@@ -221,8 +221,8 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
         loadAllFilterGroupTypes();
         loadAllMeasureGroups();
         loadAllFilterGroups();
-        if (!dt.getVisualizationSourceInfoLabel().isEmpty()){
-            setSourceLineLabel(dt.getVisualizationSourceInfoLabel());
+        if (!dt.getVisualizationDisplay().getSourceInfoLabel().isEmpty()){
+            setSourceLineLabel(dt.getVisualizationDisplay().getSourceInfoLabel());
         } else {
             setSourceLineLabel("Source Info"); 
         }
@@ -570,51 +570,36 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
     public List<SelectItem> loadSelectViewItems() {
         defaultView = 0;
         List selectItems = new ArrayList<SelectItem>();
-        String viewImage = dt.getVisualizationShowImageGraph();
-        String viewFlash = dt.getVisualizationShowFlashGraph();
-        String viewTable = dt.getVisualizationShowDataTable();
 
-        if (viewImage.equals("default")) {
+        if ( dt.getVisualizationDisplay().isShowImageGraph()) {
             selectItems.add(new SelectItem(2, "Image Graph"));
             imageAvailable = true;
-            defaultView = 2;
         }
-        if (viewFlash.equals("default")) {
+        if (dt.getVisualizationDisplay().isShowFlashGraph()) {
             selectItems.add(new SelectItem(1, "Flash Graph"));
-            defaultView = 1;
         }
-        if (viewTable.equals("default")) {
+        if (dt.getVisualizationDisplay().isShowDataTable()) {
             selectItems.add(new SelectItem(3, "Data Table"));
             dataTableAvailable = true;  
-            defaultView = 3;
         }
-        if (viewImage.equals("available")) {
-            selectItems.add(new SelectItem(2, "Image Graph"));
-            imageAvailable = true;
-            if (defaultView == 0){
-                defaultView = 2;
-            }
-        }
-        if (viewFlash.equals("available")) {
-            selectItems.add(new SelectItem(1, "Flash Graph"));
-            if (defaultView == 0){
-                defaultView = 1;
-            }
-        }
-        if (viewTable.equals("available")) {
-            selectItems.add(new SelectItem(3, "Data Table"));
-            dataTableAvailable = true;
-            if (defaultView == 0){
-                defaultView = 3;
-            }
-        }
+        
+        int defaultViewDisplay = dt.getVisualizationDisplay().getDefaultDisplay();
+        
 
-        if (viewImage.equals("hidden")) {
+        switch (defaultViewDisplay) {
+            case 0:  defaultView =  2;       break;
+            case 1:  defaultView = 1;      break;
+            case 2:  defaultView = 3;         break;
+            default: defaultView = 2; break;
+        }
+        
+
+        if (!dt.getVisualizationDisplay().isShowImageGraph()) {
             includeImage = false;
             includePdf = false;
         }
 
-        if (viewTable.equals("hidden")) {
+        if (dt.getVisualizationDisplay().isShowDataTable()) {
             includeExcel = false;
         }
         
@@ -1571,7 +1556,7 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
     private void writeImageFile(File fileIn, File pdfFileIn) {
 
         try {
-            System.out.println("imageURL " + imageURL);
+
             String decoded = URLDecoder.decode(imageURL, "UTF-8");
             System.out.println("decoded " + decoded);
             if (!graphTitle.isEmpty()){

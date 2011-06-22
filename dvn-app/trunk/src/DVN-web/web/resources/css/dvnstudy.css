@@ -272,7 +272,7 @@ table.viTblinx th{background-color:#e6e6fa;font-weight:700;margin:0px;padding:2p
 .dvnGraphResults {margin:1em; overflow:hidden; text-align:left;}
 .dvnGraphResultsVizLineTable, .dvnGraphResultsVizLineTable tr, .dvnGraphResultsVizLineTable td {border:0; margin:0; padding:0; background-color: transparent;}
 .dvnGraphIndicatorBlock {overflow:hidden; margin-bottom:1em;}
-.dvnGraphIndicatorSelect {display:inline;}
+.dvnGraphIndicatorSelect {display:inline; margin-right:2em;}
 .dvnGraphRelatedTo {font-weight:bold; margin:0 2em;}
 .dvnGraphFilterBlock {margin-bottom:1em;}
 .dvnGraphFilterTypesBlock {overflow:hidden; display:inline;}
@@ -281,6 +281,7 @@ table.viTblinx th{background-color:#e6e6fa;font-weight:700;margin:0px;padding:2p
 .dvnGraphFilterTypesControls label {font-weight:normal;}
 .dvnGraphLabelBlock {margin-bottom:.5em;}
 .dvnGraphLabelBlock div {display:inline;}
+.dvnGraphRemoveLinesButton {margin-left:1em;}
 .dvnGraphResultsLineBox {float:left; margin-right:1em;}
 .dvnGraphResultsLineBox .dvnGraphResultsVizLineTable .dvnGraphResultsVizLineBlock {padding:4px; margin:0 0 1em 0;}
 .dvnGraphResultsVizLineLabel {font-weight:bold;}

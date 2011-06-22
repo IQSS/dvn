@@ -607,7 +607,19 @@ function setLegendValue(obj) {
         </div>
 
         <div class="dvnGraphForm">
-            <div class="dvnGraphIndicatorBlock">                               
+            <div class="dvnGraphIndicatorBlock">
+
+                <div jsfc="ice:panelGroup" styleClass="dvnGraphIndicatorSelect" rendered="#{!empty ExploreDataPage.selectMeasureGroupTypes}">
+
+                    <ice:outputLabel value="#{ExploreDataPage.measureLabel} Type" for="indicatortype"/>
+
+                    <ice:selectOneMenu immediate="false" partialSubmit="true" id="issue"
+                                       valueChangeListener="#{ExploreDataPage.reset_MeasureItems}" value="#{ExploreDataPage.groupTypeId}">
+                        <f:selectItem itemLabel="Select Type..." itemValue="0"/>
+                        <f:selectItems value="#{ExploreDataPage.selectMeasureGroupTypes}"/>
+                    </ice:selectOneMenu>
+                </div>
+
                 <div class="dvnGraphIndicatorSelect">
                     <ice:outputLabel value="#{ExploreDataPage.measureLabel}" for="indicator"/>
 
@@ -616,16 +628,6 @@ function setLegendValue(obj) {
                         <f:selectItems value="#{ExploreDataPage.selectMeasureItems}"/>
                     </ice:selectOneMenu>
                 </div>
-
-                <ice:outputText value="related to" styleClass="dvnGraphRelatedTo" rendered="#{!empty ExploreDataPage.selectMeasureGroupTypes}"/>
-
-                <div class="dvnGraphIndicatorSelect">
-                    <ice:selectOneMenu immediate="false" partialSubmit="true" id="issue"
-                                       valueChangeListener="#{ExploreDataPage.reset_MeasureItems}" value="#{ExploreDataPage.groupTypeId}" rendered="#{!empty ExploreDataPage.selectMeasureGroupTypes}">
-                        <f:selectItem itemLabel="Select Type..." itemValue="0"/>
-                        <f:selectItems value="#{ExploreDataPage.selectMeasureGroupTypes}"/>
-                    </ice:selectOneMenu>
-            </div>
             </div>
 
             <div class="dvnGraphFilterBlock">
@@ -662,7 +664,7 @@ function setLegendValue(obj) {
                 <div>
                     <ice:commandButton id="addLineButton" value="Add Line" binding="#{ExploreDataPage.addLineButton}" actionListener="#{ExploreDataPage.addLine}"/>
                     <ice:message for="addLineButton" id="boxErrorMsg" styleClass="errorMessage"/>
-                    <ice:commandButton id="removeAllButton" value="Remove All Lines"  actionListener="#{ExploreDataPage.removeAllLines}"/>
+                    <ice:commandButton id="removeAllButton" value="Remove All Lines" styleClass="dvnGraphRemoveLinesButton" actionListener="#{ExploreDataPage.removeAllLines}"/>
                 </div>
             </div>
         </div>

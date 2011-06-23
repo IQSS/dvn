@@ -1,6 +1,0 @@
-sjsas.port=4848
-sjsas.password=%GF_ADMIN_PASSWORD%
-sjsas.host=localhost
-sjsas.url=http\://localhost\:8080
-sjsas.username=admin
-sjsas.root=/usr/local/glassfish

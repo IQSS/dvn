@@ -379,6 +379,7 @@ function drawVisualization() {
         }
       var data = new google.visualization.DataTable();
       var data2 = new google.visualization.DataTable();
+      var data3 = new google.visualization.DataTable();
       var colStr = new String (document.getElementById('ExploreDataPage:columnString').textContent);
         parseData(data, intDisType, intStartYear, intEndYear, useIndex, colStr);
         var icolStr = new String (document.getElementById('ExploreDataPage:imageColumnString').textContent);
@@ -396,9 +397,14 @@ function drawVisualization() {
         chart.draw(data2, optionsURL);
         
         var imageURL = chart.getImageUrl();
+        
+        
 
         document.getElementById('ExploreDataPage:imageURL').value = imageURL;
         document.getElementById('ExploreDataPage:updateImageURL').click();
+        
+        var dtcolStr = new String (document.getElementById('ExploreDataPage:dtColumnString').textContent);
+        parseData(data3, intDisType, intStartYear, intEndYear, useIndex, dtcolStr);
 
         if (intDisType == 1){
                 var chart = new google.visualization.AnnotatedTimeLine(document.getElementById('chart_div'));
@@ -410,7 +416,7 @@ function drawVisualization() {
             jQuery('#chart_div').css({'overflow-y' : 'auto'});
             jQuery('.dvnGraphExtractImageButton').css({'display' : 'none'});
             var table = new google.visualization.Table(document.getElementById('chart_div'));
-            table.draw(data, {showRowNumber: false});
+            table.draw(data3, {showRowNumber: false});
         }
         if (intDisType == 2){
 
@@ -543,6 +549,55 @@ function setLegendValue(obj) {
     }
 }
 
+var simpleEncoding = 
+  'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+
+// This function scales the submitted values so that
+// maxVal becomes the highest value.
+function simpleEncode(valueArray,maxValue) {
+  var chartData = ['s:'];
+  for (var i = 0; i < valueArray.length; i++) {
+    var currentValue = valueArray[i];
+    if (!isNaN(currentValue) && currentValue >= 0) {
+    chartData.push(simpleEncoding.charAt(Math.round((simpleEncoding.length-1) * 
+      currentValue / maxValue)));
+    }
+      else {
+      chartData.push('_');
+      }
+  }
+  return chartData.join('');
+}
+
+// Same as simple encoding, but for extended encoding.
+var EXTENDED_MAP=
+  'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-.';
+var EXTENDED_MAP_LENGTH = EXTENDED_MAP.length;
+function extendedEncode(arrVals, maxVal) {
+  var chartData = 'e:';
+
+  for(i = 0, len = arrVals.length; i < len; i++) {
+    // In case the array vals were translated to strings.
+    var numericVal = new Number(arrVals[i]);
+    // Scale the value to maxVal.
+    var scaledVal = Math.floor(EXTENDED_MAP_LENGTH * 
+        EXTENDED_MAP_LENGTH * numericVal / maxVal);
+
+    if(scaledVal > (EXTENDED_MAP_LENGTH * EXTENDED_MAP_LENGTH) - 1) {
+      chartData += "..";
+    } else if (scaledVal < 0) {
+      chartData += '__';
+    } else {
+      // Calculate first and second digits and add them to the output.
+      var quotient = Math.floor(scaledVal / EXTENDED_MAP_LENGTH);
+      var remainder = scaledVal - EXTENDED_MAP_LENGTH * quotient;
+      chartData += EXTENDED_MAP.charAt(quotient) + EXTENDED_MAP.charAt(remainder);
+    }
+  }
+
+  return chartData;
+}
+
 // ]]>
     </script>
 
@@ -550,6 +605,7 @@ function setLegendValue(obj) {
 <ice:inputHidden id="vdcId" value="#{VDCRequest.currentVDCId}"/>
 
 <ice:outputText visible="false" id="columnString" value="#{ExploreDataPage.columnString}"/>
+<ice:outputText visible="false" id="dtColumnString" value="#{ExploreDataPage.dtColumnString}"/>
 <ice:outputText visible="false" id="imageColumnString" value="#{ExploreDataPage.imageColumnString}"/>
 <ice:outputText visible="false" id="dataString" value="#{ExploreDataPage.dataString}"/>
 <ice:outputText visible="false" id="indexedDataString" value="#{ExploreDataPage.indexedDataString}"/>
@@ -755,10 +811,12 @@ function setLegendValue(obj) {
             </div>
 
             <div jsfc="ice:panelGroup" rendered="#{!empty ExploreDataPage.vizLines}" styleClass="dvnGraphBox">
+                 <div jsfc="ice:panelGroup" styleClass="dvnGraphSourceBlock" visible="#{!empty ExploreDataPage.graphTitle and (ExploreDataPage.displayType == 1 or ExploreDataPage.displayType == 3)}">
+                    <ice:outputLabel value="#{ExploreDataPage.graphTitle}" />                   
+                </div>
                 <div id="chart_div"></div>
                 <div jsfc="ice:panelGroup" styleClass="dvnGraphSourceBlock" visible="#{!empty ExploreDataPage.sources and (ExploreDataPage.displayType == 1 or ExploreDataPage.displayType == 3)}">
-                    <ice:outputLabel value="Source"/>
-                    <ice:outputText value="#{ExploreDataPage.sources}" id="sourceData"/>
+                    <ice:outputText value="Source    #{ExploreDataPage.sources}" />                   
                 </div>
             </div>
 

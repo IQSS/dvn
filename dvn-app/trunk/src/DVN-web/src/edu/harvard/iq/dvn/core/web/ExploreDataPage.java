@@ -125,7 +125,9 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
     private DataVariable xAxisVar;
     private DataTable dt = new DataTable();
     private DataVariable dataVariableSelected = new DataVariable();
+    private String dtColumnString = new String();
     private String columnString = new String();
+    private String csvColumnString = new String();
     private String imageColumnString = new String();
     
     private List <VarGroup> allMeasureGroups = new ArrayList();
@@ -188,6 +190,7 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
     private String variableLabel = "";
     private String xAxisLabel = "";
     private String sourceLineLabel = "";
+    private Long studyFileId;
 
 
 
@@ -198,8 +201,14 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
     @Override
     public void init() {
         super.init();
+        
+        studyFileId = new Long( getVDCRequestBean().getRequestParam("fileId"));
+        setUp();
+     }
+    
+    private void setUp(){
+        
         legendInt = 1;
-        Long studyFileId = new Long( getVDCRequestBean().getRequestParam("fileId"));
         visualizationService.setDataTableFromStudyFileId(studyFileId);
         studyIn = visualizationService.getStudyFromStudyFileId(studyFileId);
         studyId = studyIn.getId();
@@ -227,10 +236,16 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
             setSourceLineLabel("Source Info"); 
         }
         xAxisVar =  visualizationService.getXAxisVariable(dt.getId());
-            for (DataVariableMapping mapping : xAxisVar.getDataVariableMappings()){
-                if (mapping.isX_axis())xAxisLabel = mapping.getLabel();
-            }
-     }
+        for (DataVariableMapping mapping : xAxisVar.getDataVariableMappings()){
+             if (mapping.isX_axis())xAxisLabel = mapping.getLabel();
+        }
+        
+    }
+    
+    private void reInit(){
+        setUp();
+    }
+    
 
 
 
@@ -576,7 +591,7 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
             imageAvailable = true;
         }
         if (dt.getVisualizationDisplay().isShowFlashGraph()) {
-            selectItems.add(new SelectItem(1, "Flash Graph"));
+            selectItems.add(new SelectItem(1, "Flash Graph"));  
         }
         if (dt.getVisualizationDisplay().isShowDataTable()) {
             selectItems.add(new SelectItem(3, "Data Table"));
@@ -587,10 +602,10 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
         
 
         switch (defaultViewDisplay) {
-            case 0:  defaultView =  2;       break;
+            case 0:  defaultView = 2;     break;
             case 1:  defaultView = 1;      break;
-            case 2:  defaultView = 3;         break;
-            default: defaultView = 2; break;
+            case 2:  defaultView = 3;      break;
+            default: defaultView = 2;      break;
         }
         
 
@@ -599,7 +614,7 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
             includePdf = false;
         }
 
-        if (dt.getVisualizationDisplay().isShowDataTable()) {
+        if (!dt.getVisualizationDisplay().isShowDataTable()) {
             includeExcel = false;
         }
         
@@ -974,6 +989,7 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
         FacesContext fc = FacesContext.getCurrentInstance();
         JavascriptContext.addJavascriptCall(fc, "drawVisualization();");           
         JavascriptContext.addJavascriptCall(fc, "initLineDetails");
+        reInit();
     }
    
     private void resetLineBorder(){
@@ -1216,6 +1232,14 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
     public void setDataTableId(String dataTableId) {
         this.dataTableId = dataTableId;
     }
+    
+    public String getDtColumnString() {
+        return dtColumnString;
+    }
+
+    public void setDtColumnString(String dtColumnString) {
+        this.dtColumnString = dtColumnString;
+    }
 
     private HtmlCommandButton addLineButton = new HtmlCommandButton();
 
@@ -1240,13 +1264,17 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
     public String getDataTable(){
 
     StudyFile sf = dt.getStudyFile();
+    csvColumnString = "";
+    dtColumnString = "";
     columnString = "";
     imageColumnString = "";
     try {
         File tmpSubsetFile = File.createTempFile("tempsubsetfile.", ".tab");
         List <DataVariable> dvsIn = new ArrayList();
         dvsIn.add(xAxisVar);
-        columnString = columnString + xAxisVar.getName();
+        columnString += xAxisVar.getName();
+        csvColumnString += xAxisVar.getName();
+        dtColumnString += xAxisVar.getName();
         for (VisualizationLineDefinition vld: vizLines){
             if (vld.getLabel().length() > 6){
                 setLegendInt(2);
@@ -1256,6 +1284,8 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
                 if (dv.getId().equals(testId)){
                      dvsIn.add(dv);
                      columnString = columnString + "^" + vld.getLabel();
+                     dtColumnString = dtColumnString + "^" + vld.getLabel() + " (" + vld.getMeasureGroup().getUnits() + ")";
+                     csvColumnString = csvColumnString + "," + vld.getLabel();
                       try {
                            imageColumnString= imageColumnString + "^" +  URLEncoder.encode(vld.getLabel(), "UTF-8");
                         }    catch (Exception e){
@@ -1327,7 +1357,7 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
     String maxYear = "";
     String output = "";
     String indexedOutput = "";
-    String csvOutput =columnString + "\n";
+    String csvOutput = csvColumnString + "\n";
     boolean indexSet = false;
     boolean addIndexDate = false;
     boolean[] getIndexes = new boolean[9];
@@ -1812,7 +1842,7 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
                     } else {
                         set.add(checkSource);
                         if (returnString.isEmpty()){
-                            returnString = returnString + checkSource;
+                            returnString = returnString + "Source:  " + checkSource;
                         } else {
                             returnString = returnString + ", " + checkSource;
                         }

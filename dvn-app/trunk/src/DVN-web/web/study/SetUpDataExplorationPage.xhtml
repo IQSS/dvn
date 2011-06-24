@@ -97,7 +97,7 @@
                     </script>
 
                     <style type="text/css">
-                        .dvnstudyadminboxfloat {width:340px;}
+                        .dvnstudyadminboxfloat {width:400px;}
                         .iceDatTbl .dvnDataTableHeaderForm {text-align:left;}
                         .iceDatTbl .dvnDataTableHeaderForm label.dvnDataTableHeaderFilter {font-weight:normal;}
                         .iceDatTbl.dvnExplorationFilterGroups {background:none;}
@@ -445,15 +445,14 @@
                                             <div style="margin-top:1em;">
                                                 <ice:outputLabel value="Display Options"/><br/>
                                                 <ice:selectBooleanCheckbox  value="#{SetUpDataExplorationPage.dataTable.visualizationDisplay.showFlashGraph}" 
-                                                                            onchange="setEdited()"/> 
-                                                <ice:outputLabel value="Flash Graph" style="font-weight:normal;"/>
+                                                                            onchange="setEdited()"/>
+                                                <ice:outputLabel value="Flash Graph" style="font-weight:normal; margin-right:1em;"/>
                                                 <ice:selectBooleanCheckbox partialSubmit="false" value="#{SetUpDataExplorationPage.dataTable.visualizationDisplay.showImageGraph}"
-                                                                           onchange="setEdited()"/> 
-                                                <ice:outputLabel value="Image Graph" style="font-weight:normal; margin-left:1em;"/>
+                                                                           onchange="setEdited()"/>
+                                                <ice:outputLabel value="Image Graph" style="font-weight:normal; margin-right:1em;"/>
                                                 <ice:selectBooleanCheckbox partialSubmit="false" value="#{SetUpDataExplorationPage.dataTable.visualizationDisplay.showDataTable}"
-                                                                           onchange="setEdited()"/> 
-                                                <ice:outputLabel value="Data Table" style="font-weight:normal; margin-left:1em;"
-                                                                 />
+                                                                           onchange="setEdited()"/>
+                                                <ice:outputLabel value="Data Table" style="font-weight:normal; margin-right:1em;"/>
                                             </div>
 
                                             <div style="margin-top:1em;">

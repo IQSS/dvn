@@ -1915,9 +1915,6 @@ public class StudyServiceBean implements edu.harvard.iq.dvn.core.study.StudyServ
 
         VDC vdc = em.find(VDC.class, vdcId);
 
-        if (vdc.getHarvestingDataverse() == null ) {
-            throw new EJBException("importHarvestStudy(...) should only be called for a harvesting dataverse.");
-        }
 
         // Note on the logic below:
         // It IS possible for the method to be called on a Harvested study, but without the

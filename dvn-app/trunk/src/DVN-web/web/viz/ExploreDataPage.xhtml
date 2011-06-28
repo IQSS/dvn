@@ -336,7 +336,11 @@ function drawVisualization() {
       var displayType = new String (document.getElementById('ExploreDataPage:displayType').textContent);
 
       var footerAvailable = new String (document.getElementById('ExploreDataPage:sourceText').textContent);
-      var useIndex = document.getElementById('ExploreDataPage:displayindices').checked;
+      var useIndex = false;
+      if (document.getElementById('ExploreDataPage:displayindices') != null){
+          useIndex = document.getElementById('ExploreDataPage:displayindices').checked;
+      }
+      
       if (!useIndex){
           var axisLabel = new String (document.getElementById('ExploreDataPage:imageAxisLabel').textContent);
           var sourceFooter = new String (document.getElementById('ExploreDataPage:imageSourceFooter').textContent);
@@ -366,7 +370,6 @@ function drawVisualization() {
       var endYear = new String (document.getElementById('ExploreDataPage:endYear').textContent);
       myDateList = endYear.split('-');
       var intEndYear = parseInt(myDateList[0]);
-      var useIndex = document.getElementById('ExploreDataPage:displayindices').checked;
       var useLegend = true;
       
       var buttonVal = getRadioValue("displayLegendRadio");

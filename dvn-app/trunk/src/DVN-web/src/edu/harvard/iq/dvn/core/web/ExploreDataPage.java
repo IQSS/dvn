@@ -216,8 +216,8 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
         allVarGroupings = dt.getVarGroupings();
         
         measureLabel = loadMeasureLabel();  
-        if (!dt.getVisualizationDisplay().getMeasureTypeLabel().isEmpty()){
-            measureTypeCue = dt.getVisualizationDisplay().getMeasureTypeLabel();
+        if (dt.getVisualizationDisplay() != null && dt.getVisualizationDisplay().getMeasureTypeLabel() != null ){
+            measureTypeCue = loadMeasureTypeCue();
         } else {
             measureTypeCue = measureLabel + " Type ";
         }
@@ -294,7 +294,7 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
         this.filterPanelGroup = filterPanelGroup;
     }
 
-    public String loadMeasureLabel() {
+    private String loadMeasureLabel() {
         Iterator iterator = allVarGroupings.iterator();
         while (iterator.hasNext() ){
             VarGrouping varGrouping = (VarGrouping) iterator.next();
@@ -305,6 +305,14 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
 
         }
         return "Measure";
+    }
+    
+    private String loadMeasureTypeCue() {
+        String retVal =  measureLabel + " Type ";    
+        if ( !dt.getVisualizationDisplay().getMeasureTypeLabel().isEmpty()){
+            retVal = dt.getVisualizationDisplay().getMeasureTypeLabel();
+        } 
+        return retVal;
     }
 
     private void loadFilterGroupings(){

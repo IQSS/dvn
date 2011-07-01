@@ -216,7 +216,12 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
         allVarGroupings = dt.getVarGroupings();
         
         measureLabel = loadMeasureLabel();  
-        measureTypeCue = dt.getVisualizationDisplay().getMeasureTypeLabel();
+        if (!dt.getVisualizationDisplay().getMeasureTypeLabel().isEmpty()){
+            measureTypeCue = dt.getVisualizationDisplay().getMeasureTypeLabel();
+        } else {
+            measureTypeCue = measureLabel + " Type ";
+        }
+        
         selectMeasureGroupTypes = loadSelectMeasureGroupTypes();        
         selectMeasureItems = loadSelectMeasureItems(0);
         

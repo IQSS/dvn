@@ -96,6 +96,8 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
     VisualizationServiceLocal      visualizationService;
 
     private String measureLabel;
+    private String measureTypeCue;
+
     private String lineLabel;
 
     private String lineColor;
@@ -213,7 +215,8 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
         dvList = dt.getDataVariables();
         allVarGroupings = dt.getVarGroupings();
         
-        measureLabel = loadMeasureLabel();              
+        measureLabel = loadMeasureLabel();  
+        measureTypeCue = dt.getVisualizationDisplay().getMeasureTypeLabel();
         selectMeasureGroupTypes = loadSelectMeasureGroupTypes();        
         selectMeasureItems = loadSelectMeasureItems(0);
         
@@ -499,6 +502,15 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
 
     public String getMeasureLabel() {
         return measureLabel;
+    }
+    
+    
+    public String getMeasureTypeCue() {
+        return measureTypeCue;
+    }
+
+    public void setMeasureTypeCue(String measureTypeCue) {
+        this.measureTypeCue = measureTypeCue;
     }
 
     public List<String> getFilterStrings() {

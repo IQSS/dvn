@@ -441,7 +441,21 @@
                                                 </ice:inputText>
                                                 <ice:message styleClass="errorMessage" for="inputSourceLabel"/>
                                             </div>
-
+                                            
+                                            <div jsfc="ice:panelGroup" rendered="#{SetUpDataExplorationPage.dataTable !=null}">
+                                                <ice:outputLabel value="Measure Type User Cue" for="measureTypeLabel"/>
+                                                <ice:inputText
+                                                    onchange="setEdited()"
+                                                    id="inputMeaureTypeLabel"
+                                                    rendered="#{SetUpDataExplorationPage.dataTable !=null}"
+                                                    size="25"
+                                                    maxlength="255"
+                                                    value="#{SetUpDataExplorationPage.dataTable.visualizationDisplay.measureTypeLabel}"
+                                                    accesskey="">
+                                                </ice:inputText>
+                                                <ice:message styleClass="errorMessage" for="inputMeasureTypeLabel"/>
+                                            </div>
+                                            
                                             <div style="margin-top:1em;">
                                                 <ice:outputLabel value="Display Options"/><br/>
                                                 <ice:selectBooleanCheckbox  value="#{SetUpDataExplorationPage.dataTable.visualizationDisplay.showFlashGraph}" 

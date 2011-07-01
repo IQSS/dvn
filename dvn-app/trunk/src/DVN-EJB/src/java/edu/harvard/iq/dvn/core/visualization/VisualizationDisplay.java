@@ -29,6 +29,9 @@ public class VisualizationDisplay implements Serializable {
     private boolean showDataTable;
     private int defaultDisplay;
     private String sourceInfoLabel;
+    private String measureTypeLabel;
+
+
 
     public Long getId() {
         return id;
@@ -90,6 +93,14 @@ public class VisualizationDisplay implements Serializable {
 
     public void setSourceInfoLabel(String sourceInfoLabel) {
         this.sourceInfoLabel = sourceInfoLabel;
+    }
+    
+    public String getMeasureTypeLabel() {
+        return measureTypeLabel;
+    }
+
+    public void setMeasureTypeLabel(String measureTypeLabel) {
+        this.measureTypeLabel = measureTypeLabel;
     }
     
     @Override

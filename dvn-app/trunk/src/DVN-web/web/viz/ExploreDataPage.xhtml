@@ -680,7 +680,7 @@ function extendedEncode(arrVals, maxVal) {
 
                 <div jsfc="ice:panelGroup" styleClass="dvnGraphIndicatorSelect" rendered="#{!empty ExploreDataPage.selectMeasureGroupTypes}">
 
-                    <ice:outputLabel value="#{ExploreDataPage.measureLabel} Type" for="indicatortype"/>
+                    <ice:outputLabel value="#{ExploreDataPage.measureTypeCue}" for="indicatortype"/>
 
                     <ice:selectOneMenu immediate="false" partialSubmit="true" id="issue"
                                        valueChangeListener="#{ExploreDataPage.reset_MeasureItems}" value="#{ExploreDataPage.groupTypeId}">
@@ -747,7 +747,7 @@ function extendedEncode(arrVals, maxVal) {
                 </div>
                 <div id="chart_div"></div>
                 <div jsfc="ice:panelGroup" styleClass="dvnGraphSourceBlock" visible="#{!empty ExploreDataPage.sources and (ExploreDataPage.displayType == 1 or ExploreDataPage.displayType == 3)}">
-                    <ice:outputText value="Source #{ExploreDataPage.sources}"/>
+                    <ice:outputText value="Source: #{ExploreDataPage.sources}"/>
                 </div>
             </div>
 

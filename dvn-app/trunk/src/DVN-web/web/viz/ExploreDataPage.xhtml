@@ -332,13 +332,15 @@ function myParseXaxis(dataIn, intDisType, year){
 
 function drawVisualization() {
 
+
       document.getElementById('ExploreDataPage:hasURL').value = "false";
       var displayType = new String (document.getElementById('ExploreDataPage:displayType').textContent);
 
       var footerAvailable = new String (document.getElementById('ExploreDataPage:sourceText').textContent);
-      var useIndex = false;
-      if (document.getElementById('ExploreDataPage:displayindices') != null){
-          useIndex = document.getElementById('ExploreDataPage:displayindices').checked;
+      
+      var useIndex = false;      
+      if (document.getElementById('ExploreDataPage:displayIndicesHidden') != null){
+          useIndex = document.getElementById('ExploreDataPage:displayIndicesHidden').checked;
       }
       
       if (!useIndex){
@@ -365,6 +367,7 @@ function drawVisualization() {
       
 
       var startYear = new String (document.getElementById('ExploreDataPage:startYear').textContent);
+      document.getElementById('ExploreDataPage:tabSet1:0:hiddenDataDownload')
       var myDateList = startYear.split('-');
       var intStartYear = parseInt(myDateList[0]);
       var endYear = new String (document.getElementById('ExploreDataPage:endYear').textContent);
@@ -388,7 +391,7 @@ function drawVisualization() {
         var icolStr = new String (document.getElementById('ExploreDataPage:imageColumnString').textContent);
         parseData(data2, 2, intStartYear, intEndYear, useIndex, icolStr);
         var chart = new google.visualization.ImageChart(document.getElementById('chart_div'));
-        var optionsURL = {cht: 'lc', title: fullTitle, legend: legendAlignment, chxs: '1N*sz2*,000000',
+        var optionsURL = {cht: 'lc', title: fullTitle, legend: legendAlignment, chxs: '1N*sz0*,000000',
             colors: ['#4684EE', '#DC3912', '#FF9900', '#008000', '#4942CC', '#990099', '#FF80F2', '#7FD127']};               
         if (sourceFooter.length > 0){
                 var labelString = '0:' + getXaxisString(startYear, endYear) + sourceFooter; 
@@ -400,9 +403,7 @@ function drawVisualization() {
         chart.draw(data2, optionsURL);
         
         var imageURL = chart.getImageUrl();
-        
-        
-
+                
         document.getElementById('ExploreDataPage:imageURL').value = imageURL;
         document.getElementById('ExploreDataPage:updateImageURL').click();
         
@@ -426,13 +427,13 @@ function drawVisualization() {
             var displayTitle = new String (document.getElementById('ExploreDataPage:graphTitleHidden').textContent);
             var fullTitle = displayTitle;            
             var vAxTitle = 'vAxisTitle';
-            var options = {cht: 'lc', title: fullTitle, legend: legendAlignment, chxs: '1N*sz2*,000000', 
+            var options = {cht: 'lc', title: fullTitle, legend: legendAlignment, chxs: '1N*sz0*,000000', 
                 colors: ['#4684EE', '#DC3912', '#FF9900', '#008000', '#4942CC', '#990099', '#FF80F2', '#7FD127']};
             
             if (sourceFooter.length > 0){
                 var labelString = '0:' + getXaxisString(startYear, endYear) + displaySourceFooter;                
                 options = {cht: 'lc', title: fullTitle, chxt: axisLabel, chxl: labelString, legend: legendAlignment, 
-                chxs: '1N*sz2*,000000', 
+                chxs: '1N*sz0*,000000', 
                     colors: ['#4684EE', '#DC3912', '#FF9900', '#008000', '#4942CC', '#990099', '#FF80F2', '#7FD127']};
             }
              var chart = new google.visualization.ImageChart(document.getElementById('chart_div'));
@@ -473,8 +474,9 @@ function updateIncludeFlags(){
 }
 
 function resetIndices(){
+
+     document.getElementById('ExploreDataPage:updateUseIndex').click();
      
-     setTimeout(function(){drawVisualization();}, 500);
 }
 
 function resetLegend(){
@@ -493,15 +495,17 @@ function updateIndexYear(){
 }
 
 function updateDisplayType(){
-     document.getElementById('ExploreDataPage:selectDisplayButton').click();
+
+     document.getElementById('ExploreDataPage:selectDisplayButton').click();  
      
 }
 
 function startDownload() {
-    var imageFlag = document.getElementById('ExploreDataPage:downloadImageGraph').checked;
-    var pdfFlag = document.getElementById('ExploreDataPage:downloadPDFGraph').checked;
-    var csvFlag = document.getElementById('ExploreDataPage:downloadDataCSV').checked;
-    var excelFlag = document.getElementById('ExploreDataPage:downloadDataExcel').checked;
+
+    var imageFlag = document.getElementById('ExploreDataPage:tabSet1:0:downloadImageGraph').checked;    
+    var pdfFlag = document.getElementById('ExploreDataPage:tabSet1:0:downloadPDFGraph').checked;
+    var csvFlag = document.getElementById('ExploreDataPage:tabSet1:0:downloadDataCSV').checked;
+    var excelFlag = document.getElementById('ExploreDataPage:tabSet1:0:downloadDataExcel').checked;
 
     if (!imageFlag && !pdfFlag  && !csvFlag  && !excelFlag ) {
         alert("Please select one or more items to export.");
@@ -509,15 +513,15 @@ function startDownload() {
     }
 
     if (imageFlag && !pdfFlag  && !csvFlag  && !excelFlag ) {
-        document.getElementById('ExploreDataPage:downloadImage').click();
+        document.getElementById('ExploreDataPage:tabSet1:0:downloadImage').click();
     } else if (!imageFlag && pdfFlag  && !csvFlag  && !excelFlag ) {
-        document.getElementById('ExploreDataPage:downloadPDF').click();
+        document.getElementById('ExploreDataPage:tabSet1:0:downloadPDF').click();
     } else if (!imageFlag && !pdfFlag  && csvFlag  && !excelFlag ) {
-        document.getElementById('ExploreDataPage:downloadCSV').click();
+        document.getElementById('ExploreDataPage:tabSet1:0:downloadCSV').click();
     } else if (!imageFlag && !pdfFlag  && !csvFlag  && excelFlag ) {
-        document.getElementById('ExploreDataPage:downloadExcel').click();
+        document.getElementById('ExploreDataPage:tabSet1:0:downloadExcel').click();
     } else {
-        document.getElementById('ExploreDataPage:downloadZip').click();
+        document.getElementById('ExploreDataPage:tabSet1:0:downloadZip').click();
     }
    
 }
@@ -632,6 +636,12 @@ function extendedEncode(arrVals, maxVal) {
 <ice:commandButton visible="false" id="updateImageURL" value="Update URL" action="#{ExploreDataPage.updateImageURL}"/>
 <ice:commandButton visible="false" id="updateIncludeFlags" value="Update Include Flags" action="#{ExploreDataPage.updateIncludeFlags}"/>
 <ice:commandButton visible="false" id="resetIndexValue" actionListener="#{ExploreDataPage.resetIndexDisplay}"/>
+<ice:commandButton visible="false" id="selectDisplayButton" action="#{ExploreDataPage.reset_DisplayType}"/>
+<ice:commandButton visible="false" id="updateUseIndex" action="#{ExploreDataPage.updateUseIndex}"/>
+<ice:selectBooleanCheckbox visible="false" id="displayIndicesHidden" value="#{ExploreDataPage.displayIndexes}" rendered="true" />                                                               
+<ice:commandButton visible="false" id="updateStartYear" action="#{ExploreDataPage.update_StartYear}"/>
+<ice:commandButton visible="false" id="updateEndYear" action="#{ExploreDataPage.update_EndYear}"/>
+<ice:commandButton visible="false" id="updateIndexYear" action="#{ExploreDataPage.update_IndexYear}"/>
 
     <div class="dvn_section">
         <div jsfc="ice:panelGroup" styleClass="dvnMsgBlockRound dvnInformationMessage">
@@ -674,7 +684,7 @@ function extendedEncode(arrVals, maxVal) {
 
                     <ice:selectOneMenu immediate="false" partialSubmit="true" id="issue"
                                        valueChangeListener="#{ExploreDataPage.reset_MeasureItems}" value="#{ExploreDataPage.groupTypeId}">
-                        <f:selectItem itemLabel="Select Type..." itemValue="0"/>
+                        <f:selectItem itemLabel="Select..." itemValue="0"/>
                         <f:selectItems value="#{ExploreDataPage.selectMeasureGroupTypes}"/>
                     </ice:selectOneMenu>
                 </div>
@@ -723,7 +733,7 @@ function extendedEncode(arrVals, maxVal) {
                 <div>
                     <ice:commandButton id="addLineButton" value="Add Line" binding="#{ExploreDataPage.addLineButton}" actionListener="#{ExploreDataPage.addLine}"/>
                     <ice:message for="addLineButton" id="boxErrorMsg" styleClass="errorMessage"/>
-                    <ice:commandButton id="removeAllButton" value="Remove All Lines" styleClass="dvnGraphRemoveLinesButton" actionListener="#{ExploreDataPage.removeAllLines}"/>
+                    <ice:commandButton id="removeAllButton" value="Refresh" styleClass="dvnGraphRemoveLinesButton" actionListener="#{ExploreDataPage.removeAllLines}"/>
                 </div>
             </div>
         </div>
@@ -840,7 +850,7 @@ function extendedEncode(arrVals, maxVal) {
                                 <ice:selectOneMenu id="graphdisplay"  binding="#{ExploreDataPage.selectGraphType}" onchange="updateDisplayType();">
                                     <f:selectItems value="#{ExploreDataPage.selectView}"/>
                                 </ice:selectOneMenu>
-                                <ice:commandButton visible="false" id="selectDisplayButton" action="#{ExploreDataPage.reset_DisplayType}"/>
+                                
                                 <div>
                                     <ice:outputLabel value="Title" for="graphtitleIn"/>
                                     <ice:inputText id="graphTitleIn" size="38" binding="#{ExploreDataPage.inputGraphTitle}"
@@ -863,8 +873,7 @@ function extendedEncode(arrVals, maxVal) {
                                          <f:selectItems value="#{ExploreDataPage.selectEndYears}"/>
                                     </ice:selectOneMenu>
                                 </div>
-                                <ice:commandButton visible="false" id="updateStartYear" action="#{ExploreDataPage.update_StartYear}"/>
-                                <ice:commandButton visible="false" id="updateEndYear" action="#{ExploreDataPage.update_EndYear}"/>
+
                             </div>
                             <div class="dvnShowLegendBlock">
                                  <ice:outputLabel value="Show Graph Legend" for="displayLegend" rendered="true"/>
@@ -878,15 +887,16 @@ function extendedEncode(arrVals, maxVal) {
                             <div class="dvnGraphIndicesBlock">
                                 <ice:outputLabel value="Indices" for="graphindices" styleClass="dvnGraphIndicesTitle"/>
                                 <div>
-                                    <ice:selectBooleanCheckbox id="displayindices" value="#{ExploreDataPage.displayIndexes}"
+                                    <ice:selectBooleanCheckbox id="displayindices" value="#{ExploreDataPage.displayIndexes}" binding="#{ExploreDataPage.useIndicesCheckBox}"
                                                                rendered="true" onchange="resetIndices();"/>
                                     <ice:outputLabel value="Display Series as Indices" for="displayindices" rendered="true"/>
+                                   
                                 </div>
                                 <ice:outputLabel value="Select Reference Period" for="selectreferenceperiod" rendered="true"/>
                                 <ice:selectOneMenu id="selectreferenceperiod" rendered="true" onchange="updateIndexYear();"  binding="#{ExploreDataPage.selectIndexYear}">
                                     <f:selectItems value="#{ExploreDataPage.selectIndexDate}"/>
                                 </ice:selectOneMenu>
-                                <ice:commandButton visible="false" id="updateIndexYear" action="#{ExploreDataPage.update_IndexYear}"/>
+                                
                             </div>
                         </div>
                     </ice:panelTab>
@@ -953,15 +963,16 @@ function extendedEncode(arrVals, maxVal) {
                             styleClass="clusterViewDocPopup">
                 <f:facet name="header">
                     <ice:panelGroup styleClass="popupHeaderWrapper">
-                        <ice:outputText value="Variable Information" styleClass="popupHeaderText"/>
+                        <ice:outputText value="#{ExploreDataPage.sourceLineLabel}" styleClass="popupHeaderText"/>
                         <ice:commandLink value="Close [X]" actionListener="#{ExploreDataPage.closeVariableInfoPopup}" styleClass="popupHeaderClose"></ice:commandLink>
                     </ice:panelGroup>
                 </f:facet>
                 <f:facet name="body">
                     <ice:panelGroup styleClass="popupBody">
-
-                        <ice:outputText value="#{ExploreDataPage.variableLabel}" /><br></br>
-
+                        <ice:outputText value="#{ExploreDataPage.variableLabel}" rendered ="#{!ExploreDataPage.variableLabelLink}" />
+                        <ice:outputLink value="#{ExploreDataPage.variableLabel}"  rendered ="#{ExploreDataPage.variableLabelLink}">
+                            <ice:outputText value="#{ExploreDataPage.variableLabel}" nospan="true"/>
+                        </ice:outputLink><br></br>
                     </ice:panelGroup>
 
                 </f:facet>

@@ -27,7 +27,7 @@
     google.load('visualization', '1', {packages:['table']});
     google.load("visualization", "1", {packages:["imagebarchart"]});
     google.load('visualization', '1', {packages:['imagelinechart']});
-
+    var legendString = "";
 
     var timeout= 600; //milliseconds to wait for no activity
     var countEvents= 0;
@@ -77,6 +77,22 @@ function getXaxisString(startYear, endYear)
     return retString;
 }
 
+function getLegendString(columnString){
+    legendString = "";
+    var myString = columnString;
+    var myColumnList = myString.split ( '^' );
+    for (var i=0; i< myColumnList.length ;i++)
+    { 
+        var myColumn = myColumnList[i];
+            if(legendString==""){
+                legendString = escape(myColumn);                
+            } else {
+                legendString = legendString + "|" + escape(myColumn);
+            }
+    }
+    return legendString;
+}
+
 
  function parseData(data, intDisType, startYear, endYear, indexed, columnString) {
           
@@ -93,7 +109,7 @@ function getXaxisString(startYear, endYear)
         var numColumnsStr =  new String (document.getElementById('ExploreDataPage:dataColumns').textContent);
         var numColumns = parseInt(numColumnsStr);
         
-
+            legendString="";
     for (i=0; i< myColumnList.length ;i++)
     { 
         var myColumn = myColumnList[i];
@@ -107,11 +123,17 @@ function getXaxisString(startYear, endYear)
             if (intDisType == 3){
                 data.addColumn('string', myColumn);
             }
+
         } else {
             if (intDisType ==1){
                 data.addColumn('number', "");
             } else {
                 data.addColumn('number', myColumn);
+            }
+            if(legendString==""){
+                legendString = escape(myColumn);                
+            } else {
+                legendString = "|" + escape(myColumn);
             }
 
         }
@@ -332,12 +354,8 @@ function myParseXaxis(dataIn, intDisType, year){
 
 function drawVisualization() {
 
-
       document.getElementById('ExploreDataPage:hasURL').value = "false";
-      var displayType = new String (document.getElementById('ExploreDataPage:displayType').textContent);
-
-      var footerAvailable = new String (document.getElementById('ExploreDataPage:sourceText').textContent);
-      
+      var displayType = new String (document.getElementById('ExploreDataPage:displayType').textContent);      
       var useIndex = false;      
       if (document.getElementById('ExploreDataPage:displayIndicesHidden') != null){
           useIndex = document.getElementById('ExploreDataPage:displayIndicesHidden').checked;
@@ -347,10 +365,20 @@ function drawVisualization() {
           var axisLabel = new String (document.getElementById('ExploreDataPage:imageAxisLabel').textContent);
           var sourceFooter = new String (document.getElementById('ExploreDataPage:imageSourceFooter').textContent);
           var displaySourceFooter = new String (document.getElementById('ExploreDataPage:displaySourceFooter').textContent);
+          var transDataIn = document.getElementById('ExploreDataPage:transformedData').textContent;
+          var highValStandardIn = new String (document.getElementById('ExploreDataPage:highValStandard').textContent);
+          var highValDouble = parseFloat(highValStandardIn) * 1.1;
+          var lowValStandardIn = new String (document.getElementById('ExploreDataPage:lowValStandard').textContent);
+          var lowValDouble = parseFloat(lowValStandardIn) * 0.8; 
       } else {
           var axisLabel = new String (document.getElementById('ExploreDataPage:imageAxisLabelNoYLabel').textContent);
           var sourceFooter = new String (document.getElementById('ExploreDataPage:imageSourceFooterNoYLabel').textContent);
           var displaySourceFooter = new String (document.getElementById('ExploreDataPage:displaySourceFooterNoYLabel').textContent);
+          var transDataIn = document.getElementById('ExploreDataPage:transformedDataIndexed').textContent;
+          var highValStandardIn = new String (document.getElementById('ExploreDataPage:highValIndexed').textContent);
+          var highValDouble = parseFloat(highValStandardIn) * 1.1;
+          var lowValStandardIn = new String (document.getElementById('ExploreDataPage:lowValIndexed').textContent);
+          var lowValDouble = parseFloat(lowValStandardIn) * 0.8; 
       }
       
       var defaultView = new String (document.getElementById('ExploreDataPage:defaultView').textContent);
@@ -364,7 +392,27 @@ function drawVisualization() {
               intDisType = intDefaultView;
           }          
       }
-      
+
+
+  
+      var chxsString = "";
+      if ((highValDouble - lowValDouble) > 10){
+          chxsString = "&chxs=1N*sz0*,000000"; 
+      } else {
+          chxsString =  "&chxs=1N*sz1*,000000";  
+      }
+
+
+      var transDataInLines = transDataIn.split(";");
+      var encoded = "";
+            for (var i=0; i< transDataInLines.length  ;i++){
+                var line = transDataInLines[i];
+                var lineParse = line.split ( ',' );
+                if (i>0){
+                    encoded = encoded + ",";
+                }
+                encoded = encoded +  extendedEncode(lineParse, highValDouble,  lowValDouble);
+            }
 
       var startYear = new String (document.getElementById('ExploreDataPage:startYear').textContent);
       document.getElementById('ExploreDataPage:tabSet1:0:hiddenDataDownload')
@@ -373,36 +421,43 @@ function drawVisualization() {
       var endYear = new String (document.getElementById('ExploreDataPage:endYear').textContent);
       myDateList = endYear.split('-');
       var intEndYear = parseInt(myDateList[0]);
-      var useLegend = true;
       
       var buttonVal = getRadioValue("displayLegendRadio");
-      var legendAlignment = 'right';
+      var legendAlignment = 'r';
         if (buttonVal == 2){
-           legendAlignment = 'bottom';
+           legendAlignment = 'b';
         }
         if (buttonVal == 3){
            legendAlignment = 'none';
         }
       var data = new google.visualization.DataTable();
-      var data2 = new google.visualization.DataTable();
       var data3 = new google.visualization.DataTable();
       var colStr = new String (document.getElementById('ExploreDataPage:columnString').textContent);
-        parseData(data, intDisType, intStartYear, intEndYear, useIndex, colStr);
-        var icolStr = new String (document.getElementById('ExploreDataPage:imageColumnString').textContent);
-        parseData(data2, 2, intStartYear, intEndYear, useIndex, icolStr);
-        var chart = new google.visualization.ImageChart(document.getElementById('chart_div'));
-        var optionsURL = {cht: 'lc', title: fullTitle, legend: legendAlignment, chxs: '1N*sz0*,000000',
-            colors: ['#4684EE', '#DC3912', '#FF9900', '#008000', '#4942CC', '#990099', '#FF80F2', '#7FD127']};               
-        if (sourceFooter.length > 0){
-                var labelString = '0:' + getXaxisString(startYear, endYear) + sourceFooter; 
-                optionsURL = {cht: 'lc', title: fullTitle, chxt: axisLabel, chxl: labelString, legend: legendAlignment, 
-                chxs: '1N*sz2*,000000', 
-                    colors: ['#4684EE', '#DC3912', '#FF9900', '#008000', '#4942CC', '#990099', '#FF80F2', '#7FD127']};
-        }
+      parseData(data, intDisType, intStartYear, intEndYear, useIndex, colStr);
+      var icolStr = new String (document.getElementById('ExploreDataPage:imageColumnString').textContent);
 
-        chart.draw(data2, optionsURL);
+
+            var displayTitle = new String (document.getElementById('ExploreDataPage:graphTitleHidden').textContent);
+            var fullTitle = displayTitle;  
+            var chartBaseUrl = "http://chart.apis.google.com/chart?";
+            var chartParams = "cht=lc&chs=540x400&chco=4684EE,DC3912,FF9900,008000,4942CC,990099,FF80F2,7FD127";
+            if ((highValDouble - lowValDouble) > 10){
+               chartParams = chartParams + "&chxs=1N*sz0*,000000|0N,000000|2N,000000|3N,000000|4N,000000"; 
+            } else {
+               chartParams = chartParams + "&chxs=1N*sz1*,000000|0N,000000|2N,000000|3N,000000|4N,000000";  
+            }
+            chartParams = chartParams + "&chxt="+axisLabel;
+            var labelString = escape('0:' + getXaxisString(startYear, endYear) + displaySourceFooter);   
+            chartParams = chartParams + "&chxl="+labelString;
+            chartParams = chartParams + "&chdlp="+legendAlignment;
+            chartParams = chartParams + "&chdl="+ getLegendString(icolStr);
+            chartParams = chartParams + "&chdls=000000";
+            chartParams = chartParams + "&chxr=1,"+lowValDouble+","+highValDouble;
+            var values = "&chd=e:";
+            var title = "&chtt="+escape(fullTitle);
+            values = values + encoded;
+            var imageURL = chartBaseUrl + chartParams + title + values;        
         
-        var imageURL = chart.getImageUrl();
                 
         document.getElementById('ExploreDataPage:imageURL').value = imageURL;
         document.getElementById('ExploreDataPage:updateImageURL').click();
@@ -424,22 +479,11 @@ function drawVisualization() {
         }
         if (intDisType == 2){
 
-            var displayTitle = new String (document.getElementById('ExploreDataPage:graphTitleHidden').textContent);
-            var fullTitle = displayTitle;            
-            var vAxTitle = 'vAxisTitle';
-            var options = {cht: 'lc', title: fullTitle, legend: legendAlignment, chxs: '1N*sz0*,000000', 
-                colors: ['#4684EE', '#DC3912', '#FF9900', '#008000', '#4942CC', '#990099', '#FF80F2', '#7FD127']};
-            
-            if (sourceFooter.length > 0){
-                var labelString = '0:' + getXaxisString(startYear, endYear) + displaySourceFooter;                
-                options = {cht: 'lc', title: fullTitle, chxt: axisLabel, chxl: labelString, legend: legendAlignment, 
-                chxs: '1N*sz0*,000000', 
-                    colors: ['#4684EE', '#DC3912', '#FF9900', '#008000', '#4942CC', '#990099', '#FF80F2', '#7FD127']};
-            }
-             var chart = new google.visualization.ImageChart(document.getElementById('chart_div'));
-             chart.draw(data, options);
-             jQuery('#chart_div').css({'overflow-y' : 'visible'});
+
+            document.getElementById('chart_div').innerHTML = "<img src=" + chartBaseUrl + chartParams + title + values + ">";
+
              jQuery('.dvnGraphExtractImageButton').css({'display' : 'block'});
+             
         }
 
 
@@ -466,7 +510,7 @@ function deleteLine(){
 
 function updateStartYear(){
      document.getElementById('ExploreDataPage:updateStartYear').click();
-     setTimeout(function(){drawVisualization();}, 500);
+     
 }
 
 function updateIncludeFlags(){
@@ -486,7 +530,7 @@ function resetLegend(){
 
 function updateEndYear(){
      document.getElementById('ExploreDataPage:updateEndYear').click();
-     setTimeout(function(){drawVisualization();}, 500);
+     
 }
 
 function updateIndexYear(){
@@ -580,8 +624,10 @@ function simpleEncode(valueArray,maxValue) {
 var EXTENDED_MAP=
   'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-.';
 var EXTENDED_MAP_LENGTH = EXTENDED_MAP.length;
-function extendedEncode(arrVals, maxVal) {
-  var chartData = 'e:';
+function extendedEncode(arrVals, maxVal, minVal) {
+    var ymin=0;
+var ymax=4095;
+  var chartData = '';
 
   for(i = 0, len = arrVals.length; i < len; i++) {
     // In case the array vals were translated to strings.
@@ -590,6 +636,7 @@ function extendedEncode(arrVals, maxVal) {
     var scaledVal = Math.floor(EXTENDED_MAP_LENGTH * 
         EXTENDED_MAP_LENGTH * numericVal / maxVal);
 
+    var scaledVal=Math.round((((ymin-ymax)/(maxVal-minVal))*(maxVal-numericVal))+ymax);    
     if(scaledVal > (EXTENDED_MAP_LENGTH * EXTENDED_MAP_LENGTH) - 1) {
       chartData += "..";
     } else if (scaledVal < 0) {
@@ -601,7 +648,6 @@ function extendedEncode(arrVals, maxVal) {
       chartData += EXTENDED_MAP.charAt(quotient) + EXTENDED_MAP.charAt(remainder);
     }
   }
-
   return chartData;
 }
 
@@ -612,6 +658,12 @@ function extendedEncode(arrVals, maxVal) {
 <ice:inputHidden id="vdcId" value="#{VDCRequest.currentVDCId}"/>
 
 <ice:outputText visible="false" id="columnString" value="#{ExploreDataPage.columnString}"/>
+<ice:outputText visible="false" id="transformedData" value="#{ExploreDataPage.transformedData}"/>
+<ice:outputText visible="false" id="transformedDataIndexed" value="#{ExploreDataPage.transformedDataIndexed}"/>
+<ice:outputText visible="false" id="highValStandard" value="#{ExploreDataPage.highValStandard}"/>
+<ice:outputText visible="false" id="lowValStandard" value="#{ExploreDataPage.lowValStandard}"/>
+<ice:outputText visible="false" id="highValIndexed" value="#{ExploreDataPage.highValIndexed}"/>
+<ice:outputText visible="false" id="lowValIndexed" value="#{ExploreDataPage.lowValIndexed}"/>
 <ice:outputText visible="false" id="dtColumnString" value="#{ExploreDataPage.dtColumnString}"/>
 <ice:outputText visible="false" id="imageColumnString" value="#{ExploreDataPage.imageColumnString}"/>
 <ice:outputText visible="false" id="dataString" value="#{ExploreDataPage.dataString}"/>
@@ -710,7 +762,7 @@ function extendedEncode(arrVals, maxVal) {
                             <f:selectItems value="#{ExploreDataPage.selectFilterGroups}"/>
                         </ice:selectOneMenu>
 
-                        <ice:outputText value="related to" styleClass="dvnGraphRelatedTo" rendered="#{!empty item.varGroupTypesUI}"/>
+                        <ice:outputText value="Narrow down list by checking the boxes on the right." styleClass="dvnGraphRelatedTo" rendered="#{!empty item.varGroupTypesUI}"/>
 
                         <div jsfc="ice:panelSeries" styleClass="dvnGraphFilterTypesBlock" id="filterPanelGroupTypes" var="groupType" value="#{item.varGroupTypesUI}">
                             <!-- controls -->
@@ -745,7 +797,8 @@ function extendedEncode(arrVals, maxVal) {
                  <div jsfc="ice:panelGroup" styleClass="dvnGraphSourceBlock" visible="#{!empty ExploreDataPage.graphTitle and (ExploreDataPage.displayType == 1 or ExploreDataPage.displayType == 3)}">
                     <ice:outputLabel value="#{ExploreDataPage.graphTitle}" />                   
                 </div>
-                <div id="chart_div"></div>
+                <div id="chart_div" rendered="#{ExploreDataPage.displayType == 1 or ExploreDataPage.displayType == 3}" ></div>
+                <div id="chart_image" rendered="#{ExploreDataPage.displayType == 2}"></div>
                 <div jsfc="ice:panelGroup" styleClass="dvnGraphSourceBlock" visible="#{!empty ExploreDataPage.sources and (ExploreDataPage.displayType == 1 or ExploreDataPage.displayType == 3)}">
                     <ice:outputText value="Source: #{ExploreDataPage.sources}"/>
                 </div>

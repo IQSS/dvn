@@ -149,7 +149,6 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
     private String imageAxisLabel = "";
     private String imageAxisLabelNoYLabel = "";   
 
-
     private boolean displayIndexes = false;
     private boolean includeImage = true;
     private boolean includePdf = true;
@@ -159,12 +158,11 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
 
     private boolean dataTableAvailable = false;           
     private boolean showFilterGroupTypes = false;
-
     
     private boolean titleEdited = false;
     private Long displayType = new Long(0);
-    private String startYear = new String("0");
-    private String endYear = new String("3000");
+    private String startYear = "0";
+    private String endYear = "3000";
     private Study studyIn = new Study();
     private StudyUI studyUI;
     private String fileName = "";
@@ -186,8 +184,16 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
     private boolean displayLegend = true;
     private int legendInt = 1;    
     private Integer defaultView = new Integer(2);
+    private String[] transformedData;
+    private String transformedDataOut;
+    private String[] transformedDataIndexed;
+    private String transformedDataIndexedOut;
+    
+    private Float lowValStandard = new Float(0);
+    private Float lowValIndex = new Float (100);
+    private Float highValStandard = new Float (0);
 
-
+    private Float highValIndex = new Float(0);
 
     public ExploreDataPage() {
         
@@ -895,11 +901,19 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
     public void update_StartYear(){
         Object value= this.selectStartYear.getValue();
         this.startYear = (String) value ;
+        getDataTable();
+        FacesContext fc = FacesContext.getCurrentInstance();
+        JavascriptContext.addJavascriptCall(fc, "drawVisualization();");
+        JavascriptContext.addJavascriptCall(fc, "initLineDetails");
     }
 
     public void update_EndYear(){
         Object value= this.selectEndYear.getValue();
         this.endYear = (String) value ;
+        getDataTable();
+        FacesContext fc = FacesContext.getCurrentInstance();
+        JavascriptContext.addJavascriptCall(fc, "drawVisualization();");
+        JavascriptContext.addJavascriptCall(fc, "initLineDetails");
     }
 
     public void update_IndexYear(){
@@ -1423,8 +1437,6 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
             dt.getCaseQuantity() );
 
         if (tmpSubsetFile.exists()) {
-
-
             Long subsetFileSize = tmpSubsetFile.length();
             List <String>  fileList = new ArrayList();
             BufferedReader reader = new BufferedReader(new FileReader(tmpSubsetFile));
@@ -1433,13 +1445,8 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
                String check =  line.toString();
                fileList.add(check);
             }
-
-            loadDataTableData(fileList);
-
-            int countRows = 0;
-            
+            loadDataTableData(fileList);           
             return subsetFileSize.toString();
-
         }
         return "";
 
@@ -1447,8 +1454,6 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
             e.printStackTrace();
             return "failure";
         }
-
-
     }
 
     private void loadDataTableData(List inStr){
@@ -1456,6 +1461,13 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
     selectEndYears = new ArrayList();
     selectIndexDate = new ArrayList();
     selectEndYears.add(new SelectItem(3000, "Max"));
+    lowValStandard = new Float(0);
+    lowValIndex = new Float (100);
+    highValStandard = new Float (0);
+    highValIndex = new Float(0);
+    
+    int startYearTransform = 0;
+    int endYearTransform = 3000;
     boolean firstYearSet = false;
     String maxYear = "";
     String output = "";
@@ -1464,10 +1476,18 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
     boolean indexSet = false;
     boolean addIndexDate = false;
     boolean[] getIndexes = new boolean[9];
-    Float lowValStandard = new Float(0);
-    Float lowValIndex = new Float (0);
-    Float highValStandard = new Float (0);
-    Float highValIndex = new Float(0);    
+    
+    if (new Integer(startYear.toString()).intValue() != 0){
+        startYearTransform = new Integer(startYear.toString()).intValue();
+    }
+    
+    if (new Integer(endYear.toString()).intValue() != 3000){
+        endYearTransform = new Integer(endYear.toString()).intValue();
+    }
+
+    int rowCount = 0;
+    int colCount = 0;
+    int firstYear = 0;
     
     for (int i = 1; i<9; i++){
         getIndexes[i] = false;
@@ -1478,12 +1498,12 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
         String nextStr = (String) inObj;
         String[] columnDetail = nextStr.split("\t");
         String[] test = columnDetail;
-
-        if (test.length -1 > maxLength)
-            {
+        if (test.length -1 > maxLength){
                 maxLength = test.length -1;
-           }
+        }
     }
+    transformedData = new String[maxLength + 1];
+    transformedDataIndexed = new String[maxLength + 1];
     boolean indexesDone = false;
     for (Object inObj: inStr ){
         String nextStr = (String) inObj;
@@ -1492,17 +1512,20 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
 
         String col = "";
         String csvCol = "";
+        int testYear = 0;
         boolean alreadyAdded = false;
         if (test.length > 1)
             {
                 for (int i=0; i<test.length; i++){
                 if (i == 0) {
+                    testYear = new Integer(test[0]).intValue();
                     col =  test[i];
                     csvCol  = test[i];
 
                     if (!firstYearSet){
                          selectBeginYears.add(new SelectItem(col, "Min"));
                          firstYearSet = true;
+                         firstYear = new Integer(col).intValue();
                     }
                     if (maxLength == test.length -1){
                          addIndexDate = true;
@@ -1516,19 +1539,23 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
                     maxYear = col;
                     selectBeginYears.add(new SelectItem( col, col));
                     selectEndYears.add(new SelectItem(col, col));
-
+                    transformedData[i] = "";
                 } else {
                         col = col + ", " +  test[i];
                         csvCol = csvCol + ", " +  test[i];
-                        /*
-                        if (lowValStandard.equals(new Float  (0))  || lowValStandard.compareTo(new Float (test[i])) > 0 ){
-                            lowValStandard = new Float(test[i]);
+                        if (testYear >= startYearTransform && testYear <= endYearTransform){
+                            transformedData[i] += test[i] + ", ";      
                         }
-                        if (highValStandard.equals(new Float (0))  || highValStandard.compareTo(new Float (test[i])) < 0 ){
-                            highValStandard = new Float(test[i]);
+                                                  
+                        if(!test[i].isEmpty()){
+                            if (lowValStandard.equals(new Float  (0))  || lowValStandard.compareTo(new Float (test[i])) > 0) {
+                                lowValStandard = new Float(test[i]);
+                            }
+                            if (highValStandard.equals(new Float (0))  || highValStandard.compareTo(new Float (test[i])) < 0 ){
+                                highValStandard = new Float(test[i]);
+                            }                            
                         }
-                         
-                         */
+                                                
                         Double testIndexVal = new Double (0);
                         if (!test[i].isEmpty()){
                             testIndexVal =  new Double (test[i]);
@@ -1561,7 +1588,6 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
                   col = col + ";";
                   csvCol = csvCol + "\n";
            }
-
            output = output + col;
            csvOutput = csvOutput + csvCol;
     }
@@ -1570,31 +1596,48 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
         String nextStr = (String) inObj;
         String[] columnDetail = nextStr.split("\t");
         String[] test = columnDetail;
-        String indexCol = "";         
+        String indexCol = "";   
+        int testYear = 0;
         if (test.length > 1)
             {
                 for (int i=0; i<test.length; i++){
                     if (i == 0) {
                         indexCol = test[i];
+                        testYear = new Integer(test[0]).intValue();
                     } else {
 
-                            Double numerator = new Double(0);
+                            Float numerator = new Float(0);
                             if (!test[i].isEmpty()){
-                                numerator = new Double (test[i]);
+                                numerator = new Float (test[i]);
                             }
-                            Double denominator = new Double (0);
+                            Float denominator = new Float (0);
                             if (!indexVals[i].isEmpty()){
-                                denominator = new Double (indexVals[i]);
+                                denominator = new Float (indexVals[i]);
                             }
 
-                            Object result = new Double(0);
-                            if (!denominator.equals(new Double (0))  && !numerator.equals(new Double (0))){
-                                result = (numerator / denominator) *  new Double (100);
+                            Float result = new Float(0);
+                            Object outputIndex = new Double(0);
+                            if (!denominator.equals(new Float (0))  && !numerator.equals(new Float (0))){
+                                outputIndex = (numerator / denominator) *  new Double (100);
+                                result = (numerator / denominator) *  new Float (100);
+                                if ((lowValIndex.equals(new Float  (100))  || lowValIndex.compareTo(result) > 0)){
+                                    if (testYear >= startYearTransform && testYear <= endYearTransform){
+                                        lowValIndex = result;
+                                    }
+                                }
+                                if (!test[i].isEmpty() && (highValIndex.equals(new Float (0))  || highValIndex.compareTo(result) < 0 )){
+                                    if (testYear >= startYearTransform && testYear <= endYearTransform){
+                                        highValIndex = result;
+                                    }
+                                    
+                                }
                             } else {
-                                result = "";
+                                outputIndex = "";
+                            }  
+                            if (testYear >= startYearTransform && testYear <= endYearTransform){
+                                transformedDataIndexed[i] += outputIndex.toString() + ", ";
                             }
-                            indexCol = indexCol + ", " +  result.toString();
-
+                            indexCol = indexCol + ", " +  outputIndex.toString();
                     }
                 }
                   indexCol = indexCol + ";";
@@ -1609,8 +1652,67 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
           selectEndYears.set(0, setSI);
           csvString = csvOutput;
           dataString = output;
-          indexedDataString = indexedOutput;
+          indexedDataString = indexedOutput;          
+          cleanUpTransformedData();
     }
+    
+    private void cleanUpTransformedData(){
+        transformedDataOut = "";
+        transformedDataIndexedOut = "";
+        int countCommas = 0;
+        int countCommasI = 0;
+        int maxLength = transformedData.length;
+        for (int i = 1; i<maxLength; i++){
+            if (transformedData[i] != null){
+                countCommasI = countOccurrences(transformedData[i], ',');
+                if ( countCommasI > countCommas){
+                    countCommas = countCommasI;
+                }
+                
+                transformedData[i] = transformedData[i].substring(4);
+                transformedDataIndexed[i] = transformedDataIndexed[i].substring(4);
+                int len = transformedData[i].length();
+                int lenI = transformedDataIndexed[i].length();
+                transformedData[i] =  transformedData[i].substring(0, len-2) ;
+                transformedDataIndexed[i] =  transformedDataIndexed[i].substring(0, lenI-2) ;
+                System.out.println("transformedDataIndexed[i] "+ transformedDataIndexed[i]);
+                System.out.println("transformedData[i] "+ transformedData[i]);
+            }            
+        }
+        for (int i = 1; i<maxLength; i++){
+            if (transformedData[i] != null){
+                String addString = "";
+                countCommasI = countOccurrences(transformedData[i], ',');
+                if ( countCommasI < countCommas){
+                    int addCommas = countCommas - countCommasI;
+                    for (int j = 1; j < addCommas; j++ ){
+                        addString += ",";
+                    }
+                    transformedData[i] = addString + transformedData[i];
+                    transformedDataIndexed[i] = addString + transformedDataIndexed[i];
+                }
+                if (i > 1){
+                    transformedDataOut += ";";
+                    transformedDataIndexedOut += ";";
+                }
+                transformedDataIndexedOut += transformedDataIndexed[i];
+                transformedDataOut += transformedData[i];       
+            }            
+        }
+    }
+    
+    private static int countOccurrences(String haystack, char needle)
+{
+    int count = 0;
+    for (int i=0; i < haystack.length(); i++)
+    {
+        if (haystack.charAt(i) == needle)
+        {
+             count++;
+        }
+    }
+    return count;
+}
 
     public File getZipFileExport() {
         File zipOutputFile;
@@ -1689,7 +1791,7 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
     private void writeImageFile(File fileIn, File pdfFileIn) {
 
         try {
-
+            System.out.println("imageURL in " + imageURL);
             String decoded = URLDecoder.decode(imageURL, "UTF-8");
 
             if (!graphTitle.isEmpty()){
@@ -1704,7 +1806,7 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
                     graphTitleOut = graphTitle;
                 }
                 String encodedTitle = URLEncoder.encode(graphTitleOut, "UTF-8");
-                decoded = decoded + "&chtt=" + encodedTitle;
+                /*decoded = decoded + "&chtt=" + encodedTitle;*/
             }
             /*
             if (!sources.isEmpty()){
@@ -1712,10 +1814,10 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
                 decoded = decoded + "&chxl=" + xAxisDecoded;
             }
 */
-       
-        if (!decoded.isEmpty()){
-                URL imageURLnew = new URL(decoded);
 
+        if (!decoded.isEmpty()){
+                URL imageURLnew = new URL(imageURL);
+                System.out.println("imageURLnew " + imageURLnew);
                 try{
                     BufferedImage image =     ImageIO.read(imageURLnew);
                     if (fileIn != null) {                         
@@ -1772,9 +1874,9 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
      }
 
   private void writeExcelFile   (File fileIn) throws IOException {
-      String parseString = new String(dataString);
+      String parseString = dataString;
       List list = Arrays.asList(parseString.split(";"));
-      String parseColumn = new String(columnString);
+      String parseColumn = columnString;
       
       try {
             WorkbookSettings ws = new WorkbookSettings();
@@ -2376,6 +2478,27 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
         
         return variableLabelLink;
     }
+    
+    
+    public Float getHighValStandard() {
+        return highValStandard;
+    }
+
+    public void setHighValStandard(Float highValStandard) {
+        this.highValStandard = highValStandard;
+    }
+    
+    public Float getLowValStandard(){
+        return lowValStandard;
+    }
+    
+    public Float getHighValIndexed() {
+        return highValIndex;
+    }
+    
+    public Float getLowValIndexed(){
+        return lowValIndex;
+    }
 
     public String getImageColumnString() {
         return imageColumnString;
@@ -2443,6 +2566,26 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
 
     public void setUseIndicesCheckBox(HtmlSelectBooleanCheckbox useIndicesCheckBox) {
         this.useIndicesCheckBox = useIndicesCheckBox;
+    }
+    
+    public String getTransformedData() {
+        if (!(transformedDataOut == null)  && !transformedDataOut.isEmpty() ){
+            return transformedDataOut;
+        } else {
+            return "";
+        }
+        
+    }
+    public String getTransformedDataIndexed() {
+        if (!(transformedDataIndexedOut == null)  && !transformedDataIndexedOut.isEmpty() ){
+            return transformedDataIndexedOut;
+        } else {
+            return "";
+        }
+        
+    }
+    public void setTransformedData(String[] transformedData) {
+        this.transformedData = transformedData;
     }
 
 

@@ -1022,12 +1022,11 @@ var ymax=4095;
                 </f:facet>
                 <f:facet name="body">
                     <ice:panelGroup styleClass="popupBody">
-                        <ice:outputText value="#{ExploreDataPage.variableLabel}" rendered ="#{!ExploreDataPage.variableLabelLink}" />
-                        <ice:outputLink value="#{ExploreDataPage.variableLabel}"  rendered ="#{ExploreDataPage.variableLabelLink}">
-                            <ice:outputText value="#{ExploreDataPage.variableLabel}" nospan="true"/>
-                        </ice:outputLink><br></br>
+                        
+                        #{ExploreDataPage.variableLabel}
+                        <br></br>
                     </ice:panelGroup>
-
+                    
                 </f:facet>
             </ice:panelPopup>
 

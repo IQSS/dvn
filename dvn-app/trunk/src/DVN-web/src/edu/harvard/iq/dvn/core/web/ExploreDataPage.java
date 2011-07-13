@@ -1674,9 +1674,7 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
                 int len = transformedData[i].length();
                 int lenI = transformedDataIndexed[i].length();
                 transformedData[i] =  transformedData[i].substring(0, len-2) ;
-                transformedDataIndexed[i] =  transformedDataIndexed[i].substring(0, lenI-2) ;
-                System.out.println("transformedDataIndexed[i] "+ transformedDataIndexed[i]);
-                System.out.println("transformedData[i] "+ transformedData[i]);
+                transformedDataIndexed[i] =  transformedDataIndexed[i].substring(0, lenI-2);
             }            
         }
         for (int i = 1; i<maxLength; i++){
@@ -1922,7 +1920,7 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
                       s.addCell(l);
 
                     } else {
-                        if (!d.toString().isEmpty()){
+                        if ( !d.toString().trim().isEmpty()){
                             jxl.write.Number n = new jxl.write.Number(dcounter, rowCounter,  new Double(d.toString()));
                             s.addCell(n);
                         } else {
@@ -1939,7 +1937,10 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
             w.close();
         }
             catch (Exception e){
-
+                
+                 System.out.println("excel creation exception  " ); 
+                 System.out.println(e.getMessage().toString());
+                 System.out.println(e.getCause().toString());
         }
 
   }
@@ -2162,14 +2163,33 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
 
         variableLabel = vizLine.getVariableLabel();
         UrlValidator localValidator = new UrlValidator();
+        variableLabel = convertVariableLabel(variableLabel);
         variableLabelLink = false;
-        try {
-               variableLabelLink= localValidator.validateUrl(variableLabel);
-        }
-            catch (java.net.MalformedURLException mue){
-                  variableLabelLink = false;
-        }
+
         showVariableInfoPopup = true;
+    }
+    
+    private String convertVariableLabel(String variableLabelIn){
+                String s = variableLabelIn;
+        // separete input by spaces ( URLs don't have spaces )
+        String [] parts = s.split("\\s");
+        String retString = "";
+        // Attempt to convert each item into an URL.   
+        for( String item : parts ) try {
+            URL url = new URL(item);
+            // If possible then replace with anchor...
+            if (!retString.isEmpty()) {
+               retString += " "; 
+            }
+            retString += "<a href=\'" + url + "\'>"+ url + "</a> " ; 
+            System.out.print("<a href=\"" + url + "\">"+ url + "</a> " );    
+        } catch (MalformedURLException e) {
+            // If there was an URL that was not it!...
+            retString += " " + item;
+            System.out.print( item + " " );
+        }
+         System.out.print("retString " + retString );
+        return retString;
     }
 
     public void closeVariableInfoPopup(ActionEvent ae){

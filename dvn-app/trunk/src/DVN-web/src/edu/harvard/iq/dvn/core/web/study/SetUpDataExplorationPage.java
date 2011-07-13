@@ -1936,7 +1936,7 @@ public class SetUpDataExplorationPage extends VDCBaseBean implements java.io.Ser
     public String release(){
         if (validateForRelease(true)) {
             dataTable.setVisualizationEnabled(true);
-            edited = true;
+            saveAndContinue();
             return "";
         }
         return "";
@@ -1944,7 +1944,7 @@ public class SetUpDataExplorationPage extends VDCBaseBean implements java.io.Ser
 
     public String unRelease(){
         dataTable.setVisualizationEnabled(false);
-            edited = true;
+            saveAndContinue();
             return "";
     }
 

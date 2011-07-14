@@ -813,12 +813,22 @@ var ymax=4095;
 
                             <ice:dataTable width="100%" cellspacing="0" cellpadding="0" var="line" styleClass="dvnGraphResultsVizLineTable" value="#{ExploreDataPage.vizLines}" binding="#{ExploreDataPage.dataTableVizLines}">
                               <h:column>
-                                  <div class="dvnGraphResultsVizLineBlock" style="#{line.border}">
-                                    <div class="dvnGraphResultsVizLineLabel">
-                                        <ice:outputText value="#{line.label}"/>
-                                    </div>
+                                  <div class="dvnGraphResultsVizLineBlock">
 
-                                    <a href="#" class="lineDetailLink">View Detail</a>
+                                    <div class="dvnGraphResultsVizLineWrap">
+
+                                      <div class="dvnGraphResultsVizLineLabel">
+                                        <div style="#{line.border}"></div>
+
+                                        <ice:outputText value="#{line.label}"/>
+                                      </div>
+
+                                      <div class="dvnGraphResultsVizLineActions">
+                                        <ice:commandLink id="deleteLineLink" title="Delete Line" value="Delete [X]" actionListener="#{ExploreDataPage.deleteLine}" onclick="deleteLine();"></ice:commandLink>
+                                        <a href="#" class="lineDetailLink">Detail [+]</a>
+                                      </div>
+
+                                    </div>
 
                                     <div class="lineDetailBlock" style="display:none;">
                                         <div class="lineDetailBlockLabel">
@@ -841,9 +851,7 @@ var ymax=4095;
                                         </ice:commandLink>
                                     </div>
 
-                                    <div>
-                                        <ice:commandLink id="deleteLineLink" title="Delete Line" value="Delete Line" actionListener="#{ExploreDataPage.deleteLine}" onclick="deleteLine();"></ice:commandLink>
-                                    </div>
+                                    
                                 </div>
                               </h:column>
                               <f:facet name="footer">
@@ -852,8 +860,8 @@ var ymax=4095;
                                         jQuery(document).ready(initLineDetails);
                                         function initLineDetails(){
                                             // choose text for the show/hide link - can contain HTML (e.g. an image)
-                                            var showText='View Detail';
-                                            var hideText='Close Detail';
+                                            var showText='Detail [+]';
+                                            var hideText='Detail [-]';
 
                                             // initialise the visibility check
                                             var is_visible = false;
@@ -877,10 +885,10 @@ var ymax=4095;
                                                 // jQuery(this).next('.lineDetailBlock').slideToggle('fast');
 
                                                 if (jQuery(this).text()==hideText) {
-                                                    jQuery(this).next('.lineDetailBlock').show();
+                                                    jQuery(this).parent().parent().next('.lineDetailBlock').show();
                                                 }
                                                 else {
-                                                    jQuery(this).next('.lineDetailBlock').hide();
+                                                    jQuery(this).parent().parent().next('.lineDetailBlock').hide();
                                                 }
 
                                                 // return false so any link destination is not followed

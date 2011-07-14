@@ -282,12 +282,17 @@ table.viTblinx th{background-color:#e6e6fa;font-weight:700;margin:0px;padding:2p
 .dvnGraphLabelBlock {margin-bottom:.5em;}
 .dvnGraphLabelBlock div {display:inline;}
 .dvnGraphRemoveLinesButton {margin-left:1em;}
-.dvnGraphResultsLineBox {float:left; margin-right:1em;}
-.dvnGraphResultsLineBox .dvnGraphResultsVizLineTable .dvnGraphResultsVizLineBlock {padding:4px; margin:0 0 1em 0;}
-.dvnGraphResultsVizLineLabel {font-weight:bold;}
+.dvnGraphResults .icePnlTbSetCnt {padding:12px;}
+.dvnGraphResultsLineBox .dvnGraphResultsVizLineTable .dvnGraphResultsVizLineBlock {padding:4px; margin:0 0 1em 0; border-bottom:1px solid #D9D9D9;}
+.dvnGraphResultsVizLineWrap {overflow:hidden;}
+.dvnGraphResultsVizLineLabel {float:left; width:160px; font-weight:bold;}
+.dvnGraphResultsVizLineLabel div {float:left; width:20px; height:20px; margin-right:.5em;}
+.dvnGraphResultsVizLineActions {float:right; width:50px;}
+.dvnGraphResultsVizLineActions a:link, .dvnGraphResultsVizLineActions a:visited, .dvnGraphResultsVizLineActions a:hover, .dvnGraphResultsVizLineActions a:active {font-size:.95em !important;}
+a.lineDetailLink {display:block;}
 .lineDetailBlockLabel, .lineDetailBlockFilter {font-weight:bold; color:#484848;}
 .dvnGraphBox {float:left; margin-right:1em;}
-.dvnGraphBox #chart_div {width:540px; height:400px;}
+.dvnGraphBox #chart_div {width:676px; height:400px;} /*CHART SIZE*/
 .dvnGraphDisplay {float:left;}
 .dvnGraphDisplayBlock {margin-bottom:2em;}
 .dvnGraphDisplayBlock label {display:inline;}
@@ -297,7 +302,8 @@ table.viTblinx th{background-color:#e6e6fa;font-weight:700;margin:0px;padding:2p
 .dvnGraphSourceBlock span {font-weight:normal;}
 .dvnGraphTimeSeriesBlock {overflow:hidden; margin-bottom:2em;}
 .dvnGraphTimeSeriesBlock div {float:left; margin-right:2em;}
-.dvnGraphTimeSeriesTitle {float:left; width:100%;}
+.dvnGraphTimeSeriesBlock div:last-child {margin-right:0;}
+.dvnGraphTimeSeriesTitle {display:block;}
 .dvnGraphIndicesBlock {margin-bottom:2em;}
 .dvnGraphIndicesBlock label {font-weight:normal;}
 label.dvnGraphIndicesTitle {font-weight:bold;}

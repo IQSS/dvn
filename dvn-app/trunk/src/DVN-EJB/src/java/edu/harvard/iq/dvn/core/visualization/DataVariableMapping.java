@@ -125,8 +125,8 @@ public class DataVariableMapping implements Serializable {
             return true;
         }
         if (this.dataVariable.equals(other.dataVariable)
-                && this.varGroup.equals(other.varGroup) &&
-                this.varGrouping.equals(other.varGrouping)){           
+                && ((this.varGroup == null  && other.varGroup == null) || this.varGroup.equals(other.varGroup)) &&
+                ((this.varGrouping == null && other.varGrouping == null) || this.varGrouping.equals(other.varGrouping))){           
             return true;
         } else {
             

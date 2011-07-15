@@ -18,7 +18,394 @@
 <ice:form id="ExploreDataPage">
     <ice:message for="exploredataform" id="boxErrorMsg" styleClass="errorMessage"/>
 
-    <script type="text/javascript" src="https://www.google.com/jsapi"></script>
+<ice:inputHidden id="vdcId" value="#{VDCRequest.currentVDCId}"/>
+
+<ice:outputText visible="false" id="columnString" value="#{ExploreDataPage.columnString}"/>
+<ice:outputText visible="false" id="transformedData" value="#{ExploreDataPage.transformedData}"/>
+<ice:outputText visible="false" id="transformedDataIndexed" value="#{ExploreDataPage.transformedDataIndexed}"/>
+<ice:outputText visible="false" id="highValStandard" value="#{ExploreDataPage.highValStandard}"/>
+<ice:outputText visible="false" id="lowValStandard" value="#{ExploreDataPage.lowValStandard}"/>
+<ice:outputText visible="false" id="highValIndexed" value="#{ExploreDataPage.highValIndexed}"/>
+<ice:outputText visible="false" id="lowValIndexed" value="#{ExploreDataPage.lowValIndexed}"/>
+<ice:outputText visible="false" id="dtColumnString" value="#{ExploreDataPage.dtColumnString}"/>
+<ice:outputText visible="false" id="imageColumnString" value="#{ExploreDataPage.imageColumnString}"/>
+<ice:outputText visible="false" id="dataString" value="#{ExploreDataPage.dataString}"/>
+<ice:outputText visible="false" id="indexedDataString" value="#{ExploreDataPage.indexedDataString}"/>
+<ice:outputText visible="false" id="dataColumns" value="#{ExploreDataPage.dataColumns}"/>
+<ice:outputText visible="false" id="displayType" value="#{ExploreDataPage.displayType}"/>
+<ice:outputText visible="false" id="startYear" value="#{ExploreDataPage.startYear}"/>
+<ice:outputText visible="false" id="endYear" value="#{ExploreDataPage.endYear}"/>
+<ice:outputText visible="false" id="graphTitleHidden" value="#{ExploreDataPage.graphTitle}"/>
+<ice:outputText visible="false" id="sourceText" value="#{ExploreDataPage.sources}"/>
+<ice:inputText visible="false" id="imageURL" binding="#{ExploreDataPage.inputImageURL}" />
+<ice:outputText visible="false" id="imageAxisLabel" value="#{ExploreDataPage.imageAxisLabel}"/>
+<ice:outputText visible="false" id="imageSourceFooter" value="#{ExploreDataPage.imageSourceFooter}"/>
+<ice:outputText visible="false" id="imageAxisLabelNoYLabel" value="#{ExploreDataPage.imageAxisLabelNoYLabel}"/>
+<ice:outputText visible="false" id="imageSourceFooterNoYLabel" value="#{ExploreDataPage.imageSourceFooterNoYLabel}"/>
+<ice:outputText visible="false" id="displaySourceFooter" value="#{ExploreDataPage.displaySourceFooter}"/>
+<ice:outputText visible="false" id="displaySourceFooterNoYLabel" value="#{ExploreDataPage.displaySourceFooterNoYLabel}"/>
+<ice:outputText visible="false" id="defaultView" value="#{ExploreDataPage.defaultView}"/>
+<ice:outputText visible="false" id="hasURL"/>
+<ice:commandButton visible="false" id="updateGraphTitle" type="submit" value="update" action="#{ExploreDataPage.updateGraphTitle}"/>
+<ice:commandButton visible="false" id="deleteLineHidden" value="Delete Line hidden" actionListener="#{ExploreDataPage.deleteLine}"/>
+<ice:commandButton visible="false" id="updateImageURL" value="Update URL" action="#{ExploreDataPage.updateImageURL}"/>
+<ice:commandButton visible="false" id="updateIncludeFlags" value="Update Include Flags" action="#{ExploreDataPage.updateIncludeFlags}"/>
+<ice:commandButton visible="false" id="resetIndexValue" actionListener="#{ExploreDataPage.resetIndexDisplay}"/>
+<ice:commandButton visible="false" id="selectDisplayButton" action="#{ExploreDataPage.reset_DisplayType}"/>
+<ice:commandButton visible="false" id="updateUseIndex" action="#{ExploreDataPage.updateUseIndex}"/>
+<ice:selectBooleanCheckbox visible="false" id="displayIndicesHidden" value="#{ExploreDataPage.displayIndexes}" rendered="true" />                                                               
+<ice:commandButton visible="false" id="updateStartYear" action="#{ExploreDataPage.update_StartYear}"/>
+<ice:commandButton visible="false" id="updateEndYear" action="#{ExploreDataPage.update_EndYear}"/>
+<ice:commandButton visible="false" id="updateIndexYear" action="#{ExploreDataPage.update_IndexYear}"/>
+
+    <div class="dvn_section">
+        <div jsfc="ice:panelGroup" styleClass="dvnMsgBlockRound dvnInformationMessage">
+            <div class="dvnMsgBlockContainer">
+                <p>
+                    <ice:outputText value="(Please report any issues found in our open beta release of Explore Data to the Network Administrator using the &lt;a href=&#34;/dvn#{VDCRequest.currentVDCURL}/faces/ContactUsPage.xhtml&#34;&gt;Contact&lt;/a&gt; form.)" escape="false"/>
+                </p>
+            </div>
+        </div>
+        <div class="dvnstudytitleblock">
+            <div class="dvnstudyadminboxfloat dvn_right">
+                <ice:outputLink
+                    rendered="#{ExploreDataPage.versionNumber==null}"
+                    value="/dvn#{VDCRequest.currentVDCURL}/faces/study/StudyPage.xhtml?studyId=#{ExploreDataPage.studyId}&amp;tab=files#{VDCRequest.studyListingIndexAsParameter}">
+                <ice:outputText
+                    value="Back to Study"/>
+                </ice:outputLink>
+                <ice:outputLink
+                    rendered="#{ExploreDataPage.versionNumber!=null}"
+                    value="/dvn#{VDCRequest.currentVDCURL}/faces/study/StudyPage.xhtml?studyId=#{ExploreDataPage.studyId}&amp;tab=files&amp;versionNumber=#{ExploreDataPage.versionNumber}#{VDCRequest.studyListingIndexAsParameter}">
+                <ice:outputText
+                    value="Back to Study"/>
+                </ice:outputLink>
+            </div>
+            <ui:include src="/study/StudyTitleFragment.xhtml">
+                <ui:param name="studyUI" value="#{ExploreDataPage.studyUI}"/>
+                <ui:param name="displayReleaseLink" value="false"/>
+                <ui:param name="displayVersionInfo" value="true"/>
+                <ui:param name="displayStatusBox" value="true"/>
+                <ui:param name="displayFileName" value="#{ExploreDataPage.fileName}"/>
+            </ui:include>
+        </div>
+
+        <div class="dvnGraphForm">
+            <div class="dvnGraphIndicatorBlock">
+
+                <div jsfc="ice:panelGroup" styleClass="dvnGraphIndicatorSelect" rendered="#{!empty ExploreDataPage.selectMeasureGroupTypes}">
+
+                    <ice:outputLabel value="#{ExploreDataPage.measureTypeCue}" for="indicatortype"/>
+
+                    <ice:selectOneMenu immediate="false" partialSubmit="true" id="issue"
+                                       valueChangeListener="#{ExploreDataPage.reset_MeasureItems}" value="#{ExploreDataPage.groupTypeId}">
+                        <f:selectItem itemLabel="Select..." itemValue="0"/>
+                        <f:selectItems value="#{ExploreDataPage.selectMeasureGroupTypes}"/>
+                    </ice:selectOneMenu>
+                </div>
+
+                <div class="dvnGraphIndicatorSelect">
+                    <ice:outputLabel value="#{ExploreDataPage.measureLabel}" for="indicator"/>
+
+                    <ice:selectOneMenu id="indicatorMenu" value="#{ExploreDataPage.selectedMeasureId}" partialSubmit="true" valueChangeListener="#{ExploreDataPage.resetFiltersForMeasure}">
+                        <f:selectItem itemLabel="Select..." itemValue="0"/>
+                        <f:selectItems value="#{ExploreDataPage.selectMeasureItems}"/>
+                    </ice:selectOneMenu>
+                </div>
+            </div>
+
+            <div class="dvnGraphFilterBlock">
+                <div jsfc="ice:panelSeries" id="filterPanelGroupings" var="item" value="#{ExploreDataPage.filterGroupings}" binding="#{ExploreDataPage.filterPanelGroup}">
+                    <f:attribute name="groupingId" value="#{item.varGrouping.id}"/>
+                    <div class="dvnGraphFilterBlock">
+                        <ice:outputLabel value="#{item.varGrouping.name}"/>
+
+                        <ice:selectOneMenu id="filterGroup" styleClass="filterGroup" value="#{item.selectedGroupId}" partialSubmit="true"  valueChangeListener="#{ExploreDataPage.updateLineLabelForFilter}">
+                            <f:selectItem itemLabel="Select..." itemValue="0"/>
+                            <f:selectItems value="#{ExploreDataPage.selectFilterGroups}"/>
+                        </ice:selectOneMenu>
+
+                        <ice:outputText value="Narrow down list by checking the boxes on the right." styleClass="dvnGraphRelatedTo" rendered="#{!empty item.varGroupTypesUI}"/>
+
+                        <div jsfc="ice:panelSeries" styleClass="dvnGraphFilterTypesBlock" id="filterPanelGroupTypes" var="groupType" value="#{item.varGroupTypesUI}">
+                            <!-- controls -->
+                            <div jsfc="ice:panelGroup" styleClass="dvnGraphFilterTypesControls">
+                                <ice:selectBooleanCheckbox id="filterGroupTypeCheckBoxes" styleClass="filterGroupTypeCheckBoxes" value="#{groupType.enabled}"
+                                                            partialSubmit="true"/>
+                                <ice:outputLabel value="#{groupType.varGroupType.name}"/>
+                            </div>
+                        </div>
+                        <ice:message for="filterPanelGroupTypes" id="boxErrorMsg" styleClass="errorMessage"/>
+                    </div>
+                </div>
+            </div>
+
+            <div class="dvnGraphLabelBlock">
+                <div>
+                    <ice:outputLabel value="Label" for="graphlinelabel"/>
+                    <ice:inputText id="graphlinelabel" value="#{ExploreDataPage.lineLabel}" binding="#{ExploreDataPage.inputLineLabel}"></ice:inputText>
+                </div>
+                <div>
+                    <ice:commandButton id="addLineButton" value="Add Line" binding="#{ExploreDataPage.addLineButton}" actionListener="#{ExploreDataPage.addLine}"/>
+                    <ice:message for="addLineButton" id="boxErrorMsg" styleClass="errorMessage"/>
+                    <ice:commandButton id="removeAllButton" value="Refresh" styleClass="dvnGraphRemoveLinesButton" actionListener="#{ExploreDataPage.removeAllLines}"/>
+                </div>
+            </div>
+        </div>
+
+        <div jsfc="ice:panelGroup" styleClass="dvnGraphResults">
+            
+
+            <div jsfc="ice:panelGroup" rendered="#{!empty ExploreDataPage.vizLines}" styleClass="dvnGraphBox">
+                 <div jsfc="ice:panelGroup" styleClass="dvnGraphSourceBlock" visible="#{!empty ExploreDataPage.graphTitle and (ExploreDataPage.displayType == 1 or ExploreDataPage.displayType == 3)}">
+                    <ice:outputLabel value="#{ExploreDataPage.graphTitle}" />                   
+                </div>
+                <div id="chart_div" rendered="#{ExploreDataPage.displayType == 1 or ExploreDataPage.displayType == 3}" ></div>
+                <div id="chart_image" rendered="#{ExploreDataPage.displayType == 2}"></div>
+                <div jsfc="ice:panelGroup" styleClass="dvnGraphSourceBlock" visible="#{!empty ExploreDataPage.sources and (ExploreDataPage.displayType == 1 or ExploreDataPage.displayType == 3)}">
+                    <ice:outputText value="Source: #{ExploreDataPage.sources}"/>
+                </div>
+            </div>
+
+            <div jsfc="ice:panelGroup" rendered="#{!empty ExploreDataPage.vizLines}" styleClass="dvnGraphDisplay">
+
+                <ice:panelTabSet id="tabSet1" styleClass="dvnTabs">
+
+                    <ice:panelTab id="lineDetails" label="Line Details">
+                        <div jsfc="ice:panelGroup" id="layoutPanel1" panelLayout="flow" styleClass="dvnGraphResultsLineBox">
+
+                            <ice:dataTable width="100%" cellspacing="0" cellpadding="0" var="line" styleClass="dvnGraphResultsVizLineTable" value="#{ExploreDataPage.vizLines}" binding="#{ExploreDataPage.dataTableVizLines}">
+                              <h:column>
+                                  <div class="dvnGraphResultsVizLineBlock">
+
+                                    <div class="dvnGraphResultsVizLineWrap">
+
+                                      <div class="dvnGraphResultsVizLineLabel">
+                                        <div style="#{line.border}"></div>
+
+                                        <ice:outputText value="#{line.label}"/>
+                                      </div>
+
+                                      <div class="dvnGraphResultsVizLineActions">
+                                        <ice:commandLink id="deleteLineLink" title="Delete Line" value="Delete [X]" actionListener="#{ExploreDataPage.deleteLine}" onclick="deleteLine();"></ice:commandLink>
+                                        <a href="#" class="lineDetailLink">Detail [+]</a>
+                                      </div>
+
+                                    </div>
+
+                                    <div class="lineDetailBlock" style="display:none;">
+                                        <div class="lineDetailBlockLabel">
+                                            <ice:outputText value="#{line.measureLabel}"/>
+                                        </div>
+                                        <div jsfc="ice:panelGroup">
+                                            <ice:outputText value="#{line.measureGroup.name}"/>
+                                        </div>
+                                        <div jsfc="ice:panelSeries" id="lineListPanelSeries" var="filterGroup" value="#{line.filterGroups}">
+                                            <div class="lineDetailBlockFilter">
+                                                <ice:outputText value="#{filterGroup.groupAssociation.name}"/>
+                                            </div>
+                                            <div>
+                                                <ice:outputText value="#{filterGroup.name}"/>
+                                            </div>
+                                        </div>
+                                        <ice:commandLink
+                                            rendered="#{line.variableLabel!=null}" actionListener="#{ExploreDataPage.openVariableInfoPopup}">
+                                            <ice:outputText value="#{ExploreDataPage.sourceLineLabel}"/>
+                                        </ice:commandLink>
+                                    </div>
+
+                                    
+                                </div>
+                              </h:column>
+                              <f:facet name="footer">
+                                    <script type="text/javascript">
+                                      // <![CDATA[
+                                        jQuery(document).ready(initLineDetails);
+                                        function initLineDetails(){
+                                            // choose text for the show/hide link - can contain HTML (e.g. an image)
+                                            var showText='Detail [+]';
+                                            var hideText='Detail [-]';
+
+                                            // initialise the visibility check
+                                            var is_visible = false;
+
+                                            // append show/hide links to the element directly preceding the element with a class of "toggle"
+                                            jQuery(this).prev('a.lineDetailLink').text(showText);
+
+                                            // hide all of the elements with a class of 'toggle'
+                                            // jQuery('.lineDetailBlock').hide();
+
+                                            // capture clicks on the toggle links
+                                            jQuery('a.lineDetailLink').click(function() {
+
+                                                // switch visibility
+                                                is_visible = !is_visible;
+
+                                                // change the link depending on whether the element is shown or hidden
+                                                jQuery(this).text( (!is_visible) ? showText : hideText);
+
+                                                // toggle the display
+                                                // jQuery(this).next('.lineDetailBlock').slideToggle('fast');
+
+                                                if (jQuery(this).text()==hideText) {
+                                                    jQuery(this).parent().parent().next('.lineDetailBlock').show();
+                                                }
+                                                else {
+                                                    jQuery(this).parent().parent().next('.lineDetailBlock').hide();
+                                                }
+
+                                                // return false so any link destination is not followed
+                                                return false;
+
+                                            });
+                                        }
+                                        // ]]>
+                                    </script>
+                                </f:facet>
+                            </ice:dataTable>
+                        
+                        </div>
+                    </ice:panelTab>
+
+                    <ice:panelTab id="display" label="Display">
+                        <div jsfc="ice:panelGroup" id="layoutPanel2" panelLayout="flow">
+                            <div class="dvnGraphDisplayBlock">
+                                <ice:outputLabel value="Display" for="graphdisplay"/>
+                                <ice:selectOneMenu id="graphdisplay"  binding="#{ExploreDataPage.selectGraphType}" onchange="updateDisplayType();">
+                                    <f:selectItems value="#{ExploreDataPage.selectView}"/>
+                                </ice:selectOneMenu>
+                                
+                                <div>
+                                    <ice:outputLabel value="Title" for="graphtitleIn"/>
+                                    <ice:inputText id="graphTitleIn" size="38" binding="#{ExploreDataPage.inputGraphTitle}"
+                                                   value ="#{ExploreDataPage.graphTitle}"
+                                                   onkeyup="delayedRequestTitle(form,this,event);"></ice:inputText>
+                                </div>
+                            </div>
+
+                            <div class="dvnGraphTimeSeriesBlock">
+                                <ice:outputLabel value="Time Series" for="graphtimeseries" styleClass="dvnGraphTimeSeriesTitle"/>
+                                <div>
+                                    <ice:outputLabel value="Start" for="graphstart" rendered="true"/>
+                                    <ice:selectOneMenu id="graphstart" rendered="true" binding="#{ExploreDataPage.selectStartYear}" onchange="updateStartYear();">
+                                        <f:selectItems value="#{ExploreDataPage.selectBeginYears}"/>
+                                    </ice:selectOneMenu>
+                                </div>
+                                <div>
+                                    <ice:outputLabel value="End" for="graphend" rendered="true"/>
+                                    <ice:selectOneMenu id="graphend" rendered="true" binding="#{ExploreDataPage.selectEndYear}" onchange="updateEndYear();">
+                                         <f:selectItems value="#{ExploreDataPage.selectEndYears}"/>
+                                    </ice:selectOneMenu>
+                                </div>
+
+                            </div>
+                            <div class="dvnShowLegendBlock">
+                                 <ice:outputLabel value="Show Graph Legend" for="displayLegend" rendered="true"/>
+                                <ice:selectOneRadio id="displayLegendRadio" styleClass="displayLegendRadio" onclick="resetLegend(); initDisplayLegend();" value="#{ExploreDataPage.legendInt}">
+                                    <f:selectItem itemLabel="Right" itemValue="1" />
+                                    <f:selectItem itemLabel="Bottom" itemValue="2" />
+                                    <f:selectItem itemLabel="None" itemValue="3" />
+                                </ice:selectOneRadio>
+                            </div>
+
+                            <div class="dvnGraphIndicesBlock">
+                                <ice:outputLabel value="Indices" for="graphindices" styleClass="dvnGraphIndicesTitle"/>
+                                <div>
+                                    <ice:selectBooleanCheckbox id="displayindices" value="#{ExploreDataPage.displayIndexes}" binding="#{ExploreDataPage.useIndicesCheckBox}"
+                                                               rendered="true" onchange="resetIndices();"/>
+                                    <ice:outputLabel value="Display Series as Indices" for="displayindices" rendered="true"/>
+                                   
+                                </div>
+                                <ice:outputLabel value="Select Reference Period" for="selectreferenceperiod" rendered="true"/>
+                                <ice:selectOneMenu id="selectreferenceperiod" rendered="true" onchange="updateIndexYear();"  binding="#{ExploreDataPage.selectIndexYear}">
+                                    <f:selectItems value="#{ExploreDataPage.selectIndexDate}"/>
+                                </ice:selectOneMenu>
+                                
+                            </div>
+                        </div>
+                    </ice:panelTab>
+
+                    <ice:panelTab id="export" label="Export">
+                        <div jsfc="ice:panelGroup" id="layoutPanel3" panelLayout="flow" styleClass="dvnGraphExportBlock">
+                            <ice:outputLabel value="Export" for="graphexport"/>
+
+                            <div class="dvnExportBtmWrp">
+                                <div>
+                                    <ice:selectBooleanCheckbox id="downloadImageGraph"
+                                                               value="#{ExploreDataPage.includeImage}"
+                                                               visible="#{ExploreDataPage.imageAvailable}"
+                                                               partialSubmit="true" />
+                                    <ice:outputLabel value="Image Graph" for="downloadImageGraph" rendered="true" visible="#{ExploreDataPage.imageAvailable}" styleClass="dvnFormElementMargin"/>
+                                    <ice:selectBooleanCheckbox id="downloadPDFGraph"
+                                                               value="#{ExploreDataPage.includePdf}"
+                                                               visible="#{ExploreDataPage.imageAvailable}"
+                                                               partialSubmit="true" />
+                                    <ice:outputLabel value="PDF Graph" for="downloadPDFGraph" rendered="true" visible="#{ExploreDataPage.imageAvailable}"/>
+                                </div>
+                                <div>
+                                    <ice:selectBooleanCheckbox id="downloadDataCSV"
+                                                               value="#{ExploreDataPage.includeCSV}"
+                                                               partialSubmit="true"/>
+                                    <ice:outputLabel value="Raw Data CSV" for="downloadDataCSV" rendered="true" styleClass="dvnFormElementMargin"/>
+                                    <ice:selectBooleanCheckbox id="downloadDataExcel" binding="#{ExploreDataPage.dataExcelCheckBox}"
+                                                               value="#{ExploreDataPage.includeExcel}"
+                                                               visible="#{ExploreDataPage.dataTableAvailable}"
+                                                               partialSubmit="true" />
+                                    <ice:outputLabel value="Excel File" for="downloadDataExcel" rendered="true" visible="#{ExploreDataPage.dataTableAvailable}"/>
+                                </div>
+                                <ice:message for="downloadDataExcel" id="boxErrorMsgExcel" styleClass="errorMessage"/>
+                                <div class="dvnFormButtonMargin">
+                                    <ice:commandButton visible="true" value="Export Results" id="exportResults" type="submit" onclick="startDownload();" />
+                                      <ice:outputResource label="Export" type="button" style="display:none;"
+                                           id="downloadImage" mimeType="application/png"
+                                           resource="#{ExploreDataPage.downloadImage}" shared="false"/>
+                                      <ice:outputResource label="Export" type="button" style="display:none;"
+                                           id="downloadPDF" mimeType="application/pdf"
+                                           resource="#{ExploreDataPage.downloadPDF}" shared="false"/>
+                                      <ice:outputResource label="Export" type="button" style="display:none;"
+                                           id="downloadCSV" mimeType="text/comma-separated-values"
+                                           resource="#{ExploreDataPage.downloadCSV}" shared="false"/>
+                                      <ice:outputResource label="Export" type="button" style="display:none;"
+                                           id="downloadExcel" mimeType="application/vnd.ms-excel"
+                                           resource="#{ExploreDataPage.downloadExcel}" shared="false"/>
+                                      <ice:outputResource label="Export" type="button" style="display:none;"
+                                           id="downloadZip" mimeType="application/zip"
+                                           resource="#{ExploreDataPage.downloadZip}" shared="false"/>
+                                </div>
+                            </div>
+                        </div>
+                    </ice:panelTab>
+
+                </ice:panelTabSet>
+
+                
+                
+               <ice:panelPopup id="variableInfoPopup"
+                            visible="#{ExploreDataPage.showVariableInfoPopup}"
+                            draggable="true" modal="true"
+                            positionOnLoadOnly="true" autoCentre="true"
+                            styleClass="clusterViewDocPopup">
+                <f:facet name="header">
+                    <ice:panelGroup styleClass="popupHeaderWrapper">
+                        <ice:outputText value="#{ExploreDataPage.sourceLineLabel}" styleClass="popupHeaderText"/>
+                        <ice:commandLink value="Close [X]" actionListener="#{ExploreDataPage.closeVariableInfoPopup}" styleClass="popupHeaderClose"></ice:commandLink>
+                    </ice:panelGroup>
+                </f:facet>
+                <f:facet name="body">
+                    <ice:panelGroup styleClass="popupBody">
+                        
+                        #{ExploreDataPage.variableLabel}
+                        <br></br>
+                    </ice:panelGroup>
+                    
+                </f:facet>
+            </ice:panelPopup>
+
+
+            </div>
+        </div>
+    </div>
+<script type="text/javascript" src="https://www.google.com/jsapi"></script>
     <!--<script type="text/javascript" src="http://api.timepedia.org/gviz/"></script>-->
 
     <script type="text/javascript">
@@ -43,7 +430,19 @@
 
     }
 
-
+function initDisplayLegend() {
+    
+    var rightLegendChecked = jQuery('.displayLegendRadio input[value=1]:checked')
+    var bottomLegendChecked = jQuery('.displayLegendRadio input[value=2]:checked')
+    var noLegendChecked = jQuery('.displayLegendRadio input[value=3]:checked')
+    
+    if (rightLegendChecked) {
+        jQuery(rightLegendChecked).parents('.dvnGraphResults').children('.dvnGraphBox').children('#chart_div').addClass('rightlabel');
+    }
+    if (bottomLegendChecked || noLegendChecked) {
+        jQuery(bottomLegendChecked || noLegendChecked).parents('.dvnGraphResults').children('.dvnGraphBox').children('#chart_div').removeClass('rightlabel');
+    }
+}
 
 function getXaxisString(startYear, endYear)
 {
@@ -662,397 +1061,6 @@ var ymax=4095;
 // ]]>
     </script>
 
-
-<ice:inputHidden id="vdcId" value="#{VDCRequest.currentVDCId}"/>
-
-<ice:outputText visible="false" id="columnString" value="#{ExploreDataPage.columnString}"/>
-<ice:outputText visible="false" id="transformedData" value="#{ExploreDataPage.transformedData}"/>
-<ice:outputText visible="false" id="transformedDataIndexed" value="#{ExploreDataPage.transformedDataIndexed}"/>
-<ice:outputText visible="false" id="highValStandard" value="#{ExploreDataPage.highValStandard}"/>
-<ice:outputText visible="false" id="lowValStandard" value="#{ExploreDataPage.lowValStandard}"/>
-<ice:outputText visible="false" id="highValIndexed" value="#{ExploreDataPage.highValIndexed}"/>
-<ice:outputText visible="false" id="lowValIndexed" value="#{ExploreDataPage.lowValIndexed}"/>
-<ice:outputText visible="false" id="dtColumnString" value="#{ExploreDataPage.dtColumnString}"/>
-<ice:outputText visible="false" id="imageColumnString" value="#{ExploreDataPage.imageColumnString}"/>
-<ice:outputText visible="false" id="dataString" value="#{ExploreDataPage.dataString}"/>
-<ice:outputText visible="false" id="indexedDataString" value="#{ExploreDataPage.indexedDataString}"/>
-<ice:outputText visible="false" id="dataColumns" value="#{ExploreDataPage.dataColumns}"/>
-<ice:outputText visible="false" id="displayType" value="#{ExploreDataPage.displayType}"/>
-<ice:outputText visible="false" id="startYear" value="#{ExploreDataPage.startYear}"/>
-<ice:outputText visible="false" id="endYear" value="#{ExploreDataPage.endYear}"/>
-<ice:outputText visible="false" id="graphTitleHidden" value="#{ExploreDataPage.graphTitle}"/>
-<ice:outputText visible="false" id="sourceText" value="#{ExploreDataPage.sources}"/>
-<ice:inputText visible="false" id="imageURL" binding="#{ExploreDataPage.inputImageURL}" />
-<ice:outputText visible="false" id="imageAxisLabel" value="#{ExploreDataPage.imageAxisLabel}"/>
-<ice:outputText visible="false" id="imageSourceFooter" value="#{ExploreDataPage.imageSourceFooter}"/>
-<ice:outputText visible="false" id="imageAxisLabelNoYLabel" value="#{ExploreDataPage.imageAxisLabelNoYLabel}"/>
-<ice:outputText visible="false" id="imageSourceFooterNoYLabel" value="#{ExploreDataPage.imageSourceFooterNoYLabel}"/>
-<ice:outputText visible="false" id="displaySourceFooter" value="#{ExploreDataPage.displaySourceFooter}"/>
-<ice:outputText visible="false" id="displaySourceFooterNoYLabel" value="#{ExploreDataPage.displaySourceFooterNoYLabel}"/>
-<ice:outputText visible="false" id="defaultView" value="#{ExploreDataPage.defaultView}"/>
-<ice:outputText visible="false" id="hasURL"/>
-<ice:commandButton visible="false" id="updateGraphTitle" type="submit" value="update" action="#{ExploreDataPage.updateGraphTitle}"/>
-<ice:commandButton visible="false" id="deleteLineHidden" value="Delete Line hidden" actionListener="#{ExploreDataPage.deleteLine}"/>
-<ice:commandButton visible="false" id="updateImageURL" value="Update URL" action="#{ExploreDataPage.updateImageURL}"/>
-<ice:commandButton visible="false" id="updateIncludeFlags" value="Update Include Flags" action="#{ExploreDataPage.updateIncludeFlags}"/>
-<ice:commandButton visible="false" id="resetIndexValue" actionListener="#{ExploreDataPage.resetIndexDisplay}"/>
-<ice:commandButton visible="false" id="selectDisplayButton" action="#{ExploreDataPage.reset_DisplayType}"/>
-<ice:commandButton visible="false" id="updateUseIndex" action="#{ExploreDataPage.updateUseIndex}"/>
-<ice:selectBooleanCheckbox visible="false" id="displayIndicesHidden" value="#{ExploreDataPage.displayIndexes}" rendered="true" />                                                               
-<ice:commandButton visible="false" id="updateStartYear" action="#{ExploreDataPage.update_StartYear}"/>
-<ice:commandButton visible="false" id="updateEndYear" action="#{ExploreDataPage.update_EndYear}"/>
-<ice:commandButton visible="false" id="updateIndexYear" action="#{ExploreDataPage.update_IndexYear}"/>
-
-    <div class="dvn_section">
-        <div jsfc="ice:panelGroup" styleClass="dvnMsgBlockRound dvnInformationMessage">
-            <div class="dvnMsgBlockContainer">
-                <p>
-                    <ice:outputText value="(Please report any issues found in our open beta release of Explore Data to the Network Administrator using the &lt;a href=&#34;/dvn#{VDCRequest.currentVDCURL}/faces/ContactUsPage.xhtml&#34;&gt;Contact&lt;/a&gt; form.)" escape="false"/>
-                </p>
-            </div>
-        </div>
-        <div class="dvnstudytitleblock">
-            <div class="dvnstudyadminboxfloat dvn_right">
-                <ice:outputLink
-                    rendered="#{ExploreDataPage.versionNumber==null}"
-                    value="/dvn#{VDCRequest.currentVDCURL}/faces/study/StudyPage.xhtml?studyId=#{ExploreDataPage.studyId}&amp;tab=files#{VDCRequest.studyListingIndexAsParameter}">
-                <ice:outputText
-                    value="Back to Study"/>
-                </ice:outputLink>
-                <ice:outputLink
-                    rendered="#{ExploreDataPage.versionNumber!=null}"
-                    value="/dvn#{VDCRequest.currentVDCURL}/faces/study/StudyPage.xhtml?studyId=#{ExploreDataPage.studyId}&amp;tab=files&amp;versionNumber=#{ExploreDataPage.versionNumber}#{VDCRequest.studyListingIndexAsParameter}">
-                <ice:outputText
-                    value="Back to Study"/>
-                </ice:outputLink>
-            </div>
-            <ui:include src="/study/StudyTitleFragment.xhtml">
-                <ui:param name="studyUI" value="#{ExploreDataPage.studyUI}"/>
-                <ui:param name="displayReleaseLink" value="false"/>
-                <ui:param name="displayVersionInfo" value="true"/>
-                <ui:param name="displayStatusBox" value="true"/>
-                <ui:param name="displayFileName" value="#{ExploreDataPage.fileName}"/>
-            </ui:include>
-        </div>
-
-        <div class="dvnGraphForm">
-            <div class="dvnGraphIndicatorBlock">
-
-                <div jsfc="ice:panelGroup" styleClass="dvnGraphIndicatorSelect" rendered="#{!empty ExploreDataPage.selectMeasureGroupTypes}">
-
-                    <ice:outputLabel value="#{ExploreDataPage.measureTypeCue}" for="indicatortype"/>
-
-                    <ice:selectOneMenu immediate="false" partialSubmit="true" id="issue"
-                                       valueChangeListener="#{ExploreDataPage.reset_MeasureItems}" value="#{ExploreDataPage.groupTypeId}">
-                        <f:selectItem itemLabel="Select..." itemValue="0"/>
-                        <f:selectItems value="#{ExploreDataPage.selectMeasureGroupTypes}"/>
-                    </ice:selectOneMenu>
-                </div>
-
-                <div class="dvnGraphIndicatorSelect">
-                    <ice:outputLabel value="#{ExploreDataPage.measureLabel}" for="indicator"/>
-
-                    <ice:selectOneMenu id="indicatorMenu" value="#{ExploreDataPage.selectedMeasureId}" partialSubmit="true" valueChangeListener="#{ExploreDataPage.resetFiltersForMeasure}">
-                        <f:selectItem itemLabel="Select..." itemValue="0"/>
-                        <f:selectItems value="#{ExploreDataPage.selectMeasureItems}"/>
-                    </ice:selectOneMenu>
-                </div>
-            </div>
-
-            <div class="dvnGraphFilterBlock">
-                <div jsfc="ice:panelSeries" id="filterPanelGroupings" var="item" value="#{ExploreDataPage.filterGroupings}" binding="#{ExploreDataPage.filterPanelGroup}">
-                    <f:attribute name="groupingId" value="#{item.varGrouping.id}"/>
-                    <div class="dvnGraphFilterBlock">
-                        <ice:outputLabel value="#{item.varGrouping.name}"/>
-
-                        <ice:selectOneMenu id="filterGroup" styleClass="filterGroup" value="#{item.selectedGroupId}" partialSubmit="true"  valueChangeListener="#{ExploreDataPage.updateLineLabelForFilter}">
-                            <f:selectItem itemLabel="Select..." itemValue="0"/>
-                            <f:selectItems value="#{ExploreDataPage.selectFilterGroups}"/>
-                        </ice:selectOneMenu>
-
-                        <ice:outputText value="Narrow down list by checking the boxes on the right." styleClass="dvnGraphRelatedTo" rendered="#{!empty item.varGroupTypesUI}"/>
-
-                        <div jsfc="ice:panelSeries" styleClass="dvnGraphFilterTypesBlock" id="filterPanelGroupTypes" var="groupType" value="#{item.varGroupTypesUI}">
-                            <!-- controls -->
-                            <div jsfc="ice:panelGroup" styleClass="dvnGraphFilterTypesControls">
-                                <ice:selectBooleanCheckbox id="filterGroupTypeCheckBoxes" styleClass="filterGroupTypeCheckBoxes" value="#{groupType.enabled}"
-                                                            partialSubmit="true"/>
-                                <ice:outputLabel value="#{groupType.varGroupType.name}"/>
-                            </div>
-                        </div>
-                        <ice:message for="filterPanelGroupTypes" id="boxErrorMsg" styleClass="errorMessage"/>
-                    </div>
-                </div>
-            </div>
-
-            <div class="dvnGraphLabelBlock">
-                <div>
-                    <ice:outputLabel value="Label" for="graphlinelabel"/>
-                    <ice:inputText id="graphlinelabel" value="#{ExploreDataPage.lineLabel}" binding="#{ExploreDataPage.inputLineLabel}"></ice:inputText>
-                </div>
-                <div>
-                    <ice:commandButton id="addLineButton" value="Add Line" binding="#{ExploreDataPage.addLineButton}" actionListener="#{ExploreDataPage.addLine}"/>
-                    <ice:message for="addLineButton" id="boxErrorMsg" styleClass="errorMessage"/>
-                    <ice:commandButton id="removeAllButton" value="Refresh" styleClass="dvnGraphRemoveLinesButton" actionListener="#{ExploreDataPage.removeAllLines}"/>
-                </div>
-            </div>
-        </div>
-
-        <div jsfc="ice:panelGroup" styleClass="dvnGraphResults">
-            
-
-            <div jsfc="ice:panelGroup" rendered="#{!empty ExploreDataPage.vizLines}" styleClass="dvnGraphBox">
-                <div jsfc="ice:panelGroup" styleClass="dvnGraphSourceBlock" visible="#{!empty ExploreDataPage.forcedIndexMessage}">
-                    <ice:outputLabel value="#{ExploreDataPage.forcedIndexMessage}" />                   
-                </div>
-                 <div jsfc="ice:panelGroup" styleClass="dvnGraphSourceBlock" visible="#{!empty ExploreDataPage.graphTitle and (ExploreDataPage.displayType == 1 or ExploreDataPage.displayType == 3)}">
-                    <ice:outputLabel value="#{ExploreDataPage.graphTitle}" />                   
-                </div>
-                <div id="chart_div" rendered="#{ExploreDataPage.displayType == 1 or ExploreDataPage.displayType == 3}" ></div>
-                <div id="chart_image" rendered="#{ExploreDataPage.displayType == 2}"></div>
-                <div jsfc="ice:panelGroup" styleClass="dvnGraphSourceBlock" visible="#{!empty ExploreDataPage.sources and (ExploreDataPage.displayType == 1 or ExploreDataPage.displayType == 3)}">
-                    <ice:outputText value="Source: #{ExploreDataPage.sources}"/>
-                </div>
-            </div>
-
-            <div jsfc="ice:panelGroup" rendered="#{!empty ExploreDataPage.vizLines}" styleClass="dvnGraphDisplay">
-
-                <ice:panelTabSet id="tabSet1" styleClass="dvnTabs">
-
-                    <ice:panelTab id="lineDetails" label="Line Details">
-                        <div jsfc="ice:panelGroup" id="layoutPanel1" panelLayout="flow" styleClass="dvnGraphResultsLineBox">
-
-                            <ice:dataTable width="100%" cellspacing="0" cellpadding="0" var="line" styleClass="dvnGraphResultsVizLineTable" value="#{ExploreDataPage.vizLines}" binding="#{ExploreDataPage.dataTableVizLines}">
-                              <h:column>
-                                  <div class="dvnGraphResultsVizLineBlock">
-
-                                    <div class="dvnGraphResultsVizLineWrap">
-
-                                      <div class="dvnGraphResultsVizLineLabel">
-                                        <div style="#{line.border}"></div>
-
-                                        <ice:outputText value="#{line.label}"/>
-                                      </div>
-
-                                      <div class="dvnGraphResultsVizLineActions">
-                                        <ice:commandLink id="deleteLineLink" title="Delete Line" value="Delete [X]" actionListener="#{ExploreDataPage.deleteLine}" onclick="deleteLine();"></ice:commandLink>
-                                        <a href="#" class="lineDetailLink">Detail [+]</a>
-                                      </div>
-
-                                    </div>
-
-                                    <div class="lineDetailBlock" style="display:none;">
-                                        <div class="lineDetailBlockLabel">
-                                            <ice:outputText value="#{line.measureLabel}"/>
-                                        </div>
-                                        <div jsfc="ice:panelGroup">
-                                            <ice:outputText value="#{line.measureGroup.name}"/>
-                                        </div>
-                                        <div jsfc="ice:panelSeries" id="lineListPanelSeries" var="filterGroup" value="#{line.filterGroups}">
-                                            <div class="lineDetailBlockFilter">
-                                                <ice:outputText value="#{filterGroup.groupAssociation.name}"/>
-                                            </div>
-                                            <div>
-                                                <ice:outputText value="#{filterGroup.name}"/>
-                                            </div>
-                                        </div>
-                                        <ice:commandLink
-                                            rendered="#{line.variableLabel!=null}" actionListener="#{ExploreDataPage.openVariableInfoPopup}">
-                                            <ice:outputText value="#{ExploreDataPage.sourceLineLabel}"/>
-                                        </ice:commandLink>
-                                    </div>
-
-                                    
-                                </div>
-                              </h:column>
-                              <f:facet name="footer">
-                                    <script type="text/javascript">
-                                      // <![CDATA[
-                                        jQuery(document).ready(initLineDetails);
-                                        function initLineDetails(){
-                                            // choose text for the show/hide link - can contain HTML (e.g. an image)
-                                            var showText='Detail [+]';
-                                            var hideText='Detail [-]';
-
-                                            // initialise the visibility check
-                                            var is_visible = false;
-
-                                            // append show/hide links to the element directly preceding the element with a class of "toggle"
-                                            jQuery(this).prev('a.lineDetailLink').text(showText);
-
-                                            // hide all of the elements with a class of 'toggle'
-                                            // jQuery('.lineDetailBlock').hide();
-
-                                            // capture clicks on the toggle links
-                                            jQuery('a.lineDetailLink').click(function() {
-
-                                                // switch visibility
-                                                is_visible = !is_visible;
-
-                                                // change the link depending on whether the element is shown or hidden
-                                                jQuery(this).text( (!is_visible) ? showText : hideText);
-
-                                                // toggle the display
-                                                // jQuery(this).next('.lineDetailBlock').slideToggle('fast');
-
-                                                if (jQuery(this).text()==hideText) {
-                                                    jQuery(this).parent().parent().next('.lineDetailBlock').show();
-                                                }
-                                                else {
-                                                    jQuery(this).parent().parent().next('.lineDetailBlock').hide();
-                                                }
-
-                                                // return false so any link destination is not followed
-                                                return false;
-
-                                            });
-                                        }
-                                        // ]]>
-                                    </script>
-                                </f:facet>
-                            </ice:dataTable>
-                        
-                        </div>
-                    </ice:panelTab>
-
-                    <ice:panelTab id="display" label="Display">
-                        <div jsfc="ice:panelGroup" id="layoutPanel2" panelLayout="flow">
-                            <div class="dvnGraphDisplayBlock">
-                                <ice:outputLabel value="Display" for="graphdisplay"/>
-                                <ice:selectOneMenu id="graphdisplay"  binding="#{ExploreDataPage.selectGraphType}" onchange="updateDisplayType();">
-                                    <f:selectItems value="#{ExploreDataPage.selectView}"/>
-                                </ice:selectOneMenu>
-                                
-                                <div>
-                                    <ice:outputLabel value="Title" for="graphtitleIn"/>
-                                    <ice:inputText id="graphTitleIn" size="38" binding="#{ExploreDataPage.inputGraphTitle}"
-                                                   value ="#{ExploreDataPage.graphTitle}"
-                                                   onkeyup="delayedRequestTitle(form,this,event);"></ice:inputText>
-                                </div>
-                            </div>
-
-                            <div class="dvnGraphTimeSeriesBlock">
-                                <ice:outputLabel value="Time Series" for="graphtimeseries" styleClass="dvnGraphTimeSeriesTitle"/>
-                                <div>
-                                    <ice:outputLabel value="Start" for="graphstart" rendered="true"/>
-                                    <ice:selectOneMenu id="graphstart" rendered="true" binding="#{ExploreDataPage.selectStartYear}" onchange="updateStartYear();">
-                                        <f:selectItems value="#{ExploreDataPage.selectBeginYears}"/>
-                                    </ice:selectOneMenu>
-                                </div>
-                                <div>
-                                    <ice:outputLabel value="End" for="graphend" rendered="true"/>
-                                    <ice:selectOneMenu id="graphend" rendered="true" binding="#{ExploreDataPage.selectEndYear}" onchange="updateEndYear();">
-                                         <f:selectItems value="#{ExploreDataPage.selectEndYears}"/>
-                                    </ice:selectOneMenu>
-                                </div>
-
-                            </div>
-                            <div class="dvnShowLegendBlock">
-                                 <ice:outputLabel value="Show Graph Legend" for="displayLegend" rendered="true"/>
-                                <ice:selectOneRadio id="displayLegendRadio" onclick="resetLegend();" value="#{ExploreDataPage.legendInt}">
-                                    <f:selectItem itemLabel="Right" itemValue="1" />
-                                    <f:selectItem itemLabel="Bottom" itemValue="2" />
-                                    <f:selectItem itemLabel="None" itemValue="3" />
-                                </ice:selectOneRadio>
-                            </div>
-
-                            <div class="dvnGraphIndicesBlock">
-                                <ice:outputLabel value="Indices" for="graphindices" styleClass="dvnGraphIndicesTitle"/>
-                                <div>
-                                    <ice:selectBooleanCheckbox id="displayindices" value="#{ExploreDataPage.displayIndexes}" binding="#{ExploreDataPage.useIndicesCheckBox}"
-                                                               rendered="true" onchange="resetIndices();"/>
-                                    <ice:outputLabel value="Display Series as Indices" for="displayindices" rendered="true"/>
-                                   
-                                </div>
-                                <ice:outputLabel value="Select Reference Period" for="selectreferenceperiod" rendered="true"/>
-                                <ice:selectOneMenu id="selectreferenceperiod" rendered="true" onchange="updateIndexYear();"  binding="#{ExploreDataPage.selectIndexYear}">
-                                    <f:selectItems value="#{ExploreDataPage.selectIndexDate}"/>
-                                </ice:selectOneMenu>
-                                
-                            </div>
-                        </div>
-                    </ice:panelTab>
-
-                    <ice:panelTab id="export" label="Export">
-                        <div jsfc="ice:panelGroup" id="layoutPanel3" panelLayout="flow" styleClass="dvnGraphExportBlock">
-                            <ice:outputLabel value="Export" for="graphexport"/>
-
-                            <div class="dvnExportBtmWrp">
-                                <div>
-                                    <ice:selectBooleanCheckbox id="downloadImageGraph"
-                                                               value="#{ExploreDataPage.includeImage}"
-                                                               visible="#{ExploreDataPage.imageAvailable}"
-                                                               partialSubmit="true" />
-                                    <ice:outputLabel value="Image Graph" for="downloadImageGraph" rendered="true" visible="#{ExploreDataPage.imageAvailable}" styleClass="dvnFormElementMargin"/>
-                                    <ice:selectBooleanCheckbox id="downloadPDFGraph"
-                                                               value="#{ExploreDataPage.includePdf}"
-                                                               visible="#{ExploreDataPage.imageAvailable}"
-                                                               partialSubmit="true" />
-                                    <ice:outputLabel value="PDF Graph" for="downloadPDFGraph" rendered="true" visible="#{ExploreDataPage.imageAvailable}"/>
-                                </div>
-                                <div>
-                                    <ice:selectBooleanCheckbox id="downloadDataCSV"
-                                                               value="#{ExploreDataPage.includeCSV}"
-                                                               partialSubmit="true"/>
-                                    <ice:outputLabel value="Raw Data CSV" for="downloadDataCSV" rendered="true" styleClass="dvnFormElementMargin"/>
-                                    <ice:selectBooleanCheckbox id="downloadDataExcel" binding="#{ExploreDataPage.dataExcelCheckBox}"
-                                                               value="#{ExploreDataPage.includeExcel}"
-                                                               visible="#{ExploreDataPage.dataTableAvailable}"
-                                                               partialSubmit="true" />
-                                    <ice:outputLabel value="Excel File" for="downloadDataExcel" rendered="true" visible="#{ExploreDataPage.dataTableAvailable}"/>
-                                </div>
-                                <ice:message for="downloadDataExcel" id="boxErrorMsgExcel" styleClass="errorMessage"/>
-                                <div class="dvnFormButtonMargin">
-                                    <ice:commandButton visible="true" value="Export Results" id="exportResults" type="submit" onclick="startDownload();" />
-                                      <ice:outputResource label="Export" type="button" style="display:none;"
-                                           id="downloadImage" mimeType="application/png"
-                                           resource="#{ExploreDataPage.downloadImage}" shared="false"/>
-                                      <ice:outputResource label="Export" type="button" style="display:none;"
-                                           id="downloadPDF" mimeType="application/pdf"
-                                           resource="#{ExploreDataPage.downloadPDF}" shared="false"/>
-                                      <ice:outputResource label="Export" type="button" style="display:none;"
-                                           id="downloadCSV" mimeType="text/comma-separated-values"
-                                           resource="#{ExploreDataPage.downloadCSV}" shared="false"/>
-                                      <ice:outputResource label="Export" type="button" style="display:none;"
-                                           id="downloadExcel" mimeType="application/vnd.ms-excel"
-                                           resource="#{ExploreDataPage.downloadExcel}" shared="false"/>
-                                      <ice:outputResource label="Export" type="button" style="display:none;"
-                                           id="downloadZip" mimeType="application/zip"
-                                           resource="#{ExploreDataPage.downloadZip}" shared="false"/>
-                                </div>
-                            </div>
-                        </div>
-                    </ice:panelTab>
-
-                </ice:panelTabSet>
-
-                
-                
-               <ice:panelPopup id="variableInfoPopup"
-                            visible="#{ExploreDataPage.showVariableInfoPopup}"
-                            draggable="true" modal="true"
-                            positionOnLoadOnly="true" autoCentre="true"
-                            styleClass="clusterViewDocPopup">
-                <f:facet name="header">
-                    <ice:panelGroup styleClass="popupHeaderWrapper">
-                        <ice:outputText value="#{ExploreDataPage.sourceLineLabel}" styleClass="popupHeaderText"/>
-                        <ice:commandLink value="Close [X]" actionListener="#{ExploreDataPage.closeVariableInfoPopup}" styleClass="popupHeaderClose"></ice:commandLink>
-                    </ice:panelGroup>
-                </f:facet>
-                <f:facet name="body">
-                    <ice:panelGroup styleClass="popupBody">
-                        
-                        #{ExploreDataPage.variableLabel}
-                        <br></br>
-                    </ice:panelGroup>
-                    
-                </f:facet>
-            </ice:panelPopup>
-
-
-            </div>
-        </div>
-    </div>
 </ice:form>
 
 </ui:define>

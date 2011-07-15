@@ -292,8 +292,9 @@ table.viTblinx th{background-color:#e6e6fa;font-weight:700;margin:0px;padding:2p
 a.lineDetailLink {display:block;}
 .lineDetailBlockLabel, .lineDetailBlockFilter {font-weight:bold; color:#484848;}
 .dvnGraphBox {float:left; margin-right:1em;}
-.dvnGraphBox #chart_div {width:676px; height:400px;} /*CHART SIZE*/
-.dvnGraphDisplay {float:left;}
+.dvnGraphBox #chart_div {width:540px; height:400px; margin-bottom:.5em;} /*CHART SIZE*/
+.dvnGraphBox #chart_div.rightlabel {width:676px;} /*CHART SIZE*/
+.dvnGraphDisplay {float:left; width:280px;}
 .dvnGraphDisplayBlock {margin-bottom:2em;}
 .dvnGraphDisplayBlock label {display:inline;}
 .dvnGraphDisplayBlock div {margin-top:.5em;}

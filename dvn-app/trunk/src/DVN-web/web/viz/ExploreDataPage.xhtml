@@ -79,6 +79,10 @@ function getXaxisString(startYear, endYear)
 
 function getLegendString(columnString){
     legendString = "";
+        var buttonVal = getRadioValue("displayLegendRadio");
+        if (buttonVal == 3){
+           return legendString;
+        }
     var myString = columnString;
     var myColumnList = myString.split ( '^' );
     for (var i=0; i< myColumnList.length ;i++)
@@ -90,6 +94,7 @@ function getLegendString(columnString){
                 legendString = legendString + "|" + escape(myColumn);
             }
     }
+
     return legendString;
 }
 
@@ -449,9 +454,12 @@ function drawVisualization() {
             chartParams = chartParams + "&chxt="+axisLabel;
             var labelString = escape('0:' + getXaxisString(startYear, endYear) + displaySourceFooter);   
             chartParams = chartParams + "&chxl="+labelString;
-            chartParams = chartParams + "&chdlp="+legendAlignment;
-            chartParams = chartParams + "&chdl="+ getLegendString(icolStr);
-            chartParams = chartParams + "&chdls=000000";
+            if (buttonVal != 3){
+                chartParams = chartParams + "&chdlp="+legendAlignment;
+                chartParams = chartParams + "&chdl="+ getLegendString(icolStr);
+                chartParams = chartParams + "&chdls=000000";                
+            }
+
             chartParams = chartParams + "&chxr=1,"+lowValDouble+","+highValDouble;
             var values = "&chd=e:";
             var title = "&chtt="+escape(fullTitle);
@@ -794,6 +802,9 @@ var ymax=4095;
             
 
             <div jsfc="ice:panelGroup" rendered="#{!empty ExploreDataPage.vizLines}" styleClass="dvnGraphBox">
+                <div jsfc="ice:panelGroup" styleClass="dvnGraphSourceBlock" visible="#{!empty ExploreDataPage.forcedIndexMessage}">
+                    <ice:outputLabel value="#{ExploreDataPage.forcedIndexMessage}" />                   
+                </div>
                  <div jsfc="ice:panelGroup" styleClass="dvnGraphSourceBlock" visible="#{!empty ExploreDataPage.graphTitle and (ExploreDataPage.displayType == 1 or ExploreDataPage.displayType == 3)}">
                     <ice:outputLabel value="#{ExploreDataPage.graphTitle}" />                   
                 </div>

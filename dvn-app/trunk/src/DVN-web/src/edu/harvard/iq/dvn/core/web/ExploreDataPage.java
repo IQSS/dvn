@@ -39,7 +39,6 @@ import edu.harvard.iq.dvn.core.study.StudyFile;
 import edu.harvard.iq.dvn.core.study.VariableServiceLocal;
 import edu.harvard.iq.dvn.core.visualization.DataVariableMapping;
 import edu.harvard.iq.dvn.core.web.study.StudyUI;
-import edu.harvard.iq.dvn.core.web.util.UrlValidator;
 import edu.harvard.iq.dvn.ingest.dsb.FieldCutter;
 import edu.harvard.iq.dvn.ingest.dsb.impl.DvnJavaFieldCutter;
 import java.awt.image.BufferedImage;
@@ -188,6 +187,7 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
     private String transformedDataOut;
     private String[] transformedDataIndexed;
     private String transformedDataIndexedOut;
+    private String forcedIndexMessage;
     
     private Float lowValStandard = new Float(0);
     private Float lowValIndex = new Float (100);
@@ -1357,7 +1357,7 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
     public void setDtColumnString(String dtColumnString) {
         this.dtColumnString = dtColumnString;
     }
-
+    
     private HtmlCommandButton addLineButton = new HtmlCommandButton();
 
     public HtmlCommandButton getAddLineButton() {
@@ -1973,7 +1973,7 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
     private void checkUnits() {        
         Set<String> set = new HashSet(); 
         int countLines = 0;
-
+        forcedIndexMessage = "";
             for (VisualizationLineDefinition vld: vizLines){
                 countLines++;
             String checkUnit = vld.getMeasureGroup().getUnits();
@@ -1981,6 +1981,7 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
                 if (!set.isEmpty() && !set.contains(checkUnit) && countLines > 1){
                         setDisplayIndexes(true);
                         yAxisLabel = "";
+                        forcedIndexMessage = "Series have been displayed as indices because their measurement units are different.";
                     } else {
                         set.add(checkUnit);
                         yAxisLabel = checkUnit;
@@ -2162,7 +2163,6 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
         VisualizationLineDefinition vizLine = (VisualizationLineDefinition) tempTable.getRowData();
 
         variableLabel = vizLine.getVariableLabel();
-        UrlValidator localValidator = new UrlValidator();
         variableLabel = convertVariableLabel(variableLabel);
         variableLabelLink = false;
 
@@ -2181,14 +2181,11 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
             if (!retString.isEmpty()) {
                retString += " "; 
             }
-            retString += "<a href=\'" + url + "\'>"+ url + "</a> " ; 
-            System.out.print("<a href=\"" + url + "\">"+ url + "</a> " );    
+            retString += "<a href=\'" + url + "\'>"+ url + "</a> " ;   
         } catch (MalformedURLException e) {
             // If there was an URL that was not it!...
             retString += " " + item;
-            System.out.print( item + " " );
         }
-         System.out.print("retString " + retString );
         return retString;
     }
 
@@ -2519,7 +2516,13 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
     public Float getLowValIndexed(){
         return lowValIndex;
     }
+    public String getForcedIndexMessage() {
+        return forcedIndexMessage;
+    }
 
+    public void setForcedIndexMessage(String forcedIndexMessage) {
+        this.forcedIndexMessage = forcedIndexMessage;
+    }
     public String getImageColumnString() {
         return imageColumnString;
     }

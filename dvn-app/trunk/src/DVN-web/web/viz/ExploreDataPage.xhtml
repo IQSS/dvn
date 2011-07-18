@@ -439,8 +439,11 @@ function initDisplayLegend() {
     if (rightLegendChecked) {
         jQuery(rightLegendChecked).parents('.dvnGraphResults').children('.dvnGraphBox').children('#chart_div').addClass('rightlabel');
     }
-    if (bottomLegendChecked || noLegendChecked) {
-        jQuery(bottomLegendChecked || noLegendChecked).parents('.dvnGraphResults').children('.dvnGraphBox').children('#chart_div').removeClass('rightlabel');
+    if (bottomLegendChecked) {
+        jQuery(bottomLegendChecked).parents('.dvnGraphResults').children('.dvnGraphBox').children('#chart_div').removeClass('rightlabel');
+    }
+    if (noLegendChecked) {
+        jQuery(noLegendChecked).parents('.dvnGraphResults').children('.dvnGraphBox').children('#chart_div').removeClass('rightlabel');
     }
 }
 

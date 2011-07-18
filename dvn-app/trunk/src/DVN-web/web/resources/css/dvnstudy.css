@@ -287,7 +287,7 @@ table.viTblinx th{background-color:#e6e6fa;font-weight:700;margin:0px;padding:2p
 .dvnGraphResultsVizLineWrap {overflow:hidden;}
 .dvnGraphResultsVizLineLabel {float:left; width:160px; font-weight:bold;}
 .dvnGraphResultsVizLineLabel div {float:left; width:20px; height:20px; margin-right:.5em;}
-.dvnGraphResultsVizLineActions {float:right; width:50px;}
+.dvnGraphResultsVizLineActions {float:right; width:54px;}
 .dvnGraphResultsVizLineActions a:link, .dvnGraphResultsVizLineActions a:visited, .dvnGraphResultsVizLineActions a:hover, .dvnGraphResultsVizLineActions a:active {font-size:.95em !important;}
 a.lineDetailLink {display:block;}
 .lineDetailBlockLabel, .lineDetailBlockFilter {font-weight:bold; color:#484848;}

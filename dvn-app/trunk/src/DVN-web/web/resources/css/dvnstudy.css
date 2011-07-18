@@ -273,7 +273,7 @@ table.viTblinx th{background-color:#e6e6fa;font-weight:700;margin:0px;padding:2p
 .dvnGraphResultsVizLineTable, .dvnGraphResultsVizLineTable tr, .dvnGraphResultsVizLineTable td {border:0; margin:0; padding:0; background-color: transparent;}
 .dvnGraphIndicatorBlock {overflow:hidden; margin-bottom:1em;}
 .dvnGraphIndicatorSelect {display:inline; margin-right:2em;}
-.dvnGraphRelatedTo {font-weight:bold; margin:0 2em;}
+.dvnGraphRelatedTo {margin:0 2em;}
 .dvnGraphFilterBlock {margin-bottom:1em;}
 .dvnGraphFilterTypesBlock {overflow:hidden; display:inline;}
 .dvnGraphFilterTypesBlock .errorMessage {display:block;}

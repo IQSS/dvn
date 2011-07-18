@@ -125,7 +125,7 @@
                             <f:selectItems value="#{ExploreDataPage.selectFilterGroups}"/>
                         </ice:selectOneMenu>
 
-                        <ice:outputText value="Narrow down list by checking the boxes on the right." styleClass="dvnGraphRelatedTo" rendered="#{!empty item.varGroupTypesUI}"/>
+                        <ice:outputText value="Use check boxes to narrow drop-down menu." styleClass="dvnGraphRelatedTo" rendered="#{!empty item.varGroupTypesUI}"/>
 
                         <div jsfc="ice:panelSeries" styleClass="dvnGraphFilterTypesBlock" id="filterPanelGroupTypes" var="groupType" value="#{item.varGroupTypesUI}">
                             <!-- controls -->

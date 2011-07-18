@@ -159,42 +159,8 @@ public class DataTable implements java.io.Serializable {
         this.visualizationEnabled = visualizationEnabled;
     }
 
-    private String visualizationShowDataTable;
-    private String visualizationShowImageGraph;
-    private String visualizationShowFlashGraph;
-    private String visualizationSourceInfoLabel;
 
-    public String getVisualizationSourceInfoLabel() {
-        return visualizationSourceInfoLabel;
-    }
-
-    public void setVisualizationSourceInfoLabel(String visualizationSourceInfoLabel) {
-        this.visualizationSourceInfoLabel = visualizationSourceInfoLabel;
-    }
     
-    public String getVisualizationShowDataTable() {
-        return visualizationShowDataTable;
-    }
-
-    public void setVisualizationShowDataTable(String visualizationShowDataTable) {
-        this.visualizationShowDataTable = visualizationShowDataTable;
-    }
-
-    public String getVisualizationShowFlashGraph() {
-        return visualizationShowFlashGraph;
-    }
-
-    public void setVisualizationShowFlashGraph(String visualizationShowFlashGraph) {
-        this.visualizationShowFlashGraph = visualizationShowFlashGraph;
-    }
-
-    public String getVisualizationShowImageGraph() {
-        return visualizationShowImageGraph;
-    }
-
-    public void setVisualizationShowImageGraph(String visualizationShowImageGraph) {
-        this.visualizationShowImageGraph = visualizationShowImageGraph;
-    }
 
     
     /**

@@ -1826,8 +1826,11 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
                         Document document = new Document();
                         PdfWriter.getInstance(document, new FileOutputStream(pdfFileIn, true));
                         document.open();
+                        
                         java.awt.Image awtImg = image;
+                        
                         com.itextpdf.text.Image image2 =   com.itextpdf.text.Image.getInstance(awtImg, null);
+                        image2.scaleToFit(540f, 400f);
                         document.add(image2);
                         document.close();
                     }

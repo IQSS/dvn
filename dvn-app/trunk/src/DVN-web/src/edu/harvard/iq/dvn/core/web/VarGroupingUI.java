@@ -27,15 +27,11 @@ public class VarGroupingUI {
     private VarGrouping varGrouping;
     private List <VarGroupTypeUI> varGroupTypesUI;
     private Collection <VarGroupUI> varGroupUI;
+    private VarGroupUIList varGroupUIList;
+
     private List <SelectItem> varGroupTypesSelect = new ArrayList();
     private boolean showVariables = false;
     private List <DataVariableUI> dataVariableUIList = new ArrayList();
-
-
-
-
-
-
     private Long selectedGroupId;
 
     public List<VarGroupTypeUI> getVarGroupTypesUI() {
@@ -113,5 +109,13 @@ public class VarGroupingUI {
 
     public void setDataVariableUIList(List<DataVariableUI> dataVariableUIList) {
         this.dataVariableUIList = dataVariableUIList;
+    }
+    
+    public VarGroupUIList getVarGroupUIList() {
+        return varGroupUIList;
+    }
+
+    public void setVarGroupUIList(VarGroupUIList varGroupUIList) {
+        this.varGroupUIList = varGroupUIList;
     }
 }

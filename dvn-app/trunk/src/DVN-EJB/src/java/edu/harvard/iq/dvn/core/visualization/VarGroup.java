@@ -29,6 +29,8 @@ import javax.persistence.*;
  */
 @Entity
 public class VarGroup implements Serializable, Comparable <VarGroup> {
+    public static final String ORDER_BY_NAME = "name";
+    public static final String ORDER_BY_GROUPTYPE = "groupTypes";
     private String name;
     private String units;
 

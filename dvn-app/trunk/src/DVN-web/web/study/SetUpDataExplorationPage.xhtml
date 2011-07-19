@@ -239,12 +239,15 @@
                                                     </ice:commandLink>
                                                 </div>
                                                 <div jsfc="ice:panelGroup">
-                                                    <ice:dataTable width="100%" cellspacing="0" cellpadding="0" var="group" value="#{SetUpDataExplorationPage.measureGroups}"
+                                                    <ice:dataTable width="100%" cellspacing="0" cellpadding="0" var="group" 
+                                                                   value="#{SetUpDataExplorationPage.measureGroups.varGroupUIList}"
+                                                                   sortColumn="#{SetUpDataExplorationPage.measureGroups.sortColumnName}"
+                                                                   sortAscending="#{SetUpDataExplorationPage.measureGroups.ascending}"
                                                                    binding="#{SetUpDataExplorationPage.dataTableVarGroup}">
                                                         <h:column>
                                                             <f:facet name="header">
                                                                 <ice:commandSortHeader
-                                                                    columnName="MeasureName"
+                                                                    columnName="#{SetUpDataExplorationPage.measureGroups.nameColumnName}"
                                                                     arrow="true">
                                                                     <ice:outputText value="Name"/>
                                                                 </ice:commandSortHeader>
@@ -254,7 +257,7 @@
                                                         <h:column>
                                                             <f:facet name="header">
                                                                 <ice:commandSortHeader
-                                                                    columnName="MeasureType"
+                                                                    columnName="#{SetUpDataExplorationPage.measureGroups.typeColumnName}"
                                                                     arrow="true">
                                                                     <ice:outputText value="Type"/>
                                                                 </ice:commandSortHeader>
@@ -328,12 +331,15 @@
                                                             </ice:commandLink>
                                                         </div>
 
-                                                        <ice:dataTable width="100%" cellspacing="0" cellpadding="0" var="filter" value="#{grouping.varGroupUI}"
+                                                        <ice:dataTable width="100%" cellspacing="0" cellpadding="0" var="filter" 
+                                                                       value="#{grouping.varGroupUIList.varGroupUIList}"
+                                                                       sortColumn="#{grouping.varGroupUIList.sortColumnName}"
+                                                                       sortAscending="#{grouping.varGroupUIList.ascending}"
                                                                        binding="#{SetUpDataExplorationPage.dataTableFilterGroup}">
                                                             <h:column>
                                                                 <f:facet name="header">
                                                                     <ice:commandSortHeader
-                                                                        columnName="FilterName"
+                                                                        columnName="#{grouping.varGroupUIList.nameColumnName}"
                                                                         arrow="true">
                                                                         <ice:outputText value="Name"/>
                                                                     </ice:commandSortHeader>
@@ -343,7 +349,7 @@
                                                             <ice:column>
                                                                 <f:facet name="header">
                                                                     <ice:commandSortHeader
-                                                                        columnName="FilterType"
+                                                                        columnName="#{grouping.varGroupUIList.typeColumnName}"
                                                                         arrow="true">
                                                                         <ice:outputText value="Type"/>
                                                                     </ice:commandSortHeader>

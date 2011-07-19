@@ -1181,7 +1181,7 @@ public class SetUpDataExplorationPage extends VDCBaseBean implements java.io.Ser
                 String fullErrorMessage = "This name already exists.  Please enter another.  <br>" ;
                 FacesMessage message = new FacesMessage(fullErrorMessage);
                 fc.addMessage(validateButton.getClientId(fc), message);
-                JavascriptContext.addJavascriptCall(fc, "jQuery(\"div.dvnMsgBlockRound\").corner(\"10px\");" );
+                JavascriptContext.addJavascriptCall(fc, "initRoundedCorners();" );
                 return;
             }
 
@@ -1370,7 +1370,7 @@ public class SetUpDataExplorationPage extends VDCBaseBean implements java.io.Ser
                 String fullErrorMessage = "This name already exists.  Please enter another.  <br>" ;
                 FacesMessage message = new FacesMessage(fullErrorMessage);
                 fc.addMessage(validateButton.getClientId(fc), message);
-                JavascriptContext.addJavascriptCall(fc, "jQuery(\"div.dvnMsgBlockRound\").corner(\"10px\");" );
+                JavascriptContext.addJavascriptCall(fc, "initRoundedCorners();");
             }
 
          return duplicates;
@@ -1952,7 +1952,7 @@ public class SetUpDataExplorationPage extends VDCBaseBean implements java.io.Ser
                 FacesMessage message = new FacesMessage("The Data Visualization is valid for release.");
                 FacesContext fc = FacesContext.getCurrentInstance();
                 fc.addMessage(releaseButton.getClientId(fc), message);
-                JavascriptContext.addJavascriptCall(fc, "jQuery(\"div.dvnMsgBlockRound\").corner(\"10px\");" );
+                JavascriptContext.addJavascriptCall(fc, "initRoundedCorners();" );
         }
         if (!valid&& messages) {
             // add rounded corners to the validation message box
@@ -1960,7 +1960,7 @@ public class SetUpDataExplorationPage extends VDCBaseBean implements java.io.Ser
             fullErrorMessage = "This configuration is invalid so it cannot be released.  <br>" + fullErrorMessage;
             FacesMessage message = new FacesMessage(fullErrorMessage);
             fc.addMessage(validateButton.getClientId(fc), message);
-            JavascriptContext.addJavascriptCall(fc, "jQuery(\"div.dvnMsgBlockRound\").corner(\"10px\");" );
+            JavascriptContext.addJavascriptCall(fc, "initRoundedCorners();" );
         }
 
         return valid;

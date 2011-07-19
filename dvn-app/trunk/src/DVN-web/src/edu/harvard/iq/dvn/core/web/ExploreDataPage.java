@@ -1063,7 +1063,7 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
            return;
         } else {
             FacesContext fc = FacesContext.getCurrentInstance();
-            JavascriptContext.addJavascriptCall(fc, "jQuery(\"div.dvnMsgBlockRound\").corner(\"10px\");");
+            JavascriptContext.addJavascriptCall(fc, "initRoundedCorners();");
         }
 
     }
@@ -1160,7 +1160,7 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
 
            FacesContext fc = FacesContext.getCurrentInstance();
            JavascriptContext.addJavascriptCall(fc, "drawVisualization();");
-           JavascriptContext.addJavascriptCall(fc, "jQuery(\"div.dvnMsgBlockRound\").corner(\"10px\");");
+           JavascriptContext.addJavascriptCall(fc, "initRoundedCorners();");
 
     }
     private boolean validateSelections(){

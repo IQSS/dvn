@@ -1994,6 +1994,7 @@ public class SetUpDataExplorationPage extends VDCBaseBean implements java.io.Ser
                FacesMessage message = new FacesMessage("Your current changes are invalid.  Correct these issues or unrelease your visualization before saving.<br>Click Validate button to get a full list of validation issues.");
                FacesContext fc = FacesContext.getCurrentInstance();
                fc.addMessage(validateButton.getClientId(fc), message);
+               JavascriptContext.addJavascriptCall(fc, "initRoundedCorners();" );
                return "";
            }
        }
@@ -2009,15 +2010,26 @@ public class SetUpDataExplorationPage extends VDCBaseBean implements java.io.Ser
     }
     
     public String saveAndContinue(){
+       boolean successMessage = true;
        if (dataTable.isVisualizationEnabled()){
            if (!validateForRelease(false)) {
                dataTable.setVisualizationEnabled(false);
                FacesMessage message = new FacesMessage("Your current changes are invalid. This visualization has been set to 'unreleased'. <br>Click Validate button to get a full list of validation issues.");
                FacesContext fc = FacesContext.getCurrentInstance();
-               fc.addMessage(validateButton.getClientId(fc), message);               
+               fc.addMessage(validateButton.getClientId(fc), message);    
+               successMessage = false;
            }
        }
+       
+       
        visualizationService.saveAndContinue();
+       
+       if (successMessage){
+               FacesMessage message = new FacesMessage("Save was successful.  You may exit or continue editing.");
+               FacesContext fc = FacesContext.getCurrentInstance();
+               fc.addMessage(releaseButton.getClientId(fc), message); 
+               JavascriptContext.addJavascriptCall(fc, "initRoundedCorners();" );
+       }
        edited = false;
        return "";
     }

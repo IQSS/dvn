@@ -1393,9 +1393,7 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
         csvColumnString += xAxisVar.getName();
         dtColumnString += xAxisVar.getName();
         for (VisualizationLineDefinition vld: vizLines){
-            if (vld.getLabel().length() > 6){
-                setLegendInt(2);
-            }
+
             Long testId = vld.getVariableId();
             for (DataVariable dv : dt.getDataVariables()){
                 if (dv.getId().equals(testId)){

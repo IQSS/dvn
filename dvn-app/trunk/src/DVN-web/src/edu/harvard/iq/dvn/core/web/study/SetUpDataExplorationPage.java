@@ -882,7 +882,7 @@ public class SetUpDataExplorationPage extends VDCBaseBean implements java.io.Ser
             }
         }
         if (countSelected > 1) {
-            FacesMessage message = new FacesMessage("You may not select more than one variable");
+            FacesMessage message = new FacesMessage("You may not select more than one variable.");
             FacesContext fc = FacesContext.getCurrentInstance();
             fc.addMessage(validateButton.getClientId(fc), message);
         }
@@ -910,7 +910,7 @@ public class SetUpDataExplorationPage extends VDCBaseBean implements java.io.Ser
         String chkGroupName = (String) getInputMeasureGroupingName().getValue();
 
         if (chkGroupName.isEmpty() || chkGroupName.trim().equals("") ) {
-            FacesMessage message = new FacesMessage("Please Enter a Measure Label");
+            FacesMessage message = new FacesMessage("Please enter a Measure Label.");
             FacesContext fc = FacesContext.getCurrentInstance();
             fc.addMessage(validateButton.getClientId(fc), message);
             return;
@@ -934,7 +934,7 @@ public class SetUpDataExplorationPage extends VDCBaseBean implements java.io.Ser
         String chkGroupName = (String) getInputSourceName().getValue();
 
         if (chkGroupName.isEmpty() || chkGroupName.trim().equals("") ) {
-            FacesMessage message = new FacesMessage("Please Enter a Source Name");
+            FacesMessage message = new FacesMessage("Please enter a Source Name.");
             FacesContext fc = FacesContext.getCurrentInstance();
             fc.addMessage(validateButton.getClientId(fc), message);
             return;
@@ -963,7 +963,7 @@ public class SetUpDataExplorationPage extends VDCBaseBean implements java.io.Ser
         String chkGroupName = (String) getInputMeasureName().getValue();
 
         if (chkGroupName.isEmpty() || chkGroupName.trim().equals("") ) {
-            FacesMessage message = new FacesMessage("Please Enter a Measure Name");
+            FacesMessage message = new FacesMessage("Please enter a Measure Name.");
             FacesContext fc = FacesContext.getCurrentInstance();
             fc.addMessage(validateButton.getClientId(fc), message);
             return;
@@ -1000,7 +1000,7 @@ public class SetUpDataExplorationPage extends VDCBaseBean implements java.io.Ser
         String chkGroupName = (String) getInputFilterGroupName().getValue();
 
         if (chkGroupName.isEmpty() || chkGroupName.trim().equals("")) {
-            FacesMessage message = new FacesMessage("Please Enter a Filter Name");
+            FacesMessage message = new FacesMessage("Please enter a Filter Name.");
             FacesContext fc = FacesContext.getCurrentInstance();
             fc.addMessage(validateButton.getClientId(fc), message);
             return;
@@ -1178,7 +1178,7 @@ public class SetUpDataExplorationPage extends VDCBaseBean implements java.io.Ser
             
             if (duplicates) {
                 FacesContext fc = FacesContext.getCurrentInstance();
-                String fullErrorMessage = "This name already exists.  Please enter another.  <br>" ;
+                String fullErrorMessage = "This name already exists. Please enter another.<br>" ;
                 FacesMessage message = new FacesMessage(fullErrorMessage);
                 fc.addMessage(validateButton.getClientId(fc), message);
                 JavascriptContext.addJavascriptCall(fc, "initRoundedCorners();" );
@@ -1198,7 +1198,7 @@ public class SetUpDataExplorationPage extends VDCBaseBean implements java.io.Ser
             editFilterVarGrouping  = null;
 
         }  else {
-            FacesMessage message = new FacesMessage("Please Enter a Filter Group Name");
+            FacesMessage message = new FacesMessage("Please enter a Filter Group Name.");
             FacesContext fc = FacesContext.getCurrentInstance();
             fc.addMessage(validateButton.getClientId(fc), message);
             return;
@@ -1367,7 +1367,7 @@ public class SetUpDataExplorationPage extends VDCBaseBean implements java.io.Ser
         boolean duplicates = visualizationService.checkForDuplicateEntries(varGrouping, name, group, testObject);
             if (duplicates) {
                 FacesContext fc = FacesContext.getCurrentInstance();
-                String fullErrorMessage = "This name already exists.  Please enter another.  <br>" ;
+                String fullErrorMessage = "This name already exists. Please enter another.<br>" ;
                 FacesMessage message = new FacesMessage(fullErrorMessage);
                 fc.addMessage(validateButton.getClientId(fc), message);
                 JavascriptContext.addJavascriptCall(fc, "initRoundedCorners();");
@@ -1740,7 +1740,7 @@ public class SetUpDataExplorationPage extends VDCBaseBean implements java.io.Ser
 
         if (!visualizationService.validateDisplayOptions(dataTable)) {
             if (messages){
-                fullErrorMessage += "<br>Please select at least one view and the default view must be selected. <br>";
+                fullErrorMessage += "<br>Please select at least one view and the default view must be selected.<br>";
             }
             valid = false;
         }
@@ -1757,14 +1757,14 @@ public class SetUpDataExplorationPage extends VDCBaseBean implements java.io.Ser
             
             if (messages){
                 if (!returnListOfErrors.isEmpty()){
-                    fullErrorMessage += "<br>Measure-filter combinations were found that would result in multiple variables selected at visualization.  ";
+                    fullErrorMessage += "<br>Measure-filter combinations were found that would result in multiple variables selected at visualization. ";
                     
                     boolean firstVar = true;
                     for(Object errorObject: returnListOfErrors){
                        if (errorObject instanceof VarGroup){
                            firstVar = true;
                             VarGroup vg = (VarGroup) errorObject;
-                            fullErrorMessage += "<br>&#8226;&nbsp;&nbsp;Measure " + vg.getName() + " contains at least one variable with no associated filter. <br> ";
+                            fullErrorMessage += "<br>&#8226;&nbsp;&nbsp;Measure " + vg.getName() + " contains at least one variable with no associated filter.<br> ";
                        }
 
 
@@ -1778,9 +1778,7 @@ public class SetUpDataExplorationPage extends VDCBaseBean implements java.io.Ser
                             firstVar = false;
                         }
                     }
-                    fullErrorMessage += 
-                            "<br>To correct this, create filters to limit each measure filter combination to "
-                            + "a single variable or assign only one variable to each measure.<br>";
+                    fullErrorMessage += "<br>To correct this, create filters to limit each measure filter combination to a single variable or assign only one variable to each measure.<br>";
                 }                
             }
                                   
@@ -1793,7 +1791,7 @@ public class SetUpDataExplorationPage extends VDCBaseBean implements java.io.Ser
         if (!visualizationService.validateAllGroupsAreMapped(dataTable, returnListOfErrors)) {
             if (messages){
                 if (!returnListOfErrors.isEmpty()){
-                    fullErrorMessage += "<br>Measure-filter combinations were found that would result in no variables selected at visualization.  <br>";
+                    fullErrorMessage += "<br>Measure-filter combinations were found that would result in no variables selected at visualization.<br>";
                     String filterErrorMessage = "";
                     int filterCount = 0;
                     String measureErrorMessage = "";
@@ -1830,7 +1828,7 @@ public class SetUpDataExplorationPage extends VDCBaseBean implements java.io.Ser
                     if (measureCount > 1){
                       fullErrorMessage = fullErrorMessage + "&#8226;&nbsp;&nbsp;Measures " + measureErrorMessage + " contain no variables.<br>";
                     }
-                    fullErrorMessage +=   "To correct this, assign at least one variable or remove the empty measures or filters. <br>" ;
+                    fullErrorMessage += "To correct this, assign at least one variable or remove the empty measures or filters.<br>" ;
                             
                 }
 
@@ -1842,13 +1840,13 @@ public class SetUpDataExplorationPage extends VDCBaseBean implements java.io.Ser
         if (!visualizationService.validateMoreThanZeroMeasureMapping(dataTable, returnListOfErrors)) {
             if (messages){
                 if (!returnListOfErrors.isEmpty()){
-                    fullErrorMessage += "<br>At least one filter was found that is not mapped to any measures  <br>";
+                    fullErrorMessage += "<br>At least one filter was found that is not mapped to any measures.<br>";
                     boolean firstVar = true;
                     for(Object errorObject: returnListOfErrors){
                        if (errorObject instanceof VarGroup){
                            firstVar = true;
                             VarGroup vg = (VarGroup) errorObject;
-                            fullErrorMessage += "<br>&#8226;&nbsp;&nbsp;Filter " + vg.getName() + " contains at least one variable that is not assigned to any measure. <br> ";
+                            fullErrorMessage += "<br>&#8226;&nbsp;Filter " + vg.getName() + " contains at least one variable that is not assigned to any measure.<br>";
                        }
                         if (errorObject instanceof DataVariable ){
                             DataVariable dv = (DataVariable) errorObject;
@@ -1860,8 +1858,7 @@ public class SetUpDataExplorationPage extends VDCBaseBean implements java.io.Ser
                             firstVar = false;
                         }
                     }
-                    fullErrorMessage +=
-                            "<br>To correct this, remove unassigned variables or assign them to measures.<br>";
+                    fullErrorMessage += "<br>To correct this, remove unassigned variables or assign them to measures.<br>";
                 }
             }
 
@@ -1874,12 +1871,12 @@ public class SetUpDataExplorationPage extends VDCBaseBean implements java.io.Ser
             if (messages){
                 if (!returnListOfErrors.isEmpty()){
 
-                    fullErrorMessage += "<br>Variables were found that are mapped to multiple measures.  ";
+                    fullErrorMessage += "<br>Variables were found that are mapped to multiple measures. ";
                     boolean firstGroup = true;
                     for(Object dataVariableIn: returnListOfErrors){
                         if (dataVariableIn instanceof DataVariable ){
                             DataVariable dataVariable = (DataVariable) dataVariableIn;
-                            fullErrorMessage += "<br>&#8226;&nbsp;&nbsp;Variable: " + dataVariable.getName() + "<br>";
+                            fullErrorMessage += "<br>&#8226;&nbsp;Variable: " + dataVariable.getName() + "<br>";
                             firstGroup = true;
 
                         }
@@ -1895,8 +1892,7 @@ public class SetUpDataExplorationPage extends VDCBaseBean implements java.io.Ser
                        
                     }
                 }
-                fullErrorMessage +=
-                            "<br>To correct this, map each variable to a single measure.<br>";
+                fullErrorMessage += "<br>To correct this, map each variable to a single measure.<br>";
             }
 
             valid = false;
@@ -1904,10 +1900,9 @@ public class SetUpDataExplorationPage extends VDCBaseBean implements java.io.Ser
 
         if (!visualizationService.validateAtLeastOneMeasureMapping(dataTable)) {
             if (messages){
-                fullErrorMessage += "<br>Measure-filter combinations were found that would result in no variables selected at visualization.  <br>";
-                fullErrorMessage +=" No Measures or filters configured.<br>";
-                fullErrorMessage +=
-                            "To correct this, configure at least one measure or one measure-filter combination.<br>";
+                fullErrorMessage += "<br>Measure-filter combinations were found that would result in no variables selected at visualization.<br>";
+                fullErrorMessage += " No Measures or filters configured.<br>";
+                fullErrorMessage += "To correct this, configure at least one measure or one measure-filter combination.<br>";
 
             }
             valid = false;
@@ -1918,30 +1913,27 @@ public class SetUpDataExplorationPage extends VDCBaseBean implements java.io.Ser
 
              if (messages){
                     if (!returnListOfErrors.isEmpty()){
-                    fullErrorMessage += "<br>Measure-filter combinations were found that would result in multiple variables selected at visualization.  ";
+                    fullErrorMessage += "<br>Measure-filter combinations were found that would result in multiple variables selected at visualization. ";
                     boolean firstVar = true;
                     for(Object errorObject: returnListOfErrors){
                        if (errorObject instanceof VarGroup){
                            firstVar = true;
                             VarGroup vg = (VarGroup) errorObject;
-                            fullErrorMessage += "<br>&#8226;&nbsp;&nbsp;Measure " + vg.getName() + " contains multiple variables with insufficient filters to make them uniquely selectable.";
+                            fullErrorMessage += "<br>&#8226;&nbsp;Measure " + vg.getName() + " contains multiple variables with insufficient filters to make them uniquely selectable.";
                        }
 
 
                         if (errorObject instanceof DataVariable ){
                             DataVariable dv = (DataVariable) errorObject;
                             if (firstVar) {
-                                  fullErrorMessage += " <br>&nbsp;&nbsp;&nbsp;&nbsp;Affected Variables: " + dv.getName();
+                                  fullErrorMessage += "<br>&nbsp;&nbsp;&nbsp;&nbsp;Affected Variables: " + dv.getName();
                             } else{
                                 fullErrorMessage += ", " + dv.getName();
                             }
                             firstVar = false;
                         }
                     }
-                    fullErrorMessage +=
-                            "<br>To correct this, for measures where multiple variables are assigned, " +
-                            "also assign each variable to a filter where the measure-filter combinations "
-                            +"result in a single variable selected at visualization <br>";
+                    fullErrorMessage += "<br>To correct this, for measures where multiple variables are assigned, also assign each variable to a filter where the measure-filter combinations result in a single variable selected at visualization.<br>";
                 }  
             }
              returnListOfErrors.clear();
@@ -1957,7 +1949,7 @@ public class SetUpDataExplorationPage extends VDCBaseBean implements java.io.Ser
         if (!valid&& messages) {
             // add rounded corners to the validation message box
             FacesContext fc = FacesContext.getCurrentInstance();
-            fullErrorMessage = "This configuration is invalid so it cannot be released.  <br>" + fullErrorMessage;
+            fullErrorMessage = "This configuration is invalid so it cannot be released.<br>" + fullErrorMessage;
             FacesMessage message = new FacesMessage(fullErrorMessage);
             fc.addMessage(validateButton.getClientId(fc), message);
             JavascriptContext.addJavascriptCall(fc, "initRoundedCorners();" );
@@ -1991,7 +1983,7 @@ public class SetUpDataExplorationPage extends VDCBaseBean implements java.io.Ser
     public String saveAndExit(){
        if (dataTable.isVisualizationEnabled()){
            if (!validateForRelease(false)) {
-               FacesMessage message = new FacesMessage("Your current changes are invalid.  Correct these issues or unrelease your visualization before saving.<br>Click Validate button to get a full list of validation issues.");
+               FacesMessage message = new FacesMessage("Your current changes are invalid. Correct these issues or unrelease your visualization before saving. Click Validate button to get a full list of validation issues.");
                FacesContext fc = FacesContext.getCurrentInstance();
                fc.addMessage(validateButton.getClientId(fc), message);
                JavascriptContext.addJavascriptCall(fc, "initRoundedCorners();" );
@@ -2014,7 +2006,7 @@ public class SetUpDataExplorationPage extends VDCBaseBean implements java.io.Ser
        if (dataTable.isVisualizationEnabled()){
            if (!validateForRelease(false)) {
                dataTable.setVisualizationEnabled(false);
-               FacesMessage message = new FacesMessage("Your current changes are invalid. This visualization has been set to 'unreleased'. <br>Click Validate button to get a full list of validation issues.");
+               FacesMessage message = new FacesMessage("Your current changes are invalid. This visualization has been set to 'unreleased'. Click Validate button to get a full list of validation issues.");
                FacesContext fc = FacesContext.getCurrentInstance();
                fc.addMessage(validateButton.getClientId(fc), message);    
                successMessage = false;
@@ -2025,7 +2017,7 @@ public class SetUpDataExplorationPage extends VDCBaseBean implements java.io.Ser
        visualizationService.saveAndContinue();
        
        if (successMessage){
-               FacesMessage message = new FacesMessage("Save was successful.  You may exit or continue editing.");
+               FacesMessage message = new FacesMessage("Successfully saved changes. You may exit or continue editing.");
                FacesContext fc = FacesContext.getCurrentInstance();
                fc.addMessage(releaseButton.getClientId(fc), message); 
                JavascriptContext.addJavascriptCall(fc, "initRoundedCorners();" );

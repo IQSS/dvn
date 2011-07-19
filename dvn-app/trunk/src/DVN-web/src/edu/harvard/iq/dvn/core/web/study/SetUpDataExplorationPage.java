@@ -274,7 +274,12 @@ public class SetUpDataExplorationPage extends VDCBaseBean implements java.io.Ser
             } else {
                 filterGroupings.add(vgLocalUI);
             }
-            setVarGroupUIList(vgLocalUI);
+            if (varGrouping.getGroupingType().equals(GroupingType.FILTER)){
+                setVarGroupUIList(vgLocalUI, true);
+            } else {
+                setVarGroupUIList(vgLocalUI, false);
+            }
+            
         }
 
     }
@@ -981,14 +986,14 @@ public class SetUpDataExplorationPage extends VDCBaseBean implements java.io.Ser
 
         saveGroupFragment(editMeasureVarGroup);
         saveGroupTypes(editMeasureVarGroup);
-        setVarGroupUIList(measureGrouping);
+        setVarGroupUIList(measureGrouping, true);
         editMeasureVarGroup = null;
         cancelAddEdit();
         edited = true;
     }
     
-    private void setVarGroupUIList(VarGroupingUI varGrouping){
-        varGrouping.setVarGroupUIList( new VarGroupUIList ((List)varGrouping.getVarGroupUI()));
+    private void setVarGroupUIList(VarGroupingUI varGrouping, boolean sort){
+        varGrouping.setVarGroupUIList( new VarGroupUIList ((List)varGrouping.getVarGroupUI(), true));
     }
 
     public void saveFilterFragment(ActionEvent ae){
@@ -1016,7 +1021,9 @@ public class SetUpDataExplorationPage extends VDCBaseBean implements java.io.Ser
 
         saveGroupFragment(editFilterVarGroup);
         saveGroupTypes(editFilterVarGroup);
-        setVarGroupUIList(editFilterVarGrouping);
+        if (editFilterVarGrouping!=null){
+            setVarGroupUIList(editFilterVarGrouping, true);
+        }
         editFilterVarGroup = null;
         getInputFilterGroupName().setValue("");
         dataTableFilterGrouping.getChildren().clear();
@@ -1294,7 +1301,7 @@ public class SetUpDataExplorationPage extends VDCBaseBean implements java.io.Ser
 
         editFilterVarGrouping.getVarGroupUI().add(editFilterVarGroup);
         editFilterVarGrouping.getVarGrouping().getVarGroups().add(editFilterVarGroup.getVarGroup());
-        editFilterVarGrouping = null;
+
         dataTableFilterGrouping.getChildren().clear();
         cancelAddEdit();
 
@@ -1537,11 +1544,13 @@ public class SetUpDataExplorationPage extends VDCBaseBean implements java.io.Ser
                     varGroupingUI.getVarGroupUI().remove(varGroupUI2);
                     varGroupingUI.getVarGrouping().getVarGroups().remove(varGroup);
                     dataTableFilterGroup.setValue(varGroupingUI.getVarGroupUI());
+                    setVarGroupUIList(varGroupingUI, true);
                 }
             }
 
         }
         edited = true;
+        
         dataTableFilterGrouping.getChildren().clear();
         
     }
@@ -1567,6 +1576,7 @@ public class SetUpDataExplorationPage extends VDCBaseBean implements java.io.Ser
             visualizationService.removeCollectionElement(deleteList,dataTable2.getRowIndex());
             measureGrouping.getVarGroupUI().remove(varGroupUI2);
             measureGrouping.getVarGrouping().getVarGroups().remove(varGroup);
+            setVarGroupUIList(measureGrouping, true);
             edited = true;
         }
     }

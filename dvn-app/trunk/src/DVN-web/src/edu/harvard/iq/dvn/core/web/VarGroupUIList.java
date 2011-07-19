@@ -80,6 +80,50 @@ public class VarGroupUIList extends SortableList {
         }
     }
     
+    public VarGroupUIList(List varGroupUIListSet, boolean sort){
+        
+        if (varGroupUIListSet == null){
+            return;
+        }
+        
+            if (varGroupListIn !=null){
+                varGroupListIn.clear();
+            } else {
+                varGroupListIn = new ArrayList();
+            }
+            
+            if (varGroupUIListIn !=null){
+                varGroupUIListIn.clear();
+            } else {
+                varGroupUIListIn = new ArrayList();
+            }
+            
+
+            
+            for (Object varGroupUIIn: varGroupUIListSet){
+                VarGroupUI varGroupUICast = (VarGroupUI) varGroupUIIn;
+                varGroupListIn.add(varGroupUICast.getVarGroup());
+                varGroupUIListIn.add(varGroupUICast);
+            }
+            
+            
+            if (sort){               
+                Collections.sort(varGroupListIn);
+            } else {
+                Collections.sort(varGroupListIn, new SortVarGroupByName());
+            }
+            
+            varGroupUIList = new ArrayList<VarGroupUI>();
+            for (VarGroup varGroupOut: varGroupListIn){
+                for (VarGroupUI varGroupUIout: varGroupUIListIn ){
+                    if (varGroupOut.equals(varGroupUIout.getVarGroup())){
+                       varGroupUIList.add(varGroupUIout);
+                    }
+                }                                
+            }
+
+    }
+    
         //setters
     /**
      * Set sortColumnName type.

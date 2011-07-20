@@ -1047,6 +1047,8 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
            
            vizLines.add(vizLine);
            this.numberOfColumns = new Long(vizLines.size());
+           startYear = "0";
+           endYear = "3000";
            getDataTable();
            resetLineBorder();
            getSourceList();
@@ -1146,6 +1148,8 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
            }
            
            this.numberOfColumns = new Long(vizLines.size());
+           startYear = "0";
+           endYear = "3000";
            getDataTable();
            resetLineBorder();
            getSourceList();
@@ -1462,7 +1466,7 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
     lowValIndex = new Float (100);
     highValStandard = new Float (0);
     highValIndex = new Float(0);
-    
+
     int startYearTransform = 0;
     int endYearTransform = 3000;
     boolean firstYearSet = false;
@@ -1615,7 +1619,7 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
                             Float result = new Float(0);
                             Object outputIndex = new Double(0);
                             if (!denominator.equals(new Float (0))  && !numerator.equals(new Float (0))){
-                                outputIndex = Math.round((numerator / denominator) *  new Double (100000))/ new Float(1000);
+                                outputIndex = Math.round((numerator / denominator) *  new Double (10000))/ new Float(100);
                                 
                                 result = (numerator / denominator) *  new Float (100);
                                 if ((lowValIndex.equals(new Float  (100))  || lowValIndex.compareTo(result) > 0)){

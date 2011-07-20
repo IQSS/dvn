@@ -294,13 +294,13 @@
                                 <ice:outputLabel value="Time Series" for="graphtimeseries" styleClass="dvnGraphTimeSeriesTitle"/>
                                 <div>
                                     <ice:outputLabel value="Start" for="graphstart" rendered="true"/>
-                                    <ice:selectOneMenu id="graphstart" rendered="true" binding="#{ExploreDataPage.selectStartYear}" onchange="updateStartYear();">
+                                    <ice:selectOneMenu id="graphstart" rendered="true" binding="#{ExploreDataPage.selectStartYear}" value="#{ExploreDataPage.startYear}" onchange="updateStartYear();">
                                         <f:selectItems value="#{ExploreDataPage.selectBeginYears}"/>
                                     </ice:selectOneMenu>
                                 </div>
                                 <div>
                                     <ice:outputLabel value="End" for="graphend" rendered="true"/>
-                                    <ice:selectOneMenu id="graphend" rendered="true" binding="#{ExploreDataPage.selectEndYear}" onchange="updateEndYear();">
+                                    <ice:selectOneMenu id="graphend" rendered="true" binding="#{ExploreDataPage.selectEndYear}" value="#{ExploreDataPage.endYear}" onchange="updateEndYear();">
                                          <f:selectItems value="#{ExploreDataPage.selectEndYears}"/>
                                     </ice:selectOneMenu>
                                 </div>
@@ -426,6 +426,8 @@
     var timeout= 600; //milliseconds to wait for no activity
     var countEvents= 0;
     var delay = 500;
+    var calcedStartYear = 0;
+    var calcedEndYear = 0;
     function delayedRequestTitle(form,field,event){
     countEvents++;
     setTimeout(function() {
@@ -478,7 +480,9 @@ function getXaxisString(startYear, endYear)
         
     } else {
         if (startYear != 0 && endYear !=3000){ 
-            yearLabelInt = Math.round((endYear-startYear)/5); 
+            yearLabelInt = Math.round((endYear-startYear)/7); 
+                calcedStartYear = startYear;
+                calcedEndYear = endYear;
         }
         else {
             for (i=0; i< myRowList.length -1 ;i++)
@@ -490,8 +494,11 @@ function getXaxisString(startYear, endYear)
                 } 
                 endRange = yearNum; 
             }
+            
+                calcedStartYear = startRange;
+                calcedEndYear = endRange;
 
-            yearLabelInt = Math.round((endRange-startRange)/5); 
+            yearLabelInt = Math.round((endRange-startRange)/7); 
         }
 
         var counter = yearLabelInt;
@@ -542,7 +549,7 @@ function getLegendString(columnString){
 
 
  function parseData(data, intDisType, startYear, endYear, indexed, columnString) {
-          
+
         var myString = columnString;
         var myColumnList = myString.split ( '^' );
         if (indexed){           
@@ -603,7 +610,20 @@ function getLegendString(columnString){
             }
        yearLabelInt = Math.round((endRange-startRange)/5);
     }
+    
+    if (startYear == 0){
+        calcedStartYear = startRange;
+    } else {
+        calcedStartYear = startYear;
+    }
+    
+    if (endYear == 3000){
+        calcedEndYear = endRange;
+    } else {
+        calcedEndYear = endYear;
+    }
 
+    
     var counter = yearLabelInt;
        
     for (i=0; i< myRowList.length -1 ;i++)
@@ -852,13 +872,13 @@ function drawVisualization() {
             }
 
       var startYear = new String (document.getElementById('ExploreDataPage:startYear').textContent);
+
       document.getElementById('ExploreDataPage:tabSet1:0:hiddenDataDownload')
       var myDateList = startYear.split('-');
       var intStartYear = parseInt(myDateList[0]);
       var endYear = new String (document.getElementById('ExploreDataPage:endYear').textContent);
       myDateList = endYear.split('-');
       var intEndYear = parseInt(myDateList[0]);
-      
       var buttonVal = getRadioValue("displayLegendRadio");
       var legendAlignment = 'r';
         if (buttonVal == 2){
@@ -873,7 +893,6 @@ function drawVisualization() {
       parseData(data, intDisType, intStartYear, intEndYear, useIndex, colStr);
       var icolStr = new String (document.getElementById('ExploreDataPage:imageColumnString').textContent);
 
-
             var displayTitle = new String (document.getElementById('ExploreDataPage:graphTitleHidden').textContent);
             var fullTitle = displayTitle;  
             var chartBaseUrl = "http://chart.apis.google.com/chart?";
@@ -884,20 +903,19 @@ function drawVisualization() {
                 chartParams = chartParams + "&chs=540x400";       
             }
             if ((highValDouble - lowValDouble) > 10){
-               chartParams = chartParams + "&chxs=1N*sz0*,000000|0N,000000|2N,000000|3N,000000|4N,000000"; 
+               chartParams = chartParams + "&chxs=1N*sz0*,000000|0N*0*,000000|2N,000000|3N,000000|4N,000000"; 
             } else {
-               chartParams = chartParams + "&chxs=1N*sz1*,000000|0N,000000|2N,000000|3N,000000|4N,000000";  
+               chartParams = chartParams + "&chxs=1N*sz1*,000000|0N*0*,000000|2N,000000|3N,000000|4N,000000";  
             }
             chartParams = chartParams + "&chxt="+axisLabel;
-            var labelString = escape('0:' + getXaxisString(startYear, endYear) + displaySourceFooter);   
+            var labelString = escape( displaySourceFooter);   
             chartParams = chartParams + "&chxl="+labelString;
             if (buttonVal != 3){
                 chartParams = chartParams + "&chdlp="+legendAlignment;
                 chartParams = chartParams + "&chdl="+ getLegendString(icolStr);
                 chartParams = chartParams + "&chdls=000000";                
             }
-
-            chartParams = chartParams + "&chxr=1,"+lowValDouble+","+highValDouble;
+            chartParams = chartParams + "&chxr=1,"+lowValDouble+","+highValDouble + "|0," + calcedStartYear + "," + calcedEndYear;
             var values = "&chd=e:";
             var title = "&chtt="+escape(fullTitle);
             values = values + encoded;

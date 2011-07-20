@@ -277,7 +277,7 @@ table.viTblinx th{background-color:#e6e6fa;font-weight:700;margin:0px;padding:2p
 .dvnGraphFilterBlock {margin-bottom:1em;}
 .dvnGraphFilterTypesBlock {overflow:hidden; display:inline;}
 .dvnGraphFilterTypesBlock .errorMessage {display:block;}
-.dvnGraphFilterTypesControls {display:inline; margin-right:1em;}
+.dvnGraphFilterTypesControls {display:inline; margin-right:1em; white-space:nowrap;}
 .dvnGraphFilterTypesControls label {font-weight:normal;}
 .dvnGraphLabelBlock {margin-bottom:.5em;}
 .dvnGraphLabelBlock div {display:inline;}

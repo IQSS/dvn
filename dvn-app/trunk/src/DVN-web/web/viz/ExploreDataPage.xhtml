@@ -319,7 +319,7 @@
                                 <ice:outputLabel value="Indices" for="graphindices" styleClass="dvnGraphIndicesTitle"/>
                                 <div>
                                     <ice:selectBooleanCheckbox id="displayindices" value="#{ExploreDataPage.displayIndexes}" binding="#{ExploreDataPage.useIndicesCheckBox}"
-                                                               rendered="true" onchange="resetIndices();"/>
+                                                               disabled="#{!empty ExploreDataPage.forcedIndexMessage}" onchange="resetIndices();"/>
                                     <ice:outputLabel value="Display Series as Indices" for="displayindices" rendered="true"/>
                                    
                                 </div>

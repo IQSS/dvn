@@ -463,27 +463,60 @@ function getXaxisString(startYear, endYear)
     var yearLabelInt = 0;
     var myRowList = myDataString.split ( ';' );
     var retString = "|";
-    if (startYear != 0 && endYear !=3000)
-    { yearLabelInt = Math.round((endYear-startYear)/5); }
-    else {
+    
+    if (endYear - startYear <=7){
+        
         for (i=0; i< myRowList.length -1 ;i++)
-        { var myRow = myRowList[i];
+        {   
+            var myRow = myRowList[i];
             var myRowParse = myRow.split ( ',' );
             var yearNum = parseInt(myRowParse[0]);
-            if (i==0)
-            { startRange = yearNum; } endRange = yearNum; }
-        yearLabelInt = Math.round((endRange-startRange)/5); }
-    var counter = yearLabelInt;
-    for (i=0; i< myRowList.length -1 ;i++)
-    { var yearPrint = false; var myRow = myRowList[i];
-        var myRowParse = myRow.split ( ',' );
-        var yearNum = parseInt(myRowParse[0]);
-        if (i== 0 || counter == 0 )
-        { counter = yearLabelInt; yearPrint = true; }
-        counter--;
-        if (yearNum >= startYear && yearNum <= endYear )
-        { if (yearPrint){ retString= retString + yearNum + '|'; }
-            else { retString = retString + '|'; } } }
+            if (yearNum >= startYear && yearNum <= endYear ){
+                retString= retString + '|' + yearNum + '|'; 
+            }
+        }
+        
+        
+    } else {
+        if (startYear != 0 && endYear !=3000){ 
+            yearLabelInt = Math.round((endYear-startYear)/5); 
+        }
+        else {
+            for (i=0; i< myRowList.length -1 ;i++)
+            { var myRow = myRowList[i];
+                var myRowParse = myRow.split ( ',' );
+                var yearNum = parseInt(myRowParse[0]);
+                if (i==0){ 
+                    startRange = yearNum; 
+                } 
+                endRange = yearNum; 
+            }
+
+            yearLabelInt = Math.round((endRange-startRange)/5); 
+        }
+
+        var counter = yearLabelInt;
+        for (i=0; i< myRowList.length -1 ;i++)
+        {   var yearPrint = false; 
+            var myRow = myRowList[i];
+            var myRowParse = myRow.split ( ',' );
+            var yearNum = parseInt(myRowParse[0]);
+            if (i== 0 || counter == 0 )
+            { counter = yearLabelInt; yearPrint = true; }
+            counter--;
+            if (yearNum >= startYear && yearNum <= endYear ){ 
+                if (yearPrint){ 
+                    retString= retString + yearNum + '|'; 
+                }
+                else { retString = retString + '|'; 
+                } 
+            } 
+        }
+        
+    }
+    
+    
+
     return retString;
 }
 

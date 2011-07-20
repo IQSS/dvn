@@ -686,16 +686,11 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
     }
     
     public List<SelectItem> loadSelectMeasureGroupTypes() {
-        boolean allAdded = false;
         List selectItems = new ArrayList<SelectItem>();
         for(VarGrouping varGrouping: allVarGroupings) {           
             if (varGrouping.getGroupingType().equals(GroupingType.MEASURE)){
                 List <VarGroupType> varGroupTypes = (List<VarGroupType>) varGrouping.getVarGroupTypes();
                 for(VarGroupType varGroupType: varGroupTypes) {
-                    if(!allAdded){
-                        selectItems.add(new SelectItem(0, "All"));
-                        allAdded = true;
-                    }
                     if (varGroupType.getGroups().size() > 0) {
                         selectItems.add(new SelectItem(varGroupType.getId(), varGroupType.getName()));
                     }

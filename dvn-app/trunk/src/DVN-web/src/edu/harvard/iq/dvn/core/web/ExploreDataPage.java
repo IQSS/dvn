@@ -1984,16 +1984,16 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
             for (VisualizationLineDefinition vld: vizLines){
                 countLines++;
             String checkUnit = vld.getMeasureGroup().getUnits();
-            if (!checkUnit.isEmpty()){
+
                 if (!set.isEmpty() && !set.contains(checkUnit) && countLines > 1){
-                        setDisplayIndexes(true);
-                        yAxisLabel = "";
-                        forcedIndexMessage = "Series have been displayed as indices because their measurement units are different.";
-                    } else {
-                        set.add(checkUnit);
-                        yAxisLabel = checkUnit;
-                    }
+                    setDisplayIndexes(true);
+                    yAxisLabel = "";
+                    forcedIndexMessage = "Series have been displayed as indices because their measurement units are different.";
+                } else {
+                    set.add(checkUnit);
+                    yAxisLabel = checkUnit;
                 }
+
             }
       
     }

@@ -159,18 +159,17 @@
         </div>
 
         <div jsfc="ice:panelGroup" styleClass="dvnGraphResults">
-            
-
             <div jsfc="ice:panelGroup" rendered="#{!empty ExploreDataPage.vizLines}" styleClass="dvnGraphBox">
-                 <div jsfc="ice:panelGroup" styleClass="dvnGraphSourceBlock" visible="#{!empty ExploreDataPage.graphTitle and (ExploreDataPage.displayType == 1 or ExploreDataPage.displayType == 3)}">
+                 <div jsfc="ice:panelGroup" styleClass="dvnGraphTitleBlock" rendered="#{!empty ExploreDataPage.graphTitle and (ExploreDataPage.displayType == 1 or ExploreDataPage.displayType == 3)}">
                     <ice:outputLabel value="#{ExploreDataPage.graphTitle}" />                   
                 </div>
-                <div jsfc="ice:panelGroup" styleClass="dvnGraphSourceBlock" visible="#{!empty ExploreDataPage.forcedIndexMessage}">
-                    <ice:outputLabel value="#{ExploreDataPage.forcedIndexMessage}" />                   
+                <div jsfc="ice:panelGroup" styleClass="dvnGraphWarningBlock" rendered="#{!empty ExploreDataPage.forcedIndexMessage}">
+                    <ice:graphicImage value="/resources/images/icon_warning.18.png" styleClass="dvn_icon"/>
+                    <ice:outputText styleClass="vdcHelpText" value="#{ExploreDataPage.forcedIndexMessage}"/>
                 </div>
                 <div id="chart_div" class="rightlabel" rendered="#{ExploreDataPage.displayType == 1 or ExploreDataPage.displayType == 3}"></div>
                 <div id="chart_image" class="rightlabel" rendered="#{ExploreDataPage.displayType == 2}"></div>
-                <div jsfc="ice:panelGroup" styleClass="dvnGraphSourceBlock" visible="#{!empty ExploreDataPage.sources and (ExploreDataPage.displayType == 1 or ExploreDataPage.displayType == 3)}">
+                <div jsfc="ice:panelGroup" styleClass="dvnGraphSourceBlock" rendered="#{!empty ExploreDataPage.sources and (ExploreDataPage.displayType == 1 or ExploreDataPage.displayType == 3)}">
                     <ice:outputText value="Source: #{ExploreDataPage.sources}"/>
                 </div>
             </div>

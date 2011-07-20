@@ -298,6 +298,10 @@ a.lineDetailLink {display:block;}
 .dvnGraphDisplayBlock {margin-bottom:2em;}
 .dvnGraphDisplayBlock label {display:inline;}
 .dvnGraphDisplayBlock div {margin-top:.5em;}
+.dvnGraphTitleBlock {margin-bottom:1em;}
+.dvnGraphTitleBlock label {font-weight:normal;}
+.dvnGraphWarningBlock {margin-bottom:1em;}
+.dvnGraphWarningBlock span {margin-left:1em; font-weight:bold; color:red;}
 .dvnGraphSourceBlock {margin-bottom:2em;}
 .dvnGraphSourceBlock label {display:block;}
 .dvnGraphSourceBlock span {font-weight:normal;}

@@ -928,6 +928,9 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
         Object value= this.useIndicesCheckBox.getValue();
 
         this.displayIndexes = (Boolean) value ;
+        if (!this.displayIndexes){
+            forcedIndexMessage = "";            
+        }
         FacesContext fc = FacesContext.getCurrentInstance();
         JavascriptContext.addJavascriptCall(fc, "drawVisualization();");
         JavascriptContext.addJavascriptCall(fc, "initLineDetails");
@@ -1400,7 +1403,12 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
                 if (dv.getId().equals(testId)){
                      dvsIn.add(dv);
                      columnString = columnString + "^" + vld.getLabel();
-                     dtColumnString = dtColumnString + "^" + vld.getLabel() + " (" + vld.getMeasureGroup().getUnits() + ")";
+                     if (!vld.getMeasureGroup().getUnits().isEmpty()){
+                         dtColumnString = dtColumnString + "^" + vld.getLabel() + " (" + vld.getMeasureGroup().getUnits() + ")";
+                     } else {
+                         dtColumnString = dtColumnString + "^" + vld.getLabel();
+                     }
+                     
                      csvColumnString = csvColumnString + "," + vld.getLabel();
                       try {
                            imageColumnString= imageColumnString + "^" +  URLEncoder.encode(vld.getLabel(), "UTF-8");
@@ -1617,7 +1625,8 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
                             Float result = new Float(0);
                             Object outputIndex = new Double(0);
                             if (!denominator.equals(new Float (0))  && !numerator.equals(new Float (0))){
-                                outputIndex = (numerator / denominator) *  new Double (100);
+                                outputIndex = Math.round((numerator / denominator) *  new Double (100000))/ new Float(1000);
+                                
                                 result = (numerator / denominator) *  new Float (100);
                                 if ((lowValIndex.equals(new Float  (100))  || lowValIndex.compareTo(result) > 0)){
                                     if (testYear >= startYearTransform && testYear <= endYearTransform){

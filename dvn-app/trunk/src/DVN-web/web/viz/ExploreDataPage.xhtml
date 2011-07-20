@@ -114,7 +114,7 @@
                 </div>
             </div>
 
-            <div class="dvnGraphFilterBlock">
+            <div class="dvnGraphFilterBlock" rendered="#{ExploreDataPage.selectedMeasureId > 0}">
                 <div jsfc="ice:panelSeries" id="filterPanelGroupings" var="item" value="#{ExploreDataPage.filterGroupings}" binding="#{ExploreDataPage.filterPanelGroup}">
                     <f:attribute name="groupingId" value="#{item.varGrouping.id}"/>
                     <div class="dvnGraphFilterBlock">
@@ -125,14 +125,19 @@
                             <f:selectItems value="#{ExploreDataPage.selectFilterGroups}"/>
                         </ice:selectOneMenu>
 
-                        <ice:outputText value="Use check boxes to narrow drop-down menu." styleClass="dvnGraphRelatedTo" rendered="#{!empty item.varGroupTypesUI}"/>
+                        <ice:outputText visible="#{ExploreDataPage.selectedMeasureId > 0}" value="Use check boxes to narrow drop-down menu." 
+                                        styleClass="dvnGraphRelatedTo" rendered="#{!empty item.varGroupTypesUI}"/>
 
-                        <div jsfc="ice:panelSeries" styleClass="dvnGraphFilterTypesBlock" id="filterPanelGroupTypes" var="groupType" value="#{item.varGroupTypesUI}">
+                        <div 
+                             jsfc="ice:panelSeries" styleClass="dvnGraphFilterTypesBlock" 
+                             id="filterPanelGroupTypes" var="groupType" value="#{item.varGroupTypesUI}">
                             <!-- controls -->
                             <div jsfc="ice:panelGroup" styleClass="dvnGraphFilterTypesControls">
-                                <ice:selectBooleanCheckbox id="filterGroupTypeCheckBoxes" styleClass="filterGroupTypeCheckBoxes" value="#{groupType.enabled}"
+                                <ice:selectBooleanCheckbox visible="#{ExploreDataPage.selectedMeasureId > 0}"  
+                                                           id="filterGroupTypeCheckBoxes" styleClass="filterGroupTypeCheckBoxes" value="#{groupType.enabled}"
                                                             partialSubmit="true"/>
-                                <ice:outputLabel value="#{groupType.varGroupType.name}"/>
+                                <ice:outputLabel visible="#{ExploreDataPage.selectedMeasureId > 0}" 
+                                                 value="#{groupType.varGroupType.name}"/>
                             </div>
                         </div>
                         <ice:message for="filterPanelGroupTypes" id="boxErrorMsg" styleClass="errorMessage"/>

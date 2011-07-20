@@ -269,6 +269,7 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
         legendInt = 1; 
         setDisplayIndexes(false);
         selectedMeasureId = new Long (0);
+        groupTypeId = 0;
         lineLabel = "";
     }
 

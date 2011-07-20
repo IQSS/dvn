@@ -863,7 +863,7 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
 
 
                         } else {
-                               if (!added && varGroup.getGroupAssociation().equals(varGroupingUI.getVarGrouping()) ){
+                               if (!added && varGroup.getGroupAssociation().equals(varGroupingUI.getVarGrouping())){
                                     selectItems.add(new SelectItem(varGroup.getId(), varGroup.getName()));
                                     added = true;
                                }
@@ -873,9 +873,10 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
               }
               if (multipleSelections.size()>0){
                   for (VarGroup vgs: multipleSelections){
-                      selectItems.add(new SelectItem(vgs.getId(), vgs.getName()));
+                      if (varGroupsAll.contains(vgs)){
+                          selectItems.add(new SelectItem(vgs.getId(), vgs.getName()));
+                      }                     
                   }
-
               }
           return selectItems;
 

@@ -279,7 +279,7 @@
                         <div jsfc="ice:panelGroup" id="layoutPanel2" panelLayout="flow">
                             <div class="dvnGraphDisplayBlock">
                                 <ice:outputLabel value="Display" for="graphdisplay"/>
-                                <ice:selectOneMenu id="graphdisplay"  binding="#{ExploreDataPage.selectGraphType}" onchange="updateDisplayType();">
+                                <ice:selectOneMenu id="graphdisplay"  binding="#{ExploreDataPage.selectGraphType}" onchange="updateDisplayType();" value="#{ExploreDataPage.displayType}" >
                                     <f:selectItems value="#{ExploreDataPage.selectView}"/>
                                 </ice:selectOneMenu>
                                 

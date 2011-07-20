@@ -271,6 +271,7 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
         selectedMeasureId = new Long (0);
         groupTypeId = 0;
         lineLabel = "";
+        displayType = new Long(defaultView);
     }
 
 
@@ -893,7 +894,7 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
 
     public void reset_DisplayType(){
         Object value= this.selectGraphType.getValue();
-        this.displayType = new Long((String) value );
+        this.displayType =  (Long) value ;
            FacesContext fc = FacesContext.getCurrentInstance();
            JavascriptContext.addJavascriptCall(fc, "drawVisualization();");
            JavascriptContext.addJavascriptCall(fc, "initLineDetails");

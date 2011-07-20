@@ -1138,12 +1138,10 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
            for(VisualizationLineDefinition vizLineCheck: tempList){
                 if (vizLineCheck.equals(vizLine)){
                     removeList.add(vizLineCheck);
-
                 }
              }
 
            for(VisualizationLineDefinition vizLineRem : removeList){
-
                         vizLines.remove(vizLineRem);
            }
            
@@ -1153,7 +1151,7 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
            getSourceList();
            checkUnits();
            updateImageFooters();
-           
+
            if (!titleEdited){
                 updateGraphTitleForMeasure();
            }
@@ -1163,6 +1161,7 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
            JavascriptContext.addJavascriptCall(fc, "initRoundedCorners();");
 
     }
+    
     private boolean validateSelections(){
         boolean valid  = true;
         int count = 0;
@@ -1403,14 +1402,9 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
                          dtColumnString = dtColumnString + "^" + vld.getLabel() + " (" + vld.getMeasureGroup().getUnits() + ")";
                      } else {
                          dtColumnString = dtColumnString + "^" + vld.getLabel();
-                     }
-                     
+                     }                     
                      csvColumnString = csvColumnString + "," + vld.getLabel();
-                      try {
-                           imageColumnString= imageColumnString + "^" +  URLEncoder.encode(vld.getLabel(), "UTF-8");
-                        }    catch (Exception e){
-                           imageColumnString= imageColumnString + "^" + vld.getLabel();
-                     }
+                     imageColumnString= imageColumnString + "^" + vld.getLabel();
                 }
             }
 

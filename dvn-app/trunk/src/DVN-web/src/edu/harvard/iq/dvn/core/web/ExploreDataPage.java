@@ -1056,6 +1056,7 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
            getSourceList();
            checkUnits();
            updateImageFooters();
+           finalizeForcedIndexMessage();
            if (!titleEdited){
                 updateGraphTitleForMeasure();
            }
@@ -1070,6 +1071,20 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
             JavascriptContext.addJavascriptCall(fc, "initRoundedCorners();");
         }
 
+    }
+    
+    private void finalizeForcedIndexMessage(){
+        if (!forcedIndexMessage.isEmpty()){
+            String indexYear = "";
+            Iterator i = selectIndexDate.iterator();
+            if (i.hasNext()){
+                SelectItem si = (SelectItem) i.next();
+                indexYear = si.getLabel();
+            }
+            if (!indexYear.isEmpty()){
+                forcedIndexMessage += "  (" + indexYear + " = 100)";
+            }           
+        }        
     }
 
     public void removeAllLines(ActionEvent ae){
@@ -1157,7 +1172,7 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
            getSourceList();
            checkUnits();
            updateImageFooters();
-
+           finalizeForcedIndexMessage();
            if (!titleEdited){
                 updateGraphTitleForMeasure();
            }

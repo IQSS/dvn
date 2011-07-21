@@ -188,7 +188,7 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
     private String[] transformedDataIndexed;
     private String transformedDataIndexedOut;
     private String forcedIndexMessage;
-    
+    private String forcedIndexMessageYear;    
     private Float lowValStandard = new Float(0);
     private Float lowValIndex = new Float (100);
     private Float highValStandard = new Float (0);
@@ -808,7 +808,9 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
                                     if (varGroupTypeUI.isEnabled()){
                                         List <VarGroup> varGroups = (List) varGroupTypeUI.getVarGroupType().getGroups();
                                             for (VarGroup varGroupTest: varGroups) {
-                                                if (!added && varGroupTest.getId().equals(varGroup.getId())  && varGroup.getGroupAssociation().equals(varGroupingUI.getVarGrouping()) ){
+                                                if (!added && varGroupTest.getId().equals(varGroup.getId())  
+                                                        && varGroup.getGroupAssociation().equals(varGroupingUI.getVarGrouping()) 
+                                                            && varGroupsAll.contains(varGroupTest) ){
                                                     selectItems.add(new SelectItem(varGroup.getId(), varGroup.getName()));
                                                     added = true;
                                                 }
@@ -839,7 +841,7 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
                                         for (VarGroup vgs: varGroupsTemp){
                                             boolean save = false;
                                             for(VarGroup vgt : varGroupsTest){
-                                               if (vgt.getId().equals(vgs.getId())){
+                                               if (vgt.getId().equals(vgs.getId())  && varGroupsAll.contains(vgs) ){
                                                    save=true;
                                                }
                                                 
@@ -850,14 +852,13 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
                                         }
 
                                         
-                                    }
+                                     }
 
 
-                                       for(VarGroup vgr : vsrGroupRemove){
-                                            varGroupsSave.remove(vgr);
-                                       }
-                                       multipleSelections = varGroupsSave;
-                                    
+                                     for(VarGroup vgr : vsrGroupRemove){
+                                          varGroupsSave.remove(vgr);
+                                     }
+                                     multipleSelections = varGroupsSave;                                    
                                 }                                
                             }
 

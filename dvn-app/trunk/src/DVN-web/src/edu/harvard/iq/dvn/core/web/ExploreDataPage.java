@@ -187,8 +187,7 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
     private String transformedDataOut;
     private String[] transformedDataIndexed;
     private String transformedDataIndexedOut;
-    private String forcedIndexMessage;
-    private String forcedIndexMessageYear;    
+    private String forcedIndexMessage;   
     private Float lowValStandard = new Float(0);
     private Float lowValIndex = new Float (100);
     private Float highValStandard = new Float (0);
@@ -1212,6 +1211,65 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
            List <ArrayList> filterGroupingList = new ArrayList();
 
            List <DataVariable> resultListFilter = new ArrayList();
+           
+           List <DataVariable> measureList = resultList;
+           
+           List <ArrayList> filterGroupsList = new ArrayList();
+           int filterGroupListCount = 0;
+           for(VarGroupingUI varGrouping: filterGroupings) {
+               if(varGrouping.getSelectedGroupId()!=0){
+                   ArrayList <DataVariable> tempList = new ArrayList();
+                   for (DataVariable dv : dvList){
+                       Collection <DataVariableMapping> dvMappings = dv.getDataVariableMappings();
+                        for(DataVariableMapping dvMapping:dvMappings ) {
+                            if (!dvMapping.isX_axis() && dvMapping.getGroup().getId().equals(varGrouping.getSelectedGroupId())){
+                                tempList.add(dv);
+                                 count++;
+                            }
+                        }                       
+                   }
+                   filterGroupsList.add(tempList);
+                   filterGroupListCount++;
+               }
+           }
+           
+           if (filterGroupListCount == 1){
+               for (List groupList: filterGroupsList){
+                   for (Object dvGroup: groupList){
+                       DataVariable dvGroupFilter = (DataVariable) dvGroup;
+                       for (DataVariable dvMeasure: measureList){
+                           if (dvGroupFilter.equals(dvMeasure)){
+                                dataVariableSelected = dvMeasure;
+                                return true;
+                           }                      
+                       }                  
+                   }              
+               }
+               
+           }
+           
+
+           
+           
+           
+           for(VarGroupingUI varGrouping: filterGroupings) {
+               if(varGrouping.getSelectedGroupId()!=0){
+                   ArrayList <DataVariable> tempList = new ArrayList();
+                   Iterator varIterb = resultList.iterator();
+                   while (varIterb.hasNext()) {
+                        DataVariable dv = (DataVariable) varIterb.next();
+                        Collection <DataVariableMapping> dvMappings = dv.getDataVariableMappings();
+                        for(DataVariableMapping dvMapping:dvMappings ) {
+                            if (!dvMapping.isX_axis() && dvMapping.getGroup().getId().equals(varGrouping.getSelectedGroupId())){
+                                resultListFilter.add(dv);
+                                tempList.add(dv);
+                                count++;
+                            }
+                        }
+                   }
+                   filterGroupingList.add(tempList);
+               }
+           }
 
            for(VarGroupingUI varGrouping: filterGroupings) {
                if(varGrouping.getSelectedGroupId()!=0){
@@ -1271,8 +1329,6 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
 
         if(finalList.size() == 1) {
             dataVariableSelected = finalList.get(0);
-
-
         } else {
             FacesMessage message = new FacesMessage("Your selections do not match any in the data table.");
             FacesContext fc = FacesContext.getCurrentInstance();

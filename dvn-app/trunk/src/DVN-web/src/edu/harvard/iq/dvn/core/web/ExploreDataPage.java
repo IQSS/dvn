@@ -264,9 +264,6 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
         showVariableInfoPopup = false;
         variableLabel = "";
         variableLabelLink = false;
-        xAxisLabel = "";
-        sourceLineLabel = "";
-        yAxisLabel = "";
         displayLegend = true;
         legendInt = 1; 
         setDisplayIndexes(false);
@@ -2101,7 +2098,8 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
         sources = returnString;
     }
     
-    private void checkUnits() {        
+    private void checkUnits() {   
+
         Set<String> set = new HashSet(); 
         int countLines = 0;
         forcedIndexMessage = "";
@@ -2114,11 +2112,14 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
                     yAxisLabel = "";
                     forcedIndexMessage = "Series have been displayed as indices because their measurement units are different.";
                 } else {
+
                     set.add(checkUnit);
                     yAxisLabel = checkUnit;
                 }
 
             }
+            
+            System.out.println(" check units yAxisLabel " + yAxisLabel);
       
     }
 
@@ -2141,6 +2142,9 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
           footerNotes = "|";
           displayFooterNotesNoY = "|";
           displayFooterNotes = "|";
+          
+          System.out.println(" update Image yAxisLabel " + yAxisLabel);
+          
         if (!yAxisLabel.isEmpty()){
                axisLabelTemp += ",y";
               String codedYAxisLabel = "";
@@ -2223,21 +2227,16 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
               } catch (Exception e) {
                   codedSourceLine = sourceLine;
               }
-              footerNotes += "|" + lineNum + ":|"+  codedSourceLine +"|";
-              footerNotesNoY += "|" + lineNumNoY + ":|"+ codedSourceLine +"|";
-              displayFooterNotes += "|" + lineNum + ":|"+  sourceLine +"|";
-              displayFooterNotesNoY += "|" + lineNumNoY + ":|"+ sourceLine +"|";
+              footerNotes += "|" + lineNum + ":||"+  codedSourceLine +"|";
+              footerNotesNoY += "|" + lineNumNoY + ":||"+ codedSourceLine +"|";
+              displayFooterNotes += "|" + lineNum + ":||"+  sourceLine +"|";
+              displayFooterNotesNoY += "|" + lineNumNoY + ":||"+ sourceLine +"|";
               lineNum++;
               lineNumNoY++;
           }
 
         }
-          String outputSourceFooter =  "";
-          try {
-                outputSourceFooter = URLEncoder.encode(footerNotes, "UTF-8");
-          } catch (Exception e){
-                outputSourceFooter= footerNotes;
-          }
+
           
           setImageAxisLabel(axisLabelTemp);
           setImageSourceFooter(footerNotes);

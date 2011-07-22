@@ -94,16 +94,13 @@
             <div class="dvnGraphIndicatorBlock">
 
                 <div jsfc="ice:panelGroup" styleClass="dvnGraphIndicatorSelect" rendered="#{!empty ExploreDataPage.selectMeasureGroupTypes}">
-
                     <ice:outputLabel value="#{ExploreDataPage.measureTypeCue}" for="indicatortype"/>
-
                     <ice:selectOneMenu immediate="false" partialSubmit="true" id="issue"
                                        valueChangeListener="#{ExploreDataPage.reset_MeasureItems}" value="#{ExploreDataPage.groupTypeId}">
                         <f:selectItem itemLabel="Select..." itemValue="0"/>
                         <f:selectItems value="#{ExploreDataPage.selectMeasureGroupTypes}"/>
                     </ice:selectOneMenu>
                 </div>
-
                 <div class="dvnGraphIndicatorSelect">
                     <ice:outputLabel value="#{ExploreDataPage.measureLabel}" for="indicator"/>
 
@@ -115,6 +112,11 @@
             </div>
 
             <div class="dvnGraphFilterBlock" rendered="#{ExploreDataPage.selectedMeasureId > 0}">
+                <div jsfc="ice:panelGroup">
+                    <ice:graphicImage value="/resources/images/icon_info.gif" styleClass="dvn_icon"/>
+                    <ice:outputText value=" Use check boxes to narrow drop-down menu."/>
+                </div>
+
                 <div jsfc="ice:panelSeries" id="filterPanelGroupings" var="item" value="#{ExploreDataPage.filterGroupings}" binding="#{ExploreDataPage.filterPanelGroup}">
                     <f:attribute name="groupingId" value="#{item.varGrouping.id}"/>
                     <div class="dvnGraphFilterBlock">
@@ -124,20 +126,13 @@
                             <f:selectItem itemLabel="Select..." itemValue="0"/>
                             <f:selectItems value="#{ExploreDataPage.selectFilterGroups}"/>
                         </ice:selectOneMenu>
-
-                        <ice:outputText visible="#{ExploreDataPage.selectedMeasureId > 0}" value="Use check boxes to narrow drop-down menu." 
-                                        styleClass="dvnGraphRelatedTo" rendered="#{!empty item.varGroupTypesUI}"/>
-
-                        <div 
-                             jsfc="ice:panelSeries" styleClass="dvnGraphFilterTypesBlock" 
-                             id="filterPanelGroupTypes" var="groupType" value="#{item.varGroupTypesUI}">
+                        
+                        <div jsfc="ice:panelSeries" value="#{item.varGroupTypesUI}" styleClass="dvnGraphFilterTypesBlock" id="filterPanelGroupTypes" var="groupType">
                             <!-- controls -->
                             <div jsfc="ice:panelGroup" styleClass="dvnGraphFilterTypesControls">
-                                <ice:selectBooleanCheckbox visible="#{ExploreDataPage.selectedMeasureId > 0}"  
-                                                           id="filterGroupTypeCheckBoxes" styleClass="filterGroupTypeCheckBoxes" value="#{groupType.enabled}"
-                                                            partialSubmit="true"/>
-                                <ice:outputLabel visible="#{ExploreDataPage.selectedMeasureId > 0}" 
-                                                 value="#{groupType.varGroupType.name}"/>
+                                <ice:selectBooleanCheckbox value="#{groupType.enabled}" partialSubmit="true"
+                                                           id="filterGroupTypeCheckBoxes" styleClass="filterGroupTypeCheckBoxes"/>
+                                <ice:outputLabel value="#{groupType.varGroupType.name}"/>
                             </div>
                         </div>
                         <ice:message for="filterPanelGroupTypes" id="boxErrorMsg" styleClass="errorMessage"/>
@@ -160,15 +155,15 @@
 
         <div jsfc="ice:panelGroup" styleClass="dvnGraphResults">
             <div jsfc="ice:panelGroup" rendered="#{!empty ExploreDataPage.vizLines}" styleClass="dvnGraphBox">
-                 <div jsfc="ice:panelGroup" styleClass="dvnGraphTitleBlock" rendered="#{!empty ExploreDataPage.graphTitle and (ExploreDataPage.displayType == 1 or ExploreDataPage.displayType == 3)}">
-                    <ice:outputLabel value="#{ExploreDataPage.graphTitle}" />                   
-                </div>
                 <div jsfc="ice:panelGroup" styleClass="dvnGraphWarningBlock" rendered="#{!empty ExploreDataPage.forcedIndexMessage}">
                     <ice:graphicImage value="/resources/images/icon_warning.18.png" styleClass="dvn_icon"/>
-                    <ice:outputText styleClass="vdcHelpText" value="#{ExploreDataPage.forcedIndexMessage}"/>
+                    <ice:outputText styleClass="vdcHelpText" value=" #{ExploreDataPage.forcedIndexMessage}"/>
                 </div>
-                <div id="chart_div" class="rightlabel" rendered="#{ExploreDataPage.displayType == 1 or ExploreDataPage.displayType == 3}"></div>
-                <div id="chart_image" class="rightlabel" rendered="#{ExploreDataPage.displayType == 2}"></div>
+                <div jsfc="ice:panelGroup" styleClass="dvnGraphTitleBlock" rendered="#{!empty ExploreDataPage.graphTitle and (ExploreDataPage.displayType == 1 or ExploreDataPage.displayType == 3)}">
+                    <ice:outputLabel value="#{ExploreDataPage.graphTitle}" />                   
+                </div>
+                <div id="chart_div" rendered="#{ExploreDataPage.displayType == 1 or ExploreDataPage.displayType == 3}"></div>
+                <div id="chart_image" rendered="#{ExploreDataPage.displayType == 2}"></div>
                 <div jsfc="ice:panelGroup" styleClass="dvnGraphSourceBlock" rendered="#{!empty ExploreDataPage.sources and (ExploreDataPage.displayType == 1 or ExploreDataPage.displayType == 3)}">
                     <ice:outputText value="Source: #{ExploreDataPage.sources}"/>
                 </div>
@@ -177,102 +172,6 @@
             <div jsfc="ice:panelGroup" rendered="#{!empty ExploreDataPage.vizLines}" styleClass="dvnGraphDisplay">
 
                 <ice:panelTabSet id="tabSet1" styleClass="dvnTabs">
-
-                    <ice:panelTab id="lineDetails" label="Line Details">
-                        <div jsfc="ice:panelGroup" id="layoutPanel1" panelLayout="flow" styleClass="dvnGraphResultsLineBox">
-
-                            <ice:dataTable width="100%" cellspacing="0" cellpadding="0" var="line" styleClass="dvnGraphResultsVizLineTable" value="#{ExploreDataPage.vizLines}" binding="#{ExploreDataPage.dataTableVizLines}">
-                              <h:column>
-                                  <div class="dvnGraphResultsVizLineBlock">
-
-                                    <div class="dvnGraphResultsVizLineWrap">
-
-                                      <div class="dvnGraphResultsVizLineLabel">
-                                        <div style="#{line.border}"></div>
-
-                                        <ice:outputText value="#{line.label}"/>
-                                      </div>
-
-                                      <div class="dvnGraphResultsVizLineActions">
-                                        <ice:commandLink id="deleteLineLink" title="Delete Line" value="Delete [X]" actionListener="#{ExploreDataPage.deleteLine}" onclick="deleteLine();"></ice:commandLink>
-                                        <a href="#" class="lineDetailLink">Detail [+]</a>
-                                      </div>
-
-                                    </div>
-
-                                    <div class="lineDetailBlock" style="display:none;">
-                                        <div class="lineDetailBlockLabel">
-                                            <ice:outputText value="#{line.measureLabel}"/>
-                                        </div>
-                                        <div jsfc="ice:panelGroup">
-                                            <ice:outputText value="#{line.measureGroup.name}"/>
-                                        </div>
-                                        <div jsfc="ice:panelSeries" id="lineListPanelSeries" var="filterGroup" value="#{line.filterGroups}">
-                                            <div class="lineDetailBlockFilter">
-                                                <ice:outputText value="#{filterGroup.groupAssociation.name}"/>
-                                            </div>
-                                            <div>
-                                                <ice:outputText value="#{filterGroup.name}"/>
-                                            </div>
-                                        </div>
-                                        <ice:commandLink
-                                            rendered="#{line.variableLabel!=null}" actionListener="#{ExploreDataPage.openVariableInfoPopup}">
-                                            <ice:outputText value="#{ExploreDataPage.sourceLineLabel}"/>
-                                        </ice:commandLink>
-                                    </div>
-
-                                    
-                                </div>
-                              </h:column>
-                              <f:facet name="footer">
-                                    <script type="text/javascript">
-                                      // <![CDATA[
-                                        jQuery(document).ready(initLineDetails);
-                                        function initLineDetails(){
-                                            // choose text for the show/hide link - can contain HTML (e.g. an image)
-                                            var showText='Detail [+]';
-                                            var hideText='Detail [-]';
-
-                                            // initialise the visibility check
-                                            var is_visible = false;
-
-                                            // append show/hide links to the element directly preceding the element with a class of "toggle"
-                                            jQuery(this).prev('a.lineDetailLink').text(showText);
-
-                                            // hide all of the elements with a class of 'toggle'
-                                            // jQuery('.lineDetailBlock').hide();
-
-                                            // capture clicks on the toggle links
-                                            jQuery('a.lineDetailLink').click(function() {
-
-                                                // switch visibility
-                                                is_visible = !is_visible;
-
-                                                // change the link depending on whether the element is shown or hidden
-                                                jQuery(this).text( (!is_visible) ? showText : hideText);
-
-                                                // toggle the display
-                                                // jQuery(this).next('.lineDetailBlock').slideToggle('fast');
-
-                                                if (jQuery(this).text()==hideText) {
-                                                    jQuery(this).parent().parent().next('.lineDetailBlock').show();
-                                                }
-                                                else {
-                                                    jQuery(this).parent().parent().next('.lineDetailBlock').hide();
-                                                }
-
-                                                // return false so any link destination is not followed
-                                                return false;
-
-                                            });
-                                        }
-                                        // ]]>
-                                    </script>
-                                </f:facet>
-                            </ice:dataTable>
-                        
-                        </div>
-                    </ice:panelTab>
 
                     <ice:panelTab id="display" label="Display">
                         <div jsfc="ice:panelGroup" id="layoutPanel2" panelLayout="flow">
@@ -308,7 +207,7 @@
                             </div>
                             <div class="dvnShowLegendBlock">
                                  <ice:outputLabel value="Show Graph Legend" for="displayLegend" rendered="true"/>
-                                <ice:selectOneRadio id="displayLegendRadio" styleClass="displayLegendRadio" onclick="resetLegend(); initDisplayLegend();" value="#{ExploreDataPage.legendInt}">
+                                <ice:selectOneRadio id="displayLegendRadio" styleClass="displayLegendRadio" onclick="resetLegend();" value="#{ExploreDataPage.legendInt}">
                                     <f:selectItem itemLabel="Right" itemValue="1" />
                                     <f:selectItem itemLabel="Bottom" itemValue="2" />
                                     <f:selectItem itemLabel="None" itemValue="3" />
@@ -329,6 +228,65 @@
                                 </ice:selectOneMenu>
                                 
                             </div>
+                        </div>
+                    </ice:panelTab>
+
+                    <ice:panelTab id="lineDetails" label="Line Details">
+                        <div jsfc="ice:panelGroup" id="layoutPanel1" panelLayout="flow" styleClass="dvnGraphResultsLineBox">
+
+                            <ice:dataTable width="100%" cellspacing="0" cellpadding="0" var="line" styleClass="dvnGraphResultsVizLineTable" value="#{ExploreDataPage.vizLines}" binding="#{ExploreDataPage.dataTableVizLines}">
+                              <h:column>
+                                  <div class="dvnGraphResultsVizLineBlock">
+                                    <div class="dvnGraphResultsVizLineWrap">
+                                      <div class="dvnGraphResultsVizLineLabelBlock">
+                                        <div style="#{line.border}"></div>
+                                        <ice:outputText styleClass="dvnGraphResultsVizLineLabel" value="#{line.label}"/>
+                                        <div class="dvnGraphResultsVizLineEditBlock">
+                                            <ice:inputText value="#{line.label}"></ice:inputText>
+                                            <!--<ice:commandButton value="Save" onclick="" actionListener="#{}"/> -->
+                                        </div>
+                                      </div>
+                                      <div class="dvnGraphResultsVizLineActions">
+                                        <ice:commandLink id="deleteLineLink" title="Delete Line" value="Delete [X]" actionListener="#{ExploreDataPage.deleteLine}" onclick="deleteLine();"></ice:commandLink>
+                                        <a href="#" class="dvnGraphResultsVizLineEditLink">Edit Label</a>
+                                      </div>
+                                    </div>
+
+                                    <div class="lineDetailBlock">
+                                        <div>
+                                            <ice:outputText style="display: inline;" styleClass="lineDetailBlockLabel" value="#{line.measureLabel}: "/>
+                                            <ice:outputText style="display: inline;" value="#{line.measureGroup.name}"/>
+                                        </div>
+                                        <div jsfc="ice:panelSeries" id="lineListPanelSeries" var="filterGroup" value="#{line.filterGroups}">
+                                            <div>
+                                                <ice:outputText style="display: inline;" styleClass="lineDetailBlockFilter" value="#{filterGroup.groupAssociation.name}: "/>
+                                                <ice:outputText style="display: inline;" value="#{filterGroup.name}"/>
+                                            </div>
+                                        </div>
+                                        <ice:commandLink rendered="#{line.variableLabel!=null}" actionListener="#{ExploreDataPage.openVariableInfoPopup}">
+                                            <ice:outputText value="#{ExploreDataPage.sourceLineLabel}"/>
+                                        </ice:commandLink>
+                                    </div>
+                                </div>
+                              </h:column>
+                                <f:facet name="footer">
+                                    <script type="text/javascript">
+                                      // <![CDATA[
+                                        jQuery(document).ready(function(){
+                                            jQuery("a.dvnGraphResultsVizLineEditLink").click(function() {
+                                                jQuery(this).parent().prev().addClass("edit");
+                                                return false;
+                                            });
+                                            jQuery(".dvnGraphResultsVizLineEditBlock input:submit").click(function() {
+                                                jQuery(this).parents(".dvnGraphResultsVizLineEdit").removeClass("edit");
+                                                return false;
+                                            });
+                                        });
+                                        // ]]>
+                                    </script>
+                                </f:facet>
+                            </ice:dataTable>
+
                         </div>
                     </ice:panelTab>
 
@@ -400,11 +358,9 @@
                 </f:facet>
                 <f:facet name="body">
                     <ice:panelGroup styleClass="popupBody">
-                        
                         #{ExploreDataPage.variableLabel}
-                        <br></br>
-                    </ice:panelGroup>
-                    
+                        <br/>
+                    </ice:panelGroup>                    
                 </f:facet>
             </ice:panelPopup>
 

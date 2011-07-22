@@ -285,8 +285,12 @@ table.viTblinx th{background-color:#e6e6fa;font-weight:700;margin:0px;padding:2p
 .dvnGraphResults .icePnlTbSetCnt {padding:12px;}
 .dvnGraphResultsLineBox .dvnGraphResultsVizLineTable .dvnGraphResultsVizLineBlock {padding:4px; margin:0 0 1em 0; border-bottom:1px solid #D9D9D9;}
 .dvnGraphResultsVizLineWrap {overflow:hidden;}
-.dvnGraphResultsVizLineLabel {float:left; width:160px; font-weight:bold;}
-.dvnGraphResultsVizLineLabel div {float:left; width:20px; height:20px; margin-right:.5em;}
+.dvnGraphResultsVizLineLabelBlock {float:left; width:160px; font-weight:bold;}
+.dvnGraphResultsVizLineLabelBlock div {float:left; width:20px; height:20px; margin-right:.5em;}
+.dvnGraphResultsVizLineEditBlock {display:none;}
+.dvnGraphResultsVizLineLabelBlock.edit .dvnGraphResultsVizLineEditBlock {display:block;}
+.dvnGraphResultsVizLineLabelBlock.edit .dvnGraphResultsVizLineLabel {display:none;}
+.dvnGraphResultsVizLineLabelBlock.edit input.iceInpTxt {margin: 0 2px;}
 .dvnGraphResultsVizLineActions {float:right; width:54px;}
 .dvnGraphResultsVizLineActions a:link, .dvnGraphResultsVizLineActions a:visited, .dvnGraphResultsVizLineActions a:hover, .dvnGraphResultsVizLineActions a:active {font-size:.95em !important;}
 a.lineDetailLink {display:block;}
@@ -298,10 +302,10 @@ a.lineDetailLink {display:block;}
 .dvnGraphDisplayBlock {margin-bottom:2em;}
 .dvnGraphDisplayBlock label {display:inline;}
 .dvnGraphDisplayBlock div {margin-top:.5em;}
-.dvnGraphTitleBlock {margin-bottom:1em;}
-.dvnGraphTitleBlock label {font-weight:normal;}
+.dvnGraphTitleBlock {margin:.275em 0 1em 0; text-align:center;}
+.dvnGraphTitleBlock label {font-weight:normal; font-size:1.15em;}
 .dvnGraphWarningBlock {margin-bottom:1em;}
-.dvnGraphWarningBlock span {margin-left:1em; font-weight:bold; color:red;}
+.dvnGraphWarningBlock span {font-weight:bold; color:red;}
 .dvnGraphSourceBlock {margin-bottom:2em;}
 .dvnGraphSourceBlock label {display:block;}
 .dvnGraphSourceBlock span {font-weight:normal;}

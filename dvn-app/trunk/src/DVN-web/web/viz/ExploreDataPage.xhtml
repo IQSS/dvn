@@ -111,8 +111,8 @@
                 </div>
             </div>
 
-            <div class="dvnGraphFilterBlock" rendered="#{ExploreDataPage.selectedMeasureId > 0}">
-                <div jsfc="ice:panelGroup" rendered="#{ExploreDataPage.selectedMeasureHasFilterTypes}" >
+            <div jsfc="ice:panelGroup" styleClass="dvnGraphFilterBlock" rendered="#{ExploreDataPage.selectedMeasureId > 0}">
+                <div jsfc="ice:panelGroup" styleClass="dvnGraphFilterInfoBlock" rendered="#{ExploreDataPage.selectedMeasureHasFilterTypes}">
                     <ice:graphicImage value="/resources/images/icon_info.gif" styleClass="dvn_icon"/>
                     <ice:outputText value=" Use check boxes to narrow drop-down menu."/>
                 </div>
@@ -120,12 +120,14 @@
                 <div jsfc="ice:panelSeries" id="filterPanelGroupings" var="item" value="#{ExploreDataPage.filterGroupings}" binding="#{ExploreDataPage.filterPanelGroup}">
                     <f:attribute name="groupingId" value="#{item.varGrouping.id}"/>
                     <div class="dvnGraphFilterBlock">
-                        <ice:outputLabel value="#{item.varGrouping.name}"/>
+                        <div class="dvnGraphFilterLabelBlock">
+                            <ice:outputLabel value="#{item.varGrouping.name}"/>
 
-                        <ice:selectOneMenu id="filterGroup" styleClass="filterGroup" value="#{item.selectedGroupId}" partialSubmit="true"  valueChangeListener="#{ExploreDataPage.updateLineLabelForFilter}">
-                            <f:selectItem itemLabel="Select..." itemValue="0"/>
-                            <f:selectItems value="#{ExploreDataPage.selectFilterGroups}"/>
-                        </ice:selectOneMenu>
+                            <ice:selectOneMenu id="filterGroup" styleClass="filterGroup" value="#{item.selectedGroupId}" partialSubmit="true"  valueChangeListener="#{ExploreDataPage.updateLineLabelForFilter}">
+                                <f:selectItem itemLabel="Select..." itemValue="0"/>
+                                <f:selectItems value="#{ExploreDataPage.selectFilterGroups}"/>
+                            </ice:selectOneMenu>
+                        </div>
                         
                         <div jsfc="ice:panelSeries" value="#{item.varGroupTypesUI}" styleClass="dvnGraphFilterTypesBlock" id="filterPanelGroupTypes" var="groupType">
                             <!-- controls -->

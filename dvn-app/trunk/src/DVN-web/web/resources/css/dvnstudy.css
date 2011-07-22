@@ -274,8 +274,10 @@ table.viTblinx th{background-color:#e6e6fa;font-weight:700;margin:0px;padding:2p
 .dvnGraphIndicatorBlock {overflow:hidden; margin-bottom:1em;}
 .dvnGraphIndicatorSelect {display:inline; margin-right:2em;}
 .dvnGraphRelatedTo {margin:0 2em;}
-.dvnGraphFilterBlock {margin-bottom:1em;}
-.dvnGraphFilterTypesBlock {overflow:hidden; display:inline;}
+.dvnGraphFilterBlock {overflow:hidden; margin-bottom:.75em;}
+.dvnGraphFilterInfoBlock {margin-bottom:.5em;}
+.dvnGraphFilterLabelBlock {overflow:hidden; float:left; margin-right:2em;}
+.dvnGraphFilterTypesBlock {overflow:hidden; float:left; padding-top:6px;}
 .dvnGraphFilterTypesBlock .errorMessage {display:block;}
 .dvnGraphFilterTypesControls {display:inline; margin-right:1em; white-space:nowrap;}
 .dvnGraphFilterTypesControls label {font-weight:normal;}
@@ -296,8 +298,7 @@ table.viTblinx th{background-color:#e6e6fa;font-weight:700;margin:0px;padding:2p
 a.lineDetailLink {display:block;}
 .lineDetailBlockLabel, .lineDetailBlockFilter {font-weight:bold; color:#484848;}
 .dvnGraphBox {float:left; margin-right:1em;}
-.dvnGraphBox #chart_div {width:540px; height:400px; margin-bottom:.5em;} /*CHART SIZE*/
-.dvnGraphBox #chart_div.rightlabel {width:676px;} /*CHART SIZE*/
+.dvnGraphBox #chart_div {width:676px; height:400px; margin-bottom:.5em;}
 .dvnGraphDisplay {float:left; width:280px;}
 .dvnGraphDisplayBlock {margin-bottom:2em;}
 .dvnGraphDisplayBlock label {display:inline;}

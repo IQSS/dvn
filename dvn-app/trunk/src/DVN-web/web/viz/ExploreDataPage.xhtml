@@ -112,7 +112,7 @@
             </div>
 
             <div class="dvnGraphFilterBlock" rendered="#{ExploreDataPage.selectedMeasureId > 0}">
-                <div jsfc="ice:panelGroup">
+                <div jsfc="ice:panelGroup" rendered="#{ExploreDataPage.selectedMeasureHasFilterTypes}" >
                     <ice:graphicImage value="/resources/images/icon_info.gif" styleClass="dvn_icon"/>
                     <ice:outputText value=" Use check boxes to narrow drop-down menu."/>
                 </div>
@@ -234,7 +234,8 @@
                     <ice:panelTab id="lineDetails" label="Line Details">
                         <div jsfc="ice:panelGroup" id="layoutPanel1" panelLayout="flow" styleClass="dvnGraphResultsLineBox">
 
-                            <ice:dataTable width="100%" cellspacing="0" cellpadding="0" var="line" styleClass="dvnGraphResultsVizLineTable" value="#{ExploreDataPage.vizLines}" binding="#{ExploreDataPage.dataTableVizLines}">
+                            <ice:dataTable width="100%" cellspacing="0" cellpadding="0" var="line" styleClass="dvnGraphResultsVizLineTable"
+                                           value="#{ExploreDataPage.vizLines}" binding="#{ExploreDataPage.dataTableVizLines}">
                               <h:column>
                                   <div class="dvnGraphResultsVizLineBlock">
                                     <div class="dvnGraphResultsVizLineWrap">
@@ -243,7 +244,7 @@
                                         <ice:outputText styleClass="dvnGraphResultsVizLineLabel" value="#{line.label}"/>
                                         <div class="dvnGraphResultsVizLineEditBlock">
                                             <ice:inputText value="#{line.label}"></ice:inputText>
-                                            <!--<ice:commandButton value="Save" onclick="" actionListener="#{}"/> -->
+                                            <ice:commandButton value="Save" onclick="" actionListener="#{ExploreDataPage.updateLineLabel}"/> 
                                         </div>
                                       </div>
                                       <div class="dvnGraphResultsVizLineActions">
@@ -257,12 +258,15 @@
                                             <ice:outputText style="display: inline;" styleClass="lineDetailBlockLabel" value="#{line.measureLabel}: "/>
                                             <ice:outputText style="display: inline;" value="#{line.measureGroup.name}"/>
                                         </div>
-                                        <div jsfc="ice:panelSeries" id="lineListPanelSeries" var="filterGroup" value="#{line.filterGroups}">
+                                        <ice:dataTable id="lineListPanelSeries" binding="#{ExploreDataPage.dataTableFilterGroups}"
+                                                       var="filterGroup" value="#{line.filterGroups}">
+                                            <h:column>
                                             <div>
                                                 <ice:outputText style="display: inline;" styleClass="lineDetailBlockFilter" value="#{filterGroup.groupAssociation.name}: "/>
                                                 <ice:outputText style="display: inline;" value="#{filterGroup.name}"/>
                                             </div>
-                                        </div>
+                                            </h:column>
+                                        </ice:dataTable>
                                         <ice:commandLink rendered="#{line.variableLabel!=null}" actionListener="#{ExploreDataPage.openVariableInfoPopup}">
                                             <ice:outputText value="#{ExploreDataPage.sourceLineLabel}"/>
                                         </ice:commandLink>

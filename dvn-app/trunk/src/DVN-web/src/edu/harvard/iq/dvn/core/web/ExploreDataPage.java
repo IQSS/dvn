@@ -118,7 +118,10 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
     }
     
     private List <VisualizationLineDefinition> vizLines = new ArrayList();
+
     private Long selectedMeasureId = new Long(0);
+    private boolean selectedMeasureHasFilterTypes = false;
+
     private Long selectedFilterGroupId = new Long(0);
     private int groupTypeId = 0;
     private List <DataVariable> dvList;
@@ -270,7 +273,10 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
         selectedMeasureId = new Long (0);
         groupTypeId = 0;
         lineLabel = "";
+        filterPanelGroup.getSavedChildren().clear();
+        filterPanelGroup.getChildren().clear();
         displayType = new Long(defaultView);
+        
     }
 
 
@@ -345,6 +351,7 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
         for (VarGrouping varGrouping: localVGList){
 
             if (varGrouping.getGroupingType().equals(GroupingType.FILTER)){
+                
                 List <VarGroup> filterGroups = new ArrayList();
                 List <VarGroupTypeUI> filterGroupTypes = new ArrayList();
                 VarGroupingUI vgUI = new VarGroupingUI();
@@ -352,6 +359,11 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
                 loadFilterGroups(filterGroups);
                 loadFilterGroupTypes(filterGroupTypes, varGrouping.getId());
                 vgUI.setVarGroupTypesUI(filterGroupTypes);
+                if (!filterGroupTypes.isEmpty()){
+                    selectedMeasureHasFilterTypes = true;
+                }
+                    
+                vgUI.setSelectedGroupId(new Long (0));
                 filterGroupings.add(vgUI);
             }
 
@@ -449,6 +461,8 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
     }
 
     private List <VarGroup> getFilterGroupsFromMeasureId(Long MeasureId){
+    
+        
         List returnList = new ArrayList();
          List <VarGroup> localVGList = new ArrayList();
 
@@ -532,6 +546,15 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
     public void setMeasureTypeCue(String measureTypeCue) {
         this.measureTypeCue = measureTypeCue;
     }
+    
+    
+    public boolean isSelectedMeasureHasFilterTypes() {
+        return selectedMeasureHasFilterTypes;
+    }
+
+    public void setSelectedMeasureHasFilterTypes(boolean selectedMeasureHasFilterTypes) {
+        this.selectedMeasureHasFilterTypes = selectedMeasureHasFilterTypes;
+    }
 
     public List<String> getFilterStrings() {
         return filterStrings;
@@ -555,13 +578,12 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
 
     public void resetFiltersForMeasure(ValueChangeEvent ae){
         selectedMeasureId = (Long) ae.getNewValue();
-        
+        selectedMeasureHasFilterTypes = false;
         if (selectedMeasureId == null ){
             selectedMeasureId = new Long(0);
         }
         if (selectedMeasureId != null) {
             loadFilterGroupings();
-
             
         }
        
@@ -1014,13 +1036,14 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
         }
 
         if (validateSelections()){
-            for (VisualizationLineDefinition vl :vizLines)
+            for (VisualizationLineDefinition vl :vizLines) {
                 if (vl.getVariableId().equals(dataVariableSelected.getId())){
                    FacesMessage message = new FacesMessage("This data has already been selected");
                     FacesContext fc = FacesContext.getCurrentInstance();
                     fc.addMessage(addLineButton.getClientId(fc), message);
                     return;
-                }
+                }                
+            }                            
         }
 
         if (validateSelections()){
@@ -1033,8 +1056,11 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
            List <VarGroup> selectedFilterGroups = new ArrayList();
            for(VarGroupingUI varGrouping: filterGroupings) {
                if (!(varGrouping.getSelectedGroupId() == 0)){
-                    VarGroup filterGroup = visualizationService.getGroupFromId(varGrouping.getSelectedGroupId());
-                    selectedFilterGroups.add(filterGroup);
+                    for (VarGroup filterGroup: allFilterGroups){
+                        if (filterGroup.getGroupAssociation().equals(varGrouping.getVarGrouping()) && filterGroup.getId().equals(varGrouping.getSelectedGroupId())){
+                               selectedFilterGroups.add(filterGroup);
+                        }
+                    }                                              
                }
            }
            vizLine.setFilterGroups(selectedFilterGroups);
@@ -1060,6 +1086,9 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
                 updateGraphTitleForMeasure();
            }
 
+            dataTableVizLines.getChildren().clear();
+            dataTableVizLines.getSavedChildren().clear();
+            
            FacesContext fc = FacesContext.getCurrentInstance();
            JavascriptContext.addJavascriptCall(fc, "drawVisualization();");           
            JavascriptContext.addJavascriptCall(fc, "initLineDetails");
@@ -1090,20 +1119,31 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
     
         List <VisualizationLineDefinition> vizLinesRemove = new ArrayList();
         for (VisualizationLineDefinition vld: vizLines){
+            
             vizLinesRemove.add(vld);
         }
+        
+           for (VisualizationLineDefinition vl :vizLines) {
+                dataTableFilterGroups.setValue(null);
+            }
         
         for (VisualizationLineDefinition vld: vizLinesRemove){
             vizLines.remove(vld);
         }        
 
+        vizLines = new ArrayList();
+        dataTableVizLines.getChildren().clear();
+        dataTableVizLines.getChildren().clear();
+ /*       
         getDataTable();
         resetLineBorder();
-        getSourceList();
+        sourceList.clear();
         updateImageFooters();
         FacesContext fc = FacesContext.getCurrentInstance();
         JavascriptContext.addJavascriptCall(fc, "drawVisualization();");           
         JavascriptContext.addJavascriptCall(fc, "initLineDetails");
+         * 
+         */
         refreshSettings();
     }
    
@@ -1139,7 +1179,18 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
             }
         }
     }
-
+    
+    public void updateLineLabel(ActionEvent ae){
+        
+            UIComponent uiComponent = ae.getComponent().getParent();
+        while (!(uiComponent instanceof HtmlDataTable)){
+            uiComponent = uiComponent.getParent();
+        }
+        HtmlDataTable tempTable = (HtmlDataTable) uiComponent;
+        VisualizationLineDefinition vizLine = (VisualizationLineDefinition) tempTable.getRowData();
+        
+        
+    }
     public void deleteLine(ActionEvent ae){
 
         UIComponent uiComponent = ae.getComponent().getParent();
@@ -1164,6 +1215,9 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
            }
            
            this.numberOfColumns = new Long(vizLines.size());
+            
+            dataTableVizLines.getChildren().clear();
+            dataTableVizLines.getSavedChildren().clear();
            startYear = "0";
            endYear = "3000";
            getDataTable();
@@ -1425,7 +1479,7 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
     public void setDataTableId(String dataTableId) {
         this.dataTableId = dataTableId;
     }
-    
+        
     public String getDtColumnString() {
         return dtColumnString;
     }
@@ -1864,7 +1918,6 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
     private void writeImageFile(File fileIn, File pdfFileIn) {
 
         try {
-            System.out.println("imageURL in " + imageURL);
             String decoded = URLDecoder.decode(imageURL, "UTF-8");
 
             if (!graphTitle.isEmpty()){
@@ -2280,6 +2333,17 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
     public void setDataTableVizLines(HtmlDataTable dataTableVizLines) {
         this.dataTableVizLines = dataTableVizLines;
     }
+    
+    private HtmlDataTable dataTableFilterGroups;
+
+    public HtmlDataTable getDataTableFilterGroups() {
+        return this.dataTableFilterGroups;
+    }
+
+    public void setDataTableFilterGroups(HtmlDataTable dataTableFilterGroups) {
+        this.dataTableFilterGroups = dataTableFilterGroups;
+    }
+
 
 
     public String getColumnString() {

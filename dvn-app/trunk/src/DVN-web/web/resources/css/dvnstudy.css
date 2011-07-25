@@ -277,10 +277,10 @@ table.viTblinx th{background-color:#e6e6fa;font-weight:700;margin:0px;padding:2p
 .dvnGraphFilterBlock {overflow:hidden; margin-bottom:.75em;}
 .dvnGraphFilterInfoBlock {margin-bottom:.5em;}
 .dvnGraphFilterLabelBlock {overflow:hidden; float:left; margin-right:2em;}
-.dvnGraphFilterTypesBlock {overflow:hidden; float:left; padding-top:6px;}
+.dvnGraphFilterTypesBlock {overflow:hidden; float:left; width:70%; padding-top:6px;}
 .dvnGraphFilterTypesBlock .errorMessage {display:block;}
-.dvnGraphFilterTypesControls {display:inline; margin-right:1em; white-space:nowrap;}
-.dvnGraphFilterTypesControls label {font-weight:normal;}
+.dvnGraphFilterTypesControls {float:left; margin-bottom:.5em; margin-right:1em; white-space:nowrap;}
+.dvnGraphFilterTypesControls label {font-weight:normal; padding: 6px 0;}
 .dvnGraphLabelBlock {margin-bottom:.5em;}
 .dvnGraphLabelBlock div {display:inline;}
 .dvnGraphRemoveLinesButton {margin-left:1em;}

@@ -266,7 +266,6 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
         variableLabel = "";
         variableLabelLink = false;
         displayLegend = true;
-        legendInt = 1; 
         setDisplayIndexes(false);
         selectedMeasureId = new Long (0);
         groupTypeId = 0;
@@ -960,7 +959,8 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
     public void reset_MeasureItems(ValueChangeEvent ae){
         int i = (Integer) ae.getNewValue();
         this.selectMeasureItems = loadSelectMeasureItems(i);
-        loadFilterGroupings();
+        selectedMeasureId = new Long(0);
+
     }
     
     private VarGroup getMeasureGroupFromId(Long Id) {
@@ -1049,7 +1049,6 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
         }
 
         if (validateSelections()){
-           setLegendInt(1);
            FacesContext.getCurrentInstance().renderResponse();
            VisualizationLineDefinition vizLine = new VisualizationLineDefinition();
 

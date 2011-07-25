@@ -861,11 +861,9 @@ function drawVisualization() {
             var fullTitle = displayTitle;  
             var chartBaseUrl = "http://chart.apis.google.com/chart?";
             var chartParams = "cht=lc&chco=4684EE,DC3912,FF9900,008000,4942CC,990099,FF80F2,7FD127";
-            if (legendAlignment == 'r'){
-                chartParams = chartParams + "&chs=676x400";             
-            } else {
-                chartParams = chartParams + "&chs=540x400";       
-            }
+
+            chartParams = chartParams + "&chs=676x400";             
+
             if ((highValDouble - lowValDouble) > 10){
                chartParams = chartParams + "&chxs=1N*sz0*,000000|0N*0*,000000|2N,000000|3N,000000|4N,000000"; 
             } else {

@@ -111,7 +111,7 @@
                 </div>
             </div>
 
-            <div jsfc="ice:panelGroup" styleClass="dvnGraphFilterBlock" rendered="#{ExploreDataPage.selectedMeasureId > 0}">
+            <div jsfc="ice:panelGroup" styleClass="dvnGraphFilterBlock" rendered="#{ExploreDataPage.selectedMeasureId > 0 and ExploreDataPage.selectedMeasureHasFilterTypes}">
                 <div jsfc="ice:panelGroup" styleClass="dvnGraphFilterInfoBlock" rendered="#{ExploreDataPage.selectedMeasureHasFilterTypes}">
                     <ice:graphicImage value="/resources/images/icon_info.gif" styleClass="dvn_icon"/>
                     <ice:outputText value=" Use check boxes to narrow drop-down menu."/>

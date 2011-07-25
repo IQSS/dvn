@@ -257,6 +257,7 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
     private void refreshSettings(){        
         titleEdited = false;
         displayType = new Long(0);
+        groupTypeId = 0;
         startYear = "0";
         endYear = "3000";
         graphTitle = "";
@@ -269,6 +270,7 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
         setDisplayIndexes(false);
         selectedMeasureId = new Long (0);
         groupTypeId = 0;
+        this.selectMeasureItems = loadSelectMeasureItems(0);
         lineLabel = "";
         filterPanelGroup.getSavedChildren().clear();
         filterPanelGroup.getChildren().clear();

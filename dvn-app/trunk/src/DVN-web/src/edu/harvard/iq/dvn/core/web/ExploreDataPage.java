@@ -947,7 +947,7 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
     public void updateUseIndex(){
         Object value= this.useIndicesCheckBox.getValue();
 
-        this.displayIndexes = (Boolean) value ;
+        this.displayIndexes = (Boolean) value;
         if (!this.displayIndexes){
             forcedIndexMessage = "";            
         }
@@ -2204,6 +2204,7 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
         
         if (!xAxisLabel.isEmpty()){
                axisLabelTemp += ",x";
+               axisLabelTempNoY += ",x";
                String codedXAxisLabel = "";
               try {
                   codedXAxisLabel = URLEncoder.encode(xAxisLabel, "UTF-8");

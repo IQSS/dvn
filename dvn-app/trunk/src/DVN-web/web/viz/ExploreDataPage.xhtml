@@ -246,7 +246,8 @@
                                         <div style="#{line.border}"></div>
                                         <ice:outputText styleClass="dvnGraphResultsVizLineLabel" value="#{line.label}"/>
                                         <div class="dvnGraphResultsVizLineEditBlock">
-                                            <ice:inputText value="#{line.label}"></ice:inputText>
+                                            <ice:inputText value="#{line.label}" binding="#{ExploreDataPage.inputTextLineLabel}">
+                                            </ice:inputText>
                                             <ice:commandButton value="Save" onclick="" actionListener="#{ExploreDataPage.updateLineLabel}"/> 
                                         </div>
                                       </div>

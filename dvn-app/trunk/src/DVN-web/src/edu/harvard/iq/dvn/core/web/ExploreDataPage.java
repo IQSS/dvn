@@ -1182,14 +1182,21 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
     }
     
     public void updateLineLabel(ActionEvent ae){
-        
+        String  newLineLabel =  (String) inputTextLineLabel.getValue();
+        System.out.println("newLineLabelis "+ newLineLabel);
             UIComponent uiComponent = ae.getComponent().getParent();
         while (!(uiComponent instanceof HtmlDataTable)){
             uiComponent = uiComponent.getParent();
         }
         HtmlDataTable tempTable = (HtmlDataTable) uiComponent;
         VisualizationLineDefinition vizLine = (VisualizationLineDefinition) tempTable.getRowData();
+        vizLine.setLabel(newLineLabel);
         
+        getDataTable();
+        
+           FacesContext fc = FacesContext.getCurrentInstance();
+           JavascriptContext.addJavascriptCall(fc, "drawVisualization();");
+           JavascriptContext.addJavascriptCall(fc, "initRoundedCorners();");
         
     }
     public void deleteLine(ActionEvent ae){
@@ -2501,6 +2508,16 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
     public void setInputGraphTitle(HtmlInputText inputGraphTitle) {
         this.inputGraphTitle = inputGraphTitle;
     }
+    
+    private HtmlInputText inputTextLineLabel;
+
+    public HtmlInputText getInputTextLineLabel() {
+        return this.inputTextLineLabel;
+    }
+    public void setInputTextLineLabel(HtmlInputText inputTextLineLabel) {
+        this.inputTextLineLabel = inputTextLineLabel;
+    }
+    
     private HtmlInputText inputDownloadFileName;
 
     public HtmlInputText getInputDownloadFileName() {

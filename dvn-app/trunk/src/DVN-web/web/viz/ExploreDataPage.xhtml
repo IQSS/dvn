@@ -348,16 +348,13 @@
                             </div>
                         </div>
                     </ice:panelTab>
-
                 </ice:panelTabSet>
-
-                
                 
                <ice:panelPopup id="variableInfoPopup"
                             visible="#{ExploreDataPage.showVariableInfoPopup}"
                             draggable="true" modal="true"
                             positionOnLoadOnly="true" autoCentre="true"
-                            styleClass="clusterViewDocPopup">
+                            styleClass="variableInfoPopup">
                 <f:facet name="header">
                     <ice:panelGroup styleClass="popupHeaderWrapper">
                         <ice:outputText value="#{ExploreDataPage.sourceLineLabel}" styleClass="popupHeaderText"/>
@@ -370,8 +367,7 @@
                         <br/>
                     </ice:panelGroup>                    
                 </f:facet>
-            </ice:panelPopup>
-
+               </ice:panelPopup>
 
             </div>
         </div>

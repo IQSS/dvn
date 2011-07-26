@@ -297,6 +297,7 @@ table.viTblinx th{background-color:#e6e6fa;font-weight:700;margin:0px;padding:2p
 .dvnGraphResultsVizLineActions a:link, .dvnGraphResultsVizLineActions a:visited, .dvnGraphResultsVizLineActions a:hover, .dvnGraphResultsVizLineActions a:active {font-size:.95em !important;}
 a.lineDetailLink {display:block;}
 .lineDetailBlockLabel, .lineDetailBlockFilter {font-weight:bold; color:#484848;}
+.lineDetailBlock .iceDatTbl, .lineDetailBlock .iceDatTblRow1, .lineDetailBlock .iceDatTblRow2, .lineDetailBlock .iceDatTblCol1 {border:0; background:transparent;}
 .dvnGraphBox {float:left; margin-right:1em;}
 .dvnGraphBox #chart_div {width:676px; height:400px; margin-bottom:.5em;}
 .dvnGraphDisplay {float:left; width:280px;}
@@ -325,3 +326,5 @@ label.dvnGraphIndicesTitle {font-weight:bold;}
 .dvnExportBtmWrp label.dvnFormElementMargin {margin-right:1em;}
 .dvnExportBtmWrp div.dvnFormButtonMargin {margin-top:1em;}
 .dvnGraphExtractImageButton {display:none; margin-top:1em;}
+.variableInfoPopup table {width:100%;}
+.variableInfoPopup a.popupHeaderClose {float:right;}

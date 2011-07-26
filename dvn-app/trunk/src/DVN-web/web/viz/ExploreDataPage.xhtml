@@ -790,7 +790,6 @@ function drawVisualization() {
       
       if (!useIndex){
           var axisLabel = new String (document.getElementById('ExploreDataPage:imageAxisLabel').textContent);
-          var sourceFooter = new String (document.getElementById('ExploreDataPage:imageSourceFooter').textContent);
           var displaySourceFooter = new String (document.getElementById('ExploreDataPage:displaySourceFooter').textContent);
           var transDataIn = document.getElementById('ExploreDataPage:transformedData').textContent;
           var highValStandardIn = new String (document.getElementById('ExploreDataPage:highValStandard').textContent);
@@ -798,15 +797,15 @@ function drawVisualization() {
           var lowValStandardIn = new String (document.getElementById('ExploreDataPage:lowValStandard').textContent);
           var lowValDouble = parseFloat(lowValStandardIn) * 0.8; 
       } else {
-          var axisLabel = new String (document.getElementById('ExploreDataPage:imageAxisLabelNoYLabel').textContent);
-          var sourceFooter = new String (document.getElementById('ExploreDataPage:imageSourceFooterNoYLabel').textContent);
-          var displaySourceFooter = new String (document.getElementById('ExploreDataPage:displaySourceFooterNoYLabel').textContent);
+          var axisLabel = new String (document.getElementById('ExploreDataPage:imageAxisLabel').textContent);
+          var displaySourceFooter = new String (document.getElementById('ExploreDataPage:displaySourceFooter').textContent);
           var transDataIn = document.getElementById('ExploreDataPage:transformedDataIndexed').textContent;
           var highValStandardIn = new String (document.getElementById('ExploreDataPage:highValIndexed').textContent);
           var highValDouble = parseFloat(highValStandardIn) * 1.1;
           var lowValStandardIn = new String (document.getElementById('ExploreDataPage:lowValIndexed').textContent);
           var lowValDouble = parseFloat(lowValStandardIn) * 0.8; 
       }
+
       
       var defaultView = new String (document.getElementById('ExploreDataPage:defaultView').textContent);
       var intDefaultView = parseInt(defaultView);

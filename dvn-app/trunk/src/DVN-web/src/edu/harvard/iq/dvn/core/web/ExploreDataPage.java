@@ -937,8 +937,11 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
     public void update_IndexYear(){
         Object value= this.selectIndexYear.getValue();
         this.indexDate = (String) value ;
+        yAxisLabel = "  (" + indexDate + " = 100)";
         getDataTable();
+        updateImageFooters();
         resetLineBorder();
+
         FacesContext fc = FacesContext.getCurrentInstance();
         JavascriptContext.addJavascriptCall(fc, "drawVisualization();");
         JavascriptContext.addJavascriptCall(fc, "initLineDetails");
@@ -1081,8 +1084,9 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
            resetLineBorder();
            getSourceList();
            checkUnits();
-           updateImageFooters();
            finalizeForcedIndexMessage();
+           updateImageFooters();
+
            if (!titleEdited){
                 updateGraphTitleForMeasure();
            }
@@ -1104,16 +1108,8 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
     
     private void finalizeForcedIndexMessage(){
         if (!forcedIndexMessage.isEmpty()){
-            String indexYear = "";
-            Iterator i = selectIndexDate.iterator();
-            if (i.hasNext()){
-                SelectItem si = (SelectItem) i.next();
-                indexYear = si.getLabel();
-            }
-            if (!indexYear.isEmpty()){
-                forcedIndexMessage += "  (" + indexYear + " = 100)";
-                setIndexDate(indexYear);
-            }           
+                yAxisLabel = "  (" + indexDate + " = 100)";
+                setIndexDate(indexDate);          
         }        
     }
 
@@ -1232,8 +1228,8 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
            resetLineBorder();
            getSourceList();
            checkUnits();
-           updateImageFooters();
            finalizeForcedIndexMessage();
+           updateImageFooters();
            if (!titleEdited){
                 updateGraphTitleForMeasure();
            }
@@ -1617,6 +1613,7 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
     boolean firstIndexDateSet = false;
     int firstIndexDate = 0;
     int indexYearForCalc = 0;
+    String firstIndexDateCalc = "";
     
     if (new Integer(startYear.toString()).intValue() != 0){
         startYearTransform = new Integer(startYear.toString()).intValue();
@@ -1654,8 +1651,6 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
         String nextStr = (String) inObj;
         String[] columnDetail = nextStr.split("\t");
         String[] test = columnDetail;
-        String col = "";
-        String firstIndexDateCalc = "";
         if (!startYearTransformSet && test.length > 1){
             startYearTransformSet = true;
             startYearTransform = new Integer(test[0]).intValue();
@@ -1666,7 +1661,6 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
         
         addIndexDate = true;
         for (int i=0; i<test.length; i++){
-            col = test[0];
             if (test.length - 1 == maxLength){
                 if (i>0 && (test[i].isEmpty()  || new Float(test[i]).floatValue() == 0)){
                     addIndexDate = false;
@@ -1688,12 +1682,9 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
               }
               selectIndexDate.add(new SelectItem(test[0], test[0]));  
         }
-          if(forcedIndexMessage == null || forcedIndexMessage.isEmpty()){
+
               indexYearForCalc = Math.max(firstIndexDate, indexYearForCalc);
-          } else {
-              indexYearForCalc = firstIndexDate;
-              setIndexDate(firstIndexDateCalc);
-          }
+              indexDate = new Integer(indexYearForCalc).toString();
     }
     
     transformedData = new String[maxLength + 1];

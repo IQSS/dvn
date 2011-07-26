@@ -1184,7 +1184,6 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
     
     public void updateLineLabel(ActionEvent ae){
         String  newLineLabel =  (String) inputTextLineLabel.getValue();
-        System.out.println("newLineLabelis "+ newLineLabel);
             UIComponent uiComponent = ae.getComponent().getParent();
         while (!(uiComponent instanceof HtmlDataTable)){
             uiComponent = uiComponent.getParent();
@@ -1695,9 +1694,6 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
               indexYearForCalc = firstIndexDate;
               setIndexDate(firstIndexDateCalc);
           }
-            
-        System.out.println("startYearTransform "+startYearTransform);
-        System.out.println("endYearTransform "+endYearTransform);
     }
     
     transformedData = new String[maxLength + 1];
@@ -1865,8 +1861,7 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
                 transformedData[i] =  transformedData[i].substring(0, len-2) ;
                 transformedDataIndexed[i] =  transformedDataIndexed[i].substring(0, lenI-2);
             } 
-            System.out.println("transformedData[i] "+ transformedData[i]);
-            System.out.println("transformedDataIndexed[i] "+ transformedDataIndexed[i]);
+
         }
         for (int i = 1; i<maxLength; i++){
             if (transformedData[i] != null){
@@ -1911,8 +1906,7 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
                 transformedDataOut += transformedDataSelect;       
             }            
         }
-        System.out.println("transformedDataOut "+ transformedDataOut);
-        System.out.println("transformedDataIndexedOut "+ transformedDataIndexedOut);
+
     }
     
     private static int countOccurrences(String haystack, char needle)

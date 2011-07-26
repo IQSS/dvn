@@ -285,10 +285,10 @@ table.viTblinx th{background-color:#e6e6fa;font-weight:700;margin:0px;padding:2p
 .dvnGraphLabelBlock div {display:inline;}
 .dvnGraphRemoveLinesButton {margin-left:1em;}
 .dvnGraphResults .icePnlTbSetCnt {padding:12px;}
-.dvnGraphResultsLineBox .dvnGraphResultsVizLineTable .dvnGraphResultsVizLineBlock {padding:4px; margin:0 0 1em 0; border-bottom:1px solid #D9D9D9;}
+.dvnGraphResultsLineBox .dvnGraphResultsVizLineTable .dvnGraphResultsVizLineBlock {margin:0 0 1em 0; border-bottom:1px solid #D9D9D9;}
 .dvnGraphResultsVizLineWrap {overflow:hidden;}
-.dvnGraphResultsVizLineLabelBlock {float:left; width:160px; font-weight:bold;}
-.dvnGraphResultsVizLineLabelBlock div {float:left; width:20px; height:20px; margin-right:.5em;}
+.dvnGraphResultsVizLineLabelBlock {float:left; width:200px; font-weight:bold;}
+.dvnGraphResultsVizLineColor {float:left; width:20px; height:20px; margin-right:.5em;}
 .dvnGraphResultsVizLineEditBlock {display:none;}
 .dvnGraphResultsVizLineLabelBlock.edit .dvnGraphResultsVizLineEditBlock {display:block;}
 .dvnGraphResultsVizLineLabelBlock.edit .dvnGraphResultsVizLineLabel {display:none;}

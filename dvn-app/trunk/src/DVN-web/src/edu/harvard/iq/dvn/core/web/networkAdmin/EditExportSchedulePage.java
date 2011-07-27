@@ -83,14 +83,16 @@ public class EditExportSchedulePage extends VDCBaseBean implements java.io.Seria
     public List<SelectItem> loadSelectExportPeriod() {
         List selectItems = new ArrayList<SelectItem>();
 
-        if (this.getVDCRequestBean().getVdcNetwork().getExportPeriod().equals("")){
+        if (this.getVDCRequestBean().getVdcNetwork().getExportPeriod() == null
+            || this.getVDCRequestBean().getVdcNetwork().getExportPeriod().equals("")){
             selectItems.add(new SelectItem("", "Not Selected"));
         }
 
          selectItems.add(new SelectItem("daily", "Export daily"));
          selectItems.add(new SelectItem("weekly", "Export weekly"));
 
-        if (!this.getVDCRequestBean().getVdcNetwork().getExportPeriod().equals("")){
+        if ((this.getVDCRequestBean().getVdcNetwork().getExportPeriod() != null)
+            && (!this.getVDCRequestBean().getVdcNetwork().getExportPeriod().equals(""))){
             selectItems.add(new SelectItem("none", "Disable export"));
         }
 

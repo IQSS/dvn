@@ -228,7 +228,8 @@
                                    
                                 </div>
                                 <ice:outputLabel value="Select Reference Period" for="selectreferenceperiod" rendered="true"/>
-                                <ice:selectOneMenu id="selectreferenceperiod" rendered="true" onchange="updateIndexYear();"  
+                                <ice:selectOneMenu disabled="#{!ExploreDataPage.displayIndexes}"
+                                                   id="selectreferenceperiod" rendered="true" onchange="updateIndexYear();"  
                                                     binding="#{ExploreDataPage.selectIndexYear}">
                                     <f:selectItems value="#{ExploreDataPage.selectIndexDate}"/>
                                 </ice:selectOneMenu>

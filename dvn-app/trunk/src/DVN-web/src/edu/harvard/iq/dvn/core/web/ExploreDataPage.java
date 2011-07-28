@@ -598,6 +598,10 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
             loadFilterGroupings();
             
         }
+        
+        FacesContext fc = FacesContext.getCurrentInstance();
+        JavascriptContext.addJavascriptCall(fc, "drawVisualization();");
+        JavascriptContext.addJavascriptCall(fc, "initLineDetails");
        
     }
     

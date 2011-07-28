@@ -134,6 +134,7 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
 
     private Long selectedMeasureId = new Long(0);
     private boolean selectedMeasureHasFilterTypes = false;
+    private boolean selectedMeasureHasFilters = false;
 
     private Long selectedFilterGroupId = new Long(0);
     private int groupTypeId = 0;
@@ -371,6 +372,7 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
                 loadFilterGroups(filterGroups);
                 loadFilterGroupTypes(filterGroupTypes, varGrouping.getId());
                 vgUI.setVarGroupTypesUI(filterGroupTypes);
+                selectedMeasureHasFilters = true;
                 if (!filterGroupTypes.isEmpty()){
                     selectedMeasureHasFilterTypes = true;
                 }
@@ -591,6 +593,7 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
     public void resetFiltersForMeasure(ValueChangeEvent ae){
         selectedMeasureId = (Long) ae.getNewValue();
         selectedMeasureHasFilterTypes = false;
+        selectedMeasureHasFilters = false;
         if (selectedMeasureId == null ){
             selectedMeasureId = new Long(0);
         }
@@ -1531,6 +1534,11 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
 
     public HtmlCommandButton getDeleteLineButton() {
         return deleteLineButton;
+    }
+    
+    
+    public boolean isSelectedMeasureHasFilters() {
+        return selectedMeasureHasFilters;
     }
 
     public void setDeleteLineButton(HtmlCommandButton hit) {

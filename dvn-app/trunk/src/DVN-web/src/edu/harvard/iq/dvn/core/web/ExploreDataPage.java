@@ -957,7 +957,7 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
 
     public void update_IndexYear(){
         Object value= this.selectIndexYear.getValue();
-        this.indexDate = (String) value ;
+        this.indexDate = (String) value ;        
         yAxisLabel = "  (" + indexDate + " = 100)";
         getDataTable();
         updateImageFooters();
@@ -973,11 +973,24 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
 
         this.displayIndexes = (Boolean) value;
         if (!this.displayIndexes){
-            forcedIndexMessage = "";            
+            forcedIndexMessage = ""; 
+            yAxisLabel=  getYAxisLabelFromVizLines(); 
+        }  else {
+             yAxisLabel = "  (" + indexDate + " = 100)";
         }
         FacesContext fc = FacesContext.getCurrentInstance();
         JavascriptContext.addJavascriptCall(fc, "drawVisualization();");
         JavascriptContext.addJavascriptCall(fc, "initLineDetails");
+    }
+    
+    private String getYAxisLabelFromVizLines(){
+        
+        for (VisualizationLineDefinition vld: vizLines){                        
+            if (!vld.getMeasureGroup().getUnits().isEmpty()){
+                return vld.getMeasureGroup().getUnits();
+            }
+        }
+        return "";
     }
 
     public void reset_MeasureItems(ValueChangeEvent ae){
@@ -1940,7 +1953,7 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
             }            
         }
 
-        System.out.println("transformedDataOut " + transformedDataOut);
+       
         
     }
     

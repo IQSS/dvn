@@ -1198,16 +1198,23 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
     
     public void updateLineLabel(ActionEvent ae){
         String  newLineLabel =  (String) inputTextLineLabel.getValue();
-            UIComponent uiComponent = ae.getComponent().getParent();
+        String oldLabel = "";        
+        UIComponent uiComponent = ae.getComponent().getParent();
         while (!(uiComponent instanceof HtmlDataTable)){
             uiComponent = uiComponent.getParent();
         }
         HtmlDataTable tempTable = (HtmlDataTable) uiComponent;
         VisualizationLineDefinition vizLine = (VisualizationLineDefinition) tempTable.getRowData();
-        vizLine.setLabel(newLineLabel);
-        
+        oldLabel = vizLine.getLabel();
+        if (newLineLabel.trim().isEmpty()){
+            vizLine.setLabel(oldLabel);
+            inputTextLineLabel.setValue(oldLabel);
+
+        } else {
+            vizLine.setLabel(newLineLabel);
+        }
+                
         getDataTable();
-        
            FacesContext fc = FacesContext.getCurrentInstance();
            JavascriptContext.addJavascriptCall(fc, "drawVisualization();");
            JavascriptContext.addJavascriptCall(fc, "initRoundedCorners();");
@@ -2038,7 +2045,7 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
 
         if (!decoded.isEmpty()){
                 URL imageURLnew = new URL(imageURL);
-                System.out.println("imageURLnew " + imageURLnew);
+                
                 try{
                     BufferedImage image =     ImageIO.read(imageURLnew);
                                   

@@ -942,7 +942,12 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
     public void update_StartYear(){
         Object value= this.selectStartYear.getValue();
         this.startYear = (String) value ;
-        getDataTable(false);
+        getDataTable(true);
+        if (!this.displayIndexes){
+            yAxisLabel=  getYAxisLabelFromVizLines(); 
+        }  else {
+             yAxisLabel = "  (" + indexDate + " = 100)";
+        }
         FacesContext fc = FacesContext.getCurrentInstance();
         JavascriptContext.addJavascriptCall(fc, "drawVisualization();");
         JavascriptContext.addJavascriptCall(fc, "initLineDetails");
@@ -951,7 +956,12 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
     public void update_EndYear(){
         Object value= this.selectEndYear.getValue();
         this.endYear = (String) value ;
-        getDataTable(false);
+        getDataTable(true);
+        if (!this.displayIndexes){
+            yAxisLabel=  getYAxisLabelFromVizLines(); 
+        }  else {
+             yAxisLabel = "  (" + indexDate + " = 100)";
+        }
         FacesContext fc = FacesContext.getCurrentInstance();
         JavascriptContext.addJavascriptCall(fc, "drawVisualization();");
         JavascriptContext.addJavascriptCall(fc, "initLineDetails");
@@ -1663,7 +1673,7 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
     highValStandard = new Float (0);
     highValIndex = new Float(0);
     boolean indexesAvailable = false;
-
+    
     int startYearTransform = 0;
     boolean startYearTransformSet = false;
     int endYearTransform = 3000;
@@ -1751,10 +1761,15 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
             if (!resetIndexYear){
                 indexYearForCalc = Math.max(firstIndexDate, indexYearForCalc);
             } else {
-                indexYearForCalc = firstIndexDate;
+                if (new Integer(this.startYear).intValue() > 0){
+                    indexYearForCalc = Math.max(firstIndexDate, new Integer(this.startYear).intValue());
+                } else {
+                      indexYearForCalc = firstIndexDate;
+                }                  
             }
-              
+                          
               indexDate = new Integer(indexYearForCalc).toString();
+
     }
     
     transformedData = new String[maxLength + 1];

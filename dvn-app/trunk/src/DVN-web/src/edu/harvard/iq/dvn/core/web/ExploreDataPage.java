@@ -942,7 +942,7 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
     public void update_StartYear(){
         Object value= this.selectStartYear.getValue();
         this.startYear = (String) value ;
-        getDataTable();
+        getDataTable(false);
         FacesContext fc = FacesContext.getCurrentInstance();
         JavascriptContext.addJavascriptCall(fc, "drawVisualization();");
         JavascriptContext.addJavascriptCall(fc, "initLineDetails");
@@ -951,7 +951,7 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
     public void update_EndYear(){
         Object value= this.selectEndYear.getValue();
         this.endYear = (String) value ;
-        getDataTable();
+        getDataTable(false);
         FacesContext fc = FacesContext.getCurrentInstance();
         JavascriptContext.addJavascriptCall(fc, "drawVisualization();");
         JavascriptContext.addJavascriptCall(fc, "initLineDetails");
@@ -961,7 +961,7 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
         Object value= this.selectIndexYear.getValue();
         this.indexDate = (String) value ;        
         yAxisLabel = "  (" + indexDate + " = 100)";
-        getDataTable();
+        getDataTable(false);
         updateImageFooters();
         resetLineBorder();
 
@@ -1122,7 +1122,7 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
            this.numberOfColumns = new Long(vizLines.size());
            startYear = "0";
            endYear = "3000";
-           getDataTable();
+           getDataTable(true);
            resetLineBorder();
            getSourceList();
            checkUnits();
@@ -1238,7 +1238,7 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
             vizLine.setLabel(newLineLabel);
         }
                 
-        getDataTable();
+        getDataTable(false);
            FacesContext fc = FacesContext.getCurrentInstance();
            JavascriptContext.addJavascriptCall(fc, "drawVisualization();");
            JavascriptContext.addJavascriptCall(fc, "initRoundedCorners();");
@@ -1273,12 +1273,19 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
             dataTableVizLines.getSavedChildren().clear();
            startYear = "0";
            endYear = "3000";
-           getDataTable();
+           getDataTable(true);
            resetLineBorder();
            getSourceList();
            checkUnits();
            finalizeForcedIndexMessage();
            updateImageFooters();
+           
+           if (!this.displayIndexes){               
+                yAxisLabel=  getYAxisLabelFromVizLines(); 
+            }  else {
+                yAxisLabel = "  (" + indexDate + " = 100)";
+            }
+           
            if (!titleEdited){
                 updateGraphTitleForMeasure();
            }
@@ -1570,7 +1577,7 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
         return yAxisLabel;
     }
 
-    public String getDataTable(){
+    public String getDataTable(boolean resetIndexYear){
 
     StudyFile sf = dt.getStudyFile();
     csvColumnString = "";
@@ -1635,7 +1642,7 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
                String check =  line.toString();
                fileList.add(check);
             }
-            loadDataTableData(fileList);           
+            loadDataTableData(fileList, resetIndexYear);           
             return subsetFileSize.toString();
         }
         return "";
@@ -1646,7 +1653,7 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
         }
     }
 
-    private void loadDataTableData(List inStr){
+    private void loadDataTableData(List inStr, boolean resetIndexYear){
     selectBeginYears = new ArrayList();
     selectEndYears = new ArrayList();
     selectIndexDate = new ArrayList();
@@ -1741,8 +1748,12 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
               }
               selectIndexDate.add(new SelectItem(test[0], test[0]));  
         }
-
-              indexYearForCalc = Math.max(firstIndexDate, indexYearForCalc);
+            if (!resetIndexYear){
+                indexYearForCalc = Math.max(firstIndexDate, indexYearForCalc);
+            } else {
+                indexYearForCalc = firstIndexDate;
+            }
+              
               indexDate = new Integer(indexYearForCalc).toString();
     }
     

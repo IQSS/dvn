@@ -376,7 +376,7 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
                 if (!filterGroupTypes.isEmpty()){
                     selectedMeasureHasFilterTypes = true;
                 }
-                    
+                
                 vgUI.setSelectedGroupId(new Long (0));
                 filterGroupings.add(vgUI);
             }
@@ -601,7 +601,9 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
             loadFilterGroupings();
             
         }
-        
+        filterPanelGroup.getChildren().clear();
+        filterPanelGroup.getSavedChildren().clear();
+        inputLineLabel.setValue("");
         FacesContext fc = FacesContext.getCurrentInstance();
         JavascriptContext.addJavascriptCall(fc, "drawVisualization();");
         JavascriptContext.addJavascriptCall(fc, "initLineDetails");
@@ -656,7 +658,7 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
                     if (!added ){
                         selectItems.add(new SelectItem(varGroup.getId(), varGroup.getName()));
                         if (varGroup.getId().equals(selectedMeasureId)){
-                            resetSelected = false;
+
                         }
                         added = true;
                     }
@@ -997,7 +999,13 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
         int i = (Integer) ae.getNewValue();
         this.selectMeasureItems = loadSelectMeasureItems(i);
         selectedMeasureId = new Long(0);
-
+        selectedMeasureHasFilterTypes = false;
+        selectedMeasureHasFilters = false;
+        loadFilterGroupings();
+        inputLineLabel.setValue("");
+        FacesContext fc = FacesContext.getCurrentInstance();
+        JavascriptContext.addJavascriptCall(fc, "drawVisualization();");
+        JavascriptContext.addJavascriptCall(fc, "initLineDetails");
     }
     
     private VarGroup getMeasureGroupFromId(Long Id) {

@@ -21,6 +21,7 @@
 <ice:inputHidden id="vdcId" value="#{VDCRequest.currentVDCId}"/>
 
 <ice:outputText visible="false" id="columnString" value="#{ExploreDataPage.columnString}"/>
+<ice:outputText visible="false" id="yAxisLabel" value="#{ExploreDataPage.yAxisLabel}"/>
 <ice:outputText visible="false" id="transformedData" value="#{ExploreDataPage.transformedData}"/>
 <ice:outputText visible="false" id="transformedDataIndexed" value="#{ExploreDataPage.transformedDataIndexed}"/>
 <ice:outputText visible="false" id="highValStandard" value="#{ExploreDataPage.highValStandard}"/>
@@ -161,12 +162,14 @@
                     <ice:graphicImage value="/resources/images/icon_warning.18.png" styleClass="dvn_icon"/>
                     <ice:outputText styleClass="vdcHelpText" value=" #{ExploreDataPage.forcedIndexMessage}"/>
                 </div>
-                <div jsfc="ice:panelGroup" styleClass="dvnGraphTitleBlock" rendered="#{!empty ExploreDataPage.graphTitle and (ExploreDataPage.displayType == 1 or ExploreDataPage.displayType == 3)}">
+                <div jsfc="ice:panelGroup" styleClass="dvnGraphTitleBlock" rendered="#{!empty ExploreDataPage.graphTitle }">
                     <ice:outputLabel value="#{ExploreDataPage.graphTitle}" />                   
                 </div>
+                <div jsfc="ice:panelGroup" styleClass="dvnGraphTitleBlock" rendered="#{!empty ExploreDataPage.yAxisLabel }">
+                    <ice:outputLabel value="#{ExploreDataPage.yAxisLabel}" />                   
+                </div>
                 <div id="chart_div" rendered="#{ExploreDataPage.displayType == 1 or ExploreDataPage.displayType == 3}"></div>
-                <div id="chart_image" rendered="#{ExploreDataPage.displayType == 2}"></div>
-                <div jsfc="ice:panelGroup" styleClass="dvnGraphSourceBlock" rendered="#{!empty ExploreDataPage.sources and (ExploreDataPage.displayType == 1 or ExploreDataPage.displayType == 3)}">
+                <div jsfc="ice:panelGroup" styleClass="dvnGraphSourceBlock" rendered="#{!empty ExploreDataPage.sources }">
                     <ice:outputText value="Source: #{ExploreDataPage.sources}"/>
                 </div>
             </div>
@@ -789,16 +792,16 @@ function drawVisualization() {
       }
       
       if (!useIndex){
-          var axisLabel = new String (document.getElementById('ExploreDataPage:imageAxisLabel').textContent);
-          var displaySourceFooter = new String (document.getElementById('ExploreDataPage:displaySourceFooter').textContent);
+          var axisLabel = new String (document.getElementById('ExploreDataPage:imageAxisLabelNoYLabel').textContent);
+          var displaySourceFooter = new String (document.getElementById('ExploreDataPage:displaySourceFooterNoYLabel').textContent);
           var transDataIn = document.getElementById('ExploreDataPage:transformedData').textContent;
           var highValStandardIn = new String (document.getElementById('ExploreDataPage:highValStandard').textContent);
           var highValDouble = parseFloat(highValStandardIn) * 1.1;
           var lowValStandardIn = new String (document.getElementById('ExploreDataPage:lowValStandard').textContent);
           var lowValDouble = parseFloat(lowValStandardIn) * 0.8; 
       } else {
-          var axisLabel = new String (document.getElementById('ExploreDataPage:imageAxisLabel').textContent);
-          var displaySourceFooter = new String (document.getElementById('ExploreDataPage:displaySourceFooter').textContent);
+          var axisLabel = new String (document.getElementById('ExploreDataPage:imageAxisLabelNoYLabel').textContent);
+          var displaySourceFooter = new String (document.getElementById('ExploreDataPage:displaySourceFooterNoYLabel').textContent);
           var transDataIn = document.getElementById('ExploreDataPage:transformedDataIndexed').textContent;
           var highValStandardIn = new String (document.getElementById('ExploreDataPage:highValIndexed').textContent);
           var highValDouble = parseFloat(highValStandardIn) * 1.1;
@@ -874,9 +877,8 @@ function drawVisualization() {
             }
             chartParams = chartParams + "&chxr=1,"+lowValDouble+","+highValDouble + "|0," + calcedStartYear + "," + calcedEndYear;
             var values = "&chd=e:";
-            var title = "&chtt="+escape(fullTitle);
             values = values + encoded;
-            var imageURL = chartBaseUrl + chartParams + title + values;        
+            var imageURL = chartBaseUrl + chartParams + values;        
         
                 
         document.getElementById('ExploreDataPage:imageURL').value = imageURL;
@@ -900,7 +902,7 @@ function drawVisualization() {
         if (intDisType == 2){
 
 
-            document.getElementById('chart_div').innerHTML = "<img src=" + chartBaseUrl + chartParams + title + values + ">";
+            document.getElementById('chart_div').innerHTML = "<img src=" + chartBaseUrl + chartParams + values + ">";
 
              jQuery('.dvnGraphExtractImageButton').css({'display' : 'block'});
              

@@ -45,13 +45,10 @@ public class VarGroupUIList extends SortableList {
     }
     
     public List<VarGroupUI> getVarGroupUIList(){
-        System.out.println("In get getVarGroupUIList = " + this.sortColumnName);
         if (oldSort == null || !oldSort.equals(sortColumnName) ) {
-            System.out.println("!oldSort.eq");
             sort();
             oldSort         = sortColumnName;
             oldAscending    = ascending;
-            System.out.println("oldSort = " + oldSort);
         } else if (oldAscending != ascending) {
 
             Collections.reverse(varGroupUIList);
@@ -71,8 +68,6 @@ public class VarGroupUIList extends SortableList {
             varGroupUIList.clear();
         } else {
             varGroupUIList = new ArrayList();
-            System.out.println("Run Init");
-
         }
         for (Object varGroupInit: varGroupUIListIn ){
             VarGroupUI varGroupCast = (VarGroupUI) varGroupInit;
@@ -146,16 +141,13 @@ public class VarGroupUIList extends SortableList {
         oldSort = this.sortColumnName;
         this.sortColumnName = sortColumnName;   
         sort();
-        System.out.println("This.sortColumnName = " + this.sortColumnName);
+        
     }
 
     @Override
     protected void sort() {
-            System.out.println("in sort");
-            System.out.println("This.sortColumnName = " + this.sortColumnName);
             String orderBy = null;
-            if (sortColumnName == null) {
-                System.out.println("sortColumnName == null");
+            if (sortColumnName == null) {                
                 return;
             }
             
@@ -186,10 +178,8 @@ public class VarGroupUIList extends SortableList {
             }
             
             if (orderBy.equals(TYPE_COLUMN_NAME)){
-                System.out.println("sortColumnName == TYPE_COLUMN_NAME");
                 Collections.sort(varGroupListIn);
             } else {
-                System.out.println("sortColumnName == NAME");
                 Collections.sort(varGroupListIn, new SortVarGroupByName());
             }
             
@@ -201,7 +191,6 @@ public class VarGroupUIList extends SortableList {
                     }
                 }                                
             }
-            System.out.println("sort done");
     }
     
     

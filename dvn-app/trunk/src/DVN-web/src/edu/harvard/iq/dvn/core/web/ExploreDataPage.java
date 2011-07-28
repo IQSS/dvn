@@ -41,6 +41,19 @@ import edu.harvard.iq.dvn.core.visualization.DataVariableMapping;
 import edu.harvard.iq.dvn.core.web.study.StudyUI;
 import edu.harvard.iq.dvn.ingest.dsb.FieldCutter;
 import edu.harvard.iq.dvn.ingest.dsb.impl.DvnJavaFieldCutter;
+import java.awt.Color;
+import java.awt.Font;
+import java.awt.FontMetrics;
+import java.awt.Graphics;
+import java.awt.Graphics2D;
+import java.awt.GraphicsConfiguration;
+import java.awt.GraphicsDevice;
+import java.awt.GraphicsEnvironment;
+import java.awt.Transparency;
+import java.awt.font.FontRenderContext;
+import java.awt.font.LineMetrics;
+import java.awt.geom.AffineTransform;
+import java.awt.image.AffineTransformOp;
 import java.awt.image.BufferedImage;
 
 import java.io.BufferedReader;
@@ -183,6 +196,7 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
     private String sourceLineLabel = "";
     private Long studyFileId;
     private String yAxisLabel = "";
+
     private boolean displayLegend = true;
     private int legendInt = 1;    
     private Integer defaultView = new Integer(2);
@@ -1511,6 +1525,10 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
     public void setDeleteLineButton(HtmlCommandButton hit) {
         this.deleteLineButton = hit;
     }
+    
+    public String getyAxisLabel() {
+        return yAxisLabel;
+    }
 
     public String getDataTable(){
 
@@ -1597,6 +1615,7 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
     lowValIndex = new Float (100);
     highValStandard = new Float (0);
     highValIndex = new Float(0);
+    boolean indexesAvailable = false;
 
     int startYearTransform = 0;
     boolean startYearTransformSet = false;
@@ -1751,8 +1770,8 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
                         if (allfalse && !indexesDone && testYear == indexYearForCalc){
                             for (int q = 1; q<test.length; q++){
                                     indexVals[q] = test[q];
-                                    indexesDone = true;
-                                    
+                                    indexesDone = true; 
+                                    indexesAvailable = true;
                             }
                         }
                     }
@@ -1784,7 +1803,7 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
                                 numerator = new Float (test[i]);
                             }
                             Float denominator = new Float (0);
-                            if (!indexVals[i].isEmpty()){
+                            if (indexesAvailable && indexVals[i] != null && !indexVals[i].isEmpty()){
                                 denominator = new Float (indexVals[i]);
                             }
 
@@ -2018,22 +2037,100 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
                 System.out.println("imageURLnew " + imageURLnew);
                 try{
                     BufferedImage image =     ImageIO.read(imageURLnew);
+                                  
+                    BufferedImage yAxisImage = new BufferedImage(100, 500, BufferedImage.TYPE_INT_ARGB);  
+                    BufferedImage yAxisImageHoriz = new BufferedImage(150, 150, BufferedImage.TYPE_INT_ARGB); 
+                    BufferedImage combinedImage = new BufferedImage(776, 550, BufferedImage.TYPE_INT_ARGB);                    
+                    BufferedImage titleImage = new BufferedImage(676, 50, BufferedImage.TYPE_INT_ARGB );
+                    BufferedImage sourceImage = new BufferedImage(676, 50, BufferedImage.TYPE_INT_ARGB );
+                    BufferedImage yAxisVert = new BufferedImage(150, 150, BufferedImage.TYPE_INT_ARGB);
+                    
+                    Graphics2D yag2 = yAxisImage.createGraphics();
+                    Graphics2D cig2 = combinedImage.createGraphics();
+                    Graphics2D tig2 = titleImage.createGraphics(); 
+                    Graphics2D sig2 = sourceImage.createGraphics();
+                    Graphics2D yahg2 = yAxisImageHoriz.createGraphics();
+                    Graphics2D yaxg2 = yAxisVert.createGraphics();
+
+                    yag2.setColor(Color.WHITE);
+                    tig2.setColor(Color.WHITE);
+                    sig2.setColor(Color.WHITE);
+                    yahg2.setColor(Color.WHITE);
+                    yaxg2.setColor(Color.WHITE);
+                    yag2.fillRect(0, 0, 676, 500);
+                    tig2.fillRect(0, 0, 876, 500); 
+                    sig2.fillRect(0, 0, 876, 500); 
+                    yahg2.fillRect(0, 0, 876, 500);
+                    yaxg2.fillRect(0, 0, 100, 500);
+                    Font font = new Font("Arial", Font.BOLD, 10);
+                    Font hFont = new Font("Arial", Font.PLAIN, 12);
+                    Font tFont = new Font("Arial", Font.BOLD, 14);
+                    Font sFont = new Font("Arial", Font.PLAIN, 12);                    
+                    yag2.setFont(font);
+                    tig2.setFont(tFont);
+                    sig2.setFont(sFont);
+                    yahg2.setFont(hFont);
+
+                    FontRenderContext context = yahg2.getFontRenderContext();
+                    LineMetrics metrics = font.getLineMetrics(yAxisLabel, context);  
+                      
+                       Double width = new Double (font.getStringBounds(yAxisLabel, context).getWidth());
+                       Double halfWidth = new Double(Math.round(width/2));
+                       int iHalf = halfWidth.intValue();
+                       int startpoint = 75 - (iHalf);                  
+
+                    String message = yAxisLabel;
+                    String title = graphTitle;
+                    
+                    String source = "";
+                    
+                    if ( !sources.trim().isEmpty()) {
+                       source = "Source: " + sources;
+                    }
+
+                            
+                    tig2.setPaint(Color.black);
+                    tig2.drawString(title, 10, 20); 
+                    sig2.setPaint(Color.black);
+                    sig2.drawString(source, 10, 20);
+                    yahg2.setPaint(Color.black);
+                    yahg2.drawString(message, startpoint, 20);
+                    
+                    BufferedImage yAxisImageRotated = rotateImage(-105, yAxisImageHoriz ); 
+                    
+                    yaxg2.drawImage ( yAxisImageRotated,
+                           0, 0, 150, 150,
+                           0, 0, 150, 150,
+                           null);
+                    
+                    cig2.drawImage(yAxisImage, 0, 0, null); 
+                    cig2.drawImage(yAxisVert, 0, 160, null);   
+                    cig2.drawImage(image, 50, 50, null);
+                    cig2.drawImage(titleImage, 50, 0, null);
+                    cig2.drawImage(sourceImage, 50, 450, null);
+
+ 
                     if (fileIn != null) {                         
-                        ImageIO.write(image, "png", fileIn);                         
+                        ImageIO.write(combinedImage, "png", fileIn);                         
                     }
 
                     if (pdfFileIn != null) {
                         Document document = new Document();
                         PdfWriter.getInstance(document, new FileOutputStream(pdfFileIn, true));
-                        document.open();
-                        
-                        java.awt.Image awtImg = image;
-                        
+                        document.open();                       
+                        java.awt.Image awtImg = combinedImage;                       
                         com.itextpdf.text.Image image2 =   com.itextpdf.text.Image.getInstance(awtImg, null);
-                        image2.scaleToFit(540f, 400f);
+                        image2.scaleToFit(590f, 500f);
                         document.add(image2);
                         document.close();
                     }
+                    
+                                        
+                    yag2.dispose();
+                    tig2.dispose(); 
+                    sig2.dispose();
+                    yahg2.dispose();
+                    cig2.dispose();
 
                 } catch (IIOException io){
                     System.out.println(io.getMessage().toString());
@@ -2055,9 +2152,17 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
             System.out.println(io.getMessage());
         }
     }
-
     
 
+    public BufferedImage rotateImage( int angle, BufferedImage bufferedImage) {
+
+        AffineTransform transform = new AffineTransform();
+        transform.rotate((3.*Math.PI)/2., bufferedImage.getWidth()/2, bufferedImage.getHeight()/2);
+        AffineTransformOp op = new AffineTransformOp(transform, AffineTransformOp.TYPE_BILINEAR);
+        bufferedImage = op.filter(bufferedImage, null);
+        return bufferedImage;
+    }
+       
     private void addZipEntry(ZipOutputStream zout, String inputFileName, String outputFileName) throws IOException{
         FileInputStream tmpin = new FileInputStream(inputFileName);
         byte[] dataBuffer = new byte[8192];
@@ -2250,12 +2355,12 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
             sources = true;
             for (DataVariableMapping dvm: sourceList){
             String checkSource = dvm.getGroup().getName();
-            if (!checkSource.isEmpty()){
+            if (!checkSource.trim().isEmpty()){
                 if (set.contains(checkSource)){
 
                     } else {
                         set.add(checkSource);
-                        if (returnString.isEmpty()){
+                        if (returnString.isEmpty() ){
                             returnString = returnString + "Source:  " + checkSource;
                         } else {
                             returnString = returnString + ", " + checkSource;
@@ -2288,7 +2393,7 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
               endOfLine = Math.min(sourcesWLabel.length(), previousSpace + 73);
           }
 
-          
+          /*
 
           for (String sourceLine : sourceLines){
               axisLabelTemp += ",x";
@@ -2306,7 +2411,8 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
               lineNum++;
               lineNumNoY++;
           }
-
+           * 
+           */
         }
 
           

@@ -1956,12 +1956,8 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
                         if (yr == testYr ){
                             getVal = transformedDataSplit[t+1];
                         }
-                    }
-                    
-                       transformedDataSelect += getVal + ","; 
-                    
-                    
-                    
+                    }                    
+                       transformedDataSelect += getVal + ",";                                         
                 }               
                 for (int yr = startYear; yr <= endYear; yr++ ){
                     String getValIndex = "";
@@ -1977,7 +1973,16 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
                     }
                     transformedDataIndexSelect += getValIndex + ",";
                 }
+                
 
+                while (dataHasGaps(transformedDataSelect)){
+                    transformedDataSelect = fillInGaps(transformedDataSelect);
+                }
+
+                while (dataHasGaps(transformedDataIndexSelect)){
+                    transformedDataIndexSelect = fillInGaps(transformedDataIndexSelect);
+                }
+                
                 if (i > 1){
                     transformedDataOut += ";";
                     transformedDataIndexedOut += ";";
@@ -1989,6 +1994,65 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
 
        
         
+    }
+    
+    private boolean dataHasGaps(String stringIn){
+        List <String> list = Arrays.asList(stringIn.split(","));
+        boolean firstVal = false;
+        boolean endBlank = false;
+        boolean retVal = false;
+        
+        for (String checkString: list){
+            if (!checkString.trim().isEmpty() && new Double (checkString.trim()).doubleValue() > 0){
+                firstVal = true;
+                if (endBlank) {
+                    retVal = true;
+                }
+            }
+            if (firstVal && checkString.isEmpty()){
+                endBlank = true;
+            }
+            
+            
+        }
+        
+        return retVal;
+    }
+    
+    private String fillInGaps(String stringIn){
+        
+           String[] stringInSplit = stringIn.split(",");
+           Double firstVal =  new Double(0);
+           Double endVal = new Double(0);
+           boolean gapFound = false;
+           int indexUpdate = 0;
+           int firstIndex = 0;
+           int lastIndex = 0;
+           for (int i = 0; i < stringInSplit.length; i++ ){
+               if (!gapFound  && !stringInSplit[i].trim().isEmpty()){
+                   firstVal = new Double (stringInSplit[i].trim());
+                   firstIndex = i;
+               }
+               if (!gapFound  && firstVal > 0 && stringInSplit[i].trim().isEmpty()){
+                   gapFound = true;
+                   indexUpdate = i;
+               }
+               if (gapFound && !stringInSplit[i].trim().isEmpty()  && lastIndex == 0 ){
+                   endVal = new Double (stringInSplit[i].trim());
+                   lastIndex = i;                   
+               }                              
+           }
+           Double interVal = (firstVal * (lastIndex - indexUpdate) + endVal) / (lastIndex - firstIndex) ;
+           System.out.println("calc params" + firstVal +" " + 
+                   endVal +" " +  indexUpdate +" " + firstIndex +" " + lastIndex);
+           stringInSplit[indexUpdate] = interVal.toString();
+           
+           String retString = "";
+           for (int i = 0; i < stringInSplit.length; i++ ){
+                retString += stringInSplit[i] + ",";              
+           }
+        
+        return retString;
     }
     
     private static int countOccurrences(String haystack, char needle)

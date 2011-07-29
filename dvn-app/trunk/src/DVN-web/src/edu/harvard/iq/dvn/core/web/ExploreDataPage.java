@@ -2043,8 +2043,6 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
                }                              
            }
            Double interVal = (firstVal * (lastIndex - indexUpdate) + endVal) / (lastIndex - firstIndex) ;
-           System.out.println("calc params" + firstVal +" " + 
-                   endVal +" " +  indexUpdate +" " + firstIndex +" " + lastIndex);
            stringInSplit[indexUpdate] = interVal.toString();
            
            String retString = "";

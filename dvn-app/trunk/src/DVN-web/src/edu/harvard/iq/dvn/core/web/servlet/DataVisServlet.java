@@ -146,8 +146,6 @@ public class DataVisServlet extends HttpServlet {
             // provide more info in the error response;
         }
 
-        //deliverContent (file, fileDownloadObject, res);
-
         if (out != null) {
             try {
                 out.close();

@@ -162,14 +162,17 @@
                     <ice:graphicImage value="/resources/images/icon_warning.18.png" styleClass="dvn_icon"/>
                     <ice:outputText styleClass="vdcHelpText" value=" #{ExploreDataPage.forcedIndexMessage}"/>
                 </div>
-                <div jsfc="ice:panelGroup" styleClass="dvnGraphTitleBlock" rendered="#{!empty ExploreDataPage.graphTitle }">
+                <div jsfc="ice:panelGroup" styleClass="dvnGraphTitleBlock" rendered="#{!empty ExploreDataPage.graphTitle  
+                                                                                       and (ExploreDataPage.displayType == 1 or ExploreDataPage.displayType == 3) }">
                     <ice:outputLabel value="#{ExploreDataPage.graphTitle}" />                   
                 </div>
-                <div jsfc="ice:panelGroup" styleClass="dvnGraphTitleBlock" rendered="#{!empty ExploreDataPage.yAxisLabel }">
+                <div jsfc="ice:panelGroup" styleClass="dvnGraphTitleBlock" rendered="#{!empty ExploreDataPage.yAxisLabel 
+                                                                                        and (ExploreDataPage.displayType == 1 or ExploreDataPage.displayType == 3)}">
                     <ice:outputLabel value="#{ExploreDataPage.yAxisLabel}" />                   
                 </div>
                 <div id="chart_div" rendered="#{ExploreDataPage.displayType == 1 or ExploreDataPage.displayType == 3}"></div>
-                <div jsfc="ice:panelGroup" styleClass="dvnGraphSourceBlock" rendered="#{!empty ExploreDataPage.sources }">
+                <div jsfc="ice:panelGroup" styleClass="dvnGraphSourceBlock" rendered="#{!empty ExploreDataPage.sources   
+                                                                                        and (ExploreDataPage.displayType == 1 or ExploreDataPage.displayType == 3)}">
                     <ice:outputText value="Source: #{ExploreDataPage.sources}"/>
                 </div>
             </div>
@@ -863,7 +866,9 @@ function drawVisualization() {
       parseData(data, intDisType, intStartYear, intEndYear, useIndex, colStr);
       var icolStr = new String (document.getElementById('ExploreDataPage:imageColumnString').textContent);
 
-            var displayTitle = new String (document.getElementById('ExploreDataPage:graphTitleHidden').textContent);  
+            var displayTitle = new String (document.getElementById('ExploreDataPage:graphTitleHidden').textContent); 
+            var yAxisStringParam = new String (document.getElementById('ExploreDataPage:yAxisLabel').textContent);
+            var sourceStringParam =  new String (document.getElementById('ExploreDataPage:sourceText').textContent);
             var chartBaseUrl = "http://chart.apis.google.com/chart?";
             var chartParams = "cht=lc&chco=4684EE,DC3912,FF9900,008000,4942CC,990099,FF80F2,7FD127";
 
@@ -909,9 +914,15 @@ function drawVisualization() {
         if (intDisType == 2){
 
             var googleImageURL = chartBaseUrl + chartParams + values;
-            var graphTitleParam = document.getElementById('ExploreDataPage:graphTitleHidden').value;
-            var yAxisLabelParam = document.getElementById('ExploreDataPage:yAxisLabel').value;
+            var graphTitleParam = escape(displayTitle);
+            var yAxisLabelParam = escape(yAxisStringParam);
+            if ( sourceStringParam != ""){
+                sourcesParam = escape ("Source: " + sourceStringParam );
+            } else {
+                sourcesParam = "";
+            }
             var sourcesParam = document.getElementById('ExploreDataPage:sourceText').value;
+
             var compositeImageURL = "/dvn/DataVisImage/?graphTitle=" + graphTitleParam + "&yAxisLabel=" + yAxisLabelParam + "&sources=" + sourcesParam + "&googleImageUrl=" + escape(googleImageURL) ;
             document.getElementById('chart_div').innerHTML = "<img src=" + compositeImageURL + ">";
 

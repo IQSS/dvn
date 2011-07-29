@@ -181,16 +181,31 @@
                     <ice:panelTab id="display" label="Display">
                         <div jsfc="ice:panelGroup" id="layoutPanel2" panelLayout="flow">
                             <div class="dvnGraphDisplayBlock">
-                                <ice:outputLabel value="Display" for="graphdisplay"/>
-                                <ice:selectOneMenu id="graphdisplay"  binding="#{ExploreDataPage.selectGraphType}" onchange="updateDisplayType();" value="#{ExploreDataPage.displayType}" >
-                                    <f:selectItems value="#{ExploreDataPage.selectView}"/>
-                                </ice:selectOneMenu>
-                                
+                                <div>
+                                    <ice:outputLabel value="Display" for="graphdisplay"/>
+                                    <ice:selectOneMenu id="graphdisplay" binding="#{ExploreDataPage.selectGraphType}" onchange="updateDisplayType();" value="#{ExploreDataPage.displayType}" >
+                                        <f:selectItems value="#{ExploreDataPage.selectView}"/>
+                                    </ice:selectOneMenu>
+                                </div>
                                 <div>
                                     <ice:outputLabel value="Title" for="graphtitleIn"/>
                                     <ice:inputText id="graphTitleIn" size="38" binding="#{ExploreDataPage.inputGraphTitle}"
                                                    value ="#{ExploreDataPage.graphTitle}"
                                                    onkeyup="delayedRequestTitle(form,this,event);"></ice:inputText>
+                                </div>
+                                <div>
+                                    <ice:outputLabel value="Size" for="graphdimensions"/>
+                                    <!--<ice:selectOneMenu id="graphdimensions" binding="#{ExploreDataPage.selectGraphSize}" onchange="updateGraphSize();" value="#{ExploreDataPage.graphSize}" >
+                                        <f:selectItems value="#{ExploreDataPage.selectSize}"/>
+                                    </ice:selectOneMenu>-->
+                                </div>
+                                <div class="dvnShowLegendBlock">
+                                    <ice:outputLabel value="Legend Location" for="displayLegend" rendered="true"/>
+                                    <ice:selectOneRadio id="displayLegendRadio" styleClass="displayLegendRadio" onclick="resetLegend();" value="#{ExploreDataPage.legendInt}">
+                                        <f:selectItem itemLabel="Right" itemValue="1" />
+                                        <f:selectItem itemLabel="Bottom" itemValue="2" />
+                                        <f:selectItem itemLabel="None" itemValue="3" />
+                                    </ice:selectOneRadio>
                                 </div>
                             </div>
 
@@ -209,14 +224,6 @@
                                     </ice:selectOneMenu>
                                 </div>
 
-                            </div>
-                            <div class="dvnShowLegendBlock">
-                                 <ice:outputLabel value="Show Graph Legend" for="displayLegend" rendered="true"/>
-                                <ice:selectOneRadio id="displayLegendRadio" styleClass="displayLegendRadio" onclick="resetLegend();" value="#{ExploreDataPage.legendInt}">
-                                    <f:selectItem itemLabel="Right" itemValue="1" />
-                                    <f:selectItem itemLabel="Bottom" itemValue="2" />
-                                    <f:selectItem itemLabel="None" itemValue="3" />
-                                </ice:selectOneRadio>
                             </div>
 
                             <div class="dvnGraphIndicesBlock">

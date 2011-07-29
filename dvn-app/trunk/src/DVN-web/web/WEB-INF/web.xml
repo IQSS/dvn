@@ -176,6 +176,10 @@
         <servlet-class>edu.harvard.iq.dvn.core.web.servlet.FileDownloadServlet</servlet-class>
     </servlet>
     <servlet>
+        <servlet-name>DataVisServlet</servlet-name>
+        <servlet-class>edu.harvard.iq.dvn.core.web.servlet.DataVisServlet</servlet-class>
+    </servlet>
+    <servlet>
         <servlet-name>VDCServlet</servlet-name>
         <servlet-class>edu.harvard.iq.dvn.core.web.servlet.VDCServlet</servlet-class>
     </servlet>
@@ -241,6 +245,10 @@
     <servlet-mapping>
         <servlet-name>FileDownloadServlet</servlet-name>
         <url-pattern>/FileDownload/*</url-pattern>
+    </servlet-mapping>  
+    <servlet-mapping>
+        <servlet-name>DataVisServlet</servlet-name>
+        <url-pattern>/DataVisImage/*</url-pattern>
     </servlet-mapping>  
     <servlet-mapping>
         <servlet-name>VDCServlet</servlet-name>

@@ -901,8 +901,12 @@ function drawVisualization() {
         }
         if (intDisType == 2){
 
-
-            document.getElementById('chart_div').innerHTML = "<img src=" + chartBaseUrl + chartParams + values + ">";
+            var googleImageURL = chartBaseUrl + chartParams + values;
+            var graphTitleParam = document.getElementById('ExploreDataPage:graphTitleHidden').value;
+            var yAxisLabelParam = document.getElementById('ExploreDataPage:yAxisLabel').value;
+            var sourcesParam = document.getElementById('ExploreDataPage:sourceText').value;
+            var compositeImageURL = "/dvn/DataVisImage/?graphTitle=" + graphTitleParam + "&yAxisLabel=" + yAxisLabelParam + "&sources=" + sourcesParam + "&googleImageUrl=" + escape(googleImageURL) ;
+            document.getElementById('chart_div').innerHTML = "<img src=" + compositeImageURL + ">";
 
              jQuery('.dvnGraphExtractImageButton').css({'display' : 'block'});
              

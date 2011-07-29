@@ -1701,7 +1701,7 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
         endYearTransformSet = true;
     }
     
-    if (!indexDate.isEmpty()){
+    if (indexDate != null && !indexDate.isEmpty()){
         indexYearForCalc = new Integer(indexDate.toString()).intValue();
     }
 
@@ -2053,8 +2053,7 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
         return retString;
     }
     
-    private static int countOccurrences(String haystack, char needle)
-{
+    private static int countOccurrences(String haystack, char needle){
     int count = 0;
     for (int i=0; i < haystack.length(); i++)
     {

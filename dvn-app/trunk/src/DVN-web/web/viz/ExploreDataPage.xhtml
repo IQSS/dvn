@@ -916,12 +916,7 @@ function drawVisualization() {
             var googleImageURL = chartBaseUrl + chartParams + values;
             var graphTitleParam = escape(displayTitle);
             var yAxisLabelParam = escape(yAxisStringParam);
-            if ( sourceStringParam != ""){
-                sourcesParam = escape ("Source: " + sourceStringParam );
-            } else {
-                sourcesParam = "";
-            }
-            var sourcesParam = document.getElementById('ExploreDataPage:sourceText').value;
+            var sourcesParam = escape(sourceStringParam);
 
             var compositeImageURL = "/dvn/DataVisImage/?graphTitle=" + graphTitleParam + "&yAxisLabel=" + yAxisLabelParam + "&sources=" + sourcesParam + "&googleImageUrl=" + escape(googleImageURL) ;
             document.getElementById('chart_div').innerHTML = "<img src=" + compositeImageURL + ">";

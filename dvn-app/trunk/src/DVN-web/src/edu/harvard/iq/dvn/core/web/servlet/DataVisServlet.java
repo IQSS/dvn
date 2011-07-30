@@ -92,18 +92,7 @@ public class DataVisServlet extends HttpServlet {
         try {
             String decoded = URLDecoder.decode(googleImageURL, "UTF-8");
 
-            if (!graphTitle.isEmpty()){
-                String graphTitleOut = "";
-                if (graphTitle.length() > 80  && graphTitle.indexOf("|") == -1 ){
-                    int strLen = graphTitle.length();
-                    int half = graphTitle.length()/2;
-                    int nextSpace = graphTitle.indexOf(" ",  half);
-                    graphTitleOut = graphTitle.substring(0, nextSpace) + "|" + graphTitle.substring(nextSpace + 1, strLen);
-                    graphTitle = graphTitleOut;
-                } else {
-                    graphTitleOut = graphTitle;
-                }
-            }
+
 
             out = res.getOutputStream();
 
@@ -163,11 +152,11 @@ public class DataVisServlet extends HttpServlet {
 
     private BufferedImage getCompositeImage(BufferedImage image){
         BufferedImage yAxisImage = new BufferedImage(100, 500, BufferedImage.TYPE_INT_ARGB);
-        BufferedImage yAxisImageHoriz = new BufferedImage(150, 150, BufferedImage.TYPE_INT_ARGB);
+        BufferedImage yAxisImageHoriz = new BufferedImage(200, 200, BufferedImage.TYPE_INT_ARGB);
         BufferedImage combinedImage = new BufferedImage(776, 550, BufferedImage.TYPE_INT_ARGB);
         BufferedImage titleImage = new BufferedImage(676, 50, BufferedImage.TYPE_INT_ARGB );
         BufferedImage sourceImage = new BufferedImage(676, 50, BufferedImage.TYPE_INT_ARGB );
-        BufferedImage yAxisVert = new BufferedImage(150, 150, BufferedImage.TYPE_INT_ARGB);
+        BufferedImage yAxisVert = new BufferedImage(200, 200, BufferedImage.TYPE_INT_ARGB);
 
         Graphics2D yag2 = yAxisImage.createGraphics();
         Graphics2D cig2 = combinedImage.createGraphics();
@@ -187,23 +176,13 @@ public class DataVisServlet extends HttpServlet {
         yahg2.fillRect(0, 0, 876, 500);
         yaxg2.fillRect(0, 0, 100, 500);
         Font font = new Font("Arial", Font.BOLD, 10);
-        Font hFont = new Font("Arial", Font.PLAIN, 12);
+        Font hFont = new Font("Arial", Font.BOLD, 12);
         Font tFont = new Font("Arial", Font.BOLD, 14);
-        Font sFont = new Font("Arial", Font.PLAIN, 12);
+        Font sFont = new Font("Arial", Font.PLAIN, 10);
         yag2.setFont(font);
         tig2.setFont(tFont);
         sig2.setFont(sFont);
         yahg2.setFont(hFont);
-
-        FontRenderContext context = yahg2.getFontRenderContext();
-
-        Double width = new Double (font.getStringBounds(yAxisLabel, context).getWidth());
-        Double halfWidth = new Double(Math.round(width/2));
-        int iHalf = halfWidth.intValue();
-        int startpoint = 75 - (iHalf);
-
-        String message = yAxisLabel;
-        String title = graphTitle;
 
         String source = "";
 
@@ -211,51 +190,117 @@ public class DataVisServlet extends HttpServlet {
              source = "Source: " + sources;
         }
 
-
         tig2.setPaint(Color.black);
-        tig2.drawString(title, 10, 20);
         sig2.setPaint(Color.black);
-        sig2.drawString(source, 10, 20);
         yahg2.setPaint(Color.black);
 
-
-        writeStringToImage(yAxisImageHoriz, yahg2, yAxisLabel, true );
-
+        writeStringToImage(yAxisImageHoriz, yahg2, yAxisLabel, true, 20, 10);
+        writeStringToImage(titleImage, tig2, graphTitle, true, 20, 10 );
+        writeStringToImage(sourceImage, sig2, source, false, 15, 10 );
+        
         BufferedImage yAxisImageRotated = rotateImage(yAxisImageHoriz );
 
         yaxg2.drawImage ( yAxisImageRotated,
-              0, 0, 150, 150,
-              0, 0, 150, 150,
+              0, 0, 200, 200,
+              0, 0, 200, 200,
         null);
 
         cig2.drawImage(yAxisImage, 0, 0, null);
-        cig2.drawImage(yAxisVert, 0, 160, null);
+        cig2.drawImage(yAxisVert, 0, 120, null);
         cig2.drawImage(image, 50, 50, null);
         cig2.drawImage(titleImage, 50, 0, null);
         cig2.drawImage(sourceImage, 50, 450, null);
+        
+        BufferedImage smushedCombinedImage = new BufferedImage(590, 500, BufferedImage.TYPE_INT_ARGB);
+        Graphics2D scig2 = yAxisVert.createGraphics();
+        
+        scig2.drawImage ( yAxisImageRotated,
+              0, 0, 590, 500,
+              0, 0, 776, 550,
+        null);
 
         yag2.dispose();
         tig2.dispose();
         sig2.dispose();
         yahg2.dispose();
         cig2.dispose();
+        scig2.dispose();
+        
+        combinedImage = scaleImage(combinedImage);
+        
         return combinedImage;
     }
 
-    private void writeStringToImage(BufferedImage imageIn, Graphics2D gr, String stringIn, boolean center){
+    private BufferedImage scaleImage(BufferedImage img){
+        final float SCALE = .75f;
+
+        float newHeight = SCALE * img.getHeight(null);
+        int height = Math.round(newHeight);
+        
+        float newWidth = SCALE * img.getWidth(null);
+        int width = Math.round(newWidth);
+
+        BufferedImage bi = new BufferedImage( width,
+                                             height,
+                                             BufferedImage.TYPE_INT_ARGB);
+
+        Graphics2D grph = (Graphics2D) bi.getGraphics();
+        grph.scale(SCALE, SCALE);
+
+        grph.drawImage(img, 0, 0, null);
+        grph.dispose();
+        
+        return bi;
+
+    }
+    
+    
+    private void writeStringToImage(BufferedImage imageIn, 
+            Graphics2D gr, String stringIn, boolean center, int startHeight, int startWidth){
 
         int width = imageIn.getWidth();
         int height = imageIn.getHeight();
+        String splitString1 = "";
+        String splitString2 = "";
         FontRenderContext context = gr.getFontRenderContext();
-        Double strWidth = new Double (gr.getFont().getStringBounds(stringIn, context).getWidth());
+        Double strWidth = new Double (gr.getFont().getStringBounds(stringIn, context).getWidth());        
+                
+        if (strWidth > width){            
+            int strLen = stringIn.length();
+            int half = stringIn.length()/2;
+            int nextSpace = stringIn.indexOf(" ",  half);                
+            splitString1 = stringIn.substring(0, nextSpace);
+            splitString2 = stringIn.substring(nextSpace + 1, strLen);
+        }
         if (strWidth < width){
             if (center){
                 Double halfWidth = new Double(Math.round(strWidth/2));
                 int iHalf = halfWidth.intValue();
                 int startpoint = width/2 - (iHalf);
-                gr.drawString(stringIn, startpoint, 20);
+                gr.drawString(stringIn, startpoint, startHeight * 2);
+            } else {
+                gr.drawString(stringIn, startWidth, startHeight);
             }
+        }  else {
+            if (center){
+                Double strWidth1 = new Double (gr.getFont().getStringBounds(splitString1, context).getWidth()); 
+                Double strWidth2 = new Double (gr.getFont().getStringBounds(splitString2, context).getWidth()); 
+                Double halfWidth1 = new Double(Math.round(strWidth1/2));
+                Double halfWidth2 = new Double(Math.round(strWidth2/2));
+                int iHalf1 = halfWidth1.intValue();
+                int iHalf2 = halfWidth2.intValue();
+                int startpoint1 = width/2 - (iHalf1);
+                int startpoint2 = width/2 - (iHalf2);
+                gr.drawString(splitString1, startpoint1, startHeight);
+                gr.drawString(splitString2, startpoint2, startHeight * 2);
+            } else {
+                gr.drawString(splitString1, startWidth, startHeight);
+                gr.drawString(splitString2, startWidth, startHeight * 2);
+            }
+            
         }
+        
+        
     }
 
 

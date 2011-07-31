@@ -2144,20 +2144,6 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
         try {
             String decoded = URLDecoder.decode(imageURL, "UTF-8");
 
-            if (!graphTitle.isEmpty()){
-                String graphTitleOut = "";
-                if (graphTitle.length() > 80  && graphTitle.indexOf("|") == -1 ){
-                    int strLen = graphTitle.length();
-                    int half = graphTitle.length()/2;
-                    int nextSpace = graphTitle.indexOf(" ",  half);
-                    graphTitleOut = graphTitle.substring(0, nextSpace) + "|" + graphTitle.substring(nextSpace + 1, strLen);
-                    graphTitle = graphTitleOut;
-                } else {
-                    graphTitleOut = graphTitle;
-                }
-            }
-
-
         if (!decoded.isEmpty()){
                 URL imageURLnew = new URL(imageURL);
                 

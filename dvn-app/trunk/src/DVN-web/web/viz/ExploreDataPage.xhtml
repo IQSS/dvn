@@ -21,6 +21,7 @@
 <ice:inputHidden id="vdcId" value="#{VDCRequest.currentVDCId}"/>
 
 <ice:outputText visible="false" id="columnString" value="#{ExploreDataPage.columnString}"/>
+<ice:outputText visible="false" id="legendInt" value="#{ExploreDataPage.legendInt}"/>
 <ice:outputText visible="false" id="yAxisLabel" value="#{ExploreDataPage.yAxisLabel}"/>
 <ice:outputText visible="false" id="transformedData" value="#{ExploreDataPage.transformedData}"/>
 <ice:outputText visible="false" id="transformedDataIndexed" value="#{ExploreDataPage.transformedDataIndexed}"/>
@@ -56,6 +57,7 @@
 <ice:commandButton visible="false" id="updateUseIndex" action="#{ExploreDataPage.updateUseIndex}"/>
 <ice:selectBooleanCheckbox visible="false" id="displayIndicesHidden" value="#{ExploreDataPage.displayIndexes}" rendered="true" />                                                               
 <ice:commandButton visible="false" id="updateStartYear" action="#{ExploreDataPage.update_StartYear}"/>
+<ice:commandButton visible="false" id="updateLegendPosition" action="#{ExploreDataPage.update_LegendPosition}"/>
 <ice:commandButton visible="false" id="updateEndYear" action="#{ExploreDataPage.update_EndYear}"/>
 <ice:commandButton visible="false" id="updateIndexYear" action="#{ExploreDataPage.update_IndexYear}"/>
 
@@ -204,7 +206,8 @@
                                 </div>
                                 <div class="dvnShowLegendBlock">
                                     <ice:outputLabel value="Legend Location" for="displayLegend" rendered="true"/>
-                                    <ice:selectOneRadio id="displayLegendRadio" styleClass="displayLegendRadio" onclick="resetLegend();" value="#{ExploreDataPage.legendInt}">
+                                    <ice:selectOneRadio id="displayLegendRadio" styleClass="displayLegendRadio" onclick="resetLegend();" value="#{ExploreDataPage.legendInt}" 
+                                                        binding ="#{ExploreDataPage.selectLegendPosition}">
                                         <f:selectItem itemLabel="Right" itemValue="1" />
                                         <f:selectItem itemLabel="Bottom" itemValue="2" />
                                         <f:selectItem itemLabel="None" itemValue="3" />
@@ -853,11 +856,15 @@ function drawVisualization() {
       myDateList = endYear.split('-');
       var intEndYear = parseInt(myDateList[0]);
       var buttonVal = getRadioValue("displayLegendRadio");
+      
+      var buttonValIn = new String (document.getElementById('ExploreDataPage:legendInt').textContent);
+      var buttonValIn1 = parseInt(buttonValIn);
+
       var legendAlignment = 'r';
-        if (buttonVal == 2){
+        if (buttonValIn1 == 2){
            legendAlignment = 'b';
         }
-        if (buttonVal == 3){
+        if (buttonValIn1 == 3){
            legendAlignment = 'none';
         }
       var data = new google.visualization.DataTable();
@@ -874,10 +881,14 @@ function drawVisualization() {
 
             chartParams = chartParams + "&chs=676x400";             
 
-            if ((highValDouble - lowValDouble) > 10){
+            if ((highValDouble - lowValDouble) >= 10){
                chartParams = chartParams + "&chxs=1N*sz0*,000000|0N*0*,000000|2N,000000|3N,000000|4N,000000"; 
-            } else {
+            } 
+            if ((highValDouble - lowValDouble) < 10  && (highValDouble - lowValDouble) >= 4 ) {
                chartParams = chartParams + "&chxs=1N*sz1*,000000|0N*0*,000000|2N,000000|3N,000000|4N,000000";  
+            }
+            if ((highValDouble - lowValDouble) < 4 ) {
+               chartParams = chartParams + "&chxs=1N*sz2*,000000|0N*0*,000000|2N,000000|3N,000000|4N,000000";  
             }
             chartParams = chartParams + "&chxt="+axisLabel;
             var labelString = escape( displaySourceFooter);   
@@ -964,7 +975,7 @@ function resetIndices(){
 
 function resetLegend(){
      
-     setTimeout(function(){drawVisualization();}, 500);
+      document.getElementById('ExploreDataPage:updateLegendPosition').click();
 }
 
 function updateEndYear(){

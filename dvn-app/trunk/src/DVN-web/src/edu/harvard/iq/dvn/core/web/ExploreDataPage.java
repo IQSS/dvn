@@ -28,6 +28,7 @@ import com.icesoft.faces.component.ext.HtmlDataTable;
 import com.icesoft.faces.component.ext.HtmlInputText;
 import com.icesoft.faces.component.ext.HtmlSelectBooleanCheckbox;
 import com.icesoft.faces.component.ext.HtmlSelectOneMenu;
+import com.icesoft.faces.component.ext.HtmlSelectOneRadio;
 import com.icesoft.faces.context.Resource;
 import com.icesoft.faces.context.effects.JavascriptContext;
 import com.itextpdf.text.Document;
@@ -952,6 +953,15 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
         JavascriptContext.addJavascriptCall(fc, "drawVisualization();");
         JavascriptContext.addJavascriptCall(fc, "initLineDetails");
     }
+    
+    public void update_LegendPosition(){
+        Object value= this.selectLegendPosition.getValue();
+        Integer intVal =  (Integer) value;
+        this.legendInt = intVal.intValue();
+        FacesContext fc = FacesContext.getCurrentInstance();
+        JavascriptContext.addJavascriptCall(fc, "drawVisualization();");
+        JavascriptContext.addJavascriptCall(fc, "initLineDetails");
+    }
 
     public void update_EndYear(){
         Object value= this.selectEndYear.getValue();
@@ -1246,8 +1256,7 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
 
         } else {
             vizLine.setLabel(newLineLabel);
-        }
-                
+        }  
         getDataTable(false);
            FacesContext fc = FacesContext.getCurrentInstance();
            JavascriptContext.addJavascriptCall(fc, "drawVisualization();");
@@ -2712,6 +2721,16 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
 
     public void setSelectGraphType(HtmlSelectOneMenu selectGraphType) {
         this.selectGraphType = selectGraphType;
+    }
+    
+    HtmlSelectOneRadio selectLegendPosition;
+
+    public HtmlSelectOneRadio getSelectLegendPosition() {
+        return selectLegendPosition;
+    }
+
+    public void setSelectLegendPosition(HtmlSelectOneRadio selectLegendPosition) {
+        this.selectLegendPosition = selectLegendPosition;
     }
 
 

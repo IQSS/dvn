@@ -1991,12 +1991,11 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
                     }
                     transformedDataIndexSelect += getValIndex + ",";
                 }
-                
 
                 while (dataHasGaps(transformedDataSelect)){
                     transformedDataSelect = fillInGaps(transformedDataSelect);
                 }
-
+                
                 while (dataHasGaps(transformedDataIndexSelect)){
                     transformedDataIndexSelect = fillInGaps(transformedDataIndexSelect);
                 }
@@ -2027,7 +2026,7 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
                     retVal = true;
                 }
             }
-            if (firstVal && checkString.isEmpty()){
+            if (firstVal && checkString.trim().isEmpty()){
                 endBlank = true;
             }
             
@@ -2067,7 +2066,7 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
            for (int i = 0; i < stringInSplit.length; i++ ){
                 retString += stringInSplit[i] + ",";              
            }
-        
+           
         return retString;
     }
     

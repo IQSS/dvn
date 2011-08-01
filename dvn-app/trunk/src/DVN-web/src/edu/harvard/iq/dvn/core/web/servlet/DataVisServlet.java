@@ -234,7 +234,7 @@ public class DataVisServlet extends HttpServlet {
     }
 
     private BufferedImage scaleImage(BufferedImage img){
-        final float SCALE = 0.85f;
+        final float SCALE = 1.f;
 
         float newHeight = SCALE * img.getHeight(null);
         int height = Math.round(newHeight);

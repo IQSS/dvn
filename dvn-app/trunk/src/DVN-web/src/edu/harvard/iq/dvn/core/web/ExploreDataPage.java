@@ -1622,7 +1622,7 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
                      } else {
                          dtColumnString = dtColumnString + "^" + vld.getLabel();
                      }                     
-                     csvColumnString = csvColumnString + "," + vld.getLabel();
+                     csvColumnString = csvColumnString + "," + getSafeCString( vld.getLabel());
                      imageColumnString= imageColumnString + "^" + vld.getLabel();
                 }
             }
@@ -1670,6 +1670,15 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
             e.printStackTrace();
             return "failure";
         }
+    }
+    
+    private String getSafeCString(String strIn){
+        String retString = new String(strIn);
+        int nextSpace = strIn.indexOf(",");  
+        if(nextSpace > 0){
+            retString = "\"" + strIn + "\"";
+        }
+        return retString;
     }
 
     private void loadDataTableData(List inStr, boolean resetIndexYear){
@@ -2215,6 +2224,7 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
         Graphics2D yahg2 = yAxisImageHoriz.createGraphics();
         Graphics2D yaxg2 = yAxisVert.createGraphics();
 
+        cig2.setColor(Color.WHITE);
         yag2.setColor(Color.WHITE);
         tig2.setColor(Color.WHITE);
         sig2.setColor(Color.WHITE);
@@ -2225,6 +2235,7 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
         sig2.fillRect(0, 0, 876, 500);
         yahg2.fillRect(0, 0, 876, 500);
         yaxg2.fillRect(0, 0, 100, 500);
+        cig2.fillRect(0, 0, 776, 550);
         Font font = new Font("Arial", Font.BOLD, 10);
         Font hFont = new Font("Arial", Font.BOLD, 12);
         Font tFont = new Font("Arial", Font.BOLD, 14);

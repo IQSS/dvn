@@ -165,6 +165,7 @@ public class DataVisServlet extends HttpServlet {
         Graphics2D yahg2 = yAxisImageHoriz.createGraphics();
         Graphics2D yaxg2 = yAxisVert.createGraphics();
 
+        cig2.setColor(Color.WHITE);
         yag2.setColor(Color.WHITE);
         tig2.setColor(Color.WHITE);
         sig2.setColor(Color.WHITE);
@@ -175,6 +176,7 @@ public class DataVisServlet extends HttpServlet {
         sig2.fillRect(0, 0, 876, 500);
         yahg2.fillRect(0, 0, 876, 500);
         yaxg2.fillRect(0, 0, 100, 500);
+        cig2.fillRect(0, 0, 776, 550);
         Font font = new Font("Arial", Font.BOLD, 10);
         Font hFont = new Font("Arial", Font.BOLD, 12);
         Font tFont = new Font("Arial", Font.BOLD, 14);
@@ -232,7 +234,7 @@ public class DataVisServlet extends HttpServlet {
     }
 
     private BufferedImage scaleImage(BufferedImage img){
-        final float SCALE = .75f;
+        final float SCALE = 0.85f;
 
         float newHeight = SCALE * img.getHeight(null);
         int height = Math.round(newHeight);

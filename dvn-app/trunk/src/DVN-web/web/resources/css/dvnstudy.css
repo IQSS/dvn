@@ -299,7 +299,7 @@ a.lineDetailLink {display:block;}
 .lineDetailBlockLabel, .lineDetailBlockFilter {font-weight:bold; color:#484848;}
 .lineDetailBlock .iceDatTbl, .lineDetailBlock .iceDatTblRow1, .lineDetailBlock .iceDatTblRow2, .lineDetailBlock .iceDatTblCol1 {border:0; background:transparent;}
 .dvnGraphBox {float:left; margin-right:1em;}
-.dvnGraphBox #chart_div {width:676px; height:400px; margin-bottom:.5em;}
+.dvnGraphBox #chart_div {width:776px; height:550px; margin-bottom:.5em;}
 .dvnGraphDisplay {float:left; width:280px;}
 .dvnGraphDisplayBlock {margin-bottom:2em;}
 .dvnGraphDisplayBlock label {display:inline;}

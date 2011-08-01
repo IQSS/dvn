@@ -39,6 +39,9 @@ import edu.harvard.iq.dvn.core.study.Study;
 import edu.harvard.iq.dvn.core.study.StudyFile;
 import edu.harvard.iq.dvn.core.study.VariableServiceLocal;
 import edu.harvard.iq.dvn.core.visualization.DataVariableMapping;
+import edu.harvard.iq.dvn.core.study.StudyServiceLocal;
+import edu.harvard.iq.dvn.core.vdc.VDC;
+import edu.harvard.iq.dvn.core.vdc.VDCServiceLocal;
 import edu.harvard.iq.dvn.core.web.study.StudyUI;
 import edu.harvard.iq.dvn.ingest.dsb.FieldCutter;
 import edu.harvard.iq.dvn.ingest.dsb.impl.DvnJavaFieldCutter;
@@ -107,6 +110,11 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
     VariableServiceLocal varService;
     @EJB
     VisualizationServiceLocal      visualizationService;
+    @EJB
+    StudyServiceLocal studyService;
+    @EJB
+    VDCServiceLocal vdcService;
+
 
     private String measureLabel;
     private String measureTypeCue;
@@ -181,12 +189,14 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
     private String startYear = "0";
     private String endYear = "3000";
     private Study studyIn = new Study();
+    private StudyFile sf = null;
     private StudyUI studyUI;
     private String fileName = "";
     private String graphTitle = "";
     private String imageURL = "";
     private Long studyId = new Long(0);
     private Long versionNumber;
+    private VDC vdc = null;
     private List filterGroupingMeasureAssociation = new ArrayList();
     private List groupingTypeAssociation = new ArrayList();
     private List filterGroupMeasureAssociation = new ArrayList();
@@ -234,11 +244,18 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
         dt = visualizationService.getDataTable();
         Study thisStudy = dt.getStudyFile().getStudy();
         studyUI = new StudyUI(thisStudy);
-        StudyFile sf = dt.getStudyFile();
+        sf = dt.getStudyFile();
         fileName = sf.getFileName();
         dvList = dt.getDataVariables();
         allVarGroupings = dt.getVarGroupings();
         
+        // Get current VDC, if available, from the 
+        // VDC request bean. 
+        // We will need it when incrementing the download
+        // count:
+        vdc = getVDCRequestBean().getCurrentVDC();
+
+
         measureLabel = loadMeasureLabel();  
         if (dt.getVisualizationDisplay() != null && dt.getVisualizationDisplay().getMeasureTypeLabel() != null ){
             measureTypeCue = loadMeasureTypeCue();
@@ -3201,6 +3218,7 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
     public void setLegendInt(Integer legendInt) {
         this.legendInt = legendInt;
     }
+
     
     public class ExportFileResource implements Resource, Serializable{
         File file;
@@ -3235,6 +3253,15 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
             } else {
                 throw new IOException("Invalid file type selected.");
             }
+
+            // Increment download count:
+
+            if ( vdc != null ) {
+                studyService.incrementNumberOfDownloads(sf.getId(), vdc.getId());
+            } else {
+                studyService.incrementNumberOfDownloads(sf.getId(), (Long)null);
+            }
+
 
             return new FileInputStream(file);
         }

@@ -1975,7 +1975,7 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
                             getVal = transformedDataSplit[t+1];
                         }
                     }                    
-                       transformedDataSelect += getVal + ",";                                         
+                        transformedDataSelect += getVal + ",";        
                 }               
                 for (int yr = startYear; yr <= endYear; yr++ ){
                     String getValIndex = "";
@@ -1991,6 +1991,12 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
                     }
                     transformedDataIndexSelect += getValIndex + ",";
                 }
+                
+                int len = transformedDataSelect.length();
+                int lenI = transformedDataIndexSelect.length();
+                transformedDataSelect =  transformedDataSelect.substring(0, len-2) ;
+                transformedDataIndexSelect =  transformedDataIndexSelect.substring(0, lenI-2);
+                
 
                 while (dataHasGaps(transformedDataSelect)){
                     transformedDataSelect = fillInGaps(transformedDataSelect);

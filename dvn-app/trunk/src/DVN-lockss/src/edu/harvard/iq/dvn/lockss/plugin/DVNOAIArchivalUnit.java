@@ -145,6 +145,14 @@ public class DVNOAIArchivalUnit extends DefinableArchivalUnit {
 					       null, rule, follow_links,
 					       makeLoginPageChecker());
 
+	// We supply this crawl spec with our own, custom OaiHandler.
+	// Unlike the stock OAI Handler, ours uses efficient parsing 
+	// to strip heavy DDI XML of all but the <fileDscr> and <otherMat>
+	// sections, before the daemon attempts to build a DOM object 
+	// out of it:
+
+	c_spec.setOaiHandler(new DVNOAIHandler()); 
+
 	// The DVN download URLs are found in the DDI metadata, that is 
 	// returned as part of the initial OAI ListRecords request.
 	// In the LOCKSS scheme of things this makes all these URLs 

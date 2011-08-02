@@ -76,6 +76,8 @@ public class DataVisServlet extends HttpServlet {
     private String graphTitle = "";
     private String yAxisLabel = "";
     private String sources = "";
+    private String heightCode = "";
+    private Integer heightInt = new Integer(0);
 
 
     public void service(HttpServletRequest req, HttpServletResponse res) {
@@ -86,7 +88,8 @@ public class DataVisServlet extends HttpServlet {
         graphTitle = req.getParameter("graphTitle");
         yAxisLabel = req.getParameter("yAxisLabel");
         sources = req.getParameter("sources");
-
+        heightCode = req.getParameter("heightCode");
+        heightInt = new Integer(heightCode);
         OutputStream out = null;
 
         try {
@@ -114,6 +117,9 @@ public class DataVisServlet extends HttpServlet {
                     // TODO:
                     // log diagnostic messages;
                     // provide more info in the error response;
+                     System.out.println(io.getMessage().toString());
+                     System.out.println(io.getCause().toString());
+                     System.out.println("IIOException " + imageURLnew);
                     createErrorResponse404(res);
                 }
             }
@@ -150,10 +156,16 @@ public class DataVisServlet extends HttpServlet {
     // In the long run, we'll want this code to be in one place and not
     // duplicated. For now, I'm just trying to get it all to work.
 
-    private BufferedImage getCompositeImage(BufferedImage image){
+    private BufferedImage getCompositeImage(BufferedImage image){        Integer heightAdjustment = new Integer(0);
+        if (this.heightInt == 1){
+            heightAdjustment = 40;
+        }
+        if (this.heightInt == 3){
+            heightAdjustment = -100;
+        }
         BufferedImage yAxisImage = new BufferedImage(100, 500, BufferedImage.TYPE_INT_ARGB);
         BufferedImage yAxisImageHoriz = new BufferedImage(200, 200, BufferedImage.TYPE_INT_ARGB);
-        BufferedImage combinedImage = new BufferedImage(776, 550, BufferedImage.TYPE_INT_ARGB);
+        BufferedImage combinedImage = new BufferedImage(776, 550 + heightAdjustment , BufferedImage.TYPE_INT_ARGB);
         BufferedImage titleImage = new BufferedImage(676, 50, BufferedImage.TYPE_INT_ARGB );
         BufferedImage sourceImage = new BufferedImage(676, 50, BufferedImage.TYPE_INT_ARGB );
         BufferedImage yAxisVert = new BufferedImage(200, 200, BufferedImage.TYPE_INT_ARGB);
@@ -177,10 +189,10 @@ public class DataVisServlet extends HttpServlet {
         yahg2.fillRect(0, 0, 876, 500);
         yaxg2.fillRect(0, 0, 100, 500);
         cig2.fillRect(0, 0, 776, 550);
-        Font font = new Font("Arial", Font.BOLD, 10);
-        Font hFont = new Font("Arial", Font.BOLD, 12);
-        Font tFont = new Font("Arial", Font.BOLD, 14);
-        Font sFont = new Font("Arial", Font.PLAIN, 10);
+        Font font = new Font("Helvetica", Font.PLAIN, 10);
+        Font hFont = new Font("Helvetica", Font.PLAIN, 12);
+        Font tFont = new Font("Helvetica", Font.PLAIN, 14);
+        Font sFont = new Font("Helvetica", Font.PLAIN, 12);
         yag2.setFont(font);
         tig2.setFont(tFont);
         sig2.setFont(sFont);
@@ -211,24 +223,13 @@ public class DataVisServlet extends HttpServlet {
         cig2.drawImage(yAxisVert, 0, 120, null);
         cig2.drawImage(image, 50, 50, null);
         cig2.drawImage(titleImage, 50, 0, null);
-        cig2.drawImage(sourceImage, 50, 450, null);
-        
-        BufferedImage smushedCombinedImage = new BufferedImage(590, 500, BufferedImage.TYPE_INT_ARGB);
-        Graphics2D scig2 = yAxisVert.createGraphics();
-        
-        scig2.drawImage ( yAxisImageRotated,
-              0, 0, 590, 500,
-              0, 0, 776, 550,
-        null);
+        cig2.drawImage(sourceImage, 50, 450 + heightAdjustment, null);
 
         yag2.dispose();
         tig2.dispose();
         sig2.dispose();
         yahg2.dispose();
-        cig2.dispose();
-        scig2.dispose();
-        
-        combinedImage = scaleImage(combinedImage);
+        cig2.dispose();        
         
         return combinedImage;
     }

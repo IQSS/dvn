@@ -210,7 +210,10 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
     private String yAxisLabel = "";
 
     private boolean displayLegend = true;
-    private int legendInt = 1;    
+    private int legendInt = 2;   
+    private int heightInt = 2;
+
+
     private Integer defaultView = new Integer(2);
     private String[] transformedData;
     private String transformedDataOut;
@@ -236,7 +239,7 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
     
     private void setUp(){
         
-        legendInt = 1;
+        legendInt = 2;
         visualizationService.setDataTableFromStudyFileId(studyFileId);
         studyIn = visualizationService.getStudyFromStudyFileId(studyFileId);
         studyId = studyIn.getId();
@@ -964,7 +967,7 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
         if (!this.displayIndexes){
             yAxisLabel=  getYAxisLabelFromVizLines(); 
         }  else {
-             yAxisLabel = "  (" + indexDate + " = 100)";
+             yAxisLabel =  indexDate + " = 100";
         }
         FacesContext fc = FacesContext.getCurrentInstance();
         JavascriptContext.addJavascriptCall(fc, "drawVisualization();");
@@ -979,6 +982,15 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
         JavascriptContext.addJavascriptCall(fc, "drawVisualization();");
         JavascriptContext.addJavascriptCall(fc, "initLineDetails");
     }
+    
+    public void update_GraphHeight(){
+        Object value= this.selectGraphHeight.getValue();
+        Integer intVal =  (Integer) value;
+        this.heightInt = intVal.intValue();
+        FacesContext fc = FacesContext.getCurrentInstance();
+        JavascriptContext.addJavascriptCall(fc, "drawVisualization();");
+        JavascriptContext.addJavascriptCall(fc, "initLineDetails");
+    }
 
     public void update_EndYear(){
         Object value= this.selectEndYear.getValue();
@@ -987,7 +999,7 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
         if (!this.displayIndexes){
             yAxisLabel=  getYAxisLabelFromVizLines(); 
         }  else {
-             yAxisLabel = "  (" + indexDate + " = 100)";
+             yAxisLabel =  indexDate + " = 100";
         }
         FacesContext fc = FacesContext.getCurrentInstance();
         JavascriptContext.addJavascriptCall(fc, "drawVisualization();");
@@ -997,7 +1009,7 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
     public void update_IndexYear(){
         Object value= this.selectIndexYear.getValue();
         this.indexDate = (String) value ;        
-        yAxisLabel = "  (" + indexDate + " = 100)";
+        yAxisLabel =  indexDate + " = 100";
         getDataTable(false);
         updateImageFooters();
         resetLineBorder();
@@ -1015,7 +1027,7 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
             forcedIndexMessage = ""; 
             yAxisLabel=  getYAxisLabelFromVizLines(); 
         }  else {
-             yAxisLabel = "  (" + indexDate + " = 100)";
+             yAxisLabel = indexDate + " = 100";
         }
         FacesContext fc = FacesContext.getCurrentInstance();
         JavascriptContext.addJavascriptCall(fc, "drawVisualization();");
@@ -1319,7 +1331,7 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
            if (!this.displayIndexes){               
                 yAxisLabel=  getYAxisLabelFromVizLines(); 
             }  else {
-                yAxisLabel = "  (" + indexDate + " = 100)";
+                yAxisLabel =  indexDate + " = 100";
             }
            
            if (!titleEdited){
@@ -2009,10 +2021,7 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
                     transformedDataIndexSelect += getValIndex + ",";
                 }
                 
-                int len = transformedDataSelect.length();
-                int lenI = transformedDataIndexSelect.length();
-                transformedDataSelect =  transformedDataSelect.substring(0, len-1) ;
-                transformedDataIndexSelect =  transformedDataIndexSelect.substring(0, lenI-1);
+
                 
 
                 while (dataHasGaps(transformedDataSelect)){
@@ -2022,6 +2031,11 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
                 while (dataHasGaps(transformedDataIndexSelect)){
                     transformedDataIndexSelect = fillInGaps(transformedDataIndexSelect);
                 }
+                
+                int len = transformedDataSelect.length();
+                int lenI = transformedDataIndexSelect.length();
+                transformedDataSelect =  transformedDataSelect.substring(0, len-1) ;
+                transformedDataIndexSelect =  transformedDataIndexSelect.substring(0, lenI-1);
                 
                 if (i > 1){
                     transformedDataOut += ";";
@@ -2232,9 +2246,16 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
     
     
     private BufferedImage getCompositeImage(BufferedImage image){
+        Integer heightAdjustment = new Integer(0);
+        if (this.heightInt == 1){
+            heightAdjustment = 40;
+        }
+        if (this.heightInt == 3){
+            heightAdjustment = -100;
+        }
         BufferedImage yAxisImage = new BufferedImage(100, 500, BufferedImage.TYPE_INT_ARGB);
         BufferedImage yAxisImageHoriz = new BufferedImage(200, 200, BufferedImage.TYPE_INT_ARGB);
-        BufferedImage combinedImage = new BufferedImage(776, 550, BufferedImage.TYPE_INT_ARGB);
+        BufferedImage combinedImage = new BufferedImage(776, 550 + heightAdjustment , BufferedImage.TYPE_INT_ARGB);
         BufferedImage titleImage = new BufferedImage(676, 50, BufferedImage.TYPE_INT_ARGB );
         BufferedImage sourceImage = new BufferedImage(676, 50, BufferedImage.TYPE_INT_ARGB );
         BufferedImage yAxisVert = new BufferedImage(200, 200, BufferedImage.TYPE_INT_ARGB);
@@ -2258,10 +2279,10 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
         yahg2.fillRect(0, 0, 876, 500);
         yaxg2.fillRect(0, 0, 100, 500);
         cig2.fillRect(0, 0, 776, 550);
-        Font font = new Font("Verdana", Font.BOLD, 10);
-        Font hFont = new Font("Verdana", Font.BOLD, 12);
-        Font tFont = new Font("Verdana", Font.BOLD, 14);
-        Font sFont = new Font("Verdana", Font.BOLD, 12);
+        Font font = new Font("Helvetica", Font.PLAIN, 10);
+        Font hFont = new Font("Helvetica", Font.PLAIN, 12);
+        Font tFont = new Font("Helvetica", Font.PLAIN, 14);
+        Font sFont = new Font("Helvetica", Font.PLAIN, 12);
         yag2.setFont(font);
         tig2.setFont(tFont);
         sig2.setFont(sFont);
@@ -2292,21 +2313,13 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
         cig2.drawImage(yAxisVert, 0, 120, null);
         cig2.drawImage(image, 50, 50, null);
         cig2.drawImage(titleImage, 50, 0, null);
-        cig2.drawImage(sourceImage, 50, 450, null);
-        Graphics2D scig2 = yAxisVert.createGraphics();
-        
-        scig2.drawImage ( yAxisImageRotated,
-              0, 0, 590, 500,
-              0, 0, 776, 550,
-        null);
+        cig2.drawImage(sourceImage, 50, 450 + heightAdjustment, null);
 
         yag2.dispose();
         tig2.dispose();
         sig2.dispose();
         yahg2.dispose();
-        cig2.dispose();
-        scig2.dispose();
-        
+        cig2.dispose();        
         
         return combinedImage;
     }
@@ -2765,6 +2778,16 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
     public void setSelectLegendPosition(HtmlSelectOneRadio selectLegendPosition) {
         this.selectLegendPosition = selectLegendPosition;
     }
+    
+    HtmlSelectOneRadio selectGraphHeight;
+
+    public HtmlSelectOneRadio getSelectGraphHeight() {
+        return selectGraphHeight;
+    }
+
+    public void setSelectGraphHeight(HtmlSelectOneRadio selectHeightPosition) {
+        this.selectGraphHeight = selectHeightPosition;
+    }
 
 
     HtmlSelectOneMenu selectStartYear;
@@ -3218,7 +3241,14 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
     public void setLegendInt(Integer legendInt) {
         this.legendInt = legendInt;
     }
+    
+    public int getHeightInt() {
+        return heightInt;
+    }
 
+    public void setHeightInt(int heightInt) {
+        this.heightInt = heightInt;
+    }
     
     public class ExportFileResource implements Resource, Serializable{
         File file;

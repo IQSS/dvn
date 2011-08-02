@@ -327,4 +327,5 @@ label.dvnGraphIndicesTitle {font-weight:bold;}
 .dvnExportBtmWrp div.dvnFormButtonMargin {margin-top:1em;}
 .dvnGraphExtractImageButton {display:none; margin-top:1em;}
 .variableInfoPopup table {width:100%;}
+.variableInfoPopup div.popupBody {word-break:break-all;}
 .variableInfoPopup a.popupHeaderClose {float:right;}

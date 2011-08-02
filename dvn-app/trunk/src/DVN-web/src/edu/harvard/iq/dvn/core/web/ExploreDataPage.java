@@ -1634,8 +1634,8 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
                 if (dv.getId().equals(testId)){
                      dvsIn.add(dv);
                      columnString = columnString + "^" + vld.getLabel();
-                     if (!vld.getMeasureGroup().getUnits().isEmpty()){
-                         dtColumnString = dtColumnString + "^" + vld.getLabel() + " (" + vld.getMeasureGroup().getUnits() + ")";
+                     if (!vld.getMeasureGroup().getUnits().isEmpty()){                          
+                         dtColumnString = dtColumnString + "^" + vld.getLabel();
                      } else {
                          dtColumnString = dtColumnString + "^" + vld.getLabel();
                      }                     
@@ -2011,8 +2011,8 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
                 
                 int len = transformedDataSelect.length();
                 int lenI = transformedDataIndexSelect.length();
-                transformedDataSelect =  transformedDataSelect.substring(0, len-2) ;
-                transformedDataIndexSelect =  transformedDataIndexSelect.substring(0, lenI-2);
+                transformedDataSelect =  transformedDataSelect.substring(0, len-1) ;
+                transformedDataIndexSelect =  transformedDataIndexSelect.substring(0, lenI-1);
                 
 
                 while (dataHasGaps(transformedDataSelect)){
@@ -2043,7 +2043,7 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
         boolean retVal = false;
         
         for (String checkString: list){
-            if (!checkString.trim().isEmpty() && new Double (checkString.trim()).doubleValue() > 0){
+            if (!checkString.trim().isEmpty() && Double.parseDouble(checkString.trim()) > 0){
                 firstVal = true;
                 if (endBlank) {
                     retVal = true;
@@ -2258,10 +2258,10 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
         yahg2.fillRect(0, 0, 876, 500);
         yaxg2.fillRect(0, 0, 100, 500);
         cig2.fillRect(0, 0, 776, 550);
-        Font font = new Font("Arial", Font.BOLD, 10);
-        Font hFont = new Font("Arial", Font.BOLD, 12);
-        Font tFont = new Font("Arial", Font.BOLD, 14);
-        Font sFont = new Font("Arial", Font.PLAIN, 10);
+        Font font = new Font("Verdana", Font.BOLD, 10);
+        Font hFont = new Font("Verdana", Font.BOLD, 12);
+        Font tFont = new Font("Verdana", Font.BOLD, 14);
+        Font sFont = new Font("Verdana", Font.BOLD, 12);
         yag2.setFont(font);
         tig2.setFont(tFont);
         sig2.setFont(sFont);

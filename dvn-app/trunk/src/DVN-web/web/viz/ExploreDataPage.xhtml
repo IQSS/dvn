@@ -22,6 +22,7 @@
 
 <ice:outputText visible="false" id="columnString" value="#{ExploreDataPage.columnString}"/>
 <ice:outputText visible="false" id="legendInt" value="#{ExploreDataPage.legendInt}"/>
+<ice:outputText visible="false" id="heightInt" value="#{ExploreDataPage.heightInt}"/>
 <ice:outputText visible="false" id="yAxisLabel" value="#{ExploreDataPage.yAxisLabel}"/>
 <ice:outputText visible="false" id="transformedData" value="#{ExploreDataPage.transformedData}"/>
 <ice:outputText visible="false" id="transformedDataIndexed" value="#{ExploreDataPage.transformedDataIndexed}"/>
@@ -58,6 +59,7 @@
 <ice:selectBooleanCheckbox visible="false" id="displayIndicesHidden" value="#{ExploreDataPage.displayIndexes}" rendered="true" />                                                               
 <ice:commandButton visible="false" id="updateStartYear" action="#{ExploreDataPage.update_StartYear}"/>
 <ice:commandButton visible="false" id="updateLegendPosition" action="#{ExploreDataPage.update_LegendPosition}"/>
+<ice:commandButton visible="false" id="updateGraphHeight" action="#{ExploreDataPage.update_GraphHeight}"/>
 <ice:commandButton visible="false" id="updateEndYear" action="#{ExploreDataPage.update_EndYear}"/>
 <ice:commandButton visible="false" id="updateIndexYear" action="#{ExploreDataPage.update_IndexYear}"/>
 
@@ -198,11 +200,15 @@
                                                    value ="#{ExploreDataPage.graphTitle}"
                                                    onkeyup="delayedRequestTitle(form,this,event);"></ice:inputText>
                                 </div>
-                                <div>
-                                    <ice:outputLabel value="Size" for="graphdimensions"/>
-                                    <!--<ice:selectOneMenu id="graphdimensions" binding="#{ExploreDataPage.selectGraphSize}" onchange="updateGraphSize();" value="#{ExploreDataPage.graphSize}" >
-                                        <f:selectItems value="#{ExploreDataPage.selectSize}"/>
-                                    </ice:selectOneMenu>-->
+
+                                <div class="dvnShowHeightBlock">
+                                    <ice:outputLabel value="Graph Height" for="displayHeight" rendered="true"/>
+                                    <ice:selectOneRadio id="displayHeightRadio" styleClass="displayHeightRadio" onclick="resetHeight();" value="#{ExploreDataPage.heightInt}" 
+                                                        binding ="#{ExploreDataPage.selectGraphHeight}">
+                                        <f:selectItem itemLabel="Tall" itemValue="1" />
+                                        <f:selectItem itemLabel="Standard" itemValue="2" />
+                                        <f:selectItem itemLabel="Short" itemValue="3" />
+                                    </ice:selectOneRadio>
                                 </div>
                                 <div class="dvnShowLegendBlock">
                                     <ice:outputLabel value="Legend Location" for="displayLegend" rendered="true"/>
@@ -795,6 +801,16 @@ function myParseXaxis(dataIn, intDisType, year){
     return yearInt;
 }
 
+function changeheight(intHeightCode){
+    var height = 550;
+    var e=document.getElementById("chart_div");
+    if (intHeightCode == 1) height = 590;
+    if (intHeightCode == 3) height = 450;    
+
+        e.style.height = height;
+    }
+
+
 
 function drawVisualization() {
 
@@ -855,11 +871,14 @@ function drawVisualization() {
       var endYear = new String (document.getElementById('ExploreDataPage:endYear').textContent);
       myDateList = endYear.split('-');
       var intEndYear = parseInt(myDateList[0]);
-      var buttonVal = getRadioValue("displayLegendRadio");
+      
+      var heightValIn = new String (document.getElementById('ExploreDataPage:heightInt').textContent);
+      var heightValIn1 = parseInt(heightValIn);
+      changeheight(heightValIn1);
       
       var buttonValIn = new String (document.getElementById('ExploreDataPage:legendInt').textContent);
       var buttonValIn1 = parseInt(buttonValIn);
-
+      
       var legendAlignment = 'r';
         if (buttonValIn1 == 2){
            legendAlignment = 'b';
@@ -872,15 +891,24 @@ function drawVisualization() {
       var colStr = new String (document.getElementById('ExploreDataPage:columnString').textContent);
       parseData(data, intDisType, intStartYear, intEndYear, useIndex, colStr);
       var icolStr = new String (document.getElementById('ExploreDataPage:imageColumnString').textContent);
-
+      
             var displayTitle = new String (document.getElementById('ExploreDataPage:graphTitleHidden').textContent); 
             var yAxisStringParam = new String (document.getElementById('ExploreDataPage:yAxisLabel').textContent);
             var sourceStringParam =  new String (document.getElementById('ExploreDataPage:sourceText').textContent);
             var chartBaseUrl = "http://chart.apis.google.com/chart?";
             var chartParams = "cht=lc&chco=4684EE,DC3912,FF9900,008000,4942CC,990099,FF80F2,7FD127";
-
-            chartParams = chartParams + "&chs=676x400";             
-
+            if (heightValIn1 == 1){
+                chartParams = chartParams + "&chs=676x440";  
+            }
+            
+            if (heightValIn1 == 2){
+                chartParams = chartParams + "&chs=676x400";  
+            }
+            
+            if (heightValIn1 == 3){
+                chartParams = chartParams + "&chs=676x300";  
+            }
+                       
             if ((highValDouble - lowValDouble) >= 10){
                chartParams = chartParams + "&chxs=1N*sz0*,000000|0N*0*,000000|2N,000000|3N,000000|4N,000000"; 
             } 
@@ -919,17 +947,18 @@ function drawVisualization() {
         if (intDisType == 3){
             jQuery('#chart_div').css({'overflow-y' : 'auto'});
             jQuery('.dvnGraphExtractImageButton').css({'display' : 'none'});
-            var table = new google.visualization.Table(document.getElementById('chart_div'));
+            var table = new google.visualization.Table(document.getElementById('chart_div'));            
+
             table.draw(data3, {showRowNumber: false});
         }
         if (intDisType == 2){
-
             var googleImageURL = chartBaseUrl + chartParams + values;
             var graphTitleParam = escape(displayTitle);
             var yAxisLabelParam = escape(yAxisStringParam);
             var sourcesParam = escape(sourceStringParam);
 
-            var compositeImageURL = "/dvn/DataVisImage/?graphTitle=" + graphTitleParam + "&yAxisLabel=" + yAxisLabelParam + "&sources=" + sourcesParam + "&googleImageUrl=" + escape(googleImageURL) ;
+            var compositeImageURL = "/dvn/DataVisImage/?graphTitle=" + graphTitleParam + "&yAxisLabel=" + yAxisLabelParam + "&heightCode=" + heightValIn 
+                + "&sources=" + sourcesParam + "&googleImageUrl=" + escape(googleImageURL) ;
             document.getElementById('chart_div').innerHTML = "<img src=" + compositeImageURL + ">";
 
              jQuery('.dvnGraphExtractImageButton').css({'display' : 'block'});
@@ -976,6 +1005,11 @@ function resetIndices(){
 function resetLegend(){
      
       document.getElementById('ExploreDataPage:updateLegendPosition').click();
+}
+
+function resetHeight(){
+     
+      document.getElementById('ExploreDataPage:updateGraphHeight').click();
 }
 
 function updateEndYear(){

@@ -1187,7 +1187,7 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
     
     private void finalizeForcedIndexMessage(){
         if (!forcedIndexMessage.isEmpty()){
-                yAxisLabel = "  (" + indexDate + " = 100)";
+                yAxisLabel =  indexDate + " = 100";
                 setIndexDate(indexDate);          
         }        
     }

@@ -75,6 +75,7 @@ import java.net.URLDecoder;
 import java.net.URLEncoder;
 import java.nio.ByteBuffer;
 import java.nio.channels.FileChannel;
+import java.nio.channels.WritableByteChannel;
 import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.Collection;
@@ -1702,10 +1703,12 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
     }
     
     private String getSafeCString(String strIn){
-        String retString = new String(strIn);
+        String retString; 
         int nextSpace = strIn.indexOf(",");  
         if(nextSpace > 0){
             retString = "\"" + strIn + "\"";
+        } else {
+            retString = strIn; 
         }
         return retString;
     }
@@ -2131,7 +2134,8 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
 
             if (includeCSV) {
                 File csvFile = File.createTempFile("dataDownload_","csv");
-                writeFile(csvFile, csvString.toString().toCharArray(), csvString.toString().length());
+                //writeFile(csvFile, csvString.toString().toCharArray(), csvString.length());
+                writeFile(csvFile, csvString, csvString.length() );
                 addZipEntry(zout, csvFile.getAbsolutePath(), "csvData_" + exportTimestamp + ".txt");
 
             }
@@ -2164,8 +2168,27 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
     }
 
 
-    private void writeFile(File fileIn, char[] charArrayIn, int bufSize){
+    private void writeFile(File fileIn, String dataIn, int bufSize) {
+        ByteBuffer dataByteBuffer = ByteBuffer.wrap(dataIn.getBytes());
+
+        try {
+            FileOutputStream outputFile = null;
+            outputFile = new FileOutputStream(fileIn, true);
+            WritableByteChannel outChannel = outputFile.getChannel();
+
             try {
+                outChannel.write(dataByteBuffer);
+                outputFile.close();
+            } catch (IOException e) {
+                e.printStackTrace(System.err);
+            }
+        } catch (IOException e) {
+            throw new EJBException(e);
+        }
+    }
+
+    private void writeFile(File fileIn, char[] charArrayIn, int bufSize){
+        try {
 
             FileOutputStream outputFile = null;
             outputFile = new FileOutputStream(fileIn, true);
@@ -3277,7 +3300,8 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
             } else if ("xls".equals(fileType) ) {
                 writeExcelFile(file);
             } else if ("csv".equals(fileType) ) {
-                writeFile(file, csvString.toString().toCharArray(), csvString.toString().length() );
+                //writeFile(file, csvString.toString().toCharArray(), csvString.toString().length() );
+                writeFile(file, csvString, csvString.length() );
             } else if ("zip".equals(fileType) ) {
                 file = getZipFileExport();
             } else {

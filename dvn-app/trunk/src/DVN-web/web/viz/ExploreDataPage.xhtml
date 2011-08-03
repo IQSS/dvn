@@ -826,17 +826,22 @@ function drawVisualization() {
           var displaySourceFooter = new String (document.getElementById('ExploreDataPage:displaySourceFooterNoYLabel').textContent);
           var transDataIn = document.getElementById('ExploreDataPage:transformedData').textContent;
           var highValStandardIn = new String (document.getElementById('ExploreDataPage:highValStandard').textContent);
-          var highValDouble = parseFloat(highValStandardIn) * 1.1;
           var lowValStandardIn = new String (document.getElementById('ExploreDataPage:lowValStandard').textContent);
-          var lowValDouble = parseFloat(lowValStandardIn) * 0.8; 
+          var spreadAmount = (parseFloat(highValStandardIn) - parseFloat(lowValStandardIn))  * .1;
+          var highValDouble = parseFloat(highValStandardIn) + (spreadAmount);
+          var lowValDouble = parseFloat(lowValStandardIn) - spreadAmount; 
+          var lowValDouble = Math.max(lowValDouble, 0);
+
       } else {
           var axisLabel = new String (document.getElementById('ExploreDataPage:imageAxisLabelNoYLabel').textContent);
           var displaySourceFooter = new String (document.getElementById('ExploreDataPage:displaySourceFooterNoYLabel').textContent);
           var transDataIn = document.getElementById('ExploreDataPage:transformedDataIndexed').textContent;
           var highValStandardIn = new String (document.getElementById('ExploreDataPage:highValIndexed').textContent);
-          var highValDouble = parseFloat(highValStandardIn) * 1.1;
           var lowValStandardIn = new String (document.getElementById('ExploreDataPage:lowValIndexed').textContent);
-          var lowValDouble = parseFloat(lowValStandardIn) * 0.8; 
+          var spreadAmount = (parseFloat(highValStandardIn) - parseFloat(lowValStandardIn))  * .1;
+          var highValDouble = parseFloat(highValStandardIn) + (spreadAmount);
+          var lowValDouble = parseFloat(lowValStandardIn) - spreadAmount; 
+          var lowValDouble = Math.max(lowValDouble, 0);
       }
 
       
@@ -926,7 +931,10 @@ function drawVisualization() {
                 chartParams = chartParams + "&chdl="+ getLegendString(icolStr);
                 chartParams = chartParams + "&chdls=000000";                
             }
-            chartParams = chartParams + "&chxr=1,"+lowValDouble+","+highValDouble + "|0," + calcedStartYear + "," + calcedEndYear + ",1";
+            chartParams = chartParams + "&chxr=1,"+lowValDouble+","+highValDouble + "|0," + calcedStartYear + "," + calcedEndYear ;
+            if (calcedEndYear - calcedStartYear < 8){
+                chartParams = chartParams + ",1";  
+            }
             var values = "&chd=e:";
             values = values + encoded;
             var imageURL = chartBaseUrl + chartParams + values;        

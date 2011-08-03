@@ -2239,7 +2239,7 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
                         document.open();                       
                         java.awt.Image awtImg = combinedImage;                       
                         com.itextpdf.text.Image image2 =   com.itextpdf.text.Image.getInstance(awtImg, null);
-                        image2.scaleToFit(590f, 500f);
+                        image2.scaleToFit(530f, 500f);
                         document.add(image2);
                         document.close();
                     }

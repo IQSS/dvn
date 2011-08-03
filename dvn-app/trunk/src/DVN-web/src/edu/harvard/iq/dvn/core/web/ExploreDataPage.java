@@ -1859,7 +1859,7 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
                             transformedData[i] += test[0] +", " + test[i] + ", ";      
                         }
                                                   
-                        if(!test[i].isEmpty()){
+                        if(!test[i].isEmpty()  && testYear >= startYearTransform && testYear <= endYearTransform){
                             if (lowValStandard.equals(new Float  (0))  || lowValStandard.compareTo(new Float (test[i])) > 0) {
                                 lowValStandard = new Float(test[i]);
                             }

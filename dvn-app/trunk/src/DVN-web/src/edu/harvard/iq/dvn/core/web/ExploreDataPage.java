@@ -1721,7 +1721,7 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
             retString = retString.replaceAll("\"", "\"\"");
 
             // finally, add double quotes around the string:
-            retString = "\"" + strIn + "\"";
+            retString = "\"" + retString + "\"";
         } 
         return retString;
     }

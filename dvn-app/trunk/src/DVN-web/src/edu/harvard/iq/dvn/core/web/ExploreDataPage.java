@@ -53,12 +53,16 @@ import java.awt.Graphics2D;
 import java.awt.GraphicsConfiguration;
 import java.awt.GraphicsDevice;
 import java.awt.GraphicsEnvironment;
+import java.awt.RenderingHints;
 import java.awt.Transparency;
 import java.awt.font.FontRenderContext;
 import java.awt.font.LineMetrics;
 import java.awt.geom.AffineTransform;
 import java.awt.image.AffineTransformOp;
 import java.awt.image.BufferedImage;
+import java.awt.image.BufferedImageOp;
+import java.awt.image.ConvolveOp;
+import java.awt.image.Kernel;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -2282,6 +2286,7 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
     
     
     private BufferedImage getCompositeImage(BufferedImage image){
+
         Integer heightAdjustment = new Integer(0);
         if (this.heightInt == 1){
             heightAdjustment = 40;
@@ -2338,6 +2343,12 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
         writeStringToImage(titleImage, tig2, graphTitle, true, 20, 10 );
         writeStringToImage(sourceImage, sig2, source, false, 15, 10 );
         
+        Kernel kernel = new Kernel(3, 3, new float[] { -1, -1, -1, -1, 9, -1, -1,
+        -1, -1 });
+        BufferedImageOp op = new ConvolveOp(kernel);
+        yAxisImageHoriz = op.filter(yAxisImageHoriz, null);
+        titleImage = op.filter(titleImage, null);
+        sourceImage = op.filter(sourceImage, null);        
         BufferedImage yAxisImageRotated = rotateImage(yAxisImageHoriz );
 
         yaxg2.drawImage ( yAxisImageRotated,
@@ -2345,6 +2356,7 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
               0, 0, 200, 200,
         null);
 
+        yAxisImageRotated = op.filter(yAxisImageRotated, null); 
         cig2.drawImage(yAxisImage, 0, 0, null);
         cig2.drawImage(yAxisVert, 0, 120, null);
         cig2.drawImage(image, 50, 50, null);
@@ -2744,7 +2756,7 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
             if (!retString.isEmpty()) {
                retString += " "; 
             }
-            retString += "<a href=\'" + url + "\'>"+ url + "</a> " ;   
+            retString += "<a href=\'" + url + "\' target=\'varInfo\'>"+ url + "</a> " ;   
         } catch (MalformedURLException e) {
             // If there was an URL that was not it!...
             retString += " " + item;

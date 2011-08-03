@@ -939,6 +939,9 @@ function drawVisualization() {
                 chartParams = chartParams + "&chdl="+ getLegendString(icolStr);
                 chartParams = chartParams + "&chdls=000000";                
             }
+            
+            getXaxisString(intStartYear, intEndYear);
+            
             chartParams = chartParams + "&chxr=1,"+lowValDouble+","+highValDouble + "|0," + calcedStartYear + "," + calcedEndYear ;
             if (calcedEndYear - calcedStartYear < 8){
                 chartParams = chartParams + ",1";  

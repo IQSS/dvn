@@ -440,7 +440,7 @@ function initDisplayLegend() {
 
 function getXaxisString(startYear, endYear)
 {
-    var myDataString = new String (document.getElementById('ExploreDataPage:dataString').textContent);
+    var myDataString = new String (document.getElementById('ExploreDataPage:dataString').innerText);
     var startRange = 0;
     var endRange = 0;
     var yearLabelInt = 0;
@@ -535,14 +535,14 @@ function getLegendString(columnString){
         var myString = columnString;
         var myColumnList = myString.split ( '^' );
         if (indexed){           
-            var myDataString = new String (document.getElementById('ExploreDataPage:indexedDataString').textContent);
+            var myDataString = new String (document.getElementById('ExploreDataPage:indexedDataString').innerText);
         } else {
-            var myDataString = new String (document.getElementById('ExploreDataPage:dataString').textContent);
+            var myDataString = new String (document.getElementById('ExploreDataPage:dataString').innerText);
         }
 
         var myRowList = myDataString.split ( ';' );
 
-        var numColumnsStr =  new String (document.getElementById('ExploreDataPage:dataColumns').textContent);
+        var numColumnsStr =  new String (document.getElementById('ExploreDataPage:dataColumns').innerText);
         var numColumns = parseInt(numColumnsStr);
         
         decimalArray = new Array(numColumns);
@@ -624,9 +624,9 @@ function getLegendString(columnString){
 
         counter--;
 
-            var myString = new String (document.getElementById('ExploreDataPage:columnString').textContent);
+            var myString = new String (document.getElementById('ExploreDataPage:columnString').innerText);
             var myColumnList = myString.split ( '^' );
-            var numColumnsStr =  new String (document.getElementById('ExploreDataPage:dataColumns').textContent);
+            var numColumnsStr =  new String (document.getElementById('ExploreDataPage:dataColumns').innerText);
             var numColumns = parseInt(numColumnsStr);
 
         if (yearNum >= startYear && yearNum <= endYear ) {

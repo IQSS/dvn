@@ -203,7 +203,8 @@
 
                                 <div class="dvnShowHeightBlock">
                                     <ice:outputLabel value="Graph Height" for="displayHeight" rendered="true"/>
-                                    <ice:selectOneRadio id="displayHeightRadio" styleClass="displayHeightRadio" onclick="resetHeight();" value="#{ExploreDataPage.heightInt}" 
+                                    <ice:selectOneRadio disabled="#{ExploreDataPage.displayType == 1 or ExploreDataPage.displayType == 3}" 
+                                                        id="displayHeightRadio" styleClass="displayHeightRadio" onclick="resetHeight();" value="#{ExploreDataPage.heightInt}" 
                                                         binding ="#{ExploreDataPage.selectGraphHeight}">
                                         <f:selectItem itemLabel="Tall" itemValue="1" />
                                         <f:selectItem itemLabel="Standard" itemValue="2" />
@@ -212,7 +213,8 @@
                                 </div>
                                 <div class="dvnShowLegendBlock">
                                     <ice:outputLabel value="Legend Location" for="displayLegend" rendered="true"/>
-                                    <ice:selectOneRadio id="displayLegendRadio" styleClass="displayLegendRadio" onclick="resetLegend();" value="#{ExploreDataPage.legendInt}" 
+                                    <ice:selectOneRadio disabled="#{ExploreDataPage.displayType == 1 or ExploreDataPage.displayType == 3}"
+                                                        id="displayLegendRadio" styleClass="displayLegendRadio" onclick="resetLegend();" value="#{ExploreDataPage.legendInt}" 
                                                         binding ="#{ExploreDataPage.selectLegendPosition}">
                                         <f:selectItem itemLabel="Right" itemValue="1" />
                                         <f:selectItem itemLabel="Bottom" itemValue="2" />
@@ -426,26 +428,10 @@ function getXaxisString(startYear, endYear)
     var myDataString = jQuery('#ExploreDataPage\\:dataString').text();
     var startRange = 0;
     var endRange = 0;
-    var yearLabelInt = 0;
     var myRowList = myDataString.split ( ';' );
-    var retString = "|";
     
-    if (endYear - startYear <=7){
-        
-        for (i=0; i< myRowList.length -1 ;i++)
-        {   
-            var myRow = myRowList[i];
-            var myRowParse = myRow.split ( ',' );
-            var yearNum = parseInt(myRowParse[0]);
-            if (yearNum >= startYear && yearNum <= endYear ){
-                retString= retString + '|' + yearNum + '|'; 
-            }
-        }
-        
-        
-    } else {
-        if (startYear != 0 && endYear !=3000){ 
-            yearLabelInt = Math.round((endYear-startYear)/7); 
+    if (startYear != 0 && endYear !=3000){ 
+
                 calcedStartYear = startYear;
                 calcedEndYear = endYear;
         }
@@ -462,31 +448,16 @@ function getXaxisString(startYear, endYear)
             
                 calcedStartYear = startRange;
                 calcedEndYear = endRange;
-
-            yearLabelInt = Math.round((endRange-startRange)/7); 
-        }
-
-        var counter = yearLabelInt;
-        for (i=0; i< myRowList.length -1 ;i++)
-        {   var yearPrint = false; 
-            var myRow = myRowList[i];
-            var myRowParse = myRow.split ( ',' );
-            var yearNum = parseInt(myRowParse[0]);
-            if (i== 0 || counter == 0 )
-            { counter = yearLabelInt; yearPrint = true; }
-            counter--;
-            if (yearNum >= startYear && yearNum <= endYear ){ 
-                if (yearPrint){ 
-                    retString= retString + yearNum + '|'; 
-                }
-                else { retString = retString + '|'; 
-                } 
-            } 
-        }
-        
+        }        
     }
 
-    return retString;
+function getDecimalCount(inNum){
+    var retVal = 0;
+    if(inNum.indexOf(".") > -1) {
+                    
+      retVal =  inNum.length - (inNum.indexOf(".")+1) 
+    }                    
+    return retVal;
 }
 
 function getLegendString(columnString){

@@ -926,7 +926,7 @@ function drawVisualization() {
                 chartParams = chartParams + "&chdl="+ getLegendString(icolStr);
                 chartParams = chartParams + "&chdls=000000";                
             }
-            chartParams = chartParams + "&chxr=1,"+lowValDouble+","+highValDouble + "|0," + calcedStartYear + "," + calcedEndYear;
+            chartParams = chartParams + "&chxr=1,"+lowValDouble+","+highValDouble + "|0," + calcedStartYear + "," + calcedEndYear + ",1";
             var values = "&chd=e:";
             values = values + encoded;
             var imageURL = chartBaseUrl + chartParams + values;        

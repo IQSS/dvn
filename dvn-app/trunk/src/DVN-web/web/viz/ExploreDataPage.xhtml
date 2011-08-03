@@ -402,10 +402,9 @@
 // <![CDATA[
     google.load('visualization', '1', {'packages':['annotatedtimeline']});
     google.load('visualization', '1', {packages:['table']});
-    google.load("visualization", "1", {packages:["imagebarchart"]});
-    google.load('visualization', '1', {packages:['imagelinechart']});
-    var legendString = "";
 
+    var legendString = "";
+    var decimalArray = [];
     var timeout= 600; //milliseconds to wait for no activity
     var countEvents= 0;
     var delay = 500;
@@ -546,7 +545,9 @@ function getLegendString(columnString){
         var numColumnsStr =  new String (document.getElementById('ExploreDataPage:dataColumns').textContent);
         var numColumns = parseInt(numColumnsStr);
         
+        decimalArray = new Array(numColumns);
             legendString="";
+            
     for (i=0; i< myColumnList.length ;i++)
     { 
         var myColumn = myColumnList[i];
@@ -658,6 +659,12 @@ function getLegendString(columnString){
 
      }
 }
+      
+      function getDecimals (floatIn){
+          
+      }
+      
+      
       function addRows1(dataTable, rowList, intDisType, year) {
           var myRowParse = rowList.split ( ',' );
           var dollNum = myParseFloat(myRowParse[1]);
@@ -891,10 +898,11 @@ function drawVisualization() {
         if (buttonValIn1 == 3){
            legendAlignment = 'none';
         }
-      var data = new google.visualization.DataTable();
-      var data3 = new google.visualization.DataTable();
+
+
+      
       var colStr = new String (document.getElementById('ExploreDataPage:columnString').textContent);
-      parseData(data, intDisType, intStartYear, intEndYear, useIndex, colStr);
+
       var icolStr = new String (document.getElementById('ExploreDataPage:imageColumnString').textContent);
       
             var displayTitle = new String (document.getElementById('ExploreDataPage:graphTitleHidden').textContent); 
@@ -944,15 +952,19 @@ function drawVisualization() {
         document.getElementById('ExploreDataPage:updateImageURL').click();
         
         var dtcolStr = new String (document.getElementById('ExploreDataPage:dtColumnString').textContent);
-        parseData(data3, intDisType, intStartYear, intEndYear, useIndex, dtcolStr);
+
 
         if (intDisType == 1){
+                  var data = new google.visualization.DataTable();
+                        parseData(data, intDisType, intStartYear, intEndYear, useIndex, colStr);
                 var chart = new google.visualization.AnnotatedTimeLine(document.getElementById('chart_div'));
                 chart.draw(data, {allowRedraw: true, wmode: 'transparent', displayZoomButtons: false, displayAnnotations: false});
                 jQuery('#chart_div').css({'overflow-y' : 'visible'});
                 jQuery('.dvnGraphExtractImageButton').css({'display' : 'none'});
         }
         if (intDisType == 3){
+            var data3 = new google.visualization.DataTable();
+            parseData(data3, intDisType, intStartYear, intEndYear, useIndex, dtcolStr);
             jQuery('#chart_div').css({'overflow-y' : 'auto'});
             jQuery('.dvnGraphExtractImageButton').css({'display' : 'none'});
             var table = new google.visualization.Table(document.getElementById('chart_div'));            

@@ -822,29 +822,29 @@ function changeheight(intHeightCode){
 function drawVisualization() {
 
       document.getElementById('ExploreDataPage:hasURL').value = "false";
-      var displayType = new String (document.getElementById('ExploreDataPage:displayType').textContent);      
+      var displayType = new String (document.getElementById('ExploreDataPage:displayType').innerText);
       var useIndex = false;      
       if (document.getElementById('ExploreDataPage:displayIndicesHidden') != null){
           useIndex = document.getElementById('ExploreDataPage:displayIndicesHidden').checked;
       }
       
       if (!useIndex){
-          var axisLabel = new String (document.getElementById('ExploreDataPage:imageAxisLabelNoYLabel').textContent);
-          var displaySourceFooter = new String (document.getElementById('ExploreDataPage:displaySourceFooterNoYLabel').textContent);
-          var transDataIn = document.getElementById('ExploreDataPage:transformedData').textContent;
-          var highValStandardIn = new String (document.getElementById('ExploreDataPage:highValStandard').textContent);
-          var lowValStandardIn = new String (document.getElementById('ExploreDataPage:lowValStandard').textContent);
+          var axisLabel = new String (document.getElementById('ExploreDataPage:imageAxisLabelNoYLabel').innerText);
+          var displaySourceFooter = new String (document.getElementById('ExploreDataPage:displaySourceFooterNoYLabel').innerText);
+          var transDataIn = document.getElementById('ExploreDataPage:transformedData').innerText;
+          var highValStandardIn = new String (document.getElementById('ExploreDataPage:highValStandard').innerText);
+          var lowValStandardIn = new String (document.getElementById('ExploreDataPage:lowValStandard').innerText);
           var spreadAmount = (parseFloat(highValStandardIn) - parseFloat(lowValStandardIn))  * .1;
           var highValDouble = parseFloat(highValStandardIn) + (spreadAmount);
           var lowValDouble = parseFloat(lowValStandardIn) - spreadAmount; 
           var lowValDouble = Math.max(lowValDouble, 0);
 
       } else {
-          var axisLabel = new String (document.getElementById('ExploreDataPage:imageAxisLabelNoYLabel').textContent);
-          var displaySourceFooter = new String (document.getElementById('ExploreDataPage:displaySourceFooterNoYLabel').textContent);
-          var transDataIn = document.getElementById('ExploreDataPage:transformedDataIndexed').textContent;
-          var highValStandardIn = new String (document.getElementById('ExploreDataPage:highValIndexed').textContent);
-          var lowValStandardIn = new String (document.getElementById('ExploreDataPage:lowValIndexed').textContent);
+          var axisLabel = new String (document.getElementById('ExploreDataPage:imageAxisLabelNoYLabel').innerText);
+          var displaySourceFooter = new String (document.getElementById('ExploreDataPage:displaySourceFooterNoYLabel').innerText);
+          var transDataIn = document.getElementById('ExploreDataPage:transformedDataIndexed').innerText;
+          var highValStandardIn = new String (document.getElementById('ExploreDataPage:highValIndexed').innerText);
+          var lowValStandardIn = new String (document.getElementById('ExploreDataPage:lowValIndexed').innerText);
           var spreadAmount = (parseFloat(highValStandardIn) - parseFloat(lowValStandardIn))  * .1;
           var highValDouble = parseFloat(highValStandardIn) + (spreadAmount);
           var lowValDouble = parseFloat(lowValStandardIn) - spreadAmount; 
@@ -852,7 +852,7 @@ function drawVisualization() {
       }
 
       
-      var defaultView = new String (document.getElementById('ExploreDataPage:defaultView').textContent);
+      var defaultView = new String (document.getElementById('ExploreDataPage:defaultView').innerText);
       var intDefaultView = parseInt(defaultView);
       
       var intDisType = parseInt(displayType);
@@ -875,20 +875,20 @@ function drawVisualization() {
                 encoded = encoded +  extendedEncode(lineParse, highValDouble,  lowValDouble);
             }
             
-      var startYear = new String (document.getElementById('ExploreDataPage:startYear').textContent);
+      var startYear = new String (document.getElementById('ExploreDataPage:startYear').innerText);
 
       document.getElementById('ExploreDataPage:tabSet1:0:hiddenDataDownload')
       var myDateList = startYear.split('-');
       var intStartYear = parseInt(myDateList[0]);
-      var endYear = new String (document.getElementById('ExploreDataPage:endYear').textContent);
+      var endYear = new String (document.getElementById('ExploreDataPage:endYear').innerText);
       myDateList = endYear.split('-');
       var intEndYear = parseInt(myDateList[0]);
       
-      var heightValIn = new String (document.getElementById('ExploreDataPage:heightInt').textContent);
+      var heightValIn = new String (document.getElementById('ExploreDataPage:heightInt').innerText);
       var heightValIn1 = parseInt(heightValIn);
       changeheight(heightValIn1);
       
-      var buttonValIn = new String (document.getElementById('ExploreDataPage:legendInt').textContent);
+      var buttonValIn = new String (document.getElementById('ExploreDataPage:legendInt').innerText);
       var buttonValIn1 = parseInt(buttonValIn);
       
       var legendAlignment = 'r';
@@ -901,13 +901,13 @@ function drawVisualization() {
 
 
       
-      var colStr = new String (document.getElementById('ExploreDataPage:columnString').textContent);
+      var colStr = new String (document.getElementById('ExploreDataPage:columnString').innerText);
 
-      var icolStr = new String (document.getElementById('ExploreDataPage:imageColumnString').textContent);
+      var icolStr = new String (document.getElementById('ExploreDataPage:imageColumnString').innerText);
       
-            var displayTitle = new String (document.getElementById('ExploreDataPage:graphTitleHidden').textContent); 
-            var yAxisStringParam = new String (document.getElementById('ExploreDataPage:yAxisLabel').textContent);
-            var sourceStringParam =  new String (document.getElementById('ExploreDataPage:sourceText').textContent);
+            var displayTitle = new String (document.getElementById('ExploreDataPage:graphTitleHidden').innerText);
+            var yAxisStringParam = new String (document.getElementById('ExploreDataPage:yAxisLabel').innerText);
+            var sourceStringParam =  new String (document.getElementById('ExploreDataPage:sourceText').innerText);
             var chartBaseUrl = "http://chart.apis.google.com/chart?";
             var chartParams = "cht=lc&chco=4684EE,DC3912,FF9900,008000,4942CC,990099,FF80F2,7FD127";
             if (heightValIn1 == 1){
@@ -951,7 +951,7 @@ function drawVisualization() {
         document.getElementById('ExploreDataPage:imageURL').value = imageURL;
         document.getElementById('ExploreDataPage:updateImageURL').click();
         
-        var dtcolStr = new String (document.getElementById('ExploreDataPage:dtColumnString').textContent);
+        var dtcolStr = new String (document.getElementById('ExploreDataPage:dtColumnString').innerText);
 
 
         if (intDisType == 1){

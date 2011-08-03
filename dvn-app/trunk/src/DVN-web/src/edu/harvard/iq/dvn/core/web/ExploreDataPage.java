@@ -1703,13 +1703,26 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
     }
     
     private String getSafeCString(String strIn){
-        String retString; 
+        String retString = strIn;
         int nextSpace = strIn.indexOf(",");  
         if(nextSpace > 0){
+            // If the string is already enclosed in double quotes, remove them:
+            retString = retString.replaceFirst("^\"", "");
+            retString = retString.replaceFirst("\"$", "");
+
+            // Escape all remaining double quotes, by replacing each one with
+            // 2 double quotes in a row ("").
+            // This is an ancient (IBM Mainframe ancient) CSV convention.
+            // (see http://en.wikipedia.org/wiki/Comma-separated_values#Basic_rules)
+            // Excel apparently follows it to this day. On the other hand,
+            // Excel does NOT understand backslash escapes and will in fact
+            // be confused by it!
+
+            retString = retString.replaceAll("\"", "\"\"");
+
+            // finally, add double quotes around the string:
             retString = "\"" + strIn + "\"";
-        } else {
-            retString = strIn; 
-        }
+        } 
         return retString;
     }
 

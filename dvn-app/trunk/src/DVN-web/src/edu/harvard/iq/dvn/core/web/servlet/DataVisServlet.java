@@ -29,6 +29,7 @@
 package edu.harvard.iq.dvn.core.web.servlet;
 
 
+import java.awt.FontFormatException;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
@@ -54,6 +55,8 @@ import java.awt.image.BufferedImage;
 import java.awt.image.BufferedImageOp;
 import java.awt.image.ConvolveOp;
 import java.awt.image.Kernel;
+import java.io.FileInputStream;
+import java.util.Locale;
 
 import javax.imageio.ImageIO;
 import javax.imageio.IIOException;
@@ -105,7 +108,7 @@ public class DataVisServlet extends HttpServlet {
 
             if (!decoded.isEmpty()){
                 URL imageURLnew = new URL(googleImageURL);
-
+                System.out.println("googleImageURL " + googleImageURL);
                 try{
                     BufferedImage image =     ImageIO.read(imageURLnew);
                     BufferedImage combinedImage = getCompositeImage(image);
@@ -125,6 +128,10 @@ public class DataVisServlet extends HttpServlet {
                      System.out.println(io.getCause().toString());
                      System.out.println("IIOException " + imageURLnew);
                     createErrorResponse404(res);
+                } catch (FontFormatException ff){
+                    System.out.println("FontFormatException " + imageURLnew);
+                    
+                    System.out.println("FontFormatException " + ff.toString());
                 }
             }
 
@@ -160,7 +167,7 @@ public class DataVisServlet extends HttpServlet {
     // In the long run, we'll want this code to be in one place and not
     // duplicated. For now, I'm just trying to get it all to work.
 
-    private BufferedImage getCompositeImage(BufferedImage image){        Integer heightAdjustment = new Integer(0);
+    private BufferedImage getCompositeImage(BufferedImage image) throws FontFormatException, IOException{        Integer heightAdjustment = new Integer(0);
         if (this.heightInt == 1){
             heightAdjustment = 40;
         }
@@ -194,6 +201,21 @@ public class DataVisServlet extends HttpServlet {
         yahg2.fillRect(0, 0, 876, 500);
         yaxg2.fillRect(0, 0, 100, 500);
         cig2.fillRect(0, 0, 776, 550);
+        
+        Font fontf = null;
+        try {
+             fontf = Font.createFont(Font.TRUETYPE_FONT,
+                new FileInputStream("HelveticaNeue.ttf"));           
+        } catch (IOException iio){
+             System.out.println("IOException " );
+        } catch (FontFormatException ex) {
+            
+            System.out.println("FontFormatException message " + ex.getMessage() );
+            /*
+             System.out.println("FontFormatException cause " + ex.getCause().toString() );
+             * */
+        } 
+            
         Font font = new Font("Helvetica", Font.PLAIN, 10);
         Font hFont = new Font("Helvetica", Font.PLAIN, 12);
         Font tFont = new Font("Helvetica", Font.PLAIN, 14);

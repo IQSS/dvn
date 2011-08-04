@@ -227,17 +227,16 @@
                                 <ice:outputLabel value="Time Series" for="graphtimeseries" styleClass="dvnGraphTimeSeriesTitle"/>
                                 <div>
                                     <ice:outputLabel value="Start" for="graphstart" rendered="true"/>
-                                    <ice:selectOneMenu id="graphstart" rendered="true" binding="#{ExploreDataPage.selectStartYear}" value="#{ExploreDataPage.startYear}" onchange="updateStartYear();">
+                                    <ice:selectOneMenu id="graphstart" rendered="true" binding="#{ExploreDataPage.selectStartYear}" value="#{ExploreDataPage.startYear}" onchange="updateStartYear();setChartDivHeight();">
                                         <f:selectItems value="#{ExploreDataPage.selectBeginYears}"/>
                                     </ice:selectOneMenu>
                                 </div>
                                 <div>
                                     <ice:outputLabel value="End" for="graphend" rendered="true"/>
-                                    <ice:selectOneMenu id="graphend" rendered="true" binding="#{ExploreDataPage.selectEndYear}" value="#{ExploreDataPage.endYear}" onchange="updateEndYear();">
+                                    <ice:selectOneMenu id="graphend" rendered="true" binding="#{ExploreDataPage.selectEndYear}" value="#{ExploreDataPage.endYear}" onchange="updateEndYear();setChartDivHeight();">
                                          <f:selectItems value="#{ExploreDataPage.selectEndYears}"/>
                                     </ice:selectOneMenu>
                                 </div>
-
                             </div>
 
                             <div class="dvnGraphIndicesBlock">
@@ -246,7 +245,6 @@
                                     <ice:selectBooleanCheckbox id="displayindices" value="#{ExploreDataPage.displayIndexes}" binding="#{ExploreDataPage.useIndicesCheckBox}"
                                                                disabled="#{!empty ExploreDataPage.forcedIndexMessage}" onchange="resetIndices();"/>
                                     <ice:outputLabel value="Display Series as Indices" for="displayindices" rendered="true"/>
-                                   
                                 </div>
                                 <ice:outputLabel value="Select Reference Period" for="selectreferenceperiod" rendered="true"/>
                                 <ice:selectOneMenu disabled="#{!ExploreDataPage.displayIndexes}" value="#{ExploreDataPage.indexDate}"
@@ -254,7 +252,6 @@
                                                     binding="#{ExploreDataPage.selectIndexYear}">
                                     <f:selectItems value="#{ExploreDataPage.selectIndexDate}"/>
                                 </ice:selectOneMenu>
-                                
                             </div>
                         </div>
                     </ice:panelTab>
@@ -423,8 +420,7 @@
 
     }
 
-function getXaxisString(startYear, endYear)
-{
+function getXaxisString(startYear, endYear) {
     var myDataString = jQuery('#ExploreDataPage\\:dataString').text();
     var startRange = 0;
     var endRange = 0;
@@ -448,8 +444,8 @@ function getXaxisString(startYear, endYear)
             
                 calcedStartYear = startRange;
                 calcedEndYear = endRange;
-        }        
-    }
+        }
+}
 
 function getDecimalCount(inNum){
     var retVal = 0;
@@ -913,15 +909,15 @@ function drawVisualization() {
             parseData(data, intDisType, intStartYear, intEndYear, useIndex, colStr);
             var chart = new google.visualization.AnnotatedTimeLine(document.getElementById('chart_div'));
             chart.draw(data, {allowRedraw: true, wmode: 'transparent', displayZoomButtons: false, displayAnnotations: false});
-            jQuery('#chart_div').css({'overflow-y' : 'visible'});
+            
         }
         if (intDisType == 3){
             var data3 = new google.visualization.DataTable();
             parseData(data3, intDisType, intStartYear, intEndYear, useIndex, dtcolStr);
-            jQuery('#chart_div').css({'overflow-y' : 'auto'});
             var table = new google.visualization.Table(document.getElementById('chart_div'));
             var options = {width: 760, showRowNumber: false};
             table.draw(data3, options);
+            setChartDivHeight();
         }
         if (intDisType == 2){
             var googleImageURL = chartBaseUrl + chartParams + values;
@@ -935,6 +931,17 @@ function drawVisualization() {
 
     }
 
+    function setChartDivHeight() {
+        var chartDiv = jQuery('#chart_div');
+        var tableHeight = jQuery(chartDiv).find('table.google-visualization-table-table').height();
+        if (tableHeight < 550) {
+            jQuery(chartDiv).css({'height' : 'auto', 'overflow-y' : 'visible'});
+        }
+        else {
+            jQuery(chartDiv).css({'height' : '550px', 'overflow-y' : 'auto'});
+        }
+    }
+
    function getRadioValue( id ) {
          elements=document.getElementsByTagName("input");
          for(i=0; i < elements.length; i++) {
@@ -946,16 +953,12 @@ function drawVisualization() {
          }
     }
 
-
 function deleteLine(){
-   
     setTimeout(function(){drawVisualization();}, 1500);
-
 }
 
 function updateStartYear(){
      document.getElementById('ExploreDataPage:updateStartYear').click();
-     
 }
 
 function updateIncludeFlags(){
@@ -963,24 +966,19 @@ function updateIncludeFlags(){
 }
 
 function resetIndices(){
-
      document.getElementById('ExploreDataPage:updateUseIndex').click();
-     
 }
 
-function resetLegend(){
-     
+function resetLegend(){     
       document.getElementById('ExploreDataPage:updateLegendPosition').click();
 }
 
-function resetHeight(){
-     
+function resetHeight(){     
       document.getElementById('ExploreDataPage:updateGraphHeight').click();
 }
 
 function updateEndYear(){
      document.getElementById('ExploreDataPage:updateEndYear').click();
-     
 }
 
 function updateIndexYear(){
@@ -989,13 +987,10 @@ function updateIndexYear(){
 }
 
 function updateDisplayType(){
-
-     document.getElementById('ExploreDataPage:selectDisplayButton').click();  
-     
+     document.getElementById('ExploreDataPage:selectDisplayButton').click();
 }
 
 function startDownload() {
-
     var imageFlag = document.getElementById('ExploreDataPage:tabSet1:0:downloadImageGraph').checked;    
     var pdfFlag = document.getElementById('ExploreDataPage:tabSet1:0:downloadPDFGraph').checked;
     var csvFlag = document.getElementById('ExploreDataPage:tabSet1:0:downloadDataCSV').checked;
@@ -1017,12 +1012,9 @@ function startDownload() {
     } else {
         document.getElementById('ExploreDataPage:tabSet1:0:downloadZip').click();
     }
-   
 }
 
-function getImageURLButton()
-{
-
+function getImageURLButton() {
     var imageURL = document.getElementById('ExploreDataPage:imageURL').value;
     var hasURLVal = document.getElementById('ExploreDataPage:hasURL').value;
     if (hasURLVal != "true"){
@@ -1032,7 +1024,6 @@ function getImageURLButton()
     }
     window.open(imageURL,'mywindow','width=600,height=400');
 }
-
 
 function setLegendValue(obj) {
     selections = document.getElementById(obj.id).getElementsByTagName("INPUT");

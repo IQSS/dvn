@@ -842,18 +842,17 @@ function drawVisualization() {
           var highValStandardIn = jQuery('#ExploreDataPage\\:highValStandard').text();
           var lowValStandardIn = jQuery('#ExploreDataPage\\:lowValStandard').text();
           var lowValRawData = parseFloat(lowValStandardIn);
-          var spreadAmount = (parseFloat(highValStandardIn) - parseFloat(lowValStandardIn))  * .2;
-          var highValDouble = parseFloat(highValStandardIn) + (spreadAmount);
-          var lowValDouble = parseFloat(lowValStandardIn) - (spreadAmount * 2); 
-          lowValDouble = Math.max(lowValDouble, 0);
-          if (lowValDouble > 0){
-            lowValDouble  = roundMinVal(lowValDouble);
+          var highValRawData = parseFloat(highValStandardIn);
+         
+          if ((highValRawData - lowValRawData) > 0){
+              var yAxisStep = getYAxisStep(highValRawData - lowValRawData);
           }
-          lowValDouble = Math.min(lowValRawData, lowValDouble);
-          if ((highValDouble - lowValDouble) > 0){
-              var yAxisStep = getYAxisStep(highValDouble - lowValDouble);
-          }
-          
+
+          var highValDouble = parseFloat(highValStandardIn) + (yAxisStep * 2);
+          var lowValDouble = parseFloat(lowValStandardIn) - (yAxisStep *2); 
+          var lowValDouble =  Math.max(lowValDouble, 0);
+          highValDouble = yAxisStep * Math.round(highValDouble/yAxisStep);
+          lowValDouble = yAxisStep * Math.round(lowValDouble/yAxisStep);
 
       } else {
           var axisLabel = jQuery('#ExploreDataPage\\:imageAxisLabelNoYLabel').text();
@@ -862,18 +861,16 @@ function drawVisualization() {
           var highValStandardIn = jQuery('#ExploreDataPage\\:highValIndexed').text();
           var lowValStandardIn = jQuery('#ExploreDataPage\\:lowValIndexed').text();
           var lowValRawData = parseFloat(lowValStandardIn);
-          var spreadAmount = (parseFloat(highValStandardIn) - parseFloat(lowValStandardIn))  * .2;
-          var highValDouble = parseFloat(highValStandardIn) + (spreadAmount);
-          var lowValDouble = parseFloat(lowValStandardIn) - (spreadAmount*2); 
-          var lowValDouble = Math.max(lowValDouble, 0);
-
-          if (lowValDouble > 0){
-            lowValDouble  = roundMinVal(lowValDouble);
+          var highValRawData = parseFloat(highValStandardIn);
+          if ((highValRawData - lowValRawData) > 0){
+              var yAxisStep = getYAxisStep(highValRawData - lowValRawData);
           }
-
-          if ((highValDouble - lowValDouble) > 0){
-              var yAxisStep = getYAxisStep(highValDouble - lowValDouble);
-          }
+          var highValDouble = parseFloat(highValStandardIn) + (yAxisStep * 2);
+          var lowValDouble = parseFloat(lowValStandardIn) - (yAxisStep *2); 
+          var lowValDouble =  Math.max(lowValDouble, 0);
+          
+          highValDouble = yAxisStep * Math.round(highValDouble/yAxisStep);
+          lowValDouble = yAxisStep * Math.round(lowValDouble/yAxisStep);
       }
 
       

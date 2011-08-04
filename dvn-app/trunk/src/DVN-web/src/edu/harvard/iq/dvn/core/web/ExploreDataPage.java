@@ -1841,8 +1841,6 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
     
     transformedData = new String[maxLength + 1];
     transformedDataIndexed = new String[maxLength + 1];
-     System.out.println("startYearTransform " + startYearTransform);
-     System.out.println("endYearTransform " + endYearTransform);
     boolean indexesDone = false;
     for (Object inObj: inStr ){
         String nextStr = (String) inObj;
@@ -2344,9 +2342,12 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
         if (this.heightInt == 3){
             heightAdjustment = -100;
         }
+        
+        System.out.println("image height " + image.getHeight());
+        
         BufferedImage yAxisImage = new BufferedImage(100, 500, BufferedImage.TYPE_INT_ARGB);
         BufferedImage yAxisImageHoriz = new BufferedImage(200, 200, BufferedImage.TYPE_INT_ARGB);
-        BufferedImage combinedImage = new BufferedImage(776, 550 + heightAdjustment , BufferedImage.TYPE_INT_ARGB);
+        BufferedImage combinedImage = new BufferedImage(776, 575 + heightAdjustment , BufferedImage.TYPE_INT_ARGB);
         BufferedImage titleImage = new BufferedImage(676, 50, BufferedImage.TYPE_INT_ARGB );
         BufferedImage sourceImage = new BufferedImage(676, 50, BufferedImage.TYPE_INT_ARGB );
         BufferedImage yAxisVert = new BufferedImage(200, 200, BufferedImage.TYPE_INT_ARGB);
@@ -2369,7 +2370,7 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
         sig2.fillRect(0, 0, 876, 500);
         yahg2.fillRect(0, 0, 876, 500);
         yaxg2.fillRect(0, 0, 100, 500);
-        cig2.fillRect(0, 0, 776, 550);
+        cig2.fillRect(0, 0, 776, 575 + heightAdjustment);
         Font font = new Font("Helvetica", Font.PLAIN, 10);
         Font hFont = new Font("Helvetica", Font.PLAIN, 12);
         Font tFont = new Font("Helvetica", Font.PLAIN, 14);
@@ -2411,7 +2412,7 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
         cig2.drawImage(yAxisVert, 0, 120, null);
         cig2.drawImage(image, 50, 50, null);
         cig2.drawImage(titleImage, 50, 0, null);
-        cig2.drawImage(sourceImage, 50, 450 + heightAdjustment, null);
+        cig2.drawImage(sourceImage, 50, 475 + heightAdjustment, null);
 
         yag2.dispose();
         tig2.dispose();

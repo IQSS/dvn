@@ -784,6 +784,13 @@ function calcYAxisStep(diffIn, steps){
     
 }
 
+function calcMinVal(minIn, steps){
+    
+        
+        var intVal = Math.round( minIn / (Math.pow(10,steps)));
+        return intVal * Math.pow(10,steps);
+}
+
 function getYAxisStep(diffIn){
     
     var checkVal = diffIn;
@@ -799,9 +806,28 @@ function getYAxisStep(diffIn){
         }                    
     }  
 
-    var retVal = calcYAxisStep (checkVal, y);
-
     return calcYAxisStep (checkVal, y);
+}
+
+function roundMinVal(minIn){
+    
+    var checkVal = minIn;
+    var y = 0;
+    alert (minIn)
+    while (checkVal < 1 || checkVal > 10){
+        if (checkVal <  1){
+            y=y-1;
+            checkVal = checkVal * 10;
+        }
+        if (checkVal >  10){
+            y=y+1;
+            checkVal = checkVal / 10;
+        }  
+        alert (checkVal);
+        alert (y);
+    }  
+
+    return calcMinVal (minIn, y);
 }
 
 
@@ -824,6 +850,7 @@ function drawVisualization() {
           var highValDouble = parseFloat(highValStandardIn) + (spreadAmount);
           var lowValDouble = parseFloat(lowValStandardIn) - spreadAmount; 
           var lowValDouble = Math.max(lowValDouble, 0);
+
           if ((highValDouble - lowValDouble) > 0){
               var yAxisStep = getYAxisStep(highValDouble - lowValDouble);
           }
@@ -839,6 +866,8 @@ function drawVisualization() {
           var highValDouble = parseFloat(highValStandardIn) + (spreadAmount);
           var lowValDouble = parseFloat(lowValStandardIn) - spreadAmount; 
           var lowValDouble = Math.max(lowValDouble, 0);
+          var lowValDouble =  roundMinVal(lowValDouble);
+
           if ((highValDouble - lowValDouble) > 0){
               var yAxisStep = getYAxisStep(highValDouble - lowValDouble);
           }
@@ -934,8 +963,7 @@ function drawVisualization() {
             }
             
             getXaxisString(intStartYear, intEndYear);
-            
-            chartParams = chartParams + "&chxr=1,"+lowValDouble+","+highValDouble + ","+ yAxisStep;
+            chartParams = chartParams + "&chxr=1,"+lowValDouble+","+highValDouble + ","+ yAxisStep +
                 "|0," + calcedStartYear + "," + calcedEndYear ;
             if (calcedEndYear - calcedStartYear < 8){
                 chartParams = chartParams + ",1";  

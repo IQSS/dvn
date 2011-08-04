@@ -51,6 +51,9 @@ import java.awt.font.FontRenderContext;
 import java.awt.geom.AffineTransform;
 import java.awt.image.AffineTransformOp;
 import java.awt.image.BufferedImage;
+import java.awt.image.BufferedImageOp;
+import java.awt.image.ConvolveOp;
+import java.awt.image.Kernel;
 
 import javax.imageio.ImageIO;
 import javax.imageio.IIOException;
@@ -93,8 +96,7 @@ public class DataVisServlet extends HttpServlet {
         OutputStream out = null;
 
         try {
-            
-             System.out.println("googleImageURL passed to servlet:  "+googleImageURL);
+
             String decoded = URLDecoder.decode(googleImageURL, "UTF-8");
 
 
@@ -164,10 +166,11 @@ public class DataVisServlet extends HttpServlet {
         }
         if (this.heightInt == 3){
             heightAdjustment = -100;
-        }
+        }        
+        
         BufferedImage yAxisImage = new BufferedImage(100, 500, BufferedImage.TYPE_INT_ARGB);
         BufferedImage yAxisImageHoriz = new BufferedImage(200, 200, BufferedImage.TYPE_INT_ARGB);
-        BufferedImage combinedImage = new BufferedImage(776, 550 + heightAdjustment , BufferedImage.TYPE_INT_ARGB);
+        BufferedImage combinedImage = new BufferedImage(776, 575 + heightAdjustment , BufferedImage.TYPE_INT_ARGB);
         BufferedImage titleImage = new BufferedImage(676, 50, BufferedImage.TYPE_INT_ARGB );
         BufferedImage sourceImage = new BufferedImage(676, 50, BufferedImage.TYPE_INT_ARGB );
         BufferedImage yAxisVert = new BufferedImage(200, 200, BufferedImage.TYPE_INT_ARGB);
@@ -195,6 +198,7 @@ public class DataVisServlet extends HttpServlet {
         Font hFont = new Font("Helvetica", Font.PLAIN, 12);
         Font tFont = new Font("Helvetica", Font.PLAIN, 14);
         Font sFont = new Font("Helvetica", Font.PLAIN, 12);
+
         yag2.setFont(font);
         tig2.setFont(tFont);
         sig2.setFont(sFont);
@@ -214,6 +218,12 @@ public class DataVisServlet extends HttpServlet {
         writeStringToImage(titleImage, tig2, graphTitle, true, 20, 10 );
         writeStringToImage(sourceImage, sig2, source, false, 15, 10 );
         
+        Kernel kernel = new Kernel(3, 3, new float[] { -1, -1, -1, -1, 9, -1, -1,
+        -1, -1 });
+        BufferedImageOp op = new ConvolveOp(kernel);
+        yAxisImageHoriz = op.filter(yAxisImageHoriz, null);
+        titleImage = op.filter(titleImage, null);
+        sourceImage = op.filter(sourceImage, null);        
         BufferedImage yAxisImageRotated = rotateImage(yAxisImageHoriz );
 
         yaxg2.drawImage ( yAxisImageRotated,
@@ -221,11 +231,13 @@ public class DataVisServlet extends HttpServlet {
               0, 0, 200, 200,
         null);
 
+                yAxisImageRotated = op.filter(yAxisImageRotated, null);
+
         cig2.drawImage(yAxisImage, 0, 0, null);
         cig2.drawImage(yAxisVert, 0, 120, null);
         cig2.drawImage(image, 50, 50, null);
         cig2.drawImage(titleImage, 50, 0, null);
-        cig2.drawImage(sourceImage, 50, 450 + heightAdjustment, null);
+        cig2.drawImage(sourceImage, 50, 475 + heightAdjustment, null);
 
         yag2.dispose();
         tig2.dispose();

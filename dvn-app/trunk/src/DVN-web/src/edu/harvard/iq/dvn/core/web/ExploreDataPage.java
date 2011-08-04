@@ -1961,10 +1961,10 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
                                 }
                             } else {
                                 outputIndex = "";
-                            }  
+                            } 
                             if (testYear >= startYearTransform && testYear <= endYearTransform){
-                                transformedDataIndexed[i] += test[0] + ", " + outputIndex.toString() + ", ";
-                            }
+                                    transformedDataIndexed[i] += test[0] + ", " + outputIndex.toString() + ", ";
+                             }
                             indexCol = indexCol + ", " +  outputIndex.toString();
                     }
                 }
@@ -1997,8 +1997,7 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
             if (transformedData[i] != null){               
                 transformedData[i] = transformedData[i].substring(4);
                 transformedDataIndexed[i] = transformedDataIndexed[i].substring(4);
-            } 
-
+            }             
         }
         for (int i = 1; i<maxLength; i++){
             
@@ -2021,6 +2020,7 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
         
         for (int i = 1; i<maxLength; i++){
             double dataMaxYear = 0;
+            
             if (transformedData[i] != null){
 
                 String[] transformedDataSplit = transformedData[i].split(",");
@@ -2035,6 +2035,8 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
                 }
                 
             }
+                    System.out.println("dataMaxYear "+dataMaxYear+", maxYear is "+ maxYear);
+                    System.out.println("transformedData[i] before "+transformedData[i]);
             if (dataMaxYear < maxYear){
                 int iDataMax = new Double (dataMaxYear).intValue();
                 int iMaxYear = new Double (maxYear).intValue();
@@ -2043,20 +2045,25 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
                 }
                 
             }
+            
+            System.out.println("transformedData[i] after "+transformedData[i]);
 
         }
         
         
         
-        for (int i = 1; i<maxLength; i++){
-            
+        for (int i = 1; i<maxLength; i++){           
             if (transformedData[i] != null){
                 int len = transformedData[i].length();
-                int lenI = transformedDataIndexed[i].length();
-                transformedData[i] =  transformedData[i].substring(0, len-2) ;
-                transformedDataIndexed[i] =  transformedDataIndexed[i].substring(0, lenI-2);               
+                transformedData[i] =  transformedData[i].substring(0, len-2) ; 
             } 
-
+        }
+        
+        for (int i = 1; i<maxLength; i++){           
+            if (transformedDataIndexed[i] != null){
+                int lenI = transformedDataIndexed[i].length();
+                transformedDataIndexed[i] =  transformedDataIndexed[i].substring(0, lenI-2);  
+            } 
         }
         for (int i = 1; i<maxLength; i++){
             if (transformedData[i] != null){
@@ -2072,7 +2079,7 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
                             testYr = new Float(transformedDataSplit[t]).floatValue();
                         }
                             
-                        if (yr == testYr ){
+                        if (yr == testYr  ){
                             getVal = transformedDataSplit[t+1];
                         }
                     }                    
@@ -2104,13 +2111,13 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
                 int len = transformedDataSelect.length();
                 int lenI = transformedDataIndexSelect.length();
                 transformedDataSelect =  transformedDataSelect.substring(0, len-1) ;
-                transformedDataIndexSelect =  transformedDataIndexSelect.substring(0, lenI-1);
+                transformedDataIndexSelect =  transformedDataIndexSelect.substring(0, lenI-1);               
                 if (i > 1){
                     transformedDataOut += ";";
                     transformedDataIndexedOut += ";";
                 }
                 transformedDataIndexedOut += transformedDataIndexSelect;
-                transformedDataOut += transformedDataSelect;       
+                transformedDataOut += transformedDataSelect;   
             }            
         }
 

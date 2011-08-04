@@ -1154,7 +1154,7 @@ var ymax=4095;
     var scaledVal=Math.round((((ymin-ymax)/(maxVal-minVal))*(maxVal-numericVal))+ymax);    
     if(scaledVal > (EXTENDED_MAP_LENGTH * EXTENDED_MAP_LENGTH) - 1) {
       chartData += "..";
-    } else if (scaledVal < 0) {
+    } else if (scaledVal <= 0) {
       chartData += '__';
     } else {
       // Calculate first and second digits and add them to the output.

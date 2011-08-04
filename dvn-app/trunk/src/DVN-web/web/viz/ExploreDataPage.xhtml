@@ -785,8 +785,7 @@ function calcYAxisStep(diffIn, steps){
 }
 
 function calcMinVal(minIn, steps){
-    
-        
+            
         var intVal = Math.round( minIn / (Math.pow(10,steps)));
         return intVal * Math.pow(10,steps);
 }
@@ -810,10 +809,8 @@ function getYAxisStep(diffIn){
 }
 
 function roundMinVal(minIn){
-    
     var checkVal = minIn;
     var y = 0;
-    alert (minIn)
     while (checkVal < 1 || checkVal > 10){
         if (checkVal <  1){
             y=y-1;
@@ -823,8 +820,6 @@ function roundMinVal(minIn){
             y=y+1;
             checkVal = checkVal / 10;
         }  
-        alert (checkVal);
-        alert (y);
     }  
 
     return calcMinVal (minIn, y);
@@ -846,11 +841,15 @@ function drawVisualization() {
           var transDataIn = jQuery('#ExploreDataPage\\:transformedData').text();
           var highValStandardIn = jQuery('#ExploreDataPage\\:highValStandard').text();
           var lowValStandardIn = jQuery('#ExploreDataPage\\:lowValStandard').text();
-          var spreadAmount = (parseFloat(highValStandardIn) - parseFloat(lowValStandardIn))  * .1;
+          var lowValRawData = parseFloat(lowValStandardIn);
+          var spreadAmount = (parseFloat(highValStandardIn) - parseFloat(lowValStandardIn))  * .2;
           var highValDouble = parseFloat(highValStandardIn) + (spreadAmount);
           var lowValDouble = parseFloat(lowValStandardIn) - spreadAmount; 
-          var lowValDouble = Math.max(lowValDouble, 0);
-
+          lowValDouble = Math.max(lowValDouble, 0);
+          if (lowValDouble > 0){
+            lowValDouble  = roundMinVal(lowValDouble);
+          }
+          lowValDouble = Math.min(lowValRawData, lowValDouble);
           if ((highValDouble - lowValDouble) > 0){
               var yAxisStep = getYAxisStep(highValDouble - lowValDouble);
           }
@@ -862,12 +861,16 @@ function drawVisualization() {
           var transDataIn = jQuery('#ExploreDataPage\\:transformedDataIndexed').text();
           var highValStandardIn = jQuery('#ExploreDataPage\\:highValIndexed').text();
           var lowValStandardIn = jQuery('#ExploreDataPage\\:lowValIndexed').text();
-          var spreadAmount = (parseFloat(highValStandardIn) - parseFloat(lowValStandardIn))  * .1;
+          var lowValRawData = parseFloat(lowValStandardIn);
+          var spreadAmount = (parseFloat(highValStandardIn) - parseFloat(lowValStandardIn))  * .2;
           var highValDouble = parseFloat(highValStandardIn) + (spreadAmount);
           var lowValDouble = parseFloat(lowValStandardIn) - spreadAmount; 
           var lowValDouble = Math.max(lowValDouble, 0);
-          var lowValDouble =  roundMinVal(lowValDouble);
 
+          if (lowValDouble > 0){
+            lowValDouble  = roundMinVal(lowValDouble);
+          }
+          lowValDouble = Math.min(lowValRawData, lowValDouble);
           if ((highValDouble - lowValDouble) > 0){
               var yAxisStep = getYAxisStep(highValDouble - lowValDouble);
           }
@@ -944,13 +947,13 @@ function drawVisualization() {
                 chartParams = chartParams + "&chs=676x300";  
             }
                        
-            if ((highValDouble - lowValDouble) >= 10){
+            if (yAxisStep >= 1){
                chartParams = chartParams + "&chxs=1N*sz0*,000000|0N*0*,000000|2N,000000|3N,000000|4N,000000"; 
             } 
-            if ((highValDouble - lowValDouble) < 10  && (highValDouble - lowValDouble) >= 4 ) {
+            if (yAxisStep < 1  && yAxisStep > .25 ) {
                chartParams = chartParams + "&chxs=1N*sz1*,000000|0N*0*,000000|2N,000000|3N,000000|4N,000000";  
             }
-            if ((highValDouble - lowValDouble) < 4 ) {
+            if (yAxisStep <= .25) {
                chartParams = chartParams + "&chxs=1N*sz2*,000000|0N*0*,000000|2N,000000|3N,000000|4N,000000";  
             }
             chartParams = chartParams + "&chxt="+axisLabel;

@@ -919,8 +919,9 @@ function drawVisualization() {
             var data3 = new google.visualization.DataTable();
             parseData(data3, intDisType, intStartYear, intEndYear, useIndex, dtcolStr);
             jQuery('#chart_div').css({'overflow-y' : 'auto'});
-            var table = new google.visualization.Table(document.getElementById('chart_div'));            
-            table.draw(data3, {showRowNumber: false});
+            var table = new google.visualization.Table(document.getElementById('chart_div'));
+            var options = {width: 760, showRowNumber: false};
+            table.draw(data3, options);
         }
         if (intDisType == 2){
             var googleImageURL = chartBaseUrl + chartParams + values;

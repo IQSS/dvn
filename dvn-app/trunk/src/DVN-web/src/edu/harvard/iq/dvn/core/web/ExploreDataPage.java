@@ -1841,6 +1841,8 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
     
     transformedData = new String[maxLength + 1];
     transformedDataIndexed = new String[maxLength + 1];
+     System.out.println("startYearTransform " + startYearTransform);
+     System.out.println("endYearTransform " + endYearTransform);
     boolean indexesDone = false;
     for (Object inObj: inStr ){
         String nextStr = (String) inObj;
@@ -1851,8 +1853,7 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
         String csvCol = "";
         int testYear = 0;
         boolean alreadyAdded = false;
-        if (test.length > 1)
-            {
+        if (test.length > 1) {
                 for (int i=0; i<test.length; i++){
                 if (i == 0) {
                     testYear = new Integer(test[0]).intValue();
@@ -1912,9 +1913,12 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
                 }
                   col = col + ";";
                   csvCol = csvCol + "\n";
-           }
+           } else {
+            
+        }
            output = output + col;
            csvOutput = csvOutput + csvCol;
+           
     }
 
     for (Object inObj: inStr ){
@@ -1986,23 +1990,73 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
         
         transformedDataOut = "";
         transformedDataIndexedOut = "";
-        int countCommas = 0;
-        int countCommasI = 0;
         int maxLength = transformedData.length;
+        
+        double maxYear = 0;
+        
+        for (int i = 1; i<maxLength; i++){
+            
+            if (transformedData[i] != null){               
+                transformedData[i] = transformedData[i].substring(4);
+                transformedDataIndexed[i] = transformedDataIndexed[i].substring(4);
+            } 
+
+        }
         for (int i = 1; i<maxLength; i++){
             
             if (transformedData[i] != null){
-                countCommasI = countOccurrences(transformedData[i], ',');
-                if ( countCommasI > countCommas){
-                    countCommas = countCommasI;
+
+                String[] transformedDataSplit = transformedData[i].split(",");
+                for (int t = 0; t < transformedDataSplit.length ; t=t+2){
+                        double testYr = 0;
+                        if (!transformedDataSplit[t].trim().isEmpty()){
+                            testYr = new Float(transformedDataSplit[t]).floatValue();
+                        }
+                        if (testYr > maxYear){
+                            maxYear = testYr;   
+                        }
                 }
                 
-                transformedData[i] = transformedData[i].substring(4);
-                transformedDataIndexed[i] = transformedDataIndexed[i].substring(4);
+            } 
+
+        }
+        
+        for (int i = 1; i<maxLength; i++){
+            double dataMaxYear = 0;
+            if (transformedData[i] != null){
+
+                String[] transformedDataSplit = transformedData[i].split(",");
+                for (int t = 0; t < transformedDataSplit.length ; t=t+2){
+                        double testYr = 0;
+                        if (!transformedDataSplit[t].trim().isEmpty()){
+                            testYr = new Float(transformedDataSplit[t]).floatValue();
+                        }
+                        if (testYr > dataMaxYear){
+                            dataMaxYear = testYr;   
+                        }
+                }
+                
+            }
+            if (dataMaxYear < maxYear){
+                int iDataMax = new Double (dataMaxYear).intValue();
+                int iMaxYear = new Double (maxYear).intValue();
+                for (int j=iDataMax + 1; j <= iMaxYear; j++){
+                     transformedData[i] += j +", , "; 
+                }
+                
+            }
+
+        }
+        
+        
+        
+        for (int i = 1; i<maxLength; i++){
+            
+            if (transformedData[i] != null){
                 int len = transformedData[i].length();
                 int lenI = transformedDataIndexed[i].length();
                 transformedData[i] =  transformedData[i].substring(0, len-2) ;
-                transformedDataIndexed[i] =  transformedDataIndexed[i].substring(0, lenI-2);
+                transformedDataIndexed[i] =  transformedDataIndexed[i].substring(0, lenI-2);               
             } 
 
         }
@@ -2040,9 +2094,6 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
                     }
                     transformedDataIndexSelect += getValIndex + ",";
                 }
-                
-
-                
 
                 while (dataHasGaps(transformedDataSelect)){
                     transformedDataSelect = fillInGaps(transformedDataSelect);
@@ -2056,7 +2107,6 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
                 int lenI = transformedDataIndexSelect.length();
                 transformedDataSelect =  transformedDataSelect.substring(0, len-1) ;
                 transformedDataIndexSelect =  transformedDataIndexSelect.substring(0, lenI-1);
-                
                 if (i > 1){
                     transformedDataOut += ";";
                     transformedDataIndexedOut += ";";

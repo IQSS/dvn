@@ -766,6 +766,44 @@ function changeheight(intHeightCode){
     }
 
 
+function calcYAxisStep(diffIn, steps){
+    
+    if (diffIn <= 2){
+        
+        return .2 * (Math.pow(10,steps));
+    }
+    if (diffIn <= 2.5){
+        return .25 * (Math.pow(10,steps));
+    }
+    if (diffIn <= 5){
+        return .5 * (Math.pow(10,steps));
+    }
+    if (diffIn <= 10){
+        return 1 * (Math.pow(10,steps));
+    }
+    
+}
+
+function getYAxisStep(diffIn){
+    
+    var checkVal = diffIn;
+    var y = 0;
+    while (checkVal < 1 || checkVal > 10){
+        if (checkVal <  1){
+            y=y-1;
+            checkVal = checkVal * 10;
+        }
+        if (checkVal >  10){
+            y=y+1;
+            checkVal = checkVal / 10;
+        }                    
+    }  
+
+    var retVal = calcYAxisStep (checkVal, y);
+
+    return calcYAxisStep (checkVal, y);
+}
+
 
 function drawVisualization() {
 
@@ -786,6 +824,10 @@ function drawVisualization() {
           var highValDouble = parseFloat(highValStandardIn) + (spreadAmount);
           var lowValDouble = parseFloat(lowValStandardIn) - spreadAmount; 
           var lowValDouble = Math.max(lowValDouble, 0);
+          if ((highValDouble - lowValDouble) > 0){
+              var yAxisStep = getYAxisStep(highValDouble - lowValDouble);
+          }
+          
 
       } else {
           var axisLabel = jQuery('#ExploreDataPage\\:imageAxisLabelNoYLabel').text();
@@ -797,6 +839,9 @@ function drawVisualization() {
           var highValDouble = parseFloat(highValStandardIn) + (spreadAmount);
           var lowValDouble = parseFloat(lowValStandardIn) - spreadAmount; 
           var lowValDouble = Math.max(lowValDouble, 0);
+          if ((highValDouble - lowValDouble) > 0){
+              var yAxisStep = getYAxisStep(highValDouble - lowValDouble);
+          }
       }
 
       
@@ -890,7 +935,8 @@ function drawVisualization() {
             
             getXaxisString(intStartYear, intEndYear);
             
-            chartParams = chartParams + "&chxr=1,"+lowValDouble+","+highValDouble + "|0," + calcedStartYear + "," + calcedEndYear ;
+            chartParams = chartParams + "&chxr=1,"+lowValDouble+","+highValDouble + ","+ yAxisStep;
+                "|0," + calcedStartYear + "," + calcedEndYear ;
             if (calcedEndYear - calcedStartYear < 8){
                 chartParams = chartParams + ",1";  
             }

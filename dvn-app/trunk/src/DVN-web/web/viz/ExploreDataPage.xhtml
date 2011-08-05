@@ -846,6 +846,8 @@ function drawVisualization() {
          
           if ((highValRawData - lowValRawData) > 0){
               var yAxisStep = getYAxisStep(highValRawData - lowValRawData);
+          } else {
+              var yAxisStep = 1;
           }
 
           var highValDouble = parseFloat(highValStandardIn) + (yAxisStep * 2);
@@ -864,6 +866,8 @@ function drawVisualization() {
           var highValRawData = parseFloat(highValStandardIn);
           if ((highValRawData - lowValRawData) > 0){
               var yAxisStep = getYAxisStep(highValRawData - lowValRawData);
+          } else {
+              var yAxisStep = 1;
           }
           var highValDouble = parseFloat(highValStandardIn) + (yAxisStep * 2);
           var lowValDouble = parseFloat(lowValStandardIn) - (yAxisStep *2); 
@@ -947,10 +951,10 @@ function drawVisualization() {
             if (yAxisStep >= 1){
                chartParams = chartParams + "&chxs=1N*sz0*,000000|0N*0*,000000|2N,000000|3N,000000|4N,000000"; 
             } 
-            if (yAxisStep < 1  && yAxisStep > .25 ) {
+            if (yAxisStep < 1  && yAxisStep != .25 && yAxisStep >= .1 ) {
                chartParams = chartParams + "&chxs=1N*sz1*,000000|0N*0*,000000|2N,000000|3N,000000|4N,000000";  
             }
-            if (yAxisStep <= .25) {
+            if (yAxisStep == .25 || yAxisStep < .1) {
                chartParams = chartParams + "&chxs=1N*sz2*,000000|0N*0*,000000|2N,000000|3N,000000|4N,000000";  
             }
             chartParams = chartParams + "&chxt="+axisLabel;

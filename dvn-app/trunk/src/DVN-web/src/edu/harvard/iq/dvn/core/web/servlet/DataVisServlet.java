@@ -185,6 +185,9 @@ public class DataVisServlet extends HttpServlet {
         BufferedImage yAxisImage = new BufferedImage(100, 500, BufferedImage.TYPE_INT_ARGB);
         BufferedImage combinedImage = new BufferedImage(776, 575 + heightAdjustment , BufferedImage.TYPE_INT_ARGB);
 
+        if(graphTitle.trim().isEmpty()){
+            graphTitle = " ";
+        }
        
         File retFile = generateImageString("16", "676x", "South", "0", graphTitle);       
         BufferedImage titleImage =     ImageIO.read(retFile);
@@ -195,8 +198,15 @@ public class DataVisServlet extends HttpServlet {
              source = "Source: " + sources;
         }
         
+        if(source.trim().isEmpty()){
+            source = " ";
+        }
         retFile = generateImageString("14", "676x", "NorthWest", "0", source);        
         BufferedImage sourceImage =     ImageIO.read(retFile);
+        
+        if(yAxisLabel.trim().isEmpty()){
+            yAxisLabel = " ";
+        }
         
         retFile = generateImageString("14", "200x", "South", "-90", yAxisLabel);        
         BufferedImage yAxisVertImage =     ImageIO.read(retFile);

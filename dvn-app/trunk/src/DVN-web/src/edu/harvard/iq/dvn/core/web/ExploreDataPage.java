@@ -47,6 +47,7 @@ import edu.harvard.iq.dvn.ingest.dsb.FieldCutter;
 import edu.harvard.iq.dvn.ingest.dsb.impl.DvnJavaFieldCutter;
 import java.awt.Color;
 import java.awt.Font;
+import java.awt.FontFormatException;
 import java.awt.FontMetrics;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
@@ -1123,7 +1124,7 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
     public void addLine(ActionEvent ae){
         
         if ( lineLabel.isEmpty() || lineLabel.trim().equals("") ) {
-            FacesMessage message = new FacesMessage("Please enter a label");
+            FacesMessage message = new FacesMessage("Please complete your selections");
             FacesContext fc = FacesContext.getCurrentInstance();
             fc.addMessage(addLineButton.getClientId(fc), message);
             return;
@@ -1497,7 +1498,7 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
         if(finalList.size() == 1) {
             dataVariableSelected = finalList.get(0);
         } else {
-            FacesMessage message = new FacesMessage("Your selections do not match any in the data table.");
+            FacesMessage message = new FacesMessage("Please complete your selections.");
             FacesContext fc = FacesContext.getCurrentInstance();
             fc.addMessage(addLineButton.getClientId(fc), message);
             return false;
@@ -2042,6 +2043,7 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
                 int iMaxYear = new Double (maxYear).intValue();
                 for (int j=iDataMax + 1; j <= iMaxYear; j++){
                      transformedData[i] += j +", , "; 
+                     transformedDataIndexed[i] += j +", , ";
                 }
                 
             }
@@ -2323,7 +2325,11 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
                      System.out.println(io.getCause().toString());
                      System.out.println("IIOException " + imageURLnew);
                     
-                } 
+                }    catch (FontFormatException ff){
+                    System.out.println("FontFormatException " + imageURLnew);
+                    
+                    System.out.println("FontFormatException " + ff.toString());
+                }
             }
 
         } catch (UnsupportedEncodingException uee){
@@ -2340,91 +2346,54 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
     }
     
     
-    private BufferedImage getCompositeImage(BufferedImage image){
-
-        Integer heightAdjustment = new Integer(0);
+    private BufferedImage getCompositeImage(BufferedImage image) throws FontFormatException, IOException{ Integer heightAdjustment = new Integer(0);
         if (this.heightInt == 1){
             heightAdjustment = 40;
         }
         if (this.heightInt == 3){
             heightAdjustment = -100;
-        }
-        
-        System.out.println("image height " + image.getHeight());
+        }        
         
         BufferedImage yAxisImage = new BufferedImage(100, 500, BufferedImage.TYPE_INT_ARGB);
-        BufferedImage yAxisImageHoriz = new BufferedImage(200, 200, BufferedImage.TYPE_INT_ARGB);
         BufferedImage combinedImage = new BufferedImage(776, 575 + heightAdjustment , BufferedImage.TYPE_INT_ARGB);
-        BufferedImage titleImage = new BufferedImage(676, 50, BufferedImage.TYPE_INT_ARGB );
-        BufferedImage sourceImage = new BufferedImage(676, 50, BufferedImage.TYPE_INT_ARGB );
-        BufferedImage yAxisVert = new BufferedImage(200, 200, BufferedImage.TYPE_INT_ARGB);
 
-        Graphics2D yag2 = yAxisImage.createGraphics();
-        Graphics2D cig2 = combinedImage.createGraphics();
-        Graphics2D tig2 = titleImage.createGraphics();
-        Graphics2D sig2 = sourceImage.createGraphics();
-        Graphics2D yahg2 = yAxisImageHoriz.createGraphics();
-        Graphics2D yaxg2 = yAxisVert.createGraphics();
-
-        cig2.setColor(Color.WHITE);
-        yag2.setColor(Color.WHITE);
-        tig2.setColor(Color.WHITE);
-        sig2.setColor(Color.WHITE);
-        yahg2.setColor(Color.WHITE);
-        yaxg2.setColor(Color.WHITE);
-        yag2.fillRect(0, 0, 676, 500);
-        tig2.fillRect(0, 0, 876, 500);
-        sig2.fillRect(0, 0, 876, 500);
-        yahg2.fillRect(0, 0, 876, 500);
-        yaxg2.fillRect(0, 0, 100, 500);
-        cig2.fillRect(0, 0, 776, 575 + heightAdjustment);
-        Font font = new Font("Helvetica", Font.PLAIN, 10);
-        Font hFont = new Font("Helvetica", Font.PLAIN, 12);
-        Font tFont = new Font("Helvetica", Font.PLAIN, 14);
-        Font sFont = new Font("Helvetica", Font.PLAIN, 12);
-        yag2.setFont(font);
-        tig2.setFont(tFont);
-        sig2.setFont(sFont);
-        yahg2.setFont(hFont);
+       
+        File retFile = generateImageString("16", "676x", "South", "0", graphTitle);       
+        BufferedImage titleImage =     ImageIO.read(retFile);
 
         String source = "";
 
         if (!sources.trim().isEmpty()) {
              source = "Source: " + sources;
         }
-
-        tig2.setPaint(Color.black);
-        sig2.setPaint(Color.black);
-        yahg2.setPaint(Color.black);
-
-        writeStringToImage(yAxisImageHoriz, yahg2, yAxisLabel, true, 20, 10);
-        writeStringToImage(titleImage, tig2, graphTitle, true, 20, 10 );
-        writeStringToImage(sourceImage, sig2, source, false, 15, 10 );
         
-        Kernel kernel = new Kernel(3, 3, new float[] { -1, -1, -1, -1, 9, -1, -1,
-        -1, -1 });
-        BufferedImageOp op = new ConvolveOp(kernel);
-        yAxisImageHoriz = op.filter(yAxisImageHoriz, null);
-        titleImage = op.filter(titleImage, null);
-        sourceImage = op.filter(sourceImage, null);        
-        BufferedImage yAxisImageRotated = rotateImage(yAxisImageHoriz );
+        retFile = generateImageString("14", "676x", "NorthWest", "0", source);        
+        BufferedImage sourceImage =     ImageIO.read(retFile);
+        
+        retFile = generateImageString("14", "200x", "South", "-90", yAxisLabel);        
+        BufferedImage yAxisVertImage =     ImageIO.read(retFile);
+        
+        Graphics2D yag2 = yAxisImage.createGraphics();
+        Graphics2D cig2 = combinedImage.createGraphics();
 
-        yaxg2.drawImage ( yAxisImageRotated,
-              0, 0, 200, 200,
-              0, 0, 200, 200,
-        null);
+        Graphics2D sig2 = sourceImage.createGraphics();
+        
 
-        yAxisImageRotated = op.filter(yAxisImageRotated, null); 
+        cig2.setColor(Color.WHITE);
+        yag2.setColor(Color.WHITE);
+        yag2.fillRect(0, 0, 676, 500);
+        cig2.fillRect(0, 0, 776, 550);
+       
+
+
         cig2.drawImage(yAxisImage, 0, 0, null);
-        cig2.drawImage(yAxisVert, 0, 120, null);
+        cig2.drawImage(yAxisVertImage, 0, 120 + heightAdjustment/2 , null);
         cig2.drawImage(image, 50, 50, null);
         cig2.drawImage(titleImage, 50, 0, null);
         cig2.drawImage(sourceImage, 50, 475 + heightAdjustment, null);
 
         yag2.dispose();
-        tig2.dispose();
         sig2.dispose();
-        yahg2.dispose();
         cig2.dispose();        
         
         return combinedImage;
@@ -2504,6 +2473,55 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
         zout.closeEntry();
      }
 
+     private File generateImageString(String size, String width, String orientation, String rotate, String inStr) throws IOException {
+        // let's attempt to generate the Text image:
+        int exitValue = 0;
+        File file = File.createTempFile("imageString","tmp");
+        System.out.println(new File("/usr/bin/convert").exists() );
+        if (new File("/usr/bin/convert").exists()) {           
+            
+            String ImageMagick = "/usr/bin/convert  -background white  -font Helvetica " +
+                    "-pointsize 14  -gravity center  -size 676x  caption:\'Graph Title\'" +
+                    " png:" + file.getAbsolutePath();
+            
+            String ImageMagickCmd[] = new String[15];
+            
+            ImageMagickCmd[0] = "/usr/bin/convert";
+            ImageMagickCmd[1] = "-background";
+            ImageMagickCmd[2] = "white";
+            ImageMagickCmd[3] = "-font";
+            ImageMagickCmd[4] = "Helvetica";
+            ImageMagickCmd[5] = "-pointsize";
+            ImageMagickCmd[6] = size;
+            ImageMagickCmd[7] = "-gravity";
+            ImageMagickCmd[8] = orientation;
+            ImageMagickCmd[9] = "-rotate";
+            ImageMagickCmd[10] = rotate;
+            ImageMagickCmd[11] = "-size";
+            ImageMagickCmd[12] = width;
+            ImageMagickCmd[13] = "caption:" + inStr;
+            ImageMagickCmd[14] = "png:" + file.getAbsolutePath();
+
+                       
+            
+            try {
+                Runtime runtime = Runtime.getRuntime();
+                Process process = runtime.exec(ImageMagickCmd);
+                exitValue = process.waitFor();
+            } catch (Exception e) {
+                exitValue = 1;
+            }
+
+            if (exitValue == 0) {
+                return file;
+            }
+
+            return file;
+        }
+
+        return null;
+    }   
+    
   private void writeExcelFile   (File fileIn) throws IOException {
       String parseString = dataString;
       List list = Arrays.asList(parseString.split(";"));
@@ -2527,14 +2545,7 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
             
             List columnHeads = Arrays.asList(parseColumn.split("\\^"));
             
-            if(!sources.isEmpty()){
-                
-                Label h = new Label (0, rowCounter,  "Source(s): " + sources.toString());
-                s.addCell(h);
-                rowCounter++;
-                
-            }
-            
+
             
             int ccounter = 0;
             for (Object c: columnHeads){
@@ -2566,6 +2577,19 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
                 }
                 rowCounter++;
             }
+            
+            if(!sources.isEmpty()){
+                
+                Label h = new Label (0, rowCounter,  "" );
+                s.addCell(h);
+                rowCounter++;
+                
+                 h = new Label (0, rowCounter,  "Source: " + sources.toString());
+                s.addCell(h);
+                rowCounter++;
+                
+            }
+            
             w.write();
             w.close();
         }
@@ -2718,26 +2742,6 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
               endOfLine = Math.min(sourcesWLabel.length(), previousSpace + 73);
           }
 
-          /*
-
-          for (String sourceLine : sourceLines){
-              axisLabelTemp += ",x";
-              axisLabelTempNoY += ",x";
-              String codedSourceLine = "";
-              try {
-                  codedSourceLine = URLEncoder.encode(sourceLine, "UTF-8");
-              } catch (Exception e) {
-                  codedSourceLine = sourceLine;
-              }
-              footerNotes += "|" + lineNum + ":||"+  codedSourceLine +"|";
-              footerNotesNoY += "|" + lineNumNoY + ":||"+ codedSourceLine +"|";
-              displayFooterNotes += "|" + lineNum + ":||"+  sourceLine +"|";
-              displayFooterNotesNoY += "|" + lineNumNoY + ":||"+ sourceLine +"|";
-              lineNum++;
-              lineNumNoY++;
-          }
-           * 
-           */
         }
 
           
@@ -2750,37 +2754,6 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
 
     }
     
-    private String getXaxisString()
-{
-    int startRange = 0;
-    int endRange = 0;
-    int yearLabelInt = 0;
-    String myRowList[] = getDataString().split(";");
-    String retString = "|";
-    if (new Integer( startYear.toString()).intValue() != 0 && new Integer( endYear.toString()).intValue() !=3000)
-        
-    { yearLabelInt = Math.round((new Integer( endYear.toString()).intValue()-new Integer( startYear.toString()).intValue())/5); }
-    else {
-        for (int i=0; i< myRowList.length -1 ;i++)
-        { String myRow = myRowList[i];
-            String myRowParse[] = myRow.split ( "," );
-            int yearNum = new Integer( myRowParse[0].toString()).intValue();
-            if (i==0)
-            { startRange = yearNum; } endRange = yearNum; }
-        yearLabelInt = Math.round((endRange-startRange)/5); }
-    int counter = yearLabelInt;
-    for (int i=0; i< myRowList.length -1 ;i++)
-    { boolean yearPrint = false; String myRow = myRowList[i];
-        String myRowParse[] = myRow.split ( "," );
-        int yearNum = new Integer( myRowParse[0].toString());
-        if (i== 0 || counter == 0 )
-        { counter = yearLabelInt; yearPrint = true; }
-        counter--;
-        if (yearNum >= new Integer( startYear.toString()).intValue() && yearNum <= new Integer( endYear.toString()).intValue() )
-        { if (yearPrint){ retString= retString + yearNum + '|'; }
-            else { retString = retString + '|'; } } }
-    return retString;
-}
 
     public String getTitleOut() {
         return "";

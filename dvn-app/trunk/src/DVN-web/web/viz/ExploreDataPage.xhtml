@@ -949,15 +949,15 @@ function drawVisualization() {
             }
                        
             if (yAxisStep >= 1){
-               chartParams = chartParams + "&chxs=1N*sz0*,000000|0N*0*,000000|2N,000000|3N,000000|4N,000000"; 
+               chartParams = chartParams + "chxs=0N*0*,FFFFFF,3|1N*0*,000000,11,0,t|2N*0*,FFFFFF,3,1,l|3N*sz0*,000000,11,1,t";
             } 
             if (yAxisStep < 1  && yAxisStep != .25 && yAxisStep >= .1 ) {
-               chartParams = chartParams + "&chxs=1N*sz1*,000000|0N*0*,000000|2N,000000|3N,000000|4N,000000";  
+               chartParams = chartParams + "chxs=0N*0*,FFFFFF,3|1N*0*,000000,11,0,t|2N*0*,FFFFFF,3,1,l|3N*sz1*,000000,11,1,t";
             }
             if (yAxisStep == .25 || yAxisStep < .1) {
-               chartParams = chartParams + "&chxs=1N*sz2*,000000|0N*0*,000000|2N,000000|3N,000000|4N,000000";  
+               chartParams = chartParams + "chxs=0N*0*,FFFFFF,3|1N*0*,000000,11,0,t|2N*0*,FFFFFF,3,1,l|3N*sz2*,000000,11,1,t";
             }
-            chartParams = chartParams + "&chxt="+axisLabel;
+            chartParams = chartParams + "&chxt=x,x,y,y";
             var labelString = escape( displaySourceFooter);   
             chartParams = chartParams + "&chxl="+labelString;
             if (buttonValIn1 != 3){
@@ -967,8 +967,8 @@ function drawVisualization() {
             }
             
             getXaxisString(intStartYear, intEndYear);
-            chartParams = chartParams + "&chxr=1,"+lowValDouble+","+highValDouble + ","+ yAxisStep +
-                "|0," + calcedStartYear + "," + calcedEndYear ;
+            chartParams = chartParams + "&chxr=0,0,1,1|2,0,1,1|3,"+lowValDouble+","+highValDouble + ","+ yAxisStep +
+                "|1," + calcedStartYear + "," + calcedEndYear ;
             if (calcedEndYear - calcedStartYear < 8){
                 chartParams = chartParams + ",1";  
             }

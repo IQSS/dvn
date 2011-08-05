@@ -304,11 +304,11 @@ a.lineDetailLink {display:block;}
 .dvnGraphDisplayBlock {margin-bottom:2em;}
 .dvnGraphDisplayBlock label {display:inline;}
 .dvnGraphDisplayBlock div {margin-top:.5em;}
-.dvnGraphTitleBlock {margin:.275em 0 1em 0; text-align:center;}
+.dvnGraphTitleBlock {width:776px; margin:.275em 0 1em 0; text-align:center;}
 .dvnGraphTitleBlock label {font-weight:normal; font-size:1.15em;}
 .dvnGraphWarningBlock {margin-bottom:1em;}
 .dvnGraphWarningBlock span {font-weight:bold; color:red;}
-.dvnGraphSourceBlock {margin-bottom:2em;}
+.dvnGraphSourceBlock {width:776px; margin-bottom:2em;}
 .dvnGraphSourceBlock label {display:block;}
 .dvnGraphSourceBlock span {font-weight:normal;}
 .dvnGraphTimeSeriesBlock {overflow:hidden; margin-bottom:2em;}

@@ -48,6 +48,7 @@ import java.net.URLDecoder;
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.Graphics2D;
+import java.awt.RenderingHints;
 import java.awt.font.FontRenderContext;
 import java.awt.geom.AffineTransform;
 import java.awt.image.AffineTransformOp;
@@ -55,13 +56,19 @@ import java.awt.image.BufferedImage;
 import java.awt.image.BufferedImageOp;
 import java.awt.image.ConvolveOp;
 import java.awt.image.Kernel;
+import java.io.BufferedReader;
+import java.io.File;
 import java.io.FileInputStream;
+import java.io.InputStreamReader;
+import java.util.Iterator;
 import java.util.Locale;
 
 import javax.imageio.ImageIO;
 import javax.imageio.IIOException;
 
 import java.util.logging.Logger;
+import javax.imageio.ImageWriter;
+import javax.imageio.stream.ImageOutputStream;
 
 /**
  *
@@ -167,7 +174,7 @@ public class DataVisServlet extends HttpServlet {
     // In the long run, we'll want this code to be in one place and not
     // duplicated. For now, I'm just trying to get it all to work.
 
-    private BufferedImage getCompositeImage(BufferedImage image) throws FontFormatException, IOException{        Integer heightAdjustment = new Integer(0);
+    private BufferedImage getCompositeImage(BufferedImage image) throws FontFormatException, IOException{ Integer heightAdjustment = new Integer(0);
         if (this.heightInt == 1){
             heightAdjustment = 40;
         }
@@ -176,124 +183,50 @@ public class DataVisServlet extends HttpServlet {
         }        
         
         BufferedImage yAxisImage = new BufferedImage(100, 500, BufferedImage.TYPE_INT_ARGB);
-        BufferedImage yAxisImageHoriz = new BufferedImage(200, 200, BufferedImage.TYPE_INT_ARGB);
         BufferedImage combinedImage = new BufferedImage(776, 575 + heightAdjustment , BufferedImage.TYPE_INT_ARGB);
-        BufferedImage titleImage = new BufferedImage(676, 50, BufferedImage.TYPE_INT_ARGB );
-        BufferedImage sourceImage = new BufferedImage(676, 50, BufferedImage.TYPE_INT_ARGB );
-        BufferedImage yAxisVert = new BufferedImage(200, 200, BufferedImage.TYPE_INT_ARGB);
 
-        Graphics2D yag2 = yAxisImage.createGraphics();
-        Graphics2D cig2 = combinedImage.createGraphics();
-        Graphics2D tig2 = titleImage.createGraphics();
-        Graphics2D sig2 = sourceImage.createGraphics();
-        Graphics2D yahg2 = yAxisImageHoriz.createGraphics();
-        Graphics2D yaxg2 = yAxisVert.createGraphics();
-
-        cig2.setColor(Color.WHITE);
-        yag2.setColor(Color.WHITE);
-        tig2.setColor(Color.WHITE);
-        sig2.setColor(Color.WHITE);
-        yahg2.setColor(Color.WHITE);
-        yaxg2.setColor(Color.WHITE);
-        yag2.fillRect(0, 0, 676, 500);
-        tig2.fillRect(0, 0, 876, 500);
-        sig2.fillRect(0, 0, 876, 500);
-        yahg2.fillRect(0, 0, 876, 500);
-        yaxg2.fillRect(0, 0, 100, 500);
-        cig2.fillRect(0, 0, 776, 550);
-        
-        Font fontf = null;
-        try {
-             fontf = Font.createFont(Font.TRUETYPE_FONT,
-                new FileInputStream("HelveticaNeue.ttf"));           
-        } catch (IOException iio){
-             System.out.println("IOException " );
-        } catch (FontFormatException ex) {
-            
-            System.out.println("FontFormatException message " + ex.getMessage() );
-            /*
-             System.out.println("FontFormatException cause " + ex.getCause().toString() );
-             * */
-        } 
-            
-        Font font = new Font("Helvetica", Font.PLAIN, 10);
-        Font hFont = new Font("Helvetica", Font.PLAIN, 12);
-        Font tFont = new Font("Helvetica", Font.PLAIN, 14);
-        Font sFont = new Font("Helvetica", Font.PLAIN, 12);
-
-        yag2.setFont(font);
-        tig2.setFont(tFont);
-        sig2.setFont(sFont);
-        yahg2.setFont(hFont);
+       
+        File retFile = generateImageString("16", "676x", "South", "0", graphTitle);       
+        BufferedImage titleImage =     ImageIO.read(retFile);
 
         String source = "";
 
         if (!sources.trim().isEmpty()) {
              source = "Source: " + sources;
         }
-
-        tig2.setPaint(Color.black);
-        sig2.setPaint(Color.black);
-        yahg2.setPaint(Color.black);
-
-        writeStringToImage(yAxisImageHoriz, yahg2, yAxisLabel, true, 20, 10);
-        writeStringToImage(titleImage, tig2, graphTitle, true, 20, 10 );
-        writeStringToImage(sourceImage, sig2, source, false, 15, 10 );
         
-        Kernel kernel = new Kernel(3, 3, new float[] { -1, -1, -1, -1, 9, -1, -1,
-        -1, -1 });
-        BufferedImageOp op = new ConvolveOp(kernel);
-        yAxisImageHoriz = op.filter(yAxisImageHoriz, null);
-        titleImage = op.filter(titleImage, null);
-        sourceImage = op.filter(sourceImage, null);        
-        BufferedImage yAxisImageRotated = rotateImage(yAxisImageHoriz );
+        retFile = generateImageString("14", "676x", "NorthWest", "0", source);        
+        BufferedImage sourceImage =     ImageIO.read(retFile);
+        
+        retFile = generateImageString("14", "200x", "South", "-90", yAxisLabel);        
+        BufferedImage yAxisVertImage =     ImageIO.read(retFile);
+        
+        Graphics2D yag2 = yAxisImage.createGraphics();
+        Graphics2D cig2 = combinedImage.createGraphics();
 
-        yaxg2.drawImage ( yAxisImageRotated,
-              0, 0, 200, 200,
-              0, 0, 200, 200,
-        null);
+        Graphics2D sig2 = sourceImage.createGraphics();
+        
 
-                yAxisImageRotated = op.filter(yAxisImageRotated, null);
+        cig2.setColor(Color.WHITE);
+        yag2.setColor(Color.WHITE);
+        yag2.fillRect(0, 0, 676, 500);
+        cig2.fillRect(0, 0, 776, 550);
+       
+
 
         cig2.drawImage(yAxisImage, 0, 0, null);
-        cig2.drawImage(yAxisVert, 0, 120, null);
+        cig2.drawImage(yAxisVertImage, 0, 120 + heightAdjustment/2 , null);
         cig2.drawImage(image, 50, 50, null);
         cig2.drawImage(titleImage, 50, 0, null);
         cig2.drawImage(sourceImage, 50, 475 + heightAdjustment, null);
 
         yag2.dispose();
-        tig2.dispose();
         sig2.dispose();
-        yahg2.dispose();
         cig2.dispose();        
         
         return combinedImage;
     }
-
-    private BufferedImage scaleImage(BufferedImage img){
-        final float SCALE = 1.f;
-
-        float newHeight = SCALE * img.getHeight(null);
-        int height = Math.round(newHeight);
-        
-        float newWidth = SCALE * img.getWidth(null);
-        int width = Math.round(newWidth);
-
-        BufferedImage bi = new BufferedImage( width,
-                                             height,
-                                             BufferedImage.TYPE_INT_ARGB);
-
-        Graphics2D grph = (Graphics2D) bi.getGraphics();
-        grph.scale(SCALE, SCALE);
-
-        grph.drawImage(img, 0, 0, null);
-        grph.dispose();
-        
-        return bi;
-
-    }
-    
-    
+   
     private void writeStringToImage(BufferedImage imageIn, 
             Graphics2D gr, String stringIn, boolean center, int startHeight, int startWidth){
 
@@ -389,7 +322,85 @@ public class DataVisServlet extends HttpServlet {
             }
         }
     }
+    
+    private File generateImageString() throws IOException {
+        // let's attempt to generate the Text image:
+        int exitValue = 0;
+        File file = File.createTempFile("imageString","tmp");
+        System.out.println(new File("/usr/bin/convert").exists() );
+        if (new File("/usr/bin/convert").exists()) {           
+            
+            String ImageMagick = "/bin/sh -c \"/usr/bin/convert  -background white  -font Helvetica " +
+                    "-pointsize 14  -gravity center  -size 676x  caption:'Graph Title'" +
+                    " png:" + file.getAbsolutePath() + "\"";
+            
+            try {
+                Runtime runtime = Runtime.getRuntime();
+                Process process = runtime.exec(ImageMagick);
+                exitValue = process.waitFor();
+            } catch (Exception e) {
+                exitValue = 1;
+            }
 
+            if (exitValue == 0) {
+                return file;
+            }
+
+            return file;
+        }
+
+        return null;
+    }
+
+    
+    private File generateImageString(String size, String width, String orientation, String rotate, String inStr) throws IOException {
+        // let's attempt to generate the Text image:
+        int exitValue = 0;
+        File file = File.createTempFile("imageString","tmp");
+        System.out.println(new File("/usr/bin/convert").exists() );
+        if (new File("/usr/bin/convert").exists()) {           
+            
+            String ImageMagick = "/usr/bin/convert  -background white  -font Helvetica " +
+                    "-pointsize 14  -gravity center  -size 676x  caption:\'Graph Title\'" +
+                    " png:" + file.getAbsolutePath();
+            
+            String ImageMagickCmd[] = new String[15];
+            
+            ImageMagickCmd[0] = "/usr/bin/convert";
+            ImageMagickCmd[1] = "-background";
+            ImageMagickCmd[2] = "white";
+            ImageMagickCmd[3] = "-font";
+            ImageMagickCmd[4] = "Helvetica";
+            ImageMagickCmd[5] = "-pointsize";
+            ImageMagickCmd[6] = size;
+            ImageMagickCmd[7] = "-gravity";
+            ImageMagickCmd[8] = orientation;
+            ImageMagickCmd[9] = "-rotate";
+            ImageMagickCmd[10] = rotate;
+            ImageMagickCmd[11] = "-size";
+            ImageMagickCmd[12] = width;
+            ImageMagickCmd[13] = "caption:" + inStr;
+            ImageMagickCmd[14] = "png:" + file.getAbsolutePath();
+
+                       
+            
+            try {
+                Runtime runtime = Runtime.getRuntime();
+                Process process = runtime.exec(ImageMagickCmd);
+                exitValue = process.waitFor();
+            } catch (Exception e) {
+                exitValue = 1;
+            }
+
+            if (exitValue == 0) {
+                return file;
+            }
+
+            return file;
+        }
+
+        return null;
+    }
 
     private void createErrorResponse404(HttpServletResponse res) {
         createErrorResponseGeneric(res, res.SC_NOT_FOUND, "Sorry. The file you are looking for could not be found.");

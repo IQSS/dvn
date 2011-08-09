@@ -120,12 +120,20 @@ public class DataVisServlet extends HttpServlet {
                     BufferedImage image =     ImageIO.read(imageURLnew);
                     BufferedImage combinedImage = getCompositeImage(image);
 
-                    // MIME type header:
+                    if (combinedImage == null) {
+                        res.setHeader("Content-Type", "text/plain");
+                        //out = res.getWriter();
+                        PrintWriter wout = new PrintWriter (out);
+                        wout.println("Sorry, image could not be generated due to system instability; please try again later.");
+                    } else {
 
-                    res.setHeader("Content-Type", "image/png");
-                    // image content:
+                        // MIME type header:
 
-                    ImageIO.write(combinedImage, "png", out);
+                        res.setHeader("Content-Type", "image/png");
+                        // image content:
+
+                        ImageIO.write(combinedImage, "png", out);
+                    }
 
                 } catch (IIOException io){
                     // TODO:
@@ -189,7 +197,13 @@ public class DataVisServlet extends HttpServlet {
             graphTitle = " ";
         }
        
-        File retFile = generateImageString("16", "676x", "South", "0", graphTitle);       
+        File retFile = generateImageString("16", "676x", "South", "0", graphTitle);
+
+        if (retFile == null) {
+            dbgLog.info("failed to generate graph title image.");
+            return null;
+        }
+
         BufferedImage titleImage =     ImageIO.read(retFile);
 
         String source = "";
@@ -201,20 +215,32 @@ public class DataVisServlet extends HttpServlet {
         if(source.trim().isEmpty()){
             source = " ";
         }
-        retFile = generateImageString("14", "676x", "NorthWest", "0", source);        
+        retFile = generateImageString("14", "676x", "NorthWest", "0", source);
+
+        if (retFile == null) {
+            dbgLog.info("failed to generate \"source\" text image.");
+            return null;
+        }
+
         BufferedImage sourceImage =     ImageIO.read(retFile);
         
         if(yAxisLabel.trim().isEmpty()){
             yAxisLabel = " ";
         }
         
-        retFile = generateImageString("14", "200x", "South", "-90", yAxisLabel);        
+        retFile = generateImageString("14", "200x", "South", "-90", yAxisLabel);
+
+        if (retFile == null) {
+            dbgLog.info("failed to generate Y axis label image.");
+            return null;
+        }
+
         BufferedImage yAxisVertImage =     ImageIO.read(retFile);
         
         Graphics2D yag2 = yAxisImage.createGraphics();
         Graphics2D cig2 = combinedImage.createGraphics();
 
-        Graphics2D sig2 = sourceImage.createGraphics();
+        //Graphics2D sig2 = sourceImage.createGraphics();
         
 
         cig2.setColor(Color.WHITE);
@@ -231,7 +257,7 @@ public class DataVisServlet extends HttpServlet {
         cig2.drawImage(sourceImage, 50, 475 + heightAdjustment, null);
 
         yag2.dispose();
-        sig2.dispose();
+        //sig2.dispose();
         cig2.dispose();        
         
         return combinedImage;
@@ -396,9 +422,20 @@ public class DataVisServlet extends HttpServlet {
             
             try {
                 Runtime runtime = Runtime.getRuntime();
+
+                long freeMem = runtime.freeMemory();
+
+                dbgLog.info("free memory: "+freeMem); 
+
                 Process process = runtime.exec(ImageMagickCmd);
                 exitValue = process.waitFor();
+                // let's collect us some garbage -- ?
+                //runtime.gc();
+
             } catch (Exception e) {
+                dbgLog.info("Exception caught attempting to run external ImageMagick process!");
+                dbgLog.info(e.getMessage());
+
                 exitValue = 1;
             }
 
@@ -406,8 +443,13 @@ public class DataVisServlet extends HttpServlet {
                 return file;
             }
 
-            return file;
+            dbgLog.info("non-zero exit value ("+exitValue+") from the exec() of ImageMagick.");
+
+            //return file;
+            return null;
         }
+
+        dbgLog.info("Could not find convert program; returning null.");
 
         return null;
     }

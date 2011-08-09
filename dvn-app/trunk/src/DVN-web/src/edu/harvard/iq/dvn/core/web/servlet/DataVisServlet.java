@@ -427,11 +427,20 @@ public class DataVisServlet extends HttpServlet {
 
                 dbgLog.info("free memory: "+freeMem); 
 
+                if ( freeMem < 150000000 ) {
+                    // let's collect us some garbage:
+                    runtime.gc();
+
+                    // 150M appears to be a safe estimate of how much
+                    // memory our ImageMagick process needs to run -- L.A.
+
+                    freeMem = runtime.freeMemory();
+                    dbgLog.info("free memory, after GC: "+freeMem);
+
+                }
+
                 Process process = runtime.exec(ImageMagickCmd);
                 exitValue = process.waitFor();
-                // let's collect us some garbage -- ?
-                //runtime.gc();
-
             } catch (Exception e) {
                 dbgLog.info("Exception caught attempting to run external ImageMagick process!");
                 dbgLog.info(e.getMessage());

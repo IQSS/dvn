@@ -987,15 +987,25 @@ function drawVisualization() {
             parseData(data, intDisType, intStartYear, intEndYear, useIndex, colStr);
             var chart = new google.visualization.AnnotatedTimeLine(document.getElementById('chart_div'));
             chart.draw(data, {allowRedraw: true, wmode: 'transparent', displayZoomButtons: false, displayAnnotations: false});
-            
         }
         if (intDisType == 3){
             var data3 = new google.visualization.DataTable();
             parseData(data3, intDisType, intStartYear, intEndYear, useIndex, dtcolStr);
             var table = new google.visualization.Table(document.getElementById('chart_div'));
-            var options = {width: 760, showRowNumber: false};
-            table.draw(data3, options);
-            setChartDivHeight();
+
+
+            var rows = data3.getNumberOfRows();
+            var dataTableHeight = (rows * 25) + 35;
+            if(dataTableHeight > 550){
+                var options = {width: 760, height: 550, showRowNumber: false};
+                table.draw(data3, options);
+                return setChartDivHeight();
+            } else{
+                var options = {width: 760, height: 'auto', showRowNumber: false};
+                table.draw(data3, options);
+                return setChartDivHeight();
+            }
+
         }
         if (intDisType == 2){
             var googleImageURL = chartBaseUrl + chartParams + values;
@@ -1004,19 +1014,18 @@ function drawVisualization() {
             var sourcesParam = escape(sourceStringParam);
             var compositeImageURL = "/dvn/DataVisImage/?graphTitle=" + graphTitleParam + "&yAxisLabel=" + yAxisLabelParam + "&heightCode=" + heightValIn 
                 + "&sources=" + sourcesParam + "&googleImageUrl=" + escape(googleImageURL);
-            document.getElementById('chart_div').innerHTML = "<img src=" + compositeImageURL + ">";             
+            document.getElementById('chart_div').innerHTML = "<img src=" + compositeImageURL + ">";
         }
 
     }
 
     function setChartDivHeight() {
         var chartDiv = jQuery('#chart_div');
-        var tableHeight = jQuery(chartDiv).find('table.google-visualization-table-table').height();
-        if (tableHeight < 550) {
-            jQuery(chartDiv).css({'height' : 'auto', 'overflow-y' : 'visible'});
-        }
-        else {
+        var tableHeight = jQuery(chartDiv).children().children().height();
+        if (tableHeight > 550) {
             jQuery(chartDiv).css({'height' : '550px', 'overflow-y' : 'auto'});
+        } else {
+            jQuery(chartDiv).css({'height' : 'auto', 'overflow-y' : 'visible'});
         }
     }
 

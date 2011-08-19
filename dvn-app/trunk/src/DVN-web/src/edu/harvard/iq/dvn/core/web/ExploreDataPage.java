@@ -29,6 +29,7 @@ import com.icesoft.faces.component.ext.HtmlInputText;
 import com.icesoft.faces.component.ext.HtmlSelectBooleanCheckbox;
 import com.icesoft.faces.component.ext.HtmlSelectOneMenu;
 import com.icesoft.faces.component.ext.HtmlSelectOneRadio;
+import com.icesoft.faces.component.paneltabset.PanelTabSet;
 import com.icesoft.faces.context.Resource;
 import com.icesoft.faces.context.effects.JavascriptContext;
 import com.itextpdf.text.Document;
@@ -152,6 +153,12 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
     private boolean selectedMeasureHasFilters = false;
 
     private Long selectedFilterGroupId = new Long(0);
+    
+    private Integer selectedIndex = new Integer(0);
+
+    public Integer getSelectedIndex() {
+        return selectedIndex;
+    }
     private int groupTypeId = 0;
     private List <DataVariable> dvList;
     private List <DataVariableMapping> sourceList = new ArrayList();;
@@ -225,7 +232,8 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
     private String transformedDataOut;
     private String[] transformedDataIndexed;
     private String transformedDataIndexedOut;
-    private String forcedIndexMessage;   
+    private String forcedIndexMessage; 
+    private String dataNotAddedMessage;
     private Float lowValStandard = new Float(0);
     private Float lowValIndex = new Float (100);
     private Float highValStandard = new Float (0);
@@ -302,6 +310,8 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
         groupTypeId = 0;
         startYear = "0";
         endYear = "3000";
+        legendInt = 2;
+        this.heightInt = 2;
         graphTitle = "";
         imageURL = "";
         showVariableInfoPopup = false;
@@ -309,16 +319,27 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
         variableLabelLink = false;
         displayLegend = true;
         setDisplayIndexes(false);
+        loadSelectViewItems();
         selectedMeasureId = new Long (0);
+        selectedIndex = new Integer(0);
+        tabSet1.setSelectedIndex(selectedIndex);
         groupTypeId = 0;
         this.selectMeasureItems = loadSelectMeasureItems(0);
         lineLabel = "";
         filterPanelGroup.getSavedChildren().clear();
         filterPanelGroup.getChildren().clear();
-        displayType = new Long(defaultView);
-        
+        displayType = new Long(defaultView);        
     }
 
+    private PanelTabSet tabSet1 = new PanelTabSet();
+
+    public PanelTabSet getTabSet1() {
+        return tabSet1;
+    }
+
+    public void setTabSet1(PanelTabSet tabSet1) {
+        this.tabSet1 = tabSet1;
+    }
 
 
     public List getVarGroupings() {
@@ -631,9 +652,7 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
         filterPanelGroup.getChildren().clear();
         filterPanelGroup.getSavedChildren().clear();
         inputLineLabel.setValue("");
-        FacesContext fc = FacesContext.getCurrentInstance();
-        JavascriptContext.addJavascriptCall(fc, "drawVisualization();");
-        JavascriptContext.addJavascriptCall(fc, "initLineDetails");
+        callDrawVisualization();
        
     }
     
@@ -741,6 +760,11 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
             selectItems.add(new SelectItem(3, "Data Table"));
             dataTableAvailable = true;  
         }
+        
+        includeImage = true;
+        includePdf = true;
+        includeExcel = true;
+        includeCSV = true;
 
         if (!dt.getVisualizationDisplay().isShowImageGraph()) {
             includeImage = false;
@@ -961,9 +985,18 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
     public void reset_DisplayType(){
         Object value= this.selectGraphType.getValue();
         this.displayType =  (Long) value ;
-           FacesContext fc = FacesContext.getCurrentInstance();
-           JavascriptContext.addJavascriptCall(fc, "drawVisualization();");
-           JavascriptContext.addJavascriptCall(fc, "initLineDetails");
+        callDrawVisualization();
+    }
+    
+    private String yAxisLabelForIndex(String strIn){
+        
+        return strIn + " = 100";
+    }
+    
+    private void callDrawVisualization(){
+        FacesContext fc = FacesContext.getCurrentInstance();
+        JavascriptContext.addJavascriptCall(fc, "drawVisualization();");
+        JavascriptContext.addJavascriptCall(fc, "initLineDetails");
     }
 
     public void update_StartYear(){
@@ -973,29 +1006,23 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
         if (!this.displayIndexes){
             yAxisLabel=  getYAxisLabelFromVizLines(); 
         }  else {
-             yAxisLabel =  indexDate + " = 100";
+             yAxisLabel =  yAxisLabelForIndex(indexDate);
         }
-        FacesContext fc = FacesContext.getCurrentInstance();
-        JavascriptContext.addJavascriptCall(fc, "drawVisualization();");
-        JavascriptContext.addJavascriptCall(fc, "initLineDetails");
+        callDrawVisualization();
     }
     
     public void update_LegendPosition(){
         Object value= this.selectLegendPosition.getValue();
         Integer intVal =  (Integer) value;
         this.legendInt = intVal.intValue();
-        FacesContext fc = FacesContext.getCurrentInstance();
-        JavascriptContext.addJavascriptCall(fc, "drawVisualization();");
-        JavascriptContext.addJavascriptCall(fc, "initLineDetails");
+        callDrawVisualization();
     }
     
     public void update_GraphHeight(){
         Object value= this.selectGraphHeight.getValue();
         Integer intVal =  (Integer) value;
         this.heightInt = intVal.intValue();
-        FacesContext fc = FacesContext.getCurrentInstance();
-        JavascriptContext.addJavascriptCall(fc, "drawVisualization();");
-        JavascriptContext.addJavascriptCall(fc, "initLineDetails");
+        callDrawVisualization();
     }
 
     public void update_EndYear(){
@@ -1005,24 +1032,19 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
         if (!this.displayIndexes){
             yAxisLabel=  getYAxisLabelFromVizLines(); 
         }  else {
-             yAxisLabel =  indexDate + " = 100";
+             yAxisLabel =  yAxisLabelForIndex(indexDate);
         }
-        FacesContext fc = FacesContext.getCurrentInstance();
-        JavascriptContext.addJavascriptCall(fc, "drawVisualization();");
-        JavascriptContext.addJavascriptCall(fc, "initLineDetails");
+        callDrawVisualization();
     }
 
     public void update_IndexYear(){
         Object value= this.selectIndexYear.getValue();
         this.indexDate = (String) value ;        
-        yAxisLabel =  indexDate + " = 100";
+        yAxisLabel =  yAxisLabelForIndex(indexDate);
         getDataTable(false);
         updateImageFooters();
         resetLineBorder();
-
-        FacesContext fc = FacesContext.getCurrentInstance();
-        JavascriptContext.addJavascriptCall(fc, "drawVisualization();");
-        JavascriptContext.addJavascriptCall(fc, "initLineDetails");
+        callDrawVisualization();
     }
 
     public void updateUseIndex(){
@@ -1033,11 +1055,9 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
             forcedIndexMessage = ""; 
             yAxisLabel=  getYAxisLabelFromVizLines(); 
         }  else {
-             yAxisLabel = indexDate + " = 100";
+             yAxisLabel = yAxisLabelForIndex(indexDate);
         }
-        FacesContext fc = FacesContext.getCurrentInstance();
-        JavascriptContext.addJavascriptCall(fc, "drawVisualization();");
-        JavascriptContext.addJavascriptCall(fc, "initLineDetails");
+        callDrawVisualization();
     }
     
     private String getYAxisLabelFromVizLines(){
@@ -1058,19 +1078,9 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
         selectedMeasureHasFilters = false;
         loadFilterGroupings();
         inputLineLabel.setValue("");
-        FacesContext fc = FacesContext.getCurrentInstance();
-        JavascriptContext.addJavascriptCall(fc, "drawVisualization();");
-        JavascriptContext.addJavascriptCall(fc, "initLineDetails");
+        callDrawVisualization();
     }
     
-    private VarGroup getMeasureGroupFromId(Long Id) {
-        for (VarGroup varGroupTest: allMeasureGroups){
-            if (varGroupTest.getId().equals(Id)){
-                return varGroupTest;
-            }
-        }
-        return null;        
-    }
     
     private VarGroup getFilterGroupFromId(Long Id) {
         
@@ -1122,6 +1132,8 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
 
 
     public void addLine(ActionEvent ae){
+    
+        dataNotAddedMessage = "";
         
         if ( lineLabel.isEmpty() || lineLabel.trim().equals("") ) {
             FacesMessage message = new FacesMessage("Please complete your selections");
@@ -1182,6 +1194,13 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
            getSourceList();
            checkUnits();
            finalizeForcedIndexMessage();
+           
+                   
+            if (new Integer(indexDate).intValue() == 0) {
+                dataNotAddedMessage = "Data not added because the it did not overlap in a way that allowed the creation of an index.";
+                deleteLatestLine();
+            }
+           
            updateImageFooters();
 
            if (!titleEdited){
@@ -1191,9 +1210,7 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
             dataTableVizLines.getChildren().clear();
             dataTableVizLines.getSavedChildren().clear();
             
-           FacesContext fc = FacesContext.getCurrentInstance();
-           JavascriptContext.addJavascriptCall(fc, "drawVisualization();");           
-           JavascriptContext.addJavascriptCall(fc, "initLineDetails");
+            callDrawVisualization();
 
            return;
         } else {
@@ -1204,10 +1221,60 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
     }
     
     private void finalizeForcedIndexMessage(){
-        if (!forcedIndexMessage.isEmpty()){
-                yAxisLabel =  indexDate + " = 100";
+
+        if (!forcedIndexMessage.isEmpty()  && new Integer(indexDate).intValue() > 0){
+                yAxisLabel =  yAxisLabelForIndex(indexDate);
                 setIndexDate(indexDate);          
-        }        
+        }  
+
+                
+    }
+    
+    private void deleteLatestLine(){
+        
+        List <VisualizationLineDefinition> removeList = new ArrayList();
+
+        List <VisualizationLineDefinition> tempList = new ArrayList(vizLines);
+        
+        VisualizationLineDefinition  removeLine = null;
+        
+           for(VisualizationLineDefinition vizLineCheck: tempList){
+               
+               removeLine = vizLineCheck;
+
+             }
+
+           removeList.add(removeLine);
+           
+           for(VisualizationLineDefinition vizLineRem : removeList){
+                        vizLines.remove(vizLineRem);
+           }
+           
+           this.numberOfColumns = new Long(vizLines.size());
+            
+            dataTableVizLines.getChildren().clear();
+            dataTableVizLines.getSavedChildren().clear();
+           startYear = "0";
+           endYear = "3000";
+           getDataTable(true);
+           resetLineBorder();
+           getSourceList();
+           setDisplayIndexes(false);
+           checkUnits();
+           finalizeForcedIndexMessage();
+           updateImageFooters();
+           
+           if (!this.displayIndexes){               
+                yAxisLabel=  getYAxisLabelFromVizLines(); 
+            }  else {
+                yAxisLabel = yAxisLabelForIndex(indexDate);
+            }
+           
+           if (!titleEdited){
+                updateGraphTitleForMeasure();
+           }
+
+        callDrawVisualization();
     }
 
     public void removeAllLines(ActionEvent ae){
@@ -1293,9 +1360,7 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
             vizLine.setLabel(newLineLabel);
         }  
         getDataTable(false);
-           FacesContext fc = FacesContext.getCurrentInstance();
-           JavascriptContext.addJavascriptCall(fc, "drawVisualization();");
-           JavascriptContext.addJavascriptCall(fc, "initRoundedCorners();");
+        callDrawVisualization();
         
     }
     public void deleteLine(ActionEvent ae){
@@ -1337,16 +1402,14 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
            if (!this.displayIndexes){               
                 yAxisLabel=  getYAxisLabelFromVizLines(); 
             }  else {
-                yAxisLabel =  indexDate + " = 100";
+                yAxisLabel = yAxisLabelForIndex(indexDate);
             }
            
            if (!titleEdited){
                 updateGraphTitleForMeasure();
            }
 
-           FacesContext fc = FacesContext.getCurrentInstance();
-           JavascriptContext.addJavascriptCall(fc, "drawVisualization();");
-           JavascriptContext.addJavascriptCall(fc, "initRoundedCorners();");
+        callDrawVisualization();
 
     }
     
@@ -1354,7 +1417,7 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
         boolean valid  = true;
         int count = 0;
         if (selectedMeasureId == 0){
-            FacesMessage message = new FacesMessage("You must select a measure.");
+            FacesMessage message = new FacesMessage("Please complete your selections.");
             FacesContext fc = FacesContext.getCurrentInstance();
             fc.addMessage(addLineButton.getClientId(fc), message);
             return false;
@@ -1399,7 +1462,17 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
                    filterGroupsList.add(tempList);
                    filterGroupListCount++;
                }
+               
+               if (filterGroupListCount == 0){
+                    FacesMessage message = new FacesMessage("Please complete your selections.");
+                    FacesContext fc = FacesContext.getCurrentInstance();
+                    fc.addMessage(addLineButton.getClientId(fc), message);
+                    return false;
+                }
+               
            }
+           
+
            
            if (filterGroupListCount == 1){
                for (List groupList: filterGroupsList){
@@ -1751,13 +1824,12 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
     String output = "";
     String indexedOutput = "";
     String csvOutput = csvColumnString + "\n";
-    boolean indexSet = false;
+
     boolean addIndexDate = false;
     boolean[] getIndexes = new boolean[9];
     boolean firstIndexDateSet = false;
     int firstIndexDate = 0;
     int indexYearForCalc = 0;
-    String firstIndexDateCalc = "";
     
     if (new Integer(startYear.toString()).intValue() != 0){
         startYearTransform = new Integer(startYear.toString()).intValue();
@@ -1772,10 +1844,6 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
     if (indexDate != null && !indexDate.isEmpty()){
         indexYearForCalc = new Integer(indexDate.toString()).intValue();
     }
-
-    int rowCount = 0;
-    int colCount = 0;
-    int firstYear = 0;
     
     for (int i = 1; i<9; i++){
         getIndexes[i] = false;
@@ -1822,7 +1890,6 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
               if(!firstIndexDateSet){
                  firstIndexDateSet = true; 
                  firstIndexDate =  new Integer(test[0].toString()).intValue();
-                 firstIndexDateCalc = test[0];
               }
               selectIndexDate.add(new SelectItem(test[0], test[0]));  
         }
@@ -1834,10 +1901,8 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
                 } else {
                       indexYearForCalc = firstIndexDate;
                 }                  
-            }
-                          
-              indexDate = new Integer(indexYearForCalc).toString();
-
+            }                         
+            indexDate = new Integer(indexYearForCalc).toString();
     }
     
     transformedData = new String[maxLength + 1];
@@ -1851,7 +1916,6 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
         String col = "";
         String csvCol = "";
         int testYear = 0;
-        boolean alreadyAdded = false;
         if (test.length > 1) {
                 for (int i=0; i<test.length; i++){
                 if (i == 0) {
@@ -1862,7 +1926,6 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
                     if (!firstYearSet){
                          selectBeginYears.add(new SelectItem(col, "Min"));
                          firstYearSet = true;
-                         firstYear = new Integer(col).intValue();
                     }
 
                     maxYear = col;
@@ -1916,10 +1979,9 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
             
         }
            output = output + col;
-           csvOutput = csvOutput + csvCol;
-           
+           csvOutput = csvOutput + csvCol;           
     }
-
+    
     for (Object inObj: inStr ){
         String nextStr = (String) inObj;
         String[] columnDetail = nextStr.split("\t");
@@ -1946,14 +2008,13 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
                             Float result = new Float(0);
                             Object outputIndex = new Double(0);
                             if (!denominator.equals(new Float (0))  && !numerator.equals(new Float (0))){
-                                outputIndex = Math.round((numerator / denominator) *  new Double (10000))/ new Float(100);
-                                
+                                outputIndex = Math.round((numerator / denominator) *  new Double (10000))/ new Float(100);                              
                                 result = (numerator / denominator) *  new Float (100);
-                                if ((lowValIndex.equals(new Float  (100))  || lowValIndex.compareTo(result) > 0)){
+                                if ((lowValIndex.compareTo(result) > 0)){
                                     if (testYear >= startYearTransform && testYear <= endYearTransform){
                                         lowValIndex = result;
                                     }
-                                }
+                                } 
                                 if (!test[i].isEmpty() && (highValIndex.equals(new Float (0))  || highValIndex.compareTo(result) < 0 )){
                                     if (testYear >= startYearTransform && testYear <= endYearTransform){
                                         highValIndex = result;
@@ -2036,8 +2097,6 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
                 }
                 
             }
-                    System.out.println("dataMaxYear "+dataMaxYear+", maxYear is "+ maxYear);
-                    System.out.println("transformedData[i] before "+transformedData[i]);
             if (dataMaxYear < maxYear){
                 int iDataMax = new Double (dataMaxYear).intValue();
                 int iMaxYear = new Double (maxYear).intValue();
@@ -2047,9 +2106,6 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
                 }
                 
             }
-            
-            System.out.println("transformedData[i] after "+transformedData[i]);
-
         }
         
         
@@ -2121,10 +2177,7 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
                 transformedDataIndexedOut += transformedDataIndexSelect;
                 transformedDataOut += transformedDataSelect;   
             }            
-        }
-
-       
-        
+        }  
     }
     
     private boolean dataHasGaps(String stringIn){
@@ -2183,18 +2236,7 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
            
         return retString;
     }
-    
-    private static int countOccurrences(String haystack, char needle){
-    int count = 0;
-    for (int i=0; i < haystack.length(); i++)
-    {
-        if (haystack.charAt(i) == needle)
-        {
-             count++;
-        }
-    }
-    return count;
-}
+
 
     public File getZipFileExport() {
         File zipOutputFile;
@@ -2357,12 +2399,11 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
         BufferedImage yAxisImage = new BufferedImage(100, 500, BufferedImage.TYPE_INT_ARGB);
         BufferedImage combinedImage = new BufferedImage(776, 575 + heightAdjustment , BufferedImage.TYPE_INT_ARGB);
 
-                
         if(graphTitle.trim().isEmpty()){
             graphTitle = " ";
         }
        
-        File retFile = generateImageString("16", "676x", "South", "0", graphTitle);       
+        File retFile = generateImageString("16", "650x", "South", "0", graphTitle);       
         BufferedImage titleImage =     ImageIO.read(retFile);
 
         String source = "";
@@ -2379,14 +2420,12 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
         
         if(yAxisLabel.trim().isEmpty()){
             yAxisLabel = " ";
-        }        
-        
-        retFile = generateImageString("14", "200x", "South", "-90", yAxisLabel);        
+        }                
+        retFile = generateImageString("14", new Integer(475 + heightAdjustment) + "x", "South", "-90", yAxisLabel);        
         BufferedImage yAxisVertImage =     ImageIO.read(retFile);
         
         Graphics2D yag2 = yAxisImage.createGraphics();
         Graphics2D cig2 = combinedImage.createGraphics();
-
         Graphics2D sig2 = sourceImage.createGraphics();
         
 
@@ -2394,13 +2433,11 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
         yag2.setColor(Color.WHITE);
         yag2.fillRect(0, 0, 676, 500);
         cig2.fillRect(0, 0, 776, 550);
-       
-
 
         cig2.drawImage(yAxisImage, 0, 0, null);
-        cig2.drawImage(yAxisVertImage, 0, 120 + heightAdjustment/2 , null);
+        cig2.drawImage(yAxisVertImage, 10, 0 , null);
         cig2.drawImage(image, 50, 50, null);
-        cig2.drawImage(titleImage, 50, 0, null);
+        cig2.drawImage(titleImage, 75, 10, null);
         cig2.drawImage(sourceImage, 50, 475 + heightAdjustment, null);
 
         yag2.dispose();
@@ -2410,85 +2447,10 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
         return combinedImage;
     }
     
- private void writeStringToImage(BufferedImage imageIn, 
-            Graphics2D gr, String stringIn, boolean center, int startHeight, int startWidth){
-
-        int width = imageIn.getWidth();
-        int height = imageIn.getHeight();
-        String splitString1 = "";
-        String splitString2 = "";
-        FontRenderContext context = gr.getFontRenderContext();
-        Double strWidth = new Double (gr.getFont().getStringBounds(stringIn, context).getWidth());        
-                
-        if (strWidth > width){            
-            int strLen = stringIn.length();
-            int half = stringIn.length()/2;
-            int nextSpace = stringIn.indexOf(" ",  half);                
-            splitString1 = stringIn.substring(0, nextSpace);
-            splitString2 = stringIn.substring(nextSpace + 1, strLen);
-        }
-        if (strWidth < width){
-            if (center){
-                Double halfWidth = new Double(Math.round(strWidth/2));
-                int iHalf = halfWidth.intValue();
-                int startpoint = width/2 - (iHalf);
-                gr.drawString(stringIn, startpoint, startHeight * 2);
-            } else {
-                gr.drawString(stringIn, startWidth, startHeight);
-            }
-        }  else {
-            if (center){
-                Double strWidth1 = new Double (gr.getFont().getStringBounds(splitString1, context).getWidth()); 
-                Double strWidth2 = new Double (gr.getFont().getStringBounds(splitString2, context).getWidth()); 
-                Double halfWidth1 = new Double(Math.round(strWidth1/2));
-                Double halfWidth2 = new Double(Math.round(strWidth2/2));
-                int iHalf1 = halfWidth1.intValue();
-                int iHalf2 = halfWidth2.intValue();
-                int startpoint1 = width/2 - (iHalf1);
-                int startpoint2 = width/2 - (iHalf2);
-                gr.drawString(splitString1, startpoint1, startHeight);
-                gr.drawString(splitString2, startpoint2, startHeight * 2);
-            } else {
-                gr.drawString(splitString1, startWidth, startHeight);
-                gr.drawString(splitString2, startWidth, startHeight * 2);
-            }
-            
-        }
-        
-        
-    }
-    
-
-    private BufferedImage rotateImage(BufferedImage bufferedImage) {
-
-        AffineTransform transform = new AffineTransform();
-        transform.rotate((3.*Math.PI)/2., bufferedImage.getWidth()/2, bufferedImage.getHeight()/2);
-        AffineTransformOp op = new AffineTransformOp(transform, AffineTransformOp.TYPE_BILINEAR);
-        bufferedImage = op.filter(bufferedImage, null);
-        return bufferedImage;
-    }
-       
-    private void addZipEntry(ZipOutputStream zout, String inputFileName, String outputFileName) throws IOException{
-        FileInputStream tmpin = new FileInputStream(inputFileName);
-        byte[] dataBuffer = new byte[8192];
-        int i = 0;
-
-        ZipEntry e = new ZipEntry(outputFileName);
-        zout.putNextEntry(e);
-
-        while ((i = tmpin.read(dataBuffer)) > 0) {
-            zout.write(dataBuffer, 0, i);
-            zout.flush();
-        }
-        tmpin.close();
-        zout.closeEntry();
-     }
-
-     private File generateImageString(String size, String width, String orientation, String rotate, String inStr) throws IOException {
+    private File generateImageString(String size, String width, String orientation, String rotate, String inStr) throws IOException {
         // let's attempt to generate the Text image:
         int exitValue = 0;
         File file = File.createTempFile("imageString","tmp");
-        System.out.println(new File("/usr/bin/convert").exists() );
         if (new File("/usr/bin/convert").exists()) {           
             
             String ImageMagick = "/usr/bin/convert  -background white  -font Helvetica " +
@@ -2512,7 +2474,6 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
             ImageMagickCmd[12] = width;
             ImageMagickCmd[13] = "caption:" + inStr;
             ImageMagickCmd[14] = "png:" + file.getAbsolutePath();
-
                        
             
             try {
@@ -2531,7 +2492,23 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
         }
 
         return null;
-    }   
+    }
+    
+    private void addZipEntry(ZipOutputStream zout, String inputFileName, String outputFileName) throws IOException{
+        FileInputStream tmpin = new FileInputStream(inputFileName);
+        byte[] dataBuffer = new byte[8192];
+        int i = 0;
+
+        ZipEntry e = new ZipEntry(outputFileName);
+        zout.putNextEntry(e);
+
+        while ((i = tmpin.read(dataBuffer)) > 0) {
+            zout.write(dataBuffer, 0, i);
+            zout.flush();
+        }
+        tmpin.close();
+        zout.closeEntry();
+     }
     
   private void writeExcelFile   (File fileIn) throws IOException {
       String parseString = dataString;
@@ -2661,7 +2638,7 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
       
     }
 
-    private void updateImageFooters(  ) {
+    private void updateImageFooters() {
         String sourcesWLabel = "";
         String returnString = "";
         boolean done = false;
@@ -3020,9 +2997,7 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
         titleEdited = true;
         String graphTitleIn = (String) getInputGraphTitle().getValue();
         setGraphTitle(graphTitleIn);        
-        FacesContext fc = FacesContext.getCurrentInstance();
-        JavascriptContext.addJavascriptCall(fc, "drawVisualization();");
-        JavascriptContext.addJavascriptCall(fc, "initLineDetails");
+        callDrawVisualization();
         return "";
     }
 
@@ -3178,6 +3153,11 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
         return forcedIndexMessage;
     }
 
+    public String getDataNotAddedMessage() {
+        return dataNotAddedMessage;
+    }
+
+    
     public void setForcedIndexMessage(String forcedIndexMessage) {
         this.forcedIndexMessage = forcedIndexMessage;
     }

@@ -32,6 +32,7 @@
 <ice:outputText visible="false" id="lowValIndexed" value="#{ExploreDataPage.lowValIndexed}"/>
 <ice:outputText visible="false" id="dtColumnString" value="#{ExploreDataPage.dtColumnString}"/>
 <ice:outputText visible="false" id="imageColumnString" value="#{ExploreDataPage.imageColumnString}"/>
+<ice:outputText visible="false" id="indexDate" value="#{ExploreDataPage.indexDate}"/>
 <ice:outputText visible="false" id="dataString" value="#{ExploreDataPage.dataString}"/>
 <ice:outputText visible="false" id="indexedDataString" value="#{ExploreDataPage.indexedDataString}"/>
 <ice:outputText visible="false" id="dataColumns" value="#{ExploreDataPage.dataColumns}"/>
@@ -156,6 +157,10 @@
                     <ice:commandButton id="addLineButton" value="Add Line" binding="#{ExploreDataPage.addLineButton}" actionListener="#{ExploreDataPage.addLine}"/>
                     <ice:message for="addLineButton" id="boxErrorMsg" styleClass="errorMessage"/>
                     <ice:commandButton id="removeAllButton" value="Refresh" styleClass="dvnGraphRemoveLinesButton" actionListener="#{ExploreDataPage.removeAllLines}"/>
+                <div jsfc="ice:panelGroup" styleClass="dvnGraphFilterInfoBlock">
+                    <ice:graphicImage value="/resources/images/icon_info.gif" styleClass="dvn_icon"/>
+                    <ice:outputText value=" Click Refresh to start over."/>
+                </div>
                 </div>
             </div>
         </div>
@@ -165,6 +170,10 @@
                 <div jsfc="ice:panelGroup" styleClass="dvnGraphWarningBlock" rendered="#{!empty ExploreDataPage.forcedIndexMessage}">
                     <ice:graphicImage value="/resources/images/icon_warning.18.png" styleClass="dvn_icon"/>
                     <ice:outputText styleClass="vdcHelpText" value=" #{ExploreDataPage.forcedIndexMessage}"/>
+                </div>
+                <div jsfc="ice:panelGroup" styleClass="dvnGraphWarningBlock" rendered="#{!empty ExploreDataPage.dataNotAddedMessage}">
+                    <ice:graphicImage value="/resources/images/icon_warning.18.png" styleClass="dvn_icon"/>
+                    <ice:outputText styleClass="vdcHelpText" value=" #{ExploreDataPage.dataNotAddedMessage}"/>
                 </div>
                 <div jsfc="ice:panelGroup" styleClass="dvnGraphTitleBlock" rendered="#{!empty ExploreDataPage.graphTitle  
                                                                                        and (ExploreDataPage.displayType == 1 or ExploreDataPage.displayType == 3) }">
@@ -183,7 +192,7 @@
 
             <div jsfc="ice:panelGroup" rendered="#{!empty ExploreDataPage.vizLines}" styleClass="dvnGraphDisplay">
 
-                <ice:panelTabSet id="tabSet1" styleClass="dvnTabs">
+                <ice:panelTabSet id="tabSet1" binding="#{ExploreDataPage.tabSet1}" selectedIndex="#{ExploreDataPage.selectedIndex}"  styleClass="dvnTabs">
 
                     <ice:panelTab id="display" label="Display">
                         <div jsfc="ice:panelGroup" id="layoutPanel2" panelLayout="flow">
@@ -274,7 +283,7 @@
                                         </div>
                                       </div>
                                       <div class="dvnGraphResultsVizLineActions">
-                                        <ice:commandLink id="deleteLineLink" title="Delete Line" value="Delete [X]" actionListener="#{ExploreDataPage.deleteLine}" onclick="deleteLine();"></ice:commandLink>
+                                        <ice:commandLink id="deleteLineLink" title="Delete Line" value="Delete Line[X]" actionListener="#{ExploreDataPage.deleteLine}" onclick="deleteLine();"></ice:commandLink>
                                         <a href="#" class="dvnGraphResultsVizLineEditLink">Edit Label</a>
                                       </div>
                                     </div>
@@ -468,9 +477,9 @@ function getLegendString(columnString){
     { 
         var myColumn = myColumnList[i];
             if(legendString==""){
-                legendString = escape(myColumn);                
+                legendString = encodeURIComponent(myColumn);                
             } else {
-                legendString = legendString + "|" + escape(myColumn);
+                legendString = legendString + "|" + encodeURIComponent(myColumn);
             }
     }
 
@@ -517,9 +526,9 @@ function getLegendString(columnString){
                 data.addColumn('number', myColumn);
             }
             if(legendString==""){
-                legendString = escape(myColumn);                
+                legendString = encodeURIComponent(myColumn);                
             } else {
-                legendString = "|" + escape(myColumn);
+                legendString = "|" + encodeURIComponent(myColumn);
             }
 
         }
@@ -872,7 +881,7 @@ function drawVisualization() {
           var highValDouble = parseFloat(highValStandardIn) + (yAxisStep * 2);
           var lowValDouble = parseFloat(lowValStandardIn) - (yAxisStep *2); 
           var lowValDouble =  Math.max(lowValDouble, 0);
-          
+
           highValDouble = yAxisStep * Math.round(highValDouble/yAxisStep);
           lowValDouble = yAxisStep * Math.round(lowValDouble/yAxisStep);
       }
@@ -958,7 +967,7 @@ function drawVisualization() {
                chartParams = chartParams + "&chxs=0N*0*,FFFFFF,3|1N*0*,000000,11,0,t|2N*0*,FFFFFF,3,1,l|3N*sz2*,000000,11,1,t";
             }
             chartParams = chartParams + "&chxt=x,x,y,y";
-            var labelString = escape( displaySourceFooter);   
+            var labelString = encodeURIComponent( displaySourceFooter);   
             chartParams = chartParams + "&chxl="+labelString;
             if (buttonValIn1 != 3){
                 chartParams = chartParams + "&chdlp="+legendAlignment;
@@ -1009,11 +1018,11 @@ function drawVisualization() {
         }
         if (intDisType == 2){
             var googleImageURL = chartBaseUrl + chartParams + values;
-            var graphTitleParam = escape(displayTitle);
-            var yAxisLabelParam = escape(yAxisStringParam);
-            var sourcesParam = escape(sourceStringParam);
+            var graphTitleParam = encodeURIComponent(displayTitle);
+            var yAxisLabelParam = encodeURIComponent(yAxisStringParam);
+            var sourcesParam = encodeURIComponent(sourceStringParam);
             var compositeImageURL = "/dvn/DataVisImage/?graphTitle=" + graphTitleParam + "&yAxisLabel=" + yAxisLabelParam + "&heightCode=" + heightValIn 
-                + "&sources=" + sourcesParam + "&googleImageUrl=" + escape(googleImageURL);
+                + "&sources=" + sourcesParam + "&googleImageUrl=" + encodeURIComponent(googleImageURL);
             document.getElementById('chart_div').innerHTML = "<img src=" + compositeImageURL + ">";
         }
 
@@ -1101,16 +1110,6 @@ function startDownload() {
     }
 }
 
-function getImageURLButton() {
-    var imageURL = document.getElementById('ExploreDataPage:imageURL').value;
-    var hasURLVal = document.getElementById('ExploreDataPage:hasURL').value;
-    if (hasURLVal != "true"){
-        
-        alert ("Please select image graph to get a downloadable image.");
-        return null;
-    }
-    window.open(imageURL,'mywindow','width=600,height=400');
-}
 
 function setLegendValue(obj) {
     selections = document.getElementById(obj.id).getElementsByTagName("INPUT");

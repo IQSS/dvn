@@ -207,12 +207,84 @@ public class DvnFastGetRecord {
                             // may be needed by the transform stylesheets.
                             // this mimicks the behaviour of the OCLC GetRecord
                             // client implementation.
-                            //      -L.A. 
-                            if (line.indexOf('<') > -1) {
-                                if (!line.matches("^[^<]*<[^>]*xmlns.*")) {
-                                    line = line.replaceFirst(">", " xmlns=\"http://www.openarchives.org/OAI/2.0/\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\">");
+                            //      -L.A.
+
+                            int offset = 0;
+
+                            // However, there may be one or more XML comments before
+                            // the first "real" XML element (of the form
+                            // <!-- ... -->). So we need to skip these!
+
+                            while ( (line.indexOf('<', offset) > -1)
+                                &&
+                                "<!--".equals(line.substring(offset=line.indexOf('<', offset),4))) {
+
+                                //OK, this is a comment allright.
+
+                                // is it terminated on the same line?
+                                // if not, let's read the stream until
+                                // we find the closing '-->':
+
+                                while (line != null
+                                        &&
+                                        ((offset = line.indexOf("-->",offset)) < 0)) {
+                                    line = line.replaceAll("[\n\r]", " ");
+                                    offset = line.length();
+                                    line = line.concat(rd.readLine());
                                 }
-                                schemaChecked = true; 
+
+                                offset += 3;
+                            }
+
+                            // if we have skipped some comments, is there another
+                            // XML element left in the buffered line?
+                            int firstElementStart = -1;
+
+                            if ((firstElementStart = line.indexOf('<', offset)) > -1 ) {
+                                // OK, looks like there is. 
+                                // is it terminated? 
+                                // if not, let's read the stream until
+                                // we find the closing '>':
+
+                                int firstElementEnd = -1;
+                                offset = firstElementStart;
+
+                                while (line != null
+                                        &&
+                                        ((firstElementEnd = line.indexOf('>',offset)) < 0)) {
+
+                                    line = line.replaceAll("[\n\r]", "");
+                                    offset = line.length();
+                                    line = line.concat(rd.readLine());
+                                }
+
+                                if (firstElementEnd < 0) {
+                                    // this should not happen!
+                                    // we've reached the end of the XML stream
+                                    // without encountering a single valid XML tag -- ??
+
+                                    this.errorMessage = "Malformed GetRecord response; reached the end of the stream but couldn't find a single valid XML element in the metadata section.";
+                                } else {
+
+                                    // OK, we now have a line that contains a complete,
+                                    // terminated (possibly multi-line) first XML element
+                                    // that starts at [offset].
+
+                                    int i = firstElementStart;
+
+                                    if (!line.substring(i).matches("^<[^>]*xmlns.*")) {
+                                        String head = line.substring(0, i);
+                                        String tail = line.substring(i);
+                                        tail = tail.replaceFirst(">", " xmlns=\"http://www.openarchives.org/OAI/2.0/\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\">");
+                                        line = head + tail;
+                                    }
+
+                                    schemaChecked = true;
+                                } 
+                            } else {
+                                // there was no "real" XML elements, only comments.
+                                // We'll perform this schema check in the next 
+                                // iteration. 
                             }
                         }
 

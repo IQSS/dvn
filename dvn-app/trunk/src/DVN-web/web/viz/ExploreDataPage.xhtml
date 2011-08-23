@@ -970,7 +970,7 @@ function drawVisualization() {
             var labelString = encodeURIComponent( displaySourceFooter);   
             chartParams = chartParams + "&chxl="+labelString;
             if (buttonValIn1 != 3){
-                chartParams = chartParams + "&chdlp="+legendAlignment;
+                chartParams = chartParams + "&chdlp="+legendAlignment +"|l";
                 chartParams = chartParams + "&chdl="+ getLegendString(icolStr);
                 chartParams = chartParams + "&chdls=000000";                
             }

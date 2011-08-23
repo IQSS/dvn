@@ -34,7 +34,10 @@ import com.icesoft.faces.context.Resource;
 import com.icesoft.faces.context.effects.JavascriptContext;
 import com.itextpdf.text.Document;
 import com.itextpdf.text.DocumentException;
+import com.itextpdf.text.Image;
 import com.itextpdf.text.pdf.PdfWriter;
+import com.itextpdf.text.pdf.codec.PngImage;
+
 import edu.harvard.iq.dvn.core.study.DataVariable;
 import edu.harvard.iq.dvn.core.study.Study;
 import edu.harvard.iq.dvn.core.study.StudyFile;
@@ -2349,19 +2352,17 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
                         ImageIO.write(combinedImage, "png", fileIn);                         
                     }
 
-                    if (pdfFileIn != null) {
-                        Document document = new Document();
-                        PdfWriter.getInstance(document, new FileOutputStream(pdfFileIn, true));
-                        document.open();                       
-                        java.awt.Image awtImg = combinedImage;                       
-                        com.itextpdf.text.Image image2 =   com.itextpdf.text.Image.getInstance(awtImg, null);
-                        image2.scaleToFit(530f, 500f);
-                        document.add(image2);
-                        document.close();
+                    if (pdfFileIn != null) {                        
+                        File imagePngFile = File.createTempFile("pdfDownload","png");
+                        ImageIO.write(combinedImage, "png", imagePngFile);
+                        Document convertPngToPdf=new Document();
+                        PdfWriter.getInstance(convertPngToPdf, new FileOutputStream(pdfFileIn, true));
+                        convertPngToPdf.open();
+                        Image convertBmp=PngImage.getImage(imagePngFile.getAbsolutePath());
+                        convertBmp.scaleToFit(530f, 500f);
+                        convertPngToPdf.add(convertBmp);
+                        convertPngToPdf.close();
                     }
-                    
-
-
                 } catch (IIOException io){
                     System.out.println(io.getMessage().toString());
                      System.out.println(io.getCause().toString());
@@ -2381,10 +2382,13 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
             System.out.println("MalformedURLException ");
         } catch (IOException io){
             System.out.println("IOException - outer ");
-        } catch (DocumentException io){
+        } 
+
+        catch (DocumentException io){
             System.out.println("IOException - document ");
             System.out.println(io.getMessage());
-        }
+
+        } 
     }
     
     
@@ -2453,10 +2457,6 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
         File file = File.createTempFile("imageString","tmp");
         if (new File("/usr/bin/convert").exists()) {           
             
-            String ImageMagick = "/usr/bin/convert  -background white  -font Helvetica " +
-                    "-pointsize 14  -gravity center  -size 676x  caption:\'Graph Title\'" +
-                    " png:" + file.getAbsolutePath();
-            
             String ImageMagickCmd[] = new String[15];
             
             ImageMagickCmd[0] = "/usr/bin/convert";
@@ -2493,6 +2493,40 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
 
         return null;
     }
+    
+    private File generatePDFFile(File inFile, File outFile) throws IOException {
+        int exitValue = 0;
+        File file = File.createTempFile("convert.pdf","tmp");
+        if (new File("/usr/bin/convert").exists()) {           
+            
+            String ImageMagickCmd[] = new String[3];
+            
+            ImageMagickCmd[0] = "/usr/bin/convert";
+            ImageMagickCmd[1] = inFile.getAbsolutePath();
+            ImageMagickCmd[2] = outFile.getAbsolutePath();
+            System.out.println("ImageMagickCmd[1] " + ImageMagickCmd[1]);
+            System.out.println("ImageMagickCmd[2] " + ImageMagickCmd[2]);           
+            
+            try {
+                Runtime runtime = Runtime.getRuntime();
+                Process process = runtime.exec(ImageMagickCmd);
+                exitValue = process.waitFor();
+            } catch (Exception e) {
+                System.out.println("Exception - generate pdf file ");
+                exitValue = 1;
+            }
+
+            if (exitValue == 0) {
+                System.out.println("exit value == 0 ");
+                return file;
+            }
+            System.out.println("return file ");
+            return file;
+        }
+        System.out.println("return null ");
+        return null;
+    }
+    
     
     private void addZipEntry(ZipOutputStream zout, String inputFileName, String outputFileName) throws IOException{
         FileInputStream tmpin = new FileInputStream(inputFileName);

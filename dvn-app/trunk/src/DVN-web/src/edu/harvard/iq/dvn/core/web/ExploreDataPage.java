@@ -1200,7 +1200,7 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
            
                    
             if (new Integer(indexDate).intValue() == 0) {
-                dataNotAddedMessage = "Data not added because the it did not overlap in a way that allowed the creation of an index.";
+                dataNotAddedMessage = "You cannot add this line as an index because the x range of values do not overlap with the previously selected lines.";
                 deleteLatestLine();
             }
            
@@ -2425,7 +2425,7 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
         if(yAxisLabel.trim().isEmpty()){
             yAxisLabel = " ";
         }                
-        retFile = generateImageString("14", new Integer(475 + heightAdjustment) + "x", "South", "-90", yAxisLabel);        
+        retFile = generateImageString("14", new Integer(350 + heightAdjustment) + "x", "South", "-90", yAxisLabel);        
         BufferedImage yAxisVertImage =     ImageIO.read(retFile);
         
         Graphics2D yag2 = yAxisImage.createGraphics();
@@ -2439,7 +2439,7 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
         cig2.fillRect(0, 0, 776, 550);
 
         cig2.drawImage(yAxisImage, 0, 0, null);
-        cig2.drawImage(yAxisVertImage, 10, 0 , null);
+        cig2.drawImage(yAxisVertImage, 10, 50 , null);
         cig2.drawImage(image, 50, 50, null);
         cig2.drawImage(titleImage, 75, 10, null);
         cig2.drawImage(sourceImage, 50, 475 + heightAdjustment, null);
@@ -2493,40 +2493,7 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
 
         return null;
     }
-    
-    private File generatePDFFile(File inFile, File outFile) throws IOException {
-        int exitValue = 0;
-        File file = File.createTempFile("convert.pdf","tmp");
-        if (new File("/usr/bin/convert").exists()) {           
-            
-            String ImageMagickCmd[] = new String[3];
-            
-            ImageMagickCmd[0] = "/usr/bin/convert";
-            ImageMagickCmd[1] = inFile.getAbsolutePath();
-            ImageMagickCmd[2] = outFile.getAbsolutePath();
-            System.out.println("ImageMagickCmd[1] " + ImageMagickCmd[1]);
-            System.out.println("ImageMagickCmd[2] " + ImageMagickCmd[2]);           
-            
-            try {
-                Runtime runtime = Runtime.getRuntime();
-                Process process = runtime.exec(ImageMagickCmd);
-                exitValue = process.waitFor();
-            } catch (Exception e) {
-                System.out.println("Exception - generate pdf file ");
-                exitValue = 1;
-            }
-
-            if (exitValue == 0) {
-                System.out.println("exit value == 0 ");
-                return file;
-            }
-            System.out.println("return file ");
-            return file;
-        }
-        System.out.println("return null ");
-        return null;
-    }
-    
+        
     
     private void addZipEntry(ZipOutputStream zout, String inputFileName, String outputFileName) throws IOException{
         FileInputStream tmpin = new FileInputStream(inputFileName);

@@ -412,6 +412,7 @@
     google.load('visualization', '1', {packages:['table']});
 
     var legendString = "";
+    var numDecimals = 0;
     var decimalArray = [];
     var timeout= 600; //milliseconds to wait for no activity
     var countEvents= 0;
@@ -458,8 +459,7 @@ function getXaxisString(startYear, endYear) {
 
 function getDecimalCount(inNum){
     var retVal = 0;
-    if(inNum.indexOf(".") > -1) {
-                    
+    if(inNum.indexOf(".") > -1) {                   
       retVal =  inNum.length - (inNum.indexOf(".")+1) 
     }                    
     return retVal;
@@ -503,6 +503,10 @@ function getLegendString(columnString){
         var numColumns = parseInt(numColumnsStr);
         
         decimalArray = new Array(numColumns);
+        
+        for (i=1; i<numColumns+1; i++){
+            decimalArray[i] = 0;
+        }
             legendString="";
             
     for (i=0; i< myColumnList.length ;i++)
@@ -566,7 +570,6 @@ function getLegendString(columnString){
 
     
     var counter = yearLabelInt;
-       
     for (i=0; i< myRowList.length -1 ;i++)
     {
 
@@ -616,16 +619,15 @@ function getLegendString(columnString){
 
      }
 }
-      
-      function getDecimals (floatIn){
-          
-      }
-      
-      
+   
       function addRows1(dataTable, rowList, intDisType, year) {
           var myRowParse = rowList.split ( ',' );
           var dollNum = myParseFloat(myRowParse[1]);
-
+          for (var c=1; c<2 ;c++){
+              var chkDec = getDecimalCount(myRowParse[c]);
+              decimalArray[c] =  Math.max(chkDec, decimalArray[c]); 
+          }
+          
           var dateReturn = myParseXaxis(myRowParse[0],intDisType, year);
           dataTable.addRow([dateReturn, dollNum]);
 
@@ -636,8 +638,13 @@ function getLegendString(columnString){
           var dateReturn = myParseXaxis(myRowParse[0],intDisType, year);
           var dollNum = myParseFloat(myRowParse[1]);
           var dollNum2 = myParseFloat(myRowParse[2]);
+          for (var c=1; c<3 ;c++){
+              if (myParseFloat(myRowParse[c]) > 0){
+                  var chkDec = getDecimalCount(myRowParse[c]);
+                  decimalArray[c] =  Math.max(chkDec, decimalArray[c]); 
+              }
+          }
           dataTable.addRow([dateReturn, dollNum, dollNum2]);
-
       }
 
       function addRows3(dataTable, rowList, intDisType, year) {
@@ -646,6 +653,12 @@ function getLegendString(columnString){
           var dollNum = myParseFloat(myRowParse[1]);
           var dollNum2 = myParseFloat(myRowParse[2]);
           var dollNum3 = myParseFloat(myRowParse[3]);
+          for (var c=1; c<4;c++){
+              if (myParseFloat(myRowParse[c]) > 0){
+                  var chkDec = getDecimalCount(myRowParse[c]);
+                  decimalArray[c] =  Math.max(chkDec, decimalArray[c]); 
+              }
+          }
           dataTable.addRow([dateReturn, dollNum, dollNum2, dollNum3]);
       }
 
@@ -656,6 +669,12 @@ function getLegendString(columnString){
           var dollNum2 = myParseFloat(myRowParse[2]);
           var dollNum3 = myParseFloat(myRowParse[3]);
           var dollNum4 = myParseFloat(myRowParse[4]);
+          for (var c=1; c<5;c++){
+              if (myParseFloat(myRowParse[c]) > 0){
+                  var chkDec = getDecimalCount(myRowParse[c]);
+                  decimalArray[c] =  Math.max(chkDec, decimalArray[c]); 
+              }
+          }
           dataTable.addRow([dateReturn, dollNum, dollNum2, dollNum3, dollNum4]);
       }
 
@@ -667,6 +686,12 @@ function getLegendString(columnString){
           var dollNum3 = myParseFloat(myRowParse[3]);
           var dollNum4 = myParseFloat(myRowParse[4]);
           var dollNum5 = myParseFloat(myRowParse[5]);
+          for (var c=1; c<6;c++){
+              if (myParseFloat(myRowParse[c]) > 0){
+                  var chkDec = getDecimalCount(myRowParse[c]);
+                  decimalArray[c] =  Math.max(chkDec, decimalArray[c]); 
+              }
+          }
           dataTable.addRow([dateReturn, dollNum, dollNum2, dollNum3, dollNum4, dollNum5]);
       }
 
@@ -679,6 +704,12 @@ function getLegendString(columnString){
           var dollNum4 = myParseFloat(myRowParse[4]);
           var dollNum5 = myParseFloat(myRowParse[5]);
           var dollNum6 = myParseFloat(myRowParse[6]);
+          for (var c=1; c<7;c++){
+              if (myParseFloat(myRowParse[c]) > 0){
+                  var chkDec = getDecimalCount(myRowParse[c]);
+                  decimalArray[c] =  Math.max(chkDec, decimalArray[c]); 
+              }
+          }
           dataTable.addRow([dateReturn, dollNum, dollNum2, dollNum3, dollNum4, dollNum5, dollNum6]);
       }
 
@@ -692,6 +723,12 @@ function getLegendString(columnString){
           var dollNum5 = myParseFloat(myRowParse[5]);
           var dollNum6 = myParseFloat(myRowParse[6]);
           var dollNum7 = myParseFloat(myRowParse[7]);
+          for (var c=1; c<8;c++){
+              if (myParseFloat(myRowParse[c]) > 0){
+                  var chkDec = getDecimalCount(myRowParse[c]);
+                  decimalArray[c] =  Math.max(chkDec, decimalArray[c]); 
+              }
+          }
           dataTable.addRow([dateReturn, dollNum, dollNum2, dollNum3, dollNum4, dollNum5, dollNum6, dollNum7]);
       }
 
@@ -706,6 +743,12 @@ function getLegendString(columnString){
           var dollNum6 = myParseFloat(myRowParse[6]);
           var dollNum7 = myParseFloat(myRowParse[7]);
           var dollNum8 = myParseFloat(myRowParse[8]);
+          for (var c=1; c<9;c++){
+              if (myParseFloat(myRowParse[c]) > 0){
+                  var chkDec = getDecimalCount(myRowParse[c]);
+                  decimalArray[c] =  Math.max(chkDec, decimalArray[c]); 
+              }
+          }
           dataTable.addRow([dateReturn, dollNum, dollNum2, dollNum3, dollNum4, dollNum5, dollNum6, dollNum7, dollNum8]);
       }
 
@@ -1001,16 +1044,23 @@ function drawVisualization() {
             var data3 = new google.visualization.DataTable();
             parseData(data3, intDisType, intStartYear, intEndYear, useIndex, dtcolStr);
             var table = new google.visualization.Table(document.getElementById('chart_div'));
-
+        var numColumnsStr = jQuery('#ExploreDataPage\\:dataColumns').text();
+        var numColumns = parseInt(numColumnsStr);
+        
+        for (i=1; i<numColumns+1; i++){
+            var formatter = new google.visualization.NumberFormat(
+                {fractionDigits: decimalArray[i]});                
+            formatter.format(data3, i); 
+        }
 
             var rows = data3.getNumberOfRows();
             var dataTableHeight = (rows * 25) + 35;
             if(dataTableHeight > 550){
-                var options = {width: 760, height: 550, showRowNumber: false};
+                var options = {width: 760, height: 550, allowHtml: true, showRowNumber: false};
                 table.draw(data3, options);
                 return setChartDivHeight();
             } else{
-                var options = {width: 760, height: 'auto', showRowNumber: false};
+                var options = {width: 760, height: 'auto', allowHtml: true, showRowNumber: false};
                 table.draw(data3, options);
                 return setChartDivHeight();
             }

@@ -206,7 +206,7 @@ public class DataVisServlet extends HttpServlet {
         if(yAxisLabel.trim().isEmpty()){
             yAxisLabel = " ";
         }                
-        retFile = generateImageString("14", new Integer(475 + heightAdjustment) + "x", "South", "-90", yAxisLabel);        
+        retFile = generateImageString("14", new Integer(350 + heightAdjustment) + "x", "South", "-90", yAxisLabel);        
         BufferedImage yAxisVertImage =     ImageIO.read(retFile);
         
         Graphics2D yag2 = yAxisImage.createGraphics();
@@ -220,7 +220,7 @@ public class DataVisServlet extends HttpServlet {
         cig2.fillRect(0, 0, 776, 550);
 
         cig2.drawImage(yAxisImage, 0, 0, null);
-        cig2.drawImage(yAxisVertImage, 10, 0 , null);
+        cig2.drawImage(yAxisVertImage, 10, 50 , null);
         cig2.drawImage(image, 50, 50, null);
         cig2.drawImage(titleImage, 75, 10, null);
         cig2.drawImage(sourceImage, 50, 475 + heightAdjustment, null);

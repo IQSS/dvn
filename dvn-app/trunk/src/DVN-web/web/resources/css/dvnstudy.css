@@ -281,19 +281,22 @@ table.viTblinx th{background-color:#e6e6fa;font-weight:700;margin:0px;padding:2p
 .dvnGraphFilterTypesBlock .errorMessage {display:block;}
 .dvnGraphFilterTypesControls {float:left; margin-bottom:.5em; margin-right:1em; white-space:nowrap;}
 .dvnGraphFilterTypesControls label {font-weight:normal; padding: 6px 0;}
-.dvnGraphLabelBlock {margin-bottom:.5em;}
-.dvnGraphLabelBlock div {display:inline;}
+.dvnGraphLabelBlock {margin-bottom:.5em; overflow:hidden;}
+.dvnGraphLabelBlock div {float: left; margin-right:1em;}
+.dvnGraphLabelBlock div input[type=submit] { margin-top:4px; margin-bottom:4px;}
+.dvnGraphLabelBlock .dvnGraphFilterInfoBlock span.iceOutTxt {line-height:28px !important;}
+.dvnGraphLabelBlock .dvnGraphFilterInfoBlock img.dvn_icon {vertical-align: middle;}
 .dvnGraphRemoveLinesButton {margin-left:1em;}
 .dvnGraphResults .icePnlTbSetCnt {padding:12px;}
 .dvnGraphResultsLineBox .dvnGraphResultsVizLineTable .dvnGraphResultsVizLineBlock {margin:0 0 1em 0; border-bottom:1px solid #D9D9D9;}
 .dvnGraphResultsVizLineWrap {overflow:hidden;}
-.dvnGraphResultsVizLineLabelBlock {float:left; width:200px; font-weight:bold;}
+.dvnGraphResultsVizLineLabelBlock {float:left; width:178px; font-weight:bold;}
 .dvnGraphResultsVizLineColor {float:left; width:20px; height:20px; margin-right:.5em;}
 .dvnGraphResultsVizLineEditBlock {display:none;}
 .dvnGraphResultsVizLineLabelBlock.edit .dvnGraphResultsVizLineEditBlock {display:block;}
 .dvnGraphResultsVizLineLabelBlock.edit .dvnGraphResultsVizLineLabel {display:none;}
 .dvnGraphResultsVizLineLabelBlock.edit input.iceInpTxt {margin: 0 2px;}
-.dvnGraphResultsVizLineActions {float:right; width:54px;}
+.dvnGraphResultsVizLineActions {float:right; width:68px;}
 .dvnGraphResultsVizLineActions a:link, .dvnGraphResultsVizLineActions a:visited, .dvnGraphResultsVizLineActions a:hover, .dvnGraphResultsVizLineActions a:active {font-size:.95em !important;}
 a.lineDetailLink {display:block;}
 .lineDetailBlockLabel, .lineDetailBlockFilter {font-weight:bold; color:#484848;}

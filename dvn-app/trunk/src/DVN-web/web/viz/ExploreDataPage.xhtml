@@ -157,10 +157,10 @@
                     <ice:commandButton id="addLineButton" value="Add Line" binding="#{ExploreDataPage.addLineButton}" actionListener="#{ExploreDataPage.addLine}"/>
                     <ice:message for="addLineButton" id="boxErrorMsg" styleClass="errorMessage"/>
                     <ice:commandButton id="removeAllButton" value="Refresh" styleClass="dvnGraphRemoveLinesButton" actionListener="#{ExploreDataPage.removeAllLines}"/>
+                </div>
                 <div jsfc="ice:panelGroup" styleClass="dvnGraphFilterInfoBlock">
                     <ice:graphicImage value="/resources/images/icon_info.gif" styleClass="dvn_icon"/>
                     <ice:outputText value=" Click Refresh to start over."/>
-                </div>
                 </div>
             </div>
         </div>
@@ -283,7 +283,7 @@
                                         </div>
                                       </div>
                                       <div class="dvnGraphResultsVizLineActions">
-                                        <ice:commandLink id="deleteLineLink" title="Delete Line" value="Delete Line[X]" actionListener="#{ExploreDataPage.deleteLine}" onclick="deleteLine();"></ice:commandLink>
+                                        <ice:commandLink id="deleteLineLink" title="Delete Line" value="Delete Line" actionListener="#{ExploreDataPage.deleteLine}" onclick="deleteLine();"></ice:commandLink>
                                         <a href="#" class="dvnGraphResultsVizLineEditLink">Edit Label</a>
                                       </div>
                                     </div>

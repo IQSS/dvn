@@ -188,7 +188,7 @@ public class DataVisServlet extends HttpServlet {
         String source = "";
 
         if (!sources.trim().isEmpty()) {
-             source = "Source: " + sources;
+             source = sources;
         }
         
         if(source.trim().isEmpty()){

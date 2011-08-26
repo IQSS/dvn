@@ -183,6 +183,8 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
     private String csvString = "";
     private String indexDate = "";
     private String sources = "";
+    private String sourceString = "";
+
     private String imageSourceFooter = "";
     private String imageSourceFooterNoYLabel = "";
     private String displaySourceFooter = "";
@@ -201,6 +203,7 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
     private boolean showFilterGroupTypes = false;
     
     private boolean titleEdited = false;
+    private boolean sourceEdited = false;
     private Long displayType = new Long(0);
     private String startYear = "0";
     private String endYear = "3000";
@@ -1001,7 +1004,7 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
         JavascriptContext.addJavascriptCall(fc, "drawVisualization();");
         JavascriptContext.addJavascriptCall(fc, "initLineDetails");
     }
-
+    
     public void update_StartYear(){
         Object value= this.selectStartYear.getValue();
         this.startYear = (String) value ;
@@ -1200,7 +1203,7 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
            
                    
             if (new Integer(indexDate).intValue() == 0) {
-                dataNotAddedMessage = "You cannot add this line as an index because the x range of values do not overlap with the previously selected lines.";
+                dataNotAddedMessage = "You cannot add this line as an index because the x range of values does not overlap with the previously selected lines.";
                 deleteLatestLine();
             }
            
@@ -1366,6 +1369,8 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
         callDrawVisualization();
         
     }
+
+    
     public void deleteLine(ActionEvent ae){
 
         UIComponent uiComponent = ae.getComponent().getParent();
@@ -1630,6 +1635,13 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
         this.lineColor = lineColor;
     }
     
+    public String getSourceString() {
+        return sourceString;
+    }
+
+    public void setSourceString(String sourceString) {
+        this.sourceString = sourceString;
+    }
     public boolean isTitleEdited() {
         return titleEdited;
     }
@@ -1727,14 +1739,14 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
             for (DataVariable dv : dt.getDataVariables()){
                 if (dv.getId().equals(testId)){
                      dvsIn.add(dv);
-                     columnString = columnString + "^" + vld.getLabel();
+                     columnString = columnString + "~" + vld.getLabel();
                      if (!vld.getMeasureGroup().getUnits().isEmpty()){                          
-                         dtColumnString = dtColumnString + "^" + vld.getLabel();
+                         dtColumnString = dtColumnString + "~" + vld.getLabel();
                      } else {
-                         dtColumnString = dtColumnString + "^" + vld.getLabel();
+                         dtColumnString = dtColumnString + "~" + vld.getLabel();
                      }                     
                      csvColumnString = csvColumnString + "," + getSafeCString( vld.getLabel());
-                     imageColumnString= imageColumnString + "^" + vld.getLabel();
+                     imageColumnString= imageColumnString + "~" + vld.getLabel();
                 }
             }
 
@@ -2412,8 +2424,8 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
 
         String source = "";
 
-        if (!sources.trim().isEmpty()) {
-             source = "Source: " + sources;
+        if (!sourceString.trim().isEmpty()) {
+             source = sourceString;
         }
         
         if(source.trim().isEmpty()){
@@ -2532,7 +2544,7 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
                 rowCounter++;
             }
             
-            List columnHeads = Arrays.asList(parseColumn.split("\\^"));
+            List columnHeads = Arrays.asList(parseColumn.split("\\~"));
             
 
             
@@ -2567,13 +2579,13 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
                 rowCounter++;
             }
             
-            if(!sources.isEmpty()){
+            if(!sourceString.isEmpty()){
                 
                 Label h = new Label (0, rowCounter,  "" );
                 s.addCell(h);
                 rowCounter++;
                 
-                 h = new Label (0, rowCounter,  "Source: " + sources.toString());
+                 h = new Label (0, rowCounter,   sourceString.toString());
                 s.addCell(h);
                 rowCounter++;
                 
@@ -2593,7 +2605,7 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
 
     private void getSourceList(  ) {
         String returnString = "";
-
+        sourceEdited = false;
         Set<String> set = new HashSet();
         if (sourceList != null  && !sourceList.isEmpty()){
             for (DataVariableMapping dvm: sourceList){
@@ -2604,7 +2616,7 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
                     } else {
                         set.add(checkSource);
                         if (returnString.isEmpty()){
-                            returnString = returnString + checkSource;
+                            returnString = "Source: " + returnString + checkSource;
                         } else {
                             returnString = returnString + ", " + checkSource;
                         }
@@ -2613,6 +2625,7 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
             }
 
         }
+        sourceString = returnString;
         sources = returnString;
     }
     
@@ -2640,10 +2653,7 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
     }
 
     private void updateImageFooters() {
-        String sourcesWLabel = "";
-        String returnString = "";
-        boolean done = false;
-        boolean sources = false;
+
         String footerNotes = "";
         String footerNotesNoY = "";
         String displayFooterNotes = "";
@@ -2688,52 +2698,6 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
                lineNum++;
                lineNumNoY++;
         }
-        
-        if (sourceList != null  && !sourceList.isEmpty()){
-            sources = true;
-            for (DataVariableMapping dvm: sourceList){
-            String checkSource = dvm.getGroup().getName();
-            if (!checkSource.trim().isEmpty()){
-                if (set.contains(checkSource)){
-
-                    } else {
-                        set.add(checkSource);
-                        if (returnString.isEmpty() ){
-                            returnString = returnString + "Source:  " + checkSource;
-                        } else {
-                            returnString = returnString + ", " + checkSource;
-                        }
-                    }
-                }
-            }
-            
-                    sourcesWLabel = "" + returnString;
-
-          int numberOfLines = sourcesWLabel.length() / 72;
-          numberOfLines = numberOfLines + 2;
-          String[] sourceLines = new String[numberOfLines];
-          int begOfLine = 0;
-          int endOfLine = Math.min(sourcesWLabel.length(), 72);
-          for (int i = 0; i < numberOfLines; i++){
-
-              int previousSpace = sourcesWLabel.lastIndexOf(" ",  endOfLine);
-
-              if (previousSpace > begOfLine  && (endOfLine - begOfLine) > 71 && !done){
-                  sourceLines[i] = sourcesWLabel.substring(begOfLine, previousSpace);
-              } else if (!done) {
-                  sourceLines[i] = sourcesWLabel.substring(begOfLine, endOfLine);
-                  done = true;
-              } else {
-                  sourceLines[i] = "";
-              }
-
-              begOfLine =  previousSpace + 1;
-              endOfLine = Math.min(sourcesWLabel.length(), previousSpace + 73);
-          }
-
-        }
-
-          
           setImageAxisLabel(axisLabelTemp);
           setImageSourceFooter(footerNotes);
           setImageAxisLabelNoYLabel(axisLabelTempNoY);
@@ -2951,6 +2915,15 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
         this.inputGraphTitle = inputGraphTitle;
     }
     
+    private HtmlInputText inputSourceString;
+
+    public HtmlInputText getInputSourceString() {
+        return this.inputSourceString;
+    }
+    public void setInputSourceString(HtmlInputText inputSourceString) {
+        this.inputSourceString = inputSourceString;
+    }
+    
     private HtmlInputText inputTextLineLabel;
 
     public HtmlInputText getInputTextLineLabel() {
@@ -2997,7 +2970,15 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
     public String updateGraphTitle(){
         titleEdited = true;
         String graphTitleIn = (String) getInputGraphTitle().getValue();
-        setGraphTitle(graphTitleIn);        
+        setGraphTitle(graphTitleIn); 
+        callDrawVisualization();
+        return "";
+    }
+    
+    public String updateSourceString(){
+        sourceEdited = true;
+        String sourceStringIn = (String) getInputSourceString().getValue();
+        setSourceString(sourceStringIn); 
         callDrawVisualization();
         return "";
     }
@@ -3092,8 +3073,12 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
 
 
     public String getSources() {
-        getSourceList();
-        return sources;
+        if (!sourceEdited){
+            getSourceList();
+            return sources;
+        }
+        
+        return sourceString;
     }
 
     public void setSources(String sources) {

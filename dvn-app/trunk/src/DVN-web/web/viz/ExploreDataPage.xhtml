@@ -203,13 +203,62 @@
                                         <f:selectItems value="#{ExploreDataPage.selectView}"/>
                                     </ice:selectOneMenu>
                                 </div>
-                                <div>
+                                <div class="dvnGraphResultsTitleBlock">
                                     <ice:outputLabel value="Title" for="graphtitleIn"/>
-                                    <ice:inputText id="graphTitleIn" size="38" binding="#{ExploreDataPage.inputGraphTitle}"
-                                                   value ="#{ExploreDataPage.graphTitle}"
-                                                   onkeyup="delayedRequestTitle(form,this,event);"></ice:inputText>
-                                </div>
-
+                                        <ice:outputText styleClass="dvnGraphResultsTitle" value="#{ExploreDataPage.graphTitle}"/>
+                                        <div class="dvnGraphResultsTitleEditBlock">
+                                            <ice:inputText  binding="#{ExploreDataPage.inputGraphTitle}" value="#{ExploreDataPage.graphTitle}">
+                                            </ice:inputText>
+                                            <ice:commandButton value="Save" action="#{ExploreDataPage.updateGraphTitle}"/> 
+                                        </div>
+                                </div>  
+                                      <div class="dvnGraphResultsTitleActions">
+                                        
+                                        <a href="#" class="dvnGraphResultsTitleEditLink">Edit Title</a>
+                                      </div>
+                                   <script type="text/javascript">
+                                      // <![CDATA[
+                                        jQuery(document).ready(function(){
+                                            jQuery("a.dvnGraphResultsTitleEditLink").click(function() {
+                                                jQuery(this).parent().prev().addClass("edit");
+                                                return false;
+                                            });
+                                            jQuery(".dvnGraphResultsTitleEditBlock input:submit").click(function() {
+                                                jQuery(this).parents(".dvnGraphResultsTitleBlock").removeClass("edit");
+                                                return false;
+                                            });
+                                        });
+                                        // ]]>
+                                    </script>
+                                
+                                <div class="dvnGraphResultsSourceBlock">
+                                    <ice:outputLabel value="Source Label" for="graphSourceIn"/>
+                                        <ice:outputText styleClass="dvnGraphResultsTitle" value="#{ExploreDataPage.sourceString}"/>
+                                        <div class="dvnGraphResultsSourceEditBlock">
+                                            <ice:inputText  binding="#{ExploreDataPage.inputSourceString}" value="#{ExploreDataPage.sourceString}">
+                                            </ice:inputText>
+                                            <ice:commandButton value="Save" action="#{ExploreDataPage.updateSourceString}"/> 
+                                        </div>
+                                </div>  
+                                      <div class="dvnGraphResultsSourceActions">
+                                        
+                                        <a href="#" class="dvnGraphResultsSourceEditLink">Edit Source</a>
+                                      </div>
+                                   <script type="text/javascript">
+                                      // <![CDATA[
+                                        jQuery(document).ready(function(){
+                                            jQuery("a.dvnGraphResultsSourceEditLink").click(function() {
+                                                jQuery(this).parent().prev().addClass("edit");
+                                                return false;
+                                            });
+                                            jQuery(".dvnGraphResultsSourceEditBlock input:submit").click(function() {
+                                                jQuery(this).parents(".dvnGraphResultsSourceBlock").removeClass("edit");
+                                                return false;
+                                            });
+                                        });
+                                        // ]]>
+                                    </script>
+                                
                                 <div class="dvnShowHeightBlock">
                                     <ice:outputLabel value="Graph Height" for="displayHeight" rendered="true"/>
                                     <ice:selectOneRadio disabled="#{ExploreDataPage.displayType == 1 or ExploreDataPage.displayType == 3}" 
@@ -277,7 +326,7 @@
                                         <div class="dvnGraphResultsVizLineColor" style="#{line.border}"></div>
                                         <ice:outputText styleClass="dvnGraphResultsVizLineLabel" value="#{line.label}"/>
                                         <div class="dvnGraphResultsVizLineEditBlock">
-                                            <ice:inputText  binding="#{ExploreDataPage.inputTextLineLabel}">
+                                            <ice:inputText  binding="#{ExploreDataPage.inputTextLineLabel}" value="#{line.label}">
                                             </ice:inputText>
                                             <ice:commandButton value="Save" onclick="" actionListener="#{ExploreDataPage.updateLineLabel}"/> 
                                         </div>
@@ -459,9 +508,22 @@ function getXaxisString(startYear, endYear) {
 
 function getDecimalCount(inNum){
     var retVal = 0;
-    if(inNum.indexOf(".") > -1) {                   
-      retVal =  inNum.length - (inNum.indexOf(".")+1) 
-    }                    
+
+    
+    if(inNum.indexOf(".") > -1  && inNum.indexOf("E") == -1) {                   
+      retVal =  inNum.length - (inNum.indexOf(".")+1);
+    }
+    if(inNum.indexOf(".") > -1  && inNum.indexOf("E") > -1) {
+      var power = (inNum.substring(inNum.indexOf("E")+1,inNum.length));
+      var powerInt = parseInt(power) ;      
+      var dotInd = inNum.indexOf(".");
+      var eInd = inNum.indexOf("E");
+            
+      if ( eInd - (dotInd + powerInt + 1) > 0){
+          retVal =  eInd - (dotInd + powerInt + 1); 
+      }
+    }
+    
     return retVal;
 }
 
@@ -472,14 +534,14 @@ function getLegendString(columnString){
            return legendString;
         }
     var myString = columnString;
-    var myColumnList = myString.split ( '^' );
+    var myColumnList = myString.split ( '~' );
     for (var i=0; i< myColumnList.length ;i++)
     { 
         var myColumn = myColumnList[i];
             if(legendString==""){
                 legendString = encodeURIComponent(myColumn);                
             } else {
-                legendString = legendString + "|" + encodeURIComponent(myColumn);
+                legendString = legendString + "|" + encodeURIComponent( myColumn);
             }
     }
 
@@ -490,7 +552,7 @@ function getLegendString(columnString){
  function parseData(data, intDisType, startYear, endYear, indexed, columnString) {
 
         var myString = columnString;
-        var myColumnList = myString.split ( '^' );
+        var myColumnList = myString.split ( '~' );
         if (indexed){           
             var myDataString = jQuery('#ExploreDataPage\\:indexedDataString').text();
         } else {
@@ -532,7 +594,7 @@ function getLegendString(columnString){
             if(legendString==""){
                 legendString = encodeURIComponent(myColumn);                
             } else {
-                legendString = "|" + encodeURIComponent(myColumn);
+                legendString = " |" + encodeURIComponent( myColumn);
             }
 
         }
@@ -585,7 +647,7 @@ function getLegendString(columnString){
         counter--;
 
             var myString = jQuery('#ExploreDataPage\\:columnString').text();
-            var myColumnList = myString.split ( '^' );
+            var myColumnList = myString.split ( '~' );
             var numColumnsStr = jQuery('#ExploreDataPage\\:dataColumns').text();
             var numColumns = parseInt(numColumnsStr);
 

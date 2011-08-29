@@ -186,7 +186,7 @@
                 <div id="chart_div" rendered="#{ExploreDataPage.displayType == 1   or ExploreDataPage.displayType == 3}"></div>
                 <div jsfc="ice:panelGroup" styleClass="dvnGraphSourceBlock" rendered="#{!empty ExploreDataPage.sources   
                                                                                         and (ExploreDataPage.displayType == 1 or ExploreDataPage.displayType == 3)}">
-                    <ice:outputText value="Source: #{ExploreDataPage.sources}"/>
+                    <ice:outputText value="#{ExploreDataPage.sources}"/>
                 </div>
             </div>
 

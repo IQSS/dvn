@@ -298,6 +298,14 @@ table.viTblinx th{background-color:#e6e6fa;font-weight:700;margin:0px;padding:2p
 .dvnGraphResultsVizLineLabelBlock.edit input.iceInpTxt {margin: 0 2px;}
 .dvnGraphResultsVizLineActions {float:right; width:68px;}
 .dvnGraphResultsVizLineActions a:link, .dvnGraphResultsVizLineActions a:visited, .dvnGraphResultsVizLineActions a:hover, .dvnGraphResultsVizLineActions a:active {font-size:.95em !important;}
+.dvnGraphResultsTitleEditBlock {display:none;}
+.dvnGraphResultsTitleBlock.edit .dvnGraphResultsTitleEditBlock {display:block;}
+.dvnGraphResultsTitleBlock.edit .dvnGraphResultsTitle {display:none;}
+.dvnGraphResultsTitleBlock.edit input.iceInpTxt {margin: 0 2px;}
+.dvnGraphResultsSourceEditBlock {display:none;}
+.dvnGraphResultsSourceBlock.edit .dvnGraphResultsSourceEditBlock {display:block;}
+.dvnGraphResultsSourceBlock.edit .dvnGraphResultsSource {display:none;}
+.dvnGraphResultsSourceBlock.edit input.iceInpTxt {margin: 0 2px;}
 a.lineDetailLink {display:block;}
 .lineDetailBlockLabel, .lineDetailBlockFilter {font-weight:bold; color:#484848;}
 .lineDetailBlock .iceDatTbl, .lineDetailBlock .iceDatTblRow1, .lineDetailBlock .iceDatTblRow2, .lineDetailBlock .iceDatTblCol1 {border:0; background:transparent;}

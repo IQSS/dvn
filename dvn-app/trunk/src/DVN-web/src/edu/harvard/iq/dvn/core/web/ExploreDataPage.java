@@ -1395,7 +1395,10 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
            }
            
            this.numberOfColumns = new Long(vizLines.size());
-            
+           if (numberOfColumns == 0){
+                   titleEdited = false;
+                   sourceEdited = false;              
+           }
             dataTableVizLines.getChildren().clear();
             dataTableVizLines.getSavedChildren().clear();
            startYear = "0";

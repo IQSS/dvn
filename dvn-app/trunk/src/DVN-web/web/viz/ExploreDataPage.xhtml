@@ -534,7 +534,7 @@ function getLegendString(columnString){
            return legendString;
         }
     var myString = columnString;
-    var myColumnList = myString.split ( '~' );
+    var myColumnList = myString.split ( '|' );
     for (var i=0; i< myColumnList.length ;i++)
     { 
         var myColumn = myColumnList[i];
@@ -552,7 +552,7 @@ function getLegendString(columnString){
  function parseData(data, intDisType, startYear, endYear, indexed, columnString) {
 
         var myString = columnString;
-        var myColumnList = myString.split ( '~' );
+        var myColumnList = myString.split ( '|' );
         if (indexed){           
             var myDataString = jQuery('#ExploreDataPage\\:indexedDataString').text();
         } else {
@@ -647,7 +647,7 @@ function getLegendString(columnString){
         counter--;
 
             var myString = jQuery('#ExploreDataPage\\:columnString').text();
-            var myColumnList = myString.split ( '~' );
+            var myColumnList = myString.split ( '|' );
             var numColumnsStr = jQuery('#ExploreDataPage\\:dataColumns').text();
             var numColumns = parseInt(numColumnsStr);
 

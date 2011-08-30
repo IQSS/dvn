@@ -221,9 +221,9 @@ public class DataVisServlet extends HttpServlet {
 
         cig2.drawImage(yAxisImage, 0, 0, null);
         cig2.drawImage(yAxisVertImage, 10, 50 , null);
-        cig2.drawImage(image, 50, 50, null);
+        cig2.drawImage(image, 45, 50, null);
         cig2.drawImage(titleImage, 75, 10, null);
-        cig2.drawImage(sourceImage, 50, 475 + heightAdjustment, null);
+        cig2.drawImage(sourceImage, 45, 475 + heightAdjustment, null);
 
         yag2.dispose();
         //sig2.dispose();

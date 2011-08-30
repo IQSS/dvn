@@ -1742,14 +1742,14 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
             for (DataVariable dv : dt.getDataVariables()){
                 if (dv.getId().equals(testId)){
                      dvsIn.add(dv);
-                     columnString = columnString + "~" + vld.getLabel();
+                     columnString = columnString + "|" + vld.getLabel();
                      if (!vld.getMeasureGroup().getUnits().isEmpty()){                          
-                         dtColumnString = dtColumnString + "~" + vld.getLabel();
+                         dtColumnString = dtColumnString + "|" + vld.getLabel();
                      } else {
-                         dtColumnString = dtColumnString + "~" + vld.getLabel();
+                         dtColumnString = dtColumnString + "|" + vld.getLabel();
                      }                     
                      csvColumnString = csvColumnString + "," + getSafeCString( vld.getLabel());
-                     imageColumnString= imageColumnString + "~" + vld.getLabel();
+                     imageColumnString= imageColumnString + "|" + vld.getLabel();
                 }
             }
 
@@ -2547,7 +2547,7 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
                 rowCounter++;
             }
             
-            List columnHeads = Arrays.asList(parseColumn.split("\\~"));
+            List columnHeads = Arrays.asList(parseColumn.split("\\|"));
             
 
             

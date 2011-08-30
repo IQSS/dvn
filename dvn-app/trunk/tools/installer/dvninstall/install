@@ -438,6 +438,34 @@ unless ( -d $glassfish_dir."/domains/domain1" )
 
 print "OK!\n";
 
+# Let's determine how much memory to give to Glassfish as heap: 
+
+$gf_heap_default = "2048m"; 
+
+if ( -e "/proc/meminfo" && open MEMINFO, "/proc/meminfo" ) 
+{
+    # Linux 
+    $sys_mem_total = 0; 
+
+    while ( $mline = <MEMINFO> )
+    {
+	if ( $mline =~ /MemTotal:[ \t]*([0-9]*) kB/ )
+	{
+	    $sys_mem_total = $1; 
+	}
+    }
+
+    close MEMINFO; 
+
+    if ( $sys_mem_total != 0 )
+    {
+	$gf_heap_default = ( int ($sys_mem_total / 2000 ) ) . "m"; 
+    }
+}
+
+push @CONFIG_VARIABLES, "DEF_MEM_SIZE"; 
+$CONFIG_DEFAULTS{"DEF_MEM_SIZE"} = $gf_heap_default; 
+
 print "\nWriting glassfish configuration file (domain.xml)... ";
 
 

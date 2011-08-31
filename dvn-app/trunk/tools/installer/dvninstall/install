@@ -566,8 +566,15 @@ unless ( ($exit_code = system ("cd appdeploy; " . $ant_exec)) == 0 )
 	exit 1; 
 }
 
-print "\nOK; now we are going to stop glassfish and populate the database with\n";
-print "some initial content, then start glassfish again.\n";
+if ( $pg_local_connection )
+{
+    print "\nOK; now we are going to stop glassfish and populate the database with\n";
+    print "some initial content, then start glassfish again.\n";
+}
+else
+{
+    print "\nOK; stopping glasfish.\n";
+}
 
 
 # shut down: 
@@ -609,7 +616,10 @@ if ( $pg_local_connection )
 else 
 {
     # NOT SUPPORTED YET -- TODO
-    print "Sorry, populating remote databases not supported yet!\n";
+    print "The database needs to be populated with some intial content \n"; 
+    print "before restarting the DVN. \n";
+    print "However, populating a databases on a remote PostgresQL server "; 
+    print "is not supported yet!\n";
     print "Please copy the file referenceData.sql (found in this directory)\n";
     print "onto the remote server and populate the database manually,\n";
     print "as user postgres, with the following command:\n\n";

@@ -165,7 +165,9 @@ public class TermsOfUseFilter implements Filter {
 
         boolean redirected = false;
         
-        if (req.getServletPath().equals("/FileDownload") || (req.getServletPath().equals("/faces") && req.getPathInfo().startsWith("/subsetting/SubsettingPage"))) {
+        if (req.getServletPath().equals("/FileDownload") || (req.getServletPath().equals("/faces") 
+                && req.getPathInfo().startsWith("/subsetting/SubsettingPage"))
+                || req.getServletPath().equals("/faces") && (req.getPathInfo().startsWith("/viz/ExploreDataPage"))) {
             redirected = checkDownloadTermsOfUse(req, res);
         } else if (req.getServletPath().equals("/faces") && (req.getPathInfo().startsWith("/study/EditStudyPage") || req.getPathInfo().startsWith("/study/AddFilesPage") ) ) {
             redirected = checkDepositTermsOfUse(req, res);
@@ -341,6 +343,13 @@ public class TermsOfUseFilter implements Filter {
                     study = dt.getStudyFile().getStudy();
                 }
 
+            }
+            if (requestPath.startsWith("/viz/ExploreDataPage")) {
+                String vFileId = req.getParameter("fileId");
+                StudyFile file = studyFileService.getStudyFile(new Long(vFileId));
+                if (study == null) {
+                    study = file.getStudy();
+                }
             }
         }
 

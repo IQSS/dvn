@@ -27,8 +27,8 @@
 .dvn_sectionTitle a{font-size:100% !important}
 .dvn_sectionTitle a:hover,.dvn_sectionTitle a:active{font-size:100% !important;color:#526f76;text-decoration:none !important;cursor:text}
 .dvn_sectionTitleL{float:left;padding:0 0 0.25em;color:#526f76;font-size:112% !important;font-weight:bold;text-transform:uppercase;text-align:left}
-.dvn_sectionTitleR{float:right;padding:0 0 0.25em}
-.dvn_sectionTitleR a:link,.dvn_sectionTitleR a:visited,.dvn_sectionTitleR a:hover,.dvn_sectionTitleR a:active{margin-left:2em}
+.dvn_sectionTitleR{float:right;padding:0 0 0.25em;}
+.dvn_sectionTitleR a:link,.dvn_sectionTitleR a:visited,.dvn_sectionTitleR a:hover,.dvn_sectionTitleR a:active{margin-left:2em;}
 .dvn_sectionTitleLinksL{float:left}
 .dvn_sectionTitleLinksR{float:right}
 .dvn_sectionTitleLinksR a:link,.dvn_sectionTitleLinksR a:visited,.dvn_sectionTitleLinksR a:hover,.dvn_sectionTitleLinksR a:active{margin-left:2em}
@@ -56,6 +56,9 @@ a.dvn_headerTitleLrgNetwork:link span,a.dvn_headerTitleLrgNetwork:visited span,a
 .dvn_headerTitleL{margin:0 12px}
 .dvn_headerTitleL a:link span,.dvn_headerTitleL a:visited span,.dvn_headerTitleL a:hover span,.dvn_headerTitleL a:active span{color:#c55b28;font-size:90% !important}
 .dvn_headerTitleR{position:absolute;right:12px;top:0}
+.dvn_headerTitleR a:link, .dvn_headerTitleR a:visited, .dvn_headerTitleR a:hover, .dvn_headerTitleR a:active {display:block;line-height:40px;height:40px;}
+.dvn_headerTitleR div.dvn_headerVersion {position:absolute;bottom:0;right:0;}
+.dvn_headerTitleR div.dvn_headerVersion span.iceOutTxt {color:gray;font-size:90% !important;line-height:12px !important;}
 /* NAV */
 div.dvn_navblock{margin-bottom:12px;padding:0 10px;background:#dadee0;border-top:2px solid #91a5a9}
 div.dvn_navblockNetwork{background:#dadee0;border-top:2px solid #c55b28}

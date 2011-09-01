@@ -2029,23 +2029,20 @@ public class StudyServiceBean implements edu.harvard.iq.dvn.core.study.StudyServ
             studyVersion.getMetadata().setHarvestDVNTermsOfUse(null);
         }
 
-        em.flush();
+        //em.flush();
+	// This flush statement may in fact produce an error condition, 
+	// since some of our StudyFiles may not have been persisted yet 
+	// We are going to take care of that in the next step; but we 
+	// shouldn't be trying to flush until we do. So I'm commenting it
+	// out. -- L.A. 
 
 
         // step 5: persist files from ddi (since studyFile is not persisted when the new FileMetadata objects are created - since
-        // the studyFile often already exists - we need to manually persist the study files here)
-        //for (FileMetadata fmd : studyVersion.getFileMetadatas()) {
-        //   em.persist( fmd.getStudyFile() );
-        //} (this block was repeated twice -- L.A.)
-
-        // persist files from ddi (since studyFile is not persisted when the new FileMetadata objects are created - since
         // the studyFile often already exists - we need to manually persist the study files here)
 
         for (FileMetadata fmd : studyVersion.getFileMetadatas()) {
            em.persist( fmd.getStudyFile() );
         }
-
-        
 
         Map variablesMap = ddiService.reMapDDI(ddiFile, studyVersion, dataFilesMap);
 
@@ -2071,41 +2068,11 @@ public class StudyServiceBean implements edu.harvard.iq.dvn.core.study.StudyServ
                         logger.info("first variable on the map for id "+tmpDt.getId()+" is referencing NULL datatable! WTF?");
                     }
 
-/*
-                  for (DataVariable dv : variablesMapEntry) {
-                    if (dv != null) {
- */
-                        /*
-//                        em.persist(dv);
-                        String varName = dv.getName();
-                        Long varFormatId = dv.getVariableFormatType().getId();
-                        Long decPoints = dv.getNumberOfDecimalPoints();
-                        String queryString = "INSERT INTO datavariable " +
-                                "(name,variableformattype_id,datatable_id,numberofdecimalpoints)" +
-                                " VALUES " +
-                                "('" + varName + "'," + varFormatId + "," + dataTableId + "," + decPoints + ")";
-                        Query insertQuery = em.createNativeQuery(queryString);
-                        insertQuery.executeUpdate();
-                        logger.info("inserted query: "+queryString);
-                        //logger.info("inserted variable "+varName+", data table "+dataTableId);
-                         */
- /*
-                        DataTable tmpDt = dv.getDataTable();
-                        if (tmpDt != null) {
-                            tmpDt.getDataVariables().add(dv);
-                            logger.info("variable "+dv.getName()+" added to datatable "+tmpDt.getId());
-                        } else {
-                            logger.info("variable "+dv.getName()+" is referencing NULL datatable");
-                        }
-                    }
-                }
-  */
                 } else {
                     logger.info("found empty map entry for datatable id "+fileId);
              }
   
             }
-            logger.info("finished ingesting mapped variables");
         }
         
 

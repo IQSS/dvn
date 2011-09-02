@@ -2422,7 +2422,7 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
             graphTitle = " ";
         }
        
-        File retFile = generateImageString("16", "650x", "South", "0", graphTitle);       
+        File retFile = generateImageString("16", "620x", "South", "0", graphTitle);       
         BufferedImage titleImage =     ImageIO.read(retFile);
 
         String source = "";
@@ -2454,9 +2454,9 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
         cig2.fillRect(0, 0, 776, 550);
 
         cig2.drawImage(yAxisImage, 0, 0, null);
-        cig2.drawImage(yAxisVertImage, 10, 50 , null);
-        cig2.drawImage(image, 45, 50, null);
-        cig2.drawImage(titleImage, 75, 10, null);
+        cig2.drawImage(yAxisVertImage, 15, 50 , null);
+        cig2.drawImage(image, 50, 50, null);
+        cig2.drawImage(titleImage, 85, 15, null);
         cig2.drawImage(sourceImage, 45, 475 + heightAdjustment, null);
 
         yag2.dispose();

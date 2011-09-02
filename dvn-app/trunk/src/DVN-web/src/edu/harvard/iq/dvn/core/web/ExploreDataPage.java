@@ -1203,7 +1203,7 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
            
                    
             if (new Integer(indexDate).intValue() == 0) {
-                dataNotAddedMessage = "You cannot add this line as an index because the x range of values does not overlap with the previously selected lines.";
+                dataNotAddedMessage = "You cannot add this line as an index. It does not have any time period in common with the previously selected lines.";
                 deleteLatestLine();
             }
            

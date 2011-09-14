@@ -657,7 +657,13 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
         }
         filterPanelGroup.getChildren().clear();
         filterPanelGroup.getSavedChildren().clear();
-        inputLineLabel.setValue("");
+        if (selectedMeasureHasFilters){
+            inputLineLabel.setValue("");
+        } else {
+            VarGroup measure = visualizationService.getGroupFromId(selectedMeasureId);
+            inputLineLabel.setValue(measure.getName());
+        }
+
         callDrawVisualization();
        
     }
@@ -2665,8 +2671,8 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
         Set<String> set = new HashSet();
         String axisLabelTemp = "x,y";
         String axisLabelTempNoY = "x,y";
-          Integer lineNum = 2;
-          Integer lineNumNoY = 2;
+          Integer lineNum = 4;
+          Integer lineNumNoY = 4;
           footerNotesNoY = "|";
           footerNotes = "|";
           displayFooterNotesNoY = "|";

@@ -926,4 +926,64 @@ public class VisualizationServiceBean implements VisualizationServiceLocal {
         }
     }
 
+    public boolean validateOneFilterPerGrouping(DataTable dataTable, List returnListOfErrors) {
+       boolean valid = true;
+       boolean xAxis = false;
+        List variableMappings = new ArrayList();
+        List<DataVariable> dataVariables = (List<DataVariable>) dataTable.getDataVariables();
+        List<DataVariable>  errorVariables = new ArrayList();
+        List<VarGroup> filterGroups = new ArrayList();
+            for (DataVariable dataVariable: dataVariables){
+                filterGroups.clear();
+                xAxis = false;
+                variableMappings = getFilterMappings((List) dataVariable.getDataVariableMappings());
+                if (!variableMappings.isEmpty()){
+                    Iterator iteratorMap = variableMappings.iterator();
+                    while (iteratorMap.hasNext()) {
+                        DataVariableMapping dataVariableMapping = (DataVariableMapping) iteratorMap.next();
+                        if (!xAxis && dataVariableMapping.getVarGrouping() != null &&
+                            dataVariableMapping.getVarGrouping().getGroupingType().equals(GroupingType.FILTER)){
+                            filterGroups.add(dataVariableMapping.getGroup());
+                        }
+                    }
+                }
+                if (filterGroups.size() > 1){
+                    int i = 0;
+                    VarGrouping vgt = null;
+                    for (VarGroup vg : filterGroups){
+                        if (i==0){
+                            vgt = vg.getGroupAssociation();
+                        } else {
+                            if (vgt.equals(vg.getGroupAssociation())){
+                                    errorVariables.add(dataVariable);
+                                    valid = false;
+                            }
+                        }
+                        i++;
+                    }
+
+                }
+        }
+
+        if (!errorVariables.isEmpty()){
+            List <DataVariableMapping> allMappings = new ArrayList();
+
+            if (!errorVariables.isEmpty()){
+                for (DataVariable dv : errorVariables){
+                    List <DataVariableMapping>  errorMappings = getFilterMappings((List) dv.getDataVariableMappings());
+                    if (!errorMappings.isEmpty()){
+                        returnListOfErrors.add(dv);
+                        for (DataVariableMapping dvm: errorMappings){
+                            returnListOfErrors.add(dvm.getGroup());
+                        }
+                    }
+                }
+            }
+        }
+
+
+
+        return valid;
+    }
+
 }

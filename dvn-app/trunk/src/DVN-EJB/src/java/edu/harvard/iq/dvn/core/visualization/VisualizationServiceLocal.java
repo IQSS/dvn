@@ -59,6 +59,8 @@ public interface VisualizationServiceLocal extends java.io.Serializable {
     public boolean validateXAxisMapping(DataTable dataTable, Long xAxisVariableId);
 
     public boolean validateOneMeasureMapping(DataTable dataTable, List returnListOfErrors);
+    
+    public boolean validateOneFilterPerGrouping(DataTable dataTable, List returnListOfErrors);
 
     public boolean validateAtLeastOneMeasureMapping(DataTable dataTable);
     

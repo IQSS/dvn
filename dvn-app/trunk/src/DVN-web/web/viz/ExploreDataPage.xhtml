@@ -1071,9 +1071,12 @@ function drawVisualization() {
             if (yAxisStep == .25 || yAxisStep < .1) {
                chartParams = chartParams + "&chxs=0N*0*,FFFFFF,3|1N*0*,000000,11,0,t|2N*0*,FFFFFF,3,1,l|3N*sz2*,000000,11,1,t";
             }
-            chartParams = chartParams + "&chxt=x,x,y,y";
-            var labelString = encodeURIComponent( displaySourceFooter);   
-            chartParams = chartParams + "&chxl="+labelString;
+            if (displaySourceFooter.length > 1){
+                chartParams = chartParams + "|4,000000,11&chxt=x,x,y,y,x&chxl="+displaySourceFooter;
+            } else {
+                chartParams = chartParams + "&chxt=x,x,y,y";
+            }
+
             if (buttonValIn1 != 3){
                 chartParams = chartParams + "&chdlp="+legendAlignment +"|l";
                 chartParams = chartParams + "&chdl="+ getLegendString(icolStr);
@@ -1082,10 +1085,14 @@ function drawVisualization() {
             
             getXaxisString(intStartYear, intEndYear);
             chartParams = chartParams + "&chxr=0,0,1,1|2,0,1,1|3,"+lowValDouble+","+highValDouble + ","+ yAxisStep +
-                "|1," + calcedStartYear + "," + calcedEndYear ;
+                "|1," + calcedStartYear + "," + calcedEndYear ;            
             if (calcedEndYear - calcedStartYear < 8){
                 chartParams = chartParams + ",1";  
             }
+            if (displaySourceFooter.length > 0){    
+               
+            }       
+            
             var values = "&chd=e:";
             values = values + encoded;
             var imageURL = chartBaseUrl + chartParams + values;        

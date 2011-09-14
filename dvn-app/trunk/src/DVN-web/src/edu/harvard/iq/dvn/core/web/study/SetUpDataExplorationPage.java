@@ -36,8 +36,16 @@ import edu.harvard.iq.dvn.core.web.VarGroupUI;
 import edu.harvard.iq.dvn.core.web.VarGroupUIList;
 import edu.harvard.iq.dvn.core.web.VarGroupingUI;
 import edu.harvard.iq.dvn.core.web.common.VDCBaseBean;
+import edu.harvard.iq.dvn.ingest.dsb.FieldCutter;
+import edu.harvard.iq.dvn.ingest.dsb.impl.DvnJavaFieldCutter;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.LinkedHashSet;
+import java.util.Set;
 import java.util.List;
 import javax.ejb.EJB;
 import javax.faces.application.FacesMessage;
@@ -191,6 +199,8 @@ public class SetUpDataExplorationPage extends VDCBaseBean implements java.io.Ser
             showCommands = true;
             selectFile = false;
         }
+        FacesContext fc = FacesContext.getCurrentInstance();
+        JavascriptContext.addJavascriptCall(fc, "initRoundedCorners();" );
 
     }
 
@@ -327,7 +337,8 @@ public class SetUpDataExplorationPage extends VDCBaseBean implements java.io.Ser
 
         List <DataVariableUI> dvListUILocG = new ArrayList();
         for (DataVariable dataVariable : dvList){
-            if ((isDate &&  ("date".equals(dataVariable.getFormatCategory())  || "time".equals(dataVariable.getFormatCategory()))) ||
+            if ((isDate &&  ("date".equals(dataVariable.getFormatCategory())  || "time".equals(dataVariable.getFormatCategory())) 
+                    && !hasGapsInTimeVariable(dataVariable)  ) ||
                (!isDate && dataVariable.getVariableFormatType().getName().equals("numeric"))) {
                 DataVariableUI dataVariableUI = new DataVariableUI();
                 dataVariableUI.setDataVariable(dataVariable);
@@ -339,6 +350,51 @@ public class SetUpDataExplorationPage extends VDCBaseBean implements java.io.Ser
         return dvListUILocG;
     }
 
+    public boolean hasGapsInTimeVariable(DataVariable timeVariable){
+
+    StudyFile sf = dataTable.getStudyFile();
+
+    try {
+        File tmpSubsetFile = File.createTempFile("tempsubsetfile.", ".tab");
+        Set<Integer> fields = new LinkedHashSet<Integer>();
+        fields.add(timeVariable.getFileOrder());
+        FieldCutter fc = new DvnJavaFieldCutter();
+
+        fc.subsetFile(
+            sf.getFileSystemLocation(),
+            tmpSubsetFile.getAbsolutePath(),
+            fields,
+            dataTable.getCaseQuantity() );
+
+        if (tmpSubsetFile.exists()) {
+            List <String>  fileList = new ArrayList();
+            BufferedReader reader = new BufferedReader(new FileReader(tmpSubsetFile));
+            String line = null;
+            while ((line=reader.readLine()) != null) {
+               String check =  line.toString();
+               fileList.add(check);
+            }
+            
+            for (Object inObj: fileList){
+                String nextStr = (String) inObj;
+                String[] columnDetail = nextStr.split("\t");
+                String[] test = columnDetail;
+                if (test.length == 0){
+                    return true;
+                }
+                if (test[0].isEmpty()){
+                    return true;
+                }
+            }           
+        }
+        return false;
+
+        } catch  (IOException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+    
 
     private void setVarGroupUI(VarGroupingUI varGroupingUI) {
         List<VarGroupUI> varGroupUIList = new ArrayList();
@@ -1893,6 +1949,39 @@ public class SetUpDataExplorationPage extends VDCBaseBean implements java.io.Ser
                     }
                 }
                 fullErrorMessage += "<br>To correct this, map each variable to a single measure.<br>";
+            }
+
+            valid = false;
+        }
+        
+        returnListOfErrors.clear();
+        
+        if (!visualizationService.validateOneFilterPerGrouping(dataTable, returnListOfErrors)) {
+            if (messages){
+                if (!returnListOfErrors.isEmpty()){
+
+                    fullErrorMessage += "<br>Variables were found that are mapped to multiple filters within a single filter group. ";
+                    boolean firstGroup = true;
+                    for(Object dataVariableIn: returnListOfErrors){
+                        if (dataVariableIn instanceof DataVariable ){
+                            DataVariable dataVariable = (DataVariable) dataVariableIn;
+                            fullErrorMessage += "<br>&#8226;&nbsp;Variable: " + dataVariable.getName() + "<br>";
+                            firstGroup = true;
+
+                        }
+                        if (dataVariableIn instanceof VarGroup){
+                            VarGroup varGroup = (VarGroup) dataVariableIn;
+                            if (firstGroup){
+                                fullErrorMessage += "&nbsp;&nbsp;&nbsp;&nbsp;Filters: " + varGroup.getName() ;
+                            } else {
+                                 fullErrorMessage += " , " + varGroup.getName() ;
+                            }
+                            firstGroup = false;
+                        }
+                       
+                    }
+                }
+                fullErrorMessage += "<br>To correct this, map each variable to a single filter within each group.<br>";
             }
 
             valid = false;

@@ -66,6 +66,15 @@ public class StudyPermissionsPage extends VDCBaseBean  implements java.io.Serial
     @EJB
     private UserServiceLocal userService;
     @EJB GroupServiceLocal groupService;
+    private boolean viewCurrentFiles = true;
+
+    public boolean isViewCurrentFiles() {
+        return viewCurrentFiles;
+    }
+
+    public void setViewCurrentFiles(boolean viewCurrentFiles) {
+        this.viewCurrentFiles = viewCurrentFiles;
+    }
     /**
      * <p>Construct a new Page bean instance.</p>
      */
@@ -87,7 +96,8 @@ public class StudyPermissionsPage extends VDCBaseBean  implements java.io.Serial
         }
             editStudyPermissions.setStudy(getStudyId());
             studyUI = new StudyUI(editStudyPermissions.getStudy());
-            
+            long latestVersion = editStudyPermissions.getStudy().getLatestVersion().getVersionNumber();
+            editStudyPermissions.setStudy(getStudyId(), latestVersion);
     }
     
 
@@ -199,6 +209,15 @@ public class StudyPermissionsPage extends VDCBaseBean  implements java.io.Serial
             editStudyPermissions.setFileRestriction(selectFilePermission.equals("Restricted"));
         }
         
+    }
+    public void viewAllFiles(ActionEvent ae) {
+        setViewCurrentFiles(false);
+        editStudyPermissions.setCurrentVersionFiles(false);
+    }
+    
+    public void viewCurrentFiles(ActionEvent ae) {
+        setViewCurrentFiles(true);
+        editStudyPermissions.setCurrentVersionFiles(true);
     }
     
     public void removeStudyUserGroup(ActionEvent ae) {

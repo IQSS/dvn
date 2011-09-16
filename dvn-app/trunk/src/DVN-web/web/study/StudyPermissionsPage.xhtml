@@ -85,6 +85,7 @@
                 <td colspan="2">
                   <div jsfc="ice:panelGroup" rendered="#{!empty StudyPermissionsPage.editStudyPermissions.studyPermissions}">
                     <ice:commandButton value="Remove" actionListener="#{StudyPermissionsPage.removeStudyUserGroup}"/>
+
                     <ice:outputText styleClass="vdcHelpText" value=" Select multiple users/groups by checking the boxes below."/>
                     <ice:dataTable cellspacing="0" cellpadding="0" width="100%"
                                    value="#{StudyPermissionsPage.editStudyPermissions.studyPermissions}" var="currentRow"
@@ -196,6 +197,10 @@
               <tr>
                 <td colspan="2">
                   <ice:commandButton value="Remove" actionListener="#{StudyPermissionsPage.removeFilePermissions}"/>
+                    <ice:commandButton value="View All Files" actionListener="#{StudyPermissionsPage.viewAllFiles}" 
+                                       rendered ="#{StudyPermissionsPage.viewCurrentFiles}"/>
+                    <ice:commandButton value="View Current Files" actionListener="#{StudyPermissionsPage.viewCurrentFiles}" 
+                                       rendered ="#{!StudyPermissionsPage.viewCurrentFiles}"/>
                   <ice:dataTable cellpadding="0" cellspacing="0" width="100%"
                                  headerClass="list-header-left" columnClasses="vdcColPadded, vdcColPadded, vdcColPadded, vdcColPadded, vdcColPadded"
                                  styleClass="dvnStudyPermissionsFileDetails" rowClasses="list-row-even, list-row-odd"

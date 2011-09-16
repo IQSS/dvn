@@ -58,12 +58,28 @@ public class EditStudyPermissionsServiceBean implements EditStudyPermissionsServ
     @EJB StudyServiceLocal studyService;
     @EJB StudyFileServiceLocal studyFileService;
     @EJB MailServiceLocal mailService;
+    private boolean currentVersionFiles;
+
+    public boolean isCurrentVersionFiles() {
+        return currentVersionFiles;
+    }
+
+    public void setCurrentVersionFiles(boolean currentVersionFiles) {
+        this.currentVersionFiles = currentVersionFiles;
+    }
 
     Study study;
+    
+    public void setStudy(Long id) {
+        study = em.find(Study.class,id);
+        if (study==null) {
+            throw new IllegalArgumentException("Unknown study id: "+id);
+        }
+    }
     /**
      *  Initialize the bean with a Study for editing
      */
-    public void setStudy(Long id ) {
+    public void setStudy(Long id, Long versionNumber ) {
         study = em.find(Study.class,id);
         if (study==null) {
             throw new IllegalArgumentException("Unknown study id: "+id);
@@ -73,9 +89,8 @@ public class EditStudyPermissionsServiceBean implements EditStudyPermissionsServ
         studyPermissions = new ArrayList<PermissionBean>();
         fileDetails = new ArrayList<FileDetailBean>();
         studyRequests = new ArrayList<StudyRequestBean>();
-        
-        
-        
+        currentVersionFiles = true;
+                
         for (Iterator it = study.getStudyRequests().iterator(); it.hasNext();) {
             StudyAccessRequest elem = (StudyAccessRequest) it.next();
             studyRequests.add(new  StudyRequestBean(elem));
@@ -102,6 +117,7 @@ public class EditStudyPermissionsServiceBean implements EditStudyPermissionsServ
             StudyFile elem = em.find(StudyFile.class, fileIter.next());
             FileDetailBean fd = new FileDetailBean();
             fd.setStudyFile(elem);
+            fd.setCurrentVersion(versionNumber);
             fd.setFilePermissions(new ArrayList<PermissionBean>());
             for (Iterator it4 = elem.getAllowedUsers().iterator(); it4.hasNext();) {
                 VDCUser elem2 = (VDCUser) it4.next();
@@ -243,12 +259,26 @@ public class EditStudyPermissionsServiceBean implements EditStudyPermissionsServ
      */
     private Collection<FileDetailBean> fileDetails;
     
+    private Collection<FileDetailBean> fileDetailsReturn;
+    
     /**
      * Getter for property filePermissions.
      * @return Value of property filePermissions.
      */
     public Collection<FileDetailBean> getFileDetails() {
-        return this.fileDetails;
+        fileDetailsReturn  = new ArrayList<FileDetailBean>();
+        if (!currentVersionFiles){
+            return this.fileDetails;
+        } else {
+            for (Object obj : fileDetails){
+                FileDetailBean fdb = (FileDetailBean) obj;
+                if(fdb.isCurrentVerstion()){
+                   fileDetailsReturn.add(fdb);                     
+                }
+            }
+            return this.fileDetailsReturn;
+        }
+        
     }
     
     /**
@@ -441,6 +471,5 @@ public class EditStudyPermissionsServiceBean implements EditStudyPermissionsServ
             
         }
     }
-    
     
 }

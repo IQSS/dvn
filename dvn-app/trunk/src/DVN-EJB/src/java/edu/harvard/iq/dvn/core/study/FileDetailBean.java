@@ -84,6 +84,23 @@ public class FileDetailBean implements java.io.Serializable {
     public void setChecked(boolean checked) {
         this.checked = checked;
     }
+    
+    private boolean currentVersion;
+    
+    public boolean isCurrentVerstion(){
+        return this.currentVersion;
+    }
+    
+    public void setCurrentVersion(long currentVersion){
+                 
+        this.currentVersion = false;        
+        for ( int i = 0; i < studyFile.getFileMetadatas().size(); i++) {         
+            if (currentVersion == studyFile.getFileMetadatas().get(i).getStudyVersion().getVersionNumber().longValue()){
+               this.currentVersion = true; 
+            }
+        }
+
+    }
 
     /**
      * Holds value of property filePermissions.
@@ -144,5 +161,5 @@ public class FileDetailBean implements java.io.Serializable {
         return versions;
 
     }
-    
+       
 }

@@ -116,6 +116,12 @@ public interface EditStudyPermissionsService extends java.io.Serializable {
     void updateRequests(String studyUrl);
     
     void setFileRestriction( boolean restricted);
+
+    public void setStudy(java.lang.Long id, java.lang.Long versionNumber);
+
+    public void setCurrentVersionFiles(boolean currentVersionFiles);
+
+    public boolean isCurrentVersionFiles();
     
     
 }

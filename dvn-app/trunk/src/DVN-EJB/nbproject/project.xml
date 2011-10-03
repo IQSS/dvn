@@ -4,10 +4,11 @@
     <configuration>
         <data xmlns="http://www.netbeans.org/ns/j2ee-ejbjarproject/3">
             <name>DVN-EJB</name>
-            <minimum-ant-version>1.6</minimum-ant-version>
-            <explicit-platform explicit-source-supported="true"/>
-            <included-library>libs.dvn-EJB.classpath</included-library>
-            <included-library>reference.DVN-ingest.jar</included-library>
+            <minimum-ant-version>1.6.5</minimum-ant-version>
+            <included-library dirs="200">libs.dvn-lib-COMMON.classpath</included-library>
+            <included-library dirs="200">libs.dvn-lib-EJB.classpath</included-library>
+            <included-library dirs="200">reference.DVN-ingest.jar</included-library>
+            <included-library dirs="200">libs.dvn-lib-NETWORKDATA.classpath</included-library>
             <source-roots>
                 <root id="src.dir"/>
             </source-roots>

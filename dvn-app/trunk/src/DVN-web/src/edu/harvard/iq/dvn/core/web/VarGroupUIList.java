@@ -1,7 +1,6 @@
-
 package edu.harvard.iq.dvn.core.web;
 
-import edu.emory.mathcs.backport.java.util.Collections;
+// Commented out to compile under IceFaces 2.0! -- L.A. import edu.emory.mathcs.backport.java.util.Collections;
 import edu.harvard.iq.dvn.core.study.DataVariable;
 import edu.harvard.iq.dvn.core.visualization.SortVarGroupByName;
 import edu.harvard.iq.dvn.core.visualization.VarGroup;
@@ -51,7 +50,7 @@ public class VarGroupUIList extends SortableList {
             oldAscending    = ascending;
         } else if (oldAscending != ascending) {
 
-            Collections.reverse(varGroupUIList);
+	    // Commented out to compile under IceFaces 2.0! -- L.A.            Collections.reverse(varGroupUIList);
             oldAscending    = ascending;
         }
         
@@ -103,9 +102,9 @@ public class VarGroupUIList extends SortableList {
             
             
             if (sort){               
-                Collections.sort(varGroupListIn);
+	    // Commented out to compile under IceFaces 2.0! -- L.A.            Collections.reverse(varGroupUIList);
             } else {
-                Collections.sort(varGroupListIn, new SortVarGroupByName());
+	    // Commented out to compile under IceFaces 2.0! -- L.A.            Collections.reverse(varGroupUIList);
             }
             
             varGroupUIList = new ArrayList<VarGroupUI>();
@@ -178,9 +177,9 @@ public class VarGroupUIList extends SortableList {
             }
             
             if (orderBy.equals(TYPE_COLUMN_NAME)){
-                Collections.sort(varGroupListIn);
+	    // Commented out to compile under IceFaces 2.0! -- L.A.            Collections.reverse(varGroupUIList);
             } else {
-                Collections.sort(varGroupListIn, new SortVarGroupByName());
+	    // Commented out to compile under IceFaces 2.0! -- L.A.            Collections.reverse(varGroupUIList);
             }
             
             varGroupUIList = new ArrayList<VarGroupUI>();

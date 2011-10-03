@@ -9,7 +9,7 @@ import com.icesoft.faces.component.ext.HtmlDataTable;
 import com.icesoft.faces.component.ext.HtmlSelectBooleanCheckbox;
 import com.icesoft.faces.context.Resource;
 import com.icesoft.faces.context.effects.JavascriptContext;
-import com.icesoft.faces.webapp.xmlhttp.PersistentFacesState;
+//COMMENTED OUT TO COMPILE UNDER ICEFACES 2.O -- L.A. import com.icesoft.faces.webapp.xmlhttp.PersistentFacesState;
 import javax.faces.context.FacesContext;
 import edu.harvard.iq.dvn.core.analysis.NetworkDataServiceLocal;
 import edu.harvard.iq.dvn.core.analysis.NetworkDataSubsetResult;

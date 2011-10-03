@@ -33,15 +33,15 @@
 
 package edu.harvard.iq.dvn.core.web.push.beans;
 
-import com.icesoft.faces.async.render.OnDemandRenderer;
-import com.icesoft.faces.async.render.RenderManager;
-import com.icesoft.faces.async.render.Renderable;
+//COMMENTED OUT TO COMPILE UNDER ICEFACES 2.O -- L.A. import com.icesoft.faces.async.render.OnDemandRenderer;
+//COMMENTED OUT TO COMPILE UNDER ICEFACES 2.O -- L.A. import com.icesoft.faces.async.render.RenderManager;
+//COMMENTED OUT TO COMPILE UNDER ICEFACES 2.O -- L.A. import com.icesoft.faces.async.render.Renderable;
 import com.icesoft.faces.component.ext.HtmlInputHidden;
-import com.icesoft.faces.context.DisposableBean;
-import com.icesoft.faces.webapp.xmlhttp.FatalRenderingException;
-import com.icesoft.faces.webapp.xmlhttp.PersistentFacesState;
-import com.icesoft.faces.webapp.xmlhttp.RenderingException;
-import com.icesoft.faces.webapp.xmlhttp.TransientRenderingException;
+//COMMENTED OUT TO COMPILE UNDER ICEFACES 2.O -- L.A. import com.icesoft.faces.context.DisposableBean;
+//COMMENTED OUT TO COMPILE UNDER ICEFACES 2.O -- L.A. import com.icesoft.faces.webapp.xmlhttp.FatalRenderingException;
+//COMMENTED OUT TO COMPILE UNDER ICEFACES 2.O -- L.A. import com.icesoft.faces.webapp.xmlhttp.PersistentFacesState;
+//COMMENTED OUT TO COMPILE UNDER ICEFACES 2.O -- L.A. import com.icesoft.faces.webapp.xmlhttp.RenderingException;
+//COMMENTED OUT TO COMPILE UNDER ICEFACES 2.O -- L.A. import com.icesoft.faces.webapp.xmlhttp.TransientRenderingException;
 
 import edu.harvard.iq.dvn.core.vdc.VDCGroup;
 import edu.harvard.iq.dvn.core.web.push.NetworkStatsItemDetailer;
@@ -61,7 +61,8 @@ import org.apache.commons.logging.LogFactory;
  * Class used to handle searching and sorting of auction items, as well as front
  * end interpretation
  */
-public class NetworkStatsBean implements NetworkStatsListener, Renderable, DisposableBean {
+//COMMENTED OUT TO COMPILE UNDER ICEFACES 2.O -- L.A. public class NetworkStatsBean implements NetworkStatsListener, Renderable, DisposableBean {
+public class NetworkStatsBean implements NetworkStatsListener {
     private static Log log = LogFactory.getLog(NetworkStatsBean.class);
     private static int userCount = 0;
     public static final String RENDERER_NAME = "demand";
@@ -70,10 +71,10 @@ public class NetworkStatsBean implements NetworkStatsListener, Renderable, Dispo
     private String queryString;
     private NetworkStatsItemBean[] searchItemBeans;
     private String autoLoad = " ";
-    private PersistentFacesState persistentState = null;
+//COMMENTED OUT TO COMPILE UNDER ICEFACES 2.O -- L.A.     private PersistentFacesState persistentState = null;
     private boolean isFreshSearch;
     private NetworkStatsItemBean queryItem;
-    private OnDemandRenderer renderer = null;
+    //COMMENTED OUT TO COMPILE UNDER ICEFACES 2.O -- L.A.     private OnDemandRenderer renderer = null;
 
     // style related constants
 
@@ -100,7 +101,7 @@ public class NetworkStatsBean implements NetworkStatsListener, Renderable, Dispo
 
     public NetworkStatsBean() {
         NetworkStatsState.getInstance().addNetworkStatsListener(this);
-        persistentState = PersistentFacesState.getInstance();
+//COMMENTED OUT TO COMPILE UNDER ICEFACES 2.O -- L.A.         persistentState = PersistentFacesState.getInstance();
     }
 
     public ItemType getItem(String itemIDStr) throws Exception {
@@ -514,28 +515,28 @@ public class NetworkStatsBean implements NetworkStatsListener, Renderable, Dispo
 
     
     public void reRender() {
-        if (renderer != null) {
-            renderer.requestRender();
-        } else {
+	//COMMENTED OUT TO COMPILE UNDER ICEFACES 2.O -- L.A.         if (renderer != null) {
+	//COMMENTED OUT TO COMPILE UNDER ICEFACES 2.O -- L.A.             renderer.requestRender();
+	//COMMENTED OUT TO COMPILE UNDER ICEFACES 2.O -- L.A.         } else {
             if (log.isDebugEnabled()) {
                 log.debug("OnDemandRenderer was not available (it was null)");
             }
-        }
+        //COMMENTED OUT TO COMPILE UNDER ICEFACES 2.O -- L.A.         }
     }
 
-    public void setRenderManager(RenderManager manager) {
-        if (manager != null) {
-            renderer = manager.getOnDemandRenderer(RENDERER_NAME);
-            renderer.add(this);
-        }
-    }
+    //COMMENTED OUT TO COMPILE UNDER ICEFACES 2.O -- L.A.     public void setRenderManager(RenderManager manager) {
+    //    if (manager != null) {
+    //        renderer = manager.getOnDemandRenderer(RENDERER_NAME);
+    //        renderer.add(this);
+    //    }
+    //}
 
-    public PersistentFacesState getState() {
-        return persistentState;
-    }
+//COMMENTED OUT TO COMPILE UNDER ICEFACES 2.O -- L.A.     public PersistentFacesState getState() {
+//COMMENTED OUT TO COMPILE UNDER ICEFACES 2.O -- L.A.         return persistentState;
+//COMMENTED OUT TO COMPILE UNDER ICEFACES 2.O -- L.A.     }
 
-    public void renderingException(RenderingException renderingException) {
-        if (log.isDebugEnabled() &&
+//COMMENTED OUT TO COMPILE UNDER ICEFACES 2.O -- L.A.     public void renderingException(RenderingException renderingException) {
+/*        if (log.isDebugEnabled() &&
                 renderingException instanceof TransientRenderingException) {
             log.debug("NetworkStatsBean Transient Rendering exception:", renderingException);
         } else if (renderingException instanceof FatalRenderingException) {
@@ -545,19 +546,20 @@ public class NetworkStatsBean implements NetworkStatsListener, Renderable, Dispo
             performCleanup();
         }
     }
+*/
 
     protected boolean performCleanup() {
-        try {
-            // remove ourselves from the render group.
-            if (renderer != null){
-                renderer.remove(this);
-            }
-            return true;
-        } catch (Exception failedCleanup) {
-            if (log.isErrorEnabled()) {
-                log.error("Failed to cleanup a clock bean", failedCleanup);
-            }
-        }
+	//COMMENTED OUT TO COMPILE UNDER ICEFACES 2.O -- L.A.         try {
+	// remove ourselves from the render group.
+	//COMMENTED OUT TO COMPILE UNDER ICEFACES 2.O -- L.A.             if (renderer != null){
+	//COMMENTED OUT TO COMPILE UNDER ICEFACES 2.O -- L.A.                 renderer.remove(this);
+	//COMMENTED OUT TO COMPILE UNDER ICEFACES 2.O -- L.A.             }
+	//COMMENTED OUT TO COMPILE UNDER ICEFACES 2.O -- L.A.             return true;
+	//COMMENTED OUT TO COMPILE UNDER ICEFACES 2.O -- L.A.         } catch (Exception failedCleanup) {
+	//COMMENTED OUT TO COMPILE UNDER ICEFACES 2.O -- L.A.             if (log.isErrorEnabled()) {
+	//COMMENTED OUT TO COMPILE UNDER ICEFACES 2.O -- L.A.                 log.error("Failed to cleanup a clock bean", failedCleanup);
+	//COMMENTED OUT TO COMPILE UNDER ICEFACES 2.O -- L.A.             }
+	//COMMENTED OUT TO COMPILE UNDER ICEFACES 2.O -- L.A.         }
         return false;
     }
 

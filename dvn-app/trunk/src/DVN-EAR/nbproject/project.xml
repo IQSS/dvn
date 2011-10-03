@@ -2,18 +2,17 @@
 <project xmlns="http://www.netbeans.org/ns/project/1">
     <type>org.netbeans.modules.j2ee.earproject</type>
     <configuration>
-        <buildExtensions xmlns="http://www.netbeans.org/ns/ant-build-extender/1"/>
         <data xmlns="http://www.netbeans.org/ns/j2ee-earproject/2">
             <name>DVN-EAR</name>
-            <minimum-ant-version>1.6</minimum-ant-version>
+            <minimum-ant-version>1.6.5</minimum-ant-version>
             <web-module-libraries/>
             <web-module-additional-libraries>
-                <library files="1">
-                    <file>${reference.DVN-EJB.dist-ear}</file>
+                <library>
+                    <file>${reference.DVN-web.dist-ear}</file>
                     <path-in-war>/</path-in-war>
                 </library>
-                <library files="1">
-                    <file>${reference.DVN-web.dist-ear}</file>
+                <library>
+                    <file>${reference.DVN-EJB.dist-ear}</file>
                     <path-in-war>/</path-in-war>
                 </library>
             </web-module-additional-libraries>
@@ -21,14 +20,6 @@
         <references xmlns="http://www.netbeans.org/ns/ant-project-references/1">
             <reference>
                 <foreign-project>DVN-EJB</foreign-project>
-                <artifact-type>j2ee_ear_archive</artifact-type>
-                <script>build.xml</script>
-                <target>dist-ear</target>
-                <clean-target>clean-ear</clean-target>
-                <id>dist-ear</id>
-            </reference>
-            <reference>
-                <foreign-project>DVN-ejb</foreign-project>
                 <artifact-type>j2ee_ear_archive</artifact-type>
                 <script>build.xml</script>
                 <target>dist-ear</target>

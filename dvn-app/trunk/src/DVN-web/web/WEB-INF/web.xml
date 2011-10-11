@@ -101,9 +101,10 @@
        <param-name>properties</param-name>
         <param-value>oaicat.properties</param-value>        
     </context-param>
-    <listener>
+    <!-- <listener>
+	 Does not exist in IceFaces 2.*; - L.A. 
         <listener-class>com.icesoft.faces.util.event.servlet.ContextEventRepeater</listener-class>
-    </listener>
+    </listener-->
     <listener>
         <listener-class>edu.harvard.iq.dvn.core.web.util.VDCContextListener</listener-class>
     </listener>
@@ -146,6 +147,7 @@
             <servlet-class>com.icesoft.faces.webapp.xmlhttp.PersistentFacesServlet</servlet-class>
            
       </servlet>
+   <!-- Commenting out the servlets no longer available in IceFaces 2.*; - L.A.
         <servlet>
             <servlet-name>Blocking Servlet</servlet-name>
             <servlet-class>com.icesoft.faces.webapp.xmlhttp.BlockingServlet</servlet-class>
@@ -155,7 +157,7 @@
             <servlet-name>uploadServlet</servlet-name>
             <servlet-class>com.icesoft.faces.component.inputfile.FileUploadServlet</servlet-class>
             <load-on-startup>1</load-on-startup>
-      </servlet>
+      </servlet -->
         <!-- DVN SPECIFIC SERVLETS -->
     <servlet>
         <servlet-name>Faces Servlet</servlet-name>
@@ -217,6 +219,7 @@
 </servlet>
  !-->
    
+<!-- Commenting out the blocking and upload servlets: - L.A.
     <servlet-mapping>
         <servlet-name>Blocking Servlet</servlet-name>
         <url-pattern>/block/*</url-pattern>
@@ -224,7 +227,7 @@
     <servlet-mapping>
         <servlet-name>uploadServlet</servlet-name>
         <url-pattern>/uploadHtml</url-pattern>
-    </servlet-mapping>
+    </servlet-mapping -->
        <servlet-mapping>
         <servlet-name>Persistent Faces Servlet</servlet-name>
         <url-pattern>/xmlhttp/*</url-pattern>

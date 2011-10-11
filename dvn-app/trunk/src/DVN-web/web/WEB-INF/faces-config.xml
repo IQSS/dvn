@@ -14,9 +14,10 @@
       <render-kit-factory>com.sun.faces.renderkit.RenderKitFactoryImpl</render-kit-factory>
   </factory>
   <application>
+    <!-- commenting out ViewHandler; not available in IceFaces 2.0. - L.A.
       <view-handler>
           com.icesoft.faces.facelets.D2DFaceletViewHandler
-     </view-handler>
+     </view-handler -->
    <!-- Set default locale and add supported locales here... -->
    <locale-config>
       <default-locale>en</default-locale>

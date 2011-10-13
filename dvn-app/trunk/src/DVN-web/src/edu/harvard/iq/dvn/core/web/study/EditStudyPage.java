@@ -27,7 +27,8 @@ package edu.harvard.iq.dvn.core.web.study;
 
 
 import com.icesoft.faces.component.ext.HtmlCommandButton;
-import com.sun.jsfcl.data.DefaultTableDataModel;
+//Commenting out: VWP component. -- L.A. 
+//import com.sun.jsfcl.data.DefaultTableDataModel;
 import edu.harvard.iq.dvn.core.study.EditStudyService;
 import edu.harvard.iq.dvn.core.study.Study;
 import edu.harvard.iq.dvn.core.study.StudyAbstract;
@@ -270,15 +271,15 @@ public class EditStudyPage extends VDCBaseBean implements java.io.Serializable  
         this.currentTitle = currentTitle;
     }
    
-    private DefaultTableDataModel dataTable5Model = new DefaultTableDataModel();
+    //private DefaultTableDataModel dataTable5Model = new DefaultTableDataModel();
     
-    public DefaultTableDataModel getDataTable5Model() {
-        return dataTable5Model;
-    }
+    //public DefaultTableDataModel getDataTable5Model() {
+    //    return dataTable5Model;
+    //}
     
-    public void setDataTable5Model(DefaultTableDataModel dtdm) {
-        this.dataTable5Model = dtdm;
-    }
+    //public void setDataTable5Model(DefaultTableDataModel dtdm) {
+    //    this.dataTable5Model = dtdm;
+    //}
     
     
     private Map studyMap;

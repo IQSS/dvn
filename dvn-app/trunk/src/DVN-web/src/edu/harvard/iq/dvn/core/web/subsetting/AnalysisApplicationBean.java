@@ -26,7 +26,8 @@
 package edu.harvard.iq.dvn.core.web.subsetting;
 
 import edu.harvard.iq.dvn.ingest.dsb.AdvancedStatGUIdata;
-import com.sun.rave.web.ui.appbase.AbstractApplicationBean;
+// Commenting out: -- a VWP component. - L.A. 
+//import com.sun.rave.web.ui.appbase.AbstractApplicationBean;
 import javax.faces.FacesException;
 
 import edu.harvard.iq.dvn.ingest.dsb.DSBWrapper;

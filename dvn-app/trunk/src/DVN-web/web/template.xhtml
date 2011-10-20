@@ -1,17 +1,24 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<f:view
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!-- changing f:view header per transition to IceFaces 2.*: - L.A. 
+<f:view -->
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en"
       xmlns:ui="http://java.sun.com/jsf/facelets"
       xmlns:h="http://java.sun.com/jsf/html"
       xmlns:f="http://java.sun.com/jsf/core"
       xmlns:jsp="http://java.sun.com/JSP/Page"
       xmlns:ice="http://www.icesoft.com/icefaces/component"
       xmlns:dvn="/WEB-INF/tlds/dvn-components">
+<!-- removing "ice:outputDeclaration"; 
+     obsolete per IceFaces 2.*; replaced with the "DOCTYPE" 
+     header above. - L.A. 
 <ice:outputDeclaration
       doctypeRoot="HTML"
       doctypePublic="-//W3C//DTD XHTML 1.0 Transitional//EN"
-      doctypeSystem="http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"/>
-<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<head>
+      doctypeSystem="http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"/ -->
+<!-- note that "head" and "body" tags below have been replaced with 
+     "h:head" and "h:body". - L.A. -->
+<h:head>
   <script type="text/javascript">
       // <![CDATA[
       // check to see if page is loading in hidden grame; if so "pop" out to top level
@@ -99,9 +106,9 @@
   <ice:outputText escape="false" nospan="true"
                   rendered="#{applicationScope.googleAnalyticsKey != null || MainLayoutBean.googleAnalyticsKey != null}"
                   value="#{(applicationScope.googleAnalyticsSourceCode != null) ? applicationScope.googleAnalyticsSourceCode : MainLayoutBean.googleAnalyticsSourceCode}"/>
-</head>
+</h:head>
 <!--  this template is example 4.3 in the Facelets Shortcut -->
-<body>
+<h:body>
     <f:loadBundle basename="Bundle" var="bundle"/>
     <f:loadBundle basename="BundlePageInfo" var="bundlePageInfo"/>
     <ui:insert name="title">
@@ -130,6 +137,7 @@
                     rendered="#{applicationScope.googleAnalyticsKey != null || MainLayoutBean.googleAnalyticsKey != null}"
                     value="#{(applicationScope.googleAnalyticsCode != null) ? applicationScope.googleAnalyticsCode : MainLayoutBean.googleAnalyticsCode}"/>
   
-</body>
+</h:body>
 </html>
-</f:view>
+<!-- Removing closing f:view: - L.A.
+</f:view -->

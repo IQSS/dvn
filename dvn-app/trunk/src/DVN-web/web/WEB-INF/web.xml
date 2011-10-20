@@ -58,15 +58,16 @@
       <param-value>false</param-value>
     </context-param>
     <context-param>
-        <param-name>facelets.SKIP_COMMENTS</param-name>
-        <param-value>true</param-value>
-    </context-param>
-    <context-param>
 	<param-name>facelets.LIBRARIES</param-name>
 	<param-value>
 		/WEB-INF/dvn.taglib.xml;/WEB-INF/scroller.taglib.xml
 	</param-value>
      </context-param>
+    <context-param>
+        <param-name>facelets.SKIP_COMMENTS</param-name>
+        <param-value>true</param-value>
+    </context-param>
+
     <!-- JSF -->
     <context-param>
         <param-name>com.sun.faces.validateXml</param-name>
@@ -81,14 +82,29 @@
         <param-name>javax.faces.DEFAULT_SUFFIX</param-name>
         <param-value>.xhtml</param-value>
     </context-param> -->
-    <context-param>
+   <!-- Removing the following 2 context-params, per IceFaces 2.* upgrade: - L.A 
+   <context-param>
     <param-name>javax.faces.DEFAULT_SUFFIX</param-name>
     <param-value>.xhtml</param-value>
-  </context-param>
+   </context-param>
+   <context-param>
+     <param-name>javax.faces.STATE_SAVING_METHOD</param-name>
+     <param-value>server</param-value>
+   </context-param -->
+   
+   <!-- Per the upgrade instructions, the 2 parameters above
+	are replaced with the following 2: -->
+
     <context-param>
-        <param-name>javax.faces.STATE_SAVING_METHOD</param-name>
-        <param-value>server</param-value>
+        <param-name>javax.faces.SKIP_COMMENTS</param-name>
+        <param-value>true</param-value>
     </context-param>
+    <context-param>
+        <param-name>javax.faces.VALIDATE_EMPTY_FIELDS</param-name>
+        <param-value>false</param-value>
+    </context-param>
+
+
      <context-param>
         <param-name>javax.faces.CONFIG_FILES</param-name>
         <param-value>/WEB-INF/navigation.xml,/WEB-INF/managed-beans.xml</param-value>
@@ -117,24 +133,26 @@
         <filter-name>LoginFilter</filter-name>
         <filter-class>edu.harvard.iq.dvn.core.web.servlet.LoginFilter</filter-class>
     </filter>
+    <!-- Commenting out, since there's no Persistent Faces Servlet in IceFaces 2.0... - L.A.
     <filter-mapping>
         <filter-name>LoginFilter</filter-name>
         <servlet-name>Persistent Faces Servlet</servlet-name>
         <dispatcher>REQUEST</dispatcher>
         <dispatcher>FORWARD</dispatcher>
-    </filter-mapping>
+    </filter-mapping -->
     
     <!-- terms of use filter -->
    <filter>
         <filter-name>TermsOfUseFilter</filter-name>
         <filter-class>edu.harvard.iq.dvn.core.web.servlet.TermsOfUseFilter</filter-class>
     </filter>
+    <!-- Commenting out, since there's no Persistent Faces Servlet in IceFaces 2.0... - L.A.
     <filter-mapping>
         <filter-name>TermsOfUseFilter</filter-name>
         <servlet-name>Persistent Faces Servlet</servlet-name>
         <dispatcher>REQUEST</dispatcher>
         <dispatcher>FORWARD</dispatcher>
-    </filter-mapping>
+    </filter-mapping -->
     <filter-mapping>
         <filter-name>TermsOfUseFilter</filter-name>
         <servlet-name>FileDownloadServlet</servlet-name>
@@ -142,12 +160,13 @@
         <dispatcher>FORWARD</dispatcher>
     </filter-mapping>
     <!-- Icefaces Servlets -->
+   <!-- Commenting out the servlets no longer available and/or 
+	necessary in IceFaces 2.*; - L.A.
    <servlet>
         <servlet-name>Persistent Faces Servlet</servlet-name>
             <servlet-class>com.icesoft.faces.webapp.xmlhttp.PersistentFacesServlet</servlet-class>
            
       </servlet>
-   <!-- Commenting out the servlets no longer available in IceFaces 2.*; - L.A.
         <servlet>
             <servlet-name>Blocking Servlet</servlet-name>
             <servlet-class>com.icesoft.faces.webapp.xmlhttp.BlockingServlet</servlet-class>
@@ -158,7 +177,16 @@
             <servlet-class>com.icesoft.faces.component.inputfile.FileUploadServlet</servlet-class>
             <load-on-startup>1</load-on-startup>
       </servlet -->
-        <!-- DVN SPECIFIC SERVLETS -->
+
+   <!-- NEW (2.0) IceFaces servlet: - L.A. -->
+   <servlet>
+     <servlet-name>Resource Servlet</servlet-name>
+     <servlet-class>com.icesoft.faces.webapp.CompatResourceServlet</servlet-class>
+     <load-on-startup>1</load-on-startup>
+   </servlet>
+
+   <!-- DVN SPECIFIC SERVLETS -->
+
     <servlet>
         <servlet-name>Faces Servlet</servlet-name>
         <servlet-class>edu.harvard.iq.dvn.core.web.servlet.VDCFacesServlet</servlet-class>
@@ -219,7 +247,7 @@
 </servlet>
  !-->
    
-<!-- Commenting out the blocking and upload servlets: - L.A.
+<!-- Commenting out the blocking, persistence and upload servlets: - L.A.
     <servlet-mapping>
         <servlet-name>Blocking Servlet</servlet-name>
         <url-pattern>/block/*</url-pattern>
@@ -227,7 +255,7 @@
     <servlet-mapping>
         <servlet-name>uploadServlet</servlet-name>
         <url-pattern>/uploadHtml</url-pattern>
-    </servlet-mapping -->
+    </servlet-mapping>
        <servlet-mapping>
         <servlet-name>Persistent Faces Servlet</servlet-name>
         <url-pattern>/xmlhttp/*</url-pattern>
@@ -236,11 +264,25 @@
         <servlet-name>Persistent Faces Servlet</servlet-name>
         <url-pattern>*.iface</url-pattern>
     </servlet-mapping>
-<!-- DVN SPECIFIC SERVLET MAPPINGS START -->
      <servlet-mapping>
         <servlet-name>Persistent Faces Servlet</servlet-name>
         <url-pattern>/faces/*</url-pattern>
-    </servlet-mapping>
+    </servlet-mapping -->
+
+<!-- NEW (2.0) ICEFACES mapping: - L.A. -->   
+  <servlet-mapping>
+    <servlet-name>Resource Servlet</servlet-name>
+    <url-pattern>/xmlhttp/*</url-pattern>
+  </servlet-mapping>
+
+  <servlet-mapping>
+    <servlet-name>Faces Servlet</servlet-name>
+    <url-pattern>*.jsf</url-pattern>
+    <url-pattern>/icefaces/*</url-pattern>
+  </servlet-mapping>
+
+
+<!-- DVN SPECIFIC SERVLET MAPPINGS START -->
     <servlet-mapping>
         <servlet-name>ErrorPageServlet</servlet-name>
         <url-pattern>/ExceptionHandler</url-pattern>

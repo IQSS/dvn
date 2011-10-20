@@ -1,14 +1,20 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <persistence version="1.0" xmlns="http://java.sun.com/xml/ns/persistence" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://java.sun.com/xml/ns/persistence http://java.sun.com/xml/ns/persistence/persistence_1_0.xsd">
     <persistence-unit name="VDCNet-ejbPU" transaction-type="JTA">
-        <provider>oracle.toplink.essentials.ejb.cmp3.EntityManagerFactoryProvider</provider>
+        <!-- provider>oracle.toplink.essentials.ejb.cmp3.EntityManagerFactoryProvider</provider-->
+        <provider>org.eclipse.persistence.jpa.PersistenceProvider</provider>
         <jta-data-source>jdbc/VDCNetDS</jta-data-source>
         <properties>
             <!--property name="toplink.logging.level" value="FINE"/-->
+	    <!-- disabling weaving, as an experiment: - L.A. -->
+	    <property name="eclipselink.weaving" value="false"/>
+	    <!-- these are probably obsolete and/or no longer necessary: - L.A. -->
             <property name="toplink.ddl-generation" value="create-tables"/>
             <property name="toplink.cache.shared.default" value="false"/>
         </properties>
     </persistence-unit>
+    <!-- the persistence unit below is no longer necessary; needs to be removed 
+	 from gnrs/TestNRS and from here: - L.A. 
     <persistence-unit name="VDCNet-test" transaction-type="RESOURCE_LOCAL">
         <provider>oracle.toplink.essentials.ejb.cmp3.EntityManagerFactoryProvider</provider>
         <properties>
@@ -17,12 +23,5 @@
             <property name="toplink.jdbc.driver" value="org.postgresql.jdbc3.Jdbc3PoolingDataSource"/>
             <property name="toplink.jdbc.password" value="secret"/>
         </properties>
-    </persistence-unit>
-    <persistence-unit name="VDCNet-appPU" transaction-type="JTA">
-        <provider>oracle.toplink.essentials.ejb.cmp3.EntityManagerFactoryProvider</provider>
-        <jta-data-source>jdbc/vdcApp</jta-data-source>
-        <properties>
-            <property name="toplink.ddl-generation" value="create-tables"/>
-        </properties>
-    </persistence-unit>
+    </persistence-unit -->
 </persistence>

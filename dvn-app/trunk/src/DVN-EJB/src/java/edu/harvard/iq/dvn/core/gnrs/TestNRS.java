@@ -41,8 +41,9 @@ import javax.persistence.PersistenceUnit;
  * @author roberttreacy
  */
 public class TestNRS extends NRS{
-    @PersistenceUnit(unitName="VDCNet-test") EntityManagerFactory emf;
-    EntityManager em;
+    //@PersistenceUnit(unitName="VDCNet-ejbPU") EntityManagerFactory emf;
+    @PersistenceContext(unitName="VDCNet-ejbPU") EntityManager em;
+    //EntityManager em;
     
     /** Creates a new instance of TestNRS */
     public TestNRS() {
@@ -61,12 +62,12 @@ public class TestNRS extends NRS{
      //   return ""+now.getTime();
      //   return em.createNamedQuery("getStudyIdSequence").getSingleResult().toString();
         String studyId=null;
-        em = emf.createEntityManager();
+        //em = emf.createEntityManager();
         do {
             Vector result = (Vector)em.createNativeQuery("select nextval('studyid_seq')").getSingleResult();
             studyId = result.get(0).toString();
         } while (!isUniqueStudyId(studyId, protocol, authority));
-        em.close();
+        //em.close();
         return studyId;
         
     }
@@ -78,9 +79,9 @@ public class TestNRS extends NRS{
        String query = "SELECT s FROM Study s WHERE s.studyId = '" + userStudyId +"'";
        query += " and s.protocol ='"+protocol+"'";
        query += " and s.authority = '"+authority+"'";
-       em = emf.createEntityManager();
+       //em = emf.createEntityManager();
        boolean u = em.createQuery(query).getResultList().size()==0;
-       em.close();
+       //em.close();
        return u;
     }
 

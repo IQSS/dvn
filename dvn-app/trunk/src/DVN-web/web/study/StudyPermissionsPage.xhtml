@@ -202,7 +202,7 @@
                     <ice:commandButton value="View Current Files" actionListener="#{StudyPermissionsPage.viewCurrentFiles}" 
                                        rendered ="#{!StudyPermissionsPage.viewCurrentFiles}"/>
                   <ice:dataTable cellpadding="0" cellspacing="0" width="100%"
-                                 headerClass="list-header-left" columnClasses="vdcColPadded, vdcColPadded, vdcColPadded, vdcColPadded, vdcColPadded"
+                                 headerClass="list-header-left" columnClasses="dvnStudyFilePermTblChk, vdcColPadded, vdcColPadded, vdcColPadded, vdcColPadded"
                                  styleClass="dvnStudyPermissionsFileDetails" rowClasses="list-row-even, list-row-odd"
                                  value="#{StudyPermissionsPage.editStudyPermissions.fileDetails}" var="currentRow">
                     <ice:column id="fileuser_col1">

@@ -188,6 +188,7 @@ span.dvnAddClassificationDvNotReleased{background:url(/dvn/resources/images/icon
 .dvnPermissionsTable{width:100%;text-align:left}
 .dvnPermissionsTable td{padding:.5em 2em;border-bottom:1px solid lightgray}
 .dvnPermissionsTable td.dvnPermissionsStackedCells{border-bottom:none}
+.dvnPermissionsTable td.dvnStudyFilePermTblChk{padding:10px 5px 5px 5px; vertical-align:top; text-align:center;}
 td.dvnPermissionsTableHeader{padding:.5em 1em;background:gainsboro;color:gray;text-transform:uppercase}
 td.dvnPermissionsTableOption{width:240px;padding-top:.75em;padding-bottom:.75em;display:table-cell;vertical-align:top}
 .dvnPermissionsTable .dvnPermissionsEmpty{text-align:center}

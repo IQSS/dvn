@@ -35,13 +35,26 @@
                     <path-in-war>WEB-INF/lib</path-in-war>
                 </library>
                 <library dirs="200">
+                    <file>${reference.DVN-ingest.jar}</file>
+                    <path-in-war>WEB-INF/lib</path-in-war>
+                </library>
+                <library dirs="200">
                     <file>${libs.jsf20.classpath}</file>
+                    <path-in-war>WEB-INF/lib</path-in-war>
+                </library>
+                <library dirs="200">
+                    <file>${libs.dvn-lib-EJB.classpath}</file>
+                    <path-in-war>WEB-INF/lib</path-in-war>
+                </library>
+                <library dirs="200">
+                    <file>${libs.dvn-lib-NETWORKDATA.classpath}</file>
                     <path-in-war>WEB-INF/lib</path-in-war>
                 </library>
             </web-module-libraries>
             <web-module-additional-libraries/>
             <source-roots>
                 <root id="src.dir"/>
+                <root id="src.src.dir"/>
             </source-roots>
             <test-roots>
                 <root id="test.test.dir" name="Test Packages"/>
@@ -55,6 +68,14 @@
                 <target>dist</target>
                 <clean-target>clean</clean-target>
                 <id>dist</id>
+            </reference>
+            <reference>
+                <foreign-project>DVN-ingest</foreign-project>
+                <artifact-type>jar</artifact-type>
+                <script>build.xml</script>
+                <target>jar</target>
+                <clean-target>clean</clean-target>
+                <id>jar</id>
             </reference>
         </references>
     </configuration>

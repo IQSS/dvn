@@ -476,23 +476,9 @@ exists or setup the property manually. For example like this:
         <!-- You can override this target in the ../build.xml file. -->
     </target>
     <target depends="compile" if="is.server.weblogic" name="library-inclusion-in-archive">
-        <basename file="${libs.dvn-lib-COMMON.classpath}" property="manifest.libs.dvn-lib-COMMON.classpath"/>
-        <basename file="${libs.dvn-lib-EJB.classpath}" property="manifest.libs.dvn-lib-EJB.classpath"/>
-        <basename file="${reference.DVN-ingest.jar}" property="manifest.reference.DVN-ingest.jar"/>
-        <basename file="${libs.dvn-lib-NETWORKDATA.classpath}" property="manifest.libs.dvn-lib-NETWORKDATA.classpath"/>
-        <manifest file="${build.ear.classes.dir}/META-INF/MANIFEST.MF" mode="update">
-            <attribute name="Extension-List" value="jar-1 jar-2 jar-3 jar-4 "/>
-            <attribute name="jar-1-Extension-Name" value="${manifest.libs.dvn-lib-COMMON.classpath}"/>
-            <attribute name="jar-2-Extension-Name" value="${manifest.libs.dvn-lib-EJB.classpath}"/>
-            <attribute name="jar-3-Extension-Name" value="${manifest.reference.DVN-ingest.jar}"/>
-            <attribute name="jar-4-Extension-Name" value="${manifest.libs.dvn-lib-NETWORKDATA.classpath}"/>
-        </manifest>
+        <manifest file="${build.ear.classes.dir}/META-INF/MANIFEST.MF" mode="update"/>
     </target>
     <target depends="compile" name="library-inclusion-in-manifest">
-        <copyfiles files="${libs.dvn-lib-COMMON.classpath}" todir="${dist.ear.dir}/lib"/>
-        <copyfiles files="${libs.dvn-lib-EJB.classpath}" todir="${dist.ear.dir}/lib"/>
-        <copyfiles files="${reference.DVN-ingest.jar}" todir="${dist.ear.dir}/lib"/>
-        <copyfiles files="${libs.dvn-lib-NETWORKDATA.classpath}" todir="${dist.ear.dir}/lib"/>
         <manifest file="${build.ear.classes.dir}/META-INF/MANIFEST.MF" mode="update"/>
     </target>
     <target name="-copy-meta-inf">

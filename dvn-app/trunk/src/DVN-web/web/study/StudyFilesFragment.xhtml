@@ -49,7 +49,7 @@
                                         <ice:outputText value=" Access to some files is restricted, and those files are not available for downloading."/>
                                         <ice:outputText value=" No information about the restriction is available." rendered="#{studyPage.termsOfUseIsEmpty}"/>
                                         <ice:outputText value=" Check the " rendered="#{!studyPage.termsOfUseIsEmpty}"/>
-                                        <ice:outputLink value="/dvn#{VDCRequest.currentVDCURL}/faces/study/studyPage.xhtml?studyId=#{studyPage.studyUI.study.id}&amp;tab=catalog#termsofuse" rendered="#{!studyPage.termsOfUseIsEmpty}">
+                                        <ice:outputLink value="/dvn#{VDCRequest.currentVDCURL}/faces/study/StudyPage.xhtml?studyId=#{studyPage.studyUI.study.id}&amp;tab=catalog#termsofuse" rendered="#{!studyPage.termsOfUseIsEmpty}">
                                             <ice:outputText value="Terms of Use"/>
                                         </ice:outputLink>
                                         <ice:outputText value=" for more information." rendered="#{!studyPage.termsOfUseIsEmpty}"/>

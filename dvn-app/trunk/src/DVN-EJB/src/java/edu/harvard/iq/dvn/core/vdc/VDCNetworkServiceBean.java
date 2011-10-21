@@ -238,8 +238,9 @@ public class VDCNetworkServiceBean implements VDCNetworkServiceLocal {
     public Long getTotalStudies(boolean released) {
         Long total = new Long("0");
         boolean bool = !released;
-        Object object = ((List)em.createNativeQuery("select COUNT(study.id) from study, vdc, studyVersion where study.owner_id = vdc.id AND studyVersion.study_id = study.id AND studyVersion.versionState = '" + StudyVersion.VersionState.RELEASED + "' AND vdc.restricted = " + bool).getSingleResult()).get(0);
-        total = (Long)object;
+        //Object object = ((List)em.createNativeQuery("select COUNT(study.id) from study, vdc, studyVersion where study.owner_id = vdc.id AND studyVersion.study_id = study.id AND studyVersion.versionState = '" + StudyVersion.VersionState.RELEASED + "' AND vdc.restricted = " + bool).getSingleResult()).get(0);
+        //total = (Long)object;
+        total = (Long)em.createNativeQuery("select COUNT(study.id) from study, vdc, studyVersion where study.owner_id = vdc.id AND studyVersion.study_id = study.id AND studyVersion.versionState = '" + StudyVersion.VersionState.RELEASED + "' AND vdc.restricted = " + bool).getSingleResult();
         return total;
     }
     

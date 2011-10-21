@@ -188,12 +188,12 @@
    <!-- DVN SPECIFIC SERVLETS -->
 
     <servlet>
-        <servlet-name>Faces Servlet</servlet-name>
+        <servlet-name>CUSTOM DVN Faces Servlet</servlet-name>
         <servlet-class>edu.harvard.iq.dvn.core.web.servlet.VDCFacesServlet</servlet-class>
         
     </servlet>
     <servlet>
-        <servlet-name>Default Faces Servlet</servlet-name>
+        <servlet-name>Faces Servlet</servlet-name>
         <servlet-class>javax.faces.webapp.FacesServlet</servlet-class>
     </servlet>
     <servlet>
@@ -277,8 +277,7 @@
 
   <servlet-mapping>
     <servlet-name>Faces Servlet</servlet-name>
-    <url-pattern>*.jsf</url-pattern>
-    <url-pattern>/icefaces/*</url-pattern>
+    <url-pattern>/faces/*</url-pattern>
   </servlet-mapping>
 
 

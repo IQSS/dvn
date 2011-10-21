@@ -12,6 +12,13 @@
 <body>
   <ui:composition template="/vanilla_template.xhtml">
     <ui:param name="pageTitle" value="#{bundlePageInfo.loginTitle} - #{VDCRequest.dataversePageTitle}"/>
+    <ui:define name="metadata">
+      <f:viewParam name="redirect" value="#{LoginPage.redirect}"/>
+      <f:viewParam name="studyId" value="#{LoginPage.studyId}"/>
+      <f:viewParam name="clearWorkflow" value="#{LoginPage.clearWorkflow}"/>
+      <f:viewParam name="tab" value="#{LoginPage.tab}"/>
+    </ui:define>
+
     <ui:define name="body">
       <div id="dvnLoginPageWrap">
       <div class="dvnRound">

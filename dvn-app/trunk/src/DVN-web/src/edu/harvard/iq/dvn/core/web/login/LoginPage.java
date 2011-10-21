@@ -342,5 +342,9 @@ public class LoginPage extends VDCBaseBean implements java.io.Serializable  {
     public void setClearWorkflow(Boolean clearWorkflow) {
         this.clearWorkflow = clearWorkflow;
     }
+    
+    public Boolean getClearWorkflow() {
+        return clearWorkflow;
+    }
 }
 

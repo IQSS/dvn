@@ -1,17 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<f:view
-      xmlns:ui="http://java.sun.com/jsf/facelets"
+<html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:h="http://java.sun.com/jsf/html"
       xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
       xmlns:jsp="http://java.sun.com/JSP/Page"
-      xmlns:ice="http://www.icesoft.com/icefaces/component"
-      xmlns:dvn="/WEB-INF/tlds/dvn-components">
-<ice:outputDeclaration
-      doctypeRoot="HTML"
-      doctypePublic="-//W3C//DTD XHTML 1.0 Transitional//EN"
-      doctypeSystem="http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"/>
-<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<head>
+      xmlns:dvn="/WEB-INF/tlds/dvn-components"
+      xmlns:ice="http://www.icesoft.com/icefaces/component">
+<h:head>
   <script type="text/javascript">
       // <![CDATA[
       // check to see if page is loading in hidden grame; if so "pop" out to top level
@@ -75,9 +70,9 @@
      }
      //]]>
  </script>
-</head>
+</h:head>
 <!--  this template is example 4.3 in the Facelets Shortcut -->
-<body class="dvn_bodyVanilla">
+<h:body class="dvn_bodyVanilla">
   <div class="dvn_wrapperVanilla">
     <div class="dvn_content" id="content-frame">
       <!-- required to fix a bug in firefox where the connection status box can be displayed erroneously -->
@@ -85,8 +80,8 @@
       <f:loadBundle basename="Bundle" var="bundle"/>
       <f:loadBundle basename="BundlePageInfo" var="bundlePageInfo"/>
       <ui:insert name="body">Default Body</ui:insert>
+      <ui:insert name="metadata">Default Metadata</ui:insert>
     </div>
   </div>
-</body>
+</h:body>
 </html>
-</f:view>

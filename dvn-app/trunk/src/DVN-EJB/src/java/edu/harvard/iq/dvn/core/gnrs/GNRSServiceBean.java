@@ -129,10 +129,11 @@ public class GNRSServiceBean implements edu.harvard.iq.dvn.core.gnrs.GNRSService
        String authHandle = getAuthHandle();
        byte[] key = null;
        int index = 300;
-       String file = "/hs/svr_1/admpriv.bin";
-       String secret = System.getProperty("vdc.handle.admprivphrase");
+       //String file = "/hs/svr_1/admpriv.bin";
+       String adminCredFile = System.getProperty("dvn.handle.admcredfile");
+       String secret = System.getProperty("dvn.handle.admprivphrase");
        try {
-           File f = new File(file);
+           File f = new File(adminCredFile);
            FileInputStream fs = new FileInputStream(f);
            key = new byte[(int) f.length()];
            int n = 0;
@@ -141,7 +142,7 @@ public class GNRSServiceBean implements edu.harvard.iq.dvn.core.gnrs.GNRSService
            }
            fs.read(key);
        } catch (Throwable t) {
-           System.err.println("Cannot read private key " + file + ": " + t);
+           System.err.println("Cannot read private key " + adminCredFile + ": " + t);
        }
 
        HandleResolver resolver = new HandleResolver();
@@ -155,7 +156,7 @@ public class GNRSServiceBean implements edu.harvard.iq.dvn.core.gnrs.GNRSService
            key = Util.decrypt(key, secKey);
            privkey = Util.getPrivateKeyFromBytes(key, 0);
        } catch (Throwable t) {
-           System.err.println("Can\'t load private key in " + file + ": " + t);
+           System.err.println("Can\'t load private key in " + adminCredFile + ": " + t);
        }
 
        String urlStr = getUrlStr(prefix, handle);
@@ -190,17 +191,18 @@ public class GNRSServiceBean implements edu.harvard.iq.dvn.core.gnrs.GNRSService
            String authHandle =  getAuthHandle();
            byte[] key = null;
            int index = 300;
-           String file = "/hs/svr_1/admpriv.bin";
-           String secret = System.getProperty("vdc.handle.admprivphrase");
+           //String file = "/hs/svr_1/admpriv.bin";
+           String adminCredFile = System.getProperty("dvn.handle.admcredfile");
+           String secret = System.getProperty("dvn.handle.admprivphrase");
            try {
-               File f = new File(file);
+               File f = new File(adminCredFile);
                FileInputStream fs = new FileInputStream(f);
                key = new byte[(int)f.length()];
                int n=0;
                while(n<key.length) key[n++] = (byte)fs.read();
                fs.read(key);
            } catch (Throwable t){
-               System.err.println("Cannot read private key " + file +": " + t);
+               System.err.println("Cannot read private key " + adminCredFile +": " + t);
            }
            
            HandleResolver resolver = new HandleResolver();
@@ -214,7 +216,7 @@ public class GNRSServiceBean implements edu.harvard.iq.dvn.core.gnrs.GNRSService
                key = Util.decrypt(key, secKey);
                privkey = Util.getPrivateKeyFromBytes(key, 0);
            } catch (Throwable t){
-               System.err.println("Can't load private key in " + file +": " + t);
+               System.err.println("Can't load private key in " + adminCredFile +": " + t);
            }
            
            String urlStr = getUrlStr(prefix, handle);
@@ -260,18 +262,19 @@ public class GNRSServiceBean implements edu.harvard.iq.dvn.core.gnrs.GNRSService
        if (vdcNetworkService.find().isHandleRegistration() && isAuthority(prefix)){
            String localHandle = handle.substring(handle.indexOf("/")+1);
            String authHandle =  getAuthHandle();
-           String file = "/hs/svr_1/admpriv.bin";
-           String secret = System.getProperty("vdc.handle.admprivphrase");
+           //String file = "/hs/svr_1/admpriv.bin";
+           String adminCredFile = System.getProperty("dvn.handle.admcredfile");
+           String secret = System.getProperty("dvn.handle.admprivphrase");
            byte[] key = null;
            try {
-               File f = new File(file);
+               File f = new File(adminCredFile);
                FileInputStream fs = new FileInputStream(f);
                key = new byte[(int)f.length()];
                int n=0;
                while(n<key.length) key[n++] = (byte)fs.read();
                fs.read(key);
            } catch (Throwable t) {
-               System.err.println("Cannot read private key " + file + ": " + t);
+               System.err.println("Cannot read private key " + adminCredFile + ": " + t);
            }
            
            HandleResolver resolver = new HandleResolver();
@@ -285,7 +288,7 @@ public class GNRSServiceBean implements edu.harvard.iq.dvn.core.gnrs.GNRSService
                key = Util.decrypt(key, secKey);
                privkey = Util.getPrivateKeyFromBytes(key, 0);
            } catch (Throwable t) {
-               System.err.println("Can't load private key in " + file + ": " +t);
+               System.err.println("Can't load private key in " + adminCredFile + ": " +t);
            }
            PublicKeyAuthenticationInfo auth =
                    new PublicKeyAuthenticationInfo(Util.encodeString(authHandle), 300, privkey);
@@ -357,11 +360,12 @@ public class GNRSServiceBean implements edu.harvard.iq.dvn.core.gnrs.GNRSService
         String localHandle = handle.substring(handle.indexOf("/")+1);
         String authHandle =  getAuthHandle();
         byte[] key = null;
-        String file = "/hs/svr_1/admpriv.bin";
-        key = readKey(file);
+        //String file = "/hs/svr_1/admpriv.bin";
+        String adminCredFile = System.getProperty("dvn.handle.admcredfile");
+        key = readKey(adminCredFile);
         
         PrivateKey privkey = null;
-        privkey = readPrivKey(key, file);
+        privkey = readPrivKey(key, adminCredFile);
         PublicKeyAuthenticationInfo auth =
                 new PublicKeyAuthenticationInfo(Util.encodeString(authHandle), 300, privkey);
         
@@ -381,7 +385,7 @@ public class GNRSServiceBean implements edu.harvard.iq.dvn.core.gnrs.GNRSService
     private PrivateKey readPrivKey(byte[] key, final String file) {
         PrivateKey privkey=null;
         
-        String secret = System.getProperty("vdc.handle.admprivphrase");
+        String secret = System.getProperty("dvn.handle.admprivphrase");
         byte secKey[] = null;
         try {
             if(Util.requiresSecretKey(key)){

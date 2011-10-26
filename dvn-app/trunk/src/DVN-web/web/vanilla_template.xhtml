@@ -73,15 +73,18 @@
 </h:head>
 <!--  this template is example 4.3 in the Facelets Shortcut -->
 <h:body class="dvn_bodyVanilla">
-  <div class="dvn_wrapperVanilla">
-    <div class="dvn_content" id="content-frame">
-      <!-- required to fix a bug in firefox where the connection status box can be displayed erroneously -->
-      <ice:outputConnectionStatus/>
-      <f:loadBundle basename="Bundle" var="bundle"/>
-      <f:loadBundle basename="BundlePageInfo" var="bundlePageInfo"/>
-      <ui:insert name="body">Default Body</ui:insert>
-      <ui:insert name="metadata">Default Metadata</ui:insert>
-    </div>
-  </div>
+    <f:view>
+        <ui:insert name="metadata">Default Metadata</ui:insert>
+        <div class="dvn_wrapperVanilla">
+            <div class="dvn_content" id="content-frame">
+                <!-- required to fix a bug in firefox where the connection status box can be displayed erroneously -->
+                <ice:outputConnectionStatus/>
+                <f:loadBundle basename="Bundle" var="bundle"/>
+                <f:loadBundle basename="BundlePageInfo" var="bundlePageInfo"/>
+                <ui:insert name="body">Default Body</ui:insert>
+
+            </div>
+        </div>
+    </f:view>
 </h:body>
 </html>

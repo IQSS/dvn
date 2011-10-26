@@ -1,23 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<!-- changing f:view header per transition to IceFaces 2.*: - L.A. 
-<f:view -->
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en"
       xmlns:ui="http://java.sun.com/jsf/facelets"
       xmlns:h="http://java.sun.com/jsf/html"
       xmlns:f="http://java.sun.com/jsf/core"
-      xmlns:jsp="http://java.sun.com/JSP/Page"
       xmlns:ice="http://www.icesoft.com/icefaces/component"
       xmlns:dvn="/WEB-INF/tlds/dvn-components">
-<!-- removing "ice:outputDeclaration"; 
-     obsolete per IceFaces 2.*; replaced with the "DOCTYPE" 
-     header above. - L.A. 
-<ice:outputDeclaration
-      doctypeRoot="HTML"
-      doctypePublic="-//W3C//DTD XHTML 1.0 Transitional//EN"
-      doctypeSystem="http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"/ -->
-<!-- note that "head" and "body" tags below have been replaced with 
-     "h:head" and "h:body". - L.A. -->
 <h:head>
   <script type="text/javascript">
       // <![CDATA[
@@ -111,6 +99,7 @@
 <h:body>
     <f:loadBundle basename="Bundle" var="bundle"/>
     <f:loadBundle basename="BundlePageInfo" var="bundlePageInfo"/>
+    <ui:insert name="metadata">Default Metadata</ui:insert>
     <ui:insert name="title">
         <!--  ****** THIS IS THE HEADER ******** -->
         <ui:include src="views/CustomBanner.xhtml"/>
@@ -131,8 +120,9 @@
     <ui:insert name="footer">
         <ui:include src="views/CustomFooter.xhtml"/>
     </ui:insert>
-    <ui:include src="study/VersionNotesPopupFragment.xhtml"/>
-    <ui:include src="study/DeletePopupFragment.xhtml"/>
+    <!-- including the POPUPs below causes problems. - L.A. -->
+    <!-- ui:include src="study/VersionNotesPopupFragment.xhtml"/ -->
+    <!--ui:include src="study/DeletePopupFragment.xhtml"/-->
     <ice:outputText escape="false" nospan="true"
                     rendered="#{applicationScope.googleAnalyticsKey != null || MainLayoutBean.googleAnalyticsKey != null}"
                     value="#{(applicationScope.googleAnalyticsCode != null) ? applicationScope.googleAnalyticsCode : MainLayoutBean.googleAnalyticsCode}"/>

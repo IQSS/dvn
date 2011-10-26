@@ -107,7 +107,7 @@
 
      <context-param>
         <param-name>javax.faces.CONFIG_FILES</param-name>
-        <param-value>/WEB-INF/navigation.xml,/WEB-INF/managed-beans.xml</param-value>
+        <param-value>/WEB-INF/navigation.xml</param-value>
     </context-param>
     <context-param>
        <param-name>edu.harvard.hmdc.export</param-name>
@@ -195,6 +195,7 @@
     <servlet>
         <servlet-name>Faces Servlet</servlet-name>
         <servlet-class>javax.faces.webapp.FacesServlet</servlet-class>
+        <load-on-startup>1</load-on-startup>
     </servlet>
     <servlet>
         <servlet-name>ErrorPageServlet</servlet-name>

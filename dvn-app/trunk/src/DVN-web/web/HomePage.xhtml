@@ -1,19 +1,22 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:ui="http://java.sun.com/jsf/facelets"
       xmlns:h="http://java.sun.com/jsf/html"
       xmlns:f="http://java.sun.com/jsf/core"
-      xmlns:jsp="http://java.sun.com/JSP/Page"
       xmlns:dvn="/WEB-INF/tlds/dvn-components"
       xmlns:ice="http://www.icesoft.com/icefaces/component">
 <h:head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
 </h:head>
-
 <h:body>
   <ui:composition template="/template.xhtml">
-    <ui:param name="pageTitle" value="#{VDCRequest.dataversePageTitle}"/>
+     <ui:param name="pageTitle" value="#{VDCRequest.dataversePageTitle}"/>
+
+     <ui:define name="metadata">
+         <f:metadata>
+         <f:event type="preRenderView"
+                     listener="#{homePage.init}" />
+         </f:metadata>
+    </ui:define>     
 
     <ui:define name="body">
       <f:loadBundle basename="Bundle" var="bundle"/>
@@ -45,14 +48,14 @@
       </script>
 
       <ice:outputText escape="false"
-                      value="#{HomePage.accordionJavascript}"
+                      value="#{homePage.accordionJavascript}"
                     />
 
       <ice:form id="form1">
         <ice:inputHidden id="vdcId" value="#{VDCRequest.currentVDCId}"/>
         <!-- Success Message -->
-        <div jsfc="ice:panelGroup" styleClass="#{HomePage.msg.styleClass}" rendered="#{!empty HomePage.msg.messageText}">
-          <ice:outputText id="statusMessage" escape="false" value="#{HomePage.msg.messageText}"/>
+        <div jsfc="ice:panelGroup" styleClass="#{homePage.msg.styleClass}" rendered="#{!empty homePage.msg.messageText}">
+          <ice:outputText id="statusMessage" escape="false" value="#{homePage.msg.messageText}"/>
         </div>
 
         <!-- Main Section starts here -->
@@ -76,7 +79,7 @@
                 <div class="dvhmpgdescfloat">
 
                     <div jsfc="ice:panelGroup" styleClass="#{VDCRequest.vdcNetwork.allowCreateRequest ? 'dvn_hmpgMainMessage dvn_hmpgMainMessagePadding' : 'dvn_hmpgMainMessage'}" rendered="#{(VDCRequest.vdcNetwork.displayAnnouncements == true) and (VDCRequest.currentVDC == null) }" id="networkAnnouncementsHeaderPanel" >
-                      <ice:outputText id="networkAnnouncementsMessages" escape="false" value="#{HomePage.parsedNetworkAnnouncements}"/>
+                      <ice:outputText id="networkAnnouncementsMessages" escape="false" value="#{homePage.parsedNetworkAnnouncements}"/>
                     </div>
 
                 </div>
@@ -94,13 +97,13 @@
 
         <!-- ***************** NETWORK HOMEPAGE CONTENT *************************  -->
 
-        <div jsfc="ice:panelGroup" styleClass="#{!empty(HomePage.accordionItemBeans) ? 'dvn_section dvn_overflow' : 'dvn_section'}">
+        <div jsfc="ice:panelGroup" styleClass="#{!empty(homePage.accordionItemBeans) ? 'dvn_section dvn_overflow' : 'dvn_section'}">
 
           <!-- MAIN CONTENT AREA -->
-          <div jsfc="ice:panelGroup" styleClass="#{!empty(HomePage.accordionItemBeans) ? 'dvn_sectionContent' : 'dvn_sectionContentNoPanels'}">
+          <div jsfc="ice:panelGroup" styleClass="#{!empty(homePage.accordionItemBeans) ? 'dvn_sectionContent' : 'dvn_sectionContentNoPanels'}">
              <table cellpadding="0" cellspacing="0" border="0" width="100%" class="dvnHmpgGroupHeaderBlock">
                  <tr>
-                     <td valign="bottom"><ice:outputText styleClass="dvnHmpgGroupHeader" value="#{HomePage.groupName}"/></td>
+                     <td valign="bottom"><ice:outputText styleClass="dvnHmpgGroupHeader" value="#{homePage.groupName}"/></td>
                      <td width="280" align="right" valign="bottom">
                          <div class="dvn_searchboxblock">
                            <script type="text/javascript">
@@ -126,30 +129,30 @@
                      </td>
                  </tr>
              </table>
-             <div jsfc="ice:panelGroup" styleClass="dvnHmpgClassificationDesc" rendered="#{HomePage.group.description != null and HomePage.group.description != ''}">
-                 <p><ice:outputText value="#{HomePage.group.description}"/></p>
+             <div jsfc="ice:panelGroup" styleClass="dvnHmpgClassificationDesc" rendered="#{homePage.group.description != null and homePage.group.description != ''}">
+                 <p><ice:outputText value="#{homePage.group.description}"/></p>
              </div>
              <div jsfc="ice:panelGroup" styleClass="dvnHmpgGroupTableWrap">
 
                 <div jsfc="ice:panelGroup" styleClass="dvnHmpgGroupAlphaSortBlock" rendered="#{VDCRequest.currentVDC == null}">
                     <ul class="dvnAlphaBrowseBlock">
-                        <ui:fragment rendered="#{(HomePage.vdcUIList.alphaCharacter == '' or HomePage.vdcUIList.alphaCharacter == null)}">
+                        <ui:fragment rendered="#{(homePage.vdcUIList.alphaCharacter == '' or homePage.vdcUIList.alphaCharacter == null)}">
                             <li class="dvnAlphaBrowseSelected" onmouseover="this.className='dvnAlphaBrowseHover'" onmouseout="this.className='dvnAlphaBrowseSelected'">
                                 <ice:commandLink  onclick="setHiddenValues('All');">
                                         <ice:outputText value="ALL"/>
                                 </ice:commandLink>
                             </li>
                         </ui:fragment>
-                        <ui:fragment rendered="#{(HomePage.vdcUIList.alphaCharacter != '' and HomePage.vdcUIList.alphaCharacter != null)}">
+                        <ui:fragment rendered="#{(homePage.vdcUIList.alphaCharacter != '' and homePage.vdcUIList.alphaCharacter != null)}">
                             <li class="dvnAlphaBrowse" onmouseover="this.className='dvnAlphaBrowseHover'" onmouseout="this.className='dvnAlphaBrowse'">
                                 <ice:commandLink  onclick="setHiddenValues('All');">
                                         <ice:outputText value="ALL"/>
                                 </ice:commandLink>
                             </li>
                         </ui:fragment>
-                        <ui:repeat value="#{HomePage.alphaCharacterList}"
+                        <ui:repeat value="#{homePage.alphaCharacterList}"
                                     var="item">
-                            <ui:fragment rendered="#{(HomePage.vdcUIList.alphaCharacter == item)}">
+                            <ui:fragment rendered="#{(homePage.vdcUIList.alphaCharacter == item)}">
                                 <li class="dvnAlphaBrowseSelected" onmouseover="this.className='dvnAlphaBrowseHover'" onmouseout="this.className='dvnAlphaBrowseSelected'">
                                     <ice:commandLink onclick="setHiddenValues(document.getElementById('form1:groupId').value, '#{item}');">
                                         <ice:outputText value="#{item}"/>
@@ -158,7 +161,7 @@
                                     </ice:commandLink>
                                 </li>
                             </ui:fragment>
-                            <ui:fragment rendered="#{(HomePage.vdcUIList.alphaCharacter != item)}">
+                            <ui:fragment rendered="#{(homePage.vdcUIList.alphaCharacter != item)}">
                                 <li class="dvnAlphaBrowse" onmouseover="this.className='dvnAlphaBrowseHover'" onmouseout="this.className='dvnAlphaBrowse'">
                                     <ice:commandLink onclick="setHiddenValues(document.getElementById('form1:groupId').value, '#{item}');">
                                         <ice:outputText value="#{item}"/>
@@ -173,39 +176,39 @@
                 <ice:panelGrid cellpadding="0" cellspacing="0" border="0" columns="2" id="gridPanel2"
                                styleClass="dvnHmpgGroupTableTop"
                                columnClasses="dvnHmpgGroupTotals, dvnPaginatorWrap"
-                               rendered="#{!empty(HomePage.vdcUIList.vdcUIList)}">
+                               rendered="#{!empty(homePage.vdcUIList.vdcUIList)}">
                       <div jsfc="ice:panelGroup"
                            id="groupPanel1"
-                           rendered="#{!empty(HomePage.vdcUIList.vdcUIList) and VDCRequest.currentVDC == null}">
+                           rendered="#{!empty(homePage.vdcUIList.vdcUIList) and VDCRequest.currentVDC == null}">
                             <ice:outputText styleClass="dvn_totalsLabel" value ="Dataverses: "/>
                             <ice:outputText styleClass="dvn_totalsValue"
-                                            value="#{HomePage.vdcUIListSize}"/>
+                                            value="#{homePage.vdcUIListSize}"/>
                             <ice:outputText escape="false"
-                                            rendered="#{HomePage.groupName == 'All Dataverses' and HomePage.isAlphaSort == false}"
+                                            rendered="#{homePage.groupName == 'All Dataverses' and homePage.isAlphaSort == false}"
                                             styleClass="dvn_totalsLabel"
                                             value=" | "/>
-                            <ice:outputText rendered="#{HomePage.groupName == 'All Dataverses' and HomePage.isAlphaSort == false}"
+                            <ice:outputText rendered="#{homePage.groupName == 'All Dataverses' and homePage.isAlphaSort == false}"
                                             styleClass="dvn_totalsLabel"
                                             value ="Studies: "/>
-                            <ice:outputText rendered="#{HomePage.groupName == 'All Dataverses' and HomePage.isAlphaSort == false}"
+                            <ice:outputText rendered="#{homePage.groupName == 'All Dataverses' and homePage.isAlphaSort == false}"
                                             styleClass="dvn_totalsValue"
-                                            value="#{HomePage.studyCount}"/>
+                                            value="#{homePage.studyCount}"/>
                             <ice:outputText escape="false"
-                                            rendered="#{HomePage.groupName == 'All Dataverses' and HomePage.isAlphaSort == false}"
+                                            rendered="#{homePage.groupName == 'All Dataverses' and homePage.isAlphaSort == false}"
                                             styleClass="dvn_totalsLabel"
                                             value=" | "/>
-                            <ice:outputText rendered="#{HomePage.groupName == 'All Dataverses' and HomePage.isAlphaSort == false }"
+                            <ice:outputText rendered="#{homePage.groupName == 'All Dataverses' and homePage.isAlphaSort == false }"
                                             styleClass="dvn_totalsLabel"
                                             value="Files: " />
-                            <ice:outputText rendered="#{HomePage.groupName == 'All Dataverses' and HomePage.isAlphaSort == false }"
+                            <ice:outputText rendered="#{homePage.groupName == 'All Dataverses' and homePage.isAlphaSort == false }"
                                             styleClass="dvn_totalsValue"
-                                            value="#{HomePage.fileCount}"/>
+                                            value="#{homePage.fileCount}"/>
                       </div>
                       <div jsfc="ice:panelGroup"
                             id="groupPanel2"
-                            rendered="#{HomePage.vdcUIListSize > 10 and VDCRequest.currentVDC == null}">
+                            rendered="#{homePage.vdcUIListSize > 10 and VDCRequest.currentVDC == null}">
                         <div class="dvnPaginatorFloatRight">
-                        <ice:dataPaginator for="dataverseList"
+                        <!-- ice:dataPaginator for="dataverseList"
                                            binding="#{HomePage.vdcUIList.paginator}"
                                            id="dataScroll_3"
                                            paginator="true" fastStep="3"
@@ -230,22 +233,22 @@
                           <f:facet name="last">
                             <ice:graphicImage url="/resources/icefaces/dvn_rime/css-images/arrow-last.gif" title="Last Page"/>
                           </f:facet>
-                        </ice:dataPaginator>
+                        </ice:dataPaginator -->
                         </div>
                       </div>
                 </ice:panelGrid>
              </div>
-             <div jsfc="ice:panelGroup" styleClass="dvnHmpgGroupNoDVs" rendered="#{HomePage.vdcUIListSize == 0}">
+             <div jsfc="ice:panelGroup" styleClass="dvnHmpgGroupNoDVs" rendered="#{homePage.vdcUIListSize == 0}">
                   <p><ice:outputText value="There are no dataverses to display for the selected filter. Please select again."/></p>
              </div>
-             <div jsfc="ice:panelGroup" rendered="#{!empty(HomePage.vdcUIList.vdcUIList)}">
+             <div jsfc="ice:panelGroup" rendered="#{!empty(homePage.vdcUIList.vdcUIList)}">
                <ice:dataTable headerClass="groupRow" id="dataverseList"
-                               rendered="#{!empty(HomePage.vdcUIList.vdcUIList)}"
+                               rendered="#{!empty(homePage.vdcUIList.vdcUIList)}"
                                rowClasses="evenRow oddRow" rows="10" width="100%" columnWidths="35%,35%,10%,10%,10%"
-                               sortColumn="#{HomePage.vdcUIList.sortColumnName}"
-                               sortAscending="#{HomePage.vdcUIList.ascending}"
+                               sortColumn="#{homePage.vdcUIList.sortColumnName}"
+                               sortAscending="#{homePage.vdcUIList.ascending}"
                                styleClass="dvnHmpgGroupDataTable"
-                               value="#{HomePage.vdcUIList.vdcUIList}" var="vdcUI"><!-- this is a list of vdcs -->
+                               value="#{homePage.vdcUIList.vdcUIList}" var="vdcUI"><!-- this is a list of vdcs -->
                   <!-- name number -->
                   <f:facet name="header">
 
@@ -253,9 +256,9 @@
                   <ice:column>
                     <f:facet name="header">
                       <ice:commandSortHeader
-                        columnName="#{HomePage.vdcUIList.nameColumnName}"
+                        columnName="#{homePage.vdcUIList.nameColumnName}"
                         arrow="true">
-                        <ice:outputText value="#{HomePage.vdcUIList.nameColumnName}"/>
+                        <ice:outputText value="#{homePage.vdcUIList.nameColumnName}"/>
                       </ice:commandSortHeader>
                     </f:facet>
                     <ice:outputLink styleClass="dvnHmpgDvNameLink" id="dataverse_link" value="/dvn/dv/#{vdcUI.vdc.alias}">
@@ -275,9 +278,9 @@
                   <ice:column>
                    <f:facet name="header">
                       <ice:commandSortHeader
-                        columnName="#{HomePage.vdcUIList.affiliationColumnName}"
+                        columnName="#{homePage.vdcUIList.affiliationColumnName}"
                         arrow="true">
-                        <ice:outputText value="#{HomePage.vdcUIList.affiliationColumnName}"/>
+                        <ice:outputText value="#{homePage.vdcUIList.affiliationColumnName}"/>
                       </ice:commandSortHeader>
                     </f:facet>
                     <ice:outputText value="#{vdcUI.vdc.affiliation}"/>
@@ -287,9 +290,9 @@
                   <ice:column>
                    <f:facet name="header">
                       <ice:commandSortHeader
-                        columnName="#{HomePage.vdcUIList.dateReleasedColumnName}"
+                        columnName="#{homePage.vdcUIList.dateReleasedColumnName}"
                         arrow="true">
-                        <ice:outputText value="#{HomePage.vdcUIList.dateReleasedColumnName}"/>
+                        <ice:outputText value="#{homePage.vdcUIList.dateReleasedColumnName}"/>
                       </ice:commandSortHeader>
                     </f:facet>
                     <ice:outputText value="#{vdcUI.releaseDate}"/>
@@ -315,7 +318,7 @@
 
             </div>
               <!-- START THE MENU -->
-            <div jsfc="ice:panelGroup" styleClass="dvn_sectionPanels" rendered="#{!empty(HomePage.accordionItemBeans)}">
+            <div jsfc="ice:panelGroup" styleClass="dvn_sectionPanels" rendered="#{!empty(homePage.accordionItemBeans)}">
             <div jsfc="ice:panelGroup" styleClass="dvn_theMenuContainer">
                 <div class="theMenuContainer">
                     <!-- START ACCORDION -->
@@ -358,8 +361,8 @@
                                         </ice:commandLink>
                                     </h4>
                                 </li>
-                                <ui:repeat rendered="#{HomePage.accordionItemBeans != null}"
-                                            value="#{HomePage.accordionItemBeans}"
+                                <ui:repeat rendered="#{homePage.accordionItemBeans != null}"
+                                            value="#{homePage.accordionItemBeans}"
                                             var="menuItems">
                                     <ui:fragment rendered="#{!empty(menuItems.childItems)}">
                                         <li>
@@ -425,17 +428,17 @@
             </div>
           </div>
           <!-- END THE MENU -->
-              <ice:inputHidden  binding="#{HomePage.hiddenFilterType}"
+              <ice:inputHidden  binding="#{homePage.hiddenFilterType}"
                         id="filterType"
-                        valueChangeListener="#{HomePage.changeFilterType}"
+                        valueChangeListener="#{homePage.changeFilterType}"
                         />
-              <ice:inputHidden  binding="#{HomePage.hiddenAlphaCharacter}"
+              <ice:inputHidden  binding="#{homePage.hiddenAlphaCharacter}"
                                     id="alphaCharacter"
-                                    valueChangeListener="#{HomePage.changeAlphaCharacter}"
+                                    valueChangeListener="#{homePage.changeAlphaCharacter}"
                                     />
-               <ice:inputHidden  binding="#{HomePage.hiddenGroupId}"
+               <ice:inputHidden  binding="#{homePage.hiddenGroupId}"
                                     id="groupId"
-                                    valueChangeListener="#{HomePage.changeGroupId}"
+                                    valueChangeListener="#{homePage.changeGroupId}"
                                     />
           <ice:messages></ice:messages>
         </div>

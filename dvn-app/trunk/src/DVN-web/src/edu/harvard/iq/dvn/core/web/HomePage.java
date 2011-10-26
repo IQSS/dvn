@@ -30,8 +30,6 @@
 
 package edu.harvard.iq.dvn.core.web;
 
-import com.icesoft.faces.component.datapaginator.DataPaginator;
-import com.icesoft.faces.component.datapaginator.PaginatorActionEvent;
 import com.icesoft.faces.component.ext.HtmlDataTable;
 import com.icesoft.faces.component.ext.HtmlInputHidden;
 import edu.harvard.iq.dvn.core.admin.NetworkRoleServiceLocal;
@@ -39,14 +37,10 @@ import edu.harvard.iq.dvn.core.admin.RoleRequestServiceLocal;
 import edu.harvard.iq.dvn.core.admin.UserServiceLocal;
 import edu.harvard.iq.dvn.core.admin.VDCUser;
 import edu.harvard.iq.dvn.core.index.IndexServiceLocal;
-import edu.harvard.iq.dvn.core.index.SearchTerm;
 import edu.harvard.iq.dvn.core.study.StudyServiceLocal;
-import edu.harvard.iq.dvn.core.study.StudyVersion;
 import edu.harvard.iq.dvn.core.study.VariableServiceLocal;
-import edu.harvard.iq.dvn.core.web.util.PagedDataModel;
 import edu.harvard.iq.dvn.core.util.StringUtil;
 import edu.harvard.iq.dvn.core.vdc.*;
-import edu.harvard.iq.dvn.core.web.common.LoginBean;
 import edu.harvard.iq.dvn.core.web.common.StatusMessage;
 import edu.harvard.iq.dvn.core.web.common.VDCBaseBean;
 import edu.harvard.iq.dvn.core.web.study.StudyUI;
@@ -54,19 +48,16 @@ import java.io.Serializable;
 import java.lang.String;
 import java.text.NumberFormat;
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 import java.util.ResourceBundle;
 import javax.ejb.EJB;
-import javax.faces.context.FacesContext;
-import javax.faces.event.ActionEvent;
+import javax.enterprise.context.ConversationScoped;
 import javax.faces.event.ValueChangeEvent;
-import javax.faces.model.DataModel;
+import javax.inject.Named;
 
+@ConversationScoped
+@Named
 public class HomePage extends VDCBaseBean implements Serializable {
     @EJB StudyServiceLocal      studyService;
     @EJB VDCGroupServiceLocal   vdcGroupService;
@@ -102,8 +93,11 @@ public class HomePage extends VDCBaseBean implements Serializable {
     private String ALL_DATAVERSES_LABEL = "All Dataverses";
     private String defaultVdcPath;
     private String groupName;
-    private String parsedLocalAnnouncements     = parseAnnouncements((getVDCRequestBean().getCurrentVDC()!= null) ? getVDCRequestBean().getCurrentVDC().getAnnouncements(): "", true);
-    private String parsedNetworkAnnouncements   = parseAnnouncements((getVDCRequestBean().getVdcNetwork() != null) ? getVDCRequestBean().getVdcNetwork().getAnnouncements(): "", false);
+    //private String parsedLocalAnnouncements     = parseAnnouncements((getVDCRequestBean().getCurrentVDC()!= null) ? getVDCRequestBean().getCurrentVDC().getAnnouncements(): "", true);
+    //private String parsedNetworkAnnouncements   = parseAnnouncements((getVDCRequestBean().getVdcNetwork() != null) ? getVDCRequestBean().getVdcNetwork().getAnnouncements(): "", false);
+    private String parsedLocalAnnouncements = "";
+    private String parsedNetworkAnnouncements = "";
+    
     private String searchField;
     StatusMessage msg;
     private boolean isAlphaSort;

@@ -688,11 +688,9 @@ exists or setup the property manually. For example like this:
         <copyfiles files="${libs.dvn-lib-COMMON.classpath}" iftldtodir="${build.web.dir}/WEB-INF" todir="${dist.ear.dir}/lib"/>
         <copyfiles files="${libs.dvn-lib-WEB.classpath}" iftldtodir="${build.web.dir}/WEB-INF" todir="${dist.ear.dir}/lib"/>
         <copyfiles files="${libs.icefaces2-ice.classpath}" iftldtodir="${build.web.dir}/WEB-INF" todir="${dist.ear.dir}/lib"/>
-        <copyfiles files="${libs.icefaces2-ace.classpath}" iftldtodir="${build.web.dir}/WEB-INF" todir="${dist.ear.dir}/lib"/>
         <copyfiles files="${libs.icefaces2-core.classpath}" iftldtodir="${build.web.dir}/WEB-INF" todir="${dist.ear.dir}/lib"/>
         <copyfiles files="${libs.icefaces2-icepush.classpath}" iftldtodir="${build.web.dir}/WEB-INF" todir="${dist.ear.dir}/lib"/>
         <copyfiles files="${reference.DVN-ingest.jar}" iftldtodir="${build.web.dir}/WEB-INF" todir="${dist.ear.dir}/lib"/>
-        <copyfiles files="${libs.jsf20.classpath}" iftldtodir="${build.web.dir}/WEB-INF" todir="${dist.ear.dir}/lib"/>
         <copyfiles files="${libs.dvn-lib-EJB.classpath}" iftldtodir="${build.web.dir}/WEB-INF" todir="${dist.ear.dir}/lib"/>
         <copyfiles files="${libs.dvn-lib-NETWORKDATA.classpath}" iftldtodir="${build.web.dir}/WEB-INF" todir="${dist.ear.dir}/lib"/>
         <mkdir dir="${build.web.dir}/META-INF"/>
@@ -702,11 +700,9 @@ exists or setup the property manually. For example like this:
         <copyfiles files="${libs.dvn-lib-COMMON.classpath}" todir="${build.web.dir}/WEB-INF/lib"/>
         <copyfiles files="${libs.dvn-lib-WEB.classpath}" todir="${build.web.dir}/WEB-INF/lib"/>
         <copyfiles files="${libs.icefaces2-ice.classpath}" todir="${build.web.dir}/WEB-INF/lib"/>
-        <copyfiles files="${libs.icefaces2-ace.classpath}" todir="${build.web.dir}/WEB-INF/lib"/>
         <copyfiles files="${libs.icefaces2-core.classpath}" todir="${build.web.dir}/WEB-INF/lib"/>
         <copyfiles files="${libs.icefaces2-icepush.classpath}" todir="${build.web.dir}/WEB-INF/lib"/>
         <copyfiles files="${reference.DVN-ingest.jar}" todir="${build.web.dir}/WEB-INF/lib"/>
-        <copyfiles files="${libs.jsf20.classpath}" todir="${build.web.dir}/WEB-INF/lib"/>
         <copyfiles files="${libs.dvn-lib-EJB.classpath}" todir="${build.web.dir}/WEB-INF/lib"/>
         <copyfiles files="${libs.dvn-lib-NETWORKDATA.classpath}" todir="${build.web.dir}/WEB-INF/lib"/>
     </target>

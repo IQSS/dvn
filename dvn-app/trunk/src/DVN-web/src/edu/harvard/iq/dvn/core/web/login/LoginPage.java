@@ -35,11 +35,11 @@ import java.util.Iterator;
 import java.util.List;
 import javax.ejb.EJB;
 import com.icesoft.faces.component.ext.HtmlInputHidden;
-import edu.harvard.iq.dvn.core.admin.NetworkRoleServiceLocal;
-import edu.harvard.iq.dvn.core.util.PropertyUtil;
+import javax.enterprise.context.ConversationScoped;
 import javax.faces.context.FacesContext;
 import javax.faces.event.ValueChangeEvent;
 import javax.faces.model.SelectItem;
+import javax.inject.Named;
 import javax.servlet.http.HttpServletRequest;
 
 /**
@@ -49,6 +49,9 @@ import javax.servlet.http.HttpServletRequest;
  * lifecycle methods and event handlers where you may add behavior
  * to respond to incoming events.</p>
  */
+
+@Named("LoginPage")
+@ConversationScoped
 public class LoginPage extends VDCBaseBean implements java.io.Serializable  {
 
     @EJB

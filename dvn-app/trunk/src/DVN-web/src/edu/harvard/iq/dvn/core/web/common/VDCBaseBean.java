@@ -74,7 +74,7 @@ public class VDCBaseBean  implements java.io.Serializable  {
         return ((HttpServletRequest) FacesContext.getCurrentInstance().getExternalContext().getRequest()).getParameter(name);
     }
     
-    public final boolean isFromPage(String pageNameToCheck) {
+    public boolean isFromPage(String pageNameToCheck) {
         String fromPageName =  getRequestParam("pageName");
         return (pageNameToCheck.equals(fromPageName));
     }

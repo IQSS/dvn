@@ -440,7 +440,7 @@ public class StudyListingPage extends VDCBaseBean implements java.io.Serializabl
     private void initPageComponents(int mode) {
         int matches = studyListing.getStudyIds() != null ? studyListing.getStudyIds().size() : 0;
         renderSort = matches == 0 ? false : true;
-        renderScroller = matches == 0 ? false : true;
+        renderScroller = matches < 10 ? false : true;
 
         // default the following to false; will likely change after checking mode
         renderSearch = true;

@@ -96,13 +96,13 @@ li.hmpgDvGroupSelected a:link,li.hmpgDvGroupSelected a:visited,li.hmpgDvGroupSel
 .iceDatTblActvSrtHdr span td{font-weight:bold;}
 /* STUDY LISTING */
 .dvnStudyListWrapper{border:1px solid #dcdddf}
-.dvnStudyListCollectionNameBlock{padding:.5em .25em;border:1px solid #dcdddf;border-width:1px 1px 0 1px;text-align:right}
+.dvnStudyListCollectionNameBlock{padding:.5em .25em;border:1px solid #dcdddf;border-width:1px 1px 0 1px;}
 .dvnStudyListCollectionName{text-align:left}
 .dvnStudyListCollectionName span{font-size:140% !important;font-weight:700}
 .dvnStudyListContributorBlock{padding-bottom:.25em}
 a.dvnStudyListContributorLink:link,a.dvnStudyListContributorLink:visited,a.dvnStudyListContributorLink:hover,a.dvnStudyListContributorLink:active{padding-right:28px;color:#c55b28;background:url(/dvn/resources/images/start-arrows.gif) 100% 52% no-repeat;font-size:95%;text-decoration:none}
-.dvnStudyListResultsTop{border-bottom:1px solid #dcdddf}
-.dvnStudyListResultsBottom{border-top:1px solid #dcdddf}
+.dvnStudyListResultsTop{padding:5px; border-bottom:1px solid #dcdddf}
+.dvnStudyListResultsBottom{padding:5px; border-top:1px solid #dcdddf}
 .dvnStudyListResultsBottom .dvnPaginatorWrap{padding:.25em 0}
 td.dvn_StudyListTotals{text-align:right;width:100%;padding:.5em}
 td.dvn_StudyListSort{padding:.25em}
@@ -132,7 +132,7 @@ span.dvnStudyListTableOptionalFieldLabel{color:gray}
 .dvnStudyListTable td{border:0}
 .dvnStudyListTable div{border-width:0 0 0 0}
 span.dvnStudyListSearchResultsMessage{font-size:100% !important;font-weight:400}
-span.dvnCollectionDescription{font-size:100% !important;font-weight:normal;font-style: normal;}
+.dvnCollectionDescription{padding:5px; border-bottom:1px solid #d9d9d9;}
 .dvnStudyListNoStudies{padding:0 1em;text-align:center}
 /* ADVANCED SEARCH */
 .dvnAdvSearchTable fieldset{margin:0.5em 0 1em 0;padding:0;}

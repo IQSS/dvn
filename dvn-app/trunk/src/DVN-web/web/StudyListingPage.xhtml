@@ -106,26 +106,24 @@
           <!-- Start Search Results (with side panel, if available) -->
           <div jsfc="ice:panelGroup" styleClass="#{ (StudyListingPage.renderTree) ? 'dvn_section dvn_overflow' : 'dvn_section'} dvn_clear">
             <div jsfc="ice:panelGroup" styleClass="#{ (StudyListingPage.renderTree) ? 'dvn_sectionContent' : 'dvn_sectionContentNoPanels'}">
-              <div jsfc="ice:panelGroup" styleClass="dvnStudyListCollectionNameBlock">
-                  <table cellpadding="0" cellspacing="0" border="0" width="100%">
-                      <tr>
-                          <td valign="bottom">
-                            <div jsfc="ice:panelGroup" styleClass="dvnStudyListCollectionName">
-                              <ice:outputText value="#{StudyListingPage.listHeader}"/>
-                              <ice:outputText nospan="true" rendered="#{!empty StudyListingPage.listDescription}"><br/></ice:outputText>
-                              <ice:outputText styleClass="dvnCollectionDescription" value="#{StudyListingPage.listDescription}" rendered="#{!empty StudyListingPage.listDescription}"  />
-                              <ice:outputText styleClass="dvnStudyListSearchResultsMessage" value="#{StudyListingPage.listMessage}" rendered="#{StudyListingPage.studyCount != 0}"/>
-                            </div>
-                          </td>
-                          <td width="308" align="right" valign="bottom">
-                            <div class="dvn_searchboxblock">
+              <div class="dvnStudyListCollectionNameBlock">
+                <table cellpadding="0" cellspacing="0" border="0" width="100%" class="dvnHmpgGroupHeaderBlock">
+                  <tr>
+                     <td valign="bottom">
+                         <div jsfc="ice:panelGroup" styleClass="dvnStudyListCollectionName">
+                            <ice:outputText value="#{StudyListingPage.listHeader}"/>
+                            <ice:outputText styleClass="dvnStudyListSearchResultsMessage" value="#{StudyListingPage.listMessage}" rendered="#{StudyListingPage.studyCount != 0}"/>
+                         </div>
+                     </td>
+                     <td width="280" align="right" valign="bottom">
+                         <div class="dvn_searchboxblock" style="float:right;">
                               <script type="text/javascript">
                                     function clickclear(thisfield, defaulttext) {
                                         if (thisfield.value == defaulttext) {
                                             thisfield.value = "";
                                         }
                                     }
-                             </script>
+                              </script>
                               <fieldset>
                                 <label for="search">
                                   <ice:inputText onkeypress="if (window.event) return processEvent('', 'form1:search'); else return processEvent(event, 'form1:search');" id="textField2" value="#{StudyListingPage.searchValue}" onclick="clickclear(this, 'Search Studies')"/>
@@ -146,65 +144,76 @@
                                 <ice:outputLink value="/dvn#{VDCRequest.currentVDCURL}/faces/AdvSearchPage.xhtml">
                                   <ice:outputText value="Advanced Search"/>
                                 </ice:outputLink>
-                                <ice:outputLink value="http://thedata.org/book/search-tips" target="_blank">
+                                <ice:outputLink value="http://guides.thedata.org/book/search" target="_blank">
                                   <ice:outputText value="Tips"/>
                                 </ice:outputLink>
                               </div>
                             </div>
-                          </td>
-                      </tr>
-                  </table>
-
-                
+                     </td>
+                  </tr>
+                </table>
               </div>
               <div class="dvnStudyListWrapper">
                 <div jsfc="ice:panelGroup" styleClass="dvnStudyListNoStudies" rendered="#{StudyListingPage.studyCount == 0}">
                   <p><ice:outputText value="#{StudyListingPage.listMessage}"/></p>
                 </div>
-                <ice:panelGrid cellpadding="0" cellspacing="0" border="0" columns="3" id="gridPanel2"
-                               styleClass="dvnStudyListResultsTop" columnClasses="dvn_StudyListSort, dvn_StudyListTotals, dvnPaginatorWrap"
+                <div jsfc="ice:panelGroup" styleClass="dvnCollectionDescription" rendered="#{!empty StudyListingPage.listDescription}">
+                    <ice:outputText value="#{StudyListingPage.listDescription}"/>
+                </div>
+                <div jsfc="ice:panelGroup" styleClass="dvnStudyListResultsTop" rendered="#{StudyListingPage.studyCount != 0}">
+                  <table cellpadding="0" cellspacing="0" border="0" width="100%">
+                      <tr>
+                          <td>                            
+                            <div jsfc="ice:panelGroup" id="groupPanel5" rendered="#{StudyListingPage.renderSort}" style="text-align:left;">
+                                <ice:selectOneMenu id="dropdown2" valueChangeListener="#{StudyListingPage.sort_action}" onchange="submit();">
+                                  <f:selectItem itemLabel="Sort By:" itemValue=""/>
+                                  <f:selectItem itemLabel="- Global ID" itemValue="globalId"/>
+                                  <f:selectItem itemLabel="- Title" itemValue="title"/>
+                                  <f:selectItem itemLabel="- Last Released" itemValue="releaseTime"/>
+                                  <f:selectItem itemLabel="- Production Date" itemValue="productionDate"/>
+                                  <f:selectItem itemLabel="- Download Count" itemValue="downloadCount"/>
+                                </ice:selectOneMenu>
+                              </div>
+                          </td>
+                          <td align="right">
+                              <ice:panelGrid cellpadding="0" cellspacing="0" border="0" columns="2" id="gridPanel2"
+                               columnClasses="dvn_StudyListTotals, dvnPaginatorWrap"
                                rendered="#{StudyListingPage.renderSort or StudyListingPage.renderScroller}">
-                  <div jsfc="ice:panelGroup" id="groupPanel5" rendered="#{StudyListingPage.renderSort}">
-                    <ice:selectOneMenu id="dropdown2" valueChangeListener="#{StudyListingPage.sort_action}" onchange="submit();">
-                      <f:selectItem itemLabel="Sort By:" itemValue=""/>
-                      <f:selectItem itemLabel="- Global ID" itemValue="globalId"/>
-                      <f:selectItem itemLabel="- Title" itemValue="title"/>
-                      <f:selectItem itemLabel="- Last Released" itemValue="releaseTime"/>
-                      <f:selectItem itemLabel="- Production Date" itemValue="productionDate"/>
-                      <f:selectItem itemLabel="- Download Count" itemValue="downloadCount"/>
-                    </ice:selectOneMenu>
-                  </div>
-                  <div jsfc="ice:panelGroup" id="groupPanel6">
-                    <ice:outputText styleClass="dvn_totalsLabel" value="Studies: "/>
-                    <ice:outputText styleClass="dvn_totalsValue" value="#{StudyListingPage.studyCount}"/>
-                  </div>
-                  <div jsfc="ice:panelGroup" id="groupPanel4" rendered="#{StudyListingPage.renderScroller}">
-                    <ice:dataPaginator id="studyListingPaginatorTop" styleClass="dvnPaginatorRight"
-                                       binding="#{StudyListingPage.paginator}"
-                                       for="studyListTable1" paginator="true" partialSubmit="true"
-                                       fastStep="3" paginatorMaxPages="4" renderFacetsIfSinglePage="false">
-                      <f:facet name="first">
-                        <ice:graphicImage url="/resources/icefaces/dvn_rime/css-images/arrow-first.gif" title="First Page"/>
-                      </f:facet>
-                      <f:facet name="previous">
-                        <ice:graphicImage url="/resources/icefaces/dvn_rime/css-images/arrow-previous.gif" title="Previous"/>
-                      </f:facet>
-                      <f:facet name="next">
-                        <ice:graphicImage url="/resources/icefaces/dvn_rime/css-images/arrow-next.gif" title="Next"/>
-                      </f:facet>
-                      <f:facet name="last">
-                        <ice:graphicImage url="/resources/icefaces/dvn_rime/css-images/arrow-last.gif" title="Last Page"/>
-                      </f:facet>
-                      <f:facet name="fastforward">
-                        <ice:graphicImage url="/resources/icefaces/dvn_rime/css-images/arrow-ff.gif" title="Fast Forward"/>
-                      </f:facet>
-                      <f:facet name="fastrewind">
-                        <ice:graphicImage url="/resources/icefaces/dvn_rime/css-images/arrow-fr.gif" title="Fast Rewind"/>
-                      </f:facet>
-                    </ice:dataPaginator>
-                  </div>
-                </ice:panelGrid>
-                <ice:dataTable rows="10" headerClass="list-header" id="studyListTable1" width="99%"
+                                  <div jsfc="ice:panelGroup" id="groupPanel6">
+                                    <ice:outputText styleClass="dvn_totalsLabel" value="Studies: "/>
+                                    <ice:outputText styleClass="dvn_totalsValue" value="#{StudyListingPage.studyCount}"/>
+                                  </div>
+                                  <div jsfc="ice:panelGroup" id="groupPanel4" rendered="#{StudyListingPage.renderScroller}">
+                                    <ice:dataPaginator id="studyListingPaginatorTop" styleClass="dvnPaginatorRight"
+                                                       binding="#{StudyListingPage.paginator}"
+                                                       for="studyListTable1" paginator="true" partialSubmit="true"
+                                                       fastStep="3" paginatorMaxPages="4" renderFacetsIfSinglePage="false">
+                                      <f:facet name="first">
+                                        <ice:graphicImage url="/resources/icefaces/dvn_rime/css-images/arrow-first.gif" title="First Page"/>
+                                      </f:facet>
+                                      <f:facet name="previous">
+                                        <ice:graphicImage url="/resources/icefaces/dvn_rime/css-images/arrow-previous.gif" title="Previous"/>
+                                      </f:facet>
+                                      <f:facet name="next">
+                                        <ice:graphicImage url="/resources/icefaces/dvn_rime/css-images/arrow-next.gif" title="Next"/>
+                                      </f:facet>
+                                      <f:facet name="last">
+                                        <ice:graphicImage url="/resources/icefaces/dvn_rime/css-images/arrow-last.gif" title="Last Page"/>
+                                      </f:facet>
+                                      <f:facet name="fastforward">
+                                        <ice:graphicImage url="/resources/icefaces/dvn_rime/css-images/arrow-ff.gif" title="Fast Forward"/>
+                                      </f:facet>
+                                      <f:facet name="fastrewind">
+                                        <ice:graphicImage url="/resources/icefaces/dvn_rime/css-images/arrow-fr.gif" title="Fast Rewind"/>
+                                      </f:facet>
+                                    </ice:dataPaginator>
+                                  </div>
+                              </ice:panelGrid>
+                          </td>
+                      </tr>
+                  </table>
+                </div>
+                <ice:dataTable rows="10" headerClass="list-header" id="studyListTable1" width="100%"
                                binding="#{StudyListingPage.studyTable}"
                                styleClass="dvnStudyListTable" rowClasses="list-row-odd, list-row-even" columnClasses="dvnStudyListTableColInfo, dvnStudyListTableColID" value="#{StudyListingPage.studies}" var="studyUI">
                   <ice:column id="column1">
@@ -281,7 +290,7 @@
                           </ice:dataTable>
                       </div>
                       <div jsfc="ice:panelGroup" styleClass="dvnStudyListTableOptionalField" rendered="#{ studyUI.displayVersions and !empty studyUI.foundInVersions}">
-                 <ice:outputText value="The UNF was not found in the current version of this study; however it was found in the following archived versions:"/>
+                          <ice:outputText value="The UNF was not found in the current version of this study; however it was found in the following archived versions:"/>
                           <ice:dataTable cellspacing="0" cellpadding="0" width="100%" id="versionDataTable" value="#{studyUI.foundInVersions}" var="version">
                               <ice:column>
                                   <ice:outputLink value="/dvn#{VDCRequest.currentVDCURL}/faces/study/StudyPage.xhtml">
@@ -314,7 +323,7 @@
                 </ice:dataTable>
                 <ice:panelGrid cellpadding="0" cellspacing="0" border="0" columns="2" id="gridPanel22"
                                styleClass="dvnStudyListResultsBottom" columnClasses="dvn_StudyListTotals, dvnPaginatorWrap"
-                               rendered="#{StudyListingPage.renderSort or StudyListingPage.renderScroller}">
+                               rendered="#{StudyListingPage.renderScroller}">
                   <div jsfc="ice:panelGroup" id="groupPanel55">
                     &nbsp;
                   </div>

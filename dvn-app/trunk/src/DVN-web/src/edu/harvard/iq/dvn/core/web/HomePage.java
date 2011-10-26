@@ -32,6 +32,7 @@ package edu.harvard.iq.dvn.core.web;
 
 import com.icesoft.faces.component.ext.HtmlDataTable;
 import com.icesoft.faces.component.ext.HtmlInputHidden;
+import com.icesoft.faces.component.datapaginator.DataPaginator;
 import edu.harvard.iq.dvn.core.admin.NetworkRoleServiceLocal;
 import edu.harvard.iq.dvn.core.admin.RoleRequestServiceLocal;
 import edu.harvard.iq.dvn.core.admin.UserServiceLocal;
@@ -93,11 +94,9 @@ public class HomePage extends VDCBaseBean implements Serializable {
     private String ALL_DATAVERSES_LABEL = "All Dataverses";
     private String defaultVdcPath;
     private String groupName;
-    //private String parsedLocalAnnouncements     = parseAnnouncements((getVDCRequestBean().getCurrentVDC()!= null) ? getVDCRequestBean().getCurrentVDC().getAnnouncements(): "", true);
-    //private String parsedNetworkAnnouncements   = parseAnnouncements((getVDCRequestBean().getVdcNetwork() != null) ? getVDCRequestBean().getVdcNetwork().getAnnouncements(): "", false);
-    private String parsedLocalAnnouncements = "";
-    private String parsedNetworkAnnouncements = "";
-    
+    private String parsedLocalAnnouncements     = parseAnnouncements((getVDCRequestBean().getCurrentVDC()!= null) ? getVDCRequestBean().getCurrentVDC().getAnnouncements(): "", true);
+    private String parsedNetworkAnnouncements   = parseAnnouncements((getVDCRequestBean().getVdcNetwork() != null) ? getVDCRequestBean().getVdcNetwork().getAnnouncements(): "", false);
+
     private String searchField;
     StatusMessage msg;
     private boolean isAlphaSort;
@@ -176,17 +175,29 @@ public class HomePage extends VDCBaseBean implements Serializable {
      
 
      private void initChrome() {
-         msg =  (StatusMessage)getRequestMap().get("statusMessage");
-     }
+        msg = (StatusMessage) getRequestMap().get("statusMessage");
+    }
+    //DEBUG -- new way to get at VDCS
+    private ArrayList vdcUI;
+    private VDCUIList vdcUIList;
 
-     //DEBUG -- new way to get at VDCS
-     private ArrayList vdcUI;
-     private VDCUIList vdcUIList;
+    public VDCUIList getVdcUIList() {
+        return this.vdcUIList;
+    }
 
-     public VDCUIList getVdcUIList() {
-         return this.vdcUIList;
-     }
-
+    public DataPaginator getPaginator() {
+        if (this.vdcUIList != null) {
+            return this.vdcUIList.getPaginator();
+        }
+        return null; 
+    }
+    
+    public void setPaginator (DataPaginator paginator) {
+       if (this.vdcUIList != null) {
+            this.vdcUIList.setPaginator(paginator);
+        }
+    }
+    
     public HtmlInputHidden getHiddenGroupId() {
         return hiddenGroupId;
     }

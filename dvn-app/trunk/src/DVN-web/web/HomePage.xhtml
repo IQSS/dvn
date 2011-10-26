@@ -208,8 +208,8 @@
                             id="groupPanel2"
                             rendered="#{homePage.vdcUIListSize > 10 and VDCRequest.currentVDC == null}">
                         <div class="dvnPaginatorFloatRight">
-                        <!-- ice:dataPaginator for="dataverseList"
-                                           binding="#{HomePage.vdcUIList.paginator}"
+                        <ice:dataPaginator for="dataverseList"
+                                           binding="#{homePage.paginator}"
                                            id="dataScroll_3"
                                            paginator="true" fastStep="3"
                                            paginatorMaxPages="4"
@@ -233,7 +233,7 @@
                           <f:facet name="last">
                             <ice:graphicImage url="/resources/icefaces/dvn_rime/css-images/arrow-last.gif" title="Last Page"/>
                           </f:facet>
-                        </ice:dataPaginator -->
+                        </ice:dataPaginator>
                         </div>
                       </div>
                 </ice:panelGrid>
@@ -302,9 +302,9 @@
                   <ice:column styleClass="activityColumn">
                    <f:facet name="header">
                       <ice:commandSortHeader
-                        columnName="#{HomePage.vdcUIList.activityColumnName}"
+                        columnName="#{homePage.vdcUIList.activityColumnName}"
                         arrow="true" title="Activity data tracked since DVN 1.4 released">
-                        <ice:outputText value="#{HomePage.vdcUIList.activityColumnName}"/>
+                        <ice:outputText value="#{homePage.vdcUIList.activityColumnName}"/>
                       </ice:commandSortHeader>
                     </f:facet>
                     <div class="activity">

@@ -36,27 +36,27 @@
                     <ice:inputTextarea maxlength="#{VersionNotesPopupBean.versionNoteMaxLength}" id="studyVersionNotes" rows="8" value="#{VersionNotesPopupBean.versionNote}"></ice:inputTextarea>
 
                     <div jsfc="ice:panelGroup" styleClass="dvnFormPadding dvnFormMargin">
-                        <ice:commandButton id="autoCentPopupOk"
+                        <ice:commandButton id="autoCentPopupOkEditNote"
                                            action="#{studyPage.saveVersionNote}"
                                            value="Save"
                                            rendered="#{VersionNotesPopupBean.editNoteAction}"/>
-                       <ice:commandButton id="autoCentPopupOk"
+                       <ice:commandButton id="autoCentPopupOkVersionRelease"
                                            action="#{studyVersionDifferencesPage.saveVersionNoteAndRelease}"
                                            value="Continue"
                                            rendered="#{VersionNotesPopupBean.versionReleaseAction}"/>
-                       <ice:commandButton id="autoCentPopupOk"
+                       <ice:commandButton id="autoCentPopupOkAddFiles"
                                            action="#{AddFilesPage.save_action}"
                                            value="Continue"
                                            rendered="#{VersionNotesPopupBean.addFilesAction}"/>
-                       <ice:commandButton id="autoCentPopupOk"
+                       <ice:commandButton id="autoCentPopupOkManageStudies"
                                            actionListener="#{ManageStudiesList.doConfirmVersionNotesPopup}"
                                            value="Continue"
                                            rendered="#{VersionNotesPopupBean.manageStudiesAction}"/>
-                       <ice:commandButton id="autoCentPopupOk"
+                       <ice:commandButton id="autoCentPopupOkEditStudy"
                                            action="#{EditStudyPage.save}"
                                            value="Continue"
                                            rendered="#{VersionNotesPopupBean.editStudyAction}"/>
-                       <ice:commandButton id="autoCentPopupOk"
+                       <ice:commandButton id="autoCentPopupOkEditStudyFiles"
                                            action="#{EditStudyFilesPage.save}"
                                            value="Continue"
                                            rendered="#{VersionNotesPopupBean.editStudyFilesAction}"/>

@@ -121,8 +121,8 @@
         <ui:include src="views/CustomFooter.xhtml"/>
     </ui:insert>
     <!-- including the POPUPs below causes problems. - L.A. -->
-    <!-- ui:include src="study/VersionNotesPopupFragment.xhtml"/ -->
-    <!--ui:include src="study/DeletePopupFragment.xhtml"/-->
+    <ui:include src="study/VersionNotesPopupFragment.xhtml"/>
+    <ui:include src="study/DeletePopupFragment.xhtml"/>
     <ice:outputText escape="false" nospan="true"
                     rendered="#{applicationScope.googleAnalyticsKey != null || MainLayoutBean.googleAnalyticsKey != null}"
                     value="#{(applicationScope.googleAnalyticsCode != null) ? applicationScope.googleAnalyticsCode : MainLayoutBean.googleAnalyticsCode}"/>

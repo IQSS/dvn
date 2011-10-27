@@ -185,7 +185,6 @@ public class VDCUIList extends SortableList {
 
 
             double maxDownloadCount = Math.max( 1.0, vdcService.getMaxDownloadCount() ); // minimum of 1, to avoid divide my zero issues
-            //double maxDownloadCount = 1.0; // -- the line above bombs, while porting under EE6; -- L.A. 
             vdcUIList = new ArrayList<VDCUI>();
             for (Object vdcId : vdcIds) {
                 vdcUIList.add( new VDCUI( (Long)vdcId, maxDownloadCount ) );

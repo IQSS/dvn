@@ -49,23 +49,23 @@
                         <ice:outputText value="&#34;#{studyPage.studyUI.metadata.title}&#34;, #{studyPage.studyUI.study.globalId}" rendered="#{MainLayoutBean.inStudyPage}" escape="false"/>
                         <ice:outputText value="&#34;#{ManageStudiesList.currentStudyUI.metadata.title}&#34;, #{ManageStudiesList.currentStudyUI.study.globalId}" rendered="#{MainLayoutBean.inManageStudiesPageByViewID}" escape="false"/>
                         <div jsfc="ice:panelGroup" styleClass="dvnFormPadding dvnFormMargin">
-                            <ice:commandButton id="autoCentPopupOk"
+                            <ice:commandButton id="autoCentPopupDeleteStudyPage"
                                                actionListener="#{studyPage.confirmStudyDelete}"
                                                value="Delete"
                                                rendered="#{MainLayoutBean.inStudyPage and !studyPage.studyDestroyRequested}"/>
-                            <ice:commandButton id="autoCentPopupOk"
+                            <ice:commandButton id="autoCentPopupDestroyStudyPage"
                                                actionListener="#{studyPage.confirmStudyDelete}"
                                                value="Destroy"
                                                rendered="#{MainLayoutBean.inStudyPage and studyPage.studyDestroyRequested}"/>
-                            <ice:commandButton id="autoCentPopupCancel"
+                            <ice:commandButton id="autoCentPopupCancelStudyPage"
                                                actionListener="#{studyPage.toggleStudyDeletePopup}"
                                                value="Cancel"
                                                rendered="#{MainLayoutBean.inStudyPage}"/>
-                            <ice:commandButton id="autoCentPopupOk"
+                            <ice:commandButton id="autoCentPopupDeleteManagePage"
                                                actionListener="#{ManageStudiesList.confirmStudyDelete}"
                                                value="Delete"
                                                rendered="#{MainLayoutBean.inManageStudiesPageByViewID}"/>
-                            <ice:commandButton id="autoCentPopupCancel"
+                            <ice:commandButton id="autoCentPopupCancelManagePage"
                                                actionListener="#{ManageStudiesList.toggleStudyDeletePopup}"
                                                value="Cancel"
                                                rendered="#{MainLayoutBean.inManageStudiesPageByViewID}"/>

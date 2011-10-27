@@ -35,7 +35,7 @@ import java.util.Iterator;
 import java.util.List;
 import javax.ejb.EJB;
 import com.icesoft.faces.component.ext.HtmlInputHidden;
-import javax.enterprise.context.ConversationScoped;
+import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
 import javax.faces.event.ValueChangeEvent;
 import javax.faces.model.SelectItem;
@@ -51,7 +51,7 @@ import javax.servlet.http.HttpServletRequest;
  */
 
 @Named("LoginPage")
-@ConversationScoped
+@ViewScoped
 public class LoginPage extends VDCBaseBean implements java.io.Serializable  {
 
     @EJB

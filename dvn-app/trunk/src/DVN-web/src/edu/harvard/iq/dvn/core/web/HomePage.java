@@ -53,11 +53,11 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.ResourceBundle;
 import javax.ejb.EJB;
-import javax.enterprise.context.ConversationScoped;
+import javax.faces.bean.ViewScoped;
 import javax.faces.event.ValueChangeEvent;
 import javax.inject.Named;
 
-@ConversationScoped
+@ViewScoped
 @Named
 public class HomePage extends VDCBaseBean implements Serializable {
     @EJB StudyServiceLocal      studyService;

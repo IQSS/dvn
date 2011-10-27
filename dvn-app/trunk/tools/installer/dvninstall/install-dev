@@ -129,7 +129,11 @@ elsif ( $uname_tokens[0] eq "Linux" )
 {
     if ( -f "/etc/redhat-release" )
     {
-	print "\nThis appears to be a RedHat system; good.\n";
+	#print "\nThis appears to be a RedHat system; good.\n";
+	print "\nThis appears to be a RedHat system;\n";
+	print "WARNING: This is an experimental version of the installer,\n";
+	print "at this point it has been tested on MacOS X only.\n";
+	print "Proceed at your own risk!\n";
 	$WORKING_OS = "RedHat"; 
 	# TODO: check the distro version
     }
@@ -246,26 +250,30 @@ if ( $CONFIG_DEFAULTS{'POSTGRES_SERVER'} eq 'localhost' )
     $sys_path = $ENV{'PATH'}; 
     @sys_path_dirs = split ( ":", $sys_path ); 
 
-    $psql_command = ""; 
+    $psql_exec = ""; 
 
     for $sys_path_dir ( @sys_path_dirs )
     {
 	if ( -x $sys_path_dir . "/psql" ) 
 	{
-	    $psql_command = $sys_path_dir ."/psql"; 
+	    $psql_exec = $sys_path_dir; 
 	    last; 
 	}
     }
 
-    if ( $psql_command eq "" && $WORKING_OS eq "MacOSX" )
+    if ( $psql_exec eq "" && $WORKING_OS eq "MacOSX" )
     {
-	if ( -x "/Library/PostgreSQL/8.3/bin/psql" ) 
+	for $pg_minor_version ( "4", "3" )
 	{
-	    $psql_command = "/Library/PostgreSQL/8.3/bin/psql";
+	    if ( -x "/Library/PostgreSQL/8." . $pg_minor_version . "/bin/psql" ) 
+	    {
+		$psql_exec = "/Library/PostgreSQL/8." . $pg_minor_version . "/bin";
+		last; 
+	    }
 	}
     }
 
-    if ( $psql_command eq "" )
+    if ( $psql_exec eq "" )
     {
 	print STDERR "\nERROR: I haven't been able to find the psql command in your PATH!\n";
 	print STDERR "Please make sure PostgresQL is properly installed and try again.\n\n";
@@ -275,7 +283,7 @@ if ( $CONFIG_DEFAULTS{'POSTGRES_SERVER'} eq 'localhost' )
 
     # Check PostgresQL version: 
 
-    open (PSQLOUT, "psql --version|"); 
+    open (PSQLOUT, $psql_exec . "/psql --version|"); 
 
     $psql_version_line = <PSQLOUT>; 
     chop $psql_version_line; 
@@ -297,7 +305,7 @@ if ( $CONFIG_DEFAULTS{'POSTGRES_SERVER'} eq 'localhost' )
     unless ( $postgres_version_tokens[0] >= 8 && $postgres_version_tokens[1] >= 3 )
     {
 	print STDERR "\nERROR: PostgresQL version 8.3, or newer, is required!\n";
-	print STDERR "Found a copy of psql ($psql_command) that belongs to version $postgresVersion.\n\n";
+	print STDERR "Found a copy of psql ($psql_exec/psql) that belongs to version $postgresVersion.\n\n";
 	print STDERR "Please make sure the right version of PostgresQL is properly installed,\n";
 	print STDERR "and the right version of psql comes first in the PATH,\n";
 	print STDERR "then try again.\n";
@@ -343,41 +351,100 @@ if ($pg_local_connection)
 	exit 1; 
     }
 
-    # 1. CREATE DVN DB USER:
+    # TODO: check if the db and role already exist?
 
-    print "\nCreating Postgres user (role) for the DVN:\n";
+    # 1. CHECK IF THIS DB ALREADY EXISTS:
 
-    open TMPCMD, ">/tmp/pgcmd.$$.tmp";
-
-
-    # with unencrypted password: 
-    #print TMPCMD "CREATE ROLE ".$CONFIG_DEFAULTS{'POSTGRES_USER'}." UNENCRYPTED PASSWORD '".$CONFIG_DEFAULTS{'POSTGRES_PASSWORD'}."' NOSUPERUSER CREATEDB CREATEROLE NOINHERIT LOGIN";
-
-    # with md5-encrypted password:
-    $pg_password_md5 = &create_pg_hash ($CONFIG_DEFAULTS{'POSTGRES_USER'},$CONFIG_DEFAULTS{'POSTGRES_PASSWORD'}); 
-    my $sql_command = "CREATE ROLE \"".$CONFIG_DEFAULTS{'POSTGRES_USER'}."\" PASSWORD 'md5". $pg_password_md5 ."' NOSUPERUSER CREATEDB CREATEROLE INHERIT LOGIN";
-
-    print TMPCMD $sql_command; 
-    close TMPCMD; 
-
-    my $psql_commandline = "psql -f /tmp/pgcmd.$$.tmp";
-
-    unless ( ($exitcode = system($psql_commandline)) == 0 )
+    $my_psql_command_dbcheck = $psql_exec . "/psql -c \"\" -d " . $CONFIG_DEFAULTS{'POSTGRES_DATABASE'}; 
+    if ( ($exitcode = system($psql_command_dbcheck)) == 0 )
     {
-	print STDERR "Could not create the DVN Postgres user role!\n";
-	print STDERR "(SQL: " . $sql_command . ")\n";
-	print STDERR "(psql exit code: " . $exitcode . ")\n";
-	exit 1; 
+	print "WARNING! Database . " . $CONFIG_DEFAULTS{'POSTGRES_DATABASE'} . " already exists!\n";
+	print "Do you want to DESTROY this database? [y/n] ";
+
+	$yesnocont = <>; chop $yesnocont;
+
+	while ( $yesnocont ne "y" && $yesnocont ne "n" )
+	{
+	    print "Please enter 'y' or 'n'!\n";
+	    print "(or ctrl-C to exit the installer)\n";
+	    $yesnocont = <>; chop $yesnocont;
+	}
+
+	if ( $yesnocont eq "n" )
+	{
+	    print "\nOK. Aborting the installation.\n";
+	    exit 0;
+	}
+
+	$my_psql_command_drop = $psql_exec . "/dropdb " . $CONFIG_DEFAULTS{'POSTGRES_DATABASE'};
+	unless ( ($exitcode = system($psql_command_drop)) == 0 )
+	{
+	    print STDERR "\nERROR: Could not destroy the database.\n";
+	    print STDERR "Aborting the installation.\n";
+	    exit 1; 
+	}
     }
 
-    unlink "/tmp/pgcmd.$$.tmp";
-    print "done.\n";
+    # 2a. Check if this USER already exists:
+
+    $my_psql_command_dbcheck = $psql_exec . "/psql -c \"\" -d postgres " . $CONFIG_DEFAULTS{'POSTGRES_USER'};
+    if ( ($exitcode = system($psql_command_dbcheck)) == 0 )
+    {
+	print "WARNING! User (role) . " . $CONFIG_DEFAULTS{'POSTGRES_USER'} . " already exists!\n";
+	print "Do you want to use this existing role? [y/n] ";
+	$yesnocont = <>; chop $yesnocont;
+
+	while ( $yesnocont ne "y" && $yesnocont ne "n" )
+	{
+	    print "Please enter 'y' or 'n'!\n";
+	    print "(or ctrl-C to exit the installer)\n";
+	    $yesnocont = <>; chop $yesnocont;
+	}
+
+	if ( $yesnocont eq "n" )
+	{
+	    print "\nOK. Aborting the installation.\n";
+	    print "(please pick a different user name and try again.)\n";
+	    exit 0;
+	}
+    }
+    else 
+    {
+	# 2b. CREATE DVN DB USER:
+
+	print "\nCreating Postgres user (role) for the DVN:\n";
+
+	open TMPCMD, ">/tmp/pgcmd.$$.tmp";
+	
+	# with unencrypted password: 
+	#print TMPCMD "CREATE ROLE ".$CONFIG_DEFAULTS{'POSTGRES_USER'}." UNENCRYPTED PASSWORD '".$CONFIG_DEFAULTS{'POSTGRES_PASSWORD'}."' NOSUPERUSER CREATEDB CREATEROLE NOINHERIT LOGIN";
+	
+	# with md5-encrypted password:
+	$pg_password_md5 = &create_pg_hash ($CONFIG_DEFAULTS{'POSTGRES_USER'},$CONFIG_DEFAULTS{'POSTGRES_PASSWORD'}); 
+	my $sql_command = "CREATE ROLE \"".$CONFIG_DEFAULTS{'POSTGRES_USER'}."\" PASSWORD 'md5". $pg_password_md5 ."' NOSUPERUSER CREATEDB CREATEROLE INHERIT LOGIN";
+	
+	print TMPCMD $sql_command; 
+	close TMPCMD; 
+
+	my $psql_commandline = $psql_exec . "/psql -f /tmp/pgcmd.$$.tmp";
+	
+	unless ( ($exitcode = system($psql_commandline)) == 0 )
+	{
+	    print STDERR "Could not create the DVN Postgres user role!\n";
+	    print STDERR "(SQL: " . $sql_command . ")\n";
+	    print STDERR "(psql exit code: " . $exitcode . ")\n";
+	    exit 1; 
+	}
+
+	unlink "/tmp/pgcmd.$$.tmp";
+	print "done.\n";
+    }
     
-    # 2. CREATE DVN DB: 
+    # 3. CREATE DVN DB: 
 
     print "\nCreating Postgres database:\n";
 
-    $psql_command = "createdb ".$CONFIG_DEFAULTS{'POSTGRES_DATABASE'}." --owner=".$CONFIG_DEFAULTS{'POSTGRES_USER'};
+    $psql_command = $psql_exec . "/createdb ".$CONFIG_DEFAULTS{'POSTGRES_DATABASE'}." --owner=".$CONFIG_DEFAULTS{'POSTGRES_USER'};
 
     unless ( ($exitcode = system("$psql_command")) == 0 ) 
     {
@@ -393,6 +460,11 @@ if ($pg_local_connection)
 }
 else 
 {
+    print "\nIt is strongly recommended that you use a local PostgresQL server,\n";
+    print "running on localhost, in your development environment!\n\n";
+    print "(aborting the installation)\n".
+    exit 1; 
+
     if ( $opts{$pg_only} )
     {
 	print "The script must be run in the --pg_only mode ONLY locally\n";
@@ -425,7 +497,7 @@ $> = 0;
 $< = 0;      
 
 if ( $opts{pg_only} )
-{
+
     exit 0; 
 }
 
@@ -434,11 +506,11 @@ print "\nChecking your Glassfish installation...";
 
 my $glassfish_dir = $CONFIG_DEFAULTS{'GLASSFISH_DIRECTORY'}; 
 
-unless ( -d $glassfish_dir."/domains/domain1" )
+unless ( -d $glassfish_dir."/glassfish/domains/domain1" )
 {
     # TODO: need better check than this
 
-    while ( ! ( -d $glassfish_dir."/domains/domain1" ) )
+    while ( ! ( -d $glassfish_dir."/glassfish/domains/domain1" ) )
     {
 	print "\nInvalid Glassfish directory " . $glassfish_dir . "!\n";
 	print "Enter the root directory of your Glassfish installation:\n";
@@ -504,12 +576,12 @@ close CONFIGOUT;
 
 print "done.\n";
 
-system ("/bin/cp -f domain.xml ".$glassfish_dir."/domains/domain1/config"); 
+system ("/bin/cp -f domain.xml ".$glassfish_dir."/glassfish/domains/domain1/config"); 
 #diagnostics needed!
 
 print "\nCopying additional configuration files... ";
 
-system ( "/bin/cp -f config/* ".$glassfish_dir."/domains/domain1/config"); 
+system ( "/bin/cp -f config/* ".$glassfish_dir."/glassfish/domains/domain1/config"); 
 #diagnostics needed!
 
 print "done!\n";
@@ -565,13 +637,6 @@ for $prop_file ('AS', 'glassfish')
 
 # 
 
-my $ant_exec = $glassfish_dir . "/lib/ant/bin/ant";
-
-unless ( -x $ant_exec ) 
-{
-    chmod 0755, $ant_exec; 
-}
-
 unless ( ($exit_code = system ("cd appdeploy; " . $ant_exec)) == 0 )
 {
 	print STDERR "Could not deploy DVN application!\n";
@@ -609,7 +674,7 @@ if ( $pg_local_connection )
 
     $< = $POSTGRES_SYS_UID; 
     $> = $POSTGRES_SYS_UID; 
-    $psql_command = "psql -d $CONFIG_DEFAULTS{'POSTGRES_DATABASE'} -f referenceData.sql";
+    $psql_command = $psql_exec . "/psql -d $CONFIG_DEFAULTS{'POSTGRES_DATABASE'} -f referenceData.sql";
 
     unless ( ($exitcode = system("$psql_command")) == 0 ) 
     {

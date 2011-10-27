@@ -884,7 +884,8 @@ public class VDCServiceBean implements VDCServiceLocal {
                 "FROM vdcactivity";
         Query query = em.createNativeQuery(queryString);
 
-        BigDecimal maxDLCount = (BigDecimal) ((List) query.getSingleResult()).get(0);
+        //BigDecimal maxDLCount = (BigDecimal) ((List) query.getSingleResult()).get(0);
+        BigDecimal maxDLCount = (BigDecimal)(query.getSingleResult());
         return (maxDLCount != null ? maxDLCount.doubleValue() : 0);
 
     }  

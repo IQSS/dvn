@@ -345,7 +345,7 @@ if ($pg_local_connection)
     # 0. CHECK IF THE SQL FILES ARE IN PLACE: 
 
     $SQL_REFERENCE_DATA = "../../../src/DVN-EJB/src/conf/referenceData.sql"; 
-    $SQL_TIMER = "../../../src/DVN-EJB/src/conf/referenceData.sql"; 
+    $SQL_TIMER = "../../../src/DVN-EJB/src/conf/ejbtimer.sql"; 
 
     unless ( -f $SQL_REFERENCE_DATA && -f $SQL_TIMER )
     {
@@ -609,10 +609,18 @@ print "done!\n";
 
 print "\nInstalling the Glassfish PostgresQL driver... ";
 
-system ( "/bin/cp -f pgdriver/* ".$glassfish_dir."/lib"); 
+system ( "/bin/cp -f pgdriver/* ".$glassfish_dir."/glassfish/lib"); 
 #diagnostics needed!
 
 print "done!\n";
+
+
+print "\nStopping glassfish...\n";
+
+unless ( ($exit_code=system ($glassfish_dir."/bin/asadmin stop-domain domain1")) == 0 )
+{
+	print STDERR "(that's OK!)\n";
+}
 
 
 print "\nStarting glassfish.\n";
@@ -642,7 +650,7 @@ for $sys_path_dir ( @sys_path_dirs )
 {
     if ( -x $sys_path_dir . "/ant" ) 
     {
-	$ant_exec = $sys_path_dir; 
+	$ant_exec = $sys_path_dir . "/ant"; 
 	last; 
     }
 }
@@ -699,7 +707,7 @@ unless ( ($exit_code = system ("cd appdeploy; " . $ant_exec)) == 0 )
 if ( $pg_local_connection )
 {
     print "\nOK; now we are going to stop glassfish and populate the database with\n";
-    print "some initial content, then start glassfish again.\n";
+    print "some initial content.\n";
 }
 else
 {
@@ -775,6 +783,7 @@ print "\nOK, done.\n";
 print "Please start glassfish again, as yourself (i.e., not as root), \n";
 print "Using \n\n";
 print "   " . $glassfish_dir."/bin/asadmin start-domain domain1\n\n";
+print "or from Netbeans;\n";
 
 print "\nOnce you have a running DVN instance, \n";
 print "olease go to the application at the following URL:\n\n";

@@ -2,8 +2,8 @@
 <!-- You may freely edit this file. See commented blocks below for -->
 <!-- some examples of how to customize the build. -->
 <!-- (If you delete it and reopen the project it will be recreated.) -->
-<project name="DVN-EAR" default="default" basedir="." xmlns:ear="http://www.netbeans.org/ns/j2ee-earproject/2">
-    <description>Builds, tests, and runs the project DVN-EAR.</description>
+<project name="DVN-web" default="default" basedir="." xmlns:ear="http://www.netbeans.org/ns/j2ee-earproject/2">
+    <description>Builds, tests, and runs the project DVN-web.</description>
     <import file="build-impl.xml"/>
 </project>
 

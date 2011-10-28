@@ -1,4 +1,4 @@
-<project name="DVN-EAR-impl" default="build" basedir=".." xmlns:ear2="http://www.netbeans.org/ns/j2ee-earproject/2">
+<project name="DVN-web-impl" default="build" basedir=".." xmlns:ear2="http://www.netbeans.org/ns/j2ee-earproject/2">
     <import file="ant-deploy.xml"/>
     <target name="default" depends="run-deploy" description="Deploy project."/>
     <target name="init-private" >

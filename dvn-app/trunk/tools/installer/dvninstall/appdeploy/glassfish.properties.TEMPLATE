@@ -1,6 +1,6 @@
-sjsas.port=4848
-sjsas.password=%GF_ADMIN_PASSWORD%
-sjsas.host=localhost
-sjsas.url=http\://localhost\:8080
-sjsas.username=admin
-sjsas.root=/usr/local/glassfish
+gfv3.port=4848
+gfv3.host=127.0.0.1
+gfv3.admin.url=http\://${gfv3.host}\:${gfv3.port}
+gfv3.username=admin
+gfv3.root=%GF_ROOT_DIR%/glassfish
+gfv3.url=http\://${gfv3.host}\:8080

@@ -35,14 +35,14 @@
     <mail-resource host="mail.harvard.edu" description="" jndi-name="mail/notifyMailSession" from="do-not-reply@hmdc.harvard.edu" user="dataversenotify"></mail-resource>
     <jdbc-connection-pool driver-classname="" datasource-classname="org.postgresql.ds.PGPoolingDataSource" is-isolation-level-guaranteed="false" res-type="javax.sql.DataSource" description="" name="dvnDbPool">
       <property name="ConnectionAttributes" value=";create=true"></property>
-      <property name="User" value="dvnApp"></property>
-      <property name="DatabaseName" value="dvnDb"></property>
+      <property name="ServerName" value="%POSTGRES_SERVER%"/>
+      <property name="DatabaseName" value="%POSTGRES_DATABASE%"/>
+      <property name="PortNumber" value="%POSTGRES_PORT%"/>
+      <property name="User" value="%POSTGRES_USER%"/>
+      <property name="Password" value="%POSTGRES_PASSWORD%"/>
       <property name="MaxConnections" value="0"></property>
-      <property name="Password" value="secret"></property>
       <property name="InitialConnections" value="0"></property>
       <property name="Ssl" value="false"></property>
-      <property name="ServerName" value="localhost"></property>
-      <property name="PortNumber" value="5432"></property>
       <property name="LoginTimeout" value="0"></property>
       <property name="PrepareThreshold" value="0"></property>
     </jdbc-connection-pool>
@@ -216,10 +216,10 @@
         <jvm-options>-Ddvn.inetAddress=localhost</jvm-options>
         <jvm-options>-Ddvn.networkData.libPath=${com.sun.aas.instanceRoot}/config/networkData</jvm-options>
         <jvm-options>-Ddvn.index.location=${com.sun.aas.instanceRoot}/config</jvm-options>
-        <jvm-options>-Dvdc.dsb.host=dvndb-qa1.hmdc.harvard.edu</jvm-options>
-        <jvm-options>-Dvdc.dsb.rserve.port=6311</jvm-options>
-        <jvm-options>-Dvdc.dsb.rserve.pwrd=rserve</jvm-options>
-        <jvm-options>-Dvdc.dsb.rserve.user=rserve</jvm-options>
+        <jvm-options>-Dvdc.dsb.host=%RSERVE_HOST%</jvm-options>
+        <jvm-options>-Dvdc.dsb.rserve.port=%RSERVE_PORT%</jvm-options>
+        <jvm-options>-Dvdc.dsb.rserve.pwrd=%RSERVE_PASSWORD%</jvm-options>
+        <jvm-options>-Dvdc.dsb.rserve.user=%RSERVE_USER%</jvm-options>
         <jvm-options>-Dvdc.import.log.dir=${com.sun.aas.instanceRoot}/logs/import</jvm-options>
         <jvm-options>-Dvdc.export.log.dir=${com.sun.aas.instanceRoot}/logs/export</jvm-options>
         <jvm-options>-Dvdc.temp.file.dir=${com.sun.aas.instanceroot}/config/files/temp</jvm-options>

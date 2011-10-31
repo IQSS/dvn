@@ -9,7 +9,7 @@
 	    <!-- disabling weaving, as an experiment: - L.A. -->
 	    <property name="eclipselink.weaving" value="false"/>
 	    <!-- these are probably obsolete and/or no longer necessary: - L.A. -->
-            <property name="toplink.ddl-generation" value="create-tables"/>
+            <property name="eclipselink.ddl-generation" value="create-tables"/>
             <property name="toplink.cache.shared.default" value="false"/>
         </properties>
     </persistence-unit>

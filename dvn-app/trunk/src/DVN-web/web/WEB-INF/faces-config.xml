@@ -114,4 +114,10 @@
         <managed-bean-class>edu.harvard.iq.dvn.core.web.common.VDCSessionBean</managed-bean-class>
         <managed-bean-scope>session</managed-bean-scope>
     </managed-bean>
+    <managed-bean>
+        <managed-bean-name>LoginWorkflowBean</managed-bean-name>
+        <managed-bean-class>edu.harvard.iq.dvn.core.web.login.LoginWorkflowBean</managed-bean-class>
+        <managed-bean-scope>session</managed-bean-scope>
+    </managed-bean>
+
 </faces-config>

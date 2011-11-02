@@ -14,11 +14,13 @@
     <ui:param name="pageTitle" value="#{bundlePageInfo.loginTitle} - #{VDCRequest.dataversePageTitle}"/>
     <ui:define name="metadata">
         <f:metadata>
-      <f:viewParam name="redirect" value="#{LoginPage.redirect}"/>
-      <f:viewParam name="studyId" value="#{LoginPage.studyId}"/>
-      <f:viewParam name="clearWorkflow" value="#{LoginPage.clearWorkflow}"/>
-      <f:viewParam name="tab" value="#{LoginPage.tab}"/>
-        </f:metadata>
+            <f:viewParam name="redirect" value="#{LoginPage.redirect}"/>
+            <f:viewParam name="studyId" value="#{LoginPage.studyId}"/>
+            <f:viewParam name="clearWorkflow" value="#{LoginPage.clearWorkflow}"/>
+            <f:viewParam name="tab" value="#{LoginPage.tab}"/>
+            <f:event type="preRenderView"
+                listener="#{LoginPage.init}" />
+        </f:metadata>  
     </ui:define>
 
     <ui:define name="body">

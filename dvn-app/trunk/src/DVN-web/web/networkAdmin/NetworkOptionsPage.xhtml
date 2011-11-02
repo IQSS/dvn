@@ -13,6 +13,10 @@
 <body>
     <ui:composition template="/template.xhtml">
         <ui:param name="pageTitle" value="Dataverse Network Admin Options - #{VDCRequest.dataversePageTitle}"/>
+        <ui:define name="metadata">
+            <f:metadata>
+            </f:metadata>  
+        </ui:define>
         <ui:define name="body">
             <ice:form id="form1" rendered="#{VDCRequest.currentVDC == null}">
                 <ice:panelTabSet id="tabSet1" styleClass="dvnTabs">
@@ -130,8 +134,8 @@
                         </tr>
                         <tr>
                             <td class="dvnOptionsTableOption">
-                                <ice:outputLink id="hyperlink5" value="/dvn/faces/networkAdmin/EditNetworkDVRequirementsPage.xhtml">
-                                    <ice:outputText id="hyperlink3Text1" value="#{bundlePageInfo.editNetworkDvRequirementsTitle}"/>
+                                <ice:outputLink id="hyperlink8" value="/dvn/faces/networkAdmin/EditNetworkDVRequirementsPage.xhtml">
+                                    <ice:outputText id="hyperlink8Text" value="#{bundlePageInfo.editNetworkDvRequirementsTitle}"/>
                                 </ice:outputLink>
                             </td>
                             <td><ice:outputText styleClass="dvnOptionsTableNote" value="#{bundlePageInfo.editNetworkDvRequirementsText}"/></td>

@@ -159,7 +159,7 @@
         <from-view-id>/*</from-view-id>
         <navigation-case>
             <from-outcome>home</from-outcome>
-            <to-view-id>/HomePage.iface</to-view-id>
+            <to-view-id>/HomePage.xhtml</to-view-id>
             <redirect/>
         </navigation-case>
     </navigation-rule>

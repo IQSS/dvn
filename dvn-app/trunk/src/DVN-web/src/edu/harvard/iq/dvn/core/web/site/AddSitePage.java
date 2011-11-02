@@ -48,18 +48,15 @@ import com.icesoft.faces.component.ext.HtmlInputTextarea;
 import edu.harvard.iq.dvn.core.admin.VDCUser;
 import edu.harvard.iq.dvn.core.web.util.CharacterValidator;
 import edu.harvard.iq.dvn.core.util.PropertyUtil;
-import edu.harvard.iq.dvn.core.vdc.VDCGroup;
-import edu.harvard.iq.dvn.core.vdc.VDCNetwork;
-import edu.harvard.iq.dvn.core.web.DataverseGrouping;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.ResourceBundle;
-import java.util.logging.Logger;
+import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
 import javax.faces.event.ValueChangeEvent;
-import javax.faces.model.DataModel;
 import javax.faces.model.SelectItem;
+import javax.inject.Named;
 import javax.servlet.http.HttpServletRequest;
 
 /**
@@ -69,6 +66,8 @@ import javax.servlet.http.HttpServletRequest;
  * lifecycle methods and event handlers where you may add behavior
  * to respond to incoming events.</p>
  */
+@Named("AddSitePage")
+@ViewScoped
 public class AddSitePage extends VDCBaseBean implements java.io.Serializable  {
 
        // </editor-fold>
@@ -134,13 +133,13 @@ public class AddSitePage extends VDCBaseBean implements java.io.Serializable  {
     private boolean result;
  
      //fields from dvrecordsmanager
-    private final ArrayList itemBeans = new ArrayList();
-    public static final String GROUP_INDENT_STYLE_CLASS = "GROUP_INDENT_STYLE_CLASS";
-    public static final String GROUP_ROW_STYLE_CLASS = "groupRow";
-    public static final String CHILD_INDENT_STYLE_CLASS = "CHILD_INDENT_STYLE_CLASS";
-    public String CHILD_ROW_STYLE_CLASS;
-    public static final String CONTRACT_IMAGE = "tree_nav_top_close_no_siblings.gif";
-    public static final String EXPAND_IMAGE = "tree_nav_top_open_no_siblings.gif";
+    private ArrayList itemBeans = new ArrayList();
+    private static String GROUP_INDENT_STYLE_CLASS = "GROUP_INDENT_STYLE_CLASS";
+    private static String GROUP_ROW_STYLE_CLASS = "groupRow";
+    private static String CHILD_INDENT_STYLE_CLASS = "CHILD_INDENT_STYLE_CLASS";
+    private String CHILD_ROW_STYLE_CLASS;
+    private static String CONTRACT_IMAGE = "tree_nav_top_close_no_siblings.gif";
+    private static String EXPAND_IMAGE = "tree_nav_top_open_no_siblings.gif";
 
     //these static variables have a dependency on the Network Stats Server e.g.
     // they should be held as constants in a constants file ... TODO

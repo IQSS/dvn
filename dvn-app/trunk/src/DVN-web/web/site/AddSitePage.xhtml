@@ -209,14 +209,14 @@
                       <ice:outputText id="selectedGroupText" value="Classification"/>
                       <ice:graphicImage value="#{bundle.iconRequired}" rendered="#{VDCRequest.vdcNetwork.requireDVclassification}" />
                     </ice:outputLabel>
-                       <ice:message for="classificationCheckBox" id ="boxErrorMsg"  styleClass="errorMessage"   />
+                       <ice:message for="classificationCheckBox" id ="boxErrorMsg1"  styleClass="errorMessage"   />
                   </div>
                   <div jsfc="ice:panelGroup" rendered="#{empty AddSitePage.classificationList.classificationUIs}">
                       <ice:outputText styleClass="vdcHelpText" value="There are no classifications set up for this dataverse network."/>
                   </div>
                   <div jsfc="ice:panelGroup" rendered="#{!empty AddSitePage.classificationList.classificationUIs}">
                     <ice:outputText styleClass="vdcHelpText" for="selectedGroup" value="#{bundle.groupSelect}"/>
-                    <ice:message for="classificationCheckBox" id ="boxErrorMsg"  styleClass="errorMessage"   />
+                    <ice:message for="classificationCheckBox" id ="boxErrorMsg2"  styleClass="errorMessage"   />
                     <ice:dataTable id="dataverseList" styleClass="dvnCreateDvClassificationTable" cellspacing="0" cellpadding="0" columns="2" width="100%"
                                    headerClass="groupRow" rowClasses="evenRow,oddRow" columnWidths="2%,98%"
                                    scrollable="true" 
@@ -235,7 +235,7 @@
                         <ice:outputText styleClass="dvnCreateDvClassificationTableChild#{classUI.level}" value="#{classUI.vdcGroup.name}"/>
                       </ice:column>
                     </ice:dataTable>
-                     <ice:message for="classificationCheckBox" id ="boxErrorMsg"  styleClass="errorMessage"   />
+                     <ice:message for="classificationCheckBox" id ="boxErrorMsg3"  styleClass="errorMessage"   />
                   </div>
                 </ice:panelGrid>
                 <div class="dvnFormPadding dvnFormMargin">

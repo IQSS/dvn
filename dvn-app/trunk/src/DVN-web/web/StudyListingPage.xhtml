@@ -4,16 +4,21 @@
       xmlns:ui="http://java.sun.com/jsf/facelets"
       xmlns:h="http://java.sun.com/jsf/html"
       xmlns:f="http://java.sun.com/jsf/core"
-      xmlns:jsp="http://java.sun.com/JSP/Page"
       xmlns:ice="http://www.icesoft.com/icefaces/component"
       xmlns:t="/WEB-INF/tlds/scroller">
-<head>
+<h:head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
-</head>
+</h:head>
 
-<body>
+<h:body>
   <ui:composition template="/template.xhtml">
     <ui:param name="pageTitle" value="#{VDCRequest.dataversePageTitle}"/>
+    <ui:define name="metadata">
+        <f:metadata>
+            <f:event type="preRenderView"
+                listener="#{StudyListingPage.init}"/>
+        </f:metadata>  
+    </ui:define>
     <ui:define name="body">
       <ice:form id="form1">
         <ice:inputHidden id="vdcId" value="#{VDCRequest.currentVDCId}"/>
@@ -23,11 +28,11 @@
         <!-- Main Section starts here -->
         <div id="dvn_mainSection">
 
-        <div jsfc="ice:panelGroup" styleClass="dvnMsgBlockRound dvnWarningMessage" rendered="#{VDCRequest.currentVDC.restricted==true}">
+        <!--div jsfc="ice:panelGroup" styleClass="dvnMsgBlockRound dvnWarningMessage" rendered="#{VDCRequest.currentVDC.restricted==true}">
             <div class="dvnMsgBlockContainer">
               <p><ice:outputText value="Your dataverse is currently set to Not Released, and will not be featured on the network homepage until it is released. To release the dataverse go to the &lt;a href=&quote;/dvn#{VDCRequest.currentVDCURL}/faces/admin/PrivilegedUsersPage.xhtml&quote;&gt;Dataverse Permissions&lt;/a&gt; page." escape="false"/></p>
             </div>
-        </div>
+        </div -->
 
        <script type="text/javascript">
               jQuery(document).pageLoad(function(){
@@ -38,7 +43,7 @@
         <div class="dvhmpgdescactionboxblock">
             <div class="dvhmpgactionboxfloat">
 
-                <div jsfc="ice:panelGroup" id="beContributor" styleClass="dvhmpgactionbox" rendered="#{VDCSession.loginBean.user==null and VDCRequest.currentVDC.allowRegisteredUsersToContribute and !VDCRequest.currentVDC.allowContributorsEditAll and StudyListingPage.renderDVPermissionsBox}">
+                <div jsfc="ice:panelGroup" id="beContributor1" styleClass="dvhmpgactionbox" rendered="#{VDCSession.loginBean.user==null and VDCRequest.currentVDC.allowRegisteredUsersToContribute and !VDCRequest.currentVDC.allowContributorsEditAll and StudyListingPage.renderDVPermissionsBox}">
                     <div jsfc="ice:panelGroup">
                         <div>
                             <ice:outputText value="Open Dataverse"/>
@@ -52,7 +57,7 @@
                         </ice:outputLink>
                     </div>
                 </div>
-                <div jsfc="ice:panelGroup" id="beContributor" styleClass="dvhmpgactionbox" rendered="#{VDCSession.loginBean.user!=null and VDCRequest.currentVDC.allowRegisteredUsersToContribute and !VDCRequest.currentVDC.allowContributorsEditAll and StudyListingPage.renderDVPermissionsBox}">
+                <div jsfc="ice:panelGroup" id="beContributor2" styleClass="dvhmpgactionbox" rendered="#{VDCSession.loginBean.user!=null and VDCRequest.currentVDC.allowRegisteredUsersToContribute and !VDCRequest.currentVDC.allowContributorsEditAll and StudyListingPage.renderDVPermissionsBox}">
                     <div jsfc="ice:panelGroup">
                         <div>
                             <ice:outputText value="Open Dataverse"/>
@@ -63,7 +68,7 @@
                             </ice:outputLink>
                     </div>
                 </div>
-                <div jsfc="ice:panelGroup" id="beContributor" styleClass="dvhmpgactionbox" rendered="#{VDCSession.loginBean.user==null and VDCRequest.currentVDC.allowRegisteredUsersToContribute and VDCRequest.currentVDC.allowContributorsEditAll and StudyListingPage.renderDVPermissionsBox}">
+                <div jsfc="ice:panelGroup" id="beContributor3" styleClass="dvhmpgactionbox" rendered="#{VDCSession.loginBean.user==null and VDCRequest.currentVDC.allowRegisteredUsersToContribute and VDCRequest.currentVDC.allowContributorsEditAll and StudyListingPage.renderDVPermissionsBox}">
                     <div jsfc="ice:panelGroup">
                         <div>
                             <ice:outputText value="Wiki Dataverse"/>
@@ -77,14 +82,14 @@
                         </ice:outputLink>
                     </div>
                 </div>
-                <div jsfc="ice:panelGroup" id="beContributor" styleClass="dvhmpgactionbox" rendered="#{VDCSession.loginBean.user!=null and VDCRequest.currentVDC.allowRegisteredUsersToContribute and VDCRequest.currentVDC.allowContributorsEditAll and StudyListingPage.renderDVPermissionsBox}">
+                <div jsfc="ice:panelGroup" id="beContributor4" styleClass="dvhmpgactionbox" rendered="#{VDCSession.loginBean.user!=null and VDCRequest.currentVDC.allowRegisteredUsersToContribute and VDCRequest.currentVDC.allowContributorsEditAll and StudyListingPage.renderDVPermissionsBox}">
                     <div jsfc="ice:panelGroup">
                         <div>
                             <ice:outputText value="Wiki Dataverse"/>
                         </div>
                         You may add your own study or contribute to existing studies in this dataverse. 
-                        <ice:outputLink id="hyperlink5" value="/dvn#{VDCRequest.currentVDCURL}/faces/study/EditStudyPage.xhtml">
-                           <ice:outputText id="hyperlink1Text1" value=" #{bundlePageInfo.createStudyTitle}"/>
+                        <ice:outputLink id="hyperlink6" value="/dvn#{VDCRequest.currentVDCURL}/faces/study/EditStudyPage.xhtml">
+                           <ice:outputText id="hyperlink6Text" value=" #{bundlePageInfo.createStudyTitle}"/>
                         </ice:outputLink>
                     </div>
                 </div>
@@ -355,7 +360,7 @@
                 </ice:panelGrid>
               </div>
             </div>
-            <div jsfc="ice:panelGroup" id="groupPanel55" styleClass="dvn_sectionPanels" rendered="#{StudyListingPage.renderTree}">
+            <div jsfc="ice:panelGroup" id="groupPanel7" styleClass="dvn_sectionPanels" rendered="#{StudyListingPage.renderTree}">
               <div jsfc="ice:panelGroup" styleClass="dvnTreeBlock" style="height: #{StudyListingPage.collectionTreeVisibleNodeCount * 1.85 + 4}em;">
                 <div class="dvnTreeContainer" style="height: #{StudyListingPage.collectionTreeVisibleNodeCount * 1.85 + 3}em;">
                   <ice:tree id="collectionTree"
@@ -383,5 +388,5 @@
       </ice:form>
     </ui:define>
   </ui:composition>
-</body>
+</h:body>
 </html>

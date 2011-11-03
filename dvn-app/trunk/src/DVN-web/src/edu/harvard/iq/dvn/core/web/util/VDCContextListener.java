@@ -132,7 +132,7 @@ public class VDCContextListener implements ServletContextListener,ServletRequest
     private void fireInit(VDCBaseBean bean) {
 
       //  try {
-            bean.init(); // -- Commenting out - L.A.
+        bean.init(); // -- Commenting out - L.A.
   //      } catch (Exception e) {
   //          log(e.getMessage(), e);
   //          ViewHandlerImpl.cache(FacesContext.getCurrentInstance(), e);

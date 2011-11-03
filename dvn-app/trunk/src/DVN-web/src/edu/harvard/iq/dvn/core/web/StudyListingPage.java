@@ -60,8 +60,10 @@ import java.util.Map;
 import java.util.MissingResourceException;
 import java.util.ResourceBundle;
 import javax.ejb.EJB;
+import javax.faces.bean.ViewScoped;
 import javax.faces.component.UIData;
 import javax.faces.event.ValueChangeEvent;
+import javax.inject.Named;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
 
@@ -69,6 +71,8 @@ import javax.swing.tree.DefaultTreeModel;
  *
  * @author gdurand
  */
+@ViewScoped
+@Named("StudyListingPage")
 public class StudyListingPage extends VDCBaseBean implements java.io.Serializable {
 
     @EJB

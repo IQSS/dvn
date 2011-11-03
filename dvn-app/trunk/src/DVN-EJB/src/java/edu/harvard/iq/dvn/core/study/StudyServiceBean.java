@@ -2212,8 +2212,8 @@ public class StudyServiceBean implements edu.harvard.iq.dvn.core.study.StudyServ
     public Timestamp getLastUpdatedTime(Long vdcId) {
         String queryString  = "SELECT max(lastupdatetime) from study where owner_id=" + vdcId;
         Query query         = em.createNativeQuery(queryString);
-        Object object       = ((List)query.getSingleResult()).get(0);
-        Timestamp timestamp = (Timestamp)object;
+        //Object object       = ((List)query.getSingleResult()).get(0);
+        Timestamp timestamp = (Timestamp)(query.getSingleResult());
         return timestamp;
     }
 

@@ -36,6 +36,8 @@ import javax.faces.application.FacesMessage;
 import javax.faces.context.FacesContext;
 
 import edu.harvard.iq.dvn.core.web.common.VDCBaseBean;
+import javax.faces.bean.ViewScoped;
+import javax.inject.Named;
 import javax.servlet.http.HttpServletResponse;
 
 /**
@@ -43,6 +45,8 @@ import javax.servlet.http.HttpServletResponse;
  * @author Ellen Kraffmiller
  * (Leonid: added mechanism for returning HTTP status codes)
  */
+@ViewScoped
+@Named("ErrorPage")
 public class ErrorPage extends VDCBaseBean implements java.io.Serializable  {
     private Integer errorCode = 0;
     

@@ -50,7 +50,7 @@ import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Vector;
+import java.util.logging.Logger;
 import javax.annotation.Resource;
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
@@ -88,6 +88,8 @@ public class VDCServiceBean implements VDCServiceLocal {
     @PersistenceContext(unitName = "VDCNet-ejbPU")
     private EntityManager em;
 
+    private static final Logger logger = Logger.getLogger("edu.harvard.iq.dvn.core.vdc.VDCServiceBean");
+    
     /**
      * Creates a new instance of VDCServiceBean
      */
@@ -864,17 +866,41 @@ public class VDCServiceBean implements VDCServiceLocal {
 
         String queryString = selectClause + fromClause + whereClause + orderingClause;
 
+        logger.info ("query: "+queryString);
+                
         // we are now ready to create the query
-        Query query = em.createNativeQuery(queryString.toString());
+        Query query = em.createNativeQuery(queryString);
+
         if (classificationId != null) {
             query.setParameter(1, classificationId);
             query.setParameter(2, classificationId);
         }
+        
+        // Below is a good example of a conversion from EE5 to EE6: 
+        // 
+        // This is how we used to do things:
+        
         // since query is native, must parse through Vector results
-        for (Object currentResult : query.getResultList()) {
+        //for (Object currentResult : query.getResultList()) {
             // convert results into Longs
-            returnList.add(new Long(((Integer) ((Vector) currentResult).get(0))).longValue());
+            //returnList.add(new Long(((Integer) ((Vector) currentResult).get(0))).longValue());
+        //}
+        
+        // We cannot cast Object to Vector anymore! (runtime exception thrown)
+        // (also, it's not entirely clear what the .longValue() above is for :)
+        //
+        // So this is how we are doing it now:
+        
+        for (Iterator itr = query.getResultList().iterator(); itr.hasNext();) {
+            Object[] nextResult = (Object[])itr.next();
+            returnList.add(new Long((Integer)nextResult[0]));
         }
+        
+        // -- i.e., we have to use Object[] instead of a Vector. 
+        // Note that we (apparently) can't just do "new Long(nextResult[0])" above;
+        // you will get a "Cannot cast Integer to Long" runtime exception. 
+        // Which I guess means that the native type for the returned object id
+        // is integer, not long (?). Anyway, casting to Integer solves it.
         return returnList;
     }
 

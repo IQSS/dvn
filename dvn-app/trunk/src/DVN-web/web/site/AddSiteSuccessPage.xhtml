@@ -4,12 +4,11 @@
       xmlns:ui="http://java.sun.com/jsf/facelets"
       xmlns:h="http://java.sun.com/jsf/html"
       xmlns:f="http://java.sun.com/jsf/core"
-      xmlns:jsp="http://java.sun.com/JSP/Page"
       xmlns:ice="http://www.icesoft.com/icefaces/component">
-<head>
+<h:head>
   <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
-</head>
-<body>
+</h:head>
+<h:body>
   <ui:composition template="/template.xhtml">
     <ui:param name="pageTitle" value="Dataverse Creation Success - #{VDCRequest.dataversePageTitle}"/>
     <ui:define name="body">
@@ -94,5 +93,5 @@
       </ice:form>
     </ui:define>
   </ui:composition>
-</body>
+</h:body>
 </html>

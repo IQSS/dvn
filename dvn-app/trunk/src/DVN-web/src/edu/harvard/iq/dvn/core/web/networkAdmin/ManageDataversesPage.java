@@ -6,6 +6,7 @@ package edu.harvard.iq.dvn.core.web.networkAdmin;
 
 import com.icesoft.faces.component.ext.HtmlCommandLink;
 import com.icesoft.faces.component.ext.HtmlInputHidden;
+import com.icesoft.faces.component.datapaginator.DataPaginator;
 import edu.harvard.iq.dvn.core.vdc.VDC;
 import edu.harvard.iq.dvn.core.vdc.VDCServiceLocal;
 import edu.harvard.iq.dvn.core.web.VDCUIList;
@@ -16,12 +17,16 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import javax.ejb.EJB;
 import javax.faces.application.FacesMessage;
+import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
 import javax.faces.event.ValueChangeEvent;
+import javax.inject.Named;
 
 /**
  * @author wbossons
  */
+@ViewScoped
+@Named
 public class ManageDataversesPage extends VDCBaseBean implements Serializable {
 
     
@@ -56,7 +61,7 @@ public class ManageDataversesPage extends VDCBaseBean implements Serializable {
     private void populateVDCUIList(boolean isAlphaSort) {
         // new logic for alpha sort
         if (!isAlphaSort) {
-            if (vdcUIList == null || (vdcUIList.getAlphaCharacter() != null && ((String)hiddenAlphaCharacter.getValue()).equals("All")) ) {
+            if (vdcUIList == null || (vdcUIList.getAlphaCharacter() != null && ("All".equals((String)hiddenAlphaCharacter.getValue()))) ) {
                 vdcUIList = new VDCUIList(groupId, hideRestricted);
                 vdcUIList.setAlphaCharacter(new String(""));
                 vdcUIList.setSortColumnName(vdcUIList.getDateCreatedColumnName());
@@ -74,7 +79,7 @@ public class ManageDataversesPage extends VDCBaseBean implements Serializable {
     }
 
    
-    private HtmlInputHidden hiddenAlphaCharacter;
+    private HtmlInputHidden hiddenAlphaCharacter = new HtmlInputHidden();
     public HtmlInputHidden getHiddenAlphaCharacter() {
         return hiddenAlphaCharacter;
     }
@@ -175,6 +180,19 @@ public class ManageDataversesPage extends VDCBaseBean implements Serializable {
 
     public void setResult(boolean result) {
         this.result = result;
+    }
+    
+    public DataPaginator getPaginator() {
+        if (this.vdcUIList != null) {
+            return this.vdcUIList.getPaginator();
+        }
+        return null; 
+    }
+    
+    public void setPaginator (DataPaginator paginator) {
+       if (this.vdcUIList != null) {
+            this.vdcUIList.setPaginator(paginator);
+        }
     }
     
     /**

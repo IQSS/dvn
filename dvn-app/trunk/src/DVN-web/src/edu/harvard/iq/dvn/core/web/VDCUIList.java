@@ -17,6 +17,7 @@ import java.util.Collections;
 import java.util.List;
 import javax.ejb.EJB;
 import javax.naming.InitialContext;
+import java.util.Iterator;
    
 
 /**
@@ -171,7 +172,7 @@ public class VDCUIList extends SortableList {
             } else {
                 throw new RuntimeException("Unknown sortColumnName: " + sortColumnName);
             }
-            List vdcIds = null;
+            List<Long> vdcIds = null;
 
             if (alphaCharacter != null && vdcGroupId != null && !vdcGroupId.equals(new Long("-1"))) {
                 vdcIds = vdcService.getOrderedVDCIds(vdcGroupId, alphaCharacter, orderBy, hideRestricted);
@@ -186,8 +187,10 @@ public class VDCUIList extends SortableList {
 
             double maxDownloadCount = Math.max( 1.0, vdcService.getMaxDownloadCount() ); // minimum of 1, to avoid divide my zero issues
             vdcUIList = new ArrayList<VDCUI>();
-            for (Object vdcId : vdcIds) {
-                vdcUIList.add( new VDCUI( (Long)vdcId, maxDownloadCount ) );
+            if (vdcIds != null) {
+                for (Iterator<Long> itr = vdcIds.iterator(); itr.hasNext();) {
+                    vdcUIList.add( new VDCUI( itr.next(), maxDownloadCount ) );
+                }
             }
     }
 

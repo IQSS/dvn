@@ -32,7 +32,7 @@
       <property name="User" value="app"></property>
     </jdbc-connection-pool>
     <jdbc-resource pool-name="SamplePool" jndi-name="jdbc/sample"></jdbc-resource>
-    <mail-resource host="mail.harvard.edu" description="" jndi-name="mail/notifyMailSession" from="do-not-reply@hmdc.harvard.edu" user="dataversenotify"></mail-resource>
+    <mail-resource host="mail.hmdc.harvard.edu" description="" jndi-name="mail/notifyMailSession" from="do-not-reply@hmdc.harvard.edu" user="dataversenotify"></mail-resource>
     <jdbc-connection-pool driver-classname="" datasource-classname="org.postgresql.ds.PGPoolingDataSource" is-isolation-level-guaranteed="false" res-type="javax.sql.DataSource" description="" name="dvnDbPool">
       <property name="ConnectionAttributes" value=";create=true"></property>
       <property name="ServerName" value="%POSTGRES_SERVER%"/>

@@ -52,6 +52,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.ResourceBundle;
+import java.util.logging.Logger;
 import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
 import javax.faces.event.ValueChangeEvent;
@@ -71,6 +72,7 @@ import javax.servlet.http.HttpServletRequest;
 public class AddSitePage extends VDCBaseBean implements java.io.Serializable  {
 
        // </editor-fold>
+    private static final Logger logger = Logger.getLogger("edu.harvard.iq.dvn.core.web.site.AddSitePage");
     /**
      * <p>Construct a new Page bean instance.</p>
      */
@@ -283,7 +285,12 @@ public class AddSitePage extends VDCBaseBean implements java.io.Serializable  {
         this.button2 = hcb;
     }
 
-    ClassificationList classificationList = null;
+    // I'm initializing classificationList below in order to get the page 
+    // to work; otherwise (if it's set to null), the page dies quietly in 
+    // classificationList.getClassificationUIs() (in saveClassifications), 
+    // after creating the new DV. 
+    // I'm still not quite sure how/where this list was initialized before?
+    ClassificationList classificationList = new ClassificationList();//null;
 
     public ClassificationList getClassificationList() {
         return classificationList;
@@ -338,10 +345,13 @@ public class AddSitePage extends VDCBaseBean implements java.io.Serializable  {
             String siteAddress = "unknown";
 
             siteAddress = hostUrl + "/dvn" + getVDCRequestBean().getCurrentVDCURL();
+            
+            logger.fine("created dataverse; site address: "+siteAddress);
 
             mailService.sendAddSiteNotification(toMailAddress, name, siteAddress);
 
             getVDCSessionBean().getLoginBean().setUser(creator);
+            
 
             return "addSiteSuccess";
         }

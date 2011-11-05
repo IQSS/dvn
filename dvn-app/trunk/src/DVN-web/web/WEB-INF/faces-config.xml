@@ -119,5 +119,9 @@
         <managed-bean-class>edu.harvard.iq.dvn.core.web.login.LoginWorkflowBean</managed-bean-class>
         <managed-bean-scope>session</managed-bean-scope>
     </managed-bean>
-
+    <managed-bean>
+        <managed-bean-name>ClassificationList</managed-bean-name>
+        <managed-bean-class>edu.harvard.iq.dvn.core.web.site.ClassificationList</managed-bean-class>
+        <managed-bean-scope>request</managed-bean-scope>
+    </managed-bean>
 </faces-config>

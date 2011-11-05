@@ -13,7 +13,7 @@
     <ui:param name="pageTitle" value="#{bundlePageInfo.createDvTitle} - #{VDCRequest.dataversePageTitle}"/>
     <ui:define name="metadata">
         <f:metadata>
-            <!--f:viewParam name="classificationList" value="#{ClassificationList}"/ -->
+            <f:viewParam name="classificationList" value="#{ClassificationList}"/>
             <f:event type="preRenderView"
                 listener="#{AddSitePage.init}" />
         </f:metadata>  

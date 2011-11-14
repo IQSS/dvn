@@ -787,7 +787,7 @@ print "or from Netbeans;\n";
 
 print "\nOnce you have a running DVN instance, \n";
 print "olease go to the application at the following URL:\n\n";
-print "  http://" . $CONFIG_DEFAULTS{'HOST_DNS_ADDRESS'} . "/dvn\n";
+print "  http://" . $CONFIG_DEFAULTS{'HOST_DNS_ADDRESS'} . ":8080/dvn\n";
 print "\nand log in by using \"networkAdmin\" as both the user name\n";
 print "and password. Click the \"networkAdmin\" link on the right side\n";
 print "Of the main screen, then click \"Update Account\". Change this\n";

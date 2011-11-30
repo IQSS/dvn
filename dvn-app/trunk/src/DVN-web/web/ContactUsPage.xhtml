@@ -6,139 +6,140 @@
       xmlns:f="http://java.sun.com/jsf/core"
       xmlns:jsp="http://java.sun.com/JSP/Page"
       xmlns:ice="http://www.icesoft.com/icefaces/component">
-<head>
-  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
-</head>
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+    </head>
+    <body>
+        <ui:composition template="/template.xhtml">
+            <ui:param name="pageTitle" value="Report Issue - #{VDCRequest.dataversePageTitle}"/>
+            <ui:define name="metadata">
+                <f:metadata></f:metadata>
+            </ui:define>
+            <ui:define name="body">
+                <ice:form id="contactUsForm">
+                    <ice:inputHidden id="vdcId" value="#{VDCRequest.currentVDCId}"/>
+                    <script type="text/javascript">
+                    //<![CDATA[
+                    function changeValue(obj) {
+                        if (window.event)
+                            obj.value = window.event.srcElement.value;
+                        document.getElementById('contactUsForm').submit();
+                    }
+                    // ]]>
+                    </script>
+                    <div class="dvn_section">
+                        <div jsfc="ice:panelGroup" styleClass="dvnMsgBlockRound dvnSuccessMessage" rendered="#{ContactUsPage.success}">
+                            <div class="dvnMsgBlockContainer">
+                                <p><ice:messages layout="list" globalOnly="true"/></p>
+                            </div>
+                        </div>
+                        <div class="dvn_sectionTitle">
+                            <ice:outputText value="#{bundle.contactUsHeading}"/>
+                        </div>
+                        <div class="dvn_sectionBox">
+                            <div class="dvn_margin12">
+                                <div jsfc="ice:panelGroup" styleClass="errorMessage" rendered="#{ContactUsPage.exception}">
+                                    <ice:messages layout="table" globalOnly="true"/>
+                                </div>
+                                <div class="dvn_padBot">
+                                    <ice:outputText id="outputText2" escape="false" value="#{bundle.contactUsFormMessage}"/>
+                                    <ice:graphicImage value="/resources/images/icon_required.gif"/>
+                                    <ice:outputText styleClass="vdcHelpText" value="Indicates a required field."/>
+                                </div>
+                                <ice:panelGrid cellpadding="0" cellspacing="0"
+                                               columnClasses="vdcColPadded,vdcColPadded" columns="2" id="gridPanel2">
+                                    <ice:column>
+                                        <ice:outputText id="outputText7" styleClass="dvnContactLabel" value="#{bundle.contactUsToLabel}"/>
+                                    </ice:column>
+                                    <ice:column>
+                                        <ice:outputFormat value="#{bundle.contactUsTo}" rendered="#{(VDCRequest.currentVDCId == null)}">
+                                            <f:param value="#{VDCRequest.vdcNetwork.name}"/>
+                                            <f:param value="#{('Network')}"/>
+                                        </ice:outputFormat>
+                                        <ice:selectOneRadio id="emailRecipient"
+                                                            layout="pageDirection"
+                                                            value="#{ContactUsPage.emailRecipient}"
+                                                            required="true"
+                                                            requiredMessage="This field is required."
+                                                            rendered="#{!(VDCRequest.currentVDCId == null)}">
+                                            <f:selectItems value="#{ContactUsPage.emailRecipientOptions}"/>
+                                        </ice:selectOneRadio>
+                                    </ice:column>
+                                    <ice:column>
+                                        <ice:outputText id="outputText4" styleClass="dvnContactLabel" value="#{bundle.contactUsEmailLabel}"/>
+                                        <ice:graphicImage id="image2" value="/resources/images/icon_required.gif"/>
+                                        <ice:outputText styleClass="vdcHelpText" value="(E-mail Address)"/>
+                                    </ice:column>
+                                    <ice:column>
+                                        <ice:inputText id="emailAddress" size="30"
+                                                       value="#{ContactUsPage.emailAddress}"
+                                                       required="true"
+                                                       requiredMessage="This field is required.  Please press refresh below to get a new challenge, then correct the issue.">
+                                            <f:validator validatorId="EmailValidator"/>
+                                        </ice:inputText>
+                                        <ice:message id="emailAddressMsg" for="emailAddress" styleClass="errorMessage"/>
+                                    </ice:column>
 
-<body>
-  <ui:composition template="/template.xhtml">
-    <ui:param name="pageTitle" value="Report Issue - #{VDCRequest.dataversePageTitle}"/>
-    <ui:define name="body">
-      <ice:form id="contactUsForm">
-        <ice:inputHidden id="vdcId" value="#{VDCRequest.currentVDCId}"/>
-            <script type="text/javascript">
-            //<![CDATA[
-            function changeValue(obj) {
-                if (window.event)
-                    obj.value = window.event.srcElement.value;
-                document.getElementById('contactUsForm').submit();
-            }
-            // ]]>
-            </script>
-        <div class="dvn_section">
-          <div jsfc="ice:panelGroup" styleClass="dvnMsgBlockRound dvnSuccessMessage" rendered="#{ContactUsPage.success}">
-            <div class="dvnMsgBlockContainer">
-              <p><ice:messages layout="list" globalOnly="true"/></p>
-            </div>
-          </div>
-          <div class="dvn_sectionTitle">
-            <ice:outputText value="#{bundle.contactUsHeading}"/>
-          </div>
-          <div class="dvn_sectionBox">
-            <div class="dvn_margin12">
-              <div jsfc="ice:panelGroup" styleClass="errorMessage" rendered="#{ContactUsPage.exception}">
-                <ice:messages layout="table" globalOnly="true"/>
-              </div>
-              <div class="dvn_padBot">
-                <ice:outputText id="outputText2" escape="false" value="#{bundle.contactUsFormMessage}"/>
-                <ice:graphicImage value="/resources/images/icon_required.gif"/>
-                <ice:outputText styleClass="vdcHelpText" value="Indicates a required field."/>
-              </div>
-              <ice:panelGrid cellpadding="0" cellspacing="0"
-                             columnClasses="vdcColPadded,vdcColPadded" columns="2" id="gridPanel2">
-               <div>
-               <ice:outputText id="outputText7" styleClass="dvnContactLabel" value="#{bundle.contactUsToLabel}"/>
-               </div>
-               <div>
-                <ice:outputFormat value="#{bundle.contactUsTo}" rendered="#{(VDCRequest.currentVDCId == null)}">
-                  <f:param value="#{VDCRequest.vdcNetwork.name}"/>
-                  <f:param value="#{('Network')}"/>
-                </ice:outputFormat>
-                <ice:selectOneRadio id="emailRecipient"
-                                        layout="pageDirection"
-                                        value="#{ContactUsPage.emailRecipient}"
-                                        required="true"
-                                        requiredMessage="This field is required."
-                                        rendered="#{!(VDCRequest.currentVDCId == null)}">
-                      <f:selectItems value="#{ContactUsPage.emailRecipientOptions}"/>
-                </ice:selectOneRadio>
-                </div>
-                <div>
-                  <ice:outputText id="outputText4" styleClass="dvnContactLabel" value="#{bundle.contactUsEmailLabel}"/>
-                  <ice:graphicImage id="image2" value="/resources/images/icon_required.gif"/>
-                  <ice:outputText styleClass="vdcHelpText" value="(E-mail Address)"/>
-                </div>
-                <div>
-                  <ice:inputText id="emailAddress" size="30"
-                                 value="#{ContactUsPage.emailAddress}"                                 
-                                 required="true"
-                                 requiredMessage="This field is required.  Please press refresh below to get a new challenge, then correct the issue.">
-                    <f:validator validatorId="EmailValidator"/>
-                  </ice:inputText>
-                  <ice:message id="emailAddressMsg" for="emailAddress" styleClass="errorMessage"/>
-                </div>
-
-                <div>
-                  <ice:outputText id="outputText3" value="#{bundle.contactUsFromLabel}"/>
-                  <ice:graphicImage id="image1" value="/resources/images/icon_required.gif"/>
-                </div>
-                <div>
-                  <ice:inputText id="fullName"
-                                 size="30"
-                                 value="#{ContactUsPage.fullName}"
-                                 required="true"
-                                 requiredMessage="This field is required.  Please press refresh below to get a new challenge, then correct the issue."/>
-                  <ice:message id="fullNameMsg"
-                               for="fullName"
-                               styleClass="errorMessage"/>
-                </div>
-                <div>
-                  <ice:outputText id="outputText5" value="#{bundle.contactUsSubjectLabel}"/>
-                  <ice:graphicImage id="image3" value="/resources/images/icon_required.gif"/>
-                </div>
-                <div>
-                  <ice:selectOneMenu id="listSubjects"
-                                     required="true"
-                                     validator="#{ContactUsPage.validateSubject}"
-                                     value="#{ContactUsPage.selectedSubject}">
-                    <f:selectItems id="listSubjectItems" value="#{ContactUsPage.listSubjectItems}"/>
-                  </ice:selectOneMenu>
-                  <ice:message id="subjectListMsg"
-                               for="listSubjects"
-                               styleClass="errorMessage"/>
-                </div>
-                <div styleClass="vdcTextNoWrap">
-                  <ice:outputText id="outputText6" value="#{bundle.contactUsBodyLabel}"/>
-                  <ice:graphicImage id="image4" value="/resources/images/icon_required.gif"/>
-                </div>
-                <div>
-                  <ice:inputTextarea cols="50" id="emailBody"
-                                     value="#{ContactUsPage.emailBody}"
-                                     required="true"
-                                     
-                                     requiredMessage="This field is required.  Please press refresh below to get a new challenge, then correct the issue."
-                                     rows="8"/>
-                  <ice:message id="emailBodyMsg"
-                               for="emailBody"
-                               styleClass="errorMessage"/>
-                </div>
-              </ice:panelGrid>
-              <ice:panelGrid>
-                <p>Enter the code as it is shown:</p>
-                <p>This field helps prevent automated access.</p>
-                <ice:inputHidden id="recaptcha" validator="#{ContactUsPage.validateCaptcha}" value="captcha">
-                  <ice:message styleClass="errorMessage" for="recaptcha"/>
-                </ice:inputHidden>
-                  #{ContactUsPage.captcha}
-              </ice:panelGrid>
-              <div class="dvnFormPadding">
-                <ice:commandButton id="btnSend" value="Send E-mail" action="#{ContactUsPage.send_action}"/>
-              </div>
-            </div>
-          </div>
-        </div>
-      </ice:form>
-    </ui:define>
-  </ui:composition>
-</body>
+                                    <ice:column>
+                                        <ice:outputText id="outputText3" value="#{bundle.contactUsFromLabel}"/>
+                                        <ice:graphicImage id="image1" value="/resources/images/icon_required.gif"/>
+                                    </ice:column>
+                                    <ice:column>
+                                        <ice:inputText id="fullName"
+                                                       size="30"
+                                                       value="#{ContactUsPage.fullName}"
+                                                       required="true"
+                                                       requiredMessage="This field is required.  Please press refresh below to get a new challenge, then correct the issue."/>
+                                        <ice:message id="fullNameMsg"
+                                                     for="fullName"
+                                                     styleClass="errorMessage"/>
+                                    </ice:column>
+                                    <ice:column>
+                                        <ice:outputText id="outputText5" value="#{bundle.contactUsSubjectLabel}"/>
+                                        <ice:graphicImage id="image3" value="/resources/images/icon_required.gif"/>
+                                    </ice:column>
+                                    <ice:column>
+                                        <ice:selectOneMenu id="listSubjects"
+                                                           required="true"
+                                                           validator="#{ContactUsPage.validateSubject}"
+                                                           value="#{ContactUsPage.selectedSubject}">
+                                            <f:selectItems id="listSubjectItems" value="#{ContactUsPage.listSubjectItems}"/>
+                                        </ice:selectOneMenu>
+                                        <ice:message id="subjectListMsg"
+                                                     for="listSubjects"
+                                                     styleClass="errorMessage"/>
+                                    </ice:column>
+                                    <ice:column styleClass="vdcTextNoWrap">
+                                        <ice:outputText id="outputText6" value="#{bundle.contactUsBodyLabel}"/>
+                                        <ice:graphicImage id="image4" value="/resources/images/icon_required.gif"/>
+                                    </ice:column>
+                                    <ice:column>
+                                        <ice:inputTextarea cols="50" id="emailBody"
+                                                           value="#{ContactUsPage.emailBody}"
+                                                           required="true"
+                                                           requiredMessage="This field is required.  Please press refresh below to get a new challenge, then correct the issue."
+                                                           rows="8"/>
+                                        <ice:message id="emailBodyMsg"
+                                                     for="emailBody"
+                                                     styleClass="errorMessage"/>
+                                    </ice:column>
+                                </ice:panelGrid>
+                                <ice:panelGrid>
+                                    <p>Enter the code as it is shown:</p>
+                                    <p>This field helps prevent automated access.</p>
+                                    <ice:inputHidden id="recaptcha" validator="#{ContactUsPage.validateCaptcha}" value="captcha">
+                                        <ice:message styleClass="errorMessage" for="recaptcha"/>
+                                    </ice:inputHidden>
+                                    #{ContactUsPage.captcha}
+                                </ice:panelGrid>
+                                <div class="dvnFormPadding">
+                                    <ice:commandButton id="btnSend" value="Send E-mail" action="#{ContactUsPage.send_action}"/>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </ice:form>
+            </ui:define>
+        </ui:composition>
+    </body>
 </html>

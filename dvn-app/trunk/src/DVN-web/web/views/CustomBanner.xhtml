@@ -1,13 +1,10 @@
-<div  xmlns:ui="http://java.sun.com/jsf/facelets"
-      xmlns:h="http://java.sun.com/jsf/html"
-      xmlns:f="http://java.sun.com/jsf/core" 
-      xmlns:jsp="http://java.sun.com/JSP/Page"
-       xmlns:ice="http://www.icesoft.com/icefaces/component"
-       >
-
+<div xmlns:ui="http://java.sun.com/jsf/facelets"
+     xmlns:h="http://java.sun.com/jsf/html"
+     xmlns:f="http://java.sun.com/jsf/core" 
+     xmlns:jsp="http://java.sun.com/JSP/Page"
+     xmlns:ice="http://www.icesoft.com/icefaces/component">
     <ui:composition>
-            <h:outputText escape="false" rendered="#{VDCRequest.currentVDCId != null and VDCRequest.displayDVNCustomization}" value="#{VDCRequest.currentVDC.header}"/>
-            <h:outputText escape="false" rendered="#{VDCRequest.currentVDCId == null and VDCRequest.displayDVNCustomization}" value="#{VDCRequest.vdcNetwork.networkPageHeader}"/>
+        <h:outputText escape="false" rendered="#{VDCRequest.currentVDCId != null and VDCRequest.displayDVNCustomization}" value="#{VDCRequest.currentVDC.header}"/>
+        <h:outputText escape="false" rendered="#{VDCRequest.currentVDCId == null and VDCRequest.displayDVNCustomization}" value="#{VDCRequest.vdcNetwork.networkPageHeader}"/>
     </ui:composition>
 </div>
-

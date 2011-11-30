@@ -1,79 +1,79 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<html xmlns="http://www.w3.org/1999/xhtml"
-      xmlns:h="http://java.sun.com/jsf/html"
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns:h="http://java.sun.com/jsf/html"
       xmlns:f="http://java.sun.com/jsf/core"
       xmlns:ui="http://java.sun.com/jsf/facelets"
       xmlns:jsp="http://java.sun.com/JSP/Page"
       xmlns:dvn="/WEB-INF/tlds/dvn-components"
       xmlns:ice="http://www.icesoft.com/icefaces/component">
-<h:head>
-  <script type="text/javascript">
-      // <![CDATA[
-      // check to see if page is loading in hidden grame; if so "pop" out to top level
-        if(self.name == "hiddenDownloadFrame"){
-            parent.location.replace(self.location.href);
-        }
-      // ]]>
-  </script>
-  <ice:outputText nospan="true" escape="false" rendered="#{VDCRequest.currentVDCId == null or (VDCRequest.currentVDCId != null and !VDCRequest.displayInFrame)}">
-    <script type="text/javascript">
-        // <![CDATA[
-        // check to see if page is loaded in an iframe; if so, and "pop" out to top level
-        if(self != top){
-            top.location.replace(self.location.href);
-        }
-        // ]]>
-    </script>
-  </ice:outputText>
-  <ice:outputText nospan="true" escape="false" rendered="#{VDCRequest.currentVDCId != null and VDCRequest.displayInFrame}">
-      <script type="text/javascript">
-          // <![CDATA[
-          // check to see if page should be in an iframe (and is not); if so, redirect to containing site (specifiying sub page, if neeeded)
-            if(self == top){
-                dvn_subpage = self.location.href;
-                dvn_subpage = dvn_subpage.substring( dvn_subpage.indexOf("/dvn/dv/") + 8 ); // first strip out the /dvn/dv/ prefix
-                if ( dvn_subpage.indexOf("/") != -1) {
-                    window.location.replace("#{VDCRequest.currentVDC.parentSite}?dvn_subpage=" + dvn_subpage.substring( dvn_subpage.indexOf("/") ) );
-                } else {
-                    window.location.replace("#{VDCRequest.currentVDC.parentSite}");
+    <h:head>
+        <script type="text/javascript">
+            // <![CDATA[
+            // check to see if page is loading in hidden grame; if so "pop" out to top level
+              if(self.name == "hiddenDownloadFrame"){
+                  parent.location.replace(self.location.href);
+              }
+            // ]]>
+        </script>
+        <ice:outputText nospan="true" escape="false" rendered="#{VDCRequest.currentVDCId == null or (VDCRequest.currentVDCId != null and !VDCRequest.displayInFrame)}">
+            <script type="text/javascript">
+                // <![CDATA[
+                // check to see if page is loaded in an iframe; if so, and "pop" out to top level
+                if(self != top){
+                    top.location.replace(self.location.href);
                 }
-            }
+                // ]]>
+            </script>
+        </ice:outputText>
+        <ice:outputText nospan="true" escape="false" rendered="#{VDCRequest.currentVDCId != null and VDCRequest.displayInFrame}">
+            <script type="text/javascript">
+                // <![CDATA[
+                // check to see if page should be in an iframe (and is not); if so, redirect to containing site (specifiying sub page, if neeeded)
+                  if(self == top){
+                      dvn_subpage = self.location.href;
+                      dvn_subpage = dvn_subpage.substring( dvn_subpage.indexOf("/dvn/dv/") + 8 ); // first strip out the /dvn/dv/ prefix
+                      if ( dvn_subpage.indexOf("/") != -1) {
+                          window.location.replace("#{VDCRequest.currentVDC.parentSite}?dvn_subpage=" + dvn_subpage.substring( dvn_subpage.indexOf("/") ) );
+                      } else {
+                          window.location.replace("#{VDCRequest.currentVDC.parentSite}");
+                      }
+                  }
+                // ]]>
+            </script>
+        </ice:outputText>
+        <!-- page title param passed in by param -->
+        <title><ice:outputText nospan="true" value="#{pageTitle}"/></title>
+        <link rel="stylesheet" type="text/css" href="/dvn/resources/icefaces/dvn_rime/dvn_rime.css"/>
+        <link rel="stylesheet" type="text/css" href="/dvn/resources/css/dvngeneral.css"/>
+        <link rel="stylesheet" type="text/css" href="/dvn/resources/css/dvnspecific.css"/>
+        <!-- IE SPECIFIC STYLESHEET -->
+        <ice:outputText escape="false" nospan="true"
+                        value="&#60;!--[if lte IE 8]&#62;
+                        &#60;link rel=&#34;stylesheet&#34; type=&#34;text/css&#34; href=&#34;/dvn/resources/css/iefix.css&#34;/&#62;
+                        &#60;![endif]--&#62;"/>
+        <script type="text/javascript" src="/dvn/resources/javascript/EventCapture.js"/>
+        <script type="text/javascript" src="/dvn/resources/javascript/jquery.js"/>
+        <script type="text/javascript" src="/dvn/resources/javascript/jquery.corner.pack.js"/>
+        <script type="text/javascript">
+          // <![CDATA[
+          jQuery.noConflict();
+          jQuery(document).ready(function(){
+             jQuery("div.dvnRound, div.dvnMsgBlockRound").corner("10px");
+          });
           // ]]>
-      </script>
-  </ice:outputText>
- <!-- page title param passed in by param -->
- <title><h:outputText value="#{pageTitle}"/></title>
- <link rel="stylesheet" type="text/css" href="/dvn/resources/icefaces/dvn_rime/dvn_rime.css"/>
- <link rel="stylesheet" type="text/css" href="/dvn/resources/css/dvngeneral.css"/>
- <link rel="stylesheet" type="text/css" href="/dvn/resources/css/dvnspecific.css"/>
- <!-- IE SPECIFIC STYLESHEET -->
- <ice:outputText escape="false" nospan="true"
-   value="&#60;!--[if lte IE 8]&#62;
-   &#60;link rel=&#34;stylesheet&#34; type=&#34;text/css&#34; href=&#34;/dvn/resources/css/iefix.css&#34;/&#62;
-   &#60;![endif]--&#62;"/>
- <script type="text/javascript" src="/dvn/resources/javascript/EventCapture.js"/>
- <script type="text/javascript" src="/dvn/resources/javascript/jquery.js"/>
- <script type="text/javascript" src="/dvn/resources/javascript/jquery.corner.pack.js"/>
- <script type="text/javascript">
-   // <![CDATA[
-   jQuery.noConflict();
-   jQuery(document).ready(function(){
-      jQuery("div.dvnRound, div.dvnMsgBlockRound").corner("10px");
-   });
-   // ]]>
- </script>
- <script type="text/javascript">
-     // <![CDATA[
-     var isChild = true;
-     function printMe() {
-         window.print();
-     }
-     //]]>
- </script>
-</h:head>
-<!--  this template is example 4.3 in the Facelets Shortcut -->
-<h:body class="dvn_bodyVanilla">
-    <!--f:view -->
+        </script>
+        <script type="text/javascript">
+            // <![CDATA[
+            var isChild = true;
+            function printMe() {
+                window.print();
+            }
+            //]]>
+        </script>
+    </h:head>
+    <!--  this template is example 4.3 in the Facelets Shortcut -->
+    <h:body styleClass="dvn_bodyVanilla">
+        <!--f:view -->
         <ui:insert name="metadata">Default Metadata</ui:insert>
         <div class="dvn_wrapperVanilla">
             <div class="dvn_content" id="content-frame">
@@ -85,6 +85,6 @@
 
             </div>
         </div>
-    <!--/f:view -->
-</h:body>
+        <!--/f:view -->
+    </h:body>
 </html>

@@ -88,8 +88,8 @@ public class GNRSServiceBean implements edu.harvard.iq.dvn.core.gnrs.GNRSService
      //   return em.createNamedQuery("getStudyIdSequence").getSingleResult().toString();
         String studyId=null;
         do {
-            Vector result = (Vector)em.createNativeQuery("select nextval('studyid_seq')").getSingleResult();
-            studyId = result.get(0).toString();
+            studyId = ((Long) em.createNativeQuery("select nextval('studyid_seq')").getSingleResult()).toString();
+
         } while (!isUniqueStudyId(studyId, protocol, authority));
         
         /*

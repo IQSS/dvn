@@ -90,26 +90,6 @@
       <validator-class>edu.harvard.iq.dvn.core.web.util.DateValidator</validator-class>
   </validator>
     <managed-bean>
-        <managed-bean-name>VDCRequest</managed-bean-name>
-        <managed-bean-class>edu.harvard.iq.dvn.core.web.common.VDCRequestBean</managed-bean-class>
-        <managed-bean-scope>request</managed-bean-scope>
-        <managed-property>
-            <property-name>studyListingIndex</property-name>
-            <property-class>java.lang.String</property-class>
-            <value>#{param.studyListingIndex}</value>
-        </managed-property>
-        <managed-property>
-            <property-name>studyVersionNumber</property-name>
-            <property-class>java.lang.Long</property-class>
-            <value>#{param.versionNumber}</value>
-        </managed-property>
-        <managed-property>
-            <property-name>selectedTab</property-name>
-            <property-class>java.lang.String</property-class>
-            <value>#{param.selectedTab}</value>
-        </managed-property>
-    </managed-bean>
-    <managed-bean>
         <managed-bean-name>VDCSession</managed-bean-name>
         <managed-bean-class>edu.harvard.iq.dvn.core.web.common.VDCSessionBean</managed-bean-class>
         <managed-bean-scope>session</managed-bean-scope>

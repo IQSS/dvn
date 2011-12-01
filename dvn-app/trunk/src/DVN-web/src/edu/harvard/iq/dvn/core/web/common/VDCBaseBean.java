@@ -46,6 +46,8 @@ import javax.servlet.http.HttpServletResponse;
 public class VDCBaseBean  implements java.io.Serializable  {
     @EJB VDCServiceLocal vdcService;   
     @EJB VDCNetworkServiceLocal vdcNetworkService;
+    
+    private boolean isInititalized = false;
     /**
      * Creates a new instance of VDCBaseBean
      */
@@ -65,9 +67,16 @@ public class VDCBaseBean  implements java.io.Serializable  {
      * values submitted with this request.  Instead, they represent the
      * property values that were saved for this view when it was rendered.</p>
      */
-    public void init() {
+    public void preRenderView() {
+        if (!isInititalized) {
+            init();
+            isInititalized = true;
+        }
 
     }  
+
+    public void init() {
+    }     
 
     
     public String getRequestParam(String name) {

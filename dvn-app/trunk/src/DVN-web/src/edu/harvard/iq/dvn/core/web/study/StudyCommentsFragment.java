@@ -24,17 +24,22 @@ import java.util.Iterator;
 import java.util.List;
 import javax.ejb.EJB;
 import javax.faces.application.FacesMessage;
+import javax.faces.bean.ViewScoped;
 import javax.faces.component.UIComponent;
 import javax.faces.component.UIInput;
 import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
 import javax.faces.event.ActionEvent;
+import javax.inject.Named;
 import javax.servlet.http.HttpServletRequest;
 
 /**
  *
  * @author wbossons
  */
+
+@Named ("StudyCommentsFragment")
+@ViewScoped
 public class StudyCommentsFragment extends VDCBaseBean implements Serializable {
     @EJB
     private StudyCommentService studyCommentService;

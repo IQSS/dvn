@@ -13,6 +13,13 @@
 <body>
   <ui:composition template="/template.xhtml">
     <ui:param name="pageTitle" value="#{bundlePageInfo.editStudyTitle} - #{VDCRequest.dataversePageTitle}"/>
+    <ui:define name="metadata">
+        <f:metadata>
+            <f:viewParam name="studyId" value="#{EditStudyPage.studyId}"/>
+            <f:viewParam name="studyListingIndex" value="#{VDCRequestBean.studyListingIndex}"/>        
+            <f:event type="preRenderView" listener="#{EditStudyPage.preRenderView}" />
+        </f:metadata>  
+    </ui:define>    
     <ui:define name="body">
       <f:loadBundle basename="EditStudyBundle" var="editstudybundle"/>
       <script type="text/javascript">

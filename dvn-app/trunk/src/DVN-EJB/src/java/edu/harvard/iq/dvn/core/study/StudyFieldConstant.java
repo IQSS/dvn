@@ -29,11 +29,16 @@
 
 package edu.harvard.iq.dvn.core.study;
 
+import javax.enterprise.context.ApplicationScoped;
+import javax.inject.Named;
+
 /**
  *
  * @author Ellen Kraffmiller
  */
-public final class StudyFieldConstant implements java.io.Serializable  {
+@Named("sfc")
+@ApplicationScoped
+public class StudyFieldConstant implements java.io.Serializable  {
     
     public final static String title = "title";
     public final static String subTitle="subTitle";

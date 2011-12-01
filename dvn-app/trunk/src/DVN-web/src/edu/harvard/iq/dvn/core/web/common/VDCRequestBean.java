@@ -34,7 +34,9 @@ import edu.harvard.iq.dvn.core.vdc.VDC;
 import edu.harvard.iq.dvn.core.vdc.VDCNetwork;
 import edu.harvard.iq.dvn.core.web.StudyListing;
 import javax.ejb.EJB;
+import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
+import javax.inject.Named;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
@@ -49,6 +51,8 @@ import javax.servlet.http.HttpSession;
  * or method binding expression that references a managed bean using
  * this class.</p>
  */
+@Named("VDCRequest")
+@ViewScoped
 public class VDCRequestBean extends VDCBaseBean implements java.io.Serializable  {
     @EJB PageDefServiceLocal pageDefService;
     @EJB LockssAuthServiceLocal lockssAuthService;

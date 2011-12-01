@@ -31,48 +31,43 @@ package edu.harvard.iq.dvn.core.web.study;
 import com.icesoft.faces.component.ext.HtmlCommandLink;
 import com.icesoft.faces.component.paneltabset.PanelTabSet;
 import com.icesoft.faces.component.paneltabset.TabChangeEvent;
-import com.icesoft.faces.context.Resource;
-import com.icesoft.faces.context.Resource.Options;
-import com.icesoft.faces.context.effects.JavascriptContext;
 import edu.harvard.iq.dvn.core.study.DataFileFormatType;
 import edu.harvard.iq.dvn.core.study.StudyServiceLocal;
 import edu.harvard.iq.dvn.core.study.StudyVersion;
-import edu.harvard.iq.dvn.core.util.PropertyUtil;
-import edu.harvard.iq.dvn.core.util.StringUtil;
 import edu.harvard.iq.dvn.core.vdc.VDC;
 import edu.harvard.iq.dvn.core.util.WebStatisticsSupport;
 import edu.harvard.iq.dvn.core.web.common.VDCBaseBean;
 import edu.harvard.iq.dvn.core.web.common.VDCSessionBean;
 import edu.harvard.iq.dvn.core.web.login.LoginWorkflowBean;
 import edu.harvard.iq.dvn.core.web.servlet.TermsOfUseFilter;
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.Serializable;
-import java.net.URL;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Logger;
 import javax.ejb.EJB;
+import javax.faces.bean.ViewScoped;
 import javax.faces.component.html.HtmlPanelGrid;
 import javax.faces.context.FacesContext;
 import javax.faces.event.AbortProcessingException;
 import javax.faces.event.ActionEvent;
 import javax.faces.model.SelectItem;
+import javax.inject.Inject;
+import javax.inject.Named;
 import javax.servlet.http.HttpServletRequest;
 
 /**
  *
  * @author Ellen Kraffmiller
  */
+@Named
+@ViewScoped
 public class StudyPage extends VDCBaseBean implements java.io.Serializable  {
     private static Logger dbgLog = Logger.getLogger(StudyPage.class.getCanonicalName());
     @EJB private StudyServiceLocal studyService;
 
-
+    @Inject private VersionNotesPopupBean versionNotesPopup;
+    
     public StudyPage() {
     }
 
@@ -84,7 +79,6 @@ public class StudyPage extends VDCBaseBean implements java.io.Serializable  {
     private boolean studyUIContainsFileDetails=false; // TODO: needed??
     private int selectedIndex;
 
-    private VersionNotesPopupBean versionNotesPopup;
 
     public VersionNotesPopupBean getVersionNotesPopup() {
         return versionNotesPopup;

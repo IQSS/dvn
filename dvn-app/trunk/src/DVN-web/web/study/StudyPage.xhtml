@@ -15,6 +15,18 @@
   <ui:composition template="/template_study.xhtml">
     <ui:param name="pageTitle" value="#{studyPage.studyUI.metadata.title} - #{VDCRequest.dataversePageTitle}"/>
     <ui:param name="uniquifier" value="#{studyPage.selectedIndex}"/>
+    <ui:define name="metadata">
+        <f:metadata>
+            <f:viewParam name="studyId" value="#{studyPage.studyId}"/>
+            <f:viewParam name="globalId" value="#{studyPage.globalId}"/>
+            <f:viewParam name="versionNumber" value="#{studyPage.versionNumber}"/>
+            <f:viewParam name="tab" value="#{studyPage.tab}"/>
+            <f:viewParam name="studyListingIndex" value="#{VDCRequestBean.studyListingIndex}"/>
+            <f:viewParam name="studyVersionNumber" value="#{VDCRequestBean.studyVersionNumber}"/>
+            <f:viewParam name="selectedTab" value="#{VDCRequestBean.selectedTab}"/>            
+            <f:event type="preRenderView" listener="#{studyPage.preRenderView}" />
+        </f:metadata>  
+    </ui:define>     
     <ui:define name="body">
        <script type="text/javascript">
                     // <![CDATA[

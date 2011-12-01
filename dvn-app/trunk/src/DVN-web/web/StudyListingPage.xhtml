@@ -15,9 +15,9 @@
     <ui:param name="pageTitle" value="#{VDCRequest.dataversePageTitle}"/>
     <ui:define name="metadata">
         <f:metadata>
-            <f:event type="preRenderView"
+        </f:metadata>
+        <f:event type="preRenderView"
                 listener="#{StudyListingPage.init}"/>
-        </f:metadata>  
     </ui:define>
     <ui:define name="body">
       <ice:form id="form1">
@@ -246,6 +246,7 @@
                           <ice:outputText id="outputText14" styleClass="dvnStudyListTableAbstract" escape="false" value="Abstract: &#60;div&#62;#{studyUI.truncatedAbstracts}&#60;/div&#62;"/>
                       </div>
                       <!-- Optional search fields -->
+                      
                       <div jsfc="ice:panelGroup" styleClass="dvnStudyListTableOptionalField" rendered="#{!empty StudyListingPage.studyFields[sfc.productionDate] and !empty studyUI.metadata.productionDate}">
                           <ice:outputText value="Production Date:" styleClass="dvnStudyListTableOptionalFieldLabel"/>
                           <ice:outputText value="#{studyUI.productionDate}"/>
@@ -326,6 +327,7 @@
                     </div>
                   </ice:column>
                 </ice:dataTable>
+                      
                 <ice:panelGrid cellpadding="0" cellspacing="0" border="0" columns="2" id="gridPanel22"
                                styleClass="dvnStudyListResultsBottom" columnClasses="dvn_StudyListTotals, dvnPaginatorWrap"
                                rendered="#{StudyListingPage.renderScroller}">
@@ -368,6 +370,7 @@
                             var="item"
                             hideRootNode="true"
                             hideNavigation="false"
+                            rendered="#{StudyListingPage.renderTree}"
                             imageDir="/dvn/resources/icefaces/dvn_rime/css-images/">
                     <ice:treeNode>
                       <f:facet name="content">

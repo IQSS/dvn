@@ -92,7 +92,7 @@ public class StudyListingPage extends VDCBaseBean implements java.io.Serializabl
 
     // data members
     private StudyListing studyListing;
-    private DefaultTreeModel collectionTree;
+    private DefaultTreeModel collectionTree = null;
     private UIData studyTable;
     private DataPaginator paginator;
     private DataPaginator paginator2;
@@ -158,6 +158,27 @@ public class StudyListingPage extends VDCBaseBean implements java.io.Serializabl
      * @return Value of property collectionTree.
      */
     public DefaultTreeModel getCollectionTree() {
+        if (this.collectionTree == null) {
+            
+            // initialize an empty DefaultTreeModel: (?)
+            //
+            // weird thing is, if you simply return null here, the 
+            // StudyListingPage dies with "NullPointerException
+            // at com.icesoft.faces.component.tree.Tree.visitRows..."
+            // even when the corresponding "<ice:tree" section 
+            // has a correct "rendered=..." attribute, telling
+            // the page not to display it...
+            // so it looks like it tries to parse the tree anyway! 
+            //  -- L.A. 
+            DefaultMutableTreeNode rootTreeNode = new DefaultMutableTreeNode();
+            IceUserObject rootObject = new IceUserObject(rootTreeNode);
+            rootObject.setText("Root Node");
+            rootObject.setExpanded(true);
+            rootTreeNode.setUserObject(rootObject);
+      
+            return new DefaultTreeModel(rootTreeNode);
+
+        }
         return this.collectionTree;
     }
 

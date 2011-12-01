@@ -73,9 +73,12 @@ import com.icesoft.faces.component.ext.HtmlSelectOneRadio;
 import edu.harvard.iq.dvn.core.study.Metadata;
 import edu.harvard.iq.dvn.core.study.MetadataFieldGroup;
 import java.util.Date;
+import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
 import javax.faces.event.ActionEvent;
 import javax.faces.model.SelectItem;
+import javax.inject.Inject;
+import javax.inject.Named;
 import javax.naming.Context;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
@@ -89,12 +92,16 @@ import javax.servlet.http.HttpServletRequest;
  * to respond to incoming events.</p>
  */
 
+@Named("EditStudyPage")
+@ViewScoped
 @EJB(name="editStudy", beanInterface=edu.harvard.iq.dvn.core.study.EditStudyService.class)
 public class EditStudyPage extends VDCBaseBean implements java.io.Serializable  {
     EditStudyService editStudyService;
     @EJB StudyServiceLocal studyService;
     @EJB VDCNetworkServiceLocal vdcNetworkService;
     @EJB VDCServiceLocal vdcService;
+    
+    @Inject private VersionNotesPopupBean versionNotesPopup;
     
     /**
      * <p>Construct a new Page bean instance.</p>
@@ -1164,7 +1171,6 @@ public class EditStudyPage extends VDCBaseBean implements java.io.Serializable  
     }
     
     
-    private VersionNotesPopupBean versionNotesPopup;
 
     public VersionNotesPopupBean getVersionNotesPopup() {
         return versionNotesPopup;
@@ -1192,11 +1198,8 @@ public class EditStudyPage extends VDCBaseBean implements java.io.Serializable  
         }
 
         editStudyService.save(getVDCRequestBean().getCurrentVDCId(),getVDCSessionBean().getLoginBean().getUser().getId());
-       
-        getVDCRequestBean().setStudyId(study.getId());
-        getVDCRequestBean().setStudyVersionNumber(metadata.getStudyVersion().getVersionNumber());
-       
-        return "viewStudy";
+             
+        return "/study/StudyPage?faces-redirect=true&studyId=" + study.getId()+ "&versionNumber=" + metadata.getStudyVersion().getVersionNumber() + "&vdcId=" + getVDCRequestBean().getCurrentVDCId();
     }
     
     

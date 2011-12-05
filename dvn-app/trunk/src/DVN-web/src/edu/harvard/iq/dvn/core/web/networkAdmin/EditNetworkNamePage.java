@@ -121,10 +121,6 @@ public class EditNetworkNamePage extends VDCBaseBean  implements java.io.Seriali
      */
     public void prerender() {
     }
-
-    public void preRenderView() {
-        this.setNetworkName(vdcNetworkService.find(new Long(1)).getName());
-    }
     
     /** 
      * <p>Callback method that is called after rendering is completed for

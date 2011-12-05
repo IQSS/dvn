@@ -403,12 +403,12 @@
                                         <ice:graphicImage value="/resources/images/icon_info.gif" styleClass="dvn_icon"/>
                                         <ice:outputText value=" Results found in this publication can be replicated using these data."/>
                                     </div>
-                                    <ice:outputText id="text18" value="#{studyPage.studyUI.metadata.replicationFor}" rendered="#{!empty studyPage.studyUI.metadata.replicationFor}" escape="false"/>
+                                    <ice:outputText value="#{studyPage.studyUI.metadata.replicationFor}" rendered="#{!empty studyPage.studyUI.metadata.replicationFor}" escape="false"/>
                                 </div>
 
                             </ice:panelGrid>
-                            <div jsfc="ice:panelGroup" id="groupPanel11" styleClass="vdcStudyInfoHeader">
-                                <ice:outputText id="outputText11" value="Data Citation Details"/>
+                            <div jsfc="ice:panelGroup"  styleClass="vdcStudyInfoHeader">
+                                <ice:outputText  value="Data Citation Details"/>
                                 <ice:commandButton id="commandButtonCitationInfoContract" image="/resources/images/icon_expand.gif" title="Hide fields in this section" rendered="#{studyPage.studyUI.citationInformationPanelIsRendered}" actionListener="#{studyPage.updateCitationInfoDisplay}"/>
                                 <ice:commandButton id="commandButtonCitationInfoExpand" image="/resources/images/icon_contract.gif" title="Show fields in this section" rendered="#{!studyPage.studyUI.citationInformationPanelIsRendered}" actionListener="#{studyPage.updateCitationInfoDisplay}"/>
                             </div>

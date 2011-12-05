@@ -33,7 +33,10 @@ import edu.harvard.iq.dvn.core.vdc.VDCNetworkServiceLocal;
 import edu.harvard.iq.dvn.core.vdc.VDCServiceLocal;
 import javax.ejb.EJB;
 import javax.faces.application.FacesMessage;
+import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
+import javax.inject.Inject;
+import javax.inject.Named;
 
 
 /**
@@ -43,10 +46,11 @@ import javax.faces.context.FacesContext;
  * lifecycle methods and event handlers where you may add behavior
  * to respond to incoming events.</p>
  */
+@ViewScoped
+@Named("EditContactUsPage")
 public class EditContactUsPage extends VDCBaseBean implements java.io.Serializable  {
     @EJB VDCServiceLocal vdcService;
     @EJB VDCNetworkServiceLocal vdcNetworkService;
-    
     // <editor-fold defaultstate="collapsed" desc="Creator-managed Component Definition">
     private int __placeholder;
     
@@ -87,9 +91,17 @@ public class EditContactUsPage extends VDCBaseBean implements java.io.Serializab
      * this method to allocate resources that will be required for rendering
      * this page.</p>
      */
-    public void prerender() {
+    public void prerender() {        
     }
-
+    
+    public void init() {
+        if (getVDCRequestBean().getCurrentVDCId() == null) {
+            this.setContactUsEmail(vdcNetworkService.find().getContactEmail());
+        } else {
+            VDC vdc = vdcService.find(new Long(getVDCRequestBean().getCurrentVDC().getId()));
+            this.setContactUsEmail(vdc.getContactEmail());
+        }        
+    }
     /** 
      * <p>Callback method that is called after rendering is completed for
      * this request, if <code>init()</code> was called (regardless of whether
@@ -147,9 +159,9 @@ public class EditContactUsPage extends VDCBaseBean implements java.io.Serializab
             VDC vdc = vdcService.find(new Long(getVDCRequestBean().getCurrentVDC().getId()));
             vdc.setContactEmail(this.getContactUsEmail());
             vdcService.edit(vdc);
-            forwardPage="myOptions";
+            forwardPage="/admin/OptionsPage?faces-redirect=true&vdcId="+getVDCRequestBean().getCurrentVDC().getId();
         }
-        getVDCRequestBean().setSuccessMessage("Successfully updated E-mail notifications.");
+        getExternalContext().getFlash().put("message", "Successfully updated E-mail notifications.");
         return forwardPage;
     }
     
@@ -157,7 +169,7 @@ public class EditContactUsPage extends VDCBaseBean implements java.io.Serializab
         if (getVDCRequestBean().getCurrentVDCId() == null)
             return "cancelNetwork";
         else
-            return "cancelVDC";
+            return "/admin/OptionsPage?faces-redirect=true&vdcId="+getVDCRequestBean().getCurrentVDC().getId();
     }
     
 }

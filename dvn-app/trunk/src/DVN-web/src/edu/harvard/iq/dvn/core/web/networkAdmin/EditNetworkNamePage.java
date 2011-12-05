@@ -33,6 +33,9 @@ import edu.harvard.iq.dvn.core.web.common.VDCBaseBean;
 import javax.ejb.EJB;
 import com.icesoft.faces.component.ext.HtmlInputText;
 import edu.harvard.iq.dvn.core.web.common.VDCRequestBean;
+import javax.faces.bean.ViewScoped;
+import javax.inject.Inject;
+import javax.inject.Named;
 
 /**
  * <p>Page bean that corresponds to a similarly named JSP page.  This
@@ -41,6 +44,8 @@ import edu.harvard.iq.dvn.core.web.common.VDCRequestBean;
  * lifecycle methods and event handlers where you may add behavior
  * to respond to incoming events.</p>
  */
+@ViewScoped
+@Named("EditNetworkNamePage")
 public class EditNetworkNamePage extends VDCBaseBean  implements java.io.Serializable {
     @EJB VDCNetworkServiceLocal vdcNetworkService;
     StatusMessage msg;
@@ -117,6 +122,10 @@ public class EditNetworkNamePage extends VDCBaseBean  implements java.io.Seriali
     public void prerender() {
     }
 
+    public void preRenderView() {
+        this.setNetworkName(vdcNetworkService.find(new Long(1)).getName());
+    }
+    
     /** 
      * <p>Callback method that is called after rendering is completed for
      * this request, if <code>init()</code> was called (regardless of whether
@@ -130,12 +139,10 @@ public class EditNetworkNamePage extends VDCBaseBean  implements java.io.Seriali
     
     public String saveNetworkName(){
         VDCNetwork thisVdcNetwork = vdcNetworkService.find(new Long(1));
-        String newName = (String)textField1.getValue();
         thisVdcNetwork.setName((String)textField1.getValue());
         vdcNetworkService.edit(thisVdcNetwork);
-
-        getVDCRequestBean().setVdcNetwork(thisVdcNetwork);
-        this.getVDCRequestBean().setSuccessMessage("Successfully updated network name.");
+        getVDCRequestBean().setVdcNetwork(thisVdcNetwork);        
+        getExternalContext().getFlash().put("message", "Successfully updated network name.");
         return "myNetworkOptions";
     }
 

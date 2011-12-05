@@ -32,7 +32,10 @@ import edu.harvard.iq.dvn.core.vdc.VDCNetwork;
 import edu.harvard.iq.dvn.core.vdc.VDCNetworkServiceLocal;
 import javax.ejb.EJB;
 import javax.faces.application.FacesMessage;
+import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
+import javax.inject.Inject;
+import javax.inject.Named;
 
 /**
  * <p>Page bean that corresponds to a similarly named JSP page.  This
@@ -41,6 +44,8 @@ import javax.faces.context.FacesContext;
  * lifecycle methods and event handlers where you may add behavior
  * to respond to incoming events.</p>
  */
+@ViewScoped
+@Named("EditNetworkAnnouncementsPage")
 public class EditNetworkAnnouncementsPage extends VDCBaseBean implements java.io.Serializable  {
     @EJB VDCNetworkServiceLocal vdcNetworkService;
     // <editor-fold defaultstate="collapsed" desc="Creator-managed Component Definition">
@@ -93,7 +98,7 @@ public class EditNetworkAnnouncementsPage extends VDCBaseBean implements java.io
      */
     public void prerender() {
     }
-
+    
     /** 
      * <p>Callback method that is called after rendering is completed for
      * this request, if <code>init()</code> was called (regardless of whether
@@ -135,8 +140,7 @@ public class EditNetworkAnnouncementsPage extends VDCBaseBean implements java.io
             vdcnetwork.setDisplayAnnouncements(this.isChkEnableNetworkAnnouncements());
             vdcnetwork.setAnnouncements(this.getNetworkAnnouncements());
             vdcNetworkService.edit(vdcnetwork);
-
-            getVDCRequestBean().setSuccessMessage("Successfully updated the network description.  Go to the Homepage to see your changes.");
+            getExternalContext().getFlash().put("message", "Successfully updated the network description.  Go to the Homepage to see your changes.");
             return "myNetworkOptions";
         } else {
 

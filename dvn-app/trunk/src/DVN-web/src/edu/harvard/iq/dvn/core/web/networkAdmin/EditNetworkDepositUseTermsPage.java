@@ -33,6 +33,8 @@ import javax.ejb.EJB;
 import javax.faces.application.FacesMessage;
 import javax.faces.context.FacesContext;
 import javax.faces.FacesException;
+import javax.faces.bean.ViewScoped;
+import javax.inject.Named;
 
 /**
  * <p>Page bean that corresponds to a similarly named JSP page.  This
@@ -41,6 +43,9 @@ import javax.faces.FacesException;
  * lifecycle methods and event handlers where you may add behavior
  * to respond to incoming events.</p>
  */
+
+@ViewScoped
+@Named("EditNetworkDepositUseTermsPage")
 public class EditNetworkDepositUseTermsPage extends VDCBaseBean implements java.io.Serializable  {
 
     @EJB
@@ -72,7 +77,7 @@ public class EditNetworkDepositUseTermsPage extends VDCBaseBean implements java.
             vdcNetwork.setDepositTermsOfUse(termsOfUse);
             vdcNetwork.setDepositTermsOfUseEnabled(termsOfUseEnabled);
             vdcNetworkService.edit(vdcNetwork);
-            getVDCRequestBean().setSuccessMessage("Successfully updated terms for study creation.");
+            getExternalContext().getFlash().put("message", "Successfully updated terms for study creation.");
             return "myNetworkOptions";
         } else {
             success = false;
@@ -123,7 +128,11 @@ public class EditNetworkDepositUseTermsPage extends VDCBaseBean implements java.
         return isUseTerms;
     }
 
- 
+     public void init() {
+            VDCNetwork vdcNetwork = vdcNetworkService.find();
+            setTermsOfUse(vdcNetwork.getDepositTermsOfUse());
+            setTermsOfUseEnabled(vdcNetwork.isDepositTermsOfUseEnabled());
+    } 
 
 
    

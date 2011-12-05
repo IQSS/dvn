@@ -50,17 +50,21 @@ import java.util.List;
 import java.util.Map;
 import javax.ejb.EJB;
 import javax.faces.application.FacesMessage;
+import javax.faces.bean.ViewScoped;
 import javax.faces.component.UIComponent;
 import javax.faces.component.UIInput;
 import javax.faces.context.FacesContext;
 import javax.faces.event.ActionEvent;
 import javax.faces.model.SelectItem;
+import javax.inject.Named;
 import org.apache.commons.validator.routines.InetAddressValidator;
 
 /**
  *
  * @author Ellen Kraffmiller
  */
+@ViewScoped
+@Named("EditLockssConfigPage")
 public class EditLockssConfigPage extends VDCBaseBean implements java.io.Serializable  {
     
     @EJB VDCServiceLocal vdcService;
@@ -102,6 +106,7 @@ public class EditLockssConfigPage extends VDCBaseBean implements java.io.Seriali
             selectOAISetId = new Long(-1);
         } else {
             editLockssService.initLockssConfig(lockssConfigId);
+            System.out.println("in init - editLockssService" + editLockssService); 
             lockssConfig = editLockssService.getLockssConfig();
             selectLicenseId = lockssConfig.getLicenseType().getId();
             selectHarvestType = HarvestType.valueOf(lockssConfig.getserverAccess().toString());
@@ -280,8 +285,7 @@ public class EditLockssConfigPage extends VDCBaseBean implements java.io.Seriali
 
 
 
-    public String save() {
-       
+    public String save() {  
         boolean validLicenseType = validateLicenseType();
         boolean validOai = validateOaiSet();
         boolean validServers = validateLockssServers();
@@ -305,9 +309,11 @@ public class EditLockssConfigPage extends VDCBaseBean implements java.io.Seriali
             } // network level changes is determined at runtime by db call
 
             
-            getVDCRequestBean().setSuccessMessage("Successfully updated LOCKSS harvest settings.");
+            getExternalContext().getFlash().put("message", "Successfully updated LOCKSS harvest settings.");
+                     
             return getReturnPage();
         } else {
+                    
             return "";
         }
 
@@ -323,7 +329,7 @@ public class EditLockssConfigPage extends VDCBaseBean implements java.io.Seriali
         if (getVDCRequestBean().getCurrentVDC() == null) {
             return "myNetworkOptions";
         } else {
-            return "myOptions";
+            return "/admin/OptionsPage?faces-redirect=true&vdcId="+getVDCRequestBean().getCurrentVDC().getId();
         }
     }
 

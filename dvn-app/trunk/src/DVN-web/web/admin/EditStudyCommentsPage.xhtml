@@ -12,6 +12,9 @@
 <body>
   <ui:composition template="/template.xhtml">
     <ui:param name="pageTitle" value="#{bundlePageInfo.editStudyCommentsTitle} - #{VDCRequest.dataversePageTitle}"/>
+    <ui:define name="metadata">
+        <f:event type="preRenderView" listener="#{EditStudyCommentsPage.prerenderView}" />  
+    </ui:define>
     <ui:define name="body">
       <ice:form id="editStudyCommentsForm">
        <ice:inputHidden rendered="#{VDCRequest.currentVDC != null}" id="vdcId" value="#{VDCRequest.currentVDCId}"/>
@@ -26,7 +29,7 @@
           </div>
           <div class="dvn_sectionBox">
             <div class="dvn_margin12" id="successMessageDiv">
-              <ice:inputHidden id="vdcId" value="#{VDCRequest.currentVDCId}"/>
+              <ice:inputHidden id="vdcId1" value="#{VDCRequest.currentVDCId}"/>
               <div jsfc="ice:panelGroup" styleClass="#{EditSitePage.msg.styleClass}" rendered="#{!empty EditSitePage.msg.messageText}">
                 <ice:outputText id="statusMessage" value="#{EditSitePage.msg.messageText}"/>
               </div>
@@ -43,7 +46,7 @@
                  <ice:selectBooleanCheckbox
                      id="allowStudyComments"
                      binding="#{EditStudyCommentsPage.allowStudyCommentsCheckbox}"
-                     partialSubmit="true"
+                     partialSubmit="false"
                      value="#{EditStudyCommentsPage.allowStudyComments}"
                      />
                 </div>

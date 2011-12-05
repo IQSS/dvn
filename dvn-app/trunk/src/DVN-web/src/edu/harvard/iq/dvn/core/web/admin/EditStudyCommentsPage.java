@@ -12,12 +12,16 @@ import edu.harvard.iq.dvn.core.vdc.VDCServiceLocal;
 import edu.harvard.iq.dvn.core.web.common.VDCBaseBean;
 import java.io.Serializable;
 import javax.ejb.EJB;
+import javax.faces.bean.ViewScoped;
 import javax.faces.event.ValueChangeEvent;
+import javax.inject.Named;
 
 /**
  *
  * @author wbossons
  */
+@ViewScoped
+@Named("EditStudyCommentsPage")
 public class EditStudyCommentsPage extends VDCBaseBean implements Serializable {
     @EJB VDCServiceLocal vdcService;
 
@@ -34,19 +38,19 @@ public class EditStudyCommentsPage extends VDCBaseBean implements Serializable {
         allowStudyComments = vdc.isAllowStudyComments();
         allowStudyCommentsCheckbox.setValue(allowStudyComments);
     }
-
+    
     /* action methods */
     public String edit(){
         allowStudyComments = (Boolean)allowStudyCommentsCheckbox.getValue();
         vdc.setAllowStudyComments(allowStudyComments);
         vdcService.edit(vdc);
-        getVDCRequestBean().setSuccessMessage("Successfully updated study comments settings.");
         getVDCRequestBean().setCurrentVDC(vdc);
-        return "myOptions";
+        getExternalContext().getFlash().put("message", "Successfully updated study comments settings.");
+        return "/admin/OptionsPage?faces-redirect=true&vdcId="+getVDCRequestBean().getCurrentVDC().getId();
     }
 
     public String cancel() {
-        return "cancelVDC";
+        return "/admin/OptionsPage?faces-redirect=true&vdcId="+getVDCRequestBean().getCurrentVDC().getId();
     }
 
     /* getters and setters */

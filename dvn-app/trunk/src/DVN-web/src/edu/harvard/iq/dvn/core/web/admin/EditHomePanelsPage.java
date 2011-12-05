@@ -32,7 +32,9 @@ import edu.harvard.iq.dvn.core.vdc.VDC;
 import edu.harvard.iq.dvn.core.vdc.VDCServiceLocal;
 import javax.ejb.EJB;
 import javax.faces.application.FacesMessage;
+import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
+import javax.inject.Named;
 
 /**
  * <p>Page bean that corresponds to a similarly named JSP page.  This
@@ -41,6 +43,8 @@ import javax.faces.context.FacesContext;
  * lifecycle methods and event handlers where you may add behavior
  * to respond to incoming events.</p>
  */
+@ViewScoped
+@Named("EditHomePanelsPage")
 public class EditHomePanelsPage extends VDCBaseBean implements java.io.Serializable  {
      @EJB VDCServiceLocal vdcService;
      
@@ -175,8 +179,8 @@ public class EditHomePanelsPage extends VDCBaseBean implements java.io.Serializa
                 vdc.setAnnouncements(getLocalAnnouncements());
                 vdc.setDisplayNewStudies(this.isChkNewStudies());
                 vdcService.edit(vdc);
-                getVDCRequestBean().setSuccessMessage("Successfully updated dataverse description.");
-                return "myOptions";
+                getExternalContext().getFlash().put("message", "Successfully updated dataverse description.");
+                 return "/admin/OptionsPage?faces-redirect=true&vdcId="+getVDCRequestBean().getCurrentVDC().getId();
             } else {
                 ExceptionMessageWriter.removeGlobalMessage(SUCCESS_MESSAGE);
                 success = false;
@@ -188,7 +192,7 @@ public class EditHomePanelsPage extends VDCBaseBean implements java.io.Serializa
         if (getVDCRequestBean().getCurrentVDCId() == null)
             return "cancelNetwork";
         else
-            return "cancelVDC";
+             return "/admin/OptionsPage?faces-redirect=true&vdcId="+getVDCRequestBean().getCurrentVDC().getId();
     }
     
     //UTILITY METHODS

@@ -12,6 +12,9 @@
 <body>
   <ui:composition template="/template.xhtml">
     <ui:param name="pageTitle" value="#{bundlePageInfo.editDvDescriptionTitle} - #{VDCRequest.dataversePageTitle}"/>
+    <ui:define name="metadata">
+        <f:event type="preRenderView" listener="#{EditHomePanelsPage.preRenderView}" />  
+    </ui:define>
     <ui:define name="body">
       <ice:form id="editHomePanelsForm">
         <ice:inputHidden rendered="#{VDCRequest.currentVDCId != null}" id="vdcId" value="#{VDCRequest.currentVDCId}"/>

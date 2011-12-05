@@ -12,9 +12,12 @@
 <body>
   <ui:composition template="/template.xhtml">
     <ui:param name="pageTitle"  value="#{bundlePageInfo.editDvSettingsTitle} - #{VDCRequest.dataversePageTitle}"/>
+    <ui:define name="metadata">
+        <f:event type="preRenderView" listener="#{EditSitePage.preRenderView}" />  
+    </ui:define>
     <ui:define name="body">
       <ice:form id="editsiteform">
-           <ice:message for="editsiteform" id ="boxErrorMsg"  styleClass="errorMessage"   />
+           <ice:message for="editsiteform" id ="boxErrorMsg1"  styleClass="errorMessage"   />
         <script type="text/javascript">
             //<![CDATA[
             function changeValue(obj) {
@@ -185,6 +188,7 @@
                                      id="dataverseShortDescription"
                                      required="#{VDCRequest.vdcNetwork.requireDVdescription}"
                                      validator="#{EditSitePage.validateShortDescription}"
+                                     value="#{VDCRequest.currentVDC.description}"
                                      requiredMessage="This field is required."
                                      />
                   <br/>
@@ -196,14 +200,14 @@
                       <ice:outputText id="selectedGroupText" value="Classification"/>
                       <ice:graphicImage value="#{bundle.iconRequired}" rendered="#{VDCRequest.vdcNetwork.requireDVclassification}" />
                     </ice:outputLabel>
-                      <ice:message for="classificationCheckBox" id ="boxErrorMsg"  styleClass="errorMessage"   />
+                      <ice:message for="classificationCheckBox" id ="boxErrorMsg2"  styleClass="errorMessage"   />
                   </div>
                   <div jsfc="ice:panelGroup" rendered="#{empty EditSitePage.classificationList.classificationUIs}">
                       <ice:outputText styleClass="vdcHelpText" value="There are no classifications set up for this dataverse network."/>
                   </div>
                   <div jsfc="ice:panelGroup" rendered="#{!empty EditSitePage.classificationList.classificationUIs}">
                     <ice:outputText styleClass="vdcHelpText" for="selectedGroup" value="#{bundle.groupSelect}"/>
-                     <ice:message for="classificationCheckBox" id ="boxErrorMsg"  styleClass="errorMessage"   />
+                     <ice:message for="classificationCheckBox" id ="boxErrorMsg3"  styleClass="errorMessage"   />
                     <ice:dataTable id="dataverseList" styleClass="dvnCreateDvClassificationTable" cellspacing="0" cellpadding="0" columns="2" width="100%"
                                    headerClass="groupRow" rowClasses="evenRow,oddRow" columnWidths="2%,98%"
                                    scrollable="true"
@@ -213,7 +217,7 @@
                         <ice:selectBooleanCheckbox id="classificationCheckBox" styleClass="classificationCheckBox" partialSubmit="true"
                                                    value="#{classUI.selected}" rendered="#{classUI.level >1}"/>
                       </ice:column>
-                      <ice:message for="editsiteform" id ="boxErrorMsg"  styleClass="errorMessage"   />
+                      <ice:message for="editsiteform" id ="boxErrorMsg4"  styleClass="errorMessage"   />
                       <!-- classification name -->
                       <ice:column styleClass="dvnCreateDvClassificationNameColumn" rendered="#{classUI.level == 1}">
                         <ice:outputText value="#{classUI.vdcGroup.name}"/>
@@ -222,7 +226,7 @@
                         <ice:outputText styleClass="dvnCreateDvClassificationTableChild#{classUI.level}" value="#{classUI.vdcGroup.name}"/>
                       </ice:column>
                     </ice:dataTable>
-                     <ice:message for="classificationCheckBox" id ="boxErrorMsg"  styleClass="errorMessage"   />
+                     <ice:message for="classificationCheckBox" id ="boxErrorMsg5"  styleClass="errorMessage"   />
                   </div>
                      
               </ice:panelGrid>

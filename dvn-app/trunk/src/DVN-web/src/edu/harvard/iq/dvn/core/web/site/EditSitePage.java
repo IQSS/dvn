@@ -52,9 +52,11 @@ import edu.harvard.iq.dvn.core.util.PropertyUtil;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
 import javax.faces.event.ValueChangeEvent;
 import javax.faces.model.SelectItem;
+import javax.inject.Named;
 import javax.servlet.http.HttpServletRequest;
 
 /**
@@ -64,6 +66,8 @@ import javax.servlet.http.HttpServletRequest;
  * lifecycle methods and event handlers where you may add behavior
  * to respond to incoming events.</p>
  */
+@ViewScoped
+@Named("EditSitePage")
 public class EditSitePage extends VDCBaseBean implements java.io.Serializable  {
     @EJB VDCServiceLocal           vdcService;
     @EJB VDCCollectionServiceLocal vdcCollectionService;
@@ -81,7 +85,7 @@ public class EditSitePage extends VDCBaseBean implements java.io.Serializable  {
     private HtmlInputTextarea shortDescriptionInput = new HtmlInputTextarea();
     private HtmlOutputText  shortDescriptionLabelText;
     private HtmlOutputLabel shortDescriptionLabel;
-    private String          dataverseType = null;
+    private String          dataverseType = "";
     private String          firstName = new String("");
     private String          lastName;
     private HtmlInputTextarea          shortDescription = new HtmlInputTextarea();
@@ -261,7 +265,7 @@ public class EditSitePage extends VDCBaseBean implements java.io.Serializable  {
      */
     public void prerender() {
     }
-
+    
     /** 
      * <p>Callback method that is called after rendering is completed for
      * this request, if <code>init()</code> was called (regardless of whether
@@ -273,7 +277,7 @@ public class EditSitePage extends VDCBaseBean implements java.io.Serializable  {
     public void destroy() {
     }
     
-    ClassificationList classificationList = null;
+    ClassificationList classificationList =  new ClassificationList();
 
     public ClassificationList getClassificationList() {
         return classificationList;
@@ -283,7 +287,7 @@ public class EditSitePage extends VDCBaseBean implements java.io.Serializable  {
         this.classificationList = classificationList;
     }
      private void saveClassifications(VDC vdc) {
-         vdc.getVdcGroups().clear();
+        vdc.getVdcGroups().clear();
         for (ClassificationUI classUI: classificationList.getClassificationUIs()) {
             if (classUI.isSelected()) {
                 vdc.getVdcGroups().add(classUI.getVdcGroup());
@@ -299,7 +303,7 @@ public class EditSitePage extends VDCBaseBean implements java.io.Serializable  {
             thisVDC.setDtype(dataversetype);
             thisVDC.setName((String)dataverseName.getValue());
             thisVDC.setAlias((String)dataverseAlias.getValue());
-            thisVDC.setAffiliation((String)affiliation.getValue());
+            thisVDC.setAffiliation((String)affiliation.getValue());           
             thisVDC.setDvnDescription((String)shortDescription.getValue());
             if (dataverseType.equals("Scholar")) {
                 thisVDC.setFirstName(this.firstName);
@@ -312,8 +316,8 @@ public class EditSitePage extends VDCBaseBean implements java.io.Serializable  {
             saveClassifications(thisVDC);
             vdcService.edit(thisVDC);
             getVDCRequestBean().setCurrentVDC(thisVDC);
-            getVDCRequestBean().setSuccessMessage("Successfully updated general settings.");
-            return "myOptions";
+            getExternalContext().getFlash().put("message", "Successfully updated general settings.");
+            return "/admin/OptionsPage?faces-redirect=true&vdcId="+thisVDC.getId();
         } else {
             success = false;
             return null;
@@ -323,7 +327,8 @@ public class EditSitePage extends VDCBaseBean implements java.io.Serializable  {
    
     
     public String cancel(){
-        return "myOptions";
+        VDC thisVDC = getVDCRequestBean().getCurrentVDC();
+        return "/admin/OptionsPage?faces-redirect=true&vdcId="+thisVDC.getId();
     }
     
     public void validateName(FacesContext context,
@@ -428,7 +433,7 @@ public class EditSitePage extends VDCBaseBean implements java.io.Serializable  {
      * Getter for property affiliation.
      * @return Value of property affiliation.
      */
-    public HtmlInputText getAffiliation() {
+    public HtmlInputText getAffiliation() {      
         if (affiliation == null)
         {
             HtmlInputText affiliationText = new HtmlInputText();

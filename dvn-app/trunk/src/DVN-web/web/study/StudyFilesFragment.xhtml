@@ -5,11 +5,11 @@
                       xmlns:ice="http://www.icesoft.com/icefaces/component"
                       xmlns:dvn="/WEB-INF/tlds/dvn-components"
                       jsfc="ice:panelGroup"
-                      id="layoutPanelComments"
+                      id="layoutPanelStudyFiles"
                       panelLayout="flow"
                       styleClass="vdcStudyCommentsBlock">
                   <div jsfc="ice:panelGroup"
-                       id="commentContentPanel"
+                       id="studyFilesContentPanel"
                        panelLayout="flow">
 
                     <ice:inputHidden id="touRequired"  value="#{studyPage.termsOfUseRequired}"/>
@@ -162,10 +162,10 @@
                                                                 </ice:column>
                                                                 <ice:column id="column22" rendered="#{studyFileUI.studyFile.subsettable}">
                                                                     <div jsfc="ice:panelGroup" styleClass="vdcStudyFileSubsetAnalysis">
-                                                                        <ice:outputLink rendered="#{studyFileUI.tabularDataFile}" id="fileSubset2" styleClass="vdcStudyFileSubsetAnalysisLink" value="/dvn#{VDCRequest.currentVDCURL}/faces/subsetting/SubsettingPage.xhtml?dtId=#{studyFileUI.studyFile.dataTable.id}&amp;versionNumber=#{studyPage.studyUI.studyVersion.versionNumber}#{VDCRequest.studyListingIndexAsParameter}">
+                                                                        <ice:outputLink rendered="#{studyFileUI.tabularDataFile}" id="fileSubsetTabular" styleClass="vdcStudyFileSubsetAnalysisLink" value="/dvn#{VDCRequest.currentVDCURL}/faces/subsetting/SubsettingPage.xhtml?dtId=#{studyFileUI.studyFile.dataTable.id}&amp;versionNumber=#{studyPage.studyUI.studyVersion.versionNumber}#{VDCRequest.studyListingIndexAsParameter}">
                                                                             <ice:outputText value="Access Subset/Analysis"/>
                                                                         </ice:outputLink>
-                                                                        <ice:outputLink rendered="#{studyFileUI.networkDataFile}" id="fileSubset2" styleClass="vdcStudyFileSubsetAnalysisLink" value="/dvn#{VDCRequest.currentVDCURL}/faces/subsetting/NetworkDataAnalysisPage.xhtml?fileId=#{studyFileUI.studyFile.id}&amp;versionNumber=#{studyPage.studyUI.studyVersion.versionNumber}#{VDCRequest.studyListingIndexAsParameter}">
+                                                                        <ice:outputLink rendered="#{studyFileUI.networkDataFile}" id="fileSubsetNetwork" styleClass="vdcStudyFileSubsetAnalysisLink" value="/dvn#{VDCRequest.currentVDCURL}/faces/subsetting/NetworkDataAnalysisPage.xhtml?fileId=#{studyFileUI.studyFile.id}&amp;versionNumber=#{studyPage.studyUI.studyVersion.versionNumber}#{VDCRequest.studyListingIndexAsParameter}">
                                                                             <ice:outputText value="Access Subset/Analysis"/>
                                                                         </ice:outputLink>
                                                                         <ice:outputLink rendered="#{studyFileUI.visualizationReleased and !studyFileUI.restrictedForUser}" id="datavisualization" styleClass="vdcStudyFileSubsetAnalysisLink dvnStudyFileVisualizationLink" value="/dvn#{VDCRequest.currentVDCURL}/faces/viz/ExploreDataPage.xhtml?fileId=#{studyFileUI.studyFile.id}&amp;versionNumber=#{studyPage.studyUI.studyVersion.versionNumber}#{VDCRequest.studyListingIndexAsParameter}">

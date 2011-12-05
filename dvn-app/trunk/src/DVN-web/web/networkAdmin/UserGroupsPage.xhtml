@@ -12,6 +12,9 @@
 <body>
   <ui:composition template="/template.xhtml">
     <ui:param name="pageTitle" value="#{bundlePageInfo.manageGroupsTitle} - #{VDCRequest.dataversePageTitle}"/>
+    <ui:define name="metadata">
+        <f:event type="preRenderView" listener="#{UserGroupsPage.preRenderView}" />  
+    </ui:define>
     <ui:define name="body">
       <ice:form id="form1">
         <div class="dvn_section">

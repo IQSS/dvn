@@ -1,14 +1,9 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<f:view
-      xmlns:ui="http://java.sun.com/jsf/facelets"
+<html xmlns:ui="http://java.sun.com/jsf/facelets"
       xmlns:h="http://java.sun.com/jsf/html"
       xmlns:f="http://java.sun.com/jsf/core"
-      xmlns:jsp="http://java.sun.com/JSP/Page"
       xmlns:ice="http://www.icesoft.com/icefaces/component"
       xmlns:dvn="/WEB-INF/tlds/dvn-components">
-<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<head>
+<h:head>
   <script type="text/javascript">
       // <![CDATA[
       // check to see if page is loading in hidden grame; if so "pop" out to top level
@@ -93,9 +88,9 @@
   <ice:outputText escape="false" nospan="true"
                   rendered="#{applicationScope.googleAnalyticsKey != null || MainLayoutBean.googleAnalyticsKey != null}"
                   value="#{(applicationScope.googleAnalyticsSourceCode != null) ? applicationScope.googleAnalyticsSourceCode : MainLayoutBean.googleAnalyticsSourceCode}"/>
-</head>
+</h:head>
 <!--  this template is example 4.3 in the Facelets Shortcut -->
-<body>
+<h:body>
     <iframe  style="display: none;" name="hiddenDownloadFrame"/>
     <f:loadBundle basename="Bundle" var="bundle"/>
     <f:loadBundle basename="BundlePageInfo" var="bundlePageInfo"/>
@@ -212,6 +207,5 @@
     <!-- define them in these fragments that can be loaded where necessary. -->
     <ui:include src="study/VersionNotesPopupFragment.xhtml"/>
     <ui:include src="study/DeletePopupFragment.xhtml"/>
-</body>
+</h:body>
 </html>
-</f:view>

@@ -33,8 +33,11 @@ import edu.harvard.iq.dvn.core.vdc.VDCNetworkServiceLocal;
 import edu.harvard.iq.dvn.core.vdc.VDCServiceLocal;
 import edu.harvard.iq.dvn.core.web.common.VDCBaseBean;
 import javax.ejb.EJB;
+import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
 import javax.faces.event.ValueChangeEvent;
+import javax.inject.Inject;
+import javax.inject.Named;
 
 /**
  * <p>Page bean that corresponds to a similarly named JSP page.  This
@@ -43,6 +46,8 @@ import javax.faces.event.ValueChangeEvent;
  * lifecycle methods and event handlers where you may add behavior
  * to respond to incoming events.</p>
  */
+@ViewScoped
+@Named("EditBannerFooterPage")
 public class EditBannerFooterPage extends VDCBaseBean  implements java.io.Serializable {
     @EJB VDCServiceLocal vdcService;
     @EJB VDCNetworkServiceLocal vdcNetworkService;
@@ -102,7 +107,7 @@ public class EditBannerFooterPage extends VDCBaseBean  implements java.io.Serial
      */
     public void prerender() {
     }
-
+    
     /** 
      * <p>Callback method that is called after rendering is completed for
      * this request, if <code>init()</code> was called (regardless of whether
@@ -157,6 +162,7 @@ public class EditBannerFooterPage extends VDCBaseBean  implements java.io.Serial
     
     // ACTION METHODS
     public String save_action() {
+        System.out.println("in save ");
         String forwardPage=null;
         if (getVDCRequestBean().getCurrentVDCId() == null) {
             // this is a save against the network
@@ -175,11 +181,12 @@ public class EditBannerFooterPage extends VDCBaseBean  implements java.io.Serial
             vdc.setParentSite(parentSite);
             vdcService.edit(vdc);
             getVDCRequestBean().setCurrentVDC(vdc);
-            forwardPage="myOptions";
+            forwardPage="/admin/OptionsPage?faces-redirect=true&vdcId="+getVDCRequestBean().getCurrentVDC().getId();
         }
-        getVDCRequestBean().setSuccessMessage("Successfully updated layout branding.");
+        
+        System.out.println("forwardPage is " + forwardPage);
+        getExternalContext().getFlash().put("message","Successfully updated layout branding.");
         return forwardPage;
-
     }
 
     public String cancel_action(){

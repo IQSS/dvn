@@ -30,18 +30,24 @@
 package edu.harvard.iq.dvn.core.web.login;
 
 import edu.harvard.iq.dvn.core.admin.UserServiceLocal;
+import edu.harvard.iq.dvn.core.vdc.VDCNetwork;
 import edu.harvard.iq.dvn.core.vdc.VDCNetworkServiceLocal;
 import edu.harvard.iq.dvn.core.web.common.VDCBaseBean;
 import javax.ejb.EJB;
 import javax.faces.application.FacesMessage;
+import javax.faces.bean.ViewScoped;
 import javax.faces.component.UIComponent;
 import javax.faces.component.UIInput;
 import javax.faces.context.FacesContext;
+import javax.inject.Named;
 
 /**
  *
  * @author Gustavo Durand
  */
+
+@ViewScoped
+@Named("AccountUseTermsPage")
 public class AccountTermsOfUsePage extends VDCBaseBean implements java.io.Serializable  {
     @EJB UserServiceLocal userService;
     private String termsOfUse; 
@@ -57,7 +63,6 @@ public class AccountTermsOfUsePage extends VDCBaseBean implements java.io.Serial
   
 
     public void init() {
-        
   
         super.init();
      
@@ -69,7 +74,6 @@ public class AccountTermsOfUsePage extends VDCBaseBean implements java.io.Serial
     //private boolean studyTermsAccepted;
     private boolean termsAccepted;
     
-  
     
 
     public boolean isTermsAccepted() {
@@ -82,14 +86,14 @@ public class AccountTermsOfUsePage extends VDCBaseBean implements java.io.Serial
     
     public String acceptTerms_action () {
     
-             LoginWorkflowBean loginWorkflowBean = (LoginWorkflowBean)this.getBean("LoginWorkflowBean");
+            LoginWorkflowBean loginWorkflowBean = (LoginWorkflowBean)this.getBean("LoginWorkflowBean");
             String forward = loginWorkflowBean.processTermsOfUse(termsAccepted);
         
             return forward;      
         
     }    
 
-     public void validateTermsAccepted(FacesContext context,
+    public void validateTermsAccepted(FacesContext context,
             UIComponent toValidate,
             Object value) {
       

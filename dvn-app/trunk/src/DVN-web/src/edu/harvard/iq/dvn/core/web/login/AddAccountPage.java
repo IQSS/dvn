@@ -42,7 +42,9 @@ import javax.faces.component.UIComponent;
 import javax.faces.component.UIInput;
 import com.icesoft.faces.component.ext.HtmlInputHidden;
 import com.icesoft.faces.component.ext.HtmlInputSecret;
+import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
+import javax.inject.Named;
 import javax.servlet.http.HttpServletRequest;
 
 /**
@@ -52,6 +54,8 @@ import javax.servlet.http.HttpServletRequest;
  * lifecycle methods and event handlers where you may add behavior
  * to respond to incoming events.</p>
  */
+@ViewScoped
+@Named("AddAccountPage")
 public class AddAccountPage extends VDCBaseBean implements java.io.Serializable  {
   
     @EJB EditUserService editUserService;
@@ -166,8 +170,6 @@ public class AddAccountPage extends VDCBaseBean implements java.io.Serializable 
     }
     
     public String createAccount() {
-        String forwardPage=null;
-        Long contributorRequestVdcId = null;
         String workflowValue=null;
         user.setActive(true);
         editUserService.save();
@@ -176,7 +178,6 @@ public class AddAccountPage extends VDCBaseBean implements java.io.Serializable 
             msg.setMessageText("User account created successfully.");
             msg.setStyleClass("successMessage");
             getRequestMap().put("statusMessage",msg);
-            forwardPage="viewAccount";
         } 
         LoginWorkflowBean loginWorkflowBean = (LoginWorkflowBean)this.getBean("LoginWorkflowBean");       
         return loginWorkflowBean.processAddAccount(user);

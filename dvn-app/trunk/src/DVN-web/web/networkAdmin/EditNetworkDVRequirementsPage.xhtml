@@ -6,54 +6,56 @@
       xmlns:f="http://java.sun.com/jsf/core"
       xmlns:jsp="http://java.sun.com/JSP/Page"
       xmlns:ice="http://www.icesoft.com/icefaces/component">
-    <head>
-        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
-    </head>
-    <body>
-        <ui:composition template="/template.xhtml">
-            <ui:param name="pageTitle" value="#{bundlePageInfo.editNetworkDvRequirementsTitle} - #{VDCRequest.dataversePageTitle}"/>
-            <ui:define name="metadata">
-                <f:metadata></f:metadata>
-            </ui:define>
-            <ui:define name="body">
-                <ice:form id="form1">
-                    <ice:inputHidden id="vdcId" value="#{VDCRequest.currentVDCId}"/>
-                    <div class="dvn_section">
-                        <div jsfc="ice:panelGroup" styleClass="dvnMsgBlockRound dvnInformationMessage">
-                            <div class="dvnMsgBlockContainer">
-                                <ice:outputText value="#{bundlePageInfo.editNetworkDvRequirementsHelp}" escape="false"/>
-                            </div>
-                        </div>
-                        <div class="dvn_sectionTitle">
-                            <ice:outputText value="#{bundlePageInfo.editNetworkDvRequirementsTitle}"/>
-                        </div>
-                        <div class="dvn_sectionBox">
-                            <div class="dvn_margin12">
-                                <div jsfc="ice:panelGroup">
-                                    <ice:selectBooleanCheckbox value="#{EditNetworkDVRequirementsPage.requireDvdescription}"/>
-                                    <ice:outputText value=" Require Network Home Page Dataverse Description"/>
-                                </div>
-                                <div jsfc="ice:panelGroup">
-                                    <ice:selectBooleanCheckbox value="#{EditNetworkDVRequirementsPage.requireDvaffiliation}"/>
-                                    <ice:outputText value=" Require Dataverse Affiliation"/>
-                                </div>
-                                <div jsfc="ice:panelGroup">
-                                    <ice:selectBooleanCheckbox value="#{EditNetworkDVRequirementsPage.requireDvclassification}"/>
-                                    <ice:outputText value=" Require Dataverse Classification"/>
-                                </div>
-                                <div jsfc="ice:panelGroup">
-                                    <ice:selectBooleanCheckbox value="#{EditNetworkDVRequirementsPage.requireDvstudiesforrelease}"/>
-                                    <ice:outputText value=" Require Dataverse Studies to be included prior to release"/>
-                                </div>
-                                <div jsfc="ice:panelGroup" id="groupPanel2" styleClass="dvnFormPadding dvnFormMargin">
-                                    <ice:commandButton id="button1" value="Save" action="#{EditNetworkDVRequirementsPage.save_action}"/>
-                                    <ice:commandButton id="button2" value="Cancel" action="#{EditNetworkDVRequirementsPage.cancel_action}"/>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </ice:form>
-            </ui:define>
-        </ui:composition>
-    </body>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+</head>
+<body>
+  <ui:composition template="/template.xhtml">
+    <ui:param name="pageTitle" value="#{bundlePageInfo.editNetworkDvRequirementsTitle} - #{VDCRequest.dataversePageTitle}"/>
+    <ui:define name="metadata">
+        <f:metadata>
+            <f:event type="preRenderView" listener="#{EditNetworkDVRequirementsPage.preRenderView}" />            
+         </f:metadata>
+    </ui:define>
+    <ui:define name="body">
+      <ice:form id="form1">
+        <ice:inputHidden id="vdcId" value="#{VDCRequest.currentVDCId}"/>
+        <div class="dvn_section">
+          <div jsfc="ice:panelGroup" styleClass="dvnMsgBlockRound dvnInformationMessage">
+            <div class="dvnMsgBlockContainer">
+              <ice:outputText value="#{bundlePageInfo.editNetworkDvRequirementsHelp}" escape="false"/>
+            </div>
+          </div>
+          <div class="dvn_sectionTitle">
+            <ice:outputText value="#{bundlePageInfo.editNetworkDvRequirementsTitle}"/>
+          </div>
+          <div class="dvn_sectionBox">
+            <div class="dvn_margin12">
+              <div jsfc="ice:panelGroup">
+                <ice:selectBooleanCheckbox value="#{EditNetworkDVRequirementsPage.requireDvdescription}"/>
+                <ice:outputText value=" Require Network Home Page Dataverse Description"/>
+              </div>
+              <div jsfc="ice:panelGroup">
+                <ice:selectBooleanCheckbox value="#{EditNetworkDVRequirementsPage.requireDvaffiliation}"/>
+                <ice:outputText value=" Require Dataverse Affiliation"/>
+              </div>
+              <div jsfc="ice:panelGroup">
+                <ice:selectBooleanCheckbox value="#{EditNetworkDVRequirementsPage.requireDvclassification}"/>
+                <ice:outputText value=" Require Dataverse Classification"/>
+              </div>
+              <div jsfc="ice:panelGroup">
+                <ice:selectBooleanCheckbox value="#{EditNetworkDVRequirementsPage.requireDvstudiesforrelease}"/>
+                <ice:outputText value=" Require Dataverse Studies to be included prior to release"/>
+              </div>
+              <div jsfc="ice:panelGroup" id="groupPanel2" styleClass="dvnFormPadding dvnFormMargin">
+                <ice:commandButton id="button1" value="Save" action="#{EditNetworkDVRequirementsPage.save_action}"/>
+                <ice:commandButton id="button2" value="Cancel" action="#{EditNetworkDVRequirementsPage.cancel_action}"/>
+              </div>
+            </div>
+          </div>
+        </div>
+      </ice:form>
+    </ui:define>
+  </ui:composition>
+</body>
 </html>

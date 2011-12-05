@@ -33,6 +33,8 @@ import javax.ejb.EJB;
 import javax.faces.application.FacesMessage;
 import javax.faces.context.FacesContext;
 import javax.faces.FacesException;
+import javax.faces.bean.ViewScoped;
+import javax.inject.Named;
 
 /**
  * <p>Page bean that corresponds to a similarly named JSP page.  This
@@ -41,6 +43,8 @@ import javax.faces.FacesException;
  * lifecycle methods and event handlers where you may add behavior
  * to respond to incoming events.</p>
  */
+@ViewScoped
+@Named("EditNetworkDownloadUseTermsPage")
 public class EditNetworkDownloadUseTermsPage extends VDCBaseBean implements java.io.Serializable  {
 
     @EJB
@@ -72,7 +76,7 @@ public class EditNetworkDownloadUseTermsPage extends VDCBaseBean implements java
             vdcNetwork.setDownloadTermsOfUse(termsOfUse);
             vdcNetwork.setDownloadTermsOfUseEnabled(termsOfUseEnabled);
             vdcNetworkService.edit(vdcNetwork);
-            getVDCRequestBean().setSuccessMessage("Successfully updated terms for file download.");
+            getExternalContext().getFlash().put("message", "Successfully updated terms for file download.");
             return "myNetworkOptions";
         } else {
             success = false;

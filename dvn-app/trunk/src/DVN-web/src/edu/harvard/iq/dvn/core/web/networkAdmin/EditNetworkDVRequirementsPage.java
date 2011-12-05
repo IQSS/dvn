@@ -9,14 +9,19 @@ import edu.harvard.iq.dvn.core.vdc.VDCNetwork;
 import edu.harvard.iq.dvn.core.vdc.VDCNetworkServiceLocal;
 import edu.harvard.iq.dvn.core.web.common.VDCBaseBean;
 import javax.ejb.EJB;
+import javax.faces.bean.ViewScoped;
+import javax.inject.Inject;
+import javax.inject.Named;
 
 /**
  *
  * @author skraffmiller
  */
+@ViewScoped
+@Named("EditNetworkDVRequirementsPage")
 public class EditNetworkDVRequirementsPage extends VDCBaseBean implements java.io.Serializable {
 @EJB VDCNetworkServiceLocal vdcNetworkService;
-            VDCNetwork vdcnetwork;
+VDCNetwork vdcnetwork;
  // <editor-fold defaultstate="collapsed" desc="Creator-managed Component Definition">
     private int __placeholder;
 
@@ -79,7 +84,7 @@ public class EditNetworkDVRequirementsPage extends VDCBaseBean implements java.i
      * method to release resources acquired in the <code>init()</code>,
      * <code>preprocess()</code>, or <code>prerender()</code> methods (or
      * acquired during execution of an event handler).</p>
-     */
+     */    
     public void destroy() {
     }
 
@@ -128,14 +133,12 @@ public class EditNetworkDVRequirementsPage extends VDCBaseBean implements java.i
 
 
     public String save_action() {
-
             vdcnetwork.setRequireDVaffiliation(requireDvaffiliation);
             vdcnetwork.setRequireDVclassification(requireDvclassification);
             vdcnetwork.setRequireDVdescription(requireDvdescription);
             vdcnetwork.setRequireDVstudiesforrelease(requireDvstudiesforrelease);
             vdcNetworkService.edit(vdcnetwork);
-
-            getVDCRequestBean().setSuccessMessage("Successfully updated the network dataverse creation and release requirements.  ");
+            getExternalContext().getFlash().put("message", "Successfully updated the network dataverse creation and release requirements.  ");
             return "myNetworkOptions";
     }
 

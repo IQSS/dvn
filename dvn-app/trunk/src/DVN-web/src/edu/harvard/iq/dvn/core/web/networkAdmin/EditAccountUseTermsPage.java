@@ -32,9 +32,12 @@ import edu.harvard.iq.dvn.core.vdc.VDCNetworkServiceLocal;
 import edu.harvard.iq.dvn.core.web.common.VDCBaseBean;
 import java.util.Date;
 import javax.ejb.EJB;
+import javax.enterprise.context.Conversation;
 import javax.faces.application.FacesMessage;
 import javax.faces.context.FacesContext;
 import javax.faces.FacesException;
+import javax.faces.bean.ViewScoped;
+import javax.inject.Named;
 
 /**
  * <p>Page bean that corresponds to a similarly named JSP page.  This
@@ -43,6 +46,9 @@ import javax.faces.FacesException;
  * lifecycle methods and event handlers where you may add behavior
  * to respond to incoming events.</p>
  */
+
+@ViewScoped
+@Named("EditAccountUseTermsPage")
 public class EditAccountUseTermsPage extends VDCBaseBean implements java.io.Serializable  {
 
     @EJB
@@ -77,7 +83,7 @@ public class EditAccountUseTermsPage extends VDCBaseBean implements java.io.Seri
             vdcNetwork.setTermsOfUseUpdated(new Date());
             vdcNetworkService.edit(vdcNetwork);
             userService.clearAgreedTermsOfUse();
-            getVDCRequestBean().setSuccessMessage("Successfully updated terms for account creation.");
+            getExternalContext().getFlash().put("message", "Successfully updated terms for account creation.");
             return "myNetworkOptions";
         } else {
             success = false;
@@ -150,6 +156,12 @@ public class EditAccountUseTermsPage extends VDCBaseBean implements java.io.Seri
      * this page.</p>
      */
     public void prerender() {
+    }
+            
+    public void init() {
+            VDCNetwork vdcNetwork = vdcNetworkService.find();
+            setTermsOfUse(vdcNetwork.getTermsOfUse());
+            setTermsOfUseEnabled(vdcNetwork.isTermsOfUseEnabled());
     }
 
     /**

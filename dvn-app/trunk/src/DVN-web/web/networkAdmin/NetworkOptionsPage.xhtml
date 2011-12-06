@@ -23,9 +23,9 @@
                         <!-- DATAVERSE OPTIONS -->
                         <ice:panelTab id="networkOptions" label="Network Options" url="/dvn#{VDCRequest.currentVDCURL}/faces/admin/OptionsPage.xhtml&amp;tab=dataverseOptions" rendered="#{VDCSession.loginBean.networkAdmin}">
                 <div class="dvn_section">
-                  <div jsfc="ice:panelGroup" styleClass="dvnMsgBlockRound dvnSuccessMessage" rendered="#{!empty VDCRequest.successMessage}">
+                  <div jsfc="ice:panelGroup" styleClass="dvnMsgBlockRound dvnSuccessMessage" rendered="#{!empty flash.message}">
                     <div class="dvnMsgBlockContainer">
-                      <p><ice:outputText id="statusMessage" value="#{VDCRequest.successMessage}"/></p>
+                      <p><ice:outputText id="statusMessage" value="#{flash.message}"/></p>
                     </div>
                   </div>
 

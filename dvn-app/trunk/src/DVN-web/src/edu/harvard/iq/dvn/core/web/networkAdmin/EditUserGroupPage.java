@@ -85,7 +85,7 @@ public class EditUserGroupPage extends VDCBaseBean implements java.io.Serializab
             userDetails = editUserGroupService.getUserDetailBeans();
         } else {
             System.out.println("Putting stateful session bean in request, editUserGroupService =" + editUserGroupService);
-            userGroupId = new Long( getVDCRequestBean().getRequestParam("userGroupId"));
+
             if (userGroupId == null || userGroupId.equals(new Long("-1")) ) {
                 editUserGroupService.newUserGroup();
                 sessionPut(editUserGroupService.getClass().getName(),editUserGroupService);

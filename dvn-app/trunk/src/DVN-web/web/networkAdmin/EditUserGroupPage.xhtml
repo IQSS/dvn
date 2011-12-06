@@ -13,8 +13,10 @@
   <ui:composition template="/template.xhtml">
     <ui:param name="pageTitle" value="#{bundlePageInfo.editGroupTitle} - #{VDCRequest.dataversePageTitle}"/>
     <ui:define name="metadata">
-        <f:viewParam name="userGroupId" value ="#{EditUserGroupPage.userGroupId}"/>
-        <f:event type="preRenderView" listener="#{EditUserGroupPage.preRenderView}" />  
+        <f:metadata>
+            <f:viewParam name="userGroupId" value ="#{EditUserGroupPage.userGroupId}"/>
+            <f:event type="preRenderView" listener="#{EditUserGroupPage.preRenderView}" />  
+        </f:metadata>
     </ui:define>
     <ui:define name="body">
       <ice:form id="form1">

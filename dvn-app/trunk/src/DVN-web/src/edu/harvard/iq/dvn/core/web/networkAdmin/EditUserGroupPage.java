@@ -48,10 +48,12 @@ import edu.harvard.iq.dvn.core.admin.VDCUser;
 import edu.harvard.iq.dvn.core.web.common.VDCBaseBean;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
+import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
 import javax.faces.event.ActionEvent;
 import javax.faces.event.ValueChangeEvent;
 import javax.faces.model.SelectItem;
+import javax.inject.Named;
 
 /**
  * <p>Page bean that corresponds to a similarly named JSP page.  This
@@ -60,6 +62,9 @@ import javax.faces.model.SelectItem;
  * lifecycle methods and event handlers where you may add behavior
  * to respond to incoming events.</p>
  */
+
+@ViewScoped
+@Named("EditUserGroupPage")
 public class EditUserGroupPage extends VDCBaseBean implements java.io.Serializable  {
     @EJB private EditUserGroupService editUserGroupService;
     @EJB private UserServiceLocal userService;
@@ -80,7 +85,8 @@ public class EditUserGroupPage extends VDCBaseBean implements java.io.Serializab
             userDetails = editUserGroupService.getUserDetailBeans();
         } else {
             System.out.println("Putting stateful session bean in request, editUserGroupService =" + editUserGroupService);
-            if (userGroupId.equals(new Long("-1")) ) {
+            userGroupId = new Long( getVDCRequestBean().getRequestParam("userGroupId"));
+            if (userGroupId == null || userGroupId.equals(new Long("-1")) ) {
                 editUserGroupService.newUserGroup();
                 sessionPut(editUserGroupService.getClass().getName(),editUserGroupService);
                 group = editUserGroupService.getUserGroup();
@@ -90,7 +96,7 @@ public class EditUserGroupPage extends VDCBaseBean implements java.io.Serializab
                 group = editUserGroupService.getUserGroup();
             }
             userDetails = editUserGroupService.getUserDetailBeans();
-        }       
+        }
         initAffiliates();
         initCollections();
     }
@@ -120,7 +126,7 @@ public class EditUserGroupPage extends VDCBaseBean implements java.io.Serializab
      */
     public void prerender() {
     }
-    
+        
     /**
      * <p>Callback method that is called after rendering is completed for
      * this request, if <code>init()</code> was called (regardless of whether

@@ -19,10 +19,12 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
 import javax.ejb.EJB;
+import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
 import javax.faces.event.ActionEvent;
 import javax.faces.event.ValueChangeEvent;
 import javax.faces.model.SelectItem;
+import javax.inject.Named;
 import javax.servlet.http.HttpServletResponse;
 
 
@@ -31,6 +33,8 @@ import javax.servlet.http.HttpServletResponse;
  *
  * @author Ellen Kraffmiller
  */
+@ViewScoped
+@Named("ManageStudiesList")
 public class ManageStudiesList extends VDCBaseBean {
     private @EJB StudyServiceLocal studyService;
     private List<StudyUI> studyUIList;
@@ -49,8 +53,8 @@ public class ManageStudiesList extends VDCBaseBean {
     private DataPaginator paginator;
     private static Logger dbgLog = Logger.getLogger(ManageStudiesList.class.getCanonicalName());
     private Long vdcId;
-    private LoginBean loginBean;
-    private VersionNotesPopupBean versionNotesPopupBean;
+    private LoginBean loginBean = new LoginBean();
+    private VersionNotesPopupBean versionNotesPopupBean = new VersionNotesPopupBean();
     private String successMessage;
 
     // the StudyUI object for the currently selected study:
@@ -123,6 +127,7 @@ public class ManageStudiesList extends VDCBaseBean {
             }
             List studyVersionIds =null;
             List deaccessionedStudyVersionIds = null;
+            vdcId = loginBean.getCurrentVDC().getId();
             if (vdcId != null){
                 if (contributorFilter || (!isUserCuratorOrAdminOrNetworkAdmin() && !VDCBaseBean.getVDCRequestBean().getCurrentVDC().isAllowContributorsEditAll())) {
                     studyVersionIds = studyService.getDvOrderedStudyVersionIdsByContributor(vdcId, loginBean.getUser().getId(), orderBy, ascending);
@@ -131,7 +136,7 @@ public class ManageStudiesList extends VDCBaseBean {
                     studyVersionIds = studyService.getDvOrderedStudyVersionIds(vdcId, orderBy, ascending);
                     deaccessionedStudyVersionIds = studyService.getDvOrderedDeaccessionedStudyVersionIds(vdcId, orderBy, ascending);
                 }
-            } else{
+            } else{                                
                 studyVersionIds = studyService.getAllStudyVersionIdsByContributor(loginBean.getUser().getId(), orderBy, ascending);
                 deaccessionedStudyVersionIds = studyService.getAllDeaccessionedStudyVersionIdsByContributor(loginBean.getUser().getId(), orderBy, ascending);
             }
@@ -499,9 +504,10 @@ public class ManageStudiesList extends VDCBaseBean {
     
 
     public void init() {
+        loginBean = getVDCSessionBean().getLoginBean();
         this.versionNotesPopupBean.setActionType(VersionNotesPopupBean.ActionType.MANAGE_STUDIES);
     }
-
+    
     public ManageStudiesList() {
         this(DATE_CREATED_COLUMN);
 

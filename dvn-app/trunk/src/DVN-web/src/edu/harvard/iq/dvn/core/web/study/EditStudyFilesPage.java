@@ -16,25 +16,31 @@ import javax.faces.application.FacesMessage;
 import com.icesoft.faces.component.ext.HtmlCommandButton;
 import com.icesoft.faces.component.ext.HtmlDataTable;
 import java.util.ArrayList;
+import javax.faces.bean.ViewScoped;
 import javax.faces.component.UIComponent;
 import javax.faces.component.UIInput;
 import javax.faces.context.FacesContext;
 import javax.faces.event.ActionEvent;
 import javax.faces.model.SelectItem;
+import javax.inject.Inject;
+import javax.inject.Named;
 import javax.naming.Context;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
-import javax.servlet.http.HttpServletRequest;
 
 
 /**
  *
  * @author skraffmiller
  */
+@Named("EditStudyFilesPage")
+@ViewScoped
 @EJB(name="editStudyFiles", beanInterface=edu.harvard.iq.dvn.core.study.EditStudyFilesService.class)
 public class EditStudyFilesPage extends VDCBaseBean implements java.io.Serializable {
     private EditStudyFilesService editStudyFilesService;
 
+    @Inject private VersionNotesPopupBean versionNotesPopup;    
+   
     
     public EditStudyFilesPage() {
     }
@@ -82,7 +88,6 @@ public class EditStudyFilesPage extends VDCBaseBean implements java.io.Serializa
 
     }
      
-    private VersionNotesPopupBean versionNotesPopup;
 
     public VersionNotesPopupBean getVersionNotesPopup() {
         return versionNotesPopup;

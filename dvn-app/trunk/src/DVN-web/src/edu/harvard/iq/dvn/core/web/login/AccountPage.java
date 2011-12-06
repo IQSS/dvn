@@ -30,6 +30,8 @@ import edu.harvard.iq.dvn.core.admin.VDCUser;
 import edu.harvard.iq.dvn.core.web.common.StatusMessage;
 import edu.harvard.iq.dvn.core.web.common.VDCBaseBean;
 import javax.ejb.EJB;
+import javax.faces.bean.ViewScoped;
+import javax.inject.Named;
 
 /**
  * <p>Page bean that corresponds to a similarly named JSP page.  This
@@ -38,6 +40,8 @@ import javax.ejb.EJB;
  * lifecycle methods and event handlers where you may add behavior
  * to respond to incoming events.</p>
  */
+@ViewScoped
+@Named("AccountPage")
 public class AccountPage extends VDCBaseBean implements java.io.Serializable  {
     @EJB UserServiceLocal userService;
     
@@ -55,12 +59,13 @@ public class AccountPage extends VDCBaseBean implements java.io.Serializable  {
     public void init() {
         super.init();
         statusMessage =  (StatusMessage)getRequestMap().get("statusMessage");
-        Long requestAttrib = (Long)getRequestMap().get("userId");
+       
+        Long requestAttrib = new Long ((String) getRequestMap().get("userId"));
         if (requestAttrib!=null) {
-            userId= requestAttrib;
+            userId= new Long(requestAttrib);
         }
         user = userService.find(userId);
-        
+        System.out.println("userId is "+ userId );        
     }
 
     /** 
@@ -83,7 +88,7 @@ public class AccountPage extends VDCBaseBean implements java.io.Serializable  {
      */
     public void prerender() {
     }
-
+    
     /** 
      * <p>Callback method that is called after rendering is completed for
      * this request, if <code>init()</code> was called (regardless of whether

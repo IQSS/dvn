@@ -11,6 +11,12 @@
 </head>
     <body>
         <ui:composition template="/template.xhtml">
+        <ui:define name="metadata">
+            <f:metadata>
+                <f:viewParam name="userId" value ="#{userId}"/>
+                <f:event type="preRenderView" listener="#{AccountPage.preRenderView}" />  
+            </f:metadata>
+        </ui:define>
             <ui:param name="pageTitle" value="User Account - #{VDCRequest.dataversePageTitle}"/>
             <ui:define name="body">
                 <ice:form id="accountForm">

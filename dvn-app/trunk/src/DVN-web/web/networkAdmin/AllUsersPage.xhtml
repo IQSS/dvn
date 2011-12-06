@@ -12,6 +12,9 @@
 <body>
   <ui:composition template="/template.xhtml">
     <ui:param name="pageTitle" value="#{bundlePageInfo.manageUsersTitle} - #{VDCRequest.dataversePageTitle}"/>
+        <ui:define name="metadata">
+            <f:event type="preRenderView" listener="#{AllUsersPage.preRenderView}" />  
+        </ui:define>
     <ui:define name="body">
       <ice:form id="form1">
         <ice:inputHidden id="vdcId" value="#{VDCRequest.currentVDCId}"/>
@@ -31,9 +34,11 @@
               <f:facet name="header">
                 <ice:outputText id="outputText2" value="Username"/>
               </f:facet>
-              <ice:outputLink id="hyperlink2" value="/dvn/faces/login/AccountPage.xhtml?userId=#{currentRow.user.id}&amp;vdcId=#{VDCRequest.currentVDCId}">
-                <ice:outputText id="hyperlink2Text1" value="#{currentRow.user.userName}"/>
-              </ice:outputLink>
+              <h:link id="h2" 
+                      outcome="/login/AccountPage.xhtml?userId=#{currentRow.user.id}&amp;vdcId=#{VDCRequest.currentVDCId}" 
+                      value="#{currentRow.user.userName}">     
+                  <f:param name="userId" value="#{currentRow.user.id}" />
+              </h:link>
             </ice:column>
             <ice:column id="column3">
               <f:facet name="header">

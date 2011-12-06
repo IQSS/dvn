@@ -35,7 +35,9 @@ import java.util.Iterator;
 import java.util.List;
 import javax.ejb.EJB;
 import com.icesoft.faces.component.ext.HtmlDataTable;
+import javax.faces.bean.ViewScoped;
 import javax.faces.event.ActionEvent;
+import javax.inject.Named;
 
 /**
  * <p>Page bean that corresponds to a similarly named JSP page.  This
@@ -44,6 +46,8 @@ import javax.faces.event.ActionEvent;
  * lifecycle methods and event handlers where you may add behavior
  * to respond to incoming events.</p>
  */
+@ViewScoped
+@Named("AllUsersPage")
 public class AllUsersPage extends VDCBaseBean implements java.io.Serializable  {
     @EJB UserServiceLocal userService;
     @EJB VDCNetworkServiceLocal vdcNetworkService;
@@ -63,6 +67,7 @@ public class AllUsersPage extends VDCBaseBean implements java.io.Serializable  {
             boolean defaultNetworkAdmin = elem.getNetworkRole()!=null
                     && elem.getId().equals(vdcNetworkService.find().getDefaultNetworkAdmin().getId());
             userData.add(new AllUsersDataBean(elem, defaultNetworkAdmin));
+            System.out.println("elem is "+elem+", elem id is "+elem.getId());
         }
     }
     
@@ -94,7 +99,7 @@ public class AllUsersPage extends VDCBaseBean implements java.io.Serializable  {
      */
     public void prerender() {
     }
-    
+      
     /**
      * <p>Callback method that is called after rendering is completed for
      * this request, if <code>init()</code> was called (regardless of whether

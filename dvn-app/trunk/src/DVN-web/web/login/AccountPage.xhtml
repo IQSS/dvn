@@ -13,7 +13,7 @@
         <ui:composition template="/template.xhtml">
         <ui:define name="metadata">
             <f:metadata>
-                <f:viewParam name="userId" value ="#{userId}"/>
+                <f:viewParam name="userId" value ="#{AccountPage.userId}"/>
                 <f:event type="preRenderView" listener="#{AccountPage.preRenderView}" />  
             </f:metadata>
         </ui:define>

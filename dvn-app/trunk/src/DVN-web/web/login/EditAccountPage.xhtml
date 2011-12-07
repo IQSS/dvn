@@ -12,6 +12,13 @@
 <body>
   <ui:composition template="/template.xhtml">
     <ui:param name="pageTitle" value="#{bundlePageInfo.editAccountTitle} - #{VDCRequest.dataversePageTitle}"/>
+            <ui:define name="metadata">
+            <f:metadata>
+                <f:viewParam name="userId" value ="#{EditAccountPage.userId}"/>
+                <f:viewParam name="returnPage" value ="#{EditAccountPage.returnPage}"/>
+                <f:event type="preRenderView" listener="#{EditAccountPage.preRenderView}" />  
+            </f:metadata>
+        </ui:define>
     <ui:define name="body">
       <ice:form  id="form1">
         <ice:inputHidden id="vdcId" value="#{VDCRequest.currentVDCId}"/>

@@ -36,7 +36,9 @@ import javax.faces.application.FacesMessage;
 import javax.faces.component.UIComponent;
 import javax.faces.component.UIInput;
 import com.icesoft.faces.component.ext.HtmlSelectOneRadio;
+import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
+import javax.inject.Named;
 
 /**
  * <p>Page bean that corresponds to a similarly named JSP page.  This
@@ -45,6 +47,8 @@ import javax.faces.context.FacesContext;
  * lifecycle methods and event handlers where you may add behavior
  * to respond to incoming events.</p>
  */
+@ViewScoped
+@Named("EditAccountPage")
 public class EditAccountPage extends VDCBaseBean implements java.io.Serializable  {
     // <editor-fold defaultstate="collapsed" desc="Creator-managed Component Definition">
     private int __placeholder;
@@ -87,10 +91,9 @@ public class EditAccountPage extends VDCBaseBean implements java.io.Serializable
      */
     public void init() {
 
-            editUserService.setUser(userId);
-            user = editUserService.getUser();
-       
-        
+        returnPage = "/login/AccountPage.xhtml?faces-redirect=true&userId="+userId;
+        editUserService.setUser(userId);        
+        user = editUserService.getUser();       
         
     }
     
@@ -163,7 +166,7 @@ public class EditAccountPage extends VDCBaseBean implements java.io.Serializable
         StatusMessage msg = new StatusMessage();
         msg.setMessageText("User account updated successfully.");
         msg.setStyleClass("successMessage");
-        getRequestMap().put("statusMessage",msg);       
+        getRequestMap().put("statusMessage",msg);    
         return returnPage;
     }
     
@@ -217,11 +220,6 @@ public class EditAccountPage extends VDCBaseBean implements java.io.Serializable
     public void setReturnPage(String returnPage) {
         this.returnPage = returnPage;
     }
-
- 
-
-
-
 
 }
 

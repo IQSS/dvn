@@ -12,6 +12,9 @@
 <body>
   <ui:composition template="/template.xhtml">
     <ui:param name="pageTitle" value="Deaccession Study - #{VDCRequest.dataversePageTitle}"/>
+    <ui:define name="metadata">
+        <f:metadata></f:metadata>
+    </ui:define>
     <ui:define name="body">
       <ice:form id="form1">
         <ice:inputHidden id="vdcId" value="#{VDCRequest.currentVDCId}"/>
@@ -56,7 +59,7 @@
                 <label class="dvnDeaccessionFormLabel" for="dvnDeaccessionComments">Comments</label><br/>
                 <ice:inputTextarea  maxlength="#{DeaccessionStudyPage.archiveNoteMaxLength}" validator="#{DeaccessionStudyPage.validateArchiveNote}" id="dvnDeaccessionComments" value="#{DeaccessionStudyPage.studyVersion.archiveNote}"/>
                 <ice:message styleClass="errorMessage" for="dvnDeaccessionComments"/>
-                
+
                 <p>
                   <ice:outputText value="Add a link to another version of the deaccssioned study by including the Global ID of the new study."/>
                 </p>
@@ -64,7 +67,7 @@
                 <ice:outputText value="hdl:"/>
                 <ice:inputText id="dvnDeaccessionLinkAuthority" value="#{DeaccessionStudyPage.deaccessionLinkAuthority}" binding="#{DeaccessionStudyPage.inputDeaccessionLinkAuthority}"/>
                 <ice:outputText value=":"/>
-                <ice:inputText id="dvnDeaccessionLinkStudyId" value="#{DeaccessionStudyPage.deaccessionLinkStudyId}" 
+                <ice:inputText id="dvnDeaccessionLinkStudyId" value="#{DeaccessionStudyPage.deaccessionLinkStudyId}"
                     required="#{!empty DeaccessionStudyPage.inputDeaccessionLinkAuthority.localValue}" requiredMessage="Deaccession link must contain both an authority and a study Id."
                     validator = "#{DeaccessionStudyPage.validateDeaccessionLink}"/>
                 <ice:message styleClass="errorMessage" for="dvnDeaccessionLinkAuthority"/>

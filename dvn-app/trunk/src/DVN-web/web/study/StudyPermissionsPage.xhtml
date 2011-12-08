@@ -12,6 +12,9 @@
 <body>
   <ui:composition template="/template.xhtml">
     <ui:param name="pageTitle" value="#{bundlePageInfo.manageStudyPermissionsTitle} - #{VDCRequest.dataversePageTitle}"/>
+    <ui:define name="metadata">
+        <f:metadata></f:metadata>
+    </ui:define>
     <ui:define name="body">
       <script type="text/javascript">
           // <![CDATA[
@@ -160,7 +163,7 @@
                 </td>
               </tr>
             </table>
-          </div>          
+          </div>
           <div jsfc="ice:panelGroup">
             <table class="dvnPermissionsTable" cellspacing="0" cellpadding="0" border="0">
               <tr><td colspan="2" class="dvnPermissionsTableHeader"><ice:outputText value="Individual File Permission Settings"/></td></tr>
@@ -197,9 +200,9 @@
               <tr>
                 <td colspan="2">
                   <ice:commandButton value="Remove" actionListener="#{StudyPermissionsPage.removeFilePermissions}"/>
-                    <ice:commandButton value="View All Files" actionListener="#{StudyPermissionsPage.viewAllFiles}" 
+                    <ice:commandButton value="View All Files" actionListener="#{StudyPermissionsPage.viewAllFiles}"
                                        rendered ="#{StudyPermissionsPage.viewCurrentFiles}"/>
-                    <ice:commandButton value="View Current Files" actionListener="#{StudyPermissionsPage.viewCurrentFiles}" 
+                    <ice:commandButton value="View Current Files" actionListener="#{StudyPermissionsPage.viewCurrentFiles}"
                                        rendered ="#{!StudyPermissionsPage.viewCurrentFiles}"/>
                   <ice:dataTable cellpadding="0" cellspacing="0" width="100%"
                                  headerClass="list-header-left" columnClasses="dvnStudyFilePermTblChk, vdcColPadded, vdcColPadded, vdcColPadded, vdcColPadded"
@@ -246,9 +249,9 @@
                         <ice:column>
                           <ice:outputLink rendered="#{currPermission.user!=null}" value="/dvn#{VDCRequest.currentVDCURL}/faces/login/AccountPage.xhtml?userId=#{currPermission.user.id}">
                             <ice:outputText value="#{currPermission.user.userName}" />
-                          </ice:outputLink>                          
+                          </ice:outputLink>
                           <ice:outputText value="#{currPermission.group.name}" rendered="#{currPermission.group!=null}" />
-                          
+
                         </ice:column>
                       </ice:dataTable>
                     </ice:column>

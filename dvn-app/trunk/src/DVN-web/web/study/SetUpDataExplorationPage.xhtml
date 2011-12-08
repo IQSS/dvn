@@ -13,8 +13,10 @@
     <body>
         <ui:composition template="/template.xhtml">
             <ui:param name="pageTitle" value="Set Up Data Exploration - #{VDCRequest.dataversePageTitle}"/>
+            <ui:define name="metadata">
+                <f:metadata></f:metadata>
+            </ui:define>
             <ui:define name="body">
-
                 <ice:form id="form1">
                     <ice:inputHidden id="vdcId" value="#{VDCRequest.currentVDCId}"/>
                     <script type="text/javascript">
@@ -26,8 +28,8 @@
                         setTimeout(function() {
                         countEvents--;
                         if(countEvents==0){
-        
-                            document.getElementById('form1:updateMeasureList').click(); 
+
+                            document.getElementById('form1:updateMeasureList').click();
                         }
                         },timeout);
                         }
@@ -64,12 +66,12 @@
                         }
                         },timeout);
                         }
-    
+
                         function setEdited(){
-                            
+
                             document.getElementById('form1:setEdited').click();
                         }
-    
+
                         function selectAllFilterVariablesClick(){
                             document.getElementById('form1:selectAllFilterVariablesClick').click();
                         }
@@ -121,17 +123,11 @@
                                 <div class="dvnFormMargin">
                                     <!-- hidden button that is clicked by select menu's onchange action -->
                                     <ice:commandButton id="studyFileIdButton" visible="false" value="Change" action="#{SetUpDataExplorationPage.resetStudyFileId}"/>
-
                                     <ice:commandButton id="validateButton" type="submit" value="Validate" rendered="#{SetUpDataExplorationPage.showCommands}"
                                                        binding="#{SetUpDataExplorationPage.validateButton}" action="#{SetUpDataExplorationPage.validate}" />
-
                                     <ice:commandButton id="releaseButton" type="submit" value="Release" rendered="#{!SetUpDataExplorationPage.dataTable.visualizationEnabled and SetUpDataExplorationPage.showCommands}"
                                                        binding="#{SetUpDataExplorationPage.releaseButton}" action="#{SetUpDataExplorationPage.release}" />
-
                                     <ice:commandButton type="submit" value="Un-Release" action="#{SetUpDataExplorationPage.unRelease}" rendered="#{SetUpDataExplorationPage.dataTable.visualizationEnabled and SetUpDataExplorationPage.showCommands}"/>
-
-
-
                                     <ice:commandButton type="submit" visible="false" id="updateMeasureList" value="update" action="#{SetUpDataExplorationPage.updateMeasureList}"/>
                                     <ice:commandButton type="submit" visible="false" id="selectAllFilterVariablesClick" value="update" action="#{SetUpDataExplorationPage.selectAllFilterVariablesClick}"/>
                                     <ice:commandButton type="submit" visible="false" id="selectOneFilterVariableClick" value="update" action="#{SetUpDataExplorationPage.selectOneFilterVariableClick}"/>
@@ -156,7 +152,6 @@
                                 <ui:param name="displayStatusBox" value="false"/>
                             </ui:include>
                         </div>
-
                         <div style="overflow:hidden;">
                             <div style="float:left; margin-right:2em;">
                                 <ice:selectOneMenu value="#{SetUpDataExplorationPage.studyFileId}" rendered="#{SetUpDataExplorationPage.selectFile}" partialSubmit="true" binding="#{SetUpDataExplorationPage.selectStudyFile}"
@@ -214,7 +209,6 @@
                                     </div>
                                 </div>
                             </ice:panelTab>
-
                             <ice:panelTab id="measures" label="Measures" url="/dvn#{VDCRequest.currentVDCURL}/faces/subsetting/SetUpDataExploration.xhtml&amp;tab=measures">
                                 <div jsfc="ice:panelGroup" panelLayout="flow">
                                     <div jsfc="ice:panelGroup" style="overflow:hidden;">
@@ -239,7 +233,7 @@
                                                     </ice:commandLink>
                                                 </div>
                                                 <div jsfc="ice:panelGroup">
-                                                    <ice:dataTable width="100%" cellspacing="0" cellpadding="0" var="group" 
+                                                    <ice:dataTable width="100%" cellspacing="0" cellpadding="0" var="group"
                                                                    value="#{SetUpDataExplorationPage.measureGroups.varGroupUIList}"
                                                                    sortColumn="#{SetUpDataExplorationPage.measureGroups.sortColumnName}"
                                                                    sortAscending="#{SetUpDataExplorationPage.measureGroups.ascending}"
@@ -331,7 +325,7 @@
                                                             </ice:commandLink>
                                                         </div>
 
-                                                        <ice:dataTable width="100%" cellspacing="0" cellpadding="0" var="filter" 
+                                                        <ice:dataTable width="100%" cellspacing="0" cellpadding="0" var="filter"
                                                                        value="#{grouping.varGroupUIList.varGroupUIList}"
                                                                        sortColumn="#{grouping.varGroupUIList.sortColumnName}"
                                                                        sortAscending="#{grouping.varGroupUIList.ascending}"
@@ -370,14 +364,13 @@
                                                 </ice:dataTable>
                                             </div>
                                         </div>
-                                        <div jsfc="ice:panelGroup" style="width:35%; float:left;" 
+                                        <div jsfc="ice:panelGroup" style="width:35%; float:left;"
                                              visible="#{SetUpDataExplorationPage.editFilterGroup or SetUpDataExplorationPage.editFilterGrouping or SetUpDataExplorationPage.manageFilterTypes}">
                                             <ui:include src="SetUpDataExplorationPageFilterEdit.xhtml"></ui:include>
                                         </div>
                                     </div>
                                 </div>
                             </ice:panelTab>
-
                             <ice:panelTab id="sources" label="Sources" url="/dvn#{VDCRequest.currentVDCURL}/faces/subsetting/SetUpDataExploration.xhtml&amp;tab=sources">
                                 <div jsfc="ice:panelGroup" panelLayout="flow">
                                     <div jsfc="ice:panelGroup" style="overflow:hidden;">
@@ -420,7 +413,6 @@
                                     </div>
                                 </div>
                             </ice:panelTab>
-
                             <ice:panelTab id="displaySettings" label="Display" url="/dvn#{VDCRequest.currentVDCURL}/faces/subsetting/SetUpDataExploration.xhtml&amp;tab=displaySettings">
                                 <div jsfc="ice:panelGroup" panelLayout="flow">
                                     <div jsfc="ice:panelGroup" style="overflow:hidden;">
@@ -439,7 +431,7 @@
                                                 </ice:inputText>
                                                 <ice:message styleClass="errorMessage" for="inputSourceLabel"/>
                                             </div>
-                                            
+
                                             <div jsfc="ice:panelGroup" rendered="#{SetUpDataExplorationPage.dataTable !=null}">
                                                 <ice:outputLabel value="Measure Type Label" for="measureTypeLabel"/>
                                                 <ice:inputText
@@ -453,10 +445,10 @@
                                                 </ice:inputText>
                                                 <ice:message styleClass="errorMessage" for="inputMeasureTypeLabel"/>
                                             </div>
-                                            
+
                                             <div style="margin-top:1em;">
                                                 <ice:outputLabel value="Display Options"/><br/>
-                                                <ice:selectBooleanCheckbox  value="#{SetUpDataExplorationPage.dataTable.visualizationDisplay.showFlashGraph}" 
+                                                <ice:selectBooleanCheckbox  value="#{SetUpDataExplorationPage.dataTable.visualizationDisplay.showFlashGraph}"
                                                                             onchange="setEdited()"/>
                                                 <ice:outputLabel value="Flash Graph" style="font-weight:normal; margin-right:1em;"/>
                                                 <ice:selectBooleanCheckbox partialSubmit="false" value="#{SetUpDataExplorationPage.dataTable.visualizationDisplay.showImageGraph}"
@@ -507,7 +499,6 @@
                             </ice:panelTab>
                         </ice:panelTabSet>
                     </div>
-
                     <ice:panelPopup id="editInProgressPopup"
                                     draggable="false"
                                     visible="#{SetUpDataExplorationPage.showInProgressPopup}"
@@ -544,7 +535,6 @@
                         </f:facet>
                     </ice:panelPopup>
                 </ice:form>
-
             </ui:define>
         </ui:composition>
     </body>

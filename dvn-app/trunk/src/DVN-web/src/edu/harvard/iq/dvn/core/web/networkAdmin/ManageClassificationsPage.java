@@ -47,8 +47,12 @@ import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
 import javax.ejb.EJB;
+import javax.faces.bean.ViewScoped;
 import javax.faces.model.DataModel;
+import javax.inject.Named;
 
+@ViewScoped
+@Named("manageClassificationsPage")
 public class ManageClassificationsPage extends VDCBaseBean implements Serializable {
     @EJB StudyServiceLocal studyService;
     @EJB VDCGroupServiceLocal vdcGroupService;

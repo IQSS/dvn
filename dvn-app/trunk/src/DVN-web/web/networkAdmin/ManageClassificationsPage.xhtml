@@ -13,6 +13,9 @@
 <body>
   <ui:composition template="/template.xhtml">
     <ui:param name="pageTitle" value="#{bundlePageInfo.manageClassificationsTitle} - #{VDCRequest.dataversePageTitle}"/>
+        <ui:define name="metadata">
+                <f:event type="preRenderView" listener="#{manageClassificationsPage.preRenderView}" />  
+        </ui:define>
     <ui:define name="body">
       <ice:form>
         <div class="dvn_section">
@@ -77,7 +80,7 @@
               </f:facet>
               <ice:outputLink
                   value="/dvn/faces/networkAdmin/AddClassificationsPage.xhtml">
-                <f:param name="cid" value="#{dvItems.vdcGroup.id}"/>
+                <f:param name="classId" value="#{dvItems.vdcGroup.id}"/>
                 <ice:outputText styleClass="#{dvItems.indentStyle}"
                                 style="padding-left: #{dvItems.textIndent}em; background-position: #{dvItems.textIndent - 1.5}em;"
                                 value="#{dvItems.vdcGroup.name}"/>
@@ -113,7 +116,7 @@
                 <ice:outputText escape="false" value="Delete"/>
               </f:facet>
               <ice:outputLink value="/dvn/faces/networkAdmin/DeleteClassificationsPage.xhtml">
-                <f:param name="cid" value="#{dvItems.vdcGroup.id}"/>
+                <f:param name="classId" value="#{dvItems.vdcGroup.id}"/>
                 <ice:outputText value="Delete"/>
               </ice:outputLink>
             </ice:column>

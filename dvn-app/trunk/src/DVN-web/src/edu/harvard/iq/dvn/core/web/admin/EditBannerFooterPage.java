@@ -162,7 +162,6 @@ public class EditBannerFooterPage extends VDCBaseBean  implements java.io.Serial
     
     // ACTION METHODS
     public String save_action() {
-        System.out.println("in save ");
         String forwardPage=null;
         if (getVDCRequestBean().getCurrentVDCId() == null) {
             // this is a save against the network
@@ -183,8 +182,6 @@ public class EditBannerFooterPage extends VDCBaseBean  implements java.io.Serial
             getVDCRequestBean().setCurrentVDC(vdc);
             forwardPage="/admin/OptionsPage?faces-redirect=true&vdcId="+getVDCRequestBean().getCurrentVDC().getId();
         }
-        
-        System.out.println("forwardPage is " + forwardPage);
         getExternalContext().getFlash().put("message","Successfully updated layout branding.");
         return forwardPage;
     }

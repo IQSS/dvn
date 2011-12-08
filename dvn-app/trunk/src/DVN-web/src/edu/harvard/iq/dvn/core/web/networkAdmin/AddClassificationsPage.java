@@ -25,14 +25,18 @@ import java.util.Iterator;
 import java.util.List;
 import javax.ejb.EJB;
 import javax.faces.application.FacesMessage;
+import javax.faces.bean.ViewScoped;
 import javax.faces.component.UIComponent;
 import javax.faces.context.FacesContext;
 import javax.faces.event.ValueChangeEvent;
 import javax.faces.model.SelectItem;
+import javax.inject.Named;
 
 /**
  * @author wbossons
  */
+@ViewScoped
+@Named("addClassificationsPage")
 public class AddClassificationsPage extends VDCBaseBean implements Serializable {
     @EJB VDCGroupServiceLocal vdcGroupService;
     @EJB VDCServiceLocal vdcService;
@@ -45,14 +49,14 @@ public class AddClassificationsPage extends VDCBaseBean implements Serializable 
     private HtmlMessages      iceMessage = new HtmlMessages();
 
     //rowselection fields
-    private ArrayList selectedDataverses;
-    private ArrayList dataverses;// internal list of retreived records.
+    private ArrayList selectedDataverses = new ArrayList();
+    private ArrayList dataverses = new ArrayList();// internal list of retreived records.
     private boolean multiRowSelect = true;
     private HtmlInputHidden classificationId;
     private HtmlInputHidden multiRowSelector;
-    private Long cid;
+    private Long classId;
     private Long selectedParent;
-    private ClassificationList classificationList;
+    private ClassificationList classificationList = new ClassificationList();
 
     private boolean result;
     private String statusMessage;
@@ -61,12 +65,14 @@ public class AddClassificationsPage extends VDCBaseBean implements Serializable 
 
 
     public void init() {
+        System.out.println("before super init");
         super.init();
+        System.out.println("cid is "+classId);
         initParentSelectItems();
         dataverses         = new ArrayList();
         selectedDataverses = new ArrayList();
         initItemBeans();
-        if (cid != null) {
+        if (classId != null) {
             initClassificationBean();
             initSelectedItemBeans();
         }
@@ -82,7 +88,7 @@ public class AddClassificationsPage extends VDCBaseBean implements Serializable 
     }
 
     private void initClassificationBean() {
-        VDCGroup vdcGroup = vdcGroupService.findById(cid);
+        VDCGroup vdcGroup = vdcGroupService.findById(classId);
         nameInput.setValue(vdcGroup.getName());
         descriptionInput.setValue(vdcGroup.getDescription());
         if (vdcGroup.getParent() != null)
@@ -90,7 +96,7 @@ public class AddClassificationsPage extends VDCBaseBean implements Serializable 
     }
 
     private void initSelectedItemBeans() {
-         VDCGroup vdcGroup = vdcGroupService.findById(cid);
+         VDCGroup vdcGroup = vdcGroupService.findById(classId);
          List list = (List)vdcGroup.getVdcs();
          Iterator iterator = list.iterator();
          while(iterator.hasNext()) {
@@ -133,7 +139,7 @@ public class AddClassificationsPage extends VDCBaseBean implements Serializable 
         while (iterator.hasNext()) {
             ClassificationUI classUI =(ClassificationUI)iterator.next();
             VDCGroup vdcgroup = classUI.getVdcGroup();
-            if ( cid != null && ( cid.equals(vdcgroup.getId()) || cid.equals(vdcgroup.getParent()) ) ) {
+            if ( classId != null && ( classId.equals(vdcgroup.getId()) || classId.equals(vdcgroup.getParent()) ) ) {
                 continue;
             }else if (classUI.getLevel()==3){
                 continue;
@@ -270,13 +276,13 @@ public class AddClassificationsPage extends VDCBaseBean implements Serializable 
         return this.classificationId;
     }
 
-    public Long getCid() {
-        return this.cid;
+    public Long getClassId() {
+        return this.classId;
     }
 
 
-    public void setCid(Long cid) {
-        this.cid = cid;
+    public void setClassId(Long cid) {
+        this.classId = cid;
     }
 
     public HtmlInputHidden getMultiRowSelector() {
@@ -325,6 +331,7 @@ public class AddClassificationsPage extends VDCBaseBean implements Serializable 
                 //iterator.remove();
             //}
             FacesContext.getCurrentInstance().addMessage("AddClassificationsPageForm", new FacesMessage(statusMessage));
+            getExternalContext().getFlash().put("message",statusMessage);
             return "result";
         }
         
@@ -380,7 +387,7 @@ public class AddClassificationsPage extends VDCBaseBean implements Serializable 
             context.addMessage(toValidate.getClientId(context), message);
             context.renderResponse();
         } else if (vdcGroupService.findByName(newValue.trim()) != null) {
-            if (!group.getId().equals(cid)) {
+            if (!group.getId().equals(classId)) {
              FacesMessage message = new FacesMessage("This name is in use. Please enter a unique classification name.");
              context.addMessage(toValidate.getClientId(context), message);
              context.renderResponse();

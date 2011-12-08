@@ -13,6 +13,12 @@
 <body>
   <ui:composition template="/template.xhtml">
     <ui:param name="pageTitle" value="#{bundlePageInfo.createClassificationTitle} - #{VDCRequest.dataversePageTitle}"/>
+            <ui:define name="metadata">
+                <f:metadata>
+                    <f:viewParam name="classId" value ="#{addClassificationsPage.classId}"/>
+                    <f:event type="preRenderView" listener="#{addClassificationsPage.preRenderView}" />
+                </f:metadata>
+        </ui:define>
     <ui:define name="body">
       <ice:form id="AddClassificationsPageForm">
         <div jsfc="ice:panelGroup" styleClass="dvnMsgBlockRound #{(addClassificationsPage.result == true) ? 'dvnSuccessMessage' : 'dvnInformationMessage'}">
@@ -21,8 +27,8 @@
           </div>
         </div>
         <div class="dvn_sectionTitle">
-          <ice:outputText value="#{bundlePageInfo.createClassificationTitle}" rendered="#{addClassificationsPage.cid==null}"/>
-          <ice:outputText value="#{bundlePageInfo.editClassificationTitle}" rendered="#{addClassificationsPage.cid!=null}"/>
+          <ice:outputText value="#{bundlePageInfo.createClassificationTitle}" rendered="#{addClassificationsPage.classId==null}"/>
+          <ice:outputText value="#{bundlePageInfo.editClassificationTitle}" rendered="#{addClassificationsPage.classId!=null}"/>
         </div>
         <div class="dvn_sectionBox">
           <div class="dvn_margin12">
@@ -157,7 +163,7 @@
               </ice:panelGroup>
               <ice:inputHidden id="classificationId"
                                binding="#{addClassificationsPage.classificationId}"
-                               value="#{addClassificationsPage.cid}"/>
+                               value="#{addClassificationsPage.classId}"/>
               <ice:inputHidden id="multiRowSelect"
                                binding="#{addClassificationsPage.multiRowSelector}"
                                value="#{addClassificationsPage.multiRowSelect}"/>
@@ -165,8 +171,8 @@
             </ice:panelGroup>
             <!-- end rowSelect related form fields -->
             <div class="dvnFormPadding dvnFormMargin">
-              <ice:commandButton id="btnUpdate" rendered="#{addClassificationsPage.cid != null}" value="#{bundle.saveButtonLabel}" action="#{addClassificationsPage.update_action}"/>
-              <ice:commandButton id="btnCreate" rendered="#{addClassificationsPage.cid == null}" value="#{bundle.saveButtonLabel}" action="#{addClassificationsPage.add_action}"/>
+              <ice:commandButton id="btnUpdate" rendered="#{addClassificationsPage.classId != null}" value="#{bundle.saveButtonLabel}" action="#{addClassificationsPage.update_action}"/>
+              <ice:commandButton id="btnCreate" rendered="#{addClassificationsPage.classId == null}" value="#{bundle.saveButtonLabel}" action="#{addClassificationsPage.add_action}"/>
               <ice:commandButton id="btnCancel" immediate="true" value="#{bundle.cancelButtonLabel}" action="cancel"/>
             </div>
           </div>

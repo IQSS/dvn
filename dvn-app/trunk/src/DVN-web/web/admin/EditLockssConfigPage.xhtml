@@ -13,7 +13,7 @@
   <ui:composition template="/template.xhtml">
     <ui:param name="pageTitle" value="Data Files Harvesting (LOCKSS Harvesting) - #{VDCRequest.dataversePageTitle}"/>
     <ui:define name="metadata">
-        <f:event type="preRenderView" listener="#{EditLockssConfigPage.preRenderView}" />  
+        <f:event type="preRenderView" listener="#{EditLockssConfigPage.preRenderView}"/>
     </ui:define>
     <ui:define name="body">
         <script type="text/javascript">
@@ -217,4 +217,3 @@
   </ui:composition>
 </body>
 </html>
-

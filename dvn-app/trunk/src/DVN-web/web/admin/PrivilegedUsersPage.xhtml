@@ -12,6 +12,9 @@
 <body>
   <ui:composition template="/template.xhtml">
     <ui:param name="pageTitle" value="#{bundlePageInfo.manageDvPermissionsTitle} - #{VDCRequest.dataversePageTitle}"/>
+    <ui:define name="metadata">
+        <f:metadata></f:metadata>
+    </ui:define>
     <ui:define name="body">
       <ice:form id="privilegedUsersForm">
         <div id="hiddenDiv">
@@ -67,7 +70,7 @@
           <div jsfc="ice:panelGroup">
             <table class="dvnPermissionsTable" cellspacing="0" cellpadding="0" border="0">
               <tr><td colspan="2" class="dvnPermissionsTableHeader"><ice:outputText value="User Permission Settings"/></td></tr>
-            
+
               <tr>
                 <td colspan="2">
                   <ice:dataTable binding="#{PrivilegedUsersPage.userTable}" cellpadding="0" cellspacing="0" width="100%"
@@ -78,7 +81,7 @@
                       <f:facet name="header">
                         <ice:outputText id="outputText3" value="Username"/>
                       </f:facet>
-                      
+
                         <ice:outputLink id="hyperlink2"  rendered="#{currentRow.vdcRole!=null}" value="/dvn#{VDCRequest.currentVDCURL}/faces/login/AccountPage.xhtml?userId=#{currentRow.vdcRole.vdcUser.id}">
                         <ice:outputText id="hyperlink2Text" value="#{currentRow.vdcRole.vdcUser.userName}"/>
                       </ice:outputLink>
@@ -100,7 +103,7 @@
                       </ice:selectOneMenu>
                      <ice:outputText rendered="#{currentRow.vdcRole!=null and currentRow.vdcRole.vdcUser.id==PrivilegedUsersPage.vdc.creator.id}" id="disabledRole" value="Admin"/>
                      <ice:commandButton rendered="#{currentRow.vdcRole==null}" id="addUserButton" value="Add" actionListener="#{PrivilegedUsersPage.addUser}"/>
-                     
+
                      <ice:outputLink rendered="#{currentRow.vdcRole==null}" value="http://thedata.org/book/user-roles-0" styleClass="dvninlinelink" target="_blank" title="View Role Descriptions">
                         <ice:outputText value="View Role Descriptions"/>
                      </ice:outputLink>
@@ -159,7 +162,7 @@
               </tr>
             </table>
           </div>
-          
+
           <div class="dvnFormPadding">
             <table class="dvnPermissionsTable" cellspacing="0" cellpadding="0" border="0">
               <tr><td colspan="2" class="dvnPermissionsTableHeader"><ice:outputText value="Dataverse File Permission Settings"/></td></tr>
@@ -295,4 +298,3 @@
   </ui:composition>
 </body>
 </html>
-

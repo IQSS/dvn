@@ -13,7 +13,7 @@
   <ui:composition template="/template.xhtml">
     <ui:param name="pageTitle" value="#{bundlePageInfo.editStudyCommentsTitle} - #{VDCRequest.dataversePageTitle}"/>
     <ui:define name="metadata">
-        <f:event type="preRenderView" listener="#{EditStudyCommentsPage.prerenderView}" />  
+        <f:event type="preRenderView" listener="#{EditStudyCommentsPage.prerenderView}"/>
     </ui:define>
     <ui:define name="body">
       <ice:form id="editStudyCommentsForm">
@@ -33,7 +33,6 @@
               <div jsfc="ice:panelGroup" styleClass="#{EditSitePage.msg.styleClass}" rendered="#{!empty EditSitePage.msg.messageText}">
                 <ice:outputText id="statusMessage" value="#{EditSitePage.msg.messageText}"/>
               </div>
-              
               <ice:panelGrid cellpadding="0" cellspacing="0" columns="2"
                              columnClasses="vdcAddSiteCol1, vdcAddSiteCol2" id="gridPanel1">
                 <div jsfc="ice:panelGroup">
@@ -41,14 +40,12 @@
                     <ice:outputText value="Allow Study Comments"/>
                   </ice:outputLabel>
                 </div>
-
                 <div jsfc="ice:panelGroup">
                  <ice:selectBooleanCheckbox
                      id="allowStudyComments"
                      binding="#{EditStudyCommentsPage.allowStudyCommentsCheckbox}"
                      partialSubmit="false"
-                     value="#{EditStudyCommentsPage.allowStudyComments}"
-                     />
+                     value="#{EditStudyCommentsPage.allowStudyComments}"/>
                 </div>
               </ice:panelGrid>
               <div class="dvnFormPadding dvnFormMargin">
@@ -60,11 +57,8 @@
                                    action="#{EditStudyCommentsPage.cancel}"/>
               </div>
             </div>
-
-              
-              
-            </div>
           </div>
+        </div>
       </ice:form>
     </ui:define>
   </ui:composition>

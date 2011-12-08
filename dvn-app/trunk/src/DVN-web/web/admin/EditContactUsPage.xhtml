@@ -13,8 +13,8 @@
   <ui:composition template="/template.xhtml">
     <ui:param name="pageTitle" value="#{bundlePageInfo.editDvnNotificationsTitle} - #{VDCRequest.dataversePageTitle}"/>
     <ui:define name="metadata">
-            <f:event type="preRenderView" listener="#{EditContactUsPage.preRenderView}" />            
-    </ui:define> 
+            <f:event type="preRenderView" listener="#{EditContactUsPage.preRenderView}"/>
+    </ui:define>
     <ui:define name="body">
       <ice:form id="editContactUsForm">
         <ice:inputHidden rendered="#{VDCRequest.currentVDCId != null}" id="vdcId" value="#{VDCRequest.currentVDCId}"/>

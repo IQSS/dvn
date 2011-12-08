@@ -14,9 +14,9 @@
     <ui:param name="pageTitle" value="#{bundlePageInfo.editDvBrandingTitle} - #{VDCRequest.dataversePageTitle}"/>
     <ui:define name="metadata">
         <f:metadata>
-            <f:event type="preRenderView" listener="#{EditBannerFooterPage.preRenderView}" />            
+            <f:event type="preRenderView" listener="#{EditBannerFooterPage.preRenderView}"/>
          </f:metadata>
-    </ui:define> 
+    </ui:define>
     <ui:define name="body">
         <script type="text/javascript">
           // <![CDATA[
@@ -96,8 +96,7 @@
                                    binding="#{EditBannerFooterPage.bannerTextField}"
                                    rows="15"
                                    value="#{EditBannerFooterPage.banner}"
-                                   styleClass="formHtmlEnabled"
-                                   >
+                                   styleClass="formHtmlEnabled">
                 </ice:inputTextarea>
               </div>
               <div class="dvnFormPadding">
@@ -110,8 +109,7 @@
                                    binding="#{EditBannerFooterPage.footerTextField}"
                                    rows="7"
                                    value="#{EditBannerFooterPage.footer}"
-                                   styleClass="formHtmlEnabled"
-                                   >
+                                   styleClass="formHtmlEnabled">
                 </ice:inputTextarea>
                 <ice:inputHidden id="combined" binding="#{EditBannerFooterPage.combinedTextField}">
                     <f:validator validatorId="XhtmlValidator"/>

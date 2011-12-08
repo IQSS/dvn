@@ -9,10 +9,12 @@
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
 </head>
-
 <body>
     <ui:composition template="/template.xhtml">
         <ui:param name="pageTitle" value="Error - #{VDCRequest.dataversePageTitle}"/>
+        <ui:define name="metadata">
+            <f:metadata></f:metadata>
+        </ui:define>
         <ui:define name="body">
             <ice:form  id="errorForm">
                 <ice:inputHidden id="vdcId" value="#{VDCRequest.currentVDCId}"/>
@@ -22,9 +24,9 @@
                     </div>
                     <div class="dvn_sectionBox">
                         <div class="dvn_margin12">
-                            
+
                             <ice:outputText styleClass="errorMessage" value="A download or query is in progress, please try again once it has completed. "/>
-                            
+
                             <br/> <br/>
                             <ice:outputText value="Error Message:" rendered="#{param.errorMsg!=null}"/>
                             <ice:outputText escape="false" styleClass="errorMessage" value="#{param.errorMsg}" rendered="#{param.errorMsg!=null}"/>
@@ -46,4 +48,3 @@
     </ui:composition>
 </body>
 </html>
-

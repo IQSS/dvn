@@ -9,10 +9,12 @@
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
 </head>
-
 <body>
     <ui:composition template="/template.xhtml">
         <ui:param name="pageTitle" value="Page Not Found - #{VDCRequest.dataversePageTitle}"/>
+        <ui:define name="metadata">
+            <f:metadata></f:metadata>
+        </ui:define>
         <ui:define name="body">
             <ice:form id="aboutUsForm">
                 <ice:inputHidden rendered="#{VDCRequest.currentVDCId != null}" id="vdcId" value="#{VDCRequest.currentVDCId}"/>

@@ -36,16 +36,19 @@ import edu.harvard.iq.dvn.core.util.StringUtil;
 import edu.harvard.iq.dvn.core.web.common.VDCBaseBean;
 import javax.ejb.EJB;
 import javax.faces.application.FacesMessage;
+import javax.faces.bean.ViewScoped;
 import javax.faces.component.UIComponent;
 import javax.faces.component.UIInput;
 import javax.faces.component.html.HtmlInputText;
-import javax.faces.component.html.HtmlInputTextarea;
 import javax.faces.context.FacesContext;
+import javax.inject.Named;
 
 /**
  *
  * @author gdurand
  */
+@Named("DeaccessionStudyPage")
+@ViewScoped
 public class DeaccessionStudyPage extends VDCBaseBean implements java.io.Serializable  {
 
     @EJB StudyServiceLocal studyService;
@@ -188,15 +191,12 @@ public class DeaccessionStudyPage extends VDCBaseBean implements java.io.Seriali
             studyService.deaccessionStudy(studyVersion);
         }
 
-        getVDCRequestBean().setStudyId(studyVersion.getStudy().getId());
-        getVDCRequestBean().setStudyVersionNumber(null); // we don't provide a version number, so the user goes to the study deaccessioned page
-        return "viewStudy";
+        // we don't provide a version number, so the user goes to the study deaccessioned page
+        return "/study/StudyPage?faces-redirect=true&studyId=" + studyVersion.getStudy().getId() + "&vdcId=" + getVDCRequestBean().getCurrentVDCId();
     }
 
-    public String cancel_action() {
-        getVDCRequestBean().setStudyId(studyVersion.getStudy().getId());
-        getVDCRequestBean().setStudyVersionNumber(studyVersion.getVersionNumber());
-        return "viewStudy";
+    public String cancel_action() {       
+        return "/study/StudyPage?faces-redirect=true&studyId=" + studyVersion.getStudy().getId() + "&versionNumber=" + studyVersion.getVersionNumber() + "&vdcId=" + getVDCRequestBean().getCurrentVDCId();
     }
 
 }

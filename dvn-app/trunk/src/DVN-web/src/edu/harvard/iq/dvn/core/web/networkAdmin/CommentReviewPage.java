@@ -17,13 +17,17 @@ import java.util.List;
 import javax.ejb.EJB;
 import javax.faces.application.FacesMessage;
 import javax.faces.application.NavigationHandler;
+import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
 import javax.faces.event.ActionEvent;
+import javax.inject.Named;
 
 /**
  *
  * @author wbossons
  */
+@ViewScoped
+@Named("CommentReviewPage")
 public class CommentReviewPage extends VDCBaseBean implements java.io.Serializable  {
     @EJB
     StudyCommentService studyCommentService;

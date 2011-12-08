@@ -6,34 +6,36 @@
       xmlns:f="http://java.sun.com/jsf/core"
       xmlns:jsp="http://java.sun.com/JSP/Page"
       xmlns:ice="http://www.icesoft.com/icefaces/component">
-    <head>
-        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
-    </head>
-
-    <body>
-        <ui:composition template="/template.xhtml">
-            <ui:param name="pageTitle" value="Account Options"/>
-            <ui:define name="body">
-                <ice:form id="form1" >
-                    <ice:panelTabSet id="tabSet1" styleClass="dvnTabs" selectedIndex="0">
-                        <!-- Account Tab  -->
-                        <ice:panelTab id="account" label="Account" url="/dvn#{VDCRequest.currentVDCURL}/faces/login/AccountPage.xhtml&amp;tab=account" >
-                                <ui:include src="/login/AccountFragment.xhtml">
-                                    <ui:param name="returnPage" value="accountOptions"/>
-                                </ui:include>
-                        </ice:panelTab>
-                        <ice:panelTab id="studies" label="Studies" url="/dvn#{VDCRequest.currentVDCURL}/faces/login/AccountPage.xhtml&amp;tab=studies" rendered="#{VDCSession.loginBean.hasContributed}">
-                            <ui:include src="/study/ManageStudiesFragment.xhtml">
-                            </ui:include>
-                        </ice:panelTab>
-                        <!-- MY DATAVERSES -->
-                        <ice:panelTab id="myDataverses" label="Dataverses" rendered="#{!VDCSession.loginBean.networkAdmin and (VDCRequest.vdcNetwork.allowCreateRequest or VDCSession.loginBean.hasDataverses)}">
-                            <ui:include src="/networkAdmin/MyDataversesFragment.xhtml">
-                            </ui:include>
-                        </ice:panelTab>
-                    </ice:panelTabSet>
-                </ice:form>
-            </ui:define>
-        </ui:composition>
-    </body>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+</head>
+<body>
+    <ui:composition template="/template.xhtml">
+        <ui:param name="pageTitle" value="Account Options"/>
+        <ui:define name="metadata">
+            <f:metadata></f:metadata>
+        </ui:define>
+        <ui:define name="body">
+            <ice:form id="form1" >
+                <ice:panelTabSet id="tabSet1" styleClass="dvnTabs" selectedIndex="0">
+                    <!-- Account Tab  -->
+                    <ice:panelTab id="account" label="Account" url="/dvn#{VDCRequest.currentVDCURL}/faces/login/AccountPage.xhtml&amp;tab=account" >
+                        <ui:include src="/login/AccountFragment.xhtml">
+                            <ui:param name="returnPage" value="accountOptions"/>
+                        </ui:include>
+                    </ice:panelTab>
+                    <ice:panelTab id="studies" label="Studies" url="/dvn#{VDCRequest.currentVDCURL}/faces/login/AccountPage.xhtml&amp;tab=studies" rendered="#{VDCSession.loginBean.hasContributed}">
+                        <ui:include src="/study/ManageStudiesFragment.xhtml">
+                        </ui:include>
+                    </ice:panelTab>
+                    <!-- MY DATAVERSES -->
+                    <ice:panelTab id="myDataverses" label="Dataverses" rendered="#{!VDCSession.loginBean.networkAdmin and (VDCRequest.vdcNetwork.allowCreateRequest or VDCSession.loginBean.hasDataverses)}">
+                        <ui:include src="/networkAdmin/MyDataversesFragment.xhtml">
+                        </ui:include>
+                    </ice:panelTab>
+                </ice:panelTabSet>
+            </ice:form>
+        </ui:define>
+    </ui:composition>
+</body>
 </html>

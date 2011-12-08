@@ -12,6 +12,9 @@
 <body>
     <ui:composition template="/template.xhtml">
         <ui:param name="pageTitle" value="Register Success - #{VDCRequest.dataversePageTitle}"/>
+        <ui:define name="metadata">
+            <f:metadata></f:metadata>
+        </ui:define>
         <ui:define name="body">
             <ice:form id="contributorRequestForm">
                 <ice:inputHidden id="vdcId" value="#{VDCRequest.currentVDCId}"/>
@@ -36,7 +39,6 @@
                             <div class="dvn_margin12">
                                 <p><ice:outputText value="As a registered user, you can:"/></p>
                                 <ul>
-                                    
                                     <span jsfc="ice:panelGroup" rendered="#{VDCRequest.currentVDC != null and VDCRequest.currentVDC.allowRegisteredUsersToContribute}">
                                         <li>
                                             <ice:outputLink value="/dvn#{VDCRequest.currentVDCURL}/faces/study/EditStudyPage.xhtml">
@@ -49,7 +51,6 @@
                                             <ice:outputText value="Add studies to open and wiki dataverses, if available"/>
                                         </li>
                                     </span>
-
                                     <span jsfc="ice:panelGroup" rendered="#{VDCRequest.currentVDC != null and VDCRequest.currentVDC.allowRegisteredUsersToContribute and VDCRequest.currentVDC.allowContributorsEditAll}">
                                         <li>
                                             <ice:outputLink value="/dvn#{VDCRequest.currentVDCURL}/faces/study/ManageStudiesPage.xhtml">
@@ -62,13 +63,11 @@
                                             <ice:outputText value="Contribute to existing studies in wiki dataverses, if available"/>
                                         </li>
                                     </span>
-
                                     <span jsfc="ice:panelGroup">
                                         <li>
                                             <ice:outputText value="Add user comments to studies that have this option"/>
                                         </li>
                                     </span>
-
                                     <span jsfc="ice:panelGroup" rendered="#{VDCRequest.vdcNetwork.allowCreateRequest}">
                                         <li>
                                             <ice:outputLink value="/dvn#{VDCRequest.currentVDCURL}/faces/login/CreatorRequestInfoPage.xhtml">
@@ -76,15 +75,13 @@
                                             </ice:outputLink>
                                         </li>
                                     </span>
-
                                 </ul>
-                                <p>                                    
+                                <p>
                                     <ice:outputText value="Go to your "/> <ice:outputLink rendered="#{VDCRequest.currentVDC == null}" value="/dvn#{VDCRequest.currentVDCURL}/faces/login/AccountOptionsPage.xhtml?userId=#{VDCSession.loginBean.user.id}">
                                         <ice:outputText value="account page"/>
                                     </ice:outputLink> <ice:outputLink rendered="#{VDCRequest.currentVDC != null}" value="/dvn#{VDCRequest.currentVDCURL}/faces/login/AccountOptionsPage.xhtml?userId=#{VDCSession.loginBean.user.id}">
                                         <ice:outputText value="options page"/>
                                     </ice:outputLink> <ice:outputText rendered="#{VDCRequest.currentVDC != null}" value=" in this dataverse"/> <ice:outputText value=" to see your information."/>
-                                    
                                     <ice:outputText value="If you are interested in accessing restricted studies in this Dataverse Network, please check the data availability and terms of use of the study, or contact the dataverse administrator for more information."/>
                                 </p>
                             </div>

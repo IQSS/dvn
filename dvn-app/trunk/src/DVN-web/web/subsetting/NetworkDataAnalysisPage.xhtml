@@ -13,6 +13,9 @@
     <body>
         <ui:composition template="/template.xhtml">
             <ui:param name="pageTitle" value="Network Data Analysis - #{VDCRequest.dataversePageTitle}"/>
+            <ui:define name="metadata">
+                <f:metadata></f:metadata>
+            </ui:define>
             <ui:define name="body">
                 <script type="text/javascript">
       // <![CDATA[
@@ -87,7 +90,7 @@
           }
 
       }
-      
+
       // ]]>
                 </script>
                 <f:loadBundle basename="BundleAnalysis" var="bundleAnalysis"/>
@@ -353,7 +356,6 @@
                             </div>
                         </div>
                     </div>
-                    
            <ice:panelPopup id="inProgressPopup"
                         draggable="false"
                         visible="#{NetworkDataAnalysisPage.showInProgressPopup}"
@@ -387,7 +389,6 @@
             </f:facet>
         </ice:panelPopup>
                 </ice:form>
-
             </ui:define>
         </ui:composition>
     </body>

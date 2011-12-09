@@ -140,8 +140,7 @@ public class TemplateServiceBean implements edu.harvard.iq.dvn.core.study.Templa
     public boolean isTemplateUsed(Long templateId) {
         String queryStr = "SELECT count(id) from study s where s.template_id="+templateId;
         Query query = em.createNativeQuery(queryStr);
-        Object object = ((List)query.getSingleResult()).get(0);
-        Long count = (Long)object;
+        Long count = (Long)query.getSingleResult();
         return count.compareTo(new Long(0))>0;    
     }
     

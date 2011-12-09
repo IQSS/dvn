@@ -157,7 +157,7 @@ public class StudyFileServiceBean implements StudyFileServiceLocal {
         List<String> subsettableList = new ArrayList();
         Query query = em.createNativeQuery("select fileclass from studyfile sf, filemetadata fmd where fmd.studyfile_id = sf.id and studyversion_id = " + studyVersionId);
         for (Object currentResult : query.getResultList()) {
-            subsettableList.add( ((String) ((Vector) currentResult).get(0)) );
+            subsettableList.add( (String)currentResult );
         }
 
         if ( !subsettableList.isEmpty() ) {

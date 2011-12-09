@@ -1164,8 +1164,10 @@ public class StudyServiceBean implements edu.harvard.iq.dvn.core.study.StudyServ
     public String generateFileSystemNameSequence() {
         String fileSystemName = null;
         do {
-            Vector result = (Vector) em.createNativeQuery("select nextval('filesystemname_seq')").getSingleResult();
-            fileSystemName = result.get(0).toString();
+            //Vector result = (Vector) em.createNativeQuery("select nextval('filesystemname_seq')").getSingleResult();
+            //fileSystemName = result.get(0).toString();
+            Long result = (Long) em.createNativeQuery("select nextval('filesystemname_seq')").getSingleResult();
+            fileSystemName = result.toString();
         } while (!isUniqueFileSystemName(fileSystemName));
 
         return fileSystemName;

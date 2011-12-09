@@ -4,17 +4,21 @@
       xmlns:ui="http://java.sun.com/jsf/facelets"
       xmlns:h="http://java.sun.com/jsf/html"
       xmlns:f="http://java.sun.com/jsf/core"
-      xmlns:jsp="http://java.sun.com/JSP/Page"
       xmlns:dvn="/WEB-INF/tlds/dvn-components"
+      xmlns:ace="http://www.icefaces.org/icefaces/components"
       xmlns:ice="http://www.icesoft.com/icefaces/component">
-<head>
+<h:head>
   <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
-</head>
-<body>
+</h:head>
+<h:body>
   <ui:composition template="/template.xhtml">
     <ui:param name="pageTitle" value="#{bundlePageInfo.addFilesTitle} - #{VDCRequest.dataversePageTitle}"/>
     <ui:define name="metadata">
-        <f:metadata></f:metadata>
+        <f:metadata>
+            <f:viewParam name="studyId" value="#{AddFilesPage.studyId}"/>
+            <f:viewParam name="ingestEmail" value="#{VDCSession.loginBean.user.email}"/>
+            <f:event type="preRenderView" listener="#{AddFilesPage.preRenderView}"/>
+        </f:metadata>
     </ui:define>
     <ui:define name="body">
       <script type="text/javascript">
@@ -111,12 +115,12 @@
                             <ice:outputText nospan="true" escape="false"
                                             value="&#60;p style=&#34;margin-top:0;&#34; class=&#34;warnMessage&#34;&#62;&#60;img src=&#34;/dvn/resources/images/icon_warning.18.png&#34; class=&#34;dvn_icon&#34; /&#62; You have selected a CSV (character-separated values) file, which requires a Control Card. (Please report any issues found in our open beta release of Control Card Based Ingest to the Network Administrator using the &lt;a href=&#34;/dvn#{VDCRequest.currentVDCURL}/faces/ContactUsPage.xhtml&#34;&gt;Contact&lt;/a&gt; form.)&#60;p&#62;"
                                             rendered="#{AddFilesPage.SPSSCCIngestRequested and AddFilesPage.controlCardValidationErrorMessage == null}"/>
-                            <ice:outputText id="controlCardIngestMessage" nospan="true" escape="false"
+                            <ice:outputText id="controlCardIngestMessageSPSS" nospan="true" escape="false"
                                             value="&#60;p&#62;First, click Browse to select an SPSS Control Card file. Once you've selected the Control Card, click Browse again to select the CSV file.&#60;/p&#62;" rendered="#{AddFilesPage.SPSSCCIngestRequested}"/>
                             <ice:outputText nospan="true" escape="false"
                                             value="&#60;p style=&#34;margin-top:0;&#34; class=&#34;warnMessage&#34;&#62;&#60;img src=&#34;/dvn/resources/images/icon_warning.18.png&#34; class=&#34;dvn_icon&#34; /&#62; You have selected a TAB (tab-delimited) file, which requires a Control Card. (Please report any issues found in our open beta release of Control Card Based Ingest to the Network Administrator using the &lt;a href=&#34;/dvn#{VDCRequest.currentVDCURL}/faces/ContactUsPage.xhtml&#34;&gt;Contact&lt;/a&gt; form.)&#60;p&#62;"
                                             rendered="#{AddFilesPage.DDICCIngestRequested and AddFilesPage.controlCardValidationErrorMessage == null}"/>
-                            <ice:outputText id="controlCardIngestMessage" nospan="true" escape="false"
+                            <ice:outputText id="controlCardIngestMessageDDI" nospan="true" escape="false"
                                             value="&#60;p&#62;First, click Browse to select a DDI Control Card file. Once you've selected the DDI, click Browse again to select the TAB file.&#60;/p&#62;" rendered="#{AddFilesPage.DDICCIngestRequested}"/>
                         </ice:panelGroup>
                         <ice:panelGroup rendered="#{AddFilesPage.controlCardIngestInProgress}">
@@ -135,6 +139,7 @@
                     </div>
                   </div>
 
+                  <!-- l.a. "inputfile" component commented out: 
                   <ice:inputFile id="inputFileComponent"
                                    autoUpload="true"
                                    submitOnUpload="postUpload"
@@ -142,12 +147,48 @@
                                    binding="#{AddFilesPage.inputFile}"
                                    styleClass="dvnAddFilesInput"
                                    disabled="#{AddFilesPage.typeNotSelected}">
+                  l.a. -->
                       <!-- <ice:commandButton binding="#{AddFilesPage.inputFile}"/> -->
+                  <!-- l.a. rest of "inputfile" component commented out
                       <ice:outputStyle rel="stylesheet" type="text/css" href="/resources/css/stylesheet.css"/>
                   </ice:inputFile>
                   <br/>
                   <ice:message layout="table" globalOnly="false" for="inputFileComponent"
                                   showDetail="true" showSummary="false" styleClass="errorMessage"/>
+                  
+                  l.a. -->
+                  
+                  <!-- l.a. new "file entry" icefaces-ace component: -->
+                  <span class="top">
+                    <ace:fileEntry id="file-entry"
+                        disabled="#{AddFilesPage.typeNotSelected}"             
+                        relativePath="/temp/" 
+                        maxFileCount="1" 
+                        maxFileCountMessage="Limited to 1 file upload only (for now)" 
+                        fileEntryListener="#{AddFilesPage.uploadFileListener}" 
+                        maxFileSize="2147483648" 
+                        maxFileSizeMessage="Submitted file is too large." 
+                        maxTotalSize="2147483648" 
+                        maxTotalSizeMessage="Total size of submitted files is too large." 
+                                                useOriginalFilename="true" 
+                        useSessionSubdir="false" />
+
+                        <!-- l.a. it looks like this "file is required to submit
+                             the form" constraint prevents partial submits too! 
+                        required="true" 
+                        requiredMessage="The file is required to submit this form."
+                          l.a. -->
+                </span>
+                <span class="row">
+                    <span class="top">
+                        <h:commandButton class="submit" type="submit" value="Add File"/>
+                    </span>
+                    <span class="messages top">
+                        <h:messages/>
+                    </span>
+                </span>
+
+                  
               </ice:panelGroup>
 
               <!--
@@ -179,9 +220,11 @@
                       <f:facet name="header" id="f1">
                         <ice:panelGroup id="catColPanelGroup" styleClass="dvnAddFilesTableCategory">
                           <ice:outputLabel id="catDesc" value="Category"/>
+                          <!-- l.a. -->
                           <ice:selectOneMenu id="catDropdown" onchange="updateAllCheckedCategories(this);">
                             <f:selectItems value="#{AddFilesPage.fileCategories}"/>
                           </ice:selectOneMenu>
+                          <!-- l.a. -->
                         </ice:panelGroup>
                       </f:facet>
                     </ice:column>
@@ -246,5 +289,5 @@
       </div>
     </ui:define>
   </ui:composition>
-</body>
+</h:body>
 </html>

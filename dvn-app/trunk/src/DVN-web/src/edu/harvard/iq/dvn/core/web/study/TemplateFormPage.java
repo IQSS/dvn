@@ -65,13 +65,14 @@ import com.icesoft.faces.component.ext.HtmlDataTable;
 import com.icesoft.faces.component.ext.HtmlInputHidden;
 import com.icesoft.faces.component.ext.HtmlInputText;
 import com.icesoft.faces.component.ext.HtmlInputTextarea;
+import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
 import javax.faces.event.ActionEvent;
 import javax.faces.event.ValueChangeEvent;
+import javax.inject.Named;
 import javax.naming.Context;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
-import javax.servlet.http.HttpServletRequest;
 
 /**
  * <p>Page bean that corresponds to a similarly named JSP page.  This
@@ -81,6 +82,8 @@ import javax.servlet.http.HttpServletRequest;
  * to respond to incoming events.</p>
  */
 
+@Named("TemplateFormPage")
+@ViewScoped
 @EJB(name="editTemplate", beanInterface=edu.harvard.iq.dvn.core.study.EditTemplateService.class)
 public class TemplateFormPage extends VDCBaseBean implements java.io.Serializable  {
     EditTemplateService editTemplateService;

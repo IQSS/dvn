@@ -21,9 +21,7 @@
             <f:viewParam name="globalId" value="#{studyPage.globalId}"/>
             <f:viewParam name="versionNumber" value="#{studyPage.versionNumber}"/>
             <f:viewParam name="tab" value="#{studyPage.tab}"/>
-            <f:viewParam name="studyListingIndex" value="#{VDCRequestBean.studyListingIndex}"/>
-            <f:viewParam name="studyVersionNumber" value="#{VDCRequestBean.studyVersionNumber}"/>
-            <f:viewParam name="selectedTab" value="#{VDCRequestBean.selectedTab}"/>            
+            <f:viewParam name="studyListingIndex" value="#{VDCRequest.studyListingIndex}"/>          
             <f:event type="preRenderView" listener="#{studyPage.preRenderView}" />
         </f:metadata>  
     </ui:define>     

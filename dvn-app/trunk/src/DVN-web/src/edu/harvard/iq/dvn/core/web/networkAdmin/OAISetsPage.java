@@ -33,7 +33,9 @@ import edu.harvard.iq.dvn.core.web.common.VDCBaseBean;
 import java.util.List;
 import javax.ejb.EJB;
 import com.icesoft.faces.component.ext.HtmlDataTable;
+import javax.faces.bean.ViewScoped;
 import javax.faces.event.ActionEvent;
+import javax.inject.Named;
 
 /**
  * <p>Page bean that corresponds to a similarly named JSP page.  This
@@ -42,6 +44,8 @@ import javax.faces.event.ActionEvent;
  * lifecycle methods and event handlers where you may add behavior
  * to respond to incoming events.</p>
  */
+@ViewScoped
+@Named("OAISetsPage")
 public class OAISetsPage extends VDCBaseBean implements java.io.Serializable  {
     @EJB OAISetServiceLocal oaiSetService;
  

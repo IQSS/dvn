@@ -806,7 +806,7 @@ public class StudyServiceBean implements edu.harvard.iq.dvn.core.study.StudyServ
         // since query is native, must parse through Vector results
         for (Object currentResult : query.getResultList()) {
             // convert results into Longs
-            returnList.add(new Long(((Integer) ((Vector) currentResult).get(0))).longValue());
+            returnList.add(new Long(((Integer)currentResult)).longValue());
         }
         return returnList;
     }
@@ -830,7 +830,7 @@ public class StudyServiceBean implements edu.harvard.iq.dvn.core.study.StudyServ
         // since query is native, must parse through Vector results
         for (Object currentResult : query.getResultList()) {
             // convert results into Longs
-            returnList.add(new Long(((Integer) ((Vector) currentResult).get(0))).longValue());
+            returnList.add(new Long(((Integer)currentResult)).longValue());
         }
         return returnList;
     }
@@ -857,7 +857,7 @@ public class StudyServiceBean implements edu.harvard.iq.dvn.core.study.StudyServ
         // since query is native, must parse through Vector results
         for (Object currentResult : query.getResultList()) {
             // convert results into Longs
-            returnList.add(new Long(((Integer) ((Vector) currentResult).get(0))).longValue());
+            returnList.add(new Long(((Integer)currentResult)).longValue());
         }
         return returnList;
     }
@@ -881,7 +881,7 @@ public class StudyServiceBean implements edu.harvard.iq.dvn.core.study.StudyServ
         // since query is native, must parse through Vector results
         for (Object currentResult : query.getResultList()) {
             // convert results into Longs
-            returnList.add(new Long(((Integer) ((Vector) currentResult).get(0))).longValue());
+            returnList.add(new Long(((Integer)currentResult)).longValue());
         }
         return returnList;
     }
@@ -906,7 +906,7 @@ public class StudyServiceBean implements edu.harvard.iq.dvn.core.study.StudyServ
         // since query is native, must parse through Vector results
         for (Object currentResult : query.getResultList()) {
             // convert results into Longs
-            returnList.add(new Long(((Integer) ((Vector) currentResult).get(0))).longValue());
+            returnList.add(new Long(((Integer)currentResult)).longValue());
         }
 
         return returnList;
@@ -933,7 +933,7 @@ public class StudyServiceBean implements edu.harvard.iq.dvn.core.study.StudyServ
         // since query is native, must parse through Vector results
         for (Object currentResult : query.getResultList()) {
             // convert results into Longs
-            returnList.add(new Long(((Integer) ((Vector) currentResult).get(0))).longValue());
+            returnList.add(new Long(((Integer)currentResult)).longValue());
         }
 
         return returnList;

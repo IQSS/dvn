@@ -39,12 +39,16 @@ import edu.harvard.iq.dvn.core.web.common.VDCBaseBean;
 import java.util.Date;
 import com.icesoft.faces.component.ext.HtmlDataTable;
 import edu.harvard.iq.dvn.core.admin.DvnTimerRemote;
+import javax.faces.bean.ViewScoped;
 import javax.faces.event.ActionEvent;
+import javax.inject.Named;
 
 /**
  *
  * @author Ellen Kraffmiller
  */
+@ViewScoped
+@Named("HarvestSitesPage")
 public class HarvestSitesPage extends VDCBaseBean implements java.io.Serializable {
 
     @EJB

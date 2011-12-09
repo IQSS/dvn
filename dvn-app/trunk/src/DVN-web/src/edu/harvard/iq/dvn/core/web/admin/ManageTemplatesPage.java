@@ -40,13 +40,17 @@ import edu.harvard.iq.dvn.core.web.common.VDCBaseBean;
 import java.util.ArrayList;
 import java.util.Iterator;
 import com.icesoft.faces.component.ext.HtmlDataTable;
+import javax.faces.bean.ViewScoped;
 import javax.faces.model.DataModel;
 import javax.faces.model.ListDataModel;
+import javax.inject.Named;
 
 /**
  *
  * @author Ellen Kraffmiller
  */
+@Named("ManageTemplatesPage")
+@ViewScoped
 public class ManageTemplatesPage extends VDCBaseBean implements java.io.Serializable  {
     @EJB HarvestingDataverseServiceLocal harvestingDataverseService;
     @EJB VDCNetworkServiceLocal vdcNetworkService;

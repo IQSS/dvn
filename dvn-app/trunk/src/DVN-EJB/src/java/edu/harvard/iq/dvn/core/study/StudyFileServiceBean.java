@@ -123,7 +123,7 @@ public class StudyFileServiceBean implements StudyFileServiceLocal {
         Query query = em.createNativeQuery(nativeQuery);
         
         for (Object currentResult : query.getResultList()) {
-            studyFileIds.add(new Long(((Integer) ((Vector) currentResult).get(0)).longValue()));
+            studyFileIds.add(new Long(((Integer) currentResult)).longValue());
         }
        
 

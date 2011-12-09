@@ -63,10 +63,12 @@ import com.icesoft.faces.component.ext.HtmlSelectOneRadio;
 import edu.harvard.iq.dvn.core.admin.DvnTimerRemote;
 import java.util.Map;
 import java.util.ResourceBundle;
+import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
 import javax.faces.event.ActionEvent;
 import javax.faces.event.ValueChangeEvent;
 import javax.faces.model.SelectItem;
+import javax.inject.Named;
 import javax.naming.Context;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
@@ -75,6 +77,8 @@ import javax.naming.NamingException;
  *
  * @author Ellen Kraffmiller
  */
+@ViewScoped
+@Named("EditHarvestSitePage")
 @EJB(name="editHarvestSite", beanInterface=edu.harvard.iq.dvn.core.admin.EditHarvestSiteService.class)
 public class EditHarvestSitePage extends VDCBaseBean implements java.io.Serializable  {
     @EJB UserServiceLocal userService;
@@ -109,10 +113,6 @@ public class EditHarvestSitePage extends VDCBaseBean implements java.io.Serializ
     
     public void init() {
         super.init();
-        String harvestIdParam = getParamFromRequestOrComponent("harvestId");
-        if (harvestIdParam!=null) {
-            this.harvestId =new Long(Long.parseLong(harvestIdParam));
-        }
         if ( isFromPage("EditHarvestSitePage")) {
             if ( sessionGet(EditHarvestSiteService.class.getName()+harvestId)!=null) {
                 editHarvestSiteService = (EditHarvestSiteService) sessionGet(EditHarvestSiteService.class.getName()+harvestId);
@@ -247,8 +247,9 @@ public class EditHarvestSitePage extends VDCBaseBean implements java.io.Serializ
     
     public String save() {
         Long userId = getVDCSessionBean().getLoginBean().getUser().getId();
-        
+
         if ( harvestingDataverse.isOai() ) {
+
             String schedulePeriod=editHarvestSiteService.getHarvestingDataverse().getSchedulePeriod();
             Integer dayOfWeek = editHarvestSiteService.getHarvestingDataverse().getScheduleDayOfWeek();
             Integer hourOfDay = editHarvestSiteService.getHarvestingDataverse().getScheduleHourOfDay();
@@ -270,7 +271,7 @@ public class EditHarvestSitePage extends VDCBaseBean implements java.io.Serializ
         
         editHarvestSiteService.save(userId, dataverseName, dataverseAlias, filesRestricted, _HARVEST_DTYPE, dataverseAffiliation);
         remoteTimerService.updateHarvestTimer(harvestingDataverse);
-
+        
         if (isCreateMode()) {
             getVDCRequestBean().setCurrentVDC( editHarvestSiteService.getHarvestingDataverse().getVdc() );
             this.getVDCRequestBean().setSuccessMessage("Successfully created a harvest dataverse.");
@@ -624,7 +625,7 @@ public class EditHarvestSitePage extends VDCBaseBean implements java.io.Serializ
         boolean valid=true;
 
         if (HarvestingDataverse.HARVEST_TYPE_OAI.equals(harvestType) && oaiUrl!=null) {
-            try {
+            try {     
             editHarvestSiteService.setHarvestingSets(harvesterService.getSets(oaiUrl));
             } catch (EJBException e) {
                 valid=false;

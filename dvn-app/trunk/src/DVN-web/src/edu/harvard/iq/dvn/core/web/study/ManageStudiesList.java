@@ -88,8 +88,8 @@ public class ManageStudiesList extends VDCBaseBean {
     }  
    
     public String getSuccessMessage() {
-        if (VDCBaseBean.getVDCRequestBean().getSuccessMessage() != null) {
-            return VDCBaseBean.getVDCRequestBean().getSuccessMessage();
+        if (getVDCRequestBean().getSuccessMessage() != null) {
+            return getVDCRequestBean().getSuccessMessage();
         }
         return this.successMessage;
     }
@@ -129,7 +129,7 @@ public class ManageStudiesList extends VDCBaseBean {
             List deaccessionedStudyVersionIds = null;
             vdcId = loginBean.getCurrentVDC().getId();
             if (vdcId != null){
-                if (contributorFilter || (!isUserCuratorOrAdminOrNetworkAdmin() && !VDCBaseBean.getVDCRequestBean().getCurrentVDC().isAllowContributorsEditAll())) {
+                if (contributorFilter || (!isUserCuratorOrAdminOrNetworkAdmin() && !getVDCRequestBean().getCurrentVDC().isAllowContributorsEditAll())) {
                     studyVersionIds = studyService.getDvOrderedStudyVersionIdsByContributor(vdcId, loginBean.getUser().getId(), orderBy, ascending);
                     deaccessionedStudyVersionIds = studyService.getDvOrderedDeaccessionedStudyVersionIdsByContributor(vdcId, vdcId, orderBy, ascending);
                 } else {
@@ -297,7 +297,7 @@ public class ManageStudiesList extends VDCBaseBean {
         studyUIList = null;
 
         // and finally, set the status message:
-        VDCBaseBean.getVDCRequestBean().setSuccessMessage(successMessage);
+        getVDCRequestBean().setSuccessMessage(successMessage);
 
     }
 
@@ -376,13 +376,13 @@ public class ManageStudiesList extends VDCBaseBean {
 
 
     public boolean isContributorFilterRendered(){
-        boolean rendered = VDCBaseBean.getVDCRequestBean().getCurrentVDC() != null && (isUserCuratorOrAdminOrNetworkAdmin() || isRegAndEdit() || isUserContributorAndAllowedToEdit());
+        boolean rendered = getVDCRequestBean().getCurrentVDC() != null && (isUserCuratorOrAdminOrNetworkAdmin() || isRegAndEdit() || isUserContributorAndAllowedToEdit());
         return rendered;
     }
 
     private boolean isUserCuratorOrAdmin(){
         VDCUser user = loginBean == null ? null : loginBean.getUser();
-        VDC vdc = VDCBaseBean.getVDCRequestBean().getCurrentVDC();
+        VDC vdc = getVDCRequestBean().getCurrentVDC();
         if (user!=null) {
             return user.isCurator(vdc)|| user.isAdmin(vdc);
         }
@@ -391,7 +391,7 @@ public class ManageStudiesList extends VDCBaseBean {
 
     private boolean isUserCuratorOrAdminOrNetworkAdmin(){
         VDCUser user = loginBean == null ? null : loginBean.getUser();
-        VDC vdc = VDCBaseBean.getVDCRequestBean().getCurrentVDC();
+        VDC vdc = getVDCRequestBean().getCurrentVDC();
         if (user!=null) {
             return user.isCurator(vdc)|| user.isAdmin(vdc) || user.isNetworkAdmin();
         }
@@ -399,13 +399,13 @@ public class ManageStudiesList extends VDCBaseBean {
     }
 
     private boolean isRegAndEdit(){
-        VDC vdc = VDCBaseBean.getVDCRequestBean().getCurrentVDC();
+        VDC vdc = getVDCRequestBean().getCurrentVDC();
         return vdc.isAllowRegisteredUsersToContribute() && vdc.isAllowContributorsEditAll();
     }
 
     private boolean isUserContributorAndAllowedToEdit(){
         VDCUser user = loginBean == null ? null : loginBean.getUser();
-        VDC vdc = VDCBaseBean.getVDCRequestBean().getCurrentVDC();
+        VDC vdc = getVDCRequestBean().getCurrentVDC();
         if (user!=null) {
             return user.isContributor(vdc) && vdc.isAllowContributorsEditAll();
         }

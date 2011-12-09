@@ -663,7 +663,6 @@ public class EditStudyPage extends VDCBaseBean implements java.io.Serializable  
             return "myOptions";
         }
 
-        getVDCRequestBean().setStudyId(study.getId());
 
         if ( metadata.getStudyVersion().getId() == null  && study.getReleasedVersion() != null ) {
             // We are canceling the creation of a new version, so return
@@ -679,8 +678,7 @@ public class EditStudyPage extends VDCBaseBean implements java.io.Serializable  
             getVDCRequestBean().setStudyVersionNumber(metadata.getStudyVersion().getVersionNumber());
         }
 
-        
-        return "viewStudy";
+        return "/study/StudyPage?faces-redirect=true&studyId=" + study.getId()+ "&versionNumber=" + getVDCRequestBean().getStudyVersionNumber() + "&vdcId=" + getVDCRequestBean().getCurrentVDCId();
     }
     
     

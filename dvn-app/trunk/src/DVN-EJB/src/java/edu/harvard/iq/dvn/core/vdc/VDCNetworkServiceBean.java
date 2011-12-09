@@ -237,18 +237,13 @@ public class VDCNetworkServiceBean implements VDCNetworkServiceLocal {
     
     public Long getTotalStudies(boolean released) {
         Long total = new Long("0");
-        boolean bool = !released;
-        //Object object = ((List)em.createNativeQuery("select COUNT(study.id) from study, vdc, studyVersion where study.owner_id = vdc.id AND studyVersion.study_id = study.id AND studyVersion.versionState = '" + StudyVersion.VersionState.RELEASED + "' AND vdc.restricted = " + bool).getSingleResult()).get(0);
-        //total = (Long)object;
-        total = (Long)em.createNativeQuery("select COUNT(study.id) from study, vdc, studyVersion where study.owner_id = vdc.id AND studyVersion.study_id = study.id AND studyVersion.versionState = '" + StudyVersion.VersionState.RELEASED + "' AND vdc.restricted = " + bool).getSingleResult();
+        total = (Long)em.createNativeQuery("select COUNT(study.id) from study, vdc, studyVersion where study.owner_id = vdc.id AND studyVersion.study_id = study.id AND studyVersion.versionState = '" + StudyVersion.VersionState.RELEASED + "' AND vdc.restricted = " + !released).getSingleResult();
         return total;
     }
     
     public Long getTotalFiles(boolean released) {
         Long total = new Long("0");
-        boolean bool = !released; 
-        Object object = ((List)em.createNativeQuery("select COUNT(studyfile.id) from studyfile, vdc, filemetadata, studyversion, study where study.owner_id = vdc.id AND study.id = studyversion.study_id AND studyversion.versionstate= '" + StudyVersion.VersionState.RELEASED + "' AND filemetadata.studyversion_id = studyversion.id AND studyfile.id = filemetadata.studyfile_id  AND vdc.restricted = " + bool).getSingleResult()).get(0);
-        total = (Long)object;
+        total = ((Long)em.createNativeQuery("select COUNT(studyfile.id) from studyfile, vdc, filemetadata, studyversion, study where study.owner_id = vdc.id AND study.id = studyversion.study_id AND studyversion.versionstate= '" + StudyVersion.VersionState.RELEASED + "' AND filemetadata.studyversion_id = studyversion.id AND studyfile.id = filemetadata.studyfile_id  AND vdc.restricted = " + !released).getSingleResult());
         return total;
     }
     

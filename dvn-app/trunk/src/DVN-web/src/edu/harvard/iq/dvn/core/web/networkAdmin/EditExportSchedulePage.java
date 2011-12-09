@@ -36,10 +36,12 @@ import java.util.ArrayList;
 import java.util.List;
 import javax.ejb.EJB;
 import javax.faces.application.FacesMessage;
+import javax.faces.bean.ViewScoped;
 import javax.faces.component.UIComponent;
 import javax.faces.component.UIInput;
 import javax.faces.context.FacesContext;
 import javax.faces.model.SelectItem;
+import javax.inject.Named;
 
 /**
  * <p>Page bean that corresponds to a similarly named JSP page.  This
@@ -48,6 +50,9 @@ import javax.faces.model.SelectItem;
  * lifecycle methods and event handlers where you may add behavior
  * to respond to incoming events.</p>
  */
+
+@ViewScoped
+@Named("EditExportSchedulePage")
 public class EditExportSchedulePage extends VDCBaseBean implements java.io.Serializable  {
     @EJB VDCNetworkServiceLocal vdcNetworkService;
     @EJB (name="dvnTimer")
@@ -95,7 +100,7 @@ public class EditExportSchedulePage extends VDCBaseBean implements java.io.Seria
             && (!this.getVDCRequestBean().getVdcNetwork().getExportPeriod().equals(""))){
             selectItems.add(new SelectItem("none", "Disable export"));
         }
-
+            System.out.println("in load select page - just before return  ");
         return selectItems;
     }
 

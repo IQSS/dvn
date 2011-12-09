@@ -52,7 +52,6 @@ public class ManageStudiesList extends VDCBaseBean {
     private static final String ACTION_COLUMN = "actionReleased";
     private DataPaginator paginator;
     private static Logger dbgLog = Logger.getLogger(ManageStudiesList.class.getCanonicalName());
-    private Long vdcId;
     private LoginBean loginBean = new LoginBean();
     private VersionNotesPopupBean versionNotesPopupBean = new VersionNotesPopupBean();
     private String successMessage;
@@ -127,7 +126,7 @@ public class ManageStudiesList extends VDCBaseBean {
             }
             List studyVersionIds =null;
             List deaccessionedStudyVersionIds = null;
-            vdcId = loginBean.getCurrentVDC().getId();
+            Long vdcId = getVDCRequestBean().getCurrentVDCId();
             if (vdcId != null){
                 if (contributorFilter || (!isUserCuratorOrAdminOrNetworkAdmin() && !getVDCRequestBean().getCurrentVDC().isAllowContributorsEditAll())) {
                     studyVersionIds = studyService.getDvOrderedStudyVersionIdsByContributor(vdcId, loginBean.getUser().getId(), orderBy, ascending);
@@ -188,13 +187,6 @@ public class ManageStudiesList extends VDCBaseBean {
         this.studyUIList = studyUIList;
     }
 
-    public Long getVdcId() {
-        return vdcId;
-    }
-
-    public void setVdcId(Long vdcId) {
-        this.vdcId = vdcId;
-    }
 
     public StudyUI getCurrentStudyUI () {
         return this.currentStudyUI;

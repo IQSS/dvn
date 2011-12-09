@@ -12,9 +12,11 @@
 <body>
   <ui:composition template="/template.xhtml">
     <ui:param name="pageTitle" value="#{bundlePageInfo.manageStudiesTitle} - #{VDCRequest.dataversePageTitle}"/>
-    <ui:define name="metadata">
-        <f:event type="preRenderView" listener="#{ManageStudiesList.preRenderView}" />  
-    </ui:define>
+    <ui:define name="metadata">    
+        <!--f:metadata - COMMENTED OUT SINCE THERE ARE NO VIEW PARAMS - WORKAROUND-->  
+            <f:event type="preRenderView" listener="#{ManageStudiesList.preRenderView}" />
+        <!--f:metadata-->  
+    </ui:define>     
     <ui:define name="body">
       <ice:form>
         <ice:inputHidden id="vdcId" value="#{VDCRequest.currentVDCId}"/>

@@ -30,14 +30,18 @@
 package edu.harvard.iq.dvn.core.web;
 
 import java.util.Map;
+import javax.enterprise.context.ApplicationScoped;
 import javax.faces.context.FacesContext;
 import javax.faces.component.UIViewRoot;
+import javax.inject.Named;
 import javax.servlet.http.HttpServletRequest;
 
 /**
  *
  * @author Wendy Bosson
  */
+@Named("MainLayoutBean")
+@ApplicationScoped
 public class MainLayoutBean implements java.io.Serializable  {
     
     /**

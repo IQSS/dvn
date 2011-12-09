@@ -117,11 +117,8 @@ public class EditStudyFilesPage extends VDCBaseBean implements java.io.Serializa
 
         editStudyFilesService.save(getVDCRequestBean().getCurrentVDCId(),getVDCSessionBean().getLoginBean().getUser().getId());
 
-        getVDCRequestBean().setStudyId(study.getId());
-        getVDCRequestBean().setStudyVersionNumber(metadata.getStudyVersion().getVersionNumber());
-        getVDCRequestBean().setSelectedTab("files");
+        return "/study/StudyPage?faces-redirect=true&studyId=" + study.getId()+ "&versionNumber=" + metadata.getStudyVersion().getVersionNumber() + "&tab=files&vdcId=" + getVDCRequestBean().getCurrentVDCId();
 
-        return "viewStudy";
     }
 
     public String cancel() {
@@ -130,8 +127,6 @@ public class EditStudyFilesPage extends VDCBaseBean implements java.io.Serializa
         if (study==null) {
             return "myOptions";
         }
-
-        getVDCRequestBean().setStudyId(study.getId());
 
         if ( metadata.getStudyVersion().getId() == null  && study.getReleasedVersion() != null ) {
             // We are canceling the creation of a new version, so return
@@ -148,7 +143,8 @@ public class EditStudyFilesPage extends VDCBaseBean implements java.io.Serializa
         }
 
 
-        return "viewStudy";
+        return "/study/StudyPage?faces-redirect=true&studyId=" + study.getId()+ "&versionNumber=" + getVDCRequestBean().getStudyVersionNumber() + "&tab=files&vdcId=" + getVDCRequestBean().getCurrentVDCId();
+
     }
 
 

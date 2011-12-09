@@ -94,9 +94,9 @@ public class HomePage extends VDCBaseBean implements Serializable {
     private String ALL_DATAVERSES_LABEL = "All Dataverses";
     private String defaultVdcPath;
     private String groupName;
-    private String parsedLocalAnnouncements     = parseAnnouncements((getVDCRequestBean().getCurrentVDC()!= null) ? getVDCRequestBean().getCurrentVDC().getAnnouncements(): "", true);
-    private String parsedNetworkAnnouncements   = parseAnnouncements((getVDCRequestBean().getVdcNetwork() != null) ? getVDCRequestBean().getVdcNetwork().getAnnouncements(): "", false);
-
+    private String parsedLocalAnnouncements     = null;
+    private String parsedNetworkAnnouncements   = null;
+    
     private String searchField;
     StatusMessage msg;
     private boolean isAlphaSort;
@@ -504,10 +504,18 @@ public class HomePage extends VDCBaseBean implements Serializable {
     }
 
      public String getParsedLocalAnnouncements() {
+         if (parsedLocalAnnouncements == null) {
+             parsedLocalAnnouncements = parseAnnouncements((getVDCRequestBean().getCurrentVDC()!= null) ? getVDCRequestBean().getCurrentVDC().getAnnouncements(): "", true);
+
+         }
         return this.parsedLocalAnnouncements;
     }
 
      public String getParsedNetworkAnnouncements() {
+         if (parsedNetworkAnnouncements == null) {
+             parsedNetworkAnnouncements = parseAnnouncements((getVDCRequestBean().getVdcNetwork() != null) ? getVDCRequestBean().getVdcNetwork().getAnnouncements(): "", false);
+         }         
+         
         return this.parsedNetworkAnnouncements;
     }
 

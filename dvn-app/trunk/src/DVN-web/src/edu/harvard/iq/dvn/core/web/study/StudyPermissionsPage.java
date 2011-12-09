@@ -495,8 +495,7 @@ public class StudyPermissionsPage extends VDCBaseBean  implements java.io.Serial
       public String cancel() {
        
         editStudyPermissions.cancel();
-        this.sessionRemove(editStudyPermissions.getClass().getName());
-        getVDCRequestBean().setStudyId(studyId);        
+        this.sessionRemove(editStudyPermissions.getClass().getName());     
         return "/study/StudyPage?faces-redirect=true&studyId=" + studyId + "&versionNumber=" + getVDCRequestBean().getStudyVersionNumber() + "&vdcId=" + getVDCRequestBean().getCurrentVDCId();
 
     }

@@ -36,6 +36,7 @@ import java.util.Map;
 import javax.ejb.EJB;
 import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
+import javax.inject.Inject;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -117,8 +118,11 @@ public class VDCBaseBean  implements java.io.Serializable  {
         return (VDCSessionBean)getBean("VDCSession");
     }
 
-    public static VDCRequestBean getVDCRequestBean() {
-        return (VDCRequestBean)getBean("VDCRequest");
+    @Inject VDCRequestBean vdcRequestBean;
+    
+    public VDCRequestBean getVDCRequestBean() {
+        return vdcRequestBean;
+        //return (VDCRequestBean)getBean("VDCRequest");
         
     }
      /**

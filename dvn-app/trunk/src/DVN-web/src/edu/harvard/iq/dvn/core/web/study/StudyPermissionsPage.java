@@ -37,16 +37,16 @@ import edu.harvard.iq.dvn.core.study.EditStudyPermissionsService;
 import edu.harvard.iq.dvn.core.study.PermissionBean;
 import edu.harvard.iq.dvn.core.util.StringUtil;
 import edu.harvard.iq.dvn.core.web.common.VDCBaseBean;
-import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Iterator;
 import javax.ejb.EJB;
 import javax.faces.application.FacesMessage;
 import javax.faces.component.UIComponent;
 import javax.faces.component.UIInput;
 import com.icesoft.faces.component.ext.HtmlInputText;
+import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
 import javax.faces.event.ActionEvent;
+import javax.inject.Named;
 import javax.naming.Context;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
@@ -59,6 +59,8 @@ import javax.servlet.http.HttpServletRequest;
  * lifecycle methods and event handlers where you may add behavior
  * to respond to incoming events.</p>
  */
+@Named("StudyPermissionsPage")
+@ViewScoped
 @EJB(name="editStudyPermissions", beanInterface=edu.harvard.iq.dvn.core.study.EditStudyPermissionsService.class)
 public class StudyPermissionsPage extends VDCBaseBean  implements java.io.Serializable {
    
@@ -263,9 +265,11 @@ public class StudyPermissionsPage extends VDCBaseBean  implements java.io.Serial
     }
     
     public String save() {
-        this.getVDCRequestBean().setStudyId(editStudyPermissions.getStudy().getId());
+        Long studyId = editStudyPermissions.getStudy().getId();
         this.editStudyPermissions.save();
-        return "viewStudy";
+           
+        return "/study/StudyPage?faces-redirect=true&studyId=" + studyId + "&versionNumber=" + getVDCRequestBean().getStudyVersionNumber() + "&vdcId=" + getVDCRequestBean().getCurrentVDCId();
+        
     }
     
     

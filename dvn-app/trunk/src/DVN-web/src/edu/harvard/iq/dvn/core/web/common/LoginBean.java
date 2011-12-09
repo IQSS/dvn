@@ -39,6 +39,7 @@ import edu.harvard.iq.dvn.core.vdc.VDCServiceLocal;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import javax.inject.Inject;
 import javax.naming.InitialContext;
 
 /**
@@ -76,16 +77,17 @@ public class LoginBean  implements java.io.Serializable {
         this.user = user;
     }
     
+    @Inject VDCRequestBean vdcRequestBean;
     
     /**
      * Getter for property currentVDC.
      * @return Value of property currentVDC.
      */
     public VDC getCurrentVDC() {
-        if (VDCBaseBean.getVDCRequestBean()==null) {
+        if (vdcRequestBean==null) {
             return null;
         } else {
-            return VDCBaseBean.getVDCRequestBean().getCurrentVDC();
+            return vdcRequestBean.getCurrentVDC();
         }
     }
     

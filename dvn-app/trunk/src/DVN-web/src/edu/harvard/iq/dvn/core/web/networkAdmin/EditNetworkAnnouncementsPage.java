@@ -76,6 +76,9 @@ public class EditNetworkAnnouncementsPage extends VDCBaseBean implements java.io
      */
     public void init() {
         super.init();
+            VDCNetwork vdcnetwork = getVDCRequestBean().getVdcNetwork();
+            this.setChkEnableNetworkAnnouncements(vdcnetwork.isDisplayAnnouncements()) ;
+            this.setNetworkAnnouncements( vdcnetwork.getAnnouncements());        
         success = false;
     }
     /** 

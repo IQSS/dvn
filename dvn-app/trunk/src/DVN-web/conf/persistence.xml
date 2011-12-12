@@ -12,8 +12,7 @@
 		 persistence tables on startup; will make deployment
 		 faster. - L.A. -->
             <property name="eclipselink.ddl-generation" value="create-tables"/>
-	    <!-- this one MAY be obsolete and/or no longer necessary: - L.A. -->
-            <property name="toplink.cache.shared.default" value="false"/>
+            <property name="eclipselink.cache.shared.default" value="false"/>
         </properties>
     </persistence-unit>
     <!-- the persistence unit below is no longer necessary; needs to be removed 

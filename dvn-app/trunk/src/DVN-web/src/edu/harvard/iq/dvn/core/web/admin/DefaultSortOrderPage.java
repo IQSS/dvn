@@ -5,8 +5,11 @@ import edu.harvard.iq.dvn.core.vdc.VDC;
 import edu.harvard.iq.dvn.core.vdc.VDCServiceLocal;
 import edu.harvard.iq.dvn.core.web.common.VDCBaseBean;
 import javax.ejb.EJB;
+import javax.faces.bean.ViewScoped;
+import javax.inject.Named;
 
-
+@ViewScoped
+@Named("DefaultSortOrderPage")
 public class DefaultSortOrderPage extends VDCBaseBean implements java.io.Serializable  {
      @EJB VDCServiceLocal vdcService;
      private String defaultSortOrder = "";
@@ -26,18 +29,23 @@ public class DefaultSortOrderPage extends VDCBaseBean implements java.io.Seriali
     }
 
     public String cancel(){
-        return "myOptions";
+        VDC thisVDC = getVDCRequestBean().getCurrentVDC();
+        getVDCRequestBean().setCurrentVDC(thisVDC);
+        String    forwardPage="/admin/OptionsPage?faces-redirect=true&vdcId="+getVDCRequestBean().getCurrentVDC().getId();
+        return forwardPage;
     }
 
     public String save(){
         VDC thisVDC = getVDCRequestBean().getCurrentVDC();
 
-            thisVDC.setDefaultSortOrder(defaultSortOrder);
-            vdcService.edit(thisVDC);
+        thisVDC.setDefaultSortOrder(defaultSortOrder);
+        vdcService.edit(thisVDC);
 
-
-        getVDCRequestBean().setSuccessMessage("Successfully updated default sort order.");
-        return "myOptions";
+        getVDCRequestBean().setCurrentVDC(thisVDC);
+        String    forwardPage="/admin/OptionsPage?faces-redirect=true&vdcId="+getVDCRequestBean().getCurrentVDC().getId();
+        getExternalContext().getFlash().put("message","Successfully updated default sort order.");
+        return forwardPage;
+        
     }
 
 }

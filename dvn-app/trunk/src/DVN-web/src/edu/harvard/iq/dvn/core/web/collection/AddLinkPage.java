@@ -35,14 +35,16 @@ import edu.harvard.iq.dvn.core.vdc.VDCCollectionServiceLocal;
 import edu.harvard.iq.dvn.core.vdc.VDCServiceLocal;
 import edu.harvard.iq.dvn.core.web.common.VDCBaseBean;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import javax.ejb.EJB;
 
+import javax.faces.bean.ViewScoped;
 import javax.faces.model.SelectItem;
+import javax.inject.Named;
 
 
+@Named("AddLinkPage")
+@ViewScoped
 public class AddLinkPage extends VDCBaseBean implements java.io.Serializable  {
     @EJB VDCServiceLocal vdcService;
     @EJB VDCCollectionServiceLocal vdcCollectionService;

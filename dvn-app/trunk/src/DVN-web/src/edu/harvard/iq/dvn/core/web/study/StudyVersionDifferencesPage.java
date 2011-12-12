@@ -33,22 +33,25 @@ import edu.harvard.iq.dvn.core.study.StudyServiceLocal;
 import edu.harvard.iq.dvn.core.study.StudyVersion;
 import edu.harvard.iq.dvn.core.study.FileMetadata;
 import edu.harvard.iq.dvn.core.util.FileUtil;
-import edu.harvard.iq.dvn.core.web.MainLayoutBean;
 import java.io.File;
-import org.apache.commons.io.FileUtils;
 
 import edu.harvard.iq.dvn.core.web.common.VDCBaseBean;
 import java.util.ArrayList;
 import java.util.List;
 import javax.ejb.EJB;
+import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
 import javax.faces.event.ActionEvent;
+import javax.inject.Inject;
+import javax.inject.Named;
 import javax.servlet.http.HttpServletRequest;
 
 /**
  *
  * @author Leonid Andreev
  */
+@Named
+@ViewScoped
 public class StudyVersionDifferencesPage extends VDCBaseBean implements java.io.Serializable  {
 
     @EJB private StudyServiceLocal studyService;
@@ -61,7 +64,7 @@ public class StudyVersionDifferencesPage extends VDCBaseBean implements java.io.
     private String actionMode;
     private Long studyId;
     private String versionNumberList;
-    VersionNotesPopupBean versionNotesPopup;
+    @Inject VersionNotesPopupBean versionNotesPopup;
 
     public VersionNotesPopupBean getVersionNotesPopup() {
         return versionNotesPopup;

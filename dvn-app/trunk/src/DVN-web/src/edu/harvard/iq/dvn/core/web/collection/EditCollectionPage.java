@@ -40,19 +40,17 @@ import edu.harvard.iq.dvn.core.vdc.VDCCollectionServiceLocal;
 import edu.harvard.iq.dvn.core.vdc.VDCServiceLocal;
 import edu.harvard.iq.dvn.core.web.common.VDCBaseBean;
 import edu.harvard.iq.dvn.core.web.study.StudyUI;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.ejb.EJB;
 import javax.faces.application.FacesMessage;
+import javax.faces.bean.ViewScoped;
 import javax.faces.component.UIComponent;
 import javax.faces.component.UIInput;
 import javax.faces.context.FacesContext;
 import javax.faces.model.SelectItem;
 import javax.faces.event.ActionEvent;
-import javax.servlet.http.HttpServletResponse;
+import javax.inject.Named;
 
 /**
  * <p>Page bean that corresponds to a similarly named JSP page.  This
@@ -61,6 +59,8 @@ import javax.servlet.http.HttpServletResponse;
  * lifecycle methods and event handlers where you may add behavior
  * to respond to incoming events.</p>
  */
+@Named("EditCollectionPage")
+@ViewScoped
 public class EditCollectionPage extends VDCBaseBean implements java.io.Serializable {
 
     @EJB

@@ -69,11 +69,9 @@ public class DeleteClassificationsPage extends VDCBaseBean implements Serializab
     
     public void init() {
         super.init();
-        System.out.println("classId is "+classId );
         if (classId != null) deleteId = classId;
         
         if (deleteId!=null) {
-                    System.out.println("deleteId is "+deleteId );
             VDCGroup vdcGroup = vdcGroupService.findById(deleteId);
             classificationName = vdcGroup.getName();
         }

@@ -15,12 +15,16 @@ import java.io.Serializable;
 import java.util.Iterator;
 import javax.ejb.EJB;
 import javax.faces.application.FacesMessage;
+import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
+import javax.inject.Named;
 import javax.servlet.http.HttpServletRequest;
 
 /**
  * @author wbossons
  */
+@ViewScoped
+@Named("DeleteClassificationsPage")
 public class DeleteClassificationsPage extends VDCBaseBean implements Serializable {
     
     public DeleteClassificationsPage() {
@@ -40,7 +44,7 @@ public class DeleteClassificationsPage extends VDCBaseBean implements Serializab
     private String FAIL_MESSAGE      = new String("Problems occurred during the form submission. Please see error messages below.");
     private String classificationName;
 
-    private Long cid;
+    private Long classId;
 
     public String getClassificationName() {
         return classificationName;
@@ -65,8 +69,11 @@ public class DeleteClassificationsPage extends VDCBaseBean implements Serializab
     
     public void init() {
         super.init();
-        if (cid != null) deleteId = cid;
+        System.out.println("classId is "+classId );
+        if (classId != null) deleteId = classId;
+        
         if (deleteId!=null) {
+                    System.out.println("deleteId is "+deleteId );
             VDCGroup vdcGroup = vdcGroupService.findById(deleteId);
             classificationName = vdcGroup.getName();
         }
@@ -151,8 +158,8 @@ public class DeleteClassificationsPage extends VDCBaseBean implements Serializab
         return statusMessage;
     }
 
-    public Long getCid() {
-        return cid;
+    public Long getClassId() {
+        return classId;
     }
 
     private String getFriendlyLinkName() {
@@ -188,8 +195,8 @@ public class DeleteClassificationsPage extends VDCBaseBean implements Serializab
         this.statusMessage = statusMessage;
     }
 
-    public void setCid(Long cid) {
-        this.cid = cid;
+    public void setClassId(Long classId) {
+        this.classId = classId;
     }
 
     public String getResultLink() {

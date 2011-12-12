@@ -347,25 +347,14 @@ public class StudyVersionDifferencesPage extends VDCBaseBean implements java.io.
        
         // And now we are redirecting back to the StudyPage;
         // no need to specify the version really, since the latest version is now released.
-        //redirect("/faces/study/StudyPage.xhtml?studyId="+studyId);
-
-        getVDCRequestBean().setStudyId(getStudyId());
-        //getVDCRequestBean().setStudyVersionNumber(getVersionNumber2());
-
-        return "viewStudy";
-
+        return "/study/StudyPage?faces-redirect=true&studyId=" + getStudyId() + "&vdcId=" + getVDCRequestBean().getCurrentVDCId();
     }
 
     public String cancel() {
 
         // Do nothing and redirect back to the StudyPage;
         // Need to set the HTTP parameters:
-
-        getVDCRequestBean().setStudyId(getStudyId());
-        //getVDCRequestBean().setStudyVersionNumber(getVersionNumber2());
-
-        return "viewStudy";
-
+        return "/study/StudyPage?faces-redirect=true&studyId=" + getStudyId() + "&vdcId=" + getVDCRequestBean().getCurrentVDCId();
     }
 
 

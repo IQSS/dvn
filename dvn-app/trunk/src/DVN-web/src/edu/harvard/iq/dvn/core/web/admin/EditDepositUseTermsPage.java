@@ -31,7 +31,9 @@ import edu.harvard.iq.dvn.core.vdc.VDCServiceLocal;
 import edu.harvard.iq.dvn.core.web.common.VDCBaseBean;
 import javax.ejb.EJB;
 import javax.faces.application.FacesMessage;
+import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
+import javax.inject.Named;
 
 /**
  * <p>Page bean that corresponds to a similarly named JSP page.  This
@@ -40,6 +42,8 @@ import javax.faces.context.FacesContext;
  * lifecycle methods and event handlers where you may add behavior
  * to respond to incoming events.</p>
  */
+@ViewScoped
+@Named("EditDepositUseTermsPage")
 public class EditDepositUseTermsPage extends VDCBaseBean implements java.io.Serializable  {
     
     @EJB VDCServiceLocal vdcService;
@@ -73,8 +77,12 @@ public class EditDepositUseTermsPage extends VDCBaseBean implements java.io.Seri
             vdc.setDepositTermsOfUse(termsOfUse);
             vdc.setDepositTermsOfUseEnabled(termsOfUseEnabled);
             vdcService.edit(vdc);
-            getVDCRequestBean().setSuccessMessage("Successfully updated terms of use for study creation.");
-            return "myOptions";
+            getVDCRequestBean().setCurrentVDC(vdc);
+            String    forwardPage="/admin/OptionsPage?faces-redirect=true&vdcId="+getVDCRequestBean().getCurrentVDC().getId();
+            getExternalContext().getFlash().put("message","Successfully updated terms of use for study creation.");
+            return forwardPage;
+           
+            
         } else {
             success = false;
             return null;
@@ -82,7 +90,7 @@ public class EditDepositUseTermsPage extends VDCBaseBean implements java.io.Seri
     }
     
     public String cancel_action(){
-            return "cancelVDC";
+            return    "/admin/OptionsPage?faces-redirect=true&vdcId="+getVDCRequestBean().getCurrentVDC().getId();
     }
 
     

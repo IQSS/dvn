@@ -39,8 +39,10 @@ import java.util.List;
 import java.util.Map;
 import javax.ejb.EJB;
 import com.icesoft.faces.component.ext.HtmlSelectBooleanCheckbox;
+import javax.faces.bean.ViewScoped;
 import javax.faces.model.DataModel;
 import javax.faces.model.ListDataModel;
+import javax.inject.Named;
 
 /**
  * <p>Page bean that corresponds to a similarly named JSP page.  This
@@ -49,6 +51,8 @@ import javax.faces.model.ListDataModel;
  * lifecycle methods and event handlers where you may add behavior
  * to respond to incoming events.</p>
  */
+@ViewScoped
+@Named("SearchFieldsPage")
 public class SearchFieldsPage extends VDCBaseBean implements java.io.Serializable  {
     @EJB VDCServiceLocal vdcService;
     @EJB StudyFieldServiceLocal studyFieldService;
@@ -68,6 +72,9 @@ public class SearchFieldsPage extends VDCBaseBean implements java.io.Serializabl
         if (msg == null){
             msg =  (StatusMessage)getRequestMap().get("statusMessage");
         }
+        System.out.println("getVDCRequestBean is "+getVDCRequestBean().toString());
+        System.out.println("getCurrentVDC() is "+getVDCRequestBean().getCurrentVDC().toString());
+        System.out.println("getSearchResultFields() is "+getVDCRequestBean().getCurrentVDC().getSearchResultFields().toString());
         searchResultsFields = getVDCRequestBean().getCurrentVDC().getSearchResultFields();
         for (Iterator it = searchResultsFields.iterator(); it.hasNext();) {
             StudyField elem = (StudyField) it.next();
@@ -430,9 +437,13 @@ public class SearchFieldsPage extends VDCBaseBean implements java.io.Serializabl
             thisVDC.setSearchResultFields(newSearchResultsFields);
             vdcService.edit(thisVDC);
         }
+        
+        getVDCRequestBean().setCurrentVDC(thisVDC);
+        String    forwardPage="/admin/OptionsPage?faces-redirect=true&vdcId="+getVDCRequestBean().getCurrentVDC().getId();
+
+        getExternalContext().getFlash().put("message","Successfully updated search fields.");
+        return forwardPage;
      
-        getVDCRequestBean().setSuccessMessage("Successfully updated search fields.");
-        return "myOptions";
     }
     
     private List <StudyField> getDefaultSearchResultsFields(){
@@ -448,8 +459,10 @@ public class SearchFieldsPage extends VDCBaseBean implements java.io.Serializabl
     }
     
     public String cancel(){
-//s        indexService.indexAll();
-        return "myOptions";
+        VDC thisVDC = getVDCRequestBean().getCurrentVDC();
+        getVDCRequestBean().setCurrentVDC(thisVDC);
+        String    forwardPage="/admin/OptionsPage?faces-redirect=true&vdcId="+getVDCRequestBean().getCurrentVDC().getId();
+        return forwardPage;
     }
     
     private boolean success = false;

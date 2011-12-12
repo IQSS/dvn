@@ -13,9 +13,15 @@
   <ui:composition template="/template.xhtml">
     <!--<ui:include src="VersionNotesPopupFragment.xhtml"/>-->
     <ui:param name="pageTitle" value="#{bundlePageInfo.versionDifferencesTitle} - #{VDCRequest.dataversePageTitle}"/>
-    <ui:define name="metadata">
-        <f:metadata></f:metadata>
-    </ui:define>
+    <ui:define name="metadata">    
+        <f:metadata>
+            <f:viewParam name="studyId" value="#{studyVersionDifferencesPage.studyId}"/>
+            <f:viewParam name="versionNumberList" value="#{studyVersionDifferencesPage.versionNumberList}"/>
+            <f:viewParam name="actionMode" value="#{studyVersionDifferencesPage.actionMode}"/>
+            <f:viewParam name="studyListingIndex" value="#{VDCRequest.studyListingIndex}"/>     
+            <f:event type="preRenderView" listener="#{studyVersionDifferencesPage.preRenderView}" />
+        </f:metadata>  
+    </ui:define>    
     <ui:define name="body">
       <ice:form>
         <ice:inputHidden rendered="#{VDCRequest.currentVDCId != null}" id="vdcId" value="#{VDCRequest.currentVDCId}"/>
@@ -173,24 +179,24 @@
                     <ice:column id="column1">
                         <ice:outputText value="File ID: #{fileDiff.fileId}"/>
                     </ice:column>
-                    <ice:column id="column2" rendered="#{! fileDiff.file1Empty}">
+                    <ice:column id="column2a" rendered="#{! fileDiff.file1Empty}">
                         <ice:outputText value="File Name: #{fileDiff.fileName1}" rendered="#{fileDiff.fileName1 != null}"/>
                         <ice:outputText value="File Type: #{fileDiff.fileType1}" rendered="#{fileDiff.fileType1 != null}"/>
                         <ice:outputText value="File Size: #{fileDiff.fileSize1}" rendered="#{fileDiff.fileSize1 != null}"/>
                         <ice:outputText value="Category: #{fileDiff.fileCat1}" rendered="#{fileDiff.fileCat1 != null}"/>
                         <ice:outputText value="Description: #{fileDiff.fileDesc1}" rendered="#{fileDiff.fileDesc1 != null}"/>
                     </ice:column>
-                    <ice:column id="column2" rendered="#{fileDiff.file1Empty}">
+                    <ice:column id="column2b" rendered="#{fileDiff.file1Empty}">
                         <ice:outputText value="[Empty]"/>
                     </ice:column>
-                    <ice:column id="column3" rendered="#{! fileDiff.file2Empty}">
+                    <ice:column id="column3a" rendered="#{! fileDiff.file2Empty}">
                         <ice:outputText value="File Name: #{fileDiff.fileName2}" rendered="#{fileDiff.fileName2 != null}"/>
                         <ice:outputText value="File Type: #{fileDiff.fileType2}" rendered="#{fileDiff.fileType2 != null}"/>
                         <ice:outputText value="File Size: #{fileDiff.fileSize2}" rendered="#{fileDiff.fileSize2 != null}"/>
                         <ice:outputText value="Category: #{fileDiff.fileCat2}" rendered="#{fileDiff.fileCat1 != null}"/>
                         <ice:outputText value="Description: #{fileDiff.fileDesc2}" rendered="#{fileDiff.fileDesc1 != null}"/>
                     </ice:column>
-                    <ice:column id="column3" rendered="#{fileDiff.file2Empty}">
+                    <ice:column id="column3b" rendered="#{fileDiff.file2Empty}">
                         <ice:outputText value="[Empty]"/>
                     </ice:column>
               </ice:dataTable>

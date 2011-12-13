@@ -49,12 +49,14 @@ import java.util.Set;
 import java.util.List;
 import javax.ejb.EJB;
 import javax.faces.application.FacesMessage;
+import javax.faces.bean.ViewScoped;
 import javax.faces.component.UIComponent;
 import javax.faces.context.FacesContext;
 import javax.faces.event.ActionEvent;
 import javax.faces.event.PhaseId;
 import javax.faces.event.ValueChangeEvent;
 import javax.faces.model.SelectItem;
+import javax.inject.Named;
 import javax.naming.Context;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
@@ -64,6 +66,8 @@ import javax.naming.NamingException;
  * @author skraffmiller
  */
 @EJB(name="visualizationService", beanInterface=edu.harvard.iq.dvn.core.visualization.VisualizationServiceBean.class)
+@ViewScoped
+@Named("SetUpDataExplorationPage")
 public class SetUpDataExplorationPage extends VDCBaseBean implements java.io.Serializable {
     @EJB
     VisualizationServiceLocal      visualizationService;

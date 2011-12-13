@@ -30,7 +30,6 @@
 package edu.harvard.iq.dvn.core.web.study;
 
 import edu.harvard.iq.dvn.core.study.StudyServiceLocal;
-import edu.harvard.iq.dvn.core.study.StudyVersion;
 import edu.harvard.iq.dvn.core.vdc.VDC;
 import edu.harvard.iq.dvn.core.vdc.VDCNetwork;
 import edu.harvard.iq.dvn.core.vdc.VDCNetworkServiceLocal;
@@ -39,15 +38,19 @@ import edu.harvard.iq.dvn.core.web.servlet.TermsOfUseFilter;
 import java.util.Map;
 import javax.ejb.EJB;
 import javax.faces.application.FacesMessage;
+import javax.faces.bean.ViewScoped;
 import javax.faces.component.UIComponent;
 import javax.faces.component.UIInput;
 import javax.faces.component.html.HtmlInputHidden;
 import javax.faces.context.FacesContext;
+import javax.inject.Named;
 
 /**
  *
  * @author Gustavo Durand
  */
+@Named("TermsOfUsePage")
+@ViewScoped
 public class TermsOfUsePage extends VDCBaseBean {
     @EJB  private StudyServiceLocal studyService;
     @EJB private VDCNetworkServiceLocal vdcNetworkService;

@@ -69,6 +69,9 @@ import java.util.ResourceBundle;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.MissingResourceException;
+import javax.faces.bean.ViewScoped;
+import javax.faces.model.SelectItem;
+import javax.inject.Named;
 
 /**
  * <p>Page bean that corresponds to a similarly named JSP page.  This
@@ -77,6 +80,8 @@ import java.util.MissingResourceException;
  * lifecycle methods and event handlers where you may add behavior
  * to respond to incoming events.</p>
  */
+@Named("AdvSearchPage")
+@ViewScoped
 public class AdvSearchPage extends VDCBaseBean implements java.io.Serializable {
 
     @EJB
@@ -131,12 +136,10 @@ public class AdvSearchPage extends VDCBaseBean implements java.io.Serializable {
     public void init() {
         super.init();
         //radioButtonList1DefaultItems.setItems(new String[]{messages.getString("searchAllCollections"), messages.getString("searchOnlySelectedCollections")});
-//        dropdown4DefaultItems.setItems(new String[] {"contains", "does not contain", "is greater than", "is less than"});
-        //dropdown3DefaultItems.setItems(getAdvSearchFieldDefaults());
-        //dropdown4DefaultItems.setItems(new String[]{messages.getString("contains"), messages.getString("doesNotContain"), messages.getString("isGreaterThan"), messages.getString("isLessThan")});
-        //dropdown4DateItems.setItems(new String[]{messages.getString("isGreaterThan"), messages.getString("isLessThan")});
-        //dropdown4NotDateItems.setItems(new String[]{messages.getString("contains"), messages.getString("doesNotContain")});
-        //dropdown4FirstNonDateItems.setItems(new String[]{messages.getString("contains")});
+        dropdown3DefaultItems = initSelectItemList(getAdvSearchFieldDefaults());
+        dropdown4DateItems = initSelectItemList(new String[]{messages.getString("isGreaterThan"), messages.getString("isLessThan")});
+        dropdown4NotDateItems = initSelectItemList(new String[]{messages.getString("contains"), messages.getString("doesNotContain")});
+
         // Adding 4 rows here and removing user's ability to add/remove in interface.
         /*  Add these back to xhtml when/if user is given control
                     <ice:column>
@@ -149,17 +152,26 @@ public class AdvSearchPage extends VDCBaseBean implements java.io.Serializable {
         operatorMap.put(messages.getString("doesNotContain"), "-");
         operatorMap.put(messages.getString("isGreaterThan"), ">");
         operatorMap.put(messages.getString("isLessThan"), "<");
-        /*
+        
         if (getVDCRequestBean().getCurrentVDC() != null){
         long vdcId=getVDCRequestBean().getCurrentVDC().getId().longValue();
-        dropdown3DefaultItems.setItems(getSearchScopeList(vdcId));
+        dropdown3DefaultItems = initSelectItemList(getSearchScopeList(vdcId));
         }
         else{
-        dropdown3DefaultItems.setItems(getAdvSearchFieldDefaults());
+        dropdown3DefaultItems = initSelectItemList(getAdvSearchFieldDefaults());
         }
-         */
+        
 
         //dataTable1Model.setWrappedData(getCollectionsDisplay());
+    }
+    
+    private List<SelectItem> initSelectItemList(String[] itemsArray ) {
+        List<SelectItem> list = new ArrayList();
+        for (int i = 0; i < itemsArray.length; i++) {
+            SelectItem selectItem = new SelectItem(itemsArray[i]);
+            list.add(selectItem);          
+        }
+        return list;
     }
 
     private void initVariableInfoList(){
@@ -250,15 +262,17 @@ public class AdvSearchPage extends VDCBaseBean implements java.io.Serializable {
     public void setDropdown3(HtmlSelectOneMenu hsom) {
         this.dropdown3 = hsom;
     }
-    //private DefaultSelectItemsArray dropdown3DefaultItems = new DefaultSelectItemsArray();
+    private List<SelectItem> dropdown3DefaultItems = new ArrayList();
 
-    //public DefaultSelectItemsArray getDropdown3DefaultItems() {
-    //    return dropdown3DefaultItems;
-    //}
+    public List<SelectItem> getDropdown3DefaultItems() {
+        return dropdown3DefaultItems;
+    }
 
-    //public void setDropdown3DefaultItems(DefaultSelectItemsArray dsia) {
-    //    this.dropdown3DefaultItems = dsia;
-    //}
+    public void setDropdown3DefaultItems(List<SelectItem> dropdown3DefaultItems) {
+        this.dropdown3DefaultItems = dropdown3DefaultItems;
+    }
+
+
     private UISelectItems dropdown3SelectItems = new UISelectItems();
 
     public UISelectItems getDropdown3SelectItems() {
@@ -286,33 +300,29 @@ public class AdvSearchPage extends VDCBaseBean implements java.io.Serializable {
     //public void setDropdown4DefaultItems(DefaultSelectItemsArray dsia) {
     //    this.dropdown4DefaultItems = dsia;
     //}
-    //private DefaultSelectItemsArray dropdown4DateItems = new DefaultSelectItemsArray();
+    private List<SelectItem>  dropdown4DateItems = new ArrayList();
+    
+    public List<SelectItem> getDropdown4DateItems() {
+        return dropdown4DateItems;
+    }
 
-    //public DefaultSelectItemsArray getDropdown4DateItems() {
-    //    return dropdown4DateItems;
-    //}
+    public void setDropdown4DateItems(List<SelectItem> dropdown4DateItems) {
+        this.dropdown4DateItems = dropdown4DateItems;
+    }
 
-    //public void setDropdown4DateItems(DefaultSelectItemsArray dsia) {
-    //    this.dropdown4DateItems = dsia;
-    //}
-    //private DefaultSelectItemsArray dropdown4NotDateItems = new DefaultSelectItemsArray();
+    private List<SelectItem>  dropdown4NotDateItems = new ArrayList();
 
-    //public DefaultSelectItemsArray getDropdown4NotDateItems() {
-    //    return dropdown4NotDateItems;
-    //}
+    public List<SelectItem> getDropdown4NotDateItems() {
+        return dropdown4NotDateItems;
+    }
 
-    //public void setDropdown4NotDateItems(DefaultSelectItemsArray dsia) {
-    //    this.dropdown4NotDateItems = dsia;
-    //}
-    //private DefaultSelectItemsArray dropdown4FirstNonDateItems = new DefaultSelectItemsArray();
+    public void setDropdown4NotDateItems(List<SelectItem> dropdown4NotDateItems) {
+        this.dropdown4NotDateItems = dropdown4NotDateItems;
+    }
 
-    //public DefaultSelectItemsArray getDropdown4FirstNonDateItems() {
-    //    return dropdown4FirstNonDateItems;
-    //}
 
-    //public void setDropdown4FirstNonDateItems(DefaultSelectItemsArray dsia) {
-    //    this.dropdown4FirstNonDateItems = dsia;
-    //}
+
+
     private UISelectItems dropdown4SelectItems = new UISelectItems();
 
     public UISelectItems getDropdown4SelectItems() {
@@ -990,20 +1000,5 @@ public class AdvSearchPage extends VDCBaseBean implements java.io.Serializable {
             }
     }
 
-
-
-
-        /**
-     * <p>Callback method that is called whenever a page is navigated to,
-     * either directly via a URL, or indirectly via page navigation.
-     * Customize this method to acquire resources that will be needed
-     * for event handlers and lifecycle methods, whether or not this
-     * page is performing post back processing.</p>
-     * 
-     * <p>Note that, if the current request is a postback, the property
-     * values of the components do <strong>not</strong> represent any
-     * values submitted with this request.  Instead, they represent the
-     * property values that were saved for this view when it was rendered.</p>
-     */
 }
 

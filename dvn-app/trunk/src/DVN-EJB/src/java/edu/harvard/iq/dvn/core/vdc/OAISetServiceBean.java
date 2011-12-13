@@ -104,13 +104,15 @@ public class OAISetServiceBean implements OAISetServiceLocal {
             for (Object currentResult : query.getResultList()) {
                 // convert results into Longs
                 if (i == 0){
-                   inClause = inClause + new Long(((Integer) ((Vector) currentResult).get(0))).longValue();                           
+                    
+                   inClause = inClause + new Long(((Integer) (currentResult)));                           
                 } else {
-                    inClause = inClause + "," + new Long(((Integer) ((Vector) currentResult).get(0))).longValue() ;
+                    inClause = inClause + "," + new Long(((Integer) (currentResult))) ;
                 }
                 i++;
             }
             inClause = inClause + ")";
+
             return em.createQuery("select object(o) from OAISet  as o where  o.id in "+ inClause + "   order by o.name").getResultList();
         } else {
             return null;

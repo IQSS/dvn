@@ -25,14 +25,18 @@ import edu.harvard.iq.dvn.core.vdc.OAISetServiceLocal;
 import edu.harvard.iq.dvn.core.web.common.VDCBaseBean;
 import javax.ejb.EJB;
 import javax.faces.application.FacesMessage;
+import javax.faces.bean.ViewScoped;
 import javax.faces.component.UIComponent;
 import javax.faces.component.UIInput;
 import javax.faces.context.FacesContext;
+import javax.inject.Named;
 
 /**
  *
  * @author Ellen Kraffmiller
  */
+@ViewScoped
+@Named("EditOAISetPage")
 public class EditOAISetPage extends VDCBaseBean implements java.io.Serializable  {
     @EJB OAISetServiceLocal oaiSetService;
     public EditOAISetPage() {
@@ -41,6 +45,7 @@ public class EditOAISetPage extends VDCBaseBean implements java.io.Serializable 
     public void init() {
         super.init();
         oaiSet = new OAISet();
+        System.out.println("oaiSetId is "+oaiSetId);
         if ( !isFromPage("EditOAISetPage") && oaiSetId!=null) {
             oaiSet = oaiSetService.findById(oaiSetId);
         }

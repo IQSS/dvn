@@ -13,7 +13,11 @@
   <ui:composition template="/template.xhtml">
     <ui:param name="pageTitle" value="Account Terms of Use - #{VDCRequest.dataversePageTitle}"/>
     <ui:define name="metadata">
-        <f:metadata></f:metadata>
+        <f:metadata>
+            <f:viewParam name="redirectPage" value="#{TermsOfUsePage.redirectPage}"/>
+            <f:viewParam name="tou" value="#{TermsOfUsePage.touParam}"/> 
+            <f:event type="preRenderView" listener="#{TermsOfUsePage.preRenderView}" />
+        </f:metadata>  
     </ui:define>
     <ui:define name="body">
       <f:loadBundle basename="StudyBundle" var="studybundle"/>
@@ -99,9 +103,9 @@
               </div>
               <div class="dvnFormPadding dvnFormMargin">
                 <ice:commandButton id="termsButton" value="Continue" action="#{TermsOfUsePage.acceptTerms_action}"/>
-                <ice:commandButton id="cancelButton" value="Cancel" onclick="window.location='/dvn#{VDCRequest.currentVDCURL}/faces/study/StudyPage.xhtml?studyId=#{TermsOfUsePage.study.id}&amp;versionNumber=-1';return false;" rendered="#{TermsOfUsePage.touTypeDeposit and TermsOfUsePage.studyId!=null}"/>
-                <ice:commandButton id="cancelButton" value="Cancel" onclick="window.location='/dvn#{VDCRequest.currentVDCURL}/faces/study/StudyPage.xhtml?studyId=#{TermsOfUsePage.study.id}&amp;tab=files';return false;" rendered="#{TermsOfUsePage.touTypeDownload and VDCRequest.studyVersionNumber == null}"/>
-                <ice:commandButton id="cancelButton" value="Cancel" onclick="window.location='/dvn#{VDCRequest.currentVDCURL}/faces/study/StudyPage.xhtml?studyId=#{TermsOfUsePage.study.id}&amp;versionNumber=#{VDCRequest.studyVersionNumber}&amp;tab=files';return false;" rendered="#{TermsOfUsePage.touTypeDownload and VDCRequest.studyVersionNumber != null}"/>
+                <ice:commandButton id="cancelButton1" value="Cancel" onclick="window.location='/dvn#{VDCRequest.currentVDCURL}/faces/study/StudyPage.xhtml?studyId=#{TermsOfUsePage.study.id}&amp;versionNumber=-1';return false;" rendered="#{TermsOfUsePage.touTypeDeposit and TermsOfUsePage.studyId!=null}"/>
+                <ice:commandButton id="cancelButton2" value="Cancel" onclick="window.location='/dvn#{VDCRequest.currentVDCURL}/faces/study/StudyPage.xhtml?studyId=#{TermsOfUsePage.study.id}&amp;tab=files';return false;" rendered="#{TermsOfUsePage.touTypeDownload and VDCRequest.studyVersionNumber == null}"/>
+                <ice:commandButton id="cancelButton3" value="Cancel" onclick="window.location='/dvn#{VDCRequest.currentVDCURL}/faces/study/StudyPage.xhtml?studyId=#{TermsOfUsePage.study.id}&amp;versionNumber=#{VDCRequest.studyVersionNumber}&amp;tab=files';return false;" rendered="#{TermsOfUsePage.touTypeDownload and VDCRequest.studyVersionNumber != null}"/>
               </div>
             </div>
           </div>

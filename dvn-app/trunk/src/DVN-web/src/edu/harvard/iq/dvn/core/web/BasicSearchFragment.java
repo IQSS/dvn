@@ -14,12 +14,14 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import javax.ejb.EJB;
-import com.icesoft.faces.component.ext.HtmlInputText;
-import edu.harvard.iq.dvn.core.vdc.VDC;
 import edu.harvard.iq.dvn.core.vdc.VDCCollectionServiceLocal;
 import edu.harvard.iq.dvn.core.vdc.VDCServiceLocal;
+import javax.faces.bean.ViewScoped;
+import javax.inject.Named;
 
 
+@Named ("BasicSearchFragment")
+@ViewScoped
 public class BasicSearchFragment extends VDCBaseBean implements java.io.Serializable {
     @EJB
     IndexServiceLocal      indexService;

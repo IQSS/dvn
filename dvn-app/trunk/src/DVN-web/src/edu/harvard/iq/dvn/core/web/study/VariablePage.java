@@ -33,11 +33,15 @@ import edu.harvard.iq.dvn.core.study.DataVariable;
 import edu.harvard.iq.dvn.core.study.VariableServiceLocal;
 import edu.harvard.iq.dvn.core.web.common.VDCBaseBean;
 import javax.ejb.EJB;
+import javax.faces.bean.ViewScoped;
+import javax.inject.Named;
 
 /**
  *
  * @author gdurand
  */
+@Named("VariablePage")
+@ViewScoped
 public class VariablePage extends VDCBaseBean implements java.io.Serializable  {
     
     @EJB VariableServiceLocal varService;

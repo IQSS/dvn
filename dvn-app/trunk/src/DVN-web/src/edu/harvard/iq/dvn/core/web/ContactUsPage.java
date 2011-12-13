@@ -34,6 +34,7 @@ import java.util.List;
 import java.util.Map;
 import javax.ejb.EJB;
 import javax.faces.application.FacesMessage;
+import javax.faces.bean.ViewScoped;
 import javax.faces.event.ValueChangeEvent;
 import javax.faces.component.UIComponent;
 import javax.faces.component.UIInput;
@@ -44,6 +45,7 @@ import javax.faces.context.FacesContext;
  *
  * Created on October 18, 2006, 4:24 PM
  */
+import javax.inject.Named;
 import javax.servlet.http.HttpServletRequest;
 import net.tanesha.recaptcha.ReCaptchaImpl;
 import net.tanesha.recaptcha.ReCaptchaResponse;
@@ -56,6 +58,8 @@ import net.tanesha.recaptcha.http.SimpleHttpLoader;
  * lifecycle methods and event handlers where you may add behavior
  * to respond to incoming events.</p>
  */
+@ViewScoped
+@Named("ContactUsPage")
 public class ContactUsPage extends VDCBaseBean implements java.io.Serializable {
     @EJB MailServiceLocal mailService;
     @EJB CaptchaServiceLocal captchService;

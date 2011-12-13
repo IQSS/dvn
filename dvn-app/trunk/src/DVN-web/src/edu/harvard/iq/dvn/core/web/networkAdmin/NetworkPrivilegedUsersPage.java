@@ -36,9 +36,11 @@ import edu.harvard.iq.dvn.core.admin.VDCUser;
 import java.util.ArrayList;
 import java.util.List;
 import javax.ejb.EJB;
+import javax.faces.bean.ViewScoped;
 import javax.faces.component.UIData;
 import javax.faces.event.ActionEvent;
 import javax.faces.model.SelectItem;
+import javax.inject.Named;
 import javax.servlet.http.HttpServletRequest;
 
 /**
@@ -48,6 +50,8 @@ import javax.servlet.http.HttpServletRequest;
  * lifecycle methods and event handlers where you may add behavior
  * to respond to incoming events.</p>
  */
+@ViewScoped
+@Named("NetworkPrivilegedUsersPage")
 public class NetworkPrivilegedUsersPage extends VDCBaseBean implements java.io.Serializable  {
     @EJB  EditNetworkPrivilegesService privileges;
     @EJB  NetworkRoleServiceLocal networkRoleService;
@@ -55,20 +59,8 @@ public class NetworkPrivilegedUsersPage extends VDCBaseBean implements java.io.S
 
    public void init() {
         super.init();
-        if ( isFromPage("NetworkPrivilegedUsersPage") && sessionGet(privileges.getClass().getName())!=null) {
-            privileges = (EditNetworkPrivilegesService) sessionGet(privileges.getClass().getName());
-            System.out.println("Getting stateful session bean editNetworkPrivileges ="+getPrivileges());
-            
-        } else {
-             
-            System.out.println("Putting stateful session bean in request, editNetworkPrivileges ="+getPrivileges());
-            privileges.init();
-            sessionPut( getPrivileges().getClass().getName(),privileges);
-            //sessionPut( (studyService.getClass().getName() + "."  + studyId.toString()), studyService);
-        }
-        
-      
-       
+
+                     
     }
         
    
@@ -111,6 +103,21 @@ public class NetworkPrivilegedUsersPage extends VDCBaseBean implements java.io.S
      * <code>preprocess()</code>, or <code>prerender()</code> methods (or
      * acquired during execution of an event handler).</p>
      */
+    public void preRenderView() {
+        if ( isFromPage("NetworkPrivilegedUsersPage") && sessionGet(privileges.getClass().getName())!=null) {
+            privileges = (EditNetworkPrivilegesService) sessionGet(privileges.getClass().getName());
+            System.out.println("Getting stateful session bean editNetworkPrivileges ="+getPrivileges());
+            
+        } else {
+             
+            System.out.println("Putting stateful session bean in request, editNetworkPrivileges ="+getPrivileges());
+            privileges.init();
+            sessionPut( getPrivileges().getClass().getName(),privileges);
+            //sessionPut( (studyService.getClass().getName() + "."  + studyId.toString()), studyService);
+        }
+
+    } 
+    
     public void destroy() {
     }
 
@@ -199,7 +206,7 @@ public class NetworkPrivilegedUsersPage extends VDCBaseBean implements java.io.S
         String creatorUrl = "http://"+hostName+portStr+request.getContextPath()+"/faces/site/AddSitePage.xhtml";
         privileges.save(creatorUrl);
         privileges.init();
-        getVDCRequestBean().setSuccessMessage("Successfully updated network permissions.");
+        getExternalContext().getFlash().put("message", "Successfully updated network permissions.");
         return "myNetworkOptions";
     } 
 

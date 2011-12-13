@@ -32,6 +32,8 @@ import edu.harvard.iq.dvn.core.study.Template;
 import edu.harvard.iq.dvn.core.study.TemplateServiceLocal;
 import edu.harvard.iq.dvn.core.web.common.VDCBaseBean;
 import javax.ejb.EJB;
+import javax.faces.bean.ViewScoped;
+import javax.inject.Named;
 
 /**
  * <p>Page bean that corresponds to a similarly named JSP page.  This
@@ -40,6 +42,8 @@ import javax.ejb.EJB;
  * lifecycle methods and event handlers where you may add behavior
  * to respond to incoming events.</p>
  */
+@Named("DeleteTemplatePage")
+@ViewScoped
 @EJB(name="editStudy", beanInterface=edu.harvard.iq.dvn.core.study.EditStudyService.class)
 public class DeleteTemplatePage extends VDCBaseBean implements java.io.Serializable  {
     @EJB TemplateServiceLocal templateService;

@@ -13,12 +13,14 @@
   <ui:composition template="/template.xhtml">
     <ui:param name="pageTitle" value="#{bundlePageInfo.manageDvPermissionsTitle} - #{VDCRequest.dataversePageTitle}"/>
     <ui:define name="metadata">
-        <f:metadata></f:metadata>
+        <f:metadata>
+            <f:event type="preRenderView" listener="#{PrivilegedUsersPage.preRenderView}" />
+        </f:metadata>
     </ui:define>
     <ui:define name="body">
       <ice:form id="privilegedUsersForm">
         <div id="hiddenDiv">
-          <ice:outputText value="#{NetworkStatsBean.autoLoad}"/>
+         
         </div>
         <input type="hidden" name="pageName" value="PrivilegedUsersPage"/>
         <ice:inputHidden id="vdcId" value="#{VDCRequest.currentVDCId}"/>
@@ -95,11 +97,11 @@
                       </f:facet>
                       <ice:selectOneMenu rendered="#{currentRow.vdcRole==null}" id="newRoleSelectMenu" value="#{PrivilegedUsersPage.newRoleId}">
                         <ice:message for="roleSelectMenu" styleClass="errorMessage"/>
-                        <f:selectItems id="roleSelectItems" value="#{PrivilegedUsersPage.roleSelectItems}"/>
+                        <f:selectItems id="roleSelectItems0" value="#{PrivilegedUsersPage.roleSelectItems}"/>
                       </ice:selectOneMenu>
                        <ice:selectOneMenu rendered="#{currentRow.vdcRole!=null and currentRow.vdcRole.vdcUser.id!=PrivilegedUsersPage.vdc.creator.id}" id="roleSelectMenu" value="#{currentRow.selectedRoleId}">
                         <ice:message for="roleSelectMenu" styleClass="errorMessage"/>
-                        <f:selectItems id="roleSelectItems" value="#{PrivilegedUsersPage.roleSelectItems}"/>
+                        <f:selectItems id="roleSelectItems1" value="#{PrivilegedUsersPage.roleSelectItems}"/>
                       </ice:selectOneMenu>
                      <ice:outputText rendered="#{currentRow.vdcRole!=null and currentRow.vdcRole.vdcUser.id==PrivilegedUsersPage.vdc.creator.id}" id="disabledRole" value="Admin"/>
                      <ice:commandButton rendered="#{currentRow.vdcRole==null}" id="addUserButton" value="Add" actionListener="#{PrivilegedUsersPage.addUser}"/>
@@ -285,12 +287,7 @@
           <div class="dvnFormPadding dvnFormMargin">
             <ice:commandButton id="saveChangesButton" value="Save Changes" action="#{PrivilegedUsersPage.saveChanges}"/>
             <ice:commandButton immediate="true" id="cancelButton" value="Cancel" action="#{PrivilegedUsersPage.cancel}"/>
-            <ice:outputText binding="#{NetworkStatsBean.inlineDataverseKey}"
-                            styleClass="dvn_totalsLabel"
-                            style="visibility:hidden;"
-                            value="#{NetworkStatsBean.inlineDataverseValue}">
-              <f:attribute name="itemid" styleClass="dvn_totalsValue" value="item0"/>
-            </ice:outputText>
+
           </div>
         </div>
       </ice:form>

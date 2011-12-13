@@ -56,9 +56,11 @@ import edu.harvard.iq.dvn.core.web.collection.CollectionUI;
 import edu.harvard.iq.dvn.core.web.push.beans.NetworkStatsBean;
 import edu.harvard.iq.dvn.core.web.site.VDCUI;
 import java.util.logging.Logger;
+import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
 import javax.faces.event.ActionEvent;
 import javax.faces.model.SelectItem;
+import javax.inject.Named;
 
 /**
  * <p>Page bean that corresponds to a similarly named JSP page.  This
@@ -67,6 +69,8 @@ import javax.faces.model.SelectItem;
  * lifecycle methods and event handlers where you may add behavior
  * to respond to incoming events.</p>
  */
+@ViewScoped
+@Named("PrivilegedUsersPage")
 public class PrivilegedUsersPage extends VDCBaseBean implements java.io.Serializable  {
 
     @EJB EditVDCPrivilegesService editVDCPrivileges;
@@ -306,7 +310,7 @@ public class PrivilegedUsersPage extends VDCBaseBean implements java.io.Serializ
     }
 
 
-    public Long newRoleId;
+    private Long newRoleId;
 
     public Long getNewRoleId() {
         return newRoleId;
@@ -360,9 +364,8 @@ public class PrivilegedUsersPage extends VDCBaseBean implements java.io.Serializ
        
         editVDCPrivileges.setVdc(vdc.getId());
         vdc = editVDCPrivileges.getVdc();
-
-        getVDCRequestBean().setSuccessMessage("Successfully updated dataverse permissions.");
-        return "myOptions";  
+        getExternalContext().getFlash().put("message","Successfully updated dataverse permissions.");
+        return "/admin/OptionsPage?faces-redirect=true&vdcId="+getVDCRequestBean().getCurrentVDC().getId();
     } 
 
     private void initContributorSetting() {
@@ -773,7 +776,7 @@ public class PrivilegedUsersPage extends VDCBaseBean implements java.io.Serializ
     }
     
     public String cancel() {
-        String forwardPage="myOptions";
+        String forwardPage="/admin/OptionsPage?faces-redirect=true&vdcId="+getVDCRequestBean().getCurrentVDC().getId();
         editVDCPrivileges.cancel();
         this.sessionRemove(editVDCPrivileges.getClass().getName());
         return  forwardPage;

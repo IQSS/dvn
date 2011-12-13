@@ -40,15 +40,19 @@ import java.util.List;
 import java.util.StringTokenizer;
 import javax.ejb.EJB;
 import javax.faces.application.FacesMessage;
+import javax.faces.bean.ViewScoped;
 import javax.faces.component.UIComponent;
 import javax.faces.component.UIInput;
 import javax.faces.context.FacesContext;
+import javax.inject.Named;
 import javax.servlet.http.HttpServletRequest;
 
 /**
  *
  * @author Gustavo
  */
+@Named("EditVariablePage")
+@ViewScoped
 public class EditVariablePage extends VDCBaseBean implements java.io.Serializable  {
     
     @EJB VariableServiceLocal varService;

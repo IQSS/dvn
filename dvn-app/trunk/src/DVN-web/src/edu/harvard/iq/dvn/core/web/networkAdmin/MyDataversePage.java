@@ -13,12 +13,16 @@ import edu.harvard.iq.dvn.core.web.common.VDCBaseBean;
 import java.util.ArrayList;
 import java.util.List;
 import javax.ejb.EJB;
+import javax.faces.bean.ViewScoped;
+import javax.inject.Named;
 
 /**
  *
  * @author Ellen Kraffmiller
  */
-public class MyDataversePage  {
+@ViewScoped
+@Named("MyDataversePage")
+public class MyDataversePage extends VDCBaseBean {
     @EJB VDCServiceLocal vdcService;
     @EJB UserServiceLocal userService;
     
@@ -34,6 +38,7 @@ public class MyDataversePage  {
     private void initDataverses() {
         
         VDCUser user = VDCBaseBean.getVDCSessionBean().getUser();
+        
         if (user!=null) {
             // first refresh the user
             user = userService.find(user.getId());

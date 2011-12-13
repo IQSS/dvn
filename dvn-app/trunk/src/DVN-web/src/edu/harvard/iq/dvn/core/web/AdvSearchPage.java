@@ -47,8 +47,6 @@ import javax.ejb.EJB;
 import javax.faces.application.FacesMessage;
 import javax.faces.component.UIComponent;
 import javax.faces.component.UIInput;
-// Commenting out -- VWP component. L.A. 
-//import com.sun.jsfcl.data.DefaultSelectItemsArray;
 import javax.faces.component.UISelectItems;
 import javax.faces.context.FacesContext;
 import javax.faces.event.ValueChangeEvent;
@@ -60,8 +58,6 @@ import com.icesoft.faces.component.ext.HtmlSelectOneRadio;
 import com.icesoft.faces.component.ext.HtmlDataTable;
 import com.icesoft.faces.component.ext.HtmlCommandButton;
 import com.icesoft.faces.component.ext.HtmlPanelGrid;
-// Commenting out -- VWP component. L.A.
-//import com.sun.jsfcl.data.DefaultTableDataModel;
 import edu.harvard.iq.dvn.core.study.VariableServiceLocal;
 import javax.faces.component.UIColumn;
 import java.util.Locale;
@@ -135,7 +131,7 @@ public class AdvSearchPage extends VDCBaseBean implements java.io.Serializable {
      */
     public void init() {
         super.init();
-        //radioButtonList1DefaultItems.setItems(new String[]{messages.getString("searchAllCollections"), messages.getString("searchOnlySelectedCollections")});
+        radioButtonList1DefaultItems = initSelectItemList(new String[]{messages.getString("searchAllCollections"), messages.getString("searchOnlySelectedCollections")});
         dropdown3DefaultItems = initSelectItemList(getAdvSearchFieldDefaults());
         dropdown4DateItems = initSelectItemList(new String[]{messages.getString("isGreaterThan"), messages.getString("isLessThan")});
         dropdown4NotDateItems = initSelectItemList(new String[]{messages.getString("contains"), messages.getString("doesNotContain")});
@@ -162,7 +158,7 @@ public class AdvSearchPage extends VDCBaseBean implements java.io.Serializable {
         }
         
 
-        //dataTable1Model.setWrappedData(getCollectionsDisplay());
+        collectionModelList = getCollectionsDisplay();
     }
     
     private List<SelectItem> initSelectItemList(String[] itemsArray ) {
@@ -220,16 +216,7 @@ public class AdvSearchPage extends VDCBaseBean implements java.io.Serializable {
     public void setDropdown1(HtmlSelectOneMenu hsom) {
         this.dropdown1 = hsom;
     }
-    //private DefaultSelectItemsArray dropdown1DefaultItems = new DefaultSelectItemsArray();
 
-    //public DefaultSelectItemsArray getDropdown1DefaultItems() {
-    //    return dropdown1DefaultItems;
-    //}
-
-    //public void setDropdown1DefaultItems(DefaultSelectItemsArray dsia) {
-    //    this.dropdown1DefaultItems = dsia;
-    //}
-    
     private UISelectItems dropdown1SelectItems = new UISelectItems();
 
     public UISelectItems getDropdown1SelectItems() {
@@ -291,15 +278,7 @@ public class AdvSearchPage extends VDCBaseBean implements java.io.Serializable {
     public void setDropdown4(HtmlSelectOneMenu hsom) {
         this.dropdown4 = hsom;
     }
-    //private DefaultSelectItemsArray dropdown4DefaultItems = new DefaultSelectItemsArray();
 
-    //public DefaultSelectItemsArray getDropdown4DefaultItems() {
-    //    return dropdown4DefaultItems;
-    //}
-
-    //public void setDropdown4DefaultItems(DefaultSelectItemsArray dsia) {
-    //    this.dropdown4DefaultItems = dsia;
-    //}
     private List<SelectItem>  dropdown4DateItems = new ArrayList();
     
     public List<SelectItem> getDropdown4DateItems() {
@@ -440,15 +419,18 @@ public class AdvSearchPage extends VDCBaseBean implements java.io.Serializable {
     public void setRadioButtonList1(HtmlSelectOneRadio hsor) {
         this.radioButtonList1 = hsor;
     }
-    //private DefaultSelectItemsArray radioButtonList1DefaultItems = new DefaultSelectItemsArray();
+    
+    private List<SelectItem> radioButtonList1DefaultItems = new ArrayList();
 
-    //public DefaultSelectItemsArray getRadioButtonList1DefaultItems() {
-    //    return radioButtonList1DefaultItems;
-    //
+    public List<SelectItem> getRadioButtonList1DefaultItems() {
+        return radioButtonList1DefaultItems;
+    }
 
-    //public void setRadioButtonList1DefaultItems(DefaultSelectItemsArray dsia) {
-    //    this.radioButtonList1DefaultItems = dsia;
-    //}
+    public void setRadioButtonList1DefaultItems(List<SelectItem> radioButtonList1DefaultItems) {
+        this.radioButtonList1DefaultItems = radioButtonList1DefaultItems;
+    }
+
+
     private UISelectItems radioButtonList1SelectItems = new UISelectItems();
 
     public UISelectItems getRadioButtonList1SelectItems() {
@@ -485,15 +467,17 @@ public class AdvSearchPage extends VDCBaseBean implements java.io.Serializable {
     public void setDataTable1(HtmlDataTable hdt) {
         this.dataTable1 = hdt;
     }
-    //private DefaultTableDataModel dataTable1Model = new DefaultTableDataModel();
+    private List<CollectionModel> collectionModelList = new ArrayList();
 
-    //public DefaultTableDataModel getDataTable1Model() {
-    //    return dataTable1Model;
-    //}
+    public List<CollectionModel> getCollectionModelList() {
+        return collectionModelList;
+    }
 
-    //public void setDataTable1Model(DefaultTableDataModel dtdm) {
-    //    this.dataTable1Model = dtdm;
-    //}
+    public void setCollectionModelList(List<CollectionModel> collectionModelList) {
+        this.collectionModelList = collectionModelList;
+    }
+
+
     private UIColumn column1 = new UIColumn();
 
     public UIColumn getColumn1() {
@@ -717,8 +701,6 @@ public class AdvSearchPage extends VDCBaseBean implements java.io.Serializable {
                     searchOnlySelectedCollections = true;
 
                  searchCollections = new ArrayList();
-                  //List<CollectionModel> collectionModelList = (List<CollectionModel>) dataTable1Model.getWrappedData();
-                 List<CollectionModel> collectionModelList = (List<CollectionModel>) null;
                  for (Iterator it = collectionModelList.iterator(); it.hasNext();) {
                       CollectionModel elem = (CollectionModel) it.next();
                       if (elem.isSelected()) {

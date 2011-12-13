@@ -97,11 +97,13 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 import javax.ejb.EJBException;
 import javax.faces.application.FacesMessage;
+import javax.faces.bean.ViewScoped;
 import javax.faces.component.UIComponent;
 import javax.faces.context.FacesContext;
 import javax.imageio.IIOException;
 import javax.imageio.ImageIO;
 
+import javax.inject.Named;
 import jxl.Workbook;
 import jxl.WorkbookSettings;
 import jxl.write.Label;
@@ -115,6 +117,8 @@ import jxl.write.WritableWorkbook;
  *
  * @author skraffmiller
  */
+@ViewScoped
+@Named("ExploreDataPage")
 public class ExploreDataPage extends VDCBaseBean  implements Serializable {
     @EJB
     VariableServiceLocal varService;

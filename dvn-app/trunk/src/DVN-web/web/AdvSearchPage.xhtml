@@ -128,7 +128,7 @@
                       <f:selectItems binding="#{AdvSearchPage.radioButtonList1SelectItems}" id="radioButtonList1SelectItems" value="#{AdvSearchPage.radioButtonList1DefaultItems}"/>
                     </ice:selectOneRadio>
                     <ice:dataTable binding="#{AdvSearchPage.dataTable1}" cellpadding="0" cellspacing="0" width="90%"
-                                   value="#{AdvSearchPage.dataTable1Model}" var="currentRow"
+                                   value="#{AdvSearchPage.collectionModelList}" var="currentRow"
                                    styleClass="dvnAdvSearchCollectionsTable" columnClasses="vdcColPadded" id="dataTable1" >
                       <ice:column binding="#{AdvSearchPage.column1}" id="column1">
                         <ice:selectBooleanCheckbox id="checkbox1" style="margin-right: #{currentRow['level']}.5em;" binding="#{AdvSearchPage.checkbox1}" value="#{currentRow['selected']}"/>

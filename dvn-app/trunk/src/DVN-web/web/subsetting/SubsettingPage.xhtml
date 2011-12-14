@@ -7,14 +7,19 @@
       xmlns:jsp="http://java.sun.com/JSP/Page"
       xmlns:t="/WEB-INF/tlds/scroller"
       xmlns:ice="http://www.icesoft.com/icefaces/component">
-<head>
+<h:head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
-</head>
-<body>
+</h:head>
+<h:body>
 <ui:composition template="/template.xhtml">
 <ui:param name="pageTitle" value="Analysis and Subsetting - #{VDCRequest.dataversePageTitle}"/>
   <ui:define name="metadata">
-      <f:metadata></f:metadata>
+      <f:metadata>
+            <f:viewParam name="dtId" value="#{AnalysisPage.dtId}"/>
+            <f:viewParam name="versionNumber" value="#{AnalysisPage.versionNumber}"/>
+            <f:viewParam name="dvnVersionNumber" value="#{VersionPage.versionNumber}"/>
+            <f:event type="preRenderView" listener="#{AnalysisPage.preRenderView}" />
+      </f:metadata>
   </ui:define>
   <ui:define name="body">
       <f:loadBundle basename="BundleAnalysis" var="bundleAnalysis"/>
@@ -719,7 +724,7 @@
                     value="#{AnalysisPage.advStatSelectedVarLBox}"
                     immediate="true"
                     size="10">
-                   <f:selectItems id="itemsDwnld"
+                   <f:selectItems id="itemsDwnld1"
                          value="#{AnalysisPage.varSetAdvStat}"/>
                </ice:selectManyListbox>
 
@@ -1483,7 +1488,8 @@ function disableThis(el) {
 // fired by the radio buttons under specific conditions
 var originalSelection = "";
 function setHiddenField(obj) {
-    selections = document.getElementById(obj.id).getElementsByTagName("INPUT");
+    //selections = document.getElementById(obj.id).getElementsByTagName("INPUT");
+    selections = document.getElementById("form1:tabSet1:0:dtdwnld").getElementsByTagName("INPUT");
     for (var i = 0; selections[i]; i++) {
         if (selections[i].checked == true && selections[i].value != originalSelection) {
             originalSelection = selections[i];
@@ -1509,5 +1515,5 @@ function setHiddenField(obj) {
 <!-- to be renamed to subview -->
 </ui:define>
 </ui:composition>
-</body>
+</h:body>
 </html>

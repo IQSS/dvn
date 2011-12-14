@@ -100,8 +100,11 @@ import com.icesoft.faces.component.outputresource.*;
 import com.icesoft.faces.component.datapaginator.*;
 import edu.harvard.iq.dvn.core.web.study.StudyUI;
 import edu.harvard.iq.dvn.unf.*;
+import javax.faces.bean.ViewScoped;
+import javax.inject.Named;
 
-
+@ViewScoped
+@Named("AnalysisPage")
 public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
     
     /**
@@ -387,19 +390,19 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
      * The hash table (variable Id to variable name)
      * that stores the current selected variables
      */
-    public Map<String, String> varCart = new LinkedHashMap<String, String>();
+    private Map<String, String> varCart = new LinkedHashMap<String, String>();
 
     // Map for switch statement in checkVarType()
     /**
      *  The dataType-to-integer table used for
      *  the switch statement in the checkVarType method
      */
-    public Map<String, Integer> dataType2Int = new HashMap<String, Integer>();
+    private Map<String, Integer> dataType2Int = new HashMap<String, Integer>();
 
     /**
      * The variable-type-to-String conversion table 
      */
-    public Map<String, String> vtInt2String = new HashMap<String, String>();
+    private Map<String, String> vtInt2String = new HashMap<String, String>();
     
     
     // study-related data
@@ -549,7 +552,7 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
     private int currentTabIndex;
 
     
-    public Map<String, String> resultInfo = new HashMap<String, String>();
+    private Map<String, String> resultInfo = new HashMap<String, String>();
     
     public Map<String, String> getResultInfo() {
         return resultInfo;
@@ -832,13 +835,21 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
         }
         return dwnldFileTypeItems;
     }
-    public String dwnldFileTypeSelected = null;
+    
+    public void setDwnldFileTypeItems(List dfti) {
+        dwnldFileTypeItems = dfti; 
+    }
+    
+    
+    private String dwnldFileTypeSelected = null;
 
     public String getDwnldFileTypeSelected() {
+        dbgLog.info("Subsetting: returning dnwldFileTypeSelected="+dwnldFileTypeSelected);
         return dwnldFileTypeSelected;
     }
 
     public void setDwnldFileTypeSelected(String s) {
+        dbgLog.info("Subsetting: setting dnwldFileTypeSelected to "+s);
         this.dwnldFileTypeSelected = s;
     }
     
@@ -874,7 +885,7 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
          return result;
     }
 
-    HtmlPanelGrid pgDwnldErrMsg = 
+    private HtmlPanelGrid pgDwnldErrMsg = 
         new com.icesoft.faces.component.ext.HtmlPanelGrid();
 
     public HtmlPanelGrid getPgDwnldErrMsg() {
@@ -954,7 +965,7 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
         this.zipResourceDynFileName = zipResourceDynFileName;
     }
     
-    public String zipFileName;
+    private String zipFileName;
 
     public String getZipFileName() {
         return zipFileName;
@@ -975,26 +986,26 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
     }
     
     public void processDwnldFileType (ValueChangeEvent vce){
-        dbgLog.fine("***** within processDwnldFileType: start *****");
-        dbgLog.fine("old value="+vce.getOldValue());
-        dbgLog.fine("new value="+vce.getNewValue());
+        dbgLog.info("***** within processDwnldFileType: start *****");
+        dbgLog.info("old value="+vce.getOldValue());
+        dbgLog.info("new value="+vce.getNewValue());
         if (vce.getOldValue() == null){
-            dbgLog.fine("old value is null and this must be the initial case");
+            dbgLog.info("old value is null and this must be the initial case");
         } else {
             dwnldFileTypeSelected = (String)vce.getNewValue();
             if (vce.getNewValue().equals(vce.getOldValue())){
-                dbgLog.fine("new value is the same as before");
+                dbgLog.info("new value is the same as before");
             } else {
-                dbgLog.fine("new value differs from the old one");
+                dbgLog.info("new value differs from the old one");
                 dwnloadSubsetButton.setRendered(false);
                 dwnldButton.setRendered(true);
             }
         }
-        dbgLog.fine("***** within processDwnldFileType: end *****");
+        dbgLog.info("***** within processDwnldFileType: end *****");
     }
 
     //TODO: hiddenSelectedFileType -- debug
-    protected HtmlInputHidden hiddenSelectedFileType;
+    private HtmlInputHidden hiddenSelectedFileType = new HtmlInputHidden();
 
     /**
      * Get the value of hiddenSelectedFileType
@@ -1002,6 +1013,11 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
      * @return the value of hiddenSelectedFileType
      */
     public HtmlInputHidden getHiddenSelectedFileType() {
+        if (hiddenSelectedFileType != null) {
+            dbgLog.info("returning hiddenSelectedFileType"+hiddenSelectedFileType.getValue());
+        } else {
+            dbgLog.info("hiddenSelectedFileType is null");
+        }
         return hiddenSelectedFileType;
     }
 
@@ -3034,7 +3050,7 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
     }
 
     // @value
-    public List<Object> recodedVarSet = new ArrayList<Object>();
+    private List<Object> recodedVarSet = new ArrayList<Object>();
 
     public void setRecodedVarSet(List<Object> dt) {
         this.recodedVarSet = dt;
@@ -5096,7 +5112,7 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
     }
 
 
-    public Map<String, String> chkbxAdvStatOutputOptMap = new LinkedHashMap<String, String>();
+    private Map<String, String> chkbxAdvStatOutputOptMap = new LinkedHashMap<String, String>();
 
     public Map<String, String> getChkbxAdvStatOutputOptMap() {
         return chkbxAdvStatOutputOptMap;
@@ -5119,7 +5135,7 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
     }
 
 
-    public Map<String, String> chkbxAdvStatOutputXtbOptMap = new LinkedHashMap<String, String>();
+    private Map<String, String> chkbxAdvStatOutputXtbOptMap = new LinkedHashMap<String, String>();
 
     public Map<String, String> getChkbxAdvStatOutputXtbOptMap() {
         return chkbxAdvStatOutputXtbOptMap;
@@ -5290,7 +5306,7 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
     }
 
 
-    public Map<String, String> simOptionMap = new LinkedHashMap<String, String>();
+    private Map<String, String> simOptionMap = new LinkedHashMap<String, String>();
 
     public Map<String, String> getSimOptionMap() {
         return simOptionMap;
@@ -5300,7 +5316,7 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
         this.simOptionMap = simOptionMap;
     }
 
-    public String radioSimTypeChoiceSelected;
+    private String radioSimTypeChoiceSelected;
 
     public String getRadioSimTypeChoiceSelected() {
         return radioSimTypeChoiceSelected;
@@ -7559,7 +7575,7 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
      * 
      * @return a bean that stores zelig-model-related information
      */
-    protected AnalysisApplicationBean getAnalysisApplicationBean() {
+    public AnalysisApplicationBean getAnalysisApplicationBean() {
         return (AnalysisApplicationBean) getBean("AnalysisApplicationBean");
     }
     /**

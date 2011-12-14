@@ -1022,7 +1022,7 @@ if (tmpv.length > 0){
         try {
             // create a temp dir
             String createTmpDir = "dir.create('"+wrkdir +"')";
-            dbgLog.fine("DvnRserveComm: "+"createTmpDir="+createTmpDir);
+            dbgLog.info("DvnRserveComm: "+"createTmpDir="+createTmpDir);
             
             historyEntry.add(createTmpDir);
 
@@ -1044,16 +1044,16 @@ if (tmpv.length > 0){
                 "dwnldoptn='"+dwnldOpt+"'"+
                 ", dsnprfx='"+dsnprfx+"')";
             
-            dbgLog.fine("univarDataDwnld="+univarDataDwnld);
+            dbgLog.info("univarDataDwnld="+univarDataDwnld);
             
             historyEntry.add(univarDataDwnld);
 
-            dbgLog.fine("DvnRserveComm: "+univarDataDwnld);
+            dbgLog.info("DvnRserveComm: "+univarDataDwnld);
             c.voidEval(univarDataDwnld);
             
             int wbFileSize = getFileSize(c,dsnprfx);
             
-            dbgLog.fine("wbFileSize="+wbFileSize);
+            dbgLog.info("wbFileSize="+wbFileSize);
             
             // write back the data file to the dvn
             

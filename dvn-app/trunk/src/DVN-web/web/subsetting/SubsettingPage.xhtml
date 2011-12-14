@@ -284,7 +284,6 @@
                             visible="false"
                             escape="true"
                             styleClass="errorMessage"
-
                             text="#{AnalysisPage.msgDwnldButtonTxt}"
                             />
                     </ice:panelGrid>
@@ -295,19 +294,22 @@
                         disabled="true"
                         onclick="disableThis(this);"
                         type="submit"
-                        style="margin-top:10px"
                         value="#{bundleAnalysis['dwnld.button.submit']}"
+                        style="margin-top:10px"
                         action="#{AnalysisPage.dwnldAction}" >
+                        
                     </ice:commandButton>
 
-<ice:outputResource id="dwnloadSubsetButton"
-                    binding="#{AnalysisPage.dwnloadSubsetButton}"
-                    resource="#{AnalysisPage.zipResourceDynFileName}"
-                    mimeType="application/octet-stream"
-                    value="Download Replication-ZIP File"
-                    fileName="#{AnalysisPage.zipFileName}"
-                    type="button"
-                    shared="false"/>
+                    <ice:outputResource id="dwnloadSubsetButton"
+                        attachment="true"
+                        binding="#{AnalysisPage.dwnloadSubsetButton}"
+                        resource="#{AnalysisPage.zipResourceDynFileName}"
+                        mimeType="application/octet-stream"
+                        fileName="#{AnalysisPage.zipFileName}"
+                        type="button"
+                        shared="false"/>
+                    <!-- value="Download Replication-ZIP File" -->
+
                 </ice:panelGrid>
                     </ice:column>
 

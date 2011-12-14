@@ -844,12 +844,12 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
     private String dwnldFileTypeSelected = null;
 
     public String getDwnldFileTypeSelected() {
-        dbgLog.info("Subsetting: returning dnwldFileTypeSelected="+dwnldFileTypeSelected);
+        dbgLog.fine("Subsetting: returning dnwldFileTypeSelected="+dwnldFileTypeSelected);
         return dwnldFileTypeSelected;
     }
 
     public void setDwnldFileTypeSelected(String s) {
-        dbgLog.info("Subsetting: setting dnwldFileTypeSelected to "+s);
+        dbgLog.fine("Subsetting: setting dnwldFileTypeSelected to "+s);
         this.dwnldFileTypeSelected = s;
     }
     
@@ -955,7 +955,7 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
         dbgLog.fine("***** resetMsgDwnldButton: end *****");
     }
 
-    private Resource zipResourceDynFileName;
+    private Resource zipResourceDynFileName; //= new ByteArrayResource(null);
 
     public Resource getZipResourceDynFileName() {
         return zipResourceDynFileName;
@@ -986,22 +986,22 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
     }
     
     public void processDwnldFileType (ValueChangeEvent vce){
-        dbgLog.info("***** within processDwnldFileType: start *****");
-        dbgLog.info("old value="+vce.getOldValue());
-        dbgLog.info("new value="+vce.getNewValue());
+        dbgLog.fine("***** within processDwnldFileType: start *****");
+        dbgLog.fine("old value="+vce.getOldValue());
+        dbgLog.fine("new value="+vce.getNewValue());
         if (vce.getOldValue() == null){
-            dbgLog.info("old value is null and this must be the initial case");
+            dbgLog.fine("old value is null and this must be the initial case");
         } else {
             dwnldFileTypeSelected = (String)vce.getNewValue();
             if (vce.getNewValue().equals(vce.getOldValue())){
-                dbgLog.info("new value is the same as before");
+                dbgLog.fine("new value is the same as before");
             } else {
-                dbgLog.info("new value differs from the old one");
+                dbgLog.fine("new value differs from the old one");
                 dwnloadSubsetButton.setRendered(false);
                 dwnldButton.setRendered(true);
             }
         }
-        dbgLog.info("***** within processDwnldFileType: end *****");
+        dbgLog.fine("***** within processDwnldFileType: end *****");
     }
 
     //TODO: hiddenSelectedFileType -- debug
@@ -1014,9 +1014,9 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
      */
     public HtmlInputHidden getHiddenSelectedFileType() {
         if (hiddenSelectedFileType != null) {
-            dbgLog.info("returning hiddenSelectedFileType"+hiddenSelectedFileType.getValue());
+            dbgLog.fine("returning hiddenSelectedFileType"+hiddenSelectedFileType.getValue());
         } else {
-            dbgLog.info("hiddenSelectedFileType is null");
+            dbgLog.fine("hiddenSelectedFileType is null");
         }
         return hiddenSelectedFileType;
     }
@@ -1168,7 +1168,7 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
                     DataAccessObject accessObject = DataAccess.createDataAccessObject(sf, daReq);
 
                     if (accessObject.isSubsetSupported()) {
-                        dbgLog.info("Using NATIVE subset functionality of the repository.");
+                        dbgLog.fine("Using NATIVE subset functionality of the repository.");
                         daReq.setParameter("vars", getVariableNamesForSubset());
 
                         accessObject.open();
@@ -1196,7 +1196,7 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
                             // Cutting requested fields of data from a TAB-delimited stream:
 
                             Set<Integer> fields = getFieldNumbersForSubsetting();
-                            dbgLog.info("subsetting fields="+fields);
+                            dbgLog.fine("subsetting fields="+fields);
 
                             // Create an instance of DvnJavaFieldCutter
                             FieldCutter fc = new DvnJavaFieldCutter();
@@ -1246,8 +1246,8 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
                     
                     if (tmpsbfl.exists()){
                         Long subsetFileSize = tmpsbfl.length();
-                        dbgLog.info("subset file:Length="+subsetFileSize);
-                        dbgLog.info("subset file:name="+tmpsbfl.getAbsolutePath());
+                        dbgLog.fine("subset file:Length="+subsetFileSize);
+                        dbgLog.fine("subset file:name="+tmpsbfl.getAbsolutePath());
                         
                         if (subsetFileSize > 0){
                             mpl.put("subsetFileName", Arrays.asList(tmpsbfl.getAbsolutePath()));
@@ -1420,10 +1420,10 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
                 // a fatal condition; we'll just be displaying "not calculated"
                 // instead of the UNF in the final README file.
 
-                dbgLog.info("error while trying to calculate subset UNF: Number Format Exception.");
+                dbgLog.fine("error while trying to calculate subset UNF: Number Format Exception.");
                 ex.printStackTrace();
             } catch (IOException ex) {
-                dbgLog.info("error while trying to calculate subset UNF: IO Exception.");
+                dbgLog.fine("error while trying to calculate subset UNF: IO Exception.");
                 ex.printStackTrace();
             }
 
@@ -1476,7 +1476,7 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
                     // We are also adding the variable header to the file here.
 		    
                     // write code files:
-                    dbgLog.info("(skipping code files for the tab subset)");
+                    dbgLog.fine("(skipping code files for the tab subset)");
                     /* SKIP CODE FILES -- L.A.
                     String codeFileSas = "codeFile_sas_" + resultInfo.get("PID") + ".sas";
                     File tmpCCsasfl = new File(TEMP_DIR, codeFileSas);
@@ -1536,7 +1536,7 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
                 
                     File wbSubsetDataFile = new File(wbDataFileName);
                     if (wbSubsetDataFile.exists()){
-                        dbgLog.info("wbSubsetDataFile:length="+wbSubsetDataFile.length());
+                        dbgLog.fine("wbSubsetDataFile:length="+wbSubsetDataFile.length());
                         deleteTempFileList.add(wbSubsetDataFile);
                         zipFileList.add(wbSubsetDataFile);
                     } else {
@@ -1611,7 +1611,7 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
                 deleteTempFileList.add(readMeFile);
                     
                 for (File f : zipFileList){
-                    dbgLog.info("file to zip: path="+f.getAbsolutePath() +"\tname="+ f.getName());
+                    dbgLog.fine("file to zip: path="+f.getAbsolutePath() +"\tname="+ f.getName());
                 }
 
 
@@ -1636,6 +1636,11 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
                     //zipFiles(res.getOutputStream(), zipFileList);
                     //FacesContext.getCurrentInstance().responseComplete();
 
+                    try {
+                        Thread.sleep(1000);
+                    } catch (Exception e) {
+                        
+                    }
             
 
                     // put resultInfo into the session object
@@ -1643,13 +1648,18 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
                     //  no transition to the result page
                     //FacesContext.getCurrentInstance().getExternalContext().getSessionMap().put("resultInfo", resultInfo);
                     zipResourceDynFileName = new ByteArrayResource( toByteArray( new FileInputStream(zipFile.getAbsolutePath())));
-                    dbgLog.fine("zipFileName="+zipFileName);
+                    dbgLog.fine("Subsetting: zipFileName="+zipFileName);
+                    dbgLog.fine("Subsetting: zipFile, absolute path: "+zipFile.getAbsolutePath());
                     dvnDSBTimerService.createTimer(deleteTempFileList, TEMP_FILE_LIFETIME);
                     dwnldButton.setRendered(false);
                     dwnloadSubsetButton.setRendered(true);
                     dbgLog.fine("***** within dwnldAction(): ends here *****");
                                        
-                    return "download";
+                    //return "download";
+                    if (versionNumber != null) {
+                        return "/study/SubsettingPage?faces-redirect=true&dtId=" + dtId + "&versionNumber=" + versionNumber;
+                    }
+                    return "/study/SubsettingPage?faces-redirect=true&dtId=" + dtId;
 
                 } catch (IOException e){
                     // file-access problem, etc.
@@ -3370,7 +3380,7 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
                     DataAccessObject accessObject = DataAccess.createDataAccessObject(sf, daReq);
 
                     if (accessObject.isSubsetSupported()) {
-                        dbgLog.info("Using NATIVE subset functionality of the repository.");
+                        dbgLog.fine("Using NATIVE subset functionality of the repository.");
                         daReq.setParameter("vars", getVariableNamesForSubset());
 
                         accessObject.open();
@@ -3398,7 +3408,7 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
                             // Cutting requested fields of data from a TAB-delimited stream:
 
                             Set<Integer> fields = getFieldNumbersForSubsetting();
-                            dbgLog.info("subsetting fields="+fields);
+                            dbgLog.fine("subsetting fields="+fields);
 
                             // Create an instance of DvnJavaFieldCutter
                             FieldCutter fc = new DvnJavaFieldCutter();
@@ -6069,7 +6079,7 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
                     DataAccessObject accessObject = DataAccess.createDataAccessObject(sf, daReq);
 
                     if (accessObject.isSubsetSupported()) {
-                        dbgLog.info("Using NATIVE subset functionality of the repository.");
+                        dbgLog.fine("Using NATIVE subset functionality of the repository.");
                         daReq.setParameter("vars", getVariableNamesForSubset());
 
                         accessObject.open();
@@ -6097,7 +6107,7 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
                             // Cutting requested fields of data from a TAB-delimited stream:
 
                             Set<Integer> fields = getFieldNumbersForSubsetting();
-                            dbgLog.info("subsetting fields="+fields);
+                            dbgLog.fine("subsetting fields="+fields);
 
                             // Create an instance of DvnJavaFieldCutter
                             FieldCutter fc = new DvnJavaFieldCutter();

@@ -280,7 +280,10 @@
     <servlet-name>Faces Servlet</servlet-name>
     <url-pattern>/faces/*</url-pattern>
   </servlet-mapping>
-
+  <servlet-mapping>
+    <servlet-name>Resource Servlet</servlet-name>
+    <url-pattern>/icefaces/resource/*</url-pattern>
+  </servlet-mapping>
 
 <!-- DVN SPECIFIC SERVLET MAPPINGS START -->
     <servlet-mapping>

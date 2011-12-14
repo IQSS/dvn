@@ -104,4 +104,10 @@
         <managed-bean-class>edu.harvard.iq.dvn.core.web.site.ClassificationList</managed-bean-class>
         <managed-bean-scope>request</managed-bean-scope>
     </managed-bean>
+    <managed-bean>
+      <managed-bean-name>AnalysisApplicationBean</managed-bean-name>
+      <managed-bean-class>edu.harvard.iq.dvn.core.web.subsetting.AnalysisApplicationBean</managed-bean-class>
+      <managed-bean-scope>application</managed-bean-scope>
+    </managed-bean>
+
 </faces-config>

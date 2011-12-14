@@ -85,6 +85,7 @@ public class BasicSearchFragment extends VDCBaseBean implements java.io.Serializ
 
 
         StudyListing sl = new StudyListing(StudyListing.SEARCH);
+        sl.setVdcId(getVDCRequestBean().getCurrentVDCId());
         sl.setStudyIds(studies);
         sl.setSearchTerms(searchTerms);
         sl.setVariableMap(variableMap);

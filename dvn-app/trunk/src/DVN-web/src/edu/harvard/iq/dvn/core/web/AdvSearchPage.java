@@ -724,6 +724,7 @@ public class AdvSearchPage extends VDCBaseBean implements java.io.Serializable {
             }
 
             StudyListing sl = new StudyListing(StudyListing.SEARCH);
+            sl.setVdcId(getVDCRequestBean().getCurrentVDCId());
             sl.setSearchTerms(searchTerms);
             if (isVariableSearch()) {
                 Map variableMap = new HashMap();

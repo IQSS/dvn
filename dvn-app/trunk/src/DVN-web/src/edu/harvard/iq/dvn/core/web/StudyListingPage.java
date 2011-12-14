@@ -346,17 +346,9 @@ public class StudyListingPage extends VDCBaseBean implements java.io.Serializabl
         studyListing.setVersionMap(versionMap);
         studyListing.setCollectionTree(collectionTree);
         studyListing.setDisplayStudyVersionsList(displayVersionList);
-        setStudyListingIndex(addToStudyListingMap(studyListing));
-
-        // finally reinit!
-        initStudies();
-        initPageComponents(StudyListing.SEARCH);
-        if (renderTree) {
-            initCollectionTree();
-        }
-
-        resetScroller();
-        return "search";
+        
+        String studyListingIndex = StudyListing.addToStudyListingMap(studyListing, getSessionMap());
+        return "/StudyListingPage.xhtml?faces-redirect=true&studyListingIndex=" + studyListingIndex + "&vdcId=" + getVDCRequestBean().getCurrentVDCId();
     }
 
     public void sort_action(ValueChangeEvent event) {

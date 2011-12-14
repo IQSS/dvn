@@ -736,8 +736,8 @@ public class AdvSearchPage extends VDCBaseBean implements java.io.Serializable {
                 sl.setStudyIds(viewableIds);
             }
 
-            getVDCRequestBean().setStudyListing(sl);
-            return "search";
+            String studyListingIndex = StudyListing.addToStudyListingMap(sl, getSessionMap());
+            return "/StudyListingPage.xhtml?faces-redirect=true&studyListingIndex=" + studyListingIndex + "&vdcId=" + getVDCRequestBean().getCurrentVDCId();
         }
         else{
             return "";

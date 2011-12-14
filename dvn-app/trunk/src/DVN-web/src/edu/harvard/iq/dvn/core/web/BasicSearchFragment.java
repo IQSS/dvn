@@ -90,9 +90,10 @@ public class BasicSearchFragment extends VDCBaseBean implements java.io.Serializ
         sl.setVariableMap(variableMap);
         sl.setVersionMap(versionMap);
         sl.setDisplayStudyVersionsList(displayVersionList);
-        getVDCRequestBean().setStudyListing(sl);
-
-        return "search";
+        
+        //getVDCRequestBean().setStudyListing(sl);
+        String studyListingIndex = StudyListing.addToStudyListingMap(sl, getSessionMap());
+        return "/StudyListingPage.xhtml?faces-redirect=true&studyListingIndex=" + studyListingIndex + "&vdcId=" + getVDCRequestBean().getCurrentVDCId();
     }
 
  

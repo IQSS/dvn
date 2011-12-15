@@ -35,8 +35,12 @@ import edu.harvard.iq.dvn.core.vdc.VDCNetwork;
 import edu.harvard.iq.dvn.core.vdc.VDCNetworkServiceLocal;
 import edu.harvard.iq.dvn.core.web.common.VDCBaseBean;
 import edu.harvard.iq.dvn.core.web.servlet.TermsOfUseFilter;
+import java.io.IOException;
 import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.ejb.EJB;
+import javax.faces.FacesException;
 import javax.faces.application.FacesMessage;
 import javax.faces.bean.ViewScoped;
 import javax.faces.component.UIComponent;
@@ -244,12 +248,14 @@ public class TermsOfUsePage extends VDCBaseBean {
         }      
         if (redirectPage != null) {
             // piggy back on the login redirect logic for now
-            String loginRedirect = this.getExternalContext().getRequestContextPath() + getVDCRequestBean().getCurrentVDCURL() + redirectPage;
-            getSessionMap().put("LOGIN_REDIRECT", loginRedirect);
-            
-            // we don't actually want to go to the home page, but we need to fake JSF,
-            // so that the redirect happens
-            return "home";            
+            String redirect = this.getExternalContext().getRequestContextPath() + getVDCRequestBean().getCurrentVDCURL() + redirectPage;
+
+            try {
+                FacesContext.getCurrentInstance().getExternalContext().redirect(redirect);         
+            } catch (IOException ex) {
+                Logger.getLogger(TermsOfUsePage.class.getName()).log(Level.SEVERE, null, ex);
+                throw new FacesException(ex);
+            }
         }
         
         return null;

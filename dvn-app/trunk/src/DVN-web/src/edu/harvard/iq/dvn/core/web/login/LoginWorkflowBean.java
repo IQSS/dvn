@@ -42,7 +42,7 @@ public class LoginWorkflowBean extends VDCBaseBean implements java.io.Serializab
 
     public String beginLoginWorkflow() {
         clearWorkflowState();
-        return "login";
+        return "/login/LoginPage?faces-redirect=true";
     }
     
     public String beginFileAccessWorkflow(Long studyId) {
@@ -64,7 +64,7 @@ public class LoginWorkflowBean extends VDCBaseBean implements java.io.Serializab
         clearWorkflowState();
         workflowType = WORKFLOW_TYPE_COMMENTS;
         this.studyId=studyId;
-        String nextPage = "addAccount";
+        String nextPage = "/login/AddAccountPage?faces-redirect=true";
         return nextPage;
     }
     
@@ -77,10 +77,10 @@ public class LoginWorkflowBean extends VDCBaseBean implements java.io.Serializab
         if (loginBean != null) {
             user = loginBean.getUser();
             grantWorkflowPermission();
-            nextPage = "addSite";
+            nextPage = "/site/AddSitePage?faces-redirect=true";
         } else {
          
-            nextPage = "addAccount";
+            nextPage = "/login/AddAccountPage?faces-redirect=true";
         }
         return nextPage;
     }
@@ -95,7 +95,7 @@ public class LoginWorkflowBean extends VDCBaseBean implements java.io.Serializab
             //nextPage = "contributorSuccess";
             nextPage = "/login/ContributorRequestSuccessPage?faces-redirect=true";
         } else {   
-            nextPage = "addAccount";
+            nextPage = "/login/AddAccountPage?faces-redirect=true";
         }
         return nextPage;
     }
@@ -104,7 +104,7 @@ public class LoginWorkflowBean extends VDCBaseBean implements java.io.Serializab
     public String beginLoginCreatorWorkflow() {
         clearWorkflowState();
         workflowType =WORKFLOW_TYPE_CREATOR;
-        String nextPage = "login";
+        String nextPage = "/login/LoginPage?faces-redirect=true";
         return nextPage;
 
     }
@@ -113,7 +113,7 @@ public class LoginWorkflowBean extends VDCBaseBean implements java.io.Serializab
         clearWorkflowState();
         workflowType =   WORKFLOW_TYPE_CONTRIBUTOR;
  
-        String nextPage = "login";
+        String nextPage = "/login/LoginPage?faces-redirect=true";
         return nextPage;
 
     }
@@ -129,7 +129,7 @@ public class LoginWorkflowBean extends VDCBaseBean implements java.io.Serializab
             nextPage = updateSessionAndRedirect();
         } else {
             
-            nextPage = "accountTermsOfUse";
+            nextPage = "/login/AccountTermsOfUsePage?faces-redirect=true";
         }
         return nextPage;
     }
@@ -140,21 +140,21 @@ public class LoginWorkflowBean extends VDCBaseBean implements java.io.Serializab
         if (workflowType == null) {
             getRequestMap().put("fromPage", "AddAccountPage");
             getRequestMap().put("userId", user.getId());
-            nextPage = "viewAccount";
+            nextPage = "/login/AccountPage?faces-redirect=true";
         } else if (vdcNetworkService.find().isTermsOfUseEnabled()) {
-            nextPage = "accountTermsOfUse";
+            nextPage = "/login/AccountTermsOfUsePage?faces-redirect=true";
         } else {
             if (workflowType.equals(WORKFLOW_TYPE_CONTRIBUTOR)) {
                 //nextPage = "contributorSuccess";
                 nextPage = "/login/ContributorRequestSuccessPage?faces-redirect=true";
             } else if (workflowType.equals(WORKFLOW_TYPE_CREATOR)) {
-                nextPage = "addSite";
+                nextPage = "/site/AddSitePage?faces-redirect=true";
             } else if (workflowType.equals(WORKFLOW_TYPE_FILE_ACCESS)) {
                getRequestMap().put("studyId", studyId);
                nextPage = "/login/FileRequestPage?faces-redirect=true&studyId="+studyId;
             } else if (workflowType.equals(WORKFLOW_TYPE_COMMENTS)) {
                getRequestMap().put("studyId", studyId);
-               nextPage = "studyPage";
+               nextPage = "/study/StudyPage?faces-redirect=true&studyId="+studyId;
             }
             updateSessionForLogin();
         }
@@ -171,7 +171,7 @@ public class LoginWorkflowBean extends VDCBaseBean implements java.io.Serializab
             }
 
         }
-        forward = "home";
+        forward = "/HomePage?faces-redirect=true";
         return forward;
 
     }

@@ -36,6 +36,8 @@ import javax.faces.component.UIComponent;
 import javax.faces.component.UIInput;
 import javax.faces.context.FacesContext;
 import javax.faces.FacesException;
+import javax.faces.bean.ViewScoped;
+import javax.inject.Named;
 
 /**
  * <p>Page bean that corresponds to a similarly named JSP page.  This
@@ -44,6 +46,8 @@ import javax.faces.FacesException;
  * lifecycle methods and event handlers where you may add behavior
  * to respond to incoming events.</p>
  */
+@ViewScoped
+@Named("ForgotPasswordPage")
 public class ForgotPasswordPage extends VDCBaseBean implements java.io.Serializable  {
  
     private int __placeholder;
@@ -146,7 +150,8 @@ public class ForgotPasswordPage extends VDCBaseBean implements java.io.Serializa
         getRequestMap().put("statusMessage",msg);
        
         
-        return "passwordSent";
+        //return "passwordSent";
+        return "/login/PasswordSentPage?faces-redirect=true";
     }
     
   

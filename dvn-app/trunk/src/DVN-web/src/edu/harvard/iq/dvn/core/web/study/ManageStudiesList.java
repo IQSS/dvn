@@ -127,20 +127,36 @@ public class ManageStudiesList extends VDCBaseBean {
             List studyVersionIds =null;
             List deaccessionedStudyVersionIds = null;
             Long vdcId = getVDCRequestBean().getCurrentVDCId();
+            
+            dbgLog.info("manage studies list; vdcid: "+vdcId);
+            
+            VDCUser user = loginBean == null ? null : loginBean.getUser();
+            
+            if (user != null) {
+                dbgLog.info("manage studies list; user: "+user.getUserName());
+            } else {
+                dbgLog.info("manage studies list; null user.");
+            }
+            
             if (vdcId != null){
-                if (contributorFilter || (!isUserCuratorOrAdminOrNetworkAdmin() && !getVDCRequestBean().getCurrentVDC().isAllowContributorsEditAll())) {
-                    studyVersionIds = studyService.getDvOrderedStudyVersionIdsByContributor(vdcId, loginBean.getUser().getId(), orderBy, ascending);
+                if (user != null && (contributorFilter || (!isUserCuratorOrAdminOrNetworkAdmin() && !getVDCRequestBean().getCurrentVDC().isAllowContributorsEditAll()))) {
+                    studyVersionIds = studyService.getDvOrderedStudyVersionIdsByContributor(vdcId, user.getId(), orderBy, ascending);
                     deaccessionedStudyVersionIds = studyService.getDvOrderedDeaccessionedStudyVersionIdsByContributor(vdcId, vdcId, orderBy, ascending);
                 } else {
                     studyVersionIds = studyService.getDvOrderedStudyVersionIds(vdcId, orderBy, ascending);
                     deaccessionedStudyVersionIds = studyService.getDvOrderedDeaccessionedStudyVersionIds(vdcId, orderBy, ascending);
                 }
-            } else{                                
-                studyVersionIds = studyService.getAllStudyVersionIdsByContributor(loginBean.getUser().getId(), orderBy, ascending);
-                deaccessionedStudyVersionIds = studyService.getAllDeaccessionedStudyVersionIdsByContributor(loginBean.getUser().getId(), orderBy, ascending);
+            } else if (user != null){                                
+                studyVersionIds = studyService.getAllStudyVersionIdsByContributor(user.getId(), orderBy, ascending);
+                deaccessionedStudyVersionIds = studyService.getAllDeaccessionedStudyVersionIdsByContributor(user.getId(), orderBy, ascending);
             }
+            
+            if (studyVersionIds == null) {
+                studyVersionIds = new ArrayList<Long>(); 
+            }
+            
             studyUIList = new ArrayList<StudyUI>();
-            VDCUser user = loginBean == null ? null : loginBean.getUser();
+            
             for (Object studyVersionId: studyVersionIds) {
                 StudyUI studyUI = new StudyUI((Long)studyVersionId,user);
                 if (showArchivedStudies || !deaccessionedStudyVersionIds.contains(studyVersionId)) {

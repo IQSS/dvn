@@ -36,7 +36,9 @@ import edu.harvard.iq.dvn.core.study.StudyServiceLocal;
 import edu.harvard.iq.dvn.core.vdc.StudyAccessRequestServiceLocal;
 import edu.harvard.iq.dvn.core.web.common.VDCBaseBean;
 import javax.ejb.EJB;
+import javax.faces.bean.ViewScoped;
 import javax.faces.component.html.HtmlInputHidden;
+import javax.inject.Named;
 
 /**
  * <p>Page bean that corresponds to a similarly named JSP page.  This
@@ -45,6 +47,8 @@ import javax.faces.component.html.HtmlInputHidden;
  * lifecycle methods and event handlers where you may add behavior
  * to respond to incoming events.</p>
  */
+@ViewScoped
+@Named("FileRequestPage")
 public class FileRequestPage extends VDCBaseBean implements java.io.Serializable  {
 
     @EJB
@@ -151,7 +155,7 @@ public class FileRequestPage extends VDCBaseBean implements java.io.Serializable
  
         mailService.sendFileAccessRequestConfirmation(user.getEmail(), study.getReleasedVersion().getMetadata().getTitle(), study.getGlobalId());
      
-        return "success";
+        return "/login/FileRequestSuccessPage?faces-redirect=true";
 
     }
     /**

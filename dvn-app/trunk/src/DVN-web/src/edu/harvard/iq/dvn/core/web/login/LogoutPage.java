@@ -29,6 +29,8 @@ import edu.harvard.iq.dvn.core.web.StudyListing;
 import edu.harvard.iq.dvn.core.web.common.VDCBaseBean;
 import edu.harvard.iq.dvn.core.web.common.VDCSessionBean;
 import java.util.Map;
+import javax.faces.bean.ViewScoped;
+import javax.inject.Named;
 
 /**
  * <p>Page bean that corresponds to a similarly named JSP page.  This
@@ -37,6 +39,9 @@ import java.util.Map;
  * lifecycle methods and event handlers where you may add behavior
  * to respond to incoming events.</p>
  */
+
+@ViewScoped
+@Named("LogoutPage")
 public class LogoutPage extends VDCBaseBean implements java.io.Serializable  {
  
     /** 

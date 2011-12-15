@@ -52,9 +52,9 @@ public class LoginWorkflowBean extends VDCBaseBean implements java.io.Serializab
           String nextPage =  null;
           LoginBean loginBean = this.getVDCSessionBean().getLoginBean();
         if (loginBean == null) {
-            nextPage = "fileRequestAccount";
+            nextPage = "/login/FileRequestAccountPage?faces-redirect=true";
         } else {
-              nextPage = "fileRequest"; 
+            nextPage = "/login/FileRequestPage?faces-redirect=true&studyId="+studyId; 
         }
   
         return nextPage;
@@ -92,7 +92,8 @@ public class LoginWorkflowBean extends VDCBaseBean implements java.io.Serializab
         LoginBean loginBean = this.getVDCSessionBean().getLoginBean();
         if (loginBean != null) {
             grantWorkflowPermission();
-            nextPage = "contributorSuccess";
+            //nextPage = "contributorSuccess";
+            nextPage = "/login/ContributorRequestSuccessPage?faces-redirect=true";
         } else {   
             nextPage = "addAccount";
         }
@@ -145,12 +146,13 @@ public class LoginWorkflowBean extends VDCBaseBean implements java.io.Serializab
             nextPage = "accountTermsOfUse";
         } else {
             if (workflowType.equals(WORKFLOW_TYPE_CONTRIBUTOR)) {
-                nextPage = "contributorSuccess";
+                //nextPage = "contributorSuccess";
+                nextPage = "/login/ContributorRequestSuccessPage?faces-redirect=true";
             } else if (workflowType.equals(WORKFLOW_TYPE_CREATOR)) {
                 nextPage = "addSite";
             } else if (workflowType.equals(WORKFLOW_TYPE_FILE_ACCESS)) {
                getRequestMap().put("studyId", studyId);
-               nextPage = "fileRequest";
+               nextPage = "/login/FileRequestPage?faces-redirect=true&studyId="+studyId;
             } else if (workflowType.equals(WORKFLOW_TYPE_COMMENTS)) {
                getRequestMap().put("studyId", studyId);
                nextPage = "studyPage";

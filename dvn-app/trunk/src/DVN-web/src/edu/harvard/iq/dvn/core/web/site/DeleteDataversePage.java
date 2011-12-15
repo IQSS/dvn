@@ -32,7 +32,9 @@ import edu.harvard.iq.dvn.core.web.common.VDCBaseBean;
 import javax.ejb.EJB;
 import com.icesoft.faces.component.ext.HtmlInputHidden;
 import edu.harvard.iq.dvn.core.admin.DvnTimerRemote;
+import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
+import javax.inject.Named;
 import javax.servlet.http.HttpServletRequest;
 
 
@@ -43,7 +45,8 @@ import javax.servlet.http.HttpServletRequest;
  * lifecycle methods and event handlers where you may add behavior
  * to respond to incoming events.</p>
  */
-
+@ViewScoped
+@Named("DeleteDataversePage")
 public class DeleteDataversePage extends VDCBaseBean implements java.io.Serializable  {
     @EJB VDCServiceLocal vdcService;
     @EJB (name="dvnTimer")

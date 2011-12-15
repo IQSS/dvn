@@ -36,7 +36,9 @@ import javax.faces.component.UIComponent;
 import javax.faces.component.UIInput;
 import com.icesoft.faces.component.ext.HtmlInputHidden;
 import com.icesoft.faces.component.ext.HtmlInputSecret;
+import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
+import javax.inject.Named;
 import javax.naming.Context;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
@@ -51,6 +53,8 @@ import javax.servlet.http.HttpServletRequest;
  */
 @EJB(name="editUser", beanInterface=edu.harvard.iq.dvn.core.admin.EditUserService.class)
 
+@ViewScoped
+@Named("EditPasswordPage")
 public class EditPasswordPage extends VDCBaseBean implements java.io.Serializable  {
     // <editor-fold defaultstate="collapsed" desc="Creator-managed Component Definition">
     private int __placeholder;
@@ -206,7 +210,8 @@ public class EditPasswordPage extends VDCBaseBean implements java.io.Serializabl
         getRequestMap().put("statusMessage",msg);
         */
         
-        return "success";
+        //return "success";
+        return "/login/PasswordSuccessPage?faces-redirect=true";
     }
     
     public String cancel() {

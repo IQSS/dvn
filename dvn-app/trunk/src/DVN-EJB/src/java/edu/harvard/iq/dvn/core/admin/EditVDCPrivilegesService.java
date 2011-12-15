@@ -77,5 +77,7 @@ public interface EditVDCPrivilegesService extends java.io.Serializable  {
     public void removeAllowedFileUser(Long userId);
     
     public void  addAllowedFileUser(Long userId);
+
+    public edu.harvard.iq.dvn.core.admin.Role findRoleById(java.lang.Long id);
     
 }

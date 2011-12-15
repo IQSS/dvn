@@ -237,48 +237,44 @@ public class LoginFilter implements Filter {
                     ((HttpServletRequest) request).getSession(false);
         }
 
-        String loginURI = (String) httpRequest.getSession().getAttribute("LOGIN_REDIRECT");
-        if (loginURI != null) {
-            httpRequest.getSession().removeAttribute("LOGIN_REDIRECT");
-            httpResponse.sendRedirect(loginURI);
-        } else {
-            boolean authorized = false;
-            if (isRolePage(pageDef, httpRequest)) {
-                if (isUserAuthorizedForRolePage(pageDef, httpRequest, loginBean)) {
-                    authorized = true;
-                }
 
-            } else if (isUserAuthorizedForNonRolePage(pageDef, httpRequest, loginBean, ipUserGroup)) {
+        boolean authorized = false;
+        if (isRolePage(pageDef, httpRequest)) {
+            if (isUserAuthorizedForRolePage(pageDef, httpRequest, loginBean)) {
                 authorized = true;
             }
 
-            if (!authorized) {
-                if (loginBean == null) {
-                    redirectToLogin(httpRequest, httpResponse, currentVDC);
-                } else {
-                    PageDef redirectPageDef = pageDefService.findByName(PageDefServiceLocal.UNAUTHORIZED_PAGE);
-                    httpResponse.sendRedirect(httpRequest.getContextPath() + "/faces" + redirectPageDef.getPath());
-                }
+        } else if (isUserAuthorizedForNonRolePage(pageDef, httpRequest, loginBean, ipUserGroup)) {
+            authorized = true;
+        }
+
+        if (!authorized) {
+            if (loginBean == null) {
+                redirectToLogin(httpRequest, httpResponse, currentVDC);
             } else {
-                if (isCheckLockPage(pageDef) && studyLockedMessage(pageDef, httpRequest) != null) {
+                PageDef redirectPageDef = pageDefService.findByName(PageDefServiceLocal.UNAUTHORIZED_PAGE);
+                httpResponse.sendRedirect(httpRequest.getContextPath() + "/faces" + redirectPageDef.getPath());
+            }
+        } else {
+            if (isCheckLockPage(pageDef) && studyLockedMessage(pageDef, httpRequest) != null) {
 
-                    PageDef redirectPageDef = pageDefService.findByName(PageDefServiceLocal.STUDYLOCKED_PAGE);
-                    httpResponse.sendRedirect(httpRequest.getContextPath() + "/faces" + redirectPageDef.getPath() + "?message=" + studyLockedMessage(pageDef, httpRequest));
-                } else {
+                PageDef redirectPageDef = pageDefService.findByName(PageDefServiceLocal.STUDYLOCKED_PAGE);
+                httpResponse.sendRedirect(httpRequest.getContextPath() + "/faces" + redirectPageDef.getPath() + "?message=" + studyLockedMessage(pageDef, httpRequest));
+            } else {
 
-                    try {
-                        chain.doFilter(request, response);
-                    } catch (Throwable t) {
-                        //
-                        // If an exception is thrown somewhere down the filter chain,
-                        // we still want to execute our after processing, and then
-                        // rethrow the problem after that.
-                        //
+                try {
+                    chain.doFilter(request, response);
+                } catch (Throwable t) {
+                    //
+                    // If an exception is thrown somewhere down the filter chain,
+                    // we still want to execute our after processing, and then
+                    // rethrow the problem after that.
+                    //
 
-                        t.printStackTrace();
-                    }
+                    t.printStackTrace();
                 }
             }
+
         }
 
     }

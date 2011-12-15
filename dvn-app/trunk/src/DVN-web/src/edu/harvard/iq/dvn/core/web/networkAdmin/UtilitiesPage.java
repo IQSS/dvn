@@ -66,6 +66,7 @@ import javax.faces.context.FacesContext;
 import javax.faces.model.SelectItem;
 import javax.servlet.http.HttpServletRequest;
 //import com.icesoft.faces.component.inputfile.InputFile;
+import org.icefaces.component.fileentry.*;
 //import com.icesoft.faces.webapp.xmlhttp.FatalRenderingException;
 //import com.icesoft.faces.webapp.xmlhttp.PersistentFacesState;
 //import com.icesoft.faces.webapp.xmlhttp.RenderingException;
@@ -102,6 +103,7 @@ public class UtilitiesPage extends VDCBaseBean implements java.io.Serializable  
     private String selectedPanel;
     private Long vdcId;
 
+    private File uploadedDdiFile = null; 
     
     /** Creates a new instance of ImportStudyPage */
     public UtilitiesPage() {
@@ -573,9 +575,9 @@ public class UtilitiesPage extends VDCBaseBean implements java.io.Serializable  
     private Long importFileFormat;
     private String importBatchDir;
     
- // file upload completed percent (Progress)
+    // file upload completed percent (Progress)
     private int fileProgress;
-      // render manager for the application, uses session id for on demand
+    // render manager for the application, uses session id for on demand
     // render group.
     private String sessionId;
     //L.A.private RenderManager renderManager;
@@ -867,30 +869,34 @@ public class UtilitiesPage extends VDCBaseBean implements java.io.Serializable  
     public String importSingleFile_action(){
         //L.A.if(inputFile==null) return null; 
         //L.A.File originalFile = inputFile.getFile();
+          
+        //File originalFile = null; 
         
-        File originalFile = null; 
+        if (uploadedDdiFile != null) {
+            
+            try {
         
-         try {
-        
-               Study study = studyService.importStudy( 
-                   originalFile,getImportFileFormat(), getImportDVId(), getVDCSessionBean().getLoginBean().getUser().getId());
-            indexService.updateStudy(study.getId());
-             // create result message
-            HttpServletRequest req = (HttpServletRequest) getExternalContext().getRequest();
-            String studyURL = req.getScheme() +"://" + req.getServerName() + ":" + req.getServerPort() + req.getContextPath() 
+                Study study = studyService.importStudy( 
+                    uploadedDdiFile,getImportFileFormat(), getImportDVId(), getVDCSessionBean().getLoginBean().getUser().getId());
+                indexService.updateStudy(study.getId());
+                // create result message
+                HttpServletRequest req = (HttpServletRequest) getExternalContext().getRequest();
+                String studyURL = req.getScheme() +"://" + req.getServerName() + ":" + req.getServerPort() + req.getContextPath() 
                     + "/dv/" + study.getOwner().getAlias() + "/faces/study/StudyPage.xhtml?globalId=" + study.getGlobalId();
 
-            addMessage( "importMessage", "Import succeeded." );
-            addMessage( "importMessage", "Study URL: " + studyURL );
+                addMessage( "importMessage", "Import succeeded." );
+                addMessage( "importMessage", "Study URL: " + studyURL );
 
-         }catch(Exception e) {
-            e.printStackTrace();
-            addMessage( "harvestMessage", "Import failed: An unexpected error occurred trying to import this study." );
-            addMessage( "harvestMessage", "Exception message: " + e.getMessage() );            
+            }catch(Exception e) {
+                e.printStackTrace();
+                addMessage( "harvestMessage", "Import failed: An unexpected error occurred trying to import this study." );
+                addMessage( "harvestMessage", "Exception message: " + e.getMessage() );            
+            }
         }
                 
         return null;  
     }
+        
    public String uploadFile() {
      
        //L.A. inputFile =getInputFile();  
@@ -911,6 +917,25 @@ public class UtilitiesPage extends VDCBaseBean implements java.io.Serializable  
        return null; 
    }
    
+   
+    public void uploadFileListener(FileEntryEvent fileEvent) {
+        
+        File uploadedFile = null; 
+        
+        FileEntry fe = (FileEntry)fileEvent.getComponent();
+        FileEntryResults results = fe.getResults();
+        File parent = null;
+        StringBuilder m = null;
+
+        for (FileEntryResults.FileInfo i : results.getFiles()) {
+            //Note that the fileentry component has capabilities for 
+            //simultaneous uploads of multiple files.
+            
+            uploadedFile = i.getFile(); 
+        }                                                          
+
+        uploadedDdiFile = uploadedFile; 
+    }
   
 // </editor-fold>
 

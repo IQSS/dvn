@@ -4,6 +4,7 @@
       xmlns:ui="http://java.sun.com/jsf/facelets"
       xmlns:h="http://java.sun.com/jsf/html"
       xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:ace="http://www.icefaces.org/icefaces/components"
       xmlns:ice="http://www.icesoft.com/icefaces/component">
 <h:head>
   <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
@@ -233,12 +234,29 @@
                                  accept="#{UtilitiesPage.importDVId}, #{UtilitiesPage.importFileFormat}">
                   </ice:inputFile>
                     L.A. -->
+                    <ace:fileEntry id="inputImportFileComponent"
+                        relativePath="/temp/" 
+                        maxFileCount="1" 
+                        maxFileCountMessage="Limited to 1 file upload only (for now)" 
+                        fileEntryListener="#{UtilitiesPage.uploadFileListener}" 
+                        maxFileSize="2147483648" 
+                        maxFileSizeMessage="Submitted file is too large." 
+                        maxTotalSize="2147483648" 
+                        maxTotalSizeMessage="Total size of submitted files is too large." 
+                                                useOriginalFilename="true" 
+                        useSessionSubdir="false" />
+                    <span class="top">
+                        <h:commandButton class="submit" type="submit" value="Upload File"/>
+                    </span>
                   <ice:commandButton value="Single Import" id="buttonEV"
                                      action="#{UtilitiesPage.importSingleFile_action}"/>
+                  
                   <ice:message for="inputImportFileComponent"/>
+                  <!-- Progress display for the old-style import:
                   <ice:outputProgress
                     value="#{UtilitiesPage.fileProgress}">
                   </ice:outputProgress>
+                  L.A. -->
                 </div>
                 <hr/>
               </ice:panelGrid>

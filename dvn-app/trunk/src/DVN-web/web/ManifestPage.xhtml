@@ -6,14 +6,17 @@
       xmlns:f="http://java.sun.com/jsf/core"
       xmlns:jsp="http://java.sun.com/JSP/Page"
       xmlns:ice="http://www.icesoft.com/icefaces/component">
-<head>
+<h:head>
   <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
-</head>
-<body>
+</h:head>
+<h:body>
   <ui:composition template="/template.xhtml">
     <ui:param name="pageTitle" value="Manifest - #{VDCRequest.dataversePageTitle}"/>
     <ui:define name="metadata">
+        <!-- This page takes no parameters: -->
         <f:metadata></f:metadata>
+        <!-- (the vdc id, if present, is extracted from VDCRequest) -->
+        <f:event type="preRenderView" listener="#{ManifestPage.preRenderView}" />
     </ui:define>
     <ui:define name="body">
         <ice:form id="manifestPage" >
@@ -74,5 +77,5 @@
       </ice:form>
     </ui:define>
   </ui:composition>
-</body>
+</h:body>
 </html>

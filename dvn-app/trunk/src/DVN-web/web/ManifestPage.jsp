@@ -1,3 +1,8 @@
-<jsp:root version="2.1" xmlns:f="http://java.sun.com/jsf/core" xmlns:h="http://java.sun.com/jsf/html" xmlns:jsp="http://java.sun.com/JSP/Page" xmlns:webuijsf="http://www.sun.com/webui/webuijsf">
-    <jsp:forward page="faces/ManifestPage.xhtml"/>
-</jsp:root>
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html>
+<head>
+<title>Your Page Title</title>
+<meta http-equiv="REFRESH" content="0;url=/dvn/faces/ManifestPage.xhtml"></HEAD>
+<BODY>
+</BODY>
+</HTML>

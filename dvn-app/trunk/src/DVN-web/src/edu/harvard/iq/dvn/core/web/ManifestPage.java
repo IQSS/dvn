@@ -15,6 +15,8 @@ import edu.harvard.iq.dvn.core.web.common.VDCBaseBean;
 import javax.faces.context.FacesContext;
 import javax.servlet.http.HttpServletRequest;
 import javax.ejb.EJB;
+import javax.faces.bean.ViewScoped;
+import javax.inject.Named;
 
 
 
@@ -30,6 +32,8 @@ import javax.ejb.EJB;
  *
  * @author skraffmiller
  */
+@ViewScoped
+@Named("ManifestPage")
 public class ManifestPage extends VDCBaseBean implements java.io.Serializable {
 
     private String dvName;

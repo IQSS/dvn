@@ -133,26 +133,25 @@
         <filter-name>LoginFilter</filter-name>
         <filter-class>edu.harvard.iq.dvn.core.web.servlet.LoginFilter</filter-class>
     </filter>
-    <!-- Commenting out, since there's no Persistent Faces Servlet in IceFaces 2.0... - L.A.
+
     <filter-mapping>
         <filter-name>LoginFilter</filter-name>
-        <servlet-name>Persistent Faces Servlet</servlet-name>
+        <servlet-name>Faces Servlet</servlet-name>
         <dispatcher>REQUEST</dispatcher>
         <dispatcher>FORWARD</dispatcher>
-    </filter-mapping -->
+    </filter-mapping>
     
     <!-- terms of use filter -->
    <filter>
         <filter-name>TermsOfUseFilter</filter-name>
         <filter-class>edu.harvard.iq.dvn.core.web.servlet.TermsOfUseFilter</filter-class>
     </filter>
-    <!-- Commenting out, since there's no Persistent Faces Servlet in IceFaces 2.0... - L.A.
     <filter-mapping>
         <filter-name>TermsOfUseFilter</filter-name>
-        <servlet-name>Persistent Faces Servlet</servlet-name>
+        <servlet-name>Faces Servlet</servlet-name>
         <dispatcher>REQUEST</dispatcher>
         <dispatcher>FORWARD</dispatcher>
-    </filter-mapping -->
+    </filter-mapping >
     <filter-mapping>
         <filter-name>TermsOfUseFilter</filter-name>
         <servlet-name>FileDownloadServlet</servlet-name>

@@ -80,6 +80,9 @@ public class EditVDCPrivilegesServiceBean implements EditVDCPrivilegesService  {
     }
     
    
+    public Role findRoleById(Long id) {
+        return em.find(Role.class,id);
+    }    
    
  
         

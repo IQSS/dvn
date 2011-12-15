@@ -354,7 +354,10 @@ public class PrivilegedUsersPage extends VDCBaseBean implements java.io.Serializ
         // For each item in display role list, update the vdc with the selected role
         for (int i=1; i< vdcRoleList.size(); i++) {
             if (vdcRoleList.get(i).selectedRoleId!=null) {
-                Role role = roleService.findById(vdcRoleList.get(i).selectedRoleId);
+                // Prior to 3.0, we called a stateless RoleService bean to get the role, but with the upgrade
+                // this was creating a new row for each Role; so we moved the finder method to the stateful bean
+                // so the row would not be detached and this fixed it
+                Role role = editVDCPrivileges.findRoleById(vdcRoleList.get(i).selectedRoleId);
                 vdcRoleList.get(i).getVdcRole().setRole(role);
             }
         }

@@ -126,8 +126,7 @@ public class LoginWorkflowBean extends VDCBaseBean implements java.io.Serializab
         }
         String nextPage = null;
         if (user.isAgreedTermsOfUse() || !vdcNetworkService.find().isTermsOfUseEnabled()) {
-            updateSessionAndRedirect();
-            nextPage = "home";
+            nextPage = updateSessionAndRedirect();
         } else {
             
             nextPage = "accountTermsOfUse";
@@ -177,9 +176,9 @@ public class LoginWorkflowBean extends VDCBaseBean implements java.io.Serializab
 
     }
 
-    private void updateSessionAndRedirect() {
+    private String updateSessionAndRedirect() {
         updateSessionForLogin();
-        setLoginRedirect();
+        return setLoginRedirect();
      
     }
     
@@ -235,36 +234,45 @@ public class LoginWorkflowBean extends VDCBaseBean implements java.io.Serializab
             }
             // Update detached user object with updated user from database
             user = userService.find(user.getId());
+        
         }
     }
 
-    private void setLoginRedirect() {
+    private String setLoginRedirect() {
         Map sessionMap = getSessionMap();
-        String requestContextPath = this.getExternalContext().getRequestContextPath();
         VDC currentVDC = getVDCRequestBean().getCurrentVDC();
+        
+        String redirectString = "";
+         
         if (WORKFLOW_TYPE_CONTRIBUTOR.equals(workflowType)) {
-            sessionMap.put("LOGIN_REDIRECT", requestContextPath + getVDCRequestBean().getCurrentVDCURL() + "/faces/login/ContributorRequestSuccessPage.xhtml");
+            redirectString = "/login/ContributorRequestSuccessPage.xhtml";
         } else if (WORKFLOW_TYPE_CREATOR.equals(workflowType)) {
-            sessionMap.put("LOGIN_REDIRECT", requestContextPath + "/faces/site/AddSitePage.xhtml");
+            redirectString = "/site/AddSitePage.xhtml";
         } else if (WORKFLOW_TYPE_FILE_ACCESS.equals(workflowType)) {
             if (currentVDC != null) {
-                sessionMap.put("LOGIN_REDIRECT", requestContextPath + "/dv/" + currentVDC.getAlias() + "/faces/login/FileRequestPage.xhtml?studyId=" + studyId);
+                redirectString = "/login/FileRequestPage.xhtml?studyId=" + studyId;
             } else {
-                sessionMap.put("LOGIN_REDIRECT", requestContextPath + "/faces/login/FileRequestPage.xhtml");
+                redirectString = "/login/FileRequestPage.xhtml";
             }
         } else {
             if (sessionMap.get("ORIGINAL_URL") != null) {
-                sessionMap.put("LOGIN_REDIRECT", sessionMap.get("ORIGINAL_URL"));
+                String originalURL = (String) sessionMap.get("ORIGINAL_URL");
+                redirectString = originalURL.substring(originalURL.indexOf("/faces/") + 6);
                 sessionMap.remove("ORIGINAL_URL");
             } else {
                 //  HttpServletRequest request = this.getExternalContext().getRequestContextPath()
                 if (currentVDC != null) {
-                    sessionMap.put("LOGIN_REDIRECT", requestContextPath + "/dv/" + currentVDC.getAlias() + "/faces/StudyListingPage.xhtml");
+                    redirectString = "/StudyListingPage.xhtml";
                 } else {
-                    sessionMap.put("LOGIN_REDIRECT", requestContextPath + "/faces/HomePage.xhtml");
+                    redirectString = "/HomePage.xhtml";
                 }
             }
         }
+        
+        boolean hasParams = redirectString.indexOf("?") != -1;
+        redirectString += (hasParams ? "&" : "?") + "faces-redirect=true";
+        redirectString += getVDCRequestBean().getCurrentVDC() != null ? "&vdcId=" + getVDCRequestBean().getCurrentVDCId() : "";
+        return redirectString;
     }
 
     public Long getStudyId() {

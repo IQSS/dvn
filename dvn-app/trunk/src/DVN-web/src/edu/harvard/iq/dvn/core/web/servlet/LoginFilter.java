@@ -198,7 +198,9 @@ public class LoginFilter implements Filter {
                         Long versionNumber = new Long(versionNumberParam);
                         StudyVersion sv = studyService.getStudyVersion(studyId, versionNumber);
 
-                    } else {
+                    } else if (studyId>0){ // This allows the negative studyIds used with a new study to pass through
+                        // TODO: we should probably find a better way yo allow this to happen
+                        
                         // Get the study to make sure that the studyId exists.
                         // If it doesn't exist, and EJBException will be thrown.
                         Study study = studyService.getStudy(studyId);

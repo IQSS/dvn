@@ -20,12 +20,11 @@ import java.util.List;
 import java.util.logging.Logger;
 import javax.ejb.EJB;
 import javax.faces.bean.ViewScoped;
-import javax.faces.context.FacesContext;
 import javax.faces.event.ActionEvent;
 import javax.faces.event.ValueChangeEvent;
 import javax.faces.model.SelectItem;
+import javax.inject.Inject;
 import javax.inject.Named;
-import javax.servlet.http.HttpServletResponse;
 
 
 
@@ -53,7 +52,7 @@ public class ManageStudiesList extends VDCBaseBean {
     private DataPaginator paginator;
     private static Logger dbgLog = Logger.getLogger(ManageStudiesList.class.getCanonicalName());
     private LoginBean loginBean = new LoginBean();
-    private VersionNotesPopupBean versionNotesPopupBean = new VersionNotesPopupBean();
+    @Inject private VersionNotesPopupBean versionNotesPopupBean = new VersionNotesPopupBean();
     private String successMessage;
 
     // the StudyUI object for the currently selected study:

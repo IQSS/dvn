@@ -13,11 +13,15 @@ import edu.harvard.iq.dvn.core.web.common.VDCBaseBean;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.util.ResourceBundle;
+import javax.enterprise.context.ApplicationScoped;
+import javax.inject.Named;
 
 /**
  *
  * @author roberttreacy
  */
+@Named("VersionPage")
+@ApplicationScoped
 public class VersionPage extends VDCBaseBean  implements java.io.Serializable {
    
     private String versionNumber;

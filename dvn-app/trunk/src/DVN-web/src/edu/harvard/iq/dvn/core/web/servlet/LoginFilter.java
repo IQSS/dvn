@@ -165,12 +165,14 @@ public class LoginFilter implements Filter {
             if (isVersionDiffPage(pageDef)) {
                 Long[] versionDiffNumbers = VDCRequestBean.parseVersionNumberList(httpRequest);
                 if (versionDiffNumbers == null || studyId==null) {
-                    String redirectURL = httpRequest.getContextPath();
+                    // TODO: temporarily commenting this part out, as there is an issue with the popup and these parameters
+                    /*String redirectURL = httpRequest.getContextPath();
                     if (currentVDC != null) {
                         redirectURL += "/dv/" + currentVDC.getAlias();
                     }
                     httpResponse.sendRedirect(redirectURL + "/faces/NotFoundPage.xhtml");
                     return;
+                     */
                 } else {
                     try {
                         // Get the studyVersions to test that the versionNumbers exist for this study.

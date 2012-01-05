@@ -64,7 +64,6 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Vector;
 import java.util.logging.FileHandler;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -542,8 +541,7 @@ public class StudyServiceBean implements edu.harvard.iq.dvn.core.study.StudyServ
         List dtIdList = new ArrayList();
         Query query = em.createNativeQuery(SELECT_DATATABLE_IDS).setParameter(1, studyId);
         for (Object currentResult : query.getResultList()) {
-            // since query is native, must parse through Vector results and convert to Long
-            dtIdList.add(new Long(((Integer) ((Vector) currentResult).get(0))).longValue());
+            dtIdList.add(new Long(((Integer)currentResult).longValue()));
         }
 
         if ( !dtIdList.isEmpty() ) {
@@ -551,7 +549,7 @@ public class StudyServiceBean implements edu.harvard.iq.dvn.core.study.StudyServ
             List varList = new ArrayList();
             query = em.createNativeQuery(SELECT_DATAVARIABLE_IDS_PREFIX + "(" + generateTempTableString(dtIdList) + ")");
             for (Object currentResult : query.getResultList()) {
-                varList.add(new Long(((Integer) ((Vector) currentResult).get(0))).longValue());
+                varList.add(new Long(((Integer)currentResult).longValue()));
             }
 
             if ( !varList.isEmpty() ) {
@@ -677,10 +675,9 @@ public class StudyServiceBean implements edu.harvard.iq.dvn.core.study.StudyServ
                 "' and s.isharvested='false' and (sv.releasetime > s.lastexporttime or s.lastexporttime is null)";
         Query query = em.createNativeQuery(queryStr);
         List<Long> returnList = new ArrayList<Long>();
-        // since query is native, must parse through Vector results
         for (Object currentResult : query.getResultList()) {
             // convert results into Longs
-            returnList.add(new Long(((Integer) ((Vector) currentResult).get(0))).longValue());
+            returnList.add(new Long(((Integer)currentResult).longValue()));
         }
 
         return returnList;
@@ -690,10 +687,9 @@ public class StudyServiceBean implements edu.harvard.iq.dvn.core.study.StudyServ
         String queryStr = "select id from study";
         Query query = em.createNativeQuery(queryStr);
         List<Long> returnList = new ArrayList<Long>();
-        // since query is native, must parse through Vector results
         for (Object currentResult : query.getResultList()) {
             // convert results into Longs
-            returnList.add(new Long(((Integer) ((Vector) currentResult).get(0))).longValue());
+            returnList.add(new Long(((Integer)currentResult).longValue()));
         }
 
         return returnList;
@@ -705,10 +701,9 @@ public class StudyServiceBean implements edu.harvard.iq.dvn.core.study.StudyServ
         String queryStr = "select id from study where isharvested='false'";
         Query query = em.createNativeQuery(queryStr);
         List<Long> returnList = new ArrayList<Long>();
-        // since query is native, must parse through Vector results
         for (Object currentResult : query.getResultList()) {
             // convert results into Longs
-            returnList.add(new Long(((Integer) ((Vector) currentResult).get(0))).longValue());
+            returnList.add(new Long(((Integer)currentResult).longValue()));
         }
 
         return returnList;
@@ -776,7 +771,6 @@ public class StudyServiceBean implements edu.harvard.iq.dvn.core.study.StudyServ
         if (queryStr != null) {
             Query query = em.createNativeQuery(queryStr);
             List<Long> returnList = new ArrayList<Long>();
-            // since query is native, must parse through Vector results
             for (Object currentResult : query.getResultList()) {
                 // convert results into Longs
                 returnList.add(new Long(((Integer)currentResult).longValue()));
@@ -803,7 +797,6 @@ public class StudyServiceBean implements edu.harvard.iq.dvn.core.study.StudyServ
             queryStr += " desc";
         }
         Query query = em.createNativeQuery(queryStr);
-        // since query is native, must parse through Vector results
         for (Object currentResult : query.getResultList()) {
             // convert results into Longs
             returnList.add(new Long(((Integer)currentResult)).longValue());
@@ -827,7 +820,6 @@ public class StudyServiceBean implements edu.harvard.iq.dvn.core.study.StudyServ
             queryStr += " desc";
         }
         Query query = em.createNativeQuery(queryStr);
-        // since query is native, must parse through Vector results
         for (Object currentResult : query.getResultList()) {
             // convert results into Longs
             returnList.add(new Long(((Integer)currentResult)).longValue());
@@ -854,7 +846,6 @@ public class StudyServiceBean implements edu.harvard.iq.dvn.core.study.StudyServ
             queryStr += " desc";
         }
         Query query = em.createNativeQuery(queryStr);
-        // since query is native, must parse through Vector results
         for (Object currentResult : query.getResultList()) {
             // convert results into Longs
             returnList.add(new Long(((Integer)currentResult)).longValue());
@@ -878,7 +869,6 @@ public class StudyServiceBean implements edu.harvard.iq.dvn.core.study.StudyServ
             queryStr += " desc";
         }
         Query query = em.createNativeQuery(queryStr);
-        // since query is native, must parse through Vector results
         for (Object currentResult : query.getResultList()) {
             // convert results into Longs
             returnList.add(new Long(((Integer)currentResult)).longValue());
@@ -903,7 +893,6 @@ public class StudyServiceBean implements edu.harvard.iq.dvn.core.study.StudyServ
             queryStr += " desc";
         }
         Query query = em.createNativeQuery(queryStr);
-        // since query is native, must parse through Vector results
         for (Object currentResult : query.getResultList()) {
             // convert results into Longs
             returnList.add(new Long(((Integer)currentResult)).longValue());
@@ -930,7 +919,6 @@ public class StudyServiceBean implements edu.harvard.iq.dvn.core.study.StudyServ
             queryStr += " desc";
         }
         Query query = em.createNativeQuery(queryStr);
-        // since query is native, must parse through Vector results
         for (Object currentResult : query.getResultList()) {
             // convert results into Longs
             returnList.add(new Long(((Integer)currentResult)).longValue());
@@ -1663,7 +1651,6 @@ public class StudyServiceBean implements edu.harvard.iq.dvn.core.study.StudyServ
                     ") ORDER BY ts.orderby";
 
             Query query = em.createNativeQuery(queryString);
-            // since query is native, must parse through Vector results
             for (Object currentResult : query.getResultList()) {
                 // convert results into Longs
                 returnList.add(new Long(((Integer)currentResult).longValue()));
@@ -1768,10 +1755,9 @@ public class StudyServiceBean implements edu.harvard.iq.dvn.core.study.StudyServ
                 query.setParameter(parameterCount++, id);
             }
 
-            // since query is native, must parse through Vector results
             for (Object currentResult : query.getResultList()) {
                 // convert results into Longs
-                returnList.add(new Long(((Integer) ((Vector) currentResult).get(0))).longValue());
+                returnList.add(new Long(((Integer)currentResult).longValue()));
             }
         }
 

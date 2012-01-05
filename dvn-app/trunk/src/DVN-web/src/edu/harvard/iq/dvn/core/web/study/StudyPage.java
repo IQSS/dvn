@@ -700,7 +700,7 @@ public class StudyPage extends VDCBaseBean implements java.io.Serializable  {
         this.showStudyDeletePopup = showPopup;
     }
 
-    public void confirmStudyDelete (ActionEvent ae) {
+    public String confirmStudyDelete () {
     //public String confirmStudyDelete () {
         VDC dataverse = null;
         String successMessage = "";
@@ -741,10 +741,8 @@ public class StudyPage extends VDCBaseBean implements java.io.Serializable  {
             dvId = dataverse.getId();
         }
         
-        redirect("/faces/study/ManageStudiesPage.xhtml?vdcId="+dvId
-                +"&successMessage="
-                +successMessage);
-
+        getExternalContext().getFlash().put("message", successMessage);
+        return "/study/ManageStudiesPage?faces-redirect=true&vdcId=" + dvId;
     }
 
     private String buildSuccessMessage(String inString){

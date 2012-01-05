@@ -25,6 +25,8 @@
     <ui:define name="body">
       <ice:form>
         <ice:inputHidden rendered="#{VDCRequest.currentVDCId != null}" id="vdcId" value="#{VDCRequest.currentVDCId}"/>
+        <ice:inputHidden id="studyId" value="#{studyVersionDifferencesPage.studyId}"/>
+        <ice:inputHidden id="versionNumberList" value="#{studyVersionDifferencesPage.versionNumberList}"/>
         <script type="text/javascript">
           // <![CDATA[
           jQuery(document).ready(function(){

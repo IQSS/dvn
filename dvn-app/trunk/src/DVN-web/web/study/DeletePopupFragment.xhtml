@@ -44,11 +44,11 @@
                         <ice:outputText value="&#34;#{ManageStudiesList.currentStudyUI.metadata.title}&#34;, #{ManageStudiesList.currentStudyUI.study.globalId}" rendered="#{MainLayoutBean.inManageStudiesPageByViewID}" escape="false"/>
                         <div jsfc="ice:panelGroup" styleClass="dvnFormPadding dvnFormMargin">
                             <ice:commandButton id="autoCentPopupDeleteStudyPage"
-                                               actionListener="#{studyPage.confirmStudyDelete}"
+                                               action="#{studyPage.confirmStudyDelete}"
                                                value="Delete"
                                                rendered="#{MainLayoutBean.inStudyPage and !studyPage.studyDestroyRequested}"/>
                             <ice:commandButton id="autoCentPopupDestroyStudyPage"
-                                               actionListener="#{studyPage.confirmStudyDelete}"
+                                               action="#{studyPage.confirmStudyDelete}"
                                                value="Destroy"
                                                rendered="#{MainLayoutBean.inStudyPage and studyPage.studyDestroyRequested}"/>
                             <ice:commandButton id="autoCentPopupCancelStudyPage"

@@ -13,7 +13,7 @@
   <ui:composition template="/template.xhtml">
     <ui:param name="pageTitle" value="#{bundlePageInfo.editStudyCommentsTitle} - #{VDCRequest.dataversePageTitle}"/>
     <ui:define name="metadata">
-        <f:event type="preRenderView" listener="#{EditStudyCommentsPage.prerenderView}"/>
+        <f:event type="preRenderView" listener="#{EditStudyCommentsPage.preRenderView}"/>
     </ui:define>
     <ui:define name="body">
       <ice:form id="editStudyCommentsForm">

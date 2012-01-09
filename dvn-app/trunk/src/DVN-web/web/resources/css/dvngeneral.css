@@ -3,10 +3,10 @@
 .dvn_wrapperVanilla{width:100%;min-width:620px;background-color:#eee}
 .dvn_bodyVanilla{background-color:#eee}
 .dvn_content{padding:12px;color:#464646 !important;text-align:left;display:block}
-.dvn_content div,.dvn_content span,.dvn_content p,.dvn_content li,.dvn_content caption,.dvn_content table,.dvn_content tbody,.dvn_content tfoot,.dvn_content thead,.dvn_content tr,.dvn_content th,.dvn_content td{font-family:"HelveticaNeue", Helvetica, Arial, sans-serif !important;font-size:12px !important;line-height:18px !important}
+.dvn_content div,.dvn_content span,.dvn_content p,.dvn_content li,.dvn_content caption,.dvn_content table,.dvn_content tbody,.dvn_content tfoot,.dvn_content thead,.dvn_content tr,.dvn_content th,.dvn_content td{font-family:"HelveticaNeue", Helvetica, Arial, sans-serif !important;font-size:13px !important;line-height:18px !important}
 .dvn_content span,.dvn_content p{background-color:transparent}
 .dvn_content h1,.dvn_content h2,.dvn_content h3,.dvn_content h4,.dvn_content h5,.dvn_content h6{font-family:"HelveticaNeue", Helvetica, Arial, sans-serif !important;font-weight:bold !important;font-style:normal !important}
-.dvn_content a,.dvn_content a:link,.dvn_content a:visited,.dvn_content a:hover,.dvn_content a:active{font-family:"HelveticaNeue", Helvetica, Arial, sans-serif !important;font-size:12px !important;line-height:18px !important}
+.dvn_content a,.dvn_content a:link,.dvn_content a:visited,.dvn_content a:hover,.dvn_content a:active{font-family:"HelveticaNeue", Helvetica, Arial, sans-serif !important;font-size:13px !important;line-height:18px !important}
 .dvn_content a:link,.dvn_content a:visited{color:#0c54b3;text-decoration:none !important}
 .dvn_content a:hover,.dvn_content a:active{color:#c55b28;text-decoration:underline !important}
 .dvn_content img{margin:0 !important;padding:0 !important;border:0 !important;display:inline !important}
@@ -49,33 +49,37 @@ a.dvninlinelink{margin-left:2em;}
 .iceOutConStat{position:fixed;left:50%;top:50%;margin-top:-12px;margin-left:-12px;z-index:1}
 .iceOutConStatActv,.iceOutConStatCaution,.iceOutConStatDisconnect{width:25px;height:25px}
 /* HEADER */
-.dvn_headerTitle{position:relative;text-align:left}
-.dvn_headerTitleLarge{margin:.25em 228px .25em 12px}
-.dvn_headerTitleLarge a:link span,.dvn_headerTitleLarge a:visited span,.dvn_headerTitleLarge a:hover span,.dvn_headerTitleLarge a:active span{color:#526f76;font-size:148% !important}
+.dvn_headerTitle{overflow:hidden;text-align:left}
+.dvn_headerTitleLarge{text-align:left}
+.dvn_headerTitleLarge a:link,.dvn_headerTitleLarge a:visited,.dvn_headerTitleLarge a:hover,.dvn_headerTitleLarge a:active, .dvn_headerTitleLarge span{display:block;font-size:180% !important;line-height:22px !important}
 a.dvn_headerTitleLrgNetwork:link span,a.dvn_headerTitleLrgNetwork:visited span,a.dvn_headerTitleLrgNetwork:hover span,a.dvn_headerTitleLrgNetwork:active span{color:#c55b28}
-.dvn_headerTitleL{margin:0 12px}
+.dvn_headerTitleLarge span{font-size:100% !important}
+.dvn_headerTitleL{}
 .dvn_headerTitleL a:link span,.dvn_headerTitleL a:visited span,.dvn_headerTitleL a:hover span,.dvn_headerTitleL a:active span{color:#c55b28;font-size:90% !important}
-.dvn_headerTitleR{position:absolute;right:12px;top:0}
-.dvn_headerTitleR a:link, .dvn_headerTitleR a:visited, .dvn_headerTitleR a:hover, .dvn_headerTitleR a:active {display:block;line-height:40px;height:40px;}
-.dvn_headerTitleR div.dvn_headerVersion {position:absolute;bottom:0;right:0;}
+.dvn_headerTitleR{position:relative;text-align:right}
+.dvn_headerTitleR a:link, .dvn_headerTitleR a:visited, .dvn_headerTitleR a:hover, .dvn_headerTitleR a:active {}
+.dvn_headerTitleR div.dvn_headerVersion {position:absolute;bottom:4px;right:0;}
 .dvn_headerTitleR div.dvn_headerVersion span.iceOutTxt {color:gray;font-size:90% !important;line-height:12px !important;}
 /* NAV */
-div.dvn_navblock{margin-bottom:12px;padding:0 10px;background:#dadee0;border-top:2px solid #91a5a9}
-div.dvn_navblockNetwork{background:#dadee0;border-top:2px solid #c55b28}
+div.dvn_navblock{margin-bottom:12px;border-bottom:1px solid #dfdfdf}
+div.dvn_navblockNetwork{}
 .dvn_navblockLinks{overflow:hidden;width:100%}
-.dvn_navblockLinks ul{margin:0;padding:0;float:left;list-style-type:none !important}
-.dvn_navblockLinks ul li{float:left;z-index:1000;margin:0;padding:0}
-.dvn_navblockLinks ul li a:link,.dvn_navblockLinks ul li a:visited,.dvn_navblockLinks ul li a:hover,.dvn_navblockLinks ul li a:active{float:left;display:block;padding:.2em .5em;text-decoration:none}
+.dvn_navblockWrap{text-align:right;min-width:450px;}
+.dvn_navblockLinks ul{overflow:hidden;float:right;margin:0;padding:0;list-style-type:none !important;border-top:1px solid #dfdfdf}
+.dvn_navblockLinks ul li{float:left;margin:0;padding:0}
+.dvn_navblockLinks ul li a:link,.dvn_navblockLinks ul li a:visited,.dvn_navblockLinks ul li a:hover,.dvn_navblockLinks ul li a:active{display:block;padding:.2em .5em;text-decoration:none}
+.dvn_navblockLinks ul li span,.dvn_navblockLinks ul li a:link,.dvn_navblockLinks ul li a:visited,.dvn_navblockLinks ul li a:hover,.dvn_navblockLinks ul li a:active{line-height:20px !important}
 .dvn_navblockLinks ul li:hover,.dvn_navUserName div:hover{position:relative}
-.dvn_navblockLinks ul li:hover a:link,.dvn_navblockLinks ul li:hover a:visited,.dvn_navblockLinks ul li:hover a:hover,.dvn_navblockLinks ul li:hover a:active{background-color:#c55b28;text-decoration:underline}
-.dvn_navUserName{float:right}
-.dvn_navUserName div{float:left;z-index:1000}
-.dvn_navUserName div.textUserName{padding:0.2em 0.5em;}
-.dvn_navUserName div a:link,.dvn_navUserName div a:visited,.dvn_navUserName div a:hover,.dvn_navUserName div a:active{float:left;display:block;padding:.2em .5em;color:#c55b28;text-decoration:none}
-.dvn_navUserName div:hover a:link,.dvn_navUserName div:hover a:visited,.dvn_navUserName div:hover a:hover,.dvn_navUserName div:hover a:active{background-color:#c55b28;text-decoration:underline}
-.dvn_navUserOptions{font-weight:bold;}
-.dvn_navUserName div a:hover,.dvn_navblockLinks ul li a:hover,.dvn_navUserName a:hover{position:relative;z-index:1000;background-color:#c55b28;color:#fff;text-decoration:underline}
-.dvn_navNetworkName a:link,.dvn_navNetworkName a:visited,.dvn_navNetworkName a:hover,.dvn_navNetworkName a:active{font-weight:400}
+.dvn_navblockLinks ul li:hover a:link,.dvn_navblockLinks ul li:hover a:visited,.dvn_navblockLinks ul li:hover a:hover,.dvn_navblockLinks ul li:hover a:active{color:#fff;background-color:#c55b28;text-decoration:underline}
+.dvn_navUserName{border-left:1px solid #dfdfdf}
+.dvn_navUserGroup span{display:block;padding:.2em .5em}
+.navicon{position:relative;display:block;width:22px;height:20px;}
+.dvn_navblockLinks ul li:hover a.navicon:link, .dvn_navblockLinks ul li:hover a.navicon:visited, .dvn_navblockLinks ul li:hover a.navicon:hover, .dvn_navblockLinks ul li:hover a.navicon:active{background-color:#fff;}
+.naviconsearch{background:url(/dvn/resources/images/navicon_search.jpg)no-repeat 6px 2px;}
+.naviconguides{background:url(/dvn/resources/images/navicon_guides.jpg)no-repeat 6px 2px;}
+.naviconcontact{background:url(/dvn/resources/images/navicon_contact.jpg)no-repeat 6px 2px;}
+.naviconoptions{background:url(/dvn/resources/images/navicon_options.jpg)no-repeat 6px 2px;}
+.navicon span{position:absolute;top:-9999px;left:-9999px;}
 /* HELP-INFO MSG BLOCK */
 div.dvnMsgBlockRound{position:relative;}
 div.dvnMsgBlockContainer{text-align:left;display:table-cell;vertical-align:middle;}

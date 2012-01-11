@@ -174,10 +174,7 @@ public class AddAccountPage extends VDCBaseBean implements java.io.Serializable 
         user.setActive(true);
         editUserService.save();
         if (StringUtil.isEmpty(workflowValue)) {
-            StatusMessage msg = new StatusMessage();
-            msg.setMessageText("User account created successfully.");
-            msg.setStyleClass("successMessage");
-            getRequestMap().put("statusMessage",msg);
+            getExternalContext().getFlash().put("message", "User account created successfully." );
         } 
         LoginWorkflowBean loginWorkflowBean = (LoginWorkflowBean)this.getBean("LoginWorkflowBean");       
         return loginWorkflowBean.processAddAccount(user);

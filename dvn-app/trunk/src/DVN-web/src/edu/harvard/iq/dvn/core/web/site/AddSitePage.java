@@ -333,7 +333,7 @@ public class AddSitePage extends VDCBaseBean implements java.io.Serializable  {
             StatusMessage msg = new StatusMessage();
 
             String hostUrl = PropertyUtil.getHostUrl();
-            msg.setMessageText("Your new dataverse <a href='http://" + hostUrl + "/dvn" + getVDCRequestBean().getCurrentVDCURL()+ "'>http://" + hostUrl + "/dvn" + getVDCRequestBean().getCurrentVDCURL()+ "</a> has been successfully created!");
+            msg.setMessageText("Your new dataverse <a href='http://" + hostUrl + "/dvn/dv/" + createdVDC.getAlias() + "'>http://" + hostUrl + "/dvn/dv/" + createdVDC.getAlias() + "</a> has been successfully created!");
             msg.setStyleClass("successMessage");
             Map m = getRequestMap();
             m.put("statusMessage", msg);
@@ -350,7 +350,7 @@ public class AddSitePage extends VDCBaseBean implements java.io.Serializable  {
             // Refresh User object in LoginBean so it contains the user's new role of VDC administrator.
             getVDCSessionBean().getLoginBean().setUser(creator);
  
-            return "/site/AddSiteSuccess?faces-redirect=true&vdcId=" + createdVDC.getId();
+            return "/site/AddSiteSuccessPage?faces-redirect=true&vdcId=" + createdVDC.getId();
         }
         else {
             success = false;

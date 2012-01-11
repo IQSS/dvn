@@ -138,9 +138,7 @@ public class LoginWorkflowBean extends VDCBaseBean implements java.io.Serializab
         user = newUser;
         String nextPage = null;
         if (workflowType == null) {
-            getRequestMap().put("fromPage", "AddAccountPage");
-            getRequestMap().put("userId", user.getId());
-            nextPage = "/login/AccountPage?faces-redirect=true";
+            nextPage = "/login/AccountPage?faces-redirect=true&userId=" + user.getId();
         } else if (vdcNetworkService.find().isTermsOfUseEnabled()) {
             nextPage = "/login/AccountTermsOfUsePage?faces-redirect=true";
         } else {
@@ -150,10 +148,8 @@ public class LoginWorkflowBean extends VDCBaseBean implements java.io.Serializab
             } else if (workflowType.equals(WORKFLOW_TYPE_CREATOR)) {
                 nextPage = "/site/AddSitePage?faces-redirect=true";
             } else if (workflowType.equals(WORKFLOW_TYPE_FILE_ACCESS)) {
-               getRequestMap().put("studyId", studyId);
                nextPage = "/login/FileRequestPage?faces-redirect=true&studyId="+studyId;
             } else if (workflowType.equals(WORKFLOW_TYPE_COMMENTS)) {
-               getRequestMap().put("studyId", studyId);
                nextPage = "/study/StudyPage?faces-redirect=true&studyId="+studyId;
             }
             updateSessionForLogin();

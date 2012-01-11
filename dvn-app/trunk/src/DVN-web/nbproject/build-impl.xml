@@ -562,6 +562,11 @@ exists or setup the property manually. For example like this:
             <fileset dir="${src.dir}" excludes="${build.classes.excludes},${excludes}" includes="${includes}"/>
             <fileset dir="${src.java.dir}" excludes="${build.classes.excludes},${excludes}" includes="${includes}"/>
         </copy>
+	<!-- The lines below are there to pass the Hudson build number to the DVN source: -->
+	<delete file="${build.classes.dir}/BuildNumber.properties"/>
+	<property environment="env" />
+	<echo file="${build.classes.dir}/BuildNumber.properties">build.number=${env.BUILD_NUMBER}</echo>
+
     </target>
     <target if="has.custom.manifest" name="-copy-manifest">
         <mkdir dir="${build.meta.inf.dir}"/>
@@ -693,6 +698,7 @@ exists or setup the property manually. For example like this:
         <copyfiles files="${reference.DVN-ingest.jar}" iftldtodir="${build.web.dir}/WEB-INF" todir="${dist.ear.dir}/lib"/>
         <copyfiles files="${libs.dvn-lib-EJB.classpath}" iftldtodir="${build.web.dir}/WEB-INF" todir="${dist.ear.dir}/lib"/>
         <copyfiles files="${libs.dvn-lib-NETWORKDATA.classpath}" iftldtodir="${build.web.dir}/WEB-INF" todir="${dist.ear.dir}/lib"/>
+        <copyfiles files="${libs.icefaces2-ace.classpath}" iftldtodir="${build.web.dir}/WEB-INF" todir="${dist.ear.dir}/lib"/>
         <mkdir dir="${build.web.dir}/META-INF"/>
         <manifest file="${build.web.dir}/META-INF/MANIFEST.MF" mode="update"/>
     </target>
@@ -705,6 +711,7 @@ exists or setup the property manually. For example like this:
         <copyfiles files="${reference.DVN-ingest.jar}" todir="${build.web.dir}/WEB-INF/lib"/>
         <copyfiles files="${libs.dvn-lib-EJB.classpath}" todir="${build.web.dir}/WEB-INF/lib"/>
         <copyfiles files="${libs.dvn-lib-NETWORKDATA.classpath}" todir="${build.web.dir}/WEB-INF/lib"/>
+        <copyfiles files="${libs.icefaces2-ace.classpath}" todir="${build.web.dir}/WEB-INF/lib"/>
     </target>
     <target depends="init" if="dist.ear.dir" name="-clean-webinf-lib">
         <delete dir="${build.web.dir}/WEB-INF/lib"/>

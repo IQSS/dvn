@@ -214,7 +214,7 @@ public class MailServiceBean implements edu.harvard.iq.dvn.core.mail.MailService
                +" -Click Options to administer your dataverse.\n"
                + " -Begin creating your own studies and uploading files or adding collections of data from other dataverses\n"
                + " -Customize the layout, and then you are ready to release your dataverse to others.\n"
-               + "For detailed information about how to use your dataverse options, click User Guides on the Dataverse Network menu bar, or go to http://thedata.org/guides.";
+               + "For detailed information about how to use your dataverse options, click User Guides on the Dataverse Network menu bar, or go to http://guides.thedata.org.";
 
         sendDoNotReplyMail(dataverseCreatorEmail,subject,messageText);
     }
@@ -225,7 +225,7 @@ public class MailServiceBean implements edu.harvard.iq.dvn.core.mail.MailService
                + " released to the " + vdcNetworkService.find().getName() + " Dataverse Network. You can access your dataverse"
                + " directly by entering this URL:\n" 
                + "http://"+siteAddress+"\n"
-               + "For detailed information about how to use your dataverse options, click User Guides on the Dataverse Network menu bar, or go to http://thedata.org/guides.";
+               + "For detailed information about how to use your dataverse options, click User Guides on the Dataverse Network menu bar, or go to http://guides.thedata.org.";
                
         sendDoNotReplyMail(dataverseCreatorEmail,subject,messageText);
                        

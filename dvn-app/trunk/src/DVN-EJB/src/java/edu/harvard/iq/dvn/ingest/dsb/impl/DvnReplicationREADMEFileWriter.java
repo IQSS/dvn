@@ -101,11 +101,11 @@ public class DvnReplicationREADMEFileWriter {
     }
     public static String supportTemplate = 
         "_To Get Support_\n\n"+
-        "    You may want to consult the 'Data Users Guide' of the Dataverse\n"+
-        "    Network Project web-page first:\n\n"+
-        "        http://thedata.org/guides/users\n\n"+
-        "    especially, 'Subset, Analyze, and Download Data Sets'\n\n"+
-        "        http://thedata.org/guides/users/use_data\n\n"+
+        "    You may want to consult the 'Finding and Using Data' section of the Users Guides on the Dataverse\n"+
+        "    Network Project website first:\n\n"+
+        "        http://guides.thedata.org/book/datausers-guides\n\n"+
+        "    especially, the 'Tabular Data' page of the 'Subset and Analyze' section:\n\n"+
+        "        http://guides.thedata.org/book/manage-permissions\n\n"+
         "    If you need to contact us about results of this modeling request,\n" +
         "    besides your questions and comments, please include the following\n" +
         "    request-tracking information:\n\n" +
@@ -120,7 +120,7 @@ public class DvnReplicationREADMEFileWriter {
         "        Type=>${option}\n"+
         "    ************************************************************\n"+
         "\n"+
-        "    Thank your using the Dataverse Network.\n\n" +
+        "    Thank you for using the Dataverse Network.\n\n" +
         "    Dataverse Network Project\n"+
         "    dvn_support@help.hmdc.harvard.edu\n"+
         "    http://thedata.org/contact\n\n";

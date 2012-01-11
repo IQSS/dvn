@@ -106,7 +106,7 @@
                      <ice:outputText rendered="#{currentRow.vdcRole!=null and currentRow.vdcRole.vdcUser.id==PrivilegedUsersPage.vdc.creator.id}" id="disabledRole" value="Admin"/>
                      <ice:commandButton rendered="#{currentRow.vdcRole==null}" id="addUserButton" value="Add" actionListener="#{PrivilegedUsersPage.addUser}"/>
 
-                     <ice:outputLink rendered="#{currentRow.vdcRole==null}" value="http://thedata.org/book/user-roles-0" styleClass="dvninlinelink" target="_blank" title="View Role Descriptions">
+                     <ice:outputLink rendered="#{currentRow.vdcRole==null}" value="http://guides.thedata.org/book/manage-permissions" styleClass="dvninlinelink" target="_blank" title="View Role Descriptions">
                         <ice:outputText value="View Role Descriptions"/>
                      </ice:outputLink>
 

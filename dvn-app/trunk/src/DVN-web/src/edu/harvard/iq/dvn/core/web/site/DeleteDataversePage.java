@@ -55,8 +55,6 @@ public class DeleteDataversePage extends VDCBaseBean implements java.io.Serializ
     HtmlInputHidden hiddenVdcId;
     HtmlInputHidden hiddenVdcName;
 
-    private String result;
-    private String resultLink;
     private String vdcName;
     private Long cid;
     private String from;
@@ -115,12 +113,10 @@ public class DeleteDataversePage extends VDCBaseBean implements java.io.Serializ
             remoteTimerService.removeHarvestTimer(vdc.getHarvestingDataverse());
         }
         vdcService.delete(deleteId);
-        HttpServletRequest request = (HttpServletRequest) FacesContext.getCurrentInstance().getExternalContext().getRequest();
-        String referer      = (String)request.getHeader("referer");
-        result       = referer.substring(referer.lastIndexOf("/")+1, referer.lastIndexOf("."));
-        result       = getFriendlyLinkName();
-        resultLink   = referer;
-        return "success";
+
+        getExternalContext().getFlash().put("result", getFriendlyLinkName( from ) );
+        getExternalContext().getFlash().put("resultLink", from);
+        return "/site/DeleteDataverseSuccessPage?faces-redirect=true";
     }
     
     public String cancel() {
@@ -166,26 +162,11 @@ public class DeleteDataversePage extends VDCBaseBean implements java.io.Serializ
         this.hiddenVdcName = hiddenVdcName;
     }
 
-    public String getResult() {
-        return result;
-    }
 
-    public void setResult(String result) {
-        this.result = result;
-    }
-
-    public String getResultLink() {
-        return resultLink;
-    }
-
-    public void setResultLink(String resultLink) {
-        this.resultLink = resultLink;
-    }
-
-    private String getFriendlyLinkName() {
-        if (result.indexOf("ManageDataversesPage") != -1)
+    private String getFriendlyLinkName(String result) {
+        if ("manageDataverses".equals(result))
             return "Manage Dataverses";
-        else if (result.indexOf("HarvestSitesPage") != -1)
+        else if ("manageHarvesting".equals(result))
             return "Manage Harvesting";
         else
             return "";

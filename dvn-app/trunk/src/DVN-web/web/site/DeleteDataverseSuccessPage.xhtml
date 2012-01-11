@@ -30,9 +30,8 @@
           <div class="dvn_sectionBox">
             <div class="dvn_margin12">
               <p>
-                <ice:outputLink value="#{DeleteDataversePage.resultLink}">
-                  <ice:outputText id="returnLink" value="Return to #{DeleteDataversePage.result}"/>
-                </ice:outputLink>
+                <h:outputText value="Return to " rendered="#{!empty flash.result}"/>
+                <h:link value="#{flash.result}" outcome="#{flash.resultLink}" rendered="#{!empty flash.result}"/>
               </p>
             </div>
           </div>

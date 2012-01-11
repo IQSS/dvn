@@ -329,10 +329,7 @@ public class AddSitePage extends VDCBaseBean implements java.io.Serializable  {
             createdVDC.setAffiliation(strAffiliation);
             createdVDC.setDvnDescription(strShortDescription);
             vdcService.edit(createdVDC);
-            getVDCRequestBean().setCurrentVDC(createdVDC);
 
-            // Refresh User object in LoginBean so it contains the user's new role of VDC administrator.
-            getVDCRequestBean().getCurrentVDCURL();
             StatusMessage msg = new StatusMessage();
 
             String hostUrl = PropertyUtil.getHostUrl();
@@ -350,10 +347,10 @@ public class AddSitePage extends VDCBaseBean implements java.io.Serializable  {
 
             mailService.sendAddSiteNotification(toMailAddress, name, siteAddress);
 
+            // Refresh User object in LoginBean so it contains the user's new role of VDC administrator.
             getVDCSessionBean().getLoginBean().setUser(creator);
-            
-
-            return "addSiteSuccess";
+ 
+            return "/site/AddSiteSuccess?faces-redirect=true&vdcId=" + createdVDC.getId();
         }
         else {
             success = false;

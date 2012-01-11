@@ -48,6 +48,12 @@ xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">"%s", archunit_name</Eleme
 <ElementValue xsi:type="java:java.lang.String" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">edu.harvard.iq.dvn.lockss.plugin.DVNOAIPlugin</ElementValue>
 </MapElement>
 <MapElement>
+<ElementKey>plugin_cache_result_list</ElementKey>
+<ElementValue xsi:type="java:java.util.ArrayList" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<string xsi:type="java:java.lang.String">403=org.lockss.util.urlconn.CacheException$NoRetryDeadLinkException</string>
+</ElementValue>
+</MapElement>
+<MapElement>
 <ElementKey>plugin_config_props</ElementKey>
 <ElementValue xsi:type="java:java.util.ArrayList" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
 <ConfigParamDescr>
@@ -92,4 +98,5 @@ xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">"%s", archunit_name</Eleme
 </ConfigParamDescr>
 </ElementValue>
 </MapElement>
+
 </Elements>

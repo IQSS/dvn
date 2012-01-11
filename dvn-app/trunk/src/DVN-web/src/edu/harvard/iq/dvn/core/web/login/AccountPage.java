@@ -58,12 +58,11 @@ public class AccountPage extends VDCBaseBean implements java.io.Serializable  {
 
     public void init() {
         super.init();
-        statusMessage =  (StatusMessage)getRequestMap().get("statusMessage"); 
-        if (userId == null  && !(getRequestMap().get("userId") == null)){
-            userId = new Long((String) getRequestMap().get("userId"));            
-        }
-        user = userService.find(userId);
-        System.out.println("userId is "+ userId );        
+        if (userId != null) {
+            user = userService.find(userId);
+        } else {
+            user = getVDCSessionBean().getUser();
+        }      
     }
 
     /** 

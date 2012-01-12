@@ -114,15 +114,12 @@ public class EditOAISetPage extends VDCBaseBean implements java.io.Serializable 
     }
 
     public String save() {
-      
-               
-            oaiSetService.update(oaiSet);
-             return "success";
-     
+        oaiSetService.update(oaiSet);
+        return "/networkAdmin/OAISetsPage?faces-redirect=true";    
     }    
     
     public String cancel() {
-        return "cancel";
+        return "/networkAdmin/OAISetsPage?faces-redirect=true";
     }
     
     OAISet oaiSet;

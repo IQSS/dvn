@@ -37,7 +37,7 @@ public class MyDataversePage extends VDCBaseBean {
 
     private void initDataverses() {
         
-        VDCUser user = VDCBaseBean.getVDCSessionBean().getUser();
+        VDCUser user = getVDCSessionBean().getUser();
         
         if (user!=null) {
             // first refresh the user
@@ -55,7 +55,7 @@ public class MyDataversePage extends VDCBaseBean {
     }
 
     public String createDataverse() {
-        VDCUser user = VDCBaseBean.getVDCSessionBean().getUser();
+        VDCUser user = getVDCSessionBean().getUser();
         userService.makeCreator(user.getId());
         return "addSite";
     }

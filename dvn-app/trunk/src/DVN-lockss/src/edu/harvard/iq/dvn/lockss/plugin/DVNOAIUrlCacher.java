@@ -271,7 +271,9 @@ public class DVNOAIUrlCacher implements UrlCacher {
 
   private int cache(String lastModified) throws IOException {
     logger.debug3("Pausing before fetching content");
-    au.pauseBeforeFetch(previousContentType);
+    //pauseBeforeFetch() is no longer in the AU, as of daemon 1.52;
+    //commenting out -- L.A.
+    //au.pauseBeforeFetch(previousContentType);
     logger.debug3("Done pausing");
     InputStream input = getUncachedInputStream(lastModified);
     // null input indicates unmodified content, so skip caching

@@ -1908,10 +1908,10 @@ public class StudyServiceBean implements edu.harvard.iq.dvn.core.study.StudyServ
         // It IS possible for the method to be called on a Harvested study, but without the
         // harvestIdentifier supplied! This happens when harvesting from Nesstar sources
         // (see more comments on Nesstar harvesting below).
-        // (then we should probably check explicitly that this is indeed a Nesstar
-        // harvesting dataverse).
         //  --L.A.
         boolean isHarvest = (harvestIdentifier != null || (vdc.getHarvestingDataverse() != null));
+        boolean isNesstarHarvest = ((vdc.getHarvestingDataverse() != null) && vdc.getHarvestingDataverse().isNesstar()); 
+
         Map<String, String> globalIdComponents = null; // used if this is an update of a harvested study
 
 
@@ -1937,26 +1937,31 @@ public class StudyServiceBean implements edu.harvard.iq.dvn.core.study.StudyServ
                 // check the actual DDI metadata and see if it provides
                 // an ID we could use as the harvestidentifier.
                 //  -- L.A.
-                Study tmpStudy = new Study(vdc, creator, StudyVersion.VersionState.RELEASED);
-                StudyVersion tmpStudyVersion = tmpStudy.getLatestVersion();
-                String tmpStudyId = null;
+                
+                if (isNesstarHarvest) {
+                    Study tmpStudy = new Study(vdc, creator, StudyVersion.VersionState.RELEASED);
+                    StudyVersion tmpStudyVersion = tmpStudy.getLatestVersion();
+                    String tmpStudyId = null;
 
-                // We are doing an extra run of ddiService.mapDDI in order
-                // to achieve this; note that mapDDI is a fairly cheap
-                // operation, since it doesn't parse the data portion of the
-                // ddi.
+                    // We are doing an extra run of ddiService.mapDDI in order
+                    // to achieve this; note that mapDDI is a fairly cheap
+                    // operation, since it doesn't parse the data portion of the
+                    // ddi.
 
-                ddiService.mapDDI(ddiFile, tmpStudyVersion);
+                    ddiService.mapDDI(ddiFile, tmpStudyVersion);
 
-                if (tmpStudyVersion.getMetadata().getStudyOtherIds().size() > 0) {
-                    tmpStudyId = tmpStudyVersion.getMetadata().getStudyOtherIds().get(0).getOtherId();
+                    if (tmpStudyVersion.getMetadata().getStudyOtherIds().size() > 0) {
+                        tmpStudyId = tmpStudyVersion.getMetadata().getStudyOtherIds().get(0).getOtherId();
+                    }
+
+                    if (tmpStudyId == null || !isValidStudyIdString(tmpStudyId)) {
+                        throw new EJBException("No suitable ID was found in the Nesstar-harvested metadata.");
+                    }
+                    
+                    harvestIdentifier = tmpStudyId;
+                } else {
+                    throw new EJBException("No Identifier available for a harvested (non-Nesstar) study.");
                 }
-
-                if (tmpStudyId == null || !isValidStudyIdString(tmpStudyId)) {
-                    throw new EJBException("No suitable ID was found in the Nesstar-harvested metadata.");
-                }
-
-                harvestIdentifier = tmpStudyId;
 
             }
 
@@ -2010,6 +2015,20 @@ public class StudyServiceBean implements edu.harvard.iq.dvn.core.study.StudyServ
         if (isHarvest) {
             study.setIsHarvested(true);
             study.setHarvestIdentifier(harvestIdentifier);
+            
+            // for Nesstar studies, we are also cooking a link pointing to 
+            // the location of this study on their web server, to provide as a 
+            // "holdings"/"original archive" in the DVN Study UI. 
+            
+            if (isNesstarHarvest) {
+                String nServerURL = vdc.getHarvestingDataverse().getServerUrl();
+                String nWebviewLocation = nServerURL + 
+                        "/webview/velocity?mode=documentation&study=" + 
+                        nServerURL+"/obj/fStudy/" + 
+                        harvestIdentifier; 
+                studyVersion.getMetadata().setHarvestHoldings(nWebviewLocation);
+            }
+            
         } else {
             // clear fields related to harvesting
             studyVersion.getMetadata().setHarvestHoldings(null);

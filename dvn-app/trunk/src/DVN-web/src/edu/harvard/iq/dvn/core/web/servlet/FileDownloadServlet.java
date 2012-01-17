@@ -51,6 +51,7 @@ import edu.harvard.iq.dvn.core.admin.LockssAuthServiceLocal;
 //import edu.harvard.iq.dvn.core.vdc.LockssConfig;
 
 
+import edu.harvard.iq.dvn.core.web.common.VDCSessionBean;
 import edu.harvard.iq.dvn.core.web.dvnremote.DvnTermsOfUseAccess;
 import edu.harvard.iq.dvn.core.web.dvnremote.ICPSRauth;
 
@@ -96,11 +97,11 @@ import javax.imageio.ImageIO;
 import javax.imageio.ImageWriter;
 import javax.imageio.stream.ImageOutputStream;
 
-import org.apache.commons.lang.StringUtils;
 
 import edu.harvard.iq.dvn.ingest.dsb.impl.*;
 import java.io.BufferedOutputStream;
 import java.util.logging.Logger;
+import javax.inject.Inject;
 
 /**
  *
@@ -137,6 +138,8 @@ public class FileDownloadServlet extends HttpServlet {
     VDCNetworkServiceLocal vdcNetworkService;
     @EJB
     LockssAuthServiceLocal lockssAuthService;
+    
+    @Inject VDCSessionBean vdcSession;
 
 
     public void service(HttpServletRequest req, HttpServletResponse res) {
@@ -146,8 +149,8 @@ public class FileDownloadServlet extends HttpServlet {
         // 1. Extracted from the session:
 
         VDCUser user = null;
-        if (LoginFilter.getLoginBean(req) != null) {
-            user = LoginFilter.getLoginBean(req).getUser();
+        if (vdcSession.getLoginBean() != null) {
+            user = vdcSession.getLoginBean().getUser();
         }
 
         VDC vdc = vdcService.getVDCFromRequest(req);

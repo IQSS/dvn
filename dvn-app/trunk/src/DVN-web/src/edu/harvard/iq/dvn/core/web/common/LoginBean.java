@@ -39,7 +39,10 @@ import edu.harvard.iq.dvn.core.vdc.VDCServiceLocal;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import javax.enterprise.context.SessionScoped;
+import javax.faces.context.FacesContext;
 import javax.inject.Inject;
+import javax.inject.Named;
 import javax.naming.InitialContext;
 
 /**
@@ -77,13 +80,17 @@ public class LoginBean  implements java.io.Serializable {
         this.user = user;
     }
     
-    @Inject VDCRequestBean vdcRequestBean;
     
     /**
      * Getter for property currentVDC.
      * @return Value of property currentVDC.
      */
     public VDC getCurrentVDC() {
+        //TODO: we need to fina a better way of getting the VDCRequest bean as this invloves a deprecated method
+        // as we plan to revamp the login / authorization component, will leave for then
+        VDCRequestBean vdcRequestBean = (VDCRequestBean) FacesContext.getCurrentInstance().getApplication().getVariableResolver().resolveVariable(FacesContext.getCurrentInstance(), "VDCRequest");
+
+        
         if (vdcRequestBean==null) {
             return null;
         } else {

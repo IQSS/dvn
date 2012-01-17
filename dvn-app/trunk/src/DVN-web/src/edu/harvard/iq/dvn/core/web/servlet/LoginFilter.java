@@ -59,6 +59,7 @@ import javax.ejb.EJB;
 import javax.ejb.EJBException;
 import javax.ejb.EJBs;
 
+import javax.inject.Inject;
 import javax.servlet.Filter;
 import javax.servlet.FilterChain;
 import javax.servlet.FilterConfig;
@@ -96,6 +97,8 @@ import javax.servlet.http.HttpSession;
 })
 public class LoginFilter implements Filter {
 
+    @Inject VDCSessionBean vdcSession;
+        
     @EJB
     PageDefServiceLocal pageDefService;
     @EJB
@@ -232,7 +235,7 @@ public class LoginFilter implements Filter {
 
         setOriginalUrl(httpRequest, httpResponse, currentVDC);
 
-        LoginBean loginBean = getLoginBean(request);
+        LoginBean loginBean =  vdcSession.getLoginBean();
         UserGroup ipUserGroup = null;
         if (loginBean == null) {
             ipUserGroup = getIpGroup(httpRequest);
@@ -786,24 +789,7 @@ public class LoginFilter implements Filter {
 
 
     }
-
-    public static LoginBean getLoginBean(ServletRequest request) {
-        boolean isLoggedIn = false;
-        HttpSession session =
-                ((HttpServletRequest) request).getSession(false);
-        LoginBean loginBean = null;
-        // If there is a UserBean in the session, and it has
-        // the isLoggedIn property set to true.
-        if (session != null) {
-            VDCSessionBean vdcSession = null;
-            vdcSession = (VDCSessionBean) session.getAttribute("VDCSession");
-            if (vdcSession != null) {
-                loginBean = vdcSession.getLoginBean();
-            }
-        }
-        return loginBean;
-    }
-
+    
     /**
      * Return a String representation of this object.
      */

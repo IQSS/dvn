@@ -4,6 +4,7 @@
      xmlns:ice="http://www.icesoft.com/icefaces/component"
      xmlns:dvn="/WEB-INF/tlds/dvn-components">
     <ice:form id="StudyVersionNotesPopup">
+        <ice:inputHidden id="vdcId" value="#{VDCRequest.currentVDCId}"/>
         <ice:panelPopup id="versionNotesPopup"
                         draggable="false"
                         rendered="#{VersionNotesPopupBean.showPopup }"

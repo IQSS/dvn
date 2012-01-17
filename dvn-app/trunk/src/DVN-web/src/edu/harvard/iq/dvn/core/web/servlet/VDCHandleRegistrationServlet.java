@@ -31,9 +31,11 @@ import edu.harvard.iq.dvn.core.admin.VDCUser;
 import edu.harvard.iq.dvn.core.gnrs.GNRSServiceLocal;
 import edu.harvard.iq.dvn.core.vdc.VDCNetwork;
 import edu.harvard.iq.dvn.core.vdc.VDCNetworkServiceLocal;
+import edu.harvard.iq.dvn.core.web.common.VDCSessionBean;
 import java.io.*;
 import javax.ejb.EJB;
 
+import javax.inject.Inject;
 import javax.servlet.*;
 import javax.servlet.http.*;
 
@@ -47,10 +49,12 @@ public class VDCHandleRegistrationServlet extends HttpServlet {
     @EJB GNRSServiceLocal registrationService;
     @EJB VDCNetworkServiceLocal vdcNetworkService;
     
+    @Inject VDCSessionBean vdcSession;
+    
     private boolean isNetworkAdmin(HttpServletRequest req) {
         VDCUser user = null;
-        if ( LoginFilter.getLoginBean(req) != null ) {
-            user= LoginFilter.getLoginBean(req).getUser();
+        if ( vdcSession.getLoginBean() != null ) {
+            user= vdcSession.getLoginBean().getUser();
             if (user.getNetworkRole()!=null && user.getNetworkRole().getName().equals(NetworkRoleServiceLocal.ADMIN) ) {
                 return true;
             }

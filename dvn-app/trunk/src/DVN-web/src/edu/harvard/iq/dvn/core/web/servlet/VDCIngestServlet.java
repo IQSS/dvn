@@ -15,11 +15,13 @@ import edu.harvard.iq.dvn.core.study.StudyFileEditBean;
 import edu.harvard.iq.dvn.core.study.StudyFileServiceLocal;
 import edu.harvard.iq.dvn.core.study.StudyServiceLocal;
 import edu.harvard.iq.dvn.core.study.TabularDataFile;
+import edu.harvard.iq.dvn.core.web.common.VDCSessionBean;
 import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
 import javax.annotation.Resource;
 import javax.ejb.EJB;
+import javax.inject.Inject;
 import javax.jms.Queue;
 import javax.jms.JMSException;
 import javax.jms.Message;
@@ -43,10 +45,12 @@ public class VDCIngestServlet extends HttpServlet {
     @Resource(mappedName="jms/DSBIngest") Queue queue;
     @Resource(mappedName="jms/DSBQueueConnectionFactory") QueueConnectionFactory factory;
     
+    @Inject VDCSessionBean vdcSession;
+    
     private boolean isNetworkAdmin(HttpServletRequest req) {
         VDCUser user = null;
-        if ( LoginFilter.getLoginBean(req) != null ) {
-            user= LoginFilter.getLoginBean(req).getUser();
+        if ( vdcSession.getLoginBean() != null ) {
+            user= vdcSession.getLoginBean().getUser();
             if (user.getNetworkRole()!=null && user.getNetworkRole().getName().equals(NetworkRoleServiceLocal.ADMIN) ) {
                 return true;
             }
@@ -98,7 +102,7 @@ public class VDCIngestServlet extends HttpServlet {
                 out.print("</select></td></tr>");
                 
                 out.print("<td>Email: </td>");
-                out.println("<td><input name=\"emailAddress\" value=\"" +  LoginFilter.getLoginBean(req).getUser().getEmail() + "\" size=30 >");
+                out.println("<td><input name=\"emailAddress\" value=\"" +  vdcSession.getLoginBean().getUser().getEmail() + "\" size=30 >");
                 out.print("</td></tr>");
                 
                 out.println("</table><br/><br/>");
@@ -157,7 +161,7 @@ public class VDCIngestServlet extends HttpServlet {
                 DSBIngestMessage ingestMessage = new DSBIngestMessage();
                 ingestMessage.setFileBeans(tempList);
                 ingestMessage.setIngestEmail(req.getParameter("emailAddress"));
-                ingestMessage.setIngestUserId(LoginFilter.getLoginBean(req).getUser().getId());
+                ingestMessage.setIngestUserId(vdcSession.getLoginBean().getUser().getId());
                 ingestMessage.setStudyId(studyId);
                 Message message = session.createObjectMessage(ingestMessage);
                 sender.send(message);

@@ -224,6 +224,10 @@ public class AddFilesPage extends VDCBaseBean implements java.io.Serializable {
             for (FileMetadata fmd : studyVersion.getFileMetadatas()) {
                 preexistingLabels.add(fmd.getLabel());
             }
+            
+            
+            // set the initial value for the ingest e-mail
+            ingestEmail = getVDCSessionBean().getUser().getEmail();
 
         } else {
             // WE SHOULD HAVE A STUDY ID, throw an error

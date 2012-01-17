@@ -16,7 +16,6 @@
     <ui:define name="metadata">
         <f:metadata>
             <f:viewParam name="studyId" value="#{AddFilesPage.studyId}"/>
-            <f:viewParam name="ingestEmail" value="#{VDCSession.loginBean.user.email}"/>
             <f:event type="preRenderView" listener="#{AddFilesPage.preRenderView}"/>
         </f:metadata>
     </ui:define>

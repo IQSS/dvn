@@ -53,7 +53,7 @@
                                                               styleClass="dvnReportCommentsFlag" value="Reported"/>
                                               <ice:commandLink binding="#{StudyCommentsFragment.reportAbuseLink}"
                                                                actionListener="#{StudyCommentsFragment.togglePopup}"
-                                                               rendered="#{(StudyCommentsFragment.authorizedToDeleteComment == false and item.reportAbuseEnabled)}">
+                                                               rendered="#{(StudyCommentsFragment.authorizedToDeleteComment == false and item.reportAbuseEnabled(VDCSession.user))}">
                                                                <!--  || !StudyCommentsFragment.authorizedToDeleteComment  -->
                                                   <f:attribute name="commentId" value="#{item.studyComment.id}" />
                                                   <ice:outputText value="Report Abuse" rendered="#{VDCSession.user != item.studyComment.commentCreator}"/>

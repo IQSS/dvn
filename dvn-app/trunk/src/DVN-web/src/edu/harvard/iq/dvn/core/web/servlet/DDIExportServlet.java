@@ -36,9 +36,11 @@ import edu.harvard.iq.dvn.core.study.StudyFileServiceLocal;
 import edu.harvard.iq.dvn.core.study.StudyServiceLocal;
 import edu.harvard.iq.dvn.core.study.TabularDataFile;
 import edu.harvard.iq.dvn.core.util.FileUtil;
+import edu.harvard.iq.dvn.core.web.common.VDCSessionBean;
 import java.io.*;
 import javax.ejb.EJB;
 
+import javax.inject.Inject;
 import javax.servlet.*;
 import javax.servlet.http.*;
 
@@ -52,11 +54,13 @@ public class DDIExportServlet extends HttpServlet {
     @EJB DDIServiceLocal ddiService;
     @EJB StudyServiceLocal studyService;
     @EJB StudyFileServiceLocal studyFileService;
+    
+    @Inject VDCSessionBean vdcSession;
  
     private boolean isNetworkAdmin(HttpServletRequest req) {
         VDCUser user = null;
-        if ( LoginFilter.getLoginBean(req) != null ) {
-            user= LoginFilter.getLoginBean(req).getUser();
+        if ( vdcSession.getLoginBean() != null ) {
+            user= vdcSession.getLoginBean().getUser();
             if (user.getNetworkRole()!=null && user.getNetworkRole().getName().equals(NetworkRoleServiceLocal.ADMIN) ) {
                 return true;
             }

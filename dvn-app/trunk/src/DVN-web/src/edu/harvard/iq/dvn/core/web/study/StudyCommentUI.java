@@ -24,16 +24,10 @@ public class StudyCommentUI {
     protected boolean InFlaggedByUsers;
     protected StudyComment studyComment;
     protected String flaggedByUserNames = new String("");
-    protected VDCUser user = null;
 
 
     public StudyCommentUI(StudyComment studyComment) {
         this.studyComment = studyComment;
-    }
-
-    public StudyCommentUI(StudyComment studyComment, VDCUser currentUser) {
-        this.studyComment = studyComment;
-        this.user         = VDCBaseBean.getVDCSessionBean().getUser();
     }
 
     public String getFlaggedByUserNames() {
@@ -128,8 +122,8 @@ public class StudyCommentUI {
      *
      * @return the value of InFlaggedByUsers
      */
-    public boolean isInFlaggedByUsers() {
-        if (getFlaggedByUserNames().indexOf(VDCBaseBean.getVDCSessionBean().getUser().getUserName()) != -1) {
+    public boolean isInFlaggedByUsers(VDCUser user) {
+        if (getFlaggedByUserNames().indexOf(user.getUserName()) != -1) {
             return true;
         } else {
             return false;
@@ -152,8 +146,8 @@ public class StudyCommentUI {
      *
      * @return the value of reportAbuseEnabled
      */
-    public boolean isReportAbuseEnabled() {
-        if (studyComment.getStatus().toString().equals("FLAGGED") && isInFlaggedByUsers()) {
+    public boolean isReportAbuseEnabled(VDCUser user) {
+        if (studyComment.getStatus().toString().equals("FLAGGED") && isInFlaggedByUsers(user)) {
             reportAbuseEnabled = false;
         } else {
             reportAbuseEnabled = true;

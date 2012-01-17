@@ -30,7 +30,10 @@ import edu.harvard.iq.dvn.core.admin.VDCUser;
 import java.util.HashMap;
 import java.util.Map;
 import javax.ejb.EJB;
+import javax.enterprise.context.SessionScoped;
 import javax.faces.context.FacesContext;
+import javax.inject.Inject;
+import javax.inject.Named;
 import javax.servlet.http.HttpSession;
 
 /**
@@ -43,6 +46,8 @@ import javax.servlet.http.HttpSession;
  * or method binding expression that references a managed bean using
  * this class.</p>
  */
+@Named("VDCSession")
+@SessionScoped
 public class VDCSessionBean  implements java.io.Serializable  {
     @EJB GroupServiceLocal groupServiceLocal; 
  
@@ -51,7 +56,7 @@ public class VDCSessionBean  implements java.io.Serializable  {
      * Holds value of property loginBean.
      */
     private LoginBean loginBean;
-
+    
     /**
      * Getter for property loginBean.
      * @return Value of property loginBean.

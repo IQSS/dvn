@@ -15,13 +15,17 @@ import edu.harvard.iq.dvn.core.web.common.VDCBaseBean;
 import edu.harvard.iq.dvn.core.web.common.VDCSessionBean;
 import java.util.Map;
 import javax.ejb.EJB;
+import javax.enterprise.context.SessionScoped;
 import javax.faces.context.ExternalContext;
+import javax.inject.Named;
 import javax.servlet.http.HttpSession;
 
 /**
  *
  * @author Ellen Kraffmiller
  */
+@Named("LoginWorkflowBean")
+@SessionScoped
 public class LoginWorkflowBean extends VDCBaseBean implements java.io.Serializable  {
 
     @EJB

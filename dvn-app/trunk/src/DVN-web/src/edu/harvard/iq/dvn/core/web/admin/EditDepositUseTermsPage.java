@@ -47,11 +47,15 @@ import javax.inject.Named;
 public class EditDepositUseTermsPage extends VDCBaseBean implements java.io.Serializable  {
     
     @EJB VDCServiceLocal vdcService;
-
-    private String SUCCESS_MESSAGE = new String("Update Successful!");
     
     private boolean termsOfUseEnabled;
     private String termsOfUse;
+    
+    public void init() {
+        super.init();
+        termsOfUse = getVDCRequestBean().getCurrentVDC().getDepositTermsOfUse();
+        termsOfUseEnabled = getVDCRequestBean().getCurrentVDC().isDepositTermsOfUseEnabled();
+    }
 
     public boolean isTermsOfUseEnabled() {
         return termsOfUseEnabled;
@@ -70,21 +74,18 @@ public class EditDepositUseTermsPage extends VDCBaseBean implements java.io.Seri
     }    
     
     public String save_action() {
-        success = true;
         if (validateTerms()) {
             // action code here
             VDC vdc = vdcService.find(new Long(getVDCRequestBean().getCurrentVDC().getId()));
             vdc.setDepositTermsOfUse(termsOfUse);
             vdc.setDepositTermsOfUseEnabled(termsOfUseEnabled);
             vdcService.edit(vdc);
-            getVDCRequestBean().setCurrentVDC(vdc);
             String    forwardPage="/admin/OptionsPage?faces-redirect=true&vdcId="+getVDCRequestBean().getCurrentVDC().getId();
             getExternalContext().getFlash().put("message","Successfully updated terms of use for study creation.");
             return forwardPage;
            
             
         } else {
-            success = false;
             return null;
         }
     }
@@ -93,38 +94,8 @@ public class EditDepositUseTermsPage extends VDCBaseBean implements java.io.Seri
             return    "/admin/OptionsPage?faces-redirect=true&vdcId="+getVDCRequestBean().getCurrentVDC().getId();
     }
 
-    
-    //UTILITY METHODS
-    
-    /**
-     * Holds value of property success.
-     */
-    private boolean success;
-    
-    /**
-     * Getter for property success.
-     * @return Value of property success.
-     */
-    public boolean isSuccess() {
-        return this.success;
-    }
 
-    /**
-     * Setter for property success.
-     * @param success New value of property success.
-     */
-    public void setSuccess(boolean success) {
-        this.success = success;
-    }
-    /* validateTerms
-     *
-     **<p> Utility method to validate that the user entered terms of use.</p>
-     * 
-     *
-     * @author Wendy Bossons
-     */
-
-    public boolean validateTerms() {
+    private boolean validateTerms() {
         String elementValue = termsOfUse;
         boolean isUseTerms = true;
          if ( (elementValue == null || elementValue.equals("")) && (termsOfUseEnabled) ) {

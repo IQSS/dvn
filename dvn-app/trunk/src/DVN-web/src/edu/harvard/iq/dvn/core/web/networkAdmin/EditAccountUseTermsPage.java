@@ -51,12 +51,17 @@ import javax.inject.Named;
 @Named("EditAccountUseTermsPage")
 public class EditAccountUseTermsPage extends VDCBaseBean implements java.io.Serializable  {
 
-    @EJB
-    VDCNetworkServiceLocal vdcNetworkService;
+    @EJB VDCNetworkServiceLocal vdcNetworkService;
     @EJB UserServiceLocal userService;
     private boolean termsOfUseEnabled;
     private String termsOfUse;
 
+    public void init() {
+        super.init();
+        termsOfUse = getVDCRequestBean().getVdcNetwork().getTermsOfUse();
+        termsOfUseEnabled = getVDCRequestBean().getVdcNetwork().isTermsOfUseEnabled();
+    }     
+    
     public boolean isTermsOfUseEnabled() {
         return termsOfUseEnabled;
     }
@@ -74,7 +79,6 @@ public class EditAccountUseTermsPage extends VDCBaseBean implements java.io.Seri
     }
 
     public String save_action() {
-        success = true;
         if (validateTerms()) {
             // action code here
             VDCNetwork vdcNetwork = vdcNetworkService.find();
@@ -86,7 +90,6 @@ public class EditAccountUseTermsPage extends VDCBaseBean implements java.io.Seri
             getExternalContext().getFlash().put("message", "Successfully updated terms for account creation.");
             return "myNetworkOptions";
         } else {
-            success = false;
             return null;
         }
 
@@ -95,36 +98,8 @@ public class EditAccountUseTermsPage extends VDCBaseBean implements java.io.Seri
     public String cancel_action() {
         return "cancelNetwork";
     }
-    //UTILITY METHODS
-    /**
-     * Holds value of property success.
-     */
-    private boolean success;
 
-    /**
-     * Getter for property success.
-     * @return Value of property success.
-     */
-    public boolean isSuccess() {
-        return this.success;
-    }
-
-    /**
-     * Setter for property success.
-     * @param success New value of property success.
-     */
-    public void setSuccess(boolean success) {
-        this.success = success;
-    }
-    /* validateTerms
-     *
-     **<p> Utility method to validate that the user entered terms of use.</p>
-     * 
-     *
-     * @author Wendy Bossons
-     */
-
-    public boolean validateTerms() {
+    private boolean validateTerms() {
         String elementValue = termsOfUse;
         boolean isUseTerms = true;
         if ((elementValue == null || elementValue.equals("")) && (termsOfUseEnabled)) {
@@ -135,52 +110,5 @@ public class EditAccountUseTermsPage extends VDCBaseBean implements java.io.Seri
         return isUseTerms;
     }
 
-  
-
-    /**
-     * <p>Callback method that is called after the component tree has been
-     * restored, but before any event processing takes place.  This method
-     * will <strong>only</strong> be called on a postback request that
-     * is processing a form submit.  Customize this method to allocate
-     * resources that will be required in your event handlers.</p>
-     */
-    public void preprocess() {
-    }
-
-    /**
-     * <p>Callback method that is called just before rendering takes place.
-     * This method will <strong>only</strong> be called for the page that
-     * will actually be rendered (and not, for example, on a page that
-     * handled a postback and then navigated to a different page).  Customize
-     * this method to allocate resources that will be required for rendering
-     * this page.</p>
-     */
-    public void prerender() {
-    }
-            
-    public void init() {
-            VDCNetwork vdcNetwork = vdcNetworkService.find();
-            setTermsOfUse(vdcNetwork.getTermsOfUse());
-            setTermsOfUseEnabled(vdcNetwork.isTermsOfUseEnabled());
-    }
-
-    /**
-     * <p>Callback method that is called after rendering is completed for
-     * this request, if <code>init()</code> was called (regardless of whether
-     * or not this was the page that was actually rendered).  Customize this
-     * method to release resources acquired in the <code>init()</code>,
-     * <code>preprocess()</code>, or <code>prerender()</code> methods (or
-     * acquired during execution of an event handler).</p>
-     */
-    public void destroy() {
-    }
-
-    /**
-     * <p>Automatically managed component initialization.  <strong>WARNING:</strong>
-     * This method is automatically generated, so any user-specified code inserted
-     * here is subject to being replaced.</p>
-     */
-    private void _init() {
-    }
 }
 

@@ -75,10 +75,10 @@ div.dvn_navblockNetwork{}
 .dvn_navUserGroup span{display:block;padding:.2em .5em}
 .navicon{position:relative;display:block;width:22px;height:20px;}
 .dvn_navblockLinks ul li:hover a.navicon:link, .dvn_navblockLinks ul li:hover a.navicon:visited, .dvn_navblockLinks ul li:hover a.navicon:hover, .dvn_navblockLinks ul li:hover a.navicon:active{background-color:#fff;}
-.naviconsearch{background:url(/dvn/resources/images/navicon_search.jpg)no-repeat 6px 2px;}
-.naviconguides{background:url(/dvn/resources/images/navicon_guides.jpg)no-repeat 6px 2px;}
-.naviconcontact{background:url(/dvn/resources/images/navicon_contact.jpg)no-repeat 6px 2px;}
-.naviconoptions{background:url(/dvn/resources/images/navicon_options.jpg)no-repeat 6px 2px;}
+.naviconsearch{background:#fff url(/dvn/resources/images/navicon_search.jpg) no-repeat 6px 2px;}
+.naviconguides{background:#fff url(/dvn/resources/images/navicon_guides.jpg) no-repeat 6px 2px;}
+.naviconcontact{background:#fff url(/dvn/resources/images/navicon_contact.jpg) no-repeat 6px 2px;}
+.naviconoptions{background:#fff url(/dvn/resources/images/navicon_options.jpg) no-repeat 6px 2px;}
 .navicon span{position:absolute;top:-9999px;left:-9999px;}
 /* HELP-INFO MSG BLOCK */
 div.dvnMsgBlockRound{position:relative;}

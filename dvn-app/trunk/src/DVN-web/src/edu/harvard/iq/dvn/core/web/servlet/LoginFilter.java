@@ -864,7 +864,7 @@ public class LoginFilter implements Filter {
      * 
      */
     private boolean isAuthorizedToEditStudy(PageDef pageDef, VDCUser user, HttpServletRequest request, VDC currentVDC) {
-        boolean authorized = false;
+        boolean authorized = false;        
         // If this is a new study being created, then user is authorized if he or she is admin, curator or contributor
         // in currentVDC
         if (pageDef.getName().equals(PageDefServiceLocal.EDIT_STUDY_PAGE) && (getStudyIdFromRequest(request) == null || Integer.parseInt(getStudyIdFromRequest(request)) < 0)) {
@@ -880,6 +880,14 @@ public class LoginFilter implements Filter {
                 }
             }
         } else {
+            
+            // TODO: We noticed strange behavior with the DVN upgrade; where the Addfiles page when submitting the fileEntry component would not have any parameters
+            // since not having an ide should never happen in a real scenario, we add this hack to get around that; the todo is to modify the login / authorization module
+            // so that each page does its own authorization; that way the AddFiles page cha check based on its internal studyId, rather than have to look for a parameter every time
+            if (getStudyIdFromRequest(request) == null) {
+                return true;           
+            }            
+                      
             // If we are editing an existing study, then the authorization depends on the study
             Long studyId = Long.parseLong(getStudyIdFromRequest(request));
             Study study = studyService.getStudy(studyId);

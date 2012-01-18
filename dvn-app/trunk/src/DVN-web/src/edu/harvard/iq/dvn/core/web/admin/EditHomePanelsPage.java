@@ -68,6 +68,11 @@ public class EditHomePanelsPage extends VDCBaseBean implements java.io.Serializa
     public void init(){
         super.init();
         success = false;
+        
+        chkNetworkAnnouncements = getVDCRequestBean().getCurrentVDC().isDisplayNetworkAnnouncements();
+        chkLocalAnnouncements = getVDCRequestBean().getCurrentVDC().isDisplayAnnouncements();
+        localAnnouncements = getVDCRequestBean().getCurrentVDC().getAnnouncements();
+        chkNewStudies = getVDCRequestBean().getCurrentVDC().isDisplayNewStudies();
     }
     
 
@@ -167,17 +172,12 @@ public class EditHomePanelsPage extends VDCBaseBean implements java.io.Serializa
     public String save_action() {
         success = true;
             if (validateAnnouncementsText()) {
-                setChkNetworkAnnouncements(chkNetworkAnnouncements);
-                setChkLocalAnnouncements(chkLocalAnnouncements);
-                validateAnnouncementsText();
-                setLocalAnnouncements(localAnnouncements);
-                setChkNewStudies(chkNewStudies);
                 // GET the VDC
                 VDC vdc = vdcService.find(new Long(getVDCRequestBean().getCurrentVDC().getId()));
-                vdc.setDisplayNetworkAnnouncements(this.isChkNetworkAnnouncements());
-                vdc.setDisplayAnnouncements(this.isChkLocalAnnouncements());
-                vdc.setAnnouncements(getLocalAnnouncements());
-                vdc.setDisplayNewStudies(this.isChkNewStudies());
+                vdc.setDisplayNetworkAnnouncements(chkNetworkAnnouncements);
+                vdc.setDisplayAnnouncements(chkLocalAnnouncements);
+                vdc.setAnnouncements(localAnnouncements);
+                vdc.setDisplayNewStudies(chkNewStudies);
                 vdcService.edit(vdc);
                 getExternalContext().getFlash().put("message", "Successfully updated dataverse description.");
                  return "/admin/OptionsPage?faces-redirect=true&vdcId="+getVDCRequestBean().getCurrentVDC().getId();

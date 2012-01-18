@@ -48,11 +48,16 @@ import javax.inject.Named;
 @Named("EditNetworkDepositUseTermsPage")
 public class EditNetworkDepositUseTermsPage extends VDCBaseBean implements java.io.Serializable  {
 
-    @EJB
-    VDCNetworkServiceLocal vdcNetworkService;
+    @EJB VDCNetworkServiceLocal vdcNetworkService;
     private boolean termsOfUseEnabled;
     private String termsOfUse;
 
+    public void init() {
+        super.init();
+        termsOfUse = getVDCRequestBean().getVdcNetwork().getDepositTermsOfUse();
+        termsOfUseEnabled = getVDCRequestBean().getVdcNetwork().isDepositTermsOfUseEnabled();
+    }    
+    
     public boolean isTermsOfUseEnabled() {
         return termsOfUseEnabled;
     }
@@ -70,7 +75,6 @@ public class EditNetworkDepositUseTermsPage extends VDCBaseBean implements java.
     }
 
     public String save_action() {
-        success = true;
         if (validateTerms()) {
             // action code here
             VDCNetwork vdcNetwork = vdcNetworkService.find();
@@ -80,7 +84,6 @@ public class EditNetworkDepositUseTermsPage extends VDCBaseBean implements java.
             getExternalContext().getFlash().put("message", "Successfully updated terms for study creation.");
             return "myNetworkOptions";
         } else {
-            success = false;
             return null;
         }
     }
@@ -88,36 +91,9 @@ public class EditNetworkDepositUseTermsPage extends VDCBaseBean implements java.
     public String cancel_action() {
         return "cancelNetwork";
     }
-    //UTILITY METHODS
-    /**
-     * Holds value of property success.
-     */
-    private boolean success;
 
-    /**
-     * Getter for property success.
-     * @return Value of property success.
-     */
-    public boolean isSuccess() {
-        return this.success;
-    }
 
-    /**
-     * Setter for property success.
-     * @param success New value of property success.
-     */
-    public void setSuccess(boolean success) {
-        this.success = success;
-    }
-    /* validateTerms
-     *
-     **<p> Utility method to validate that the user entered terms of use.</p>
-     * 
-     *
-     * @author Wendy Bossons
-     */
-
-    public boolean validateTerms() {
+    private boolean validateTerms() {
         String elementValue = termsOfUse;
         boolean isUseTerms = true;
         if ((elementValue == null || elementValue.equals("")) && (termsOfUseEnabled)) {
@@ -127,14 +103,6 @@ public class EditNetworkDepositUseTermsPage extends VDCBaseBean implements java.
         }
         return isUseTerms;
     }
-
-     public void init() {
-            VDCNetwork vdcNetwork = vdcNetworkService.find();
-            setTermsOfUse(vdcNetwork.getDepositTermsOfUse());
-            setTermsOfUseEnabled(vdcNetwork.isDepositTermsOfUseEnabled());
-    } 
-
-
    
 }
 

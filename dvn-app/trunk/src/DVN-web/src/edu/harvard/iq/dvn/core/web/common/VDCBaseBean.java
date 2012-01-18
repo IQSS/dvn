@@ -111,11 +111,14 @@ public class VDCBaseBean  implements java.io.Serializable  {
     }
 
 
+    @Inject VDCSessionBean vdcSessionBean;
+     
     /** 
      * <p>Return a reference to the scoped data bean.</p>
      */
-    public static VDCSessionBean getVDCSessionBean() {
-        return (VDCSessionBean)getBean("VDCSession");
+    public VDCSessionBean getVDCSessionBean() {
+        return vdcSessionBean;
+        //return (VDCSessionBean)getBean("VDCSession");
     }
 
     @Inject VDCRequestBean vdcRequestBean;

@@ -1953,6 +1953,10 @@ public class StudyServiceBean implements edu.harvard.iq.dvn.core.study.StudyServ
                     if (tmpStudyVersion.getMetadata().getStudyOtherIds().size() > 0) {
                         tmpStudyId = tmpStudyVersion.getMetadata().getStudyOtherIds().get(0).getOtherId();
                     }
+                    
+                    // We may need to go through the list of "other Ids" (instead of
+                    // just grabbing the first one); and apply some logic to get the 
+                    // best one. -- L.A.
 
                     if (tmpStudyId == null || !isValidStudyIdString(tmpStudyId)) {
                         throw new EJBException("No suitable ID was found in the Nesstar-harvested metadata.");
@@ -2022,8 +2026,12 @@ public class StudyServiceBean implements edu.harvard.iq.dvn.core.study.StudyServ
             
             if (isNesstarHarvest) {
                 String nServerURL = vdc.getHarvestingDataverse().getServerUrl();
+                // chop any trailing slashes in the server URL - or they will result
+                // in multiple slashes in the final URL pointing to the study 
+                // on server of origin; Nesstar doesn't like it, apparently. 
+                nServerURL = nServerURL.replaceAll("/*$", "");
                 String nWebviewLocation = nServerURL + 
-                        "/webview/velocity?mode=documentation&study=" + 
+                        "/webview/velocity?mode=documentation&submode=abstract&study=" + 
                         nServerURL+"/obj/fStudy/" + 
                         harvestIdentifier; 
                 studyVersion.getMetadata().setHarvestHoldings(nWebviewLocation);

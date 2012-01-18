@@ -1651,14 +1651,27 @@ public class DDIServiceBean implements DDIServiceLocal {
 
         String codeBookLevelId = xmlr.getAttributeValue(null, "ID");
         
-        if (codeBookLevelId != null && !codeBookLevelId.equals("")) {
-            StudyOtherId sid = new StudyOtherId();
-            sid.setOtherId( codeBookLevelId );
-            sid.setMetadata(studyVersion.getMetadata());
-            studyVersion.getMetadata().getStudyOtherIds().add(sid);
-        }
-
+        // (but first we will parse and process the entire DDI - and only 
+        // then add this codeBook-level id to the list of identifiers; i.e., 
+        // we don't want it to be the first on the list, if one or more
+        // ids are available in the studyDscr section - those should take 
+        // precedence!)
+        // In fact, we should only use these IDs when no ID is available down 
+        // in the study description section!
+        
         processCodeBook(xmlr, studyVersion, filesMap);
+        
+        if (codeBookLevelId != null && !codeBookLevelId.equals("")) {
+            if (studyVersion.getMetadata().getStudyOtherIds().size() == 0) {
+                // this means no ids were found during the parsing of the 
+                // study description section. we'll use the one we found in 
+                // the codeBook entry:
+                StudyOtherId sid = new StudyOtherId();
+                sid.setOtherId( codeBookLevelId );
+                sid.setMetadata(studyVersion.getMetadata());
+                studyVersion.getMetadata().getStudyOtherIds().add(sid);
+            }
+        }
 
     }
 

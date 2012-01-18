@@ -50,17 +50,14 @@ public class EditUseTermsPage extends VDCBaseBean implements java.io.Serializabl
     
     @EJB VDCServiceLocal vdcService;
 
-    private String SUCCESS_MESSAGE = new String("Update Successful!");
-    
     private boolean termsOfUseEnabled;
     private String termsOfUse;
 
-    private HtmlMessages messageTag = new HtmlMessages();
-
     public void init() {
         super.init();
-        messageTag.setRendered(false);
-    };
+        termsOfUse = getVDCRequestBean().getCurrentVDC().getDownloadTermsOfUse();
+        termsOfUseEnabled = getVDCRequestBean().getCurrentVDC().isDownloadTermsOfUseEnabled();
+    }
 
     public boolean isTermsOfUseEnabled() {
         return termsOfUseEnabled;
@@ -86,13 +83,10 @@ public class EditUseTermsPage extends VDCBaseBean implements java.io.Serializabl
             vdc.setDownloadTermsOfUseEnabled(termsOfUseEnabled);
             vdcService.edit(vdc);
 
-            getVDCRequestBean().setCurrentVDC(vdc);
             String    forwardPage="/admin/OptionsPage?faces-redirect=true&vdcId="+getVDCRequestBean().getCurrentVDC().getId();
             getExternalContext().getFlash().put("message","Successfully updated file download terms of use.");
             return forwardPage;
         } else {
-            ExceptionMessageWriter.removeGlobalMessage(SUCCESS_MESSAGE);
-            success = false;
             return null;
         }
 
@@ -102,47 +96,9 @@ public class EditUseTermsPage extends VDCBaseBean implements java.io.Serializabl
             return "/admin/OptionsPage?faces-redirect=true&vdcId="+getVDCRequestBean().getCurrentVDC().getId();
     }
 
-    
-    //UTILITY METHODS
-    
-    /**
-     * Holds value of property success.
-     */
-    private boolean success;
-    
-    /**
-     * Getter for property success.
-     * @return Value of property success.
-     */
-    public boolean isSuccess() {
-        return this.success;
-    }
 
-    /**
-     * Setter for property success.
-     * @param success New value of property success.
-     */
-    public void setSuccess(boolean success) {
-        this.success = success;
-    }
 
-    public HtmlMessages getMessageTag() {
-        return messageTag;
-    }
-
-    public void setMessageTag(HtmlMessages messageTag) {
-        this.messageTag = messageTag;
-    }
-
-    /* validateTerms
-     *
-     **<p> Utility method to validate that the user entered terms of use.</p>
-     * 
-     *
-     * @author Wendy Bossons
-     */
-
-    public boolean validateTerms() {
+    private boolean validateTerms() {
         String elementValue = termsOfUse;
         boolean isUseTerms = true;
          if ( (elementValue == null || elementValue.equals("")) && (termsOfUseEnabled) ) {
@@ -150,7 +106,6 @@ public class EditUseTermsPage extends VDCBaseBean implements java.io.Serializabl
             FacesMessage message = new FacesMessage("This field is required.");
             FacesContext.getCurrentInstance().addMessage("form1:textArea1", message);
         }
-        messageTag.setRendered(false);
         return isUseTerms;
     }
 }

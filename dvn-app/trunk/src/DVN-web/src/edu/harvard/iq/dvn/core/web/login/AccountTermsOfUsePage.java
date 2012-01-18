@@ -47,7 +47,7 @@ import javax.inject.Named;
  */
 
 @ViewScoped
-@Named("AccountUseTermsPage")
+@Named("AccountTermsOfUsePage")
 public class AccountTermsOfUsePage extends VDCBaseBean implements java.io.Serializable  {
     @EJB UserServiceLocal userService;
     private String termsOfUse; 

@@ -280,9 +280,21 @@
     <url-pattern>/faces/*</url-pattern>
   </servlet-mapping>
   <servlet-mapping>
+    <servlet-name>Faces Servlet</servlet-name>
+    <url-pattern>/icefaces/*</url-pattern>
+  </servlet-mapping>
+
+<!--
+ Contrary to what you would expect, the mapping entry below makes the 
+ /dvn/icefaces/resource/* URLs *STOP* working. 
+ instead, /icefaces/* should be mapped to *Faces Servlet*, as above. 
+ why? - who knows.  - L.A.
+   
+  <servlet-mapping>
     <servlet-name>Resource Servlet</servlet-name>
     <url-pattern>/icefaces/resource/*</url-pattern>
   </servlet-mapping>
+-->
 
 <!-- DVN SPECIFIC SERVLET MAPPINGS START -->
     <servlet-mapping>

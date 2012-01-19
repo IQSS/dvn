@@ -28,15 +28,10 @@
 package edu.harvard.iq.dvn.core.study;
 
 import java.util.Collection;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.ManyToMany;
-import javax.persistence.ManyToOne;
 
 import edu.harvard.iq.dvn.core.vdc.VDC;
 import edu.harvard.iq.dvn.core.vdc.VDCCollection;
-import javax.persistence.GeneratedValue;
-import javax.persistence.OneToMany;
+import java.io.Serializable;
 import javax.persistence.*;
 
 /**
@@ -44,7 +39,7 @@ import javax.persistence.*;
  * @author Ellen Kraffmiller
  */
 @Entity
-public class StudyField {
+public class StudyField implements Serializable {
     private String name;
     private String title;
     private String description;

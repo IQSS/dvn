@@ -332,7 +332,7 @@ public class AddClassificationsPage extends VDCBaseBean implements Serializable 
             //}
             FacesContext.getCurrentInstance().addMessage("AddClassificationsPageForm", new FacesMessage(statusMessage));
             getExternalContext().getFlash().put("message",statusMessage);
-            return "result";
+            return "/networkAdmin/ManageClassificationsPage.xhtml?faces-redirect=true";
         }
         
     }
@@ -374,7 +374,7 @@ public class AddClassificationsPage extends VDCBaseBean implements Serializable 
             
       
            
-            return "result";
+            return "/networkAdmin/ManageClassificationsPage.xhtml?faces-redirect=true";
         
     }
 

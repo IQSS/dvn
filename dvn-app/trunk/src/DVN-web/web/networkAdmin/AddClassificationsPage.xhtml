@@ -173,7 +173,7 @@
             <div class="dvnFormPadding dvnFormMargin">
               <ice:commandButton id="btnUpdate" rendered="#{addClassificationsPage.classId != null}" value="#{bundle.saveButtonLabel}" action="#{addClassificationsPage.update_action}"/>
               <ice:commandButton id="btnCreate" rendered="#{addClassificationsPage.classId == null}" value="#{bundle.saveButtonLabel}" action="#{addClassificationsPage.add_action}"/>
-              <ice:commandButton id="btnCancel" immediate="true" value="#{bundle.cancelButtonLabel}" action="cancel"/>
+              <ice:commandButton id="btnCancel" immediate="true" value="#{bundle.cancelButtonLabel}" action="/networkAdmin/ManageClassificationsPage.xhtml?faces-redirect=true"/>
             </div>
           </div>
         </div>

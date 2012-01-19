@@ -89,17 +89,9 @@ public class EditHarvestSitePage extends VDCBaseBean implements java.io.Serializ
     @EJB (name="dvnTimer")
     DvnTimerRemote remoteTimerService;
 
-    public String getFrom() {
-        return from;
-    }
-
-    public void setFrom(String from) {
-        this.from = from;
-    }
     HtmlSelectBooleanCheckbox scheduledCheckbox;
     HtmlSelectOneMenu schedulePeriod;
     String _HARVEST_DTYPE = "Basic";
-    String from;  // page you are comming from
 
     public HtmlSelectOneMenu getSchedulePeriod() {
         return schedulePeriod;
@@ -273,20 +265,31 @@ public class EditHarvestSitePage extends VDCBaseBean implements java.io.Serializ
         remoteTimerService.updateHarvestTimer(harvestingDataverse);
         
         if (isCreateMode()) {
-            getVDCRequestBean().setCurrentVDC( editHarvestSiteService.getHarvestingDataverse().getVdc() );
-            this.getVDCRequestBean().setSuccessMessage("Successfully created a harvest dataverse.");
-            return "addSiteSuccess";
+            return "/site/AddSiteSuccessPage?faces-redirect=true&vdcId=" + editHarvestSiteService.getHarvestingDataverse().getVdc().getId();
             
         } else {
-            this.getVDCRequestBean().setSuccessMessage("Successfully updated harvesting settings.");
-            return from;
+            getExternalContext().getFlash().put("message","Successfully updated harvesting settings.");
+            return generateReturnPage();
         }
 
     }
     
     public String cancel() {
-        return from;
+        if (isCreateMode()) {
+            return "/networkAdmin/NetworkOptionsPage?faces-redirect=true";
+        } else {
+            return generateReturnPage();
+        }
     }
+    
+    private String generateReturnPage() {
+        if (getVDCRequestBean().getCurrentVDCId() != null) {
+            return "/admin/OptionsPage?faces-redirect=true&vdcId=" + getVDCRequestBean().getCurrentVDCId();
+        } else {
+            return "/site/HarvestSitesPage.xhtml?faces-redirect=true";
+        }
+    }
+    
     /**
      * Holds value of property success.
      */

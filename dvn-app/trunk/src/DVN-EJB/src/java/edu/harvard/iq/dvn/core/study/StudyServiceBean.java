@@ -2227,8 +2227,7 @@ public class StudyServiceBean implements edu.harvard.iq.dvn.core.study.StudyServ
     public Timestamp getLastUpdatedTime(Long vdcId) {
         String queryString  = "SELECT max(lastupdatetime) from study where owner_id=" + vdcId;
         Query query         = em.createNativeQuery(queryString);
-        //Object object       = ((List)query.getSingleResult()).get(0);
-        Timestamp timestamp = (Timestamp)(query.getSingleResult());
+        Timestamp timestamp = (Timestamp) query.getSingleResult();
         return timestamp;
     }
 
@@ -2239,8 +2238,7 @@ public class StudyServiceBean implements edu.harvard.iq.dvn.core.study.StudyServ
         Long studyDownloadCount = null;
         Query query = em.createNativeQuery(queryString);
         try {
-            Object object = ((List)query.getSingleResult()).get(0);
-            studyDownloadCount = (Long)object;
+            studyDownloadCount = (Long) query.getSingleResult();
         } catch (Exception nre) {} // empty catch; return 0
 
         return studyDownloadCount != null ? studyDownloadCount.longValue() : 0;
@@ -2254,8 +2252,7 @@ public class StudyServiceBean implements edu.harvard.iq.dvn.core.study.StudyServ
         Long longValue = null;
         Query query         = em.createNativeQuery(queryString);
         try {
-            Object object       = ((List)query.getSingleResult()).get(0);
-            longValue      = (Long)object;
+            longValue      = (Long) query.getSingleResult();
         } catch (Exception nre) {
             longValue = new Long("0");
         } finally {
@@ -2268,8 +2265,7 @@ public class StudyServiceBean implements edu.harvard.iq.dvn.core.study.StudyServ
                 "from studyfileactivity  sfa, study s " +
                 "where sfa.study_id = s.id";
         Query query         = em.createNativeQuery(queryString);
-        Object object       = ((List)query.getSingleResult()).get(0);
-        Long longValue      = (Long)object;
+        Long longValue      = (Long) query.getSingleResult();
         return longValue;
     }
 

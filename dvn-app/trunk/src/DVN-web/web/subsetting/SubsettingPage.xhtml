@@ -4,7 +4,6 @@
       xmlns:ui="http://java.sun.com/jsf/facelets"
       xmlns:h="http://java.sun.com/jsf/html"
       xmlns:f="http://java.sun.com/jsf/core"
-      xmlns:jsp="http://java.sun.com/JSP/Page"
       xmlns:t="/WEB-INF/tlds/scroller"
       xmlns:ice="http://www.icesoft.com/icefaces/component">
 <h:head>
@@ -285,6 +284,7 @@
                             escape="true"
                             styleClass="errorMessage"
                             text="#{AnalysisPage.msgDwnldButtonTxt}"
+                            zhopa="zhopa"
                             />
                     </ice:panelGrid>
                     <br />
@@ -322,7 +322,7 @@
             rendered="false"
             style="padding-top:10px; padding-bottom:10px;">
             <ice:outputLink value="javascript:editVariables()">
-                <ice:outputText  value="Edit selected variables"/>
+                    <ice:outputText  value="Edit selected variables"/>
             </ice:outputLink>
             <ice:outputText id="linkAction5HelpText"
                 styleClass="vdcHelpText"

@@ -841,7 +841,8 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
     }
     
     
-    private String dwnldFileTypeSelected = null;
+    // File format for the saved subset defaults to plain text:
+    private String dwnldFileTypeSelected = (String)(getDwnldFileTypeItems().get(0));
 
     public String getDwnldFileTypeSelected() {
         dbgLog.fine("Subsetting: returning dnwldFileTypeSelected="+dwnldFileTypeSelected);
@@ -1046,7 +1047,9 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
     }
     
     // dwnldButton commandButton@action
-    public String dwnldAction() {   
+    public String dwnldAction() { 
+        dbgLog.fine("***** within dwnldAction() *****");
+
         resetMsgDwnldButton();
         
         if (checkDwnldParameters()) {
@@ -1060,7 +1063,6 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
                 .getExternalContext().getRequest();
 
 
-            dbgLog.fine("***** within dwnldAction() *****");
 
             StudyFile sf = dataTable.getStudyFile();
             Long noRecords = dataTable.getRecordsPerCase();
@@ -1076,7 +1078,6 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
 
             Map<String, List<String>> mpl = new HashMap<String, List<String>>();
 
-            // String formatType = req.getParameter("formatType");
             String formatType = (String) dwnldFileTypeSet.getValue();
             dbgLog.fine("file type from the binding=" + formatType);
             if (formatType == null){
@@ -1084,13 +1085,6 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
                 dbgLog.fine("file type from the value=" + dwnldFileTypeSelected);
             }
             mpl.put("dtdwnld", Arrays.asList(formatType));
-
-            // if there is a user-defined (recoded) variables
-            /*
-            if (recodedVarSet.size() > 0) {
-                mpl.putAll(getRecodedVarParameters());
-            }
-            */
             
             dbgLog.fine("citation info to be sent:\n" + getCitation());
 
@@ -1113,12 +1107,11 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
             mpl.put("requestType", Arrays.asList("Download"));
 
             // -----------------------------------------------------
-            // New processing route
+            // Processing route, step by step:
             // 
             // Step 0. Locate the data file and its attributes
     
             String fileId = sf.getId().toString();
-            //VDC vdc = vdcService.getVDCFromRequest(req);
             
             String fileloc = sf.getFileSystemLocation();
             String tabflnm = sf.getFileName();
@@ -1134,18 +1127,13 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
              
             List<File> zipFileList = new ArrayList();
             
-            // the data file for downloading/statistical analyses must be subset-ready
-            // local (relative to the application) file case 
-            
-
-            
             File tmpsbfl= null;
             
             if (sbstOK) {
                 
                 try {
 
-                    // this temp file will store the requested columns:
+                    // this temp file will store the requested column(s):
                     tmpsbfl = File.createTempFile("tempsubsetfile.", ".tab");
                     deleteTempFileList.add(tmpsbfl);
 
@@ -1225,7 +1213,7 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
                                 dbgLog.warning("exiting dwnldAction() due to an IO problem ");
                                 getVDCRequestBean().setSelectedTab("tabDwnld");
                                 dvnDSBTimerService.createTimer(deleteTempFileList, TEMP_FILE_LIFETIME);
-                                return "failure";
+                                return "";
 
                             } catch (RuntimeException re){
                                 re.printStackTrace();
@@ -1235,7 +1223,7 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
                                 dbgLog.warning("exiting dwnldAction() due to an runtime error");
                                 getVDCRequestBean().setSelectedTab("tabDwnld");
                                 dvnDSBTimerService.createTimer(deleteTempFileList, TEMP_FILE_LIFETIME);
-                                return "failure";
+                                return "";
                             
                             }
 
@@ -1262,7 +1250,7 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
                             );
                             getVDCRequestBean().setSelectedTab("tabDwnld");
                             dvnDSBTimerService.createTimer(deleteTempFileList, TEMP_FILE_LIFETIME);
-                            return "failure";
+                            return "";
 
                         }
                     } else {
@@ -1274,7 +1262,7 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
                         );
                         getVDCRequestBean().setSelectedTab("tabDwnld");
                         dvnDSBTimerService.createTimer(deleteTempFileList, TEMP_FILE_LIFETIME);
-                        return "failure";
+                        return "";
 
                     }
 
@@ -1296,8 +1284,6 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
                     // skip the Rserve call completely (for plain tab file format, with no recoding)! -- L.A.
                     if (!formatType.equals("D01") || (recodeSchema.size() > 0)) {
 
-                        //Map<String, Map<String, String>> vls = getValueTableForRequestedVariables(getDataVariableForRequest());
-
                         Map<String, Map<String, String>> vls = getValueTablesForAllRequestedVariables();
                     
                         sro = new DvnRJobRequest(getDataVariableForRequest(), mpl, vls, recodeSchema);
@@ -1309,13 +1295,14 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
 
                         DvnRDataAnalysisServiceImpl das = new DvnRDataAnalysisServiceImpl();
 
-                        // Executes a request of downloading or data analysis and
-                        // capture resulting information as a Map <String, String>
+                        // Executes a download or data analysis request and
+                        // stores the results in a Map <String, String>
 
                         resultInfo = das.execute(sro);
                     
 
-                        // Step 5. Checks the DSB-exit-status code
+                        // Step 5. Check the exit status of the R process:
+                        
                         if (resultInfo.get("RexecError").equals("true")){
                     
                             msgDwnldButton.setValue("* The Request failed due to an R-runtime error");
@@ -1323,7 +1310,7 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
                             dbgLog.fine("exiting dwnldAction() due to an R-runtime error");
                             getVDCRequestBean().setSelectedTab("tabDwnld");
                             dvnDSBTimerService.createTimer(deleteTempFileList, TEMP_FILE_LIFETIME);
-                            return "failure";
+                            return "";
                         } 
                     }
                     
@@ -1341,11 +1328,11 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
                     dbgLog.warning("exiting dwnldAction() due to a URL problem ");
                     getVDCRequestBean().setSelectedTab("tabDwnld");
                     
-                    return "failure";
+                    return "";
 
                 } catch (IOException e) {
-                    // this may occur if the dataverse is not released
-                    // the file exists, but it is not accessible 
+                    // this may occur if the dataverse is not released,
+                    // or if the file exists, but it is not accessible, etc.
                     e.printStackTrace();
                     
                     msgDwnldButton.setValue("* an IO problem occurred");
@@ -1353,7 +1340,7 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
                     dbgLog.warning("exiting dwnldAction() due to an IO problem ");
                     getVDCRequestBean().setSelectedTab("tabDwnld");
 
-                    return "failure";
+                    return "";
                 }
                 
                // end of subset-OK case
@@ -1364,7 +1351,7 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
                 dbgLog.warning("exiting dwnldAction(): the data file is not subsettable ");
                 getVDCRequestBean().setSelectedTab("tabDwnld");
                 dvnDSBTimerService.createTimer(deleteTempFileList, TEMP_FILE_LIFETIME);
-                return "failure";
+                return "";
 
             } // end:subsetNotOKcase
             
@@ -1399,7 +1386,6 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
 
             // calculate UNF (locally, on the application side):
 
-            //getBaseVarIdSetFromRecodedVarIdSet();
             List<DataVariable> subsetVariableList = getDataVariableForRequest();
 
             String subsetUNFvalue = "[NOT CALCULATED]";
@@ -1428,55 +1414,23 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
             }
 
             resultInfo.put("fileUNF", subsetUNFvalue);
-           
-            //dbgLog.fine("wbDataFileName="+resultInfo.get("wbDataFileName"));
-            //dbgLog.fine("RwrkspFileName="+resultInfo.get("wrkspFileName"));
             
-            // writing necessary files
-            
-            // files to be written back as a zip file
-            //           local     remote  local      local     remote
-            // tab       citation, data,   R history, codefiles, wrksp 
-            // others    citation, data,   R history,            wrksp
+            // writing necessary files:
             
             try{
                 
-                //zipFileList.add(tmpsbflnew);
-
-                // (1) write a citation file 
-//                String citationFilePrefix = "citationFile_"+ resultInfo.get("PID") + "_";
-//                File tmpcfl = File.createTempFile(citationFilePrefix, ".txt");
-//
-//                zipFileList.add(tmpcfl);
-//                deleteTempFileList.add(tmpcfl);
-//
-//                DvnCitationFileWriter dcfw = new DvnCitationFileWriter(resultInfo);
-//
-//                String fmpcflFullname = tmpcfl.getAbsolutePath();
-//                String fmpcflname = tmpcfl.getName();
-//                dcfw.write(tmpcfl);
-
-                // write a R command file
-                //String rhistoryFilePrefix = R_COMMAND_FILE_PREFIX + resultInfo.get("PID") + ".R";
-                //File tmpRhfl = new File(TEMP_DIR, rhistoryFilePrefix);
-
-                //zipFileList.add(tmpRhfl);
-                //deleteTempFileList.add(tmpRhfl);
-                
-                //writeRhistory(tmpRhfl, rhistNew);
-                
-
                 if (formatType.equals("D01") && !(recodeSchema.size() > 0)){
                     // (2) tab-delimited-format-only step:
                     //
                     // In the final zip file we package the subset file
-                    // created by JCut, plus the SAS, SPSS and R control
-                    // files created by R, above.
+                    // and a replication README file (also contains citation). 
+                    // We also *used to* include the SAS, SPSS and R control
+                    // files created by R. We are not doing this anymore, but 
+                    // I left the code commented-out below. 
+                    //                  -- L.A. Jan. 2012
                     //
                     // We are also adding the variable header to the file here.
-		    
-                    // write code files:
-                    dbgLog.fine("(skipping code files for the tab subset)");
+                    
                     /* SKIP CODE FILES -- L.A.
                     String codeFileSas = "codeFile_sas_" + resultInfo.get("PID") + ".sas";
                     File tmpCCsasfl = new File(TEMP_DIR, codeFileSas);
@@ -1502,7 +1456,6 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
 
                     // add the subset file:
 
-                    //File tmpsbflnew = new File (resultInfo.get("wbDataFileName"));
                     File tmpsbflnew = File.createTempFile("tempsubsetfile_new.", ".tab");
                     deleteTempFileList.add(tmpsbflnew);
 
@@ -1530,7 +1483,6 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
                 } else {
                 
                     // (2)The format-converted subset data file
-                    // get the path-name of the data-file to be delivered
                     String wbDataFileName = resultInfo.get("wbDataFileName");
                     dbgLog.fine("wbDataFileName="+wbDataFileName);
                 
@@ -1548,51 +1500,12 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
                         dbgLog.warning("exiting dwnldAction(): data file was not transferred");
                         getVDCRequestBean().setSelectedTab("tabDwnld");
                         dvnDSBTimerService.createTimer(deleteTempFileList, TEMP_FILE_LIFETIME);
-                        return "failure";
+                        return "";
                     }
                 }
 
-                // R-work space file
-//                String wrkspFileName = resultInfo.get("wrkspFileName");
-//                dbgLog.fine("wrkspFileName="+wrkspFileName);
-//                
-//                File RwrkspFileName = new File(wrkspFileName);
-//                if (RwrkspFileName.exists()){
-//                    dbgLog.fine("RwrkspFileName:length="+RwrkspFileName.length());
-//
-//                    //zipFileList.add(RwrkspFileName);
-//
-//                } else {
-//                    dbgLog.fine("RwrkspFileName does not exist");
-//                    //msgDwnldButton.setValue("* The workspace file is not available");
-//                    //msgDwnldButton.setVisible(true);
-//                    dbgLog.warning("dwnldAction(): R workspace file was not transferred");
-//                    //getVDCRequestBean().setSelectedTab("tabDwnld");
-//
-//                    //return "failure";
-//                }
-//                deleteTempFileList.add(RwrkspFileName);
-
-//                // vdc_startup.R file
-//                String vdc_startupFileName = resultInfo.get("vdc_startupFileName");
-//                dbgLog.fine("vdc_startupFileName="+vdc_startupFileName);
-//                File vdcstrtFileName = new File(vdc_startupFileName);
-//                if (vdcstrtFileName.exists()){
-//                    dbgLog.fine("vdcstrtFileName:length="+vdcstrtFileName.length());
-//                    zipFileList.add(vdcstrtFileName);
-//                } else {
-//                    dbgLog.fine("vdcstrtFileName does not exist");
-//                    //msgDwnldButton.setValue("* vdc_startup.R is not available");
-//                    //msgDwnldButton.setVisible(true);
-//                    dbgLog.warning("dwnldAction(): vdc_startup.R was not transferred");
-//                    //getVDCRequestBean().setSelectedTab("tabDwnld");
-//
-//                    //return "failure";
-//                }
-//                deleteTempFileList.add(vdcstrtFileName);
+                // Create README file:
                 
-                // (3) add replication readme file
-                //zipFileList.add(REP_README_FILE);
                 String readMeFileName = null; 
                 
                 if (resultInfo.get("PID") != null && !resultInfo.get("PID").equals("N/A")) {
@@ -1606,7 +1519,6 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
                 DvnReplicationREADMEFileWriter rw = new DvnReplicationREADMEFileWriter(resultInfo);
                 rw.writeREADMEfile(readMeFile, true);
 
-                //zipFileList.add(REP_README_FILE);
                 zipFileList.add(readMeFile);
                 deleteTempFileList.add(readMeFile);
                     
@@ -1615,7 +1527,7 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
                 }
 
 
-                // zipping all required files
+                // We can now zip all the required files"
                 try {
                     String zipFilePrefix = null;
 
@@ -1628,38 +1540,39 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
                     File zipFile  = new File(TEMP_DIR, zipFilePrefix);
                     
                     //deleteTempFileList.add(zipFile);
-                    res.setContentType("application/zip");
                     String zfname = zipFile.getName();
-                    res.setHeader("content-disposition", "attachment; filename=" + zfname);
                     zipFileName = zfname;
                     zipFiles(new FileOutputStream(zipFile), zipFileList);
-                    //zipFiles(res.getOutputStream(), zipFileList);
-                    //FacesContext.getCurrentInstance().responseComplete();
 
+                    /*
                     try {
                         Thread.sleep(1000);
                     } catch (Exception e) {
                         
                     }
-            
-
-                    // put resultInfo into the session object
-                    // this step is unnecessary now because
-                    //  no transition to the result page
-                    //FacesContext.getCurrentInstance().getExternalContext().getSessionMap().put("resultInfo", resultInfo);
+                     */
+                    
                     zipResourceDynFileName = new ByteArrayResource( toByteArray( new FileInputStream(zipFile.getAbsolutePath())));
-                    dbgLog.fine("Subsetting: zipFileName="+zipFileName);
-                    dbgLog.fine("Subsetting: zipFile, absolute path: "+zipFile.getAbsolutePath());
+                    dbgLog.info("Subsetting: zipFileName="+zipFileName);
+                    dbgLog.info("Subsetting: zipFile, absolute path: "+zipFile.getAbsolutePath());
                     dvnDSBTimerService.createTimer(deleteTempFileList, TEMP_FILE_LIFETIME);
+                    
+                    // Hide 'Create' button, show 'Download' button:
                     dwnldButton.setRendered(false);
                     dwnloadSubsetButton.setRendered(true);
-                    dbgLog.fine("***** within dwnldAction(): ends here *****");
+                    dbgLog.info("***** within dwnldAction(): ends here *****");
                                        
-                    //return "download";
-                    if (versionNumber != null) {
-                        return "/study/SubsettingPage?faces-redirect=true&dtId=" + dtId + "&versionNumber=" + versionNumber;
-                    }
-                    return "/study/SubsettingPage?faces-redirect=true&dtId=" + dtId;
+                    /*
+                     * Navigation: 
+                     *  - is it necessary to use "faces-redirect" navigation here? 
+                     *    Or should we simply return "" as long as we want to stay 
+                     *    on the subsetting page?
+                        if (versionNumber != null) {
+                            return "/study/SubsettingPage?faces-redirect=true&dtId=" + dtId + "&versionNumber=" + versionNumber;
+                        }
+                        return "/study/SubsettingPage?faces-redirect=true&dtId=" + dtId;
+                     */
+                    return "";
 
                 } catch (IOException e){
                     // file-access problem, etc.
@@ -1670,7 +1583,7 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
                     dbgLog.warning("exiting dwnldAction() due to an IO problem ");
                     getVDCRequestBean().setSelectedTab("tabDwnld");
                     dvnDSBTimerService.createTimer(deleteTempFileList, TEMP_FILE_LIFETIME);
-                    return "failure";
+                    return "";
                 }
                 // end of zipping step
 
@@ -1682,7 +1595,7 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
                 dbgLog.warning("exiting dwnldAction() due to an IO problem ");
                 getVDCRequestBean().setSelectedTab("tabDwnld");
                 dvnDSBTimerService.createTimer(deleteTempFileList, TEMP_FILE_LIFETIME);
-                return "failure";
+                return "";
             }
             
             
@@ -1696,7 +1609,7 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
             dbgLog.warning("exiting dwnldAction() due to incomplete data ");
             getVDCRequestBean().setSelectedTab("tabDwnld");
             
-            return "failure";
+            return "";
         } // end: checking params
         
         
@@ -1712,7 +1625,6 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
     // moveRecodeVarBttn:h:commandButton@binding
     private HtmlCommandButton moveRecodeVarBttn = 
         new com.icesoft.faces.component.ext.HtmlCommandButton();
-        //new javax.faces.component.html.HtmlCommandButton();
 
     public HtmlCommandButton getMoveRecodeVarBttn() {
         return moveRecodeVarBttn;
@@ -2099,18 +2011,7 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
     public void setRecodeTargetVarLabel(HtmlInputText vl) {
         this.recodeTargetVarLabel = vl;
     }
-/*  deprecated (now using component-binding (recodeTargetVarLabel object)
-    // value-binding 
-    private String recodeVariableLabel;
 
-    public void setRecodeVariableLabel(String vl) {
-        recodeVariableLabel = vl;
-    }
-
-    public String getRecodeVariableLabel() {
-        return recodeVariableLabel;
-    }
-*/
     // dataTable:recodeTable
     // @binding
     private HtmlDataTable recodeTable = 
@@ -3119,16 +3020,6 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
 
     // LHS: list box related fields
 
-//    private HelpInline helpInline3 = new HelpInline();
-//
-//    public HelpInline getHelpInline3() {
-//        return helpInline3;
-//    }
-//
-//    public void setHelpInline3(HelpInline helpInline3) {
-//        this.helpInline3 = helpInline3;
-//    }
-
     // RHS: checkbox area related fields
     // analysis :selectManyCheckbox@binding
     private HtmlSelectManyCheckbox edaOptionSet = 
@@ -3187,22 +3078,22 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
     // checking parameters before submission-
     public boolean checkEdaParameters() {
         boolean result = false;
-        dbgLog.fine("EDA: number of selected options (value)="
+        dbgLog.info("EDA: number of selected options (value)="
             + edaOptionSelected);
         Object[] vs = edaOptionSet.getSelectedValues();
-        dbgLog.fine("EDA: number of selected options (binding)="
+        dbgLog.info("EDA: number of selected options (binding)="
             + vs);        
         // param-checking conditions
         if  (edaOptionSelected.length > 0){
-            dbgLog.fine("EDA(checkEdaParameters): number of selected options="
+            dbgLog.info("EDA(checkEdaParameters): number of selected options="
                 + vs.length);
             result = true;
         } else if (vs.length > 0) {
-            dbgLog.fine("EDA(checkEdaParameters): number of selected options="
+            dbgLog.info("EDA(checkEdaParameters): number of selected options="
                 + vs.length);
             result = true;
         } else {
-            dbgLog.fine("EDA(checkEdaParameters()): no option is checked");
+            dbgLog.info("EDA(checkEdaParameters()): no option is checked");
         }
         return result;
     }
@@ -3231,13 +3122,13 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
     }
 
     public void resetMsgEdaButton() {
-        dbgLog.fine("***** within resetMsgEdaButton *****");
+        dbgLog.info("***** within resetMsgEdaButton *****");
         msgEdaButton.setValue(" ");
         FacesContext.getCurrentInstance().getExternalContext()
             .getSessionMap().put("msgEdaButtonTxt", msgEdaButtonTxt);
         msgEdaButton.setVisible(false);
 
-        dbgLog.fine("***** resetMsgEdaButton: end  *****");
+        dbgLog.info("***** resetMsgEdaButton: end  *****");
     }
 
     // end of eda section ----------------------------------------------------
@@ -3259,13 +3150,13 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
             HttpServletRequest req = (HttpServletRequest) cntxt
                 .getExternalContext().getRequest();
 
-                dbgLog.fine("***** within edaAction() *****");
+                dbgLog.info("***** within edaAction() *****");
 
                 StudyFile sf = dataTable.getStudyFile();
                 Long noRecords = dataTable.getRecordsPerCase();
 
                 String dsbUrl = getDsbUrl();
-                dbgLog.fine("dsbUrl=" + dsbUrl);
+                dbgLog.info("dsbUrl=" + dsbUrl);
 
                 String serverPrefix = req.getScheme() + "://"
                 + req.getServerName() + ":" + req.getServerPort()
@@ -3274,7 +3165,7 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
                 String serverPrefix = "http://dvn-alpha.hmdc.harvard.edu"
                     + req.getContextPath();
                 */    
-                dbgLog.fine("serverPrefix"+serverPrefix);
+                dbgLog.info("serverPrefix"+serverPrefix);
 
                 /*
                  * "optnlst_a" => "A01|A02|A03",
@@ -3291,7 +3182,7 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
                 List<String> alst = new ArrayList<String>();
 
                 for (int i = 0; i < vs.length; i++) {
-                    dbgLog.fine("eda option[" + i + "]=" + vs[i]);
+                    dbgLog.info("eda option[" + i + "]=" + vs[i]);
                     alst.add((String) vs[i]);
                 }
 
@@ -3311,7 +3202,7 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
 //                    + req.getServerPort() + req.getContextPath()));
                 
                 mpl.put("studytitle", Arrays.asList(getStudyTitle()));
-                dbgLog.fine("studyId from get method="+getStudyId().toString());
+                dbgLog.info("studyId from get method="+getStudyId().toString());
                 mpl.put("studyno", Arrays.asList(getStudyId().toString()));
                 mpl.put("studyURL", Arrays.asList(studyURL));
                 mpl.put("browserType", Arrays.asList(browserType));
@@ -3341,10 +3232,10 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
             boolean sbstOK = sf.isSubsettable();
             String flct = sf.getFileType();
             
-            dbgLog.fine("location="+fileloc);
-            dbgLog.fine("filename="+tabflnm);
-            dbgLog.fine("subsettable="+sbstOK);
-            dbgLog.fine("filetype="+flct);
+            dbgLog.info("location="+fileloc);
+            dbgLog.info("filename="+tabflnm);
+            dbgLog.info("subsettable="+sbstOK);
+            dbgLog.info("filetype="+flct);
 
             DvnRJobRequest sro = null;
 
@@ -3380,7 +3271,7 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
                     DataAccessObject accessObject = DataAccess.createDataAccessObject(sf, daReq);
 
                     if (accessObject.isSubsetSupported()) {
-                        dbgLog.fine("Using NATIVE subset functionality of the repository.");
+                        dbgLog.info("Using NATIVE subset functionality of the repository.");
                         daReq.setParameter("vars", getVariableNamesForSubset());
 
                         accessObject.open();
@@ -3408,7 +3299,7 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
                             // Cutting requested fields of data from a TAB-delimited stream:
 
                             Set<Integer> fields = getFieldNumbersForSubsetting();
-                            dbgLog.fine("subsetting fields="+fields);
+                            dbgLog.info("subsetting fields="+fields);
 
                             // Create an instance of DvnJavaFieldCutter
                             FieldCutter fc = new DvnJavaFieldCutter();
@@ -3437,7 +3328,7 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
                                 dbgLog.warning("exiting dwnldAction() due to an IO problem ");
                                 getVDCRequestBean().setSelectedTab("tabDwnld");
                                 dvnDSBTimerService.createTimer(deleteTempFileList, TEMP_FILE_LIFETIME);
-                                return "failure";
+                                return "";
 
                             } catch (RuntimeException re){
                                 re.printStackTrace();
@@ -3447,7 +3338,7 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
                                 dbgLog.warning("exiting dwnldAction() due to an runtime error");
                                 getVDCRequestBean().setSelectedTab("tabDwnld");
                                 dvnDSBTimerService.createTimer(deleteTempFileList, TEMP_FILE_LIFETIME);
-                                return "failure";
+                                return "";
 
                             }
 
@@ -3457,8 +3348,8 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
                     // Checks the resulting subset file 
                     if (tmpsbfl.exists()){
                         Long subsetFileSize = tmpsbfl.length();
-                        dbgLog.fine("subsettFile:Length="+subsetFileSize);
-                        dbgLog.fine("tmpsb file name="+tmpsbfl.getAbsolutePath());
+                        dbgLog.info("subsettFile:Length="+subsetFileSize);
+                        dbgLog.info("tmpsb file name="+tmpsbfl.getAbsolutePath());
                         
                         if (subsetFileSize > 0){
                             mpl.put("subsetFileName", Arrays.asList(tmpsbfl.getAbsolutePath()));
@@ -3473,7 +3364,7 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
                             );
                             getVDCRequestBean().setSelectedTab("tabEda");
 
-                            return "failure";
+                            return "";
 
                         }
                     } else {
@@ -3485,7 +3376,7 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
                         );
                         getVDCRequestBean().setSelectedTab("tabEda");
 
-                        return "failure";
+                        return "";
 
                     }
                     
@@ -3513,10 +3404,10 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
                     if (resultInfo.get("RexecError").equals("true")){
                         msgEdaButton.setValue("* The Request failed due to an R-runtime error");
                         msgEdaButton.setVisible(true);
-                        dbgLog.fine("exiting edaAction() due to an R-runtime error");
+                        dbgLog.info("exiting edaAction() due to an R-runtime error");
                         getVDCRequestBean().setSelectedTab("tabEda");
 
-                        return "failure";
+                        return "";
                     } else {
                         if (recodeSchema.size()> 0){
                             resultInfo.put("subsettingCriteria",sro.getSubsetConditionsForCitation());
@@ -3533,7 +3424,7 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
                     dbgLog.warning("exiting edaAction() due to a URL problem ");
                     getVDCRequestBean().setSelectedTab("tabEda");
 
-                    return "failure";
+                    return "";
                     
                 } catch (IOException e) {
                     // this may occur if the dataverse is not released
@@ -3545,7 +3436,7 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
                     dbgLog.warning("exiting edaAction() due to an IO problem ");
                     getVDCRequestBean().setSelectedTab("tabEda");
 
-                    return "failure";
+                    return "";
                 }
                 
                 // end of the subset-OK case
@@ -3556,7 +3447,7 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
                 dbgLog.warning("exiting edaAction(): the data file is not subsettable ");
                 getVDCRequestBean().setSelectedTab("tabEda");
 
-                return "failure";
+                return "";
 
             } // end:subsetNotOKcaseF
 
@@ -3573,7 +3464,7 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
             resultInfo.put("R_min_verion_no",resultInfo.get("Rversion").substring(2));
             resultInfo.put("dataverse_version_no",dvnVersionNumber);
             
-            dbgLog.fine("RwrkspFileName="+resultInfo.get("wrkspFileName"));
+            dbgLog.info("RwrkspFileName="+resultInfo.get("wrkspFileName"));
 
             // writing necessary files
             try{
@@ -3624,16 +3515,16 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
 
                 // (3)RData Replication file
                 String wrkspFileName = resultInfo.get("wrkspFileName");
-                dbgLog.fine("wrkspFileName="+wrkspFileName);
+                dbgLog.info("wrkspFileName="+wrkspFileName);
                 
                 File RwrkspFileName = new File(wrkspFileName);
                 if (RwrkspFileName.exists()){
-                    dbgLog.fine("RwrkspFileName:length="+RwrkspFileName.length());
+                    dbgLog.info("RwrkspFileName:length="+RwrkspFileName.length());
 
                     zipFileList.add(RwrkspFileName);
 
                 } else {
-                    dbgLog.fine("RwrkspFileName does not exist");
+                    dbgLog.info("RwrkspFileName does not exist");
                     //msgEdaButton.setValue("* The workspace file is not available");
                     //msgEdaButton.setVisible(true);
                     dbgLog.warning("edaAction(): R workspace file was not transferred");
@@ -3700,16 +3591,16 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
                     deleteTempFileList.add(zipFile);
                     if (zipFile.exists()){
                         Long zipFileSize = zipFile.length();
-                        dbgLog.fine("zip file:length="+zipFileSize);
-                        dbgLog.fine("zip file:name="+zipFile.getAbsolutePath());
+                        dbgLog.info("zip file:length="+zipFileSize);
+                        dbgLog.info("zip file:name="+zipFile.getAbsolutePath());
                         if (zipFileSize > 0){
                             resultInfo.put("replicationZipFile", zfname);
                             resultInfo.put("replicationZipFileName", zipFile.getName());
                         } else {
-                            dbgLog.fine("zip file is empty");
+                            dbgLog.info("zip file is empty");
                         }
                     } else {
-                        dbgLog.fine("zip file was not saved");
+                        dbgLog.info("zip file was not saved");
                     }
                     
                     resultInfo.remove("RCommandHistory");
@@ -3721,21 +3612,22 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
                     
                     dvnDSBTimerService.createTimer(deleteTempFileList, TEMP_FILE_LIFETIME);
                     
-                    dbgLog.fine("***** within edaAction(): succcessfully ends here *****");
+                    dbgLog.info("***** within edaAction(): succcessfully ends here *****");
 
-                        
-                    return "success";
+                    return "/subsetting/AnalysisResultsPage?faces-redirect=true";  
+                    //return "success";
                 
                 } catch (IOException e){
                     // file-access problem, etc.
                     e.printStackTrace();
-                    dbgLog.fine("zipping IO exception");
+                    dbgLog.info("zipping IO exception");
                     msgEdaButton.setValue("* an IO problem occurred during zipping replication files");
                     msgEdaButton.setVisible(true);
                     dbgLog.warning("exiting edaAction() due to an zipping IO problem ");
                     //getVDCRequestBean().setSelectedTab("tabEda");
                     dvnDSBTimerService.createTimer(deleteTempFileList, TEMP_FILE_LIFETIME);
-                    return "success";
+                    return "/subsetting/AnalysisResultsPage?faces-redirect=true";
+                    //return "success";
                 }
                 // end of zipping step
 
@@ -3748,7 +3640,7 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
                 dbgLog.warning("exiting edaAction() due to an IO problem ");
                 getVDCRequestBean().setSelectedTab("tabEda");
 
-                return "failure";
+                return "";
             }
 
 
@@ -3766,7 +3658,7 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
             dbgLog.warning("exiting edaAction(): selection is incomplete");
             getVDCRequestBean().setSelectedTab("tabEda");
 
-            return "failure";
+            return "";
         }
 
     }
@@ -6136,7 +6028,7 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
                                 dbgLog.warning("exiting dwnldAction() due to an IO problem ");
                                 getVDCRequestBean().setSelectedTab("tabDwnld");
                                 dvnDSBTimerService.createTimer(deleteTempFileList, TEMP_FILE_LIFETIME);
-                                return "failure";
+                                return "";
 
                             } catch (RuntimeException re){
                                 re.printStackTrace();
@@ -6146,7 +6038,7 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
                                 dbgLog.warning("exiting dwnldAction() due to an runtime error");
                                 getVDCRequestBean().setSelectedTab("tabDwnld");
                                 dvnDSBTimerService.createTimer(deleteTempFileList, TEMP_FILE_LIFETIME);
-                                return "failure";
+                                return ""; //"failure";
 
                             }
 
@@ -6172,7 +6064,7 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
                             );
                             getVDCRequestBean().setSelectedTab("tabAdvStat");
 
-                            return "failure";
+                            return ""; //"failure";
 
                         }
                     } else {
@@ -6184,7 +6076,7 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
                         );
                         getVDCRequestBean().setSelectedTab("tabAdvStat");
 
-                        return "failure";
+                        return ""; //"failure";
 
                     }
 
@@ -6217,7 +6109,7 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
                         dbgLog.fine("exiting advStatAction() due to an R-runtime error");
                         getVDCRequestBean().setSelectedTab("tabAdvStat");
                         
-                        return "failure";
+                        return ""; //"failure";
                     } else {
                         if (recodeSchema.size()> 0){
                             resultInfo.put("subsettingCriteria",sro.getSubsetConditionsForCitation());
@@ -6236,7 +6128,7 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
                     dbgLog.warning("exiting advStatAction() due to a URL problem ");
                     getVDCRequestBean().setSelectedTab("tabAdvStat");
 
-                     return "failure";
+                     return ""; //"failure";
                      
                 } catch (IOException e) {
                     // this may occur if the dataverse is not released
@@ -6248,7 +6140,7 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
                     dbgLog.warning("exiting advStatAction() due to an IO problem ");
                     getVDCRequestBean().setSelectedTab("tabAdvStat");
 
-                    return "failure";
+                    return ""; //"failure";
 
                 }
                 // end of the subset-OK case
@@ -6259,7 +6151,7 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
                 dbgLog.warning("exiting advStatAction(): the data file is not subsettable ");
                 getVDCRequestBean().setSelectedTab("tabAdvStat");
 
-                return "failure";
+                return ""; //"failure";
 
             } // end:subsetNotOKcase
 
@@ -6428,7 +6320,7 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
                         
                     dbgLog.fine("***** within advStatAction(): succcessfully ends here *****");
                         
-                    return "success";
+                    return "/subsetting/AnalysisResultsPage?faces-redirect=true"; //"success";
                 
                 } catch (IOException e){
                     // file-access problem, etc.
@@ -6439,7 +6331,7 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
                     dbgLog.warning("exiting edaAction() due to an zipping IO problem ");
                     //getVDCRequestBean().setSelectedTab("tabAdvStat");
                     dvnDSBTimerService.createTimer(deleteTempFileList, TEMP_FILE_LIFETIME);
-                    return "success";
+                    return "/subsetting/AnalysisResultsPage?faces-redirect=true"; //"success";
                 }
                 // end of zipping step
 
@@ -6452,7 +6344,7 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
                 dbgLog.warning("exiting edaAction() due to an IO problem ");
                 getVDCRequestBean().setSelectedTab("tabAdvStat");
 
-                return "failure";
+                return ""; //"failure";
             }
             
             
@@ -6470,7 +6362,7 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
             dbgLog.fine("exiting advStatAction(): selection is incomplete");
             getVDCRequestBean().setSelectedTab("tabAdvStat");
 
-            return "failure";
+            return ""; //"failure";
         }
         
     }    
@@ -8194,7 +8086,7 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
         } // end of try-catch block
         
 //            dbgLog.fine("init(): current tab id=" + tabSet1.getSelected());
-            dbgLog.fine("***** init():end *****\n\n");
+        dbgLog.fine("***** init():end *****\n\n");
     }
     
     // end of doInit() -------------------------------------------------------
@@ -8224,7 +8116,7 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
         getVDCRequestBean().setDtId(dtId);
         getVDCRequestBean().setDvFilter(dvFilter);
 
-        return "editVariable";
+        return "/study/ditVariablePage?faces-redirect=true"; //"editVariable";
     }
 
     public boolean isEditVariableActionRendered() {

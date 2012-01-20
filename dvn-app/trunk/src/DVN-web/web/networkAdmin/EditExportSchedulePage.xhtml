@@ -75,10 +75,9 @@
                   <ice:outputText value="Export Period"/>
                 </div>
                 <div jsfc="ice:panelGroup">
-                  <ice:selectOneMenu binding="#{EditExportSchedulePage.exportPeriod}" validator="#{EditExportSchedulePage.validateExportPeriod}" id="exportPeriod" value="#{EditExportSchedulePage.exportSchedulePeriod}"  onchange='updateExportInput();' >
-<!--                  <ice:selectOneMenu id="exportPeriod" value="#{EditExportSchedulePage.exportPeriod}" onchange='updateExportInput();'> -->
-                      <f:selectItems value="#{EditExportSchedulePage.selectExportPeriod}"/>
-                  </ice:selectOneMenu>
+                    <ice:selectOneMenu binding="#{EditExportSchedulePage.exportPeriod}" validator="#{EditExportSchedulePage.validateExportPeriod}" id="exportPeriod" value="#{EditExportSchedulePage.exportSchedulePeriod}"  onchange='updateExportInput();' >
+                        <f:selectItems value="#{EditExportSchedulePage.selectExportPeriod}"/>
+                    </ice:selectOneMenu>
                   <ice:message styleClass="errorMessage" for="exportPeriod" />
                 </div>
                 <div jsfc="ice:panelGroup">
@@ -86,7 +85,6 @@
                 </div>
                 <div jsfc="ice:panelGroup">
                         <ice:selectOneMenu validator="#{EditExportSchedulePage.validateHourOfDay}" id="exportHourOfDay" value="#{EditExportSchedulePage.exportHourOfDay}">
-<!--                        <ice:selectOneMenu id="selectScheduleHourOfDay" value="#{EditExportSchedulePage.exportHourOfDay}"> -->
                             <f:selectItem itemValue="-1" itemLabel="Not Selected"/>
                             <f:selectItem itemValue="0" itemLabel="12:00 AM"/>
                             <f:selectItem itemValue="1" itemLabel="1:00 AM"/>
@@ -114,12 +112,6 @@
                             <f:selectItem itemValue="23" itemLabel="11:00 PM"/>
                         </ice:selectOneMenu>
                         <ice:message  styleClass="errorMessage" for="exportHourOfDay"/>
-                    <!--
-                  <ice:inputText id="exportHourOfDay" value="#{EditExportSchedulePage.exportHourOfDay}" required="true"  requiredMessage="This field is required.">
-                    <f:validateLongRange minimum="0" maximum="23" message="Please enter a value between 0 and 23"/>
-                  </ice:inputText>
-                  <ice:message for="exportHourOfDay" styleClass="errorMessage"/>
-                  -->
                 </div>
                 <div jsfc="ice:panelGroup">
                   <div id="requiredDayOfWeek">
@@ -140,12 +132,6 @@
                             <f:selectItem itemValue="7" itemLabel="Saturday"/>
                         </ice:selectOneMenu>
                         <ice:message  styleClass="errorMessage" for="exportDayOfWeek"/>
-                     <!--
-                    <ice:inputText id="exportDayOfWeek" value="#{EditExportSchedulePage.exportDayOfWeek}" required="true" requiredMessage="This field is required.">
-                      <f:validateLongRange minimum="1" maximum="7"  message="Please enter a value between 1 and 7"/>
-                    </ice:inputText>
-                    <ice:message for="exportDayOfWeek" styleClass="errorMessage"/>
-                    -->
                   </div>
                 </div>
               </ice:panelGrid>
@@ -158,7 +144,7 @@
         </div>
       </ice:form>
       <script type="text/javascript">
-          // initial call to disable subsetting Restricted (if needed)
+          // initial call to disable dropdowns(if needed)
           updateExportInput();
       </script>
     </ui:define>

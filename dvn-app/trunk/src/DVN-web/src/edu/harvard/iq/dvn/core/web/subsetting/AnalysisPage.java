@@ -3036,9 +3036,13 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
 
     // selectManyCheckbox@value
     
-    private Object[] edaOptionSelected = null;
+    private Object[] edaOptionSelected = null; 
 
     public Object[] getEdaOptionSelected() {
+        if (edaOptionSelected == null) {
+            edaOptionSelected = new Object[1];
+            edaOptionSelected[0] = (Object)(getEdaOptionItems().get(0));
+        }
         return edaOptionSelected;
     }
 

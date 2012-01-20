@@ -50,6 +50,14 @@ public class DvnRDataAnalysisServiceImpl{
     private static boolean REPLICATION = true;
     public static String dtflprefix = "dvnDataFile_";
     public static String TEMP_DIR = System.getProperty("java.io.tmpdir");
+    // TODO: 
+    // relying on java.io.tempdir may not be the best idea here; at least 
+    // on some platforms (MacOS!) this directory may be different between
+    // JVM sessions; so a link created in glassfish/domain/.../docroot and 
+    // pointing there may not necessarily point to the right place next time
+    // glassfish runs. (need to check how it behaves on linux!)
+    // A better solution would be to default to default to /tmp, but have it 
+    // configurable through a JVM option. -- L.A.
     
     static {
     
@@ -206,21 +214,23 @@ public class DvnRDataAnalysisServiceImpl{
 	// and the link to it from the docroot directory:
 
 	Properties p = System.getProperties();
-        String domainRoot = p.getProperty("com.sun.jbi.domain.root");
-	dbgLog.fine("PROPERTY: com.sun.jbi.domain.root="+domainRoot);
+        String domainRoot = p.getProperty("com.sun.aas.instanceRoot");
+        dbgLog.fine("PROPERTY: com.sun.aas.instanceRoot="+domainRoot);
 
-	File tempLoc = new File (domainRoot+"/docroot/temp"); 
+        String tempLocName = domainRoot+"/docroot/temp";
+	File tempLoc = new File (tempLocName); 
 	if ( !tempLoc.exists() ) {
 
-	    String createSymLink = "/bin/ln -s "+TEMP_DIR+"/DVN "+tempLoc;
+	    String createSymLink = "/bin/ln -s "+TEMP_DIR+"/DVN "+tempLocName;
 		
-	    dbgLog.fine("attempting to execute "+createSymLink);
+	    dbgLog.info("attempting to execute "+createSymLink);
 
 	    try {
 		Runtime runtime = Runtime.getRuntime();
 		Process process = runtime.exec(createSymLink);
 		int exitValue = process.waitFor();
 	    } catch (Exception e) {
+                dbgLog.info("failed to create symlink!");
 		e.printStackTrace();
 	    }
 	} else {

@@ -20,11 +20,15 @@ import java.util.*;
 import java.util.logging.*;
 import javax.servlet.http.*;
 import java.io.*;
+import javax.faces.bean.ViewScoped;
+import javax.inject.Named;
 
 /**
  *
  * @author asone
  */
+@ViewScoped
+@Named("AnalysisResultsPage")
 public class AnalysisResultsPage extends VDCBaseBean implements java.io.Serializable  {
 
     /** Sets the logger (use the package name) */
@@ -86,7 +90,7 @@ public class AnalysisResultsPage extends VDCBaseBean implements java.io.Serializ
     public void setVersionNumber(String vn) {
         this.versionNumber = vn;
     }
-    public String zipFile;
+    private String zipFile;
 
     public String getZipFile() {
         return zipFile;
@@ -96,7 +100,7 @@ public class AnalysisResultsPage extends VDCBaseBean implements java.io.Serializ
         this.zipFile = zipFile;
     }
     
-    public String zipFileName;
+    private String zipFileName;
 
     public String getZipFileName() {
         return zipFileName;
@@ -107,7 +111,7 @@ public class AnalysisResultsPage extends VDCBaseBean implements java.io.Serializ
     }
     
     
-    public String requestedOption;
+    private String requestedOption;
 
     public String getRequestedOption() {
         return requestedOption;
@@ -117,7 +121,7 @@ public class AnalysisResultsPage extends VDCBaseBean implements java.io.Serializ
         this.requestedOption = requestedOption;
     }
         
-    public String requestResultPID;
+    private String requestResultPID;
 
     public String getRequestResultPID() {
         return requestResultPID;
@@ -127,7 +131,7 @@ public class AnalysisResultsPage extends VDCBaseBean implements java.io.Serializ
         this.requestResultPID = requestResultPID;
     }
     
-    public Map<String, String> resultInfo = new HashMap<String, String>();
+    private Map<String, String> resultInfo = new HashMap<String, String>();
     
     public Map<String, String> getResultInfo() {
         return resultInfo;
@@ -137,7 +141,7 @@ public class AnalysisResultsPage extends VDCBaseBean implements java.io.Serializ
         this.resultInfo = resultInfo;
     }
     
-    public String offlineCitation;
+    private String offlineCitation;
 
     public String getOfflineCitation() {
         return offlineCitation;
@@ -147,7 +151,7 @@ public class AnalysisResultsPage extends VDCBaseBean implements java.io.Serializ
         this.offlineCitation = offlineCitation;
     }
     
-    public String studyTitle;
+    private String studyTitle;
 
     public String getStudyTitle() {
         return studyTitle;
@@ -157,7 +161,7 @@ public class AnalysisResultsPage extends VDCBaseBean implements java.io.Serializ
         this.studyTitle = studyTitle;
     }
     
-    public String fileUNF;
+    private String fileUNF;
 
     public String getFileUNF() {
         return fileUNF;
@@ -167,7 +171,7 @@ public class AnalysisResultsPage extends VDCBaseBean implements java.io.Serializ
         this.fileUNF = fileUNF;
     }
     
-    public String variableList;
+    private String variableList;
 
     public String getVariableList() {
         return variableList;
@@ -177,7 +181,7 @@ public class AnalysisResultsPage extends VDCBaseBean implements java.io.Serializ
         this.variableList = variableList;
     }
     
-    public String rversion ;
+    private String rversion ;
 
     public String getRversion() {
         return rversion;
@@ -187,7 +191,7 @@ public class AnalysisResultsPage extends VDCBaseBean implements java.io.Serializ
         this.rversion = rversion;
     }
     
-    public String rexecDate;
+    private String rexecDate;
 
     public String getRexecDate() {
         return rexecDate;
@@ -197,7 +201,7 @@ public class AnalysisResultsPage extends VDCBaseBean implements java.io.Serializ
         this.rexecDate = rexecDate;
     }
     
-    public String zeligVersion;
+    private String zeligVersion;
 
     public String getZeligVersion() {
         return zeligVersion;
@@ -210,7 +214,7 @@ public class AnalysisResultsPage extends VDCBaseBean implements java.io.Serializ
     // PanelGroups
     
     
-    public String resultURLdwnld;
+    private String resultURLdwnld;
     
     public String getResultURLdwnld() {
         return resultURLdwnld;
@@ -220,7 +224,7 @@ public class AnalysisResultsPage extends VDCBaseBean implements java.io.Serializ
         this.resultURLdwnld = resultURLdwnld;
     }
     
-    public String resultURLhtml;
+    private String resultURLhtml;
 
     public String getResultURLhtml() {
         return resultURLhtml;
@@ -246,7 +250,7 @@ public class AnalysisResultsPage extends VDCBaseBean implements java.io.Serializ
 */
 
     
-    public HtmlPanelGroup pgDwnld = new HtmlPanelGroup() ;
+    private HtmlPanelGroup pgDwnld = new HtmlPanelGroup() ;
 
     public HtmlPanelGroup getPgDwnld() {
         return pgDwnld;
@@ -257,7 +261,7 @@ public class AnalysisResultsPage extends VDCBaseBean implements java.io.Serializ
         this.pgDwnld = pgDwnld;
     }
     
-    public HtmlPanelGroup pgHtml  = new HtmlPanelGroup();
+    private HtmlPanelGroup pgHtml  = new HtmlPanelGroup();
 
     public HtmlPanelGroup getPgHtml() {
         return pgHtml;
@@ -269,7 +273,7 @@ public class AnalysisResultsPage extends VDCBaseBean implements java.io.Serializ
         this.pgHtml = pgHtml;
     }
     
-    public HtmlPanelGroup pgRwrksp = new HtmlPanelGroup();
+    private HtmlPanelGroup pgRwrksp = new HtmlPanelGroup();
 
     public HtmlPanelGroup getPgRwrksp() {
         return pgRwrksp;

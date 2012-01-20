@@ -14,6 +14,7 @@
     <ui:param name="pageTitle" value="#{bundlePageInfo.viewGroupTitle} - #{VDCRequest.dataversePageTitle}"/>
     <ui:define name="metadata">
         <f:metadata>
+             <f:viewParam name="userGroupId" value="#{ViewUserGroupPage.userGroupId}"/> 
              <f:event type="preRenderView" listener="#{ViewUserGroupPage.preRenderView}" />     
         </f:metadata>
     </ui:define>

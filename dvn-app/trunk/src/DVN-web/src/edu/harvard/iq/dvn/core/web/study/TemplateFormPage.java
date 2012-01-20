@@ -65,14 +65,24 @@ import com.icesoft.faces.component.ext.HtmlDataTable;
 import com.icesoft.faces.component.ext.HtmlInputHidden;
 import com.icesoft.faces.component.ext.HtmlInputText;
 import com.icesoft.faces.component.ext.HtmlInputTextarea;
+import com.icesoft.faces.component.ext.HtmlSelectOneMenu;
+import com.icesoft.faces.component.ext.HtmlSelectBooleanCheckbox;
+import edu.harvard.iq.dvn.core.study.FieldInputLevel;
+import edu.harvard.iq.dvn.core.study.StudyField;
+
+import java.util.Collections;
+import java.util.Comparator;
 import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
 import javax.faces.event.ActionEvent;
 import javax.faces.event.ValueChangeEvent;
+import javax.faces.model.SelectItem;
+import javax.inject.Inject;
 import javax.inject.Named;
 import javax.naming.Context;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
+import javax.servlet.http.HttpServletRequest;
 
 /**
  * <p>Page bean that corresponds to a similarly named JSP page.  This
@@ -81,12 +91,10 @@ import javax.naming.NamingException;
  * lifecycle methods and event handlers where you may add behavior
  * to respond to incoming events.</p>
  */
-
-@Named("TemplateFormPage")
 @ViewScoped
-@EJB(name="editTemplate", beanInterface=edu.harvard.iq.dvn.core.study.EditTemplateService.class)
+@Named("TemplateFormPage")
 public class TemplateFormPage extends VDCBaseBean implements java.io.Serializable  {
-    EditTemplateService editTemplateService;
+    @Inject EditTemplateService editTemplateService;
     @EJB StudyServiceLocal studyService;
     @EJB VDCNetworkServiceLocal vdcNetworkService;
     @EJB VDCServiceLocal vdcService;
@@ -100,37 +108,48 @@ public class TemplateFormPage extends VDCBaseBean implements java.io.Serializabl
     
     
    public void init() {
+            System.out.println("In page init... " );      
        super.init();
  
        try {
            Context ctx = new InitialContext();
-           editTemplateService = (EditTemplateService) ctx.lookup("java:comp/env/editTemplate");
+           /*editTemplateService = (EditTemplateService) ctx.lookup("java:comp/env/editTemplate");*/
        } catch (NamingException e) {
+            System.out.println("In catch " );      
            e.printStackTrace();
            FacesContext context = FacesContext.getCurrentInstance();
            FacesMessage errMessage = new FacesMessage(FacesMessage.SEVERITY_ERROR, e.getMessage(), null);
            context.addMessage(null, errMessage);
 
        }
+        
        if (getTemplateId() != null) {
+           System.out.println("getTemplateId() ... " + getTemplateId() );      
            editTemplateService.setTemplate(templateId);
            template = editTemplateService.getTemplate();
 
        } else {
-           Long vdcId = getVDCRequestBean().getCurrentVDC().getId();
+           Long vdcId = new Long(0);
+           if (getVDCRequestBean().getCurrentVDC() != null){
+               vdcId = getVDCRequestBean().getCurrentVDC().getId();
+           }
+           
            if (studyVersionId != null) {
                editTemplateService.newTemplate(vdcId, studyVersionId);
-           } else {
+           } else if(!vdcId.equals(new Long(0))) {
+               System.out.println("vdcId ... " + vdcId );      
                editTemplateService.newTemplate(vdcId);
-           }
-        
-           template = editTemplateService.getTemplate();
-         
+           } else {
+               editTemplateService.newNetworkTemplate();
+           }   
+           
+           template = editTemplateService.getTemplate();         
        }
        initStudyMap();
-       template.getMetadata().initCollections();
-
-        
+       initAdHocFieldMap();
+       fieldInputLevelSelectItems = loadFieldInputLevelSelectItems();
+       fieldTypeSelectItems = loadFieldTypeSelectItems();
+       template.getMetadata().initCollections();       
     }
     
    
@@ -184,12 +203,7 @@ public class TemplateFormPage extends VDCBaseBean implements java.io.Serializabl
     public void setTemplate(Template template) {
         this.template = template;
     }
-    
-   
-    
-   
-    
-    
+        
     
     private Map studyMap;
     
@@ -198,21 +212,122 @@ public class TemplateFormPage extends VDCBaseBean implements java.io.Serializabl
     }
     
     public void initStudyMap() {
+        
+        System.out.println("in InitStudyMap");
         studyMap = new HashMap();
         for (Iterator<TemplateField> it =template.getTemplateFields().iterator(); it.hasNext();) {
             TemplateField tf = it.next();
             StudyMapValue smv = new StudyMapValue();
             smv.setTemplateFieldUI(new TemplateFieldUI(tf));
-            studyMap.put(tf.getStudyField().getName(),smv);
-        }
-        
+            if(!tf.getStudyField().isDcmField()){
+                studyMap.put(tf.getStudyField().getName(),smv);
+                System.out.println("fieldName is "+tf.getStudyField().getName());
+            }           
+        } 
+                System.out.println("end of InitStudyMap");
     }
-      public Map getTemplatesMap() {
+    
+    
+    public Map getTemplatesMap() {
         return vdcService.getVdcTemplatesMap(getVDCRequestBean().getCurrentVDCId());
     }
     
+    private List<TemplateField> adHocFields;
     
+    private void initAdHocFieldMap(){
 
+        if (adHocFields == null) {
+           adHocFields = new ArrayList();
+            for (Iterator<TemplateField> it =template.getTemplateFields().iterator(); it.hasNext();) {
+                TemplateField tf = it.next();
+                StudyMapValue smv = new StudyMapValue();
+                smv.setTemplateFieldUI(new TemplateFieldUI(tf));
+
+                if(tf.getStudyField().isDcmField()){
+                    tf.initValues();
+
+                    adHocFields.add(tf);
+                }
+            }
+            Long defaultdcmOrder = new Long(1);
+            for (Object o : adHocFields){
+                TemplateField c1 = (TemplateField) o;
+                if (c1.getDcmSortOrder() == null){
+                    c1.setdcmSortOrder(defaultdcmOrder);
+                    defaultdcmOrder++;
+                }
+            }
+        }
+
+        Collections.sort(adHocFields, comparator);
+    }
+
+    Comparator comparator = new Comparator() {
+            public int compare(Object o1, Object o2) {
+                TemplateField c1 = (TemplateField) o1;
+                TemplateField c2 = (TemplateField) o2;
+                return c1.getDcmSortOrder().compareTo(c2.getDcmSortOrder());
+
+            }
+    };
+    
+    public List getAdHocFields() {
+        return adHocFields;
+    }
+    
+    public List<SelectItem> loadFieldInputLevelSelectItems() {
+        List selectItems = new ArrayList<SelectItem>();
+        
+        FieldInputLevel rec = new FieldInputLevel();
+        rec.setName("recommended");
+        FieldInputLevel hidden = new FieldInputLevel();
+        hidden.setName("hidden");
+        FieldInputLevel optional = new FieldInputLevel();
+        optional.setName("optional");
+        FieldInputLevel required = new FieldInputLevel();
+        required.setName("required");
+
+        selectItems.add(new SelectItem("required", "Required"));
+        selectItems.add(new SelectItem("recommended", "Recommended"));
+        selectItems.add(new SelectItem("optional", "Optional"));
+        selectItems.add(new SelectItem("hidden", "Hidden"));
+        return selectItems;
+    }
+    
+    private List <SelectItem> fieldInputLevelSelectItems = new ArrayList();
+    
+    public List<SelectItem> getFieldInputLevelSelectItems() {
+
+        return this.fieldInputLevelSelectItems;
+    }
+
+    public List<SelectItem> loadFieldTypeSelectItems() {
+        List selectItems = new ArrayList<SelectItem>();
+
+        selectItems.add(new SelectItem("textBox", "Text Box"));
+        selectItems.add(new SelectItem("textArea", "Text Area"));
+        selectItems.add(new SelectItem("date", "Date"));
+        selectItems.add(new SelectItem("html", "Allow HTML"));
+        return selectItems;
+    }
+
+    private List <SelectItem> fieldTypeSelectItems = new ArrayList();
+
+    public List<SelectItem> getFieldTypeSelectItems() {
+
+        return this.fieldTypeSelectItems;
+    }
+
+    public void addDcmRow(ActionEvent ae) {
+        Long getOrder = (Long) ae.getComponent().getAttributes().get("dcmSortOrder");
+            TemplateField tf = adHocFields.get(getOrder.intValue() -1 );
+            TemplateFieldValue newElem = new TemplateFieldValue();
+            newElem.setMetadata(template.getMetadata());
+            newElem.setTemplateField(tf);
+            tf.getTemplateFieldValues().add(newElem);
+            tf.getTemplateFieldValues().size();
+            dcmFieldTable.getChildren().clear();
+    }
    
     public void addRow(ActionEvent ae) {
         
@@ -293,6 +408,52 @@ public class TemplateFormPage extends VDCBaseBean implements java.io.Serializabl
             List data = (List)dataTable.getValue();
             editTemplateService.removeCollectionElement(data,dataTable.getRowData());
         }
+    }
+
+    public void removeDcmRow(ActionEvent ae) {
+
+        Long getOrder = (Long) ae.getComponent().getAttributes().get("dcmSortOrder");
+        TemplateField tf = adHocFields.get(getOrder.intValue() -1 );
+        TemplateFieldValue tfv = null;
+        List data = null;
+        if (tf.getTemplateFieldValues().size()>1) {
+            data = tf.getTemplateFieldValues();
+            tfv = tf.getTemplateFieldValues().get(tf.getTemplateFieldValues().size() -1);
+            
+        }
+        if (!(tfv== null)){
+            editTemplateService.removeCollectionElement(data,tfv);
+        }
+         
+    }
+
+    public void moveUp(ActionEvent ae) {
+        Long getOrder = (Long) ae.getComponent().getAttributes().get("dcmSortOrder");
+
+        if (getOrder.intValue() > 1){
+            TemplateField moveUp = adHocFields.get(getOrder.intValue() -1 );
+            TemplateField moveDown = adHocFields.get(getOrder.intValue() -2 );
+            moveUp.setdcmSortOrder(getOrder - 1 );
+            moveDown.setdcmSortOrder(getOrder);
+        }
+        dcmFieldTable.getChildren().clear();
+          Collections.sort(adHocFields, comparator);
+
+    }
+
+    public void moveDown(ActionEvent ae) {
+        Long getOrder = (Long) ae.getComponent().getAttributes().get("dcmSortOrder");
+
+            TemplateField moveDown = adHocFields.get(getOrder.intValue() -1 );
+            TemplateField moveUp = adHocFields.get(getOrder.intValue());
+
+            moveUp.setdcmSortOrder(getOrder );
+            moveDown.setdcmSortOrder(getOrder + 1);
+
+            dcmFieldTable.getChildren().clear();
+
+             Collections.sort(adHocFields, comparator);
+
     }
     
     public void toggleInlineHelp(ActionEvent ae) {
@@ -436,7 +597,24 @@ public class TemplateFormPage extends VDCBaseBean implements java.io.Serializabl
                    editTemplateService.removeCollectionElement(it,elem);
            }
         }
-        
+
+        for (TemplateField tf : adHocFields){
+           List<TemplateFieldValue> valList =  tf.getTemplateFieldValues();
+           List toRemove = new ArrayList();
+           for (TemplateFieldValue tfv: valList){
+               if (tfv.getStrValue().isEmpty()){
+                   toRemove.add(tfv);
+               }
+           }
+
+           if (!toRemove.isEmpty()){
+               for (Object o: toRemove){
+                    editTemplateService.removeCollectionElement(valList,o);
+               }
+           }
+
+
+        }
         
     }
     
@@ -602,7 +780,25 @@ public class TemplateFormPage extends VDCBaseBean implements java.io.Serializabl
     public void setDataTableNotes(HtmlDataTable dataTableNotes) {
         this.dataTableNotes = dataTableNotes;
     }
-    
+
+    private HtmlDataTable dcmFieldTable;
+
+    /**
+     * Getter for property dataTableNotes.
+     * @return Value of property dataTableNotes.
+     */
+    public HtmlDataTable getDcmFieldTable() {
+        return this.dcmFieldTable;
+    }
+
+    /**
+     * Setter for property dataTableNotes.
+     * @param dataTableNotes New value of property dataTableNotes.
+     */
+    public void setDcmFieldTable(HtmlDataTable dcmFieldTable) {
+        this.dcmFieldTable = dcmFieldTable;
+    }
+
     /**
      * Holds value of property dataTableProducers.
      */
@@ -740,6 +936,12 @@ public class TemplateFormPage extends VDCBaseBean implements java.io.Serializabl
 
 
     }
+    
+    public String getAdHocFieldsInputLevel() {
+        return null;
+    }
+    
+    
 
     public String getTermsOfUseInputLevel() {
         return getInputLevel(StudyFieldConstant.disclaimer,
@@ -921,12 +1123,80 @@ public class TemplateFormPage extends VDCBaseBean implements java.io.Serializabl
        
         return "manageTemplates";
     }
-    
-    
-    
-    
-    
-    
+
+    HtmlSelectOneMenu selectFieldType;
+
+    public HtmlSelectOneMenu getSelectFieldType() {
+        return selectFieldType;
+    }
+
+    public void setSelectFieldType(HtmlSelectOneMenu selectFieldType) {
+        this.selectFieldType = selectFieldType;
+    }
+
+    HtmlSelectBooleanCheckbox allowMultiplesCheck;
+
+    public HtmlSelectBooleanCheckbox getAllowMultiplesCheck() {
+        return allowMultiplesCheck;
+    }
+
+    public void setAllowMultiplesCheck(HtmlSelectBooleanCheckbox allowMultiplesCheck) {
+        this.allowMultiplesCheck = allowMultiplesCheck;
+    }
+
+    public String saveField() {
+        if (this.getTemplate()==null) {
+            return "home";
+        }
+
+        String fieldName = (String)inputStudyFieldName.getLocalValue();
+        String fieldDescription = (String)inputStudyFieldDescription.getLocalValue();
+
+        Boolean allowMultiples = (Boolean) this.allowMultiplesCheck.getLocalValue();
+
+        if(fieldName.trim().isEmpty()){
+            FacesContext context = FacesContext.getCurrentInstance();
+            FacesMessage message = new FacesMessage("New field name may not be blank.");
+            context.addMessage(null, message);
+        }
+
+        int maxDCM = 0;
+
+        for (TemplateField tfl : adHocFields){
+            if (tfl.getDcmSortOrder().intValue() >= maxDCM ){
+                maxDCM = tfl.getDcmSortOrder().intValue();
+            }
+        }
+
+        Object value= this.selectFieldType.getValue();
+        String fieldType =  (String) value ;
+
+        TemplateField newTF = new TemplateField();
+        StudyField newElem = new StudyField();
+
+        newElem.setName(fieldName);
+        newElem.setDescription(fieldDescription);
+        newElem.setDcmField(true);
+        newElem.setFieldType(fieldType);
+        newTF.setTemplate(template);
+        newTF.setStudyField(newElem);
+        newTF.setdcmSortOrder(new Long(maxDCM + 1));
+        newTF.setAllowMultiples(allowMultiples);
+        TemplateFieldUI newUI = new TemplateFieldUI();
+        newUI.setTemplateField(newTF);
+        newUI.setRecommended(false);
+        newTF.initValues();
+
+        template.getTemplateFields().add(newTF);
+        adHocFields.add(newTF);
+
+        System.out.println(" after add  "  + maxDCM );
+
+        inputStudyFieldName.setValue("");
+        inputStudyFieldDescription.setValue("");
+        return "";
+    }
+        
     public void validateLongitude(FacesContext context,
             UIComponent toValidate,
             Object value) {
@@ -1394,6 +1664,29 @@ public class TemplateFormPage extends VDCBaseBean implements java.io.Serializabl
         this.inputAuthorName = inputAuthorName;
     }
 
+
+    private HtmlInputText inputStudyFieldName;
+
+
+    public HtmlInputText getInputStudyFieldName() {
+        return this.inputStudyFieldName;
+    }
+
+    public void setInputStudyFieldName(HtmlInputText inputStudyFieldName) {
+        this.inputStudyFieldName = inputStudyFieldName;
+    }
+
+    private HtmlInputText inputStudyFieldDescription;
+
+
+    public HtmlInputText getInputStudyFieldDescription() {
+        return this.inputStudyFieldDescription;
+    }
+
+    public void setInputStudyFieldDescription(HtmlInputText inputStudyFieldDescription) {
+        this.inputStudyFieldDescription = inputStudyFieldDescription;
+    }
+
     private HtmlInputText inputTitle;
 
     public HtmlInputText getInputTitle() {
@@ -1402,6 +1695,16 @@ public class TemplateFormPage extends VDCBaseBean implements java.io.Serializabl
 
     public void setInputTitle(HtmlInputText inputTitle) {
         this.inputTitle = inputTitle;
+    }
+
+    private HtmlInputText inputTemplateValue;
+
+    public HtmlInputText getInputTemplateValue() {
+        return inputTemplateValue;
+    }
+
+    public void setInputTemplateValue(HtmlInputText inputTemplateValue) {
+        this.inputTemplateValue = inputTemplateValue;
     }
     
     
@@ -1425,6 +1728,28 @@ public class TemplateFormPage extends VDCBaseBean implements java.io.Serializabl
     public void setInputAuthorAffiliation(HtmlInputText inputAuthorAffiliation) {
         this.inputAuthorAffiliation = inputAuthorAffiliation;
     }
+    
+    /**
+     * Holds value of property inputAuthorAffiliation.
+     */
+    private HtmlInputText inputAuthorIDValue;
+
+    /**
+     * Getter for property studyAuthorAffiliation.
+     * @return Value of property studyAuthorAffiliation.
+     */
+    public HtmlInputText getInputAuthorIDValue() {
+        return this.inputAuthorIDValue;
+    }
+
+    /**
+     * Setter for property studyAuthorAffiliation.
+     * @param studyAuthorAffiliation New value of property studyAuthorAffiliation.
+     */
+    public void setInputAuthorIDValue(HtmlInputText inputAuthorIDValue) {
+        this.inputAuthorIDValue = inputAuthorIDValue;
+    }
+      
 
     /**
      * Holds value of property sessionCounter.
@@ -2343,7 +2668,41 @@ public class TemplateFormPage extends VDCBaseBean implements java.io.Serializabl
             StudyMapValue studyMapValue = (StudyMapValue)studyMap.get(studyFieldName);
             editTemplateService.changeRecommend(studyMapValue.getTemplateField(), newValue);
     }
-  
+
+    public void changeFieldInputValue(ValueChangeEvent event) {
+        System.out.println("In value change event" );
+            String newValue = (String)event.getNewValue();
+
+            String id =event.getComponent().getId();
+            String studyField = id.substring(5, id.length());
+            String studyFieldName=  event.getComponent().getId();
+            
+            System.out.println("studyField is "+studyField);
+            String getFieldName = (String) event.getComponent().getAttributes().get("fieldName");
+            StudyMapValue studyMapValue = (StudyMapValue)studyMap.get(getFieldName);
+
+            System.out.println("studyFieldName is "+ studyFieldName );
+            System.out.println("newValue is "+ newValue );
+
+            System.out.println("studyMapValue is "+ studyMapValue.toString() );
+             
+            editTemplateService.changeFieldInputLevel(studyMapValue.getTemplateField(), newValue);
+    }
+
+    public void changeFieldInputValueDCM(ValueChangeEvent event) {
+
+        Long getOrder = (Long) event.getComponent().getAttributes().get("dcmSortOrder");
+
+        TemplateField changeValue = adHocFields.get(getOrder.intValue() -1 );
+
+        System.out.println("In value change event" );
+            String newValue = (String)event.getNewValue();
+
+            System.out.println("studyFieldName is "+ changeValue.getStudyField().getName() );
+            System.out.println("newValue is "+ newValue );
+
+            editTemplateService.changeFieldInputLevel(changeValue, newValue);
+    }
     
 }
 

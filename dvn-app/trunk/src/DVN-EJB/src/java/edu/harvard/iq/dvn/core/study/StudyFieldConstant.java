@@ -45,6 +45,8 @@ public class StudyFieldConstant implements java.io.Serializable  {
     public final static String studyId = "studyId";
     public final static String authorName ="authorName";
     public final static String authorAffiliation = "authorAffiliation";
+    public final static String authorIdType = "authorIdType";
+    public final static String authorIdValue = "authorIdValue";
     public final static String otherId="otherId";
     public final static String otherIdAgency= "otherIdAgency";
     
@@ -159,6 +161,14 @@ public class StudyFieldConstant implements java.io.Serializable  {
     
     public String getAuthorAffiliation() {
         return authorAffiliation;
+    }
+        
+    public static String getAuthorIdType() {
+        return authorIdType;
+    }
+
+    public static String getAuthorIdValue() {
+        return authorIdValue;
     }
     
     public String getOtherId() {
@@ -536,5 +546,6 @@ public class StudyFieldConstant implements java.io.Serializable  {
     public String getNumberOfFiles() {
         return numberOfFiles;
     }
+    
     
 }

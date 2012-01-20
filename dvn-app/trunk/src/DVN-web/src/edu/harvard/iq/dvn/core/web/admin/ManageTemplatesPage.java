@@ -66,11 +66,23 @@ public class ManageTemplatesPage extends VDCBaseBean implements java.io.Serializ
 
         super.init();
         
-        templateList = vdcService.getOrderedTemplates(getVDCRequestBean().getCurrentVDCId());
+   
+
+        if (getVDCRequestBean().getCurrentVDC() != null){
+           templateList = vdcService.getOrderedTemplates(getVDCRequestBean().getCurrentVDCId());
+           List<Template> networkTemplateList = vdcService.getOrderedNetworkTemplates();
+           for (Template t:networkTemplateList){
+               templateList.add(t);
+           }
+           defaultTemplateId= getVDCRequestBean().getCurrentVDC().getDefaultTemplate().getId(); 
+        } else {
+           templateList = vdcService.getOrderedNetworkTemplates();           
+           defaultTemplateId = new Long(1);  /* network template*/
+        }
+        
         Template networkTemplate = vdcNetworkService.find().getDefaultTemplate();
         templateList.add(0, networkTemplate);
-        networkTemplateId = networkTemplate.getId();
-        defaultTemplateId= getVDCRequestBean().getCurrentVDC().getDefaultTemplate().getId();
+        networkTemplateId = networkTemplate.getId(); 
      
 
     }

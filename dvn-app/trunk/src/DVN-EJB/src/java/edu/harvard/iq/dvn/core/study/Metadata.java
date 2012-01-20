@@ -28,6 +28,7 @@
 package edu.harvard.iq.dvn.core.study;
 
 import edu.harvard.iq.dvn.core.util.StringUtil;
+import edu.harvard.iq.dvn.core.web.study.TemplateFieldValue;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -355,6 +356,19 @@ public class Metadata implements java.io.Serializable {
     public void setTitle(String title) {
         this.title = title;
     }
+    
+    @OneToMany (mappedBy="metadata", cascade={ CascadeType.REMOVE, CascadeType.MERGE,CascadeType.PERSIST})
+    @OrderBy ("strValue")
+    private List<TemplateFieldValue> templateFieldValue;
+
+    public List<TemplateFieldValue> getTemplateFieldValue() {
+        return templateFieldValue;
+    }
+
+    public void setTemplateFieldValue(List<TemplateFieldValue> templateFieldValue) {
+        this.templateFieldValue = templateFieldValue;
+    }
+
     
  
     @OneToMany(mappedBy="metadata", cascade={CascadeType.REMOVE, CascadeType.MERGE, CascadeType.PERSIST})

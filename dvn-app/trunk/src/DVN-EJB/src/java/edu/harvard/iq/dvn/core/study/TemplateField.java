@@ -30,6 +30,9 @@
 package edu.harvard.iq.dvn.core.study;
 
 import edu.harvard.iq.dvn.core.util.FieldInputLevelConstant;
+import edu.harvard.iq.dvn.core.web.study.TemplateFieldValue;
+import java.util.ArrayList;
+import java.util.List;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
@@ -161,7 +164,7 @@ public class TemplateField implements java.io.Serializable {
      * Holds value of property studyField.
      */
     @ManyToOne
-    @JoinColumn(nullable=false)
+    @JoinColumn(nullable=false, insertable = true)
     private StudyField studyField;
 
     /**
@@ -178,6 +181,30 @@ public class TemplateField implements java.io.Serializable {
      */
     public void setStudyField(StudyField studyField) {
         this.studyField = studyField;
+    }
+    
+    @OneToMany (mappedBy="templateField", cascade={ CascadeType.REMOVE, CascadeType.MERGE,CascadeType.PERSIST})
+    @OrderBy ("strValue")
+    private List<TemplateFieldValue> templateFieldValues;
+
+    public List<TemplateFieldValue> getTemplateFieldValues() {
+        return templateFieldValues;
+    }
+
+    public void setTemplateFieldValues(List<TemplateFieldValue> templateFieldValues) {
+        this.templateFieldValues = templateFieldValues;
+    }
+
+    public void initValues (){
+        if (this.getTemplateFieldValues() == null || this.getTemplateFieldValues().isEmpty()){
+            TemplateFieldValue elem = new TemplateFieldValue();
+            elem.setTemplateField(this);
+            elem.setMetadata(this.getTemplate().getMetadata());
+            List values = new ArrayList();
+            values.add(elem);
+            this.setTemplateFieldValues(values);
+        }
+
     }
 
 
@@ -203,6 +230,48 @@ public class TemplateField implements java.io.Serializable {
         this.version = version;
     }
     
+    /**
+     * Holds value of property allow multiples.
+     */
+    private boolean allowMultiples; 
+
+    /**
+     * Getter for property allow multiples.
+     * @return Value of property allow multiples.
+     */
+    public boolean isAllowMultiples() {
+        return this.allowMultiples;
+    }
+
+    /**
+     * Setter for property allow multiples.
+     * @param version New value of property allow multiples.
+     */
+    public void setAllowMultiples(boolean allowMultiples) {
+        this.allowMultiples = allowMultiples;
+    }
+    
+        /**
+     * Holds value of property allow multiples.
+     */
+    private Long dcmSortOrder; 
+
+    /**
+     * Getter for property allow multiples.
+     * @return Value of property allow multiples.
+     */
+    public Long getDcmSortOrder() {
+        return this.dcmSortOrder;
+    }
+
+    /**
+     * Setter for property allow multiples.
+     * @param version New value of property allow multiples.
+     */
+    public void setdcmSortOrder(Long dcmSortOrder) {
+        this.dcmSortOrder = dcmSortOrder;
+    }
+    
     public boolean isRequired() {
         return fieldInputLevel.getName().equals(FieldInputLevelConstant.getRequired()); 
     }
@@ -215,6 +284,9 @@ public class TemplateField implements java.io.Serializable {
         return fieldInputLevel.getName().equals(FieldInputLevelConstant.getOptional()); 
     }
     
+    public boolean isHidden() {
+        return fieldInputLevel.getName().equals(FieldInputLevelConstant.getHidden()); 
+    }
     
    public int hashCode() {
         int hash = 0;

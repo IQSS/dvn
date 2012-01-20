@@ -485,6 +485,13 @@ public class VDCServiceBean implements VDCServiceLocal {
 
 
     }
+    
+    public List<Template> getOrderedNetworkTemplates() {
+
+        String query = "select object(o) FROM Template as o WHERE o.network = true and o.id > 1 ORDER BY o.name";
+        return (List) em.createQuery(query).getResultList();
+
+    }
 
     public void updateDefaultTemplate(Long vdcId, Long templateId) {
         VDC vdc = em.find(VDC.class, vdcId);

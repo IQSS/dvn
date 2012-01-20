@@ -174,6 +174,32 @@ public class StudyAuthor implements java.io.Serializable, MetadataFieldGroup {
     public void setAffiliation(String affiliation) {
         this.affiliation = affiliation;
     }
+    
+    private String idType;
+
+    public String getIdType() {
+        return idType;
+    }
+
+    public void setIdType(String idType) {
+        this.idType = idType;
+    }
+    
+    private String idValue;
+    
+    
+    public String getIdValue() {
+        return idValue;
+    }
+
+    public void setIdValue(String idValue) {
+        this.idValue = idValue;
+        if (!this.idValue.isEmpty()){
+            setIdType("ORCID");
+        } else {
+            setIdType("");
+        }
+    }
        
     public boolean isEmpty() {
         return ( (affiliation==null || affiliation.trim().equals(""))

@@ -37,6 +37,7 @@ public final class FieldInputLevelConstant implements java.io.Serializable  {
     private final static String required = "required";
     private final static String recommended = "recommended";
     private final static String optional = "optional";
+    private final static String hidden = "hidden";
     
     /** Creates a new instance of FieldInputLevelConstant */
     public  FieldInputLevelConstant() {
@@ -52,6 +53,10 @@ public final class FieldInputLevelConstant implements java.io.Serializable  {
 
     public  final static String getOptional() {
         return optional;
+    }
+    
+    public  final static String getHidden() {
+        return hidden;
     }
     
 }

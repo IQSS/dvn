@@ -33,6 +33,7 @@ import edu.harvard.iq.dvn.core.admin.DvnTimerLocal;
 import edu.harvard.iq.dvn.core.mail.MailServiceLocal;
 import edu.harvard.iq.dvn.core.study.StudyServiceLocal;
 import edu.harvard.iq.dvn.core.study.StudyVersion;
+import edu.harvard.iq.dvn.core.study.Template;
 import edu.harvard.iq.dvn.core.util.StringUtil;
 import java.util.Calendar;
 import java.util.Date;
@@ -250,5 +251,11 @@ public class VDCNetworkServiceBean implements VDCNetworkServiceLocal {
     public void updateDefaultDisplayNumber(VDCNetwork vdcnetwork) {
         if (em.find(VDCNetwork.class, new Long(1)) != null)
             em.merge(vdcnetwork);
+    }
+
+    @Override
+    public List<Template> getNetworkTemplates() {
+        String query = "select object(o) FROM Template as o WHERE o.network = true and o.id > 1 ORDER BY o.name";
+        return (List) em.createQuery(query).setParameter("fieldName", 0).getResultList();
     }
 }

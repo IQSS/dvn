@@ -72,6 +72,8 @@ import com.icesoft.faces.component.ext.HtmlSelectOneMenu;
 import com.icesoft.faces.component.ext.HtmlSelectOneRadio;
 import edu.harvard.iq.dvn.core.study.Metadata;
 import edu.harvard.iq.dvn.core.study.MetadataFieldGroup;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
 import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
@@ -106,7 +108,7 @@ public class EditStudyPage extends VDCBaseBean implements java.io.Serializable  
     /**
      * <p>Construct a new Page bean instance.</p>
      */
-    public EditStudyPage() {
+     public EditStudyPage() {
         
     }
     
@@ -131,8 +133,8 @@ public class EditStudyPage extends VDCBaseBean implements java.io.Serializable  
             study = editStudyService.getStudyVersion().getStudy();          
             metadata = editStudyService.getStudyVersion().getMetadata();
             currentTitle = metadata.getTitle();
-
             setFiles(editStudyService.getCurrentFiles());
+            initAdHocFieldMap(true);
         } else {
             Long vdcId = getVDCRequestBean().getCurrentVDC().getId();
             selectTemplateId = getVDCRequestBean().getCurrentVDC().getDefaultTemplate().getId();
@@ -146,9 +148,11 @@ public class EditStudyPage extends VDCBaseBean implements java.io.Serializable  
             // prefill date of deposit
             metadata.setDateOfDeposit(new SimpleDateFormat("yyyy-MM-dd").format(new Date()));
             setFiles(editStudyService.getCurrentFiles());
+            initAdHocFieldMap(false);
         }
         // Initialize map containing required/recommended settings for all fields
         initStudyMap();
+
         // Add empty first element to subcollections, so the input text fields will be visible
         metadata.initCollections();
         //  initDvnDates();
@@ -225,7 +229,7 @@ public class EditStudyPage extends VDCBaseBean implements java.io.Serializable  
         return false;
     }
     
-       public String changeTemplateAction() {
+    public String changeTemplateAction() {
         Object value= this.selectTemplate.getValue();
         if (value!=null ) {           
             editStudyService.changeTemplate((Long)value);
@@ -234,6 +238,7 @@ public class EditStudyPage extends VDCBaseBean implements java.io.Serializable  
         }
        
         initStudyMap();  // Reset Recommended flag for all fields
+        initAdHocFieldMap(false);
         return "";
      }
      
@@ -302,11 +307,60 @@ public class EditStudyPage extends VDCBaseBean implements java.io.Serializable  
         studyMap = new HashMap();
         for (Iterator<TemplateField> it =study.getTemplate().getTemplateFields().iterator(); it.hasNext();) {
             TemplateField tf = it.next();
-            StudyMapValue smv = new StudyMapValue();
-            smv.setTemplateFieldUI(new TemplateFieldUI(tf));
-            studyMap.put(tf.getStudyField().getName(),smv);
+            if (!tf.getStudyField().isDcmField()){
+                StudyMapValue smv = new StudyMapValue();
+                smv.setTemplateFieldUI(new TemplateFieldUI(tf));
+                studyMap.put(tf.getStudyField().getName(),smv);
+            }
+
       }
     }
+    
+    private List<TemplateField> adHocFields;
+    
+    public void initAdHocFieldMap(boolean metadataSet){
+        adHocFields = new ArrayList();
+        for (Iterator<TemplateField> it = study.getTemplate().getTemplateFields().iterator(); it.hasNext();) {
+            TemplateField tf = it.next();
+            StudyMapValue smv = new StudyMapValue();
+            smv.setTemplateFieldUI(new TemplateFieldUI(tf));
+            List <TemplateFieldValue> removeList = new ArrayList();
+            if(tf.getStudyField().isDcmField()){
+                tf.getTemplateFieldValues();
+                if (tf.getTemplateFieldValues().size() > 0){
+                    
+                    for (TemplateFieldValue tfv : tf.getTemplateFieldValues()){
+                        if (!tfv.getMetadata().equals(metadata) && metadataSet ){
+                            removeList.add(tfv);
+                        }
+                    }
+
+                }
+
+                for (TemplateFieldValue tfvr: removeList){
+                    editStudyService.removeCollectionElement(tf.getTemplateFieldValues(),tfvr);
+                }
+
+                tf.initValues();
+                adHocFields.add(tf);
+            }           
+        }         
+        Collections.sort(adHocFields, comparator);
+    }
+
+    Comparator comparator = new Comparator() {
+            public int compare(Object o1, Object o2) {
+                TemplateField c1 = (TemplateField) o1;
+                TemplateField c2 = (TemplateField) o2;
+                return c1.getDcmSortOrder().compareTo(c2.getDcmSortOrder());
+
+            }
+    };
+    
+    public List getAdHocFields() {
+        return adHocFields;
+    }
+    
       public Map getTemplatesMap() {
         // getVdcTemplatesMap is called with currentVDCId, since for a new study the current VDC IS the owner
         return vdcService.getVdcTemplatesMap(getVDCRequestBean().getCurrentVDCId());
@@ -319,6 +373,36 @@ public class EditStudyPage extends VDCBaseBean implements java.io.Serializable  
         return tf.isRequired();
         
     }
+
+    public void addDcmRow(ActionEvent ae) {
+        Long getOrder = (Long) ae.getComponent().getAttributes().get("dcmSortOrder");
+            TemplateField tf = adHocFields.get(getOrder.intValue() -1 );
+            TemplateFieldValue newElem = new TemplateFieldValue();
+            newElem.setMetadata(metadata);
+            newElem.setTemplateField(tf);
+            metadata.getTemplateFieldValue().add(newElem);
+            tf.getTemplateFieldValues().add(newElem);
+            dcmFieldTable.getChildren().clear();
+    }
+
+    private HtmlDataTable dcmFieldTable;
+
+    /**
+     * Getter for property dataTableNotes.
+     * @return Value of property dataTableNotes.
+     */
+    public HtmlDataTable getDcmFieldTable() {
+        return this.dcmFieldTable;
+    }
+
+    /**
+     * Setter for property dataTableNotes.
+     * @param dataTableNotes New value of property dataTableNotes.
+     */
+    public void setDcmFieldTable(HtmlDataTable dcmFieldTable) {
+        this.dcmFieldTable = dcmFieldTable;
+    }
+
     public void addRow(ActionEvent ae) {
         
         //      UIComponent dataTable = ae.getComponent().getParent().getParent().getParent();
@@ -648,6 +732,22 @@ public class EditStudyPage extends VDCBaseBean implements java.io.Serializable  
                    editStudyService.removeCollectionElement(it,elem);
            }
         }
+
+        for (TemplateField tf : adHocFields){
+           List<TemplateFieldValue> valList =  tf.getTemplateFieldValues();
+           List toRemove = new ArrayList();
+           for (TemplateFieldValue tfv: valList){
+               if (tfv.getStrValue().isEmpty()){
+                   toRemove.add(tfv);
+               }
+           }
+
+           if (!toRemove.isEmpty()){
+               for (Object o: toRemove){
+                    editStudyService.removeCollectionElement(valList,o);
+               }
+           }
+        }
         
         
     }
@@ -663,6 +763,7 @@ public class EditStudyPage extends VDCBaseBean implements java.io.Serializable  
             return "myOptions";
         }
 
+        getVDCRequestBean().setStudyId(study.getId());
 
         if ( metadata.getStudyVersion().getId() == null  && study.getReleasedVersion() != null ) {
             // We are canceling the creation of a new version, so return
@@ -678,7 +779,8 @@ public class EditStudyPage extends VDCBaseBean implements java.io.Serializable  
             getVDCRequestBean().setStudyVersionNumber(metadata.getStudyVersion().getVersionNumber());
         }
 
-        return "/study/StudyPage?faces-redirect=true&studyId=" + study.getId()+ "&versionNumber=" + getVDCRequestBean().getStudyVersionNumber() + "&vdcId=" + getVDCRequestBean().getCurrentVDCId();
+        
+        return "viewStudy";
     }
     
     
@@ -1167,8 +1269,6 @@ public class EditStudyPage extends VDCBaseBean implements java.io.Serializable  
     public void setFiles(List files) {
         this.files = files;
     }
-    
-    
 
     public VersionNotesPopupBean getVersionNotesPopup() {
         return versionNotesPopup;
@@ -1196,8 +1296,11 @@ public class EditStudyPage extends VDCBaseBean implements java.io.Serializable  
         }
 
         editStudyService.save(getVDCRequestBean().getCurrentVDCId(),getVDCSessionBean().getLoginBean().getUser().getId());
-             
-        return "/study/StudyPage?faces-redirect=true&studyId=" + study.getId()+ "&versionNumber=" + metadata.getStudyVersion().getVersionNumber() + "&vdcId=" + getVDCRequestBean().getCurrentVDCId();
+       
+        getVDCRequestBean().setStudyId(study.getId());
+        getVDCRequestBean().setStudyVersionNumber(metadata.getStudyVersion().getVersionNumber());
+       
+        return "viewStudy";
     }
     
     

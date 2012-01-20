@@ -121,6 +121,12 @@
                                 </p>
                             </div>
                         </div>
+                       <div jsfc="ice:panelGroup" styleClass="dvnMsgBlockRound dvnSuccessMessage" rendered="#{!empty flash.validationMessage }">
+                        <div class="dvnMsgBlockContainer">
+                            <p><ice:outputText id="statusMessage" value="#{flash.validationMessage}"/></p>
+                        </div>
+                       </div>
+                        
                         <div class="dvnstudytitleblock dvn_padBot">
                             <div class="dvnstudyadminboxfloat dvn_right">
                                 <div class="dvnFormMargin">
@@ -231,8 +237,8 @@
                                                 </div>
 
                                                 <div jsfc="ice:panelGroup" style="float:right;">
-                                                    <ice:commandLink id="addFilterGroup" action="#{SetUpDataExplorationPage.addMeasureGroup}">
-                                                        <ice:outputText id="addFilterGroupTextMeasure" value="+ Add Measure"/>
+                                                    <ice:commandLink id="addMeasureGroup" action="#{SetUpDataExplorationPage.addMeasureGroup}">
+                                                        <ice:outputText id="addMeasureGroupTextMeasure" value="+ Add Measure"/>
                                                     </ice:commandLink>
                                                 </div>
                                                 <div jsfc="ice:panelGroup">
@@ -329,7 +335,7 @@
                                                         </div>
 
                                                         <ice:dataTable width="100%" cellspacing="0" cellpadding="0" var="filter"
-                                                                       value="#{grouping.varGroupUIList.varGroupUIList}"
+                                                                       value="#{grouping.varGroupUI}"
                                                                        sortColumn="#{grouping.varGroupUIList.sortColumnName}"
                                                                        sortAscending="#{grouping.varGroupUIList.ascending}"
                                                                        binding="#{SetUpDataExplorationPage.dataTableFilterGroup}">

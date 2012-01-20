@@ -43,6 +43,8 @@ public class StudyField implements Serializable {
     private String name;
     private String title;
     private String description;
+    private boolean dcmField;
+    private String fieldType;
     
    
     /** Creates a new instance of StudyField */
@@ -92,6 +94,22 @@ public class StudyField implements Serializable {
 
     public void setDescription(String description) {
         this.description = description;
+    }
+    
+    public boolean isDcmField() {
+        return dcmField;
+    }
+
+    public void setDcmField(boolean dcmField) {
+        this.dcmField = dcmField;
+    }
+
+     public String getFieldType() {
+        return fieldType;
+    }
+
+    public void setFieldType(String fieldType) {
+        this.fieldType = fieldType;
     }
 
     /**

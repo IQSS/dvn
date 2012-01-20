@@ -147,7 +147,17 @@ public class Template implements java.io.Serializable {
      */
     public void setVersion(Long version) {
         this.version = version;
-    }    
+    }   
+
+    private boolean network;
+
+    public boolean isNetwork() {
+        return network;
+    }
+
+    public void setNetwork(boolean network) {
+        this.network = network;
+    }
 
     /**
      * Holds value of property vdcNetWork.

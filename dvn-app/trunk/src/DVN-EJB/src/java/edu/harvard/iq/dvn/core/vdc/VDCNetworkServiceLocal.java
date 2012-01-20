@@ -29,6 +29,7 @@
 
 package edu.harvard.iq.dvn.core.vdc;
 
+import edu.harvard.iq.dvn.core.study.Template;
 import java.util.List;
 import javax.ejb.Local;
 
@@ -65,6 +66,7 @@ public interface VDCNetworkServiceLocal extends java.io.Serializable  {
     
     void updateDefaultDisplayNumber(VDCNetwork vdcnetwork);
 
+    public List<Template> getNetworkTemplates();
     
     
 }

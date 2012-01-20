@@ -5,6 +5,7 @@
       xmlns:h="http://java.sun.com/jsf/html"
       xmlns:f="http://java.sun.com/jsf/core"
       xmlns:jsp="http://java.sun.com/JSP/Page"
+      xmlns:icecore="http://www.icefaces.org/icefaces/core"
       xmlns:dvn="/WEB-INF/tlds/dvn-components"
       xmlns:ice="http://www.icesoft.com/icefaces/component">
 <head>
@@ -15,11 +16,14 @@
 <ui:param name="pageTitle" value="Explore Data - #{VDCRequest.dataversePageTitle}"/>
 <ui:define name="metadata">
     <f:metadata>
+        <f:viewParam name="fileId" value ="#{ExploreDataPage.studyFileId}"/>
+        <f:viewParam name="versionNumber" value="#{ExploreDataPage.versionNumber}"/>
         <f:event type="preRenderView" listener="#{ExploreDataPage.preRenderView}" />
     </f:metadata>
 </ui:define>
 <ui:define name="body">
 <ice:form id="ExploreDataPage">
+    <icecore:singleSubmit />
     <ice:message for="exploredataform" id="boxErrorMsg" styleClass="errorMessage"/>
 
 <ice:inputHidden id="vdcId" value="#{VDCRequest.currentVDCId}"/>

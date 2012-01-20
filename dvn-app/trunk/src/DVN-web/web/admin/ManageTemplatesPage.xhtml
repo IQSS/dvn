@@ -41,8 +41,13 @@
           <div class="dvnManageTableTop">
 
             <div jsfc="ice:panelGroup" styleClass="dvnManageTableCreateLink">
-              <ice:outputLink value="/dvn/dv/#{VDCRequest.currentVDC.alias}/faces/study/TemplateFormPage.xhtml">
+              <ice:outputLink rendered="#{VDCRequest.currentVDCId!=null}" value="/dvn/dv/#{VDCRequest.currentVDC.alias}/faces/study/TemplateFormPage.xhtml">
                 <ice:outputText value="Create New Template"/>
+              </ice:outputLink>
+            </div>
+            <div jsfc="ice:panelGroup" styleClass="dvnManageTableCreateLink">
+              <ice:outputLink rendered="#{VDCRequest.currentVDCId==null}" value="/dvn/faces/study/TemplateFormPage.xhtml">
+                <ice:outputText value="Create New Network Template"/>
               </ice:outputLink>
             </div>
           </div>

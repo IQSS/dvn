@@ -31,6 +31,7 @@ package edu.harvard.iq.dvn.core.study;
 
 import edu.harvard.iq.dvn.core.util.FieldInputLevelConstant;
 import edu.harvard.iq.dvn.core.vdc.VDC;
+import edu.harvard.iq.dvn.core.vdc.VDCNetwork;
 import edu.harvard.iq.dvn.core.vdc.VDCNetworkServiceLocal;
 import edu.harvard.iq.dvn.core.vdc.VDCServiceLocal;
 import java.util.ArrayList;
@@ -82,9 +83,21 @@ public class EditTemplateServiceBean implements edu.harvard.iq.dvn.core.study.Ed
         em.persist(template);
        System.out.println("Persist after init, member template");    
     
- 
         
        initTemplate( vdcId);
+      
+     
+    }
+    
+    public void newNetworkTemplate() {
+        newTemplate=true;   
+         
+        template = new Template();
+        em.persist(template);
+       System.out.println("Persist after init, member template");    
+    
+        
+       initTemplate(new Long(0) );
       
      
     }
@@ -139,10 +152,14 @@ public class EditTemplateServiceBean implements edu.harvard.iq.dvn.core.study.Ed
     @Remove
     @TransactionAttribute(TransactionAttributeType.REQUIRED)
     public void save() {
-      
-      // Don't need to do anything specific, just commit the transaction 
-  
-      
+        //Need to save any newly created study fields
+        Collection<TemplateField> templateFields = template.getTemplateFields();
+        for (TemplateField tf : templateFields ){
+            StudyField sf = tf.getStudyField();
+            if (sf.getId() == null){
+                em.persist(sf);
+            }
+        }     
     }
     
     
@@ -195,21 +212,39 @@ public class EditTemplateServiceBean implements edu.harvard.iq.dvn.core.study.Ed
             tf.setTemplate(template);
             template.getTemplateFields().add(tf);
         }
+    }
+    
+    private void addNetworkFields(VDCNetwork network) {
         
+        Collection<TemplateField> defaultFields = network.getDefaultTemplate().getTemplateFields();
        
-   
-        
-   
+        template.setTemplateFields(new ArrayList());
+        for( TemplateField defaultField: defaultFields) {
+            TemplateField tf = new TemplateField();
+            tf.setDefaultValue(defaultField.getDefaultValue());
+            tf.setFieldInputLevel(defaultField.getFieldInputLevel());
+            tf.setStudyField(defaultField.getStudyField());
+            tf.setTemplate(template);
+            template.getTemplateFields().add(tf);
+        }
     }
      
    
     private void initTemplate( Long vdcId) {
        // Template template = new Template();
-           
-        VDC vdc = em.find(VDC.class, vdcId);      
-        template.setVdc(vdc);
-        vdc.getTemplates().add(template);
-        addFields(vdcId);
+        if(vdcId.intValue() > 0){
+           VDC vdc = em.find(VDC.class, vdcId);      
+            template.setVdc(vdc);
+            vdc.getTemplates().add(template);
+            addFields(vdcId);
+        } else {            
+
+            VDCNetwork network = vdcNetworkService.find(new Long(1)); 
+            template.setVdcNetWork(network);
+            addNetworkFields(network);
+
+        }  
+
      
     }
     
@@ -219,6 +254,20 @@ public class EditTemplateServiceBean implements edu.harvard.iq.dvn.core.study.Ed
           } else {
               tf.setFieldInputLevel(templateService.getFieldInputLevel(FieldInputLevelConstant.getOptional()));
           }
+     }
+     
+     public void changeFieldInputLevel(TemplateField tf, String inputLevel) {
+          if (inputLevel.equals("recommended")) {
+              tf.setFieldInputLevel(templateService.getFieldInputLevel(FieldInputLevelConstant.getRecommended()));
+          } else if (inputLevel.equals("optional")) {
+              tf.setFieldInputLevel(templateService.getFieldInputLevel(FieldInputLevelConstant.getOptional()));
+          } else if (inputLevel.equals("hidden")) {
+              tf.setFieldInputLevel(templateService.getFieldInputLevel(FieldInputLevelConstant.getHidden()));
+          } else if (inputLevel.equals("required")) {
+              tf.setFieldInputLevel(templateService.getFieldInputLevel(FieldInputLevelConstant.getRequired()));
+          }
+
+          System.out.println("after change inputfield level event" + tf.getFieldInputLevel().getName() );
      }
     
 }

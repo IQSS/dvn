@@ -42,7 +42,9 @@ public interface EditTemplateService extends java.io.Serializable {
     public void removeCollectionElement(Collection coll, Object elem);
     void removeCollectionElement(Iterator iter, Object elem);
     public void changeRecommend(TemplateField tf, boolean isRecommended);
-  
+    public void changeFieldInputLevel(TemplateField tf, String inputLevel);
+
+    public void newNetworkTemplate();
    
  
 }

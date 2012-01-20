@@ -203,8 +203,24 @@ public class SetUpDataExplorationPage extends VDCBaseBean implements java.io.Ser
             showCommands = true;
             selectFile = false;
         }
+        
+        System.out.println("in reset Study File  ");
+         for (VarGroupingUI varGroupingUI: filterGroupings){
+             List <VarGroupUI> varGroupUIList = varGroupingUI.getVarGroupUIList().getVarGroupUIList();
+              System.out.println("varGroupUIList size is "+ varGroupUIList.size() );
+             for (VarGroupUI varGroupUI: varGroupUIList ){
+                 System.out.println("name is "+varGroupUI.getVarGroup().getName() +", variable list is "+ varGroupUI.getDataVariablesSelected());
+                 System.out.println("groupId is "+varGroupUI.getVarGroup().getId() );
+                 for (Long dvId : varGroupUI.getDataVariablesSelected() ){
+                     System.out.println("dvId is "+ dvId );                 
+                 }
+             }
+         }
+        
         FacesContext fc = FacesContext.getCurrentInstance();
         JavascriptContext.addJavascriptCall(fc, "initRoundedCorners();" );
+        
+        
 
     }
 
@@ -259,7 +275,18 @@ public class SetUpDataExplorationPage extends VDCBaseBean implements java.io.Ser
              dataTable.setVisualizationDisplay(visualizationDisplay);
          }
          edited = false;
-         
+         System.out.println("in load data table  ");
+         for (VarGroupingUI varGroupingUI: filterGroupings){
+             List <VarGroupUI> varGroupUIList = varGroupingUI.getVarGroupUIList().getVarGroupUIList();
+             System.out.println("varGroupUIList size is "+ varGroupUIList.size() );
+             for (VarGroupUI varGroupUI: varGroupUIList ){
+                 System.out.println("name is "+varGroupUI.getVarGroup().getName() +", variable list is "+ varGroupUI.getDataVariablesSelected());
+                 System.out.println("groupId is "+varGroupUI.getVarGroup().getId() );
+                 for (Long dvId : varGroupUI.getDataVariablesSelected() ){
+                     System.out.println("dvId is "+ dvId );                 
+                 }
+             }
+         }         
     }
     
     private VisualizationDisplay getDefaultVisualizationDisplay(){
@@ -1716,6 +1743,7 @@ public class SetUpDataExplorationPage extends VDCBaseBean implements java.io.Ser
 
 
     public String cancel(){
+        Long redirectVersionNumber = new Long(0);
         if (edited){
             setShowInProgressPopup(true);
             return "";
@@ -1724,12 +1752,14 @@ public class SetUpDataExplorationPage extends VDCBaseBean implements java.io.Ser
         getVDCRequestBean().setStudyId(study.getId());
         if ( studyVersion.getId() == null ) {
             getVDCRequestBean().setStudyVersionNumber(study.getReleasedVersion().getVersionNumber());
+            redirectVersionNumber = study.getReleasedVersion().getVersionNumber();
         } else {
             getVDCRequestBean().setStudyVersionNumber(studyVersion.getVersionNumber());
+            redirectVersionNumber = studyVersion.getVersionNumber();
         }
         getVDCRequestBean().setSelectedTab("files");
-
-        return "viewStudy";
+        this.getRequestMap().put("studyId",study.getId());
+        return "/study/StudyPage?faces-redirect=true&studyId=" + study.getId()+ "&versionNumber=" + redirectVersionNumber + "&tab=files&vdcId=" + getVDCRequestBean().getCurrentVDCId();
     }
     
     boolean showInProgressPopup = false;
@@ -1793,7 +1823,6 @@ public class SetUpDataExplorationPage extends VDCBaseBean implements java.io.Ser
 
      public boolean validateForRelease(boolean messages){
         boolean valid = true;
-        List fullListOfErrors = new ArrayList();
         List returnListOfErrors = new ArrayList();
         List duplicateVariables = new ArrayList();
         String fullErrorMessage = "";
@@ -2036,7 +2065,8 @@ public class SetUpDataExplorationPage extends VDCBaseBean implements java.io.Ser
         if (valid && messages){
                 FacesMessage message = new FacesMessage("The Data Visualization is valid for release.");
                 FacesContext fc = FacesContext.getCurrentInstance();
-                fc.addMessage(releaseButton.getClientId(fc), message);
+                
+                getExternalContext().getFlash().put("validationMessage","The Data Visualization is valid for release."); 
                 JavascriptContext.addJavascriptCall(fc, "initRoundedCorners();" );
         }
         if (!valid&& messages) {
@@ -2044,7 +2074,8 @@ public class SetUpDataExplorationPage extends VDCBaseBean implements java.io.Ser
             FacesContext fc = FacesContext.getCurrentInstance();
             fullErrorMessage = "This configuration is invalid so it cannot be released.<br>" + fullErrorMessage;
             FacesMessage message = new FacesMessage(fullErrorMessage);
-            fc.addMessage(validateButton.getClientId(fc), message);
+            
+            getExternalContext().getFlash().put("validationMessage",fullErrorMessage); 
             JavascriptContext.addJavascriptCall(fc, "initRoundedCorners();" );
         }
 
@@ -2072,7 +2103,7 @@ public class SetUpDataExplorationPage extends VDCBaseBean implements java.io.Ser
             return "";
     }
 
-
+/*
     public String saveAndExit(){
        if (dataTable.isVisualizationEnabled()){
            if (!validateForRelease(false)) {
@@ -2093,7 +2124,7 @@ public class SetUpDataExplorationPage extends VDCBaseBean implements java.io.Ser
         getVDCRequestBean().setSelectedTab("files");
        return "viewStudy";
     }
-    
+*/    
     public String saveAndContinue(){
        boolean successMessage = true;
        if (dataTable.isVisualizationEnabled()){
@@ -2101,7 +2132,8 @@ public class SetUpDataExplorationPage extends VDCBaseBean implements java.io.Ser
                dataTable.setVisualizationEnabled(false);
                FacesMessage message = new FacesMessage("Your current changes are invalid. This visualization has been set to 'unreleased'. Click Validate button to get a full list of validation issues.");
                FacesContext fc = FacesContext.getCurrentInstance();
-               fc.addMessage(validateButton.getClientId(fc), message);    
+               getExternalContext().getFlash().put("validationMessage","Your current changes are invalid. This visualization has been set to 'unreleased'. Click Validate button to get a full list of validation issues."); 
+               
                successMessage = false;
            }
        }
@@ -2112,7 +2144,7 @@ public class SetUpDataExplorationPage extends VDCBaseBean implements java.io.Ser
        if (successMessage){
                FacesMessage message = new FacesMessage("Successfully saved changes. You may exit or continue editing.");
                FacesContext fc = FacesContext.getCurrentInstance();
-               fc.addMessage(releaseButton.getClientId(fc), message); 
+               getExternalContext().getFlash().put("validationMessage","Successfully saved changes. You may exit or continue editing.");
                JavascriptContext.addJavascriptCall(fc, "initRoundedCorners();" );
        }
        edited = false;
@@ -2563,6 +2595,7 @@ public class SetUpDataExplorationPage extends VDCBaseBean implements java.io.Ser
     }
     
     public void selectOneSourceVariableClick(){
+        System.out.println("in selectOneSourceVariableClick ");
         boolean setSelected = checkSelectAllVariablesPrivate();
         sourceCheckBox.setSelected(setSelected) ;
     }

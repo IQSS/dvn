@@ -125,4 +125,6 @@ public interface VDCServiceLocal extends java.io.Serializable  {
 
    public double getMaxDownloadCount();
 
+    public List<Template> getOrderedNetworkTemplates();
+
 }

@@ -74,14 +74,12 @@ public class EditExportSchedulePage extends VDCBaseBean implements java.io.Seria
      */
     public void init() {
         super.init();
-        exportPeriod  = new HtmlSelectOneMenu();
-        success = false;
-           if (!isFromPage("EditExportSchedulePage")) {
-               VDCNetwork vdcNetwork = this.getVDCRequestBean().getVdcNetwork();
-               exportPeriod.setValue( vdcNetwork.getExportPeriod());
-               exportHourOfDay=vdcNetwork.getExportHourOfDay();
-               exportDayOfWeek = vdcNetwork.getExportDayOfWeek();
-           }
+
+        VDCNetwork vdcNetwork = this.getVDCRequestBean().getVdcNetwork();
+        exportSchedulePeriod = vdcNetwork.getExportPeriod();
+        exportHourOfDay = vdcNetwork.getExportHourOfDay();
+        exportDayOfWeek = vdcNetwork.getExportDayOfWeek();
+
         setSelectExportPeriod(loadSelectExportPeriod());
     }
 
@@ -100,7 +98,7 @@ public class EditExportSchedulePage extends VDCBaseBean implements java.io.Seria
             && (!this.getVDCRequestBean().getVdcNetwork().getExportPeriod().equals(""))){
             selectItems.add(new SelectItem("none", "Disable export"));
         }
-            System.out.println("in load select page - just before return  ");
+
         return selectItems;
     }
 
@@ -111,101 +109,32 @@ public class EditExportSchedulePage extends VDCBaseBean implements java.io.Seria
     public void setSelectExportPeriod(List<SelectItem> selectExportPeriod) {
         this.selectExportPeriod = selectExportPeriod;
     }
-    /** 
-     * <p>Callback method that is called after the component tree has been
-     * restored, but before any event processing takes place.  This method
-     * will <strong>only</strong> be called on a postback request that
-     * is processing a form submit.  Customize this method to allocate
-     * resources that will be required in your event handlers.</p>
-     */
-    public void preprocess() {
-    }
 
-    /** 
-     * <p>Callback method that is called just before rendering takes place.
-     * This method will <strong>only</strong> be called for the page that
-     * will actually be rendered (and not, for example, on a page that
-     * handled a postback and then navigated to a different page).  Customize
-     * this method to allocate resources that will be required for rendering
-     * this page.</p>
-     */
-    public void prerender() {
-    }
-
-    /** 
-     * <p>Callback method that is called after rendering is completed for
-     * this request, if <code>init()</code> was called (regardless of whether
-     * or not this was the page that was actually rendered).  Customize this
-     * method to release resources acquired in the <code>init()</code>,
-     * <code>preprocess()</code>, or <code>prerender()</code> methods (or
-     * acquired during execution of an event handler).</p>
-     */
-    public void destroy() {
-    }
     
   
     
     public String save() {
-        String msg = SUCCESS_MESSAGE;
-        success = true;
-        
-            if (true) {
-                // Get the Network
-                VDCNetwork vdcnetwork = getVDCRequestBean().getVdcNetwork();
-                vdcnetwork.setExportPeriod(exportSchedulePeriod);
-                vdcnetwork.setExportHourOfDay(exportHourOfDay);
-                if (exportDayOfWeek != null && exportDayOfWeek.intValue()==-1){
-                    exportDayOfWeek = null;
-                }
-                vdcnetwork.setExportDayOfWeek(exportDayOfWeek);
-                vdcNetworkService.edit(vdcnetwork);
-                remoteTimerService.createExportTimer(vdcnetwork);
-                getVDCRequestBean().setSuccessMessage("Successfully updated export schedule.");
-            } else {
-                ExceptionMessageWriter.removeGlobalMessage(SUCCESS_MESSAGE);
-                success = false;
-            }
-            return "myNetworkOptions";
+
+        VDCNetwork vdcnetwork = getVDCRequestBean().getVdcNetwork();
+        vdcnetwork.setExportPeriod(exportSchedulePeriod);
+        vdcnetwork.setExportHourOfDay(exportHourOfDay);
+        if (exportDayOfWeek != null && exportDayOfWeek.intValue()==-1){
+            exportDayOfWeek = null;
+        }
+        vdcnetwork.setExportDayOfWeek(exportDayOfWeek);
+        vdcNetworkService.edit(vdcnetwork);
+        remoteTimerService.createExportTimer(vdcnetwork);
+        getExternalContext().getFlash().put("message","Successfully updated export schedule.");
+
+        return "myNetworkOptions";
      
     }
     
-   
-    
-    //UTILITY METHODS
-    
-    /** validateAnnouncementsText
-     *
-     *
-     * @author wbossons
-     *
-     */
-    
-    private String SUCCESS_MESSAGE = new String("Update Successful!");
-    /**
-     * Holds value of property success.
-     */
-    private boolean success;
-
-    /**
-     * Getter for property success.
-     * @return Value of property success.
-     */
-    public boolean isSuccess() {
-        return this.success;
-    }
-
-    /**
-     * Setter for property success.
-     * @param success New value of property success.
-     */
-    public void setSuccess(boolean success) {
-        this.success = success;
-    }
-
+ 
+    HtmlSelectOneMenu exportPeriod;    
     private String exportSchedulePeriod;
-    HtmlSelectOneMenu exportPeriod;
     Integer exportDayOfWeek;
-     Integer exportHourOfDay;
+    Integer exportHourOfDay;
 
     public HtmlSelectOneMenu getExportPeriod() {
         return exportPeriod;
@@ -214,6 +143,14 @@ public class EditExportSchedulePage extends VDCBaseBean implements java.io.Seria
     public void setExportPeriod(HtmlSelectOneMenu exportPeriod) {
         this.exportPeriod = exportPeriod;
     }
+
+    public String getExportSchedulePeriod() {
+        return exportSchedulePeriod;
+    }
+
+    public void setExportSchedulePeriod(String exportSchedulePeriod) {
+        this.exportSchedulePeriod = exportSchedulePeriod;
+    }    
 
     public Integer getExportDayOfWeek() {
         return exportDayOfWeek;
@@ -288,20 +225,6 @@ public class EditExportSchedulePage extends VDCBaseBean implements java.io.Seria
             context.addMessage(toValidate.getClientId(context), message);
         }
 
-    }
-
-    /**
-     * @return the exportSchedulePeriod
-     */
-    public String getExportSchedulePeriod() {
-        return exportSchedulePeriod;
-    }
-
-    /**
-     * @param exportSchedulePeriod the exportSchedulePeriod to set
-     */
-    public void setExportSchedulePeriod(String exportSchedulePeriod) {
-        this.exportSchedulePeriod = exportSchedulePeriod;
     }
 
     

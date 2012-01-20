@@ -78,25 +78,18 @@ public class EditUserGroupPage extends VDCBaseBean implements java.io.Serializab
     
     public void init() {
         super.init();
-        if ( isFromPage("EditUserGroupPage") && sessionGet(editUserGroupService.getClass().getName()) != null ) {
-            editUserGroupService =(EditUserGroupService) sessionGet(editUserGroupService.getClass().getName());
-            System.out.println("Getting stateful session bean editUserGroupService ="+editUserGroupService);
-            group = editUserGroupService.getUserGroup();
-            userDetails = editUserGroupService.getUserDetailBeans();
-        } else {
-            System.out.println("Putting stateful session bean in request, editUserGroupService =" + editUserGroupService);
 
-            if (userGroupId == null || userGroupId.equals(new Long("-1")) ) {
-                editUserGroupService.newUserGroup();
-                sessionPut(editUserGroupService.getClass().getName(),editUserGroupService);
-                group = editUserGroupService.getUserGroup();
-            } else {
-                editUserGroupService.setUserGroup(userGroupId);
-                sessionPut(editUserGroupService.getClass().getName(),editUserGroupService);
-                group = editUserGroupService.getUserGroup();
-            }
-            userDetails = editUserGroupService.getUserDetailBeans();
+        if (userGroupId == null) {
+            editUserGroupService.newUserGroup();
+            group = editUserGroupService.getUserGroup();
+        
+        } else {
+            editUserGroupService.setUserGroup(userGroupId);
+            group = editUserGroupService.getUserGroup();
+            userGroupType = (group.getLoginDomains() == null || group.getLoginDomains().size() == 0) ? "usergroup" : "ipgroup";
         }
+       
+        userDetails = editUserGroupService.getUserDetailBeans();
         initAffiliates();
         initCollections();
     }

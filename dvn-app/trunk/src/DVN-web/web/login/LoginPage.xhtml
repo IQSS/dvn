@@ -17,11 +17,10 @@
                     <f:viewParam name="studyId" value="#{LoginPage.studyId}"/>
                     <f:viewParam name="clearWorkflow" value="#{LoginPage.clearWorkflow}"/>
                     <f:viewParam name="tab" value="#{LoginPage.tab}"/>
-                    <f:event type="preRenderView"
-                             listener="#{LoginPage.init}"/>
+                    <f:event type="preRenderView" listener="#{LoginPage.preRenderView}"/>
                 </f:metadata>
             </ui:define>
-            <ui:define name="body">
+            <ui:define name="body">               
                 <div id="dvnLoginPageWrap">
                     <div class="dvnRound">
                         <ice:form id="vanillaLoginForm">
@@ -36,11 +35,11 @@
                                             <ice:outputText styleClass="errorMessage" value="#{LoginPage.errMessage}"/>
                                         </div>
                                         <label for="username">Username</label>
-                                        <ice:inputText tabindex="1" id="username" name="username" value="#{LoginPage.userName}" required="true" requiredMessage="This field is required."/>
+                                        <ice:inputText tabindex="1" id="username" value="#{LoginPage.userName}" required="true" requiredMessage="This field is required." action="#{LoginPage.login}"/>
                                         <ice:message for="username" styleClass="errorMessage"/>
                                         <br/>
                                         <label for="password">Password</label>
-                                        <ice:inputSecret tabindex="2" onkeypress="if (window.event) return processEvent('', 'loginForm:button1'); else return processEvent(event, 'loginForm:button1');" id="password" name="password" value="#{LoginPage.password}" required="true" requiredMessage="This field is required."/>
+                                        <ice:inputSecret tabindex="2" id="password" value="#{LoginPage.password}" required="true" requiredMessage="This field is required." action="#{LoginPage.login}"/>
                                         <ice:message for="password" styleClass="errorMessage"/>
                                         <p>
                                             <ice:commandButton tabindex="3" id="button1" value="Log in" action="#{LoginPage.login}"/>
@@ -95,6 +94,12 @@
                         </ice:form>
                     </div>
                 </div>
+                <script type="text/javascript">
+                  // <![CDATA[
+                  // set initial focus to the username text field
+                  document.getElementById('vanillaLoginForm:username').focus(); 
+                  // ]]>
+                </script>                  
             </ui:define>
         </ui:composition>
     </body>

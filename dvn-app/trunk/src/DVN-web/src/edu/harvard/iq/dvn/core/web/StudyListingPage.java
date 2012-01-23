@@ -108,14 +108,11 @@ public class StudyListingPage extends VDCBaseBean implements java.io.Serializabl
     private boolean renderScroller;
     private boolean renderDescription;
     private boolean renderContributorLink;
-    private boolean renderTruncatedDesc;
-    private boolean descriptionTruncated;
     private boolean renderDVPermissionsBox;
 
     String listHeader;
     String listMessage;
     String listDescription;
-    String truncatedDescription;
 
     public StudyListing getStudyListing() {
         return studyListing;
@@ -213,14 +210,6 @@ public class StudyListingPage extends VDCBaseBean implements java.io.Serializabl
         return listMessage;
     }
 
-    public String getTruncatedDescription() {
-        return truncatedDescription;
-    }
-
-    public boolean isDescriptionTruncated() {
-        return descriptionTruncated;
-    }
-
     public boolean isRenderTree() {
         return renderTree;
     }
@@ -243,10 +232,6 @@ public class StudyListingPage extends VDCBaseBean implements java.io.Serializabl
 
     public boolean isRenderDescription() {
         return renderDescription;
-    }
-
-    public boolean isRenderTruncatedDesc() {
-        return renderTruncatedDesc;
     }
     
     public boolean isRenderDVPermissionsBox() {
@@ -362,11 +347,6 @@ public class StudyListingPage extends VDCBaseBean implements java.io.Serializabl
             studyListing.setStudyIds(sortedStudies);
             resetScroller();
         }
-    }
-
-    public String toggleDescription_action() {
-        renderTruncatedDesc = !renderTruncatedDesc;
-        return null;
     }
 
     private void resetScroller() {
@@ -506,16 +486,7 @@ public class StudyListingPage extends VDCBaseBean implements java.io.Serializabl
             }
 
             renderSearchCollectionFilter = renderTree;
-            
-            // check description rendering and size
             renderDescription = getVDCRequestBean().getCurrentVDC().isDisplayAnnouncements();
-            if (renderDescription) {
-                truncatedDescription = StringUtil.truncateString(getVDCRequestBean().getCurrentVDC().getAnnouncements(), 1000);
-                if ( truncatedDescription != null && !truncatedDescription.equals(getVDCRequestBean().getCurrentVDC().getAnnouncements()) ) {
-                    descriptionTruncated = true;
-                    renderTruncatedDesc = true;
-                }
-            }
 
             LoginBean loginBean = getVDCSessionBean().getLoginBean();
             renderContributorLink =

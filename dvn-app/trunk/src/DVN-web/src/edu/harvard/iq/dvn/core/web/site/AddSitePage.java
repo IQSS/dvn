@@ -330,18 +330,10 @@ public class AddSitePage extends VDCBaseBean implements java.io.Serializable  {
             createdVDC.setAnnouncements(strShortDescription); // also set default dv home page description from the the DVN home page short description
             vdcService.edit(createdVDC);
 
-            StatusMessage msg = new StatusMessage();
-
             String hostUrl = PropertyUtil.getHostUrl();
-            msg.setMessageText("Your new dataverse <a href='http://" + hostUrl + "/dvn/dv/" + createdVDC.getAlias() + "'>http://" + hostUrl + "/dvn/dv/" + createdVDC.getAlias() + "</a> has been successfully created!");
-            msg.setStyleClass("successMessage");
-            Map m = getRequestMap();
-            m.put("statusMessage", msg);
             VDCUser creator = userService.findByUserName(getVDCSessionBean().getLoginBean().getUser().getUserName());
             String toMailAddress = getVDCSessionBean().getLoginBean().getUser().getEmail();
-            String siteAddress = "unknown";
-
-            siteAddress = hostUrl + "/dvn" + getVDCRequestBean().getCurrentVDCURL();
+            String siteAddress = hostUrl + "/dvn/dv/" + createdVDC.getAlias();
             
             logger.fine("created dataverse; site address: "+siteAddress);
 
@@ -389,30 +381,20 @@ public class AddSitePage extends VDCBaseBean implements java.io.Serializable  {
             createdScholarDataverse.setAboutThisDataverse(getVDCRequestBean().getVdcNetwork().getDefaultVDCAboutText());
             createdScholarDataverse.setContactEmail(getVDCSessionBean().getLoginBean().getUser().getEmail());
             createdScholarDataverse.setDvnDescription(strShortDescription);
+            createdScholarDataverse.setAnnouncements(strShortDescription); // also set default dv home page description from the the DVN home page short description
             vdcService.edit(createdScholarDataverse);
-            getVDCRequestBean().setCurrentVDC(createdScholarDataverse);
-            // Refresh User object in LoginBean so it contains the user's new role of VDC administrator.
     
-            StatusMessage msg = new StatusMessage();
-
-            String hostUrl = PropertyUtil.getHostUrl();
-
-            msg.setMessageText("Your new scholar dataverse <a href='http://" + hostUrl + "/dvn" + getVDCRequestBean().getCurrentVDCURL()+ "'>http://" + hostUrl + "/dvn" + getVDCRequestBean().getCurrentVDCURL()+ "</a> has been successfully created!");
-
-            msg.setStyleClass("successMessage");
-            Map m = getRequestMap();
-            m.put("statusMessage", msg);
+            String hostUrl = PropertyUtil.getHostUrl();           
             VDCUser creator = userService.findByUserName(getVDCSessionBean().getLoginBean().getUser().getUserName());
             String toMailAddress = getVDCSessionBean().getLoginBean().getUser().getEmail();
-            String siteAddress = "unknown";
-
-            siteAddress = hostUrl + "/dvn" + getVDCRequestBean().getCurrentVDCURL();
+            String siteAddress = hostUrl + "/dvn/dv/" + createdScholarDataverse.getAlias();
 
             mailService.sendAddSiteNotification(toMailAddress, name, siteAddress);
 
+            // Refresh User object in LoginBean so it contains the user's new role of VDC administrator.
             getVDCSessionBean().getLoginBean().setUser(creator);
 
-            return "addSiteSuccess";
+            return "/site/AddSiteSuccessPage?faces-redirect=true&vdcId=" + createdScholarDataverse.getId();
         }
         else {
             return null;

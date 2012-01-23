@@ -97,14 +97,7 @@
 
             <div class="dvhmpgdescfloat">
                 <div jsfc="ice:panelGroup" styleClass="#{VDCRequest.currentVDC.allowRegisteredUsersToContribute == true ? 'dvn_hmpgMainMessage dvn_hmpgMainMessagePadding' : 'dvn_hmpgMainMessage'}" rendered="#{StudyListingPage.renderDescription}" block="true">
-                    <div jsfc="ice:panelGroup" rendered="#{!StudyListingPage.descriptionTruncated or !StudyListingPage.renderTruncatedDesc}">
-                        <h:outputText escape="false" value="#{VDCRequest.currentVDC.announcements}" rendered="#{!StudyListingPage.descriptionTruncated or !StudyListingPage.renderTruncatedDesc}" />
-                    </div>
-                    <h:outputText escape="false" value="#{StudyListingPage.truncatedDescription}" rendered="#{StudyListingPage.descriptionTruncated and StudyListingPage.renderTruncatedDesc}" />
-
-                    <ice:commandLink styleClass="dvn_more" action="#{StudyListingPage.toggleDescription_action}" rendered="#{StudyListingPage.descriptionTruncated}">
-                        <h:outputText escape="false" value=" #{StudyListingPage.renderTruncatedDesc ? 'more >>' : '&lt;&lt; less'}"/>
-                    </ice:commandLink>
+                    <h:outputText escape="false" value="#{VDCRequest.currentVDC.announcements}" />
                 </div>
             </div>
         </div>

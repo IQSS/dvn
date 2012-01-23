@@ -8,6 +8,11 @@ body {margin:0; padding:0;}
 
 update vdcnetwork set defaultvdcfooter='</div>'
 
+-- rrmoval of default description (replaced by new logic)
+update vdcnetwork set defaultvdcannouncements = '';
+
+update vdc  set announcements = ''
+where announcements like 'A description of your Dataverse or announcements may be added here.%'
 
 
 -- Changes for new template logic
@@ -123,10 +128,7 @@ where studyfield_id > 43 and studyfield_id < 65;
  update templateField
  set ALLOWMULTIPLES = false;
 
-update vdcnetwork set defaultvdcannouncements = '';
 
-update vdc  set announcements = ''
-where announcements like 'A description of your Dataverse or announcements may be added here.%'
 
  Alter table studyAuthor add IDType  character varying(255);
  Alter table studyAuthor add IDValue  character varying(255);

@@ -322,12 +322,12 @@ public class AddSitePage extends VDCBaseBean implements java.io.Serializable  {
             createdVDC.setDtype(dataverseType);
             createdVDC.setDisplayNetworkAnnouncements(getVDCRequestBean().getVdcNetwork().isDisplayAnnouncements());
             createdVDC.setDisplayAnnouncements(getVDCRequestBean().getVdcNetwork().isDisplayVDCAnnouncements());
-            createdVDC.setAnnouncements(getVDCRequestBean().getVdcNetwork().getDefaultVDCAnnouncements());
             createdVDC.setDisplayNewStudies(getVDCRequestBean().getVdcNetwork().isDisplayVDCRecentStudies());
             createdVDC.setAboutThisDataverse(getVDCRequestBean().getVdcNetwork().getDefaultVDCAboutText());
             createdVDC.setContactEmail(getVDCSessionBean().getLoginBean().getUser().getEmail());
             createdVDC.setAffiliation(strAffiliation);
             createdVDC.setDvnDescription(strShortDescription);
+            createdVDC.setAnnouncements(strShortDescription); // also set default dv home page description from the the DVN home page short description
             vdcService.edit(createdVDC);
 
             StatusMessage msg = new StatusMessage();

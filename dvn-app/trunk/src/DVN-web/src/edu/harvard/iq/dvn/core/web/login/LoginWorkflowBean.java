@@ -162,16 +162,16 @@ public class LoginWorkflowBean extends VDCBaseBean implements java.io.Serializab
     }
 
     public String processTermsOfUse(boolean termsAccepted) {
-        String forward = null;
+        String forward = "/HomePage?faces-redirect=true";
+        
         if (user != null) {
             if (termsAccepted) {
                 userService.setAgreedTermsOfUse(user.getId(), termsAccepted);
                 user.setAgreedTermsOfUse(termsAccepted);  // update detached object because it will be added to the loginBean
-                updateSessionAndRedirect();
+                forward = updateSessionAndRedirect();
             }
-
         }
-        forward = "/HomePage?faces-redirect=true";
+
         return forward;
 
     }

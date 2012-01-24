@@ -109,8 +109,6 @@ UPDATE studyfield
    SET  "name"='Other Data Appraisal'
  WHERE id=64;
 
-ALTER TABLE templateField ADD COLUMN dcmSortOrder bigint;
-
 alter table template
  ADD status  character varying(255);
 

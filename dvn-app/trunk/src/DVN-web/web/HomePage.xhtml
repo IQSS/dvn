@@ -41,10 +41,15 @@
                       jQuery(moreInfo).children('span.iceOutTxt').text(toggleLabelText);
                       return false;
                     };
-                    // ]]>
+
+
+                    // javascript for the accordian
+                    jQuery(document).ready(function(){
+                        jQuery('.xtraMenu').accordion({active: 'h4.selected', header: 'h4.head', autoheight: false});
+                    });
+
+                // ]]>
                 </script>
-                <ice:outputText escape="false"
-                                value="#{homePage.accordionJavascript}"/>
                 <ice:form id="form1">
                     <ice:inputHidden id="vdcId" value="#{VDCRequest.currentVDCId}"/>
                     <!-- Success Message -->

@@ -51,7 +51,6 @@ public class ManageStudiesList extends VDCBaseBean {
     private static final String ACTION_COLUMN = "actionReleased";
     private DataPaginator paginator;
     private static Logger dbgLog = Logger.getLogger(ManageStudiesList.class.getCanonicalName());
-    private LoginBean loginBean = new LoginBean();
     @Inject private VersionNotesPopupBean versionNotesPopupBean = new VersionNotesPopupBean();
     private String successMessage;
 
@@ -129,7 +128,7 @@ public class ManageStudiesList extends VDCBaseBean {
             
             dbgLog.info("manage studies list; vdcid: "+vdcId);
             
-            VDCUser user = loginBean == null ? null : loginBean.getUser();
+            VDCUser user = getVDCSessionBean().getLoginBean() == null ? null : getVDCSessionBean().getLoginBean().getUser();
             
             if (user != null) {
                 dbgLog.info("manage studies list; user: "+user.getUserName());
@@ -165,13 +164,7 @@ public class ManageStudiesList extends VDCBaseBean {
 
     }
 
-    public LoginBean getLoginBean() {
-        return loginBean;
-    }
 
-    public void setLoginBean(LoginBean loginBean) {
-        this.loginBean = loginBean;
-    }
     public boolean isDefaultAscending(String columnName) {
         return true;
         
@@ -388,7 +381,7 @@ public class ManageStudiesList extends VDCBaseBean {
     }
 
     private boolean isUserCuratorOrAdmin(){
-        VDCUser user = loginBean == null ? null : loginBean.getUser();
+        VDCUser user = getVDCSessionBean().getLoginBean() == null ? null : getVDCSessionBean().getLoginBean().getUser();
         VDC vdc = getVDCRequestBean().getCurrentVDC();
         if (user!=null) {
             return user.isCurator(vdc)|| user.isAdmin(vdc);
@@ -397,7 +390,7 @@ public class ManageStudiesList extends VDCBaseBean {
     }
 
     private boolean isUserCuratorOrAdminOrNetworkAdmin(){
-        VDCUser user = loginBean == null ? null : loginBean.getUser();
+        VDCUser user = getVDCSessionBean().getLoginBean() == null ? null : getVDCSessionBean().getLoginBean().getUser();
         VDC vdc = getVDCRequestBean().getCurrentVDC();
         if (user!=null) {
             return user.isCurator(vdc)|| user.isAdmin(vdc) || user.isNetworkAdmin();
@@ -411,7 +404,7 @@ public class ManageStudiesList extends VDCBaseBean {
     }
 
     private boolean isUserContributorAndAllowedToEdit(){
-        VDCUser user = loginBean == null ? null : loginBean.getUser();
+        VDCUser user = getVDCSessionBean().getLoginBean() == null ? null : getVDCSessionBean().getLoginBean().getUser();
         VDC vdc = getVDCRequestBean().getCurrentVDC();
         if (user!=null) {
             return user.isContributor(vdc) && vdc.isAllowContributorsEditAll();
@@ -511,7 +504,6 @@ public class ManageStudiesList extends VDCBaseBean {
     
 
     public void init() {
-        loginBean = getVDCSessionBean().getLoginBean();
         this.versionNotesPopupBean.setActionType(VersionNotesPopupBean.ActionType.MANAGE_STUDIES);
     }
     

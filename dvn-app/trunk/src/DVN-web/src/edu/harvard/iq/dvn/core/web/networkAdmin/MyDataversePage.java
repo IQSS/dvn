@@ -57,7 +57,7 @@ public class MyDataversePage extends VDCBaseBean {
     public String createDataverse() {
         VDCUser user = getVDCSessionBean().getUser();
         userService.makeCreator(user.getId());
-        return "addSite";
+        return "/site/AddSitePage?faces-redirect=true";
     }
 
 }

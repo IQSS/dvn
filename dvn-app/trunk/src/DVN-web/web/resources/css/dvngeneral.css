@@ -64,7 +64,7 @@ a.dvn_headerTitleLrgNetwork:link span,a.dvn_headerTitleLrgNetwork:visited span,a
 div.dvn_navblock{margin-bottom:12px;border-bottom:1px solid #dfdfdf}
 div.dvn_navblockNetwork{}
 .dvn_navblockLinks{overflow:hidden;width:100%}
-.dvn_navblockWrap{text-align:right;min-width:450px;}
+.dvn_navblockWrap{text-align:right;min-width:450px;overflow:hidden;}
 .dvn_navblockLinks ul{overflow:hidden;float:right;margin:0;padding:0;list-style-type:none !important;border-top:1px solid #dfdfdf}
 .dvn_navblockLinks ul li{float:left;margin:0;padding:0}
 .dvn_navblockLinks ul li a:link,.dvn_navblockLinks ul li a:visited,.dvn_navblockLinks ul li a:hover,.dvn_navblockLinks ul li a:active{display:block;padding:.2em .5em;text-decoration:none}

@@ -74,24 +74,20 @@ public class HomePage extends VDCBaseBean implements Serializable {
     
 
     //Primitives
-    private boolean isInit;
     private int classificationsSize  = 0;
-    private int currentRow;
+
     
 
     //Objects
     private ArrayList accordionItemBeans;
     DataverseGrouping parentItem    = null;
     DataverseGrouping childItem     = null;
-    private DataverseGroupingObject selectedUserObject;
     private HtmlDataTable dataverseList = new HtmlDataTable();
     private HtmlInputHidden hiddenGroupId = new HtmlInputHidden();
     private HtmlInputHidden hiddenAlphaCharacter = new HtmlInputHidden();
     List descendants                = new ArrayList();
     private List recentStudies;
     private Long groupId;
-    private long totalStudyDownloads = -1;
-    private String ALL_DATAVERSES_LABEL = "All Dataverses";
     private String defaultVdcPath;
     private String groupName;
     private String parsedLocalAnnouncements     = null;
@@ -392,7 +388,6 @@ public class HomePage extends VDCBaseBean implements Serializable {
                     populateDescendants(vdcgroup, true);
                 }
         }
-        writeJavascript();
     }
 
       //Manage classification
@@ -432,48 +427,6 @@ public class HomePage extends VDCBaseBean implements Serializable {
          }
       }
       
-            private void writeJavascript() {
-          accordionJavascript +=  "<script type=\"text/javascript\">"  + "\n\r" +
-                "// <![CDATA[ " +  "\n\r" +
-                "jQuery(document).ready(function(){" + "\n\r" +
- //                     "jQuery('#navigation').accordion({ " +
- //                       "active: 'h3.selected', " +
- //                       "header: 'h3.head', " +
- //                       "autoheight: false" +
- //               "});" + "\n\r" +
-                "jQuery('.xtraMenu').accordion({" +
-                "active: 'h4.selected', " +
-                "header: 'h4.head', " +
-                "autoheight: false" +
-                "});" + "\n\r";
-        Iterator iterator = childItemBeans.iterator();
-        while (iterator.hasNext()) {
-            String grouping = (String)iterator.next();
-            String divId = "xtraMenu" + grouping;
-                accordionJavascript += "jQuery('#" + divId + "').accordion({" +
-                "active: 'h4.selected', " +
-                "header: 'h4.head', " +
-                "autoheight: false" +
-                "});" + "\n\r";
-        }
-        accordionJavascript += "  });"  + "\n\r" +
-              "// ]] >"  + "\n\r" + "</" + "script>";
-      }
-
-      private ArrayList childItemBeans = new ArrayList();
-      private String accordionJavascript = new String("");
-
-    public String getAccordionJavascript() {
-        return accordionJavascript;
-    }
-
-    public void setAccordionJavascript(String accordionJavascript) {
-        this.accordionJavascript = accordionJavascript;
-    }
-
-
-
-      //actions and actionListeners
 
 
      

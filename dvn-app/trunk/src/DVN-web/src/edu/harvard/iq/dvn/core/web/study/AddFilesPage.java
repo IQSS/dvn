@@ -42,6 +42,7 @@ import javax.faces.event.ValueChangeEvent;
 import com.icesoft.faces.component.ext.HtmlDataTable;
 import com.icesoft.faces.component.ext.HtmlSelectOneMenu;
 
+import com.icesoft.faces.context.effects.JavascriptContext;
 import javax.faces.model.SelectItem;
 import javax.faces.model.SelectItemGroup;
 import java.util.*;
@@ -207,6 +208,11 @@ public class AddFilesPage extends VDCBaseBean implements java.io.Serializable {
         this.selectFileType = selectFileType;
     }
 
+    public void preRenderView() {
+        super.preRenderView();
+        // add javascript call on each partial submit to the file browser
+        JavascriptContext.addJavascriptCall(getFacesContext(), "jQuery(':input[type=file]').change(function(){ jQuery(':input[id=form1:addFile]').click(); });");
+    }  
 
 
     public void init() {

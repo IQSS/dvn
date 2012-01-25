@@ -111,9 +111,10 @@ public class ManageTemplatesPage extends VDCBaseBean implements java.io.Serializ
         for (Iterator it = templateList.iterator(); it.hasNext();) {
             Template template = (Template) it.next();
            
-                Object[] row = new Object[2];
+                Object[] row = new Object[3];
                 row[0] = template;
                 row[1] = getRemoveText(template);
+                row[2] = template.isNetwork();
              
                 displayFields.add(row);
            
@@ -130,6 +131,8 @@ public class ManageTemplatesPage extends VDCBaseBean implements java.io.Serializ
             removeText = "Cannot remove - dataverse default template";
         } else if (templateService.isTemplateUsed(template.getId())){
             removeText="Cannot remove - template associated with created studies";
+        } else if (template.isNetwork()  && getVDCRequestBean().getCurrentVDCId() != null){
+            removeText="Cannot remove - network level template";
         }
         return removeText;
     }

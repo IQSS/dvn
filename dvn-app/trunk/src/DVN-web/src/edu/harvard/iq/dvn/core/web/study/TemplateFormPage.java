@@ -108,14 +108,13 @@ public class TemplateFormPage extends VDCBaseBean implements java.io.Serializabl
     
     
    public void init() {
-            System.out.println("In page init... " );      
+              
        super.init();
- 
+       Long vdcId = new Long(0);
        try {
            Context ctx = new InitialContext();
            /*editTemplateService = (EditTemplateService) ctx.lookup("java:comp/env/editTemplate");*/
        } catch (NamingException e) {
-            System.out.println("In catch " );      
            e.printStackTrace();
            FacesContext context = FacesContext.getCurrentInstance();
            FacesMessage errMessage = new FacesMessage(FacesMessage.SEVERITY_ERROR, e.getMessage(), null);
@@ -124,20 +123,28 @@ public class TemplateFormPage extends VDCBaseBean implements java.io.Serializabl
        }
         
        if (getTemplateId() != null) {
-           System.out.println("getTemplateId() ... " + getTemplateId() );      
+              
            editTemplateService.setTemplate(templateId);
            template = editTemplateService.getTemplate();
-
+           System.out.println("template id " + template.getId());
+           if (getVDCRequestBean().getCurrentVDC() != null){
+               vdcId = getVDCRequestBean().getCurrentVDC().getId();
+           }
+           if (vdcId > 0 && template.isNetwork()){
+               System.out.println("cloning " );
+               editTemplateService.newClonedTemplate(vdcId, template);
+               template = editTemplateService.getTemplate(); 
+           }
+           System.out.println("template id " + template.getId());
        } else {
-           Long vdcId = new Long(0);
+
            if (getVDCRequestBean().getCurrentVDC() != null){
                vdcId = getVDCRequestBean().getCurrentVDC().getId();
            }
            
            if (studyVersionId != null) {
                editTemplateService.newTemplate(vdcId, studyVersionId);
-           } else if(!vdcId.equals(new Long(0))) {
-               System.out.println("vdcId ... " + vdcId );      
+           } else if(!vdcId.equals(new Long(0))) {               
                editTemplateService.newTemplate(vdcId);
            } else {
                editTemplateService.newNetworkTemplate();
@@ -149,7 +156,12 @@ public class TemplateFormPage extends VDCBaseBean implements java.io.Serializabl
        initAdHocFieldMap();
        fieldInputLevelSelectItems = loadFieldInputLevelSelectItems();
        fieldTypeSelectItems = loadFieldTypeSelectItems();
-       template.getMetadata().initCollections();       
+       template.getMetadata().initCollections(); 
+       if (vdcId > 0){
+          networkEdit = false;
+       } else {
+          networkEdit = true;
+       }
     }
     
    
@@ -203,6 +215,17 @@ public class TemplateFormPage extends VDCBaseBean implements java.io.Serializabl
     public void setTemplate(Template template) {
         this.template = template;
     }
+    
+    private boolean networkEdit;
+
+    public boolean isNetworkEdit() {
+        return networkEdit;
+    }
+
+    public void setNetworkEdit(boolean networkEdit) {
+        this.networkEdit = networkEdit;
+    }
+    
         
     
     private Map studyMap;
@@ -1133,6 +1156,16 @@ public class TemplateFormPage extends VDCBaseBean implements java.io.Serializabl
     public void setSelectFieldType(HtmlSelectOneMenu selectFieldType) {
         this.selectFieldType = selectFieldType;
     }
+    
+    HtmlSelectOneMenu selectNewDcmFieldInputLevel;
+
+    public HtmlSelectOneMenu getSelectNewDcmFieldInputLevel() {
+        return selectNewDcmFieldInputLevel;
+    }
+
+    public void setSelectNewDcmFieldInputLevel(HtmlSelectOneMenu selectNewDcmFieldInputLevel) {
+        this.selectNewDcmFieldInputLevel = selectNewDcmFieldInputLevel;
+    }
 
     HtmlSelectBooleanCheckbox allowMultiplesCheck;
 
@@ -1170,7 +1203,10 @@ public class TemplateFormPage extends VDCBaseBean implements java.io.Serializabl
 
         Object value= this.selectFieldType.getValue();
         String fieldType =  (String) value ;
-
+        
+        value= this.selectNewDcmFieldInputLevel.getValue();
+        String inputLevel =  (String) value ;
+        
         TemplateField newTF = new TemplateField();
         StudyField newElem = new StudyField();
 
@@ -1178,10 +1214,12 @@ public class TemplateFormPage extends VDCBaseBean implements java.io.Serializabl
         newElem.setDescription(fieldDescription);
         newElem.setDcmField(true);
         newElem.setFieldType(fieldType);
+       
         newTF.setTemplate(template);
         newTF.setStudyField(newElem);
         newTF.setdcmSortOrder(new Long(maxDCM + 1));
         newTF.setAllowMultiples(allowMultiples);
+         editTemplateService.changeFieldInputLevel(newTF, inputLevel);
         TemplateFieldUI newUI = new TemplateFieldUI();
         newUI.setTemplateField(newTF);
         newUI.setRecommended(false);
@@ -2694,14 +2732,9 @@ public class TemplateFormPage extends VDCBaseBean implements java.io.Serializabl
         Long getOrder = (Long) event.getComponent().getAttributes().get("dcmSortOrder");
 
         TemplateField changeValue = adHocFields.get(getOrder.intValue() -1 );
+        String newValue = (String)event.getNewValue();
 
-        System.out.println("In value change event" );
-            String newValue = (String)event.getNewValue();
-
-            System.out.println("studyFieldName is "+ changeValue.getStudyField().getName() );
-            System.out.println("newValue is "+ newValue );
-
-            editTemplateService.changeFieldInputLevel(changeValue, newValue);
+        editTemplateService.changeFieldInputLevel(changeValue, newValue);
     }
     
 }

@@ -45,6 +45,8 @@ public interface EditTemplateService extends java.io.Serializable {
     public void changeFieldInputLevel(TemplateField tf, String inputLevel);
 
     public void newNetworkTemplate();
+
+    public void newClonedTemplate(Long vdcId, Template cloneSource);
    
  
 }

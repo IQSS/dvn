@@ -72,12 +72,12 @@
               </ice:panelGrid>
 
               <ice:panelGrid cellpadding="0" cellspacing="0" columns="2" width="100%"
-                    styleClass="vdcEditStudyTable #{TemplateFormPage.studyMap[sfc.subTitle].templateField.fieldInputLevel.name}"
+                    styleClass="vdcEditStudyTable #{TemplateFormPage.studyMap[sfc.subTitle].templateField.fieldInputLevelString}"
                     columnClasses="vdcEditStudyCol1, vdcEditStudyCol2">
                 <div class="vdcEditStudyField">                  
-                  <ice:selectOneMenu immediate="false"    partialSubmit="true"
+                  <ice:selectOneMenu immediate="false"    
                                      valueChangeListener="#{TemplateFormPage.changeFieldInputValue}"
-                                        value="#{TemplateFormPage.studyMap[sfc.subTitle].templateField.fieldInputLevel.name}">
+                                        value="#{TemplateFormPage.studyMap[sfc.subTitle].templateField.fieldInputLevelString}">
                         <f:selectItems value="#{TemplateFormPage.fieldInputLevelSelectItems}"/>
                         <f:attribute name="fieldName" value="subTitle" />
                    </ice:selectOneMenu>                  
@@ -102,7 +102,7 @@
                     <ice:column>
                       <div class="vdcEditStudyField"> 
                        <ice:selectOneMenu immediate="false" 
-                                        value="#{TemplateFormPage.studyMap[sfc.otherId].templateField.fieldInputLevel.name}"
+                                        value="#{TemplateFormPage.studyMap[sfc.otherId].templateField.fieldInputLevelString}"
                                         valueChangeListener="#{TemplateFormPage.changeFieldInputValue}"
                                         rendered ="#{TemplateFormPage.dataTableOtherIds.rowIndex==0}">
                            <f:attribute name="fieldName" value="otherId" />
@@ -115,13 +115,13 @@
                     </ice:column>
                     <ice:column>
                       <div class="vdcEditStudyFieldFloatWrap">
-                        <div jsfc="ice:panelGroup" styleClass="vdcEditStudyFieldFloat1 #{TemplateFormPage.studyMap[sfc.otherId].templateField.fieldInputLevel.name}">
+                        <div jsfc="ice:panelGroup" styleClass="vdcEditStudyFieldFloat1 #{TemplateFormPage.studyMap[sfc.otherId].templateField.fieldInputLevelString}">
                           <dvn:inlinehelp helpMessage="#{editstudybundle.otheridHelp}" linkText="#{editstudybundle.otheridLabel}" heading="#{editstudybundle.otheridHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
                           <br/>
                           <ice:inputText maxlength="255" binding="#{TemplateFormPage.inputOtherId}" id="input_otherId" value="#{currentRow.otherId}" required="#{TemplateFormPage.studyMap[sfc.otherId].required}"/>
                           <ice:message styleClass="errorMessage" for="input_otherId"/>
                         </div>
-                        <div jsfc="ice:panelGroup" styleClass="vdcEditStudyFieldFloat2 vdcEditStudyGroupField #{TemplateFormPage.studyMap[sfc.otherIdAgency].templateField.fieldInputLevel.name}">
+                        <div jsfc="ice:panelGroup" styleClass="vdcEditStudyFieldFloat2 vdcEditStudyGroupField #{TemplateFormPage.studyMap[sfc.otherIdAgency].templateField.fieldInputLevelString}">
                           <dvn:inlinehelp helpMessage="#{editstudybundle.otherAgencyHelp}" linkText="#{editstudybundle.otherAgencyLabel}" heading="#{editstudybundle.otherAgencyHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
                           <br/>
                           <ice:inputText maxlength="255" binding="#{TemplateFormPage.inputOtherIdAgency}" validator="#{TemplateFormPage.validateStudyOtherId}"
@@ -150,7 +150,7 @@
                     <ice:column>
                       <div class="vdcEditStudyField">
                         <ice:selectOneMenu immediate="false"  
-                                        value="#{TemplateFormPage.studyMap[sfc.authorName].templateField.fieldInputLevel.name}"
+                                        value="#{TemplateFormPage.studyMap[sfc.authorName].templateField.fieldInputLevelString}"
                                         valueChangeListener="#{TemplateFormPage.changeFieldInputValue}"
                                         rendered ="#{TemplateFormPage.dataTableAuthors.rowIndex==0}">
                             <f:selectItems value="#{TemplateFormPage.fieldInputLevelSelectItems}"/>
@@ -163,7 +163,7 @@
                     </ice:column>
                     <ice:column>
                       <div class="vdcEditStudyFieldFloatWrap">
-                        <div jsfc="ice:panelGroup" styleClass="vdcEditStudyFieldFloat1 #{TemplateFormPage.studyMap[sfc.authorName].templateField.fieldInputLevel.name}">
+                        <div jsfc="ice:panelGroup" styleClass="vdcEditStudyFieldFloat1 #{TemplateFormPage.studyMap[sfc.authorName].templateField.fieldInputLevelString}">
                           <dvn:inlinehelp helpMessage="#{editstudybundle.authorNameHelp}" linkText="#{editstudybundle.authorNameLabel}" heading="#{editstudybundle.authorNameHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
                           <br/>
                           <ice:inputText id="input_authorName"
@@ -175,7 +175,7 @@
                           <ice:outputText value="(firstName LastName)"/>
                           <ice:message styleClass="errorMessage" for="input_authorName"/>
                         </div>
-                        <div jsfc="ice:panelGroup" styleClass="vdcEditStudyFieldFloat2 #{TemplateFormPage.studyMap[sfc.authorAffiliation].templateField.fieldInputLevel.name}">
+                        <div jsfc="ice:panelGroup" styleClass="vdcEditStudyFieldFloat2 #{TemplateFormPage.studyMap[sfc.authorAffiliation].templateField.fieldInputLevelString}">
                           <dvn:inlinehelp helpMessage="#{editstudybundle.authorAffiliationHelp}" linkText="#{editstudybundle.authorAffiliationLabel}" heading="#{editstudybundle.authorAffiliationHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
                           <br/>
                           <ice:inputText id="input_authorAffiliation" size="45" maxlength="255"
@@ -188,7 +188,7 @@
                           </ice:inputText>
                           <ice:message styleClass="errorMessage" for="input_authorAffiliation"/>
                         </div>
-                        <div jsfc="ice:panelGroup" styleClass="vdcEditStudyFieldFloat2 #{TemplateFormPage.studyMap[sfc.authorAffiliation].templateField.fieldInputLevel.name}">
+                        <div jsfc="ice:panelGroup" styleClass="vdcEditStudyFieldFloat2 #{TemplateFormPage.studyMap[sfc.authorAffiliation].templateField.fieldInputLevelString}">
                           <dvn:inlinehelp helpMessage="#{editstudybundle.authorIDValueHelp}" linkText="#{editstudybundle.authorIDValueLabel}" heading="#{editstudybundle.authorIDValueHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
                           <br/>
                           <ice:inputText id="input_authorIDValue" size="45" maxlength="255"
@@ -222,7 +222,7 @@
                     <ice:column>
                       <div class="vdcEditStudyField">
                          <ice:selectOneMenu immediate="false" 
-                                        value="#{TemplateFormPage.studyMap[sfc.producerName].templateField.fieldInputLevel.name}"
+                                        value="#{TemplateFormPage.studyMap[sfc.producerName].templateField.fieldInputLevelString}"
                                         valueChangeListener="#{TemplateFormPage.changeFieldInputValue}"
                                         rendered ="#{TemplateFormPage.dataTableProducers.rowIndex==0}">
                             <f:selectItems value="#{TemplateFormPage.fieldInputLevelSelectItems}"/>
@@ -235,19 +235,19 @@
                     </ice:column>
                     <ice:column>
                       <div class="vdcEditStudyFieldFloatWrap">
-                        <div jsfc="ice:panelGroup" styleClass="vdcEditStudyFieldFloat1 vdcEditStudyGroupField #{TemplateFormPage.studyMap[sfc.producerName].templateField.fieldInputLevel.name}">
+                        <div jsfc="ice:panelGroup" styleClass="vdcEditStudyFieldFloat1 vdcEditStudyGroupField #{TemplateFormPage.studyMap[sfc.producerName].templateField.fieldInputLevelString}">
                           <dvn:inlinehelp helpMessage="#{editstudybundle.producerHelp}" linkText="#{editstudybundle.producerLabel}" heading="#{editstudybundle.producerHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
                           <br/>
                           <ice:inputText maxlength="255" binding="#{TemplateFormPage.inputProducerName}" id="input_producerName" value="#{currentRow.name}" size="45" required="#{TemplateFormPage.studyMap[sfc.producerName].required}"/>
                           <ice:message styleClass="errorMessage" for="input_producerName"/>
                         </div>
-                        <div jsfc="ice:panelGroup" styleClass="vdcEditStudyFieldFloat2 vdcEditStudyGroupField #{TemplateFormPage.studyMap[sfc.producerAbbreviation].templateField.fieldInputLevel.name}">
+                        <div jsfc="ice:panelGroup" styleClass="vdcEditStudyFieldFloat2 vdcEditStudyGroupField #{TemplateFormPage.studyMap[sfc.producerAbbreviation].templateField.fieldInputLevelString}">
                           <dvn:inlinehelp helpMessage="#{editstudybundle.producerAbbreviationHelp}" linkText="#{editstudybundle.producerAbbreviationLabel}" heading="#{editstudybundle.producerAbbreviationHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
                           <br/>
                           <ice:inputText maxlength="255" validator="#{TemplateFormPage.validateStudyProducer}" binding="#{TemplateFormPage.inputProducerAbbreviation}" id="input_producerAbbreviation" value="#{currentRow.abbreviation}" required="#{TemplateFormPage.studyMap[sfc.producerAbbreviation].required}"/>
                           <ice:message styleClass="errorMessage" for="input_producerAbbreviation"/>
                         </div>
-                        <div jsfc="ice:panelGroup" styleClass="vdcEditStudyFieldFloat3 vdcEditStudyGroupField #{TemplateFormPage.studyMap[sfc.producerAffiliation].templateField.fieldInputLevel.name}">
+                        <div jsfc="ice:panelGroup" styleClass="vdcEditStudyFieldFloat3 vdcEditStudyGroupField #{TemplateFormPage.studyMap[sfc.producerAffiliation].templateField.fieldInputLevelString}">
                           <dvn:inlinehelp helpMessage="#{editstudybundle.producerAffiliationHelp}" linkText="#{editstudybundle.producerAffiliationLabel}" heading="#{editstudybundle.producerAffiliationHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
                           <br/>
                           <ice:inputText maxlength="255" validator="#{TemplateFormPage.validateStudyProducer}" binding="#{TemplateFormPage.inputProducerAffiliation}" id="input_producerAffiliation" size="45" value="#{currentRow.affiliation}" required="#{TemplateFormPage.studyMap[sfc.producerAffiliation].required}"
@@ -256,7 +256,7 @@
                           </ice:inputText>
                           <ice:message styleClass="errorMessage" for="input_producerAffiliation"/>
                         </div>
-                        <div jsfc="ice:panelGroup" styleClass="vdcEditStudyGroupField #{TemplateFormPage.studyMap[sfc.producerURL].templateField.fieldInputLevel.name}">
+                        <div jsfc="ice:panelGroup" styleClass="vdcEditStudyGroupField #{TemplateFormPage.studyMap[sfc.producerURL].templateField.fieldInputLevelString}">
                           <dvn:inlinehelp helpMessage="#{editstudybundle.producerURLHelp}" linkText="#{editstudybundle.producerURLLabel}" heading="#{editstudybundle.producerURLHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
                           <br/>
                           <ice:inputText id="input_producerURL"
@@ -271,7 +271,7 @@
                           <ice:outputText value="(http://example-domain.edu/)"/>
                           <ice:message styleClass="errorMessage" for="input_producerURL"/>
                         </div>
-                        <div jsfc="ice:panelGroup" styleClass="vdcEditStudyGroupField  #{TemplateFormPage.studyMap[sfc.producerLogo].templateField.fieldInputLevel.name}">
+                        <div jsfc="ice:panelGroup" styleClass="vdcEditStudyGroupField  #{TemplateFormPage.studyMap[sfc.producerLogo].templateField.fieldInputLevelString}">
                           <dvn:inlinehelp helpMessage="#{editstudybundle.producerLogoHelp}" linkText="#{editstudybundle.producerLogoLabel}" heading="#{editstudybundle.producerLogoHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
                           <br/>
                           <ice:inputText id="input_producerLogo"
@@ -297,11 +297,11 @@
               </ice:dataTable>
 
               <ice:panelGrid cellpadding="0" cellspacing="0" columns="2" width="100%"
-                             styleClass="vdcEditStudyTable #{TemplateFormPage.studyMap[sfc.productionDate].templateField.fieldInputLevel.name}"
+                             styleClass="vdcEditStudyTable #{TemplateFormPage.studyMap[sfc.productionDate].templateField.fieldInputLevelString}"
                              columnClasses="vdcEditStudyCol1, vdcEditStudyCol2">
                 <div class="vdcEditStudyField">
                   <ice:selectOneMenu immediate="false" 
-                                        value="#{TemplateFormPage.studyMap[sfc.productionDate].templateField.fieldInputLevel.name}"
+                                        value="#{TemplateFormPage.studyMap[sfc.productionDate].templateField.fieldInputLevelString}"
                                         valueChangeListener="#{TemplateFormPage.changeFieldInputValue}">
                             <f:attribute name="fieldName" value="productionDate" />
                             <f:selectItems value="#{TemplateFormPage.fieldInputLevelSelectItems}"/>
@@ -320,11 +320,11 @@
               </ice:panelGrid>
 
               <ice:panelGrid cellpadding="0" cellspacing="0" width="100%"
-                    styleClass="vdcEditStudyTable #{TemplateFormPage.studyMap[sfc.productionPlace].templateField.fieldInputLevel.name}"
+                    styleClass="vdcEditStudyTable #{TemplateFormPage.studyMap[sfc.productionPlace].templateField.fieldInputLevelString}"
                     columnClasses="vdcEditStudyCol1, vdcEditStudyCol2" columns="2">
                 <div class="vdcEditStudyField">                  
                   <ice:selectOneMenu immediate="false" 
-                                        value="#{TemplateFormPage.studyMap[sfc.productionPlace].templateField.fieldInputLevel.name}"
+                                        value="#{TemplateFormPage.studyMap[sfc.productionPlace].templateField.fieldInputLevelString}"
                                         valueChangeListener="#{TemplateFormPage.changeFieldInputValue}">
                             <f:attribute name="fieldName" value="productionPlace" />
                             <f:selectItems value="#{TemplateFormPage.fieldInputLevelSelectItems}"/>
@@ -351,7 +351,7 @@
                     <ice:column>
                       <div class="vdcEditStudyField">                      
                         <ice:selectOneMenu immediate="false"
-                                        value="#{TemplateFormPage.studyMap[sfc.softwareName].templateField.fieldInputLevel.name}"
+                                        value="#{TemplateFormPage.studyMap[sfc.softwareName].templateField.fieldInputLevelString}"
                                         rendered ="#{TemplateFormPage.dataTableSoftware.rowIndex==0}"
                                         valueChangeListener="#{TemplateFormPage.changeFieldInputValue}">
                             <f:attribute name="fieldName" value="softwareName" />
@@ -364,13 +364,13 @@
                     </ice:column>
                     <ice:column>
                       <div class="vdcEditStudyFieldFloatWrap">
-                        <div jsfc="ice:panelGroup" styleClass="vdcEditStudyFieldFloat1 #{TemplateFormPage.studyMap[sfc.softwareName].templateField.fieldInputLevel.name}">
+                        <div jsfc="ice:panelGroup" styleClass="vdcEditStudyFieldFloat1 #{TemplateFormPage.studyMap[sfc.softwareName].templateField.fieldInputLevelString}">
                           <dvn:inlinehelp helpMessage="#{editstudybundle.softwareNameHelp}" linkText="#{editstudybundle.softwareNameLabel}" heading="#{editstudybundle.softwareNameHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
                           <br/>
                           <ice:inputText maxlength="255" binding="#{TemplateFormPage.inputSoftwareName}" id="input_softwareName" size="45" value="#{currentRow.name}" required="#{TemplateFormPage.studyMap[sfc.softwareName].required}"/>
                           <ice:message styleClass="errorMessage" for="input_softwareName"/>
                         </div>
-                        <div jsfc="ice:panelGroup" styleClass="vdcEditStudyFieldFloat2 vdcEditStudyGroupField #{TemplateFormPage.studyMap[sfc.softwareVersion].templateField.fieldInputLevel.name}">
+                        <div jsfc="ice:panelGroup" styleClass="vdcEditStudyFieldFloat2 vdcEditStudyGroupField #{TemplateFormPage.studyMap[sfc.softwareVersion].templateField.fieldInputLevelString}">
                           <dvn:inlinehelp helpMessage="#{editstudybundle.softwareVersionHelp}" linkText="#{editstudybundle.softwareVersionLabel}" heading="#{editstudybundle.softwareVersionHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
                           <br/>
                           <ice:inputText maxlength="255" binding="#{TemplateFormPage.inputSoftwareVersion}" validator="#{TemplateFormPage.validateStudySoftware}" id="input_softwareVersion" value="#{currentRow.softwareVersion}" required="#{TemplateFormPage.studyMap[sfc.softwareVersion].required}"/>
@@ -387,11 +387,11 @@
               </ice:dataTable>
 
               <ice:panelGrid cellpadding="0" cellspacing="0" columns="2" width="100%"
-                            styleClass="vdcEditStudyTable #{TemplateFormPage.studyMap[sfc.fundingAgency].templateField.fieldInputLevel.name}"
+                            styleClass="vdcEditStudyTable #{TemplateFormPage.studyMap[sfc.fundingAgency].templateField.fieldInputLevelString}"
                             columnClasses="vdcEditStudyCol1, vdcEditStudyCol2">
                 <div class="vdcEditStudyField">
                   <ice:selectOneMenu immediate="false"  
-                                        value="#{TemplateFormPage.studyMap[sfc.fundingAgency].templateField.fieldInputLevel.name}"
+                                        value="#{TemplateFormPage.studyMap[sfc.fundingAgency].templateField.fieldInputLevelString}"
                                         valueChangeListener="#{TemplateFormPage.changeFieldInputValue}">
                             <f:attribute name="fieldName" value="fundingAgency" />
                             <f:selectItems value="#{TemplateFormPage.fieldInputLevelSelectItems}"/>
@@ -417,7 +417,7 @@
                     <ice:column>
                       <div class="vdcEditStudyField">
                         <ice:selectOneMenu immediate="false" 
-                                        value="#{TemplateFormPage.studyMap[sfc.grantNumber].templateField.fieldInputLevel.name}"
+                                        value="#{TemplateFormPage.studyMap[sfc.grantNumber].templateField.fieldInputLevelString}"
                                         rendered ="#{TemplateFormPage.dataTableGrants.rowIndex==0}"
                                         valueChangeListener="#{TemplateFormPage.changeFieldInputValue}">
                             <f:attribute name="fieldName" value="grantNumber" />
@@ -430,13 +430,13 @@
                     </ice:column>
                     <ice:column>
                       <div>
-                        <div jsfc="ice:panelGroup" styleClass="vdcEditStudyGroupField #{TemplateFormPage.studyMap[sfc.grantNumber].templateField.fieldInputLevel.name}">
+                        <div jsfc="ice:panelGroup" styleClass="vdcEditStudyGroupField #{TemplateFormPage.studyMap[sfc.grantNumber].templateField.fieldInputLevelString}">
                           <dvn:inlinehelp helpMessage="#{editstudybundle.grantNumberHelp}" linkText="#{editstudybundle.grantNumberLabel}" heading="#{editstudybundle.grantNumberHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
                           <br/>
                           <ice:inputText maxlength="255" immediate="true" binding="#{TemplateFormPage.inputGrantNumber}" id="input_grantNumber" size="45" value="#{currentRow.number}" required="#{TemplateFormPage.studyMap[sfc.grantNumber].required}"/>
                           <ice:message styleClass="errorMessage" for="input_grantNumber"/>
                         </div>
-                        <div jsfc="ice:panelGroup" styleClass="vdcEditStudyGroupField #{TemplateFormPage.studyMap[sfc.grantNumberAgency].templateField.fieldInputLevel.name}">
+                        <div jsfc="ice:panelGroup" styleClass="vdcEditStudyGroupField #{TemplateFormPage.studyMap[sfc.grantNumberAgency].templateField.fieldInputLevelString}">
                           <dvn:inlinehelp helpMessage="#{editstudybundle.grantingAgencyHelp}" linkText="#{editstudybundle.grantingAgencyLabel}" heading="#{editstudybundle.grantingAgencyHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
                           <br/>
                           <ice:inputText  maxlength="255" immediate="true" binding="#{TemplateFormPage.inputGrantAgency}" validator="#{TemplateFormPage.validateStudyGrant}" id="input_grantNumberAgency" size="45" value="#{currentRow.agency}" required="#{TemplateFormPage.studyMap[sfc.grantNumberAgency].required}"/>
@@ -463,7 +463,7 @@
                     <ice:column>
                       <div class="vdcEditStudyField">
                         <ice:selectOneMenu immediate="false" partialSubmit="true" 
-                                        value="#{TemplateFormPage.studyMap[sfc.distributorName].templateField.fieldInputLevel.name}"
+                                        value="#{TemplateFormPage.studyMap[sfc.distributorName].templateField.fieldInputLevelString}"
                                         rendered ="#{TemplateFormPage.dataTableDistributors.rowIndex==0}"
                                         valueChangeListener="#{TemplateFormPage.changeFieldInputValue}">
                             <f:attribute name="fieldName" value="distributorName" />
@@ -476,19 +476,19 @@
                     </ice:column>
                     <ice:column>
                       <div styleClass="vdcEditStudyFieldFloatWrap">
-                        <div jsfc="ice:panelGroup" styleClass="vdcEditStudyFieldFloat1 #{TemplateFormPage.studyMap[sfc.distributorName].templateField.fieldInputLevel.name}">
+                        <div jsfc="ice:panelGroup" styleClass="vdcEditStudyFieldFloat1 #{TemplateFormPage.studyMap[sfc.distributorName].templateField.fieldInputLevelString}">
                           <dvn:inlinehelp helpMessage="#{editstudybundle.distributorHelp}" linkText="#{editstudybundle.distributorLabel}" heading="#{editstudybundle.distributorHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
                           <br/>
                           <ice:inputText maxlength="255" binding="#{TemplateFormPage.inputDistributorName}" id="input_distributorName" value="#{currentRow.name}" size="45" required="#{TemplateFormPage.studyMap[sfc.distributorName].required}"/>
                           <ice:message styleClass="errorMessage" for="input_distributorName"/>
                         </div>
-                        <div jsfc="ice:panelGroup" styleClass="vdcEditStudyFieldFloat2 vdcEditStudyGroupField #{TemplateFormPage.studyMap[sfc.distributorAbbreviation].templateField.fieldInputLevel.name}">
+                        <div jsfc="ice:panelGroup" styleClass="vdcEditStudyFieldFloat2 vdcEditStudyGroupField #{TemplateFormPage.studyMap[sfc.distributorAbbreviation].templateField.fieldInputLevelString}">
                           <dvn:inlinehelp helpMessage="#{editstudybundle.distributorAbbreviationHelp}" linkText="#{editstudybundle.distributorAbbreviationLabel}" heading="#{editstudybundle.distributorAbbreviationHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
                           <br/>
                           <ice:inputText maxlength="255" validator="#{TemplateFormPage.validateStudyDistributor}" binding="#{TemplateFormPage.inputDistributorAbbreviation}" id="input_distributorAbbreviation" value="#{currentRow.abbreviation}"  required="#{TemplateFormPage.studyMap[sfc.distributorAbbreviation].required}"/>
                           <ice:message styleClass="errorMessage" for="input_distributorAbbreviation"/>
                         </div>
-                        <div jsfc="ice:panelGroup" styleClass="vdcEditStudyFieldFloat3 vdcEditStudyGroupField #{TemplateFormPage.studyMap[sfc.distributorAffiliation].templateField.fieldInputLevel.name}">
+                        <div jsfc="ice:panelGroup" styleClass="vdcEditStudyFieldFloat3 vdcEditStudyGroupField #{TemplateFormPage.studyMap[sfc.distributorAffiliation].templateField.fieldInputLevelString}">
                           <dvn:inlinehelp helpMessage="#{editstudybundle.distributorAffiliationHelp}" linkText="#{editstudybundle.distributorAffiliationLabel}" heading="#{editstudybundle.distributorAffiliationHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
                           <br/>
                           <ice:inputText maxlength="255" id="input_distributorAffiliation" validator="#{TemplateFormPage.validateStudyDistributor}" binding="#{TemplateFormPage.inputDistributorAffiliation}" size="45"
@@ -499,7 +499,7 @@
                           </ice:inputText>
                           <ice:message styleClass="errorMessage" for="input_distributorAffiliation"/>
                         </div>
-                        <div jsfc="ice:panelGroup" styleClass="vdcEditStudyGroupField #{TemplateFormPage.studyMap[sfc.distributorURL].templateField.fieldInputLevel.name}">
+                        <div jsfc="ice:panelGroup" styleClass="vdcEditStudyGroupField #{TemplateFormPage.studyMap[sfc.distributorURL].templateField.fieldInputLevelString}">
                           <dvn:inlinehelp helpMessage="#{editstudybundle.distributorURLHelp}" linkText="#{editstudybundle.distributorURLLabel}" heading="#{editstudybundle.distributorURLHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
                           <br/>
                           <ice:inputText id="input_distributorURL"
@@ -514,7 +514,7 @@
                           <ice:outputText value="(http://example-domain.edu/)"/>
                           <ice:message styleClass="errorMessage" for="input_distributorURL"/>
                         </div>
-                        <div jsfc="ice:panelGroup" styleClass="vdcEditStudyGroupField  #{TemplateFormPage.studyMap[sfc.distributorLogo].templateField.fieldInputLevel.name}">
+                        <div jsfc="ice:panelGroup" styleClass="vdcEditStudyGroupField  #{TemplateFormPage.studyMap[sfc.distributorLogo].templateField.fieldInputLevelString}">
                           <dvn:inlinehelp helpMessage="#{editstudybundle.distributorLogoHelp}" linkText="#{editstudybundle.distributorLogoLabel}" heading="#{editstudybundle.distributorLogoHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
                           <br/>
                           <ice:inputText binding="#{TemplateFormPage.inputDistributorLogo}" id="input_distributorLogo"
@@ -542,7 +542,7 @@
                              styleClass="vdcEditStudyTable #{TemplateFormPage.distributorInputLevel}" columnClasses="vdcEditStudyCol1, vdcEditStudyCol2">
                 <div jsfc="ice:panelGroup" styleClass="vdcEditStudyField #{TemplateFormPage.distributorInputLevel}">
                   <ice:selectOneMenu immediate="false" partialSubmit="true" 
-                                        value="#{TemplateFormPage.studyMap[sfc.distributorContact].templateField.fieldInputLevel.name}"
+                                        value="#{TemplateFormPage.studyMap[sfc.distributorContact].templateField.fieldInputLevelString}"
                                         valueChangeListener="#{TemplateFormPage.changeFieldInputValue}">
                             <f:attribute name="fieldName" value="distributorContact" />
                             <f:selectItems value="#{TemplateFormPage.fieldInputLevelSelectItems}"/>
@@ -552,13 +552,13 @@
                   <ice:graphicImage value="/resources/images/icon_recommended.gif" rendered="#{TemplateFormPage.studyMap[sfc.distributorContact].recommended}"/>
                 </div>
                 <div class="vdcEditStudyFieldFloatWrap">
-                  <div jsfc="ice:panelGroup" styleClass="vdcEditStudyFieldFloat1 #{TemplateFormPage.studyMap[sfc.distributorContact].templateField.fieldInputLevel.name}">
+                  <div jsfc="ice:panelGroup" styleClass="vdcEditStudyFieldFloat1 #{TemplateFormPage.studyMap[sfc.distributorContact].templateField.fieldInputLevelString}">
                     <dvn:inlinehelp helpMessage="#{editstudybundle.distributorContactHelp}" linkText="#{editstudybundle.distributorContactLabel}" heading="#{editstudybundle.distributorContactHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
                     <br/>
                     <ice:inputText binding ="#{TemplateFormPage.inputDistributorContact}" id="input_distributorContact" size="45" value="#{TemplateFormPage.template.metadata.distributorContact}"  required="#{TemplateFormPage.studyMap[sfc.distributorContact].required}"/>
                     <ice:message styleClass="errorMessage" for="input_distributorContact"/>
                   </div>
-                  <div jsfc="ice:panelGroup" styleClass="vdcEditStudyFieldFloat2 vdcEditStudyGroupField #{TemplateFormPage.studyMap[sfc.distributorContactAffiliation].templateField.fieldInputLevel.name}">
+                  <div jsfc="ice:panelGroup" styleClass="vdcEditStudyFieldFloat2 vdcEditStudyGroupField #{TemplateFormPage.studyMap[sfc.distributorContactAffiliation].templateField.fieldInputLevelString}">
                     <dvn:inlinehelp helpMessage="#{editstudybundle.distributorContactAffiliationHelp}" linkText="#{editstudybundle.distributorContactAffiliationLabel}" heading="#{editstudybundle.distributorContactAffiliationHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
                     <br/>
                     <ice:inputText id="distributorContactAffiliation"
@@ -571,7 +571,7 @@
                     </ice:inputText>
                     <ice:message styleClass="errorMessage" for="distributorContactAffiliation"/>
                   </div>
-                  <div jsfc="ice:panelGroup" styleClass="vdcEditStudyFieldFloat3 vdcEditStudyGroupField #{TemplateFormPage.studyMap[sfc.distributorContactEmail].templateField.fieldInputLevel.name}">
+                  <div jsfc="ice:panelGroup" styleClass="vdcEditStudyFieldFloat3 vdcEditStudyGroupField #{TemplateFormPage.studyMap[sfc.distributorContactEmail].templateField.fieldInputLevelString}">
                     <dvn:inlinehelp helpMessage="#{editstudybundle.distributorContactEmailHelp}" linkText="#{editstudybundle.distributorContactEmailLabel}" heading="#{editstudybundle.distributorContactEmailHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
                     <br/>
                     <ice:inputText  binding ="#{TemplateFormPage.inputDistributorContactEmail}" id="input_distributorContactEmail" size="45" value="#{TemplateFormPage.template.metadata.distributorContactEmail}" required="#{TemplateFormPage.studyMap[sfc.distributorContactEmail].required}"/>
@@ -581,11 +581,11 @@
               </ice:panelGrid>
 
               <ice:panelGrid cellpadding="0" cellspacing="0" columns="2" width="100%"
-                             styleClass="vdcEditStudyTable #{TemplateFormPage.studyMap[sfc.distributionDate].templateField.fieldInputLevel.name}"
+                             styleClass="vdcEditStudyTable #{TemplateFormPage.studyMap[sfc.distributionDate].templateField.fieldInputLevelString}"
                              columnClasses="vdcEditStudyCol1, vdcEditStudyCol2">
-                <div jsfc="ice:panelGroup" id="groupPanel49" styleClass="vdcEditStudyField #{TemplateFormPage.studyMap[sfc.distributionDate].templateField.fieldInputLevel.name}">
+                <div jsfc="ice:panelGroup" id="groupPanel49" styleClass="vdcEditStudyField #{TemplateFormPage.studyMap[sfc.distributionDate].templateField.fieldInputLevelString}">
                   <ice:selectOneMenu immediate="false" partialSubmit="true" 
-                                        value="#{TemplateFormPage.studyMap[sfc.distributionDate].templateField.fieldInputLevel.name}"
+                                        value="#{TemplateFormPage.studyMap[sfc.distributionDate].templateField.fieldInputLevelString}"
                                         valueChangeListener="#{TemplateFormPage.changeFieldInputValue}">
                             <f:attribute name="fieldName" value="distributionDate" />
                            <f:selectItems value="#{TemplateFormPage.fieldInputLevelSelectItems}"/>
@@ -594,7 +594,7 @@
                   <ice:graphicImage value="/resources/images/icon_required.gif" rendered="#{TemplateFormPage.studyMap[sfc.distributionDate].required}"/>
                   <ice:graphicImage value="/resources/images/icon_recommended.gif" rendered="#{TemplateFormPage.studyMap[sfc.distributionDate].recommended}"/>
                 </div>
-                <div jsfc="ice:panelGroup" id="groupPanel26" styleClass="#{TemplateFormPage.studyMap[sfc.distributionDate].templateField.fieldInputLevel.name}">
+                <div jsfc="ice:panelGroup" id="groupPanel26" styleClass="#{TemplateFormPage.studyMap[sfc.distributionDate].templateField.fieldInputLevelString}">
                   <ice:inputText id="input_distributionDate" styleClass="formDateFormat" value="#{TemplateFormPage.template.metadata.distributionDate}"  required="#{TemplateFormPage.studyMap[sfc.distributionDate].required}">
 
                   </ice:inputText>
@@ -604,11 +604,11 @@
               </ice:panelGrid>
 
               <ice:panelGrid cellpadding="0" cellspacing="0" columns="2" width="100%"
-                             styleClass="vdcEditStudyTable #{TemplateFormPage.studyMap[sfc.depositor].templateField.fieldInputLevel.name}"
+                             styleClass="vdcEditStudyTable #{TemplateFormPage.studyMap[sfc.depositor].templateField.fieldInputLevelString}"
                              columnClasses="vdcEditStudyCol1, vdcEditStudyCol2">
                 <div id="groupPanel50" class="vdcEditStudyField">
                   <ice:selectOneMenu immediate="false" partialSubmit="true" 
-                                        value="#{TemplateFormPage.studyMap[sfc.depositor].templateField.fieldInputLevel.name}"
+                                        value="#{TemplateFormPage.studyMap[sfc.depositor].templateField.fieldInputLevelString}"
                                         valueChangeListener="#{TemplateFormPage.changeFieldInputValue}">
                             <f:attribute name="fieldName" value="depositor" />
                            <f:selectItems value="#{TemplateFormPage.fieldInputLevelSelectItems}"/>
@@ -617,18 +617,18 @@
                   <ice:graphicImage value="/resources/images/icon_required.gif" rendered="#{TemplateFormPage.studyMap[sfc.depositor].required}"/>
                   <ice:graphicImage value="/resources/images/icon_recommended.gif" rendered="#{TemplateFormPage.studyMap[sfc.depositor].recommended}"/>
                 </div>
-                <div jsfc="ice:panelGroup" id="groupPanel27" styleClass="#{TemplateFormPage.studyMap[sfc.depositor].templateField.fieldInputLevel.name}">
+                <div jsfc="ice:panelGroup" id="groupPanel27" styleClass="#{TemplateFormPage.studyMap[sfc.depositor].templateField.fieldInputLevelString}">
                   <ice:inputText id="input_depositor" size="45" value="#{TemplateFormPage.template.metadata.depositor}" required="#{TemplateFormPage.studyMap[sfc.depositor].required}"/>
                   <ice:message styleClass="errorMessage" for="input_depositor"/>
                 </div>
               </ice:panelGrid>
 
               <ice:panelGrid cellpadding="0" cellspacing="0" columns="2" width="100%"
-                             styleClass="vdcEditStudyTable #{TemplateFormPage.studyMap[sfc.dateOfDeposit].templateField.fieldInputLevel.name}"
+                             styleClass="vdcEditStudyTable #{TemplateFormPage.studyMap[sfc.dateOfDeposit].templateField.fieldInputLevelString}"
                              columnClasses="vdcEditStudyCol1, vdcEditStudyCol2">
-                <div jsfc="ice:panelGroup" id="groupPanel51"  styleClass="vdcEditStudyField #{TemplateFormPage.studyMap[sfc.dateOfDeposit].templateField.fieldInputLevel.name}">
+                <div jsfc="ice:panelGroup" id="groupPanel51"  styleClass="vdcEditStudyField #{TemplateFormPage.studyMap[sfc.dateOfDeposit].templateField.fieldInputLevelString}">
                   <ice:selectOneMenu immediate="false" partialSubmit="true" 
-                                        value="#{TemplateFormPage.studyMap[sfc.dateOfDeposit].templateField.fieldInputLevel.name}"
+                                        value="#{TemplateFormPage.studyMap[sfc.dateOfDeposit].templateField.fieldInputLevelString}"
                                         valueChangeListener="#{TemplateFormPage.changeFieldInputValue}">
                             <f:attribute name="fieldName" value="dateOfDeposit" />
                            <f:selectItems value="#{TemplateFormPage.fieldInputLevelSelectItems}"/>
@@ -637,7 +637,7 @@
                   <ice:graphicImage value="/resources/images/icon_required.gif" rendered="#{TemplateFormPage.studyMap[sfc.dateOfDeposit].required}"/>
                   <ice:graphicImage value="/resources/images/icon_recommended.gif" rendered="#{TemplateFormPage.studyMap[sfc.dateOfDeposit].recommended}"/>
                 </div>
-                <div jsfc="ice:panelGroup" id="groupPanel28" styleClass="vdcEditStudyField #{TemplateFormPage.studyMap[sfc.dateOfDeposit].templateField.fieldInputLevel.name}">
+                <div jsfc="ice:panelGroup" id="groupPanel28" styleClass="vdcEditStudyField #{TemplateFormPage.studyMap[sfc.dateOfDeposit].templateField.fieldInputLevelString}">
                   <ice:outputText value="&lt;#{editstudybundle.depositDateLabel} cannot be set in a template&gt;"/>
                   <ice:message styleClass="errorMessage" for="input_dateOfDeposit"/>
                 </div>
@@ -648,7 +648,7 @@
                              columnClasses="vdcEditStudyCol1, vdcEditStudyCol2">
                 <div jsfc="ice:panelGroup" id="groupPanel52" styleClass="vdcEditStudyField #{TemplateFormPage.seriesInputLevel}">
                   <ice:selectOneMenu immediate="false" partialSubmit="true" 
-                                        value="#{TemplateFormPage.studyMap[sfc.seriesName].templateField.fieldInputLevel.name}"
+                                        value="#{TemplateFormPage.studyMap[sfc.seriesName].templateField.fieldInputLevelString}"
                                         valueChangeListener="#{TemplateFormPage.changeFieldInputValue}">
                             <f:attribute name="fieldName" value="seriesName" />
                            <f:selectItems value="#{TemplateFormPage.fieldInputLevelSelectItems}"/>
@@ -658,7 +658,7 @@
                   <ice:graphicImage value="/resources/images/icon_recommended.gif" rendered="#{TemplateFormPage.seriesInputLevel=='recommended'}"/>
                 </div>
                 <div>
-                  <div jsfc="ice:panelGroup" id="groupPanel29" styleClass="vdcEditStudyField #{TemplateFormPage.studyMap[sfc.seriesName].templateField.fieldInputLevel.name}">
+                  <div jsfc="ice:panelGroup" id="groupPanel29" styleClass="vdcEditStudyField #{TemplateFormPage.studyMap[sfc.seriesName].templateField.fieldInputLevelString}">
                     <dvn:inlinehelp helpMessage="#{editstudybundle.seriesHelp}" linkText="#{editstudybundle.seriesLabel}" heading="#{editstudybundle.seriesHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
                     <br/>
                     <ice:inputText binding="#{TemplateFormPage.inputSeries}" id="input_seriesName"
@@ -669,7 +669,7 @@
                     </ice:inputText>
                     <ice:message styleClass="errorMessage" for="input_seriesName"/>
                   </div>
-                  <div jsfc="ice:panelGroup" styleClass="vdcEditStudyGroupField #{TemplateFormPage.studyMap[sfc.seriesName].templateField.fieldInputLevel.name}" >
+                  <div jsfc="ice:panelGroup" styleClass="vdcEditStudyGroupField #{TemplateFormPage.studyMap[sfc.seriesName].templateField.fieldInputLevelString}" >
                     <dvn:inlinehelp helpMessage="#{editstudybundle.seriesInformationHelp}" linkText="#{editstudybundle.seriesInformationLabel}" heading="#{editstudybundle.seriesInformationHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
                     <br/>
                     <ice:inputText binding ="#{TemplateFormPage.inputSeriesInformation}" id="input_seriesInformation"
@@ -690,7 +690,7 @@
                              columnClasses="vdcEditStudyCol1, vdcEditStudyCol2">
                 <div jsfc="ice:panelGroup" id="groupPanel53" styleClass="#{TemplateFormPage.versionInputLevel}">
                   <ice:selectOneMenu immediate="false" partialSubmit="true" 
-                                        value="#{TemplateFormPage.studyMap[sfc.studyVersion].templateField.fieldInputLevel.name}"
+                                        value="#{TemplateFormPage.studyMap[sfc.studyVersion].templateField.fieldInputLevelString}"
                                         valueChangeListener="#{TemplateFormPage.changeFieldInputValue}">
                             <f:attribute name="fieldName" value="studyVersion" />
                            <f:selectItems value="#{TemplateFormPage.fieldInputLevelSelectItems}"/>
@@ -700,13 +700,13 @@
                   <ice:graphicImage value="/resources/images/icon_recommended.gif" rendered="#{TemplateFormPage.versionInputLevel=='recommended'}"/>
                 </div>
                 <div id="groupPanel30">
-                  <div jsfc="ice:panelGroup" styleClass="#{TemplateFormPage.studyMap[sfc.studyVersion].templateField.fieldInputLevel.name}">
+                  <div jsfc="ice:panelGroup" styleClass="#{TemplateFormPage.studyMap[sfc.studyVersion].templateField.fieldInputLevelString}">
                     <dvn:inlinehelp helpMessage="#{editstudybundle.seriesVersionHelp}" linkText="#{editstudybundle.seriesVersionLabel}" heading="#{editstudybundle.seriesVersionHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
                     <br/>
                     <ice:inputText  binding="#{TemplateFormPage.inputVersion}" id="input_studyVersion" value="#{TemplateFormPage.template.metadata.studyVersion}"  required="#{TemplateFormPage.studyMap[sfc.studyVersion].required}"/>
                     <ice:message styleClass="errorMessage" for="input_studyVersion"/>
                   </div>
-                  <div jsfc="ice:panelGroup" styleClass="vdcEditStudyGroupField #{TemplateFormPage.studyMap[sfc.versionDate].templateField.fieldInputLevel.name}">
+                  <div jsfc="ice:panelGroup" styleClass="vdcEditStudyGroupField #{TemplateFormPage.studyMap[sfc.versionDate].templateField.fieldInputLevelString}">
                     <dvn:inlinehelp helpMessage="#{editstudybundle.seriesVersionDateHelp}" linkText="#{editstudybundle.seriesVersionDateLabel}" heading="#{editstudybundle.seriesVersionDateHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
                     <br/>
                     <ice:inputText binding="#{TemplateFormPage.inputVersionDate}" validator="#{TemplateFormPage.validateVersion}" id="input_versionDate" styleClass="formDateFormat" value="#{TemplateFormPage.template.metadata.versionDate}" required="#{TemplateFormPage.studyMap[sfc.versionDate].required}" >
@@ -718,11 +718,11 @@
                 </div>
               </ice:panelGrid>
               <ice:panelGrid cellpadding="0" cellspacing="0" columns="2" width="100%"
-                             styleClass="vdcEditStudyTable #{TemplateFormPage.studyMap[sfc.replicationFor].templateField.fieldInputLevel.name}"
+                             styleClass="vdcEditStudyTable #{TemplateFormPage.studyMap[sfc.replicationFor].templateField.fieldInputLevelString}"
                              columnClasses="vdcEditStudyCol1, vdcEditStudyCol2">
-                <div jsfc="ice:panelGroup" styleClass="vdcEditStudyGroupField #{TemplateFormPage.studyMap[sfc.replicationFor].templateField.fieldInputLevel.name}">
+                <div jsfc="ice:panelGroup" styleClass="vdcEditStudyGroupField #{TemplateFormPage.studyMap[sfc.replicationFor].templateField.fieldInputLevelString}">
                   <ice:selectOneMenu immediate="false" partialSubmit="true" 
-                                        value="#{TemplateFormPage.studyMap[sfc.replicationFor].templateField.fieldInputLevel.name}"
+                                        value="#{TemplateFormPage.studyMap[sfc.replicationFor].templateField.fieldInputLevelString}"
                                         valueChangeListener="#{TemplateFormPage.changeFieldInputValue}">
                             <f:attribute name="fieldName" value="replicationFor" />
                            <f:selectItems value="#{TemplateFormPage.fieldInputLevelSelectItems}"/>
@@ -731,7 +731,7 @@
                   <ice:graphicImage value="/resources/images/icon_required.gif" rendered="#{TemplateFormPage.studyMap[sfc.replicationFor].required}"/>
                   <ice:graphicImage value="/resources/images/icon_recommended.gif" rendered="#{TemplateFormPage.studyMap[sfc.replicationFor].recommended}"/>
                 </div>
-                <div jsfc="ice:panelGroup" styleClass="#{TemplateFormPage.studyMap[sfc.replicationFor].templateField.fieldInputLevel.name}">
+                <div jsfc="ice:panelGroup" styleClass="#{TemplateFormPage.studyMap[sfc.replicationFor].templateField.fieldInputLevelString}">
                   <ice:inputTextarea cols="90" rows="4"
                                      id="input_replicationFor"
                                      value="#{TemplateFormPage.template.metadata.replicationFor}"
@@ -758,7 +758,7 @@
                     <ice:column>
                       <div class="vdcEditStudyField">
                         <ice:selectOneMenu immediate="false" partialSubmit="true" 
-                                        value="#{TemplateFormPage.studyMap[sfc.abstractText].templateField.fieldInputLevel.name}"
+                                        value="#{TemplateFormPage.studyMap[sfc.abstractText].templateField.fieldInputLevelString}"
                                         rendered ="#{TemplateFormPage.dataTableAbstracts.rowIndex==0}"
                                         valueChangeListener="#{TemplateFormPage.changeFieldInputValue}">
                             <f:attribute name="fieldName" value="abstractText" />
@@ -771,7 +771,7 @@
                     </ice:column>
                     <ice:column>
                       <div>
-                        <div styleClass="#{TemplateFormPage.studyMap[sfc.abstractText].templateField.fieldInputLevel.name}">
+                        <div styleClass="#{TemplateFormPage.studyMap[sfc.abstractText].templateField.fieldInputLevelString}">
                           <ice:outputText value="Note: Copying and pasting from a Word document can create errors when you save this page."/>
                           <br/>
                           <dvn:inlinehelp helpMessage="#{editstudybundle.abstractHelp}" linkText="#{editstudybundle.abstractLabel}" heading="#{editstudybundle.abstractHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
@@ -786,7 +786,7 @@
                           </ice:inputTextarea>
                           <ice:message styleClass="errorMessage" for="input_abstractText"/>
                         </div>
-                        <div jsfc="ice:panelGroup" styleClass="vdcEditStudyGroupField #{TemplateFormPage.studyMap[sfc.abstractDate].templateField.fieldInputLevel.name}">
+                        <div jsfc="ice:panelGroup" styleClass="vdcEditStudyGroupField #{TemplateFormPage.studyMap[sfc.abstractDate].templateField.fieldInputLevelString}">
                           <dvn:inlinehelp helpMessage="#{editstudybundle.abstractDateHelp}" linkText="#{editstudybundle.abstractDateLabel}" heading="#{editstudybundle.abstractDateHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
                           <br/>
                           <ice:inputText binding="#{TemplateFormPage.inputAbstractDate}" validator="#{TemplateFormPage.validateStudyAbstract}" id="input_abstractDate" styleClass="formDateFormat" value="#{currentRow.date}" required="#{TemplateFormPage.studyMap[sfc.abstractDate].required}">
@@ -816,7 +816,7 @@
                     <ice:column>
                       <div class="vdcEditStudyField">
                         <ice:selectOneMenu immediate="false" partialSubmit="true" 
-                                        value="#{TemplateFormPage.studyMap[sfc.keywordValue].templateField.fieldInputLevel.name}"
+                                        value="#{TemplateFormPage.studyMap[sfc.keywordValue].templateField.fieldInputLevelString}"
                                         rendered ="#{TemplateFormPage.dataTableKeywords.rowIndex==0}"
                                         valueChangeListener="#{TemplateFormPage.changeFieldInputValue}">
                             <f:attribute name="fieldName" value="keywordValue" />
@@ -829,19 +829,19 @@
                     </ice:column>
                     <ice:column>
                       <div class="vdcEditStudyFieldFloatWrap">
-                        <div jsfc="ice:panelGroup" styleClass="vdcEditStudyFieldFloat1 #{TemplateFormPage.studyMap[sfc.keywordValue].templateField.fieldInputLevel.name}">
+                        <div jsfc="ice:panelGroup" styleClass="vdcEditStudyFieldFloat1 #{TemplateFormPage.studyMap[sfc.keywordValue].templateField.fieldInputLevelString}">
                           <dvn:inlinehelp helpMessage="#{editstudybundle.keywordHelp}" linkText="#{editstudybundle.keywordLabel}" heading="#{editstudybundle.keywordHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
                           <br/>
                           <ice:inputText binding="#{TemplateFormPage.inputKeywordValue}" id="input_keywordValue" value="#{currentRow.value}" required="#{TemplateFormPage.studyMap[sfc.keywordValue].required}"/>
                           <ice:message styleClass="errorMessage" for="input_keywordValue"/>
                         </div>
-                        <div jsfc="ice:panelGroup" styleClass="vdcEditStudyFieldFloat2 vdcEditStudyGroupField #{TemplateFormPage.studyMap[sfc.keywordVocab].templateField.fieldInputLevel.name}">
+                        <div jsfc="ice:panelGroup" styleClass="vdcEditStudyFieldFloat2 vdcEditStudyGroupField #{TemplateFormPage.studyMap[sfc.keywordVocab].templateField.fieldInputLevelString}">
                           <dvn:inlinehelp helpMessage="#{editstudybundle.keywordVocabularyHelp}" linkText="#{editstudybundle.keywordVocabularyLabel}" heading="#{editstudybundle.keywordVocabularyHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
                           <br/>
                           <ice:inputText validator="#{TemplateFormPage.validateStudyKeyword}" binding="#{TemplateFormPage.inputKeywordVocab}" id="input_keywordVocab" value="#{currentRow.vocab}" required="#{TemplateFormPage.studyMap[sfc.keywordVocab].required}" maxlength="255"/>
                           <ice:message styleClass="errorMessage" for="input_keywordVocab"/>
                         </div>
-                        <div jsfc="ice:panelGroup" styleClass="vdcEditStudyFieldFloat3 vdcEditStudyGroupField #{TemplateFormPage.studyMap[sfc.keywordVocabURI].templateField.fieldInputLevel.name}">
+                        <div jsfc="ice:panelGroup" styleClass="vdcEditStudyFieldFloat3 vdcEditStudyGroupField #{TemplateFormPage.studyMap[sfc.keywordVocabURI].templateField.fieldInputLevelString}">
                           <dvn:inlinehelp helpMessage="#{editstudybundle.keywordVocabularyURLHelp}" linkText="#{editstudybundle.keywordVocabularyURLLabel}" heading="#{editstudybundle.keywordVocabularyURLHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
                           <br/>
                           <ice:inputText id="input_keywordVocabURI"
@@ -878,7 +878,7 @@
                     <ice:column>
                       <div class="vdcEditStudyField">
                         <ice:selectOneMenu immediate="false" partialSubmit="true" 
-                                        value="#{TemplateFormPage.studyMap[sfc.topicClassValue].templateField.fieldInputLevel.name}"
+                                        value="#{TemplateFormPage.studyMap[sfc.topicClassValue].templateField.fieldInputLevelString}"
                                         rendered ="#{TemplateFormPage.dataTableTopicClass.rowIndex==0}"
                                         valueChangeListener="#{TemplateFormPage.changeFieldInputValue}">
                             <f:attribute name="fieldName" value="topicClassValue" />
@@ -891,19 +891,19 @@
                     </ice:column>
                     <ice:column>
                       <div class="vdcEditStudyFieldFloatWrap">
-                        <div jsfc="ice:panelGroup" styleClass="vdcEditStudyFieldFloat1 vdcEditStudyGroupField #{TemplateFormPage.studyMap[sfc.topicClassValue].templateField.fieldInputLevel.name}">
+                        <div jsfc="ice:panelGroup" styleClass="vdcEditStudyFieldFloat1 vdcEditStudyGroupField #{TemplateFormPage.studyMap[sfc.topicClassValue].templateField.fieldInputLevelString}">
                           <dvn:inlinehelp helpMessage="#{editstudybundle.topicClassificationHelp}" linkText="#{editstudybundle.topicClassificationLabel}" heading="#{editstudybundle.topicClassificationHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
                           <br/>
                           <ice:inputText binding="#{TemplateFormPage.inputTopicClassValue}" id="input_topicClassValue" value="#{currentRow.value}" required="#{TemplateFormPage.studyMap[sfc.topicClassValue].required}"/>
                           <ice:message styleClass="errorMessage" for="input_topicClassValue"/>
                         </div>
-                        <div jsfc="ice:panelGroup" styleClass="vdcEditStudyFieldFloat2 vdcEditStudyGroupField #{TemplateFormPage.studyMap[sfc.topicClassVocab].templateField.fieldInputLevel.name}">
+                        <div jsfc="ice:panelGroup" styleClass="vdcEditStudyFieldFloat2 vdcEditStudyGroupField #{TemplateFormPage.studyMap[sfc.topicClassVocab].templateField.fieldInputLevelString}">
                           <dvn:inlinehelp helpMessage="#{editstudybundle.topicClassVocabularyHelp}" linkText="#{editstudybundle.topicClassVocabularyLabel}" heading="#{editstudybundle.topicClassVocabularyHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
                           <br/>
                           <ice:inputText maxlength="255" validator="#{TemplateFormPage.validateStudyTopicClass}" binding="#{TemplateFormPage.inputTopicClassVocab}" id="input_topicClassVocab" value="#{currentRow.vocab}" required="#{TemplateFormPage.studyMap[sfc.topicClassVocab].required}"/>
                           <ice:message styleClass="errorMessage" for="input_topicClassVocab"/>
                         </div>
-                        <div jsfc="ice:panelGroup" styleClass="vdcEditStudyFieldFloat3 vdcEditStudyGroupField #{TemplateFormPage.studyMap[sfc.topicClassVocabURI].templateField.fieldInputLevel.name}">
+                        <div jsfc="ice:panelGroup" styleClass="vdcEditStudyFieldFloat3 vdcEditStudyGroupField #{TemplateFormPage.studyMap[sfc.topicClassVocabURI].templateField.fieldInputLevelString}">
                           <dvn:inlinehelp helpMessage="#{editstudybundle.topicClassVocabularyURLHelp}" linkText="#{editstudybundle.topicClassVocabularyURLLabel}" heading="#{editstudybundle.topicClassVocabularyURLHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
                           <br/>
                           <ice:inputText id="input_topicClassVocabURI"
@@ -931,7 +931,7 @@
               <!-- this is a dummy datatable wrapper used to force data retention on validation error-->
               <ice:dataTable cellpadding="0" cellspacing="0" width="100%"
                              styleClass="vdcEditStudyTable"
-                             rowClasses="#{TemplateFormPage.studyMap[sfc.relatedPublications].templateField.fieldInputLevel.name}" value="dummy_datatable">
+                             rowClasses="#{TemplateFormPage.studyMap[sfc.relatedPublications].templateField.fieldInputLevelString}" value="dummy_datatable">
                 <ice:column>
                   <ice:dataTable cellpadding="0" cellspacing="0" width="100%"
                                  columnClasses="vdcEditStudyCol1b, vdcEditStudyCol2, vdcEditStudyCol3"
@@ -940,7 +940,7 @@
                     <ice:column>
                       <div class="vdcEditStudyField">
                         <ice:selectOneMenu immediate="false" partialSubmit="true" 
-                                        value="#{TemplateFormPage.studyMap[sfc.relatedPublications].templateField.fieldInputLevel.name}"
+                                        value="#{TemplateFormPage.studyMap[sfc.relatedPublications].templateField.fieldInputLevelString}"
                                         rendered ="#{TemplateFormPage.dataTableRelPublications.rowIndex==0}"
                                         valueChangeListener="#{TemplateFormPage.changeFieldInputValue}">
                             <f:attribute name="fieldName" value="relatedPublications" />
@@ -975,7 +975,7 @@
               <!-- this is a dummy datatable wrapper used to force data retention on validation error-->
               <ice:dataTable cellpadding="0" cellspacing="0" width="100%"
                              styleClass="vdcEditStudyTable"
-                             rowClasses="#{TemplateFormPage.studyMap[sfc.relatedMaterial].templateField.fieldInputLevel.name}" value="dummy_datatable">
+                             rowClasses="#{TemplateFormPage.studyMap[sfc.relatedMaterial].templateField.fieldInputLevelString}" value="dummy_datatable">
                 <ice:column>
                   <ice:dataTable cellpadding="0" cellspacing="0" width="100%"
                                  columnClasses="vdcEditStudyCol1b, vdcEditStudyCol2, vdcEditStudyCol3"
@@ -984,7 +984,7 @@
                     <ice:column>
                       <div class="vdcEditStudyField">
                         <ice:selectOneMenu immediate="false" partialSubmit="true" 
-                                        value="#{TemplateFormPage.studyMap[sfc.relatedMaterial].templateField.fieldInputLevel.name}"
+                                        value="#{TemplateFormPage.studyMap[sfc.relatedMaterial].templateField.fieldInputLevelString}"
                                         rendered ="#{TemplateFormPage.dataTableRelMaterials.rowIndex==0}"
                                         valueChangeListener="#{TemplateFormPage.changeFieldInputValue}">
                             <f:attribute name="fieldName" value="relatedMaterial" />
@@ -1019,7 +1019,7 @@
               <!-- this is a dummy datatable wrapper used to force data retention on validation error-->
               <ice:dataTable cellpadding="0" cellspacing="0" width="100%"
                              styleClass="vdcEditStudyTable"
-                             rowClasses="#{TemplateFormPage.studyMap[sfc.relatedStudies].templateField.fieldInputLevel.name}" value="dummy_datatable">
+                             rowClasses="#{TemplateFormPage.studyMap[sfc.relatedStudies].templateField.fieldInputLevelString}" value="dummy_datatable">
                 <ice:column>
                   <ice:dataTable cellpadding="0" cellspacing="0" width="100%"
                                  columnClasses="vdcEditStudyCol1b, vdcEditStudyCol2, vdcEditStudyCol3"
@@ -1028,7 +1028,7 @@
                     <ice:column>
                       <div class="vdcEditStudyField">
                         <ice:selectOneMenu immediate="false" partialSubmit="true" 
-                                        value="#{TemplateFormPage.studyMap[sfc.relatedStudies].templateField.fieldInputLevel.name}"
+                                        value="#{TemplateFormPage.studyMap[sfc.relatedStudies].templateField.fieldInputLevelString}"
                                         rendered ="#{TemplateFormPage.dataTableRelStudies.rowIndex==0}"
                                         valueChangeListener="#{TemplateFormPage.changeFieldInputValue}">
                             <f:attribute name="fieldName" value="relatedStudies" />
@@ -1063,7 +1063,7 @@
               <!-- this is a dummy datatable wrapper used to force data retention on validation error-->
               <ice:dataTable cellpadding="0" cellspacing="0" width="100%"
                              styleClass="vdcEditStudyTable"
-                             rowClasses="#{TemplateFormPage.studyMap[sfc.otherReferences].templateField.fieldInputLevel.name}" value="dummy_datatable">
+                             rowClasses="#{TemplateFormPage.studyMap[sfc.otherReferences].templateField.fieldInputLevelString}" value="dummy_datatable">
                 <ice:column>
                   <ice:dataTable cellpadding="0" cellspacing="0" width="100%"
                                  columnClasses="vdcEditStudyCol1b, vdcEditStudyCol2, vdcEditStudyCol3"
@@ -1072,7 +1072,7 @@
                     <ice:column>
                       <div class="vdcEditStudyField">
                         <ice:selectOneMenu immediate="false" partialSubmit="true" 
-                                        value="#{TemplateFormPage.studyMap[sfc.otherReferences].templateField.fieldInputLevel.name}"
+                                        value="#{TemplateFormPage.studyMap[sfc.otherReferences].templateField.fieldInputLevelString}"
                                         rendered ="#{TemplateFormPage.dataTableOtherReferences.rowIndex==0}"
                                         valueChangeListener="#{TemplateFormPage.changeFieldInputValue}">
                             <f:attribute name="fieldName" value="otherReferences" />
@@ -1105,11 +1105,11 @@
               </ice:dataTable>
 
               <ice:panelGrid cellpadding="0" cellspacing="0" columns="2" width="100%"
-                             styleClass="vdcEditStudyTable #{TemplateFormPage.studyMap[sfc.timePeriodCoveredStart].templateField.fieldInputLevel.name}"
+                             styleClass="vdcEditStudyTable #{TemplateFormPage.studyMap[sfc.timePeriodCoveredStart].templateField.fieldInputLevelString}"
                              columnClasses="vdcEditStudyCol1, vdcEditStudyCol2">
                 <div class="vdcEditStudyField">
                   <ice:selectOneMenu immediate="false" partialSubmit="true" 
-                                        value="#{TemplateFormPage.studyMap[sfc.timePeriodCoveredStart].templateField.fieldInputLevel.name}"
+                                        value="#{TemplateFormPage.studyMap[sfc.timePeriodCoveredStart].templateField.fieldInputLevelString}"
                                         valueChangeListener="#{TemplateFormPage.changeFieldInputValue}">
                             <f:attribute name="fieldName" value="timePeriodCoveredStart" />
                            <f:selectItems value="#{TemplateFormPage.fieldInputLevelSelectItems}"/>
@@ -1128,11 +1128,11 @@
               </ice:panelGrid>
 
               <ice:panelGrid cellpadding="0" cellspacing="0" columns="2" width="100%"
-                             styleClass="vdcEditStudyTable #{TemplateFormPage.studyMap[sfc.timePeriodCoveredEnd].templateField.fieldInputLevel.name}"
+                             styleClass="vdcEditStudyTable #{TemplateFormPage.studyMap[sfc.timePeriodCoveredEnd].templateField.fieldInputLevelString}"
                              columnClasses="vdcEditStudyCol1, vdcEditStudyCol2">
                 <div class="vdcEditStudyField">
                   <ice:selectOneMenu immediate="false" partialSubmit="true" 
-                                        value="#{TemplateFormPage.studyMap[sfc.timePeriodCoveredEnd].templateField.fieldInputLevel.name}"
+                                        value="#{TemplateFormPage.studyMap[sfc.timePeriodCoveredEnd].templateField.fieldInputLevelString}"
                                         valueChangeListener="#{TemplateFormPage.changeFieldInputValue}">
                             <f:attribute name="fieldName" value="timePeriodCoveredEnd" />
                            <f:selectItems value="#{TemplateFormPage.fieldInputLevelSelectItems}"/>
@@ -1151,11 +1151,11 @@
               </ice:panelGrid>
 
               <ice:panelGrid cellpadding="0" cellspacing="0" columns="2" width="100%"
-                             styleClass="vdcEditStudyTable #{TemplateFormPage.studyMap[sfc.dateOfCollectionStart].templateField.fieldInputLevel.name}"
+                             styleClass="vdcEditStudyTable #{TemplateFormPage.studyMap[sfc.dateOfCollectionStart].templateField.fieldInputLevelString}"
                              columnClasses="vdcEditStudyCol1, vdcEditStudyCol2">
                 <div class="vdcEditStudyField">
                   <ice:selectOneMenu immediate="false" partialSubmit="true" 
-                                        value="#{TemplateFormPage.studyMap[sfc.dateOfCollectionStart].templateField.fieldInputLevel.name}"
+                                        value="#{TemplateFormPage.studyMap[sfc.dateOfCollectionStart].templateField.fieldInputLevelString}"
                                         valueChangeListener="#{TemplateFormPage.changeFieldInputValue}">
                             <f:attribute name="fieldName" value="dateOfCollectionStart" />
                            <f:selectItems value="#{TemplateFormPage.fieldInputLevelSelectItems}"/>
@@ -1174,11 +1174,11 @@
               </ice:panelGrid>
 
               <ice:panelGrid cellpadding="0" cellspacing="0" columns="2" width="100%"
-                             styleClass="vdcEditStudyTable #{TemplateFormPage.studyMap[sfc.dateOfCollectionEnd].templateField.fieldInputLevel.name}"
+                             styleClass="vdcEditStudyTable #{TemplateFormPage.studyMap[sfc.dateOfCollectionEnd].templateField.fieldInputLevelString}"
                              columnClasses="vdcEditStudyCol1, vdcEditStudyCol2">
                 <div class="vdcEditStudyField">
                   <ice:selectOneMenu immediate="false" partialSubmit="true" 
-                                        value="#{TemplateFormPage.studyMap[sfc.dateOfCollectionEnd].templateField.fieldInputLevel.name}"
+                                        value="#{TemplateFormPage.studyMap[sfc.dateOfCollectionEnd].templateField.fieldInputLevelString}"
                                         valueChangeListener="#{TemplateFormPage.changeFieldInputValue}">
                             <f:attribute name="fieldName" value="dateOfCollectionEnd" />
                            <f:selectItems value="#{TemplateFormPage.fieldInputLevelSelectItems}"/>
@@ -1197,11 +1197,11 @@
               </ice:panelGrid>
 
               <ice:panelGrid cellpadding="0" cellspacing="0" columns="2" width="100%"
-                             styleClass="vdcEditStudyTable #{TemplateFormPage.studyMap[sfc.country].templateField.fieldInputLevel.name}"
+                             styleClass="vdcEditStudyTable #{TemplateFormPage.studyMap[sfc.country].templateField.fieldInputLevelString}"
                              columnClasses="vdcEditStudyCol1, vdcEditStudyCol2">
                 <div class="vdcEditStudyField">
                   <ice:selectOneMenu immediate="false" partialSubmit="true" 
-                                        value="#{TemplateFormPage.studyMap[sfc.country].templateField.fieldInputLevel.name}"
+                                        value="#{TemplateFormPage.studyMap[sfc.country].templateField.fieldInputLevelString}"
                                         valueChangeListener="#{TemplateFormPage.changeFieldInputValue}">
                             <f:attribute name="fieldName" value="country" />
                            <f:selectItems value="#{TemplateFormPage.fieldInputLevelSelectItems}"/>
@@ -1217,11 +1217,11 @@
               </ice:panelGrid>
 
               <ice:panelGrid cellpadding="0" cellspacing="0" columns="2" width="100%"
-                             styleClass="vdcEditStudyTable #{TemplateFormPage.studyMap[sfc.geographicCoverage].templateField.fieldInputLevel.name}"
+                             styleClass="vdcEditStudyTable #{TemplateFormPage.studyMap[sfc.geographicCoverage].templateField.fieldInputLevelString}"
                              columnClasses="vdcEditStudyCol1, vdcEditStudyCol2">
                 <div class="vdcEditStudyField">
                   <ice:selectOneMenu immediate="false" partialSubmit="true" 
-                                        value="#{TemplateFormPage.studyMap[sfc.geographicCoverage].templateField.fieldInputLevel.name}"
+                                        value="#{TemplateFormPage.studyMap[sfc.geographicCoverage].templateField.fieldInputLevelString}"
                                         valueChangeListener="#{TemplateFormPage.changeFieldInputValue}">
                             <f:attribute name="fieldName" value="geographicCoverage" />
                            <f:selectItems value="#{TemplateFormPage.fieldInputLevelSelectItems}"/>
@@ -1237,11 +1237,11 @@
               </ice:panelGrid>
 
               <ice:panelGrid cellpadding="0" cellspacing="0" columns="2" width="100%"
-                             styleClass="vdcEditStudyTable #{TemplateFormPage.studyMap[sfc.geographicUnit].templateField.fieldInputLevel.name}"
+                             styleClass="vdcEditStudyTable #{TemplateFormPage.studyMap[sfc.geographicUnit].templateField.fieldInputLevelString}"
                              columnClasses="vdcEditStudyCol1, vdcEditStudyCol2">
                 <div class="vdcEditStudyField">
                   <ice:selectOneMenu immediate="false" partialSubmit="true" 
-                                        value="#{TemplateFormPage.studyMap[sfc.geographicUnit].templateField.fieldInputLevel.name}"
+                                        value="#{TemplateFormPage.studyMap[sfc.geographicUnit].templateField.fieldInputLevelString}"
                                         valueChangeListener="#{TemplateFormPage.changeFieldInputValue}">
                             <f:attribute name="fieldName" value="geographicUnit" />
                            <f:selectItems value="#{TemplateFormPage.fieldInputLevelSelectItems}"/>
@@ -1257,11 +1257,11 @@
               </ice:panelGrid>
 
               <ice:panelGrid cellpadding="0" cellspacing="0" columns="2" width="100%"
-                             styleClass="vdcEditStudyTable #{TemplateFormPage.studyMap[sfc.westLongitude].templateField.fieldInputLevel.name}"
+                             styleClass="vdcEditStudyTable #{TemplateFormPage.studyMap[sfc.westLongitude].templateField.fieldInputLevelString}"
                              columnClasses="vdcEditStudyCol1, vdcEditStudyCol2">
                 <div class="vdcEditStudyField">
                   <ice:selectOneMenu immediate="false" partialSubmit="true" 
-                                        value="#{TemplateFormPage.studyMap[sfc.westLongitude].templateField.fieldInputLevel.name}"
+                                        value="#{TemplateFormPage.studyMap[sfc.westLongitude].templateField.fieldInputLevelString}"
                                         valueChangeListener="#{TemplateFormPage.changeFieldInputValue}">
                             <f:attribute name="fieldName" value="westLongitude" />
                            <f:selectItems value="#{TemplateFormPage.fieldInputLevelSelectItems}"/>
@@ -1311,11 +1311,11 @@
               </ice:panelGrid>
 
               <ice:panelGrid cellpadding="0" cellspacing="0" columns="2" width="100%"
-                             styleClass="vdcEditStudyTable #{TemplateFormPage.studyMap[sfc.unitOfAnalysis].templateField.fieldInputLevel.name}"
+                             styleClass="vdcEditStudyTable #{TemplateFormPage.studyMap[sfc.unitOfAnalysis].templateField.fieldInputLevelString}"
                              columnClasses="vdcEditStudyCol1, vdcEditStudyCol2">
                 <div class="vdcEditStudyField">
                   <ice:selectOneMenu immediate="false" partialSubmit="true" 
-                                        value="#{TemplateFormPage.studyMap[sfc.unitOfAnalysis].templateField.fieldInputLevel.name}"
+                                        value="#{TemplateFormPage.studyMap[sfc.unitOfAnalysis].templateField.fieldInputLevelString}"
                                         valueChangeListener="#{TemplateFormPage.changeFieldInputValue}">
                             <f:attribute name="fieldName" value="unitOfAnalysis" />
                            <f:selectItems value="#{TemplateFormPage.fieldInputLevelSelectItems}"/>
@@ -1333,11 +1333,11 @@
               </ice:panelGrid>
 
               <ice:panelGrid cellpadding="0" cellspacing="0" columns="2" width="100%"
-                             styleClass="vdcEditStudyTable #{TemplateFormPage.studyMap[sfc.universe].templateField.fieldInputLevel.name}"
+                             styleClass="vdcEditStudyTable #{TemplateFormPage.studyMap[sfc.universe].templateField.fieldInputLevelString}"
                              columnClasses="vdcEditStudyCol1, vdcEditStudyCol2">
                 <div class="vdcEditStudyField">
                   <ice:selectOneMenu immediate="false" partialSubmit="true" 
-                                        value="#{TemplateFormPage.studyMap[sfc.universe].templateField.fieldInputLevel.name}"
+                                        value="#{TemplateFormPage.studyMap[sfc.universe].templateField.fieldInputLevelString}"
                                         valueChangeListener="#{TemplateFormPage.changeFieldInputValue}">
                             <f:attribute name="fieldName" value="universe" />
                            <f:selectItems value="#{TemplateFormPage.fieldInputLevelSelectItems}"/>
@@ -1367,24 +1367,27 @@
               <!-- end of DCM header-->
 
              <!-- Add Field section -->
+             <ice:selectOneMenu immediate="false" rendered="#{TemplateFormPage.networkEdit}"
+                                        binding="#{TemplateFormPage.selectNewDcmFieldInputLevel}">
+                   <f:selectItems value="#{TemplateFormPage.fieldInputLevelSelectItems}"/>
+             </ice:selectOneMenu>
 
-             <ice:outputText  value="Field Name"/>
-                  <ice:inputText id="input_adHocFieldName" size="90" binding="#{TemplateFormPage.inputStudyFieldName}">
+             <ice:outputText  value="Field Name" rendered="#{TemplateFormPage.networkEdit}"/>
+                  <ice:inputText id="input_adHocFieldName" size="90" binding="#{TemplateFormPage.inputStudyFieldName}"  rendered="#{TemplateFormPage.networkEdit}">
+                  </ice:inputText>
+             <ice:outputText  value="Field Description" rendered="#{TemplateFormPage.networkEdit}"/>
+                  <ice:inputText id="input_adHocFieldDescription" size="90" binding="#{TemplateFormPage.inputStudyFieldDescription}"  rendered="#{TemplateFormPage.networkEdit}">
 
                   </ice:inputText>
-             <ice:outputText  value="Field Description"/>
-                  <ice:inputText id="input_adHocFieldDescription" size="90" binding="#{TemplateFormPage.inputStudyFieldDescription}">
-
-                  </ice:inputText>
-             <ice:outputText  value="Field Type"/>
+             <ice:outputText  value="Field Type" rendered="#{TemplateFormPage.networkEdit}"/>
                            <ice:selectOneMenu immediate="false" partialSubmit="false" binding="#{TemplateFormPage.selectFieldType}"
-                                        >
+                                         rendered="#{TemplateFormPage.networkEdit}">
                            <f:selectItems value="#{TemplateFormPage.fieldTypeSelectItems}"/>
                            </ice:selectOneMenu>
-                  <ice:outputText  value="Allow multiple values"/>
-                  <ice:selectBooleanCheckbox partialSubmit="false"  binding="#{TemplateFormPage.allowMultiplesCheck}"  />
+                  <ice:outputText  value="Allow multiple values" rendered="#{TemplateFormPage.networkEdit}"/>
+                  <ice:selectBooleanCheckbox partialSubmit="false"  binding="#{TemplateFormPage.allowMultiplesCheck}"  rendered="#{TemplateFormPage.networkEdit}" />
 
-                  <ice:commandButton partialSubmit="true" value="Add Field" action="#{TemplateFormPage.saveField}"/>
+                  <ice:commandButton partialSubmit="true" value="Add Field" action="#{TemplateFormPage.saveField}"  rendered="#{TemplateFormPage.networkEdit}"/>
               
               <!-- Generic control-->
 
@@ -1398,7 +1401,7 @@
                     <ice:column>
                       <div class="vdcEditStudyField">
                         <ice:selectOneMenu immediate="true" partialSubmit="true"
-                                           value="#{dcmItem.fieldInputLevel.name}"
+                                           value="#{dcmItem.fieldInputLevelString}"
                                            valueChangeListener="#{TemplateFormPage.changeFieldInputValueDCM}"
                                         >
                             <f:attribute name="dcmSortOrder" value="#{dcmItem.dcmSortOrder}" />
@@ -1456,11 +1459,11 @@
               </ice:panelGrid>
 
               <ice:panelGrid cellpadding="0" cellspacing="0" columns="2" width="100%"
-                             styleClass="vdcEditStudyTable #{TemplateFormPage.studyMap[sfc.placeOfAccess].templateField.fieldInputLevel.name}"
+                             styleClass="vdcEditStudyTable #{TemplateFormPage.studyMap[sfc.placeOfAccess].templateField.fieldInputLevelString}"
                              columnClasses="vdcEditStudyCol1, vdcEditStudyCol2" id="gridPanel5a">
                 <div class="vdcEditStudyField">
                   <ice:selectOneMenu immediate="false" partialSubmit="true"
-                                        value="#{TemplateFormPage.studyMap[sfc.placeOfAccess].templateField.fieldInputLevel.name}"
+                                        value="#{TemplateFormPage.studyMap[sfc.placeOfAccess].templateField.fieldInputLevelString}"
                                         valueChangeListener="#{TemplateFormPage.changeFieldInputValue}">
                             <f:attribute name="fieldName" value="placeOfAccess" />
                            <f:selectItems value="#{TemplateFormPage.fieldInputLevelSelectItems}"/>
@@ -1482,11 +1485,11 @@
               </ice:panelGrid>
 
               <ice:panelGrid cellpadding="0" cellspacing="0" columns="2" width="100%"
-                             styleClass="vdcEditStudyTable #{TemplateFormPage.studyMap[sfc.originalArchive].templateField.fieldInputLevel.name}"
+                             styleClass="vdcEditStudyTable #{TemplateFormPage.studyMap[sfc.originalArchive].templateField.fieldInputLevelString}"
                              columnClasses="vdcEditStudyCol1, vdcEditStudyCol2">
                 <div class="vdcEditStudyField">
                   <ice:selectOneMenu immediate="false" partialSubmit="true"
-                                        value="#{TemplateFormPage.studyMap[sfc.originalArchive].templateField.fieldInputLevel.name}"
+                                        value="#{TemplateFormPage.studyMap[sfc.originalArchive].templateField.fieldInputLevelString}"
                                         valueChangeListener="#{TemplateFormPage.changeFieldInputValue}">
                             <f:attribute name="fieldName" value="originalArchive" />
                   <f:selectItems value="#{TemplateFormPage.fieldInputLevelSelectItems}"/>
@@ -1508,11 +1511,11 @@
               </ice:panelGrid>
 
               <ice:panelGrid cellpadding="0" cellspacing="0" columns="2" width="100%"
-                             styleClass="vdcEditStudyTable #{TemplateFormPage.studyMap[sfc.availabilityStatus].templateField.fieldInputLevel.name}"
+                             styleClass="vdcEditStudyTable #{TemplateFormPage.studyMap[sfc.availabilityStatus].templateField.fieldInputLevelString}"
                              columnClasses="vdcEditStudyCol1, vdcEditStudyCol2">
                 <div class="vdcEditStudyField">
                   <ice:selectOneMenu immediate="false" partialSubmit="true"
-                                        value="#{TemplateFormPage.studyMap[sfc.availabilityStatus].templateField.fieldInputLevel.name}"
+                                        value="#{TemplateFormPage.studyMap[sfc.availabilityStatus].templateField.fieldInputLevelString}"
                                         valueChangeListener="#{TemplateFormPage.changeFieldInputValue}">
                             <f:attribute name="fieldName" value="availabilityStatus" />
                   <f:selectItems value="#{TemplateFormPage.fieldInputLevelSelectItems}"/>
@@ -1533,11 +1536,11 @@
               </ice:panelGrid>
 
               <ice:panelGrid cellpadding="0" cellspacing="0" columns="2" width="100%"
-                             styleClass="vdcEditStudyTable #{TemplateFormPage.studyMap[sfc.collectionSize].templateField.fieldInputLevel.name}"
+                             styleClass="vdcEditStudyTable #{TemplateFormPage.studyMap[sfc.collectionSize].templateField.fieldInputLevelString}"
                              columnClasses="vdcEditStudyCol1, vdcEditStudyCol2">
                 <div class="vdcEditStudyField">
                   <ice:selectOneMenu immediate="false" partialSubmit="true"
-                                        value="#{TemplateFormPage.studyMap[sfc.collectionSize].templateField.fieldInputLevel.name}"
+                                        value="#{TemplateFormPage.studyMap[sfc.collectionSize].templateField.fieldInputLevelString}"
                                         valueChangeListener="#{TemplateFormPage.changeFieldInputValue}">
                             <f:attribute name="fieldName" value="collectionSize" />
                   <f:selectItems value="#{TemplateFormPage.fieldInputLevelSelectItems}"/>
@@ -1559,11 +1562,11 @@
               </ice:panelGrid>
 
               <ice:panelGrid cellpadding="0" cellspacing="0" columns="2" width="100%"
-                             styleClass="vdcEditStudyTable #{TemplateFormPage.studyMap[sfc.studyCompletion].templateField.fieldInputLevel.name}"
+                             styleClass="vdcEditStudyTable #{TemplateFormPage.studyMap[sfc.studyCompletion].templateField.fieldInputLevelString}"
                              columnClasses="vdcEditStudyCol1, vdcEditStudyCol2">
                 <div class="vdcEditStudyField">
                   <ice:selectOneMenu immediate="false" partialSubmit="true"
-                                        value="#{TemplateFormPage.studyMap[sfc.studyCompletion].templateField.fieldInputLevel.name}"
+                                        value="#{TemplateFormPage.studyMap[sfc.studyCompletion].templateField.fieldInputLevelString}"
                                         valueChangeListener="#{TemplateFormPage.changeFieldInputValue}">
                             <f:attribute name="fieldName" value="studyCompletion" />
                   <f:selectItems value="#{TemplateFormPage.fieldInputLevelSelectItems}"/>
@@ -1590,11 +1593,11 @@
               </ice:panelGrid>
 
               <ice:panelGrid cellpadding="0" cellspacing="0" columns="2" width="100%"
-                             styleClass="vdcEditStudyTable #{TemplateFormPage.studyMap[sfc.confidentialityDeclaration].templateField.fieldInputLevel.name}"
+                             styleClass="vdcEditStudyTable #{TemplateFormPage.studyMap[sfc.confidentialityDeclaration].templateField.fieldInputLevelString}"
                              columnClasses="vdcEditStudyCol1, vdcEditStudyCol2" id="gridPanel5">
                 <div class="vdcEditStudyField">
                   <ice:selectOneMenu immediate="false" partialSubmit="true"
-                                        value="#{TemplateFormPage.studyMap[sfc.confidentialityDeclaration].templateField.fieldInputLevel.name}"
+                                        value="#{TemplateFormPage.studyMap[sfc.confidentialityDeclaration].templateField.fieldInputLevelString}"
                                         valueChangeListener="#{TemplateFormPage.changeFieldInputValue}">
                             <f:attribute name="fieldName" value="confidentialityDeclaration" />
                   <f:selectItems value="#{TemplateFormPage.fieldInputLevelSelectItems}"/>
@@ -1616,11 +1619,11 @@
               </ice:panelGrid>
 
               <ice:panelGrid cellpadding="0" cellspacing="0" columns="2" width="100%"
-                             styleClass="vdcEditStudyTable #{TemplateFormPage.studyMap[sfc.specialPermissions].templateField.fieldInputLevel.name}"
+                             styleClass="vdcEditStudyTable #{TemplateFormPage.studyMap[sfc.specialPermissions].templateField.fieldInputLevelString}"
                              columnClasses="vdcEditStudyCol1, vdcEditStudyCol2">
                 <div class="vdcEditStudyField">
                   <ice:selectOneMenu immediate="false" partialSubmit="true"
-                                        value="#{TemplateFormPage.studyMap[sfc.specialPermissions].templateField.fieldInputLevel.name}"
+                                        value="#{TemplateFormPage.studyMap[sfc.specialPermissions].templateField.fieldInputLevelString}"
                                         valueChangeListener="#{TemplateFormPage.changeFieldInputValue}">
                             <f:attribute name="fieldName" value="specialPermissions" />
                   <f:selectItems value="#{TemplateFormPage.fieldInputLevelSelectItems}"/>
@@ -1641,11 +1644,11 @@
               </ice:panelGrid>
 
               <ice:panelGrid cellpadding="0" cellspacing="0" columns="2" width="100%"
-                             styleClass="vdcEditStudyTable #{TemplateFormPage.studyMap[sfc.restrictions].templateField.fieldInputLevel.name}"
+                             styleClass="vdcEditStudyTable #{TemplateFormPage.studyMap[sfc.restrictions].templateField.fieldInputLevelString}"
                              columnClasses="vdcEditStudyCol1, vdcEditStudyCol2">
                 <div class="vdcEditStudyField">
                   <ice:selectOneMenu immediate="false" partialSubmit="true"
-                                        value="#{TemplateFormPage.studyMap[sfc.restrictions].templateField.fieldInputLevel.name}"
+                                        value="#{TemplateFormPage.studyMap[sfc.restrictions].templateField.fieldInputLevelString}"
                                         valueChangeListener="#{TemplateFormPage.changeFieldInputValue}">
                             <f:attribute name="fieldName" value="restrictions" />
                   <f:selectItems value="#{TemplateFormPage.fieldInputLevelSelectItems}"/>
@@ -1667,11 +1670,11 @@
               </ice:panelGrid>
 
               <ice:panelGrid cellpadding="0" cellspacing="0" columns="2" width="100%"
-                             styleClass="vdcEditStudyTable #{TemplateFormPage.studyMap[sfc.contact].templateField.fieldInputLevel.name}"
+                             styleClass="vdcEditStudyTable #{TemplateFormPage.studyMap[sfc.contact].templateField.fieldInputLevelString}"
                              columnClasses="vdcEditStudyCol1, vdcEditStudyCol2">
                 <div class="vdcEditStudyField">
                   <ice:selectOneMenu immediate="false" partialSubmit="true"
-                                        value="#{TemplateFormPage.studyMap[sfc.contact].templateField.fieldInputLevel.name}"
+                                        value="#{TemplateFormPage.studyMap[sfc.contact].templateField.fieldInputLevelString}"
                                         valueChangeListener="#{TemplateFormPage.changeFieldInputValue}">
                             <f:attribute name="fieldName" value="contact" />
                   <f:selectItems value="#{TemplateFormPage.fieldInputLevelSelectItems}"/>
@@ -1693,11 +1696,11 @@
               </ice:panelGrid>
 
               <ice:panelGrid cellpadding="0" cellspacing="0" columns="2" width="100%"
-                             styleClass="vdcEditStudyTable #{TemplateFormPage.studyMap[sfc.citationRequirements].templateField.fieldInputLevel.name}"
+                             styleClass="vdcEditStudyTable #{TemplateFormPage.studyMap[sfc.citationRequirements].templateField.fieldInputLevelString}"
                              columnClasses="vdcEditStudyCol1, vdcEditStudyCol2">
                 <div class="vdcEditStudyField">
                   <ice:selectOneMenu immediate="false" partialSubmit="true"
-                                        value="#{TemplateFormPage.studyMap[sfc.citationRequirements].templateField.fieldInputLevel.name}"
+                                        value="#{TemplateFormPage.studyMap[sfc.citationRequirements].templateField.fieldInputLevelString}"
                                         valueChangeListener="#{TemplateFormPage.changeFieldInputValue}">
                             <f:attribute name="fieldName" value="citationRequirements" />
                   <f:selectItems value="#{TemplateFormPage.fieldInputLevelSelectItems}"/>
@@ -1718,11 +1721,11 @@
               </ice:panelGrid>
 
               <ice:panelGrid cellpadding="0" cellspacing="0" columns="2" width="100%"
-                             styleClass="vdcEditStudyTable #{TemplateFormPage.studyMap[sfc.depositorRequirements].templateField.fieldInputLevel.name}"
+                             styleClass="vdcEditStudyTable #{TemplateFormPage.studyMap[sfc.depositorRequirements].templateField.fieldInputLevelString}"
                              columnClasses="vdcEditStudyCol1, vdcEditStudyCol2">
                 <div class="vdcEditStudyField">
                   <ice:selectOneMenu immediate="false" partialSubmit="true"
-                                        value="#{TemplateFormPage.studyMap[sfc.depositorRequirements].templateField.fieldInputLevel.name}"
+                                        value="#{TemplateFormPage.studyMap[sfc.depositorRequirements].templateField.fieldInputLevelString}"
                                         valueChangeListener="#{TemplateFormPage.changeFieldInputValue}">
                             <f:attribute name="fieldName" value="depositorRequirements" />
                   <f:selectItems value="#{TemplateFormPage.fieldInputLevelSelectItems}"/>
@@ -1744,11 +1747,11 @@
               </ice:panelGrid>
 
               <ice:panelGrid cellpadding="0" cellspacing="0" width="100%"
-                             styleClass="vdcEditStudyTable #{TemplateFormPage.studyMap[sfc.conditions].templateField.fieldInputLevel.name}"
+                             styleClass="vdcEditStudyTable #{TemplateFormPage.studyMap[sfc.conditions].templateField.fieldInputLevelString}"
                              columnClasses="vdcEditStudyCol1, vdcEditStudyCol2" columns="2">
                 <div class="vdcEditStudyField">
                   <ice:selectOneMenu immediate="false" partialSubmit="true"
-                                        value="#{TemplateFormPage.studyMap[sfc.conditions].templateField.fieldInputLevel.name}"
+                                        value="#{TemplateFormPage.studyMap[sfc.conditions].templateField.fieldInputLevelString}"
                                         valueChangeListener="#{TemplateFormPage.changeFieldInputValue}">
                             <f:attribute name="fieldName" value="conditions" />
                   <f:selectItems value="#{TemplateFormPage.fieldInputLevelSelectItems}"/>
@@ -1770,11 +1773,11 @@
               </ice:panelGrid>
 
               <ice:panelGrid cellpadding="0" cellspacing="0" width="100%"
-                             styleClass="vdcEditStudyTable #{TemplateFormPage.studyMap[sfc.disclaimer].templateField.fieldInputLevel.name}"
+                             styleClass="vdcEditStudyTable #{TemplateFormPage.studyMap[sfc.disclaimer].templateField.fieldInputLevelString}"
                              columnClasses="vdcEditStudyCol1, vdcEditStudyCol2" columns="2">
                 <div class="vdcEditStudyField">
                   <ice:selectOneMenu immediate="false" partialSubmit="true"
-                                        value="#{TemplateFormPage.studyMap[sfc.disclaimer].templateField.fieldInputLevel.name}"
+                                        value="#{TemplateFormPage.studyMap[sfc.disclaimer].templateField.fieldInputLevelString}"
                                         valueChangeListener="#{TemplateFormPage.changeFieldInputValue}">
                             <f:attribute name="fieldName" value="disclaimer" />
                   <f:selectItems value="#{TemplateFormPage.fieldInputLevelSelectItems}"/>
@@ -1810,7 +1813,7 @@
                     <ice:column>
                       <div class="vdcEditStudyField">
                        <ice:selectOneMenu immediate="false" partialSubmit="true" rendered ="#{TemplateFormPage.dataTableNotes.rowIndex==0}"
-                                        value="#{TemplateFormPage.studyMap[sfc.notesInformationType].templateField.fieldInputLevel.name}"                                         
+                                        value="#{TemplateFormPage.studyMap[sfc.notesInformationType].templateField.fieldInputLevelString}"                                         
                                         valueChangeListener="#{TemplateFormPage.changeFieldInputValue}">
                             <f:attribute name="fieldName" value="notesInformationType" />
                             <f:selectItems value="#{TemplateFormPage.fieldInputLevelSelectItems}"/>
@@ -1822,7 +1825,7 @@
                     </ice:column>
                     <ice:column>
                       <div class="vdcEditStudyFieldFloatWrap">
-                        <div jsfc="ice:panelGroup" styleClass="vdcEditStudyFieldFloat1 #{TemplateFormPage.studyMap[sfc.notesInformationType].templateField.fieldInputLevel.name}">
+                        <div jsfc="ice:panelGroup" styleClass="vdcEditStudyFieldFloat1 #{TemplateFormPage.studyMap[sfc.notesInformationType].templateField.fieldInputLevelString}">
                           <dvn:inlinehelp helpMessage="#{editstudybundle.notesTypeHelp}" linkText="#{editstudybundle.notesTypeLabel}" heading="#{editstudybundle.notesTypeHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
                           <br/>
                           <ice:inputText maxlength="255" binding="#{TemplateFormPage.inputNoteType}" id="input_notesInformationType"
@@ -1833,7 +1836,7 @@
                           </ice:inputText>
                           <ice:message styleClass="errorMessage" for="input_notesInformationType"/>
                         </div>
-                        <div jsfc="ice:panelGroup" styleClass="vdcEditStudyFieldFloat2 vdcEditStudyGroupField #{TemplateFormPage.studyMap[sfc.notesInformationSubject].templateField.fieldInputLevel.name}">
+                        <div jsfc="ice:panelGroup" styleClass="vdcEditStudyFieldFloat2 vdcEditStudyGroupField #{TemplateFormPage.studyMap[sfc.notesInformationSubject].templateField.fieldInputLevelString}">
                           <dvn:inlinehelp helpMessage="#{editstudybundle.notesSubjectHelp}" linkText="#{editstudybundle.notesSubjectLabel}" heading="#{editstudybundle.notesSubjectHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
                           <br/>
                           <ice:inputText id="input_notesInformationSubject"
@@ -1847,7 +1850,7 @@
                           </ice:inputText>
                           <ice:message styleClass="errorMessage" for="input_notesInformationSubject"/>
                         </div>
-                        <div jsfc="ice:panelGroup" styleClass="vdcEditStudyFieldFloat3 vdcEditStudyGroupField #{TemplateFormPage.studyMap[sfc.notesText].templateField.fieldInputLevel.name}">
+                        <div jsfc="ice:panelGroup" styleClass="vdcEditStudyFieldFloat3 vdcEditStudyGroupField #{TemplateFormPage.studyMap[sfc.notesText].templateField.fieldInputLevelString}">
                           <dvn:inlinehelp helpMessage="#{editstudybundle.notesTextHelp}" linkText="#{editstudybundle.notesTextLabel}" heading="#{editstudybundle.notesTextHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
                           <br/>
                           <ice:inputText id="input_notesText"

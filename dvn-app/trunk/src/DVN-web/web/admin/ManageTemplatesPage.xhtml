@@ -84,8 +84,17 @@
                   <f:facet name="header">
                     <ice:outputText value="Edit"/>
                   </f:facet>
-                  <ice:outputLink rendered="#{currentRow[0].id!=ManageTemplatesPage.networkTemplateId}" value="/dvn#{VDCRequest.currentVDCURL}/faces/study/TemplateFormPage.xhtml?templateId=#{currentRow[0].id}">
+                  <ice:outputLink rendered="#{currentRow[0].id!=ManageTemplatesPage.networkTemplateId and empty(VDCRequest.currentVDCURL) and currentRow[2] == true}" 
+                                  value="/dvn#{VDCRequest.currentVDCURL}/faces/study/TemplateFormPage.xhtml?templateId=#{currentRow[0].id}">
                     <ice:outputText value="Edit"/>
+                  </ice:outputLink>
+                  <ice:outputLink rendered="#{currentRow[0].id!=ManageTemplatesPage.networkTemplateId and !empty(VDCRequest.currentVDCURL) and currentRow[2] == false}" 
+                                  value="/dvn#{VDCRequest.currentVDCURL}/faces/study/TemplateFormPage.xhtml?templateId=#{currentRow[0].id}">
+                    <ice:outputText value="Edit"/>
+                  </ice:outputLink>  
+                  <ice:outputLink rendered="#{currentRow[0].id!=ManageTemplatesPage.networkTemplateId and !empty(VDCRequest.currentVDCURL) and currentRow[2] == true}" 
+                                  value="/dvn#{VDCRequest.currentVDCURL}/faces/study/TemplateFormPage.xhtml?templateId=#{currentRow[0].id}">
+                    <ice:outputText value="Clone Network Template for this Dataverse"/>
                   </ice:outputLink>
                   <ice:outputText rendered="#{currentRow[0].id==ManageTemplatesPage.networkTemplateId}" value="Cannot edit - DVN default template"/>
                 </ice:column>

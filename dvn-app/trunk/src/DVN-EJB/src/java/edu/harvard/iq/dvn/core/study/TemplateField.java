@@ -55,9 +55,6 @@ public class TemplateField implements java.io.Serializable {
     public TemplateField() {
     }
 
-    public TemplateField(FieldInputLevel inputLevel) {
-        this.fieldInputLevel=inputLevel;
-    }
     
     private String defaultValue;
 
@@ -91,27 +88,15 @@ public class TemplateField implements java.io.Serializable {
         this.selectValues = selectValues;
     }
 
-    /**
-     * Holds value of property fieldInputLevel.
-     */
-    @ManyToOne
-    @JoinColumn(nullable=false)
-    private FieldInputLevel fieldInputLevel;
+    
+    private String fieldInputLevelString;
 
-    /**
-     * Getter for property fieldInputLevel.
-     * @return Value of property fieldInputLevel.
-     */
-    public FieldInputLevel getFieldInputLevel() {
-        return this.fieldInputLevel;
+    public String getFieldInputLevelString() {
+        return fieldInputLevelString;
     }
 
-    /**
-     * Setter for property fieldInputLevel.
-     * @param fieldInputLevel New value of property fieldInputLevel.
-     */
-    public void setFieldInputLevel(FieldInputLevel fieldInputLevel) {
-        this.fieldInputLevel = fieldInputLevel;
+    public void setFieldInputLevelString(String fieldInputLevelString) {
+        this.fieldInputLevelString = fieldInputLevelString;
     }
 
     /**
@@ -273,19 +258,19 @@ public class TemplateField implements java.io.Serializable {
     }
     
     public boolean isRequired() {
-        return fieldInputLevel.getName().equals(FieldInputLevelConstant.getRequired()); 
+        return fieldInputLevelString.equals("required"); 
     }
 
     public boolean isRecommended() {
-        return fieldInputLevel.getName().equals(FieldInputLevelConstant.getRecommended()); 
+        return fieldInputLevelString.equals("recommended"); 
     }
     
     public boolean isOptional() {
-        return fieldInputLevel.getName().equals(FieldInputLevelConstant.getOptional()); 
+        return fieldInputLevelString.equals("optional"); 
     }
     
     public boolean isHidden() {
-        return fieldInputLevel.getName().equals(FieldInputLevelConstant.getHidden()); 
+        return fieldInputLevelString.equals("hidden"); 
     }
     
    public int hashCode() {

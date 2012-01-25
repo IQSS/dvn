@@ -45,9 +45,11 @@ public class TemplateFieldUI {
             e.printStackTrace();
         }
         if (isRecommended) {
-              templateField.setFieldInputLevel(templateService.getFieldInputLevel(FieldInputLevelConstant.getRecommended()));
+              templateField.setFieldInputLevelString("recommended");
+              /*templateField.setFieldInputLevel(templateService.getFieldInputLevel(FieldInputLevelConstant.getRecommended()));*/
           } else {
-              templateField.setFieldInputLevel(templateService.getFieldInputLevel(FieldInputLevelConstant.getOptional()));
+                templateField.setFieldInputLevelString("optional");
+              /*templateField.setFieldInputLevel(templateService.getFieldInputLevel(FieldInputLevelConstant.getOptional()));*/
           }    }
     
     

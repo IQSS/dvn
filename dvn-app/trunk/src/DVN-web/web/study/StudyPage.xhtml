@@ -364,7 +364,7 @@
             
             </div>
             <div class="dvn_sectionBoxNoBorders">
-                <ice:panelTabSet id="tabSet1" binding="#{studyPage.tabSet1}" tabChangeListener="#{studyPage.processTabChange}">
+                <ice:panelTabSet id="tabSet1" styleClass="dvnTabs" binding="#{studyPage.tabSet1}" tabChangeListener="#{studyPage.processTabChange}">
                     <ice:panelTab id="catalog" label="Cataloging Information" url="#{VDCRequest.currentVDCURL}/faces/study/StudyPage.xhtml?globalId=#{studyPage.studyUI.study.globalId}&amp;tab=catalog#{studyPage.studyListingIndexAsParameter}">
                         <div jsfc="ice:panelGroup" id="layoutPanel1" panelLayout="flow">
                             <ice:panelGrid id="panelGridHowToCite" styleClass="dvnhowtocitetable" cellpadding="0" cellspacing="0"
@@ -750,7 +750,7 @@
                         </div>
                     </ice:panelTab>
                     <!-- FILES -->
-                    <ice:panelTab id="files" label="Documentation, Data and Analysis" >
+                    <ice:panelTab id="files" label="Data &amp; Analysis" >
                         <script type="text/javascript">
                             // <![CDATA[
                             jQuery(document).ready(function(){
@@ -764,15 +764,12 @@
                         </ui:include>
                     </ice:panelTab>
                     <!-- Study comments -->
-  <ice:panelTab id="comments"
-                label="User Comments"
-                                  rendered="#{studyPage.allowStudyComments}">
+                    <ice:panelTab id="comments" label="Comments" rendered="#{studyPage.allowStudyComments}">
                         <ui:include src="StudyCommentsFragment.xhtml">
                         </ui:include>
                     </ice:panelTab>
                     <!-- end study comments -->
-  <ice:panelTab id="versions"
-                                  label="Versions">
+                    <ice:panelTab id="versions" label="Versions">
                         <ui:include src="StudyVersionsFragment.xhtml">
                         </ui:include>
                     </ice:panelTab>

@@ -738,6 +738,7 @@ public class LoginFilter implements Filter {
                 && requestURI.indexOf(PageDefServiceLocal.CREATOR_REQUEST_PAGE) == -1
                 && requestURI.indexOf(PageDefServiceLocal.FILE_REQUEST_ACCOUNT_PAGE) == -1
                 && requestURI.indexOf(PageDefServiceLocal.FILE_REQUEST_SUCCESS_PAGE) == -1
+                && requestURI.indexOf(PageDefServiceLocal.ACCOUNT_TERMS_OF_USE_PAGE) == -1
                 && requestURI.indexOf(PageDefServiceLocal.FILE_REQUEST_PAGE) == -1 && request.getMethod().equals("GET")) {
             request.getSession().setAttribute("ORIGINAL_URL", originalUrl);
         }

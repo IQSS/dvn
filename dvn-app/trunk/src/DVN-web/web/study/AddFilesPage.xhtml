@@ -53,7 +53,7 @@
           }
           function disableSave() {
               document.getElementById("form1:saveButton").disabled = true;
-          }
+          }        
           // ]]>
       </script>
       <div class="dvn_section">
@@ -159,7 +159,7 @@
                   
                   <!-- l.a. new "file entry" icefaces-ace component: -->
                   <span class="top">
-                    <ace:fileEntry id="file-entry"
+                    <ace:fileEntry id="file-entry"          
                         disabled="#{AddFilesPage.typeNotSelected}"             
                         relativePath="/temp/" 
                         maxFileCount="1" 
@@ -171,21 +171,20 @@
                         maxTotalSizeMessage="Total size of submitted files is too large." 
                                                 useOriginalFilename="true" 
                         useSessionSubdir="false" />
-
+                    
+                    <h:commandButton  id="addFile" value="Add File" style="display:none"/>
                         <!-- l.a. it looks like this "file is required to submit
                              the form" constraint prevents partial submits too! 
                         required="true" 
                         requiredMessage="The file is required to submit this form."
                           l.a. -->
                 </span>
-                <span class="row">
-                    <span class="top">
-                        <h:commandButton class="submit" type="submit" value="Add File"/>
-                    </span>
+                <!-- commented out because all it was displaying was a debug statement; is this needed for anything more?
+                  <span class="row">
                     <span class="messages top">
                         <h:messages/>
                     </span>
-                </span>
+                </span>-->
 
                   
               </ice:panelGroup>
@@ -285,7 +284,7 @@
             </ice:form>
           </div>
         </div>
-      </div>
+      </div>     
     </ui:define>
   </ui:composition>
 </h:body>

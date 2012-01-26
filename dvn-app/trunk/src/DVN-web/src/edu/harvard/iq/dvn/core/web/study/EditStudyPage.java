@@ -760,27 +760,27 @@ public class EditStudyPage extends VDCBaseBean implements java.io.Serializable  
 
         if (study.getId()==null) {
             // Cancelling the creation of a new study
-            return "myOptions";
+            return "/admin/OptionsPage?faces-redirect=true&vdcId=" + getVDCRequestBean().getCurrentVDCId();
         }
 
-        getVDCRequestBean().setStudyId(study.getId());
+        Long versionNumber;
 
         if ( metadata.getStudyVersion().getId() == null  && study.getReleasedVersion() != null ) {
-            // We are canceling the creation of a new version, so return
-            // to the previous version that the user was viewing.
+            // We are canceling the creation of a new version, so return to the previous version that the user was viewing.
             if (study.isReleased()) {
-                getVDCRequestBean().setStudyVersionNumber(study.getReleasedVersion().getVersionNumber());
+                versionNumber =  study.getReleasedVersion().getVersionNumber();
             } else {
                 // The only other option is that the study is deaccessioned
-                getVDCRequestBean().setStudyVersionNumber(study.getDeaccessionedVersion().getVersionNumber());
+                versionNumber = study.getDeaccessionedVersion().getVersionNumber();
             }
         } else {
             // We are cancelling the edit of an existing version, so just return to that version.
-            getVDCRequestBean().setStudyVersionNumber(metadata.getStudyVersion().getVersionNumber());
+            versionNumber = metadata.getStudyVersion().getVersionNumber();
         }
 
         
-        return "viewStudy";
+        return "/study/StudyPage?faces-redirect=true&studyId=" + study.getId()+ "&versionNumber=" + versionNumber + "&vdcId=" + getVDCRequestBean().getCurrentVDCId();
+
     }
     
     
@@ -1297,10 +1297,8 @@ public class EditStudyPage extends VDCBaseBean implements java.io.Serializable  
 
         editStudyService.save(getVDCRequestBean().getCurrentVDCId(),getVDCSessionBean().getLoginBean().getUser().getId());
        
-        getVDCRequestBean().setStudyId(study.getId());
-        getVDCRequestBean().setStudyVersionNumber(metadata.getStudyVersion().getVersionNumber());
-       
-        return "viewStudy";
+        return "/study/StudyPage?faces-redirect=true&studyId=" + study.getId()+ "&versionNumber=" + metadata.getStudyVersion().getVersionNumber() + "&vdcId=" + getVDCRequestBean().getCurrentVDCId();
+
     }
     
     

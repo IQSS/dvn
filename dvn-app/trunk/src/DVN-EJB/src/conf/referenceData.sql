@@ -731,9 +731,9 @@ update vdcnetwork set defaultvdcheader='<style type="text/css">
 body {margin:0; padding:0;}
 </style>
 <div style="width:100%; height:40px; background: url(/dvn/resources/images/customizationpattern.png) repeat-x left -35px #698DA2;"></div>
-<div style="margin:0 auto; max-width:1000px;">'
+<div style="margin:0 auto; max-width:1000px;">';
 
-update vdcnetwork set defaultvdcfooter='</div>'
+update vdcnetwork set defaultvdcfooter='</div>';
 
 
 

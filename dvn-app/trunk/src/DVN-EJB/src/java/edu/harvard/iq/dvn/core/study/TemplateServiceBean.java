@@ -75,7 +75,7 @@ public class TemplateServiceBean implements edu.harvard.iq.dvn.core.study.Templa
         for( TemplateField defaultField: defaultFields) {
             TemplateField tf = new TemplateField();
             tf.setDefaultValue(defaultField.getDefaultValue());
-            /*tf.setFieldInputLevel(defaultField.getFieldInputLevel());*/
+            tf.setFieldInputLevelString(defaultField.getFieldInputLevelString());
             tf.setStudyField(defaultField.getStudyField());
             tf.setTemplate(template);
             template.getTemplateFields().add(tf);

@@ -122,14 +122,16 @@ public class EditTemplateServiceBean implements edu.harvard.iq.dvn.core.study.Ed
         template = new Template();
         template.setNetwork(false);
         
-        template.setMetadata(cloneSource.getMetadata());
-        template.setTemplateFields(cloneSource.getTemplateFields());
-        
-        for (Iterator<TemplateField> it =cloneSource.getTemplateFields().iterator(); it.hasNext();) {
-            TemplateField tf = it.next();
-            if(tf.getStudyField().isDcmField()){
-                System.out.println("fieldName is "+tf.getStudyField().getName());
-            }           
+        template.setMetadata(new Metadata(cloneSource.getMetadata()));        
+        Collection<TemplateField> defaultFields = cloneSource.getTemplateFields();       
+        template.setTemplateFields(new ArrayList());
+        for( TemplateField defaultField: defaultFields) {
+            TemplateField tf = new TemplateField();
+            tf.setDefaultValue(defaultField.getDefaultValue());
+            tf.setStudyField(defaultField.getStudyField());
+            tf.setTemplate(template);
+            tf.setFieldInputLevelString(defaultField.getFieldInputLevelString());
+            template.getTemplateFields().add(tf);
         }
         VDC vdc = em.find(VDC.class, vdcId);      
         template.setVdc(vdc);

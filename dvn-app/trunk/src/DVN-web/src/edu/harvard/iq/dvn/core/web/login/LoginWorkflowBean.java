@@ -81,6 +81,7 @@ public class LoginWorkflowBean extends VDCBaseBean implements java.io.Serializab
         if (loginBean != null) {
             user = loginBean.getUser();
             grantWorkflowPermission();
+            loginBean.setUser(user); // user may have been modified by call to grantWorkflowPermission
             nextPage = "/site/AddSitePage?faces-redirect=true";
         } else {
          
@@ -95,8 +96,9 @@ public class LoginWorkflowBean extends VDCBaseBean implements java.io.Serializab
         String nextPage = null;
         LoginBean loginBean = this.getVDCSessionBean().getLoginBean();
         if (loginBean != null) {
+            user = loginBean.getUser();
             grantWorkflowPermission();
-            //nextPage = "contributorSuccess";
+            loginBean.setUser(user); // user may have been modified by call to grantWorkflowPermission
             nextPage = "/login/ContributorRequestSuccessPage?faces-redirect=true";
         } else {   
             nextPage = "/login/AddAccountPage?faces-redirect=true";

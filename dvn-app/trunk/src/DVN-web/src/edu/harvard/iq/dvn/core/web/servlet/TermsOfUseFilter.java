@@ -49,6 +49,7 @@ import java.util.StringTokenizer;
 import javax.ejb.EJB;
 
 
+import javax.inject.Inject;
 import javax.servlet.Filter;
 import javax.servlet.FilterChain;
 import javax.servlet.FilterConfig;
@@ -85,6 +86,8 @@ public class TermsOfUseFilter implements Filter {
     VDCNetworkServiceLocal vdcNetworkService;
     @EJB
     StudyFileServiceLocal studyFileService;
+    
+    @Inject VDCSessionBean vdcSession;
 
     public static boolean isDownloadDataverseTermsRequired(Study study, Map termsOfUseMap) {
         boolean vdcTermsRequired = study.getOwner().isDownloadTermsOfUseEnabled();
@@ -129,20 +132,12 @@ public class TermsOfUseFilter implements Filter {
         return false;
     }
 
-    private Map getTermsOfUseMap(HttpServletRequest req) {
-        HttpSession session = req.getSession(false);
-        if (session != null) {
-            VDCSessionBean vdcSession = (VDCSessionBean) session.getAttribute("VDCSession");
-            if (vdcSession != null) {
-                if (vdcSession.getLoginBean() != null) {
-                    return vdcSession.getLoginBean().getTermsfUseMap();
-                } else {
-                    return vdcSession.getTermsfUseMap();
-                }
-            }
+    private Map getTermsOfUseMap() {
+        if (vdcSession.getLoginBean() != null) {
+            return vdcSession.getLoginBean().getTermsfUseMap();
+        } else {
+            return vdcSession.getTermsfUseMap();
         }
-
-        return new HashMap();
     }
 
     /**
@@ -260,7 +255,7 @@ public class TermsOfUseFilter implements Filter {
     }
 
     private boolean checkDepositTermsOfUse(HttpServletRequest req, HttpServletResponse res) throws java.io.IOException {
-        Map termsOfUseMap = getTermsOfUseMap(req);
+        Map termsOfUseMap = getTermsOfUseMap();
         String studyId = req.getParameter("studyId");
         VDC currentVDC = vdcService.getVDCFromRequest(req);
         VDC depositVDC = null;
@@ -396,7 +391,7 @@ public class TermsOfUseFilter implements Filter {
 	    }
 
             if (NOTaDSBrequest) {
-                Map termsOfUseMap = getTermsOfUseMap(req);
+                Map termsOfUseMap = getTermsOfUseMap();
                 if (isDownloadDvnTermsRequired(vdcNetworkService.find(), termsOfUseMap) || isDownloadDataverseTermsRequired(study, termsOfUseMap) || isDownloadStudyTermsRequired(study, termsOfUseMap)) {
                  VDC currentVDC = vdcService.getVDCFromRequest(req);
                     String params = "?studyId=" + study.getId();

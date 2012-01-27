@@ -436,7 +436,7 @@ public class StudyVersionDifferencesPage extends VDCBaseBean implements java.io.
 
         while ( i < studyUI1.getFileMetadataList().size() ) {
             fm1 = studyUI1.getFileMetadataList().get(i);
-            studyFileDifferenceItem fdi = selectFileMetadataDiffs (null, fm1);
+            studyFileDifferenceItem fdi = selectFileMetadataDiffs (fm1, null);
             fdi.setFileId(fm1.getStudyFile().getId().toString());
             studyFilesDiffList.add(fdi);
 

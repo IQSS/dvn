@@ -1742,25 +1742,29 @@ public class SetUpDataExplorationPage extends VDCBaseBean implements java.io.Ser
     }
 
 
-    public String cancel(){
-        Long redirectVersionNumber = new Long(0);
+    public String exit(){
         if (edited){
             setShowInProgressPopup(true);
             return "";
         }
+        return cancel();
+    }
+
+    public String cancel() {
         visualizationService.cancel();
-        getVDCRequestBean().setStudyId(study.getId());
-        if ( studyVersion.getId() == null ) {
-            getVDCRequestBean().setStudyVersionNumber(study.getReleasedVersion().getVersionNumber());
+        return returnToStudy();
+    }
+        
+    private String returnToStudy() {        
+        Long redirectVersionNumber = new Long(0);
+        if (studyVersion.getId() == null) {
             redirectVersionNumber = study.getReleasedVersion().getVersionNumber();
         } else {
-            getVDCRequestBean().setStudyVersionNumber(studyVersion.getVersionNumber());
             redirectVersionNumber = studyVersion.getVersionNumber();
         }
-        getVDCRequestBean().setSelectedTab("files");
-        this.getRequestMap().put("studyId",study.getId());
-        return "/study/StudyPage?faces-redirect=true&studyId=" + study.getId()+ "&versionNumber=" + redirectVersionNumber + "&tab=files&vdcId=" + getVDCRequestBean().getCurrentVDCId();
-    }
+        return "/study/StudyPage?faces-redirect=true&studyId=" + study.getId() + "&versionNumber=" + redirectVersionNumber + "&tab=files&vdcId=" + getVDCRequestBean().getCurrentVDCId();
+    }   
+    
     
     boolean showInProgressPopup = false;
     
@@ -1776,18 +1780,7 @@ public class SetUpDataExplorationPage extends VDCBaseBean implements java.io.Ser
          showInProgressPopup = !showInProgressPopup;
     }
 
-    public String cancelAction() {
-        visualizationService.cancel();
-        getVDCRequestBean().setStudyId(study.getId());
-        if ( studyVersion.getId() == null ) {
-            getVDCRequestBean().setStudyVersionNumber(study.getReleasedVersion().getVersionNumber());
-        } else {
-            getVDCRequestBean().setStudyVersionNumber(studyVersion.getVersionNumber());
-        }
-        getVDCRequestBean().setSelectedTab("files");
-
-        return "viewStudy";
-    }
+    
     private void cancelAddEdit(){
         getInputFilterGroupName().setValue("");
         getInputFilterGroupTypeName().setValue("");
@@ -2115,14 +2108,7 @@ public class SetUpDataExplorationPage extends VDCBaseBean implements java.io.Ser
            }
        }
        save();
-       getVDCRequestBean().setStudyId(study.getId());
-        if ( studyVersion.getId() == null ) {
-            getVDCRequestBean().setStudyVersionNumber(study.getReleasedVersion().getVersionNumber());
-        } else {
-            getVDCRequestBean().setStudyVersionNumber(studyVersion.getVersionNumber());
-        }
-        getVDCRequestBean().setSelectedTab("files");
-       return "viewStudy";
+       return ruturnToStudy();
     }
 */    
     public String saveAndContinue(){

@@ -184,6 +184,13 @@
      <load-on-startup>1</load-on-startup>
    </servlet>
 
+   <!-- EXPERIMENTAL DVN-API REST SERVLET: -->
+
+   <servlet>
+        <servlet-name>edu.harvard.iq.dvn.api.resources.DvnApiApp</servlet-name>       
+        <load-on-startup>1</load-on-startup>
+    </servlet>
+
    <!-- DVN SPECIFIC SERVLETS -->
 
     <servlet>
@@ -295,6 +302,14 @@
     <url-pattern>/icefaces/resource/*</url-pattern>
   </servlet-mapping>
 -->
+
+<!-- Experimental servlet mapping for the REST servlet: --> 
+
+    <servlet-mapping>
+      <servlet-name>edu.harvard.iq.dvn.api.resources.DvnApiApp</servlet-name>
+      <url-pattern>/api/*</url-pattern>
+    </servlet-mapping>
+
 
 <!-- DVN SPECIFIC SERVLET MAPPINGS START -->
     <servlet-mapping>

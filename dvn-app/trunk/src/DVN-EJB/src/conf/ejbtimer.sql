@@ -1,17 +1,22 @@
-CREATE TABLE ejb__timer__tbl
-(
-  creationtimeraw numeric(19) NOT NULL,
-  blob bytea,
-  timerid varchar(256) NOT NULL,
-  containerid numeric(19) NOT NULL,
-  ownerid varchar(256),
-  state int4 NOT NULL,
-  pkhashcode int4 NOT NULL,
-  intervalduration numeric(19) NOT NULL,
-  initialexpirationraw numeric(19) NOT NULL,
-  lastexpirationraw numeric(19) NOT NULL,
-  CONSTRAINT pk_ejb__timer__tbl PRIMARY KEY (timerid)
-) 
-WITHOUT OIDS;
-ALTER TABLE ejb__timer__tbl OWNER TO "dvnApp";
+-- Table: "EJB__TIMER__TBL"
 
+-- DROP TABLE "EJB__TIMER__TBL";
+
+CREATE TABLE "EJB__TIMER__TBL"
+(
+  "TIMERID" character varying(255) NOT NULL,
+  "APPLICATIONID" bigint,
+  "BLOB" bytea,
+  "CONTAINERID" bigint,
+  "CREATIONTIMERAW" bigint,
+  "INITIALEXPIRATIONRAW" bigint,
+  "INTERVALDURATION" bigint,
+  "LASTEXPIRATIONRAW" bigint,
+  "OWNERID" character varying(255),
+  "PKHASHCODE" integer,
+  "SCHEDULE" character varying(255),
+  "STATE" integer,
+  CONSTRAINT "EJB__TIMER__TBL_pkey" PRIMARY KEY ("TIMERID")
+)
+WITH (OIDS=FALSE);
+ALTER TABLE "EJB__TIMER__TBL" OWNER TO "dvnApp";

@@ -167,6 +167,7 @@ public class LoginFilter implements Filter {
             
             if (isVersionDiffPage(pageDef)) {
                 Long[] versionDiffNumbers = VDCRequestBean.parseVersionNumberList(httpRequest);
+                if (versionDiffNumbers == null || studyId==null) {
                     String redirectURL = httpRequest.getContextPath();
                     if (currentVDC != null) {
                         redirectURL += "/dv/" + currentVDC.getAlias();

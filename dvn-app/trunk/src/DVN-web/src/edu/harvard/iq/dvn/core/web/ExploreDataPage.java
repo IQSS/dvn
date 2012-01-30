@@ -280,7 +280,6 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
         visualizationService.setDataTableFromStudyFileId(studyFileId);
         studyIn = visualizationService.getStudyFromStudyFileId(studyFileId);
         studyId = studyIn.getId();
-        versionNumber = getVDCRequestBean().getStudyVersionNumber();
         dt = visualizationService.getDataTable();
         Study thisStudy = dt.getStudyFile().getStudy();
         studyUI = new StudyUI(thisStudy);

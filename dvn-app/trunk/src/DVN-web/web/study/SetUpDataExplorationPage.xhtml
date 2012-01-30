@@ -150,7 +150,7 @@
                                     <ice:commandButton type="submit" visible="false" id="updateSourceList" value="update" action="#{SetUpDataExplorationPage.updateSourceList}"/>
                                     <ice:commandButton type="submit" visible="false" value="Save" action="#{SetUpDataExplorationPage.saveAndExit}" rendered="#{SetUpDataExplorationPage.showCommands}"/>
                                     <ice:commandButton type="submit" value="Save" action="#{SetUpDataExplorationPage.saveAndContinue}" rendered="#{SetUpDataExplorationPage.showCommands}"/>
-                                    <ice:commandButton type="submit" value="Exit" action="#{SetUpDataExplorationPage.cancel}"/>
+                                    <ice:commandButton type="submit" value="Exit" action="#{SetUpDataExplorationPage.exit}"/>
                                     <ice:commandButton type="submit" visible="false" value="Save and Continue" action="#{SetUpDataExplorationPage.saveAndContinue}" rendered="#{SetUpDataExplorationPage.showCommands}"/>
                                 </div>
                             </div>
@@ -537,7 +537,7 @@
                                                        actionListener="#{SetUpDataExplorationPage.togglePopup}"
                                                        value="No"/>
                                     <ice:commandButton id="autoCentPopupExit"
-                                                       action="#{SetUpDataExplorationPage.cancelAction}"
+                                                       action="#{SetUpDataExplorationPage.cancel}"
                                                        value="Yes"/>
                                 </div>
                             </ice:panelGrid>

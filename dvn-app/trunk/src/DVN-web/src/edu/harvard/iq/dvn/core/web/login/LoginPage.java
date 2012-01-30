@@ -63,13 +63,13 @@ public class LoginPage extends VDCBaseBean implements java.io.Serializable  {
     @EJB VDCNetworkServiceLocal vdcNetworkService;
     
     
-    private Boolean clearWorkflow=true;
+    private Boolean clearWorkflow;
     String refererUrl = new String("");
     String errMessage;
  
     public void init() {
         super.init();
-        if (clearWorkflow!=null) {
+        if (clearWorkflow!=null && clearWorkflow.booleanValue()) {
             LoginWorkflowBean lwf = (LoginWorkflowBean)getBean("LoginWorkflowBean");
             lwf.clearWorkflowState();
         }

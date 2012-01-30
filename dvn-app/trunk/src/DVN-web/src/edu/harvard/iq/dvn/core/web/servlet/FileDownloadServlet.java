@@ -248,9 +248,9 @@ public class FileDownloadServlet extends HttpServlet {
             deliverContent (file, fileDownloadObject, res);
 
             // step 7. increment the appropriate download counters:
-            // (but only if it's not a LOCKSS crawl!)
+            // (but only if it's not a LOCKSS crawl OR a thumbnail!)
 
-            if (!isLockssCrawlRequest(req)) {
+            if (!isLockssCrawlRequest(req) && imageThumb == null) {
                 incrementDownloadCounts(file, vdc);
             }
 

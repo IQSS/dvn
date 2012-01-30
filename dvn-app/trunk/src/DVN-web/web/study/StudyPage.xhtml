@@ -333,7 +333,7 @@
                             </ul>
                         </div>
                         <div jsfc="ice:panelGroup" rendered="#{!(studyPage.studyUI.study.studyLock==null)}">
-                            <ice:outputText styleClass="vdcStudyStatus" value="Currently unavailable for editing because file upload is in progress." rendered="#{studyPage.studyUI.userAuthorizedToEdit and !(studyPage.studyUI.study.studyLock==null)}"/>
+                            <ice:outputText styleClass="vdcStudyStatus" value="Currently unavailable for editing because file upload is in progress. " rendered="#{studyPage.studyUI.userAuthorizedToEdit and !(studyPage.studyUI.study.studyLock==null)}"/>
                             <ice:outputLink styleClass="vdcStudyStatus" value="/dvn#{VDCRequest.currentVDCURL}/faces/study/StudyPage.xhtml?globalId=#{studyPage.studyUI.study.globalId}&amp;versionNumber=-1&amp;tab=#{studyPage.tab}#{VDCRequest.studyListingIndexAsParameter}" rendered="#{studyPage.studyUI.userAuthorizedToEdit and !(studyPage.studyUI.study.studyLock==null)}">
                                 <ice:outputText nospan="true" value="Refresh"/>
                             </ice:outputLink>

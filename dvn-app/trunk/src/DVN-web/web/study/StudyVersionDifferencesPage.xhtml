@@ -25,8 +25,9 @@
     <ui:define name="body">
       <ice:form>
         <ice:inputHidden rendered="#{VDCRequest.currentVDCId != null}" id="vdcId" value="#{VDCRequest.currentVDCId}"/>
-        <ice:inputHidden id="studyId" value="#{studyVersionDifferencesPage.studyId}"/>
-        <ice:inputHidden id="versionNumberList" value="#{studyVersionDifferencesPage.versionNumberList}"/>
+        <!-- add hidden vars so that they passes through partial submits for the the Filters-->
+        <input type="hidden" name="studyId" value="${param.studyId}"/>
+        <input type="hidden" name="versionNumberList" value="${param.versionNumberList}"/>
         <script type="text/javascript">
           // <![CDATA[
           jQuery(document).ready(function(){

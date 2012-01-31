@@ -162,7 +162,7 @@ public class LoginFilter implements Filter {
         // check for invalid study Id or study versionNumber
         // for right now, do this with a sendRedirect, though we should try to figure out a solution
         // with a forward isntead; that way the user can fix the issue in the URL and easily try again
-        if ( isViewStudyPage(pageDef) || isEditStudyPage(pageDef) || isVersionDiffPage(pageDef) ) {
+        if ( (isViewStudyPage(pageDef) || isEditStudyPage(pageDef) || isVersionDiffPage(pageDef)) && !isPopup(httpRequest) ) {
             Long studyId = determineStudyId(pageDef, httpRequest);
             
             if (isVersionDiffPage(pageDef)) {
@@ -399,6 +399,10 @@ public class LoginFilter implements Filter {
                 }
             }
         } else if (isViewStudyPage(pageDef)) {
+            if (isPopup(request)) {
+                return true;
+            }
+            
             Study study = null;
             StudyVersion studyVersion = null;
             String studyId = VDCBaseBean.getParamFromRequestOrComponent("studyId", request);
@@ -528,7 +532,7 @@ public class LoginFilter implements Filter {
         }
         return ipUserGroup;
     }
-
+    
     private boolean isVersionDiffPage(PageDef pageDef ) {
         if (pageDef != null &&
                 pageDef.getName().equals(PageDefServiceLocal.STUDY_VERSION_DIFFERENCES_PAGE )) {
@@ -618,6 +622,14 @@ public class LoginFilter implements Filter {
         return studyIdParam;
 
     }
+    
+    private boolean isPopup(HttpServletRequest req) {
+        if (req.getParameter("StudyVersionNotesPopup") != null) {
+            return true;
+        }
+        
+        return false;
+    }    
 
     private boolean isAddStudyPage(PageDef pageDef, HttpServletRequest request) {
         if (pageDef != null && pageDef.getName().equals(PageDefServiceLocal.EDIT_STUDY_PAGE) && request.getParameter("studyId") == null) {

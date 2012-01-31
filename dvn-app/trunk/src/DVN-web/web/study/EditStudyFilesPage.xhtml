@@ -5,7 +5,6 @@
       xmlns:h="http://java.sun.com/jsf/html"
       xmlns:f="http://java.sun.com/jsf/core"
       xmlns:jsp="http://java.sun.com/JSP/Page"
-      xmlns:dvn="/WEB-INF/tlds/dvn-components"
       xmlns:ice="http://www.icesoft.com/icefaces/component">
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
@@ -83,7 +82,7 @@
                     }
                     // ]]>
                 </script>
-                <dvn:inlinehelpsupport writeHelpDiv="true" writeTipDiv="true" rendered="true"/>
+                
                 <ice:form id="studyForm">
                     <ice:inputHidden id="vdcId" value="#{VDCRequest.currentVDCId}"/>
                     <script type="text/javascript">
@@ -162,7 +161,6 @@
                                 <ice:outputText value='Please check messages below.'/>
                             </div>
 
-
                             <!-- FILES TAB -->
                             <ice:panelGroup id="layoutPanel1" panelLayout="flow" >
                                 <div jsfc="ice:panelGroup" id="noFilesPanel" styleClass="dvnFormPadding" rendered="#{empty EditStudyFilesPage.files}">
@@ -230,7 +228,6 @@
                         </div>
                     </div>
                 </ice:form>
-
 
             </ui:define>
         </ui:composition>

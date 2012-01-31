@@ -4,10 +4,7 @@
      xmlns:ice="http://www.icesoft.com/icefaces/component"
      xmlns:dvn="/WEB-INF/tlds/dvn-components">
     <ice:form id="StudyVersionNotesPopup">
-        <ice:inputHidden id="vdcId" value="#{VDCRequest.currentVDCId}"/>
-        <!-- add hidden vars so that they passes through partial submits for the the Filters-->
-        <input type="hidden" name="studyId" value="${param.studyId}"/>
-        <input type="hidden" name="versionNumberList" value="${param.versionNumberList}"/>        
+        <ice:inputHidden id="vdcId" value="#{VDCRequest.currentVDCId}"/>      
         <ice:panelPopup id="versionNotesPopup"
                         draggable="false"
                         rendered="#{VersionNotesPopupBean.showPopup }"

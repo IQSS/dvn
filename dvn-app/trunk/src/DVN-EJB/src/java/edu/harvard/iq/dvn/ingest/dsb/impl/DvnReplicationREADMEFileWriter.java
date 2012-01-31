@@ -105,7 +105,8 @@ public class DvnReplicationREADMEFileWriter {
         "    Network Project website first:\n\n"+
         "        http://guides.thedata.org/book/datausers-guides\n\n"+
         "    especially, the 'Tabular Data' page of the 'Subset and Analyze' section:\n\n"+
-        "        http://guides.thedata.org/book/manage-permissions\n\n"+
+        "        http://guides.thedata.org/book/tabular-data\n\n"+
+	
         "    If you need to contact us about results of this modeling request,\n" +
         "    besides your questions and comments, please include the following\n" +
         "    request-tracking information:\n\n" +

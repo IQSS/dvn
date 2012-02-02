@@ -115,6 +115,7 @@ div.dvnWarningMessage span{font-weight:bold;color:#000;background:transparent}
 .vdcHelpText{color:#666;margin-bottom:1em}
 .vdcHelpText img{vertical-align:bottom;border:0}
 .vdcHelpText span{padding-left:.5em}
+span.iceOutTxt.vdcHelpText{display:inline !important;}
 .vdcInlineHelp{position:absolute;display:block;width:300px;background-image:url(/dvn/resources/images/tooltipcallout.gif);background-repeat:no-repeat;padding-top:10px;padding-left:0px;padding-right:0px;padding-bottom:0px;z-Index:500}
 .vdcInlineHelpLink{color:#069;text-decoration:none}
 .vdcInlineHelpContents{height:100%;background-color:#dadee0;margin-top:5px;padding:3px 3px 3px 10px;margin-bottom:0px;display:block;text-align:left;color:#000;font-weight:400}

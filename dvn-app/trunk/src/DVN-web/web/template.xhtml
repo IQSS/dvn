@@ -64,6 +64,8 @@
         <script type="text/javascript" src="/dvn/resources/javascript/jquery.truncator.js"/>
         <script type="text/javascript" src="/dvn/resources/javascript/sgbeal-togglepane.jquery.js"/>
         <script type="text/javascript" src="/dvn/resources/javascript/jquery.accordion.js"/>
+        <script type="text/javascript" src="/dvn/resources/javascript/jquery.dimensions.js"/>
+        <script type="text/javascript" src="/dvn/resources/javascript/jquery.tooltip.min.js"/>
         <script type="text/javascript" src="/dvn/resources/javascript/jquery.cookie.js"/>
         <script type="text/javascript" src="/dvn/resources/javascript/jcap.js"/>
         <script type="text/javascript" src="/dvn/resources/javascript/md5.js"/>
@@ -76,6 +78,15 @@
         <script type="text/javascript">
             // <![CDATA[
             jQuery.noConflict();
+            jQuery(document).ready(function(){
+                  initInlineHelpTip();
+            });
+            function initInlineHelpTip(){
+                jQuery('.dvnInlineHelpTip').tooltip({
+                    showURL: false,
+                    showBody: " - "
+                });
+            };
             // ]]>
         </script>
         <script type="text/javascript">

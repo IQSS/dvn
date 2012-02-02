@@ -79,11 +79,14 @@
       // <![CDATA[
       jQuery.noConflict();
       jQuery(document).ready(function(){
-          jQuery('.dvnInlineHelpTip').tooltip({
-            showURL: false,
-            showBody: " - "
-          });
-      });
+              initInlineHelpTip();
+        });
+        function initInlineHelpTip(){
+            jQuery('.dvnInlineHelpTip').tooltip({
+                showURL: false,
+                showBody: " - "
+            });
+        };
       // ]]>
   </script>
   <script type="text/javascript">

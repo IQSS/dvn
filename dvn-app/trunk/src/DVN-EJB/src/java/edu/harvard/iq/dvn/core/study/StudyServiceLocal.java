@@ -213,4 +213,5 @@ public interface StudyServiceLocal extends java.io.Serializable {
 
     public List getAllDeaccessionedStudyVersionIdsByContributor(java.lang.Long contributorId, java.lang.String orderBy, boolean ascending);
 
+    public List<MetadataFormatType> findAllMetadataExportFormatTypes();
 }

@@ -29,7 +29,7 @@ import javax.ws.rs.core.UriInfo;
 public class MetadataResourceBean {
 
     @Context private UriInfo ui;
-    @EJB MetadataHolderSingletonBean singleton;
+    @EJB MetadataSingletonBean singleton;
 
     
     // Lookup by local (database) study ID:

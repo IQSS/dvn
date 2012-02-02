@@ -19,11 +19,14 @@ public class DvnApiApp extends Application {
         // register root resources/providers
         classes.add(DvnApiRootResource.class);
         classes.add(MetadataInstance.class);
-        classes.add(MetadataResourceBean.class);
-        classes.add(MetadataHolderSingletonBean.class);
+        classes.add(MetadataFormats.class);
+        classes.add(MetadataWriter.class);
+        classes.add(MetadataFormatsWriter.class);
         classes.add(NotFoundException.class);
         classes.add(NotFoundExceptionMapper.class);
-        classes.add(MetadataWriter.class);
+        classes.add(MetadataResourceBean.class);
+	classes.add(MetadataFormatsResourceBean.class); 
+        classes.add(MetadataSingletonBean.class);
         return classes;
     }
 }

@@ -14,10 +14,16 @@ import javax.ws.rs.Path;
 public class DvnApiRootResource {
 
     @EJB MetadataResourceBean r;
+    @EJB MetadataFormatsResourceBean rf; 
 
     @Path("metadata")
     public MetadataResourceBean getMetadataResourceBean() {
         return r;
+    }
+    
+    @Path("metadataFormatsAvailable")
+    public MetadataFormatsResourceBean getMetadataFormatsResourceBean() {
+        return rf;
     }
 }
 

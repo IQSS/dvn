@@ -1327,15 +1327,8 @@ public class StudyServiceBean implements edu.harvard.iq.dvn.core.study.StudyServ
                 studyVersion = study.getLatestVersion();
             } else {
                 studyVersion = study.getStudyVersionByNumber(versionNumber);
-
-                if (studyVersion==null) {
-                    throw new IllegalArgumentException("No studyVersion found for study id "+studyId+"versionNumber "+versionNumber);
-                }
             }
-
-        } else {
-            throw new IllegalArgumentException("No study found for study id "+studyId);
-        }
+        } 
 
         //String queryStr = "SELECT sv FROM StudyVersion sv WHERE sv.study.id = '" + studyId;
         //if (versionNumber != null) {
@@ -2268,6 +2261,13 @@ public class StudyServiceBean implements edu.harvard.iq.dvn.core.study.StudyServ
         Long longValue      = (Long) query.getSingleResult();
         return longValue;
     }
+
+    
+    public List<MetadataFormatType> findAllMetadataExportFormatTypes() {
+        String queryStr = "SELECT f FROM MetadataFormatType f";
+        Query query = em.createQuery(queryStr);
+        return query.getResultList();
+    }    
 
     public class ConvertedFilenamesFilter implements FilenameFilter{
 

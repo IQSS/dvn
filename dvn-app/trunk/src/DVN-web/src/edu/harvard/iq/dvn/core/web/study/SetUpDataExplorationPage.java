@@ -8,7 +8,6 @@ package edu.harvard.iq.dvn.core.web.study;
 import com.icesoft.faces.async.render.SessionRenderer;
 import com.icesoft.faces.component.ext.HtmlCommandButton;
 import edu.harvard.iq.dvn.core.study.DataTable;
-import com.icesoft.faces.component.ext.HtmlDataTable;
 import com.icesoft.faces.component.ext.HtmlInputText;
 import com.icesoft.faces.component.ext.HtmlCommandLink;
 import com.icesoft.faces.component.ext.HtmlSelectBooleanCheckbox;
@@ -51,6 +50,7 @@ import javax.ejb.EJB;
 import javax.faces.application.FacesMessage;
 import javax.faces.bean.ViewScoped;
 import javax.faces.component.UIComponent;
+import javax.faces.component.html.HtmlDataTable;
 import javax.faces.context.FacesContext;
 import javax.faces.event.ActionEvent;
 import javax.faces.event.PhaseId;
@@ -1108,7 +1108,7 @@ public class SetUpDataExplorationPage extends VDCBaseBean implements java.io.Ser
 
         saveGroupFragment(editFilterVarGroup);
         saveGroupTypes(editFilterVarGroup);
-        if (editFilterVarGrouping!=null){
+        if (editFilterVarGrouping!=null){ 
             setVarGroupUIList(editFilterVarGrouping, true);
         }
         editFilterVarGroup = null;

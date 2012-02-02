@@ -309,7 +309,8 @@
                                                 <ice:outputText id="addFilterGroupText" value="+ Add Group"/>
                                             </ice:commandLink>
                                             <div jsfc="ice:panelGroup">
-                                                <ice:dataTable id="filterPanelGroupings" styleClass="dvnExplorationFilterGroups" columnClasses="dvnExplorationFilterGroupsCol1"
+                                                <!-- Changed outer datatable from ice to h, because of an ince faces issue with nested datatables -->
+                                                <h:dataTable id="filterPanelGroupings" styleClass="dvnExplorationFilterGroups" columnClasses="dvnExplorationFilterGroupsCol1"
                                                                width="100%" cellspacing="0" cellpadding="0" var="grouping" value="#{SetUpDataExplorationPage.filterGroupings}"
                                                                binding="#{SetUpDataExplorationPage.dataTableFilterGrouping}">
                                                     <h:column>
@@ -370,7 +371,7 @@
                                                             </h:column>
                                                         </ice:dataTable>
                                                     </h:column>
-                                                </ice:dataTable>
+                                                </h:dataTable>
                                             </div>
                                         </div>
                                         <div jsfc="ice:panelGroup" style="width:35%; float:left;"

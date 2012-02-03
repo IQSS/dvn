@@ -70,6 +70,7 @@ import com.icesoft.faces.component.ext.HtmlInputText;
 import com.icesoft.faces.component.ext.HtmlInputTextarea;
 import com.icesoft.faces.component.ext.HtmlSelectOneMenu;
 import com.icesoft.faces.component.ext.HtmlSelectOneRadio;
+import com.icesoft.faces.context.effects.JavascriptContext;
 import edu.harvard.iq.dvn.core.study.Metadata;
 import edu.harvard.iq.dvn.core.study.MetadataFieldGroup;
 import java.util.Collections;
@@ -111,6 +112,12 @@ public class EditStudyPage extends VDCBaseBean implements java.io.Serializable  
      public EditStudyPage() {
         
     }
+     
+   public void preRenderView() {
+       super.preRenderView();
+       // add javascript call on each partial submit to initialize the help tips for added fields
+       JavascriptContext.addJavascriptCall(getFacesContext(),"initInlineHelpTip();");
+   }     
     
     
     public void init() {

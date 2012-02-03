@@ -59,6 +59,8 @@ span.vdcEditStudyFormatExample{display:inline}
 .vdcEditStudyFieldFloat3{clear:left}
 .vdcEditStudyOuterTable,.vdcEditStudyOuterTable td{padding:0;margin:0}
 .vdcEditStudyInnerTable{margin:0}
+.vdcEditStudyInnerTable td.vdcEditStudyCol1b span.iceOutTxt.dvnInlineHelpTip {display:inline}
+.icePnlGrd.vdcEditStudyTable td.vdcEditStudyCol2 span.iceOutTxt, .icePnlGrd.vdcEditStudyTable td.vdcEditStudyCol2 span.iceOutTxt.dvnInlineHelpTip {display:block}
 .vdcEditStudyInnerTable div{white-space:nowrap}
 .vdcEditStudyInnerTable textarea{width:auto}
 .vdcEditStudyInnerTable td.vdcEditFilesColA img.iceGphImg{display:inline;vertical-align:middle}

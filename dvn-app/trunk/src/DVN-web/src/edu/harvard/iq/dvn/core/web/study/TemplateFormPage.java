@@ -95,7 +95,6 @@ import javax.servlet.http.HttpServletRequest;
 @Named("TemplateFormPage")
 public class TemplateFormPage extends VDCBaseBean implements java.io.Serializable  {
     @Inject EditTemplateService editTemplateService;
-    @Inject private ControlledVocabularyPopupBean controlledVocabularyPopup;
     @EJB StudyServiceLocal studyService;
     @EJB VDCNetworkServiceLocal vdcNetworkService;
     @EJB VDCServiceLocal vdcService;

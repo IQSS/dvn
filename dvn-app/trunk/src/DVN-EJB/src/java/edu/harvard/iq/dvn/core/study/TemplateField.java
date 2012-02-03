@@ -30,6 +30,7 @@
 package edu.harvard.iq.dvn.core.study;
 
 import edu.harvard.iq.dvn.core.util.FieldInputLevelConstant;
+import edu.harvard.iq.dvn.core.web.study.TemplateFieldControlledVocabulary;
 import edu.harvard.iq.dvn.core.web.study.TemplateFieldValue;
 import java.util.ArrayList;
 import java.util.List;
@@ -189,9 +190,30 @@ public class TemplateField implements java.io.Serializable {
             values.add(elem);
             this.setTemplateFieldValues(values);
         }
-
     }
 
+    @OneToMany (mappedBy="templateField", cascade={ CascadeType.REMOVE, CascadeType.MERGE,CascadeType.PERSIST})
+    @OrderBy ("strValue")
+    private List<TemplateFieldControlledVocabulary> templateFieldControlledVocabulary;
+
+    public List<TemplateFieldControlledVocabulary> getTemplateFieldControlledVocabulary() {
+        return templateFieldControlledVocabulary;
+    }
+
+    public void setTemplateFieldControlledVocabulary(List<TemplateFieldControlledVocabulary> templateFieldControlledVocabulary) {
+        this.templateFieldControlledVocabulary = templateFieldControlledVocabulary;
+    }
+
+    public void initControlledVocabulary (){
+        if (this.getTemplateFieldControlledVocabulary() == null || this.getTemplateFieldControlledVocabulary().isEmpty()){
+            TemplateFieldControlledVocabulary elem = new TemplateFieldControlledVocabulary();
+            elem.setTemplateField(this);
+            elem.setMetadata(this.getTemplate().getMetadata());
+            List vocab = new ArrayList();
+            vocab.add(elem);
+            this.setTemplateFieldControlledVocabulary(vocab);
+        }
+    }
 
   /**
      * Holds value of property version.

@@ -3,13 +3,6 @@
  * and open the template in the editor.
  */
 package edu.harvard.iq.dvn.core.web.study;
-
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
-
-
 import edu.harvard.iq.dvn.core.study.Metadata;
 import edu.harvard.iq.dvn.core.study.TemplateField;
 import java.io.Serializable;
@@ -23,13 +16,14 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 
+
 /**
  *
  * @author skraffmiller
  */
 @Entity
-public class TemplateFieldValue implements Serializable {
-    private static final long serialVersionUID = 1L;
+public class TemplateFieldControlledVocabulary implements Serializable{
+        private static final long serialVersionUID = 1L;
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
@@ -116,7 +110,7 @@ public class TemplateFieldValue implements Serializable {
         if (!(object instanceof TemplateFieldValue)) {
             return false;
         }
-        TemplateFieldValue other = (TemplateFieldValue) object;
+        TemplateFieldControlledVocabulary other = (TemplateFieldControlledVocabulary) object;
         if ((this.id == null && other.id != null) || (this.id != null && !this.id.equals(other.id))) {
             return false;
         }

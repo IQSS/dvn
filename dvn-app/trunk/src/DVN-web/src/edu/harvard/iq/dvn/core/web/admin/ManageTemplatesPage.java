@@ -94,6 +94,14 @@ public class ManageTemplatesPage extends VDCBaseBean implements java.io.Serializ
         
         return "/dvn#" + getVDCRequestBean().getCurrentVDCURL() +  "/faces/admin/ManageTemplatesPage.xhtml?faces-redirect=true?mode=4";
     }
+    
+    public String updateNetworkDefaultAction() {
+        Template currentTemplate = (Template)((Object[])this.templateDataTable.getRowData())[0];
+        vdcService.updateDefaultTemplate(getVDCRequestBean().getCurrentVDCId(),currentTemplate.getId());
+        defaultTemplateId = currentTemplate.getId();
+        
+        return "/faces/admin/ManageTemplatesPage.xhtml?faces-redirect=true?mode=4";
+    }
 
     private List<Template> templateList;
     /**

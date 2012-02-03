@@ -130,7 +130,7 @@ public class EditStudyPage extends VDCBaseBean implements java.io.Serializable  
         }
         if (getStudyId() != null) {
             editStudyService.setStudyVersion(studyId);
-            study = editStudyService.getStudyVersion().getStudy();          
+            study = editStudyService.getStudyVersion().getStudy();             
             metadata = editStudyService.getStudyVersion().getMetadata();
             currentTitle = metadata.getTitle();
             setFiles(editStudyService.getCurrentFiles());
@@ -263,7 +263,6 @@ public class EditStudyPage extends VDCBaseBean implements java.io.Serializable  
      * @param study New value of property study.
      */
     public void setStudy(Study study) {
-        System.out.println("Set Study is called");
         this.study = study;
     }
 
@@ -322,28 +321,32 @@ public class EditStudyPage extends VDCBaseBean implements java.io.Serializable  
         adHocFields = new ArrayList();
         for (Iterator<TemplateField> it = study.getTemplate().getTemplateFields().iterator(); it.hasNext();) {
             TemplateField tf = it.next();
-            StudyMapValue smv = new StudyMapValue();
-            smv.setTemplateFieldUI(new TemplateFieldUI(tf));
-            List <TemplateFieldValue> removeList = new ArrayList();
-            if(tf.getStudyField().isDcmField()){
-                tf.getTemplateFieldValues();
-                if (tf.getTemplateFieldValues().size() > 0){
-                    
-                    for (TemplateFieldValue tfv : tf.getTemplateFieldValues()){
-                        if (!tfv.getMetadata().equals(metadata) && metadataSet ){
-                            removeList.add(tfv);
+            if (!tf.isHidden()){
+                StudyMapValue smv = new StudyMapValue();
+                smv.setTemplateFieldUI(new TemplateFieldUI(tf));
+                List <TemplateFieldValue> removeList = new ArrayList();
+                if(tf.getStudyField().isDcmField()){
+                    tf.getTemplateFieldValues();
+                    if (tf.getTemplateFieldValues().size() > 0){
+
+                        for (TemplateFieldValue tfv : tf.getTemplateFieldValues()){
+                            if (!tfv.getMetadata().equals(metadata) && metadataSet ){
+                                removeList.add(tfv);
+                            }
                         }
+
                     }
 
-                }
+                    for (TemplateFieldValue tfvr: removeList){
+                        editStudyService.removeCollectionElement(tf.getTemplateFieldValues(),tfvr);
+                    }
 
-                for (TemplateFieldValue tfvr: removeList){
-                    editStudyService.removeCollectionElement(tf.getTemplateFieldValues(),tfvr);
-                }
-
-                tf.initValues();
-                adHocFields.add(tf);
-            }           
+                    tf.initValues();
+                    
+                    adHocFields.add(tf);
+                }                
+            }
+           
         }         
         Collections.sort(adHocFields, comparator);
     }
@@ -362,7 +365,7 @@ public class EditStudyPage extends VDCBaseBean implements java.io.Serializable  
     }
     
       public Map getTemplatesMap() {
-        // getVdcTemplatesMap is called with currentVDCId, since for a new study the current VDC IS the owner
+        // getVdcTemplatesMap is called with currentVDCId, since for a new study the current VDC IS the owner   
         return vdcService.getVdcTemplatesMap(getVDCRequestBean().getCurrentVDCId());
     }
     
@@ -375,13 +378,20 @@ public class EditStudyPage extends VDCBaseBean implements java.io.Serializable  
     }
 
     public void addDcmRow(ActionEvent ae) {
-        Long getOrder = (Long) ae.getComponent().getAttributes().get("dcmSortOrder");
-            TemplateField tf = adHocFields.get(getOrder.intValue() -1 );
+        
+        Long  getId = (Long) ae.getComponent().getAttributes().get("tf_id");
+         TemplateField tfSel = new TemplateField();
+         for (TemplateField tfTest: adHocFields){
+              if(tfTest.getId().equals(getId)){
+                  tfSel = tfTest;
+              }
+         }
+        
             TemplateFieldValue newElem = new TemplateFieldValue();
             newElem.setMetadata(metadata);
-            newElem.setTemplateField(tf);
+            newElem.setTemplateField(tfSel);
             metadata.getTemplateFieldValue().add(newElem);
-            tf.getTemplateFieldValues().add(newElem);
+            tfSel.getTemplateFieldValues().add(newElem);
             dcmFieldTable.getChildren().clear();
     }
 
@@ -487,7 +497,6 @@ public class EditStudyPage extends VDCBaseBean implements java.io.Serializable  
     public void toggleInlineHelp(ActionEvent ae) {
         String id =ae.getComponent().getId();
         String studyField = id.substring(5, id.length());
-        System.out.println("studyField is"+studyField);
         UIComponent helpText = FacesContext.getCurrentInstance().getViewRoot().findComponent("help_text_"+studyField);
         helpText.setRendered(!helpText.isRendered());
     }

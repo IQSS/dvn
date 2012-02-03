@@ -1382,8 +1382,9 @@
                     <ice:column>
                       <ice:commandButton partialSubmit="true" image="/resources/images/icon_add.gif" rendered="#{dcmItem.allowMultiples}"
                                          actionListener="#{EditStudyPage.addDcmRow}">
-                                         <f:attribute name="dcmSortOrder" value="#{dcmItem.dcmSortOrder}"/>
-                      </ice:commandButton>
+                                         <f:attribute name="dcmSortOrder" value="#{dcmItem.dcmSortOrder}" />
+                                         <f:attribute name="tf_id" value="#{dcmItem.id}" />
+                               </ice:commandButton>
                     </ice:column>
                   </ice:dataTable>
                   <!-- End of Generic Control -->

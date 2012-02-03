@@ -2,15 +2,9 @@
 package edu.harvard.iq.dvn.api.resources;
 
 import edu.harvard.iq.dvn.api.entities.MetadataInstance;
-import edu.harvard.iq.dvn.api.exceptions.NotFoundException;
-import java.net.URI;
-import java.net.URISyntaxException;
-import java.util.List;
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
-import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
-import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.PathParam;

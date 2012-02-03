@@ -15,6 +15,8 @@ public class DvnApiRootResource {
 
     @EJB MetadataResourceBean r;
     @EJB MetadataFormatsResourceBean rf; 
+    @EJB MetadataSearchFieldsResourceBean rs;
+    @EJB MetadataSearchResultsResourceBean rsr; 
 
     @Path("metadata")
     public MetadataResourceBean getMetadataResourceBean() {
@@ -24,6 +26,16 @@ public class DvnApiRootResource {
     @Path("metadataFormatsAvailable")
     public MetadataFormatsResourceBean getMetadataFormatsResourceBean() {
         return rf;
+    }
+    
+    @Path("metadataSearchFields")
+    public MetadataSearchFieldsResourceBean getMetadataSearchFieldsResourceBean() {
+        return rs; 
+    }
+    
+    @Path("metadataSearch")
+    public MetadataSearchResultsResourceBean getMetadataSearchResultsResourceBean() {
+        return rsr;
     }
 }
 

@@ -2,8 +2,6 @@ package edu.harvard.iq.dvn.api.entities;
 
 import java.io.IOException;
 import java.io.OutputStream;
-import java.io.InputStream; 
-import java.io.FileInputStream;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Type;
 import javax.ejb.Singleton;

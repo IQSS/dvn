@@ -2,13 +2,22 @@ package edu.harvard.iq.dvn.api.resources;
 
 import edu.harvard.iq.dvn.api.entities.MetadataInstance;
 import edu.harvard.iq.dvn.api.entities.MetadataFormats;
+import edu.harvard.iq.dvn.api.entities.MetadataSearchFields;
+import edu.harvard.iq.dvn.api.entities.MetadataSearchResults;
+
+
 import java.util.List;
+import java.util.ArrayList; 
 import javax.ejb.Singleton;
 import javax.ejb.EJB;
 
 import edu.harvard.iq.dvn.core.study.StudyServiceLocal;
+import edu.harvard.iq.dvn.core.index.IndexServiceLocal;
+import edu.harvard.iq.dvn.core.study.Study;
 import edu.harvard.iq.dvn.core.study.StudyVersion;
 import edu.harvard.iq.dvn.core.study.MetadataFormatType;
+//import edu.harvard.iq.dvn.core.study.StudyField;
+//import edu.harvard.iq.dvn.core.study.StudyFieldServiceLocal;
 
 
 /**
@@ -17,9 +26,16 @@ import edu.harvard.iq.dvn.core.study.MetadataFormatType;
  */
 @Singleton
 public class MetadataSingletonBean {
-    @EJB private StudyServiceLocal studyService;
+    @EJB 
+    private StudyServiceLocal studyService;
+    @EJB
+    IndexServiceLocal indexService;
+    
+    //@EJB
+    //StudyFieldServiceLocal studyFieldService;
     
     private List<MetadataFormatType> allSupportedTypes; 
+    private List<String> searchableFields = null; 
 
     public MetadataSingletonBean() {
     }
@@ -154,6 +170,63 @@ public class MetadataSingletonBean {
         return null; 
     }
 
+    public MetadataSearchFields getMetadataSearchFields() {
+        MetadataSearchFields msf = null; 
+        
+        if (searchableFields == null) {
+            // In order to initialize the list, eventually we want to use the
+            // StudyFieldService, like this: 
+            //
+            //   searchableFields = studyFieldService.findAdvSearchDefault();
+            //
+            // for now, however, we are going to hard-code it, the same way
+            // it is done in the AdvStudyPage:
+            String[] fieldsHardCoded = {"title", "authorName", "globalId", "otherId", "abstractText", "keywordValue", "keywordVocabulary", "topicClassValue", "topicClassVocabulary", "producerName", "distributorName", "fundingAgency", "productionDate", "distributionDate", "dateOfDeposit", "timePeriodCoveredStart", "timePeriodCoveredEnd", "country", "geographicCoverage", "geographicUnit", "universe", "kindOfData"};
+            searchableFields = new ArrayList<String>(fieldsHardCoded.length);
+            
+            for (int i = 0; i < fieldsHardCoded.length; i++) {
+                searchableFields.add(fieldsHardCoded[i]);
+            }
+            // TODO: discuss this with the team. -- L.A.
+        }
+        msf = new MetadataSearchFields(searchableFields);
+
+     
+        return msf; 
+    }
+    
+    public MetadataSearchResults getMetadataSearchResults(String queryString) {
+        MetadataSearchResults msr = null; 
+        
+        // Run the search utilizing Index Service:
+        
+        List<Long> matchingStudyIds = indexService.query(queryString);
+        
+        if (matchingStudyIds == null) {
+            msr = new MetadataSearchResults();
+        } else {
+            // Convert numeric (database) study ids to global ids:
+            List<String> matchingGlobalIds = new ArrayList<String>();
+            for (Long studyId : matchingStudyIds) {
+                Study lookupStudy = studyService.getStudy(studyId);
+                String lookupStudyGlobalId = null; 
+                if (lookupStudy != null) {
+                    lookupStudyGlobalId = lookupStudy.getGlobalId();
+                    if (lookupStudyGlobalId != null && !lookupStudyGlobalId.equals("")) {
+                        matchingGlobalIds.add(lookupStudyGlobalId);
+                    }
+                }
+            }
+            msr = new MetadataSearchResults(matchingGlobalIds);
+        }
+        
+        if (msr != null) {
+            msr.setQueryString(queryString);
+        }
+        
+        return msr; 
+    }
+    
     private void lookupMetadataTypesAvailable (MetadataFormats metadataFormats) {
         for (MetadataFormatType mfType : studyService.findAllMetadataExportFormatTypes()) {
             // We want to skip the formats that are not XML-based

@@ -4,7 +4,6 @@ import java.io.File;
 import java.io.UnsupportedEncodingException; 
 
 import edu.harvard.iq.dvn.core.util.FileUtil;
-import edu.harvard.iq.dvn.core.study.Study; 
 
 /**
  *

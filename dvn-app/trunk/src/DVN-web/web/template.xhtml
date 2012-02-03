@@ -86,6 +86,11 @@
                     showURL: false,
                     showBody: " - "
                 });
+                
+                // Now remove the class, so when this method gets called again we don't include them
+                // (since calling .tooltip more than once seems to break the tooltips)
+                jQuery('.dvnInlineHelpTip').removeClass("dvnInlineHelpTip");
+                
             };
             // ]]>
         </script>

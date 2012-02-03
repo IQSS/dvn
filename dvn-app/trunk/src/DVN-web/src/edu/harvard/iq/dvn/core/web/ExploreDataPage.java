@@ -21,7 +21,6 @@ import javax.ejb.EJB;
 import javax.faces.event.ActionEvent;
 import javax.faces.event.ValueChangeEvent;
 import javax.faces.model.SelectItem;
-import com.icesoft.faces.component.panelseries.PanelSeries;
 
 import com.icesoft.faces.component.ext.HtmlCommandButton;
 import com.icesoft.faces.component.ext.HtmlDataTable;
@@ -50,24 +49,9 @@ import edu.harvard.iq.dvn.core.web.study.StudyUI;
 import edu.harvard.iq.dvn.ingest.dsb.FieldCutter;
 import edu.harvard.iq.dvn.ingest.dsb.impl.DvnJavaFieldCutter;
 import java.awt.Color;
-import java.awt.Font;
 import java.awt.FontFormatException;
-import java.awt.FontMetrics;
-import java.awt.Graphics;
 import java.awt.Graphics2D;
-import java.awt.GraphicsConfiguration;
-import java.awt.GraphicsDevice;
-import java.awt.GraphicsEnvironment;
-import java.awt.RenderingHints;
-import java.awt.Transparency;
-import java.awt.font.FontRenderContext;
-import java.awt.font.LineMetrics;
-import java.awt.geom.AffineTransform;
-import java.awt.image.AffineTransformOp;
 import java.awt.image.BufferedImage;
-import java.awt.image.BufferedImageOp;
-import java.awt.image.ConvolveOp;
-import java.awt.image.Kernel;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -230,15 +214,6 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
     private String xAxisLabel = "";
     private String sourceLineLabel = "";
     private Long studyFileId;
-    private Long fileId;
-
-    public Long getFileId() {
-        return fileId;
-    }
-
-    public void setFileId(Long fileId) {
-        this.fileId = fileId;
-    }
 
     private String yAxisLabel = "";
 
@@ -267,10 +242,7 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
     @Override
     public void init() {
         super.init();        
-        studyFileId = new Long( getVDCRequestBean().getRequestParam("fileId"));
-        System.out.println("studyFileId is "+studyFileId);
-        fileId = studyFileId;
-        
+        studyFileId = new Long( getVDCRequestBean().getRequestParam("fileId"));       
         setUp();
      }
     
@@ -318,14 +290,7 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
         xAxisVar =  visualizationService.getXAxisVariable(dt.getId());
         for (DataVariableMapping mapping : xAxisVar.getDataVariableMappings()){
              if (mapping.isX_axis())xAxisLabel = mapping.getLabel();
-        }
-        
-        for (VarGroup varGroup: allFilterGroups){
-
-                 System.out.println(" filter name is "+varGroup.getName() );
-             }
-
-        
+        }               
     }
     
     private void reInit(){
@@ -354,9 +319,7 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
         groupTypeId = 0;
         this.selectMeasureItems = loadSelectMeasureItems(0);
         lineLabel = "";
-        filterPanelGroup.getSavedChildren().clear();
-        filterPanelGroup.getChildren().clear();
-        displayType = new Long(defaultView);        
+        displayType = new Long(defaultView);     
     }
 
     private PanelTabSet tabSet1 = new PanelTabSet();
@@ -386,15 +349,6 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
         this.filterGroupings = filterGroupings;
     }
 
-    protected PanelSeries filterPanelGroup;
-
-    public PanelSeries getFilterPanelGroup() {
-        return filterPanelGroup;
-    }
-
-    public void setFilterPanelGroup(PanelSeries filterPanelGroup) {
-        this.filterPanelGroup = filterPanelGroup;
-    }
 
     private String loadMeasureLabel() {
         Iterator iterator = allVarGroupings.iterator();
@@ -423,7 +377,6 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
         filterStrings.clear();
         filterGroupings.clear();
         List <VarGrouping> localVGList = new ArrayList();
-                System.out.println(" In load filter groupings selectedMeasureId is  " + selectedMeasureId);
         Iterator i = filterGroupingMeasureAssociation.listIterator();
         int count = 0;
         while (i.hasNext()){
@@ -549,10 +502,6 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
 
         for (VarGroup varGroup: localVGList ){
             inList.add(varGroup);
-
-
-                 System.out.println("in load filter groups filter name is "+varGroup.getName() );
-
         }
     }
 
@@ -672,7 +621,7 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
         return this.selectMeasureItems;
     }
 
-    public void resetFiltersForMeasure(ValueChangeEvent ae){
+    public void resetFiltersForMeasure(ValueChangeEvent ae){ 
         selectedMeasureId = (Long) ae.getNewValue();
         selectedMeasureHasFilterTypes = false;
         selectedMeasureHasFilters = false;
@@ -683,25 +632,22 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
             loadFilterGroupings();
             
         }
-        filterPanelGroup.getChildren().clear();
-        filterPanelGroup.getSavedChildren().clear();
-
-        if (selectedMeasureHasFilters){
-            inputLineLabel.setValue("");
-        } else if (selectedMeasureId > 0) {
-            System.out.println("selected measure has no filters  ");
+        
+        if (!selectedMeasureHasFilters && selectedMeasureId > 0) {
             VarGroup measure = visualizationService.getGroupFromId(selectedMeasureId);
             inputLineLabel.setValue(measure.getName());
         } else {
             inputLineLabel.setValue(""); 
         }
-
-        callDrawVisualization();        
-        FacesContext.getCurrentInstance().getViewRoot().getChildren().clear();
+       
+        // commented out because we don't need to reset the visualization when all we are doing is selecting the filter
+        //callDrawVisualization();
+        
+        // added the following to fix issue where you would change from one measure to anoter, but the filter values were being kept
         getFacesContext().renderResponse();
     }
     
-    
+   
     public void updateLineLabelForFilter(ValueChangeEvent ae){
        Long filterId =  (Long) ae.getNewValue();
        
@@ -876,21 +822,19 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
         return selectItems;
     }
     
-    public List<SelectItem> getSelectFilterGroups() {
+    public List<SelectItem> getSelectFilterGroups(Long groupingId) {
         if (!selectedMeasureId.equals(new Long(0))){
           
-            return getFilterGroupsWithMeasure();
+            return getFilterGroupsWithMeasure(groupingId);
         }
         return null;
     }
 
 
-    public List<SelectItem> getSelectFilterGroupTypes() {
-        Long groupingId = new Long(0);
+    public List<SelectItem> getSelectFilterGroupTypes(Long groupingId) {
         showFilterGroupTypes = false;
         List selectItems = new ArrayList<SelectItem>();
         if (!selectedMeasureId.equals(new Long(0))){
-            groupingId = new Long(filterPanelGroup.getAttributes().get("groupingId").toString());
 
             List <VarGroup> varGroupsAll = (List<VarGroup>)  getFilterGroupsFromMeasureId(selectedMeasureId);
             List <VarGroupType> varGroupTypesAll = new ArrayList();
@@ -928,10 +872,9 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
     }
 
 
-    private List<SelectItem> getFilterGroupsWithMeasure(){
+    private List<SelectItem> getFilterGroupsWithMeasure(Long groupingId){
 
          List selectItems = new ArrayList<SelectItem>();
-          Long groupingId = new Long(filterPanelGroup.getAttributes().get("groupingId").toString());
           boolean addAll = false;
           List <VarGroup> multipleSelections = new ArrayList <VarGroup>();
           List <VarGroup> varGroupsAll = (List<VarGroup>)  getFilterGroupsFromMeasureId(selectedMeasureId);
@@ -1061,10 +1004,9 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
     }
     
     private void callDrawVisualization(){
-         System.out.println(" In callDrawVisualization...  ");
         FacesContext fc = FacesContext.getCurrentInstance();
         JavascriptContext.addJavascriptCall(fc, "drawVisualization();");
-        JavascriptContext.addJavascriptCall(fc, "initLineDetails");
+        //JavascriptContext.addJavascriptCall(fc, "initLineDetails"); // commented out because this was throwing JS error and we couldn't find how it was getting called; leaving in, in case we need to investigate further
     }
     
     public void update_StartYear(){
@@ -1185,10 +1127,6 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
            getInputGraphTitle().setValue(tmpLineLabel);                
     }
 
-    public void reset_FilterItems(){
-        
-        this.getSelectFilterGroups();
-    }
 
     public int getGroupTypeId() {
         return groupTypeId;
@@ -3160,8 +3098,7 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
     public void setImageURL(String imageURL) {
         this.imageURL = imageURL;
     }
-    
-    
+     
     public Long getStudyFileId() {
         return studyFileId;
     }

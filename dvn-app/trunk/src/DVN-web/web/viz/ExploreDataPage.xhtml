@@ -21,6 +21,7 @@
     </f:metadata>
 </ui:define>
 <ui:define name="body">
+<script type="text/javascript" src="https://www.google.com/jsapi"></script>
 <ice:form id="ExploreDataPage">
     <ice:message for="exploredataform" id="boxErrorMsg" styleClass="errorMessage"/>
 
@@ -131,18 +132,17 @@
                     <ice:outputText value=" Use check boxes to narrow drop-down menu."/>
                 </div>
 
-                <div jsfc="ice:panelSeries" id="filterPanelGroupings" var="item" value="#{ExploreDataPage.filterGroupings}" binding="#{ExploreDataPage.filterPanelGroup}">
-                    <f:attribute name="groupingId" value="#{item.varGrouping.id}"/>
+                <ui:repeat id="filterPanelGroupings" var="item" value="#{ExploreDataPage.filterGroupings}" >
                     <div class="dvnGraphFilterBlock">
                         <div class="dvnGraphFilterLabelBlock">
                             <ice:outputLabel value="#{item.varGrouping.name}"/>
 
                             <ice:selectOneMenu id="filterGroup" styleClass="filterGroup" value="#{item.selectedGroupId}" partialSubmit="true"  valueChangeListener="#{ExploreDataPage.updateLineLabelForFilter}">
                                 <f:selectItem itemLabel="Select..." itemValue="0"/>
-                                <f:selectItems value="#{ExploreDataPage.selectFilterGroups}"/>
+                                <f:selectItems value="#{ExploreDataPage.getSelectFilterGroups(item.varGrouping.id)}"/>
                             </ice:selectOneMenu>
                         </div>
-
+                        
                         <div jsfc="ice:panelSeries" value="#{item.varGroupTypesUI}" styleClass="dvnGraphFilterTypesBlock" id="filterPanelGroupTypes" var="groupType">
                             <!-- controls -->
                             <div jsfc="ice:panelGroup" styleClass="dvnGraphFilterTypesControls">
@@ -153,7 +153,7 @@
                         </div>
                         <ice:message for="filterPanelGroupTypes" id="boxErrorMsg1" styleClass="errorMessage"/>
                     </div>
-                </div>
+                </ui:repeat>
             </div>
 
             <div class="dvnGraphLabelBlock">
@@ -460,9 +460,6 @@
             </div>
         </div>
     </div>
-<script type="text/javascript" src="https://www.google.com/jsapi"></script>
-    <!--<script type="text/javascript" src="http://api.timepedia.org/gviz/"></script>-->
-
     <script type="text/javascript">
 // <![CDATA[
     google.load('visualization', '1', {'packages':['annotatedtimeline']});

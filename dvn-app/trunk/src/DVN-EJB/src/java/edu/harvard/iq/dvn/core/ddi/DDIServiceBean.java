@@ -186,7 +186,7 @@ public class DDIServiceBean implements DDIServiceLocal {
             try {
                 xmlw = xmlOutputFactory.createXMLStreamWriter(os);
                 xmlw.writeStartDocument();
-                createCodeBook(xmlw, s.getReleasedVersion());
+                createCodeBook(xmlw, s.getReleasedVersion(), null, null);
                 xmlw.writeEndDocument();
             } catch (XMLStreamException ex) {
                 Logger.getLogger("global").log(Level.SEVERE, null, ex);
@@ -202,6 +202,46 @@ public class DDIServiceBean implements DDIServiceLocal {
         }
     }
 
+    @TransactionAttribute(TransactionAttributeType.NOT_SUPPORTED)
+    public void exportStudy(Study s, OutputStream os, String xpathExclude, String xpathInclude) {
+        if (s.getReleasedVersion() == null) {
+            throw new IllegalArgumentException("Study does not have released version, study.id = " + s.getId());
+        }
+        
+        if ((xpathExclude == null || "".equals(xpathExclude))
+                &&
+            (xpathInclude == null || "".equals(xpathInclude))) {
+            this.exportStudy(s, os);
+        } else {
+            // partial export 
+            if (s.isIsHarvested()) {
+                throw new IllegalArgumentException("Partial export requested on a harvested study. (study id = " + s.getId() + ")");          
+            }
+            XMLStreamWriter xmlw = null;
+            try {
+                xmlw = xmlOutputFactory.createXMLStreamWriter(os);
+                xmlw.writeStartDocument();
+                createCodeBook(xmlw, s.getReleasedVersion(), xpathExclude, xpathInclude);
+                xmlw.writeEndDocument();
+            } catch (XMLStreamException ex) {
+                Logger.getLogger("global").log(Level.SEVERE, null, ex);
+                throw new EJBException("ERROR occurred during partial export of a study.", ex);
+            } finally {
+                try {
+                    if (xmlw != null) {
+                        xmlw.close();
+                    }
+                } catch (XMLStreamException ex) {
+                }
+            }
+            
+            
+            
+            
+        }
+        
+    }
+    
     public void exportDataFile(TabularDataFile tdf, OutputStream os)  {
         if (tdf.getReleasedFileMetadata() == null) {
             throw new IllegalArgumentException("StudyFile does not have a released version, study file id = " + tdf.getId() );
@@ -218,7 +258,7 @@ public class DDIServiceBean implements DDIServiceLocal {
             xmlw.writeDefaultNamespace("http://www.icpsr.umich.edu/DDI");
             writeAttribute( xmlw, "version", "2.0" );
 
-            createFileDscr(xmlw, tdf.getReleasedFileMetadata());
+            createFileDscr(xmlw, tdf.getReleasedFileMetadata(), null, null, null);
             createDataDscr(xmlw, tdf);
 
             xmlw.writeEndElement(); // codeBook
@@ -263,7 +303,7 @@ public class DDIServiceBean implements DDIServiceLocal {
                         
                         // now create DocDscr element (using StAX)
                         xmlw = xmlOutputFactory.createXMLStreamWriter(os);
-                        createDocDscr(xmlw, sv.getMetadata());
+                        createDocDscr(xmlw, sv.getMetadata(), null, null, null);
                         xmlw.close();
 
                         out.write(System.getProperty("line.separator"));
@@ -302,122 +342,139 @@ public class DDIServiceBean implements DDIServiceLocal {
 
 
     // <editor-fold defaultstate="collapsed" desc="export methods">
-    private void createCodeBook(XMLStreamWriter xmlw, StudyVersion sv) throws XMLStreamException {
+    private void createCodeBook(XMLStreamWriter xmlw, StudyVersion sv, String xpathExclude, String xpathInclude) throws XMLStreamException {
         Metadata md = sv.getMetadata();
+        
+        String xpathCurrent = "codeBook";
 
-        xmlw.writeStartElement("codeBook");
+        xmlw.writeStartElement(xpathCurrent);
         xmlw.writeDefaultNamespace("http://www.icpsr.umich.edu/DDI");
         writeAttribute( xmlw, "xmlns:xsi", "http://www.w3.org/2001/XMLSchema-instance" );
         writeAttribute( xmlw, "xsi:schemaLocation", "http://www.icpsr.umich.edu/DDI http://www.icpsr.umich.edu/DDI/Version2-0.xsd" );
         writeAttribute( xmlw, "version", "2.0" );
 
-        createDocDscr(xmlw, md);
-        createStdyDscr(xmlw, md);
+        createDocDscr(xmlw, md, xpathCurrent, xpathExclude, xpathInclude);
+        createStdyDscr(xmlw, md, xpathCurrent, xpathExclude, xpathInclude);
 
         // iterate through files, saving other material files for the end
         List<FileMetadata> otherMatFiles = new ArrayList();
         for (FileMetadata fmd : sv.getFileMetadatas()) {
             StudyFile sf = fmd.getStudyFile();
             if ( sf instanceof TabularDataFile ) {
-                createFileDscr(xmlw, fmd);
+                createFileDscr(xmlw, fmd, xpathCurrent, xpathExclude, xpathInclude);
             } else {
                 otherMatFiles.add(fmd);
             }
         }
 
-        createDataDscr(xmlw, sv);
+        createDataDscr(xmlw, sv, xpathCurrent, xpathExclude, xpathInclude);
 
         // now go through otherMat files
         for (FileMetadata fmd : otherMatFiles) {
-            createOtherMat(xmlw, fmd);
+            createOtherMat(xmlw, fmd, xpathCurrent, xpathExclude, xpathInclude);
         }
 
         xmlw.writeEndElement(); // codeBook
     }
 
-    private void createDocDscr(XMLStreamWriter xmlw, Metadata metadata) throws XMLStreamException {
+    private void createDocDscr(XMLStreamWriter xmlw, Metadata metadata, String xpathParent, String xpathExclude, String xpathInclude) throws XMLStreamException {
         Study study = metadata.getStudy();
 
-        xmlw.writeStartElement("docDscr");
-        xmlw.writeStartElement("citation");
+        String currentElement = "docDscr"; 
+        String xpathCurrent = xpathParent + "/" + currentElement; 
+        
+        if (xpathExclude != null && (xpathExclude.equals(xpathCurrent))) {
+            return; 
+        }
+        
+        if (xpathInclude == null || xpathInclude.startsWith(xpathCurrent)) {
+            xmlw.writeStartElement(currentElement);
+        
+            // TODO: perform similar exclude/include tests on all the child 
+            // elements of docDscr.
+            // (for now we only support the exclusions and inclusions of the top-
+            // level DDI parts)
+        
+            xmlw.writeStartElement("citation");
 
-        // titlStmt
-        xmlw.writeStartElement("titlStmt");
+            // titlStmt
+            xmlw.writeStartElement("titlStmt");
 
-        xmlw.writeStartElement("titl");
-        xmlw.writeCharacters( metadata.getTitle() );
-        xmlw.writeEndElement(); // titl
+            xmlw.writeStartElement("titl");
+            xmlw.writeCharacters( metadata.getTitle() );
+            xmlw.writeEndElement(); // titl
 
-        xmlw.writeStartElement("IDNo");
-        writeAttribute( xmlw, "agency", "handle" );
-        xmlw.writeCharacters( study.getGlobalId() );
-        xmlw.writeEndElement(); // IDNo
+            xmlw.writeStartElement("IDNo");
+            writeAttribute( xmlw, "agency", "handle" );
+            xmlw.writeCharacters( study.getGlobalId() );
+            xmlw.writeEndElement(); // IDNo
 
-        xmlw.writeEndElement(); // titlStmt
+            xmlw.writeEndElement(); // titlStmt
 
-        // distStmt
-        xmlw.writeStartElement("distStmt");
+            // distStmt
+            xmlw.writeStartElement("distStmt");
 
-        xmlw.writeStartElement("distrbtr");
-        xmlw.writeCharacters( vdcNetworkService.find().getName() + " Dataverse Network" );
-        xmlw.writeEndElement(); // distrbtr
+            xmlw.writeStartElement("distrbtr");
+            xmlw.writeCharacters( vdcNetworkService.find().getName() + " Dataverse Network" );
+            xmlw.writeEndElement(); // distrbtr
 
-        String lastUpdateString = new SimpleDateFormat("yyyy-MM-dd").format(study.getLastUpdateTime());
-        createDateElement( xmlw, "distDate", lastUpdateString );
+            String lastUpdateString = new SimpleDateFormat("yyyy-MM-dd").format(study.getLastUpdateTime());
+            createDateElement( xmlw, "distDate", lastUpdateString );
 
-        xmlw.writeEndElement(); // distStmt
+            xmlw.writeEndElement(); // distStmt
 
-        // verStmt (DVN versions)
-        for (StudyVersion sv : study.getStudyVersions()) {
-            if (sv.isWorkingCopy()) {
-                continue; // we do not want to incude any info about a working copy
-            }
-
-            xmlw.writeStartElement("verStmt");
-            writeAttribute( xmlw, "source", "DVN" );
-
-            xmlw.writeStartElement("version");
-            writeAttribute( xmlw, "date", new SimpleDateFormat("yyyy-MM-dd").format(sv.getReleaseTime()) );
-            writeAttribute( xmlw, "type", sv.getVersionState().toString() );
-            xmlw.writeCharacters( sv.getVersionNumber().toString() );
-            xmlw.writeEndElement(); // version
-
-            String versionContributors = "";
-            for (VersionContributor vc : sv.getVersionContributors()) {
-                if (!"".equals(versionContributors)) {
-                    versionContributors += ", ";
+            // verStmt (DVN versions)
+            for (StudyVersion sv : study.getStudyVersions()) {
+                if (sv.isWorkingCopy()) {
+                    continue; // we do not want to incude any info about a working copy
                 }
-                versionContributors += vc.getContributor().getUserName();
-            }
-            xmlw.writeStartElement("verResp");
-            xmlw.writeCharacters( versionContributors );
-            xmlw.writeEndElement(); // verResp
 
-            if (!StringUtil.isEmpty( sv.getVersionNote() )) {
-                xmlw.writeStartElement("notes");
-                writeAttribute( xmlw, "type", NOTE_TYPE_VERSION_NOTE );
-                writeAttribute( xmlw, "subject", NOTE_SUBJECT_VERSION_NOTE );
-                xmlw.writeCharacters( sv.getVersionNote());
-                xmlw.writeEndElement(); // notes
-            }
+                xmlw.writeStartElement("verStmt");
+                writeAttribute( xmlw, "source", "DVN" );
 
-            if (!StringUtil.isEmpty( sv.getArchiveNote() )) {
-                xmlw.writeStartElement("notes");
-                writeAttribute( xmlw, "type", NOTE_TYPE_ARCHIVE_NOTE );
-                writeAttribute( xmlw, "subject", NOTE_SUBJECT_ARCHIVE_NOTE );
-                xmlw.writeCharacters( sv.getArchiveNote());
-                xmlw.writeEndElement(); // notes
-            }
+                xmlw.writeStartElement("version");
+                writeAttribute( xmlw, "date", new SimpleDateFormat("yyyy-MM-dd").format(sv.getReleaseTime()) );
+                writeAttribute( xmlw, "type", sv.getVersionState().toString() );
+                xmlw.writeCharacters( sv.getVersionNumber().toString() );
+                xmlw.writeEndElement(); // version
 
-            if (sv.getArchiveTime() != null) {
-                xmlw.writeStartElement("notes");
-                writeAttribute( xmlw, "type", NOTE_TYPE_ARCHIVE_DATE );
-                writeAttribute( xmlw, "subject", NOTE_SUBJECT_ARCHIVE_DATE );
-                xmlw.writeCharacters( new SimpleDateFormat("yyyy-MM-dd").format(sv.getArchiveTime()) );
-                xmlw.writeEndElement(); // notes
-            }
+                String versionContributors = "";
+                for (VersionContributor vc : sv.getVersionContributors()) {
+                    if (!"".equals(versionContributors)) {
+                        versionContributors += ", ";
+                    }
+                    versionContributors += vc.getContributor().getUserName();
+                }
+                xmlw.writeStartElement("verResp");
+                xmlw.writeCharacters( versionContributors );
+                xmlw.writeEndElement(); // verResp
 
-            xmlw.writeEndElement(); // verStmt
+                if (!StringUtil.isEmpty( sv.getVersionNote() )) {
+                    xmlw.writeStartElement("notes");
+                    writeAttribute( xmlw, "type", NOTE_TYPE_VERSION_NOTE );
+                    writeAttribute( xmlw, "subject", NOTE_SUBJECT_VERSION_NOTE );
+                    xmlw.writeCharacters( sv.getVersionNote());
+                    xmlw.writeEndElement(); // notes
+                }
+
+                if (!StringUtil.isEmpty( sv.getArchiveNote() )) {
+                    xmlw.writeStartElement("notes");
+                    writeAttribute( xmlw, "type", NOTE_TYPE_ARCHIVE_NOTE );
+                    writeAttribute( xmlw, "subject", NOTE_SUBJECT_ARCHIVE_NOTE );
+                    xmlw.writeCharacters( sv.getArchiveNote());
+                    xmlw.writeEndElement(); // notes
+                }
+
+                if (sv.getArchiveTime() != null) {
+                    xmlw.writeStartElement("notes");
+                    writeAttribute( xmlw, "type", NOTE_TYPE_ARCHIVE_DATE );
+                    writeAttribute( xmlw, "subject", NOTE_SUBJECT_ARCHIVE_DATE );
+                    xmlw.writeCharacters( new SimpleDateFormat("yyyy-MM-dd").format(sv.getArchiveTime()) );
+                    xmlw.writeEndElement(); // notes
+                }
+
+                xmlw.writeEndElement(); // verStmt
+            }
         }
 
         // biblCit
@@ -435,15 +492,24 @@ public class DDIServiceBean implements DDIServiceLocal {
         xmlw.writeEndElement(); // docDscr
     }
 
-    private void createStdyDscr(XMLStreamWriter xmlw, Metadata metadata) throws XMLStreamException {
-        xmlw.writeStartElement("stdyDscr");
-        createCitation(xmlw, metadata);
-        createStdyInfo(xmlw, metadata);
-        createMethod(xmlw, metadata);
-        createDataAccs(xmlw, metadata);
-        createOthrStdyMat(xmlw,metadata);
-        createNotes(xmlw,metadata);
-        xmlw.writeEndElement(); // stdyDscr
+    private void createStdyDscr(XMLStreamWriter xmlw, Metadata metadata, String xpathParent, String xpathExclude, String xpathInclude) throws XMLStreamException {
+        String currentElement = "stdyDscr"; 
+        String xpathCurrent = xpathParent + "/" + currentElement; 
+        
+        if (xpathExclude != null && (xpathExclude.equals(xpathCurrent))) {
+            return; 
+        }
+        
+        if (xpathInclude == null || xpathInclude.startsWith(xpathCurrent)) {
+            xmlw.writeStartElement(currentElement);
+            createCitation(xmlw, metadata);
+            createStdyInfo(xmlw, metadata);
+            createMethod(xmlw, metadata);
+            createDataAccs(xmlw, metadata);
+            createOthrStdyMat(xmlw,metadata);
+            createNotes(xmlw,metadata);
+            xmlw.writeEndElement(); // stdyDscr
+        }
     }
 
     private void createCitation(XMLStreamWriter xmlw, Metadata metadata) throws XMLStreamException {
@@ -1147,90 +1213,99 @@ public class DDIServiceBean implements DDIServiceLocal {
         }
     }
 
-    private void createFileDscr(XMLStreamWriter xmlw, FileMetadata fm) throws XMLStreamException {
-        TabularDataFile tdf = (TabularDataFile) fm.getStudyFile();
-        DataTable dt = tdf.getDataTable();
-
-        xmlw.writeStartElement("fileDscr");
-        writeAttribute( xmlw, "ID", "f" + tdf.getId().toString() );
-        writeAttribute( xmlw, "URI", determineFileURI(fm) );
-
-        // fileTxt
-        xmlw.writeStartElement("fileTxt");
-
-        xmlw.writeStartElement("fileName");
-        xmlw.writeCharacters( fm.getLabel() );
-        xmlw.writeEndElement(); // fileName
-
-        xmlw.writeStartElement("fileCont");
-        xmlw.writeCharacters( fm.getDescription() );
-        xmlw.writeEndElement(); // fileCont
-
-        // dimensions
-        if (dt.getCaseQuantity() != null || dt.getVarQuantity() != null || dt.getRecordsPerCase() != null) {
-            xmlw.writeStartElement("dimensns");
-
-            if (dt.getCaseQuantity() != null) {
-                xmlw.writeStartElement("caseQnty");
-                xmlw.writeCharacters( dt.getCaseQuantity().toString() );
-                xmlw.writeEndElement(); // caseQnty
-            }
-            if (dt.getVarQuantity() != null) {
-                xmlw.writeStartElement("varQnty");
-                xmlw.writeCharacters( dt.getVarQuantity().toString() );
-                xmlw.writeEndElement(); // varQnty
-            }
-            if (dt.getRecordsPerCase() != null) {
-                xmlw.writeStartElement("recPrCas");
-                xmlw.writeCharacters( dt.getRecordsPerCase().toString() );
-                xmlw.writeEndElement(); // recPrCas
-            }
-
-            xmlw.writeEndElement(); // dimensns
+    private void createFileDscr(XMLStreamWriter xmlw, FileMetadata fm, String xpathParent, String xpathExclude, String xpathInclude) throws XMLStreamException {
+        String currentElement = "fileDscr"; 
+        String xpathCurrent = xpathParent + "/" + currentElement; 
+        
+        if (xpathExclude != null && (xpathExclude.equals(xpathCurrent))) {
+            return; 
         }
+        
+        if (xpathInclude == null || xpathInclude.startsWith(xpathCurrent)) {       
+            TabularDataFile tdf = (TabularDataFile) fm.getStudyFile();
+            DataTable dt = tdf.getDataTable();
 
-        xmlw.writeStartElement("fileType");
-        xmlw.writeCharacters( tdf.getFileType() );
-        xmlw.writeEndElement(); // fileType
+            xmlw.writeStartElement(currentElement);
+            writeAttribute( xmlw, "ID", "f" + tdf.getId().toString() );
+            writeAttribute( xmlw, "URI", determineFileURI(fm) );
 
-        xmlw.writeEndElement(); // fileTxt
+            // fileTxt
+            xmlw.writeStartElement("fileTxt");
 
-        // notes
-        xmlw.writeStartElement("notes");
-        writeAttribute( xmlw, "level", LEVEL_FILE );
-        writeAttribute( xmlw, "type", NOTE_TYPE_UNF );
-        writeAttribute( xmlw, "subject", NOTE_SUBJECT_UNF );
-        xmlw.writeCharacters( dt.getUnf() );
-        xmlw.writeEndElement(); // notes
+            xmlw.writeStartElement("fileName");
+            xmlw.writeCharacters( fm.getLabel() );
+            xmlw.writeEndElement(); // fileName
 
-        xmlw.writeStartElement("notes");
-        writeAttribute( xmlw, "type", "vdc:category" );
-        xmlw.writeCharacters( fm.getCategory() );
-        xmlw.writeEndElement(); // notes
+            xmlw.writeStartElement("fileCont");
+            xmlw.writeCharacters( fm.getDescription() );
+            xmlw.writeEndElement(); // fileCont
 
-        // A special note for LOCKSS crawlers indicating the restricted
-        // status of the file:
+            // dimensions
+            if (dt.getCaseQuantity() != null || dt.getVarQuantity() != null || dt.getRecordsPerCase() != null) {
+                xmlw.writeStartElement("dimensns");
 
-        if (tdf != null && isRestrictedFile(tdf)) {
+                if (dt.getCaseQuantity() != null) {
+                    xmlw.writeStartElement("caseQnty");
+                    xmlw.writeCharacters( dt.getCaseQuantity().toString() );
+                    xmlw.writeEndElement(); // caseQnty
+                }
+                if (dt.getVarQuantity() != null) {
+                    xmlw.writeStartElement("varQnty");
+                    xmlw.writeCharacters( dt.getVarQuantity().toString() );
+                    xmlw.writeEndElement(); // varQnty
+                }
+                if (dt.getRecordsPerCase() != null) {
+                    xmlw.writeStartElement("recPrCas");
+                    xmlw.writeCharacters( dt.getRecordsPerCase().toString() );
+                    xmlw.writeEndElement(); // recPrCas
+                }
+
+                xmlw.writeEndElement(); // dimensns
+            }
+
+            xmlw.writeStartElement("fileType");
+            xmlw.writeCharacters( tdf.getFileType() );
+            xmlw.writeEndElement(); // fileType
+
+            xmlw.writeEndElement(); // fileTxt
+
+            // notes
             xmlw.writeStartElement("notes");
-            writeAttribute( xmlw, "type", NOTE_TYPE_LOCKSS_CRAWL );
             writeAttribute( xmlw, "level", LEVEL_FILE );
-            writeAttribute( xmlw, "subject", NOTE_SUBJECT_LOCKSS_PERM );
-            xmlw.writeCharacters( "restricted" );
+            writeAttribute( xmlw, "type", NOTE_TYPE_UNF );
+            writeAttribute( xmlw, "subject", NOTE_SUBJECT_UNF );
+            xmlw.writeCharacters( dt.getUnf() );
             xmlw.writeEndElement(); // notes
 
+            xmlw.writeStartElement("notes");
+            writeAttribute( xmlw, "type", "vdc:category" );
+            xmlw.writeCharacters( fm.getCategory() );
+            xmlw.writeEndElement(); // notes
+
+            // A special note for LOCKSS crawlers indicating the restricted
+            // status of the file:
+
+            if (tdf != null && isRestrictedFile(tdf)) {
+                xmlw.writeStartElement("notes");
+                writeAttribute( xmlw, "type", NOTE_TYPE_LOCKSS_CRAWL );
+                writeAttribute( xmlw, "level", LEVEL_FILE );
+                writeAttribute( xmlw, "subject", NOTE_SUBJECT_LOCKSS_PERM );
+                xmlw.writeCharacters( "restricted" );
+                xmlw.writeEndElement(); // notes
+
+            }
+
+            // THIS IS OLD CODE FROM JAXB, but a reminder that we may want to add original fileType
+            // we don't yet store original file type!!!'
+            // do we want this in the DDI export????
+            //NotesType _origFileType = objFactory.createNotesType();
+            //_origFileType.setLevel(LEVEL_FILE);
+            //_origFileType.setType("VDC:MIME");
+            //_origFileType.setSubject("original file format");
+            //_origFileType.getContent().add( ORIGINAL_FILE_TYPE );
+
+            xmlw.writeEndElement(); // fileDscr
         }
-
-        // THIS IS OLD CODE FROM JAXB, but a reminder that we may want to add original fileType
-        // we don't yet store original file type!!!'
-        // do we want this in the DDI export????
-        //NotesType _origFileType = objFactory.createNotesType();
-        //_origFileType.setLevel(LEVEL_FILE);
-        //_origFileType.setType("VDC:MIME");
-        //_origFileType.setSubject("original file format");
-        //_origFileType.getContent().add( ORIGINAL_FILE_TYPE );
-
-        xmlw.writeEndElement(); // fileDscr
     }
 
     private String determineFileURI(FileMetadata fm) {
@@ -1253,40 +1328,49 @@ public class DDIServiceBean implements DDIServiceLocal {
         return fileURI;
     }
 
-    private void createOtherMat(XMLStreamWriter xmlw, FileMetadata fm) throws XMLStreamException {
+    private void createOtherMat(XMLStreamWriter xmlw, FileMetadata fm, String xpathParent, String xpathExclude, String xpathInclude) throws XMLStreamException {
         StudyFile sf = fm.getStudyFile();
 
-        xmlw.writeStartElement("otherMat");
-        writeAttribute( xmlw, "level", LEVEL_STUDY );
-        writeAttribute( xmlw, "URI", determineFileURI(fm) );
+        String currentElement = "otherMat"; 
+        String xpathCurrent = xpathParent + "/" + currentElement; 
+        
+        if (xpathExclude != null && (xpathExclude.equals(xpathCurrent))) {
+            return; 
+        }
+        
+        if (xpathInclude == null || xpathInclude.startsWith(xpathCurrent)) {
+            xmlw.writeStartElement("otherMat");
+            writeAttribute( xmlw, "level", LEVEL_STUDY );
+            writeAttribute( xmlw, "URI", determineFileURI(fm) );
 
-        xmlw.writeStartElement("labl");
-        xmlw.writeCharacters( fm.getLabel() );
-        xmlw.writeEndElement(); // labl
+            xmlw.writeStartElement("labl");
+            xmlw.writeCharacters( fm.getLabel() );
+            xmlw.writeEndElement(); // labl
 
-        xmlw.writeStartElement("txt");
-        xmlw.writeCharacters( fm.getDescription() );
-        xmlw.writeEndElement(); // txt
+            xmlw.writeStartElement("txt");
+            xmlw.writeCharacters( fm.getDescription() );
+            xmlw.writeEndElement(); // txt
 
-        xmlw.writeStartElement("notes");
-        writeAttribute( xmlw, "type", "vdc:category" );
-        xmlw.writeCharacters( fm.getCategory() );
-        xmlw.writeEndElement(); // notes
-
-        // A special note for LOCKSS crawlers indicating the restricted
-        // status of the file:
-
-        if (sf != null && isRestrictedFile(sf)) {
             xmlw.writeStartElement("notes");
-            writeAttribute( xmlw, "type", NOTE_TYPE_LOCKSS_CRAWL );
-            writeAttribute( xmlw, "level", LEVEL_FILE );
-            writeAttribute( xmlw, "subject", NOTE_SUBJECT_LOCKSS_PERM );
-            xmlw.writeCharacters( "restricted" );
+            writeAttribute( xmlw, "type", "vdc:category" );
+            xmlw.writeCharacters( fm.getCategory() );
             xmlw.writeEndElement(); // notes
 
-        }
+            // A special note for LOCKSS crawlers indicating the restricted
+            // status of the file:
 
-        xmlw.writeEndElement(); // otherMat
+            if (sf != null && isRestrictedFile(sf)) {
+                xmlw.writeStartElement("notes");
+                writeAttribute( xmlw, "type", NOTE_TYPE_LOCKSS_CRAWL );
+                writeAttribute( xmlw, "level", LEVEL_FILE );
+                writeAttribute( xmlw, "subject", NOTE_SUBJECT_LOCKSS_PERM );
+                xmlw.writeCharacters( "restricted" );
+                xmlw.writeEndElement(); // notes
+
+            }
+
+            xmlw.writeEndElement(); // otherMat
+        }
     }
 
     private Boolean isRestrictedFile(StudyFile file) {
@@ -1315,25 +1399,34 @@ public class DDIServiceBean implements DDIServiceLocal {
         return false;
     }
 
-    private void createDataDscr(XMLStreamWriter xmlw, StudyVersion studyVersion) throws XMLStreamException {
+    private void createDataDscr(XMLStreamWriter xmlw, StudyVersion studyVersion, String xpathParent, String xpathExclude, String xpathInclude) throws XMLStreamException {
         boolean dataDscrAdded = false;
 
-        for (FileMetadata fmd : studyVersion.getFileMetadatas()) {
-            StudyFile sf = fmd.getStudyFile();
-            if ( sf instanceof TabularDataFile ) {
-                TabularDataFile tdf = (TabularDataFile) sf;
-                if ( tdf.getDataTable().getDataVariables().size() > 0 ) {
-                    dataDscrAdded = checkParentElement(xmlw, "dataDscr", dataDscrAdded);
-                    Iterator varIter = varService.getDataVariablesByFileOrder( tdf.getDataTable().getId() ).iterator();
-                    while (varIter.hasNext()) {
-                        DataVariable dv = (DataVariable) varIter.next();
-                        createVar(xmlw, dv);
+        String currentElement = "dataDscr"; 
+        String xpathCurrent = xpathParent + "/" + currentElement; 
+        
+        if (xpathExclude != null && (xpathExclude.equals(xpathCurrent))) {
+            return; 
+        }
+        
+        if (xpathInclude == null || xpathInclude.startsWith(xpathCurrent)) {
+            for (FileMetadata fmd : studyVersion.getFileMetadatas()) {
+                StudyFile sf = fmd.getStudyFile();
+                if ( sf instanceof TabularDataFile ) {
+                    TabularDataFile tdf = (TabularDataFile) sf;
+                    if ( tdf.getDataTable().getDataVariables().size() > 0 ) {
+                        dataDscrAdded = checkParentElement(xmlw, "dataDscr", dataDscrAdded);
+                        Iterator varIter = varService.getDataVariablesByFileOrder( tdf.getDataTable().getId() ).iterator();
+                        while (varIter.hasNext()) {
+                            DataVariable dv = (DataVariable) varIter.next();
+                            createVar(xmlw, dv);
+                        }
                     }
                 }
             }
-        }
 
-        if (dataDscrAdded) xmlw.writeEndElement(); //dataDscr
+            if (dataDscrAdded) xmlw.writeEndElement(); //dataDscr
+        }
     }
 
 

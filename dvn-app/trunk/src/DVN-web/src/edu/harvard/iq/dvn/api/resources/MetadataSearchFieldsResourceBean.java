@@ -31,9 +31,9 @@ public class MetadataSearchFieldsResourceBean {
     @Produces({ "application/xml" })
 
     public MetadataSearchFields getMetadataSearchFields() throws WebApplicationException {
-         
+        
         MetadataSearchFields msf = singleton.getMetadataSearchFields();
-
+        
         if (msf == null) {
             // Something bad happened - 
             // safe to say, the service is not available:

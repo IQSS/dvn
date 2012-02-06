@@ -35,4 +35,5 @@ public interface StudyExporter  extends java.io.Serializable{
   boolean isXmlFormat(); 
   
   void exportStudy(Study study, OutputStream out) throws IOException;
+  void exportStudy(Study study, OutputStream out, String excludeXpath, String includeXpath) throws IOException; 
 }

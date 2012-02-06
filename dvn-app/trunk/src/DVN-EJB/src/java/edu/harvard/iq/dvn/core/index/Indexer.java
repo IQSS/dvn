@@ -487,6 +487,7 @@ public class Indexer implements java.io.Serializable  {
             searchParts.add(searchTermsQuery);
             BooleanQuery searchQuery = andQueryClause(searchParts);
             logger.fine("Start hits: " + DateTools.dateToString(new Date(), Resolution.MILLISECOND));
+            logger.info("INDEXER: search query: "+searchQuery.toString());
             nvResults = getHitIds(searchQuery);
             logger.fine("Done hits: " + DateTools.dateToString(new Date(), Resolution.MILLISECOND));
             logger.fine("Start filter: " + DateTools.dateToString(new Date(), Resolution.MILLISECOND));
@@ -640,12 +641,14 @@ public class Indexer implements java.io.Serializable  {
     public List query(String adhocQuery) throws IOException {
 //        QueryParser parser = new QueryParser("abstract",new DVNAnalyzer());
 //        QueryParser parser = new QueryParser(Version.LUCENE_30,"abstract",new DVNSearchAnalyzer());
+        logger.info("INDEXER: adhoc query: "+adhocQuery);
         QueryParser parser = new QueryParser(Version.LUCENE_30,"abstract",new DVNAnalyzer());
 //        QueryParser parser = new QueryParser("abstract",new StandardAnalyzer());
         parser.setDefaultOperator(QueryParser.AND_OPERATOR);
         Query query=null;
         try {
             query = parser.parse(adhocQuery);
+            logger.info("INDEXER: parsed adhoc query: "+query.toString());
         } catch (ParseException ex) {
             ex.printStackTrace();
         }

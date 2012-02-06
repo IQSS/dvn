@@ -128,4 +128,10 @@ public class MarcServiceBean implements MarcServiceLocal {
 
         out.flush();
     }
+    
+    
+    @TransactionAttribute(TransactionAttributeType.NOT_SUPPORTED)
+    public void exportStudy(Study s, OutputStream os, String xpathExclude, String xpathInclude) throws IOException {
+        throw new IllegalArgumentException("Partial export not supported for MARC.");
+    }
 }

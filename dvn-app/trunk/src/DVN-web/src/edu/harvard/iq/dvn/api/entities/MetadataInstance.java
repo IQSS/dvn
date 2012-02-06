@@ -2,7 +2,9 @@ package edu.harvard.iq.dvn.api.entities;
 
 import java.io.File; 
 import java.io.UnsupportedEncodingException; 
+import javax.ejb.EJB;
 
+import edu.harvard.iq.dvn.core.study.StudyExporterFactoryLocal;
 import edu.harvard.iq.dvn.core.util.FileUtil;
 
 /**
@@ -10,6 +12,7 @@ import edu.harvard.iq.dvn.core.util.FileUtil;
  * @author leonidandreev
  */
 public class MetadataInstance {
+    @EJB StudyExporterFactoryLocal studyExporterFactory;
 
     private String globalStudyId; 
     private Long studyId;
@@ -29,25 +32,29 @@ public class MetadataInstance {
     
     
     public MetadataInstance(String globalId) {
-        this(globalId, "ddi");
+        this(globalId, "ddi", null, null);
     }
     
-    public MetadataInstance(String globalId, String format) {
+    public MetadataInstance(String globalId, String format, String partialExclude, String partialInclude) {
         globalStudyId = globalId;
         formatType = format; 
+        parameterIncludeSection = partialInclude; 
+        parameterExcludeSection = partialExclude; 
         
         lookupMetadataFile(); 
         
     }
     
     public MetadataInstance(Long localId) {
-        this(localId, "ddi");
+        this(localId, "ddi", null, null);
     }
 
-    public MetadataInstance(Long localId, String format) {
+    public MetadataInstance(Long localId, String format, String partialExclude, String partialInclude) {
         studyId = localId;
-        formatType = format; 
-        
+        formatType = format;
+        parameterIncludeSection = partialInclude; 
+        parameterExcludeSection = partialExclude; 
+       
         lookupMetadataFile(); 
     }
      
@@ -69,6 +76,10 @@ public class MetadataInstance {
     
     public Boolean isAvailable() {
         return isAvailable; 
+    }
+    
+    public void setAvailability(Boolean availability) {
+        isAvailable = availability; 
     }
     
     public Boolean isCached() {

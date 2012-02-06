@@ -25,14 +25,12 @@ public class MetadataSearchResultsResourceBean {
     @EJB MetadataSingletonBean singleton;
 
     
-    // The verb has no parameters:
-    
     @Path("{queryString}")
     @GET
     @Produces({ "application/xml" })
 
     public MetadataSearchResults getMetadataSearchResults(@PathParam("queryString") String queryString) throws WebApplicationException {
-         
+                 
         MetadataSearchResults msr = singleton.getMetadataSearchResults(queryString);
 
         if (msr == null) {

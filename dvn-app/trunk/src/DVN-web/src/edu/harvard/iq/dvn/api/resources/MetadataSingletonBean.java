@@ -41,7 +41,7 @@ public class MetadataSingletonBean {
     }
     
     // Looks up Metadata Instance by Global ID:
-    public MetadataInstance getMetadata(String globalId, String formatType, Long versionNumber) {
+    public MetadataInstance getMetadata(String globalId, String formatType, Long versionNumber, String partialExclude, String partialInclude) {
         MetadataInstance m = null; 
         StudyVersion sv = null; 
         Long studyId = null; 
@@ -50,8 +50,46 @@ public class MetadataSingletonBean {
             try {
                 sv = studyService.getStudyVersion(globalId, versionNumber);
                 if (sv != null) {
+                    // First, verify that the format requested is legit/supported:
                     
-                    m = new MetadataInstance (globalId, formatType); 
+                    if (formatType == null) {
+                        formatType = "ddi";
+                    }
+                    
+                    MetadataFormatType mfTypeSupported = null; 
+                    
+                    for (MetadataFormatType mfType : studyService.findAllMetadataExportFormatTypes()) {
+                            if (formatType.equals(mfType.getName())) {
+                                mfTypeSupported = mfType;
+                            }
+                    }
+                    
+                    if (mfTypeSupported == null) {
+                        m = new MetadataInstance (globalId);
+                        m.setAvailability(false);
+                        return m; 
+                    }
+                    
+                    // If optional partial exclude or include argument are 
+                    // supplied, verify that the functionality is supported:
+                    
+                    if (partialExclude != null) {
+                        if (!(mfTypeSupported.isPartialExcludeSupported())) {
+                            m = new MetadataInstance (globalId);
+                            m.setAvailability(false);
+                            return m; 
+                        }
+                    }
+                    
+                    if (partialInclude != null) {
+                        if (!(mfTypeSupported.isPartialSelectSupported())) {
+                            m = new MetadataInstance (globalId);
+                            m.setAvailability(false);
+                            return m;
+                        }
+                    }
+
+                    m = new MetadataInstance (globalId, formatType, partialExclude, partialInclude); 
                     // local database id:
                     if (sv.getStudy() != null) {
                         studyId = sv.getStudy().getId();
@@ -73,7 +111,7 @@ public class MetadataSingletonBean {
     }
     
     // Looks up Metadata Instance by Local (database) ID:
-    public MetadataInstance getMetadata(Long studyId, String formatType, Long versionNumber) {
+    public MetadataInstance getMetadata(Long studyId, String formatType, Long versionNumber, String partialExclude, String partialInclude) {
         MetadataInstance m = null; 
         StudyVersion sv = null; 
         String globalId = null; 
@@ -86,7 +124,7 @@ public class MetadataSingletonBean {
                     if (sv.getStudy() != null) {
                         globalId = sv.getStudy().getGlobalId();
                         if (globalId != null) {
-                            m = new MetadataInstance (globalId, formatType); 
+                            m = new MetadataInstance (globalId, formatType, partialExclude, partialInclude); 
                             m.setStudyId(studyId);
                             return m; 
                         }

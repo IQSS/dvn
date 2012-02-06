@@ -32,9 +32,9 @@ public class MetadataResourceBean {
     @GET
     @Produces({ "application/xml" })
 
-    public MetadataInstance getMetadataInstance(@PathParam("stdyId") Long studyId, @QueryParam("formatType") String formatType, @QueryParam("versionNumber") Long versionNumber) throws WebApplicationException {
+    public MetadataInstance getMetadataInstance(@PathParam("stdyId") Long studyId, @QueryParam("formatType") String formatType, @QueryParam("versionNumber") Long versionNumber, @QueryParam("partialExclude") String partialExclude, @QueryParam("partialInclude") String partialInclude) throws WebApplicationException {
          
-        MetadataInstance m = singleton.getMetadata(studyId, formatType, versionNumber);
+        MetadataInstance m = singleton.getMetadata(studyId, formatType, versionNumber, partialExclude, partialInclude);
 
         if (m == null) {
             // Study (and/or version) not found;
@@ -56,12 +56,12 @@ public class MetadataResourceBean {
     @GET
     @Produces({ "application/xml" })
     
-    public MetadataInstance getMetadataInstanceByGlobalId(@PathParam("nameSpace") String nameSpace, @PathParam("stdyId") String stdyId, @QueryParam("formatType") String formatType, @QueryParam("versionNumber") Long versionNumber) throws WebApplicationException {
+    public MetadataInstance getMetadataInstanceByGlobalId(@PathParam("nameSpace") String nameSpace, @PathParam("stdyId") String stdyId, @QueryParam("formatType") String formatType, @QueryParam("versionNumber") Long versionNumber, @QueryParam("partialExclude") String partialExclude, @QueryParam("partialInclude") String partialInclude) throws WebApplicationException {
         
         
         MetadataInstance m = null; // = singleton.addMetadata("hdl:"+nameSpace+"/"+stdyId);
        
-        m = singleton.getMetadata("hdl:"+nameSpace+"/"+stdyId, formatType, versionNumber);
+        m = singleton.getMetadata("hdl:"+nameSpace+"/"+stdyId, formatType, versionNumber, partialExclude, partialInclude);
         
         
         if (m == null) {

@@ -204,6 +204,9 @@ public class DDIServiceBean implements DDIServiceLocal {
 
     @TransactionAttribute(TransactionAttributeType.NOT_SUPPORTED)
     public void exportStudy(Study s, OutputStream os, String xpathExclude, String xpathInclude) {
+        if (s == null) {
+            throw new IllegalArgumentException("ExportStudy called with a null study.");
+        }
         if (s.getReleasedVersion() == null) {
             throw new IllegalArgumentException("Study does not have released version, study.id = " + s.getId());
         }
@@ -475,21 +478,22 @@ public class DDIServiceBean implements DDIServiceLocal {
 
                 xmlw.writeEndElement(); // verStmt
             }
+
+            // biblCit
+            xmlw.writeStartElement("biblCit");
+            writeAttribute( xmlw, "format", "DVN" );
+            xmlw.writeCharacters( metadata.getTextCitation() );
+            xmlw.writeEndElement(); // biblCit
+
+            // holdings
+            xmlw.writeEmptyElement("holdings");
+            writeAttribute( xmlw, "URI", "http://" + PropertyUtil.getHostUrl() + "/dvn/study?globalId=" + study.getGlobalId() );
+
+
+            xmlw.writeEndElement(); // citation
+            xmlw.writeEndElement(); // docDscr
         }
 
-        // biblCit
-        xmlw.writeStartElement("biblCit");
-        writeAttribute( xmlw, "format", "DVN" );
-        xmlw.writeCharacters( metadata.getTextCitation() );
-        xmlw.writeEndElement(); // biblCit
-
-        // holdings
-        xmlw.writeEmptyElement("holdings");
-        writeAttribute( xmlw, "URI", "http://" + PropertyUtil.getHostUrl() + "/dvn/study?globalId=" + study.getGlobalId() );
-
-
-        xmlw.writeEndElement(); // citation
-        xmlw.writeEndElement(); // docDscr
     }
 
     private void createStdyDscr(XMLStreamWriter xmlw, Metadata metadata, String xpathParent, String xpathExclude, String xpathInclude) throws XMLStreamException {

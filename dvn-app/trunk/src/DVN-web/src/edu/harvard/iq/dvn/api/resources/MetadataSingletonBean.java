@@ -13,6 +13,8 @@ import javax.ejb.EJB;
 
 import edu.harvard.iq.dvn.core.study.StudyServiceLocal;
 import edu.harvard.iq.dvn.core.index.IndexServiceLocal;
+import edu.harvard.iq.dvn.core.study.StudyExporterFactoryLocal;
+import edu.harvard.iq.dvn.core.study.StudyExporter;
 import edu.harvard.iq.dvn.core.study.Study;
 import edu.harvard.iq.dvn.core.study.StudyVersion;
 import edu.harvard.iq.dvn.core.study.MetadataFormatType;
@@ -30,6 +32,8 @@ public class MetadataSingletonBean {
     private StudyServiceLocal studyService;
     @EJB
     IndexServiceLocal indexService;
+    @EJB 
+    StudyExporterFactoryLocal studyExporterFactory;
     
     //@EJB
     //StudyFieldServiceLocal studyFieldService;
@@ -89,12 +93,20 @@ public class MetadataSingletonBean {
                         }
                     }
 
-                    m = new MetadataInstance (globalId, formatType, partialExclude, partialInclude); 
-                    // local database id:
-                    if (sv.getStudy() != null) {
-                        studyId = sv.getStudy().getId();
-                    } else {
-                        return null; 
+                    m = new MetadataInstance (globalId, formatType, partialExclude, partialInclude);
+                    if (m != null) {
+                        StudyExporter studyExporter = null; 
+                        if (partialExclude != null || partialInclude != null) {
+                            studyExporter = studyExporterFactory.getStudyExporter(formatType);
+                            m.setStudy(sv.getStudy());
+                        }
+                        m.lookupMetadata(studyExporter);
+                        // local database id:
+                        if (sv.getStudy() != null) {
+                            studyId = sv.getStudy().getId();
+                        } else {
+                            return null; 
+                        }
                     }
                     m.setStudyId(studyId);
                     return m; 
@@ -125,7 +137,10 @@ public class MetadataSingletonBean {
                         globalId = sv.getStudy().getGlobalId();
                         if (globalId != null) {
                             m = new MetadataInstance (globalId, formatType, partialExclude, partialInclude); 
-                            m.setStudyId(studyId);
+                            if (m != null) {
+                                m.lookupMetadata();
+                                m.setStudyId(studyId);
+                            }
                             return m; 
                         }
                     } 

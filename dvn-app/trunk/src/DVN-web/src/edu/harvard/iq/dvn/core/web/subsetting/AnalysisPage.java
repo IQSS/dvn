@@ -99,9 +99,11 @@ import com.icesoft.faces.context.Resource;
 import com.icesoft.faces.component.outputresource.*;
 import com.icesoft.faces.component.datapaginator.*;
 import edu.harvard.iq.dvn.core.web.study.StudyUI;
+import edu.harvard.iq.dvn.core.web.VersionPage;
 import edu.harvard.iq.dvn.unf.*;
 import javax.faces.bean.ViewScoped;
 import javax.inject.Named;
+import javax.inject.Inject;
 
 @ViewScoped
 @Named("AnalysisPage")
@@ -118,6 +120,8 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
     StudyServiceLocal studyService;
     @EJB
     private VDCServiceLocal vdcService;
+    
+    @Inject VersionPage versionPageClass;
 
     /**
      * getter for the injected VariableServiceLocal
@@ -8090,6 +8094,9 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
         } // end of try-catch block
         
 //            dbgLog.fine("init(): current tab id=" + tabSet1.getSelected());
+        
+        this.setDvnVersionNumber(versionPageClass.getVersionNumber());
+        
         dbgLog.fine("***** init():end *****\n\n");
     }
     

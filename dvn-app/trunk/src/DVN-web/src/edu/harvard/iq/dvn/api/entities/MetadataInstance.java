@@ -1,10 +1,11 @@
 package edu.harvard.iq.dvn.api.entities;
 
-import java.io.File; 
+import java.io.File;
+import java.io.ByteArrayOutputStream;
 import java.io.UnsupportedEncodingException; 
-import javax.ejb.EJB;
 
-import edu.harvard.iq.dvn.core.study.StudyExporterFactoryLocal;
+import edu.harvard.iq.dvn.core.study.Study;
+import edu.harvard.iq.dvn.core.study.StudyExporter;
 import edu.harvard.iq.dvn.core.util.FileUtil;
 
 /**
@@ -12,10 +13,10 @@ import edu.harvard.iq.dvn.core.util.FileUtil;
  * @author leonidandreev
  */
 public class MetadataInstance {
-    @EJB StudyExporterFactoryLocal studyExporterFactory;
 
     private String globalStudyId; 
     private Long studyId;
+    private Study study; 
 
     private String formatType; 
     
@@ -29,6 +30,9 @@ public class MetadataInstance {
     private File cachedMetadataFile; 
     private byte[] generatedMetadataBytes; 
     
+    public MetadataInstance() {
+        this.formatType = "ddi";
+    }
     
     
     public MetadataInstance(String globalId) {
@@ -41,7 +45,7 @@ public class MetadataInstance {
         parameterIncludeSection = partialInclude; 
         parameterExcludeSection = partialExclude; 
         
-        lookupMetadataFile(); 
+        //lookupMetadataFile(); 
         
     }
     
@@ -55,7 +59,7 @@ public class MetadataInstance {
         parameterIncludeSection = partialInclude; 
         parameterExcludeSection = partialExclude; 
        
-        lookupMetadataFile(); 
+        //lookupMetadataFile(); 
     }
      
     public Long getStudyId() {
@@ -72,6 +76,14 @@ public class MetadataInstance {
     
     public void setGlobalStudyId(String globalId) {
         globalStudyId = globalId; 
+    }
+    
+    public Study getStudy () {
+        return this.study; 
+    }
+    
+    public void setStudy(Study s) {
+        this.study = s; 
     }
     
     public Boolean isAvailable() {
@@ -98,11 +110,72 @@ public class MetadataInstance {
         return generatedMetadataBytes; 
     }
     
-    private void lookupMetadataFile() {
+    public void lookupMetadata(StudyExporter studyExporter) {
+        lookupMetadataFile(studyExporter);
+    }
+    
+    public void lookupMetadata() {
+        lookupMetadataFile(null); 
+        
+        // If this is a request for a partial record, if it's not cached, 
+        // we'll attempt to generate it in real time: 
+        
+        /*
+        if (!this.isAvailable) {
+            if ((parameterExcludeSection != null && !(parameterExcludeSection.equals("")))
+                ||
+                (parameterIncludeSection != null && !(parameterIncludeSection.equals("")))) { 
+                generatePartialInstance(); 
+            }   
+        }
+         * 
+         */
+        
+    }
+    
+    private void generatePartialInstance() {
+        
+    }
+    
+    private void lookupMetadataFile(StudyExporter studyExporter) {
         String cachedFileName = null; 
         
         if (this.formatType == null) {
             this.formatType = "ddi";
+        }
+        
+        
+        if ((parameterExcludeSection != null && !(parameterExcludeSection.equals("")))
+            ||
+            (parameterIncludeSection != null && !(parameterIncludeSection.equals("")))) {
+            
+            if (studyExporter == null) {
+                return; 
+            }
+                    
+            ByteArrayOutputStream outStream = null;
+            try {
+                outStream = new ByteArrayOutputStream();
+
+                studyExporter.exportStudy(
+                        study, 
+                        outStream, 
+                        parameterExcludeSection, 
+                        parameterIncludeSection);
+            } catch (Exception e) {
+                // For whatever reason we've failed to generate a partial 
+                // metadata record requested. We simply return - which will
+                // result in having in this metadata instance object being
+                // tagged as unavailable. 
+                return; 
+            }
+            
+            this.isAvailable = true; 
+            this.isByteArray = true; 
+            this.generatedMetadataBytes = outStream.toByteArray(); 
+            
+            
+            return; 
         }
         
         if (globalStudyId != null) {

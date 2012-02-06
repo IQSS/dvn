@@ -760,21 +760,24 @@
                                 value="#{AnalysisApplicationBean.modelMenuOptions}"/>
                         </ice:selectOneMenu>
 
-                        <div jsfc="ice:panelGroup" id="modelInfoBox" styleClass="vdcHelpText"
+                        <ice:panelGrid id="modelInfoBox" styleClass="vdcHelpText"
+                             columns="1"     
                              binding="#{AnalysisPage.gridPanelModelInfoBox}"
                              rendered="#{AnalysisPage.gridPanelModelInfoBoxRendered}">
-                            <ice:graphicImage styleClass="dvn_icon"
-                                alt="Information"
-                                title="Information"
-                                value="/resources/images/icon_info.gif"/>
-                            <ice:outputLink
-                                value="#{AnalysisPage.modelHelpLinkURL}"
-                                target="_blank"
-                                style="padding-left: .5em;">
-                                <ice:outputText
-                                    value="#{bundleAnalysis['advStat.model.helpInfo.header']}"/>
-                            </ice:outputLink>
-                        </div>
+                            <ice:column>
+                                <ice:graphicImage styleClass="dvn_icon"
+                                    alt="Information"
+                                    title="Information"
+                                    value="/resources/images/icon_info.gif"/>
+                                <ice:outputLink
+                                    value="#{AnalysisPage.modelHelpLinkURL}"
+                                    target="_blank"
+                                    style="padding-left: .5em;">
+                                    <ice:outputText
+                                        value="#{bundleAnalysis['advStat.model.helpInfo.header']}"/>
+                                </ice:outputLink>
+                            </ice:column>
+                        </ice:panelGrid>
                     </ice:panelGrid><!-- end: gridPanel8above -->
 
                     <ice:panelGroup id="groupPanel8below"

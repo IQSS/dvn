@@ -88,4 +88,10 @@
         </div>
         <!--/f:view -->
     </h:body>
+    <script type="text/javascript">
+        // <![CDATA[
+        // TODO: remove this when we upgrade to Icefaces 3; this is a workaround to solve an issue where a request is being submitted when the page is unloaded
+        window.onbeforeunload = null;
+        // ]]>
+    </script>      
 </html>

@@ -242,17 +242,25 @@ public class StudyFileUI implements java.io.Serializable {
             }
 
             List<DataFileFormatType> formatConversionsAvailable = studyService.getDataFileFormatTypes(); 
-            //dataFileFormatTypes.addAll(studyService.getDataFileFormatTypes());
             
             // Go through the list of the conversion formats available and if 
             // we have the same format as the saved original there, knock it off 
             // the list. 
             // As of now (Feb. 2012), the only such real life case is 
             // application/x-stata; i.e., Stata is the only format that we 
-            // currently support both for ingest and for online conversions. 
+            // currently support both for ingest and for online conversions;
+            // but it may change in the future. 
             //      -- L.A. 
 
             String tmpOrigName = userFriendlyOriginalFormatName; 
+            
+            // The datafile formats which we can generate online
+            // are saved in the dataFileFormatType db table; as of now (Feb. 2012)
+            // the table doesn't store the real mime type, only a short 
+            // label ("Stata", "R", "Splus"); so in order to match this label with 
+            // the "user-friendly" type from FileUtil, I have to do some simple
+            // preprocessing:       -- L.A. 
+            
             if ( tmpOrigName != null && tmpOrigName.indexOf(" ") != -1 ) {
                 tmpOrigName = tmpOrigName.substring(0, tmpOrigName.indexOf(" "));
             }

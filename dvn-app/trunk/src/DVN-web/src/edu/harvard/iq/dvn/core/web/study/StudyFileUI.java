@@ -210,9 +210,24 @@ public class StudyFileUI implements java.io.Serializable {
             dataFileFormatTypes.add(tabDelimitedType);
 
             // and original file
-            if ( !StringUtil.isEmpty( getStudyFile().getOriginalFileType() ) ) {
+            
+            String originalFormatName = getStudyFile().getOriginalFileType();
+            String userFriendlyOriginalFormatName = null; 
+            
+            if ( !StringUtil.isEmpty( originalFormatName ) ) {
                 DataFileFormatType originalFileType = new DataFileFormatType();
-                originalFileType.setName("Original File");
+                
+                userFriendlyOriginalFormatName = FileUtil.getUserFriendlyOriginalType(getStudyFile());
+                String originalTypeLabel = ""; 
+                
+                if (!StringUtil.isEmpty(userFriendlyOriginalFormatName)) {
+                    originalTypeLabel = userFriendlyOriginalFormatName;
+                } else {
+                    originalTypeLabel = originalFormatName;
+                }
+                
+                String originalFileLabel = "Saved original (" + originalTypeLabel + ")";
+                originalFileType.setName(originalFileLabel);
                 originalFileType.setValue(DataFileFormatType.ORIGINAL_FILE_DATA_FILE_FORMAT);
                 dataFileFormatTypes.add(originalFileType);
             }
@@ -223,10 +238,32 @@ public class StudyFileUI implements java.io.Serializable {
                 studyService = (StudyServiceLocal) new InitialContext().lookup("java:comp/env/studyService");
             } catch (Exception e) {
                 e.printStackTrace();
+                return dataFileFormatTypes; 
             }
 
-            dataFileFormatTypes.addAll(studyService.getDataFileFormatTypes());
+            List<DataFileFormatType> formatConversionsAvailable = studyService.getDataFileFormatTypes(); 
+            //dataFileFormatTypes.addAll(studyService.getDataFileFormatTypes());
+            
+            // Go through the list of the conversion formats available and if 
+            // we have the same format as the saved original there, knock it off 
+            // the list. 
+            // As of now (Feb. 2012), the only such real life case is 
+            // application/x-stata; i.e., Stata is the only format that we 
+            // currently support both for ingest and for online conversions. 
+            //      -- L.A. 
 
+            String tmpOrigName = userFriendlyOriginalFormatName; 
+            if ( tmpOrigName != null && tmpOrigName.indexOf(" ") != -1 ) {
+                tmpOrigName = tmpOrigName.substring(0, tmpOrigName.indexOf(" "));
+            }
+            for (DataFileFormatType dfmt : formatConversionsAvailable) {
+                String fName = dfmt.getName();
+                if (fName != null && (!fName.equals(tmpOrigName))) {
+                    dfmt.setName(dfmt.getName()+" (generated)");
+                    dataFileFormatTypes.add(dfmt);
+                }
+            }
+            
         } else if(isNetworkDataFile()) {
             // now add tab delimited
             DataFileFormatType tabDelimitedType = new DataFileFormatType();

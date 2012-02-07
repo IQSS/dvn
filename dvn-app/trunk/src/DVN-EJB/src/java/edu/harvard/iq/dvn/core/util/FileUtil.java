@@ -211,6 +211,7 @@ public class FileUtil implements java.io.Serializable  {
             return originalName +"."+newExtension ;
         }
     }
+    
      public static String getUserFriendlyFileType(StudyFile sf) {
         String tempFileType = sf.getFileType();
         
@@ -229,7 +230,24 @@ public class FileUtil implements java.io.Serializable  {
         return tempFileType;
      }     
     
-      
+    public static String getUserFriendlyOriginalType(StudyFile sf) {
+        String originalType = sf.getOriginalFileType();
+        
+        if (!StringUtil.isEmpty( originalType ) ) {
+            if ( originalType.indexOf(";") != -1 ) {
+                originalType = originalType.substring( 0, originalType.indexOf(";") );
+            }
+        
+            try {
+                return ResourceBundle.getBundle("FileTypeBundle").getString( originalType );
+            } catch (MissingResourceException e) {
+                return originalType;
+            }
+        }
+        
+        return originalType;
+     }
+    
     public static String getStudyFileDir() {
         String studyFileDir = System.getProperty("vdc.study.file.dir");
         if (studyFileDir != null) {

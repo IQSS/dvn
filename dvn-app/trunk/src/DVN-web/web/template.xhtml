@@ -136,6 +136,12 @@
                         rendered="#{applicationScope.googleAnalyticsKey != null || MainLayoutBean.googleAnalyticsKey != null}"
                         value="#{(applicationScope.googleAnalyticsCode != null) ? applicationScope.googleAnalyticsCode : MainLayoutBean.googleAnalyticsCode}"/>
     </h:body>
+    <script type="text/javascript">
+        // <![CDATA[
+        // TODO: remove this when we upgrade to Icefaces 3; this is a workaround to solve an issue where a request is being submitted when the page is unloaded
+        window.onbeforeunload = null;
+        // ]]>
+    </script>    
 </html>
 <!-- Removing closing f:view: - L.A.
 </f:view -->

@@ -262,6 +262,7 @@ public class TemplateFormPage extends VDCBaseBean implements java.io.Serializabl
                 if(tf.getStudyField().isDcmField()){
                     tf.initValues();
                     adHocFields.add(tf);
+                    
                 }
             }
             Long defaultdcmOrder = new Long(1);
@@ -441,6 +442,45 @@ public class TemplateFormPage extends VDCBaseBean implements java.io.Serializabl
             editTemplateService.removeCollectionElement(data,tfv);
         }
          
+    }
+    
+    public void removeAdHocField(ActionEvent ae) {
+
+        Long getId = (Long) ae.getComponent().getAttributes().get("studyFieldId");
+        String getName = (String) ae.getComponent().getAttributes().get("studyFieldName");
+
+        TemplateField removeTF = null;
+        if (getId !=null){
+            for (TemplateField tfTest: adHocFields){
+                if(getId.equals(tfTest.getStudyField().getId())){
+                    removeTF = tfTest;
+                }
+            }
+        }  else {  //if it's not already saved must look for matching name
+            
+            for (TemplateField tfTest: adHocFields){
+                if(getName.equals(tfTest.getStudyField().getName())){
+                    removeTF = tfTest;
+                }
+            }
+            
+        }
+        
+        if (removeTF !=null){ 
+            template.getTemplateFields().remove(removeTF);
+            adHocFields.remove(removeTF);
+
+            List data = null;
+            if (template.getTemplateFields().size()>1) {
+                data = (List) template.getTemplateFields();
+
+            }
+            editTemplateService.removeCollectionElement(data,removeTF);
+            dcmFieldTable.getChildren().clear();
+            
+        }  else {           
+             System.out.println("Nothing to remove?  " );            
+        }        
     }
 
     public void moveUp(ActionEvent ae) {
@@ -1177,6 +1217,14 @@ public class TemplateFormPage extends VDCBaseBean implements java.io.Serializabl
             FacesMessage message = new FacesMessage("New field name may not be blank.");
             context.addMessage(null, message);
             getExternalContext().getFlash().put("message","New field name may not be blank."); 
+            return "";
+        }
+        
+        if(fieldDescription.trim().isEmpty()){
+            FacesContext context = FacesContext.getCurrentInstance();
+            FacesMessage message = new FacesMessage("New field description may not be blank.");
+            context.addMessage(null, message);
+            getExternalContext().getFlash().put("message","New field description may not be blank."); 
             return "";
         }
 
@@ -2763,21 +2811,47 @@ public class TemplateFormPage extends VDCBaseBean implements java.io.Serializabl
         templateCVField.getTemplateFieldControlledVocabulary().add(tfCV);
         return;
     }
-    private Long selectedControlledVocabId = new Long(0);
+    private String selectedControlledVocabString = new String("");
 
-    public Long getSelectedControlledVocabId() {
-        return selectedControlledVocabId;
+    public String getSelectedControlledVocabString() {
+        return selectedControlledVocabString;
     }
 
-    public void setSelectedControlledVocabId(Long selectedControlledVocabId) {
-        this.selectedControlledVocabId = selectedControlledVocabId;
+    public void setSelectedControlledVocabString(String selectedControlledVocabId) {
+        this.selectedControlledVocabString = selectedControlledVocabId;
     }
         
     public void removeSelectedControlledVocab(){
        
         List data = (List)templateCVField.getTemplateFieldControlledVocabulary();
-        System.out.println("remove selected id  " + selectedControlledVocabId );                      
-            //editTemplateService.removeCollectionElement(data,dataTable.getRowData());
+        List <TemplateFieldControlledVocabulary> dataReset = new ArrayList <TemplateFieldControlledVocabulary>();
+        TemplateFieldControlledVocabulary removeVal = new TemplateFieldControlledVocabulary();
+           
+        Object value= this.selectControlledVocabulary.getValue();  
+        boolean removeExisting = false;
+        for (TemplateFieldControlledVocabulary tfCV  : templateCVField.getTemplateFieldControlledVocabulary()){
+            if (value.equals(tfCV.getStrValue())){
+                removeVal = tfCV;
+                removeExisting = true;
+            } else {
+                dataReset.add(tfCV);
+            }
+            
+        }
+        if (removeExisting){
+            editTemplateService.removeCollectionElement(data,removeVal);
+            templateCVField.getTemplateFieldControlledVocabulary().remove(removeVal);
+        }
+        
+        //clear and re-add the controlled vocab
+        templateCVField.getTemplateFieldControlledVocabulary().clear();
+        if (!dataReset.isEmpty()){
+            for (TemplateFieldControlledVocabulary tfCV: dataReset ){
+                 templateCVField.getTemplateFieldControlledVocabulary().add(tfCV);                
+            }            
+        }
+        
+            
         return;
     }
     
@@ -2785,20 +2859,30 @@ public class TemplateFormPage extends VDCBaseBean implements java.io.Serializabl
         showPopup = false;
     }
     
-    public List<SelectItem> getControlledVocabSelectItems() {
+    public List<String> getControlledVocabStrings() {
 
-        List selectItems = new ArrayList<SelectItem>();
+        List stringList = new ArrayList<String>();
         
         if (templateCVField != null){
             for(TemplateFieldControlledVocabulary tfCV: templateCVField.getTemplateFieldControlledVocabulary()) {
-
-                 selectItems.add(new SelectItem(tfCV.getId(), tfCV.getStrValue()));
+                 stringList.add(tfCV.getStrValue());
             }              
         }
 
-        return selectItems;
+        return stringList;
+    }
+    
+
+    
+    HtmlSelectOneMenu selectControlledVocabulary;
+
+    public HtmlSelectOneMenu getSelectControlledVocabulary() {
+        return selectControlledVocabulary;
     }
 
+    public void setSelectControlledVocabulary(HtmlSelectOneMenu selectControlledVocabulary) {
+        this.selectControlledVocabulary = selectControlledVocabulary;
+    }
     
 }
 

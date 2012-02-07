@@ -1457,6 +1457,11 @@
                         <ice:graphicImage value="/resources/images/icon_recommended.gif" rendered="#{dcmItem.recommended}"/>
                         <ice:outputText  value="Allow multiple values"/>
                         <ice:selectBooleanCheckbox partialSubmit="true" value="#{dcmItem.allowMultiples}"/>
+                      <ice:commandButton  value="Remove Field" 
+                                          actionListener="#{TemplateFormPage.removeAdHocField}" rendered="#{dcmItem.studyField.id > 98 or dcmItem.studyField.id == null}" >
+                                         <f:attribute name="studyFieldId" value="#{dcmItem.studyField.id}" />
+                                          <f:attribute name="studyFieldName" value="#{dcmItem.studyField.name}" />
+                      </ice:commandButton>
                       </div>
                     </ice:column>
                     <ice:column>
@@ -1485,8 +1490,7 @@
                                          <f:attribute name="dcmSortOrder" value="#{dcmItem.dcmSortOrder}" />
                       </ice:commandButton>
                       <ice:commandButton  value="Move Down" alt="Move Down" title="Move Down" image="/resources/images/icon_movedown.png" actionListener="#{TemplateFormPage.moveDown}">
-                          <f:attribute name="dcmSortOrder" value="#{dcmItem.dcmSortOrder}" />
-                          
+                          <f:attribute name="dcmSortOrder" value="#{dcmItem.dcmSortOrder}" />                          
                       </ice:commandButton>
                         
                     </ice:column>
@@ -1946,8 +1950,9 @@
                                width="100%" cellpadding="0"
                                cellspacing="0" columns="1"
                                styleClass="popupModalBody" rowClasses="popupModVerNotText,popupModVerNotLabel,popupModVerNotField,popupModVerNotForm">
-                                <ice:selectOneMenu value="#{TemplateFormPage.selectedControlledVocabId}">                                              
-                                    <f:selectItems value="#{TemplateFormPage.controlledVocabSelectItems}"/>
+                                <ice:selectOneMenu id="controlledVocabSelectOneMenu" value="#{TemplateFormPage.selectedControlledVocabString}"
+                                                   binding="#{TemplateFormPage.selectControlledVocabulary}">                                                                    
+                                    <f:selectItems value="#{TemplateFormPage.controlledVocabStrings}"></f:selectItems>
                                 </ice:selectOneMenu>
                                 <ice:inputText  id="newControlledVocab"  value="#{TemplateFormPage.newControlledVocab}">
                                 </ice:inputText>
@@ -1956,7 +1961,7 @@
                                            value="Add"
                                            />                               
                                
-                       <ice:commandButton id="autoCentPopupOkSave" visible="false"
+                       <ice:commandButton id="autoCentPopupOkSave" visible="true"
                                            action="#{TemplateFormPage.removeSelectedControlledVocab}"
                                            value="Remove Selected"
                                            />

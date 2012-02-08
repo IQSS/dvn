@@ -692,14 +692,15 @@ public class TemplateFormPage extends VDCBaseBean implements java.io.Serializabl
     
     
     public String cancel() {
-        String forwardPage="manageTemplates";
-    //    if (editTemplateService.getCreatedFromStudyId()!=null) {
-     //       forwardPage="viewStudy";
-     //       getVDCRequestBean().setStudyId(editTemplateService.getCreatedFromStudyId());
-      //  }
+        /* TODO: cleanup; can we remove this commented out section?
+        if (editTemplateService.getCreatedFromStudyId()!=null) {
+            forwardPage="viewStudy";
+            getVDCRequestBean().setStudyId(editTemplateService.getCreatedFromStudyId());
+        }*/
         editTemplateService.cancel();
-        
-        return  forwardPage;
+
+        return "/admin/ManageTemplatesPage?faces-redirect=true" + ((getVDCRequestBean().getCurrentVDCId() != null) ? "&vdcId=" + getVDCRequestBean().getCurrentVDCId() : "");
+ 
     }
     
     
@@ -1190,7 +1191,7 @@ public class TemplateFormPage extends VDCBaseBean implements java.io.Serializabl
         }      
         removeEmptyRows();
         editTemplateService.save();
-        return "manageTemplates";
+        return "/admin/ManageTemplatesPage?faces-redirect=true" + ((getVDCRequestBean().getCurrentVDCId() != null) ? "&vdcId=" + getVDCRequestBean().getCurrentVDCId() : "");
     }
 
     HtmlSelectOneMenu selectFieldType;

@@ -1452,7 +1452,7 @@
                             <f:attribute name="tf_id" value="#{dcmItem.id}" />
                             <f:selectItems value="#{TemplateFormPage.fieldInputLevelSelectItems}"/>
                         </ice:selectOneMenu>
-                        <dvn:inlinehelp helpMessage="#{editstudybundle.authorHelp}" linkText="#{dcmItem.studyField.name}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
+                        <dvn:inlinehelp helpMessage="#{dcmItem.studyField.description}" heading="#{dcmItem.studyField.name}" linkText="#{dcmItem.studyField.name}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
                         <ice:graphicImage value="/resources/images/icon_required.gif" rendered="#{dcmItem.required}"/>
                         <ice:graphicImage value="/resources/images/icon_recommended.gif" rendered="#{dcmItem.recommended}"/>
                         <ice:outputText  value="Allow multiple values"/>

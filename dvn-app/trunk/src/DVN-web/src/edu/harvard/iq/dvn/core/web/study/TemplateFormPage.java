@@ -1264,6 +1264,7 @@ public class TemplateFormPage extends VDCBaseBean implements java.io.Serializabl
         value= this.selectNewDcmFieldInputLevel.getValue();
         String inputLevel =  (String) value ;
         
+        
         TemplateField newTF = new TemplateField();
         StudyField newElem = new StudyField();
 
@@ -1277,9 +1278,9 @@ public class TemplateFormPage extends VDCBaseBean implements java.io.Serializabl
         newTF.setdcmSortOrder(new Long(maxDCM + 1));
         newTF.setAllowMultiples(allowMultiples);
          editTemplateService.changeFieldInputLevel(newTF, inputLevel);
+         newTF.setFieldInputLevelString(inputLevel);
         TemplateFieldUI newUI = new TemplateFieldUI();
         newUI.setTemplateField(newTF);
-        newUI.setRecommended(false);
         newTF.initValues();
 
         template.getTemplateFields().add(newTF);
@@ -2824,23 +2825,19 @@ public class TemplateFormPage extends VDCBaseBean implements java.io.Serializabl
     }
     
     public void addToControlledVocabList(){
-        System.out.println("in add");
+
 
         String newCV =  (String)inputControlledVocabulary.getLocalValue();
-                System.out.println("newCVnot empty" + newCV);
+                
         if(newControlledVocab.isEmpty()){
             return;
         }
                
         TemplateFieldControlledVocabulary tfCV = new TemplateFieldControlledVocabulary();
-        System.out.println("before templateCVField test" );
-        System.out.println("templateCVField not empty" + templateCVField);
         tfCV.setTemplateField(templateCVField);
         tfCV.setStrValue(newControlledVocab);
         tfCV.setMetadata(template.getMetadata());
-        System.out.println("before add to list");
         templateCVField.getTemplateFieldControlledVocabulary().add(tfCV);
-        System.out.println("after add cv");
         return;
     }
     private String selectedControlledVocabString = new String("");

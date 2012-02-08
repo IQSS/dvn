@@ -31,6 +31,7 @@ package edu.harvard.iq.dvn.core.web.study;
 import com.icesoft.faces.component.ext.HtmlCommandLink;
 import com.icesoft.faces.component.paneltabset.PanelTabSet;
 import com.icesoft.faces.component.paneltabset.TabChangeEvent;
+import com.icesoft.faces.context.effects.JavascriptContext;
 import edu.harvard.iq.dvn.core.study.DataFileFormatType;
 import edu.harvard.iq.dvn.core.study.StudyServiceLocal;
 import edu.harvard.iq.dvn.core.study.StudyVersion;
@@ -122,6 +123,12 @@ public class StudyPage extends VDCBaseBean implements java.io.Serializable  {
         this.selectedIndex = selectedIndex;
 
     }
+    
+   public void preRenderView() {
+       super.preRenderView();
+       // add javascript call on each partial submit to initialize the help tips for added fields
+       JavascriptContext.addJavascriptCall(getFacesContext(),"initInlineHelpTip();");
+   }     
 
     public void init() {
         super.init();

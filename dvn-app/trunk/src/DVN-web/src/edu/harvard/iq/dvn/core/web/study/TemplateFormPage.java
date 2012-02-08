@@ -252,7 +252,7 @@ public class TemplateFormPage extends VDCBaseBean implements java.io.Serializabl
     private List<TemplateField> adHocFields;
     
     private void initAdHocFieldMap(){
-
+        Long defaultdcmOrder = new Long(1);
         if (adHocFields == null) {
            adHocFields = new ArrayList();
             for (Iterator<TemplateField> it =template.getTemplateFields().iterator(); it.hasNext();) {
@@ -265,7 +265,7 @@ public class TemplateFormPage extends VDCBaseBean implements java.io.Serializabl
                     
                 }
             }
-            Long defaultdcmOrder = new Long(1);
+
             for (Object o : adHocFields){
                 TemplateField c1 = (TemplateField) o;
                 
@@ -277,6 +277,16 @@ public class TemplateFormPage extends VDCBaseBean implements java.io.Serializabl
         }
 
         Collections.sort(adHocFields, comparator);
+        
+        //after sort close up any gaps that may have been introduced
+        defaultdcmOrder = new Long(1);
+        
+            for (Object o : adHocFields){
+                TemplateField c1 = (TemplateField) o;
+                    c1.setdcmSortOrder(defaultdcmOrder);
+                    defaultdcmOrder++;
+            }
+        
     }
 
     Comparator comparator = new Comparator() {
@@ -487,6 +497,13 @@ public class TemplateFormPage extends VDCBaseBean implements java.io.Serializabl
 
     public void moveUp(ActionEvent ae) {
         Long getOrder = (Long) ae.getComponent().getAttributes().get("dcmSortOrder");
+        Long getId = (Long) ae.getComponent().getAttributes().get("sf_id");
+         System.out.println("getId " + getId);
+         System.out.println("getOrder " + getOrder);
+        for (TemplateField tfTest: adHocFields){
+            System.out.println("tfTest name, id, sortOrder  " + tfTest.getStudyField().getName() + ", " + tfTest.getStudyField().getId() + ", " + tfTest.getDcmSortOrder() );
+            
+        }
 
         if (getOrder.intValue() > 1){
             TemplateField moveUp = adHocFields.get(getOrder.intValue() -1 );
@@ -2763,15 +2780,13 @@ public class TemplateFormPage extends VDCBaseBean implements java.io.Serializabl
     }
     
     public void openPopup(ActionEvent ae) {
-        System.out.println("in open");
         Long getId = (Long) ae.getComponent().getAttributes().get("sf_id");
-        System.out.println("getId " + getId);
+
         for (TemplateField tfTest: adHocFields){ 
             if (getId.equals(tfTest.getStudyField().getId())){  
                    setTemplateCVField(tfTest);
             }
         }
-        System.out.println("templateCVField " + templateCVField.getStudyField().getId());
         showPopup = true;
     }
     

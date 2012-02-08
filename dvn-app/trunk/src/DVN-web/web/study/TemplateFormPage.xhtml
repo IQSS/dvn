@@ -1487,9 +1487,11 @@
                     </ice:column>
                     <ice:column>
                         <ice:commandButton immediate="true" value="Move Up" alt="Move Up" title="Move Up" image="/resources/images/icon_moveup.png" actionListener="#{TemplateFormPage.moveUp}">
+                                         <f:attribute name="sf_id" value="#{dcmItem.studyField.id}" />
                                          <f:attribute name="dcmSortOrder" value="#{dcmItem.dcmSortOrder}" />
                       </ice:commandButton>
                       <ice:commandButton immediate="true" value="Move Down" alt="Move Down" title="Move Down" image="/resources/images/icon_movedown.png" actionListener="#{TemplateFormPage.moveDown}">
+                          <f:attribute name="sf_id" value="#{dcmItem.studyField.id}" />
                           <f:attribute name="dcmSortOrder" value="#{dcmItem.dcmSortOrder}" />                          
                       </ice:commandButton>
                         
@@ -1497,17 +1499,18 @@
                     <ice:column>
                       <ice:commandButton  immediate="true" image="/resources/images/icon_add.gif" rendered="#{dcmItem.allowMultiples}"
                                          actionListener="#{TemplateFormPage.addDcmRow}">
+                                         <f:attribute name="sf_id" value="#{dcmItem.studyField.id}" />
                                          <f:attribute name="dcmSortOrder" value="#{dcmItem.dcmSortOrder}" />
                       </ice:commandButton>
                       <ice:commandButton immediate="true"
                                          rendered="#{dcmItem.allowMultiples}"
                                          image="/resources/images/icon_remove.gif" actionListener="#{TemplateFormPage.removeDcmRow}">
+                          <f:attribute name="sf_id" value="#{dcmItem.studyField.id}" />
                           <f:attribute name="dcmSortOrder" value="#{dcmItem.dcmSortOrder}" />
                       </ice:commandButton>
                     </ice:column>
                     <ice:column>
-                      <ice:commandButton                                        
-                                         value="Update Controlled Vocabulary" actionListener="#{TemplateFormPage.openPopup}">
+                      <ice:commandButton   value="Update Controlled Vocabulary" actionListener="#{TemplateFormPage.openPopup}">
                           <f:attribute name="sf_id" value="#{dcmItem.studyField.id}" />
                           <f:attribute name="dcmSortOrder" value="#{dcmItem.dcmSortOrder}" />
                       </ice:commandButton>

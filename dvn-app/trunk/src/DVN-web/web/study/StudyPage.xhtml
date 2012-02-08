@@ -22,6 +22,11 @@
             <f:viewParam name="tab" value="#{studyPage.tab}"/>
             <f:viewParam name="studyListingIndex" value="#{VDCRequest.studyListingIndex}"/>          
             <f:event type="preRenderView" listener="#{studyPage.preRenderView}" />
+            <!-- The following are for the StudyCommmentsFragment
+                TODO: there shouldn't be a need to initialize this unless we go to the comments tab  -->
+            <f:viewParam name="studyId" value="#{StudyCommentsFragment.studyId}"/>
+            <f:viewParam name="versionNumber" value="#{StudyCommentsFragment.versionNumber}"/>            
+            <f:event type="preRenderView" listener="#{StudyCommentsFragment.preRenderView}" />
         </f:metadata>  
     </ui:define>     
     <ui:define name="body">

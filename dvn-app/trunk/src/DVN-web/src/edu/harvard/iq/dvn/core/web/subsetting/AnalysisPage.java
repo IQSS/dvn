@@ -3464,6 +3464,7 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
             resultInfo.put("offlineCitation", getCitation());
             resultInfo.put("studyTitle", getStudyTitle());
             resultInfo.put("studyNo", getStudyId().toString());
+            resultInfo.put("fileName", fileName);
             resultInfo.put("dtId", dtId.toString());
             if (versionNumber != null) {
                 resultInfo.put("versionNumber", versionNumber.toString());

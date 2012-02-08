@@ -16,10 +16,17 @@ import com.icesoft.faces.component.ext.HtmlPanelGroup;
 import com.icesoft.faces.context.ByteArrayResource;
 import com.icesoft.faces.context.Resource;
 
+import edu.harvard.iq.dvn.core.admin.VDCUser;
+import edu.harvard.iq.dvn.core.study.Study;
+import edu.harvard.iq.dvn.core.study.StudyServiceLocal;
+import edu.harvard.iq.dvn.core.study.StudyVersion;
+import edu.harvard.iq.dvn.core.study.VariableServiceLocal;
+import edu.harvard.iq.dvn.core.web.study.StudyUI;
 import java.util.*;
 import java.util.logging.*;
 import javax.servlet.http.*;
 import java.io.*;
+import javax.ejb.EJB;
 import javax.faces.bean.ViewScoped;
 import javax.inject.Named;
 
@@ -31,6 +38,9 @@ import javax.inject.Named;
 @Named("AnalysisResultsPage")
 public class AnalysisResultsPage extends VDCBaseBean implements java.io.Serializable  {
 
+    @EJB StudyServiceLocal studyService;
+    @EJB VariableServiceLocal varService;
+    
     /** Sets the logger (use the package name) */
     private static Logger dbgLog = Logger.getLogger(AnalysisResultsPage.class.getPackage().getName());
     
@@ -445,6 +455,7 @@ public class AnalysisResultsPage extends VDCBaseBean implements java.io.Serializ
             // dbgLog.fine("**** resultInfo from the subsetting Page ****:\n"+resultInfo);
             offlineCitation = resultInfo.get("offlineCitation");
             studyTitle      = resultInfo.get("studyTitle");
+            fileName        = resultInfo.get("fileName");
             dtId            = resultInfo.get("dtId");
             versionNumber   = resultInfo.get("versionNumber");
             fileUNF         = resultInfo.get("fileUNF");
@@ -581,7 +592,33 @@ public class AnalysisResultsPage extends VDCBaseBean implements java.io.Serializ
     }
 
 
+    // used for the title fragment
+    private StudyUI studyUI;
+    private String fileName;
 
-
+    public String getFileName() {
+        return fileName;
+    }
     
+    public StudyUI getStudyUI() {
+        if (studyUI == null) {
+            Study thisStudy = varService.getDataTable(new Long(dtId)).getStudyFile().getStudy();
+            VDCUser user = (getVDCSessionBean().getLoginBean() != null) ? getVDCSessionBean().getLoginBean().getUser() : null;
+
+            if (versionNumber == null) {
+                studyUI = new StudyUI(thisStudy);
+            } else {
+                StudyVersion thisStudyVersion = thisStudy.getStudyVersionByNumber(new Long(versionNumber));
+
+                if (thisStudyVersion == null) {
+                    dbgLog.severe("ERROR: Could not find a valid Version of this study");
+                    throw new FacesException("Could not find a valid Version of this study, studyId = " + thisStudy.getId() + " versionNumber= " + versionNumber);
+                }
+                studyUI = new StudyUI(thisStudyVersion, user);
+            }
+        }
+
+        return studyUI;
+    }
+
 }

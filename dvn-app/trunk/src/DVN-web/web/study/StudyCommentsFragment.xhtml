@@ -49,11 +49,11 @@
                                       <ul>
                                           <li>
                                               <ice:outputText rendered="#{(item.studyComment.status == 'FLAGGED' and
-                                                              StudyCommentsFragment.authorizedToDeleteComment) or (!item.reportAbuseEnabled)}"
+                                                              StudyCommentsFragment.authorizedToDeleteComment) or (!item.isReportAbuseEnabled(VDCSession.user))}"
                                                               styleClass="dvnReportCommentsFlag" value="Reported"/>
                                               <ice:commandLink binding="#{StudyCommentsFragment.reportAbuseLink}"
                                                                actionListener="#{StudyCommentsFragment.togglePopup}"
-                                                               rendered="#{(StudyCommentsFragment.authorizedToDeleteComment == false and item.reportAbuseEnabled(VDCSession.user))}">
+                                                               rendered="#{(StudyCommentsFragment.authorizedToDeleteComment == false and item.isReportAbuseEnabled(VDCSession.user))}">
                                                                <!--  || !StudyCommentsFragment.authorizedToDeleteComment  -->
                                                   <f:attribute name="commentId" value="#{item.studyComment.id}" />
                                                   <ice:outputText value="Report Abuse" rendered="#{VDCSession.user != item.studyComment.commentCreator}"/>

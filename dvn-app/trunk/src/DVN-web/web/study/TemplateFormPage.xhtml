@@ -1458,7 +1458,7 @@
                         <ice:outputText  value="Allow multiple values"/>
                         <ice:selectBooleanCheckbox immediate="true" partialSubmit="true" value="#{dcmItem.allowMultiples}"/>
                       <ice:commandButton  value="Remove Field" 
-                                          actionListener="#{TemplateFormPage.removeAdHocField}" rendered="#{dcmItem.studyField.id > 98 or dcmItem.studyField.id == null}" >
+                                          actionListener="#{TemplateFormPage.removeAdHocField}" rendered="#{(dcmItem.studyField.id > 98 or dcmItem.studyField.id == null) and TemplateFormPage.networkEdit}" >
                                          <f:attribute name="studyFieldId" value="#{dcmItem.studyField.id}" />
                                           <f:attribute name="studyFieldName" value="#{dcmItem.studyField.name}" />
                       </ice:commandButton>

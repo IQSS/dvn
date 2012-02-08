@@ -34,10 +34,13 @@ import edu.harvard.iq.dvn.core.vdc.VDC;
 import edu.harvard.iq.dvn.core.vdc.VDCNetwork;
 import edu.harvard.iq.dvn.core.vdc.VDCNetworkServiceLocal;
 import edu.harvard.iq.dvn.core.vdc.VDCServiceLocal;
+import edu.harvard.iq.dvn.core.web.study.TemplateFieldControlledVocabulary;
+import edu.harvard.iq.dvn.core.web.study.TemplateFieldValue;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
 import javax.ejb.EJB;
 import javax.ejb.Remove;
 import javax.ejb.Stateful;
@@ -121,16 +124,29 @@ public class EditTemplateServiceBean implements edu.harvard.iq.dvn.core.study.Ed
         newTemplate=true;
         template = new Template();
         template.setNetwork(false);
-        
-        template.setMetadata(new Metadata(cloneSource.getMetadata()));        
+        Metadata clonedMetadata = new Metadata(cloneSource.getMetadata());
+        template.setMetadata(clonedMetadata);        
         Collection<TemplateField> defaultFields = cloneSource.getTemplateFields();       
         template.setTemplateFields(new ArrayList());
         for( TemplateField defaultField: defaultFields) {
             TemplateField tf = new TemplateField();
             tf.setDefaultValue(defaultField.getDefaultValue());
             tf.setStudyField(defaultField.getStudyField());
-            tf.setTemplateFieldValues(defaultField.getTemplateFieldValues());
-            tf.setTemplateFieldControlledVocabulary(defaultField.getTemplateFieldControlledVocabulary());
+            // bring over field values separately
+            List <TemplateFieldValue> tfvList = new  ArrayList();
+            for (TemplateFieldValue tfv: defaultField.getTemplateFieldValues()){
+                
+                tfv.setMetadata(clonedMetadata);
+                tfvList.add(tfv);
+            }
+            tf.setTemplateFieldValues(tfvList);
+            // bring over field contolled vocab separately
+            List <TemplateFieldControlledVocabulary> tfcvList = new  ArrayList();
+            for (TemplateFieldControlledVocabulary tfcv: defaultField.getTemplateFieldControlledVocabulary()){
+                tfcv.setMetadata(clonedMetadata);
+                tfcvList.add(tfcv);
+            }
+            tf.setTemplateFieldControlledVocabulary(tfcvList);
             tf.setTemplate(template);
             tf.setFieldInputLevelString(defaultField.getFieldInputLevelString());
             tf.setdcmSortOrder(defaultField.getDcmSortOrder());
@@ -236,6 +252,7 @@ public class EditTemplateServiceBean implements edu.harvard.iq.dvn.core.study.Ed
         for( TemplateField defaultField: defaultFields) {
             TemplateField tf = new TemplateField();
             tf.setDefaultValue(defaultField.getDefaultValue());
+            tf.setTemplateFieldControlledVocabulary(new ArrayList());
             /*tf.setFieldInputLevel(defaultField.getFieldInputLevel());*/
             tf.setFieldInputLevelString(defaultField.getFieldInputLevelString());
             tf.setStudyField(defaultField.getStudyField());
@@ -255,6 +272,7 @@ public class EditTemplateServiceBean implements edu.harvard.iq.dvn.core.study.Ed
             TemplateField tf = new TemplateField();
             tf.setDefaultValue(defaultField.getDefaultValue());
             tf.setFieldInputLevelString(defaultField.getFieldInputLevelString());
+            tf.setTemplateFieldControlledVocabulary(new ArrayList());
             tf.setStudyField(defaultField.getStudyField());
             tf.setTemplate(template);
             tf.getStudyField().setDcmField(defaultField.getStudyField().isDcmField());

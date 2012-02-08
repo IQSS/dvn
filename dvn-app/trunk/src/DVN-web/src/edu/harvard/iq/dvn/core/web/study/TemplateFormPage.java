@@ -342,8 +342,9 @@ public class TemplateFormPage extends VDCBaseBean implements java.io.Serializabl
             newElem.setMetadata(template.getMetadata());
             newElem.setTemplateField(tf);
             tf.getTemplateFieldValues().add(newElem);
-            tf.getTemplateFieldValues().size();
-            dcmFieldTable.getChildren().clear();
+            //tf.getTemplateFieldValues().size(); //debug line
+            //remove clear it was interfering with move buttons
+            //dcmFieldTable.getChildren().clear();
     }
    
     public void addRow(ActionEvent ae) {
@@ -476,7 +477,8 @@ public class TemplateFormPage extends VDCBaseBean implements java.io.Serializabl
 
             }
             editTemplateService.removeCollectionElement(data,removeTF);
-            dcmFieldTable.getChildren().clear();
+            // .clear was interfering with move up-down buttons
+            //dcmFieldTable.getChildren().clear();
             
         }  else {           
              System.out.println("Nothing to remove?  " );            
@@ -492,7 +494,8 @@ public class TemplateFormPage extends VDCBaseBean implements java.io.Serializabl
             moveUp.setdcmSortOrder(getOrder - 1 );
             moveDown.setdcmSortOrder(getOrder);
         }
-        dcmFieldTable.getChildren().clear();
+        // .clear was interfering with move up-down buttons
+        //dcmFieldTable.getChildren().clear();
         Collections.sort(adHocFields, comparator);
     }
 
@@ -505,7 +508,8 @@ public class TemplateFormPage extends VDCBaseBean implements java.io.Serializabl
             moveUp.setdcmSortOrder(getOrder);
             moveDown.setdcmSortOrder(getOrder + 1);              
         } 
-        dcmFieldTable.getChildren().clear();
+        // .clear was interfering with move up-down buttons
+        //dcmFieldTable.getChildren().clear();
         Collections.sort(adHocFields, comparator);
     }
     
@@ -2759,12 +2763,15 @@ public class TemplateFormPage extends VDCBaseBean implements java.io.Serializabl
     }
     
     public void openPopup(ActionEvent ae) {
+        System.out.println("in open");
         Long getId = (Long) ae.getComponent().getAttributes().get("sf_id");
+        System.out.println("getId " + getId);
         for (TemplateField tfTest: adHocFields){ 
             if (getId.equals(tfTest.getStudyField().getId())){  
                    setTemplateCVField(tfTest);
             }
         }
+        System.out.println("templateCVField " + templateCVField.getStudyField().getId());
         showPopup = true;
     }
     
@@ -2801,14 +2808,23 @@ public class TemplateFormPage extends VDCBaseBean implements java.io.Serializabl
     }
     
     public void addToControlledVocabList(){
+        System.out.println("in add");
+
+        String newCV =  (String)inputControlledVocabulary.getLocalValue();
+                System.out.println("newCVnot empty" + newCV);
         if(newControlledVocab.isEmpty()){
             return;
         }
+               
         TemplateFieldControlledVocabulary tfCV = new TemplateFieldControlledVocabulary();
+        System.out.println("before templateCVField test" );
+        System.out.println("templateCVField not empty" + templateCVField);
         tfCV.setTemplateField(templateCVField);
         tfCV.setStrValue(newControlledVocab);
         tfCV.setMetadata(template.getMetadata());
+        System.out.println("before add to list");
         templateCVField.getTemplateFieldControlledVocabulary().add(tfCV);
+        System.out.println("after add cv");
         return;
     }
     private String selectedControlledVocabString = new String("");
@@ -2863,7 +2879,7 @@ public class TemplateFormPage extends VDCBaseBean implements java.io.Serializabl
 
         List stringList = new ArrayList<String>();
         
-        if (templateCVField != null){
+        if (templateCVField != null  && templateCVField.getTemplateFieldControlledVocabulary() !=null ){
             for(TemplateFieldControlledVocabulary tfCV: templateCVField.getTemplateFieldControlledVocabulary()) {
                  stringList.add(tfCV.getStrValue());
             }              
@@ -2882,6 +2898,23 @@ public class TemplateFormPage extends VDCBaseBean implements java.io.Serializabl
 
     public void setSelectControlledVocabulary(HtmlSelectOneMenu selectControlledVocabulary) {
         this.selectControlledVocabulary = selectControlledVocabulary;
+    }
+    private HtmlInputText inputControlledVocabulary;
+
+    /**
+     * Getter for property studyAuthorName.
+     * @return Value of property studyAuthorName.
+     */
+    public HtmlInputText getInputControlledVocabulary() {
+        return this.inputControlledVocabulary;
+    }
+
+    /**
+     * Setter for property studyAuthorName.
+     * @param studyAuthorName New value of property studyAuthorName.
+     */
+    public void setInputControlledVocabulary(HtmlInputText inputControlledVocabulary) {
+        this.inputControlledVocabulary = inputControlledVocabulary;
     }
     
 }

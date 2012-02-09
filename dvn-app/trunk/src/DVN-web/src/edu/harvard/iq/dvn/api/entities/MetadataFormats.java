@@ -21,6 +21,9 @@ public class MetadataFormats {
 
     private List<MetadataFormatType> formatTypesAvailable; 
     
+    public MetadataFormats() {
+    }
+    
     public MetadataFormats(String globalId) {
         globalStudyId = globalId;
 

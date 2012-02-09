@@ -38,7 +38,6 @@ public class MetadataSingletonBean {
     //@EJB
     //StudyFieldServiceLocal studyFieldService;
     
-    private List<MetadataFormatType> allSupportedTypes; 
     private List<String> searchableFields = null; 
 
     public MetadataSingletonBean() {

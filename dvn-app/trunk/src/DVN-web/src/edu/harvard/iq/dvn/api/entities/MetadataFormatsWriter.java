@@ -21,6 +21,9 @@ import edu.harvard.iq.dvn.core.study.MetadataFormatType;
 @Singleton
 @Provider
 public class MetadataFormatsWriter implements MessageBodyWriter<MetadataFormats> {
+    public MetadataFormatsWriter() {
+        super();
+    }
 
     public boolean isWriteable(Class<?> clazz, Type type, Annotation[] annotation, MediaType mediaType) {
         return clazz == MetadataFormats.class;

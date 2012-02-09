@@ -24,6 +24,9 @@ public class MetadataFormatsResourceBean {
     @Context private UriInfo ui;
     @EJB MetadataSingletonBean singleton;
 
+    public MetadataFormatsResourceBean() {
+        
+    }
     
     // Lookup by local (database) study ID:
      

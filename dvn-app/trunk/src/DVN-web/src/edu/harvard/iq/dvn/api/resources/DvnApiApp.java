@@ -25,21 +25,28 @@ public class DvnApiApp extends Application {
         classes.add(MetadataFormats.class);
         classes.add(MetadataSearchFields.class);
         classes.add(MetadataSearchResults.class);
+        classes.add(DownloadInfo.class);
         // register writers for the entities above:
         classes.add(MetadataWriter.class);
         classes.add(MetadataFormatsWriter.class);
         classes.add(MetadataSearchFieldsWriter.class);
         classes.add(MetadataSearchResultsWriter.class);
+        classes.add(DownloadInfoWriter.class);
         // register custom exceptions:
         classes.add(NotFoundException.class);
+        classes.add(AuthorizationRequiredException.class);
         classes.add(NotFoundExceptionMapper.class);
+        classes.add(AuthorizationRequiredExceptionMapper.class);
         // register resource beans that will supply the resources above:
         classes.add(MetadataResourceBean.class);
 	classes.add(MetadataFormatsResourceBean.class);
         classes.add(MetadataSearchFieldsResourceBean.class);
         classes.add(MetadataSearchResultsResourceBean.class);
+        classes.add(DownloadInfoResourceBean.class);
         // and the main EJB singleton, the workhorse of the API:
         classes.add(MetadataSingletonBean.class);
+        classes.add(FileAccessSingletonBean.class);
+        
         return classes;
     }
 }

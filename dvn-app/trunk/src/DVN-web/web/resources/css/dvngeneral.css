@@ -23,7 +23,8 @@
 .vdcNoBorders{border-bottom-style:none;border-left-style:none;border-right-style:none;border-top-style:none}
 .dvn_section{margin:1em 0;width:100%;text-align:center}
 .dvn_sectionHeader{width:100%;text-align:center;overflow:hidden}
-.dvn_sectionTitle{margin:0;padding:0 .65em .25em;font-size:112% !important;color:#526f76;text-transform:uppercase;text-align:left}
+.dvn_sectionTitle{display:table;margin:0 0 2px 0;padding:0 .65em .25em;border:1px solid #D9D9D9;border-bottom-width:0;background:transparent url(/dvn/resources/icefaces/dvn_rime/css-images/Tab_MidMid.gif) repeat-x left top;text-transform:uppercase;text-align:left}
+.dvn_sectionTitle span.iceOutTxt{display:block;font-size: 1.3em !important;font-weight:bold;color:#0C54B3;margin:3px;padding:4px 8px 5px 8px;}
 .dvn_sectionTitle a{font-size:100% !important}
 .dvn_sectionTitle a:hover,.dvn_sectionTitle a:active{font-size:100% !important;color:#526f76;text-decoration:none !important;cursor:text}
 .dvn_sectionTitleL{float:left;padding:0 0 0.25em;color:#526f76;font-size:112% !important;font-weight:bold;text-transform:uppercase;text-align:left}
@@ -32,9 +33,9 @@
 .dvn_sectionTitleLinksL{float:left}
 .dvn_sectionTitleLinksR{float:right}
 .dvn_sectionTitleLinksR a:link,.dvn_sectionTitleLinksR a:visited,.dvn_sectionTitleLinksR a:hover,.dvn_sectionTitleLinksR a:active{margin-left:2em}
-.dvn_sectionBox{width:100%;border-top:2px solid #91a5a9;border-left:1px solid #ccc;text-align:left}
+.dvn_sectionBox{width:100%;text-align:left;border:1px solid #D9D9D9;background:#FFFFFF url(/dvn/resources/icefaces/dvn_rime/css-images/contentContainer_bg.gif) repeat-x left top;}
 .dvn_sectionBoxNoBorders{width:100%;padding-top:.75em;text-align:left;float:left}
-.dvn_block{margin-bottom:12px;padding:6px;background:url(/dvn/resources/images/blocks_bg.png) no-repeat #f8f8f8;border:1px solid #e9e5e5}
+.dvn_block{margin-bottom:12px;padding:6px;background:#f8f8f8 url(/dvn/resources/images/blocks_bg.png) no-repeat;border:1px solid #e9e5e5}
 .dvn_block span{margin:0;padding:0;color:#526f76;font-weight:bold;text-transform:uppercase}
 .dvn_blockTitleBar{margin-bottom:12px;padding:6px;background:#F2F2F2;border:1px solid #ddd;font-style:italic;text-align:center}
 .dvn_margin12{margin:1em 0em 0em 1em;padding-bottom:2em;line-height:inherit}
@@ -82,11 +83,12 @@ div.dvn_navblockNetwork{}
 .navicon span{position:absolute;top:-9999px;left:-9999px;}
 /* HELP-INFO MSG BLOCK */
 div.dvnMsgBlockRound{position:relative;}
-div.dvnMsgBlockContainer{text-align:left;display:table-cell;vertical-align:middle;}
-div.dvnMsgBlockContainer p{background:transparent;margin:1em 0 1em 58px}
-div.dvnMsgBlockContainer ul{margin:1em 0 1em 58px}
-div.dvnInformationMessage{max-width:900px;width:80%;margin:0 auto 1em;background:url(/dvn/resources/images/icon_information.png) #bfdcf1 4px no-repeat}
-div.dvnSuccessMessage{max-width:900px;width:80%;margin:0 auto 1em;background:url(/dvn/resources/images/icon_success.png) #cee6bb 4px no-repeat}
+div.dvnMsgBlockContainer{text-align:left}
+div.dvnMsgBlockContainer p{background:transparent;margin:1em 0;color:#666666}
+div.dvnMsgBlockContainer p:first-child {text-indent:22px}
+div.dvnMsgBlockContainer ul{margin:1em 0}
+div.dvnInformationMessage{margin-bottom:1em;background:transparent url(/dvn/resources/images/icon_information.18.png) no-repeat 0px 0px}
+div.dvnSuccessMessage{max-width:700px;margin:0 auto 1em;background:#cee6bb url(/dvn/resources/images/icon_success.png) no-repeat 0px 0px}
 div.dvnSuccessMessage div.dvnMsgBlockContainer{}
 div.dvnSuccessMessage span{font-weight:bold;color:#299a0b;background:transparent}
 div.dvnSuccessMessage ul{padding-left:0;list-style:none;background:transparent}

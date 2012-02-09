@@ -46,7 +46,6 @@
                                         </p>
                                         <div class="dvnLoginLinkBlock">
                                             <p><ice:outputLink tabindex="4" value="/dvn#{VDCRequest.currentVDCURL}/faces/login/ForgotPasswordPage.xhtml" title="Link to Reset Password">Forgot your password?</ice:outputLink></p>
-                                            <p><ice:outputText value="Don't have a Dataverse Network account? "></ice:outputText> <ice:commandLink tabindex="5" action="#{LoginWorkflowBean.beginContributorWorkflow}" title="Create an Account" immediate="true">Create an Account.</ice:commandLink></p>
                                         </div>
                                     </fieldset>
                                     <!-- ************* end username login section *************** -->
@@ -84,6 +83,7 @@
                                             <ice:outputText value="#{bundlePageInfo.loginHelp}" escape="false" rendered="#{LoginPage.redirect == null}"/>
                                             <ice:outputText value="#{bundlePageInfo.loginAffiliateHelp}" escape="false" rendered="#{LoginPage.isAffiliates != null}"/>
                                             <ice:outputText value="#{bundlePageInfo.loginRestrictedHelp}" escape="false" rendered="#{LoginPage.redirect != null}"/>
+                                            <p><ice:outputText value="Don't have a Dataverse Network account? "></ice:outputText> <ice:commandLink tabindex="5" action="#{LoginWorkflowBean.beginContributorWorkflow}" title="Create an Account" immediate="true">Create an Account.</ice:commandLink></p>
                                         </div>
                                     </div>
                                     <div class="dvnLoginContentAreaFooter">

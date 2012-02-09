@@ -1467,6 +1467,13 @@
                     <ice:column>
                         
                       <ui:repeat var="fieldValRow" value="#{dcmItem.templateFieldValues}" >
+                          
+                       <!-- put in default field type as text box-->
+                      <ice:inputText id="input_TextDefault" size="90" rendered="#{empty(dcmItem.studyField.fieldType)}" 
+                                     visible="#{empty(dcmItem.templateFieldControlledVocabulary)}"
+                                     value="#{fieldValRow.strValue}"
+                                    >
+                      </ice:inputText> 
                           <ice:inputText id="input_HtmlEnabled" size="90" rendered="#{dcmItem.studyField.fieldType == 'html'}" 
                                          visible="#{empty(dcmItem.templateFieldControlledVocabulary)}"
                                      value="#{fieldValRow.strValue}"

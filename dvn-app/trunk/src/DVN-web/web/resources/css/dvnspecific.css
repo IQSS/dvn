@@ -39,16 +39,17 @@ div.dvnOptionsTableLicense{padding-top:.5em}
 .dvnMyDataverseTableTop td div{padding:.5em .25em}
 .dvnMyDataverseTableName{width:70%;padding-bottom:3px;padding-left:4px;padding-top:3px;text-align:left;vertical-align:top}
 .dvnMyDataverseTableRole{width:30%;padding-bottom:3px;padding-left:4px;padding-top:3px;text-align:center;vertical-align:top}
-/* MANAGE + EDIT STUDY */
+/* MANAGE + EDIT STUDY + TEMPLATE */
 .vdcStudyTemplateFormTable{width:98%;border:1px solid #6E7F90;padding:10px;margin-top:1em}
 .vdcEditStudyTable{border:0;margin:0}
 .vdcEditStudyTable tr{border-width:0 0 1px 0;padding:0}
 .vdcEditStudyTable td{border-bottom:1px solid #dadee0;border-width:0 0 1px 0;padding:4px 0}
 .vdcEditStudyTable div{border-width:0 0 0 0;padding:0}
+.vdcEditStudyTable input, .vdcEditStudyTable textarea {display:block;}
 .vdcEditStudyTableRow table{border-width:0 0 0 0;margin:0}
 .vdcEditStudyTableRow table td{border-width:0 0 0 0;padding:0}
 .vdcEditStudyInnerTable,.vdcEditStudyInnerTable tr,.vdcEditStudyInnerTable td{border-width:0 0 0 0;padding:0;margin:0}
-span.vdcEditStudyFormatExample{display:inline}
+span.vdcEditStudyFormatExample{color:#666666;}
 .vdcEditStudyTableLegend div{margin-bottom:.25em}
 .vdcEditStudyTableLegend img{vertical-align:middle}
 .vdcEditStudyTableLegend span{margin-left:.25em}
@@ -59,9 +60,10 @@ span.vdcEditStudyFormatExample{display:inline}
 .vdcEditStudyFieldFloat3{clear:left}
 .vdcEditStudyOuterTable,.vdcEditStudyOuterTable td{padding:0;margin:0}
 .vdcEditStudyInnerTable{margin:0}
-.vdcEditStudyInnerTable td.vdcEditStudyCol1b span.iceOutTxt.dvnInlineHelpTip {display:inline}
-.icePnlGrd.vdcEditStudyTable td.vdcEditStudyCol2 span.iceOutTxt, .icePnlGrd.vdcEditStudyTable td.vdcEditStudyCol2 span.iceOutTxt.dvnInlineHelpTip {display:block}
+.vdcEditStudyInnerTable td.vdcEditStudyCol1b span.iceOutTxt.dvnInlineHelpLabel {display:inline}
+.icePnlGrd.vdcEditStudyTable td.vdcEditStudyCol2 span.iceOutTxt, .icePnlGrd.vdcEditStudyTable td.vdcEditStudyCol2 span.iceOutTxt.dvnInlineHelpLabel {display:block}
 .vdcEditStudyInnerTable div{white-space:nowrap}
+.vdcEditStudyInnerTable input, .vdcEditStudyInnerTable textarea {display:block;}
 .vdcEditStudyInnerTable textarea{width:auto}
 .vdcEditStudyInnerTable td.vdcEditFilesColA img.iceGphImg{display:inline;vertical-align:middle}
 .vdcEditStudyInnerTable td.vdcEditFilesColA span.iceOutTxt{margin-left:.5em;display:inline}
@@ -105,6 +107,10 @@ td.vdcEditFilesColC{width:7%;padding:1em .25em;text-align:center}
 .vdcReviewCol4{padding-left:2px;padding-right:2px;width:100px}
 .vdcReviewCol5{padding-left:2px;padding-right:2px;width:70px}
 .vdcReviewCol6{padding-left:2px;padding-right:2px;width:70px}
+.iceDatTbl.dvnStudyTemplateTableDCM {border-width:0 0 0 0; margin-top:0;}
+.dvnStudyTemplateTableDCM tr.iceDatTblRow1, .dvnStudyTemplateTableDCM tr.iceDatTblRow2 {border-width:0 0 0 0;}
+.dvnStudyTemplateTableDCM td {border-width:0 0 1px 0;}
+.dvnCGAmapLink span.iceOutTxt, .dvnCGAmapLink a.iceOutLnk {display:inline !important;}
 /* ADD FILE */
 .dvnAddFilesOuterTable{border-left:0;border-right:0;border-bottom:0}
 .dvnAddFilesOuterTable td{padding:0;border-left:0;border-right:0;border-bottom:0}

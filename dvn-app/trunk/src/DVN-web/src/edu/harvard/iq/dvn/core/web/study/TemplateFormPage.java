@@ -1826,28 +1826,6 @@ public class TemplateFormPage extends VDCBaseBean implements java.io.Serializabl
     public void setInputAuthorAffiliation(HtmlInputText inputAuthorAffiliation) {
         this.inputAuthorAffiliation = inputAuthorAffiliation;
     }
-    
-    /**
-     * Holds value of property inputAuthorAffiliation.
-     */
-    private HtmlInputText inputAuthorIDValue;
-
-    /**
-     * Getter for property studyAuthorAffiliation.
-     * @return Value of property studyAuthorAffiliation.
-     */
-    public HtmlInputText getInputAuthorIDValue() {
-        return this.inputAuthorIDValue;
-    }
-
-    /**
-     * Setter for property studyAuthorAffiliation.
-     * @param studyAuthorAffiliation New value of property studyAuthorAffiliation.
-     */
-    public void setInputAuthorIDValue(HtmlInputText inputAuthorIDValue) {
-        this.inputAuthorIDValue = inputAuthorIDValue;
-    }
-      
 
     /**
      * Holds value of property sessionCounter.

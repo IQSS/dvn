@@ -67,6 +67,7 @@ import com.icesoft.faces.component.ext.HtmlInputText;
 import com.icesoft.faces.component.ext.HtmlInputTextarea;
 import com.icesoft.faces.component.ext.HtmlSelectOneMenu;
 import com.icesoft.faces.component.ext.HtmlSelectBooleanCheckbox;
+import com.icesoft.faces.context.effects.JavascriptContext;
 import edu.harvard.iq.dvn.core.study.FieldInputLevel;
 import edu.harvard.iq.dvn.core.study.StudyField;
 
@@ -82,7 +83,6 @@ import javax.inject.Named;
 import javax.naming.Context;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
-import javax.servlet.http.HttpServletRequest;
 
 /**
  * <p>Page bean that corresponds to a similarly named JSP page.  This
@@ -106,6 +106,11 @@ public class TemplateFormPage extends VDCBaseBean implements java.io.Serializabl
         
     }
     
+   public void preRenderView() {
+       super.preRenderView();
+       // add javascript call on each partial submit to initialize the help tips for added fields
+       JavascriptContext.addJavascriptCall(getFacesContext(),"initInlineHelpTip();");
+   }     
     
    public void init() {
               

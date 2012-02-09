@@ -214,15 +214,6 @@
                           </ice:inputText>
                           <ice:message styleClass="errorMessage" for="input_authorAffiliation"/>
                         </div>
-                        <div jsfc="ice:panelGroup" styleClass="vdcEditStudyFieldFloat3 #{TemplateFormPage.studyMap[sfc.authorAffiliation].templateField.fieldInputLevelString}">
-                          <ice:outputText styleClass="dvnInlineHelpLabel dvnInlineHelpTip" value="#{editstudybundle.authorIDValueLabel}" title="#{editstudybundle.authorIDValueHelpHeading} - #{editstudybundle.authorIDValueHelp}"/>
-                          <ice:inputText id="input_authorIDValue" size="45" maxlength="255"
-                                         binding="#{TemplateFormPage.inputAuthorIDValue}"
-                                         value="#{currentAuthor.idValue}"
-                                         validator="#{TemplateFormPage.validateStudyAuthor}">
-                          </ice:inputText>
-                          <ice:message styleClass="errorMessage" for="input_authorAffiliation"/>
-                        </div>
                       </div>
                     </ice:column>
                     <ice:column>

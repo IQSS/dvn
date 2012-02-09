@@ -1467,10 +1467,32 @@
                     <ice:column>
                         
                       <ui:repeat var="fieldValRow" value="#{dcmItem.templateFieldValues}" >
-                      <ice:inputText id="input_adHocField" size="90" visible="#{empty(dcmItem.templateFieldControlledVocabulary)}"
+                          <ice:inputText id="input_HtmlEnabled" size="90" rendered="#{dcmItem.studyField.fieldType == 'html'}" 
+                                         visible="#{empty(dcmItem.templateFieldControlledVocabulary)}"
                                      value="#{fieldValRow.strValue}"
                                      styleClass="formHtmlEnabled">
+                              <f:validator validatorId="XhtmlValidator"/>
                       </ice:inputText>
+                      <ice:inputText id="input_Text" size="90" rendered="#{dcmItem.studyField.fieldType == 'textBox'}" 
+                                     visible="#{empty(dcmItem.templateFieldControlledVocabulary)}"
+                                     value="#{fieldValRow.strValue}"
+                                    >
+                      </ice:inputText>    
+                      <ice:inputText id="input_genericDate" styleClass="formDateFormat"
+                                     rendered="#{dcmItem.studyField.fieldType == 'date'}" 
+                                     value="#{fieldValRow.strValue}" 
+                                     visible="#{empty(dcmItem.templateFieldControlledVocabulary)}" >
+                            <f:validator validatorId="DateValidator"/>
+                      </ice:inputText>   
+                          <ice:inputTextarea cols="90" rows="4"
+                                           id="input_TextArea"
+                                           value="#{fieldValRow.strValue}"
+                                           rendered="#{dcmItem.studyField.fieldType == 'textArea'}" 
+                                           visible="#{empty(dcmItem.templateFieldControlledVocabulary)}"
+                                           >
+                          
+                        </ice:inputTextarea>
+                          
                       </ui:repeat>
                       <ice:outputText id="controlledVocabHeader"  visible="#{!empty(dcmItem.templateFieldControlledVocabulary)}"
                                      value="Controlled Vocabulary"

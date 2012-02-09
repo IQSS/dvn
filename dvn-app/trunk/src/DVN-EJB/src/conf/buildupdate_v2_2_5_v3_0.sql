@@ -21,28 +21,6 @@ Alter table studyField add dcmField boolean;
 Alter table studyField add fieldType character varying(255);
 
 update studyField set dcmField = false;
-update studyField set dcmField = true where id > 44 and id < 65;
-
-UPDATE studyfield SET "name"='Time Method'                   WHERE id=45;
-UPDATE studyfield SET "name"='Data Collector'                WHERE id=46;
-UPDATE studyfield SET "name"='Frequency of Data Collection'  WHERE id=47;
-UPDATE studyfield SET "name"='Sampling Procedure'            WHERE id=48;
-UPDATE studyfield SET "name"='Deviations from Sample Design' WHERE id=49;
-UPDATE studyfield SET "name"='Collection Mode'               WHERE id=50;
-UPDATE studyfield SET "name"='Research Instrument'           WHERE id=51;
-UPDATE studyfield SET "name"='Data Sources'                  WHERE id=52;
-UPDATE studyfield SET "name"='Origin of Sources'             WHERE id=53;
-UPDATE studyfield SET "name"='Characteristic of Sources'     WHERE id=54;
-UPDATE studyfield SET "name"='Access to Sources'             WHERE id=55;
-UPDATE studyfield SET "name"='Data Collection Situation'     WHERE id=56;
-UPDATE studyfield SET "name"='Actions to Minimize Loss'      WHERE id=57;
-UPDATE studyfield SET "name"='Control Operations'            WHERE id=58;
-UPDATE studyfield SET "name"='Weighting'                     WHERE id=59;
-UPDATE studyfield SET "name"='Cleaning Operations'           WHERE id=60;
-UPDATE studyfield SET "name"='Study Level Error Notes'       WHERE id=61;
-UPDATE studyfield SET "name"='Response Rate'                 WHERE id=62;
-UPDATE studyfield SET "name"='Sampling Error Estimates'      WHERE id=63;
-UPDATE studyfield SET "name"='Other Data Appraisal'          WHERE id=64;
 
 alter table templateField ADD dcmSortOrder  int;
 update templatefield set dcmsortorder = studyfield_id - 44 where studyfield_id > 44 and studyfield_id < 65;

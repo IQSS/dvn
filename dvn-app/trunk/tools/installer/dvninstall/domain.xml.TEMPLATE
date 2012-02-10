@@ -29,7 +29,7 @@
     <jdbc-resource enabled="true" jndi-name="jdbc/sample" object-type="user" pool-name="SamplePool"/>
     <jdbc-resource enabled="true" jndi-name="jdbc/vdcApp" object-type="user" pool-name="post-gre-sqlPool"/>
     <jdbc-resource enabled="true" jndi-name="jdbc/VDCNetDS" object-type="user" pool-name="dvnDbPool"/>
-    <mail-resource debug="false" enabled="true" from="do-not-reply@%HOST_DNS_ADDRESS%" host="localhost" jndi-name="mail/notifyMailSession" object-type="user" store-protocol="imap" store-protocol-class="com.sun.mail.imap.IMAPStore" transport-protocol="smtp" transport-protocol-class="com.sun.mail.smtp.SMTPTransport" user="dataversenotify"/>
+    <mail-resource debug="false" enabled="true" from="do-not-reply@%HOST_DNS_ADDRESS%" host="%MAIL_SERVER%" jndi-name="mail/notifyMailSession" object-type="user" store-protocol="imap" store-protocol-class="com.sun.mail.imap.IMAPStore" transport-protocol="smtp" transport-protocol-class="com.sun.mail.smtp.SMTPTransport" user="dataversenotify"/>
     <admin-object-resource enabled="true" jndi-name="jms/IndexMessage" object-type="user" res-adapter="jmsra" res-type="javax.jms.Queue">
       <property name="Name" value="IndexMessage"/>
     </admin-object-resource>
@@ -214,7 +214,7 @@
       <diagnostic-service capture-app-dd="true" capture-hadb-info="true" capture-install-log="true" capture-system-info="true" compute-checksum="true" max-log-entries="500" min-log-level="INFO" verify-config="true"/>
       <java-config classpath-suffix="" debug-enabled="true" debug-options="-Xdebug -Xrunjdwp:transport=dt_socket,server=y,suspend=n,address=9009" env-classpath-ignored="true" java-home="${com.sun.aas.javaRoot}" javac-options="-g" rmic-options="-iiop -poa -alwaysgenerate -keepgenerated -g" system-classpath="">
         <!-- various required jvm-options -->
-        <jvm-options>-Ddvn.networkData.libPath=${com.sun.aas.instanceRoot}/config/networkData</jvm-options>
+	<jvm-options>-Ddvn.networkData.libPath=${com.sun.aas.instanceRoot}/config/networkData</jvm-options>
         <jvm-options>-Djava.util.logging.config.file=${com.sun.aas.instanceRoot}/config/logging.properties</jvm-options>
         <jvm-options>-Ddvn.index.location=${com.sun.aas.instanceRoot}/config</jvm-options>
         <jvm-options>-Dvdc.dsb.port=%RSERVE_PORT%</jvm-options>
@@ -224,16 +224,16 @@
         <jvm-options>-Dvdc.dsb.rserve.user=%RSERVE_USER%</jvm-options>
         <jvm-options>-Dvdc.import.log.dir=${com.sun.aas.instanceRoot}/logs/import</jvm-options>
         <jvm-options>-Dvdc.export.log.dir=${com.sun.aas.instanceRoot}/logs/export</jvm-options>
-        <jvm-options>-Dvdc.temp.file.dir=${com.sun.aas.instanceroot}/config/files/temp</jvm-options>
-        <jvm-options>-Dvdc.study.file.dir=${com.sun.aas.instanceRoot}/config/files/studies</jvm-options>
+	<jvm-options>-Dvdc.temp.file.dir=${com.sun.aas.instanceroot}/config/files/temp</jvm-options>
+	<jvm-options>-Dvdc.study.file.dir=${com.sun.aas.instanceRoot}/config/files/studies</jvm-options>
         <jvm-options>-XX:+UseParallelOldGC</jvm-options>
-        <jvm-options>-Ddvn.inetAddress=%HOST_DNS_ADDRESS%</jvm-options>
+	<jvm-options>-Ddvn.inetAddress=%HOST_DNS_ADDRESS%</jvm-options>
         <jvm-options>-Djhove.conf.dir=${com.sun.aas.instanceRoot}/config</jvm-options>
         <jvm-options>-Dcom.sun.enterprise.ss.ASQuickStartup=false</jvm-options>
         <jvm-options>-XX:+DisableExplicitGC</jvm-options>
         <jvm-options>-Xss128k</jvm-options>
         <jvm-options>-XX:+AggressiveHeap</jvm-options>
-        <jvm-options>-Xms%DEF_MEM_SIZE%</jvm-options>
+	<jvm-options>-Xms%DEF_MEM_SIZE%</jvm-options>
         <jvm-options>-XX:MaxPermSize=192m</jvm-options>
         <jvm-options>-server</jvm-options>
         <jvm-options>-Djava.endorsed.dirs=${com.sun.aas.installRoot}/lib/endorsed</jvm-options>

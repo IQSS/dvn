@@ -404,13 +404,31 @@ public class AdvancedStatGUIdata  implements java.io.Serializable {
           String helplinkRaw = z.getHelpLink().getUrl();
           dbgLog.finer("helplinkRaw="+ helplinkRaw);
 
+          // temporary hack -- documentation files for individual Zelig models 
+          // are temporarily not available on Gary's site; so instead we are 
+          // replacing them all with links to http://gking.harvard.edu/zelig,
+          
+          // once the new version of Zelig is released and the documentation 
+          // site is back up, we'll remove this hack. 
+          
+
+          /* 
+           * oopsie-daisy, looks like this was already attempted 5 years ago:
+           
           // temporary fix: until zelig package is updated
           Matcher matcher = p.matcher(helplinkRaw);
           String helplink = null;
           if (matcher.find()){
             helplink = matcher.replaceFirst("/zelig/docs/");
           }
+           *
+           */
+          
+          // So anyway, screw regexes - let's just hard-code the truncated URL:
 
+          String helplink = "http://gking.harvard.edu/zelig";
+          
+          // -- L.A.
           mdlii.setHelplink(helplink);
 
           // sepcialFunction

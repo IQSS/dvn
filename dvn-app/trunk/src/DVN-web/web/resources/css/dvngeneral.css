@@ -24,7 +24,7 @@
 .dvn_section{margin:1em 0;width:100%;text-align:center}
 .dvn_sectionHeader{width:100%;text-align:center;overflow:hidden}
 .dvn_sectionTitle{display:table;margin:0 0 2px 0;padding:0 .65em .25em;border:1px solid #D9D9D9;border-bottom-width:0;background:transparent url(/dvn/resources/icefaces/dvn_rime/css-images/Tab_MidMid.gif) repeat-x left top;text-transform:uppercase;text-align:left}
-.dvn_sectionTitle span.iceOutTxt{display:block;font-size: 1.3em !important;font-weight:bold;color:#0C54B3;margin:3px;padding:4px 8px 5px 8px;}
+.dvn_sectionTitle span.iceOutTxt{display:block;font-size: 1.3em !important;font-weight:bold;color:#0C54B3;margin:3px;padding:4px 8px 0 8px;}
 .dvn_sectionTitle a{font-size:100% !important}
 .dvn_sectionTitle a:hover,.dvn_sectionTitle a:active{font-size:100% !important;color:#526f76;text-decoration:none !important;cursor:text}
 .dvn_sectionTitleL{float:left;padding:0 0 0.25em;color:#526f76;font-size:112% !important;font-weight:bold;text-transform:uppercase;text-align:left}
@@ -38,7 +38,7 @@
 .dvn_block{margin-bottom:12px;padding:6px;background:#f8f8f8 url(/dvn/resources/images/blocks_bg.png) no-repeat;border:1px solid #e9e5e5}
 .dvn_block span{margin:0;padding:0;color:#526f76;font-weight:bold;text-transform:uppercase}
 .dvn_blockTitleBar{margin-bottom:12px;padding:6px;background:#F2F2F2;border:1px solid #ddd;font-style:italic;text-align:center}
-.dvn_margin12{margin:1em 0em 0em 1em;padding-bottom:2em;line-height:inherit}
+.dvn_margin12{margin:1em 1em 0em 1em;padding-bottom:2em;line-height:inherit}
 .dvn_padTop{padding-top:1em;}
 .dvn_padBot{padding-bottom:1em;}
 .dvn_spacing{margin:1em;}
@@ -81,6 +81,13 @@ div.dvn_navblockNetwork{}
 .naviconcontact{background:#fff url(/dvn/resources/images/navicon_contact.jpg) no-repeat 6px 2px;}
 .naviconoptions{background:#fff url(/dvn/resources/images/navicon_options.jpg) no-repeat 6px 2px;}
 .navicon span{position:absolute;top:-9999px;left:-9999px;}
+/* FORM ELEMENTS */
+.dvnFormPadding input.iceCmdBtn[type=submit]{background:#CEE6BB; border:1px solid #9BC191; padding:4px 16px; font-size:1em;}
+.dvnFormPadding input.iceCmdBtn[type=submit]:hover{border:1px solid #299A0B;}
+.dvnFormPadding input.iceCmdBtn[type=submit]:active{background:#299A0B;}
+.dvnFormPadding input.iceCmdBtn[value=Cancel]{background:#EEF3FB; border:1px solid #B7CDFF; padding:4px 16px; font-size:1em;}
+.dvnFormPadding input.iceCmdBtn[value=Cancel]:hover{border:1px solid #0C54B3;}
+.dvnFormPadding input.iceCmdBtn[value=Cancel]:active{background:#0C54B3;}
 /* HELP-INFO MSG BLOCK */
 div.dvnMsgBlockRound{position:relative;}
 div.dvnMsgBlockContainer{text-align:left}
@@ -185,8 +192,8 @@ li.dvnAlphaBrowseSelected a{padding:2px 5px;font-weight:bold;color:white}
 .dvnTabs .icePnlTbOn, .dvnTabs .icePnlTbOff, .dvnTabs .icePnlTbOver {margin: 0 4px 2px 0;}
 .dvnTabs .icePnlTbOn .LftTop, .dvnTabs .icePnlTbOn .MidTop, .dvnTabs .icePnlTbOn .RtTop, .dvnTabs .icePnlTbOff .LftTop, .dvnTabs .icePnlTbOff .MidTop, .dvnTabs .icePnlTbOff .RtTop, .dvnTabs .icePnlTbOver .LftTop, .dvnTabs .icePnlTbOver .MidTop, .dvnTabs .icePnlTbOver .RtTop {height: 1px;}
 .dvnTabs .icePnlTbOn .LftBtm, .dvnTabs .icePnlTbOn .MidBtm, .dvnTabs .icePnlTbOn .RtBtm, .dvnTabs .icePnlTbOff .LftBtm, .dvnTabs .icePnlTbOff .MidBtm, .dvnTabs .icePnlTbOff .RtBtm, .dvnTabs .icePnlTbOver .LftBtm, .dvnTabs .icePnlTbOver .MidBtm, .dvnTabs .icePnlTbOver .RtBtm {background:none;}
-.dvnTabs .icePnlTbOn .LftMid, .dvnTabs .icePnlTbOff .LftMid, .dvnTabs .icePnlTbOver .LftMid {background:none; border-left: 1px solid #D9D9D9;}
-.dvnTabs .icePnlTbOn .RtMid, .dvnTabs .icePnlTbOff .RtMid, .dvnTabs .icePnlTbOver .RtMid {background:none; border-right: 1px solid #D9D9D9;}
+.dvnTabs .icePnlTbOn .MidMid, .dvnTabs .icePnlTbOff .MidMid, .dvnTabs .icePnlTbOver .MidMid {border-left: 1px solid #D9D9D9; border-right: 1px solid #D9D9D9;}
+.dvnTabs .icePnlTbOn .LftTop, .dvnTabs .icePnlTbOn .LftMid, .dvnTabs .icePnlTbOn .LftBtm, .dvnTabs .icePnlTbOn .RtTop, .dvnTabs .icePnlTbOn .RtMid, .dvnTabs .icePnlTbOn .RtBtm {display:none;}
 .dvnTabs .icePnlTbOn .MidMid a {background:none; padding-left: 8px; text-transform: uppercase;}
 .dvnTabs .icePnlTbOn .MidMid a td {color:#0C54B3;}
 .dvnTabs .icePnlTbOn .MidMid a:hover td {color:#C55B28;}

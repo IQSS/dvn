@@ -624,7 +624,8 @@ public class LoginFilter implements Filter {
     }
     
     private boolean isPopup(HttpServletRequest req) {
-        if (req.getParameter("StudyVersionNotesPopup") != null) {
+        if (req.getParameter("StudyVersionNotesPopup") != null || 
+            req.getParameter("StudyCommentsPopup") != null) {
             return true;
         }
         

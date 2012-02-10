@@ -132,10 +132,10 @@ public class EditTemplateServiceBean implements edu.harvard.iq.dvn.core.study.Ed
             TemplateField tf = new TemplateField();
             tf.setDefaultValue(defaultField.getDefaultValue());
             tf.setStudyField(defaultField.getStudyField());
+            tf.setAllowMultiples(defaultField.isAllowMultiples());
             // bring over field values separately
             List <TemplateFieldValue> tfvList = new  ArrayList();
-            for (TemplateFieldValue tfv: defaultField.getTemplateFieldValues()){
-                
+            for (TemplateFieldValue tfv: defaultField.getTemplateFieldValues()){ 
                 tfv.setMetadata(clonedMetadata);
                 tfvList.add(tfv);
             }
@@ -150,7 +150,7 @@ public class EditTemplateServiceBean implements edu.harvard.iq.dvn.core.study.Ed
             tf.setTemplate(template);
             tf.setFieldInputLevelString(defaultField.getFieldInputLevelString());
             tf.setdcmSortOrder(defaultField.getDcmSortOrder());
-            tf.getStudyField().setDcmField(defaultField.getStudyField().isDcmField());
+            
             template.getTemplateFields().add(tf);
         }
         VDC vdc = em.find(VDC.class, vdcId);      

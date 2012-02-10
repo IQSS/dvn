@@ -356,7 +356,10 @@ public class TemplateFormPage extends VDCBaseBean implements java.io.Serializabl
             TemplateFieldValue newElem = new TemplateFieldValue();
             newElem.setMetadata(template.getMetadata());
             newElem.setTemplateField(tf);
-            tf.getTemplateFieldValues().add(newElem);
+            
+            // try to get the add button to not wipe out newly added text.
+            tf.getTemplateFieldValues().add(tf.getTemplateFieldValues().size(), newElem);
+            template.getMetadata().getTemplateFieldValue().add(newElem);
             //tf.getTemplateFieldValues().size(); //debug line
             //remove clear it was interfering with move buttons
             //dcmFieldTable.getChildren().clear();
@@ -1208,7 +1211,7 @@ public class TemplateFormPage extends VDCBaseBean implements java.io.Serializabl
     public void setSelectFieldType(HtmlSelectOneMenu selectFieldType) {
         this.selectFieldType = selectFieldType;
     }
-    
+    /* remove field input level select menu from field creation
     HtmlSelectOneMenu selectNewDcmFieldInputLevel;
 
     public HtmlSelectOneMenu getSelectNewDcmFieldInputLevel() {
@@ -1218,6 +1221,7 @@ public class TemplateFormPage extends VDCBaseBean implements java.io.Serializabl
     public void setSelectNewDcmFieldInputLevel(HtmlSelectOneMenu selectNewDcmFieldInputLevel) {
         this.selectNewDcmFieldInputLevel = selectNewDcmFieldInputLevel;
     }
+     * */
 
     HtmlSelectBooleanCheckbox allowMultiplesCheck;
 
@@ -1265,9 +1269,8 @@ public class TemplateFormPage extends VDCBaseBean implements java.io.Serializabl
 
         Object value= this.selectFieldType.getValue();
         String fieldType =  (String) value ;
-        
-        value= this.selectNewDcmFieldInputLevel.getValue();
-        String inputLevel =  (String) value ;
+        // make all new fields recommended at creation
+        String inputLevel =  "recommended" ;
         
         
         TemplateField newTF = new TemplateField();
@@ -1283,6 +1286,8 @@ public class TemplateFormPage extends VDCBaseBean implements java.io.Serializabl
         newTF.setdcmSortOrder(new Long(maxDCM + 1));
         newTF.setAllowMultiples(allowMultiples);
          editTemplateService.changeFieldInputLevel(newTF, inputLevel);
+         newTF.setTemplateFieldControlledVocabulary(new ArrayList());
+         newTF.setTemplateFieldValues(new ArrayList());
          newTF.setFieldInputLevelString(inputLevel);
         TemplateFieldUI newUI = new TemplateFieldUI();
         newUI.setTemplateField(newTF);
@@ -2766,12 +2771,20 @@ public class TemplateFormPage extends VDCBaseBean implements java.io.Serializabl
     
     public void openPopup(ActionEvent ae) {
         Long getId = (Long) ae.getComponent().getAttributes().get("sf_id");
-
-        for (TemplateField tfTest: adHocFields){ 
-            if (getId.equals(tfTest.getStudyField().getId())){  
-                   setTemplateCVField(tfTest);
+        String getName = (String) ae.getComponent().getAttributes().get("sf_name");
+         System.out.println("get name" + getName);
+         System.out.println("get id" + getId);
+         System.out.println("templateCVField before " + templateCVField);
+            for (TemplateField tfTest : template.getTemplateFields()) {
+                if(getId !=null && getId.equals(tfTest.getStudyField().getId())){
+                   setTemplateCVField(tfTest); 
+                }
+                if (getName.equals(tfTest.getStudyField().getName())){
+                   setTemplateCVField(tfTest);  
+                }
+                
             }
-        }
+                     System.out.println("templateCVField after " + templateCVField);
         showPopup = true;
     }
     
@@ -2808,9 +2821,6 @@ public class TemplateFormPage extends VDCBaseBean implements java.io.Serializabl
     }
     
     public void addToControlledVocabList(){
-
-
-        String newCV =  (String)inputControlledVocabulary.getLocalValue();
                 
         if(newControlledVocab.isEmpty()){
             return;
@@ -2820,6 +2830,7 @@ public class TemplateFormPage extends VDCBaseBean implements java.io.Serializabl
         tfCV.setTemplateField(templateCVField);
         tfCV.setStrValue(newControlledVocab);
         tfCV.setMetadata(template.getMetadata());
+
         templateCVField.getTemplateFieldControlledVocabulary().add(tfCV);
         return;
     }

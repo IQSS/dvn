@@ -1336,9 +1336,7 @@
                     </div>
                 <ice:panelGrid cellpadding="0" cellspacing="0" columns="3" width="100%">
                     <ice:column>
-                        <ice:selectOneMenu immediate="false" binding="#{TemplateFormPage.selectNewDcmFieldInputLevel}">
-                            <f:selectItems value="#{TemplateFormPage.fieldInputLevelSelectItems}"/>
-                        </ice:selectOneMenu>
+<!-- remove input level from field creation-->
                         <ice:outputText value="Allow multiple values"/>
                         <ice:selectBooleanCheckbox partialSubmit="false" binding="#{TemplateFormPage.allowMultiplesCheck}"/>
                     </ice:column>
@@ -1381,8 +1379,7 @@
                         <ice:outputText styleClass="dvnInlineHelpLabel dvnInlineHelpTip" value="#{dcmItem.studyField.name}" title="#{dcmItem.studyField.name} - #{dcmItem.studyField.description}"/>
                         <ice:graphicImage value="/resources/images/icon_required.gif" rendered="#{dcmItem.required}"/>
                         <ice:graphicImage value="/resources/images/icon_recommended.gif" rendered="#{dcmItem.recommended}"/>
-                        <ice:outputText  value="Allow multiple values"/>
-                        <ice:selectBooleanCheckbox immediate="true" partialSubmit="true" value="#{dcmItem.allowMultiples}"/>
+               <!-- remove allow multiples from edit field section-->
                       <ice:commandButton  value="Remove Field" 
                                           actionListener="#{TemplateFormPage.removeAdHocField}" rendered="#{(dcmItem.studyField.id > 98 or dcmItem.studyField.id == null) and TemplateFormPage.networkEdit}" >
                                          <f:attribute name="studyFieldId" value="#{dcmItem.studyField.id}" />
@@ -1454,13 +1451,543 @@
                       </ice:commandButton>
                     </ice:column>
                     <ice:column>
-                      <ice:commandButton   value="Update Controlled Vocabulary" actionListener="#{TemplateFormPage.openPopup}">
+                      <ice:commandButton   value="Update Controlled Vocabulary" actionListener="#{TemplateFormPage.openPopup}" rendered="#{TemplateFormPage.networkEdit}" >
                           <f:attribute name="sf_id" value="#{dcmItem.studyField.id}"/>
                           <f:attribute name="dcmSortOrder" value="#{dcmItem.dcmSortOrder}"/>
+                          <f:attribute name="sf_name" value="#{dcmItem.studyField.name}"/>
                       </ice:commandButton>
                     </ice:column>
                   </ice:dataTable>
-              <!-- end of data collection methodology section -->              
+              <!-- end of data collection methodology section -->   
+              <ice:panelGrid cellpadding="0" cellspacing="0" columns="2" width="100%"
+                             styleClass="vdcEditStudyTable #{TemplateFormPage.studyMap[sfc.timeMethod].templateField.fieldInputLevelString}"
+                             columnClasses="vdcEditStudyCol1, vdcEditStudyCol2">
+                <ice:column styleClass="vdcEditStudyField">
+                  <ice:selectOneMenu immediate="false" partialSubmit="true" 
+                                        value="#{TemplateFormPage.studyMap[sfc.timeMethod].templateField.fieldInputLevelString}"
+                                        valueChangeListener="#{TemplateFormPage.changeFieldInputValue}">
+                            <f:attribute name="fieldName" value="timeMethod" />
+                           <f:selectItems value="#{TemplateFormPage.fieldInputLevelSelectItems}"/>
+                  </ice:selectOneMenu>
+                  <ice:outputText styleClass="dvnInlineHelpLabel dvnInlineHelpTip" 
+                                  value="#{editstudybundle.timeMethodLabel}" title="#{editstudybundle.timeMethodHelpHeading} - #{editstudybundle.timeMethodHelp}"/>
+                  <ice:graphicImage value="/resources/images/icon_required.gif" rendered="#{TemplateFormPage.studyMap[sfc.timeMethod].required}"/>
+                  <ice:graphicImage value="/resources/images/icon_recommended.gif" rendered="#{TemplateFormPage.studyMap[sfc.timeMethod].recommended}"/>
+                </ice:column>
+                <ice:column>
+                  <ice:inputText id="input_timeMethod" size="90"
+                                 value="#{TemplateFormPage.template.metadata.timeMethod}"
+                                 required="#{TemplateFormPage.studyMap[sfc.timeMethod].required}"
+                                 styleClass="formHtmlEnabled">
+                    <f:validator validatorId="XhtmlValidator"/>
+                  </ice:inputText>
+                  <ice:message styleClass="errorMessage" for="input_timeMethod"/>
+                </ice:column>
+              </ice:panelGrid>
+
+              <ice:panelGrid cellpadding="0" cellspacing="0" columns="2" width="100%"
+                             styleClass="vdcEditStudyTable #{TemplateFormPage.studyMap[sfc.dataCollector].templateField.fieldInputLevelString}"
+                             columnClasses="vdcEditStudyCol1, vdcEditStudyCol2">
+                <ice:column styleClass="vdcEditStudyField">
+                  <ice:selectOneMenu immediate="false" partialSubmit="true" 
+                                        value="#{TemplateFormPage.studyMap[sfc.dataCollector].templateField.fieldInputLevelString}"
+                                        valueChangeListener="#{TemplateFormPage.changeFieldInputValue}">
+                            <f:attribute name="fieldName" value="dataCollector" />
+                           <f:selectItems value="#{TemplateFormPage.fieldInputLevelSelectItems}"/>
+                  </ice:selectOneMenu>
+                  <ice:outputText styleClass="dvnInlineHelpLabel dvnInlineHelpTip" 
+                                  value="#{editstudybundle.dataCollectorLabel}" title="#{editstudybundle.dataCollectorHelpHeading} - #{editstudybundle.dataCollectorHelp}"/>
+                  <ice:graphicImage value="/resources/images/icon_required.gif" rendered="#{TemplateFormPage.studyMap[sfc.dataCollector].required}"/>
+                  <ice:graphicImage value="/resources/images/icon_recommended.gif" rendered="#{TemplateFormPage.studyMap[sfc.dataCollector].recommended}"/>
+                </ice:column>
+                <ice:column>
+                  <ice:inputText id="input_dataCollector" size="90"
+                                 value="#{TemplateFormPage.template.metadata.dataCollector}"
+                                 required="#{TemplateFormPage.studyMap[sfc.dataCollector].required}"
+                                 styleClass="formHtmlEnabled">
+                    <f:validator validatorId="XhtmlValidator"/>
+                  </ice:inputText>
+                  <ice:message styleClass="errorMessage" for="input_dataCollector"/>
+                </ice:column>
+              </ice:panelGrid>
+
+              <ice:panelGrid cellpadding="0" cellspacing="0" columns="2" width="100%"
+                             styleClass="vdcEditStudyTable #{TemplateFormPage.studyMap[sfc.frequencyOfDataCollection].templateField.fieldInputLevelString}"
+                             columnClasses="vdcEditStudyCol1, vdcEditStudyCol2">
+                <ice:column styleClass="vdcEditStudyField">
+                  <ice:selectOneMenu immediate="false" partialSubmit="true" 
+                                        value="#{TemplateFormPage.studyMap[sfc.frequencyOfDataCollection].templateField.fieldInputLevelString}"
+                                        valueChangeListener="#{TemplateFormPage.changeFieldInputValue}">
+                            <f:attribute name="fieldName" value="frequencyOfDataCollection" />
+                           <f:selectItems value="#{TemplateFormPage.fieldInputLevelSelectItems}"/>
+                  </ice:selectOneMenu>
+                  <ice:outputText styleClass="dvnInlineHelpLabel dvnInlineHelpTip" 
+                                  value="#{editstudybundle.frequencyLabel}" title="#{editstudybundle.frequencyHelpHeading} - #{editstudybundle.frequencyHelp}"/>
+                  <ice:graphicImage value="/resources/images/icon_required.gif" rendered="#{TemplateFormPage.studyMap[sfc.frequencyOfDataCollection].required}"/>
+                  <ice:graphicImage value="/resources/images/icon_recommended.gif" rendered="#{TemplateFormPage.studyMap[sfc.frequencyOfDataCollection].recommended}"/>
+                </ice:column>
+                <ice:column>
+                  <ice:inputText id="input_frequencyOfDataCollection" size="90"
+                                 value="#{TemplateFormPage.template.metadata.frequencyOfDataCollection}"
+                                 required="#{TemplateFormPage.studyMap[sfc.frequencyOfDataCollection].required}"
+                                 styleClass="formHtmlEnabled">
+                    <f:validator validatorId="XhtmlValidator"/>
+                  </ice:inputText>
+                  <ice:message styleClass="errorMessage" for="input_frequencyOfDataCollection"/>
+                </ice:column>
+              </ice:panelGrid>
+
+              <ice:panelGrid cellpadding="0" cellspacing="0" columns="2" width="100%"
+                             styleClass="vdcEditStudyTable #{TemplateFormPage.studyMap[sfc.samplingProcedure].templateField.fieldInputLevelString}"
+                             columnClasses="vdcEditStudyCol1, vdcEditStudyCol2">
+                <ice:column styleClass="vdcEditStudyField">
+                  <ice:selectOneMenu immediate="false" partialSubmit="true" 
+                                        value="#{TemplateFormPage.studyMap[sfc.samplingProcedure].templateField.fieldInputLevelString}"
+                                        valueChangeListener="#{TemplateFormPage.changeFieldInputValue}">
+                            <f:attribute name="fieldName" value="samplingProcedure" />
+                           <f:selectItems value="#{TemplateFormPage.fieldInputLevelSelectItems}"/>
+                  </ice:selectOneMenu>
+                  <ice:outputText styleClass="dvnInlineHelpLabel dvnInlineHelpTip" 
+                                  value="#{editstudybundle.samplingProcedureLabel}" title="#{editstudybundle.samplingProcedureHelpHeading} - #{editstudybundle.samplingProcedureHelp}"/>
+                  <ice:graphicImage value="/resources/images/icon_required.gif" rendered="#{TemplateFormPage.studyMap[sfc.samplingProcedure].required}"/>
+                  <ice:graphicImage value="/resources/images/icon_recommended.gif" rendered="#{TemplateFormPage.studyMap[sfc.samplingProcedure].recommended}"/>
+                </ice:column>
+                <ice:column>
+                  <ice:inputTextarea id="input_samplingProcedure"
+                                     cols="90" rows="4"
+                                     value="#{TemplateFormPage.template.metadata.samplingProcedure}"
+                                     required="#{TemplateFormPage.studyMap[sfc.samplingProcedure].required}"
+                                     styleClass="formHtmlEnabled">
+                    <f:validator validatorId="XhtmlValidator"/>
+                  </ice:inputTextarea>
+                  <ice:message styleClass="errorMessage" for="input_samplingProcedure"/>
+                </ice:column>
+              </ice:panelGrid>
+
+              <ice:panelGrid cellpadding="0" cellspacing="0" columns="2" width="100%"
+                             styleClass="vdcEditStudyTable #{TemplateFormPage.studyMap[sfc.deviationsFromSampleDesign].templateField.fieldInputLevelString}"
+                             columnClasses="vdcEditStudyCol1, vdcEditStudyCol2">
+                <ice:column styleClass="vdcEditStudyField">
+                  <ice:selectOneMenu immediate="false" partialSubmit="true" 
+                                        value="#{TemplateFormPage.studyMap[sfc.deviationsFromSampleDesign].templateField.fieldInputLevelString}"
+                                        valueChangeListener="#{TemplateFormPage.changeFieldInputValue}">
+                            <f:attribute name="fieldName" value="deviationsFromSampleDesign" />
+                           <f:selectItems value="#{TemplateFormPage.fieldInputLevelSelectItems}"/>
+                  </ice:selectOneMenu>
+                  <ice:outputText styleClass="dvnInlineHelpLabel dvnInlineHelpTip" 
+                                  value="#{editstudybundle.majorDeviationsLabel}" title="#{editstudybundle.majorDeviationsHelpHeading} - #{editstudybundle.majorDeviationsHelp}"/>
+                  <ice:graphicImage value="/resources/images/icon_required.gif" rendered="#{TemplateFormPage.studyMap[sfc.deviationsFromSampleDesign].required}"/>
+                  <ice:graphicImage value="/resources/images/icon_recommended.gif" rendered="#{TemplateFormPage.studyMap[sfc.deviationsFromSampleDesign].recommended}"/>
+                </ice:column>
+                <ice:column>
+                  <ice:inputTextarea cols="90" rows="4"
+                                     id="input_deviationsFromSampleDesign"
+                                     value="#{TemplateFormPage.template.metadata.deviationsFromSampleDesign}"
+                                     required="#{TemplateFormPage.studyMap[sfc.deviationsFromSampleDesign].required}"
+                                     styleClass="formHtmlEnabled">
+                    <f:validator validatorId="XhtmlValidator"/>
+                  </ice:inputTextarea>
+                  <ice:message styleClass="errorMessage" for="input_deviationsFromSampleDesign"/>
+                </ice:column>
+              </ice:panelGrid>
+
+              <ice:panelGrid cellpadding="0" cellspacing="0" columns="2" width="100%"
+                             styleClass="vdcEditStudyTable #{TemplateFormPage.studyMap[sfc.collectionMode].templateField.fieldInputLevelString}"
+                             columnClasses="vdcEditStudyCol1, vdcEditStudyCol2">
+                <ice:column styleClass="vdcEditStudyField">
+                  <ice:selectOneMenu immediate="false" partialSubmit="true" 
+                                        value="#{TemplateFormPage.studyMap[sfc.collectionMode].templateField.fieldInputLevelString}"
+                                        valueChangeListener="#{TemplateFormPage.changeFieldInputValue}">
+                            <f:attribute name="fieldName" value="collectionMode" />
+                           <f:selectItems value="#{TemplateFormPage.fieldInputLevelSelectItems}"/>
+                  </ice:selectOneMenu>
+                  <ice:outputText styleClass="dvnInlineHelpLabel dvnInlineHelpTip" 
+                                  value="#{editstudybundle.collectionModeLabel}" title="#{editstudybundle.collectionModeHelpHeading} - #{editstudybundle.collectionModeHelp}"/>
+                  <ice:graphicImage value="/resources/images/icon_required.gif" rendered="#{TemplateFormPage.studyMap[sfc.collectionMode].required}"/>
+                  <ice:graphicImage value="/resources/images/icon_recommended.gif" rendered="#{TemplateFormPage.studyMap[sfc.collectionMode].recommended}"/>
+                </ice:column>
+                <ice:column>
+                  <ice:inputText id="input_collectionMode" size="90"
+                                 value="#{TemplateFormPage.template.metadata.collectionMode}"
+                                 required="#{TemplateFormPage.studyMap[sfc.collectionMode].required}"
+                                 styleClass="formHtmlEnabled">
+                    <f:validator validatorId="XhtmlValidator"/>
+                  </ice:inputText>
+                  <ice:message styleClass="errorMessage" for="input_collectionMode"/>
+                </ice:column>
+              </ice:panelGrid>
+
+              <ice:panelGrid cellpadding="0" cellspacing="0" columns="2" width="100%"
+                             styleClass="vdcEditStudyTable #{TemplateFormPage.studyMap[sfc.researchInstrument].templateField.fieldInputLevelString}"
+                             columnClasses="vdcEditStudyCol1, vdcEditStudyCol2">
+                <ice:column styleClass="vdcEditStudyField">
+                  <ice:selectOneMenu immediate="false" partialSubmit="true" 
+                                        value="#{TemplateFormPage.studyMap[sfc.researchInstrument].templateField.fieldInputLevelString}"
+                                        valueChangeListener="#{TemplateFormPage.changeFieldInputValue}">
+                            <f:attribute name="fieldName" value="researchInstrument" />
+                           <f:selectItems value="#{TemplateFormPage.fieldInputLevelSelectItems}"/>
+                  </ice:selectOneMenu>
+                  <ice:outputText styleClass="dvnInlineHelpLabel dvnInlineHelpTip" 
+                                  value="#{editstudybundle.researchInstrumentLabel}" title="#{editstudybundle.researchInstrumentHelpHeading} - #{editstudybundle.researchInstrumentHelp}"/>
+                  <ice:graphicImage value="/resources/images/icon_required.gif" rendered="#{TemplateFormPage.studyMap[sfc.researchInstrument].required}"/>
+                  <ice:graphicImage value="/resources/images/icon_recommended.gif" rendered="#{TemplateFormPage.studyMap[sfc.researchInstrument].recommended}"/>
+                </ice:column>
+                <ice:column>
+                  <ice:inputText id="input_researchInstrument"
+                                 size="90"
+                                 value="#{TemplateFormPage.template.metadata.researchInstrument}"
+                                 required="#{TemplateFormPage.studyMap[sfc.researchInstrument].required}"
+                                 styleClass="formHtmlEnabled">
+                    <f:validator validatorId="XhtmlValidator"/>
+                  </ice:inputText>
+                  <ice:message styleClass="errorMessage" for="input_researchInstrument"/>
+                </ice:column>
+              </ice:panelGrid>
+
+              <ice:panelGrid cellpadding="0" cellspacing="0" columns="2" width="100%"
+                             styleClass="vdcEditStudyTable #{TemplateFormPage.studyMap[sfc.dataSources].templateField.fieldInputLevelString}"
+                             columnClasses="vdcEditStudyCol1, vdcEditStudyCol2">
+                <ice:column styleClass="vdcEditStudyField">
+                  <ice:selectOneMenu immediate="false" partialSubmit="true" 
+                                        value="#{TemplateFormPage.studyMap[sfc.dataSources].templateField.fieldInputLevelString}"
+                                        valueChangeListener="#{TemplateFormPage.changeFieldInputValue}">
+                            <f:attribute name="fieldName" value="dataSources" />
+                           <f:selectItems value="#{TemplateFormPage.fieldInputLevelSelectItems}"/>
+                  </ice:selectOneMenu>
+                  <ice:outputText styleClass="dvnInlineHelpLabel dvnInlineHelpTip" 
+                                  value="#{editstudybundle.dataSourcesLabel}" title="#{editstudybundle.dataSourcesHelpHeading} - #{editstudybundle.dataSourcesHelp}"/>
+                  <ice:graphicImage value="/resources/images/icon_required.gif" rendered="#{TemplateFormPage.studyMap[sfc.dataSources].required}"/>
+                  <ice:graphicImage value="/resources/images/icon_recommended.gif" rendered="#{TemplateFormPage.studyMap[sfc.dataSources].recommended}"/>
+                </ice:column>
+                <ice:column>
+                  <ice:inputText id="input_dataSources" size="90"
+                                 value="#{TemplateFormPage.template.metadata.dataSources}"
+                                 required="#{TemplateFormPage.studyMap[sfc.dataSources].required}"
+                                 styleClass="formHtmlEnabled">
+                    <f:validator validatorId="XhtmlValidator"/>
+                  </ice:inputText>
+                  <ice:message styleClass="errorMessage" for="input_dataSources"/>
+                </ice:column>
+              </ice:panelGrid>
+
+              <ice:panelGrid cellpadding="0" cellspacing="0" columns="2" width="100%"
+                             styleClass="vdcEditStudyTable #{TemplateFormPage.studyMap[sfc.originOfSources].templateField.fieldInputLevelString}"
+                             columnClasses="vdcEditStudyCol1, vdcEditStudyCol2">
+                <ice:column styleClass="vdcEditStudyField">
+                  <ice:selectOneMenu immediate="false" partialSubmit="true" 
+                                        value="#{TemplateFormPage.studyMap[sfc.originOfSources].templateField.fieldInputLevelString}"
+                                        valueChangeListener="#{TemplateFormPage.changeFieldInputValue}">
+                            <f:attribute name="fieldName" value="originOfSources" />
+                           <f:selectItems value="#{TemplateFormPage.fieldInputLevelSelectItems}"/>
+                  </ice:selectOneMenu>
+                  <ice:outputText styleClass="dvnInlineHelpLabel dvnInlineHelpTip" 
+                                  value="#{editstudybundle.originOfSourcesLabel}" title="#{editstudybundle.originOfSourcesHelpHeading} - #{editstudybundle.originOfSourcesHelp}"/>
+                  <ice:graphicImage value="/resources/images/icon_required.gif" rendered="#{TemplateFormPage.studyMap[sfc.originOfSources].required}"/>
+                  <ice:graphicImage value="/resources/images/icon_recommended.gif" rendered="#{TemplateFormPage.studyMap[sfc.originOfSources].recommended}"/>
+                </ice:column>
+                <ice:column>
+                  <ice:inputText id="input_originOfSources" size="90"
+                                 value="#{TemplateFormPage.template.metadata.originOfSources}"
+                                 required="#{TemplateFormPage.studyMap[sfc.originOfSources].required}"
+                                 styleClass="formHtmlEnabled">
+                    <f:validator validatorId="XhtmlValidator"/>
+                  </ice:inputText>
+                  <ice:message styleClass="errorMessage" for="input_originOfSources"/>
+                </ice:column>
+              </ice:panelGrid>
+
+              <ice:panelGrid cellpadding="0" cellspacing="0" columns="2" width="100%"
+                             styleClass="vdcEditStudyTable #{TemplateFormPage.studyMap[sfc.characteristicOfSources].templateField.fieldInputLevelString}"
+                             columnClasses="vdcEditStudyCol1, vdcEditStudyCol2">
+                <ice:column styleClass="vdcEditStudyField">
+                  <ice:selectOneMenu immediate="false" partialSubmit="true" 
+                                        value="#{TemplateFormPage.studyMap[sfc.characteristicOfSources].templateField.fieldInputLevelString}"
+                                        valueChangeListener="#{TemplateFormPage.changeFieldInputValue}">
+                            <f:attribute name="fieldName" value="characteristicOfSources" />
+                           <f:selectItems value="#{TemplateFormPage.fieldInputLevelSelectItems}"/>
+                  </ice:selectOneMenu>
+                  <ice:outputText styleClass="dvnInlineHelpLabel dvnInlineHelpTip" 
+                                  value="#{editstudybundle.sourceCharacteristicsLabel}" title="#{editstudybundle.sourceCharacteristicsHelpHeading} - #{editstudybundle.sourceCharacteristicsHelp}"/>
+                  <ice:graphicImage value="/resources/images/icon_required.gif" rendered="#{TemplateFormPage.studyMap[sfc.characteristicOfSources].required}"/>
+                  <ice:graphicImage value="/resources/images/icon_recommended.gif" rendered="#{TemplateFormPage.studyMap[sfc.characteristicOfSources].recommended}"/>
+                </ice:column>
+                <ice:column>
+                  <ice:inputText id="input_characteristicOfSources"
+                                 size="90"
+                                 value="#{TemplateFormPage.template.metadata.characteristicOfSources}"
+                                 required="#{TemplateFormPage.studyMap[sfc.characteristicOfSources].required}"
+                                 styleClass="formHtmlEnabled">
+                    <f:validator validatorId="XhtmlValidator"/>
+                  </ice:inputText>
+                  <ice:message styleClass="errorMessage" for="input_characteristicOfSources"/>
+                </ice:column>
+              </ice:panelGrid>
+
+              <ice:panelGrid cellpadding="0" cellspacing="0" columns="2" width="100%"
+                             styleClass="vdcEditStudyTable #{TemplateFormPage.studyMap[sfc.accessToSources].templateField.fieldInputLevelString}"
+                             columnClasses="vdcEditStudyCol1, vdcEditStudyCol2">
+                <ice:column styleClass="vdcEditStudyField">
+                  <ice:selectOneMenu immediate="false" partialSubmit="true" 
+                                        value="#{TemplateFormPage.studyMap[sfc.accessToSources].templateField.fieldInputLevelString}"
+                                        valueChangeListener="#{TemplateFormPage.changeFieldInputValue}">
+                            <f:attribute name="fieldName" value="accessToSources" />
+                           <f:selectItems value="#{TemplateFormPage.fieldInputLevelSelectItems}"/>
+                  </ice:selectOneMenu>
+                  <ice:outputText styleClass="dvnInlineHelpLabel dvnInlineHelpTip" 
+                                  value="#{editstudybundle.sourceDocumentationLabel}" title="#{editstudybundle.sourceDocumentationHelpHeading} - #{editstudybundle.sourceDocumentationHelp}"/>
+                  <ice:graphicImage value="/resources/images/icon_required.gif" rendered="#{TemplateFormPage.studyMap[sfc.accessToSources].required}"/>
+                  <ice:graphicImage value="/resources/images/icon_recommended.gif" rendered="#{TemplateFormPage.studyMap[sfc.accessToSources].recommended}"/>
+                </ice:column>
+                <ice:column>
+                  <ice:inputTextarea cols="90" rows="4"
+                                     id="input_accessToSources"
+                                     value="#{TemplateFormPage.template.metadata.accessToSources}"
+                                     required="#{TemplateFormPage.studyMap[sfc.accessToSources].required}"
+                                     styleClass="formHtmlEnabled">
+                    <f:validator validatorId="XhtmlValidator"/>
+                  </ice:inputTextarea>
+                  <ice:message styleClass="errorMessage" for="input_accessToSources"/>
+                </ice:column>
+              </ice:panelGrid>
+
+              <ice:panelGrid cellpadding="0" cellspacing="0" columns="2" width="100%"
+                             styleClass="vdcEditStudyTable #{TemplateFormPage.studyMap[sfc.dataCollectionSituation].templateField.fieldInputLevelString}"
+                             columnClasses="vdcEditStudyCol1, vdcEditStudyCol2">
+                <ice:column styleClass="vdcEditStudyField">
+                  <ice:selectOneMenu immediate="false" partialSubmit="true" 
+                                        value="#{TemplateFormPage.studyMap[sfc.dataCollectionSituation].templateField.fieldInputLevelString}"
+                                        valueChangeListener="#{TemplateFormPage.changeFieldInputValue}">
+                            <f:attribute name="fieldName" value="dataCollectionSituation" />
+                           <f:selectItems value="#{TemplateFormPage.fieldInputLevelSelectItems}"/>
+                  </ice:selectOneMenu>
+                  <ice:outputText styleClass="dvnInlineHelpLabel dvnInlineHelpTip" 
+                                  value="#{editstudybundle.dataCollectionCharacteristicsLabel}" title="#{editstudybundle.dataCollectionCharacteristicsHelpHeading} - #{editstudybundle.dataCollectionCharacteristicsHelp}"/>
+                  <ice:graphicImage value="/resources/images/icon_required.gif" rendered="#{TemplateFormPage.studyMap[sfc.dataCollectionSituation].required}"/>
+                  <ice:graphicImage value="/resources/images/icon_recommended.gif" rendered="#{TemplateFormPage.studyMap[sfc.dataCollectionSituation].recommended}"/>
+                </ice:column>
+                <ice:column>
+                  <ice:inputText id="input_dataCollectionSituation"
+                                 size="90"
+                                 value="#{TemplateFormPage.template.metadata.dataCollectionSituation}"
+                                 required="#{TemplateFormPage.studyMap[sfc.dataCollectionSituation].required}"
+                                 styleClass="formHtmlEnabled">
+                    <f:validator validatorId="XhtmlValidator"/>
+                  </ice:inputText>
+                  <ice:message styleClass="errorMessage" for="input_dataCollectionSituation"/>
+                  </ice:column>
+              </ice:panelGrid>
+
+              <ice:panelGrid cellpadding="0" cellspacing="0" columns="2" width="100%"
+                             styleClass="vdcEditStudyTable #{TemplateFormPage.studyMap[sfc.actionsToMinimizeLoss].templateField.fieldInputLevelString}"
+                             columnClasses="vdcEditStudyCol1, vdcEditStudyCol2">
+                <ice:column styleClass="vdcEditStudyField">
+                  <ice:selectOneMenu immediate="false" partialSubmit="true" 
+                                        value="#{TemplateFormPage.studyMap[sfc.actionsToMinimizeLoss].templateField.fieldInputLevelString}"
+                                        valueChangeListener="#{TemplateFormPage.changeFieldInputValue}">
+                            <f:attribute name="fieldName" value="actionsToMinimizeLoss" />
+                           <f:selectItems value="#{TemplateFormPage.fieldInputLevelSelectItems}"/>
+                  </ice:selectOneMenu>
+                  <ice:outputText styleClass="dvnInlineHelpLabel dvnInlineHelpTip"   value="#{editstudybundle.minimizeActionsLabel}" 
+                                  title="#{editstudybundle.minimizeActionsHelpHeading} - #{editstudybundle.minimizeActionsHelp}"/>
+                  <ice:graphicImage value="/resources/images/icon_required.gif" rendered="#{TemplateFormPage.studyMap[sfc.actionsToMinimizeLoss].required}"/>
+                  <ice:graphicImage value="/resources/images/icon_recommended.gif" rendered="#{TemplateFormPage.studyMap[sfc.actionsToMinimizeLoss].recommended}"/>
+                </ice:column>
+                <ice:column>
+                  <ice:inputText id="input_actionsToMinimizeLoss"
+                                 size="90"
+                                 value="#{TemplateFormPage.template.metadata.actionsToMinimizeLoss}"
+                                 required="#{TemplateFormPage.studyMap[sfc.actionsToMinimizeLoss].required}"
+                                 styleClass="formHtmlEnabled">
+                    <f:validator validatorId="XhtmlValidator"/>
+                  </ice:inputText>
+                  <ice:message styleClass="errorMessage" for="input_actionsToMinimizeLoss"/>
+                </ice:column>
+              </ice:panelGrid>
+
+              <ice:panelGrid cellpadding="0" cellspacing="0" columns="2" width="100%"
+                             styleClass="vdcEditStudyTable #{TemplateFormPage.studyMap[sfc.controlOperations].templateField.fieldInputLevelString}"
+                             columnClasses="vdcEditStudyCol1, vdcEditStudyCol2">
+                <ice:column styleClass="vdcEditStudyField">
+                  <ice:selectOneMenu immediate="false" partialSubmit="true" 
+                                        value="#{TemplateFormPage.studyMap[sfc.controlOperations].templateField.fieldInputLevelString}"
+                                        valueChangeListener="#{TemplateFormPage.changeFieldInputValue}">
+                            <f:attribute name="fieldName" value="controlOperations" />
+                           <f:selectItems value="#{TemplateFormPage.fieldInputLevelSelectItems}"/>
+                  </ice:selectOneMenu>
+                  <ice:outputText styleClass="dvnInlineHelpLabel dvnInlineHelpTip"   value="#{editstudybundle.controlOperationsLabel}" 
+                                  title="#{editstudybundle.controlOperationsHelpHeading} - #{editstudybundle.controlOperationsHelp}"/>
+                  <ice:graphicImage value="/resources/images/icon_required.gif" rendered="#{TemplateFormPage.studyMap[sfc.controlOperations].required}"/>
+                  <ice:graphicImage value="/resources/images/icon_recommended.gif" rendered="#{TemplateFormPage.studyMap[sfc.controlOperations].recommended}"/>
+                </ice:column>
+                <ice:column>
+                  <ice:inputText id="input_controlOperations"
+                                 size="90"
+                                 value="#{TemplateFormPage.template.metadata.controlOperations}"
+                                 required="#{TemplateFormPage.studyMap[sfc.controlOperations].required}"
+                                 styleClass="formHtmlEnabled">
+                    <f:validator validatorId="XhtmlValidator"/>
+                  </ice:inputText>
+                  <ice:message styleClass="errorMessage" for="input_controlOperations"/>
+                </ice:column>
+              </ice:panelGrid>
+
+              <ice:panelGrid cellpadding="0" cellspacing="0" columns="2" width="100%"
+                             styleClass="vdcEditStudyTable #{TemplateFormPage.studyMap[sfc.weighting].templateField.fieldInputLevelString}"
+                             columnClasses="vdcEditStudyCol1, vdcEditStudyCol2">
+                <ice:column styleClass="vdcEditStudyField">
+                  <ice:selectOneMenu immediate="false" partialSubmit="true" 
+                                        value="#{TemplateFormPage.studyMap[sfc.weighting].templateField.fieldInputLevelString}"
+                                        valueChangeListener="#{TemplateFormPage.changeFieldInputValue}">
+                            <f:attribute name="fieldName" value="weighting" />
+                           <f:selectItems value="#{TemplateFormPage.fieldInputLevelSelectItems}"/>
+                  </ice:selectOneMenu>
+                  <ice:outputText styleClass="dvnInlineHelpLabel dvnInlineHelpTip"   value="#{editstudybundle.weightingLabel}" 
+                                  title="#{editstudybundle.weightingHelpHeading} - #{editstudybundle.weightingHelp}"/>
+                  <ice:graphicImage value="/resources/images/icon_required.gif" rendered="#{TemplateFormPage.studyMap[sfc.weighting].required}"/>
+                  <ice:graphicImage value="/resources/images/icon_recommended.gif" rendered="#{TemplateFormPage.studyMap[sfc.weighting].recommended}"/>
+                </ice:column>
+                <ice:column>
+                  <ice:inputText id="input_weighting" size="90"
+                                 value="#{TemplateFormPage.template.metadata.weighting}"
+                                 required="#{TemplateFormPage.studyMap[sfc.weighting].required}"
+                                 styleClass="formHtmlEnabled">
+                    <f:validator validatorId="XhtmlValidator"/>
+                  </ice:inputText>
+                  <ice:message styleClass="errorMessage" for="input_weighting"/>
+                </ice:column>
+              </ice:panelGrid>
+
+              <ice:panelGrid cellpadding="0" cellspacing="0" columns="2" width="100%"
+                             styleClass="vdcEditStudyTable #{TemplateFormPage.studyMap[sfc.cleaningOperations].templateField.fieldInputLevelString}"
+                             columnClasses="vdcEditStudyCol1, vdcEditStudyCol2">
+                <ice:column styleClass="vdcEditStudyField">
+                  <ice:selectOneMenu immediate="false" partialSubmit="true" 
+                                        value="#{TemplateFormPage.studyMap[sfc.cleaningOperations].templateField.fieldInputLevelString}"
+                                        valueChangeListener="#{TemplateFormPage.changeFieldInputValue}">
+                            <f:attribute name="fieldName" value="cleaningOperations" />
+                           <f:selectItems value="#{TemplateFormPage.fieldInputLevelSelectItems}"/>
+                  </ice:selectOneMenu>
+                  <ice:outputText styleClass="dvnInlineHelpLabel dvnInlineHelpTip"   value="#{editstudybundle.cleaningOperationsLabel}" 
+                                  title="#{editstudybundle.cleaningOperationsHelpHeading} - #{editstudybundle.cleaningOperationsHelp}"/>
+                  <ice:graphicImage value="/resources/images/icon_required.gif" rendered="#{TemplateFormPage.studyMap[sfc.cleaningOperations].required}"/>
+                  <ice:graphicImage value="/resources/images/icon_recommended.gif" rendered="#{TemplateFormPage.studyMap[sfc.cleaningOperations].recommended}"/>
+                </ice:column>
+                <ice:column>
+                  <ice:inputText id="input_cleaningOperations" size="90"
+                                 value="#{TemplateFormPage.template.metadata.cleaningOperations}"
+                                 required="#{TemplateFormPage.studyMap[sfc.cleaningOperations].required}"
+                                 styleClass="formHtmlEnabled">
+                    <f:validator validatorId="XhtmlValidator"/>
+                  </ice:inputText>
+                  <ice:message styleClass="errorMessage" for="input_cleaningOperations"/>
+                </ice:column>
+              </ice:panelGrid>
+
+              <ice:panelGrid cellpadding="0" cellspacing="0" columns="2" width="100%"
+                             styleClass="vdcEditStudyTable #{TemplateFormPage.studyMap[sfc.studyLevelErrorNotes].templateField.fieldInputLevelString}"
+                             columnClasses="vdcEditStudyCol1, vdcEditStudyCol2">
+                <ice:column styleClass="vdcEditStudyField">
+                  <ice:selectOneMenu immediate="false" partialSubmit="true" 
+                                        value="#{TemplateFormPage.studyMap[sfc.studyLevelErrorNotes].templateField.fieldInputLevelString}"
+                                        valueChangeListener="#{TemplateFormPage.changeFieldInputValue}">
+                            <f:attribute name="fieldName" value="studyLevelErrorNotes" />
+                           <f:selectItems value="#{TemplateFormPage.fieldInputLevelSelectItems}"/>
+                  </ice:selectOneMenu>
+                  <ice:outputText styleClass="dvnInlineHelpLabel dvnInlineHelpTip"   value="#{editstudybundle.studyLevelErrorNotesLabel}" 
+                                  title="#{editstudybundle.studyLevelErrorNotesHelpHeading} - #{editstudybundle.studyLevelErrorNotesHelp}"/>
+                  <ice:graphicImage value="/resources/images/icon_required.gif" rendered="#{TemplateFormPage.studyMap[sfc.studyLevelErrorNotes].required}"/>
+                  <ice:graphicImage value="/resources/images/icon_recommended.gif" rendered="#{TemplateFormPage.studyMap[sfc.studyLevelErrorNotes].recommended}"/>
+                </ice:column>
+                <ice:column>
+                  <ice:inputText id="input_studyLevelErrorNotes" size="90"
+                                 value="#{TemplateFormPage.template.metadata.studyLevelErrorNotes}"
+                                 required="#{TemplateFormPage.studyMap[sfc.studyLevelErrorNotes].required}"
+                                 styleClass="formHtmlEnabled">
+                    <f:validator validatorId="XhtmlValidator"/>
+                  </ice:inputText>
+                  <ice:message styleClass="errorMessage" for="input_studyLevelErrorNotes"/>
+                </ice:column>
+              </ice:panelGrid>
+
+              <ice:panelGrid cellpadding="0" cellspacing="0" columns="2" width="100%"
+                             styleClass="vdcEditStudyTable #{TemplateFormPage.studyMap[sfc.responseRate].templateField.fieldInputLevelString}"
+                             columnClasses="vdcEditStudyCol1, vdcEditStudyCol2">
+                <ice:column styleClass="vdcEditStudyField">
+                  <ice:selectOneMenu immediate="false" partialSubmit="true" 
+                                        value="#{TemplateFormPage.studyMap[sfc.responseRate].templateField.fieldInputLevelString}"
+                                        valueChangeListener="#{TemplateFormPage.changeFieldInputValue}">
+                            <f:attribute name="fieldName" value="responseRate" />
+                           <f:selectItems value="#{TemplateFormPage.fieldInputLevelSelectItems}"/>
+                  </ice:selectOneMenu>
+                  <ice:outputText styleClass="dvnInlineHelpLabel dvnInlineHelpTip"   value="#{editstudybundle.responseRateLabel}" 
+                                  title="#{editstudybundle.responseRateHelpHeading} - #{editstudybundle.responseRateHelp}"/>
+                  <ice:graphicImage value="/resources/images/icon_required.gif" rendered="#{TemplateFormPage.studyMap[sfc.responseRate].required}"/>
+                  <ice:graphicImage value="/resources/images/icon_recommended.gif" rendered="#{TemplateFormPage.studyMap[sfc.responseRate].recommended}"/>
+                </ice:column>
+                <ice:column>
+                  <ice:inputText id="input_responseRate" size="90"
+                                 value="#{TemplateFormPage.template.metadata.responseRate}"
+                                 required="#{TemplateFormPage.studyMap[sfc.responseRate].required}"
+                                 styleClass="formHtmlEnabled">
+                    <f:validator validatorId="XhtmlValidator"/>
+                  </ice:inputText>
+                  <ice:message styleClass="errorMessage" for="input_responseRate"/>
+                </ice:column>
+              </ice:panelGrid>
+
+              <ice:panelGrid cellpadding="0" cellspacing="0" columns="2" width="100%"
+                             styleClass="vdcEditStudyTable #{TemplateFormPage.studyMap[sfc.samplingErrorEstimates].templateField.fieldInputLevelString}"
+                             columnClasses="vdcEditStudyCol1, vdcEditStudyCol2">
+                <ice:column styleClass="vdcEditStudyField">
+                  <ice:selectOneMenu immediate="false" partialSubmit="true" 
+                                        value="#{TemplateFormPage.studyMap[sfc.samplingErrorEstimates].templateField.fieldInputLevelString}"
+                                        valueChangeListener="#{TemplateFormPage.changeFieldInputValue}">
+                            <f:attribute name="fieldName" value="samplingErrorEstimates" />
+                           <f:selectItems value="#{TemplateFormPage.fieldInputLevelSelectItems}"/>
+                  </ice:selectOneMenu>
+                  <ice:outputText styleClass="dvnInlineHelpLabel dvnInlineHelpTip"   value="#{editstudybundle.samplingErrorLabel}" 
+                                  title="#{editstudybundle.samplingErrorHelpHeading} - #{editstudybundle.samplingErrorHelp}"/>
+                  <ice:graphicImage value="/resources/images/icon_required.gif" rendered="#{TemplateFormPage.studyMap[sfc.samplingErrorEstimates].required}"/>
+                  <ice:graphicImage value="/resources/images/icon_recommended.gif" rendered="#{TemplateFormPage.studyMap[sfc.samplingErrorEstimates].recommended}"/>
+                </ice:column>
+                <ice:column>
+                  <ice:inputText id="input_samplingErrorEstimates" size="90"
+                                 value="#{TemplateFormPage.template.metadata.samplingErrorEstimate}"
+                                 required="#{TemplateFormPage.studyMap[sfc.samplingErrorEstimates].required}"
+                                 styleClass="formHtmlEnabled">
+                    <f:validator validatorId="XhtmlValidator"/>
+                  </ice:inputText>
+                  <ice:message styleClass="errorMessage" for="input_samplingErrorEstimates"/>
+                </ice:column>
+              </ice:panelGrid>
+
+              <ice:panelGrid cellpadding="0" cellspacing="0" columns="2" width="100%"
+                             styleClass="vdcEditStudyTable #{TemplateFormPage.studyMap[sfc.otherDataAppraisal].templateField.fieldInputLevelString}"
+                             columnClasses="vdcEditStudyCol1, vdcEditStudyCol2">
+                <ice:column styleClass="vdcEditStudyField">
+                  <ice:selectOneMenu immediate="false" partialSubmit="true" 
+                                        value="#{TemplateFormPage.studyMap[sfc.otherDataAppraisal].templateField.fieldInputLevelString}"
+                                        valueChangeListener="#{TemplateFormPage.changeFieldInputValue}">
+                            <f:attribute name="fieldName" value="otherDataAppraisal" />
+                           <f:selectItems value="#{TemplateFormPage.fieldInputLevelSelectItems}"/>
+                  </ice:selectOneMenu>
+                  <ice:outputText styleClass="dvnInlineHelpLabel dvnInlineHelpTip"   value="#{editstudybundle.otherDataAppraisalLabel}" 
+                                  title="#{editstudybundle.otherDataAppraisalHelpHeading} - #{editstudybundle.otherDataAppraisalHelp}"/>
+                  <ice:graphicImage value="/resources/images/icon_required.gif" rendered="#{TemplateFormPage.studyMap[sfc.otherDataAppraisal].required}"/>
+                  <ice:graphicImage value="/resources/images/icon_recommended.gif" rendered="#{TemplateFormPage.studyMap[sfc.otherDataAppraisal].recommended}"/>
+                </ice:column>
+                <ice:column>
+                  <ice:inputText id="input_otherDataAppraisal"
+                                 size="90"
+                                 value="#{TemplateFormPage.template.metadata.otherDataAppraisal}"
+                                 required="#{TemplateFormPage.studyMap[sfc.otherDataAppraisal].required}"
+                                 styleClass="formHtmlEnabled">
+                    <f:validator validatorId="XhtmlValidator"/>
+                  </ice:inputText>
+                  <ice:message styleClass="errorMessage" for="input_otherDataAppraisal"/>
+                </ice:column>
+              </ice:panelGrid>
+
               
               <!-- DATA SET AVAILABILITY SECTION -->
               <div jsfc="ice:panelGroup" styleClass="vdcStudyInfoHeader #{TemplateFormPage.dataSetAvailabilityInputLevel}">

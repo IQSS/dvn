@@ -1,4 +1,3 @@
-
 -- changes for default header and footer
 update vdcnetwork set defaultvdcheader='<style type="text/css">
 body {margin:0; padding:0;}
@@ -38,5 +37,12 @@ UPDATE template SET  network=true WHERE vdc_id is null;
 -- Author related changes
 Alter table studyAuthor add IDType  character varying(255);
 Alter table studyAuthor add IDValue  character varying(255);
+
+
+-- Adding mimetype column to the datafileformattype table
+ALTER TABLE DataFileFormatType ADD COLUMN mimeType character varying(255);
+UPDATE DataFileFormatType SET mimeType='application/x-rlang-transport' WHERE id=1;
+UPDATE DataFileFormatType SET mimeType='application/x-stata' WHERE id=2;
+UPDATE DataFileFormatType SET mimeType='application/x-R-2' WHERE id=3;
 
 

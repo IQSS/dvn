@@ -20,6 +20,10 @@ import edu.harvard.iq.dvn.core.admin.VDCUser;
 import edu.harvard.iq.dvn.core.admin.UserServiceLocal;
 import edu.harvard.iq.dvn.core.web.dataaccess.OptionalAccessService;
 
+import edu.harvard.iq.dvn.core.util.FileUtil;
+import edu.harvard.iq.dvn.core.util.StringUtil;
+
+
 /**
  *
  * @author leonidandreev
@@ -85,12 +89,12 @@ public class FileAccessSingletonBean {
             // And authorization: 
             // 1st, for Access permissions: 
             
-            if (checkAccessPermissions(authenticatedUser, sf)) {
+            if (checkAccessPermissions(authenticatedUser, di)) {
                 di.setPassAccessPermissions(true);
             }
             
             // and then, for any Access Restrictions (Terms of Use)
-            if (checkAccessRestrictions(authenticatedUser, sf)) {
+            if (checkAccessRestrictions(authenticatedUser, di)) {
                 di.setPassAccessRestrictions(true);
             }
             
@@ -101,18 +105,45 @@ public class FileAccessSingletonBean {
             // Image Thumbnail:
             
             if (fileMimeType != null && fileMimeType.startsWith("image/")) {
-                di.addServiceAvailable(new OptionalAccessService("thumbnail", "image/png", "imageThumb=true", "Image Thumbnail"));
+                di.addServiceAvailable(new OptionalAccessService("thumbnail", "image/png", "imageThumb=true", "Image Thumbnail (64x64)"));
             }
             
             // Services for subsettable files: 
             
             if (sf.isSubsettable()) {
                 // Subsetting: (TODO: separate auth)
-                di.addServiceAvailable(new OptionalAccessService("subset", "text/tab-separated-values", "variables=<LIST>", "Column-wise Subsetting"));
+                di.addServiceAvailable(new OptionalAccessService("subset", "text/tab-separated-values", "variables=&lt;LIST&gt;", "Column-wise Subsetting"));
             
                 // "saved original" file, if available: 
+                
+                String originalFormatType = sf.getOriginalFileType();
+                String userFriendlyOriginalFormatName = null;
+
+                if ( !StringUtil.isEmpty( originalFormatType ) ) {
+
+                    userFriendlyOriginalFormatName = FileUtil.getUserFriendlyOriginalType(sf);
+                    String originalTypeLabel = "";
+
+                    if (!StringUtil.isEmpty(userFriendlyOriginalFormatName)) {
+                        originalTypeLabel = userFriendlyOriginalFormatName;
+                    } else {
+                        originalTypeLabel = originalFormatType;
+                    }
+
+                    String originalFileDesc = "Saved original (" + originalTypeLabel + ")";
+                    String originalFileServiceArg = "fileFormat=original";
+                    
+                    di.addServiceAvailable(new OptionalAccessService(
+                            "original", 
+                            originalFormatType, 
+                            originalFileServiceArg, 
+                            originalFileDesc));
+                }
+
             
-                // "No variable header" download 
+                // "No variable header" download
+                
+                di.addServiceAvailable(new OptionalAccessService("dataonly", "text/tab-separated-values", "noVarHeader=true", "Data only, no variable header"));
                 
                 // Finally, conversion formats: 
                 
@@ -128,7 +159,7 @@ public class FileAccessSingletonBean {
     // the "Authenticate: " header), extracts the username and password, 
     // and attempts to authenticate the user with the DVN User Service. 
     
-    private VDCUser authenticateAccess (String authCredentials) {
+    public VDCUser authenticateAccess (String authCredentials) {
         VDCUser vdcUser = null;
         Base64 base64codec = new Base64(); 
         
@@ -163,27 +194,93 @@ public class FileAccessSingletonBean {
     
     // Access Permissions:
     
-    private Boolean checkAccessPermissions (VDCUser vdcUser, StudyFile studyFile) {
+    private Boolean checkAccessPermissions (VDCUser vdcUser, DownloadInfo di) {
+        StudyFile studyFile = di.getStudyFile();
         Boolean accessAuthorized = true; 
         
-        if (vdcUser == null || studyFile == null) {
-            return accessAuthorized; 
+        if (studyFile == null) {
+            return false; 
+        }
+ 
+        if (!isPublicAccess(studyFile)) {
+            di.setAccessPermissionsApply(true);
         }
         
-        return accessAuthorized; 
+        if (studyFile.isFileRestrictedForUser(vdcUser, null, null)) {
+            return false; 
+        }
+        
+        return true; 
     }
     
     
     // Access Restrictions: (Terms of Use)
     
-    private Boolean checkAccessRestrictions (VDCUser vdcUser, StudyFile studyFile) {
+    private Boolean checkAccessRestrictions (VDCUser vdcUser, DownloadInfo di) {
+        StudyFile studyFile = di.getStudyFile();
         Boolean accessAuthorized = true; 
         
+        
         if (vdcUser == null || studyFile == null) {
-            return accessAuthorized; 
+            return false; 
+        }
+        
+        if (isUnderTermsOfUse(studyFile)) {
+            di.setAccessRestrictionsAply(true);
+            
+            // Check if the user is authorized to be responsible for the 
+            // enforcement of the Terms of use:
         }
         
         return accessAuthorized; 
+    }
+  
+    // Check if this file is freely available ("public")
+    // note that restrictions can apply on multiple levels. 
+    
+    private Boolean isPublicAccess (StudyFile studyFile) {
+        if (studyFile.isRestricted()) {
+            return false; 
+        }
+        
+        if (studyFile.getStudy() != null) {
+            if (studyFile.getStudy().isRestricted()) {
+                return false; 
+            }
+            if (studyFile.getStudy().getOwner() != null) {
+                if (studyFile.getStudy().getOwner().isFilesRestricted()) {
+                    return false; 
+                }
+            }
+        }
+        
+        return true; 
+    }
+    
+    // Check if any Terms of Use apply
+    
+    private Boolean isUnderTermsOfUse (StudyFile studyFile) {
+        if (studyFile == null) {
+            return false; 
+        }
+        
+        if (studyFile.getStudy() != null) {
+        
+            if (studyFile.getStudy().getOwner() != null) {
+                if (studyFile.getStudy().getOwner().isDownloadTermsOfUseEnabled()) {
+                    return true; 
+                }
+            }
+        
+            if (studyFile.getStudy().getReleasedVersion() != null &&
+                    studyFile.getStudy().getReleasedVersion().getMetadata() != null) {
+                if (studyFile.getStudy().getReleasedVersion().getMetadata().isTermsOfUseEnabled()) {
+                    return true; 
+                }
+            }
+        } 
+        
+        return false; 
     }
     
     

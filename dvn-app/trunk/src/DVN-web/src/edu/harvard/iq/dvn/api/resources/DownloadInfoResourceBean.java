@@ -3,6 +3,7 @@ package edu.harvard.iq.dvn.api.resources;
 
 import edu.harvard.iq.dvn.api.entities.DownloadInfo;
 import edu.harvard.iq.dvn.api.exceptions.AuthorizationRequiredException;
+import edu.harvard.iq.dvn.core.admin.VDCUser;
 
 
 import javax.ejb.EJB;
@@ -53,11 +54,20 @@ public class DownloadInfoResourceBean {
             }
         }
 
-        if (authCredentials == null) {
-            //throw new WebApplicationException(Response.Status.UNAUTHORIZED);
-            throw new AuthorizationRequiredException(); 
-        }
-        
+        // This is a special hack for testing Basic auth through a browser: 
+        // if 0 is supplied as a file id, the resource will throw a 401,
+        // prompting the browser to show a login prompt:
+        if (studyFileId.equals(new Long(0))) {
+            
+            if (authCredentials == null) {
+                //throw new WebApplicationException(Response.Status.UNAUTHORIZED);
+                throw new AuthorizationRequiredException(); 
+            } else {
+                if (singleton.authenticateAccess(authCredentials) == null) {
+                    throw new AuthorizationRequiredException();
+                }
+            }
+        }        
          
         //DownloadInfo mf = singleton.getMetadataFormatsAvailable(studyId);
         DownloadInfo di = singleton.getDownloadInfo(studyFileId, authCredentials);

@@ -36,8 +36,7 @@ public class DownloadInfoWriter implements MessageBodyWriter<DownloadInfo> {
             throw new WebApplicationException(Response.Status.NOT_FOUND);
         }
         
-        String access = di.isAccessGranted() ? "granted" : "denied";
-        String openingTag = "<FileDownloadInfo fileId=\"" + di.getStudyFileId() + "\" access=\"" + access + "\">\n";
+        String openingTag = "<FileDownloadInfo>\n <studyFile fileId=\"" + di.getStudyFileId() + "\">\n";
         outstream.write(openingTag.getBytes());
         
         
@@ -53,18 +52,27 @@ public class DownloadInfoWriter implements MessageBodyWriter<DownloadInfo> {
         // Authentication Information: 
         
         String open = "  <Authentication>\n";
-        
-        String userName = "    <authUser>" + di.getAuthUserName() + "</authUser>\n";
-        String authMethod = "    <authMethod>" + "anonymous" + "</authMethod>\n";
+         
+        String userName = ""; 
+        if (di.getAuthUserName() != null && !(di.getAuthUserName().equals(""))) {
+            userName = "    <authUser>" + di.getAuthUserName() + "</authUser>\n";
+        } 
+        String authMethod = "    <authMethod>" + di.getAuthMethod() + "</authMethod>\n";
         String close = "  </Authentication>\n";
 
         formatOut = open + userName + authMethod + close;
+        outstream.write(formatOut.getBytes());
+        
+        // Authorization
+        
+        String accessGranted = di.isAccessGranted() ? "true" : "false";
+        formatOut = "  <Authorization directAccess=\"" + accessGranted + "\"/>\n";
         outstream.write(formatOut.getBytes());
 
         // Access Permissions
         
         if (di.isAccessPermissionsApply()) {
-            String accessGranted = di.isPassAccessPermissions() ? "true" : "false";
+            accessGranted = di.isPassAccessPermissions() ? "true" : "false";
             open = "  <accessPermissions granted=\"" + accessGranted + "\">";
             String text = "    Restricted Access\n";        
             close = "  </accessPermissions>\n";
@@ -76,7 +84,7 @@ public class DownloadInfoWriter implements MessageBodyWriter<DownloadInfo> {
         // Access Restrictions (Terms of Use)
         
         if (di.isAccessRestrictionsApply()) {
-            String accessGranted = di.isPassAccessPermissions() ? "true" : "false";
+            accessGranted = di.isPassAccessPermissions() ? "true" : "false";
             open = "  <accessRestrictions granted=\"" + accessGranted + "\">";
             String text = "    Terms of Use\n";        
             close = "  </accessRestrictions>\n";
@@ -87,7 +95,7 @@ public class DownloadInfoWriter implements MessageBodyWriter<DownloadInfo> {
           
         // Services supported: format conversions, thumbnails, subsetting
         
-        outstream.write("  <accessServicesSupported\n>".getBytes());
+        outstream.write("  <accessServicesSupported>\n".getBytes());
         
         for (OptionalAccessService s : di.getServicesAvailable()) {
             open = "    <accessService>\n";
@@ -105,6 +113,6 @@ public class DownloadInfoWriter implements MessageBodyWriter<DownloadInfo> {
         }
         
         outstream.write("  </accessServicesSupported>\n".getBytes());
-        outstream.write("</FileDownloadInfo>\n".getBytes());
+        outstream.write(" </studyFile>\n</FileDownloadInfo>\n".getBytes());
     }
 }

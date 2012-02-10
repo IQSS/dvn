@@ -932,9 +932,9 @@ CREATE SEQUENCE filesystemname_seq
 ALTER TABLE filesystemname_seq OWNER TO "dvnApp";
 
 
-INSERT INTO DataFileFormatType (id, value, name) VALUES (1, 'D02', 'Splus');
-INSERT INTO DataFileFormatType (id, value, name) VALUES (2, 'D03', 'Stata');
-INSERT INTO DataFileFormatType (id, value, name) VALUES (3, 'D04', 'R');
+INSERT INTO DataFileFormatType (id, value, name, mimeType) VALUES (1, 'D02', 'Splus', 'application/x-rlang-transport');
+INSERT INTO DataFileFormatType (id, value, name, mimeType) VALUES (2, 'D03', 'Stata', 'application/x-stata');
+INSERT INTO DataFileFormatType (id, value, name, mimeType) VALUES (3, 'D04', 'R', 'application/x-R-2');
 
 INSERT INTO harvestformattype (id, metadataprefix, name, stylesheetfilename) VALUES (0, 'ddi', 'DDI', null);
 INSERT INTO harvestformattype (id, metadataprefix, name, stylesheetfilename) VALUES (1, 'oai_etdms', 'MIF', 'mif2ddi.xsl');

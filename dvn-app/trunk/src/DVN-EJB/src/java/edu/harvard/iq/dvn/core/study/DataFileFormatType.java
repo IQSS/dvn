@@ -61,6 +61,7 @@ public class DataFileFormatType implements Serializable {
     
     String name;
     String value;
+    String mimeType; 
 
     public String getName() {
         return name;
@@ -76,6 +77,14 @@ public class DataFileFormatType implements Serializable {
 
     public void setValue(String value) {
         this.value = value;
+    }
+    
+    public String getMimeType() {
+        return mimeType;
+    }
+    
+    public void setMimeType(String mt) {
+        this.mimeType = mt; 
     }
     
     public boolean isOriginalFileDataFileFormat() {

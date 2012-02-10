@@ -130,20 +130,62 @@ public class MetadataSingletonBean {
         if (studyId != null) {
             try {
                 sv = studyService.getStudyVersion(studyId, versionNumber);
-                if (sv != null) {
-                    // global id:
-                    if (sv.getStudy() != null) {
-                        globalId = sv.getStudy().getGlobalId();
-                        if (globalId != null) {
-                            m = new MetadataInstance (globalId, formatType, partialExclude, partialInclude); 
-                            if (m != null) {
-                                m.lookupMetadata();
-                                m.setStudyId(studyId);
+                // First, verify that the format requested is legit/supported:
+                    
+                    if (formatType == null) {
+                        formatType = "ddi";
+                    }
+                    
+                    MetadataFormatType mfTypeSupported = null; 
+                    
+                    for (MetadataFormatType mfType : studyService.findAllMetadataExportFormatTypes()) {
+                            if (formatType.equals(mfType.getName())) {
+                                mfTypeSupported = mfType;
                             }
+                    }
+                    
+                    if (mfTypeSupported == null) {
+                        m = new MetadataInstance (globalId);
+                        m.setAvailability(false);
+                        return m; 
+                    }
+                    
+                    // If optional partial exclude or include argument are 
+                    // supplied, verify that the functionality is supported:
+                    
+                    if (partialExclude != null) {
+                        if (!(mfTypeSupported.isPartialExcludeSupported())) {
+                            m = new MetadataInstance (globalId);
+                            m.setAvailability(false);
                             return m; 
                         }
-                    } 
-                }
+                    }
+                    
+                    if (partialInclude != null) {
+                        if (!(mfTypeSupported.isPartialSelectSupported())) {
+                            m = new MetadataInstance (globalId);
+                            m.setAvailability(false);
+                            return m;
+                        }
+                    }
+
+                    m = new MetadataInstance (globalId, formatType, partialExclude, partialInclude);
+                    if (m != null) {
+                        StudyExporter studyExporter = null; 
+                        if (partialExclude != null || partialInclude != null) {
+                            studyExporter = studyExporterFactory.getStudyExporter(formatType);
+                            m.setStudy(sv.getStudy());
+                        }
+                        m.lookupMetadata(studyExporter);
+                        // local database id:
+                        if (sv.getStudy() != null) {
+                            globalId = sv.getStudy().getGlobalId();
+                        } else {
+                            return null; 
+                        }
+                    }
+                    m.setGlobalStudyId(globalId);
+                    return m;
             } catch (java.lang.IllegalArgumentException ex) {
                 return null; 
                 // We don't need to do anything special here -- we simply

@@ -68,7 +68,7 @@ public class DownloadInfoResourceBean {
             throw new WebApplicationException(Response.Status.NOT_FOUND);
         }
 
-        di.setAuthUserName(authCredentials);
+        //di.setAuthUserName(authCredentials);
 
         return di;
     }

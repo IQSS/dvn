@@ -12,6 +12,7 @@ import javax.ws.rs.ext.MessageBodyWriter;
 import javax.ws.rs.ext.Provider;
 import javax.ws.rs.core.Response;
 
+import edu.harvard.iq.dvn.core.study.StudyField;
 /**
  *
  * @author leonidandreev
@@ -37,15 +38,15 @@ public class MetadataSearchFieldsWriter implements MessageBodyWriter<MetadataSea
         
         outstream.write(openingTag.getBytes());
         
-        for (String searchField : msf.getSearchableFields()) {
+        for (StudyField searchField : msf.getSearchableFields()) {
             String open =  "  <SearchableField";
             // In the future we can add attributes specifying the type of the
             // field, numeric formats, etc. 
             open = open.concat(">\n");
 
             
-            String name =   "    <fieldName>" + searchField + "</fieldName>\n";
-            String description = "    <fieldDescription>" + searchField + "</fieldDescription>\n";
+            String name =   "    <fieldName>" + searchField.getName() + "</fieldName>\n";
+            String description = "    <fieldDescription>" + searchField.getDescription() + "</fieldDescription>\n";
             String close =  "  </SearchableField>\n";
             
             String formatOut = open + name + description + close; 

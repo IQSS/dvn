@@ -12,6 +12,7 @@ import java.io.UnsupportedEncodingException;
 import org.apache.commons.codec.binary.Base64;
 
 import edu.harvard.iq.dvn.core.study.StudyFileServiceLocal;
+import edu.harvard.iq.dvn.core.study.StudyServiceLocal;
 //import edu.harvard.iq.dvn.core.study.Study;
 import edu.harvard.iq.dvn.core.study.StudyFile;
 import edu.harvard.iq.dvn.core.study.DataFileFormatType;
@@ -33,6 +34,8 @@ public class FileAccessSingletonBean {
     @EJB private StudyFileServiceLocal studyFileService; 
      
     @EJB UserServiceLocal userService;
+    
+    @EJB StudyServiceLocal studyService; 
     
     private List<DataFileFormatType> allSupportedTypes = null; 
 
@@ -147,8 +150,23 @@ public class FileAccessSingletonBean {
                 
                 // Finally, conversion formats: 
                 
+                if (allSupportedTypes == null) {
+                    allSupportedTypes = studyService.getDataFileFormatTypes();
+                }
                 
-                
+                for (DataFileFormatType dft : allSupportedTypes) {
+                    if (originalFormatType == null ||
+                            !originalFormatType.equals(dft.getMimeType()) ) {
+                        
+                        String formatServiceArg = "fileFormat="+dft.getName();
+                        String formatDescription = "Data in "+ dft.getName() + " format (generated)";
+                        di.addServiceAvailable(new OptionalAccessService(
+                            dft.getName(), 
+                            dft.getMimeType(), 
+                            formatServiceArg, 
+                            formatDescription));
+                    }
+                }
             }  
         } 
         

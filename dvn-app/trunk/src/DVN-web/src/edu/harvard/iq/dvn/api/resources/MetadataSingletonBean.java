@@ -18,8 +18,8 @@ import edu.harvard.iq.dvn.core.study.StudyExporter;
 import edu.harvard.iq.dvn.core.study.Study;
 import edu.harvard.iq.dvn.core.study.StudyVersion;
 import edu.harvard.iq.dvn.core.study.MetadataFormatType;
-//import edu.harvard.iq.dvn.core.study.StudyField;
-//import edu.harvard.iq.dvn.core.study.StudyFieldServiceLocal;
+import edu.harvard.iq.dvn.core.study.StudyField;
+import edu.harvard.iq.dvn.core.study.StudyFieldServiceLocal;
 
 
 /**
@@ -35,10 +35,11 @@ public class MetadataSingletonBean {
     @EJB 
     StudyExporterFactoryLocal studyExporterFactory;
     
-    //@EJB
-    //StudyFieldServiceLocal studyFieldService;
+    @EJB
+    StudyFieldServiceLocal studyFieldService;
     
-    private List<String> searchableFields = null; 
+    //private List<String> searchableFields = null; 
+    private List<StudyField> searchableFields = null; 
 
     public MetadataSingletonBean() {
     }
@@ -275,13 +276,14 @@ public class MetadataSingletonBean {
             //
             // for now, however, we are going to hard-code it, the same way
             // it is done in the AdvStudyPage:
-            String[] fieldsHardCoded = {"title", "authorName", "globalId", "otherId", "abstractText", "keywordValue", "keywordVocabulary", "topicClassValue", "topicClassVocabulary", "producerName", "distributorName", "fundingAgency", "productionDate", "distributionDate", "dateOfDeposit", "timePeriodCoveredStart", "timePeriodCoveredEnd", "country", "geographicCoverage", "geographicUnit", "universe", "kindOfData"};
-            searchableFields = new ArrayList<String>(fieldsHardCoded.length);
+            //String[] fieldsHardCoded = {"title", "authorName", "globalId", "otherId", "abstractText", "keywordValue", "keywordVocabulary", "topicClassValue", "topicClassVocabulary", "producerName", "distributorName", "fundingAgency", "productionDate", "distributionDate", "dateOfDeposit", "timePeriodCoveredStart", "timePeriodCoveredEnd", "country", "geographicCoverage", "geographicUnit", "universe", "kindOfData"};
+            //searchableFields = new ArrayList<String>(fieldsHardCoded.length);
             
-            for (int i = 0; i < fieldsHardCoded.length; i++) {
-                searchableFields.add(fieldsHardCoded[i]);
-            }
+            //for (int i = 0; i < fieldsHardCoded.length; i++) {
+            //    searchableFields.add(fieldsHardCoded[i]);
+            //}
             // TODO: discuss this with the team. -- L.A.
+            searchableFields = studyFieldService.findAdvSearchDefault();
         }
         msf = new MetadataSearchFields(searchableFields);
 

@@ -30,6 +30,10 @@
 package edu.harvard.iq.dvn.core.study;
 
 import java.util.List;
+import java.util.ArrayList; 
+import java.util.ResourceBundle;
+import java.util.MissingResourceException;
+
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -45,6 +49,9 @@ public class StudyFieldServiceBean implements StudyFieldServiceLocal, java.io.Se
     private EntityManager em;
     private static final String NAME_QUERY = "SELECT sf from StudyField sf where sf.name= :fieldName ";
     private static final String ID_QUERY = "SELECT sf from StudyField sf where id = :fieldId";
+    
+    private static String[] advancedSearchFields = {"title", "authorName", "globalId", "otherId", "abstractText", "keywordValue", "keywordVocabulary", "topicClassValue", "topicClassVocabulary", "producerName", "distributorName", "fundingAgency", "productionDate", "distributionDate", "dateOfDeposit", "timePeriodCoveredStart", "timePeriodCoveredEnd", "country", "geographicCoverage", "geographicUnit", "universe", "kindOfData"};
+    private static List<StudyField> advancedStudyFields = null; 
 
     /** Creates a new instance of StudyFieldServiceBean */
     public StudyFieldServiceBean() {
@@ -66,9 +73,27 @@ public class StudyFieldServiceBean implements StudyFieldServiceLocal, java.io.Se
     }
 
     public List findAdvSearchDefault() {
-        List <StudyField> studyFields = (List <StudyField>) em.createQuery("SELECT sf from StudyField sf where sf.advancedSearchField = true").getResultList();
-        return studyFields;
+        //List <StudyField> studyFields = (List <StudyField>) em.createQuery("SELECT sf from StudyField sf where sf.advancedSearchField = true").getResultList();
+        //return studyFields;
+        if (advancedStudyFields == null) {
+            advancedStudyFields = new ArrayList<StudyField>();
+            for (int i=0; i < advancedSearchFields.length; i++) {
+                StudyField sf = new StudyField();
+                sf.setName(advancedSearchFields[i]);
+                sf.setDescription(getUserFriendlySearchField(advancedSearchFields[i]));
+                advancedStudyFields.add(sf);
+            }
+        }
+              
+        return advancedStudyFields; 
     }
 
+    private String getUserFriendlySearchField(String searchField) {
+        try {
+            return ResourceBundle.getBundle("SearchFieldBundle").getString(searchField);
+        } catch (MissingResourceException e) {
+            return searchField;
+        }
+    }
     
 }

@@ -70,4 +70,8 @@ public interface EditNetworkPrivilegesService  extends java.io.Serializable  {
     
     public void addPrivilegedUser(Long userId );
     
+    public List<VDCUser> getTOUPrivilegedUsers();
+    public void setTOUPrivilegedUsers(List<VDCUser> TOUprivilegedUsers);    
+    public void addTOUPrivilegedUser(Long userId );
+    
 }

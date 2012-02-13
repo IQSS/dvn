@@ -56,6 +56,7 @@ public class EditNetworkPrivilegesServiceBean implements EditNetworkPrivilegesSe
    @EJB UserServiceLocal userService; 
     private VDCNetwork network;
     private List<NetworkPrivilegedUserBean> privilegedUsers;
+    private List<VDCUser> TOUprivilegedUsers;
     private List<CreatorRequestBean> creatorRequests;
     
     
@@ -66,6 +67,7 @@ public class EditNetworkPrivilegesServiceBean implements EditNetworkPrivilegesSe
         setNetwork(em.find(VDCNetwork.class, new Long(1)));
         
         initPrivilegedUsers();
+        initTOUPrivilegedUsers();
     
         
     }
@@ -81,7 +83,9 @@ public class EditNetworkPrivilegesServiceBean implements EditNetworkPrivilegesSe
      }
    }
     
- 
+   private void initTOUPrivilegedUsers() {
+     TOUprivilegedUsers = em.createQuery("SELECT u from VDCUser u where u.bypassTermsOfUse = true").getResultList();
+   }
     
 
    // @Remove
@@ -99,6 +103,11 @@ public class EditNetworkPrivilegesServiceBean implements EditNetworkPrivilegesSe
                 }
             }
         }
+        
+        for (Iterator it = TOUprivilegedUsers.iterator(); it.hasNext();) {
+            VDCUser elem = (VDCUser) it.next();
+            elem.setBypassTermsOfUse(Boolean.TRUE);
+        }
   
         em.flush();
     }
@@ -109,6 +118,11 @@ public class EditNetworkPrivilegesServiceBean implements EditNetworkPrivilegesSe
         VDCUser user = em.find(VDCUser.class, userId);
         this.privilegedUsers.add(new NetworkPrivilegedUserBean(user, null));
         
+    }
+    
+    public void addTOUPrivilegedUser(Long userId) {
+        VDCUser user = em.find(VDCUser.class, userId);
+        this.TOUprivilegedUsers.add(user);
     }
     
     /**
@@ -149,6 +163,13 @@ public class EditNetworkPrivilegesServiceBean implements EditNetworkPrivilegesSe
         this.privilegedUsers = privilegedUsers;
     }
 
+    public List<VDCUser> getTOUPrivilegedUsers() {
+        return TOUprivilegedUsers;
+    }
+
+    public void setTOUPrivilegedUsers(List<VDCUser> userList) {
+        this.TOUprivilegedUsers = userList;
+    }
     
 
   

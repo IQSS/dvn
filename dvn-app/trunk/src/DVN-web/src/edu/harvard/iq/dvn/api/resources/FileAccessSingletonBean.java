@@ -214,7 +214,6 @@ public class FileAccessSingletonBean {
     
     private Boolean checkAccessPermissions (VDCUser vdcUser, DownloadInfo di) {
         StudyFile studyFile = di.getStudyFile();
-        Boolean accessAuthorized = true; 
         
         if (studyFile == null) {
             return false; 
@@ -222,6 +221,8 @@ public class FileAccessSingletonBean {
  
         if (!isPublicAccess(studyFile)) {
             di.setAccessPermissionsApply(true);
+        } else {
+            return true; 
         }
         
         if (studyFile.isFileRestrictedForUser(vdcUser, null, null)) {

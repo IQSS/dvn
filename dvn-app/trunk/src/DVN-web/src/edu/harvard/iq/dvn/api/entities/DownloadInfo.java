@@ -1,14 +1,10 @@
 package edu.harvard.iq.dvn.api.entities;
 
 import java.io.File; 
-import java.io.UnsupportedEncodingException; 
 import java.util.List;
 import java.util.ArrayList;
 
-import edu.harvard.iq.dvn.core.util.FileUtil;
-import edu.harvard.iq.dvn.core.study.Study;
 import edu.harvard.iq.dvn.core.study.StudyFile;
-import edu.harvard.iq.dvn.core.study.MetadataFormatType; 
 import edu.harvard.iq.dvn.core.web.dataaccess.OptionalAccessService;
 
 

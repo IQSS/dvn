@@ -13,12 +13,16 @@ import javax.ws.rs.Path;
 @Path("/")
 public class DvnApiRootResource {
 
+    // Metadata API resources: 
     @EJB MetadataResourceBean r;
     @EJB MetadataFormatsResourceBean rf; 
     @EJB MetadataSearchFieldsResourceBean rs;
     @EJB MetadataSearchResultsResourceBean rsr;
 
-    @EJB DownloadInfoResourceBean dir; 
+    // Access (download) API resources:
+    @EJB DownloadInfoResourceBean dir;
+    @EJB DownloadResourceBean dr; 
+    
 
     @Path("metadata")
     public MetadataResourceBean getMetadataResourceBean() {
@@ -45,5 +49,9 @@ public class DvnApiRootResource {
         return dir; 
     }
     
+    @Path("download")
+    public DownloadResourceBean getDownloadResourceBean() {
+        return dr; 
+    }
 }
 

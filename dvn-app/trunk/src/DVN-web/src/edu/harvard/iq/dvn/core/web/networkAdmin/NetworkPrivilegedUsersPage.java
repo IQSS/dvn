@@ -151,6 +151,16 @@ public class NetworkPrivilegedUsersPage extends VDCBaseBean implements java.io.S
         this.userName = userName;
     }
     
+    
+    private String TOUuserName; 
+    
+    public String getTOUUserName() {
+        return this.TOUuserName; 
+    }
+    public void setTOUUserName(String name) {
+        this.TOUuserName = name; 
+    }
+    
     private UIData userTable;
     
      public javax.faces.component.UIData getUserTable() {
@@ -161,8 +171,17 @@ public class NetworkPrivilegedUsersPage extends VDCBaseBean implements java.io.S
         this.userTable = userTable;
     }
 
-   
-      public List getRoleSelectItems() {
+    private UIData TOUuserTable;
+    
+    public javax.faces.component.UIData getUserTOUTable() {
+        return TOUuserTable;
+    }
+
+    public void setUserTOUTable(javax.faces.component.UIData tut) {
+        this.TOUuserTable = tut;
+    }
+
+    public List getRoleSelectItems() {
         List selectItems = new ArrayList();
         NetworkRole role = networkRoleService.findByName(NetworkRoleServiceLocal.CREATOR);
         selectItems.add(new SelectItem(role.getId(), "Dataverse Creator"));
@@ -173,6 +192,11 @@ public class NetworkPrivilegedUsersPage extends VDCBaseBean implements java.io.S
     public void clearRole(ActionEvent ea) {
         NetworkPrivilegedUserBean user = (NetworkPrivilegedUserBean)userTable.getRowData();
         user.setNetworkRoleId(null);
+    }
+    
+    public void clearTOURole(ActionEvent ea) {
+        VDCUser user = (VDCUser)userTable.getRowData();
+        user.setBypassTermsOfUse(false);
     }
     
     public void addUser(ActionEvent ae) {
@@ -192,7 +216,22 @@ public class NetworkPrivilegedUsersPage extends VDCBaseBean implements java.io.S
                 this.privileges.addPrivilegedUser(user.getId());
             }
         }
-    }   
+    } 
+    
+    public void addTOUUser(ActionEvent ae) {
+        VDCUser user = null; 
+        // See comment in the addUser method!
+        if (TOUuserName.indexOf("'") != -1) {
+            setTOUUserNotFound(true);
+        } else {
+            user = userService.findByUserName(TOUuserName);
+            if (user==null) {
+                setTOUUserNotFound(true);
+            } else {
+                this.privileges.addTOUPrivilegedUser(user.getId());
+            }
+        }
+    }
 
     public String save() {
         HttpServletRequest request = (HttpServletRequest)this.getExternalContext().getRequest();
@@ -224,9 +263,23 @@ public class NetworkPrivilegedUsersPage extends VDCBaseBean implements java.io.S
     public void setUserNotFound(boolean userNotFound) {
         this.userNotFound = userNotFound;
     }
+    
+    private boolean TOUuserNotFound; 
+    
+    public boolean isTOUUserNotFound() {
+        return TOUuserNotFound; 
+    }
+    
+    public void setTOUUserNotFound(boolean userNotFound) {
+        this.TOUuserNotFound = userNotFound; 
+    }
 
     public boolean getDisplayPrivilegedUsers() {
         return getPrivileges().getPrivilegedUsers().size()>1;
+    }
+    
+    public boolean getDisplayTOUPrivilegedUsers() {
+        return getPrivileges().getTOUPrivilegedUsers().size()>1;
     }
     /**
      * Holds value of property success.

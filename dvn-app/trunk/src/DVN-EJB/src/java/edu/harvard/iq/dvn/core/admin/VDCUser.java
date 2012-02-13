@@ -44,6 +44,9 @@ import javax.persistence.*;
  */
 @Entity
 public class VDCUser implements java.io.Serializable  {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
 
     @OneToMany(mappedBy = "user", cascade={CascadeType.REMOVE, CascadeType.MERGE, CascadeType.PERSIST})
     private List<StudyLock> studyLocks;
@@ -53,6 +56,13 @@ public class VDCUser implements java.io.Serializable  {
     private String firstName;
     private String lastName;
     private boolean agreedTermsOfUse;
+    // User is responsible for complying with and enforcing any Terms of Use
+    // associated with any Digital Objects from this DVN, and thus authorized
+    // direct access to Terms of Use-restricted objects, without TOU page
+    // redirects. 
+    // This is subject to a LEGAL agreement between the individual and the 
+    // DVN administrators. 
+    private boolean bypassTermsOfUse;
  //   private String password;
 
     public String getEncryptedPassword() {
@@ -97,6 +107,14 @@ public class VDCUser implements java.io.Serializable  {
 
     public void setVersionContributors(List<VersionContributor> versionContributors) {
         this.versionContributors = versionContributors;
+    }
+    /**
+     * Getter for property id.
+     * @return Value of property id.
+     */
+       
+    public Long getId() {
+        return this.id;
     }
    /**
      * Creates a new instance of VDCUser
@@ -233,20 +251,6 @@ public class VDCUser implements java.io.Serializable  {
     }
 
 
-    /**
-     * Holds value of property id.
-     */
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
-
-    /**
-     * Getter for property id.
-     * @return Value of property id.
-     */
-    public Long getId() {
-        return this.id;
-    }
 
     /**
      * Setter for property id.
@@ -464,6 +468,13 @@ public class VDCUser implements java.io.Serializable  {
         this.agreedTermsOfUse = agreedTermsOfUse;
     }
     
+    public boolean isBypassTermsOfUse() {
+        return bypassTermsOfUse; 
+    }
+    
+    public void setBypassTermsOfUse(Boolean bypass) {
+        this.bypassTermsOfUse = bypass; 
+    }
     
      public int hashCode() {
         int hash = 0;

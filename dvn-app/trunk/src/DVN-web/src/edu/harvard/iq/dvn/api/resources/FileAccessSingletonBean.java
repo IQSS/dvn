@@ -236,22 +236,31 @@ public class FileAccessSingletonBean {
     // Access Restrictions: (Terms of Use)
     
     private Boolean checkAccessRestrictions (VDCUser vdcUser, DownloadInfo di) {
-        StudyFile studyFile = di.getStudyFile();
-        Boolean accessAuthorized = true; 
+        StudyFile studyFile = di.getStudyFile();        
         
-        
-        if (vdcUser == null || studyFile == null) {
+        if (studyFile == null) {
             return false; 
         }
         
-        if (isUnderTermsOfUse(studyFile)) {
-            di.setAccessRestrictionsAply(true);
+        if (!isUnderTermsOfUse(studyFile)) {
+            return true; 
+        }       
+        
+        di.setAccessRestrictionsAply(true);
+        
+        if (vdcUser == null) {
+            return false; 
+        }
             
-            // Check if the user is authorized to be responsible for the 
-            // enforcement of the Terms of use:
+        // Finally, heck if the user is authorized to be responsible for the 
+        // enforcement of the Terms of use:
+        
+        if (vdcUser.isBypassTermsOfUse()) {
+            return true; 
         }
         
-        return accessAuthorized; 
+        return false; 
+
     }
   
     // Check if this file is freely available ("public")

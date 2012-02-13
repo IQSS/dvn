@@ -561,11 +561,13 @@ public class AdvSearchPage extends VDCBaseBean implements java.io.Serializable {
     public String[] getAdvSearchFieldDefaults() {
 
         List<StudyField> advSearchFieldsDefault = studyFieldService.findAdvSearchDefault();
-        //String[] advS = getFieldList(advancedSearchFields);
         String[] advS = new String[advSearchFieldsDefault.size()]; 
         for (int i=0; i<advS.length; i++) {
             advS[i] = advSearchFieldsDefault.get(i).getName();
         }
+        //String[] advS = getFieldList(advancedSearchFields);
+        advS = getFieldList(advS);
+
         return advS;
     }
 

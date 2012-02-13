@@ -132,7 +132,6 @@ public class EditTemplateServiceBean implements edu.harvard.iq.dvn.core.study.Ed
             TemplateField tf = new TemplateField();
             tf.setDefaultValue(defaultField.getDefaultValue());
             tf.setStudyField(defaultField.getStudyField());
-            tf.setAllowMultiples(defaultField.isAllowMultiples());
             // bring over field values separately
             List <TemplateFieldValue> tfvList = new  ArrayList();
             for (TemplateFieldValue tfv: defaultField.getTemplateFieldValues()){ 

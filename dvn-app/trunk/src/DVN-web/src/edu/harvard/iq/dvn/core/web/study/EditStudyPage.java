@@ -327,7 +327,7 @@ public class EditStudyPage extends VDCBaseBean implements java.io.Serializable  
     private List<TemplateField> adHocFields;
     
     public void initAdHocFieldMap(boolean metadataSet){
-        System.out.println("init adhoc field");
+
         adHocFields = new ArrayList();
         for (Iterator<TemplateField> it = study.getTemplate().getTemplateFields().iterator(); it.hasNext();) {
             TemplateField tf = it.next();
@@ -337,10 +337,8 @@ public class EditStudyPage extends VDCBaseBean implements java.io.Serializable  
                 
                 List <TemplateFieldValue> removeList = new ArrayList();
                 if(tf.getStudyField().isDcmField()){
-                    System.out.println("tf in init adhoc field map  " + tf.getStudyField().getName() + "  multiple rows ? " + tf.isAllowMultiples());
                     tf.getTemplateFieldValues();
-                    if (tf.getTemplateFieldValues().size() > 0){
-                         System.out.println("tf in init adhoc field map" + tf.getStudyField().getName() + "multiple rows ? " + tf.isAllowMultiples());
+                    if (tf.getTemplateFieldValues().size() > 0){                         
                         for (TemplateFieldValue tfv : tf.getTemplateFieldValues()){
                             if (!tfv.getMetadata().equals(metadata) && metadataSet ){
                                 removeList.add(tfv);

@@ -1280,11 +1280,12 @@ public class TemplateFormPage extends VDCBaseBean implements java.io.Serializabl
         newElem.setDescription(fieldDescription);
         newElem.setDcmField(true);
         newElem.setFieldType(fieldType);
+        newElem.setAllowMultiples(allowMultiples);        
        
         newTF.setTemplate(template);
         newTF.setStudyField(newElem);
         newTF.setdcmSortOrder(new Long(maxDCM + 1));
-        newTF.setAllowMultiples(allowMultiples);
+
          editTemplateService.changeFieldInputLevel(newTF, inputLevel);
          newTF.setTemplateFieldControlledVocabulary(new ArrayList());
          newTF.setTemplateFieldValues(new ArrayList());

@@ -237,26 +237,12 @@ public class TemplateField implements java.io.Serializable {
         this.version = version;
     }
     
-    /**
-     * Holds value of property allow multiples.
-     */
-    private boolean allowMultiples; 
 
-    /**
-     * Getter for property allow multiples.
-     * @return Value of property allow multiples.
-     */
     public boolean isAllowMultiples() {
-        return this.allowMultiples;
+        return this.studyField.isAllowMultiples();
     }
 
-    /**
-     * Setter for property allow multiples.
-     * @param version New value of property allow multiples.
-     */
-    public void setAllowMultiples(boolean allowMultiples) {
-        this.allowMultiples = allowMultiples;
-    }
+
     
         /**
      * Holds value of property allow multiples.

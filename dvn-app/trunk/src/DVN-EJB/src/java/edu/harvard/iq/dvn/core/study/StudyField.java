@@ -103,6 +103,28 @@ public class StudyField implements Serializable {
     public void setDcmField(boolean dcmField) {
         this.dcmField = dcmField;
     }
+    
+        
+    /**
+     * Holds value of property allow multiples.
+     */
+    private boolean allowMultiples; 
+
+    /**
+     * Getter for property allow multiples.
+     * @return Value of property allow multiples.
+     */
+    public boolean isAllowMultiples() {
+        return this.allowMultiples;
+    }
+
+    /**
+     * Setter for property allow multiples.
+     * @param version New value of property allow multiples.
+     */
+    public void setAllowMultiples(boolean allowMultiples) {
+        this.allowMultiples = allowMultiples;
+    }
 
      public String getFieldType() {
         return fieldType;

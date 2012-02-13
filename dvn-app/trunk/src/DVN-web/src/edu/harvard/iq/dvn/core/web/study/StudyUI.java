@@ -1206,5 +1206,29 @@ public class StudyUI  implements java.io.Serializable {
     public void setDisplayVersions(boolean displayVersions) {
         this.displayVersions = displayVersions;
     }
+    
+    private List<TemplateFieldValue> customFields;
+    
+    public List<TemplateFieldValue> getCustomFields() {
+        if (customFields == null) {
+            customFields = new ArrayList();
+            for (TemplateFieldValue elem : getMetadata().getTemplateFieldValue()) {
+                boolean found = false;
+                String name = elem.getTemplateField().getStudyField().getName();
+                for (TemplateFieldValue tfv : customFields) {
+                    if (tfv.getTemplateField().getStudyField().getName().equals(name)) {
+                        tfv.setStrValue(tfv.getStrValue() + "; " + elem.getStrValue());
+                        found = true;
+                        break;
+                    }
+                }
+
+                if (!found) {
+                    customFields.add(elem);
+                }
+            }
+        }
+        return customFields;
+    }
 
 }

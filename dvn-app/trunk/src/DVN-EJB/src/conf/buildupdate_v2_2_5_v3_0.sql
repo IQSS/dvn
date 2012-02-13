@@ -45,4 +45,6 @@ UPDATE DataFileFormatType SET mimeType='application/x-rlang-transport' WHERE id=
 UPDATE DataFileFormatType SET mimeType='application/x-stata' WHERE id=2;
 UPDATE DataFileFormatType SET mimeType='application/x-R-2' WHERE id=3;
 
+-- Adding the DVN-wide Terms of Use Authorization to the VDCUser table
+ALTER TABLE VDCUser ADD COLUMN BypassTermsOfUse boolean;
 

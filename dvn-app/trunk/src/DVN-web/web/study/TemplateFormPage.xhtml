@@ -1360,8 +1360,8 @@
                     </ice:column>
                 </ice:panelGrid>
               </div>
+              <!-- End of Add-->
               <!-- Generic control-->
-              <!-- end of Generic control-->
 
                   <ice:dataTable cellpadding="0" cellspacing="0" width="100%" styleClass="dvnStudyTemplateTableDCM"
                                  columnClasses="vdcEditStudyCol1b, vdcEditStudyCol2, vdcEditStudyCol3"
@@ -1388,7 +1388,8 @@
                       </div>
                     </ice:column>
                     <ice:column>
-                      <ui:repeat var="fieldValRow" value="#{dcmItem.templateFieldValues}">
+                      <ice:dataTable var="fieldValRow" value="#{dcmItem.templateFieldValues}">
+                       <ice:column> 
                           <!-- put in default field type as text box-->
                           <ice:inputText id="input_TextDefault" size="90" rendered="#{empty(dcmItem.studyField.fieldType)}" 
                                          visible="#{empty(dcmItem.templateFieldControlledVocabulary)}"
@@ -1417,7 +1418,23 @@
                                                visible="#{empty(dcmItem.templateFieldControlledVocabulary)}">
                           </ice:inputTextarea>
                           <ice:outputText value="#{editstudybundle.dateFormatDescription}" rendered="#{dcmItem.studyField.fieldType == 'date'}"/>
-                      </ui:repeat>
+                        </ice:column>
+                        <ice:column>
+                         <ice:commandButton immediate="true" image="/resources/images/icon_add.gif" rendered="#{dcmItem.allowMultiples}"
+                                             actionListener="#{TemplateFormPage.addDcmRow}">
+                             <f:attribute name="sf_id" value="#{dcmItem.studyField.id}"/>
+                             <f:attribute name="strVal" value="#{fieldValRow.strValue}"/>
+                             <f:attribute name="dcmSortOrder" value="#{dcmItem.dcmSortOrder}"/>
+                          </ice:commandButton>
+                          <ice:commandButton immediate="true"
+                                             rendered="#{dcmItem.allowMultiples}"
+                                             image="/resources/images/icon_remove.gif" actionListener="#{TemplateFormPage.removeDcmRow}">
+                              <f:attribute name="sf_id" value="#{dcmItem.studyField.id}"/>
+                              <f:attribute name="strVal" value="#{fieldValRow.strValue}"/>
+                              <f:attribute name="dcmSortOrder" value="#{dcmItem.dcmSortOrder}"/>
+                          </ice:commandButton>
+                        </ice:column>
+                      </ice:dataTable>
                       <ice:outputText id="controlledVocabHeader" visible="#{!empty(dcmItem.templateFieldControlledVocabulary)}"
                                      value="Controlled Vocabulary">
                       </ice:outputText>
@@ -1427,6 +1444,7 @@
                           </ice:outputText>
                       </ui:repeat>
                     </ice:column>
+
                     <ice:column>
                       <ice:commandButton immediate="true" value="Move Up" alt="Move Up" title="Move Up" image="/resources/images/icon_moveup.png" actionListener="#{TemplateFormPage.moveUp}">
                          <f:attribute name="sf_id" value="#{dcmItem.studyField.id}"/>
@@ -1437,19 +1455,8 @@
                           <f:attribute name="dcmSortOrder" value="#{dcmItem.dcmSortOrder}"/>                          
                       </ice:commandButton>
                     </ice:column>
-                    <ice:column>
-                      <ice:commandButton immediate="true" image="/resources/images/icon_add.gif" rendered="#{dcmItem.allowMultiples}"
-                                         actionListener="#{TemplateFormPage.addDcmRow}">
-                         <f:attribute name="sf_id" value="#{dcmItem.studyField.id}"/>
-                         <f:attribute name="dcmSortOrder" value="#{dcmItem.dcmSortOrder}"/>
-                      </ice:commandButton>
-                      <ice:commandButton immediate="true"
-                                         rendered="#{dcmItem.allowMultiples}"
-                                         image="/resources/images/icon_remove.gif" actionListener="#{TemplateFormPage.removeDcmRow}">
-                          <f:attribute name="sf_id" value="#{dcmItem.studyField.id}"/>
-                          <f:attribute name="dcmSortOrder" value="#{dcmItem.dcmSortOrder}"/>
-                      </ice:commandButton>
-                    </ice:column>
+
+ 
                     <ice:column>
                       <ice:commandButton   value="Update Controlled Vocabulary" actionListener="#{TemplateFormPage.openPopup}" rendered="#{TemplateFormPage.networkEdit}" >
                           <f:attribute name="sf_id" value="#{dcmItem.studyField.id}"/>
@@ -1458,7 +1465,9 @@
                       </ice:commandButton>
                     </ice:column>
                   </ice:dataTable>
-              <!-- end of data collection methodology section -->   
+               <!-- end of original Generic control--> 
+
+               
               <ice:panelGrid cellpadding="0" cellspacing="0" columns="2" width="100%"
                              styleClass="vdcEditStudyTable #{TemplateFormPage.studyMap[sfc.timeMethod].templateField.fieldInputLevelString}"
                              columnClasses="vdcEditStudyCol1, vdcEditStudyCol2">
@@ -1988,6 +1997,7 @@
                 </ice:column>
               </ice:panelGrid>
 
+               <!-- end of data collection methodology section --> 
               
               <!-- DATA SET AVAILABILITY SECTION -->
               <div jsfc="ice:panelGroup" styleClass="vdcStudyInfoHeader #{TemplateFormPage.dataSetAvailabilityInputLevel}">

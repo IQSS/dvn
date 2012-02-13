@@ -5,7 +5,6 @@
       xmlns:h="http://java.sun.com/jsf/html"
       xmlns:f="http://java.sun.com/jsf/core"
       xmlns:jsp="http://java.sun.com/JSP/Page"
-      xmlns:c="http://java.sun.com/jsp/jstl/core"
       xmlns:ice="http://www.icesoft.com/icefaces/component">
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
@@ -562,8 +561,8 @@
                                 <ice:outputText styleClass="dvnInlineHelpLabel dvnInlineHelpTip" value="#{studybundle.kindOfDataLabel}" title="#{studybundle.kindOfDataHelpHeading} - #{studybundle.kindOfDataHelp}" rendered="#{studyPage.studyUI.metadata.kindOfData != '' and studyPage.studyUI.metadata.kindOfData != null}"/>
                                 <ice:outputText id="text32" value="#{studyPage.studyUI.metadata.kindOfData}" rendered="#{!empty studyPage.studyUI.metadata.kindOfData}"/>
                             </ice:panelGrid>
-                            <div jsfc="ice:panelGroup" id="groupPanel13" styleClass="vdcStudyInfoHeader" rendered="#{!studyPage.dataCollectionIsEmpty || !studyPage.getCustomDataCollectionIsEmpty}">
-                                <ice:outputText id="outputText78" value="#{studyPage.studyUI.metadata.templateFieldValue.size()}"/>
+                            <div jsfc="ice:panelGroup" id="groupPanel13" styleClass="vdcStudyInfoHeader" rendered="#{!studyPage.dataCollectionIsEmpty || !studyPage.customDataCollectionIsEmpty}">
+                                <ice:outputText id="outputText78" value="Data Collection / Methodology"/>
                                 <ice:commandButton id="commandButtondataCollectionoContract" image="/resources/images/icon_expand.gif" title="Hide fields in this section" rendered="#{studyPage.studyUI.dataCollectionPanelIsRendered}" actionListener="#{studyPage.updateDataCollectionDisplay}"/>
                                 <ice:commandButton id="commandButtondataCollectionExpand" image="/resources/images/icon_contract.gif" title="Show fields in this section" rendered="#{!studyPage.studyUI.dataCollectionPanelIsRendered}" actionListener="#{studyPage.updateDataCollectionDisplay}"/>
                             </div>

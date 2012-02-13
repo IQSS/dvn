@@ -1351,7 +1351,8 @@
                   <!-- Start of Data Collection Methodology -->
                   
                   <ice:panelGrid cellpadding="0" cellspacing="0" columns="1" width="100%"
-                                 visible="#{!EditStudyPage.dataCollectionMethodologyEmpty or EditStudyPage.dataCollectionMethodologyInputLevel=='recommended' or EditStudyPage.showAll}">
+                                 visible="#{!EditStudyPage.dataCollectionMethodologyEmpty or EditStudyPage.dataCollectionMethodologyInputLevel=='recommended' 
+                                            or EditStudyPage.dataCollectionMethodologyInputLevel=='required' or EditStudyPage.showAll}">
                     <div jsfc="ice:panelGroup" id="groupPanel13" styleClass="vdcStudyInfoHeader">
                       <ice:outputText id="outputText90" value="Data Collection / Methodology"/>
                     </div>

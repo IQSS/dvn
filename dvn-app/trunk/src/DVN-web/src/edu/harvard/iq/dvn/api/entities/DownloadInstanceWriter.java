@@ -52,9 +52,20 @@ public class DownloadInstanceWriter implements MessageBodyWriter<DownloadInstanc
                     
                     httpHeaders.add("Content-disposition", "attachment; filename=\"" + fileName + "\"");
                     httpHeaders.add("Content-Type", mimeType + "; name=\"" + fileName);
+                    
+                    // (the httpHeaders map must be modified *before* writing any
+                    // data in the output stream! 
                                                               
                     int bufsize;
                     byte [] bffr = new byte[4*8192];
+                    
+                    // before writing out any bytes from the input stream, flush
+                    // any extra content, such as the variable header for the 
+                    // subsettable files:
+                    
+                    if (accessObject.getVarHeader() != null) {
+                        outstream.write(accessObject.getVarHeader().getBytes());
+                    }
 
                     while ((bufsize = instream.read(bffr)) != -1) {
                         outstream.write(bffr, 0, bufsize);

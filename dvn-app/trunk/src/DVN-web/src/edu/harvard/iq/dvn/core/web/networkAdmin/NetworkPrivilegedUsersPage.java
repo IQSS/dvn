@@ -195,7 +195,7 @@ public class NetworkPrivilegedUsersPage extends VDCBaseBean implements java.io.S
     }
     
     public void clearTOURole(ActionEvent ea) {
-        VDCUser user = (VDCUser)userTable.getRowData();
+        VDCUser user = (VDCUser)TOUuserTable.getRowData();
         user.setBypassTermsOfUse(false);
     }
     
@@ -279,7 +279,7 @@ public class NetworkPrivilegedUsersPage extends VDCBaseBean implements java.io.S
     }
     
     public boolean getDisplayTOUPrivilegedUsers() {
-        return getPrivileges().getTOUPrivilegedUsers().size()>1;
+        return getPrivileges().getTOUPrivilegedUsers().size()>0;
     }
     /**
      * Holds value of property success.

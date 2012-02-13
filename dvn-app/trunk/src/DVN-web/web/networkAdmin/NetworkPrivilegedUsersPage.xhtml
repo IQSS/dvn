@@ -91,7 +91,8 @@
               
               <tr>
                 <td class="dvnPermissionsTableOption dvnPermissionsStackedCells">
-                  <ice:outputText value="Users Authorized to bypass Terms of Use (INSERT SCARY LEGAL LANGUAGE HERE!)"/>
+                    <ice:outputText value="Users Authorized to bypass Terms of Use "/>
+                    <ice:outputText style="color: red" value="(INSERT SCARY LEGAL LANGUAGE HERE!!! &quot;You know what you're doing, you understand the consequences... Only grant this authorization to users with whom you have a written legal agreement, etc.&quot;)"/>
                 </td>
                 <td class="dvnPermissionsStackedCells">
                   <ice:outputText id="outputText117" value="Username: "/>
@@ -109,19 +110,19 @@
                   </div>
                   <ice:dataTable binding="#{NetworkPrivilegedUsersPage.userTOUTable}" cellpadding="0" cellspacing="0" width="98%"
                                  columnClasses="vdcColPadded, vdcColPadded, vdcColPadded, vdcColPadded" headerClass="list-header-left"
-                                 rowClasses="list-row-even,list-row-odd" value="#{NetworkPrivilegedUsersPage.privileges.TOUprivilegedUsers}" var="currentRow"
+                                 rowClasses="list-row-even,list-row-odd" value="#{NetworkPrivilegedUsersPage.privileges.TOUPrivilegedUsers}" var="currentRow"
                                  rendered="#{NetworkPrivilegedUsersPage.displayTOUPrivilegedUsers}">
                     <ice:column id="column100">
                       <f:facet name="header">
                         <ice:outputText id="outputText103" value="Username"/>
                       </f:facet>
-                      <ice:outputLink id="hyperlink102" value="/dvn/faces/login/AccountPage.xhtml?userId=#{currentRow.user.id}">
+                      <ice:outputLink id="hyperlink102" value="/dvn/faces/login/AccountPage.xhtml?userId=#{currentRow.id}">
                         <ice:outputText id="hyperlink2Text" value="#{currentRow.userName}"/>
                       </ice:outputLink>
                     </ice:column>
                     
                     <ice:column>
-                      <ice:commandButton value="Clear Role" actionListener="#{NetworkPrivilegedUsersPage.clearTOURole}"/>
+                      <ice:commandButton value="Revoke" actionListener="#{NetworkPrivilegedUsersPage.clearTOURole}"/>
                     </ice:column>
                   </ice:dataTable>
                 </td>

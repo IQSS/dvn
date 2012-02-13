@@ -106,7 +106,7 @@ public class EditNetworkPrivilegesServiceBean implements EditNetworkPrivilegesSe
         
         for (Iterator it = TOUprivilegedUsers.iterator(); it.hasNext();) {
             VDCUser elem = (VDCUser) it.next();
-            elem.setBypassTermsOfUse(Boolean.TRUE);
+            //elem.setBypassTermsOfUse(Boolean.TRUE);
         }
   
         em.flush();

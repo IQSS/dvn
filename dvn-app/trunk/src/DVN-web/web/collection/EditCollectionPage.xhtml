@@ -97,18 +97,18 @@
         <ice:inputHidden id="vdcId" value="#{VDCRequest.currentVDCId}"/>
         <ice:inputHidden id="collId" value="#{EditCollectionPage.collId}"/>
         <div class="dvn_section">
-          <div jsfc="ice:panelGroup" styleClass="dvnMsgBlockRound dvnInformationMessage">
-            <div class="dvnMsgBlockContainer">
-              <ice:outputText value="#{bundlePageInfo.editCollectionHelp}" escape="false" rendered="#{! EditCollectionPage.collection.rootCollection}"/>
-              <ice:outputText value="#{bundlePageInfo.editRootCollectionHelp}" escape="false" rendered="#{EditCollectionPage.collection.rootCollection}"/>
-            </div>
-          </div>
           <div class="dvn_sectionTitle">
             <ice:outputText value="#{bundlePageInfo.editCollectionTitle}" rendered="#{! EditCollectionPage.collection.rootCollection}"/>
             <ice:outputText value="#{bundlePageInfo.editRootCollectionTitle}" rendered="#{EditCollectionPage.collection.rootCollection}"/>
           </div>
           <div class="dvn_sectionBox">
             <div class="dvn_margin12">
+              <div jsfc="ice:panelGroup" styleClass="dvnInformationMessage">
+                <div class="dvnMsgBlockContainer">
+                  <ice:outputText value="#{bundlePageInfo.editCollectionHelp}" escape="false" rendered="#{! EditCollectionPage.collection.rootCollection}"/>
+                  <ice:outputText value="#{bundlePageInfo.editRootCollectionHelp}" escape="false" rendered="#{EditCollectionPage.collection.rootCollection}"/>
+                </div>
+              </div>
               <div jsfc="ice:panelGroup" id="layoutPanel1" styleClass="dvnEditCollection" panelLayout="flow">
                 <ice:panelGrid cellpadding="0" cellspacing="0" columns="2" width="100%">
                   <div jsfc="ice:panelGroup" id="groupPanel1" styleClass="vdcFieldTitle">

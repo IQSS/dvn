@@ -180,8 +180,8 @@ li.dvnAlphaBrowseSelected a{padding:2px 5px;font-weight:bold;color:white}
 .vdcSubHeader{font-weight:bold;display:block}
 .vdcSubHeaderColor{color:#0b3b6b;font-weight:bold;display:block}
 .dvnManageTable{width:100%;margin:0}
-.dvnManageSecondTable{margin-top:1.5em}
-.dvnManageTableTop{border:1px solid #d9d9d9;border-bottom:0;background:#FFFFFF url(/dvn/resources/icefaces/dvn_rime/css-images/contentContainer_bg.gif) repeat-x left top;text-align:left;overflow:hidden}
+.dvnManageTableTop{border:1px solid #d9d9d9;border-bottom-width:0;background:#FFFFFF url(/dvn/resources/icefaces/dvn_rime/css-images/contentContainer_bg.gif) repeat-x left top;text-align:left;overflow:hidden}
+.dvnManageSecondTable{padding-top:1.5em;border-width:0 1px}
 .dvnManageTableTotals{width:75%;padding:.5em .25em}
 .dvnManageTableCreateLink{float:right;width:20%;padding:.5em .25em;text-align:right}
 .dvnManageTableEmpty{border:1px solid #d9d9d9;border-top-width:0;padding:1em 0}

@@ -21,24 +21,22 @@
       <ice:form id="templateForm">
         <ice:inputHidden id="vdcId" value="#{VDCRequest.currentVDCId}"/>
         <div class="dvn_section">
-          <div jsfc="ice:panelGroup" 
-               rendered="#{CommentReviewPage.actionComplete == false}"
-               styleClass="dvnMsgBlockRound dvnInformationMessage">
-            <div class="dvnMsgBlockContainer">
-              <ice:outputText value="#{bundlePageInfo.commentReviewHelp}" escape="false"/>
-            </div>
-          </div>
-          <div jsfc="ice:panelGroup" styleClass="dvnMsgBlockRound dvnSuccessMessage" rendered="#{!empty VDCRequest.successMessage}">
-              <div class="dvnMsgBlockContainer">
-                  <p><ice:outputText id="statusMessage" value="#{VDCRequest.successMessage}"/></p>
-              </div>
-          </div>
           <div class="dvn_sectionTitle">
             <ice:outputText value="#{bundlePageInfo.commentReviewTitle}"/>
           </div>
-          <div jsfc="ice:panelGroup">
-            <ice:panelGrid cellpadding="0" cellspacing="0" border="0" columns="2"
-                           styleClass="dvnManageStudiesTableTop" columnClasses="dvn_StudyListTotals, dvnPaginatorWrap">
+          <div jsfc="ice:panelGroup" styleClass="dvnManageTableTop">
+              <div jsfc="ice:panelGroup" styleClass="dvn_margin12 dvnInformationMessage" rendered="#{CommentReviewPage.actionComplete == false}">
+                <div class="dvnMsgBlockContainer">
+                  <ice:outputText value="#{bundlePageInfo.commentReviewHelp}" escape="false"/>
+                </div>
+              </div>
+              <div jsfc="ice:panelGroup" styleClass="dvnSuccessMessage" rendered="#{!empty VDCRequest.successMessage}">
+                  <div class="dvnMsgBlockContainer">
+                      <p><ice:outputText id="statusMessage" value="#{VDCRequest.successMessage}"/></p>
+                  </div>
+              </div>
+            <ice:panelGrid cellpadding="0" cellspacing="0" border="0" columns="2" width="100%"
+                           columnClasses="dvn_StudyListTotals, dvnPaginatorWrap">
               <div jsfc="ice:panelGroup" styleClass="dvn_StudyListTotals">
                 <ice:dataPaginator id="scroll_2" for="commentReviewData"
                                    rowsCountVar="rowsCount" displayedRowsCountVar="displayedRowsCountVar"
@@ -78,7 +76,7 @@
               </div>
             </ice:panelGrid>
           </div>
-          <div>
+          <div jsfc="ice:panelGroup">
               <ice:dataTable binding="#{CommentReviewPage.mainDataTable}"
                              cellpadding="0" cellspacing="0" width="100%"
                              styleClass="dvnManageTable dvnCommentReviewTable"
@@ -128,20 +126,18 @@
                     <ice:outputText value="Action"/>
                   </f:facet>
                 <ice:commandLink binding="#{CommentReviewPage.deleteCommentLink}"
-                                 actionListener="#{CommentReviewPage.deleteFlaggedComment}"
-                                 >
+                                 actionListener="#{CommentReviewPage.deleteFlaggedComment}">
                     <f:attribute name="commentId" value="#{currentRow.studyComment.id}" />
                     <ice:outputText value="Delete"/>
                   </ice:commandLink>
                 <ice:commandLink binding="#{CommentReviewPage.ignoreCommentFlagLink}"
-                                 actionListener="#{CommentReviewPage.ignoreCommentFlag}"
-                                 >
+                                 actionListener="#{CommentReviewPage.ignoreCommentFlag}">
                     <f:attribute name="commentId" value="#{currentRow.studyComment.id}" />
                     <ice:outputText value="Ignore"/>
                  </ice:commandLink>
                 </ice:column>
               </ice:dataTable>
-            </div>
+          </div>
         </div>
       </ice:form>
     </ui:define>

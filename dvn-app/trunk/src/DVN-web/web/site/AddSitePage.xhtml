@@ -21,14 +21,7 @@
             <ui:define name="body">
                 <ice:form id="addsiteform">
                     <ice:message for="addsiteform" id="boxErrorMsg" styleClass="errorMessage"/>
-                    <ice:outputText id="statusMessage" styleClass="#{AddSitePage.msg.styleClass}" value="#{AddSitePage.msg.messageText}"/>
-                    <div jsfc="ice:panelGroup" rendered="#{LoginWorkflowBean.plainWorkflow}" styleClass="#{(LoginWorkflowBean.plainWorkflow) ? 'dvn_section' : 'dvn_nostyle'}">
-                        <div class="dvnMsgBlockRound dvnInformationMessage">
-                            <div class="dvnMsgBlockContainer">
-                                <ice:outputText value="#{bundlePageInfo.createDvHelp}" escape="false"/>
-                            </div>
-                        </div>
-                    </div>
+                    <!-- what is this? --> <ice:outputText id="statusMessage" styleClass="#{AddSitePage.msg.styleClass}" value="#{AddSitePage.msg.messageText}"/>
                     <script type="text/javascript">
                         //<![CDATA[
                         function changeValue(obj) {
@@ -72,7 +65,7 @@
                         </div>
                         <div jsfc="ice:panelGroup" styleClass="#{(LoginWorkflowBean.creatorWorkflow) ? 'requestContent' : 'dvn_sectionBox'}">
                             <div jsfc="ice:panelGroup" rendered="#{LoginWorkflowBean.creatorWorkflow}" styleClass="requestContentDescLeft">
-                                <div jsfc="ice:panelGroup" styleClass="dvnMsgBlockRound dvnInformationMessage">
+                                <div jsfc="ice:panelGroup" styleClass="dvnInformationMessage">
                                     <div class="dvnMsgBlockContainer">
                                         <ice:outputText value="#{bundlePageInfo.createDvHelp}" escape="false"/>
                                     </div>
@@ -80,6 +73,15 @@
                             </div>
                             <div jsfc="ice:panelGroup" styleClass="#{(LoginWorkflowBean.creatorWorkflow) ? 'requestContentFormRight' : 'empty'}">
                                 <div class="dvn_margin12">
+                                    
+                                    <div jsfc="ice:panelGroup" rendered="#{LoginWorkflowBean.plainWorkflow}" styleClass="#{(LoginWorkflowBean.plainWorkflow) ? 'dvn_section' : 'dvn_nostyle'}">
+                                        <div class="dvnInformationMessage">
+                                            <div class="dvnMsgBlockContainer">
+                                                <ice:outputText value="#{bundlePageInfo.createDvHelp}" escape="false"/>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    
                                     <ice:panelGrid cellpadding="0" cellspacing="0"
                                                    columnClasses="vdcAddSiteCol1, vdcAddSiteCol2" columns="2" id="gridPanel1">
                                         <!-- dataverse type -->

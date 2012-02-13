@@ -13,61 +13,63 @@
   <ui:composition template="/template.xhtml">
     <ui:param name="pageTitle" value="#{bundlePageInfo.manageUsersTitle} - #{VDCRequest.dataversePageTitle}"/>
         <ui:define name="metadata">
-            <f:event type="preRenderView" listener="#{AllUsersPage.preRenderView}" />  
+            <f:event type="preRenderView" listener="#{AllUsersPage.preRenderView}"/>  
         </ui:define>
     <ui:define name="body">
       <ice:form id="form1">
         <ice:inputHidden id="vdcId" value="#{VDCRequest.currentVDCId}"/>
         <div class="dvn_section">
-          <div jsfc="ice:panelGroup" styleClass="dvnMsgBlockRound dvnInformationMessage">
-            <div class="dvnMsgBlockContainer">
-              <ice:outputText value="#{bundlePageInfo.manageUsersHelp}" escape="false"/>
-            </div>
-          </div>
           <div class="dvn_sectionTitle">
             <ice:outputText value="#{bundlePageInfo.manageUsersTitle}"/>
+          </div>
+          <div jsfc="ice:panelGroup" styleClass="dvnManageTableTop">
+              <div jsfc="ice:panelGroup" styleClass="dvn_margin12 dvnInformationMessage">
+                <div class="dvnMsgBlockContainer">
+                  <ice:outputText value="#{bundlePageInfo.manageUsersHelp}" escape="false"/>
+                </div>
+              </div>
           </div>
           <ice:dataTable binding="#{AllUsersPage.dataTable}" cellpadding="0" cellspacing="0" width="100%"
                          styleClass="dvnDataTable" columnClasses="vdcColPadded, vdcColPadded, vdcColPadded, vdcColPadded" headerClass="list-header-left" id="dataTable1"
                          rowClasses="list-row-even,list-row-odd" value="#{AllUsersPage.userData}" var="currentRow">
-            <ice:column id="column1">
-              <f:facet name="header">
-                <ice:outputText id="outputText2" value="Username"/>
-              </f:facet>
-              <h:link id="h2" 
-                      outcome="/login/AccountPage.xhtml?userId=#{currentRow.user.id}&amp;vdcId=#{VDCRequest.currentVDCId}" 
-                      value="#{currentRow.user.userName}">     
-                  <f:param name="userId" value="#{currentRow.user.id}" />
-              </h:link>
-            </ice:column>
-            <ice:column id="column3">
-              <f:facet name="header">
-                <ice:outputText id="outputText5" value="Full Name"/>
-              </f:facet>
-              <ice:outputText id="outputText6" value="#{currentRow.user.firstName} #{currentRow.user.lastName}"/>
-            </ice:column>
-            <ice:column id="column2">
-              <f:facet name="header">
-                <ice:outputText id="outputText3" value="Role(s)"/>
-              </f:facet>
-              <ice:outputText id="outputText4" value="#{currentRow.roles}"/>
-            </ice:column>
-            <ice:column>
-              <f:facet name="header">
-                <ice:outputText id="outputText10" value="Status"/>
-              </f:facet>
-              <ice:outputText value="Active" rendered="#{currentRow.user.active}"/>
-              <ice:outputText value="Inactive" rendered="#{!currentRow.user.active}"/>
-            </ice:column>
-            <ice:column>
-              <ice:commandLink actionListener="#{AllUsersPage.deactivateUser}" rendered="#{currentRow.user.active and !currentRow.defaultNetworkAdmin}">
-                <ice:outputText value="Deactivate"/>
-              </ice:commandLink>
-              <ice:commandLink actionListener="#{AllUsersPage.activateUser}" rendered="#{!currentRow.user.active and !currentRow.defaultNetworkAdmin}">
-                <ice:outputText value="Activate"/>
-              </ice:commandLink>
-              <ice:outputText value="Cannot Deactivate Network Admin" rendered ="#{currentRow.defaultNetworkAdmin}"/>
-            </ice:column>
+                <ice:column id="column1">
+                  <f:facet name="header">
+                    <ice:outputText id="outputText2" value="Username"/>
+                  </f:facet>
+                  <h:link id="h2" 
+                          outcome="/login/AccountPage.xhtml?userId=#{currentRow.user.id}&amp;vdcId=#{VDCRequest.currentVDCId}" 
+                          value="#{currentRow.user.userName}">     
+                      <f:param name="userId" value="#{currentRow.user.id}"/>
+                  </h:link>
+                </ice:column>
+                <ice:column id="column3">
+                  <f:facet name="header">
+                    <ice:outputText id="outputText5" value="Full Name"/>
+                  </f:facet>
+                  <ice:outputText id="outputText6" value="#{currentRow.user.firstName} #{currentRow.user.lastName}"/>
+                </ice:column>
+                <ice:column id="column2">
+                  <f:facet name="header">
+                    <ice:outputText id="outputText3" value="Role(s)"/>
+                  </f:facet>
+                  <ice:outputText id="outputText4" value="#{currentRow.roles}"/>
+                </ice:column>
+                <ice:column>
+                  <f:facet name="header">
+                    <ice:outputText id="outputText10" value="Status"/>
+                  </f:facet>
+                  <ice:outputText value="Active" rendered="#{currentRow.user.active}"/>
+                  <ice:outputText value="Inactive" rendered="#{!currentRow.user.active}"/>
+                </ice:column>
+                <ice:column>
+                  <ice:commandLink actionListener="#{AllUsersPage.deactivateUser}" rendered="#{currentRow.user.active and !currentRow.defaultNetworkAdmin}">
+                    <ice:outputText value="Deactivate"/>
+                  </ice:commandLink>
+                  <ice:commandLink actionListener="#{AllUsersPage.activateUser}" rendered="#{!currentRow.user.active and !currentRow.defaultNetworkAdmin}">
+                    <ice:outputText value="Activate"/>
+                  </ice:commandLink>
+                  <ice:outputText value="Cannot Deactivate Network Admin" rendered ="#{currentRow.defaultNetworkAdmin}"/>
+                </ice:column>
           </ice:dataTable>
         </div>
       </ice:form>

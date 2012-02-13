@@ -20,86 +20,90 @@
         <input type="hidden" name="pageName" value="PrivilegedUsersPage"/>
         <ice:inputHidden id="vdcId" value="#{VDCRequest.currentVDCId}"/>
         <div class="dvn_section">
-           <div jsfc="ice:panelGroup" styleClass="dvnMsgBlockRound dvnInformationMessage">
-             <div class="dvnMsgBlockContainer">
-               <ice:outputText value="#{bundlePageInfo.codePromotionalHelp}" escape="false"/>
-             </div>
-          </div>
           <div class="dvn_sectionTitle">
             <ice:outputText value="#{bundlePageInfo.codePromotionalTitle}"/>
           </div>
-          <div class="dvnPromotionalLinks">
-              <div class="dvnPromotionalLinksBlock">
-                <div class="dvnPromotionalLinksHeader">
-                  <ice:outputText value="Text Link"/>
-                </div>
-                <div class="dvnPromotionalSampleBlock">
-                  <div class="dvnPromotionalSample">
-                    <span>Sample</span><br/>
-                    <strong style="color: blue; text-decoration: underline;">View My Dataverse</strong>
+          <div class="dvn_sectionBox">
+              <div class="dvn_margin12">
+                  <div jsfc="ice:panelGroup" styleClass="dvnInformationMessage">
+                     <div class="dvnMsgBlockContainer">
+                       <ice:outputText value="#{bundlePageInfo.codePromotionalHelp}" escape="false"/>
+                     </div>
                   </div>
-                  <div class="dvnPromotionalCode">
-                    <span>Code</span><br/>
-                    <textarea name="text_area1" rows="4">
-                      <ice:outputText nospan="true" value="&lt;strong&gt;&lt;a href=&quot;http://#{VDCRequest.hostUrl}/dvn#{VDCRequest.currentVDCURL}&quot;&gt;View My Dataverse&lt;/a&gt;&lt;/strong&gt;"/>
-                    </textarea>
-                    <br/>
-                    <input type="button" value="Select All Code" onClick="javascript:this.form.text_area1.focus();this.form.text_area1.select();"/>
-                  </div>
-                  <div class="dvnPromotionalTip">
-                    <span>Tip</span><br/>
-                    Add this dataverse link to your site's main content area, header or navigation bar.
-                  </div>
-                </div>
-              </div>
-              <div class="dvnPromotionalLinksBlock">
-                <div class="dvnPromotionalLinksHeader">
-                  <ice:outputText value="Button Link"/>
-                </div>
-                <div class="dvnPromotionalSampleBlock">
-                  <div class="dvnPromotionalSample">
-                    <span>Sample</span><br/>
-                    <div style="margin-top: .5em;"><span style="padding: 4px 8px; border: 1px solid #c55b28; background: #e6ebed; color: #c55b28; font-weight: bold; text-decoration: underline;">View My Dataverse</span></div>
-                  </div>
-                  <div class="dvnPromotionalCode">
-                    <span>Code</span><br/>
-                    <textarea name="text_area2" rows="4">
-                       <ice:outputText nospan="true" value="&lt;span style=&quot;padding: 4px 8px; border: 1px solid #c55b28; background: #e6ebed;&quot;&gt;&lt;strong&gt;&lt;a href=&quot;http://#{VDCRequest.hostUrl}/dvn#{VDCRequest.currentVDCURL}&quot; style=&quot;color: #c55b28;&quot;&gt;View My Dataverse&lt;/a&gt;&lt;/strong&gt;&lt;/span&gt;"/>
-                    </textarea>
-                    <br/>
-                    <input type="button" value="Select All Code" onClick="javascript:this.form.text_area2.focus();this.form.text_area2.select();"/>
-                  </div>
-                  <div class="dvnPromotionalTip">
-                    <span>Tip</span><br/>
-                    Add this dataverse link to your site's main content area, header or navigation bar.
-                  </div>
-                </div>
-              </div>
-              <div class="dvnPromotionalLinksBlock">
-                <div class="dvnPromotionalLinksHeader">
-                  <ice:outputText value="Search Box"/>
-                </div>
-                <div class="dvnPromotionalSampleBlock">
-                  <div class="dvnPromotionalSample">
-                    <span>Sample</span><br/>
-                    <span style="color: #526f76; text-transform: uppercase;">Search</span>&#160;<span style="color: #c55b28;">My Dataverse</span><br/>
-                    <input value="" type="text"/>&#160;<input value="Search" type="button"/>
-                  </div>
-                  <div class="dvnPromotionalCode">
-                    <span>Code</span><br/>
-                    <textarea name="text_area3" rows="4">
-                      <ice:outputText nospan="true" value="&lt;span style=&quot;color: #526f76; text-transform: uppercase;&quot;&gt;Search&lt;/span&gt;&#38;#160;&lt;span style=&quot;color: #c55b28;&quot;&gt;My Dataverse&lt;/span&gt;&lt;br/&gt;&lt;input type=&quot;text&quot;/&gt;&#38;#160;&lt;input value=&quot;Search&quot; type=&quot;button&quot; onclick=&quot;location='http://#{VDCRequest.hostUrl}/dvn#{VDCRequest.currentVDCURL}/faces/StudyListingPage.xhtml?mode=2&amp;searchValue=' + this.previousSibling.previousSibling.value&quot; /&gt;"/>
-                    </textarea>
-                    <br/>
-                    <input type="button" value="Select All Code" onClick="javascript:text_area3.focus();text_area3.select();"/>
-                  </div>
-                  <div class="dvnPromotionalTip">
-                    <span>Tip</span><br/>
-                    Add this dataverse search box to your site's header or navigation bar.
-                  </div>
-                </div>
-              </div>
+                  <div class="dvnPromotionalLinks">
+                      <div class="dvnPromotionalLinksBlock">
+                        <div class="dvnPromotionalLinksHeader">
+                          <ice:outputText value="Text Link"/>
+                        </div>
+                        <div class="dvnPromotionalSampleBlock">
+                          <div class="dvnPromotionalSample">
+                            <span>Sample</span><br/>
+                            <strong style="color: blue; text-decoration: underline;">View My Dataverse</strong>
+                          </div>
+                          <div class="dvnPromotionalCode">
+                            <span>Code</span><br/>
+                            <textarea name="text_area1" rows="4">
+                              <ice:outputText nospan="true" value="&lt;strong&gt;&lt;a href=&quot;http://#{VDCRequest.hostUrl}/dvn#{VDCRequest.currentVDCURL}&quot;&gt;View My Dataverse&lt;/a&gt;&lt;/strong&gt;"/>
+                            </textarea>
+                            <br/>
+                            <input type="button" value="Select All Code" onClick="javascript:this.form.text_area1.focus();this.form.text_area1.select();"/>
+                          </div>
+                          <div class="dvnPromotionalTip">
+                            <span>Tip</span><br/>
+                            Add this dataverse link to your site's main content area, header or navigation bar.
+                          </div>
+                        </div>
+                      </div>
+                      <div class="dvnPromotionalLinksBlock">
+                        <div class="dvnPromotionalLinksHeader">
+                          <ice:outputText value="Button Link"/>
+                        </div>
+                        <div class="dvnPromotionalSampleBlock">
+                          <div class="dvnPromotionalSample">
+                            <span>Sample</span><br/>
+                            <div style="margin-top: .5em;"><span style="padding: 4px 8px; border: 1px solid #c55b28; background: #e6ebed; color: #c55b28; font-weight: bold; text-decoration: underline;">View My Dataverse</span></div>
+                          </div>
+                          <div class="dvnPromotionalCode">
+                            <span>Code</span><br/>
+                            <textarea name="text_area2" rows="4">
+                               <ice:outputText nospan="true" value="&lt;span style=&quot;padding: 4px 8px; border: 1px solid #c55b28; background: #e6ebed;&quot;&gt;&lt;strong&gt;&lt;a href=&quot;http://#{VDCRequest.hostUrl}/dvn#{VDCRequest.currentVDCURL}&quot; style=&quot;color: #c55b28;&quot;&gt;View My Dataverse&lt;/a&gt;&lt;/strong&gt;&lt;/span&gt;"/>
+                            </textarea>
+                            <br/>
+                            <input type="button" value="Select All Code" onClick="javascript:this.form.text_area2.focus();this.form.text_area2.select();"/>
+                          </div>
+                          <div class="dvnPromotionalTip">
+                            <span>Tip</span><br/>
+                            Add this dataverse link to your site's main content area, header or navigation bar.
+                          </div>
+                        </div>
+                      </div>
+                      <div class="dvnPromotionalLinksBlock">
+                        <div class="dvnPromotionalLinksHeader">
+                          <ice:outputText value="Search Box"/>
+                        </div>
+                        <div class="dvnPromotionalSampleBlock">
+                          <div class="dvnPromotionalSample">
+                            <span>Sample</span><br/>
+                            <span style="color: #526f76; text-transform: uppercase;">Search</span>&#160;<span style="color: #c55b28;">My Dataverse</span><br/>
+                            <input value="" type="text"/>&#160;<input value="Search" type="button"/>
+                          </div>
+                          <div class="dvnPromotionalCode">
+                            <span>Code</span><br/>
+                            <textarea name="text_area3" rows="4">
+                              <ice:outputText nospan="true" value="&lt;span style=&quot;color: #526f76; text-transform: uppercase;&quot;&gt;Search&lt;/span&gt;&#38;#160;&lt;span style=&quot;color: #c55b28;&quot;&gt;My Dataverse&lt;/span&gt;&lt;br/&gt;&lt;input type=&quot;text&quot;/&gt;&#38;#160;&lt;input value=&quot;Search&quot; type=&quot;button&quot; onclick=&quot;location='http://#{VDCRequest.hostUrl}/dvn#{VDCRequest.currentVDCURL}/faces/StudyListingPage.xhtml?mode=2&amp;searchValue=' + this.previousSibling.previousSibling.value&quot; /&gt;"/>
+                            </textarea>
+                            <br/>
+                            <input type="button" value="Select All Code" onClick="javascript:text_area3.focus();text_area3.select();"/>
+                          </div>
+                          <div class="dvnPromotionalTip">
+                            <span>Tip</span><br/>
+                            Add this dataverse search box to your site's header or navigation bar.
+                          </div>
+                        </div>
+                      </div>
+                 </div>
             </div>
+          </div>
         </div>
       </ice:form>
     </ui:define>

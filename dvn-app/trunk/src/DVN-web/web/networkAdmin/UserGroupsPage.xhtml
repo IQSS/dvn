@@ -13,20 +13,20 @@
   <ui:composition template="/template.xhtml">
     <ui:param name="pageTitle" value="#{bundlePageInfo.manageGroupsTitle} - #{VDCRequest.dataversePageTitle}"/>
     <ui:define name="metadata">
-        <f:event type="preRenderView" listener="#{UserGroupsPage.preRenderView}" />  
+        <f:event type="preRenderView" listener="#{UserGroupsPage.preRenderView}"/>  
     </ui:define>
     <ui:define name="body">
       <ice:form id="form1">
         <div class="dvn_section">
-          <div jsfc="ice:panelGroup" styleClass="dvnMsgBlockRound dvnInformationMessage">
-            <div class="dvnMsgBlockContainer">
-              <ice:outputText value="#{bundlePageInfo.manageGroupsHelp}" escape="false"/>
-            </div>
-          </div>
           <div class="dvn_sectionTitle">
             <ice:outputText value="#{bundlePageInfo.manageGroupsTitle}"/>
           </div>
           <div class="dvnManageTableTop">
+            <div jsfc="ice:panelGroup" styleClass="dvn_margin12 dvnInformationMessage">
+            <div class="dvnMsgBlockContainer">
+              <ice:outputText value="#{bundlePageInfo.manageGroupsHelp}" escape="false"/>
+            </div>
+          </div>
             <div class="dvnManageTableCreateLink">
               <ice:outputLink value="/dvn/faces/networkAdmin/EditUserGroupPage.xhtml">
                 <ice:outputText value="Create Group"/>

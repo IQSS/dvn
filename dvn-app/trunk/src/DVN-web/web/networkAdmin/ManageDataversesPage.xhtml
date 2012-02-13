@@ -30,19 +30,18 @@
         <ice:form id="manageDataversesForm">
              <ice:inputHidden  binding="#{manageDataversesPage.hiddenAlphaCharacter}"
                                     id="alphaCharacter"
-                                    valueChangeListener="#{manageDataversesPage.changeAlphaCharacter}"
-                                    />
+                                    valueChangeListener="#{manageDataversesPage.changeAlphaCharacter}"/>
         <div class="dvn_section">
-            <div jsfc="ice:panelGroup" styleClass="dvnMsgBlockRound dvnInformationMessage">
-                <div class="dvnMsgBlockContainer">
-                    <ice:outputText value="#{bundlePageInfo.manageDvsHelp}" escape="false"/>
-                </div>
-            </div>
             <div class="dvn_sectionTitle">
                 <ice:outputText value="#{bundlePageInfo.manageDvsTitle}"/>
             </div>
           <div jsfc="ice:panelGroup" styleClass="dvnManageTableTop">
-                <div jsfc="ice:panelGroup" styleClass="dvnHmpgGroupAlphaSortBlock" rendered="#{VDCRequest.currentVDC == null}">
+              <div jsfc="ice:panelGroup" styleClass="dvn_margin12 dvnInformationMessage">
+                <div class="dvnMsgBlockContainer">
+                    <ice:outputText value="#{bundlePageInfo.manageDvsHelp}" escape="false"/>
+                </div>
+              </div>  
+              <div jsfc="ice:panelGroup" styleClass="dvnHmpgGroupAlphaSortBlock" rendered="#{VDCRequest.currentVDC == null}">
                     <ul class="dvnAlphaBrowseBlock">
                         <ui:fragment rendered="#{(manageDataversesPage.vdcUIList.alphaCharacter == '' or manageDataversesPage.vdcUIList.alphaCharacter == null)}">
                             <li class="dvnAlphaBrowseSelected" onmouseover="this.className='dvnAlphaBrowseHover'" onmouseout="this.className='dvnAlphaBrowseSelected'">

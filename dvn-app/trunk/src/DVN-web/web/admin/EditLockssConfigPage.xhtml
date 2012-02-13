@@ -58,155 +58,156 @@
           }
            //]]>
       </script>
-        <div class="dvn_section">
-
-        <div jsfc="ice:panelGroup" styleClass="dvnMsgBlockRound dvnInformationMessage" rendered="#{VDCRequest.vdcNetwork.exportPeriod ==null}">
-            <div class="dvnMsgBlockContainer">
-              <p>
-                <ice:outputText value="Note: In order for LOCKSS to harvest studies, study exports must be scheduled."/>
-                <ice:outputText rendered="#{!VDCSession.loginBean.networkAdmin}" value=" Please contact your network administrator to schedule study exports."/>
-                <ice:outputText rendered="#{VDCSession.loginBean.networkAdmin}" value=" To schedule study exports, go to "/>
-                <ice:outputLink rendered="#{VDCSession.loginBean.networkAdmin}" value="/dvn/faces/networkAdmin/EditExportSchedulePage.xhtml">
-                   <ice:outputText nospan="true" value="Schedule Study Exports"/>
-                </ice:outputLink>
-              </p>
-            </div>
-        </div>
-        </div>
       <ice:form id="form1">
         <ice:inputHidden id="vdcId" value="#{VDCRequest.currentVDCId}"/>
         <input type="hidden" name="pageName" value="EditDataFilesHarverstPage"/>
-        <div class="dvn_section">
-          <div class="dvn_sectionTitle">
-            <ice:outputText value="Data Files Harvesting (LOCKSS Harvesting)"/>
-          </div>
-          <div jsfc="ice:panelGroup">
-              <table class="dvnPermissionsTable" cellspacing="0" cellpadding="0" border="0">
-                  <tr><td colspan="2" class="dvnPermissionsTableHeader"><ice:outputText value="Harvest Settings"/></td></tr>
-                  <tr>
-                    <td class="dvnPermissionsTableOption">
-                        <ice:outputText value="Harvesting Type"/>
-                    </td>
-                    <td>
+          <div class="dvn_section">
+            <div class="dvn_section">
+              <div class="dvn_sectionTitle">
+                <ice:outputText value="Data Files Harvesting (LOCKSS Harvesting)"/>
+              </div>
+              <div class="dvn_sectionBox">
+                  <div class="dvn_margin12">
+                    <div jsfc="ice:panelGroup" styleClass="dvnInformationMessage" rendered="#{VDCRequest.vdcNetwork.exportPeriod ==null}">
+                        <div class="dvnMsgBlockContainer">
+                          <p>
+                            <ice:outputText value="In order for LOCKSS to harvest studies, study exports must be scheduled."/>
+                            <ice:outputText rendered="#{!VDCSession.loginBean.networkAdmin}" value=" Please contact your network administrator to schedule study exports."/>
+                            <ice:outputText rendered="#{VDCSession.loginBean.networkAdmin}" value=" To schedule study exports, go to "/>
+                            <ice:outputLink rendered="#{VDCSession.loginBean.networkAdmin}" value="/dvn/faces/networkAdmin/EditExportSchedulePage.xhtml">
+                               <ice:outputText nospan="true" value="Schedule Study Exports"/>
+                            </ice:outputLink>
+                          </p>
+                        </div>
+                    </div>
+                    <table class="dvnPermissionsTable" cellspacing="0" cellpadding="0" border="0">
+                      <tr><td colspan="2" class="dvnPermissionsTableHeader"><ice:outputText value="Harvest Settings"/></td></tr>
+                      <tr>
+                        <td class="dvnPermissionsTableOption">
+                            <ice:outputText value="Harvesting Type"/>
+                        </td>
+                        <td>
+                          <ui:fragment rendered ="#{VDCRequest.currentVDC==null}">
+                            <ice:selectOneRadio id="harvestType1"
+                                                layout="pageDirection"
+                                                required="true"
+                                                onclick="hideOptions()"
+                                                value="#{EditLockssConfigPage.selectHarvestType}"
+                                                requiredMessage="This field is required.">
+                                <f:selectItem itemLabel="Disable harvesting of all data files" itemValue="NONE" />
+                                <f:selectItem itemLabel="Enable harvesting of public data files" itemValue="ALL"  />
+                                <f:selectItem itemLabel="Enable harvesting of public data files by specified servers only" itemValue="GROUP"/>
+                            </ice:selectOneRadio>
+                          </ui:fragment>
+                        <ui:fragment rendered ="#{VDCRequest.currentVDC!=null}">
+                            <ice:selectOneRadio id="harvestType2"
+                                                layout="pageDirection"
+                                                required="true"
+                                                onclick="hideOptions()"
+                                                value="#{EditLockssConfigPage.selectHarvestType}"
+                                                requiredMessage="This field is required.">
+                                <f:selectItem itemLabel="LOCKSS configured at Dataverse Network level" itemValue="NONE" />
+                                <f:selectItem itemLabel="LOCKSS configured at Dataverse level - harvest of public data files" itemValue="ALL"  />
+                                <f:selectItem itemLabel="LOCKSS configured at Dataverse level - harvest of public data files by specified servers only" itemValue="GROUP"/>
+                            </ice:selectOneRadio>
+                          </ui:fragment>
+                        </td>
+                      </tr>
                       <ui:fragment rendered ="#{VDCRequest.currentVDC==null}">
-                        <ice:selectOneRadio id="harvestType1"
-                                            layout="pageDirection"
-                                            required="true"
-                                            onclick="hideOptions()"
-                                            value="#{EditLockssConfigPage.selectHarvestType}"
-                                            requiredMessage="This field is required.">
-                            <f:selectItem itemLabel="Disable harvesting of all data files" itemValue="NONE" />
-                            <f:selectItem itemLabel="Enable harvesting of public data files" itemValue="ALL"  />
-                            <f:selectItem itemLabel="Enable harvesting of public data files by specified servers only" itemValue="GROUP"/>
-                        </ice:selectOneRadio>
-                      </ui:fragment>
-                    <ui:fragment rendered ="#{VDCRequest.currentVDC!=null}">
-                        <ice:selectOneRadio id="harvestType2"
-                                            layout="pageDirection"
-                                            required="true"
-                                            onclick="hideOptions()"
-                                            value="#{EditLockssConfigPage.selectHarvestType}"
-                                            requiredMessage="This field is required.">
-                            <f:selectItem itemLabel="LOCKSS configured at Dataverse Network level" itemValue="NONE" />
-                            <f:selectItem itemLabel="LOCKSS configured at Dataverse level - harvest of public data files" itemValue="ALL"  />
-                            <f:selectItem itemLabel="LOCKSS configured at Dataverse level - harvest of public data files by specified servers only" itemValue="GROUP"/>
-                        </ice:selectOneRadio>
-                      </ui:fragment>
-                    </td>
-                  </tr>
-                  <ui:fragment rendered ="#{VDCRequest.currentVDC==null}">
-                  <tr class="lockssConfig">
-                    <td class="dvnPermissionsTableOption">
-                        <ice:outputText value="OAI Set"/>
-                    </td>
-                    <td><div jsfc="ice:panelGroup" styleClass="vdcHelpText">
-                          <ice:graphicImage alt="Information" title="Information" styleClass="vdcNoBorders" value="/resources/images/icon_info.gif"/>
-                          <ice:outputText value="Choose an OAI Set for harvesting by LOCKSS. Please note that LOCKSS servers can only harvest data that is local to this Dataverse Network."/>
-                        </div>
-                        <ice:selectOneMenu binding="#{EditLockssConfigPage.oaiSetMenu}" id="oaiSetModel" value="#{EditLockssConfigPage.selectOAISetId}">
-                            <f:selectItem itemValue="-1" itemLabel="Not Selected"/>
-                            <f:selectItems value="#{EditLockssConfigPage.selectOAISets}"/>
-                        </ice:selectOneMenu>
-                        <ice:message id="oaiSetModelMsg" styleClass="errorMessage" for="oaiSetModel"/>
-                    </td>
-                  </tr>
-                  </ui:fragment>
-                  <tr class="lockssConfig">
-                    <td class="dvnPermissionsTableOption">
-                        <ice:outputText value="Restricted Data Files"/>
-                    </td>
-                    <td>
-                        <ice:selectBooleanCheckbox id="enableRestrictedCheckBox" value="#{EditLockssConfigPage.lockssConfig.allowRestricted}"/>
-                        <ice:outputText id="enableRestrictedLabel" value=" Enable LOCKSS harvesting of restricted data files by specified servers."/>
-                    </td>
-                  </tr>
-                  <tr class="lockssConfig">
-                    <td class="dvnPermissionsTableOption">
-                        <ice:outputText value="LOCKSS Server Addresses"/>
-                    </td>
-                    <td>
-                        <div jsfc="ice:panelGroup" styleClass="vdcHelpText">
-                          <ice:graphicImage alt="Information" title="Information" styleClass="vdcNoBorders" value="/resources/images/icon_info.gif"/>
-                          <ice:outputText value="Enter IP addresses (192.168.2.1) and/or domain names (www.host.edu) in the field below. Wildcards are acceptable (for example, 192.168.*, or *.host.edu ). "/>
-                        </div>
-                        <ice:message for="serverTable" styleClass="errorMessage"/>
-                        <ice:dataTable styleClass="dvnFormDataTable"
-                                       id ="serverTable"
-                                       cellpadding="0"
-                                       cellspacing="0"
-                                       binding="#{EditLockssConfigPage.serverTable}"
-                                       var="currentRow" value="#{EditLockssConfigPage.lockssConfig.lockssServers}">
-                          <ice:column>
-                            <ice:inputText id="ipAddress"
-                                           value="#{currentRow.ipAddress}"
-                                           validator="#{EditLockssConfigPage.validateIpAddress}"/>
-                          </ice:column>
-                          <ice:column>
-                            <ice:commandButton image="/resources/images/icon_add.gif" actionListener="#{EditLockssConfigPage.addRow}" />
-                            <ice:commandButton image="/resources/images/icon_remove.gif" actionListener="#{EditLockssConfigPage.removeRow}"/>
-                          </ice:column>
-                          <ice:column>
-                            <ice:message for="ipAddress" styleClass="errorMessage"/>
-                          </ice:column>
-                        </ice:dataTable>
-                    </td>
-                  </tr>
-                  <tr class="lockssConfig"><td colspan="2" class="dvnPermissionsTableHeader"><ice:outputText value="Licensing Settings"/></td></tr>
-                  <tr class="lockssConfig">
-                    <td class="dvnPermissionsTableOption">
-                        <ice:outputText value="Licensing Options"/>
-                    </td>
-                    <td>
-                        <div jsfc="ice:panelGroup" styleClass="vdcHelpText">
-                          <ice:graphicImage alt="Information" title="Information" styleClass="vdcNoBorders" value="/resources/images/icon_info.gif"/>
-                          <ice:outputText value="Designate the license terms to be associated with harvesting content. For more information about CC licenses, please refer to the &#60;a href=&#34;http://creativecommons.org/about/licenses&#34;&#62; Creative Commons site&#60;/a&#62;, or &#60;a href=&#34;http://creativeCommons.org/about/cc0&#34;&#62; About CC0&#60;/a&#62;." escape="false"/>
-                        </div>
-                        <div jsfc="ice:panelGroup">
-                            <ice:selectOneMenu binding="#{EditLockssConfigPage.licenseMenu}" id="licenseType" value="#{EditLockssConfigPage.selectLicenseId}" >
-                                <f:selectItem itemValue="" itemLabel="Not Selected"/>
-                                <f:selectItems value="#{EditLockssConfigPage.selectLicenseTypes}"/>
+                      <tr class="lockssConfig">
+                        <td class="dvnPermissionsTableOption">
+                            <ice:outputText value="OAI Set"/>
+                        </td>
+                        <td><div jsfc="ice:panelGroup" styleClass="vdcHelpText">
+                              <ice:graphicImage alt="Information" title="Information" styleClass="vdcNoBorders" value="/resources/images/icon_info.gif"/>
+                              <ice:outputText value="Choose an OAI Set for harvesting by LOCKSS. Please note that LOCKSS servers can only harvest data that is local to this Dataverse Network."/>
+                            </div>
+                            <ice:selectOneMenu binding="#{EditLockssConfigPage.oaiSetMenu}" id="oaiSetModel" value="#{EditLockssConfigPage.selectOAISetId}">
+                                <f:selectItem itemValue="-1" itemLabel="Not Selected"/>
+                                <f:selectItems value="#{EditLockssConfigPage.selectOAISets}"/>
                             </ice:selectOneMenu>
-                            <ice:message id="licenseErrorMsg" styleClass="errorMessage" for="licenseType"/>
-                        </div>
-                    </td>
-                  </tr>
-                  <tr class="lockssConfig">
-                    <td class="dvnPermissionsTableOption">
-                        <ice:outputText value="Additional Terms"/>
-                    </td>
-                    <td>
-                        <ice:inputTextarea cols="100" rows="5" styleClass="formHtmlEnabled"
-                                           id="additionalLicensingTerms" value="#{EditLockssConfigPage.lockssConfig.licenseText}">
-                          <f:validator validatorId="XhtmlValidator"/>
-                        </ice:inputTextarea>
-                    </td>
-                  </tr>
-              </table>
-          </div>
-          <div class="dvnFormPadding dvnFormMargin">
-            <ice:commandButton id="button1" value="Save" action="#{EditLockssConfigPage.save}"/>
-            <ice:commandButton id="button2" immediate="true" value="Cancel" action="#{EditLockssConfigPage.cancel}"/>
-          </div>
+                            <ice:message id="oaiSetModelMsg" styleClass="errorMessage" for="oaiSetModel"/>
+                        </td>
+                      </tr>
+                      </ui:fragment>
+                      <tr class="lockssConfig">
+                        <td class="dvnPermissionsTableOption">
+                            <ice:outputText value="Restricted Data Files"/>
+                        </td>
+                        <td>
+                            <ice:selectBooleanCheckbox id="enableRestrictedCheckBox" value="#{EditLockssConfigPage.lockssConfig.allowRestricted}"/>
+                            <ice:outputText id="enableRestrictedLabel" value=" Enable LOCKSS harvesting of restricted data files by specified servers."/>
+                        </td>
+                      </tr>
+                      <tr class="lockssConfig">
+                        <td class="dvnPermissionsTableOption">
+                            <ice:outputText value="LOCKSS Server Addresses"/>
+                        </td>
+                        <td>
+                            <div jsfc="ice:panelGroup" styleClass="vdcHelpText">
+                              <ice:graphicImage alt="Information" title="Information" styleClass="vdcNoBorders" value="/resources/images/icon_info.gif"/>
+                              <ice:outputText value="Enter IP addresses (192.168.2.1) and/or domain names (www.host.edu) in the field below. Wildcards are acceptable (for example, 192.168.*, or *.host.edu ). "/>
+                            </div>
+                            <ice:message for="serverTable" styleClass="errorMessage"/>
+                            <ice:dataTable styleClass="dvnFormDataTable"
+                                           id ="serverTable"
+                                           cellpadding="0"
+                                           cellspacing="0"
+                                           binding="#{EditLockssConfigPage.serverTable}"
+                                           var="currentRow" value="#{EditLockssConfigPage.lockssConfig.lockssServers}">
+                              <ice:column>
+                                <ice:inputText id="ipAddress"
+                                               value="#{currentRow.ipAddress}"
+                                               validator="#{EditLockssConfigPage.validateIpAddress}"/>
+                              </ice:column>
+                              <ice:column>
+                                <ice:commandButton image="/resources/images/icon_add.gif" actionListener="#{EditLockssConfigPage.addRow}" />
+                                <ice:commandButton image="/resources/images/icon_remove.gif" actionListener="#{EditLockssConfigPage.removeRow}"/>
+                              </ice:column>
+                              <ice:column>
+                                <ice:message for="ipAddress" styleClass="errorMessage"/>
+                              </ice:column>
+                            </ice:dataTable>
+                        </td>
+                      </tr>
+                      <tr class="lockssConfig"><td colspan="2" class="dvnPermissionsTableHeader"><ice:outputText value="Licensing Settings"/></td></tr>
+                      <tr class="lockssConfig">
+                        <td class="dvnPermissionsTableOption">
+                            <ice:outputText value="Licensing Options"/>
+                        </td>
+                        <td>
+                            <div jsfc="ice:panelGroup" styleClass="vdcHelpText">
+                              <ice:graphicImage alt="Information" title="Information" styleClass="vdcNoBorders" value="/resources/images/icon_info.gif"/>
+                              <ice:outputText value="Designate the license terms to be associated with harvesting content. For more information about CC licenses, please refer to the &#60;a href=&#34;http://creativecommons.org/about/licenses&#34;&#62; Creative Commons site&#60;/a&#62;, or &#60;a href=&#34;http://creativeCommons.org/about/cc0&#34;&#62; About CC0&#60;/a&#62;." escape="false"/>
+                            </div>
+                            <div jsfc="ice:panelGroup">
+                                <ice:selectOneMenu binding="#{EditLockssConfigPage.licenseMenu}" id="licenseType" value="#{EditLockssConfigPage.selectLicenseId}" >
+                                    <f:selectItem itemValue="" itemLabel="Not Selected"/>
+                                    <f:selectItems value="#{EditLockssConfigPage.selectLicenseTypes}"/>
+                                </ice:selectOneMenu>
+                                <ice:message id="licenseErrorMsg" styleClass="errorMessage" for="licenseType"/>
+                            </div>
+                        </td>
+                      </tr>
+                      <tr class="lockssConfig">
+                        <td class="dvnPermissionsTableOption">
+                            <ice:outputText value="Additional Terms"/>
+                        </td>
+                        <td>
+                            <ice:inputTextarea cols="100" rows="5" styleClass="formHtmlEnabled"
+                                               id="additionalLicensingTerms" value="#{EditLockssConfigPage.lockssConfig.licenseText}">
+                              <f:validator validatorId="XhtmlValidator"/>
+                            </ice:inputTextarea>
+                        </td>
+                      </tr>
+                    </table>
+                    <div class="dvnFormPadding dvnFormMargin">
+                        <ice:commandButton id="button1" value="Save" action="#{EditLockssConfigPage.save}"/>
+                        <ice:commandButton id="button2" immediate="true" value="Cancel" action="#{EditLockssConfigPage.cancel}"/>
+                    </div>
+                </div>
+              </div>
+            </div>
         </div>
       </ice:form>
       <script type="text/javascript">

@@ -30,23 +30,22 @@
         <ice:inputHidden id="vdcId" value="#{VDCRequest.currentVDCId}"/>
         <ice:inputHidden id="hiddenNetworkTemplateId" value="#{ManageTemplatesPage.networkTemplateId}"/>
         <div class="dvn_section">
-          <div jsfc="ice:panelGroup" styleClass="dvnMsgBlockRound dvnInformationMessage">
-            <div class="dvnMsgBlockContainer">
-              <ice:outputText value="#{bundlePageInfo.manageTemplatesHelp}" escape="false"/>
-            </div>
-          </div>
           <div class="dvn_sectionTitle">
             <ice:outputText value="#{bundlePageInfo.manageTemplatesTitle}"/>
           </div>
           <div class="dvnManageTableTop">
-
-            <div jsfc="ice:panelGroup" styleClass="dvnManageTableCreateLink">
-              <ice:outputLink rendered="#{VDCRequest.currentVDCId!=null}" value="/dvn/dv/#{VDCRequest.currentVDC.alias}/faces/study/TemplateFormPage.xhtml">
+            <div jsfc="ice:panelGroup" styleClass="dvn_margin12 dvnInformationMessage">
+                <div class="dvnMsgBlockContainer">
+                  <ice:outputText value="#{bundlePageInfo.manageTemplatesHelp}" escape="false"/>
+                </div>
+            </div>
+            <div jsfc="ice:panelGroup" styleClass="dvnManageTableCreateLink" rendered="#{VDCRequest.currentVDCId!=null}">
+              <ice:outputLink value="/dvn/dv/#{VDCRequest.currentVDC.alias}/faces/study/TemplateFormPage.xhtml">
                 <ice:outputText value="Create New Template"/>
               </ice:outputLink>
             </div>
-            <div jsfc="ice:panelGroup" styleClass="dvnManageTableCreateLink">
-              <ice:outputLink rendered="#{VDCRequest.currentVDCId==null}" value="/dvn/faces/study/TemplateFormPage.xhtml">
+            <div jsfc="ice:panelGroup" styleClass="dvnManageTableCreateLink" rendered="#{VDCRequest.currentVDCId==null}">
+              <ice:outputLink value="/dvn/faces/study/TemplateFormPage.xhtml">
                 <ice:outputText value="Create New Network Template"/>
               </ice:outputLink>
             </div>
@@ -60,18 +59,18 @@
                              value="#{ManageTemplatesPage.templateData}" var="currentRow">
                 <ice:column>
                   <f:facet name="header">
+                    <ice:outputText value="Name"/>
+                  </f:facet>
+                  <ice:outputText value="#{currentRow[0].name}"/>
+                </ice:column>
+                <ice:column>
+                  <f:facet name="header">
                     <ice:outputText value="Default"/>
                   </f:facet>
                   <ice:outputText value="Current Default Template" rendered="#{ManageTemplatesPage.defaultTemplateId==currentRow[0].id}"/>
                   <ice:commandLink value="Make Default" rendered="#{(ManageTemplatesPage.defaultTemplateId!=currentRow[0].id and currentRow[2] == false) or 
                         (ManageTemplatesPage.defaultTemplateId!=currentRow[0].id and currentRow[0].id == 1)}" 
                                    action="#{ManageTemplatesPage.updateDefaultAction}"/>
-                 </ice:column>                 
-                <ice:column>
-                  <f:facet name="header">
-                    <ice:outputText value="Name"/>
-                  </f:facet>
-                  <ice:outputText value="#{currentRow[0].name}"/>
                 </ice:column>
                 <ice:column>
                   <f:facet name="header">

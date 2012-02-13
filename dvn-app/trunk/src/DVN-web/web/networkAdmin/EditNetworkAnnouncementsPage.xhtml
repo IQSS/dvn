@@ -14,22 +14,22 @@
     <ui:param name="pageTitle" value="#{bundlePageInfo.editDvnDescriptionTitle} - #{VDCRequest.dataversePageTitle}"/>
         <ui:define name="metadata">
         <f:metadata>
-            <f:event type="preRenderView" listener="#{EditNetworkAnnouncementsPage.preRenderView}" />            
+            <f:event type="preRenderView" listener="#{EditNetworkAnnouncementsPage.preRenderView}"/>            
          </f:metadata>
     </ui:define> 
     <ui:define name="body">
       <ice:form id="editNetworkAnnouncementsForm">
         <div class="dvn_section">
-          <div jsfc="ice:panelGroup" styleClass="dvnMsgBlockRound dvnInformationMessage">
-            <div class="dvnMsgBlockContainer">
-              <ice:outputText value="#{bundlePageInfo.editDvnDescriptionHelp}" escape="false"/>
-            </div>
-          </div>
           <div class="dvn_sectionTitle">
             <ice:outputText value="#{bundlePageInfo.editDvnDescriptionTitle}"/>
           </div>
           <div class="dvn_sectionBox">
-            <div class="dvn_margin12">              
+            <div class="dvn_margin12">
+              <div jsfc="ice:panelGroup" styleClass="dvnInformationMessage">
+                <div class="dvnMsgBlockContainer">
+                  <ice:outputText value="#{bundlePageInfo.editDvnDescriptionHelp}" escape="false"/>
+                </div>
+              </div>
               <div jsfc="ice:panelGroup" id="groupPanel2">
                 <ice:selectBooleanCheckbox id="chkEnableNetworkAnnouncements" value="#{EditNetworkAnnouncementsPage.chkEnableNetworkAnnouncements}"/>
                 <ice:outputText id="outputText4" value=" #{bundle.enableNetworkAnnouncementsLabel}"/>

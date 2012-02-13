@@ -16,167 +16,167 @@
             <ui:define name="metadata">
                 <f:metadata>
                     <f:viewParam name="classId" value ="#{addClassificationsPage.classId}"/>
-                    <f:event type="preRenderView" listener="#{addClassificationsPage.preRenderView}" />
+                    <f:event type="preRenderView" listener="#{addClassificationsPage.preRenderView}"/>
                 </f:metadata>
         </ui:define>
     <ui:define name="body">
       <ice:form id="AddClassificationsPageForm">
-        <div jsfc="ice:panelGroup" styleClass="dvnMsgBlockRound #{(addClassificationsPage.result == true) ? 'dvnSuccessMessage' : 'dvnInformationMessage'}">
-          <div class="dvnMsgBlockContainer">
-            <ice:outputText value="#{bundlePageInfo.createClassificationHelp}" escape="false"/>
-          </div>
-        </div>
-        <div class="dvn_sectionTitle">
-          <ice:outputText value="#{bundlePageInfo.createClassificationTitle}" rendered="#{addClassificationsPage.classId==null}"/>
-          <ice:outputText value="#{bundlePageInfo.editClassificationTitle}" rendered="#{addClassificationsPage.classId!=null}"/>
-        </div>
-        <div class="dvn_sectionBox">
-          <div class="dvn_margin12">
-            <!-- ***************************** add content here ************************************ -->
-            <ice:panelGrid cellpadding="0" cellspacing="0"
-                           columnClasses="vdcColPadded, vdcColPadded" columns="2" id="gridPanel2">
-              <ice:panelGroup>
-                <ice:outputLabel for="classification"
-                                 styleClass="vdcFieldTitle"
-                                 value="Name"/>
-                <ice:graphicImage id="image1" value="/resources/images/icon_required.gif"/>
-              </ice:panelGroup>
-              <ice:panelGroup>
-                <ice:inputText type="text"
-                               id="classification"
-                               binding="#{addClassificationsPage.nameInput}"
-                               required="true"
-                               requiredMessage="This field is required."
-                               size="35"
-                               validator="#{addClassificationsPage.validateClassificationName}"/>
-                <ice:message styleClass="errorMessage" for="classification"/>
-              </ice:panelGroup>
-              <ice:panelGroup>
-                <ice:outputLabel for="parent"
-                                 styleClass="vdcFieldTitle"
-                                 value="Parent"/>
-              </ice:panelGroup>
-              <ice:panelGroup>
-                <ice:selectOneMenu binding="#{addClassificationsPage.parentSelect}"
-                                   id="parentSelect"
-                                   value="#{addClassificationsPage.selectedParent}"
-                                   partialSubmit="true">
-                  <f:selectItems value="#{addClassificationsPage.parentSelectItems}" id="parentSelectItems"/>
-                </ice:selectOneMenu>
-              </ice:panelGroup>
-              <ice:panelGroup>
-                <ice:outputLabel for="description"
-                                 styleClass="vdcFieldTitle"
-                                 value="Description"/>
-              </ice:panelGroup>
-              <ice:panelGroup>
-                <ice:inputTextarea id="description"
-                                   name="description"
-                                   rows="4"
-                                   cols="20"
-                                   binding="#{addClassificationsPage.descriptionInput}">
-                    <f:validator validatorId="PlainTextValidator"/>
-                </ice:inputTextarea>
-                <ice:message styleClass="errorMessage" for="description"/>
-              </ice:panelGroup>
-            
-           </ice:panelGrid>
-           <ice:panelGroup rendered="#{addClassificationsPage.selectedParent==null or addClassificationsPage.selectedParent==0}">
-               <p>
-                   <ice:graphicImage value="/resources/images/icon_warning.18.png" styleClass="dvn_icon"/>
-                   <ice:outputText value=" You cannot add a dataverse to a top-level classification (a classification that does not have a parent). You can add dataverses to subclassifications only."/>
-               </p>
-           </ice:panelGroup>
-            <!-- ***************************** Add/Remove Dataverses to/from Classifications page. ************************************ -->
-            <ice:panelGroup styleClass="componentBox" rendered="#{addClassificationsPage.selectedParent!=null and addClassificationsPage.selectedParent!=0}">
-            <!-- Multiple Selection Checkbox -->
-            <ice:panelGroup styleClass="clearer"/>
-              <ice:panelGroup styleClass="dvnAddClassificationBlock">
-                <!-- DataTable with RowSelector Component -->
-                <ice:panelGroup styleClass="dvnAddClassificationMessage">
-                        <p>
-                            <ice:graphicImage value="/resources/images/icon_warning.18.png" styleClass="dvn_icon"/>
-                            <ice:outputText value=" Indicates a dataverse is not released."/>
-                        </p>
+          <div class="dvn_section">
+            <div class="dvn_sectionTitle">
+              <ice:outputText value="#{bundlePageInfo.createClassificationTitle}" rendered="#{addClassificationsPage.classId==null}"/>
+              <ice:outputText value="#{bundlePageInfo.editClassificationTitle}" rendered="#{addClassificationsPage.classId!=null}"/>
+            </div>
+            <div class="dvn_sectionBox">
+              <div class="dvn_margin12">
+                <div jsfc="ice:panelGroup" styleClass="#{(addClassificationsPage.result == true) ? 'dvnSuccessMessage' : 'dvnInformationMessage'}">
+                  <div class="dvnMsgBlockContainer">
+                    <ice:outputText value="#{bundlePageInfo.createClassificationHelp}" escape="false"/>
+                  </div>
+                </div>
+                <!-- ***************************** add content here ************************************ -->
+                <ice:panelGrid cellpadding="0" cellspacing="0"
+                               columnClasses="vdcColPadded, vdcColPadded" columns="2" id="gridPanel2">
+                  <ice:panelGroup>
+                    <ice:outputLabel for="classification"
+                                     styleClass="vdcFieldTitle"
+                                     value="Name"/>
+                    <ice:graphicImage id="image1" value="/resources/images/icon_required.gif"/>
+                  </ice:panelGroup>
+                  <ice:panelGroup>
+                    <ice:inputText type="text"
+                                   id="classification"
+                                   binding="#{addClassificationsPage.nameInput}"
+                                   required="true"
+                                   requiredMessage="This field is required."
+                                   size="35"
+                                   validator="#{addClassificationsPage.validateClassificationName}"/>
+                    <ice:message styleClass="errorMessage" for="classification"/>
+                  </ice:panelGroup>
+                  <ice:panelGroup>
+                    <ice:outputLabel for="parent"
+                                     styleClass="vdcFieldTitle"
+                                     value="Parent"/>
+                  </ice:panelGroup>
+                  <ice:panelGroup>
+                    <ice:selectOneMenu binding="#{addClassificationsPage.parentSelect}"
+                                       id="parentSelect"
+                                       value="#{addClassificationsPage.selectedParent}"
+                                       partialSubmit="true">
+                      <f:selectItems value="#{addClassificationsPage.parentSelectItems}" id="parentSelectItems"/>
+                    </ice:selectOneMenu>
+                  </ice:panelGroup>
+                  <ice:panelGroup>
+                    <ice:outputLabel for="description"
+                                     styleClass="vdcFieldTitle"
+                                     value="Description"/>
+                  </ice:panelGroup>
+                  <ice:panelGroup>
+                    <ice:inputTextarea id="description"
+                                       name="description"
+                                       rows="4"
+                                       cols="20"
+                                       binding="#{addClassificationsPage.descriptionInput}">
+                        <f:validator validatorId="PlainTextValidator"/>
+                    </ice:inputTextarea>
+                    <ice:message styleClass="errorMessage" for="description"/>
+                  </ice:panelGroup>
+               </ice:panelGrid>
+               <ice:panelGroup rendered="#{addClassificationsPage.selectedParent==null or addClassificationsPage.selectedParent==0}">
+                   <p>
+                       <ice:graphicImage value="/resources/images/icon_warning.18.png" styleClass="dvn_icon"/>
+                       <ice:outputText value=" You cannot add a dataverse to a top-level classification (a classification that does not have a parent). You can add dataverses to subclassifications only."/>
+                   </p>
+               </ice:panelGroup>
+                <!-- ***************************** Add/Remove Dataverses to/from Classifications page. ************************************ -->
+                <ice:panelGroup styleClass="componentBox" rendered="#{addClassificationsPage.selectedParent!=null and addClassificationsPage.selectedParent!=0}">
+                <!-- Multiple Selection Checkbox -->
+                <ice:panelGroup styleClass="clearer"/>
+                  <ice:panelGroup styleClass="dvnAddClassificationBlock">
+                    <!-- DataTable with RowSelector Component -->
+                    <ice:panelGroup styleClass="dvnAddClassificationMessage">
+                            <p>
+                                <ice:graphicImage value="/resources/images/icon_warning.18.png" styleClass="dvn_icon"/>
+                                <ice:outputText value=" Indicates a dataverse is not released."/>
+                            </p>
+                    </ice:panelGroup>
+                    <ice:panelGroup styleClass="dvnAddClassificationDataverses">
+                      <ice:outputLabel id="list" value="All Dataverses"/>
+                      <ice:dataTable id="dataverseList"
+                                     var="dataverse" columns="2"
+                                     scrollable="true" scrollHeight="400px"
+                                     value="#{addClassificationsPage.dataverses}"
+                                     columnClasses="tableCol" columnWidths="60%,40%"
+                                     width="100%"
+                                     styleClass="dvnAddClassificationTable">
+                        <ice:column styleClass="dvnAddClassificationDvName">
+                            <ice:rowSelector id="selected"
+                                           value="#{dataverse.selected}"
+                                           multiple="#{addClassificationsPage.multiRowSelect}"
+                                           selectionListener="#{addClassificationsPage.rowSelectionListener}"/>
+                          <f:facet name="header">
+                            <ice:outputText id="column2" value="Name"/>
+                          </f:facet>
+                          <ice:panelGroup>
+                              <ice:outputText id="Name" value="#{dataverse.name}"
+                                    styleClass="#{(dataverse.restricted) ? 'dvnAddClassificationDvNotReleased' : 'dvnAddClassificationDvReleased'}"/>
+                          </ice:panelGroup>
+                        </ice:column>
+                        <ice:column>
+                          <f:facet name="header">
+                            <ice:outputText id="column3" value="Affiliation"/>
+                          </f:facet>
+                          <ice:outputText id="Affiliation" value="#{dataverse.affiliation}"/>
+                        </ice:column>
+                      </ice:dataTable>
+                    </ice:panelGroup>
+                    <!-- Selected Values DataTable -->
+                    <ice:panelGroup styleClass="dvnAddClassificationSelected">
+                      <!-- TODO: Build this message -->
+                      <ice:outputLabel id="results" value="Selected Dataverses"/>
+                      <ice:dataTable id="selectedRows"
+                                     columns="2" 
+                                     scrollable="true"
+                                     scrollHeight="400px"
+                                     var="dataverse"
+                                     value="#{addClassificationsPage.selectedDataverses}"
+                                     columnClasses="tableCol" columnWidths="60%,40%"
+                                     headerClasses="dvnAddClassificationTableColHeader1,dvnAddClassificationTableColHeader2"
+                                     width="100%"
+                                     styleClass="dvnAddClassificationTable">
+                        <ice:column styleClass="dvnAddClassificationDvName">
+                          <f:facet name="header">
+                            <ice:outputText id="selectedColumn1" value="Name"/>
+                          </f:facet>
+                          <ice:panelGroup>
+                              <ice:outputText id="selectedName" value="#{dataverse.name}"
+                                    styleClass="#{(dataverse.restricted) ? 'dvnAddClassificationDvNotReleased' : 'dvnAddClassificationDvReleased'}"/>
+                            </ice:panelGroup>
+                        </ice:column>
+                        <ice:column>
+                          <f:facet name="header">
+                            <ice:outputText id="selectedColumn2" value="Affiliation"/>
+                          </f:facet>
+                          <ice:outputText id="selectedAffiliation" value="#{dataverse.affiliation}"/>
+                        </ice:column>
+                      </ice:dataTable>
+                    </ice:panelGroup>
+                  </ice:panelGroup>
+                  <ice:inputHidden id="classificationId"
+                                   binding="#{addClassificationsPage.classificationId}"
+                                   value="#{addClassificationsPage.classId}"/>
+                  <ice:inputHidden id="multiRowSelect"
+                                   binding="#{addClassificationsPage.multiRowSelector}"
+                                   value="#{addClassificationsPage.multiRowSelect}"/>
                 </ice:panelGroup>
-                <ice:panelGroup styleClass="dvnAddClassificationDataverses">
-                  <ice:outputLabel id="list" value="All Dataverses"/>
-                  <ice:dataTable id="dataverseList"
-                                 var="dataverse" columns="2"
-                                 scrollable="true" scrollHeight="400px"
-                                 value="#{addClassificationsPage.dataverses}"
-                                 columnClasses="tableCol" columnWidths="60%,40%"
-                                 width="100%"
-                                 styleClass="dvnAddClassificationTable">
-                    <ice:column styleClass="dvnAddClassificationDvName">
-                        <ice:rowSelector id="selected"
-                                       value="#{dataverse.selected}"
-                                       multiple="#{addClassificationsPage.multiRowSelect}"
-                                       selectionListener="#{addClassificationsPage.rowSelectionListener}"/>
-                      <f:facet name="header">
-                        <ice:outputText id="column2" value="Name"/>
-                      </f:facet>
-                      <ice:panelGroup>
-                          <ice:outputText id="Name" value="#{dataverse.name}"
-                                styleClass="#{(dataverse.restricted) ? 'dvnAddClassificationDvNotReleased' : 'dvnAddClassificationDvReleased'}"/>
-                      </ice:panelGroup>
-                    </ice:column>
-                    <ice:column>
-                      <f:facet name="header">
-                        <ice:outputText id="column3" value="Affiliation"/>
-                      </f:facet>
-                      <ice:outputText id="Affiliation" value="#{dataverse.affiliation}"/>
-                    </ice:column>
-                  </ice:dataTable>
-                </ice:panelGroup>
-                <!-- Selected Values DataTable -->
-                <ice:panelGroup styleClass="dvnAddClassificationSelected">
-                  <!-- TODO: Build this message -->
-                  <ice:outputLabel id="results" value="Selected Dataverses"/>
-                  <ice:dataTable id="selectedRows"
-                                 columns="2" 
-                                 scrollable="true"
-                                 scrollHeight="400px"
-                                 var="dataverse"
-                                 value="#{addClassificationsPage.selectedDataverses}"
-                                 columnClasses="tableCol" columnWidths="60%,40%"
-                                 headerClasses="dvnAddClassificationTableColHeader1,dvnAddClassificationTableColHeader2"
-                                 width="100%"
-                                 styleClass="dvnAddClassificationTable">
-                    <ice:column styleClass="dvnAddClassificationDvName">
-                      <f:facet name="header">
-                        <ice:outputText id="selectedColumn1" value="Name"/>
-                      </f:facet>
-                      <ice:panelGroup>
-                          <ice:outputText id="selectedName" value="#{dataverse.name}"
-                                styleClass="#{(dataverse.restricted) ? 'dvnAddClassificationDvNotReleased' : 'dvnAddClassificationDvReleased'}"/>
-                        </ice:panelGroup>
-                    </ice:column>
-                    <ice:column>
-                      <f:facet name="header">
-                        <ice:outputText id="selectedColumn2" value="Affiliation"/>
-                      </f:facet>
-                      <ice:outputText id="selectedAffiliation" value="#{dataverse.affiliation}"/>
-                    </ice:column>
-                  </ice:dataTable>
-                </ice:panelGroup>
-              </ice:panelGroup>
-              <ice:inputHidden id="classificationId"
-                               binding="#{addClassificationsPage.classificationId}"
-                               value="#{addClassificationsPage.classId}"/>
-              <ice:inputHidden id="multiRowSelect"
-                               binding="#{addClassificationsPage.multiRowSelector}"
-                               value="#{addClassificationsPage.multiRowSelect}"/>
-           
-            </ice:panelGroup>
-            <!-- end rowSelect related form fields -->
-            <div class="dvnFormPadding dvnFormMargin">
-              <ice:commandButton id="btnUpdate" rendered="#{addClassificationsPage.classId != null}" value="#{bundle.saveButtonLabel}" action="#{addClassificationsPage.update_action}"/>
-              <ice:commandButton id="btnCreate" rendered="#{addClassificationsPage.classId == null}" value="#{bundle.saveButtonLabel}" action="#{addClassificationsPage.add_action}"/>
-              <ice:commandButton id="btnCancel" immediate="true" value="#{bundle.cancelButtonLabel}" action="/networkAdmin/ManageClassificationsPage.xhtml?faces-redirect=true"/>
+                <!-- end rowSelect related form fields -->
+                <div class="dvnFormPadding dvnFormMargin">
+                  <ice:commandButton id="btnUpdate" rendered="#{addClassificationsPage.classId != null}" value="#{bundle.saveButtonLabel}" action="#{addClassificationsPage.update_action}"/>
+                  <ice:commandButton id="btnCreate" rendered="#{addClassificationsPage.classId == null}" value="#{bundle.saveButtonLabel}" action="#{addClassificationsPage.add_action}"/>
+                  <ice:commandButton id="btnCancel" immediate="true" value="#{bundle.cancelButtonLabel}" action="/networkAdmin/ManageClassificationsPage.xhtml?faces-redirect=true"/>
+                </div>
+              </div>
             </div>
           </div>
-        </div>
       </ice:form>
     </ui:define>
   </ui:composition>

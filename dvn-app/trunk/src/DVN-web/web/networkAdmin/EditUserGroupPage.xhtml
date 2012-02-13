@@ -45,16 +45,16 @@
         <ice:inputHidden id="vdcId" value="#{VDCRequest.currentVDCId}"/>
         <input type="hidden" name="pageName" value="EditUserGroupPage"/>
         <div class="dvn_section">
-           <div jsfc="ice:panelGroup" styleClass="dvnMsgBlockRound dvnInformationMessage">
-             <div class="dvnMsgBlockContainer">
-               <ice:outputText value="#{bundlePageInfo.editGroupHelp}" escape="false"/>
-             </div>
-          </div>
           <div class="dvn_sectionTitle">
             <ice:outputText value="#{bundlePageInfo.editGroupTitle}"/>
           </div>
           <div class="dvn_sectionBox">
             <div class="dvn_margin12">
+              <div jsfc="ice:panelGroup" styleClass="dvnInformationMessage">
+                 <div class="dvnMsgBlockContainer">
+                   <ice:outputText value="#{bundlePageInfo.editGroupHelp}" escape="false"/>
+                 </div>
+              </div>
               <div jsfc="ice:panelGroup" styleClass="vdcHelpText">
                 <ice:graphicImage value="/resources/images/icon_required.gif"/> <ice:outputText value="Indicates a required field."/>
               </div>

@@ -19,11 +19,6 @@
     <ui:define name="body">
       <ice:form>
         <div class="dvn_section">
-          <div jsfc="ice:panelGroup" styleClass="dvnMsgBlockRound dvnInformationMessage">
-            <div class="dvnMsgBlockContainer">
-              <ice:outputText value="#{bundlePageInfo.manageClassificationsHelp}" escape="false"/>
-            </div>
-          </div>
           <div class="dvn_sectionTitle">
             <ice:outputText value="#{bundlePageInfo.manageClassificationsTitle}"/>
           </div>
@@ -32,6 +27,12 @@
             <ice:messages id="iceMessage" binding="#{manageClassificationsPage.iceMessage}" layout="list" showDetail="false" showSummary="true"/>
           </div>
           <div class="dvnManageClassificationsTableTop">
+            <div jsfc="ice:panelGroup" styleClass="dvn_margin12 dvnInformationMessage">
+                <div class="dvnMsgBlockContainer">
+                  <ice:outputText value="#{bundlePageInfo.manageClassificationsHelp}" escape="false"/>
+                </div>
+            </div>
+            
             <div jsfc="ice:panelGroup" styleClass="dvnManageClassificationsTableTotals">
               <ice:outputText value="Classifications: #{manageClassificationsPage.itemBeansSize}"/>
             </div>
@@ -41,7 +42,11 @@
               </ice:outputLink>
             </div>
           </div>
+          <div jsfc="ice:panelGroup" styleClass="dvnManageTableEmpty" rendered="#{manageClassificationsPage.itemBeansSize == 0}">
+              <ice:outputText value="There are no classifications set up for this Dataverse Network."/>
+          </div>
           <ice:dataTable id="dataverseList" binding="#{manageClassificationsPage.mainTable}"
+                         rendered="#{manageClassificationsPage.itemBeansSize != 0}"
                          styleClass="dvnManageClassificationsTable"
                          rowClasses="evenRow, oddRow" headerClass="groupRow"
                          columnClasses="dvnMngClssTableSelect,dvnMngClssTableName,dvnMngClssTableDesc,dvnMngClssTableCount,dvnMngClssTableDelete"

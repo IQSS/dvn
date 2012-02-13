@@ -15,7 +15,7 @@
         <f:metadata>
             <f:viewParam name="deleteId" value ="#{DeleteDataversePage.deleteId}"/>
             <f:viewParam name="from" value ="#{DeleteDataversePage.from}"/>
-            <f:event type="preRenderView" listener="#{DeleteDataversePage.preRenderView}" />
+            <f:event type="preRenderView" listener="#{DeleteDataversePage.preRenderView}"/>
         </f:metadata>
     </ui:define>
     <ui:define name="body">
@@ -24,16 +24,16 @@
         <ice:inputHidden id="deleteId" value="#{DeleteDataversePage.deleteId}" binding="#{DeleteDataversePage.hiddenVdcId}"/>
         <ice:inputHidden binding="#{DeleteDataversePage.hiddenVdcName}" id="vdcName" value="#{DeleteDataversePage.vdcName}"/>
         <div class="dvn_section">
-          <div jsfc="ice:panelGroup" styleClass="dvnMsgBlockRound dvnInformationMessage">
-            <div class="dvnMsgBlockContainer">
-              <ice:outputText value="#{bundlePageInfo.deleteDataverseHelp}" escape="false"/>
-            </div>
-          </div>
           <div class="dvn_sectionTitle">
             <ice:outputText value="#{bundlePageInfo.deleteDataverseTitle}"/>
           </div>
           <div class="dvn_sectionBox">
             <div class="dvn_margin12">
+              <div jsfc="ice:panelGroup" styleClass="dvnInformationMessage">
+                <div class="dvnMsgBlockContainer">
+                  <ice:outputText value="#{bundlePageInfo.deleteDataverseHelp}" escape="false"/>
+                </div>
+              </div>
               <div id="groupPanel1">
                 <p>
                   <ice:outputText styleClass="warnMessage" value="Are you sure you want to delete &lt;span class='vdcTextStandOut'&gt;#{DeleteDataversePage.vdcName}&lt;/span&gt;?" escape="false"/>

@@ -11,13 +11,13 @@
 </head>
 <body>
   <ui:composition template="/template.xhtml">
-    <ui:param name="pageTitle"  value="#{bundlePageInfo.editDvSettingsTitle} - #{VDCRequest.dataversePageTitle}"/>
+    <ui:param name="pageTitle" value="#{bundlePageInfo.editDvSettingsTitle} - #{VDCRequest.dataversePageTitle}"/>
     <ui:define name="metadata">
-        <f:event type="preRenderView" listener="#{EditSitePage.preRenderView}" />  
+        <f:event type="preRenderView" listener="#{EditSitePage.preRenderView}"/>  
     </ui:define>
     <ui:define name="body">
       <ice:form id="editsiteform">
-           <ice:message for="editsiteform" id ="boxErrorMsg1"  styleClass="errorMessage"   />
+           <ice:message for="editsiteform" id ="boxErrorMsg1"  styleClass="errorMessage"/>
         <script type="text/javascript">
             //<![CDATA[
             function changeValue(obj) {
@@ -55,32 +55,31 @@
             // ]]>
         </script>
         <div class="dvn_section">
-          <div jsfc="ice:panelGroup" styleClass="dvnMsgBlockRound dvnInformationMessage">
-            <div class="dvnMsgBlockContainer">
-              <ice:outputText value="#{bundlePageInfo.editDvSettingsHelp}" escape="false"/>
-            </div>
-          </div>
           <div class="dvn_sectionTitle">
             <ice:outputText value="#{bundlePageInfo.editDvSettingsTitle}"/>
           </div>
           <div class="dvn_sectionBox">
             <div class="dvn_margin12" id="successMessageDiv">
+              <div jsfc="ice:panelGroup" styleClass="dvnInformationMessage">
+                <div class="dvnMsgBlockContainer">
+                  <ice:outputText value="#{bundlePageInfo.editDvSettingsHelp}" escape="false"/>
+                </div>
+              </div>
               <ice:inputHidden id="vdcId" value="#{VDCRequest.currentVDCId}"/>
               <div jsfc="ice:panelGroup" styleClass="#{EditSitePage.msg.styleClass}" rendered="#{!empty EditSitePage.msg.messageText}">
                 <ice:outputText id="statusMessage" value="#{EditSitePage.msg.messageText}"/>
               </div>
               <ice:panelGrid cellpadding="0" cellspacing="0" columns="2"
                              columnClasses="vdcAddSiteCol1, vdcAddSiteCol2" id="gridPanel1">
-                <div jsfc="ice:panelGroup">
-                  <ice:outputLabel for="dataverseOption" id="dataverseLabel" rendered ="{not VDCRequest.currentVDC.harvestingDv}">
+                <div jsfc="ice:panelGroup" rendered="{not VDCRequest.currentVDC.harvestingDv}">
+                  <ice:outputLabel for="dataverseOption" id="dataverseLabel">
                     <ice:outputText value="Type of Dataverse"/>
                   </ice:outputLabel>
                 </div>
                 <!-- Developed for 16a, but not used pending a solution for cast up from scholar dv to VDC -->
-                <div jsfc="ice:panelGroup">
+                <div jsfc="ice:panelGroup" rendered="{not VDCRequest.currentVDC.harvestingDv}">
                    <!-- add rendered condition for dataverseType because this should only be shown for non-harvesting dataverses-->
                   <ice:selectOneRadio id="dataverseOption"
-                                      rendered ="{not VDCRequest.currentVDC.harvestingDv} "
                                       layout="pageDirection"
                                       immediate="true"
                                       onclick="changeValue(this);"
@@ -90,13 +89,13 @@
                   </ice:selectOneRadio>
                 </div>
                 <!-- first name -->
-                <div jsfc="ice:panelGroup">
+                <div jsfc="ice:panelGroup" rendered="#{EditSitePage.dataverseType == 'Scholar'}">
                   <ice:outputLabel for="firstName" id="firstnameLabel">
                     <ice:outputText value="First Name"/>
                     <ice:graphicImage value="#{bundle.iconRequired}"/>
                   </ice:outputLabel>
                 </div>
-                <div jsfc="ice:panelGroup">
+                <div jsfc="ice:panelGroup" rendered="#{EditSitePage.dataverseType == 'Scholar'}">
                   <ice:inputText id="firstName"
                                  required="#{(EditSitePage.dataverseType == 'Scholar') ? true : false}"
                                  requiredMessage="This field is required."
@@ -106,20 +105,19 @@
                   <ice:message for="firstName" showSummary="true" showDetail="false" errorClass="errorMessage" styleClass="errorMessage"/>
                 </div>
                 <!-- last name -->
-                <div jsfc="ice:panelGroup">
+                <div jsfc="ice:panelGroup" rendered="#{EditSitePage.dataverseType == 'Scholar'}">
                   <ice:outputLabel for="lastName" id="lastnameLabel">
                     <ice:outputText value="Last Name"/>
                     <ice:graphicImage value="#{bundle.iconRequired}"/>
                   </ice:outputLabel>
                 </div>
-                <div jsfc="ice:panelGroup">
+                <div jsfc="ice:panelGroup" rendered="#{EditSitePage.dataverseType == 'Scholar'}">
                   <ice:inputText id="lastName"
                                  required="#{(EditSitePage.dataverseType == 'Scholar') ? true : false}"
                                  requiredMessage="This field is required."
                                  value="#{EditSitePage.lastName}"
                                  valueChangeListener="#{EditSitePage.changeLastName}"
                                  validator="#{EditSitePage.validateIsEmpty}"/>
-
                   <ice:message for="lastName" showSummary="true" showDetail="false" errorClass="errorMessage" styleClass="errorMessage"/>
                 </div>
                 <!-- affiliation -->

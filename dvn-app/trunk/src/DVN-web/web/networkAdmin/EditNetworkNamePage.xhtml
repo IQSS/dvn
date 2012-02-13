@@ -13,21 +13,21 @@
   <ui:composition template="/template.xhtml">
     <ui:param name="pageTitle" value="#{bundlePageInfo.editDvnNameTitle} - #{VDCRequest.dataversePageTitle}"/>
     <ui:define name="metadata">
-        <f:event type="preRenderView" listener="#{EditNetworkNamePage.preRenderView}" />   
+        <f:event type="preRenderView" listener="#{EditNetworkNamePage.preRenderView}"/>   
     </ui:define> 
     <ui:define name="body">
       <ice:form id="form1">
         <div class="dvn_section">
-          <div jsfc="ice:panelGroup" styleClass="dvnMsgBlockRound dvnInformationMessage">
-            <div class="dvnMsgBlockContainer">
-              <ice:outputText value="#{bundlePageInfo.editDvnNameHelp}" escape="false"/>
-            </div>
-          </div>
           <div class="dvn_sectionTitle">
             <ice:outputText value="#{bundlePageInfo.editDvnNameTitle}"/>
           </div>
           <div class="dvn_sectionBox">
             <div class="dvn_margin12">
+              <div jsfc="ice:panelGroup" styleClass="dvnInformationMessage">
+                <div class="dvnMsgBlockContainer">
+                  <ice:outputText value="#{bundlePageInfo.editDvnNameHelp}" escape="false"/>
+                </div>
+              </div>
               <div jsfc="ice:panelGroup" styleClass="#{EditNetworkNamePage.msg.styleClass}" rendered="#{!empty EditNetworkNamePage.msg.messageText}">
                 <ice:outputText id="statusMessage" value="#{EditNetworkNamePage.msg.messageText}"/>
               </div>

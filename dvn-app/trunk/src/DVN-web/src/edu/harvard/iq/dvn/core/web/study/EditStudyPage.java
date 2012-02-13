@@ -143,6 +143,7 @@ public class EditStudyPage extends VDCBaseBean implements java.io.Serializable  
             setFiles(editStudyService.getCurrentFiles());
             initAdHocFieldMap(true);
         } else {
+            
             Long vdcId = getVDCRequestBean().getCurrentVDC().getId();
             selectTemplateId = getVDCRequestBean().getCurrentVDC().getDefaultTemplate().getId();
             editStudyService.newStudy(vdcId, getVDCSessionBean().getLoginBean().getUser().getId(), selectTemplateId);
@@ -237,6 +238,7 @@ public class EditStudyPage extends VDCBaseBean implements java.io.Serializable  
     }
     
     public String changeTemplateAction() {
+        System.out.println("change template action");
         Object value= this.selectTemplate.getValue();
         if (value!=null ) {           
             editStudyService.changeTemplate((Long)value);
@@ -325,17 +327,20 @@ public class EditStudyPage extends VDCBaseBean implements java.io.Serializable  
     private List<TemplateField> adHocFields;
     
     public void initAdHocFieldMap(boolean metadataSet){
+        System.out.println("init adhoc field");
         adHocFields = new ArrayList();
         for (Iterator<TemplateField> it = study.getTemplate().getTemplateFields().iterator(); it.hasNext();) {
             TemplateField tf = it.next();
             if (!tf.isHidden()){
                 StudyMapValue smv = new StudyMapValue();
                 smv.setTemplateFieldUI(new TemplateFieldUI(tf));
+                
                 List <TemplateFieldValue> removeList = new ArrayList();
                 if(tf.getStudyField().isDcmField()){
+                    System.out.println("tf in init adhoc field map  " + tf.getStudyField().getName() + "  multiple rows ? " + tf.isAllowMultiples());
                     tf.getTemplateFieldValues();
                     if (tf.getTemplateFieldValues().size() > 0){
-
+                         System.out.println("tf in init adhoc field map" + tf.getStudyField().getName() + "multiple rows ? " + tf.isAllowMultiples());
                         for (TemplateFieldValue tfv : tf.getTemplateFieldValues()){
                             if (!tfv.getMetadata().equals(metadata) && metadataSet ){
                                 removeList.add(tfv);
@@ -399,7 +404,8 @@ public class EditStudyPage extends VDCBaseBean implements java.io.Serializable  
             newElem.setTemplateField(tfSel);
             metadata.getTemplateFieldValue().add(newElem);
             tfSel.getTemplateFieldValues().add(newElem);
-            dcmFieldTable.getChildren().clear();
+            //remove clear can interfere with add buttons
+            //dcmFieldTable.getChildren().clear();
     }
 
     private HtmlDataTable dcmFieldTable;
@@ -1083,7 +1089,7 @@ public class EditStudyPage extends VDCBaseBean implements java.io.Serializable  
      }
 
     public String getDataCollectionMethodologyInputLevel() {
-        return getInputLevel(StudyFieldConstant.timeMethod,
+        String retString = getInputLevel(StudyFieldConstant.timeMethod,
                 StudyFieldConstant.dataCollector,
                 StudyFieldConstant.frequencyOfDataCollection,
                 StudyFieldConstant.samplingProcedure,
@@ -1102,8 +1108,24 @@ public class EditStudyPage extends VDCBaseBean implements java.io.Serializable  
                 StudyFieldConstant.studyLevelErrorNotes,
                 StudyFieldConstant.samplingErrorEstimates,
                 StudyFieldConstant.otherDataAppraisal);
-
-
+        if (retString.equals("recommended")  || retString.equals("required") ){
+            return retString;
+        } else {
+            return getCustomFieldMethodologyInputLevel();
+        }
+    }
+    
+    public String getCustomFieldMethodologyInputLevel(){
+        String retString = "optional";
+        for (TemplateField tfv: adHocFields){
+            if (tfv.isRecommended()){
+               return "recommended"; 
+            }
+            if (tfv.isRequired()){
+               return "required"; 
+            }
+        }
+        return retString;
     }
     public boolean isDataCollectionMethodologyEmpty() {
         return StringUtil.isEmpty(metadata.getTimeMethod()) &&

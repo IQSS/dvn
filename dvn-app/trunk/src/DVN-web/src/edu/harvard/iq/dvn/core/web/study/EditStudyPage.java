@@ -637,8 +637,34 @@ public class EditStudyPage extends VDCBaseBean implements java.io.Serializable  
         return isGroupEmpty(metadata.getStudyOtherRefs());
     }
 
+    public void removeDcmRow(ActionEvent ae) {
 
-
+        HtmlDataTable dataTable = getDataTableDCMFieldValues();
+        if (dataTable.getRowCount()>1) {
+            List data = (List)dataTable.getValue();
+            editStudyService.removeCollectionElement(data,dataTable.getRowData());
+        }
+    }
+        /**
+     * Holds value of property dataTableOtherIds.
+     */
+    private HtmlDataTable dataTableDCMFieldValues;
+    
+    /**
+     * Getter for property dataTableOtherIds.
+     * @return Value of property dataTableOtherIds.
+     */
+    public HtmlDataTable getDataTableDCMFieldValues() {
+        return this.dataTableDCMFieldValues;
+    }
+    
+    /**
+     * Setter for property dataTableOtherIds.
+     * @param dataTableOtherIds New value of property dataTableOtherIds.
+     */
+    public void setDataTableDCMFieldValues(HtmlDataTable dataTableDCMFieldValues) {
+        this.dataTableDCMFieldValues = dataTableDCMFieldValues;
+    }
     private void removeEmptyRows() {
         // Remove empty collection rows
         
@@ -1145,7 +1171,16 @@ public class EditStudyPage extends VDCBaseBean implements java.io.Serializable  
                 StringUtil.isEmpty(metadata.getStudyLevelErrorNotes()) &&
                 StringUtil.isEmpty(metadata.getResponseRate()) &&
                 StringUtil.isEmpty(metadata.getSamplingErrorEstimate()) &&
-                StringUtil.isEmpty(metadata.getOtherDataAppraisal());
+                StringUtil.isEmpty(metadata.getOtherDataAppraisal())  && 
+                adHocFieldsEmpty();
+    }
+    private boolean adHocFieldsEmpty(){
+        for (TemplateField tf: adHocFields){
+            if(!tf.getTemplateFieldValues().isEmpty()){
+                return false;
+            }
+        }
+        return true;
     }
  
     public String getTermsOfUseInputLevel() {

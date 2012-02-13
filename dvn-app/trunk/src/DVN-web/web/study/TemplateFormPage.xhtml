@@ -1388,7 +1388,8 @@
                       </div>
                     </ice:column>
                     <ice:column>
-                      <ice:dataTable var="fieldValRow" value="#{dcmItem.templateFieldValues}">
+                      <ice:dataTable var="fieldValRow" value="#{dcmItem.templateFieldValues}"
+                                     binding="#{TemplateFormPage.dataTableDCMFieldValues}">
                        <ice:column> 
                           <!-- put in default field type as text box-->
                           <ice:inputText id="input_TextDefault" size="90" rendered="#{empty(dcmItem.studyField.fieldType)}" 

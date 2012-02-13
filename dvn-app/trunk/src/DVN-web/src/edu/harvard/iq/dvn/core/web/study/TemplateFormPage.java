@@ -351,6 +351,8 @@ public class TemplateFormPage extends VDCBaseBean implements java.io.Serializabl
     }
 
     public void addDcmRow(ActionEvent ae) {
+        
+        HtmlDataTable dataTable = getDataTableDCMFieldValues();
         Long getOrder = (Long) ae.getComponent().getAttributes().get("dcmSortOrder");
             TemplateField tf = adHocFields.get(getOrder.intValue() -1 );
             TemplateFieldValue newElem = new TemplateFieldValue();
@@ -359,7 +361,7 @@ public class TemplateFormPage extends VDCBaseBean implements java.io.Serializabl
             
             // try to get the add button to not wipe out newly added text.
             tf.getTemplateFieldValues().add(tf.getTemplateFieldValues().size(), newElem);
-            template.getMetadata().getTemplateFieldValue().add(newElem);
+            template.getMetadata().getTemplateFieldValue().add(dataTable.getRowIndex()+1,newElem);
             //tf.getTemplateFieldValues().size(); //debug line
             //remove clear it was interfering with move buttons
             //dcmFieldTable.getChildren().clear();
@@ -448,6 +450,12 @@ public class TemplateFormPage extends VDCBaseBean implements java.io.Serializabl
 
     public void removeDcmRow(ActionEvent ae) {
 
+        HtmlDataTable dataTable = getDataTableDCMFieldValues();
+        if (dataTable.getRowCount()>1) {
+            List data = (List)dataTable.getValue();
+            editTemplateService.removeCollectionElement(data,dataTable.getRowData());
+        }
+        /*
         Long getOrder = (Long) ae.getComponent().getAttributes().get("dcmSortOrder");
         TemplateField tf = adHocFields.get(getOrder.intValue() -1 );
         TemplateFieldValue tfv = null;
@@ -460,7 +468,7 @@ public class TemplateFormPage extends VDCBaseBean implements java.io.Serializabl
         if (!(tfv== null)){
             editTemplateService.removeCollectionElement(data,tfv);
         }
-         
+        */ 
     }
     
     public void removeAdHocField(ActionEvent ae) {
@@ -563,6 +571,27 @@ public class TemplateFormPage extends VDCBaseBean implements java.io.Serializabl
      */
     public void setDataTableOtherIds(HtmlDataTable dataTableOtherIds) {
         this.dataTableOtherIds = dataTableOtherIds;
+    }
+    
+        /**
+     * Holds value of property dataTableOtherIds.
+     */
+    private HtmlDataTable dataTableDCMFieldValues;
+    
+    /**
+     * Getter for property dataTableOtherIds.
+     * @return Value of property dataTableOtherIds.
+     */
+    public HtmlDataTable getDataTableDCMFieldValues() {
+        return this.dataTableDCMFieldValues;
+    }
+    
+    /**
+     * Setter for property dataTableOtherIds.
+     * @param dataTableOtherIds New value of property dataTableOtherIds.
+     */
+    public void setDataTableDCMFieldValues(HtmlDataTable dataTableDCMFieldValues) {
+        this.dataTableDCMFieldValues = dataTableDCMFieldValues;
     }
     
     private void removeEmptyRows() {

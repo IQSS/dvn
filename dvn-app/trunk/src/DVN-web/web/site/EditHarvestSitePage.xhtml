@@ -97,18 +97,19 @@
         <input type="hidden" name="pageName" value="EditHarvestSitePage"/>
         <ice:inputHidden id="harvestId" value="#{EditHarvestSitePage.harvestId}"/>
         <div class="dvn_section">
-          <div jsfc="ice:panelGroup" styleClass="dvnMsgBlockRound dvnInformationMessage">
-            <div class="dvnMsgBlockContainer">
-              <ice:outputText value="#{bundlePageInfo.createHarvestingDvHelp}" escape="false"/>
-              <div jsfc="ice:panelGroup" styleClass="successMessage" rendered="#{EditHarvestSitePage.success}">
-                <ice:outputText value="Update Successful!"/>
-              </div>
-            </div>
-          </div>
           <div class="dvn_sectionTitle">
             <ice:outputText value="#{EditHarvestSitePage.pageTitle}"/>
           </div>
-          <div jsfc="ice:panelGroup">
+          <div class="dvn_sectionBox">
+            <div class="dvn_margin12">
+              <div jsfc="ice:panelGroup" styleClass="dvnInformationMessage">
+                <div class="dvnMsgBlockContainer">
+                  <ice:outputText value="#{bundlePageInfo.createHarvestingDvHelp}" escape="false"/>
+                  <div jsfc="ice:panelGroup" styleClass="successMessage" rendered="#{EditHarvestSitePage.success}">
+                    <ice:outputText value="Update Successful!"/>
+                  </div>
+                </div>
+              </div>
               <table class="dvnPermissionsTable" cellspacing="0" cellpadding="0" border="0">
                   <tr><td colspan="2" class="dvnPermissionsTableHeader"><ice:outputText value="General Settings"/></td></tr>
                   <tr>
@@ -222,8 +223,6 @@
                     </td>
                   </tr>
               </table>
-          </div>
-          <div id="scheduleBlock" class="dvnFormPaddingTop">
               <table class="dvnPermissionsTable" cellspacing="0" cellpadding="0" border="0">
                   <tr><td colspan="2" class="dvnPermissionsTableHeader"><ice:outputText value="Schedule Settings"/></td></tr>
                   <tr>
@@ -312,8 +311,6 @@
                     </td>
                   </tr>
               </table>
-          </div>
-          <div class="dvnFormPadding">
               <table class="dvnPermissionsTable" cellspacing="0" cellpadding="0" border="0">
                   <tr><td colspan="2" class="dvnPermissionsTableHeader"><ice:outputText value="Permissions Settings"/></td></tr>
                   <tr>
@@ -397,10 +394,11 @@
                     </td>
                   </tr>
               </table>
-          </div>
-          <div class="dvnFormPadding dvnFormMargin">
-              <ice:commandButton id="button1" binding ="#{EditHarvestSitePage.saveCommand}" value="Save" action="#{EditHarvestSitePage.save}"/>
-            <ice:commandButton id="button2" immediate="true" value="Cancel" action="#{EditHarvestSitePage.cancel}"/>
+              <div class="dvnFormPadding dvnFormMargin">
+                  <ice:commandButton id="button1" binding ="#{EditHarvestSitePage.saveCommand}" value="Save" action="#{EditHarvestSitePage.save}"/>
+                <ice:commandButton id="button2" immediate="true" value="Cancel" action="#{EditHarvestSitePage.cancel}"/>
+              </div>
+            </div>
           </div>
         </div>
       </ice:form>

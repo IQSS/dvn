@@ -20,15 +20,15 @@
     <ui:define name="body">
       <ice:form id="form1">
         <div class="dvn_section">
-          <div jsfc="ice:panelGroup" styleClass="dvnMsgBlockRound dvnInformationMessage">
-            <div class="dvnMsgBlockContainer">
-              <ice:outputText value="#{bundlePageInfo.oaiSetsHelp}" escape="false"/>
-            </div>
-          </div>
           <div class="dvn_sectionTitle">
             <ice:outputText value="#{bundlePageInfo.oaiSetsTitle}"/>
           </div>
           <div class="dvnManageTableTop">
+            <div jsfc="ice:panelGroup" styleClass="dvn_margin12 dvnInformationMessage">
+                <div class="dvnMsgBlockContainer">
+                  <ice:outputText value="#{bundlePageInfo.oaiSetsHelp}" escape="false"/>
+                </div>
+            </div>
             <div class="dvnManageTableCreateLink">
               <ice:outputLink value="/dvn/faces/networkAdmin/EditOAISetPage.xhtml">
                 <ice:outputText value="Create OAI Harvesting Set"/>

@@ -15,7 +15,7 @@
     <ui:define name="metadata">
         <f:metadata>
              <f:viewParam name="oaiSetId" value ="#{EditOAISetPage.oaiSetId}"/>
-             <f:event type="preRenderView" listener="#{EditOAISetPage.preRenderView}" />
+             <f:event type="preRenderView" listener="#{EditOAISetPage.preRenderView}"/>
         </f:metadata>
     </ui:define>
     <ui:define name="body">
@@ -24,16 +24,16 @@
         <ice:inputHidden value="#{EditOAISetPage.oaiSet.version}"/>
         <input type="hidden" name="pageName" value="EditOAISetPage"/>
         <div class="dvn_section">
-          <div jsfc="ice:panelGroup" styleClass="dvnMsgBlockRound dvnInformationMessage">
-            <div class="dvnMsgBlockContainer">
-              <ice:outputText value="#{bundlePageInfo.editOaiSetHelp}" escape="false"/>
-            </div>
-          </div>
           <div class="dvn_sectionTitle">
             <ice:outputText value="#{bundlePageInfo.editOaiSetTitle}"/>
           </div>
           <div class="dvn_sectionBox">
             <div class="dvn_margin12">
+              <div jsfc="ice:panelGroup" styleClass="dvnInformationMessage">
+                <div class="dvnMsgBlockContainer">
+                  <ice:outputText value="#{bundlePageInfo.editOaiSetHelp}" escape="false"/>
+                </div>
+              </div>
               <!--  <div jsfc="ice:panelGroup" styleClass="successMessage" rendered="#{EditOAISetPage.success}">
                     <ice:outputText value="Update Successful!" />
               </div> -->

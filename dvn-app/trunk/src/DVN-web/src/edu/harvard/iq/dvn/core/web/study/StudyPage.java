@@ -451,6 +451,14 @@ public class StudyPage extends VDCBaseBean implements java.io.Serializable  {
             return false;
         }
     }
+    
+    public boolean getCustomDataCollectionIsEmpty() {
+        if (studyUI.getCustomFields() == null || studyUI.getCustomFields().size() == 0) {
+            return true;
+        } else {
+            return false;
+        }
+    }    
 
     public boolean getDataCollectionIsEmpty() {
         if (isEmpty(studyUI.getMetadata().getTimeMethod()) && isEmpty(studyUI.getMetadata().getDataCollector()) && isEmpty(studyUI.getMetadata().getFrequencyOfDataCollection()) && isEmpty(studyUI.getMetadata().getSamplingProcedure()) && isEmpty(studyUI.getMetadata().getDeviationsFromSampleDesign()) && isEmpty(studyUI.getMetadata().getCollectionMode()) && isEmpty(studyUI.getMetadata().getResearchInstrument()) && isEmpty(studyUI.getMetadata().getDataSources()) && isEmpty(studyUI.getMetadata().getOriginOfSources()) && isEmpty(studyUI.getMetadata().getCharacteristicOfSources()) && isEmpty(studyUI.getMetadata().getAccessToSources()) && isEmpty(studyUI.getMetadata().getDataCollectionSituation()) && isEmpty(studyUI.getMetadata().getActionsToMinimizeLoss()) && isEmpty(studyUI.getMetadata().getControlOperations()) && isEmpty(studyUI.getMetadata().getWeighting()) && isEmpty(studyUI.getMetadata().getCleaningOperations()) && isEmpty(studyUI.getMetadata().getStudyLevelErrorNotes()) && isEmpty(studyUI.getMetadata().getResponseRate()) && isEmpty(studyUI.getMetadata().getSamplingErrorEstimate()) && isEmpty(studyUI.getMetadata().getOtherDataAppraisal())) {
@@ -499,7 +507,7 @@ public class StudyPage extends VDCBaseBean implements java.io.Serializable  {
         // When you first go to the page, if these sections contain data, these panels will ALSO be open 
         // they were previously set to be closed
 
-        if (!getDataCollectionIsEmpty()) {
+        if (!getCustomDataCollectionIsEmpty() || !getDataCollectionIsEmpty()) {
             studyUI.setDataCollectionPanelIsRendered(true);
         }
         if (!getDataAvailIsEmpty()) {

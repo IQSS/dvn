@@ -21,6 +21,8 @@ Alter table studyField add fieldType character varying(255);
 
 update studyField set dcmField = false;
 
+update templatefield set version = 1 where version is null;
+
 alter table templateField ADD dcmSortOrder  int;
 update templatefield set dcmsortorder = studyfield_id - 44 where studyfield_id > 44 and studyfield_id < 65;
 

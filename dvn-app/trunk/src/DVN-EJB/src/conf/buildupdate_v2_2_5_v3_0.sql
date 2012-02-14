@@ -15,11 +15,111 @@ where announcements like 'A description of your Dataverse or announcements may b
 
 
 -- Changes for new template logic
-Alter table studyField add dcmField boolean;
-
-Alter table studyField add fieldType character varying(255);
-
+Alter table studyField add COLUMN dcmField boolean;
 update studyField set dcmField = false;
+
+Alter table studyField add COLUMN fieldType character varying(255);
+
+ALTER TABLE StudyField ADD COLUMN FieldInputLevelString character varying(255);
+UPDATE StudyField SET FieldInputLevelString='required' WHERE id=1;
+UPDATE StudyField SET FieldInputLevelString='required' WHERE id=2;
+UPDATE StudyField SET FieldInputLevelString='recommended' WHERE id=3;
+UPDATE StudyField SET FieldInputLevelString='optional' WHERE id=4;
+UPDATE StudyField SET FieldInputLevelString='recommended' WHERE id=5;
+UPDATE StudyField SET FieldInputLevelString='optional' WHERE id=6;
+UPDATE StudyField SET FieldInputLevelString='optional' WHERE id=7;
+UPDATE StudyField SET FieldInputLevelString='optional' WHERE id=8;
+UPDATE StudyField SET FieldInputLevelString='recommended' WHERE id=9;
+UPDATE StudyField SET FieldInputLevelString='optional' WHERE id=10;
+UPDATE StudyField SET FieldInputLevelString='optional' WHERE id=11;
+UPDATE StudyField SET FieldInputLevelString='optional' WHERE id=12;
+UPDATE StudyField SET FieldInputLevelString='optional' WHERE id=13;
+UPDATE StudyField SET FieldInputLevelString='optional' WHERE id=14;
+UPDATE StudyField SET FieldInputLevelString='recommended' WHERE id=15;
+UPDATE StudyField SET FieldInputLevelString='optional' WHERE id=16;
+UPDATE StudyField SET FieldInputLevelString='optional' WHERE id=17;
+UPDATE StudyField SET FieldInputLevelString='recommended' WHERE id=18;
+UPDATE StudyField SET FieldInputLevelString='recommended' WHERE id=19;
+UPDATE StudyField SET FieldInputLevelString='optional' WHERE id=20;
+UPDATE StudyField SET FieldInputLevelString='recommended' WHERE id=21;
+UPDATE StudyField SET FieldInputLevelString='optional' WHERE id=22;
+UPDATE StudyField SET FieldInputLevelString='recommended' WHERE id=23;
+UPDATE StudyField SET FieldInputLevelString='optional' WHERE id=24;
+UPDATE StudyField SET FieldInputLevelString='optional' WHERE id=25;
+UPDATE StudyField SET FieldInputLevelString='optional' WHERE id=26;
+UPDATE StudyField SET FieldInputLevelString='recommended' WHERE id=27;
+UPDATE StudyField SET FieldInputLevelString='optional' WHERE id=28;
+UPDATE StudyField SET FieldInputLevelString='optional' WHERE id=29;
+UPDATE StudyField SET FieldInputLevelString='recommended' WHERE id=30;
+UPDATE StudyField SET FieldInputLevelString='optional' WHERE id=31;
+UPDATE StudyField SET FieldInputLevelString='optional' WHERE id=32;
+UPDATE StudyField SET FieldInputLevelString='recommended' WHERE id=33;
+UPDATE StudyField SET FieldInputLevelString='optional' WHERE id=34;
+UPDATE StudyField SET FieldInputLevelString='recommended' WHERE id=35;
+UPDATE StudyField SET FieldInputLevelString='recommended' WHERE id=36;
+UPDATE StudyField SET FieldInputLevelString='recommended' WHERE id=37;
+UPDATE StudyField SET FieldInputLevelString='recommended' WHERE id=38;
+UPDATE StudyField SET FieldInputLevelString='recommended' WHERE id=39;
+UPDATE StudyField SET FieldInputLevelString='recommended' WHERE id=40;
+UPDATE StudyField SET FieldInputLevelString='recommended' WHERE id=41;
+UPDATE StudyField SET FieldInputLevelString='optional' WHERE id=42;
+UPDATE StudyField SET FieldInputLevelString='recommended' WHERE id=43;
+UPDATE StudyField SET FieldInputLevelString='recommended' WHERE id=44;
+UPDATE StudyField SET FieldInputLevelString='optional' WHERE id=45;
+UPDATE StudyField SET FieldInputLevelString='optional' WHERE id=46;
+UPDATE StudyField SET FieldInputLevelString='optional' WHERE id=47;
+UPDATE StudyField SET FieldInputLevelString='optional' WHERE id=48;
+UPDATE StudyField SET FieldInputLevelString='optional' WHERE id=49;
+UPDATE StudyField SET FieldInputLevelString='optional' WHERE id=50;
+UPDATE StudyField SET FieldInputLevelString='optional' WHERE id=51;
+UPDATE StudyField SET FieldInputLevelString='optional' WHERE id=52;
+UPDATE StudyField SET FieldInputLevelString='optional' WHERE id=53;
+UPDATE StudyField SET FieldInputLevelString='optional' WHERE id=54;
+UPDATE StudyField SET FieldInputLevelString='optional' WHERE id=55;
+UPDATE StudyField SET FieldInputLevelString='optional' WHERE id=56;
+UPDATE StudyField SET FieldInputLevelString='optional' WHERE id=57;
+UPDATE StudyField SET FieldInputLevelString='optional' WHERE id=58;
+UPDATE StudyField SET FieldInputLevelString='optional' WHERE id=59;
+UPDATE StudyField SET FieldInputLevelString='optional' WHERE id=60;
+UPDATE StudyField SET FieldInputLevelString='optional' WHERE id=61;
+UPDATE StudyField SET FieldInputLevelString='optional' WHERE id=62;
+UPDATE StudyField SET FieldInputLevelString='optional' WHERE id=63;
+UPDATE StudyField SET FieldInputLevelString='optional' WHERE id=64;
+UPDATE StudyField SET FieldInputLevelString='optional' WHERE id=65;
+UPDATE StudyField SET FieldInputLevelString='optional' WHERE id=66;
+UPDATE StudyField SET FieldInputLevelString='optional' WHERE id=67;
+UPDATE StudyField SET FieldInputLevelString='optional' WHERE id=68;
+UPDATE StudyField SET FieldInputLevelString='optional' WHERE id=69;
+UPDATE StudyField SET FieldInputLevelString='optional' WHERE id=70;
+UPDATE StudyField SET FieldInputLevelString='optional' WHERE id=71;
+UPDATE StudyField SET FieldInputLevelString='optional' WHERE id=72;
+UPDATE StudyField SET FieldInputLevelString='optional' WHERE id=73;
+UPDATE StudyField SET FieldInputLevelString='optional' WHERE id=74;
+UPDATE StudyField SET FieldInputLevelString='optional' WHERE id=75;
+UPDATE StudyField SET FieldInputLevelString='optional' WHERE id=76;
+UPDATE StudyField SET FieldInputLevelString='optional' WHERE id=77;
+UPDATE StudyField SET FieldInputLevelString='recommended' WHERE id=78;
+UPDATE StudyField SET FieldInputLevelString='recommended' WHERE id=79;
+UPDATE StudyField SET FieldInputLevelString='recommended' WHERE id=80;
+UPDATE StudyField SET FieldInputLevelString='optional' WHERE id=81;
+UPDATE StudyField SET FieldInputLevelString='optional' WHERE id=82;
+UPDATE StudyField SET FieldInputLevelString='optional' WHERE id=83;
+UPDATE StudyField SET FieldInputLevelString='optional' WHERE id=84;
+UPDATE StudyField SET FieldInputLevelString='optional' WHERE id=85;
+UPDATE StudyField SET FieldInputLevelString='optional' WHERE id=86;
+UPDATE StudyField SET FieldInputLevelString='optional' WHERE id=87;
+UPDATE StudyField SET FieldInputLevelString='optional' WHERE id=88;
+UPDATE StudyField SET FieldInputLevelString='recommended' WHERE id=89;
+UPDATE StudyField SET FieldInputLevelString='optional' WHERE id=90;
+UPDATE StudyField SET FieldInputLevelString='optional' WHERE id=91;
+UPDATE StudyField SET FieldInputLevelString='optional' WHERE id=92;
+UPDATE StudyField SET FieldInputLevelString='optional' WHERE id=93;
+UPDATE StudyField SET FieldInputLevelString='optional' WHERE id=94;
+UPDATE StudyField SET FieldInputLevelString='optional' WHERE id=95;
+UPDATE StudyField SET FieldInputLevelString='optional' WHERE id=96;
+UPDATE StudyField SET FieldInputLevelString='optional' WHERE id=97;
+UPDATE StudyField SET FieldInputLevelString='optional' WHERE id=98;
+
 
 update templatefield set version = 1 where version is null;
 

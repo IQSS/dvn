@@ -23,7 +23,7 @@ div.dvn_searchblock{margin-bottom:12px;padding:4px 12px;background:#F2F2F2;borde
 /* SECTION PANELS + ACCORDION + TREE */
 #dvn_mainSection{position:relative;overflow:hidden;width:100%;text-align:center}
 .dvn_sectionContent{display:inline;width:75%;float:right;text-align:left}
-.dvn_sectionPanels{display:inline;position:relative;float:left;margin-right:2%;width:22%}
+.dvn_sectionPanels{display:inline;position:relative;float:left;width:24%}
 .dvn_sectionPanelTitle{padding:.25em 0;border-bottom:2px solid #91a5a9;color:#555;font-weight:700}
 .dvn_sectionPanels div.dvn_sectionPanelText{margin-bottom:1em;padding:.5em}
 .dvn_sectionPanels ul{margin-left:2em}
@@ -32,7 +32,13 @@ div.dvn_searchblock{margin-bottom:12px;padding:4px 12px;background:#F2F2F2;borde
 .iceTreeRow a span.iceOutTxt{font-size:90% !important}
 .iceTreeRow .icePnlGrp{display:inline}
 .dvnTreeBlock{width:100%;height:38em;padding:0;border:0;text-align:left}
-.dvnTreeContainer{width:100%;height:34em;border-top:solid 1px #BBB;border-left:solid 1px #BBB;border-bottom:solid 1px #FFF;border-right:solid 1px #FFF;background:#FFF;overflow:auto;overflow-x:scroll;overflow-y:hidden;padding:.25em}
+.dvnTreeContainer{width:100%;height:34em;border-top:solid 1px #DCDDDF;border-left:solid 1px #DCDDDF;border-bottom:solid 1px #DCDDDF;border-right:0;background:#FFF;padding:.25em}
+div.iceTree div.iceTreeRow div.iceTreeRow {white-space:normal}
+div.iceTree div.iceTreeRow div.iceTreeRow div.iceTreeRow img {}
+div.iceTree div.iceTreeRow div.iceTreeRow div.iceTreeRow {border-bottom:1px dotted #DCDDDF}
+div.iceTree div.iceTreeRow div.iceTreeRow div.iceTreeRow:first-child {border-top:1px dotted #DCDDDF}
+div.iceTree div.iceTreeRow div.iceTreeRow div.iceTreeRow div.icePnlGrp {}
+div.iceTree div.iceTreeRow div.iceTreeRow div.iceTreeRow div.iceTreeRow div.icePnlGrp a {}
 .theMenuContainer{text-align:left}
 .theMenuContainer ul,.theMenuContainer li{margin:0;padding:0;list-style-type:none;list-style-image:none}
 .theMenuContainer h3,.theMenuContainer h4{margin:0;padding:0}

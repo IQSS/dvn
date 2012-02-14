@@ -128,4 +128,9 @@ public class TemplateFieldValue implements Serializable {
         return "edu.harvard.iq.dvn.core.study.TemplateFieldValue[ id=" + id + " ]";
     }
     
+    
+
+    private int displayOrder;
+    public int getDisplayOrder() { return this.displayOrder;}
+    public void setDisplayOrder(int displayOrder) {this.displayOrder = displayOrder;}    
 }

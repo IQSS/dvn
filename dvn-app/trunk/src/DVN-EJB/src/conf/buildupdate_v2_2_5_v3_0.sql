@@ -20,6 +20,8 @@ update studyField set dcmField = false;
 
 Alter table studyField add COLUMN fieldType character varying(255);
 
+alter table StudyField add ALLOWMULTIPLES boolean;
+
 ALTER TABLE StudyField ADD COLUMN FieldInputLevelString character varying(255);
 UPDATE StudyField SET FieldInputLevelString='required' WHERE id=1;
 UPDATE StudyField SET FieldInputLevelString='required' WHERE id=2;
@@ -125,9 +127,6 @@ update templatefield set version = 1 where version is null;
 
 alter table templateField ADD dcmSortOrder  int;
 update templatefield set dcmsortorder = studyfield_id - 44 where studyfield_id > 44 and studyfield_id < 65;
-
-alter table templateField add ALLOWMULTIPLES boolean;
-update templateField set ALLOWMULTIPLES = false;
 
 alter table template ADD status character varying(255);
 

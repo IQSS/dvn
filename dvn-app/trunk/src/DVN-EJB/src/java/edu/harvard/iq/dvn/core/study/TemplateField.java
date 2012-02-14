@@ -186,6 +186,7 @@ public class TemplateField implements java.io.Serializable {
             TemplateFieldValue elem = new TemplateFieldValue();
             elem.setTemplateField(this);
             elem.setMetadata(this.getTemplate().getMetadata());
+            elem.setDisplayOrder(0);
             List values = new ArrayList();
             values.add(elem);
             this.setTemplateFieldValues(values);

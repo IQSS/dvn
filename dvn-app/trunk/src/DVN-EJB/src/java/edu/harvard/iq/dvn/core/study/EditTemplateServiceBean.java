@@ -135,15 +135,22 @@ public class EditTemplateServiceBean implements edu.harvard.iq.dvn.core.study.Ed
             // bring over field values separately
             List <TemplateFieldValue> tfvList = new  ArrayList();
             for (TemplateFieldValue tfv: defaultField.getTemplateFieldValues()){ 
-                tfv.setMetadata(clonedMetadata);
-                tfvList.add(tfv);
+                TemplateFieldValue tfvn = new TemplateFieldValue();
+                tfvn.setStrValue(tfv.getStrValue());                
+                tfvn.setMetadata(clonedMetadata);
+                tfvn.setDisplayOrder(tfv.getDisplayOrder());
+                tfvn.setTemplateField(tf);
+                tfvList.add(tfvn);
             }
             tf.setTemplateFieldValues(tfvList);
             // bring over field contolled vocab separately
             List <TemplateFieldControlledVocabulary> tfcvList = new  ArrayList();
             for (TemplateFieldControlledVocabulary tfcv: defaultField.getTemplateFieldControlledVocabulary()){
-                tfcv.setMetadata(clonedMetadata);
-                tfcvList.add(tfcv);
+                TemplateFieldControlledVocabulary tfcvn = new TemplateFieldControlledVocabulary();
+                tfcvn.setStrValue(tfcv.getStrValue());
+                tfcvn.setTemplateField(tf);
+                tfcvn.setMetadata(clonedMetadata);
+                tfcvList.add(tfcvn);
             }
             tf.setTemplateFieldControlledVocabulary(tfcvList);
             tf.setTemplate(template);

@@ -136,6 +136,7 @@ public class TemplateFormPage extends VDCBaseBean implements java.io.Serializabl
                vdcId = getVDCRequestBean().getCurrentVDC().getId();
            }
            if (vdcId > 0 && template.isNetwork()){
+               System.out.println("before clone");
                editTemplateService.newClonedTemplate(vdcId, template);
                template = editTemplateService.getTemplate(); 
            }
@@ -159,6 +160,7 @@ public class TemplateFormPage extends VDCBaseBean implements java.io.Serializabl
        fieldInputLevelSelectItems = loadFieldInputLevelSelectItems();
        fieldTypeSelectItems = loadFieldTypeSelectItems();
        template.getMetadata().initCollections(); 
+       
        if (vdcId > 0){
           networkEdit = false;
        } else {
@@ -267,7 +269,7 @@ public class TemplateFormPage extends VDCBaseBean implements java.io.Serializabl
                 if(tf.getStudyField().isDcmField()){
                     tf.initValues();
                     adHocFields.add(tf);
-                    
+                    System.out.println("tf " + tf.getId());
                 }
             }
 
@@ -529,7 +531,7 @@ public class TemplateFormPage extends VDCBaseBean implements java.io.Serializabl
     public void moveUp(ActionEvent ae) {
         Long getOrder = (Long) ae.getComponent().getAttributes().get("dcmSortOrder");
         Long getId = (Long) ae.getComponent().getAttributes().get("sf_id");
-         System.out.println("getId " + getId);
+
          System.out.println("getOrder " + getOrder);
         for (TemplateField tfTest: adHocFields){
             System.out.println("tfTest name, id, sortOrder  " + tfTest.getStudyField().getName() + ", " + tfTest.getStudyField().getId() + ", " + tfTest.getDcmSortOrder() );

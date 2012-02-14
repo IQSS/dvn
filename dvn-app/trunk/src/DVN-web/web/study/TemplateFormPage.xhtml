@@ -1384,11 +1384,35 @@
                     </ice:column>
                     <ice:column>
                       <div>
-                        <ice:inputTextarea cols="90" rows="4"
-                                           id="input_relatedStudies"
-                                           value="#{customValue.strValue}"
-                                           styleClass="formHtmlEnabled">
-                        </ice:inputTextarea>
+ <ice:column> 
+                          <ice:inputText id="input_TextDefault" size="90" rendered="#{empty(customField.studyField.fieldType)}" 
+                                         visible="#{empty(customField.templateFieldControlledVocabulary)}"
+                                         value="#{customValue.strValue}">
+                          </ice:inputText> 
+                          <ice:inputText id="input_HtmlEnabled" size="90" rendered="#{customField.studyField.fieldType == 'html'}" 
+                                         visible="#{empty(customField.templateFieldControlledVocabulary)}"
+                                         value="#{customValue.strValue}"
+                                         styleClass="formHtmlEnabled">
+                                  <f:validator validatorId="XhtmlValidator"/>
+                          </ice:inputText>
+                          <ice:inputText id="input_Text" size="90" rendered="#{customField.studyField.fieldType == 'textBox'}" 
+                                         visible="#{empty(customField.templateFieldControlledVocabulary)}"
+                                         value="#{customValue.strValue}">
+                          </ice:inputText>    
+                          <ice:inputText id="input_genericDate" styleClass="formDateFormat"
+                                         rendered="#{customField.studyField.fieldType == 'date'}" 
+                                         value="#{customValue.strValue}" 
+                                         visible="#{empty(customField.templateFieldControlledVocabulary)}">
+                                <f:validator validatorId="DateValidator"/>
+                          </ice:inputText>   
+                          <ice:inputTextarea cols="90" rows="4"
+                                               id="input_TextArea"
+                                               value="#{customValue.strValue}"
+                                               rendered="#{customField.studyField.fieldType == 'textArea'}" 
+                                               visible="#{empty(customField.templateFieldControlledVocabulary)}">
+                          </ice:inputTextarea>
+                          <ice:outputText value="#{editstudybundle.dateFormatDescription}" rendered="#{customField.studyField.fieldType == 'date'}"/>
+                        </ice:column>
                       </div>
                     </ice:column>
                     <ice:column>

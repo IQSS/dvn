@@ -203,20 +203,7 @@ public class SetUpDataExplorationPage extends VDCBaseBean implements java.io.Ser
             showCommands = true;
             selectFile = false;
         }
-        
-        System.out.println("in reset Study File  ");
-         for (VarGroupingUI varGroupingUI: filterGroupings){
-             List <VarGroupUI> varGroupUIList = varGroupingUI.getVarGroupUIList().getVarGroupUIList();
-              System.out.println("varGroupUIList size is "+ varGroupUIList.size() );
-             for (VarGroupUI varGroupUI: varGroupUIList ){
-                 System.out.println("name is "+varGroupUI.getVarGroup().getName() +", variable list is "+ varGroupUI.getDataVariablesSelected());
-                 System.out.println("groupId is "+varGroupUI.getVarGroup().getId() );
-                 for (Long dvId : varGroupUI.getDataVariablesSelected() ){
-                     System.out.println("dvId is "+ dvId );                 
-                 }
-             }
-         }
-        
+                
         FacesContext fc = FacesContext.getCurrentInstance();
         JavascriptContext.addJavascriptCall(fc, "initRoundedCorners();" );
         
@@ -274,19 +261,7 @@ public class SetUpDataExplorationPage extends VDCBaseBean implements java.io.Ser
              visualizationDisplay = getDefaultVisualizationDisplay();
              dataTable.setVisualizationDisplay(visualizationDisplay);
          }
-         edited = false;
-         System.out.println("in load data table  ");
-         for (VarGroupingUI varGroupingUI: filterGroupings){
-             List <VarGroupUI> varGroupUIList = varGroupingUI.getVarGroupUIList().getVarGroupUIList();
-             System.out.println("varGroupUIList size is "+ varGroupUIList.size() );
-             for (VarGroupUI varGroupUI: varGroupUIList ){
-                 System.out.println("name is "+varGroupUI.getVarGroup().getName() +", variable list is "+ varGroupUI.getDataVariablesSelected());
-                 System.out.println("groupId is "+varGroupUI.getVarGroup().getId() );
-                 for (Long dvId : varGroupUI.getDataVariablesSelected() ){
-                     System.out.println("dvId is "+ dvId );                 
-                 }
-             }
-         }         
+         edited = false;    
     }
     
     private VisualizationDisplay getDefaultVisualizationDisplay(){
@@ -2056,19 +2031,15 @@ public class SetUpDataExplorationPage extends VDCBaseBean implements java.io.Ser
         }
 
         if (valid && messages){
-                FacesMessage message = new FacesMessage("The Data Visualization is valid for release.");
-                FacesContext fc = FacesContext.getCurrentInstance();
-                
-                getExternalContext().getFlash().put("validationMessage","The Data Visualization is valid for release."); 
+                FacesContext fc = FacesContext.getCurrentInstance();               
+                getExternalContext().getFlash().put("validationSuccessMessage","The Data Visualization is valid for release."); 
                 JavascriptContext.addJavascriptCall(fc, "initRoundedCorners();" );
         }
         if (!valid&& messages) {
             // add rounded corners to the validation message box
             FacesContext fc = FacesContext.getCurrentInstance();
-            fullErrorMessage = "This configuration is invalid so it cannot be released.<br>" + fullErrorMessage;
-            FacesMessage message = new FacesMessage(fullErrorMessage);
-            
-            getExternalContext().getFlash().put("validationMessage",fullErrorMessage); 
+            fullErrorMessage = "This configuration is invalid so it cannot be released.<br>" + fullErrorMessage;           
+            getExternalContext().getFlash().put("validationErrorMessage",fullErrorMessage); 
             JavascriptContext.addJavascriptCall(fc, "initRoundedCorners();" );
         }
 
@@ -2116,9 +2087,8 @@ public class SetUpDataExplorationPage extends VDCBaseBean implements java.io.Ser
        if (dataTable.isVisualizationEnabled()){
            if (!validateForRelease(false)) {
                dataTable.setVisualizationEnabled(false);
-               FacesMessage message = new FacesMessage("Your current changes are invalid. This visualization has been set to 'unreleased'. Click Validate button to get a full list of validation issues.");
                FacesContext fc = FacesContext.getCurrentInstance();
-               getExternalContext().getFlash().put("validationMessage","Your current changes are invalid. This visualization has been set to 'unreleased'. Click Validate button to get a full list of validation issues."); 
+               getExternalContext().getFlash().put("validationErrorMessage","Your current changes are invalid. This visualization has been set to 'unreleased'. Click Validate button to get a full list of validation issues."); 
                
                successMessage = false;
            }
@@ -2128,9 +2098,8 @@ public class SetUpDataExplorationPage extends VDCBaseBean implements java.io.Ser
        visualizationService.saveAndContinue();
        
        if (successMessage){
-               FacesMessage message = new FacesMessage("Successfully saved changes. You may exit or continue editing.");
                FacesContext fc = FacesContext.getCurrentInstance();
-               getExternalContext().getFlash().put("validationMessage","Successfully saved changes. You may exit or continue editing.");
+               getExternalContext().getFlash().put("validationSuccessMessage","Successfully saved changes. You may exit or continue editing.");
                JavascriptContext.addJavascriptCall(fc, "initRoundedCorners();" );
        }
        edited = false;
@@ -3190,16 +3159,6 @@ public class SetUpDataExplorationPage extends VDCBaseBean implements java.io.Ser
 
     public void setFilterCheckBox(HtmlSelectBooleanCheckbox filterCheckBox) {
         this.filterCheckBox = filterCheckBox;
-    }
-
-    public boolean isDisplayValidationFailure() {
-        FacesContext fc = FacesContext.getCurrentInstance();
-        return fc.getMessages(validateButton.getClientId(fc)).hasNext();
-    }
-
-    public boolean isDisplayValidationSuccess() {
-        FacesContext fc = FacesContext.getCurrentInstance();
-        return fc.getMessages(releaseButton.getClientId(fc)).hasNext();
     }
 
     public StudyUI getStudyUI() {

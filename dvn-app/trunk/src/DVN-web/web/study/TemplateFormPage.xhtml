@@ -75,7 +75,7 @@
                     styleClass="vdcEditStudyTable #{TemplateFormPage.studyMap[sfc.subTitle].templateField.fieldInputLevelString}"
                     columnClasses="vdcEditStudyCol1, vdcEditStudyCol2">
                 <ice:column styleClass="vdcEditStudyField">                  
-                  <ice:selectOneMenu immediate="false"    
+                  <ice:selectOneMenu immediate="false" partialSubmit="true"    
                                      valueChangeListener="#{TemplateFormPage.changeFieldInputValue}"
                                         value="#{TemplateFormPage.studyMap[sfc.subTitle].templateField.fieldInputLevelString}">
                         <f:selectItems value="#{TemplateFormPage.fieldInputLevelSelectItems}"/>

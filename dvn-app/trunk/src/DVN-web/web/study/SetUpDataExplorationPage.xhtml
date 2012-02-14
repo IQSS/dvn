@@ -112,21 +112,15 @@
                     </style>
 
                     <div class="dvn_section">
-                        <div jsfc="ice:panelGroup" styleClass="dvnMsgBlockRound #{SetUpDataExplorationPage.displayValidationFailure ? 'dvnWarningMessage': (SetUpDataExplorationPage.displayValidationSuccess ? 'dvnSuccessMessage':'dvnInformationMessage')}">
+                        <div jsfc="ice:panelGroup" styleClass="dvnMsgBlockRound #{!empty flash.validationErrorMessage ? 'dvnWarningMessage': (!empty flash.validationSuccessMessage ? 'dvnSuccessMessage':'dvnInformationMessage')}">
                             <div class="dvnMsgBlockContainer">
                                 <p>
-                                    <ice:outputText value="(Please report any issues found in our open beta release of Explore Data to the Network Administrator using the &lt;a href=&#34;/dvn#{VDCRequest.currentVDCURL}/faces/ContactUsPage.xhtml&#34;&gt;Contact&lt;/a&gt; form.)" escape="false" rendered="#{!SetUpDataExplorationPage.displayValidationFailure and !SetUpDataExplorationPage.displayValidationSuccess}"/>
-                                    <ice:message for="validateButton" id="boxErrorMsg"/>
-                                    <ice:message for="releaseButton" id="boxSuccessMsg" />
+                                    <ice:outputText value="(Please report any issues found in our open beta release of Explore Data to the Network Administrator using the &lt;a href=&#34;/dvn#{VDCRequest.currentVDCURL}/faces/ContactUsPage.xhtml&#34;&gt;Contact&lt;/a&gt; form.)" escape="false" rendered="#{empty flash.validationErrorMessage and empty flash.validationSuccessMessage}"/>
+                                    <ice:outputText value="#{flash.validationSuccessMessage}" rendered="#{!empty flash.validationSuccessMessage}"/>
+                                    <ice:outputText value="#{flash.validationErrorMessage}" rendered="#{!empty flash.validationErrorMessage}"/>
                                 </p>
                             </div>
                         </div>
-                       <div jsfc="ice:panelGroup" styleClass="dvnMsgBlockRound dvnSuccessMessage" rendered="#{!empty flash.validationMessage }">
-                        <div class="dvnMsgBlockContainer">
-                            <p><ice:outputText id="statusMessage" value="#{flash.validationMessage}"/></p>
-                        </div>
-                       </div>
-                        
                         <div class="dvnstudytitleblock dvn_padBot">
                             <div class="dvnstudyadminboxfloat dvn_right">
                                 <div class="dvnFormMargin">

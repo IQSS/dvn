@@ -133,7 +133,7 @@
                                  value="#{TemplateFormPage.template.metadata.studyOtherIds}" var="currentRow">
                     <ice:column>
                       <div class="vdcEditStudyField"> 
-                       <ice:selectOneMenu immediate="false" 
+                       <ice:selectOneMenu immediate="false" partialSubmit="true" 
                                         value="#{TemplateFormPage.studyMap[sfc.otherId].templateField.fieldInputLevelString}"
                                         valueChangeListener="#{TemplateFormPage.changeFieldInputValue}"
                                         rendered ="#{TemplateFormPage.dataTableOtherIds.rowIndex==0}">
@@ -179,7 +179,7 @@
                                  value="#{TemplateFormPage.template.metadata.studyAuthors}" var="currentAuthor">
                     <ice:column>
                       <div class="vdcEditStudyField">
-                        <ice:selectOneMenu immediate="false"  
+                        <ice:selectOneMenu immediate="false"  partialSubmit="true" 
                                         value="#{TemplateFormPage.studyMap[sfc.authorName].templateField.fieldInputLevelString}"
                                         valueChangeListener="#{TemplateFormPage.changeFieldInputValue}"
                                         rendered ="#{TemplateFormPage.dataTableAuthors.rowIndex==0}">
@@ -235,7 +235,7 @@
                                  value="#{TemplateFormPage.template.metadata.studyProducers}" var="currentRow">
                     <ice:column>
                       <div class="vdcEditStudyField">
-                         <ice:selectOneMenu immediate="false" 
+                         <ice:selectOneMenu immediate="false" partialSubmit="true" 
                                         value="#{TemplateFormPage.studyMap[sfc.producerName].templateField.fieldInputLevelString}"
                                         valueChangeListener="#{TemplateFormPage.changeFieldInputValue}"
                                         rendered ="#{TemplateFormPage.dataTableProducers.rowIndex==0}">
@@ -309,7 +309,7 @@
                              styleClass="vdcEditStudyTable #{TemplateFormPage.studyMap[sfc.productionDate].templateField.fieldInputLevelString}"
                              columnClasses="vdcEditStudyCol1, vdcEditStudyCol2">
                 <ice:column styleClass="vdcEditStudyField">
-                  <ice:selectOneMenu immediate="false" 
+                  <ice:selectOneMenu immediate="false" partialSubmit="true" 
                                         value="#{TemplateFormPage.studyMap[sfc.productionDate].templateField.fieldInputLevelString}"
                                         valueChangeListener="#{TemplateFormPage.changeFieldInputValue}">
                             <f:attribute name="fieldName" value="productionDate" />
@@ -330,7 +330,7 @@
                     styleClass="vdcEditStudyTable #{TemplateFormPage.studyMap[sfc.productionPlace].templateField.fieldInputLevelString}"
                     columnClasses="vdcEditStudyCol1, vdcEditStudyCol2" columns="2">
                 <ice:column styleClass="vdcEditStudyField">                  
-                  <ice:selectOneMenu immediate="false" 
+                  <ice:selectOneMenu immediate="false" partialSubmit="true" 
                                         value="#{TemplateFormPage.studyMap[sfc.productionPlace].templateField.fieldInputLevelString}"
                                         valueChangeListener="#{TemplateFormPage.changeFieldInputValue}">
                             <f:attribute name="fieldName" value="productionPlace" />
@@ -357,7 +357,7 @@
                                  value="#{TemplateFormPage.template.metadata.studySoftware}" var="currentRow">
                     <ice:column>
                       <div class="vdcEditStudyField">                      
-                        <ice:selectOneMenu immediate="false"
+                        <ice:selectOneMenu immediate="false" partialSubmit="true" 
                                         value="#{TemplateFormPage.studyMap[sfc.softwareName].templateField.fieldInputLevelString}"
                                         rendered ="#{TemplateFormPage.dataTableSoftware.rowIndex==0}"
                                         valueChangeListener="#{TemplateFormPage.changeFieldInputValue}">
@@ -395,7 +395,7 @@
                             styleClass="vdcEditStudyTable #{TemplateFormPage.studyMap[sfc.fundingAgency].templateField.fieldInputLevelString}"
                             columnClasses="vdcEditStudyCol1, vdcEditStudyCol2">
                 <ice:column styleClass="vdcEditStudyField">
-                  <ice:selectOneMenu immediate="false"  
+                  <ice:selectOneMenu immediate="false"  partialSubmit="true" 
                                         value="#{TemplateFormPage.studyMap[sfc.fundingAgency].templateField.fieldInputLevelString}"
                                         valueChangeListener="#{TemplateFormPage.changeFieldInputValue}">
                             <f:attribute name="fieldName" value="fundingAgency" />
@@ -421,7 +421,7 @@
                                  value="#{TemplateFormPage.template.metadata.studyGrants}" var="currentRow" width="100%">
                     <ice:column>
                       <div class="vdcEditStudyField">
-                        <ice:selectOneMenu immediate="false" 
+                        <ice:selectOneMenu immediate="false" partialSubmit="true" 
                                         value="#{TemplateFormPage.studyMap[sfc.grantNumber].templateField.fieldInputLevelString}"
                                         rendered ="#{TemplateFormPage.dataTableGrants.rowIndex==0}"
                                         valueChangeListener="#{TemplateFormPage.changeFieldInputValue}">

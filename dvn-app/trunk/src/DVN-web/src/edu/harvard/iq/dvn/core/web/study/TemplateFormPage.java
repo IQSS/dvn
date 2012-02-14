@@ -367,6 +367,10 @@ public class TemplateFormPage extends VDCBaseBean implements java.io.Serializabl
         //remove clear it was interfering with move buttons
         //dcmFieldTable.getChildren().clear();
     }
+    
+    // TODO: this count is for the display order on the custom fields; the order for each field will be correct, though may miss stop steps (e.g. 0,5,8,10;
+    // cleanup to have it not skip steps
+    int count = 1;
    
     public void addRow(ActionEvent ae) {
         
@@ -433,6 +437,16 @@ public class TemplateFormPage extends VDCBaseBean implements java.io.Serializabl
             StudyOtherRef newElem = new StudyOtherRef();
             newElem.setMetadata(template.getMetadata());
             template.getMetadata().getStudyOtherRefs().add(dataTable.getRowIndex()+1,newElem);
+        } else { // new custom field
+            TemplateFieldValue newElem = new TemplateFieldValue();
+            Long getOrder = (Long) ae.getComponent().getAttributes().get("dcmSortOrder");
+            TemplateField tf = adHocFields.get(getOrder.intValue() -1 );
+            newElem.setMetadata(template.getMetadata());
+            newElem.setTemplateField(tf);
+            newElem.setStrValue("");    
+            newElem.setDisplayOrder(count++);
+            tf.getTemplateFieldValues().add(dataTable.getRowIndex()+1, newElem);            
+            
         }
         
         
@@ -890,24 +904,6 @@ public class TemplateFormPage extends VDCBaseBean implements java.io.Serializabl
         this.dataTableNotes = dataTableNotes;
     }
 
-    private HtmlDataTable dcmFieldTable;
-
-    /**
-     * Getter for property dataTableNotes.
-     * @return Value of property dataTableNotes.
-     */
-    public HtmlDataTable getDcmFieldTable() {
-        return this.dcmFieldTable;
-    }
-
-    /**
-     * Setter for property dataTableNotes.
-     * @param dataTableNotes New value of property dataTableNotes.
-     */
-    public void setDcmFieldTable(HtmlDataTable dcmFieldTable) {
-        this.dcmFieldTable = dcmFieldTable;
-    }
-
     /**
      * Holds value of property dataTableProducers.
      */
@@ -1316,10 +1312,9 @@ public class TemplateFormPage extends VDCBaseBean implements java.io.Serializabl
         newTF.setStudyField(newElem);
         newTF.setdcmSortOrder(new Long(maxDCM + 1));
 
-         editTemplateService.changeFieldInputLevel(newTF, inputLevel);
-         newTF.setTemplateFieldControlledVocabulary(new ArrayList());
-         newTF.setTemplateFieldValues(new ArrayList());
-         newTF.setFieldInputLevelString(inputLevel);
+        editTemplateService.changeFieldInputLevel(newTF, inputLevel);
+        newTF.setTemplateFieldControlledVocabulary(new ArrayList());
+        newTF.setFieldInputLevelString(inputLevel);
         TemplateFieldUI newUI = new TemplateFieldUI();
         newUI.setTemplateField(newTF);
         newTF.initValues();

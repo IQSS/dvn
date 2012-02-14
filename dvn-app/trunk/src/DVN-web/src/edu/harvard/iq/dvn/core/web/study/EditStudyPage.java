@@ -329,29 +329,40 @@ public class EditStudyPage extends VDCBaseBean implements java.io.Serializable  
     public void initAdHocFieldMap(boolean metadataSet){
 
         adHocFields = new ArrayList();
+
         for (Iterator<TemplateField> it = study.getTemplate().getTemplateFields().iterator(); it.hasNext();) {
-            TemplateField tf = it.next();
-            if (!tf.isHidden()){
+            TemplateField defaultField = it.next();
+
+            
+
+            
+            if (!defaultField.isHidden()){
                 StudyMapValue smv = new StudyMapValue();
-                smv.setTemplateFieldUI(new TemplateFieldUI(tf));
+                
+                smv.setTemplateFieldUI(new TemplateFieldUI(defaultField));
                 
                 List <TemplateFieldValue> removeList = new ArrayList();
-                if(tf.getStudyField().isDcmField()){
-                    tf.getTemplateFieldValues();
-                    if (tf.getTemplateFieldValues().size() > 0){                         
-                        for (TemplateFieldValue tfv : tf.getTemplateFieldValues()){
-                            if (!tfv.getMetadata().equals(metadata) && metadataSet ){
-                                removeList.add(tfv);
-                            }
+                if(defaultField.getStudyField().isDcmField()){
+                    TemplateField tf = new TemplateField();
+                        tf.setDefaultValue(defaultField.getDefaultValue());
+                        tf.setStudyField(defaultField.getStudyField());
+                        // bring over field values separately
+                        List <TemplateFieldValue> tfvList = new  ArrayList();
+                        for (TemplateFieldValue tfv: defaultField.getTemplateFieldValues()){ 
+                            tfv.setMetadata(metadata);
+                            tfvList.add(tfv);
                         }
+                        tf.setTemplateFieldValues(tfvList);
+                        // bring over field contolled vocab separately
+                        List <TemplateFieldControlledVocabulary> tfcvList = new  ArrayList();
+                        for (TemplateFieldControlledVocabulary tfcv: defaultField.getTemplateFieldControlledVocabulary()){
+                            tfcv.setMetadata(metadata);
+                            tfcvList.add(tfcv);
+                        }
+                        tf.setTemplateFieldControlledVocabulary(tfcvList);
+                        tf.setFieldInputLevelString(defaultField.getFieldInputLevelString());
+                        tf.setdcmSortOrder(defaultField.getDcmSortOrder());
 
-                    }
-
-                    for (TemplateFieldValue tfvr: removeList){
-                        editStudyService.removeCollectionElement(tf.getTemplateFieldValues(),tfvr);
-                    }
-
-                    tf.initValues();
                     
                     adHocFields.add(tf);
                 }                

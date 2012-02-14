@@ -1407,15 +1407,23 @@
                                            >
                           
                         </ice:inputTextarea>  
+                        <ice:selectOneMenu immediate="false"  
+                                        rendered ="#{!empty(dcmItem.templateFieldControlledVocabulary) and !dcmItem.allowMultiples}">
+                            <f:selectItems value="#{dcmItem.controlledVocabularyStrings}"/>
+                        </ice:selectOneMenu>  
+                        <ice:selectManyListbox immediate="false"  
+                                        rendered ="#{!empty(dcmItem.templateFieldControlledVocabulary) and dcmItem.allowMultiples}">
+                            <f:selectItems value="#{dcmItem.controlledVocabularyStrings}"/>
+                        </ice:selectManyListbox> 
                     </ice:column>
                     <ice:column>
-                      <ice:commandButton partialSubmit="true" image="/resources/images/icon_add.gif" rendered="#{dcmItem.allowMultiples}"
+                      <ice:commandButton partialSubmit="true" image="/resources/images/icon_add.gif" rendered="#{dcmItem.allowMultiples and empty(dcmItem.templateFieldControlledVocabulary)}"
                                          actionListener="#{EditStudyPage.addDcmRow}">
                                          <f:attribute name="dcmSortOrder" value="#{dcmItem.dcmSortOrder}" />
                                          <f:attribute name="tf_id" value="#{dcmItem.id}" />
                                </ice:commandButton>
                           <ice:commandButton immediate="true"
-                                             rendered="#{dcmItem.allowMultiples}"
+                                             rendered="#{dcmItem.allowMultiples and empty(dcmItem.templateFieldControlledVocabulary)}"
                                              image="/resources/images/icon_remove.gif" actionListener="#{EditStudyPage.removeDcmRow}">
                               <f:attribute name="sf_id" value="#{dcmItem.studyField.id}"/>
                               <f:attribute name="strVal" value="#{fieldValRow.strValue}"/>

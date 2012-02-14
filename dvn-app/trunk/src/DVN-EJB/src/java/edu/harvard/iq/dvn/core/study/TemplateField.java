@@ -214,6 +214,15 @@ public class TemplateField implements java.io.Serializable {
             this.setTemplateFieldControlledVocabulary(vocab);
         }
     }
+    
+    public List<String> getControlledVocabularyStrings(){
+        List <String> retList = new ArrayList();
+        retList.add("");
+        for (TemplateFieldControlledVocabulary tfcv: this.templateFieldControlledVocabulary){
+            retList.add(tfcv.getStrValue());
+        }
+        return retList;
+    }
 
   /**
      * Holds value of property version.

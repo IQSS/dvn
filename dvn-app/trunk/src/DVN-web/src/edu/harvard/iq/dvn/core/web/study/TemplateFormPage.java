@@ -354,17 +354,18 @@ public class TemplateFormPage extends VDCBaseBean implements java.io.Serializabl
         
         HtmlDataTable dataTable = getDataTableDCMFieldValues();
         Long getOrder = (Long) ae.getComponent().getAttributes().get("dcmSortOrder");
-            TemplateField tf = adHocFields.get(getOrder.intValue() -1 );
-            TemplateFieldValue newElem = new TemplateFieldValue();
-            newElem.setMetadata(template.getMetadata());
-            newElem.setTemplateField(tf);
-            
-            // try to get the add button to not wipe out newly added text.
-            tf.getTemplateFieldValues().add(tf.getTemplateFieldValues().size(), newElem);
-            template.getMetadata().getTemplateFieldValue().add(dataTable.getRowIndex()+1,newElem);
-            //tf.getTemplateFieldValues().size(); //debug line
-            //remove clear it was interfering with move buttons
-            //dcmFieldTable.getChildren().clear();
+        TemplateField tf = adHocFields.get(getOrder.intValue() -1 );
+        TemplateFieldValue newElem = new TemplateFieldValue();
+        newElem.setMetadata(template.getMetadata());
+        newElem.setTemplateField(tf);
+        newElem.setStrValue("");    
+        // try to get the add button to not wipe out newly added text.
+        tf.getTemplateFieldValues().add(dataTable.getRowIndex()+1, newElem);
+        // took out add to template does not have an effect on plus minus
+        //template.getMetadata().getTemplateFieldValue().add(dataTable.getRowIndex()+1,newElem);
+        //tf.getTemplateFieldValues().size(); //debug line
+        //remove clear it was interfering with move buttons
+        //dcmFieldTable.getChildren().clear();
     }
    
     public void addRow(ActionEvent ae) {

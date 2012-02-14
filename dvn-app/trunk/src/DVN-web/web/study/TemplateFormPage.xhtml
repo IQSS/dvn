@@ -1421,14 +1421,14 @@
                           <ice:outputText value="#{editstudybundle.dateFormatDescription}" rendered="#{dcmItem.studyField.fieldType == 'date'}"/>
                         </ice:column>
                         <ice:column>
-                         <ice:commandButton immediate="true" image="/resources/images/icon_add.gif" rendered="#{dcmItem.allowMultiples}"
+                         <ice:commandButton immediate="true" image="/resources/images/icon_add.gif" rendered="#{dcmItem.allowMultiples and empty(dcmItem.templateFieldControlledVocabulary)}"
                                              actionListener="#{TemplateFormPage.addDcmRow}">
                              <f:attribute name="sf_id" value="#{dcmItem.studyField.id}"/>
                              <f:attribute name="strVal" value="#{fieldValRow.strValue}"/>
                              <f:attribute name="dcmSortOrder" value="#{dcmItem.dcmSortOrder}"/>
                           </ice:commandButton>
                           <ice:commandButton immediate="true"
-                                             rendered="#{dcmItem.allowMultiples}"
+                                             rendered="#{dcmItem.allowMultiples and empty(dcmItem.templateFieldControlledVocabulary)}"
                                              image="/resources/images/icon_remove.gif" actionListener="#{TemplateFormPage.removeDcmRow}">
                               <f:attribute name="sf_id" value="#{dcmItem.studyField.id}"/>
                               <f:attribute name="strVal" value="#{fieldValRow.strValue}"/>
@@ -1439,11 +1439,15 @@
                       <ice:outputText id="controlledVocabHeader" visible="#{!empty(dcmItem.templateFieldControlledVocabulary)}"
                                      value="Controlled Vocabulary">
                       </ice:outputText>
-                      <ui:repeat var="fieldControlledVocabRow" value="#{dcmItem.templateFieldControlledVocabulary}">
-                          <ice:outputText id="controlledVocabRow" visible="#{!empty(dcmItem.templateFieldControlledVocabulary)}"
-                                         value="#{fieldControlledVocabRow.strValue}">
-                          </ice:outputText>
-                      </ui:repeat>
+                        <ice:selectOneMenu immediate="false"  
+                                        rendered ="#{!empty(dcmItem.templateFieldControlledVocabulary) and !dcmItem.allowMultiples}">
+                            <f:selectItems value="#{dcmItem.controlledVocabularyStrings}"/>
+                        </ice:selectOneMenu>  
+                        <ice:selectManyListbox immediate="false"  
+                                        rendered ="#{!empty(dcmItem.templateFieldControlledVocabulary) and dcmItem.allowMultiples}">
+                            <f:selectItems value="#{dcmItem.controlledVocabularyStrings}"/>
+                        </ice:selectManyListbox> 
+                        
                     </ice:column>
 
                     <ice:column>

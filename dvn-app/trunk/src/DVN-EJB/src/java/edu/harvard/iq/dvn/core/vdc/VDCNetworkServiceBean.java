@@ -252,10 +252,15 @@ public class VDCNetworkServiceBean implements VDCNetworkServiceLocal {
         if (em.find(VDCNetwork.class, new Long(1)) != null)
             em.merge(vdcnetwork);
     }
+    
+    public void updateDefaultTemplate(Long templateId) {
+        Template template = em.find(Template.class, templateId);
+        find().setDefaultTemplate(template);
+    }    
 
     @Override
     public List<Template> getNetworkTemplates() {
-        String query = "select object(o) FROM Template as o WHERE o.network = true and o.id > 1 ORDER BY o.name";
-        return (List) em.createQuery(query).setParameter("fieldName", 0).getResultList();
+        String query = "select object(o) FROM Template as o WHERE o.network = true ORDER BY o.name";
+        return (List) em.createQuery(query).getResultList();
     }
 }

@@ -28,7 +28,6 @@
       </script>
       <ice:form id="templateForm">
         <ice:inputHidden id="vdcId" value="#{VDCRequest.currentVDCId}"/>
-        <ice:inputHidden id="hiddenNetworkTemplateId" value="#{ManageTemplatesPage.networkTemplateId}"/>
         <div class="dvn_section">
           <div class="dvn_sectionTitle">
             <ice:outputText value="#{bundlePageInfo.manageTemplatesTitle}"/>
@@ -68,8 +67,7 @@
                     <ice:outputText value="Default"/>
                   </f:facet>
                   <ice:outputText value="Current Default Template" rendered="#{ManageTemplatesPage.defaultTemplateId==currentRow[0].id}"/>
-                  <ice:commandLink value="Make Default" rendered="#{(ManageTemplatesPage.defaultTemplateId!=currentRow[0].id and currentRow[2] == false) or 
-                        (ManageTemplatesPage.defaultTemplateId!=currentRow[0].id and currentRow[0].id == 1)}" 
+                  <ice:commandLink value="Make Default" rendered="#{ManageTemplatesPage.defaultTemplateId!=currentRow[0].id}" 
                                    action="#{ManageTemplatesPage.updateDefaultAction}"/>
                 </ice:column>
                 <ice:column>
@@ -85,19 +83,14 @@
                   <f:facet name="header">
                     <ice:outputText value="Edit"/>
                   </f:facet>
-                  <ice:outputLink rendered="#{currentRow[0].id!=ManageTemplatesPage.networkTemplateId and empty(VDCRequest.currentVDCURL) and currentRow[2] == true}" 
+                  <ice:outputLink rendered="#{(empty(VDCRequest.currentVDC) and currentRow[2] == true) or (!empty(VDCRequest.currentVDC) and currentRow[2] == false)}" 
                                   value="/dvn#{VDCRequest.currentVDCURL}/faces/study/TemplateFormPage.xhtml?templateId=#{currentRow[0].id}">
                     <ice:outputText value="Edit"/>
                   </ice:outputLink>
-                  <ice:outputLink rendered="#{currentRow[0].id!=ManageTemplatesPage.networkTemplateId and !empty(VDCRequest.currentVDCURL) and currentRow[2] == false}" 
-                                  value="/dvn#{VDCRequest.currentVDCURL}/faces/study/TemplateFormPage.xhtml?templateId=#{currentRow[0].id}">
-                    <ice:outputText value="Edit"/>
-                  </ice:outputLink>  
-                  <ice:outputLink rendered="#{currentRow[0].id!=ManageTemplatesPage.networkTemplateId and !empty(VDCRequest.currentVDCURL) and currentRow[2] == true}" 
+                  <ice:outputLink rendered="#{!empty(VDCRequest.currentVDC) and currentRow[2] == true}" 
                                   value="/dvn#{VDCRequest.currentVDCURL}/faces/study/TemplateFormPage.xhtml?templateId=#{currentRow[0].id}">
                     <ice:outputText value="Clone Network Template for this Dataverse"/>
                   </ice:outputLink>
-                  <ice:outputText rendered="#{currentRow[0].id==ManageTemplatesPage.networkTemplateId}" value="Cannot edit - DVN default template"/>
                 </ice:column>
               </ice:dataTable>
             </div>

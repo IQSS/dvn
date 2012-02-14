@@ -36,11 +36,6 @@
           // ]]>
         </script>
         <div jsfc="ice:panelGroup" styleClass="dvn_section">
-            <div jsfc="ice:panelGroup" styleClass="dvnMsgBlockRound dvnInformationMessage" rendered="#{! studyVersionDifferencesPage.releaseConfrimInProgress}">
-                <div class="dvnMsgBlockContainer">
-                    <ice:outputText value="#{bundlePageInfo.versionDifferencesHelp}" escape="false"/>
-                </div>
-            </div>
             <div class="dvnstudytitleblock dvn_padBot">
                 <div class="dvnstudyadminboxfloat">
                     <div jsfc="ice:panelGroup" styleClass="vdcTextRight dvnFormMargin" rendered="#{studyVersionDifferencesPage.releaseConfrimInProgress}">
@@ -59,11 +54,16 @@
                     <ui:param name="displayStatusBox" value="#{!studyVersionDifferencesPage.releaseConfrimInProgress}"/>
                 </ui:include>
             </div>
-            <div jsfc="ice:panelGroup" styleClass="dvn_sectionTitle" rendered="#{! studyVersionDifferencesPage.releaseConfrimInProgress}">
+            <div jsfc="ice:panelGroup" styleClass="dvn_sectionTitle">
                 <ice:outputText value="#{bundlePageInfo.versionDifferencesTitle}"/>
             </div>
           <div class="dvn_sectionBox">
             <div class="dvn_margin12">
+              <div jsfc="ice:panelGroup" styleClass="dvnMsgBlockRound dvnInformationMessage" rendered="#{! studyVersionDifferencesPage.releaseConfrimInProgress}">
+                    <div class="dvnMsgBlockContainer">
+                        <ice:outputText value="#{bundlePageInfo.versionDifferencesHelp}" escape="false"/>
+                    </div>
+              </div>
               <ice:dataTable id="versionTable" styleClass="dvnDifferanceTableHeader" value="versionTable" rendered="true"
                              columns="3" cellpadding="0" cellspacing="0" width="100%" columnWidths="20%,40%,40%" columnClasses="dvnDifferanceTableHeaderCol1,dvnDifferanceTableHeaderCol2,dvnDifferanceTableHeaderCol3">
                   <ice:column id="column1">
@@ -173,7 +173,7 @@
               </div>
               <ice:dataTable id="IamAnEmptyTable" columns="1" cellpadding="0" cellspacing="0" width="100%" bgcolor=""/>
               <div jsfc="ice:panelGroup" id="diffPanel8" styleClass="vdcStudyInfoHeader" rendered="#{studyVersionDifferencesPage.studyFilesDifferent}">
-                    <ice:outputText id="outputText" value="Differences in Study Files:"/>
+                    <ice:outputText id="outputText" value="Differences in Study Files"/>
               </div>
               <ice:dataTable id="diffFilesDataTable" styleClass="dvnDifferanceTable" value="#{studyVersionDifferencesPage.studyFilesDiffList}" var="fileDiff"
                               columns="3" cellpadding="0" cellspacing="0" width="100%"
@@ -206,7 +206,6 @@
               <div jsfc="ice:panelGroup" id="diffPanel9" styleClass="vdcStudyInfoHeader" rendered="#{!studyVersionDifferencesPage.studyFilesDifferent}">
                     <ice:outputText id="outputText9" value="#{studyVersionDifferencesPage.noFileDifferencesFoundLabel}"/>
               </div>
-
             </div>
           </div>
         </div>

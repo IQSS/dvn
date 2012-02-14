@@ -82,12 +82,13 @@ div.dvn_navblockNetwork{}
 .naviconoptions{background:#fff url(/dvn/resources/images/navicon_options.jpg) no-repeat 6px 2px;}
 .navicon span{position:absolute;top:-9999px;left:-9999px;}
 /* FORM ELEMENTS */
-.dvnFormPadding input.iceCmdBtn[type=submit]{background:#CEE6BB; border:1px solid #9BC191; padding:4px 16px; font-size:1em;}
-.dvnFormPadding input.iceCmdBtn[type=submit]:hover{border:1px solid #299A0B;}
-.dvnFormPadding input.iceCmdBtn[type=submit]:active{background:#299A0B;}
-.dvnFormPadding input.iceCmdBtn[value=Cancel]{background:#EEF3FB; border:1px solid #B7CDFF; padding:4px 16px; font-size:1em;}
-.dvnFormPadding input.iceCmdBtn[value=Cancel]:hover{border:1px solid #0C54B3;}
-.dvnFormPadding input.iceCmdBtn[value=Cancel]:active{background:#0C54B3;}
+.dvnFormMargin input.iceCmdBtn[type=submit], .dvnFormMargin input.iceCmdBtn[value=Release]{background:#CEE6BB; border:1px solid #9BC191; padding:4px 16px; font-size:1em;}
+.dvnFormMargin input.iceCmdBtn-dis[type=submit]{background:#D9D9D9; border:1px solid #A9A9A9; padding:4px 16px; font-size:1em;}
+.dvnFormMargin input.iceCmdBtn[type=submit]:hover, .dvnFormMargin input.iceCmdBtn[value=Release]:hover{border:1px solid #299A0B;}
+.dvnFormMargin input.iceCmdBtn[type=submit]:active{background:#299A0B;}
+.dvnFormMargin input.iceCmdBtn[value=Cancel], .dvnFormMargin input.iceCmdBtn[value=Exit]{background:#EEF3FB; border:1px solid #B7CDFF; padding:4px 16px; font-size:1em;}
+.dvnFormMargin input.iceCmdBtn[value=Cancel]:hover, .dvnFormMargin input.iceCmdBtn[value=Exit]:hover{border:1px solid #0C54B3;}
+.dvnFormMargin input.iceCmdBtn[value=Cancel]:active, .dvnFormMargin input.iceCmdBtn[value=Exit]:active{background:#0C54B3;}
 /* HELP-INFO MSG BLOCK */
 div.dvnMsgBlockRound{position:relative;}
 div.dvnMsgBlockContainer{text-align:left}
@@ -106,10 +107,11 @@ div.dvnSuccessMessage .successMessage{background:transparent;color:#299a0b;font-
 .successMessage a:link,.successMessage a:visited,.successMessage a:hover,.successMessage a:active{color:blue}
 ul.successMessage,.successMessage ul{list-style:none}
 ul.successMessage li,.successMessage ul li{margin:0;padding:0}
-div.dvnWarningMessage{max-width:900px;width:80%;margin:0 auto 1em;background:url(/dvn/resources/images/icon_warning.png) #e6e4d3 4px no-repeat}
+div.dvnWarningMessage{margin-bottom:1em;background:transparent url(/dvn/resources/images/icon_warning.18.png) no-repeat 0px 0px}
 div.dvnWarningMessage div.dvnMsgBlockContainer{}
 div.dvnWarningMessage a:link,div.dvnWarningMessage a:visited,div.dvnWarningMessage a:hover,div.dvnWarningMessage a:active{color:#0c54b3}
-div.dvnWarningMessage span{font-weight:bold;color:#000;background:transparent}
+div.dvnWarningMessage span{font-weight:bold;background:transparent}
+div.dvnWarningMessage span p{color:#8B0404;}
 .dvnWarningMessage.dvnMessageLink a{font-weight:bold;}
 .dvnWarningMessage.dvnMessageCapLock span.warnMessage {text-transform: uppercase;}
 .warnMessage{color:#8B0404}

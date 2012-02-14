@@ -26,36 +26,37 @@
         <ice:inputHidden id="vdcId" value="#{VDCRequest.currentVDCId}"/>
         <input type="hidden" name="pageName" value="TemplateFormPage"/>
          <div class="dvn_section">
-          <div jsfc="ice:panelGroup" styleClass="dvnMsgBlockRound dvnInformationMessage">
-            <div class="dvnMsgBlockContainer">
-              <ice:outputText value="#{bundlePageInfo.editTemplateHelp}" escape="false"/>
-            </div>
-          </div>
           <div class="dvn_sectionTitle">
-            <ice:outputText value="#{TemplateFormPage.template.metadata.title}"/>
+            <ice:outputText value="#{bundlePageInfo.editTemplateTitle}"/>
           </div>
-          <div class="dvn_sectionBoxNoBorders">
-            <!-- validation errors occurred? -->
-            <div id="messagePanel" class="errorMessage">
-              <ice:outputText value="Please check messages below" rendered="#{!empty facesContext.maximumSeverity}"/>
-            </div>
-            <div id="groupPanel10" class="vdcTextRight dvnFormMargin">
-              <ice:commandButton id="button1" value="Save" action="#{TemplateFormPage.save}"/>
-              <ice:commandButton immediate="true" id="button2" value="Cancel" action="#{TemplateFormPage.cancel}"/>
-            </div>
+          <div class="dvn_sectionBox">
             <div panelLayout="flow" class="vdcStudyTemplateFormTable">
-              <div style="padding:4px 0; border-bottom:1px solid #DADEE0">
-                <ice:panelGrid cellpadding="0" cellspacing="0" columns="2">
-                  <ice:column>
-                    <ice:outputText value="Template Name: "/>
-                  </ice:column>
-                  <ice:column>
-                    <ice:inputText id="template_name" size="45" value='#{TemplateFormPage.template.name}' required='true' requiredMessage='Template name is required.'/>
-                    <ice:message styleClass="errorMessage" for="template_name"/>
-                  </ice:column>
-                </ice:panelGrid>
+              <div jsfc="ice:panelGroup" styleClass="dvnInformationMessage">
+                <div class="dvnMsgBlockContainer">
+                  <ice:outputText value="#{bundlePageInfo.editTemplateHelp}" escape="false"/>
+                </div>
               </div>
-
+                <!-- validation errors occurred? -->
+                <div id="messagePanel" class="errorMessage">
+                  <ice:outputText value="Please check messages below" rendered="#{!empty facesContext.maximumSeverity}"/>
+                </div>
+              <div class="dvnstudytitleblock dvnStudyTemplateTitleBlock">
+                <div id="groupPanel10" class="dvnstudyadminboxfloat dvnFormMargin">
+                  <ice:commandButton id="button1" value="Save" action="#{TemplateFormPage.save}"/>
+                  <ice:commandButton immediate="true" id="button2" value="Cancel" action="#{TemplateFormPage.cancel}"/>
+                </div>
+                <div class="dvnstudytitlefloat">
+                  <ice:panelGrid cellpadding="0" cellspacing="0" columns="2">
+                      <ice:column>
+                        <ice:outputText value="Template Name "/>
+                      </ice:column>
+                      <ice:column>
+                        <ice:inputText id="template_name" size="45" value='#{TemplateFormPage.template.name}' required='true' requiredMessage='Template name is required.'/>
+                        <ice:message styleClass="errorMessage" for="template_name"/>
+                      </ice:column>
+                  </ice:panelGrid>
+                </div>
+              </div>
               <!-- TITLE -->
               <ice:panelGrid cellpadding="0" cellspacing="0" columns="2" width="100%"
                              styleClass="vdcEditStudyTable" columnClasses="vdcEditStudyCol1, vdcEditStudyCol2">
@@ -1324,7 +1325,7 @@
               <!-- end of DCM header-->
 
               <!-- Add Field section -->
-              <div jsfc="ice:panelGroup" rendered="#{TemplateFormPage.networkEdit}" style="border-bottom:1px solid #DADEE0; padding-bottom:1em;">
+              <div jsfc="ice:panelGroup" styleClass="dvnStudyTemplateDCMBlock" rendered="#{TemplateFormPage.networkEdit}">
                 <p>
                   <ice:graphicImage value="/resources/images/icon_info.gif" styleClass="dvn_icon"/>
                   <ice:outputText styleClass="vdcHelpText" value=" Add custom Data Collection/Methodology fields by using the form and clicking the Add Field button." escape="false"/>

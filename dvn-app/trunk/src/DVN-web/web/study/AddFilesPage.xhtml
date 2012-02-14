@@ -57,12 +57,7 @@
           // ]]>
       </script>
       <div class="dvn_section">
-        <div jsfc="ice:panelGroup" styleClass="dvnMsgBlockRound dvnInformationMessage">
-          <div class="dvnMsgBlockContainer">
-            <ice:outputText value="#{bundlePageInfo.addFilesHelp}" escape="false"/>
-          </div>
-        </div>
-        <div class="dvnstudytitlefloat">
+        <div class="dvnstudytitlefloat dvn_padBot">
             <ice:outputText styleClass="dvnstudytitle" value="#{AddFilesPage.studyVersion.metadata.title}"/>
             <div jsfc="ice:panelGroup" styleClass="dvnstudyversioninfo">
                 <ice:outputText value="#{AddFilesPage.study.globalId}"/> <ice:outputText value="#{AddFilesPage.studyVersion.metadata.UNF}" rendered="#{!empty AddFilesPage.studyVersion.metadata.UNF}"/>
@@ -79,11 +74,16 @@
                 <ice:outputText styleClass="dvnstudystatusversionnote" value="#{AddFilesPage.studyVersion.versionNote}" rendered="#{!empty AddFilesPage.studyVersion.versionNote}"/>
             </div>
         </div>
-        <div class="dvn_sectionTitle dvn_padTop">
+        <div class="dvn_sectionTitle">
           <ice:outputText value="#{bundlePageInfo.addFilesTitle}"/>
         </div>
         <div class="dvn_sectionBox">
           <div class="dvn_margin12">
+            <div jsfc="ice:panelGroup" styleClass="dvnInformationMessage">
+              <div class="dvnMsgBlockContainer">
+                <ice:outputText value="#{bundlePageInfo.addFilesHelp}" escape="false"/>
+              </div>
+            </div>
             <ice:form id="form1">
               <ice:inputHidden id="vdcId" value="#{VDCRequest.currentVDCId}"/>
               <ice:inputHidden id="studyId" value="#{AddFilesPage.study.id}"/>
@@ -91,7 +91,7 @@
 
               <ice:panelGroup id="filetypePanelGroup" styleClass="dvnAddFilesInputBlock">
 
-                  <div style="overflow: hidden; border-bottom:1px solid #D9D9D9; padding-bottom:1em; margin-bottom:1em;">
+                  <div class="dvnAddFilesInputContainer">
                     <div style="float:left; width:350px;">
                     <ice:selectOneMenu id="filetypeDropdown" binding="#{AddFilesPage.selectFileType}" onchange="getElementById('form1:filetypeButton').click();" rendered="#{!AddFilesPage.controlCardIngestInProgress}">
                         <f:selectItems value="#{AddFilesPage.fileTypes}"/>

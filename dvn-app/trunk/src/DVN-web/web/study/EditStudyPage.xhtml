@@ -123,16 +123,7 @@
         </script>
 
  <div class="dvn_section">
-          <div jsfc="ice:panelGroup" styleClass="dvnMsgBlockRound dvnInformationMessage">
-            <div class="dvnMsgBlockContainer dvnEditStudyHelpBlock">
-              <ice:outputLink styleClass="dvnCloseHelpBlock" value="#" onclick="return toggleHelpBlock(this)">
-                  <ice:outputText value="Close Help [-]"/>
-              </ice:outputLink>
-              <ice:outputText styleClass="dvnEditStudyHelp" value="#{bundlePageInfo.editStudyCatalogingHelp}"  escape="false"/>
-            </div>
-          </div>
-          
-        <div class="dvnstudytitleblock">
+        <div class="dvnstudytitleblock dvn_padBot">
             <div class="dvnstudyadminboxfloat">
                 <div jsfc="ice:panelGroup" id="groupPanel10" styleClass="vdcTextRight dvnFormMargin">
                     <ice:commandButton binding="#{EditStudyPage.saveCommand1}" id="saveCommand1" value="Save" actionListener="#{EditStudyPage.openPopup}"/>
@@ -158,7 +149,13 @@
             </div>
         </div>
 
-          <div class="dvn_sectionBoxNoBorders">
+          <div class="dvn_sectionBox">
+            <div panelLayout="flow" class="vdcStudyTemplateFormTable">
+              <div jsfc="ice:panelGroup" styleClass="dvnInformationMessage">
+                <div class="dvnMsgBlockContainer">
+                  <ice:outputText styleClass="dvnEditStudyHelp" value="#{bundlePageInfo.editStudyCatalogingHelp}" escape="false"/>
+                </div>
+              </div>
               <!-- validation errors occurred? -->
               <div jsfc="ice:panelGroup" id="messagePanel" styleClass="errorMessage" rendered="#{!empty facesContext.maximumSeverity}">
                 <ice:outputText value='Please check messages below.'/>
@@ -2209,10 +2206,11 @@
                   </ice:dataTable>              
               </ice:panelGroup>
 
-            <div jsfc="ice:panelGroup" styleClass="vdcTextRight dvnFormPadding dvnFormMargin">
-              <ice:commandButton binding="#{EditStudyPage.saveCommand2}" id="saveCommand2" value="Save" actionListener="#{EditStudyPage.openPopup}"/>
-              <ice:commandButton id="cancelCommand" value="Cancel" immediate="true" action="#{EditStudyPage.cancel}"/>
-            </div>
+                <div jsfc="ice:panelGroup" styleClass="vdcTextRight dvnFormPadding dvnFormMargin">
+                  <ice:commandButton binding="#{EditStudyPage.saveCommand2}" id="saveCommand2" value="Save" actionListener="#{EditStudyPage.openPopup}"/>
+                  <ice:commandButton id="cancelCommand" value="Cancel" immediate="true" action="#{EditStudyPage.cancel}"/>
+                </div>
+              </div>
           </div>
         </div>
       </ice:form>

@@ -24,29 +24,30 @@
         <ice:inputHidden id="vdcId" value="#{VDCRequest.currentVDCId}"/>
         <input type="hidden" name="pageName" value="DeaccessionStudyPage"/>
         <ice:inputHidden id="studyId" value="#{DeaccessionStudyPage.studyId}"/>
-
-        <div jsfc="ice:panelGroup" styleClass="dvnMsgBlockRound dvnWarningMessage" rendered="#{!DeaccessionStudyPage.updateDeaccessionDetails}">
-            <div class="dvnMsgBlockContainer">
-              <ice:outputText value="#{bundlePageInfo.deaccessionStudyHelp}" escape="false"/>
-            </div>
-        </div>
-        <div jsfc="ice:panelGroup" styleClass="dvnMsgBlockRound dvnInformationMessage" rendered="#{DeaccessionStudyPage.updateDeaccessionDetails}">
-            <div class="dvnMsgBlockContainer">
-              <ice:outputText value="#{bundlePageInfo.deaccessionStudyEditHelp}" escape="false"/>
-            </div>
-        </div>
         <div class="dvn_section">
-          <ui:include src="StudyTitleFragment.xhtml">
-             <ui:param name="studyUI" value="#{DeaccessionStudyPage.studyUI}"/>
-             <ui:param name="displayReleaseLink" value="true"/>
-             <ui:param name="displayVersionInfo" value="false"/>
-             <ui:param name="displayStatusBox" value="false"/>
-          </ui:include>
-          <div class="dvn_sectionTitle dvn_padTop">
+          <div class="dvnstudytitleblock dvn_padBot">
+            <ui:include src="StudyTitleFragment.xhtml">
+                 <ui:param name="studyUI" value="#{DeaccessionStudyPage.studyUI}"/>
+                 <ui:param name="displayReleaseLink" value="true"/>
+                 <ui:param name="displayVersionInfo" value="false"/>
+                 <ui:param name="displayStatusBox" value="false"/>
+            </ui:include>
+          </div>
+          <div class="dvn_sectionTitle">
             <ice:outputText value="#{bundlePageInfo.deaccessionStudyTitle}" escape="false"/>
           </div>
           <div class="dvn_sectionBox">
             <div class="dvn_margin12">
+              <div jsfc="ice:panelGroup" styleClass="dvnWarningMessage" rendered="#{!DeaccessionStudyPage.updateDeaccessionDetails}">
+                <div class="dvnMsgBlockContainer">
+                  <ice:outputText value="#{bundlePageInfo.deaccessionStudyHelp}" escape="false"/>
+                </div>
+              </div>
+              <div jsfc="ice:panelGroup" styleClass="dvnInformationMessage" rendered="#{DeaccessionStudyPage.updateDeaccessionDetails}">
+                <div class="dvnMsgBlockContainer">
+                  <ice:outputText value="#{bundlePageInfo.deaccessionStudyEditHelp}" escape="false"/>
+                </div>
+              </div>
               <div>
                 <span jsfc="ice:panelGroup" rendered="#{!DeaccessionStudyPage.updateDeaccessionDetails}">
                     <ice:graphicImage value="/resources/images/icon_warning.18.png" styleClass="dvn_icon"/>
@@ -68,7 +69,7 @@
                   <ice:outputText value="Add a link to another version of the deaccssioned study by including the Global ID of the new study."/>
                 </p>
                 <label class="dvnDeaccessionFormLabel" for="dvnDeaccessionForwardLink">Global ID</label>
-                <ice:outputText value="hdl:"/>
+                <ice:outputText value=" hdl:"/>
                 <ice:inputText id="dvnDeaccessionLinkAuthority" value="#{DeaccessionStudyPage.deaccessionLinkAuthority}" binding="#{DeaccessionStudyPage.inputDeaccessionLinkAuthority}"/>
                 <ice:outputText value=":"/>
                 <ice:inputText id="dvnDeaccessionLinkStudyId" value="#{DeaccessionStudyPage.deaccessionLinkStudyId}"

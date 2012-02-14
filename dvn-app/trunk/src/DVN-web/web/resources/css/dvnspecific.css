@@ -40,7 +40,10 @@ div.dvnOptionsTableLicense{padding-top:.5em}
 .dvnMyDataverseTableName{width:70%;padding-bottom:3px;padding-left:4px;padding-top:3px;text-align:left;vertical-align:top}
 .dvnMyDataverseTableRole{width:30%;padding-bottom:3px;padding-left:4px;padding-top:3px;text-align:center;vertical-align:top}
 /* MANAGE + EDIT STUDY + TEMPLATE */
-.vdcStudyTemplateFormTable{width:98%;border:1px solid #6E7F90;padding:10px;margin-top:1em}
+.vdcStudyTemplateFormTable{margin:12px 12px 0 12px}
+.dvnStudyTemplateTitleBlock{margin-top:1.5em; padding:4px 0; border-bottom:1px solid #DADEE0}
+.dvnStudyTemplateTitleBlock .dvnstudyadminboxfloat{text-align:right}
+.dvnStudyTemplateDCMBlock{border-bottom:1px solid #DADEE0; padding-bottom:1em;}
 .vdcEditStudyTable{border:0;margin:0}
 .vdcEditStudyTable tr{border-width:0 0 1px 0;padding:0}
 .vdcEditStudyTable td{border-bottom:1px solid #dadee0;border-width:0 0 1px 0;padding:4px 0}
@@ -80,7 +83,7 @@ td.vdcEditFilesColC{width:7%;padding:1em .25em;text-align:center}
 .vdcEditStudyField{padding-top:6px;padding-bottom:6px}
 .vdcEditStudyGroupField{white-space:nowrap}
 .vdcEditStudyIconLegend{float:left;margin-left:2em}
-.dvnManageStudiesTableTop{border:1px solid #d9d9d9;border-bottom:0;width:100%}
+.dvnManageStudiesTableTop{width:100%}
 .dvnManageStudiesTableTop .dvnPaginatorWrap{padding:.5em 0}
 .dvnManageStudiesTableBlock{position:relative;width:100%;overflow:auto}
 .dvnManageStudiesTable{position:absolute;top:0;left:0}
@@ -121,6 +124,7 @@ td.vdcEditFilesColC{width:7%;padding:1em .25em;text-align:center}
 .dvnAddFilesTable .dvnAddFilesCatCol{white-space:nowrap;}
 .dvnAddFilesTableCategory label.iceOutLbl{display:inline}
 .dvnAddFilesTableCategory select.iceSelOneMnu{display:inline}
+.dvnAddFilesInputContainer {overflow: hidden; border:1px solid #D9D9D9; border-width:1px 0; padding:1em 0; margin-bottom:1em;}
 /* MANAGE + EDIT COLLECTIONS */
 .dvnManageCollectionsTable{width:100%;margin-top:0}
 .dvnManageCollectionsTableChild{padding-left:18px;background:url(/dvn/resources/icefaces/dvn_rime/css-images/tree_line_last_node.gif) 0 0 no-repeat}
@@ -223,7 +227,7 @@ td.dvnPermissionsTableOption{width:240px;padding-top:.75em;padding-bottom:.75em;
 .dvn_createDvRequest{text-align:center}
 .dvn_createDvRequest .requestHeader{margin-left:auto;margin-right:auto;width:676px;color:#c55b28;font-size:160% !important;text-transform:uppercase;text-align:left}
 .dvn_createDvRequest .requestHeader .requestContentTitle{float:left;width:330px;padding:0 0 6px;color:#c55b28;font-size:100% !important;font-weight:400;text-transform:uppercase;line-height:22px !important}
-.dvn_createDvRequest .requestHeader span{color:#ccc;font-size:100% !important}
+.dvn_createDvRequest .requestHeader span{color:#ccc;font-size:100% !important;line-height:22px !important}
 .dvn_createDvRequest .requestContentDescRight{float:left;width:324px;padding:0 10px 6px;border-left:1px solid #ccc;color:#555;text-transform:none;text-align:left}
 .dvn_createDvRequest .requestIntroSteps{margin-top:30px;margin-left:auto;margin-right:auto;width:676px}
 .dvn_createDvRequest .requestIntroStepsContributor{margin-top:30px;margin-left:auto;margin-right:auto;width:521px}

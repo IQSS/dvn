@@ -26,18 +26,10 @@
                 <p><ice:outputText id="statusMessage" value="#{flash.message}"/></p>
             </div>
           </div>
-
-          <div jsfc="ice:panelGroup" styleClass="dvnMsgBlockRound dvnInformationMessage" rendered="#{empty flash.message }">
-            <div class="dvnMsgBlockContainer">
-              <ice:outputText value="#{bundlePageInfo.manageStudiesHelp}" escape="false"/>
-            </div>
-          </div>
           <div class="dvn_sectionTitle">
             <ice:outputText value="#{bundlePageInfo.manageStudiesTitle}"/>
           </div>
-            <ui:include src="/study/ManageStudiesFragment.xhtml">
-                            </ui:include>
-
+          <ui:include src="/study/ManageStudiesFragment.xhtml"></ui:include>
         </div>
       </ice:form>
     </ui:define>

@@ -167,7 +167,7 @@
 
 <!-- html top boiler-plate block -->
 
-    <ice:form id="form1" >
+    <ice:form id="form1">
     <input type="hidden" name="dtId" value="${param.dtId}"/>
 
     <ice:inputHidden id="vdcId" value="#{VDCRequest.currentVDCId}"/>
@@ -176,17 +176,13 @@
 
         <div class="dvnstudytitleblock">
             <div class="dvnstudyadminboxfloat dvn_right">
-                <ice:outputLink
-                    value="/dvn#{VDCRequest.currentVDCURL}/faces/study/StudyPage.xhtml?studyId=#{AnalysisPage.studyId}&amp;tab=files#{VDCRequest.studyListingIndexAsParameter}"
+                <ice:outputLink value="/dvn#{VDCRequest.currentVDCURL}/faces/study/StudyPage.xhtml?studyId=#{AnalysisPage.studyId}&amp;tab=files#{VDCRequest.studyListingIndexAsParameter}"
                     rendered="#{AnalysisPage.versionNumber == null}">
-                    <ice:outputText
-                        value="Back to Study"/>
+                    <ice:outputText value="&lt; Back to Study"/>
                 </ice:outputLink>
-                <ice:outputLink
-                value="/dvn#{VDCRequest.currentVDCURL}/faces/study/StudyPage.xhtml?studyId=#{AnalysisPage.studyId}&amp;versionNumber=#{AnalysisPage.versionNumber}&amp;tab=files#{VDCRequest.studyListingIndexAsParameter}"
+                <ice:outputLink value="/dvn#{VDCRequest.currentVDCURL}/faces/study/StudyPage.xhtml?studyId=#{AnalysisPage.studyId}&amp;versionNumber=#{AnalysisPage.versionNumber}&amp;tab=files#{VDCRequest.studyListingIndexAsParameter}"
                     rendered="#{AnalysisPage.versionNumber != null}">
-                    <ice:outputText
-                        value="Back to Study"/>
+                    <ice:outputText value="&lt; Back to Study"/>
                 </ice:outputLink>
             </div>
             <ui:include src="/study/StudyTitleFragment.xhtml">
@@ -203,7 +199,7 @@
             <!--tab block starts here -->
 
             <!-- ui:tabSet binding="{AnalysisPage.tabSet1}" id="tabSet1" lite="true" mini="true" selected="{AnalysisPage.tab}" styleClass="vdcStudyTabSet" -->
-            <ice:panelTabSet id="tabSet1"
+            <ice:panelTabSet id="tabSet1" styleClass="dvnTabs"
                 binding="#{AnalysisPage.tabSet1}"
                 tabChangeListener="#{AnalysisPage.processTabChange}">
 

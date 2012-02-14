@@ -126,11 +126,11 @@
                           </div>
                       </div>
                       <div jsfc="ice:panelGroup" styleClass="vdcStudyCommentLoginRegister" rendered="#{VDCSession.user != null and !studyPage.studyUI.studyVersion.released and studyPage.studyUI.studyVersion.study.releasedVersion != null}">
-                          <ice:outputText value="To add comments, please vew the"/>
+                          <ice:outputText value="To add comments, please view the "/>
                           <ice:outputLink value="/dvn#{VDCRequest.currentVDCURL}/faces/study/StudyPage.xhtml?studyId=#{studyPage.studyUI.studyVersion.study.id}&amp;versionNumber=#{studyPage.studyUI.studyVersion.study.releasedVersion.versionNumber}&amp;tab=comments#{VDCRequest.studyListingIndexAsParameter}">
                             <ice:outputText value="released version"/>
                           </ice:outputLink>
-                          <ice:outputText value="of the study."/>
+                          <ice:outputText value=" of the study."/>
                       </div>
                       <div jsfc="ice:panelGroup" styleClass="vdcStudyCommentLoginRegister" rendered="#{VDCSession.user != null and studyPage.studyUI.studyVersion.study.releasedVersion == null}">
                           <ice:outputText value="The study must be released in order to add comments. "/>

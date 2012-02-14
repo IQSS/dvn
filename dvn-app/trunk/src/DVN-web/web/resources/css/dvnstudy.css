@@ -1,7 +1,7 @@
 /* CSS Document */
 /* STUDY TITLE/ACTION BOX */
 .dvnstudytitleblock {overflow: hidden;}
-.dvnstudytitlefloat {padding-right: 340px; text-align: left;}
+.dvnstudytitlefloat {padding-right: 346px; text-align: left;}
 span.dvnstudytitle {line-height: 1.48; color:#526F76; text-transform:uppercase; font-size:1.35em !important;}
 .dvnstudyversioninfo span.iceOutTxt {color:#A9A9A9; line-height: 1.48; font-size:.95em !important;}
 .dvnstudystatusbox{display: table-cell; padding: 2px 8px; font-weight: bold; line-height:24px !important;}
@@ -14,12 +14,12 @@ span.dvnstudytitle {line-height: 1.48; color:#526F76; text-transform:uppercase; 
 .dvnstudystatusnoreleasedver{color:#820024;}
 .dvnstudystatusversionnote{font-weight:normal;}
 .dvnstudystatusversionnote .vdcTruncatorLinkLess{margin-left: 8px;}
-.dvnstudyadminboxfloat{float: right; width: 310px; text-align:left;}
+.dvnstudyadminboxfloat{float: right; width: 330px; text-align:left;}
 .dvnstudyadminboxfloat.dvn_right{text-align:right;}
 .dvnstudypreviouslisting{text-align:right;}
-.dvnstudyadminbox{width: 300px; overflow:hidden; border:1px solid #d0d0d0; padding:4px; color:#526F76;}
-.dvnstudyadminlinksL {float: left; width: 150px; list-style-type: square; margin: 0 0 0 1.25em; padding: 0;}
-.dvnstudyadminlinksR {float: right; width: 130px; list-style-type: square; margin: 0; padding: 0;}
+.dvnstudyadminbox{width: 320px; overflow:hidden; border:1px solid #d0d0d0; padding:4px; color:#526F76;}
+.dvnstudyadminlinksL {float: left; width: 164px; list-style-type: square; margin: 0 0 0 1.25em; padding: 0;}
+.dvnstudyadminlinksR {float: right; width: 140px; list-style-type: square; margin: 0; padding: 0;}
 .dvnstudyadminbox ul {padding: 0px; margin: 0px; list-style-type: none;}
 .dvnstudyadminbox li {background: url(/dvn/resources/images/icon_bullet.gif) no-repeat 0px 8px; padding-left: 10px;}
 .dvnstudyadminbox a:link,.dvnstudyadminbox a:visited,.dvnstudyadminbox a:hover,.dvnstudyadminbox a:active{color:#C55B28;}
@@ -174,7 +174,7 @@ tr.popupModVerNotLabel td span{font-weight:bold;}
 .dvnversionsreleasedate{white-space:nowrap}
 .dvnStudyVersionNote .vdcTruncatorLinkLess{margin-left:8px;}
 /* STUDY VERSION DIFFERENCES */
-table.dvnDifferanceTableHeader, table.dvnDifferanceTableHeader tr{border-left:0;}
+table.dvnDifferanceTableHeader, table.dvnDifferanceTableHeader tr{border-left:0;background:none;}
 table.dvnDifferanceTableHeader td{border-bottom:0;}
 table.dvnDifferanceTableHeader td{border-top:1px solid #CCC;}
 td.dvnDifferanceTableHeaderCol1{border-top:0 !important;}

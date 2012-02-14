@@ -31,14 +31,16 @@
                 <ice:outputText id="dvnDeaccessionForwardLink" value="#{studyPage.studyUI.studyVersion.metadata.textCitation}"/>
                 <p>
                     <ice:outputText value="The study you have requested has been deaccessioned."/>
-                    <ice:outputText rendered="#{empty studyPage.studyUI.studyVersion.deaccessionLink}" value="No further information has been provided."/>
-                    <ice:outputText rendered="#{!empty studyPage.studyUI.studyVersion.deaccessionLink}" value="An updated version has been created with Global ID,"/>
+                    <ice:outputText rendered="#{empty studyPage.studyUI.studyVersion.deaccessionLink}" value=" No further information has been provided."/>
+                    <ice:outputText rendered="#{!empty studyPage.studyUI.studyVersion.deaccessionLink}" value=" An updated version has been created with Global ID, "/>
                     <ice:outputLink rendered="#{!empty studyPage.studyUI.studyVersion.deaccessionLink}" value="http://hdl.handle.net/#{studyPage.studyUI.studyVersion.deaccessionLinkAsGlobalId.authority}/#{studyPage.studyUI.studyVersion.deaccessionLinkAsGlobalId.studyId}">
                         <ice:outputText value="#{studyPage.studyUI.studyVersion.deaccessionLink}"/>
                     </ice:outputLink>
                 </p>
-                <label for="dvnDeaccessionComments" class="dvnDeaccessionCommentsLabel">Comments</label>
-                <ice:outputText id="dvnDeaccessionComments" value="#{studyPage.studyUI.studyVersion.archiveNote}"/>
+                <div jsfc="ice:panelGroup" rendered="#{!empty studyPage.studyUI.studyVersion.archiveNote}">
+                    <label for="dvnDeaccessionComments" class="dvnDeaccessionCommentsLabel">Comments</label>
+                    <ice:outputText id="dvnDeaccessionComments" value="#{studyPage.studyUI.studyVersion.archiveNote}"/>
+                </div>
             </div>
         </div>
     </div>

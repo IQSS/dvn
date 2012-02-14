@@ -6,156 +6,153 @@
       xmlns:f="http://java.sun.com/jsf/core"
       xmlns:jsp="http://java.sun.com/JSP/Page"
       xmlns:ice="http://www.icesoft.com/icefaces/component">
-    <head>
-        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
-    </head>
-    <body>
-        <ui:composition template="/template.xhtml">
-            <ui:param name="pageTitle" value="#{bundlePageInfo.editStudyTitle} - #{VDCRequest.dataversePageTitle}"/>
-    <ui:define name="metadata">
-        <f:metadata>
-            <f:viewParam name="studyId" value="#{EditStudyFilesPage.studyId}"/>
-            <f:viewParam name="studyListingIndex" value="#{VDCRequest.studyListingIndex}"/>        
-            <f:event type="preRenderView" listener="#{EditStudyFilesPage.preRenderView}" />
-        </f:metadata>  
-    </ui:define>              
-            <ui:define name="body">
-                <f:loadBundle basename="EditStudyBundle" var="editstudybundle"/>
-                <script type="text/javascript">
-                    // <![CDATA[
-                    // Functions for hiding and showing study fields
-                    function addLoadEvent(func) {
-                        var oldonload = window.onload;
-                        if (typeof window.onload != 'function') {
-                            window.onload = func;
-                        } else {
-                            window.onload = function() {
-                                if (oldonload) {
-                                    oldonload();
-                                }
-                                func();
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+</head>
+<body>
+    <ui:composition template="/template.xhtml">
+        <ui:param name="pageTitle" value="#{bundlePageInfo.editStudyTitle} - #{VDCRequest.dataversePageTitle}"/>
+        <ui:define name="metadata">
+            <f:metadata>
+                <f:viewParam name="studyId" value="#{EditStudyFilesPage.studyId}"/>
+                <f:viewParam name="studyListingIndex" value="#{VDCRequest.studyListingIndex}"/>        
+                <f:event type="preRenderView" listener="#{EditStudyFilesPage.preRenderView}" />
+            </f:metadata>  
+        </ui:define>              
+        <ui:define name="body">
+            <f:loadBundle basename="EditStudyBundle" var="editstudybundle"/>
+            <script type="text/javascript">
+                // <![CDATA[
+                // Functions for hiding and showing study fields
+                function addLoadEvent(func) {
+                    var oldonload = window.onload;
+                    if (typeof window.onload != 'function') {
+                        window.onload = func;
+                    } else {
+                        window.onload = function() {
+                            if (oldonload) {
+                                oldonload();
                             }
+                            func();
                         }
                     }
-                    // functions to work with category selection
-                    // note a few assumptions that these functions have:
-                    // the id of the dropdown (including parent nodes); the partial id of the checkboxes;
-                    // and that the checkbox is two elements before the text field (there is empty text
-                    // in between, created by the div)
-                    function updateCategory( checkbox ) {
-                        if (checkbox.checked) {
-                            textField = document.getElementById(checkbox.id).nextSibling;
-                            dropdown = document.getElementById("studyForm:fileDataTableWrapper:0:fileDataTable:catDropdown");
+                }
+                // functions to work with category selection
+                // note a few assumptions that these functions have:
+                // the id of the dropdown (including parent nodes); the partial id of the checkboxes;
+                // and that the checkbox is two elements before the text field (there is empty text
+                // in between, created by the div)
+                function updateCategory( checkbox ) {
+                    if (checkbox.checked) {
+                        textField = document.getElementById(checkbox.id).nextSibling;
+                        dropdown = document.getElementById("studyForm:fileDataTableWrapper:0:fileDataTable:catDropdown");
+                        textField.value = dropdown.value;
+                    }
+                }
+                function deselectCategory( textField ) {
+                    checkbox = document.getElementById(textField.id).previousSibling;
+                    checkbox.checked = false;
+                }
+                function updateAllCheckedCategories( dropdown ) {
+                    checkboxes=document.getElementsByTagName("input");
+                    for(i=0; i < checkboxes.length; i++) {
+                        if (checkboxes[i].id.indexOf("catCheckbox") != -1 && checkboxes[i].checked == true) {
+                            textField = checkboxes[i].nextSibling;
                             textField.value = dropdown.value;
                         }
                     }
-                    function deselectCategory( textField ) {
-                        checkbox = document.getElementById(textField.id).previousSibling;
-                        checkbox.checked = false;
+                }
+                /** commenting out this code pending
+                 * input from alpha testing re: validation
+                 * required or no
+                 * To activate uncomment the function
+                 * below and uncomment the related div
+                 * just below the author name. See below.
+                 * @author Wendy Bossons
+                 */
+                function validateNameFormat(obj) {
+                    if (obj.value.length == 0) {
+                        return;
+                    } else {
+                        var regexp = /[^\s^]/i;
+                        var helpObj = eval("document.getElementById('input_authorNameHelp')");
+                        if (regexp.test(obj.value))
+                            helpObj.style.display = 'block';
                     }
-                    function updateAllCheckedCategories( dropdown ) {
-                        checkboxes=document.getElementsByTagName("input");
-                        for(i=0; i < checkboxes.length; i++) {
-                            if (checkboxes[i].id.indexOf("catCheckbox") != -1 && checkboxes[i].checked == true) {
-                                textField = checkboxes[i].nextSibling;
-                                textField.value = dropdown.value;
+                }
+                // ]]>
+            </script>
+
+            <ice:form id="studyForm">
+                <ice:inputHidden id="vdcId" value="#{VDCRequest.currentVDCId}"/>
+                <script type="text/javascript">
+                  // <![CDATA[
+
+                      function toggleHelpBlock(helpBlock) {
+                            jQuery(helpBlock).next().slideToggle(500);
+                            var toggleHelpBlock = (jQuery(helpBlock).children('span.iceOutTxt').text() == 'Close Help [-]') ? 'Open Help [+]' : 'Close Help [-]';
+                            jQuery(helpBlock).children('span.iceOutTxt').text(toggleHelpBlock);
+                            var toggleState = jQuery(helpBlock).children('span.iceOutTxt').text();
+                            if (toggleState == 'Open Help [+]') {
+                                jQuery('.dvnEditStudyHelpBlock').animate({height:'26px'},400,function() {jQuery('.dvnInformationMessage').css('background-image','url(/dvn/resources/images/icon_information.18.png)')});
+                                jQuery.cookie('helpBlockState', 'closed');
                             }
-                        }
-                    }
-                    /** commenting out this code pending
-                     * input from alpha testing re: validation
-                     * required or no
-                     * To activate uncomment the function
-                     * below and uncomment the related div
-                     * just below the author name. See below.
-                     * @author Wendy Bossons
-                     */
-                    function validateNameFormat(obj) {
-                        if (obj.value.length == 0) {
-                            return;
-                        } else {
-                            var regexp = /[^\s^]/i;
-                            var helpObj = eval("document.getElementById('input_authorNameHelp')");
-                            if (regexp.test(obj.value))
-                                helpObj.style.display = 'block';
-                        }
-                    }
-                    // ]]>
+                            else {
+                                jQuery('.dvnEditStudyHelpBlock').animate({height:'auto'},400,function() {jQuery('.dvnInformationMessage').css('background-image','url(/dvn/resources/images/icon_information.png)')});
+                                jQuery.cookie('helpBlockState', 'opened');
+                            }
+                            return false;
+                      };
+
+                      jQuery(document).ready(function(){
+
+                      var helpBlockStateVar = jQuery.cookie('helpBlockState');
+                            if (helpBlockStateVar == 'closed') {
+                                jQuery('.dvnCloseHelpBlock').next().slideToggle(500);
+                                jQuery('.dvnEditStudyHelpBlock').animate({height:'26px'},400,function() {jQuery('.dvnInformationMessage').css('background-image','url(/dvn/resources/images/icon_information.18.png)')});
+                                jQuery('.dvnCloseHelpBlock').children('span.iceOutTxt').text('Open Help [+]');
+                      };
+
+
+                      jQuery(".dvnstudystatusversionnote").truncate({max_length: 250});
+
+                  });
+                  // ]]>
                 </script>
-                
-                <ice:form id="studyForm">
-                    <ice:inputHidden id="vdcId" value="#{VDCRequest.currentVDCId}"/>
-                    <script type="text/javascript">
-                      // <![CDATA[
 
-                          function toggleHelpBlock(helpBlock) {
-                                jQuery(helpBlock).next().slideToggle(500);
-                                var toggleHelpBlock = (jQuery(helpBlock).children('span.iceOutTxt').text() == 'Close Help [-]') ? 'Open Help [+]' : 'Close Help [-]';
-                                jQuery(helpBlock).children('span.iceOutTxt').text(toggleHelpBlock);
-                                var toggleState = jQuery(helpBlock).children('span.iceOutTxt').text();
-                                if (toggleState == 'Open Help [+]') {
-                                    jQuery('.dvnEditStudyHelpBlock').animate({height:'26px'},400,function() {jQuery('.dvnInformationMessage').css('background-image','url(/dvn/resources/images/icon_information.18.png)')});
-                                    jQuery.cookie('helpBlockState', 'closed');
-                                }
-                                else {
-                                    jQuery('.dvnEditStudyHelpBlock').animate({height:'auto'},400,function() {jQuery('.dvnInformationMessage').css('background-image','url(/dvn/resources/images/icon_information.png)')});
-                                    jQuery.cookie('helpBlockState', 'opened');
-                                }
-                                return false;
-                          };
-
-                          jQuery(document).ready(function(){
-
-                          var helpBlockStateVar = jQuery.cookie('helpBlockState');
-                                if (helpBlockStateVar == 'closed') {
-                                    jQuery('.dvnCloseHelpBlock').next().slideToggle(500);
-                                    jQuery('.dvnEditStudyHelpBlock').animate({height:'26px'},400,function() {jQuery('.dvnInformationMessage').css('background-image','url(/dvn/resources/images/icon_information.18.png)')});
-                                    jQuery('.dvnCloseHelpBlock').children('span.iceOutTxt').text('Open Help [+]');
-                          };
-
-
-                          jQuery(".dvnstudystatusversionnote").truncate({max_length: 250});
-
-                      });
-                      // ]]>
-                    </script>
-
-                    <div class="dvn_section">
-                        <div jsfc="ice:panelGroup" styleClass="dvnMsgBlockRound dvnInformationMessage">
-                            <div class="dvnMsgBlockContainer dvnEditStudyHelpBlock">
-                                <ice:outputLink styleClass="dvnCloseHelpBlock" value="#" onclick="return toggleHelpBlock(this)">
-                                    <ice:outputText value="Close Help [-]"/>
-                                </ice:outputLink>
-                                <ice:outputText styleClass="dvnEditStudyHelp" value="#{bundlePageInfo.editStudyFilesHelp}"  escape="false"/>
+                <div class="dvn_section">
+                    <div class="dvnstudytitleblock dvn_padBot">
+                        <div class="dvnstudyadminboxfloat">
+                            <div jsfc="ice:panelGroup" id="groupPanel10" styleClass="vdcTextRight dvnFormMargin">
+                                <ice:commandButton binding ="#{EditStudyFilesPage.saveCommand1}" id="saveCommand1" value="Save" actionListener="#{EditStudyFilesPage.openPopup}"/>
+                                <ice:commandButton id="button2" value="Cancel" immediate="true" action="#{EditStudyFilesPage.cancel}"/>
                             </div>
                         </div>
-                        <div class="dvnstudytitleblock">
-                            <div class="dvnstudyadminboxfloat">
-                                <div jsfc="ice:panelGroup" id="groupPanel10" styleClass="vdcTextRight dvnFormMargin">
-                                    <ice:commandButton binding ="#{EditStudyFilesPage.saveCommand1}" id="saveCommand1" value="Save" actionListener="#{EditStudyFilesPage.openPopup}"/>
-                                    <ice:commandButton id="button2" value="Cancel" immediate="true" action="#{EditStudyFilesPage.cancel}"/>
-                                </div>
+                        <div class="dvnstudytitlefloat">
+                            <ice:outputText styleClass="dvnstudytitle" value="#{EditStudyFilesPage.currentTitle}" rendered="#{EditStudyFilesPage.study.id != null}"/>
+                            <div jsfc="ice:panelGroup" styleClass="dvnstudyversioninfo" rendered="#{EditStudyFilesPage.study.id != null}">
+                                <ice:outputText value="#{EditStudyFilesPage.metadata.study.studyId}"/> <ice:outputText value="#{EditStudyFilesPage.metadata.UNF}" rendered="#{!empty EditStudyFilesPage.metadata.UNF}"/>
                             </div>
-                            <div class="dvnstudytitlefloat">
-                                <ice:outputText styleClass="dvnstudytitle" value="#{EditStudyFilesPage.currentTitle}" rendered="#{EditStudyFilesPage.study.id != null}"/>
-                                <div jsfc="ice:panelGroup" styleClass="dvnstudyversioninfo" rendered="#{EditStudyFilesPage.study.id != null}">
-                                    <ice:outputText value="#{EditStudyFilesPage.metadata.study.studyId}"/> <ice:outputText value="#{EditStudyFilesPage.metadata.UNF}" rendered="#{!empty EditStudyFilesPage.metadata.UNF}"/>
-                                </div>
-                                <div jsfc="ice:panelGroup" styleClass="dvnstudystatusbox #{EditStudyFilesPage.metadata.studyVersion.inReview ? 'dvnstudystatusreview' : '' or EditStudyFilesPage.metadata.studyVersion.draft ? 'dvnstudystatusdraft' : ''}">
-                                    <ice:outputText styleClass="dvnstudystatuslabel" value="In Review " rendered="#{EditStudyFilesPage.metadata.studyVersion.inReview}"/>
-                                    <ice:outputText styleClass="dvnstudystatuslabel" value="Draft " rendered="#{EditStudyFilesPage.metadata.studyVersion.draft}"/>
-                                    <ice:outputText value="Study Version: #{EditStudyFilesPage.metadata.studyVersion.versionNumber}"/>
-                                    <ice:outputText nospan="true"><br/></ice:outputText>
-                                    <ice:outputText value="Created: #{EditStudyFilesPage.metadata.studyVersion.createTime} - Last Updated: #{EditStudyFilesPage.metadata.studyVersion.lastUpdateTime}" rendered="#{!empty EditStudyFilesPage.metadata.studyVersion.lastUpdateTime}"/>
-                                    <ice:outputText value="Created: &lt;i&gt;Draft study version is not created until the form is saved&lt;/i&gt;" rendered="#{null == EditStudyFilesPage.metadata.studyVersion.lastUpdateTime}" escape="false"/>
-                                    <ice:outputText nospan="true" rendered="#{!empty EditStudyFilesPage.metadata.studyVersion.versionNote}"><br/></ice:outputText>
-                                    <ice:outputText value="Study Version Notes: " rendered="#{!empty EditStudyFilesPage.metadata.studyVersion.versionNote}"/>
-                                    <ice:outputText styleClass="dvnstudystatusversionnote" value="#{EditStudyFilesPage.metadata.studyVersion.versionNote}" rendered="#{!empty EditStudyFilesPage.metadata.studyVersion.versionNote}"/>
-                                </div>
+                            <div jsfc="ice:panelGroup" styleClass="dvnstudystatusbox #{EditStudyFilesPage.metadata.studyVersion.inReview ? 'dvnstudystatusreview' : '' or EditStudyFilesPage.metadata.studyVersion.draft ? 'dvnstudystatusdraft' : ''}">
+                                <ice:outputText styleClass="dvnstudystatuslabel" value="In Review " rendered="#{EditStudyFilesPage.metadata.studyVersion.inReview}"/>
+                                <ice:outputText styleClass="dvnstudystatuslabel" value="Draft " rendered="#{EditStudyFilesPage.metadata.studyVersion.draft}"/>
+                                <ice:outputText value="Study Version: #{EditStudyFilesPage.metadata.studyVersion.versionNumber}"/>
+                                <ice:outputText nospan="true"><br/></ice:outputText>
+                                <ice:outputText value="Created: #{EditStudyFilesPage.metadata.studyVersion.createTime} - Last Updated: #{EditStudyFilesPage.metadata.studyVersion.lastUpdateTime}" rendered="#{!empty EditStudyFilesPage.metadata.studyVersion.lastUpdateTime}"/>
+                                <ice:outputText value="Created: &lt;i&gt;Draft study version is not created until the form is saved&lt;/i&gt;" rendered="#{null == EditStudyFilesPage.metadata.studyVersion.lastUpdateTime}" escape="false"/>
+                                <ice:outputText nospan="true" rendered="#{!empty EditStudyFilesPage.metadata.studyVersion.versionNote}"><br/></ice:outputText>
+                                <ice:outputText value="Study Version Notes: " rendered="#{!empty EditStudyFilesPage.metadata.studyVersion.versionNote}"/>
+                                <ice:outputText styleClass="dvnstudystatusversionnote" value="#{EditStudyFilesPage.metadata.studyVersion.versionNote}" rendered="#{!empty EditStudyFilesPage.metadata.studyVersion.versionNote}"/>
                             </div>
                         </div>
-
-                        <div class="dvn_sectionBoxNoBorders">
+                    </div>
+                    <div class="dvn_sectionBox">
+                        <div class="dvn_margin12">
+                            <div jsfc="ice:panelGroup" styleClass="dvnInformationMessage">
+                                <div class="dvnMsgBlockContainer">
+                                    <ice:outputText styleClass="dvnEditStudyHelp" value="#{bundlePageInfo.editStudyFilesHelp}"  escape="false"/>
+                                </div>
+                            </div>
                             <!-- validation errors occurred? -->
                             <div jsfc="ice:panelGroup" id="messagePanel" styleClass="errorMessage" rendered="#{!empty facesContext.maximumSeverity}">
                                 <ice:outputText value='Please check messages below.'/>
@@ -221,15 +218,16 @@
                                 </div>
                             </ice:panelGroup>
 
-                            <div jsfc="ice:panelGroup" styleClass="vdcTextRight dvnFormPadding dvnFormMargin">
+                            <div jsfc="ice:panelGroup" styleClass="dvnFormPadding dvnFormMargin">
                                 <ice:commandButton binding ="#{EditStudyFilesPage.saveCommand2}" id="saveCommand2" value="Save" actionListener="#{EditStudyFilesPage.openPopup}"/>
                                 <ice:commandButton id="cancelCommand" value="Cancel" immediate="true" action="#{EditStudyFilesPage.cancel}"/>
                             </div>
                         </div>
                     </div>
-                </ice:form>
+                </div>
+            </ice:form>
 
-            </ui:define>
-        </ui:composition>
-    </body>
+        </ui:define>
+    </ui:composition>
+</body>
 </html>

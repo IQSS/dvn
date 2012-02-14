@@ -1336,7 +1336,6 @@
                     </div>
                 <ice:panelGrid cellpadding="0" cellspacing="0" columns="3" width="100%">
                     <ice:column>
-<!-- remove input level from field creation-->
                         <ice:outputText value="Allow multiple values"/>
                         <ice:selectBooleanCheckbox partialSubmit="false" binding="#{TemplateFormPage.allowMultiplesCheck}"/>
                     </ice:column>
@@ -1361,8 +1360,46 @@
                 </ice:panelGrid>
               </div>
               <!-- End of Add-->
-              <!-- Generic control-->
-
+              
+              <!-- Generic control-->              
+              <ice:panelSeries value="#{TemplateFormPage.adHocFields}" var="customField">
+                  <ice:dataTable cellpadding="0" cellspacing="0" width="100%"
+                                 columnClasses="vdcEditStudyCol1b, vdcEditStudyCol2, vdcEditStudyCol3"
+                                 value="#{customField.templateFieldValues}" var="customValue">
+                    <ice:column>                  
+                      <div class="vdcEditStudyField">
+                        <ice:selectOneMenu immediate="false" partialSubmit="true"
+                                        rendered="#{customValue.displayOrder==0}"
+                                        value="#{customField.fieldInputLevelString}"
+                                        valueChangeListener="#{TemplateFormPage.changeFieldInputValueDCM}">
+                            <f:attribute name="dcmSortOrder" value="#{customField.dcmSortOrder}" />
+                            <f:attribute name="tf_id" value="#{customField.id}" />
+                           <f:selectItems value="#{TemplateFormPage.fieldInputLevelSelectItems}"/>
+                        </ice:selectOneMenu>                          
+                        <ice:outputText styleClass="dvnInlineHelpLabel dvnInlineHelpTip" value="#{customField.studyField.name}" title="#{customField.studyField.name} - #{customField.studyField.description}"/>
+                        <ice:graphicImage value="/resources/images/icon_required.gif" rendered="#{customField.required}"/>
+                        <ice:graphicImage value="/resources/images/icon_recommended.gif" rendered="#{customField.recommended}"/>
+                      </div>
+                    </ice:column>
+                    <ice:column>
+                      <div>
+                        <ice:inputTextarea cols="90" rows="4"
+                                           id="input_relatedStudies"
+                                           value="#{customValue.strValue}"
+                                           styleClass="formHtmlEnabled">
+                        </ice:inputTextarea>
+                      </div>
+                    </ice:column>
+                    <ice:column>
+                      <ice:commandButton partialSubmit="true" image="/resources/images/icon_add.gif" actionListener="#{TemplateFormPage.addRow}">
+                        <f:attribute name="dcmSortOrder" value="#{customField.dcmSortOrder}"/>
+                      </ice:commandButton>       
+                        <ice:commandButton partialSubmit="true" rendered="#{customField.templateFieldValues.size() > 1}" image="/resources/images/icon_remove.gif" actionListener="#{TemplateFormPage.removeRow}"/>
+                    </ice:column>
+                    </ice:dataTable>      
+              </ice:panelSeries>
+                            
+              <!--
                   <ice:dataTable cellpadding="0" cellspacing="0" width="100%" styleClass="dvnStudyTemplateTableDCM"
                                  columnClasses="vdcEditStudyCol1b, vdcEditStudyCol2, vdcEditStudyCol3"
                                  binding="#{TemplateFormPage.dcmFieldTable}"
@@ -1379,7 +1416,6 @@
                         <ice:outputText styleClass="dvnInlineHelpLabel dvnInlineHelpTip" value="#{dcmItem.studyField.name}" title="#{dcmItem.studyField.name} - #{dcmItem.studyField.description}"/>
                         <ice:graphicImage value="/resources/images/icon_required.gif" rendered="#{dcmItem.required}"/>
                         <ice:graphicImage value="/resources/images/icon_recommended.gif" rendered="#{dcmItem.recommended}"/>
-               <!-- remove allow multiples from edit field section-->
                       <ice:commandButton  value="Remove Field" 
                                           actionListener="#{TemplateFormPage.removeAdHocField}" rendered="#{(dcmItem.studyField.id > 98 or dcmItem.studyField.id == null) and TemplateFormPage.networkEdit}" >
                                          <f:attribute name="studyFieldId" value="#{dcmItem.studyField.id}" />
@@ -1391,7 +1427,6 @@
                       <ice:dataTable var="fieldValRow" value="#{dcmItem.templateFieldValues}"
                                      binding="#{TemplateFormPage.dataTableDCMFieldValues}">
                        <ice:column> 
-                          <!-- put in default field type as text box-->
                           <ice:inputText id="input_TextDefault" size="90" rendered="#{empty(dcmItem.studyField.fieldType)}" 
                                          visible="#{empty(dcmItem.templateFieldControlledVocabulary)}"
                                          value="#{fieldValRow.strValue}">
@@ -1470,6 +1505,7 @@
                       </ice:commandButton>
                     </ice:column>
                   </ice:dataTable>
+                  -->
                <!-- end of original Generic control--> 
 
                

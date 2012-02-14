@@ -240,4 +240,8 @@ public class VDCBaseBean  implements java.io.Serializable  {
             throw new RuntimeException("IOException thrown while trying to redirect to " + url);
         }
     }
+    
+    public String getNavigationVDCSuffix() {
+        return (getVDCRequestBean().getCurrentVDCId() != null) ? "&vdcId=" + getVDCRequestBean().getCurrentVDCId() : "";
+    }
 }

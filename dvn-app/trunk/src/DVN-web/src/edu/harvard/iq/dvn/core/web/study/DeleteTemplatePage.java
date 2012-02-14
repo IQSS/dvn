@@ -67,52 +67,13 @@ public class DeleteTemplatePage extends VDCBaseBean implements java.io.Serializa
      * property values that were saved for this view when it was rendered.</p>
      */
     
-       public void init() {
+    public void init() {
         super.init();
         Template template = templateService.getTemplate(templateId);
-        
-         templateName = template.getName();
-        
+        templateName = template.getName();
+
     }
-    
-    
-    
-    
-    /**
-     * <p>Callback method that is called after the component tree has been
-     * restored, but before any event processing takes place.  This method
-     * will <strong>only</strong> be called on a postback request that
-     * is processing a form submit.  Customize this method to allocate
-     * resources that will be required in your event handlers.</p>
-     */
-    public void preprocess() {
-        System.out.println("in preprocess");
-    }
-    
-    /**
-     * <p>Callback method that is called just before rendering takes place.
-     * This method will <strong>only</strong> be called for the page that
-     * will actually be rendered (and not, for example, on a page that
-     * handled a postback and then navigated to a different page).  Customize
-     * this method to allocate resources that will be required for rendering
-     * this page.</p>
-     */
-    public void prerender() {
-        System.out.println("in prerender");
-    }
-    
-    /**
-     * <p>Callback method that is called after rendering is completed for
-     * this request, if <code>init()</code> was called (regardless of whether
-     * or not this was the page that was actually rendered).  Customize this
-     * method to release resources acquired in the <code>init()</code>,
-     * <code>preprocess()</code>, or <code>prerender()</code> methods (or
-     * acquired during execution of an event handler).</p>
-     */
-    public void destroy() {
-    }
-    
-    
+       
     
     /**
      * Holds value of property study.
@@ -140,12 +101,12 @@ public class DeleteTemplatePage extends VDCBaseBean implements java.io.Serializa
     
     public String delete() {
         templateService.deleteTemplate(templateId);
-        return "success";
+        return "/study/DeleteTemplateSuccessPage?faces-redirect=true" + getNavigationVDCSuffix();
     }
     
     public String cancel() {
         
-        return "manageTemplates";
+        return "/admin/ManageTemplatesPage?faces-redirect=true" + getNavigationVDCSuffix();
     }
 
    private Long templateId;

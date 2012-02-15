@@ -130,10 +130,6 @@ update templatefield set dcmsortorder = studyfield_id - 44 where studyfield_id >
 
 alter table template ADD status character varying(255);
 
-Alter table template add network boolean;
-UPDATE template SET  network=false WHERE vdc_id is not null;
-UPDATE template SET  network=true WHERE vdc_id is null;
-
 
 -- Author related changes
 Alter table studyAuthor add IDType  character varying(255);

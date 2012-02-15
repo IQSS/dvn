@@ -79,51 +79,48 @@ public class EditTemplateServiceBean implements edu.harvard.iq.dvn.core.study.Ed
    
     }
     
-    public void newTemplate(Long vdcId ) {
-        newTemplate=true;   
-         
-        template = new Template();
-        em.persist(template);
-       System.out.println("Persist after init, member template");    
-    
-        
-       initTemplate( vdcId);
-      
-     
-    }
-    
-    public void newNetworkTemplate() {
-        newTemplate=true;   
-         
-        template = new Template();
-        template.setNetwork(true);
-        em.persist(template);
-       System.out.println("Persist after init, member template");    
-    
-        
-       initTemplate(new Long(0) );
-      
-     
-    }
-    public void  newTemplate(Long vdcId, Long studyVersionId) {
-        newTemplate=true;
-        template = new Template();
-        template.setNetwork(false);
-        Metadata metadata = em.find(StudyVersion.class, studyVersionId).getMetadata();
-        template.setMetadata(new Metadata(metadata));
-        initTemplate( vdcId);
-        
-        template.getMetadata().setDateOfDeposit("");
-        template.getMetadata().setUNF(null);
 
-        em.persist(template);
-      
+    public void newNetworkTemplate() {
+        newTemplate(null,null);
+    }    
+    
+    public void newTemplate(Long vdcId) {
+        newTemplate(vdcId, null);
     }
+
+
+    public void newTemplate(Long vdcId, Long studyVersionId) {
+        newTemplate = true;
+        template = new Template();
+        
+        // set the vdc or nwtwork
+        if (vdcId != null) {
+            VDC vdc = em.find(VDC.class, vdcId);
+            template.setVdc(vdc);
+            vdc.getTemplates().add(template);
+            addFields(vdcId);
+        } else {
+            VDCNetwork network = vdcNetworkService.find(new Long(1));
+            template.setVdcNetwork(network);
+            addNetworkFields(network);
+
+        }
+
+        // copy metadata if from a study
+        if (studyVersionId != null) {
+            Metadata metadata = em.find(StudyVersion.class, studyVersionId).getMetadata();
+            template.setMetadata(new Metadata(metadata));
+            template.getMetadata().setDateOfDeposit("");
+            template.getMetadata().setUNF(null);
+        }
+        
+        em.persist(template);
+    } 
+    
 
     public void  newClonedTemplate(Long vdcId, Template cloneSource) {
         newTemplate=true;
         template = new Template();
-        template.setNetwork(false);
         Metadata clonedMetadata = new Metadata(cloneSource.getMetadata());
         template.setMetadata(clonedMetadata);        
         Collection<TemplateField> defaultFields = cloneSource.getTemplateFields();       
@@ -288,23 +285,6 @@ public class EditTemplateServiceBean implements edu.harvard.iq.dvn.core.study.Ed
     }
      
    
-    private void initTemplate( Long vdcId) {
-       // Template template = new Template();
-        if(vdcId.intValue() > 0){
-           VDC vdc = em.find(VDC.class, vdcId);      
-            template.setVdc(vdc);
-            vdc.getTemplates().add(template);
-            addFields(vdcId);
-        } else {            
-
-            VDCNetwork network = vdcNetworkService.find(new Long(1)); 
-            template.setVdcNetWork(network);
-            addNetworkFields(network);
-
-        }  
-
-     
-    }
     
      public void changeRecommend(TemplateField tf, boolean isRecommended) {
           if (isRecommended) {

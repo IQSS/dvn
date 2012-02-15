@@ -149,27 +149,20 @@ public class Template implements java.io.Serializable {
         this.version = version;
     }   
 
-    private boolean network;
+    
 
     public boolean isNetwork() {
-        return network;
+        return (vdc == null);
     }
 
-    public void setNetwork(boolean network) {
-        this.network = network;
-    }
+   
 
-    /**
-     * Holds value of property vdcNetWork.
-     */
+
    @OneToOne(mappedBy="defaultTemplate")
    private VDCNetwork vdcNetwork;
 
-    /**
-     * Getter for property vdcNetWork.
-     * @return Value of property vdcNetWork.
-     */
-     public VDCNetwork getVdcNetWork() {
+
+     public VDCNetwork getVdcNetwork() {
         return this.vdcNetwork;
     }
      
@@ -184,12 +177,9 @@ public class Template implements java.io.Serializable {
         this.vdc = vdc;
     }
 
-    /**
-     * Setter for property vdcNetWork.
-     * @param vdcNetWork New value of property vdcNetWork.
-     */
-    public void setVdcNetWork(VDCNetwork vdcNetWork) {
-        this.vdcNetwork = vdcNetWork;
+
+    public void setVdcNetwork(VDCNetwork vdcNetwork) {
+        this.vdcNetwork = vdcNetwork;
     }
     
     @OneToOne(cascade={CascadeType.REMOVE, CascadeType.MERGE, CascadeType.PERSIST})

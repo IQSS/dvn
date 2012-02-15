@@ -28,6 +28,7 @@ import javax.ws.rs.core.UriInfo;
 @Stateless
 public class DownloadResourceBean {
     @Context HttpHeaders headers;
+    @Context UriInfo uriInfo;
 
 
     @EJB FileAccessSingletonBean singleton;
@@ -40,7 +41,7 @@ public class DownloadResourceBean {
 
     public DownloadInstance getDownloadInstance (@PathParam("stdyFileId") Long studyFileId) throws WebApplicationException, AuthorizationRequiredException{
         String authCredentials = null; 
-        
+                
         for (String header : headers.getRequestHeaders().keySet()) {
             if (header.equalsIgnoreCase("Authorization")) {
                 String headerValue = headers.getRequestHeader(header).get(0);
@@ -51,17 +52,39 @@ public class DownloadResourceBean {
         }
 
                   
-        DownloadInfo di = singleton.getDownloadInfo(studyFileId, authCredentials);
+        DownloadInfo dInfo = singleton.getDownloadInfo(studyFileId, authCredentials);
         
-        if (di == null) {
+        if (dInfo == null) {
             // Study not found;
             // returning 404
             throw new WebApplicationException(Response.Status.NOT_FOUND);
         }
 
+        // Create download instance: 
+        
+        DownloadInstance dInstance = new DownloadInstance (dInfo);
+        
+        if (dInstance == null) {
+            return null;
+        }
+        
+        // Check the parameters supplied: 
+        
+        String optionalParam = null; 
+        String optionalParamValue = null; 
+        
+        for (String key : uriInfo.getQueryParameters().keySet()) {
+            String value = uriInfo.getQueryParameters().getFirst(key);
+            
+            if (!dInstance.isDownloadServiceSupported(key, value)) {
+                // Service unknown/not supported/bad arguments, etc.:
+                throw new WebApplicationException(Response.Status.SERVICE_UNAVAILABLE);
+            }
+        }
+     
         // Are we willing to give them content? 
         
-        if (!di.isAccessGranted()) {
+        if (!dInfo.isAccessGranted()) {
             if (authCredentials == null || authCredentials.equals("")) {
                 // Access isn't authorized, but they haven't had a chance to 
                 // authenticate yet. So we want to give them 401 / AUTH REQUIRED:
@@ -73,7 +96,8 @@ public class DownloadResourceBean {
             }
         }
         
-        return new DownloadInstance (di);
+        return dInstance; 
+        
     }
             
     

@@ -130,9 +130,16 @@ public class MetadataSingletonBean {
         
         if (studyId != null) {
             try {
-                sv = studyService.getStudyVersion(studyId, versionNumber);
-                // First, verify that the format requested is legit/supported:
+                    sv = studyService.getStudyVersion(studyId, versionNumber);
                     
+                    // Verify lookup and find global study id:
+                    if (sv != null && sv.getStudy() != null) {
+                        globalId = sv.getStudy().getGlobalId();
+                    } else {
+                        return null; 
+                    }
+                    
+                    // Verify that the format requested is legit/supported:                    
                     if (formatType == null) {
                         formatType = "ddi";
                     }
@@ -171,21 +178,17 @@ public class MetadataSingletonBean {
                     }
 
                     m = new MetadataInstance (globalId, formatType, partialExclude, partialInclude);
+                    
                     if (m != null) {
+                        m.setGlobalStudyId(globalId);
                         StudyExporter studyExporter = null; 
                         if (partialExclude != null || partialInclude != null) {
                             studyExporter = studyExporterFactory.getStudyExporter(formatType);
                             m.setStudy(sv.getStudy());
                         }
-                        m.lookupMetadata(studyExporter);
-                        // local database id:
-                        if (sv.getStudy() != null) {
-                            globalId = sv.getStudy().getGlobalId();
-                        } else {
-                            return null; 
-                        }
+                        m.lookupMetadata(studyExporter);                       
                     }
-                    m.setGlobalStudyId(globalId);
+                    
                     return m;
             } catch (java.lang.IllegalArgumentException ex) {
                 return null; 

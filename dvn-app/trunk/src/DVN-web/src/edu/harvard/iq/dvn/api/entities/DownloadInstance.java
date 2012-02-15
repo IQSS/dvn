@@ -24,19 +24,30 @@ public class DownloadInstance {
         this.downloadInfo = info; 
     }
     
-    public Boolean isDownloadServiceSupported (String serviceTag) {
-        if (downloadInfo == null || serviceTag == null) {
+    // Move this method into the DownloadInfo instead -- ?
+    
+    public Boolean isDownloadServiceSupported (String serviceArg, String serviceArgValue) {
+        if (downloadInfo == null || serviceArg == null) {
             return false;
         }
         
         List<OptionalAccessService> servicesAvailable = downloadInfo.getServicesAvailable();
         
         for (OptionalAccessService dataService : servicesAvailable) {
-            if (serviceTag.equals(dataService.getServiceName())) {
-                return true; 
+            if (dataService != null) {
+                // Special case for the subsetting parameter (variables=<LIST>):
+                if (serviceArg.equals("variables")) {
+                    if ("subset".equals(dataService.getServiceName())) {
+                        return true; 
+                    }
+                } else {
+                    String argValuePair = serviceArg + "=" + serviceArgValue; 
+                    if (argValuePair.equals(dataService.getServiceArguments())) {
+                        return true; 
+                    }
+                }
             }
         }
-        
         return false; 
     }
     

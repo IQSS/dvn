@@ -3,7 +3,6 @@ package edu.harvard.iq.dvn.api.resources;
 
 import edu.harvard.iq.dvn.api.entities.DownloadInfo;
 import edu.harvard.iq.dvn.api.exceptions.AuthorizationRequiredException;
-import edu.harvard.iq.dvn.core.admin.VDCUser;
 
 
 import javax.ejb.EJB;
@@ -18,7 +17,6 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.core.HttpHeaders;
 
 import javax.ws.rs.core.Response;
-import javax.ws.rs.core.UriInfo;
 
 /**
  *

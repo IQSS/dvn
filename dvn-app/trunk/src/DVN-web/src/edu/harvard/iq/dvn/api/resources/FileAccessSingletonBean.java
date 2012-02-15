@@ -115,7 +115,8 @@ public class FileAccessSingletonBean {
             
             if (sf.isSubsettable()) {
                 // Subsetting: (TODO: separate auth)
-                di.addServiceAvailable(new OptionalAccessService("subset", "text/tab-separated-values", "variables=&lt;LIST&gt;", "Column-wise Subsetting"));
+                // Not supported in this release?
+                //di.addServiceAvailable(new OptionalAccessService("subset", "text/tab-separated-values", "variables=&lt;LIST&gt;", "Column-wise Subsetting"));
             
                 // "saved original" file, if available: 
                 
@@ -158,7 +159,7 @@ public class FileAccessSingletonBean {
                     if (originalFormatType == null ||
                             !originalFormatType.equals(dft.getMimeType()) ) {
                         
-                        String formatServiceArg = "fileFormat="+dft.getName();
+                        String formatServiceArg = "fileFormat="+dft.getValue();
                         String formatDescription = "Data in "+ dft.getName() + " format (generated)";
                         di.addServiceAvailable(new OptionalAccessService(
                             dft.getName(), 

@@ -54,23 +54,52 @@ public class DownloadInstance {
         for (OptionalAccessService dataService : servicesAvailable) {
             if (dataService != null) {
                 // Special case for the subsetting parameter (variables=<LIST>):
-                if (serviceArg.equals("variables")) {
-                    if ("subset".equals(dataService.getServiceName())) {
-                        conversionParam = "subset";
-                        conversionParamValue = serviceArgValue; 
-                        return true; 
-                    }
-                } else {
+                //if (serviceArg.equals("variables")) {
+                //    if ("subset".equals(dataService.getServiceName())) {
+                //        conversionParam = "subset";
+                //        conversionParamValue = serviceArgValue; 
+                //        return true; 
+                //    }
+                //} else {
                     String argValuePair = serviceArg + "=" + serviceArgValue; 
                     if (argValuePair.equals(dataService.getServiceArguments())) {
                         conversionParam = serviceArg; 
                         conversionParamValue = serviceArgValue; 
                         return true; 
                     }
-                }
+                //}
             }
         }
         return false; 
+    }
+    
+    public String getServiceFormatType (String serviceArg, String serviceArgValue) {
+        if (downloadInfo == null || serviceArg == null) {
+            return null;
+        }
+        
+        List<OptionalAccessService> servicesAvailable = downloadInfo.getServicesAvailable();
+        
+        for (OptionalAccessService dataService : servicesAvailable) {
+            if (dataService != null) {
+                // Special case for the subsetting parameter (variables=<LIST>):
+                if (serviceArg.equals("variables")) {
+                    if ("subset".equals(dataService.getServiceName())) {
+                        conversionParam = "subset";
+                        conversionParamValue = serviceArgValue; 
+                        return dataService.getMimeType(); 
+                    }
+                } else {
+                    String argValuePair = serviceArg + "=" + serviceArgValue; 
+                    if (argValuePair.equals(dataService.getServiceArguments())) {
+                        conversionParam = serviceArg; 
+                        conversionParamValue = serviceArgValue; 
+                        return dataService.getMimeType(); 
+                    }
+                }
+            }
+        }
+        return null; 
     }
     
 }

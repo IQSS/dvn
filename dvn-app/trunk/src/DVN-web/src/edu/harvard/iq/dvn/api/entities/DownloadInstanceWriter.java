@@ -35,16 +35,51 @@ public class DownloadInstanceWriter implements MessageBodyWriter<DownloadInstanc
 
         if (di.getDownloadInfo() != null && di.getDownloadInfo().getStudyFile() != null) {
             DataAccessRequest daReq = new DataAccessRequest();
+            
+            
+            
             StudyFile sf = di.getDownloadInfo().getStudyFile();
             DataAccessObject accessObject = DataAccess.createDataAccessObject(sf, daReq);
                         
             if (accessObject != null) {
                 accessObject.open();
                 
-                // Image Thumbnail conversion: 
                 if (di.getConversionParam() != null) {
+                    // Image Thumbnail conversion: 
+                    
                     if (di.getConversionParam().equals("imageThumb")) {
                         accessObject = ImageThumbConverter.getImageThumb(sf, (FileAccessObject)accessObject); 
+                    }
+                    // Subsettable: 
+                    
+                    if (sf.isSubsettable()) {
+                        if (di.getConversionParam().equals("noVarHeader")) {
+                            accessObject.setNoVarHeader(Boolean.TRUE);
+                            accessObject.setVarHeader(null);
+                        } else if (di.getConversionParam().equals("fileFormat")) {
+                            // Saved Original: 
+                            
+                            if ("original".equals(di.getConversionParamValue())) {
+                                accessObject = StoredOriginalFile.retrieve(sf, (FileAccessObject)accessObject);
+                            } else {
+                                // Other format conversions: 
+                                String requestedMimeType = di.getServiceFormatType(di.getConversionParam(), di.getConversionParamValue()); 
+                                if (requestedMimeType == null) {
+                                    // default mime type, in case real type is unknown;
+                                    // (this shouldn't happen in real life - but just in case): 
+                                    requestedMimeType = "application/octet-stream";
+                                } 
+                                accessObject = 
+                                        DataFileConverter.performFormatConversion(
+                                        sf, 
+                                        (FileAccessObject)accessObject, 
+                                        di.getConversionParamValue(), requestedMimeType);
+                            }
+                        }
+                    }
+                    
+                    if (accessObject == null) {
+                        throw new WebApplicationException(Response.Status.SERVICE_UNAVAILABLE);
                     }
                 }
                 

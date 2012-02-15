@@ -1380,6 +1380,11 @@
                         <ice:outputText styleClass="dvnInlineHelpLabel dvnInlineHelpTip" value="#{customField.studyField.name}" title="#{customField.studyField.name} - #{customField.studyField.description}"/>
                         <ice:graphicImage value="/resources/images/icon_required.gif" rendered="#{customField.required}"/>
                         <ice:graphicImage value="/resources/images/icon_recommended.gif" rendered="#{customField.recommended}"/>
+                      <ice:commandButton  value="Remove Field" 
+                                          actionListener="#{TemplateFormPage.removeAdHocField}" rendered="#{(customField.studyField.id > 98 or customField.studyField.id == null) and TemplateFormPage.networkEdit}" >
+                                         <f:attribute name="studyFieldId" value="#{customField.studyField.id}" />
+                                          <f:attribute name="studyFieldName" value="#{customField.studyField.name}" />
+                      </ice:commandButton>
                       </div>
                     </ice:column>
                     <ice:column>

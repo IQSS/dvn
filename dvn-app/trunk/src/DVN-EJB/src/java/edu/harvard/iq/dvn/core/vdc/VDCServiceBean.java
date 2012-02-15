@@ -458,15 +458,13 @@ public class VDCServiceBean implements VDCServiceLocal {
     }
 
     public Map getVdcTemplatesMap(Long vdcId) {
-        VDC vdc = em.find(VDC.class, vdcId);
         Map templatesMap = new LinkedHashMap();
-        Template defaultNetworkTemplate = vdcNetworkService.find().getDefaultTemplate();
-        templatesMap.put(defaultNetworkTemplate.getName(), defaultNetworkTemplate.getId());
-        Collection<Template> vdcTemplates = vdc.getTemplates();
-        if (vdcTemplates != null) {
-            for (Template template : vdcTemplates) {
-                templatesMap.put(template.getName(), template.getId());
-            }
+       
+        for (Template template : vdcNetworkService.getNetworkTemplates()) {
+            templatesMap.put(template.getName(), template.getId());
+        }        
+        for (Template template : getOrderedTemplates(vdcId)) {
+            templatesMap.put(template.getName(), template.getId());
         }
 
         return templatesMap;

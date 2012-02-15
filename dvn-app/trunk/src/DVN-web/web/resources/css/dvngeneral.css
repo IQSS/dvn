@@ -111,7 +111,7 @@ div.dvnWarningMessage{margin-bottom:1em;background:transparent url(/dvn/resource
 div.dvnWarningMessage div.dvnMsgBlockContainer{}
 div.dvnWarningMessage a:link,div.dvnWarningMessage a:visited,div.dvnWarningMessage a:hover,div.dvnWarningMessage a:active{color:#0c54b3}
 div.dvnWarningMessage span{font-weight:bold;background:transparent}
-div.dvnWarningMessage span p{color:#8B0404;}
+div.dvnWarningMessage p{color:#8B0404;}
 .dvnWarningMessage.dvnMessageLink a{font-weight:bold;}
 .dvnWarningMessage.dvnMessageCapLock span.warnMessage {text-transform: uppercase;}
 .warnMessage{color:#8B0404}

@@ -78,7 +78,7 @@
                                     <div id="dvnLoginPageHeader">
                                         <a name="login" title="Dataverse Network Login"><ice:outputText value="#{VDCRequest.vdcNetwork.name} Dataverse Network" styleClass="dvnLoginHeadingText" escape="false"/></a>
                                     </div>
-                                    <div jsfc="ice:panelGroup" styleClass="dvnMsgBlockRound dvnInformationMessage">
+                                    <div jsfc="ice:panelGroup" styleClass="dvnInformationMessage">
                                         <div class="dvnMsgBlockContainer">
                                             <ice:outputText value="#{bundlePageInfo.loginHelp}" escape="false" rendered="#{LoginPage.redirect == null}"/>
                                             <ice:outputText value="#{bundlePageInfo.loginAffiliateHelp}" escape="false" rendered="#{LoginPage.isAffiliates != null}"/>

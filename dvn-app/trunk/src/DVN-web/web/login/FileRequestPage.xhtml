@@ -23,19 +23,19 @@
         <ice:inputHidden value="test"/>
         <ice:inputHidden value="test"/>
         <div class="dvn_section">
-          <div jsfc="ice:panelGroup" styleClass="dvnMsgBlockRound dvnInformationMessage" rendered="#{FileRequestPage.alreadyRequested}">
-            <div class="dvnMsgBlockContainer">
-              <p>
-                <ice:outputText value="You have already requested access to files in this study. Please wait for approval from the administrator. "/>
-                <ice:outputLink value="/dvn#{VDCRequest.currentVDCURL}/faces/HomePage.xhtml" title="Go to Dataverse Home Page"/>
-              </p>
-            </div>
-          </div>
           <div class="dvn_sectionTitle">
             <ice:outputText value="Request Access to Restricted File"/>
           </div>
           <div class="dvn_sectionBox">
             <div class="dvn_margin12">
+              <div jsfc="ice:panelGroup" styleClass="dvnWarningMessage" rendered="#{FileRequestPage.alreadyRequested}">
+                <div class="dvnMsgBlockContainer">
+                  <p>
+                    <ice:outputText value="You have already requested access to files in this study. Please wait for approval from the administrator. "/>
+                    <ice:outputLink value="/dvn#{VDCRequest.currentVDCURL}/faces/HomePage.xhtml" title="Go to Dataverse Home Page"/>
+                  </p>
+                </div>
+              </div>
               <div jsfc="ice:panelGroup" rendered="#{! FileRequestPage.alreadyRequested}">
                 <div jsfc="ice:panelGroup" styleClass="dvnFormPadding">
                   <ice:outputText value="I would like to access restricted files in this study."/>

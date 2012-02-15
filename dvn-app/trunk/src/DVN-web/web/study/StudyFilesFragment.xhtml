@@ -46,18 +46,18 @@
                                 <div jsfc="ice:panelGroup" rendered="#{studyPage.studyUI.anyFileRestricted}">
                                     <p>
                                         <ice:graphicImage value="/resources/images/icon_warning.18.png" styleClass="dvn_icon"/>
-                                        <ice:outputText value=" Access to some files is restricted, and those files are not available for downloading."/>
-                                        <ice:outputText value=" No information about the restriction is available." rendered="#{studyPage.termsOfUseIsEmpty}"/>
+                                        <ice:outputText value=" Access to some files is restricted, and those files are not available for downloading. "/>
+                                        <ice:outputText value=" No information about the restriction is available. " rendered="#{studyPage.termsOfUseIsEmpty}"/>
                                         <ice:outputText value=" Check the " rendered="#{!studyPage.termsOfUseIsEmpty}"/>
                                         <ice:outputLink value="/dvn#{VDCRequest.currentVDCURL}/faces/study/StudyPage.xhtml?studyId=#{studyPage.studyUI.study.id}&amp;tab=catalog#termsofuse" rendered="#{!studyPage.termsOfUseIsEmpty}">
                                             <ice:outputText value="Terms of Use"/>
                                         </ice:outputLink>
-                                        <ice:outputText value=" for more information." rendered="#{!studyPage.termsOfUseIsEmpty}"/>
+                                        <ice:outputText value=" for more information. " rendered="#{!studyPage.termsOfUseIsEmpty}"/>
                                         <ice:outputLink action="#{studyPage.beginRequestWorkflow}" rendered="#{studyPage.studyUI.study.requestAccess and VDCSession.loginBean!=null}" value="/dvn#{VDCRequest.currentVDCURL}/faces/login/FileRequestPage.xhtml?studyId=#{studyPage.studyId}">
-                                            <ice:outputText value=" Send a Request"/>
+                                            <ice:outputText value="Send a Request"/>
                                         </ice:outputLink>
                                         <ice:commandLink action="#{studyPage.beginRequestWorkflow}" rendered="#{studyPage.studyUI.study.requestAccess and VDCSession.loginBean==null}">
-                                            <ice:outputText value=" Send a Request"/>
+                                            <ice:outputText value="Send a Request"/>
                                         </ice:commandLink>
                                         <ice:outputText value=" if you would like to access the restricted files in this study." rendered="#{studyPage.studyUI.study.requestAccess}"/>
                                     </p>

@@ -29,11 +29,12 @@
           <div class="dvn_sectionBox">
             <div class="dvn_margin12">
               <div>
-                <ice:outputText styleClass="warnMessage" value="Are you sure you want to delete "/>
+                <ice:graphicImage value="/resources/images/icon_warning.18.png" styleClass="dvn_icon"/>
+                <ice:outputText styleClass="warnMessage" value=" Are you sure you want to delete "/>
                 <ice:outputFormat id="outputText3" styleClass="vdcTextStandOut" value="{0}">
                   <f:param value="#{DeleteTemplatePage.templateName}"/>
                 </ice:outputFormat>
-                <ice:outputText id="outputText4" value="?"/>
+                <ice:outputText styleClass="warnMessage" value="?"/>
               </div>
               <div class="dvnFormPadding dvnFormMargin">
                 <ice:commandButton id="button1" value="Delete" action="#{DeleteTemplatePage.delete}"/>

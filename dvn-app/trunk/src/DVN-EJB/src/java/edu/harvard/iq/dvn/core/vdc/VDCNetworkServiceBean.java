@@ -260,7 +260,7 @@ public class VDCNetworkServiceBean implements VDCNetworkServiceLocal {
 
     @Override
     public List<Template> getNetworkTemplates() {
-        String query = "select object(o) FROM Template as o WHERE o.network = true ORDER BY o.name";
+        String query = "select object(o) FROM Template as o WHERE o.vdc is null ORDER BY o.name";
         return (List) em.createQuery(query).getResultList();
     }
 }

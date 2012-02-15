@@ -2790,7 +2790,6 @@ public class TemplateFormPage extends VDCBaseBean implements java.io.Serializabl
     }
 
     public void changeFieldInputValueDCM(ValueChangeEvent event) {
-
         Long getOrder = (Long) event.getComponent().getAttributes().get("dcmSortOrder");
         TemplateField changeValue = adHocFields.get(getOrder.intValue() -1 );
         String newValue = (String)event.getNewValue();
@@ -2800,9 +2799,6 @@ public class TemplateFormPage extends VDCBaseBean implements java.io.Serializabl
     public void openPopup(ActionEvent ae) {
         Long getId = (Long) ae.getComponent().getAttributes().get("sf_id");
         String getName = (String) ae.getComponent().getAttributes().get("sf_name");
-         System.out.println("get name" + getName);
-         System.out.println("get id" + getId);
-         System.out.println("templateCVField before " + templateCVField);
             for (TemplateField tfTest : template.getTemplateFields()) {
                 if(getId !=null && getId.equals(tfTest.getStudyField().getId())){
                    setTemplateCVField(tfTest); 
@@ -2812,7 +2808,6 @@ public class TemplateFormPage extends VDCBaseBean implements java.io.Serializabl
                 }
                 
             }
-                     System.out.println("templateCVField after " + templateCVField);
         showPopup = true;
     }
     

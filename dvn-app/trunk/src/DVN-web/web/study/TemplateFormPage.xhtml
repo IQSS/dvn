@@ -1384,7 +1384,7 @@
                     </ice:column>
                     <ice:column>
                       <div>
- <ice:column> 
+                        <ice:column> 
                           <ice:inputText id="input_TextDefault" size="90" rendered="#{empty(customField.studyField.fieldType)}" 
                                          visible="#{empty(customField.templateFieldControlledVocabulary)}"
                                          value="#{customValue.strValue}">
@@ -1412,16 +1412,53 @@
                                                visible="#{empty(customField.templateFieldControlledVocabulary)}">
                           </ice:inputTextarea>
                           <ice:outputText value="#{editstudybundle.dateFormatDescription}" rendered="#{customField.studyField.fieldType == 'date'}"/>
+                      <ice:outputText id="controlledVocabHeader" visible="#{!empty(customField.templateFieldControlledVocabulary)}"
+                                     value="Controlled Vocabulary">
+                      </ice:outputText>
+                        <ice:selectOneMenu immediate="false"  
+                                        rendered ="#{!empty(customField.templateFieldControlledVocabulary) and !customField.allowMultiples}">
+                            <f:selectItems value="#{customField.controlledVocabularyStrings}"/>
+                        </ice:selectOneMenu>  
+                        <ice:selectManyListbox immediate="false"  
+                                        rendered ="#{!empty(customField.templateFieldControlledVocabulary) and customField.allowMultiples}">
+                            <f:selectItems value="#{customField.controlledVocabularyStrings}"/>
+                        </ice:selectManyListbox> 
                         </ice:column>
                       </div>
                     </ice:column>
                     <ice:column>
-                      <ice:commandButton partialSubmit="true" image="/resources/images/icon_add.gif" actionListener="#{TemplateFormPage.addRow}">
+                      <ice:commandButton immediate="true" value="Move Up" alt="Move Up" title="Move Up" 
+                                         rendered="#{TemplateFormPage.networkEdit and customValue.displayOrder==0}"
+                                         image="/resources/images/icon_moveup.png" actionListener="#{TemplateFormPage.moveUp}">
+                         <f:attribute name="sf_id" value="#{customField.studyField.id}"/>
+                         <f:attribute name="dcmSortOrder" value="#{customField.dcmSortOrder}"/>
+                      </ice:commandButton>
+                      <ice:commandButton immediate="true" value="Move Down" alt="Move Down" title="Move Down" 
+                                         rendered="#{TemplateFormPage.networkEdit and customValue.displayOrder==0}"
+                                         image="/resources/images/icon_movedown.png" actionListener="#{TemplateFormPage.moveDown}">
+                          <f:attribute name="sf_id" value="#{customField.studyField.id}"/>
+                          <f:attribute name="dcmSortOrder" value="#{customField.dcmSortOrder}"/>                          
+                      </ice:commandButton>
+                    </ice:column>
+                    <ice:column>
+                      <ice:commandButton rendered ="#{customField.allowMultiples and empty(customField.templateFieldControlledVocabulary)}" 
+                                         partialSubmit="true" image="/resources/images/icon_add.gif" 
+                                         actionListener="#{TemplateFormPage.addRow}">
                         <f:attribute name="dcmSortOrder" value="#{customField.dcmSortOrder}"/>
                       </ice:commandButton>       
-                        <ice:commandButton partialSubmit="true" rendered="#{customField.templateFieldValues.size() > 1}" image="/resources/images/icon_remove.gif" actionListener="#{TemplateFormPage.removeRow}"/>
+                        <ice:commandButton partialSubmit="true" rendered="#{customField.templateFieldValues.size() > 1 and empty(customField.templateFieldControlledVocabulary)}" 
+                                image="/resources/images/icon_remove.gif" actionListener="#{TemplateFormPage.removeRow}"/>
                     </ice:column>
-                    </ice:dataTable>      
+                    <ice:column>  
+                      <ice:commandButton   value="Update Controlled Vocabulary" actionListener="#{TemplateFormPage.openPopup}" 
+                                           rendered="#{TemplateFormPage.networkEdit and customValue.displayOrder==0}" >
+                          <f:attribute name="sf_id" value="#{customField.studyField.id}"/>
+                          <f:attribute name="dcmSortOrder" value="#{customField.dcmSortOrder}"/>
+                          <f:attribute name="sf_name" value="#{customField.studyField.name}"/>
+                      </ice:commandButton>
+                    </ice:column>
+                    </ice:dataTable> 
+
               </ice:panelSeries>
                             
               <!--

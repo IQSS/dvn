@@ -82,6 +82,10 @@ div.dvn_navblockNetwork{}
 .naviconoptions{background:#fff url(/dvn/resources/images/navicon_options.jpg) no-repeat 6px 2px;}
 .navicon span{position:absolute;top:-9999px;left:-9999px;}
 /* FORM ELEMENTS */
+.dvnFormPadding{padding:1em 0;text-align:left}
+.dvnFormPaddingTop{padding-top:1em;text-align:left}
+.dvnFormMargin input{margin-right:2em}
+.dvnFormMargin input:last-child{margin-right:0}
 .dvnFormMargin input.iceCmdBtn[type=submit], .dvnFormMargin input.iceCmdBtn[value=Release]{background:#CEE6BB; border:1px solid #9BC191; padding:4px 16px; font-size:1em;}
 .dvnFormMargin input.iceCmdBtn-dis[type=submit]{background:#D9D9D9; border:1px solid #A9A9A9; padding:4px 16px; font-size:1em;}
 .dvnFormMargin input.iceCmdBtn[type=submit]:hover, .dvnFormMargin input.iceCmdBtn[value=Release]:hover{border:1px solid #299A0B;}
@@ -169,9 +173,6 @@ li.dvnAlphaBrowseHover a:hover{padding:2px 5px;color:white}
 li.dvnAlphaBrowseSelected a{padding:2px 5px;font-weight:bold;color:white}
 /* TABLE */
 .vdcColPadded{padding-bottom:3px;padding-left:4px;padding-top:3px;text-align:left;vertical-align:top}
-.dvnFormPadding{padding:1em 0;text-align:left}
-.dvnFormPaddingTop{padding-top:1em;text-align:left}
-.dvnFormMargin input{margin-right:2em}
 .dvnFormDataTable{border:0;margin:0}
 .dvnFormDataTable tr{border:0;padding:0}
 .dvnFormDataTable td,.dvnFormDataTable th{border:0;padding:4px 0;text-align:left}

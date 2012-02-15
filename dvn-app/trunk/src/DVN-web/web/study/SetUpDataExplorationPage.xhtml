@@ -102,7 +102,7 @@
                     </script>
 
                     <style type="text/css">
-                        .dvnstudyadminboxfloat {width:400px;}
+                        .dvnstudyadminboxfloat {width:414px;}
                         .iceDatTbl .dvnDataTableHeaderForm {text-align:left;}
                         .iceDatTbl .dvnDataTableHeaderForm label.dvnDataTableHeaderFilter {font-weight:normal;}
                         .iceDatTbl.dvnExplorationFilterGroups {background:none;}
@@ -112,10 +112,9 @@
                     </style>
 
                     <div class="dvn_section">
-                        <div jsfc="ice:panelGroup" styleClass="dvnMsgBlockRound #{!empty flash.validationErrorMessage ? 'dvnWarningMessage': (!empty flash.validationSuccessMessage ? 'dvnSuccessMessage':'dvnInformationMessage')}">
+                        <div jsfc="ice:panelGroup" rendered="#{!empty flash.validationSuccessMessage or !empty flash.validationErrorMessage}" styleClass="dvnMsgBlockRound #{!empty flash.validationErrorMessage ? 'dvnWarningMessage': (!empty flash.validationSuccessMessage ? 'dvnSuccessMessage':'')}">
                             <div class="dvnMsgBlockContainer">
                                 <p>
-                                    <ice:outputText value="(Please report any issues found in our open beta release of Explore Data to the Network Administrator using the &lt;a href=&#34;/dvn#{VDCRequest.currentVDCURL}/faces/ContactUsPage.xhtml&#34;&gt;Contact&lt;/a&gt; form.)" escape="false" rendered="#{empty flash.validationErrorMessage and empty flash.validationSuccessMessage}"/>
                                     <ice:outputText value="#{flash.validationSuccessMessage}" escape="false" rendered="#{!empty flash.validationSuccessMessage}"/>
                                     <ice:outputText value="#{flash.validationErrorMessage}" escape="false" rendered="#{!empty flash.validationErrorMessage}"/>
                                 </p>
@@ -144,7 +143,7 @@
                                     <ice:commandButton type="submit" visible="false" id="updateSourceList" value="update" action="#{SetUpDataExplorationPage.updateSourceList}"/>
                                     <ice:commandButton type="submit" visible="false" value="Save" action="#{SetUpDataExplorationPage.saveAndExit}" rendered="#{SetUpDataExplorationPage.showCommands}"/>
                                     <ice:commandButton type="submit" value="Save" action="#{SetUpDataExplorationPage.saveAndContinue}" rendered="#{SetUpDataExplorationPage.showCommands}"/>
-                                    <ice:commandButton type="submit" value="Exit" action="#{SetUpDataExplorationPage.exit}"/>
+                                    <ice:commandButton type="submit" value="Exit" style="margin:0" action="#{SetUpDataExplorationPage.exit}"/>
                                     <ice:commandButton type="submit" visible="false" value="Save and Continue" action="#{SetUpDataExplorationPage.saveAndContinue}" rendered="#{SetUpDataExplorationPage.showCommands}"/>
                                 </div>
                             </div>
@@ -171,7 +170,7 @@
 
                     </div>
                     <div class="dvn_sectionBoxNoBorders">
-                        <ice:panelTabSet id="tabSetZ" rendered="#{SetUpDataExplorationPage.showCommands}"
+                        <ice:panelTabSet id="tabSetZ" styleClass="dvnTabs" rendered="#{SetUpDataExplorationPage.showCommands}"
                                          tabChangeListener="#{SetUpDataExplorationPage.changeTab}">
                             <ice:panelTab id="xVariable" label="Time Variable" url="/dvn#{VDCRequest.currentVDCURL}/faces/subsetting/SetUpDataExploration.xhtml&amp;tab=xVariable">
                                 <div jsfc="ice:panelGroup" panelLayout="flow">

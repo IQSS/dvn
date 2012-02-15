@@ -74,26 +74,19 @@
 <ice:commandButton visible="false" id="updateIndexYear" action="#{ExploreDataPage.update_IndexYear}"/>
 
     <div class="dvn_section">
-        <div jsfc="ice:panelGroup" styleClass="dvnMsgBlockRound dvnInformationMessage">
-            <div class="dvnMsgBlockContainer">
-                <p>
-                    <ice:outputText value="(Please report any issues found in our open beta release of Explore Data to the Network Administrator using the &lt;a href=&#34;/dvn#{VDCRequest.currentVDCURL}/faces/ContactUsPage.xhtml&#34;&gt;Contact&lt;/a&gt; form.)" escape="false"/>
-                </p>
-            </div>
-        </div>
         <div class="dvnstudytitleblock">
             <div class="dvnstudyadminboxfloat dvn_right">
                 <ice:outputLink
                     rendered="#{ExploreDataPage.versionNumber==null}"
                     value="/dvn#{VDCRequest.currentVDCURL}/faces/study/StudyPage.xhtml?studyId=#{ExploreDataPage.studyId}&amp;tab=files#{VDCRequest.studyListingIndexAsParameter}">
                 <ice:outputText
-                    value="Back to Study"/>
+                    value="&lt; Back to Study"/>
                 </ice:outputLink>
                 <ice:outputLink
                     rendered="#{ExploreDataPage.versionNumber!=null}"
                     value="/dvn#{VDCRequest.currentVDCURL}/faces/study/StudyPage.xhtml?studyId=#{ExploreDataPage.studyId}&amp;tab=files&amp;versionNumber=#{ExploreDataPage.versionNumber}#{VDCRequest.studyListingIndexAsParameter}">
                 <ice:outputText
-                    value="Back to Study"/>
+                    value="&lt; Back to Study"/>
                 </ice:outputLink>
             </div>
             <ui:include src="/study/StudyTitleFragment.xhtml">

@@ -31,18 +31,15 @@ package edu.harvard.iq.dvn.core.web.admin;
 
 import edu.harvard.iq.dvn.core.study.Template;
 import edu.harvard.iq.dvn.core.study.TemplateServiceLocal;
-import edu.harvard.iq.dvn.core.vdc.HarvestingDataverseServiceLocal;
 import edu.harvard.iq.dvn.core.vdc.VDCNetworkServiceLocal;
 import edu.harvard.iq.dvn.core.vdc.VDCServiceLocal;
 import java.util.List;
 import javax.ejb.EJB;
 import edu.harvard.iq.dvn.core.web.common.VDCBaseBean;
-import java.util.ArrayList;
-import java.util.Iterator;
 import com.icesoft.faces.component.ext.HtmlDataTable;
+import java.util.HashMap;
+import java.util.Map;
 import javax.faces.bean.ViewScoped;
-import javax.faces.model.DataModel;
-import javax.faces.model.ListDataModel;
 import javax.inject.Named;
 
 /**
@@ -73,18 +70,21 @@ public class ManageTemplatesPage extends VDCBaseBean implements java.io.Serializ
         } else {      
            defaultTemplateId = getVDCRequestBean().getVdcNetwork().getDefaultTemplate().getId();
         }
+        
+        // whether a template is being used deermines if it can be removed or not
+        for (Template template : templateList) {
+            templateInUseMap.put( template.getId(), templateService.isTemplateUsed(template.getId()) );
+        }
     }
     
-    public String updateDefaultAction() {
-        Template currentTemplate = (Template)((Object[])this.templateDataTable.getRowData())[0];
-        
+    public String updateDefaultAction(Long templateId) {      
         if (getVDCRequestBean().getCurrentVDC() == null) {
-            vdcNetworkService.updateDefaultTemplate(currentTemplate.getId());
+            vdcNetworkService.updateDefaultTemplate(templateId);
         } else {
-            vdcService.updateDefaultTemplate(getVDCRequestBean().getCurrentVDCId(),currentTemplate.getId());
+            vdcService.updateDefaultTemplate(getVDCRequestBean().getCurrentVDCId(),templateId);
         }
         
-        defaultTemplateId = currentTemplate.getId();
+        defaultTemplateId = templateId;
         return "";
     }
     
@@ -96,35 +96,11 @@ public class ManageTemplatesPage extends VDCBaseBean implements java.io.Serializ
         return templateList;        
     }
     
-      public DataModel getTemplateData(){
-         List displayFields = new ArrayList();
-        for (Iterator it = templateList.iterator(); it.hasNext();) {
-            Template template = (Template) it.next();
-           
-                Object[] row = new Object[3];
-                row[0] = template;
-                row[1] = getRemoveText(template);
-                row[2] = template.isNetwork();
-             
-                displayFields.add(row);
-           
-        }
-       return new ListDataModel(displayFields);
-       
-    }
+    private Map<Long,Boolean> templateInUseMap = new HashMap();
     
-    private String getRemoveText(Template template) {
-        String removeText=null;
-        if (template.getId().equals(this.defaultTemplateId)) {
-            removeText = "Cannot remove - default template";
-        } else if (templateService.isTemplateUsed(template.getId())){
-            removeText="Cannot remove - template associated with created studies";
-        } else if (getVDCRequestBean().getCurrentVDCId() != null && template.isNetwork()){
-            removeText="Cannot remove - network level template";
-        }
-        return removeText;
-    }
-    
+    public Map<Long,Boolean> getTemplateInUseMap() {       
+        return templateInUseMap;        
+    }   
     
     Long defaultTemplateId;
 
@@ -135,27 +111,4 @@ public class ManageTemplatesPage extends VDCBaseBean implements java.io.Serializ
     public void setDefaultTemplateId(Long defaultTemplateId) {
         this.defaultTemplateId = defaultTemplateId;
     }
-    
-    
-    /**
-     * Holds value of property dataverseDataTable.
-     */
-    private HtmlDataTable templateDataTable;
-    
-    /**
-     * Getter for property dataverseDataTable.
-     * @return Value of property dataverseDataTable.
-     */
-    public HtmlDataTable getTemplateDataTable() {
-        return this.templateDataTable;
-    }
-    
-    /**
-     * Setter for property dataverseDataTable.
-     * @param dataverseDataTable New value of property dataverseDataTable.
-     */
-    public void setTemplateDataTable(HtmlDataTable templateDataTable) {
-        this.templateDataTable = templateDataTable;
-    }
-
 }

@@ -37,9 +37,17 @@ public class DownloadInstanceWriter implements MessageBodyWriter<DownloadInstanc
             DataAccessRequest daReq = new DataAccessRequest();
             StudyFile sf = di.getDownloadInfo().getStudyFile();
             DataAccessObject accessObject = DataAccess.createDataAccessObject(sf, daReq);
-            
+                        
             if (accessObject != null) {
                 accessObject.open();
+                
+                // Image Thumbnail conversion: 
+                if (di.getConversionParam() != null) {
+                    if (di.getConversionParam().equals("imageThumb")) {
+                        accessObject = ImageThumbConverter.getImageThumb(sf, (FileAccessObject)accessObject); 
+                    }
+                }
+                
                 InputStream instream = accessObject.getInputStream();
                 if (instream != null) {
                     // headers:

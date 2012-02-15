@@ -80,6 +80,9 @@ public class DownloadResourceBean {
                 // Service unknown/not supported/bad arguments, etc.:
                 throw new WebApplicationException(Response.Status.SERVICE_UNAVAILABLE);
             }
+            
+            optionalParam = key; 
+            optionalParamValue = value; 
         }
      
         // Are we willing to give them content? 

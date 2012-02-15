@@ -11,6 +11,8 @@ import edu.harvard.iq.dvn.core.web.dataaccess.OptionalAccessService;
 public class DownloadInstance {
     
     private DownloadInfo downloadInfo = null; 
+    private String conversionParam = null; 
+    private String conversionParamValue = null; 
     
     public DownloadInstance (DownloadInfo info) {
         this.downloadInfo = info; 
@@ -22,6 +24,22 @@ public class DownloadInstance {
     
     public void setDownloadInfo (DownloadInfo info) {
         this.downloadInfo = info; 
+    }
+    
+    public String getConversionParam () {
+        return conversionParam; 
+    }
+    
+    public void setConversionParam (String param) {
+        this.conversionParam = param; 
+    }
+    
+    public String getConversionParamValue () {
+        return conversionParamValue; 
+    }
+    
+    public void setConversionParamValue (String paramValue) {
+        this.conversionParamValue = paramValue; 
     }
     
     // Move this method into the DownloadInfo instead -- ?
@@ -38,11 +56,15 @@ public class DownloadInstance {
                 // Special case for the subsetting parameter (variables=<LIST>):
                 if (serviceArg.equals("variables")) {
                     if ("subset".equals(dataService.getServiceName())) {
+                        conversionParam = "subset";
+                        conversionParamValue = serviceArgValue; 
                         return true; 
                     }
                 } else {
                     String argValuePair = serviceArg + "=" + serviceArgValue; 
                     if (argValuePair.equals(dataService.getServiceArguments())) {
+                        conversionParam = serviceArg; 
+                        conversionParamValue = serviceArgValue; 
                         return true; 
                     }
                 }

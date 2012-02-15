@@ -18,11 +18,6 @@
         <ui:define name="body">
             <ice:form id="form1" rendered="#{VDCRequest.currentVDC == null}">
             <div class="dvn_section">
-                <div jsfc="ice:panelGroup" styleClass="dvnMsgBlockRound dvnSuccessMessage" rendered="#{!empty flash.message}">
-                    <div class="dvnMsgBlockContainer">
-                        <p><ice:outputText id="statusMessage" value="#{flash.message}"/></p>
-                    </div>
-                </div>
                 <ice:panelTabSet id="tabSet1" styleClass="dvnTabs">
                     <!-- DATAVERSE OPTIONS -->
                     <ice:panelTab id="networkOptions" label="Network Options" url="/dvn#{VDCRequest.currentVDCURL}/faces/admin/OptionsPage.xhtml&amp;tab=dataverseOptions" rendered="#{VDCSession.loginBean.networkAdmin}">

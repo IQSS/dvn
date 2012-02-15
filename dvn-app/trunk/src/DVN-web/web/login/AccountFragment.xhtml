@@ -8,11 +8,6 @@
     <!-- Begin code from account page -->
     <ice:inputHidden id="vdcId" value="#{VDCRequest.currentVDCId}"/>
     <div class="dvn_section">
-        <div jsfc="ice:panelGroup" styleClass="dvnSuccessMessage" rendered="#{!empty flash.message}">
-            <div class="dvnMsgBlockContainer">
-                <p><ice:outputText id="statusMessage" value="#{flash.message}"/></p>
-            </div>
-        </div>
         <div class="dvn_sectionTitle">
             <ice:outputText value="Account for #{AccountPage.user.userName}"/>
         </div>

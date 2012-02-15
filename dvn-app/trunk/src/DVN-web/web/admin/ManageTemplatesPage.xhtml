@@ -38,11 +38,6 @@
                   <ice:outputText value="#{bundlePageInfo.manageTemplatesHelp}" escape="false"/>
                 </div>
             </div>
-            <div jsfc="ice:panelGroup" styleClass="dvnManageTableCreateLink" rendered="#{VDCRequest.currentVDCId!=null}">
-              <ice:outputLink value="/dvn/dv/#{VDCRequest.currentVDC.alias}/faces/study/TemplateFormPage.xhtml">
-                <ice:outputText value="Create New Template"/>
-              </ice:outputLink>
-            </div>
             <div jsfc="ice:panelGroup" styleClass="dvnManageTableCreateLink" rendered="#{VDCRequest.currentVDCId==null}">
               <ice:outputLink value="/dvn/faces/study/TemplateFormPage.xhtml">
                 <ice:outputText value="Create New Network Template"/>
@@ -55,43 +50,58 @@
                              binding="#{ManageTemplatesPage.templateDataTable}"
                              headerClass="list-header-left vdcColPadded" id="dataTable1"
                              rowClasses="list-row-even vdcColPadded, list-row-odd vdcColPadded"
-                             value="#{ManageTemplatesPage.templateData}" var="currentRow">
+                             value="#{ManageTemplatesPage.templateList}" var="template">
                 <ice:column>
                   <f:facet name="header">
                     <ice:outputText value="Name"/>
                   </f:facet>
-                  <ice:outputText value="#{currentRow[0].name}"/>
+                  <ice:outputText value="#{template.name}"/>
                 </ice:column>
+
+                <ice:column rendered="#{!empty VDCRequest.currentVDC}">
+                  <f:facet name="header">
+                    <ice:outputText value="Type"/>
+                  </f:facet>
+                  <ice:outputText value="#{template.network ? 'Network' : 'Dataverse'}"/>
+                </ice:column>
+                  
                 <ice:column>
                   <f:facet name="header">
                     <ice:outputText value="Default"/>
                   </f:facet>
-                  <ice:outputText value="Current Default Template" rendered="#{ManageTemplatesPage.defaultTemplateId==currentRow[0].id}"/>
-                  <ice:commandLink value="Make Default" rendered="#{ManageTemplatesPage.defaultTemplateId!=currentRow[0].id}" 
-                                   action="#{ManageTemplatesPage.updateDefaultAction}"/>
+                  <ice:outputText value="Default Template" rendered="#{ManageTemplatesPage.defaultTemplateId==template.id}"/>
+                  <ice:commandLink value="Make Default" rendered="#{ManageTemplatesPage.defaultTemplateId!=template.id}" 
+                                   action="#{ManageTemplatesPage.updateDefaultAction(template.id)}"/>
                 </ice:column>
-                <ice:column>
-                  <f:facet name="header">
-                    <ice:outputText value="Remove"/>
-                  </f:facet>
-                  <ice:outputLink rendered="#{currentRow[1]==null}" value="/dvn#{VDCRequest.currentVDCURL}/faces/study/DeleteTemplatePage.xhtml?templateId=#{currentRow[0].id}">
-                    <ice:outputText value="Remove"/>
-                  </ice:outputLink>
-                  <ice:outputText rendered="#{currentRow[1]!=null}" value="#{currentRow[1]}"/>
-                </ice:column>
+
                 <ice:column>
                   <f:facet name="header">
                     <ice:outputText value="Edit"/>
                   </f:facet>
-                  <ice:outputLink rendered="#{(empty(VDCRequest.currentVDC) and currentRow[2] == true) or (!empty(VDCRequest.currentVDC) and currentRow[2] == false)}" 
-                                  value="/dvn#{VDCRequest.currentVDCURL}/faces/study/TemplateFormPage.xhtml?templateId=#{currentRow[0].id}">
+                  <ice:outputLink rendered="#{(empty(VDCRequest.currentVDC) and template.network) or (!empty(VDCRequest.currentVDC) and !template.network)}" 
+                                  value="/dvn#{VDCRequest.currentVDCURL}/faces/study/TemplateFormPage.xhtml?templateId=#{template.id}">
                     <ice:outputText value="Edit"/>
                   </ice:outputLink>
-                  <ice:outputLink rendered="#{!empty(VDCRequest.currentVDC) and currentRow[2] == true}" 
-                                  value="/dvn#{VDCRequest.currentVDCURL}/faces/study/TemplateFormPage.xhtml?templateId=#{currentRow[0].id}">
-                    <ice:outputText value="Clone Network Template for this Dataverse"/>
+                  <ice:outputLink rendered="#{!empty(VDCRequest.currentVDC) and template.network}" 
+                                  value="/dvn#{VDCRequest.currentVDCURL}/faces/study/TemplateFormPage.xhtml?templateId=#{template.id}">
+                    <ice:outputText value="Clone"/>
+                  </ice:outputLink>
+                </ice:column>                  
+                  
+                <ice:column>
+                  <f:facet name="header">
+                    <ice:outputText value="Remove"/>
+                  </f:facet>
+                  <ice:outputText rendered="#{!empty(VDCRequest.currentVDC) and template.network}" value="(Network Template})"/>
+                  <ice:outputText rendered="#{!(!empty(VDCRequest.currentVDC) and template.network) and ManageTemplatesPage.templateInUseMap.get(template.id).booleanValue()}" value="(In Use)"/>
+                  <ice:outputText rendered="#{!(!empty(VDCRequest.currentVDC) and template.network) and !(ManageTemplatesPage.templateInUseMap.get(template.id).booleanValue()) and ManageTemplatesPage.defaultTemplateId==template.id}" value="(Default Template)"/>
+                  <ice:outputLink rendered="#{!(!empty(VDCRequest.currentVDC) and template.network) and !(ManageTemplatesPage.templateInUseMap.get(template.id).booleanValue()) and !(ManageTemplatesPage.defaultTemplateId==template.id)}" 
+                                  value="/dvn#{VDCRequest.currentVDCURL}/faces/study/DeleteTemplatePage.xhtml?templateId=#{template.id}">
+                    <ice:outputText value="Remove"/>
                   </ice:outputLink>
                 </ice:column>
+                  
+
               </ice:dataTable>
             </div>
         </div>

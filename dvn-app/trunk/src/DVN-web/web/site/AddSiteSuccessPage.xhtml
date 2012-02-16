@@ -22,11 +22,6 @@
         <input type="hidden" name="pageName" value="CreatorRequestPage"/>
         <ice:inputHidden id="vdcId" value="#{VDCRequest.currentVDCId}"/>
         <div jsfc="ice:panelGroup" styleClass="#{(LoginWorkflowBean.creatorWorkflow) ? 'dvn_createDvRequest dvn_section dvn_overflow' : 'dvn_section'}">
-          <div jsfc="ice:panelGroup" styleClass="dvnMsgBlockRound dvnSuccessMessage" rendered="#{LoginWorkflowBean.plainWorkflow}">
-            <div class="dvnMsgBlockContainer">
-              <p><ice:outputText styleClass="successMessage" value="Your new dataverse has been created!"/></p>
-            </div>
-          </div>
           <div jsfc="ice:panelGroup" rendered="#{LoginWorkflowBean.plainWorkflow}" styleClass="dvn_sectionTitle">
             <ice:outputText value="#{bundlePageInfo.createDvTitle}"/>
           </div>
@@ -40,13 +35,6 @@
             <div class="requestTimelinePoint creatorWorkflowStep4"><img src="/dvn/resources/images/lrg-blue-bullet.gif" class="vdcNoBorder" alt=""/><br/><strong class="requestWorkflowCurrent">Success!</strong></div>
           </div>
           <div jsfc="ice:panelGroup" styleClass="#{(LoginWorkflowBean.creatorWorkflow) ? 'requestContent' : 'dvn_sectionBox'}">
-            <div jsfc="ice:panelGroup" rendered="#{LoginWorkflowBean.creatorWorkflow}" styleClass="requestContentDescLeft">
-              <div jsfc="ice:panelGroup" styleClass="dvnMsgBlockRound dvnSuccessMessage">
-                <div class="dvnMsgBlockContainer">
-                  <p><ice:outputText styleClass="successMessage" value="Your new dataverse has been created!"/></p>
-                </div>
-              </div>
-            </div>
             <div jsfc="ice:panelGroup" styleClass="#{(LoginWorkflowBean.creatorWorkflow) ? 'requestContentFormRight requestContentSucess' : 'requestContentSucess'}">
               <div jsfc="ice:panelGroup" styleClass="dvn_margin12">
                 <p>

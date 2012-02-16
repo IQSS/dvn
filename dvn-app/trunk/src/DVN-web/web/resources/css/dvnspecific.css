@@ -187,9 +187,10 @@ span.dvnAddClassificationDvNotReleased{background:url(/dvn/resources/images/icon
 .dvnCommentReviewTable th {text-align: center;}
 .dvnCommentReviewTable th span {white-space: nowrap !important;}
 .dvnCommentReviewCol4 span {white-space: nowrap !important;}
-.dvnCommentReviewCol6 {width: 15%; text-align: center;}
-.dvnCommentReviewCol6 a.iceOutLnk {margin-right: .5em;}
-.dvnCommentReviewCol6 a, .dvnCommentReviewCol6 span {display: inline !important;}
+.iceDatTbl td.dvnCommentReviewCol6{text-align:center}
+.iceDatTbl td.dvnCommentReviewCol6 a.iceCmdLnk, td.dvnCommentReviewCol6 a.iceCmdLnk span.iceOutTxt{display:inline}
+.dvnCommentReviewCol6 input, .dvnCommentReviewCol6 a.iceCmdLnk{margin-right:2em}
+.dvnCommentReviewCol6 input:last-child, .dvnCommentReviewCol6 a.iceCmdLnk:last-child{margin-right:0}
 /* TERMS OF USE */
 .dvnstudypreviouslisting{text-align:right;}
 .termsAgreeChkBxBlock{width:380px;}

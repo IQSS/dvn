@@ -112,14 +112,6 @@
                     </style>
 
                     <div class="dvn_section">
-                        <div jsfc="ice:panelGroup" rendered="#{!empty flash.validationSuccessMessage or !empty flash.validationErrorMessage}" styleClass="dvnMsgBlockRound #{!empty flash.validationErrorMessage ? 'dvnWarningMessage': (!empty flash.validationSuccessMessage ? 'dvnSuccessMessage':'')}">
-                            <div class="dvnMsgBlockContainer">
-                                <p>
-                                    <ice:outputText value="#{flash.validationSuccessMessage}" escape="false" rendered="#{!empty flash.validationSuccessMessage}"/>
-                                    <ice:outputText value="#{flash.validationErrorMessage}" escape="false" rendered="#{!empty flash.validationErrorMessage}"/>
-                                </p>
-                            </div>
-                        </div>
                         <div class="dvnstudytitleblock dvn_padBot">
                             <div class="dvnstudyadminboxfloat dvn_right">
                                 <div class="dvnFormMargin">
@@ -170,6 +162,13 @@
 
                     </div>
                     <div class="dvn_sectionBoxNoBorders">
+                        <div jsfc="ice:panelGroup" rendered="#{!empty flash.validationErrorMessage}" styleClass="dvnWarningMessage">
+                            <div class="dvnMsgBlockContainer">
+                                <p>
+                                    <ice:outputText value="#{flash.validationErrorMessage}" escape="false"/>
+                                </p>
+                            </div>
+                        </div>
                         <ice:panelTabSet id="tabSetZ" styleClass="dvnTabs" rendered="#{SetUpDataExplorationPage.showCommands}"
                                          tabChangeListener="#{SetUpDataExplorationPage.changeTab}">
                             <ice:panelTab id="xVariable" label="Time Variable" url="/dvn#{VDCRequest.currentVDCURL}/faces/subsetting/SetUpDataExploration.xhtml&amp;tab=xVariable">

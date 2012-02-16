@@ -14,17 +14,13 @@
   <ui:composition template="/template.xhtml">
     <ui:param name="pageTitle" value="#{bundlePageInfo.manageClassificationsTitle} - #{VDCRequest.dataversePageTitle}"/>
         <ui:define name="metadata">
-                <f:event type="preRenderView" listener="#{manageClassificationsPage.preRenderView}" />  
+                <f:event type="preRenderView" listener="#{manageClassificationsPage.preRenderView}"/>  
         </ui:define>
     <ui:define name="body">
       <ice:form>
         <div class="dvn_section">
           <div class="dvn_sectionTitle">
             <ice:outputText value="#{bundlePageInfo.manageClassificationsTitle}"/>
-          </div>
-          <!-- ***************************** add content here ************************************ -->
-          <div jsfc="ice:panelGroup" rendered="#{manageClassificationsPage.result == true}" styleClass="successMessage">
-            <ice:messages id="iceMessage" binding="#{manageClassificationsPage.iceMessage}" layout="list" showDetail="false" showSummary="true"/>
           </div>
           <div class="dvnManageClassificationsTableTop">
             <div jsfc="ice:panelGroup" styleClass="dvn_margin12 dvnInformationMessage">

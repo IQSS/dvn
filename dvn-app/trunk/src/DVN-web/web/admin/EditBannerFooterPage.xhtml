@@ -40,7 +40,6 @@
                 <div class="dvnMsgBlockContainer">
                   <ice:outputText value="#{bundlePageInfo.editDvnBrandingHelp}" escape="false" rendered="#{VDCRequest.currentVDC == null}"/>
                   <ice:outputText value="#{bundlePageInfo.editDvBrandingHelp}" escape="false" rendered="#{VDCRequest.currentVDC != null}"/>
-                  <ice:messages layout="list" globalOnly="true" styleClass="successMessage"/>
                 </div>
               </div>
               <div jsfc="ice:panelGroup" rendered="#{VDCRequest.currentVDC != null}">

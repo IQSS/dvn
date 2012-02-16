@@ -37,6 +37,8 @@ import edu.harvard.iq.dvn.core.study.StudyVersion;
 import edu.harvard.iq.dvn.core.study.SummaryStatistic;
 import edu.harvard.iq.dvn.core.study.SummaryStatisticType;
 import edu.harvard.iq.dvn.core.study.TabularDataFile;
+import edu.harvard.iq.dvn.core.study.TemplateField; 
+import edu.harvard.iq.dvn.core.web.study.TemplateFieldValue;
 import edu.harvard.iq.dvn.core.study.VariableCategory;
 import edu.harvard.iq.dvn.core.study.VariableFormatType;
 import edu.harvard.iq.dvn.core.study.VariableIntervalType;
@@ -130,6 +132,8 @@ public class DDIServiceBean implements DDIServiceLocal {
 
     public static final String NOTE_TYPE_ARCHIVE_DATE = "DVN:ARCHIVE_DATE";
     public static final String NOTE_SUBJECT_ARCHIVE_DATE= "Archive Date";
+    
+    public static final String NOTE_TYPE_EXTENDED_METADATA = "DVN:EXTENDED_METADATA";
 
     public static final String NOTE_TYPE_LOCKSS_CRAWL = "LOCKSS:CRAWLING";
     public static final String NOTE_SUBJECT_LOCKSS_PERM = "LOCKSS Permission";
@@ -981,6 +985,18 @@ public class DDIServiceBean implements DDIServiceLocal {
 
 
         // notes
+        
+        // This "notes" section (<   >) may be used for different things:
+        // Its default use has been to store the StudyLevelErrorNotes from 
+        // the standard DVN Metadata; we continue storing these as 
+        // simply "<notes>" - with no attributes. 
+        //
+        // We'll also be using these notes to store extended, template-based
+        // metadata fields. For these, the note should be storing both 
+        // the name and the value of the field. These notes will be tagged
+        // with the special attributes: type="DVN:EXTENDED_METADATA" and
+        // subject="TEMPLATE:XXX;FIELD:YYY"
+        
         if (!StringUtil.isEmpty( metadata.getStudyLevelErrorNotes() )) {
             methodAdded = checkParentElement(xmlw, "method", methodAdded);
             xmlw.writeStartElement("notes");
@@ -988,7 +1004,37 @@ public class DDIServiceBean implements DDIServiceLocal {
             xmlw.writeEndElement(); // notes
         }
 
+        // Check if the study metadata uses any template other than the 
+        // standard one: 
 
+
+        String templateName = metadata.getStudy().getTemplate().getName();
+        for (TemplateFieldValue extFieldValue : metadata.getTemplateFieldValue()) {
+            try {
+                String extFieldName = extFieldValue.getTemplateField().getStudyField().getName();
+                String extFieldStrValue = extFieldValue.getStrValue();
+
+                if (extFieldName != null
+                        && !extFieldName.equals("")
+                        && extFieldStrValue != null
+                        && !extFieldStrValue.equals("")) {
+
+                    String fieldDefinition = "TEMPLATE:" + templateName + ";FIELD:" + extFieldName;
+
+                    methodAdded = checkParentElement(xmlw, "method", methodAdded);
+                    xmlw.writeStartElement("notes");
+                    writeAttribute(xmlw, "type", NOTE_TYPE_EXTENDED_METADATA);
+                    writeAttribute(xmlw, "subject", fieldDefinition);
+                    xmlw.writeCharacters(extFieldStrValue);
+                    xmlw.writeEndElement(); // notes
+                }
+
+            } catch (Exception ex) {
+                // do nothing - if we can't retrieve the field, we are 
+                // not going to export it, that's all. 
+            }
+        }
+            
         // anlyInfo
         boolean anlyInfoAdded = false;
         if (!StringUtil.isEmpty( metadata.getResponseRate() )) {

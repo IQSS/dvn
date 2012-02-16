@@ -402,19 +402,20 @@ public class LoginFilter implements Filter {
             if (isPopup(request)) {
                 return true;
             }
-            
+
             Study study = null;
             StudyVersion studyVersion = null;
             String studyId = VDCBaseBean.getParamFromRequestOrComponent("studyId", request);
             String versionNumber = VDCBaseBean.getParamFromRequestOrComponent("versionNumber", request);
-          if (studyId != null) {
+            if (studyId != null) {
                 study = studyService.getStudy(Long.parseLong(studyId));
-                if (versionNumber!=null) {
-                    studyVersion = studyService.getStudyVersion(Long.parseLong(studyId), new Long(versionNumber));
-                }
-          } else {
-                study = studyService.getStudyByGlobalId( VDCBaseBean.getParamFromRequestOrComponent("globalId", request) );
-          }
+            } else {
+                study = studyService.getStudyByGlobalId(VDCBaseBean.getParamFromRequestOrComponent("globalId", request));
+                studyId = study.getId().toString();
+            }
+            if (versionNumber != null) {
+                studyVersion = studyService.getStudyVersion(Long.parseLong(studyId), new Long(versionNumber));
+            }
           if (study.isStudyRestrictedForUser(user, ipUserGroup)) {
                 return false;
           }

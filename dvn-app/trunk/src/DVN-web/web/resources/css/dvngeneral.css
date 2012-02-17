@@ -101,7 +101,7 @@ div.dvnMsgBlockContainer p:first-child {text-indent:22px}
 div.dvnMsgBlockContainer ul{margin:1em 0}
 div.dvnInformationMessage{margin-bottom:1em;background:transparent url(/dvn/resources/images/icon_information.18.png) no-repeat 0px 0px}
 div.dvnInformationMessage.dvn_margin12{padding-bottom:0;}
-div.dvnSuccessMessage{max-width:700px;margin:0 auto 1em;background:#cee6bb url(/dvn/resources/images/icon_success.png) no-repeat 0px 0px}
+div.dvnSuccessMessage{max-width:700px;margin:0 auto 1em;background:#cee6bb url(/dvn/resources/images/icon_success.18.png) no-repeat 0px 0px}
 div.dvnSuccessMessage div.dvnMsgBlockContainer{}
 div.dvnSuccessMessage span{font-weight:bold;color:#299a0b;background:transparent}
 div.dvnSuccessMessage ul{padding-left:0;list-style:none;background:transparent}

@@ -122,9 +122,12 @@
                     <!-- *** MENUBAR (Included from template) *** -->
                     <ui:include src="views/Menubar.xhtml"/>
                 </ui:insert>
-                <div jsfc="ice:panelGroup" styleClass="dvnMsgBlockRound dvnSuccessMessage" rendered="#{!empty flash.message}">
+                <div jsfc="ice:panelGroup" styleClass="#{!empty(flash.warningMessage) ? 'dvnWarningMessage' : 'dvnSuccessMessage'}" rendered="#{!empty flash.successMessage or !empty flash.warningMessage}">
                   <div class="dvnMsgBlockContainer">
-                    <p><ice:outputText id="statusMessage" value="#{flash.message}"/></p>
+                    <p>
+                        <ice:outputText id="successMessage" value="#{flash.successMessage}" rendered="#{!empty flash.successMessage}"/>
+                        <ice:outputText id="warningMessage" value="#{flash.warningMessage}" rendered="#{!empty flash.warningMessage}"/>
+                    </p>
                   </div>
                 </div>
                 <ui:insert name="body">Default Body</ui:insert>

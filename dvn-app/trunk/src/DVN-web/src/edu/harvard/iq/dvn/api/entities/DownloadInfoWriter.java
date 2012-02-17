@@ -73,7 +73,7 @@ public class DownloadInfoWriter implements MessageBodyWriter<DownloadInfo> {
         
         if (di.isAccessPermissionsApply()) {
             accessGranted = di.isPassAccessPermissions() ? "true" : "false";
-            open = "  <accessPermissions granted=\"" + accessGranted + "\">";
+            open = "  <accessPermissions granted=\"" + accessGranted + "\">\n";
             String text = "    Restricted Access\n";        
             close = "  </accessPermissions>\n";
 

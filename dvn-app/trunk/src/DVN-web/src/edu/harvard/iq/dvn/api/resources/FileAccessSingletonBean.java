@@ -61,8 +61,7 @@ public class FileAccessSingletonBean {
                     if (!sf.getStudy().isReleased()) {
                         // if not - we are simply going to say "NOT FOUND!"
                         return null; 
-                    }
-                    
+                    } 
                     di = new DownloadInfo (sf);
                     if (di == null) {
                         return null; 
@@ -223,6 +222,7 @@ public class FileAccessSingletonBean {
             return false; 
         }
  
+        // file is 
         if (!isPublicAccess(studyFile)) {
             di.setAccessPermissionsApply(true);
         } else {
@@ -271,16 +271,24 @@ public class FileAccessSingletonBean {
     // note that restrictions can apply on multiple levels. 
     
     private Boolean isPublicAccess (StudyFile studyFile) {
+        // Restrictions on the StudyFile itself: 
         if (studyFile.isRestricted()) {
             return false; 
         }
         
         if (studyFile.getStudy() != null) {
+            // Study-level restrictions: 
             if (studyFile.getStudy().isRestricted()) {
                 return false; 
             }
+            // And Dataverse-level: 
             if (studyFile.getStudy().getOwner() != null) {
-                if (studyFile.getStudy().getOwner().isFilesRestricted()) {
+                // Note that there are 2 ways in which access to the study file
+                // can be restricted on the DV level:  
+                // it can be either through the "Files Restricted" setting, 
+                // or the Dataverse being restricted (or "unrleleased"):
+                if (studyFile.getStudy().getOwner().isFilesRestricted()
+                         || studyFile.getStudy().getOwner().isRestricted()) {
                     return false; 
                 }
             }

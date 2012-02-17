@@ -30,15 +30,20 @@ import javax.ejb.Local;
 @Local
 public interface TemplateServiceLocal extends java.io.Serializable {
   
-    public FieldInputLevel getFieldInputLevel(String name);    
-    public void deleteTemplate(Long templateId);
+    
+    public  void createTemplate(Long vdcId);    
+
     public Template getTemplate(Long templateId);
+    public void updateTemplate(Template template);
+    public void deleteTemplate(Long templateId);
+
+    public FieldInputLevel getFieldInputLevel(String name);
+    
     public boolean isTemplateUsed(Long templateId);
     public boolean isTemplateUsedAsVDCDefault(Long templateId);
-    public  void createTemplate(Long vdcId);
+    
     
     public Map getVdcTemplatesMap(Long vdcId);   
-
     public List<Template> getVDCTemplates(Long vdcId);
     public List<Template> getEnabledVDCTemplates(Long vdcId);
     public List<Template> getNetworkTemplates();

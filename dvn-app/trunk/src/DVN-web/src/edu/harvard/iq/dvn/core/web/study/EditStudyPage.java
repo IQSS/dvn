@@ -344,13 +344,15 @@ public class EditStudyPage extends VDCBaseBean implements java.io.Serializable  
                            List <TemplateFieldValue> tfvList = new  ArrayList();
                            if (!defaultField.getTemplateFieldValues().isEmpty()){
                                 for (TemplateFieldValue tfv: defaultField.getTemplateFieldValues()){ 
-                                     TemplateFieldValue nTfv = new TemplateFieldValue();                            
-                                     nTfv.setMetadata(metadata);
-                                     nTfv.setStrValue(tfv.getStrValue());
-                                     nTfv.setDisplayOrder(tfv.getDisplayOrder());
-                                     nTfv.setTemplateField(tf);
-                                     tfvList.add(nTfv);
-                                     metadata.getTemplateFieldValues().add(nTfv);
+                                     TemplateFieldValue nTfv = new TemplateFieldValue(); 
+                                         if (tfv.getMetadata().equals(study.getTemplate().getMetadata())){
+                                             nTfv.setMetadata(metadata);
+                                             nTfv.setStrValue(tfv.getStrValue());
+                                             nTfv.setDisplayOrder(tfv.getDisplayOrder());
+                                             nTfv.setTemplateField(tf);
+                                             tfvList.add(nTfv);
+                                             metadata.getTemplateFieldValues().add(nTfv);
+                                         }
                                     }
                              } else {//get 'empty' template fields to show in edit study screen
                                      TemplateFieldValue nTfv = new TemplateFieldValue();                            
@@ -366,13 +368,15 @@ public class EditStudyPage extends VDCBaseBean implements java.io.Serializable  
 
                              for (TemplateFieldControlledVocabulary tfcv: defaultField.getTemplateFieldControlledVocabulary()){
                                   TemplateFieldControlledVocabulary nTfcv = new TemplateFieldControlledVocabulary();
-                                  nTfcv.setMetadata(metadata);
-                                  nTfcv.setStrValue(tfcv.getStrValue());
-                                  nTfcv.setTemplateField(tf);
-                                  tfcvList.add(nTfcv);
+                                  if(tfcv.getMetadata().equals(study.getTemplate().getMetadata())){
+                                      nTfcv.setMetadata(metadata);
+                                      nTfcv.setStrValue(tfcv.getStrValue());
+                                      nTfcv.setTemplateField(tf);
+                                      tfcvList.add(nTfcv); 
+                                  }
+
                              }
                               tf.setTemplateFieldControlledVocabulary(tfcvList);
-
                               tf.setFieldInputLevelString(defaultField.getFieldInputLevelString());
                               tf.setdcmSortOrder(defaultField.getDcmSortOrder()); 
                               if (tf.getTemplateFieldValues().isEmpty()){
@@ -471,16 +475,12 @@ public class EditStudyPage extends VDCBaseBean implements java.io.Serializable  
                 int counter = 0;    
                 for (Object inObj: inStringList){
                     String inStr = (String) inObj;
-                     System.out.println("in array " + inStr);
                     TemplateFieldValue elem = new TemplateFieldValue();
                     elem.setTemplateField(tfTest);
                     elem.setMetadata(metadata);
                     elem.setStrValue(inStr);
                     elem.setDisplayOrder(counter++);
-
-                    values.add(elem);
-                    
-                    
+                    values.add(elem);                    
                 }
                 tfTest.setTemplateFieldValues(values);
             }

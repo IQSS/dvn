@@ -81,7 +81,7 @@ public class EditDepositUseTermsPage extends VDCBaseBean implements java.io.Seri
             vdc.setDepositTermsOfUseEnabled(termsOfUseEnabled);
             vdcService.edit(vdc);
             String    forwardPage="/admin/OptionsPage?faces-redirect=true&vdcId="+getVDCRequestBean().getCurrentVDC().getId();
-            getExternalContext().getFlash().put("message","Successfully updated terms of use for study creation.");
+            getExternalContext().getFlash().put("successMessage","Successfully updated terms of use for study creation.");
             return forwardPage;
            
             

@@ -66,9 +66,6 @@ public interface VDCNetworkServiceLocal extends java.io.Serializable  {
     
     void updateDefaultDisplayNumber(VDCNetwork vdcnetwork);
 
-    public void updateDefaultTemplate(Long templateId);
-    
-    public List<Template> getNetworkTemplates();
-    
+    public void updateDefaultTemplate(Long templateId);   
     
 }

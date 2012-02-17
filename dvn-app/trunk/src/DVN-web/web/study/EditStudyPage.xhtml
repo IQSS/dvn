@@ -1355,82 +1355,81 @@
                     </div>
                   </ice:panelGrid>
                   
-                                     <!-- Start of Generic Control -->
+                  <!--revised generic control-->
+                               <ice:panelSeries value="#{EditStudyPage.adHocFields}" var="customField">
                   <ice:dataTable cellpadding="0" cellspacing="0" width="100%"
-                                 styleClass="vdcEditStudyTable"
                                  columnClasses="vdcEditStudyCol1b, vdcEditStudyCol2, vdcEditStudyCol3"
-                                 binding="#{EditStudyPage.dcmFieldTable}"
-                                 value="#{EditStudyPage.adHocFields}" var="dcmItem">
+                                 value="#{customField.templateFieldValues}" var="customValue">
                     <ice:column>
                       <div class="vdcEditStudyField">
-                        <ice:outputText styleClass="dvnInlineHelpLabel dvnInlineHelpTip" value="#{dcmItem.studyField.name}" title="#{dcmItem.studyField.name} - #{dcmItem.studyField.description}"/>
-                        <ice:graphicImage value="/resources/images/icon_required.gif" rendered="#{dcmItem.required}"/>
-                        <ice:graphicImage value="/resources/images/icon_recommended.gif" rendered="#{dcmItem.recommended}"/>
+                        <ice:outputText styleClass="dvnInlineHelpLabel dvnInlineHelpTip" value="#{customField.studyField.name}" title="#{customField.studyField.name} - #{customField.studyField.description}"/>
+                        <ice:graphicImage value="/resources/images/icon_required.gif" rendered="#{customField.required}"/>
+                        <ice:graphicImage value="/resources/images/icon_recommended.gif" rendered="#{customField.recommended}"/>
+                      </div>
+                    </ice:column>
+
+                    <ice:column>
+                      <div>
+                        <ice:column> 
+                          <ice:inputText id="input_TextDefault" size="90" rendered="#{empty(customField.studyField.fieldType)}" 
+                                         visible="#{empty(customField.templateFieldControlledVocabulary)}"
+                                         value="#{customValue.strValue}">
+                          </ice:inputText> 
+                          <ice:inputText id="input_HtmlEnabled" size="90" rendered="#{customField.studyField.fieldType == 'html'}" 
+                                         visible="#{empty(customField.templateFieldControlledVocabulary)}"
+                                         value="#{customValue.strValue}"
+                                         styleClass="formHtmlEnabled">
+                                  <f:validator validatorId="XhtmlValidator"/>
+                          </ice:inputText>
+                          <ice:inputText id="input_Text" size="90" rendered="#{customField.studyField.fieldType == 'textBox'}" 
+                                         visible="#{empty(customField.templateFieldControlledVocabulary)}"
+                                         value="#{customValue.strValue}">
+                          </ice:inputText>    
+                          <ice:inputText id="input_genericDate" styleClass="formDateFormat"
+                                         rendered="#{customField.studyField.fieldType == 'date'}" 
+                                         value="#{customValue.strValue}" 
+                                         visible="#{empty(customField.templateFieldControlledVocabulary)}">
+                                <f:validator validatorId="DateValidator"/>
+                          </ice:inputText>   
+                          <ice:inputTextarea cols="90" rows="4"
+                                               id="input_TextArea"
+                                               value="#{customValue.strValue}"
+                                               rendered="#{customField.studyField.fieldType == 'textArea'}" 
+                                               visible="#{empty(customField.templateFieldControlledVocabulary)}">
+                          </ice:inputTextarea>
+                          <ice:outputText value="#{editstudybundle.dateFormatDescription}" rendered="#{customField.studyField.fieldType == 'date'}"/>
+                      <ice:outputText id="controlledVocabHeader" visible="#{!empty(customField.templateFieldControlledVocabulary)}"
+                                     value="Controlled Vocabulary">
+                      </ice:outputText>
+                        <ice:selectOneMenu immediate="false"   value="#{customField.templateFieldValueSingleString}" valueChangeListener="#{EditStudyPage.changeSingleValCV}"
+                                        rendered ="#{!empty(customField.templateFieldControlledVocabulary) and !customField.allowMultiples}">
+                            <f:selectItems value="#{customField.controlledVocabularyStrings}"/>
+                            <f:attribute name="sf_id" value="#{customField.studyField.id}"/>
+                        </ice:selectOneMenu>  
+                        <ice:selectManyListbox immediate="false"  value="#{customField.templateFieldValueStrings}" valueChangeListener="#{EditStudyPage.changeMultiValCV}"
+                                        rendered ="#{!empty(customField.templateFieldControlledVocabulary) and customField.allowMultiples}">                            
+                            <f:selectItems value="#{customField.controlledVocabularyStrings}"/>
+                            <f:attribute name="sf_id" value="#{customField.studyField.id}"/>
+                        </ice:selectManyListbox> 
+                        </ice:column>
                       </div>
                     </ice:column>
                     <ice:column>
-                      <ice:dataTable var="fieldValRow" value="#{dcmItem.templateFieldValues}"
-                                     binding="#{EditStudyPage.dataTableDCMFieldValues}">
-                          
-                       <!-- put in default field type as text box-->
-                      <ice:column>
-                      <ice:inputText id="input_TextDefault" size="90" rendered="#{empty(dcmItem.studyField.fieldType)}" 
-                                     visible="#{empty(dcmItem.templateFieldControlledVocabulary)}"
-                                     value="#{fieldValRow.strValue}"
-                                    >
-                      </ice:inputText> 
-                      <ice:inputText id="input_HtmlEnabled" size="90" rendered="#{dcmItem.studyField.fieldType == 'html'}" 
-                                         visible="#{empty(dcmItem.templateFieldControlledVocabulary)}"
-                                     value="#{fieldValRow.strValue}"
-                                     styleClass="formHtmlEnabled">
-                              <f:validator validatorId="XhtmlValidator"/>
-                      </ice:inputText>
-                      <ice:inputText id="input_Text" size="90" rendered="#{dcmItem.studyField.fieldType == 'textBox'}" 
-                                     visible="#{empty(dcmItem.templateFieldControlledVocabulary)}"
-                                     value="#{fieldValRow.strValue}"
-                                    >
-                      </ice:inputText>    
-                      <ice:inputText id="input_genericDate" styleClass="formDateFormat"
-                                     rendered="#{dcmItem.studyField.fieldType == 'date'}" 
-                                     value="#{fieldValRow.strValue}" 
-                                     visible="#{empty(dcmItem.templateFieldControlledVocabulary)}" >
-                            <f:validator validatorId="DateValidator"/>
-                      </ice:inputText>   
-                          <ice:inputTextarea cols="90" rows="4"
-                                           id="input_TextArea"
-                                           value="#{fieldValRow.strValue}"
-                                           rendered="#{dcmItem.studyField.fieldType == 'textArea'}" 
-                                           visible="#{empty(dcmItem.templateFieldControlledVocabulary)}"
-                                           >
-                          
-                        </ice:inputTextarea>  
-                        <ice:selectOneMenu immediate="false"  
-                                        rendered ="#{!empty(dcmItem.templateFieldControlledVocabulary) and !dcmItem.allowMultiples}">
-                            <f:selectItems value="#{dcmItem.controlledVocabularyStrings}"/>
-                        </ice:selectOneMenu>  
-                        <ice:selectManyListbox immediate="false"  
-                                        rendered ="#{!empty(dcmItem.templateFieldControlledVocabulary) and dcmItem.allowMultiples}">
-                            <f:selectItems value="#{dcmItem.controlledVocabularyStrings}"/>
-                        </ice:selectManyListbox> 
+                      <ice:commandButton rendered ="#{customField.allowMultiples and empty(customField.templateFieldControlledVocabulary)}" 
+                                         partialSubmit="true" image="/resources/images/icon_add.gif" 
+                                         actionListener="#{EditStudyPage.addRow}">
+                        <f:attribute name="dcmSortOrder" value="#{customField.dcmSortOrder}"/>
+                      </ice:commandButton>       
+                        <ice:commandButton partialSubmit="true" rendered="#{customField.templateFieldValues.size() > 1 and empty(customField.templateFieldControlledVocabulary)}" 
+                                image="/resources/images/icon_remove.gif" actionListener="#{EditStudyPage.removeRow}"/>
                     </ice:column>
-                    <ice:column>
-                      <ice:commandButton partialSubmit="true" image="/resources/images/icon_add.gif" rendered="#{dcmItem.allowMultiples and empty(dcmItem.templateFieldControlledVocabulary)}"
-                                         actionListener="#{EditStudyPage.addDcmRow}">
-                                         <f:attribute name="dcmSortOrder" value="#{dcmItem.dcmSortOrder}" />
-                                         <f:attribute name="tf_id" value="#{dcmItem.id}" />
-                               </ice:commandButton>
-                          <ice:commandButton immediate="true"
-                                             rendered="#{dcmItem.allowMultiples and empty(dcmItem.templateFieldControlledVocabulary)}"
-                                             image="/resources/images/icon_remove.gif" actionListener="#{EditStudyPage.removeDcmRow}">
-                              <f:attribute name="sf_id" value="#{dcmItem.studyField.id}"/>
-                              <f:attribute name="strVal" value="#{fieldValRow.strValue}"/>
-                              <f:attribute name="dcmSortOrder" value="#{dcmItem.dcmSortOrder}"/>
-                          </ice:commandButton>
-                    </ice:column>
-                    </ice:dataTable>
-                    </ice:column>
+                    </ice:dataTable> 
 
-                  </ice:dataTable>
+              </ice:panelSeries>
+                  
+                  <!-- End Revised generic control-->
+                  
+
                   <!-- End of Generic Control -->
                   
                     <ice:panelGrid cellpadding="0" cellspacing="0" columns="2" width="100%"

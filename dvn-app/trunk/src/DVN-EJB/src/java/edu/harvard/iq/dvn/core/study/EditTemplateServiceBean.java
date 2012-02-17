@@ -123,22 +123,31 @@ public class EditTemplateServiceBean implements edu.harvard.iq.dvn.core.study.Ed
         template = new Template();
         Metadata clonedMetadata = new Metadata(cloneSource.getMetadata());
         template.setMetadata(clonedMetadata);        
-        Collection<TemplateField> defaultFields = cloneSource.getTemplateFields();       
+        Collection<TemplateField> defaultFields = cloneSource.getTemplateFields();  
+                
         template.setTemplateFields(new ArrayList());
         for( TemplateField defaultField: defaultFields) {
             TemplateField tf = new TemplateField();
             tf.setDefaultValue(defaultField.getDefaultValue());
             tf.setStudyField(defaultField.getStudyField());
             // bring over field values separately
+            //get template field values from cloned metadata
             List <TemplateFieldValue> tfvList = new  ArrayList();
+            for (TemplateFieldValue tfv : clonedMetadata.getTemplateFieldValues()){
+                if(tfv.getTemplateField().getStudyField().equals(tf.getStudyField())){
+                    tfv.setTemplateField(tf);
+                    tfvList.add(tfv);
+                }
+            }
+            /* 
             for (TemplateFieldValue tfv: defaultField.getTemplateFieldValues()){ 
                 TemplateFieldValue tfvn = new TemplateFieldValue();
                 tfvn.setStrValue(tfv.getStrValue());                
                 tfvn.setMetadata(clonedMetadata);
                 tfvn.setDisplayOrder(tfv.getDisplayOrder());
                 tfvn.setTemplateField(tf);
-                tfvList.add(tfvn);
-            }
+                
+            }*/
             tf.setTemplateFieldValues(tfvList);
             // bring over field contolled vocab separately
             List <TemplateFieldControlledVocabulary> tfcvList = new  ArrayList();

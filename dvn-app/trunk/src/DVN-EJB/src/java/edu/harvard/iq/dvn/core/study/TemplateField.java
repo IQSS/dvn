@@ -169,7 +169,7 @@ public class TemplateField implements java.io.Serializable {
         this.studyField = studyField;
     }
     
-    @OneToMany (mappedBy="templateField", cascade={ CascadeType.REMOVE, CascadeType.MERGE,CascadeType.PERSIST})
+    @OneToMany (mappedBy="templateField",  cascade={ CascadeType.REMOVE, CascadeType.MERGE,CascadeType.PERSIST})
     @OrderBy ("strValue")
     private List<TemplateFieldValue> templateFieldValues;
 
@@ -180,7 +180,35 @@ public class TemplateField implements java.io.Serializable {
     public void setTemplateFieldValues(List<TemplateFieldValue> templateFieldValues) {
         this.templateFieldValues = templateFieldValues;
     }
+    
+    public List<String> getTemplateFieldValueStrings(){
+        List <String> retList = new ArrayList();
+        for (TemplateFieldValue tfv: this.getTemplateFieldValues()){
+            retList.add(tfv.getStrValue());
+        }        
+        return retList;       
+    }
 
+    public String getTemplateFieldValueSingleString(){
+        List <String> retList = new ArrayList();
+        for (TemplateFieldValue tfv: this.getTemplateFieldValues()){
+            retList.add(tfv.getStrValue());
+        }
+        if (!retList.isEmpty()){
+           return retList.get(0);  
+        } else {
+           return "";
+        }              
+    }
+    
+    public void setTemplateFieldValueStrings(List <String> inList){
+
+    }
+    
+    public void setTemplateFieldValueSingleString(String inStr){
+      
+    }
+    
     public void initValues (){
         if (this.getTemplateFieldValues() == null || this.getTemplateFieldValues().isEmpty()){
             TemplateFieldValue elem = new TemplateFieldValue();

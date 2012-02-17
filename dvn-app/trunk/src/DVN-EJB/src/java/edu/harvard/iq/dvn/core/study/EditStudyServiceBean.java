@@ -38,6 +38,7 @@ import edu.harvard.iq.dvn.core.study.StudyVersion.VersionState;
 import edu.harvard.iq.dvn.core.vdc.VDC;
 import edu.harvard.iq.dvn.core.vdc.VDCNetwork;
 import edu.harvard.iq.dvn.core.vdc.VDCNetworkServiceLocal;
+import edu.harvard.iq.dvn.core.web.study.TemplateFieldValue;
 import java.io.File;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
@@ -179,11 +180,17 @@ public class EditStudyServiceBean implements edu.harvard.iq.dvn.core.study.EditS
     public void save(Long vdcId, Long userId) {
         VDCUser user = em.find(VDCUser.class,userId);
         try {
+            Metadata m = studyVersion.getMetadata();
+            for (TemplateFieldValue tfv : m.getTemplateFieldValues()){
+                    if (tfv.getId() == null){                                   
+                            em.persist(tfv);
+                    }
+            }
            
             editFiles();
    
             studyService.saveStudyVersion(studyVersion, userId);
-          
+
             // if new, register the handle
             if ( isNewStudy() && vdcNetworkService.find().isHandleRegistration() ) {
                 String handle = studyVersion.getStudy().getAuthority() + "/" + studyVersion.getStudy().getStudyId();
@@ -191,7 +198,7 @@ public class EditStudyServiceBean implements edu.harvard.iq.dvn.core.study.EditS
                
             }
 
-             
+            
             em.flush(); // Always call flush(), so that we can detect an OptimisticLockException
            
            

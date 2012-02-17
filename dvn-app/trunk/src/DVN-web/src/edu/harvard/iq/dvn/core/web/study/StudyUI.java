@@ -1212,11 +1212,11 @@ public class StudyUI  implements java.io.Serializable {
     public List<TemplateFieldValue> getCustomFields() {
         if (customFields == null) {
             customFields = new ArrayList();
-            for (TemplateFieldValue elem : getMetadata().getTemplateFieldValue()) {
+            for (TemplateFieldValue elem : getMetadata().getTemplateFieldValues()) {
                 boolean found = false;
                 String name = elem.getTemplateField().getStudyField().getName();
                 for (TemplateFieldValue tfv : customFields) {
-                    if (tfv.getTemplateField().getStudyField().getName().equals(name)) {
+                    if (tfv.getTemplateField().getStudyField().getName().equals(name)&& tfv.getMetadata().equals(getMetadata())) {
                         tfv.setStrValue(tfv.getStrValue() + "; " + elem.getStrValue());
                         found = true;
                         break;

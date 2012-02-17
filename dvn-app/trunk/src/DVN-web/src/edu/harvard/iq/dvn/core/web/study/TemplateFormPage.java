@@ -136,7 +136,7 @@ public class TemplateFormPage extends VDCBaseBean implements java.io.Serializabl
                vdcId = getVDCRequestBean().getCurrentVDC().getId();
            }
            if (vdcId > 0 && template.isNetwork()){
-               System.out.println("before clone");
+
                editTemplateService.newClonedTemplate(vdcId, template);
                template = editTemplateService.getTemplate(); 
            }
@@ -245,8 +245,7 @@ public class TemplateFormPage extends VDCBaseBean implements java.io.Serializabl
             StudyMapValue smv = new StudyMapValue();
             smv.setTemplateFieldUI(new TemplateFieldUI(tf));
             if(!tf.getStudyField().isDcmField()){
-                studyMap.put(tf.getStudyField().getName(),smv);
-               
+                studyMap.put(tf.getStudyField().getName(),smv);              
             }           
         } 
     }
@@ -267,9 +266,31 @@ public class TemplateFormPage extends VDCBaseBean implements java.io.Serializabl
                 StudyMapValue smv = new StudyMapValue();
                 smv.setTemplateFieldUI(new TemplateFieldUI(tf));
                 if(tf.getStudyField().isDcmField()){
-                    tf.initValues();
+                    if (tf.getTemplateFieldValues().isEmpty()){
+                        tf.initValues();
+                    } else {
+                        ArrayList <TemplateFieldValue> matchingValues = new ArrayList<TemplateFieldValue>();
+                        for (TemplateFieldValue tfv: tf.getTemplateFieldValues()){
+                            if (tfv.getMetadata().equals(template.getMetadata())){
+                                   matchingValues.add(tfv);
+                            }
+
+                        }                        
+                        tf.setTemplateFieldValues(matchingValues);
+                    }
+                    if (tf.getTemplateFieldValues().isEmpty()){
+                        tf.initValues();
+                    }
+                        ArrayList <TemplateFieldControlledVocabulary> matchingControlledVocab = new ArrayList<TemplateFieldControlledVocabulary>();
+                        for (TemplateFieldControlledVocabulary tfv: tf.getTemplateFieldControlledVocabulary()){
+                            if (tfv.getMetadata().equals(template.getMetadata())){
+                                   matchingControlledVocab.add(tfv);
+                            }
+
+                        }                        
+                        tf.setTemplateFieldControlledVocabulary(matchingControlledVocab);
+                    
                     adHocFields.add(tf);
-                    System.out.println("tf " + tf.getId());
                 }
             }
 
@@ -2781,19 +2802,80 @@ public class TemplateFormPage extends VDCBaseBean implements java.io.Serializabl
     public void changeFieldInputValue(ValueChangeEvent event) {
             String newValue = (String)event.getNewValue();
             String id =event.getComponent().getId();
-            String studyField = id.substring(5, id.length());
-            String studyFieldName=  event.getComponent().getId();
             String getFieldName = (String) event.getComponent().getAttributes().get("fieldName");
             StudyMapValue studyMapValue = (StudyMapValue)studyMap.get(getFieldName);
              
             editTemplateService.changeFieldInputLevel(studyMapValue.getTemplateField(), newValue);
     }
+    
 
     public void changeFieldInputValueDCM(ValueChangeEvent event) {
         Long getOrder = (Long) event.getComponent().getAttributes().get("dcmSortOrder");
         TemplateField changeValue = adHocFields.get(getOrder.intValue() -1 );
         String newValue = (String)event.getNewValue();
         editTemplateService.changeFieldInputLevel(changeValue, newValue);
+    }
+    
+    public void changeSingleValCV(ValueChangeEvent event) {
+        Long sf_Id = (Long) event.getComponent().getAttributes().get("sf_id");
+        
+        for (TemplateField tfTest: adHocFields){
+            if (tfTest.getStudyField().getId().equals(sf_Id)){
+                
+                List data = (List)tfTest.getTemplateFieldValues();
+                List removeItems = new ArrayList();
+                for (TemplateFieldValue tfv: tfTest.getTemplateFieldValues()){
+                    removeItems.add(tfv);
+                }
+                for (Object o: removeItems){
+                    editTemplateService.removeCollectionElement(data,o);
+                }               
+                    TemplateFieldValue elem = new TemplateFieldValue();
+                    elem.setTemplateField(tfTest);
+                    elem.setMetadata(this.getTemplate().getMetadata());
+                    elem.setStrValue((String)event.getNewValue());
+                    elem.setDisplayOrder(0);
+                    List values = new ArrayList();
+                    values.add(elem);
+                    tfTest.setTemplateFieldValues(values);            
+            }
+        }
+    }
+    
+    public void changeMultiValCV(ValueChangeEvent event) {
+        Long sf_Id = (Long) event.getComponent().getAttributes().get("sf_id");
+
+        for (TemplateField tfTest: adHocFields){
+            if (tfTest.getStudyField().getId().equals(sf_Id)){
+                
+                List data = (List)tfTest.getTemplateFieldValues();
+                List removeItems = new ArrayList();
+                for (TemplateFieldValue tfv: tfTest.getTemplateFieldValues()){
+                    removeItems.add(tfv);
+                }
+                for (Object o: removeItems){
+                    editTemplateService.removeCollectionElement(data,o);
+                } 
+                
+                List inStringList = (List) event.getNewValue();
+                List values = new ArrayList();
+                int counter = 0;    
+                for (Object inObj: inStringList){
+                    String inStr = (String) inObj;
+                     System.out.println("in array " + inStr);
+                    TemplateFieldValue elem = new TemplateFieldValue();
+                    elem.setTemplateField(tfTest);
+                    elem.setMetadata(this.getTemplate().getMetadata());
+                    elem.setStrValue(inStr);
+                    elem.setDisplayOrder(counter++);
+
+                    values.add(elem);
+                    
+                    
+                }
+                tfTest.setTemplateFieldValues(values);
+            }
+        }
     }
     
     public void openPopup(ActionEvent ae) {
@@ -2911,7 +2993,10 @@ public class TemplateFormPage extends VDCBaseBean implements java.io.Serializabl
         
         if (templateCVField != null  && templateCVField.getTemplateFieldControlledVocabulary() !=null ){
             for(TemplateFieldControlledVocabulary tfCV: templateCVField.getTemplateFieldControlledVocabulary()) {
-                 stringList.add(tfCV.getStrValue());
+                if (tfCV.getMetadata().equals(template.getMetadata())){
+                     stringList.add(tfCV.getStrValue());
+                }
+                
             }              
         }
 

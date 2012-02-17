@@ -295,6 +295,15 @@ public class Metadata implements java.io.Serializable {
             cloneTopic.setVocabURI(topic.getVocabURI());
             this.getStudyTopicClasses().add(cloneTopic);
         }
+        this.setTemplateFieldValues(new ArrayList<TemplateFieldValue>());
+        for (TemplateFieldValue tfv: copyFrom.getTemplateFieldValues()){
+            TemplateFieldValue cloneTfv = new TemplateFieldValue();
+            cloneTfv.setDisplayOrder(tfv.getDisplayOrder());
+            cloneTfv.setTemplateField(tfv.getTemplateField());
+            cloneTfv.setStrValue(tfv.getStrValue());
+            cloneTfv.setMetadata(this);
+            this.getTemplateFieldValues().add(cloneTfv);
+        }
        
     }
      
@@ -359,14 +368,14 @@ public class Metadata implements java.io.Serializable {
     
     @OneToMany (mappedBy="metadata", cascade={ CascadeType.REMOVE, CascadeType.MERGE,CascadeType.PERSIST})
     @OrderBy ("strValue")
-    private List<TemplateFieldValue> templateFieldValue;
+    private List<TemplateFieldValue> templateFieldValues;
 
-    public List<TemplateFieldValue> getTemplateFieldValue() {
-        return templateFieldValue;
+    public List<TemplateFieldValue> getTemplateFieldValues() {
+        return templateFieldValues;
     }
 
-    public void setTemplateFieldValue(List<TemplateFieldValue> templateFieldValue) {
-        this.templateFieldValue = templateFieldValue;
+    public void setTemplateFieldValues(List<TemplateFieldValue> templateFieldValues) {
+        this.templateFieldValues = templateFieldValues;
     }
 
     

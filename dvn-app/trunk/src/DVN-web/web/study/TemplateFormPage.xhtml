@@ -1377,11 +1377,17 @@
                             <f:attribute name="tf_id" value="#{customField.id}" />
                            <f:selectItems value="#{TemplateFormPage.fieldInputLevelSelectItems}"/>
                         </ice:selectOneMenu>                          
-                        <ice:outputText styleClass="dvnInlineHelpLabel dvnInlineHelpTip" value="#{customField.studyField.name}" title="#{customField.studyField.name} - #{customField.studyField.description}"/>
-                        <ice:graphicImage value="/resources/images/icon_required.gif" rendered="#{customField.required}"/>
-                        <ice:graphicImage value="/resources/images/icon_recommended.gif" rendered="#{customField.recommended}"/>
+                        <ice:outputText styleClass="dvnInlineHelpLabel dvnInlineHelpTip" value="#{customField.studyField.name}" 
+                                          rendered="#{empty(customField.templateFieldControlledVocabulary) or customValue.displayOrder==0}"
+                                        title="#{customField.studyField.name} - #{customField.studyField.description}"/>
+                        <ice:graphicImage value="/resources/images/icon_required.gif" rendered="#{customField.required
+                               and( empty(customField.templateFieldControlledVocabulary) or customValue.displayOrder==0)}"/>
+                        <ice:graphicImage value="/resources/images/icon_recommended.gif" rendered="#{customField.recommended
+                                and( empty(customField.templateFieldControlledVocabulary) or customValue.displayOrder==0)}"/>
                       <ice:commandButton  value="Remove Field" 
-                                          actionListener="#{TemplateFormPage.removeAdHocField}" rendered="#{(customField.studyField.id > 98 or customField.studyField.id == null) and TemplateFormPage.networkEdit}" >
+                                          actionListener="#{TemplateFormPage.removeAdHocField}" 
+                                          rendered="#{(customField.studyField.id > 98 or customField.studyField.id == null) 
+                                                      and TemplateFormPage.networkEdit and customValue.displayOrder==0}" >
                                          <f:attribute name="studyFieldId" value="#{customField.studyField.id}" />
                                           <f:attribute name="studyFieldName" value="#{customField.studyField.name}" />
                       </ice:commandButton>
@@ -1417,16 +1423,19 @@
                                                visible="#{empty(customField.templateFieldControlledVocabulary)}">
                           </ice:inputTextarea>
                           <ice:outputText value="#{editstudybundle.dateFormatDescription}" rendered="#{customField.studyField.fieldType == 'date'}"/>
-                      <ice:outputText id="controlledVocabHeader" visible="#{!empty(customField.templateFieldControlledVocabulary)}"
+                      <ice:outputText id="controlledVocabHeader" visible="#{!empty(customField.templateFieldControlledVocabulary)
+                                    and customValue.displayOrder==0}"
                                      value="Controlled Vocabulary">
                       </ice:outputText>
-                        <ice:selectOneMenu immediate="false"  
+                        <ice:selectOneMenu immediate="false"  value="#{customField.templateFieldValueSingleString}" valueChangeListener="#{TemplateFormPage.changeSingleValCV}"                                          
                                         rendered ="#{!empty(customField.templateFieldControlledVocabulary) and !customField.allowMultiples}">
                             <f:selectItems value="#{customField.controlledVocabularyStrings}"/>
+                            <f:attribute name="sf_id" value="#{customField.studyField.id}"/>
                         </ice:selectOneMenu>  
-                        <ice:selectManyListbox immediate="false"  
-                                        rendered ="#{!empty(customField.templateFieldControlledVocabulary) and customField.allowMultiples}">
+                        <ice:selectManyListbox immediate="false"   value="#{customField.templateFieldValueStrings}"  valueChangeListener="#{TemplateFormPage.changeMultiValCV}"                                             
+                                        rendered ="#{!empty(customField.templateFieldControlledVocabulary) and customField.allowMultiples and customValue.displayOrder==0}">
                             <f:selectItems value="#{customField.controlledVocabularyStrings}"/>
+                            <f:attribute name="sf_id" value="#{customField.studyField.id}"/>
                         </ice:selectManyListbox> 
                         </ice:column>
                       </div>

@@ -79,6 +79,7 @@ import java.util.Date;
 import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
 import javax.faces.event.ActionEvent;
+import javax.faces.event.ValueChangeEvent;
 import javax.faces.model.SelectItem;
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -240,12 +241,13 @@ public class EditStudyPage extends VDCBaseBean implements java.io.Serializable  
     public String changeTemplateAction() {
         System.out.println("change template action");
         Object value= this.selectTemplate.getValue();
+        System.out.println("value = " +  value);
         if (value!=null ) {           
             editStudyService.changeTemplate((Long)value);
             metadata = editStudyService.getStudyVersion().getMetadata();
          
         }
-       
+        System.out.println("after edit study service  ");
         initStudyMap();  // Reset Recommended flag for all fields
         initAdHocFieldMap(false);
         return "";
@@ -324,50 +326,92 @@ public class EditStudyPage extends VDCBaseBean implements java.io.Serializable  
       }
     }
     
+    
     private List<TemplateField> adHocFields;
     
     public void initAdHocFieldMap(boolean metadataSet){
-
+        if(!metadataSet){
+            metadata.setTemplateFieldValues(new ArrayList());
+        }
         adHocFields = new ArrayList();
+        for (TemplateField defaultField : study.getTemplate().getTemplateFields()) {          
+             if (!defaultField.isHidden()){
+                StudyMapValue smv = new StudyMapValue();               
+                smv.setTemplateFieldUI(new TemplateFieldUI(defaultField));  
+                if(!metadataSet){
+                    if(defaultField.getStudyField().isDcmField()){
+                        TemplateField tf = defaultField;
+                           List <TemplateFieldValue> tfvList = new  ArrayList();
+                           if (!defaultField.getTemplateFieldValues().isEmpty()){
+                                for (TemplateFieldValue tfv: defaultField.getTemplateFieldValues()){ 
+                                     TemplateFieldValue nTfv = new TemplateFieldValue();                            
+                                     nTfv.setMetadata(metadata);
+                                     nTfv.setStrValue(tfv.getStrValue());
+                                     nTfv.setDisplayOrder(tfv.getDisplayOrder());
+                                     nTfv.setTemplateField(tf);
+                                     tfvList.add(nTfv);
+                                     metadata.getTemplateFieldValues().add(nTfv);
+                                    }
+                             } else {//get 'empty' template fields to show in edit study screen
+                                     TemplateFieldValue nTfv = new TemplateFieldValue();                            
+                                     nTfv.setMetadata(metadata);
+                                     nTfv.setStrValue("");
+                                     nTfv.setDisplayOrder(0);
+                                     nTfv.setTemplateField(tf);
+                                     metadata.getTemplateFieldValues().add(nTfv);
+                                     tfvList.add(nTfv);                            
+                             }
+                             tf.setTemplateFieldValues(tfvList);
+                             List <TemplateFieldControlledVocabulary> tfcvList = new  ArrayList();
 
-        for (Iterator<TemplateField> it = study.getTemplate().getTemplateFields().iterator(); it.hasNext();) {
-            TemplateField defaultField = it.next();
+                             for (TemplateFieldControlledVocabulary tfcv: defaultField.getTemplateFieldControlledVocabulary()){
+                                  TemplateFieldControlledVocabulary nTfcv = new TemplateFieldControlledVocabulary();
+                                  nTfcv.setMetadata(metadata);
+                                  nTfcv.setStrValue(tfcv.getStrValue());
+                                  nTfcv.setTemplateField(tf);
+                                  tfcvList.add(nTfcv);
+                             }
+                              tf.setTemplateFieldControlledVocabulary(tfcvList);
 
-            
-
-            
-            if (!defaultField.isHidden()){
-                StudyMapValue smv = new StudyMapValue();
-                
-                smv.setTemplateFieldUI(new TemplateFieldUI(defaultField));
-                
-                List <TemplateFieldValue> removeList = new ArrayList();
-                if(defaultField.getStudyField().isDcmField()){
-                    TemplateField tf = new TemplateField();
-                        tf.setDefaultValue(defaultField.getDefaultValue());
-                        tf.setStudyField(defaultField.getStudyField());
-                        // bring over field values separately
+                              tf.setFieldInputLevelString(defaultField.getFieldInputLevelString());
+                              tf.setdcmSortOrder(defaultField.getDcmSortOrder()); 
+                              if (tf.getTemplateFieldValues().isEmpty()){
+                                tf.initValues();
+                              }
+                        adHocFields.add(tf);
+                    }                    
+                } else {
+                    if(defaultField.getStudyField().isDcmField()){
+                        TemplateField tf = defaultField;
                         List <TemplateFieldValue> tfvList = new  ArrayList();
-                        for (TemplateFieldValue tfv: defaultField.getTemplateFieldValues()){ 
-                            tfv.setMetadata(metadata);
-                            tfvList.add(tfv);
+                        for (TemplateFieldValue tfv : metadata.getTemplateFieldValues()){
+                            if(tfv.getTemplateField().getStudyField().equals(tf.getStudyField())){
+                                if (tfv.getMetadata().equals(metadata)){
+                                    tfv.setTemplateField(tf);
+                                    tfvList.add(tfv);
+                                }
+                            }
                         }
                         tf.setTemplateFieldValues(tfvList);
-                        // bring over field contolled vocab separately
                         List <TemplateFieldControlledVocabulary> tfcvList = new  ArrayList();
-                        for (TemplateFieldControlledVocabulary tfcv: defaultField.getTemplateFieldControlledVocabulary()){
-                            tfcv.setMetadata(metadata);
-                            tfcvList.add(tfcv);
-                        }
-                        tf.setTemplateFieldControlledVocabulary(tfcvList);
-                        tf.setFieldInputLevelString(defaultField.getFieldInputLevelString());
-                        tf.setdcmSortOrder(defaultField.getDcmSortOrder());
+                             for (TemplateFieldControlledVocabulary tfcv: defaultField.getTemplateFieldControlledVocabulary()){
+                                 if (tfcv.getMetadata().equals(metadata)){
+                                    tfcv.setTemplateField(tf);
+                                    tfcvList.add(tfcv);
+                                 }
+                             }
+                              tf.setTemplateFieldControlledVocabulary(tfcvList);
+                              tf.setFieldInputLevelString(defaultField.getFieldInputLevelString());
+                              tf.setdcmSortOrder(defaultField.getDcmSortOrder()); 
+                              if (tf.getTemplateFieldValues().isEmpty()){
+                                tf.initValues();
+                              }
+                        adHocFields.add(tf);
+                    }
 
-                    
-                    adHocFields.add(tf);
-                }                
-            }
-           
+                }
+                
+            }           
         }         
         Collections.sort(adHocFields, comparator);
     }
@@ -380,6 +424,68 @@ public class EditStudyPage extends VDCBaseBean implements java.io.Serializable  
 
             }
     };
+    
+    public void changeSingleValCV(ValueChangeEvent event) {
+        Long sf_Id = (Long) event.getComponent().getAttributes().get("sf_id");
+        
+        for (TemplateField tfTest: adHocFields){
+            if (tfTest.getStudyField().getId().equals(sf_Id)){
+                
+                List data = (List)tfTest.getTemplateFieldValues();
+                List removeItems = new ArrayList();
+                for (TemplateFieldValue tfv: tfTest.getTemplateFieldValues()){
+                    removeItems.add(tfv);
+                }
+                for (Object o: removeItems){
+                    editStudyService.removeCollectionElement(data,o);
+                }               
+                    TemplateFieldValue elem = new TemplateFieldValue();
+                    elem.setTemplateField(tfTest);
+                    elem.setMetadata(metadata);
+                    elem.setStrValue((String)event.getNewValue());
+                    elem.setDisplayOrder(0);
+                    List values = new ArrayList();
+                    values.add(elem);
+                    tfTest.setTemplateFieldValues(values);            
+            }
+        }
+    }
+    
+    public void changeMultiValCV(ValueChangeEvent event) {
+        Long sf_Id = (Long) event.getComponent().getAttributes().get("sf_id");
+
+        for (TemplateField tfTest: adHocFields){
+            if (tfTest.getStudyField().getId().equals(sf_Id)){
+                
+                List data = (List)tfTest.getTemplateFieldValues();
+                List removeItems = new ArrayList();
+                for (TemplateFieldValue tfv: tfTest.getTemplateFieldValues()){
+                    removeItems.add(tfv);
+                }
+                for (Object o: removeItems){
+                    editStudyService.removeCollectionElement(data,o);
+                } 
+                
+                List inStringList = (List) event.getNewValue();
+                List values = new ArrayList();
+                int counter = 0;    
+                for (Object inObj: inStringList){
+                    String inStr = (String) inObj;
+                     System.out.println("in array " + inStr);
+                    TemplateFieldValue elem = new TemplateFieldValue();
+                    elem.setTemplateField(tfTest);
+                    elem.setMetadata(metadata);
+                    elem.setStrValue(inStr);
+                    elem.setDisplayOrder(counter++);
+
+                    values.add(elem);
+                    
+                    
+                }
+                tfTest.setTemplateFieldValues(values);
+            }
+        }
+    }
     
     public List getAdHocFields() {
         return adHocFields;
@@ -411,7 +517,7 @@ public class EditStudyPage extends VDCBaseBean implements java.io.Serializable  
             TemplateFieldValue newElem = new TemplateFieldValue();
             newElem.setMetadata(metadata);
             newElem.setTemplateField(tfSel);
-            metadata.getTemplateFieldValue().add(newElem);
+            metadata.getTemplateFieldValues().add(newElem);
             tfSel.getTemplateFieldValues().add(newElem);
             //remove clear can interfere with add buttons
             //dcmFieldTable.getChildren().clear();
@@ -434,6 +540,8 @@ public class EditStudyPage extends VDCBaseBean implements java.io.Serializable  
     public void setDcmFieldTable(HtmlDataTable dcmFieldTable) {
         this.dcmFieldTable = dcmFieldTable;
     }
+    
+    int count = 1;
 
     public void addRow(ActionEvent ae) {
         
@@ -500,6 +608,16 @@ public class EditStudyPage extends VDCBaseBean implements java.io.Serializable  
             StudyOtherRef newElem = new StudyOtherRef();
             newElem.setMetadata(metadata);
             metadata.getStudyOtherRefs().add(dataTable.getRowIndex()+1,newElem);
+        } else { // new custom field
+            TemplateFieldValue newElem = new TemplateFieldValue();
+            Long getOrder = (Long) ae.getComponent().getAttributes().get("dcmSortOrder");
+            TemplateField tf = adHocFields.get(getOrder.intValue() -1 );
+            newElem.setMetadata(metadata);
+            newElem.setTemplateField(tf);
+            newElem.setStrValue("");    
+            newElem.setDisplayOrder(count++);
+            tf.getTemplateFieldValues().add(dataTable.getRowIndex()+1, newElem);    
+            metadata.getTemplateFieldValues().add(newElem);
         }
         
   
@@ -1368,6 +1486,8 @@ public class EditStudyPage extends VDCBaseBean implements java.io.Serializable  
     
     public String save() {
         metadata.getStudyVersion().setVersionNote(versionNotesPopup.getVersionNote());
+
+            
         versionNotesPopup.setShowPopup(false);
 
         removeEmptyRows();

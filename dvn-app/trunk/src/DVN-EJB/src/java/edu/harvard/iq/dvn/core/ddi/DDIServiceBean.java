@@ -1009,7 +1009,7 @@ public class DDIServiceBean implements DDIServiceLocal {
 
 
         String templateName = metadata.getStudy().getTemplate().getName();
-        for (TemplateFieldValue extFieldValue : metadata.getTemplateFieldValue()) {
+        for (TemplateFieldValue extFieldValue : metadata.getTemplateFieldValues()) {
             try {
                 String extFieldName = extFieldValue.getTemplateField().getStudyField().getName();
                 String extFieldStrValue = extFieldValue.getStrValue();

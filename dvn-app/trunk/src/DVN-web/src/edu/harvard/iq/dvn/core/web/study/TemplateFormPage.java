@@ -76,6 +76,8 @@ import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
 import javax.faces.event.ActionEvent;
 import javax.faces.event.ValueChangeEvent;
+import javax.faces.model.DataModel;
+import javax.faces.model.ListDataModel;
 import javax.faces.model.SelectItem;
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -485,28 +487,6 @@ public class TemplateFormPage extends VDCBaseBean implements java.io.Serializabl
         }
     }
 
-    public void removeDcmRow(ActionEvent ae) {
-
-        HtmlDataTable dataTable = getDataTableDCMFieldValues();
-        if (dataTable.getRowCount()>1) {
-            List data = (List)dataTable.getValue();
-            editTemplateService.removeCollectionElement(data,dataTable.getRowData());
-        }
-        /*
-        Long getOrder = (Long) ae.getComponent().getAttributes().get("dcmSortOrder");
-        TemplateField tf = adHocFields.get(getOrder.intValue() -1 );
-        TemplateFieldValue tfv = null;
-        List data = null;
-        if (tf.getTemplateFieldValues().size()>1) {
-            data = tf.getTemplateFieldValues();
-            tfv = tf.getTemplateFieldValues().get(tf.getTemplateFieldValues().size() -1);
-            
-        }
-        if (!(tfv== null)){
-            editTemplateService.removeCollectionElement(data,tfv);
-        }
-        */ 
-    }
     
     public void removeAdHocField(ActionEvent ae) {
 
@@ -1295,7 +1275,7 @@ public class TemplateFormPage extends VDCBaseBean implements java.io.Serializabl
             FacesContext context = FacesContext.getCurrentInstance();
             FacesMessage message = new FacesMessage("New field name may not be blank.");
             context.addMessage(null, message);
-            getExternalContext().getFlash().put("message","New field name may not be blank."); 
+            getExternalContext().getFlash().put("warningMessage","New field name may not be blank."); 
             return "";
         }
         
@@ -1303,7 +1283,7 @@ public class TemplateFormPage extends VDCBaseBean implements java.io.Serializabl
             FacesContext context = FacesContext.getCurrentInstance();
             FacesMessage message = new FacesMessage("New field description may not be blank.");
             context.addMessage(null, message);
-            getExternalContext().getFlash().put("message","New field description may not be blank."); 
+            getExternalContext().getFlash().put("warningMessage","New field description may not be blank."); 
             return "";
         }
 
@@ -3031,5 +3011,58 @@ public class TemplateFormPage extends VDCBaseBean implements java.io.Serializabl
         this.inputControlledVocabulary = inputControlledVocabulary;
     }
     
+    
+    
+   
+     public DataModel getCustomFieldsDataModel() {
+        List values = new ArrayList();
+        for (TemplateField tf : getAdHocFields()) {
+
+            Object[] row = new Object[2];
+            row[0] = tf;
+            row[1] = getCustomValuesDataModel(tf);
+            values.add(row);
+
+        }
+        return new ListDataModel(values);
+
+    }
+
+    private DataModel getCustomValuesDataModel(TemplateField customField) {
+        List values = new ArrayList();
+        for (TemplateFieldValue tfv : customField.getTemplateFieldValues()) {
+
+            Object[] row = new Object[1];
+            row[0] = tfv;
+            values.add(row);
+
+        }
+        return new ListDataModel(values);
+    }
+
+    public void removeDcmRow(ActionEvent ae) {
+
+        HtmlDataTable dataTable = (HtmlDataTable) ae.getComponent().getParent().getParent();
+        if (dataTable.getRowCount() > 1) {
+            ListDataModel data = (ListDataModel) dataTable.getValue();
+            editTemplateService.removeCollectionElement((List) data.getWrappedData(), ((Object[]) data.getRowData())[0]);
+
+        }
+                /*
+        Long getOrder = (Long) ae.getComponent().getAttributes().get("dcmSortOrder");
+        TemplateField tf = adHocFields.get(getOrder.intValue() -1 );
+        TemplateFieldValue tfv = null;
+        List data = null;
+        if (tf.getTemplateFieldValues().size()>1) {
+            data = tf.getTemplateFieldValues();
+            tfv = tf.getTemplateFieldValues().get(tf.getTemplateFieldValues().size() -1);
+            
+        }
+        if (!(tfv== null)){
+            editTemplateService.removeCollectionElement(data,tfv);
+        }
+        */ 
+    }
+
 }
 

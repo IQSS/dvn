@@ -297,7 +297,7 @@ public class ManageStudiesList extends VDCBaseBean {
         studyUIList = null;
 
         // and finally, set the status message:
-        getVDCRequestBean().setSuccessMessage(successMessage);
+        getExternalContext().getFlash().put("successMessage",successMessage);
 
     }
 

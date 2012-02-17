@@ -115,6 +115,7 @@ public class EditOAISetPage extends VDCBaseBean implements java.io.Serializable 
 
     public String save() {
         oaiSetService.update(oaiSet);
+        getExternalContext().getFlash().put("successMessage",SUCCESS_MESSAGE);
         return "/networkAdmin/OAISetsPage?faces-redirect=true";    
     }    
     
@@ -129,25 +130,6 @@ public class EditOAISetPage extends VDCBaseBean implements java.io.Serializable 
     private String originalName;
     
       private String SUCCESS_MESSAGE = new String("Update Successful!");
-    /**
-     * Holds value of property success.
-     */
-    private boolean success;
-
-    /**
-     * Getter for property success.
-     * @return Value of property success.
-     */
-    public boolean isSuccess() {
-        return this.success;
-    }
-
-    /**
-     * Setter for property success.
-     * @param success New value of property success.
-     */
-    public void setSuccess(boolean success) {
-        this.success = success;
-    }  
+  
     
 }

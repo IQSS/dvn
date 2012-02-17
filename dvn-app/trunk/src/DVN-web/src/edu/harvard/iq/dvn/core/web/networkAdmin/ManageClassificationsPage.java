@@ -60,15 +60,8 @@ public class ManageClassificationsPage extends VDCBaseBean implements Serializab
 
     private Long cid;
     private int itemBeansSize       = 0; //used to output the number of classifications
-    private boolean result;
-    private String statusMessage;
-    private String SUCCESS_MESSAGE   = new String("Success. The classifications and dataverses operation completed successfully.");
-    private String FAIL_MESSAGE      = new String("Problems occurred during the form submission. Please see error messages below.");
     private HtmlDataTable mainTable   = new HtmlDataTable();
-    private HtmlMessages   iceMessage = new HtmlMessages();
-    private HtmlOutputText linkDelete = new HtmlOutputText();
-    private DataverseGrouping parentItem = null;
-    private DataverseGrouping childItem  = null;
+
 
     public ManageClassificationsPage() {
     }
@@ -114,21 +107,6 @@ public class ManageClassificationsPage extends VDCBaseBean implements Serializab
         this.toggleImage = toggleImage;
     }
 
-    public String getFAIL_MESSAGE() {
-        return FAIL_MESSAGE;
-    }
-
-    public void setFAIL_MESSAGE(String FAIL_MESSAGE) {
-        this.FAIL_MESSAGE = FAIL_MESSAGE;
-    }
-
-    public String getSUCCESS_MESSAGE() {
-        return SUCCESS_MESSAGE;
-    }
-
-    public void setSUCCESS_MESSAGE(String SUCCESS_MESSAGE) {
-        this.SUCCESS_MESSAGE = SUCCESS_MESSAGE;
-    }
 
     public Long getCid() {
         return cid;
@@ -138,29 +116,6 @@ public class ManageClassificationsPage extends VDCBaseBean implements Serializab
         this.cid = cid;
     }
 
-    public HtmlMessages getIceMessage() {
-        return iceMessage;
-    }
-
-    public void setIceMessage(HtmlMessages iceMessage) {
-        this.iceMessage = iceMessage;
-    }
-
-    public boolean isResult() {
-        return result;
-    }
-
-    public void setResult(boolean result) {
-        this.result = result;
-    }
-
-    public String getStatusMessage() {
-        return statusMessage;
-    }
-
-    public void setStatusMessage(String statusMessage) {
-        this.statusMessage = statusMessage;
-    }
 
     public HtmlDataTable getMainTable() {
         return mainTable;
@@ -176,45 +131,5 @@ public class ManageClassificationsPage extends VDCBaseBean implements Serializab
 
     
 
-   
-    /**
-     * <p>Callback method that is called after the component tree has been
-     * restored, but before any event processing takes place.  This method
-     * will <strong>only</strong> be called on a postback request that
-     * is processing a form submit.  Customize this method to allocate
-     * resources that will be required in your event handlers.</p>
-     */
-    public void preprocess() {
-    }
-
-    /**
-     * <p>Callback method that is called just before rendering takes place.
-     * This method will <strong>only</strong> be called for the page that
-     * will actually be rendered (and not, for example, on a page that
-     * handled a postback and then navigated to a different page).  Customize
-     * this method to allocate resources that will be required for rendering
-     * this page.</p>
-     */
-    public void prerender() {
-    }
-
-    /**
-     * <p>Callback method that is called after rendering is completed for
-     * this request, if <code>init()</code> was called (regardless of whether
-     * or not this was the page that was actually rendered).  Customize this
-     * method to release resources acquired in the <code>init()</code>,
-     * <code>preprocess()</code>, or <code>prerender()</code> methods (or
-     * acquired during execution of an event handler).</p>
-     */
-    public void destroy() {
-    }
-
-    /**
-     * <p>Automatically managed component initialization.  <strong>WARNING:</strong>
-     * This method is automatically generated, so any user-specified code inserted
-     * here is subject to being replaced.</p>
-     */
-    private void _init() {
-    }
 
 }

@@ -29,9 +29,7 @@
 
 package edu.harvard.iq.dvn.core.vdc;
 
-import edu.harvard.iq.dvn.core.study.Template;
 import java.util.List;
-import java.util.Map;
 import javax.ejb.Local;
 import javax.servlet.http.HttpServletRequest;
 
@@ -85,9 +83,6 @@ public interface VDCServiceLocal extends java.io.Serializable  {
     
     public List<VDC> findVdcsNotInGroups(String dtype);
     
-    public Map getVdcTemplatesMap(Long vdcId);
-    
-    public List<Template> getOrderedTemplates(Long vdcId);
     
     public void updateDefaultTemplate(Long vdcId, Long templateId);
     

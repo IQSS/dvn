@@ -2161,6 +2161,40 @@ public class Metadata implements java.io.Serializable {
 
         return false;
     }
+    
+    // Return all the Terms of Use-related metadata fields concatenated as 
+    // one string, if available: 
+    
+    public String getTermsOfUseAsString() {
+        String touString = ""; 
+        
+        if ( !StringUtil.isEmpty(getConfidentialityDeclaration()) ) { 
+            touString = touString.concat(getConfidentialityDeclaration());
+        }
+        if ( !StringUtil.isEmpty(getSpecialPermissions()) ) { 
+            touString = touString.concat(getSpecialPermissions()); 
+        }
+        if ( !StringUtil.isEmpty(getRestrictions()) ) { 
+            touString = touString.concat(getRestrictions()); 
+        }
+        if ( !StringUtil.isEmpty(getContact()) ) { 
+            touString = touString.concat(getContact()); 
+        }
+        if ( !StringUtil.isEmpty(getCitationRequirements()) ) { 
+            touString = touString.concat(getCitationRequirements()); 
+        }
+        if ( !StringUtil.isEmpty(getDepositorRequirements()) ) { 
+            touString = touString.concat(getDepositorRequirements());
+        }
+        if ( !StringUtil.isEmpty(getConditions()) ) { 
+            touString = touString.concat(getConditions());
+        }
+        if ( !StringUtil.isEmpty(getDisclaimer()) ) { 
+            touString = touString.concat(getDisclaimer()); 
+        }
+        
+        return !StringUtil.isEmpty(touString) ? touString : null; 
+    }
 
     public Study getStudy() {
         return getStudyVersion().getStudy();

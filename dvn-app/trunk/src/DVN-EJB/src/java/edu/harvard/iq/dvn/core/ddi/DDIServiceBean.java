@@ -986,7 +986,8 @@ public class DDIServiceBean implements DDIServiceLocal {
 
         // notes
         
-        // This "notes" section (<   >) may be used for different things:
+        // We use this "notes" section (<method><dataColl.../><notes .../>)  
+        // for different things:
         // Its default use has been to store the StudyLevelErrorNotes from 
         // the standard DVN Metadata; we continue storing these as 
         // simply "<notes>" - with no attributes. 
@@ -997,6 +998,7 @@ public class DDIServiceBean implements DDIServiceLocal {
         // with the special attributes: type="DVN:EXTENDED_METADATA" and
         // subject="TEMPLATE:XXX;FIELD:YYY"
         
+        // StudyLevelErrorNotes:
         if (!StringUtil.isEmpty( metadata.getStudyLevelErrorNotes() )) {
             methodAdded = checkParentElement(xmlw, "method", methodAdded);
             xmlw.writeStartElement("notes");
@@ -1004,10 +1006,8 @@ public class DDIServiceBean implements DDIServiceLocal {
             xmlw.writeEndElement(); // notes
         }
 
-        // Check if the study metadata uses any template other than the 
-        // standard one: 
-
-
+        // Extended metadata (will produce multiple notes for different and/or
+        // multiple extended fields: 
         String templateName = metadata.getStudy().getTemplate().getName();
         for (TemplateFieldValue extFieldValue : metadata.getTemplateFieldValues()) {
             try {
@@ -1189,7 +1189,17 @@ public class DDIServiceBean implements DDIServiceLocal {
             dvTermsOfUse = study.getOwner().isDownloadTermsOfUseEnabled() ? study.getOwner().getDownloadTermsOfUse() : null;
             dvnTermsOfUse = vdcNetworkService.find().isDownloadTermsOfUseEnabled() ? vdcNetworkService.find().getDownloadTermsOfUse() : null;
         }
-
+        
+        // Are we missing the study-level terms of use here? 
+        // that would be:
+        // if (metadata.isTermsOfUseEnabled()) { ... }
+        //  -- Actually, no, it looks like isTermsOfUseEnabled does not rely on a 
+        // boolean stored in the database, but checks if any field from a list
+        // of "terms of use-related" fields is present. 
+        // Presumably, all these values, if present, are getting exported as 
+        // the corresponding native DDI fields. 
+        //      -- L.A., Feb. 2012
+        
         if (!StringUtil.isEmpty(dvTermsOfUse)) {
             dataAccsAdded = checkParentElement(xmlw, "dataAccs", dataAccsAdded);
             xmlw.writeStartElement("notes");

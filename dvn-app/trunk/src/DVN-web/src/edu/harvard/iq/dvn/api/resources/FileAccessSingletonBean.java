@@ -13,12 +13,13 @@ import org.apache.commons.codec.binary.Base64;
 
 import edu.harvard.iq.dvn.core.study.StudyFileServiceLocal;
 import edu.harvard.iq.dvn.core.study.StudyServiceLocal;
+import edu.harvard.iq.dvn.core.admin.UserServiceLocal;
+import edu.harvard.iq.dvn.core.vdc.VDCNetworkServiceLocal;
 //import edu.harvard.iq.dvn.core.study.Study;
 import edu.harvard.iq.dvn.core.study.StudyFile;
 import edu.harvard.iq.dvn.core.study.DataFileFormatType;
 
 import edu.harvard.iq.dvn.core.admin.VDCUser; 
-import edu.harvard.iq.dvn.core.admin.UserServiceLocal;
 import edu.harvard.iq.dvn.core.web.dataaccess.OptionalAccessService;
 
 import edu.harvard.iq.dvn.core.util.FileUtil;
@@ -32,10 +33,9 @@ import edu.harvard.iq.dvn.core.util.StringUtil;
 @Singleton
 public class FileAccessSingletonBean {
     @EJB private StudyFileServiceLocal studyFileService; 
-     
-    @EJB UserServiceLocal userService;
-    
-    @EJB StudyServiceLocal studyService; 
+    @EJB private UserServiceLocal userService;
+    @EJB private StudyServiceLocal studyService; 
+    @EJB private VDCNetworkServiceLocal vdcNetworkService;
     
     private List<DataFileFormatType> allSupportedTypes = null; 
 
@@ -51,14 +51,17 @@ public class FileAccessSingletonBean {
     public DownloadInfo getDownloadInfo(Long studyFileId, String authCredentials) {
         DownloadInfo di = null; 
         StudyFile sf = null; 
-        Long studyId = null;
         VDCUser authenticatedUser = null; 
-        String authenticatedUserName = null; 
         
         if (studyFileId != null) {
             try {
                 sf = studyFileService.getStudyFile(studyFileId);
                 if (sf != null) {
+                    // Check if the file is part of a released study: 
+                    if (!sf.getStudy().isReleased()) {
+                        // if not - we are simply going to say "NOT FOUND!"
+                        return null; 
+                    }
                     
                     di = new DownloadInfo (sf);
                     if (di == null) {
@@ -293,8 +296,16 @@ public class FileAccessSingletonBean {
             return false; 
         }
         
-        if (studyFile.getStudy() != null) {
+        // There are multiple levels on which Terms of Use can apply:
         
+        if (studyFile.getStudy() != null) {
+ 
+            // Network level: 
+            if (vdcNetworkService.find().isDownloadTermsOfUseEnabled()) {
+                return true; 
+            }
+            
+            // Dataverse level: 
             if (studyFile.getStudy().getOwner() != null) {
                 if (studyFile.getStudy().getOwner().isDownloadTermsOfUseEnabled()) {
                     return true; 

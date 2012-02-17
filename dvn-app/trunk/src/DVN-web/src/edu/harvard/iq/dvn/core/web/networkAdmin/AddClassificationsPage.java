@@ -46,7 +46,6 @@ public class AddClassificationsPage extends VDCBaseBean implements Serializable 
     private HtmlInputText     parentInput;
     private HtmlSelectOneMenu parentSelect;
     private ArrayList         parentSelectItems;
-    private HtmlMessages      iceMessage = new HtmlMessages();
 
     //rowselection fields
     private ArrayList selectedDataverses = new ArrayList();
@@ -59,7 +58,7 @@ public class AddClassificationsPage extends VDCBaseBean implements Serializable 
     private ClassificationList classificationList = new ClassificationList();
 
     private boolean result;
-    private String statusMessage;
+
     private String SUCCESS_MESSAGE   = new String("Success. The classifications and dataverses operation completed successfully.");
     private String FAIL_MESSAGE      = new String("Problems occurred during the form submission. Please see error messages below.");
 
@@ -176,9 +175,6 @@ public class AddClassificationsPage extends VDCBaseBean implements Serializable 
         return this.selectedParent;
     }
 
-    public HtmlMessages getIceMessage() {
-        return this.iceMessage;
-    }
 
     public boolean isResult() {
         return result;
@@ -209,10 +205,6 @@ public class AddClassificationsPage extends VDCBaseBean implements Serializable 
         this.selectedParent = selected;
     }
 
-    public void setIceMessage(HtmlMessages icemessage) {
-        iceMessage.setStyleClass("successMessage");
-        this.iceMessage = icemessage;
-    }
 
     //TODO 
 
@@ -311,7 +303,6 @@ public class AddClassificationsPage extends VDCBaseBean implements Serializable 
     }
 
     public String add_action() {
-        statusMessage = SUCCESS_MESSAGE;
         result = true;
         try {
             //
@@ -323,15 +314,10 @@ public class AddClassificationsPage extends VDCBaseBean implements Serializable 
             vdcGroupService.create(vdcgroup);
             classificationId.setValue(vdcgroup.getId());
             update_action();
+            getExternalContext().getFlash().put("successMessage",SUCCESS_MESSAGE);
         } catch (Exception e) {
-            statusMessage = FAIL_MESSAGE;
+            getExternalContext().getFlash().put("warningMessage",FAIL_MESSAGE);
         } finally {
-            //Iterator iterator = FacesContext.getCurrentInstance().getMessages("AddClassificationsPageForm");
-            //while (iterator.hasNext()) {
-                //iterator.remove();
-            //}
-            FacesContext.getCurrentInstance().addMessage("AddClassificationsPageForm", new FacesMessage(statusMessage));
-            getExternalContext().getFlash().put("successMessage",statusMessage);
             return "/networkAdmin/ManageClassificationsPage.xhtml?faces-redirect=true";
         }
         
@@ -342,7 +328,6 @@ public class AddClassificationsPage extends VDCBaseBean implements Serializable 
         //Iterator msgiterator = FacesContext.getCurrentInstance().getMessages("AddClassificationsPageForm");
         //if (msgiterator.hasNext())
             //msgiterator.remove();
-        statusMessage = SUCCESS_MESSAGE;
         result = true;
  
             Long[] vdcs         = new Long[selectedDataverses.size()];
@@ -373,7 +358,7 @@ public class AddClassificationsPage extends VDCBaseBean implements Serializable 
             }
             
       
-           
+            getExternalContext().getFlash().put("successMessage",SUCCESS_MESSAGE);
             return "/networkAdmin/ManageClassificationsPage.xhtml?faces-redirect=true";
         
     }

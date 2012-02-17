@@ -20,15 +20,9 @@
 
 package edu.harvard.iq.dvn.core.study;
 
-import edu.harvard.iq.dvn.core.admin.VDCUser;
-import edu.harvard.iq.dvn.core.vdc.VDC;
-import java.io.File;
-import java.io.IOException;
-import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import javax.ejb.Local;
-import javax.xml.bind.JAXBException;
 
 /**
  * This is the business interface for NewSession enterprise bean.
@@ -40,5 +34,14 @@ public interface TemplateServiceLocal extends java.io.Serializable {
     public void deleteTemplate(Long templateId);
     public Template getTemplate(Long templateId);
     public boolean isTemplateUsed(Long templateId);
+    public boolean isTemplateUsedAsVDCDefault(Long templateId);
     public  void createTemplate(Long vdcId);
+    
+    public Map getVdcTemplatesMap(Long vdcId);   
+
+    public List<Template> getVDCTemplates(Long vdcId);
+    public List<Template> getEnabledVDCTemplates(Long vdcId);
+    public List<Template> getNetworkTemplates();
+    public List<Template> getEnabledNetworkTemplates();
+    
 }

@@ -57,8 +57,6 @@ public class AddClassificationsPage extends VDCBaseBean implements Serializable 
     private Long selectedParent;
     private ClassificationList classificationList = new ClassificationList();
 
-    private boolean result;
-
     private String SUCCESS_MESSAGE   = new String("Success. The classifications and dataverses operation completed successfully.");
     private String FAIL_MESSAGE      = new String("Problems occurred during the form submission. Please see error messages below.");
 
@@ -75,7 +73,6 @@ public class AddClassificationsPage extends VDCBaseBean implements Serializable 
             initClassificationBean();
             initSelectedItemBeans();
         }
-        result = false;
     }
 
     public ClassificationList getClassificationList() {
@@ -176,9 +173,6 @@ public class AddClassificationsPage extends VDCBaseBean implements Serializable 
     }
 
 
-    public boolean isResult() {
-        return result;
-    }
 
     //setters
     public void setNameInput(HtmlInputText nameinput) {
@@ -303,7 +297,6 @@ public class AddClassificationsPage extends VDCBaseBean implements Serializable 
     }
 
     public String add_action() {
-        result = true;
         try {
             //
             VDCGroup vdcgroup = new VDCGroup();
@@ -325,10 +318,6 @@ public class AddClassificationsPage extends VDCBaseBean implements Serializable 
 
     public String update_action() {
         //now add all of these dataverses to the parent
-        //Iterator msgiterator = FacesContext.getCurrentInstance().getMessages("AddClassificationsPageForm");
-        //if (msgiterator.hasNext())
-            //msgiterator.remove();
-        result = true;
  
             Long[] vdcs         = new Long[selectedDataverses.size()];
             Iterator iterator   = selectedDataverses.iterator();

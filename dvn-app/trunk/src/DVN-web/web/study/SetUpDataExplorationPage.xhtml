@@ -162,13 +162,6 @@
 
                     </div>
                     <div class="dvn_sectionBoxNoBorders">
-                        <div jsfc="ice:panelGroup" rendered="#{!empty flash.validationErrorMessage}" styleClass="dvnWarningMessage">
-                            <div class="dvnMsgBlockContainer">
-                                <p>
-                                    <ice:outputText value="#{flash.validationErrorMessage}" escape="false"/>
-                                </p>
-                            </div>
-                        </div>
                         <ice:panelTabSet id="tabSetZ" styleClass="dvnTabs" rendered="#{SetUpDataExplorationPage.showCommands}"
                                          tabChangeListener="#{SetUpDataExplorationPage.changeTab}">
                             <ice:panelTab id="xVariable" label="Time Variable" url="/dvn#{VDCRequest.currentVDCURL}/faces/subsetting/SetUpDataExploration.xhtml&amp;tab=xVariable">

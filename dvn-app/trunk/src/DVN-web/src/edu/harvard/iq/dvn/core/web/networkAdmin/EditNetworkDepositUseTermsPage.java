@@ -81,7 +81,7 @@ public class EditNetworkDepositUseTermsPage extends VDCBaseBean implements java.
             vdcNetwork.setDepositTermsOfUse(termsOfUse);
             vdcNetwork.setDepositTermsOfUseEnabled(termsOfUseEnabled);
             vdcNetworkService.edit(vdcNetwork);
-            getExternalContext().getFlash().put("message", "Successfully updated terms for study creation.");
+            getExternalContext().getFlash().put("successMessage", "Successfully updated terms for study creation.");
             return "myNetworkOptions";
         } else {
             return null;

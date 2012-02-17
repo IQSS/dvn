@@ -143,7 +143,7 @@ public class EditNetworkAnnouncementsPage extends VDCBaseBean implements java.io
             vdcnetwork.setDisplayAnnouncements(this.isChkEnableNetworkAnnouncements());
             vdcnetwork.setAnnouncements(this.getNetworkAnnouncements());
             vdcNetworkService.edit(vdcnetwork);
-            getExternalContext().getFlash().put("message", "Successfully updated the network description.  Go to the Homepage to see your changes.");
+            getExternalContext().getFlash().put("successMessage", "Successfully updated the network description.  Go to the Homepage to see your changes.");
             return "myNetworkOptions";
         } else {
 

@@ -138,7 +138,7 @@ public class EditNetworkNamePage extends VDCBaseBean  implements java.io.Seriali
         thisVdcNetwork.setName((String)textField1.getValue());
         vdcNetworkService.edit(thisVdcNetwork);
         getVDCRequestBean().setVdcNetwork(thisVdcNetwork);        
-        getExternalContext().getFlash().put("message", "Successfully updated network name.");
+        getExternalContext().getFlash().put("successMessage", "Successfully updated network name.");
         return "myNetworkOptions";
     }
 

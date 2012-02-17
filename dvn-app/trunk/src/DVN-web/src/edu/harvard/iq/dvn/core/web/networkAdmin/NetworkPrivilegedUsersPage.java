@@ -245,7 +245,7 @@ public class NetworkPrivilegedUsersPage extends VDCBaseBean implements java.io.S
         String creatorUrl = "http://"+hostName+portStr+request.getContextPath()+"/faces/site/AddSitePage.xhtml";
         privileges.save(creatorUrl);
         privileges.init();
-        getExternalContext().getFlash().put("message", "Successfully updated network permissions.");
+        getExternalContext().getFlash().put("successMessage", "Successfully updated network permissions.");
         return "myNetworkOptions";
     } 
 

@@ -80,7 +80,7 @@ public class EditNetworkDownloadUseTermsPage extends VDCBaseBean implements java
             vdcNetwork.setDownloadTermsOfUse(termsOfUse);
             vdcNetwork.setDownloadTermsOfUseEnabled(termsOfUseEnabled);
             vdcNetworkService.edit(vdcNetwork);
-            getExternalContext().getFlash().put("message", "Successfully updated terms for file download.");
+            getExternalContext().getFlash().put("successMessage", "Successfully updated terms for file download.");
             return "myNetworkOptions";
         } else {
             return null;

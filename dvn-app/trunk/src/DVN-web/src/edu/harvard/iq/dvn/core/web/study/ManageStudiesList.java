@@ -52,7 +52,6 @@ public class ManageStudiesList extends VDCBaseBean {
     private DataPaginator paginator;
     private static Logger dbgLog = Logger.getLogger(ManageStudiesList.class.getCanonicalName());
     @Inject private VersionNotesPopupBean versionNotesPopupBean = new VersionNotesPopupBean();
-    private String successMessage;
 
     // the StudyUI object for the currently selected study:
     // (for example, selected for deletion)
@@ -84,16 +83,6 @@ public class ManageStudiesList extends VDCBaseBean {
         this.studyDataTable = studyDataTable;
     }  
    
-    public String getSuccessMessage() {
-        if (getVDCRequestBean().getSuccessMessage() != null) {
-            return getVDCRequestBean().getSuccessMessage();
-        }
-        return this.successMessage;
-    }
-
-    public void setSuccessMessage(String successMessage) {
-        this.successMessage = successMessage;
-    }
     
     protected void sort() {
             String orderBy=null;

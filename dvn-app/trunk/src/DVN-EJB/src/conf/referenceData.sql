@@ -713,7 +713,7 @@ ALTER TABLE "metadata" ENABLE TRIGGER ALL;
 
 ALTER TABLE "template" DISABLE TRIGGER ALL;
 
-INSERT INTO template( id, version, name,metadata_id) VALUES (1, 1, 'Dataverse Network Default Template',1);
+INSERT INTO template( id, version, name,metadata_id,enabled) VALUES (1, 1, 'Dataverse Network Default Template',1,true);
 
 ALTER TABLE "template" ENABLE TRIGGER ALL;
 

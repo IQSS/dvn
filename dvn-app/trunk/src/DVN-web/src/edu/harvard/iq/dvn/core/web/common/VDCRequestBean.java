@@ -67,15 +67,6 @@ public class VDCRequestBean extends VDCBaseBean implements java.io.Serializable 
         return ((HttpServletRequest) FacesContext.getCurrentInstance().getExternalContext().getRequest()).getParameter(name);
     }    
         
-    private String successMessage;
-
-    public String getSuccessMessage() {
-        return successMessage;
-    }
-
-    public void setSuccessMessage(String successMessage) {
-        this.successMessage = successMessage;
-    }
     
     /**
      * Holds value of property studyId.

@@ -50,8 +50,6 @@ import edu.harvard.iq.dvn.core.study.StudyTopicClass;
 import edu.harvard.iq.dvn.core.study.TemplateField;
 import edu.harvard.iq.dvn.core.web.util.SessionCounter;
 import edu.harvard.iq.dvn.core.util.StringUtil;
-import edu.harvard.iq.dvn.core.vdc.VDCNetworkServiceLocal;
-import edu.harvard.iq.dvn.core.vdc.VDCServiceLocal;
 import edu.harvard.iq.dvn.core.study.StudyFieldConstant;
 import edu.harvard.iq.dvn.core.web.common.VDCBaseBean;
 import java.math.BigDecimal;
@@ -73,6 +71,7 @@ import com.icesoft.faces.component.ext.HtmlSelectOneRadio;
 import com.icesoft.faces.context.effects.JavascriptContext;
 import edu.harvard.iq.dvn.core.study.Metadata;
 import edu.harvard.iq.dvn.core.study.MetadataFieldGroup;
+import edu.harvard.iq.dvn.core.study.TemplateServiceLocal;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
@@ -102,9 +101,7 @@ import javax.servlet.http.HttpServletRequest;
 public class EditStudyPage extends VDCBaseBean implements java.io.Serializable  {
     EditStudyService editStudyService;
     @EJB StudyServiceLocal studyService;
-    @EJB VDCNetworkServiceLocal vdcNetworkService;
-    @EJB VDCServiceLocal vdcService;
-    
+    @EJB TemplateServiceLocal templateService;
     @Inject private VersionNotesPopupBean versionNotesPopup;
     
     /**
@@ -493,7 +490,7 @@ public class EditStudyPage extends VDCBaseBean implements java.io.Serializable  
     
       public Map getTemplatesMap() {
         // getVdcTemplatesMap is called with currentVDCId, since for a new study the current VDC IS the owner   
-        return vdcService.getVdcTemplatesMap(getVDCRequestBean().getCurrentVDCId());
+        return templateService.getVdcTemplatesMap(getVDCRequestBean().getCurrentVDCId());
     }
     
     

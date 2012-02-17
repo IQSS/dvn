@@ -718,7 +718,6 @@ public class StudyPage extends VDCBaseBean implements java.io.Serializable  {
     public String confirmStudyDelete () {
     //public String confirmStudyDelete () {
         VDC dataverse = null;
-        String successMessage = "";
         Long dvId = null;
 
         if (studyUI != null && studyUI.getStudy() != null) {
@@ -727,20 +726,20 @@ public class StudyPage extends VDCBaseBean implements java.io.Serializable  {
 
         if (StudyDeleteRequestType.DRAFT_VERSION.equals(deleteRequested)) {
             if (studyUI != null && studyUI.getStudyVersion() != null ) {
-                successMessage = buildSuccessMessage( "Successfully deleted draft version of the study ");
+                getExternalContext().getFlash().put("successMessage", buildSuccessMessage( "Successfully deleted draft version of the study "));
                 studyService.destroyWorkingCopyVersion(studyUI.getStudyVersion().getId());
             }
         } else if (StudyDeleteRequestType.REVIEW_VERSION.equals(deleteRequested)) {
             if (studyUI != null && studyUI.getStudyVersion() != null ) {
-                successMessage = buildSuccessMessage("Successfully deleted review version of the study ");
+                getExternalContext().getFlash().put("successMessage", buildSuccessMessage("Successfully deleted review version of the study "));
                 studyService.destroyWorkingCopyVersion(studyUI.getStudyVersion().getId());
             }
         } else if (StudyDeleteRequestType.DESTROY_STUDY.equals(deleteRequested)) {
-            successMessage = buildSuccessMessage("Permanently destroyed study ");
+            getExternalContext().getFlash().put("successMessage", buildSuccessMessage("Permanently destroyed study "));
             studyService.deleteStudy(studyId);
 
         } else {
-            successMessage = "Warning: attempted to execute unknown delete action!";
+            getExternalContext().getFlash().put("warningMessage", "Warning: attempted to execute unknown delete action!");
         }
 
         showStudyDeletePopup = false;
@@ -756,7 +755,6 @@ public class StudyPage extends VDCBaseBean implements java.io.Serializable  {
             dvId = dataverse.getId();
         }
         
-        getExternalContext().getFlash().put("message", successMessage);
         return "/study/ManageStudiesPage?faces-redirect=true&vdcId=" + dvId;
     }
 

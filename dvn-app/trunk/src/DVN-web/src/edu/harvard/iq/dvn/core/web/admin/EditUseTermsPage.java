@@ -84,7 +84,7 @@ public class EditUseTermsPage extends VDCBaseBean implements java.io.Serializabl
             vdcService.edit(vdc);
 
             String    forwardPage="/admin/OptionsPage?faces-redirect=true&vdcId="+getVDCRequestBean().getCurrentVDC().getId();
-            getExternalContext().getFlash().put("message","Successfully updated file download terms of use.");
+            getExternalContext().getFlash().put("successMessage","Successfully updated file download terms of use.");
             return forwardPage;
         } else {
             return null;

@@ -309,7 +309,7 @@ public class EditLockssConfigPage extends VDCBaseBean implements java.io.Seriali
             } // network level changes is determined at runtime by db call
 
             
-            getExternalContext().getFlash().put("message", "Successfully updated LOCKSS harvest settings.");
+            getExternalContext().getFlash().put("successMessage", "Successfully updated LOCKSS harvest settings.");
                      
             return getReturnPage();
         } else {

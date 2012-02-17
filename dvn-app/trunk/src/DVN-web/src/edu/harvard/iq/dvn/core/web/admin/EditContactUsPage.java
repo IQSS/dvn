@@ -161,7 +161,7 @@ public class EditContactUsPage extends VDCBaseBean implements java.io.Serializab
             vdcService.edit(vdc);
             forwardPage="/admin/OptionsPage?faces-redirect=true&vdcId="+getVDCRequestBean().getCurrentVDC().getId();
         }
-        getExternalContext().getFlash().put("message", "Successfully updated E-mail notifications.");
+        getExternalContext().getFlash().put("successMessage", "Successfully updated E-mail notifications.");
         return forwardPage;
     }
     

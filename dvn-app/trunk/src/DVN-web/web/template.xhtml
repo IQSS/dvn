@@ -125,8 +125,8 @@
                 <div jsfc="ice:panelGroup" styleClass="#{!empty(flash.warningMessage) ? 'dvnWarningMessage' : 'dvnSuccessMessage'}" rendered="#{!empty flash.successMessage or !empty flash.warningMessage}">
                   <div class="dvnMsgBlockContainer">
                     <p>
-                        <ice:outputText id="successMessage" value="#{flash.successMessage}" rendered="#{!empty flash.successMessage}"/>
-                        <ice:outputText id="warningMessage" value="#{flash.warningMessage}" rendered="#{!empty flash.warningMessage}"/>
+                        <ice:outputText id="successMessage" value="#{flash.successMessage}" escape="false" rendered="#{!empty flash.successMessage}"/>
+                        <ice:outputText id="warningMessage" value="#{flash.warningMessage}" escape="false" rendered="#{!empty flash.warningMessage}"/>
                     </p>
                   </div>
                 </div>

@@ -51,6 +51,7 @@ import edu.harvard.iq.dvn.core.study.StudySoftware;
 import edu.harvard.iq.dvn.core.study.StudyTopicClass;
 import edu.harvard.iq.dvn.core.study.StudyVersion;
 import edu.harvard.iq.dvn.core.study.TabularDataFile;
+import edu.harvard.iq.dvn.core.web.study.TemplateFieldValue; 
 import java.io.File;
 import java.io.IOException;
 import java.io.StringReader;
@@ -362,6 +363,37 @@ public class Indexer implements java.io.Serializable  {
             }
 
 
+            // Extented metadata fields: 
+            
+            
+            String templateName = metadata.getStudy().getTemplate().getName();
+            
+            for (TemplateFieldValue extFieldValue : metadata.getTemplateFieldValue()) {
+                try {
+                    String extFieldName = extFieldValue.getTemplateField().getStudyField().getName();
+                    String extFieldStrValue = extFieldValue.getStrValue();
+
+                    if (extFieldName != null
+                            && !extFieldName.equals("")
+                            && extFieldStrValue != null
+                            && !extFieldStrValue.equals("")) {
+
+                        addText(2.0f, doc, extFieldName, extFieldStrValue);
+                        
+                        // Whenever we encounter an extended field actually 
+                        // used in a study metadata, we want it to be searchable,
+                        // on the "Advanced Search" page:
+                        
+                        extFieldValue.getTemplateField().getStudyField().setAdvancedSearchField(true);
+                        
+                    }
+
+                } catch (Exception ex) {
+                    // do nothing - if we can't retrieve the field, we are 
+                    // not going to index it, that's all.  
+                }
+            }   
+            
             for (FileMetadata fileMetadata : sv.getFileMetadatas()) {
                 addText(1.0f, doc, "fileDescription", fileMetadata.getDescription());
             }
@@ -1032,6 +1064,7 @@ public class Indexer implements java.io.Serializable  {
 
     private BooleanQuery buildAnyQuery(String string) {
         List <SearchTerm> anyTerms = new ArrayList();
+        /*
         anyTerms.add(buildAnyTerm("title",string));
         anyTerms.add(buildAnyTerm("studyId", string));
         anyTerms.add(buildAnyTerm("abstractText",string));
@@ -1124,7 +1157,24 @@ public class Indexer implements java.io.Serializable  {
         anyTerms.add(buildAnyTerm("studySouthLatitude",string));
         anyTerms.add(buildAnyTerm("fileDescription",string));
         anyTerms.add(buildAnyTerm("unf",string));
+         
+         */
 
+        if (r != null) {
+            Collection<String> allfields = r.getFieldNames(IndexReader.FieldOption.INDEXED);
+        
+            for (String indexedFieldName : allfields) {
+                //logger.fine("INDEXREADER: "+indexedFieldName);
+                if (!"varName".equals(indexedFieldName)
+                        && !"varLabel".equals(indexedFieldName)
+                        && !"varId".equals(indexedFieldName)
+                        && !"varStudyId".equals(indexedFieldName)
+                        && !"varStudyFileId".equals(indexedFieldName)) {
+                    anyTerms.add(buildAnyTerm(indexedFieldName, string));
+                }
+            }
+        }
+        
         return orPhraseQuery(anyTerms);
     }
 

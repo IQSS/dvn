@@ -50,7 +50,7 @@ public class StudyFieldServiceBean implements StudyFieldServiceLocal, java.io.Se
     private static final String NAME_QUERY = "SELECT sf from StudyField sf where sf.name= :fieldName ";
     private static final String ID_QUERY = "SELECT sf from StudyField sf where id = :fieldId";
     
-    private static String[] advancedSearchFields = {"title", "authorName", "globalId", "otherId", "abstractText", "keywordValue", "keywordVocabulary", "topicClassValue", "topicClassVocabulary", "producerName", "distributorName", "fundingAgency", "productionDate", "distributionDate", "dateOfDeposit", "timePeriodCoveredStart", "timePeriodCoveredEnd", "country", "geographicCoverage", "geographicUnit", "universe", "kindOfData"};
+    private static String[] advancedSearchFields = {"title", "authorName", "globalId", "otherId", "abstractText", "keywordValue", "keywordVocabulary", "topicClassValue", "topicClassVocabulary", "producerName", "distributorName", "fundingAgency", "productionDate", "distributionDate", "dateOfDeposit", "timePeriodCoveredStart", "timePeriodCoveredEnd", "country", "geographicCoverage", "geographicUnit", "universe", "kindOfData", "extnFld4"};
     private static List<StudyField> advancedStudyFields = null; 
 
     /** Creates a new instance of StudyFieldServiceBean */
@@ -73,8 +73,10 @@ public class StudyFieldServiceBean implements StudyFieldServiceLocal, java.io.Se
     }
 
     public List findAdvSearchDefault() {
-        //List <StudyField> studyFields = (List <StudyField>) em.createQuery("SELECT sf from StudyField sf where sf.advancedSearchField = true").getResultList();
-        //return studyFields;
+        List <StudyField> studyFields = (List <StudyField>) em.createQuery("SELECT sf from StudyField sf where sf.advancedSearchField = true").getResultList();
+        return studyFields;
+        
+        /* hard-coded defaults; used until 3.0: 
         if (advancedStudyFields == null) {
             advancedStudyFields = new ArrayList<StudyField>();
             for (int i=0; i < advancedSearchFields.length; i++) {
@@ -86,6 +88,8 @@ public class StudyFieldServiceBean implements StudyFieldServiceLocal, java.io.Se
         }
               
         return advancedStudyFields; 
+         *  -- L.A.
+         */
     }
 
     private String getUserFriendlySearchField(String searchField) {

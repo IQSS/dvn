@@ -96,7 +96,6 @@ public class AdvSearchPage extends VDCBaseBean implements java.io.Serializable {
     private ResourceBundle messages = ResourceBundle.getBundle("Bundle");
     private HashMap advSearchFieldMap = new HashMap();
     private HashMap operatorMap = new HashMap();
-    private String[] advancedSearchFields = {"title", "authorName", "globalId", "otherId", "abstractText", "keywordValue", "keywordVocabulary", "topicClassValue", "topicClassVocabulary", "producerName", "distributorName", "fundingAgency", "productionDate", "distributionDate", "dateOfDeposit", "timePeriodCoveredStart", "timePeriodCoveredEnd", "country", "geographicCoverage", "geographicUnit", "universe", "kindOfData"};
     private boolean collectionsIncluded;
     private boolean variableSearch;
     private List <SearchTerm>  variableInfoList = new ArrayList();
@@ -562,11 +561,14 @@ public class AdvSearchPage extends VDCBaseBean implements java.io.Serializable {
 
         List<StudyField> advSearchFieldsDefault = studyFieldService.findAdvSearchDefault();
         String[] advS = new String[advSearchFieldsDefault.size()]; 
+        /*
         for (int i=0; i<advS.length; i++) {
             advS[i] = advSearchFieldsDefault.get(i).getName();
         }
-        //String[] advS = getFieldList(advancedSearchFields);
         advS = getFieldList(advS);
+         * 
+         */
+        advS = getFieldList(advSearchFieldsDefault);
 
         return advS;
     }
@@ -586,8 +588,17 @@ public class AdvSearchPage extends VDCBaseBean implements java.io.Serializable {
         for (Iterator it = advSearchFields.iterator(); it.hasNext();) {
             StudyField elem = (StudyField) it.next();
             elem.getId();
-            advS[i++] = getUserFriendlySearchField(elem.getName());
-            advSearchFieldMap.put(getUserFriendlySearchField(elem.getName()), elem.getName());
+            // check if we have a "user-friendly" description for this field 
+            // in our resource bundle: 
+            advS[i] = getUserFriendlySearchField(elem.getName());
+            // if not, check if the field has a description in the database: 
+            if (advS[i].equals(elem.getName())) {
+                if (elem.getDescription() != null && !elem.getDescription().equals("")) {
+                    advS[i] = elem.getDescription();
+                }
+            }
+            
+            advSearchFieldMap.put(advS[i++], elem.getName());
 
         }
         return advS;
@@ -616,6 +627,7 @@ public class AdvSearchPage extends VDCBaseBean implements java.io.Serializable {
         try {
             return ResourceBundle.getBundle("SearchFieldBundle").getString(searchField);
         } catch (MissingResourceException e) {
+            
             return searchField;
         }
     }    

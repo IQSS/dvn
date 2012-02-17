@@ -35,7 +35,9 @@ import java.lang.String;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.logging.Logger;
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
@@ -144,10 +146,52 @@ public class TemplateServiceBean implements edu.harvard.iq.dvn.core.study.Templa
         return count.compareTo(new Long(0))>0;    
     }
     
+    public boolean isTemplateUsedAsVDCDefault(Long templateId) {
+        String queryStr = "SELECT count(id) from vdc v where v.defaulttemplate_id="+templateId;
+        Query query = em.createNativeQuery(queryStr);
+        Long count = (Long)query.getSingleResult();
+        return count.compareTo(new Long(0))>0;    
+    }    
+    
     public FieldInputLevel getFieldInputLevel(String name) {
         String queryStr = "SELECT f FROM FieldInputLevel f WHERE f.name = '" + name + "'"; 
         Query query= em.createQuery(queryStr);
         return (FieldInputLevel)query.getSingleResult();
     }
+
+    
+    public Map getVdcTemplatesMap(Long vdcId) {
+        Map templatesMap = new LinkedHashMap();
+       
+        for (Template template : getEnabledNetworkTemplates()) {
+            templatesMap.put(template.getName(), template.getId());
+        }        
+        for (Template template : getEnabledVDCTemplates(vdcId)) {
+            templatesMap.put(template.getName(), template.getId());
+        }
+
+        return templatesMap;
+
+    }    
+
+    public List<Template> getVDCTemplates(Long vdcId) {
+        String query = "select object(o) FROM Template as o WHERE o.vdc.id = :vdcId ORDER BY o.name";
+        return (List) em.createQuery(query).setParameter("vdcId", vdcId).getResultList();
+    }
+    
+    public List<Template> getEnabledVDCTemplates(Long vdcId) {
+        String query = "select object(o) FROM Template as o WHERE o.vdc.id = :vdcId and o.enabled = true ORDER BY o.name";
+        return (List) em.createQuery(query).setParameter("vdcId", vdcId).getResultList();
+    }    
+    
+    public List<Template> getNetworkTemplates() {
+        String query = "select object(o) FROM Template as o WHERE o.vdc is null and o.enabled = true ORDER BY o.name";
+        return (List) em.createQuery(query).getResultList();
+    }
+    
+     public List<Template> getEnabledNetworkTemplates() {
+        String query = "select object(o) FROM Template as o WHERE o.vdc is null and o.enabled = true ORDER BY o.name";
+        return (List) em.createQuery(query).getResultList();
+    }   
     
 }

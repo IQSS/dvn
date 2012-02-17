@@ -53,11 +53,10 @@ public class CommentReviewPage extends VDCBaseBean implements java.io.Serializab
                                "This comment was deleted in accordance with the " +
                                 "study comments terms of use.";
          studyCommentService.deleteComment(flaggedCommentId, deletedMessage);
-         getVDCRequestBean().setSuccessMessage("Successfully deleted the flagged comment.");
+         getExternalContext().getFlash().put("successMessage","Successfully deleted the flagged comment.");
          //cleanup
          flaggedCommentId  = new Long("0");
          commentsForReview = null;
-         actionComplete    = true;
      }
 
      public void ignoreCommentFlag(ActionEvent event) {
@@ -71,11 +70,10 @@ public class CommentReviewPage extends VDCBaseBean implements java.io.Serializab
                                 "reported comment is not an abuse. This comment will remain posted, and will " +
                                 "no longer appear to you as reported.";
          studyCommentService.okComment(flaggedCommentId, okMessage);
-         getVDCRequestBean().setSuccessMessage("Successfully ignored the flagged comment.");
+         getExternalContext().getFlash().put("successMessage","Successfully ignored the flagged comment.");
          //cleanup
          flaggedCommentId  = new Long("0");
          commentsForReview = null;
-         actionComplete    = true;
      }
 
     protected HtmlCommandLink goToCommentsLink;
@@ -221,25 +219,6 @@ public class CommentReviewPage extends VDCBaseBean implements java.io.Serializab
 
      
 
-    protected boolean actionComplete = false;
-
-    /**
-     * Get the value of actionComplete
-     *
-     * @return the value of actionComplete
-     */
-    public boolean isActionComplete() {
-        return actionComplete;
-    }
-
-    /**
-     * Set the value of actionComplete
-     *
-     * @param actionComplete new value of actionComplete
-     */
-    public void setActionComplete(boolean actionComplete) {
-        this.actionComplete = actionComplete;
-    }
 
     protected HtmlDataTable mainDataTable;
 

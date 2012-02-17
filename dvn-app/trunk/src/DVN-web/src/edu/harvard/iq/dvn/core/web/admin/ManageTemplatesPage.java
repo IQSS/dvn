@@ -36,8 +36,7 @@ import edu.harvard.iq.dvn.core.vdc.VDCServiceLocal;
 import java.util.List;
 import javax.ejb.EJB;
 import edu.harvard.iq.dvn.core.web.common.VDCBaseBean;
-import com.icesoft.faces.component.ext.HtmlDataTable;
-import java.util.HashMap;
+import java.util.ArrayList;
 import java.util.Map;
 import javax.faces.bean.ViewScoped;
 import javax.inject.Named;
@@ -60,33 +59,68 @@ public class ManageTemplatesPage extends VDCBaseBean implements java.io.Serializ
     
     public void init(){
         super.init();
-        
-        templateList = vdcNetworkService.getNetworkTemplates(); 
 
         if (getVDCRequestBean().getCurrentVDC() != null){
-           templateList.addAll(vdcService.getOrderedTemplates(getVDCRequestBean().getCurrentVDCId()));
-           defaultTemplateId= getVDCRequestBean().getCurrentVDC().getDefaultTemplate().getId(); 
+           templateList = templateService.getEnabledNetworkTemplates();
+           templateList.addAll(templateService.getVDCTemplates(getVDCRequestBean().getCurrentVDCId()));
+           defaultTemplateId = getVDCRequestBean().getCurrentVDC().getDefaultTemplate().getId(); 
            
-        } else {      
+        } else {
+           templateList = templateService.getNetworkTemplates();
            defaultTemplateId = getVDCRequestBean().getVdcNetwork().getDefaultTemplate().getId();
         }
         
-        // whether a template is being used deermines if it can be removed or not
+        // whether a template is being used determines if it can be removed or not (initialized here, so the page doesn't call thew service bean multiple times)
         for (Template template : templateList) {
-            templateInUseMap.put( template.getId(), templateService.isTemplateUsed(template.getId()) );
+            if (templateService.isTemplateUsed(template.getId() )) 
+            { 
+                templateInUseList.add(template.getId());
+            }
+            
+            if (templateService.isTemplateUsedAsVDCDefault(template.getId() )) 
+            { 
+                templateinsUseAsVDCDefaultList.add(template.getId());
+            }
         }
     }
     
-    public String updateDefaultAction(Long templateId) {      
-        if (getVDCRequestBean().getCurrentVDC() == null) {
-            vdcNetworkService.updateDefaultTemplate(templateId);
+    public String updateDefaultAction(Long templateId) {
+        // first, verify that the template has not been disabled
+        if (templateService.getTemplate(templateId).isEnabled()) {
+            if (getVDCRequestBean().getCurrentVDC() == null) {
+                vdcNetworkService.updateDefaultTemplate(templateId);
+            } else {
+                vdcService.updateDefaultTemplate(getVDCRequestBean().getCurrentVDCId(),templateId);
+            }
+
+            defaultTemplateId = templateId;
         } else {
-            vdcService.updateDefaultTemplate(getVDCRequestBean().getCurrentVDCId(),templateId);
+            // add flash message
+            getExternalContext().getFlash().put("warningMessage","The template you are trying to make Default was disabled by another user. Please reload this page to update.");
+            
         }
-        
-        defaultTemplateId = templateId;
         return "";
     }
+
+    public void updateEnabledAction(Template template) {
+        // first, check if we are trying disable a template and verify it has not been made a default
+        if (template.isEnabled()) {
+            // network level template
+            if (getVDCRequestBean().getCurrentVDC() == null) {
+                if ( vdcNetworkService.find().getDefaultTemplate().equals(template) || templateService.isTemplateUsedAsVDCDefault(template.getId()) ) {
+                    getExternalContext().getFlash().put("warningMessage","This template you are trying to disable was made a default template by another user. Please reload this page to update.");
+                    return;
+                }
+            // vdc level template    
+            } else if (vdcService.findById(getVDCRequestBean().getCurrentVDCId()).getDefaultTemplate().equals(template)) {
+                getExternalContext().getFlash().put("warningMessage","This template you are trying to disable was made a default template by another user. Please reload this page to update.");
+                return;
+            }
+        }
+        
+        template.setEnabled(!template.isEnabled());
+        templateService.updateTemplate(template);;
+    }    
     
     
    
@@ -96,12 +130,6 @@ public class ManageTemplatesPage extends VDCBaseBean implements java.io.Serializ
         return templateList;        
     }
     
-    private Map<Long,Boolean> templateInUseMap = new HashMap();
-    
-    public Map<Long,Boolean> getTemplateInUseMap() {       
-        return templateInUseMap;        
-    }   
-    
     Long defaultTemplateId;
 
     public Long getDefaultTemplateId() {
@@ -110,5 +138,23 @@ public class ManageTemplatesPage extends VDCBaseBean implements java.io.Serializ
 
     public void setDefaultTemplateId(Long defaultTemplateId) {
         this.defaultTemplateId = defaultTemplateId;
+    }    
+    
+    private List<Long> templateInUseList = new ArrayList();
+    private List<Long> templateinsUseAsVDCDefaultList = new ArrayList();  
+    
+
+    // helper methods for display
+    
+    public boolean isDefault(Long templateId) {
+        return defaultTemplateId.equals(templateId);
+    }
+    
+    public boolean isInUse(Long templateId) {
+        return templateInUseList.contains(templateId);
+    }
+
+    public boolean isVDCDefault(Long templateId) {
+        return templateinsUseAsVDCDefaultList.contains(templateId);
     }
 }

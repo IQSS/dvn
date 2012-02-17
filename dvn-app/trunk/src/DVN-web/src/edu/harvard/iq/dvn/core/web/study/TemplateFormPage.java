@@ -47,8 +47,6 @@ import edu.harvard.iq.dvn.core.study.StudyTopicClass;
 import edu.harvard.iq.dvn.core.study.Template;
 import edu.harvard.iq.dvn.core.study.TemplateField;
 import edu.harvard.iq.dvn.core.util.StringUtil;
-import edu.harvard.iq.dvn.core.vdc.VDCNetworkServiceLocal;
-import edu.harvard.iq.dvn.core.vdc.VDCServiceLocal;
 import edu.harvard.iq.dvn.core.study.StudyFieldConstant;
 import edu.harvard.iq.dvn.core.web.common.VDCBaseBean;
 import java.math.BigDecimal;
@@ -71,6 +69,7 @@ import com.icesoft.faces.context.effects.JavascriptContext;
 import edu.harvard.iq.dvn.core.study.FieldInputLevel;
 import edu.harvard.iq.dvn.core.study.StudyField;
 
+import edu.harvard.iq.dvn.core.study.TemplateServiceLocal;
 import java.util.Collections;
 import java.util.Comparator;
 import javax.faces.bean.ViewScoped;
@@ -96,8 +95,8 @@ import javax.naming.NamingException;
 public class TemplateFormPage extends VDCBaseBean implements java.io.Serializable  {
     @Inject EditTemplateService editTemplateService;
     @EJB StudyServiceLocal studyService;
-    @EJB VDCNetworkServiceLocal vdcNetworkService;
-    @EJB VDCServiceLocal vdcService;
+    @EJB TemplateServiceLocal templateService;
+
     
     /**
      * <p>Construct a new Page bean instance.</p>
@@ -252,7 +251,7 @@ public class TemplateFormPage extends VDCBaseBean implements java.io.Serializabl
     
     
     public Map getTemplatesMap() {
-        return vdcService.getVdcTemplatesMap(getVDCRequestBean().getCurrentVDCId());
+        return templateService.getVdcTemplatesMap(getVDCRequestBean().getCurrentVDCId());
     }
     
     private List<TemplateField> adHocFields;
@@ -326,7 +325,7 @@ public class TemplateFormPage extends VDCBaseBean implements java.io.Serializabl
             }
     };
     
-    public List getAdHocFields() {
+    public List<TemplateField> getAdHocFields() {
         return adHocFields;
     }
     

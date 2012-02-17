@@ -61,7 +61,6 @@ public class EditBannerFooterPage extends VDCBaseBean  implements java.io.Serial
      */
     public void init() {
         super.init();
-        success = false;
         if (this.getBanner() == null){
             setBanner( (getVDCRequestBean().getCurrentVDCId() == null) ? getVDCRequestBean().getVdcNetwork().getNetworkPageHeader(): getVDCRequestBean().getCurrentVDC().getHeader());
             setFooter( (getVDCRequestBean().getCurrentVDCId() == null) ? getVDCRequestBean().getVdcNetwork().getNetworkPageFooter(): getVDCRequestBean().getCurrentVDC().getFooter());
@@ -139,26 +138,7 @@ public class EditBannerFooterPage extends VDCBaseBean  implements java.io.Serial
         this.footer = footer;
     }
     
-     /**
-     * Holds value of property success.
-     */
-    private boolean success;
 
-    /**
-     * Getter for property success.
-     * @return Value of property success.
-     */
-    public boolean isSuccess() {
-        return this.success;
-    }
-
-    /**
-     * Setter for property success.
-     * @param success New value of property success.
-     */
-    public void setSuccess(boolean success) {
-        this.success = success;
-    }
     
     // ACTION METHODS
     public String save_action() {

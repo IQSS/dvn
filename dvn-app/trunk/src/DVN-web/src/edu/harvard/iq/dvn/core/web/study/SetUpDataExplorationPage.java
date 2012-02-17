@@ -2032,14 +2032,14 @@ public class SetUpDataExplorationPage extends VDCBaseBean implements java.io.Ser
 
         if (valid && messages){
                 FacesContext fc = FacesContext.getCurrentInstance();               
-                getExternalContext().getFlash().put("validationSuccessMessage","The Data Visualization is valid for release."); 
+                getExternalContext().getFlash().put("successMessage","The Data Visualization is valid for release."); 
                 JavascriptContext.addJavascriptCall(fc, "initRoundedCorners();" );
         }
         if (!valid&& messages) {
             // add rounded corners to the validation message box
             FacesContext fc = FacesContext.getCurrentInstance();
             fullErrorMessage = "This configuration is invalid so it cannot be released.<br>" + fullErrorMessage;           
-            getExternalContext().getFlash().put("validationErrorMessage",fullErrorMessage); 
+            getExternalContext().getFlash().put("warningMessage",fullErrorMessage); 
             JavascriptContext.addJavascriptCall(fc, "initRoundedCorners();" );
         }
 
@@ -2088,7 +2088,7 @@ public class SetUpDataExplorationPage extends VDCBaseBean implements java.io.Ser
            if (!validateForRelease(false)) {
                dataTable.setVisualizationEnabled(false);
                FacesContext fc = FacesContext.getCurrentInstance();
-               getExternalContext().getFlash().put("validationErrorMessage","Your current changes are invalid. This visualization has been set to 'unreleased'. Click Validate button to get a full list of validation issues."); 
+               getExternalContext().getFlash().put("warningMessage","Your current changes are invalid. This visualization has been set to 'unreleased'. Click Validate button to get a full list of validation issues."); 
                
                successMessage = false;
            }
@@ -2099,7 +2099,7 @@ public class SetUpDataExplorationPage extends VDCBaseBean implements java.io.Ser
        
        if (successMessage){
                FacesContext fc = FacesContext.getCurrentInstance();
-               getExternalContext().getFlash().put("validationSuccessMessage","Successfully saved changes. You may exit or continue editing.");
+               getExternalContext().getFlash().put("successMessage","Successfully saved changes. You may exit or continue editing.");
                JavascriptContext.addJavascriptCall(fc, "initRoundedCorners();" );
        }
        edited = false;

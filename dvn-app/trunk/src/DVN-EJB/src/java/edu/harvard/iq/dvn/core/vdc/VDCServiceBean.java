@@ -47,9 +47,7 @@ import java.sql.PreparedStatement;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
-import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.logging.Logger;
 import javax.annotation.Resource;
 import javax.ejb.EJB;
@@ -457,31 +455,10 @@ public class VDCServiceBean implements VDCServiceLocal {
         return (List) em.createQuery(query).setParameter("fieldName", dtype).getResultList();
     }
 
-    public Map getVdcTemplatesMap(Long vdcId) {
-        Map templatesMap = new LinkedHashMap();
-       
-        for (Template template : vdcNetworkService.getNetworkTemplates()) {
-            templatesMap.put(template.getName(), template.getId());
-        }        
-        for (Template template : getOrderedTemplates(vdcId)) {
-            templatesMap.put(template.getName(), template.getId());
-        }
-
-        return templatesMap;
-
-    }
 
     public List getUserVDCs(Long userId) {
         String query = "select v from VDC  v where v.id in (select vr.vdc.id from VDCRole vr where vr.vdcUser.id=" + userId + ")";
         return em.createQuery(query).getResultList();
-    }
-
-    public List<Template> getOrderedTemplates(Long vdcId) {
-
-        String query = "select object(o) FROM Template as o WHERE o.vdc.id = :fieldName ORDER BY o.name";
-        return (List) em.createQuery(query).setParameter("fieldName", vdcId).getResultList();
-
-
     }
 
     public void updateDefaultTemplate(Long vdcId, Long templateId) {

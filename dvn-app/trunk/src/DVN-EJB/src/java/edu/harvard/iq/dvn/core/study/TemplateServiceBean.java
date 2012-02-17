@@ -69,6 +69,7 @@ public class TemplateServiceBean implements edu.harvard.iq.dvn.core.study.Templa
     public TemplateServiceBean() {
     }
 
+    // TODO: verify that this is nlo longer used
     private void addFields(Template template, Long vdcId) {
       VDC vdc = em.find(VDC.class, vdcId);
         Collection<TemplateField> defaultFields = vdc.getDefaultTemplate().getTemplateFields();
@@ -131,13 +132,25 @@ public class TemplateServiceBean implements edu.harvard.iq.dvn.core.study.Templa
 
     }
      */ 
+
+    public Template getTemplate(Long templateId) {
+        return em.find(Template.class, templateId);
+    }
+
+    public void updateTemplate(Template template) {
+        em.merge(template);
+    }
+
     public void deleteTemplate(Long templateId) {
         Template template = em.find(Template.class, templateId);
         em.remove(template);
     }
-    public Template getTemplate(Long templateId) {
-        return em.find(Template.class, templateId);
-    }
+
+    public FieldInputLevel getFieldInputLevel(String name) {
+        String queryStr = "SELECT f FROM FieldInputLevel f WHERE f.name = '" + name + "'"; 
+        Query query= em.createQuery(queryStr);
+        return (FieldInputLevel)query.getSingleResult();
+    }    
     
     public boolean isTemplateUsed(Long templateId) {
         String queryStr = "SELECT count(id) from study s where s.template_id="+templateId;
@@ -153,11 +166,6 @@ public class TemplateServiceBean implements edu.harvard.iq.dvn.core.study.Templa
         return count.compareTo(new Long(0))>0;    
     }    
     
-    public FieldInputLevel getFieldInputLevel(String name) {
-        String queryStr = "SELECT f FROM FieldInputLevel f WHERE f.name = '" + name + "'"; 
-        Query query= em.createQuery(queryStr);
-        return (FieldInputLevel)query.getSingleResult();
-    }
 
     
     public Map getVdcTemplatesMap(Long vdcId) {

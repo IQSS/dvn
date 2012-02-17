@@ -182,7 +182,7 @@ public class EditBannerFooterPage extends VDCBaseBean  implements java.io.Serial
             getVDCRequestBean().setCurrentVDC(vdc);
             forwardPage="/admin/OptionsPage?faces-redirect=true&vdcId="+getVDCRequestBean().getCurrentVDC().getId();
         }
-        getExternalContext().getFlash().put("message","Successfully updated layout branding.");
+        getExternalContext().getFlash().put("successMessage","Successfully updated layout branding.");
         return forwardPage;
     }
 

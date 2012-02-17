@@ -43,7 +43,7 @@ public class DefaultSortOrderPage extends VDCBaseBean implements java.io.Seriali
 
         getVDCRequestBean().setCurrentVDC(thisVDC);
         String    forwardPage="/admin/OptionsPage?faces-redirect=true&vdcId="+getVDCRequestBean().getCurrentVDC().getId();
-        getExternalContext().getFlash().put("message","Successfully updated default sort order.");
+        getExternalContext().getFlash().put("successMessage","Successfully updated default sort order.");
         return forwardPage;
         
     }

@@ -331,7 +331,7 @@ public class AddClassificationsPage extends VDCBaseBean implements Serializable 
                 //iterator.remove();
             //}
             FacesContext.getCurrentInstance().addMessage("AddClassificationsPageForm", new FacesMessage(statusMessage));
-            getExternalContext().getFlash().put("message",statusMessage);
+            getExternalContext().getFlash().put("successMessage",statusMessage);
             return "/networkAdmin/ManageClassificationsPage.xhtml?faces-redirect=true";
         }
         

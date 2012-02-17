@@ -121,7 +121,7 @@ public class EditAccountPage extends VDCBaseBean implements java.io.Serializable
             this.getVDCSessionBean().getLoginBean().setUser(user);
         }
 
-        getExternalContext().getFlash().put("message","User account updated successfully."); 
+        getExternalContext().getFlash().put("successMessage","User account updated successfully."); 
         return returnPage;
     }
     

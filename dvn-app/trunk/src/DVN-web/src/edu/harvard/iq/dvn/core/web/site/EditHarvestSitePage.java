@@ -290,26 +290,6 @@ public class EditHarvestSitePage extends VDCBaseBean implements java.io.Serializ
         }
     }
     
-    /**
-     * Holds value of property success.
-     */
-    private boolean success;
-    
-    /**
-     * Getter for property success.
-     * @return Value of property success.
-     */
-    public boolean isSuccess() {
-        return this.success;
-    }
-    
-    /**
-     * Setter for property success.
-     * @param success New value of property success.
-     */
-    public void setSuccess(boolean success) {
-        this.success = success;
-    }
     
     /**
      * Holds value of property dataverseName.

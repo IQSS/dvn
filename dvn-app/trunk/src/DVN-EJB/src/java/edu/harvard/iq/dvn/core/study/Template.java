@@ -108,7 +108,7 @@ public class Template implements java.io.Serializable {
     
     private boolean enabled;
 
-    public boolean getEnabled() {
+    public boolean isEnabled() {
         return enabled;
     }
 

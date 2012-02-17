@@ -18,14 +18,6 @@
         <!--f:metadata-->  
     </ui:define>  
     <ui:define name="body">
-      <script type="text/javascript">
-          // <![CDATA[
-          function updateDefault(radioButton) {
-              hiddenNetworkTemplate = document.getElementById("templateForm:tabSet1:files:fileDataTableWrapper:0:fileDataTable:catDropdown");
-              hiddenNetworkTemplate.value=radioButton.value;
-          }
-          // ]]>
-      </script>
       <ice:form id="templateForm">
         <ice:inputHidden id="vdcId" value="#{VDCRequest.currentVDCId}"/>
         <div class="dvn_section">
@@ -66,10 +58,19 @@
                   
                 <ice:column>
                   <f:facet name="header">
+                    <ice:outputText value="Enabled"/>
+                  </f:facet>
+                  <ice:selectBooleanCheckbox partialSubmit="true" value="#{template.enabled}" valueChangeListener="#{ManageTemplatesPage.updateEnabledAction(template)}"
+                                             disabled="#{ManageTemplatesPage.isDefault(template.id) or (empty(VDCRequest.currentVDC) and ManageTemplatesPage.isVDCDefault(template.id)) or (!empty(VDCRequest.currentVDC) and template.network)}"/>
+                </ice:column>
+                  
+                <ice:column>
+                  <f:facet name="header">
                     <ice:outputText value="Default"/>
                   </f:facet>
-                  <ice:outputText value="Default Template" rendered="#{ManageTemplatesPage.defaultTemplateId==template.id}"/>
-                  <ice:commandLink value="Make Default" rendered="#{ManageTemplatesPage.defaultTemplateId!=template.id}" 
+                  <ice:outputText value="Default Template" rendered="#{ManageTemplatesPage.isDefault(template.id)}"/>
+                  <ice:outputText value="Make Default" rendered="#{!ManageTemplatesPage.isDefault(template.id) and !template.enabled}"/>
+                  <ice:commandLink value="Make Default" rendered="#{!ManageTemplatesPage.isDefault(template.id) and template.enabled}" 
                                    action="#{ManageTemplatesPage.updateDefaultAction(template.id)}"/>
                 </ice:column>
 
@@ -92,9 +93,9 @@
                     <ice:outputText value="Remove"/>
                   </f:facet>
                   <ice:outputText rendered="#{!empty(VDCRequest.currentVDC) and template.network}" value="(Network Template})"/>
-                  <ice:outputText rendered="#{!(!empty(VDCRequest.currentVDC) and template.network) and ManageTemplatesPage.templateInUseMap.get(template.id).booleanValue()}" value="(In Use)"/>
-                  <ice:outputText rendered="#{!(!empty(VDCRequest.currentVDC) and template.network) and !(ManageTemplatesPage.templateInUseMap.get(template.id).booleanValue()) and ManageTemplatesPage.defaultTemplateId==template.id}" value="(Default Template)"/>
-                  <ice:outputLink rendered="#{!(!empty(VDCRequest.currentVDC) and template.network) and !(ManageTemplatesPage.templateInUseMap.get(template.id).booleanValue()) and !(ManageTemplatesPage.defaultTemplateId==template.id)}" 
+                  <ice:outputText rendered="#{!(!empty(VDCRequest.currentVDC) and template.network) and ManageTemplatesPage.isInUse(template.id)}" value="(In Use)"/>
+                  <ice:outputText rendered="#{!(!empty(VDCRequest.currentVDC) and template.network) and !ManageTemplatesPage.isInUse(template.id) and ManageTemplatesPage.isDefault(template.id)}" value="(Default Template)"/>
+                  <ice:outputLink rendered="#{!(!empty(VDCRequest.currentVDC) and template.network) and !ManageTemplatesPage.isInUse(template.id) and !ManageTemplatesPage.isDefault(template.id)}" 
                                   value="/dvn#{VDCRequest.currentVDCURL}/faces/study/DeleteTemplatePage.xhtml?templateId=#{template.id}">
                     <ice:outputText value="Remove"/>
                   </ice:outputLink>

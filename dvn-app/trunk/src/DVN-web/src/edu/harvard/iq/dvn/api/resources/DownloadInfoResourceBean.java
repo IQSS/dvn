@@ -7,6 +7,8 @@ import edu.harvard.iq.dvn.api.exceptions.AuthorizationRequiredException;
 
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
+import java.net.URI; 
+
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
@@ -17,6 +19,8 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.core.HttpHeaders;
 
 import javax.ws.rs.core.Response;
+import javax.ws.rs.core.UriInfo;
+
 
 /**
  *
@@ -26,6 +30,8 @@ import javax.ws.rs.core.Response;
 
 public class DownloadInfoResourceBean {
     @Context HttpHeaders headers;
+    @Context UriInfo uriInfo;
+
 
 
     @EJB FileAccessSingletonBean singleton;
@@ -40,6 +46,13 @@ public class DownloadInfoResourceBean {
     @Produces({ "application/xml" })
 
     public DownloadInfo getDownloadInfo(@PathParam("stdyFileId") Long studyFileId) throws WebApplicationException, AuthorizationRequiredException {
+        
+        URI resourcePath = uriInfo.getAbsolutePath();
+        if (resourcePath != null) {
+            if (!"https".regionMatches(0, resourcePath.toASCIIString(), 0, 5)) {
+                throw new WebApplicationException(Response.Status.SERVICE_UNAVAILABLE);
+            }
+        }
         
         String authCredentials = null; 
         

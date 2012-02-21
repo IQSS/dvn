@@ -9,6 +9,7 @@ import edu.harvard.iq.dvn.core.admin.VDCUser;
 
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
+import java.net.URI; 
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
@@ -41,6 +42,13 @@ public class DownloadResourceBean {
 
     public DownloadInstance getDownloadInstance (@PathParam("stdyFileId") Long studyFileId) throws WebApplicationException, AuthorizationRequiredException{
         String authCredentials = null; 
+        
+        URI resourcePath = uriInfo.getAbsolutePath();
+        if (resourcePath != null) {
+            if (!"https".regionMatches(0, resourcePath.toASCIIString(), 0, 5)) {
+                throw new WebApplicationException(Response.Status.SERVICE_UNAVAILABLE);
+            }
+        }
                 
         for (String header : headers.getRequestHeaders().keySet()) {
             if (header.equalsIgnoreCase("Authorization")) {

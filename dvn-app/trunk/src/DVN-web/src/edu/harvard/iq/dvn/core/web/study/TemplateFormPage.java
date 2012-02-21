@@ -2817,7 +2817,9 @@ public class TemplateFormPage extends VDCBaseBean implements java.io.Serializabl
                 }
                 for (Object o: removeItems){
                     editTemplateService.removeCollectionElement(data,o);
-                }               
+                }
+                String inStr = (String)event.getNewValue();
+                if (!inStr.equals("--No Value--")){
                     TemplateFieldValue elem = new TemplateFieldValue();
                     elem.setTemplateField(tfTest);
                     elem.setMetadata(this.getTemplate().getMetadata());
@@ -2825,7 +2827,8 @@ public class TemplateFormPage extends VDCBaseBean implements java.io.Serializabl
                     elem.setDisplayOrder(0);
                     List values = new ArrayList();
                     values.add(elem);
-                    tfTest.setTemplateFieldValues(values);            
+                    tfTest.setTemplateFieldValues(values);
+                }
             }
         }
     }
@@ -2848,18 +2851,16 @@ public class TemplateFormPage extends VDCBaseBean implements java.io.Serializabl
                 List inStringList = (List) event.getNewValue();
                 List values = new ArrayList();
                 int counter = 0;    
-                for (Object inObj: inStringList){
+                for (Object inObj: inStringList){                  
                     String inStr = (String) inObj;
-                     System.out.println("in array " + inStr);
-                    TemplateFieldValue elem = new TemplateFieldValue();
-                    elem.setTemplateField(tfTest);
-                    elem.setMetadata(this.getTemplate().getMetadata());
-                    elem.setStrValue(inStr);
-                    elem.setDisplayOrder(counter++);
-
-                    values.add(elem);
-                    
-                    
+                    if (!inStr.equals("--No Value--")){
+                        TemplateFieldValue elem = new TemplateFieldValue();
+                        elem.setTemplateField(tfTest);
+                        elem.setMetadata(this.getTemplate().getMetadata());
+                        elem.setStrValue(inStr);
+                        elem.setDisplayOrder(counter++);
+                        values.add(elem); 
+                    }                                      
                 }
                 tfTest.setTemplateFieldValues(values);
             }

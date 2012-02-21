@@ -1526,7 +1526,7 @@
                     </ice:column>
                     <ice:column>  
                       <ice:commandButton   value="Update Controlled Vocabulary" actionListener="#{TemplateFormPage.openPopup}" 
-                                           rendered="#{TemplateFormPage.networkEdit and customValue.displayOrder==0}" >
+                                           rendered="#{TemplateFormPage.networkEdit and customValue.displayOrder==0  and customField.studyField.fieldType == 'textBox'}" >
                           <f:attribute name="sf_id" value="#{customField.studyField.id}"/>
                           <f:attribute name="dcmSortOrder" value="#{customField.dcmSortOrder}"/>
                           <f:attribute name="sf_name" value="#{customField.studyField.name}"/>

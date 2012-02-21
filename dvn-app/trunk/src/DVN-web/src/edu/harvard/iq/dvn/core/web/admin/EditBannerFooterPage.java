@@ -151,7 +151,7 @@ public class EditBannerFooterPage extends VDCBaseBean  implements java.io.Serial
             vdcNetworkService.edit(vdcnetwork);
             getVDCRequestBean().getVdcNetwork().setNetworkPageHeader(banner);
             getVDCRequestBean().getVdcNetwork().setNetworkPageFooter(footer);
-            forwardPage="myNetworkOptions";
+            forwardPage="/networkAdmin/NetworkOptionsPage?faces-redirect=true";
         } else {
             VDC vdc = vdcService.find(new Long(getVDCRequestBean().getCurrentVDC().getId()));
             vdc.setHeader(banner);
@@ -159,7 +159,6 @@ public class EditBannerFooterPage extends VDCBaseBean  implements java.io.Serial
             vdc.setDisplayInFrame(displayInFrame);
             vdc.setParentSite(parentSite);
             vdcService.edit(vdc);
-            getVDCRequestBean().setCurrentVDC(vdc);
             forwardPage="/admin/OptionsPage?faces-redirect=true&vdcId="+getVDCRequestBean().getCurrentVDC().getId();
         }
         getExternalContext().getFlash().put("successMessage","Successfully updated layout branding.");
@@ -170,13 +169,13 @@ public class EditBannerFooterPage extends VDCBaseBean  implements java.io.Serial
         if (getVDCRequestBean().getCurrentVDCId() == null) {
             setBanner(getVDCRequestBean().getVdcNetwork().getNetworkPageHeader());
             setFooter(getVDCRequestBean().getVdcNetwork().getNetworkPageFooter());
-            return "cancelNetwork";
+            return "/networkAdmin/NetworkOptionsPage?faces-redirect=true";
         } else {
                 setBanner(getVDCRequestBean().getCurrentVDC().getHeader());
                 setFooter(getVDCRequestBean().getCurrentVDC().getFooter());
                 setDisplayInFrame(getVDCRequestBean().getCurrentVDC().isDisplayInFrame());
                 setParentSite(getVDCRequestBean().getCurrentVDC().getParentSite());
-            return "cancelVDC";
+            return "/admin/OptionsPage?faces-redirect=true&vdcId="+getVDCRequestBean().getCurrentVDC().getId();
         }
     }
 

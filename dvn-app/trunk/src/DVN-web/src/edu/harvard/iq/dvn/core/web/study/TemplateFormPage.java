@@ -158,7 +158,7 @@ public class TemplateFormPage extends VDCBaseBean implements java.io.Serializabl
        }
        initStudyMap();
        initAdHocFieldMap();
-       fieldInputLevelSelectItems = loadFieldInputLevelSelectItems();
+
        fieldTypeSelectItems = loadFieldTypeSelectItems();
        template.getMetadata().initCollections(); 
        
@@ -167,6 +167,8 @@ public class TemplateFormPage extends VDCBaseBean implements java.io.Serializabl
        } else {
           networkEdit = true;
        }
+       
+       fieldInputLevelSelectItems = loadFieldInputLevelSelectItems();
     }
     
    
@@ -342,11 +344,18 @@ public class TemplateFormPage extends VDCBaseBean implements java.io.Serializabl
         optional.setName("optional");
         FieldInputLevel required = new FieldInputLevel();
         required.setName("required");
+        FieldInputLevel disabled = new FieldInputLevel();
+        required.setName("disabled");
+        
 
         selectItems.add(new SelectItem("required", "Required"));
         selectItems.add(new SelectItem("recommended", "Recommended"));
         selectItems.add(new SelectItem("optional", "Optional"));
         selectItems.add(new SelectItem("hidden", "Hidden"));
+        if(networkEdit){
+           selectItems.add(new SelectItem("disabled", "Disabled")); 
+        }
+
         return selectItems;
     }
     

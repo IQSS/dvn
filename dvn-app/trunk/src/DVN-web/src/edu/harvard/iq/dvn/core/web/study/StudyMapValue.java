@@ -108,5 +108,9 @@ public class StudyMapValue implements java.io.Serializable  {
     public boolean isHidden() {
         return templateFieldUI.getTemplateField().isHidden();
     }
+    
+    public boolean isDisabled() {
+        return templateFieldUI.getTemplateField().isDisabled();
+    }
       
 }

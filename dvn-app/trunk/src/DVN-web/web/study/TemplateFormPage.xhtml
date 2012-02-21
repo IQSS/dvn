@@ -73,6 +73,8 @@
 
               <ice:panelGrid cellpadding="0" cellspacing="0" columns="2" width="100%"
                     styleClass="vdcEditStudyTable #{TemplateFormPage.studyMap[sfc.subTitle].templateField.fieldInputLevelString}"
+                    rendered="#{TemplateFormPage.networkEdit or 
+                                TemplateFormPage.studyMap[sfc.subTitle].templateField.fieldInputLevelString != 'disabled'}"
                     columnClasses="vdcEditStudyCol1, vdcEditStudyCol2">
                 <ice:column styleClass="vdcEditStudyField">                  
                   <ice:selectOneMenu immediate="false" partialSubmit="true"    
@@ -93,6 +95,8 @@
               
               <ice:panelGrid cellpadding="0" cellspacing="0" columns="2" width="100%"
                              styleClass="vdcEditStudyTable #{TemplateFormPage.studyMap[sfc.replicationFor].templateField.fieldInputLevelString}"
+                             rendered="#{TemplateFormPage.networkEdit or 
+                                TemplateFormPage.studyMap[sfc.replicationFor].templateField.fieldInputLevelString != 'disabled'}"
                              columnClasses="vdcEditStudyCol1, vdcEditStudyCol2">
                 <ice:column styleClass="vdcEditStudyGroupField #{TemplateFormPage.studyMap[sfc.replicationFor].templateField.fieldInputLevelString}">
                   <ice:selectOneMenu immediate="false" partialSubmit="true" 
@@ -126,6 +130,8 @@
 
               <!-- OTHER IDS -->
               <ice:dataTable cellpadding="0" cellspacing="0" width="100%"
+                                rendered="#{TemplateFormPage.networkEdit or 
+                                TemplateFormPage.studyMap[sfc.otherId].templateField.fieldInputLevelString != 'disabled'}"
                              styleClass="vdcEditStudyTable" rowClasses="#{TemplateFormPage.otherIdLevel}" value="dummy_datatable">
                 <ice:column>
                   <ice:dataTable cellpadding="0" cellspacing="0" width="100%"
@@ -172,6 +178,8 @@
               <!-- Authors -->
               <!-- this is a dummy datatable wrapper used to force data retention on validation error-->
               <ice:dataTable cellpadding="0" cellspacing="0" width="100%"
+                                rendered="#{TemplateFormPage.networkEdit or 
+                                TemplateFormPage.studyMap[sfc.authorName].templateField.fieldInputLevelString != 'disabled'}"
                              styleClass="vdcEditStudyTable" rowClasses="#{TemplateFormPage.authorInputLevel}" value="dummy_datatable" >
                 <ice:column>
                   <ice:dataTable cellpadding="0" cellspacing="0" width="100%"
@@ -228,6 +236,8 @@
               <!--Producers-->
               <!-- this is a dummy datatable wrapper used to force data retention on validation error-->
               <ice:dataTable cellpadding="0" cellspacing="0" width="100%"
+                                rendered="#{TemplateFormPage.networkEdit or 
+                                TemplateFormPage.studyMap[sfc.producerName].templateField.fieldInputLevelString != 'disabled'}"
                              styleClass="vdcEditStudyTable" rowClasses="#{TemplateFormPage.producerInputLevel}" value="dummy_datatable">
                 <ice:column>
                   <ice:dataTable cellpadding="0" cellspacing="0" width="100%"
@@ -350,6 +360,8 @@
               <!-- Software -->
               <!-- this is a dummy datatable wrapper used to force data retention on validation error-->
               <ice:dataTable cellpadding="0" cellspacing="0" width="100%"
+                                rendered="#{TemplateFormPage.networkEdit or 
+                                TemplateFormPage.studyMap[sfc.softwareName].templateField.fieldInputLevelString != 'disabled'}"
                              styleClass="vdcEditStudyTable" rowClasses="#{TemplateFormPage.softwareInputLevel}" value="dummy_datatable">
                 <ice:column>
                   <ice:dataTable cellpadding="0" cellspacing="0" width="100%"
@@ -394,6 +406,8 @@
 
               <ice:panelGrid cellpadding="0" cellspacing="0" columns="2" width="100%"
                             styleClass="vdcEditStudyTable #{TemplateFormPage.studyMap[sfc.fundingAgency].templateField.fieldInputLevelString}"
+                                rendered="#{TemplateFormPage.networkEdit or 
+                                TemplateFormPage.studyMap[sfc.fundingAgency].templateField.fieldInputLevelString != 'disabled'}"
                             columnClasses="vdcEditStudyCol1, vdcEditStudyCol2">
                 <ice:column styleClass="vdcEditStudyField">
                   <ice:selectOneMenu immediate="false"  partialSubmit="true" 
@@ -414,6 +428,8 @@
 
               <!-- this is a dummy datatable wrapper used to force data retention on validation error-->
               <ice:dataTable cellpadding="0" cellspacing="0" width="100%"
+                                 rendered="#{TemplateFormPage.networkEdit or 
+                                TemplateFormPage.studyMap[sfc.grantNumber].templateField.fieldInputLevelString != 'disabled'}"
                              styleClass="vdcEditStudyTable" rowClasses="#{TemplateFormPage.grantInputLevel}" value="dummy_datatable">
                 <ice:column>
                   <ice:dataTable cellpadding="0" cellspacing="0"
@@ -458,6 +474,8 @@
 
               <!-- this is a dummy datatable wrapper used to force data retention on validation error-->
               <ice:dataTable cellpadding="0" cellspacing="0" width="100%"
+                                rendered="#{TemplateFormPage.networkEdit or 
+                                TemplateFormPage.studyMap[sfc.distributorName].templateField.fieldInputLevelString != 'disabled'}"
                              styleClass="vdcEditStudyTable" rowClasses="#{TemplateFormPage.distributorInputLevel}" value="dummy_datatable">
                 <ice:column>
                   <ice:dataTable cellpadding="0" cellspacing="0" width="100%"
@@ -535,6 +553,8 @@
               </ice:dataTable>
 
               <ice:panelGrid cellpadding="0" cellspacing="0" columns="2" width="100%"
+                                rendered="#{TemplateFormPage.networkEdit or 
+                                TemplateFormPage.studyMap[sfc.distributorContact].templateField.fieldInputLevelString != 'disabled'}"
                              styleClass="vdcEditStudyTable #{TemplateFormPage.distributorInputLevel}" columnClasses="vdcEditStudyCol1, vdcEditStudyCol2">
                 <ice:column styleClass="vdcEditStudyField #{TemplateFormPage.distributorInputLevel}">
                   <ice:selectOneMenu immediate="false" partialSubmit="true" 
@@ -574,6 +594,8 @@
               </ice:panelGrid>
 
               <ice:panelGrid cellpadding="0" cellspacing="0" columns="2" width="100%"
+                                rendered="#{TemplateFormPage.networkEdit or 
+                                TemplateFormPage.studyMap[sfc.distributionDate].templateField.fieldInputLevelString != 'disabled'}"
                              styleClass="vdcEditStudyTable #{TemplateFormPage.studyMap[sfc.distributionDate].templateField.fieldInputLevelString}"
                              columnClasses="vdcEditStudyCol1, vdcEditStudyCol2">
                 <div jsfc="ice:panelGroup" id="groupPanel49" styleClass="vdcEditStudyField #{TemplateFormPage.studyMap[sfc.distributionDate].templateField.fieldInputLevelString}">
@@ -595,6 +617,8 @@
               </ice:panelGrid>
 
               <ice:panelGrid cellpadding="0" cellspacing="0" columns="2" width="100%"
+                                rendered="#{TemplateFormPage.networkEdit or 
+                                TemplateFormPage.studyMap[sfc.depositor].templateField.fieldInputLevelString != 'disabled'}"
                              styleClass="vdcEditStudyTable #{TemplateFormPage.studyMap[sfc.depositor].templateField.fieldInputLevelString}"
                              columnClasses="vdcEditStudyCol1, vdcEditStudyCol2">
                 <ice:column styleClass="vdcEditStudyField">
@@ -615,6 +639,8 @@
               </ice:panelGrid>
 
               <ice:panelGrid cellpadding="0" cellspacing="0" columns="2" width="100%"
+                                rendered="#{TemplateFormPage.networkEdit or 
+                                TemplateFormPage.studyMap[sfc.dateOfDeposit].templateField.fieldInputLevelString != 'disabled'}"
                              styleClass="vdcEditStudyTable #{TemplateFormPage.studyMap[sfc.dateOfDeposit].templateField.fieldInputLevelString}"
                              columnClasses="vdcEditStudyCol1, vdcEditStudyCol2">
                 <ice:column  styleClass="vdcEditStudyField #{TemplateFormPage.studyMap[sfc.dateOfDeposit].templateField.fieldInputLevelString}">
@@ -636,6 +662,8 @@
               </ice:panelGrid>
 
               <ice:panelGrid cellpadding="0" cellspacing="0" columns="2" width="100%"
+                                rendered="#{TemplateFormPage.networkEdit or 
+                                TemplateFormPage.studyMap[sfc.seriesName].templateField.fieldInputLevelString != 'disabled'}"
                              styleClass="vdcEditStudyTable #{TemplateFormPage.seriesInputLevel}"
                              columnClasses="vdcEditStudyCol1, vdcEditStudyCol2">
                 <ice:column styleClass="vdcEditStudyField #{TemplateFormPage.seriesInputLevel}">
@@ -675,6 +703,8 @@
 
               <ice:panelGrid cellpadding="0" cellspacing="0" columns="2" width="100%"
                              styleClass="vdcEditStudyTable #{TemplateFormPage.versionInputLevel}"
+                             rendered="#{TemplateFormPage.networkEdit or 
+                                TemplateFormPage.studyMap[sfc.studyVersion].templateField.fieldInputLevelString != 'disabled'}"
                              columnClasses="vdcEditStudyCol1, vdcEditStudyCol2">
                 <ice:column styleClass="#{TemplateFormPage.versionInputLevel}">
                   <ice:selectOneMenu immediate="false" partialSubmit="true" 
@@ -709,6 +739,8 @@
 
               <!-- this is a dummy datatable wrapper used to force data retention on validation error-->
               <ice:dataTable cellpadding="0" cellspacing="0" width="100%"
+                                rendered="#{TemplateFormPage.networkEdit or 
+                                TemplateFormPage.studyMap[sfc.abstractText].templateField.fieldInputLevelString != 'disabled'}"
                              styleClass="vdcEditStudyTable" rowClasses="#{TemplateFormPage.abstractInputLevel}" value="dummy_datatable">
                 <ice:column>
                   <ice:dataTable cellpadding="0" cellspacing="0" width="100%"
@@ -764,6 +796,8 @@
 
               <!-- this is a dummy datatable wrapper used to force data retention on validation error-->
               <ice:dataTable cellpadding="0" cellspacing="0" width="100%"
+                                rendered="#{TemplateFormPage.networkEdit or 
+                                TemplateFormPage.studyMap[sfc.keywordValue].templateField.fieldInputLevelString != 'disabled'}"
                              styleClass="vdcEditStudyTable" rowClasses="#{TemplateFormPage.keywordInputLevel}" value="dummy_datatable">
                 <ice:column>
                   <ice:dataTable cellpadding="0" cellspacing="0" width="100%"
@@ -821,6 +855,8 @@
 
               <!-- this is a dummy datatable wrapper used to force data retention on validation error-->
               <ice:dataTable cellpadding="0" cellspacing="0" width="100%"
+                                rendered="#{TemplateFormPage.networkEdit or 
+                                TemplateFormPage.studyMap[sfc.topicClassValue].templateField.fieldInputLevelString != 'disabled'}"
                              styleClass="vdcEditStudyTable" rowClasses="#{TemplateFormPage.topicInputLevel}" value="dummy_datatable">
                 <ice:column>
                   <ice:dataTable cellpadding="0" cellspacing="0" width="100%"
@@ -880,6 +916,8 @@
               <!-- this is a dummy datatable wrapper used to force data retention on validation error-->
               <ice:dataTable cellpadding="0" cellspacing="0" width="100%"
                              styleClass="vdcEditStudyTable"
+                             rendered="#{TemplateFormPage.networkEdit or 
+                                TemplateFormPage.studyMap[sfc.relatedPublications].templateField.fieldInputLevelString != 'disabled'}"
                              rowClasses="#{TemplateFormPage.studyMap[sfc.relatedPublications].templateField.fieldInputLevelString}" value="dummy_datatable">
                 <ice:column>
                   <ice:dataTable cellpadding="0" cellspacing="0" width="100%"
@@ -923,6 +961,8 @@
               <!-- this is a dummy datatable wrapper used to force data retention on validation error-->
               <ice:dataTable cellpadding="0" cellspacing="0" width="100%"
                              styleClass="vdcEditStudyTable"
+                             rendered="#{TemplateFormPage.networkEdit or 
+                                TemplateFormPage.studyMap[sfc.relatedMaterial].templateField.fieldInputLevelString != 'disabled'}"
                              rowClasses="#{TemplateFormPage.studyMap[sfc.relatedMaterial].templateField.fieldInputLevelString}" value="dummy_datatable">
                 <ice:column>
                   <ice:dataTable cellpadding="0" cellspacing="0" width="100%"
@@ -966,6 +1006,8 @@
               <!-- this is a dummy datatable wrapper used to force data retention on validation error-->
               <ice:dataTable cellpadding="0" cellspacing="0" width="100%"
                              styleClass="vdcEditStudyTable"
+                             rendered="#{TemplateFormPage.networkEdit or 
+                                TemplateFormPage.studyMap[sfc.relatedStudies].templateField.fieldInputLevelString != 'disabled'}"
                              rowClasses="#{TemplateFormPage.studyMap[sfc.relatedStudies].templateField.fieldInputLevelString}" value="dummy_datatable">
                 <ice:column>
                   <ice:dataTable cellpadding="0" cellspacing="0" width="100%"
@@ -1009,6 +1051,8 @@
               <!-- this is a dummy datatable wrapper used to force data retention on validation error-->
               <ice:dataTable cellpadding="0" cellspacing="0" width="100%"
                              styleClass="vdcEditStudyTable"
+                             rendered="#{TemplateFormPage.networkEdit or 
+                                TemplateFormPage.studyMap[sfc.otherReferences].templateField.fieldInputLevelString != 'disabled'}"
                              rowClasses="#{TemplateFormPage.studyMap[sfc.otherReferences].templateField.fieldInputLevelString}" value="dummy_datatable">
                 <ice:column>
                   <ice:dataTable cellpadding="0" cellspacing="0" width="100%"
@@ -1050,6 +1094,8 @@
               </ice:dataTable>
 
               <ice:panelGrid cellpadding="0" cellspacing="0" columns="2" width="100%"
+                             rendered="#{TemplateFormPage.networkEdit or 
+                                TemplateFormPage.studyMap[sfc.timePeriodCoveredStart].templateField.fieldInputLevelString != 'disabled'}"
                              styleClass="vdcEditStudyTable #{TemplateFormPage.studyMap[sfc.timePeriodCoveredStart].templateField.fieldInputLevelString}"
                              columnClasses="vdcEditStudyCol1, vdcEditStudyCol2">
                 <ice:column styleClass="vdcEditStudyField">
@@ -1073,6 +1119,8 @@
               </ice:panelGrid>
 
               <ice:panelGrid cellpadding="0" cellspacing="0" columns="2" width="100%"
+                             rendered="#{TemplateFormPage.networkEdit or 
+                                TemplateFormPage.studyMap[sfc.timePeriodCoveredEnd].templateField.fieldInputLevelString != 'disabled'}"
                              styleClass="vdcEditStudyTable #{TemplateFormPage.studyMap[sfc.timePeriodCoveredEnd].templateField.fieldInputLevelString}"
                              columnClasses="vdcEditStudyCol1, vdcEditStudyCol2">
                 <ice:column styleClass="vdcEditStudyField">
@@ -1096,6 +1144,8 @@
               </ice:panelGrid>
 
               <ice:panelGrid cellpadding="0" cellspacing="0" columns="2" width="100%"
+                              rendered="#{TemplateFormPage.networkEdit or 
+                                TemplateFormPage.studyMap[sfc.dateOfCollectionStart].templateField.fieldInputLevelString != 'disabled'}"
                              styleClass="vdcEditStudyTable #{TemplateFormPage.studyMap[sfc.dateOfCollectionStart].templateField.fieldInputLevelString}"
                              columnClasses="vdcEditStudyCol1, vdcEditStudyCol2">
                 <ice:column styleClass="vdcEditStudyField">
@@ -1119,6 +1169,8 @@
               </ice:panelGrid>
 
               <ice:panelGrid cellpadding="0" cellspacing="0" columns="2" width="100%"
+                             rendered="#{TemplateFormPage.networkEdit or 
+                                TemplateFormPage.studyMap[sfc.dateOfCollectionEnd].templateField.fieldInputLevelString != 'disabled'}"
                              styleClass="vdcEditStudyTable #{TemplateFormPage.studyMap[sfc.dateOfCollectionEnd].templateField.fieldInputLevelString}"
                              columnClasses="vdcEditStudyCol1, vdcEditStudyCol2">
                 <ice:column styleClass="vdcEditStudyField">
@@ -1142,6 +1194,8 @@
               </ice:panelGrid>
 
               <ice:panelGrid cellpadding="0" cellspacing="0" columns="2" width="100%"
+                             rendered="#{TemplateFormPage.networkEdit or 
+                                TemplateFormPage.studyMap[sfc.country].templateField.fieldInputLevelString != 'disabled'}"
                              styleClass="vdcEditStudyTable #{TemplateFormPage.studyMap[sfc.country].templateField.fieldInputLevelString}"
                              columnClasses="vdcEditStudyCol1, vdcEditStudyCol2">
                 <ice:column styleClass="vdcEditStudyField">
@@ -1162,6 +1216,8 @@
               </ice:panelGrid>
 
               <ice:panelGrid cellpadding="0" cellspacing="0" columns="2" width="100%"
+                             rendered="#{TemplateFormPage.networkEdit or 
+                                TemplateFormPage.studyMap[sfc.geographicCoverage].templateField.fieldInputLevelString != 'disabled'}"
                              styleClass="vdcEditStudyTable #{TemplateFormPage.studyMap[sfc.geographicCoverage].templateField.fieldInputLevelString}"
                              columnClasses="vdcEditStudyCol1, vdcEditStudyCol2">
                 <ice:column styleClass="vdcEditStudyField">
@@ -1182,6 +1238,8 @@
               </ice:panelGrid>
 
               <ice:panelGrid cellpadding="0" cellspacing="0" columns="2" width="100%"
+                             rendered="#{TemplateFormPage.networkEdit or 
+                                TemplateFormPage.studyMap[sfc.geographicUnit].templateField.fieldInputLevelString != 'disabled'}"
                              styleClass="vdcEditStudyTable #{TemplateFormPage.studyMap[sfc.geographicUnit].templateField.fieldInputLevelString}"
                              columnClasses="vdcEditStudyCol1, vdcEditStudyCol2">
                 <ice:column styleClass="vdcEditStudyField">
@@ -1202,6 +1260,8 @@
               </ice:panelGrid>
 
               <ice:panelGrid cellpadding="0" cellspacing="0" columns="2" width="100%"
+                             rendered="#{TemplateFormPage.networkEdit or 
+                                TemplateFormPage.studyMap[sfc.westLongitude].templateField.fieldInputLevelString != 'disabled'}"
                              styleClass="vdcEditStudyTable #{TemplateFormPage.studyMap[sfc.westLongitude].templateField.fieldInputLevelString}"
                              columnClasses="vdcEditStudyCol1, vdcEditStudyCol2">
                 <ice:column styleClass="vdcEditStudyField">
@@ -1251,6 +1311,8 @@
               </ice:panelGrid>
 
               <ice:panelGrid cellpadding="0" cellspacing="0" columns="2" width="100%"
+                             rendered="#{TemplateFormPage.networkEdit or 
+                                TemplateFormPage.studyMap[sfc.unitOfAnalysis].templateField.fieldInputLevelString != 'disabled'}"
                              styleClass="vdcEditStudyTable #{TemplateFormPage.studyMap[sfc.unitOfAnalysis].templateField.fieldInputLevelString}"
                              columnClasses="vdcEditStudyCol1, vdcEditStudyCol2">
                 <ice:column styleClass="vdcEditStudyField">
@@ -1274,6 +1336,8 @@
 
               <ice:panelGrid cellpadding="0" cellspacing="0" columns="2" width="100%"
                              styleClass="vdcEditStudyTable #{TemplateFormPage.studyMap[sfc.universe].templateField.fieldInputLevelString}"
+                             rendered="#{TemplateFormPage.networkEdit or 
+                                TemplateFormPage.studyMap[sfc.universe].templateField.fieldInputLevelString != 'disabled'}"
                              columnClasses="vdcEditStudyCol1, vdcEditStudyCol2">
                 <ice:column styleClass="vdcEditStudyField">
                   <ice:selectOneMenu immediate="false" partialSubmit="true" 
@@ -1296,6 +1360,8 @@
 
                <ice:panelGrid cellpadding="0" cellspacing="0" columns="2" width="100%"
                              styleClass="vdcEditStudyTable #{TemplateFormPage.studyMap[sfc.kindOfData].templateField.fieldInputLevelString}"
+                             rendered="#{TemplateFormPage.networkEdit or 
+                                TemplateFormPage.studyMap[sfc.kindOfData].templateField.fieldInputLevelString != 'disabled'}"
                              columnClasses="vdcEditStudyCol1, vdcEditStudyCol2">
                 <ice:column styleClass="vdcEditStudyField">
                   <ice:selectOneMenu immediate="false" partialSubmit="true" 
@@ -1364,7 +1430,7 @@
               
               <!-- Generic control-->              
               <ice:panelSeries value="#{TemplateFormPage.adHocFields}" var="customField">
-                  <ice:dataTable cellpadding="0" cellspacing="0" width="100%"
+                  <ice:dataTable cellpadding="0" cellspacing="0" width="100%" rendered ="#{empty(customField.templateFieldControlledVocabulary)}"
                                  columnClasses="vdcEditStudyCol1b, vdcEditStudyCol2, vdcEditStudyCol3"
                                  value="#{customField.templateFieldValues}" var="customValue">
                     <ice:column>                  
@@ -1378,55 +1444,49 @@
                            <f:selectItems value="#{TemplateFormPage.fieldInputLevelSelectItems}"/>
                         </ice:selectOneMenu>                          
                         <ice:outputText styleClass="dvnInlineHelpLabel dvnInlineHelpTip" value="#{customField.studyField.name}" 
-                                          rendered="#{empty(customField.templateFieldControlledVocabulary) or customValue.displayOrder==0}"
+                                          rendered="#{customValue.displayOrder==0}"
                                         title="#{customField.studyField.name} - #{customField.studyField.description}"/>
                         <ice:graphicImage value="/resources/images/icon_required.gif" rendered="#{customField.required
-                               and( empty(customField.templateFieldControlledVocabulary) or customValue.displayOrder==0)}"/>
+                               and( customValue.displayOrder==0)}"/>
                         <ice:graphicImage value="/resources/images/icon_recommended.gif" rendered="#{customField.recommended
-                                and( empty(customField.templateFieldControlledVocabulary) or customValue.displayOrder==0)}"/>
-                      <ice:commandButton  value="Remove Field" 
+                                and( customValue.displayOrder==0)}"/>
+                               <!-- only custom fields are removable -->
+                       <ice:commandButton  value="Remove Field" 
                                           actionListener="#{TemplateFormPage.removeAdHocField}" 
-                                          rendered="#{(customField.studyField.id > 98 or customField.studyField.id == null) 
-                                                      and TemplateFormPage.networkEdit and customValue.displayOrder==0}" >
+                                          rendered="#{ TemplateFormPage.networkEdit and customValue.displayOrder==0}" >
                                          <f:attribute name="studyFieldId" value="#{customField.studyField.id}" />
                                           <f:attribute name="studyFieldName" value="#{customField.studyField.name}" />
-                      </ice:commandButton>
+                       </ice:commandButton>
                       </div>
                     </ice:column>
                     <ice:column>
                       <div>
                         <ice:column> 
-                          <ice:inputText id="input_TextDefault" size="90" rendered="#{empty(customField.studyField.fieldType)}" 
-                                         visible="#{empty(customField.templateFieldControlledVocabulary)}"
+                          <ice:inputText id="input_TextDefault" size="90" rendered="#{empty(customField.studyField.fieldType)}"                                        
                                          value="#{customValue.strValue}">
                           </ice:inputText> 
-                          <ice:inputText id="input_HtmlEnabled" size="90" rendered="#{customField.studyField.fieldType == 'html'}" 
-                                         visible="#{empty(customField.templateFieldControlledVocabulary)}"
+                          <ice:inputText id="input_HtmlEnabled" size="90" rendered="#{customField.studyField.fieldType == 'html'}"                                          
                                          value="#{customValue.strValue}"
                                          styleClass="formHtmlEnabled">
                                   <f:validator validatorId="XhtmlValidator"/>
                           </ice:inputText>
                           <ice:inputText id="input_Text" size="90" rendered="#{customField.studyField.fieldType == 'textBox'}" 
-                                         visible="#{empty(customField.templateFieldControlledVocabulary)}"
                                          value="#{customValue.strValue}">
                           </ice:inputText>    
                           <ice:inputText id="input_genericDate" styleClass="formDateFormat"
                                          rendered="#{customField.studyField.fieldType == 'date'}" 
                                          value="#{customValue.strValue}" 
-                                         visible="#{empty(customField.templateFieldControlledVocabulary)}">
+                                         >
                                 <f:validator validatorId="DateValidator"/>
                           </ice:inputText>   
                           <ice:inputTextarea cols="90" rows="4"
                                                id="input_TextArea"
                                                value="#{customValue.strValue}"
                                                rendered="#{customField.studyField.fieldType == 'textArea'}" 
-                                               visible="#{empty(customField.templateFieldControlledVocabulary)}">
+                                               >
                           </ice:inputTextarea>
                           <ice:outputText value="#{editstudybundle.dateFormatDescription}" rendered="#{customField.studyField.fieldType == 'date'}"/>
-                      <ice:outputText id="controlledVocabHeader" visible="#{!empty(customField.templateFieldControlledVocabulary)
-                                    and customValue.displayOrder==0}"
-                                     value="Controlled Vocabulary">
-                      </ice:outputText>
+
                         <ice:selectOneMenu immediate="false"  value="#{customField.templateFieldValueSingleString}" valueChangeListener="#{TemplateFormPage.changeSingleValCV}"                                          
                                         rendered ="#{!empty(customField.templateFieldControlledVocabulary) and !customField.allowMultiples}">
                             <f:selectItems value="#{customField.controlledVocabularyStrings}"/>
@@ -1455,12 +1515,12 @@
                       </ice:commandButton>
                     </ice:column>
                     <ice:column>
-                      <ice:commandButton rendered ="#{customField.allowMultiples and empty(customField.templateFieldControlledVocabulary)}" 
+                      <ice:commandButton rendered ="#{customField.allowMultiples}" 
                                          partialSubmit="true" image="/resources/images/icon_add.gif" 
                                          actionListener="#{TemplateFormPage.addRow}">
                         <f:attribute name="dcmSortOrder" value="#{customField.dcmSortOrder}"/>
                       </ice:commandButton>       
-                        <ice:commandButton partialSubmit="true" rendered="#{customField.templateFieldValues.size() > 1 and empty(customField.templateFieldControlledVocabulary)}" 
+                        <ice:commandButton partialSubmit="true" rendered="#{customField.templateFieldValues.size() > 1 }" 
                                 image="/resources/images/icon_remove.gif" actionListener="#{TemplateFormPage.removeRow}"/>
                     </ice:column>
                     <ice:column>  
@@ -1472,121 +1532,81 @@
                       </ice:commandButton>
                     </ice:column>
                     </ice:dataTable> 
-
-              </ice:panelSeries>
-                            
-              <!--
-                  <ice:dataTable cellpadding="0" cellspacing="0" width="100%" styleClass="dvnStudyTemplateTableDCM"
-                                 columnClasses="vdcEditStudyCol1b, vdcEditStudyCol2, vdcEditStudyCol3"
-                                 binding="#{TemplateFormPage.dcmFieldTable}"
-                                 value="#{TemplateFormPage.adHocFields}" var="dcmItem">
-                    <ice:column>
+                  
+<!-- Start of Controlled vocab stuff-->
+                    <ice:column>                  
                       <div class="vdcEditStudyField">
-                        <ice:selectOneMenu immediate="true" partialSubmit="true"
-                                           value="#{dcmItem.fieldInputLevelString}"
-                                           valueChangeListener="#{TemplateFormPage.changeFieldInputValueDCM}">
-                            <f:attribute name="dcmSortOrder" value="#{dcmItem.dcmSortOrder}" />
-                            <f:attribute name="tf_id" value="#{dcmItem.id}" />
-                            <f:selectItems value="#{TemplateFormPage.fieldInputLevelSelectItems}"/>
-                        </ice:selectOneMenu>
-                        <ice:outputText styleClass="dvnInlineHelpLabel dvnInlineHelpTip" value="#{dcmItem.studyField.name}" title="#{dcmItem.studyField.name} - #{dcmItem.studyField.description}"/>
-                        <ice:graphicImage value="/resources/images/icon_required.gif" rendered="#{dcmItem.required}"/>
-                        <ice:graphicImage value="/resources/images/icon_recommended.gif" rendered="#{dcmItem.recommended}"/>
-                      <ice:commandButton  value="Remove Field" 
-                                          actionListener="#{TemplateFormPage.removeAdHocField}" rendered="#{(dcmItem.studyField.id > 98 or dcmItem.studyField.id == null) and TemplateFormPage.networkEdit}" >
-                                         <f:attribute name="studyFieldId" value="#{dcmItem.studyField.id}" />
-                                          <f:attribute name="studyFieldName" value="#{dcmItem.studyField.name}" />
-                      </ice:commandButton>
+                        <ice:selectOneMenu immediate="false" partialSubmit="true"
+                                        rendered="#{!empty(customField.templateFieldControlledVocabulary)}"
+                                        value="#{customField.fieldInputLevelString}"
+                                        valueChangeListener="#{TemplateFormPage.changeFieldInputValueDCM}">
+                            <f:attribute name="dcmSortOrder" value="#{customField.dcmSortOrder}" />
+                            <f:attribute name="tf_id" value="#{customField.id}" />
+                           <f:selectItems value="#{TemplateFormPage.fieldInputLevelSelectItems}"/>
+                        </ice:selectOneMenu>                          
+                        <ice:outputText styleClass="dvnInlineHelpLabel dvnInlineHelpTip" value="#{customField.studyField.name}" 
+                                          rendered="#{!empty(customField.templateFieldControlledVocabulary)}"
+                                        title="#{customField.studyField.name} - #{customField.studyField.description}"/>
+                        <ice:graphicImage value="/resources/images/icon_required.gif" rendered="#{customField.required
+                               and !empty(customField.templateFieldControlledVocabulary)}"/>
+                        <ice:graphicImage value="/resources/images/icon_recommended.gif" rendered="#{customField.recommended
+                                and !empty(customField.templateFieldControlledVocabulary)}"/>
+                               <!-- only custom fields are removable -->
+                       <ice:commandButton  value="Remove Field" 
+                                          actionListener="#{TemplateFormPage.removeAdHocField}" 
+                                          rendered="#{ TemplateFormPage.networkEdit and !empty(customField.templateFieldControlledVocabulary)}" >
+                                         <f:attribute name="studyFieldId" value="#{customField.studyField.id}" />
+                                          <f:attribute name="studyFieldName" value="#{customField.studyField.name}" />
+                       </ice:commandButton>
                       </div>
                     </ice:column>
                     <ice:column>
-                      <ice:dataTable var="fieldValRow" value="#{dcmItem.templateFieldValues}"
-                                     binding="#{TemplateFormPage.dataTableDCMFieldValues}">
-                       <ice:column> 
-                          <ice:inputText id="input_TextDefault" size="90" rendered="#{empty(dcmItem.studyField.fieldType)}" 
-                                         visible="#{empty(dcmItem.templateFieldControlledVocabulary)}"
-                                         value="#{fieldValRow.strValue}">
-                          </ice:inputText> 
-                          <ice:inputText id="input_HtmlEnabled" size="90" rendered="#{dcmItem.studyField.fieldType == 'html'}" 
-                                         visible="#{empty(dcmItem.templateFieldControlledVocabulary)}"
-                                         value="#{fieldValRow.strValue}"
-                                         styleClass="formHtmlEnabled">
-                                  <f:validator validatorId="XhtmlValidator"/>
-                          </ice:inputText>
-                          <ice:inputText id="input_Text" size="90" rendered="#{dcmItem.studyField.fieldType == 'textBox'}" 
-                                         visible="#{empty(dcmItem.templateFieldControlledVocabulary)}"
-                                         value="#{fieldValRow.strValue}">
-                          </ice:inputText>    
-                          <ice:inputText id="input_genericDate" styleClass="formDateFormat"
-                                         rendered="#{dcmItem.studyField.fieldType == 'date'}" 
-                                         value="#{fieldValRow.strValue}" 
-                                         visible="#{empty(dcmItem.templateFieldControlledVocabulary)}">
-                                <f:validator validatorId="DateValidator"/>
-                          </ice:inputText>   
-                          <ice:inputTextarea cols="90" rows="4"
-                                               id="input_TextArea"
-                                               value="#{fieldValRow.strValue}"
-                                               rendered="#{dcmItem.studyField.fieldType == 'textArea'}" 
-                                               visible="#{empty(dcmItem.templateFieldControlledVocabulary)}">
-                          </ice:inputTextarea>
-                          <ice:outputText value="#{editstudybundle.dateFormatDescription}" rendered="#{dcmItem.studyField.fieldType == 'date'}"/>
-                        </ice:column>
-                        <ice:column>
-                         <ice:commandButton immediate="true" image="/resources/images/icon_add.gif" rendered="#{dcmItem.allowMultiples and empty(dcmItem.templateFieldControlledVocabulary)}"
-                                             actionListener="#{TemplateFormPage.addDcmRow}">
-                             <f:attribute name="sf_id" value="#{dcmItem.studyField.id}"/>
-                             <f:attribute name="strVal" value="#{fieldValRow.strValue}"/>
-                             <f:attribute name="dcmSortOrder" value="#{dcmItem.dcmSortOrder}"/>
-                          </ice:commandButton>
-                          <ice:commandButton immediate="true"
-                                             rendered="#{dcmItem.allowMultiples and empty(dcmItem.templateFieldControlledVocabulary)}"
-                                             image="/resources/images/icon_remove.gif" actionListener="#{TemplateFormPage.removeDcmRow}">
-                              <f:attribute name="sf_id" value="#{dcmItem.studyField.id}"/>
-                              <f:attribute name="strVal" value="#{fieldValRow.strValue}"/>
-                              <f:attribute name="dcmSortOrder" value="#{dcmItem.dcmSortOrder}"/>
-                          </ice:commandButton>
-                        </ice:column>
-                      </ice:dataTable>
-                      <ice:outputText id="controlledVocabHeader" visible="#{!empty(dcmItem.templateFieldControlledVocabulary)}"
-                                     value="Controlled Vocabulary">
-                      </ice:outputText>
-                        <ice:selectOneMenu immediate="false"  
-                                        rendered ="#{!empty(dcmItem.templateFieldControlledVocabulary) and !dcmItem.allowMultiples}">
-                            <f:selectItems value="#{dcmItem.controlledVocabularyStrings}"/>
+                      <div>
+                        <ice:column> 
+                        <ice:selectOneMenu immediate="false"  value="#{customField.templateFieldValueSingleString}" valueChangeListener="#{TemplateFormPage.changeSingleValCV}"                                          
+                                        rendered ="#{!empty(customField.templateFieldControlledVocabulary) and !customField.allowMultiples}">
+                            <f:selectItems value="#{customField.controlledVocabularyStrings}"/>
+                            <f:attribute name="sf_id" value="#{customField.studyField.id}"/>
                         </ice:selectOneMenu>  
-                        <ice:selectManyListbox immediate="false"  
-                                        rendered ="#{!empty(dcmItem.templateFieldControlledVocabulary) and dcmItem.allowMultiples}">
-                            <f:selectItems value="#{dcmItem.controlledVocabularyStrings}"/>
+                        <ice:selectManyListbox immediate="false"   value="#{customField.templateFieldValueStrings}"  valueChangeListener="#{TemplateFormPage.changeMultiValCV}"                                             
+                                        rendered ="#{!empty(customField.templateFieldControlledVocabulary) and customField.allowMultiples }">
+                            <f:selectItems value="#{customField.controlledVocabularyStrings}"/>
+                            <f:attribute name="sf_id" value="#{customField.studyField.id}"/>
                         </ice:selectManyListbox> 
-                        
+                        </ice:column>
+                      </div>
                     </ice:column>
-
                     <ice:column>
-                      <ice:commandButton immediate="true" value="Move Up" alt="Move Up" title="Move Up" image="/resources/images/icon_moveup.png" actionListener="#{TemplateFormPage.moveUp}">
-                         <f:attribute name="sf_id" value="#{dcmItem.studyField.id}"/>
-                         <f:attribute name="dcmSortOrder" value="#{dcmItem.dcmSortOrder}"/>
+                      <ice:commandButton immediate="true" value="Move Up" alt="Move Up" title="Move Up" 
+                                         rendered="#{TemplateFormPage.networkEdit and !empty(customField.templateFieldControlledVocabulary)}"
+                                         image="/resources/images/icon_moveup.png" actionListener="#{TemplateFormPage.moveUp}">
+                         <f:attribute name="sf_id" value="#{customField.studyField.id}"/>
+                         <f:attribute name="dcmSortOrder" value="#{customField.dcmSortOrder}"/>
                       </ice:commandButton>
-                      <ice:commandButton immediate="true" value="Move Down" alt="Move Down" title="Move Down" image="/resources/images/icon_movedown.png" actionListener="#{TemplateFormPage.moveDown}">
-                          <f:attribute name="sf_id" value="#{dcmItem.studyField.id}"/>
-                          <f:attribute name="dcmSortOrder" value="#{dcmItem.dcmSortOrder}"/>                          
-                      </ice:commandButton>
-                    </ice:column>
-
- 
-                    <ice:column>
-                      <ice:commandButton   value="Update Controlled Vocabulary" actionListener="#{TemplateFormPage.openPopup}" rendered="#{TemplateFormPage.networkEdit}" >
-                          <f:attribute name="sf_id" value="#{dcmItem.studyField.id}"/>
-                          <f:attribute name="dcmSortOrder" value="#{dcmItem.dcmSortOrder}"/>
-                          <f:attribute name="sf_name" value="#{dcmItem.studyField.name}"/>
+                      <ice:commandButton immediate="true" value="Move Down" alt="Move Down" title="Move Down" 
+                                         rendered="#{TemplateFormPage.networkEdit and !empty(customField.templateFieldControlledVocabulary)}"
+                                         image="/resources/images/icon_movedown.png" actionListener="#{TemplateFormPage.moveDown}">
+                          <f:attribute name="sf_id" value="#{customField.studyField.id}"/>
+                          <f:attribute name="dcmSortOrder" value="#{customField.dcmSortOrder}"/>                          
                       </ice:commandButton>
                     </ice:column>
-                  </ice:dataTable>
-                  -->
-               <!-- end of original Generic control--> 
+                    <ice:column>  
+                      <ice:commandButton   value="Update Controlled Vocabulary" actionListener="#{TemplateFormPage.openPopup}" 
+                                           rendered="#{TemplateFormPage.networkEdit and !empty(customField.templateFieldControlledVocabulary)}" >
+                          <f:attribute name="sf_id" value="#{customField.studyField.id}"/>
+                          <f:attribute name="dcmSortOrder" value="#{customField.dcmSortOrder}"/>
+                          <f:attribute name="sf_name" value="#{customField.studyField.name}"/>
+                      </ice:commandButton>
+                    </ice:column> 
+              </ice:panelSeries>
+                            
+  
 
                
               <ice:panelGrid cellpadding="0" cellspacing="0" columns="2" width="100%"
                              styleClass="vdcEditStudyTable #{TemplateFormPage.studyMap[sfc.timeMethod].templateField.fieldInputLevelString}"
+                             rendered="#{TemplateFormPage.networkEdit or 
+                                TemplateFormPage.studyMap[sfc.timeMethod].templateField.fieldInputLevelString != 'disabled'}"
                              columnClasses="vdcEditStudyCol1, vdcEditStudyCol2">
                 <ice:column styleClass="vdcEditStudyField">
                   <ice:selectOneMenu immediate="false" partialSubmit="true" 
@@ -1602,8 +1622,7 @@
                 </ice:column>
                 <ice:column>
                   <ice:inputText id="input_timeMethod" size="90"
-                                 value="#{TemplateFormPage.template.metadata.timeMethod}"
-                                 required="#{TemplateFormPage.studyMap[sfc.timeMethod].required}"
+                                 value="#{TemplateFormPage.template.metadata.timeMethod}"                                 
                                  styleClass="formHtmlEnabled">
                     <f:validator validatorId="XhtmlValidator"/>
                   </ice:inputText>
@@ -1613,6 +1632,8 @@
 
               <ice:panelGrid cellpadding="0" cellspacing="0" columns="2" width="100%"
                              styleClass="vdcEditStudyTable #{TemplateFormPage.studyMap[sfc.dataCollector].templateField.fieldInputLevelString}"
+                             rendered="#{TemplateFormPage.networkEdit or 
+                                TemplateFormPage.studyMap[sfc.dataCollector].templateField.fieldInputLevelString != 'disabled'}"
                              columnClasses="vdcEditStudyCol1, vdcEditStudyCol2">
                 <ice:column styleClass="vdcEditStudyField">
                   <ice:selectOneMenu immediate="false" partialSubmit="true" 
@@ -1629,7 +1650,6 @@
                 <ice:column>
                   <ice:inputText id="input_dataCollector" size="90"
                                  value="#{TemplateFormPage.template.metadata.dataCollector}"
-                                 required="#{TemplateFormPage.studyMap[sfc.dataCollector].required}"
                                  styleClass="formHtmlEnabled">
                     <f:validator validatorId="XhtmlValidator"/>
                   </ice:inputText>
@@ -1639,6 +1659,8 @@
 
               <ice:panelGrid cellpadding="0" cellspacing="0" columns="2" width="100%"
                              styleClass="vdcEditStudyTable #{TemplateFormPage.studyMap[sfc.frequencyOfDataCollection].templateField.fieldInputLevelString}"
+                             rendered="#{TemplateFormPage.networkEdit or 
+                                TemplateFormPage.studyMap[sfc.frequencyOfDataCollection].templateField.fieldInputLevelString != 'disabled'}"
                              columnClasses="vdcEditStudyCol1, vdcEditStudyCol2">
                 <ice:column styleClass="vdcEditStudyField">
                   <ice:selectOneMenu immediate="false" partialSubmit="true" 
@@ -1655,7 +1677,6 @@
                 <ice:column>
                   <ice:inputText id="input_frequencyOfDataCollection" size="90"
                                  value="#{TemplateFormPage.template.metadata.frequencyOfDataCollection}"
-                                 required="#{TemplateFormPage.studyMap[sfc.frequencyOfDataCollection].required}"
                                  styleClass="formHtmlEnabled">
                     <f:validator validatorId="XhtmlValidator"/>
                   </ice:inputText>
@@ -1665,6 +1686,8 @@
 
               <ice:panelGrid cellpadding="0" cellspacing="0" columns="2" width="100%"
                              styleClass="vdcEditStudyTable #{TemplateFormPage.studyMap[sfc.samplingProcedure].templateField.fieldInputLevelString}"
+                             rendered="#{TemplateFormPage.networkEdit or 
+                                TemplateFormPage.studyMap[sfc.samplingProcedure].templateField.fieldInputLevelString != 'disabled'}"
                              columnClasses="vdcEditStudyCol1, vdcEditStudyCol2">
                 <ice:column styleClass="vdcEditStudyField">
                   <ice:selectOneMenu immediate="false" partialSubmit="true" 
@@ -1682,7 +1705,6 @@
                   <ice:inputTextarea id="input_samplingProcedure"
                                      cols="90" rows="4"
                                      value="#{TemplateFormPage.template.metadata.samplingProcedure}"
-                                     required="#{TemplateFormPage.studyMap[sfc.samplingProcedure].required}"
                                      styleClass="formHtmlEnabled">
                     <f:validator validatorId="XhtmlValidator"/>
                   </ice:inputTextarea>
@@ -1692,6 +1714,8 @@
 
               <ice:panelGrid cellpadding="0" cellspacing="0" columns="2" width="100%"
                              styleClass="vdcEditStudyTable #{TemplateFormPage.studyMap[sfc.deviationsFromSampleDesign].templateField.fieldInputLevelString}"
+                             rendered="#{TemplateFormPage.networkEdit or 
+                                TemplateFormPage.studyMap[sfc.deviationsFromSampleDesign].templateField.fieldInputLevelString != 'disabled'}"
                              columnClasses="vdcEditStudyCol1, vdcEditStudyCol2">
                 <ice:column styleClass="vdcEditStudyField">
                   <ice:selectOneMenu immediate="false" partialSubmit="true" 
@@ -1709,7 +1733,6 @@
                   <ice:inputTextarea cols="90" rows="4"
                                      id="input_deviationsFromSampleDesign"
                                      value="#{TemplateFormPage.template.metadata.deviationsFromSampleDesign}"
-                                     required="#{TemplateFormPage.studyMap[sfc.deviationsFromSampleDesign].required}"
                                      styleClass="formHtmlEnabled">
                     <f:validator validatorId="XhtmlValidator"/>
                   </ice:inputTextarea>
@@ -1719,6 +1742,8 @@
 
               <ice:panelGrid cellpadding="0" cellspacing="0" columns="2" width="100%"
                              styleClass="vdcEditStudyTable #{TemplateFormPage.studyMap[sfc.collectionMode].templateField.fieldInputLevelString}"
+                             rendered="#{TemplateFormPage.networkEdit or 
+                                TemplateFormPage.studyMap[sfc.collectionMode].templateField.fieldInputLevelString != 'disabled'}"
                              columnClasses="vdcEditStudyCol1, vdcEditStudyCol2">
                 <ice:column styleClass="vdcEditStudyField">
                   <ice:selectOneMenu immediate="false" partialSubmit="true" 
@@ -1735,7 +1760,6 @@
                 <ice:column>
                   <ice:inputText id="input_collectionMode" size="90"
                                  value="#{TemplateFormPage.template.metadata.collectionMode}"
-                                 required="#{TemplateFormPage.studyMap[sfc.collectionMode].required}"
                                  styleClass="formHtmlEnabled">
                     <f:validator validatorId="XhtmlValidator"/>
                   </ice:inputText>
@@ -1745,6 +1769,8 @@
 
               <ice:panelGrid cellpadding="0" cellspacing="0" columns="2" width="100%"
                              styleClass="vdcEditStudyTable #{TemplateFormPage.studyMap[sfc.researchInstrument].templateField.fieldInputLevelString}"
+                             rendered="#{TemplateFormPage.networkEdit or 
+                                TemplateFormPage.studyMap[sfc.researchInstrument].templateField.fieldInputLevelString != 'disabled'}"
                              columnClasses="vdcEditStudyCol1, vdcEditStudyCol2">
                 <ice:column styleClass="vdcEditStudyField">
                   <ice:selectOneMenu immediate="false" partialSubmit="true" 
@@ -1762,7 +1788,6 @@
                   <ice:inputText id="input_researchInstrument"
                                  size="90"
                                  value="#{TemplateFormPage.template.metadata.researchInstrument}"
-                                 required="#{TemplateFormPage.studyMap[sfc.researchInstrument].required}"
                                  styleClass="formHtmlEnabled">
                     <f:validator validatorId="XhtmlValidator"/>
                   </ice:inputText>
@@ -1772,6 +1797,8 @@
 
               <ice:panelGrid cellpadding="0" cellspacing="0" columns="2" width="100%"
                              styleClass="vdcEditStudyTable #{TemplateFormPage.studyMap[sfc.dataSources].templateField.fieldInputLevelString}"
+                             rendered="#{TemplateFormPage.networkEdit or 
+                                TemplateFormPage.studyMap[sfc.dataSources].templateField.fieldInputLevelString != 'disabled'}"
                              columnClasses="vdcEditStudyCol1, vdcEditStudyCol2">
                 <ice:column styleClass="vdcEditStudyField">
                   <ice:selectOneMenu immediate="false" partialSubmit="true" 
@@ -1788,7 +1815,6 @@
                 <ice:column>
                   <ice:inputText id="input_dataSources" size="90"
                                  value="#{TemplateFormPage.template.metadata.dataSources}"
-                                 required="#{TemplateFormPage.studyMap[sfc.dataSources].required}"
                                  styleClass="formHtmlEnabled">
                     <f:validator validatorId="XhtmlValidator"/>
                   </ice:inputText>
@@ -1798,6 +1824,8 @@
 
               <ice:panelGrid cellpadding="0" cellspacing="0" columns="2" width="100%"
                              styleClass="vdcEditStudyTable #{TemplateFormPage.studyMap[sfc.originOfSources].templateField.fieldInputLevelString}"
+                             rendered="#{TemplateFormPage.networkEdit or 
+                                TemplateFormPage.studyMap[sfc.originOfSources].templateField.fieldInputLevelString != 'disabled'}"
                              columnClasses="vdcEditStudyCol1, vdcEditStudyCol2">
                 <ice:column styleClass="vdcEditStudyField">
                   <ice:selectOneMenu immediate="false" partialSubmit="true" 
@@ -1814,7 +1842,6 @@
                 <ice:column>
                   <ice:inputText id="input_originOfSources" size="90"
                                  value="#{TemplateFormPage.template.metadata.originOfSources}"
-                                 required="#{TemplateFormPage.studyMap[sfc.originOfSources].required}"
                                  styleClass="formHtmlEnabled">
                     <f:validator validatorId="XhtmlValidator"/>
                   </ice:inputText>
@@ -1824,6 +1851,8 @@
 
               <ice:panelGrid cellpadding="0" cellspacing="0" columns="2" width="100%"
                              styleClass="vdcEditStudyTable #{TemplateFormPage.studyMap[sfc.characteristicOfSources].templateField.fieldInputLevelString}"
+                             rendered="#{TemplateFormPage.networkEdit or 
+                                TemplateFormPage.studyMap[sfc.characteristicOfSources].templateField.fieldInputLevelString != 'disabled'}"
                              columnClasses="vdcEditStudyCol1, vdcEditStudyCol2">
                 <ice:column styleClass="vdcEditStudyField">
                   <ice:selectOneMenu immediate="false" partialSubmit="true" 
@@ -1841,7 +1870,6 @@
                   <ice:inputText id="input_characteristicOfSources"
                                  size="90"
                                  value="#{TemplateFormPage.template.metadata.characteristicOfSources}"
-                                 required="#{TemplateFormPage.studyMap[sfc.characteristicOfSources].required}"
                                  styleClass="formHtmlEnabled">
                     <f:validator validatorId="XhtmlValidator"/>
                   </ice:inputText>
@@ -1851,6 +1879,8 @@
 
               <ice:panelGrid cellpadding="0" cellspacing="0" columns="2" width="100%"
                              styleClass="vdcEditStudyTable #{TemplateFormPage.studyMap[sfc.accessToSources].templateField.fieldInputLevelString}"
+                             rendered="#{TemplateFormPage.networkEdit or 
+                                TemplateFormPage.studyMap[sfc.accessToSources].templateField.fieldInputLevelString != 'disabled'}"
                              columnClasses="vdcEditStudyCol1, vdcEditStudyCol2">
                 <ice:column styleClass="vdcEditStudyField">
                   <ice:selectOneMenu immediate="false" partialSubmit="true" 
@@ -1868,7 +1898,6 @@
                   <ice:inputTextarea cols="90" rows="4"
                                      id="input_accessToSources"
                                      value="#{TemplateFormPage.template.metadata.accessToSources}"
-                                     required="#{TemplateFormPage.studyMap[sfc.accessToSources].required}"
                                      styleClass="formHtmlEnabled">
                     <f:validator validatorId="XhtmlValidator"/>
                   </ice:inputTextarea>
@@ -1878,6 +1907,8 @@
 
               <ice:panelGrid cellpadding="0" cellspacing="0" columns="2" width="100%"
                              styleClass="vdcEditStudyTable #{TemplateFormPage.studyMap[sfc.dataCollectionSituation].templateField.fieldInputLevelString}"
+                             rendered="#{TemplateFormPage.networkEdit or 
+                                TemplateFormPage.studyMap[sfc.dataCollectionSituation].templateField.fieldInputLevelString != 'disabled'}"
                              columnClasses="vdcEditStudyCol1, vdcEditStudyCol2">
                 <ice:column styleClass="vdcEditStudyField">
                   <ice:selectOneMenu immediate="false" partialSubmit="true" 
@@ -1895,7 +1926,6 @@
                   <ice:inputText id="input_dataCollectionSituation"
                                  size="90"
                                  value="#{TemplateFormPage.template.metadata.dataCollectionSituation}"
-                                 required="#{TemplateFormPage.studyMap[sfc.dataCollectionSituation].required}"
                                  styleClass="formHtmlEnabled">
                     <f:validator validatorId="XhtmlValidator"/>
                   </ice:inputText>
@@ -1905,6 +1935,8 @@
 
               <ice:panelGrid cellpadding="0" cellspacing="0" columns="2" width="100%"
                              styleClass="vdcEditStudyTable #{TemplateFormPage.studyMap[sfc.actionsToMinimizeLoss].templateField.fieldInputLevelString}"
+                             rendered="#{TemplateFormPage.networkEdit or 
+                                TemplateFormPage.studyMap[sfc.actionsToMinimizeLoss].templateField.fieldInputLevelString != 'disabled'}"
                              columnClasses="vdcEditStudyCol1, vdcEditStudyCol2">
                 <ice:column styleClass="vdcEditStudyField">
                   <ice:selectOneMenu immediate="false" partialSubmit="true" 
@@ -1922,7 +1954,6 @@
                   <ice:inputText id="input_actionsToMinimizeLoss"
                                  size="90"
                                  value="#{TemplateFormPage.template.metadata.actionsToMinimizeLoss}"
-                                 required="#{TemplateFormPage.studyMap[sfc.actionsToMinimizeLoss].required}"
                                  styleClass="formHtmlEnabled">
                     <f:validator validatorId="XhtmlValidator"/>
                   </ice:inputText>
@@ -1932,6 +1963,8 @@
 
               <ice:panelGrid cellpadding="0" cellspacing="0" columns="2" width="100%"
                              styleClass="vdcEditStudyTable #{TemplateFormPage.studyMap[sfc.controlOperations].templateField.fieldInputLevelString}"
+                             rendered="#{TemplateFormPage.networkEdit or 
+                                TemplateFormPage.studyMap[sfc.controlOperations].templateField.fieldInputLevelString != 'disabled'}"
                              columnClasses="vdcEditStudyCol1, vdcEditStudyCol2">
                 <ice:column styleClass="vdcEditStudyField">
                   <ice:selectOneMenu immediate="false" partialSubmit="true" 
@@ -1949,7 +1982,6 @@
                   <ice:inputText id="input_controlOperations"
                                  size="90"
                                  value="#{TemplateFormPage.template.metadata.controlOperations}"
-                                 required="#{TemplateFormPage.studyMap[sfc.controlOperations].required}"
                                  styleClass="formHtmlEnabled">
                     <f:validator validatorId="XhtmlValidator"/>
                   </ice:inputText>
@@ -1959,6 +1991,8 @@
 
               <ice:panelGrid cellpadding="0" cellspacing="0" columns="2" width="100%"
                              styleClass="vdcEditStudyTable #{TemplateFormPage.studyMap[sfc.weighting].templateField.fieldInputLevelString}"
+                             rendered="#{TemplateFormPage.networkEdit or 
+                                TemplateFormPage.studyMap[sfc.weighting].templateField.fieldInputLevelString != 'disabled'}"
                              columnClasses="vdcEditStudyCol1, vdcEditStudyCol2">
                 <ice:column styleClass="vdcEditStudyField">
                   <ice:selectOneMenu immediate="false" partialSubmit="true" 
@@ -1975,7 +2009,6 @@
                 <ice:column>
                   <ice:inputText id="input_weighting" size="90"
                                  value="#{TemplateFormPage.template.metadata.weighting}"
-                                 required="#{TemplateFormPage.studyMap[sfc.weighting].required}"
                                  styleClass="formHtmlEnabled">
                     <f:validator validatorId="XhtmlValidator"/>
                   </ice:inputText>
@@ -1985,6 +2018,8 @@
 
               <ice:panelGrid cellpadding="0" cellspacing="0" columns="2" width="100%"
                              styleClass="vdcEditStudyTable #{TemplateFormPage.studyMap[sfc.cleaningOperations].templateField.fieldInputLevelString}"
+                             rendered="#{TemplateFormPage.networkEdit or 
+                                TemplateFormPage.studyMap[sfc.cleaningOperations].templateField.fieldInputLevelString != 'disabled'}"
                              columnClasses="vdcEditStudyCol1, vdcEditStudyCol2">
                 <ice:column styleClass="vdcEditStudyField">
                   <ice:selectOneMenu immediate="false" partialSubmit="true" 
@@ -2001,7 +2036,6 @@
                 <ice:column>
                   <ice:inputText id="input_cleaningOperations" size="90"
                                  value="#{TemplateFormPage.template.metadata.cleaningOperations}"
-                                 required="#{TemplateFormPage.studyMap[sfc.cleaningOperations].required}"
                                  styleClass="formHtmlEnabled">
                     <f:validator validatorId="XhtmlValidator"/>
                   </ice:inputText>
@@ -2011,6 +2045,8 @@
 
               <ice:panelGrid cellpadding="0" cellspacing="0" columns="2" width="100%"
                              styleClass="vdcEditStudyTable #{TemplateFormPage.studyMap[sfc.studyLevelErrorNotes].templateField.fieldInputLevelString}"
+                             rendered="#{TemplateFormPage.networkEdit or 
+                                TemplateFormPage.studyMap[sfc.studyLevelErrorNotes].templateField.fieldInputLevelString != 'disabled'}"
                              columnClasses="vdcEditStudyCol1, vdcEditStudyCol2">
                 <ice:column styleClass="vdcEditStudyField">
                   <ice:selectOneMenu immediate="false" partialSubmit="true" 
@@ -2027,7 +2063,6 @@
                 <ice:column>
                   <ice:inputText id="input_studyLevelErrorNotes" size="90"
                                  value="#{TemplateFormPage.template.metadata.studyLevelErrorNotes}"
-                                 required="#{TemplateFormPage.studyMap[sfc.studyLevelErrorNotes].required}"
                                  styleClass="formHtmlEnabled">
                     <f:validator validatorId="XhtmlValidator"/>
                   </ice:inputText>
@@ -2037,6 +2072,8 @@
 
               <ice:panelGrid cellpadding="0" cellspacing="0" columns="2" width="100%"
                              styleClass="vdcEditStudyTable #{TemplateFormPage.studyMap[sfc.responseRate].templateField.fieldInputLevelString}"
+                             rendered="#{TemplateFormPage.networkEdit or 
+                                TemplateFormPage.studyMap[sfc.responseRate].templateField.fieldInputLevelString != 'disabled'}"
                              columnClasses="vdcEditStudyCol1, vdcEditStudyCol2">
                 <ice:column styleClass="vdcEditStudyField">
                   <ice:selectOneMenu immediate="false" partialSubmit="true" 
@@ -2053,7 +2090,6 @@
                 <ice:column>
                   <ice:inputText id="input_responseRate" size="90"
                                  value="#{TemplateFormPage.template.metadata.responseRate}"
-                                 required="#{TemplateFormPage.studyMap[sfc.responseRate].required}"
                                  styleClass="formHtmlEnabled">
                     <f:validator validatorId="XhtmlValidator"/>
                   </ice:inputText>
@@ -2063,6 +2099,8 @@
 
               <ice:panelGrid cellpadding="0" cellspacing="0" columns="2" width="100%"
                              styleClass="vdcEditStudyTable #{TemplateFormPage.studyMap[sfc.samplingErrorEstimates].templateField.fieldInputLevelString}"
+                             rendered="#{TemplateFormPage.networkEdit or 
+                                TemplateFormPage.studyMap[sfc.samplingErrorEstimates].templateField.fieldInputLevelString != 'disabled'}"
                              columnClasses="vdcEditStudyCol1, vdcEditStudyCol2">
                 <ice:column styleClass="vdcEditStudyField">
                   <ice:selectOneMenu immediate="false" partialSubmit="true" 
@@ -2079,7 +2117,6 @@
                 <ice:column>
                   <ice:inputText id="input_samplingErrorEstimates" size="90"
                                  value="#{TemplateFormPage.template.metadata.samplingErrorEstimate}"
-                                 required="#{TemplateFormPage.studyMap[sfc.samplingErrorEstimates].required}"
                                  styleClass="formHtmlEnabled">
                     <f:validator validatorId="XhtmlValidator"/>
                   </ice:inputText>
@@ -2089,6 +2126,8 @@
 
               <ice:panelGrid cellpadding="0" cellspacing="0" columns="2" width="100%"
                              styleClass="vdcEditStudyTable #{TemplateFormPage.studyMap[sfc.otherDataAppraisal].templateField.fieldInputLevelString}"
+                             rendered="#{TemplateFormPage.networkEdit or 
+                                TemplateFormPage.studyMap[sfc.otherDataAppraisal].templateField.fieldInputLevelString != 'disabled'}"
                              columnClasses="vdcEditStudyCol1, vdcEditStudyCol2">
                 <ice:column styleClass="vdcEditStudyField">
                   <ice:selectOneMenu immediate="false" partialSubmit="true" 
@@ -2106,7 +2145,6 @@
                   <ice:inputText id="input_otherDataAppraisal"
                                  size="90"
                                  value="#{TemplateFormPage.template.metadata.otherDataAppraisal}"
-                                 required="#{TemplateFormPage.studyMap[sfc.otherDataAppraisal].required}"
                                  styleClass="formHtmlEnabled">
                     <f:validator validatorId="XhtmlValidator"/>
                   </ice:inputText>
@@ -2123,6 +2161,8 @@
 
               <ice:panelGrid cellpadding="0" cellspacing="0" columns="2" width="100%"
                              styleClass="vdcEditStudyTable #{TemplateFormPage.studyMap[sfc.placeOfAccess].templateField.fieldInputLevelString}"
+                             rendered="#{TemplateFormPage.networkEdit or 
+                                TemplateFormPage.studyMap[sfc.placeOfAccess].templateField.fieldInputLevelString != 'disabled'}"
                              columnClasses="vdcEditStudyCol1, vdcEditStudyCol2" id="gridPanel5a">
                 <ice:column styleClass="vdcEditStudyField">
                   <ice:selectOneMenu immediate="false" partialSubmit="true"
@@ -2148,6 +2188,8 @@
 
               <ice:panelGrid cellpadding="0" cellspacing="0" columns="2" width="100%"
                              styleClass="vdcEditStudyTable #{TemplateFormPage.studyMap[sfc.originalArchive].templateField.fieldInputLevelString}"
+                             rendered="#{TemplateFormPage.networkEdit or 
+                                TemplateFormPage.studyMap[sfc.originalArchive].templateField.fieldInputLevelString != 'disabled'}"
                              columnClasses="vdcEditStudyCol1, vdcEditStudyCol2">
                 <ice:column styleClass="vdcEditStudyField">
                   <ice:selectOneMenu immediate="false" partialSubmit="true"
@@ -2173,6 +2215,8 @@
 
               <ice:panelGrid cellpadding="0" cellspacing="0" columns="2" width="100%"
                              styleClass="vdcEditStudyTable #{TemplateFormPage.studyMap[sfc.availabilityStatus].templateField.fieldInputLevelString}"
+                             rendered="#{TemplateFormPage.networkEdit or 
+                                TemplateFormPage.studyMap[sfc.availabilityStatus].templateField.fieldInputLevelString != 'disabled'}"
                              columnClasses="vdcEditStudyCol1, vdcEditStudyCol2">
                 <ice:column styleClass="vdcEditStudyField">
                   <ice:selectOneMenu immediate="false" partialSubmit="true"
@@ -2197,6 +2241,8 @@
 
               <ice:panelGrid cellpadding="0" cellspacing="0" columns="2" width="100%"
                              styleClass="vdcEditStudyTable #{TemplateFormPage.studyMap[sfc.collectionSize].templateField.fieldInputLevelString}"
+                             rendered="#{TemplateFormPage.networkEdit or 
+                                TemplateFormPage.studyMap[sfc.collectionSize].templateField.fieldInputLevelString != 'disabled'}"
                              columnClasses="vdcEditStudyCol1, vdcEditStudyCol2">
                 <ice:column styleClass="vdcEditStudyField">
                   <ice:selectOneMenu immediate="false" partialSubmit="true"
@@ -2222,6 +2268,8 @@
 
               <ice:panelGrid cellpadding="0" cellspacing="0" columns="2" width="100%"
                              styleClass="vdcEditStudyTable #{TemplateFormPage.studyMap[sfc.studyCompletion].templateField.fieldInputLevelString}"
+                             rendered="#{TemplateFormPage.networkEdit or 
+                                TemplateFormPage.studyMap[sfc.studyCompletion].templateField.fieldInputLevelString != 'disabled'}"
                              columnClasses="vdcEditStudyCol1, vdcEditStudyCol2">
                 <ice:column styleClass="vdcEditStudyField">
                   <ice:selectOneMenu immediate="false" partialSubmit="true"
@@ -2250,6 +2298,8 @@
               </div>
               <ice:panelGrid cellpadding="0" cellspacing="0" columns="2" width="100%"
                              styleClass="vdcEditStudyTable #{TemplateFormPage.studyMap[sfc.confidentialityDeclaration].templateField.fieldInputLevelString}"
+                             rendered="#{TemplateFormPage.networkEdit or 
+                                TemplateFormPage.studyMap[sfc.confidentialityDeclaration].templateField.fieldInputLevelString != 'disabled'}"
                              columnClasses="vdcEditStudyCol1, vdcEditStudyCol2" id="gridPanel5">
                 <ice:column styleClass="vdcEditStudyField">
                   <ice:selectOneMenu immediate="false" partialSubmit="true"
@@ -2275,6 +2325,8 @@
 
               <ice:panelGrid cellpadding="0" cellspacing="0" columns="2" width="100%"
                              styleClass="vdcEditStudyTable #{TemplateFormPage.studyMap[sfc.specialPermissions].templateField.fieldInputLevelString}"
+                             rendered="#{TemplateFormPage.networkEdit or 
+                                TemplateFormPage.studyMap[sfc.specialPermissions].templateField.fieldInputLevelString != 'disabled'}"
                              columnClasses="vdcEditStudyCol1, vdcEditStudyCol2">
                 <ice:column styleClass="vdcEditStudyField">
                   <ice:selectOneMenu immediate="false" partialSubmit="true"
@@ -2299,6 +2351,8 @@
 
               <ice:panelGrid cellpadding="0" cellspacing="0" columns="2" width="100%"
                              styleClass="vdcEditStudyTable #{TemplateFormPage.studyMap[sfc.restrictions].templateField.fieldInputLevelString}"
+                             rendered="#{TemplateFormPage.networkEdit or 
+                                TemplateFormPage.studyMap[sfc.restrictions].templateField.fieldInputLevelString != 'disabled'}"
                              columnClasses="vdcEditStudyCol1, vdcEditStudyCol2">
                 <ice:column styleClass="vdcEditStudyField">
                   <ice:selectOneMenu immediate="false" partialSubmit="true"
@@ -2324,6 +2378,8 @@
 
               <ice:panelGrid cellpadding="0" cellspacing="0" columns="2" width="100%"
                              styleClass="vdcEditStudyTable #{TemplateFormPage.studyMap[sfc.contact].templateField.fieldInputLevelString}"
+                             rendered="#{TemplateFormPage.networkEdit or 
+                                TemplateFormPage.studyMap[sfc.contact].templateField.fieldInputLevelString != 'disabled'}"
                              columnClasses="vdcEditStudyCol1, vdcEditStudyCol2">
                 <ice:column styleClass="vdcEditStudyField">
                   <ice:selectOneMenu immediate="false" partialSubmit="true"
@@ -2353,6 +2409,8 @@
                 <ice:column styleClass="vdcEditStudyField">
                   <ice:selectOneMenu immediate="false" partialSubmit="true"
                                         value="#{TemplateFormPage.studyMap[sfc.citationRequirements].templateField.fieldInputLevelString}"
+                                        rendered="#{TemplateFormPage.networkEdit or 
+                                            TemplateFormPage.studyMap[sfc.citationRequirements].templateField.fieldInputLevelString != 'disabled'}"
                                         valueChangeListener="#{TemplateFormPage.changeFieldInputValue}">
                             <f:attribute name="fieldName" value="citationRequirements" />
                   <f:selectItems value="#{TemplateFormPage.fieldInputLevelSelectItems}"/>
@@ -2373,6 +2431,8 @@
 
               <ice:panelGrid cellpadding="0" cellspacing="0" columns="2" width="100%"
                              styleClass="vdcEditStudyTable #{TemplateFormPage.studyMap[sfc.depositorRequirements].templateField.fieldInputLevelString}"
+                             rendered="#{TemplateFormPage.networkEdit or 
+                                            TemplateFormPage.studyMap[sfc.depositorRequirements].templateField.fieldInputLevelString != 'disabled'}"
                              columnClasses="vdcEditStudyCol1, vdcEditStudyCol2">
                 <ice:column styleClass="vdcEditStudyField">
                   <ice:selectOneMenu immediate="false" partialSubmit="true"
@@ -2399,6 +2459,8 @@
 
               <ice:panelGrid cellpadding="0" cellspacing="0" width="100%"
                              styleClass="vdcEditStudyTable #{TemplateFormPage.studyMap[sfc.conditions].templateField.fieldInputLevelString}"
+                             rendered="#{TemplateFormPage.networkEdit or 
+                                            TemplateFormPage.studyMap[sfc.conditions].templateField.fieldInputLevelString != 'disabled'}"
                              columnClasses="vdcEditStudyCol1, vdcEditStudyCol2" columns="2">
                 <ice:column styleClass="vdcEditStudyField">
                   <ice:selectOneMenu immediate="false" partialSubmit="true"
@@ -2425,6 +2487,8 @@
 
               <ice:panelGrid cellpadding="0" cellspacing="0" width="100%"
                              styleClass="vdcEditStudyTable #{TemplateFormPage.studyMap[sfc.disclaimer].templateField.fieldInputLevelString}"
+                             rendered="#{TemplateFormPage.networkEdit or 
+                                            TemplateFormPage.studyMap[sfc.disclaimer].templateField.fieldInputLevelString != 'disabled'}"
                              columnClasses="vdcEditStudyCol1, vdcEditStudyCol2" columns="2">
                 <ice:column styleClass="vdcEditStudyField">
                   <ice:selectOneMenu immediate="false" partialSubmit="true"
@@ -2456,6 +2520,8 @@
               <!-- this is a dummy datatable wrapper used to force data retention on validation error-->
               <ice:dataTable cellpadding="0" cellspacing="0" width="100%"
                              styleClass="vdcEditStudyTable"
+                             rendered="#{TemplateFormPage.networkEdit or 
+                                            TemplateFormPage.studyMap[sfc.notesInformationType].templateField.fieldInputLevelString != 'disabled'}"
                              rowClasses="#{TemplateFormPage.noteInputLevel}" value="dummy_datatable">
                 <ice:column>
                   <ice:dataTable id="dataTableNotes" cellpadding="0" cellspacing="0" width="100%"

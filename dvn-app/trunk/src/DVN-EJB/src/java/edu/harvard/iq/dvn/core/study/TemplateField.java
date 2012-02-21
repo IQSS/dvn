@@ -320,6 +320,10 @@ public class TemplateField implements java.io.Serializable {
         return fieldInputLevelString.equals("hidden"); 
     }
     
+    public boolean isDisabled() {
+        return fieldInputLevelString.equals("disabled"); 
+    }
+    
    public int hashCode() {
         int hash = 0;
         hash += (this.id != null ? this.id.hashCode() : 0);

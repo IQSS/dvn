@@ -49,7 +49,7 @@
         jQuery('.dvnUrlOpenScholar').hide();
         jQuery('.dvnUrlPersonalSite').hide();
         
-        jQuery(('#editBannerFooterForm\\:chkOpenScholarDataverse').checked = true).each(function() {
+        jQuery('#editBannerFooterForm\\:chkOpenScholarDataverse[checked]').each(function() {
            jQuery('.dvnCustomizationSelectSiteBlock').show();
            jQuery(".dvnCustomBannerFooterFieldsBlock").hide();
         });

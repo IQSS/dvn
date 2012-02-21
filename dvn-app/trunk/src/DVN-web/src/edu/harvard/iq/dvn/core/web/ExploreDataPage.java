@@ -1221,7 +1221,6 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
            return;
         } else {
             FacesContext fc = FacesContext.getCurrentInstance();
-            JavascriptContext.addJavascriptCall(fc, "initRoundedCorners();");
         }
 
     }

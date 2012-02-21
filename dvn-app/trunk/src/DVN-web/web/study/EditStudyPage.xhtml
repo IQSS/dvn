@@ -89,36 +89,9 @@
         <ice:inputHidden id="studyId" value="#{EditStudyPage.studyId}"/>
         <script type="text/javascript">
           // <![CDATA[
-
-              function toggleHelpBlock(helpBlock) {
-                    jQuery(helpBlock).next().slideToggle(500);
-                    var toggleHelpBlock = (jQuery(helpBlock).children('span.iceOutTxt').text() == 'Close Help [-]') ? 'Open Help [+]' : 'Close Help [-]';
-                    jQuery(helpBlock).children('span.iceOutTxt').text(toggleHelpBlock);
-                    var toggleState = jQuery(helpBlock).children('span.iceOutTxt').text();
-                    if (toggleState == 'Open Help [+]') {
-                        jQuery('.dvnEditStudyHelpBlock').animate({height:'26px'},400,function() {jQuery('.dvnInformationMessage').css('background-image','url(/dvn/resources/images/icon_information.18.png)')});
-                        jQuery.cookie('helpBlockState', 'closed');
-                    }
-                    else {
-                        jQuery('.dvnEditStudyHelpBlock').animate({height:'auto'},400,function() {jQuery('.dvnInformationMessage').css('background-image','url(/dvn/resources/images/icon_information.png)')});
-                        jQuery.cookie('helpBlockState', 'opened');
-                    }
-                    return false;
-              };
-
               jQuery(document).ready(function(){
-              
-              var helpBlockStateVar = jQuery.cookie('helpBlockState');
-                    if (helpBlockStateVar == 'closed') {
-                        jQuery('.dvnCloseHelpBlock').next().slideToggle(500);
-                        jQuery('.dvnEditStudyHelpBlock').animate({height:'26px'},400,function() {jQuery('.dvnInformationMessage').css('background-image','url(/dvn/resources/images/icon_information.18.png)')});
-                        jQuery('.dvnCloseHelpBlock').children('span.iceOutTxt').text('Open Help [+]');
-              };
-
-
-              jQuery(".dvnstudystatusversionnote").truncate({max_length: 250});
-
-          });
+                jQuery(".dvnstudystatusversionnote").truncate({max_length: 250});
+              });
           // ]]>
         </script>
 

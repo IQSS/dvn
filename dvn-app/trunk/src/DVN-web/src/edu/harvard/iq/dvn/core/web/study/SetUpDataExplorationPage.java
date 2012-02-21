@@ -205,7 +205,6 @@ public class SetUpDataExplorationPage extends VDCBaseBean implements java.io.Ser
         }
                 
         FacesContext fc = FacesContext.getCurrentInstance();
-        JavascriptContext.addJavascriptCall(fc, "initRoundedCorners();" );
         
         
 
@@ -1243,7 +1242,6 @@ public class SetUpDataExplorationPage extends VDCBaseBean implements java.io.Ser
                 String fullErrorMessage = "This name already exists. Please enter another.<br>" ;
                 FacesMessage message = new FacesMessage(fullErrorMessage);
                 fc.addMessage(validateButton.getClientId(fc), message);
-                JavascriptContext.addJavascriptCall(fc, "initRoundedCorners();" );
                 return;
             }
 
@@ -1432,7 +1430,6 @@ public class SetUpDataExplorationPage extends VDCBaseBean implements java.io.Ser
                 String fullErrorMessage = "This name already exists. Please enter another.<br>" ;
                 FacesMessage message = new FacesMessage(fullErrorMessage);
                 fc.addMessage(validateButton.getClientId(fc), message);
-                JavascriptContext.addJavascriptCall(fc, "initRoundedCorners();");
             }
 
          return duplicates;
@@ -2032,15 +2029,13 @@ public class SetUpDataExplorationPage extends VDCBaseBean implements java.io.Ser
 
         if (valid && messages){
                 FacesContext fc = FacesContext.getCurrentInstance();               
-                getExternalContext().getFlash().put("successMessage","The Data Visualization is valid for release."); 
-                JavascriptContext.addJavascriptCall(fc, "initRoundedCorners();" );
+                getExternalContext().getFlash().put("successMessage","The Data Visualization is valid for release.");
         }
         if (!valid&& messages) {
             // add rounded corners to the validation message box
             FacesContext fc = FacesContext.getCurrentInstance();
-            fullErrorMessage = "This configuration is invalid so it cannot be released.<br>" + fullErrorMessage;           
-            getExternalContext().getFlash().put("warningMessage",fullErrorMessage); 
-            JavascriptContext.addJavascriptCall(fc, "initRoundedCorners();" );
+            fullErrorMessage = "This configuration is invalid so it cannot be released.<br>" + fullErrorMessage;
+            getExternalContext().getFlash().put("warningMessage",fullErrorMessage);
         }
 
         return valid;
@@ -2074,7 +2069,6 @@ public class SetUpDataExplorationPage extends VDCBaseBean implements java.io.Ser
                FacesMessage message = new FacesMessage("Your current changes are invalid. Correct these issues or unrelease your visualization before saving. Click Validate button to get a full list of validation issues.");
                FacesContext fc = FacesContext.getCurrentInstance();
                fc.addMessage(validateButton.getClientId(fc), message);
-               JavascriptContext.addJavascriptCall(fc, "initRoundedCorners();" );
                return "";
            }
        }
@@ -2100,7 +2094,6 @@ public class SetUpDataExplorationPage extends VDCBaseBean implements java.io.Ser
        if (successMessage){
                FacesContext fc = FacesContext.getCurrentInstance();
                getExternalContext().getFlash().put("successMessage","Successfully saved changes. You may exit or continue editing.");
-               JavascriptContext.addJavascriptCall(fc, "initRoundedCorners();" );
        }
        edited = false;
        return "";

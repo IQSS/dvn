@@ -60,9 +60,6 @@
     &#60;![endif]--&#62;"/>
   <script type="text/javascript" src="/dvn/resources/javascript/EventCapture.js"/>
   <script type="text/javascript" src="/dvn/resources/javascript/jquery.js"/>
-  <script type="text/javascript" src="/dvn/resources/javascript/jquery.corner.pack.js"/>
-  <script type="text/javascript" src="/dvn/resources/javascript/excanvas.pack.js"/>
-  <script type="text/javascript" src="/dvn/resources/javascript/jquery.ifixpng.js"/>
   <script type="text/javascript" src="/dvn/resources/javascript/jquery.truncator.js"/>
   <script type="text/javascript" src="/dvn/resources/javascript/sgbeal-togglepane.jquery.js"/>
   <script type="text/javascript" src="/dvn/resources/javascript/jquery.accordion.js"/>
@@ -79,13 +76,25 @@
       // <![CDATA[
       jQuery.noConflict();
       jQuery(document).ready(function(){
-          jQuery("div.dvn_navblock").corner("10px bottom");
-          jQuery("div.dvn_block, div.dvn_blockTitleBar, div.dvn_searchblock, div.dvnMsgBlockRound, div.vdcStudyFilesMessage"
-            ).corner("10px");
-          //jQuery.ifixpng("/dvn/resources/images/pixel.gif");
-          //jQuery("img[@src$=.png], a.requestHmpgSideLink:link, a.requestHmpgSideLink:visited, a.requestHmpgSideLink:hover, a.requestHmpgSideLink:active").ifixpng();
+          initInlineHelpTip();
       });
+      function initInlineHelpTip(){
+        jQuery('.dvnInlineHelpTip').tooltip({
+            showURL: false,
+            showBody: " - "
+        });
+
+        // Now remove the class, so when this method gets called again we don't include them
+        // (since calling .tooltip more than once seems to break the tooltips)
+        jQuery('.dvnInlineHelpTip').removeClass("dvnInlineHelpTip");
+      };
       // ]]>
+  </script>
+  <script type="text/javascript">
+    if (self != top)
+    {
+      document.write ('<link rel="stylesheet" type="text/css" href="/dvn/resources/css/dvnframes.css"/>');
+    }
   </script>
   <ice:outputText escape="false" nospan="true"
                   rendered="#{applicationScope.googleAnalyticsKey != null || MainLayoutBean.googleAnalyticsKey != null}"

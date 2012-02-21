@@ -519,7 +519,7 @@ public class Indexer implements java.io.Serializable  {
             searchParts.add(searchTermsQuery);
             BooleanQuery searchQuery = andQueryClause(searchParts);
             logger.fine("Start hits: " + DateTools.dateToString(new Date(), Resolution.MILLISECOND));
-            logger.fine("INDEXER: search query: "+searchQuery.toString());
+            logger.info("INDEXER: search query (native): "+searchQuery.toString());
             nvResults = getHitIds(searchQuery);
             logger.fine("Done hits: " + DateTools.dateToString(new Date(), Resolution.MILLISECOND));
             logger.fine("Start filter: " + DateTools.dateToString(new Date(), Resolution.MILLISECOND));

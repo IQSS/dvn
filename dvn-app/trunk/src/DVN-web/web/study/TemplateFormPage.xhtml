@@ -1430,6 +1430,7 @@
               
               <!-- Generic control-->              
               <ice:panelSeries value="#{TemplateFormPage.adHocFields}" var="customField">
+                  
                   <ice:dataTable cellpadding="0" cellspacing="0" width="100%" rendered ="#{empty(customField.templateFieldControlledVocabulary)}"
                                  columnClasses="vdcEditStudyCol1b, vdcEditStudyCol2, vdcEditStudyCol3"
                                  value="#{customField.templateFieldValues}" var="customValue">
@@ -1534,8 +1535,11 @@
                     </ice:dataTable> 
                   
 <!-- Start of Controlled vocab stuff-->
-                    <ice:column>                  
-                      <div class="vdcEditStudyField">
+                <ice:panelGrid cellpadding="0" cellspacing="0" columns="3" width="100%"
+                             styleClass="vdcEditStudyTable #{customField.fieldInputLevelString}"
+                             rendered="#{TemplateFormPage.networkEdit or customField.fieldInputLevelString != 'disabled'}"
+                             columnClasses="vdcEditStudyCol1, vdcEditStudyCol2">
+                <ice:column styleClass="vdcEditStudyField">
                         <ice:selectOneMenu immediate="false" partialSubmit="true"
                                         rendered="#{!empty(customField.templateFieldControlledVocabulary)}"
                                         value="#{customField.fieldInputLevelString}"
@@ -1558,11 +1562,8 @@
                                          <f:attribute name="studyFieldId" value="#{customField.studyField.id}" />
                                           <f:attribute name="studyFieldName" value="#{customField.studyField.name}" />
                        </ice:commandButton>
-                      </div>
                     </ice:column>
-                    <ice:column>
-                      <div>
-                        <ice:column> 
+                <ice:column>
                         <ice:selectOneMenu immediate="false"  value="#{customField.templateFieldValueSingleString}" valueChangeListener="#{TemplateFormPage.changeSingleValCV}"                                          
                                         rendered ="#{!empty(customField.templateFieldControlledVocabulary) and !customField.allowMultiples}">
                             <f:selectItems value="#{customField.controlledVocabularyStrings}"/>
@@ -1573,23 +1574,7 @@
                             <f:selectItems value="#{customField.controlledVocabularyStrings}"/>
                             <f:attribute name="sf_id" value="#{customField.studyField.id}"/>
                         </ice:selectManyListbox> 
-                        </ice:column>
-                      </div>
-                    </ice:column>
-                    <ice:column>
-                      <ice:commandButton immediate="true" value="Move Up" alt="Move Up" title="Move Up" 
-                                         rendered="#{TemplateFormPage.networkEdit and !empty(customField.templateFieldControlledVocabulary)}"
-                                         image="/resources/images/icon_moveup.png" actionListener="#{TemplateFormPage.moveUp}">
-                         <f:attribute name="sf_id" value="#{customField.studyField.id}"/>
-                         <f:attribute name="dcmSortOrder" value="#{customField.dcmSortOrder}"/>
-                      </ice:commandButton>
-                      <ice:commandButton immediate="true" value="Move Down" alt="Move Down" title="Move Down" 
-                                         rendered="#{TemplateFormPage.networkEdit and !empty(customField.templateFieldControlledVocabulary)}"
-                                         image="/resources/images/icon_movedown.png" actionListener="#{TemplateFormPage.moveDown}">
-                          <f:attribute name="sf_id" value="#{customField.studyField.id}"/>
-                          <f:attribute name="dcmSortOrder" value="#{customField.dcmSortOrder}"/>                          
-                      </ice:commandButton>
-                    </ice:column>
+                </ice:column>
                     <ice:column>  
                       <ice:commandButton   value="Update Controlled Vocabulary" actionListener="#{TemplateFormPage.openPopup}" 
                                            rendered="#{TemplateFormPage.networkEdit and !empty(customField.templateFieldControlledVocabulary)}" >
@@ -1597,7 +1582,9 @@
                           <f:attribute name="dcmSortOrder" value="#{customField.dcmSortOrder}"/>
                           <f:attribute name="sf_name" value="#{customField.studyField.name}"/>
                       </ice:commandButton>
-                    </ice:column> 
+                    </ice:column>                     
+              </ice:panelGrid>
+ 
               </ice:panelSeries>
                             
   

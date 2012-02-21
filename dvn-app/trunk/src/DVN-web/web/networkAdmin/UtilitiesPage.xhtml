@@ -296,6 +296,20 @@
                 <div>
                   <ice:commandButton value="Fix Handles" action="#{UtilitiesPage.handleFixAll_action}"/>
                 </div>
+                <hr/>
+                <ice:outputText value="To re-register a single handle, enter the global id and click on the button below:"/>
+                <div>
+                  <ice:inputText value="#{UtilitiesPage.fixGlobalId}" size="6"/>
+                  <ice:commandButton value="Fix Handle" action="#{UtilitiesPage.handleFixSingle_action}"/>
+                </div>
+                <hr/>
+                <ice:outputText value="To check the Handle registration status of a range of studies, enter the range of db ids and click below:"/>
+                <div>
+                  <ice:inputText value="#{UtilitiesPage.studyIdRange}" size="12"/>
+                  <ice:commandButton value="Check Handles" action="#{UtilitiesPage.handleCheckRange_action}"/>
+                </div>
+                
+                
               </ice:panelGrid>
               <!-- STUDY PANEL -->
               <div class="vdcStudyInfoHeader dvnFormPadding">

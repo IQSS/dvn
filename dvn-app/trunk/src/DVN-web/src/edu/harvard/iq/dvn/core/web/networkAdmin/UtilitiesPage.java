@@ -172,6 +172,8 @@ public class UtilitiesPage extends VDCBaseBean implements java.io.Serializable  
     
     String indexDVId;
     String indexStudyIds;
+    private String fixGlobalId; 
+    private String studyIdRange;
 
     public String getIndexDVId() {
         return indexDVId;
@@ -184,11 +186,28 @@ public class UtilitiesPage extends VDCBaseBean implements java.io.Serializable  
     public String getIndexStudyIds() {
         return indexStudyIds;
     }
-
+    
     public void setIndexStudyIds(String indexStudyIds) {
         this.indexStudyIds = indexStudyIds;
     }
     
+    public String getFixGlobalId() {
+        return fixGlobalId; 
+    }
+    
+    public void setFixGlobalId(String gid) {
+        fixGlobalId = gid; 
+    }
+
+    public String getStudyIdRange() {
+        return studyIdRange; 
+    }
+    
+    public void setStudyIdRange(String sir) {
+        studyIdRange = sir; 
+    }
+    
+
     private boolean deleteLockDisabled;
     
     public String getIndexLocks(){
@@ -1009,6 +1028,96 @@ public class UtilitiesPage extends VDCBaseBean implements java.io.Serializable  
         }
 
         return null;
+    }
+        
+    public String handleFixSingle_action() {
+        // TODO: also need a method to do this on a range of study IDs (?)
+        String hdl = fixGlobalId; 
+        try {
+            gnrsService.fixHandle(hdl);
+
+            addMessage( "handleMessage", "Re-registered handle "+hdl );
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            addMessage( "handleMessage", "Handle (re)registration failed for \"" + hdl + "\"" );
+        }
+
+        return null;
+    }
+    
+    
+    public String handleCheckRange_action() {
+        if (studyIdRange == null || 
+                !(studyIdRange.matches("^[0-9][0-9]*$") || 
+                studyIdRange.matches("^[0-9][0-9]*\\-[0-9][0-9]*$"))) {
+            addMessage("handleMessage", "Invalid study ID range!");
+            return null; 
+            
+        }
+        
+        String checkOutput = ""; 
+        
+        if (studyIdRange.indexOf('-') > 0) {
+            // range: 
+            Long idStart = null; 
+            Long idEnd = null; 
+            
+            try {
+                String rangeStart = studyIdRange.substring(0, studyIdRange.indexOf('-'));
+                String rangeEnd = studyIdRange.substring(studyIdRange.indexOf('-')+1);
+ 
+                idStart = new Long (rangeStart);
+                idEnd = new Long (rangeEnd); 
+            } catch (Exception ex) {
+                addMessage("handleMessage", "Invalid study ID range: "+studyIdRange);
+                return null; 
+            }
+                
+            if (!(idStart.compareTo(idEnd) < 0)) {
+                addMessage("handleMessage", "Invalid numeric range: " + studyIdRange);
+                return null;
+            }
+
+            Long studyId = idStart;
+
+            while (studyId.compareTo(idEnd) <= 0) {
+                try {
+                    Study chkStudy = studyService.getStudy(studyId);
+                    String chkHandle = chkStudy.getAuthority() + "/" + chkStudy.getStudyId();
+                    if (gnrsService.isHandleRegistered(chkHandle)) {
+                        checkOutput = checkOutput.concat(studyId + "\t" + chkHandle + "\tok\n");
+                    } else {
+                        checkOutput = checkOutput.concat(studyId + "\t" + chkHandle + "\tNOT REGISTERED\n");
+                    }
+                    
+                } catch (IllegalArgumentException ex) {
+                    checkOutput = checkOutput.concat(studyId + "\t\tNO SUCH STUDY\n");
+                }
+                studyId = studyId + 1;
+            }
+            addMessage("handleMessage", checkOutput); 
+            
+            
+        } else {
+            // single id: 
+            try {
+                Long studyId = new Long (studyIdRange);
+                Study chkStudy = studyService.getStudy(studyId);
+                String chkHandle = chkStudy.getAuthority() + "/" + chkStudy.getStudyId();
+                if (gnrsService.isHandleRegistered(chkHandle)) {
+                    checkOutput = chkHandle + "\t\tok\n";
+                } else {
+                    checkOutput = chkHandle + "\t\tNOT REGISTERED\n";
+                }
+
+                addMessage("handleMessage", checkOutput);     
+                
+            } catch (Exception ex) {
+                addMessage("handleMessage", "No such study: id="+studyIdRange);
+            }
+        }
+        return null; 
     }
 
     // </editor-fold>

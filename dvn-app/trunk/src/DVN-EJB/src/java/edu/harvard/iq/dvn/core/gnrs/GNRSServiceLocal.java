@@ -45,4 +45,6 @@ public interface GNRSServiceLocal  extends java.io.Serializable {
     public void deleteAll();
 
     public void fixAll();
+    
+    public boolean isHandleRegistered(String handle);
 }

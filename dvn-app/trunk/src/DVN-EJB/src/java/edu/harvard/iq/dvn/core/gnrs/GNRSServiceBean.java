@@ -69,6 +69,8 @@ public class GNRSServiceBean implements edu.harvard.iq.dvn.core.gnrs.GNRSService
     @PersistenceContext(unitName="VDCNet-ejbPU") EntityManager em;
     @EJB VDCNetworkServiceLocal vdcNetworkService;
     @EJB StudyServiceLocal studyService;
+    
+    private static final Logger logger = Logger.getLogger("edu.harvard.iq.dvn.core.gnrs.GNRSServiceBean");
 
     /** Creates a new instance of GNRSServiceBean */
     public GNRSServiceBean() {
@@ -185,41 +187,62 @@ public class GNRSServiceBean implements edu.harvard.iq.dvn.core.gnrs.GNRSService
    }
 
    public void createHandle( String handle){
-       String prefix = handle.substring(0,handle.indexOf("/"));
+    String prefix = handle.substring(0,handle.indexOf("/"));
+    logger.fine("Creating handle "+handle);
        if (vdcNetworkService.find().isHandleRegistration() && isAuthority(prefix)){
            String localHandle = handle.substring(handle.indexOf("/")+1);
            String authHandle =  getAuthHandle();
            byte[] key = null;
            int index = 300;
-           //String file = "/hs/svr_1/admpriv.bin";
            String adminCredFile = System.getProperty("dvn.handle.admcredfile");
+           logger.fine("Configured location of the private key file: "+adminCredFile);
            String secret = System.getProperty("dvn.handle.admprivphrase");
-           try {
+           if (secret==null) {
+            logger.fine("No private phrase specified.");
+           } else if (secret.equals("")) {
+            logger.fine("Empty private phrase specified.");
+           }
+           
+            try {
                File f = new File(adminCredFile);
                FileInputStream fs = new FileInputStream(f);
+               
+               logger.fine("Key file length: "+f.length());
+
                key = new byte[(int)f.length()];
                int n=0;
-               while(n<key.length) key[n++] = (byte)fs.read();
-               fs.read(key);
+               while(n<key.length) {
+                    key[n++] = (byte)fs.read();
+               }
+               //fs.read(key);
+               logger.fine("Read "+n+" bytes from key file;");
+
            } catch (Throwable t){
-               System.err.println("Cannot read private key " + adminCredFile +": " + t);
+               System.err.println("Cannot read private key " + adminCredFile +": " + t.getMessage());
            }
            
            HandleResolver resolver = new HandleResolver();
            
            PrivateKey privkey = null;
            byte secKey[] = null;
+           byte decryptedKeyBytes[] = null; 
            try {
                if(Util.requiresSecretKey(key)){
+                   logger.fine("Secret key is required.");
                    secKey = secret.getBytes();
+               } else {
+                   logger.fine("No secret key required.");
                }
-               key = Util.decrypt(key, secKey);
-               privkey = Util.getPrivateKeyFromBytes(key, 0);
+               logger.fine("Decrypting the key.");
+               decryptedKeyBytes = Util.decrypt(key, secKey);
+               logger.fine("Decrypted: "+decryptedKeyBytes.length+" bytes");
+               privkey = Util.getPrivateKeyFromBytes(decryptedKeyBytes, 0);
            } catch (Throwable t){
-               System.err.println("Can't load private key in " + adminCredFile +": " + t);
+               System.err.println("Can't load private key in " + adminCredFile +": " + t.getMessage());
            }
            
            String urlStr = getUrlStr(prefix, handle);
+           logger.fine("URL string: "+urlStr);
            
            try {
                PublicKeyAuthenticationInfo auth =
@@ -339,7 +362,7 @@ public class GNRSServiceBean implements edu.harvard.iq.dvn.core.gnrs.GNRSService
         return handleUrl;
     }
     
-    private boolean isHandleRegistered(String handle){
+    public boolean isHandleRegistered(String handle){
         boolean handleRegistered = false;
         ResolutionRequest req = buildResolutionRequest(handle);
         AbstractResponse response = null;
@@ -407,8 +430,10 @@ public class GNRSServiceBean implements edu.harvard.iq.dvn.core.gnrs.GNRSService
             FileInputStream fs = new FileInputStream(f);
             key = new byte[(int)f.length()];
             int n=0;
-            while(n<key.length) key[n++] = (byte)fs.read();
-            fs.read(key);
+            while(n<key.length) {
+                key[n++] = (byte)fs.read();
+            }
+            //fs.read(key);
         } catch (Throwable t){
             System.err.println("Cannot read private key " + file +": " + t);
         }

@@ -57,8 +57,11 @@ public class FileAccessSingletonBean {
             try {
                 sf = studyFileService.getStudyFile(studyFileId);
                 if (sf != null) {
-                    // Check if the file is part of a released study: 
-                    if (!sf.getStudy().isReleased()) {
+                    // Check if the file is part of a released study AND a 
+                    // released Dataverse; (note that the "released" status 
+                    // is actually called "restricted" on the dataverse level!
+                    if (!sf.getStudy().isReleased() 
+                            || sf.getStudy().getOwner().isRestricted()) {
                         // if not - we are simply going to say "NOT FOUND!"
                         return null; 
                     } 
@@ -73,9 +76,11 @@ public class FileAccessSingletonBean {
                 return null; 
                 // We don't care much what happened - but for whatever 
                 // reason, we haven't been able to look up the file.
+                // Could have been a null pointer exception, because the study
+                // file isn't referenced by a valid study, etc. 
                 //
                 // We don't need to do anything special here -- we simply
-                // return null, and jersey app will cook a proper 404 
+                // return null, and Jersey app will cook a proper 404 
                 // response. 
             }
             
@@ -284,11 +289,14 @@ public class FileAccessSingletonBean {
             // And Dataverse-level: 
             if (studyFile.getStudy().getOwner() != null) {
                 // Note that there are 2 ways in which access to the study file
-                // can be restricted on the DV level:  
-                // it can be either through the "Files Restricted" setting, 
-                // or the Dataverse being restricted (or "unrleleased"):
-                if (studyFile.getStudy().getOwner().isFilesRestricted()
-                         || studyFile.getStudy().getOwner().isRestricted()) {
+                // can be "restricted" on the DV level:  
+                // it can be either through the "Files Restricted" setting, and 
+                // this is what we are checking here; or the Dataverse itself 
+                // can be "restricted" - but that must be just a legacy name, 
+                // and what it really means is more like the equivalent of 
+                // the "unrleleased" status on the study level. 
+                if (studyFile.getStudy().getOwner().isFilesRestricted()) {
+                //         || studyFile.getStudy().getOwner().isRestricted()) {
                     return false; 
                 }
             }

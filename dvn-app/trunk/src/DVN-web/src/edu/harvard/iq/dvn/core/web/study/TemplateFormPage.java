@@ -3042,8 +3042,9 @@ public class TemplateFormPage extends VDCBaseBean implements java.io.Serializabl
         List values = new ArrayList();
         for (TemplateFieldValue tfv : customField.getTemplateFieldValues()) {
 
-            Object[] row = new Object[1];
+            Object[] row = new Object[2];
             row[0] = tfv;
+            row[1] = customField.getTemplateFieldValues(); // used by the remove method
             values.add(row);
 
         }
@@ -3054,24 +3055,10 @@ public class TemplateFormPage extends VDCBaseBean implements java.io.Serializabl
 
         HtmlDataTable dataTable = (HtmlDataTable) ae.getComponent().getParent().getParent();
         if (dataTable.getRowCount() > 1) {
-            ListDataModel data = (ListDataModel) dataTable.getValue();
-            editTemplateService.removeCollectionElement((List) data.getWrappedData(), ((Object[]) data.getRowData())[0]);
+            Object[] data = (Object[]) ((ListDataModel) dataTable.getValue()).getRowData();
+            editTemplateService.removeCollectionElement((List) data[1], data[0]);
 
         }
-                /*
-        Long getOrder = (Long) ae.getComponent().getAttributes().get("dcmSortOrder");
-        TemplateField tf = adHocFields.get(getOrder.intValue() -1 );
-        TemplateFieldValue tfv = null;
-        List data = null;
-        if (tf.getTemplateFieldValues().size()>1) {
-            data = tf.getTemplateFieldValues();
-            tfv = tf.getTemplateFieldValues().get(tf.getTemplateFieldValues().size() -1);
-            
-        }
-        if (!(tfv== null)){
-            editTemplateService.removeCollectionElement(data,tfv);
-        }
-        */ 
     }
 
 }

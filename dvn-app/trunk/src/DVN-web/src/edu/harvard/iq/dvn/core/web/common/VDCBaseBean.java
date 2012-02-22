@@ -47,7 +47,7 @@ import javax.servlet.http.HttpServletResponse;
 public class VDCBaseBean  implements java.io.Serializable  {
     @EJB VDCServiceLocal vdcService;   
     @EJB VDCNetworkServiceLocal vdcNetworkService;
-    
+     
     private boolean isInititalized = false;
     /**
      * Creates a new instance of VDCBaseBean
@@ -112,22 +112,25 @@ public class VDCBaseBean  implements java.io.Serializable  {
 
 
     @Inject VDCSessionBean vdcSessionBean;
-     
-    /** 
-     * <p>Return a reference to the scoped data bean.</p>
-     */
+
     public VDCSessionBean getVDCSessionBean() {
         return vdcSessionBean;
-        //return (VDCSessionBean)getBean("VDCSession");
     }
 
     @Inject VDCRequestBean vdcRequestBean;
     
     public VDCRequestBean getVDCRequestBean() {
-        return vdcRequestBean;
-        //return (VDCRequestBean)getBean("VDCRequest");
-        
+        return vdcRequestBean;       
     }
+    
+    @Inject VDCRenderBean vdcRenderBean;
+
+    public VDCRenderBean getVDCRenderBean() {
+        return vdcRenderBean;        
+    }     
+    
+    
+    
      /**
      * <p>Return a <code>Map</code> of the session scope attributes for the
      * current user's session.  Note that calling this method will cause a

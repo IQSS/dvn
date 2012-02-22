@@ -461,7 +461,46 @@ public class TemplateFormPage extends VDCBaseBean implements java.io.Serializabl
         }
     }
 
+   public void removeAdHocField(ActionEvent ae) {
 
+        Long getId = (Long) ae.getComponent().getAttributes().get("studyFieldId");
+        String getName = (String) ae.getComponent().getAttributes().get("studyFieldName");
+
+        TemplateField removeTF = null;
+        if (getId !=null){
+            for (TemplateField tfTest: adHocFields){
+                if(getId.equals(tfTest.getStudyField().getId())){
+                    removeTF = tfTest;
+                }
+            }
+        }  else {  //if it's not already saved must look for matching name
+            
+            for (TemplateField tfTest: adHocFields){
+                if(getName.equals(tfTest.getStudyField().getName())){
+                    removeTF = tfTest;
+                }
+            }
+            
+        }
+        
+        if (removeTF !=null){ 
+            template.getTemplateFields().remove(removeTF);
+            adHocFields.remove(removeTF);
+
+            List data = null;
+            if (template.getTemplateFields().size()>1) {
+                data = (List) template.getTemplateFields();
+
+            }
+            editTemplateService.removeCollectionElement(data,removeTF);
+            // .clear was interfering with move up-down buttons
+            //dcmFieldTable.getChildren().clear();
+            
+        }  else {           
+             System.out.println("Nothing to remove?  " );            
+        }        
+    }    
+    
     /**
      * Holds value of property dataTableOtherIds.
      */

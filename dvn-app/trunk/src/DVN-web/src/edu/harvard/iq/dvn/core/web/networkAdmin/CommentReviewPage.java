@@ -53,7 +53,7 @@ public class CommentReviewPage extends VDCBaseBean implements java.io.Serializab
                                "This comment was deleted in accordance with the " +
                                 "study comments terms of use.";
          studyCommentService.deleteComment(flaggedCommentId, deletedMessage);
-         getExternalContext().getFlash().put("successMessage","Successfully deleted the flagged comment.");
+         getVDCRenderBean().getFlash().put("successMessage","Successfully deleted the flagged comment.");
          //cleanup
          flaggedCommentId  = new Long("0");
          commentsForReview = null;
@@ -70,7 +70,7 @@ public class CommentReviewPage extends VDCBaseBean implements java.io.Serializab
                                 "reported comment is not an abuse. This comment will remain posted, and will " +
                                 "no longer appear to you as reported.";
          studyCommentService.okComment(flaggedCommentId, okMessage);
-         getExternalContext().getFlash().put("successMessage","Successfully ignored the flagged comment.");
+         getVDCRenderBean().getFlash().put("successMessage","Successfully ignored the flagged comment.");
          //cleanup
          flaggedCommentId  = new Long("0");
          commentsForReview = null;

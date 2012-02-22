@@ -87,7 +87,7 @@ public class EditAccountUseTermsPage extends VDCBaseBean implements java.io.Seri
             vdcNetwork.setTermsOfUseUpdated(new Date());
             vdcNetworkService.edit(vdcNetwork);
             userService.clearAgreedTermsOfUse();
-            getExternalContext().getFlash().put("successMessage", "Successfully updated terms for account creation.");
+            getVDCRenderBean().getFlash().put("successMessage", "Successfully updated terms for account creation.");
             return "myNetworkOptions";
         } else {
             return null;

@@ -726,20 +726,20 @@ public class StudyPage extends VDCBaseBean implements java.io.Serializable  {
 
         if (StudyDeleteRequestType.DRAFT_VERSION.equals(deleteRequested)) {
             if (studyUI != null && studyUI.getStudyVersion() != null ) {
-                getExternalContext().getFlash().put("successMessage", buildSuccessMessage( "Successfully deleted draft version of the study "));
+                getVDCRenderBean().getFlash().put("successMessage", buildSuccessMessage( "Successfully deleted draft version of the study "));
                 studyService.destroyWorkingCopyVersion(studyUI.getStudyVersion().getId());
             }
         } else if (StudyDeleteRequestType.REVIEW_VERSION.equals(deleteRequested)) {
             if (studyUI != null && studyUI.getStudyVersion() != null ) {
-                getExternalContext().getFlash().put("successMessage", buildSuccessMessage("Successfully deleted review version of the study "));
+                getVDCRenderBean().getFlash().put("successMessage", buildSuccessMessage("Successfully deleted review version of the study "));
                 studyService.destroyWorkingCopyVersion(studyUI.getStudyVersion().getId());
             }
         } else if (StudyDeleteRequestType.DESTROY_STUDY.equals(deleteRequested)) {
-            getExternalContext().getFlash().put("successMessage", buildSuccessMessage("Permanently destroyed study "));
+            getVDCRenderBean().getFlash().put("successMessage", buildSuccessMessage("Permanently destroyed study "));
             studyService.deleteStudy(studyId);
 
         } else {
-            getExternalContext().getFlash().put("warningMessage", "Warning: attempted to execute unknown delete action!");
+            getVDCRenderBean().getFlash().put("warningMessage", "Warning: attempted to execute unknown delete action!");
         }
 
         showStudyDeletePopup = false;

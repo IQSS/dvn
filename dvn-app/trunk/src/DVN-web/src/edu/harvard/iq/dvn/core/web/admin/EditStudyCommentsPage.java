@@ -45,7 +45,7 @@ public class EditStudyCommentsPage extends VDCBaseBean implements Serializable {
         vdc.setAllowStudyComments(allowStudyComments);
         vdcService.edit(vdc);
         getVDCRequestBean().setCurrentVDC(vdc);
-        getExternalContext().getFlash().put("successMessage", "Successfully updated study comments settings.");
+        getVDCRenderBean().getFlash().put("successMessage", "Successfully updated study comments settings.");
         return "/admin/OptionsPage?faces-redirect=true&vdcId="+getVDCRequestBean().getCurrentVDC().getId();
     }
 

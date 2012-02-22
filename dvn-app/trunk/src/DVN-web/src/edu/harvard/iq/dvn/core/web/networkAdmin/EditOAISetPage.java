@@ -115,7 +115,7 @@ public class EditOAISetPage extends VDCBaseBean implements java.io.Serializable 
 
     public String save() {
         oaiSetService.update(oaiSet);
-        getExternalContext().getFlash().put("successMessage",SUCCESS_MESSAGE);
+        getVDCRenderBean().getFlash().put("successMessage",SUCCESS_MESSAGE);
         return "/networkAdmin/OAISetsPage?faces-redirect=true";    
     }    
     

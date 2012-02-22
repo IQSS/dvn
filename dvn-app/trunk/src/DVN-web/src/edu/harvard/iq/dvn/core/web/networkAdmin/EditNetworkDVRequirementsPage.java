@@ -138,7 +138,7 @@ VDCNetwork vdcnetwork;
             vdcnetwork.setRequireDVdescription(requireDvdescription);
             vdcnetwork.setRequireDVstudiesforrelease(requireDvstudiesforrelease);
             vdcNetworkService.edit(vdcnetwork);
-            getExternalContext().getFlash().put("successMessage", "Successfully updated the network dataverse creation and release requirements.  ");
+            getVDCRenderBean().getFlash().put("successMessage", "Successfully updated the network dataverse creation and release requirements.  ");
             return "myNetworkOptions";
     }
 

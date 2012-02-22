@@ -2029,13 +2029,13 @@ public class SetUpDataExplorationPage extends VDCBaseBean implements java.io.Ser
 
         if (valid && messages){
                 FacesContext fc = FacesContext.getCurrentInstance();               
-                getExternalContext().getFlash().put("successMessage","The Data Visualization is valid for release.");
+                getVDCRenderBean().getFlash().put("successMessage","The Data Visualization is valid for release.");
         }
         if (!valid&& messages) {
             // add rounded corners to the validation message box
             FacesContext fc = FacesContext.getCurrentInstance();
             fullErrorMessage = "This configuration is invalid so it cannot be released.<br>" + fullErrorMessage;
-            getExternalContext().getFlash().put("warningMessage",fullErrorMessage);
+            getVDCRenderBean().getFlash().put("warningMessage",fullErrorMessage);
         }
 
         return valid;
@@ -2082,7 +2082,7 @@ public class SetUpDataExplorationPage extends VDCBaseBean implements java.io.Ser
            if (!validateForRelease(false)) {
                dataTable.setVisualizationEnabled(false);
                FacesContext fc = FacesContext.getCurrentInstance();
-               getExternalContext().getFlash().put("warningMessage","Your current changes are invalid. This visualization has been set to 'unreleased'. Click Validate button to get a full list of validation issues."); 
+               getVDCRenderBean().getFlash().put("warningMessage","Your current changes are invalid. This visualization has been set to 'unreleased'. Click Validate button to get a full list of validation issues."); 
                
                successMessage = false;
            }
@@ -2093,7 +2093,7 @@ public class SetUpDataExplorationPage extends VDCBaseBean implements java.io.Ser
        
        if (successMessage){
                FacesContext fc = FacesContext.getCurrentInstance();
-               getExternalContext().getFlash().put("successMessage","Successfully saved changes. You may exit or continue editing.");
+               getVDCRenderBean().getFlash().put("successMessage","Successfully saved changes. You may exit or continue editing.");
        }
        edited = false;
        return "";

@@ -179,7 +179,7 @@ public class EditHomePanelsPage extends VDCBaseBean implements java.io.Serializa
                 vdc.setAnnouncements(localAnnouncements);
                 vdc.setDisplayNewStudies(chkNewStudies);
                 vdcService.edit(vdc);
-                getExternalContext().getFlash().put("successMessage", "Successfully updated dataverse description.");
+                getVDCRenderBean().getFlash().put("successMessage", "Successfully updated dataverse description.");
                  return "/admin/OptionsPage?faces-redirect=true&vdcId="+getVDCRequestBean().getCurrentVDC().getId();
             } else {
                 ExceptionMessageWriter.removeGlobalMessage(SUCCESS_MESSAGE);

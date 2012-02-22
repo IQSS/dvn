@@ -268,7 +268,7 @@ public class EditHarvestSitePage extends VDCBaseBean implements java.io.Serializ
             return "/site/AddSiteSuccessPage?faces-redirect=true&vdcId=" + editHarvestSiteService.getHarvestingDataverse().getVdc().getId();
             
         } else {
-            getExternalContext().getFlash().put("successMessage","Successfully updated harvesting settings.");
+            getVDCRenderBean().getFlash().put("successMessage","Successfully updated harvesting settings.");
             return generateReturnPage();
         }
 

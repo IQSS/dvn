@@ -1169,7 +1169,7 @@ public class TemplateFormPage extends VDCBaseBean implements java.io.Serializabl
             FacesContext context = FacesContext.getCurrentInstance();
             FacesMessage message = new FacesMessage("New field name may not be blank.");
             context.addMessage(null, message);
-            getExternalContext().getFlash().put("warningMessage","New field name may not be blank."); 
+            getVDCRenderBean().getFlash().put("warningMessage","New field name may not be blank."); 
             return "";
         }
         
@@ -1177,7 +1177,7 @@ public class TemplateFormPage extends VDCBaseBean implements java.io.Serializabl
             FacesContext context = FacesContext.getCurrentInstance();
             FacesMessage message = new FacesMessage("New field description may not be blank.");
             context.addMessage(null, message);
-            getExternalContext().getFlash().put("warningMessage","New field description may not be blank."); 
+            getVDCRenderBean().getFlash().put("warningMessage","New field description may not be blank."); 
             return "";
         }
 

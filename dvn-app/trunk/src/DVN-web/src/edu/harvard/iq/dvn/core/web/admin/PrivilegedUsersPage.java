@@ -367,7 +367,7 @@ public class PrivilegedUsersPage extends VDCBaseBean implements java.io.Serializ
        
         editVDCPrivileges.setVdc(vdc.getId());
         vdc = editVDCPrivileges.getVdc();
-        getExternalContext().getFlash().put("successMessage","Successfully updated dataverse permissions.");
+        getVDCRenderBean().getFlash().put("successMessage","Successfully updated dataverse permissions.");
         return "/admin/OptionsPage?faces-redirect=true&vdcId="+getVDCRequestBean().getCurrentVDC().getId();
     } 
 

@@ -97,7 +97,7 @@ public class ManageTemplatesPage extends VDCBaseBean implements java.io.Serializ
             defaultTemplateId = templateId;
         } else {
             // add flash message
-            getExternalContext().getFlash().put("warningMessage","The template you are trying to make Default was disabled by another user. Please reload this page to update.");
+            getVDCRenderBean().getFlash().put("warningMessage","The template you are trying to make Default was disabled by another user. Please reload this page to update.");
             
         }
         return "";
@@ -109,12 +109,12 @@ public class ManageTemplatesPage extends VDCBaseBean implements java.io.Serializ
             // network level template
             if (getVDCRequestBean().getCurrentVDC() == null) {
                 if ( vdcNetworkService.find().getDefaultTemplate().equals(template) || templateService.isTemplateUsedAsVDCDefault(template.getId()) ) {
-                    getExternalContext().getFlash().put("warningMessage","The template you are trying to disable was made a default template by another user. Please reload this page to update.");
+                    getVDCRenderBean().getFlash().put("warningMessage","The template you are trying to disable was made a default template by another user. Please reload this page to update.");
                     return;
                 }
             // vdc level template    
             } else if (vdcService.findById(getVDCRequestBean().getCurrentVDCId()).getDefaultTemplate().equals(template)) {
-                getExternalContext().getFlash().put("warningMessage","The template you are trying to disable was made a default template by another user. Please reload this page to update.");
+                getVDCRenderBean().getFlash().put("warningMessage","The template you are trying to disable was made a default template by another user. Please reload this page to update.");
                 return;
             }
         }

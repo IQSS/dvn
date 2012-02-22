@@ -322,11 +322,11 @@ public class ContactUsPage extends VDCBaseBean implements java.io.Serializable {
         } finally {
             ExceptionMessageWriter.addGlobalMessage(msg);
             if (success) {
-                getExternalContext().getFlash().put("success",success);
-                getExternalContext().getFlash().put("fullName",fullName);
-                getExternalContext().getFlash().put("emailAddress",emailAddress);
-                getExternalContext().getFlash().put("selectedSubject",selectedSubject);
-                getExternalContext().getFlash().put("emailBody",emailBody);
+                getVDCRenderBean().getFlash().put("success",success);
+                getVDCRenderBean().getFlash().put("fullName",fullName);
+                getVDCRenderBean().getFlash().put("emailAddress",emailAddress);
+                getVDCRenderBean().getFlash().put("selectedSubject",selectedSubject);
+                getVDCRenderBean().getFlash().put("emailBody",emailBody);
                 return "success"; 
             } else {
                 return "result";

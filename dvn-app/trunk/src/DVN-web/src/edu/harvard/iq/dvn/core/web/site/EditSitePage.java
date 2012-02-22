@@ -316,7 +316,7 @@ public class EditSitePage extends VDCBaseBean implements java.io.Serializable  {
             saveClassifications(thisVDC);
             vdcService.edit(thisVDC);
             getVDCRequestBean().setCurrentVDC(thisVDC);
-            getExternalContext().getFlash().put("successMessage", "Successfully updated general settings.");
+            getVDCRenderBean().getFlash().put("successMessage", "Successfully updated general settings.");
             return "/admin/OptionsPage?faces-redirect=true&vdcId="+thisVDC.getId();
         } else {
             success = false;

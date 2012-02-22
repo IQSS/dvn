@@ -114,8 +114,8 @@ public class DeleteDataversePage extends VDCBaseBean implements java.io.Serializ
         }
         vdcService.delete(deleteId);
 
-        getExternalContext().getFlash().put("result", getFriendlyLinkName( from ) );
-        getExternalContext().getFlash().put("resultLink", from);
+        getVDCRenderBean().getFlash().put("result", getFriendlyLinkName( from ) );
+        getVDCRenderBean().getFlash().put("resultLink", from);
         return "/site/DeleteDataverseSuccessPage?faces-redirect=true";
     }
     

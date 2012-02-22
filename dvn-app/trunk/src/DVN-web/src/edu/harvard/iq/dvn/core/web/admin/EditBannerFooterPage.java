@@ -34,8 +34,6 @@ import edu.harvard.iq.dvn.core.vdc.VDCServiceLocal;
 import edu.harvard.iq.dvn.core.web.common.VDCBaseBean;
 import javax.ejb.EJB;
 import javax.faces.bean.ViewScoped;
-import javax.faces.context.FacesContext;
-import javax.faces.event.ValueChangeEvent;
 import javax.inject.Inject;
 import javax.inject.Named;
 
@@ -51,14 +49,7 @@ import javax.inject.Named;
 public class EditBannerFooterPage extends VDCBaseBean  implements java.io.Serializable {
     @EJB VDCServiceLocal vdcService;
     @EJB VDCNetworkServiceLocal vdcNetworkService;
-    // <editor-fold defaultstate="collapsed" desc="Creator-managed Component Definition">
-    private int __placeholder;
     
-    /**
-     * <p>Automatically managed component initialization.  <strong>WARNING:</strong>
-     * This method is automatically generated, so any user-specified code inserted
-     * here is subject to being replaced.</p>
-     */
     public void init() {
         super.init();
         if (this.getBanner() == null){
@@ -72,11 +63,8 @@ public class EditBannerFooterPage extends VDCBaseBean  implements java.io.Serial
         }
         combinedTextField.setValue(banner + footer);
     }
+       
     
-    
-    // </editor-fold>
-
-    private String ERROR_MESSAGE   = new String("An Error Occurred.");
   
     /** 
      * <p>Construct a new Page bean instance.</p>
@@ -85,38 +73,6 @@ public class EditBannerFooterPage extends VDCBaseBean  implements java.io.Serial
     }
 
 
-
-    /** 
-     * <p>Callback method that is called after the component tree has been
-     * restored, but before any event processing takes place.  This method
-     * will <strong>only</strong> be called on a postback request that
-     * is processing a form submit.  Customize this method to allocate
-     * resources that will be required in your event handlers.</p>
-     */
-    public void preprocess() {
-    }
-
-    /** 
-     * <p>Callback method that is called just before rendering takes place.
-     * This method will <strong>only</strong> be called for the page that
-     * will actually be rendered (and not, for example, on a page that
-     * handled a postback and then navigated to a different page).  Customize
-     * this method to allocate resources that will be required for rendering
-     * this page.</p>
-     */
-    public void prerender() {
-    }
-    
-    /** 
-     * <p>Callback method that is called after rendering is completed for
-     * this request, if <code>init()</code> was called (regardless of whether
-     * or not this was the page that was actually rendered).  Customize this
-     * method to release resources acquired in the <code>init()</code>,
-     * <code>preprocess()</code>, or <code>prerender()</code> methods (or
-     * acquired during execution of an event handler).</p>
-     */
-    public void destroy() {
-    }
     
     private String banner;
     
@@ -161,7 +117,7 @@ public class EditBannerFooterPage extends VDCBaseBean  implements java.io.Serial
             vdcService.edit(vdc);
             forwardPage="/admin/OptionsPage?faces-redirect=true&vdcId="+getVDCRequestBean().getCurrentVDC().getId();
         }
-        getExternalContext().getFlash().put("successMessage","Successfully updated layout branding.");
+        getVDCRenderBean().getFlash().put("successMessage","Successfully updated layout branding.");
         return forwardPage;
     }
 
@@ -260,6 +216,6 @@ public class EditBannerFooterPage extends VDCBaseBean  implements java.io.Serial
         this.parentSite = parentSite;
     }
     
-
+  
 }
 

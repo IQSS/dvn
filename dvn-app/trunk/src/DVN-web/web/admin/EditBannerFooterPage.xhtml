@@ -49,22 +49,22 @@
         jQuery('.dvnUrlOpenScholar').hide();
         jQuery('.dvnUrlPersonalSite').hide();
         
+        var siteURL = jQuery('input#editBannerFooterForm\\:urlOpenScholarDataverse').val();
+        
+        if ( siteURL != '' ) {
+            if ( jQuery('input#editBannerFooterForm\\:urlOpenScholarDataverse').val().startsWith('http://scholar.harvard.edu') ) {
+                // Do nothing, OpenScholar is the default setting
+            }
+            else {
+                jQuery('input#editBannerFooterForm\\:urlOpenScholarDataverse').parents('.dvnUrlOpenScholar').prev('.dvnCustomizationSelectSiteBlock').children('input[value=personal]').prop('checked', true);
+                jQuery('.dvnUrlOpenScholar').show();
+                jQuery('.dvnUrlPersonalSite').show();
+            }
+        }
+        
         jQuery('#editBannerFooterForm\\:chkOpenScholarDataverse[checked]').each(function() {
            jQuery('.dvnCustomizationSelectSiteBlock').show();
            jQuery(".dvnCustomBannerFooterFieldsBlock").hide();
-        });
-        jQuery('#editBannerFooterForm\\:chkOpenScholarDataverse').change(function(){
-            if (("input[name='iframesite']").checked = true) {
-                jQuery(".dvnCustomizationSelectSiteBlock").toggle();
-                jQuery(".dvnCustomBannerFooterFieldsBlock").toggle();
-                jQuery("input[name='iframesite']").prop('checked', false);
-                if (jQuery('.dvnUrlOpenScholar').is(':visible')) {
-                    jQuery('.dvnUrlOpenScholar').hide();
-                }
-                if (jQuery('.dvnUrlPersonalSite').is(':visible')) {
-                    jQuery('.dvnUrlPersonalSite').hide();
-                }
-            }
         });
         
         jQuery("input[name='iframesite']").change(function(){
@@ -77,6 +77,18 @@
                 jQuery('.dvnUrlPersonalSite').hide();
             }
         });
+        
+        jQuery('#editBannerFooterForm\\:chkOpenScholarDataverse').change(function(){
+            if (('#editBannerFooterForm\\:chkOpenScholarDataverse').checked = true) {
+                jQuery('input.dvnCustomizationSelectSite[value="personal"]').prop('checked', false);
+                jQuery('input.dvnCustomizationSelectSite[value="openscholar"]').prop('checked', true);
+                jQuery('input#editBannerFooterForm\\:urlOpenScholarDataverse').val('');
+                jQuery('.dvnUrlPersonalSite').hide();
+            }
+            jQuery(".dvnCustomizationSelectSiteBlock").toggle();
+            jQuery('.dvnUrlOpenScholar').toggle();
+            jQuery(".dvnCustomBannerFooterFieldsBlock").toggle();
+        });
     });
 </script>
                 <div class="dvn_padBot">
@@ -88,7 +100,7 @@
                         <ice:graphicImage value="/resources/images/icon_information.18.png" styleClass="dvn_icon"/>
                         <ice:outputText styleClass="vdcHelpText" value=" Select which site you will be hosting your dataverse."/>
                     </div>
-                    <input type="radio" class="dvnCustomizationSelectSite" name="iframesite" value="openscholar" /> OpenScholar<br />
+                    <input type="radio" class="dvnCustomizationSelectSite" name="iframesite" value="openscholar" checked="checked" /> OpenScholar<br />
                     <input type="radio" class="dvnCustomizationSelectSite" name="iframesite" value="personal" /> Personal Site
                 </div>
                 <div class="dvnUrlOpenScholar dvn_padBot">

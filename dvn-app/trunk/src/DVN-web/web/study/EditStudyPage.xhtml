@@ -174,8 +174,10 @@
                   <!-- SUBTITLE -->
                   <ice:panelGrid cellpadding="0" cellspacing="0" columns="2" width="100%"
                                  styleClass="vdcEditStudyTable" visible="#{(!empty EditStudyPage.metadata.subTitle 
-                                                                           or EditStudyPage.studyMap[sfc.subTitle].recommended) 
-                                                                           or (EditStudyPage.showAll and !EditStudyPage.studyMap[sfc.subTitle].hidden) }"
+                                                                           or EditStudyPage.studyMap[sfc.subTitle].recommended
+                                                                           or EditStudyPage.studyMap[sfc.subTitle].required) 
+                                                                           or (EditStudyPage.showAll and !EditStudyPage.studyMap[sfc.subTitle].hidden
+                                                                           and !EditStudyPage.studyMap[sfc.subTitle].disabled) }"
                                  columnClasses="vdcEditStudyCol1, vdcEditStudyCol2">
                     <div jsfc="ice:panelGroup" styleClass="vdcEditStudyField">
                       <ice:outputText styleClass="dvnInlineHelpLabel dvnInlineHelpTip" value="#{editstudybundle.subtitleLabel}" title="#{editstudybundle.subtitleHelpHeading} - #{editstudybundle.subtitleHelp}"/>
@@ -183,7 +185,8 @@
                       <ice:graphicImage value="/resources/images/icon_recommended.gif" rendered="#{EditStudyPage.studyMap[sfc.subTitle].recommended}"/>
                     </div>
                     <div jsfc="ice:panelGroup">
-                      <ice:inputText id="input_subtitle" size="90" value="#{EditStudyPage.metadata.subTitle}"  requiredMessage="This field is required." required="#{EditStudyPage.studyMap[sfc.subTitle].required and EditStudyPage.validateRequired}"/>
+                      <ice:inputText id="input_subtitle" size="90" value="#{EditStudyPage.metadata.subTitle}" 
+                                     requiredMessage="This field is required." required="#{EditStudyPage.studyMap[sfc.subTitle].required and EditStudyPage.validateRequired}"/>
                       <ice:message styleClass="errorMessage" for="input_subtitle"/>
                     </div>
                   </ice:panelGrid>
@@ -192,8 +195,10 @@
                                  styleClass="vdcEditStudyTable"
                                  columnClasses="vdcEditStudyCol1, vdcEditStudyCol2"
                                  visible="#{(!empty EditStudyPage.metadata.replicationFor 
-                                            or EditStudyPage.studyMap[sfc.replicationFor].recommended) or ( EditStudyPage.showAll
-                                            and !EditStudyPage.studyMap[sfc.replicationFor].hidden)}">
+                                            or EditStudyPage.studyMap[sfc.replicationFor].recommended
+                                            or EditStudyPage.studyMap[sfc.replicationFor].required) 
+                                            or  (EditStudyPage.showAll and !EditStudyPage.studyMap[sfc.replicationFor].hidden 
+                                            and !EditStudyPage.studyMap[sfc.replicationFor].disabled)}">
                     <div jsfc="ice:panelGroup" styleClass="vdcEditStudyGroupField">
                       <ice:outputText styleClass="dvnInlineHelpLabel dvnInlineHelpTip" value="#{editstudybundle.replicationForLabel}" title="#{editstudybundle.replicationForHelpHeading} - #{editstudybundle.replicationForHelp}"/>
                       <ice:graphicImage value="/resources/images/icon_required.gif" rendered="#{EditStudyPage.studyMap[sfc.replicationFor].required}"/>
@@ -239,9 +244,13 @@
                   <!-- OTHER IDS -->
                   <ice:dataTable cellpadding="0" cellspacing="0" width="100%"
                                  styleClass="vdcEditStudyTable"
-                                 visible="#{(!EditStudyPage.studyOtherIdsEmpty or 
-                                            EditStudyPage.studyMap[sfc.otherId].recommended) or ( EditStudyPage.showAll
-                                             and !EditStudyPage.studyMap[sfc.otherId].hidden) }" value="dummy_datatable">
+                                 rendered="#{(!EditStudyPage.studyOtherIdsEmpty 
+                                             or EditStudyPage.studyMap[sfc.otherId].recommended
+                                            or EditStudyPage.studyMap[sfc.otherId].required) 
+                                            or  (EditStudyPage.showAll
+                                             and  !EditStudyPage.studyMap[sfc.otherId].hidden 
+                                             and !EditStudyPage.studyMap[sfc.otherId].disabled) }" 
+                                             value="dummy_datatable">
                     <ice:column>
                       <ice:dataTable cellpadding="0" cellspacing="0"
                                      styleClass="vdcEditStudyInnerTable"
@@ -281,9 +290,13 @@
                   <!-- Authors -->
                   <!-- this is a dummy datatable wrapper used to force data retention on validation error-->
                     <ice:dataTable cellpadding="0" cellspacing="0" width="100%"
-                                   styleClass="vdcEditStudyTable" visible="#{(!EditStudyPage.studyAuthorsEmpty 
-                                                                             or EditStudyPage.studyMap[sfc.authorName].recommended) or (EditStudyPage.showAll
-                                                                              and !EditStudyPage.studyMap[sfc.authorName].hidden)}" value="dummy_datatable">
+                                   styleClass="vdcEditStudyTable" rendered="#{(!EditStudyPage.studyAuthorsEmpty 
+                                                                             or EditStudyPage.studyMap[sfc.authorName].recommended
+                                                                             or EditStudyPage.studyMap[sfc.authorName].required)
+                                                                             or (EditStudyPage.showAll
+                                                                              and !EditStudyPage.studyMap[sfc.authorName].hidden 
+                                                                              and !EditStudyPage.studyMap[sfc.authorName].disabled)}" 
+                                                                              value="dummy_datatable">
                       <ice:column>
                         <ice:dataTable cellpadding="0" cellspacing="0" width="100%"
                                        styleClass="vdcEditStudyInnerTable" columnClasses="vdcEditStudyCol1b, vdcEditStudyCol2, vdcEditStudyCol3"
@@ -334,10 +347,13 @@
                   <!--Producers-->
                   <!-- this is a dummy datatable wrapper used to force data retention on validation error-->
                   <ice:dataTable cellpadding="0" cellspacing="0" width="100%"
-                                 styleClass="vdcEditStudyTable"  visible="#{(!EditStudyPage.studyProducersEmpty 
-                                                                            or EditStudyPage.studyMap[sfc.producerName].recommended) 
+                                 styleClass="vdcEditStudyTable"  rendered="#{(!EditStudyPage.studyProducersEmpty 
+                                                                            or EditStudyPage.studyMap[sfc.producerName].recommended
+                                                                            or EditStudyPage.studyMap[sfc.producerName].required) 
                                                                             or (EditStudyPage.showAll
-                                                                            and !EditStudyPage.studyMap[sfc.producerName].hidden)}" value="dummy_datatable">
+                                                                            and !EditStudyPage.studyMap[sfc.producerName].hidden
+                                                                            and !EditStudyPage.studyMap[sfc.producerName].disabled)}" 
+                                                                            value="dummy_datatable">
                     <ice:column>
                       <ice:dataTable cellpadding="0" cellspacing="0"
                                      styleClass="vdcEditStudyInnerTable"
@@ -411,9 +427,12 @@
 
                   <ice:panelGrid cellpadding="0" cellspacing="0" columns="2" width="100%"
                                  styleClass="vdcEditStudyTable " columnClasses="vdcEditStudyCol1, vdcEditStudyCol2"
-                                 visible="#{(!empty EditStudyPage.metadata.productionDate or 
-                                            EditStudyPage.studyMap[sfc.productionDate].recommended) 
-                                            or (EditStudyPage.showAll and !EditStudyPage.studyMap[sfc.productionDate].hidden) }">
+                                 visible="#{(!empty EditStudyPage.metadata.productionDate 
+                                            or EditStudyPage.studyMap[sfc.productionDate].recommended
+                                            or EditStudyPage.studyMap[sfc.productionDate].required) 
+                                            or (EditStudyPage.showAll 
+                                            and !EditStudyPage.studyMap[sfc.productionDate].hidden
+                                            and !EditStudyPage.studyMap[sfc.productionDate].disabled) }">
                     <div jsfc="ice:panelGroup" id="groupPanel42" styleClass="vdcEditStudyField">
                       <ice:outputText styleClass="dvnInlineHelpLabel dvnInlineHelpTip" value="#{editstudybundle.productionDateLabel}" title="#{editstudybundle.productionDateHelpHeading} - #{editstudybundle.productionDateHelp}"/>
                       <ice:graphicImage value="/resources/images/icon_required.gif" rendered="#{EditStudyPage.studyMap[sfc.productionDate].required}"/>
@@ -431,7 +450,12 @@
                   <ice:panelGrid cellpadding="0" cellspacing="0" columns="2" width="100%"
                                  styleClass="vdcEditStudyTable" 
                                  columnClasses="vdcEditStudyCol1, vdcEditStudyCol2"
-                                 visible="#{!empty EditStudyPage.metadata.productionPlace or EditStudyPage.studyMap[sfc.productionPlace].recommended or EditStudyPage.showAll}">
+                                 visible="#{(!empty EditStudyPage.metadata.productionPlace 
+                                            or EditStudyPage.studyMap[sfc.productionPlace].recommended
+                                            or EditStudyPage.studyMap[sfc.productionPlace].required)
+                                            or (EditStudyPage.showAll 
+                                            and !EditStudyPage.studyMap[sfc.productionPlace].hidden
+                                            and !EditStudyPage.studyMap[sfc.productionPlace].disabled)}">
                     <div jsfc="ice:panelGroup" id="groupPanel43"   styleClass="vdcEditStudyField">
                       <ice:outputText styleClass="dvnInlineHelpLabel dvnInlineHelpTip" value="#{editstudybundle.productionPlaceLabel}" title="#{editstudybundle.productionPlaceHelpHeading} - #{editstudybundle.productionPlaceHelp}"/>
                       <ice:graphicImage value="/resources/images/icon_required.gif" rendered="#{EditStudyPage.studyMap[sfc.productionPlace].required}"/>
@@ -446,9 +470,12 @@
                   <!-- Software -->
                   <!-- this is a dummy datatable wrapper used to force data retention on validation error-->
                   <ice:dataTable cellpadding="0" cellspacing="0" width="100%"
-                                 styleClass="vdcEditStudyTable"  visible="#{(!EditStudyPage.studySoftwareEmpty 
+                                 styleClass="vdcEditStudyTable"  rendered="#{(!EditStudyPage.studySoftwareEmpty 
+                                                                             or EditStudyPage.studyMap[sfc.softwareName].required
                                                                             or EditStudyPage.studyMap[sfc.softwareName].recommended)
-                                                                            or (EditStudyPage.showAll and !EditStudyPage.studyMap[sfc.softwareName].hidden)}" value="dummy_datatable">
+                                                                            or (EditStudyPage.showAll 
+                                                                            and !EditStudyPage.studyMap[sfc.softwareName].hidden
+                                                                            and !EditStudyPage.studyMap[sfc.softwareName].disabled)}" value="dummy_datatable">
                     <ice:column>
                       <ice:dataTable cellpadding="0" cellspacing="0" width="100%"
                                      styleClass="vdcEditStudyInnerTable"
@@ -488,8 +515,12 @@
                                  styleClass="vdcEditStudyTable " 
                                  columnClasses="vdcEditStudyCol1, vdcEditStudyCol2"
                                  visible="#{(!empty EditStudyPage.metadata.fundingAgency 
-                                            or EditStudyPage.studyMap[sfc.fundingAgency].recommended) or 
-                                            (EditStudyPage.showAll and !EditStudyPage.studyMap[sfc.fundingAgency].hidden)}">
+                                            or EditStudyPage.studyMap[sfc.fundingAgency].recommended
+                                            or EditStudyPage.studyMap[sfc.fundingAgency].required
+                                            ) or 
+                                            (EditStudyPage.showAll 
+                                            and !EditStudyPage.studyMap[sfc.fundingAgency].hidden
+                                            and !EditStudyPage.studyMap[sfc.fundingAgency].required)}">
                     <div jsfc="ice:panelGroup" styleClass="vdcEditStudyField">
                       <ice:outputText styleClass="dvnInlineHelpLabel dvnInlineHelpTip" value="#{editstudybundle.fundingAgencyLabel}" title="#{editstudybundle.fundingAgencyHelpHeading} - #{editstudybundle.fundingAgencyHelp}"/>
                       <ice:graphicImage value="/resources/images/icon_required.gif" rendered="#{EditStudyPage.studyMap[sfc.fundingAgency].required}"/>
@@ -504,8 +535,12 @@
                   <!-- this is a dummy datatable wrapper used to force data retention on validation error-->
                   <ice:dataTable cellpadding="0" cellspacing="0" width="100%"
                                  styleClass="vdcEditStudyTable" 
-                                 visible="#{(!EditStudyPage.studyGrantsEmpty or EditStudyPage.studyMap[sfc.grantNumber].recommended)
-                                            or (EditStudyPage.showAll and !EditStudyPage.studyMap[sfc.grantNumber].hidden)}" value="dummy_datatable">
+                                 rendered="#{(!EditStudyPage.studyGrantsEmpty 
+                                             or EditStudyPage.studyMap[sfc.grantNumber].recommended
+                                             or EditStudyPage.studyMap[sfc.grantNumber].required)
+                                            or (EditStudyPage.showAll
+                                            and !EditStudyPage.studyMap[sfc.grantNumber].hidden
+                                            and !EditStudyPage.studyMap[sfc.grantNumber].disabled)}" value="dummy_datatable">
                     <ice:column>
                       <ice:dataTable cellpadding="0" cellspacing="0"
                                      styleClass="vdcEditStudyInnerTable"
@@ -544,8 +579,12 @@
                   <!-- this is a dummy datatable wrapper used to force data retention on validation error-->
                   <ice:dataTable cellpadding="0" cellspacing="0" width="100%"
                                  styleClass="vdcEditStudyTable" 
-                                 visible="#{(!EditStudyPage.studyDistributorsEmpty or EditStudyPage.studyMap[sfc.distributorName].recommended) 
-                                                                           or (EditStudyPage.showAll and !EditStudyPage.studyMap[sfc.distributorName].hidden)}" 
+                                 rendered="#{(!EditStudyPage.studyDistributorsEmpty 
+                                             or EditStudyPage.studyMap[sfc.distributorName].recommended
+                                             or EditStudyPage.studyMap[sfc.distributorName].required) 
+                                             or (EditStudyPage.showAll 
+                                             and !EditStudyPage.studyMap[sfc.distributorName].hidden
+                                             and !EditStudyPage.studyMap[sfc.distributorName].disabled)}" 
                                                                            value="dummy_datatable">
                     <ice:column>
                       <ice:dataTable cellpadding="0" cellspacing="0"
@@ -622,8 +661,12 @@
                   <ice:panelGrid cellpadding="0" cellspacing="0" columns="2" width="100%"
                                  styleClass="vdcEditStudyTable "
                                  columnClasses="vdcEditStudyCol1, vdcEditStudyCol2"
-                                 visible="#{(!empty EditStudyPage.metadata.distributorContact or EditStudyPage.studyMap[sfc.distributorContact].recommended)
-                                            or ( EditStudyPage.showAll and !EditStudyPage.studyMap[sfc.distributorContact].hidden)}">
+                                 visible="#{(!empty EditStudyPage.metadata.distributorContact 
+                                            or EditStudyPage.studyMap[sfc.distributorContact].recommended
+                                            or EditStudyPage.studyMap[sfc.distributorContact].required)
+                                            or ( EditStudyPage.showAll 
+                                            and !EditStudyPage.studyMap[sfc.distributorContact].hidden
+                                            and !EditStudyPage.studyMap[sfc.distributorContact].disabled)}">
                     <div jsfc="ice:panelGroup" styleClass="vdcEditStudyField">
                       <ice:outputText styleClass="dvnInlineHelpLabel dvnInlineHelpTip" value="#{editstudybundle.distributorContactLabel}" title="#{editstudybundle.distributorContactHelpHeading} - #{editstudybundle.distributorContactHelp}"/>
                       <ice:graphicImage value="/resources/images/icon_required.gif" rendered="#{EditStudyPage.studyMap[sfc.distributorContact].required}"/>
@@ -658,8 +701,12 @@
                   <ice:panelGrid cellpadding="0" cellspacing="0" columns="2" width="100%"
                                  styleClass="vdcEditStudyTable"
                                  columnClasses="vdcEditStudyCol1, vdcEditStudyCol2"
-                                 visible="#{(!empty EditStudyPage.metadata.distributionDate or EditStudyPage.studyMap[sfc.distributionDate].recommended) 
-                                            or (EditStudyPage.showAll and  !EditStudyPage.studyMap[sfc.distributionDate].hidden)  }">
+                                 visible="#{(!empty EditStudyPage.metadata.distributionDate
+                                            or EditStudyPage.studyMap[sfc.distributionDate].recommended
+                                            or EditStudyPage.studyMap[sfc.distributionDate].required) 
+                                            or (EditStudyPage.showAll
+                                            and  !EditStudyPage.studyMap[sfc.distributionDate].hidden
+                                            and  !EditStudyPage.studyMap[sfc.distributionDate].disabled)  }">
                     <div jsfc="ice:panelGroup" id="groupPanel49" styleClass="vdcEditStudyField">
                       <ice:outputText styleClass="dvnInlineHelpLabel dvnInlineHelpTip" value="#{editstudybundle.distributionDateLabel}" title="#{editstudybundle.distributionDateHelpHeading} - #{editstudybundle.distributionDateHelp}"/>
                       <ice:graphicImage value="/resources/images/icon_required.gif" rendered="#{EditStudyPage.studyMap[sfc.distributionDate].required}"/>
@@ -677,8 +724,12 @@
                   <ice:panelGrid cellpadding="0" cellspacing="0" columns="2" width="100%"
                                  styleClass="vdcEditStudyTable"
                                  columnClasses="vdcEditStudyCol1, vdcEditStudyCol2"
-                                 visible="#{(!empty EditStudyPage.metadata.depositor or EditStudyPage.studyMap[sfc.depositor].recommended) 
-                                            or ( EditStudyPage.showAll and  !EditStudyPage.studyMap[sfc.depositor].hidden)  }">
+                                 visible="#{(!empty EditStudyPage.metadata.depositor 
+                                            or EditStudyPage.studyMap[sfc.depositor].recommended
+                                            or EditStudyPage.studyMap[sfc.depositor].required) 
+                                            or ( EditStudyPage.showAll 
+                                            or !EditStudyPage.studyMap[sfc.depositor].hidden
+                                            or !EditStudyPage.studyMap[sfc.depositor].disabled)  }">
                     <div jsfc="ice:panelGroup" id="groupPanel50"  styleClass="vdcEditStudyField">
                       <ice:outputText styleClass="dvnInlineHelpLabel dvnInlineHelpTip" value="#{editstudybundle.depositorLabel}" title="#{editstudybundle.depositorHelpHeading} - #{editstudybundle.depositorHelp}"/>
                       <ice:graphicImage value="/resources/images/icon_required.gif" rendered="#{EditStudyPage.studyMap[sfc.depositor].required}"/>
@@ -693,8 +744,12 @@
                   <ice:panelGrid cellpadding="0" cellspacing="0" columns="2" width="100%"
                                  styleClass="vdcEditStudyTable"
                                  columnClasses="vdcEditStudyCol1, vdcEditStudyCol2"
-                                 visible="#{(!empty EditStudyPage.metadata.dateOfDeposit or EditStudyPage.studyMap[sfc.dateOfDeposit].recommended) 
-                                            or (EditStudyPage.showAll and !EditStudyPage.studyMap[sfc.dateOfDeposit].hidden)  }">
+                                 visible="#{(!empty EditStudyPage.metadata.dateOfDeposit 
+                                            or EditStudyPage.studyMap[sfc.dateOfDeposit].recommended
+                                            or EditStudyPage.studyMap[sfc.dateOfDeposit].required) 
+                                            or (EditStudyPage.showAll 
+                                            and !EditStudyPage.studyMap[sfc.dateOfDeposit].hidden
+                                            and !EditStudyPage.studyMap[sfc.dateOfDeposit].disabled)  }">
                     <div jsfc="ice:panelGroup" id="groupPanel51"  styleClass="vdcEditStudyField">
                       <ice:outputText styleClass="dvnInlineHelpLabel dvnInlineHelpTip" value="#{editstudybundle.depositDateLabel}" title="#{editstudybundle.depositDateHelpHeading} - #{editstudybundle.depositDateHelp}"/>
                       <ice:graphicImage value="/resources/images/icon_required.gif" rendered="#{EditStudyPage.studyMap[sfc.dateOfDeposit].required}"/>
@@ -712,8 +767,12 @@
                   <ice:panelGrid cellpadding="0" cellspacing="0" columns="2" width="100%"
                                  styleClass="vdcEditStudyTable"
                                  columnClasses="vdcEditStudyCol1, vdcEditStudyCol2"
-                                 visible="#{(!empty EditStudyPage.metadata.seriesName or EditStudyPage.studyMap[sfc.seriesName].recommended)
-                                            or (EditStudyPage.showAll and !EditStudyPage.studyMap[sfc.seriesName].hidden) }">
+                                 visible="#{(!empty EditStudyPage.metadata.seriesName 
+                                            or EditStudyPage.studyMap[sfc.seriesName].recommended
+                                            or EditStudyPage.studyMap[sfc.seriesName].required)
+                                            or (EditStudyPage.showAll 
+                                            and !EditStudyPage.studyMap[sfc.seriesName].hidden
+                                            and !EditStudyPage.studyMap[sfc.seriesName].disabled) }">
                     <div jsfc="ice:panelGroup" id="groupPanel52"  styleClass="vdcEditStudyField">
                       <ice:outputText styleClass="dvnInlineHelpLabel dvnInlineHelpTip" value="#{editstudybundle.seriesLabel}" title="#{editstudybundle.seriesHelpHeading} - #{editstudybundle.seriesHelp}"/>
                       <ice:graphicImage value="/resources/images/icon_required.gif" rendered="#{EditStudyPage.studyMap[sfc.seriesName].required}"/>
@@ -748,8 +807,12 @@
                   <ice:panelGrid cellpadding="0" cellspacing="0" columns="2" width="100%"
                                  styleClass="vdcEditStudyTable"
                                  columnClasses="vdcEditStudyCol1, vdcEditStudyCol2"
-                                 visible="#{(!empty EditStudyPage.metadata.studyVersionText or EditStudyPage.studyMap[sfc.studyVersion].recommended) 
-                                            or (EditStudyPage.showAll and !EditStudyPage.studyMap[sfc.studyVersion].hidden)  }">
+                                 visible="#{(!empty EditStudyPage.metadata.studyVersionText 
+                                            or EditStudyPage.studyMap[sfc.studyVersion].recommended
+                                            or EditStudyPage.studyMap[sfc.studyVersion].required) 
+                                            or (EditStudyPage.showAll 
+                                            and !EditStudyPage.studyMap[sfc.studyVersion].hidden
+                                            and !EditStudyPage.studyMap[sfc.studyVersion].disabled)  }">
                     <div jsfc="ice:panelGroup" id="groupPanel53">
                       <ice:outputText styleClass="dvnInlineHelpLabel dvnInlineHelpTip" value="#{editstudybundle.seriesVersionLabel}" title="#{editstudybundle.seriesVersionHelpHeading} - #{editstudybundle.seriesVersionHelp}"/>
                       <ice:graphicImage value="/resources/images/icon_required.gif" rendered="#{EditStudyPage.studyMap[sfc.studyVersion].required }"/>
@@ -780,8 +843,12 @@
                 </ice:panelGrid>
                   <!-- this is a dummy datatable wrapper used to force data retention on validation error-->
                   <ice:dataTable cellpadding="0" cellspacing="0" width="100%"
-                                 styleClass="vdcEditStudyTable" visible="#{(!EditStudyPage.studyAbstractsEmpty  or EditStudyPage.studyMap[sfc.abstractText].recommended) 
-                                                                           or (EditStudyPage.showAll and !EditStudyPage.studyMap[sfc.abstractText].hidden)}"  
+                                 styleClass="vdcEditStudyTable" rendered="#{(!EditStudyPage.studyAbstractsEmpty  
+                                                                            or EditStudyPage.studyMap[sfc.abstractText].recommended
+                                                                            or EditStudyPage.studyMap[sfc.abstractText].required) 
+                                                                           or (EditStudyPage.showAll 
+                                                                           and !EditStudyPage.studyMap[sfc.abstractText].hidden
+                                                                           and !EditStudyPage.studyMap[sfc.abstractText].disabled)}"  
                                                                            value="dummy_datatable">
                     <ice:column>
                       <ice:dataTable cellpadding="0" cellspacing="0"
@@ -834,8 +901,12 @@
 
                   <!-- this is a dummy datatable wrapper used to force data retention on validation error-->
                   <ice:dataTable cellpadding="0" cellspacing="0" width="100%"
-                                 styleClass="vdcEditStudyTable" visible="#{(!EditStudyPage.studyKeywordsEmpty or EditStudyPage.studyMap[sfc.keywordValue].recommended) 
-                                                                           or (EditStudyPage.showAll and !EditStudyPage.studyMap[sfc.keywordValue].hidden)}" 
+                                 styleClass="vdcEditStudyTable" rendered="#{(!EditStudyPage.studyKeywordsEmpty 
+                                                                            or EditStudyPage.studyMap[sfc.keywordValue].recommended
+                                                                            or EditStudyPage.studyMap[sfc.keywordValue].required) 
+                                                                           or (EditStudyPage.showAll 
+                                                                           and !EditStudyPage.studyMap[sfc.keywordValue].hidden
+                                                                           and !EditStudyPage.studyMap[sfc.keywordValue].disabled)}" 
                                                                            value="dummy_datatable">
                     <ice:column>
                       <ice:dataTable cellpadding="0" cellspacing="0"
@@ -888,8 +959,12 @@
 
                   <!-- this is a dummy datatable wrapper used to force data retention on validation error-->
                   <ice:dataTable cellpadding="0" cellspacing="0" width="100%"
-                                 styleClass="vdcEditStudyTable" visible="#{(!EditStudyPage.studyTopicClassesEmpty or EditStudyPage.studyMap[sfc.topicClassValue].recommended) 
-                                                                           or ( EditStudyPage.showAll and !EditStudyPage.studyMap[sfc.topicClassValue].hidden) }" 
+                                 styleClass="vdcEditStudyTable" rendered="#{(!EditStudyPage.studyTopicClassesEmpty 
+                                                                            or EditStudyPage.studyMap[sfc.topicClassValue].recommended
+                                                                            or EditStudyPage.studyMap[sfc.topicClassValue].required) 
+                                                                           or ( EditStudyPage.showAll 
+                                                                           and !EditStudyPage.studyMap[sfc.topicClassValue].hidden
+                                                                           and !EditStudyPage.studyMap[sfc.topicClassValue].disabled) }" 
                                                                            value="dummy_datatable">
                     <ice:column>
                       <ice:dataTable cellpadding="0" cellspacing="0" width="100%"
@@ -942,8 +1017,12 @@
 
                   <!-- this is a dummy datatable wrapper used to force data retention on validation error-->
                   <ice:dataTable cellpadding="0" cellspacing="0" width="100%"
-                                 styleClass="vdcEditStudyTable" visible="#{(!EditStudyPage.studyRelPublicationsEmpty or EditStudyPage.studyMap[sfc.relatedPublications].recommended)
-                                                                           or (EditStudyPage.showAll and !EditStudyPage.studyMap[sfc.relatedPublications].hidden)}"  
+                                 styleClass="vdcEditStudyTable" rendered="#{(!EditStudyPage.studyRelPublicationsEmpty 
+                                                                            or EditStudyPage.studyMap[sfc.relatedPublications].recommended
+                                                                            or EditStudyPage.studyMap[sfc.relatedPublications].required)
+                                                                           or (EditStudyPage.showAll 
+                                                                           and !EditStudyPage.studyMap[sfc.relatedPublications].hidden
+                                                                           and !EditStudyPage.studyMap[sfc.relatedPublications].disabled)}"  
                                                                            value="dummy_datatable">
                     <ice:column>
                       <ice:dataTable cellpadding="0" cellspacing="0"
@@ -980,8 +1059,12 @@
 
                   <!-- this is a dummy datatable wrapper used to force data retention on validation error-->
                   <ice:dataTable cellpadding="0" cellspacing="0" width="100%"
-                                 styleClass="vdcEditStudyTable" visible="#{(!EditStudyPage.studyRelMaterialsEmpty or EditStudyPage.studyMap[sfc.relatedMaterial].recommended) 
-                                                                           or (EditStudyPage.showAll and  !EditStudyPage.studyMap[sfc.relatedMaterial].hidden)  }"  
+                                 styleClass="vdcEditStudyTable" rendered="#{(!EditStudyPage.studyRelMaterialsEmpty 
+                                                                            or EditStudyPage.studyMap[sfc.relatedMaterial].recommended
+                                                                            or EditStudyPage.studyMap[sfc.relatedMaterial].required) 
+                                                                           or (EditStudyPage.showAll 
+                                                                           and  !EditStudyPage.studyMap[sfc.relatedMaterial].hidden
+                                                                           and  !EditStudyPage.studyMap[sfc.relatedMaterial].disabled)  }"  
                                                                            value="dummy_datatable">
                     <ice:column>
                       <ice:dataTable cellpadding="0" cellspacing="0"
@@ -1019,8 +1102,12 @@
 
                   <!-- this is a dummy datatable wrapper used to force data retention on validation error-->
                   <ice:dataTable cellpadding="0" cellspacing="0" width="100%"
-                                 styleClass="vdcEditStudyTable" visible="#{(!EditStudyPage.studyRelStudiesEmpty or EditStudyPage.studyMap[sfc.relatedStudies].recommended)
-                                                                           or (EditStudyPage.showAll  and !EditStudyPage.studyMap[sfc.relatedStudies].hidden) }" 
+                                 styleClass="vdcEditStudyTable" rendered="#{(!EditStudyPage.studyRelStudiesEmpty 
+                                                                            or EditStudyPage.studyMap[sfc.relatedStudies].recommended
+                                                                            or EditStudyPage.studyMap[sfc.relatedStudies].required)
+                                                                           or (EditStudyPage.showAll 
+                                                                           and !EditStudyPage.studyMap[sfc.relatedStudies].hidden
+                                                                           and !EditStudyPage.studyMap[sfc.relatedStudies].disabled) }" 
                                                                            value="dummy_datatable">
                     <ice:column>
                       <ice:dataTable cellpadding="0" cellspacing="0"
@@ -1059,8 +1146,12 @@
                   <!-- this is a dummy datatable wrapper used to force data retention on validation error-->
                   <ice:dataTable cellpadding="0" cellspacing="0" width="100%"
                                  styleClass="vdcEditStudyTable"
-                                  visible="#{(!EditStudyPage.studyOtherRefsEmpty or  EditStudyPage.studyMap[sfc.otherReferences].recommended) 
-                                             or (EditStudyPage.showAll and  !EditStudyPage.studyMap[sfc.otherReferences].hidden) }" 
+                                  rendered="#{(!EditStudyPage.studyOtherRefsEmpty 
+                                              or  EditStudyPage.studyMap[sfc.otherReferences].recommended
+                                              or  EditStudyPage.studyMap[sfc.otherReferences].required) 
+                                             or (EditStudyPage.showAll
+                                             and  !EditStudyPage.studyMap[sfc.otherReferences].hidden
+                                             and  !EditStudyPage.studyMap[sfc.otherReferences].disabled) }" 
                                              value="dummy_datatable">
                     <ice:column>
                       <ice:dataTable cellpadding="0" cellspacing="0"
@@ -1099,8 +1190,12 @@
                   <ice:panelGrid cellpadding="0" cellspacing="0" columns="2" width="100%"
                                  styleClass="vdcEditStudyTable"
                                  columnClasses="vdcEditStudyCol1, vdcEditStudyCol2"
-                                 visible="#{(!empty EditStudyPage.metadata.timePeriodCoveredStart or EditStudyPage.studyMap[sfc.timePeriodCoveredStart].recommended) 
-                                            or (EditStudyPage.showAll and !EditStudyPage.studyMap[sfc.timePeriodCoveredStart].hidden)  }">
+                                 visible="#{(!empty EditStudyPage.metadata.timePeriodCoveredStart 
+                                            or EditStudyPage.studyMap[sfc.timePeriodCoveredStart].recommended
+                                            or EditStudyPage.studyMap[sfc.timePeriodCoveredStart].required) 
+                                            or (EditStudyPage.showAll 
+                                            and !EditStudyPage.studyMap[sfc.timePeriodCoveredStart].hidden
+                                            and !EditStudyPage.studyMap[sfc.timePeriodCoveredStart].disabled)  }">
                     <div jsfc="ice:panelGroup" styleClass="vdcEditStudyField" >
                       <ice:outputText styleClass="dvnInlineHelpLabel dvnInlineHelpTip" value="#{editstudybundle.timePeriodStartLabel}" title="#{editstudybundle.timePeriodStartHelpHeading} - #{editstudybundle.timePeriodStartHelp}"/>
                       <ice:graphicImage value="/resources/images/icon_required.gif" rendered="#{EditStudyPage.studyMap[sfc.timePeriodCoveredStart].required}"/>
@@ -1118,8 +1213,12 @@
                   <ice:panelGrid cellpadding="0" cellspacing="0" columns="2" width="100%"
                                  styleClass="vdcEditStudyTable"
                                  columnClasses="vdcEditStudyCol1, vdcEditStudyCol2"
-                                 visible="#{(!empty EditStudyPage.metadata.timePeriodCoveredEnd or EditStudyPage.studyMap[sfc.timePeriodCoveredEnd].recommended) 
-                                            or ( EditStudyPage.showAll and !EditStudyPage.studyMap[sfc.timePeriodCoveredEnd].hidden) }">
+                                 visible="#{(!empty EditStudyPage.metadata.timePeriodCoveredEnd 
+                                            or EditStudyPage.studyMap[sfc.timePeriodCoveredEnd].recommended
+                                            or EditStudyPage.studyMap[sfc.timePeriodCoveredEnd].required) 
+                                            or ( EditStudyPage.showAll 
+                                            and !EditStudyPage.studyMap[sfc.timePeriodCoveredEnd].hidden
+                                            and !EditStudyPage.studyMap[sfc.timePeriodCoveredEnd].disabled) }">
                     <div jsfc="ice:panelGroup" styleClass="vdcEditStudyField">
                       <ice:outputText styleClass="dvnInlineHelpLabel dvnInlineHelpTip" value="#{editstudybundle.timePeriodEndLabel}" title="#{editstudybundle.timePeriodEndHelpHeading} - #{editstudybundle.timePeriodEndHelp}"/>
                       <ice:graphicImage value="/resources/images/icon_required.gif" rendered="#{EditStudyPage.studyMap[sfc.timePeriodCoveredEnd].required}"/>
@@ -1137,8 +1236,12 @@
                   <ice:panelGrid cellpadding="0" cellspacing="0" columns="2" width="100%"
                                  styleClass="vdcEditStudyTable"
                                  columnClasses="vdcEditStudyCol1, vdcEditStudyCol2"
-                                 visible="#{(!empty EditStudyPage.metadata.dateOfCollectionStart or EditStudyPage.studyMap[sfc.dateOfCollectionStart].recommended)
-                                            or (EditStudyPage.showAll and !EditStudyPage.studyMap[sfc.dateOfCollectionStart].hidden) }">
+                                 visible="#{(!empty EditStudyPage.metadata.dateOfCollectionStart 
+                                            or EditStudyPage.studyMap[sfc.dateOfCollectionStart].recommended
+                                            or EditStudyPage.studyMap[sfc.dateOfCollectionStart].required)
+                                            or (EditStudyPage.showAll 
+                                            and !EditStudyPage.studyMap[sfc.dateOfCollectionStart].hidden
+                                            and !EditStudyPage.studyMap[sfc.dateOfCollectionStart].disabled) }">
                     <div jsfc="ice:panelGroup" styleClass="vdcEditStudyField">
                       <ice:outputText styleClass="dvnInlineHelpTip" value="#{editstudybundle.collectionDateStartLabel}" 
                                       title="#{editstudybundle.collectionDateStartHelpHeading} - #{editstudybundle.collectionDateStartHelp}"/>
@@ -1157,8 +1260,12 @@
                   <ice:panelGrid cellpadding="0" cellspacing="0" columns="2" width="100%"
                                  styleClass="vdcEditStudyTable"
                                  columnClasses="vdcEditStudyCol1, vdcEditStudyCol2"
-                                 visible="#{(!empty EditStudyPage.metadata.dateOfCollectionEnd or EditStudyPage.studyMap[sfc.dateOfCollectionEnd].recommended)
-                                            or (EditStudyPage.showAll and  !EditStudyPage.studyMap[sfc.dateOfCollectionEnd].hidden)}">
+                                 visible="#{(!empty EditStudyPage.metadata.dateOfCollectionEnd
+                                            or EditStudyPage.studyMap[sfc.dateOfCollectionEnd].recommended
+                                            or EditStudyPage.studyMap[sfc.dateOfCollectionEnd].required)
+                                            or (EditStudyPage.showAll 
+                                            and  !EditStudyPage.studyMap[sfc.dateOfCollectionEnd].hidden
+                                            and  !EditStudyPage.studyMap[sfc.dateOfCollectionEnd].disabled)}">
                     <div jsfc="ice:panelGroup" styleClass="vdcEditStudyField">
                       <ice:outputText styleClass="dvnInlineHelpLabel dvnInlineHelpTip" value="#{editstudybundle.collectionDateEndLabel}" title="#{editstudybundle.collectionDateEndHelpHeading} - #{editstudybundle.collectionDateEndHelp}"/>
                       <ice:graphicImage value="/resources/images/icon_required.gif" rendered="#{EditStudyPage.studyMap[sfc.dateOfCollectionEnd].required}"/>
@@ -1176,8 +1283,12 @@
                   <ice:panelGrid cellpadding="0" cellspacing="0" columns="2" width="100%"
                                  styleClass="vdcEditStudyTable"
                                  columnClasses="vdcEditStudyCol1, vdcEditStudyCol2"
-                                 visible="#{(!empty EditStudyPage.metadata.country or EditStudyPage.studyMap[sfc.country].recommended) 
-                                            or (EditStudyPage.showAll and !EditStudyPage.studyMap[sfc.country].hidden)}">
+                                 visible="#{(!empty EditStudyPage.metadata.country 
+                                            or EditStudyPage.studyMap[sfc.country].recommended
+                                            or EditStudyPage.studyMap[sfc.country].required) 
+                                            or (EditStudyPage.showAll 
+                                            and !EditStudyPage.studyMap[sfc.country].hidden
+                                            and !EditStudyPage.studyMap[sfc.country].disabled)}">
                     <div jsfc="ice:panelGroup" styleClass="vdcEditStudyField">
                       <ice:outputText styleClass="dvnInlineHelpLabel dvnInlineHelpTip" value="#{editstudybundle.countryLabel}" title="#{editstudybundle.countryHelpHeading} - #{editstudybundle.countryHelp}"/>
                       <ice:graphicImage value="/resources/images/icon_required.gif" rendered="#{EditStudyPage.studyMap[sfc.country].required}"/>
@@ -1192,8 +1303,12 @@
                   <ice:panelGrid cellpadding="0" cellspacing="0" columns="2" width="100%"
                                  styleClass="vdcEditStudyTable"
                                  columnClasses="vdcEditStudyCol1, vdcEditStudyCol2"
-                                 visible="#{(!empty EditStudyPage.metadata.geographicCoverage or EditStudyPage.studyMap[sfc.geographicCoverage].recommended) 
-                                            or (EditStudyPage.showAll and !EditStudyPage.studyMap[sfc.geographicCoverage].hidden) }">
+                                 visible="#{(!empty EditStudyPage.metadata.geographicCoverage
+                                            or EditStudyPage.studyMap[sfc.geographicCoverage].recommended
+                                            or EditStudyPage.studyMap[sfc.geographicCoverage].required) 
+                                            or (EditStudyPage.showAll 
+                                            and !EditStudyPage.studyMap[sfc.geographicCoverage].hidden
+                                            and !EditStudyPage.studyMap[sfc.geographicCoverage].disabled) }">
                     <div jsfc="ice:panelGroup" styleClass="vdcEditStudyField">
                       <ice:outputText styleClass="dvnInlineHelpLabel dvnInlineHelpTip" value="#{editstudybundle.geographicCoverageLabel}" title="#{editstudybundle.geographicCoverageHelpHeading} - #{editstudybundle.geographicCoverageHelp}"/>
                       <ice:graphicImage value="/resources/images/icon_required.gif" rendered="#{EditStudyPage.studyMap[sfc.geographicCoverage].required}"/>
@@ -1208,8 +1323,12 @@
                   <ice:panelGrid cellpadding="0" cellspacing="0" columns="2" width="100%"
                                  styleClass="vdcEditStudyTable"
                                  columnClasses="vdcEditStudyCol1, vdcEditStudyCol2"
-                                 visible="#{(!empty EditStudyPage.metadata.geographicUnit or EditStudyPage.studyMap[sfc.geographicUnit].recommended)
-                                            or (EditStudyPage.showAll and !EditStudyPage.studyMap[sfc.geographicUnit].hidden)}">
+                                 visible="#{(!empty EditStudyPage.metadata.geographicUnit 
+                                            or EditStudyPage.studyMap[sfc.geographicUnit].recommended
+                                            or EditStudyPage.studyMap[sfc.geographicUnit].required)
+                                            or (EditStudyPage.showAll 
+                                            and !EditStudyPage.studyMap[sfc.geographicUnit].hidden
+                                            and !EditStudyPage.studyMap[sfc.geographicUnit].disabled)}">
                     <div jsfc="ice:panelGroup" styleClass="vdcEditStudyField">
                       <ice:outputText styleClass="dvnInlineHelpLabel dvnInlineHelpTip" value="#{editstudybundle.geographicUnitLabel}" title="#{editstudybundle.geographicUnitHelpHeading} - #{editstudybundle.geographicUnitHelp}"/>
                       <ice:graphicImage value="/resources/images/icon_required.gif" rendered="#{EditStudyPage.studyMap[sfc.geographicUnit].required}"/>
@@ -1224,8 +1343,12 @@
                   <ice:panelGrid cellpadding="0" cellspacing="0" columns="2" width="100%"
                                  styleClass="vdcEditStudyTable"
                                  columnClasses="vdcEditStudyCol1, vdcEditStudyCol2"
-                                 visible="#{(!EditStudyPage.studyGeoBoundingsEmpty or EditStudyPage.studyMap[sfc.westLongitude].recommended)
-                                            or ( EditStudyPage.showAll and !EditStudyPage.studyMap[sfc.westLongitude].hidden) }">
+                                 visible="#{(!EditStudyPage.studyGeoBoundingsEmpty 
+                                            or EditStudyPage.studyMap[sfc.westLongitude].recommended
+                                            or EditStudyPage.studyMap[sfc.westLongitude].required)
+                                            or ( EditStudyPage.showAll 
+                                            and !EditStudyPage.studyMap[sfc.westLongitude].hidden
+                                            and !EditStudyPage.studyMap[sfc.westLongitude].disabled) }">
                     <div jsfc="ice:panelGroup" styleClass="vdcEditStudyField">
                       <ice:outputText styleClass="dvnInlineHelpLabel dvnInlineHelpTip" value="#{editstudybundle.geographicBoundingBoxLabel}" title="#{editstudybundle.geographicBoundingBoxHelpHeading} - #{editstudybundle.geographicBoundingBoxHelp}"/>
                       <ice:graphicImage value="/resources/images/icon_required.gif" rendered="#{EditStudyPage.studyMap[sfc.westLongitude].required}"/>
@@ -1269,8 +1392,12 @@
                   <ice:panelGrid cellpadding="0" cellspacing="0" columns="2" width="100%"
                                  styleClass="vdcEditStudyTable"
                                  columnClasses="vdcEditStudyCol1, vdcEditStudyCol2"
-                                 visible="#{(!empty EditStudyPage.metadata.unitOfAnalysis or EditStudyPage.studyMap[sfc.unitOfAnalysis].recommended) 
-                                            or (EditStudyPage.showAll  and !EditStudyPage.studyMap[sfc.unitOfAnalysis].hidden) }">
+                                 visible="#{(!empty EditStudyPage.metadata.unitOfAnalysis 
+                                            or EditStudyPage.studyMap[sfc.unitOfAnalysis].required
+                                            or EditStudyPage.studyMap[sfc.unitOfAnalysis].recommended) 
+                                            or (EditStudyPage.showAll  
+                                            and !EditStudyPage.studyMap[sfc.unitOfAnalysis].hidden
+                                            and !EditStudyPage.studyMap[sfc.unitOfAnalysis].disabled) }">
                     <div jsfc="ice:panelGroup" styleClass="vdcEditStudyField">
                       <ice:outputText styleClass="dvnInlineHelpLabel dvnInlineHelpTip" value="#{editstudybundle.unitOfAnalysisLabel}" title="#{editstudybundle.unitOfAnalysisHelpHeading} - #{editstudybundle.unitOfAnalysisHelp}"/>
                       <ice:graphicImage value="/resources/images/icon_required.gif" rendered="#{EditStudyPage.studyMap[sfc.unitOfAnalysis].required}"/>
@@ -1287,8 +1414,12 @@
                   <ice:panelGrid cellpadding="0" cellspacing="0" columns="2" width="100%"
                                  styleClass="vdcEditStudyTable"
                                  columnClasses="vdcEditStudyCol1, vdcEditStudyCol2"
-                                 visible="#{(!empty EditStudyPage.metadata.universe or EditStudyPage.studyMap[sfc.universe].recommended)
-                                            or (EditStudyPage.showAll  and !EditStudyPage.studyMap[sfc.universe].hidden) }">
+                                 visible="#{(!empty EditStudyPage.metadata.universe 
+                                            or EditStudyPage.studyMap[sfc.universe].recommended
+                                            or EditStudyPage.studyMap[sfc.universe].required)
+                                            or (EditStudyPage.showAll  
+                                            and !EditStudyPage.studyMap[sfc.universe].hidden
+                                            and !EditStudyPage.studyMap[sfc.universe].disabled) }">
                     <div jsfc="ice:panelGroup" styleClass="vdcEditStudyField">
                       <ice:outputText styleClass="dvnInlineHelpLabel dvnInlineHelpTip" value="#{editstudybundle.universeLabel}" title="#{editstudybundle.universeHelpHeading} - #{editstudybundle.universeHelp}"/>
                       <ice:graphicImage value="/resources/images/icon_required.gif" rendered="#{EditStudyPage.studyMap[sfc.universe].required}"/>
@@ -1305,8 +1436,12 @@
                   <ice:panelGrid cellpadding="0" cellspacing="0" columns="2" width="100%"
                                  styleClass="vdcEditStudyTable"
                                  columnClasses="vdcEditStudyCol1, vdcEditStudyCol2"
-                                 visible="#{(!empty EditStudyPage.metadata.kindOfData or EditStudyPage.studyMap[sfc.kindOfData].recommended)
-                                            or (EditStudyPage.showAll and !EditStudyPage.studyMap[sfc.kindOfData].hidden) }">
+                                 visible="#{(!empty EditStudyPage.metadata.kindOfData 
+                                            or EditStudyPage.studyMap[sfc.kindOfData].recommended
+                                            or EditStudyPage.studyMap[sfc.kindOfData].required)
+                                            or (EditStudyPage.showAll 
+                                            and !EditStudyPage.studyMap[sfc.kindOfData].hidden
+                                            and !EditStudyPage.studyMap[sfc.kindOfData].disabled) }">
                     <div jsfc="ice:panelGroup" styleClass="vdcEditStudyField">
                       <ice:outputText styleClass="dvnInlineHelpLabel dvnInlineHelpTip" value="#{editstudybundle.kindOfDataLabel}" title="#{editstudybundle.kindOfDataHelpHeading} - #{editstudybundle.kindOfDataHelp}"/>
                       <ice:graphicImage value="/resources/images/icon_required.gif" rendered="#{EditStudyPage.studyMap[sfc.kindOfData].required}"/>
@@ -1393,8 +1528,10 @@
                                          actionListener="#{EditStudyPage.addRow}">
                         <f:attribute name="dcmSortOrder" value="#{customField.dcmSortOrder}"/>
                       </ice:commandButton>       
-                        <ice:commandButton partialSubmit="true" rendered="#{customField.templateFieldValues.size() > 1 and empty(customField.templateFieldControlledVocabulary)}" 
+                        <ice:commandButton partialSubmit="true" 
+                                 rendered="#{customField.templateFieldValues.size() > 1 and empty(customField.templateFieldControlledVocabulary)}" 
                                 image="/resources/images/icon_remove.gif" actionListener="#{EditStudyPage.removeRow}"/>
+                        <f:attribute name="dcmSortOrder" value="#{customField.dcmSortOrder}"/>
                     </ice:column>
                     </ice:dataTable> 
 
@@ -1408,7 +1545,12 @@
                     <ice:panelGrid cellpadding="0" cellspacing="0" columns="2" width="100%"
                                  styleClass="vdcEditStudyTable"
                                  columnClasses="vdcEditStudyCol1, vdcEditStudyCol2"
-                                 visible="#{!empty EditStudyPage.metadata.timeMethod or EditStudyPage.studyMap[sfc.timeMethod].recommended or EditStudyPage.showAll}">
+                                 visible="#{(!empty EditStudyPage.metadata.timeMethod
+                                            or EditStudyPage.studyMap[sfc.timeMethod].recommended
+                                            or EditStudyPage.studyMap[sfc.timeMethod].required)
+                                            or (EditStudyPage.showAll
+                                            and !EditStudyPage.studyMap[sfc.timeMethod].hidden
+                                            and !EditStudyPage.studyMap[sfc.timeMethod].disabled) }">
                     <div jsfc="ice:panelGroup" styleClass="vdcEditStudyField">
                       <ice:outputText styleClass="dvnInlineHelpTip" value="#{editstudybundle.timeMethodLabel}" 
                                       title="#{editstudybundle.timeMethodHelpHeading} - #{editstudybundle.timeMethodHelp}"/>
@@ -1428,7 +1570,12 @@
                   <ice:panelGrid cellpadding="0" cellspacing="0" columns="2" width="100%"
                                  styleClass="vdcEditStudyTable"
                                  columnClasses="vdcEditStudyCol1, vdcEditStudyCol2"
-                                 visible="#{!empty EditStudyPage.metadata.dataCollector or EditStudyPage.studyMap[sfc.dataCollector].recommended or EditStudyPage.showAll}">
+                                 visible="#{(!empty EditStudyPage.metadata.dataCollector 
+                                            or EditStudyPage.studyMap[sfc.dataCollector].recommended 
+                                            or EditStudyPage.studyMap[sfc.dataCollector].required )
+                                            or (EditStudyPage.showAll
+                                            and !EditStudyPage.studyMap[sfc.dataCollector].hidden
+                                            and !EditStudyPage.studyMap[sfc.dataCollector].disabled)}">
                     <div jsfc="ice:panelGroup" styleClass="vdcEditStudyField">
                       <ice:outputText styleClass="dvnInlineHelpTip" value="#{editstudybundle.dataCollectorLabel}" 
                                       title="#{editstudybundle.dataCollectorHelpHeading} - #{editstudybundle.dataCollectorHelp}"/>
@@ -1449,7 +1596,13 @@
                   <ice:panelGrid cellpadding="0" cellspacing="0" columns="2" width="100%"
                                  styleClass="vdcEditStudyTable"
                                  columnClasses="vdcEditStudyCol1, vdcEditStudyCol2"
-                                 visible="#{!empty EditStudyPage.metadata.frequencyOfDataCollection or EditStudyPage.studyMap[sfc.frequencyOfDataCollection].recommended or EditStudyPage.showAll}">
+                                 visible="#{(!empty EditStudyPage.metadata.frequencyOfDataCollection 
+                                            or EditStudyPage.studyMap[sfc.frequencyOfDataCollection].recommended
+                                            or EditStudyPage.studyMap[sfc.frequencyOfDataCollection].required) 
+                                            or (EditStudyPage.showAll
+                                            and !EditStudyPage.studyMap[sfc.frequencyOfDataCollection].hidden
+                                            and !EditStudyPage.studyMap[sfc.frequencyOfDataCollection].disabled)
+                                            }">
                     <div jsfc="ice:panelGroup" styleClass="vdcEditStudyField">
                       <ice:outputText styleClass="dvnInlineHelpTip" value="#{editstudybundle.frequencyLabel}" 
                                       title="#{editstudybundle.frequencyHelpHeading} - #{editstudybundle.frequencyHelp}"/>
@@ -1470,7 +1623,13 @@
                   <ice:panelGrid cellpadding="0" cellspacing="0" columns="2" width="100%"
                                  styleClass="vdcEditStudyTable"
                                  columnClasses="vdcEditStudyCol1, vdcEditStudyCol2"
-                                 visible="#{!empty EditStudyPage.metadata.samplingProcedure or EditStudyPage.studyMap[sfc.samplingProcedure].recommended or EditStudyPage.showAll}">
+                                 visible="#{(!empty EditStudyPage.metadata.samplingProcedure
+                                            or EditStudyPage.studyMap[sfc.samplingProcedure].recommended
+                                            or EditStudyPage.studyMap[sfc.samplingProcedure].required )
+                                            or (EditStudyPage.showAll
+                                            and !EditStudyPage.studyMap[sfc.samplingProcedure].hidden
+                                            and !EditStudyPage.studyMap[sfc.samplingProcedure].disabled
+                                            )}">
                     <div jsfc="ice:panelGroup" styleClass="vdcEditStudyField">
                       <ice:outputText styleClass="dvnInlineHelpTip" value="#{editstudybundle.samplingProcedureLabel}" 
                                       title="#{editstudybundle.samplingProcedureHelpHeading} - #{editstudybundle.samplingProcedureHelp}"/>
@@ -1492,7 +1651,12 @@
                   <ice:panelGrid cellpadding="0" cellspacing="0" columns="2" width="100%"
                                  styleClass="vdcEditStudyTable"
                                  columnClasses="vdcEditStudyCol1, vdcEditStudyCol2"
-                                 visible="#{!empty EditStudyPage.metadata.deviationsFromSampleDesign or EditStudyPage.studyMap[sfc.deviationsFromSampleDesign].recommended or EditStudyPage.showAll}">
+                                 visible="#{(!empty EditStudyPage.metadata.deviationsFromSampleDesign 
+                                            or EditStudyPage.studyMap[sfc.deviationsFromSampleDesign].recommended
+                                            or EditStudyPage.studyMap[sfc.deviationsFromSampleDesign].required )
+                                            or (EditStudyPage.showAll
+                                            and !EditStudyPage.studyMap[sfc.deviationsFromSampleDesign].hidden
+                                               and !EditStudyPage.studyMap[sfc.deviationsFromSampleDesign].disabled )}">
                     <div jsfc="ice:panelGroup" styleClass="vdcEditStudyField">
                       <ice:outputText styleClass="dvnInlineHelpTip" value="#{editstudybundle.majorDeviationsLabel}" 
                                       title="#{editstudybundle.majorDeviationsHelpHeading} - #{editstudybundle.majorDeviationsHelp}"/>
@@ -1514,7 +1678,12 @@
                   <ice:panelGrid cellpadding="0" cellspacing="0" columns="2" width="100%"
                                  styleClass="vdcEditStudyTable}"
                                  columnClasses="vdcEditStudyCol1, vdcEditStudyCol2"
-                                 visible="#{!empty EditStudyPage.metadata.collectionMode or EditStudyPage.studyMap[sfc.collectionMode].recommended or EditStudyPage.showAll}">
+                                 visible="#{(!empty EditStudyPage.metadata.collectionMode 
+                                            or EditStudyPage.studyMap[sfc.collectionMode].recommended 
+                                            or EditStudyPage.studyMap[sfc.collectionMode].required)
+                                            or ( EditStudyPage.showAll
+                                            and !EditStudyPage.studyMap[sfc.collectionMode].hidden
+                                            and !EditStudyPage.studyMap[sfc.collectionMode].disabled)}">
                     <div jsfc="ice:panelGroup" styleClass="vdcEditStudyField">
                       <ice:outputText styleClass="dvnInlineHelpTip" value="#{editstudybundle.collectionModeLabel}" 
                                       title="#{editstudybundle.collectionModeHelpHeading} - #{editstudybundle.collectionModeHelp}"/>
@@ -1535,7 +1704,13 @@
                   <ice:panelGrid cellpadding="0" cellspacing="0" columns="2" width="100%"
                                  styleClass="vdcEditStudyTable"
                                  columnClasses="vdcEditStudyCol1, vdcEditStudyCol2"
-                                 visible="#{!empty EditStudyPage.metadata.researchInstrument or EditStudyPage.studyMap[sfc.researchInstrument].recommended or EditStudyPage.showAll}">
+                                 visible="#{(!empty EditStudyPage.metadata.researchInstrument 
+                                            or EditStudyPage.studyMap[sfc.researchInstrument].recommended
+                                            or EditStudyPage.studyMap[sfc.researchInstrument].required)
+                                            or ( EditStudyPage.showAll
+                                            and !EditStudyPage.studyMap[sfc.researchInstrument].hidden
+                                            and !EditStudyPage.studyMap[sfc.researchInstrument].disabled
+                                            )}">
                     <div jsfc="ice:panelGroup" styleClass="vdcEditStudyField">
                     <ice:outputText styleClass="dvnInlineHelpTip" value="#{editstudybundle.researchInstrumentLabel}" 
                                       title="#{editstudybundle.researchInstrumentHelpHeading} - #{editstudybundle.researchInstrumentHelp}"/>
@@ -1556,7 +1731,13 @@
                   <ice:panelGrid cellpadding="0" cellspacing="0" columns="2" width="100%"
                                  styleClass="vdcEditStudyTable"
                                  columnClasses="vdcEditStudyCol1, vdcEditStudyCol2"
-                                 visible="#{!empty EditStudyPage.metadata.dataSources or EditStudyPage.studyMap[sfc.dataSources].recommended or EditStudyPage.showAll}">
+                                 visible="#{(!empty EditStudyPage.metadata.dataSources 
+                                            or EditStudyPage.studyMap[sfc.dataSources].recommended
+                                            or EditStudyPage.studyMap[sfc.dataSources].required)
+                                            or (EditStudyPage.showAll
+                                            and  !EditStudyPage.studyMap[sfc.dataSources].hidden
+                                            and  !EditStudyPage.studyMap[sfc.dataSources].disabled
+                                            )}">
                     <div jsfc="ice:panelGroup" styleClass="vdcEditStudyField">
                     <ice:outputText styleClass="dvnInlineHelpTip" value="#{editstudybundle.dataSourcesLabel}" 
                                       title="#{editstudybundle.dataSourcesHelpHeading} - #{editstudybundle.dataSourcesHelp}"/>
@@ -1577,7 +1758,13 @@
                   <ice:panelGrid cellpadding="0" cellspacing="0" columns="2" width="100%"
                                  styleClass="vdcEditStudyTable"
                                  columnClasses="vdcEditStudyCol1, vdcEditStudyCol2"
-                                 visible="#{!empty EditStudyPage.metadata.originOfSources or EditStudyPage.studyMap[sfc.originOfSources].recommended or EditStudyPage.showAll}">
+                                 visible="#{(!empty EditStudyPage.metadata.originOfSources 
+                                            or EditStudyPage.studyMap[sfc.originOfSources].recommended
+                                            or EditStudyPage.studyMap[sfc.originOfSources].required) 
+                                            or (EditStudyPage.showAll
+                                            and !EditStudyPage.studyMap[sfc.originOfSources].hidden
+                                            and !EditStudyPage.studyMap[sfc.originOfSources].disabled
+                                            )}">
                     <div jsfc="ice:panelGroup" styleClass="vdcEditStudyField">
                       <ice:outputText styleClass="dvnInlineHelpTip" value="#{editstudybundle.originOfSourcesLabel}" 
                                       title="#{editstudybundle.originOfSourcesHelpHeading} - #{editstudybundle.originOfSourcesHelp}"/>
@@ -1598,7 +1785,13 @@
                   <ice:panelGrid cellpadding="0" cellspacing="0" columns="2" width="100%"
                                  styleClass="vdcEditStudyTable"
                                  columnClasses="vdcEditStudyCol1, vdcEditStudyCol2"
-                                 visible="#{!empty EditStudyPage.metadata.characteristicOfSources or EditStudyPage.studyMap[sfc.characteristicOfSources].recommended or EditStudyPage.showAll}">
+                                 visible="#{(!empty EditStudyPage.metadata.characteristicOfSources 
+                                            or EditStudyPage.studyMap[sfc.characteristicOfSources].recommended
+                                            or EditStudyPage.studyMap[sfc.characteristicOfSources].required )
+                                            or (EditStudyPage.showAll
+                                            and !EditStudyPage.studyMap[sfc.characteristicOfSources].hidden
+                                            and !EditStudyPage.studyMap[sfc.characteristicOfSources].disabled
+                                            )}">
                     <div jsfc="ice:panelGroup" styleClass="vdcEditStudyField">
                       <ice:outputText styleClass="dvnInlineHelpTip" value="#{editstudybundle.sourceCharacteristicsLabel}" 
                                       title="#{editstudybundle.sourceCharacteristicsHelpHeading} - #{editstudybundle.sourceCharacteristicsHelp}"/>
@@ -1619,7 +1812,12 @@
                   <ice:panelGrid cellpadding="0" cellspacing="0" columns="2" width="100%"
                                  styleClass="vdcEditStudyTable"
                                  columnClasses="vdcEditStudyCol1, vdcEditStudyCol2"
-                                 visible="#{!empty EditStudyPage.metadata.accessToSources or EditStudyPage.studyMap[sfc.accessToSources].recommended or EditStudyPage.showAll}">
+                                 visible="#{(!empty EditStudyPage.metadata.accessToSources 
+                                            or EditStudyPage.studyMap[sfc.accessToSources].recommended 
+                                            or EditStudyPage.studyMap[sfc.accessToSources].required)
+                                            or (EditStudyPage.showAll
+                                            and !EditStudyPage.studyMap[sfc.accessToSources].hidden
+                                            and !EditStudyPage.studyMap[sfc.accessToSources].disabled)}">
                     <div jsfc="ice:panelGroup" styleClass="vdcEditStudyField">
                       <ice:outputText styleClass="dvnInlineHelpTip" value="#{editstudybundle.sourceDocumentationLabel}" 
                                       title="#{editstudybundle.sourceDocumentationHelpHeading} - #{editstudybundle.sourceDocumentationHelp}"/>
@@ -1641,7 +1839,13 @@
                   <ice:panelGrid cellpadding="0" cellspacing="0" columns="2" width="100%"
                                  styleClass="vdcEditStudyTable"
                                  columnClasses="vdcEditStudyCol1, vdcEditStudyCol2"
-                                 visible="#{!empty EditStudyPage.metadata.dataCollectionSituation or EditStudyPage.studyMap[sfc.dataCollectionSituation].recommended or EditStudyPage.showAll}">
+                                 visible="#{(!empty EditStudyPage.metadata.dataCollectionSituation 
+                                            or EditStudyPage.studyMap[sfc.dataCollectionSituation].recommended
+                                            or EditStudyPage.studyMap[sfc.dataCollectionSituation].required) 
+                                            or (EditStudyPage.showAll
+                                            and !EditStudyPage.studyMap[sfc.dataCollectionSituation].hidden
+                                             and !EditStudyPage.studyMap[sfc.dataCollectionSituation].disabled)
+                                            }">
                     <div jsfc="ice:panelGroup" styleClass="vdcEditStudyField">
                       <ice:outputText styleClass="dvnInlineHelpTip" value="#{editstudybundle.dataCollectionCharacteristicsLabel}" 
                                       title="#{editstudybundle.dataCollectionCharacteristicsHelpHeading} - #{editstudybundle.dataCollectionCharacteristicsHelp}"/>
@@ -1662,7 +1866,13 @@
                   <ice:panelGrid cellpadding="0" cellspacing="0" columns="2" width="100%"
                                  styleClass="vdcEditStudyTable"
                                  columnClasses="vdcEditStudyCol1, vdcEditStudyCol2"
-                                 visible="#{!empty EditStudyPage.metadata.actionsToMinimizeLoss or EditStudyPage.studyMap[sfc.actionsToMinimizeLoss].recommended or EditStudyPage.showAll}">
+                                 visible="#{(!empty EditStudyPage.metadata.actionsToMinimizeLoss
+                                            or EditStudyPage.studyMap[sfc.actionsToMinimizeLoss].recommended
+                                            or EditStudyPage.studyMap[sfc.actionsToMinimizeLoss].required) 
+                                            or (EditStudyPage.showAll
+                                            and !EditStudyPage.studyMap[sfc.actionsToMinimizeLoss].hidden
+                                            and !EditStudyPage.studyMap[sfc.actionsToMinimizeLoss].disabled
+                                            )}">
                     <div jsfc="ice:panelGroup" styleClass="vdcEditStudyField">
                       <ice:outputText styleClass="dvnInlineHelpTip" value="#{editstudybundle.minimizeActionsLabel}" 
                                       title="#{editstudybundle.minimizeActionsHelpHeading} - #{editstudybundle.minimizeActionsHelp}"/>
@@ -1683,7 +1893,13 @@
                   <ice:panelGrid cellpadding="0" cellspacing="0" columns="2" width="100%"
                                  styleClass="vdcEditStudyTable"
                                  columnClasses="vdcEditStudyCol1, vdcEditStudyCol2"
-                                 visible="#{!empty EditStudyPage.metadata.controlOperations or EditStudyPage.studyMap[sfc.controlOperations].recommended or EditStudyPage.showAll}">
+                                 visible="#{(!empty EditStudyPage.metadata.controlOperations 
+                                            or EditStudyPage.studyMap[sfc.controlOperations].recommended 
+                                            or EditStudyPage.studyMap[sfc.controlOperations].required )
+                                            or (EditStudyPage.showAll
+                                            and !EditStudyPage.studyMap[sfc.controlOperations].hidden
+                                            and !EditStudyPage.studyMap[sfc.controlOperations].disabled
+                                            )}">
                     <div jsfc="ice:panelGroup" styleClass="vdcEditStudyField">
                       <ice:outputText styleClass="dvnInlineHelpTip" value="#{editstudybundle.controlOperationsLabel}" 
                                       title="#{editstudybundle.controlOperationsHelpHeading} - #{editstudybundle.controlOperationsHelp}"/>
@@ -1704,7 +1920,12 @@
                   <ice:panelGrid cellpadding="0" cellspacing="0" columns="2" width="100%"
                                  styleClass="vdcEditStudyTable"
                                  columnClasses="vdcEditStudyCol1, vdcEditStudyCol2"
-                                 visible="#{!empty EditStudyPage.metadata.weighting or EditStudyPage.studyMap[sfc.weighting].recommended or EditStudyPage.showAll}">
+                                 visible="#{(!empty EditStudyPage.metadata.weighting 
+                                            or EditStudyPage.studyMap[sfc.weighting].recommended
+                                            or EditStudyPage.studyMap[sfc.weighting].required )
+                                            or (EditStudyPage.showAll
+                                            and !EditStudyPage.studyMap[sfc.weighting].hidden
+                                            and !EditStudyPage.studyMap[sfc.weighting].disabled)}">
                     <div jsfc="ice:panelGroup" styleClass="vdcEditStudyField">
                       <ice:outputText styleClass="dvnInlineHelpTip" value="#{editstudybundle.weightingLabel}" 
                                       title="#{editstudybundle.weightingHelpHeading} - #{editstudybundle.weightingHelp}"/>
@@ -1725,7 +1946,13 @@
                   <ice:panelGrid cellpadding="0" cellspacing="0" columns="2" width="100%"
                                  styleClass="vdcEditStudyTable"
                                  columnClasses="vdcEditStudyCol1, vdcEditStudyCol2"
-                                  visible="#{!empty EditStudyPage.metadata.cleaningOperations or EditStudyPage.studyMap[sfc.cleaningOperations].recommended or EditStudyPage.showAll}">
+                                  visible="#{(!empty EditStudyPage.metadata.cleaningOperations 
+                                             or EditStudyPage.studyMap[sfc.cleaningOperations].recommended 
+                                             or EditStudyPage.studyMap[sfc.cleaningOperations].required )
+                                             or (EditStudyPage.showAll
+                                             and !EditStudyPage.studyMap[sfc.cleaningOperations].hidden 
+                                             and !EditStudyPage.studyMap[sfc.cleaningOperations].disabled
+                                             )}">
                     <div jsfc="ice:panelGroup" styleClass="vdcEditStudyField">
                       <ice:outputText styleClass="dvnInlineHelpTip" value="#{editstudybundle.cleaningOperationsLabel}" 
                                       title="#{editstudybundle.cleaningOperationsHelpHeading} - #{editstudybundle.cleaningOperationsHelp}"/>
@@ -1746,7 +1973,13 @@
                   <ice:panelGrid cellpadding="0" cellspacing="0" columns="2" width="100%"
                                  styleClass="vdcEditStudyTable"
                                  columnClasses="vdcEditStudyCol1, vdcEditStudyCol2"
-                                 visible="#{!empty EditStudyPage.metadata.studyLevelErrorNotes or EditStudyPage.studyMap[sfc.studyLevelErrorNotes].recommended or EditStudyPage.showAll}">
+                                 visible="#{(!empty EditStudyPage.metadata.studyLevelErrorNotes 
+                                            or EditStudyPage.studyMap[sfc.studyLevelErrorNotes].recommended
+                                            or EditStudyPage.studyMap[sfc.studyLevelErrorNotes].required )
+                                            or (EditStudyPage.showAll
+                                            and !EditStudyPage.studyMap[sfc.studyLevelErrorNotes].hidden
+                                            and !EditStudyPage.studyMap[sfc.studyLevelErrorNotes].disabled
+                                            )}">
                     <div jsfc="ice:panelGroup" styleClass="vdcEditStudyField">
                       <ice:outputText styleClass="dvnInlineHelpTip" value="#{editstudybundle.studyLevelErrorNotesLabel}" 
                                       title="#{editstudybundle.studyLevelErrorNotesHelpHeading} - #{editstudybundle.studyLevelErrorNotesHelp}"/>
@@ -1767,7 +2000,13 @@
                   <ice:panelGrid cellpadding="0" cellspacing="0" columns="2" width="100%"
                                  styleClass="vdcEditStudyTable"
                                  columnClasses="vdcEditStudyCol1, vdcEditStudyCol2"
-                                 visible="#{!empty EditStudyPage.metadata.responseRate or EditStudyPage.studyMap[sfc.responseRate].recommended or EditStudyPage.showAll}">
+                                 visible="#{(!empty EditStudyPage.metadata.responseRate 
+                                            or EditStudyPage.studyMap[sfc.responseRate].recommended
+                                            or EditStudyPage.studyMap[sfc.responseRate].required )
+                                            or (EditStudyPage.showAll
+                                            and !EditStudyPage.studyMap[sfc.responseRate].hidden
+                                            and !EditStudyPage.studyMap[sfc.responseRate].disabled
+                                            )}">
                     <div jsfc="ice:panelGroup" styleClass="vdcEditStudyField">
                       <ice:outputText styleClass="dvnInlineHelpTip" value="#{editstudybundle.responseRateLabel}" 
                                       title="#{editstudybundle.responseRateHelpHeading} - #{editstudybundle.responseRateHelp}"/>
@@ -1788,7 +2027,13 @@
                   <ice:panelGrid cellpadding="0" cellspacing="0" columns="2" width="100%"
                                  styleClass="vdcEditStudyTable"
                                  columnClasses="vdcEditStudyCol1, vdcEditStudyCol2"
-                                 visible="#{!empty EditStudyPage.metadata.samplingErrorEstimate or EditStudyPage.studyMap[sfc.samplingErrorEstimates].recommended or EditStudyPage.showAll}">
+                                 visible="#{(!empty EditStudyPage.metadata.samplingErrorEstimate 
+                                            or EditStudyPage.studyMap[sfc.samplingErrorEstimates].recommended
+                                            or EditStudyPage.studyMap[sfc.samplingErrorEstimates].required) 
+                                            or (EditStudyPage.showAll
+                                            and !EditStudyPage.studyMap[sfc.samplingErrorEstimates].hidden
+                                            and !EditStudyPage.studyMap[sfc.samplingErrorEstimates].disabled
+                                            )}">
                     <div jsfc="ice:panelGroup" styleClass="vdcEditStudyField">
                       <ice:outputText styleClass="dvnInlineHelpTip" value="#{editstudybundle.samplingErrorLabel}" 
                                       title="#{editstudybundle.samplingErrorHelpHeading} - #{editstudybundle.samplingErrorHelp}"/>
@@ -1809,7 +2054,13 @@
                   <ice:panelGrid cellpadding="0" cellspacing="0" columns="2" width="100%"
                                  styleClass="vdcEditStudyTable"
                                  columnClasses="vdcEditStudyCol1, vdcEditStudyCol2"
-                                 visible="#{!empty EditStudyPage.metadata.otherDataAppraisal or EditStudyPage.studyMap[sfc.otherDataAppraisal].recommended or EditStudyPage.showAll}">
+                                 visible="#{(!empty EditStudyPage.metadata.otherDataAppraisal 
+                                            or EditStudyPage.studyMap[sfc.otherDataAppraisal].recommended 
+                                            or EditStudyPage.studyMap[sfc.otherDataAppraisal].required )
+                                            or (EditStudyPage.showAll
+                                            and !EditStudyPage.studyMap[sfc.otherDataAppraisal].hidden 
+                                            and !EditStudyPage.studyMap[sfc.otherDataAppraisal].disabled 
+                                            )}">
                     <div jsfc="ice:panelGroup" styleClass="vdcEditStudyField">
                       <ice:outputText styleClass="dvnInlineHelpTip" value="#{editstudybundle.otherDataAppraisalLabel}" 
                                       title="#{editstudybundle.otherDataAppraisalHelpHeading} - #{editstudybundle.otherDataAppraisalHelp}"/>
@@ -1842,7 +2093,13 @@
                   <ice:panelGrid cellpadding="0" cellspacing="0" columns="2" width="100%"
                                  styleClass="vdcEditStudyTable"
                                  columnClasses="vdcEditStudyCol1, vdcEditStudyCol2" id="gridPanel5a"
-                                 visible="#{!empty EditStudyPage.metadata.placeOfAccess or EditStudyPage.studyMap[sfc.placeOfAccess].recommended or EditStudyPage.showAll}">
+                                 visible="#{(!empty EditStudyPage.metadata.placeOfAccess 
+                                            or EditStudyPage.studyMap[sfc.placeOfAccess].recommended
+                                            or EditStudyPage.studyMap[sfc.placeOfAccess].required )
+                                            or (EditStudyPage.showAll
+                                            and !EditStudyPage.studyMap[sfc.placeOfAccess].hidden
+                                            and !EditStudyPage.studyMap[sfc.placeOfAccess].disabled
+                                            )}">
                     <div jsfc="ice:panelGroup" styleClass="vdcEditStudyField">
                       <ice:outputText styleClass="dvnInlineHelpLabel dvnInlineHelpTip" value="#{editstudybundle.dataAccessPlaceLabel}" title="#{editstudybundle.dataAccessPlaceHelpHeading} - #{editstudybundle.dataAccessPlaceHelp}"/>
                       <ice:graphicImage value="/resources/images/icon_required.gif" rendered="#{EditStudyPage.studyMap[sfc.placeOfAccess].required}"/>
@@ -1862,7 +2119,13 @@
                   <ice:panelGrid cellpadding="0" cellspacing="0" columns="2" width="100%"
                                  styleClass="vdcEditStudyTable "
                                  columnClasses="vdcEditStudyCol1, vdcEditStudyCol2"
-                                 visible="#{!empty EditStudyPage.metadata.originalArchive or EditStudyPage.studyMap[sfc.originalArchive].recommended or EditStudyPage.showAll}">
+                                 visible="#{(!empty EditStudyPage.metadata.originalArchive 
+                                            or EditStudyPage.studyMap[sfc.originalArchive].recommended 
+                                            or EditStudyPage.studyMap[sfc.originalArchive].required )
+                                            or (EditStudyPage.showAll
+                                            and !EditStudyPage.studyMap[sfc.originalArchive].hidden
+                                            and !EditStudyPage.studyMap[sfc.originalArchive].required                                            
+                                            )}">
                     <div jsfc="ice:panelGroup" styleClass="vdcEditStudyField">
                       <ice:outputText styleClass="dvnInlineHelpLabel dvnInlineHelpTip" value="#{editstudybundle.originalArchiveLabel}" title="#{editstudybundle.originalArchiveHelpHeading} - #{editstudybundle.originalArchiveHelp}"/>
                       <ice:graphicImage value="/resources/images/icon_required.gif" rendered="#{EditStudyPage.studyMap[sfc.originalArchive].required}"/>
@@ -1882,7 +2145,13 @@
                   <ice:panelGrid cellpadding="0" cellspacing="0" columns="2" width="100%"
                                  styleClass="vdcEditStudyTable"
                                  columnClasses="vdcEditStudyCol1, vdcEditStudyCol2"
-                                 visible="#{!empty EditStudyPage.metadata.availabilityStatus or EditStudyPage.studyMap[sfc.availabilityStatus].recommended or EditStudyPage.showAll}">
+                                 visible="#{(!empty EditStudyPage.metadata.availabilityStatus 
+                                            or EditStudyPage.studyMap[sfc.availabilityStatus].recommended
+                                            or EditStudyPage.studyMap[sfc.availabilityStatus].required)
+                                            or (EditStudyPage.showAll
+                                            and !EditStudyPage.studyMap[sfc.availabilityStatus].hidden
+                                            and !EditStudyPage.studyMap[sfc.availabilityStatus].disabled
+                                            )}">
                     <div jsfc="ice:panelGroup" styleClass="vdcEditStudyField">
                       <ice:outputText styleClass="dvnInlineHelpLabel dvnInlineHelpTip" value="#{editstudybundle.availabilityLabel}" title="#{editstudybundle.availabilityHelpHeading} - #{editstudybundle.availabilityHelp}"/>
                       <ice:graphicImage value="/resources/images/icon_required.gif" rendered="#{EditStudyPage.studyMap[sfc.availabilityStatus].required}"/>
@@ -1902,7 +2171,13 @@
                   <ice:panelGrid cellpadding="0" cellspacing="0" columns="2" width="100%"
                                  styleClass="vdcEditStudyTable"
                                  columnClasses="vdcEditStudyCol1, vdcEditStudyCol2"
-                                 visible="#{!empty EditStudyPage.metadata.collectionSize or EditStudyPage.studyMap[sfc.collectionSize].recommended or EditStudyPage.showAll}">
+                                 visible="#{(!empty EditStudyPage.metadata.collectionSize 
+                                            or EditStudyPage.studyMap[sfc.collectionSize].recommended 
+                                            or EditStudyPage.studyMap[sfc.collectionSize].required )
+                                            or (EditStudyPage.showAll
+                                            and !EditStudyPage.studyMap[sfc.collectionSize].hidden
+                                            and !EditStudyPage.studyMap[sfc.collectionSize].disabled
+                                            )}">
                     <div jsfc="ice:panelGroup" styleClass="vdcEditStudyField">
                       <ice:outputText styleClass="dvnInlineHelpLabel dvnInlineHelpTip" value="#{editstudybundle.collectionSizeLabel}" title="#{editstudybundle.collectionSizeHelpHeading} - #{editstudybundle.collectionSizeHelp}"/>
                       <ice:graphicImage value="/resources/images/icon_required.gif" rendered="#{EditStudyPage.studyMap[sfc.collectionSize].required}"/>
@@ -1922,7 +2197,13 @@
                   <ice:panelGrid cellpadding="0" cellspacing="0" columns="2" width="100%"
                                  styleClass="vdcEditStudyTable"
                                  columnClasses="vdcEditStudyCol1, vdcEditStudyCol2"
-                                 visible="#{!empty EditStudyPage.metadata.studyCompletion or EditStudyPage.studyMap[sfc.studyCompletion].recommended or EditStudyPage.showAll}">
+                                 visible="#{(!empty EditStudyPage.metadata.studyCompletion 
+                                            or EditStudyPage.studyMap[sfc.studyCompletion].recommended 
+                                            or EditStudyPage.studyMap[sfc.studyCompletion].required )
+                                            or (EditStudyPage.showAll
+                                            and !EditStudyPage.studyMap[sfc.studyCompletion].hidden
+                                            and !EditStudyPage.studyMap[sfc.studyCompletion].disabled
+                                            )}">
                     <div jsfc="ice:panelGroup" styleClass="vdcEditStudyField">
                       <ice:outputText styleClass="dvnInlineHelpLabel dvnInlineHelpTip" value="#{editstudybundle.studyCompletionLabel}" title="#{editstudybundle.studyCompletionHelpHeading} - #{editstudybundle.studyCompletionHelp}"/>
                       <ice:graphicImage value="/resources/images/icon_required.gif" rendered="#{EditStudyPage.studyMap[sfc.studyCompletion].required}"/>
@@ -1948,7 +2229,13 @@
                   <ice:panelGrid cellpadding="0" cellspacing="0" columns="2" width="100%"
                                  styleClass="vdcEditStudyTable"
                                  columnClasses="vdcEditStudyCol1, vdcEditStudyCol2" id="gridPanel5"
-                                 visible="#{!empty EditStudyPage.metadata.confidentialityDeclaration or EditStudyPage.studyMap[sfc.confidentialityDeclaration].recommended or EditStudyPage.showAll}">
+                                 visible="#{(!empty EditStudyPage.metadata.confidentialityDeclaration 
+                                            or EditStudyPage.studyMap[sfc.confidentialityDeclaration].recommended
+                                            or EditStudyPage.studyMap[sfc.confidentialityDeclaration].required) 
+                                            or (EditStudyPage.showAll
+                                            and !EditStudyPage.studyMap[sfc.confidentialityDeclaration].hidden
+                                            and !EditStudyPage.studyMap[sfc.confidentialityDeclaration].disabled
+                                            )}">
                     <div jsfc="ice:panelGroup" styleClass="vdcEditStudyField">
                       <ice:outputText styleClass="dvnInlineHelpLabel dvnInlineHelpTip" value="#{editstudybundle.confidentialityLabel}" title="#{editstudybundle.confidentialityHelpHeading} - #{editstudybundle.confidentialityHelp}"/>
                       <ice:graphicImage value="/resources/images/icon_required.gif" rendered="#{EditStudyPage.studyMap[sfc.confidentialityDeclaration].required}"/>
@@ -1969,7 +2256,13 @@
                   <ice:panelGrid cellpadding="0" cellspacing="0" columns="2" width="100%"
                                  styleClass="vdcEditStudyTable"
                                  columnClasses="vdcEditStudyCol1, vdcEditStudyCol2"
-                                 visible="#{!empty EditStudyPage.metadata.specialPermissions or EditStudyPage.studyMap[sfc.specialPermissions].recommended or EditStudyPage.showAll}">
+                                 visible="#{(!empty EditStudyPage.metadata.specialPermissions
+                                            or EditStudyPage.studyMap[sfc.specialPermissions].recommended 
+                                            or EditStudyPage.studyMap[sfc.specialPermissions].required )
+                                            or (EditStudyPage.showAll
+                                            and !EditStudyPage.studyMap[sfc.specialPermissions].hidden 
+                                            and !EditStudyPage.studyMap[sfc.specialPermissions].disabled 
+                                            )}">
                     <div jsfc="ice:panelGroup" styleClass="vdcEditStudyField">
                       <ice:outputText styleClass="dvnInlineHelpLabel dvnInlineHelpTip" value="#{editstudybundle.specialPermissionsLabel}" title="#{editstudybundle.specialPermissionsHelpHeading} - #{editstudybundle.specialPermissionsHelp}"/>
                       <ice:graphicImage value="/resources/images/icon_required.gif" rendered="#{EditStudyPage.studyMap[sfc.specialPermissions].required}"/>
@@ -1989,7 +2282,12 @@
                   <ice:panelGrid cellpadding="0" cellspacing="0" columns="2" width="100%"
                                  styleClass="vdcEditStudyTable"
                                  columnClasses="vdcEditStudyCol1, vdcEditStudyCol2"
-                                 visible="#{!empty EditStudyPage.metadata.restrictions or EditStudyPage.studyMap[sfc.restrictions].recommended or EditStudyPage.showAll}">
+                                 visible="#{(!empty EditStudyPage.metadata.restrictions 
+                                            or EditStudyPage.studyMap[sfc.restrictions].recommended
+                                            or EditStudyPage.studyMap[sfc.restrictions].required) 
+                                            or (EditStudyPage.showAll
+                                            and !EditStudyPage.studyMap[sfc.restrictions].hidden
+                                            and !EditStudyPage.studyMap[sfc.restrictions].disabled)}">
                     <div jsfc="ice:panelGroup" styleClass="vdcEditStudyField">
                       <ice:outputText styleClass="dvnInlineHelpLabel dvnInlineHelpTip" value="#{editstudybundle.restrictionsLabel}" title="#{editstudybundle.restrictionsHelpHeading} - #{editstudybundle.restrictionsHelp}"/>
                       <ice:graphicImage value="/resources/images/icon_required.gif" rendered="#{EditStudyPage.studyMap[sfc.restrictions].required}"/>
@@ -2010,7 +2308,12 @@
                   <ice:panelGrid cellpadding="0" cellspacing="0" columns="2" width="100%"
                                  styleClass="vdcEditStudyTable"
                                  columnClasses="vdcEditStudyCol1, vdcEditStudyCol2"
-                                 visible="#{!empty EditStudyPage.metadata.contact or EditStudyPage.studyMap[sfc.contact].recommended or EditStudyPage.showAll}">
+                                 visible="#{(!empty EditStudyPage.metadata.contact 
+                                            or EditStudyPage.studyMap[sfc.contact].recommended 
+                                            or EditStudyPage.studyMap[sfc.contact].required)
+                                            or (EditStudyPage.showAll 
+                                            and !EditStudyPage.studyMap[sfc.contact].hidden
+                                            and !EditStudyPage.studyMap[sfc.contact].disabled)}">
                     <div jsfc="ice:panelGroup" styleClass="vdcEditStudyField">
                       <ice:outputText styleClass="dvnInlineHelpLabel dvnInlineHelpTip" value="#{editstudybundle.contactLabel}" title="#{editstudybundle.contactHelpHeading} - #{editstudybundle.contactHelp}"/>
                       <ice:graphicImage value="/resources/images/icon_required.gif" rendered="#{EditStudyPage.studyMap[sfc.contact].required}"/>
@@ -2030,7 +2333,12 @@
                   <ice:panelGrid cellpadding="0" cellspacing="0" columns="2" width="100%"
                                  styleClass="vdcEditStudyTable"
                                  columnClasses="vdcEditStudyCol1, vdcEditStudyCol2"
-                                 visible="#{!empty EditStudyPage.metadata.citationRequirements or EditStudyPage.studyMap[sfc.citationRequirements].recommended or EditStudyPage.showAll}">
+                                 visible="#{(!empty EditStudyPage.metadata.citationRequirements 
+                                            or EditStudyPage.studyMap[sfc.citationRequirements].recommended
+                                            or EditStudyPage.studyMap[sfc.citationRequirements].required) 
+                                            or (EditStudyPage.showAll
+                                            and !EditStudyPage.studyMap[sfc.citationRequirements].hidden
+                                            and !EditStudyPage.studyMap[sfc.citationRequirements].disabled)}">
                     <div jsfc="ice:panelGroup" styleClass="vdcEditStudyField">
                       <ice:outputText styleClass="dvnInlineHelpLabel dvnInlineHelpTip" value="#{editstudybundle.citationRequirementsLabel}" title="#{editstudybundle.citationRequirementsHelpHeading} - #{editstudybundle.citationRequirementsHelp}"/>
                       <ice:graphicImage value="/resources/images/icon_required.gif" rendered="#{EditStudyPage.studyMap[sfc.citationRequirements].required}"/>
@@ -2050,7 +2358,12 @@
                   <ice:panelGrid cellpadding="0" cellspacing="0" columns="2" width="100%"
                                  styleClass="vdcEditStudyTable"
                                  columnClasses="vdcEditStudyCol1, vdcEditStudyCol2"
-                                 visible="#{!empty EditStudyPage.metadata.depositorRequirements or EditStudyPage.studyMap[sfc.depositorRequirements].recommended or EditStudyPage.showAll}">
+                                 visible="#{(!empty EditStudyPage.metadata.depositorRequirements 
+                                            or EditStudyPage.studyMap[sfc.depositorRequirements].recommended 
+                                            or EditStudyPage.studyMap[sfc.depositorRequirements].required )
+                                            or (EditStudyPage.showAll
+                                            and !EditStudyPage.studyMap[sfc.depositorRequirements].hidden
+                                            and !EditStudyPage.studyMap[sfc.depositorRequirements].disabled )}">
                     <div jsfc="ice:panelGroup" styleClass="vdcEditStudyField">
                       <ice:outputText styleClass="dvnInlineHelpLabel dvnInlineHelpTip" value="#{editstudybundle.depositorRequirementsLabel}" title="#{editstudybundle.depositorRequirementsHelpHeading} - #{editstudybundle.depositorRequirementsHelp}"/>
                       <ice:graphicImage value="/resources/images/icon_required.gif" rendered="#{EditStudyPage.studyMap[sfc.depositorRequirements].required}"/>
@@ -2071,7 +2384,12 @@
                   <ice:panelGrid cellpadding="0" cellspacing="0" columns="2" width="100%"
                                  styleClass="vdcEditStudyTable"
                                  columnClasses="vdcEditStudyCol1, vdcEditStudyCol2"
-                                 visible="#{!empty EditStudyPage.metadata.conditions or EditStudyPage.studyMap[sfc.conditions].recommended or EditStudyPage.showAll}">
+                                 visible="#{(!empty EditStudyPage.metadata.conditions 
+                                            or EditStudyPage.studyMap[sfc.conditions].recommended
+                                            or EditStudyPage.studyMap[sfc.conditions].required )
+                                            or (EditStudyPage.showAll
+                                            and !EditStudyPage.studyMap[sfc.conditions].hidden
+                                            and !EditStudyPage.studyMap[sfc.conditions].disabled)}">
                     <div jsfc="ice:panelGroup" styleClass="vdcEditStudyField">
                       <ice:outputText styleClass="dvnInlineHelpLabel dvnInlineHelpTip" value="#{editstudybundle.conditionsLabel}" title="#{editstudybundle.conditionsHelpHeading} - #{editstudybundle.conditionsHelp}"/>
                       <ice:graphicImage value="/resources/images/icon_required.gif" rendered="#{EditStudyPage.studyMap[sfc.conditions].required}"/>
@@ -2092,7 +2410,13 @@
                   <ice:panelGrid cellpadding="0" cellspacing="0" columns="2" width="100%"
                                  styleClass="vdcEditStudyTable"
                                  columnClasses="vdcEditStudyCol1, vdcEditStudyCol2"
-                                 visible="#{!empty EditStudyPage.metadata.disclaimer or EditStudyPage.studyMap[sfc.disclaimer].recommended or EditStudyPage.showAll}">
+                                 visible="#{(!empty EditStudyPage.metadata.disclaimer 
+                                            or EditStudyPage.studyMap[sfc.disclaimer].recommended
+                                            or EditStudyPage.studyMap[sfc.disclaimer].required) 
+                                            or (EditStudyPage.showAll
+                                            and !EditStudyPage.studyMap[sfc.disclaimer].hidden
+                                            and !EditStudyPage.studyMap[sfc.disclaimer].disabled
+                                            )}">
                     <div jsfc="ice:panelGroup" styleClass="vdcEditStudyField">
                       <ice:outputText styleClass="dvnInlineHelpLabel dvnInlineHelpTip" value="#{editstudybundle.disclaimerLabel}" title="#{editstudybundle.disclaimerHelpHeading} - #{editstudybundle.disclaimerHelp}"/>
                       <ice:graphicImage value="/resources/images/icon_required.gif" rendered="#{EditStudyPage.studyMap[sfc.disclaimer].required}"/>
@@ -2117,7 +2441,13 @@
                   <!-- this is a dummy datatable wrapper used to force data retention on validation error-->
                   <ice:dataTable cellpadding="0" cellspacing="0" width="100%"
                                  styleClass="vdcEditStudyTable"
-                                 visible="#{!EditStudyPage.studyNotesEmpty or EditStudyPage.studyMap[sfc.notesInformationType].recommended or EditStudyPage.showAll}" value="dummy_datatable">
+                                 rendered="#{(!EditStudyPage.studyNotesEmpty 
+                                             or EditStudyPage.studyMap[sfc.notesInformationType].recommended 
+                                             or EditStudyPage.studyMap[sfc.notesInformationType].required )
+                                             or (EditStudyPage.showAll
+                                             and !EditStudyPage.studyMap[sfc.notesInformationType].hidden 
+                                             and !EditStudyPage.studyMap[sfc.notesInformationType].disabled ) }" 
+                                             value="dummy_datatable">
                     <ice:column>
                       <ice:dataTable id="dataTableNotes" cellpadding="0" cellspacing="0"
                                      styleClass="vdcEditStudyInnerTable" columnClasses="vdcEditStudyCol1b, vdcEditStudyCol2, vdcEditStudyCol3"

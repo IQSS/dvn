@@ -346,8 +346,7 @@ public class TemplateFormPage extends VDCBaseBean implements java.io.Serializabl
         FieldInputLevel required = new FieldInputLevel();
         required.setName("required");
         FieldInputLevel disabled = new FieldInputLevel();
-        required.setName("disabled");
-        
+        disabled.setName("disabled");       
 
         selectItems.add(new SelectItem("required", "Required"));
         selectItems.add(new SelectItem("recommended", "Recommended"));

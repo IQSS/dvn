@@ -78,6 +78,14 @@ public class Metadata implements java.io.Serializable {
     @OneToOne(mappedBy="metadata")
     private Template template;
 
+    public Template getTemplate() {
+        return template;
+    }
+
+    public void setTemplate(Template template) {
+        this.template = template;
+    }
+
   
 
     
@@ -87,226 +95,540 @@ public class Metadata implements java.io.Serializable {
     public  Metadata(Metadata copyFrom ) {
      
         this.setUNF(copyFrom.UNF);
-        this.setAccessToSources(copyFrom.accessToSources);
-        this.setActionsToMinimizeLoss(copyFrom.actionsToMinimizeLoss);
-        this.setAvailabilityStatus(copyFrom.availabilityStatus);
-        this.setCharacteristicOfSources(copyFrom.characteristicOfSources);
-        this.setCitationRequirements(copyFrom.citationRequirements);
-        this.setCleaningOperations(copyFrom.cleaningOperations);
-        this.setCollectionMode(copyFrom.collectionMode);
-        this.setCollectionSize(copyFrom.collectionSize);
-        this.setConditions(copyFrom.conditions);
-        this.setConfidentialityDeclaration(copyFrom.confidentialityDeclaration);
-        this.setContact(copyFrom.contact);
-        this.setControlOperations(copyFrom.controlOperations);
-        this.setCountry(copyFrom.country);
-        this.setDataCollectionSituation(copyFrom.dataCollectionSituation);
-        this.setDataCollector(copyFrom.dataCollector);
-        this.setDataSources(copyFrom.dataSources);
-        this.setDateOfCollectionEnd(copyFrom.dateOfCollectionEnd);
-        this.setDateOfCollectionStart(copyFrom.dateOfCollectionStart);
-        this.setDateOfDeposit(copyFrom.dateOfDeposit);
-        this.setDepositor(copyFrom.depositor);
-        this.setDepositorRequirements(copyFrom.depositorRequirements);
-        this.setDeviationsFromSampleDesign(copyFrom.deviationsFromSampleDesign);
-        this.setDisclaimer(copyFrom.disclaimer);
-        this.setDistributionDate(copyFrom.distributionDate);
-        this.setDistributorContact(copyFrom.distributorContact);
-        this.setDistributorContactAffiliation(copyFrom.distributorContactAffiliation);
-        this.setDistributorContactEmail(copyFrom.distributorContactEmail);
-        this.setFrequencyOfDataCollection(copyFrom.frequencyOfDataCollection);
-        this.setFundingAgency(copyFrom.fundingAgency);
-        this.setGeographicCoverage(copyFrom.geographicCoverage);
-        this.setGeographicUnit(copyFrom.geographicUnit);
-        this.setHarvestDVNTermsOfUse(copyFrom.harvestDVNTermsOfUse);
-        this.setHarvestDVTermsOfUse(copyFrom.harvestDVTermsOfUse);
-        this.setHarvestHoldings(copyFrom.harvestHoldings);
-        this.setKindOfData(copyFrom.kindOfData);
-        this.setOriginOfSources(copyFrom.originOfSources);
-        this.setOriginalArchive(copyFrom.originalArchive);
-        this.setOtherDataAppraisal(copyFrom.otherDataAppraisal);
-        this.setPlaceOfAccess(copyFrom.placeOfAccess);
-        this.setProductionDate(copyFrom.productionDate);
-        this.setProductionPlace(copyFrom.productionPlace);
-        this.setReplicationFor(copyFrom.replicationFor);
-        this.setResearchInstrument(copyFrom.researchInstrument);
-        this.setResponseRate(copyFrom.responseRate);
-        this.setRestrictions(copyFrom.restrictions);
-        this.setSamplingErrorEstimate(copyFrom.samplingErrorEstimate);
-        this.setSamplingProcedure(copyFrom.samplingProcedure);
-        this.setSeriesInformation(copyFrom.seriesInformation);
-        this.setSeriesName(copyFrom.seriesName);
-        this.setSpecialPermissions(copyFrom.specialPermissions);
-        this.setStudyVersionText(copyFrom.studyVersionText);
-        this.setSubTitle(copyFrom.subTitle);
-        this.setTimeMethod(copyFrom.timeMethod);
-        this.setTimePeriodCoveredEnd(copyFrom.timePeriodCoveredEnd);
-        this.setTimePeriodCoveredStart(copyFrom.timePeriodCoveredStart);
-        this.setTitle(copyFrom.title);
-        this.setUnitOfAnalysis(copyFrom.unitOfAnalysis);
-        this.setUniverse(copyFrom.universe);
-        this.setVersionDate(copyFrom.versionDate);
-        this.setWeighting(copyFrom.weighting);
-        this.setStudyLevelErrorNotes(copyFrom.studyLevelErrorNotes);
-        this.setStudyCompletion(copyFrom.studyCompletion);
-        
-        
-        
-     
-        this.setStudyAbstracts(new ArrayList<StudyAbstract>());
-        for(StudyAbstract sa: copyFrom.studyAbstracts) {
-            StudyAbstract cloneAbstract = new StudyAbstract();
-            cloneAbstract.setDate(sa.getDate());
-            cloneAbstract.setDisplayOrder(sa.getDisplayOrder());
-            cloneAbstract.setMetadata(this);
-            cloneAbstract.setText(sa.getText());
-            this.getStudyAbstracts().add(cloneAbstract);
+        for (TemplateField tf : copyFrom.getTemplate().getTemplateFields()){
+            
+            if (tf.getStudyField().getName().equals("accessToSources")){
+                if(!tf.isHidden()  && !tf.isDisabled()){
+                     this.setAccessToSources(copyFrom.accessToSources); 
+                }
+            }
+            if (tf.getStudyField().getName().equals("actionsToMinimizeLoss")){
+                if(!tf.isHidden()  && !tf.isDisabled()){
+                     this.setActionsToMinimizeLoss(copyFrom.actionsToMinimizeLoss); 
+                }
+            }
+            if (tf.getStudyField().getName().equals("availabilityStatus")){
+                if(!tf.isHidden()  && !tf.isDisabled()){
+                     this.setAvailabilityStatus(copyFrom.availabilityStatus); 
+                }
+            }
+            if (tf.getStudyField().getName().equals("characteristicOfSources")){
+                if(!tf.isHidden()  && !tf.isDisabled()){
+                     this.setCharacteristicOfSources(copyFrom.characteristicOfSources); 
+                }
+            }
+            if (tf.getStudyField().getName().equals("citationRequirements")){
+                if(!tf.isHidden()  && !tf.isDisabled()){
+                     this.setCitationRequirements(copyFrom.citationRequirements); 
+                }
+            }
+            if (tf.getStudyField().getName().equals("cleaningOperations")){
+                if(!tf.isHidden()  && !tf.isDisabled()){
+                     this.setCleaningOperations(copyFrom.cleaningOperations); 
+                }
+            }
+            if (tf.getStudyField().getName().equals("collectionMode")){
+                if(!tf.isHidden()  && !tf.isDisabled()){
+                     this.setCollectionMode(copyFrom.collectionMode); 
+                }
+            }
+            if (tf.getStudyField().getName().equals("collectionSize")){
+                if(!tf.isHidden()  && !tf.isDisabled()){
+                     this.setCollectionSize(copyFrom.collectionSize); 
+                }
+            }
+            if (tf.getStudyField().getName().equals("conditions")){
+                if(!tf.isHidden()  && !tf.isDisabled()){
+                     this.setConditions(copyFrom.conditions); 
+                }
+            }
+            if (tf.getStudyField().getName().equals("confidentialityDeclaration")){
+                if(!tf.isHidden()  && !tf.isDisabled()){
+                     this.setConfidentialityDeclaration(copyFrom.confidentialityDeclaration); 
+                     
+                }
+            }
+            if (tf.getStudyField().getName().equals("contact")){
+                if(!tf.isHidden()  && !tf.isDisabled()){
+                     this.setContact(copyFrom.contact); 
+                }
+            }
+            if (tf.getStudyField().getName().equals("controlOperations")){
+                if(!tf.isHidden()  && !tf.isDisabled()){
+                     this.setControlOperations(copyFrom.controlOperations); 
+                }
+            }
+            if (tf.getStudyField().getName().equals("country")){
+                if(!tf.isHidden()  && !tf.isDisabled()){
+                     this.setCountry(copyFrom.country); 
+                }
+            }
+            if (tf.getStudyField().getName().equals("dataCollectionSituation")){
+                if(!tf.isHidden()  && !tf.isDisabled()){
+                     this.setDataCollectionSituation(copyFrom.dataCollectionSituation); 
+                }
+            }
+            if (tf.getStudyField().getName().equals("dataCollector")){
+                if(!tf.isHidden()  && !tf.isDisabled()){
+                     this.setDataCollector(copyFrom.dataCollector); 
+                }
+            }
+            if (tf.getStudyField().getName().equals("dataSources")){
+                if(!tf.isHidden()  && !tf.isDisabled()){
+                     this.setDataSources(copyFrom.dataSources); 
+                }
+            }
+            if (tf.getStudyField().getName().equals("dateOfCollectionEnd")){
+                if(!tf.isHidden()  && !tf.isDisabled()){
+                     this.setDateOfCollectionEnd(copyFrom.dateOfCollectionEnd); 
+                }
+            }
+            if (tf.getStudyField().getName().equals("dateOfCollectionStart")){
+                if(!tf.isHidden()  && !tf.isDisabled()){
+                     this.setDateOfCollectionStart(copyFrom.dateOfCollectionStart); 
+                }
+            }
+            if (tf.getStudyField().getName().equals("dateOfDeposit")){
+                if(!tf.isHidden()  && !tf.isDisabled()){
+                     this.setDateOfDeposit(copyFrom.dateOfDeposit); 
+                }
+            }
+            if (tf.getStudyField().getName().equals("depositor")){
+                if(!tf.isHidden()  && !tf.isDisabled()){
+                     this.setDepositor(copyFrom.depositor); 
+                }
+            }
+            if (tf.getStudyField().getName().equals("depositorRequirements")){
+                if(!tf.isHidden()  && !tf.isDisabled()){
+                     this.setDepositorRequirements(copyFrom.depositorRequirements); 
+                }
+            }
+            if (tf.getStudyField().getName().equals("deviationsFromSampleDesign")){
+                if(!tf.isHidden()  && !tf.isDisabled()){
+                     this.setDeviationsFromSampleDesign(copyFrom.deviationsFromSampleDesign); 
+                }
+            }
+            if (tf.getStudyField().getName().equals("disclaimer")){
+                if(!tf.isHidden()  && !tf.isDisabled()){
+                     this.setDisclaimer(copyFrom.disclaimer); 
+                }
+            }
+            if (tf.getStudyField().getName().equals("distributionDate")){
+                if(!tf.isHidden()  && !tf.isDisabled()){
+                     this.setDistributionDate(copyFrom.distributionDate); 
+                }
+            }
+            if (tf.getStudyField().getName().equals("distributorContact")){
+                if(!tf.isHidden()  && !tf.isDisabled()){
+                     this.setDistributorContact(copyFrom.distributorContact); 
+                }
+            }
+            if (tf.getStudyField().getName().equals("distributorContactAffiliation")){
+                if(!tf.isHidden()  && !tf.isDisabled()){
+                     this.setDistributorContactAffiliation(copyFrom.distributorContactAffiliation); 
+                }
+            }
+            if (tf.getStudyField().getName().equals("distributorContactEmail")){
+                if(!tf.isHidden()  && !tf.isDisabled()){
+                     this.setDistributorContactEmail(copyFrom.distributorContactEmail); 
+                }
+            }
+            if (tf.getStudyField().getName().equals("frequencyOfDataCollection")){
+                if(!tf.isHidden()  && !tf.isDisabled()){
+                     this.setFrequencyOfDataCollection(copyFrom.frequencyOfDataCollection); 
+                }
+            }
+            if (tf.getStudyField().getName().equals("fundingAgency")){
+                System.out.println("In fundingAgency "+tf.getStudyField().getName());
+                if(!tf.isHidden()  && !tf.isDisabled()){
+                     this.setFundingAgency(copyFrom.fundingAgency); 
+                }
+            }
+            if (tf.getStudyField().getName().equals("geographicCoverage")){
+                if(!tf.isHidden()  && !tf.isDisabled()){
+                     this.setAccessToSources(copyFrom.geographicCoverage); 
+                }
+            }
+            if (tf.getStudyField().getName().equals("geographicUnit")){
+                if(!tf.isHidden()  && !tf.isDisabled()){
+                     this.setGeographicCoverage(copyFrom.geographicUnit); 
+                }
+            }
+            if (tf.getStudyField().getName().equals("harvestDVNTermsOfUse")){
+                if(!tf.isHidden()  && !tf.isDisabled()){
+                     this.setHarvestDVNTermsOfUse(copyFrom.harvestDVNTermsOfUse); 
+                }
+            }
+            if (tf.getStudyField().getName().equals("harvestDVTermsOfUse")){
+                if(!tf.isHidden()  && !tf.isDisabled()){
+                     this.setHarvestDVTermsOfUse(copyFrom.harvestDVTermsOfUse); 
+                }
+            }
+            if (tf.getStudyField().getName().equals("harvestHoldings")){
+                if(!tf.isHidden()  && !tf.isDisabled()){
+                     this.setHarvestHoldings(copyFrom.harvestHoldings);
+                }
+            }
+            if (tf.getStudyField().getName().equals("kindOfData")){
+                if(!tf.isHidden()  && !tf.isDisabled()){
+                     this.setKindOfData(copyFrom.kindOfData);
+                }
+            }
+            if (tf.getStudyField().getName().equals("originOfSources")){
+                if(!tf.isHidden()  && !tf.isDisabled()){
+                     this.setOriginOfSources(copyFrom.originOfSources);
+                }
+            }
+            if (tf.getStudyField().getName().equals("originalArchive")){
+                if(!tf.isHidden()  && !tf.isDisabled()){
+                     this.setOriginalArchive(copyFrom.originalArchive);
+                }
+            }
+            if (tf.getStudyField().getName().equals("otherDataAppraisal")){
+                if(!tf.isHidden()  && !tf.isDisabled()){
+                     this.setOtherDataAppraisal(copyFrom.otherDataAppraisal);
+                }
+            }
+            if (tf.getStudyField().getName().equals("placeOfAccess")){
+                if(!tf.isHidden()  && !tf.isDisabled()){
+                     this.setPlaceOfAccess(copyFrom.placeOfAccess);
+                }
+            }
+            if (tf.getStudyField().getName().equals("productionDate")){
+                if(!tf.isHidden()  && !tf.isDisabled()){
+                     this.setProductionDate(copyFrom.productionDate);
+                }
+            }
+            if (tf.getStudyField().getName().equals("productionPlace")){
+                if(!tf.isHidden()  && !tf.isDisabled()){
+                     this.setProductionPlace(copyFrom.productionPlace);
+                }
+            }
+            if (tf.getStudyField().getName().equals("replicationFor")){
+                if(!tf.isHidden()  && !tf.isDisabled()){
+                     this.setReplicationFor(copyFrom.replicationFor);
+                }
+            }
+            if (tf.getStudyField().getName().equals("researchInstrument")){
+                if(!tf.isHidden()  && !tf.isDisabled()){
+                     this.setResearchInstrument(copyFrom.researchInstrument);
+                }
+            }
+            if (tf.getStudyField().getName().equals("responseRate")){
+                if(!tf.isHidden()  && !tf.isDisabled()){
+                     this.setResponseRate(copyFrom.responseRate);
+                }
+            }
+            if (tf.getStudyField().getName().equals("restrictions")){
+                if(!tf.isHidden()  && !tf.isDisabled()){
+                     this.setRestrictions(copyFrom.restrictions);
+                }
+            } 
+            if (tf.getStudyField().getName().equals("samplingErrorEstimate")){
+                if(!tf.isHidden()  && !tf.isDisabled()){
+                    this.setSamplingErrorEstimate(copyFrom.samplingErrorEstimate);
+                }
+            }
+            if (tf.getStudyField().getName().equals("samplingProcedure")){
+                if(!tf.isHidden()  && !tf.isDisabled()){
+                     this.setSamplingProcedure(copyFrom.samplingProcedure);
+                }
+            }
+            if (tf.getStudyField().getName().equals("seriesInformation")){
+                if(!tf.isHidden()  && !tf.isDisabled()){
+                     this.setSeriesInformation(copyFrom.seriesInformation);
+                }
+            }            
+            if (tf.getStudyField().getName().equals("seriesName")){
+                if(!tf.isHidden()  && !tf.isDisabled()){
+                     this.setSeriesName(copyFrom.seriesName);
+                }
+            } 
+            if (tf.getStudyField().getName().equals("specialPermissions")){
+                if(!tf.isHidden()  && !tf.isDisabled()){
+                     this.setSpecialPermissions(copyFrom.specialPermissions);
+                }
+            }
+            if (tf.getStudyField().getName().equals("studyVersionText")){
+                if(!tf.isHidden()  && !tf.isDisabled()){
+                     this.setStudyVersionText(copyFrom.studyVersionText);
+                }
+            }
+            if (tf.getStudyField().getName().equals("subTitle")){
+                if(!tf.isHidden()  && !tf.isDisabled()){
+                     this.setSubTitle(copyFrom.subTitle);
+                }
+            }
+            if (tf.getStudyField().getName().equals("timeMethod")){
+                if(!tf.isHidden()  && !tf.isDisabled()){
+                     this.setTimeMethod(copyFrom.timeMethod);
+                }
+            }
+            if (tf.getStudyField().getName().equals("timePeriodCoveredEnd")){
+                if(!tf.isHidden()  && !tf.isDisabled()){
+                     this.setTimePeriodCoveredEnd(copyFrom.timePeriodCoveredEnd);
+                }
+            }            
+            if (tf.getStudyField().getName().equals("timePeriodCoveredStart")){
+                if(!tf.isHidden()  && !tf.isDisabled()){
+                     this.setTimePeriodCoveredStart(copyFrom.timePeriodCoveredStart);
+                }
+            }
+            if (tf.getStudyField().getName().equals("title")){
+                if(!tf.isHidden()  && !tf.isDisabled()){
+                     this.setTitle(copyFrom.title);
+                }
+            }
+            if (tf.getStudyField().getName().equals("unitOfAnalysis")){
+                if(!tf.isHidden()  && !tf.isDisabled()){
+                    this.setUnitOfAnalysis(copyFrom.unitOfAnalysis);
+                }
+            }
+            if (tf.getStudyField().getName().equals("universe")){
+                if(!tf.isHidden()  && !tf.isDisabled()){
+                    this.setUniverse(copyFrom.universe);
+                }
+            }
+            if (tf.getStudyField().getName().equals("versionDate")){
+                if(!tf.isHidden()  && !tf.isDisabled()){
+                    this.setVersionDate(copyFrom.versionDate);
+                }
+            }
+            if (tf.getStudyField().getName().equals("weighting")){
+                if(!tf.isHidden()  && !tf.isDisabled()){
+                     this.setWeighting(copyFrom.weighting);
+                }
+            }
+            if (tf.getStudyField().getName().equals("studyLevelErrorNotes")){
+                if(!tf.isHidden()  && !tf.isDisabled()){
+                    this.setStudyLevelErrorNotes(copyFrom.studyLevelErrorNotes);
+                }
+            }
+            if (tf.getStudyField().getName().equals("studyCompletion")){
+                if(!tf.isHidden()  && !tf.isDisabled()){
+                    this.setStudyCompletion(copyFrom.studyCompletion);
+                }
+            }
+            
+            if (tf.getStudyField().getName().equals("abstractText")){
+                if(!tf.isHidden()  && !tf.isDisabled()){
+                     this.setStudyAbstracts(new ArrayList<StudyAbstract>());
+                    for(StudyAbstract sa: copyFrom.studyAbstracts) {
+                        StudyAbstract cloneAbstract = new StudyAbstract();
+                        cloneAbstract.setDate(sa.getDate());
+                        cloneAbstract.setDisplayOrder(sa.getDisplayOrder());
+                        cloneAbstract.setMetadata(this);
+                        cloneAbstract.setText(sa.getText());
+                        this.getStudyAbstracts().add(cloneAbstract);
+                    }
+                }
+            }
+            if (tf.getStudyField().getName().equals("authorName")){
+                if(!tf.isHidden()  && !tf.isDisabled()){
+                    this.setStudyAuthors(new ArrayList<StudyAuthor>());
+                    for (StudyAuthor author: copyFrom.studyAuthors) {
+                        StudyAuthor cloneAuthor = new StudyAuthor();
+                        cloneAuthor.setAffiliation(author.getAffiliation());
+                        cloneAuthor.setDisplayOrder(author.getDisplayOrder());
+                        cloneAuthor.setMetadata(this);
+                        cloneAuthor.setName(author.getName());
+                        this.getStudyAuthors().add(cloneAuthor);
+                    }
+                }
+            }
+            if (tf.getStudyField().getName().equals("distributorName")){
+                if(!tf.isHidden()  && !tf.isDisabled()){
+                    this.setStudyDistributors(new ArrayList<StudyDistributor>());
+                    for (StudyDistributor dist: copyFrom.studyDistributors){
+                        StudyDistributor cloneDist = new StudyDistributor();
+                        cloneDist.setAbbreviation(dist.getAbbreviation());
+                        cloneDist.setAffiliation(dist.getAffiliation());
+                        cloneDist.setDisplayOrder(dist.getDisplayOrder());
+                        cloneDist.setMetadata(this);
+                        cloneDist.setLogo(dist.getLogo());
+                        cloneDist.setName(dist.getName());
+                        cloneDist.setUrl(dist.getUrl());
+                        this.getStudyDistributors().add(cloneDist);
+                    }
+                }
+            }
+            if (tf.getStudyField().getName().equals("westLongitude")){
+                if(!tf.isHidden()  && !tf.isDisabled()){
+                    this.setStudyGeoBoundings(new ArrayList<StudyGeoBounding>());
+                    for(StudyGeoBounding geo: copyFrom.studyGeoBoundings) {
+                        StudyGeoBounding cloneGeo = new StudyGeoBounding();
+                        cloneGeo.setDisplayOrder(geo.getDisplayOrder());
+                        cloneGeo.setMetadata(this);
+                        cloneGeo.setEastLongitude(geo.getEastLongitude());
+                        cloneGeo.setNorthLatitude(geo.getNorthLatitude());
+                        cloneGeo.setSouthLatitude(geo.getSouthLatitude());
+                        cloneGeo.setWestLongitude(geo.getWestLongitude());
+                        this.getStudyGeoBoundings().add(cloneGeo);
+                    }
+                }
+            }
+            if (tf.getStudyField().getName().equals("grantNumber")){
+                if(!tf.isHidden()  && !tf.isDisabled()){
+                    this.setStudyGrants(new ArrayList<StudyGrant>());
+                    for(StudyGrant grant: copyFrom.studyGrants) {
+                        StudyGrant cloneGrant = new StudyGrant();
+                        cloneGrant.setAgency(grant.getAgency());
+                        cloneGrant.setDisplayOrder(grant.getDisplayOrder());
+                        cloneGrant.setMetadata(this);
+                        cloneGrant.setNumber(grant.getNumber());
+                        this.getStudyGrants().add(cloneGrant);
+                    }
+                }
+            }
+            if (tf.getStudyField().getName().equals("keywordValue")){
+                if(!tf.isHidden()  && !tf.isDisabled()){
+                    this.setStudyKeywords(new ArrayList<StudyKeyword>());
+                    for(StudyKeyword key: copyFrom.studyKeywords) {
+                        StudyKeyword cloneKey = new StudyKeyword();
+                        cloneKey.setDisplayOrder(key.getDisplayOrder());
+                        cloneKey.setMetadata(this);
+                        cloneKey.setValue(key.getValue());
+                        cloneKey.setVocab(key.getVocab());
+                        cloneKey.setVocabURI(key.getVocabURI());
+                        this.getStudyKeywords().add(cloneKey);
+                    }
+                }
+            }
+            if (tf.getStudyField().getName().equals("notesInformationType")){
+                if(!tf.isHidden()  && !tf.isDisabled()){
+                   this.setStudyNotes(new ArrayList<StudyNote>());
+                   for(StudyNote note: copyFrom.studyNotes) {
+                        StudyNote cloneNote = new StudyNote();
+                        cloneNote.setDisplayOrder(note.getDisplayOrder());
+                        cloneNote.setMetadata(this);
+                        cloneNote.setSubject(note.getSubject());
+                        cloneNote.setText(note.getText());
+                        cloneNote.setType(note.getType());
+                        this.getStudyNotes().add(cloneNote);
+                    }
+                }
+            }
+            if (tf.getStudyField().getName().equals("otherId")){
+                if(!tf.isHidden()  && !tf.isDisabled()){
+                    this.setStudyOtherIds(new ArrayList<StudyOtherId>());
+                    for(StudyOtherId id: copyFrom.studyOtherIds) {
+                        StudyOtherId cloneId = new StudyOtherId();
+                        cloneId.setAgency(id.getAgency());
+                        cloneId.setDisplayOrder(id.getDisplayOrder());
+                        cloneId.setMetadata(this);
+                        cloneId.setOtherId(id.getOtherId());
+                        this.getStudyOtherIds().add(cloneId);
+                    }
+                }
+            }
+            if (tf.getStudyField().getName().equals("otherReferences")){
+                if(!tf.isHidden()  && !tf.isDisabled()){
+                    this.setStudyOtherRefs(new ArrayList<StudyOtherRef>());
+                    for(StudyOtherRef ref: copyFrom.studyOtherRefs) {
+                        StudyOtherRef cloneRef = new StudyOtherRef();
+                        cloneRef.setDisplayOrder(ref.getDisplayOrder());
+                        cloneRef.setMetadata(this);
+                        cloneRef.setText(ref.getText());
+                        this.getStudyOtherRefs().add(cloneRef);
+                    }
+                }
+            }
+            if (tf.getStudyField().getName().equals("producerName")){
+                if(!tf.isHidden()  && !tf.isDisabled()){
+                    this.setStudyProducers(new ArrayList<StudyProducer>());
+                    for(StudyProducer prod: copyFrom.studyProducers) {
+                        StudyProducer cloneProd = new StudyProducer();
+                        cloneProd.setAbbreviation(prod.getAbbreviation());
+                        cloneProd.setAffiliation(prod.getAffiliation());
+                        cloneProd.setDisplayOrder(prod.getDisplayOrder());
+                        cloneProd.setLogo(prod.getLogo());
+                        cloneProd.setMetadata(this);
+                        cloneProd.setName(prod.getName());
+                        cloneProd.setUrl(prod.getUrl());
+                        this.getStudyProducers().add(cloneProd);
+                    }
+                }
+            }
+            if (tf.getStudyField().getName().equals("relatedMaterial")){
+                if(!tf.isHidden()  && !tf.isDisabled()){
+                   this.setStudyRelMaterials(new ArrayList<StudyRelMaterial>());
+                   for(StudyRelMaterial rel: copyFrom.studyRelMaterials) {
+                        StudyRelMaterial cloneRel = new StudyRelMaterial();
+                        cloneRel.setDisplayOrder(rel.getDisplayOrder());
+                        cloneRel.setMetadata(this);
+                        cloneRel.setText(rel.getText());
+                        this.getStudyRelMaterials().add(cloneRel);
+                    }
+                }
+            }            
+            if (tf.getStudyField().getName().equals("relatedPublications")){
+                if(!tf.isHidden()  && !tf.isDisabled()){
+                    this.setStudyRelPublications(new ArrayList<StudyRelPublication>());
+                    for(StudyRelPublication rel: copyFrom.studyRelPublications){
+                        StudyRelPublication cloneRel = new StudyRelPublication();
+                        cloneRel.setDisplayOrder(rel.getDisplayOrder());
+                        cloneRel.setMetadata(this);
+                        cloneRel.setText(rel.getText());
+                        this.getStudyRelPublications().add(cloneRel);
+                    }
+                }
+            } 
+            if (tf.getStudyField().getName().equals("relatedStudies")){
+                if(!tf.isHidden()  && !tf.isDisabled()){
+                    this.setStudyRelStudies(new ArrayList<StudyRelStudy>());
+                    for(StudyRelStudy rel: copyFrom.studyRelStudies){
+                        StudyRelStudy cloneRel = new StudyRelStudy();
+                        cloneRel.setDisplayOrder(rel.getDisplayOrder());
+                        cloneRel.setMetadata(this);
+                        cloneRel.setText(rel.getText());
+                        this.getStudyRelStudies().add(cloneRel);
+                    }
+                }
+            }
+            if (tf.getStudyField().getName().equals("softwareName")){
+                if(!tf.isHidden()  && !tf.isDisabled()){
+                    this.setStudySoftware(new ArrayList<StudySoftware>());
+                    for(StudySoftware soft: copyFrom.studySoftware){
+                        StudySoftware cloneSoft = new StudySoftware();
+                        cloneSoft.setDisplayOrder(soft.getDisplayOrder());
+                        cloneSoft.setMetadata(this);
+                        cloneSoft.setName(soft.getName());
+                        cloneSoft.setSoftwareVersion(soft.getSoftwareVersion());
+                        this.getStudySoftware().add(cloneSoft);
+                    }
+                }
+            }
+            if (tf.getStudyField().getName().equals("topicClassValue")){
+                if(!tf.isHidden()  && !tf.isDisabled()){
+                    this.setStudyTopicClasses(new ArrayList<StudyTopicClass>());
+                    for (StudyTopicClass topic: copyFrom.studyTopicClasses){
+                        StudyTopicClass cloneTopic = new StudyTopicClass();
+                        cloneTopic.setDisplayOrder(topic.getDisplayOrder());
+                        cloneTopic.setMetadata(this);
+                        cloneTopic.setValue(topic.getValue());
+                        cloneTopic.setVocab(topic.getVocab());
+                        cloneTopic.setVocabURI(topic.getVocabURI());
+                        this.getStudyTopicClasses().add(cloneTopic);
+                    }
+                }
+            }            
         }
-        this.setStudyAuthors(new ArrayList<StudyAuthor>());
-        for (StudyAuthor author: copyFrom.studyAuthors) {
-            StudyAuthor cloneAuthor = new StudyAuthor();
-            cloneAuthor.setAffiliation(author.getAffiliation());
-            cloneAuthor.setDisplayOrder(author.getDisplayOrder());
-            cloneAuthor.setMetadata(this);
-            cloneAuthor.setName(author.getName());
-            this.getStudyAuthors().add(cloneAuthor);
-        }
-        this.setStudyDistributors(new ArrayList<StudyDistributor>());
-        for (StudyDistributor dist: copyFrom.studyDistributors){
-            StudyDistributor cloneDist = new StudyDistributor();
-            cloneDist.setAbbreviation(dist.getAbbreviation());
-            cloneDist.setAffiliation(dist.getAffiliation());
-            cloneDist.setDisplayOrder(dist.getDisplayOrder());
-            cloneDist.setMetadata(this);
-            cloneDist.setLogo(dist.getLogo());
-            cloneDist.setName(dist.getName());
-            cloneDist.setUrl(dist.getUrl());
-            this.getStudyDistributors().add(cloneDist);
-        }
-        this.setStudyGeoBoundings(new ArrayList<StudyGeoBounding>());
-        for(StudyGeoBounding geo: copyFrom.studyGeoBoundings) {
-            StudyGeoBounding cloneGeo = new StudyGeoBounding();
-            cloneGeo.setDisplayOrder(geo.getDisplayOrder());
-            cloneGeo.setMetadata(this);
-            cloneGeo.setEastLongitude(geo.getEastLongitude());
-            cloneGeo.setNorthLatitude(geo.getNorthLatitude());
-            cloneGeo.setSouthLatitude(geo.getSouthLatitude());
-            cloneGeo.setWestLongitude(geo.getWestLongitude());
-            this.getStudyGeoBoundings().add(cloneGeo);
-        }
-        this.setStudyGrants(new ArrayList<StudyGrant>());
-        for(StudyGrant grant: copyFrom.studyGrants) {
-            StudyGrant cloneGrant = new StudyGrant();
-            cloneGrant.setAgency(grant.getAgency());
-            cloneGrant.setDisplayOrder(grant.getDisplayOrder());
-            cloneGrant.setMetadata(this);
-            cloneGrant.setNumber(grant.getNumber());
-            this.getStudyGrants().add(cloneGrant);
-        }
-        this.setStudyKeywords(new ArrayList<StudyKeyword>());
-        for(StudyKeyword key: copyFrom.studyKeywords) {
-            StudyKeyword cloneKey = new StudyKeyword();
-            cloneKey.setDisplayOrder(key.getDisplayOrder());
-            cloneKey.setMetadata(this);
-            cloneKey.setValue(key.getValue());
-            cloneKey.setVocab(key.getVocab());
-            cloneKey.setVocabURI(key.getVocabURI());
-            this.getStudyKeywords().add(cloneKey);
-        }
-       this.setStudyNotes(new ArrayList<StudyNote>());
-       for(StudyNote note: copyFrom.studyNotes) {
-            StudyNote cloneNote = new StudyNote();
-            cloneNote.setDisplayOrder(note.getDisplayOrder());
-            cloneNote.setMetadata(this);
-            cloneNote.setSubject(note.getSubject());
-            cloneNote.setText(note.getText());
-            cloneNote.setType(note.getType());
-            this.getStudyNotes().add(cloneNote);
-        }
-        this.setStudyOtherIds(new ArrayList<StudyOtherId>());
-        for(StudyOtherId id: copyFrom.studyOtherIds) {
-            StudyOtherId cloneId = new StudyOtherId();
-            cloneId.setAgency(id.getAgency());
-            cloneId.setDisplayOrder(id.getDisplayOrder());
-            cloneId.setMetadata(this);
-            cloneId.setOtherId(id.getOtherId());
-            this.getStudyOtherIds().add(cloneId);
-        }
-        this.setStudyOtherRefs(new ArrayList<StudyOtherRef>());
-        for(StudyOtherRef ref: copyFrom.studyOtherRefs) {
-            StudyOtherRef cloneRef = new StudyOtherRef();
-            cloneRef.setDisplayOrder(ref.getDisplayOrder());
-            cloneRef.setMetadata(this);
-            cloneRef.setText(ref.getText());
-            this.getStudyOtherRefs().add(cloneRef);
-        }
-        this.setStudyProducers(new ArrayList<StudyProducer>());
-        for(StudyProducer prod: copyFrom.studyProducers) {
-            StudyProducer cloneProd = new StudyProducer();
-            cloneProd.setAbbreviation(prod.getAbbreviation());
-            cloneProd.setAffiliation(prod.getAffiliation());
-            cloneProd.setDisplayOrder(prod.getDisplayOrder());
-            cloneProd.setLogo(prod.getLogo());
-            cloneProd.setMetadata(this);
-            cloneProd.setName(prod.getName());
-            cloneProd.setUrl(prod.getUrl());
-            this.getStudyProducers().add(cloneProd);
-        }
-       this.setStudyRelMaterials(new ArrayList<StudyRelMaterial>());
-       for(StudyRelMaterial rel: copyFrom.studyRelMaterials) {
-            StudyRelMaterial cloneRel = new StudyRelMaterial();
-            cloneRel.setDisplayOrder(rel.getDisplayOrder());
-            cloneRel.setMetadata(this);
-            cloneRel.setText(rel.getText());
-            this.getStudyRelMaterials().add(cloneRel);
-        }
-       this.setStudyRelPublications(new ArrayList<StudyRelPublication>());
-        for(StudyRelPublication rel: copyFrom.studyRelPublications){
-            StudyRelPublication cloneRel = new StudyRelPublication();
-            cloneRel.setDisplayOrder(rel.getDisplayOrder());
-            cloneRel.setMetadata(this);
-            cloneRel.setText(rel.getText());
-            this.getStudyRelPublications().add(cloneRel);
-        }
-        this.setStudyRelStudies(new ArrayList<StudyRelStudy>());
-        for(StudyRelStudy rel: copyFrom.studyRelStudies){
-            StudyRelStudy cloneRel = new StudyRelStudy();
-            cloneRel.setDisplayOrder(rel.getDisplayOrder());
-            cloneRel.setMetadata(this);
-            cloneRel.setText(rel.getText());
-            this.getStudyRelStudies().add(cloneRel);
-        }
-        this.setStudySoftware(new ArrayList<StudySoftware>());
-        for(StudySoftware soft: copyFrom.studySoftware){
-            StudySoftware cloneSoft = new StudySoftware();
-            cloneSoft.setDisplayOrder(soft.getDisplayOrder());
-            cloneSoft.setMetadata(this);
-            cloneSoft.setName(soft.getName());
-            cloneSoft.setSoftwareVersion(soft.getSoftwareVersion());
-            this.getStudySoftware().add(cloneSoft);
-        }
-        this.setStudyTopicClasses(new ArrayList<StudyTopicClass>());
-        for (StudyTopicClass topic: copyFrom.studyTopicClasses){
-            StudyTopicClass cloneTopic = new StudyTopicClass();
-            cloneTopic.setDisplayOrder(topic.getDisplayOrder());
-            cloneTopic.setMetadata(this);
-            cloneTopic.setValue(topic.getValue());
-            cloneTopic.setVocab(topic.getVocab());
-            cloneTopic.setVocabURI(topic.getVocabURI());
-            this.getStudyTopicClasses().add(cloneTopic);
-        }
+
         this.setTemplateFieldValues(new ArrayList<TemplateFieldValue>());
         for (TemplateFieldValue tfv: copyFrom.getTemplateFieldValues()){
-            TemplateFieldValue cloneTfv = new TemplateFieldValue();
-            cloneTfv.setDisplayOrder(tfv.getDisplayOrder());
-            cloneTfv.setTemplateField(tfv.getTemplateField());
-            cloneTfv.setStrValue(tfv.getStrValue());
-            cloneTfv.setMetadata(this);
-            this.getTemplateFieldValues().add(cloneTfv);
+            TemplateField tf = tfv.getTemplateField();
+            if(!tf.isHidden()  && !tf.isDisabled()){
+                TemplateFieldValue cloneTfv = new TemplateFieldValue();
+                cloneTfv.setDisplayOrder(tfv.getDisplayOrder());
+                cloneTfv.setTemplateField(tfv.getTemplateField());
+                cloneTfv.setStrValue(tfv.getStrValue());
+                cloneTfv.setMetadata(this);
+                this.getTemplateFieldValues().add(cloneTfv);
+            }
         }
        
     }
-     
+            
     public String getAuthorsStr() {
         return getAuthorsStr(true);
     }

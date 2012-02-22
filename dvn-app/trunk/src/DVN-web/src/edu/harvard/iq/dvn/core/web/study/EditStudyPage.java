@@ -625,6 +625,8 @@ public class EditStudyPage extends VDCBaseBean implements java.io.Serializable  
     public void removeRow(ActionEvent ae) {
         
         HtmlDataTable dataTable = (HtmlDataTable)ae.getComponent().getParent().getParent();
+         System.out.println("datatable in remove " + dataTable );
+         System.out.println("datatable title in remove " + dataTable.getTitle() );
         if (dataTable.getRowCount()>1) { 
             List data = (List)dataTable.getValue();
             editStudyService.removeCollectionElement(data,dataTable.getRowIndex());

@@ -307,9 +307,9 @@ public class AddClassificationsPage extends VDCBaseBean implements Serializable 
             vdcGroupService.create(vdcgroup);
             classificationId.setValue(vdcgroup.getId());
             update_action();
-            getExternalContext().getFlash().put("successMessage",SUCCESS_MESSAGE);
+            getVDCRenderBean().getFlash().put("successMessage",SUCCESS_MESSAGE);
         } catch (Exception e) {
-            getExternalContext().getFlash().put("warningMessage",FAIL_MESSAGE);
+            getVDCRenderBean().getFlash().put("warningMessage",FAIL_MESSAGE);
         } finally {
             return "/networkAdmin/ManageClassificationsPage.xhtml?faces-redirect=true";
         }
@@ -347,7 +347,7 @@ public class AddClassificationsPage extends VDCBaseBean implements Serializable 
             }
             
       
-            getExternalContext().getFlash().put("successMessage",SUCCESS_MESSAGE);
+            getVDCRenderBean().getFlash().put("successMessage",SUCCESS_MESSAGE);
             return "/networkAdmin/ManageClassificationsPage.xhtml?faces-redirect=true";
         
     }

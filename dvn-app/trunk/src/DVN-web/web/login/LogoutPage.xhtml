@@ -4,6 +4,7 @@
       xmlns:ui="http://java.sun.com/jsf/facelets"
       xmlns:h="http://java.sun.com/jsf/html"
       xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:jsp="http://java.sun.com/JSP/Page"
       xmlns:ice="http://www.icesoft.com/icefaces/component">
 <h:head>
   <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
@@ -24,7 +25,7 @@
           </div>
           <div class="dvn_sectionBox">
             <div class="dvn_margin12">
-              <div jsfc="ice:panelGroup" rendered="#{LogoutPage.success}">
+              <div jsfc="ice:panelGroup">
                 <p>
                   <ice:outputLink value="/dvn">
                     <ice:outputText value="Go to the #{VDCRequest.vdcNetwork.name} Dataverse Network homepage"/>

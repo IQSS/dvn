@@ -65,6 +65,7 @@ import com.icesoft.faces.component.ext.HtmlInputText;
 import com.icesoft.faces.component.ext.HtmlInputTextarea;
 import com.icesoft.faces.component.ext.HtmlSelectOneMenu;
 import com.icesoft.faces.component.ext.HtmlSelectBooleanCheckbox;
+import com.icesoft.faces.component.panelseries.PanelSeries;
 import com.icesoft.faces.context.effects.JavascriptContext;
 import edu.harvard.iq.dvn.core.study.FieldInputLevel;
 import edu.harvard.iq.dvn.core.study.StudyField;
@@ -383,28 +384,7 @@ public class TemplateFormPage extends VDCBaseBean implements java.io.Serializabl
         return this.fieldTypeSelectItems;
     }
 
-    public void addDcmRow(ActionEvent ae) {
-        
-        HtmlDataTable dataTable = getDataTableDCMFieldValues();
-        Long getOrder = (Long) ae.getComponent().getAttributes().get("dcmSortOrder");
-        TemplateField tf = adHocFields.get(getOrder.intValue() -1 );
-        TemplateFieldValue newElem = new TemplateFieldValue();
-        newElem.setMetadata(template.getMetadata());
-        newElem.setTemplateField(tf);
-        newElem.setStrValue("");    
-        // try to get the add button to not wipe out newly added text.
-        tf.getTemplateFieldValues().add(dataTable.getRowIndex()+1, newElem);
-        // took out add to template does not have an effect on plus minus
-        //template.getMetadata().getTemplateFieldValue().add(dataTable.getRowIndex()+1,newElem);
-        //tf.getTemplateFieldValues().size(); //debug line
-        //remove clear it was interfering with move buttons
-        //dcmFieldTable.getChildren().clear();
-    }
-    
-    // TODO: this count is for the display order on the custom fields; the order for each field will be correct, though may miss stop steps (e.g. 0,5,8,10;
-    // cleanup to have it not skip steps
-    int count = 1;
-   
+       
     public void addRow(ActionEvent ae) {
         
         //      UIComponent dataTable = ae.getComponent().getParent().getParent().getParent();
@@ -470,21 +450,7 @@ public class TemplateFormPage extends VDCBaseBean implements java.io.Serializabl
             StudyOtherRef newElem = new StudyOtherRef();
             newElem.setMetadata(template.getMetadata());
             template.getMetadata().getStudyOtherRefs().add(dataTable.getRowIndex()+1,newElem);
-        } else { // new custom field
-            TemplateFieldValue newElem = new TemplateFieldValue();
-            Long getOrder = (Long) ae.getComponent().getAttributes().get("dcmSortOrder");
-            TemplateField tf = adHocFields.get(getOrder.intValue() -1 );
-            newElem.setMetadata(template.getMetadata());
-            newElem.setTemplateField(tf);
-            newElem.setStrValue("");    
-            newElem.setDisplayOrder(count++);
-            tf.getTemplateFieldValues().add(dataTable.getRowIndex()+1, newElem);            
-            
-        }
-        
-        
-        
-        
+        }       
     }
     
     public void removeRow(ActionEvent ae) {
@@ -496,88 +462,7 @@ public class TemplateFormPage extends VDCBaseBean implements java.io.Serializabl
         }
     }
 
-    
-    public void removeAdHocField(ActionEvent ae) {
 
-        Long getId = (Long) ae.getComponent().getAttributes().get("studyFieldId");
-        String getName = (String) ae.getComponent().getAttributes().get("studyFieldName");
-
-        TemplateField removeTF = null;
-        if (getId !=null){
-            for (TemplateField tfTest: adHocFields){
-                if(getId.equals(tfTest.getStudyField().getId())){
-                    removeTF = tfTest;
-                }
-            }
-        }  else {  //if it's not already saved must look for matching name
-            
-            for (TemplateField tfTest: adHocFields){
-                if(getName.equals(tfTest.getStudyField().getName())){
-                    removeTF = tfTest;
-                }
-            }
-            
-        }
-        
-        if (removeTF !=null){ 
-            template.getTemplateFields().remove(removeTF);
-            adHocFields.remove(removeTF);
-
-            List data = null;
-            if (template.getTemplateFields().size()>1) {
-                data = (List) template.getTemplateFields();
-
-            }
-            editTemplateService.removeCollectionElement(data,removeTF);
-            // .clear was interfering with move up-down buttons
-            //dcmFieldTable.getChildren().clear();
-            
-        }  else {           
-             System.out.println("Nothing to remove?  " );            
-        }        
-    }
-
-    public void moveUp(ActionEvent ae) {
-        Long getOrder = (Long) ae.getComponent().getAttributes().get("dcmSortOrder");
-        Long getId = (Long) ae.getComponent().getAttributes().get("sf_id");
-
-         System.out.println("getOrder " + getOrder);
-        for (TemplateField tfTest: adHocFields){
-            System.out.println("tfTest name, id, sortOrder  " + tfTest.getStudyField().getName() + ", " + tfTest.getStudyField().getId() + ", " + tfTest.getDcmSortOrder() );
-            
-        }
-
-        if (getOrder.intValue() > 1){
-            TemplateField moveUp = adHocFields.get(getOrder.intValue() -1 );
-            TemplateField moveDown = adHocFields.get(getOrder.intValue() -2 );
-            moveUp.setdcmSortOrder(getOrder - 1 );
-            moveDown.setdcmSortOrder(getOrder);
-        }
-        // .clear was interfering with move up-down buttons
-        //dcmFieldTable.getChildren().clear();
-        Collections.sort(adHocFields, comparator);
-    }
-
-    public void moveDown(ActionEvent ae) {
-        Long getOrder = (Long) ae.getComponent().getAttributes().get("dcmSortOrder");
-        Integer arraySize = adHocFields.size();
-        if (getOrder.intValue() < arraySize.intValue()){
-            TemplateField moveDown = adHocFields.get(getOrder.intValue() -1 );
-            TemplateField moveUp = adHocFields.get(getOrder.intValue());
-            moveUp.setdcmSortOrder(getOrder);
-            moveDown.setdcmSortOrder(getOrder + 1);              
-        } 
-        // .clear was interfering with move up-down buttons
-        //dcmFieldTable.getChildren().clear();
-        Collections.sort(adHocFields, comparator);
-    }
-    
-    public void toggleInlineHelp(ActionEvent ae) {
-        String id =ae.getComponent().getId();
-        String studyField = id.substring(5, id.length());
-        UIComponent helpText = FacesContext.getCurrentInstance().getViewRoot().findComponent("help_text_"+studyField);
-        helpText.setRendered(!helpText.isRendered());
-    }
     /**
      * Holds value of property dataTableOtherIds.
      */
@@ -2824,7 +2709,6 @@ public class TemplateFormPage extends VDCBaseBean implements java.io.Serializabl
                     elem.setTemplateField(tfTest);
                     elem.setMetadata(this.getTemplate().getMetadata());
                     elem.setStrValue((String)event.getNewValue());
-                    elem.setDisplayOrder(0);
                     List values = new ArrayList();
                     values.add(elem);
                     tfTest.setTemplateFieldValues(values);
@@ -2849,8 +2733,7 @@ public class TemplateFormPage extends VDCBaseBean implements java.io.Serializabl
                 } 
                 
                 List inStringList = (List) event.getNewValue();
-                List values = new ArrayList();
-                int counter = 0;    
+                List values = new ArrayList(); 
                 for (Object inObj: inStringList){                  
                     String inStr = (String) inObj;
                     if (!inStr.equals("--No Value--")){
@@ -2858,7 +2741,6 @@ public class TemplateFormPage extends VDCBaseBean implements java.io.Serializabl
                         elem.setTemplateField(tfTest);
                         elem.setMetadata(this.getTemplate().getMetadata());
                         elem.setStrValue(inStr);
-                        elem.setDisplayOrder(counter++);
                         values.add(elem); 
                     }                                      
                 }
@@ -3022,9 +2904,17 @@ public class TemplateFormPage extends VDCBaseBean implements java.io.Serializabl
     }
     
     
-    
+    private PanelSeries customFieldsPanelSeries;
+
+    public PanelSeries getCustomFieldsPanelSeries() {
+        return customFieldsPanelSeries;
+    }
+
+    public void setCustomFieldsPanelSeries(PanelSeries customFieldsPanelSeries) {
+        this.customFieldsPanelSeries = customFieldsPanelSeries;
+    }
    
-     public DataModel getCustomFieldsDataModel() {
+    public DataModel getCustomFieldsDataModel() {
         List values = new ArrayList();
         for (TemplateField tf : getAdHocFields()) {
 
@@ -3032,7 +2922,6 @@ public class TemplateFormPage extends VDCBaseBean implements java.io.Serializabl
             row[0] = tf;
             row[1] = getCustomValuesDataModel(tf);
             values.add(row);
-
         }
         return new ListDataModel(values);
 
@@ -3046,9 +2935,20 @@ public class TemplateFormPage extends VDCBaseBean implements java.io.Serializabl
             row[0] = tfv;
             row[1] = customField.getTemplateFieldValues(); // used by the remove method
             values.add(row);
-
         }
         return new ListDataModel(values);
+    }
+
+    public void addDcmRow(ActionEvent ae) {
+
+        HtmlDataTable dataTable = (HtmlDataTable) ae.getComponent().getParent().getParent();
+        Object[] data = (Object[]) ((ListDataModel) dataTable.getValue()).getRowData();
+
+        TemplateFieldValue newElem = new TemplateFieldValue();
+        newElem.setMetadata(template.getMetadata());
+        newElem.setTemplateField(((TemplateFieldValue) data[0]).getTemplateField());
+        newElem.setStrValue("");
+        ((List) data[1]).add(dataTable.getRowIndex() + 1, newElem);
     }
 
     public void removeDcmRow(ActionEvent ae) {
@@ -3061,5 +2961,27 @@ public class TemplateFormPage extends VDCBaseBean implements java.io.Serializabl
         }
     }
 
-}
+    public void moveUp(ActionEvent ae) {
+        int rowIndex = customFieldsPanelSeries.getRowIndex();
+        if (rowIndex > 0) {
+            TemplateField moveDown = adHocFields.get(rowIndex - 1);
+            TemplateField moveUp = adHocFields.get(rowIndex);
+            moveUp.setdcmSortOrder(new Long(rowIndex - 1));
+            moveDown.setdcmSortOrder(new Long(rowIndex));
+        }
 
+        Collections.sort(adHocFields, comparator);
+    }
+
+    public void moveDown(ActionEvent ae) {
+        int rowIndex = customFieldsPanelSeries.getRowIndex();
+        if (rowIndex < adHocFields.size() - 1) {
+            TemplateField moveDown = adHocFields.get(rowIndex);
+            TemplateField moveUp = adHocFields.get(rowIndex + 1);
+            moveUp.setdcmSortOrder(new Long(rowIndex));
+            moveDown.setdcmSortOrder(new Long(rowIndex + 1));
+        }
+
+        Collections.sort(adHocFields, comparator);
+    }
+}

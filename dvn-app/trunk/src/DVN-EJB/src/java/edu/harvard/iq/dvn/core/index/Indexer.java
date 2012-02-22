@@ -37,6 +37,7 @@ import edu.harvard.iq.dvn.core.study.StudyAbstract;
 import edu.harvard.iq.dvn.core.study.StudyAuthor;
 import edu.harvard.iq.dvn.core.study.StudyDistributor;
 import edu.harvard.iq.dvn.core.study.StudyFile;
+import edu.harvard.iq.dvn.core.study.StudyField;
 import edu.harvard.iq.dvn.core.study.StudyGeoBounding;
 import edu.harvard.iq.dvn.core.study.StudyGrant;
 import edu.harvard.iq.dvn.core.study.StudyKeyword;
@@ -370,7 +371,8 @@ public class Indexer implements java.io.Serializable  {
             
             for (TemplateFieldValue extFieldValue : metadata.getTemplateFieldValues()) {
                 try {
-                    String extFieldName = extFieldValue.getTemplateField().getStudyField().getName();
+                    StudyField extStudyField = extFieldValue.getTemplateField().getStudyField();
+                    String extFieldName = extStudyField.getName();
                     String extFieldStrValue = extFieldValue.getStrValue();
 
                     if (extFieldName != null
@@ -382,9 +384,24 @@ public class Indexer implements java.io.Serializable  {
                         
                         // Whenever we encounter an extended field actually 
                         // used in a study metadata, we want it to be searchable,
-                        // on the "Advanced Search" page:
+                        // on the "Advanced Search" page: (or do we?)
                         
                         extFieldValue.getTemplateField().getStudyField().setAdvancedSearchField(true);
+                        
+                        // note that the above will only control the appearance of the 
+                        // field on the Network-level Advanced Search page. (that 
+                        // page uses the default list of advanced search fields, 
+                        // which is simply all the lists from the StudyField DB
+                        // table where isAdvancedField=true. Individual DVs 
+                        // have their own lists of advanced fields. 
+                        // As of now, we will make the field "advanced" only in
+                        // its own dataverse: 
+                        // (this is to be reviewed with Merce next week -- L.A. Feb. 22, 2012)
+                        
+                        
+                        if (!metadata.getStudy().getOwner().getAdvSearchFields().contains(extStudyField)) {
+                            metadata.getStudy().getOwner().getAdvSearchFields().add(extStudyField);
+                        }
                         
                     }
 

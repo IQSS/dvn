@@ -14,8 +14,7 @@
         <ui:define name="metadata">
             <f:metadata>
                 <f:viewParam name="errorCode" value="#{ErrorPage.errorCode}"/>
-                <f:event type="preRenderView"
-                     listener="#{ErrorPage.init}" />
+                <f:event type="preRenderView" listener="#{ErrorPage.preRenderView}" />
             </f:metadata>
         </ui:define>   
         <ui:define name="body">

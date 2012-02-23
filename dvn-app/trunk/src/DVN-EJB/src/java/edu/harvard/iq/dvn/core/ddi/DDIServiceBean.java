@@ -999,6 +999,7 @@ public class DDIServiceBean implements DDIServiceLocal {
         // subject="TEMPLATE:XXX;FIELD:YYY"
         
         // StudyLevelErrorNotes:
+        // TODO: create an explicit type attribute for this.
         if (!StringUtil.isEmpty( metadata.getStudyLevelErrorNotes() )) {
             methodAdded = checkParentElement(xmlw, "method", methodAdded);
             xmlw.writeStartElement("notes");
@@ -2243,14 +2244,30 @@ public class DDIServiceBean implements DDIServiceLocal {
     private void processMethod(XMLStreamReader xmlr, Metadata metadata) throws XMLStreamException {
         for (int event = xmlr.next(); event != XMLStreamConstants.END_DOCUMENT; event = xmlr.next()) {
             if (event == XMLStreamConstants.START_ELEMENT) {
-                if (xmlr.getLocalName().equals("dataColl")) processDataColl(xmlr, metadata);
-                else if (xmlr.getLocalName().equals("notes")) {
-                    if (StringUtil.isEmpty( metadata.getStudyLevelErrorNotes() ) ) {
-                        metadata.setStudyLevelErrorNotes( parseText( xmlr,"notes" ) );
-                    } else {
-                        metadata.setStudyLevelErrorNotes( metadata.getStudyLevelErrorNotes() + "; " + parseText( xmlr, "notes" ) );
+                if (xmlr.getLocalName().equals("dataColl")) {
+                    processDataColl(xmlr, metadata);
+                } else if (xmlr.getLocalName().equals("notes")) {
+                    // As of 3.0, this note is going to be used for the extended
+                    // metadata fields. For now, we are not going to try to 
+                    // process these in any meaningful way.
+                    // We also don't want them to become the "Study-Level Error
+                    // notes" -- that's what the note was being used for 
+                    // exclusively in pre-3.0 practice. 
+                    // TODO: this needs to be revisited after 3.0, when we 
+                    // figure out how DVNs will be harvesting each others'
+                    // extended metadata.
+                    
+                    String noteType = xmlr.getAttributeValue(null, "type");
+                    if (!NOTE_TYPE_EXTENDED_METADATA.equalsIgnoreCase(noteType) ) {
+                        if (StringUtil.isEmpty( metadata.getStudyLevelErrorNotes() ) ) {
+                            metadata.setStudyLevelErrorNotes( parseText( xmlr,"notes" ) );
+                        } else {
+                            metadata.setStudyLevelErrorNotes( metadata.getStudyLevelErrorNotes() + "; " + parseText( xmlr, "notes" ) );
+                        }
                     }
-                } else if (xmlr.getLocalName().equals("anlyInfo")) processAnlyInfo(xmlr, metadata);
+                } else if (xmlr.getLocalName().equals("anlyInfo")) {
+                    processAnlyInfo(xmlr, metadata);
+                }
             } else if (event == XMLStreamConstants.END_ELEMENT) {
                 if (xmlr.getLocalName().equals("method")) return;
             }

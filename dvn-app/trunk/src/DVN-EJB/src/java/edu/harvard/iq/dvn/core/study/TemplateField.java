@@ -247,7 +247,10 @@ public class TemplateField implements java.io.Serializable {
     
     public List<String> getControlledVocabularyStrings(){
         List <String> retList = new ArrayList();
-        retList.add("--No Value--");
+        if(!this.isAllowMultiples()){
+             retList.add("--No Value--");
+        }
+
         for (TemplateFieldControlledVocabulary tfcv: this.templateFieldControlledVocabulary){
             retList.add(tfcv.getStrValue());
         }

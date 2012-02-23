@@ -2886,18 +2886,27 @@ public class TemplateFormPage extends VDCBaseBean implements java.io.Serializabl
         TemplateFieldControlledVocabulary removeVal = new TemplateFieldControlledVocabulary();
            
         boolean removeExisting = false;
-        List inStringList = (List) this.selectControlledVocabulary.getValue(); 
-        List values = new ArrayList(); 
-        for (Object inObj: inStringList){                  
+        List inStringList = (List) this.selectControlledVocabulary.getValue();  
+        if (inStringList.isEmpty()){
+            return;
+        }
+        boolean readded = false;
+        boolean thisOneremoved = false;
+        for (TemplateFieldControlledVocabulary tfCV  : templateCVField.getTemplateFieldControlledVocabulary()){
+            readded = false;
+            thisOneremoved = false;
+             for (Object inObj: inStringList){                  
              String inStr = (String) inObj;
-             for (TemplateFieldControlledVocabulary tfCV  : templateCVField.getTemplateFieldControlledVocabulary()){
                 if (inStr.equals(tfCV.getStrValue())){
                     removeVal = tfCV;
                     removeExisting = true;
-                } else {
-                    dataReset.add(tfCV);
-                }           
-            }                        
+                    thisOneremoved = true;
+                } 
+                
+            }
+            if (!thisOneremoved){
+                dataReset.add(tfCV);
+            }
         }
         
 

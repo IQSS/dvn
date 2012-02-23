@@ -159,34 +159,21 @@
                   
                   <!-- l.a. new "file entry" icefaces-ace component: -->
                   <span class="top">
-                    <ace:fileEntry id="file-entry"          
-                        disabled="#{AddFilesPage.typeNotSelected}"             
-                        relativePath="/temp/" 
-                        maxFileCount="1" 
-                        maxFileCountMessage="Limited to 1 file upload only (for now)" 
-                        fileEntryListener="#{AddFilesPage.uploadFileListener}" 
-                        maxFileSize="2147483648" 
-                        maxFileSizeMessage="Submitted file is too large." 
-                        maxTotalSize="2147483648" 
-                        maxTotalSizeMessage="Total size of submitted files is too large." 
-                                                useOriginalFilename="true" 
-                        useSessionSubdir="false" />
-                    
-                    <h:commandButton  id="addFile" value="Add File" style="display:none"/>
-                        <!-- l.a. it looks like this "file is required to submit
-                             the form" constraint prevents partial submits too! 
-                        required="true" 
-                        requiredMessage="The file is required to submit this form."
-                          l.a. -->
-                </span>
-                <!-- commented out because all it was displaying was a debug statement; is this needed for anything more?
-                  <span class="row">
-                    <span class="messages top">
-                        <h:messages/>
-                    </span>
-                </span>-->
+                      <ace:fileEntry id="file-entry"          
+                                     disabled="#{AddFilesPage.typeNotSelected}"             
+                                     relativePath="/temp/" 
+                                     maxFileCount="1" 
+                                     maxFileCountMessage="Limited to 1 file upload only (for now)" 
+                                     fileEntryListener="#{AddFilesPage.uploadFileListener}" 
+                                     maxFileSize="2147483648" 
+                                     maxFileSizeMessage="Submitted file is too large." 
+                                     maxTotalSize="2147483648" 
+                                     maxTotalSizeMessage="Total size of submitted files is too large." 
+                                     useOriginalFilename="true" 
+                                     useSessionSubdir="false" />
 
-                  
+                      <h:commandButton  id="addFile" value="Add File" style="display:none"/>
+                  </span>                  
               </ice:panelGroup>
 
               <!--

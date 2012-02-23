@@ -92,7 +92,7 @@
                   <f:facet name="header">
                     <ice:outputText value="Remove"/>
                   </f:facet>
-                  <ice:outputText rendered="#{!empty(VDCRequest.currentVDC) and template.network}" value="(Network Template})"/>
+                  <ice:outputText rendered="#{!empty(VDCRequest.currentVDC) and template.network}" value="(Network Template)"/>
                   <ice:outputText rendered="#{!(!empty(VDCRequest.currentVDC) and template.network) and ManageTemplatesPage.isInUse(template.id)}" value="(In Use)"/>
                   <ice:outputText rendered="#{!(!empty(VDCRequest.currentVDC) and template.network) and !ManageTemplatesPage.isInUse(template.id) and ManageTemplatesPage.isDefault(template.id)}" value="(Default Template)"/>
                   <ice:outputLink rendered="#{!(!empty(VDCRequest.currentVDC) and template.network) and !ManageTemplatesPage.isInUse(template.id) and !ManageTemplatesPage.isDefault(template.id)}" 

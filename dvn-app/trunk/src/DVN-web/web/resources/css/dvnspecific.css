@@ -233,9 +233,9 @@ td.dvnPermissionsTableOption{width:240px;padding-top:.75em;padding-bottom:.75em;
 .dvn_createDvRequest .requestIntroSteps{margin-top:30px;margin-left:auto;margin-right:auto;width:676px}
 .dvn_createDvRequest .requestIntroStepsContributor{margin-top:30px;margin-left:auto;margin-right:auto;width:521px}
 .dvn_createDvRequest .requestIntroStepCard{position:relative;width:161px;height:170px;float:left;text-align:left}
-.dvn_createDvRequest .requestIntroStepCard h3{margin:1.1em 0 1em 2.1em !important;font-size:150% !important;font-weight:normal !important;color:#c55b28 !important;text-transform:uppercase !important}
-.dvn_createDvRequest .requestIntroStepCard p{margin:.75em;font-size:110% !important;font-weight:700}
-.dvn_createDvRequest .requestIntroStepCard div.stepCardBtm{position:absolute;top:162px;left:0;width:183px;height:8px;background:#fff url(/dvn/resources/images/request-intro-rndbtm.png) no-repeat}
+.dvn_createDvRequest .requestIntroStepCard h3{margin:.9em 0 .7em 1.9em !important;font-size:150% !important;line-height:22px !important;font-weight:normal !important;color:#c55b28 !important;text-transform:uppercase !important}
+.dvn_createDvRequest .requestIntroStepCard p{margin:.5em;font-size:105% !important;font-weight:700}
+.dvn_createDvRequest .requestIntroStepCard div.stepCardBtm{position:absolute;top:162px;left:0;width:161px;height:8px;background:#fff url(/dvn/resources/images/request-intro-rndbtm.png) no-repeat}
 .dvn_createDvRequest .contributorSuccess{position:relative;width:402px;height:170px;float:left;text-align:left}
 #requestIntroCont{margin:0 auto;width:676px;text-align:right}
 #requestIntroCont .requestIntroContLink{padding-right:28px;background:url(/dvn/resources/images/start-arrows.gif) 100% 52% no-repeat;color:#c55b28;font-size:160% !important;text-transform:uppercase}
@@ -261,7 +261,7 @@ td.dvnPermissionsTableOption{width:240px;padding-top:.75em;padding-bottom:.75em;
 .requestIntroCard2{margin-right:10px;background:#f4ebc7 url(/dvn/resources/images/request-intro-rndtop2.png) no-repeat}
 .requestIntroCard3{margin-right:10px;background:#f4ebc7 url(/dvn/resources/images/request-intro-rndtop3.png) no-repeat}
 .requestIntroCard4{background:#f4ebc7 url(/dvn/resources/images/request-intro-rndtop4.png) no-repeat}
-.requestIntroCard4 h3{line-height:1.85}
+.dvn_createDvRequest .requestIntroStepCard.requestIntroCard4 h3{line-height:44px !important}
 .creatorWorkflowStep1{left:36px}
 .creatorWorkflowStep2{left:214px}
 .creatorWorkflowStep3{left:376px}

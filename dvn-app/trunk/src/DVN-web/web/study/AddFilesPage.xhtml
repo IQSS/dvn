@@ -51,6 +51,13 @@
                   }
               }
           }
+          
+          // this method is a workaround for handling the two click submit needed by the fileEntry component; it is added as on onchange event tot he file input
+          // by the backing bean in preRenderView (so that it will exist after every partial submit)
+          function clickHiddenAddFileButton() {
+              jQuery('input#form1\\:addFile').click();
+          }
+          
           function disableSave() {
               document.getElementById("form1:saveButton").disabled = true;
           }        

@@ -8,7 +8,7 @@
 .dvnLoginContent{width:618px;overflow:hidden;text-align:left}
 .dvnLoginContentText{float:left;width:348px;margin-right:10px;text-align:center}
 .dvnLoginInputArea{float:right;width:260px}
-.dvnLoginInputArea p{text-align:right}
+.dvnLoginInputArea .dvnFormPadding{margin-top:0;text-align:right}
 .dvnLoginInputArea .dvnLoginFailed{display:block}
 .dvnLoginInputArea .errorMessageError{display:block;text-align:right;color:red;font-weight:700}
 .dvnLoginInputArea fieldset{border:1px solid #7f9db9;background:#EEF3FB;text-align:center}

@@ -41,9 +41,9 @@
                                         <label for="password">Password</label>
                                         <ice:inputSecret tabindex="2" id="password" value="#{LoginPage.password}" required="true" requiredMessage="This field is required." action="#{LoginPage.login}"/>
                                         <ice:message for="password" styleClass="errorMessage"/>
-                                        <p>
+                                        <div class="dvnFormPadding dvnFormMargin">
                                             <ice:commandButton tabindex="3" id="button1" value="Log in" action="#{LoginPage.login}"/>
-                                        </p>
+                                        </div>
                                         <div class="dvnLoginLinkBlock">
                                             <p><ice:outputLink tabindex="4" value="/dvn#{VDCRequest.currentVDCURL}/faces/login/ForgotPasswordPage.xhtml" title="Link to Reset Password">Forgot your password?</ice:outputLink></p>
                                         </div>

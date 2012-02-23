@@ -1456,7 +1456,8 @@
                   
                   <ice:panelGrid cellpadding="0" cellspacing="0" columns="1" width="100%"
                                  visible="#{!EditStudyPage.dataCollectionMethodologyEmpty or EditStudyPage.dataCollectionMethodologyInputLevel=='recommended' 
-                                            or EditStudyPage.dataCollectionMethodologyInputLevel=='required' or EditStudyPage.showAll}">
+                                            or EditStudyPage.dataCollectionMethodologyInputLevel=='required' 
+                                            or EditStudyPage.showAll }">
                     <div jsfc="ice:panelGroup" id="groupPanel13" styleClass="vdcStudyInfoHeader">
                       <ice:outputText id="outputText90" value="Data Collection / Methodology"/>
                     </div>
@@ -1466,6 +1467,12 @@
                   <ice:panelSeries value="#{EditStudyPage.adHocFields}" var="customField">
                       <ice:dataTable cellpadding="0" cellspacing="0" width="100%"
                                      columnClasses="vdcEditStudyCol1b, vdcEditStudyCol2, vdcEditStudyCol3"
+                                                                      rendered="#{(!empty customField.templateFieldValues 
+                                            or customField.recommended 
+                                            or customField.required)
+                                            or (EditStudyPage.showAll
+                                            and !customField.hidden
+                                            and !customField.disabled)}"
                                      value="#{customField.templateFieldValues}" var="customValue">
                         <ice:column>
                           <div class="vdcEditStudyField">

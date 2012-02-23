@@ -342,7 +342,7 @@ public class EditStudyPage extends VDCBaseBean implements java.io.Serializable  
                            if (!defaultField.getTemplateFieldValues().isEmpty()){
                                 for (TemplateFieldValue tfv: defaultField.getTemplateFieldValues()){ 
                                      TemplateFieldValue nTfv = new TemplateFieldValue(); 
-                                         if (tfv.getMetadata().equals(study.getTemplate().getMetadata())){
+                                         if (tfv.getMetadata().equals(study.getTemplate().getMetadata())  && !tf.isHidden()  && !tf.isDisabled()){
                                              nTfv.setMetadata(metadata);
                                              nTfv.setStrValue(tfv.getStrValue());
                                              nTfv.setDisplayOrder(tfv.getDisplayOrder());
@@ -376,7 +376,7 @@ public class EditStudyPage extends VDCBaseBean implements java.io.Serializable  
                               tf.setTemplateFieldControlledVocabulary(tfcvList);
                               tf.setFieldInputLevelString(defaultField.getFieldInputLevelString());
                               tf.setdcmSortOrder(defaultField.getDcmSortOrder()); 
-                              if (tf.getTemplateFieldValues().isEmpty()){
+                              if (tf.getTemplateFieldValues().isEmpty() && !tf.isHidden()  && !tf.isDisabled()){
                                 tf.initValues();
                               }
                         adHocFields.add(tf);

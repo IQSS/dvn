@@ -239,7 +239,6 @@ public class Metadata implements java.io.Serializable {
                 }
             }
             if (tf.getStudyField().getName().equals("fundingAgency")){
-                System.out.println("In fundingAgency "+tf.getStudyField().getName());
                 if(!tf.isHidden()  && !tf.isDisabled()){
                      this.setFundingAgency(copyFrom.fundingAgency); 
                 }

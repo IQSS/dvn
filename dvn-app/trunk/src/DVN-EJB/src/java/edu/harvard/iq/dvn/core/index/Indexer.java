@@ -379,6 +379,8 @@ public class Indexer implements java.io.Serializable  {
                             && !extFieldName.equals("")
                             && extFieldStrValue != null
                             && !extFieldStrValue.equals("")) {
+                        
+                        addText(2.0f, doc, extFieldName, extFieldStrValue);
 
                         // Whenever we encounter an extended field actually 
                         // used in a study metadata, we want it to be searchable,

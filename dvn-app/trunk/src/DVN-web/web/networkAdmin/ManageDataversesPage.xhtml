@@ -15,8 +15,7 @@
         <ui:param name="pageTitle" value="#{bundlePageInfo.manageDvsTitle} - #{VDCRequest.dataversePageTitle}"/>
         <ui:define name="metadata">
             <f:metadata>
-                <f:event type="preRenderView"
-                     listener="#{manageDataversesPage.init}" />
+                <f:event type="preRenderView" listener="#{manageDataversesPage.preRenderView}" />
             </f:metadata>
         </ui:define>
         <ui:define name="body">

@@ -380,13 +380,11 @@ public class Indexer implements java.io.Serializable  {
                             && extFieldStrValue != null
                             && !extFieldStrValue.equals("")) {
 
-                        addText(2.0f, doc, extFieldName, extFieldStrValue);
-                        
                         // Whenever we encounter an extended field actually 
                         // used in a study metadata, we want it to be searchable,
                         // on the "Advanced Search" page: (or do we?)
                         
-                        extFieldValue.getTemplateField().getStudyField().setAdvancedSearchField(true);
+                        //extFieldValue.getTemplateField().getStudyField().setAdvancedSearchField(true);
                         
                         // note that the above will only control the appearance of the 
                         // field on the Network-level Advanced Search page. (that 
@@ -691,6 +689,7 @@ public class Indexer implements java.io.Serializable  {
 //        QueryParser parser = new QueryParser("abstract",new DVNAnalyzer());
 //        QueryParser parser = new QueryParser(Version.LUCENE_30,"abstract",new DVNSearchAnalyzer());
         logger.fine("INDEXER: adhoc query: "+adhocQuery);
+        
         QueryParser parser = new QueryParser(Version.LUCENE_30,"abstract",new DVNAnalyzer());
 //        QueryParser parser = new QueryParser("abstract",new StandardAnalyzer());
         parser.setDefaultOperator(QueryParser.AND_OPERATOR);

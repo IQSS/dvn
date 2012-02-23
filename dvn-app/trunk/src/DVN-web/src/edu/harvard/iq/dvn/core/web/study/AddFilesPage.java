@@ -211,7 +211,7 @@ public class AddFilesPage extends VDCBaseBean implements java.io.Serializable {
     public void preRenderView() {
         super.preRenderView();
         // add javascript call on each partial submit to the file browser
-        JavascriptContext.addJavascriptCall(getFacesContext(), "jQuery(':input[type=file]').change(function(){ jQuery(':input[id=form1:addFile]').click(); });");
+        JavascriptContext.addJavascriptCall(getFacesContext(), "jQuery('input[type=file]').change(function(){ jQuery('input#form1\\:addFile').click(); });");
     }  
 
 

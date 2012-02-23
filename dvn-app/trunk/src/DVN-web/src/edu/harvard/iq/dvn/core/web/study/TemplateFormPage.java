@@ -65,6 +65,7 @@ import com.icesoft.faces.component.ext.HtmlInputText;
 import com.icesoft.faces.component.ext.HtmlInputTextarea;
 import com.icesoft.faces.component.ext.HtmlSelectOneMenu;
 import com.icesoft.faces.component.ext.HtmlSelectBooleanCheckbox;
+import com.icesoft.faces.component.ext.HtmlSelectManyListbox;
 import com.icesoft.faces.component.panelseries.PanelSeries;
 import com.icesoft.faces.context.effects.JavascriptContext;
 import edu.harvard.iq.dvn.core.study.FieldInputLevel;
@@ -2839,6 +2840,11 @@ public class TemplateFormPage extends VDCBaseBean implements java.io.Serializabl
         if(newControlledVocab.isEmpty()){
             return;
         }
+        for (TemplateFieldControlledVocabulary tfCvPrior: templateCVField.getTemplateFieldControlledVocabulary() ){
+            if(newControlledVocab.equals(tfCvPrior.getStrValue())){
+                return;
+            }
+        }
                
         TemplateFieldControlledVocabulary tfCV = new TemplateFieldControlledVocabulary();
         tfCV.setTemplateField(templateCVField);
@@ -2848,6 +2854,21 @@ public class TemplateFormPage extends VDCBaseBean implements java.io.Serializabl
         templateCVField.getTemplateFieldControlledVocabulary().add(tfCV);
         return;
     }
+    
+    private List<String> selectedControlledVocabStrings;
+
+    public List<String> getSelectedControlledVocabStrings() {
+        return selectedControlledVocabStrings;
+    }
+
+    public void setSelectedControlledVocabStrings(List<String> selectedControlledVocabStrings) {
+        this.selectedControlledVocabStrings = selectedControlledVocabStrings;
+    }
+    
+    public List<String> getTemplateFieldValueStrings(){
+        return null;
+    }
+    
     private String selectedControlledVocabString = new String("");
 
     public String getSelectedControlledVocabString() {
@@ -2864,17 +2885,23 @@ public class TemplateFormPage extends VDCBaseBean implements java.io.Serializabl
         List <TemplateFieldControlledVocabulary> dataReset = new ArrayList <TemplateFieldControlledVocabulary>();
         TemplateFieldControlledVocabulary removeVal = new TemplateFieldControlledVocabulary();
            
-        Object value= this.selectControlledVocabulary.getValue();  
         boolean removeExisting = false;
-        for (TemplateFieldControlledVocabulary tfCV  : templateCVField.getTemplateFieldControlledVocabulary()){
-            if (value.equals(tfCV.getStrValue())){
-                removeVal = tfCV;
-                removeExisting = true;
-            } else {
-                dataReset.add(tfCV);
-            }
-            
+        List inStringList = (List) this.selectControlledVocabulary.getValue(); 
+        List values = new ArrayList(); 
+        for (Object inObj: inStringList){                  
+             String inStr = (String) inObj;
+             for (TemplateFieldControlledVocabulary tfCV  : templateCVField.getTemplateFieldControlledVocabulary()){
+                if (inStr.equals(tfCV.getStrValue())){
+                    removeVal = tfCV;
+                    removeExisting = true;
+                } else {
+                    dataReset.add(tfCV);
+                }           
+            }                        
         }
+        
+
+
         if (removeExisting){
             editTemplateService.removeCollectionElement(data,removeVal);
             templateCVField.getTemplateFieldControlledVocabulary().remove(removeVal);
@@ -2914,13 +2941,13 @@ public class TemplateFormPage extends VDCBaseBean implements java.io.Serializabl
     
 
     
-    HtmlSelectOneMenu selectControlledVocabulary;
+    HtmlSelectManyListbox selectControlledVocabulary;
 
-    public HtmlSelectOneMenu getSelectControlledVocabulary() {
+    public HtmlSelectManyListbox getSelectControlledVocabulary() {
         return selectControlledVocabulary;
     }
 
-    public void setSelectControlledVocabulary(HtmlSelectOneMenu selectControlledVocabulary) {
+    public void setSelectControlledVocabulary(HtmlSelectManyListbox selectControlledVocabulary) {
         this.selectControlledVocabulary = selectControlledVocabulary;
     }
     private HtmlInputText inputControlledVocabulary;

@@ -174,6 +174,7 @@ public class UtilitiesPage extends VDCBaseBean implements java.io.Serializable  
     String indexStudyIds;
     private String fixGlobalId; 
     private String studyIdRange;
+    private String handleCheckReport; 
 
     public String getIndexDVId() {
         return indexDVId;
@@ -207,6 +208,13 @@ public class UtilitiesPage extends VDCBaseBean implements java.io.Serializable  
         studyIdRange = sir; 
     }
     
+    public String getHandleCheckReport() {
+        return handleCheckReport; 
+    }
+    
+    public void setHandleCheckReport(String hcr) {
+        handleCheckReport = hcr; 
+    }
 
     private boolean deleteLockDisabled;
     
@@ -1033,6 +1041,9 @@ public class UtilitiesPage extends VDCBaseBean implements java.io.Serializable  
     public String handleFixSingle_action() {
         // TODO: also need a method to do this on a range of study IDs (?)
         String hdl = fixGlobalId; 
+        
+        hdl = hdl.replaceFirst("^hdl:", "");
+        
         try {
             gnrsService.fixHandle(hdl);
 
@@ -1048,6 +1059,8 @@ public class UtilitiesPage extends VDCBaseBean implements java.io.Serializable  
     
     
     public String handleCheckRange_action() {
+        handleCheckReport = null; 
+        
         if (studyIdRange == null || 
                 !(studyIdRange.matches("^[0-9][0-9]*$") || 
                 studyIdRange.matches("^[0-9][0-9]*\\-[0-9][0-9]*$"))) {
@@ -1086,17 +1099,19 @@ public class UtilitiesPage extends VDCBaseBean implements java.io.Serializable  
                     Study chkStudy = studyService.getStudy(studyId);
                     String chkHandle = chkStudy.getAuthority() + "/" + chkStudy.getStudyId();
                     if (gnrsService.isHandleRegistered(chkHandle)) {
-                        checkOutput = checkOutput.concat(studyId + "\t" + chkHandle + "\tok\n");
+                        checkOutput = checkOutput.concat(studyId + "\thdl:" + chkHandle + "\tok\n");
                     } else {
-                        checkOutput = checkOutput.concat(studyId + "\t" + chkHandle + "\tNOT REGISTERED\n");
+                        checkOutput = checkOutput.concat(studyId + "\thdl:" + chkHandle + "\tNOT REGISTERED\n");
                     }
                     
-                } catch (IllegalArgumentException ex) {
+                } catch (Exception ex) {
                     checkOutput = checkOutput.concat(studyId + "\t\tNO SUCH STUDY\n");
                 }
                 studyId = studyId + 1;
             }
-            addMessage("handleMessage", checkOutput); 
+            //addMessage("handleMessage", checkOutput);
+            handleCheckReport = checkOutput; 
+
             
             
         } else {
@@ -1106,12 +1121,13 @@ public class UtilitiesPage extends VDCBaseBean implements java.io.Serializable  
                 Study chkStudy = studyService.getStudy(studyId);
                 String chkHandle = chkStudy.getAuthority() + "/" + chkStudy.getStudyId();
                 if (gnrsService.isHandleRegistered(chkHandle)) {
-                    checkOutput = chkHandle + "\t\tok\n";
+                    checkOutput = studyId + "\thdl:" + chkHandle + "\t\tok\n";
                 } else {
-                    checkOutput = chkHandle + "\t\tNOT REGISTERED\n";
+                    checkOutput = studyId + "\thdl:" + chkHandle + "\t\tNOT REGISTERED\n";
                 }
 
-                addMessage("handleMessage", checkOutput);     
+                //addMessage("handleMessage", checkOutput);
+                handleCheckReport = checkOutput;
                 
             } catch (Exception ex) {
                 addMessage("handleMessage", "No such study: id="+studyIdRange);

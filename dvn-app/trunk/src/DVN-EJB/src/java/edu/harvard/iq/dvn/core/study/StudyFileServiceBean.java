@@ -72,6 +72,19 @@ public class StudyFileServiceBean implements StudyFileServiceLocal {
         return file;
     }
 
+    public StudyFile lookupStudyFile(Long fileId) {
+       
+        StudyFile file = null; 
+        try {
+            file = em.find(StudyFile.class, fileId);
+        } catch (Exception ex) {
+            logger.fine("StudyFileService: caught exception; returning null.");
+            return null; 
+        }
+
+        return file;
+    }
+    
     @TransactionAttribute(TransactionAttributeType.NOT_SUPPORTED)
     public List<FileMetadata> getStudyFilesByExtension(String extension) {
 

@@ -2,15 +2,14 @@
 package edu.harvard.iq.dvn.api.resources;
 
 import edu.harvard.iq.dvn.api.entities.MetadataSearchFields;
+import edu.harvard.iq.dvn.api.exceptions.ServiceUnavailableException;
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 
-import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.Context;
-import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
 
 /**
@@ -30,14 +29,14 @@ public class MetadataSearchFieldsResourceBean {
     @GET
     @Produces({ "application/xml" })
 
-    public MetadataSearchFields getMetadataSearchFields() throws WebApplicationException {
+    public MetadataSearchFields getMetadataSearchFields() throws ServiceUnavailableException {
         
         MetadataSearchFields msf = singleton.getMetadataSearchFields();
         
         if (msf == null) {
             // Something bad happened - 
             // safe to say, the service is not available:
-            throw new WebApplicationException(Response.Status.SERVICE_UNAVAILABLE);
+            throw new ServiceUnavailableException();
         }
 
         return msf;

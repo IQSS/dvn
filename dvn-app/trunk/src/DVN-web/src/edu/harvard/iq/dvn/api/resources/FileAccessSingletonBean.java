@@ -26,6 +26,7 @@ import edu.harvard.iq.dvn.core.util.FileUtil;
 import edu.harvard.iq.dvn.core.util.StringUtil;
 
 
+
 /**
  *
  * @author leonidandreev
@@ -38,7 +39,7 @@ public class FileAccessSingletonBean {
     @EJB private VDCNetworkServiceLocal vdcNetworkService;
     
     private List<DataFileFormatType> allSupportedTypes = null; 
-
+    
     public FileAccessSingletonBean() {
     }
     
@@ -55,11 +56,11 @@ public class FileAccessSingletonBean {
         
         if (studyFileId != null) {
             try {
-                sf = studyFileService.getStudyFile(studyFileId);
+                sf = studyFileService.lookupStudyFile(studyFileId);
                 if (sf != null) {
                     // Check if the file is part of a released study AND a 
                     // released Dataverse; (note that the "released" status 
-                    // is actually called "restricted" on the dataverse level!
+                    // is actually called "restricted" on the dataverse level!)
                     if (!sf.getStudy().isReleased() 
                             || sf.getStudy().getOwner().isRestricted()) {
                         // if not - we are simply going to say "NOT FOUND!"
@@ -76,13 +77,14 @@ public class FileAccessSingletonBean {
                 return null; 
                 // We don't care much what happened - but for whatever 
                 // reason, we haven't been able to look up the file.
-                // Could have been a null pointer exception, because the study
+                // It could have been a study file that does not exist; 
+                // or a null pointer exception, because the study
                 // file isn't referenced by a valid study, etc. 
                 //
                 // We don't need to do anything special here -- we simply
                 // return null, and Jersey app will cook a proper 404 
                 // response. 
-            }
+            } 
             
             // Let's try to authenticate: 
             

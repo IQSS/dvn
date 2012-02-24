@@ -51,7 +51,7 @@ public class DvnApiRootResource {
     
     @Path("download")
     public DownloadResourceBean getDownloadResourceBean() {
-        return dr; 
+        return dr;
     }
 }
 

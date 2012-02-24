@@ -3,6 +3,9 @@ package edu.harvard.iq.dvn.api.resources;
 
 import edu.harvard.iq.dvn.api.entities.DownloadInfo;
 import edu.harvard.iq.dvn.api.exceptions.AuthorizationRequiredException;
+import edu.harvard.iq.dvn.api.exceptions.NotFoundException;
+import edu.harvard.iq.dvn.api.exceptions.ServiceUnavailableException;
+
 
 
 import javax.ejb.EJB;
@@ -14,11 +17,9 @@ import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.PathParam;
 
-import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.HttpHeaders;
 
-import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
 
 
@@ -45,12 +46,12 @@ public class DownloadInfoResourceBean {
     @GET
     @Produces({ "application/xml" })
 
-    public DownloadInfo getDownloadInfo(@PathParam("stdyFileId") Long studyFileId) throws WebApplicationException, AuthorizationRequiredException {
+    public DownloadInfo getDownloadInfo(@PathParam("stdyFileId") Long studyFileId) throws AuthorizationRequiredException, NotFoundException, ServiceUnavailableException {
         
         URI resourcePath = uriInfo.getAbsolutePath();
         if (resourcePath != null) {
             if (!"https".regionMatches(0, resourcePath.toASCIIString(), 0, 5)) {
-                throw new WebApplicationException(Response.Status.SERVICE_UNAVAILABLE);
+                throw new ServiceUnavailableException();
             }
         }
         
@@ -71,7 +72,6 @@ public class DownloadInfoResourceBean {
         if (studyFileId.equals(new Long(0))) {
             
             if (authCredentials == null) {
-                //throw new WebApplicationException(Response.Status.UNAUTHORIZED);
                 throw new AuthorizationRequiredException(); 
             } else {
                 if (singleton.authenticateAccess(authCredentials) == null) {
@@ -80,16 +80,13 @@ public class DownloadInfoResourceBean {
             }
         }        
          
-        //DownloadInfo mf = singleton.getMetadataFormatsAvailable(studyId);
         DownloadInfo di = singleton.getDownloadInfo(studyFileId, authCredentials);
         
         if (di == null) {
             // Study not found;
             // returning 404
-            throw new WebApplicationException(Response.Status.NOT_FOUND);
+            throw new NotFoundException(); 
         }
-
-        //di.setAuthUserName(authCredentials);
 
         return di;
     }

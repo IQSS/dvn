@@ -307,6 +307,7 @@
                 <div>
                   <ice:inputText value="#{UtilitiesPage.studyIdRange}" size="12"/>
                   <ice:commandButton value="Check Handles" action="#{UtilitiesPage.handleCheckRange_action}"/>
+                  <ice:inputTextarea value="#{UtilitiesPage.handleCheckReport}" rows="8" cols="32" readonly="true" rendered="#{! empty UtilitiesPage.handleCheckReport}"/>
                 </div>
                 
                 

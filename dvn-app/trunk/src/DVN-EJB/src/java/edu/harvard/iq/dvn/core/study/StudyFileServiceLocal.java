@@ -18,6 +18,7 @@ public interface StudyFileServiceLocal {
 
 
     public StudyFile getStudyFile(Long fileId);
+    public StudyFile lookupStudyFile(Long fileId);
 
     public List<FileMetadata> getStudyFilesByExtension(String extension);
     public void updateStudyFile(StudyFile detachedStudyFile);

@@ -19,8 +19,8 @@ import edu.harvard.iq.dvn.core.study.Study;
 import edu.harvard.iq.dvn.core.study.StudyAbstract;
 import edu.harvard.iq.dvn.core.study.StudyAuthor;
 import edu.harvard.iq.dvn.core.study.StudyDistributor;
+import edu.harvard.iq.dvn.core.study.StudyFieldValue;
 import edu.harvard.iq.dvn.core.study.StudyFile;
-import edu.harvard.iq.dvn.core.study.StudyFileActivity;
 import edu.harvard.iq.dvn.core.study.StudyGeoBounding;
 import edu.harvard.iq.dvn.core.study.StudyGrant;
 import edu.harvard.iq.dvn.core.study.StudyKeyword;
@@ -37,8 +37,6 @@ import edu.harvard.iq.dvn.core.study.StudyVersion;
 import edu.harvard.iq.dvn.core.study.SummaryStatistic;
 import edu.harvard.iq.dvn.core.study.SummaryStatisticType;
 import edu.harvard.iq.dvn.core.study.TabularDataFile;
-import edu.harvard.iq.dvn.core.study.TemplateField; 
-import edu.harvard.iq.dvn.core.web.study.TemplateFieldValue;
 import edu.harvard.iq.dvn.core.study.VariableCategory;
 import edu.harvard.iq.dvn.core.study.VariableFormatType;
 import edu.harvard.iq.dvn.core.study.VariableIntervalType;
@@ -54,8 +52,6 @@ import edu.harvard.iq.dvn.core.vdc.VDCNetworkServiceLocal;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.PrintWriter;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
@@ -1010,9 +1006,9 @@ public class DDIServiceBean implements DDIServiceLocal {
         // Extended metadata (will produce multiple notes for different and/or
         // multiple extended fields: 
         String templateName = metadata.getStudy().getTemplate().getName();
-        for (TemplateFieldValue extFieldValue : metadata.getTemplateFieldValues()) {
+        for (StudyFieldValue extFieldValue : metadata.getStudyFieldValues()) {
             try {
-                String extFieldName = extFieldValue.getTemplateField().getStudyField().getName();
+                String extFieldName = extFieldValue.getStudyField().getName();
                 String extFieldStrValue = extFieldValue.getStrValue();
 
                 if (extFieldName != null

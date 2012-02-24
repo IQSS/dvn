@@ -39,6 +39,8 @@ import edu.harvard.iq.dvn.core.study.Study;
 import edu.harvard.iq.dvn.core.study.StudyAbstract;
 import edu.harvard.iq.dvn.core.study.StudyAuthor;
 import edu.harvard.iq.dvn.core.study.StudyDistributor;
+import edu.harvard.iq.dvn.core.study.StudyField;
+import edu.harvard.iq.dvn.core.study.StudyFieldValue;
 import edu.harvard.iq.dvn.core.study.StudyFileServiceLocal;
 import edu.harvard.iq.dvn.core.study.StudyGeoBounding;
 import edu.harvard.iq.dvn.core.study.StudyGrant;
@@ -1209,26 +1211,20 @@ public class StudyUI  implements java.io.Serializable {
     
     private List<TemplateFieldValue> customFields;
     
-    public List<TemplateFieldValue> getCustomFields() {
-        if (customFields == null) {
-            customFields = new ArrayList();
-            for (TemplateFieldValue elem : getMetadata().getTemplateFieldValues()) {
-                boolean found = false;
-                String name = elem.getTemplateField().getStudyField().getName();
-                for (TemplateFieldValue tfv : customFields) {
-                    if (tfv.getTemplateField().getStudyField().getName().equals(name)&& tfv.getMetadata().equals(getMetadata())) {
-                        tfv.setStrValue(tfv.getStrValue() + "; " + elem.getStrValue());
-                        found = true;
-                        break;
-                    }
-                }
+       
 
-                if (!found) {
-                    customFields.add(elem);
+    public String getStudyFieldValue(StudyField studyField) {
+        String str = "";
+        for (StudyFieldValue elem : studyField.getStudyFieldValues()) {
+            if (!StringUtil.isEmpty(elem.getStrValue())) {
+                if (str != "") {
+                    str += "; ";
                 }
-            }
+                str += elem.getStrValue();
+            }           
         }
-        return customFields;
-    }
+
+        return str;
+    }    
 
 }

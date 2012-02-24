@@ -464,20 +464,24 @@ public class TemplateFormPage extends VDCBaseBean implements java.io.Serializabl
         }
     }
 
-   public void removeAdHocField(ActionEvent ae) {
-        int rowIndex = customFieldsPanelSeries.getRowIndex();
-        Object[] fieldsRowData = (Object[]) ((ListDataModel) getCustomFieldsDataModel()).getRowData();
+    public void removeAdHocField(ActionEvent ae) {
+        // first set the rowindex of the data model to the row index of the panel series
+        // TODO: (until we cache the DataModel, we have to do this)
+        DataModel fieldsDataModel = getCustomFieldsDataModel();
+        fieldsDataModel.setRowIndex(customFieldsPanelSeries.getRowIndex());
+
+        Object[] fieldsRowData = (Object[]) fieldsDataModel.getRowData();
         TemplateField removeTF = (TemplateField) fieldsRowData[0];
-        editTemplateService.removeCollectionElement(template.getTemplateFields(),removeTF);
-        
+        editTemplateService.removeCollectionElement(template.getTemplateFields(), removeTF);
+
         adHocFields.remove(removeTF);
-        
+
         List valuesWrappedData = (List) ((ListDataModel) fieldsRowData[1]).getWrappedData();
         for (Object elem : valuesWrappedData) {
             Object[] valuesRowData = (Object[]) elem;
             editTemplateService.removeCollectionElement((List) valuesRowData[1], valuesRowData[0]);
-       }
-    }    
+        }
+    }
     
     /**
      * Holds value of property dataTableOtherIds.
@@ -2993,7 +2997,7 @@ public class TemplateFormPage extends VDCBaseBean implements java.io.Serializabl
 
     public void addDcmRow(ActionEvent ae) {
 
-        HtmlDataTable dataTable = (HtmlDataTable) ae.getComponent().getParent().getParent();
+        HtmlDataTable dataTable = (HtmlDataTable) ae.getComponent().getParent().getParent().getParent();
         Object[] data = (Object[]) ((ListDataModel) dataTable.getValue()).getRowData();
 
         StudyFieldValue newElem = new StudyFieldValue();
@@ -3005,7 +3009,7 @@ public class TemplateFormPage extends VDCBaseBean implements java.io.Serializabl
 
     public void removeDcmRow(ActionEvent ae) {
 
-        HtmlDataTable dataTable = (HtmlDataTable) ae.getComponent().getParent().getParent();
+        HtmlDataTable dataTable = (HtmlDataTable) ae.getComponent().getParent().getParent().getParent();
         if (dataTable.getRowCount() > 1) {
             Object[] data = (Object[]) ((ListDataModel) dataTable.getValue()).getRowData();
             editTemplateService.removeCollectionElement((List) data[1], data[0]);

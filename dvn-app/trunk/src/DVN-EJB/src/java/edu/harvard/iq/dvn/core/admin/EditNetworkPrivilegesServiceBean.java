@@ -106,7 +106,9 @@ public class EditNetworkPrivilegesServiceBean implements EditNetworkPrivilegesSe
         
         for (Iterator it = TOUprivilegedUsers.iterator(); it.hasNext();) {
             VDCUser elem = (VDCUser) it.next();
-            elem.setBypassTermsOfUse(Boolean.TRUE);
+            if (elem.isBypassTermsOfUse()) {
+                elem.setBypassTermsOfUse(Boolean.TRUE);
+            }
         }
   
         em.flush();
@@ -122,7 +124,15 @@ public class EditNetworkPrivilegesServiceBean implements EditNetworkPrivilegesSe
     
     public void addTOUPrivilegedUser(Long userId) {
         VDCUser user = em.find(VDCUser.class, userId);
-        this.TOUprivilegedUsers.add(user);
+        
+        int i = this.TOUprivilegedUsers.indexOf(user); 
+        
+        if (i > -1) {
+            this.TOUprivilegedUsers.get(i).setBypassTermsOfUse(Boolean.TRUE);
+        } else {
+            user.setBypassTermsOfUse(Boolean.TRUE);
+            this.TOUprivilegedUsers.add(user);
+        }
     }
     
     /**

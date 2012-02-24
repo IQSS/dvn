@@ -121,7 +121,7 @@
                             </ice:column>
 
                             <ice:column>
-                              <ice:commandButton value="Revoke" actionListener="#{NetworkPrivilegedUsersPage.clearTOURole}"/>
+                              <ice:commandButton value="Revoke" actionListener="#{NetworkPrivilegedUsersPage.clearTOURole}" rendered="#{currentRow.bypassTermsOfUse}"/>
                             </ice:column>
                           </ice:dataTable>
                         </td>

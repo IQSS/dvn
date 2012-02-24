@@ -1,8 +1,6 @@
 
 package edu.harvard.iq.dvn.core.study;
 
-import edu.harvard.iq.dvn.core.study.Metadata;
-import edu.harvard.iq.dvn.core.study.StudyField;
 import java.io.Serializable;
 import javax.persistence.Column;
 import javax.persistence.Entity;

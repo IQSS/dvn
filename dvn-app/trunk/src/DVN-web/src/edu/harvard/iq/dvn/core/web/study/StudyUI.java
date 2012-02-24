@@ -1208,10 +1208,7 @@ public class StudyUI  implements java.io.Serializable {
     public void setDisplayVersions(boolean displayVersions) {
         this.displayVersions = displayVersions;
     }
-    
-    private List<TemplateFieldValue> customFields;
-    
-       
+        
 
     public String getStudyFieldValue(StudyField studyField) {
         String str = "";

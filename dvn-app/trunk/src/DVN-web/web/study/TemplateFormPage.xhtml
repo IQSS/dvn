@@ -1509,17 +1509,6 @@
                                                rendered="#{customFieldsDataModel[0].studyField.fieldType == 'textArea'}">
                           </ice:inputTextarea>
                           <ice:outputText value="#{editstudybundle.dateFormatDescription}" rendered="#{customFieldsDataModel[0].studyField.fieldType == 'date'}"/>
-
-                        <ice:selectOneMenu immediate="false"  value="#{customFieldsDataModel[0].templateFieldValueSingleString}" valueChangeListener="#{TemplateFormPage.changeSingleValCV}"                                          
-                                        rendered ="#{!empty(customFieldsDataModel[0].templateFieldControlledVocabulary) and !customFieldsDataModel[0].allowMultiples}">
-                            <f:selectItems value="#{customFieldsDataModel[0].controlledVocabularyStrings}"/>
-                            <f:attribute name="sf_id" value="#{customFieldsDataModel[0].studyField.id}"/>
-                        </ice:selectOneMenu>  
-                        <ice:selectManyListbox immediate="false"   value="#{customFieldsDataModel[0].templateFieldValueStrings}"  valueChangeListener="#{TemplateFormPage.changeMultiValCV}"                                             
-                                        rendered ="#{!empty(customFieldsDataModel[0].templateFieldControlledVocabulary) and customFieldsDataModel[0].allowMultiples and customFieldsDataModel[1].rowIndex==0}">
-                            <f:selectItems value="#{customFieldsDataModel[0].controlledVocabularyStrings}"/>
-                            <f:attribute name="sf_id" value="#{customFieldsDataModel[0].studyField.id}"/>
-                        </ice:selectManyListbox> 
                         </ice:column>
                       </div>
                     </ice:column>
@@ -1528,7 +1517,7 @@
                           <div style="float:left;" jsfc="ice:panelGroup" rendered="#{customFieldsDataModel[0].allowMultiples}">
                               <ice:commandButton 
                                         image="/resources/images/icon_add.gif" actionListener="#{TemplateFormPage.addDcmRow}"/>       
-                              <ice:commandButton rendered="#{customFieldsDataModel[0].templateFieldValues.size() > 1}" 
+                              <ice:commandButton rendered="#{customValuesDataModel[1].size() > 1}" 
                                         image="/resources/images/icon_remove.gif" actionListener="#{TemplateFormPage.removeDcmRow}"/>
                           </div>
                           <div style="float:left;margin-right:1em;" jsfc="ice:panelGroup" rendered="#{TemplateFormPage.networkEdit and customFieldsDataModel[1].rowIndex == 0 and customFieldsDataModel[0].studyField.fieldType == 'textBox'}">
@@ -1554,10 +1543,7 @@
                                                  image="/resources/images/icon_movedown.png" actionListener="#{TemplateFormPage.moveDown}"/>
                           </div>
                           <div style="float:left;" jsfc="ice:panelGroup" rendered="#{TemplateFormPage.networkEdit and customFieldsDataModel[1].rowIndex==0}">
-                              <ice:commandButton value="Remove Field" actionListener="#{TemplateFormPage.removeAdHocField}">
-                                 <f:attribute name="studyFieldId" value="#{customFieldsDataModel[0].studyField.id}"/>
-                                 <f:attribute name="studyFieldName" value="#{customFieldsDataModel[0].studyField.name}"/>
-                              </ice:commandButton>
+                              <ice:commandButton value="Remove Field" actionListener="#{TemplateFormPage.removeAdHocField}"/>
                           </div>
                         </div>
                     </ice:column>
@@ -1611,10 +1597,7 @@
                                 </ice:selectOneMenu>
                             </div>
                             <div style="float:left;" jsfc="ice:panelGroup" rendered="#{TemplateFormPage.networkEdit}">
-                                <ice:commandButton value="Remove Field" actionListener="#{TemplateFormPage.removeAdHocField}">
-                                    <f:attribute name="studyFieldId" value="#{customFieldsDataModel[0].studyField.id}"/>
-                                    <f:attribute name="studyFieldName" value="#{customFieldsDataModel[0].studyField.name}"/>
-                                </ice:commandButton>
+                                <ice:commandButton value="Remove Field" actionListener="#{TemplateFormPage.removeAdHocField}"/>
                             </div>
                         </div>
                     </ice:column>

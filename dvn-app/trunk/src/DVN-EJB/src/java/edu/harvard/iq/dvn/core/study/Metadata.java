@@ -28,7 +28,6 @@
 package edu.harvard.iq.dvn.core.study;
 
 import edu.harvard.iq.dvn.core.util.StringUtil;
-import edu.harvard.iq.dvn.core.web.study.TemplateFieldValue;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -614,19 +613,20 @@ public class Metadata implements java.io.Serializable {
             }            
         }
 
-        this.setTemplateFieldValues(new ArrayList<TemplateFieldValue>());
-        for (TemplateFieldValue tfv: copyFrom.getTemplateFieldValues()){
-            TemplateField tf = tfv.getTemplateField();
+        /*
+        this.setStudyFieldValues(new ArrayList<StudyFieldValue>());
+        for (StudyFieldValue sfv: copyFrom.getStudyFieldValues()){
+            StudyField sf = sfv.getStudyField();
             if(!tf.isHidden()  && !tf.isDisabled()){
-                TemplateFieldValue cloneTfv = new TemplateFieldValue();
-                cloneTfv.setDisplayOrder(tfv.getDisplayOrder());
-                cloneTfv.setTemplateField(tfv.getTemplateField());
-                cloneTfv.setStrValue(tfv.getStrValue());
-                cloneTfv.setMetadata(this);
-                this.getTemplateFieldValues().add(cloneTfv);
+                StudyFieldValue cloneSfv = new StudyFieldValue();
+                cloneSfv.setDisplayOrder(sfv.getDisplayOrder());
+                cloneSfv.setStudyField(sfv.getStudyField());
+                cloneSfv.setStrValue(tfv.getStrValue());
+                cloneSfv.setMetadata(this);
+                this.getStudyFieldValues().add(cloneSfv);
             }
         }
-       
+        */ 
     }
     
     public Metadata(Metadata copyFrom ) {
@@ -840,14 +840,14 @@ public class Metadata implements java.io.Serializable {
             cloneTopic.setVocabURI(topic.getVocabURI());
             this.getStudyTopicClasses().add(cloneTopic);
         }
-        this.setTemplateFieldValues(new ArrayList<TemplateFieldValue>());
-        for (TemplateFieldValue tfv: copyFrom.getTemplateFieldValues()){
-            TemplateFieldValue cloneTfv = new TemplateFieldValue();
-            cloneTfv.setDisplayOrder(tfv.getDisplayOrder());
-            cloneTfv.setTemplateField(tfv.getTemplateField());
-            cloneTfv.setStrValue(tfv.getStrValue());
-            cloneTfv.setMetadata(this);
-            this.getTemplateFieldValues().add(cloneTfv);
+        this.setStudyFieldValues(new ArrayList<StudyFieldValue>());
+        for (StudyFieldValue sfv: copyFrom.getStudyFieldValues()){
+            StudyFieldValue cloneSfv = new StudyFieldValue();
+            cloneSfv.setDisplayOrder(sfv.getDisplayOrder());
+            cloneSfv.setStudyField(sfv.getStudyField());
+            cloneSfv.setStrValue(sfv.getStrValue());
+            cloneSfv.setMetadata(this);
+            this.getStudyFieldValues().add(cloneSfv);
         }
        
     } 
@@ -912,15 +912,15 @@ public class Metadata implements java.io.Serializable {
     }
     
     @OneToMany (mappedBy="metadata", cascade={ CascadeType.REMOVE, CascadeType.MERGE,CascadeType.PERSIST})
-    @OrderBy ("strValue")
-    private List<TemplateFieldValue> templateFieldValues;
+    @OrderBy ("displayOrder")
+    private List<StudyFieldValue> studyFieldValues;
 
-    public List<TemplateFieldValue> getTemplateFieldValues() {
-        return templateFieldValues;
+    public List<StudyFieldValue> getStudyFieldValues() {
+        return studyFieldValues;
     }
 
-    public void setTemplateFieldValues(List<TemplateFieldValue> templateFieldValues) {
-        this.templateFieldValues = templateFieldValues;
+    public void setStudyFieldValues(List<StudyFieldValue> studyFieldValues) {
+        this.studyFieldValues = studyFieldValues;
     }
 
     
@@ -2863,7 +2863,47 @@ public class Metadata implements java.io.Serializable {
             list.add(elem);
             this.setStudyOtherRefs(list);
         }
-
-
+        
+        // custom fields
+        for (StudyField sf : this.getStudyFields()) {
+        if (sf.getStudyFieldValues()==null || sf.getStudyFieldValues().size()==0) {
+            List list = new ArrayList();
+            StudyFieldValue elem = new StudyFieldValue();
+            elem.setStudyField(sf);
+            elem.setMetadata(this);
+            list.add(elem);
+            sf.setStudyFieldValues(list);
+        }            
+        }
     }
+    
+    
+    // this is a transient list of the study fields, so we can initialize it on the first get and then store it here
+    @Transient
+    List<StudyField> studyFields;
+
+    public List<StudyField> getStudyFields() {
+        if (studyFields == null) {
+            studyFields = new ArrayList();
+            Template template = this.getTemplate() != null ? this.getTemplate() : this.getStudyVersion().getStudy().getTemplate();
+            for (TemplateField tf : template.getTemplateFields()) {
+                StudyField sf = tf.getStudyField();
+                if (sf.isDcmField()) {
+                    List sfvList = new ArrayList();
+                    // now iterate through values and map accordingly
+                    for (StudyFieldValue sfv : studyFieldValues) {
+                        if (sf.equals(sfv.getStudyField())) {
+                            sfvList.add(sfv);
+                        }
+                    }
+                    sf.setStudyFieldValues(sfvList);
+                    studyFields.add(sf);
+                }
+            }
+            
+        }
+            
+        return studyFields;
+    }
+    
 }

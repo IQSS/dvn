@@ -132,6 +132,7 @@ public class EditTemplateServiceBean implements edu.harvard.iq.dvn.core.study.Ed
             tf.setStudyField(defaultField.getStudyField());
             // bring over field values separately
             //get template field values from cloned metadata
+            /* THESE ARE CLONED BY THE METADATA ALREADY???
             List <TemplateFieldValue> tfvList = new  ArrayList();
             for (TemplateFieldValue tfv : clonedMetadata.getTemplateFieldValues()){
                 if(tfv.getTemplateField().getStudyField().equals(tf.getStudyField())){
@@ -139,6 +140,7 @@ public class EditTemplateServiceBean implements edu.harvard.iq.dvn.core.study.Ed
                     tfvList.add(tfv);
                 }
             }
+            */
             /* 
             for (TemplateFieldValue tfv: defaultField.getTemplateFieldValues()){ 
                 TemplateFieldValue tfvn = new TemplateFieldValue();
@@ -148,7 +150,7 @@ public class EditTemplateServiceBean implements edu.harvard.iq.dvn.core.study.Ed
                 tfvn.setTemplateField(tf);
                 
             }*/
-            tf.setTemplateFieldValues(tfvList);
+            //tf.setTemplateFieldValues(tfvList);
             // bring over field contolled vocab separately
             List <TemplateFieldControlledVocabulary> tfcvList = new  ArrayList();
             for (TemplateFieldControlledVocabulary tfcv: defaultField.getTemplateFieldControlledVocabulary()){

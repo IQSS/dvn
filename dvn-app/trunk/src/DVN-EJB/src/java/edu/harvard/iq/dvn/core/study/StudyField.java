@@ -32,6 +32,7 @@ import java.util.Collection;
 import edu.harvard.iq.dvn.core.vdc.VDC;
 import edu.harvard.iq.dvn.core.vdc.VDCCollection;
 import java.io.Serializable;
+import java.util.List;
 import javax.persistence.*;
 
 /**
@@ -266,4 +267,15 @@ public class StudyField implements Serializable {
         return true;
     }      
     
+
+    @OneToMany (mappedBy="studyField",  cascade={ CascadeType.REMOVE, CascadeType.MERGE,CascadeType.PERSIST})
+    private List<StudyFieldValue> studyFieldValues;
+
+    public List<StudyFieldValue> getStudyFieldValues() {
+        return studyFieldValues;
+    }    
+
+    public void setStudyFieldValues(List<StudyFieldValue> studyFieldValues) {
+        this.studyFieldValues = studyFieldValues;
+    }            
 }

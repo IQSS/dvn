@@ -69,7 +69,9 @@
                                                 <f:selectItems value="#{LoginPage.affiliateNames}"/>
                                             </ice:selectOneMenu>
                                             <ice:message for="affiliateName" styleClass="errorMessage"/>
-                                            <input type="button" class="iceCmdBtn" onclick="loginAffiliate('vanillaLoginForm:affiliateName')" value="Log in"/>
+                                            <div class="dvnFormPadding dvnFormMargin">
+                                                <input type="button" class="iceCmdBtn" onclick="loginAffiliate('vanillaLoginForm:affiliateName')" value="Log in"/>
+                                            </div>
                                         </fieldset>
                                     </div>
                                     <!-- ************* end affiliate login section *************** -->

@@ -86,10 +86,10 @@ div.dvn_navblockNetwork{}
 .dvnFormPaddingTop{padding-top:1em;text-align:left}
 .dvnFormMargin input{margin-right:2em}
 .dvnFormMargin input:last-child{margin-right:0}
-.dvnFormMargin input.iceCmdBtn[type=submit], .dvnFormMargin input.iceCmdBtn[value=Release]{background:#CEE6BB; border:1px solid #9BC191; padding:4px 16px; font-size:1em;}
+.dvnFormMargin input.iceCmdBtn[type=submit], .dvnFormMargin input.iceCmdBtn[value=Release], .dvnLoginPageAffiliate .dvnFormMargin input.iceCmdBtn[type=button]{background:#CEE6BB; border:1px solid #9BC191; padding:4px 16px; font-size:1em;}
 .dvnFormMargin input.iceCmdBtn-dis[type=submit]{background:#D9D9D9; border:1px solid #A9A9A9; padding:4px 16px; font-size:1em;}
-.dvnFormMargin input.iceCmdBtn[type=submit]:hover, .dvnFormMargin input.iceCmdBtn[value=Release]:hover{border:1px solid #299A0B;}
-.dvnFormMargin input.iceCmdBtn[type=submit]:active{background:#299A0B;}
+.dvnFormMargin input.iceCmdBtn[type=submit]:hover, .dvnFormMargin input.iceCmdBtn[value=Release]:hover, .dvnLoginPageAffiliate .dvnFormMargin input.iceCmdBtn[type=button]:hover{border:1px solid #299A0B;}
+.dvnFormMargin input.iceCmdBtn[type=submit]:active, .dvnLoginPageAffiliate .dvnFormMargin input.iceCmdBtn[type=button]:active{background:#299A0B;}
 .dvnFormMargin input.iceCmdBtn[value=Cancel], .dvnFormMargin input.iceCmdBtn[value=Exit]{background:#EEF3FB; border:1px solid #B7CDFF; padding:4px 16px; font-size:1em;}
 .dvnFormMargin input.iceCmdBtn[value=Cancel]:hover, .dvnFormMargin input.iceCmdBtn[value=Exit]:hover{border:1px solid #0C54B3;}
 .dvnFormMargin input.iceCmdBtn[value=Cancel]:active, .dvnFormMargin input.iceCmdBtn[value=Exit]:active{background:#0C54B3;}

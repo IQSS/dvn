@@ -467,7 +467,7 @@ public class TemplateFormPage extends VDCBaseBean implements java.io.Serializabl
    public void removeAdHocField(ActionEvent ae) {
         int rowIndex = customFieldsPanelSeries.getRowIndex();
         Object[] fieldsRowData = (Object[]) ((ListDataModel) getCustomFieldsDataModel()).getRowData();
-        TemplateField removeTF = (TemplateField) fieldsRowData[rowIndex];
+        TemplateField removeTF = (TemplateField) fieldsRowData[0];
         editTemplateService.removeCollectionElement(template.getTemplateFields(),removeTF);
         
         adHocFields.remove(removeTF);

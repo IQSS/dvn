@@ -168,7 +168,8 @@ public class TemplateField implements java.io.Serializable {
     public void setStudyField(StudyField studyField) {
         this.studyField = studyField;
     }
-    
+
+    /*
     @OneToMany (mappedBy="templateField",  cascade={ CascadeType.REMOVE, CascadeType.MERGE,CascadeType.PERSIST})
     @OrderBy ("strValue")
     private List<TemplateFieldValue> templateFieldValues;
@@ -201,14 +202,6 @@ public class TemplateField implements java.io.Serializable {
         }              
     }
     
-    public void setTemplateFieldValueStrings(List <String> inList){
-
-    }
-    
-    public void setTemplateFieldValueSingleString(String inStr){
-      
-    }
-    
     public void initValues (){
         if (this.getTemplateFieldValues() == null || this.getTemplateFieldValues().isEmpty()){
             TemplateFieldValue elem = new TemplateFieldValue();
@@ -221,6 +214,7 @@ public class TemplateField implements java.io.Serializable {
         }
 
     }
+    */
 
     @OneToMany (mappedBy="templateField", cascade={ CascadeType.REMOVE, CascadeType.MERGE,CascadeType.PERSIST})
     @OrderBy ("strValue")

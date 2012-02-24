@@ -38,6 +38,7 @@ import edu.harvard.iq.dvn.core.study.StudyAuthor;
 import edu.harvard.iq.dvn.core.study.StudyDistributor;
 import edu.harvard.iq.dvn.core.study.StudyFile;
 import edu.harvard.iq.dvn.core.study.StudyField;
+import edu.harvard.iq.dvn.core.study.StudyFieldValue;
 import edu.harvard.iq.dvn.core.study.StudyGeoBounding;
 import edu.harvard.iq.dvn.core.study.StudyGrant;
 import edu.harvard.iq.dvn.core.study.StudyKeyword;
@@ -52,7 +53,6 @@ import edu.harvard.iq.dvn.core.study.StudySoftware;
 import edu.harvard.iq.dvn.core.study.StudyTopicClass;
 import edu.harvard.iq.dvn.core.study.StudyVersion;
 import edu.harvard.iq.dvn.core.study.TabularDataFile;
-import edu.harvard.iq.dvn.core.web.study.TemplateFieldValue; 
 import java.io.File;
 import java.io.IOException;
 import java.io.StringReader;
@@ -369,9 +369,9 @@ public class Indexer implements java.io.Serializable  {
             
             String templateName = metadata.getStudy().getTemplate().getName();
             
-            for (TemplateFieldValue extFieldValue : metadata.getTemplateFieldValues()) {
+            for (StudyFieldValue extFieldValue : metadata.getStudyFieldValues()) {
                 try {
-                    StudyField extStudyField = extFieldValue.getTemplateField().getStudyField();
+                    StudyField extStudyField = extFieldValue.getStudyField();
                     String extFieldName = extStudyField.getName();
                     String extFieldStrValue = extFieldValue.getStrValue();
 

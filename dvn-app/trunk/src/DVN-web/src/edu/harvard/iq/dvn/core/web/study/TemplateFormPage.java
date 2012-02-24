@@ -2997,7 +2997,7 @@ public class TemplateFormPage extends VDCBaseBean implements java.io.Serializabl
 
     public void addDcmRow(ActionEvent ae) {
 
-        HtmlDataTable dataTable = (HtmlDataTable) ae.getComponent().getParent().getParent().getParent();
+        HtmlDataTable dataTable = (HtmlDataTable) ae.getComponent().getParent().getParent();
         Object[] data = (Object[]) ((ListDataModel) dataTable.getValue()).getRowData();
 
         StudyFieldValue newElem = new StudyFieldValue();
@@ -3009,7 +3009,7 @@ public class TemplateFormPage extends VDCBaseBean implements java.io.Serializabl
 
     public void removeDcmRow(ActionEvent ae) {
 
-        HtmlDataTable dataTable = (HtmlDataTable) ae.getComponent().getParent().getParent().getParent();
+        HtmlDataTable dataTable = (HtmlDataTable) ae.getComponent().getParent().getParent();
         if (dataTable.getRowCount() > 1) {
             Object[] data = (Object[]) ((ListDataModel) dataTable.getValue()).getRowData();
             editTemplateService.removeCollectionElement((List) data[1], data[0]);

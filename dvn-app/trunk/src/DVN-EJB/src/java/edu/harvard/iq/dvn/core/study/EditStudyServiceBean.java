@@ -441,7 +441,7 @@ public class EditStudyServiceBean implements edu.harvard.iq.dvn.core.study.EditS
         clearCollection(studyVersion.getMetadata().getStudyTopicClasses());
         
         // Copy Template Metadata into Study Metadata
-        studyVersion.setMetadata(new Metadata(newTemplate.getMetadata()));
+        studyVersion.setMetadata(new Metadata(newTemplate.getMetadata(), true, false));
         studyVersion.getStudy().setTemplate(newTemplate);
 
         // prefill date of deposit

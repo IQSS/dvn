@@ -121,7 +121,7 @@ public class EditTemplateServiceBean implements edu.harvard.iq.dvn.core.study.Ed
     public void  newClonedTemplate(Long vdcId, Template cloneSource) {
         newTemplate=true;
         template = new Template();
-        Metadata clonedMetadata = new Metadata(cloneSource.getMetadata());
+        Metadata clonedMetadata = new Metadata(cloneSource.getMetadata(), false, false );
         template.setMetadata(clonedMetadata);        
         Collection<TemplateField> defaultFields = cloneSource.getTemplateFields();  
                 

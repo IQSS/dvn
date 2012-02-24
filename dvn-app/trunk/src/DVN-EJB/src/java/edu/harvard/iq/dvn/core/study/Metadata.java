@@ -90,9 +90,10 @@ public class Metadata implements java.io.Serializable {
 
     
     public Metadata () {
-    }    
+    }
+    
         
-    public  Metadata(Metadata copyFrom ) {
+    public  Metadata(Metadata copyFrom, boolean studyCopy, boolean networkTarget ) {
      
         this.setUNF(copyFrom.UNF);
         for (TemplateField tf : copyFrom.getTemplate().getTemplateFields()){
@@ -627,6 +628,229 @@ public class Metadata implements java.io.Serializable {
         }
        
     }
+    
+    public Metadata(Metadata copyFrom ) {
+     //this is for a direct copy of study metadata to study metadata
+        this.setUNF(copyFrom.UNF);
+        this.setAccessToSources(copyFrom.accessToSources);
+        this.setActionsToMinimizeLoss(copyFrom.actionsToMinimizeLoss);
+        this.setAvailabilityStatus(copyFrom.availabilityStatus);
+        this.setCharacteristicOfSources(copyFrom.characteristicOfSources);
+        this.setCitationRequirements(copyFrom.citationRequirements);
+        this.setCleaningOperations(copyFrom.cleaningOperations);
+        this.setCollectionMode(copyFrom.collectionMode);
+        this.setCollectionSize(copyFrom.collectionSize);
+        this.setConditions(copyFrom.conditions);
+        this.setConfidentialityDeclaration(copyFrom.confidentialityDeclaration);
+        this.setContact(copyFrom.contact);
+        this.setControlOperations(copyFrom.controlOperations);
+        this.setCountry(copyFrom.country);
+        this.setDataCollectionSituation(copyFrom.dataCollectionSituation);
+        this.setDataCollector(copyFrom.dataCollector);
+        this.setDataSources(copyFrom.dataSources);
+        this.setDateOfCollectionEnd(copyFrom.dateOfCollectionEnd);
+        this.setDateOfCollectionStart(copyFrom.dateOfCollectionStart);
+        this.setDateOfDeposit(copyFrom.dateOfDeposit);
+        this.setDepositor(copyFrom.depositor);
+        this.setDepositorRequirements(copyFrom.depositorRequirements);
+        this.setDeviationsFromSampleDesign(copyFrom.deviationsFromSampleDesign);
+        this.setDisclaimer(copyFrom.disclaimer);
+        this.setDistributionDate(copyFrom.distributionDate);
+        this.setDistributorContact(copyFrom.distributorContact);
+        this.setDistributorContactAffiliation(copyFrom.distributorContactAffiliation);
+        this.setDistributorContactEmail(copyFrom.distributorContactEmail);
+        this.setFrequencyOfDataCollection(copyFrom.frequencyOfDataCollection);
+        this.setFundingAgency(copyFrom.fundingAgency);
+        this.setGeographicCoverage(copyFrom.geographicCoverage);
+        this.setGeographicUnit(copyFrom.geographicUnit);
+        this.setHarvestDVNTermsOfUse(copyFrom.harvestDVNTermsOfUse);
+        this.setHarvestDVTermsOfUse(copyFrom.harvestDVTermsOfUse);
+        this.setHarvestHoldings(copyFrom.harvestHoldings);
+        this.setKindOfData(copyFrom.kindOfData);
+        this.setOriginOfSources(copyFrom.originOfSources);
+        this.setOriginalArchive(copyFrom.originalArchive);
+        this.setOtherDataAppraisal(copyFrom.otherDataAppraisal);
+        this.setPlaceOfAccess(copyFrom.placeOfAccess);
+        this.setProductionDate(copyFrom.productionDate);
+        this.setProductionPlace(copyFrom.productionPlace);
+        this.setReplicationFor(copyFrom.replicationFor);
+        this.setResearchInstrument(copyFrom.researchInstrument);
+        this.setResponseRate(copyFrom.responseRate);
+        this.setRestrictions(copyFrom.restrictions);
+        this.setSamplingErrorEstimate(copyFrom.samplingErrorEstimate);
+        this.setSamplingProcedure(copyFrom.samplingProcedure);
+        this.setSeriesInformation(copyFrom.seriesInformation);
+        this.setSeriesName(copyFrom.seriesName);
+        this.setSpecialPermissions(copyFrom.specialPermissions);
+        this.setStudyVersionText(copyFrom.studyVersionText);
+        this.setSubTitle(copyFrom.subTitle);
+        this.setTimeMethod(copyFrom.timeMethod);
+        this.setTimePeriodCoveredEnd(copyFrom.timePeriodCoveredEnd);
+        this.setTimePeriodCoveredStart(copyFrom.timePeriodCoveredStart);
+        this.setTitle(copyFrom.title);
+        this.setUnitOfAnalysis(copyFrom.unitOfAnalysis);
+        this.setUniverse(copyFrom.universe);
+        this.setVersionDate(copyFrom.versionDate);
+        this.setWeighting(copyFrom.weighting);
+        this.setStudyLevelErrorNotes(copyFrom.studyLevelErrorNotes);
+        this.setStudyCompletion(copyFrom.studyCompletion);
+        
+        
+        
+     
+        this.setStudyAbstracts(new ArrayList<StudyAbstract>());
+        for(StudyAbstract sa: copyFrom.studyAbstracts) {
+            StudyAbstract cloneAbstract = new StudyAbstract();
+            cloneAbstract.setDate(sa.getDate());
+            cloneAbstract.setDisplayOrder(sa.getDisplayOrder());
+            cloneAbstract.setMetadata(this);
+            cloneAbstract.setText(sa.getText());
+            this.getStudyAbstracts().add(cloneAbstract);
+        }
+        this.setStudyAuthors(new ArrayList<StudyAuthor>());
+        for (StudyAuthor author: copyFrom.studyAuthors) {
+            StudyAuthor cloneAuthor = new StudyAuthor();
+            cloneAuthor.setAffiliation(author.getAffiliation());
+            cloneAuthor.setDisplayOrder(author.getDisplayOrder());
+            cloneAuthor.setMetadata(this);
+            cloneAuthor.setName(author.getName());
+            this.getStudyAuthors().add(cloneAuthor);
+        }
+        this.setStudyDistributors(new ArrayList<StudyDistributor>());
+        for (StudyDistributor dist: copyFrom.studyDistributors){
+            StudyDistributor cloneDist = new StudyDistributor();
+            cloneDist.setAbbreviation(dist.getAbbreviation());
+            cloneDist.setAffiliation(dist.getAffiliation());
+            cloneDist.setDisplayOrder(dist.getDisplayOrder());
+            cloneDist.setMetadata(this);
+            cloneDist.setLogo(dist.getLogo());
+            cloneDist.setName(dist.getName());
+            cloneDist.setUrl(dist.getUrl());
+            this.getStudyDistributors().add(cloneDist);
+        }
+        this.setStudyGeoBoundings(new ArrayList<StudyGeoBounding>());
+        for(StudyGeoBounding geo: copyFrom.studyGeoBoundings) {
+            StudyGeoBounding cloneGeo = new StudyGeoBounding();
+            cloneGeo.setDisplayOrder(geo.getDisplayOrder());
+            cloneGeo.setMetadata(this);
+            cloneGeo.setEastLongitude(geo.getEastLongitude());
+            cloneGeo.setNorthLatitude(geo.getNorthLatitude());
+            cloneGeo.setSouthLatitude(geo.getSouthLatitude());
+            cloneGeo.setWestLongitude(geo.getWestLongitude());
+            this.getStudyGeoBoundings().add(cloneGeo);
+        }
+        this.setStudyGrants(new ArrayList<StudyGrant>());
+        for(StudyGrant grant: copyFrom.studyGrants) {
+            StudyGrant cloneGrant = new StudyGrant();
+            cloneGrant.setAgency(grant.getAgency());
+            cloneGrant.setDisplayOrder(grant.getDisplayOrder());
+            cloneGrant.setMetadata(this);
+            cloneGrant.setNumber(grant.getNumber());
+            this.getStudyGrants().add(cloneGrant);
+        }
+        this.setStudyKeywords(new ArrayList<StudyKeyword>());
+        for(StudyKeyword key: copyFrom.studyKeywords) {
+            StudyKeyword cloneKey = new StudyKeyword();
+            cloneKey.setDisplayOrder(key.getDisplayOrder());
+            cloneKey.setMetadata(this);
+            cloneKey.setValue(key.getValue());
+            cloneKey.setVocab(key.getVocab());
+            cloneKey.setVocabURI(key.getVocabURI());
+            this.getStudyKeywords().add(cloneKey);
+        }
+       this.setStudyNotes(new ArrayList<StudyNote>());
+       for(StudyNote note: copyFrom.studyNotes) {
+            StudyNote cloneNote = new StudyNote();
+            cloneNote.setDisplayOrder(note.getDisplayOrder());
+            cloneNote.setMetadata(this);
+            cloneNote.setSubject(note.getSubject());
+            cloneNote.setText(note.getText());
+            cloneNote.setType(note.getType());
+            this.getStudyNotes().add(cloneNote);
+        }
+        this.setStudyOtherIds(new ArrayList<StudyOtherId>());
+        for(StudyOtherId id: copyFrom.studyOtherIds) {
+            StudyOtherId cloneId = new StudyOtherId();
+            cloneId.setAgency(id.getAgency());
+            cloneId.setDisplayOrder(id.getDisplayOrder());
+            cloneId.setMetadata(this);
+            cloneId.setOtherId(id.getOtherId());
+            this.getStudyOtherIds().add(cloneId);
+        }
+        this.setStudyOtherRefs(new ArrayList<StudyOtherRef>());
+        for(StudyOtherRef ref: copyFrom.studyOtherRefs) {
+            StudyOtherRef cloneRef = new StudyOtherRef();
+            cloneRef.setDisplayOrder(ref.getDisplayOrder());
+            cloneRef.setMetadata(this);
+            cloneRef.setText(ref.getText());
+            this.getStudyOtherRefs().add(cloneRef);
+        }
+        this.setStudyProducers(new ArrayList<StudyProducer>());
+        for(StudyProducer prod: copyFrom.studyProducers) {
+            StudyProducer cloneProd = new StudyProducer();
+            cloneProd.setAbbreviation(prod.getAbbreviation());
+            cloneProd.setAffiliation(prod.getAffiliation());
+            cloneProd.setDisplayOrder(prod.getDisplayOrder());
+            cloneProd.setLogo(prod.getLogo());
+            cloneProd.setMetadata(this);
+            cloneProd.setName(prod.getName());
+            cloneProd.setUrl(prod.getUrl());
+            this.getStudyProducers().add(cloneProd);
+        }
+       this.setStudyRelMaterials(new ArrayList<StudyRelMaterial>());
+       for(StudyRelMaterial rel: copyFrom.studyRelMaterials) {
+            StudyRelMaterial cloneRel = new StudyRelMaterial();
+            cloneRel.setDisplayOrder(rel.getDisplayOrder());
+            cloneRel.setMetadata(this);
+            cloneRel.setText(rel.getText());
+            this.getStudyRelMaterials().add(cloneRel);
+        }
+       this.setStudyRelPublications(new ArrayList<StudyRelPublication>());
+        for(StudyRelPublication rel: copyFrom.studyRelPublications){
+            StudyRelPublication cloneRel = new StudyRelPublication();
+            cloneRel.setDisplayOrder(rel.getDisplayOrder());
+            cloneRel.setMetadata(this);
+            cloneRel.setText(rel.getText());
+            this.getStudyRelPublications().add(cloneRel);
+        }
+        this.setStudyRelStudies(new ArrayList<StudyRelStudy>());
+        for(StudyRelStudy rel: copyFrom.studyRelStudies){
+            StudyRelStudy cloneRel = new StudyRelStudy();
+            cloneRel.setDisplayOrder(rel.getDisplayOrder());
+            cloneRel.setMetadata(this);
+            cloneRel.setText(rel.getText());
+            this.getStudyRelStudies().add(cloneRel);
+        }
+        this.setStudySoftware(new ArrayList<StudySoftware>());
+        for(StudySoftware soft: copyFrom.studySoftware){
+            StudySoftware cloneSoft = new StudySoftware();
+            cloneSoft.setDisplayOrder(soft.getDisplayOrder());
+            cloneSoft.setMetadata(this);
+            cloneSoft.setName(soft.getName());
+            cloneSoft.setSoftwareVersion(soft.getSoftwareVersion());
+            this.getStudySoftware().add(cloneSoft);
+        }
+        this.setStudyTopicClasses(new ArrayList<StudyTopicClass>());
+        for (StudyTopicClass topic: copyFrom.studyTopicClasses){
+            StudyTopicClass cloneTopic = new StudyTopicClass();
+            cloneTopic.setDisplayOrder(topic.getDisplayOrder());
+            cloneTopic.setMetadata(this);
+            cloneTopic.setValue(topic.getValue());
+            cloneTopic.setVocab(topic.getVocab());
+            cloneTopic.setVocabURI(topic.getVocabURI());
+            this.getStudyTopicClasses().add(cloneTopic);
+        }
+        this.setTemplateFieldValues(new ArrayList<TemplateFieldValue>());
+        for (TemplateFieldValue tfv: copyFrom.getTemplateFieldValues()){
+            TemplateFieldValue cloneTfv = new TemplateFieldValue();
+            cloneTfv.setDisplayOrder(tfv.getDisplayOrder());
+            cloneTfv.setTemplateField(tfv.getTemplateField());
+            cloneTfv.setStrValue(tfv.getStrValue());
+            cloneTfv.setMetadata(this);
+            this.getTemplateFieldValues().add(cloneTfv);
+        }
+       
+    } 
             
     public String getAuthorsStr() {
         return getAuthorsStr(true);

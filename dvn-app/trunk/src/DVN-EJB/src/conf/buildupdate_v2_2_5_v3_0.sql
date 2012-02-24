@@ -126,7 +126,6 @@ UPDATE StudyField SET FieldInputLevelString='optional' WHERE id=98;
 update templatefield set version = 1 where version is null;
 
 alter table templateField ADD dcmSortOrder  int;
-update templatefield set dcmsortorder = studyfield_id - 44 where studyfield_id > 44 and studyfield_id < 65;
 
 alter table template ADD COLUMN enabled boolean;
 update template set enabled=true;

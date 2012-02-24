@@ -6,7 +6,6 @@ package edu.harvard.iq.dvn.core.web.study;
 import edu.harvard.iq.dvn.core.study.Metadata;
 import edu.harvard.iq.dvn.core.study.TemplateField;
 import java.io.Serializable;
-import java.util.Collection;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -14,7 +13,6 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
 
 
 /**
@@ -107,7 +105,7 @@ public class TemplateFieldControlledVocabulary implements Serializable{
     @Override
     public boolean equals(Object object) {
         // TODO: Warning - this method won't work in the case the id fields are not set
-        if (!(object instanceof TemplateFieldValue)) {
+        if (!(object instanceof TemplateFieldControlledVocabulary)) {
             return false;
         }
         TemplateFieldControlledVocabulary other = (TemplateFieldControlledVocabulary) object;

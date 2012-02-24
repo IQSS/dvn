@@ -71,6 +71,8 @@ import com.icesoft.faces.component.ext.HtmlSelectOneRadio;
 import com.icesoft.faces.context.effects.JavascriptContext;
 import edu.harvard.iq.dvn.core.study.Metadata;
 import edu.harvard.iq.dvn.core.study.MetadataFieldGroup;
+import edu.harvard.iq.dvn.core.study.StudyField;
+import edu.harvard.iq.dvn.core.study.StudyFieldValue;
 import edu.harvard.iq.dvn.core.study.TemplateServiceLocal;
 import java.util.Collections;
 import java.util.Comparator;
@@ -326,7 +328,7 @@ public class EditStudyPage extends VDCBaseBean implements java.io.Serializable  
     
     private List<TemplateField> adHocFields;
     
-    public void initAdHocFieldMap(boolean metadataSet){
+    public void initAdHocFieldMap(boolean metadataSet){/*
         if(!metadataSet){
             metadata.setTemplateFieldValues(new ArrayList());
         }
@@ -413,7 +415,7 @@ public class EditStudyPage extends VDCBaseBean implements java.io.Serializable  
                 }
                 
             }           
-        }         
+        }         */
         Collections.sort(adHocFields, comparator);
     }
 
@@ -426,7 +428,7 @@ public class EditStudyPage extends VDCBaseBean implements java.io.Serializable  
             }
     };
     
-    public void changeSingleValCV(ValueChangeEvent event) {
+    public void changeSingleValCV(ValueChangeEvent event) {/*
         Long sf_Id = (Long) event.getComponent().getAttributes().get("sf_id");
         
         for (TemplateField tfTest: adHocFields){
@@ -449,12 +451,12 @@ public class EditStudyPage extends VDCBaseBean implements java.io.Serializable  
                     values.add(elem);
                     tfTest.setTemplateFieldValues(values);            
             }
-        }
+        }*/
     }
     
     public void changeMultiValCV(ValueChangeEvent event) {
         Long sf_Id = (Long) event.getComponent().getAttributes().get("sf_id");
-
+/*
         for (TemplateField tfTest: adHocFields){
             if (tfTest.getStudyField().getId().equals(sf_Id)){
                 
@@ -481,7 +483,7 @@ public class EditStudyPage extends VDCBaseBean implements java.io.Serializable  
                 }
                 tfTest.setTemplateFieldValues(values);
             }
-        }
+        }*/
     }
     
     public List getAdHocFields() {
@@ -500,7 +502,7 @@ public class EditStudyPage extends VDCBaseBean implements java.io.Serializable  
         return tf.isRequired();
         
     }
-
+    /*
     public void addDcmRow(ActionEvent ae) {
         
         Long  getId = (Long) ae.getComponent().getAttributes().get("tf_id");
@@ -514,12 +516,12 @@ public class EditStudyPage extends VDCBaseBean implements java.io.Serializable  
             TemplateFieldValue newElem = new TemplateFieldValue();
             newElem.setMetadata(metadata);
             newElem.setTemplateField(tfSel);
-            metadata.getTemplateFieldValues().add(newElem);
-            tfSel.getTemplateFieldValues().add(newElem);
+            //metadata.getTemplateFieldValues().add(newElem);
+            //tfSel.getTemplateFieldValues().add(newElem);
             //remove clear can interfere with add buttons
             //dcmFieldTable.getChildren().clear();
     }
-
+    `*/
     private HtmlDataTable dcmFieldTable;
 
     /**
@@ -605,21 +607,7 @@ public class EditStudyPage extends VDCBaseBean implements java.io.Serializable  
             StudyOtherRef newElem = new StudyOtherRef();
             newElem.setMetadata(metadata);
             metadata.getStudyOtherRefs().add(dataTable.getRowIndex()+1,newElem);
-        } else { // new custom field
-            TemplateFieldValue newElem = new TemplateFieldValue();
-            Long getOrder = (Long) ae.getComponent().getAttributes().get("dcmSortOrder");
-            TemplateField tf = adHocFields.get(getOrder.intValue() -1 );
-            newElem.setMetadata(metadata);
-            newElem.setTemplateField(tf);
-            newElem.setStrValue("");    
-            newElem.setDisplayOrder(count++);
-            tf.getTemplateFieldValues().add(dataTable.getRowIndex()+1, newElem);    
-            metadata.getTemplateFieldValues().add(newElem);
-        }
-        
-  
-        
-        
+        }                          
     }
     
     public void removeRow(ActionEvent ae) {
@@ -907,21 +895,15 @@ public class EditStudyPage extends VDCBaseBean implements java.io.Serializable  
            }
         }
 
-        for (TemplateField tf : adHocFields){
-           List<TemplateFieldValue> valList =  tf.getTemplateFieldValues();
-           List toRemove = new ArrayList();
-           for (TemplateFieldValue tfv: valList){
-               if (tfv.getStrValue().isEmpty()){
-                   toRemove.add(tfv);
-               }
-           }
-
-           if (!toRemove.isEmpty()){
-               for (Object o: toRemove){
-                    editStudyService.removeCollectionElement(valList,o);
-               }
-           }
-        }
+        // custom fields
+        for (StudyField studyField : metadata.getStudyFields()) {
+            for (Iterator<StudyFieldValue> it = studyField.getStudyFieldValues().iterator(); it.hasNext();) {
+                StudyFieldValue elem =  it.next();
+                if (elem.isEmpty()) {
+                    editStudyService.removeCollectionElement(it,elem);
+                }
+            }
+        }  
         
         
     }
@@ -1303,8 +1285,8 @@ public class EditStudyPage extends VDCBaseBean implements java.io.Serializable  
                 adHocFieldsEmpty();
     }
     private boolean adHocFieldsEmpty(){
-        for (TemplateField tf: adHocFields){
-            if(!tf.getTemplateFieldValues().isEmpty()){
+        for (StudyField sf: metadata.getStudyFields()){
+            if(!isGroupEmpty(sf.getStudyFieldValues())) {
                 return false;
             }
         }

@@ -453,7 +453,7 @@ public class StudyPage extends VDCBaseBean implements java.io.Serializable  {
     }
     
     public boolean getCustomDataCollectionIsEmpty() {
-        if (studyUI.getCustomFields() == null || studyUI.getCustomFields().size() == 0) {
+        if (studyUI.getMetadata().getStudyFieldValues() == null || studyUI.getMetadata().getStudyFieldValues().size() == 0) {
             return true;
         } else {
             return false;

@@ -12,6 +12,8 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.UriInfo;
+import javax.ws.rs.core.HttpHeaders;
+
 
 /**
  *
@@ -21,6 +23,8 @@ import javax.ws.rs.core.UriInfo;
 public class MetadataFormatsResourceBean {
 
     @Context private UriInfo ui;
+    @Context private HttpHeaders headers;
+
     @EJB MetadataSingletonBean singleton;
 
     public MetadataFormatsResourceBean() {
@@ -34,8 +38,10 @@ public class MetadataFormatsResourceBean {
     @Produces({ "application/xml" })
 
     public MetadataFormats getMetadataFormats(@PathParam("stdyId") Long studyId) throws NotFoundException {
+        String authCredentials = getAuthCredentials();
+
          
-        MetadataFormats mf = singleton.getMetadataFormatsAvailable(studyId);
+        MetadataFormats mf = singleton.getMetadataFormatsAvailable(studyId, authCredentials);
 
         if (mf == null) {
             // Study not found;
@@ -52,11 +58,11 @@ public class MetadataFormatsResourceBean {
     @Produces({ "application/xml" })
     
     public MetadataFormats getMetadataFormatsByGlobalId(@PathParam("nameSpace") String nameSpace, @PathParam("stdyId") String stdyId) throws NotFoundException {
-        
+        String authCredentials = getAuthCredentials();        
         
         MetadataFormats mf = null; // = singleton.addMetadata("hdl:"+nameSpace+"/"+stdyId);
        
-        mf = singleton.getMetadataFormatsAvailable("hdl:"+nameSpace+"/"+stdyId);
+        mf = singleton.getMetadataFormatsAvailable("hdl:"+nameSpace+"/"+stdyId, authCredentials);
         
         
         if (mf == null) {
@@ -66,6 +72,20 @@ public class MetadataFormatsResourceBean {
         }
         
         return mf;
+    }
+    
+    private String getAuthCredentials () {
+        String authCredentials = null; 
+        for (String header : headers.getRequestHeaders().keySet()) {
+            if (header.equalsIgnoreCase("Authorization")) {
+                String headerValue = headers.getRequestHeader(header).get(0);
+                if (headerValue != null && headerValue.startsWith("Basic ")) {
+                    authCredentials = headerValue.substring(6);
+                }
+            }
+        }
+        
+        return authCredentials; 
     }
 }
 

@@ -5,11 +5,13 @@ import edu.harvard.iq.dvn.api.entities.MetadataFormats;
 import edu.harvard.iq.dvn.api.entities.MetadataSearchFields;
 import edu.harvard.iq.dvn.api.entities.MetadataSearchResults;
 
-
+import java.io.UnsupportedEncodingException;
 import java.util.List;
 import java.util.ArrayList; 
 import javax.ejb.Singleton;
 import javax.ejb.EJB;
+
+import org.apache.commons.codec.binary.Base64;
 
 import edu.harvard.iq.dvn.core.study.StudyServiceLocal;
 import edu.harvard.iq.dvn.core.index.IndexServiceLocal;
@@ -20,6 +22,8 @@ import edu.harvard.iq.dvn.core.study.StudyVersion;
 import edu.harvard.iq.dvn.core.study.MetadataFormatType;
 import edu.harvard.iq.dvn.core.study.StudyField;
 import edu.harvard.iq.dvn.core.study.StudyFieldServiceLocal;
+import edu.harvard.iq.dvn.core.admin.VDCUser;
+import edu.harvard.iq.dvn.core.admin.UserServiceLocal;
 
 
 /**
@@ -33,10 +37,11 @@ public class MetadataSingletonBean {
     @EJB
     IndexServiceLocal indexService;
     @EJB 
-    StudyExporterFactoryLocal studyExporterFactory;
-    
+    StudyExporterFactoryLocal studyExporterFactory;  
     @EJB
     StudyFieldServiceLocal studyFieldService;
+    @EJB
+    UserServiceLocal userService; 
     
     //private List<String> searchableFields = null; 
     private List<StudyField> searchableFields = null; 
@@ -45,7 +50,7 @@ public class MetadataSingletonBean {
     }
     
     // Looks up Metadata Instance by Global ID:
-    public MetadataInstance getMetadata(String globalId, String formatType, Long versionNumber, String partialExclude, String partialInclude) {
+    public MetadataInstance getMetadata(String globalId, String formatType, Long versionNumber, String partialExclude, String partialInclude, String authCredentials) {
         MetadataInstance m = null; 
         StudyVersion sv = null; 
         Long studyId = null; 
@@ -53,8 +58,17 @@ public class MetadataSingletonBean {
         if (globalId != null) {
             try {
                 sv = studyService.getStudyVersion(globalId, versionNumber);
-                if (sv != null) {
-                    // First, verify that the format requested is legit/supported:
+                if (sv != null && sv.getStudy() != null) {
+                    // First, verify that they are authorized to download this
+                    // metadata record: 
+                           
+                    if (!checkAccessAuthorization(sv.getStudy(), authCredentials)) {
+                        m = new MetadataInstance(globalId);
+                        m.setAccessAuthorized(false);
+                        return m; 
+                    }
+                   
+                    // Then verify that the format requested is legit/supported:
                     
                     if (formatType == null) {
                         formatType = "ddi";
@@ -123,7 +137,7 @@ public class MetadataSingletonBean {
     }
     
     // Looks up Metadata Instance by Local (database) ID:
-    public MetadataInstance getMetadata(Long studyId, String formatType, Long versionNumber, String partialExclude, String partialInclude) {
+    public MetadataInstance getMetadata(Long studyId, String formatType, Long versionNumber, String partialExclude, String partialInclude, String authCredentials) {
         MetadataInstance m = null; 
         StudyVersion sv = null; 
         String globalId = null; 
@@ -137,6 +151,15 @@ public class MetadataSingletonBean {
                         globalId = sv.getStudy().getGlobalId();
                     } else {
                         return null; 
+                    }
+                    
+                    // Verify that they are authorized to download this
+                    // metadata record: 
+                    
+                    if (!checkAccessAuthorization(sv.getStudy(), authCredentials)) {
+                        m = new MetadataInstance(globalId);
+                        m.setAccessAuthorized(false);
+                        return m; 
                     }
                     
                     // Verify that the format requested is legit/supported:                    
@@ -202,7 +225,7 @@ public class MetadataSingletonBean {
     }
     
     // Looks up Metadata Formats by Global ID:
-    public MetadataFormats getMetadataFormatsAvailable(String globalId) {
+    public MetadataFormats getMetadataFormatsAvailable(String globalId, String authCredentials) {
         MetadataFormats mf = null; 
         StudyVersion sv = null; 
         Long studyId = null; 
@@ -219,7 +242,12 @@ public class MetadataSingletonBean {
                     if (sv.getStudy() != null) {
                         studyId = sv.getStudy().getId();
                         mf.setStudyId(studyId);
-                        lookupMetadataTypesAvailable(mf);
+                        // If the study is "restricted", it means even its 
+                        // "cataloging information", i.e. metadata, should not
+                        // be freely available!
+                        if (checkAccessAuthorization(sv.getStudy(), authCredentials)) {
+                            lookupMetadataTypesAvailable(mf);
+                        }
                         return mf; 
                     } 
                 } 
@@ -235,7 +263,7 @@ public class MetadataSingletonBean {
     }
     
     // Looks up Metadata Formats by Local (database) ID:
-    public MetadataFormats getMetadataFormatsAvailable(Long studyId) {
+    public MetadataFormats getMetadataFormatsAvailable(Long studyId, String authCredentials) {
         MetadataFormats mf = null; 
         StudyVersion sv = null; 
         String globalId = null; 
@@ -252,7 +280,12 @@ public class MetadataSingletonBean {
                         if (globalId != null) {
                             mf = new MetadataFormats (globalId); 
                             mf.setStudyId(studyId);
-                            lookupMetadataTypesAvailable(mf);
+                            // If the study is "restricted", it means even its 
+                            // "cataloging information", i.e. metadata, should not
+                            // be freely available!
+                            if (checkAccessAuthorization(sv.getStudy(), authCredentials)) {
+                                lookupMetadataTypesAvailable(mf);
+                            }
                             return mf;
                         }
                     } 
@@ -338,5 +371,67 @@ public class MetadataSingletonBean {
         }
     }
     
+    
+    private boolean checkAccessAuthorization (Study study, String authCredentials) {
+        // If the study is not restricted at all - it's a no-brainer: 
+        if (!study.isRestricted()) {
+            return true;
+        }
+        
+        VDCUser user = authenticateAccess(authCredentials);
+        
+        // Study restricted, but no authentication? - no luck. 
+        if (user == null) {
+            return false;
+        }
+        
+        // Finally, we can check if this particular user has a right to see
+        // this particular metadata record:
+        
+        if (study.isStudyRestrictedForUser(user)) {
+            return true;
+        }        
+        
+        return false;
+    }
+    // Decodes the Base64 credential string (passed with the request in 
+    // the "Authenticate: " header), extracts the username and password, 
+    // and attempts to authenticate the user with the DVN User Service. 
+    
+    public VDCUser authenticateAccess (String authCredentials) {
+        if (authCredentials == null) {
+            return null; 
+        }
+        VDCUser vdcUser = null;
+        Base64 base64codec = new Base64(); 
+        
+        String decodedCredentials = ""; 
+        byte[] authCredBytes = authCredentials.getBytes();
+        
+        try {
+            byte[] decodedBytes = base64codec.decode(authCredBytes);
+            decodedCredentials = new String (decodedBytes, "ASCII");
+        } catch (UnsupportedEncodingException e) {
+            return null; 
+        }
+
+        if (decodedCredentials != null ) {
+            int i = decodedCredentials.indexOf(':');
+            if (i != -1) { 
+                String userPassword = decodedCredentials.substring(i+1);
+                String userName = decodedCredentials.substring(0, i);
+                
+                if (!"".equals(userName)) {
+                    vdcUser = userService.findByUserName(userName, true);
+                    if (vdcUser == null || 
+                        !userService.validatePassword(vdcUser.getId(),userPassword)) {
+                        return null;
+                    } 
+                }
+            }
+        } 
+        
+        return vdcUser; 
+    }
     
 }

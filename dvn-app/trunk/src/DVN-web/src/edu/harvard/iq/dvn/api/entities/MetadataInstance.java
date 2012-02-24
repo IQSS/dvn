@@ -24,6 +24,7 @@ public class MetadataInstance {
     private String parameterExcludeSection; 
 
     private Boolean isAvailable = false; 
+    private Boolean isAccessAuthorized = true; 
     private Boolean isCached = false; 
     private Boolean isByteArray = false; 
     
@@ -92,6 +93,14 @@ public class MetadataInstance {
     
     public void setAvailability(Boolean availability) {
         isAvailable = availability; 
+    }
+    
+    public Boolean isAccessAuthorized() {
+        return isAccessAuthorized; 
+    }
+    
+    public void setAccessAuthorized(Boolean authorized) {
+        isAccessAuthorized = authorized; 
     }
     
     public Boolean isCached() {
@@ -170,7 +179,8 @@ public class MetadataInstance {
                 return; 
             }
             
-            this.isAvailable = true; 
+            this.isAvailable = true;
+            this.isAccessAuthorized = true; 
             this.isByteArray = true; 
             this.generatedMetadataBytes = outStream.toByteArray(); 
             
@@ -195,6 +205,7 @@ public class MetadataInstance {
             
             if (lookupFile.exists()) {
                 this.isAvailable = true;
+                this.isAccessAuthorized = true; 
                 this.isCached = true; 
                 this.cachedMetadataFile = lookupFile; 
             }

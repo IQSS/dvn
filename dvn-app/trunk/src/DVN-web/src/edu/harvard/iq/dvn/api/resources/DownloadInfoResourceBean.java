@@ -10,7 +10,6 @@ import edu.harvard.iq.dvn.api.exceptions.ServiceUnavailableException;
 
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
-import java.net.URI; 
 
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
@@ -31,7 +30,6 @@ import javax.ws.rs.core.UriInfo;
 
 public class DownloadInfoResourceBean {
     @Context HttpHeaders headers;
-    @Context UriInfo uriInfo;
 
 
 
@@ -47,13 +45,6 @@ public class DownloadInfoResourceBean {
     @Produces({ "application/xml" })
 
     public DownloadInfo getDownloadInfo(@PathParam("stdyFileId") Long studyFileId) throws AuthorizationRequiredException, NotFoundException, ServiceUnavailableException {
-        
-        URI resourcePath = uriInfo.getAbsolutePath();
-        if (resourcePath != null) {
-            if (!"https".regionMatches(0, resourcePath.toASCIIString(), 0, 5)) {
-                throw new ServiceUnavailableException();
-            }
-        }
         
         String authCredentials = null; 
         

@@ -29,13 +29,10 @@
 
 package edu.harvard.iq.dvn.core.study;
 
-import edu.harvard.iq.dvn.core.util.FieldInputLevelConstant;
 import edu.harvard.iq.dvn.core.vdc.VDC;
 import edu.harvard.iq.dvn.core.vdc.VDCNetwork;
 import edu.harvard.iq.dvn.core.vdc.VDCNetworkServiceLocal;
-import edu.harvard.iq.dvn.core.vdc.VDCServiceLocal;
 import edu.harvard.iq.dvn.core.web.study.TemplateFieldControlledVocabulary;
-import edu.harvard.iq.dvn.core.web.study.TemplateFieldValue;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;

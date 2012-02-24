@@ -1604,6 +1604,14 @@ public class StudyServiceBean implements edu.harvard.iq.dvn.core.study.StudyServ
             i++;
         }
 
+        // custom fields
+        for (StudyField studyField : metadata.getStudyFields()) {
+            i = 0;
+            for (StudyFieldValue elem : studyField.getStudyFieldValues()) {
+                elem.setDisplayOrder(i++);
+            }
+        }       
+        
     }
 
     public Study saveStudyVersion(StudyVersion studyVersion, Long userId) {

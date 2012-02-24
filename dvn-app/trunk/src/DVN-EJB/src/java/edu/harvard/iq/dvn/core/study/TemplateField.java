@@ -29,17 +29,9 @@
 
 package edu.harvard.iq.dvn.core.study;
 
-import edu.harvard.iq.dvn.core.util.FieldInputLevelConstant;
 import edu.harvard.iq.dvn.core.web.study.TemplateFieldControlledVocabulary;
-import edu.harvard.iq.dvn.core.web.study.TemplateFieldValue;
 import java.util.ArrayList;
 import java.util.List;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
-import javax.persistence.SequenceGenerator;
 import javax.persistence.*;
 
 /**

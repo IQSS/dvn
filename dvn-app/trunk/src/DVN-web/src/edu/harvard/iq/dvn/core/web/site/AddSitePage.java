@@ -341,7 +341,7 @@ public class AddSitePage extends VDCBaseBean implements java.io.Serializable  {
 
             // Refresh User object in LoginBean so it contains the user's new role of VDC administrator.
             getVDCSessionBean().getLoginBean().setUser(creator);
- 
+            getVDCRenderBean().getFlash().put("successMessage","Your new dataverse has been created!");
             return "/site/AddSiteSuccessPage?faces-redirect=true&vdcId=" + createdVDC.getId();
         }
         else {
@@ -393,7 +393,7 @@ public class AddSitePage extends VDCBaseBean implements java.io.Serializable  {
 
             // Refresh User object in LoginBean so it contains the user's new role of VDC administrator.
             getVDCSessionBean().getLoginBean().setUser(creator);
-
+            getVDCRenderBean().getFlash().put("successMessage","Your new dataverse has been created!");
             return "/site/AddSiteSuccessPage?faces-redirect=true&vdcId=" + createdScholarDataverse.getId();
         }
         else {

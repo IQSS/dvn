@@ -186,20 +186,25 @@ public class TemplateServiceBean implements edu.harvard.iq.dvn.core.study.Templa
         String query = "select object(o) FROM Template as o WHERE o.vdc.id = :vdcId ORDER BY o.name";
         return (List) em.createQuery(query).setParameter("vdcId", vdcId).getResultList();
     }
-    
+
     public List<Template> getEnabledVDCTemplates(Long vdcId) {
         String query = "select object(o) FROM Template as o WHERE o.vdc.id = :vdcId and o.enabled = true ORDER BY o.name";
         return (List) em.createQuery(query).setParameter("vdcId", vdcId).getResultList();
-    }    
-    
+    }
+
     public List<Template> getNetworkTemplates() {
         String query = "select object(o) FROM Template as o WHERE o.vdc is null ORDER BY o.name";
         return (List) em.createQuery(query).getResultList();
     }
-    
-     public List<Template> getEnabledNetworkTemplates() {
+
+    public List<Template> getEnabledNetworkTemplates() {
         String query = "select object(o) FROM Template as o WHERE o.vdc is null and o.enabled = true ORDER BY o.name";
         return (List) em.createQuery(query).getResultList();
-    }   
-    
+    }
+
+    public List<ControlledVocabulary> getNetworkControlledVocabulary() {
+        String query = "select object(o) FROM ControlledVocabulary";
+        return (List) em.createQuery(query).getResultList();
+    }
+     
 }

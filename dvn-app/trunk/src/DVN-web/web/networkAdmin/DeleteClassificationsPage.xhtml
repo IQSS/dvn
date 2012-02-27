@@ -39,17 +39,8 @@
                 <ice:outputText  id="outputText4" value="?"/>
               </div>
               <div id="groupPanel2" class="dvnFormPadding dvnFormMargin">
-                <ice:commandButton  id="button1"
-                                    binding="#{DeleteClassificationsPage.linkDelete}"
-                                    value="Delete"
-                                    action="#{DeleteClassificationsPage.delete}">
-                  <f:attribute name="deleteId"              value="#{DeleteClassificationsPage.deleteId}"/>
-                  <f:attribute name="classificationName"    value="#{DeleteClassificationsPage.classificationName}"/>
-                </ice:commandButton>
-                <ice:commandButton immediate="true"
-                                   id="button2"
-                                   value="Cancel"
-                                   action="#{DeleteClassificationsPage.cancel}"/>
+                <ice:commandButton  value="Delete"  action="#{DeleteClassificationsPage.delete}" />
+                <ice:commandButton immediate="true" value="Cancel"  action="#{DeleteClassificationsPage.cancel}"/>
               </div>
             </div>
           </div>

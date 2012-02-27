@@ -1432,27 +1432,16 @@
 
               <!-- Add Field section -->
               <div jsfc="ice:panelGroup" styleClass="dvnStudyTemplateDCMBlock" rendered="#{TemplateFormPage.networkEdit}">
-                <p>
-                  <ice:graphicImage value="/resources/images/icon_info.gif" styleClass="dvn_icon"/>
-                  <ice:outputText styleClass="vdcHelpText" value=" Add custom Data Collection/Methodology fields by using the form and clicking the Add Field button." escape="false"/>
-                </p>
-                    <div jsfc="ice:panelGroup" styleClass="dvnMsgBlockRound dvnWarningMessage" rendered="#{!empty flash.message }">
-                      <div class="dvnMsgBlockContainer">
-                        <p><ice:outputText id="addFieldMessage" value="#{flash.message}"/></p>
-                      </div>
-                    </div>
-                <ice:panelGrid cellpadding="0" cellspacing="0" columns="3" width="100%">
+                <ice:panelGrid cellpadding="0" cellspacing="0" columns="1" width="100%">
                     <ice:column>
-                        <ice:outputText value="Allow multiple values"/>
-                        <ice:selectBooleanCheckbox partialSubmit="false" binding="#{TemplateFormPage.allowMultiplesCheck}"/>
-                    </ice:column>
-                    <ice:column>
-                        <div>
-                            <ice:outputText value="Field Name"/>
-                            <ice:inputText id="input_adHocFieldName" size="90" binding="#{TemplateFormPage.inputStudyFieldName}"></ice:inputText>
-                            <br/>
-                            <ice:outputText value="Field Description"/>
-                            <ice:inputText id="input_adHocFieldDescription" size="90" binding="#{TemplateFormPage.inputStudyFieldDescription}"></ice:inputText>
+                        <p>
+                          <ice:graphicImage value="/resources/images/icon_info.gif" styleClass="dvn_icon"/>
+                          <ice:outputText styleClass="vdcHelpText" value=" Add custom Data Collection/Methodology fields by using the form and clicking the Add Field button." escape="false"/>
+                        </p>
+                        <div jsfc="ice:panelGroup" styleClass="dvnWarningMessage" rendered="#{!empty flash.message}">
+                          <div class="dvnMsgBlockContainer">
+                            <p><ice:outputText id="addFieldMessage" value="#{flash.message}"/></p>
+                          </div>
                         </div>
                         <div>
                             <ice:outputText value="Field Type"/>
@@ -1460,9 +1449,21 @@
                                 <f:selectItems value="#{TemplateFormPage.fieldTypeSelectItems}"/>
                             </ice:selectOneMenu>
                         </div>
-                    </ice:column>
-                    <ice:column>
-                        <ice:commandButton partialSubmit="true" value="Add Field" action="#{TemplateFormPage.saveField}"/>
+                        <div>
+                            <ice:outputText value="Field Name"/>
+                            <ice:inputText id="input_adHocFieldName" size="90" binding="#{TemplateFormPage.inputStudyFieldName}"></ice:inputText>
+                        </div>
+                        <div>
+                            <ice:outputText value="Field Description"/>
+                            <ice:inputText id="input_adHocFieldDescription" size="90" binding="#{TemplateFormPage.inputStudyFieldDescription}"></ice:inputText>
+                        </div>
+                        <div class="dvnFormPadding">
+                            <ice:selectBooleanCheckbox partialSubmit="false" binding="#{TemplateFormPage.allowMultiplesCheck}"/>
+                            <ice:outputText value="Allow multiple values"/>
+                        </div>
+                        <div class="dvnFormPadding">
+                            <ice:commandButton partialSubmit="true" value="Add Field" action="#{TemplateFormPage.saveField}"/>
+                        </div>
                     </ice:column>
                 </ice:panelGrid>
               </div>

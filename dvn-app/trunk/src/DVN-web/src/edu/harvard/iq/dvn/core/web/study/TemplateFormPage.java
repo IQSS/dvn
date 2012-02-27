@@ -376,10 +376,10 @@ public class TemplateFormPage extends VDCBaseBean implements java.io.Serializabl
     public List<SelectItem> loadFieldTypeSelectItems() {
         List selectItems = new ArrayList<SelectItem>();
 
-        selectItems.add(new SelectItem("textBox", "Text Box"));
-        selectItems.add(new SelectItem("textArea", "Text Area"));
-        selectItems.add(new SelectItem("date", "Date"));
-        selectItems.add(new SelectItem("html", "Allow HTML"));
+        selectItems.add(new SelectItem("textBox", "Plain Text Input"));
+        selectItems.add(new SelectItem("textArea", "Plain Text Area"));
+        selectItems.add(new SelectItem("date", "Date Input"));
+        selectItems.add(new SelectItem("html", "HTML Enabled Text Input"));
         return selectItems;
     }
 

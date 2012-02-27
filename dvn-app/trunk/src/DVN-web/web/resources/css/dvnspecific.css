@@ -44,6 +44,7 @@ div.dvnOptionsTableLicense{padding-top:.5em}
 .dvnStudyTemplateTitleBlock{margin-top:1.5em; padding:4px 0; border-bottom:1px solid #DADEE0}
 .dvnStudyTemplateTitleBlock .dvnstudyadminboxfloat{text-align:right}
 .dvnStudyTemplateDCMBlock{border-bottom:1px solid #DADEE0; padding-bottom:1em;}
+.dvnStudyTemplateDCMBlock table.icePnlGrd{padding:4px;background:#EEF3FB;}
 .vdcEditStudyTable{border:0;margin:0}
 .vdcEditStudyTable tr{border-width:0 0 1px 0;padding:0}
 .vdcEditStudyTable td{border-bottom:1px solid #dadee0;border-width:0 0 1px 0;padding:4px 0}

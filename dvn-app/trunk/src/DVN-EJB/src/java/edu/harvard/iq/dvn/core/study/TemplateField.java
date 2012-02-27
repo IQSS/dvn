@@ -116,6 +116,16 @@ public class TemplateField implements java.io.Serializable {
         this.template=template;
     }
 
+    
+    @ManyToOne
+    @JoinColumn
+    private ControlledVocabulary controlledVocabulary;
+
+    public ControlledVocabulary getControlledVocabulary() { return controlledVocabulary; }
+    public void setControlledVocabulary(ControlledVocabulary controlledVocabulary) { this.controlledVocabulary=controlledVocabulary; }    
+    
+        
+    
     /**
      * Holds value of property id.
      */

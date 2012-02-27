@@ -49,4 +49,6 @@ public interface TemplateServiceLocal extends java.io.Serializable {
     public List<Template> getNetworkTemplates();
     public List<Template> getEnabledNetworkTemplates();
     
+    public List<ControlledVocabulary> getNetworkControlledVocabulary();
+    
 }

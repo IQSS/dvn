@@ -403,7 +403,12 @@ public class AddSitePage extends VDCBaseBean implements java.io.Serializable  {
     }
     
     public String cancel() {
-        return "cancel";
+        VDCUser user = getVDCSessionBean().getLoginBean().getUser();
+        if (user.isNetworkAdmin()) {
+            return "/networkAdmin/NetworkOptionsPage?faces-redirect=tru";
+        } else {
+            return "/login/AccountOptionsPage?faces-redirect=true&userId="+user.getId();
+        }
     }
 
 

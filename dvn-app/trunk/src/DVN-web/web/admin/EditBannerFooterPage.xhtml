@@ -49,11 +49,12 @@
         jQuery('.dvnUrlOpenScholar').hide();
         jQuery('.dvnUrlPersonalSite').hide();
         
-        var siteURL = jQuery('input#editBannerFooterForm\\:urlOpenScholarDataverse').val();
+        var siteURL = jQuery('input#editBannerFooterForm\\:urlOpenScholarDataverse');
         
-        if ( siteURL != '' ) {
-            if ( jQuery('input#editBannerFooterForm\\:urlOpenScholarDataverse').val().startsWith('http://scholar.harvard.edu') ) {
-                // Do nothing, OpenScholar is the default setting
+        if ( siteURL.val() != '' ) {
+            if ( jQuery(siteURL).val().startsWith('http://scholars.harvard.edu') || jQuery(siteURL).val().startsWith('http://projects.iq.harvard.edu') ) {
+                jQuery('input#editBannerFooterForm\\:urlOpenScholarDataverse').parents('.dvnUrlOpenScholar').prev('.dvnCustomizationSelectSiteBlock').children('input[value=openscholar]').prop('checked', true);
+                jQuery('.dvnUrlOpenScholar').show();
             }
             else {
                 jQuery('input#editBannerFooterForm\\:urlOpenScholarDataverse').parents('.dvnUrlOpenScholar').prev('.dvnCustomizationSelectSiteBlock').children('input[value=personal]').prop('checked', true);

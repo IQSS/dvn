@@ -2659,21 +2659,20 @@
                 <ice:panelGrid id="autoCentContent"
                                width="100%" cellpadding="0"
                                cellspacing="0" columns="1"
-                               styleClass="popupModalBody" rowClasses="popupModVerNotText,popupModVerNotLabel,popupModVerNotField,popupModVerNotForm">
-                <ice:column styleClass="vdcEditStudyField">
-                    <ice:selectManyListbox id="controlledVocabSelectManyList" value="#{TemplateFormPage.selectedControlledVocabStrings}"
-                                       binding="#{TemplateFormPage.selectControlledVocabulary}">                                                                    
-                        <f:selectItems value="#{TemplateFormPage.controlledVocabStrings}"></f:selectItems>
-                    </ice:selectManyListbox>
-                    <ice:commandButton id="autoCentPopupOkSave" visible="true" action="#{TemplateFormPage.removeSelectedControlledVocab}" image="/resources/images/icon_remove.gif"/>
-                </ice:column>
-                <ice:column styleClass="vdcEditStudyField">
-                    <ice:inputText id="newControlledVocab" binding="#{TemplateFormPage.inputControlledVocabulary}" value="#{TemplateFormPage.newControlledVocab}"></ice:inputText>
-                    <ice:commandButton id="addToControlledVocabButton" action="#{TemplateFormPage.addToControlledVocabList}" image="/resources/images/icon_add.gif"/>
+                               styleClass="popupModalBody">
+                    <ice:column>
+                        <ice:inputText id="newControlledVocab" binding="#{TemplateFormPage.inputControlledVocabulary}" value="#{TemplateFormPage.newControlledVocab}"></ice:inputText>
+                        <ice:commandButton id="addToControlledVocabButton" action="#{TemplateFormPage.addToControlledVocabList}" image="/resources/images/icon_add.gif"/>
                     </ice:column>
-
+                    <ice:column>
+                        <ice:selectManyListbox id="controlledVocabSelectManyList" value="#{TemplateFormPage.selectedControlledVocabStrings}"
+                                           binding="#{TemplateFormPage.selectControlledVocabulary}">                                                                    
+                            <f:selectItems value="#{TemplateFormPage.controlledVocabStrings}"></f:selectItems>
+                        </ice:selectManyListbox>
+                        <ice:commandButton id="autoCentPopupOkSave" visible="true" action="#{TemplateFormPage.removeSelectedControlledVocab}" image="/resources/images/icon_remove.gif"/>
+                    </ice:column>
                     <div jsfc="ice:panelGroup" styleClass="dvnFormPadding dvnFormMargin">
-                        <ice:commandButton id="autoCentPopupCancel" immediate="true" actionListener="#{TemplateFormPage.closePopup}" value="Exit"/>
+                        <ice:commandButton id="autoCentPopupCancel" immediate="true" actionListener="#{TemplateFormPage.closePopup}" value="Continue"/>
                     </div>
                 </ice:panelGrid>
             </f:facet>

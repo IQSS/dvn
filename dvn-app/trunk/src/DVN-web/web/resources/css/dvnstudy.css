@@ -150,6 +150,7 @@ span.vdcStudyCommentDetails{font-size:90% !important;color:#a9a9a9;white-space:n
 .vdcStudyCommentLoginRegister{padding-top:.5em}
 .vdcStudyCommentsBlock .errorMessageFatal,.vdcStudyCommentsBlock .errorMessageError,.vdcStudyCommentsBlock .errorMessageWarn,.vdcStudyCommentsBlock .errorMessageInfo{padding-left:0 !important;display:block}
 .icePnlPop{z-index:1000;width:300px;}
+.icePnlPop table:first-child {width:100%;}
 .icePnlPopHdr .iceOutTxt{font-family:"HelveticaNeue", Helvetica, Arial, sans-serif !important;font-size:12px !important;}
 .popupModalClose{float:right;cursor:pointer}
 .popupModalClose img{border:0}

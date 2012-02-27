@@ -81,6 +81,8 @@ import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
 import javax.faces.event.ActionEvent;
 import javax.faces.event.ValueChangeEvent;
+import javax.faces.model.DataModel;
+import javax.faces.model.ListDataModel;
 import javax.faces.model.SelectItem;
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -156,7 +158,7 @@ public class EditStudyPage extends VDCBaseBean implements java.io.Serializable  
             // prefill date of deposit
             metadata.setDateOfDeposit(new SimpleDateFormat("yyyy-MM-dd").format(new Date()));
             setFiles(editStudyService.getCurrentFiles());
-            initAdHocFieldMap(false);
+            //initAdHocFieldMap(false);
         }
         // Initialize map containing required/recommended settings for all fields
         initStudyMap();
@@ -328,7 +330,26 @@ public class EditStudyPage extends VDCBaseBean implements java.io.Serializable  
     
     private List<TemplateField> adHocFields;
     
-    public void initAdHocFieldMap(boolean metadataSet){/*
+    public void initAdHocFieldMap(boolean metadataSet){
+        
+        if (adHocFields == null) {
+            adHocFields = new ArrayList();
+            for (Iterator<TemplateField> it = metadata.getTemplate().getTemplateFields().iterator(); it.hasNext();) {
+                                TemplateField tf = it.next();
+                StudyMapValue smv = new StudyMapValue();
+                smv.setTemplateFieldUI(new TemplateFieldUI(tf));
+                if(tf.getStudyField().isDcmField()){
+                    
+                     adHocFields.add(tf);
+                    
+                }
+            }
+            
+        }
+
+
+        
+        /*
         if(!metadataSet){
             metadata.setTemplateFieldValues(new ArrayList());
         }
@@ -353,7 +374,9 @@ public class EditStudyPage extends VDCBaseBean implements java.io.Serializable  
                                              metadata.getTemplateFieldValues().add(nTfv);
                                          }
                                     }
-                             } else {//get 'empty' template fields to show in edit study screen
+                             } else if (!tf.isHidden()  && !tf.isDisabled()){
+                                 //get 'empty' template fields to show in edit study screen
+                                 // unless they are hidden or disabled
                                      TemplateFieldValue nTfv = new TemplateFieldValue();                            
                                      nTfv.setMetadata(metadata);
                                      nTfv.setStrValue("");
@@ -406,7 +429,7 @@ public class EditStudyPage extends VDCBaseBean implements java.io.Serializable  
                               tf.setTemplateFieldControlledVocabulary(tfcvList);
                               tf.setFieldInputLevelString(defaultField.getFieldInputLevelString());
                               tf.setdcmSortOrder(defaultField.getDcmSortOrder()); 
-                              if (tf.getTemplateFieldValues().isEmpty()){
+                              if (tf.getTemplateFieldValues().isEmpty() && !tf.isHidden()  && !tf.isDisabled()){
                                 tf.initValues();
                               }
                         adHocFields.add(tf);
@@ -1251,14 +1274,17 @@ public class EditStudyPage extends VDCBaseBean implements java.io.Serializable  
     
     public String getCustomFieldMethodologyInputLevel(){
         String retString = "optional";
-        for (TemplateField tfv: adHocFields){
-            if (tfv.isRecommended()){
-               return "recommended"; 
-            }
-            if (tfv.isRequired()){
-               return "required"; 
-            }
+        if (adHocFields != null){
+            for (TemplateField tfv: adHocFields){
+                if (tfv.isRecommended()){
+                   return "recommended"; 
+                }
+                if (tfv.isRequired()){
+                   return "required"; 
+                }
+            }            
         }
+
         return retString;
     }
     public boolean isDataCollectionMethodologyEmpty() {
@@ -3106,7 +3132,37 @@ public class EditStudyPage extends VDCBaseBean implements java.io.Serializable  
     public void setFilesDataTable(HtmlDataTable filesDataTable) {
         this.filesDataTable = filesDataTable;
     }
+    public DataModel getCustomFieldsDataModel() {
+        List values = new ArrayList();
+        for (TemplateField tf : adHocFields) {
 
+            Object[] row = new Object[2];
+            row[0] = tf;
+            row[1] = getCustomValuesDataModel(tf);
+            values.add(row);
+        }
+        return new ListDataModel(values);
+
+    }
+
+    private DataModel getCustomValuesDataModel(TemplateField customField) {
+        List values = new ArrayList();
+        
+        for (StudyField studyField : metadata.getStudyFields()) {
+            if (studyField.equals(customField.getStudyField())) {            
+                for (StudyFieldValue sfv : studyField.getStudyFieldValues()) {
+
+                    Object[] row = new Object[2];
+                    row[0] = sfv;
+                    row[1] = studyField.getStudyFieldValues(); // used by the remove method
+                    values.add(row);
+                }
+                
+                break;
+            }
+        }
+        return new ListDataModel(values);
+    }
 
   
 }

@@ -49,10 +49,12 @@ public class Template implements java.io.Serializable {
      */
     public Template() {
         metadata = new Metadata();
+        metadata.setTemplate(this);
     }
 
      public Template(ArrayList templateFields ) {
         metadata = new Metadata();
+        metadata.setTemplate(this);
     } 
     public Collection<TemplateField> getTemplateFields() {
         return templateFields;

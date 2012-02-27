@@ -95,7 +95,16 @@ public class EditTemplateServiceBean implements edu.harvard.iq.dvn.core.study.Ed
             VDC vdc = em.find(VDC.class, vdcId);
             template.setVdc(vdc);
             vdc.getTemplates().add(template);
-            addFields(vdcId);
+            if (studyVersionId == null){
+                addFields(vdcId);
+            } else {
+                Metadata metadata = em.find(StudyVersion.class, studyVersionId).getMetadata();
+                template.setMetadata(new Metadata(metadata));
+                template.getMetadata().setDateOfDeposit("");
+                template.getMetadata().setUNF(null);
+                addStudyFields(studyVersionId, template.getMetadata());
+            }
+
         } else {
             VDCNetwork network = vdcNetworkService.find(new Long(1));
             template.setVdcNetwork(network);
@@ -105,15 +114,39 @@ public class EditTemplateServiceBean implements edu.harvard.iq.dvn.core.study.Ed
 
         // copy metadata if from a study
         if (studyVersionId != null) {
-            Metadata metadata = em.find(StudyVersion.class, studyVersionId).getMetadata();
-            template.setMetadata(new Metadata(metadata));
-            template.getMetadata().setDateOfDeposit("");
-            template.getMetadata().setUNF(null);
+
         }
         
         em.persist(template);
     } 
     
+   private List <StudyFieldValue> copyCustomValues(TemplateField tf, Metadata clonedMetadata ){
+           List <StudyFieldValue> tfvList = new  ArrayList();
+            for (StudyFieldValue tfv : clonedMetadata.getStudyFieldValues()){
+                if(tfv.getStudyField().equals(tf.getStudyField())){
+                    tfvList.add(tfv);
+                }
+            }
+
+            return tfvList;       
+   }
+   
+   private List <TemplateFieldControlledVocabulary> copyControlledVocabulary(TemplateField tf, 
+           TemplateField defaultField, Metadata clonedMetadata, Metadata sourceMetadata){
+            List <TemplateFieldControlledVocabulary> tfcvList = new  ArrayList();
+            for (TemplateFieldControlledVocabulary tfcv: defaultField.getTemplateFieldControlledVocabulary()){
+
+                    TemplateFieldControlledVocabulary tfcvn = new TemplateFieldControlledVocabulary();
+                    tfcvn.setStrValue(tfcv.getStrValue());
+                    tfcvn.setTemplateField(tf);
+
+                    tfcvList.add(tfcvn); 
+
+
+            }
+       
+       return tfcvList;
+   }
 
     public void  newClonedTemplate(Long vdcId, Template cloneSource) {
         newTemplate=true;
@@ -154,10 +187,8 @@ public class EditTemplateServiceBean implements edu.harvard.iq.dvn.core.study.Ed
                 TemplateFieldControlledVocabulary tfcvn = new TemplateFieldControlledVocabulary();
                 tfcvn.setStrValue(tfcv.getStrValue());
                 tfcvn.setTemplateField(tf);
-                tfcvn.setMetadata(clonedMetadata);
                 tfcvList.add(tfcvn);
             }
-            tf.setTemplateFieldControlledVocabulary(tfcvList);
             tf.setTemplate(template);
             tf.setFieldInputLevelString(defaultField.getFieldInputLevelString());
             tf.setdcmSortOrder(defaultField.getDcmSortOrder());
@@ -267,6 +298,31 @@ public class EditTemplateServiceBean implements edu.harvard.iq.dvn.core.study.Ed
             /*tf.setFieldInputLevel(defaultField.getFieldInputLevel());*/
             tf.setFieldInputLevelString(defaultField.getFieldInputLevelString());
             tf.setStudyField(defaultField.getStudyField());
+            tf.setTemplate(template);
+            tf.getStudyField().setDcmField(defaultField.getStudyField().isDcmField());
+            tf.setdcmSortOrder(defaultField.getDcmSortOrder());
+            template.getTemplateFields().add(tf);
+        }
+    }
+    
+    private void addStudyFields(Long studyVersionId, Metadata newMetadata) {
+        
+            
+        Metadata metadata = em.find(StudyVersion.class, studyVersionId).getMetadata();   
+        Study study = em.find(StudyVersion.class, studyVersionId).getStudy();
+        Collection<TemplateField> defaultFields = study.getTemplate().getTemplateFields();
+        template.setTemplateFields(new ArrayList());
+        for( TemplateField defaultField: defaultFields) {
+            TemplateField tf = new TemplateField();
+            tf.setDefaultValue(defaultField.getDefaultValue());
+            tf.setTemplateFieldControlledVocabulary(new ArrayList());
+            /*tf.setFieldInputLevel(defaultField.getFieldInputLevel());*/
+            tf.setFieldInputLevelString(defaultField.getFieldInputLevelString());
+            tf.setStudyField(defaultField.getStudyField());
+            if(tf.getStudyField().isDcmField()){
+                //tf.setStudyFieldValues(copyCustomValues(tf, metadata ) );
+                //tf.setTemplateFieldControlledVocabulary(copyControlledVocabulary(tf, defaultField, newMetadata, metadata ));
+            }
             tf.setTemplate(template);
             tf.getStudyField().setDcmField(defaultField.getStudyField().isDcmField());
             tf.setdcmSortOrder(defaultField.getDcmSortOrder());

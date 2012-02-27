@@ -1460,12 +1460,12 @@
                   <ice:panelSeries value="#{EditStudyPage.adHocFields}" var="customField">
                       <ice:dataTable cellpadding="0" cellspacing="0" width="100%"
                                      columnClasses="vdcEditStudyCol1b, vdcEditStudyCol2, vdcEditStudyCol3"
-                                                                      rendered="#{(!empty customField.templateFieldValues 
+                                            rendered="#{((!empty customField.templateFieldValues 
                                             or customField.recommended 
                                             or customField.required)
                                             or (EditStudyPage.showAll
                                             and !customField.hidden
-                                            and !customField.disabled)}"
+                                            and !customField.disabled)) and empty(customField.templateFieldControlledVocabulary)}"
                                      value="#{customField.templateFieldValues}" var="customValue">
                         <ice:column>
                           <div class="vdcEditStudyField">
@@ -1505,19 +1505,8 @@
                                                    visible="#{empty(customField.templateFieldControlledVocabulary)}">
                               </ice:inputTextarea>
                               <ice:outputText value="#{editstudybundle.dateFormatDescription}" rendered="#{customField.studyField.fieldType == 'date'}"/>
-                          <ice:outputText id="controlledVocabHeader" visible="#{!empty(customField.templateFieldControlledVocabulary)}"
-                                         value="Controlled Vocabulary">
-                          </ice:outputText>
-                            <ice:selectOneMenu immediate="false" value="#{customField.templateFieldValueSingleString}" valueChangeListener="#{EditStudyPage.changeSingleValCV}"
-                                            rendered ="#{!empty(customField.templateFieldControlledVocabulary) and !customField.allowMultiples}">
-                                <f:selectItems value="#{customField.controlledVocabularyStrings}"/>
-                                <f:attribute name="sf_id" value="#{customField.studyField.id}"/>
-                            </ice:selectOneMenu>  
-                            <ice:selectManyListbox immediate="false" value="#{customField.templateFieldValueStrings}" valueChangeListener="#{EditStudyPage.changeMultiValCV}"
-                                            rendered ="#{!empty(customField.templateFieldControlledVocabulary) and customField.allowMultiples}">                            
-                                <f:selectItems value="#{customField.controlledVocabularyStrings}"/>
-                                <f:attribute name="sf_id" value="#{customField.studyField.id}"/>
-                            </ice:selectManyListbox> 
+
+
                             </ice:column>
                           </div>
                         </ice:column>
@@ -1533,6 +1522,26 @@
                             <f:attribute name="dcmSortOrder" value="#{customField.dcmSortOrder}"/>
                         </ice:column>
                       </ice:dataTable>
+                      <ice:panelGrid cellpadding="0" cellspacing="0" columns="4" width="100%"
+                             styleClass="vdcEditStudyTable #{customField.fieldInputLevelString}"
+                             rendered ="#{!empty(customField.templateFieldControlledVocabulary)}"
+                             
+                             columnClasses="vdcEditStudyCol1, vdcEditStudyCol2">
+                         <ice:outputText id="controlledVocabHeader" visible="#{!empty(customField.templateFieldControlledVocabulary)}"
+                                         value="Controlled Vocabulary">
+                          </ice:outputText>
+                            <ice:selectOneMenu immediate="false" value="#{customField.templateFieldValueSingleString}" valueChangeListener="#{EditStudyPage.changeSingleValCV}"
+                                            rendered ="#{!empty(customField.templateFieldControlledVocabulary) and !customField.allowMultiples}">
+                                <f:selectItems value="#{customField.controlledVocabularyStrings}"/>
+                                <f:attribute name="sf_id" value="#{customField.studyField.id}"/>
+                            </ice:selectOneMenu>  
+                            <ice:selectManyListbox immediate="false" value="#{customField.templateFieldValueStrings}" valueChangeListener="#{EditStudyPage.changeMultiValCV}"
+                                            rendered ="#{!empty(customField.templateFieldControlledVocabulary) and customField.allowMultiples}">                            
+                                <f:selectItems value="#{customField.controlledVocabularyStrings}"/>
+                                <f:attribute name="sf_id" value="#{customField.studyField.id}"/>
+                            </ice:selectManyListbox> 
+                          
+                          </ice:panelGrid>
                   </ice:panelSeries>
                   
                   <!-- End Revised generic control-->

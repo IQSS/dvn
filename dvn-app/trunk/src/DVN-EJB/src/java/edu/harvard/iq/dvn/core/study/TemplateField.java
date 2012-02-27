@@ -32,6 +32,7 @@ package edu.harvard.iq.dvn.core.study;
 import edu.harvard.iq.dvn.core.web.study.TemplateFieldControlledVocabulary;
 import java.util.ArrayList;
 import java.util.List;
+import javax.faces.model.SelectItem;
 import javax.persistence.*;
 
 /**
@@ -224,7 +225,6 @@ public class TemplateField implements java.io.Serializable {
         if (this.getTemplateFieldControlledVocabulary() == null || this.getTemplateFieldControlledVocabulary().isEmpty()){
             TemplateFieldControlledVocabulary elem = new TemplateFieldControlledVocabulary();
             elem.setTemplateField(this);
-            elem.setMetadata(this.getTemplate().getMetadata());
             List vocab = new ArrayList();
             vocab.add(elem);
             this.setTemplateFieldControlledVocabulary(vocab);
@@ -239,6 +239,24 @@ public class TemplateField implements java.io.Serializable {
 
         for (TemplateFieldControlledVocabulary tfcv: this.templateFieldControlledVocabulary){
             retList.add(tfcv.getStrValue());
+        }
+        return retList;
+    }
+    
+    public List <SelectItem> getControlledVocabularySelectItems(){
+        List <SelectItem> retList = new ArrayList();
+        if(!this.isAllowMultiples()){
+             SelectItem toAdd = new SelectItem();
+             toAdd.setValue("");
+             toAdd.setDescription("--No Value--");
+             retList.add(toAdd);
+        }
+
+        for (TemplateFieldControlledVocabulary tfcv: this.templateFieldControlledVocabulary){
+             SelectItem toAdd = new SelectItem();
+             toAdd.setValue(tfcv.getStrValue());
+             toAdd.setDescription(tfcv.getStrValue());
+             retList.add(toAdd);
         }
         return retList;
     }

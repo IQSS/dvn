@@ -2750,7 +2750,7 @@ public class Metadata implements java.io.Serializable {
      *  It's necessary to do this before displaying the metadata in a form, because
      *  we need empty elements for the users to enter data into.
      */
-    public void initCollections() {
+    public void initCollections() {        
         if ( this.getStudyOtherIds()==null || this.getStudyOtherIds().size()==0) {
             StudyOtherId elem = new StudyOtherId();
             elem.setMetadata(this);
@@ -2885,17 +2885,20 @@ public class Metadata implements java.io.Serializable {
     public List<StudyField> getStudyFields() {
         if (studyFields == null) {
             studyFields = new ArrayList();
-            Template template = this.getTemplate() != null ? this.getTemplate() : this.getStudyVersion().getStudy().getTemplate();
-            for (TemplateField tf : template.getTemplateFields()) {
+            Template templateIn = this.getTemplate() != null ? this.getTemplate() : this.getStudyVersion().getStudy().getTemplate();
+            for (TemplateField tf : templateIn.getTemplateFields()) {
                 StudyField sf = tf.getStudyField();
                 if (sf.isDcmField()) {
                     List sfvList = new ArrayList();
                     // now iterate through values and map accordingly
-                    for (StudyFieldValue sfv : studyFieldValues) {
-                        if (sf.equals(sfv.getStudyField())) {
-                            sfvList.add(sfv);
+                    if (studyFieldValues != null){
+                        for (StudyFieldValue sfv : studyFieldValues) {
+                            if (sf.equals(sfv.getStudyField())) {
+                                sfvList.add(sfv);
+                            }
                         }
                     }
+
                     sf.setStudyFieldValues(sfvList);
                     studyFields.add(sf);
                 }

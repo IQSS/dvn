@@ -1547,14 +1547,15 @@
                         <ice:graphicImage value="/resources/images/icon_recommended.gif" rendered="#{customFieldsDataModel[0].recommended}"/>
                     </ice:column>
                     <ice:column>
-                        <ice:selectOneMenu immediate="false" value="#{customFieldsDataModel[0].templateFieldValueSingleString}" valueChangeListener="#{TemplateFormPage.changeSingleValCV}"                                          
+                        <ice:selectOneMenu immediate="false" value="#{customFieldsDataModel[0].studyField.studyFieldValues}" 
+                                           valueChangeListener="#{TemplateFormPage.changeSingleValCV}"                                          
                                         rendered ="#{!customFieldsDataModel[0].allowMultiples}">
-                            <f:selectItems value="#{customFieldsDataModel[0].controlledVocabularyStrings}"/>
+                            <f:selectItems value="#{customFieldsDataModel[0].controlledVocabularySelectItems}"/>
                             <f:attribute name="sf_id" value="#{customFieldsDataModel[0].studyField.id}"/>
                         </ice:selectOneMenu>  
-                        <ice:selectManyListbox immediate="false" value="#{customFieldsDataModel[0].templateFieldValueStrings}" valueChangeListener="#{TemplateFormPage.changeMultiValCV}"                                             
+                        <ice:selectManyListbox immediate="false" value="#{customFieldsDataModel[0].studyField.studyFieldValues}" valueChangeListener="#{TemplateFormPage.changeMultiValCV}"                                             
                                         rendered ="#{customFieldsDataModel[0].allowMultiples }">
-                            <f:selectItems value="#{customFieldsDataModel[0].controlledVocabularyStrings}"/>
+                            <f:selectItems value="#{customFieldsDataModel[0].controlledVocabularySelectItems}"/>
                             <f:attribute name="sf_id" value="#{customFieldsDataModel[0].studyField.id}"/>
                         </ice:selectManyListbox>
                     </ice:column>

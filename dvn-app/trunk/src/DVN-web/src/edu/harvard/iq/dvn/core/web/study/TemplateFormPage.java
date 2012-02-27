@@ -117,7 +117,7 @@ public class TemplateFormPage extends VDCBaseBean implements java.io.Serializabl
    }     
     
    public void init() {
-              
+       System.out.println("Start of init.....");       
        super.init();
        Long vdcId = new Long(0);
        try {
@@ -163,6 +163,10 @@ public class TemplateFormPage extends VDCBaseBean implements java.io.Serializabl
        initAdHocFieldMap();
 
        fieldTypeSelectItems = loadFieldTypeSelectItems();
+
+       //sek - needed to set template to get the init to work....
+       // - moved to Template contructor
+       //template.getMetadata().setTemplate(template);
        template.getMetadata().initCollections(); 
        
        if (vdcId > 0){
@@ -290,9 +294,9 @@ public class TemplateFormPage extends VDCBaseBean implements java.io.Serializabl
                     }*/
                         ArrayList <TemplateFieldControlledVocabulary> matchingControlledVocab = new ArrayList<TemplateFieldControlledVocabulary>();
                         for (TemplateFieldControlledVocabulary tfv: tf.getTemplateFieldControlledVocabulary()){
-                            if (tfv.getMetadata().equals(template.getMetadata())){
+
                                    matchingControlledVocab.add(tfv);
-                            }
+                       
 
                         }                        
                         tf.setTemplateFieldControlledVocabulary(matchingControlledVocab);
@@ -2824,7 +2828,6 @@ public class TemplateFormPage extends VDCBaseBean implements java.io.Serializabl
         TemplateFieldControlledVocabulary tfCV = new TemplateFieldControlledVocabulary();
         tfCV.setTemplateField(templateCVField);
         tfCV.setStrValue(newControlledVocab);
-        tfCV.setMetadata(template.getMetadata());
 
         templateCVField.getTemplateFieldControlledVocabulary().add(tfCV);
         return;
@@ -2913,11 +2916,8 @@ public class TemplateFormPage extends VDCBaseBean implements java.io.Serializabl
         
         if (templateCVField != null  && templateCVField.getTemplateFieldControlledVocabulary() !=null ){
             for(TemplateFieldControlledVocabulary tfCV: templateCVField.getTemplateFieldControlledVocabulary()) {
-                if (tfCV.getMetadata().equals(template.getMetadata())){
                      stringList.add(tfCV.getStrValue());
-                }
-                
-            }              
+                }             
         }
 
         return stringList;

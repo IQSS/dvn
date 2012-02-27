@@ -58,28 +58,7 @@ public class TemplateFieldControlledVocabulary implements Serializable{
     }
 
     
-    /**
-     * Holds value of property Metadata.
-     */
-    @ManyToOne
-    @JoinColumn(nullable=false)
-    private Metadata metadata;
 
-    /**
-     * Getter for property template.
-     * @return Value of property template.
-     */
-    public Metadata getMetadata() {
-        return metadata;
-    }
-
-    /**
-     * Setter for property template.
-     * @param template New value of property template.
-     */
-    public void setMetadata(Metadata metadata) {
-        this.metadata=metadata;
-    }
     
     
     @Column(columnDefinition="TEXT") 

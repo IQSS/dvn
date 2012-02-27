@@ -567,10 +567,11 @@
                                 <ice:commandButton id="commandButtondataCollectionExpand" image="/resources/images/icon_contract.gif" title="Show fields in this section" rendered="#{!studyPage.studyUI.dataCollectionPanelIsRendered}" actionListener="#{studyPage.updateDataCollectionDisplay}"/>
                             </div>
                             <ice:panelGroup rendered="#{studyPage.studyUI.dataCollectionPanelIsRendered}">
-                                    <ui:repeat value="#{studyPage.studyUI.customFields}"  var ="customField" >
-                                        <ice:panelGrid cellpadding="0" cellspacing="0" columnClasses="vdcStudyInfoCol1, vdcStudyInfoCol2" columns="2" width="100%">  
-                                            <ice:outputText styleClass="dvnInlineHelpLabel dvnInlineHelpTip" value="#{customField.templateField.studyField.name}" title="#{customField.templateField.studyField.name} - #{customField.templateField.studyField.description}"/>
-                                            <ice:outputText value="#{customField.strValue}" escape="false"/>
+                                    <ui:repeat value="#{studyPage.studyUI.metadata.studyFields}"  var ="studyField" >
+                                        <ice:panelGrid cellpadding="0" cellspacing="0" columnClasses="vdcStudyInfoCol1, vdcStudyInfoCol2" columns="2" width="100%"
+                                                       rendered="#{!empty studyUI.getStudyFieldValue(studyField)}">  
+                                            <ice:outputText styleClass="dvnInlineHelpLabel dvnInlineHelpTip" value="#{studyField.name}" title="#{studyField.name} - #{studyField.description}"/>
+                                            <ice:outputText value="#{studyUI.getStudyFieldValue(studyField)}" escape="false"/>
                                         </ice:panelGrid>
                                     </ui:repeat>
                             </ice:panelGroup>

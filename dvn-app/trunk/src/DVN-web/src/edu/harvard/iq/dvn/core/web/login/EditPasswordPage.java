@@ -114,20 +114,26 @@ public class EditPasswordPage extends VDCBaseBean implements java.io.Serializabl
      */
     public void init() {
         super.init();
+        
+        if ("viewAccount".equals(returnPage)) {
+            returnPage = "/login/AccountPage.xhtml?faces-redirect=true&userId="+userId;
+        } else {
+            returnPage = "/login/AccountOptionsPage?faces-redirect=true&userId="+userId;
+        }        
        
                   // we need to create the editStudyService bean
-            try {
-                Context ctx = new InitialContext();
-                editUserService = (EditUserService) ctx.lookup("java:comp/env/editUser");
-            } catch(NamingException e) {
-                e.printStackTrace();
-                FacesContext context = FacesContext.getCurrentInstance();
-                FacesMessage errMessage = new FacesMessage(FacesMessage.SEVERITY_ERROR, e.getMessage(),null);
-                context.addMessage(null,errMessage);
-                
-            }        
-            editUserService.setUser(userId); 
-            user = editUserService.getUser();
+        try {
+            Context ctx = new InitialContext();
+            editUserService = (EditUserService) ctx.lookup("java:comp/env/editUser");
+        } catch(NamingException e) {
+            e.printStackTrace();
+            FacesContext context = FacesContext.getCurrentInstance();
+            FacesMessage errMessage = new FacesMessage(FacesMessage.SEVERITY_ERROR, e.getMessage(),null);
+            context.addMessage(null,errMessage);
+
+        }        
+        editUserService.setUser(userId); 
+        user = editUserService.getUser();
          
       
         
@@ -201,17 +207,9 @@ public class EditPasswordPage extends VDCBaseBean implements java.io.Serializabl
         if (getVDCSessionBean().getLoginBean().getUser().getId().equals(user.getId())) {
             this.getVDCSessionBean().getLoginBean().setUser(user);
         }
-        // Save userId as requestAttribute so it can be used by AccountPage
-        /*
-        this.getRequestMap().put("userId",user.getId());
-        StatusMessage msg = new StatusMessage();
-        msg.setMessageText("Password updated successfully.");
-        msg.setStyleClass("successMessage");
-        getRequestMap().put("statusMessage",msg);
-        */
-        
-        //return "success";
-        return "/login/PasswordSuccessPage?faces-redirect=true";
+
+        getVDCRenderBean().getFlash().put("successMessage", "Password updated successfully.");
+        return returnPage;
     }
     
     public String cancel() {

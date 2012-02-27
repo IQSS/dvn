@@ -98,6 +98,15 @@ public class DeleteDataversePage extends VDCBaseBean implements java.io.Serializ
     
     public void init() {
         super.init();
+
+        if ("manageDataverses".equals(from)) {
+            from = "/networkAdmin/ManageDataversesPage.xhtml?faces-redirect=true";
+        } else if ("manageHarvesting".equals(from)){
+            from = "/site/HarvestSitesPage?faces-redirect=true";
+        } else {
+            from = "/HomePage?faces-redirect=true";
+        }      
+        
         if (deleteId != null) {
             VDC vdc = vdcService.find(deleteId);
             vdcName = vdc.getName();
@@ -114,9 +123,8 @@ public class DeleteDataversePage extends VDCBaseBean implements java.io.Serializ
         }
         vdcService.delete(deleteId);
 
-        getVDCRenderBean().getFlash().put("result", getFriendlyLinkName( from ) );
-        getVDCRenderBean().getFlash().put("resultLink", from);
-        return "/site/DeleteDataverseSuccessPage?faces-redirect=true";
+        getVDCRenderBean().getFlash().put("successMessage", "Successfully deleted dataverse.");
+        return from;
     }
     
     public String cancel() {

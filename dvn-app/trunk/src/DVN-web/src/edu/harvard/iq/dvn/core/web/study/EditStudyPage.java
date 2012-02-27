@@ -315,6 +315,7 @@ public class EditStudyPage extends VDCBaseBean implements java.io.Serializable  
     }
     
     public void initStudyMap() {
+            System.out.println("in init study map  ");    
         studyMap = new HashMap();
         for (Iterator<TemplateField> it =study.getTemplate().getTemplateFields().iterator(); it.hasNext();) {
             TemplateField tf = it.next();
@@ -331,15 +332,17 @@ public class EditStudyPage extends VDCBaseBean implements java.io.Serializable  
     private List<TemplateField> adHocFields;
     
     public void initAdHocFieldMap(boolean metadataSet){
-        
+
         if (adHocFields == null) {
             adHocFields = new ArrayList();
-            for (Iterator<TemplateField> it = metadata.getTemplate().getTemplateFields().iterator(); it.hasNext();) {
-                                TemplateField tf = it.next();
+            for (Iterator<TemplateField> it = study.getTemplate().getTemplateFields().iterator(); it.hasNext();) {
+
+                TemplateField tf = it.next();
                 StudyMapValue smv = new StudyMapValue();
+
                 smv.setTemplateFieldUI(new TemplateFieldUI(tf));
                 if(tf.getStudyField().isDcmField()){
-                    
+                     System.out.println("tf is  " + tf.getStudyField().getName());
                      adHocFields.add(tf);
                     
                 }
@@ -347,7 +350,7 @@ public class EditStudyPage extends VDCBaseBean implements java.io.Serializable  
             
         }
 
-
+        System.out.println("after ad hoc field map  ");  
         
         /*
         if(!metadataSet){
@@ -3134,13 +3137,16 @@ public class EditStudyPage extends VDCBaseBean implements java.io.Serializable  
     }
     public DataModel getCustomFieldsDataModel() {
         List values = new ArrayList();
-        for (TemplateField tf : adHocFields) {
+        if (adHocFields != null){
+            for (TemplateField tf : adHocFields) {
 
-            Object[] row = new Object[2];
-            row[0] = tf;
-            row[1] = getCustomValuesDataModel(tf);
-            values.add(row);
+                Object[] row = new Object[2];
+                row[0] = tf;
+                row[1] = getCustomValuesDataModel(tf);
+                values.add(row);
+            }            
         }
+
         return new ListDataModel(values);
 
     }

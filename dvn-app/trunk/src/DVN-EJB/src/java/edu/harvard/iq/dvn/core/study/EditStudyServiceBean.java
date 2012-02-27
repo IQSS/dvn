@@ -179,11 +179,14 @@ public class EditStudyServiceBean implements edu.harvard.iq.dvn.core.study.EditS
         VDCUser user = em.find(VDCUser.class,userId);
         try {
             Metadata m = studyVersion.getMetadata();
-            for (StudyFieldValue sfv : m.getStudyFieldValues()){
-                    if (sfv.getId() == null){                                   
-                            em.persist(sfv);
-                    }
+            if (m.getStudyFieldValues()!=null){
+                for (StudyFieldValue sfv : m.getStudyFieldValues()){
+                        if (sfv.getId() == null){                                   
+                                em.persist(sfv);
+                        }
+                }                
             }
+
            
             editFiles();
    

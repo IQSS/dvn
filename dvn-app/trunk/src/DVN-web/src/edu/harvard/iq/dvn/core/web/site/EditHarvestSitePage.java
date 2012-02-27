@@ -265,6 +265,7 @@ public class EditHarvestSitePage extends VDCBaseBean implements java.io.Serializ
         remoteTimerService.updateHarvestTimer(harvestingDataverse);
         
         if (isCreateMode()) {
+            getVDCRenderBean().getFlash().put("successMessage","Your new dataverse has been created!");
             return "/site/AddSiteSuccessPage?faces-redirect=true&vdcId=" + editHarvestSiteService.getHarvestingDataverse().getVdc().getId();
             
         } else {

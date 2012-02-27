@@ -85,14 +85,6 @@
 
             <ice:form id="studyForm">
                 <ice:inputHidden id="vdcId" value="#{VDCRequest.currentVDCId}"/>
-                <script type="text/javascript">
-                  // <![CDATA[
-                      jQuery(document).ready(function(){
-                        jQuery(".dvnstudystatusversionnote").truncate({max_length: 250});
-                      });
-                  // ]]>
-                </script>
-
                 <div class="dvn_section">
                     <div class="dvnstudytitleblock dvn_padBot">
                         <div class="dvnstudyadminboxfloat">
@@ -145,7 +137,7 @@
                                         <ice:column>
                                             <ice:dataTable cellpadding="0" cellspacing="0" width="100%"
                                                            styleClass="vdcEditStudyInnerTable" headerClasses="vdcEditFilesHeader"
-                                                           columnClasses="vdcEditFilesColA, vdcEditFilesColA, vdcEditFilesColB, vdcEditFilesColC" rowClasses="list-row-even,list-row-odd"
+                                                           columnClasses="vdcEditFilesColA, vdcEditFilesColB, vdcEditFilesColC, vdcEditFilesColD" rowClasses="list-row-even,list-row-odd"
                                                            id="fileDataTable" binding="#{EditStudyFilesPage.filesDataTable}" value="#{EditStudyFilesPage.files}" var="file">
                                                 <ice:column id="column9">
                                                     <div jsfc="ice:panelGroup">
@@ -165,7 +157,7 @@
                                                 </ice:column>
                                                 <ice:column id="column10">
                                                     <ice:inputText id="input_fileName" size="30" value="#{file.fileMetadata.label}" required="true" requiredMessage="This field is required."  validator="#{EditStudyFilesPage.validateFileName}" />
-                                                    <ice:message styleClass="errorMessage" for="input_fileName"/><br/>
+                                                    <ice:message styleClass="errorMessage" for="input_fileName"/>
                                                     <ice:graphicImage rendered="#{file.studyFile.subsettable}" id="imagefs" styleClass="vdcNoBorders" value="/resources/images/icon_subsettable.gif"/>
                                                     <ice:outputText id="outputText17" value="#{file.userFriendlyFileType}"/>
                                                     <f:facet name="header">

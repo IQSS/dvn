@@ -28,13 +28,6 @@
         <!-- add hidden vars so that they passes through partial submits for the the Filters-->
         <input type="hidden" name="studyId" value="${param.studyId}"/>
         <input type="hidden" name="versionNumberList" value="${param.versionNumberList}"/>
-        <script type="text/javascript">
-          // <![CDATA[
-          jQuery(document).ready(function(){
-              jQuery(".dvnstudystatusversionnote").truncate({max_length: 250});
-          });
-          // ]]>
-        </script>
         <div jsfc="ice:panelGroup" styleClass="dvn_section">
             <div class="dvnstudytitleblock dvn_padBot">
                 <div class="dvnstudyadminboxfloat">

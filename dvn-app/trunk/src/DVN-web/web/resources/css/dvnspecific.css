@@ -68,14 +68,17 @@ span.vdcEditStudyFormatExample{color:#666666;}
 .vdcEditStudyInnerTable div{white-space:nowrap}
 .vdcEditStudyInnerTable input, .vdcEditStudyInnerTable textarea {display:block;}
 .vdcEditStudyInnerTable textarea{width:auto}
-.vdcEditStudyInnerTable td.vdcEditFilesColA img.iceGphImg{display:inline;vertical-align:middle}
-.vdcEditStudyInnerTable td.vdcEditFilesColA span.iceOutTxt{margin-left:.5em;display:inline}
+.vdcEditStudyInnerTable td.vdcEditFilesColB img.iceGphImg{display:inline;vertical-align:middle}
+.vdcEditStudyInnerTable td.vdcEditFilesColB span.iceOutTxt{margin-left:.5em;display:inline}
 td.vdcEditFilesColA{width:26%;padding:1em .25em;vertical-align:top}
-td.vdcEditFilesColB{width:41%;padding:1em .25em;vertical-align:top}
-td.vdcEditFilesColC{width:7%;padding:1em .25em;text-align:center}
+td.vdcEditFilesColB{width:26%;padding:1em .25em;vertical-align:top}
+td.vdcEditFilesColC{width:41%;padding:1em .25em;vertical-align:top}
+td.vdcEditFilesColD{width:7%;padding:1em .25em;text-align:center}
 .vdcEditFilesHeader{font-weight:bold;text-align:left;border-right:0}
 .vdcEditFilesHeader:first-child{border-left:0}
 .vdcEditFilesHeader div.icePnlGrp span.iceOutTxt,.vdcEditFilesHeader div.icePnlGrp select.iceSelOneMnu{display:inline}
+td.vdcEditFilesColA input{display:inline;}
+td.vdcEditFilesColB .errorMessage{display:block;}
 .vdcEditStudyCol1{font-weight:400;padding:4px 0;text-align:left;vertical-align:top;width:220px;border-bottom:1px solid #dadee0}
 .vdcEditStudyCol1b{font-weight:400;padding:4px 0;text-align:left;vertical-align:top;width:220px;border-bottom:1px solid #dadee0}
 .vdcEditStudyCol2{font-weight:400;padding:4px 0;text-align:left;vertical-align:middle;white-space:normal;border-bottom:1px solid #dadee0}

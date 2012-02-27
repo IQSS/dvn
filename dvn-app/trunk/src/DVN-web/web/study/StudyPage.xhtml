@@ -191,14 +191,6 @@
                     // ]]>
                 </script>
       <f:loadBundle basename="StudyBundle" var="studybundle"/>
-
-<script type="text/javascript">
-  // <![CDATA[
-  jQuery(document).ready(function(){
-      jQuery(".dvnstudystatusversionnote").truncate({max_length: 250});
-  });
-  // ]]>
-</script>
       <ice:form id="studyForm" rendered="#{!studyPage.deaccessionedView}">
           <ice:inputHidden id="vdcId" value="#{VDCRequest.currentVDCId}"/>
           <input type="hidden" value="StudyPage" name="pageName"/>

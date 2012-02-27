@@ -127,6 +127,10 @@ update templatefield set version = 1 where version is null;
 
 alter table templateField ADD dcmSortOrder  int;
 
+ALTER TABLE templatefield ADD COLUMN controlledvocabulary_id bigint;
+ALTER TABLE templatefield ALTER COLUMN controlledvocabulary_id SET STORAGE PLAIN;
+
+
 alter table template ADD COLUMN enabled boolean;
 update template set enabled=true;
 

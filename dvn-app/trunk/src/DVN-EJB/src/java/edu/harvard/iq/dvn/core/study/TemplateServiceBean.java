@@ -203,8 +203,21 @@ public class TemplateServiceBean implements edu.harvard.iq.dvn.core.study.Templa
     }
 
     public List<ControlledVocabulary> getNetworkControlledVocabulary() {
-        String query = "select object(o) FROM ControlledVocabulary as o";
+        String query = "select object(o) FROM ControlledVocabulary as o ORDER BY o.name";
         return (List) em.createQuery(query).getResultList();
+    }
+    
+    public ControlledVocabulary getControlledVocabulary(Long cvId) {
+        return em.find(ControlledVocabulary.class, cvId);
+    }
+    
+    
+    public void saveControlledVocabulary(ControlledVocabulary controlledVocabulary) {
+        if (controlledVocabulary.getId() == null) {
+            em.persist(controlledVocabulary);
+        } else {
+            em.merge(controlledVocabulary);
+        }
     }
      
 }

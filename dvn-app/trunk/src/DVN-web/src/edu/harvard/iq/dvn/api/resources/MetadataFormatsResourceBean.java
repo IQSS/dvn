@@ -3,6 +3,7 @@ package edu.harvard.iq.dvn.api.resources;
 
 import edu.harvard.iq.dvn.api.entities.MetadataFormats;
 import edu.harvard.iq.dvn.api.exceptions.NotFoundException;
+import edu.harvard.iq.dvn.api.exceptions.AuthorizationRequiredException;
 
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
@@ -37,9 +38,22 @@ public class MetadataFormatsResourceBean {
     @GET
     @Produces({ "application/xml" })
 
-    public MetadataFormats getMetadataFormats(@PathParam("stdyId") Long studyId) throws NotFoundException {
+    public MetadataFormats getMetadataFormats(@PathParam("stdyId") Long studyId) throws NotFoundException, AuthorizationRequiredException {
         String authCredentials = getAuthCredentials();
 
+        // This is a special hack for testing Basic auth through a browser: 
+        // if 0 is supplied as a file id, the resource will throw a 401,
+        // prompting the browser to show a login prompt:
+        if (studyId.equals(new Long(0))) {
+            
+            if (authCredentials == null) {
+                throw new AuthorizationRequiredException(); 
+            } else {
+                if (singleton.authenticateAccess(authCredentials) == null) {
+                    throw new AuthorizationRequiredException();
+                }
+            }
+        }     
          
         MetadataFormats mf = singleton.getMetadataFormatsAvailable(studyId, authCredentials);
 

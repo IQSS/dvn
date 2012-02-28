@@ -57,7 +57,7 @@
                     <div jsfc="ice:panelGroup"  styleClass="vdcFieldTitle" rendered="#{!empty editControlledVocabularyPage.controlledVocabulary.controlledVocabularyValues}">
                   </div>  
                   <div jsfc="ice:panelGroup" rendered="#{!empty editControlledVocabularyPage.controlledVocabulary.controlledVocabularyValues}">
-                    <ice:selectManyListbox value="#{editControlledVocabularyPage.selectedControlledVocabularyValues}" size="5" style="width : 200px;" >                                                                    
+                    <ice:selectManyListbox value="#{editControlledVocabularyPage.selectedControlledVocabularyValues}" style="width : 200px;" >                                                                    
                         <f:selectItems value="#{editControlledVocabularyPage.controlledVocabularySelectItems}"/>
                     </ice:selectManyListbox>
                     <ice:commandButton  action="#{editControlledVocabularyPage.removeControlledVocabularyValues}" alt="Remove Row" title="Remove Row" image="/resources/images/icon_remove.gif"/>

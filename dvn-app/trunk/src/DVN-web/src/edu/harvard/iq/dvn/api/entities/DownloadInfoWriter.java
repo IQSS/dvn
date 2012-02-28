@@ -84,7 +84,7 @@ public class DownloadInfoWriter implements MessageBodyWriter<DownloadInfo> {
         // Access Restrictions (Terms of Use)
         
         if (di.isAccessRestrictionsApply()) {
-            accessGranted = di.isPassAccessPermissions() ? "true" : "false";
+            accessGranted = di.isPassAccessRestrictions() ? "true" : "false";
             open = "  <accessRestrictions granted=\"" + accessGranted + "\">\n";
             // TODO(?): We may want to be more specific here; for example,
             // specify all the types of Terms of Use that apply, Network-level

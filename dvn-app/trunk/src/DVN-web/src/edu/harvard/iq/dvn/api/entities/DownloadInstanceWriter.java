@@ -49,6 +49,12 @@ public class DownloadInstanceWriter implements MessageBodyWriter<DownloadInstanc
                     
                     if (di.getConversionParam().equals("imageThumb")) {
                         accessObject = ImageThumbConverter.getImageThumb(sf, (FileAccessObject)accessObject); 
+                    } else if (di.getConversionParam().equals("TermsOfUse")) {
+                        accessObject = ExportTermsOfUse.export(sf.getStudy());
+                    } else if (di.getConversionParam().equals("package")) {
+                        if ("WithTermsOfUse".equals(di.getConversionParamValue())) {
+                            accessObject = PackageWithTermsOfUse.repackage(sf, (FileAccessObject)accessObject);
+                        }
                     }
                     // Subsettable: 
                     

@@ -28,7 +28,7 @@ public class FileAccessObject extends DataAccessObject {
 
         super(file, req);
 
-        if (file.isRemote()) {
+        if (file != null && file.isRemote()) {
             //return null; 
             throw new IOException ("not a local file.");
         }

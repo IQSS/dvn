@@ -177,7 +177,14 @@ public class FileAccessSingletonBean {
                             formatDescription));
                     }
                 }
-            }  
+            } 
+            
+            // Finally, Terms of Use (experimental)
+            
+            if (di.isAccessRestrictionsApply()) {
+                di.addServiceAvailable(new OptionalAccessService("termsofuse", "text/plain", "TermsOfUse=true", "Terms of Use/Access Restrictions associated with the data file"));
+                di.addServiceAvailable(new OptionalAccessService("bundleTOU", "application/zip", "package=WithTermsOfUse", "Data File and the Terms of Use in a Zip archive"));
+            }
         } 
         
         return di; 

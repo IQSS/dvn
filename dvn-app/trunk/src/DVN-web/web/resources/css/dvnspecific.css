@@ -44,7 +44,7 @@ div.dvnOptionsTableLicense{padding-top:.5em}
 .dvnStudyTemplateTitleBlock{margin-top:1.5em; padding:4px 0; border-bottom:1px solid #DADEE0}
 .dvnStudyTemplateTitleBlock .dvnstudyadminboxfloat{text-align:right}
 .dvnStudyTemplateDCMBlock{border-bottom:1px solid #DADEE0; padding-bottom:1em;}
-.dvnStudyTemplateDCMBlock table.icePnlGrd{padding:4px;background:#EEF3FB;}
+.dvnStudyTemplateDCMBlock table.icePnlGrd{padding:4px;background:#FAF4E0;}
 .vdcEditStudyTable{border:0;margin:0}
 .vdcEditStudyTable tr{border-width:0 0 1px 0;padding:0}
 .vdcEditStudyTable td{border-bottom:1px solid #dadee0;border-width:0 0 1px 0;padding:4px 0}
@@ -84,18 +84,14 @@ td.vdcEditFilesColB .errorMessage{display:block;}
 .vdcEditStudyCol1b{font-weight:400;padding:4px 0;text-align:left;vertical-align:top;width:220px;border-bottom:1px solid #dadee0}
 .vdcEditStudyCol2{font-weight:400;padding:4px 0;text-align:left;vertical-align:middle;white-space:normal;border-bottom:1px solid #dadee0}
 .vdcEditStudyCol3{font-weight:400;padding:4px 0;text-align:right;width:50px;vertical-align:top;border-bottom:1px solid #dadee0}
-
-/* WORK */
 .vdcStudyTemplateFormTable .vdcEditStudyCol3{width:auto;}
 .vdcStudyTemplateFormTable .vdcEditStudyCol3 input[type=image]{display:inline;margin-right:1em;}
 .vdcStudyTemplateFormTable .vdcEditStudyCol3 select.iceSelOneMnu{display:inline;}
-
 .vdcStudyTemplateFormTable .icePnlSrs .vdcEditStudyCol3{width:auto;}
 .vdcStudyTemplateFormTable .icePnlSrs .vdcEditStudyCol3 input[type=image]{display:inline;margin-right:1em;}
 .vdcStudyTemplateFormTable .icePnlSrs .vdcEditStudyCol3 a.iceCmdLnk{display:inline;margin-right:1em;}
 .vdcStudyTemplateFormTable .icePnlSrs .vdcEditStudyCol3 a.iceCmdLnk:last-child{margin-right:0;}
 .vdcStudyTemplateFormTable .icePnlSrs .vdcEditStudyCol3 select.iceSelOneMnu{display:inline;margin-right:1em;}
-
 .vdcEditStudyField{padding-top:6px;padding-bottom:6px}
 .vdcEditStudyGroupField{white-space:nowrap}
 .vdcEditStudyIconLegend{float:left;margin-left:2em}

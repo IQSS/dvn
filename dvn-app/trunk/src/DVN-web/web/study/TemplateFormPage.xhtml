@@ -163,8 +163,8 @@
                       </div>
                     </ice:column>
                     <ice:column id="groupPanel61">
-                      <ice:commandButton partialSubmit="true" image="/resources/images/icon_add.gif" actionListener="#{TemplateFormPage.addRow}"/>
-                      <ice:commandButton partialSubmit="True" rendered="#{TemplateFormPage.dataTableOtherIds.rowCount gt 1}" image="/resources/images/icon_remove.gif" actionListener="#{TemplateFormPage.removeRow}"/>
+                      <ice:commandButton partialSubmit="true" alt="Add Row" title="Add Row" image="/resources/images/icon_add.gif" actionListener="#{TemplateFormPage.addRow}"/>
+                      <ice:commandButton partialSubmit="True" rendered="#{TemplateFormPage.dataTableOtherIds.rowCount gt 1}" alt="Remove Row" title="Remove Row" image="/resources/images/icon_remove.gif" actionListener="#{TemplateFormPage.removeRow}"/>
                       <ice:selectOneMenu immediate="false" partialSubmit="true" 
                                             value="#{TemplateFormPage.studyMap[sfc.otherId].templateField.fieldInputLevelString}"
                                             valueChangeListener="#{TemplateFormPage.changeFieldInputValue}"
@@ -221,8 +221,8 @@
                       </div>
                     </ice:column>
                     <ice:column>
-                      <ice:commandButton partialSubmit="true" image="/resources/images/icon_add.gif" actionListener="#{TemplateFormPage.addRow}"/>
-                      <ice:commandButton partialSubmit="true" rendered="#{TemplateFormPage.dataTableAuthors.rowCount gt 1}" image="/resources/images/icon_remove.gif" actionListener="#{TemplateFormPage.removeRow}"/>
+                      <ice:commandButton partialSubmit="true" alt="Add Row" title="Add Row" image="/resources/images/icon_add.gif" actionListener="#{TemplateFormPage.addRow}"/>
+                      <ice:commandButton partialSubmit="true" rendered="#{TemplateFormPage.dataTableAuthors.rowCount gt 1}" alt="Remove Row" title="Remove Row" image="/resources/images/icon_remove.gif" actionListener="#{TemplateFormPage.removeRow}"/>
                       <ice:selectOneMenu immediate="false"  partialSubmit="true" 
                                         value="#{TemplateFormPage.studyMap[sfc.authorName].templateField.fieldInputLevelString}"
                                         valueChangeListener="#{TemplateFormPage.changeFieldInputValue}"
@@ -304,8 +304,8 @@
                       </div>
                     </ice:column>
                     <ice:column>
-                      <ice:commandButton partialSubmit="true" image="/resources/images/icon_add.gif" actionListener="#{TemplateFormPage.addRow}"/>
-                      <ice:commandButton partialSubmit="true" rendered="#{TemplateFormPage.dataTableProducers.rowCount gt 1}" image="/resources/images/icon_remove.gif" actionListener="#{TemplateFormPage.removeRow}"/>
+                      <ice:commandButton partialSubmit="true" alt="Add Row" title="Add Row" image="/resources/images/icon_add.gif" actionListener="#{TemplateFormPage.addRow}"/>
+                      <ice:commandButton partialSubmit="true" rendered="#{TemplateFormPage.dataTableProducers.rowCount gt 1}" alt="Remove Row" title="Remove Row" image="/resources/images/icon_remove.gif" actionListener="#{TemplateFormPage.removeRow}"/>
                       <ice:selectOneMenu immediate="false" partialSubmit="true" 
                                         value="#{TemplateFormPage.studyMap[sfc.producerName].templateField.fieldInputLevelString}"
                                         valueChangeListener="#{TemplateFormPage.changeFieldInputValue}"
@@ -396,8 +396,8 @@
                       </div>
                     </ice:column>
                     <ice:column>
-                      <ice:commandButton partialSubmit="true" image="/resources/images/icon_add.gif" actionListener="#{TemplateFormPage.addRow}"/>
-                      <ice:commandButton partialSubmit="true" rendered="#{TemplateFormPage.dataTableSoftware.rowCount gt 1}" image="/resources/images/icon_remove.gif" actionListener="#{TemplateFormPage.removeRow}"/>
+                      <ice:commandButton partialSubmit="true" alt="Add Row" title="Add Row" image="/resources/images/icon_add.gif" actionListener="#{TemplateFormPage.addRow}"/>
+                      <ice:commandButton partialSubmit="true" rendered="#{TemplateFormPage.dataTableSoftware.rowCount gt 1}" alt="Remove Row" title="Remove Row" image="/resources/images/icon_remove.gif" actionListener="#{TemplateFormPage.removeRow}"/>
                       <ice:selectOneMenu immediate="false" partialSubmit="true" 
                                         value="#{TemplateFormPage.studyMap[sfc.softwareName].templateField.fieldInputLevelString}"
                                         rendered ="#{TemplateFormPage.dataTableSoftware.rowIndex==0}"
@@ -465,8 +465,8 @@
                       </div>
                     </ice:column>
                     <ice:column>
-                      <ice:commandButton partialSubmit="true" image="/resources/images/icon_add.gif" actionListener="#{TemplateFormPage.addRow}"/>
-                      <ice:commandButton partialSubmit="true" rendered="#{TemplateFormPage.dataTableGrants.rowCount gt 1}" image="/resources/images/icon_remove.gif" actionListener="#{TemplateFormPage.removeRow}"/>
+                      <ice:commandButton partialSubmit="true" alt="Add Row" title="Add Row" image="/resources/images/icon_add.gif" actionListener="#{TemplateFormPage.addRow}"/>
+                      <ice:commandButton partialSubmit="true" rendered="#{TemplateFormPage.dataTableGrants.rowCount gt 1}" alt="Remove Row" title="Remove Row" image="/resources/images/icon_remove.gif" actionListener="#{TemplateFormPage.removeRow}"/>
                       <ice:selectOneMenu immediate="false" partialSubmit="true" 
                                         value="#{TemplateFormPage.studyMap[sfc.grantNumber].templateField.fieldInputLevelString}"
                                         rendered ="#{TemplateFormPage.dataTableGrants.rowIndex==0}"
@@ -545,8 +545,8 @@
                       </div>
                     </ice:column>
                     <ice:column>
-                      <ice:commandButton partialSubmit="true" image="/resources/images/icon_add.gif" actionListener="#{TemplateFormPage.addRow}"/>
-                      <ice:commandButton partialSubmit="true" rendered="#{TemplateFormPage.dataTableDistributors.rowCount gt 1}" image="/resources/images/icon_remove.gif" actionListener="#{TemplateFormPage.removeRow}"/>
+                      <ice:commandButton partialSubmit="true" alt="Add Row" title="Add Row" image="/resources/images/icon_add.gif" actionListener="#{TemplateFormPage.addRow}"/>
+                      <ice:commandButton partialSubmit="true" rendered="#{TemplateFormPage.dataTableDistributors.rowCount gt 1}" alt="Remove Row" title="Remove Row" image="/resources/images/icon_remove.gif" actionListener="#{TemplateFormPage.removeRow}"/>
                       <ice:selectOneMenu immediate="false" partialSubmit="true" 
                                         value="#{TemplateFormPage.studyMap[sfc.distributorName].templateField.fieldInputLevelString}"
                                         rendered ="#{TemplateFormPage.dataTableDistributors.rowIndex==0}"
@@ -799,8 +799,8 @@
                       </div>
                     </ice:column>
                     <ice:column>
-                      <ice:commandButton partialSubmit="true" image="/resources/images/icon_add.gif" actionListener="#{TemplateFormPage.addRow}"/>
-                      <ice:commandButton partialSubmit="true" rendered="#{TemplateFormPage.dataTableAbstracts.rowCount gt 1}" image="/resources/images/icon_remove.gif" actionListener="#{TemplateFormPage.removeRow}"/>
+                      <ice:commandButton partialSubmit="true" alt="Add Row" title="Add Row" image="/resources/images/icon_add.gif" actionListener="#{TemplateFormPage.addRow}"/>
+                      <ice:commandButton partialSubmit="true" rendered="#{TemplateFormPage.dataTableAbstracts.rowCount gt 1}" alt="Remove Row" title="Remove Row" image="/resources/images/icon_remove.gif" actionListener="#{TemplateFormPage.removeRow}"/>
                       <ice:selectOneMenu immediate="false" partialSubmit="true" 
                                         value="#{TemplateFormPage.studyMap[sfc.abstractText].templateField.fieldInputLevelString}"
                                         rendered ="#{TemplateFormPage.dataTableAbstracts.rowIndex==0}"
@@ -858,8 +858,8 @@
                       </div>
                     </ice:column>
                     <ice:column>
-                      <ice:commandButton partialSubmit="true" image="/resources/images/icon_add.gif" actionListener="#{TemplateFormPage.addRow}"/>
-                      <ice:commandButton partialSubmit="true" rendered="#{TemplateFormPage.dataTableKeywords.rowCount gt 1}" image="/resources/images/icon_remove.gif" actionListener="#{TemplateFormPage.removeRow}"/>
+                      <ice:commandButton partialSubmit="true" alt="Add Row" title="Add Row" image="/resources/images/icon_add.gif" actionListener="#{TemplateFormPage.addRow}"/>
+                      <ice:commandButton partialSubmit="true" rendered="#{TemplateFormPage.dataTableKeywords.rowCount gt 1}" alt="Remove Row" title="Remove Row" image="/resources/images/icon_remove.gif" actionListener="#{TemplateFormPage.removeRow}"/>
                       <ice:selectOneMenu immediate="false" partialSubmit="true" 
                                         value="#{TemplateFormPage.studyMap[sfc.keywordValue].templateField.fieldInputLevelString}"
                                         rendered ="#{TemplateFormPage.dataTableKeywords.rowIndex==0}"
@@ -918,8 +918,8 @@
                       </div>
                     </ice:column>
                     <ice:column>
-                      <ice:commandButton partialSubmit="true" image="/resources/images/icon_add.gif" actionListener="#{TemplateFormPage.addRow}"/>
-                      <ice:commandButton partialSubmit="true" rendered="#{TemplateFormPage.dataTableTopicClass.rowCount gt 1}" image="/resources/images/icon_remove.gif" actionListener="#{TemplateFormPage.removeRow}"/>
+                      <ice:commandButton partialSubmit="true" alt="Add Row" title="Add Row" image="/resources/images/icon_add.gif" actionListener="#{TemplateFormPage.addRow}"/>
+                      <ice:commandButton partialSubmit="true" rendered="#{TemplateFormPage.dataTableTopicClass.rowCount gt 1}" alt="Remove Row" title="Remove Row" image="/resources/images/icon_remove.gif" actionListener="#{TemplateFormPage.removeRow}"/>
                       <ice:selectOneMenu immediate="false" partialSubmit="true" 
                                         value="#{TemplateFormPage.studyMap[sfc.topicClassValue].templateField.fieldInputLevelString}"
                                         rendered ="#{TemplateFormPage.dataTableTopicClass.rowIndex==0}"
@@ -963,8 +963,8 @@
                       </div>
                     </ice:column>
                     <ice:column>
-                      <ice:commandButton partialSubmit="true" image="/resources/images/icon_add.gif" actionListener="#{TemplateFormPage.addRow}"/>
-                      <ice:commandButton partialSubmit="true" rendered="#{TemplateFormPage.dataTableRelPublications.rowCount gt 1}" image="/resources/images/icon_remove.gif" actionListener="#{TemplateFormPage.removeRow}"/>
+                      <ice:commandButton partialSubmit="true" alt="Add Row" title="Add Row" image="/resources/images/icon_add.gif" actionListener="#{TemplateFormPage.addRow}"/>
+                      <ice:commandButton partialSubmit="true" rendered="#{TemplateFormPage.dataTableRelPublications.rowCount gt 1}" alt="Remove Row" title="Remove Row" image="/resources/images/icon_remove.gif" actionListener="#{TemplateFormPage.removeRow}"/>
                       <ice:selectOneMenu immediate="false" partialSubmit="true" 
                                         value="#{TemplateFormPage.studyMap[sfc.relatedPublications].templateField.fieldInputLevelString}"
                                         rendered ="#{TemplateFormPage.dataTableRelPublications.rowIndex==0}"
@@ -1008,8 +1008,8 @@
                       </div>
                     </ice:column>
                     <ice:column>
-                      <ice:commandButton partialSubmit="true" image="/resources/images/icon_add.gif" actionListener="#{TemplateFormPage.addRow}"/>
-                      <ice:commandButton partialSubmit="true" rendered="#{TemplateFormPage.dataTableRelMaterials.rowCount gt 1}" image="/resources/images/icon_remove.gif" actionListener="#{TemplateFormPage.removeRow}"/>
+                      <ice:commandButton partialSubmit="true" alt="Add Row" title="Add Row" image="/resources/images/icon_add.gif" actionListener="#{TemplateFormPage.addRow}"/>
+                      <ice:commandButton partialSubmit="true" rendered="#{TemplateFormPage.dataTableRelMaterials.rowCount gt 1}" alt="Remove Row" title="Remove Row" image="/resources/images/icon_remove.gif" actionListener="#{TemplateFormPage.removeRow}"/>
                       <ice:selectOneMenu immediate="false" partialSubmit="true" 
                                         value="#{TemplateFormPage.studyMap[sfc.relatedMaterial].templateField.fieldInputLevelString}"
                                         rendered ="#{TemplateFormPage.dataTableRelMaterials.rowIndex==0}"
@@ -1053,8 +1053,8 @@
                       </div>
                     </ice:column>
                     <ice:column>
-                      <ice:commandButton partialSubmit="true" image="/resources/images/icon_add.gif" actionListener="#{TemplateFormPage.addRow}"/>
-                      <ice:commandButton partialSubmit="true" rendered="#{TemplateFormPage.dataTableRelStudies.rowCount gt 1}" image="/resources/images/icon_remove.gif" actionListener="#{TemplateFormPage.removeRow}"/>
+                      <ice:commandButton partialSubmit="true" alt="Add Row" title="Add Row" image="/resources/images/icon_add.gif" actionListener="#{TemplateFormPage.addRow}"/>
+                      <ice:commandButton partialSubmit="true" rendered="#{TemplateFormPage.dataTableRelStudies.rowCount gt 1}" alt="Remove Row" title="Remove Row" image="/resources/images/icon_remove.gif" actionListener="#{TemplateFormPage.removeRow}"/>
                       <ice:selectOneMenu immediate="false" partialSubmit="true" 
                                         value="#{TemplateFormPage.studyMap[sfc.relatedStudies].templateField.fieldInputLevelString}"
                                         rendered ="#{TemplateFormPage.dataTableRelStudies.rowIndex==0}"
@@ -1098,8 +1098,8 @@
                       </div>
                     </ice:column>
                     <ice:column>
-                      <ice:commandButton partialSubmit="true" image="/resources/images/icon_add.gif" actionListener="#{TemplateFormPage.addRow}"/>
-                      <ice:commandButton partialSubmit="true" rendered="#{TemplateFormPage.dataTableOtherReferences.rowCount gt 1}" image="/resources/images/icon_remove.gif" actionListener="#{TemplateFormPage.removeRow}"/>
+                      <ice:commandButton partialSubmit="true" alt="Add Row" title="Add Row" image="/resources/images/icon_add.gif" actionListener="#{TemplateFormPage.addRow}"/>
+                      <ice:commandButton partialSubmit="true" rendered="#{TemplateFormPage.dataTableOtherReferences.rowCount gt 1}" alt="Remove Row" title="Remove Row" image="/resources/images/icon_remove.gif" actionListener="#{TemplateFormPage.removeRow}"/>
                       <ice:selectOneMenu immediate="false" partialSubmit="true" 
                                         value="#{TemplateFormPage.studyMap[sfc.otherReferences].templateField.fieldInputLevelString}"
                                         rendered ="#{TemplateFormPage.dataTableOtherReferences.rowIndex==0}"
@@ -1436,7 +1436,7 @@
                     <ice:column>
                         <p>
                           <ice:graphicImage value="/resources/images/icon_info.gif" styleClass="dvn_icon"/>
-                          <ice:outputText styleClass="vdcHelpText" value=" Add custom Data Collection/Methodology fields by using the form and clicking the Add Field button." escape="false"/>
+                          <ice:outputText styleClass="vdcHelpText" value=" #{bundlePageInfo.editTemplateAddFieldsHelp}" escape="false"/>
                         </p>
                         <div jsfc="ice:panelGroup" styleClass="dvnWarningMessage" rendered="#{!empty flash.message}">
                           <div class="dvnMsgBlockContainer">
@@ -1509,9 +1509,9 @@
                     </ice:column>
                     <ice:column>
                           <ice:commandButton rendered="#{customFieldsDataModel[0].allowMultiples}"
-                                    image="/resources/images/icon_add.gif" actionListener="#{TemplateFormPage.addDcmRow}"/>       
+                                    alt="Add Row" title="Add Row" image="/resources/images/icon_add.gif" actionListener="#{TemplateFormPage.addDcmRow}"/>       
                           <ice:commandButton rendered="#{customValuesDataModel[1].size() > 1}" 
-                                    image="/resources/images/icon_remove.gif" actionListener="#{TemplateFormPage.removeDcmRow}"/>
+                                    alt="Remove Row" title="Remove Row" image="/resources/images/icon_remove.gif" actionListener="#{TemplateFormPage.removeDcmRow}"/>
 
                           <ice:commandLink value="Edit Vocabulary" rendered="#{TemplateFormPage.networkEdit and customFieldsDataModel[1].rowIndex == 0 and customFieldsDataModel[0].studyField.fieldType == 'textBox'}" actionListener="#{TemplateFormPage.openPopup}">
                               <f:attribute name="sf_id" value="#{customFieldsDataModel[0].studyField.id}"/>
@@ -1527,12 +1527,12 @@
                             <f:selectItems value="#{TemplateFormPage.fieldInputLevelSelectItems}"/>
                         </ice:selectOneMenu>
 
-                          <ice:commandButton value="Move Up" alt="Move Up" title="Move Up" style="display:inline;" rendered="#{TemplateFormPage.networkEdit and customFieldsDataModel[1].rowIndex==0}"
+                          <ice:commandButton value="Move Up" alt="Move Up" title="Move Up" rendered="#{TemplateFormPage.networkEdit and customFieldsDataModel[1].rowIndex==0}"
                                              image="/resources/images/icon_moveup.png" actionListener="#{TemplateFormPage.moveUp}"/>
-                          <ice:commandButton value="Move Down" alt="Move Down" title="Move Down" style="display:inline;" rendered="#{TemplateFormPage.networkEdit and customFieldsDataModel[1].rowIndex==0}" 
+                          <ice:commandButton value="Move Down" alt="Move Down" title="Move Down" rendered="#{TemplateFormPage.networkEdit and customFieldsDataModel[1].rowIndex==0}" 
                                              image="/resources/images/icon_movedown.png" actionListener="#{TemplateFormPage.moveDown}"/>
 
-                          <ice:commandLink value="Remove" rendered="#{TemplateFormPage.networkEdit and customFieldsDataModel[1].rowIndex==0}" actionListener="#{TemplateFormPage.removeAdHocField}"/>
+                          <ice:commandLink value="Remove" title="Remove Field" rendered="#{TemplateFormPage.networkEdit and customFieldsDataModel[1].rowIndex==0}" actionListener="#{TemplateFormPage.removeAdHocField}"/>
                     </ice:column>
                   </ice:dataTable>
                   
@@ -1580,7 +1580,7 @@
                            <f:selectItems value="#{TemplateFormPage.fieldInputLevelSelectItems}"/>
                         </ice:selectOneMenu>
 
-                        <ice:commandLink value="Remove" rendered="#{TemplateFormPage.networkEdit}" actionListener="#{TemplateFormPage.removeAdHocField}"/>
+                        <ice:commandLink value="Remove" title="Remove Field" rendered="#{TemplateFormPage.networkEdit}" actionListener="#{TemplateFormPage.removeAdHocField}"/>
                     </ice:column>
                 </ice:panelGrid>
               </ice:panelSeries>
@@ -2623,8 +2623,8 @@
                       </div>
                     </ice:column>
                     <ice:column>
-                      <ice:commandButton partialSubmit="true" image="/resources/images/icon_add.gif" actionListener="#{TemplateFormPage.addRow}"/>
-                      <ice:commandButton partialSubmit="true" rendered="#{TemplateFormPage.dataTableNotes.rowCount gt 1}" image="/resources/images/icon_remove.gif" actionListener="#{TemplateFormPage.removeRow}"/>
+                      <ice:commandButton partialSubmit="true" alt="Add Row" title="Add Row" image="/resources/images/icon_add.gif" actionListener="#{TemplateFormPage.addRow}"/>
+                      <ice:commandButton partialSubmit="true" rendered="#{TemplateFormPage.dataTableNotes.rowCount gt 1}" alt="Remove Row" title="Remove Row" image="/resources/images/icon_remove.gif" actionListener="#{TemplateFormPage.removeRow}"/>
                       <ice:selectOneMenu immediate="false" partialSubmit="true" rendered ="#{TemplateFormPage.dataTableNotes.rowIndex==0}"
                                         value="#{TemplateFormPage.studyMap[sfc.notesInformationType].templateField.fieldInputLevelString}"                                         
                                         valueChangeListener="#{TemplateFormPage.changeFieldInputValue}">
@@ -2663,14 +2663,14 @@
                                styleClass="popupModalBody">
                     <ice:column>
                         <ice:inputText id="newControlledVocab" binding="#{TemplateFormPage.inputControlledVocabulary}" value="#{TemplateFormPage.newControlledVocab}"></ice:inputText>
-                        <ice:commandButton id="addToControlledVocabButton" action="#{TemplateFormPage.addToControlledVocabList}" image="/resources/images/icon_add.gif"/>
+                        <ice:commandButton id="addToControlledVocabButton" action="#{TemplateFormPage.addToControlledVocabList}" alt="Add Row" title="Add Row" image="/resources/images/icon_add.gif"/>
                     </ice:column>
                     <ice:column>
                         <ice:selectManyListbox id="controlledVocabSelectManyList" value="#{TemplateFormPage.selectedControlledVocabStrings}"
                                            binding="#{TemplateFormPage.selectControlledVocabulary}">                                                                    
                             <f:selectItems value="#{TemplateFormPage.controlledVocabStrings}"></f:selectItems>
                         </ice:selectManyListbox>
-                        <ice:commandButton id="autoCentPopupOkSave" visible="true" action="#{TemplateFormPage.removeSelectedControlledVocab}" image="/resources/images/icon_remove.gif"/>
+                        <ice:commandButton id="autoCentPopupOkSave" visible="true" action="#{TemplateFormPage.removeSelectedControlledVocab}" alt="Remove Row" title="Remove Row" image="/resources/images/icon_remove.gif"/>
                     </ice:column>
                     <div jsfc="ice:panelGroup" styleClass="dvnFormPadding dvnFormMargin">
                         <ice:commandButton id="autoCentPopupCancel" immediate="true" actionListener="#{TemplateFormPage.closePopup}" value="Continue"/>

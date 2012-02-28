@@ -528,26 +528,7 @@ public class EditStudyPage extends VDCBaseBean implements java.io.Serializable  
         return tf.isRequired();
         
     }
-    /*
-    public void addDcmRow(ActionEvent ae) {
-        
-        Long  getId = (Long) ae.getComponent().getAttributes().get("tf_id");
-         TemplateField tfSel = new TemplateField();
-         for (TemplateField tfTest: adHocFields){
-              if(tfTest.getId().equals(getId)){
-                  tfSel = tfTest;
-              }
-         }
-        
-            TemplateFieldValue newElem = new TemplateFieldValue();
-            newElem.setMetadata(metadata);
-            newElem.setTemplateField(tfSel);
-            //metadata.getTemplateFieldValues().add(newElem);
-            //tfSel.getTemplateFieldValues().add(newElem);
-            //remove clear can interfere with add buttons
-            //dcmFieldTable.getChildren().clear();
-    }
-    `*/
+
     private HtmlDataTable dcmFieldTable;
 
     /**
@@ -564,6 +545,34 @@ public class EditStudyPage extends VDCBaseBean implements java.io.Serializable  
      */
     public void setDcmFieldTable(HtmlDataTable dcmFieldTable) {
         this.dcmFieldTable = dcmFieldTable;
+    }
+    
+    public void addDcmRow(ActionEvent ae) {
+
+           System.out.println("in add dcm row method" );
+        HtmlDataTable dataTable = (HtmlDataTable) ae.getComponent().getParent().getParent();
+        
+         System.out.println("datatable in add " + dataTable );
+         System.out.println("datatable title in add " + dataTable.getTitle() );
+        Object[] data = (Object[]) ((ListDataModel) dataTable.getValue()).getRowData();
+
+        StudyFieldValue newElem = new StudyFieldValue();
+        newElem.setMetadata(metadata);
+        newElem.setStudyField(((StudyFieldValue) data[0]).getStudyField());
+        newElem.setStrValue("");
+        ((List) data[1]).add(dataTable.getRowIndex() + 1, newElem);
+    }
+
+    public void removeDcmRow(ActionEvent ae) {
+
+        HtmlDataTable dataTable = (HtmlDataTable) ae.getComponent().getParent().getParent();
+         System.out.println("datatable in remove " + dataTable );
+         System.out.println("datatable title in remove " + dataTable.getTitle() );
+        if (dataTable.getRowCount() > 1) {
+            Object[] data = (Object[]) ((ListDataModel) dataTable.getValue()).getRowData();
+            editStudyService.removeCollectionElement((List) data[1], data[0]);
+
+        }
     }
     
     int count = 1;
@@ -639,8 +648,6 @@ public class EditStudyPage extends VDCBaseBean implements java.io.Serializable  
     public void removeRow(ActionEvent ae) {
         
         HtmlDataTable dataTable = (HtmlDataTable)ae.getComponent().getParent().getParent();
-         System.out.println("datatable in remove " + dataTable );
-         System.out.println("datatable title in remove " + dataTable.getTitle() );
         if (dataTable.getRowCount()>1) { 
             List data = (List)dataTable.getValue();
             editStudyService.removeCollectionElement(data,dataTable.getRowIndex());
@@ -779,14 +786,6 @@ public class EditStudyPage extends VDCBaseBean implements java.io.Serializable  
         return isGroupEmpty(metadata.getStudyOtherRefs());
     }
 
-    public void removeDcmRow(ActionEvent ae) {
-
-        HtmlDataTable dataTable = getDataTableDCMFieldValues();
-        if (dataTable.getRowCount()>1) {
-            List data = (List)dataTable.getValue();
-            editStudyService.removeCollectionElement(data,dataTable.getRowData());
-        }
-    }
         /**
      * Holds value of property dataTableOtherIds.
      */

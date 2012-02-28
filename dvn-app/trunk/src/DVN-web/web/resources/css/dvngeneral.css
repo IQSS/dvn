@@ -80,6 +80,7 @@ div.dvn_navblockNetwork{}
 .naviconguides{background:#fff url(/dvn/resources/images/navicon_guides.jpg) no-repeat 6px 2px;}
 .naviconcontact{background:#fff url(/dvn/resources/images/navicon_contact.jpg) no-repeat 6px 2px;}
 .naviconoptions{background:#fff url(/dvn/resources/images/navicon_options.jpg) no-repeat 6px 2px;}
+.naviconmanifest{background:#fff url(/dvn/resources/images/navicon_manifest.jpg) no-repeat 6px 2px;}
 .navicon span{position:absolute;top:-9999px;left:-9999px;}
 /* FORM ELEMENTS */
 .dvnFormPadding{padding:1em 0;text-align:left}

@@ -35,7 +35,7 @@
                                     </li>
                                     <ice:outputText nospan="true" escape="false" rendered="#{VDCRequest.renderManifestLink}">
                                         <li>
-                                            <ice:outputLink id="hyperlinkM" value="/dvn#{VDCRequest.currentVDCURL}/ManifestPage.jsp">
+                                            <ice:outputLink id="hyperlinkM" styleClass="navicon naviconmanifest" value="/dvn#{VDCRequest.currentVDCURL}/ManifestPage.jsp" title="#{VDCRequest.vdcNetwork.name} Dataverse Network LOCKSS Manifest">
                                                 <ice:outputText id="hyperlinkMText1" value="#{bundlePageInfo.viewLOCKSSManifestPage}"/>
                                             </ice:outputLink>
                                         </li>

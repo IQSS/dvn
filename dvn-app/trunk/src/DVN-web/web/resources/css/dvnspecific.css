@@ -126,6 +126,10 @@ td.vdcEditFilesColB .errorMessage{display:block;}
 .dvnStudyTemplateTableDCM tr.iceDatTblRow1, .dvnStudyTemplateTableDCM tr.iceDatTblRow2 {border-width:0 0 0 0;}
 .dvnStudyTemplateTableDCM td {border-width:0 0 1px 0;}
 .dvnCGAmapLink span.iceOutTxt, .dvnCGAmapLink a.iceOutLnk {display:inline !important;}
+/* CONTROLLED VOCAB */
+.dvnControlledVocabInput input[type=text] {width:200px;}
+.dvnControlledVocabInput select {min-width:208px;max-height:8em;}
+.dvnControlledVocabInput input[type=image] {vertical-align:top;}
 /* ADD FILE */
 .dvnAddFilesOuterTable{border-left:0;border-right:0;border-bottom:0}
 .dvnAddFilesOuterTable td{padding:0;border-left:0;border-right:0;border-bottom:0}

@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:jsp="http://java.sun.com/JSP/Page"
+      xmlns:ice="http://www.icesoft.com/icefaces/component">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+</head>
+<body>
+  <ui:composition template="/template.xhtml">
+    <ui:param name="pageTitle" value="#{bundlePageInfo.editControlledVocabularyTitle}"/>
+    <ui:define name="metadata">    
+        <f:metadata>
+            <f:viewParam name="cvId" value="#{editControlledVocabularyPage.cvId}"/>
+            <f:event type="preRenderView" listener="#{editControlledVocabularyPage.preRenderView}" />
+        </f:metadata>
+    </ui:define> 
+    <ui:define name="body">
+      <ice:form id="form1">
+        <ice:inputHidden id="vdcId" value="#{VDCRequest.currentVDCId}"/>
+        <div class="dvn_section">
+          <div class="dvn_sectionTitle">
+            <ice:outputText value="#{bundlePageInfo.editControlledVocabularyTitle}"/>
+          </div>
+          <div class="dvn_sectionBox">
+            <div class="dvn_margin12">
+              <div jsfc="ice:panelGroup" styleClass="dvnInformationMessage">
+                <div class="dvnMsgBlockContainer">
+                  <ice:outputText value="#{bundlePageInfo.editControlledVocabularyHelp}" escape="false"/>
+                </div>
+              </div>
+              <div jsfc="ice:panelGroup" id="layoutPanel1" styleClass="dvnEditCollection" panelLayout="flow">
+                <ice:panelGrid cellpadding="0" cellspacing="0" columns="2" width="100%">
+                  <div jsfc="ice:panelGroup" id="groupPanel2" styleClass="vdcFieldTitle">
+                    Name
+                  </div>
+                  <div jsfc="ice:panelGroup">
+                    <ice:inputText id="input_controlledVocabularyName" size="45" maxlength="255" value="#{editControlledVocabularyPage.controlledVocabulary.name}"  required="true" requiredMessage="This field is required."/>
+                    <ice:message styleClass="errorMessage" for="input_controlledVocabularyName"/>
+                  </div>
+                  <div jsfc="ice:panelGroup" id="groupPanel3" styleClass="vdcFieldTitle">
+                    Description
+                  </div>
+                  <div jsfc="ice:panelGroup">
+                    <ice:inputTextarea id="input_controlledVocabularyDesc" cols="60" rows="4" value="#{editControlledVocabularyPage.controlledVocabulary.description}"/>
+                  </div>
+                  <div jsfc="ice:panelGroup"  styleClass="vdcFieldTitle">
+                    Values
+                  </div>
+                  <div jsfc="ice:panelGroup">
+                    <ice:inputText  value="#{editControlledVocabularyPage.newControlledVocabularyValue}" style="width : 200px;"></ice:inputText>
+                    <ice:commandButton action="#{editControlledVocabularyPage.addControlledVocabularyValue}" alt="Add Row" title="Add Row" image="/resources/images/icon_add.gif"/>
+                  </div>
+                    <div jsfc="ice:panelGroup"  styleClass="vdcFieldTitle" rendered="#{!empty editControlledVocabularyPage.controlledVocabulary.controlledVocabularyValues}">
+                  </div>  
+                  <div jsfc="ice:panelGroup" rendered="#{!empty editControlledVocabularyPage.controlledVocabulary.controlledVocabularyValues}">
+                    <ice:selectManyListbox value="#{editControlledVocabularyPage.selectedControlledVocabularyValues}" size="5" style="width : 200px;" >                                                                    
+                        <f:selectItems value="#{editControlledVocabularyPage.controlledVocabularySelectItems}"/>
+                    </ice:selectManyListbox>
+                    <ice:commandButton  action="#{editControlledVocabularyPage.removeControlledVocabularyValues}" alt="Remove Row" title="Remove Row" image="/resources/images/icon_remove.gif"/>
+                  </div>      
+                </ice:panelGrid>
+              </div>
+              <div class="dvnFormPadding dvnFormMargin">
+                <ice:commandButton value="Save" action="#{editControlledVocabularyPage.save_action}"/>
+                <ice:commandButton immediate="true" value="Cancel" action="/admin/ManageControlledVocabularyPage?faces-redirect=true"/>
+              </div>
+            </div>
+          </div>
+        </div>
+      </ice:form>
+
+    </ui:define>
+  </ui:composition>
+</body>
+</html>

@@ -13,6 +13,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
+import javax.persistence.OrderBy;
 
 /**
  *
@@ -27,7 +28,8 @@ public class ControlledVocabulary implements Serializable {
     private String name;
     @Column(columnDefinition="TEXT") 
     private String description;
-    @OneToMany(mappedBy="controlledVocabulary",cascade={CascadeType.REMOVE, CascadeType.MERGE, CascadeType.PERSIST})
+    @OneToMany(mappedBy="controlledVocabulary", orphanRemoval=true, cascade={CascadeType.REMOVE, CascadeType.MERGE, CascadeType.PERSIST})
+    @OrderBy ("value")
     private List<ControlledVocabularyValue> controlledVocabularyValues;
     @OneToMany(mappedBy="controlledVocabulary")
     private List<TemplateField> templateFields;    

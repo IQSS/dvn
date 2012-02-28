@@ -203,7 +203,7 @@ public class TemplateServiceBean implements edu.harvard.iq.dvn.core.study.Templa
     }
 
     public List<ControlledVocabulary> getNetworkControlledVocabulary() {
-        String query = "select object(o) FROM ControlledVocabulary";
+        String query = "select object(o) FROM ControlledVocabulary as o";
         return (List) em.createQuery(query).getResultList();
     }
      

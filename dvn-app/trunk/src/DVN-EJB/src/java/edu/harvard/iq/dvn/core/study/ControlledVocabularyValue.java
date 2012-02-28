@@ -18,7 +18,7 @@ import javax.persistence.ManyToOne;
  * @author gdurand
  */
 @Entity
-public class ControlledVocabularyValue implements Serializable {
+public class ControlledVocabularyValue implements Serializable, Comparable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)    
@@ -79,6 +79,11 @@ public class ControlledVocabularyValue implements Serializable {
     @Override
     public String toString() {
         return "edu.harvard.iq.dvn.core.study.ControlledVocabularyValue[ id=" + id + " ]";
+    }
+    
+    
+    public int compareTo (Object o) {
+        return this.getValue().compareTo(((ControlledVocabularyValue) o).getValue());
     }
     
 }

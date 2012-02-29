@@ -82,7 +82,7 @@ public class OAISetsPage extends VDCBaseBean implements java.io.Serializable  {
         oaiSetService.remove(oaiSet.getId());
         initSetData();  // Re-fetch list to reflect Delete action
         
-        getVDCRenderBean().getFlash().put("successMessage", "Successfully removed OAI set.");
+        getVDCRenderBean().getFlash().put("successMessage", "Successfully deleted OAI set.");
 
     }
 

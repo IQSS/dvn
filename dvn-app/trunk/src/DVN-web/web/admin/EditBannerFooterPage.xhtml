@@ -52,7 +52,7 @@
         var siteURL = jQuery('input#editBannerFooterForm\\:urlOpenScholarDataverse');
         
         if ( siteURL.val() != '' ) {
-            if ( jQuery(siteURL).val().startsWith('http://scholars.harvard.edu') || jQuery(siteURL).val().startsWith('http://projects.iq.harvard.edu') ) {
+            if ( jQuery(siteURL).val().startsWith('http://scholar.harvard.edu') || jQuery(siteURL).val().startsWith('http://projects.iq.harvard.edu') ) {
                 jQuery('input#editBannerFooterForm\\:urlOpenScholarDataverse').parents('.dvnUrlOpenScholar').prev('.dvnCustomizationSelectSiteBlock').children('input[value=openscholar]').prop('checked', true);
                 jQuery('.dvnUrlOpenScholar').show();
             }

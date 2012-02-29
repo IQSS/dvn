@@ -272,8 +272,6 @@ INSERT INTO pagedef ( name, path, role_id, networkrole_id ) VALUES ( 'EditStudyF
 INSERT INTO pagedef ( name, path, role_id, networkrole_id ) VALUES ( 'AddFilesPage','/study/AddFilesPage.xhtml',1,null );
 INSERT INTO pagedef ( name, path, role_id, networkrole_id ) VALUES ( 'SetUpDataExplorationPage','/study/SetUpDataExplorationPage.xhtml',1,null );
 INSERT INTO pagedef ( name, path, role_id, networkrole_id ) VALUES ( 'DeleteStudyPage','/study/DeleteStudyPage.xhtml',1,null );
-INSERT INTO pagedef ( name, path, role_id, networkrole_id ) VALUES ( 'EditTemplatePage','/study/EditTemplatePage.xhtml',1,null );
-INSERT INTO pagedef ( name, path, role_id, networkrole_id ) VALUES ( 'TemplateFormPage','/study/TemplateFormPage.xhtml',1,null );
 INSERT INTO pagedef ( name, path, role_id, networkrole_id ) VALUES ( 'MyDataversePage','/networkAdmin/MyDataversePage.xhtml',null,null );
 
 -- Curator Role
@@ -281,6 +279,9 @@ INSERT INTO pagedef ( name, path, role_id, networkrole_id ) VALUES ( 'EditCollec
 INSERT INTO pagedef ( name, path, role_id, networkrole_id ) VALUES ( 'ManageCollectionsPage','/collection/ManageCollectionsPage.xhtml',2,null );
 INSERT INTO pagedef ( name, path, role_id, networkrole_id ) VALUES ( 'StudyPermissionsPage','/study/StudyPermissionsPage.xhtml',2,null );
 INSERT INTO pagedef ( name, path, role_id, networkrole_id ) VALUES ( 'DeaccessionStudyPage', '/study/DeaccessionStudyPage.xhtml', 2, null );
+
+INSERT INTO pagedef ( name, path, role_id, networkrole_id ) VALUES ( 'ManageTemplatesPage', '/admin/ManageTemplatesPage.xhtml', 2,2 );
+INSERT INTO pagedef ( name, path, role_id, networkrole_id ) VALUES ( 'TemplateFormPage','/study/TemplateFormPage.xhtml',2,2 );
 
 -- Admin Role
 INSERT INTO pagedef ( name, path, role_id, networkrole_id ) VALUES ( 'EditSitePage', '/site/EditSitePage.xhtml', 3,null );
@@ -302,6 +303,7 @@ INSERT INTO pagedef ( name, path, role_id, networkrole_id ) VALUES ( 'NetworkOpt
 INSERT INTO pagedef ( name, path, role_id, networkrole_id ) VALUES ( 'HarvestSitesPage', '/site/HarvestSitesPage.xhtml', null,2 );
 INSERT INTO pagedef ( name, path, role_id, networkrole_id ) VALUES ( 'AddClassificationsPage', '/networkAdmin/AddClassificationsPage.xhtml', null,2 );
 INSERT INTO pagedef ( name, path, role_id, networkrole_id ) VALUES ( 'ManageClassificationsPage', '/networkAdmin/ManageClassificationsPage.xhtml', null,2 );
+INSERT INTO pagedef ( name, path, role_id, networkrole_id ) VALUES ( 'ManageControlledVocabularyPage', '/admin/ManageControlledVocabularyPage.xhtml', null,2 );
 INSERT INTO pagedef ( name, path, role_id, networkrole_id ) VALUES ( 'CommentReviewPage', '/networkAdmin/CommentReviewPage.xhtml', null, 2 );
 INSERT INTO pagedef ( name, path, role_id, networkrole_id ) VALUES ( 'ManageDataversesPage', '/networkAdmin/ManageDataversesPage.xhtml', null,2 );
 INSERT INTO pagedef ( name, path, role_id, networkrole_id ) VALUES ( 'EditHarvestSitePage', '/site/EditHarvestSitePage.xhtml', null,2 );

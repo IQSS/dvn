@@ -6,11 +6,8 @@
 package edu.harvard.iq.dvn.core.web.subsetting;
 
 import com.icesoft.faces.component.ext.HtmlDataTable;
-import com.icesoft.faces.component.ext.HtmlSelectBooleanCheckbox;
 import com.icesoft.faces.context.Resource;
-import com.icesoft.faces.context.effects.JavascriptContext;
 //COMMENTED OUT TO COMPILE UNDER ICEFACES 2.O -- L.A. import com.icesoft.faces.webapp.xmlhttp.PersistentFacesState;
-import javax.faces.context.FacesContext;
 import edu.harvard.iq.dvn.core.analysis.NetworkDataServiceLocal;
 import edu.harvard.iq.dvn.core.analysis.NetworkDataSubsetResult;
 import edu.harvard.iq.dvn.core.analysis.NetworkMeasureParameter;
@@ -39,28 +36,23 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.ejb.ConcurrentAccessException;
 import javax.ejb.EJB;
-import javax.faces.FactoryFinder;
 import javax.faces.application.FacesMessage;
+import javax.faces.bean.ViewScoped;
 import javax.faces.component.UIComponent;
 import javax.faces.context.FacesContext;
-import javax.faces.context.FacesContextFactory;
 import javax.faces.event.ValueChangeEvent;
-import javax.faces.lifecycle.Lifecycle;
-import javax.faces.lifecycle.LifecycleFactory;
 import javax.faces.model.SelectItem;
+import javax.inject.Named;
 import javax.naming.Context;
 import javax.naming.InitialContext;
-import javax.servlet.ServletContext;
-import javax.servlet.ServletRequest;
-import javax.servlet.ServletResponse;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 
 /**
  *
  * @author gdurand
  */
 @EJB(name="networkData", beanInterface=edu.harvard.iq.dvn.core.analysis.NetworkDataServiceLocal.class)
+@ViewScoped
+@Named("NetworkDataAnalysisPage")
 public class NetworkDataAnalysisPage extends VDCBaseBean implements Serializable {
 
     
@@ -110,9 +102,7 @@ public class NetworkDataAnalysisPage extends VDCBaseBean implements Serializable
         super.init();
 
         try {
-            fileId = Long.parseLong( getRequestParam("fileId") );
             file = (NetworkDataFile) studyFileService.getStudyFile(fileId);           
-            versionNumber = getVDCRequestBean().getStudyVersionNumber();
             
             if (versionNumber!=null) {
                 StudyVersion sv = file.getStudy().getStudyVersionByNumber(versionNumber);

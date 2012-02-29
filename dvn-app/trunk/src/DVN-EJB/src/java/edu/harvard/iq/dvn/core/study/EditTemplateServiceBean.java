@@ -100,6 +100,7 @@ public class EditTemplateServiceBean implements edu.harvard.iq.dvn.core.study.Ed
             } else {
                 Metadata metadata = em.find(StudyVersion.class, studyVersionId).getMetadata();
                 template.setMetadata(new Metadata(metadata));
+                template.getMetadata().setTemplate(template);
                 template.getMetadata().setDateOfDeposit("");
                 template.getMetadata().setUNF(null);
                 addStudyFields(studyVersionId, template.getMetadata());
@@ -152,7 +153,8 @@ public class EditTemplateServiceBean implements edu.harvard.iq.dvn.core.study.Ed
         newTemplate=true;
         template = new Template();
         Metadata clonedMetadata = new Metadata(cloneSource.getMetadata(), false, false );
-        template.setMetadata(clonedMetadata);        
+        template.setMetadata(clonedMetadata);  
+        clonedMetadata.setTemplate(template);
         Collection<TemplateField> defaultFields = cloneSource.getTemplateFields();  
                 
         template.setTemplateFields(new ArrayList());

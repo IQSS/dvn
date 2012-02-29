@@ -32,9 +32,8 @@
                 // check to see if page should be in an iframe (and is not); if so, redirect to containing site (specifiying sub page, if neeeded)
                   if(self == top){
                       dvn_subpage = self.location.href;
-                      dvn_subpage = dvn_subpage.substring( dvn_subpage.indexOf("/dvn/dv/") + 8 ); // first strip out the /dvn/dv/ prefix
-                      if ( dvn_subpage.indexOf("/") != -1) {
-                          window.location.replace("#{VDCRequest.currentVDC.parentSite}?dvn_subpage=" + dvn_subpage.substring( dvn_subpage.indexOf("/") ) );
+                      if ( dvn_subpage.indexOf("/faces/") != -1) {
+                          window.location.replace("#{VDCRequest.currentVDC.parentSite}?dvn_subpage=" + dvn_subpage.substring( dvn_subpage.indexOf("/faces/") ) );
                       } else {
                           window.location.replace("#{VDCRequest.currentVDC.parentSite}");
                       }

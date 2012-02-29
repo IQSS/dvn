@@ -95,6 +95,7 @@ public class Metadata implements java.io.Serializable {
     public  Metadata(Metadata copyFrom, boolean studyCopy, boolean networkTarget ) {
      
         this.setUNF(copyFrom.UNF);
+        this.setStudyFieldValues(new ArrayList<StudyFieldValue>());
         for (TemplateField tf : copyFrom.getTemplate().getTemplateFields()){
             
             if (tf.getStudyField().getName().equals("accessToSources")){
@@ -610,23 +611,24 @@ public class Metadata implements java.io.Serializable {
                         this.getStudyTopicClasses().add(cloneTopic);
                     }
                 }
-            }            
-        }
-
-        /*
-        this.setStudyFieldValues(new ArrayList<StudyFieldValue>());
-        for (StudyFieldValue sfv: copyFrom.getStudyFieldValues()){
-            StudyField sf = sfv.getStudyField();
-            if(!tf.isHidden()  && !tf.isDisabled()){
-                StudyFieldValue cloneSfv = new StudyFieldValue();
-                cloneSfv.setDisplayOrder(sfv.getDisplayOrder());
-                cloneSfv.setStudyField(sfv.getStudyField());
-                cloneSfv.setStrValue(tfv.getStrValue());
-                cloneSfv.setMetadata(this);
-                this.getStudyFieldValues().add(cloneSfv);
             }
-        }
-        */ 
+            
+            if (tf.getStudyField().isDcmField()) {
+                if(!tf.isHidden()  && !tf.isDisabled()){
+                    for (StudyFieldValue sfv: copyFrom.getStudyFieldValues()){
+                        if( tf.getStudyField().equals(sfv.getStudyField()) ) {
+                            StudyFieldValue cloneSfv = new StudyFieldValue();
+                            cloneSfv.setDisplayOrder(sfv.getDisplayOrder());
+                            cloneSfv.setStudyField(sfv.getStudyField());
+                            cloneSfv.setStrValue(sfv.getStrValue());
+                            cloneSfv.setMetadata(this);
+                            this.getStudyFieldValues().add(cloneSfv);    
+                        }
+                    }
+                }
+            }
+                
+        }         
     }
     
     public Metadata(Metadata copyFrom ) {

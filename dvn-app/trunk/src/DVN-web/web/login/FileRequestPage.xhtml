@@ -36,13 +36,13 @@
                   </p>
                 </div>
               </div>
-              <div jsfc="ice:panelGroup" rendered="#{! FileRequestPage.alreadyRequested}">
+              <di11v jsfc="ice:panelGroup" rendered="#{! FileRequestPage.alreadyRequested}">
                 <div jsfc="ice:panelGroup" styleClass="dvnFormPadding">
                   <ice:outputText value="I would like to access restricted files in this study."/>
                 </div>
                 <div class="dvnFormPadding dvnFormMargin">
                   <ice:commandButton value="Submit Request" action="#{FileRequestPage.generateRequest}"/>
-                  <ice:commandButton value="Cancel" action="home"/>
+                  <ice:commandButton value="Cancel" action="#{FileRequestPage.cancel}"/>
                 </div>
               </div>
             </div>

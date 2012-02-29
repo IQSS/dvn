@@ -155,9 +155,16 @@ public class FileRequestPage extends VDCBaseBean implements java.io.Serializable
  
         mailService.sendFileAccessRequestConfirmation(user.getEmail(), study.getReleasedVersion().getMetadata().getTitle(), study.getGlobalId());
      
-        return "/login/FileRequestSuccessPage?faces-redirect=true";
+        getVDCRenderBean().getFlash().put("successMessage", "Thanks for your interest in this study. You will be notified as soon as your request is approved.");
+        return "/study/StudyPage.xhtml?faces-redirect=true&studyId=" + getStudyId() + "&tab=files" + getNavigationVDCSuffix();
 
     }
+    
+    public String cancel() {
+        return "/study/StudyPage.xhtml?faces-redirect=true&studyId=" + getStudyId() + "&tab=files" + getNavigationVDCSuffix();        
+    }
+    
+    
     /**
      * Holds value of property fileRequest.
      */

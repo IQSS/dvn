@@ -687,7 +687,7 @@ unless ( -f "config/logging.properties" )
 
 print "\nCopying additional configuration files... ";
 
-system ( "/bin/cp -f config/* ".$glassfish_dir."/domains/domain1/config"); 
+system ( "/bin/cp -Rf config/* ".$glassfish_dir."/domains/domain1/config"); 
 #diagnostics needed!
 
 print "done!\n";

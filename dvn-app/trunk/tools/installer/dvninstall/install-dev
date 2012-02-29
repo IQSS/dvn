@@ -653,6 +653,9 @@ unless ( -f "../../../working_directory/logging.properties" )
 print "\nCopying additional configuration files... ";
 
 system ( "/bin/cp -f ../../../working_directory/* ".$glassfish_dir."/glassfish/domains/domain1/config"); 
+system ( "/bin/mkdir -p ".$glassfish_dir."/glassfish/domains/domain1/config/lib"); 
+system ( "/bin/cp -f ../../../lib/dvn-lib-NetworkData/* ".$glassfish_dir."/glassfish/domains/domain1/config/lib"); 
+system ( "/bin/cp -f ../../../lib/dvn-lib-NetworkData-LUCENE/* ".$glassfish_dir."/glassfish/domains/domain1/config/lib"); 
 #diagnostics needed!
 
 print "done!\n";

@@ -120,6 +120,14 @@
                 <!-- *** MENUBAR (Included from template) *** -->
                 <ui:include src="views/Menubar.xhtml"/>
             </ui:insert>
+            <div jsfc="ice:panelGroup" styleClass="#{!empty(VDCRender.flash.warningMessage) ? 'dvnWarningMessage' : 'dvnSuccessMessage'}" rendered="#{!empty VDCRender.flash.successMessage or !empty VDCRender.flash.warningMessage}">
+              <div class="dvnMsgBlockContainer">
+                <p>
+                    <ice:outputText id="successMessage" value="#{VDCRender.flash.successMessage}" escape="false" rendered="#{!empty VDCRender.flash.successMessage}"/>
+                    <ice:outputText id="warningMessage" value="#{VDCRender.flash.warningMessage}" escape="false" rendered="#{!empty VDCRender.flash.warningMessage}"/>
+                </p>
+              </div>
+            </div>
             <ui:insert name="body">Default Body</ui:insert>
             <div class="dvn_clear"></div>
         </div>

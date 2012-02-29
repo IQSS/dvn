@@ -4,6 +4,17 @@ use Getopt::Long;
 use Socket; 
 
 my( %opts ) = ( );
+my( $rez ) = GetOptions( \%opts, "pg_only!");
+
+if ( $opts{$pg_only} )
+{
+    print "Please do not use the dev. installer in --pg_only mode! \n";
+    print "In order to populate a database on a remote server, please use \n";
+    print "the *main* installer script (\"install --pg_only\") instead.\n\n";
+     
+    exit 1;
+}
+
 
 
 my @CONFIG_VARIABLES = (); 
@@ -198,9 +209,16 @@ if ( $yesno eq "n" )
     goto ENTERCONFIG; 
 }
 
+# FOR DEV SYSTEM, HOST IS ALWAYS LOCALHOST: 
+
 $CONFIG_DEFAULTS{'HOST_DNS_ADDRESS'} = 'localhost';
 
-# CHECK IF THE WAR FILE IS AVAILABLE:
+# VALIDATION/VERIFICATION OF THE CONFIGURATION VALUES: 
+
+# 1. NO MAIL SERVER CHECK FOR THE DEV VERSION 
+# (smtp.hmdc.harvard.edu pre-configured)
+
+# 2. CHECK IF THE WAR FILE IS AVAILABLE:
 
 unless ( -f "../../../src/DVN-web/dist/DVN-web.war" )
 {
@@ -212,10 +230,7 @@ unless ( -f "../../../src/DVN-web/dist/DVN-web.war" )
     exit 0; 
 }
 
-
-# CONFIGURE POSTGRES: 
-
-print "\nConfiguring Postgres Database:\n";
+# 3. CHECK POSTGRES AVAILABILITY: 
 
 my $pg_local_connection = 0; 
 
@@ -223,7 +238,9 @@ if ( $CONFIG_DEFAULTS{'POSTGRES_SERVER'} eq 'localhost' )
 {
     $pg_local_connection = 1; 
 
-    # Check for system user postgres:
+    # 3a. CHECK FOR USER postgres:
+
+    print "\nChecking system user \"postgres\"... ";
 
     $POSTGRES_SYS_NAME = "postgres";
     $POSTGRES_SYS_UID = (getpwnam ("postgres"))[2]; 
@@ -234,9 +251,11 @@ if ( $CONFIG_DEFAULTS{'POSTGRES_SERVER'} eq 'localhost' )
 	print STDERR "available)\n";
 
 	exit 1; 
-    }
+    } 
 
-    # Check if psql is present: 
+    print "OK.\n";
+
+    # 3b. LOCATE THE EXECUTABLE:
 
     $sys_path = $ENV{'PATH'}; 
     @sys_path_dirs = split ( ":", $sys_path ); 
@@ -272,7 +291,7 @@ if ( $CONFIG_DEFAULTS{'POSTGRES_SERVER'} eq 'localhost' )
 	exit 1; 
     }
 
-    # Check PostgresQL version: 
+    # 3c. CHECK POSTGRES VERSION: 
 
     open (PSQLOUT, $psql_exec . "/psql --version|"); 
 
@@ -306,15 +325,15 @@ if ( $CONFIG_DEFAULTS{'POSTGRES_SERVER'} eq 'localhost' )
 
     print "\n\nFound Postgres psql command, version $postgresVersion. Good.\n\n";
 
-}
 
-if ($pg_local_connection) 
-{
-    
+    # 4. CONFIGURE POSTGRES: 
+
+    print "\nConfiguring Postgres Database:\n";
 
     $< = $POSTGRES_SYS_UID; 
     $> = $POSTGRES_SYS_UID; 
 
+    # 4a. CHECK IF POSTGRES IS RUNNING:
     print "Checking if a local instance of Postgres is running and accessible...\n";
 
     if (!system ($psql_exec . "/psql -c 'SELECT * FROM pg_roles' > /dev/null 2>&1"))
@@ -342,7 +361,7 @@ if ($pg_local_connection)
 	exit 1; 
     }
 
-    # 0. CHECK IF THE SQL FILES ARE IN PLACE: 
+    # 4b. CHECK IF THE SQL FILES ARE IN PLACE: 
 
     $SQL_REFERENCE_DATA = "../../../src/DVN-EJB/src/conf/referenceData.sql"; 
     $SQL_TIMER = "../../../src/DVN-EJB/src/conf/ejbtimer.sql"; 
@@ -356,7 +375,7 @@ if ($pg_local_connection)
     }
 
 
-    # 1. CHECK IF THIS DB ALREADY EXISTS:
+    # 4c. CHECK IF THIS DB ALREADY EXISTS:
 
     $psql_command_dbcheck = $psql_exec . "/psql -c \"\" -d " . $CONFIG_DEFAULTS{'POSTGRES_DATABASE'}; 
     if ( ($exitcode = system($psql_command_dbcheck)) == 0 )
@@ -389,7 +408,7 @@ if ($pg_local_connection)
 	}
     }
 
-    # 2a. Check if this USER already exists:
+    # 4d. Check if this USER already exists:
 
     $psql_command_rolecheck = $psql_exec . "/psql -c \"\" -d postgres " . $CONFIG_DEFAULTS{'POSTGRES_USER'};
     if ( ($exitcode = system($psql_command_rolecheck)) == 0 )
@@ -399,7 +418,7 @@ if ($pg_local_connection)
     }
     else 
     {
-	# 2b. CREATE DVN DB USER:
+	# 4e. CREATE DVN DB USER:
 
 	print "\nCreating Postgres user (role) for the DVN:\n";
 
@@ -429,7 +448,7 @@ if ($pg_local_connection)
 	print "done.\n";
     }
     
-    # 3. CREATE DVN DB: 
+    # 4f. CREATE DVN DB: 
 
     print "\nCreating Postgres database:\n";
 
@@ -444,7 +463,7 @@ if ($pg_local_connection)
 	
     }
 
-    #4. CREATE TIMER: 
+    #4g. CREATE TIMER: (is this really necessary?? - probably not!)
 
     print "\nCreating database entry for the DVN/EJB timer:\n\n";
 
@@ -489,7 +508,7 @@ else
 
 
     print "In order to use a PostgresQL database running on a remote server,\n";
-    print "Please run the main installer on that host with the \"--pg_only\" option:\n\n";
+    print "Please run the *main* installer on that host with the \"--pg_only\" option:\n\n";
     print "./install --pg_only\n\n";
 
     print "Press any key to continue the installation process once that has been\n";
@@ -511,11 +530,14 @@ else
 $> = 0; 
 $< = 0;      
 
+# 5. CONFIGURE GLASSFISH
 
 print "\nProceeding with the Glassfish setup.\n";
 print "\nChecking your Glassfish installation..."; 
 
 my $glassfish_dir = $CONFIG_DEFAULTS{'GLASSFISH_DIRECTORY'}; 
+
+# 5a. CHECK IF GLASSFISH DIR LOOKS OK:
 
 unless ( -d $glassfish_dir."/glassfish/domains/domain1" )
 {
@@ -534,33 +556,61 @@ unless ( -d $glassfish_dir."/glassfish/domains/domain1" )
 
 print "OK!\n";
 
-## Let's determine how much memory to give to Glassfish as heap: 
-# (no need to worry about this for the dev. environment)
-#$gf_heap_default = "2048m"; 
-#
-#if ( -e "/proc/meminfo" && open MEMINFO, "/proc/meminfo" ) 
-#{
-#    # Linux 
-#    $sys_mem_total = 0; 
-#
-#    while ( $mline = <MEMINFO> )
-#    {
-#	if ( $mline =~ /MemTotal:[ \t]*([0-9]*) kB/ )
-#	{
-#	    $sys_mem_total = $1; 
-#	}
-#    }
-#
-#    close MEMINFO; 
-#
-#    if ( $sys_mem_total != 0 )
-#    {
-#	$gf_heap_default = ( int ($sys_mem_total / 2000 ) ) . "m"; 
-#    }
-#}
-#
-#push @CONFIG_VARIABLES, "DEF_MEM_SIZE"; 
-#$CONFIG_DEFAULTS{"DEF_MEM_SIZE"} = $gf_heap_default; 
+# 5b. DETERMINE HOW MUCH MEMORY TO GIVE TO GLASSFISH AS HEAP:
+
+$gf_heap_default = "2048m"; 
+$sys_mem_total = 0; 
+
+if ( -e "/proc/meminfo" && open MEMINFO, "/proc/meminfo" ) 
+{
+    # Linux 
+
+    while ( $mline = <MEMINFO> )
+    {
+	if ( $mline =~ /MemTotal:[ \t]*([0-9]*) kB/ )
+	{
+	    $sys_mem_total = $1; 
+	}
+    }
+
+    close MEMINFO; 
+
+} 
+elsif ( -x "/usr/sbin/sysctl" ) 
+{
+    # MacOS X, probably...
+
+    $sys_mem_total = `/usr/sbin/sysctl -n hw.memsize`; 
+    chop $raw_mem_info; 
+}
+
+if ( $sys_mem_total > 0 )
+{
+    $gf_heap_default = ( int ($sys_mem_total / (2 * 1024) ) ); 
+
+    print "\nSetting the heap limit for Glassfish to " . $gl_heap_default . "MB. \n"; 
+    print "You may need to adjust this setting to better suit \n";
+    print "your system.\n\n";
+
+}
+else 
+{
+    print "\nCould not determine the amount of memory on your system.\n";
+    print "Setting the heap limit for Glassfish to 2GB. You may need \n"; 
+    print "to  adjust the value to better suit your system.\n\n";
+}
+
+push @CONFIG_VARIABLES, "DEF_MEM_SIZE"; 
+$CONFIG_DEFAULTS{"DEF_MEM_SIZE"} = $gf_heap_default; 
+
+print "\nPress any key to continue...\n\n";
+
+system "stty cbreak </dev/tty >/dev/tty 2>&1";
+	my $key = getc(STDIN);
+	system "stty -cbreak </dev/tty >/dev/tty 2>&1";
+	print "\n";
+
+# 5c. GENERATE GLASSFISH CONFIGURATION FILE:
 
 print "\nWriting glassfish configuration file (domain.xml)... ";
 
@@ -615,6 +665,7 @@ system ( "/bin/cp -f pgdriver/* ".$glassfish_dir."/glassfish/lib");
 print "done!\n";
 
 
+# 5d. STOP GLASSFISH (OK IF NOT RUNNING):
 print "\nStopping glassfish...\n";
 
 unless ( ($exit_code=system ($glassfish_dir."/bin/asadmin stop-domain domain1")) == 0 )
@@ -622,7 +673,7 @@ unless ( ($exit_code=system ($glassfish_dir."/bin/asadmin stop-domain domain1"))
 	print STDERR "(that's OK!)\n";
 }
 
-
+# 5e. START GLASSFISH:
 print "\nStarting glassfish.\n";
 
 unless ( ($exit_code=system ($glassfish_dir."/bin/asadmin start-domain domain1")) == 0 )
@@ -636,10 +687,8 @@ unless ( ($exit_code=system ($glassfish_dir."/bin/asadmin start-domain domain1")
 # check if glassfish is running: 
 # TODO. 
 
-# Deploy: 
-print "\nAttempting to deploy the application:\n\n";
-
-# Do we have ant? 
+# 6. DEPLOY APPLICATION:                                                                         
+# 6a. DO WE HAVE ANT?                                                                            
 
 $sys_path = $ENV{'PATH'}; 
 @sys_path_dirs = split ( ":", $sys_path ); 
@@ -662,6 +711,9 @@ if ( $ant_exec eq "" )
 
     exit 1; 
 }
+
+# 6b. TRY TO DEPLOY:
+print "\nAttempting to deploy the application:\n\n";
 
 $CONFIG_DEFAULTS{'GLASSFISH_ADMIN_PASSWORD'} = 'adminadmin'; 
 # TODO: ask for password! -- in case they have already changed it
@@ -715,7 +767,7 @@ else
 }
 
 
-# shut down: 
+# 6c. SHUT DOWN:
 
 $gf_stop_command = $glassfish_dir."/bin/asadmin stop-domain domain1"; 
 
@@ -727,9 +779,11 @@ unless ( ($exit_code = system ($gf_stop_command)) == 0 )
 	exit 1; 
 }
 
+# 7. POPULATE DATABASE:
 
 if ( $pg_local_connection )
 {
+    # 7a. POPULATE LOCALLY:
     print "\nPopulating the database (local PostgresQL instance):\n\n";
 
     $< = $POSTGRES_SYS_UID; 
@@ -753,6 +807,7 @@ if ( $pg_local_connection )
 }
 else 
 {
+    # 7b. INSTRUCT THE USER TO POPULATE THE DB ON THE REMOTE SERVER: 
     # NOT SUPPORTED YET -- TODO
     print "The database needs to be populated with some intial content \n"; 
     print "before restarting the DVN. \n";
@@ -777,6 +832,7 @@ else
 $> = 0; 
 $< = 0; 
 
+# 8. INSTRUCT THE USER TO START GLASSFISH AGAIN, MANUALLY:
 system ("chown -fR " . $user_real . " " . $glassfish_dir . "/glassfish/domains/domain1"); 
 
 print "\nOK, done.\n";
@@ -793,54 +849,54 @@ print "and password. Click the \"networkAdmin\" link on the right side\n";
 print "Of the main screen, then click \"Update Account\". Change this\n";
 print "default password and default e-mail address.\n\n";
 
-# Finally, check if Rserve is running and accessible: 
-# (not necessary on a dev. system?)
-#print "\n\nFinally, checking if Rserve is running and accessible...\n";
-#
-#unless ( $CONFIG_DEFAULTS{'RSERVE_PORT'}=~/^[0-9][0-9]*$/ )
-#{
-#    print $CONFIG_DEFAULTS{'RSERVE_HOST'} . " does not look like a valid port number,\n";
-#    print "defaulting to 6311.\n\n";
-#
-#    $CONFIG_DEFAULTS{'RSERVE_PORT'} = 6311; 
-#}
-#    
-#my ( $rserve_iaddr, $rserve_paddr, $rserve_proto );
+# 9. FINALLY, CHECK IF RSERVE IS RUNNING:
+if (0) { # (not necessary on a dev. system?)
+print "\n\nFinally, checking if Rserve is running and accessible...\n";
 
-#unless ( $rserve_iaddr = inet_aton($CONFIG_DEFAULTS{'RSERVE_HOST'}) )
-#{
-#    print STDERR "Could not look up $CONFIG_DEFAULTS{'RSERVE_HOST'},\n";
-#    print STDERR "the host you specified as your R server.\n";
-#    print STDERR "\nDVN can function without a working R server, but\n";
-#    print STDERR "much of the functionality concerning running statistics\n";
-#    print STDERR "and analysis on quantitative data will not be available.\n";
-#    print STDERR "Please consult the Installers guide for more info.\n";
-#
-#    exit 0;
-#}
-#
-#$rserve_paddr = sockaddr_in($CONFIG_DEFAULTS{'RSERVE_PORT'}, $rserve_iaddr);
-#$rserve_proto = getprotobyname('tcp');
-#
-#unless ( socket(SOCK, PF_INET, SOCK_STREAM, $rserve_proto) &&
-#	connect(SOCK, $rserve_paddr) ) 
-#{
-#    print STDERR "Could not establish connection to $CONFIG_DEFAULTS{'RSERVE_HOST'}\n";
-#    print STDERR "on port $CONFIG_DEFAULTS{'RSERVE_PORT'}, the address you provided\n";
-#    print STDERR "for your R server.\n";
-#    print STDERR "DVN can function without a working R server, but\n";
-#    print STDERR "much of the functionality concerning running statistics\n";
-#    print STDERR "and analysis on quantitative data will not be available.\n";
-#    print STDERR "Please consult the \"Installing R\" section in the Installers guide\n";
-#    print STDERR "for more info.\n";
-#
-#    exit 0;
-#    
-#}
-#
-#close (SOCK); 
-#print "\nOK!\n";
+unless ( $CONFIG_DEFAULTS{'RSERVE_PORT'}=~/^[0-9][0-9]*$/ )
+{
+    print $CONFIG_DEFAULTS{'RSERVE_HOST'} . " does not look like a valid port number,\n";
+    print "defaulting to 6311.\n\n";
 
+    $CONFIG_DEFAULTS{'RSERVE_PORT'} = 6311; 
+}
+    
+my ( $rserve_iaddr, $rserve_paddr, $rserve_proto );
+
+unless ( $rserve_iaddr = inet_aton($CONFIG_DEFAULTS{'RSERVE_HOST'}) )
+{
+    print STDERR "Could not look up $CONFIG_DEFAULTS{'RSERVE_HOST'},\n";
+    print STDERR "the host you specified as your R server.\n";
+    print STDERR "\nDVN can function without a working R server, but\n";
+    print STDERR "much of the functionality concerning running statistics\n";
+    print STDERR "and analysis on quantitative data will not be available.\n";
+    print STDERR "Please consult the Installers guide for more info.\n";
+
+    exit 0;
+}
+
+$rserve_paddr = sockaddr_in($CONFIG_DEFAULTS{'RSERVE_PORT'}, $rserve_iaddr);
+$rserve_proto = getprotobyname('tcp');
+
+unless ( socket(SOCK, PF_INET, SOCK_STREAM, $rserve_proto) &&
+	connect(SOCK, $rserve_paddr) ) 
+{
+    print STDERR "Could not establish connection to $CONFIG_DEFAULTS{'RSERVE_HOST'}\n";
+    print STDERR "on port $CONFIG_DEFAULTS{'RSERVE_PORT'}, the address you provided\n";
+    print STDERR "for your R server.\n";
+    print STDERR "DVN can function without a working R server, but\n";
+    print STDERR "much of the functionality concerning running statistics\n";
+    print STDERR "and analysis on quantitative data will not be available.\n";
+    print STDERR "Please consult the \"Installing R\" section in the Installers guide\n";
+    print STDERR "for more info.\n";
+
+    exit 0;
+    
+}
+
+close (SOCK); 
+print "\nOK!\n";
+}
 exit 0; 
 
 

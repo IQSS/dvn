@@ -1438,9 +1438,9 @@
                           <ice:graphicImage value="/resources/images/icon_info.gif" styleClass="dvn_icon"/>
                           <ice:outputText styleClass="vdcHelpText" value=" #{bundlePageInfo.editTemplateAddFieldsHelp}" escape="false"/>
                         </p>
-                        <div jsfc="ice:panelGroup" styleClass="dvnWarningMessage" rendered="#{!empty flash.message}">
+                        <div jsfc="ice:panelGroup" styleClass="dvnWarningMessage" rendered="#{!empty VDCRender.flash.warningMessage}">
                           <div class="dvnMsgBlockContainer">
-                            <p><ice:outputText id="addFieldMessage" value="#{flash.message}"/></p>
+                            <p><ice:outputText id="addFieldMessage" value="#{VDCRender.flash.warningMessage}"/></p>
                           </div>
                         </div>
                         <div>

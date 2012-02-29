@@ -116,20 +116,9 @@ public class TemplateFormPage extends VDCBaseBean implements java.io.Serializabl
        JavascriptContext.addJavascriptCall(getFacesContext(),"initInlineHelpTip();");
    }     
     
-   public void init() {
-       System.out.println("Start of init.....");       
+   public void init() {      
        super.init();
        Long vdcId = new Long(0);
-       try {
-           Context ctx = new InitialContext();
-           /*editTemplateService = (EditTemplateService) ctx.lookup("java:comp/env/editTemplate");*/
-       } catch (NamingException e) {
-           e.printStackTrace();
-           FacesContext context = FacesContext.getCurrentInstance();
-           FacesMessage errMessage = new FacesMessage(FacesMessage.SEVERITY_ERROR, e.getMessage(), null);
-           context.addMessage(null, errMessage);
-
-       }
         
        if (getTemplateId() != null) {
               
@@ -1134,13 +1123,18 @@ public class TemplateFormPage extends VDCBaseBean implements java.io.Serializabl
     public String addTemplateAction() {
         return "templateForm";
     }
-    public String save() {
-        if (this.getTemplate()==null) {
-            return "home";
-        }      
+    public String save() {       
+        boolean isNewTemplate = template.getId() == null;
         removeEmptyRows();
         editTemplateService.save();
-        return "/admin/ManageTemplatesPage?faces-redirect=true" + ((getVDCRequestBean().getCurrentVDCId() != null) ? "&vdcId=" + getVDCRequestBean().getCurrentVDCId() : "");
+
+        if (isNewTemplate) {
+        getVDCRenderBean().getFlash().put("successMessage", "Successfully added new template.");
+        } else {
+        getVDCRenderBean().getFlash().put("successMessage", "Successfully updated template.");
+        }       
+        
+        return "/admin/ManageTemplatesPage?faces-redirect=true" + getNavigationVDCSuffix();
     }
 
     HtmlSelectOneMenu selectFieldType;

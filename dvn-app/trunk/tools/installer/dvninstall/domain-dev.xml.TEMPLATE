@@ -214,7 +214,7 @@
         <jvm-options>-Dcom.sun.enterprise.taglibs=appserv-jstl.jar,jsf-impl.jar</jvm-options>
         <jvm-options>-Dcom.sun.enterprise.taglisteners=jsf-impl.jar</jvm-options>
         <jvm-options>-Ddvn.inetAddress=localhost</jvm-options>
-        <jvm-options>-Ddvn.networkData.libPath=${com.sun.aas.instanceRoot}/config/networkData</jvm-options>
+        <jvm-options>-Ddvn.networkData.libPath=${com.sun.aas.instanceRoot}/config/networkData/lib</jvm-options>
         <jvm-options>-Ddvn.index.location=${com.sun.aas.instanceRoot}/config</jvm-options>
         <jvm-options>-Dvdc.dsb.host=%RSERVE_HOST%</jvm-options>
         <jvm-options>-Dvdc.dsb.rserve.port=%RSERVE_PORT%</jvm-options>

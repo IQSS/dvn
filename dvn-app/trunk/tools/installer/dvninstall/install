@@ -625,6 +625,8 @@ if ( $sys_mem_total > 0 )
     print "You may need to adjust this setting to better suit \n";
     print "your system.\n\n";
 
+    $gf_heap_default .= "m";
+
 }
 else 
 {

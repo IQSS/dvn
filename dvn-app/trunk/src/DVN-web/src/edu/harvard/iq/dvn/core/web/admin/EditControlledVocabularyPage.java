@@ -123,7 +123,7 @@ public class EditControlledVocabularyPage extends VDCBaseBean implements java.io
             if (isNewControlledVocabulary) {
                 getVDCRenderBean().getFlash().put("successMessage", "Successfully added new Controlled Vocabulary.");
             } else {
-                getVDCRenderBean().getFlash().put("successMessage", "Successfully edited Controlled Vocabulary.");
+                getVDCRenderBean().getFlash().put("successMessage", "Successfully updated Controlled Vocabulary.");
             }
             return "/admin/ManageControlledVocabularyPage?faces-redirect=true";
     }

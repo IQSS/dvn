@@ -134,6 +134,11 @@ ALTER TABLE templatefield ALTER COLUMN controlledvocabulary_id SET STORAGE PLAIN
 alter table template ADD COLUMN enabled boolean;
 update template set enabled=true;
 
+-- Page def permission changes:
+INSERT INTO pagedef ( name, path, role_id, networkrole_id ) VALUES ( 'ManageControlledVocabularyPage', '/admin/ManageControlledVocabularyPage.xhtml', null,2 );
+INSERT INTO pagedef ( name, path, role_id, networkrole_id ) VALUES ( 'ManageTemplatesPage', '/admin/ManageTemplatesPage.xhtml', 2,2 );
+update pagedef set role_id=2,networkrole_id=2 where name = 'TemplateFormPage';
+
 
 -- Author related changes
 Alter table studyAuthor add IDType  character varying(255);

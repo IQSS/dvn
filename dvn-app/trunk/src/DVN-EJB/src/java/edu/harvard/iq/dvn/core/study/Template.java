@@ -33,6 +33,7 @@ import java.util.Collection;
 import javax.persistence.*;
 import edu.harvard.iq.dvn.core.vdc.*;
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  *
@@ -41,7 +42,7 @@ import java.util.ArrayList;
 @Entity
 public class Template implements java.io.Serializable {
     @OneToMany (mappedBy="template",cascade={CascadeType.REMOVE, CascadeType.MERGE, CascadeType.PERSIST})
-    private Collection<TemplateField> templateFields;
+    private List<TemplateField> templateFields;
     
     
     /**
@@ -56,11 +57,11 @@ public class Template implements java.io.Serializable {
         metadata = new Metadata();
         metadata.setTemplate(this);
     } 
-    public Collection<TemplateField> getTemplateFields() {
+    public List<TemplateField> getTemplateFields() {
         return templateFields;
     }
 
-    public void setTemplateFields(Collection<TemplateField> templateFields) {
+    public void setTemplateFields(List<TemplateField> templateFields) {
         this.templateFields = templateFields;
     }
 

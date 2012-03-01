@@ -5,7 +5,9 @@
 package edu.harvard.iq.dvn.core.study;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
+import javax.faces.model.SelectItem;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -49,6 +51,14 @@ public class ControlledVocabulary implements Serializable {
 
     public void setControlledVocabularyValues(List<ControlledVocabularyValue> controlledVocabularyValues) {
         this.controlledVocabularyValues = controlledVocabularyValues;
+    }
+    
+    public List<SelectItem> getSelectItems(){
+        List selectItems = new ArrayList<SelectItem>();
+        for (ControlledVocabularyValue cvv: controlledVocabularyValues){
+              selectItems.add(new SelectItem(cvv.getValue(), cvv.getValue()));
+        }
+        return selectItems;
     }
 
     public String getDescription() {

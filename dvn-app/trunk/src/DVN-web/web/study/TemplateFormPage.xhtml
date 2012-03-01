@@ -1473,7 +1473,8 @@
               <ice:panelSeries value="#{TemplateFormPage.customFieldsDataModel}" var="customFieldsDataModel"
                                binding="#{TemplateFormPage.customFieldsPanelSeries}">
                   <ice:dataTable cellpadding="0" cellspacing="0" width="100%" 
-                                 rendered="#{empty(customFieldsDataModel[0].templateFieldControlledVocabulary) and (TemplateFormPage.networkEdit or customFieldsDataModel[0].fieldInputLevelString != 'disabled')}"
+                                 rendered="#{empty(customFieldsDataModel[0].controlledVocabulary) 
+                                             and (TemplateFormPage.networkEdit or customFieldsDataModel[0].fieldInputLevelString != 'disabled')}"
                                  styleClass="vdcEditStudyTable" columnClasses="vdcEditStudyCol1, vdcEditStudyCol2, vdcEditStudyCol3"
                                  value="#{customFieldsDataModel[1]}" var="customValuesDataModel">
                     <ice:column styleClass="vdcEditStudyField">
@@ -1513,12 +1514,16 @@
                           <ice:commandButton rendered="#{customValuesDataModel[1].size() > 1}" 
                                     alt="Remove Row" title="Remove Row" image="/resources/images/icon_remove.gif" actionListener="#{TemplateFormPage.removeDcmRow}"/>
 
-                          <ice:commandLink value="Edit Vocabulary" rendered="#{TemplateFormPage.networkEdit and customFieldsDataModel[1].rowIndex == 0 and customFieldsDataModel[0].studyField.fieldType == 'textBox'}" actionListener="#{TemplateFormPage.openPopup}">
+                          <ice:commandLink value="Select Vocabulary" rendered="#{TemplateFormPage.networkEdit 
+                                                                                 and customFieldsDataModel[1].rowIndex == 0 and customFieldsDataModel[0].studyField.fieldType == 'textBox'}" 
+                                           actionListener="#{TemplateFormPage.openPopup}">
                               <f:attribute name="sf_id" value="#{customFieldsDataModel[0].studyField.id}"/>
                               <f:attribute name="dcmSortOrder" value="#{customFieldsDataModel[0].dcmSortOrder}"/>
                               <f:attribute name="sf_name" value="#{customFieldsDataModel[0].studyField.name}"/>
                           </ice:commandLink>
-
+                          
+                          
+                          
                         <ice:selectOneMenu immediate="false" partialSubmit="true" rendered="#{customFieldsDataModel[1].rowIndex==0}"
                                         value="#{customFieldsDataModel[0].fieldInputLevelString}"
                                         valueChangeListener="#{TemplateFormPage.changeFieldInputValueDCM}">
@@ -1532,14 +1537,15 @@
                           <ice:commandButton value="Move Down" alt="Move Down" title="Move Down" rendered="#{TemplateFormPage.networkEdit and customFieldsDataModel[1].rowIndex==0}" 
                                              image="/resources/images/icon_movedown.png" actionListener="#{TemplateFormPage.moveDown}"/>
 
-                          <ice:commandLink value="Remove" title="Remove Field" rendered="#{TemplateFormPage.networkEdit and customFieldsDataModel[1].rowIndex==0}" actionListener="#{TemplateFormPage.removeAdHocField}"/>
+                          <ice:commandLink value="Remove" rendered="#{TemplateFormPage.networkEdit and customFieldsDataModel[1].rowIndex==0}" 
+                                           actionListener="#{TemplateFormPage.removeAdHocField}"/>
                     </ice:column>
                   </ice:dataTable>
                   
 <!-- Start of Controlled vocab stuff-->
                   <ice:panelGrid cellpadding="0" cellspacing="0" columns="3" width="100%"
                              styleClass="vdcEditStudyTable #{customFieldsDataModel[0].fieldInputLevelString}"
-                             rendered ="#{!empty(customFieldsDataModel[0].templateFieldControlledVocabulary)}"
+                             rendered ="#{!empty(customFieldsDataModel[0].controlledVocabulary)}"
                              columnClasses="vdcEditStudyCol1, vdcEditStudyCol2, vdcEditStudyCol3">
                     <ice:column styleClass="vdcEditStudyField">                          
                         <ice:outputText styleClass="dvnInlineHelpLabel dvnInlineHelpTip" value="#{customFieldsDataModel[0].studyField.name}" 
@@ -1548,38 +1554,42 @@
                         <ice:graphicImage value="/resources/images/icon_recommended.gif" rendered="#{customFieldsDataModel[0].recommended}"/>
                     </ice:column>
                     <ice:column>
-                        <ice:selectOneMenu immediate="false" value="#{customFieldsDataModel[0].studyField.studyFieldValues}" 
+                        <ice:selectOneMenu immediate="false" 
+                                           value="#{customFieldsDataModel[0].studyField.studyFieldValueSingleString}" 
                                            valueChangeListener="#{TemplateFormPage.changeSingleValCV}"                                          
                                         rendered ="#{!customFieldsDataModel[0].allowMultiples}">
-                            <f:selectItems value="#{customFieldsDataModel[0].controlledVocabularySelectItems}"/>
+                            <f:selectItem itemLabel="No Value" itemValue=""/>
+                            <f:selectItems value="#{customFieldsDataModel[0].controlledVocabulary.selectItems}"/>
                             <f:attribute name="sf_id" value="#{customFieldsDataModel[0].studyField.id}"/>
                         </ice:selectOneMenu>  
-                        <ice:selectManyListbox immediate="false" value="#{customFieldsDataModel[0].studyField.studyFieldValues}" valueChangeListener="#{TemplateFormPage.changeMultiValCV}"                                             
+                        <ice:selectManyListbox immediate="false" 
+                                               valueChangeListener="#{TemplateFormPage.changeMultiValCV}" 
+                                               value="#{customFieldsDataModel[0].studyField.studyFieldValueStrings}"
                                         rendered ="#{customFieldsDataModel[0].allowMultiples }">
-                            <f:selectItems value="#{customFieldsDataModel[0].controlledVocabularySelectItems}"/>
+                            <f:selectItems value="#{customFieldsDataModel[0].controlledVocabulary.selectItems}"/>
                             <f:attribute name="sf_id" value="#{customFieldsDataModel[0].studyField.id}"/>
                         </ice:selectManyListbox>
                     </ice:column>
                     <ice:column>
-                        <ice:commandButton value="Move Up" alt="Move Up" title="Move Up" style="float:left;" image="/resources/images/icon_moveup.png"
-                                           rendered="#{TemplateFormPage.networkEdit}" actionListener="#{TemplateFormPage.moveUp}"/>
-                        <ice:commandButton value="Move Down" alt="Move Down" title="Move Down" style="float:left;" image="/resources/images/icon_movedown.png"
-                                           rendered="#{TemplateFormPage.networkEdit}" actionListener="#{TemplateFormPage.moveDown}"/>
-
-                        <ice:commandButton value="Update Controlled Vocabulary" rendered="#{TemplateFormPage.networkEdit}" actionListener="#{TemplateFormPage.openPopup}">
-                          <f:attribute name="sf_id" value="#{customFieldsDataModel[0].studyField.id}"/>
-                          <f:attribute name="dcmSortOrder" value="#{customFieldsDataModel[0].dcmSortOrder}"/>
-                          <f:attribute name="sf_name" value="#{customFieldsDataModel[0].studyField.name}"/>
-                        </ice:commandButton>
-
+                         <ice:commandLink value="Select Vocabulary" rendered="#{ customFieldsDataModel[0].studyField.fieldType == 'textBox'}" actionListener="#{TemplateFormPage.openPopup}">
+                              <f:attribute name="sf_id" value="#{customFieldsDataModel[0].studyField.id}"/>
+                              <f:attribute name="dcmSortOrder" value="#{customFieldsDataModel[0].dcmSortOrder}"/>
+                              <f:attribute name="sf_name" value="#{customFieldsDataModel[0].studyField.name}"/>
+                          </ice:commandLink>
+  
                         <ice:selectOneMenu immediate="false" partialSubmit="true"
                                     value="#{customFieldsDataModel[0].fieldInputLevelString}"
                                     valueChangeListener="#{TemplateFormPage.changeFieldInputValueDCM}">
                            <f:attribute name="dcmSortOrder" value="#{customFieldsDataModel[0].dcmSortOrder}"/>
                            <f:attribute name="tf_id" value="#{customFieldsDataModel[0].id}"/>
+
                            <f:selectItems value="#{TemplateFormPage.fieldInputLevelSelectItems}"/>
                         </ice:selectOneMenu>
 
+                      <ice:commandButton value="Move Up" alt="Move Up" title="Move Up" style="float:left;" image="/resources/images/icon_moveup.png"
+                                           rendered="#{TemplateFormPage.networkEdit}" actionListener="#{TemplateFormPage.moveUp}"/>
+                        <ice:commandButton value="Move Down" alt="Move Down" title="Move Down" style="float:left;" image="/resources/images/icon_movedown.png"
+                                           rendered="#{TemplateFormPage.networkEdit}" actionListener="#{TemplateFormPage.moveDown}"/>
                         <ice:commandLink value="Remove" title="Remove Field" rendered="#{TemplateFormPage.networkEdit}" actionListener="#{TemplateFormPage.removeAdHocField}"/>
                     </ice:column>
                 </ice:panelGrid>
@@ -2653,7 +2663,7 @@
                                width="100%" cellpadding="0"
                                cellspacing="0" columns="2"
                                columnClasses="none,popupButton">
-                    <ice:outputText value="Edit Controlled Vocabulary"/>
+                    <ice:outputText value="View/Select Controlled Vocabulary"/>
                 </ice:panelGrid>
             </f:facet>
             <f:facet name="body">
@@ -2661,19 +2671,26 @@
                                width="100%" cellpadding="0"
                                cellspacing="0" columns="1"
                                styleClass="popupModalBody">
+
                     <ice:column>
-                        <ice:inputText id="newControlledVocab" binding="#{TemplateFormPage.inputControlledVocabulary}" value="#{TemplateFormPage.newControlledVocab}"></ice:inputText>
-                        <ice:commandButton id="addToControlledVocabButton" action="#{TemplateFormPage.addToControlledVocabList}" alt="Add Row" title="Add Row" image="/resources/images/icon_add.gif"/>
-                    </ice:column>
-                    <ice:column>
-                        <ice:selectManyListbox id="controlledVocabSelectManyList" value="#{TemplateFormPage.selectedControlledVocabStrings}"
-                                           binding="#{TemplateFormPage.selectControlledVocabulary}">                                                                    
-                            <f:selectItems value="#{TemplateFormPage.controlledVocabStrings}"></f:selectItems>
+                        <ice:outputText
+                                        value="Controlled Vocabulary Items" />
+                        <ice:selectOneMenu immediate="false" partialSubmit="true" value="#{TemplateFormPage.selectedControlledVocabItem}"
+                                           valueChangeListener="#{TemplateFormPage.changeControlledVocabItem}">
+                            <f:selectItems value="#{TemplateFormPage.controlledVocabularySelectItems}"/>
+                        </ice:selectOneMenu>
+                        <ice:outputText
+                                        value="Controlled Vocabulary Description: #{TemplateFormPage.selectedControlledVocabDescription}" />
+                        <ice:outputText
+                                        value="Controlled Vocabulary Values" />
+                        <ice:selectManyListbox id="controlledVocabSelectManyList" 
+                                           >                                                                    
+                            <f:selectItems value="#{TemplateFormPage.selectedControlledVocabStrings}"></f:selectItems>
                         </ice:selectManyListbox>
-                        <ice:commandButton id="autoCentPopupOkSave" visible="true" action="#{TemplateFormPage.removeSelectedControlledVocab}" alt="Remove Row" title="Remove Row" image="/resources/images/icon_remove.gif"/>
                     </ice:column>
                     <div jsfc="ice:panelGroup" styleClass="dvnFormPadding dvnFormMargin">
-                        <ice:commandButton id="autoCentPopupCancel" immediate="true" actionListener="#{TemplateFormPage.closePopup}" value="Continue"/>
+                        <ice:commandButton id="autoCentPopupApply" immediate="true" actionListener="#{TemplateFormPage.applyControlledVocabulary}" value="Apply"/>
+                        <ice:commandButton id="autoCentPopupCancel" immediate="true" actionListener="#{TemplateFormPage.closePopup}" value="Cancel"/>
                     </div>
                 </ice:panelGrid>
             </f:facet>

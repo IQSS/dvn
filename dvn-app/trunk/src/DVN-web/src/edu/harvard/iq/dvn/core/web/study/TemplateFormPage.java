@@ -68,6 +68,8 @@ import com.icesoft.faces.component.ext.HtmlSelectBooleanCheckbox;
 import com.icesoft.faces.component.ext.HtmlSelectManyListbox;
 import com.icesoft.faces.component.panelseries.PanelSeries;
 import com.icesoft.faces.context.effects.JavascriptContext;
+import edu.harvard.iq.dvn.core.study.ControlledVocabulary;
+import edu.harvard.iq.dvn.core.study.ControlledVocabularyValue;
 import edu.harvard.iq.dvn.core.study.FieldInputLevel;
 import edu.harvard.iq.dvn.core.study.StudyField;
 
@@ -116,7 +118,8 @@ public class TemplateFormPage extends VDCBaseBean implements java.io.Serializabl
        JavascriptContext.addJavascriptCall(getFacesContext(),"initInlineHelpTip();");
    }     
     
-   public void init() {      
+   public void init() {
+       
        super.init();
        Long vdcId = new Long(0);
         
@@ -150,6 +153,7 @@ public class TemplateFormPage extends VDCBaseBean implements java.io.Serializabl
        }
        initStudyMap();
        initAdHocFieldMap();
+       initControlledVocbaularyMap();
 
        fieldTypeSelectItems = loadFieldTypeSelectItems();
 
@@ -249,6 +253,20 @@ public class TemplateFormPage extends VDCBaseBean implements java.io.Serializabl
         } 
     }
     
+    private Map controlledVocabularyMap;
+    
+    private void initControlledVocbaularyMap(){
+        controlledVocabularyMap = new HashMap();
+
+        for (ControlledVocabulary cv: templateService.getNetworkControlledVocabulary()){
+            controlledVocabularyMap.put(cv.getId(), cv);
+        } 
+
+    }
+    
+    public Map getControlledVocabularyMap() {
+        return controlledVocabularyMap;
+    }
     
     public Map getTemplatesMap() {
         return templateService.getVdcTemplatesMap(getVDCRequestBean().getCurrentVDCId());
@@ -328,6 +346,17 @@ public class TemplateFormPage extends VDCBaseBean implements java.io.Serializabl
     
     public List<TemplateField> getAdHocFields() {
         return adHocFields;
+    }
+    
+    public List<SelectItem> getControlledVocabularySelectItems(){
+        List selectItems = new ArrayList<SelectItem>();
+        if (templateService.getNetworkControlledVocabulary().size() > 0){
+             selectItems.add(new SelectItem(0, "Select Controlled Vocabulary"));
+        }
+        for (ControlledVocabulary cv: templateService.getNetworkControlledVocabulary()){
+              selectItems.add(new SelectItem(cv.getId(), cv.getName()));
+        }
+        return selectItems;
     }
     
     public List<SelectItem> loadFieldInputLevelSelectItems() {
@@ -1126,6 +1155,7 @@ public class TemplateFormPage extends VDCBaseBean implements java.io.Serializabl
     public String save() {       
         boolean isNewTemplate = template.getId() == null;
         removeEmptyRows();
+
         editTemplateService.save();
 
         if (isNewTemplate) {
@@ -2692,6 +2722,54 @@ public class TemplateFormPage extends VDCBaseBean implements java.io.Serializabl
             editTemplateService.changeFieldInputLevel(studyMapValue.getTemplateField(), newValue);
     }
     
+    
+    public void changeControlledVocabItem(ValueChangeEvent event){
+        selectedControlledVocabStrings.clear();
+        selectedControlledVocabDescription = "";
+                Long newValue = (Long)event.getNewValue();
+                if (newValue > 0){
+                    ControlledVocabulary selectedCV = (ControlledVocabulary) controlledVocabularyMap.get(newValue);
+                    selectedControlledVocabDescription = selectedCV.getDescription();
+                    if (!selectedCV.getControlledVocabularyValues().isEmpty()){
+                        for (ControlledVocabularyValue cvv: selectedCV.getControlledVocabularyValues()){
+                            selectedControlledVocabStrings.add(cvv.getValue());
+                        }
+                    }
+                }    
+
+    }
+    
+    private Long selectedControlledVocabItem;
+    
+    
+    
+    private String selectedControlledVocabDescription;
+    
+    public String getSelectedControlledVocabDescription() {
+        return selectedControlledVocabDescription;
+    }
+
+    public void setSelectedControlledVocabDescription(String selectedControlledVocabStrings) {
+        this.selectedControlledVocabDescription = selectedControlledVocabStrings;
+    }
+    
+    public void changeFieldControlledVocabulary(ValueChangeEvent event) {
+        
+               
+        String newValue = (String)event.getNewValue();
+
+        Long getOrder = (Long) event.getComponent().getAttributes().get("dcmSortOrder");
+        TemplateField changeValue = adHocFields.get(getOrder.intValue() -1 );
+
+        for (ControlledVocabulary cv: templateService.getNetworkControlledVocabulary()){
+            if (cv.getId().equals(new Long(newValue))){
+                changeValue.setControlledVocabulary(cv);
+            }
+              
+        }
+        
+    }
+    
 
     public void changeFieldInputValueDCM(ValueChangeEvent event) {
         Long getOrder = (Long) event.getComponent().getAttributes().get("dcmSortOrder");
@@ -2701,15 +2779,15 @@ public class TemplateFormPage extends VDCBaseBean implements java.io.Serializabl
     }
     
     public void changeSingleValCV(ValueChangeEvent event) {
-        /*
+
         Long sf_Id = (Long) event.getComponent().getAttributes().get("sf_id");
         
         for (TemplateField tfTest: adHocFields){
             if (tfTest.getStudyField().getId().equals(sf_Id)){
-                
-                List data = (List)tfTest.getTemplateFieldValues();
+                StudyField sfc = tfTest.getStudyField();
+                List data = (List)sfc.getStudyFieldValues();
                 List removeItems = new ArrayList();
-                for (TemplateFieldValue tfv: tfTest.getTemplateFieldValues()){
+                for (StudyFieldValue tfv: sfc.getStudyFieldValues()){
                     removeItems.add(tfv);
                 }
                 for (Object o: removeItems){
@@ -2717,27 +2795,27 @@ public class TemplateFormPage extends VDCBaseBean implements java.io.Serializabl
                 }
                 String inStr = (String)event.getNewValue();
                 if (!inStr.equals("--No Value--")){
-                    TemplateFieldValue elem = new TemplateFieldValue();
-                    elem.setTemplateField(tfTest);
+                    StudyFieldValue elem = new StudyFieldValue();
+                    elem.setStudyField(sfc);
                     elem.setMetadata(this.getTemplate().getMetadata());
                     elem.setStrValue((String)event.getNewValue());
                     List values = new ArrayList();
                     values.add(elem);
-                    tfTest.setTemplateFieldValues(values);
+                    sfc.setStudyFieldValues(values);
                 }
             }
-        }*/
+        }
     }
     
     public void changeMultiValCV(ValueChangeEvent event) {
         Long sf_Id = (Long) event.getComponent().getAttributes().get("sf_id");
-        /*
+
         for (TemplateField tfTest: adHocFields){
             if (tfTest.getStudyField().getId().equals(sf_Id)){
-                
-                List data = (List)tfTest.getTemplateFieldValues();
+                StudyField sfc = tfTest.getStudyField();
+                List data = (List)sfc.getStudyFieldValues();
                 List removeItems = new ArrayList();
-                for (TemplateFieldValue tfv: tfTest.getTemplateFieldValues()){
+                for (StudyFieldValue tfv: sfc.getStudyFieldValues()){
                     removeItems.add(tfv);
                 }
                 for (Object o: removeItems){
@@ -2749,16 +2827,16 @@ public class TemplateFormPage extends VDCBaseBean implements java.io.Serializabl
                 for (Object inObj: inStringList){                  
                     String inStr = (String) inObj;
                     if (!inStr.equals("--No Value--")){
-                        TemplateFieldValue elem = new TemplateFieldValue();
-                        elem.setTemplateField(tfTest);
+                        StudyFieldValue elem = new StudyFieldValue();
+                        elem.setStudyField(sfc);
                         elem.setMetadata(this.getTemplate().getMetadata());
                         elem.setStrValue(inStr);
                         values.add(elem); 
                     }                                      
                 }
-                tfTest.setTemplateFieldValues(values);
+                sfc.setStudyFieldValues(values);
             }
-        }*/
+        }
     }
     
     public void openPopup(ActionEvent ae) {
@@ -2827,7 +2905,7 @@ public class TemplateFormPage extends VDCBaseBean implements java.io.Serializabl
         return;
     }
     
-    private List<String> selectedControlledVocabStrings;
+    private List<String> selectedControlledVocabStrings = new ArrayList();
 
     public List<String> getSelectedControlledVocabStrings() {
         return selectedControlledVocabStrings;
@@ -2904,6 +2982,17 @@ public class TemplateFormPage extends VDCBaseBean implements java.io.Serializabl
         showPopup = false;
     }
     
+    public void applyControlledVocabulary(ActionEvent ae) {
+        if (templateCVField != null && selectedControlledVocabItem > 0){
+            System.out.println("selectedControlledVocabItem is " + selectedControlledVocabItem); 
+           ControlledVocabulary selectedCV = (ControlledVocabulary) controlledVocabularyMap.get(selectedControlledVocabItem);
+           templateCVField.setControlledVocabulary(selectedCV);         
+        } else {
+           templateCVField.setControlledVocabulary(null); 
+        }
+        showPopup = false;
+    }
+    
     public List<String> getControlledVocabStrings() {
 
         List stringList = new ArrayList<String>();
@@ -2918,6 +3007,15 @@ public class TemplateFormPage extends VDCBaseBean implements java.io.Serializabl
     }
     
 
+    public Long getSelectedControlledVocabItem() {
+        return selectedControlledVocabItem;
+    }
+
+    public void setSelectedControlledVocabItem(Long selectedControlledVocabItem) {
+        this.selectedControlledVocabItem = selectedControlledVocabItem;
+    }
+    
+    
     
     HtmlSelectManyListbox selectControlledVocabulary;
 
@@ -2965,6 +3063,8 @@ public class TemplateFormPage extends VDCBaseBean implements java.io.Serializabl
             row[0] = tf;
             row[1] = getCustomValuesDataModel(tf);
             values.add(row);
+            tf.getStudyField().getStudyFieldValues();
+            
         }
         return new ListDataModel(values);
 
@@ -2974,13 +3074,15 @@ public class TemplateFormPage extends VDCBaseBean implements java.io.Serializabl
         List values = new ArrayList();
         
         for (StudyField studyField : template.getMetadata().getStudyFields()) {
-            if (studyField.equals(customField.getStudyField())) {            
-                for (StudyFieldValue sfv : studyField.getStudyFieldValues()) {
+            if (studyField.equals(customField.getStudyField())) { 
+                if(studyField.getStudyFieldValues() !=null){
+                    for (StudyFieldValue sfv : studyField.getStudyFieldValues()) {
 
-                    Object[] row = new Object[2];
-                    row[0] = sfv;
-                    row[1] = studyField.getStudyFieldValues(); // used by the remove method
-                    values.add(row);
+                        Object[] row = new Object[2];
+                        row[0] = sfv;
+                        row[1] = studyField.getStudyFieldValues(); // used by the remove method
+                        values.add(row);
+                    }                    
                 }
                 
                 break;

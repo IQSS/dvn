@@ -32,6 +32,7 @@ import java.util.Collection;
 import edu.harvard.iq.dvn.core.vdc.VDC;
 import edu.harvard.iq.dvn.core.vdc.VDCCollection;
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 import javax.persistence.*;
 
@@ -273,8 +274,28 @@ public class StudyField implements Serializable {
 
     public List<StudyFieldValue> getStudyFieldValues() {
         return studyFieldValues;
-    }    
+    }  
+    
+    public List<String> getStudyFieldValueStrings() {
+        List <String> retString = new ArrayList();
+        for (StudyFieldValue sfv:studyFieldValues){
+            retString.add(sfv.getStrValue());
+        }
+        return retString;
+    }
+    
+    public String getStudyFieldValueSingleString() {
+        String retString = "";
+        for (StudyFieldValue sfv:studyFieldValues){
+            retString = sfv.getStrValue();
+        }
+        return retString;
+    }
+    
+    public void setStudyFieldValueStrings(List<String> studyFieldValues) {}
 
+    public void setStudyFieldValueSingleString(String studyFieldValues) {}
+    
     public void setStudyFieldValues(List<StudyFieldValue> studyFieldValues) {
         this.studyFieldValues = studyFieldValues;
     }            

@@ -454,41 +454,42 @@ public class EditStudyPage extends VDCBaseBean implements java.io.Serializable  
             }
     };
     
-    public void changeSingleValCV(ValueChangeEvent event) {/*
+    public void changeSingleValCV(ValueChangeEvent event) {
         Long sf_Id = (Long) event.getComponent().getAttributes().get("sf_id");
-        
+                
         for (TemplateField tfTest: adHocFields){
             if (tfTest.getStudyField().getId().equals(sf_Id)){
-                
-                List data = (List)tfTest.getTemplateFieldValues();
+                StudyField sfc = tfTest.getStudyField();
+                List data = (List)sfc.getStudyFieldValues();
                 List removeItems = new ArrayList();
-                for (TemplateFieldValue tfv: tfTest.getTemplateFieldValues()){
+                for (StudyFieldValue tfv: sfc.getStudyFieldValues()){
                     removeItems.add(tfv);
                 }
                 for (Object o: removeItems){
                     editStudyService.removeCollectionElement(data,o);
                 }               
-                    TemplateFieldValue elem = new TemplateFieldValue();
-                    elem.setTemplateField(tfTest);
+                    StudyFieldValue elem = new StudyFieldValue();
+                    elem.setStudyField(sfc);
                     elem.setMetadata(metadata);
                     elem.setStrValue((String)event.getNewValue());
                     elem.setDisplayOrder(0);
                     List values = new ArrayList();
                     values.add(elem);
-                    tfTest.setTemplateFieldValues(values);            
+                    sfc.setStudyFieldValues(values);            
             }
-        }*/
+        }
     }
     
     public void changeMultiValCV(ValueChangeEvent event) {
         Long sf_Id = (Long) event.getComponent().getAttributes().get("sf_id");
-/*
+
         for (TemplateField tfTest: adHocFields){
             if (tfTest.getStudyField().getId().equals(sf_Id)){
-                
-                List data = (List)tfTest.getTemplateFieldValues();
+                System.out.println("Found match  " + sf_Id);
+                StudyField sfc = tfTest.getStudyField();
+                List data = (List)sfc.getStudyFieldValues();
                 List removeItems = new ArrayList();
-                for (TemplateFieldValue tfv: tfTest.getTemplateFieldValues()){
+                for (StudyFieldValue tfv: sfc.getStudyFieldValues()){
                     removeItems.add(tfv);
                 }
                 for (Object o: removeItems){
@@ -496,20 +497,21 @@ public class EditStudyPage extends VDCBaseBean implements java.io.Serializable  
                 } 
                 
                 List inStringList = (List) event.getNewValue();
+                
                 List values = new ArrayList();
                 int counter = 0;    
                 for (Object inObj: inStringList){
                     String inStr = (String) inObj;
-                    TemplateFieldValue elem = new TemplateFieldValue();
-                    elem.setTemplateField(tfTest);
+                    StudyFieldValue elem = new StudyFieldValue();
+                    elem.setStudyField(sfc);
                     elem.setMetadata(metadata);
                     elem.setStrValue(inStr);
                     elem.setDisplayOrder(counter++);
                     values.add(elem);                    
                 }
-                tfTest.setTemplateFieldValues(values);
+                sfc.setStudyFieldValues(values);
             }
-        }*/
+        }
     }
     
     public List getAdHocFields() {
@@ -549,11 +551,11 @@ public class EditStudyPage extends VDCBaseBean implements java.io.Serializable  
     
     public void addDcmRow(ActionEvent ae) {
 
-           System.out.println("in add dcm row method" );
+
         HtmlDataTable dataTable = (HtmlDataTable) ae.getComponent().getParent().getParent();
         
-         System.out.println("datatable in add " + dataTable );
-         System.out.println("datatable title in add " + dataTable.getTitle() );
+
+
         Object[] data = (Object[]) ((ListDataModel) dataTable.getValue()).getRowData();
 
         StudyFieldValue newElem = new StudyFieldValue();

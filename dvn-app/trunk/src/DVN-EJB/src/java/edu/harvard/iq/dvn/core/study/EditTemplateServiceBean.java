@@ -184,14 +184,16 @@ public class EditTemplateServiceBean implements edu.harvard.iq.dvn.core.study.Ed
             }*/
             //tf.setTemplateFieldValues(tfvList);
             // bring over field contolled vocab separately
+            /*
             List <TemplateFieldControlledVocabulary> tfcvList = new  ArrayList();
             for (TemplateFieldControlledVocabulary tfcv: defaultField.getTemplateFieldControlledVocabulary()){
                 TemplateFieldControlledVocabulary tfcvn = new TemplateFieldControlledVocabulary();
                 tfcvn.setStrValue(tfcv.getStrValue());
                 tfcvn.setTemplateField(tf);
                 tfcvList.add(tfcvn);
-            }
+            }*/
             tf.setTemplate(template);
+            tf.setControlledVocabulary(defaultField.getControlledVocabulary());
             tf.setFieldInputLevelString(defaultField.getFieldInputLevelString());
             tf.setdcmSortOrder(defaultField.getDcmSortOrder());
             

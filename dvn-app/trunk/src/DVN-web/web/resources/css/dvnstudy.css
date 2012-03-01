@@ -241,7 +241,7 @@ table.viTblinx th{background-color:#e6e6fa;font-weight:700;margin:0px;padding:2p
 .dvnNetDataAnlsAddQryInfoBlk{width:85%;margin-left:1em;padding:1em 0;background:#d2e3ff}
 .dvnNetDataAnlsAddQryInfoBlk div,.dvnNetDataAnlsAddQryInfoBlk p{padding:0 1em;}
 .dvnNetDataAnlsAddQryInfoTitle{text-align:left}
-.dvnNetDataAnlsQryBldrAddButton{text-align:right}
+.dvnNetDataAnlsQryBldrAddButton{padding:0 1em 1em 1em;text-align:right}
 .dvnLittleLetters{font-size:80% !important;vertical-align:top;line-height:2}
 .dvnNetDataAnlsSubTitle{font-weight:bold;margin-top:1em;text-align:left}
 .dvnNetDataAnlsSubTable{margin-top:0}

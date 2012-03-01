@@ -1438,9 +1438,9 @@
                           <ice:graphicImage value="/resources/images/icon_info.gif" styleClass="dvn_icon"/>
                           <ice:outputText styleClass="vdcHelpText" value=" #{bundlePageInfo.editTemplateAddFieldsHelp}" escape="false"/>
                         </p>
-                        <div jsfc="ice:panelGroup" styleClass="dvnWarningMessage" rendered="#{!empty VDCRender.flash.warningMessage}">
+                        <div jsfc="ice:panelGroup" styleClass="dvnWarningMessage" rendered="#{!empty VDCRender.flash.customFieldWarningMessage}">
                           <div class="dvnMsgBlockContainer">
-                            <p><ice:outputText id="addFieldMessage" value="#{VDCRender.flash.warningMessage}"/></p>
+                            <p><ice:outputText id="addFieldMessage" value="#{VDCRender.flash.customFieldWarningMessage}"/></p>
                           </div>
                         </div>
                         <div>
@@ -1462,7 +1462,7 @@
                             <ice:outputText value="Allow multiple values"/>
                         </div>
                         <div class="dvnFormPadding">
-                            <ice:commandButton partialSubmit="true" value="Add Field" action="#{TemplateFormPage.saveField}"/>
+                            <ice:commandButton partialSubmit="true" value="Add Field" action="#{TemplateFormPage.addCustomField}"/>
                         </div>
                     </ice:column>
                 </ice:panelGrid>
@@ -1527,8 +1527,6 @@
                         <ice:selectOneMenu immediate="false" partialSubmit="true" rendered="#{customFieldsDataModel[1].rowIndex==0}"
                                         value="#{customFieldsDataModel[0].fieldInputLevelString}"
                                         valueChangeListener="#{TemplateFormPage.changeFieldInputValueDCM}">
-                            <f:attribute name="dcmSortOrder" value="#{customFieldsDataModel[0].dcmSortOrder}"/>
-                            <f:attribute name="tf_id" value="#{customFieldsDataModel[0].id}"/>
                             <f:selectItems value="#{TemplateFormPage.fieldInputLevelSelectItems}"/>
                         </ice:selectOneMenu>
 
@@ -1538,7 +1536,7 @@
                                              image="/resources/images/icon_movedown.png" actionListener="#{TemplateFormPage.moveDown}"/>
 
                           <ice:commandLink value="Remove" rendered="#{TemplateFormPage.networkEdit and customFieldsDataModel[1].rowIndex==0}" 
-                                           actionListener="#{TemplateFormPage.removeAdHocField}"/>
+                                           actionListener="#{TemplateFormPage.removeCustomField}"/>
                     </ice:column>
                   </ice:dataTable>
                   
@@ -1580,9 +1578,6 @@
                         <ice:selectOneMenu immediate="false" partialSubmit="true"
                                     value="#{customFieldsDataModel[0].fieldInputLevelString}"
                                     valueChangeListener="#{TemplateFormPage.changeFieldInputValueDCM}">
-                           <f:attribute name="dcmSortOrder" value="#{customFieldsDataModel[0].dcmSortOrder}"/>
-                           <f:attribute name="tf_id" value="#{customFieldsDataModel[0].id}"/>
-
                            <f:selectItems value="#{TemplateFormPage.fieldInputLevelSelectItems}"/>
                         </ice:selectOneMenu>
 
@@ -1590,7 +1585,7 @@
                                            rendered="#{TemplateFormPage.networkEdit}" actionListener="#{TemplateFormPage.moveUp}"/>
                         <ice:commandButton value="Move Down" alt="Move Down" title="Move Down" style="float:left;" image="/resources/images/icon_movedown.png"
                                            rendered="#{TemplateFormPage.networkEdit}" actionListener="#{TemplateFormPage.moveDown}"/>
-                        <ice:commandLink value="Remove" title="Remove Field" rendered="#{TemplateFormPage.networkEdit}" actionListener="#{TemplateFormPage.removeAdHocField}"/>
+                        <ice:commandLink value="Remove" title="Remove Field" rendered="#{TemplateFormPage.networkEdit}" actionListener="#{TemplateFormPage.removeCustomField}"/>
                     </ice:column>
                 </ice:panelGrid>
               </ice:panelSeries>

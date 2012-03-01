@@ -125,7 +125,9 @@ public class TemplateFormPage extends VDCBaseBean implements java.io.Serializabl
         networkEdit = getVDCRequestBean().getCurrentVDC() == null;        
         
         if (getTemplateId() != null) {
-            if (!networkEdit && template.isNetwork()) {
+            editTemplateService.setTemplate(templateId); // TODO clean up 
+            
+            if (!networkEdit && editTemplateService.getTemplate().isNetwork()) {
                 // here, we are cloing a network templte to a dv template
                 editTemplateService.newClonedTemplate(getVDCRequestBean().getCurrentVDCId(), template);
             } else {

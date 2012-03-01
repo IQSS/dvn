@@ -343,10 +343,10 @@ public class TemplateFormPage extends VDCBaseBean implements java.io.Serializabl
 
             }
     };
-    
+    /*
     public List<TemplateField> getAdHocFields() {
         return adHocFields;
-    }
+    }*/
     
     public List<SelectItem> getControlledVocabularySelectItems(){
         List selectItems = new ArrayList<SelectItem>();
@@ -482,7 +482,7 @@ public class TemplateFormPage extends VDCBaseBean implements java.io.Serializabl
         HtmlDataTable dataTable = (HtmlDataTable)ae.getComponent().getParent().getParent();
         if (dataTable.getRowCount()>1) {
             List data = (List)dataTable.getValue();
-            editTemplateService.removeCollectionElement(data,dataTable.getRowData());
+            editTemplateService.removeCollectionElement(data,dataTable.getRowIndex());
         }
     }
 
@@ -493,10 +493,10 @@ public class TemplateFormPage extends VDCBaseBean implements java.io.Serializabl
         fieldsDataModel.setRowIndex(customFieldsPanelSeries.getRowIndex());
 
         Object[] fieldsRowData = (Object[]) fieldsDataModel.getRowData();
-        TemplateField removeTF = (TemplateField) fieldsRowData[0];
-        editTemplateService.removeCollectionElement(template.getTemplateFields(), removeTF);
+        //TemplateField removeTF = (TemplateField) fieldsRowData[0];
+        editTemplateService.removeCollectionElement(template.getTemplateFields(), ((Integer) fieldsRowData[2]).intValue());
 
-        adHocFields.remove(removeTF);
+        //adHocFields.remove(removeTF);
 
         List valuesWrappedData = (List) ((ListDataModel) fieldsRowData[1]).getWrappedData();
         for (Object elem : valuesWrappedData) {
@@ -1255,7 +1255,7 @@ public class TemplateFormPage extends VDCBaseBean implements java.io.Serializabl
         
         
         template.getTemplateFields().add(newTF);
-        adHocFields.add(newTF);
+        //adHocFields.add(newTF);
         
         // clear the form fields
         inputStudyFieldName.setValue("");
@@ -3057,32 +3057,34 @@ public class TemplateFormPage extends VDCBaseBean implements java.io.Serializabl
    
     public DataModel getCustomFieldsDataModel() {
         List values = new ArrayList();
-        for (TemplateField tf : getAdHocFields()) {
+        for (int i = 0; i < template.getTemplateFields().size(); i++) {
+            TemplateField tf = template.getTemplateFields().get(i);
 
-            Object[] row = new Object[2];
-            row[0] = tf;
-            row[1] = getCustomValuesDataModel(tf);
-            values.add(row);
+            if (tf.getStudyField().isDcmField()) {
+                Object[] row = new Object[3];
+                row[0] = tf;
+                row[1] = getCustomValuesDataModel(tf);
+                row[2] = new Integer(i);
+                values.add(row);
+            }
             tf.getStudyField().getStudyFieldValues();
             
         }
+        
         return new ListDataModel(values);
 
     }
 
     private DataModel getCustomValuesDataModel(TemplateField customField) {
         List values = new ArrayList();
-        
-        for (StudyField studyField : template.getMetadata().getStudyFields()) {
-            if (studyField.equals(customField.getStudyField())) { 
-                if(studyField.getStudyFieldValues() !=null){
-                    for (StudyFieldValue sfv : studyField.getStudyFieldValues()) {
 
-                        Object[] row = new Object[2];
-                        row[0] = sfv;
-                        row[1] = studyField.getStudyFieldValues(); // used by the remove method
-                        values.add(row);
-                    }                    
+        for (StudyField studyField : template.getMetadata().getStudyFields()) {
+            if (studyField.getName().equals(customField.getStudyField().getName())) {            
+                for (StudyFieldValue sfv : studyField.getStudyFieldValues()) {
+                    Object[] row = new Object[2];
+                    row[0] = sfv;
+                    row[1] = studyField.getStudyFieldValues(); // used by the remove method
+                    values.add(row);
                 }
                 
                 break;
@@ -3108,7 +3110,7 @@ public class TemplateFormPage extends VDCBaseBean implements java.io.Serializabl
         HtmlDataTable dataTable = (HtmlDataTable) ae.getComponent().getParent().getParent();
         if (dataTable.getRowCount() > 1) {
             Object[] data = (Object[]) ((ListDataModel) dataTable.getValue()).getRowData();
-            editTemplateService.removeCollectionElement((List) data[1], data[0]);
+            editTemplateService.removeCollectionElement((List) data[1], dataTable.getRowIndex());
 
         }
     }
@@ -3116,24 +3118,28 @@ public class TemplateFormPage extends VDCBaseBean implements java.io.Serializabl
     public void moveUp(ActionEvent ae) {
         int rowIndex = customFieldsPanelSeries.getRowIndex();
         if (rowIndex > 0) {
-            TemplateField moveDown = adHocFields.get(rowIndex - 1);
-            TemplateField moveUp = adHocFields.get(rowIndex);
-            moveUp.setdcmSortOrder(new Long(rowIndex - 1));
-            moveDown.setdcmSortOrder(new Long(rowIndex));
+            DataModel fieldsDataModel = getCustomFieldsDataModel();
+            fieldsDataModel.setRowIndex(rowIndex);
+
+            Object[] fieldsRowData = (Object[]) fieldsDataModel.getRowData();
+            int swapIndex = ((Integer) fieldsRowData[2]).intValue();
+            Collections.swap(template.getTemplateFields(), swapIndex - 1, swapIndex);
         }
 
-        Collections.sort(adHocFields, comparator);
+        //Collections.sort(adHocFields, comparator);
     }
 
     public void moveDown(ActionEvent ae) {
         int rowIndex = customFieldsPanelSeries.getRowIndex();
-        if (rowIndex < adHocFields.size() - 1) {
-            TemplateField moveDown = adHocFields.get(rowIndex);
-            TemplateField moveUp = adHocFields.get(rowIndex + 1);
-            moveUp.setdcmSortOrder(new Long(rowIndex));
-            moveDown.setdcmSortOrder(new Long(rowIndex + 1));
+        if (rowIndex < customFieldsPanelSeries.getRowCount() - 1) {
+            DataModel fieldsDataModel = getCustomFieldsDataModel();
+            fieldsDataModel.setRowIndex(rowIndex);
+
+            Object[] fieldsRowData = (Object[]) fieldsDataModel.getRowData();
+            int swapIndex = ((Integer) fieldsRowData[2]).intValue();
+            Collections.swap(template.getTemplateFields(), swapIndex, swapIndex + 1);
         }
 
-        Collections.sort(adHocFields, comparator);
+        //Collections.sort(adHocFields, comparator);
     }
 }

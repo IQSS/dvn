@@ -216,6 +216,11 @@ public class EditTemplateServiceBean implements edu.harvard.iq.dvn.core.study.Ed
         em.remove(elem);
     }
     
+    public void removeCollectionElement(List list,int index) {
+        em.remove(list.get(index));
+        list.remove(index);
+    }    
+    
     public  Template getTemplate() {
         return template;
     }

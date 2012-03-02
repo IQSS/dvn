@@ -147,51 +147,13 @@ public class TemplateFormPage extends VDCBaseBean implements java.io.Serializabl
         template.getMetadata().initCollections();
         
         initStudyMap();
-        initControlledVocbaularyMap();
 
         fieldTypeSelectItems = loadFieldTypeSelectItems();
         fieldInputLevelSelectItems = loadFieldInputLevelSelectItems();
     }
 
    
-   
-    
-    /**
-     * <p>Callback method that is called after the component tree has been
-     * restored, but before any event processing takes place.  This method
-     * will <strong>only</strong> be called on a postback request that
-     * is processing a form submit.  Customize this method to allocate
-     * resources that will be required in your event handlers.</p>
-     */
-    public void preprocess() {
-        System.out.println("in preprocess");
-    }
-    
-    /**
-     * <p>Callback method that is called just before rendering takes place.
-     * This method will <strong>only</strong> be called for the page that
-     * will actually be rendered (and not, for example, on a page that
-     * handled a postback and then navigated to a different page).  Customize
-     * this method to allocate resources that will be required for rendering
-     * this page.</p>
-     */
-    public void prerender() {
-        System.out.println("in prerender");
-    }
-    
-    /**
-     * <p>Callback method that is called after rendering is completed for
-     * this request, if <code>init()</code> was called (regardless of whether
-     * or not this was the page that was actually rendered).  Customize this
-     * method to release resources acquired in the <code>init()</code>,
-     * <code>preprocess()</code>, or <code>prerender()</code> methods (or
-     * acquired during execution of an event handler).</p>
-     */
-    public void destroy() {
-    }
-    
-   
-   
+      
     /**
      * Holds value of property template.getMetadata().
      */
@@ -234,38 +196,7 @@ public class TemplateFormPage extends VDCBaseBean implements java.io.Serializabl
             }           
         } 
     }
-    
-    private Map controlledVocabularyMap;
-    
-    private void initControlledVocbaularyMap(){
-        controlledVocabularyMap = new HashMap();
-
-        for (ControlledVocabulary cv: templateService.getNetworkControlledVocabulary()){
-            controlledVocabularyMap.put(cv.getId(), cv);
-        } 
-
-    }
-    
-    public Map getControlledVocabularyMap() {
-        return controlledVocabularyMap;
-    }
-    
-    public Map getTemplatesMap() {
-        return templateService.getVdcTemplatesMap(getVDCRequestBean().getCurrentVDCId());
-    }
-    
-    
-    public List<SelectItem> getControlledVocabularySelectItems(){
-        List selectItems = new ArrayList<SelectItem>();
-        if (templateService.getNetworkControlledVocabulary().size() > 0){
-             selectItems.add(new SelectItem(0, "Select Controlled Vocabulary"));
-        }
-        for (ControlledVocabulary cv: templateService.getNetworkControlledVocabulary()){
-              selectItems.add(new SelectItem(cv.getId(), cv.getName()));
-        }
-        return selectItems;
-    }
-    
+            
     public List<SelectItem> loadFieldInputLevelSelectItems() {
         List selectItems = new ArrayList<SelectItem>();
         
@@ -393,22 +324,6 @@ public class TemplateFormPage extends VDCBaseBean implements java.io.Serializabl
         }
     }
 
-    public void removeCustomField(ActionEvent ae) {
-        // first set the rowindex of the data model to the row index of the panel series
-        // TODO: (until we cache the DataModel, we have to do this)
-        DataModel fieldsDataModel = getCustomFieldsDataModel();
-        fieldsDataModel.setRowIndex(customFieldsPanelSeries.getRowIndex());
-
-        Object[] fieldsRowData = (Object[]) fieldsDataModel.getRowData();
-        //TemplateField removeTF = (TemplateField) fieldsRowData[0];
-        editTemplateService.removeCollectionElement(template.getTemplateFields(), ((Integer) fieldsRowData[2]).intValue());
-
-        List valuesWrappedData = (List) ((ListDataModel) fieldsRowData[1]).getWrappedData();
-        for (Object elem : valuesWrappedData) {
-            Object[] valuesRowData = (Object[]) elem;
-            editTemplateService.removeCollectionElement((List) valuesRowData[1], valuesRowData[0]);
-        }
-    }
     
     /**
      * Holds value of property dataTableOtherIds.
@@ -1067,76 +982,7 @@ public class TemplateFormPage extends VDCBaseBean implements java.io.Serializabl
         return "/admin/ManageTemplatesPage?faces-redirect=true" + getNavigationVDCSuffix();
     }
 
-    HtmlSelectOneMenu selectFieldType;
 
-    public HtmlSelectOneMenu getSelectFieldType() {
-        return selectFieldType;
-    }
-
-    public void setSelectFieldType(HtmlSelectOneMenu selectFieldType) {
-        this.selectFieldType = selectFieldType;
-    }
-
-
-    HtmlSelectBooleanCheckbox allowMultiplesCheck;
-
-    public HtmlSelectBooleanCheckbox getAllowMultiplesCheck() {
-        return allowMultiplesCheck;
-    }
-
-    public void setAllowMultiplesCheck(HtmlSelectBooleanCheckbox allowMultiplesCheck) {
-        this.allowMultiplesCheck = allowMultiplesCheck;
-    }
-
-    public String addCustomField() {
-        String fieldName = (String)inputStudyFieldName.getLocalValue();
-        String fieldDescription = (String)inputStudyFieldDescription.getLocalValue();
-        Boolean allowMultiples = (Boolean) this.allowMultiplesCheck.getLocalValue();
-        String fieldType = (String) this.selectFieldType.getValue();
-                
-        if(fieldName.trim().isEmpty()){
-            getVDCRenderBean().getFlash().put("customFieldWarningMessage","New field name may not be blank."); 
-            return "";
-        }
-        
-        if(fieldDescription.trim().isEmpty()){
-            getVDCRenderBean().getFlash().put("customFieldWarningMessage","New field description may not be blank."); 
-            return "";
-        }
-                
-        // Add the new Study Field (with an empty value)
-        StudyField newSF = new StudyField();
-        newSF.setName(fieldName);
-        newSF.setDescription(fieldDescription);
-        newSF.setDcmField(true);
-        newSF.setFieldType(fieldType);
-        newSF.setAllowMultiples(allowMultiples);        
-       
-        // add the initial empty value
-        StudyFieldValue newSFV = new StudyFieldValue();
-        newSFV.setStudyField(newSF);
-        newSFV.setMetadata(template.getMetadata());
-        List list = new ArrayList();
-        list.add(newSFV);
-        newSF.setStudyFieldValues(list);  
-        
-        // set the new study field in the metadata
-        template.getMetadata().getStudyFields().add(newSF);
-
-        // And add the new template field
-        TemplateField newTF = new TemplateField();
-        newTF.setTemplate(template);
-        newTF.setStudyField(newSF);
-        newTF.setTemplateFieldControlledVocabulary(new ArrayList());
-        newTF.setFieldInputLevelString("recommended"); // make all new fields recommended at creation       
-        
-        template.getTemplateFields().add(newTF);
-        
-        // clear the form fields
-        inputStudyFieldName.setValue("");
-        inputStudyFieldDescription.setValue("");
-        return "";
-    }
         
     public void validateLongitude(FacesContext context,
             UIComponent toValidate,
@@ -1603,29 +1449,6 @@ public class TemplateFormPage extends VDCBaseBean implements java.io.Serializabl
      */
     public void setInputAuthorName(HtmlInputText inputAuthorName) {
         this.inputAuthorName = inputAuthorName;
-    }
-
-
-    private HtmlInputText inputStudyFieldName;
-
-
-    public HtmlInputText getInputStudyFieldName() {
-        return this.inputStudyFieldName;
-    }
-
-    public void setInputStudyFieldName(HtmlInputText inputStudyFieldName) {
-        this.inputStudyFieldName = inputStudyFieldName;
-    }
-
-    private HtmlInputText inputStudyFieldDescription;
-
-
-    public HtmlInputText getInputStudyFieldDescription() {
-        return this.inputStudyFieldDescription;
-    }
-
-    public void setInputStudyFieldDescription(HtmlInputText inputStudyFieldDescription) {
-        this.inputStudyFieldDescription = inputStudyFieldDescription;
     }
 
     private HtmlInputText inputTitle;
@@ -2590,51 +2413,218 @@ public class TemplateFormPage extends VDCBaseBean implements java.io.Serializabl
     }
     
     
-    public void changeControlledVocabItem(ValueChangeEvent event){
-        selectedControlledVocabStrings.clear();
-        selectedControlledVocabDescription = "";
-                Long newValue = (Long)event.getNewValue();
-                if (newValue > 0){
-                    ControlledVocabulary selectedCV = (ControlledVocabulary) controlledVocabularyMap.get(newValue);
-                    selectedControlledVocabDescription = selectedCV.getDescription();
-                    if (!selectedCV.getControlledVocabularyValues().isEmpty()){
-                        for (ControlledVocabularyValue cvv: selectedCV.getControlledVocabularyValues()){
-                            selectedControlledVocabStrings.add(cvv.getValue());
-                        }
-                    }
-                }    
-
-    }
-    
-    private Long selectedControlledVocabItem;
     
     
+         
     
-    private String selectedControlledVocabDescription;
     
-    public String getSelectedControlledVocabDescription() {
-        return selectedControlledVocabDescription;
+    // Custom value related fields and methods    
+    private PanelSeries customFieldsPanelSeries;    
+    private HtmlInputText inputStudyFieldName;
+    private HtmlInputText inputStudyFieldDescription;
+    HtmlSelectOneMenu selectFieldType;
+    HtmlSelectBooleanCheckbox allowMultiplesCheck;
+    
+    public PanelSeries getCustomFieldsPanelSeries() {
+        return customFieldsPanelSeries;
     }
 
-    public void setSelectedControlledVocabDescription(String selectedControlledVocabStrings) {
-        this.selectedControlledVocabDescription = selectedControlledVocabStrings;
+    public void setCustomFieldsPanelSeries(PanelSeries customFieldsPanelSeries) {
+        this.customFieldsPanelSeries = customFieldsPanelSeries;
     }
     
-    public void changeFieldControlledVocabulary(ValueChangeEvent event) {
+    public HtmlInputText getInputStudyFieldName() {
+        return this.inputStudyFieldName;
+    }
+
+    public void setInputStudyFieldName(HtmlInputText inputStudyFieldName) {
+        this.inputStudyFieldName = inputStudyFieldName;
+    }
+
+    public HtmlInputText getInputStudyFieldDescription() {
+        return this.inputStudyFieldDescription;
+    }
+
+    public void setInputStudyFieldDescription(HtmlInputText inputStudyFieldDescription) {
+        this.inputStudyFieldDescription = inputStudyFieldDescription;
+    }    
+    public HtmlSelectOneMenu getSelectFieldType() {
+        return selectFieldType;
+    }
+
+    public void setSelectFieldType(HtmlSelectOneMenu selectFieldType) {
+        this.selectFieldType = selectFieldType;
+    }
+
+    public HtmlSelectBooleanCheckbox getAllowMultiplesCheck() {
+        return allowMultiplesCheck;
+    }
+
+    public void setAllowMultiplesCheck(HtmlSelectBooleanCheckbox allowMultiplesCheck) {
+        this.allowMultiplesCheck = allowMultiplesCheck;
+    }    
+   
+    public DataModel getCustomFieldsDataModel() {
+        List values = new ArrayList();
+        for (int i = 0; i < template.getTemplateFields().size(); i++) {
+            TemplateField tf = template.getTemplateFields().get(i);
+
+            if (tf.getStudyField().isDcmField()) {
+                Object[] row = new Object[3];
+                row[0] = tf;
+                row[1] = getCustomValuesDataModel(tf);
+                row[2] = new Integer(i);
+                values.add(row);
+            }
+            tf.getStudyField().getStudyFieldValues();
+            
+        }
+        
+        return new ListDataModel(values);
+
+    }
+
+    private DataModel getCustomValuesDataModel(TemplateField customField) {
+        List values = new ArrayList();
+
+        for (StudyField studyField : template.getMetadata().getStudyFields()) {
+            if (studyField.getName().equals(customField.getStudyField().getName())) {            
+                for (StudyFieldValue sfv : studyField.getStudyFieldValues()) {
+                    Object[] row = new Object[2];
+                    row[0] = sfv;
+                    row[1] = studyField.getStudyFieldValues(); // used by the remove method
+                    values.add(row);
+                }
+                
+                break;
+            }
+        }
+        return new ListDataModel(values);
+    }
+    
+        public String addCustomField() {
+        String fieldName = (String)inputStudyFieldName.getLocalValue();
+        String fieldDescription = (String)inputStudyFieldDescription.getLocalValue();
+        Boolean allowMultiples = (Boolean) this.allowMultiplesCheck.getLocalValue();
+        String fieldType = (String) this.selectFieldType.getValue();
+                
+        if(fieldName.trim().isEmpty()){
+            getVDCRenderBean().getFlash().put("customFieldWarningMessage","New field name may not be blank."); 
+            return "";
+        }
+        
+        if(fieldDescription.trim().isEmpty()){
+            getVDCRenderBean().getFlash().put("customFieldWarningMessage","New field description may not be blank."); 
+            return "";
+        }
+                
+        // Add the new Study Field (with an empty value)
+        StudyField newSF = new StudyField();
+        newSF.setName(fieldName);
+        newSF.setDescription(fieldDescription);
+        newSF.setDcmField(true);
+        newSF.setFieldType(fieldType);
+        newSF.setAllowMultiples(allowMultiples);        
+       
+        // add the initial empty value
+        StudyFieldValue newSFV = new StudyFieldValue();
+        newSFV.setStudyField(newSF);
+        newSFV.setMetadata(template.getMetadata());
+        List list = new ArrayList();
+        list.add(newSFV);
+        newSF.setStudyFieldValues(list);  
+        
+        // set the new study field in the metadata
+        template.getMetadata().getStudyFields().add(newSF);
+
+        // And add the new template field
+        TemplateField newTF = new TemplateField();
+        newTF.setTemplate(template);
+        newTF.setStudyField(newSF);
+        newTF.setTemplateFieldControlledVocabulary(new ArrayList());
+        newTF.setFieldInputLevelString("recommended"); // make all new fields recommended at creation       
+        
+        template.getTemplateFields().add(newTF);
+        
+        // clear the form fields
+        inputStudyFieldName.setValue("");
+        inputStudyFieldDescription.setValue("");
+        return "";
+    }
+        
+    public void removeCustomField(ActionEvent ae) {
+        // first set the rowindex of the data model to the row index of the panel series
+        // TODO: (until we cache the DataModel, we have to do this)
+        DataModel fieldsDataModel = getCustomFieldsDataModel();
+        fieldsDataModel.setRowIndex(customFieldsPanelSeries.getRowIndex());
+
+        Object[] fieldsRowData = (Object[]) fieldsDataModel.getRowData();
+        //TemplateField removeTF = (TemplateField) fieldsRowData[0];
+        editTemplateService.removeCollectionElement(template.getTemplateFields(), ((Integer) fieldsRowData[2]).intValue());
+
+        List valuesWrappedData = (List) ((ListDataModel) fieldsRowData[1]).getWrappedData();
+        for (Object elem : valuesWrappedData) {
+            Object[] valuesRowData = (Object[]) elem;
+            editTemplateService.removeCollectionElement((List) valuesRowData[1], valuesRowData[0]);
+        }
+    }        
+
+    public void addDcmRow(ActionEvent ae) {
+
+        HtmlDataTable dataTable = (HtmlDataTable) ae.getComponent().getParent().getParent();
+        Object[] data = (Object[]) ((ListDataModel) dataTable.getValue()).getRowData();
+
+        StudyFieldValue newElem = new StudyFieldValue();
+        newElem.setMetadata(template.getMetadata());
+        newElem.setStudyField(((StudyFieldValue) data[0]).getStudyField());
+        newElem.setStrValue("");
+        ((List) data[1]).add(dataTable.getRowIndex() + 1, newElem);
+    }
+
+    public void removeDcmRow(ActionEvent ae) {
+
+        HtmlDataTable dataTable = (HtmlDataTable) ae.getComponent().getParent().getParent();
+        if (dataTable.getRowCount() > 1) {
+            Object[] data = (Object[]) ((ListDataModel) dataTable.getValue()).getRowData();
+            editTemplateService.removeCollectionElement((List) data[1], dataTable.getRowIndex());
+        }
+    }
+    
+    public void moveUp(ActionEvent ae) {
+        int rowIndex = customFieldsPanelSeries.getRowIndex();
+        if (rowIndex > 0) {
+            DataModel fieldsDataModel = getCustomFieldsDataModel();
+            fieldsDataModel.setRowIndex(rowIndex);
+
+            Object[] fieldsRowData = (Object[]) fieldsDataModel.getRowData();
+            int swapIndex = ((Integer) fieldsRowData[2]).intValue();
+            Collections.swap(template.getTemplateFields(), swapIndex - 1, swapIndex);
+        }
+    }
+
+    public void moveDown(ActionEvent ae) {
+        int rowIndex = customFieldsPanelSeries.getRowIndex();
+        if (rowIndex < customFieldsPanelSeries.getRowCount() - 1) {
+            DataModel fieldsDataModel = getCustomFieldsDataModel();
+            fieldsDataModel.setRowIndex(rowIndex);
+
+            Object[] fieldsRowData = (Object[]) fieldsDataModel.getRowData();
+            int swapIndex = ((Integer) fieldsRowData[2]).intValue();
+            Collections.swap(template.getTemplateFields(), swapIndex, swapIndex + 1);
+        }
+    }
+    
+    
+    
+    public void changeFieldInputValueDCM(ValueChangeEvent event) {
         int rowIndex = customFieldsPanelSeries.getRowIndex();
         DataModel fieldsDataModel = getCustomFieldsDataModel();
         fieldsDataModel.setRowIndex(rowIndex);
 
         Object[] fieldsRowData = (Object[]) fieldsDataModel.getRowData();
-        TemplateField templateField = (TemplateField) fieldsRowData[0];  
+        TemplateField changeValue = (TemplateField) fieldsRowData[0];        
 
-        for (ControlledVocabulary cv: templateService.getNetworkControlledVocabulary()){
-            if (cv.getId().equals(new Long( (String)event.getNewValue() ))) {
-                templateField.setControlledVocabulary(cv);
-            }
-              
-        }
-        
+        editTemplateService.changeFieldInputLevel(changeValue, (String)event.getNewValue());
     }
     
     
@@ -2695,267 +2685,75 @@ public class TemplateFormPage extends VDCBaseBean implements java.io.Serializabl
             elem.setStrValue(inObj);
             template.getMetadata().getStudyFieldValues().add(elem);
         }
-    }
+    }    
+    
+    // Popup related fields and methods   
+    boolean showPopup;
+    private TemplateField popupTemplateField;
+    private ControlledVocabulary popupControlledVocabulary;
+    private String popupSelectId;
+      
+    public boolean isShowPopup() { return showPopup; }
+    public void setShowPopup(boolean showPopup) { this.showPopup = showPopup;}
+
+    public ControlledVocabulary getPopupControlledVocabulary() { return popupControlledVocabulary;}
+    public void setPopupControlledVocabulary(ControlledVocabulary popupControlledVocabulary) { this.popupControlledVocabulary = popupControlledVocabulary; }
+
+    public String getPopupSelectId() { return popupSelectId; }
+    public void setPopupSelectId(String popupSelectId) { this.popupSelectId = popupSelectId; }
+  
     
     public void openPopup(ActionEvent ae) {
-        Long getId = (Long) ae.getComponent().getAttributes().get("sf_id");
-        String getName = (String) ae.getComponent().getAttributes().get("sf_name");
-            for (TemplateField tfTest : template.getTemplateFields()) {
-                if(getId !=null && getId.equals(tfTest.getStudyField().getId())){
-                   setTemplateCVField(tfTest); 
-                }
-                if (getName.equals(tfTest.getStudyField().getName())){
-                   setTemplateCVField(tfTest);  
-                }
-                
-            }
-        showPopup = true;
-    }
-    
-    boolean showPopup;
-    
-    private TemplateField templateCVField;
-
-    public TemplateField getTemplateField() {
-        return templateCVField;
-    }
-
-    public void setTemplateCVField(TemplateField templateField) {
-        
-        this.templateCVField = templateField;
-    }
-
-    public boolean isShowPopup() {
-        
-        return showPopup;
-    }
-
-    public void setShowPopup(boolean showPopup) {
-        this.showPopup = showPopup;
-    }
-    
-    private String newControlledVocab;
-
-    public String getNewControlledVocab() {
-        return newControlledVocab;
-    }
-
-    public void setNewControlledVocab(String newControlledVocab) {
-        this.newControlledVocab = newControlledVocab;
-    }
-    
-    public void addToControlledVocabList(){
-                
-        if(newControlledVocab.isEmpty()){
-            return;
-        }
-        for (TemplateFieldControlledVocabulary tfCvPrior: templateCVField.getTemplateFieldControlledVocabulary() ){
-            if(newControlledVocab.equals(tfCvPrior.getStrValue())){
-                return;
-            }
-        }
-               
-        TemplateFieldControlledVocabulary tfCV = new TemplateFieldControlledVocabulary();
-        tfCV.setTemplateField(templateCVField);
-        tfCV.setStrValue(newControlledVocab);
-
-        templateCVField.getTemplateFieldControlledVocabulary().add(tfCV);
-        return;
-    }
-    
-    private List<String> selectedControlledVocabStrings = new ArrayList();
-
-    public List<String> getSelectedControlledVocabStrings() {
-        return selectedControlledVocabStrings;
-    }
-
-    public void setSelectedControlledVocabStrings(List<String> selectedControlledVocabStrings) {
-        this.selectedControlledVocabStrings = selectedControlledVocabStrings;
-    }
-    
-    public List<String> getTemplateFieldValueStrings(){
-        return null;
-    }
-    
-    private String selectedControlledVocabString = new String("");
-
-    public String getSelectedControlledVocabString() {
-        return selectedControlledVocabString;
-    }
-
-    public void setSelectedControlledVocabString(String selectedControlledVocabId) {
-        this.selectedControlledVocabString = selectedControlledVocabId;
-    }
-        
-    
-    public void closePopup(ActionEvent ae) {
-        showPopup = false;
-    }
-    
-    public void applyControlledVocabulary(ActionEvent ae) {
-        if (templateCVField != null && selectedControlledVocabItem > 0){
-            System.out.println("selectedControlledVocabItem is " + selectedControlledVocabItem); 
-           ControlledVocabulary selectedCV = (ControlledVocabulary) controlledVocabularyMap.get(selectedControlledVocabItem);
-           templateCVField.setControlledVocabulary(selectedCV);         
-        } else {
-           templateCVField.setControlledVocabulary(null); 
-        }
-        showPopup = false;
-    }
-    
-    public List<String> getControlledVocabStrings() {
-
-        List stringList = new ArrayList<String>();
-        
-        if (templateCVField != null  && templateCVField.getTemplateFieldControlledVocabulary() !=null ){
-            for(TemplateFieldControlledVocabulary tfCV: templateCVField.getTemplateFieldControlledVocabulary()) {
-                     stringList.add(tfCV.getStrValue());
-                }             
-        }
-
-        return stringList;
-    }
-    
-
-    public Long getSelectedControlledVocabItem() {
-        return selectedControlledVocabItem;
-    }
-
-    public void setSelectedControlledVocabItem(Long selectedControlledVocabItem) {
-        this.selectedControlledVocabItem = selectedControlledVocabItem;
-    }
-    
-    
-    
-    HtmlSelectManyListbox selectControlledVocabulary;
-
-    public HtmlSelectManyListbox getSelectControlledVocabulary() {
-        return selectControlledVocabulary;
-    }
-
-    public void setSelectControlledVocabulary(HtmlSelectManyListbox selectControlledVocabulary) {
-        this.selectControlledVocabulary = selectControlledVocabulary;
-    }
-    private HtmlInputText inputControlledVocabulary;
-
-    /**
-     * Getter for property studyAuthorName.
-     * @return Value of property studyAuthorName.
-     */
-    public HtmlInputText getInputControlledVocabulary() {
-        return this.inputControlledVocabulary;
-    }
-
-    /**
-     * Setter for property studyAuthorName.
-     * @param studyAuthorName New value of property studyAuthorName.
-     */
-    public void setInputControlledVocabulary(HtmlInputText inputControlledVocabulary) {
-        this.inputControlledVocabulary = inputControlledVocabulary;
-    }
-    
-    
-    private PanelSeries customFieldsPanelSeries;
-
-    public PanelSeries getCustomFieldsPanelSeries() {
-        return customFieldsPanelSeries;
-    }
-
-    public void setCustomFieldsPanelSeries(PanelSeries customFieldsPanelSeries) {
-        this.customFieldsPanelSeries = customFieldsPanelSeries;
-    }
-   
-    public DataModel getCustomFieldsDataModel() {
-        List values = new ArrayList();
-        for (int i = 0; i < template.getTemplateFields().size(); i++) {
-            TemplateField tf = template.getTemplateFields().get(i);
-
-            if (tf.getStudyField().isDcmField()) {
-                Object[] row = new Object[3];
-                row[0] = tf;
-                row[1] = getCustomValuesDataModel(tf);
-                row[2] = new Integer(i);
-                values.add(row);
-            }
-            tf.getStudyField().getStudyFieldValues();
-            
-        }
-        
-        return new ListDataModel(values);
-
-    }
-
-    private DataModel getCustomValuesDataModel(TemplateField customField) {
-        List values = new ArrayList();
-
-        for (StudyField studyField : template.getMetadata().getStudyFields()) {
-            if (studyField.getName().equals(customField.getStudyField().getName())) {            
-                for (StudyFieldValue sfv : studyField.getStudyFieldValues()) {
-                    Object[] row = new Object[2];
-                    row[0] = sfv;
-                    row[1] = studyField.getStudyFieldValues(); // used by the remove method
-                    values.add(row);
-                }
-                
-                break;
-            }
-        }
-        return new ListDataModel(values);
-    }
-
-    public void addDcmRow(ActionEvent ae) {
-
-        HtmlDataTable dataTable = (HtmlDataTable) ae.getComponent().getParent().getParent();
-        Object[] data = (Object[]) ((ListDataModel) dataTable.getValue()).getRowData();
-
-        StudyFieldValue newElem = new StudyFieldValue();
-        newElem.setMetadata(template.getMetadata());
-        newElem.setStudyField(((StudyFieldValue) data[0]).getStudyField());
-        newElem.setStrValue("");
-        ((List) data[1]).add(dataTable.getRowIndex() + 1, newElem);
-    }
-
-    public void removeDcmRow(ActionEvent ae) {
-
-        HtmlDataTable dataTable = (HtmlDataTable) ae.getComponent().getParent().getParent();
-        if (dataTable.getRowCount() > 1) {
-            Object[] data = (Object[]) ((ListDataModel) dataTable.getValue()).getRowData();
-            editTemplateService.removeCollectionElement((List) data[1], dataTable.getRowIndex());
-        }
-    }
-    
-    public void moveUp(ActionEvent ae) {
-        int rowIndex = customFieldsPanelSeries.getRowIndex();
-        if (rowIndex > 0) {
-            DataModel fieldsDataModel = getCustomFieldsDataModel();
-            fieldsDataModel.setRowIndex(rowIndex);
-
-            Object[] fieldsRowData = (Object[]) fieldsDataModel.getRowData();
-            int swapIndex = ((Integer) fieldsRowData[2]).intValue();
-            Collections.swap(template.getTemplateFields(), swapIndex - 1, swapIndex);
-        }
-    }
-
-    public void moveDown(ActionEvent ae) {
-        int rowIndex = customFieldsPanelSeries.getRowIndex();
-        if (rowIndex < customFieldsPanelSeries.getRowCount() - 1) {
-            DataModel fieldsDataModel = getCustomFieldsDataModel();
-            fieldsDataModel.setRowIndex(rowIndex);
-
-            Object[] fieldsRowData = (Object[]) fieldsDataModel.getRowData();
-            int swapIndex = ((Integer) fieldsRowData[2]).intValue();
-            Collections.swap(template.getTemplateFields(), swapIndex, swapIndex + 1);
-        }
-    }
-    
-    public void changeFieldInputValueDCM(ValueChangeEvent event) {
         int rowIndex = customFieldsPanelSeries.getRowIndex();
         DataModel fieldsDataModel = getCustomFieldsDataModel();
         fieldsDataModel.setRowIndex(rowIndex);
 
         Object[] fieldsRowData = (Object[]) fieldsDataModel.getRowData();
-        TemplateField changeValue = (TemplateField) fieldsRowData[0];        
+        TemplateField templateField = (TemplateField) fieldsRowData[0]; 
+        popupTemplateField = templateField;
+        popupControlledVocabulary = templateField.getControlledVocabulary();
+        popupSelectId = popupControlledVocabulary != null ? popupControlledVocabulary.getId().toString() : "";
+        showPopup = true;
+    }    
 
-        editTemplateService.changeFieldInputLevel(changeValue, (String)event.getNewValue());
-    }      
+    public List<SelectItem> getControlledVocabularySelectItems(){
+        List selectItems = new ArrayList<SelectItem>();
+        for (ControlledVocabulary cv: templateService.getNetworkControlledVocabulary()){
+              selectItems.add(new SelectItem(cv.getId(), cv.getName()));
+        }
+        return selectItems;
+    }
+    
+    public List<SelectItem> getControlledVocabularyValueSelectItems(ControlledVocabulary cv){
+        List selectItems = new ArrayList<SelectItem>();
+        if (cv != null) {
+            for (ControlledVocabularyValue cvv : cv.getControlledVocabularyValues()) {
+                selectItems.add(new SelectItem(cvv.getValue()));
+            }
+        }
+        return selectItems;
+    }
+    
+    public void changePopupControlledVocabulary(ValueChangeEvent event){
+        String changeCVId = (String)event.getNewValue();
+        if ( !StringUtil.isEmpty(changeCVId) ) {
+            popupControlledVocabulary = templateService.getControlledVocabulary(new Long(changeCVId));
+        } else {
+            popupControlledVocabulary = null;
+        }
+    }    
+    
+    public void savePopup(ActionEvent ae) {
+        if (popupControlledVocabulary != null) {
+            editTemplateService.setTemplateFieldControlledVocabulary(popupTemplateField, popupControlledVocabulary.getId());
+        } else {
+            popupTemplateField.setControlledVocabulary(null);
+        }
+        showPopup = false;
+    }  
+    
+    public void closePopup(ActionEvent ae) {
+        showPopup = false;
+    }
+           
 }

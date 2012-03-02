@@ -68,6 +68,7 @@ import com.icesoft.faces.component.ext.HtmlInputText;
 import com.icesoft.faces.component.ext.HtmlInputTextarea;
 import com.icesoft.faces.component.ext.HtmlSelectOneMenu;
 import com.icesoft.faces.component.ext.HtmlSelectOneRadio;
+import com.icesoft.faces.component.panelseries.PanelSeries;
 import com.icesoft.faces.context.effects.JavascriptContext;
 import edu.harvard.iq.dvn.core.study.Metadata;
 import edu.harvard.iq.dvn.core.study.MetadataFieldGroup;
@@ -143,7 +144,6 @@ public class EditStudyPage extends VDCBaseBean implements java.io.Serializable  
             metadata = editStudyService.getStudyVersion().getMetadata();
             currentTitle = metadata.getTitle();
             setFiles(editStudyService.getCurrentFiles());
-            initAdHocFieldMap(true);
         } else {
             
             Long vdcId = getVDCRequestBean().getCurrentVDC().getId();
@@ -158,7 +158,6 @@ public class EditStudyPage extends VDCBaseBean implements java.io.Serializable  
             // prefill date of deposit
             metadata.setDateOfDeposit(new SimpleDateFormat("yyyy-MM-dd").format(new Date()));
             setFiles(editStudyService.getCurrentFiles());
-            //initAdHocFieldMap(false);
         }
         // Initialize map containing required/recommended settings for all fields
         initStudyMap();
@@ -166,12 +165,7 @@ public class EditStudyPage extends VDCBaseBean implements java.io.Serializable  
         // Add empty first element to subcollections, so the input text fields will be visible
         metadata.initCollections();
         //  initDvnDates();
-
-
-
-
-        
-        
+       
     }
     
     private String getStudyIdFromRequest() {
@@ -245,12 +239,10 @@ public class EditStudyPage extends VDCBaseBean implements java.io.Serializable  
         System.out.println("value = " +  value);
         if (value!=null ) {           
             editStudyService.changeTemplate((Long)value);
-            metadata = editStudyService.getStudyVersion().getMetadata();
-         
+            metadata = editStudyService.getStudyVersion().getMetadata();    
         }
         System.out.println("after edit study service  ");
         initStudyMap();  // Reset Recommended flag for all fields
-        initAdHocFieldMap(false);
         return "";
      }
      
@@ -315,210 +307,81 @@ public class EditStudyPage extends VDCBaseBean implements java.io.Serializable  
     }
     
     public void initStudyMap() {
-            System.out.println("in init study map  ");    
         studyMap = new HashMap();
-        for (Iterator<TemplateField> it =study.getTemplate().getTemplateFields().iterator(); it.hasNext();) {
+        for (Iterator<TemplateField> it = study.getTemplate().getTemplateFields().iterator(); it.hasNext();) {
             TemplateField tf = it.next();
-            if (!tf.getStudyField().isDcmField()){
+            if (!tf.getStudyField().isDcmField()) {
                 StudyMapValue smv = new StudyMapValue();
                 smv.setTemplateFieldUI(new TemplateFieldUI(tf));
-                studyMap.put(tf.getStudyField().getName(),smv);
+                studyMap.put(tf.getStudyField().getName(), smv);
             }
-
-      }
-    }
-    
-    
-    private List<TemplateField> adHocFields;
-    
-    public void initAdHocFieldMap(boolean metadataSet){
-
-        if (adHocFields == null) {
-            adHocFields = new ArrayList();
-            for (Iterator<TemplateField> it = study.getTemplate().getTemplateFields().iterator(); it.hasNext();) {
-
-                TemplateField tf = it.next();
-                StudyMapValue smv = new StudyMapValue();
-
-                smv.setTemplateFieldUI(new TemplateFieldUI(tf));
-                if(tf.getStudyField().isDcmField()){
-                     System.out.println("tf is  " + tf.getStudyField().getName());
-                     adHocFields.add(tf);
-                    
-                }
-            }
-            
         }
-
-        System.out.println("after ad hoc field map  ");  
+    }
         
-        /*
-        if(!metadataSet){
-            metadata.setTemplateFieldValues(new ArrayList());
-        }
-        adHocFields = new ArrayList();
-        for (TemplateField defaultField : study.getTemplate().getTemplateFields()) {          
-             if (!defaultField.isHidden()){
-                StudyMapValue smv = new StudyMapValue();               
-                smv.setTemplateFieldUI(new TemplateFieldUI(defaultField));  
-                if(!metadataSet){
-                    if(defaultField.getStudyField().isDcmField()){
-                        TemplateField tf = defaultField;
-                           List <TemplateFieldValue> tfvList = new  ArrayList();
-                           if (!defaultField.getTemplateFieldValues().isEmpty()){
-                                for (TemplateFieldValue tfv: defaultField.getTemplateFieldValues()){ 
-                                     TemplateFieldValue nTfv = new TemplateFieldValue(); 
-                                         if (tfv.getMetadata().equals(study.getTemplate().getMetadata())  && !tf.isHidden()  && !tf.isDisabled()){
-                                             nTfv.setMetadata(metadata);
-                                             nTfv.setStrValue(tfv.getStrValue());
-                                             nTfv.setDisplayOrder(tfv.getDisplayOrder());
-                                             nTfv.setTemplateField(tf);
-                                             tfvList.add(nTfv);
-                                             metadata.getTemplateFieldValues().add(nTfv);
-                                         }
-                                    }
-                             } else if (!tf.isHidden()  && !tf.isDisabled()){
-                                 //get 'empty' template fields to show in edit study screen
-                                 // unless they are hidden or disabled
-                                     TemplateFieldValue nTfv = new TemplateFieldValue();                            
-                                     nTfv.setMetadata(metadata);
-                                     nTfv.setStrValue("");
-                                     nTfv.setDisplayOrder(0);
-                                     nTfv.setTemplateField(tf);
-                                     metadata.getTemplateFieldValues().add(nTfv);
-                                     tfvList.add(nTfv);                            
-                             }
-                             tf.setTemplateFieldValues(tfvList);
-                             List <TemplateFieldControlledVocabulary> tfcvList = new  ArrayList();
-
-                             for (TemplateFieldControlledVocabulary tfcv: defaultField.getTemplateFieldControlledVocabulary()){
-                                  TemplateFieldControlledVocabulary nTfcv = new TemplateFieldControlledVocabulary();
-                                  if(tfcv.getMetadata().equals(study.getTemplate().getMetadata())){
-                                      nTfcv.setMetadata(metadata);
-                                      nTfcv.setStrValue(tfcv.getStrValue());
-                                      nTfcv.setTemplateField(tf);
-                                      tfcvList.add(nTfcv); 
-                                  }
-
-                             }
-                              tf.setTemplateFieldControlledVocabulary(tfcvList);
-                              tf.setFieldInputLevelString(defaultField.getFieldInputLevelString());
-                              tf.setdcmSortOrder(defaultField.getDcmSortOrder()); 
-                              if (tf.getTemplateFieldValues().isEmpty() && !tf.isHidden()  && !tf.isDisabled()){
-                                tf.initValues();
-                              }
-                        adHocFields.add(tf);
-                    }                    
-                } else {
-                    if(defaultField.getStudyField().isDcmField()){
-                        TemplateField tf = defaultField;
-                        List <TemplateFieldValue> tfvList = new  ArrayList();
-                        for (TemplateFieldValue tfv : metadata.getTemplateFieldValues()){
-                            if(tfv.getTemplateField().getStudyField().equals(tf.getStudyField())){
-                                if (tfv.getMetadata().equals(metadata)){
-                                    tfv.setTemplateField(tf);
-                                    tfvList.add(tfv);
-                                }
-                            }
-                        }
-                        tf.setTemplateFieldValues(tfvList);
-                        List <TemplateFieldControlledVocabulary> tfcvList = new  ArrayList();
-                             for (TemplateFieldControlledVocabulary tfcv: defaultField.getTemplateFieldControlledVocabulary()){
-                                 if (tfcv.getMetadata().equals(metadata)){
-                                    tfcv.setTemplateField(tf);
-                                    tfcvList.add(tfcv);
-                                 }
-                             }
-                              tf.setTemplateFieldControlledVocabulary(tfcvList);
-                              tf.setFieldInputLevelString(defaultField.getFieldInputLevelString());
-                              tf.setdcmSortOrder(defaultField.getDcmSortOrder()); 
-                              if (tf.getTemplateFieldValues().isEmpty() && !tf.isHidden()  && !tf.isDisabled()){
-                                tf.initValues();
-                              }
-                        adHocFields.add(tf);
-                    }
-
-                }
-                
-            }           
-        }         */
-        Collections.sort(adHocFields, comparator);
-    }
-
-    Comparator comparator = new Comparator() {
-            public int compare(Object o1, Object o2) {
-                TemplateField c1 = (TemplateField) o1;
-                TemplateField c2 = (TemplateField) o2;
-                return c1.getDcmSortOrder().compareTo(c2.getDcmSortOrder());
-
-            }
-    };
-    
     public void changeSingleValCV(ValueChangeEvent event) {
-        Long sf_Id = (Long) event.getComponent().getAttributes().get("sf_id");
-                
-        for (TemplateField tfTest: adHocFields){
-            if (tfTest.getStudyField().getId().equals(sf_Id)){
-                StudyField sfc = tfTest.getStudyField();
-                List data = (List)sfc.getStudyFieldValues();
-                List removeItems = new ArrayList();
-                for (StudyFieldValue tfv: sfc.getStudyFieldValues()){
-                    removeItems.add(tfv);
-                }
-                for (Object o: removeItems){
-                    editStudyService.removeCollectionElement(data,o);
-                }               
-                    StudyFieldValue elem = new StudyFieldValue();
-                    elem.setStudyField(sfc);
-                    elem.setMetadata(metadata);
-                    elem.setStrValue((String)event.getNewValue());
-                    elem.setDisplayOrder(0);
-                    List values = new ArrayList();
-                    values.add(elem);
-                    sfc.setStudyFieldValues(values);            
-            }
+        
+        int rowIndex = customFieldsPanelSeries.getRowIndex();
+        DataModel fieldsDataModel = getCustomFieldsDataModel();
+        fieldsDataModel.setRowIndex(rowIndex);
+
+        Object[] fieldsRowData = (Object[]) fieldsDataModel.getRowData();
+        TemplateField templateField = (TemplateField) fieldsRowData[0];  
+        StudyField studyField = templateField.getStudyField();
+        
+        // first remove all the old values
+        List valuesWrappedData = (List) ((ListDataModel) fieldsRowData[1]).getWrappedData();
+        for (Object elem : valuesWrappedData) {
+            Object[] valuesRowData = (Object[]) elem;
+            List<StudyFieldValue> studyFieldValues = (List)valuesRowData[1];
+            editStudyService.removeCollectionElement((List) valuesRowData[1], valuesRowData[0]);
         }
+                               
+        StudyFieldValue elem = new StudyFieldValue();
+        elem.setStudyField(studyField);
+        elem.setMetadata(metadata);
+        elem.setStrValue((String) event.getNewValue());
+        elem.setDisplayOrder(0);
+        List values = new ArrayList();
+        values.add(elem);
+        studyField.setStudyFieldValues(values);           
     }
     
     public void changeMultiValCV(ValueChangeEvent event) {
-        Long sf_Id = (Long) event.getComponent().getAttributes().get("sf_id");
+        int rowIndex = customFieldsPanelSeries.getRowIndex();
+        DataModel fieldsDataModel = getCustomFieldsDataModel();
+        fieldsDataModel.setRowIndex(rowIndex);
 
-        for (TemplateField tfTest: adHocFields){
-            if (tfTest.getStudyField().getId().equals(sf_Id)){
-                System.out.println("Found match  " + sf_Id);
-                StudyField sfc = tfTest.getStudyField();
-                List data = (List)sfc.getStudyFieldValues();
-                List removeItems = new ArrayList();
-                for (StudyFieldValue tfv: sfc.getStudyFieldValues()){
-                    removeItems.add(tfv);
-                }
-                for (Object o: removeItems){
-                    editStudyService.removeCollectionElement(data,o);
-                } 
-                
-                List inStringList = (List) event.getNewValue();
-                
-                List values = new ArrayList();
-                int counter = 0;    
-                for (Object inObj: inStringList){
-                    String inStr = (String) inObj;
-                    StudyFieldValue elem = new StudyFieldValue();
-                    elem.setStudyField(sfc);
-                    elem.setMetadata(metadata);
-                    elem.setStrValue(inStr);
-                    elem.setDisplayOrder(counter++);
-                    values.add(elem);                    
-                }
-                sfc.setStudyFieldValues(values);
-            }
+        Object[] fieldsRowData = (Object[]) fieldsDataModel.getRowData();
+        TemplateField templateField = (TemplateField) fieldsRowData[0];
+        StudyField studyField = templateField.getStudyField();
+
+        // first remove all the old values
+        List valuesWrappedData = (List) ((ListDataModel) fieldsRowData[1]).getWrappedData();
+        for (Object elem : valuesWrappedData) {
+            Object[] valuesRowData = (Object[]) elem;
+            List<StudyFieldValue> studyFieldValues = (List) valuesRowData[1];
+            editStudyService.removeCollectionElement((List) valuesRowData[1], valuesRowData[0]);
         }
+
+        List inStringList = (List) event.getNewValue();
+
+        List values = new ArrayList();
+        int counter = 0;
+        for (Object inObj : inStringList) {
+            String inStr = (String) inObj;
+            StudyFieldValue elem = new StudyFieldValue();
+            elem.setStudyField(studyField);
+            elem.setMetadata(metadata);
+            elem.setStrValue(inStr);
+            elem.setDisplayOrder(counter++);
+            values.add(elem);
+        }
+        studyField.setStudyFieldValues(values);
+
     }
     
-    public List getAdHocFields() {
-        return adHocFields;
-    }
     
-      public Map getTemplatesMap() {
+    public Map getTemplatesMap() {
         // getVdcTemplatesMap is called with currentVDCId, since for a new study the current VDC IS the owner   
         return templateService.getVdcTemplatesMap(getVDCRequestBean().getCurrentVDCId());
     }
@@ -1276,21 +1139,23 @@ public class EditStudyPage extends VDCBaseBean implements java.io.Serializable  
         }
     }
     
-    public String getCustomFieldMethodologyInputLevel(){
+    public String getCustomFieldMethodologyInputLevel() {
         String retString = "optional";
-        if (adHocFields != null){
-            for (TemplateField tfv: adHocFields){
-                if (tfv.isRecommended()){
-                   return "recommended"; 
+
+            for (TemplateField tf : study.getTemplate().getTemplateFields()) {
+                if (tf.getStudyField().isDcmField()) {
+                    if (tf.isRecommended()) {
+                        return "recommended";
+                    }
+                    if (tf.isRequired()) {
+                        return "required";
+                    }
                 }
-                if (tfv.isRequired()){
-                   return "required"; 
-                }
-            }            
-        }
+            }
 
         return retString;
     }
+
     public boolean isDataCollectionMethodologyEmpty() {
         return StringUtil.isEmpty(metadata.getTimeMethod()) &&
                 StringUtil.isEmpty(metadata.getDataCollector()) &&
@@ -1312,9 +1177,9 @@ public class EditStudyPage extends VDCBaseBean implements java.io.Serializable  
                 StringUtil.isEmpty(metadata.getResponseRate()) &&
                 StringUtil.isEmpty(metadata.getSamplingErrorEstimate()) &&
                 StringUtil.isEmpty(metadata.getOtherDataAppraisal())  && 
-                adHocFieldsEmpty();
+                customFieldsEmpty();
     }
-    private boolean adHocFieldsEmpty(){
+    private boolean customFieldsEmpty(){
         for (StudyField sf: metadata.getStudyFields()){
             if(!isGroupEmpty(sf.getStudyFieldValues())) {
                 return false;
@@ -3138,18 +3003,34 @@ public class EditStudyPage extends VDCBaseBean implements java.io.Serializable  
     }
     public DataModel getCustomFieldsDataModel() {
         List values = new ArrayList();
-        if (adHocFields != null){
-            for (TemplateField tf : adHocFields) {
+        if (study.getTemplate() == null){
+             return new ListDataModel(values);
+        }
+        System.out.println("getCustomFieldsDataModel metadata not null...  "); 
+        for (int i = 0; i < study.getTemplate().getTemplateFields().size(); i++) {
+            TemplateField tf = study.getTemplate().getTemplateFields().get(i);
 
-                Object[] row = new Object[2];
+            if (tf.getStudyField().isDcmField()) {
+                Object[] row = new Object[3];
                 row[0] = tf;
                 row[1] = getCustomValuesDataModel(tf);
+                row[2] = new Integer(i);
                 values.add(row);
-            }            
-        }
-
+            }
+            tf.getStudyField().getStudyFieldValues();
+            
+        }        
         return new ListDataModel(values);
+    }
+    
+    private PanelSeries customFieldsPanelSeries;
 
+    public PanelSeries getCustomFieldsPanelSeries() {
+        return customFieldsPanelSeries;
+    }
+
+    public void setCustomFieldsPanelSeries(PanelSeries customFieldsPanelSeries) {
+        this.customFieldsPanelSeries = customFieldsPanelSeries;
     }
 
     private DataModel getCustomValuesDataModel(TemplateField customField) {

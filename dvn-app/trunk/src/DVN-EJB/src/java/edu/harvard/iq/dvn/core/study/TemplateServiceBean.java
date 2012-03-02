@@ -68,27 +68,7 @@ public class TemplateServiceBean implements edu.harvard.iq.dvn.core.study.Templa
      */
     public TemplateServiceBean() {
     }
-
-    // TODO: verify that this is nlo longer used
-    private void addFields(Template template, Long vdcId) {
-      VDC vdc = em.find(VDC.class, vdcId);
-        Collection<TemplateField> defaultFields = vdc.getDefaultTemplate().getTemplateFields();
-       
-        template.setTemplateFields(new ArrayList());
-        for( TemplateField defaultField: defaultFields) {
-            TemplateField tf = new TemplateField();
-            tf.setDefaultValue(defaultField.getDefaultValue());
-            tf.setFieldInputLevelString(defaultField.getFieldInputLevelString());
-            tf.setStudyField(defaultField.getStudyField());
-            tf.setTemplate(template);
-            template.getTemplateFields().add(tf);
-        }
-
-      
-    }
-    
-    
-    
+     
     @TransactionAttribute(TransactionAttributeType.REQUIRED)
     public  void createTemplate(Long vdcId) {
        // Template template = new Template();

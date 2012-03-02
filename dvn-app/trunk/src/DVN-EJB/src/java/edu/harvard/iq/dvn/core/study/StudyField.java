@@ -275,27 +275,7 @@ public class StudyField implements Serializable {
     public List<StudyFieldValue> getStudyFieldValues() {
         return studyFieldValues;
     }  
-    
-    public List<String> getStudyFieldValueStrings() {
-        List <String> retString = new ArrayList();
-        for (StudyFieldValue sfv:studyFieldValues){
-            retString.add(sfv.getStrValue());
-        }
-        return retString;
-    }
-    
-    public String getStudyFieldValueSingleString() {
-        String retString = "";
-        for (StudyFieldValue sfv:studyFieldValues){
-            retString = sfv.getStrValue();
-        }
-        return retString;
-    }
-    
-    public void setStudyFieldValueStrings(List<String> studyFieldValues) {}
-
-    public void setStudyFieldValueSingleString(String studyFieldValues) {}
-    
+       
     public void setStudyFieldValues(List<StudyFieldValue> studyFieldValues) {
         this.studyFieldValues = studyFieldValues;
     }            

@@ -48,6 +48,8 @@ public interface EditTemplateService extends java.io.Serializable {
     public void newNetworkTemplate();
 
     public void newClonedTemplate(Long vdcId, Template cloneSource);
+    
+    public void setTemplateFieldControlledVocabulary(TemplateField tf, Long cvId);
    
  
 }

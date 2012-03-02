@@ -588,7 +588,7 @@ if ( $sys_mem_total > 0 )
 {
     $gf_heap_default = ( int ($sys_mem_total / (2 * 1024) ) ); 
 
-    print "\nSetting the heap limit for Glassfish to " . $gl_heap_default . "MB. \n"; 
+    print "\nSetting the heap limit for Glassfish to " . $gf_heap_default . "MB. \n"; 
     print "You may need to adjust this setting to better suit \n";
     print "your system.\n\n";
 
@@ -653,9 +653,9 @@ unless ( -f "../../../working_directory/logging.properties" )
 print "\nCopying additional configuration files... ";
 
 system ( "/bin/cp -f ../../../working_directory/* ".$glassfish_dir."/glassfish/domains/domain1/config"); 
-system ( "/bin/mkdir -p ".$glassfish_dir."/glassfish/domains/domain1/config/lib"); 
-system ( "/bin/cp -f ../../../lib/dvn-lib-NetworkData/* ".$glassfish_dir."/glassfish/domains/domain1/config/lib"); 
-system ( "/bin/cp -f ../../../lib/dvn-lib-NetworkData-LUCENE/* ".$glassfish_dir."/glassfish/domains/domain1/config/lib"); 
+system ( "/bin/mkdir -p ".$glassfish_dir."/glassfish/domains/domain1/config/networkData/lib"); 
+system ( "/bin/cp -f ../../../lib/dvn-lib-NetworkData/*.jar ".$glassfish_dir."/glassfish/domains/domain1/config/networkData/lib"); 
+system ( "/bin/cp -f ../../../lib/dvn-lib-NetworkData-LUCENE/*.jar ".$glassfish_dir."/glassfish/domains/domain1/config/networkData/lib"); 
 #diagnostics needed!
 
 print "done!\n";

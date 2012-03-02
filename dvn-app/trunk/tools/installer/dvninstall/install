@@ -43,7 +43,7 @@ else
 my %CONFIG_DEFAULTS = 
     (       
 	    'HOST_DNS_ADDRESS', '',
-	    'GLASSFISH_DIRECTORY', '/usr/local/glassfish-3.1.1',
+	    'GLASSFISH_DIRECTORY', '/usr/local/glassfish3',
 	    'MAIL_SERVER',      'localhost',
 
 	    'POSTGRES_SERVER',  'localhost',
@@ -563,6 +563,15 @@ else
 $> = 0; 
 $< = 0;      
 
+if ( $opts{$pg_only} )
+{
+    print "\nOK, done.\n";
+    print "You can now resume the installation on the main DVN host.\n\n";
+    
+    exit 0; 
+}
+
+
 # 5. CONFIGURE GLASSFISH
 
 print "\nProceeding with the Glassfish setup.\n";
@@ -621,7 +630,7 @@ if ( $sys_mem_total > 0 )
 {
     $gf_heap_default = ( int ($sys_mem_total / (2 * 1024) ) ); 
 
-    print "\nSetting the heap limit for Glassfish to " . $gl_heap_default . "MB. \n"; 
+    print "\nSetting the heap limit for Glassfish to " . $gf_heap_default . "MB. \n"; 
     print "You may need to adjust this setting to better suit \n";
     print "your system.\n\n";
 
@@ -687,7 +696,7 @@ unless ( -f "config/logging.properties" )
 
 print "\nCopying additional configuration files... ";
 
-system ( "/bin/cp -Rf config/* ".$glassfish_dir."/domains/domain1/config"); 
+system ( "/bin/cp -Rf config/* ".$glassfish_dir."/glassfish/domains/domain1/config"); 
 #diagnostics needed!
 
 print "done!\n";
@@ -851,8 +860,8 @@ else
     # 7b. INSTRUCT THE USER TO POPULATE THE DB ON THE REMOTE SERVER:
     # NOT SUPPORTED YET -- TODO
     print "The database needs to be populated with some intial content \n"; 
-    print "before restarting the DVN. \n";
-    print "However, populating a databases on a remote PostgresQL server "; 
+    print "before we restart the DVN one last time. \n";
+    print "However, populating a database on a remote PostgresQL server "; 
     print "is not supported yet!\n";
     print "Please copy the file referenceData.sql (found in this directory)\n";
     print "onto the remote server and populate the database manually,\n";

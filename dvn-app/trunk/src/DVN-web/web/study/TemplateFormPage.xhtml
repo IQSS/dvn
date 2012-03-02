@@ -1527,7 +1527,8 @@
                         <ice:commandButton value="Move Down" alt="Move Down" title="Move Down" rendered="#{TemplateFormPage.networkEdit and customFieldsDataModel[1].rowIndex==0}" 
                                          image="/resources/images/icon_movedown.png" actionListener="#{TemplateFormPage.moveDown}"/>
 
-                        <ice:commandLink value="Remove" rendered="#{TemplateFormPage.networkEdit and customFieldsDataModel[1].rowIndex==0}" 
+                          <ice:commandLink value="Remove" rendered="#{(TemplateFormPage.networkEdit and customFieldsDataModel[1].rowIndex==0)
+                                            and ((customFieldsDataModel[0].studyField.id == null) or TemplateFormPage.fieldRemovable) }" 
                                            actionListener="#{TemplateFormPage.removeCustomField}"/>
                     </ice:column>
                   </ice:dataTable>
@@ -1573,7 +1574,10 @@
                                    image="/resources/images/icon_moveup.png" actionListener="#{TemplateFormPage.moveUp}"/>
                         <ice:commandButton value="Move Down" alt="Move Down" title="Move Down" rendered="#{TemplateFormPage.networkEdit}"
                                    image="/resources/images/icon_movedown.png" actionListener="#{TemplateFormPage.moveDown}"/>
-                        <ice:commandLink value="Remove" title="Remove Field" rendered="#{TemplateFormPage.networkEdit}" actionListener="#{TemplateFormPage.removeCustomField}"/>
+                        <ice:commandLink value="Remove" title="Remove Field" rendered="#{TemplateFormPage.networkEdit and (TemplateFormPage.fieldRemovable 
+                                                                                         or (customFieldsDataModel[0].studyField.id == null))
+                                                                                         }" 
+                                         actionListener="#{TemplateFormPage.removeCustomField}"/>
                     </ice:column>
                 </ice:panelGrid>
               </ice:panelSeries>

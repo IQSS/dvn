@@ -372,6 +372,11 @@ public class EditTemplateServiceBean implements edu.harvard.iq.dvn.core.study.Ed
      public void changeFieldInputLevel(TemplateField tf, String inputLevel) {
           tf.setFieldInputLevelString(inputLevel);
      }
-    
+
+     public void setTemplateFieldControlledVocabulary(TemplateField tf, Long cvId) {
+         tf.setControlledVocabulary( em.find(ControlledVocabulary.class, cvId) );
+         
+     }
+     
 }
 

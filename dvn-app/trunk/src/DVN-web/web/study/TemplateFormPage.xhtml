@@ -1569,10 +1569,10 @@
                             <f:selectItems value="#{TemplateFormPage.fieldInputLevelSelectItems}"/>
                         </ice:selectOneMenu>
 
-                        <ice:commandButton value="Move Up" alt="Move Up" title="Move Up" style="float:left;" image="/resources/images/icon_moveup.png"
-                                   rendered="#{TemplateFormPage.networkEdit}" actionListener="#{TemplateFormPage.moveUp}"/>
-                        <ice:commandButton value="Move Down" alt="Move Down" title="Move Down" style="float:left;" image="/resources/images/icon_movedown.png"
-                                   rendered="#{TemplateFormPage.networkEdit}" actionListener="#{TemplateFormPage.moveDown}"/>
+                        <ice:commandButton value="Move Up" alt="Move Up" title="Move Up" rendered="#{TemplateFormPage.networkEdit}"
+                                   image="/resources/images/icon_moveup.png" actionListener="#{TemplateFormPage.moveUp}"/>
+                        <ice:commandButton value="Move Down" alt="Move Down" title="Move Down" rendered="#{TemplateFormPage.networkEdit}"
+                                   image="/resources/images/icon_movedown.png" actionListener="#{TemplateFormPage.moveDown}"/>
                         <ice:commandLink value="Remove" title="Remove Field" rendered="#{TemplateFormPage.networkEdit}" actionListener="#{TemplateFormPage.removeCustomField}"/>
                     </ice:column>
                 </ice:panelGrid>
@@ -2646,7 +2646,7 @@
                                width="100%" cellpadding="0"
                                cellspacing="0" columns="2"
                                columnClasses="none,popupButton">
-                    <ice:outputText value="View/Select Controlled Vocabulary"/>
+                    <ice:outputText value="Select Controlled Vocabulary"/>
                 </ice:panelGrid>
             </f:facet>
             <f:facet name="body">

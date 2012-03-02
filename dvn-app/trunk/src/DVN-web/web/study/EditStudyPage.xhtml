@@ -1460,7 +1460,7 @@
                   <ice:panelSeries value="#{EditStudyPage.customFieldsDataModel}" var="customFieldsDataModel"
                                    binding="#{EditStudyPage.customFieldsPanelSeries}">
                       <ice:dataTable cellpadding="0" cellspacing="0" width="100%"
-                                     columnClasses="vdcEditStudyCol1b, vdcEditStudyCol2, vdcEditStudyCol3"
+                                     styleClass="vdcEditStudyTable" columnClasses="vdcEditStudyCol1, vdcEditStudyCol2, vdcEditStudyCol3"
                                             rendered="#{((!empty customFieldsDataModel[1]
                                             or customFieldsDataModel[0].recommended 
                                             or customFieldsDataModel[0].required)

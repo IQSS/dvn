@@ -2502,7 +2502,7 @@ public class TemplateFormPage extends VDCBaseBean implements java.io.Serializabl
         return new ListDataModel(values);
     }
     
-        public String addCustomField() {
+    public String addCustomField() {
         String fieldName = (String)inputStudyFieldName.getLocalValue();
         String fieldDescription = (String)inputStudyFieldDescription.getLocalValue();
         Boolean allowMultiples = (Boolean) this.allowMultiplesCheck.getLocalValue();
@@ -2516,6 +2516,13 @@ public class TemplateFormPage extends VDCBaseBean implements java.io.Serializabl
         if(fieldDescription.trim().isEmpty()){
             getVDCRenderBean().getFlash().put("customFieldWarningMessage","New field description may not be blank."); 
             return "";
+        }
+        
+        for (TemplateField tfTest : template.getTemplateFields()) {
+            if (tfTest.getStudyField().getName().equals(fieldName)) {
+                getVDCRenderBean().getFlash().put("customFieldWarningMessage", "New field name may not match an existing field name.");
+                return "";
+            }
         }
                 
         // Add the new Study Field (with an empty value)
@@ -2550,6 +2557,10 @@ public class TemplateFormPage extends VDCBaseBean implements java.io.Serializabl
         inputStudyFieldName.setValue("");
         inputStudyFieldDescription.setValue("");
         return "";
+    }
+    
+    public boolean isFieldRemovable(){
+        return !templateService.isTemplateUsed(template.getId());
     }
         
     public void removeCustomField(ActionEvent ae) {

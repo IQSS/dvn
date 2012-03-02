@@ -1457,7 +1457,8 @@
                   </ice:panelGrid>
                   
                   <!--revised generic control-->
-                  <ice:panelSeries value="#{EditStudyPage.customFieldsDataModel}" var="customFieldsDataModel">
+                  <ice:panelSeries value="#{EditStudyPage.customFieldsDataModel}" var="customFieldsDataModel"
+                                   binding="#{EditStudyPage.customFieldsPanelSeries}">
                       <ice:dataTable cellpadding="0" cellspacing="0" width="100%"
                                      columnClasses="vdcEditStudyCol1b, vdcEditStudyCol2, vdcEditStudyCol3"
                                             rendered="#{((!empty customFieldsDataModel[1]

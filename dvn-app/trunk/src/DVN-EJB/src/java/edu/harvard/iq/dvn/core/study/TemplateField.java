@@ -172,52 +172,6 @@ public class TemplateField implements java.io.Serializable {
         this.studyField = studyField;
     }
 
-    /*
-    @OneToMany (mappedBy="templateField",  cascade={ CascadeType.REMOVE, CascadeType.MERGE,CascadeType.PERSIST})
-    @OrderBy ("strValue")
-    private List<TemplateFieldValue> templateFieldValues;
-
-    public List<TemplateFieldValue> getTemplateFieldValues() {
-        return templateFieldValues;
-    }
-
-    public void setTemplateFieldValues(List<TemplateFieldValue> templateFieldValues) {
-        this.templateFieldValues = templateFieldValues;
-    }
-    
-    public List<String> getTemplateFieldValueStrings(){
-        List <String> retList = new ArrayList();
-        for (TemplateFieldValue tfv: this.getTemplateFieldValues()){
-            retList.add(tfv.getStrValue());
-        }        
-        return retList;       
-    }
-
-    public String getTemplateFieldValueSingleString(){
-        List <String> retList = new ArrayList();
-        for (TemplateFieldValue tfv: this.getTemplateFieldValues()){
-            retList.add(tfv.getStrValue());
-        }
-        if (!retList.isEmpty()){
-           return retList.get(0);  
-        } else {
-           return "";
-        }              
-    }
-    
-    public void initValues (){
-        if (this.getTemplateFieldValues() == null || this.getTemplateFieldValues().isEmpty()){
-            TemplateFieldValue elem = new TemplateFieldValue();
-            elem.setTemplateField(this);
-            elem.setMetadata(this.getTemplate().getMetadata());
-            elem.setDisplayOrder(0);
-            List values = new ArrayList();
-            values.add(elem);
-            this.setTemplateFieldValues(values);
-        }
-
-    }
-    */
 
     @OneToMany (mappedBy="templateField", cascade={ CascadeType.REMOVE, CascadeType.MERGE,CascadeType.PERSIST})
     @OrderBy ("strValue")
@@ -231,45 +185,6 @@ public class TemplateField implements java.io.Serializable {
         this.templateFieldControlledVocabulary = templateFieldControlledVocabulary;
     }
 
-    public void initControlledVocabulary (){
-        if (this.getTemplateFieldControlledVocabulary() == null || this.getTemplateFieldControlledVocabulary().isEmpty()){
-            TemplateFieldControlledVocabulary elem = new TemplateFieldControlledVocabulary();
-            elem.setTemplateField(this);
-            List vocab = new ArrayList();
-            vocab.add(elem);
-            this.setTemplateFieldControlledVocabulary(vocab);
-        }
-    }
-    
-    public List<String> getControlledVocabularyStrings(){
-        List <String> retList = new ArrayList();
-        if(!this.isAllowMultiples()){
-             retList.add("--No Value--");
-        }
-
-        for (TemplateFieldControlledVocabulary tfcv: this.templateFieldControlledVocabulary){
-            retList.add(tfcv.getStrValue());
-        }
-        return retList;
-    }
-    
-    public List <SelectItem> getControlledVocabularySelectItems(){
-        List <SelectItem> retList = new ArrayList();
-        if(!this.isAllowMultiples()){
-             SelectItem toAdd = new SelectItem();
-             toAdd.setValue("");
-             toAdd.setDescription("--No Value--");
-             retList.add(toAdd);
-        }
-
-        for (TemplateFieldControlledVocabulary tfcv: this.templateFieldControlledVocabulary){
-             SelectItem toAdd = new SelectItem();
-             toAdd.setValue(tfcv.getStrValue());
-             toAdd.setDescription(tfcv.getStrValue());
-             retList.add(toAdd);
-        }
-        return retList;
-    }
 
   /**
      * Holds value of property version.

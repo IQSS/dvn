@@ -1545,8 +1545,8 @@
                         <ice:graphicImage value="/resources/images/icon_recommended.gif" rendered="#{customFieldsDataModel[0].recommended}"/>
                     </ice:column>
                     <ice:column>
-                        <ice:selectOneMenu immediate="false" 
-                                           value="#{customFieldsDataModel[0].studyField.studyFieldValueSingleString}" 
+                        <ice:selectOneMenu immediate="false"                                             
+                                           value="#{customFieldsDataModel[3].studyFieldValueSingleString}" 
                                            valueChangeListener="#{TemplateFormPage.changeSingleValCV}"                                          
                                         rendered ="#{!customFieldsDataModel[0].allowMultiples}">
                             <f:selectItem itemLabel="No Value" itemValue=""/>
@@ -1555,7 +1555,7 @@
                         </ice:selectOneMenu>  
                         <ice:selectManyListbox immediate="false" 
                                                valueChangeListener="#{TemplateFormPage.changeMultiValCV}" 
-                                               value="#{customFieldsDataModel[0].studyField.studyFieldValueStrings}"
+                                               value="#{customFieldsDataModel[3].studyFieldValueStrings}"
                                         rendered ="#{customFieldsDataModel[0].allowMultiples }">
                             <f:selectItems value="#{customFieldsDataModel[0].controlledVocabulary.selectItems}"/>
                             <f:attribute name="sf_id" value="#{customFieldsDataModel[0].studyField.id}"/>

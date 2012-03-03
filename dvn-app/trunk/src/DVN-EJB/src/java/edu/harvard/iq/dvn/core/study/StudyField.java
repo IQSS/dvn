@@ -278,5 +278,23 @@ public class StudyField implements Serializable {
        
     public void setStudyFieldValues(List<StudyFieldValue> studyFieldValues) {
         this.studyFieldValues = studyFieldValues;
-    }            
+    }      
+    
+    // helper methods for getting the internal string values
+    public List<String> getStudyFieldValueStrings() {
+        List <String> retString = new ArrayList();
+        for (StudyFieldValue sfv:studyFieldValues){
+            retString.add(sfv.getStrValue());
+        }
+        return retString;
+    }
+    
+    public String getStudyFieldValueSingleString() {
+        return studyFieldValues.size() > 0 ? studyFieldValues.get(0).getStrValue() : "";
+    }
+    
+    public void setStudyFieldValueStrings(List<String> studyFieldValues) {}
+
+    public void setStudyFieldValueSingleString(String studyFieldValues) {}
+      
 }

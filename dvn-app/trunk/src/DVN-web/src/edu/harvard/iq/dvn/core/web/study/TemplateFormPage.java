@@ -2466,17 +2466,26 @@ public class TemplateFormPage extends VDCBaseBean implements java.io.Serializabl
    
     public DataModel getCustomFieldsDataModel() {
         List values = new ArrayList();
+        
         for (int i = 0; i < template.getTemplateFields().size(); i++) {
-            TemplateField tf = template.getTemplateFields().get(i);
+            TemplateField templateField = template.getTemplateFields().get(i);
+            StudyField studyField = null;
 
-            if (tf.getStudyField().isDcmField()) {
-                Object[] row = new Object[3];
-                row[0] = tf;
-                row[1] = getCustomValuesDataModel(tf);
+            if (templateField.getStudyField().isDcmField()) {
+                for (StudyField sf : template.getMetadata().getStudyFields()) {
+                    if (sf.getName().equals(templateField.getStudyField().getName())) { 
+                        studyField = sf;
+                        break;
+                    }                
+                }            
+            
+                Object[] row = new Object[4];
+                row[0] = templateField;
+                row[1] = getCustomValuesDataModel(studyField);
                 row[2] = new Integer(i);
+                row[3] = studyField;                
                 values.add(row);
             }
-            tf.getStudyField().getStudyFieldValues();
             
         }
         
@@ -2484,21 +2493,16 @@ public class TemplateFormPage extends VDCBaseBean implements java.io.Serializabl
 
     }
 
-    private DataModel getCustomValuesDataModel(TemplateField customField) {
-        List values = new ArrayList();
-
-        for (StudyField studyField : template.getMetadata().getStudyFields()) {
-            if (studyField.getName().equals(customField.getStudyField().getName())) {            
-                for (StudyFieldValue sfv : studyField.getStudyFieldValues()) {
-                    Object[] row = new Object[2];
-                    row[0] = sfv;
-                    row[1] = studyField.getStudyFieldValues(); // used by the remove method
-                    values.add(row);
-                }
-                
-                break;
-            }
+    private DataModel getCustomValuesDataModel(StudyField studyField) {
+        List values = new ArrayList();   
+        
+        for (StudyFieldValue sfv : studyField.getStudyFieldValues()) {
+            Object[] row = new Object[2];
+            row[0] = sfv;
+            row[1] = studyField.getStudyFieldValues(); // used by the remove method
+            values.add(row);
         }
+                
         return new ListDataModel(values);
     }
     
@@ -2644,30 +2648,21 @@ public class TemplateFormPage extends VDCBaseBean implements java.io.Serializabl
         DataModel fieldsDataModel = getCustomFieldsDataModel();
         fieldsDataModel.setRowIndex(rowIndex);
 
-        Object[] fieldsRowData = (Object[]) fieldsDataModel.getRowData();
-        TemplateField templateField = (TemplateField) fieldsRowData[0];  
-        StudyField studyField = templateField.getStudyField();
+        Object[] fieldsRowData = (Object[]) fieldsDataModel.getRowData();  
+        StudyField studyField = (StudyField) fieldsRowData[3];
         
         // first remove all the old values
-        List valuesWrappedData = (List) ((ListDataModel) fieldsRowData[1]).getWrappedData();
-        for (Object elem : valuesWrappedData) {
-            Object[] valuesRowData = (Object[]) elem;
-            List<StudyFieldValue> studyFieldValues = (List)valuesRowData[1];
-            editTemplateService.removeCollectionElement((List) valuesRowData[1], valuesRowData[0]);
-        }
-        
-        /* TODO: cleanup!
-        for (Iterator it = studyFieldValues.iterator(); it.hasNext();) {
+        for (Iterator it = studyField.getStudyFieldValues().iterator(); it.hasNext();) {
             StudyFieldValue sfv = (StudyFieldValue) it.next();
             editTemplateService.removeCollectionElement(it,sfv);
-        }*/
+        } 
         
         // now add new value
         StudyFieldValue elem = new StudyFieldValue();
         elem.setStudyField(studyField);
         elem.setMetadata(this.getTemplate().getMetadata());
         elem.setStrValue((String)event.getNewValue());
-        template.getMetadata().getStudyFieldValues().add(elem);
+        studyField.getStudyFieldValues().add(elem);
       
     }
     
@@ -2676,17 +2671,14 @@ public class TemplateFormPage extends VDCBaseBean implements java.io.Serializabl
         DataModel fieldsDataModel = getCustomFieldsDataModel();
         fieldsDataModel.setRowIndex(rowIndex);
 
-        Object[] fieldsRowData = (Object[]) fieldsDataModel.getRowData();
-        TemplateField templateField = (TemplateField) fieldsRowData[0];  
-        StudyField studyField = templateField.getStudyField();
-
+        Object[] fieldsRowData = (Object[]) fieldsDataModel.getRowData(); 
+        StudyField studyField = (StudyField) fieldsRowData[3];
+        
         // first remove all the old values
-        List valuesWrappedData = (List) ((ListDataModel) fieldsRowData[1]).getWrappedData();
-        for (Object elem : valuesWrappedData) {
-            Object[] valuesRowData = (Object[]) elem;
-            List<StudyFieldValue> studyFieldValues = (List)valuesRowData[1];
-            editTemplateService.removeCollectionElement((List) valuesRowData[1], valuesRowData[0]);
-        }
+        for (Iterator it = studyField.getStudyFieldValues().iterator(); it.hasNext();) {
+            StudyFieldValue sfv = (StudyFieldValue) it.next();
+            editTemplateService.removeCollectionElement(it,sfv);
+        } 
         
         // now add new value
         for (String inObj:  (List<String>) event.getNewValue()){ 
@@ -2694,7 +2686,7 @@ public class TemplateFormPage extends VDCBaseBean implements java.io.Serializabl
             elem.setStudyField(studyField);
             elem.setMetadata(this.getTemplate().getMetadata());
             elem.setStrValue(inObj);
-            template.getMetadata().getStudyFieldValues().add(elem);
+            studyField.getStudyFieldValues().add(elem);
         }
     }    
     

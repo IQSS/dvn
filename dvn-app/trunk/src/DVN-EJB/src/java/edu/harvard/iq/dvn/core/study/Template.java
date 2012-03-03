@@ -42,6 +42,7 @@ import java.util.List;
 @Entity
 public class Template implements java.io.Serializable {
     @OneToMany (mappedBy="template",cascade={CascadeType.REMOVE, CascadeType.MERGE, CascadeType.PERSIST})
+    @OrderBy("dcmSortOrder")
     private List<TemplateField> templateFields;
     
     

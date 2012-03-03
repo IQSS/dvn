@@ -972,6 +972,15 @@ public class TemplateFormPage extends VDCBaseBean implements java.io.Serializabl
         removeEmptyRows();
         template.getMetadata().setDisplayOrders();
 
+        int i=0;
+        // set order of custom fields
+        for (TemplateField tf : template.getTemplateFields()) {
+            if (tf.getStudyField().isDcmField()) {
+                tf.setdcmSortOrder(new Long(i++));
+            }
+        }
+        
+        
         editTemplateService.save();
 
         if (isNewTemplate) {

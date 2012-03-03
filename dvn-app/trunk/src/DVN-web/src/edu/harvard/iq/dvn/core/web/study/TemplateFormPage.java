@@ -2681,12 +2681,21 @@ public class TemplateFormPage extends VDCBaseBean implements java.io.Serializabl
         } 
         
         // now add new value
-        for (String inObj:  (List<String>) event.getNewValue()){ 
+        List<String> newValues = (List) event.getNewValue();
+        if (newValues != null && newValues.size() > 0) {
+            for (String inObj:  (List<String>) event.getNewValue()){ 
+                StudyFieldValue elem = new StudyFieldValue();
+                elem.setStudyField(studyField);
+                elem.setMetadata(this.getTemplate().getMetadata());
+                elem.setStrValue(inObj);
+                studyField.getStudyFieldValues().add(elem);
+            }
+        } else {
+            // add one blank row, in case user removed controlled vocabulary from template field
             StudyFieldValue elem = new StudyFieldValue();
             elem.setStudyField(studyField);
             elem.setMetadata(this.getTemplate().getMetadata());
-            elem.setStrValue(inObj);
-            studyField.getStudyFieldValues().add(elem);
+            studyField.getStudyFieldValues().add(elem);            
         }
     }    
     

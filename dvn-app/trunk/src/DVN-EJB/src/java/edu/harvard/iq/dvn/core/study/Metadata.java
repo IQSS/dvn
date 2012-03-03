@@ -2868,17 +2868,103 @@ public class Metadata implements java.io.Serializable {
         
         // custom fields
         for (StudyField sf : this.getStudyFields()) {
-        if (sf.getStudyFieldValues()==null || sf.getStudyFieldValues().size()==0) {
-            List list = new ArrayList();
-            StudyFieldValue elem = new StudyFieldValue();
-            elem.setStudyField(sf);
-            elem.setMetadata(this);
-            list.add(elem);
-            sf.setStudyFieldValues(list);
-        }            
+            if (sf.getStudyFieldValues()==null || sf.getStudyFieldValues().size()==0) {
+                List list = new ArrayList();
+                StudyFieldValue elem = new StudyFieldValue();
+                elem.setStudyField(sf);
+                elem.setMetadata(this);
+                list.add(elem);
+                sf.setStudyFieldValues(list);
+            }            
         }
     }
     
+    
+   public void setDisplayOrders() {
+
+        int i = 0;
+        for (StudyAuthor elem : this.getStudyAuthors()) {
+            elem.setDisplayOrder(i++);
+        }
+        
+        i = 0;
+        for (StudyAbstract elem : this.getStudyAbstracts()) {
+            elem.setDisplayOrder(i++);
+        }
+        
+        i = 0;
+        for (StudyDistributor elem : this.getStudyDistributors()) {
+            elem.setDisplayOrder(i++);
+        }
+        
+        i = 0;
+        for (StudyGeoBounding elem : this.getStudyGeoBoundings()) {
+            elem.setDisplayOrder(i++);
+        }
+        
+        i = 0;
+        for (StudyGrant elem : this.getStudyGrants()) {
+            elem.setDisplayOrder(i++);
+        }
+        
+        i = 0;
+        for (StudyKeyword elem : this.getStudyKeywords()) {
+            elem.setDisplayOrder(i++);
+        }
+        
+        i = 0;
+        for (StudyNote elem : this.getStudyNotes()) {
+            elem.setDisplayOrder(i++);
+        }
+        
+        i = 0;
+        for (StudyOtherId elem : this.getStudyOtherIds()) {
+            elem.setDisplayOrder(i++);
+        }
+        
+        i = 0;
+        for (StudyOtherRef elem : this.getStudyOtherRefs()) {
+            elem.setDisplayOrder(i++);
+        }
+        
+        i = 0;
+        for (StudyProducer elem : this.getStudyProducers()) {
+            elem.setDisplayOrder(i++);
+        }
+        
+        i = 0;
+        for (StudyRelPublication elem : this.getStudyRelPublications()) {
+            elem.setDisplayOrder(i++);
+        }
+        
+        i = 0;
+        for (StudyRelStudy elem : this.getStudyRelStudies()) {
+            elem.setDisplayOrder(i++);
+        }
+        
+        i = 0;
+        for (StudyRelMaterial elem : this.getStudyRelMaterials()) {
+            elem.setDisplayOrder(i++);
+        }
+        
+        i = 0;
+        for (StudySoftware elem : this.getStudySoftware()) {
+            elem.setDisplayOrder(i++);
+        }
+
+        i = 0;
+        for (StudyTopicClass elem : this.getStudyTopicClasses()) {
+            elem.setDisplayOrder(i++);
+        }
+
+        // custom fields
+        for (StudyField studyField : this.getStudyFields()) {
+            i = 0;
+            for (StudyFieldValue elem : studyField.getStudyFieldValues()) {
+                elem.setDisplayOrder(i++);
+            }
+        }  
+    }
     
     // this is a transient list of the study fields, so we can initialize it on the first get and then store it here
     @Transient

@@ -1502,118 +1502,6 @@ public class StudyServiceBean implements edu.harvard.iq.dvn.core.study.StudyServ
     }
 
 
-    private void setDisplayOrders(Metadata metadata) {
-
-        int i = 0;
-        for (Iterator it = metadata.getStudyAuthors().iterator(); it.hasNext();) {
-            StudyAuthor elem = (StudyAuthor) it.next();
-            elem.setDisplayOrder(i);
-            i++;
-
-        }
-        i = 0;
-        for (Iterator it = metadata.getStudyAbstracts().iterator(); it.hasNext();) {
-            StudyAbstract elem = (StudyAbstract) it.next();
-            elem.setDisplayOrder(i);
-            i++;
-
-        }
-        i = 0;
-        for (Iterator it = metadata.getStudyDistributors().iterator(); it.hasNext();) {
-            StudyDistributor elem = (StudyDistributor) it.next();
-            elem.setDisplayOrder(i);
-            i++;
-
-        }
-        i = 0;
-        for (Iterator it = metadata.getStudyGeoBoundings().iterator(); it.hasNext();) {
-            StudyGeoBounding elem = (StudyGeoBounding) it.next();
-            elem.setDisplayOrder(i);
-            i++;
-
-        }
-        i = 0;
-        for (Iterator it = metadata.getStudyGrants().iterator(); it.hasNext();) {
-            StudyGrant elem = (StudyGrant) it.next();
-            elem.setDisplayOrder(i);
-            i++;
-        }
-
-        i = 0;
-        for (Iterator it = metadata.getStudyKeywords().iterator(); it.hasNext();) {
-            StudyKeyword elem = (StudyKeyword) it.next();
-            elem.setDisplayOrder(i);
-            i++;
-        }
-
-        i = 0;
-        for (Iterator it = metadata.getStudyNotes().iterator(); it.hasNext();) {
-            StudyNote elem = (StudyNote) it.next();
-            elem.setDisplayOrder(i);
-            i++;
-        }
-        i = 0;
-        for (Iterator it = metadata.getStudyOtherIds().iterator(); it.hasNext();) {
-            StudyOtherId elem = (StudyOtherId) it.next();
-            elem.setDisplayOrder(i);
-            i++;
-        }
-        i = 0;
-        for (Iterator it = metadata.getStudyOtherRefs().iterator(); it.hasNext();) {
-            StudyOtherRef elem = (StudyOtherRef) it.next();
-            elem.setDisplayOrder(i);
-            i++;
-        }
-        i = 0;
-        for (Iterator it = metadata.getStudyProducers().iterator(); it.hasNext();) {
-            StudyProducer elem = (StudyProducer) it.next();
-            elem.setDisplayOrder(i);
-            i++;
-        }
-        i = 0;
-        for (Iterator it = metadata.getStudyRelPublications().iterator(); it.hasNext();) {
-            StudyRelPublication elem = (StudyRelPublication) it.next();
-            elem.setDisplayOrder(i);
-            i++;
-        }
-        i = 0;
-           for (Iterator it = metadata.getStudyRelStudies().iterator(); it.hasNext();) {
-            StudyRelStudy elem = (StudyRelStudy) it.next();
-            elem.setDisplayOrder(i);
-            i++;
-        }
-
-        i = 0;
-           for (Iterator it = metadata.getStudyRelMaterials().iterator(); it.hasNext();) {
-            StudyRelMaterial elem = (StudyRelMaterial) it.next();
-            elem.setDisplayOrder(i);
-            i++;
-        }
-
-        i = 0;
-        for (Iterator it = metadata.getStudySoftware().iterator(); it.hasNext();) {
-            StudySoftware elem = (StudySoftware) it.next();
-            elem.setDisplayOrder(i);
-            i++;
-        }
-
-        i = 0;
-        for (Iterator it = metadata.getStudyTopicClasses().iterator(); it.hasNext();) {
-            StudyTopicClass elem = (StudyTopicClass) it.next();
-            elem.setDisplayOrder(i);
-            i++;
-        }
-
-        // custom fields
-        for (StudyField studyField : metadata.getStudyFields()) {
-            i = 0;
-            for (StudyFieldValue elem : studyField.getStudyFieldValues()) {
-                elem.setDisplayOrder(i++);
-            }
-        }       
-        
-    }
-
     public Study saveStudyVersion(StudyVersion studyVersion, Long userId) {
         VDCUser user = em.find(VDCUser.class, userId);
         Date lastUpdateTime = new Date();
@@ -1631,7 +1519,7 @@ public class StudyServiceBean implements edu.harvard.iq.dvn.core.study.StudyServ
 
         }
         studyVersion.updateVersionContributors(user);
-        setDisplayOrders(studyVersion.getMetadata());
+        studyVersion.getMetadata().setDisplayOrders();
         return studyVersion.getStudy();
     }
 

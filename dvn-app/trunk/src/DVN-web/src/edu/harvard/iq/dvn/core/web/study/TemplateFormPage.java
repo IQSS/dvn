@@ -970,6 +970,7 @@ public class TemplateFormPage extends VDCBaseBean implements java.io.Serializabl
     public String save() {       
         boolean isNewTemplate = template.getId() == null;
         removeEmptyRows();
+        template.getMetadata().setDisplayOrders();
 
         editTemplateService.save();
 

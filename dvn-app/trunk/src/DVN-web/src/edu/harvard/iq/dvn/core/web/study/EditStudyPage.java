@@ -650,6 +650,10 @@ public class EditStudyPage extends VDCBaseBean implements java.io.Serializable  
     public boolean isStudyOtherRefsEmpty() {
         return isGroupEmpty(metadata.getStudyOtherRefs());
     }
+    
+    public boolean isCustomFieldEmpty(StudyField sf){
+        return isGroupEmpty(sf.getStudyFieldValues());
+    }     
 
         /**
      * Holds value of property dataTableOtherIds.
@@ -1177,9 +1181,10 @@ public class EditStudyPage extends VDCBaseBean implements java.io.Serializable  
                 StringUtil.isEmpty(metadata.getResponseRate()) &&
                 StringUtil.isEmpty(metadata.getSamplingErrorEstimate()) &&
                 StringUtil.isEmpty(metadata.getOtherDataAppraisal())  && 
-                customFieldsEmpty();
+                isCustomFieldsEmpty();
     }
-    private boolean customFieldsEmpty(){
+    
+    private boolean isCustomFieldsEmpty(){
         for (StudyField sf: metadata.getStudyFields()){
             if(!isGroupEmpty(sf.getStudyFieldValues())) {
                 return false;
@@ -1187,7 +1192,8 @@ public class EditStudyPage extends VDCBaseBean implements java.io.Serializable  
         }
         return true;
     }
- 
+    
+      
     public String getTermsOfUseInputLevel() {
         return getInputLevel(StudyFieldConstant.disclaimer,
                 StudyFieldConstant.conditions,
@@ -3002,24 +3008,30 @@ public class EditStudyPage extends VDCBaseBean implements java.io.Serializable  
         this.filesDataTable = filesDataTable;
     }
     public DataModel getCustomFieldsDataModel() {
-        List values = new ArrayList();
-        if (study.getTemplate() == null){
-             return new ListDataModel(values);
-        }
-        System.out.println("getCustomFieldsDataModel metadata not null...  "); 
+        List values = new ArrayList(); 
+        
         for (int i = 0; i < study.getTemplate().getTemplateFields().size(); i++) {
-            TemplateField tf = study.getTemplate().getTemplateFields().get(i);
+            TemplateField templateField = study.getTemplate().getTemplateFields().get(i);
+            StudyField studyField = null;
 
-            if (tf.getStudyField().isDcmField()) {
-                Object[] row = new Object[3];
-                row[0] = tf;
-                row[1] = getCustomValuesDataModel(tf);
+            if (templateField.getStudyField().isDcmField()) {
+                for (StudyField sf : metadata.getStudyFields()) {
+                    if (sf.getName().equals(templateField.getStudyField().getName())) { 
+                        studyField = sf;
+                        break;
+                    }                
+                }            
+            
+                Object[] row = new Object[4];
+                row[0] = templateField;
+                row[1] = getCustomValuesDataModel(studyField);
                 row[2] = new Integer(i);
+                row[3] = studyField;                
                 values.add(row);
             }
-            tf.getStudyField().getStudyFieldValues();
             
         }        
+        
         return new ListDataModel(values);
     }
     
@@ -3033,25 +3045,18 @@ public class EditStudyPage extends VDCBaseBean implements java.io.Serializable  
         this.customFieldsPanelSeries = customFieldsPanelSeries;
     }
 
-    private DataModel getCustomValuesDataModel(TemplateField customField) {
-        List values = new ArrayList();
+    private DataModel getCustomValuesDataModel(StudyField studyField) {
+        List values = new ArrayList();   
         
-        for (StudyField studyField : metadata.getStudyFields()) {
-            if (studyField.equals(customField.getStudyField())) {            
-                for (StudyFieldValue sfv : studyField.getStudyFieldValues()) {
-
-                    Object[] row = new Object[2];
-                    row[0] = sfv;
-                    row[1] = studyField.getStudyFieldValues(); // used by the remove method
-                    values.add(row);
-                }
-                
-                break;
-            }
+        for (StudyFieldValue sfv : studyField.getStudyFieldValues()) {
+            Object[] row = new Object[2];
+            row[0] = sfv;
+            row[1] = studyField.getStudyFieldValues(); // used by the remove method
+            values.add(row);
         }
+                
         return new ListDataModel(values);
     }
-
   
 }
 

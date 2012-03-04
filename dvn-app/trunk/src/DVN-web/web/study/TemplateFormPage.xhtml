@@ -319,6 +319,7 @@
               </ice:dataTable>
 
               <ice:panelGrid cellpadding="0" cellspacing="0" columns="3" width="100%"
+                             rendered="#{TemplateFormPage.networkEdit or TemplateFormPage.studyMap[sfc.productionDate].templateField.fieldInputLevelString != 'disabled'}"                             
                              styleClass="vdcEditStudyTable #{TemplateFormPage.studyMap[sfc.productionDate].templateField.fieldInputLevelString}"
                              columnClasses="vdcEditStudyCol1, vdcEditStudyCol2, vdcEditStudyCol3">
                 <ice:column styleClass="vdcEditStudyField">
@@ -342,8 +343,9 @@
               </ice:panelGrid>
 
               <ice:panelGrid cellpadding="0" cellspacing="0" width="100%"
-                    styleClass="vdcEditStudyTable #{TemplateFormPage.studyMap[sfc.productionPlace].templateField.fieldInputLevelString}"
-                    columnClasses="vdcEditStudyCol1, vdcEditStudyCol2, vdcEditStudyCol3" columns="3">
+                             rendered="#{TemplateFormPage.networkEdit or TemplateFormPage.studyMap[sfc.productionPlace].templateField.fieldInputLevelString != 'disabled'}"                               
+                             styleClass="vdcEditStudyTable #{TemplateFormPage.studyMap[sfc.productionPlace].templateField.fieldInputLevelString}"
+                             columnClasses="vdcEditStudyCol1, vdcEditStudyCol2, vdcEditStudyCol3" columns="3">
                 <ice:column styleClass="vdcEditStudyField">
                   <ice:outputText styleClass="dvnInlineHelpLabel dvnInlineHelpTip" value="#{editstudybundle.productionPlaceLabel}" title="#{editstudybundle.productionPlaceHelpHeading} - #{editstudybundle.productionPlaceHelp}"/>
                   <ice:graphicImage value="/resources/images/icon_required.gif" rendered="#{TemplateFormPage.studyMap[sfc.productionPlace].required}"/>

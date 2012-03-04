@@ -721,8 +721,8 @@
                                             or EditStudyPage.studyMap[sfc.depositor].recommended
                                             or EditStudyPage.studyMap[sfc.depositor].required) 
                                             or ( EditStudyPage.showAll 
-                                            or !EditStudyPage.studyMap[sfc.depositor].hidden
-                                            or !EditStudyPage.studyMap[sfc.depositor].disabled)  }">
+                                            and !EditStudyPage.studyMap[sfc.depositor].hidden
+                                            and !EditStudyPage.studyMap[sfc.depositor].disabled)  }">
                     <div jsfc="ice:panelGroup" id="groupPanel50"  styleClass="vdcEditStudyField">
                       <ice:outputText styleClass="dvnInlineHelpLabel dvnInlineHelpTip" value="#{editstudybundle.depositorLabel}" title="#{editstudybundle.depositorHelpHeading} - #{editstudybundle.depositorHelp}"/>
                       <ice:graphicImage value="/resources/images/icon_required.gif" rendered="#{EditStudyPage.studyMap[sfc.depositor].required}"/>

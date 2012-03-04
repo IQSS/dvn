@@ -71,15 +71,16 @@ import com.icesoft.faces.context.effects.JavascriptContext;
 import edu.harvard.iq.dvn.core.study.ControlledVocabulary;
 import edu.harvard.iq.dvn.core.study.ControlledVocabularyValue;
 import edu.harvard.iq.dvn.core.study.FieldInputLevel;
+import edu.harvard.iq.dvn.core.study.Metadata;
 import edu.harvard.iq.dvn.core.study.StudyField;
 
 import edu.harvard.iq.dvn.core.study.StudyFieldValue;
 import edu.harvard.iq.dvn.core.study.TemplateServiceLocal;
+import hep.aida.ref.Converter;
 import java.util.Collections;
-import java.util.Comparator;
 import javax.faces.bean.ViewScoped;
-import javax.faces.component.html.HtmlPanelGrid;
 import javax.faces.context.FacesContext;
+import javax.faces.convert.ConverterException;
 import javax.faces.event.ActionEvent;
 import javax.faces.event.ValueChangeEvent;
 import javax.faces.model.DataModel;
@@ -87,9 +88,6 @@ import javax.faces.model.ListDataModel;
 import javax.faces.model.SelectItem;
 import javax.inject.Inject;
 import javax.inject.Named;
-import javax.naming.Context;
-import javax.naming.InitialContext;
-import javax.naming.NamingException;
 
 /**
  * <p>Page bean that corresponds to a similarly named JSP page.  This
@@ -2435,45 +2433,29 @@ public class TemplateFormPage extends VDCBaseBean implements java.io.Serializabl
     HtmlSelectOneMenu selectFieldType;
     HtmlSelectBooleanCheckbox allowMultiplesCheck;
     
-    public PanelSeries getCustomFieldsPanelSeries() {
-        return customFieldsPanelSeries;
-    }
-
-    public void setCustomFieldsPanelSeries(PanelSeries customFieldsPanelSeries) {
-        this.customFieldsPanelSeries = customFieldsPanelSeries;
-    }
+    public PanelSeries getCustomFieldsPanelSeries() { return customFieldsPanelSeries; }
+    public void setCustomFieldsPanelSeries(PanelSeries customFieldsPanelSeries) { this.customFieldsPanelSeries = customFieldsPanelSeries; }
     
-    public HtmlInputText getInputStudyFieldName() {
-        return this.inputStudyFieldName;
-    }
+    public HtmlInputText getInputStudyFieldName() { return this.inputStudyFieldName; }
+    public void setInputStudyFieldName(HtmlInputText inputStudyFieldName) { this.inputStudyFieldName = inputStudyFieldName; }
 
-    public void setInputStudyFieldName(HtmlInputText inputStudyFieldName) {
-        this.inputStudyFieldName = inputStudyFieldName;
-    }
+    public HtmlInputText getInputStudyFieldDescription() { return this.inputStudyFieldDescription; }
+    public void setInputStudyFieldDescription(HtmlInputText inputStudyFieldDescription) { this.inputStudyFieldDescription = inputStudyFieldDescription; }    
+    
+    public HtmlSelectOneMenu getSelectFieldType() { return selectFieldType; }
+    public void setSelectFieldType(HtmlSelectOneMenu selectFieldType) { this.selectFieldType = selectFieldType; }
 
-    public HtmlInputText getInputStudyFieldDescription() {
-        return this.inputStudyFieldDescription;
-    }
-
-    public void setInputStudyFieldDescription(HtmlInputText inputStudyFieldDescription) {
-        this.inputStudyFieldDescription = inputStudyFieldDescription;
-    }    
-    public HtmlSelectOneMenu getSelectFieldType() {
-        return selectFieldType;
-    }
-
-    public void setSelectFieldType(HtmlSelectOneMenu selectFieldType) {
-        this.selectFieldType = selectFieldType;
-    }
-
-    public HtmlSelectBooleanCheckbox getAllowMultiplesCheck() {
-        return allowMultiplesCheck;
-    }
-
-    public void setAllowMultiplesCheck(HtmlSelectBooleanCheckbox allowMultiplesCheck) {
-        this.allowMultiplesCheck = allowMultiplesCheck;
-    }    
+    public HtmlSelectBooleanCheckbox getAllowMultiplesCheck() { return allowMultiplesCheck; }
+    public void setAllowMultiplesCheck(HtmlSelectBooleanCheckbox allowMultiplesCheck) { this.allowMultiplesCheck = allowMultiplesCheck; }    
    
+    
+    public DataModel getCustomFieldsDataModel(int rowIndex) {
+        DataModel fieldsDataModel = getCustomFieldsDataModel();
+        fieldsDataModel.setRowIndex(rowIndex);
+        return fieldsDataModel;
+    }
+
+    
     public DataModel getCustomFieldsDataModel() {
         List values = new ArrayList();
         
@@ -2580,8 +2562,7 @@ public class TemplateFormPage extends VDCBaseBean implements java.io.Serializabl
     public void removeCustomField(ActionEvent ae) {
         // first set the rowindex of the data model to the row index of the panel series
         // TODO: (until we cache the DataModel, we have to do this)
-        DataModel fieldsDataModel = getCustomFieldsDataModel();
-        fieldsDataModel.setRowIndex(customFieldsPanelSeries.getRowIndex());
+        DataModel fieldsDataModel = getCustomFieldsDataModel( customFieldsPanelSeries.getRowIndex() );
 
         Object[] fieldsRowData = (Object[]) fieldsDataModel.getRowData();
         //TemplateField removeTF = (TemplateField) fieldsRowData[0];
@@ -2612,14 +2593,20 @@ public class TemplateFormPage extends VDCBaseBean implements java.io.Serializabl
         if (dataTable.getRowCount() > 1) {
             Object[] data = (Object[]) ((ListDataModel) dataTable.getValue()).getRowData();
             editTemplateService.removeCollectionElement((List) data[1], dataTable.getRowIndex());
+
+            StudyFieldValue sfv = ((StudyFieldValue) data[0]);
+            // if this value is already in db, we also need to remove it from the metadata's list of studyFieldValues
+            if ( sfv.getId()!= null ) {
+                template.getMetadata().getStudyFieldValues().remove( sfv );
+            }
+            
         }
     }
     
     public void moveUp(ActionEvent ae) {
         int rowIndex = customFieldsPanelSeries.getRowIndex();
         if (rowIndex > 0) {
-            DataModel fieldsDataModel = getCustomFieldsDataModel();
-            fieldsDataModel.setRowIndex(rowIndex);
+            DataModel fieldsDataModel = getCustomFieldsDataModel( rowIndex );
 
             Object[] fieldsRowData = (Object[]) fieldsDataModel.getRowData();
             int swapIndex = ((Integer) fieldsRowData[2]).intValue();
@@ -2630,8 +2617,7 @@ public class TemplateFormPage extends VDCBaseBean implements java.io.Serializabl
     public void moveDown(ActionEvent ae) {
         int rowIndex = customFieldsPanelSeries.getRowIndex();
         if (rowIndex < customFieldsPanelSeries.getRowCount() - 1) {
-            DataModel fieldsDataModel = getCustomFieldsDataModel();
-            fieldsDataModel.setRowIndex(rowIndex);
+            DataModel fieldsDataModel = getCustomFieldsDataModel( rowIndex );
 
             Object[] fieldsRowData = (Object[]) fieldsDataModel.getRowData();
             int swapIndex = ((Integer) fieldsRowData[2]).intValue();
@@ -2642,9 +2628,7 @@ public class TemplateFormPage extends VDCBaseBean implements java.io.Serializabl
     
     
     public void changeFieldInputValueDCM(ValueChangeEvent event) {
-        int rowIndex = customFieldsPanelSeries.getRowIndex();
-        DataModel fieldsDataModel = getCustomFieldsDataModel();
-        fieldsDataModel.setRowIndex(rowIndex);
+        DataModel fieldsDataModel = getCustomFieldsDataModel( customFieldsPanelSeries.getRowIndex() );
 
         Object[] fieldsRowData = (Object[]) fieldsDataModel.getRowData();
         TemplateField changeValue = (TemplateField) fieldsRowData[0];        
@@ -2654,60 +2638,53 @@ public class TemplateFormPage extends VDCBaseBean implements java.io.Serializabl
     
     
     public void changeSingleValCV(ValueChangeEvent event) {
-        int rowIndex = customFieldsPanelSeries.getRowIndex();
-        DataModel fieldsDataModel = getCustomFieldsDataModel();
-        fieldsDataModel.setRowIndex(rowIndex);
+        DataModel fieldsDataModel = getCustomFieldsDataModel( customFieldsPanelSeries.getRowIndex() );
 
         Object[] fieldsRowData = (Object[]) fieldsDataModel.getRowData();  
         StudyField studyField = (StudyField) fieldsRowData[3];
         
-        // first remove all the old values
-        for (Iterator it = studyField.getStudyFieldValues().iterator(); it.hasNext();) {
-            StudyFieldValue sfv = (StudyFieldValue) it.next();
-            editTemplateService.removeCollectionElement(it,sfv);
-        } 
+        removeOldStudyFieldValues(studyField);  
         
         // now add new value
-        StudyFieldValue elem = new StudyFieldValue();
-        elem.setStudyField(studyField);
-        elem.setMetadata(this.getTemplate().getMetadata());
-        elem.setStrValue((String)event.getNewValue());
-        studyField.getStudyFieldValues().add(elem);
+        StudyFieldValue sfv = new StudyFieldValue( studyField, template.getMetadata(), (String)event.getNewValue() );
+        studyField.getStudyFieldValues().add( sfv );
       
     }
     
-    public void changeMultiValCV(ValueChangeEvent event) {
-        int rowIndex = customFieldsPanelSeries.getRowIndex();
-        DataModel fieldsDataModel = getCustomFieldsDataModel();
-        fieldsDataModel.setRowIndex(rowIndex);
+    public void changeMultiValCV(ValueChangeEvent event) {       
+        DataModel fieldsDataModel = getCustomFieldsDataModel( customFieldsPanelSeries.getRowIndex() );
 
         Object[] fieldsRowData = (Object[]) fieldsDataModel.getRowData(); 
         StudyField studyField = (StudyField) fieldsRowData[3];
         
-        // first remove all the old values
-        for (Iterator it = studyField.getStudyFieldValues().iterator(); it.hasNext();) {
-            StudyFieldValue sfv = (StudyFieldValue) it.next();
-            editTemplateService.removeCollectionElement(it,sfv);
-        } 
+        removeOldStudyFieldValues(studyField); 
         
-        // now add new value
+        // now add new valuea
         List<String> newValues = (List) event.getNewValue();
         if (newValues != null && newValues.size() > 0) {
-            for (String inObj:  (List<String>) event.getNewValue()){ 
-                StudyFieldValue elem = new StudyFieldValue();
-                elem.setStudyField(studyField);
-                elem.setMetadata(this.getTemplate().getMetadata());
-                elem.setStrValue(inObj);
-                studyField.getStudyFieldValues().add(elem);
+            for (String newVal : newValues){ 
+                StudyFieldValue sfv = new StudyFieldValue(studyField, template.getMetadata(), newVal);
+                studyField.getStudyFieldValues().add( sfv );
             }
         } else {
             // add one blank row, in case user removed controlled vocabulary from template field
-            StudyFieldValue elem = new StudyFieldValue();
-            elem.setStudyField(studyField);
-            elem.setMetadata(this.getTemplate().getMetadata());
-            studyField.getStudyFieldValues().add(elem);            
+            StudyFieldValue sfv = new StudyFieldValue(studyField, template.getMetadata(), null);
+            studyField.getStudyFieldValues().add( sfv );            
         }
-    }    
+    }
+    
+    private void removeOldStudyFieldValues(StudyField studyField) {
+        for (Iterator it = studyField.getStudyFieldValues().iterator(); it.hasNext();) {
+            StudyFieldValue sfv = (StudyFieldValue) it.next();
+            editTemplateService.removeCollectionElement(it,sfv);
+
+            // if this value is already in db, we also need to remove it from the metadata's list of studyFieldValues
+            if ( sfv.getId()!= null ) {
+                template.getMetadata().getStudyFieldValues().remove( sfv );
+            }           
+        }        
+    }
+    
     
     // Popup related fields and methods   
     boolean showPopup;
@@ -2726,9 +2703,7 @@ public class TemplateFormPage extends VDCBaseBean implements java.io.Serializabl
   
     
     public void openPopup(ActionEvent ae) {
-        int rowIndex = customFieldsPanelSeries.getRowIndex();
-        DataModel fieldsDataModel = getCustomFieldsDataModel();
-        fieldsDataModel.setRowIndex(rowIndex);
+        DataModel fieldsDataModel = getCustomFieldsDataModel( customFieldsPanelSeries.getRowIndex() );
 
         Object[] fieldsRowData = (Object[]) fieldsDataModel.getRowData();
         TemplateField templateField = (TemplateField) fieldsRowData[0]; 
@@ -2777,5 +2752,5 @@ public class TemplateFormPage extends VDCBaseBean implements java.io.Serializabl
     public void closePopup(ActionEvent ae) {
         showPopup = false;
     }
-           
+              
 }

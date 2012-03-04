@@ -476,14 +476,7 @@ public class VDCServiceBean implements VDCServiceLocal {
         String queryString = "select count(owner_id) from study  s where s.owner_id = " + vdcId;
         Long longValue = null;
         Query query = em.createNativeQuery(queryString);
-        try {
-            Object object = ((List) query.getSingleResult()).get(0);
-            longValue = (Long) object;
-        } catch (Exception nre) {
-            longValue = new Long("0");
-        } finally {
-            return longValue;
-        }
+        return (Long) query.getSingleResult();
     }
 
         public Long getReleasedStudyCount(Long vdcId) {
@@ -492,14 +485,7 @@ public class VDCServiceBean implements VDCServiceLocal {
                 "s.owner_id = " + vdcId;
         Long longValue = null;
         Query query = em.createNativeQuery(queryString);
-        try {
-            Object object = ((List) query.getSingleResult()).get(0);
-            longValue = (Long) object;
-        } catch (Exception nre) {
-            longValue = new Long("0");
-        } finally {
-            return longValue;
-        }
+        return (Long) query.getSingleResult();
     }
 
     public List getPagedData(Long vdcGroupId, int firstRow, int totalRows, String orderBy, String order) {
@@ -725,28 +711,14 @@ public class VDCServiceBean implements VDCServiceLocal {
                 " AND g.vdc_id in (SELECT id FROM vdc WHERE restricted = false)" : "SELECT count(id) FROM vdc v WHERE restricted = false";
         Long longValue = null;
         Query query = em.createNativeQuery(queryString);
-        try {
-            Object object = ((List) query.getSingleResult()).get(0);
-            longValue = (Long) object;
-        } catch (Exception nre) {
-            longValue = new Long("0");
-        } finally {
-            return longValue;
-        }
+        return (Long) query.getSingleResult();
     }
 
     public Long getVdcCount() {
         String queryString = "SELECT count(id) FROM vdc v";
         Long longValue = null;
         Query query = em.createNativeQuery(queryString);
-        try {
-            Object object = ((List) query.getSingleResult()).get(0);
-            longValue = (Long) object;
-        } catch (Exception nre) {
-            longValue = new Long("0");
-        } finally {
-            return longValue;
-        }
+        return (Long) query.getSingleResult();
     }
 
     // metho to get an ordered list of vdcIds

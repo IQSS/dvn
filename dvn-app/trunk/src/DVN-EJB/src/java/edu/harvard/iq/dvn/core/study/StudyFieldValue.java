@@ -13,7 +13,17 @@ import javax.persistence.ManyToOne;
 
 @Entity
 public class StudyFieldValue implements Serializable, MetadataFieldGroup {
-    private static final long serialVersionUID = 1L;
+
+    public StudyFieldValue () {
+    }
+    
+    public StudyFieldValue(StudyField sf, Metadata m, String val) {
+        setStudyField(sf);
+        setMetadata(m);
+        setStrValue(val);    
+    }    
+    
+    
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;

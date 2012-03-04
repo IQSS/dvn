@@ -27,6 +27,7 @@
 
 package edu.harvard.iq.dvn.core.study;
 
+import edu.harvard.iq.dvn.core.util.StringUtil;
 import java.util.Collection;
 
 import edu.harvard.iq.dvn.core.vdc.VDC;
@@ -284,7 +285,9 @@ public class StudyField implements Serializable {
     public List<String> getStudyFieldValueStrings() {
         List <String> retString = new ArrayList();
         for (StudyFieldValue sfv:studyFieldValues){
-            retString.add(sfv.getStrValue());
+            if ( !StringUtil.isEmpty(sfv.getStrValue()) ) {
+                retString.add(sfv.getStrValue());
+            }
         }
         return retString;
     }
@@ -293,8 +296,9 @@ public class StudyField implements Serializable {
         return studyFieldValues.size() > 0 ? studyFieldValues.get(0).getStrValue() : "";
     }
     
-    public void setStudyFieldValueStrings(List<String> studyFieldValues) {}
+    public void setStudyFieldValueStrings(List<String> newValList) {}
 
-    public void setStudyFieldValueSingleString(String studyFieldValues) {}
+    public void setStudyFieldValueSingleString(String newVal) {}
+    
       
 }

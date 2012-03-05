@@ -2659,20 +2659,26 @@
             <f:facet name="body">
                 <ice:panelGrid id="autoCentContent" width="100%" cellpadding="0" cellspacing="0" columns="1" styleClass="popupModalBody">
                     <ice:column>
-                        <ice:outputText value="Controlled Vocabulary"/>
-                        <ice:selectOneMenu immediate="false" partialSubmit="true" value="#{TemplateFormPage.popupSelectId}" valueChangeListener="#{TemplateFormPage.changePopupControlledVocabulary}">
-                            <f:selectItem itemLabel="--none--" itemValue=""/>
-                            <f:selectItems value="#{TemplateFormPage.controlledVocabularySelectItems}"/>
-                        </ice:selectOneMenu>
-                        </ice:column>
-                        <ice:outputText value="Description: #{TemplateFormPage.popupControlledVocabulary.description}" rendered="#{!empty TemplateFormPage.popupControlledVocabulary}"/>
-                        <ice:selectManyListbox id="controlledVocabSelectManyList" rendered="#{!empty TemplateFormPage.popupControlledVocabulary}">                                                                    
-                            <f:selectItems value="#{TemplateFormPage.getControlledVocabularyValueSelectItems(TemplateFormPage.popupControlledVocabulary)}"/>
-                        </ice:selectManyListbox>
-                    <div jsfc="ice:panelGroup" styleClass="dvnFormPadding dvnFormMargin">
-                        <ice:commandButton id="autoCentPopupApply" immediate="true" actionListener="#{TemplateFormPage.savePopup}" value="Save"/>
-                        <ice:commandButton id="autoCentPopupCancel" immediate="true" actionListener="#{TemplateFormPage.closePopup}" value="Cancel"/>
-                    </div>
+                        <div>
+                            <ice:outputText value="Controlled Vocabulary"/>
+                            <ice:selectOneMenu immediate="false" partialSubmit="true" value="#{TemplateFormPage.popupSelectId}" valueChangeListener="#{TemplateFormPage.changePopupControlledVocabulary}">
+                                <f:selectItem itemLabel="--none--" itemValue=""/>
+                                <f:selectItems value="#{TemplateFormPage.controlledVocabularySelectItems}"/>
+                            </ice:selectOneMenu>
+                        </div>
+                        <div class="dvnFormPadding">
+                            <ice:outputText value="Description: #{TemplateFormPage.popupControlledVocabulary.description}" rendered="#{!empty TemplateFormPage.popupControlledVocabulary}"/>
+                        </div>
+                        <div class="dvnFormPadding">
+                            <ice:selectManyListbox id="controlledVocabSelectManyList" rendered="#{!empty TemplateFormPage.popupControlledVocabulary}">                                                                    
+                                <f:selectItems value="#{TemplateFormPage.getControlledVocabularyValueSelectItems(TemplateFormPage.popupControlledVocabulary)}"/>
+                            </ice:selectManyListbox>
+                        </div>
+                        <div jsfc="ice:panelGroup" styleClass="dvnFormPadding dvnFormMargin">
+                            <ice:commandButton id="autoCentPopupApply" immediate="true" actionListener="#{TemplateFormPage.savePopup}" value="Save"/>
+                            <ice:commandButton id="autoCentPopupCancel" immediate="true" actionListener="#{TemplateFormPage.closePopup}" value="Cancel"/>
+                        </div>
+                    </ice:column>
                 </ice:panelGrid>
             </f:facet>
         </ice:panelPopup>

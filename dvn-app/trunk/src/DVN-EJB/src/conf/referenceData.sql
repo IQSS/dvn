@@ -450,9 +450,9 @@ INSERT INTO studyfield (id, description, name,basicSearchField,advancedSearchFie
 INSERT INTO studyfield (id, description, name,basicSearchField,advancedSearchField, searchResultField, dcmField) VALUES (79, '', 'relatedPublications', FALSE, TRUE, FALSE, FALSE );
 INSERT INTO studyfield (id, description, name,basicSearchField,advancedSearchField, searchResultField, dcmField) VALUES (80, '', 'relatedStudies', FALSE, FALSE, FALSE, FALSE );
 INSERT INTO studyfield (id, description, name,basicSearchField,advancedSearchField, searchResultField, dcmField) VALUES (81, '', 'otherReferences', FALSE, FALSE, FALSE, FALSE );
-INSERT INTO studyfield (id, description, name,basicSearchField,advancedSearchField, searchResultField, dcmField) VALUES (82, '', 'NotesText', FALSE, FALSE, FALSE, FALSE );
-INSERT INTO studyfield (id, description, name,basicSearchField,advancedSearchField, searchResultField, dcmField) VALUES (83, '', 'NotesInformationType', FALSE, FALSE, FALSE, FALSE );
-INSERT INTO studyfield (id, description, name,basicSearchField,advancedSearchField, searchResultField, dcmField) VALUES (84, '', 'NotesInformationSubject', FALSE, FALSE, FALSE, FALSE );
+INSERT INTO studyfield (id, description, name,basicSearchField,advancedSearchField, searchResultField, dcmField) VALUES (82, '', 'notesText', FALSE, FALSE, FALSE, FALSE );
+INSERT INTO studyfield (id, description, name,basicSearchField,advancedSearchField, searchResultField, dcmField) VALUES (83, '', 'notesInformationType', FALSE, FALSE, FALSE, FALSE );
+INSERT INTO studyfield (id, description, name,basicSearchField,advancedSearchField, searchResultField, dcmField) VALUES (84, '', 'notesInformationSubject', FALSE, FALSE, FALSE, FALSE );
 INSERT INTO studyfield (id, description, name,basicSearchField,advancedSearchField, searchResultField, dcmField) VALUES (85, '', 'otherId', FALSE, TRUE, FALSE, FALSE );
 INSERT INTO studyfield (id, description, name,basicSearchField,advancedSearchField, searchResultField, dcmField) VALUES (86, '', 'otherIdAgency', FALSE, FALSE, FALSE, FALSE );
 INSERT INTO studyfield (id, description, name,basicSearchField,advancedSearchField, searchResultField, dcmField) VALUES (87, '', 'productionPlace', FALSE, FALSE, FALSE, FALSE );

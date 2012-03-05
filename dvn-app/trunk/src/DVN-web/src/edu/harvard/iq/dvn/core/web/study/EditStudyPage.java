@@ -1235,9 +1235,9 @@ public class EditStudyPage extends VDCBaseBean implements java.io.Serializable  
 
     }
     public String getOtherInformationInputLevel() {
-        return getInputLevel(StudyFieldConstant.NotesInformationSubject,
-                StudyFieldConstant.NotesInformationType,
-                StudyFieldConstant.NotesText);
+        return getInputLevel(StudyFieldConstant.notesInformationSubject,
+                StudyFieldConstant.notesInformationType,
+                StudyFieldConstant.notesText);
 
     }
 
@@ -1321,9 +1321,9 @@ public class EditStudyPage extends VDCBaseBean implements java.io.Serializable  
     }
 
     public String getNoteInputLevel() {
-        return getInputLevel(StudyFieldConstant.NotesText,
-                StudyFieldConstant.NotesInformationType,
-                StudyFieldConstant.NotesInformationSubject);
+        return getInputLevel(StudyFieldConstant.notesText,
+                StudyFieldConstant.notesInformationType,
+                StudyFieldConstant.notesInformationSubject);
 
     }
 

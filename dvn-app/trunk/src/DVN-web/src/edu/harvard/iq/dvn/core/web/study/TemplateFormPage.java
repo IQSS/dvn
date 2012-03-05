@@ -1123,7 +1123,7 @@ public class TemplateFormPage extends VDCBaseBean implements java.io.Serializabl
         String inputName = (String)value;   
         List <Template> networkTemplates = templateService.getNetworkTemplates();
             for(Template testTemplate : networkTemplates){
-                if (testTemplate.getName().equals(inputName)){
+                if (testTemplate.isEnabled() && !testTemplate.equals(template) && testTemplate.getName().equals(inputName)){
                    valid = false;
                 }
             }
@@ -1131,7 +1131,7 @@ public class TemplateFormPage extends VDCBaseBean implements java.io.Serializabl
         if (!networkEdit) {
             List <Template> vdcTemplates = templateService.getVDCTemplates(getVDCRequestBean().getCurrentVDCId());    
             for(Template testTemplate : vdcTemplates){
-                if (testTemplate.getName().equals(inputName)){
+                if (!testTemplate.equals(template) && testTemplate.getName().equals(inputName)){
                    valid = false;
                 }
             }

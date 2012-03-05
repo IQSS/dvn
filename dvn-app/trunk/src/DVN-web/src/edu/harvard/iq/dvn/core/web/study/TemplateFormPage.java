@@ -822,9 +822,9 @@ public class TemplateFormPage extends VDCBaseBean implements java.io.Serializabl
 
     }
     public String getOtherInformationInputLevel() {
-        return getInputLevel(StudyFieldConstant.NotesInformationSubject,
-                StudyFieldConstant.NotesInformationType,
-                StudyFieldConstant.NotesText);
+        return getInputLevel(StudyFieldConstant.notesInformationSubject,
+                StudyFieldConstant.notesInformationType,
+                StudyFieldConstant.notesText);
 
     }
 
@@ -908,9 +908,9 @@ public class TemplateFormPage extends VDCBaseBean implements java.io.Serializabl
     }
 
     public String getNoteInputLevel() {
-        return getInputLevel(StudyFieldConstant.NotesText,
-                StudyFieldConstant.NotesInformationType,
-                StudyFieldConstant.NotesInformationSubject);
+        return getInputLevel(StudyFieldConstant.notesText,
+                StudyFieldConstant.notesInformationType,
+                StudyFieldConstant.notesInformationSubject);
 
     }
 

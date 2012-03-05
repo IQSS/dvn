@@ -1115,7 +1115,34 @@ public class TemplateFormPage extends VDCBaseBean implements java.io.Serializabl
             context.addMessage(toValidate.getClientId(context), message);
         }
         
-    }     
+    }
+  public void validateTemplateName(FacesContext context,
+            UIComponent toValidate, Object value) {
+        
+        boolean valid=true;
+        String inputName = (String)value;   
+        List <Template> networkTemplates = templateService.getNetworkTemplates();
+            for(Template testTemplate : networkTemplates){
+                if (testTemplate.getName().equals(inputName)){
+                   valid = false;
+                }
+            }
+        
+        if (!networkEdit) {
+            List <Template> vdcTemplates = templateService.getVDCTemplates(getVDCRequestBean().getCurrentVDCId());    
+            for(Template testTemplate : vdcTemplates){
+                if (testTemplate.getName().equals(inputName)){
+                   valid = false;
+                }
+            }
+        }
+        if (!valid) {
+            ((UIInput)toValidate).setValid(false);
+            FacesMessage message = new FacesMessage("This name is already in use by another Template.");
+            context.addMessage(toValidate.getClientId(context), message);
+        }
+    }
+ 
     public void validateStudyAbstract(FacesContext context,
             UIComponent toValidate,
             Object value) {

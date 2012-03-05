@@ -139,9 +139,9 @@ public class StudyFieldConstant implements java.io.Serializable  {
     public final static String relatedPublications="relatedPublications";
     public final static String relatedStudies="relatedStudies";
     public final static String otherReferences="otherReferences";
-    public final static String NotesText="NotesText";
-    public final static String NotesInformationType="NotesInformationType";
-    public final static String NotesInformationSubject="NotesInformationSubject";
+    public final static String notesText="notesText";
+    public final static String notesInformationType="notesInformationType";
+    public final static String notesInformationSubject="notesInformationSubject";
     
     /*
      * The following getters are needed so we can use them as properties in JSP 
@@ -488,15 +488,15 @@ public class StudyFieldConstant implements java.io.Serializable  {
     }
     
     public String getNotesText() {
-        return NotesText;
+        return notesText;
     }
     
     public String getNotesInformationType() {
-        return NotesInformationType;
+        return notesInformationType;
     }
     
     public String getNotesInformationSubject() {
-        return NotesInformationSubject;
+        return notesInformationSubject;
     }
     
     public String getProducerAffiliation() {

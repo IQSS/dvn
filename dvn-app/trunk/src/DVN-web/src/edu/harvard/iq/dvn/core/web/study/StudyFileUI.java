@@ -274,18 +274,25 @@ public class StudyFileUI implements java.io.Serializable {
             
         } else if(isNetworkDataFile()) {
             // now add tab delimited
-            DataFileFormatType tabDelimitedType = new DataFileFormatType();
-            tabDelimitedType.setName("GraphML");
-            tabDelimitedType.setValue("");
-            dataFileFormatTypes.add(tabDelimitedType);
+            DataFileFormatType networkDataType = new DataFileFormatType();
+            networkDataType.setName("GraphML");
+            networkDataType.setValue("");
+            dataFileFormatTypes.add(networkDataType);
 
-            // and original file
+            // and NO original file -- all the Network Data files are GraphML; 
+            // no file conversion is performed on ingest; and it is the very
+            // same GraphML file that we save as the original type. :)
+            //          --Leonid
+            // (it may change, again; but we'll revisit the issue if and when it happens. 
+            /*
             if ( !StringUtil.isEmpty( getStudyFile().getOriginalFileType() ) ) {
                 DataFileFormatType originalFileType = new DataFileFormatType();
                 originalFileType.setName("Original File");
                 originalFileType.setValue(DataFileFormatType.ORIGINAL_FILE_DATA_FILE_FORMAT);
                 dataFileFormatTypes.add(originalFileType);
             }
+             * 
+             */
 
             // TODO: need to RData as download
         }

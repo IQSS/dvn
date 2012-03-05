@@ -17,7 +17,9 @@ import edu.harvard.iq.dvn.core.admin.UserServiceLocal;
 import edu.harvard.iq.dvn.core.vdc.VDCNetworkServiceLocal;
 //import edu.harvard.iq.dvn.core.study.Study;
 import edu.harvard.iq.dvn.core.study.StudyFile;
+import edu.harvard.iq.dvn.core.study.StudyVersion; 
 import edu.harvard.iq.dvn.core.study.DataFileFormatType;
+import edu.harvard.iq.dvn.core.study.FileMetadata; 
 
 import edu.harvard.iq.dvn.core.admin.VDCUser; 
 import edu.harvard.iq.dvn.core.web.dataaccess.OptionalAccessService;
@@ -65,7 +67,31 @@ public class FileAccessSingletonBean {
                             || sf.getStudy().getOwner().isRestricted()) {
                         // if not - we are simply going to say "NOT FOUND!"
                         return null; 
-                    } 
+                    }
+                    // Similarly, if the file no longer belongs to the released
+                    // version of the study, we are going to pretend it does 
+                    // not exist either: 
+                    StudyVersion releasedVersion = sf.getStudy().getReleasedVersion();
+                    
+                    if (releasedVersion != null) {
+                        List<FileMetadata> fileList = releasedVersion.getFileMetadatas();
+                        Boolean inReleasedVersion = false; 
+                        int i = 0;
+                        while (i < fileList.size() && !inReleasedVersion) {
+                            FileMetadata fileMD = fileList.get(i);
+                            if (fileMD.getStudyFile().getId().compareTo(sf.getId()) == 0) {
+                                inReleasedVersion = true; 
+                            }
+                            i++;
+                        }
+                        
+                        if (!inReleasedVersion) {
+                            return null; 
+                        }
+                    } else {
+                        return null; 
+                    }
+                    
                     di = new DownloadInfo (sf);
                     if (di == null) {
                         return null; 

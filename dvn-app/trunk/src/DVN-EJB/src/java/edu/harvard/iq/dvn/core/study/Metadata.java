@@ -182,11 +182,11 @@ public class Metadata implements java.io.Serializable {
         }        
 
         if( copyField(tfMap.get(StudyFieldConstant.dateOfCollectionStart), copyHidden, copyDisabled) ) {
-             this.setAccessToSources(source.dateOfCollectionStart); 
+             this.setDateOfCollectionStart(source.dateOfCollectionStart); 
         }  
 
         if( copyField(tfMap.get(StudyFieldConstant.dateOfDeposit), copyHidden, copyDisabled) ) {
-             this.setDateOfCollectionStart(source.dateOfDeposit); 
+             this.setDateOfDeposit(source.dateOfDeposit); 
         }         
 
         if( copyField(tfMap.get(StudyFieldConstant.depositor), copyHidden, copyDisabled) ) {

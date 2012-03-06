@@ -122,18 +122,13 @@ public class TemplateFormPage extends VDCBaseBean implements java.io.Serializabl
 
         networkEdit = getVDCRequestBean().getCurrentVDC() == null;        
         
-        if (getTemplateId() != null) {
-            editTemplateService.setTemplate(templateId); // TODO clean up 
-            template = editTemplateService.getTemplate();
-            if (!networkEdit && template.isNetwork()) {
-                // here, we are cloing a network templte to a dv template
-                editTemplateService.newClonedTemplate(getVDCRequestBean().getCurrentVDCId(), template);
-            } else {
-                editTemplateService.setTemplate(templateId);
-            }
+        if (templateId != null) {
+            editTemplateService.setTemplate(templateId); 
+        } else if (sourceTemplateId != null) {
+            editTemplateService.newClonedTemplate(sourceTemplateId, getVDCRequestBean().getCurrentVDCId());
         } else {
             if (studyVersionId != null) {
-                editTemplateService.newTemplate(getVDCRequestBean().getCurrentVDCId(), studyVersionId);
+                editTemplateService.newTemplate(studyVersionId, getVDCRequestBean().getCurrentVDCId());
             } else if (!networkEdit) {
                 editTemplateService.newTemplate(getVDCRequestBean().getCurrentVDCId());
             } else {
@@ -942,6 +937,7 @@ public class TemplateFormPage extends VDCBaseBean implements java.io.Serializabl
     
     
     private Long templateId;
+    private Long sourceTemplateId;
 
     public Long getTemplateId() {
         return templateId;
@@ -950,17 +946,17 @@ public class TemplateFormPage extends VDCBaseBean implements java.io.Serializabl
     public void setTemplateId(Long templateId) {
         this.templateId = templateId;
     }
+
+    public Long getSourceTemplateId() {
+        return sourceTemplateId;
+    }
+
+    public void setSourceTemplateId(Long sourceTemplateId) {
+        this.sourceTemplateId = sourceTemplateId;
+    }
+    
     
         
-    private List files;
-    
-    public List getFiles() {
-        return files;
-    }
-    
-    public void setFiles(List files) {
-        this.files = files;
-    }
     
     public String addTemplateAction() {
         return "templateForm";

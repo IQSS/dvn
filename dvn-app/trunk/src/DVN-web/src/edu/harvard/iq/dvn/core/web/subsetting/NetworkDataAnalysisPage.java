@@ -63,6 +63,8 @@ public class NetworkDataAnalysisPage extends VDCBaseBean implements Serializable
     StudyFileServiceLocal studyFileService;
 
     NetworkDataServiceLocal networkDataService;
+    
+    private static Logger dbgLog = Logger.getLogger(NetworkDataAnalysisPage.class.getPackage().getName());
 
     private Long fileId;
     private Long versionNumber;
@@ -259,6 +261,7 @@ public class NetworkDataAnalysisPage extends VDCBaseBean implements Serializable
     public boolean isManualQueryAction() {
         return "manualQuery".equals(actionType);
     }
+    
 
     public boolean isAutomaticQueryAction() {
         return "automaticQuery".equals(actionType);
@@ -411,7 +414,6 @@ public class NetworkDataAnalysisPage extends VDCBaseBean implements Serializable
     public String manualQuery_action() {
         try {
             NetworkDataSubsetResult result = networkDataService.runManualQuery( manualQueryType, manualQuery, eliminateDisconnectedVertices );
-
             NetworkDataAnalysisEvent event = new NetworkDataAnalysisEvent();
             event.setLabel("Manual Query");
             event.setAttributeSet(manualQueryType);
@@ -427,8 +429,8 @@ public class NetworkDataAnalysisPage extends VDCBaseBean implements Serializable
         } catch (ConcurrentAccessException a){
              setShowInProgressPopup(true); 
         }
-
-        return null;
+        
+        return "";
     }
 
     public String automaticQuery_action() {

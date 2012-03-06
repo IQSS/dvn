@@ -29,8 +29,10 @@ package edu.harvard.iq.dvn.core.study;
 
 import edu.harvard.iq.dvn.core.util.StringUtil;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import javax.persistence.*;
 
 /**
@@ -91,617 +93,534 @@ public class Metadata implements java.io.Serializable {
     public Metadata () {
     }
     
-        
-    public  Metadata(Metadata copyFrom, boolean studyCopy, boolean networkTarget ) {
-     
-        this.setUNF(copyFrom.UNF);
-        this.setStudyFieldValues(new ArrayList<StudyFieldValue>());
-        for (TemplateField tf : copyFrom.getTemplate().getTemplateFields()){
-            
-            if (tf.getStudyField().getName().equals("accessToSources")){
-                if(!tf.isHidden()  && !tf.isDisabled()){
-                     this.setAccessToSources(copyFrom.accessToSources); 
-                }
-            }
-            if (tf.getStudyField().getName().equals("actionsToMinimizeLoss")){
-                if(!tf.isHidden()  && !tf.isDisabled()){
-                     this.setActionsToMinimizeLoss(copyFrom.actionsToMinimizeLoss); 
-                }
-            }
-            if (tf.getStudyField().getName().equals("availabilityStatus")){
-                if(!tf.isHidden()  && !tf.isDisabled()){
-                     this.setAvailabilityStatus(copyFrom.availabilityStatus); 
-                }
-            }
-            if (tf.getStudyField().getName().equals("characteristicOfSources")){
-                if(!tf.isHidden()  && !tf.isDisabled()){
-                     this.setCharacteristicOfSources(copyFrom.characteristicOfSources); 
-                }
-            }
-            if (tf.getStudyField().getName().equals("citationRequirements")){
-                if(!tf.isHidden()  && !tf.isDisabled()){
-                     this.setCitationRequirements(copyFrom.citationRequirements); 
-                }
-            }
-            if (tf.getStudyField().getName().equals("cleaningOperations")){
-                if(!tf.isHidden()  && !tf.isDisabled()){
-                     this.setCleaningOperations(copyFrom.cleaningOperations); 
-                }
-            }
-            if (tf.getStudyField().getName().equals("collectionMode")){
-                if(!tf.isHidden()  && !tf.isDisabled()){
-                     this.setCollectionMode(copyFrom.collectionMode); 
-                }
-            }
-            if (tf.getStudyField().getName().equals("collectionSize")){
-                if(!tf.isHidden()  && !tf.isDisabled()){
-                     this.setCollectionSize(copyFrom.collectionSize); 
-                }
-            }
-            if (tf.getStudyField().getName().equals("conditions")){
-                if(!tf.isHidden()  && !tf.isDisabled()){
-                     this.setConditions(copyFrom.conditions); 
-                }
-            }
-            if (tf.getStudyField().getName().equals("confidentialityDeclaration")){
-                if(!tf.isHidden()  && !tf.isDisabled()){
-                     this.setConfidentialityDeclaration(copyFrom.confidentialityDeclaration); 
-                     
-                }
-            }
-            if (tf.getStudyField().getName().equals("contact")){
-                if(!tf.isHidden()  && !tf.isDisabled()){
-                     this.setContact(copyFrom.contact); 
-                }
-            }
-            if (tf.getStudyField().getName().equals("controlOperations")){
-                if(!tf.isHidden()  && !tf.isDisabled()){
-                     this.setControlOperations(copyFrom.controlOperations); 
-                }
-            }
-            if (tf.getStudyField().getName().equals("country")){
-                if(!tf.isHidden()  && !tf.isDisabled()){
-                     this.setCountry(copyFrom.country); 
-                }
-            }
-            if (tf.getStudyField().getName().equals("dataCollectionSituation")){
-                if(!tf.isHidden()  && !tf.isDisabled()){
-                     this.setDataCollectionSituation(copyFrom.dataCollectionSituation); 
-                }
-            }
-            if (tf.getStudyField().getName().equals("dataCollector")){
-                if(!tf.isHidden()  && !tf.isDisabled()){
-                     this.setDataCollector(copyFrom.dataCollector); 
-                }
-            }
-            if (tf.getStudyField().getName().equals("dataSources")){
-                if(!tf.isHidden()  && !tf.isDisabled()){
-                     this.setDataSources(copyFrom.dataSources); 
-                }
-            }
-            if (tf.getStudyField().getName().equals("dateOfCollectionEnd")){
-                if(!tf.isHidden()  && !tf.isDisabled()){
-                     this.setDateOfCollectionEnd(copyFrom.dateOfCollectionEnd); 
-                }
-            }
-            if (tf.getStudyField().getName().equals("dateOfCollectionStart")){
-                if(!tf.isHidden()  && !tf.isDisabled()){
-                     this.setDateOfCollectionStart(copyFrom.dateOfCollectionStart); 
-                }
-            }
-            if (tf.getStudyField().getName().equals("dateOfDeposit")){
-                if(!tf.isHidden()  && !tf.isDisabled()){
-                     this.setDateOfDeposit(copyFrom.dateOfDeposit); 
-                }
-            }
-            if (tf.getStudyField().getName().equals("depositor")){
-                if(!tf.isHidden()  && !tf.isDisabled()){
-                     this.setDepositor(copyFrom.depositor); 
-                }
-            }
-            if (tf.getStudyField().getName().equals("depositorRequirements")){
-                if(!tf.isHidden()  && !tf.isDisabled()){
-                     this.setDepositorRequirements(copyFrom.depositorRequirements); 
-                }
-            }
-            if (tf.getStudyField().getName().equals("deviationsFromSampleDesign")){
-                if(!tf.isHidden()  && !tf.isDisabled()){
-                     this.setDeviationsFromSampleDesign(copyFrom.deviationsFromSampleDesign); 
-                }
-            }
-            if (tf.getStudyField().getName().equals("disclaimer")){
-                if(!tf.isHidden()  && !tf.isDisabled()){
-                     this.setDisclaimer(copyFrom.disclaimer); 
-                }
-            }
-            if (tf.getStudyField().getName().equals("distributionDate")){
-                if(!tf.isHidden()  && !tf.isDisabled()){
-                     this.setDistributionDate(copyFrom.distributionDate); 
-                }
-            }
-            if (tf.getStudyField().getName().equals("distributorContact")){
-                if(!tf.isHidden()  && !tf.isDisabled()){
-                     this.setDistributorContact(copyFrom.distributorContact); 
-                }
-            }
-            if (tf.getStudyField().getName().equals("distributorContactAffiliation")){
-                if(!tf.isHidden()  && !tf.isDisabled()){
-                     this.setDistributorContactAffiliation(copyFrom.distributorContactAffiliation); 
-                }
-            }
-            if (tf.getStudyField().getName().equals("distributorContactEmail")){
-                if(!tf.isHidden()  && !tf.isDisabled()){
-                     this.setDistributorContactEmail(copyFrom.distributorContactEmail); 
-                }
-            }
-            if (tf.getStudyField().getName().equals("frequencyOfDataCollection")){
-                if(!tf.isHidden()  && !tf.isDisabled()){
-                     this.setFrequencyOfDataCollection(copyFrom.frequencyOfDataCollection); 
-                }
-            }
-            if (tf.getStudyField().getName().equals("fundingAgency")){
-                if(!tf.isHidden()  && !tf.isDisabled()){
-                     this.setFundingAgency(copyFrom.fundingAgency); 
-                }
-            }
-            if (tf.getStudyField().getName().equals("geographicCoverage")){
-                if(!tf.isHidden()  && !tf.isDisabled()){
-                     this.setAccessToSources(copyFrom.geographicCoverage); 
-                }
-            }
-            if (tf.getStudyField().getName().equals("geographicUnit")){
-                if(!tf.isHidden()  && !tf.isDisabled()){
-                     this.setGeographicCoverage(copyFrom.geographicUnit); 
-                }
-            }
-            if (tf.getStudyField().getName().equals("harvestDVNTermsOfUse")){
-                if(!tf.isHidden()  && !tf.isDisabled()){
-                     this.setHarvestDVNTermsOfUse(copyFrom.harvestDVNTermsOfUse); 
-                }
-            }
-            if (tf.getStudyField().getName().equals("harvestDVTermsOfUse")){
-                if(!tf.isHidden()  && !tf.isDisabled()){
-                     this.setHarvestDVTermsOfUse(copyFrom.harvestDVTermsOfUse); 
-                }
-            }
-            if (tf.getStudyField().getName().equals("harvestHoldings")){
-                if(!tf.isHidden()  && !tf.isDisabled()){
-                     this.setHarvestHoldings(copyFrom.harvestHoldings);
-                }
-            }
-            if (tf.getStudyField().getName().equals("kindOfData")){
-                if(!tf.isHidden()  && !tf.isDisabled()){
-                     this.setKindOfData(copyFrom.kindOfData);
-                }
-            }
-            if (tf.getStudyField().getName().equals("originOfSources")){
-                if(!tf.isHidden()  && !tf.isDisabled()){
-                     this.setOriginOfSources(copyFrom.originOfSources);
-                }
-            }
-            if (tf.getStudyField().getName().equals("originalArchive")){
-                if(!tf.isHidden()  && !tf.isDisabled()){
-                     this.setOriginalArchive(copyFrom.originalArchive);
-                }
-            }
-            if (tf.getStudyField().getName().equals("otherDataAppraisal")){
-                if(!tf.isHidden()  && !tf.isDisabled()){
-                     this.setOtherDataAppraisal(copyFrom.otherDataAppraisal);
-                }
-            }
-            if (tf.getStudyField().getName().equals("placeOfAccess")){
-                if(!tf.isHidden()  && !tf.isDisabled()){
-                     this.setPlaceOfAccess(copyFrom.placeOfAccess);
-                }
-            }
-            if (tf.getStudyField().getName().equals("productionDate")){
-                if(!tf.isHidden()  && !tf.isDisabled()){
-                     this.setProductionDate(copyFrom.productionDate);
-                }
-            }
-            if (tf.getStudyField().getName().equals("productionPlace")){
-                if(!tf.isHidden()  && !tf.isDisabled()){
-                     this.setProductionPlace(copyFrom.productionPlace);
-                }
-            }
-            if (tf.getStudyField().getName().equals("replicationFor")){
-                if(!tf.isHidden()  && !tf.isDisabled()){
-                     this.setReplicationFor(copyFrom.replicationFor);
-                }
-            }
-            if (tf.getStudyField().getName().equals("researchInstrument")){
-                if(!tf.isHidden()  && !tf.isDisabled()){
-                     this.setResearchInstrument(copyFrom.researchInstrument);
-                }
-            }
-            if (tf.getStudyField().getName().equals("responseRate")){
-                if(!tf.isHidden()  && !tf.isDisabled()){
-                     this.setResponseRate(copyFrom.responseRate);
-                }
-            }
-            if (tf.getStudyField().getName().equals("restrictions")){
-                if(!tf.isHidden()  && !tf.isDisabled()){
-                     this.setRestrictions(copyFrom.restrictions);
-                }
-            } 
-            if (tf.getStudyField().getName().equals("samplingErrorEstimate")){
-                if(!tf.isHidden()  && !tf.isDisabled()){
-                    this.setSamplingErrorEstimate(copyFrom.samplingErrorEstimate);
-                }
-            }
-            if (tf.getStudyField().getName().equals("samplingProcedure")){
-                if(!tf.isHidden()  && !tf.isDisabled()){
-                     this.setSamplingProcedure(copyFrom.samplingProcedure);
-                }
-            }
-            if (tf.getStudyField().getName().equals("seriesInformation")){
-                if(!tf.isHidden()  && !tf.isDisabled()){
-                     this.setSeriesInformation(copyFrom.seriesInformation);
-                }
-            }            
-            if (tf.getStudyField().getName().equals("seriesName")){
-                if(!tf.isHidden()  && !tf.isDisabled()){
-                     this.setSeriesName(copyFrom.seriesName);
-                }
-            } 
-            if (tf.getStudyField().getName().equals("specialPermissions")){
-                if(!tf.isHidden()  && !tf.isDisabled()){
-                     this.setSpecialPermissions(copyFrom.specialPermissions);
-                }
-            }
-            if (tf.getStudyField().getName().equals("studyVersionText")){
-                if(!tf.isHidden()  && !tf.isDisabled()){
-                     this.setStudyVersionText(copyFrom.studyVersionText);
-                }
-            }
-            if (tf.getStudyField().getName().equals("subTitle")){
-                if(!tf.isHidden()  && !tf.isDisabled()){
-                     this.setSubTitle(copyFrom.subTitle);
-                }
-            }
-            if (tf.getStudyField().getName().equals("timeMethod")){
-                if(!tf.isHidden()  && !tf.isDisabled()){
-                     this.setTimeMethod(copyFrom.timeMethod);
-                }
-            }
-            if (tf.getStudyField().getName().equals("timePeriodCoveredEnd")){
-                if(!tf.isHidden()  && !tf.isDisabled()){
-                     this.setTimePeriodCoveredEnd(copyFrom.timePeriodCoveredEnd);
-                }
-            }            
-            if (tf.getStudyField().getName().equals("timePeriodCoveredStart")){
-                if(!tf.isHidden()  && !tf.isDisabled()){
-                     this.setTimePeriodCoveredStart(copyFrom.timePeriodCoveredStart);
-                }
-            }
-            if (tf.getStudyField().getName().equals("title")){
-                if(!tf.isHidden()  && !tf.isDisabled()){
-                     this.setTitle(copyFrom.title);
-                }
-            }
-            if (tf.getStudyField().getName().equals("unitOfAnalysis")){
-                if(!tf.isHidden()  && !tf.isDisabled()){
-                    this.setUnitOfAnalysis(copyFrom.unitOfAnalysis);
-                }
-            }
-            if (tf.getStudyField().getName().equals("universe")){
-                if(!tf.isHidden()  && !tf.isDisabled()){
-                    this.setUniverse(copyFrom.universe);
-                }
-            }
-            if (tf.getStudyField().getName().equals("versionDate")){
-                if(!tf.isHidden()  && !tf.isDisabled()){
-                    this.setVersionDate(copyFrom.versionDate);
-                }
-            }
-            if (tf.getStudyField().getName().equals("weighting")){
-                if(!tf.isHidden()  && !tf.isDisabled()){
-                     this.setWeighting(copyFrom.weighting);
-                }
-            }
-            if (tf.getStudyField().getName().equals("studyLevelErrorNotes")){
-                if(!tf.isHidden()  && !tf.isDisabled()){
-                    this.setStudyLevelErrorNotes(copyFrom.studyLevelErrorNotes);
-                }
-            }
-            if (tf.getStudyField().getName().equals("studyCompletion")){
-                if(!tf.isHidden()  && !tf.isDisabled()){
-                    this.setStudyCompletion(copyFrom.studyCompletion);
-                }
-            }
-            
-            if (tf.getStudyField().getName().equals("abstractText")){
-                if(!tf.isHidden()  && !tf.isDisabled()){
-                     this.setStudyAbstracts(new ArrayList<StudyAbstract>());
-                    for(StudyAbstract sa: copyFrom.studyAbstracts) {
-                        StudyAbstract cloneAbstract = new StudyAbstract();
-                        cloneAbstract.setDate(sa.getDate());
-                        cloneAbstract.setDisplayOrder(sa.getDisplayOrder());
-                        cloneAbstract.setMetadata(this);
-                        cloneAbstract.setText(sa.getText());
-                        this.getStudyAbstracts().add(cloneAbstract);
-                    }
-                }
-            }
-            if (tf.getStudyField().getName().equals("authorName")){
-                if(!tf.isHidden()  && !tf.isDisabled()){
-                    this.setStudyAuthors(new ArrayList<StudyAuthor>());
-                    for (StudyAuthor author: copyFrom.studyAuthors) {
-                        StudyAuthor cloneAuthor = new StudyAuthor();
-                        cloneAuthor.setAffiliation(author.getAffiliation());
-                        cloneAuthor.setDisplayOrder(author.getDisplayOrder());
-                        cloneAuthor.setMetadata(this);
-                        cloneAuthor.setName(author.getName());
-                        this.getStudyAuthors().add(cloneAuthor);
-                    }
-                }
-            }
-            if (tf.getStudyField().getName().equals("distributorName")){
-                if(!tf.isHidden()  && !tf.isDisabled()){
-                    this.setStudyDistributors(new ArrayList<StudyDistributor>());
-                    for (StudyDistributor dist: copyFrom.studyDistributors){
-                        StudyDistributor cloneDist = new StudyDistributor();
-                        cloneDist.setAbbreviation(dist.getAbbreviation());
-                        cloneDist.setAffiliation(dist.getAffiliation());
-                        cloneDist.setDisplayOrder(dist.getDisplayOrder());
-                        cloneDist.setMetadata(this);
-                        cloneDist.setLogo(dist.getLogo());
-                        cloneDist.setName(dist.getName());
-                        cloneDist.setUrl(dist.getUrl());
-                        this.getStudyDistributors().add(cloneDist);
-                    }
-                }
-            }
-            if (tf.getStudyField().getName().equals("westLongitude")){
-                if(!tf.isHidden()  && !tf.isDisabled()){
-                    this.setStudyGeoBoundings(new ArrayList<StudyGeoBounding>());
-                    for(StudyGeoBounding geo: copyFrom.studyGeoBoundings) {
-                        StudyGeoBounding cloneGeo = new StudyGeoBounding();
-                        cloneGeo.setDisplayOrder(geo.getDisplayOrder());
-                        cloneGeo.setMetadata(this);
-                        cloneGeo.setEastLongitude(geo.getEastLongitude());
-                        cloneGeo.setNorthLatitude(geo.getNorthLatitude());
-                        cloneGeo.setSouthLatitude(geo.getSouthLatitude());
-                        cloneGeo.setWestLongitude(geo.getWestLongitude());
-                        this.getStudyGeoBoundings().add(cloneGeo);
-                    }
-                }
-            }
-            if (tf.getStudyField().getName().equals("grantNumber")){
-                if(!tf.isHidden()  && !tf.isDisabled()){
-                    this.setStudyGrants(new ArrayList<StudyGrant>());
-                    for(StudyGrant grant: copyFrom.studyGrants) {
-                        StudyGrant cloneGrant = new StudyGrant();
-                        cloneGrant.setAgency(grant.getAgency());
-                        cloneGrant.setDisplayOrder(grant.getDisplayOrder());
-                        cloneGrant.setMetadata(this);
-                        cloneGrant.setNumber(grant.getNumber());
-                        this.getStudyGrants().add(cloneGrant);
-                    }
-                }
-            }
-            if (tf.getStudyField().getName().equals("keywordValue")){
-                if(!tf.isHidden()  && !tf.isDisabled()){
-                    this.setStudyKeywords(new ArrayList<StudyKeyword>());
-                    for(StudyKeyword key: copyFrom.studyKeywords) {
-                        StudyKeyword cloneKey = new StudyKeyword();
-                        cloneKey.setDisplayOrder(key.getDisplayOrder());
-                        cloneKey.setMetadata(this);
-                        cloneKey.setValue(key.getValue());
-                        cloneKey.setVocab(key.getVocab());
-                        cloneKey.setVocabURI(key.getVocabURI());
-                        this.getStudyKeywords().add(cloneKey);
-                    }
-                }
-            }
-            if (tf.getStudyField().getName().equals("notesInformationType")){
-                if(!tf.isHidden()  && !tf.isDisabled()){
-                   this.setStudyNotes(new ArrayList<StudyNote>());
-                   for(StudyNote note: copyFrom.studyNotes) {
-                        StudyNote cloneNote = new StudyNote();
-                        cloneNote.setDisplayOrder(note.getDisplayOrder());
-                        cloneNote.setMetadata(this);
-                        cloneNote.setSubject(note.getSubject());
-                        cloneNote.setText(note.getText());
-                        cloneNote.setType(note.getType());
-                        this.getStudyNotes().add(cloneNote);
-                    }
-                }
-            }
-            if (tf.getStudyField().getName().equals("otherId")){
-                if(!tf.isHidden()  && !tf.isDisabled()){
-                    this.setStudyOtherIds(new ArrayList<StudyOtherId>());
-                    for(StudyOtherId id: copyFrom.studyOtherIds) {
-                        StudyOtherId cloneId = new StudyOtherId();
-                        cloneId.setAgency(id.getAgency());
-                        cloneId.setDisplayOrder(id.getDisplayOrder());
-                        cloneId.setMetadata(this);
-                        cloneId.setOtherId(id.getOtherId());
-                        this.getStudyOtherIds().add(cloneId);
-                    }
-                }
-            }
-            if (tf.getStudyField().getName().equals("otherReferences")){
-                if(!tf.isHidden()  && !tf.isDisabled()){
-                    this.setStudyOtherRefs(new ArrayList<StudyOtherRef>());
-                    for(StudyOtherRef ref: copyFrom.studyOtherRefs) {
-                        StudyOtherRef cloneRef = new StudyOtherRef();
-                        cloneRef.setDisplayOrder(ref.getDisplayOrder());
-                        cloneRef.setMetadata(this);
-                        cloneRef.setText(ref.getText());
-                        this.getStudyOtherRefs().add(cloneRef);
-                    }
-                }
-            }
-            if (tf.getStudyField().getName().equals("producerName")){
-                if(!tf.isHidden()  && !tf.isDisabled()){
-                    this.setStudyProducers(new ArrayList<StudyProducer>());
-                    for(StudyProducer prod: copyFrom.studyProducers) {
-                        StudyProducer cloneProd = new StudyProducer();
-                        cloneProd.setAbbreviation(prod.getAbbreviation());
-                        cloneProd.setAffiliation(prod.getAffiliation());
-                        cloneProd.setDisplayOrder(prod.getDisplayOrder());
-                        cloneProd.setLogo(prod.getLogo());
-                        cloneProd.setMetadata(this);
-                        cloneProd.setName(prod.getName());
-                        cloneProd.setUrl(prod.getUrl());
-                        this.getStudyProducers().add(cloneProd);
-                    }
-                }
-            }
-            if (tf.getStudyField().getName().equals("relatedMaterial")){
-                if(!tf.isHidden()  && !tf.isDisabled()){
-                   this.setStudyRelMaterials(new ArrayList<StudyRelMaterial>());
-                   for(StudyRelMaterial rel: copyFrom.studyRelMaterials) {
-                        StudyRelMaterial cloneRel = new StudyRelMaterial();
-                        cloneRel.setDisplayOrder(rel.getDisplayOrder());
-                        cloneRel.setMetadata(this);
-                        cloneRel.setText(rel.getText());
-                        this.getStudyRelMaterials().add(cloneRel);
-                    }
-                }
-            }            
-            if (tf.getStudyField().getName().equals("relatedPublications")){
-                if(!tf.isHidden()  && !tf.isDisabled()){
-                    this.setStudyRelPublications(new ArrayList<StudyRelPublication>());
-                    for(StudyRelPublication rel: copyFrom.studyRelPublications){
-                        StudyRelPublication cloneRel = new StudyRelPublication();
-                        cloneRel.setDisplayOrder(rel.getDisplayOrder());
-                        cloneRel.setMetadata(this);
-                        cloneRel.setText(rel.getText());
-                        this.getStudyRelPublications().add(cloneRel);
-                    }
-                }
-            } 
-            if (tf.getStudyField().getName().equals("relatedStudies")){
-                if(!tf.isHidden()  && !tf.isDisabled()){
-                    this.setStudyRelStudies(new ArrayList<StudyRelStudy>());
-                    for(StudyRelStudy rel: copyFrom.studyRelStudies){
-                        StudyRelStudy cloneRel = new StudyRelStudy();
-                        cloneRel.setDisplayOrder(rel.getDisplayOrder());
-                        cloneRel.setMetadata(this);
-                        cloneRel.setText(rel.getText());
-                        this.getStudyRelStudies().add(cloneRel);
-                    }
-                }
-            }
-            if (tf.getStudyField().getName().equals("softwareName")){
-                if(!tf.isHidden()  && !tf.isDisabled()){
-                    this.setStudySoftware(new ArrayList<StudySoftware>());
-                    for(StudySoftware soft: copyFrom.studySoftware){
-                        StudySoftware cloneSoft = new StudySoftware();
-                        cloneSoft.setDisplayOrder(soft.getDisplayOrder());
-                        cloneSoft.setMetadata(this);
-                        cloneSoft.setName(soft.getName());
-                        cloneSoft.setSoftwareVersion(soft.getSoftwareVersion());
-                        this.getStudySoftware().add(cloneSoft);
-                    }
-                }
-            }
-            if (tf.getStudyField().getName().equals("topicClassValue")){
-                if(!tf.isHidden()  && !tf.isDisabled()){
-                    this.setStudyTopicClasses(new ArrayList<StudyTopicClass>());
-                    for (StudyTopicClass topic: copyFrom.studyTopicClasses){
-                        StudyTopicClass cloneTopic = new StudyTopicClass();
-                        cloneTopic.setDisplayOrder(topic.getDisplayOrder());
-                        cloneTopic.setMetadata(this);
-                        cloneTopic.setValue(topic.getValue());
-                        cloneTopic.setVocab(topic.getVocab());
-                        cloneTopic.setVocabURI(topic.getVocabURI());
-                        this.getStudyTopicClasses().add(cloneTopic);
-                    }
-                }
-            }
-            
-            if (tf.getStudyField().isDcmField()) {
-                if(!tf.isHidden()  && !tf.isDisabled()){
-                    for (StudyFieldValue sfv: copyFrom.getStudyFieldValues()){
-                        if( tf.getStudyField().equals(sfv.getStudyField()) ) {
-                            StudyFieldValue cloneSfv = new StudyFieldValue();
-                            cloneSfv.setDisplayOrder(sfv.getDisplayOrder());
-                            cloneSfv.setStudyField(sfv.getStudyField());
-                            cloneSfv.setStrValue(sfv.getStrValue());
-                            cloneSfv.setMetadata(this);
-                            this.getStudyFieldValues().add(cloneSfv);    
-                        }
-                    }
-                }
-            }
-                
-        }         
+    private boolean copyField(TemplateField tf, boolean copyHidden, boolean copyDisabled) {
+        return (!tf.isHidden() && !tf.isDisabled()) ||
+               (copyHidden && tf.isHidden() ) ||
+               (copyDisabled && tf.isDisabled());       
     }
     
-    public Metadata(Metadata copyFrom ) {
-     //this is for a direct copy of study metadata to study metadata
-        this.setUNF(copyFrom.UNF);
-        this.setAccessToSources(copyFrom.accessToSources);
-        this.setActionsToMinimizeLoss(copyFrom.actionsToMinimizeLoss);
-        this.setAvailabilityStatus(copyFrom.availabilityStatus);
-        this.setCharacteristicOfSources(copyFrom.characteristicOfSources);
-        this.setCitationRequirements(copyFrom.citationRequirements);
-        this.setCleaningOperations(copyFrom.cleaningOperations);
-        this.setCollectionMode(copyFrom.collectionMode);
-        this.setCollectionSize(copyFrom.collectionSize);
-        this.setConditions(copyFrom.conditions);
-        this.setConfidentialityDeclaration(copyFrom.confidentialityDeclaration);
-        this.setContact(copyFrom.contact);
-        this.setControlOperations(copyFrom.controlOperations);
-        this.setCountry(copyFrom.country);
-        this.setDataCollectionSituation(copyFrom.dataCollectionSituation);
-        this.setDataCollector(copyFrom.dataCollector);
-        this.setDataSources(copyFrom.dataSources);
-        this.setDateOfCollectionEnd(copyFrom.dateOfCollectionEnd);
-        this.setDateOfCollectionStart(copyFrom.dateOfCollectionStart);
-        this.setDateOfDeposit(copyFrom.dateOfDeposit);
-        this.setDepositor(copyFrom.depositor);
-        this.setDepositorRequirements(copyFrom.depositorRequirements);
-        this.setDeviationsFromSampleDesign(copyFrom.deviationsFromSampleDesign);
-        this.setDisclaimer(copyFrom.disclaimer);
-        this.setDistributionDate(copyFrom.distributionDate);
-        this.setDistributorContact(copyFrom.distributorContact);
-        this.setDistributorContactAffiliation(copyFrom.distributorContactAffiliation);
-        this.setDistributorContactEmail(copyFrom.distributorContactEmail);
-        this.setFrequencyOfDataCollection(copyFrom.frequencyOfDataCollection);
-        this.setFundingAgency(copyFrom.fundingAgency);
-        this.setGeographicCoverage(copyFrom.geographicCoverage);
-        this.setGeographicUnit(copyFrom.geographicUnit);
-        this.setHarvestDVNTermsOfUse(copyFrom.harvestDVNTermsOfUse);
-        this.setHarvestDVTermsOfUse(copyFrom.harvestDVTermsOfUse);
-        this.setHarvestHoldings(copyFrom.harvestHoldings);
-        this.setKindOfData(copyFrom.kindOfData);
-        this.setOriginOfSources(copyFrom.originOfSources);
-        this.setOriginalArchive(copyFrom.originalArchive);
-        this.setOtherDataAppraisal(copyFrom.otherDataAppraisal);
-        this.setPlaceOfAccess(copyFrom.placeOfAccess);
-        this.setProductionDate(copyFrom.productionDate);
-        this.setProductionPlace(copyFrom.productionPlace);
-        this.setReplicationFor(copyFrom.replicationFor);
-        this.setResearchInstrument(copyFrom.researchInstrument);
-        this.setResponseRate(copyFrom.responseRate);
-        this.setRestrictions(copyFrom.restrictions);
-        this.setSamplingErrorEstimate(copyFrom.samplingErrorEstimate);
-        this.setSamplingProcedure(copyFrom.samplingProcedure);
-        this.setSeriesInformation(copyFrom.seriesInformation);
-        this.setSeriesName(copyFrom.seriesName);
-        this.setSpecialPermissions(copyFrom.specialPermissions);
-        this.setStudyVersionText(copyFrom.studyVersionText);
-        this.setSubTitle(copyFrom.subTitle);
-        this.setTimeMethod(copyFrom.timeMethod);
-        this.setTimePeriodCoveredEnd(copyFrom.timePeriodCoveredEnd);
-        this.setTimePeriodCoveredStart(copyFrom.timePeriodCoveredStart);
-        this.setTitle(copyFrom.title);
-        this.setUnitOfAnalysis(copyFrom.unitOfAnalysis);
-        this.setUniverse(copyFrom.universe);
-        this.setVersionDate(copyFrom.versionDate);
-        this.setWeighting(copyFrom.weighting);
-        this.setStudyLevelErrorNotes(copyFrom.studyLevelErrorNotes);
-        this.setStudyCompletion(copyFrom.studyCompletion);
+        
+    public  Metadata(Metadata source, boolean copyHidden, boolean copyDisabled ) {
+     
+        this.setUNF(source.UNF);
+        this.setStudyFieldValues(new ArrayList<StudyFieldValue>());
+        
+        Template sourceTemplate = source.getTemplate() != null ? source.getTemplate() : source.getStudyVersion().getStudy().getTemplate();
+        
+        // create a Map so we can look up each template field and check its field input level
+        Map<String,TemplateField> tfMap = new HashMap();        
+        for (TemplateField tf : sourceTemplate.getTemplateFields()){
+            tfMap.put(tf.getStudyField().getName(), tf);
+        }
+            
+        if( copyField(tfMap.get(StudyFieldConstant.accessToSources), copyHidden, copyDisabled) ) {
+             this.setAccessToSources(source.accessToSources); 
+        }
+
+        if( copyField(tfMap.get(StudyFieldConstant.actionsToMinimizeLoss), copyHidden, copyDisabled) ) {
+             this.setActionsToMinimizeLoss(source.actionsToMinimizeLoss); 
+        }
+        
+        if( copyField(tfMap.get(StudyFieldConstant.availabilityStatus), copyHidden, copyDisabled) ) {
+             this.setAvailabilityStatus(source.availabilityStatus); 
+        }
+
+        if( copyField(tfMap.get(StudyFieldConstant.characteristicOfSources), copyHidden, copyDisabled) ) {
+             this.setCharacteristicOfSources(source.characteristicOfSources); 
+        }
+
+        if( copyField(tfMap.get(StudyFieldConstant.citationRequirements), copyHidden, copyDisabled) ) {
+             this.setCitationRequirements(source.citationRequirements); 
+        }
+        
+        if( copyField(tfMap.get(StudyFieldConstant.cleaningOperations), copyHidden, copyDisabled) ) {
+             this.setCleaningOperations(source.cleaningOperations); 
+        }
+
+        if( copyField(tfMap.get(StudyFieldConstant.collectionMode), copyHidden, copyDisabled) ) {
+             this.setCollectionMode(source.collectionMode); 
+        }
+
+        if( copyField(tfMap.get(StudyFieldConstant.collectionSize), copyHidden, copyDisabled) ) {
+             this.setCollectionSize(source.collectionSize); 
+        }
+
+        if( copyField(tfMap.get(StudyFieldConstant.conditions), copyHidden, copyDisabled) ) {
+             this.setConditions(source.conditions); 
+        }
+
+        if( copyField(tfMap.get(StudyFieldConstant.confidentialityDeclaration), copyHidden, copyDisabled) ) {
+             this.setConfidentialityDeclaration(source.confidentialityDeclaration); 
+        }
+        
+        if( copyField(tfMap.get(StudyFieldConstant.contact), copyHidden, copyDisabled) ) {
+             this.setContact(source.contact); 
+        }
+
+        if( copyField(tfMap.get(StudyFieldConstant.controlOperations), copyHidden, copyDisabled) ) {
+             this.setControlOperations(source.controlOperations); 
+        }
+
+        if( copyField(tfMap.get(StudyFieldConstant.country), copyHidden, copyDisabled) ) {
+             this.setCountry(source.country); 
+        }
+
+        if( copyField(tfMap.get(StudyFieldConstant.dataCollectionSituation), copyHidden, copyDisabled) ) {
+             this.setDataCollectionSituation(source.dataCollectionSituation); 
+        }
+        
+        if( copyField(tfMap.get(StudyFieldConstant.dataCollector), copyHidden, copyDisabled) ) {
+             this.setDataCollector(source.dataCollector); 
+        }
+        
+        if( copyField(tfMap.get(StudyFieldConstant.dataSources), copyHidden, copyDisabled) ) {
+             this.setDataSources(source.dataSources); 
+        }
+        
+        if( copyField(tfMap.get(StudyFieldConstant.dateOfCollectionEnd), copyHidden, copyDisabled) ) {
+             this.setDateOfCollectionEnd(source.dateOfCollectionEnd); 
+        }        
+
+        if( copyField(tfMap.get(StudyFieldConstant.dateOfCollectionStart), copyHidden, copyDisabled) ) {
+             this.setAccessToSources(source.dateOfCollectionStart); 
+        }  
+
+        if( copyField(tfMap.get(StudyFieldConstant.dateOfDeposit), copyHidden, copyDisabled) ) {
+             this.setDateOfCollectionStart(source.dateOfDeposit); 
+        }         
+
+        if( copyField(tfMap.get(StudyFieldConstant.depositor), copyHidden, copyDisabled) ) {
+             this.setDepositor(source.depositor); 
+        }          
+
+        if( copyField(tfMap.get(StudyFieldConstant.depositorRequirements), copyHidden, copyDisabled) ) {
+             this.setDepositorRequirements(source.depositorRequirements); 
+        } 
+        
+        if( copyField(tfMap.get(StudyFieldConstant.deviationsFromSampleDesign), copyHidden, copyDisabled) ) {
+             this.setDeviationsFromSampleDesign(source.deviationsFromSampleDesign); 
+        } 
+        
+        if( copyField(tfMap.get(StudyFieldConstant.disclaimer), copyHidden, copyDisabled) ) {
+             this.setDisclaimer(source.disclaimer); 
+        } 
+
+        if( copyField(tfMap.get(StudyFieldConstant.distributionDate), copyHidden, copyDisabled) ) {
+             this.setDistributionDate(source.distributionDate); 
+        }
+
+        if( copyField(tfMap.get(StudyFieldConstant.distributorContact), copyHidden, copyDisabled) ) {
+             this.setDistributorContact(source.distributorContact); 
+        }
+        
+        if( copyField(tfMap.get(StudyFieldConstant.distributorContactAffiliation), copyHidden, copyDisabled) ) {
+             this.setDistributorContactAffiliation(source.distributorContactAffiliation); 
+        }
+
+        if( copyField(tfMap.get(StudyFieldConstant.distributorContactEmail), copyHidden, copyDisabled) ) {
+             this.setDistributorContactEmail(source.distributorContactEmail); 
+        }   
+        
+        if( copyField(tfMap.get(StudyFieldConstant.frequencyOfDataCollection), copyHidden, copyDisabled) ) {
+             this.setFrequencyOfDataCollection(source.frequencyOfDataCollection); 
+        } 
+
+        if( copyField(tfMap.get(StudyFieldConstant.fundingAgency), copyHidden, copyDisabled) ) {
+             this.setFundingAgency(source.fundingAgency); 
+        }
+        
+        if( copyField(tfMap.get(StudyFieldConstant.geographicCoverage), copyHidden, copyDisabled) ) {
+             this.setGeographicCoverage(source.geographicCoverage); 
+        } 
+
+        if( copyField(tfMap.get(StudyFieldConstant.geographicUnit), copyHidden, copyDisabled) ) {
+             this.setGeographicUnit(source.geographicUnit); 
+        } 
+        
+        if (copyField(tfMap.get(StudyFieldConstant.kindOfData), copyHidden, copyDisabled)) {
+            this.setKindOfData(source.kindOfData);
+        }
+        
+        if (copyField(tfMap.get(StudyFieldConstant.originOfSources), copyHidden, copyDisabled)) {
+            this.setOriginOfSources(source.originOfSources);
+        }
+
+        if (copyField(tfMap.get(StudyFieldConstant.originalArchive), copyHidden, copyDisabled)) {
+            this.setOriginalArchive(source.originalArchive);
+        }
+
+        if (copyField(tfMap.get(StudyFieldConstant.otherDataAppraisal), copyHidden, copyDisabled)) {
+            this.setOtherDataAppraisal(source.otherDataAppraisal);
+        }
+
+        if (copyField(tfMap.get(StudyFieldConstant.placeOfAccess), copyHidden, copyDisabled)) {
+            this.setPlaceOfAccess(source.placeOfAccess);
+        }
+
+        if (copyField(tfMap.get(StudyFieldConstant.productionDate), copyHidden, copyDisabled)) {
+            this.setProductionDate(source.productionDate);
+        }
+
+        if (copyField(tfMap.get(StudyFieldConstant.productionPlace), copyHidden, copyDisabled)) {
+            this.setProductionPlace(source.productionPlace);
+        }
+
+        if (copyField(tfMap.get(StudyFieldConstant.replicationFor), copyHidden, copyDisabled)) {
+            this.setReplicationFor(source.replicationFor);
+        }
+
+        if (copyField(tfMap.get(StudyFieldConstant.researchInstrument), copyHidden, copyDisabled)) {
+            this.setResearchInstrument(source.researchInstrument);
+        }
+
+        if (copyField(tfMap.get(StudyFieldConstant.responseRate), copyHidden, copyDisabled)) {
+            this.setResponseRate(source.responseRate);
+        }
+
+        if (copyField(tfMap.get(StudyFieldConstant.restrictions), copyHidden, copyDisabled)) {
+            this.setRestrictions(source.restrictions);
+        }
+
+        if (copyField(tfMap.get(StudyFieldConstant.samplingErrorEstimates), copyHidden, copyDisabled)) {
+            this.setSamplingErrorEstimate(source.samplingErrorEstimate);
+        }
+
+        if (copyField(tfMap.get(StudyFieldConstant.samplingProcedure), copyHidden, copyDisabled)) {
+            this.setSamplingProcedure(source.samplingProcedure);
+        }
+
+        if (copyField(tfMap.get(StudyFieldConstant.seriesInformation), copyHidden, copyDisabled)) {
+            this.setSeriesInformation(source.seriesInformation);
+        }
+
+        if (copyField(tfMap.get(StudyFieldConstant.seriesName), copyHidden, copyDisabled)) {
+            this.setSeriesName(source.seriesName);
+        }
+ 
+        if (copyField(tfMap.get(StudyFieldConstant.specialPermissions), copyHidden, copyDisabled)) {
+            this.setSpecialPermissions(source.specialPermissions);
+        }
+
+        if (copyField(tfMap.get(StudyFieldConstant.studyVersion), copyHidden, copyDisabled)) {
+            this.setStudyVersionText(source.studyVersionText);
+        }
+
+        if (copyField(tfMap.get(StudyFieldConstant.subTitle), copyHidden, copyDisabled)) {
+            this.setSubTitle(source.subTitle);
+        }
+
+        if (copyField(tfMap.get(StudyFieldConstant.timeMethod), copyHidden, copyDisabled)) {
+            this.setTimeMethod(source.timeMethod);
+        }
+
+        if (copyField(tfMap.get(StudyFieldConstant.timePeriodCoveredEnd), copyHidden, copyDisabled)) {
+            this.setTimePeriodCoveredEnd(source.timePeriodCoveredEnd);
+        }
+        
+        if (copyField(tfMap.get(StudyFieldConstant.timePeriodCoveredStart), copyHidden, copyDisabled)) {
+            this.setTimePeriodCoveredStart(source.timePeriodCoveredStart);
+        }
+        
+        if (copyField(tfMap.get(StudyFieldConstant.title), copyHidden, copyDisabled)) {
+            this.setTitle(source.title);
+        }
+
+        if (copyField(tfMap.get(StudyFieldConstant.unitOfAnalysis), copyHidden, copyDisabled)) {
+            this.setUnitOfAnalysis(source.unitOfAnalysis);
+        }
+
+        if (copyField(tfMap.get(StudyFieldConstant.universe), copyHidden, copyDisabled)) {
+            this.setUniverse(source.universe);
+        }
+
+        if (copyField(tfMap.get(StudyFieldConstant.versionDate), copyHidden, copyDisabled)) {
+            this.setVersionDate(source.versionDate);
+        }
+
+        if (copyField(tfMap.get(StudyFieldConstant.weighting), copyHidden, copyDisabled)) {
+            this.setWeighting(source.weighting);
+        }
+
+        if (copyField(tfMap.get(StudyFieldConstant.studyLevelErrorNotes), copyHidden, copyDisabled)) {
+            this.setStudyLevelErrorNotes(source.studyLevelErrorNotes);
+        }
+
+        if (copyField(tfMap.get(StudyFieldConstant.studyCompletion), copyHidden, copyDisabled)) {
+            this.setStudyCompletion(source.studyCompletion);
+        }            
+
+        if (copyField(tfMap.get(StudyFieldConstant.abstractText), copyHidden, copyDisabled)) {
+            this.setStudyAbstracts(new ArrayList<StudyAbstract>());
+            for (StudyAbstract sa : source.studyAbstracts) {
+                StudyAbstract cloneAbstract = new StudyAbstract();
+                cloneAbstract.setDate(sa.getDate());
+                cloneAbstract.setDisplayOrder(sa.getDisplayOrder());
+                cloneAbstract.setMetadata(this);
+                cloneAbstract.setText(sa.getText());
+                this.getStudyAbstracts().add(cloneAbstract);
+            }
+        }
+
+        if (copyField(tfMap.get(StudyFieldConstant.authorName), copyHidden, copyDisabled)) {
+            this.setStudyAuthors(new ArrayList<StudyAuthor>());
+            for (StudyAuthor author : source.studyAuthors) {
+                StudyAuthor cloneAuthor = new StudyAuthor();
+                cloneAuthor.setAffiliation(author.getAffiliation());
+                cloneAuthor.setDisplayOrder(author.getDisplayOrder());
+                cloneAuthor.setMetadata(this);
+                cloneAuthor.setName(author.getName());
+                this.getStudyAuthors().add(cloneAuthor);
+            }
+        }
+        
+        if (copyField(tfMap.get(StudyFieldConstant.distributorName), copyHidden, copyDisabled)) {
+            this.setStudyDistributors(new ArrayList<StudyDistributor>());
+            for (StudyDistributor dist : source.studyDistributors) {
+                StudyDistributor cloneDist = new StudyDistributor();
+                cloneDist.setAbbreviation(dist.getAbbreviation());
+                cloneDist.setAffiliation(dist.getAffiliation());
+                cloneDist.setDisplayOrder(dist.getDisplayOrder());
+                cloneDist.setMetadata(this);
+                cloneDist.setLogo(dist.getLogo());
+                cloneDist.setName(dist.getName());
+                cloneDist.setUrl(dist.getUrl());
+                this.getStudyDistributors().add(cloneDist);
+            }
+        }
+
+        if (copyField(tfMap.get(StudyFieldConstant.westLongitude), copyHidden, copyDisabled)) {
+            this.setStudyGeoBoundings(new ArrayList<StudyGeoBounding>());
+            for (StudyGeoBounding geo : source.studyGeoBoundings) {
+                StudyGeoBounding cloneGeo = new StudyGeoBounding();
+                cloneGeo.setDisplayOrder(geo.getDisplayOrder());
+                cloneGeo.setMetadata(this);
+                cloneGeo.setEastLongitude(geo.getEastLongitude());
+                cloneGeo.setNorthLatitude(geo.getNorthLatitude());
+                cloneGeo.setSouthLatitude(geo.getSouthLatitude());
+                cloneGeo.setWestLongitude(geo.getWestLongitude());
+                this.getStudyGeoBoundings().add(cloneGeo);
+            }
+        }
+
+        if (copyField(tfMap.get(StudyFieldConstant.grantNumber), copyHidden, copyDisabled)) {
+            this.setStudyGrants(new ArrayList<StudyGrant>());
+            for (StudyGrant grant : source.studyGrants) {
+                StudyGrant cloneGrant = new StudyGrant();
+                cloneGrant.setAgency(grant.getAgency());
+                cloneGrant.setDisplayOrder(grant.getDisplayOrder());
+                cloneGrant.setMetadata(this);
+                cloneGrant.setNumber(grant.getNumber());
+                this.getStudyGrants().add(cloneGrant);
+            }
+        }
+
+        if (copyField(tfMap.get(StudyFieldConstant.keywordValue), copyHidden, copyDisabled)) {
+            this.setStudyKeywords(new ArrayList<StudyKeyword>());
+            for (StudyKeyword key : source.studyKeywords) {
+                StudyKeyword cloneKey = new StudyKeyword();
+                cloneKey.setDisplayOrder(key.getDisplayOrder());
+                cloneKey.setMetadata(this);
+                cloneKey.setValue(key.getValue());
+                cloneKey.setVocab(key.getVocab());
+                cloneKey.setVocabURI(key.getVocabURI());
+                this.getStudyKeywords().add(cloneKey);
+            }
+        }
+        
+        if (copyField(tfMap.get(StudyFieldConstant.notesInformationType), copyHidden, copyDisabled)) {
+            this.setStudyNotes(new ArrayList<StudyNote>());
+            for (StudyNote note : source.studyNotes) {
+                StudyNote cloneNote = new StudyNote();
+                cloneNote.setDisplayOrder(note.getDisplayOrder());
+                cloneNote.setMetadata(this);
+                cloneNote.setSubject(note.getSubject());
+                cloneNote.setText(note.getText());
+                cloneNote.setType(note.getType());
+                this.getStudyNotes().add(cloneNote);
+            }
+        }
+
+        if (copyField(tfMap.get(StudyFieldConstant.otherId), copyHidden, copyDisabled)) {
+            this.setStudyOtherIds(new ArrayList<StudyOtherId>());
+            for (StudyOtherId id : source.studyOtherIds) {
+                StudyOtherId cloneId = new StudyOtherId();
+                cloneId.setAgency(id.getAgency());
+                cloneId.setDisplayOrder(id.getDisplayOrder());
+                cloneId.setMetadata(this);
+                cloneId.setOtherId(id.getOtherId());
+                this.getStudyOtherIds().add(cloneId);
+            }
+        }
+
+        if (copyField(tfMap.get(StudyFieldConstant.otherReferences), copyHidden, copyDisabled)) {
+            this.setStudyOtherRefs(new ArrayList<StudyOtherRef>());
+            for (StudyOtherRef ref : source.studyOtherRefs) {
+                StudyOtherRef cloneRef = new StudyOtherRef();
+                cloneRef.setDisplayOrder(ref.getDisplayOrder());
+                cloneRef.setMetadata(this);
+                cloneRef.setText(ref.getText());
+                this.getStudyOtherRefs().add(cloneRef);
+            }
+        }
+
+        if (copyField(tfMap.get(StudyFieldConstant.producerName), copyHidden, copyDisabled)) {
+            this.setStudyProducers(new ArrayList<StudyProducer>());
+            for (StudyProducer prod : source.studyProducers) {
+                StudyProducer cloneProd = new StudyProducer();
+                cloneProd.setAbbreviation(prod.getAbbreviation());
+                cloneProd.setAffiliation(prod.getAffiliation());
+                cloneProd.setDisplayOrder(prod.getDisplayOrder());
+                cloneProd.setLogo(prod.getLogo());
+                cloneProd.setMetadata(this);
+                cloneProd.setName(prod.getName());
+                cloneProd.setUrl(prod.getUrl());
+                this.getStudyProducers().add(cloneProd);
+            }
+        }        
+        
+        if (copyField(tfMap.get(StudyFieldConstant.relatedMaterial), copyHidden, copyDisabled)) {
+            this.setStudyRelMaterials(new ArrayList<StudyRelMaterial>());
+            for (StudyRelMaterial rel : source.studyRelMaterials) {
+                StudyRelMaterial cloneRel = new StudyRelMaterial();
+                cloneRel.setDisplayOrder(rel.getDisplayOrder());
+                cloneRel.setMetadata(this);
+                cloneRel.setText(rel.getText());
+                this.getStudyRelMaterials().add(cloneRel);
+            }
+        }
+
+        if (copyField(tfMap.get(StudyFieldConstant.relatedPublications), copyHidden, copyDisabled)) {
+            this.setStudyRelPublications(new ArrayList<StudyRelPublication>());
+            for (StudyRelPublication rel : source.studyRelPublications) {
+                StudyRelPublication cloneRel = new StudyRelPublication();
+                cloneRel.setDisplayOrder(rel.getDisplayOrder());
+                cloneRel.setMetadata(this);
+                cloneRel.setText(rel.getText());
+                this.getStudyRelPublications().add(cloneRel);
+            }
+        }
+
+        if (copyField(tfMap.get(StudyFieldConstant.relatedStudies), copyHidden, copyDisabled)) {
+            this.setStudyRelStudies(new ArrayList<StudyRelStudy>());
+            for (StudyRelStudy rel : source.studyRelStudies) {
+                StudyRelStudy cloneRel = new StudyRelStudy();
+                cloneRel.setDisplayOrder(rel.getDisplayOrder());
+                cloneRel.setMetadata(this);
+                cloneRel.setText(rel.getText());
+                this.getStudyRelStudies().add(cloneRel);
+            }
+        }
+        
+        if (copyField(tfMap.get(StudyFieldConstant.softwareName), copyHidden, copyDisabled)) {
+            this.setStudySoftware(new ArrayList<StudySoftware>());
+            for (StudySoftware soft : source.studySoftware) {
+                StudySoftware cloneSoft = new StudySoftware();
+                cloneSoft.setDisplayOrder(soft.getDisplayOrder());
+                cloneSoft.setMetadata(this);
+                cloneSoft.setName(soft.getName());
+                cloneSoft.setSoftwareVersion(soft.getSoftwareVersion());
+                this.getStudySoftware().add(cloneSoft);
+            }
+        }
+        
+        
+        if (copyField(tfMap.get(StudyFieldConstant.topicClassValue), copyHidden, copyDisabled)) {
+
+            this.setStudyTopicClasses(new ArrayList<StudyTopicClass>());
+            for (StudyTopicClass topic : source.studyTopicClasses) {
+                StudyTopicClass cloneTopic = new StudyTopicClass();
+                cloneTopic.setDisplayOrder(topic.getDisplayOrder());
+                cloneTopic.setMetadata(this);
+                cloneTopic.setValue(topic.getValue());
+                cloneTopic.setVocab(topic.getVocab());
+                cloneTopic.setVocabURI(topic.getVocabURI());
+                this.getStudyTopicClasses().add(cloneTopic);
+            }
+        }
+        
+        // custom values
+        for (StudyField sf : source.getStudyFields()) {                     
+            if( copyField(tfMap.get(sf.getName()), copyHidden, copyDisabled) ) {
+                for (StudyFieldValue sfv: sf.getStudyFieldValues()){
+                    StudyFieldValue cloneSfv = new StudyFieldValue();
+                    cloneSfv.setDisplayOrder(sfv.getDisplayOrder());
+                    cloneSfv.setStudyField(sfv.getStudyField());
+                    cloneSfv.setStrValue(sfv.getStrValue());
+                    cloneSfv.setMetadata(this);
+                    this.getStudyFieldValues().add(cloneSfv);    
+                }
+            }            
+        }                
+    }
+    
+    // This constructor is for an exact clone, regarldes of field input levels
+    public Metadata(Metadata source ) {
+        this.setUNF(source.UNF);
+        this.setAccessToSources(source.accessToSources);
+        this.setActionsToMinimizeLoss(source.actionsToMinimizeLoss);
+        this.setAvailabilityStatus(source.availabilityStatus);
+        this.setCharacteristicOfSources(source.characteristicOfSources);
+        this.setCitationRequirements(source.citationRequirements);
+        this.setCleaningOperations(source.cleaningOperations);
+        this.setCollectionMode(source.collectionMode);
+        this.setCollectionSize(source.collectionSize);
+        this.setConditions(source.conditions);
+        this.setConfidentialityDeclaration(source.confidentialityDeclaration);
+        this.setContact(source.contact);
+        this.setControlOperations(source.controlOperations);
+        this.setCountry(source.country);
+        this.setDataCollectionSituation(source.dataCollectionSituation);
+        this.setDataCollector(source.dataCollector);
+        this.setDataSources(source.dataSources);
+        this.setDateOfCollectionEnd(source.dateOfCollectionEnd);
+        this.setDateOfCollectionStart(source.dateOfCollectionStart);
+        this.setDateOfDeposit(source.dateOfDeposit);
+        this.setDepositor(source.depositor);
+        this.setDepositorRequirements(source.depositorRequirements);
+        this.setDeviationsFromSampleDesign(source.deviationsFromSampleDesign);
+        this.setDisclaimer(source.disclaimer);
+        this.setDistributionDate(source.distributionDate);
+        this.setDistributorContact(source.distributorContact);
+        this.setDistributorContactAffiliation(source.distributorContactAffiliation);
+        this.setDistributorContactEmail(source.distributorContactEmail);
+        this.setFrequencyOfDataCollection(source.frequencyOfDataCollection);
+        this.setFundingAgency(source.fundingAgency);
+        this.setGeographicCoverage(source.geographicCoverage);
+        this.setGeographicUnit(source.geographicUnit);
+        this.setKindOfData(source.kindOfData);
+        this.setOriginOfSources(source.originOfSources);
+        this.setOriginalArchive(source.originalArchive);
+        this.setOtherDataAppraisal(source.otherDataAppraisal);
+        this.setPlaceOfAccess(source.placeOfAccess);
+        this.setProductionDate(source.productionDate);
+        this.setProductionPlace(source.productionPlace);
+        this.setReplicationFor(source.replicationFor);
+        this.setResearchInstrument(source.researchInstrument);
+        this.setResponseRate(source.responseRate);
+        this.setRestrictions(source.restrictions);
+        this.setSamplingErrorEstimate(source.samplingErrorEstimate);
+        this.setSamplingProcedure(source.samplingProcedure);
+        this.setSeriesInformation(source.seriesInformation);
+        this.setSeriesName(source.seriesName);
+        this.setSpecialPermissions(source.specialPermissions);
+        this.setStudyVersionText(source.studyVersionText);
+        this.setSubTitle(source.subTitle);
+        this.setTimeMethod(source.timeMethod);
+        this.setTimePeriodCoveredEnd(source.timePeriodCoveredEnd);
+        this.setTimePeriodCoveredStart(source.timePeriodCoveredStart);
+        this.setTitle(source.title);
+        this.setUnitOfAnalysis(source.unitOfAnalysis);
+        this.setUniverse(source.universe);
+        this.setVersionDate(source.versionDate);
+        this.setWeighting(source.weighting);
+        this.setStudyLevelErrorNotes(source.studyLevelErrorNotes);
+        this.setStudyCompletion(source.studyCompletion);
         
         
         
      
         this.setStudyAbstracts(new ArrayList<StudyAbstract>());
-        for(StudyAbstract sa: copyFrom.studyAbstracts) {
+        for(StudyAbstract sa: source.studyAbstracts) {
             StudyAbstract cloneAbstract = new StudyAbstract();
             cloneAbstract.setDate(sa.getDate());
             cloneAbstract.setDisplayOrder(sa.getDisplayOrder());
@@ -710,7 +629,7 @@ public class Metadata implements java.io.Serializable {
             this.getStudyAbstracts().add(cloneAbstract);
         }
         this.setStudyAuthors(new ArrayList<StudyAuthor>());
-        for (StudyAuthor author: copyFrom.studyAuthors) {
+        for (StudyAuthor author: source.studyAuthors) {
             StudyAuthor cloneAuthor = new StudyAuthor();
             cloneAuthor.setAffiliation(author.getAffiliation());
             cloneAuthor.setDisplayOrder(author.getDisplayOrder());
@@ -719,7 +638,7 @@ public class Metadata implements java.io.Serializable {
             this.getStudyAuthors().add(cloneAuthor);
         }
         this.setStudyDistributors(new ArrayList<StudyDistributor>());
-        for (StudyDistributor dist: copyFrom.studyDistributors){
+        for (StudyDistributor dist: source.studyDistributors){
             StudyDistributor cloneDist = new StudyDistributor();
             cloneDist.setAbbreviation(dist.getAbbreviation());
             cloneDist.setAffiliation(dist.getAffiliation());
@@ -731,7 +650,7 @@ public class Metadata implements java.io.Serializable {
             this.getStudyDistributors().add(cloneDist);
         }
         this.setStudyGeoBoundings(new ArrayList<StudyGeoBounding>());
-        for(StudyGeoBounding geo: copyFrom.studyGeoBoundings) {
+        for(StudyGeoBounding geo: source.studyGeoBoundings) {
             StudyGeoBounding cloneGeo = new StudyGeoBounding();
             cloneGeo.setDisplayOrder(geo.getDisplayOrder());
             cloneGeo.setMetadata(this);
@@ -742,7 +661,7 @@ public class Metadata implements java.io.Serializable {
             this.getStudyGeoBoundings().add(cloneGeo);
         }
         this.setStudyGrants(new ArrayList<StudyGrant>());
-        for(StudyGrant grant: copyFrom.studyGrants) {
+        for(StudyGrant grant: source.studyGrants) {
             StudyGrant cloneGrant = new StudyGrant();
             cloneGrant.setAgency(grant.getAgency());
             cloneGrant.setDisplayOrder(grant.getDisplayOrder());
@@ -751,7 +670,7 @@ public class Metadata implements java.io.Serializable {
             this.getStudyGrants().add(cloneGrant);
         }
         this.setStudyKeywords(new ArrayList<StudyKeyword>());
-        for(StudyKeyword key: copyFrom.studyKeywords) {
+        for(StudyKeyword key: source.studyKeywords) {
             StudyKeyword cloneKey = new StudyKeyword();
             cloneKey.setDisplayOrder(key.getDisplayOrder());
             cloneKey.setMetadata(this);
@@ -761,7 +680,7 @@ public class Metadata implements java.io.Serializable {
             this.getStudyKeywords().add(cloneKey);
         }
        this.setStudyNotes(new ArrayList<StudyNote>());
-       for(StudyNote note: copyFrom.studyNotes) {
+       for(StudyNote note: source.studyNotes) {
             StudyNote cloneNote = new StudyNote();
             cloneNote.setDisplayOrder(note.getDisplayOrder());
             cloneNote.setMetadata(this);
@@ -771,7 +690,7 @@ public class Metadata implements java.io.Serializable {
             this.getStudyNotes().add(cloneNote);
         }
         this.setStudyOtherIds(new ArrayList<StudyOtherId>());
-        for(StudyOtherId id: copyFrom.studyOtherIds) {
+        for(StudyOtherId id: source.studyOtherIds) {
             StudyOtherId cloneId = new StudyOtherId();
             cloneId.setAgency(id.getAgency());
             cloneId.setDisplayOrder(id.getDisplayOrder());
@@ -780,7 +699,7 @@ public class Metadata implements java.io.Serializable {
             this.getStudyOtherIds().add(cloneId);
         }
         this.setStudyOtherRefs(new ArrayList<StudyOtherRef>());
-        for(StudyOtherRef ref: copyFrom.studyOtherRefs) {
+        for(StudyOtherRef ref: source.studyOtherRefs) {
             StudyOtherRef cloneRef = new StudyOtherRef();
             cloneRef.setDisplayOrder(ref.getDisplayOrder());
             cloneRef.setMetadata(this);
@@ -788,7 +707,7 @@ public class Metadata implements java.io.Serializable {
             this.getStudyOtherRefs().add(cloneRef);
         }
         this.setStudyProducers(new ArrayList<StudyProducer>());
-        for(StudyProducer prod: copyFrom.studyProducers) {
+        for(StudyProducer prod: source.studyProducers) {
             StudyProducer cloneProd = new StudyProducer();
             cloneProd.setAbbreviation(prod.getAbbreviation());
             cloneProd.setAffiliation(prod.getAffiliation());
@@ -800,7 +719,7 @@ public class Metadata implements java.io.Serializable {
             this.getStudyProducers().add(cloneProd);
         }
        this.setStudyRelMaterials(new ArrayList<StudyRelMaterial>());
-       for(StudyRelMaterial rel: copyFrom.studyRelMaterials) {
+       for(StudyRelMaterial rel: source.studyRelMaterials) {
             StudyRelMaterial cloneRel = new StudyRelMaterial();
             cloneRel.setDisplayOrder(rel.getDisplayOrder());
             cloneRel.setMetadata(this);
@@ -808,7 +727,7 @@ public class Metadata implements java.io.Serializable {
             this.getStudyRelMaterials().add(cloneRel);
         }
        this.setStudyRelPublications(new ArrayList<StudyRelPublication>());
-        for(StudyRelPublication rel: copyFrom.studyRelPublications){
+        for(StudyRelPublication rel: source.studyRelPublications){
             StudyRelPublication cloneRel = new StudyRelPublication();
             cloneRel.setDisplayOrder(rel.getDisplayOrder());
             cloneRel.setMetadata(this);
@@ -816,7 +735,7 @@ public class Metadata implements java.io.Serializable {
             this.getStudyRelPublications().add(cloneRel);
         }
         this.setStudyRelStudies(new ArrayList<StudyRelStudy>());
-        for(StudyRelStudy rel: copyFrom.studyRelStudies){
+        for(StudyRelStudy rel: source.studyRelStudies){
             StudyRelStudy cloneRel = new StudyRelStudy();
             cloneRel.setDisplayOrder(rel.getDisplayOrder());
             cloneRel.setMetadata(this);
@@ -824,7 +743,7 @@ public class Metadata implements java.io.Serializable {
             this.getStudyRelStudies().add(cloneRel);
         }
         this.setStudySoftware(new ArrayList<StudySoftware>());
-        for(StudySoftware soft: copyFrom.studySoftware){
+        for(StudySoftware soft: source.studySoftware){
             StudySoftware cloneSoft = new StudySoftware();
             cloneSoft.setDisplayOrder(soft.getDisplayOrder());
             cloneSoft.setMetadata(this);
@@ -833,7 +752,7 @@ public class Metadata implements java.io.Serializable {
             this.getStudySoftware().add(cloneSoft);
         }
         this.setStudyTopicClasses(new ArrayList<StudyTopicClass>());
-        for (StudyTopicClass topic: copyFrom.studyTopicClasses){
+        for (StudyTopicClass topic: source.studyTopicClasses){
             StudyTopicClass cloneTopic = new StudyTopicClass();
             cloneTopic.setDisplayOrder(topic.getDisplayOrder());
             cloneTopic.setMetadata(this);
@@ -843,7 +762,7 @@ public class Metadata implements java.io.Serializable {
             this.getStudyTopicClasses().add(cloneTopic);
         }
         this.setStudyFieldValues(new ArrayList<StudyFieldValue>());
-        for (StudyFieldValue sfv: copyFrom.getStudyFieldValues()){
+        for (StudyFieldValue sfv: source.getStudyFieldValues()){
             StudyFieldValue cloneSfv = new StudyFieldValue();
             cloneSfv.setDisplayOrder(sfv.getDisplayOrder());
             cloneSfv.setStudyField(sfv.getStudyField());

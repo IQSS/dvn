@@ -318,7 +318,7 @@ public class EditStudyPage extends VDCBaseBean implements java.io.Serializable  
         }
     }
         
-    public void changeSingleValCV(ValueChangeEvent event) {
+    public void changeSingleValCVOld(ValueChangeEvent event) {
         
         int rowIndex = customFieldsPanelSeries.getRowIndex();
         DataModel fieldsDataModel = getCustomFieldsDataModel();
@@ -346,7 +346,7 @@ public class EditStudyPage extends VDCBaseBean implements java.io.Serializable  
         studyField.setStudyFieldValues(values);           
     }
     
-    public void changeMultiValCV(ValueChangeEvent event) {
+    public void changeMultiValCVOld(ValueChangeEvent event) {
         int rowIndex = customFieldsPanelSeries.getRowIndex();
         DataModel fieldsDataModel = getCustomFieldsDataModel();
         fieldsDataModel.setRowIndex(rowIndex);
@@ -380,6 +380,56 @@ public class EditStudyPage extends VDCBaseBean implements java.io.Serializable  
 
     }
     
+    public void changeSingleValCV(ValueChangeEvent event) {;
+        Object[] fieldsRowData = getCustomFieldsRowData( customFieldsPanelSeries.getRowIndex() );  
+        StudyField studyField = (StudyField) fieldsRowData[3];
+        removeStudyFieldValues(studyField);  
+        
+        // now add new value
+        StudyFieldValue sfv = new StudyFieldValue( studyField, metadata, (String)event.getNewValue() );
+        studyField.getStudyFieldValues().add( sfv );
+      
+    }
+    
+    public void changeMultiValCV(ValueChangeEvent event) {       
+        Object[] fieldsRowData = getCustomFieldsRowData( customFieldsPanelSeries.getRowIndex() );
+        StudyField studyField = (StudyField) fieldsRowData[3];
+        
+        removeStudyFieldValues(studyField); 
+        
+        // now add new valuea
+        List<String> newValues = (List) event.getNewValue();
+        if (newValues != null && newValues.size() > 0) {
+            for (String newVal : newValues){ 
+                StudyFieldValue sfv = new StudyFieldValue(studyField, metadata, newVal);
+                studyField.getStudyFieldValues().add( sfv );
+            }
+        } else {
+            // add one blank row, in case user removed controlled vocabulary from template field
+            StudyFieldValue sfv = new StudyFieldValue(studyField, metadata, null);
+            studyField.getStudyFieldValues().add( sfv );            
+        }
+    }
+    
+    private void removeStudyFieldValues(StudyField studyField) {
+        for (Iterator it = studyField.getStudyFieldValues().iterator(); it.hasNext();) {
+            StudyFieldValue sfv = (StudyFieldValue) it.next();
+            editStudyService.removeCollectionElement(it,sfv);
+
+            // if this value is already in db, we also need to remove it from the metadata's list of studyFieldValues
+            if ( sfv.getId()!= null ) {
+                study.getTemplate().getMetadata().getStudyFieldValues().remove( sfv );
+            }           
+        }        
+    }
+    
+    public Object[] getCustomFieldsRowData(int rowIndex) {
+        // first set the rowindex of the data model to the row index of the panel series
+        // TODO: (until we cache the DataModel, we have to do this)        
+        DataModel fieldsDataModel = getCustomFieldsDataModel();
+        fieldsDataModel.setRowIndex(rowIndex);
+        return (Object[]) fieldsDataModel.getRowData();
+    }
     
     public Map getTemplatesMap() {
         // getVdcTemplatesMap is called with currentVDCId, since for a new study the current VDC IS the owner   

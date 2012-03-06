@@ -35,7 +35,7 @@ import javax.ejb.Local;
 public interface EditTemplateService extends java.io.Serializable { 
     public void setTemplate( Long templateId);
     public void newTemplate(Long vdcId);
-    public void newTemplate(Long vdcId,Long studyVersionId);
+    public void newTemplate(Long studyVersionId,Long vdcId);
     public void cancel();
     public void save();
     public Template getTemplate();
@@ -47,7 +47,7 @@ public interface EditTemplateService extends java.io.Serializable {
 
     public void newNetworkTemplate();
 
-    public void newClonedTemplate(Long vdcId, Template cloneSource);
+    public void newClonedTemplate(Long sourceTemplateId, Long vdcId);
     
     public void setTemplateFieldControlledVocabulary(TemplateField tf, Long cvId);
    

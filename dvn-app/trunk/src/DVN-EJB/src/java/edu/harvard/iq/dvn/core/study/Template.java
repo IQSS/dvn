@@ -53,11 +53,26 @@ public class Template implements java.io.Serializable {
         metadata = new Metadata();
         metadata.setTemplate(this);
     }
-
-     public Template(ArrayList templateFields ) {
+    
+    public Template(Template source) {
         metadata = new Metadata();
-        metadata.setTemplate(this);
-    } 
+        metadata.setTemplate(this);        
+        
+        List<TemplateField> sourceTemplateFields = source.getTemplateFields();
+        templateFields = new ArrayList();
+        for(TemplateField sourceField : sourceTemplateFields) {
+            TemplateField tf = new TemplateField();
+            tf.setTemplate(this);
+            tf.setStudyField(sourceField.getStudyField());
+
+            tf.setControlledVocabulary(sourceField.getControlledVocabulary());
+            tf.setFieldInputLevelString(sourceField.getFieldInputLevelString());
+            tf.setdcmSortOrder(sourceField.getDcmSortOrder());
+
+            templateFields.add(tf);
+        }
+    }
+
     public List<TemplateField> getTemplateFields() {
         return templateFields;
     }

@@ -1490,6 +1490,12 @@
                                              styleClass="formHtmlEnabled">
                                       <f:validator validatorId="XhtmlValidator"/>
                               </ice:inputText>
+                              <ice:inputTextarea id="input_HtmlEnabledArea" cols="90" rows="4" rendered="#{customFieldsDataModel[0].studyField.fieldType == 'htmlarea'}"                                          
+                                         value="#{customValuesDataModel[0].strValue}"
+                                         visible="#{empty(customFieldsDataModel[0].templateFieldControlledVocabulary)}"
+                                         styleClass="formHtmlEnabled">
+                                  <f:validator validatorId="XhtmlValidator"/>
+                              </ice:inputTextarea>
                               <ice:inputText id="input_Text" size="90" rendered="#{customFieldsDataModel[0].studyField.fieldType == 'textBox'}" 
                                              visible="#{empty(customFieldsDataModel[0].templateFieldControlledVocabulary)}"
                                              value="#{customValuesDataModel[0].strValue}">

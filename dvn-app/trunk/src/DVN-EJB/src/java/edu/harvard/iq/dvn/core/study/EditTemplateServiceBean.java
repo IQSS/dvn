@@ -74,137 +74,68 @@ public class EditTemplateServiceBean implements edu.harvard.iq.dvn.core.study.Ed
         
       
    
-    }
+    } 
     
-
+    // used to create a new Network template from the default Network templates (exact clone)
     public void newNetworkTemplate() {
-        newTemplate(null,null);
+        VDCNetwork network = vdcNetworkService.find(new Long(1));  
+        newTemplate(network.getDefaultTemplate(), null, true, true);        
     }    
     
+    // used to create a new VDC template from the default VDC templates (exact clone)
     public void newTemplate(Long vdcId) {
-        newTemplate(vdcId, null);
+        VDC vdc = em.find(VDC.class, vdcId);
+        newTemplate(vdc.getDefaultTemplate(), vdc, true, true);
     }
-
-
-    public void newTemplate(Long vdcId, Long studyVersionId) {
-        newTemplate = true;
-        template = new Template();
+    
+    // used to create a new VDC template from a preexiting study (no disabled fields)
+    public void newTemplate(Long studyVersionId, Long vdcId) {
+        StudyVersion sv = em.find(StudyVersion.class, studyVersionId);
+        VDC vdc = em.find(VDC.class, vdcId);
+        newTemplate(sv.getStudy().getTemplate(), sv.getMetadata(), vdc, true, false);
         
-        // set the vdc or nwtwork
-        if (vdcId != null) {
-            VDC vdc = em.find(VDC.class, vdcId);
-            template.setVdc(vdc);
-            vdc.getTemplates().add(template);
-            if (studyVersionId == null){
-                addFields(vdcId);
-            } else {
-                Metadata metadata = em.find(StudyVersion.class, studyVersionId).getMetadata();
-                template.setMetadata(new Metadata(metadata));
-                template.getMetadata().setTemplate(template);
-                template.getMetadata().setDateOfDeposit("");
-                template.getMetadata().setUNF(null);
-                addStudyFields(studyVersionId, template.getMetadata());
-            }
-
-        } else {
-            VDCNetwork network = vdcNetworkService.find(new Long(1));
-            template.setVdcNetwork(network);
-            addNetworkFields(network);
-
+        // clear out fields
+        template.getMetadata().setDateOfDeposit("");
+        template.getMetadata().setUNF(null);        
+    }    
+    
+    // used to create to clone any template; always copies hidden; only copies disabled if target is network
+    public void  newClonedTemplate(Long sourceId, Long vdcId) {
+        VDC vdc = (vdcId != null ? em.find(VDC.class, vdcId) : null);
+        Template source = em.find(Template.class, sourceId);
+        boolean copyDisabled = vdc != null;         
+      
+        newTemplate(source, vdc, true, copyDisabled);
+    }
+ 
+ 
+    private void newTemplate(Template sourceTemplate, VDC vdc, boolean copyHidden, boolean copyDisabled) {
+       newTemplate(sourceTemplate, null, vdc, copyHidden, copyDisabled);
+    }
+    
+    private void newTemplate(Template sourceTemplate, Metadata sourceMetadata, VDC vdc, boolean copyHidden, boolean copyDisabled) {
+        newTemplate = true;
+        template = new Template(sourceTemplate);       
+        
+        // if no passed metadata, use metadata from template
+        if (sourceMetadata == null) {
+            sourceMetadata = sourceTemplate.getMetadata();
         }
-
-        // copy metadata if from a study
-        if (studyVersionId != null) {
-
+        
+        if (copyHidden && copyDisabled) {
+            template.setMetadata( new Metadata(sourceMetadata) );
+        } else {
+            template.setMetadata( new Metadata(sourceMetadata,copyHidden, copyDisabled) );
+        }
+        template.getMetadata().setTemplate(template);
+        
+        if (vdc != null) {
+            template.setVdc(vdc);
         }
         
         em.persist(template);
-    } 
+    }    
     
-   private List <StudyFieldValue> copyCustomValues(TemplateField tf, Metadata clonedMetadata ){
-           List <StudyFieldValue> tfvList = new  ArrayList();
-            for (StudyFieldValue tfv : clonedMetadata.getStudyFieldValues()){
-                if(tfv.getStudyField().equals(tf.getStudyField())){
-                    tfvList.add(tfv);
-                }
-            }
-
-            return tfvList;       
-   }
-   
-   private List <TemplateFieldControlledVocabulary> copyControlledVocabulary(TemplateField tf, 
-           TemplateField defaultField, Metadata clonedMetadata, Metadata sourceMetadata){
-            List <TemplateFieldControlledVocabulary> tfcvList = new  ArrayList();
-            for (TemplateFieldControlledVocabulary tfcv: defaultField.getTemplateFieldControlledVocabulary()){
-
-                    TemplateFieldControlledVocabulary tfcvn = new TemplateFieldControlledVocabulary();
-                    tfcvn.setStrValue(tfcv.getStrValue());
-                    tfcvn.setTemplateField(tf);
-
-                    tfcvList.add(tfcvn); 
-
-
-            }
-       
-       return tfcvList;
-   }
-
-    public void  newClonedTemplate(Long vdcId, Template cloneSource) {
-        newTemplate=true;
-        template = new Template();
-        Metadata clonedMetadata = new Metadata(cloneSource.getMetadata(), false, false );
-        template.setMetadata(clonedMetadata);  
-        clonedMetadata.setTemplate(template);
-        Collection<TemplateField> defaultFields = cloneSource.getTemplateFields();  
-                
-        template.setTemplateFields(new ArrayList());
-        for( TemplateField defaultField: defaultFields) {
-            TemplateField tf = new TemplateField();
-            tf.setDefaultValue(defaultField.getDefaultValue());
-            tf.setStudyField(defaultField.getStudyField());
-            // bring over field values separately
-            //get template field values from cloned metadata
-            /* THESE ARE CLONED BY THE METADATA ALREADY???
-            List <TemplateFieldValue> tfvList = new  ArrayList();
-            for (TemplateFieldValue tfv : clonedMetadata.getTemplateFieldValues()){
-                if(tfv.getTemplateField().getStudyField().equals(tf.getStudyField())){
-                    tfv.setTemplateField(tf);
-                    tfvList.add(tfv);
-                }
-            }
-            */
-            /* 
-            for (TemplateFieldValue tfv: defaultField.getTemplateFieldValues()){ 
-                TemplateFieldValue tfvn = new TemplateFieldValue();
-                tfvn.setStrValue(tfv.getStrValue());                
-                tfvn.setMetadata(clonedMetadata);
-                tfvn.setDisplayOrder(tfv.getDisplayOrder());
-                tfvn.setTemplateField(tf);
-                
-            }*/
-            //tf.setTemplateFieldValues(tfvList);
-            // bring over field contolled vocab separately
-            /*
-            List <TemplateFieldControlledVocabulary> tfcvList = new  ArrayList();
-            for (TemplateFieldControlledVocabulary tfcv: defaultField.getTemplateFieldControlledVocabulary()){
-                TemplateFieldControlledVocabulary tfcvn = new TemplateFieldControlledVocabulary();
-                tfcvn.setStrValue(tfcv.getStrValue());
-                tfcvn.setTemplateField(tf);
-                tfcvList.add(tfcvn);
-            }*/
-            tf.setTemplate(template);
-            tf.setControlledVocabulary(defaultField.getControlledVocabulary());
-            tf.setFieldInputLevelString(defaultField.getFieldInputLevelString());
-            tf.setdcmSortOrder(defaultField.getDcmSortOrder());
-            
-            template.getTemplateFields().add(tf);
-        }
-        VDC vdc = em.find(VDC.class, vdcId);      
-        template.setVdc(vdc);
-        template.getMetadata().setDateOfDeposit("");
-        template.getMetadata().setUNF(null);
-        em.persist(template);      
-    }
     
     public void removeCollectionElement(Collection coll, Object elem) {
         coll.remove(elem);
@@ -289,76 +220,7 @@ public class EditTemplateServiceBean implements edu.harvard.iq.dvn.core.study.Ed
     }
     
  
-   
-    /**
-     * Get the default template for the given dataverse, and add fields to the 
-     *  new template based on the default template. 
-     */
-    private void addFields(Long vdcId) {
-        
-        VDC vdc = em.find(VDC.class, vdcId);
-        Collection<TemplateField> defaultFields = vdc.getDefaultTemplate().getTemplateFields();
        
-        template.setTemplateFields(new ArrayList());
-        for( TemplateField defaultField: defaultFields) {
-            TemplateField tf = new TemplateField();
-            tf.setDefaultValue(defaultField.getDefaultValue());
-            tf.setTemplateFieldControlledVocabulary(new ArrayList());
-            /*tf.setFieldInputLevel(defaultField.getFieldInputLevel());*/
-            tf.setFieldInputLevelString(defaultField.getFieldInputLevelString());
-            tf.setStudyField(defaultField.getStudyField());
-            tf.setTemplate(template);
-            tf.getStudyField().setDcmField(defaultField.getStudyField().isDcmField());
-            tf.setdcmSortOrder(defaultField.getDcmSortOrder());
-            template.getTemplateFields().add(tf);
-        }
-    }
-    
-    private void addStudyFields(Long studyVersionId, Metadata newMetadata) {
-        
-            
-        Metadata metadata = em.find(StudyVersion.class, studyVersionId).getMetadata();   
-        Study study = em.find(StudyVersion.class, studyVersionId).getStudy();
-        Collection<TemplateField> defaultFields = study.getTemplate().getTemplateFields();
-        template.setTemplateFields(new ArrayList());
-        for( TemplateField defaultField: defaultFields) {
-            TemplateField tf = new TemplateField();
-            tf.setDefaultValue(defaultField.getDefaultValue());
-            tf.setTemplateFieldControlledVocabulary(new ArrayList());
-            /*tf.setFieldInputLevel(defaultField.getFieldInputLevel());*/
-            tf.setFieldInputLevelString(defaultField.getFieldInputLevelString());
-            tf.setStudyField(defaultField.getStudyField());
-            if(tf.getStudyField().isDcmField()){
-                //tf.setStudyFieldValues(copyCustomValues(tf, metadata ) );
-                //tf.setTemplateFieldControlledVocabulary(copyControlledVocabulary(tf, defaultField, newMetadata, metadata ));
-            }
-            tf.setTemplate(template);
-            tf.getStudyField().setDcmField(defaultField.getStudyField().isDcmField());
-            tf.setdcmSortOrder(defaultField.getDcmSortOrder());
-            template.getTemplateFields().add(tf);
-        }
-    }
-    
-    private void addNetworkFields(VDCNetwork network) {
-        
-        Collection<TemplateField> defaultFields = network.getDefaultTemplate().getTemplateFields();
-       
-        template.setTemplateFields(new ArrayList());
-        for( TemplateField defaultField: defaultFields) {
-            TemplateField tf = new TemplateField();
-            tf.setDefaultValue(defaultField.getDefaultValue());
-            tf.setFieldInputLevelString(defaultField.getFieldInputLevelString());
-            tf.setTemplateFieldControlledVocabulary(new ArrayList());
-            tf.setStudyField(defaultField.getStudyField());
-            tf.setTemplate(template);
-            tf.getStudyField().setDcmField(defaultField.getStudyField().isDcmField());
-            tf.setdcmSortOrder(defaultField.getDcmSortOrder());
-            template.getTemplateFields().add(tf);
-        }
-    }
-     
-   
-    
      public void changeRecommend(TemplateField tf, boolean isRecommended) {
           if (isRecommended) {
               tf.setFieldInputLevelString("recommended");

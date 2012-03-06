@@ -107,7 +107,7 @@ public class Study implements java.io.Serializable {
         sv.setVersionNumber(new Long(1));
         sv.setVersionState(versionState);
         sv.setStudy(this);
-        sv.setMetadata(new Metadata(template.getMetadata()));
+        sv.setMetadata(new Metadata(template.getMetadata(),false,false));
         sv.getMetadata().setStudyVersion(sv);
         studyVersions = new ArrayList<StudyVersion>();
         studyVersions.add( sv );

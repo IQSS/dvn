@@ -1477,8 +1477,7 @@
               <ice:panelSeries value="#{TemplateFormPage.customFieldsDataModel}" var="customFieldsDataModel"
                                binding="#{TemplateFormPage.customFieldsPanelSeries}">
                   <ice:dataTable cellpadding="0" cellspacing="0" width="100%" 
-                                 rendered="#{empty(customFieldsDataModel[0].controlledVocabulary) 
-                                             and (TemplateFormPage.networkEdit or customFieldsDataModel[0].fieldInputLevelString != 'disabled')}"
+                                 rendered="#{empty(customFieldsDataModel[0].controlledVocabulary) and (TemplateFormPage.networkEdit or customFieldsDataModel[0].fieldInputLevelString != 'disabled')}"
                                  styleClass="vdcEditStudyTable" columnClasses="vdcEditStudyCol1, vdcEditStudyCol2, vdcEditStudyCol3"
                                  value="#{customFieldsDataModel[1]}" var="customValuesDataModel">
                     <ice:column styleClass="vdcEditStudyField">
@@ -1540,7 +1539,7 @@
 <!-- Start of Controlled vocab stuff-->
                   <ice:panelGrid cellpadding="0" cellspacing="0" columns="3" width="100%"
                              styleClass="vdcEditStudyTable #{customFieldsDataModel[0].fieldInputLevelString}"
-                             rendered ="#{!empty(customFieldsDataModel[0].controlledVocabulary)}"
+                             rendered="#{!empty(customFieldsDataModel[0].controlledVocabulary) and (TemplateFormPage.networkEdit or customFieldsDataModel[0].fieldInputLevelString != 'disabled')}"
                              columnClasses="vdcEditStudyCol1, vdcEditStudyCol2, vdcEditStudyCol3">
                     <ice:column styleClass="vdcEditStudyField">                          
                         <ice:outputText styleClass="dvnInlineHelpLabel dvnInlineHelpTip" value="#{customFieldsDataModel[0].studyField.name}" 

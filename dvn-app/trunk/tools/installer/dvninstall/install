@@ -328,6 +328,8 @@ if ( $CONFIG_DEFAULTS{'POSTGRES_SERVER'} eq 'localhost' )
 	exit 1; 
     }
 
+    
+
     # 3c. CHECK POSTGRES VERSION: 
 
     open (PSQLOUT, $psql_exec . "/psql --version|"); 
@@ -623,7 +625,12 @@ elsif ( -x "/usr/sbin/sysctl" )
     # MacOS X, probably...
 
     $sys_mem_total = `/usr/sbin/sysctl -n hw.memsize`; 
-    chop $raw_mem_info; 
+    chop $sys_mem_total;
+    if ($sys_mem_total > 0) 
+    {
+	$sys_mem_total = int ($sys_mem_total / 1024); 
+	# size in kb
+    }
 }
 
 if ( $sys_mem_total > 0 )

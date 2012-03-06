@@ -423,23 +423,14 @@ public class EditStudyServiceBean implements edu.harvard.iq.dvn.core.study.EditS
     
     public void changeTemplate(Long templateId) {
         Template newTemplate = em.find(Template.class, templateId);
-        // Clear existing metadata from study version
-     
-        clearCollection(studyVersion.getMetadata().getStudyAbstracts());
-        clearCollection(studyVersion.getMetadata().getStudyAuthors());
-        clearCollection(studyVersion.getMetadata().getStudyDistributors());
-        clearCollection(studyVersion.getMetadata().getStudyGeoBoundings());
-        clearCollection(studyVersion.getMetadata().getStudyGrants());
-        clearCollection(studyVersion.getMetadata().getStudyKeywords());
-        clearCollection(studyVersion.getMetadata().getStudyNotes());
-        clearCollection(studyVersion.getMetadata().getStudyOtherIds());
-        clearCollection(studyVersion.getMetadata().getStudyOtherRefs());
-        clearCollection(studyVersion.getMetadata().getStudyProducers());
-        clearCollection(studyVersion.getMetadata().getStudyRelMaterials());
-        clearCollection(studyVersion.getMetadata().getStudyRelPublications());
-        clearCollection(studyVersion.getMetadata().getStudyRelStudies());
-        clearCollection(studyVersion.getMetadata().getStudySoftware());
-        clearCollection(studyVersion.getMetadata().getStudyTopicClasses());
+        
+        // we have to clear out the studyFieldValues from the transient StudyField list
+        // (otherwise they hang on to the metadata object)
+        for (StudyField sf : studyVersion.getMetadata().getStudyFields()) {
+            sf.getStudyFieldValues().clear();    
+        }
+        // then remove the existing metadata from study version
+        em.remove(studyVersion.getMetadata());
         
         // Copy Template Metadata into Study Metadata
         studyVersion.setMetadata(new Metadata(newTemplate.getMetadata(), false, false));

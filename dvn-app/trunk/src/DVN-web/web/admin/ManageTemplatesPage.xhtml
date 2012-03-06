@@ -55,15 +55,7 @@
                   </f:facet>
                   <ice:outputText value="#{template.network ? 'Network' : 'Dataverse'}"/>
                 </ice:column>
-                  
-                <ice:column>
-                  <f:facet name="header">
-                    <ice:outputText value="Enabled"/>
-                  </f:facet>
-                  <ice:selectBooleanCheckbox partialSubmit="true" value="#{template.enabled}" valueChangeListener="#{ManageTemplatesPage.updateEnabledAction(template)}"
-                                             disabled="#{ManageTemplatesPage.isDefault(template.id) or (empty(VDCRequest.currentVDC) and ManageTemplatesPage.isVDCDefault(template.id)) or (!empty(VDCRequest.currentVDC) and template.network)}"/>
-                </ice:column>
-                  
+ 
                 <ice:column>
                   <f:facet name="header">
                     <ice:outputText value="Default"/>
@@ -73,7 +65,30 @@
                   <ice:commandLink value="Make Default" rendered="#{!ManageTemplatesPage.isDefault(template.id) and template.enabled}" 
                                    action="#{ManageTemplatesPage.updateDefaultAction(template.id)}"/>
                 </ice:column>
+                  
+                <ice:column>
+                  <f:facet name="header">
+                    <ice:outputText value="Enabled"/>
+                  </f:facet>
+                  <ice:selectBooleanCheckbox partialSubmit="true" value="#{template.enabled}" valueChangeListener="#{ManageTemplatesPage.updateEnabledAction(template)}"
+                                             disabled="#{ManageTemplatesPage.isDefault(template.id) or (empty(VDCRequest.currentVDC) and ManageTemplatesPage.isVDCDefault(template.id)) or (!empty(VDCRequest.currentVDC) and template.network)}"/>
+                </ice:column>
 
+                <ice:column>
+                  <f:facet name="header">
+                    <ice:outputText value="In Use?"/>
+                  </f:facet>
+                  <ice:selectBooleanCheckbox disabled="true" value="#{ManageTemplatesPage.isInUse(template.id)}" />
+                </ice:column>                  
+                 
+                  
+                <ice:column rendered="#{empty VDCRequest.currentVDC}">
+                  <f:facet name="header">
+                    <ice:outputText value="Dataverse Default?"/>
+                  </f:facet>
+                  <ice:selectBooleanCheckbox disabled="true" value="#{ManageTemplatesPage.isVDCDefault(template.id)}" />
+                </ice:column>                  
+                  
                 <ice:column>
                   <f:facet name="header">
                     <ice:outputText value="Edit"/>
@@ -83,7 +98,7 @@
                     <ice:outputText value="Edit"/>
                   </ice:outputLink>
                   <ice:outputLink rendered="#{!empty(VDCRequest.currentVDC) and template.network}" 
-                                  value="/dvn#{VDCRequest.currentVDCURL}/faces/study/TemplateFormPage.xhtml?templateId=#{template.id}">
+                                  value="/dvn#{VDCRequest.currentVDCURL}/faces/study/TemplateFormPage.xhtml?sourceTemplateId=#{template.id}">
                     <ice:outputText value="Clone"/>
                   </ice:outputLink>
                 </ice:column>                  
@@ -92,10 +107,8 @@
                   <f:facet name="header">
                     <ice:outputText value="Remove"/>
                   </f:facet>
-                  <ice:outputText rendered="#{(!empty(VDCRequest.currentVDC) and template.network)}" value="(Network Template)"/>
-                  <ice:outputText rendered="#{!(!empty(VDCRequest.currentVDC) and template.network) and ManageTemplatesPage.isInUse(template.id)}" value="(In Use)"/>
-                  <ice:outputText rendered="#{!(!empty(VDCRequest.currentVDC) and template.network) and !ManageTemplatesPage.isInUse(template.id) and ManageTemplatesPage.isVDCDefault(template.id)}" value="(Dataverse Default)"/>
-                  <ice:outputText rendered="#{!(!empty(VDCRequest.currentVDC) and template.network) and !ManageTemplatesPage.isInUse(template.id) and !ManageTemplatesPage.isVDCDefault(template.id) and ManageTemplatesPage.isDefault(template.id)}" value="(Default Template)"/>
+                  <ice:outputText rendered="#{(!empty(VDCRequest.currentVDC) and template.network)  or   ManageTemplatesPage.isInUse(template.id) or  ManageTemplatesPage.isVDCDefault(template.id)  or  ManageTemplatesPage.isDefault(template.id)}"
+                                  value="Remove"/>
                   <ice:outputLink rendered="#{!(!empty(VDCRequest.currentVDC) and template.network) and !ManageTemplatesPage.isInUse(template.id) and !ManageTemplatesPage.isVDCDefault(template.id) and !ManageTemplatesPage.isDefault(template.id)}" 
                                   value="/dvn#{VDCRequest.currentVDCURL}/faces/study/DeleteTemplatePage.xhtml?templateId=#{template.id}">
                     <ice:outputText value="Remove"/>

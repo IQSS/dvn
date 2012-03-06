@@ -418,7 +418,7 @@ public class EditStudyPage extends VDCBaseBean implements java.io.Serializable  
 
             // if this value is already in db, we also need to remove it from the metadata's list of studyFieldValues
             if ( sfv.getId()!= null ) {
-                study.getTemplate().getMetadata().getStudyFieldValues().remove( sfv );
+                metadata.getStudyFieldValues().remove( sfv );
             }           
         }        
     }

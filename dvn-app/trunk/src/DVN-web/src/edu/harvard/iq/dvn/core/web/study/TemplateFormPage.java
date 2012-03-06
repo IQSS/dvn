@@ -65,22 +65,19 @@ import com.icesoft.faces.component.ext.HtmlInputText;
 import com.icesoft.faces.component.ext.HtmlInputTextarea;
 import com.icesoft.faces.component.ext.HtmlSelectOneMenu;
 import com.icesoft.faces.component.ext.HtmlSelectBooleanCheckbox;
-import com.icesoft.faces.component.ext.HtmlSelectManyListbox;
 import com.icesoft.faces.component.panelseries.PanelSeries;
 import com.icesoft.faces.context.effects.JavascriptContext;
 import edu.harvard.iq.dvn.core.study.ControlledVocabulary;
 import edu.harvard.iq.dvn.core.study.ControlledVocabularyValue;
 import edu.harvard.iq.dvn.core.study.FieldInputLevel;
-import edu.harvard.iq.dvn.core.study.Metadata;
 import edu.harvard.iq.dvn.core.study.StudyField;
 
 import edu.harvard.iq.dvn.core.study.StudyFieldValue;
 import edu.harvard.iq.dvn.core.study.TemplateServiceLocal;
-import hep.aida.ref.Converter;
+import edu.harvard.iq.dvn.core.vdc.VDC;
 import java.util.Collections;
 import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
-import javax.faces.convert.ConverterException;
 import javax.faces.event.ActionEvent;
 import javax.faces.event.ValueChangeEvent;
 import javax.faces.model.DataModel;
@@ -123,7 +120,10 @@ public class TemplateFormPage extends VDCBaseBean implements java.io.Serializabl
         networkEdit = getVDCRequestBean().getCurrentVDC() == null;        
         
         if (templateId != null) {
-            editTemplateService.setTemplate(templateId); 
+            editTemplateService.setTemplate(templateId);
+            if (!isTemplateInCurrentVDC()) {
+                return;
+            }
         } else if (sourceTemplateId != null) {
             editTemplateService.newClonedTemplate(sourceTemplateId, getVDCRequestBean().getCurrentVDCId());
         } else {
@@ -143,6 +143,19 @@ public class TemplateFormPage extends VDCBaseBean implements java.io.Serializabl
 
         fieldTypeSelectItems = loadFieldTypeSelectItems();
         fieldInputLevelSelectItems = loadFieldInputLevelSelectItems();
+    }
+    
+    // this metho checks to see if the template the user is attempting to edit is in the current vdc;
+    // if not redirect
+    private boolean isTemplateInCurrentVDC() {
+        VDC templateVDC = editTemplateService.getTemplate().getVdc();
+        if ( ( !networkEdit && !getVDCRequestBean().getCurrentVDC().equals(templateVDC) )  ||
+             ( networkEdit && templateVDC != null ) ) {
+            redirect("/faces/admin/ManageTemplatesPage.xhtml");
+            return false;
+        }
+        
+        return true;
     }
 
    

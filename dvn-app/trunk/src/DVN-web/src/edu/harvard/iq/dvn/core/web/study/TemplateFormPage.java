@@ -976,7 +976,14 @@ public class TemplateFormPage extends VDCBaseBean implements java.io.Serializabl
         return "templateForm";
     }
     public String save() {       
-        boolean isNewTemplate = template.getId() == null;
+        boolean isNewTemplate = template.getId() == null;        
+        
+        if(StringUtil.isEmpty(template.getName())){
+            FacesMessage message = new FacesMessage("Template name is required.");
+            FacesContext.getCurrentInstance().addMessage("templateForm:template_name", message);
+            return "";
+        }
+        
         removeEmptyRows();
         template.getMetadata().setDisplayOrders();
 
@@ -1129,8 +1136,9 @@ public class TemplateFormPage extends VDCBaseBean implements java.io.Serializabl
   public void validateTemplateName(FacesContext context,
             UIComponent toValidate, Object value) {
         
-        boolean valid=true;
-        String inputName = (String)value;   
+        boolean valid=true;        
+        String inputName = (String)value; 
+
         List <Template> networkTemplates = templateService.getNetworkTemplates();
             for(Template testTemplate : networkTemplates){
                 if (testTemplate.isEnabled() && !testTemplate.equals(template) && testTemplate.getName().equals(inputName)){

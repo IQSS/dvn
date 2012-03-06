@@ -52,8 +52,9 @@
                         <ice:outputText value="Template Name "/>
                       </ice:column>
                       <ice:column>
-                        <ice:inputText id="template_name" size="45" value='#{TemplateFormPage.template.name}' required='true' requiredMessage='Template name is required.'
-                                       validator="#{TemplateFormPage.validateTemplateName}"/>
+                        <ice:inputText id="template_name" size="45" value='#{TemplateFormPage.template.name}' 
+                                       validator="#{TemplateFormPage.validateTemplateName}" >
+                        </ice:inputText>
                         <ice:message styleClass="errorMessage" for="template_name"/>
                       </ice:column>
                   </ice:panelGrid>

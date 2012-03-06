@@ -105,6 +105,7 @@ public class ManageTemplatesPage extends VDCBaseBean implements java.io.Serializ
 
     public void updateEnabledAction(Template template) {
         // first, check if we are trying disable a template and verify it has not been made a default
+        boolean setEnabled = true;
         if (template.isEnabled()) {
             // network level template
             if (getVDCRequestBean().getCurrentVDC() == null) {
@@ -117,10 +118,21 @@ public class ManageTemplatesPage extends VDCBaseBean implements java.io.Serializ
                 getVDCRenderBean().getFlash().put("warningMessage","The template you are trying to disable was made a default template by another user. Please reload this page to update.");
                 return;
             }
+        }   else {
+
+            for(Template testTemplate : templateList){
+                if (testTemplate.isEnabled() && !testTemplate.equals(template) && testTemplate.getName().equals(template.getName())){
+                    getVDCRenderBean().getFlash().put("warningMessage","The template you are trying to enable has the same name as another enabled template. Please edit the name and re-try enabling.");
+                    setEnabled = false;
+                }
+            }
         }
         
-        template.setEnabled(!template.isEnabled());
-        templateService.updateTemplate(template);
+        if (setEnabled) {
+            template.setEnabled(!template.isEnabled());
+            templateService.updateTemplate(template);
+        }
+
         
         // now update the template in the list
         for (int i = 0; i < templateList.size(); i++) {

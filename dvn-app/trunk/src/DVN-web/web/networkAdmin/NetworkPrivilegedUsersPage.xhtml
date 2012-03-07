@@ -90,11 +90,13 @@
 
                       <tr>
                         <td class="dvnPermissionsTableOption dvnPermissionsStackedCells">
-                            <ice:outputText value="Users Authorized to bypass Terms of Use "/>
-                            <ice:outputText style="color: red" value="Warning: We advise you to have a written agreement with authorized parties before allowing them to access data sets bypassing Terms of Use. The authorized party should be responsible for enforcing the Terms of Use to their end users.
-For more information, contact us at dvn_support@hmdc.harvard.edu."/>
+                            <ice:outputText value="Users Authorized to bypass Terms of Use"/>
                         </td>
                         <td class="dvnPermissionsStackedCells">
+                          <p>
+                            <ice:graphicImage value="/resources/images/icon_warning.18.png" styleClass="dvn_icon"/>
+                            <ice:outputText styleClass="warnMessage" value=" We advise you to have a written agreement with authorized parties before allowing them to access data sets, bypassing the Terms of Use. The authorized party should be responsible for enforcing the Terms of Use to their end users. For more information, contact us at dvn_support@hmdc.harvard.edu."/>
+                          </p>
                           <ice:outputText id="outputText117" value="Username: "/>
                           <ice:inputText onkeypress="if (window.event) return processEvent('', 'addUserbutton100'); else return processEvent(event, 'addUserbutton100');" id="textField101" value="#{NetworkPrivilegedUsersPage.TOUUserName}"/>
                           <ice:commandButton id="addUserButton100" value="Add" actionListener="#{NetworkPrivilegedUsersPage.addTOUUser}"/>

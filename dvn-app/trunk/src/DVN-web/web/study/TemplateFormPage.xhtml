@@ -97,37 +97,6 @@
                 </ice:column>
               </ice:panelGrid>
               
-              <ice:panelGrid cellpadding="0" cellspacing="0" columns="3" width="100%"
-                             styleClass="vdcEditStudyTable #{TemplateFormPage.studyMap[sfc.replicationFor].templateField.fieldInputLevelString}"
-                             rendered="#{TemplateFormPage.networkEdit or 
-                                TemplateFormPage.studyMap[sfc.replicationFor].templateField.fieldInputLevelString != 'disabled'}"
-                             columnClasses="vdcEditStudyCol1, vdcEditStudyCol2, vdcEditStudyCol3">
-                <ice:column styleClass="vdcEditStudyGroupField #{TemplateFormPage.studyMap[sfc.replicationFor].templateField.fieldInputLevelString}">
-                  <ice:outputText styleClass="dvnInlineHelpLabel dvnInlineHelpTip" value="#{editstudybundle.replicationForLabel}" title="#{editstudybundle.replicationForHelpHeading} - #{editstudybundle.replicationForHelp}"/>
-                  <ice:graphicImage value="/resources/images/icon_required.gif" rendered="#{TemplateFormPage.studyMap[sfc.replicationFor].required}"/>
-                  <ice:graphicImage value="/resources/images/icon_recommended.gif" rendered="#{TemplateFormPage.studyMap[sfc.replicationFor].recommended}"/>
-                </ice:column>
-                <ice:column styleClass="#{TemplateFormPage.studyMap[sfc.replicationFor].templateField.fieldInputLevelString}">
-                  <p>
-                      <ice:graphicImage value="/resources/images/icon_info.gif" styleClass="dvn_icon"/>
-                      <ice:outputText styleClass="vdcHelpText" value=" Enter the full citation for the original publication whose results can be replicated using these data."/>
-                  </p>
-                  <ice:inputTextarea cols="90" rows="4"
-                                     id="input_replicationFor"
-                                     value="#{TemplateFormPage.template.metadata.replicationFor}"
-                                     styleClass="formHtmlEnabled">
-                    <f:validator validatorId="XhtmlValidator"/>
-                  </ice:inputTextarea>
-                  <ice:message styleClass="errorMessage" for="input_replicationFor"/>
-                </ice:column>
-                <ice:column>
-                  <ice:selectOneMenu immediate="false" partialSubmit="true" 
-                                        value="#{TemplateFormPage.studyMap[sfc.replicationFor].templateField.fieldInputLevelString}">
-                            <f:attribute name="fieldName" value="replicationFor" />
-                           <f:selectItems value="#{TemplateFormPage.fieldInputLevelSelectItems}"/>
-                  </ice:selectOneMenu>
-                </ice:column>
-              </ice:panelGrid>
 
               <div id="groupPanel9" class="vdcStudyInfoHeader">
                 <ice:outputText id="outputText26" value="Citation Information"/>
@@ -1452,7 +1421,7 @@
               
               <!-- Generic control-->              
               <ice:panelSeries value="#{TemplateFormPage.customFieldsDataModel}" var="customFieldsDataModel"
-                               binding="#{TemplateFormPage.customFieldsPanelSeries}">
+                               binding="#{TemplateFormPage.customFieldsPanelSeries}">                                  
                   <ice:dataTable cellpadding="0" cellspacing="0" width="100%" 
                                  rendered="#{empty(customFieldsDataModel[0].controlledVocabulary) and (TemplateFormPage.networkEdit or customFieldsDataModel[0].fieldInputLevelString != 'disabled')}"
                                  styleClass="vdcEditStudyTable" columnClasses="vdcEditStudyCol1, vdcEditStudyCol2, vdcEditStudyCol3"

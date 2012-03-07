@@ -36,7 +36,7 @@ UPDATE templatefield SET fieldInputLevelString='required' WHERE fieldinputlevel_
 UPDATE templatefield SET fieldInputLevelString='recommended'WHERE fieldinputlevel_id =2;
 UPDATE templatefield SET fieldInputLevelString='optional' WHERE fieldinputlevel_id =3;
 --We need to keep drop column query at the end because the data it contains is used to fill the new String field.
-ALTER TABLE templatefield DROP COLUMN fieldinputlevel_id
+ALTER TABLE templatefield DROP COLUMN fieldinputlevel_id;
 
 
 alter table template ADD COLUMN enabled boolean;

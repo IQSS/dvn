@@ -1223,14 +1223,6 @@ public class DDIServiceBean implements DDIServiceLocal {
     private void createOthrStdyMat(XMLStreamWriter xmlw, Metadata metadata) throws XMLStreamException {
         boolean othrStdyMatAdded = false;
 
-        // add replication for as a related material
-        if (!StringUtil.isEmpty( metadata.getReplicationFor() )) {
-            othrStdyMatAdded = checkParentElement(xmlw, "othrStdyMat", othrStdyMatAdded);
-            xmlw.writeStartElement("relMat");
-            writeAttribute( xmlw, "type", "replicationFor" );
-            xmlw.writeCharacters( metadata.getReplicationFor() );
-            xmlw.writeEndElement(); // relMat
-        }
         for (StudyRelMaterial rm : metadata.getStudyRelMaterials()) {
             othrStdyMatAdded = checkParentElement(xmlw, "othrStdyMat", othrStdyMatAdded);
             xmlw.writeStartElement("relMat");
@@ -2417,15 +2409,10 @@ public class DDIServiceBean implements DDIServiceLocal {
         for (int event = xmlr.next(); event != XMLStreamConstants.END_DOCUMENT; event = xmlr.next()) {
             if (event == XMLStreamConstants.START_ELEMENT) {
                 if (xmlr.getLocalName().equals("relMat")) {
-                    if (!replicationForFound && REPLICATION_FOR_TYPE.equals( xmlr.getAttributeValue(null, "type") ) ) {
-                        metadata.setReplicationFor( parseText( xmlr, "relMat" ) );
-                        replicationForFound = true;
-                    } else {
-                        StudyRelMaterial rm = new StudyRelMaterial();
-                        metadata.getStudyRelMaterials().add(rm);
-                        rm.setMetadata(metadata);
-                        rm.setText( parseText( xmlr, "relMat" ) );
-                    }
+                    StudyRelMaterial rm = new StudyRelMaterial();
+                    metadata.getStudyRelMaterials().add(rm);
+                    rm.setMetadata(metadata);
+                    rm.setText( parseText( xmlr, "relMat" ) );
                 } else if (xmlr.getLocalName().equals("relStdy")) {
                     StudyRelStudy rs = new StudyRelStudy();
                     metadata.getStudyRelStudies().add(rs);

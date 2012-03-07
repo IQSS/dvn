@@ -90,7 +90,6 @@
                 </ice:column>
                 <ice:column>                  
                   <ice:selectOneMenu immediate="false" partialSubmit="true"    
-                                     valueChangeListener="#{TemplateFormPage.changeFieldInputValue}"
                                         value="#{TemplateFormPage.studyMap[sfc.subTitle].templateField.fieldInputLevelString}">
                         <f:selectItems value="#{TemplateFormPage.fieldInputLevelSelectItems}"/>
                         <f:attribute name="fieldName" value="subTitle"/>
@@ -123,8 +122,7 @@
                 </ice:column>
                 <ice:column>
                   <ice:selectOneMenu immediate="false" partialSubmit="true" 
-                                        value="#{TemplateFormPage.studyMap[sfc.replicationFor].templateField.fieldInputLevelString}"
-                                        valueChangeListener="#{TemplateFormPage.changeFieldInputValue}">
+                                        value="#{TemplateFormPage.studyMap[sfc.replicationFor].templateField.fieldInputLevelString}">
                             <f:attribute name="fieldName" value="replicationFor" />
                            <f:selectItems value="#{TemplateFormPage.fieldInputLevelSelectItems}"/>
                   </ice:selectOneMenu>
@@ -170,7 +168,6 @@
                       <ice:commandButton partialSubmit="True" rendered="#{TemplateFormPage.dataTableOtherIds.rowCount gt 1}" alt="Remove Row" title="Remove Row" image="/resources/images/icon_remove.gif" actionListener="#{TemplateFormPage.removeRow}"/>
                       <ice:selectOneMenu immediate="false" partialSubmit="true" 
                                             value="#{TemplateFormPage.studyMap[sfc.otherId].templateField.fieldInputLevelString}"
-                                            valueChangeListener="#{TemplateFormPage.changeFieldInputValue}"
                                             rendered ="#{TemplateFormPage.dataTableOtherIds.rowIndex==0}">
                                <f:attribute name="fieldName" value="otherId"/>
                                <f:selectItems value="#{TemplateFormPage.fieldInputLevelSelectItems}"/>
@@ -228,7 +225,6 @@
                       <ice:commandButton partialSubmit="true" rendered="#{TemplateFormPage.dataTableAuthors.rowCount gt 1}" alt="Remove Row" title="Remove Row" image="/resources/images/icon_remove.gif" actionListener="#{TemplateFormPage.removeRow}"/>
                       <ice:selectOneMenu immediate="false"  partialSubmit="true" 
                                         value="#{TemplateFormPage.studyMap[sfc.authorName].templateField.fieldInputLevelString}"
-                                        valueChangeListener="#{TemplateFormPage.changeFieldInputValue}"
                                         rendered ="#{TemplateFormPage.dataTableAuthors.rowIndex==0}">
                             <f:selectItems value="#{TemplateFormPage.fieldInputLevelSelectItems}"/>
                             <f:attribute name="fieldName" value="authorName" />
@@ -311,7 +307,6 @@
                       <ice:commandButton partialSubmit="true" rendered="#{TemplateFormPage.dataTableProducers.rowCount gt 1}" alt="Remove Row" title="Remove Row" image="/resources/images/icon_remove.gif" actionListener="#{TemplateFormPage.removeRow}"/>
                       <ice:selectOneMenu immediate="false" partialSubmit="true" 
                                         value="#{TemplateFormPage.studyMap[sfc.producerName].templateField.fieldInputLevelString}"
-                                        valueChangeListener="#{TemplateFormPage.changeFieldInputValue}"
                                         rendered ="#{TemplateFormPage.dataTableProducers.rowIndex==0}">
                             <f:selectItems value="#{TemplateFormPage.fieldInputLevelSelectItems}"/>
                             <f:attribute name="fieldName" value="producerName" />
@@ -337,8 +332,7 @@
                 </ice:column>
                 <ice:column>
                   <ice:selectOneMenu immediate="false" partialSubmit="true" 
-                                        value="#{TemplateFormPage.studyMap[sfc.productionDate].templateField.fieldInputLevelString}"
-                                        valueChangeListener="#{TemplateFormPage.changeFieldInputValue}">
+                                        value="#{TemplateFormPage.studyMap[sfc.productionDate].templateField.fieldInputLevelString}">
                             <f:attribute name="fieldName" value="productionDate" />
                             <f:selectItems value="#{TemplateFormPage.fieldInputLevelSelectItems}"/>
                   </ice:selectOneMenu>
@@ -360,8 +354,7 @@
                 </ice:column>
                 <ice:column>                  
                   <ice:selectOneMenu immediate="false" partialSubmit="true" 
-                                        value="#{TemplateFormPage.studyMap[sfc.productionPlace].templateField.fieldInputLevelString}"
-                                        valueChangeListener="#{TemplateFormPage.changeFieldInputValue}">
+                                        value="#{TemplateFormPage.studyMap[sfc.productionPlace].templateField.fieldInputLevelString}">
                             <f:attribute name="fieldName" value="productionPlace" />
                             <f:selectItems value="#{TemplateFormPage.fieldInputLevelSelectItems}"/>
                   </ice:selectOneMenu>
@@ -405,8 +398,7 @@
                       <ice:commandButton partialSubmit="true" rendered="#{TemplateFormPage.dataTableSoftware.rowCount gt 1}" alt="Remove Row" title="Remove Row" image="/resources/images/icon_remove.gif" actionListener="#{TemplateFormPage.removeRow}"/>
                       <ice:selectOneMenu immediate="false" partialSubmit="true" 
                                         value="#{TemplateFormPage.studyMap[sfc.softwareName].templateField.fieldInputLevelString}"
-                                        rendered ="#{TemplateFormPage.dataTableSoftware.rowIndex==0}"
-                                        valueChangeListener="#{TemplateFormPage.changeFieldInputValue}">
+                                        rendered ="#{TemplateFormPage.dataTableSoftware.rowIndex==0}">
                             <f:attribute name="fieldName" value="softwareName" />
                             <f:selectItems value="#{TemplateFormPage.fieldInputLevelSelectItems}"/>
                       </ice:selectOneMenu>
@@ -431,8 +423,7 @@
                 </ice:column>
                 <ice:column>
                   <ice:selectOneMenu immediate="false"  partialSubmit="true" 
-                                        value="#{TemplateFormPage.studyMap[sfc.fundingAgency].templateField.fieldInputLevelString}"
-                                        valueChangeListener="#{TemplateFormPage.changeFieldInputValue}">
+                                        value="#{TemplateFormPage.studyMap[sfc.fundingAgency].templateField.fieldInputLevelString}">
                             <f:attribute name="fieldName" value="fundingAgency" />
                             <f:selectItems value="#{TemplateFormPage.fieldInputLevelSelectItems}"/>
                   </ice:selectOneMenu>
@@ -474,8 +465,7 @@
                       <ice:commandButton partialSubmit="true" rendered="#{TemplateFormPage.dataTableGrants.rowCount gt 1}" alt="Remove Row" title="Remove Row" image="/resources/images/icon_remove.gif" actionListener="#{TemplateFormPage.removeRow}"/>
                       <ice:selectOneMenu immediate="false" partialSubmit="true" 
                                         value="#{TemplateFormPage.studyMap[sfc.grantNumber].templateField.fieldInputLevelString}"
-                                        rendered ="#{TemplateFormPage.dataTableGrants.rowIndex==0}"
-                                        valueChangeListener="#{TemplateFormPage.changeFieldInputValue}">
+                                        rendered ="#{TemplateFormPage.dataTableGrants.rowIndex==0}">
                             <f:attribute name="fieldName" value="grantNumber" />
                             <f:selectItems value="#{TemplateFormPage.fieldInputLevelSelectItems}"/>
                       </ice:selectOneMenu>
@@ -554,8 +544,7 @@
                       <ice:commandButton partialSubmit="true" rendered="#{TemplateFormPage.dataTableDistributors.rowCount gt 1}" alt="Remove Row" title="Remove Row" image="/resources/images/icon_remove.gif" actionListener="#{TemplateFormPage.removeRow}"/>
                       <ice:selectOneMenu immediate="false" partialSubmit="true" 
                                         value="#{TemplateFormPage.studyMap[sfc.distributorName].templateField.fieldInputLevelString}"
-                                        rendered ="#{TemplateFormPage.dataTableDistributors.rowIndex==0}"
-                                        valueChangeListener="#{TemplateFormPage.changeFieldInputValue}">
+                                        rendered ="#{TemplateFormPage.dataTableDistributors.rowIndex==0}">
                             <f:attribute name="fieldName" value="distributorName" />
                             <f:selectItems value="#{TemplateFormPage.fieldInputLevelSelectItems}"/>
                       </ice:selectOneMenu>
@@ -599,8 +588,7 @@
                 </ice:column>
                 <ice:column>
                   <ice:selectOneMenu immediate="false" partialSubmit="true" 
-                                        value="#{TemplateFormPage.studyMap[sfc.distributorContact].templateField.fieldInputLevelString}"
-                                        valueChangeListener="#{TemplateFormPage.changeFieldInputValue}">
+                                        value="#{TemplateFormPage.studyMap[sfc.distributorContact].templateField.fieldInputLevelString}">
                             <f:attribute name="fieldName" value="distributorContact" />
                             <f:selectItems value="#{TemplateFormPage.fieldInputLevelSelectItems}"/>
                   </ice:selectOneMenu>
@@ -624,8 +612,7 @@
                 </ice:column>
                 <ice:column>
                     <ice:selectOneMenu immediate="false" partialSubmit="true" 
-                                        value="#{TemplateFormPage.studyMap[sfc.distributionDate].templateField.fieldInputLevelString}"
-                                        valueChangeListener="#{TemplateFormPage.changeFieldInputValue}">
+                                        value="#{TemplateFormPage.studyMap[sfc.distributionDate].templateField.fieldInputLevelString}">
                            <f:attribute name="fieldName" value="distributionDate" />
                            <f:selectItems value="#{TemplateFormPage.fieldInputLevelSelectItems}"/>
                     </ice:selectOneMenu>
@@ -648,8 +635,7 @@
                 </ice:column>
                 <ice:column>
                   <ice:selectOneMenu immediate="false" partialSubmit="true" 
-                                        value="#{TemplateFormPage.studyMap[sfc.depositor].templateField.fieldInputLevelString}"
-                                        valueChangeListener="#{TemplateFormPage.changeFieldInputValue}">
+                                        value="#{TemplateFormPage.studyMap[sfc.depositor].templateField.fieldInputLevelString}">
                             <f:attribute name="fieldName" value="depositor" />
                            <f:selectItems value="#{TemplateFormPage.fieldInputLevelSelectItems}"/>
                   </ice:selectOneMenu>
@@ -673,8 +659,7 @@
                 </ice:column>
                 <ice:column>
                   <ice:selectOneMenu immediate="false" partialSubmit="true" 
-                                        value="#{TemplateFormPage.studyMap[sfc.dateOfDeposit].templateField.fieldInputLevelString}"
-                                        valueChangeListener="#{TemplateFormPage.changeFieldInputValue}">
+                                        value="#{TemplateFormPage.studyMap[sfc.dateOfDeposit].templateField.fieldInputLevelString}">
                             <f:attribute name="fieldName" value="dateOfDeposit" />
                            <f:selectItems value="#{TemplateFormPage.fieldInputLevelSelectItems}"/>
                   </ice:selectOneMenu>
@@ -715,8 +700,7 @@
                 </ice:column>
                 <ice:column>
                   <ice:selectOneMenu immediate="false" partialSubmit="true" 
-                                        value="#{TemplateFormPage.studyMap[sfc.seriesName].templateField.fieldInputLevelString}"
-                                        valueChangeListener="#{TemplateFormPage.changeFieldInputValue}">
+                                        value="#{TemplateFormPage.studyMap[sfc.seriesName].templateField.fieldInputLevelString}">
                             <f:attribute name="fieldName" value="seriesName" />
                            <f:selectItems value="#{TemplateFormPage.fieldInputLevelSelectItems}"/>
                   </ice:selectOneMenu>
@@ -748,8 +732,7 @@
                 </ice:column>
                 <ice:column>
                   <ice:selectOneMenu immediate="false" partialSubmit="true" 
-                                        value="#{TemplateFormPage.studyMap[sfc.studyVersion].templateField.fieldInputLevelString}"
-                                        valueChangeListener="#{TemplateFormPage.changeFieldInputValue}">
+                                        value="#{TemplateFormPage.studyMap[sfc.studyVersion].templateField.fieldInputLevelString}">
                             <f:attribute name="fieldName" value="studyVersion" />
                            <f:selectItems value="#{TemplateFormPage.fieldInputLevelSelectItems}"/>
                   </ice:selectOneMenu>
@@ -808,8 +791,7 @@
                       <ice:commandButton partialSubmit="true" rendered="#{TemplateFormPage.dataTableAbstracts.rowCount gt 1}" alt="Remove Row" title="Remove Row" image="/resources/images/icon_remove.gif" actionListener="#{TemplateFormPage.removeRow}"/>
                       <ice:selectOneMenu immediate="false" partialSubmit="true" 
                                         value="#{TemplateFormPage.studyMap[sfc.abstractText].templateField.fieldInputLevelString}"
-                                        rendered ="#{TemplateFormPage.dataTableAbstracts.rowIndex==0}"
-                                        valueChangeListener="#{TemplateFormPage.changeFieldInputValue}">
+                                        rendered ="#{TemplateFormPage.dataTableAbstracts.rowIndex==0}">
                             <f:attribute name="fieldName" value="abstractText" />
                            <f:selectItems value="#{TemplateFormPage.fieldInputLevelSelectItems}"/>
                       </ice:selectOneMenu>
@@ -867,8 +849,7 @@
                       <ice:commandButton partialSubmit="true" rendered="#{TemplateFormPage.dataTableKeywords.rowCount gt 1}" alt="Remove Row" title="Remove Row" image="/resources/images/icon_remove.gif" actionListener="#{TemplateFormPage.removeRow}"/>
                       <ice:selectOneMenu immediate="false" partialSubmit="true" 
                                         value="#{TemplateFormPage.studyMap[sfc.keywordValue].templateField.fieldInputLevelString}"
-                                        rendered ="#{TemplateFormPage.dataTableKeywords.rowIndex==0}"
-                                        valueChangeListener="#{TemplateFormPage.changeFieldInputValue}">
+                                        rendered ="#{TemplateFormPage.dataTableKeywords.rowIndex==0}">
                             <f:attribute name="fieldName" value="keywordValue" />
                            <f:selectItems value="#{TemplateFormPage.fieldInputLevelSelectItems}"/>
                       </ice:selectOneMenu>
@@ -927,8 +908,7 @@
                       <ice:commandButton partialSubmit="true" rendered="#{TemplateFormPage.dataTableTopicClass.rowCount gt 1}" alt="Remove Row" title="Remove Row" image="/resources/images/icon_remove.gif" actionListener="#{TemplateFormPage.removeRow}"/>
                       <ice:selectOneMenu immediate="false" partialSubmit="true" 
                                         value="#{TemplateFormPage.studyMap[sfc.topicClassValue].templateField.fieldInputLevelString}"
-                                        rendered ="#{TemplateFormPage.dataTableTopicClass.rowIndex==0}"
-                                        valueChangeListener="#{TemplateFormPage.changeFieldInputValue}">
+                                        rendered ="#{TemplateFormPage.dataTableTopicClass.rowIndex==0}">
                             <f:attribute name="fieldName" value="topicClassValue" />
                            <f:selectItems value="#{TemplateFormPage.fieldInputLevelSelectItems}"/>
                       </ice:selectOneMenu>
@@ -972,8 +952,7 @@
                       <ice:commandButton partialSubmit="true" rendered="#{TemplateFormPage.dataTableRelPublications.rowCount gt 1}" alt="Remove Row" title="Remove Row" image="/resources/images/icon_remove.gif" actionListener="#{TemplateFormPage.removeRow}"/>
                       <ice:selectOneMenu immediate="false" partialSubmit="true" 
                                         value="#{TemplateFormPage.studyMap[sfc.relatedPublications].templateField.fieldInputLevelString}"
-                                        rendered ="#{TemplateFormPage.dataTableRelPublications.rowIndex==0}"
-                                        valueChangeListener="#{TemplateFormPage.changeFieldInputValue}">
+                                        rendered ="#{TemplateFormPage.dataTableRelPublications.rowIndex==0}">
                             <f:attribute name="fieldName" value="relatedPublications" />
                            <f:selectItems value="#{TemplateFormPage.fieldInputLevelSelectItems}"/>
                       </ice:selectOneMenu>
@@ -1017,8 +996,7 @@
                       <ice:commandButton partialSubmit="true" rendered="#{TemplateFormPage.dataTableRelMaterials.rowCount gt 1}" alt="Remove Row" title="Remove Row" image="/resources/images/icon_remove.gif" actionListener="#{TemplateFormPage.removeRow}"/>
                       <ice:selectOneMenu immediate="false" partialSubmit="true" 
                                         value="#{TemplateFormPage.studyMap[sfc.relatedMaterial].templateField.fieldInputLevelString}"
-                                        rendered ="#{TemplateFormPage.dataTableRelMaterials.rowIndex==0}"
-                                        valueChangeListener="#{TemplateFormPage.changeFieldInputValue}">
+                                        rendered ="#{TemplateFormPage.dataTableRelMaterials.rowIndex==0}">
                             <f:attribute name="fieldName" value="relatedMaterial" />
                            <f:selectItems value="#{TemplateFormPage.fieldInputLevelSelectItems}"/>
                       </ice:selectOneMenu>
@@ -1062,8 +1040,7 @@
                       <ice:commandButton partialSubmit="true" rendered="#{TemplateFormPage.dataTableRelStudies.rowCount gt 1}" alt="Remove Row" title="Remove Row" image="/resources/images/icon_remove.gif" actionListener="#{TemplateFormPage.removeRow}"/>
                       <ice:selectOneMenu immediate="false" partialSubmit="true" 
                                         value="#{TemplateFormPage.studyMap[sfc.relatedStudies].templateField.fieldInputLevelString}"
-                                        rendered ="#{TemplateFormPage.dataTableRelStudies.rowIndex==0}"
-                                        valueChangeListener="#{TemplateFormPage.changeFieldInputValue}">
+                                        rendered ="#{TemplateFormPage.dataTableRelStudies.rowIndex==0}">
                             <f:attribute name="fieldName" value="relatedStudies" />
                            <f:selectItems value="#{TemplateFormPage.fieldInputLevelSelectItems}"/>
                       </ice:selectOneMenu>
@@ -1107,8 +1084,7 @@
                       <ice:commandButton partialSubmit="true" rendered="#{TemplateFormPage.dataTableOtherReferences.rowCount gt 1}" alt="Remove Row" title="Remove Row" image="/resources/images/icon_remove.gif" actionListener="#{TemplateFormPage.removeRow}"/>
                       <ice:selectOneMenu immediate="false" partialSubmit="true" 
                                         value="#{TemplateFormPage.studyMap[sfc.otherReferences].templateField.fieldInputLevelString}"
-                                        rendered ="#{TemplateFormPage.dataTableOtherReferences.rowIndex==0}"
-                                        valueChangeListener="#{TemplateFormPage.changeFieldInputValue}">
+                                        rendered ="#{TemplateFormPage.dataTableOtherReferences.rowIndex==0}">
                             <f:attribute name="fieldName" value="otherReferences" />
                            <f:selectItems value="#{TemplateFormPage.fieldInputLevelSelectItems}"/>
                       </ice:selectOneMenu>
@@ -1136,8 +1112,7 @@
                 </ice:column>
                 <ice:column>
                   <ice:selectOneMenu immediate="false" partialSubmit="true" 
-                                        value="#{TemplateFormPage.studyMap[sfc.timePeriodCoveredStart].templateField.fieldInputLevelString}"
-                                        valueChangeListener="#{TemplateFormPage.changeFieldInputValue}">
+                                        value="#{TemplateFormPage.studyMap[sfc.timePeriodCoveredStart].templateField.fieldInputLevelString}">
                             <f:attribute name="fieldName" value="timePeriodCoveredStart" />
                            <f:selectItems value="#{TemplateFormPage.fieldInputLevelSelectItems}"/>
                   </ice:selectOneMenu>
@@ -1163,8 +1138,7 @@
                 </ice:column>
                 <ice:column>
                   <ice:selectOneMenu immediate="false" partialSubmit="true" 
-                                        value="#{TemplateFormPage.studyMap[sfc.timePeriodCoveredEnd].templateField.fieldInputLevelString}"
-                                        valueChangeListener="#{TemplateFormPage.changeFieldInputValue}">
+                                        value="#{TemplateFormPage.studyMap[sfc.timePeriodCoveredEnd].templateField.fieldInputLevelString}">
                             <f:attribute name="fieldName" value="timePeriodCoveredEnd" />
                            <f:selectItems value="#{TemplateFormPage.fieldInputLevelSelectItems}"/>
                   </ice:selectOneMenu>
@@ -1190,8 +1164,7 @@
                 </ice:column>
                 <ice:column>
                   <ice:selectOneMenu immediate="false" partialSubmit="true" 
-                                        value="#{TemplateFormPage.studyMap[sfc.dateOfCollectionStart].templateField.fieldInputLevelString}"
-                                        valueChangeListener="#{TemplateFormPage.changeFieldInputValue}">
+                                        value="#{TemplateFormPage.studyMap[sfc.dateOfCollectionStart].templateField.fieldInputLevelString}">
                             <f:attribute name="fieldName" value="dateOfCollectionStart" />
                            <f:selectItems value="#{TemplateFormPage.fieldInputLevelSelectItems}"/>
                   </ice:selectOneMenu>
@@ -1217,8 +1190,7 @@
                 </ice:column>
                 <ice:column>
                   <ice:selectOneMenu immediate="false" partialSubmit="true" 
-                                        value="#{TemplateFormPage.studyMap[sfc.dateOfCollectionEnd].templateField.fieldInputLevelString}"
-                                        valueChangeListener="#{TemplateFormPage.changeFieldInputValue}">
+                                        value="#{TemplateFormPage.studyMap[sfc.dateOfCollectionEnd].templateField.fieldInputLevelString}">
                             <f:attribute name="fieldName" value="dateOfCollectionEnd" />
                            <f:selectItems value="#{TemplateFormPage.fieldInputLevelSelectItems}"/>
                   </ice:selectOneMenu>
@@ -1241,8 +1213,7 @@
                 </ice:column>
                 <ice:column>
                   <ice:selectOneMenu immediate="false" partialSubmit="true" 
-                                        value="#{TemplateFormPage.studyMap[sfc.country].templateField.fieldInputLevelString}"
-                                        valueChangeListener="#{TemplateFormPage.changeFieldInputValue}">
+                                        value="#{TemplateFormPage.studyMap[sfc.country].templateField.fieldInputLevelString}">
                             <f:attribute name="fieldName" value="country" />
                            <f:selectItems value="#{TemplateFormPage.fieldInputLevelSelectItems}"/>
                   </ice:selectOneMenu>
@@ -1265,8 +1236,7 @@
                 </ice:column>
                 <ice:column>
                   <ice:selectOneMenu immediate="false" partialSubmit="true" 
-                                        value="#{TemplateFormPage.studyMap[sfc.geographicCoverage].templateField.fieldInputLevelString}"
-                                        valueChangeListener="#{TemplateFormPage.changeFieldInputValue}">
+                                        value="#{TemplateFormPage.studyMap[sfc.geographicCoverage].templateField.fieldInputLevelString}">
                             <f:attribute name="fieldName" value="geographicCoverage" />
                            <f:selectItems value="#{TemplateFormPage.fieldInputLevelSelectItems}"/>
                   </ice:selectOneMenu>
@@ -1289,8 +1259,7 @@
                 </ice:column>
                 <ice:column>
                   <ice:selectOneMenu immediate="false" partialSubmit="true" 
-                                        value="#{TemplateFormPage.studyMap[sfc.geographicUnit].templateField.fieldInputLevelString}"
-                                        valueChangeListener="#{TemplateFormPage.changeFieldInputValue}">
+                                        value="#{TemplateFormPage.studyMap[sfc.geographicUnit].templateField.fieldInputLevelString}">
                             <f:attribute name="fieldName" value="geographicUnit" />
                            <f:selectItems value="#{TemplateFormPage.fieldInputLevelSelectItems}"/>
                   </ice:selectOneMenu>
@@ -1342,8 +1311,7 @@
                 </ice:column>
                 <ice:column>
                   <ice:selectOneMenu immediate="false" partialSubmit="true" 
-                                        value="#{TemplateFormPage.studyMap[sfc.westLongitude].templateField.fieldInputLevelString}"
-                                        valueChangeListener="#{TemplateFormPage.changeFieldInputValue}">
+                                        value="#{TemplateFormPage.studyMap[sfc.westLongitude].templateField.fieldInputLevelString}">
                             <f:attribute name="fieldName" value="westLongitude" />
                            <f:selectItems value="#{TemplateFormPage.fieldInputLevelSelectItems}"/>
                   </ice:selectOneMenu>
@@ -1368,8 +1336,7 @@
                 </ice:column>
                 <ice:column>
                   <ice:selectOneMenu immediate="false" partialSubmit="true" 
-                                        value="#{TemplateFormPage.studyMap[sfc.unitOfAnalysis].templateField.fieldInputLevelString}"
-                                        valueChangeListener="#{TemplateFormPage.changeFieldInputValue}">
+                                        value="#{TemplateFormPage.studyMap[sfc.unitOfAnalysis].templateField.fieldInputLevelString}">
                             <f:attribute name="fieldName" value="unitOfAnalysis" />
                            <f:selectItems value="#{TemplateFormPage.fieldInputLevelSelectItems}"/>
                   </ice:selectOneMenu>
@@ -1394,8 +1361,7 @@
                 </ice:column>
                 <ice:column>
                   <ice:selectOneMenu immediate="false" partialSubmit="true" 
-                                        value="#{TemplateFormPage.studyMap[sfc.universe].templateField.fieldInputLevelString}"
-                                        valueChangeListener="#{TemplateFormPage.changeFieldInputValue}">
+                                        value="#{TemplateFormPage.studyMap[sfc.universe].templateField.fieldInputLevelString}">
                             <f:attribute name="fieldName" value="universe" />
                            <f:selectItems value="#{TemplateFormPage.fieldInputLevelSelectItems}"/>
                   </ice:selectOneMenu>
@@ -1420,8 +1386,7 @@
                 </ice:column>
                 <ice:column>
                   <ice:selectOneMenu immediate="false" partialSubmit="true" 
-                                        value="#{TemplateFormPage.studyMap[sfc.kindOfData].templateField.fieldInputLevelString}"
-                                        valueChangeListener="#{TemplateFormPage.changeFieldInputValue}">
+                                        value="#{TemplateFormPage.studyMap[sfc.kindOfData].templateField.fieldInputLevelString}">
                             <f:attribute name="fieldName" value="universe" />
                            <f:selectItems value="#{TemplateFormPage.fieldInputLevelSelectItems}"/>
                   </ice:selectOneMenu>
@@ -1533,7 +1498,7 @@
                                        actionListener="#{TemplateFormPage.openPopup}"/>
 
                         <ice:selectOneMenu immediate="false" partialSubmit="true" rendered="#{customFieldsDataModel[1].rowIndex==0}"
-                                           value="#{customFieldsDataModel[0].fieldInputLevelString}" valueChangeListener="#{TemplateFormPage.changeFieldInputValueCustom}">
+                                           value="#{customFieldsDataModel[0].fieldInputLevelString}" >
                             <f:selectItems value="#{TemplateFormPage.fieldInputLevelSelectItems}"/>
                         </ice:selectOneMenu>
 
@@ -1583,7 +1548,7 @@
                                          actionListener="#{TemplateFormPage.openPopup}"/>
 
                         <ice:selectOneMenu immediate="false" partialSubmit="true"
-                                           value="#{customFieldsDataModel[0].fieldInputLevelString}" valueChangeListener="#{TemplateFormPage.changeFieldInputValueDCM}">
+                                           value="#{customFieldsDataModel[0].fieldInputLevelString}" >
                             <f:selectItems value="#{TemplateFormPage.fieldInputLevelSelectItems}"/>
                         </ice:selectOneMenu>
 
@@ -1620,8 +1585,7 @@
                 </ice:column>
                 <ice:column>
                     <ice:selectOneMenu immediate="false" partialSubmit="true" 
-                                       value="#{TemplateFormPage.studyMap[sfc.timeMethod].templateField.fieldInputLevelString}"
-                                       valueChangeListener="#{TemplateFormPage.changeFieldInputValue}">
+                                       value="#{TemplateFormPage.studyMap[sfc.timeMethod].templateField.fieldInputLevelString}">                                      
                            <f:attribute name="fieldName" value="timeMethod"/>
                            <f:selectItems value="#{TemplateFormPage.fieldInputLevelSelectItems}"/>
                     </ice:selectOneMenu>
@@ -1649,8 +1613,7 @@
                 </ice:column>
                 <ice:column>
                   <ice:selectOneMenu immediate="false" partialSubmit="true" 
-                                        value="#{TemplateFormPage.studyMap[sfc.dataCollector].templateField.fieldInputLevelString}"
-                                        valueChangeListener="#{TemplateFormPage.changeFieldInputValue}">
+                                        value="#{TemplateFormPage.studyMap[sfc.dataCollector].templateField.fieldInputLevelString}">
                             <f:attribute name="fieldName" value="dataCollector" />
                            <f:selectItems value="#{TemplateFormPage.fieldInputLevelSelectItems}"/>
                   </ice:selectOneMenu>
@@ -1678,8 +1641,7 @@
                 </ice:column>
                 <ice:column>
                   <ice:selectOneMenu immediate="false" partialSubmit="true" 
-                                        value="#{TemplateFormPage.studyMap[sfc.frequencyOfDataCollection].templateField.fieldInputLevelString}"
-                                        valueChangeListener="#{TemplateFormPage.changeFieldInputValue}">
+                                        value="#{TemplateFormPage.studyMap[sfc.frequencyOfDataCollection].templateField.fieldInputLevelString}">
                             <f:attribute name="fieldName" value="frequencyOfDataCollection" />
                            <f:selectItems value="#{TemplateFormPage.fieldInputLevelSelectItems}"/>
                   </ice:selectOneMenu>
@@ -1708,8 +1670,7 @@
                 </ice:column>
                   <ice:column>
                   <ice:selectOneMenu immediate="false" partialSubmit="true" 
-                                        value="#{TemplateFormPage.studyMap[sfc.samplingProcedure].templateField.fieldInputLevelString}"
-                                        valueChangeListener="#{TemplateFormPage.changeFieldInputValue}">
+                                        value="#{TemplateFormPage.studyMap[sfc.samplingProcedure].templateField.fieldInputLevelString}">
                             <f:attribute name="fieldName" value="samplingProcedure" />
                            <f:selectItems value="#{TemplateFormPage.fieldInputLevelSelectItems}"/>
                   </ice:selectOneMenu>
@@ -1738,8 +1699,7 @@
                 </ice:column>
                 <ice:column>
                   <ice:selectOneMenu immediate="false" partialSubmit="true" 
-                                        value="#{TemplateFormPage.studyMap[sfc.deviationsFromSampleDesign].templateField.fieldInputLevelString}"
-                                        valueChangeListener="#{TemplateFormPage.changeFieldInputValue}">
+                                        value="#{TemplateFormPage.studyMap[sfc.deviationsFromSampleDesign].templateField.fieldInputLevelString}">
                             <f:attribute name="fieldName" value="deviationsFromSampleDesign" />
                            <f:selectItems value="#{TemplateFormPage.fieldInputLevelSelectItems}"/>
                   </ice:selectOneMenu>
@@ -1767,8 +1727,7 @@
                 </ice:column>
                 <ice:column>
                   <ice:selectOneMenu immediate="false" partialSubmit="true" 
-                                        value="#{TemplateFormPage.studyMap[sfc.collectionMode].templateField.fieldInputLevelString}"
-                                        valueChangeListener="#{TemplateFormPage.changeFieldInputValue}">
+                                        value="#{TemplateFormPage.studyMap[sfc.collectionMode].templateField.fieldInputLevelString}">
                             <f:attribute name="fieldName" value="collectionMode" />
                            <f:selectItems value="#{TemplateFormPage.fieldInputLevelSelectItems}"/>
                   </ice:selectOneMenu>
@@ -1797,8 +1756,7 @@
                 </ice:column>
                 <ice:column>
                   <ice:selectOneMenu immediate="false" partialSubmit="true" 
-                                        value="#{TemplateFormPage.studyMap[sfc.researchInstrument].templateField.fieldInputLevelString}"
-                                        valueChangeListener="#{TemplateFormPage.changeFieldInputValue}">
+                                        value="#{TemplateFormPage.studyMap[sfc.researchInstrument].templateField.fieldInputLevelString}">
                             <f:attribute name="fieldName" value="researchInstrument" />
                            <f:selectItems value="#{TemplateFormPage.fieldInputLevelSelectItems}"/>
                   </ice:selectOneMenu>
@@ -1826,8 +1784,7 @@
                 </ice:column>
                 <ice:column>
                   <ice:selectOneMenu immediate="false" partialSubmit="true" 
-                                        value="#{TemplateFormPage.studyMap[sfc.dataSources].templateField.fieldInputLevelString}"
-                                        valueChangeListener="#{TemplateFormPage.changeFieldInputValue}">
+                                        value="#{TemplateFormPage.studyMap[sfc.dataSources].templateField.fieldInputLevelString}">
                             <f:attribute name="fieldName" value="dataSources" />
                            <f:selectItems value="#{TemplateFormPage.fieldInputLevelSelectItems}"/>
                   </ice:selectOneMenu>
@@ -1855,8 +1812,7 @@
                 </ice:column>
                 <ice:column>
                   <ice:selectOneMenu immediate="false" partialSubmit="true" 
-                                        value="#{TemplateFormPage.studyMap[sfc.originOfSources].templateField.fieldInputLevelString}"
-                                        valueChangeListener="#{TemplateFormPage.changeFieldInputValue}">
+                                        value="#{TemplateFormPage.studyMap[sfc.originOfSources].templateField.fieldInputLevelString}">
                             <f:attribute name="fieldName" value="originOfSources" />
                            <f:selectItems value="#{TemplateFormPage.fieldInputLevelSelectItems}"/>
                   </ice:selectOneMenu>
@@ -1885,8 +1841,7 @@
                 </ice:column>
                 <ice:column>
                   <ice:selectOneMenu immediate="false" partialSubmit="true" 
-                                        value="#{TemplateFormPage.studyMap[sfc.characteristicOfSources].templateField.fieldInputLevelString}"
-                                        valueChangeListener="#{TemplateFormPage.changeFieldInputValue}">
+                                        value="#{TemplateFormPage.studyMap[sfc.characteristicOfSources].templateField.fieldInputLevelString}">
                             <f:attribute name="fieldName" value="characteristicOfSources" />
                            <f:selectItems value="#{TemplateFormPage.fieldInputLevelSelectItems}"/>
                   </ice:selectOneMenu>
@@ -1915,8 +1870,7 @@
                 </ice:column>
                 <ice:column>
                   <ice:selectOneMenu immediate="false" partialSubmit="true" 
-                                        value="#{TemplateFormPage.studyMap[sfc.accessToSources].templateField.fieldInputLevelString}"
-                                        valueChangeListener="#{TemplateFormPage.changeFieldInputValue}">
+                                        value="#{TemplateFormPage.studyMap[sfc.accessToSources].templateField.fieldInputLevelString}">
                             <f:attribute name="fieldName" value="accessToSources" />
                            <f:selectItems value="#{TemplateFormPage.fieldInputLevelSelectItems}"/>
                   </ice:selectOneMenu>
@@ -1945,8 +1899,7 @@
                 </ice:column>
                 <ice:column>
                   <ice:selectOneMenu immediate="false" partialSubmit="true" 
-                                        value="#{TemplateFormPage.studyMap[sfc.dataCollectionSituation].templateField.fieldInputLevelString}"
-                                        valueChangeListener="#{TemplateFormPage.changeFieldInputValue}">
+                                        value="#{TemplateFormPage.studyMap[sfc.dataCollectionSituation].templateField.fieldInputLevelString}">
                             <f:attribute name="fieldName" value="dataCollectionSituation" />
                            <f:selectItems value="#{TemplateFormPage.fieldInputLevelSelectItems}"/>
                   </ice:selectOneMenu>
@@ -1975,8 +1928,7 @@
                 </ice:column>
                 <ice:column>
                   <ice:selectOneMenu immediate="false" partialSubmit="true" 
-                                        value="#{TemplateFormPage.studyMap[sfc.actionsToMinimizeLoss].templateField.fieldInputLevelString}"
-                                        valueChangeListener="#{TemplateFormPage.changeFieldInputValue}">
+                                        value="#{TemplateFormPage.studyMap[sfc.actionsToMinimizeLoss].templateField.fieldInputLevelString}">
                             <f:attribute name="fieldName" value="actionsToMinimizeLoss" />
                            <f:selectItems value="#{TemplateFormPage.fieldInputLevelSelectItems}"/>
                   </ice:selectOneMenu>
@@ -2005,8 +1957,7 @@
                 </ice:column>
                 <ice:column>
                   <ice:selectOneMenu immediate="false" partialSubmit="true" 
-                                        value="#{TemplateFormPage.studyMap[sfc.controlOperations].templateField.fieldInputLevelString}"
-                                        valueChangeListener="#{TemplateFormPage.changeFieldInputValue}">
+                                        value="#{TemplateFormPage.studyMap[sfc.controlOperations].templateField.fieldInputLevelString}">
                             <f:attribute name="fieldName" value="controlOperations" />
                            <f:selectItems value="#{TemplateFormPage.fieldInputLevelSelectItems}"/>
                   </ice:selectOneMenu>
@@ -2034,8 +1985,7 @@
                 </ice:column>
                 <ice:column>
                   <ice:selectOneMenu immediate="false" partialSubmit="true" 
-                                        value="#{TemplateFormPage.studyMap[sfc.weighting].templateField.fieldInputLevelString}"
-                                        valueChangeListener="#{TemplateFormPage.changeFieldInputValue}">
+                                        value="#{TemplateFormPage.studyMap[sfc.weighting].templateField.fieldInputLevelString}">
                             <f:attribute name="fieldName" value="weighting" />
                            <f:selectItems value="#{TemplateFormPage.fieldInputLevelSelectItems}"/>
                   </ice:selectOneMenu>
@@ -2063,8 +2013,7 @@
                 </ice:column>
                 <ice:column>
                   <ice:selectOneMenu immediate="false" partialSubmit="true" 
-                                        value="#{TemplateFormPage.studyMap[sfc.cleaningOperations].templateField.fieldInputLevelString}"
-                                        valueChangeListener="#{TemplateFormPage.changeFieldInputValue}">
+                                        value="#{TemplateFormPage.studyMap[sfc.cleaningOperations].templateField.fieldInputLevelString}">
                             <f:attribute name="fieldName" value="cleaningOperations" />
                            <f:selectItems value="#{TemplateFormPage.fieldInputLevelSelectItems}"/>
                   </ice:selectOneMenu>
@@ -2092,8 +2041,7 @@
                 </ice:column>
                 <ice:column>
                   <ice:selectOneMenu immediate="false" partialSubmit="true" 
-                                     value="#{TemplateFormPage.studyMap[sfc.studyLevelErrorNotes].templateField.fieldInputLevelString}"
-                                     valueChangeListener="#{TemplateFormPage.changeFieldInputValue}">
+                                     value="#{TemplateFormPage.studyMap[sfc.studyLevelErrorNotes].templateField.fieldInputLevelString}">
                             <f:attribute name="fieldName" value="studyLevelErrorNotes" />
                            <f:selectItems value="#{TemplateFormPage.fieldInputLevelSelectItems}"/>
                   </ice:selectOneMenu>
@@ -2121,8 +2069,7 @@
                 </ice:column>
                 <ice:column>
                   <ice:selectOneMenu immediate="false" partialSubmit="true" 
-                                        value="#{TemplateFormPage.studyMap[sfc.responseRate].templateField.fieldInputLevelString}"
-                                        valueChangeListener="#{TemplateFormPage.changeFieldInputValue}">
+                                        value="#{TemplateFormPage.studyMap[sfc.responseRate].templateField.fieldInputLevelString}">
                             <f:attribute name="fieldName" value="responseRate" />
                            <f:selectItems value="#{TemplateFormPage.fieldInputLevelSelectItems}"/>
                   </ice:selectOneMenu>
@@ -2150,8 +2097,7 @@
                 </ice:column>
                 <ice:column>
                   <ice:selectOneMenu immediate="false" partialSubmit="true" 
-                                        value="#{TemplateFormPage.studyMap[sfc.samplingErrorEstimates].templateField.fieldInputLevelString}"
-                                        valueChangeListener="#{TemplateFormPage.changeFieldInputValue}">
+                                        value="#{TemplateFormPage.studyMap[sfc.samplingErrorEstimates].templateField.fieldInputLevelString}">
                             <f:attribute name="fieldName" value="samplingErrorEstimates" />
                            <f:selectItems value="#{TemplateFormPage.fieldInputLevelSelectItems}"/>
                   </ice:selectOneMenu>
@@ -2180,8 +2126,7 @@
                 </ice:column>
                 <ice:column>
                   <ice:selectOneMenu immediate="false" partialSubmit="true" 
-                                        value="#{TemplateFormPage.studyMap[sfc.otherDataAppraisal].templateField.fieldInputLevelString}"
-                                        valueChangeListener="#{TemplateFormPage.changeFieldInputValue}">
+                                        value="#{TemplateFormPage.studyMap[sfc.otherDataAppraisal].templateField.fieldInputLevelString}">
                             <f:attribute name="fieldName" value="otherDataAppraisal" />
                            <f:selectItems value="#{TemplateFormPage.fieldInputLevelSelectItems}"/>
                   </ice:selectOneMenu>
@@ -2216,8 +2161,7 @@
                 </ice:column>
                 <ice:column>
                   <ice:selectOneMenu immediate="false" partialSubmit="true"
-                                        value="#{TemplateFormPage.studyMap[sfc.placeOfAccess].templateField.fieldInputLevelString}"
-                                        valueChangeListener="#{TemplateFormPage.changeFieldInputValue}">
+                                        value="#{TemplateFormPage.studyMap[sfc.placeOfAccess].templateField.fieldInputLevelString}">
                             <f:attribute name="fieldName" value="placeOfAccess" />
                            <f:selectItems value="#{TemplateFormPage.fieldInputLevelSelectItems}"/>
                   </ice:selectOneMenu>
@@ -2245,8 +2189,7 @@
                 </ice:column>
                 <ice:column>
                   <ice:selectOneMenu immediate="false" partialSubmit="true"
-                                        value="#{TemplateFormPage.studyMap[sfc.originalArchive].templateField.fieldInputLevelString}"
-                                        valueChangeListener="#{TemplateFormPage.changeFieldInputValue}">
+                                        value="#{TemplateFormPage.studyMap[sfc.originalArchive].templateField.fieldInputLevelString}">
                             <f:attribute name="fieldName" value="originalArchive" />
                   <f:selectItems value="#{TemplateFormPage.fieldInputLevelSelectItems}"/>
                   </ice:selectOneMenu>
@@ -2273,8 +2216,7 @@
                 </ice:column>
                 <ice:column>
                   <ice:selectOneMenu immediate="false" partialSubmit="true"
-                                        value="#{TemplateFormPage.studyMap[sfc.availabilityStatus].templateField.fieldInputLevelString}"
-                                        valueChangeListener="#{TemplateFormPage.changeFieldInputValue}">
+                                        value="#{TemplateFormPage.studyMap[sfc.availabilityStatus].templateField.fieldInputLevelString}">
                             <f:attribute name="fieldName" value="availabilityStatus" />
                   <f:selectItems value="#{TemplateFormPage.fieldInputLevelSelectItems}"/>
                   </ice:selectOneMenu>
@@ -2302,8 +2244,7 @@
                 </ice:column>
                 <ice:column>
                   <ice:selectOneMenu immediate="false" partialSubmit="true"
-                                        value="#{TemplateFormPage.studyMap[sfc.collectionSize].templateField.fieldInputLevelString}"
-                                        valueChangeListener="#{TemplateFormPage.changeFieldInputValue}">
+                                        value="#{TemplateFormPage.studyMap[sfc.collectionSize].templateField.fieldInputLevelString}">
                             <f:attribute name="fieldName" value="collectionSize" />
                   <f:selectItems value="#{TemplateFormPage.fieldInputLevelSelectItems}"/>
                   </ice:selectOneMenu>
@@ -2330,8 +2271,7 @@
                 </ice:column>
                 <ice:column>
                   <ice:selectOneMenu immediate="false" partialSubmit="true"
-                                        value="#{TemplateFormPage.studyMap[sfc.studyCompletion].templateField.fieldInputLevelString}"
-                                        valueChangeListener="#{TemplateFormPage.changeFieldInputValue}">
+                                        value="#{TemplateFormPage.studyMap[sfc.studyCompletion].templateField.fieldInputLevelString}">
                             <f:attribute name="fieldName" value="studyCompletion" />
                   <f:selectItems value="#{TemplateFormPage.fieldInputLevelSelectItems}"/>
                   </ice:selectOneMenu>
@@ -2363,8 +2303,7 @@
                 </ice:column>
                 <ice:column>
                   <ice:selectOneMenu immediate="false" partialSubmit="true"
-                                        value="#{TemplateFormPage.studyMap[sfc.confidentialityDeclaration].templateField.fieldInputLevelString}"
-                                        valueChangeListener="#{TemplateFormPage.changeFieldInputValue}">
+                                        value="#{TemplateFormPage.studyMap[sfc.confidentialityDeclaration].templateField.fieldInputLevelString}">
                             <f:attribute name="fieldName" value="confidentialityDeclaration" />
                   <f:selectItems value="#{TemplateFormPage.fieldInputLevelSelectItems}"/>
                   </ice:selectOneMenu>
@@ -2391,8 +2330,7 @@
                 </ice:column>
                 <ice:column>
                   <ice:selectOneMenu immediate="false" partialSubmit="true"
-                                        value="#{TemplateFormPage.studyMap[sfc.specialPermissions].templateField.fieldInputLevelString}"
-                                        valueChangeListener="#{TemplateFormPage.changeFieldInputValue}">
+                                        value="#{TemplateFormPage.studyMap[sfc.specialPermissions].templateField.fieldInputLevelString}">
                             <f:attribute name="fieldName" value="specialPermissions" />
                   <f:selectItems value="#{TemplateFormPage.fieldInputLevelSelectItems}"/>
                   </ice:selectOneMenu>
@@ -2420,8 +2358,7 @@
                 </ice:column>
                 <ice:column>
                   <ice:selectOneMenu immediate="false" partialSubmit="true"
-                                        value="#{TemplateFormPage.studyMap[sfc.restrictions].templateField.fieldInputLevelString}"
-                                        valueChangeListener="#{TemplateFormPage.changeFieldInputValue}">
+                                        value="#{TemplateFormPage.studyMap[sfc.restrictions].templateField.fieldInputLevelString}">
                             <f:attribute name="fieldName" value="restrictions" />
                   <f:selectItems value="#{TemplateFormPage.fieldInputLevelSelectItems}"/>
                   </ice:selectOneMenu>
@@ -2449,8 +2386,7 @@
                 </ice:column>
                 <ice:column>
                   <ice:selectOneMenu immediate="false" partialSubmit="true"
-                                        value="#{TemplateFormPage.studyMap[sfc.contact].templateField.fieldInputLevelString}"
-                                        valueChangeListener="#{TemplateFormPage.changeFieldInputValue}">
+                                        value="#{TemplateFormPage.studyMap[sfc.contact].templateField.fieldInputLevelString}">
                             <f:attribute name="fieldName" value="contact" />
                   <f:selectItems value="#{TemplateFormPage.fieldInputLevelSelectItems}"/>
                   </ice:selectOneMenu>
@@ -2477,8 +2413,7 @@
                   <ice:selectOneMenu immediate="false" partialSubmit="true"
                                         value="#{TemplateFormPage.studyMap[sfc.citationRequirements].templateField.fieldInputLevelString}"
                                         rendered="#{TemplateFormPage.networkEdit or 
-                                            TemplateFormPage.studyMap[sfc.citationRequirements].templateField.fieldInputLevelString != 'disabled'}"
-                                        valueChangeListener="#{TemplateFormPage.changeFieldInputValue}">
+                                            TemplateFormPage.studyMap[sfc.citationRequirements].templateField.fieldInputLevelString != 'disabled'}">
                             <f:attribute name="fieldName" value="citationRequirements" />
                   <f:selectItems value="#{TemplateFormPage.fieldInputLevelSelectItems}"/>
                   </ice:selectOneMenu>
@@ -2507,8 +2442,7 @@
                 </ice:column>
                 <ice:column>
                   <ice:selectOneMenu immediate="false" partialSubmit="true"
-                                        value="#{TemplateFormPage.studyMap[sfc.depositorRequirements].templateField.fieldInputLevelString}"
-                                        valueChangeListener="#{TemplateFormPage.changeFieldInputValue}">
+                                        value="#{TemplateFormPage.studyMap[sfc.depositorRequirements].templateField.fieldInputLevelString}">
                             <f:attribute name="fieldName" value="depositorRequirements" />
                   <f:selectItems value="#{TemplateFormPage.fieldInputLevelSelectItems}"/>
                   </ice:selectOneMenu>
@@ -2537,8 +2471,7 @@
                 </ice:column>
                 <ice:column>
                   <ice:selectOneMenu immediate="false" partialSubmit="true"
-                                        value="#{TemplateFormPage.studyMap[sfc.conditions].templateField.fieldInputLevelString}"
-                                        valueChangeListener="#{TemplateFormPage.changeFieldInputValue}">
+                                        value="#{TemplateFormPage.studyMap[sfc.conditions].templateField.fieldInputLevelString}">
                             <f:attribute name="fieldName" value="conditions" />
                   <f:selectItems value="#{TemplateFormPage.fieldInputLevelSelectItems}"/>
                   </ice:selectOneMenu>
@@ -2567,8 +2500,7 @@
                 </ice:column>
                 <ice:column>
                   <ice:selectOneMenu immediate="false" partialSubmit="true"
-                                        value="#{TemplateFormPage.studyMap[sfc.disclaimer].templateField.fieldInputLevelString}"
-                                        valueChangeListener="#{TemplateFormPage.changeFieldInputValue}">
+                                        value="#{TemplateFormPage.studyMap[sfc.disclaimer].templateField.fieldInputLevelString}">
                             <f:attribute name="fieldName" value="disclaimer" />
                   <f:selectItems value="#{TemplateFormPage.fieldInputLevelSelectItems}"/>
                   </ice:selectOneMenu>
@@ -2640,8 +2572,7 @@
                       <ice:commandButton partialSubmit="true" alt="Add Row" title="Add Row" image="/resources/images/icon_add.gif" actionListener="#{TemplateFormPage.addRow}"/>
                       <ice:commandButton partialSubmit="true" rendered="#{TemplateFormPage.dataTableNotes.rowCount gt 1}" alt="Remove Row" title="Remove Row" image="/resources/images/icon_remove.gif" actionListener="#{TemplateFormPage.removeRow}"/>
                       <ice:selectOneMenu immediate="false" partialSubmit="true" rendered ="#{TemplateFormPage.dataTableNotes.rowIndex==0}"
-                                        value="#{TemplateFormPage.studyMap[sfc.notesInformationType].templateField.fieldInputLevelString}"                                         
-                                        valueChangeListener="#{TemplateFormPage.changeFieldInputValue}">
+                                        value="#{TemplateFormPage.studyMap[sfc.notesInformationType].templateField.fieldInputLevelString}">
                             <f:attribute name="fieldName" value="notesInformationType" />
                             <f:selectItems value="#{TemplateFormPage.fieldInputLevelSelectItems}"/>
                       </ice:selectOneMenu>

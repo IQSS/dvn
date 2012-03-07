@@ -2459,18 +2459,6 @@ public class TemplateFormPage extends VDCBaseBean implements java.io.Serializabl
             editTemplateService.changeRecommend(studyMapValue.getTemplateField(), newValue);
     }*/
 
-    public void changeFieldInputValue(ValueChangeEvent event) {
-            String newValue = (String)event.getNewValue();
-            String getFieldName = (String) event.getComponent().getAttributes().get("fieldName");
-            StudyMapValue studyMapValue = (StudyMapValue)studyMap.get(getFieldName);             
-            editTemplateService.changeFieldInputLevel(studyMapValue.getTemplateField(), newValue);
-    }
-    
-    
-    
-    
-         
-    
     
     // Custom value related fields and methods    
     private PanelSeries customFieldsPanelSeries;    
@@ -2671,13 +2659,6 @@ public class TemplateFormPage extends VDCBaseBean implements java.io.Serializabl
     }
     
     
-    
-    public void changeFieldInputValueCustom(ValueChangeEvent event) {
-        Object[] fieldsRowData = getCustomFieldsRowData( customFieldsPanelSeries.getRowIndex() );
-        TemplateField changeValue = (TemplateField) fieldsRowData[0];        
-
-        editTemplateService.changeFieldInputLevel(changeValue, (String)event.getNewValue());
-    }
     
     
     public void changeSingleValCV(ValueChangeEvent event) {

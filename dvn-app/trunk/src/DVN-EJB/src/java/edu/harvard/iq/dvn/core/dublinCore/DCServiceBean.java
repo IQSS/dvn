@@ -36,6 +36,8 @@ import edu.harvard.iq.dvn.core.study.StudyGeoBounding;
 import edu.harvard.iq.dvn.core.study.StudyKeyword;
 import edu.harvard.iq.dvn.core.study.StudyProducer;
 import edu.harvard.iq.dvn.core.study.StudyRelMaterial;
+import edu.harvard.iq.dvn.core.study.StudyRelPublication;
+import edu.harvard.iq.dvn.core.study.StudyRelStudy;
 import edu.harvard.iq.dvn.core.study.StudyTopicClass;
 import edu.harvard.iq.dvn.core.util.StringUtil;
 import java.io.IOException;
@@ -149,17 +151,22 @@ public class DCServiceBean implements DCServiceLocal {
         }
 
         //Relation              
-        if (!StringUtil.isEmpty(metadata.getReplicationFor())) {
+        for (StudyRelPublication relMaterial : metadata.getStudyRelPublications()) {
             xmlw.writeStartElement("dc:relation");
-            xmlw.writeCharacters(metadata.getReplicationFor());
+            xmlw.writeCharacters(relMaterial.getText());
             xmlw.writeEndElement();
-        } else {
-            for (StudyRelMaterial relMaterial : metadata.getStudyRelMaterials()) {
-                xmlw.writeStartElement("dc:relation");
-                xmlw.writeCharacters(relMaterial.getText());
-                xmlw.writeEndElement();
-            }
         }
+        for (StudyRelMaterial relMaterial : metadata.getStudyRelMaterials()) {
+            xmlw.writeStartElement("dc:relation");
+            xmlw.writeCharacters(relMaterial.getText());
+            xmlw.writeEndElement();
+        }
+        for (StudyRelStudy relMaterial : metadata.getStudyRelStudies()) {
+            xmlw.writeStartElement("dc:relation");
+            xmlw.writeCharacters(relMaterial.getText());
+            xmlw.writeEndElement();
+        }
+
 
         //Subject
         for (StudyKeyword keyword : metadata.getStudyKeywords()) {

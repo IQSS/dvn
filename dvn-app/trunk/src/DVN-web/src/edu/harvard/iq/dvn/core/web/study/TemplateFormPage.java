@@ -2509,7 +2509,7 @@ public class TemplateFormPage extends VDCBaseBean implements java.io.Serializabl
                         break;
                     }                
                 }            
-            
+                System.out.println("GPD: new field added: " + studyField.getName() + ": " + studyField.getStudyFieldValues().size());
                 Object[] row = new Object[4];
                 row[0] = templateField;
                 row[1] = getCustomValuesDataModel(studyField);
@@ -2587,7 +2587,7 @@ public class TemplateFormPage extends VDCBaseBean implements java.io.Serializabl
         
         // set the new study field in the metadata
         template.getMetadata().getStudyFields().add(newSF);
-
+        System.out.println("GPD: new field added: " + newSF.getName() + ": " + newSF.getStudyFieldValues().size());
         // And add the new template field
         TemplateField newTF = new TemplateField();
         newTF.setTemplate(template);
@@ -2612,7 +2612,16 @@ public class TemplateFormPage extends VDCBaseBean implements java.io.Serializabl
         Object[] fieldsRowData = getCustomFieldsRowData( customFieldsPanelSeries.getRowIndex() );
         editTemplateService.removeCollectionElement(template.getTemplateFields(), ((Integer) fieldsRowData[2]).intValue());
 
-        removeStudyFieldValues((StudyField) fieldsRowData[3]); 
+        StudyField studyField = (StudyField) fieldsRowData[3];
+        removeStudyFieldValues(studyField);
+        
+        // we also have to remove the study field from the transient list
+        for (Iterator<StudyField> it = template.getMetadata().getStudyFields().iterator(); it.hasNext();) {
+            StudyField sf = it.next();
+            if (studyField.getName().equals(sf.getName())) {
+                it.remove();
+            }
+        }
     }        
 
     public void addDcmRow(ActionEvent ae) {
@@ -2707,11 +2716,11 @@ public class TemplateFormPage extends VDCBaseBean implements java.io.Serializabl
         for (Iterator it = studyField.getStudyFieldValues().iterator(); it.hasNext();) {
             StudyFieldValue sfv = (StudyFieldValue) it.next();
             editTemplateService.removeCollectionElement(it,sfv);
-
+           
             // if this value is already in db, we also need to remove it from the metadata's list of studyFieldValues
             if ( sfv.getId()!= null ) {
                 template.getMetadata().getStudyFieldValues().remove( sfv );
-            }           
+            }        
         }        
     }
     

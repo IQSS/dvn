@@ -1492,29 +1492,35 @@
                           <ice:inputText id="input_TextDefault" size="90" rendered="#{empty(customFieldsDataModel[0].studyField.fieldType)}"                                        
                                          value="#{customValuesDataModel[0].strValue}">
                           </ice:inputText> 
+                          <ice:message styleClass="errorMessage" for="input_TextDefault"/>
                           <ice:inputText id="input_HtmlEnabled" size="90" rendered="#{customFieldsDataModel[0].studyField.fieldType == 'html'}"                                          
                                          value="#{customValuesDataModel[0].strValue}"
                                          styleClass="formHtmlEnabled">
                                   <f:validator validatorId="XhtmlValidator"/>
                           </ice:inputText>
+                          <ice:message styleClass="errorMessage" for="input_HtmlEnabled"/>
                           <ice:inputTextarea id="input_HtmlEnabledArea" cols="90" rows="4" rendered="#{customFieldsDataModel[0].studyField.fieldType == 'htmlarea'}"                                          
                                          value="#{customValuesDataModel[0].strValue}"
                                          styleClass="formHtmlEnabled">
                                   <f:validator validatorId="XhtmlValidator"/>
                           </ice:inputTextarea>
+                          <ice:message styleClass="errorMessage" for="input_HtmlEnabledArea"/>
                           <ice:inputText id="input_Text" size="90" rendered="#{customFieldsDataModel[0].studyField.fieldType == 'textBox'}" 
                                          value="#{customValuesDataModel[0].strValue}">
-                          </ice:inputText>    
+                          </ice:inputText>  
+                          <ice:message styleClass="errorMessage" for="input_Text"/>
                           <ice:inputText id="input_genericDate" styleClass="formDateFormat"
                                          rendered="#{customFieldsDataModel[0].studyField.fieldType == 'date'}" 
                                          value="#{customValuesDataModel[0].strValue}">
                                 <f:validator validatorId="DateValidator"/>
                           </ice:inputText>   
+                          <ice:message styleClass="errorMessage" for="input_genericDate"/>
                           <ice:inputTextarea cols="90" rows="4"
                                                id="input_TextArea"
                                                value="#{customValuesDataModel[0].strValue}"
                                                rendered="#{customFieldsDataModel[0].studyField.fieldType == 'textArea'}">
                           </ice:inputTextarea>
+                          <ice:message styleClass="errorMessage" for="input_TextArea"/>
                           <ice:outputText value="#{editstudybundle.dateFormatDescription}" rendered="#{customFieldsDataModel[0].studyField.fieldType == 'date'}"/>
                     </ice:column>
                     <ice:column>
@@ -1554,7 +1560,7 @@
                         <ice:graphicImage value="/resources/images/icon_recommended.gif" rendered="#{customFieldsDataModel[0].recommended}"/>
                     </ice:column>
                     <ice:column>
-                        <ice:selectOneMenu immediate="false"                                             
+                        <ice:selectOneMenu immediate="false"   id="selectOneCustom"                                          
                                            value="#{customFieldsDataModel[3].studyFieldValueSingleString}" 
                                            valueChangeListener="#{TemplateFormPage.changeSingleValCV}"                                          
                                         rendered ="#{!customFieldsDataModel[0].allowMultiples}">
@@ -1562,13 +1568,15 @@
                             <f:selectItems value="#{customFieldsDataModel[0].controlledVocabulary.selectItems}"/>
                             <f:attribute name="sf_id" value="#{customFieldsDataModel[0].studyField.id}"/>
                         </ice:selectOneMenu>  
-                        <ice:selectManyListbox immediate="false" 
+                         <ice:message styleClass="errorMessage" for="selectOneCustom"/>
+                        <ice:selectManyListbox immediate="false" id="selectManyCustom"   
                                                valueChangeListener="#{TemplateFormPage.changeMultiValCV}" 
                                                value="#{customFieldsDataModel[3].studyFieldValueStrings}"
                                         rendered ="#{customFieldsDataModel[0].allowMultiples }">
                             <f:selectItems value="#{customFieldsDataModel[0].controlledVocabulary.selectItems}"/>
                             <f:attribute name="sf_id" value="#{customFieldsDataModel[0].studyField.id}"/>
                         </ice:selectManyListbox>
+                         <ice:message styleClass="errorMessage" for="selectManyCustom"/>
                     </ice:column>
                     <ice:column>
                         <ice:commandLink value="Select Vocabulary" rendered="#{ customFieldsDataModel[0].studyField.fieldType == 'textBox'}" 

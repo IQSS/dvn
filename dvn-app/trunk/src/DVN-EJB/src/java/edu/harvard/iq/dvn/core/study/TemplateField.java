@@ -58,29 +58,6 @@ public class TemplateField implements java.io.Serializable {
     public void setDefaultValue(String defaultValue) {
         this.defaultValue = defaultValue;
     }
-
-    /**
-     * Holds value of property selectValues.
-     */
-    @OneToMany (mappedBy="templateField", cascade=CascadeType.PERSIST)
-    private java.util.Collection<TemplateFieldSelectValue> selectValues;
-
-    /**
-     * Getter for property selectValues.
-     * @return Value of property selectValues.
-     */
-    public java.util.Collection<TemplateFieldSelectValue> getSelectValues() {
-        return this.selectValues;
-    }
-
-    /**
-     * Setter for property selectValues.
-     * @param selectValues New value of property selectValues.
-     */
-    public void setSelectValues(java.util.Collection<TemplateFieldSelectValue> selectValues) {
-        this.selectValues = selectValues;
-    }
-
     
     private String fieldInputLevelString;
 

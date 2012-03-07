@@ -66,6 +66,7 @@ import javax.faces.component.UIInput;
 import com.icesoft.faces.component.ext.HtmlDataTable;
 import com.icesoft.faces.component.ext.HtmlInputText;
 import com.icesoft.faces.component.ext.HtmlInputTextarea;
+import com.icesoft.faces.component.ext.HtmlSelectBooleanCheckbox;
 import com.icesoft.faces.component.ext.HtmlSelectOneMenu;
 import com.icesoft.faces.component.ext.HtmlSelectOneRadio;
 import com.icesoft.faces.component.panelseries.PanelSeries;
@@ -75,8 +76,6 @@ import edu.harvard.iq.dvn.core.study.MetadataFieldGroup;
 import edu.harvard.iq.dvn.core.study.StudyField;
 import edu.harvard.iq.dvn.core.study.StudyFieldValue;
 import edu.harvard.iq.dvn.core.study.TemplateServiceLocal;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.Date;
 import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
@@ -1385,9 +1384,14 @@ public class EditStudyPage extends VDCBaseBean implements java.io.Serializable  
         versionNotesPopup.setShowPopup(false);
 
         removeEmptyRows();
-        if (!StringUtil.isEmpty(metadata.getReplicationFor())  ) {
-            if (!metadata.getTitle().startsWith("Replication data for:")) {
-                metadata.setTitle("Replication data for: "+metadata.getTitle());
+        
+        // check to see if any of the publications are replication data
+        for (StudyRelPublication publication : metadata.getStudyRelPublications()) {
+            if (publication.isReplicationData()) {
+                if (!metadata.getTitle().startsWith("Replication data for:")) {
+                    metadata.setTitle("Replication data for: "+metadata.getTitle());
+                }
+                break;
             }
         }
 
@@ -1767,6 +1771,29 @@ public class EditStudyPage extends VDCBaseBean implements java.io.Serializable  
         }
 
     }
+    
+    public void validateStudyPublication(FacesContext context,
+            UIComponent toValidate,
+            Object value) {
+        
+        if (isValidateRequired()) {
+            boolean valid=true;
+            if (StringUtil.isEmpty((String)inputRelPublicationText.getLocalValue())
+            && (!((Boolean)inputRelPublicationReplicationData.getLocalValue()).booleanValue()
+             || !StringUtil.isEmpty((String)inputRelPublicationIDType.getLocalValue())
+             || !StringUtil.isEmpty((String)inputRelPublicationIDNumber.getLocalValue())
+             || !StringUtil.isEmpty((String)inputRelPublicationURL.getLocalValue())                    
+             || !StringUtil.isEmpty((String)value) )) {
+                valid=false;
+            }
+            if (!valid) {
+                ((UIInput)toValidate).setValid(false);
+                FacesMessage message = new FacesMessage("Publication citation is required if other publication data is entered.");
+                context.addMessage(toValidate.getClientId(context), message);
+            }
+        }
+        
+    }    
       
   
     public void validateStudyId(FacesContext context,
@@ -2339,22 +2366,50 @@ public class EditStudyPage extends VDCBaseBean implements java.io.Serializable  
     /**
      * Holds value of property inputRelPublicationName.
      */
-    private HtmlInputTextarea inputRelPublicationName;
+    private HtmlInputTextarea inputRelPublicationText;
+    private HtmlSelectBooleanCheckbox inputRelPublicationReplicationData;
+    private HtmlSelectOneMenu inputRelPublicationIDType;
+    private HtmlInputText inputRelPublicationIDNumber;
+    private HtmlInputText inputRelPublicationURL;
 
-    /**
-     * Getter for property inputRelPublicationName.
-     * @return Value of property inputRelPublicationName.
-     */
-    public HtmlInputTextarea getInputRelPublicationName() {
-        return this.inputRelPublicationName;
+    public HtmlInputText getInputRelPublicationIDNumber() {
+        return inputRelPublicationIDNumber;
     }
 
-    /**
-     * Setter for property inputRelPublicationName.
-     * @param inputRelPublicationName New value of property inputRelPublicationName.
-     */
-    public void setInputRelPublicationName(HtmlInputTextarea inputRelPublicationName) {
-        this.inputRelPublicationName = inputRelPublicationName;
+    public void setInputRelPublicationIDNumber(HtmlInputText inputRelPublicationIDNumber) {
+        this.inputRelPublicationIDNumber = inputRelPublicationIDNumber;
+    }
+
+    public HtmlSelectOneMenu getInputRelPublicationIDType() {
+        return inputRelPublicationIDType;
+    }
+
+    public void setInputRelPublicationIDType(HtmlSelectOneMenu inputRelPublicationIDType) {
+        this.inputRelPublicationIDType = inputRelPublicationIDType;
+    }
+
+    public HtmlSelectBooleanCheckbox getInputRelPublicationReplicationData() {
+        return inputRelPublicationReplicationData;
+    }
+
+    public void setInputRelPublicationReplicationData(HtmlSelectBooleanCheckbox inputRelPublicationReplicationData) {
+        this.inputRelPublicationReplicationData = inputRelPublicationReplicationData;
+    }
+
+    public HtmlInputTextarea getInputRelPublicationText() {
+        return inputRelPublicationText;
+    }
+
+    public void setInputRelPublicationText(HtmlInputTextarea inputRelPublicationText) {
+        this.inputRelPublicationText = inputRelPublicationText;
+    }
+
+    public HtmlInputText getInputRelPublicationURL() {
+        return inputRelPublicationURL;
+    }
+
+    public void setInputRelPublicationURL(HtmlInputText inputRelPublicationURL) {
+        this.inputRelPublicationURL = inputRelPublicationURL;
     }
 
     /**

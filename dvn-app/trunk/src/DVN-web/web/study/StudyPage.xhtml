@@ -4,7 +4,6 @@
       xmlns:ui="http://java.sun.com/jsf/facelets"
       xmlns:h="http://java.sun.com/jsf/html"
       xmlns:f="http://java.sun.com/jsf/core"
-      xmlns:jsp="http://java.sun.com/JSP/Page"
       xmlns:ice="http://www.icesoft.com/icefaces/component">
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
@@ -371,6 +370,9 @@
                     <ui:param name="displayStatusBox" value="true"/>
                 </ui:include>
             
+                
+                    
+                
             </div>
             <div class="dvn_sectionBoxNoBorders">
                 <ice:panelTabSet id="tabSet1" styleClass="dvnTabs" binding="#{studyPage.tabSet1}" tabChangeListener="#{studyPage.processTabChange}">
@@ -764,6 +766,14 @@
                                 </ice:outputLink>
                             </div>
                             -->
+                            <div>
+                                <!--ice:outputLink value="#{studyPage.apiMetadataUrl}" rendered="#{!empty studyPage.apiMetadataUrl}"-->
+                                <ice:outputLink value="http://localhost/foobar">
+                                    <ice:outputText value="Study Metadata in DDI format (XML)"/>
+                                </ice:outputLink>
+                            </div>    
+                                
+                
                         </div>
                     </ice:panelTab>
                     <!-- FILES -->

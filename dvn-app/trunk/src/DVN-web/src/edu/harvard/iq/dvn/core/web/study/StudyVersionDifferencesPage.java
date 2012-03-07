@@ -1098,29 +1098,6 @@ public class StudyVersionDifferencesPage extends VDCBaseBean implements java.io.
 
 			}
 		}
-		value1 = getStudyUI1().getMetadata().getReplicationFor();
-		value2 = getStudyUI2().getMetadata().getReplicationFor();
-
-		if (value1 != null || value2 != null) {
-			if ((value1 != null && !value1.equals(value2)) ||
-			    (value2 != null && !value2.equals(value1))) {
-
-				if (value1 == null || value1.equals("")) {
-					value1 = "[Empty]";
-				} else if (value2 == null || value2.equals("")) {
-					value2 = "[Empty]";
-				}
-
-				idi = new catalogInfoDifferenceItem();
-
-				idi.setFieldName("Replication For");
-				idi.setFieldValue1(value1);
-				idi.setFieldValue2(value2);
-
-				citationDiffList.add(idi);
-
-			}
-		}
 
     }
 

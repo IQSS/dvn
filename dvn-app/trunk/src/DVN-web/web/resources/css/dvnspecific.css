@@ -51,6 +51,7 @@ div.icePnlPop#templateForm\:controlledVocabularyPopup{width:500px}
 .vdcEditStudyTable tr{border-width:0 0 1px 0;padding:0}
 .vdcEditStudyTable td{border-bottom:1px solid #dadee0;border-width:0 0 1px 0;padding:4px 0}
 .vdcEditStudyTable div{border-width:0 0 0 0;padding:0}
+.vdcEditStudyTable div.dvnFormPadding{padding:1em 0}
 .vdcEditStudyTable input, .vdcEditStudyTable textarea {display:block;}
 .vdcEditStudyTableRow table{border-width:0 0 0 0;margin:0}
 .vdcEditStudyTableRow table td{border-width:0 0 0 0;padding:0}
@@ -69,7 +70,9 @@ span.vdcEditStudyFormatExample{color:#666666;}
 .vdcEditStudyInnerTable td.vdcEditStudyCol1b span.iceOutTxt.dvnInlineHelpLabel {display:inline}
 .icePnlGrd.vdcEditStudyTable td.vdcEditStudyCol2 span.iceOutTxt, .icePnlGrd.vdcEditStudyTable td.vdcEditStudyCol2 span.iceOutTxt.dvnInlineHelpLabel {display:block}
 .vdcEditStudyInnerTable div{white-space:nowrap}
-.vdcEditStudyInnerTable input, .vdcEditStudyInnerTable textarea {display:block;}
+.vdcEditStudyInnerTable input, .vdcEditStudyInnerTable textarea, .vdcEditStudyInnerTable select{display:block}
+.vdcEditStudyInnerTable input[type=checkbox]{display:inline}
+.vdcEditStudyInnerTable label {display:inline;font-weight:normal}
 .vdcEditStudyInnerTable textarea{width:auto}
 .vdcEditStudyInnerTable td.vdcEditFilesColB img.iceGphImg{display:inline;vertical-align:middle}
 .vdcEditStudyInnerTable td.vdcEditFilesColB span.iceOutTxt{margin-left:.5em;display:inline}

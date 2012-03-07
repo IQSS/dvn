@@ -219,13 +219,13 @@
                               </ice:inputTextarea>
                               <ice:message styleClass="errorMessage" for="input_relatedPublicationText"/>
                             </div>                                
-                            <div jsfc="ice:panelGroup">
-                                <ice:selectBooleanCheckbox  binding="#{EditStudyPage.inputRelPublicationReplicationData}" value="#{currentRow.replicationData}" id="input_relatedPublicationReplicationData"/>
+                            <div jsfc="ice:panelGroup" styleClass="dvnFormPadding">
+                                <ice:selectBooleanCheckbox binding="#{EditStudyPage.inputRelPublicationReplicationData}" value="#{currentRow.replicationData}" id="input_relatedPublicationReplicationData"/>
                                 <ice:outputLabel value="Replication Data for Original Publication (This will apply &quot;Replication Data for:&quot; to your title)" for="input_relatedPublicationReplicationData"/>
                             </div>
                             <div jsfc="ice:panelGroup" styleClass="vdcEditStudyFieldFloat1">
                               <ice:outputText styleClass="dvnInlineHelpLabel dvnInlineHelpTip" value="#{editstudybundle.relatedPublicationIDTypeLabel}" title="#{editstudybundle.relatedPublicationIDTypeHelpHeading} - #{editstudybundle.relatedPublicationIDTypeHelp}"/>
-                              <ice:selectOneMenu validator="#{EditStudyPage.validateStudyPublication}"  binding="#{EditStudyPage.inputRelPublicationIDType}" id="input_relatedPublicationIDType" value="#{currentRow.idType}" required="#{EditStudyPage.studyMap[sfc.relatedPublications].required}" requiredMessage="This field is required.">
+                              <ice:selectOneMenu validator="#{EditStudyPage.validateStudyPublication}" binding="#{EditStudyPage.inputRelPublicationIDType}" id="input_relatedPublicationIDType" value="#{currentRow.idType}" required="#{EditStudyPage.studyMap[sfc.relatedPublications].required}" requiredMessage="This field is required.">
                                 <f:selectItem itemLabel="Select" itemValue=""/>
                                 <f:selectItem itemLabel="DOI" itemValue="DOI"/>
                                 <f:selectItem itemLabel="arXiv" itemValue="ArXiv"/>
@@ -237,7 +237,7 @@
                               <ice:inputText validator="#{EditStudyPage.validateStudyPublication}" binding="#{EditStudyPage.inputRelPublicationIDNumber}" id="input_relatedPublicationIDNumber" value="#{currentRow.idNumber}" required="#{EditStudyPage.studyMap[sfc.relatedPublications].required and EditStudyPage.validateRequired}"  requiredMessage="This field is required." maxlength="255"/>
                               <ice:message styleClass="errorMessage" for="input_relatedPublicationIDNumber"/>
                             </div>                            
-                            <div jsfc="ice:panelGroup" styleClass="vdcEditStudyFieldFloat3 vdcEditStudyGroupField ">
+                            <div jsfc="ice:panelGroup" styleClass="vdcEditStudyFieldFloat3 vdcEditStudyGroupField">
                               <ice:outputText styleClass="dvnInlineHelpLabel dvnInlineHelpTip" value="#{editstudybundle.relatedPublicationURLLabel}" title="#{editstudybundle.relatedPublicationURLHeading} - #{editstudybundle.relatedPublicationURLHelp}"/>
                               <ice:inputText id="input_relatedPublicationURL"
                                              validator="#{EditStudyPage.validateStudyPublication}"
@@ -1573,7 +1573,7 @@
                             <f:selectItem itemLabel="No Value" itemValue=""/>
                             <f:selectItems value="#{customFieldsDataModel[0].controlledVocabulary.selectItems}"/>
                             <f:attribute name="sf_id" value="#{customFieldsDataModel[0].studyField.id}"/>
-                        </ice:selectOneMenu>  
+                        </ice:selectOneMenu>
                         <ice:message styleClass="errorMessage" for="custom_SelectOne"/>
                         <ice:selectManyListbox immediate="false"  id="custom_SelectMany"
                                                valueChangeListener="#{EditStudyPage.changeMultiValCV}" 

@@ -362,14 +362,7 @@
                                     <script type="text/javascript">
                                       // <![CDATA[
                                         jQuery(document).ready(function(){
-                                            jQuery("a.dvnGraphResultsVizLineEditLink").click(function() {
-                                                jQuery(this).parent().prev().addClass("edit");
-                                                return false;
-                                            });
-                                            jQuery(".dvnGraphResultsVizLineEditBlock input:submit").click(function() {
-                                                jQuery(this).parents(".dvnGraphResultsVizLineLabelBlock").removeClass("edit");
-                                                return false;
-                                            });
+                                            initGraphResultsVizLineEdit();
                                         });
                                         // ]]>
                                     </script>
@@ -1163,8 +1156,19 @@ function drawVisualization() {
          }
     }
 
+function initGraphResultsVizLineEdit(){
+    jQuery("a.dvnGraphResultsVizLineEditLink").click(function() {
+        jQuery(this).parent().prev().addClass("edit");
+        return false;
+    });
+    jQuery(".dvnGraphResultsVizLineEditBlock input:submit").click(function() {
+        jQuery(this).parents(".dvnGraphResultsVizLineLabelBlock").removeClass("edit");
+        return false;
+    });
+}
+
 function deleteLine(){
-    setTimeout(function(){drawVisualization();}, 1500);
+    setTimeout(function(){drawVisualization();initGraphResultsVizLineEdit();}, 1500);
 }
 
 function updateStartYear(){

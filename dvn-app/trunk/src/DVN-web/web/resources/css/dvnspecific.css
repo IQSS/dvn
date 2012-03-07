@@ -46,6 +46,7 @@ div.dvnOptionsTableLicense{padding-top:.5em}
 .dvnStudyTemplateDCMBlock{border-bottom:1px solid #DADEE0; padding-bottom:1em;}
 .dvnStudyTemplateDCMBlock table.icePnlGrd{padding:4px;background:#FAF4E0;}
 div.icePnlPop#templateForm\:controlledVocabularyPopup{width:500px}
+.dvnControlledVocabularyValuesBlock span.iceOutTxt{display:block}
 .vdcEditStudyTable{border:0;margin:0}
 .vdcEditStudyTable tr{border-width:0 0 1px 0;padding:0}
 .vdcEditStudyTable td{border-bottom:1px solid #dadee0;border-width:0 0 1px 0;padding:4px 0}

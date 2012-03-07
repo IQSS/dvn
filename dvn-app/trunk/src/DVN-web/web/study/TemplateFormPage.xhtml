@@ -2614,10 +2614,10 @@
                         <div class="dvnFormPadding">
                             <ice:outputText value="Description: #{TemplateFormPage.popupControlledVocabulary.description}" rendered="#{!empty TemplateFormPage.popupControlledVocabulary}"/>
                         </div>
-                        <div class="dvnFormPadding">
-                            <ice:selectManyListbox id="controlledVocabSelectManyList" rendered="#{!empty TemplateFormPage.popupControlledVocabulary}">                                                                    
-                                <f:selectItems value="#{TemplateFormPage.getControlledVocabularyValueSelectItems(TemplateFormPage.popupControlledVocabulary)}"/>
-                            </ice:selectManyListbox>
+                        <div jsfc="ice:panelGroup" styleClass="dvnControlledVocabularyValuesBlock dvnFormPadding" rendered="#{!empty TemplateFormPage.popupControlledVocabulary}">
+                            <ui:repeat value="#{TemplateFormPage.popupControlledVocabulary.controlledVocabularyValues}" var="item">
+                                <ice:outputText value="#{item.value}"/>
+                            </ui:repeat>
                         </div>
                         <div jsfc="ice:panelGroup" styleClass="dvnFormPadding dvnFormMargin">
                             <ice:commandButton id="autoCentPopupApply" immediate="true" actionListener="#{TemplateFormPage.savePopup}" value="Save"/>

@@ -2509,7 +2509,7 @@ public class TemplateFormPage extends VDCBaseBean implements java.io.Serializabl
                         break;
                     }                
                 }            
-                System.out.println("GPD: new field added: " + studyField.getName() + ": " + studyField.getStudyFieldValues().size());
+
                 Object[] row = new Object[4];
                 row[0] = templateField;
                 row[1] = getCustomValuesDataModel(studyField);
@@ -2587,7 +2587,7 @@ public class TemplateFormPage extends VDCBaseBean implements java.io.Serializabl
         
         // set the new study field in the metadata
         template.getMetadata().getStudyFields().add(newSF);
-        System.out.println("GPD: new field added: " + newSF.getName() + ": " + newSF.getStudyFieldValues().size());
+
         // And add the new template field
         TemplateField newTF = new TemplateField();
         newTF.setTemplate(template);

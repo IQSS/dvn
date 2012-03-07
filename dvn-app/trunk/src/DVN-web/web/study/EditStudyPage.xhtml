@@ -1561,20 +1561,25 @@
                         </ice:column>
 
  
-                        <ice:selectOneMenu immediate="false" 
+                        <ice:selectOneMenu immediate="false" id="custom_SelectOne"
                                            value="#{customFieldsDataModel[0].studyField.studyFieldValueSingleString}" 
                                            valueChangeListener="#{EditStudyPage.changeSingleValCV}"                                          
-                                        rendered ="#{!customFieldsDataModel[0].allowMultiples}">
+                                        rendered ="#{!customFieldsDataModel[0].allowMultiples}"
+                                        required="#{customFieldsDataModel[0].required and EditStudyPage.validateRequired}"  requiredMessage="This field is required." >
                             <f:selectItem itemLabel="No Value" itemValue=""/>
                             <f:selectItems value="#{customFieldsDataModel[0].controlledVocabulary.selectItems}"/>
                             <f:attribute name="sf_id" value="#{customFieldsDataModel[0].studyField.id}"/>
+                            <ice:message styleClass="errorMessage" for="custom_SelectOne"/>
                         </ice:selectOneMenu>  
-                        <ice:selectManyListbox immediate="false" 
+                        <ice:selectManyListbox immediate="false"  id="custom_SelectMany"
                                                valueChangeListener="#{EditStudyPage.changeMultiValCV}" 
                                                value="#{customFieldsDataModel[0].studyField.studyFieldValueStrings}"
+                                               required="#{customFieldsDataModel[0].required and EditStudyPage.validateRequired}"  requiredMessage="This field is required."
                                                rendered ="#{customFieldsDataModel[0].allowMultiples }">
+                            <f:selectItem itemLabel="" itemValue=""/>
                             <f:selectItems value="#{customFieldsDataModel[0].controlledVocabulary.selectItems}"/>
                             <f:attribute name="sf_id" value="#{customFieldsDataModel[0].studyField.id}"/>
+                            <ice:message styleClass="errorMessage" for="custom_SelectMany"/>
                         </ice:selectManyListbox>
                           
                      </ice:panelGrid>

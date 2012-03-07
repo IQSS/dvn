@@ -326,7 +326,9 @@
                   <ice:graphicImage value="/resources/images/icon_recommended.gif" rendered="#{TemplateFormPage.studyMap[sfc.productionDate].recommended}"/>
                 </ice:column>
                 <ice:column>
-                  <ice:inputText id="input_productionDate" styleClass="formDateFormat" value="#{TemplateFormPage.template.metadata.productionDate}"></ice:inputText>
+                  <ice:inputText id="input_productionDate" styleClass="formDateFormat" value="#{TemplateFormPage.template.metadata.productionDate}">
+                                 <f:validator validatorId="DateValidator"/>
+                      </ice:inputText>
                   <ice:outputText styleClass="vdcEditStudyFormatExample" value="#{editstudybundle.dateFormatDescription}"/>
                   <ice:message styleClass="errorMessage" for="input_productionDate"><f:param name="x" value="Production Date:"/> </ice:message>
                 </ice:column>
@@ -606,7 +608,10 @@
                   <ice:graphicImage value="/resources/images/icon_recommended.gif" rendered="#{TemplateFormPage.studyMap[sfc.distributionDate].recommended}"/>
                 </ice:column>
                 <ice:column id="groupPanel26" styleClass="#{TemplateFormPage.studyMap[sfc.distributionDate].templateField.fieldInputLevelString}">
-                  <ice:inputText id="input_distributionDate" styleClass="formDateFormat" value="#{TemplateFormPage.template.metadata.distributionDate}"></ice:inputText>
+                  <ice:inputText id="input_distributionDate" styleClass="formDateFormat" value="#{TemplateFormPage.template.metadata.distributionDate}">
+                                 <f:validator validatorId="DateValidator"/>
+                </ice:inputText>
+
                   <ice:outputText styleClass="vdcEditStudyFormatExample" value="#{editstudybundle.dateFormatDescription}"/>
                   <ice:message styleClass="errorMessage" for="input_distributionDate"/>
                 </ice:column>
@@ -725,7 +730,10 @@
                   </div>
                   <div jsfc="ice:panelGroup" styleClass="vdcEditStudyGroupField #{TemplateFormPage.studyMap[sfc.versionDate].templateField.fieldInputLevelString}">
                     <ice:outputText styleClass="dvnInlineHelpLabel dvnInlineHelpTip" value="#{editstudybundle.seriesVersionDateLabel}" title="#{editstudybundle.seriesVersionDateHelpHeading} - #{editstudybundle.seriesVersionDateHelp}"/>
-                    <ice:inputText binding="#{TemplateFormPage.inputVersionDate}" validator="#{TemplateFormPage.validateVersion}" id="input_versionDate" styleClass="formDateFormat" value="#{TemplateFormPage.template.metadata.versionDate}"></ice:inputText>
+                    <ice:inputText binding="#{TemplateFormPage.inputVersionDate}" validator="#{TemplateFormPage.validateVersion}" 
+                                   id="input_versionDate" styleClass="formDateFormat" value="#{TemplateFormPage.template.metadata.versionDate}">
+                                   <f:validator validatorId="DateValidator"/>
+                    </ice:inputText>
                     <ice:outputText styleClass="vdcEditStudyFormatExample" value="#{editstudybundle.dateFormatDescription}"/>
                     <ice:message styleClass="errorMessage" for="input_versionDate"/>
                   </div>
@@ -780,7 +788,10 @@
                         </div>
                         <div jsfc="ice:panelGroup" styleClass="vdcEditStudyGroupField #{TemplateFormPage.studyMap[sfc.abstractDate].templateField.fieldInputLevelString}">
                           <ice:outputText styleClass="dvnInlineHelpLabel dvnInlineHelpTip" value="#{editstudybundle.abstractDateLabel}" title="#{editstudybundle.abstractDateHelpHeading} - #{editstudybundle.abstractDateHelp}"/>
-                          <ice:inputText binding="#{TemplateFormPage.inputAbstractDate}" validator="#{TemplateFormPage.validateStudyAbstract}" id="input_abstractDate" styleClass="formDateFormat" value="#{currentRow.date}"></ice:inputText>
+                          <ice:inputText binding="#{TemplateFormPage.inputAbstractDate}" validator="#{TemplateFormPage.validateStudyAbstract}" 
+                                         id="input_abstractDate" styleClass="formDateFormat" value="#{currentRow.date}">
+                                         <f:validator validatorId="DateValidator"/>
+                              </ice:inputText>
                           <ice:outputText styleClass="vdcEditStudyFormatExample" value="#{editstudybundle.dateFormatDescription}"/>
                           <ice:message styleClass="errorMessage" for="input_abstractDate"/>
                         </div>
@@ -1479,6 +1490,7 @@
                                          value="#{customValuesDataModel[0].strValue}">
                                 <f:validator validatorId="DateValidator"/>
                           </ice:inputText>   
+                          <ice:outputText value="#{editstudybundle.dateFormatDescription}" rendered="#{customFieldsDataModel[0].studyField.fieldType == 'date'}"/>
                           <ice:message styleClass="errorMessage" for="input_genericDate"/>
                           <ice:inputTextarea cols="90" rows="4"
                                                id="input_TextArea"
@@ -1486,7 +1498,7 @@
                                                rendered="#{customFieldsDataModel[0].studyField.fieldType == 'textArea'}">
                           </ice:inputTextarea>
                           <ice:message styleClass="errorMessage" for="input_TextArea"/>
-                          <ice:outputText value="#{editstudybundle.dateFormatDescription}" rendered="#{customFieldsDataModel[0].studyField.fieldType == 'date'}"/>
+                
                     </ice:column>
                     <ice:column>
                         <ice:commandButton rendered="#{customFieldsDataModel[0].allowMultiples}"

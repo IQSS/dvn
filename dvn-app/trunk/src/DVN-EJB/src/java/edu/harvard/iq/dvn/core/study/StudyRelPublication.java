@@ -26,15 +26,8 @@
  * To change this template, choose Tools | Template Manager
  * and open the template in the editor.
  */
-
 package edu.harvard.iq.dvn.core.study;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.ManyToOne;
-import javax.persistence.SequenceGenerator;
-import javax.persistence.Version;
 import javax.persistence.*;
 
 /**
@@ -43,87 +36,57 @@ import javax.persistence.*;
  */
 @Entity
 public class StudyRelPublication implements java.io.Serializable, MetadataFieldGroup {
-    
+
     /** Creates a new instance of StudyGrant */
     public StudyRelPublication() {
     }
-
-    /**
-     * Holds value of property id.
-     */
-
-   
-    
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+    @Version
+    private Long version;
+    @ManyToOne
+    @JoinColumn(nullable = false)
+    private Metadata metadata;
+    @Column(columnDefinition = "TEXT")
+    private String text;
+    private String idType;
+    private String idNumber;
+    private String url;
+    private boolean replicationData;
+    private int displayOrder;
 
-    /**
-     * Getter for property id.
-     * @return Value of property id.
-     */
-    public Long getId() {
-        return this.id;
+    public int getDisplayOrder() {
+        return displayOrder;
     }
 
-    /**
-     * Setter for property id.
-     * @param id New value of property id.
-     */
+    public void setDisplayOrder(int displayOrder) {
+        this.displayOrder = displayOrder;
+    }
+
+    public Long getId() {
+        return id;
+    }
 
     public void setId(Long id) {
         this.id = id;
     }
 
-    /**
-     * Holds value of property text.
-     */
-    @Column(columnDefinition="TEXT")
-    private String text;
-
-    /**
-     * Getter for property value.
-     * @return Value of property value.
-     */
-    public String getText() {
-        return this.text;
+    public String getIdNumber() {
+        return idNumber;
     }
 
-    /**
-     * Setter for property value.
-     * @param value New value of property value.
-     */
-    public void setText(String text) {
-        this.text = text;
+    public void setIdNumber(String idNumber) {
+        this.idNumber = idNumber;
     }
 
-    /**
-     * Holds value of property displayOrder.
-     */
-    private int displayOrder;
-
-    /**
-     * Getter for property order.
-     * @return Value of property order.
-     */
-    public int getDisplayOrder() {
-        return this.displayOrder;
+    public String getIdType() {
+        return idType;
     }
 
-    /**
-     * Setter for property order.
-     * @param order New value of property order.
-     */
-    public void setDisplayOrder(int displayOrder) {
-        this.displayOrder = displayOrder;
+    public void setIdType(String idType) {
+        this.idType = idType;
     }
-
-     /**
-     * Holds value of property metadata.
-     */
-    @ManyToOne
-    @JoinColumn(nullable=false)
-    private Metadata metadata;
 
     public Metadata getMetadata() {
         return metadata;
@@ -132,32 +95,51 @@ public class StudyRelPublication implements java.io.Serializable, MetadataFieldG
     public void setMetadata(Metadata metadata) {
         this.metadata = metadata;
     }
-    
-      /**
-     * Holds value of property version.
-     */
-    @Version
-    private Long version;
 
-    /**
-     * Getter for property version.
-     * @return Value of property version.
-     */
-    public Long getVersion() {
-        return this.version;
+    public boolean isReplicationData() {
+        return replicationData;
     }
 
-    /**
-     * Setter for property version.
-     * @param version New value of property version.
-     */
+    public void setReplicationData(boolean replicationData) {
+        this.replicationData = replicationData;
+    }
+
+    public String getText() {
+        return text;
+    }
+
+    public void setText(String text) {
+        this.text = text;
+    }
+
+    public String getUrl() {
+        return url;
+    }
+
+    public void setUrl(String url) {
+        this.url = url;
+    }
+
+    public Long getVersion() {
+        return version;
+    }
+
     public void setVersion(Long version) {
         this.version = version;
     }
+    
+    
+
+
      public boolean isEmpty() {
-        return ((text==null || text.trim().equals("")));
-    }
-  public int hashCode() {
+        return ((text==null || text.trim().equals(""))
+            && (!replicationData)
+            && (idType==null || idType.trim().equals(""))
+            && (idNumber==null || idNumber.trim().equals(""))                
+            && (url==null || url.trim().equals("")));
+    }        
+
+    public int hashCode() {
         int hash = 0;
         hash += (this.id != null ? this.id.hashCode() : 0);
         return hash;
@@ -168,8 +150,10 @@ public class StudyRelPublication implements java.io.Serializable, MetadataFieldG
         if (!(object instanceof StudyRelPublication)) {
             return false;
         }
-        StudyRelPublication other = (StudyRelPublication)object;
-        if (this.id != other.id && (this.id == null || !this.id.equals(other.id))) return false;
+        StudyRelPublication other = (StudyRelPublication) object;
+        if (this.id != other.id && (this.id == null || !this.id.equals(other.id))) {
+            return false;
+        }
         return true;
     }
 }

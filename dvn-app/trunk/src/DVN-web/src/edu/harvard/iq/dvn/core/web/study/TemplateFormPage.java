@@ -2563,7 +2563,7 @@ public class TemplateFormPage extends VDCBaseBean implements java.io.Serializabl
         }
         
         for (TemplateField tfTest : template.getTemplateFields()) {
-            if (tfTest.getStudyField().getName().equals(fieldName)) {
+            if (tfTest.getStudyField().getName().toUpperCase().equals(fieldName.toUpperCase())) {
                 getVDCRenderBean().getFlash().put("customFieldWarningMessage", "New field name may not match an existing field name.");
                 return "";
             }

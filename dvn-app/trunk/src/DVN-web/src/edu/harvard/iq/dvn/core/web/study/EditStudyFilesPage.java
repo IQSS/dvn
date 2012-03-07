@@ -108,13 +108,6 @@ public class EditStudyFilesPage extends VDCBaseBean implements java.io.Serializa
         metadata.getStudyVersion().setVersionNote(versionNotesPopup.getVersionNote());
         versionNotesPopup.setShowPopup(false);
 
-
-        if (!StringUtil.isEmpty(metadata.getReplicationFor())  ) {
-            if (!metadata.getTitle().startsWith("Replication data for:")) {
-                metadata.setTitle("Replication data for: "+metadata.getTitle());
-            }
-        }
-
         editStudyFilesService.save(getVDCRequestBean().getCurrentVDCId(),getVDCSessionBean().getLoginBean().getUser().getId());
 
         return "/study/StudyPage?faces-redirect=true&studyId=" + study.getId()+ "&versionNumber=" + metadata.getStudyVersion().getVersionNumber() + "&tab=files&vdcId=" + getVDCRequestBean().getCurrentVDCId();

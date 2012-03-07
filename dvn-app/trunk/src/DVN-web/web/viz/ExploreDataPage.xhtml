@@ -99,6 +99,7 @@
         </div>
 
         <div class="dvnGraphForm">
+
             <div class="dvnGraphIndicatorBlock">
 
                 <div jsfc="ice:panelGroup" styleClass="dvnGraphIndicatorSelect" rendered="#{!empty ExploreDataPage.selectMeasureGroupTypes}">
@@ -437,7 +438,11 @@
                 </f:facet>
                 <f:facet name="body">
                     <ice:panelGroup styleClass="popupBody">
-                        #{ExploreDataPage.variableLabel}
+                           <ice:outputText id="test"
+                            escape="false"
+                            value="#{ExploreDataPage.variableLabel}"
+                            />
+                        
                         <br/>
                     </ice:panelGroup>
                 </f:facet>

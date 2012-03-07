@@ -353,7 +353,7 @@ public class Indexer implements java.io.Serializable  {
                 addText(1.0f, doc, "studyGrantNumber", elem.getNumber());
                 addText(1.0f, doc, "studyGrantNumberAgency", elem.getAgency());
             }
-            addText(1.0f, doc, "replicationFor", metadata.getReplicationFor());
+            //addText(1.0f, doc, "replicationFor", metadata.getReplicationFor());
             List<StudyGeoBounding> studyGeoBounding = metadata.getStudyGeoBoundings();
             for (Iterator it = studyGeoBounding.iterator(); it.hasNext();) {
                 StudyGeoBounding elem = (StudyGeoBounding) it.next();

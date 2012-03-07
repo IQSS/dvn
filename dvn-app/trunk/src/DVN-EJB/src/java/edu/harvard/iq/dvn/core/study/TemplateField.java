@@ -29,7 +29,6 @@
 
 package edu.harvard.iq.dvn.core.study;
 
-import edu.harvard.iq.dvn.core.web.study.TemplateFieldControlledVocabulary;
 import java.util.ArrayList;
 import java.util.List;
 import javax.faces.model.SelectItem;
@@ -170,19 +169,6 @@ public class TemplateField implements java.io.Serializable {
      */
     public void setStudyField(StudyField studyField) {
         this.studyField = studyField;
-    }
-
-
-    @OneToMany (mappedBy="templateField", cascade={ CascadeType.REMOVE, CascadeType.MERGE,CascadeType.PERSIST})
-    @OrderBy ("strValue")
-    private List<TemplateFieldControlledVocabulary> templateFieldControlledVocabulary;
-
-    public List<TemplateFieldControlledVocabulary> getTemplateFieldControlledVocabulary() {
-        return templateFieldControlledVocabulary;
-    }
-
-    public void setTemplateFieldControlledVocabulary(List<TemplateFieldControlledVocabulary> templateFieldControlledVocabulary) {
-        this.templateFieldControlledVocabulary = templateFieldControlledVocabulary;
     }
 
 

@@ -32,7 +32,6 @@ package edu.harvard.iq.dvn.core.study;
 import edu.harvard.iq.dvn.core.vdc.VDC;
 import edu.harvard.iq.dvn.core.vdc.VDCNetwork;
 import edu.harvard.iq.dvn.core.vdc.VDCNetworkServiceLocal;
-import edu.harvard.iq.dvn.core.web.study.TemplateFieldControlledVocabulary;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;

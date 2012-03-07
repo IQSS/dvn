@@ -2592,7 +2592,6 @@ public class TemplateFormPage extends VDCBaseBean implements java.io.Serializabl
         TemplateField newTF = new TemplateField();
         newTF.setTemplate(template);
         newTF.setStudyField(newSF);
-        newTF.setTemplateFieldControlledVocabulary(new ArrayList());
         newTF.setFieldInputLevelString("recommended"); // make all new fields recommended at creation       
         
         template.getTemplateFields().add(newTF);

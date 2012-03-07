@@ -42,7 +42,7 @@ import java.util.List;
 @Entity
 public class Template implements java.io.Serializable {
     @OneToMany (mappedBy="template",cascade={CascadeType.REMOVE, CascadeType.MERGE, CascadeType.PERSIST})
-    @OrderBy("dcmSortOrder")
+    @OrderBy("displayOrder")
     private List<TemplateField> templateFields;
     
     
@@ -67,7 +67,7 @@ public class Template implements java.io.Serializable {
 
             tf.setControlledVocabulary(sourceField.getControlledVocabulary());
             tf.setFieldInputLevelString(sourceField.getFieldInputLevelString());
-            tf.setdcmSortOrder(sourceField.getDcmSortOrder());
+            tf.setDisplayOrder(sourceField.getDisplayOrder());
 
             templateFields.add(tf);
         }

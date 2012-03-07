@@ -197,7 +197,7 @@ public class TemplateFormPage extends VDCBaseBean implements java.io.Serializabl
             TemplateField tf = it.next();
             StudyMapValue smv = new StudyMapValue();
             smv.setTemplateFieldUI(new TemplateFieldUI(tf));
-            if(!tf.getStudyField().isDcmField()){
+            if(!tf.getStudyField().isCustomField()){
                 studyMap.put(tf.getStudyField().getName(),smv);              
             }           
         } 
@@ -990,8 +990,8 @@ public class TemplateFormPage extends VDCBaseBean implements java.io.Serializabl
         int i=0;
         // set order of custom fields
         for (TemplateField tf : template.getTemplateFields()) {
-            if (tf.getStudyField().isDcmField()) {
-                tf.setdcmSortOrder(new Long(i++));
+            if (tf.getStudyField().isCustomField()) {
+                tf.setDisplayOrder(i++);
             }
         }
         
@@ -2502,7 +2502,7 @@ public class TemplateFormPage extends VDCBaseBean implements java.io.Serializabl
             TemplateField templateField = template.getTemplateFields().get(i);
             StudyField studyField = null;
 
-            if (templateField.getStudyField().isDcmField()) {
+            if (templateField.getStudyField().isCustomField()) {
                 for (StudyField sf : template.getMetadata().getStudyFields()) {
                     if (sf.getName().equals(templateField.getStudyField().getName())) { 
                         studyField = sf;
@@ -2573,7 +2573,7 @@ public class TemplateFormPage extends VDCBaseBean implements java.io.Serializabl
         StudyField newSF = new StudyField();
         newSF.setName(fieldName);
         newSF.setDescription(fieldDescription);
-        newSF.setDcmField(true);
+        newSF.setCustomField(true);
         newSF.setFieldType(fieldType);
         newSF.setAllowMultiples(allowMultiples);        
        
@@ -2624,7 +2624,7 @@ public class TemplateFormPage extends VDCBaseBean implements java.io.Serializabl
         }
     }        
 
-    public void addDcmRow(ActionEvent ae) {
+    public void addCustomRow(ActionEvent ae) {
 
         HtmlDataTable dataTable = (HtmlDataTable) ae.getComponent().getParent().getParent();
         Object[] data = (Object[]) ((ListDataModel) dataTable.getValue()).getRowData();
@@ -2636,7 +2636,7 @@ public class TemplateFormPage extends VDCBaseBean implements java.io.Serializabl
         ((List) data[1]).add(dataTable.getRowIndex() + 1, newElem);
     }
 
-    public void removeDcmRow(ActionEvent ae) {
+    public void removeCustomRow(ActionEvent ae) {
 
         HtmlDataTable dataTable = (HtmlDataTable) ae.getComponent().getParent().getParent();
         if (dataTable.getRowCount() > 1) {
@@ -2672,7 +2672,7 @@ public class TemplateFormPage extends VDCBaseBean implements java.io.Serializabl
     
     
     
-    public void changeFieldInputValueDCM(ValueChangeEvent event) {
+    public void changeFieldInputValueCustom(ValueChangeEvent event) {
         Object[] fieldsRowData = getCustomFieldsRowData( customFieldsPanelSeries.getRowIndex() );
         TemplateField changeValue = (TemplateField) fieldsRowData[0];        
 

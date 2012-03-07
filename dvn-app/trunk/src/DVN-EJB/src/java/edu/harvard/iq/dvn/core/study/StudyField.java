@@ -46,7 +46,7 @@ public class StudyField implements Serializable {
     private String name;
     private String title;
     private String description;
-    private boolean dcmField;
+    private boolean customField;
     private String fieldType;
     
    
@@ -99,12 +99,12 @@ public class StudyField implements Serializable {
         this.description = description;
     }
     
-    public boolean isDcmField() {
-        return dcmField;
+    public boolean isCustomField() {
+        return customField;
     }
 
-    public void setDcmField(boolean dcmField) {
-        this.dcmField = dcmField;
+    public void setCustomField(boolean customField) {
+        this.customField = customField;
     }
     
         

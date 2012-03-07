@@ -218,22 +218,22 @@ public class TemplateField implements java.io.Serializable {
         /**
      * Holds value of property allow multiples.
      */
-    private Long dcmSortOrder; 
+    private int displayOrder; 
 
     /**
      * Getter for property allow multiples.
      * @return Value of property allow multiples.
      */
-    public Long getDcmSortOrder() {
-        return this.dcmSortOrder;
+    public int getDisplayOrder() {
+        return this.displayOrder;
     }
 
     /**
      * Setter for property allow multiples.
      * @param version New value of property allow multiples.
      */
-    public void setdcmSortOrder(Long dcmSortOrder) {
-        this.dcmSortOrder = dcmSortOrder;
+    public void setDisplayOrder(int displayOrder) {
+        this.displayOrder = displayOrder;
     }
     
     public boolean isRequired() {

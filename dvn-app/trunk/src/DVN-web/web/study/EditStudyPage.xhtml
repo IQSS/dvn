@@ -1533,13 +1533,11 @@
                         <ice:column>
                           <ice:commandButton rendered ="#{customFieldsDataModel[0].allowMultiples and empty(customFieldsDataModel[0].templateFieldControlledVocabulary)}" 
                                              partialSubmit="true" image="/resources/images/icon_add.gif" 
-                                             actionListener="#{EditStudyPage.addDcmRow}">
-                            <f:attribute name="dcmSortOrder" value="#{customFieldsDataModel[0].dcmSortOrder}"/>
+                                             actionListener="#{EditStudyPage.addCustomRow}">
                           </ice:commandButton>       
                             <ice:commandButton partialSubmit="true" 
                                      rendered="#{customValuesDataModel[1].size() > 1 and empty(customFieldsDataModel[0].templateFieldControlledVocabulary)}" 
-                                    image="/resources/images/icon_remove.gif" actionListener="#{EditStudyPage.removeDcmRow}"/>
-                            <f:attribute name="dcmSortOrder" value="#{customFieldsDataModel[0].dcmSortOrder}"/>
+                                    image="/resources/images/icon_remove.gif" actionListener="#{EditStudyPage.removeCustomRow}"/>
                         </ice:column>
                       </ice:dataTable>
                       <ice:panelGrid cellpadding="0" cellspacing="0" columns="4" width="100%"

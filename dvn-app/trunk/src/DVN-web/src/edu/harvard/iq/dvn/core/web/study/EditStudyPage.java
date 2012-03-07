@@ -310,7 +310,7 @@ public class EditStudyPage extends VDCBaseBean implements java.io.Serializable  
         studyMap = new HashMap();
         for (Iterator<TemplateField> it = study.getTemplate().getTemplateFields().iterator(); it.hasNext();) {
             TemplateField tf = it.next();
-            if (!tf.getStudyField().isDcmField()) {
+            if (!tf.getStudyField().isCustomField()) {
                 StudyMapValue smv = new StudyMapValue();
                 smv.setTemplateFieldUI(new TemplateFieldUI(tf));
                 studyMap.put(tf.getStudyField().getName(), smv);
@@ -444,31 +444,12 @@ public class EditStudyPage extends VDCBaseBean implements java.io.Serializable  
         
     }
 
-    private HtmlDataTable dcmFieldTable;
-
-    /**
-     * Getter for property dataTableNotes.
-     * @return Value of property dataTableNotes.
-     */
-    public HtmlDataTable getDcmFieldTable() {
-        return this.dcmFieldTable;
-    }
-
-    /**
-     * Setter for property dataTableNotes.
-     * @param dataTableNotes New value of property dataTableNotes.
-     */
-    public void setDcmFieldTable(HtmlDataTable dcmFieldTable) {
-        this.dcmFieldTable = dcmFieldTable;
-    }
     
-    public void addDcmRow(ActionEvent ae) {
+    public void addCustomRow(ActionEvent ae) {
 
 
         HtmlDataTable dataTable = (HtmlDataTable) ae.getComponent().getParent().getParent();
         
-
-
         Object[] data = (Object[]) ((ListDataModel) dataTable.getValue()).getRowData();
 
         StudyFieldValue newElem = new StudyFieldValue();
@@ -478,7 +459,7 @@ public class EditStudyPage extends VDCBaseBean implements java.io.Serializable  
         ((List) data[1]).add(dataTable.getRowIndex() + 1, newElem);
     }
 
-    public void removeDcmRow(ActionEvent ae) {
+    public void removeCustomRow(ActionEvent ae) {
 
         HtmlDataTable dataTable = (HtmlDataTable) ae.getComponent().getParent().getParent();
          System.out.println("datatable in remove " + dataTable );
@@ -705,26 +686,7 @@ public class EditStudyPage extends VDCBaseBean implements java.io.Serializable  
         return isGroupEmpty(sf.getStudyFieldValues());
     }     
 
-        /**
-     * Holds value of property dataTableOtherIds.
-     */
-    private HtmlDataTable dataTableDCMFieldValues;
-    
-    /**
-     * Getter for property dataTableOtherIds.
-     * @return Value of property dataTableOtherIds.
-     */
-    public HtmlDataTable getDataTableDCMFieldValues() {
-        return this.dataTableDCMFieldValues;
-    }
-    
-    /**
-     * Setter for property dataTableOtherIds.
-     * @param dataTableOtherIds New value of property dataTableOtherIds.
-     */
-    public void setDataTableDCMFieldValues(HtmlDataTable dataTableDCMFieldValues) {
-        this.dataTableDCMFieldValues = dataTableDCMFieldValues;
-    }
+
     private void removeEmptyRows() {
         // Remove empty collection rows
         
@@ -1197,7 +1159,7 @@ public class EditStudyPage extends VDCBaseBean implements java.io.Serializable  
         String retString = "optional";
 
             for (TemplateField tf : study.getTemplate().getTemplateFields()) {
-                if (tf.getStudyField().isDcmField()) {
+                if (tf.getStudyField().isCustomField()) {
                     if (tf.isRecommended()) {
                         return "recommended";
                     }
@@ -3064,7 +3026,7 @@ public class EditStudyPage extends VDCBaseBean implements java.io.Serializable  
             TemplateField templateField = study.getTemplate().getTemplateFields().get(i);
             StudyField studyField = null;
 
-            if (templateField.getStudyField().isDcmField()) {
+            if (templateField.getStudyField().isCustomField()) {
                 for (StudyField sf : metadata.getStudyFields()) {
                     if (sf.getName().equals(templateField.getStudyField().getName())) { 
                         studyField = sf;

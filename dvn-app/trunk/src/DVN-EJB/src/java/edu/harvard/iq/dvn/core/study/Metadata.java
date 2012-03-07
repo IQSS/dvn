@@ -2895,7 +2895,7 @@ public class Metadata implements java.io.Serializable {
             Template templateIn = this.getTemplate() != null ? this.getTemplate() : this.getStudyVersion().getStudy().getTemplate();
             for (TemplateField tf : templateIn.getTemplateFields()) {
                 StudyField sf = tf.getStudyField();
-                if (sf.isDcmField()) {
+                if (sf.isCustomField()) {
                     List sfvList = new ArrayList();
                     // now iterate through values and map accordingly
                     if (studyFieldValues != null){

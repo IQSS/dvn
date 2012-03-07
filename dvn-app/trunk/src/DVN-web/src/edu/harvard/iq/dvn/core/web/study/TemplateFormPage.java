@@ -989,6 +989,7 @@ public class TemplateFormPage extends VDCBaseBean implements java.io.Serializabl
 
         int i=0;
         // set order of custom fields
+        // (note: standard ddi fields all have display order of -1, as they currently cannot be moved.)
         for (TemplateField tf : template.getTemplateFields()) {
             if (tf.getStudyField().isCustomField()) {
                 tf.setDisplayOrder(i++);

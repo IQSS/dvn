@@ -51,16 +51,15 @@ a.dvninlinelink{margin-left:2em;}
 .iceOutConStatActv,.iceOutConStatCaution,.iceOutConStatDisconnect{width:25px;height:25px}
 /* HEADER */
 .dvn_headerTitle{overflow:hidden;text-align:left}
-.dvn_headerTitleLarge{text-align:left}
-.dvn_headerTitleLarge a:link,.dvn_headerTitleLarge a:visited,.dvn_headerTitleLarge a:hover,.dvn_headerTitleLarge a:active, .dvn_headerTitleLarge span{display:block;font-size:180% !important;line-height:22px !important}
-a.dvn_headerTitleLrgNetwork:link span,a.dvn_headerTitleLrgNetwork:visited span,a.dvn_headerTitleLrgNetwork:hover span,a.dvn_headerTitleLrgNetwork:active span{color:#c55b28}
-.dvn_headerTitleLarge span{font-size:100% !important}
-.dvn_headerTitleL{}
-.dvn_headerTitleL a:link span,.dvn_headerTitleL a:visited span,.dvn_headerTitleL a:hover span,.dvn_headerTitleL a:active span{color:#c55b28;font-size:90% !important}
+.dvn_headerTitleLarge{padding:2px 0;text-align:left}
+.dvn_headerTitleLarge a:link,.dvn_headerTitleLarge a:visited,.dvn_headerTitleLarge a:hover,.dvn_headerTitleLarge a:active{display:inline !important;font-size:180% !important;line-height:22px !important}
+a.dvn_headerTitleLrgNetwork:link,a.dvn_headerTitleLrgNetwork:visited,a.dvn_headerTitleLrgNetwork:hover,a.dvn_headerTitleLrgNetwork:active{color:#c55b28}
+.dvn_headerTitleL a:link,.dvn_headerTitleL a:visited,.dvn_headerTitleL a:hover,.dvn_headerTitleL a:active{color:#c55b28;font-size:90% !important}
 .dvn_headerTitleR{position:relative;text-align:right}
-.dvn_headerTitleR a:link, .dvn_headerTitleR a:visited, .dvn_headerTitleR a:hover, .dvn_headerTitleR a:active {}
 .dvn_headerTitleR div.dvn_headerVersion {position:absolute;bottom:4px;right:0;}
 .dvn_headerTitleR div.dvn_headerVersion span.iceOutTxt {color:gray;font-size:90% !important;line-height:12px !important;}
+.dvnUnreleasedDVIcon{display:inline !important;margin-left:.5em}
+.dvnUnreleasedDVIcon img{display:inline !important;vertical-align: middle}
 /* NAV */
 div.dvn_navblock{margin-bottom:12px;border-bottom:1px solid #dfdfdf}
 div.dvn_navblockNetwork{}

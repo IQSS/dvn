@@ -106,11 +106,14 @@
                         <td valign="bottom">
                             <div class="dvn_headerTitleLarge">
                                 <ice:outputLink value="/dvn" styleClass="dvn_headerTitleLrgNetwork" title="#{VDCRequest.vdcNetwork.name} Dataverse Network Homepage" rendered="#{VDCRequest.currentVDC == null}">
-                                    <ice:outputText value="#{VDCRequest.vdcNetwork.name} Dataverse Network"/>
+                                    <ice:outputText value="#{VDCRequest.vdcNetwork.name} Dataverse Network" nospan="true"/>
                                 </ice:outputLink>
                                 <ice:outputLink value="/dvn/dv/#{VDCRequest.currentVDC.alias}" title="#{VDCRequest.currentVDC.name} dataverse Homepage" rendered="#{VDCRequest.currentVDC != null}">
-                                    <ice:outputText value="#{VDCRequest.currentVDC.name} Dataverse"/>
+                                    <ice:outputText value="#{VDCRequest.currentVDC.name} Dataverse" nospan="true"/>
                                 </ice:outputLink>
+                                <ice:outputLink value="/dvn#{VDCRequest.currentVDCURL}/faces/admin/PrivilegedUsersPage.xhtml" styleClass="dvnUnreleasedDVIcon dvnInlineHelpTip" 
+                                                rendered="#{VDCRequest.currentVDC != null and VDCRequest.currentVDC.restricted}" title="Unreleased Dataverse - Your dataverse is currently set to Not Released, and will not be featured on the network homepage until it is released. To release the dataverse, click this icon, to go to the Dataverse Permissions page."
+                                                ><img src="/dvn/resources/images/icon_warning.18.png" alt="Unreleased Dataverse"/></ice:outputLink>
                             </div>
                         </td>
                     </tr>

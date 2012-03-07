@@ -15,8 +15,8 @@ where announcements like 'A description of your Dataverse or announcements may b
 
 
 -- Changes for new template logic
-Alter table studyField add COLUMN dcmField boolean;
-update studyField set dcmField = false;
+Alter table studyField add COLUMN customfield boolean;
+update studyField set customfield = false;
 
 Alter table studyField add COLUMN fieldType character varying(255);
 
@@ -24,7 +24,8 @@ alter table StudyField add ALLOWMULTIPLES boolean;
 
 update templatefield set version = 1 where version is null;
 
-alter table templateField ADD dcmSortOrder  int;
+alter table templateField ADD displayorder  int;
+update templatefield set displayorder = -1;
 
 ALTER TABLE templatefield ADD COLUMN controlledvocabulary_id bigint;
 ALTER TABLE templatefield ALTER COLUMN controlledvocabulary_id SET STORAGE PLAIN;

@@ -566,7 +566,7 @@
                                     <ui:repeat value="#{studyPage.studyUI.metadata.studyFields}"  var ="studyField" >
                                         <ice:panelGrid cellpadding="0" cellspacing="0" columnClasses="vdcStudyInfoCol1, vdcStudyInfoCol2" columns="2" width="100%"
                                                        rendered="#{!empty studyPage.studyUI.getStudyFieldValue(studyField)}">  
-                                            <ice:outputText styleClass="dvnInlineHelpLabel dvnInlineHelpTip" value="#{studyField.name}" title="#{studyField.name} - #{studyField.description}"/>
+                                            <ice:outputText styleClass="dvnInlineHelpLabel dvnInlineHelpTip" value="#{studyField.title}" title="#{studyField.title} - #{studyField.description}"/>
                                             <ice:outputText value="#{studyPage.studyUI.getStudyFieldValue(studyField)}" escape="false"/>
                                         </ice:panelGrid>
                                     </ui:repeat>

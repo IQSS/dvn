@@ -1042,7 +1042,6 @@ public class StudyPage extends VDCBaseBean implements java.io.Serializable  {
     private String getPort(boolean secure) {
         try {
             String serverName = System.getProperty(SystemPropertyConstants.SERVER_NAME);
-            dbgLog.info("serverName: "+serverName);
             if (serverName == null) {
                 final ServerContext serverContext = Globals.get(org.glassfish.internal.api.ServerContext.class);
                 if (serverContext != null) {
@@ -1053,23 +1052,13 @@ public class StudyPage extends VDCBaseBean implements java.io.Serializable  {
                     return null; 
                 }
             }
-            dbgLog.info("serverName (1): "+serverName);
-
-            //com.sun.enterprise.config.serverbeans.Config config = Globals.getDefaultHabitat().getInhabitantByType(com.sun.enterprise.config.serverbeans.Config.class).get();
-
             
-            Habitat defaultHabitat = Globals.getDefaultHabitat();
-            dbgLog.info("retrieved habitat");
-            
+            Habitat defaultHabitat = Globals.getDefaultHabitat();            
             Config config = defaultHabitat.getInhabitantByType(com.sun.enterprise.config.serverbeans.Config.class).get();
-            dbgLog.info("retrieved config;");
             
             String[] networkListenerNames = config.getHttpService().getVirtualServerByName(serverName).getNetworkListeners().split(",");
-
-            dbgLog.info("retrieved network listeners...");
             
             for (String listenerName : networkListenerNames) {
-                dbgLog.info("checking listener "+listenerName);
                 if (listenerName == null || listenerName.length() == 0) {
                     continue;
                 }
@@ -1077,14 +1066,13 @@ public class StudyPage extends VDCBaseBean implements java.io.Serializable  {
                 NetworkListener listener = config.getNetworkConfig().getNetworkListener(listenerName.trim());
 
                 if (secure == Boolean.valueOf(listener.findHttpProtocol().getSecurityEnabled())) {
-                    dbgLog.info("returning "+listener.getPort());
                     return listener.getPort();
                 }
             }
         } catch (Throwable t) {
             
-            // error condition handled ... NOT.
-            dbgLog.info("Exception occurred retrieving port configuration... " + t.getMessage());
+            // error condition handled - we'll just log it and return null.
+            dbgLog.info("Configuratoin lookup: Exception occurred retrieving port configuration... " + t.getMessage());
             
         }
 

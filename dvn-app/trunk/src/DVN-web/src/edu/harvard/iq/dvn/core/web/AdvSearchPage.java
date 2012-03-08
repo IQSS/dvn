@@ -587,7 +587,7 @@ public class AdvSearchPage extends VDCBaseBean implements java.io.Serializable {
             advS[i] = getUserFriendlySearchField(elem.getName());
             // if not, check if the field has a description in the database: 
             if (advS[i].equals(elem.getName())) {
-                if (elem.getDescription() != null && !elem.getDescription().equals("")) {
+                if (elem.getTitle() != null && !elem.getTitle().equals("")) {
                     advS[i] = elem.getTitle();
                 }
             }

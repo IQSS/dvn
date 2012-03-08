@@ -2644,16 +2644,51 @@ public class TemplateFormPage extends VDCBaseBean implements java.io.Serializabl
             return "";
         }
         
+        
+        // We are in the process of changing how we are using the fields of
+        // the fieldName object:
+        //
+        // As the "name", we'll be using the name that the user supplied, 
+        // stripped of spaces and everything else non-alphanumeric, with the 
+        // first character converted to lower case, if necessary (making it
+        // a DDI-like name that is);
+        //
+        // The user-supplied name itself we'll be using as the "title", intact
+        // (so this may contain spaces, etc.; it will be used for displaying 
+        // on the study page, in the search page menus, etc.);
+        //
+        // The user-supplied description will still be the "description" field;
+        // This one, the longest of the 3 values, will be used for
+        // mouse-overs and other such display purposes. 
+        
+        // Also, note that when we check for uniqueness of the new field, we 
+        // run the check on the "stripped" version of the name! -- L.A.
+        
+        String fieldNameInternal = fieldName; 
+        
+        fieldNameInternal = fieldNameInternal.replaceAll("[^A-Za-z0-9]", "");
+        
+        if (fieldNameInternal.matches("^[A-Z]")) {
+            String firstCharacter = fieldNameInternal.substring(0,1);
+            fieldNameInternal = fieldNameInternal.replaceFirst(firstCharacter, firstCharacter.toLowerCase());
+        }
+        
+        // Verify that the field is unique:
         for (TemplateField tfTest : template.getTemplateFields()) {
-            if (tfTest.getStudyField().getName().toUpperCase().equals(fieldName.toUpperCase())) {
+            if (tfTest.getStudyField().getName().toUpperCase().equals(fieldNameInternal.toUpperCase())) {
                 getVDCRenderBean().getFlash().put("customFieldWarningMessage", "New field name may not match an existing field name.");
                 return "";
             }
         }
                 
+        // OK, we're still here -- that means the name is good; 
+        // we can proceed to store it permanently:
+        
         // Add the new Study Field (with an empty value)
         StudyField newSF = new StudyField();
-        newSF.setName(fieldName);
+        
+        newSF.setName(fieldNameInternal);
+        newSF.setTitle(fieldName);
         newSF.setDescription(fieldDescription);
         newSF.setCustomField(true);
         newSF.setFieldType(fieldType);

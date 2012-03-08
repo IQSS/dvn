@@ -43,9 +43,10 @@ import javax.persistence.*;
  */
 @Entity
 public class StudyField implements Serializable {
-    private String name;
-    private String title;
-    private String description;
+    private String name;    // This is the internal, DDI-like name, no spaces, etc.
+    private String title;   // A longer, human-friendlier name - punctuation allowed
+    private String description; // A user-friendly Description; will be used for 
+                                // mouse-overs, etc. 
     private boolean customField;
     private String fieldType;
     

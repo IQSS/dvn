@@ -34,6 +34,7 @@ import com.icesoft.faces.component.paneltabset.TabChangeEvent;
 import com.icesoft.faces.context.effects.JavascriptContext;
 import edu.harvard.iq.dvn.core.study.DataFileFormatType;
 import edu.harvard.iq.dvn.core.study.StudyServiceLocal;
+import edu.harvard.iq.dvn.core.study.StudyFileServiceLocal; 
 import edu.harvard.iq.dvn.core.study.StudyVersion;
 import edu.harvard.iq.dvn.core.vdc.VDC;
 import edu.harvard.iq.dvn.core.util.WebStatisticsSupport;
@@ -57,6 +58,12 @@ import javax.inject.Inject;
 import javax.inject.Named;
 import javax.servlet.http.HttpServletRequest;
 
+import  com.sun.enterprise.config.serverbeans.Config;
+import  com.sun.enterprise.util.SystemPropertyConstants;
+import  com.sun.grizzly.config.dom.NetworkListener;
+import  org.glassfish.internal.api.Globals;
+import  org.glassfish.internal.api.ServerContext;
+import org.jvnet.hk2.component.Habitat;
 /**
  *
  * @author Ellen Kraffmiller
@@ -66,6 +73,7 @@ import javax.servlet.http.HttpServletRequest;
 public class StudyPage extends VDCBaseBean implements java.io.Serializable  {
     private static Logger dbgLog = Logger.getLogger(StudyPage.class.getCanonicalName());
     @EJB private StudyServiceLocal studyService;
+    @EJB private StudyFileServiceLocal studyFileService; 
 
     @Inject private VersionNotesPopupBean versionNotesPopup;
     
@@ -79,7 +87,6 @@ public class StudyPage extends VDCBaseBean implements java.io.Serializable  {
 
     private boolean studyUIContainsFileDetails=false; // TODO: needed??
     private int selectedIndex;
-
 
     public VersionNotesPopupBean getVersionNotesPopup() {
         return versionNotesPopup;
@@ -495,7 +502,7 @@ public class StudyPage extends VDCBaseBean implements java.io.Serializable  {
             return false;
         }
     }
-
+    
     public void initPanelDisplay() {
         // We will always have citation info, 
         // so this is always rendered the first time we go to this page.
@@ -950,4 +957,139 @@ public class StudyPage extends VDCBaseBean implements java.io.Serializable  {
         return new HashMap();
     }
 
+    public String getApiMetadataUrlWithoutDataSection() {
+        String baseMetadataUrl = getApiMetadataUrl(); 
+        if (baseMetadataUrl == null || baseMetadataUrl.equals("")) {
+            return null; 
+        }
+        
+        if (studyFileService.doesStudyHaveSubsettableFiles(studyUI.getStudyVersion().getId())) {
+            return baseMetadataUrl + "?partialExclude=codeBook/dataDscr";
+        }
+        
+        return null; 
+    }
+    
+    public String getApiMetadataUrl() {
+        // For now, we only display these links if a) this is the released 
+        // study version and b) its metadata is not restricted. 
+        
+        if (studyUI.getStudyVersion().isReleased() && !studyUI.getStudy().isRestricted()) {
+            
+            String httpsHostUrl = getServerHostAndPort(true); 
+            if (httpsHostUrl == null || httpsHostUrl.equals("")) {
+                return null; 
+            }
+            String finalUrl = "https://" + httpsHostUrl + "/dvn/api/metadata/"+studyId;
+        
+            return finalUrl; 
+        }
+        
+        return null;
+    }
+    
+    // The utilities below - we have to jump through all these hoops solely 
+    // to obtain our own HTTPS port number (!); 
+    // This code is based on ... from ... by ...
+    // We probably want to move it into its own dedicated utility; it could 
+    // be useful elsewhere. 
+    
+    /**
+     * Get the hostname and port of the secure or non-secure http listener for the default
+     * virtual server in this server instance.  The string representation will be of the
+     * form 'hostname:port'.
+     *
+     * @param secure true if you want the secure port, false if you want the non-secure port
+     * @return the 'hostname:port' combination or null if there were any errors calculating the address
+     */
+    public String getServerHostAndPort(boolean secure) {
+        final String host = getHostName();
+        final String port = getPort(secure);
+        
+        if ((host == null) || (port == null)) {
+            return null;
+        }
+        
+        return host + ":" + port;
+    }
+
+    /**
+     * Lookup the canonical host name of the system this server instance is running on.
+     *
+     * @return the canonical host name or null if there was an error retrieving it
+     */
+    private String getHostName() {
+        // this value is calculated from InetAddress.getCanonicalHostName when the AS is
+        // installed.  asadmin then passes this value as a system property when the server
+        // is started.
+        String myHost = System.getProperty(SystemPropertyConstants.HOST_NAME_PROPERTY);
+        
+        dbgLog.info("StudyPage: retrieved hostname: "+myHost);
+        
+        return myHost; 
+    }
+
+    
+    /**
+     * Get the http/https port number for the default virtual server of this server instance.
+     * <p/>
+     * If the 'secure' parameter is true, then return the secure http listener port, otherwise
+     * return the non-secure http listener port.
+     *
+     * @param secure true if you want the secure port, false if you want the non-secure port
+     * @return the port or null if there was an error retrieving it.
+     */
+    private String getPort(boolean secure) {
+        try {
+            String serverName = System.getProperty(SystemPropertyConstants.SERVER_NAME);
+            dbgLog.info("serverName: "+serverName);
+            if (serverName == null) {
+                final ServerContext serverContext = Globals.get(org.glassfish.internal.api.ServerContext.class);
+                if (serverContext != null) {
+                    serverName = serverContext.getInstanceName();
+                }
+
+                if (serverName == null) {
+                    return null; 
+                }
+            }
+            dbgLog.info("serverName (1): "+serverName);
+
+            //com.sun.enterprise.config.serverbeans.Config config = Globals.getDefaultHabitat().getInhabitantByType(com.sun.enterprise.config.serverbeans.Config.class).get();
+
+            
+            Habitat defaultHabitat = Globals.getDefaultHabitat();
+            dbgLog.info("retrieved habitat");
+            
+            Config config = defaultHabitat.getInhabitantByType(com.sun.enterprise.config.serverbeans.Config.class).get();
+            dbgLog.info("retrieved config;");
+            
+            String[] networkListenerNames = config.getHttpService().getVirtualServerByName(serverName).getNetworkListeners().split(",");
+
+            dbgLog.info("retrieved network listeners...");
+            
+            for (String listenerName : networkListenerNames) {
+                dbgLog.info("checking listener "+listenerName);
+                if (listenerName == null || listenerName.length() == 0) {
+                    continue;
+                }
+
+                NetworkListener listener = config.getNetworkConfig().getNetworkListener(listenerName.trim());
+
+                if (secure == Boolean.valueOf(listener.findHttpProtocol().getSecurityEnabled())) {
+                    dbgLog.info("returning "+listener.getPort());
+                    return listener.getPort();
+                }
+            }
+        } catch (Throwable t) {
+            
+            // error condition handled ... NOT.
+            dbgLog.info("Exception occurred retrieving port configuration... " + t.getMessage());
+            
+        }
+
+        return null;
+    }
+
+    
 }

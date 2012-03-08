@@ -310,6 +310,8 @@ public class EditStudyPage extends VDCBaseBean implements java.io.Serializable  
     }
     
     public void initStudyMap() {
+        String controlledVocabularyUpdateMessage = "";
+        String errorMessage = "";
         studyMap = new HashMap();
         for (Iterator<TemplateField> it = study.getTemplate().getTemplateFields().iterator(); it.hasNext();) {
             TemplateField tf = it.next();
@@ -319,26 +321,29 @@ public class EditStudyPage extends VDCBaseBean implements java.io.Serializable  
                 studyMap.put(tf.getStudyField().getName(), smv);
             } else {
                 if (tf.getControlledVocabulary() !=null){
-                    verifyControlledVocabValues(tf);
+                    errorMessage +=verifyControlledVocabValues(tf);
                 }
             } 
         }
+        if (!errorMessage.isEmpty()){
+            controlledVocabularyUpdateMessage = "Please review the following data entries: ";
+            controlledVocabularyUpdateMessage += errorMessage;
+            getVDCRenderBean().getFlash().put("warningMessage",controlledVocabularyUpdateMessage);
+        }
     }
     
-        private String controlledVocabularyUpdateMessage = "";
 
-    public String getControlledVocabularyUpdateMessage() {
-        return controlledVocabularyUpdateMessage;
-    }
-
-    public void setControlledVocabularyUpdateMessage(String controlledVocabularyUpdateMessage) {
-        this.controlledVocabularyUpdateMessage = controlledVocabularyUpdateMessage;
-    }
     
     
-    private void verifyControlledVocabValues(TemplateField tfIn){
-        StudyField studyField = tfIn.getStudyField();
-        List <String> errorList = new ArrayList();
+    private String verifyControlledVocabValues(TemplateField tfIn){        
+        StudyField studyField = new StudyField();
+        for (StudyField sf : metadata.getStudyFields()) {
+            if (sf.getName().equals(tfIn.getStudyField().getName())) {
+                studyField = sf;
+                break;
+            }
+        }
+        String errorMessage = "";
         boolean inControlledVocab = false;
         for (String studyFieldValue: studyField.getStudyFieldValueStrings()){
             inControlledVocab = false;
@@ -348,18 +353,10 @@ public class EditStudyPage extends VDCBaseBean implements java.io.Serializable  
                 }
             }
             if(!inControlledVocab){
-                String errorMessage = studyField.getName() +  " has had value " + studyFieldValue + " removed from its controlled vocabulary.";
-                errorList.add(errorMessage);
+                errorMessage += studyField.getName() +  " has had value " + studyFieldValue + " removed from its controlled vocabulary.";
             }
-        }  
-        if (!errorList.isEmpty()){
-            controlledVocabularyUpdateMessage = "Please review the following data entries: ";
-            for (String message : errorList){
-                controlledVocabularyUpdateMessage += message;
-            }
-        }
-        
-
+        }          
+        return errorMessage;
     }
         
     public void changeSingleValCVOld(ValueChangeEvent event) {

@@ -38,10 +38,7 @@
                 </div>
               </div>
                 <!-- validation errors occurred? -->
-                <div id="messagePanelControlledVocab" class="errorMessage">
-                  <ice:outputText value="#{TemplateFormPage.controlledVocabularyUpdateMessage}" 
-                                  rendered="#{!empty TemplateFormPage.controlledVocabularyUpdateMessage}"/>
-              </div>
+
                 
                 <div id="messagePanel" class="errorMessage">
                   <ice:outputText value="Please check messages below" rendered="#{!empty facesContext.maximumSeverity}"/>
@@ -132,7 +129,7 @@
                               <ice:message styleClass="errorMessage" for="input_relatedPublicationText"/>
                             </div>                                
                             <div jsfc="ice:panelGroup" styleClass="dvnFormPadding" rendered="#{TemplateFormPage.dataTableRelPublications.rowIndex==0}">
-                                <ice:selectBooleanCheckbox binding="#{TemplateFormPage.inputRelPublicationReplicationData}" value="#{currentRow.replicationData}" id="input_relatedPublicationReplicationData"/>
+                                <ice:selectBooleanCheckbox validator="#{TemplateFormPage.validateStudyPublication}" binding="#{TemplateFormPage.inputRelPublicationReplicationData}" value="#{currentRow.replicationData}" id="input_relatedPublicationReplicationData"/>
                                 <ice:outputLabel value="Replication Data for Original Publication (This will apply &quot;Replication Data for:&quot; to your title)" for="input_relatedPublicationReplicationData"/>
                             </div>
                             <div jsfc="ice:panelGroup" styleClass="vdcEditStudyFieldFloat1">

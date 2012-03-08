@@ -123,10 +123,7 @@
                 </div>
               </div>
               <!-- validation errors occurred? -->
-              <div id="messagePanelControlledVocab" class="errorMessage">
-                  <ice:outputText value="#{EditStudyPage.controlledVocabularyUpdateMessage}" 
-                                  rendered="#{!empty EditStudyPage.controlledVocabularyUpdateMessage}"/>
-              </div>
+
               <div jsfc="ice:panelGroup" id="messagePanel" styleClass="errorMessage" rendered="#{!empty facesContext.maximumSeverity}">
                 <ice:outputText value='Please check messages below.'/>
               </div>
@@ -1371,7 +1368,8 @@
                       <div jsfc="ice:panelGroup" styleClass="vdcEditStudyFieldFloatWrap">
                           <div jsfc="ice:panelGroup" styleClass="vdcEditStudyFieldFloat1 vdcEditStudyGroupField">
                             <ice:outputText styleClass="dvnInlineHelpLabel dvnInlineHelpTip" value="#{editstudybundle.westLongitudeLabel}" title="#{editstudybundle.westLongitudeHelpHeading} - #{editstudybundle.westLongitudeHelp}"/>
-                            <ice:inputText id="input_westLongitude" binding="#{EditStudyPage.inputWestLongitude}" value="#{EditStudyPage.metadata.studyGeoBoundings[0].westLongitude}"  validator="#{EditStudyPage.validateLongitude}" required="#{EditStudyPage.studyMap[sfc.westLongitude].required and EditStudyPage.validateRequired}" requiredMessage="This field is required." />
+                            <ice:inputText id="input_westLongitude" binding="#{EditStudyPage.inputWestLongitude}" value="#{EditStudyPage.metadata.studyGeoBoundings[0].westLongitude}"  validator="#{EditStudyPage.validateLongitude}" 
+                                           required="#{EditStudyPage.studyMap[sfc.westLongitude].required and EditStudyPage.validateRequired}" requiredMessage="This field is required." />
                             <ice:message styleClass="errorMessage" for="input_westLongitude"/>
                           </div>
                           <div jsfc="ice:panelGroup" styleClass="vdcEditStudyFieldFloat2 vdcEditStudyGroupField">
@@ -1528,6 +1526,7 @@
                                              visible="#{empty(customFieldsDataModel[0].controlledVocabulary)}">
                                     <f:validator validatorId="DateValidator"/>
                               </ice:inputText>   
+                              <ice:outputText value="#{editstudybundle.dateFormatDescription}" rendered="#{customFieldsDataModel[0].studyField.fieldType == 'date'}"/>
                                <ice:message styleClass="errorMessage" for="input_genericDate"/>
                               <ice:inputTextarea cols="90" rows="4"
                                                    id="input_TextArea"
@@ -1537,7 +1536,6 @@
                                                    visible="#{empty(customFieldsDataModel[0].controlledVocabulary)}">
                               </ice:inputTextarea>
                                <ice:message styleClass="errorMessage" for="input_TextArea"/>
-                              <ice:outputText value="#{editstudybundle.dateFormatDescription}" rendered="#{customFieldsDataModel[0].studyField.fieldType == 'date'}"/>
 
 
                             </ice:column>

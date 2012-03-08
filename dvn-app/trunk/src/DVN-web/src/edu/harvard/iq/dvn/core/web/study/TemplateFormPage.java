@@ -192,7 +192,8 @@ public class TemplateFormPage extends VDCBaseBean implements java.io.Serializabl
     }
     
     public void initStudyMap() {
-        controlledVocabularyUpdateMessage = "";
+        String controlledVocabularyUpdateMessage = "";
+        String errorMessage = "";
         studyMap = new HashMap();
         for (Iterator<TemplateField> it =template.getTemplateFields().iterator(); it.hasNext();) {
             TemplateField tf = it.next();
@@ -203,26 +204,30 @@ public class TemplateFormPage extends VDCBaseBean implements java.io.Serializabl
 
             } else {
                 if (tf.getControlledVocabulary() !=null){
-                    verifyControlledVocabValues(tf);
+                   errorMessage +=verifyControlledVocabValues(tf);
                 }
             }          
-        } 
+        }
+        if (!errorMessage.isEmpty()){
+            controlledVocabularyUpdateMessage = "Please review the following data entries: ";
+            controlledVocabularyUpdateMessage += errorMessage;
+            getVDCRenderBean().getFlash().put("warningMessage",controlledVocabularyUpdateMessage);
+        }
     }
     
-    private String controlledVocabularyUpdateMessage = "";
 
-    public String getControlledVocabularyUpdateMessage() {
-        return controlledVocabularyUpdateMessage;
-    }
-
-    public void setControlledVocabularyUpdateMessage(String controlledVocabularyUpdateMessage) {
-        this.controlledVocabularyUpdateMessage = controlledVocabularyUpdateMessage;
-    }
     
     
-    private void verifyControlledVocabValues(TemplateField tfIn){
-        StudyField studyField = tfIn.getStudyField();
-        List <String> errorList = new ArrayList();
+    private String verifyControlledVocabValues(TemplateField tfIn){
+        
+        StudyField studyField = new StudyField();
+        for (StudyField sf : template.getMetadata().getStudyFields()) {
+            if (sf.getName().equals(tfIn.getStudyField().getName())) {
+                studyField = sf;
+                break;
+            }
+        }
+        String errorMessage = "";
         boolean inControlledVocab = false;
         for (String studyFieldValue: studyField.getStudyFieldValueStrings()){
             inControlledVocab = false;
@@ -232,18 +237,10 @@ public class TemplateFormPage extends VDCBaseBean implements java.io.Serializabl
                 }
             }
             if(!inControlledVocab){
-                String errorMessage = studyField.getName() +  " has had value " + studyFieldValue + " removed from its controlled vocabulary.";
-                errorList.add(errorMessage);
+                errorMessage += studyField.getName() +  " has had value " + studyFieldValue + " removed from its controlled vocabulary.";
             }
-        }  
-        if (!errorList.isEmpty()){
-            controlledVocabularyUpdateMessage = "Please review the following data entries: ";
-            for (String message : errorList){
-                controlledVocabularyUpdateMessage += message;
-            }
-        }
-        
-
+        }          
+        return errorMessage;
     }
             
     public List<SelectItem> loadFieldInputLevelSelectItems() {
@@ -1049,8 +1046,23 @@ public class TemplateFormPage extends VDCBaseBean implements java.io.Serializabl
         
         return "/admin/ManageTemplatesPage?faces-redirect=true" + getNavigationVDCSuffix();
     }
-
-
+    
+    public void validateStudyPublication(FacesContext context,
+            UIComponent toValidate,
+            Object value) {
+        
+            boolean valid=true;
+            if (StringUtil.isEmpty((String)inputRelPublicationText.getLocalValue())
+            && ((value instanceof String && !StringUtil.isEmpty((String)value))) || (value instanceof Boolean && ((Boolean)value).booleanValue()) ){
+                valid=false;
+            }
+            if (!valid) {
+                ((UIInput)toValidate).setValid(false);
+                FacesMessage message = new FacesMessage("Publication citation is required if other publication data is entered.");
+                context.addMessage(toValidate.getClientId(context), message);
+            }
+        
+    }
         
     public void validateLongitude(FacesContext context,
             UIComponent toValidate,

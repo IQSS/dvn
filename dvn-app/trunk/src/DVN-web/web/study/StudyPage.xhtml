@@ -403,16 +403,21 @@
                                     <textarea readonly="readonly" rows="3" id="dvnStudyCitationWeb" class="dvnstudycitation"><ice:outputText value="#{studyPage.studyUI.metadata.webCitation}" nospan="true"></ice:outputText></textarea>
                                     <label for="citationformat">Citation Format</label> <select id="dvnCitationSelector"><option value="Print" selected="selected">Print</option><option value="Web">Web</option></select>
                                 </div>
-
-                                <ice:outputText styleClass="dvnInlineHelpLabel dvnInlineHelpTip" value="#{studybundle.replicationForLabel}" title="#{studybundle.replicationForHelpHeading} - #{studybundle.replicationForHelp}" rendered="#{studyPage.studyUI.metadata.replicationFor != '' and studyPage.studyUI.metadata.replicationFor != null}"/>
-                                <div jsfc="ice:panelGroup" styleClass="dvnhowtocitecitationfloat" rendered="#{!empty studyPage.studyUI.metadata.replicationFor}">
+                                
+                                
+                                <ice:outputText styleClass="dvnInlineHelpLabel dvnInlineHelpTip" value="#{studybundle.replicationForLabel}" title="#{studybundle.replicationForHelpHeading} - #{studybundle.replicationForHelp}" rendered="#{studyPage.studyUI.replicationFor != '' and studyPage.studyUI.replicationFor != null}"/>
+                                <div jsfc="ice:panelGroup" styleClass="dvnhowtocitecitationfloat" rendered="#{!empty studyPage.studyUI.replicationFor}">
                                     <div class="dvn_padBot">
                                         <ice:graphicImage value="/resources/images/icon_info.gif" styleClass="dvn_icon"/>
                                         <ice:outputText value=" Results found in this publication can be replicated using these data."/>
                                     </div>
-                                    <ice:outputText value="#{studyPage.studyUI.metadata.replicationFor}" rendered="#{!empty studyPage.studyUI.metadata.replicationFor}" escape="false"/>
+                                    <ice:outputText value="#{studyPage.studyUI.replicationFor}" rendered="#{!empty studyPage.studyUI.replicationFor}" escape="false"/>
                                 </div>
-
+                                
+                                <ice:outputText styleClass="dvnInlineHelpLabel dvnInlineHelpTip" value="#{studybundle.relatedPublicationsLabel}" title="#{studybundle.relatedPublicationsHelpHeading} - #{studybundle.relatedPublicationsHelp}" rendered="#{studyPage.studyUI.relPublications != '' and studyPage.studyUI.relPublications != null}"/>
+                                <div jsfc="ice:panelGroup" styleClass="dvnhowtocitecitationfloat" rendered="#{!empty studyPage.studyUI.relPublications}">
+                                    <ice:outputText id="text23" value="#{studyPage.studyUI.relPublications}" rendered="#{!empty studyPage.studyUI.relPublications }" escape="false"/>
+                                </div>
                             </ice:panelGrid>
                             <div jsfc="ice:panelGroup"  styleClass="vdcStudyInfoHeader">
                                 <ice:outputText  value="Data Citation Details"/>
@@ -515,9 +520,6 @@
 
                                 <ice:outputText styleClass="dvnInlineHelpLabel dvnInlineHelpTip" value="#{studybundle.topicClassificationLabel}" title="#{studybundle.topicClassificationHelpHeading} - #{studybundle.topicClassificationHelp}" rendered="#{studyPage.studyUI.topicClasses != ''}"/>
                                 <ice:outputText id="text22" value="#{studyPage.studyUI.topicClasses}" rendered="#{!empty studyPage.studyUI.topicClasses }" escape="false"/>
-
-                                <ice:outputText styleClass="dvnInlineHelpLabel dvnInlineHelpTip" value="#{studybundle.relatedPublicationsLabel}" title="#{studybundle.relatedPublicationsHelpHeading} - #{studybundle.relatedPublicationsHelp}" rendered="#{studyPage.studyUI.relPublications != '' and studyPage.studyUI.relPublications != null}"/>
-                                <ice:outputText id="text23" value="#{studyPage.studyUI.relPublications}" rendered="#{!empty studyPage.studyUI.relPublications }" escape="false"/>
 
                                 <ice:outputText styleClass="dvnInlineHelpLabel dvnInlineHelpTip" value="#{studybundle.relatedMaterialLabel}" title="#{studybundle.relatedMaterialHelpHeading} - #{studybundle.relatedMaterialHelp}" rendered="#{studyPage.studyUI.relMaterials != '' and studyPage.studyUI.relMaterials != null}"/>
                                 <ice:outputText id="outputText150" value="#{studyPage.studyUI.relMaterials}" rendered="#{!empty studyPage.studyUI.relMaterials}" escape="false"/>

@@ -599,10 +599,7 @@ public class StudyUI  implements java.io.Serializable {
         for (Iterator<StudyRelPublication> it = getMetadata().getStudyRelPublications().iterator(); it.hasNext();) {
             StudyRelPublication elem = it.next();
             if (elem.isReplicationData() && !StringUtil.isEmpty(elem.getText())) {
-                if (str != "") {
-                    str += "; ";
-                }
-                str += getPublication(elem);
+                str = getPublication(elem);
                 break;
             }
             

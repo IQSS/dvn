@@ -1132,7 +1132,6 @@ public class EditStudyPage extends VDCBaseBean implements java.io.Serializable  
                StudyFieldConstant.topicClassValue,              
                StudyFieldConstant.topicClassVocab,
                StudyFieldConstant.topicClassVocabURI,
-               StudyFieldConstant.relatedPublications,
                StudyFieldConstant.relatedMaterial,
                StudyFieldConstant.relatedStudies,
                StudyFieldConstant.otherReferences,
@@ -1156,7 +1155,6 @@ public class EditStudyPage extends VDCBaseBean implements java.io.Serializable  
          return this.isStudyAbstractsEmpty() &&
                  this.isStudyKeywordsEmpty() &&
                  this.isStudyTopicClassesEmpty() &&
-                 this.isStudyRelPublicationsEmpty() &&
                  this.isStudyRelMaterialsEmpty() &&
                  this.isStudyOtherRefsEmpty() &&
                  StringUtil.isEmpty(metadata.getTimePeriodCoveredStart()) &&

@@ -71,6 +71,7 @@ import com.icesoft.faces.component.ext.HtmlSelectOneMenu;
 import com.icesoft.faces.component.ext.HtmlSelectOneRadio;
 import com.icesoft.faces.component.panelseries.PanelSeries;
 import com.icesoft.faces.context.effects.JavascriptContext;
+import edu.harvard.iq.dvn.core.study.ControlledVocabularyValue;
 import edu.harvard.iq.dvn.core.study.Metadata;
 import edu.harvard.iq.dvn.core.study.MetadataFieldGroup;
 import edu.harvard.iq.dvn.core.study.StudyField;
@@ -158,11 +159,14 @@ public class EditStudyPage extends VDCBaseBean implements java.io.Serializable  
             metadata.setDateOfDeposit(new SimpleDateFormat("yyyy-MM-dd").format(new Date()));
             setFiles(editStudyService.getCurrentFiles());
         }
+        // Add empty first element to subcollections, so the input text fields will be visible
+        //moved init collections so that the missing controlled vocab error message will only look at the current
+        //metadata - SEK 3-8.
+        metadata.initCollections();
         // Initialize map containing required/recommended settings for all fields
         initStudyMap();
 
-        // Add empty first element to subcollections, so the input text fields will be visible
-        metadata.initCollections();
+
         //  initDvnDates();
        
     }
@@ -313,8 +317,49 @@ public class EditStudyPage extends VDCBaseBean implements java.io.Serializable  
                 StudyMapValue smv = new StudyMapValue();
                 smv.setTemplateFieldUI(new TemplateFieldUI(tf));
                 studyMap.put(tf.getStudyField().getName(), smv);
+            } else {
+                if (tf.getControlledVocabulary() !=null){
+                    verifyControlledVocabValues(tf);
+                }
+            } 
+        }
+    }
+    
+        private String controlledVocabularyUpdateMessage = "";
+
+    public String getControlledVocabularyUpdateMessage() {
+        return controlledVocabularyUpdateMessage;
+    }
+
+    public void setControlledVocabularyUpdateMessage(String controlledVocabularyUpdateMessage) {
+        this.controlledVocabularyUpdateMessage = controlledVocabularyUpdateMessage;
+    }
+    
+    
+    private void verifyControlledVocabValues(TemplateField tfIn){
+        StudyField studyField = tfIn.getStudyField();
+        List <String> errorList = new ArrayList();
+        boolean inControlledVocab = false;
+        for (String studyFieldValue: studyField.getStudyFieldValueStrings()){
+            inControlledVocab = false;
+            for (ControlledVocabularyValue controlledVocabValue : tfIn.getControlledVocabulary().getControlledVocabularyValues() ){
+                if(studyFieldValue.equals(controlledVocabValue.getValue())){
+                    inControlledVocab = true;
+                }
+            }
+            if(!inControlledVocab){
+                String errorMessage = studyField.getName() +  " has had value " + studyFieldValue + " removed from its controlled vocabulary.";
+                errorList.add(errorMessage);
+            }
+        }  
+        if (!errorList.isEmpty()){
+            controlledVocabularyUpdateMessage = "Please review the following data entries: ";
+            for (String message : errorList){
+                controlledVocabularyUpdateMessage += message;
             }
         }
+        
+
     }
         
     public void changeSingleValCVOld(ValueChangeEvent event) {

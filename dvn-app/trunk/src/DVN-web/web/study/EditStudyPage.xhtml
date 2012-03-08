@@ -123,6 +123,10 @@
                 </div>
               </div>
               <!-- validation errors occurred? -->
+              <div id="messagePanelControlledVocab" class="errorMessage">
+                  <ice:outputText value="#{EditStudyPage.controlledVocabularyUpdateMessage}" 
+                                  rendered="#{!empty EditStudyPage.controlledVocabularyUpdateMessage}"/>
+              </div>
               <div jsfc="ice:panelGroup" id="messagePanel" styleClass="errorMessage" rendered="#{!empty facesContext.maximumSeverity}">
                 <ice:outputText value='Please check messages below.'/>
               </div>

@@ -561,13 +561,7 @@ public class AdvSearchPage extends VDCBaseBean implements java.io.Serializable {
 
         List<StudyField> advSearchFieldsDefault = studyFieldService.findAdvSearchDefault();
         String[] advS = new String[advSearchFieldsDefault.size()]; 
-        /*
-        for (int i=0; i<advS.length; i++) {
-            advS[i] = advSearchFieldsDefault.get(i).getName();
-        }
-        advS = getFieldList(advS);
-         * 
-         */
+        
         advS = getFieldList(advSearchFieldsDefault);
 
         return advS;
@@ -594,7 +588,7 @@ public class AdvSearchPage extends VDCBaseBean implements java.io.Serializable {
             // if not, check if the field has a description in the database: 
             if (advS[i].equals(elem.getName())) {
                 if (elem.getDescription() != null && !elem.getDescription().equals("")) {
-                    advS[i] = elem.getDescription();
+                    advS[i] = elem.getTitle();
                 }
             }
             
@@ -604,6 +598,9 @@ public class AdvSearchPage extends VDCBaseBean implements java.io.Serializable {
         return advS;
     }
 
+    /* The method below doesn't appear like it's being used any longer; 
+     * needs to be removed? -- L.A.
+     */
     private String[] getFieldList(String[] advSearchFields) {
         String[] advS = new String[advSearchFields.length];
         for (int i = 0; i < advS.length; i++) {

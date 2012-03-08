@@ -143,6 +143,7 @@ public class TemplateFormPage extends VDCBaseBean implements java.io.Serializabl
 
         fieldTypeSelectItems = loadFieldTypeSelectItems();
         fieldInputLevelSelectItems = loadFieldInputLevelSelectItems();
+        displayAlwaysFieldInputLevelSelectItems = loadFieldInputLevelSelectItems(true);
     }
     
     // this metho checks to see if the template the user is attempting to edit is in the current vdc;
@@ -242,27 +243,20 @@ public class TemplateFormPage extends VDCBaseBean implements java.io.Serializabl
         }          
         return errorMessage;
     }
-            
+
     public List<SelectItem> loadFieldInputLevelSelectItems() {
-        List selectItems = new ArrayList<SelectItem>();
-        
-        FieldInputLevel rec = new FieldInputLevel();
-        rec.setName("recommended");
-        FieldInputLevel hidden = new FieldInputLevel();
-        hidden.setName("hidden");
-        FieldInputLevel optional = new FieldInputLevel();
-        optional.setName("optional");
-        FieldInputLevel required = new FieldInputLevel();
-        required.setName("required");
-        FieldInputLevel disabled = new FieldInputLevel();
-        disabled.setName("disabled");       
+        return loadFieldInputLevelSelectItems(false);
+    }
+    
+    public List<SelectItem> loadFieldInputLevelSelectItems(boolean displayAlways) {
+        List selectItems = new ArrayList<SelectItem>();     
 
         selectItems.add(new SelectItem("required", "Required"));
         selectItems.add(new SelectItem("recommended", "Recommended"));
         selectItems.add(new SelectItem("optional", "Optional"));
-        selectItems.add(new SelectItem("hidden", "Hidden"));
+        selectItems.add(new SelectItem("hidden", "Hidden", "", displayAlways));
         if(networkEdit){
-           selectItems.add(new SelectItem("disabled", "Disabled")); 
+           selectItems.add(new SelectItem("disabled", "Disabled", "", displayAlways)); 
         }
 
         return selectItems;
@@ -274,6 +268,13 @@ public class TemplateFormPage extends VDCBaseBean implements java.io.Serializabl
 
         return this.fieldInputLevelSelectItems;
     }
+    
+    private List <SelectItem> displayAlwaysFieldInputLevelSelectItems = new ArrayList();
+    
+    public List<SelectItem> getDisplayAlwaysFieldInputLevelSelectItems() {
+
+        return this.displayAlwaysFieldInputLevelSelectItems;
+    }    
 
     public List<SelectItem> loadFieldTypeSelectItems() {
         List selectItems = new ArrayList<SelectItem>();

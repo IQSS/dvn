@@ -311,11 +311,6 @@ public class Indexer implements java.io.Serializable  {
                 StudyRelMaterial elem = (StudyRelMaterial) it.next();
                 addText(1.0f, doc, "relatedMaterial", elem.getText());
             }
-            List<StudyRelPublication> relPublications = metadata.getStudyRelPublications();
-            for (Iterator it = relPublications.iterator(); it.hasNext();) {
-                StudyRelPublication elem = (StudyRelPublication) it.next();
-                addText(1.0f, doc, "relatedPublications", elem.getText());
-            }
             List<StudyRelStudy> relStudies = metadata.getStudyRelStudies();
             for (Iterator it = relStudies.iterator(); it.hasNext();) {
                 StudyRelStudy elem = (StudyRelStudy) it.next();
@@ -326,6 +321,22 @@ public class Indexer implements java.io.Serializable  {
                 StudyOtherRef elem = (StudyOtherRef) it.next();
                 addText(1.0f, doc, "otherReferences", elem.getText());
             }
+            
+
+            for (StudyRelPublication elem : metadata.getStudyRelPublications()) {
+                if (elem.isReplicationData()) {
+                    addText(1.0f, doc, "replicationFor", elem.getText());
+                    addText(1.0f, doc, "replicationForIdType", elem.getIdType());
+                    addText(1.0f, doc, "replicationForIdNumber", elem.getIdNumber());
+                    addText(1.0f, doc, "replicationForURL", elem.getUrl());                    
+                } else {
+                    addText(1.0f, doc, "relatedPublications", elem.getText());
+                    addText(1.0f, doc, "relatedPublicationsIdType", elem.getIdType());
+                    addText(1.0f, doc, "relatedPublicationsIdNumber", elem.getIdNumber());
+                    addText(1.0f, doc, "relatedPublicationsURL", elem.getUrl());
+                }
+            }
+            
 
             /*     addText(1.0f,  doc,"relatedMaterial",metadata.getRelatedMaterial());
             addText(1.0f,  doc,"relatedPublications",metadata.getRelatedPublications());
@@ -353,7 +364,6 @@ public class Indexer implements java.io.Serializable  {
                 addText(1.0f, doc, "studyGrantNumber", elem.getNumber());
                 addText(1.0f, doc, "studyGrantNumberAgency", elem.getAgency());
             }
-            //addText(1.0f, doc, "replicationFor", metadata.getReplicationFor());
             List<StudyGeoBounding> studyGeoBounding = metadata.getStudyGeoBoundings();
             for (Iterator it = studyGeoBounding.iterator(); it.hasNext();) {
                 StudyGeoBounding elem = (StudyGeoBounding) it.next();

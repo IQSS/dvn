@@ -6,6 +6,7 @@ use Socket;
 my( %opts ) = ( );
 my( $rez ) = GetOptions( \%opts, "pg_only!");
 
+my $postgresonly = 0; 
 
 my @CONFIG_VARIABLES = (); 
 
@@ -38,6 +39,8 @@ else
 	    'POSTGRES_USER',
 	    'POSTGRES_PASSWORD'
 	    ); 
+
+    $postgresonly = 1; 
 }
 
 my %CONFIG_DEFAULTS = 
@@ -416,7 +419,7 @@ if ( $CONFIG_DEFAULTS{'POSTGRES_SERVER'} eq 'localhost' )
 
     # 4c. CHECK IF THIS DB ALREADY EXISTS:
 
-    $psql_command_dbcheck = $psql_exec . "/psql -c \"\" -d " . $CONFIG_DEFAULTS{'POSTGRES_DATABASE'}; 
+    $psql_command_dbcheck = $psql_exec . "/psql -c \"\" -d " . $CONFIG_DEFAULTS{'POSTGRES_DATABASE'} . ">/dev/null"; 
     if ( ($exitcode = system($psql_command_dbcheck)) == 0 )
     {
 	print "WARNING! Database " . $CONFIG_DEFAULTS{'POSTGRES_DATABASE'} . " already exists!\n";
@@ -565,7 +568,7 @@ else
 $> = 0; 
 $< = 0;      
 
-if ( $opts{$pg_only} )
+if ( $postgresonly )
 {
     print "\nOK, done.\n";
     print "You can now resume the installation on the main DVN host.\n\n";

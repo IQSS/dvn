@@ -28,6 +28,8 @@ public interface StudyFileServiceLocal {
         java.util.List<FileMetadata> getFilesByStudyVersionOrderedById(Long svId);
 
     public Boolean doesStudyHaveSubsettableFiles(Long studyVersionId);
+    public Boolean doesStudyHaveTabularFiles(Long studyVersionId);
+
 
 
     public void addFiles(StudyVersion studyVersion, List<StudyFileEditBean> newFiles, VDCUser user);

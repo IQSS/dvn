@@ -179,14 +179,31 @@ public class StudyFileServiceBean implements StudyFileServiceLocal {
                     return Boolean.TRUE;
             }
 
-            return Boolean.FALSE;
         }
-
-        return null;
+            
+        return Boolean.FALSE;
 
 
     }
 
+    public Boolean doesStudyHaveTabularFiles(Long studyVersionId) {
+        List<String> subsettableList = new ArrayList();
+        Query query = em.createNativeQuery("select fileclass from studyfile sf, filemetadata fmd where fmd.studyfile_id = sf.id and studyversion_id = " + studyVersionId);
+        for (Object currentResult : query.getResultList()) {
+            subsettableList.add( (String)currentResult );
+        }
+
+        if ( !subsettableList.isEmpty() ) {
+            for (String fclass : subsettableList) {
+                if ("TabularDataFile".equals(fclass))
+                    return Boolean.TRUE;
+            }
+
+        }
+
+        return Boolean.FALSE;
+
+    }
 
     public void addFiles(StudyVersion studyVersion, List<StudyFileEditBean> newFiles, VDCUser user) {
         addFiles(studyVersion, newFiles, user, user.getEmail(), DSBIngestMessage.INGEST_MESAGE_LEVEL_ERROR);

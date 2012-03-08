@@ -567,6 +567,9 @@ public class StudyPage extends VDCBaseBean implements java.io.Serializable  {
     public void setStudyService(StudyServiceLocal studyService) {
         this.studyService = studyService;
     }
+    
+    
+    
     /**
      * Holds value of property studyUI.
      */
@@ -963,7 +966,7 @@ public class StudyPage extends VDCBaseBean implements java.io.Serializable  {
             return null; 
         }
         
-        if (studyFileService.doesStudyHaveSubsettableFiles(studyUI.getStudyVersion().getId())) {
+        if (studyFileService.doesStudyHaveTabularFiles(studyUI.getStudyVersion().getId())) {
             return baseMetadataUrl + "?partialExclude=codeBook/dataDscr";
         }
         
@@ -972,8 +975,8 @@ public class StudyPage extends VDCBaseBean implements java.io.Serializable  {
     
     public String getApiMetadataUrl() {
         // For now, we only display these links if a) this is the released 
-        // study version and b) its metadata is not restricted. 
-        
+        // study version and b) its metadata is not restricted.
+                
         if (studyUI.getStudyVersion().isReleased() && !studyUI.getStudy().isRestricted()) {
             
             String httpsHostUrl = getServerHostAndPort(true); 
@@ -1023,9 +1026,7 @@ public class StudyPage extends VDCBaseBean implements java.io.Serializable  {
         // installed.  asadmin then passes this value as a system property when the server
         // is started.
         String myHost = System.getProperty(SystemPropertyConstants.HOST_NAME_PROPERTY);
-        
-        dbgLog.info("StudyPage: retrieved hostname: "+myHost);
-        
+                
         return myHost; 
     }
 

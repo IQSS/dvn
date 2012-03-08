@@ -1581,7 +1581,7 @@ public class StudyVersionDifferencesPage extends VDCBaseBean implements java.io.
 
                             idi = new catalogInfoDifferenceItem();
 
-                            idi.setFieldName(sf1.getName());
+                            idi.setFieldName(sf1.getTitle());
                             idi.setFieldValue1(value1);
                             idi.setFieldValue2(value2);
 
@@ -1608,7 +1608,7 @@ public class StudyVersionDifferencesPage extends VDCBaseBean implements java.io.
 
                             idi = new catalogInfoDifferenceItem();
 
-                            idi.setFieldName(sf2.getName());
+                            idi.setFieldName(sf2.getTitle());
                             idi.setFieldValue1(value1);
                             idi.setFieldValue2(value2);
 

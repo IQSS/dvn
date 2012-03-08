@@ -219,7 +219,7 @@
                               </ice:inputTextarea>
                               <ice:message styleClass="errorMessage" for="input_relatedPublicationText"/>
                             </div>                                
-                            <div jsfc="ice:panelGroup" styleClass="dvnFormPadding">
+                            <div jsfc="ice:panelGroup" styleClass="dvnFormPadding" rendered="#{EditStudyPage.dataTableRelPublications.rowIndex==0}">
                                 <ice:selectBooleanCheckbox binding="#{EditStudyPage.inputRelPublicationReplicationData}" value="#{currentRow.replicationData}" id="input_relatedPublicationReplicationData"/>
                                 <ice:outputLabel value="Replication Data for Original Publication (This will apply &quot;Replication Data for:&quot; to your title)" for="input_relatedPublicationReplicationData"/>
                             </div>

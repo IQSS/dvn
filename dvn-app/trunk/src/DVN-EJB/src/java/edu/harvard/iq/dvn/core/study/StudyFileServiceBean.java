@@ -178,10 +178,13 @@ public class StudyFileServiceBean implements StudyFileServiceLocal {
                 if ("TabularDataFile".equals(fclass) || "NetworkDataFile".equals(fclass))
                     return Boolean.TRUE;
             }
-
+            return Boolean.FALSE;
         }
             
-        return Boolean.FALSE;
+        // It appears (according to Gustavo) that the method does return null 
+        // instead of a Boolean here ON PURPOSE! So leave it be, just be careful
+        // to check for nullness if you're using this. 
+        return null; 
 
 
     }

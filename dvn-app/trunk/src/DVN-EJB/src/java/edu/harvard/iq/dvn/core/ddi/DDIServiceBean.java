@@ -134,6 +134,8 @@ public class DDIServiceBean implements DDIServiceLocal {
     public static final String NOTE_TYPE_LOCKSS_CRAWL = "LOCKSS:CRAWLING";
     public static final String NOTE_SUBJECT_LOCKSS_PERM = "LOCKSS Permission";
 
+    public static final String NOTE_TYPE_REPLICATION_FOR = "DVN:REPLICATION_FOR";
+    
     // db constants
     public static final String DB_VAR_INTERVAL_TYPE_CONTINUOUS = "continuous";
     public static final String DB_VAR_RANGE_TYPE_POINT = "point";
@@ -1238,7 +1240,7 @@ public class DDIServiceBean implements DDIServiceLocal {
         for (StudyRelPublication rp : metadata.getStudyRelPublications()) {
             othrStdyMatAdded = checkParentElement(xmlw, "othrStdyMat", othrStdyMatAdded);
             xmlw.writeStartElement("relPubl");
-            xmlw.writeCharacters( rp.getText() );
+            createInnerCitation(xmlw,rp);
             xmlw.writeEndElement(); // relPubl
         }
         for (StudyOtherRef or : metadata.getStudyOtherRefs()) {
@@ -1250,6 +1252,41 @@ public class DDIServiceBean implements DDIServiceLocal {
 
 
         if (othrStdyMatAdded) xmlw.writeEndElement(); // othrStdyMat
+    }
+    
+    private void createInnerCitation(XMLStreamWriter xmlw, StudyRelPublication publication) throws XMLStreamException {
+        // currently this field only accepts related publications, but could in theory generate a citation for other elements
+        // if we do this, let's creater an interface, and then have StudyRelPublication and others extend that
+        xmlw.writeStartElement("citation");
+        
+        if (StringUtil.isEmpty(publication.getIdNumber())) {
+            xmlw.writeStartElement("titlStmt");
+            xmlw.writeStartElement("IDNo");
+            writeAttribute( xmlw, "agency", publication.getIdType() );
+            xmlw.writeCharacters( publication.getIdNumber() );
+            xmlw.writeEndElement(); // IDNo
+            xmlw.writeEndElement(); // titlStmt
+        }
+        
+        xmlw.writeStartElement("biblCit");
+        xmlw.writeCharacters( publication.getText() );
+        xmlw.writeEndElement(); // biblCit
+        
+        if (StringUtil.isEmpty(publication.getUrl())) {
+            xmlw.writeStartElement("holdings");
+            writeAttribute( xmlw, "URI", publication.getUrl() );
+            xmlw.writeCharacters( publication.getUrl() ); // for now, just put URL here, since we don't have a title for the holdings
+            xmlw.writeEndElement(); // holdings
+        }
+        
+        if (publication.isReplicationData()) {
+            xmlw.writeEmptyElement("notes");
+            writeAttribute( xmlw, "type", NOTE_TYPE_REPLICATION_FOR );
+        }
+        
+        xmlw.writeEndElement(); // citation       
+        
+        
     }
 
     private void createNotes(XMLStreamWriter xmlw, Metadata metadata) throws XMLStreamException {
@@ -2409,10 +2446,20 @@ public class DDIServiceBean implements DDIServiceLocal {
         for (int event = xmlr.next(); event != XMLStreamConstants.END_DOCUMENT; event = xmlr.next()) {
             if (event == XMLStreamConstants.START_ELEMENT) {
                 if (xmlr.getLocalName().equals("relMat")) {
-                    StudyRelMaterial rm = new StudyRelMaterial();
-                    metadata.getStudyRelMaterials().add(rm);
-                    rm.setMetadata(metadata);
-                    rm.setText( parseText( xmlr, "relMat" ) );
+                    // this code is still here to handle imports from old DVN created ddis
+                    if (!replicationForFound && REPLICATION_FOR_TYPE.equals( xmlr.getAttributeValue(null, "type") ) ) {
+                        StudyRelPublication rp = new StudyRelPublication();
+                        metadata.getStudyRelPublications().add(rp);
+                        rp.setMetadata(metadata);
+                        rp.setReplicationData(true);
+                        rp.setText( parseText( xmlr, "relMat" ) );
+                        replicationForFound = true;
+                    } else {                    
+                        StudyRelMaterial rm = new StudyRelMaterial();
+                        metadata.getStudyRelMaterials().add(rm);
+                        rm.setMetadata(metadata);
+                        rm.setText( parseText( xmlr, "relMat" ) );
+                    }
                 } else if (xmlr.getLocalName().equals("relStdy")) {
                     StudyRelStudy rs = new StudyRelStudy();
                     metadata.getStudyRelStudies().add(rs);
@@ -2422,7 +2469,8 @@ public class DDIServiceBean implements DDIServiceLocal {
                     StudyRelPublication rp = new StudyRelPublication();
                     metadata.getStudyRelPublications().add(rp);
                     rp.setMetadata(metadata);
-                    rp.setText( parseText( xmlr, "relPubl" ) );
+                    processInnerDataCitation(xmlr, rp);
+                    //rp.setText( parseText( xmlr, "relPubl" ) ); // TODO: need to make backward compatible with old DDIs
                 } else if (xmlr.getLocalName().equals("otherRefs")) {
                     StudyOtherRef or = new StudyOtherRef();
                     metadata.getStudyOtherRefs().add(or);
@@ -2434,6 +2482,31 @@ public class DDIServiceBean implements DDIServiceLocal {
             }
         }
     }
+    
+    private void processInnerDataCitation(XMLStreamReader xmlr, StudyRelPublication publication) throws XMLStreamException {
+        for (int event = xmlr.next(); event != XMLStreamConstants.END_DOCUMENT; event = xmlr.next()) {
+            if (event == XMLStreamConstants.START_ELEMENT) {
+               if (xmlr.getLocalName().equals("IDNo")) {
+                    publication.setIdType( xmlr.getAttributeValue(null, "agency") );
+                    publication.setIdNumber( parseText(xmlr) );                   
+               }
+                else if (xmlr.getLocalName().equals("biblCit")) {
+                    publication.setText( parseText(xmlr) );                   
+                }
+                else if (xmlr.getLocalName().equals("holdings")) {
+                    publication.setUrl( xmlr.getAttributeValue(null, "URI") );                 
+                }
+                else if (xmlr.getLocalName().equals("notes")) {
+                    if (NOTE_TYPE_REPLICATION_FOR.equals(xmlr.getAttributeValue(null, "type")) ) {
+                        publication.setReplicationData(true);
+                    }
+                }
+            } else if (event == XMLStreamConstants.END_ELEMENT) {
+                if (xmlr.getLocalName().equals("relPubl")) return;
+            }
+        }        
+    }
+    
     private void processFileDscr(XMLStreamReader xmlr, StudyVersion studyVersion, Map filesMap) throws XMLStreamException {
         FileMetadata fmd = new FileMetadata();
         fmd.setStudyVersion(studyVersion);

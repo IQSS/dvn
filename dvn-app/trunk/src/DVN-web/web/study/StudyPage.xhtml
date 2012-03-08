@@ -766,14 +766,16 @@
                                 </ice:outputLink>
                             </div>
                             -->
-                            <div>
+                            <div class="dvn_padTop">
+                                <div class="dvn_padBot">
+                                    <ice:graphicImage value="/resources/images/icon_info.gif" styleClass="dvn_icon"/>
+                                    <ice:outputText value=" Export the Study Metadata in a DDI format (XML). You can use this as you see fit. Enjoy!"/>
+                                </div>
                                 <!--ice:outputLink value="#{studyPage.apiMetadataUrl}" rendered="#{!empty studyPage.apiMetadataUrl}"-->
                                 <ice:outputLink value="http://localhost/foobar">
                                     <ice:outputText value="Study Metadata in DDI format (XML)"/>
                                 </ice:outputLink>
-                            </div>    
-                                
-                
+                            </div>
                         </div>
                     </ice:panelTab>
                     <!-- FILES -->

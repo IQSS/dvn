@@ -769,15 +769,15 @@
                             </div>
                             -->
                             <div jsfc="ice:panelGroup" id="groupPanel16" styleClass="dvn_padTop" rendered="#{!empty studyPage.apiMetadataUrl}">
-                                <div class="dvn_padBot">
+                                <div jsfc="ice:panelGroup" id="groupPanel17" styleClass="dvn_padBot" rendered="#{!empty studyPage.apiMetadataUrlWithoutDataSection}">
                                     <ice:graphicImage value="/resources/images/icon_info.gif" styleClass="dvn_icon"/>
-                                    <ice:outputLink value="#{studyPage.apiMetadataUrlWithoutDataSection}" rendered="#{!empty studyPage.apiMetadataUrlWithoutDataSection}">
+                                    <ice:outputLink value="#{studyPage.apiMetadataUrlWithoutDataSection}">
                                         <ice:outputText value=" Download the cataloging information in XML format (DDI, without variables)"/>
                                     </ice:outputLink>
                                 </div>
                                 <div class="dvn_padBot">
                                     <ice:graphicImage value="/resources/images/icon_info.gif" styleClass="dvn_icon"/>
-                                    <ice:outputLink value="#{studyPage.apiMetadataUrl}" rendered="#{!empty studyPage.apiMetadataUrl}">
+                                    <ice:outputLink value="#{studyPage.apiMetadataUrl}">
                                         <ice:outputText value=" Download the cataloging information in XML format (DDI, full)"/>
                                     </ice:outputLink>
                                 </div>

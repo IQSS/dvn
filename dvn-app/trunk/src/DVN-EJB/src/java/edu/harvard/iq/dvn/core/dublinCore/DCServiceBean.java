@@ -34,6 +34,7 @@ import edu.harvard.iq.dvn.core.study.StudyAbstract;
 import edu.harvard.iq.dvn.core.study.StudyAuthor;
 import edu.harvard.iq.dvn.core.study.StudyGeoBounding;
 import edu.harvard.iq.dvn.core.study.StudyKeyword;
+import edu.harvard.iq.dvn.core.study.StudyOtherRef;
 import edu.harvard.iq.dvn.core.study.StudyProducer;
 import edu.harvard.iq.dvn.core.study.StudyRelMaterial;
 import edu.harvard.iq.dvn.core.study.StudyRelPublication;
@@ -151,21 +152,26 @@ public class DCServiceBean implements DCServiceLocal {
         }
 
         //Relation              
-        for (StudyRelPublication relMaterial : metadata.getStudyRelPublications()) {
+        for (StudyRelPublication rp : metadata.getStudyRelPublications()) {
             xmlw.writeStartElement("dc:relation");
-            xmlw.writeCharacters(relMaterial.getText());
+            xmlw.writeCharacters(rp.getText());
             xmlw.writeEndElement();
         }
-        for (StudyRelMaterial relMaterial : metadata.getStudyRelMaterials()) {
+        for (StudyRelMaterial rm : metadata.getStudyRelMaterials()) {
             xmlw.writeStartElement("dc:relation");
-            xmlw.writeCharacters(relMaterial.getText());
+            xmlw.writeCharacters(rm.getText());
             xmlw.writeEndElement();
         }
-        for (StudyRelStudy relMaterial : metadata.getStudyRelStudies()) {
+        for (StudyRelStudy rs : metadata.getStudyRelStudies()) {
             xmlw.writeStartElement("dc:relation");
-            xmlw.writeCharacters(relMaterial.getText());
+            xmlw.writeCharacters(rs.getText());
             xmlw.writeEndElement();
         }
+        for (StudyOtherRef or : metadata.getStudyOtherRefs()) {
+            xmlw.writeStartElement("dc:relation");
+            xmlw.writeCharacters(or.getText());
+            xmlw.writeEndElement();
+        }        
 
 
         //Subject

@@ -57,7 +57,7 @@ public class MetadataSingletonBean {
         
         if (globalId != null) {
             try {
-                sv = studyService.getStudyVersion(globalId, versionNumber);
+                sv = studyService.getStudyVersion(globalId, null);
                 if (sv != null && sv.getStudy() != null) {
                     // First, verify that they are authorized to download this
                     // metadata record: 
@@ -144,7 +144,7 @@ public class MetadataSingletonBean {
         
         if (studyId != null) {
             try {
-                    sv = studyService.getStudyVersion(studyId, versionNumber);
+                    sv = studyService.getStudyVersion(studyId, null);
                     
                     // Verify lookup and find global study id:
                     if (sv != null && sv.getStudy() != null) {
@@ -389,10 +389,10 @@ public class MetadataSingletonBean {
         // this particular metadata record:
         
         if (study.isStudyRestrictedForUser(user)) {
-            return true;
+            return false;
         }        
         
-        return false;
+        return true;
     }
     // Decodes the Base64 credential string (passed with the request in 
     // the "Authenticate: " header), extracts the username and password, 

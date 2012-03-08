@@ -1098,6 +1098,56 @@ public class StudyVersionDifferencesPage extends VDCBaseBean implements java.io.
 
 			}
 		}
+                
+                // pblications
+		value1 = getStudyUI1().getReplicationFor();
+		value2 = getStudyUI2().getReplicationFor();
+
+		if (value1 != null || value2 != null) {
+			if ((value1 != null && !value1.equals(value2)) ||
+			    (value2 != null && !value2.equals(value1))) {
+
+				if (value1 == null || value1.equals("")) {
+					value1 = "[Empty]";
+				} else if (value2 == null || value2.equals("")) {
+					value2 = "[Empty]";
+				}
+
+				idi = new catalogInfoDifferenceItem();
+
+				idi.setFieldName("Replication For");
+				idi.setFieldValue1(value1);
+				idi.setFieldValue2(value2);
+
+				citationDiffList.add(idi);
+
+			}
+		}
+                
+                value1 = getStudyUI1().getRelPublications();
+		value2 = getStudyUI2().getRelPublications();
+
+		if (value1 != null || value2 != null) {
+			if ((value1 != null && !value1.equals(value2)) ||
+			    (value2 != null && !value2.equals(value1))) {
+
+				if (value1 == null || value1.equals("")) {
+					value1 = "[Empty]";
+				} else if (value2 == null || value2.equals("")) {
+					value2 = "[Empty]";
+				}
+
+				idi = new catalogInfoDifferenceItem();
+
+				idi.setFieldName("Related Publications");
+				idi.setFieldValue1(value1);
+				idi.setFieldValue2(value2);
+
+				abstractandscopeDiffList.add(idi);
+
+			}
+		}                
+
 
     }
 
@@ -1195,30 +1245,6 @@ public class StudyVersionDifferencesPage extends VDCBaseBean implements java.io.
 				idi = new catalogInfoDifferenceItem();
 
 				idi.setFieldName("Topic Classification");
-				idi.setFieldValue1(value1);
-				idi.setFieldValue2(value2);
-
-				abstractandscopeDiffList.add(idi);
-
-			}
-		}
-
-        value1 = getStudyUI1().getRelPublications();
-		value2 = getStudyUI2().getRelPublications();
-
-		if (value1 != null || value2 != null) {
-			if ((value1 != null && !value1.equals(value2)) ||
-			    (value2 != null && !value2.equals(value1))) {
-
-				if (value1 == null || value1.equals("")) {
-					value1 = "[Empty]";
-				} else if (value2 == null || value2.equals("")) {
-					value2 = "[Empty]";
-				}
-
-				idi = new catalogInfoDifferenceItem();
-
-				idi.setFieldName("Related Publications");
 				idi.setFieldValue1(value1);
 				idi.setFieldValue2(value2);
 

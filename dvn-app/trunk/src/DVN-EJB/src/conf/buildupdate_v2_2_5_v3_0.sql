@@ -77,4 +77,7 @@ ALTER table StudyRelPublication ADD COLUMN idType character varying(255);
 ALTER table StudyRelPublication ADD COLUMN idNumber character varying(255);
 ALTER table StudyRelPublication ADD COLUMN url character varying(255);
 ALTER table StudyRelPublication ADD COLUMN replicationData boolean;
-UPDATE StudyRelPublication SET replicationData=false;
+UPDATE StudyRelPublication SET replicationData=false, displayorder = displayorder +1;
+
+-- move old replication for values to study publication table
+insert into studyrelpublication (metadata_id, version, text,displayOrder,replicationdata) select id, 1, replicationfor, 0, true from metadata where replicationfor != '';

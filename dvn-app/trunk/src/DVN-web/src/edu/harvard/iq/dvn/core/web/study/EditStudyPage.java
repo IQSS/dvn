@@ -1822,11 +1822,7 @@ public class EditStudyPage extends VDCBaseBean implements java.io.Serializable  
         if (isValidateRequired()) {
             boolean valid=true;
             if (StringUtil.isEmpty((String)inputRelPublicationText.getLocalValue())
-            && (!((Boolean)inputRelPublicationReplicationData.getLocalValue()).booleanValue()
-             || !StringUtil.isEmpty((String)inputRelPublicationIDType.getLocalValue())
-             || !StringUtil.isEmpty((String)inputRelPublicationIDNumber.getLocalValue())
-             || !StringUtil.isEmpty((String)inputRelPublicationURL.getLocalValue())                    
-             || !StringUtil.isEmpty((String)value) )) {
+            && ((value instanceof String && !StringUtil.isEmpty((String)value))) || (value instanceof Boolean && ((Boolean)value).booleanValue()) ){
                 valid=false;
             }
             if (!valid) {

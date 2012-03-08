@@ -32,11 +32,13 @@ package edu.harvard.iq.dvn.core.web.study;
 import edu.harvard.iq.dvn.core.study.StudyServiceLocal;
 import edu.harvard.iq.dvn.core.study.StudyVersion;
 import edu.harvard.iq.dvn.core.study.FileMetadata;
+import edu.harvard.iq.dvn.core.study.StudyField;
 import edu.harvard.iq.dvn.core.util.FileUtil;
 import java.io.File;
 
 import edu.harvard.iq.dvn.core.web.common.VDCBaseBean;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import javax.ejb.EJB;
 import javax.faces.bean.ViewScoped;
@@ -1099,7 +1101,7 @@ public class StudyVersionDifferencesPage extends VDCBaseBean implements java.io.
 			}
 		}
                 
-                // pblications
+                // publications (forst the replication for, if any)
 		value1 = getStudyUI1().getReplicationFor();
 		value2 = getStudyUI2().getReplicationFor();
 
@@ -1143,7 +1145,7 @@ public class StudyVersionDifferencesPage extends VDCBaseBean implements java.io.
 				idi.setFieldValue1(value1);
 				idi.setFieldValue2(value2);
 
-				abstractandscopeDiffList.add(idi);
+				citationDiffList.add(idi);
 
 			}
 		}                
@@ -1535,6 +1537,18 @@ public class StudyVersionDifferencesPage extends VDCBaseBean implements java.io.
 		}
 
     }
+    
+    private StudyField getandRemoveStudyFieldFromList(List<StudyField> sfList, String name) {
+        for (Iterator<StudyField> it = sfList.iterator(); it.hasNext();) {
+            StudyField sf = it.next();
+            if (sf.getName().equals(name)) {
+                it.remove(); //remove the field from the list as it is already being evaluated 
+                return sf;
+            }
+            
+        }
+        return null;
+    }
 
     private void initDatacollectionDifferencesList () {
         String value1;
@@ -1544,6 +1558,68 @@ public class StudyVersionDifferencesPage extends VDCBaseBean implements java.io.
 
         catalogInfoDifferenceItem idi;
 
+        //CUSTOM FIELDS LOGIC
+        List<StudyField> customFields1 = getStudyUI1().getMetadata().getStudyFields();
+        List<StudyField> customFields2 = getStudyUI2().getMetadata().getStudyFields();
+        
+                
+        for (StudyField sf1 : customFields1) {
+            StudyField sf2 = getandRemoveStudyFieldFromList(customFields2, sf1.getName());
+            
+            value1 = getStudyUI1().getStudyFieldValue(sf1);
+            value2 = sf2 != null ? getStudyUI2().getStudyFieldValue(sf2) : "";
+
+            if (value1 != null || value2 != null) {
+                    if ((value1 != null && !value1.equals(value2)) ||
+                        (value2 != null && !value2.equals(value1))) {
+
+                            if (value1 == null || value1.equals("")) {
+                                    value1 = "[Empty]";
+                            } else if (value2 == null || value2.equals("")) {
+                                    value2 = "[Empty]";
+                            }
+
+                            idi = new catalogInfoDifferenceItem();
+
+                            idi.setFieldName(sf1.getName());
+                            idi.setFieldValue1(value1);
+                            idi.setFieldValue2(value2);
+
+                            datacollectionDiffList.add(idi);
+
+                    }
+            }                   
+        }
+        
+        // now iterate through remaining fields from other metadata
+        for (StudyField sf2 : customFields2) {
+            value1 = ""; // we know this value doesn't exist
+            value2 = getStudyUI2().getStudyFieldValue(sf2);
+
+            if (value1 != null || value2 != null) {
+                    if ((value1 != null && !value1.equals(value2)) ||
+                        (value2 != null && !value2.equals(value1))) {
+
+                            if (value1 == null || value1.equals("")) {
+                                    value1 = "[Empty]";
+                            } else if (value2 == null || value2.equals("")) {
+                                    value2 = "[Empty]";
+                            }
+
+                            idi = new catalogInfoDifferenceItem();
+
+                            idi.setFieldName(sf2.getName());
+                            idi.setFieldValue1(value1);
+                            idi.setFieldValue2(value2);
+
+                            datacollectionDiffList.add(idi);
+
+                    }
+            }                        
+        }        
+        
+        
+        
         // insert auto-generated code here:
  		value1 = getStudyUI1().getMetadata().getTimeMethod();
 		value2 = getStudyUI2().getMetadata().getTimeMethod();

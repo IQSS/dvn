@@ -224,8 +224,11 @@
                               <ice:message styleClass="errorMessage" for="input_relatedPublicationText"/>
                             </div>                                
                             <div jsfc="ice:panelGroup" styleClass="dvnFormPadding" rendered="#{EditStudyPage.dataTableRelPublications.rowIndex==0}">
-                                <ice:selectBooleanCheckbox binding="#{EditStudyPage.inputRelPublicationReplicationData}" value="#{currentRow.replicationData}" id="input_relatedPublicationReplicationData"/>
+                                <ice:selectBooleanCheckbox validator="#{EditStudyPage.validateStudyPublication}" binding="#{EditStudyPage.inputRelPublicationReplicationData}" value="#{currentRow.replicationData}" id="input_relatedPublicationReplicationData"/>
                                 <ice:outputLabel value="Replication Data for Original Publication (This will apply &quot;Replication Data for:&quot; to your title)" for="input_relatedPublicationReplicationData"/>
+                            </div>
+                            <div>
+                                <ice:message styleClass="errorMessage" for="input_relatedPublicationReplicationData"/>
                             </div>
                             <div jsfc="ice:panelGroup" styleClass="vdcEditStudyFieldFloat1">
                               <ice:outputText styleClass="dvnInlineHelpLabel dvnInlineHelpTip" value="#{editstudybundle.relatedPublicationIDTypeLabel}" title="#{editstudybundle.relatedPublicationIDTypeHelpHeading} - #{editstudybundle.relatedPublicationIDTypeHelp}"/>

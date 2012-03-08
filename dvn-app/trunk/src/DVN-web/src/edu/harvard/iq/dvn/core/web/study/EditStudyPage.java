@@ -160,12 +160,10 @@ public class EditStudyPage extends VDCBaseBean implements java.io.Serializable  
             setFiles(editStudyService.getCurrentFiles());
         }
         // Add empty first element to subcollections, so the input text fields will be visible
-        //moved init collections so that the missing controlled vocab error message will only look at the current
-        //metadata - SEK 3-8.
-        metadata.initCollections();
+
         // Initialize map containing required/recommended settings for all fields
         initStudyMap();
-
+        metadata.initCollections();
 
         //  initDvnDates();
        
@@ -1750,7 +1748,12 @@ public class EditStudyPage extends VDCBaseBean implements java.io.Serializable  
             UIComponent toValidate,
             Object value) {
         if (isValidateRequired()) {
-             boolean valid=true;
+             boolean requiredValid = true;
+             boolean countValid=true;
+             
+             if(getInputLevel(StudyFieldConstant.westLongitude).equals("required")){
+                 
+             }
             // if any geographic values are filled, then they all must be filled
             /* - Validation for "all or nothing"
              *
@@ -1776,13 +1779,21 @@ public class EditStudyPage extends VDCBaseBean implements java.io.Serializable  
             if (!StringUtil.isEmpty((String)inputSouthLatitude.getLocalValue())){numLatitude++;}
 
             if (numLatitude != numLongitude) {
-                valid = false;
+                countValid = false;
             }
 
+             if(getInputLevel(StudyFieldConstant.westLongitude).equals("required")  && numLatitude==0 && numLongitude==0 ){
+                 requiredValid = false;
+             }
 
-            if (!valid) {
+            if (!countValid) {
                inputSouthLatitude.setValid(false);
                FacesMessage message = new FacesMessage("Enter a single geographic point or a full bounding box.");
+               context.addMessage(inputSouthLatitude.getClientId(context), message);
+           }
+            if (!requiredValid) {
+               inputSouthLatitude.setValid(false);
+               FacesMessage message = new FacesMessage("Geographic bounding is required.");
                context.addMessage(inputSouthLatitude.getClientId(context), message);
            }
         }

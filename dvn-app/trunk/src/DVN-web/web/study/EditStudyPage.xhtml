@@ -1369,22 +1369,22 @@
                           <div jsfc="ice:panelGroup" styleClass="vdcEditStudyFieldFloat1 vdcEditStudyGroupField">
                             <ice:outputText styleClass="dvnInlineHelpLabel dvnInlineHelpTip" value="#{editstudybundle.westLongitudeLabel}" title="#{editstudybundle.westLongitudeHelpHeading} - #{editstudybundle.westLongitudeHelp}"/>
                             <ice:inputText id="input_westLongitude" binding="#{EditStudyPage.inputWestLongitude}" value="#{EditStudyPage.metadata.studyGeoBoundings[0].westLongitude}"  validator="#{EditStudyPage.validateLongitude}" 
-                                           required="#{EditStudyPage.studyMap[sfc.westLongitude].required and EditStudyPage.validateRequired}" requiredMessage="This field is required." />
+                                            />
                             <ice:message styleClass="errorMessage" for="input_westLongitude"/>
                           </div>
                           <div jsfc="ice:panelGroup" styleClass="vdcEditStudyFieldFloat2 vdcEditStudyGroupField">
                             <ice:outputText styleClass="dvnInlineHelpLabel dvnInlineHelpTip" value="#{editstudybundle.eastLongitudeLabel}" title="#{editstudybundle.eastLongitudeHelpHeading} - #{editstudybundle.eastLongitudeHelp}"/>
-                            <ice:inputText binding="#{EditStudyPage.inputEastLongitude}" id="input_eastLongitude" value="#{EditStudyPage.metadata.studyGeoBoundings[0].eastLongitude}" validator="#{EditStudyPage.validateLongitude}" required="#{EditStudyPage.studyMap[sfc.eastLongitude].required and EditStudyPage.validateRequired}" requiredMessage="This field is required." />
+                            <ice:inputText binding="#{EditStudyPage.inputEastLongitude}" id="input_eastLongitude" value="#{EditStudyPage.metadata.studyGeoBoundings[0].eastLongitude}" validator="#{EditStudyPage.validateLongitude}"  />
                             <ice:message styleClass="errorMessage" for="input_eastLongitude"/>
                           </div>
                           <div jsfc="ice:panelGroup" styleClass="vdcEditStudyFieldFloat1 vdcEditStudyFieldFloat3 vdcEditStudyGroupField">
                             <ice:outputText styleClass="dvnInlineHelpLabel dvnInlineHelpTip" value="#{editstudybundle.northLatitudeLabel}" title="#{editstudybundle.northLatitudeHelpHeading} - #{editstudybundle.northLatitudeHelp}"/>
-                            <ice:inputText binding="#{EditStudyPage.inputNorthLatitude}" id="input_northLatitude" value="#{EditStudyPage.metadata.studyGeoBoundings[0].northLatitude}" validator="#{EditStudyPage.validateLatitude}" required="#{EditStudyPage.studyMap[sfc.northLatitude].required and EditStudyPage.validateRequired}" requiredMessage="This field is required." />
+                            <ice:inputText binding="#{EditStudyPage.inputNorthLatitude}" id="input_northLatitude" value="#{EditStudyPage.metadata.studyGeoBoundings[0].northLatitude}" validator="#{EditStudyPage.validateLatitude}"   />
                             <ice:message styleClass="errorMessage" for="input_northLatitude"/>
                           </div>
                           <div jsfc="ice:panelGroup" styleClass="vdcEditStudyFieldFloat2 vdcEditStudyGroupField">
                             <ice:outputText styleClass="dvnInlineHelpLabel dvnInlineHelpTip" value="#{editstudybundle.southLatitudeLabel}" title="#{editstudybundle.southLatitudeHelpHeading} - #{editstudybundle.southLatitudeHelp}"/>
-                            <ice:inputText binding="#{EditStudyPage.inputSouthLatitude}" id="input_southLatitude" value="#{EditStudyPage.metadata.studyGeoBoundings[0].southLatitude}" validator="#{EditStudyPage.validateLatitude}"  required="#{EditStudyPage.studyMap[sfc.southLatitude].required and EditStudyPage.validateRequired}" requiredMessage="This field is required." />
+                            <ice:inputText binding="#{EditStudyPage.inputSouthLatitude}" id="input_southLatitude" value="#{EditStudyPage.metadata.studyGeoBoundings[0].southLatitude}" validator="#{EditStudyPage.validateLatitude}"    />
                             <ice:message styleClass="errorMessage" for="input_southLatitude"/>
                           </div>
                       </div>

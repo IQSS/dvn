@@ -634,7 +634,7 @@ public class StudyUI  implements java.io.Serializable {
         }
 
         if (!StringUtil.isEmpty(publication.getUrl())) {
-            str += ", <a href='" + publication.getUrl() + "' target='_blank' title='" + publication.getUrl() + "'>" + publication.getUrl() + "</a>";
+            str += " <a href='" + publication.getUrl() + "' target='_blank' title='" + publication.getUrl() + "'>Link</a>";
         }              
 
         return str;        

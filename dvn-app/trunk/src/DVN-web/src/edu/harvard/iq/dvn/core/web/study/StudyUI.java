@@ -594,19 +594,53 @@ public class StudyUI  implements java.io.Serializable {
         return str;
     }
     
+    public String getReplicationFor() {
+        String str = "";
+        for (Iterator<StudyRelPublication> it = getMetadata().getStudyRelPublications().iterator(); it.hasNext();) {
+            StudyRelPublication elem = it.next();
+            if (elem.isReplicationData() && !StringUtil.isEmpty(elem.getText())) {
+                if (str != "") {
+                    str += "; ";
+                }
+                str += getPublication(elem);
+                break;
+            }
+            
+        }
+        return str;       
+    }
+    
     public String getRelPublications() {
         String str = "";
         for (Iterator<StudyRelPublication> it = getMetadata().getStudyRelPublications().iterator(); it.hasNext();) {
             StudyRelPublication elem = it.next();
-            if (!StringUtil.isEmpty(elem.getText())) {
+            if (!elem.isReplicationData() && !StringUtil.isEmpty(elem.getText())) {
                 if (str != "") {
                     str += "; ";
                 }
-                str += elem.getText();
+                str += getPublication(elem);
             }
             
         }
         return str;
+    }
+    
+    private String getPublication(StudyRelPublication publication) {
+        String str = publication.getText();
+
+        if (!StringUtil.isEmpty(publication.getIdNumber())) {                
+            str += " (";
+            if (!StringUtil.isEmpty(publication.getIdType())) {
+                str += publication.getIdType() + ":";
+            }
+            str += publication.getIdNumber() + ")";
+        }
+
+        if (!StringUtil.isEmpty(publication.getUrl())) {
+            str += ", <a href='" + publication.getUrl() + "' target='_blank' title='" + publication.getUrl() + "'>" + publication.getUrl() + "</a>";
+        }              
+
+        return str;        
     }
     
     public String getRelMaterials() {

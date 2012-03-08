@@ -1462,9 +1462,9 @@
                                  styleClass="vdcEditStudyTable" columnClasses="vdcEditStudyCol1, vdcEditStudyCol2, vdcEditStudyCol3"
                                  value="#{customFieldsDataModel[1]}" var="customValuesDataModel">
                     <ice:column styleClass="vdcEditStudyField">
-                       <ice:outputText styleClass="dvnInlineHelpLabel dvnInlineHelpTip" value="#{customFieldsDataModel[0].studyField.name}" 
+                       <ice:outputText styleClass="dvnInlineHelpLabel dvnInlineHelpTip" value="#{customFieldsDataModel[0].studyField.title}" 
                                           rendered="#{customFieldsDataModel[1].rowIndex==0}"
-                                        title="#{customFieldsDataModel[0].studyField.name} - #{customFieldsDataModel[0].studyField.description}"/>
+                                        title="#{customFieldsDataModel[0].studyField.title} - #{customFieldsDataModel[0].studyField.description}"/>
                        <ice:graphicImage value="/resources/images/icon_required.gif" rendered="#{customFieldsDataModel[0].required and (customFieldsDataModel[1].rowIndex==0)}"/>
                        <ice:graphicImage value="/resources/images/icon_recommended.gif" rendered="#{customFieldsDataModel[0].recommended and (customFieldsDataModel[1].rowIndex==0)}"/>
                     </ice:column>
@@ -1535,8 +1535,8 @@
                              rendered="#{!empty(customFieldsDataModel[0].controlledVocabulary) and (TemplateFormPage.networkEdit or customFieldsDataModel[0].fieldInputLevelString != 'disabled')}"
                              columnClasses="vdcEditStudyCol1, vdcEditStudyCol2, vdcEditStudyCol3">
                     <ice:column styleClass="vdcEditStudyField">                          
-                        <ice:outputText styleClass="dvnInlineHelpLabel dvnInlineHelpTip" value="#{customFieldsDataModel[0].studyField.name}" 
-                                        title="#{customFieldsDataModel[0].studyField.name} - #{customFieldsDataModel[0].studyField.description}"/>
+                        <ice:outputText styleClass="dvnInlineHelpLabel dvnInlineHelpTip" value="#{customFieldsDataModel[0].studyField.description}" 
+                                        title="#{customFieldsDataModel[0].studyField.name} - #{customFieldsDataModel[0].studyField.title}"/>
                         <ice:graphicImage value="/resources/images/icon_required.gif" rendered="#{customFieldsDataModel[0].required}"/>
                         <ice:graphicImage value="/resources/images/icon_recommended.gif" rendered="#{customFieldsDataModel[0].recommended}"/>
                     </ice:column>

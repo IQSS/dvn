@@ -102,6 +102,78 @@
                 </ice:column>
               </ice:panelGrid>
               
+              <ice:dataTable cellpadding="0" cellspacing="0" width="100%"
+                                 styleClass="vdcEditStudyTable"   
+                                                                           value="dummy_datatable">
+                    <ice:column>
+                      <ice:dataTable cellpadding="0" cellspacing="0"
+                                     styleClass="vdcEditStudyInnerTable" columnClasses="vdcEditStudyCol1b, vdcEditStudyCol2, vdcEditStudyCol3"
+                                     binding="#{TemplateFormPage.dataTableRelPublications}"
+                                     value="#{TemplateFormPage.template.metadata.studyRelPublications}" var="currentRow" width="100%">
+                        <ice:column>
+                          <div jsfc="ice:panelGroup" styleClass="vdcEditStudyField">
+                            <ice:outputText styleClass="dvnInlineHelpLabel dvnInlineHelpTip" value="#{editstudybundle.relatedPublicationLabel}" title="#{editstudybundle.relatedPublicationHelpHeading} - #{editstudybundle.relatedPublicationHelp}"/>
+                            <ice:graphicImage value="/resources/images/icon_required.gif" rendered="#{TemplateFormPage.studyMap[sfc.relatedPublications].required}"/>
+                            <ice:graphicImage value="/resources/images/icon_recommended.gif" rendered="#{TemplateFormPage.studyMap[sfc.relatedPublications].recommended}"/>
+                          </div>
+                        </ice:column>
+                        <ice:column>
+                          <div jsfc="ice:panelGroup" styleClass="vdcEditStudyFieldFloatWrap">
+                            <div jsfc="ice:panelGroup">
+                               <ice:outputText styleClass="dvnInlineHelpLabel dvnInlineHelpTip" value="#{editstudybundle.relatedPublicationTextLabel}" title="#{editstudybundle.relatedPublicationTextHelpHeading} - #{editstudybundle.relatedPublicationTextHelp}"/>
+                               <ice:inputTextarea cols="90" rows="4"
+                                               id="input_relatedPublicationText"
+                                               binding="#{TemplateFormPage.inputRelPublicationText}"
+                                               value="#{currentRow.text}"
+                                               required="#{TemplateFormPage.studyMap[sfc.relatedPublications].required and TemplateFormPage.validateRequired}" requiredMessage="This field is required."
+                                               styleClass="formHtmlEnabled">
+                                <f:validator validatorId="XhtmlValidator"/>
+                              </ice:inputTextarea>
+                              <ice:message styleClass="errorMessage" for="input_relatedPublicationText"/>
+                            </div>                                
+                            <div jsfc="ice:panelGroup" styleClass="dvnFormPadding" rendered="#{TemplateFormPage.dataTableRelPublications.rowIndex==0}">
+                                <ice:selectBooleanCheckbox binding="#{TemplateFormPage.inputRelPublicationReplicationData}" value="#{currentRow.replicationData}" id="input_relatedPublicationReplicationData"/>
+                                <ice:outputLabel value="Replication Data for Original Publication (This will apply &quot;Replication Data for:&quot; to your title)" for="input_relatedPublicationReplicationData"/>
+                            </div>
+                            <div jsfc="ice:panelGroup" styleClass="vdcEditStudyFieldFloat1">
+                              <ice:outputText styleClass="dvnInlineHelpLabel dvnInlineHelpTip" value="#{editstudybundle.relatedPublicationIDTypeLabel}" title="#{editstudybundle.relatedPublicationIDTypeHelpHeading} - #{editstudybundle.relatedPublicationIDTypeHelp}"/>
+                              <ice:selectOneMenu validator="#{TemplateFormPage.validateStudyPublication}" binding="#{TemplateFormPage.inputRelPublicationIDType}" id="input_relatedPublicationIDType" value="#{currentRow.idType}" required="#{TemplateFormPage.studyMap[sfc.relatedPublications].required}" requiredMessage="This field is required.">
+                                <f:selectItem itemLabel="Select" itemValue=""/>
+                                <f:selectItem itemLabel="DOI" itemValue="DOI"/>
+                                <f:selectItem itemLabel="arXiv" itemValue="ArXiv"/>
+                              </ice:selectOneMenu>
+                              <ice:message styleClass="errorMessage" for="input_relatedPublicationIDType"/>
+                            </div>
+                            <div jsfc="ice:panelGroup" styleClass="vdcEditStudyFieldFloat2 vdcEditStudyGroupField">
+                              <ice:outputText styleClass="dvnInlineHelpLabel dvnInlineHelpTip" value="#{editstudybundle.relatedPublicationIDNumberLabel}" title="#{editstudybundle.relatedPublicationIDNumberHelpHeading} - #{editstudybundle.relatedPublicationIDNumberHelp}"/>
+                              <ice:inputText validator="#{TemplateFormPage.validateStudyPublication}" binding="#{TemplateFormPage.inputRelPublicationIDNumber}" id="input_relatedPublicationIDNumber" value="#{currentRow.idNumber}" required="#{TemplateFormPage.studyMap[sfc.relatedPublications].required and TemplateFormPage.validateRequired}"  requiredMessage="This field is required." maxlength="255"/>
+                              <ice:message styleClass="errorMessage" for="input_relatedPublicationIDNumber"/>
+                            </div>                            
+                            <div jsfc="ice:panelGroup" styleClass="vdcEditStudyFieldFloat3 vdcEditStudyGroupField">
+                              <ice:outputText styleClass="dvnInlineHelpLabel dvnInlineHelpTip" value="#{editstudybundle.relatedPublicationURLLabel}" title="#{editstudybundle.relatedPublicationURLHeading} - #{editstudybundle.relatedPublicationURLHelp}"/>
+                              <ice:inputText id="input_relatedPublicationURL"
+                                             validator="#{TemplateFormPage.validateStudyPublication}"
+                                             binding="#{TemplateFormPage.inputRelPublicationURL}"
+                                             size="45"
+                                             maxlength="255"
+                                             value="#{currentRow.url}"
+                                             required="#{TemplateFormPage.studyMap[sfc.relatedPublications].required and TemplateFormPage.validateRequired}" requiredMessage="This field is required." >
+                                <f:validator validatorId="UrlValidator"/>
+                              </ice:inputText>
+                              <ice:outputText styleClass="vdcEditStudyFormatExample" value="(http://example-domain.edu/)"/>
+                              <ice:message styleClass="errorMessage" for="input_relatedPublicationURL"/>
+                            </div>
+                          </div>                            
+                        </ice:column>
+                        <ice:column>
+                          <ice:commandButton image="/resources/images/icon_add.gif" actionListener="#{TemplateFormPage.addRow}"/>
+                          <ice:commandButton rendered="#{TemplateFormPage.dataTableRelPublications.rowCount gt 1}" image="/resources/images/icon_remove.gif" actionListener="#{TemplateFormPage.removeRow}" />
+                        </ice:column>
+                      </ice:dataTable>
+                    </ice:column>
+                  </ice:dataTable>                 
+
+              
 
               <div id="groupPanel9" class="vdcStudyInfoHeader">
                 <ice:outputText id="outputText26" value="Citation Information"/>
@@ -902,49 +974,7 @@
                 </ice:column>
               </ice:dataTable>
 
-              <!-- this is a dummy datatable wrapper used to force data retention on validation error-->
-              <ice:dataTable cellpadding="0" cellspacing="0" width="100%"
-                             styleClass="vdcEditStudyTable"
-                             rendered="#{TemplateFormPage.networkEdit or 
-                                TemplateFormPage.studyMap[sfc.relatedPublications].templateField.fieldInputLevelString != 'disabled'}"
-                             rowClasses="#{TemplateFormPage.studyMap[sfc.relatedPublications].templateField.fieldInputLevelString}" value="dummy_datatable">
-                <ice:column>
-                  <ice:dataTable cellpadding="0" cellspacing="0" width="100%"
-                                 styleClass="vdcEditStudyInnerTable" columnClasses="vdcEditStudyCol1b, vdcEditStudyCol2, vdcEditStudyCol3"
-                                 binding="#{TemplateFormPage.dataTableRelPublications}"
-                                 value="#{TemplateFormPage.template.metadata.studyRelPublications}" var="currentRow">
-                    <ice:column>
-                      <div class="vdcEditStudyField">
-                        <ice:outputText styleClass="dvnInlineHelpLabel dvnInlineHelpTip" value="#{editstudybundle.relatedPublicationsLabel}" title="#{editstudybundle.relatedPublicationsHelpHeading} - #{editstudybundle.relatedPublicationsHelp}"/>
-                        <ice:graphicImage value="/resources/images/icon_required.gif" rendered="#{TemplateFormPage.studyMap[sfc.relatedPublications].required}"/>
-                        <ice:graphicImage value="/resources/images/icon_recommended.gif" rendered="#{TemplateFormPage.studyMap[sfc.relatedPublications].recommended}"/>
-                      </div>
-                    </ice:column>
-                    <ice:column>
-                      <div>
-                        <ice:inputTextarea cols="90" rows="4"
-                                           id="input_relatedPublications"
-                                           binding="#{TemplateFormPage.inputRelPublicationName}"
-                                           value="#{currentRow.text}"
-                                           styleClass="formHtmlEnabled">
-                          <f:validator validatorId="XhtmlValidator"/>
-                        </ice:inputTextarea>
-                        <ice:message styleClass="errorMessage" for="input_relatedPublications"/>
-                      </div>
-                    </ice:column>
-                    <ice:column>
-                      <ice:commandButton partialSubmit="true" alt="Add Row" title="Add Row" image="/resources/images/icon_add.gif" actionListener="#{TemplateFormPage.addRow}"/>
-                      <ice:commandButton partialSubmit="true" rendered="#{TemplateFormPage.dataTableRelPublications.rowCount gt 1}" alt="Remove Row" title="Remove Row" image="/resources/images/icon_remove.gif" actionListener="#{TemplateFormPage.removeRow}"/>
-                      <ice:selectOneMenu immediate="false" partialSubmit="true" 
-                                        value="#{TemplateFormPage.studyMap[sfc.relatedPublications].templateField.fieldInputLevelString}"
-                                        rendered ="#{TemplateFormPage.dataTableRelPublications.rowIndex==0}">
-                            <f:attribute name="fieldName" value="relatedPublications" />
-                           <f:selectItems value="#{TemplateFormPage.fieldInputLevelSelectItems}"/>
-                      </ice:selectOneMenu>
-                    </ice:column>
-                  </ice:dataTable>
-                </ice:column>
-              </ice:dataTable>
+<!--Removed related publications re-add in new format above-->
 
               <!-- this is a dummy datatable wrapper used to force data retention on validation error-->
               <ice:dataTable cellpadding="0" cellspacing="0" width="100%"

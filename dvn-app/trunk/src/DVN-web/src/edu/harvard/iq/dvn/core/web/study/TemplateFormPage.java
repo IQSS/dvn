@@ -801,7 +801,6 @@ public class TemplateFormPage extends VDCBaseBean implements java.io.Serializabl
                StudyFieldConstant.topicClassValue,
                StudyFieldConstant.topicClassVocab,
                StudyFieldConstant.topicClassVocabURI,
-               StudyFieldConstant.relatedPublications,
                StudyFieldConstant.relatedMaterial,
                StudyFieldConstant.relatedStudies,
                StudyFieldConstant.otherReferences,
@@ -1488,6 +1487,57 @@ public class TemplateFormPage extends VDCBaseBean implements java.io.Serializabl
     /**
      * Holds value of property dataTableRelPublications.
      */
+        /**
+     * Holds value of property inputRelPublicationName.
+     */
+    private HtmlInputTextarea inputRelPublicationText;
+    private HtmlSelectBooleanCheckbox inputRelPublicationReplicationData;
+    private HtmlSelectOneMenu inputRelPublicationIDType;
+    private HtmlInputText inputRelPublicationIDNumber;
+    private HtmlInputText inputRelPublicationURL;
+
+    public HtmlInputText getInputRelPublicationIDNumber() {
+        return inputRelPublicationIDNumber;
+    }
+
+    public void setInputRelPublicationIDNumber(HtmlInputText inputRelPublicationIDNumber) {
+        this.inputRelPublicationIDNumber = inputRelPublicationIDNumber;
+    }
+
+    public HtmlSelectOneMenu getInputRelPublicationIDType() {
+        return inputRelPublicationIDType;
+    }
+
+    public void setInputRelPublicationIDType(HtmlSelectOneMenu inputRelPublicationIDType) {
+        this.inputRelPublicationIDType = inputRelPublicationIDType;
+    }
+
+    public HtmlSelectBooleanCheckbox getInputRelPublicationReplicationData() {
+        return inputRelPublicationReplicationData;
+    }
+
+    public void setInputRelPublicationReplicationData(HtmlSelectBooleanCheckbox inputRelPublicationReplicationData) {
+        this.inputRelPublicationReplicationData = inputRelPublicationReplicationData;
+    }
+
+    public HtmlInputTextarea getInputRelPublicationText() {
+        return inputRelPublicationText;
+    }
+
+    public void setInputRelPublicationText(HtmlInputTextarea inputRelPublicationText) {
+        this.inputRelPublicationText = inputRelPublicationText;
+    }
+
+    public HtmlInputText getInputRelPublicationURL() {
+        return inputRelPublicationURL;
+    }
+
+    public void setInputRelPublicationURL(HtmlInputText inputRelPublicationURL) {
+        this.inputRelPublicationURL = inputRelPublicationURL;
+    }
+    
+    
+    
     private HtmlDataTable dataTableRelPublications;
     
     /**

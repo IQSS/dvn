@@ -192,15 +192,58 @@ public class TemplateFormPage extends VDCBaseBean implements java.io.Serializabl
     }
     
     public void initStudyMap() {
+        controlledVocabularyUpdateMessage = "";
         studyMap = new HashMap();
         for (Iterator<TemplateField> it =template.getTemplateFields().iterator(); it.hasNext();) {
             TemplateField tf = it.next();
             StudyMapValue smv = new StudyMapValue();
             smv.setTemplateFieldUI(new TemplateFieldUI(tf));
             if(!tf.getStudyField().isCustomField()){
-                studyMap.put(tf.getStudyField().getName(),smv);              
-            }           
+                studyMap.put(tf.getStudyField().getName(),smv); 
+
+            } else {
+                if (tf.getControlledVocabulary() !=null){
+                    verifyControlledVocabValues(tf);
+                }
+            }          
         } 
+    }
+    
+    private String controlledVocabularyUpdateMessage = "";
+
+    public String getControlledVocabularyUpdateMessage() {
+        return controlledVocabularyUpdateMessage;
+    }
+
+    public void setControlledVocabularyUpdateMessage(String controlledVocabularyUpdateMessage) {
+        this.controlledVocabularyUpdateMessage = controlledVocabularyUpdateMessage;
+    }
+    
+    
+    private void verifyControlledVocabValues(TemplateField tfIn){
+        StudyField studyField = tfIn.getStudyField();
+        List <String> errorList = new ArrayList();
+        boolean inControlledVocab = false;
+        for (String studyFieldValue: studyField.getStudyFieldValueStrings()){
+            inControlledVocab = false;
+            for (ControlledVocabularyValue controlledVocabValue : tfIn.getControlledVocabulary().getControlledVocabularyValues() ){
+                if(studyFieldValue.equals(controlledVocabValue.getValue())){
+                    inControlledVocab = true;
+                }
+            }
+            if(!inControlledVocab){
+                String errorMessage = studyField.getName() +  " has had value " + studyFieldValue + " removed from its controlled vocabulary.";
+                errorList.add(errorMessage);
+            }
+        }  
+        if (!errorList.isEmpty()){
+            controlledVocabularyUpdateMessage = "Please review the following data entries: ";
+            for (String message : errorList){
+                controlledVocabularyUpdateMessage += message;
+            }
+        }
+        
+
     }
             
     public List<SelectItem> loadFieldInputLevelSelectItems() {

@@ -38,6 +38,11 @@
                 </div>
               </div>
                 <!-- validation errors occurred? -->
+                <div id="messagePanelControlledVocab" class="errorMessage">
+                  <ice:outputText value="#{TemplateFormPage.controlledVocabularyUpdateMessage}" 
+                                  rendered="#{!empty TemplateFormPage.controlledVocabularyUpdateMessage}"/>
+              </div>
+                
                 <div id="messagePanel" class="errorMessage">
                   <ice:outputText value="Please check messages below" rendered="#{!empty facesContext.maximumSeverity}"/>
                 </div>

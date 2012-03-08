@@ -265,10 +265,6 @@ public class Metadata implements java.io.Serializable {
             this.setProductionPlace(source.productionPlace);
         }
 
-        if (copyField(tfMap.get(StudyFieldConstant.replicationFor), copyHidden, copyDisabled)) {
-            this.setReplicationFor(source.replicationFor);
-        }
-
         if (copyField(tfMap.get(StudyFieldConstant.researchInstrument), copyHidden, copyDisabled)) {
             this.setResearchInstrument(source.researchInstrument);
         }
@@ -594,7 +590,6 @@ public class Metadata implements java.io.Serializable {
         this.setPlaceOfAccess(source.placeOfAccess);
         this.setProductionDate(source.productionDate);
         this.setProductionPlace(source.productionPlace);
-        this.setReplicationFor(source.replicationFor);
         this.setResearchInstrument(source.researchInstrument);
         this.setResponseRate(source.responseRate);
         this.setRestrictions(source.restrictions);
@@ -2327,29 +2322,6 @@ public class Metadata implements java.io.Serializable {
  
     
     /**
-     * Holds value of property replicationFor.
-     */
-    @Column(columnDefinition="TEXT")
-    private String replicationFor;
-    
-    /**
-     * Getter for property replicationFor.
-     * @return Value of property replicationFor.
-     */
-    
-    public String getReplicationFor() {
-        return this.replicationFor;
-    }
-    
-    /**
-     * Setter for property replicationFor.
-     * @param replicationFor New value of property replicationFor.
-     */
-    public void setReplicationFor(String replicationFor) {
-        this.replicationFor = replicationFor;
-    }
-    
-    /**
      * Holds value of property subTitle.
      */
     @Column(columnDefinition="TEXT")
@@ -2912,7 +2884,7 @@ public class Metadata implements java.io.Serializable {
             }
             
         }
-            
+                
         return studyFields;
     }
     

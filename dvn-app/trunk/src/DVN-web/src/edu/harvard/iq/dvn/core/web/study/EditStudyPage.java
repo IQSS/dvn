@@ -351,7 +351,7 @@ public class EditStudyPage extends VDCBaseBean implements java.io.Serializable  
                 }
             }
             if(!inControlledVocab){
-                errorMessage += studyField.getName() +  " has had value " + studyFieldValue + " removed from its controlled vocabulary.  ";
+                errorMessage += "<br></br>" + studyField.getName() +  " has had value " + studyFieldValue + " removed from its controlled vocabulary.";
             }
         }          
         return errorMessage;

@@ -584,8 +584,6 @@ public class SetUpDataExplorationPage extends VDCBaseBean implements java.io.Ser
                     if (varGroupingUI.getVarGrouping() == (varGroupType.getVarGrouping())){
                         varGroupingUI.getVarGroupTypesUI().remove(varGroupTypeUI2);
                         varGroupingUI.getVarGrouping().getVarGroupTypes().remove(varGroupType);
-                        dataTableManageFilterGroupType.setValue(varGroupingUI.getVarGroupTypesUI());
-                        dataTable2.setValue(varGroupingUI.getVarGroupTypesUI());
                     }
                 }
                  if (editFilterVarGroup !=null &&  editFilterVarGroup.getVarGroup() != null){
@@ -1470,16 +1468,12 @@ public class SetUpDataExplorationPage extends VDCBaseBean implements java.io.Ser
         for(VarGroupingUI varGroupingUI: filterGroupings){
              if (varGroupingUI.getVarGrouping() == newElem.getVarGrouping()){
                 varGroupingUI.getVarGroupTypesUI().add(varGroupTypeUI);
-                dataTableManageFilterGroupType.setValue(varGroupingUI.getVarGroupTypesUI());
                 varGroupingUI.getVarGrouping().getVarGroupTypes().add(newElem);
              }
          }
         if (groupEdit){           
             addNewTypeToGroupUI(editFilterVarGroup, varGroupTypeUI);
-            dataTableFilterGroupType.setValue(editFilterVarGroup.getVarGroupTypes());
         }
-
-        dataTableFilterGrouping.getChildren().clear();
 
         addFilterType = false;
         edited = true;

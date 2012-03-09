@@ -71,6 +71,7 @@ INSERT INTO metadataformattype (id, name, mimetype, namespace, formatschema, par
 UPDATE studyfield set name = 'notesInformationType' where name = 'NotesInformationType';
 UPDATE studyfield set name = 'notesInformationSubject' where name = 'NotesInformationSubject';
 UPDATE studyfield set name = 'notesText' where name = 'NotesText';
+UPDATE studyfield set title=description WHERE description != '';
 
 --new columns to related publications
 ALTER table StudyRelPublication ADD COLUMN idType character varying(255);

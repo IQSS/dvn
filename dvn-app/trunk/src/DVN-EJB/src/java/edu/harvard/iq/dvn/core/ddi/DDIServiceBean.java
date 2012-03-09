@@ -90,6 +90,8 @@ public class DDIServiceBean implements DDIServiceLocal {
     @EJB VDCNetworkServiceLocal vdcNetworkService;
 
     // ddi constants
+    public static final String SOURCE_DVN_3_0 = "DVN_3_0";
+    
     public static final String AGENCY_HANDLE = "handle";
     public static final String REPLICATION_FOR_TYPE = "replicationFor";
     public static final String VAR_WEIGHTED = "wgtd";
@@ -1258,6 +1260,7 @@ public class DDIServiceBean implements DDIServiceLocal {
         // currently this field only accepts related publications, but could in theory generate a citation for other elements
         // if we do this, let's creater an interface, and then have StudyRelPublication and others extend that
         xmlw.writeStartElement("citation");
+        writeAttribute( xmlw, "source", SOURCE_DVN_3_0 );
         
         if (StringUtil.isEmpty(publication.getIdNumber())) {
             xmlw.writeStartElement("titlStmt");
@@ -2469,8 +2472,19 @@ public class DDIServiceBean implements DDIServiceLocal {
                     StudyRelPublication rp = new StudyRelPublication();
                     metadata.getStudyRelPublications().add(rp);
                     rp.setMetadata(metadata);
-                    processInnerDataCitation(xmlr, rp);
-                    //rp.setText( parseText( xmlr, "relPubl" ) ); // TODO: need to make backward compatible with old DDIs
+                    
+                    // call new parse text logic
+                    Object rpFromDDI = parseTextNew( xmlr, "relPubl" );
+                    if (rpFromDDI instanceof Map) {
+                      Map rpMap = (Map) rpFromDDI;
+                      rp.setText((String) rpMap.get("text"));
+                      rp.setIdType((String) rpMap.get("idType"));
+                      rp.setIdNumber((String) rpMap.get("idNumber"));
+                      rp.setUrl((String) rpMap.get("url"));
+                      rp.setReplicationData( (rpMap.get("replicationData") != null ));
+                    } else {
+                        rp.setText( (String) rpFromDDI );
+                    }
                 } else if (xmlr.getLocalName().equals("otherRefs")) {
                     StudyOtherRef or = new StudyOtherRef();
                     metadata.getStudyOtherRefs().add(or);
@@ -2483,29 +2497,6 @@ public class DDIServiceBean implements DDIServiceLocal {
         }
     }
     
-    private void processInnerDataCitation(XMLStreamReader xmlr, StudyRelPublication publication) throws XMLStreamException {
-        for (int event = xmlr.next(); event != XMLStreamConstants.END_DOCUMENT; event = xmlr.next()) {
-            if (event == XMLStreamConstants.START_ELEMENT) {
-               if (xmlr.getLocalName().equals("IDNo")) {
-                    publication.setIdType( xmlr.getAttributeValue(null, "agency") );
-                    publication.setIdNumber( parseText(xmlr) );                   
-               }
-                else if (xmlr.getLocalName().equals("biblCit")) {
-                    publication.setText( parseText(xmlr) );                   
-                }
-                else if (xmlr.getLocalName().equals("holdings")) {
-                    publication.setUrl( xmlr.getAttributeValue(null, "URI") );                 
-                }
-                else if (xmlr.getLocalName().equals("notes")) {
-                    if (NOTE_TYPE_REPLICATION_FOR.equals(xmlr.getAttributeValue(null, "type")) ) {
-                        publication.setReplicationData(true);
-                    }
-                }
-            } else if (event == XMLStreamConstants.END_ELEMENT) {
-                if (xmlr.getLocalName().equals("relPubl")) return;
-            }
-        }        
-    }
     
     private void processFileDscr(XMLStreamReader xmlr, StudyVersion studyVersion, Map filesMap) throws XMLStreamException {
         FileMetadata fmd = new FileMetadata();
@@ -3234,7 +3225,13 @@ public class DDIServiceBean implements DDIServiceLocal {
      }
 
      private String parseText(XMLStreamReader xmlr, String endTag) throws XMLStreamException {
+         return (String) parseTextNew(xmlr,endTag);
+     }
+     
+     
+     private Object parseTextNew(XMLStreamReader xmlr, String endTag) throws XMLStreamException {
         String returnString = "";
+        Map returnMap = null;
 
         while (true) {
             if (!returnString.equals("")) { returnString += "\n";}
@@ -3255,6 +3252,9 @@ public class DDIServiceBean implements DDIServiceLocal {
                 } else if (xmlr.getLocalName().equals("list")) {
                     returnString += parseText_list(xmlr);
                 } else if (xmlr.getLocalName().equals("citation")) {
+                    if (SOURCE_DVN_3_0.equals(xmlr.getAttributeValue(null, "source")) ) {
+                        returnMap = processDVNCitation(xmlr);
+                }
                     returnString += parseText_citation(xmlr);
                 } else {
                     throw new EJBException("ERROR occurred in mapDDI (parseText): tag not yet supported: <" + xmlr.getLocalName() + ">" );
@@ -3263,7 +3263,13 @@ public class DDIServiceBean implements DDIServiceLocal {
                 if (xmlr.getLocalName().equals(endTag)) break;
             }
         }
-
+        
+        if (returnMap != null) {
+            // this is one of our new citation areas for DVN3.0
+            return returnMap;
+        }
+        
+        // otherwise it's a standard section and just return the String like we always did
         return returnString;
     }
 
@@ -3348,6 +3354,34 @@ public class DDIServiceBean implements DDIServiceLocal {
 
         return citation;
     }
+    
+    private Map processDVNCitation(XMLStreamReader xmlr) throws XMLStreamException {
+        Map returnValues = new HashMap();
+        
+        for (int event = xmlr.next(); event != XMLStreamConstants.END_DOCUMENT; event = xmlr.next()) {
+            if (event == XMLStreamConstants.START_ELEMENT) {
+               if (xmlr.getLocalName().equals("IDNo")) {
+                    returnValues.put("idType", xmlr.getAttributeValue(null, "agency") );
+                    returnValues.put("idNumber", parseText(xmlr) );                   
+               }
+                else if (xmlr.getLocalName().equals("biblCit")) {
+                    returnValues.put("text", parseText(xmlr) );                   
+                }
+                else if (xmlr.getLocalName().equals("holdings")) {
+                    returnValues.put("url", xmlr.getAttributeValue(null, "URI") );                 
+                }
+                else if (xmlr.getLocalName().equals("notes")) {
+                    if (NOTE_TYPE_REPLICATION_FOR.equals(xmlr.getAttributeValue(null, "type")) ) {
+                        returnValues.put("replicationData", new Boolean(true));
+                    }
+                }
+            } else if (event == XMLStreamConstants.END_ELEMENT) {
+                if (xmlr.getLocalName().equals("citation")) break;
+            }
+        } 
+        
+        return returnValues;
+    }    
 
     private Map<String,String> parseCompoundText (XMLStreamReader xmlr, String endTag) throws XMLStreamException {
         Map<String,String> returnMap = new HashMap<String,String>();

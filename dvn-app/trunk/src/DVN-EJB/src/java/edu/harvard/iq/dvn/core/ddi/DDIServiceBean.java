@@ -19,6 +19,7 @@ import edu.harvard.iq.dvn.core.study.Study;
 import edu.harvard.iq.dvn.core.study.StudyAbstract;
 import edu.harvard.iq.dvn.core.study.StudyAuthor;
 import edu.harvard.iq.dvn.core.study.StudyDistributor;
+import edu.harvard.iq.dvn.core.study.StudyField; 
 import edu.harvard.iq.dvn.core.study.StudyFieldValue;
 import edu.harvard.iq.dvn.core.study.StudyFile;
 import edu.harvard.iq.dvn.core.study.StudyGeoBounding;
@@ -1010,29 +1011,32 @@ public class DDIServiceBean implements DDIServiceLocal {
         // Extended metadata (will produce multiple notes for different and/or
         // multiple extended fields: 
         String templateName = metadata.getStudy().getTemplate().getName();
-        for (StudyFieldValue extFieldValue : metadata.getStudyFieldValues()) {
-            try {
-                String extFieldName = extFieldValue.getStudyField().getName();
-                String extFieldStrValue = extFieldValue.getStrValue();
+        for (StudyField extField : metadata.getStudyFields()) {
+            for (StudyFieldValue extFieldValue : extField.getStudyFieldValues()) {
+                try {
+                    String extFieldName = extFieldValue.getStudyField().getName();
+                    String extFieldStrValue = extFieldValue.getStrValue();
 
-                if (extFieldName != null
-                        && !extFieldName.equals("")
-                        && extFieldStrValue != null
-                        && !extFieldStrValue.equals("")) {
+                    if (extFieldName != null
+                            && !extFieldName.equals("")
+                            && extFieldStrValue != null
+                            && !extFieldStrValue.equals("")) {
 
-                    String fieldDefinition = "TEMPLATE:" + templateName + ";FIELD:" + extFieldName;
+                        String fieldDefinition = "TEMPLATE:" + templateName + ";FIELD:" + extFieldName;
 
-                    methodAdded = checkParentElement(xmlw, "method", methodAdded);
-                    xmlw.writeStartElement("notes");
-                    writeAttribute(xmlw, "type", NOTE_TYPE_EXTENDED_METADATA);
-                    writeAttribute(xmlw, "subject", fieldDefinition);
-                    xmlw.writeCharacters(extFieldStrValue);
-                    xmlw.writeEndElement(); // notes
-                }
+                        methodAdded = checkParentElement(xmlw, "method", methodAdded);
+                        xmlw.writeStartElement("notes");
+                        writeAttribute(xmlw, "type", NOTE_TYPE_EXTENDED_METADATA);
+                        writeAttribute(xmlw, "subject", fieldDefinition);
+                        xmlw.writeCharacters(extFieldStrValue);
+                        xmlw.writeEndElement(); // notes
+                    }
 
-            } catch (Exception ex) {
+                } catch (Exception ex) {
+                        
                 // do nothing - if we can't retrieve the field, we are 
                 // not going to export it, that's all. 
+                }
             }
         }
             

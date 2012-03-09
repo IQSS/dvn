@@ -241,7 +241,7 @@
                               <ice:inputText validator="#{EditStudyPage.validateStudyPublication}" binding="#{EditStudyPage.inputRelPublicationIDNumber}" id="input_relatedPublicationIDNumber" value="#{currentRow.idNumber}" required="#{EditStudyPage.studyMap[sfc.relatedPublications].required and EditStudyPage.validateRequired}"  requiredMessage="This field is required." maxlength="255"/>
                               <ice:message styleClass="errorMessage" for="input_relatedPublicationIDNumber"/>
                             </div>                            
-                            <div jsfc="ice:panelGroup" styleClass="vdcEditStudyFieldFloat3 vdcEditStudyGroupField">
+                            <div jsfc="ice:panelGroup" styleClass="vdcEditStudyFieldFloat2 vdcEditStudyGroupField">
                               <ice:outputText styleClass="dvnInlineHelpLabel dvnInlineHelpTip" value="#{editstudybundle.relatedPublicationURLLabel}" title="#{editstudybundle.relatedPublicationURLHelpHeading} - #{editstudybundle.relatedPublicationURLHelp}"/>
                               <ice:inputText id="input_relatedPublicationURL"
                                              validator="#{EditStudyPage.validateStudyPublication}"

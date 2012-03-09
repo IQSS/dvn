@@ -976,8 +976,12 @@ public class StudyPage extends VDCBaseBean implements java.io.Serializable  {
     public String getApiMetadataUrl() {
         // For now, we only display these links if a) this is the released 
         // study version and b) its metadata is not restricted.
+        
+        // The study also has to have been exported...
+        // It really looks like we should instead make a real 
+        // metadataFormatsAvailable API call here. -- TODO in 3.1?
                 
-        if (studyUI.getStudyVersion().isReleased() && !studyUI.getStudy().isRestricted()) {
+        if (studyUI.getStudyVersion().isReleased() && !studyUI.getStudy().isRestricted() && (studyUI.getStudy().getLastExportTime() != null)) {
             
             String httpsHostUrl = getServerHostAndPort(true); 
             if (httpsHostUrl == null || httpsHostUrl.equals("")) {

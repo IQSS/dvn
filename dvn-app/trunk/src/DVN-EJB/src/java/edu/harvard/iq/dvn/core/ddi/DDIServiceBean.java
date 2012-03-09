@@ -2458,8 +2458,8 @@ public class DDIServiceBean implements DDIServiceLocal {
                         StudyRelPublication rp = new StudyRelPublication();
                         metadata.getStudyRelPublications().add(rp);
                         rp.setMetadata(metadata);
-                        rp.setReplicationData(true);
                         rp.setText( parseText( xmlr, "relMat" ) );
+                        rp.setReplicationData(true);
                         replicationForFound = true;
                     } else {                    
                         StudyRelMaterial rm = new StudyRelMaterial();
@@ -2485,7 +2485,10 @@ public class DDIServiceBean implements DDIServiceLocal {
                       rp.setIdType((String) rpMap.get("idType"));
                       rp.setIdNumber((String) rpMap.get("idNumber"));
                       rp.setUrl((String) rpMap.get("url"));
-                      rp.setReplicationData( (rpMap.get("replicationData") != null ));
+                      if (!replicationForFound && rpMap.get("replicationData") != null) {
+                        rp.setReplicationData(true);
+                        replicationForFound = true;
+                      }
                     } else {
                         rp.setText( (String) rpFromDDI );
                     }
@@ -3257,7 +3260,7 @@ public class DDIServiceBean implements DDIServiceLocal {
                     returnString += parseText_list(xmlr);
                 } else if (xmlr.getLocalName().equals("citation")) {
                     if (SOURCE_DVN_3_0.equals(xmlr.getAttributeValue(null, "source")) ) {
-                        returnMap = processDVNCitation(xmlr);
+                        returnMap = parseDVNCitation(xmlr);
                 }
                     returnString += parseText_citation(xmlr);
                 } else {
@@ -3359,7 +3362,7 @@ public class DDIServiceBean implements DDIServiceLocal {
         return citation;
     }
     
-    private Map processDVNCitation(XMLStreamReader xmlr) throws XMLStreamException {
+    private Map parseDVNCitation(XMLStreamReader xmlr) throws XMLStreamException {
         Map returnValues = new HashMap();
         
         for (int event = xmlr.next(); event != XMLStreamConstants.END_DOCUMENT; event = xmlr.next()) {

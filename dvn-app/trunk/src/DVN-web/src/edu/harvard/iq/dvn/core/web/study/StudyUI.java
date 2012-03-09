@@ -613,7 +613,7 @@ public class StudyUI  implements java.io.Serializable {
             StudyRelPublication elem = it.next();
             if (!elem.isReplicationData() && !StringUtil.isEmpty(elem.getText())) {
                 if (str != "") {
-                    str += "; ";
+                    str += "<br/><br/>";
                 }
                 str += getPublication(elem);
             }
@@ -626,16 +626,16 @@ public class StudyUI  implements java.io.Serializable {
         String str = publication.getText();
 
         if (!StringUtil.isEmpty(publication.getIdNumber())) {                
-            str += " (";
+            str += " <br/>ID: ";
             if (!StringUtil.isEmpty(publication.getIdType())) {
                 str += publication.getIdType() + ":";
             }
-            str += publication.getIdNumber() + ")";
+            str += publication.getIdNumber();
         }
 
         if (!StringUtil.isEmpty(publication.getUrl())) {
-            str += " <a href='" + publication.getUrl() + "' target='_blank' title='" + publication.getUrl() + "'>Link</a>";
-        }              
+            str += "<br/><a href='" + publication.getUrl() + "' target='_blank' title='" + publication.getUrl() + "'>Link</a>";
+        }
 
         return str;        
     }

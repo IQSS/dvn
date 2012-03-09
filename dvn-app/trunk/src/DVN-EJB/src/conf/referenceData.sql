@@ -854,17 +854,6 @@ SELECT pg_catalog.setval(pg_catalog.pg_get_serial_sequence('templatefield', 'id'
 
 ALTER TABLE templatefield ENABLE TRIGGER ALL;
 
---
--- TOC entry 1815 (class 0 OID 113850)
--- Dependencies: 1278
--- Data for Name: templatefieldselectvalue; Type: TABLE DATA; Schema: public; Owner: dvnApp
---
-
-ALTER TABLE templatefieldselectvalue DISABLE TRIGGER ALL;
-
-
-
-ALTER TABLE templatefieldselectvalue ENABLE TRIGGER ALL;
 
 
 --

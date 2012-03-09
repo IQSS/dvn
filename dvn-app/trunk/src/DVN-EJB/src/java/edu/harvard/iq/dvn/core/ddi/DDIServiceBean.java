@@ -1014,7 +1014,7 @@ public class DDIServiceBean implements DDIServiceLocal {
         for (StudyField extField : metadata.getStudyFields()) {
             for (StudyFieldValue extFieldValue : extField.getStudyFieldValues()) {
                 try {
-                    String extFieldName = extFieldValue.getStudyField().getName();
+                    String extFieldName = extField.getName();
                     String extFieldStrValue = extFieldValue.getStrValue();
 
                     if (extFieldName != null

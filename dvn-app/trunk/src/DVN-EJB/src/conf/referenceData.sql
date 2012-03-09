@@ -538,18 +538,6 @@ ALTER TABLE templatefield DISABLE TRIGGER ALL;
 ALTER TABLE templatefield ENABLE TRIGGER ALL;
 
 --
--- TOC entry 1815 (class 0 OID 113850)
--- Dependencies: 1278
--- Data for Name: templatefieldselectvalue; Type: TABLE DATA; Schema: public; Owner: dvnApp
---
-
-ALTER TABLE templatefieldselectvalue DISABLE TRIGGER ALL;
-
-
-
-ALTER TABLE templatefieldselectvalue ENABLE TRIGGER ALL;
-
---
 -- TOC entry 1832 (class 0 OID 113945)
 -- Dependencies: 1303
 -- Data for Name: usergroup; Type: TABLE DATA; Schema: public; Owner: dvnApp

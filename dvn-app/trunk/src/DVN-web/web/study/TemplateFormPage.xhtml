@@ -124,17 +124,16 @@
                                                value="#{currentRow.text}"
                                                required="#{TemplateFormPage.studyMap[sfc.relatedPublications].required and TemplateFormPage.validateRequired}" requiredMessage="This field is required."
                                                styleClass="formHtmlEnabled">
-                                <f:validator validatorId="XhtmlValidator"/>
                               </ice:inputTextarea>
                               <ice:message styleClass="errorMessage" for="input_relatedPublicationText"/>
                             </div>                                
                             <div jsfc="ice:panelGroup" styleClass="dvnFormPadding" rendered="#{TemplateFormPage.dataTableRelPublications.rowIndex==0}">
-                                <ice:selectBooleanCheckbox validator="#{TemplateFormPage.validateStudyPublication}" binding="#{TemplateFormPage.inputRelPublicationReplicationData}" value="#{currentRow.replicationData}" id="input_relatedPublicationReplicationData"/>
+                                <ice:selectBooleanCheckbox  binding="#{TemplateFormPage.inputRelPublicationReplicationData}" value="#{currentRow.replicationData}" id="input_relatedPublicationReplicationData"/>
                                 <ice:outputLabel value="Replication Data for Original Publication (This will apply &quot;Replication Data for:&quot; to your title)" for="input_relatedPublicationReplicationData"/>
                             </div>
                             <div jsfc="ice:panelGroup" styleClass="vdcEditStudyFieldFloat1">
                               <ice:outputText styleClass="dvnInlineHelpLabel dvnInlineHelpTip" value="#{editstudybundle.relatedPublicationIDTypeLabel}" title="#{editstudybundle.relatedPublicationIDTypeHelpHeading} - #{editstudybundle.relatedPublicationIDTypeHelp}"/>
-                              <ice:selectOneMenu validator="#{TemplateFormPage.validateStudyPublication}" binding="#{TemplateFormPage.inputRelPublicationIDType}" id="input_relatedPublicationIDType" value="#{currentRow.idType}" required="#{TemplateFormPage.studyMap[sfc.relatedPublications].required}" requiredMessage="This field is required.">
+                              <ice:selectOneMenu  binding="#{TemplateFormPage.inputRelPublicationIDType}" id="input_relatedPublicationIDType" value="#{currentRow.idType}" required="#{TemplateFormPage.studyMap[sfc.relatedPublications].required}" requiredMessage="This field is required.">
                                 <f:selectItem itemLabel="Select" itemValue=""/>
                                 <f:selectItem itemLabel="DOI" itemValue="DOI"/>
                                 <f:selectItem itemLabel="arXiv" itemValue="ArXiv"/>
@@ -143,19 +142,17 @@
                             </div>
                             <div jsfc="ice:panelGroup" styleClass="vdcEditStudyFieldFloat2 vdcEditStudyGroupField">
                               <ice:outputText styleClass="dvnInlineHelpLabel dvnInlineHelpTip" value="#{editstudybundle.relatedPublicationIDNumberLabel}" title="#{editstudybundle.relatedPublicationIDNumberHelpHeading} - #{editstudybundle.relatedPublicationIDNumberHelp}"/>
-                              <ice:inputText validator="#{TemplateFormPage.validateStudyPublication}" binding="#{TemplateFormPage.inputRelPublicationIDNumber}" id="input_relatedPublicationIDNumber" value="#{currentRow.idNumber}" required="#{TemplateFormPage.studyMap[sfc.relatedPublications].required and TemplateFormPage.validateRequired}"  requiredMessage="This field is required." maxlength="255"/>
+                              <ice:inputText binding="#{TemplateFormPage.inputRelPublicationIDNumber}" id="input_relatedPublicationIDNumber" value="#{currentRow.idNumber}" required="#{TemplateFormPage.studyMap[sfc.relatedPublications].required and TemplateFormPage.validateRequired}"  requiredMessage="This field is required." maxlength="255"/>
                               <ice:message styleClass="errorMessage" for="input_relatedPublicationIDNumber"/>
                             </div>                            
                             <div jsfc="ice:panelGroup" styleClass="vdcEditStudyFieldFloat3 vdcEditStudyGroupField">
                               <ice:outputText styleClass="dvnInlineHelpLabel dvnInlineHelpTip" value="#{editstudybundle.relatedPublicationURLLabel}" title="#{editstudybundle.relatedPublicationURLHelpHeading} - #{editstudybundle.relatedPublicationURLHelp}"/>
                               <ice:inputText id="input_relatedPublicationURL"
-                                             validator="#{TemplateFormPage.validateStudyPublication}"
                                              binding="#{TemplateFormPage.inputRelPublicationURL}"
                                              size="45"
                                              maxlength="255"
                                              value="#{currentRow.url}"
                                              required="#{TemplateFormPage.studyMap[sfc.relatedPublications].required and TemplateFormPage.validateRequired}" requiredMessage="This field is required." >
-                                <f:validator validatorId="UrlValidator"/>
                               </ice:inputText>
                               <ice:outputText styleClass="vdcEditStudyFormatExample" value="(http://example-domain.edu/)"/>
                               <ice:message styleClass="errorMessage" for="input_relatedPublicationURL"/>
@@ -200,7 +197,7 @@
                         </div>
                         <div jsfc="ice:panelGroup" styleClass="vdcEditStudyFieldFloat2 vdcEditStudyGroupField #{TemplateFormPage.studyMap[sfc.otherIdAgency].templateField.fieldInputLevelString}">
                           <ice:outputText styleClass="dvnInlineHelpLabel dvnInlineHelpTip" value="#{editstudybundle.otherAgencyLabel}" title="#{editstudybundle.otherAgencyHelpHeading} - #{editstudybundle.otherAgencyHelp}"/>
-                          <ice:inputText maxlength="255" binding="#{TemplateFormPage.inputOtherIdAgency}" validator="#{TemplateFormPage.validateStudyOtherId}"
+                          <ice:inputText maxlength="255" binding="#{TemplateFormPage.inputOtherIdAgency}" 
                                          id="input_otherIdAgency" value="#{currentRow.agency}" />
                           <ice:message styleClass="errorMessage" for="input_otherIdAgency"/>
                         </div>
@@ -254,10 +251,8 @@
                           <ice:outputText styleClass="dvnInlineHelpLabel dvnInlineHelpTip" value="#{editstudybundle.authorAffiliationLabel}" title="#{editstudybundle.authorAffiliationHelpHeading} - #{editstudybundle.authorAffiliationHelp}"/>
                           <ice:inputText id="input_authorAffiliation" size="45" maxlength="255"
                                          binding="#{TemplateFormPage.inputAuthorAffiliation}"
-                                         value="#{currentAuthor.affiliation}"
-                                         validator="#{TemplateFormPage.validateStudyAuthor}"                             
+                                         value="#{currentAuthor.affiliation}"                           
                                          styleClass="formHtmlEnabled">
-                            <f:validator validatorId="XhtmlValidator"/>
                           </ice:inputText>
                           <ice:message styleClass="errorMessage" for="input_authorAffiliation"/>
                         </div>
@@ -304,28 +299,25 @@
                         </div>
                         <div jsfc="ice:panelGroup" styleClass="vdcEditStudyFieldFloat2 vdcEditStudyGroupField #{TemplateFormPage.studyMap[sfc.producerAbbreviation].templateField.fieldInputLevelString}">
                           <ice:outputText styleClass="dvnInlineHelpLabel dvnInlineHelpTip" value="#{editstudybundle.producerAbbreviationLabel}" title="#{editstudybundle.producerAbbreviationHelpHeading} - #{editstudybundle.producerAbbreviationHelp}"/>
-                          <ice:inputText maxlength="255" validator="#{TemplateFormPage.validateStudyProducer}" binding="#{TemplateFormPage.inputProducerAbbreviation}" 
+                          <ice:inputText maxlength="255"  binding="#{TemplateFormPage.inputProducerAbbreviation}" 
                                          id="input_producerAbbreviation" value="#{currentRow.abbreviation}" />
                           <ice:message styleClass="errorMessage" for="input_producerAbbreviation"/>
                         </div>
                         <div jsfc="ice:panelGroup" styleClass="vdcEditStudyFieldFloat3 vdcEditStudyGroupField #{TemplateFormPage.studyMap[sfc.producerAffiliation].templateField.fieldInputLevelString}">
                           <ice:outputText styleClass="dvnInlineHelpLabel dvnInlineHelpTip" value="#{editstudybundle.producerAffiliationLabel}" title="#{editstudybundle.producerAffiliationHelpHeading} - #{editstudybundle.producerAffiliationHelp}"/>
-                          <ice:inputText maxlength="255" validator="#{TemplateFormPage.validateStudyProducer}" binding="#{TemplateFormPage.inputProducerAffiliation}" 
+                          <ice:inputText maxlength="255"  binding="#{TemplateFormPage.inputProducerAffiliation}" 
                                          id="input_producerAffiliation" size="45" value="#{currentRow.affiliation}" 
                                          styleClass="formHtmlEnabled">
-                            <f:validator validatorId="XhtmlValidator"/>
                           </ice:inputText>
                           <ice:message styleClass="errorMessage" for="input_producerAffiliation"/>
                         </div>
                         <div jsfc="ice:panelGroup" styleClass="vdcEditStudyGroupField #{TemplateFormPage.studyMap[sfc.producerURL].templateField.fieldInputLevelString}">
                           <ice:outputText styleClass="dvnInlineHelpLabel dvnInlineHelpTip" value="#{editstudybundle.producerURLLabel}" title="#{editstudybundle.producerURLHelpHeading} - #{editstudybundle.producerURLHelp}"/>
                           <ice:inputText id="input_producerURL"
-                                         validator="#{TemplateFormPage.validateStudyProducer}"
                                          binding="#{TemplateFormPage.inputProducerUrl}"
                                          value="#{currentRow.url}"
                                          size="45"
                                          maxlength="255">
-                            <f:validator validatorId="UrlValidator"/>
                           </ice:inputText>
                           <ice:outputText styleClass="vdcEditStudyFormatExample" value="(http://example-domain.edu/)"/>
                           <ice:message styleClass="errorMessage" for="input_producerURL"/>
@@ -334,11 +326,9 @@
                           <ice:outputText styleClass="dvnInlineHelpLabel dvnInlineHelpTip" value="#{editstudybundle.producerLogoLabel}" title="#{editstudybundle.producerLogoHelpHeading} - #{editstudybundle.producerLogoHelp}"/>
                           <ice:inputText id="input_producerLogo"
                                          binding="#{TemplateFormPage.inputProducerLogo}"
-                                         validator="#{TemplateFormPage.validateStudyProducer}"
                                          value="#{currentRow.logo}"
                                          size="45"
                                          maxlength="255">
-                            <f:validator validatorId="UrlValidator"/>
                           </ice:inputText>
                           <ice:outputText styleClass="vdcEditStudyFormatExample" value="(http://example-domain.edu/image)"/>
                           <ice:message styleClass="errorMessage" for="input_producerLogo"/>
@@ -370,7 +360,6 @@
                 </ice:column>
                 <ice:column>
                   <ice:inputText id="input_productionDate" styleClass="formDateFormat" value="#{TemplateFormPage.template.metadata.productionDate}">
-                                 <f:validator validatorId="DateValidator"/>
                       </ice:inputText>
                   <ice:outputText styleClass="vdcEditStudyFormatExample" value="#{editstudybundle.dateFormatDescription}"/>
                   <ice:message styleClass="errorMessage" for="input_productionDate"><f:param name="x" value="Production Date:"/> </ice:message>
@@ -433,7 +422,7 @@
                         </div>
                         <div jsfc="ice:panelGroup" styleClass="vdcEditStudyFieldFloat2 vdcEditStudyGroupField #{TemplateFormPage.studyMap[sfc.softwareVersion].templateField.fieldInputLevelString}">
                           <ice:outputText styleClass="dvnInlineHelpLabel dvnInlineHelpTip" value="#{editstudybundle.softwareVersionLabel}" title="#{editstudybundle.softwareVersionHelpHeading} - #{editstudybundle.softwareVersionHelp}"/>
-                          <ice:inputText maxlength="255" binding="#{TemplateFormPage.inputSoftwareVersion}" validator="#{TemplateFormPage.validateStudySoftware}" id="input_softwareVersion" value="#{currentRow.softwareVersion}"/>
+                          <ice:inputText maxlength="255" binding="#{TemplateFormPage.inputSoftwareVersion}"  id="input_softwareVersion" value="#{currentRow.softwareVersion}"/>
                           <ice:message styleClass="errorMessage" for="input_softwareVersion"/>
                         </div>
                       </div>
@@ -500,7 +489,7 @@
                         </div>
                         <div jsfc="ice:panelGroup" styleClass="vdcEditStudyGroupField #{TemplateFormPage.studyMap[sfc.grantNumberAgency].templateField.fieldInputLevelString}">
                           <ice:outputText styleClass="dvnInlineHelpLabel dvnInlineHelpTip" value="#{editstudybundle.grantingAgencyLabel}" title="#{editstudybundle.grantingAgencyHelpHeading} - #{editstudybundle.grantingAgencyHelp}"/>
-                          <ice:inputText maxlength="255" immediate="true" binding="#{TemplateFormPage.inputGrantAgency}" validator="#{TemplateFormPage.validateStudyGrant}" id="input_grantNumberAgency" size="45" value="#{currentRow.agency}"/>
+                          <ice:inputText maxlength="255" immediate="true" binding="#{TemplateFormPage.inputGrantAgency}"  id="input_grantNumberAgency" size="45" value="#{currentRow.agency}"/>
                           <ice:message styleClass="errorMessage" for="input_grantNumberAgency"/>
                         </div>
                       </div>
@@ -545,27 +534,24 @@
                         </div>
                         <div jsfc="ice:panelGroup" styleClass="vdcEditStudyFieldFloat2 vdcEditStudyGroupField #{TemplateFormPage.studyMap[sfc.distributorAbbreviation].templateField.fieldInputLevelString}">
                           <ice:outputText styleClass="dvnInlineHelpLabel dvnInlineHelpTip" value="#{editstudybundle.distributorAbbreviationLabel}" title="#{editstudybundle.distributorAbbreviationHelpHeading} - #{editstudybundle.distributorAbbreviationHelp}"/>
-                          <ice:inputText maxlength="255" validator="#{TemplateFormPage.validateStudyDistributor}" binding="#{TemplateFormPage.inputDistributorAbbreviation}" id="input_distributorAbbreviation" value="#{currentRow.abbreviation}"/>
+                          <ice:inputText maxlength="255"  binding="#{TemplateFormPage.inputDistributorAbbreviation}" id="input_distributorAbbreviation" value="#{currentRow.abbreviation}"/>
                           <ice:message styleClass="errorMessage" for="input_distributorAbbreviation"/>
                         </div>
                         <div jsfc="ice:panelGroup" styleClass="vdcEditStudyFieldFloat3 vdcEditStudyGroupField #{TemplateFormPage.studyMap[sfc.distributorAffiliation].templateField.fieldInputLevelString}">
                           <ice:outputText styleClass="dvnInlineHelpLabel dvnInlineHelpTip" value="#{editstudybundle.distributorAffiliationLabel}" title="#{editstudybundle.distributorAffiliationHelpHeading} - #{editstudybundle.distributorAffiliationHelp}"/>
-                          <ice:inputText maxlength="255" id="input_distributorAffiliation" validator="#{TemplateFormPage.validateStudyDistributor}" binding="#{TemplateFormPage.inputDistributorAffiliation}" size="45"
+                          <ice:inputText maxlength="255" id="input_distributorAffiliation"  binding="#{TemplateFormPage.inputDistributorAffiliation}" size="45"
                                          value="#{currentRow.affiliation}"
                                          styleClass="formHtmlEnabled">
-                            <f:validator validatorId="XhtmlValidator"/>
                           </ice:inputText>
                           <ice:message styleClass="errorMessage" for="input_distributorAffiliation"/>
                         </div>
                         <div jsfc="ice:panelGroup" styleClass="vdcEditStudyGroupField #{TemplateFormPage.studyMap[sfc.distributorURL].templateField.fieldInputLevelString}">
                           <ice:outputText styleClass="dvnInlineHelpLabel dvnInlineHelpTip" value="#{editstudybundle.distributorURLLabel}" title="#{editstudybundle.distributorURLHelpHeading} - #{editstudybundle.distributorURLHelp}"/>
                           <ice:inputText id="input_distributorURL"
-                                         validator="#{TemplateFormPage.validateStudyDistributor}"
                                          binding="#{TemplateFormPage.inputDistributorUrl}"
                                          value="#{currentRow.url}"
                                          size="45"
                                          maxlength="255">
-                            <f:validator validatorId="UrlValidator"/>
                           </ice:inputText>
                           <ice:outputText styleClass="vdcEditStudyFormatExample" value="(http://example-domain.edu/)"/>
                           <ice:message styleClass="errorMessage" for="input_distributorURL"/>
@@ -573,11 +559,9 @@
                         <div jsfc="ice:panelGroup" styleClass="vdcEditStudyGroupField  #{TemplateFormPage.studyMap[sfc.distributorLogo].templateField.fieldInputLevelString}">
                           <ice:outputText styleClass="dvnInlineHelpLabel dvnInlineHelpTip" value="#{editstudybundle.distributorLogoLabel}" title="#{editstudybundle.distributorLogoHelpHeading} - #{editstudybundle.distributorLogoHelp}"/>
                           <ice:inputText binding="#{TemplateFormPage.inputDistributorLogo}" id="input_distributorLogo"
-                                         validator="#{TemplateFormPage.validateStudyDistributor}"
                                          value="#{currentRow.logo}"
                                          size="45"
                                          maxlength="255">
-                            <f:validator validatorId="UrlValidator"/>
                           </ice:inputText>
                           <ice:outputText styleClass="vdcEditStudyFormatExample" value="(http://example-domain.edu/image)"/>
                           <ice:message styleClass="errorMessage" for="input_distributorLogo"/>
@@ -618,9 +602,7 @@
                     <ice:inputText id="distributorContactAffiliation"
                                    binding ="#{TemplateFormPage.inputDistributorContactAffiliation}"
                                   value="#{TemplateFormPage.template.metadata.distributorContactAffiliation}"
-                                   validator="#{TemplateFormPage.validateDistributorContact}"
                                    styleClass="formHtmlEnabled">
-                      <f:validator validatorId="XhtmlValidator"/>
                     </ice:inputText>
                     <ice:message styleClass="errorMessage" for="distributorContactAffiliation"/>
                   </div>
@@ -652,7 +634,6 @@
                 </ice:column>
                 <ice:column id="groupPanel26" styleClass="#{TemplateFormPage.studyMap[sfc.distributionDate].templateField.fieldInputLevelString}">
                   <ice:inputText id="input_distributionDate" styleClass="formDateFormat" value="#{TemplateFormPage.template.metadata.distributionDate}">
-                                 <f:validator validatorId="DateValidator"/>
                 </ice:inputText>
 
                   <ice:outputText styleClass="vdcEditStudyFormatExample" value="#{editstudybundle.dateFormatDescription}"/>
@@ -730,7 +711,6 @@
                     <ice:inputText binding="#{TemplateFormPage.inputSeries}" id="input_seriesName"
                                    value="#{TemplateFormPage.template.metadata.seriesName}"
                                    styleClass="formHtmlEnabled">
-                      <f:validator validatorId="XhtmlValidator"/>
                     </ice:inputText>
                     <ice:message styleClass="errorMessage" for="input_seriesName"/>
                   </div>
@@ -739,9 +719,7 @@
                     <ice:inputText binding ="#{TemplateFormPage.inputSeriesInformation}" id="input_seriesInformation"
                                    size="45"
                                    value="#{TemplateFormPage.template.metadata.seriesInformation}"
-                                   validator="#{TemplateFormPage.validateSeries}"
                                    styleClass="formHtmlEnabled">
-                      <f:validator validatorId="XhtmlValidator"/>
                     </ice:inputText>
                     <ice:message styleClass="errorMessage" for="input_seriesInformation"/>
                   </div>
@@ -773,9 +751,8 @@
                   </div>
                   <div jsfc="ice:panelGroup" styleClass="vdcEditStudyGroupField #{TemplateFormPage.studyMap[sfc.versionDate].templateField.fieldInputLevelString}">
                     <ice:outputText styleClass="dvnInlineHelpLabel dvnInlineHelpTip" value="#{editstudybundle.seriesVersionDateLabel}" title="#{editstudybundle.seriesVersionDateHelpHeading} - #{editstudybundle.seriesVersionDateHelp}"/>
-                    <ice:inputText binding="#{TemplateFormPage.inputVersionDate}" validator="#{TemplateFormPage.validateVersion}" 
+                    <ice:inputText binding="#{TemplateFormPage.inputVersionDate}" 
                                    id="input_versionDate" styleClass="formDateFormat" value="#{TemplateFormPage.template.metadata.versionDate}">
-                                   <f:validator validatorId="DateValidator"/>
                     </ice:inputText>
                     <ice:outputText styleClass="vdcEditStudyFormatExample" value="#{editstudybundle.dateFormatDescription}"/>
                     <ice:message styleClass="errorMessage" for="input_versionDate"/>
@@ -825,15 +802,13 @@
                                              binding="#{TemplateFormPage.inputAbstractText}"
                                              value="#{currentRow.text}"
                                              styleClass="formHtmlEnabled">
-                            <f:validator validatorId="XhtmlValidator"/>
                           </ice:inputTextarea>
                           <ice:message styleClass="errorMessage" for="input_abstractText"/>
                         </div>
                         <div jsfc="ice:panelGroup" styleClass="vdcEditStudyGroupField #{TemplateFormPage.studyMap[sfc.abstractDate].templateField.fieldInputLevelString}">
                           <ice:outputText styleClass="dvnInlineHelpLabel dvnInlineHelpTip" value="#{editstudybundle.abstractDateLabel}" title="#{editstudybundle.abstractDateHelpHeading} - #{editstudybundle.abstractDateHelp}"/>
-                          <ice:inputText binding="#{TemplateFormPage.inputAbstractDate}" validator="#{TemplateFormPage.validateStudyAbstract}" 
+                          <ice:inputText binding="#{TemplateFormPage.inputAbstractDate}" 
                                          id="input_abstractDate" styleClass="formDateFormat" value="#{currentRow.date}">
-                                         <f:validator validatorId="DateValidator"/>
                               </ice:inputText>
                           <ice:outputText styleClass="vdcEditStudyFormatExample" value="#{editstudybundle.dateFormatDescription}"/>
                           <ice:message styleClass="errorMessage" for="input_abstractDate"/>
@@ -880,18 +855,16 @@
                         </div>
                         <div jsfc="ice:panelGroup" styleClass="vdcEditStudyFieldFloat2 vdcEditStudyGroupField #{TemplateFormPage.studyMap[sfc.keywordVocab].templateField.fieldInputLevelString}">
                           <ice:outputText styleClass="dvnInlineHelpLabel dvnInlineHelpTip" value="#{editstudybundle.keywordVocabularyLabel}" title="#{editstudybundle.keywordVocabularyHelpHeading} - #{editstudybundle.keywordVocabularyHelp}"/>
-                          <ice:inputText validator="#{TemplateFormPage.validateStudyKeyword}" binding="#{TemplateFormPage.inputKeywordVocab}" id="input_keywordVocab" value="#{currentRow.vocab}"/>
+                          <ice:inputText  binding="#{TemplateFormPage.inputKeywordVocab}" id="input_keywordVocab" value="#{currentRow.vocab}"/>
                           <ice:message styleClass="errorMessage" for="input_keywordVocab"/>
                         </div>
                         <div jsfc="ice:panelGroup" styleClass="vdcEditStudyFieldFloat3 vdcEditStudyGroupField #{TemplateFormPage.studyMap[sfc.keywordVocabURI].templateField.fieldInputLevelString}">
                           <ice:outputText styleClass="dvnInlineHelpLabel dvnInlineHelpTip" value="#{editstudybundle.keywordVocabularyURLLabel}" title="#{editstudybundle.keywordVocabularyURLHelpHeading} - #{editstudybundle.keywordVocabularyURLHelp}"/>
                           <ice:inputText id="input_keywordVocabURI"
-                                         validator="#{TemplateFormPage.validateStudyKeyword}"
                                          binding="#{TemplateFormPage.inputKeywordVocabUri}"
                                          size="45"
                                          maxlength="255"
                                          value="#{currentRow.vocabURI}">
-                            <f:validator validatorId="UrlValidator"/>
                           </ice:inputText>
                           <ice:outputText styleClass="vdcEditStudyFormatExample" value="(http://example-domain.edu/)"/>
                           <ice:message styleClass="errorMessage" for="input_keywordVocabURI"/>
@@ -939,18 +912,16 @@
                         </div>
                         <div jsfc="ice:panelGroup" styleClass="vdcEditStudyFieldFloat2 vdcEditStudyGroupField #{TemplateFormPage.studyMap[sfc.topicClassVocab].templateField.fieldInputLevelString}">
                           <ice:outputText styleClass="dvnInlineHelpLabel dvnInlineHelpTip" value="#{editstudybundle.topicClassVocabularyLabel}" title="#{editstudybundle.topicClassVocabularyHelpHeading} - #{editstudybundle.topicClassVocabularyHelp}"/>
-                          <ice:inputText maxlength="255" validator="#{TemplateFormPage.validateStudyTopicClass}" binding="#{TemplateFormPage.inputTopicClassVocab}" id="input_topicClassVocab" value="#{currentRow.vocab}" />
+                          <ice:inputText maxlength="255"  binding="#{TemplateFormPage.inputTopicClassVocab}" id="input_topicClassVocab" value="#{currentRow.vocab}" />
                           <ice:message styleClass="errorMessage" for="input_topicClassVocab"/>
                         </div>
                         <div jsfc="ice:panelGroup" styleClass="vdcEditStudyFieldFloat3 vdcEditStudyGroupField #{TemplateFormPage.studyMap[sfc.topicClassVocabURI].templateField.fieldInputLevelString}">
                           <ice:outputText styleClass="dvnInlineHelpLabel dvnInlineHelpTip" value="#{editstudybundle.topicClassVocabularyURLLabel}" title="#{editstudybundle.topicClassVocabularyURLHelpHeading} - #{editstudybundle.topicClassVocabularyURLHelp}"/>
                           <ice:inputText id="input_topicClassVocabURI"
                                          binding="#{TemplateFormPage.inputTopicClassVocabUri}"
-                                         validator="#{TemplateFormPage.validateStudyTopicClass}"
                                          size="45"
                                          maxlength="255"
                                          value="#{currentRow.vocabURI}">
-                            <f:validator validatorId="UrlValidator"/>
                           </ice:inputText>
                           <ice:outputText styleClass="vdcEditStudyFormatExample" value="(http://example-domain.edu/)"/>
                           <ice:message styleClass="errorMessage" for="input_topicClassVocabURI"/>
@@ -998,7 +969,6 @@
                                            binding="#{TemplateFormPage.inputRelMaterial}"
                                            value="#{currentRow.text}"
                                            styleClass="formHtmlEnabled">
-                          <f:validator validatorId="XhtmlValidator"/>
                         </ice:inputTextarea>
                         <ice:message styleClass="errorMessage" for="input_relatedMaterial"/>
                       </div>
@@ -1042,7 +1012,6 @@
                                            binding="#{TemplateFormPage.inputRelStudy}"
                                            value="#{currentRow.text}"
                                            styleClass="formHtmlEnabled">
-                          <f:validator validatorId="XhtmlValidator"/>
                         </ice:inputTextarea>
                         <ice:message styleClass="errorMessage" for="input_relatedStudies"/>
                       </div>
@@ -1086,7 +1055,6 @@
                                        value="#{currentRow.text}"
                                        size="90"
                                        styleClass="formHtmlEnabled">
-                          <f:validator validatorId="XhtmlValidator"/>
                         </ice:inputText>
                         <ice:message styleClass="errorMessage" for="input_otherReferences"/>
                       </div>
@@ -1117,7 +1085,6 @@
                 </ice:column>
                 <ice:column>
                   <ice:inputText id="input_timePeriodCoveredStart" styleClass="formDateFormat" value="#{TemplateFormPage.template.metadata.timePeriodCoveredStart}" >
-                    <f:validator validatorId="DateValidator"/>
                   </ice:inputText>
                   <ice:outputText styleClass="vdcEditStudyFormatExample" value="#{editstudybundle.dateFormatDescription}"/>
                   <ice:message styleClass="errorMessage" for="input_timePeriodCoveredStart"/>
@@ -1143,7 +1110,6 @@
                 </ice:column>
                 <ice:column>
                   <ice:inputText id="input_timePeriodCoveredEnd" styleClass="formDateFormat" value="#{TemplateFormPage.template.metadata.timePeriodCoveredEnd}" >
-                    <f:validator validatorId="DateValidator"/>
                   </ice:inputText>
                   <ice:outputText styleClass="vdcEditStudyFormatExample" value="#{editstudybundle.dateFormatDescription}"/>
                   <ice:message styleClass="errorMessage" for="input_timePeriodCoveredEnd"/>
@@ -1169,7 +1135,6 @@
                 </ice:column>
                 <ice:column>
                   <ice:inputText id="input_dateOfCollectionStart" styleClass="formDateFormat" value="#{TemplateFormPage.template.metadata.dateOfCollectionStart}">
-                    <f:validator validatorId="DateValidator"/>
                   </ice:inputText>
                   <ice:outputText styleClass="vdcEditStudyFormatExample" value="#{editstudybundle.dateFormatDescription}"/>
                   <ice:message styleClass="errorMessage" for="input_dateOfCollectionStart"/>
@@ -1195,7 +1160,6 @@
                 </ice:column>
                 <ice:column>
                   <ice:inputText id="input_dateOfCollectionEnd" styleClass="formDateFormat" value="#{TemplateFormPage.template.metadata.dateOfCollectionEnd}"  >
-                    <f:validator validatorId="DateValidator"/>
                   </ice:inputText>
                   <ice:outputText styleClass="vdcEditStudyFormatExample" value="#{editstudybundle.dateFormatDescription}"/>
                   <ice:message styleClass="errorMessage" for="input_dateOfCollectionEnd"/>
@@ -1319,7 +1283,6 @@
                         <ice:message styleClass="errorMessage" for="input_southLatitude"/>
                       </div>
                   </div>
-                  <ice:inputHidden validator="#{TemplateFormPage.validateGeographicBounding}" value="test" required="true"/>
                 </ice:column>
                 <ice:column>
                   <ice:selectOneMenu immediate="false" partialSubmit="true" 
@@ -1342,7 +1305,6 @@
                 </ice:column>
                 <ice:column>
                   <ice:inputTextarea id="input_unitOfAnalysis" cols="90" rows="2" value="#{TemplateFormPage.template.metadata.unitOfAnalysis}" styleClass="formHtmlEnabled">
-                    <f:validator validatorId="XhtmlValidator"/>
                   </ice:inputTextarea>
                   <ice:message styleClass="errorMessage" for="input_unitOfAnalysis"/>
                 </ice:column>
@@ -1367,7 +1329,6 @@
                 </ice:column>
                 <ice:column>
                   <ice:inputTextarea id="input_universe" cols="90" rows="2" value="#{TemplateFormPage.template.metadata.universe}"  styleClass="formHtmlEnabled">
-                    <f:validator validatorId="XhtmlValidator"/>
                   </ice:inputTextarea>
                   <ice:message styleClass="errorMessage" for="input_universe"/>
                 </ice:column>
@@ -1392,7 +1353,6 @@
                 </ice:column>
                 <ice:column>
                   <ice:inputTextarea id="input_kindOfData" cols="90" rows="2" value="#{TemplateFormPage.template.metadata.kindOfData}"  styleClass="formHtmlEnabled">
-                    <f:validator validatorId="XhtmlValidator"/>
                   </ice:inputTextarea>
                   <ice:message styleClass="errorMessage" for="input_kindOfData"/>
                 </ice:column>
@@ -1472,14 +1432,12 @@
                           <ice:message styleClass="errorMessage" for="input_TextDefault"/>
                           <ice:inputText id="input_HtmlEnabled" size="90" rendered="#{customFieldsDataModel[0].studyField.fieldType == 'html'}"                                          
                                          value="#{customValuesDataModel[0].strValue}"
-                                         styleClass="formHtmlEnabled">
-                                  <f:validator validatorId="XhtmlValidator"/>
+                                         styleClass="formHtmlEnabled">>
                           </ice:inputText>
                           <ice:message styleClass="errorMessage" for="input_HtmlEnabled"/>
                           <ice:inputTextarea id="input_HtmlEnabledArea" cols="90" rows="4" rendered="#{customFieldsDataModel[0].studyField.fieldType == 'htmlarea'}"                                          
                                          value="#{customValuesDataModel[0].strValue}"
                                          styleClass="formHtmlEnabled">
-                                  <f:validator validatorId="XhtmlValidator"/>
                           </ice:inputTextarea>
                           <ice:message styleClass="errorMessage" for="input_HtmlEnabledArea"/>
                           <ice:inputText id="input_Text" size="90" rendered="#{customFieldsDataModel[0].studyField.fieldType == 'textBox'}" 
@@ -1489,7 +1447,6 @@
                           <ice:inputText id="input_genericDate" styleClass="formDateFormat"
                                          rendered="#{customFieldsDataModel[0].studyField.fieldType == 'date'}" 
                                          value="#{customValuesDataModel[0].strValue}">
-                                <f:validator validatorId="DateValidator"/>
                           </ice:inputText>   
                           <ice:outputText value="#{editstudybundle.dateFormatDescription}" rendered="#{customFieldsDataModel[0].studyField.fieldType == 'date'}"/>
                           <ice:message styleClass="errorMessage" for="input_genericDate"/>
@@ -1592,7 +1549,6 @@
                   <ice:inputText id="input_timeMethod" size="90"
                                  value="#{TemplateFormPage.template.metadata.timeMethod}"                                 
                                  styleClass="formHtmlEnabled">
-                    <f:validator validatorId="XhtmlValidator"/>
                   </ice:inputText>
                   <ice:message styleClass="errorMessage" for="input_timeMethod"/>
                 </ice:column>
@@ -1620,7 +1576,6 @@
                   <ice:inputText id="input_dataCollector" size="90"
                                  value="#{TemplateFormPage.template.metadata.dataCollector}"
                                  styleClass="formHtmlEnabled">
-                    <f:validator validatorId="XhtmlValidator"/>
                   </ice:inputText>
                   <ice:message styleClass="errorMessage" for="input_dataCollector"/>
                 </ice:column>
@@ -1648,7 +1603,6 @@
                   <ice:inputText id="input_frequencyOfDataCollection" size="90"
                                  value="#{TemplateFormPage.template.metadata.frequencyOfDataCollection}"
                                  styleClass="formHtmlEnabled">
-                    <f:validator validatorId="XhtmlValidator"/>
                   </ice:inputText>
                   <ice:message styleClass="errorMessage" for="input_frequencyOfDataCollection"/>
                 </ice:column>
@@ -1677,7 +1631,6 @@
                                      cols="90" rows="4"
                                      value="#{TemplateFormPage.template.metadata.samplingProcedure}"
                                      styleClass="formHtmlEnabled">
-                    <f:validator validatorId="XhtmlValidator"/>
                   </ice:inputTextarea>
                   <ice:message styleClass="errorMessage" for="input_samplingProcedure"/>
                 </ice:column>
@@ -1706,7 +1659,6 @@
                                      id="input_deviationsFromSampleDesign"
                                      value="#{TemplateFormPage.template.metadata.deviationsFromSampleDesign}"
                                      styleClass="formHtmlEnabled">
-                    <f:validator validatorId="XhtmlValidator"/>
                   </ice:inputTextarea>
                   <ice:message styleClass="errorMessage" for="input_deviationsFromSampleDesign"/>
                 </ice:column>
@@ -1734,7 +1686,6 @@
                   <ice:inputText id="input_collectionMode" size="90"
                                  value="#{TemplateFormPage.template.metadata.collectionMode}"
                                  styleClass="formHtmlEnabled">
-                    <f:validator validatorId="XhtmlValidator"/>
                   </ice:inputText>
                   <ice:message styleClass="errorMessage" for="input_collectionMode"/>
                 </ice:column>
@@ -1763,7 +1714,6 @@
                                  size="90"
                                  value="#{TemplateFormPage.template.metadata.researchInstrument}"
                                  styleClass="formHtmlEnabled">
-                    <f:validator validatorId="XhtmlValidator"/>
                   </ice:inputText>
                   <ice:message styleClass="errorMessage" for="input_researchInstrument"/>
                 </ice:column>
@@ -1791,7 +1741,6 @@
                   <ice:inputText id="input_dataSources" size="90"
                                  value="#{TemplateFormPage.template.metadata.dataSources}"
                                  styleClass="formHtmlEnabled">
-                    <f:validator validatorId="XhtmlValidator"/>
                   </ice:inputText>
                   <ice:message styleClass="errorMessage" for="input_dataSources"/>
                 </ice:column>
@@ -1819,7 +1768,6 @@
                   <ice:inputText id="input_originOfSources" size="90"
                                  value="#{TemplateFormPage.template.metadata.originOfSources}"
                                  styleClass="formHtmlEnabled">
-                    <f:validator validatorId="XhtmlValidator"/>
                   </ice:inputText>
                   <ice:message styleClass="errorMessage" for="input_originOfSources"/>
                 </ice:column>
@@ -1848,7 +1796,6 @@
                                  size="90"
                                  value="#{TemplateFormPage.template.metadata.characteristicOfSources}"
                                  styleClass="formHtmlEnabled">
-                    <f:validator validatorId="XhtmlValidator"/>
                   </ice:inputText>
                   <ice:message styleClass="errorMessage" for="input_characteristicOfSources"/>
                 </ice:column>
@@ -1877,7 +1824,6 @@
                                      id="input_accessToSources"
                                      value="#{TemplateFormPage.template.metadata.accessToSources}"
                                      styleClass="formHtmlEnabled">
-                    <f:validator validatorId="XhtmlValidator"/>
                   </ice:inputTextarea>
                   <ice:message styleClass="errorMessage" for="input_accessToSources"/>
                 </ice:column>
@@ -1906,7 +1852,6 @@
                                  size="90"
                                  value="#{TemplateFormPage.template.metadata.dataCollectionSituation}"
                                  styleClass="formHtmlEnabled">
-                    <f:validator validatorId="XhtmlValidator"/>
                   </ice:inputText>
                   <ice:message styleClass="errorMessage" for="input_dataCollectionSituation"/>
                 </ice:column>
@@ -1935,7 +1880,6 @@
                                  size="90"
                                  value="#{TemplateFormPage.template.metadata.actionsToMinimizeLoss}"
                                  styleClass="formHtmlEnabled">
-                    <f:validator validatorId="XhtmlValidator"/>
                   </ice:inputText>
                   <ice:message styleClass="errorMessage" for="input_actionsToMinimizeLoss"/>
                 </ice:column>
@@ -1964,7 +1908,6 @@
                                  size="90"
                                  value="#{TemplateFormPage.template.metadata.controlOperations}"
                                  styleClass="formHtmlEnabled">
-                    <f:validator validatorId="XhtmlValidator"/>
                   </ice:inputText>
                   <ice:message styleClass="errorMessage" for="input_controlOperations"/>
                 </ice:column>
@@ -1992,7 +1935,6 @@
                   <ice:inputText id="input_weighting" size="90"
                                  value="#{TemplateFormPage.template.metadata.weighting}"
                                  styleClass="formHtmlEnabled">
-                    <f:validator validatorId="XhtmlValidator"/>
                   </ice:inputText>
                   <ice:message styleClass="errorMessage" for="input_weighting"/>
                 </ice:column>
@@ -2020,7 +1962,6 @@
                   <ice:inputText id="input_cleaningOperations" size="90"
                                  value="#{TemplateFormPage.template.metadata.cleaningOperations}"
                                  styleClass="formHtmlEnabled">
-                    <f:validator validatorId="XhtmlValidator"/>
                   </ice:inputText>
                   <ice:message styleClass="errorMessage" for="input_cleaningOperations"/>
                 </ice:column>
@@ -2048,7 +1989,6 @@
                   <ice:inputText id="input_studyLevelErrorNotes" size="90"
                                  value="#{TemplateFormPage.template.metadata.studyLevelErrorNotes}"
                                  styleClass="formHtmlEnabled">
-                    <f:validator validatorId="XhtmlValidator"/>
                   </ice:inputText>
                   <ice:message styleClass="errorMessage" for="input_studyLevelErrorNotes"/>
                 </ice:column>
@@ -2076,7 +2016,6 @@
                   <ice:inputText id="input_responseRate" size="90"
                                  value="#{TemplateFormPage.template.metadata.responseRate}"
                                  styleClass="formHtmlEnabled">
-                    <f:validator validatorId="XhtmlValidator"/>
                   </ice:inputText>
                   <ice:message styleClass="errorMessage" for="input_responseRate"/>
                 </ice:column>
@@ -2104,7 +2043,6 @@
                   <ice:inputText id="input_samplingErrorEstimates" size="90"
                                  value="#{TemplateFormPage.template.metadata.samplingErrorEstimate}"
                                  styleClass="formHtmlEnabled">
-                    <f:validator validatorId="XhtmlValidator"/>
                   </ice:inputText>
                   <ice:message styleClass="errorMessage" for="input_samplingErrorEstimates"/>
                 </ice:column>
@@ -2133,7 +2071,6 @@
                                  size="90"
                                  value="#{TemplateFormPage.template.metadata.otherDataAppraisal}"
                                  styleClass="formHtmlEnabled">
-                    <f:validator validatorId="XhtmlValidator"/>
                   </ice:inputText>
                   <ice:message styleClass="errorMessage" for="input_otherDataAppraisal"/>
                 </ice:column>
@@ -2168,7 +2105,6 @@
                                  size="90"
                                  value="#{TemplateFormPage.template.metadata.placeOfAccess}"
                                  styleClass="formHtmlEnabled">
-                    <f:validator validatorId="XhtmlValidator"/>
                   </ice:inputText>
                   <ice:message styleClass="errorMessage" for="input_placeOfAccess"/>
                 </ice:column>
@@ -2196,7 +2132,6 @@
                                  size="90"
                                  value="#{TemplateFormPage.template.metadata.originalArchive}"
                                  styleClass="formHtmlEnabled">
-                    <f:validator validatorId="XhtmlValidator"/>
                   </ice:inputText>
                   <ice:message styleClass="errorMessage" for="input_originalArchive"/>
                 </ice:column>
@@ -2223,7 +2158,6 @@
                   <ice:inputText id="input_availabilityStatus" size="90"
                                  value="#{TemplateFormPage.template.metadata.availabilityStatus}"
                                  styleClass="formHtmlEnabled">
-                    <f:validator validatorId="XhtmlValidator"/>
                   </ice:inputText>
                   <ice:message styleClass="errorMessage" for="input_availabilityStatus"/>
                 </ice:column>
@@ -2251,7 +2185,6 @@
                                  size="90"
                                  value="#{TemplateFormPage.template.metadata.collectionSize}"
                                  styleClass="formHtmlEnabled">
-                    <f:validator validatorId="XhtmlValidator"/>
                   </ice:inputText>
                   <ice:message styleClass="errorMessage" for="input_collectionSize"/>
                 </ice:column>
@@ -2278,7 +2211,6 @@
                   <ice:inputText size="90" id="input_studyCompletion"
                                  value="#{TemplateFormPage.template.metadata.studyCompletion}"
                                  styleClass="formHtmlEnabled">
-                    <f:validator validatorId="XhtmlValidator"/>
                   </ice:inputText>
                   <ice:message styleClass="errorMessage" for="input_studyCompletion"/>
                 </ice:column>
@@ -2310,7 +2242,6 @@
                                      id="input_confidentialityDeclaration"
                                      value="#{TemplateFormPage.template.metadata.confidentialityDeclaration}"                                     
                                      styleClass="formHtmlEnabled">
-                    <f:validator validatorId="XhtmlValidator"/>
                   </ice:inputTextarea>
                   <ice:message styleClass="errorMessage" for="input_confidentialityDeclaration"/>
                 </ice:column>
@@ -2337,7 +2268,6 @@
                   <ice:inputTextarea cols="90" rows="4" id="input_specialPermissions"
                                      value="#{TemplateFormPage.template.metadata.specialPermissions}"                                     
                                      styleClass="formHtmlEnabled">
-                    <f:validator validatorId="XhtmlValidator"/>
                   </ice:inputTextarea>
                   <ice:message styleClass="errorMessage" for="input_specialPermissions"/>
                 </ice:column>
@@ -2365,7 +2295,6 @@
                                      id="input_restrictions"
                                      value="#{TemplateFormPage.template.metadata.restrictions}"                                   
                                      styleClass="formHtmlEnabled">
-                    <f:validator validatorId="XhtmlValidator"/>
                   </ice:inputTextarea>
                   <ice:message styleClass="errorMessage" for="input_restrictions"/>
                 </ice:column>
@@ -2393,7 +2322,6 @@
                                  size="90"
                                  value="#{TemplateFormPage.template.metadata.contact}"
                                  styleClass="formHtmlEnabled">
-                    <f:validator validatorId="XhtmlValidator"/>
                   </ice:inputText>
                   <ice:message styleClass="errorMessage" for="input_contact"/>
                 </ice:column>
@@ -2418,7 +2346,6 @@
                   <ice:inputTextarea cols="90" rows="4" id="input_citationRequirements"
                                      value="#{TemplateFormPage.template.metadata.citationRequirements}"
                                      styleClass="formHtmlEnabled">
-                    <f:validator validatorId="XhtmlValidator"/>
                   </ice:inputTextarea>
                   <ice:message styleClass="errorMessage" for="input_citationRequirements"/>
                 </ice:column>
@@ -2449,7 +2376,6 @@
                                      value="#{TemplateFormPage.template.metadata.depositorRequirements}"
                                      
                                      styleClass="formHtmlEnabled">
-                    <f:validator validatorId="XhtmlValidator"/>
                   </ice:inputTextarea>
                   <ice:message styleClass="errorMessage" for="input_depositorRequirements"/>
                 </ice:column>
@@ -2475,10 +2401,8 @@
                 <ice:column>
                   <ice:inputTextarea cols="90" rows="4"
                                      id="input_conditions"
-                                     value="#{TemplateFormPage.template.metadata.conditions}"
-                                     
+                                     value="#{TemplateFormPage.template.metadata.conditions}"       
                                      styleClass="formHtmlEnabled">
-                    <f:validator validatorId="XhtmlValidator"/>
                   </ice:inputTextarea>
                   <ice:message styleClass="errorMessage" for="input_conditions"/>
                 </ice:column>
@@ -2504,10 +2428,8 @@
                 <ice:column>
                   <ice:inputTextarea cols="90" rows="4"
                                      id="input_disclaimer"
-                                     value="#{TemplateFormPage.template.metadata.disclaimer}"
-                                     
+                                     value="#{TemplateFormPage.template.metadata.disclaimer}"                                     
                                      styleClass="formHtmlEnabled">
-                    <f:validator validatorId="XhtmlValidator"/>
                   </ice:inputTextarea>
                   <ice:message styleClass="errorMessage" for="input_disclaimer"/>
                 </ice:column>
@@ -2549,7 +2471,6 @@
                           <ice:inputText maxlength="255" binding="#{TemplateFormPage.inputNoteType}" id="input_notesInformationType"
                                          value="#{currentRow.type}"
                                          styleClass="formHtmlEnabled">
-                            <f:validator validatorId="XhtmlValidator"/>
                           </ice:inputText>
                           <ice:message styleClass="errorMessage" for="input_notesInformationType"/>
                         </div>
@@ -2559,10 +2480,7 @@
                                          maxlength="255"
                                          binding="#{TemplateFormPage.inputNoteSubject}"
                                          value="#{currentRow.subject}"
-                                         validator="#{TemplateFormPage.validateStudyNote}"
-                                         
                                          styleClass="formHtmlEnabled">
-                            <f:validator validatorId="XhtmlValidator"/>
                           </ice:inputText>
                           <ice:message styleClass="errorMessage" for="input_notesInformationSubject"/>
                         </div>
@@ -2571,11 +2489,8 @@
                           <ice:inputText id="input_notesText"
                                          size="90"
                                          binding="#{TemplateFormPage.inputNoteText}"
-                                         validator="#{TemplateFormPage.validateStudyNote}"
                                          value="#{currentRow.text}"
-                                         
                                          styleClass="formHtmlEnabled">
-                            <f:validator validatorId="XhtmlValidator"/>
                           </ice:inputText>
                           <ice:message styleClass="errorMessage" for="input_notesText"/>
                         </div>

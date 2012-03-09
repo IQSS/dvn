@@ -238,7 +238,7 @@ public class TemplateFormPage extends VDCBaseBean implements java.io.Serializabl
                 }
             }
             if(!inControlledVocab){
-                errorMessage += studyField.getName() +  " has had value " + studyFieldValue + " removed from its controlled vocabulary.";
+                errorMessage += studyField.getName() +  " has had value " + studyFieldValue + " removed from its controlled vocabulary.  ";
             }
         }          
         return errorMessage;

@@ -1266,7 +1266,7 @@ public class DDIServiceBean implements DDIServiceLocal {
         xmlw.writeStartElement("citation");
         writeAttribute( xmlw, "source", SOURCE_DVN_3_0 );
         
-        if (StringUtil.isEmpty(publication.getIdNumber())) {
+        if (!StringUtil.isEmpty(publication.getIdNumber())) {
             xmlw.writeStartElement("titlStmt");
             xmlw.writeStartElement("IDNo");
             writeAttribute( xmlw, "agency", publication.getIdType() );
@@ -1279,7 +1279,7 @@ public class DDIServiceBean implements DDIServiceLocal {
         xmlw.writeCharacters( publication.getText() );
         xmlw.writeEndElement(); // biblCit
         
-        if (StringUtil.isEmpty(publication.getUrl())) {
+        if (!StringUtil.isEmpty(publication.getUrl())) {
             xmlw.writeStartElement("holdings");
             writeAttribute( xmlw, "URI", publication.getUrl() );
             xmlw.writeCharacters( publication.getUrl() ); // for now, just put URL here, since we don't have a title for the holdings

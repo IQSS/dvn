@@ -122,7 +122,6 @@
                                                id="input_relatedPublicationText"
                                                binding="#{TemplateFormPage.inputRelPublicationText}"
                                                value="#{currentRow.text}"
-                                               required="#{TemplateFormPage.studyMap[sfc.relatedPublications].required and TemplateFormPage.validateRequired}" requiredMessage="This field is required."
                                                styleClass="formHtmlEnabled">
                               </ice:inputTextarea>
                               <ice:message styleClass="errorMessage" for="input_relatedPublicationText"/>
@@ -133,7 +132,7 @@
                             </div>
                             <div jsfc="ice:panelGroup" styleClass="vdcEditStudyFieldFloat1">
                               <ice:outputText styleClass="dvnInlineHelpLabel dvnInlineHelpTip" value="#{editstudybundle.relatedPublicationIDTypeLabel}" title="#{editstudybundle.relatedPublicationIDTypeHelpHeading} - #{editstudybundle.relatedPublicationIDTypeHelp}"/>
-                              <ice:selectOneMenu  binding="#{TemplateFormPage.inputRelPublicationIDType}" id="input_relatedPublicationIDType" value="#{currentRow.idType}" required="#{TemplateFormPage.studyMap[sfc.relatedPublications].required}" requiredMessage="This field is required.">
+                              <ice:selectOneMenu  binding="#{TemplateFormPage.inputRelPublicationIDType}" id="input_relatedPublicationIDType" value="#{currentRow.idType}">
                                 <f:selectItem itemLabel="Select" itemValue=""/>
                                 <f:selectItem itemLabel="DOI" itemValue="DOI"/>
                                 <f:selectItem itemLabel="arXiv" itemValue="ArXiv"/>
@@ -142,7 +141,7 @@
                             </div>
                             <div jsfc="ice:panelGroup" styleClass="vdcEditStudyFieldFloat2 vdcEditStudyGroupField">
                               <ice:outputText styleClass="dvnInlineHelpLabel dvnInlineHelpTip" value="#{editstudybundle.relatedPublicationIDNumberLabel}" title="#{editstudybundle.relatedPublicationIDNumberHelpHeading} - #{editstudybundle.relatedPublicationIDNumberHelp}"/>
-                              <ice:inputText binding="#{TemplateFormPage.inputRelPublicationIDNumber}" id="input_relatedPublicationIDNumber" value="#{currentRow.idNumber}" required="#{TemplateFormPage.studyMap[sfc.relatedPublications].required and TemplateFormPage.validateRequired}"  requiredMessage="This field is required." maxlength="255"/>
+                              <ice:inputText binding="#{TemplateFormPage.inputRelPublicationIDNumber}" id="input_relatedPublicationIDNumber" value="#{currentRow.idNumber}" maxlength="255"/>
                               <ice:message styleClass="errorMessage" for="input_relatedPublicationIDNumber"/>
                             </div>                            
                             <div jsfc="ice:panelGroup" styleClass="vdcEditStudyFieldFloat2 vdcEditStudyGroupField">
@@ -151,8 +150,7 @@
                                              binding="#{TemplateFormPage.inputRelPublicationURL}"
                                              size="45"
                                              maxlength="255"
-                                             value="#{currentRow.url}"
-                                             required="#{TemplateFormPage.studyMap[sfc.relatedPublications].required and TemplateFormPage.validateRequired}" requiredMessage="This field is required." >
+                                             value="#{currentRow.url}">
                               </ice:inputText>
                               <ice:outputText styleClass="vdcEditStudyFormatExample" value="(http://example-domain.edu/)"/>
                               <ice:message styleClass="errorMessage" for="input_relatedPublicationURL"/>
@@ -160,11 +158,17 @@
                           </div>                            
                         </ice:column>
                         <ice:column>
-                          <ice:commandButton image="/resources/images/icon_add.gif" actionListener="#{TemplateFormPage.addRow}"/>
-                          <ice:commandButton rendered="#{TemplateFormPage.dataTableRelPublications.rowCount gt 1}" image="/resources/images/icon_remove.gif" actionListener="#{TemplateFormPage.removeRow}" />
+                          <ice:commandButton partialSubmit="true" alt="Add Row" title="Add Row" image="/resources/images/icon_add.gif" actionListener="#{TemplateFormPage.addRow}"/>
+                          <ice:commandButton partialSubmit="true" rendered="#{TemplateFormPage.dataTableRelPublications.rowCount gt 1}" alt="Remove Row" title="Remove Row" image="/resources/images/icon_remove.gif" actionListener="#{TemplateFormPage.removeRow}" />
+                          <ice:selectOneMenu immediate="false" partialSubmit="true" 
+                                                value="#{TemplateFormPage.studyMap[sfc.relatedPublications].templateField.fieldInputLevelString}"
+                                                rendered ="#{TemplateFormPage.dataTableRelPublications.rowIndex==0}">
+                                   <f:attribute name="fieldName" value="relatedPublications"/>
+                                   <f:selectItems value="#{TemplateFormPage.fieldInputLevelSelectItems}"/>
+                          </ice:selectOneMenu>
                         </ice:column>
                       </ice:dataTable>
-                    </ice:column>
+                    </ice:column>                
                   </ice:dataTable>                 
 
               
@@ -205,7 +209,7 @@
                     </ice:column>
                     <ice:column id="groupPanel61">
                       <ice:commandButton partialSubmit="true" alt="Add Row" title="Add Row" image="/resources/images/icon_add.gif" actionListener="#{TemplateFormPage.addRow}"/>
-                      <ice:commandButton partialSubmit="True" rendered="#{TemplateFormPage.dataTableOtherIds.rowCount gt 1}" alt="Remove Row" title="Remove Row" image="/resources/images/icon_remove.gif" actionListener="#{TemplateFormPage.removeRow}"/>
+                      <ice:commandButton partialSubmit="true" rendered="#{TemplateFormPage.dataTableOtherIds.rowCount gt 1}" alt="Remove Row" title="Remove Row" image="/resources/images/icon_remove.gif" actionListener="#{TemplateFormPage.removeRow}"/>
                       <ice:selectOneMenu immediate="false" partialSubmit="true" 
                                             value="#{TemplateFormPage.studyMap[sfc.otherId].templateField.fieldInputLevelString}"
                                             rendered ="#{TemplateFormPage.dataTableOtherIds.rowIndex==0}">

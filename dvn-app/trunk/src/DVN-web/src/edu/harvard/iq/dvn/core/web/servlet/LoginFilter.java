@@ -433,6 +433,10 @@ public class LoginFilter implements Filter {
           }
 
         } else if ( isVersionDiffPage(pageDef)) {
+            if (isPopup(request)) {
+                return true;
+            }       
+            
             Study study = null;
             StudyVersion studyVersion1 = null;
             StudyVersion studyVersion2 = null;
@@ -626,7 +630,8 @@ public class LoginFilter implements Filter {
     
     private boolean isPopup(HttpServletRequest req) {
         if (req.getParameter("StudyVersionNotesPopup") != null || 
-            req.getParameter("StudyCommentsPopup") != null) {
+            req.getParameter("StudyCommentsPopup") != null ||    
+            req.getParameter("StudyConfirmDeletePopup") != null) {
             return true;
         }
         

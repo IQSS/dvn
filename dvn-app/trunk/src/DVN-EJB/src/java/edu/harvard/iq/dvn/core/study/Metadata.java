@@ -492,6 +492,10 @@ public class Metadata implements java.io.Serializable {
                 cloneRel.setDisplayOrder(rel.getDisplayOrder());
                 cloneRel.setMetadata(this);
                 cloneRel.setText(rel.getText());
+                cloneRel.setIdType(rel.getIdType());
+                cloneRel.setIdNumber(rel.getIdNumber());
+                cloneRel.setUrl(rel.getUrl());
+                cloneRel.setReplicationData(rel.isReplicationData());
                 this.getStudyRelPublications().add(cloneRel);
             }
         }
@@ -727,6 +731,10 @@ public class Metadata implements java.io.Serializable {
             cloneRel.setDisplayOrder(rel.getDisplayOrder());
             cloneRel.setMetadata(this);
             cloneRel.setText(rel.getText());
+            cloneRel.setIdType(rel.getIdType());
+            cloneRel.setIdNumber(rel.getIdNumber());
+            cloneRel.setUrl(rel.getUrl());
+            cloneRel.setReplicationData(rel.isReplicationData());            
             this.getStudyRelPublications().add(cloneRel);
         }
         this.setStudyRelStudies(new ArrayList<StudyRelStudy>());

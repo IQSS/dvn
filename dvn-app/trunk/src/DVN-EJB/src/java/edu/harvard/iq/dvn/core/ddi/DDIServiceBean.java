@@ -3261,8 +3261,9 @@ public class DDIServiceBean implements DDIServiceLocal {
                 } else if (xmlr.getLocalName().equals("citation")) {
                     if (SOURCE_DVN_3_0.equals(xmlr.getAttributeValue(null, "source")) ) {
                         returnMap = parseDVNCitation(xmlr);
-                }
-                    returnString += parseText_citation(xmlr);
+                    } else {
+                        returnString += parseText_citation(xmlr);
+                    }
                 } else {
                     throw new EJBException("ERROR occurred in mapDDI (parseText): tag not yet supported: <" + xmlr.getLocalName() + ">" );
                 }
@@ -3365,7 +3366,8 @@ public class DDIServiceBean implements DDIServiceLocal {
     private Map parseDVNCitation(XMLStreamReader xmlr) throws XMLStreamException {
         Map returnValues = new HashMap();
         
-        for (int event = xmlr.next(); event != XMLStreamConstants.END_DOCUMENT; event = xmlr.next()) {
+        while (true) {
+            int event = xmlr.next();
             if (event == XMLStreamConstants.START_ELEMENT) {
                if (xmlr.getLocalName().equals("IDNo")) {
                     returnValues.put("idType", xmlr.getAttributeValue(null, "agency") );

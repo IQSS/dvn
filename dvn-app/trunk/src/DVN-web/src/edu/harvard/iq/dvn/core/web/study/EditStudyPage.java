@@ -160,10 +160,10 @@ public class EditStudyPage extends VDCBaseBean implements java.io.Serializable  
             setFiles(editStudyService.getCurrentFiles());
         }
         // Add empty first element to subcollections, so the input text fields will be visible
-
-        // Initialize map containing required/recommended settings for all fields
-        initStudyMap();
         metadata.initCollections();
+        
+        // Initialize map containing required/recommended settings for all fields
+        initStudyFields();
 
         //  initDvnDates();
        
@@ -243,7 +243,7 @@ public class EditStudyPage extends VDCBaseBean implements java.io.Serializable  
             metadata = editStudyService.getStudyVersion().getMetadata();    
         }
         System.out.println("after edit study service  ");
-        initStudyMap();  // Reset Recommended flag for all fields
+        initStudyFields();  // Reset Recommended flag for all fields
         return "";
      }
      
@@ -301,13 +301,16 @@ public class EditStudyPage extends VDCBaseBean implements java.io.Serializable  
     private Map studyMap;
     
     public Map getStudyMap() {
-        if (studyMap==null) {
-            initStudyMap();
-        }
         return studyMap;
     }
     
-    public void initStudyMap() {
+    public void initStudyFields() {
+        
+        // first, let's get the values into the transient study field list of metadata
+        metadata.getStudyFields();
+        //and remove from the regular list or they will still get saved!
+        metadata.getStudyFieldValues().clear();
+        
         String controlledVocabularyUpdateMessage = "";
         String errorMessage = "";
         studyMap = new HashMap();
@@ -323,6 +326,7 @@ public class EditStudyPage extends VDCBaseBean implements java.io.Serializable  
                 }
             } 
         }
+        
         if (!errorMessage.isEmpty()){
             controlledVocabularyUpdateMessage = "Please review the following data entries: ";
             controlledVocabularyUpdateMessage += errorMessage;
@@ -455,10 +459,10 @@ public class EditStudyPage extends VDCBaseBean implements java.io.Serializable  
             StudyFieldValue sfv = (StudyFieldValue) it.next();
             editStudyService.removeCollectionElement(it,sfv);
 
-            // if this value is already in db, we also need to remove it from the metadata's list of studyFieldValues
+            /* if this value is already in db, we also need to remove it from the metadata's list of studyFieldValues
             if ( sfv.getId()!= null ) {
                 metadata.getStudyFieldValues().remove( sfv );
-            }           
+            } */          
         }        
     }
     

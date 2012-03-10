@@ -139,7 +139,7 @@ public class TemplateFormPage extends VDCBaseBean implements java.io.Serializabl
         template = editTemplateService.getTemplate();
         template.getMetadata().initCollections();
         
-        initStudyMap();
+        initStudyFields();
 
         fieldTypeSelectItems = loadFieldTypeSelectItems();
         fieldInputLevelSelectItems = loadFieldInputLevelSelectItems();
@@ -192,7 +192,13 @@ public class TemplateFormPage extends VDCBaseBean implements java.io.Serializabl
         return studyMap;
     }
     
-    public void initStudyMap() {
+    public void initStudyFields() {
+        
+        // first, let's get the values into the transient study field list of metadata
+        template.getMetadata().getStudyFields();
+        //and remove from the regular list or they will still get saved!
+        template.getMetadata().getStudyFieldValues().clear();
+        
         String controlledVocabularyUpdateMessage = "";
         String errorMessage = "";
         studyMap = new HashMap();

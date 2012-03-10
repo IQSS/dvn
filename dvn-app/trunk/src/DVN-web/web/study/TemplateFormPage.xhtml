@@ -1493,8 +1493,8 @@
                              rendered="#{!empty(customFieldsDataModel[0].controlledVocabulary) and (TemplateFormPage.networkEdit or customFieldsDataModel[0].fieldInputLevelString != 'disabled')}"
                              columnClasses="vdcEditStudyCol1, vdcEditStudyCol2, vdcEditStudyCol3">
                     <ice:column styleClass="vdcEditStudyField">                          
-                        <ice:outputText styleClass="dvnInlineHelpLabel dvnInlineHelpTip" value="#{customFieldsDataModel[0].studyField.description}" 
-                                        title="#{customFieldsDataModel[0].studyField.name} - #{customFieldsDataModel[0].studyField.title}"/>
+                        <ice:outputText styleClass="dvnInlineHelpLabel dvnInlineHelpTip" value="#{customFieldsDataModel[0].studyField.title}" 
+                                        title="#{customFieldsDataModel[0].studyField.title} - #{customFieldsDataModel[0].studyField.description}"/>
                         <ice:graphicImage value="/resources/images/icon_required.gif" rendered="#{customFieldsDataModel[0].required}"/>
                         <ice:graphicImage value="/resources/images/icon_recommended.gif" rendered="#{customFieldsDataModel[0].recommended}"/>
                     </ice:column>

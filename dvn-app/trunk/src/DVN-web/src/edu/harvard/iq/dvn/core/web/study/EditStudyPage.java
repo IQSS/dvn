@@ -328,7 +328,7 @@ public class EditStudyPage extends VDCBaseBean implements java.io.Serializable  
         }
         
         if (!errorMessage.isEmpty()){
-            controlledVocabularyUpdateMessage = "Please review the following data entries: ";
+            controlledVocabularyUpdateMessage = "Please review the following data entries:";
             controlledVocabularyUpdateMessage += errorMessage;
             getVDCRenderBean().getFlash().put("warningMessage",controlledVocabularyUpdateMessage);
         }
@@ -355,7 +355,7 @@ public class EditStudyPage extends VDCBaseBean implements java.io.Serializable  
                 }
             }
             if(!inControlledVocab){
-                errorMessage += "<br></br>" + studyField.getName() +  " has had value " + studyFieldValue + " removed from its controlled vocabulary.";
+                errorMessage += "<br/>" + studyField.getName() +  " has had value " + studyFieldValue + " removed from its controlled vocabulary.";
             }
         }          
         return errorMessage;

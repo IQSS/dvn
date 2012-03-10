@@ -1104,26 +1104,57 @@ public class EditStudyPage extends VDCBaseBean implements java.io.Serializable  
     
    
 
-    private String getInputLevel(String... fieldNames) {
+    private List<TemplateField> getStudyMapTemplateFields(String... fieldNames) {
+        List templateFieldList = new ArrayList();
+        
         for (String fieldName : fieldNames) {
             if (((StudyMapValue) getStudyMap().get(fieldName))!=null) {
-                if (((StudyMapValue) getStudyMap().get(fieldName)).isRequired()) {
-                    return "required";
-                }
+                StudyMapValue smv = (StudyMapValue) getStudyMap().get(fieldName);
+                templateFieldList.add(smv.getTemplateField());
             }
-        }
-        for (String fieldName : fieldNames) {
-            if (((StudyMapValue) getStudyMap().get(fieldName))!=null) {
-                if (((StudyMapValue) getStudyMap().get(fieldName)).isRecommended()) {
-                    return "recommended";
-                }
-            }
-        }
-        return "optional";
+        }        
+        
+        return templateFieldList;
     }
     
+    private List<TemplateField> getCustomTemplateFields() {
+        List customFieldList = new ArrayList();
+        for (TemplateField tf : study.getTemplate().getTemplateFields()) {
+            if (tf.getStudyField().isCustomField()) {
+                customFieldList.add(tf);
+            }
+        }
+        
+        return customFieldList;
+    }
+    
+    private String getInputLevel(List<TemplateField> tfList) {
+        boolean hasRecommended = false;
+        boolean hasOptional = false;
+        
+        for (TemplateField tf : tfList) {
+            if (tf.isRequired()) {
+                return "required";
+            } else if (tf.isRecommended()) {
+                hasRecommended = true;
+            }  else if (tf.isOptional()) {
+                hasOptional = true;
+            }
+        }
+        
+        if (hasRecommended) {
+            return "recommended";
+        }
+        if (hasOptional) {
+            return "optional";
+        }
+        
+        return "hidden";        
+    }      
+    
      public String getAbstractAndScopeInputLevel() {
-        return getInputLevel(StudyFieldConstant.abstractDate,
+        List tfList = getStudyMapTemplateFields(
+               StudyFieldConstant.abstractDate,
                StudyFieldConstant.abstractText,
                StudyFieldConstant.keywordValue,             
                StudyFieldConstant.keywordVocab,
@@ -1148,6 +1179,8 @@ public class EditStudyPage extends VDCBaseBean implements java.io.Serializable  
                StudyFieldConstant.unitOfAnalysis,
                StudyFieldConstant.kindOfData,
                StudyFieldConstant.universe);
+        
+        return getInputLevel(tfList);
      }
 
      public boolean isAbstractAndScopeEmpty() {
@@ -1170,7 +1203,8 @@ public class EditStudyPage extends VDCBaseBean implements java.io.Serializable  
      }
 
     public String getDataCollectionMethodologyInputLevel() {
-        String retString = getInputLevel(StudyFieldConstant.timeMethod,
+        List tfList = getStudyMapTemplateFields(
+                StudyFieldConstant.timeMethod,
                 StudyFieldConstant.dataCollector,
                 StudyFieldConstant.frequencyOfDataCollection,
                 StudyFieldConstant.samplingProcedure,
@@ -1189,29 +1223,14 @@ public class EditStudyPage extends VDCBaseBean implements java.io.Serializable  
                 StudyFieldConstant.studyLevelErrorNotes,
                 StudyFieldConstant.samplingErrorEstimates,
                 StudyFieldConstant.otherDataAppraisal);
-        if (retString.equals("recommended")  || retString.equals("required") ){
-            return retString;
-        } else {
-            return getCustomFieldMethodologyInputLevel();
-        }
+        
+        // add all the custom fields
+        tfList.addAll(getCustomTemplateFields());
+        
+        return getInputLevel(tfList);
     }
     
-    public String getCustomFieldMethodologyInputLevel() {
-        String retString = "optional";
 
-            for (TemplateField tf : study.getTemplate().getTemplateFields()) {
-                if (tf.getStudyField().isCustomField()) {
-                    if (tf.isRecommended()) {
-                        return "recommended";
-                    }
-                    if (tf.isRequired()) {
-                        return "required";
-                    }
-                }
-            }
-
-        return retString;
-    }
 
     public boolean isDataCollectionMethodologyEmpty() {
         return StringUtil.isEmpty(metadata.getTimeMethod()) &&
@@ -1248,7 +1267,8 @@ public class EditStudyPage extends VDCBaseBean implements java.io.Serializable  
     
       
     public String getTermsOfUseInputLevel() {
-        return getInputLevel(StudyFieldConstant.disclaimer,
+        List tfList = getStudyMapTemplateFields(
+                StudyFieldConstant.disclaimer,
                 StudyFieldConstant.conditions,
                 StudyFieldConstant.depositorRequirements,
                 StudyFieldConstant.citationRequirements,
@@ -1256,6 +1276,8 @@ public class EditStudyPage extends VDCBaseBean implements java.io.Serializable  
                 StudyFieldConstant.restrictions,
                 StudyFieldConstant.specialPermissions,
                 StudyFieldConstant.confidentialityDeclaration);
+        
+        return getInputLevel(tfList);
 
     }
 
@@ -1271,11 +1293,14 @@ public class EditStudyPage extends VDCBaseBean implements java.io.Serializable  
     }
 
     public String getDataSetAvailabilityInputLevel() {
-        return getInputLevel(StudyFieldConstant.placeOfAccess,
+        List tfList = getStudyMapTemplateFields(
+                StudyFieldConstant.placeOfAccess,
                 StudyFieldConstant.originalArchive,
                 StudyFieldConstant.availabilityStatus,
                 StudyFieldConstant.collectionSize,
                 StudyFieldConstant.studyCompletion);
+        
+        return getInputLevel(tfList);
 
     }
 
@@ -1288,96 +1313,127 @@ public class EditStudyPage extends VDCBaseBean implements java.io.Serializable  
 
     }
     public String getOtherInformationInputLevel() {
-        return getInputLevel(StudyFieldConstant.notesInformationSubject,
+        List tfList = getStudyMapTemplateFields(
+                StudyFieldConstant.notesInformationSubject,
                 StudyFieldConstant.notesInformationType,
                 StudyFieldConstant.notesText);
+        
+        return getInputLevel(tfList);
 
     }
 
     public String getOtherIdLevel() {
-        return getInputLevel(StudyFieldConstant.otherId,
+        List tfList = getStudyMapTemplateFields(
+                StudyFieldConstant.otherId,
                 StudyFieldConstant.otherIdAgency);
-
+        
+        return getInputLevel(tfList);
     }
 
     public String getAuthorInputLevel() {
-        return getInputLevel(StudyFieldConstant.authorName,
+        List tfList = getStudyMapTemplateFields(
+                StudyFieldConstant.authorName,
                 StudyFieldConstant.authorAffiliation);
-
-
+        
+        return getInputLevel(tfList);
     }
 
     public String getProducerInputLevel() {
-        return getInputLevel(StudyFieldConstant.producerName,
+        List tfList = getStudyMapTemplateFields(
+                StudyFieldConstant.producerName,
                 StudyFieldConstant.producerAffiliation,
                 StudyFieldConstant.producerAbbreviation,
                 StudyFieldConstant.producerURL,
                 StudyFieldConstant.producerLogo);
+        
+        return getInputLevel(tfList);
     }
 
     public String getSeriesInputLevel() {
-        return getInputLevel(StudyFieldConstant.seriesName,
+        List tfList = getStudyMapTemplateFields(
+                StudyFieldConstant.seriesName,
                 StudyFieldConstant.seriesInformation);
-
+        
+        return getInputLevel(tfList);
     }
     
     public String getVersionInputLevel() {
-        return getInputLevel(StudyFieldConstant.versionDate,
+        List tfList = getStudyMapTemplateFields(
+                StudyFieldConstant.versionDate,
                 StudyFieldConstant.studyVersion);
 
+        return getInputLevel(tfList);
     }
 
     public String getSoftwareInputLevel() {
-        return getInputLevel(StudyFieldConstant.softwareName,
+        List tfList = getStudyMapTemplateFields(
+                StudyFieldConstant.softwareName,
                 StudyFieldConstant.softwareVersion);
 
+        return getInputLevel(tfList);
     }
 
     public String getGrantInputLevel() {
-        return getInputLevel(StudyFieldConstant.grantNumber,
+        List tfList = getStudyMapTemplateFields(
+                StudyFieldConstant.grantNumber,
                 StudyFieldConstant.grantNumberAgency);
+        
+        return getInputLevel(tfList);
     }
 
     public String getDistributorInputLevel() {
-        return getInputLevel(StudyFieldConstant.distributorName,
+        List tfList = getStudyMapTemplateFields(
+                StudyFieldConstant.distributorName,
                 StudyFieldConstant.distributorAffiliation,
                 StudyFieldConstant.distributorAbbreviation,
                 StudyFieldConstant.distributorURL,
                 StudyFieldConstant.distributorLogo);
 
+        return getInputLevel(tfList);
     }
 
     public String getContactInputLevel() {
-        return getInputLevel(StudyFieldConstant.distributorContact,
+        List tfList = getStudyMapTemplateFields(
+                StudyFieldConstant.distributorContact,
                 StudyFieldConstant.distributorContactAffiliation,
                 StudyFieldConstant.distributorContactEmail);
 
+        return getInputLevel(tfList);
     }
 
     public String getAbstractInputLevel() {
-        return getInputLevel(StudyFieldConstant.abstractText,
+        List tfList = getStudyMapTemplateFields(
+                StudyFieldConstant.abstractText,
                 StudyFieldConstant.abstractDate);
 
+        return getInputLevel(tfList);
     }
 
     public String getKeywordInputLevel() {
-        return getInputLevel(StudyFieldConstant.keywordValue,
+        List tfList = getStudyMapTemplateFields(
+                StudyFieldConstant.keywordValue,
                 StudyFieldConstant.keywordVocab,
                 StudyFieldConstant.keywordVocabURI);
 
+        return getInputLevel(tfList);
     }
 
     public String getTopicInputLevel() {
-        return getInputLevel(StudyFieldConstant.topicClassValue,
+        List tfList = getStudyMapTemplateFields(
+                StudyFieldConstant.topicClassValue,
                 StudyFieldConstant.topicClassVocab,
                 StudyFieldConstant.topicClassVocabURI);
+        
+        return getInputLevel(tfList);
     }
 
     public String getNoteInputLevel() {
-        return getInputLevel(StudyFieldConstant.notesText,
+        List tfList = getStudyMapTemplateFields(
+                StudyFieldConstant.notesText,
                 StudyFieldConstant.notesInformationType,
                 StudyFieldConstant.notesInformationSubject);
-
+        
+        return getInputLevel(tfList);
     }
 
 
@@ -1755,25 +1811,6 @@ public class EditStudyPage extends VDCBaseBean implements java.io.Serializable  
              boolean requiredValid = true;
              boolean countValid=true;
              
-             if(getInputLevel(StudyFieldConstant.westLongitude).equals("required")){
-                 
-             }
-            // if any geographic values are filled, then they all must be filled
-            /* - Validation for "all or nothing"
-             *
-            if (!StringUtil.isEmpty((String)inputWestLongitude.getLocalValue())
-                ||  !StringUtil.isEmpty((String)inputEastLongitude.getLocalValue())
-                ||  !StringUtil.isEmpty((String)inputNorthLatitude.getLocalValue())
-                || !StringUtil.isEmpty((String)inputSouthLatitude.getLocalValue())) {
-                if ( StringUtil.isEmpty((String)inputWestLongitude.getLocalValue())
-                  ||  StringUtil.isEmpty((String)inputEastLongitude.getLocalValue())
-                  ||  StringUtil.isEmpty((String)inputNorthLatitude.getLocalValue())
-                  || StringUtil.isEmpty((String)inputSouthLatitude.getLocalValue())) {
-             
-                    valid=false;
-                }
-            }
-          */
             int numLatitude = 0;
             int numLongitude = 0;
 
@@ -1785,8 +1822,8 @@ public class EditStudyPage extends VDCBaseBean implements java.io.Serializable  
             if (numLatitude != numLongitude) {
                 countValid = false;
             }
-
-             if(getInputLevel(StudyFieldConstant.westLongitude).equals("required")  && numLatitude==0 && numLongitude==0 ){
+            
+            if( ((StudyMapValue) getStudyMap().get(StudyFieldConstant.westLongitude)).isRequired()  && numLatitude==0 && numLongitude==0 ){
                  requiredValid = false;
              }
 

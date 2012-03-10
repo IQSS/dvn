@@ -114,7 +114,7 @@
                 </div>
             </div>
         </div>
-
+     
           <div class="dvn_sectionBox">
             <div panelLayout="flow" class="vdcStudyTemplateFormTable">
               <div jsfc="ice:panelGroup" styleClass="dvnInformationMessage">
@@ -881,7 +881,7 @@
                   </ice:panelGrid>
 
                 <ice:panelGrid cellpadding="0" cellspacing="0" columns="1" width="100%"
-                                 visible="#{!EditStudyPage.abstractAndScopeEmpty or EditStudyPage.abstractAndScopeInputLevel=='recommended' or EditStudyPage.abstractAndScopeInputLevel=='required' or EditStudyPage.showAll }">
+                                 visible="#{!EditStudyPage.abstractAndScopeEmpty or EditStudyPage.abstractAndScopeInputLevel=='required' or EditStudyPage.abstractAndScopeInputLevel=='recommended' or (EditStudyPage.showAll and EditStudyPage.abstractAndScopeInputLevel=='optional') }">
                   <div jsfc="ice:panelGroup" id="groupPanel12" styleClass="vdcStudyInfoHeader" >
                     <ice:outputText id="outputText65" value="Abstract and Scope"/>
                   </div>
@@ -1459,9 +1459,9 @@
                   <!-- Start of Data Collection Methodology -->
                   
                   <ice:panelGrid cellpadding="0" cellspacing="0" columns="1" width="100%"
-                                 visible="#{!EditStudyPage.dataCollectionMethodologyEmpty or EditStudyPage.dataCollectionMethodologyInputLevel=='recommended' 
-                                            or EditStudyPage.dataCollectionMethodologyInputLevel=='required' 
-                                            or EditStudyPage.showAll }">
+                                 visible="#{!EditStudyPage.dataCollectionMethodologyEmpty or EditStudyPage.dataCollectionMethodologyInputLevel=='required' 
+                                            or EditStudyPage.dataCollectionMethodologyInputLevel=='recommended' 
+                                            or (EditStudyPage.showAll and EditStudyPage.dataCollectionMethodologyInputLevel=='optional') }">
                     <div jsfc="ice:panelGroup" id="groupPanel13" styleClass="vdcStudyInfoHeader">
                       <ice:outputText id="outputText90" value="Data Collection / Methodology"/>
                     </div>
@@ -2119,9 +2119,9 @@
                     </div>
                   </ice:panelGrid>
                   
-                  <!--End of Data Collection Methodology -->
+                  <!--End of Data Collection Methodology -->  
                   
-                  <ice:panelGrid cellpadding="0" cellspacing="0" visible="#{!EditStudyPage.dataSetAvailabilityEmpty or EditStudyPage.dataSetAvailabilityInputLevel=='recommended' or EditStudyPage.dataSetAvailabilityInputLevel=='required' or EditStudyPage.showAll}"
+                  <ice:panelGrid cellpadding="0" cellspacing="0" visible="#{!EditStudyPage.dataSetAvailabilityEmpty or EditStudyPage.dataSetAvailabilityInputLevel=='required' or EditStudyPage.dataSetAvailabilityInputLevel=='recommended' or (EditStudyPage.showAll and EditStudyPage.dataSetAvailabilityInputLevel=='optional') }"
                                  columns="1" width="100%">
                     <div jsfc="ice:panelGroup" id="groupPanel14a" styleClass="vdcStudyInfoHeader">
                       <ice:outputText id="outputText131a" value="Data Set Availability"/>
@@ -2253,7 +2253,7 @@
                     </div>
                   </ice:panelGrid>
                   <ice:panelGrid cellpadding="0" cellspacing="0" columns="1" width="100%"
-                                 visible="#{!EditStudyPage.termsOfUseEmpty or EditStudyPage.termsOfUseInputLevel=='recommended' or EditStudyPage.termsOfUseInputLevel=='required' or EditStudyPage.showAll}">
+                                 visible="#{!EditStudyPage.termsOfUseEmpty or EditStudyPage.termsOfUseInputLevel=='required' or EditStudyPage.termsOfUseInputLevel=='recommended' or (EditStudyPage.showAll and EditStudyPage.termsOfUseInputLevel=='optional')}">
                     <div jsfc="ice:panelGroup" id="groupPanel14" styleClass="vdcStudyInfoHeader">
                       <ice:outputText id="outputText131" value="Terms of Use" />
                     </div>
@@ -2465,7 +2465,7 @@
                   </ice:panelGrid>
 
                   <div jsfc="ice:panelGroup" id="groupPanel15" styleClass="vdcStudyInfoHeader"
-                       visible="#{!EditStudyPage.studyNotesEmpty or EditStudyPage.studyMap[sfc.notesInformationType].recommended or EditStudyPage.studyMap[sfc.notesInformationType].required or EditStudyPage.showAll}">
+                       visible="#{!EditStudyPage.studyNotesEmpty or EditStudyPage.studyMap[sfc.notesInformationType].required or EditStudyPage.studyMap[sfc.notesInformationType].recommended or (EditStudyPage.showAll and EditStudyPage.studyMap[sfc.notesInformationType].optional) }">
                     <ice:outputText id="outputText160" value="Other Information"/>
                   </div>
                   <!-- this is a dummy datatable wrapper used to force data retention on validation error-->

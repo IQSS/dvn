@@ -1231,6 +1231,19 @@ public class DDIServiceBean implements DDIServiceLocal {
     private void createOthrStdyMat(XMLStreamWriter xmlw, Metadata metadata) throws XMLStreamException {
         boolean othrStdyMatAdded = false;
 
+        // first check for a replication for publication; if one exists, we need to first add it as a
+        // related materials so pre 3.0 DVNs can read this; we add a source of 3.0, so that it will get skipped post 3.0
+        for (StudyRelPublication rp : metadata.getStudyRelPublications()) {
+             if (rp.isReplicationData()) {
+                othrStdyMatAdded = checkParentElement(xmlw, "othrStdyMat", othrStdyMatAdded);
+                xmlw.writeStartElement("relMat");
+                writeAttribute( xmlw, "source", SOURCE_DVN_3_0 );
+                xmlw.writeCharacters( rp.getText() );
+                xmlw.writeEndElement(); // relMat
+                break;
+             }
+        }       
+        
         for (StudyRelMaterial rm : metadata.getStudyRelMaterials()) {
             othrStdyMatAdded = checkParentElement(xmlw, "othrStdyMat", othrStdyMatAdded);
             xmlw.writeStartElement("relMat");
@@ -1244,10 +1257,10 @@ public class DDIServiceBean implements DDIServiceLocal {
             xmlw.writeEndElement(); // relStdy
         }
         for (StudyRelPublication rp : metadata.getStudyRelPublications()) {
-            othrStdyMatAdded = checkParentElement(xmlw, "othrStdyMat", othrStdyMatAdded);
+            othrStdyMatAdded = checkParentElement(xmlw, "othrStdyMat", othrStdyMatAdded);                     
             xmlw.writeStartElement("relPubl");
             createInnerCitation(xmlw,rp);
-            xmlw.writeEndElement(); // relPubl
+            xmlw.writeEndElement(); // relPubl          
         }
         for (StudyOtherRef or : metadata.getStudyOtherRefs()) {
             othrStdyMatAdded = checkParentElement(xmlw, "othrStdyMat", othrStdyMatAdded);
@@ -1261,6 +1274,13 @@ public class DDIServiceBean implements DDIServiceLocal {
     }
     
     private void createInnerCitation(XMLStreamWriter xmlw, StudyRelPublication publication) throws XMLStreamException {
+        // to stay backward compatible we pre 3.0, we need to add non replication for publications as publications in the old style
+        if (!publication.isReplicationData()) {
+            xmlw.writeCharacters( publication.getText() );
+        } else {
+            xmlw.writeCharacters( "<!--" + NOTE_TYPE_REPLICATION_FOR + ":" + SOURCE_DVN_3_0 + "-->" );
+        }
+        
         // currently this field only accepts related publications, but could in theory generate a citation for other elements
         // if we do this, let's creater an interface, and then have StudyRelPublication and others extend that
         xmlw.writeStartElement("citation");
@@ -2455,12 +2475,15 @@ public class DDIServiceBean implements DDIServiceLocal {
                 if (xmlr.getLocalName().equals("relMat")) {
                     // this code is still here to handle imports from old DVN created ddis
                     if (!replicationForFound && REPLICATION_FOR_TYPE.equals( xmlr.getAttributeValue(null, "type") ) ) {
-                        StudyRelPublication rp = new StudyRelPublication();
-                        metadata.getStudyRelPublications().add(rp);
-                        rp.setMetadata(metadata);
-                        rp.setText( parseText( xmlr, "relMat" ) );
-                        rp.setReplicationData(true);
-                        replicationForFound = true;
+                        if (!SOURCE_DVN_3_0.equals( xmlr.getAttributeValue(null, "source") ) ) {
+                            // this is a ddi from pre 3.0, so we should add a publication
+                            StudyRelPublication rp = new StudyRelPublication();
+                            metadata.getStudyRelPublications().add(rp);
+                            rp.setMetadata(metadata);
+                            rp.setText( parseText( xmlr, "relMat" ) );
+                            rp.setReplicationData(true);
+                            replicationForFound = true;
+                        }
                     } else {                    
                         StudyRelMaterial rm = new StudyRelMaterial();
                         metadata.getStudyRelMaterials().add(rm);
@@ -3292,7 +3315,7 @@ public class DDIServiceBean implements DDIServiceLocal {
         }
         
         // otherwise it's a standard section and just return the String like we always did
-        return returnString;
+        return returnString.trim();
     }
 
     private String parseText_list (XMLStreamReader xmlr) throws XMLStreamException {

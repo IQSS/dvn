@@ -2628,12 +2628,26 @@ public class DDIServiceBean implements DDIServiceLocal {
                 if (xmlr.getLocalName().equals("fileName")) {
                     ddiFileId = xmlr.getAttributeValue(null, "ID");
                     fmd.setLabel( parseText(xmlr) );
-                    sf.setFileType( FileUtil.determineFileType( fmd.getLabel() ) );
+                    /*sf.setFileType( FileUtil.determineFileType( fmd.getLabel() ) );*/
+
                 } else if (xmlr.getLocalName().equals("fileCont")) {
                     fmd.setDescription( parseText(xmlr) );
                 }  else if (xmlr.getLocalName().equals("dimensns")) processDimensns(xmlr, dt);
             } else if (event == XMLStreamConstants.END_ELEMENT) {
-                if (xmlr.getLocalName().equals("fileTxt")) return ddiFileId;
+                if (xmlr.getLocalName().equals("fileTxt")) {
+                    // Now is the good time to determine the type of this subsettable
+                    // file (now that the "<dimensns>" section has been parsed, we 
+                    // should know whether it's a tab, or a fixed field:
+                    String subsettableFileType = "application/octet-stream"; // better this than nothing!
+                    if ( dt.getRecordsPerCase() != null )  {
+                        subsettableFileType="text/x-fixed-field";
+                    } else {
+                        subsettableFileType="text/tab-separated-values";
+                    }        
+                    sf.setFileType( subsettableFileType );
+                    
+                    return ddiFileId;
+                }
             }
         }
         return ddiFileId;

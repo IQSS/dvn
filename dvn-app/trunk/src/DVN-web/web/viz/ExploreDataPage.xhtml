@@ -185,7 +185,9 @@
                                                                                         and (ExploreDataPage.displayType == 1 or ExploreDataPage.displayType == 3)}">
                     <ice:outputLabel value="(#{ExploreDataPage.yAxisLabel})" />
                 </div>
-                <div id="chart_div" rendered="#{ExploreDataPage.displayType == 1   or ExploreDataPage.displayType == 3}"></div>
+                <div id="chart_div" rendered="#{ExploreDataPage.displayType == 1   or ExploreDataPage.displayType == 3}">
+                    <img id="graph_image"/>
+                </div>
                 <div jsfc="ice:panelGroup" styleClass="dvnGraphSourceBlock" rendered="#{!empty ExploreDataPage.sources
                                                                                         and (ExploreDataPage.displayType == 1 or ExploreDataPage.displayType == 3)}">
                     <ice:outputText value="#{ExploreDataPage.sources}"/>
@@ -453,9 +455,10 @@
     </div>
     <script type="text/javascript">
 // <![CDATA[
-    google.load('visualization', '1', {'packages':['annotatedtimeline']});
-    google.load('visualization', '1', {packages:['table']});
-
+    google.load("jquery", "1.4.2");
+    //google.load('visualization', '1', {'packages':['annotatedtimeline']});
+    //google.load('visualization', '1', {packages:['table']});
+    
     var legendString = "";
     var numDecimals = 0;
     var decimalArray = [];
@@ -1135,7 +1138,7 @@ function drawVisualization() {
             var sourcesParam = encodeURIComponent(sourceStringParam);
             var compositeImageURL = "/dvn/DataVisImage/?graphTitle=" + graphTitleParam + "&yAxisLabel=" + yAxisLabelParam + "&heightCode=" + heightValIn
                 + "&sources=" + sourcesParam + "&googleImageUrl=" + encodeURIComponent(googleImageURL);
-            document.getElementById('chart_div').innerHTML = "<img src=" + compositeImageURL + ">";
+            document.getElementById('graph_image').src = compositeImageURL;
         }
         
         initGraphResultsVizLineEdit();
@@ -1272,14 +1275,15 @@ function simpleEncode(valueArray,maxValue) {
   return chartData.join('');
 }
 
-// Same as simple encoding, but for extended encoding.
-var EXTENDED_MAP=
-  'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-.';
-var EXTENDED_MAP_LENGTH = EXTENDED_MAP.length;
+
 function extendedEncode(arrVals, maxVal, minVal) {
+    // Same as simple encoding, but for extended encoding.
+    var EXTENDED_MAP='ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-.';
+    var EXTENDED_MAP_LENGTH = EXTENDED_MAP.length;
+
     var ymin=0;
-var ymax=4095;
-  var chartData = '';
+    var ymax=4095;
+    var chartData = '';
 
   for(i = 0, len = arrVals.length; i < len; i++) {
     // In case the array vals were translated to strings.

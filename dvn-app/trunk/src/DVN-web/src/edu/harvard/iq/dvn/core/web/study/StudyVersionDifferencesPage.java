@@ -1200,7 +1200,7 @@ public class StudyVersionDifferencesPage extends VDCBaseBean implements java.io.
 
 				idi = new catalogInfoDifferenceItem();
 
-				idi.setFieldName("Abstract Date");
+				idi.setFieldName("Description Date");
 				idi.setFieldValue1(value1);
 				idi.setFieldValue2(value2);
 

@@ -501,7 +501,7 @@
                                 </div>
                             </ice:panelGrid>
                             <div jsfc="ice:panelGroup" id="groupPanel12" styleClass="vdcStudyInfoHeader" rendered="#{!studyPage.abstractAndScopePanelIsEmpty}">
-                                <ice:outputText id="AbstractAndScopeText" value="Abstract and Scope"/>
+                                <ice:outputText id="AbstractAndScopeText" value="Description and Scope"/>
                                 <ice:commandButton id="commandButtonAbstractScopeContract"  image="/resources/images/icon_expand.gif" title="Hide fields in this section" rendered="#{studyPage.studyUI.abstractAndScopePanelIsRendered }" actionListener="#{studyPage.updateAbstractScopeDisplay}"/>
                                 <ice:commandButton id="commandButtonAbstractScopeExpand" image="/resources/images/icon_contract.gif" title="Show fields in this section" rendered="#{!studyPage.studyUI.abstractAndScopePanelIsRendered }" actionListener="#{studyPage.updateAbstractScopeDisplay}"/>
                                 <!--ice:outputText  value="(This section is empty)" rendered="#{studyPage.abstractAndScopePanelIsEmpty}" /-->

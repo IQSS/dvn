@@ -965,9 +965,11 @@ public class StudyPage extends VDCBaseBean implements java.io.Serializable  {
         if (baseMetadataUrl == null || baseMetadataUrl.equals("")) {
             return null; 
         }
-        
-        if (studyFileService.doesStudyHaveTabularFiles(studyUI.getStudyVersion().getId())) {
-            return baseMetadataUrl + "?partialExclude=codeBook/dataDscr";
+       
+        if (!studyUI.getStudy().isIsHarvested()) {
+            if (studyFileService.doesStudyHaveTabularFiles(studyUI.getStudyVersion().getId())) {
+                return baseMetadataUrl + "?partialExclude=codeBook/dataDscr";
+            }
         }
         
         return null; 

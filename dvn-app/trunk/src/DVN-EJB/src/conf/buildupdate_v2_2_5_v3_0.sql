@@ -82,3 +82,6 @@ UPDATE StudyRelPublication SET replicationData=false, displayorder = displayorde
 
 -- move old replication for values to study publication table
 insert into studyrelpublication (metadata_id, version, text,displayOrder,replicationdata) select id, 1, replicationfor, 0, true from metadata where replicationfor != '';
+
+-- drop old table(s)
+drop table templatefieldselectvalue;

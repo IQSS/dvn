@@ -324,15 +324,14 @@ public class Indexer implements java.io.Serializable  {
             
 
             for (StudyRelPublication elem : metadata.getStudyRelPublications()) {
+                String publicationId = (elem.getIdType() != null ? elem.getIdType() + ":" : "") + elem.getIdNumber();
                 if (elem.isReplicationData()) {
                     addText(1.0f, doc, "replicationFor", elem.getText());
-                    addText(1.0f, doc, "replicationForIdType", elem.getIdType());
-                    addText(1.0f, doc, "replicationForIdNumber", elem.getIdNumber());
+                    addText(1.0f, doc, "replicationForId", publicationId);
                     addText(1.0f, doc, "replicationForURL", elem.getUrl());                    
                 } else {
                     addText(1.0f, doc, "relatedPublications", elem.getText());
-                    addText(1.0f, doc, "relatedPublicationsIdType", elem.getIdType());
-                    addText(1.0f, doc, "relatedPublicationsIdNumber", elem.getIdNumber());
+                    addText(1.0f, doc, "relatedPublicationsId", publicationId);
                     addText(1.0f, doc, "relatedPublicationsURL", elem.getUrl());
                 }
             }

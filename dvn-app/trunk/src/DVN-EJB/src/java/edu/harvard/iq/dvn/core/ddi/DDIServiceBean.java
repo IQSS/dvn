@@ -360,7 +360,8 @@ public class DDIServiceBean implements DDIServiceLocal {
         writeAttribute( xmlw, "xmlns:xsi", "http://www.w3.org/2001/XMLSchema-instance" );
         writeAttribute( xmlw, "xsi:schemaLocation", "http://www.icpsr.umich.edu/DDI http://www.icpsr.umich.edu/DDI/Version2-0.xsd" );
         writeAttribute( xmlw, "version", "2.0" );
-
+        writeAttribute( xmlw, "source", SOURCE_DVN_3_0 );
+        
         createDocDscr(xmlw, md, xpathCurrent, xpathExclude, xpathInclude);
         createStdyDscr(xmlw, md, xpathCurrent, xpathExclude, xpathInclude);
 

@@ -1239,6 +1239,7 @@ public class DDIServiceBean implements DDIServiceLocal {
                 othrStdyMatAdded = checkParentElement(xmlw, "othrStdyMat", othrStdyMatAdded);
                 xmlw.writeStartElement("relMat");
                 writeAttribute( xmlw, "source", SOURCE_DVN_3_0 );
+                writeAttribute( xmlw, "type", REPLICATION_FOR_TYPE );
                 xmlw.writeCharacters( rp.getText() );
                 xmlw.writeEndElement(); // relMat
                 break;

@@ -127,7 +127,7 @@
                                     <ice:inputHidden id="recaptcha" validator="#{ContactUsPage.validateCaptcha}" value="captcha">
                                         <ice:message styleClass="errorMessage" for="recaptcha"/>
                                     </ice:inputHidden>
-                                    #{ContactUsPage.captcha}
+                                    <ice:outputText escape="false" value="#{ContactUsPage.captcha}" />
                                 </ice:panelGrid>
                                 <div class="dvnFormPadding">
                                     <ice:commandButton id="btnSend" value="Send E-mail" action="#{ContactUsPage.send_action}"/>

@@ -62,7 +62,6 @@ UPDATE DataFileFormatType SET mimeType='application/x-R-2' WHERE id=3;
 -- Adding the DVN-wide Terms of Use Authorization to the VDCUser table
 ALTER TABLE VDCUser ADD COLUMN BypassTermsOfUse boolean;
 
-CREATE TABLE metadataformattype (ID BIGINT NOT NULL, FORMATSCHEMA VARCHAR(255), MIMETYPE VARCHAR(255), NAME VARCHAR(255), NAMESPACE VARCHAR(255), PARTIALEXCLUDESUPPORTED BOOLEAN, PARTIALSELECTSUPPORTED BOOLEAN, PRIMARY KEY (ID));
 INSERT INTO metadataformattype (id, name, mimetype, namespace, formatschema, partialexcludesupported, partialselectsupported) VALUES (1, 'ddi', 'application/xml', 'http://www.icpsr.umich.edu/DDI', 'http://www.icpsr.umich.edu/DDI/Version2-0.xsd', true, true);
 INSERT INTO metadataformattype (id, name, mimetype, namespace, formatschema, partialexcludesupported, partialselectsupported) VALUES (2, 'oai_dc', 'application/xml', 'http://www.openarchives.org/OAI/2.0/oai_dc/', 'http://www.openarchives.org/OAI/2.0/oai_dc.xsd', false, false);
 INSERT INTO metadataformattype (id, name, mimetype, namespace, formatschema, partialexcludesupported, partialselectsupported) VALUES (3, 'marc', 'application/octet-stream', 'http://www.loc.gov/marc/', 'MARC 21', false, false);

@@ -238,6 +238,12 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
     public ExploreDataPage() {
         
     }
+    
+    public void preRenderView() {
+        super.preRenderView();
+        // add javascript call on each partial submit to init the edit line functionality
+        JavascriptContext.addJavascriptCall(getFacesContext(), "initGraphResultsVizLineEdit();");
+    }    
 
     @Override
     public void init() {

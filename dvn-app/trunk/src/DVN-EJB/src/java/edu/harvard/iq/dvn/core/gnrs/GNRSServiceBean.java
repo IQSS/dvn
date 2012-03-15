@@ -37,8 +37,6 @@ import java.io.FileInputStream;
 import java.security.PrivateKey;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Vector;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
@@ -85,22 +83,13 @@ public class GNRSServiceBean implements edu.harvard.iq.dvn.core.gnrs.GNRSService
     }
     
     private String generateStudyIdSequence(String protocol, String authority) {
-     //   Date now = new Date();
-     //   return ""+now.getTime();
-     //   return em.createNamedQuery("getStudyIdSequence").getSingleResult().toString();
+     
         String studyId=null;
         do {
             studyId = ((Long) em.createNativeQuery("select nextval('studyid_seq')").getSingleResult()).toString();
 
         } while (!isUniqueStudyId(studyId, protocol, authority));
         
-        /*
-        String handle = authority + "/" + studyId;
-        VDCNetwork vdcNetwork = vdcNetworkService.find();
-        if (vdcNetwork.isHandleRegistration()&& isAuthority(authority)){
-            createHandle(handle);
-        }
-        */
         
         return studyId;
         
@@ -126,65 +115,67 @@ public class GNRSServiceBean implements edu.harvard.iq.dvn.core.gnrs.GNRSService
    }
 
    public void fixHandle( String handle){
-       String prefix = handle.substring(0,handle.indexOf("/"));
-       String localHandle = handle.substring(handle.indexOf("/") + 1);
-       String authHandle = getAuthHandle();
-       byte[] key = null;
-       int index = 300;
-       //String file = "/hs/svr_1/admpriv.bin";
-       String adminCredFile = System.getProperty("dvn.handle.admcredfile");
-       String secret = System.getProperty("dvn.handle.admprivphrase");
-       try {
-           File f = new File(adminCredFile);
-           FileInputStream fs = new FileInputStream(f);
-           key = new byte[(int) f.length()];
-           int n = 0;
-           while (n < key.length) {
-               key[n++] = (byte) fs.read();
+   
+       if (isHandleRegistered(handle)) {
+           // Rebuild/Modify an existing handle
+
+           String prefix = handle.substring(0, handle.indexOf("/"));
+           String localHandle = handle.substring(handle.indexOf("/") + 1);
+           String authHandle = getAuthHandle();
+           int index = 300;
+
+
+           byte[] key = null;
+           String adminCredFile = System.getProperty("dvn.handle.admcredfile");
+           key = readKey(adminCredFile);
+
+           PrivateKey privkey = null;
+           privkey = readPrivKey(key, adminCredFile);
+
+
+           HandleResolver resolver = new HandleResolver();
+
+           String urlStr = getUrlStr(prefix, handle);
+
+           try {
+               PublicKeyAuthenticationInfo auth =
+                       new PublicKeyAuthenticationInfo(authHandle.getBytes("UTF8"),
+                       index,
+                       privkey);
+
+               AdminRecord admin = new AdminRecord(authHandle.getBytes("UTF8"), 300,
+                       true, true, true, true, true, true,
+                       true, true, true, true, true, true);
+
+               int timestamp = (int) (System.currentTimeMillis() / 1000);
+
+               HandleValue[] val = {new HandleValue(100, "HS_ADMIN".getBytes("UTF8"),
+                   Encoder.encodeAdminRecord(admin),
+                   HandleValue.TTL_TYPE_RELATIVE, 86400,
+                   timestamp, null, true, true, true, false), new HandleValue(1, "URL".getBytes("UTF8"),
+                   urlStr.getBytes(),
+                   HandleValue.TTL_TYPE_RELATIVE, 86400,
+                   timestamp, null, true, true, true, false)};
+
+
+               ModifyValueRequest req = new ModifyValueRequest(handle.getBytes("UTF8"), val, auth);
+
+               resolver.traceMessages = true;
+               AbstractResponse response = resolver.processRequest(req);
+               if (response.responseCode == AbstractMessage.RC_SUCCESS) {
+                   logger.fine("\nGot Response: \n" + response);
+               } else {
+                   logger.fine("\nGot Error: \n" + response);
+               }
+           } catch (Throwable t) {
+               logger.fine("\nError: " + t);
            }
-           fs.read(key);
-       } catch (Throwable t) {
-           System.err.println("Cannot read private key " + adminCredFile + ": " + t);
+       } else {
+           // Create a new handle from scratch:
+           
+           createHandle(handle);
        }
-
-       HandleResolver resolver = new HandleResolver();
-
-       PrivateKey privkey = null;
-       byte[] secKey = null;
-       try {
-           if (Util.requiresSecretKey(key)) {
-               secKey = secret.getBytes();
-           }
-           key = Util.decrypt(key, secKey);
-           privkey = Util.getPrivateKeyFromBytes(key, 0);
-       } catch (Throwable t) {
-           System.err.println("Can\'t load private key in " + adminCredFile + ": " + t);
-       }
-
-       String urlStr = getUrlStr(prefix, handle);
-
-       try {
-           PublicKeyAuthenticationInfo auth = new PublicKeyAuthenticationInfo(authHandle.getBytes("UTF8"), index, privkey);
-
-           AdminRecord admin = new AdminRecord(authHandle.getBytes("UTF8"), 300, true, true, true, true, true, true, true, true, true, true, true, true);
-
-           int timestamp = (int) (System.currentTimeMillis()/1000);
-
-           HandleValue[] val = {new HandleValue(100, "HS_ADMIN".getBytes("UTF8"), Encoder.encodeAdminRecord(admin), HandleValue.TTL_TYPE_RELATIVE, 86400, timestamp, null, true, true, true, false), new HandleValue(1, "URL".getBytes("UTF8"), urlStr.getBytes(), HandleValue.TTL_TYPE_RELATIVE, 86400, timestamp, null, true, true, true, false)};
-
-           ModifyValueRequest req = new ModifyValueRequest(handle.getBytes("UTF8"), val, auth);
-
-           resolver.traceMessages = true;
-           AbstractResponse response = resolver.processRequest(req);
-           if (response.responseCode == AbstractMessage.RC_SUCCESS){
-               System.out.println("\nGot Response: \n"+response);
-           } else {
-               System.out.println("\nGot Error: \n"+response);
-           }
-       } catch (Throwable t) {
-           System.err.println("\nError: " + t);
-       }       
-   }
+    }
 
    public void createHandle( String handle){
     String prefix = handle.substring(0,handle.indexOf("/"));
@@ -192,57 +183,17 @@ public class GNRSServiceBean implements edu.harvard.iq.dvn.core.gnrs.GNRSService
        if (vdcNetworkService.find().isHandleRegistration() && isAuthority(prefix)){
            String localHandle = handle.substring(handle.indexOf("/")+1);
            String authHandle =  getAuthHandle();
+           
            byte[] key = null;
-           int index = 300;
            String adminCredFile = System.getProperty("dvn.handle.admcredfile");
-           logger.fine("Configured location of the private key file: "+adminCredFile);
-           String secret = System.getProperty("dvn.handle.admprivphrase");
-           if (secret==null) {
-            logger.fine("No private phrase specified.");
-           } else if (secret.equals("")) {
-            logger.fine("Empty private phrase specified.");
-           }
-           
-            try {
-               File f = new File(adminCredFile);
-               FileInputStream fs = new FileInputStream(f);
-               
-               logger.fine("Key file length: "+f.length());
+           key = readKey(adminCredFile);
+           PrivateKey privkey = readPrivKey(key, adminCredFile);
 
-               key = new byte[(int)f.length()];
-               int n=0;
-               while(n<key.length) {
-                    key[n++] = (byte)fs.read();
-               }
-               //fs.read(key);
-               logger.fine("Read "+n+" bytes from key file;");
-
-           } catch (Throwable t){
-               System.err.println("Cannot read private key " + adminCredFile +": " + t.getMessage());
-           }
-           
            HandleResolver resolver = new HandleResolver();
            
-           PrivateKey privkey = null;
-           byte secKey[] = null;
-           byte decryptedKeyBytes[] = null; 
-           try {
-               if(Util.requiresSecretKey(key)){
-                   logger.fine("Secret key is required.");
-                   secKey = secret.getBytes();
-               } else {
-                   logger.fine("No secret key required.");
-               }
-               logger.fine("Decrypting the key.");
-               decryptedKeyBytes = Util.decrypt(key, secKey);
-               logger.fine("Decrypted: "+decryptedKeyBytes.length+" bytes");
-               privkey = Util.getPrivateKeyFromBytes(decryptedKeyBytes, 0);
-           } catch (Throwable t){
-               System.err.println("Can't load private key in " + adminCredFile +": " + t.getMessage());
-           }
-           
            String urlStr = getUrlStr(prefix, handle);
-           logger.fine("URL string: "+urlStr);
+           
+           int index = 300;
            
            try {
                PublicKeyAuthenticationInfo auth =
@@ -270,12 +221,12 @@ public class GNRSServiceBean implements edu.harvard.iq.dvn.core.gnrs.GNRSService
                resolver.traceMessages = true;
                AbstractResponse response = resolver.processRequest(req);
                if (response.responseCode == AbstractMessage.RC_SUCCESS){
-                   System.out.println("\nGot Response: \n"+response);
+                   logger.fine("\nGot Response: \n"+response);
                } else {
-                   System.out.println("\nGot Error: \n"+response);
+                   logger.fine("\nGot Error: \n"+response);
                }
            } catch (Throwable t) {
-               System.err.println("\nError: "+t);
+               logger.severe("\nError: "+t);
            }
        }
    }
@@ -285,34 +236,15 @@ public class GNRSServiceBean implements edu.harvard.iq.dvn.core.gnrs.GNRSService
        if (vdcNetworkService.find().isHandleRegistration() && isAuthority(prefix)){
            String localHandle = handle.substring(handle.indexOf("/")+1);
            String authHandle =  getAuthHandle();
-           //String file = "/hs/svr_1/admpriv.bin";
-           String adminCredFile = System.getProperty("dvn.handle.admcredfile");
-           String secret = System.getProperty("dvn.handle.admprivphrase");
-           byte[] key = null;
-           try {
-               File f = new File(adminCredFile);
-               FileInputStream fs = new FileInputStream(f);
-               key = new byte[(int)f.length()];
-               int n=0;
-               while(n<key.length) key[n++] = (byte)fs.read();
-               fs.read(key);
-           } catch (Throwable t) {
-               System.err.println("Cannot read private key " + adminCredFile + ": " + t);
-           }
            
+           byte[] key = null;
+           String adminCredFile = System.getProperty("dvn.handle.admcredfile");
+           key = readKey(adminCredFile);
+           PrivateKey privkey = readPrivKey(key, adminCredFile);
+                      
            HandleResolver resolver = new HandleResolver();
            resolver.setSessionTracker(new ClientSessionTracker());
-           PrivateKey privkey = null;
-           byte secKey[] = null;
-           try {
-               if(Util.requiresSecretKey(key)){
-                   secKey = secret.getBytes();
-               }
-               key = Util.decrypt(key, secKey);
-               privkey = Util.getPrivateKeyFromBytes(key, 0);
-           } catch (Throwable t) {
-               System.err.println("Can't load private key in " + adminCredFile + ": " +t);
-           }
+           
            PublicKeyAuthenticationInfo auth =
                    new PublicKeyAuthenticationInfo(Util.encodeString(authHandle), 300, privkey);
            
@@ -325,9 +257,9 @@ public class GNRSServiceBean implements edu.harvard.iq.dvn.core.gnrs.GNRSService
                ex.printStackTrace();
            }
            if(response==null || response.responseCode!=AbstractMessage.RC_SUCCESS) {
-               System.out.println("error deleting '"+handle+"': "+response);
+               logger.fine("error deleting '"+handle+"': "+response);
            } else {
-               System.out.println("deleted "+handle);
+               logger.fine("deleted "+handle);
            }
        }
    }
@@ -342,16 +274,16 @@ public class GNRSServiceBean implements edu.harvard.iq.dvn.core.gnrs.GNRSService
             ex.printStackTrace();
         }
         if(response==null || response.responseCode!=AbstractMessage.RC_SUCCESS) {
-            System.out.println("error resolving '"+handle+"': "+response);
+            logger.fine("error resolving '"+handle+"': "+response);
         } else {
-            System.out.println("resolved "+handle);
+            logger.fine("resolved "+handle);
         }
         String handleUrl = null;
         try {
             HandleValue[] values = ((ResolutionResponse) response).getHandleValues();
-            System.out.println("Size " + values.length);
+            logger.fine("Size " + values.length);
             for (int i = 0; i < values.length; i++) {
-                System.out.println("Handle "+ i + values[i].getTypeAsString()+values[i].getDataAsString());
+                logger.fine("Handle "+ i + values[i].getTypeAsString()+values[i].getDataAsString());
                 if (values[i].getTypeAsString().equals("URL")){
                     handleUrl = values[i].getDataAsString();
                 }
@@ -383,10 +315,9 @@ public class GNRSServiceBean implements edu.harvard.iq.dvn.core.gnrs.GNRSService
         String localHandle = handle.substring(handle.indexOf("/")+1);
         String authHandle =  getAuthHandle();
         byte[] key = null;
-        //String file = "/hs/svr_1/admpriv.bin";
         String adminCredFile = System.getProperty("dvn.handle.admcredfile");
-        key = readKey(adminCredFile);
-        
+
+        key = readKey(adminCredFile);        
         PrivateKey privkey = null;
         privkey = readPrivKey(key, adminCredFile);
         PublicKeyAuthenticationInfo auth =
@@ -413,12 +344,11 @@ public class GNRSServiceBean implements edu.harvard.iq.dvn.core.gnrs.GNRSService
         try {
             if(Util.requiresSecretKey(key)){
                 secKey = secret.getBytes();
-//                secKey = Util.getPassphrase("passphrase: ");
             }
             key = Util.decrypt(key, secKey);
             privkey = Util.getPrivateKeyFromBytes(key, 0);
         } catch (Throwable t){
-            System.err.println("Can't load private key in " + file +": " + t);
+            logger.severe("Can't load private key in " + file +": " + t);
         }
         return privkey;
     }
@@ -433,9 +363,8 @@ public class GNRSServiceBean implements edu.harvard.iq.dvn.core.gnrs.GNRSService
             while(n<key.length) {
                 key[n++] = (byte)fs.read();
             }
-            //fs.read(key);
         } catch (Throwable t){
-            System.err.println("Cannot read private key " + file +": " + t);
+            logger.severe("Cannot read private key " + file +": " + t);
         }
         return key;
     }
@@ -446,7 +375,6 @@ public class GNRSServiceBean implements edu.harvard.iq.dvn.core.gnrs.GNRSService
         String vdcAuthority = network.getAuthority(); 
         String baseUrl = null;
         if (isAuthority(prefix)){
-//        if (prefix.equals(vdcAuthority)){
             baseUrl = "http://" + System.getProperty("dvn.inetAddress") + "/dvn/study?globalId=hdl:";
             if (baseUrl == null) {
                 baseUrl = "http://dvn.iq.harvard.edu/dvn/study?globalId=hdl:";

@@ -361,15 +361,6 @@
                                     </div>
                                 </div>
                               </h:column>
-                                <f:facet name="footer">
-                                    <script type="text/javascript">
-                                      // <![CDATA[
-                                        jQuery(document).ready(function(){
-                                            initGraphResultsVizLineEdit();
-                                        });
-                                        // ]]>
-                                    </script>
-                                </f:facet>
                             </ice:dataTable>
 
                         </div>
@@ -1139,9 +1130,6 @@ function drawVisualization() {
                 + "&sources=" + sourcesParam + "&googleImageUrl=" + encodeURIComponent(googleImageURL);
             document.getElementById('graph_image').src = compositeImageURL;
         }
-        
-        initGraphResultsVizLineEdit();
-
     }
 
     function setChartDivHeight() {
@@ -1165,6 +1153,7 @@ function drawVisualization() {
          }
     }
 
+// this method is called by the backing bean's prerender method'
 function initGraphResultsVizLineEdit(){
     jQuery("a.dvnGraphResultsVizLineEditLink").click(function() {
         jQuery(this).parent().prev().addClass("edit");
@@ -1177,7 +1166,7 @@ function initGraphResultsVizLineEdit(){
 }
 
 function deleteLine(){
-    setTimeout(function(){drawVisualization();initGraphResultsVizLineEdit();}, 1500);
+    setTimeout(function(){drawVisualization();}, 1500);
 }
 
 function updateStartYear(){

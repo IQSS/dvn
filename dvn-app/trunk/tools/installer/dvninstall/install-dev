@@ -581,7 +581,8 @@ elsif ( -x "/usr/sbin/sysctl" )
     # MacOS X, probably...
 
     $sys_mem_total = `/usr/sbin/sysctl -n hw.memsize`; 
-    chop $raw_mem_info; 
+    chop $sys_mem_total; 
+    $sys_mem_total = ( int ($sys_mem_total / 1024) ); 
 }
 
 if ( $sys_mem_total > 0 )
@@ -655,7 +656,7 @@ print "\nCopying additional configuration files... ";
 system ( "/bin/cp -f ../../../working_directory/* ".$glassfish_dir."/glassfish/domains/domain1/config"); 
 system ( "/bin/mkdir -p ".$glassfish_dir."/glassfish/domains/domain1/config/networkData/lib"); 
 system ( "/bin/cp -f ../../../lib/dvn-lib-NetworkData/*.jar ".$glassfish_dir."/glassfish/domains/domain1/config/networkData/lib"); 
-system ( "/bin/cp -f ../../../lib/dvn-lib-NetworkData-LUCENE/*.jar ".$glassfish_dir."/glassfish/domains/domain1/config/networkData/lib"); 
+system ( "/bin/cp -f ../../../lib/dvn-lib-NetworkData-EXTRA/*.jar ".$glassfish_dir."/glassfish/domains/domain1/config/networkData/lib"); 
 #diagnostics needed!
 
 print "done!\n";

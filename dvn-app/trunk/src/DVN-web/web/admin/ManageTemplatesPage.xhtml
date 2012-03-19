@@ -63,8 +63,15 @@
                   <f:facet name="header">
                     <ice:outputText value="Enabled"/>
                   </f:facet>
-                  <ice:selectBooleanCheckbox partialSubmit="true" value="#{template.enabled}" valueChangeListener="#{ManageTemplatesPage.updateEnabledAction(template)}"
-                                             disabled="#{ManageTemplatesPage.isDefault(template.id) or (empty(VDCRequest.currentVDC) and ManageTemplatesPage.isVDCDefault(template.id)) or (!empty(VDCRequest.currentVDC) and template.network)}"/>
+                  <ice:outputText value="Cannot Disable" rendered="#{template.enabled and (ManageTemplatesPage.isDefault(template.id) 
+                                               or (empty(VDCRequest.currentVDC) and ManageTemplatesPage.isVDCDefault(template.id)) 
+                                               or (!empty(VDCRequest.currentVDC) and template.network))}" />
+                  <ice:commandLink value="Disable" action="#{ManageTemplatesPage.updateEnabledAction(template.id)}"
+                                   rendered="#{template.enabled and !(ManageTemplatesPage.isDefault(template.id) 
+                                               or (empty(VDCRequest.currentVDC) and ManageTemplatesPage.isVDCDefault(template.id)) 
+                                               or (!empty(VDCRequest.currentVDC) and template.network))}" />
+                  <ice:commandLink value="Enable" action="#{ManageTemplatesPage.updateEnabledAction(template.id)}"
+                                   rendered="#{!template.enabled}" />
                 </ice:column>                  
                   
                 <ice:column>

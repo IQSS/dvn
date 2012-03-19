@@ -37,8 +37,6 @@ import java.util.List;
 import javax.ejb.EJB;
 import edu.harvard.iq.dvn.core.web.common.VDCBaseBean;
 import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.Map;
 import javax.faces.bean.ViewScoped;
 import javax.inject.Named;
 
@@ -102,10 +100,23 @@ public class ManageTemplatesPage extends VDCBaseBean implements java.io.Serializ
         }
         return "";
     }
-
-    public void updateEnabledAction(Template template) {
+    
+        
+    public void updateEnabledAction(Long templateId) {
+        Template template = null;
+        int templateIndex = 0;
+        
+        // get the the template (and the index, so we can refrsh afterwards)
+        for (int i = 0; i < templateList.size(); i++) {
+            Template t = templateList.get(i);
+            if (t.getId().equals(templateId)) {
+                templateIndex = i;
+                template = t;
+                break;
+            }   
+        }        
+        
         // first, check if we are trying disable a template and verify it has not been made a default
-        boolean setEnabled = true;
         if (template.isEnabled()) {
             // network level template
             if (getVDCRequestBean().getCurrentVDC() == null) {
@@ -123,27 +134,18 @@ public class ManageTemplatesPage extends VDCBaseBean implements java.io.Serializ
             for(Template testTemplate : templateList){
                 if (testTemplate.isEnabled() && !testTemplate.equals(template) && testTemplate.getName().equals(template.getName())){
                     getVDCRenderBean().getFlash().put("warningMessage","The template you are trying to enable has the same name as another enabled template. Please edit the name and re-try enabling.");
-                    setEnabled = false;
+                    return;
                 }
             }
         }
         
-        if (setEnabled) {
-            template.setEnabled(!template.isEnabled());
-            templateService.updateTemplate(template);
-        }
+        template.setEnabled(!template.isEnabled());
+        templateService.updateTemplate(template);
 
-        
-        // now update the template in the list
-        for (int i = 0; i < templateList.size(); i++) {
-            Template t = templateList.get(i);
-            if (template.equals(t)) {
-                templateList.set(i, templateService.getTemplate(template.getId()));
-                break;
-            }  
-            
-        }
-    }    
+        // now update the template in the list (this is needed or a second attempt to change will result in an optimistic lock)
+        templateList.set(templateIndex, templateService.getTemplate(template.getId()));
+    }
+     
     
     
    

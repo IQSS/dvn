@@ -348,9 +348,11 @@
                                                                     &#160;
                                                                 </f:facet>
                                                                 <ice:commandLink id="editFilterGroup" style="margin-right:1em;" actionListener="#{SetUpDataExplorationPage.editFilterGroup}">
+                                                                    <f:attribute name="grouping" value="#{grouping}"/>
                                                                     <ice:outputText style="display:inline;" id="editFilterGroupText" value="Edit"/>
                                                                 </ice:commandLink>
                                                                 <ice:commandLink id="deleteFilterGroup" actionListener="#{SetUpDataExplorationPage.deleteFilterGroup}">
+                                                                    <f:attribute name="grouping" value="#{grouping}"/>
                                                                     <ice:outputText style="display:inline;" id="deleteFilterGroupText" value="Delete"/>
                                                                 </ice:commandLink>
                                                             </h:column>

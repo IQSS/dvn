@@ -1762,7 +1762,7 @@ public class SetUpDataExplorationPage extends VDCBaseBean implements java.io.Ser
         if (!visualizationService.validateAllGroupsAreMapped(dataTable, returnListOfErrors)) {
             if (messages) {
                 if (!returnListOfErrors.isEmpty()) {
-                    fullErrorMessage += "<br></br>Measure-filter combinations were found that would result in no variables selected at visualization.<br></br>";
+                    fullErrorMessage += "<br></br>Measure-filter combinations were found that would result in no variables selected at visualization.";
                     fullErrorMessage += "<ul>";
                     String filterErrorMessage = "";
                     int filterCount = 0;
@@ -1813,7 +1813,7 @@ public class SetUpDataExplorationPage extends VDCBaseBean implements java.io.Ser
         if (!visualizationService.validateMoreThanZeroMeasureMapping(dataTable, returnListOfErrors)) {
             if (messages) {
                 if (!returnListOfErrors.isEmpty()) {
-                    fullErrorMessage += "<br></br>At least one filter was found that is not mapped to any measures.<br></br>";;
+                    fullErrorMessage += "<br></br>At least one filter was found that is not mapped to any measures.";;
                     boolean firstVar = true;
                     boolean newgroup = false;
                     for (Object errorObject : returnListOfErrors) {
@@ -1977,7 +1977,7 @@ public class SetUpDataExplorationPage extends VDCBaseBean implements java.io.Ser
         }
         if (!valid && messages) {
             // add rounded corners to the validation message box
-            fullErrorMessage = "This configuration is invalid so it cannot be released. " + fullErrorMessage;
+            fullErrorMessage = "This configuration is invalid so it cannot be released. <br></br>" + fullErrorMessage;
             getVDCRenderBean().getFlash().put("warningMessage", fullErrorMessage);
         }
         return valid;

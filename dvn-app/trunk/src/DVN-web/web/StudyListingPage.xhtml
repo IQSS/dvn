@@ -230,7 +230,7 @@
                               </div>
                               -->
                       <div jsfc="ice:panelGroup" id="groupPanel2" rendered="#{studyUI.abstracts != null and studyUI.abstracts != ''}">
-                          <ice:outputText id="outputText14" styleClass="dvnStudyListTableAbstract" escape="false" value="Abstract: &#60;div&#62;#{studyUI.abstracts}&#60;/div&#62;"/>
+                          <ice:outputText id="outputText14" styleClass="dvnStudyListTableAbstract" escape="false" value="Abstract: &#60;div class=&#34;dvnStudyListTableAbstractBlock&#34;&#62;#{studyUI.abstracts}&#60;/div&#62;"/>
                       </div>
                       <!-- Optional search fields -->
                       
@@ -348,7 +348,7 @@
                 </ice:panelGrid>
                 <script type="text/javascript">
                     jQuery(document).ready(function(){
-                        jQuery("span.dvnStudyListTableAbstract div").truncate({max_length: 255});
+                        jQuery("div.dvnStudyListTableAbstractBlock").truncate({max_length: 255});
                     });
                 </script>
               </div>

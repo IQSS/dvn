@@ -30,6 +30,7 @@ package edu.harvard.iq.dvn.core.web;
 
 import com.icesoft.faces.component.datapaginator.DataPaginator;
 import com.icesoft.faces.component.tree.IceUserObject;
+import com.icesoft.faces.context.effects.JavascriptContext;
 import edu.harvard.iq.dvn.core.admin.UserGroup;
 import edu.harvard.iq.dvn.core.admin.VDCUser;
 import edu.harvard.iq.dvn.core.index.IndexServiceLocal;
@@ -356,6 +357,12 @@ public class StudyListingPage extends VDCBaseBean implements java.io.Serializabl
         if (paginator2 != null) {
             paginator2.gotoFirstPage();
         }
+    }
+    
+    public void preRenderView() {
+       super.preRenderView();
+       // add javascript call on each partial submit to initialize the help tips for added fields
+       JavascriptContext.addJavascriptCall(getFacesContext(),"initAbstractTruncate();");
     }
 
     public void init() {

@@ -347,9 +347,15 @@
                   </div>
                 </ice:panelGrid>
                 <script type="text/javascript">
+                    // <![CDATA[
                     jQuery(document).ready(function(){
-                        jQuery("div.dvnStudyListTableAbstractBlock").truncate({max_length: 255});
+                        initAbstractTruncate();
                     });
+                    
+                    function initAbstractTruncate() {
+                        jQuery("div.dvnStudyListTableAbstractBlock").truncate({max_length: 255});
+                    }
+                    // ]]>
                 </script>
               </div>
             </div>

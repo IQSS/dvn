@@ -173,7 +173,7 @@ tr.popupModVerNotLabel td span{font-weight:bold;}
 .dvnversionstable td.dvnversionstableCol5{width:180px;}
 .dvnversionstable td.dvnversionstableCol6{width:18%;}
 .dvnversionsreleasedate{white-space:nowrap}
-.dvnStudyVersionNote .vdcTruncatorLinkLess{margin-left:8px;}
+.vdcTruncatorLinkLess{margin-left:8px;}
 /* STUDY VERSION DIFFERENCES */
 table.dvnDifferanceTableHeader, table.dvnDifferanceTableHeader tr{border-left:0;background:none;}
 table.dvnDifferanceTableHeader td{border-bottom:0;}

@@ -11,7 +11,15 @@
     var opts = $.extend({}, $.fn.truncate.defaults, options);
     
     $(this).each(function() {
+      
+      // since we call this method multiple times when rendering the page through partial submits,
+      // we first check to make sure it has not already been called for this node
+      if (this.getAttribute("TRUNCATE_CALLED") != null)
+          return;  
 
+      // first time this is called, add truncate attribute
+      this.setAttribute("TRUNCATE_CALLED", "true");
+      
       var content_length = $.trim(squeeze($(this).text())).length;
       if (content_length <= opts.max_length)
         return;  // bail early if not overlong
@@ -31,10 +39,10 @@
         append('<a href="#show less content" class="vdcTruncatorLinkLess">'+opts.less+'</a>');
 
       truncated_node.find('a:last').click(function() {
-        truncated_node.hide(); full_node.show(); return false;
+        truncated_node.hide();full_node.show();return false;
       });
       full_node.find('a:last').click(function() {
-        truncated_node.show(); full_node.hide(); return false;
+        truncated_node.show();full_node.hide();return false;
       });
 
     });

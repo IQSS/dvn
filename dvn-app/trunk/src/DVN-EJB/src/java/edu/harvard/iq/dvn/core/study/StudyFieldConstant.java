@@ -45,7 +45,7 @@ public class StudyFieldConstant implements java.io.Serializable  {
     public final static String software = "software";
     public final static String grantNumber = "grantNumber";
     public final static String distributor = "distributor";
-    public final static String contact = "contact";
+    public final static String distributorContact = "distributorContact";
     public final static String series = "series";
     public final static String version = "version";
     
@@ -89,7 +89,7 @@ public class StudyFieldConstant implements java.io.Serializable  {
     public final static String distributorURL="distributorURL";
     public final static String distributorLogo="distributorLogo";
     public final static String distributionDate="distributionDate";
-    public final static String distributorContact="distributorContact";
+    public final static String distributorContactName="distributorContactName";
     public final static String distributorContactAffiliation="distributorContactAffiliation";
     public final static String distributorContactEmail="distributorContactEmail";
     public final static String distributorAffiliation="distributorAffiliation";
@@ -152,13 +152,13 @@ public class StudyFieldConstant implements java.io.Serializable  {
     public final static String confidentialityDeclaration="confidentialityDeclaration";
     public final static String specialPermissions="specialPermissions";
     public final static String restrictions="restrictions";
-    public final static String contactName="contactName";
+    public final static String contact="contact";
     public final static String citationRequirements="citationRequirements";
     public final static String depositorRequirements="depositorRequirements";
     public final static String conditions="conditions";
     public final static String disclaimer="disclaimer";
     public final static String relatedMaterial="relatedMaterial";
-    public final static String replicationFor="replicationFor";
+    //public final static String replicationFor="replicationFor";
     //public final static String relatedPublications="relatedPublications";
     public final static String relatedStudies="relatedStudies";
     public final static String otherReferences="otherReferences";
@@ -258,8 +258,8 @@ public class StudyFieldConstant implements java.io.Serializable  {
         return distributionDate;
     }
     
-    public String getDistributorContact() {
-        return distributorContact;
+    public String getDistributorContactName() {
+        return distributorContactName;
     }
     
     public String getDistributorContactAffiliation() {
@@ -547,9 +547,10 @@ public class StudyFieldConstant implements java.io.Serializable  {
         return subTitle;
     }
 
+    /*
     public String getReplicationFor() {
         return replicationFor;
-    }
+    }*/
 
     public String getWestLongitude() {
         return westLongitude;
@@ -575,8 +576,8 @@ public class StudyFieldConstant implements java.io.Serializable  {
         return author;
     }
 
-    public static String getContactName() {
-        return contactName;
+    public static String getDistributorContact() {
+        return distributorContact;
     }
 
     public static String getDescription() {

@@ -1156,7 +1156,7 @@ public class EditStudyPage extends VDCBaseBean implements java.io.Serializable  
         // nor do they determine if the field as a whole is shown
         List tfList = getStudyMapTemplateFields(
                //StudyFieldConstant.abstractDate,
-               StudyFieldConstant.abstractText,
+               StudyFieldConstant.description,
                StudyFieldConstant.keywordValue,             
                //StudyFieldConstant.keywordVocab,
                //StudyFieldConstant.keywordVocabURI,
@@ -1315,9 +1315,7 @@ public class EditStudyPage extends VDCBaseBean implements java.io.Serializable  
     }
     public String getOtherInformationInputLevel() {
         List tfList = getStudyMapTemplateFields(
-                StudyFieldConstant.notesInformationSubject,
-                StudyFieldConstant.notesInformationType,
-                StudyFieldConstant.notesText);
+                StudyFieldConstant.note);
         
         return getInputLevel(tfList);
 
@@ -1325,42 +1323,35 @@ public class EditStudyPage extends VDCBaseBean implements java.io.Serializable  
 
     public String getOtherIdLevel() {
         List tfList = getStudyMapTemplateFields(
-                StudyFieldConstant.otherId,
-                StudyFieldConstant.otherIdAgency);
+                StudyFieldConstant.otherId);
         
         return getInputLevel(tfList);
     }
 
     public String getAuthorInputLevel() {
         List tfList = getStudyMapTemplateFields(
-                StudyFieldConstant.authorName,
-                StudyFieldConstant.authorAffiliation);
+                StudyFieldConstant.author);
         
         return getInputLevel(tfList);
     }
 
     public String getProducerInputLevel() {
         List tfList = getStudyMapTemplateFields(
-                StudyFieldConstant.producerName,
-                StudyFieldConstant.producerAffiliation,
-                StudyFieldConstant.producerAbbreviation,
-                StudyFieldConstant.producerURL,
-                StudyFieldConstant.producerLogo);
+                StudyFieldConstant.producer);
         
         return getInputLevel(tfList);
     }
 
     public String getSeriesInputLevel() {
         List tfList = getStudyMapTemplateFields(
-                StudyFieldConstant.seriesName,
-                StudyFieldConstant.seriesInformation);
+                StudyFieldConstant.series);
         
         return getInputLevel(tfList);
     }
     
     public String getVersionInputLevel() {
         List tfList = getStudyMapTemplateFields(
-                StudyFieldConstant.versionDate,
+
                 StudyFieldConstant.studyVersion);
 
         return getInputLevel(tfList);
@@ -1368,71 +1359,56 @@ public class EditStudyPage extends VDCBaseBean implements java.io.Serializable  
 
     public String getSoftwareInputLevel() {
         List tfList = getStudyMapTemplateFields(
-                StudyFieldConstant.softwareName,
-                StudyFieldConstant.softwareVersion);
+                StudyFieldConstant.software);
 
         return getInputLevel(tfList);
     }
 
     public String getGrantInputLevel() {
         List tfList = getStudyMapTemplateFields(
-                StudyFieldConstant.grantNumber,
-                StudyFieldConstant.grantNumberAgency);
+                StudyFieldConstant.grantNumber);
         
         return getInputLevel(tfList);
     }
 
     public String getDistributorInputLevel() {
         List tfList = getStudyMapTemplateFields(
-                StudyFieldConstant.distributorName,
-                StudyFieldConstant.distributorAffiliation,
-                StudyFieldConstant.distributorAbbreviation,
-                StudyFieldConstant.distributorURL,
-                StudyFieldConstant.distributorLogo);
+                StudyFieldConstant.distributor);
 
         return getInputLevel(tfList);
     }
 
     public String getContactInputLevel() {
         List tfList = getStudyMapTemplateFields(
-                StudyFieldConstant.distributorContact,
-                StudyFieldConstant.distributorContactAffiliation,
-                StudyFieldConstant.distributorContactEmail);
+                StudyFieldConstant.distributorContact);
 
         return getInputLevel(tfList);
     }
 
     public String getAbstractInputLevel() {
         List tfList = getStudyMapTemplateFields(
-                StudyFieldConstant.abstractText,
-                StudyFieldConstant.abstractDate);
+                StudyFieldConstant.description);
 
         return getInputLevel(tfList);
     }
 
     public String getKeywordInputLevel() {
         List tfList = getStudyMapTemplateFields(
-                StudyFieldConstant.keywordValue,
-                StudyFieldConstant.keywordVocab,
-                StudyFieldConstant.keywordVocabURI);
+                StudyFieldConstant.keyword);
 
         return getInputLevel(tfList);
     }
 
     public String getTopicInputLevel() {
         List tfList = getStudyMapTemplateFields(
-                StudyFieldConstant.topicClassValue,
-                StudyFieldConstant.topicClassVocab,
-                StudyFieldConstant.topicClassVocabURI);
+                StudyFieldConstant.topicClassification);
         
         return getInputLevel(tfList);
     }
 
     public String getNoteInputLevel() {
         List tfList = getStudyMapTemplateFields(
-                StudyFieldConstant.notesText,
-                StudyFieldConstant.notesInformationType,
-                StudyFieldConstant.notesInformationSubject);
+                StudyFieldConstant.note);
         
         return getInputLevel(tfList);
     }

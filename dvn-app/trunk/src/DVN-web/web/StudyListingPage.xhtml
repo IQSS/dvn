@@ -238,7 +238,7 @@
                           <ice:outputText value="Production Date:" styleClass="dvnStudyListTableOptionalFieldLabel"/>
                           <ice:outputText value="#{studyUI.productionDate}"/>
                       </div>
-                      <div jsfc="ice:panelGroup" styleClass="dvnStudyListTableOptionalField" rendered="#{!empty StudyListingPage.studyFields[sfc.producerName] and !empty studyUI.producers}">
+                      <div jsfc="ice:panelGroup" styleClass="dvnStudyListTableOptionalField" rendered="#{!empty StudyListingPage.studyFields[sfc.producer] and !empty studyUI.producers}">
                           <ice:outputText value="Producer:" styleClass="dvnStudyListTableOptionalFieldLabel"/>
                           <ice:outputText value="#{studyUI.producers}" escape="false"/>
                       </div>
@@ -246,7 +246,7 @@
                           <ice:outputText value="Distribution Date:" styleClass="dvnStudyListTableOptionalFieldLabel"/>
                           <ice:outputText value="#{studyUI.distributionDate}" escape="false"/>
                       </div>
-                      <div jsfc="ice:panelGroup" styleClass="dvnStudyListTableOptionalField" rendered="#{!empty StudyListingPage.studyFields[sfc.distributorName] and !empty studyUI.distributors}">
+                      <div jsfc="ice:panelGroup" styleClass="dvnStudyListTableOptionalField" rendered="#{!empty StudyListingPage.studyFields[sfc.distributor] and !empty studyUI.distributors}">
                           <ice:outputText value="Distributor:" styleClass="dvnStudyListTableOptionalFieldLabel"/>
                           <ice:outputText value="#{studyUI.distributors}" escape="false"/>
                       </div>
@@ -254,7 +254,7 @@
                           <ice:outputText value="Replication For:" styleClass="dvnStudyListTableOptionalFieldLabel"/>
                           <ice:outputText value="#{studyUI.replicationFor}" escape="false"/>
                       </div>
-                      <div jsfc="ice:panelGroup" styleClass="dvnStudyListTableOptionalField" rendered="#{!empty StudyListingPage.studyFields[sfc.relatedPublications] and !empty studyUI.relPublications}">
+                      <div jsfc="ice:panelGroup" styleClass="dvnStudyListTableOptionalField" rendered="#{!empty StudyListingPage.studyFields[sfc.publication] and !empty studyUI.relPublications}">
                           <ice:outputText value="Related Publications:" styleClass="dvnStudyListTableOptionalFieldLabel"/>
                           <ice:outputText value="#{studyUI.relPublications}" escape="false"/>
                       </div>

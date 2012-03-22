@@ -796,14 +796,10 @@ public class TemplateFormPage extends VDCBaseBean implements java.io.Serializabl
     }
     
      public String getAbstractAndScopeInputLevel() {
-        return getInputLevel(StudyFieldConstant.abstractDate,
-               StudyFieldConstant.abstractText,
-               StudyFieldConstant.keywordValue,
-               StudyFieldConstant.keywordVocab,
-               StudyFieldConstant.keywordVocabURI,
-               StudyFieldConstant.topicClassValue,
-               StudyFieldConstant.topicClassVocab,
-               StudyFieldConstant.topicClassVocabURI,
+        return getInputLevel(//StudyFieldConstant.de
+               StudyFieldConstant.description,
+               StudyFieldConstant.keyword,
+               StudyFieldConstant.topicClassification,
                StudyFieldConstant.relatedMaterial,
                StudyFieldConstant.relatedStudies,
                StudyFieldConstant.otherReferences,
@@ -889,14 +885,14 @@ public class TemplateFormPage extends VDCBaseBean implements java.io.Serializabl
     }
 
     public String getAuthorInputLevel() {
-        return getInputLevel(StudyFieldConstant.authorName,
+        return getInputLevel( StudyFieldConstant.author,   StudyFieldConstant.authorName,
                 StudyFieldConstant.authorAffiliation);
 
 
     }
 
     public String getProducerInputLevel() {
-        return getInputLevel(StudyFieldConstant.producerName,
+        return getInputLevel(StudyFieldConstant.producer, StudyFieldConstant.producerName,
                 StudyFieldConstant.producerAffiliation,
                 StudyFieldConstant.producerAbbreviation,
                 StudyFieldConstant.producerURL,
@@ -904,30 +900,29 @@ public class TemplateFormPage extends VDCBaseBean implements java.io.Serializabl
     }
 
     public String getSeriesInputLevel() {
-        return getInputLevel(StudyFieldConstant.seriesName,
+        return getInputLevel(StudyFieldConstant.series, StudyFieldConstant.seriesName,
                 StudyFieldConstant.seriesInformation);
 
     }
     
     public String getVersionInputLevel() {
-        return getInputLevel(StudyFieldConstant.versionDate,
-                StudyFieldConstant.studyVersion);
+        return getInputLevel(StudyFieldConstant.studyVersion);
 
     }
 
     public String getSoftwareInputLevel() {
-        return getInputLevel(StudyFieldConstant.softwareName,
+        return getInputLevel(StudyFieldConstant.software, StudyFieldConstant.softwareName,
                 StudyFieldConstant.softwareVersion);
 
     }
 
     public String getGrantInputLevel() {
-        return getInputLevel(StudyFieldConstant.grantNumber,
+        return getInputLevel(StudyFieldConstant.grantNumber, StudyFieldConstant.grantNumberValue,
                 StudyFieldConstant.grantNumberAgency);
     }
 
     public String getDistributorInputLevel() {
-        return getInputLevel(StudyFieldConstant.distributorName,
+        return getInputLevel(StudyFieldConstant.distributor, StudyFieldConstant.distributorName,
                 StudyFieldConstant.distributorAffiliation,
                 StudyFieldConstant.distributorAbbreviation,
                 StudyFieldConstant.distributorURL,
@@ -936,33 +931,32 @@ public class TemplateFormPage extends VDCBaseBean implements java.io.Serializabl
     }
 
     public String getContactInputLevel() {
-        return getInputLevel(StudyFieldConstant.distributorContact,
+        return getInputLevel(StudyFieldConstant.distributor, StudyFieldConstant.distributorContact,
                 StudyFieldConstant.distributorContactAffiliation,
                 StudyFieldConstant.distributorContactEmail);
 
     }
 
     public String getAbstractInputLevel() {
-        return getInputLevel(StudyFieldConstant.abstractText,
-                StudyFieldConstant.abstractDate);
+        return getInputLevel(StudyFieldConstant.description);
 
     }
 
     public String getKeywordInputLevel() {
-        return getInputLevel(StudyFieldConstant.keywordValue,
+        return getInputLevel(StudyFieldConstant.keyword, StudyFieldConstant.keywordValue,
                 StudyFieldConstant.keywordVocab,
                 StudyFieldConstant.keywordVocabURI);
 
     }
 
     public String getTopicInputLevel() {
-        return getInputLevel(StudyFieldConstant.topicClassValue,
+        return getInputLevel(StudyFieldConstant.topicClassification, StudyFieldConstant.topicClassValue,
                 StudyFieldConstant.topicClassVocab,
                 StudyFieldConstant.topicClassVocabURI);
     }
 
     public String getNoteInputLevel() {
-        return getInputLevel(StudyFieldConstant.notesText,
+        return getInputLevel(StudyFieldConstant.note, StudyFieldConstant.notesText,
                 StudyFieldConstant.notesInformationType,
                 StudyFieldConstant.notesInformationSubject);
 

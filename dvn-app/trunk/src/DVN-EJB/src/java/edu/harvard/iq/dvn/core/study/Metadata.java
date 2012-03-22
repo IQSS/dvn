@@ -343,7 +343,7 @@ public class Metadata implements java.io.Serializable {
             this.setStudyCompletion(source.studyCompletion);
         }            
 
-        if (copyField(tfMap.get(StudyFieldConstant.abstractText), copyHidden, copyDisabled)) {
+        if (copyField(tfMap.get(StudyFieldConstant.description), copyHidden, copyDisabled)) {
             this.setStudyAbstracts(new ArrayList<StudyAbstract>());
             for (StudyAbstract sa : source.studyAbstracts) {
                 StudyAbstract cloneAbstract = new StudyAbstract();
@@ -355,7 +355,7 @@ public class Metadata implements java.io.Serializable {
             }
         }
 
-        if (copyField(tfMap.get(StudyFieldConstant.authorName), copyHidden, copyDisabled)) {
+        if (copyField(tfMap.get(StudyFieldConstant.author), copyHidden, copyDisabled)) {
             this.setStudyAuthors(new ArrayList<StudyAuthor>());
             for (StudyAuthor author : source.studyAuthors) {
                 StudyAuthor cloneAuthor = new StudyAuthor();
@@ -367,7 +367,7 @@ public class Metadata implements java.io.Serializable {
             }
         }
         
-        if (copyField(tfMap.get(StudyFieldConstant.distributorName), copyHidden, copyDisabled)) {
+        if (copyField(tfMap.get(StudyFieldConstant.distributor), copyHidden, copyDisabled)) {
             this.setStudyDistributors(new ArrayList<StudyDistributor>());
             for (StudyDistributor dist : source.studyDistributors) {
                 StudyDistributor cloneDist = new StudyDistributor();
@@ -382,7 +382,7 @@ public class Metadata implements java.io.Serializable {
             }
         }
 
-        if (copyField(tfMap.get(StudyFieldConstant.westLongitude), copyHidden, copyDisabled)) {
+        if (copyField(tfMap.get(StudyFieldConstant.geographicBoundingBox), copyHidden, copyDisabled)) {
             this.setStudyGeoBoundings(new ArrayList<StudyGeoBounding>());
             for (StudyGeoBounding geo : source.studyGeoBoundings) {
                 StudyGeoBounding cloneGeo = new StudyGeoBounding();
@@ -408,7 +408,7 @@ public class Metadata implements java.io.Serializable {
             }
         }
 
-        if (copyField(tfMap.get(StudyFieldConstant.keywordValue), copyHidden, copyDisabled)) {
+        if (copyField(tfMap.get(StudyFieldConstant.keyword), copyHidden, copyDisabled)) {
             this.setStudyKeywords(new ArrayList<StudyKeyword>());
             for (StudyKeyword key : source.studyKeywords) {
                 StudyKeyword cloneKey = new StudyKeyword();
@@ -421,7 +421,7 @@ public class Metadata implements java.io.Serializable {
             }
         }
         
-        if (copyField(tfMap.get(StudyFieldConstant.notesInformationType), copyHidden, copyDisabled)) {
+        if (copyField(tfMap.get(StudyFieldConstant.note), copyHidden, copyDisabled)) {
             this.setStudyNotes(new ArrayList<StudyNote>());
             for (StudyNote note : source.studyNotes) {
                 StudyNote cloneNote = new StudyNote();
@@ -457,7 +457,7 @@ public class Metadata implements java.io.Serializable {
             }
         }
 
-        if (copyField(tfMap.get(StudyFieldConstant.producerName), copyHidden, copyDisabled)) {
+        if (copyField(tfMap.get(StudyFieldConstant.producer), copyHidden, copyDisabled)) {
             this.setStudyProducers(new ArrayList<StudyProducer>());
             for (StudyProducer prod : source.studyProducers) {
                 StudyProducer cloneProd = new StudyProducer();
@@ -482,8 +482,8 @@ public class Metadata implements java.io.Serializable {
                 this.getStudyRelMaterials().add(cloneRel);
             }
         }
-
-        if (copyField(tfMap.get(StudyFieldConstant.relatedPublications), copyHidden, copyDisabled)) {
+        
+        if (copyField(tfMap.get(StudyFieldConstant.publication), copyHidden, copyDisabled)) {
             this.setStudyRelPublications(new ArrayList<StudyRelPublication>());
             for (StudyRelPublication rel : source.studyRelPublications) {
                 StudyRelPublication cloneRel = new StudyRelPublication();
@@ -497,7 +497,7 @@ public class Metadata implements java.io.Serializable {
                 this.getStudyRelPublications().add(cloneRel);
             }
         }
-
+        
         if (copyField(tfMap.get(StudyFieldConstant.relatedStudies), copyHidden, copyDisabled)) {
             this.setStudyRelStudies(new ArrayList<StudyRelStudy>());
             for (StudyRelStudy rel : source.studyRelStudies) {
@@ -509,7 +509,7 @@ public class Metadata implements java.io.Serializable {
             }
         }
         
-        if (copyField(tfMap.get(StudyFieldConstant.softwareName), copyHidden, copyDisabled)) {
+        if (copyField(tfMap.get(StudyFieldConstant.software), copyHidden, copyDisabled)) {
             this.setStudySoftware(new ArrayList<StudySoftware>());
             for (StudySoftware soft : source.studySoftware) {
                 StudySoftware cloneSoft = new StudySoftware();
@@ -522,7 +522,7 @@ public class Metadata implements java.io.Serializable {
         }
         
         
-        if (copyField(tfMap.get(StudyFieldConstant.topicClassValue), copyHidden, copyDisabled)) {
+        if (copyField(tfMap.get(StudyFieldConstant.topicClassification), copyHidden, copyDisabled)) {
 
             this.setStudyTopicClasses(new ArrayList<StudyTopicClass>());
             for (StudyTopicClass topic : source.studyTopicClasses) {

@@ -103,8 +103,8 @@
               <!-- this is a dummy datatable wrapper used to force data retention on validation error-->              
               <ice:dataTable cellpadding="0" cellspacing="0" width="100%"
                                 rendered="#{TemplateFormPage.networkEdit or 
-                                TemplateFormPage.studyMap[sfc.relatedPublications].templateField.fieldInputLevelString != 'disabled'}"
-                             styleClass="vdcEditStudyTable" rowClasses="#{TemplateFormPage.studyMap[sfc.relatedPublications].templateField.fieldInputLevelString}" value="dummy_datatable" >              
+                                TemplateFormPage.studyMap[sfc.publication].templateField.fieldInputLevelString != 'disabled'}"
+                             styleClass="vdcEditStudyTable" rowClasses="#{TemplateFormPage.studyMap[sfc.publication].templateField.fieldInputLevelString}" value="dummy_datatable" >              
                     <ice:column>
                       <ice:dataTable cellpadding="0" cellspacing="0"
                                      styleClass="vdcEditStudyInnerTable" columnClasses="vdcEditStudyCol1b, vdcEditStudyCol2, vdcEditStudyCol3"
@@ -113,8 +113,8 @@
                         <ice:column>
                           <div jsfc="ice:panelGroup" styleClass="vdcEditStudyField">
                             <ice:outputText styleClass="dvnInlineHelpLabel dvnInlineHelpTip" value="#{editstudybundle.relatedPublicationLabel}" title="#{editstudybundle.relatedPublicationHelpHeading} - #{editstudybundle.relatedPublicationHelp}"/>
-                            <ice:graphicImage value="/resources/images/icon_required.gif" rendered="#{TemplateFormPage.studyMap[sfc.relatedPublications].required}"/>
-                            <ice:graphicImage value="/resources/images/icon_recommended.gif" rendered="#{TemplateFormPage.studyMap[sfc.relatedPublications].recommended}"/>
+                            <ice:graphicImage value="/resources/images/icon_required.gif" rendered="#{TemplateFormPage.studyMap[sfc.publication].required}"/>
+                            <ice:graphicImage value="/resources/images/icon_recommended.gif" rendered="#{TemplateFormPage.studyMap[sfc.publication].recommended}"/>
                           </div>
                         </ice:column>
                         <ice:column>
@@ -228,7 +228,7 @@
               <!-- this is a dummy datatable wrapper used to force data retention on validation error-->
               <ice:dataTable cellpadding="0" cellspacing="0" width="100%"
                                 rendered="#{TemplateFormPage.networkEdit or 
-                                TemplateFormPage.studyMap[sfc.authorName].templateField.fieldInputLevelString != 'disabled'}"
+                                TemplateFormPage.studyMap[sfc.author].templateField.fieldInputLevelString != 'disabled'}"
                              styleClass="vdcEditStudyTable" rowClasses="#{TemplateFormPage.authorInputLevel}" value="dummy_datatable" >
                 <ice:column>
                   <ice:dataTable cellpadding="0" cellspacing="0" width="100%"
@@ -269,7 +269,7 @@
                       <ice:commandButton partialSubmit="true" alt="Add Row" title="Add Row" image="/resources/images/icon_add.gif" actionListener="#{TemplateFormPage.addRow}"/>
                       <ice:commandButton partialSubmit="true" rendered="#{TemplateFormPage.dataTableAuthors.rowCount gt 1}" alt="Remove Row" title="Remove Row" image="/resources/images/icon_remove.gif" actionListener="#{TemplateFormPage.removeRow}"/>
                       <ice:selectOneMenu immediate="false"  partialSubmit="true" 
-                                        value="#{TemplateFormPage.studyMap[sfc.authorName].templateField.fieldInputLevelString}"
+                                        value="#{TemplateFormPage.studyMap[sfc.author].templateField.fieldInputLevelString}"
                                         rendered ="#{TemplateFormPage.dataTableAuthors.rowIndex==0}">
                             <f:selectItems value="#{TemplateFormPage.fieldInputLevelSelectItems}"/>
                             <f:attribute name="fieldName" value="authorName" />
@@ -283,7 +283,7 @@
               <!-- this is a dummy datatable wrapper used to force data retention on validation error-->
               <ice:dataTable cellpadding="0" cellspacing="0" width="100%"
                                 rendered="#{TemplateFormPage.networkEdit or 
-                                TemplateFormPage.studyMap[sfc.producerName].templateField.fieldInputLevelString != 'disabled'}"
+                                TemplateFormPage.studyMap[sfc.producer].templateField.fieldInputLevelString != 'disabled'}"
                              styleClass="vdcEditStudyTable" rowClasses="#{TemplateFormPage.producerInputLevel}" value="dummy_datatable">
                 <ice:column>
                   <ice:dataTable cellpadding="0" cellspacing="0" width="100%"
@@ -346,7 +346,7 @@
                       <ice:commandButton partialSubmit="true" alt="Add Row" title="Add Row" image="/resources/images/icon_add.gif" actionListener="#{TemplateFormPage.addRow}"/>
                       <ice:commandButton partialSubmit="true" rendered="#{TemplateFormPage.dataTableProducers.rowCount gt 1}" alt="Remove Row" title="Remove Row" image="/resources/images/icon_remove.gif" actionListener="#{TemplateFormPage.removeRow}"/>
                       <ice:selectOneMenu immediate="false" partialSubmit="true" 
-                                        value="#{TemplateFormPage.studyMap[sfc.producerName].templateField.fieldInputLevelString}"
+                                        value="#{TemplateFormPage.studyMap[sfc.producer].templateField.fieldInputLevelString}"
                                         rendered ="#{TemplateFormPage.dataTableProducers.rowIndex==0}">
                             <f:selectItems value="#{TemplateFormPage.fieldInputLevelSelectItems}"/>
                             <f:attribute name="fieldName" value="producerName" />
@@ -406,7 +406,7 @@
               <!-- this is a dummy datatable wrapper used to force data retention on validation error-->
               <ice:dataTable cellpadding="0" cellspacing="0" width="100%"
                                 rendered="#{TemplateFormPage.networkEdit or 
-                                TemplateFormPage.studyMap[sfc.softwareName].templateField.fieldInputLevelString != 'disabled'}"
+                                TemplateFormPage.studyMap[sfc.software].templateField.fieldInputLevelString != 'disabled'}"
                              styleClass="vdcEditStudyTable" rowClasses="#{TemplateFormPage.softwareInputLevel}" value="dummy_datatable">
                 <ice:column>
                   <ice:dataTable cellpadding="0" cellspacing="0" width="100%"
@@ -438,7 +438,7 @@
                       <ice:commandButton partialSubmit="true" alt="Add Row" title="Add Row" image="/resources/images/icon_add.gif" actionListener="#{TemplateFormPage.addRow}"/>
                       <ice:commandButton partialSubmit="true" rendered="#{TemplateFormPage.dataTableSoftware.rowCount gt 1}" alt="Remove Row" title="Remove Row" image="/resources/images/icon_remove.gif" actionListener="#{TemplateFormPage.removeRow}"/>
                       <ice:selectOneMenu immediate="false" partialSubmit="true" 
-                                        value="#{TemplateFormPage.studyMap[sfc.softwareName].templateField.fieldInputLevelString}"
+                                        value="#{TemplateFormPage.studyMap[sfc.software].templateField.fieldInputLevelString}"
                                         rendered ="#{TemplateFormPage.dataTableSoftware.rowIndex==0}">
                             <f:attribute name="fieldName" value="softwareName" />
                             <f:selectItems value="#{TemplateFormPage.fieldInputLevelSelectItems}"/>
@@ -505,7 +505,7 @@
                       <ice:commandButton partialSubmit="true" alt="Add Row" title="Add Row" image="/resources/images/icon_add.gif" actionListener="#{TemplateFormPage.addRow}"/>
                       <ice:commandButton partialSubmit="true" rendered="#{TemplateFormPage.dataTableGrants.rowCount gt 1}" alt="Remove Row" title="Remove Row" image="/resources/images/icon_remove.gif" actionListener="#{TemplateFormPage.removeRow}"/>
                       <ice:selectOneMenu immediate="false" partialSubmit="true" 
-                                        value="#{TemplateFormPage.studyMap[sfc.grantNumber].templateField.fieldInputLevelString}"
+                                        value="#{TemplateFormPage.studyMap[sfc.grant].templateField.fieldInputLevelString}"
                                         rendered ="#{TemplateFormPage.dataTableGrants.rowIndex==0}">
                             <f:attribute name="fieldName" value="grantNumber" />
                             <f:selectItems value="#{TemplateFormPage.fieldInputLevelSelectItems}"/>
@@ -518,7 +518,7 @@
               <!-- this is a dummy datatable wrapper used to force data retention on validation error-->
               <ice:dataTable cellpadding="0" cellspacing="0" width="100%"
                                 rendered="#{TemplateFormPage.networkEdit or 
-                                TemplateFormPage.studyMap[sfc.distributorName].templateField.fieldInputLevelString != 'disabled'}"
+                                TemplateFormPage.studyMap[sfc.distributor].templateField.fieldInputLevelString != 'disabled'}"
                              styleClass="vdcEditStudyTable" rowClasses="#{TemplateFormPage.distributorInputLevel}" value="dummy_datatable">
                 <ice:column>
                   <ice:dataTable cellpadding="0" cellspacing="0" width="100%"
@@ -579,7 +579,7 @@
                       <ice:commandButton partialSubmit="true" alt="Add Row" title="Add Row" image="/resources/images/icon_add.gif" actionListener="#{TemplateFormPage.addRow}"/>
                       <ice:commandButton partialSubmit="true" rendered="#{TemplateFormPage.dataTableDistributors.rowCount gt 1}" alt="Remove Row" title="Remove Row" image="/resources/images/icon_remove.gif" actionListener="#{TemplateFormPage.removeRow}"/>
                       <ice:selectOneMenu immediate="false" partialSubmit="true" 
-                                        value="#{TemplateFormPage.studyMap[sfc.distributorName].templateField.fieldInputLevelString}"
+                                        value="#{TemplateFormPage.studyMap[sfc.distributor].templateField.fieldInputLevelString}"
                                         rendered ="#{TemplateFormPage.dataTableDistributors.rowIndex==0}">
                             <f:attribute name="fieldName" value="distributorName" />
                             <f:selectItems value="#{TemplateFormPage.fieldInputLevelSelectItems}"/>
@@ -704,7 +704,7 @@
 
               <ice:panelGrid cellpadding="0" cellspacing="0" columns="3" width="100%"
                                 rendered="#{TemplateFormPage.networkEdit or 
-                                TemplateFormPage.studyMap[sfc.seriesName].templateField.fieldInputLevelString != 'disabled'}"
+                                TemplateFormPage.studyMap[sfc.series].templateField.fieldInputLevelString != 'disabled'}"
                              styleClass="vdcEditStudyTable #{TemplateFormPage.seriesInputLevel}"
                              columnClasses="vdcEditStudyCol1, vdcEditStudyCol2, vdcEditStudyCol3">
                 <ice:column styleClass="vdcEditStudyField #{TemplateFormPage.seriesInputLevel}">
@@ -733,7 +733,7 @@
                 </ice:column>
                 <ice:column>
                   <ice:selectOneMenu immediate="false" partialSubmit="true" 
-                                        value="#{TemplateFormPage.studyMap[sfc.seriesName].templateField.fieldInputLevelString}">
+                                        value="#{TemplateFormPage.studyMap[sfc.series].templateField.fieldInputLevelString}">
                             <f:attribute name="fieldName" value="seriesName" />
                            <f:selectItems value="#{TemplateFormPage.fieldInputLevelSelectItems}"/>
                   </ice:selectOneMenu>
@@ -753,7 +753,7 @@
                 <ice:column>
                   <div jsfc="ice:panelGroup" styleClass="#{TemplateFormPage.studyMap[sfc.studyVersion].templateField.fieldInputLevelString}">
                     <ice:outputText styleClass="dvnInlineHelpLabel dvnInlineHelpTip" value="#{editstudybundle.seriesVersionLabel}" title="#{editstudybundle.seriesVersionHelpHeading} - #{editstudybundle.seriesVersionHelp}"/>
-                    <ice:inputText binding="#{TemplateFormPage.inputVersion}" id="input_studyVersion" value="#{TemplateFormPage.template.metadata.studyVersion}"/>
+                    <ice:inputText binding="#{TemplateFormPage.inputVersion}" id="input_studyVersion" value="#{TemplateFormPage.template.metadata.studyVersionValue}"/>
                     <ice:message styleClass="errorMessage" for="input_studyVersion"/>
                   </div>
                   <div jsfc="ice:panelGroup" styleClass="vdcEditStudyGroupField #{TemplateFormPage.studyMap[sfc.versionDate].templateField.fieldInputLevelString}">
@@ -782,7 +782,7 @@
               <!-- this is a dummy datatable wrapper used to force data retention on validation error-->
               <ice:dataTable cellpadding="0" cellspacing="0" width="100%"
                                 rendered="#{TemplateFormPage.networkEdit or 
-                                TemplateFormPage.studyMap[sfc.abstractText].templateField.fieldInputLevelString != 'disabled'}"
+                                TemplateFormPage.studyMap[sfc.description].templateField.fieldInputLevelString != 'disabled'}"
                              styleClass="vdcEditStudyTable" rowClasses="#{TemplateFormPage.abstractInputLevel}" value="dummy_datatable">
                 <ice:column>
                   <ice:dataTable cellpadding="0" cellspacing="0" width="100%"
@@ -798,7 +798,7 @@
                     </ice:column>
                     <ice:column>
                       <div>
-                        <div styleClass="#{TemplateFormPage.studyMap[sfc.abstractText].templateField.fieldInputLevelString}">
+                        <div styleClass="#{TemplateFormPage.studyMap[sfc.description].templateField.fieldInputLevelString}">
                           <p>
                               <ice:graphicImage value="/resources/images/icon_warning.18.png" styleClass="dvn_icon"/>
                               <ice:outputText styleClass="vdcHelpText" value=" Copying and pasting from a Word document can create errors when you save this page."/>
@@ -826,7 +826,7 @@
                       <ice:commandButton partialSubmit="true" alt="Add Row" title="Add Row" image="/resources/images/icon_add.gif" actionListener="#{TemplateFormPage.addRow}"/>
                       <ice:commandButton partialSubmit="true" rendered="#{TemplateFormPage.dataTableAbstracts.rowCount gt 1}" alt="Remove Row" title="Remove Row" image="/resources/images/icon_remove.gif" actionListener="#{TemplateFormPage.removeRow}"/>
                       <ice:selectOneMenu immediate="false" partialSubmit="true" 
-                                        value="#{TemplateFormPage.studyMap[sfc.abstractText].templateField.fieldInputLevelString}"
+                                        value="#{TemplateFormPage.studyMap[sfc.description].templateField.fieldInputLevelString}"
                                         rendered ="#{TemplateFormPage.dataTableAbstracts.rowIndex==0}">
                             <f:attribute name="fieldName" value="abstractText" />
                            <f:selectItems value="#{TemplateFormPage.fieldInputLevelSelectItems}"/>
@@ -839,7 +839,7 @@
               <!-- this is a dummy datatable wrapper used to force data retention on validation error-->
               <ice:dataTable cellpadding="0" cellspacing="0" width="100%"
                                 rendered="#{TemplateFormPage.networkEdit or 
-                                TemplateFormPage.studyMap[sfc.keywordValue].templateField.fieldInputLevelString != 'disabled'}"
+                                TemplateFormPage.studyMap[sfc.keyword].templateField.fieldInputLevelString != 'disabled'}"
                              styleClass="vdcEditStudyTable" rowClasses="#{TemplateFormPage.keywordInputLevel}" value="dummy_datatable">
                 <ice:column>
                   <ice:dataTable cellpadding="0" cellspacing="0" width="100%"
@@ -849,8 +849,8 @@
                     <ice:column>
                       <div class="vdcEditStudyField">
                         <ice:outputText styleClass="dvnInlineHelpLabel dvnInlineHelpTip" value="#{editstudybundle.keywordLabel}" title="#{editstudybundle.keywordHelpHeading} - #{editstudybundle.keywordHelp}"/>
-                        <ice:graphicImage value="/resources/images/icon_required.gif" rendered="#{TemplateFormPage.studyMap[sfc.keywordValue].required}"/>
-                        <ice:graphicImage value="/resources/images/icon_recommended.gif" rendered="#{TemplateFormPage.studyMap[sfc.keywordValue].recommended}"/>
+                        <ice:graphicImage value="/resources/images/icon_required.gif" rendered="#{TemplateFormPage.studyMap[sfc.keyword].required}"/>
+                        <ice:graphicImage value="/resources/images/icon_recommended.gif" rendered="#{TemplateFormPage.studyMap[sfc.keyword].recommended}"/>
                       </div>
                     </ice:column>
                     <ice:column>
@@ -895,7 +895,7 @@
               <!-- this is a dummy datatable wrapper used to force data retention on validation error-->
               <ice:dataTable cellpadding="0" cellspacing="0" width="100%"
                                 rendered="#{TemplateFormPage.networkEdit or 
-                                TemplateFormPage.studyMap[sfc.topicClassValue].templateField.fieldInputLevelString != 'disabled'}"
+                                TemplateFormPage.studyMap[sfc.topicClassification].templateField.fieldInputLevelString != 'disabled'}"
                              styleClass="vdcEditStudyTable" rowClasses="#{TemplateFormPage.topicInputLevel}" value="dummy_datatable">
                 <ice:column>
                   <ice:dataTable cellpadding="0" cellspacing="0" width="100%"
@@ -906,13 +906,13 @@
                     <ice:column>
                       <div class="vdcEditStudyField">
                         <ice:outputText styleClass="dvnInlineHelpLabel dvnInlineHelpTip" value="#{editstudybundle.topicClassificationLabel}" title="#{editstudybundle.topicClassificationHelpHeading} - #{editstudybundle.topicClassificationHelp}"/>
-                        <ice:graphicImage value="/resources/images/icon_required.gif" rendered="#{TemplateFormPage.studyMap[sfc.topicClassValue].required}"/>
-                        <ice:graphicImage value="/resources/images/icon_recommended.gif" rendered="#{TemplateFormPage.studyMap[sfc.topicClassValue].recommended}"/>
+                        <ice:graphicImage value="/resources/images/icon_required.gif" rendered="#{TemplateFormPage.studyMap[sfc.topicClassification].required}"/>
+                        <ice:graphicImage value="/resources/images/icon_recommended.gif" rendered="#{TemplateFormPage.studyMap[sfc.topicClassification].recommended}"/>
                       </div>
                     </ice:column>
                     <ice:column>
                       <div class="vdcEditStudyFieldFloatWrap">
-                        <div jsfc="ice:panelGroup" styleClass="vdcEditStudyFieldFloat1 vdcEditStudyGroupField #{TemplateFormPage.studyMap[sfc.topicClassValue].templateField.fieldInputLevelString}">
+                        <div jsfc="ice:panelGroup" styleClass="vdcEditStudyFieldFloat1 vdcEditStudyGroupField #{TemplateFormPage.studyMap[sfc.topicClassification].templateField.fieldInputLevelString}">
                           <ice:outputText styleClass="dvnInlineHelpLabel dvnInlineHelpTip" value="#{editstudybundle.topicClassificationLabel}" title="#{editstudybundle.topicClassificationHelpHeading} - #{editstudybundle.topicClassificationHelp}"/>
                           <ice:inputText binding="#{TemplateFormPage.inputTopicClassValue}" id="input_topicClassValue" value="#{currentRow.value}"/>
                           <ice:message styleClass="errorMessage" for="input_topicClassValue"/>
@@ -939,7 +939,7 @@
                       <ice:commandButton partialSubmit="true" alt="Add Row" title="Add Row" image="/resources/images/icon_add.gif" actionListener="#{TemplateFormPage.addRow}"/>
                       <ice:commandButton partialSubmit="true" rendered="#{TemplateFormPage.dataTableTopicClass.rowCount gt 1}" alt="Remove Row" title="Remove Row" image="/resources/images/icon_remove.gif" actionListener="#{TemplateFormPage.removeRow}"/>
                       <ice:selectOneMenu immediate="false" partialSubmit="true" 
-                                        value="#{TemplateFormPage.studyMap[sfc.topicClassValue].templateField.fieldInputLevelString}"
+                                        value="#{TemplateFormPage.studyMap[sfc.topicClassification].templateField.fieldInputLevelString}"
                                         rendered ="#{TemplateFormPage.dataTableTopicClass.rowIndex==0}">
                             <f:attribute name="fieldName" value="topicClassValue" />
                            <f:selectItems value="#{TemplateFormPage.fieldInputLevelSelectItems}"/>
@@ -1252,12 +1252,12 @@
               <ice:panelGrid cellpadding="0" cellspacing="0" columns="3" width="100%"
                              rendered="#{TemplateFormPage.networkEdit or 
                                 TemplateFormPage.studyMap[sfc.westLongitude].templateField.fieldInputLevelString != 'disabled'}"
-                             styleClass="vdcEditStudyTable #{TemplateFormPage.studyMap[sfc.westLongitude].templateField.fieldInputLevelString}"
+                             styleClass="vdcEditStudyTable #{TemplateFormPage.studyMap[sfc.geographicBoundingBox].templateField.fieldInputLevelString}"
                              columnClasses="vdcEditStudyCol1, vdcEditStudyCol2, vdcEditStudyCol3">
                 <ice:column styleClass="vdcEditStudyField">
                   <ice:outputText styleClass="dvnInlineHelpLabel dvnInlineHelpTip" value="#{editstudybundle.geographicBoundingBoxLabel}" title="#{editstudybundle.geographicBoundingBoxHelpHeading} - #{editstudybundle.geographicBoundingBoxHelp}"/>
-                  <ice:graphicImage value="/resources/images/icon_required.gif" rendered="#{TemplateFormPage.studyMap[sfc.westLongitude].required}"/>
-                  <ice:graphicImage value="/resources/images/icon_recommended.gif" rendered="#{TemplateFormPage.studyMap[sfc.westLongitude].recommended}"/>
+                  <ice:graphicImage value="/resources/images/icon_required.gif" rendered="#{TemplateFormPage.studyMap[sfc.geographicBoundingBox].required}"/>
+                  <ice:graphicImage value="/resources/images/icon_recommended.gif" rendered="#{TemplateFormPage.studyMap[sfc.geographicBoundingBox].recommended}"/>
                 </ice:column>
                 <ice:column>
                   <p>
@@ -1293,7 +1293,7 @@
                 </ice:column>
                 <ice:column>
                   <ice:selectOneMenu immediate="false" partialSubmit="true" 
-                                        value="#{TemplateFormPage.studyMap[sfc.westLongitude].templateField.fieldInputLevelString}">
+                                        value="#{TemplateFormPage.studyMap[sfc.geographicBoundingBox].templateField.fieldInputLevelString}">
                             <f:attribute name="fieldName" value="westLongitude" />
                            <f:selectItems value="#{TemplateFormPage.fieldInputLevelSelectItems}"/>
                   </ice:selectOneMenu>
@@ -2457,7 +2457,7 @@
               <ice:dataTable cellpadding="0" cellspacing="0" width="100%"
                              styleClass="vdcEditStudyTable"
                              rendered="#{TemplateFormPage.networkEdit or 
-                                            TemplateFormPage.studyMap[sfc.notesInformationType].templateField.fieldInputLevelString != 'disabled'}"
+                                            TemplateFormPage.studyMap[sfc.notes].templateField.fieldInputLevelString != 'disabled'}"
                              rowClasses="#{TemplateFormPage.noteInputLevel}" value="dummy_datatable">
                 <ice:column>
                   <ice:dataTable id="dataTableNotes" cellpadding="0" cellspacing="0" width="100%"
@@ -2467,8 +2467,8 @@
                     <ice:column>
                       <div class="vdcEditStudyField">
                         <ice:outputText styleClass="dvnInlineHelpLabel dvnInlineHelpTip" value="#{editstudybundle.notesTypeLabel}" title="#{editstudybundle.notesTypeHelpHeading} - #{editstudybundle.notesTypeHelp}"/>
-                        <ice:graphicImage value="/resources/images/icon_required.gif" rendered="#{TemplateFormPage.noteInputLevel=='required'}"/>
-                        <ice:graphicImage value="/resources/images/icon_recommended.gif" rendered="#{TemplateFormPage.noteInputLevel=='recommended'}"/>
+                        <ice:graphicImage value="/resources/images/icon_required.gif" rendered="#{TemplateFormPage.notes=='required'}"/>
+                        <ice:graphicImage value="/resources/images/icon_recommended.gif" rendered="#{TemplateFormPage.notes=='recommended'}"/>
                       </div>
                     </ice:column>
                     <ice:column>
@@ -2507,7 +2507,7 @@
                       <ice:commandButton partialSubmit="true" alt="Add Row" title="Add Row" image="/resources/images/icon_add.gif" actionListener="#{TemplateFormPage.addRow}"/>
                       <ice:commandButton partialSubmit="true" rendered="#{TemplateFormPage.dataTableNotes.rowCount gt 1}" alt="Remove Row" title="Remove Row" image="/resources/images/icon_remove.gif" actionListener="#{TemplateFormPage.removeRow}"/>
                       <ice:selectOneMenu immediate="false" partialSubmit="true" rendered ="#{TemplateFormPage.dataTableNotes.rowIndex==0}"
-                                        value="#{TemplateFormPage.studyMap[sfc.notesInformationType].templateField.fieldInputLevelString}">
+                                        value="#{TemplateFormPage.studyMap[sfc.notes].templateField.fieldInputLevelString}">
                             <f:attribute name="fieldName" value="notesInformationType" />
                             <f:selectItems value="#{TemplateFormPage.fieldInputLevelSelectItems}"/>
                       </ice:selectOneMenu>

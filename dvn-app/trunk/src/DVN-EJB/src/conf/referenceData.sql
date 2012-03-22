@@ -490,65 +490,65 @@ INSERT INTO studyfield (id,title,description, name,basicSearchField,advancedSear
 INSERT INTO studyfield (id,title,description, name,basicSearchField,advancedSearchField, searchResultField, customField) VALUES (116, '', '', 'publicationURL', FALSE, FALSE, FALSE, FALSE );
 
 --set the parent child relationship
-update stuyfield set parentstudyfield_id = 3 where id = 99;
-update stuyfield set parentstudyfield_id = 3 where id = 4;
+update studyfield set parentstudyfield_id = 3 where id = 99;
+update studyfield set parentstudyfield_id = 3 where id = 4;
 
-update stuyfield set parentstudyfield_id = 5 where id = 100;
-update stuyfield set parentstudyfield_id = 5 where id = 6;
-update stuyfield set parentstudyfield_id = 5 where id = 7;
-update stuyfield set parentstudyfield_id = 5 where id = 8;
-update stuyfield set parentstudyfield_id = 5 where id = 96;
+update studyfield set parentstudyfield_id = 5 where id = 100;
+update studyfield set parentstudyfield_id = 5 where id = 6;
+update studyfield set parentstudyfield_id = 5 where id = 7;
+update studyfield set parentstudyfield_id = 5 where id = 8;
+update studyfield set parentstudyfield_id = 5 where id = 96;
 
-update stuyfield set parentstudyfield_id = 15 where id = 101;
-update stuyfield set parentstudyfield_id = 15 where id = 16;
-update stuyfield set parentstudyfield_id = 15 where id = 17;
-update stuyfield set parentstudyfield_id = 15 where id = 97;
-update stuyfield set parentstudyfield_id = 15 where id = 98;
+update studyfield set parentstudyfield_id = 15 where id = 101;
+update studyfield set parentstudyfield_id = 15 where id = 16;
+update studyfield set parentstudyfield_id = 15 where id = 17;
+update studyfield set parentstudyfield_id = 15 where id = 97;
+update studyfield set parentstudyfield_id = 15 where id = 98;
 
-update stuyfield set parentstudyfield_id = 19 where id = 102;
-update stuyfield set parentstudyfield_id = 19 where id = 20;
-update stuyfield set parentstudyfield_id = 19 where id = 21;
+update studyfield set parentstudyfield_id = 19 where id = 102;
+update studyfield set parentstudyfield_id = 19 where id = 20;
+update studyfield set parentstudyfield_id = 19 where id = 21;
 
-update stuyfield set parentstudyfield_id = 33 where id = 103;
-update stuyfield set parentstudyfield_id = 33 where id = 34;
+update studyfield set parentstudyfield_id = 33 where id = 103;
+update studyfield set parentstudyfield_id = 33 where id = 34;
 
-update stuyfield set parentstudyfield_id = 27 where id = 104;
-update stuyfield set parentstudyfield_id = 27 where id = 28;
-update stuyfield set parentstudyfield_id = 27 where id = 29;
+update studyfield set parentstudyfield_id = 27 where id = 104;
+update studyfield set parentstudyfield_id = 27 where id = 28;
+update studyfield set parentstudyfield_id = 27 where id = 29;
 
-update stuyfield set parentstudyfield_id = 30 where id = 105;
-update stuyfield set parentstudyfield_id = 30 where id = 31;
-update stuyfield set parentstudyfield_id = 30 where id = 32;
+update studyfield set parentstudyfield_id = 30 where id = 105;
+update studyfield set parentstudyfield_id = 30 where id = 31;
+update studyfield set parentstudyfield_id = 30 where id = 32;
 
-update stuyfield set parentstudyfield_id = 85 where id = 106;
-update stuyfield set parentstudyfield_id = 85 where id = 86;
+update studyfield set parentstudyfield_id = 85 where id = 106;
+update studyfield set parentstudyfield_id = 85 where id = 86;
 
-update stuyfield set parentstudyfield_id = 10 where id = 107;
-update stuyfield set parentstudyfield_id = 10 where id = 11;
+update studyfield set parentstudyfield_id = 10 where id = 107;
+update studyfield set parentstudyfield_id = 10 where id = 11;
 
-update stuyfield set parentstudyfield_id = 13 where id = 108;
-update stuyfield set parentstudyfield_id = 13 where id = 14;
+update studyfield set parentstudyfield_id = 13 where id = 108;
+update studyfield set parentstudyfield_id = 13 where id = 14;
 
-update stuyfield set parentstudyfield_id = 24 where id = 109;
-update stuyfield set parentstudyfield_id = 24 where id = 25;
+update studyfield set parentstudyfield_id = 24 where id = 109;
+update studyfield set parentstudyfield_id = 24 where id = 25;
 
-update stuyfield set parentstudyfield_id = 26 where id = 110;
-update stuyfield set parentstudyfield_id = 26 where id = 91;
+update studyfield set parentstudyfield_id = 26 where id = 110;
+update studyfield set parentstudyfield_id = 26 where id = 91;
 
-update stuyfield set parentstudyfield_id = 92 where id = 111;
-update stuyfield set parentstudyfield_id = 92 where id = 93;
-update stuyfield set parentstudyfield_id = 92 where id = 94;
-update stuyfield set parentstudyfield_id = 92 where id = 95;
+update studyfield set parentstudyfield_id = 92 where id = 111;
+update studyfield set parentstudyfield_id = 92 where id = 93;
+update studyfield set parentstudyfield_id = 92 where id = 94;
+update studyfield set parentstudyfield_id = 92 where id = 95;
 
-update stuyfield set parentstudyfield_id = 83 where id = 112;
-update stuyfield set parentstudyfield_id = 83 where id = 82;
-update stuyfield set parentstudyfield_id = 83 where id = 84;
+update studyfield set parentstudyfield_id = 83 where id = 112;
+update studyfield set parentstudyfield_id = 83 where id = 82;
+update studyfield set parentstudyfield_id = 83 where id = 84;
 
-update stuyfield set parentstudyfield_id = 79 where id = 113;
-update stuyfield set parentstudyfield_id = 79 where id = 114;
-update stuyfield set parentstudyfield_id = 79 where id = 115;
-update stuyfield set parentstudyfield_id = 79 where id = 116;
-update stuyfield set parentstudyfield_id = 79 where id = 89;
+update studyfield set parentstudyfield_id = 79 where id = 113;
+update studyfield set parentstudyfield_id = 79 where id = 114;
+update studyfield set parentstudyfield_id = 79 where id = 115;
+update studyfield set parentstudyfield_id = 79 where id = 116;
+update studyfield set parentstudyfield_id = 79 where id = 89;
 
 
 ALTER TABLE studyfield ENABLE TRIGGER ALL;

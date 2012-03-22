@@ -107,8 +107,8 @@ public class StudyFieldConstant implements java.io.Serializable  {
     public final static String topicClassValue="topicClassValue";
     public final static String topicClassVocab="topicClassVocab";
     public final static String topicClassVocabURI="topicClassVocabURI";
-    public final static String abstractText="abstractText";
-    public final static String abstractDate="abstractDate";
+    public final static String descriptionText="descriptionText";
+    public final static String descriptionDate="descriptionDate";
     public final static String timePeriodCoveredStart="timePeriodCoveredStart";
     public final static String timePeriodCoveredEnd="timePeriodCoveredEnd";
     public final static String dateOfCollectionStart="dateOfCollectionStart";
@@ -314,12 +314,12 @@ public class StudyFieldConstant implements java.io.Serializable  {
         return topicClassVocabURI;
     }
     
-    public String getAbstractText() {
-        return abstractText;
+    public String getDescriptionText() {
+        return descriptionText;
     }
     
-    public String getAbstractDate() {
-        return abstractDate;
+    public String getDescriptionDate() {
+        return descriptionDate;
     }
     
     public String getTimePeriodCoveredStart() {

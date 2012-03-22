@@ -150,6 +150,8 @@ public class StudyField implements Serializable {
     public Long getId() {
         return this.id;
     }
+    
+    
 
     /**
      * Setter for property id.
@@ -159,6 +161,31 @@ public class StudyField implements Serializable {
         this.id = id;
     }
 
+
+    
+    @OneToMany(mappedBy = "parentStudyField", cascade = {CascadeType.REMOVE, CascadeType.MERGE, CascadeType.PERSIST})
+    @OrderBy("name ASC")
+    private Collection<StudyField> childStudyFields;
+
+    public Collection<StudyField> getChildStudyFields() {
+        return this.childStudyFields;
+    }
+
+    public void setChildStudyFields(Collection<StudyField> childStudyFields) {
+        this.childStudyFields = childStudyFields;
+    }
+    @ManyToOne(cascade = CascadeType.MERGE)
+    private StudyField parentStudyField;
+
+    public StudyField getParentStudyField() {
+        return parentStudyField;
+    }
+
+    public void setParentStudyField(StudyField parentStudyField) {
+        this.parentStudyField = parentStudyField;
+    }
+    
+    
     /**
      * Holds value of property studies. 
      */

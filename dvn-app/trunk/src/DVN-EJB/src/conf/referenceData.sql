@@ -372,19 +372,19 @@ ALTER TABLE studyfield DISABLE TRIGGER ALL;
 
 INSERT INTO studyfield (id,title,description, name,basicSearchField,advancedSearchField, searchResultField, customField) VALUES (1, 'Title', 'Title', 'title', TRUE, TRUE, TRUE, FALSE );
 INSERT INTO studyfield (id,title,description, name,basicSearchField,advancedSearchField, searchResultField, customField) VALUES (2, 'Study ID', 'Study ID', 'studyId', TRUE, TRUE, TRUE, FALSE );
-INSERT INTO studyfield (id,title,description, name,basicSearchField,advancedSearchField, searchResultField, customField) VALUES (3, 'Author', 'Author', 'authorName', TRUE, TRUE, TRUE, FALSE );
+INSERT INTO studyfield (id,title,description, name,basicSearchField,advancedSearchField, searchResultField, customField) VALUES (3, 'Author', 'Author', 'author', TRUE, TRUE, TRUE, FALSE );
 INSERT INTO studyfield (id,title,description, name,basicSearchField,advancedSearchField, searchResultField, customField) VALUES (4, 'Author Affiliation', 'Author Affiliation', 'authorAffiliation', FALSE, FALSE, FALSE, FALSE );
-INSERT INTO studyfield (id,title,description, name,basicSearchField,advancedSearchField, searchResultField, customField) VALUES (5, 'Producer', 'Producer', 'producerName', FALSE, TRUE, FALSE, FALSE );
+INSERT INTO studyfield (id,title,description, name,basicSearchField,advancedSearchField, searchResultField, customField) VALUES (5, 'Producer', 'Producer', 'producer', FALSE, TRUE, FALSE, FALSE );
 INSERT INTO studyfield (id,title,description, name,basicSearchField,advancedSearchField, searchResultField, customField) VALUES (6, 'Producer URL', 'Producer URL', 'producerURL', FALSE, FALSE, FALSE, FALSE );
 INSERT INTO studyfield (id,title,description, name,basicSearchField,advancedSearchField, searchResultField, customField) VALUES (7, 'URL to Producer Logo', 'URL to Producer Logo', 'producerLogo', FALSE, FALSE, FALSE, FALSE );
 INSERT INTO studyfield (id,title,description, name,basicSearchField,advancedSearchField, searchResultField, customField) VALUES (8, 'Producer Name Abbreviation', 'Producer Name Abbreviation', 'producerAbbreviation', FALSE, FALSE, FALSE, FALSE );
 INSERT INTO studyfield (id,title,description, name,basicSearchField,advancedSearchField, searchResultField, customField) VALUES (9, 'Production Date', 'Production Date', 'productionDate', FALSE, TRUE, FALSE, FALSE );
-INSERT INTO studyfield (id,title,description, name,basicSearchField,advancedSearchField, searchResultField, customField) VALUES (10, 'Software', 'Software', 'softwareName', FALSE, FALSE, FALSE, FALSE );
+INSERT INTO studyfield (id,title,description, name,basicSearchField,advancedSearchField, searchResultField, customField) VALUES (10, 'Software', 'Software', 'software', FALSE, FALSE, FALSE, FALSE );
 INSERT INTO studyfield (id,title,description, name,basicSearchField,advancedSearchField, searchResultField, customField) VALUES (11, 'Software Version', 'Software Version', 'softwareVersion', FALSE, FALSE, FALSE, FALSE );
 INSERT INTO studyfield (id,title,description, name,basicSearchField,advancedSearchField, searchResultField, customField) VALUES (12, 'Funding Agency', 'Funding Agency', 'fundingAgency', FALSE, FALSE, FALSE, FALSE );
 INSERT INTO studyfield (id,title,description, name,basicSearchField,advancedSearchField, searchResultField, customField) VALUES (13, 'Grant Number', 'Grant Number', 'grantNumber', FALSE, FALSE, FALSE, FALSE );
 INSERT INTO studyfield (id,title,description, name,basicSearchField,advancedSearchField, searchResultField, customField) VALUES (14, 'Grant Number Agency', 'Grant Number Agency', 'grantNumberAgency', FALSE, FALSE, FALSE, FALSE );
-INSERT INTO studyfield (id,title,description, name,basicSearchField,advancedSearchField, searchResultField, customField) VALUES (15, '', '', 'distributorName', FALSE, TRUE, FALSE, FALSE );
+INSERT INTO studyfield (id,title,description, name,basicSearchField,advancedSearchField, searchResultField, customField) VALUES (15, '', '', 'distributor', FALSE, TRUE, FALSE, FALSE );
 INSERT INTO studyfield (id,title,description, name,basicSearchField,advancedSearchField, searchResultField, customField) VALUES (16, '', '', 'distributorURL', FALSE, FALSE, FALSE, FALSE );
 INSERT INTO studyfield (id,title,description, name,basicSearchField,advancedSearchField, searchResultField, customField) VALUES (17, '', '', 'distributorLogo', FALSE, FALSE, FALSE, FALSE );
 INSERT INTO studyfield (id,title,description, name,basicSearchField,advancedSearchField, searchResultField, customField) VALUES (18, '', '', 'distributionDate', FALSE, TRUE, FALSE, FALSE );
@@ -393,17 +393,17 @@ INSERT INTO studyfield (id,title,description, name,basicSearchField,advancedSear
 INSERT INTO studyfield (id,title,description, name,basicSearchField,advancedSearchField, searchResultField, customField) VALUES (21, '', '', 'distributorContactEmail', FALSE, FALSE, FALSE, FALSE );
 INSERT INTO studyfield (id,title,description, name,basicSearchField,advancedSearchField, searchResultField, customField) VALUES (22, '', '', 'depositor', FALSE, FALSE, FALSE, FALSE );
 INSERT INTO studyfield (id,title,description, name,basicSearchField,advancedSearchField, searchResultField, customField) VALUES (23, '', '', 'dateOfDeposit', FALSE, FALSE, FALSE, FALSE );
-INSERT INTO studyfield (id,title,description, name,basicSearchField,advancedSearchField, searchResultField, customField) VALUES (24, '', '', 'seriesName', FALSE, FALSE, FALSE, FALSE );
+INSERT INTO studyfield (id,title,description, name,basicSearchField,advancedSearchField, searchResultField, customField) VALUES (24, '', '', 'series', FALSE, FALSE, FALSE, FALSE );
 INSERT INTO studyfield (id,title,description, name,basicSearchField,advancedSearchField, searchResultField, customField) VALUES (25, '', '', 'seriesInformation', FALSE, FALSE, FALSE, FALSE );
 INSERT INTO studyfield (id,title,description, name,basicSearchField,advancedSearchField, searchResultField, customField) VALUES (26, '', '', 'studyVersion', FALSE, FALSE, FALSE, FALSE );
-INSERT INTO studyfield (id,title,description, name,basicSearchField,advancedSearchField, searchResultField, customField) VALUES (27, '', '', 'keywordValue', FALSE, TRUE, FALSE, FALSE );
+INSERT INTO studyfield (id,title,description, name,basicSearchField,advancedSearchField, searchResultField, customField) VALUES (27, '', '', 'keyword', FALSE, TRUE, FALSE, FALSE );
 INSERT INTO studyfield (id,title,description, name,basicSearchField,advancedSearchField, searchResultField, customField) VALUES (28, '', '', 'keywordVocab', FALSE, FALSE, FALSE, FALSE );
 INSERT INTO studyfield (id,title,description, name,basicSearchField,advancedSearchField, searchResultField, customField) VALUES (29, '', '', 'keywordVocabURI', FALSE, FALSE, FALSE, FALSE );
-INSERT INTO studyfield (id,title,description, name,basicSearchField,advancedSearchField, searchResultField, customField) VALUES (30, '', '', 'topicClassValue', FALSE, TRUE, FALSE, FALSE );
+INSERT INTO studyfield (id,title,description, name,basicSearchField,advancedSearchField, searchResultField, customField) VALUES (30, '', '', 'topicClassification', FALSE, TRUE, FALSE, FALSE );
 INSERT INTO studyfield (id,title,description, name,basicSearchField,advancedSearchField, searchResultField, customField) VALUES (31, '', '', 'topicClassVocab', FALSE, FALSE, FALSE, FALSE );
 INSERT INTO studyfield (id,title,description, name,basicSearchField,advancedSearchField, searchResultField, customField) VALUES (32, '', '', 'topicClassVocabURI', FALSE, FALSE, FALSE, FALSE );
-INSERT INTO studyfield (id,title,description, name,basicSearchField,advancedSearchField, searchResultField, customField) VALUES (33, '', '', 'abstractText', FALSE, TRUE, TRUE, FALSE );
-INSERT INTO studyfield (id,title,description, name,basicSearchField,advancedSearchField, searchResultField, customField) VALUES (34, '', '', 'abstractDate', FALSE, FALSE, FALSE, FALSE );
+INSERT INTO studyfield (id,title,description, name,basicSearchField,advancedSearchField, searchResultField, customField) VALUES (33, '', '', 'description', FALSE, TRUE, TRUE, FALSE );
+INSERT INTO studyfield (id,title,description, name,basicSearchField,advancedSearchField, searchResultField, customField) VALUES (34, '', '', 'descriptionDate', FALSE, FALSE, FALSE, FALSE );
 INSERT INTO studyfield (id,title,description, name,basicSearchField,advancedSearchField, searchResultField, customField) VALUES (35, '', '', 'timePeriodCoveredStart', FALSE, TRUE, FALSE, FALSE );
 INSERT INTO studyfield (id,title,description, name,basicSearchField,advancedSearchField, searchResultField, customField) VALUES (36, '', '', 'timePeriodCoveredEnd', FALSE, TRUE, FALSE, FALSE );
 INSERT INTO studyfield (id,title,description, name,basicSearchField,advancedSearchField, searchResultField, customField) VALUES (37, '', '', 'dateOfCollectionStart', FALSE, FALSE, FALSE, FALSE );
@@ -448,26 +448,107 @@ INSERT INTO studyfield (id,title,description, name,basicSearchField,advancedSear
 INSERT INTO studyfield (id,title,description, name,basicSearchField,advancedSearchField, searchResultField, customField) VALUES (76, '', '', 'conditions', FALSE, FALSE, FALSE, FALSE );
 INSERT INTO studyfield (id,title,description, name,basicSearchField,advancedSearchField, searchResultField, customField) VALUES (77, '', '', 'disclaimer', FALSE, FALSE, FALSE, FALSE );
 INSERT INTO studyfield (id,title,description, name,basicSearchField,advancedSearchField, searchResultField, customField) VALUES (78, '', '', 'relatedMaterial', FALSE, FALSE, FALSE, FALSE );
-INSERT INTO studyfield (id,title,description, name,basicSearchField,advancedSearchField, searchResultField, customField) VALUES (79, '', '', 'relatedPublications', FALSE, TRUE, FALSE, FALSE );
+INSERT INTO studyfield (id,title,description, name,basicSearchField,advancedSearchField, searchResultField, customField) VALUES (79, '', '', 'publication', FALSE, TRUE, FALSE, FALSE );
 INSERT INTO studyfield (id,title,description, name,basicSearchField,advancedSearchField, searchResultField, customField) VALUES (80, '', '', 'relatedStudies', FALSE, FALSE, FALSE, FALSE );
 INSERT INTO studyfield (id,title,description, name,basicSearchField,advancedSearchField, searchResultField, customField) VALUES (81, '', '', 'otherReferences', FALSE, FALSE, FALSE, FALSE );
 INSERT INTO studyfield (id,title,description, name,basicSearchField,advancedSearchField, searchResultField, customField) VALUES (82, '', '', 'notesText', FALSE, FALSE, FALSE, FALSE );
-INSERT INTO studyfield (id,title,description, name,basicSearchField,advancedSearchField, searchResultField, customField) VALUES (83, '', '', 'notesInformationType', FALSE, FALSE, FALSE, FALSE );
+INSERT INTO studyfield (id,title,description, name,basicSearchField,advancedSearchField, searchResultField, customField) VALUES (83, '', '', 'note', FALSE, FALSE, FALSE, FALSE );
 INSERT INTO studyfield (id,title,description, name,basicSearchField,advancedSearchField, searchResultField, customField) VALUES (84, '', '', 'notesInformationSubject', FALSE, FALSE, FALSE, FALSE );
 INSERT INTO studyfield (id,title,description, name,basicSearchField,advancedSearchField, searchResultField, customField) VALUES (85, '', '', 'otherId', FALSE, TRUE, FALSE, FALSE );
 INSERT INTO studyfield (id,title,description, name,basicSearchField,advancedSearchField, searchResultField, customField) VALUES (86, '', '', 'otherIdAgency', FALSE, FALSE, FALSE, FALSE );
 INSERT INTO studyfield (id,title,description, name,basicSearchField,advancedSearchField, searchResultField, customField) VALUES (87, '', '', 'productionPlace', FALSE, FALSE, FALSE, FALSE );
 INSERT INTO studyfield (id,title,description, name,basicSearchField,advancedSearchField, searchResultField, customField) VALUES (88, '', '', 'numberOfFiles', FALSE, FALSE, FALSE, FALSE );
-INSERT INTO studyfield (id,title,description, name,basicSearchField,advancedSearchField, searchResultField, customField) VALUES (89, '', '', 'replicationFor', FALSE, FALSE, FALSE, FALSE );
+INSERT INTO studyfield (id,title,description, name,basicSearchField,advancedSearchField, searchResultField, customField) VALUES (89, '', '', 'publicationReplicationData', FALSE, FALSE, FALSE, FALSE );
 INSERT INTO studyfield (id,title,description, name,basicSearchField,advancedSearchField, searchResultField, customField) VALUES (90, '', '', 'subTitle', FALSE, FALSE, FALSE, FALSE );
 INSERT INTO studyfield (id,title,description, name,basicSearchField,advancedSearchField, searchResultField, customField) VALUES (91, '', '', 'versionDate', FALSE, FALSE, FALSE, FALSE );
-INSERT INTO studyfield (id,title,description, name,basicSearchField,advancedSearchField, searchResultField, customField) VALUES (92, '', '', 'westLongitude', FALSE, FALSE, FALSE, FALSE );
+INSERT INTO studyfield (id,title,description, name,basicSearchField,advancedSearchField, searchResultField, customField) VALUES (92, '', '', 'geographicBoundingBox', FALSE, FALSE, FALSE, FALSE );
 INSERT INTO studyfield (id,title,description, name,basicSearchField,advancedSearchField, searchResultField, customField) VALUES (93, '', '', 'eastLongitude', FALSE, FALSE, FALSE, FALSE );
 INSERT INTO studyfield (id,title,description, name,basicSearchField,advancedSearchField, searchResultField, customField) VALUES (94, '', '', 'northLatitude', FALSE, FALSE, FALSE, FALSE );
 INSERT INTO studyfield (id,title,description, name,basicSearchField,advancedSearchField, searchResultField, customField) VALUES (95, '', '', 'southLatitude', FALSE, FALSE, FALSE, FALSE );
 INSERT INTO studyfield (id,title,description, name,basicSearchField,advancedSearchField, searchResultField, customField) VALUES (96, '', '', 'producerAffiliation', FALSE, FALSE, FALSE, FALSE );
 INSERT INTO studyfield (id,title,description, name,basicSearchField,advancedSearchField, searchResultField, customField) VALUES (97, '', '', 'distributorAffiliation', FALSE, FALSE, FALSE, FALSE );
 INSERT INTO studyfield (id,title,description, name,basicSearchField,advancedSearchField, searchResultField, customField) VALUES (98, '', '', 'distributorAbbreviation', FALSE, FALSE, FALSE, FALSE );
+
+INSERT INTO studyfield (id,title,description, name,basicSearchField,advancedSearchField, searchResultField, customField) VALUES (99, '', '', 'authorName', FALSE, FALSE, FALSE, FALSE );
+INSERT INTO studyfield (id,title,description, name,basicSearchField,advancedSearchField, searchResultField, customField) VALUES (100, '', '', 'producerName', FALSE, FALSE, FALSE, FALSE );
+INSERT INTO studyfield (id,title,description, name,basicSearchField,advancedSearchField, searchResultField, customField) VALUES (101, '', '', 'distributorName', FALSE, FALSE, FALSE, FALSE );
+INSERT INTO studyfield (id,title,description, name,basicSearchField,advancedSearchField, searchResultField, customField) VALUES (102, '', '', 'distributorContactName', FALSE, FALSE, FALSE, FALSE );
+INSERT INTO studyfield (id,title,description, name,basicSearchField,advancedSearchField, searchResultField, customField) VALUES (103, '', '', 'descriptionText', FALSE, FALSE, FALSE, FALSE );
+INSERT INTO studyfield (id,title,description, name,basicSearchField,advancedSearchField, searchResultField, customField) VALUES (104, '', '', 'keywordValue', FALSE, FALSE, FALSE, FALSE );
+INSERT INTO studyfield (id,title,description, name,basicSearchField,advancedSearchField, searchResultField, customField) VALUES (105, '', '', 'topicClassValue', FALSE, FALSE, FALSE, FALSE );
+INSERT INTO studyfield (id,title,description, name,basicSearchField,advancedSearchField, searchResultField, customField) VALUES (106, '', '', 'otherIdValue', FALSE, FALSE, FALSE, FALSE );
+INSERT INTO studyfield (id,title,description, name,basicSearchField,advancedSearchField, searchResultField, customField) VALUES (107, '', '', 'softwareName', FALSE, FALSE, FALSE, FALSE );
+INSERT INTO studyfield (id,title,description, name,basicSearchField,advancedSearchField, searchResultField, customField) VALUES (108, '', '', 'grantNumberValue', FALSE, FALSE, FALSE, FALSE );
+INSERT INTO studyfield (id,title,description, name,basicSearchField,advancedSearchField, searchResultField, customField) VALUES (109, '', '', 'seriesName', FALSE, FALSE, FALSE, FALSE );
+INSERT INTO studyfield (id,title,description, name,basicSearchField,advancedSearchField, searchResultField, customField) VALUES (110, '', '', 'studyVersionValue', FALSE, FALSE, FALSE, FALSE );
+INSERT INTO studyfield (id,title,description, name,basicSearchField,advancedSearchField, searchResultField, customField) VALUES (111, '', '', 'westLongitutde', FALSE, FALSE, FALSE, FALSE );
+INSERT INTO studyfield (id,title,description, name,basicSearchField,advancedSearchField, searchResultField, customField) VALUES (112, '', '', 'noteInformationType', FALSE, FALSE, FALSE, FALSE );
+
+INSERT INTO studyfield (id,title,description, name,basicSearchField,advancedSearchField, searchResultField, customField) VALUES (113, '', '', 'publicationCitation', FALSE, FALSE, FALSE, FALSE );
+INSERT INTO studyfield (id,title,description, name,basicSearchField,advancedSearchField, searchResultField, customField) VALUES (114, '', '', 'publicationIDType', FALSE, FALSE, FALSE, FALSE );
+INSERT INTO studyfield (id,title,description, name,basicSearchField,advancedSearchField, searchResultField, customField) VALUES (115, '', '', 'publicationIDNumber', FALSE, FALSE, FALSE, FALSE );
+INSERT INTO studyfield (id,title,description, name,basicSearchField,advancedSearchField, searchResultField, customField) VALUES (116, '', '', 'publicationURL', FALSE, FALSE, FALSE, FALSE );
+
+--set the parent child relationship
+update stuyfield set parentstudyfield_id = 3 where id = 99;
+update stuyfield set parentstudyfield_id = 3 where id = 4;
+
+update stuyfield set parentstudyfield_id = 5 where id = 100;
+update stuyfield set parentstudyfield_id = 5 where id = 6;
+update stuyfield set parentstudyfield_id = 5 where id = 7;
+update stuyfield set parentstudyfield_id = 5 where id = 8;
+update stuyfield set parentstudyfield_id = 5 where id = 96;
+
+update stuyfield set parentstudyfield_id = 15 where id = 101;
+update stuyfield set parentstudyfield_id = 15 where id = 16;
+update stuyfield set parentstudyfield_id = 15 where id = 17;
+update stuyfield set parentstudyfield_id = 15 where id = 97;
+update stuyfield set parentstudyfield_id = 15 where id = 98;
+
+update stuyfield set parentstudyfield_id = 19 where id = 102;
+update stuyfield set parentstudyfield_id = 19 where id = 20;
+update stuyfield set parentstudyfield_id = 19 where id = 21;
+
+update stuyfield set parentstudyfield_id = 33 where id = 103;
+update stuyfield set parentstudyfield_id = 33 where id = 34;
+
+update stuyfield set parentstudyfield_id = 27 where id = 104;
+update stuyfield set parentstudyfield_id = 27 where id = 28;
+update stuyfield set parentstudyfield_id = 27 where id = 29;
+
+update stuyfield set parentstudyfield_id = 30 where id = 105;
+update stuyfield set parentstudyfield_id = 30 where id = 31;
+update stuyfield set parentstudyfield_id = 30 where id = 32;
+
+update stuyfield set parentstudyfield_id = 85 where id = 106;
+update stuyfield set parentstudyfield_id = 85 where id = 86;
+
+update stuyfield set parentstudyfield_id = 10 where id = 107;
+update stuyfield set parentstudyfield_id = 10 where id = 11;
+
+update stuyfield set parentstudyfield_id = 13 where id = 108;
+update stuyfield set parentstudyfield_id = 13 where id = 14;
+
+update stuyfield set parentstudyfield_id = 24 where id = 109;
+update stuyfield set parentstudyfield_id = 24 where id = 25;
+
+update stuyfield set parentstudyfield_id = 26 where id = 110;
+update stuyfield set parentstudyfield_id = 26 where id = 91;
+
+update stuyfield set parentstudyfield_id = 92 where id = 111;
+update stuyfield set parentstudyfield_id = 92 where id = 93;
+update stuyfield set parentstudyfield_id = 92 where id = 94;
+update stuyfield set parentstudyfield_id = 92 where id = 95;
+
+update stuyfield set parentstudyfield_id = 83 where id = 112;
+update stuyfield set parentstudyfield_id = 83 where id = 82;
+update stuyfield set parentstudyfield_id = 83 where id = 84;
+
+update stuyfield set parentstudyfield_id = 79 where id = 113;
+update stuyfield set parentstudyfield_id = 79 where id = 114;
+update stuyfield set parentstudyfield_id = 79 where id = 115;
+update stuyfield set parentstudyfield_id = 79 where id = 116;
+update stuyfield set parentstudyfield_id = 79 where id = 89;
 
 
 ALTER TABLE studyfield ENABLE TRIGGER ALL;
@@ -837,7 +918,7 @@ INSERT INTO templatefield(id, version, template_id, studyfield_id, fieldinputlev
 INSERT INTO templatefield(id, version, template_id, studyfield_id, fieldinputlevelstring, displayorder) VALUES(86,1,1,86,'optional',-1);
 INSERT INTO templatefield(id, version, template_id, studyfield_id, fieldinputlevelstring, displayorder) VALUES(87,1,1,87,'optional',-1);
 INSERT INTO templatefield(id, version, template_id, studyfield_id, fieldinputlevelstring, displayorder) VALUES(88,1,1,88,'optional',-1);
-INSERT INTO templatefield(id, version, template_id, studyfield_id, fieldinputlevelstring, displayorder) VALUES(89,1,1,89,'recommended',-1);
+INSERT INTO templatefield(id, version, template_id, studyfield_id, fieldinputlevelstring, displayorder) VALUES(89,1,1,89,'optional',-1);
 INSERT INTO templatefield(id, version, template_id, studyfield_id, fieldinputlevelstring, displayorder) VALUES(90,1,1,90,'optional',-1);
 INSERT INTO templatefield(id, version, template_id, studyfield_id, fieldinputlevelstring, displayorder) VALUES(91,1,1,91,'optional',-1);
 INSERT INTO templatefield(id, version, template_id, studyfield_id, fieldinputlevelstring, displayorder) VALUES(92,1,1,92,'optional',-1);
@@ -848,6 +929,24 @@ INSERT INTO templatefield(id, version, template_id, studyfield_id, fieldinputlev
 INSERT INTO templatefield(id, version, template_id, studyfield_id, fieldinputlevelstring, displayorder) VALUES(97,1,1,97,'optional',-1);
 INSERT INTO templatefield(id, version, template_id, studyfield_id, fieldinputlevelstring, displayorder) VALUES(98,1,1,98,'optional',-1);
 
+INSERT INTO templatefield(version, template_id, studyfield_id, fieldinputlevelstring, displayorder) select 1,template.id, studyfield.id, 'optional', -1 from template, studyfield where studyfield.name = 'authorName';
+INSERT INTO templatefield(version, template_id, studyfield_id, fieldinputlevelstring, displayorder) select 1,template.id, studyfield.id, 'optional', -1 from template, studyfield where studyfield.name = 'producerName';
+INSERT INTO templatefield(version, template_id, studyfield_id, fieldinputlevelstring, displayorder) select 1,template.id, studyfield.id, 'optional', -1 from template, studyfield where studyfield.name = 'distributorName';
+INSERT INTO templatefield(version, template_id, studyfield_id, fieldinputlevelstring, displayorder) select 1,template.id, studyfield.id, 'optional', -1 from template, studyfield where studyfield.name = 'distributorContactName';
+INSERT INTO templatefield(version, template_id, studyfield_id, fieldinputlevelstring, displayorder) select 1,template.id, studyfield.id, 'optional', -1 from template, studyfield where studyfield.name = 'descriptionText';
+INSERT INTO templatefield(version, template_id, studyfield_id, fieldinputlevelstring, displayorder) select 1,template.id, studyfield.id, 'optional', -1 from template, studyfield where studyfield.name = 'keywordValue';
+INSERT INTO templatefield(version, template_id, studyfield_id, fieldinputlevelstring, displayorder) select 1,template.id, studyfield.id, 'optional', -1 from template, studyfield where studyfield.name = 'topicClassValue';
+INSERT INTO templatefield(version, template_id, studyfield_id, fieldinputlevelstring, displayorder) select 1,template.id, studyfield.id, 'optional', -1 from template, studyfield where studyfield.name = 'otherIdValue';
+INSERT INTO templatefield(version, template_id, studyfield_id, fieldinputlevelstring, displayorder) select 1,template.id, studyfield.id, 'optional', -1 from template, studyfield where studyfield.name = 'softwareName';
+INSERT INTO templatefield(version, template_id, studyfield_id, fieldinputlevelstring, displayorder) select 1,template.id, studyfield.id, 'optional', -1 from template, studyfield where studyfield.name = 'grantNumberValue';
+INSERT INTO templatefield(version, template_id, studyfield_id, fieldinputlevelstring, displayorder) select 1,template.id, studyfield.id, 'optional', -1 from template, studyfield where studyfield.name = 'seriesName';
+INSERT INTO templatefield(version, template_id, studyfield_id, fieldinputlevelstring, displayorder) select 1,template.id, studyfield.id, 'optional', -1 from template, studyfield where studyfield.name = 'studyVersionValue';
+INSERT INTO templatefield(version, template_id, studyfield_id, fieldinputlevelstring, displayorder) select 1,template.id, studyfield.id, 'optional', -1 from template, studyfield where studyfield.name = 'westLongitude';
+INSERT INTO templatefield(version, template_id, studyfield_id, fieldinputlevelstring, displayorder) select 1,template.id, studyfield.id, 'optional', -1 from template, studyfield where studyfield.name = 'noteInformationType';
+INSERT INTO templatefield(version, template_id, studyfield_id, fieldinputlevelstring, displayorder) select 1,template.id, studyfield.id, 'optional', -1 from template, studyfield where studyfield.name = 'publicationCitation';
+INSERT INTO templatefield(version, template_id, studyfield_id, fieldinputlevelstring, displayorder) select 1,template.id, studyfield.id, 'optional', -1 from template, studyfield where studyfield.name = 'publicationIDType';
+INSERT INTO templatefield(version, template_id, studyfield_id, fieldinputlevelstring, displayorder) select 1,template.id, studyfield.id, 'optional', -1 from template, studyfield where studyfield.name = 'publicationIDNumber';
+INSERT INTO templatefield(version, template_id, studyfield_id, fieldinputlevelstring, displayorder) select 1,template.id, studyfield.id, 'optional', -1 from template, studyfield where studyfield.name = 'publicationURL';
 
 SELECT pg_catalog.setval(pg_catalog.pg_get_serial_sequence('templatefield', 'id'), 100, false);
 

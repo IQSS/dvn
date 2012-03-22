@@ -47,7 +47,7 @@ public class StudyFieldConstant implements java.io.Serializable  {
     public final static String distributor = "distributor";
     public final static String distributorContact = "distributorContact";
     public final static String series = "series";
-    public final static String version = "version";
+    public final static String studyVersion = "studyVersion";
     
     public final static String description = "description";
     public final static String keyword = "keyword";
@@ -99,7 +99,7 @@ public class StudyFieldConstant implements java.io.Serializable  {
     public final static String dateOfDeposit="dateOfDeposit";
     public final static String seriesName="seriesName";
     public final static String seriesInformation="seriesInformation";
-    public final static String studyVersion="studyVersion";
+    public final static String studyVersionValue="studyVersionValue";
     public final static String versionDate="versionDate";
     public final static String keywordValue="keywordValue";
     public final static String keywordVocab="keywordVocab";
@@ -648,8 +648,8 @@ public class StudyFieldConstant implements java.io.Serializable  {
         return topicClassification;
     }
 
-    public static String getVersion() {
-        return version;
+    public static String getStudyVersionValue() {
+        return studyVersionValue;
     }
     
 }

@@ -38,6 +38,31 @@ import javax.inject.Named;
 @ApplicationScoped
 public class StudyFieldConstant implements java.io.Serializable  {
     
+    public final static String publication = "publication";
+    public final static String otherId = "otherId";
+    public final static String author =  "author";
+    public final static String producer = "producer";
+    public final static String software = "software";
+    public final static String grantNumber = "grantNumber";
+    public final static String distributor = "distributor";
+    public final static String contact = "contact";
+    public final static String series = "series";
+    public final static String version = "version";
+    
+    public final static String description = "description";
+    public final static String keyword = "keyword";
+    public final static String topicClassification = "topicClassification";
+    public final static String geographicBoundingBox = "geographicBoundingBox";
+    
+    public final static String note = "note";
+    
+    public final static String publicationCitation = "publicationCitation";
+    public final static String publicationIDType = "publicationIDType";
+    public final static String publicationIDNumber = "publicationIDNumber";
+    public final static String publicationURL = "publicationURL";
+    public final static String publicationReplicationData = "publicationReplicationData";
+    
+    
     public final static String title = "title";
     public final static String subTitle="subTitle";
     public final static String studyId = "studyId";
@@ -45,7 +70,7 @@ public class StudyFieldConstant implements java.io.Serializable  {
     public final static String authorAffiliation = "authorAffiliation";
     public final static String authorIdType = "authorIdType";
     public final static String authorIdValue = "authorIdValue";
-    public final static String otherId="otherId";
+    public final static String otherIdValue="otherIdValue";
     public final static String otherIdAgency= "otherIdAgency";
     
     public final static String producerName="producerName";
@@ -58,7 +83,7 @@ public class StudyFieldConstant implements java.io.Serializable  {
     public final static String softwareName="softwareName";
     public final static String softwareVersion="softwareVersion";
     public final static String fundingAgency="fundingAgency";
-    public final static String grantNumber="grantNumber";
+    public final static String grantNumberValue="grantNumberValue";
     public final static String grantNumberAgency="grantNumberAgency";
     public final static String distributorName="distributorName";
     public final static String distributorURL="distributorURL";
@@ -127,14 +152,14 @@ public class StudyFieldConstant implements java.io.Serializable  {
     public final static String confidentialityDeclaration="confidentialityDeclaration";
     public final static String specialPermissions="specialPermissions";
     public final static String restrictions="restrictions";
-    public final static String contact="contact";
+    public final static String contactName="contactName";
     public final static String citationRequirements="citationRequirements";
     public final static String depositorRequirements="depositorRequirements";
     public final static String conditions="conditions";
     public final static String disclaimer="disclaimer";
     public final static String relatedMaterial="relatedMaterial";
     public final static String replicationFor="replicationFor";
-    public final static String relatedPublications="relatedPublications";
+    //public final static String relatedPublications="relatedPublications";
     public final static String relatedStudies="relatedStudies";
     public final static String otherReferences="otherReferences";
     public final static String notesText="notesText";
@@ -473,9 +498,10 @@ public class StudyFieldConstant implements java.io.Serializable  {
         return relatedMaterial;
     }
     
+    /*
     public String getRelatedPublications() {
         return relatedPublications;
-    }
+    }*/
     
     public String getRelatedStudies() {
         return relatedStudies;
@@ -544,6 +570,85 @@ public class StudyFieldConstant implements java.io.Serializable  {
     public String getNumberOfFiles() {
         return numberOfFiles;
     }
-    
+
+    public static String getAuthor() {
+        return author;
+    }
+
+    public static String getContactName() {
+        return contactName;
+    }
+
+    public static String getDescription() {
+        return description;
+    }
+
+    public static String getDistributor() {
+        return distributor;
+    }
+
+    public static String getGeographicBoundingBox() {
+        return geographicBoundingBox;
+    }
+
+    public static String getGrantNumberValue() {
+        return grantNumberValue;
+    }
+
+    public static String getKeyword() {
+        return keyword;
+    }
+
+    public static String getNote() {
+        return note;
+    }
+
+    public static String getOtherIdValue() {
+        return otherIdValue;
+    }
+
+    public static String getProducer() {
+        return producer;
+    }
+
+    public static String getPublication() {
+        return publication;
+    }
+
+    public static String getPublicationCitation() {
+        return publicationCitation;
+    }
+
+    public static String getPublicationIDNumber() {
+        return publicationIDNumber;
+    }
+
+    public static String getPublicationIDType() {
+        return publicationIDType;
+    }
+
+    public static String getPublicationReplicationData() {
+        return publicationReplicationData;
+    }
+
+    public static String getPublicationURL() {
+        return publicationURL;
+    }
+
+    public static String getSeries() {
+        return series;
+    }
+
+    public static String getSoftware() {
+        return software;
+    }
+
+    public static String getTopicClassification() {
+        return topicClassification;
+    }
+
+    public static String getVersion() {
+        return version;
+    }
     
 }

@@ -405,7 +405,7 @@ public class SearchFieldsPage extends VDCBaseBean implements java.io.Serializabl
             newSearchResultsFields.add(productionDateResultsField);
         }        
         if (producerCheckbox.isSelected()){
-            StudyField producerResultsField = studyFieldService.findByName("producerName");
+            StudyField producerResultsField = studyFieldService.findByName("producer");
             newSearchResultsFields.add(producerResultsField);
         }
         if (distributionDateCheckbox.isSelected()){
@@ -413,15 +413,15 @@ public class SearchFieldsPage extends VDCBaseBean implements java.io.Serializabl
             newSearchResultsFields.add(distributionDateResultsField);
         }
         if (distributorCheckbox.isSelected()){
-            StudyField distributorResultsField = studyFieldService.findByName("distributorName");
+            StudyField distributorResultsField = studyFieldService.findByName("distributor");
             newSearchResultsFields.add(distributorResultsField);
         }
         if (replicationCheckbox.isSelected()){
-            StudyField replicationResultsField = studyFieldService.findByName("replicationFor");
+            StudyField replicationResultsField = studyFieldService.findByName("publicationReplicationData");
             newSearchResultsFields.add(replicationResultsField);
         }
         if (relatedpubCheckbox.isSelected()){
-            StudyField relatedpubResultsField = studyFieldService.findByName("relatedPublications");
+            StudyField relatedpubResultsField = studyFieldService.findByName("publication");
             newSearchResultsFields.add(relatedpubResultsField);
         }
         if (relatedmatCheckbox.isSelected()){

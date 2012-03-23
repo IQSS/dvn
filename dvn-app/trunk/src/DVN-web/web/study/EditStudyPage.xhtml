@@ -214,7 +214,7 @@
                                                id="input_relatedPublicationText"
                                                binding="#{EditStudyPage.inputRelPublicationText}"
                                                value="#{currentRow.text}"
-                                               required="#{EditStudyPage.studyMap[sfc.relatedPublications].required and EditStudyPage.validateRequired}" requiredMessage="This field is required."
+                                               required="#{EditStudyPage.studyMap[sfc.publication].required and EditStudyPage.validateRequired}" requiredMessage="This field is required."
                                                styleClass="formHtmlEnabled">
                                 <f:validator validatorId="XhtmlValidator"/>
                               </ice:inputTextarea>
@@ -229,7 +229,7 @@
                             </div>
                             <div jsfc="ice:panelGroup" styleClass="vdcEditStudyFieldFloat1">
                               <ice:outputText styleClass="dvnInlineHelpLabel dvnInlineHelpTip" value="#{editstudybundle.relatedPublicationIDTypeLabel}" title="#{editstudybundle.relatedPublicationIDTypeHelpHeading} - #{editstudybundle.relatedPublicationIDTypeHelp}"/>
-                              <ice:selectOneMenu validator="#{EditStudyPage.validateStudyPublication}" binding="#{EditStudyPage.inputRelPublicationIDType}" id="input_relatedPublicationIDType" value="#{currentRow.idType}" required="#{EditStudyPage.studyMap[sfc.relatedPublications].required}" requiredMessage="This field is required.">
+                              <ice:selectOneMenu validator="#{EditStudyPage.validateStudyPublication}" binding="#{EditStudyPage.inputRelPublicationIDType}" id="input_relatedPublicationIDType" value="#{currentRow.idType}" required="#{EditStudyPage.studyMap[sfc.publication].required}" requiredMessage="This field is required.">
                                 <f:selectItem itemLabel="Select" itemValue=""/>
                                 <f:selectItem itemLabel="DOI" itemValue="DOI"/>
                                 <f:selectItem itemLabel="arXiv" itemValue="ArXiv"/>
@@ -238,7 +238,7 @@
                             </div>
                             <div jsfc="ice:panelGroup" styleClass="vdcEditStudyFieldFloat2 vdcEditStudyGroupField">
                               <ice:outputText styleClass="dvnInlineHelpLabel dvnInlineHelpTip" value="#{editstudybundle.relatedPublicationIDNumberLabel}" title="#{editstudybundle.relatedPublicationIDNumberHelpHeading} - #{editstudybundle.relatedPublicationIDNumberHelp}"/>
-                              <ice:inputText validator="#{EditStudyPage.validateStudyPublication}" binding="#{EditStudyPage.inputRelPublicationIDNumber}" id="input_relatedPublicationIDNumber" value="#{currentRow.idNumber}" required="#{EditStudyPage.studyMap[sfc.relatedPublications].required and EditStudyPage.validateRequired}"  requiredMessage="This field is required." maxlength="255"/>
+                              <ice:inputText validator="#{EditStudyPage.validateStudyPublication}" binding="#{EditStudyPage.inputRelPublicationIDNumber}" id="input_relatedPublicationIDNumber" value="#{currentRow.idNumber}" required="#{EditStudyPage.studyMap[sfc.publication].required and EditStudyPage.validateRequired}"  requiredMessage="This field is required." maxlength="255"/>
                               <ice:message styleClass="errorMessage" for="input_relatedPublicationIDNumber"/>
                             </div>                            
                             <div jsfc="ice:panelGroup" styleClass="vdcEditStudyFieldFloat2 vdcEditStudyGroupField">
@@ -249,7 +249,7 @@
                                              size="45"
                                              maxlength="255"
                                              value="#{currentRow.url}"
-                                             required="#{EditStudyPage.studyMap[sfc.relatedPublications].required and EditStudyPage.validateRequired}" requiredMessage="This field is required." >
+                                             required="#{EditStudyPage.studyMap[sfc.publication].required and EditStudyPage.validateRequired}" requiredMessage="This field is required." >
                                 <f:validator validatorId="UrlValidator"/>
                               </ice:inputText>
                               <ice:outputText styleClass="vdcEditStudyFormatExample" value="(http://example-domain.edu/)"/>
@@ -581,11 +581,11 @@
                   <ice:dataTable cellpadding="0" cellspacing="0" width="100%"
                                  styleClass="vdcEditStudyTable" 
                                  rendered="#{(!EditStudyPage.studyGrantsEmpty 
-                                             or EditStudyPage.studyMap[sfc.grant].recommended
-                                             or EditStudyPage.studyMap[sfc.grant].required)
+                                             or EditStudyPage.studyMap[sfc.grantNumber].recommended
+                                             or EditStudyPage.studyMap[sfc.grantNumber].required)
                                             or (EditStudyPage.showAll
-                                            and !EditStudyPage.studyMap[sfc.grant].hidden
-                                            and !EditStudyPage.studyMap[sfc.grant].disabled)}" value="dummy_datatable">
+                                            and !EditStudyPage.studyMap[sfc.grantNumber].hidden
+                                            and !EditStudyPage.studyMap[sfc.grantNumber].disabled)}" value="dummy_datatable">
                     <ice:column>
                       <ice:dataTable cellpadding="0" cellspacing="0"
                                      styleClass="vdcEditStudyInnerTable"
@@ -595,8 +595,8 @@
                         <ice:column>
                           <div jsfc="ice:panelGroup" styleClass="vdcEditStudyField">
                             <ice:outputText styleClass="dvnInlineHelpLabel dvnInlineHelpTip" value="#{editstudybundle.grantNumberLabel}" title="#{editstudybundle.grantNumberHelpHeading} - #{editstudybundle.grantNumberHelp}"/>
-                            <ice:graphicImage value="/resources/images/icon_required.gif" rendered="#{EditStudyPage.studyMap[sfc.grant].required}"/>
-                            <ice:graphicImage value="/resources/images/icon_recommended.gif" rendered="#{EditStudyPage.studyMap[sfc.grant].recommended}"/>
+                            <ice:graphicImage value="/resources/images/icon_required.gif" rendered="#{EditStudyPage.studyMap[sfc.grantNumber].required}"/>
+                            <ice:graphicImage value="/resources/images/icon_recommended.gif" rendered="#{EditStudyPage.studyMap[sfc.grantNumber].recommended}"/>
                           </div>
                         </ice:column>
                         <ice:column>
@@ -866,7 +866,7 @@
                     <div jsfc="ice:panelGroup" id="groupPanel30">
                       <div jsfc="ice:panelGroup" >
                         <ice:outputText styleClass="dvnInlineHelpLabel dvnInlineHelpTip" value="#{editstudybundle.seriesVersionLabel}" title="#{editstudybundle.seriesVersionHelpHeading} - #{editstudybundle.seriesVersionHelp}"/>
-                        <ice:inputText binding="#{EditStudyPage.inputVersion}" id="input_studyVersion" value="#{EditStudyPage.metadata.studyVersionValue}"  required="#{EditStudyPage.studyMap[sfc.studyVersion].required and EditStudyPage.validateRequired}" requiredMessage="This field is required." />
+                        <ice:inputText binding="#{EditStudyPage.inputVersion}" id="input_studyVersion" value="#{EditStudyPage.metadata.studyVersionText}"  required="#{EditStudyPage.studyMap[sfc.studyVersion].required and EditStudyPage.validateRequired}" requiredMessage="This field is required." />
                         <ice:message styleClass="errorMessage" for="input_studyVersion"/>
                       </div>
                       <div jsfc="ice:panelGroup" styleClass="vdcEditStudyGroupField">
@@ -920,7 +920,7 @@
                                                  id="input_abstractText"
                                                  binding="#{EditStudyPage.inputAbstractText}"
                                                  value="#{currentRow.text}"
-                                                 required="#{EditStudyPage.studyMap[sfc.abstractText].required and EditStudyPage.validateRequired}" requiredMessage="This field is required."
+                                                 required="#{EditStudyPage.studyMap[sfc.descriptionText].required and EditStudyPage.validateRequired}" requiredMessage="This field is required."
                                                  styleClass="formHtmlEnabled">
                                 <f:validator validatorId="XhtmlValidator"/>
                               </ice:inputTextarea>
@@ -928,7 +928,7 @@
                             </div>
                             <div jsfc="ice:panelGroup" styleClass="vdcEditStudyGroupField">
                               <ice:outputText styleClass="dvnInlineHelpLabel dvnInlineHelpTip" value="#{editstudybundle.abstractDateLabel}" title="#{editstudybundle.abstractDateHelpHeading} - #{editstudybundle.abstractDateHelp}"/>
-                              <ice:inputText binding="#{EditStudyPage.inputAbstractDate}" validator="#{EditStudyPage.validateStudyAbstract}" id="input_abstractDate" styleClass="formDateFormat" value="#{currentRow.date}" required="#{EditStudyPage.studyMap[sfc.abstractDate].required and EditStudyPage.validateRequired}" requiredMessage="This field is required.">
+                              <ice:inputText binding="#{EditStudyPage.inputAbstractDate}" validator="#{EditStudyPage.validateStudyAbstract}" id="input_abstractDate" styleClass="formDateFormat" value="#{currentRow.date}" required="#{EditStudyPage.studyMap[sfc.descriptionDate].required and EditStudyPage.validateRequired}" requiredMessage="This field is required.">
                                 <f:validator validatorId="DateValidator"/>
                               </ice:inputText>
                               <ice:outputText styleClass="vdcEditStudyFormatExample" value="#{editstudybundle.dateFormatDescription}"/>

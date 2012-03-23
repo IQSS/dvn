@@ -184,7 +184,7 @@
               <ice:dataTable cellpadding="0" cellspacing="0" width="100%"
                                 rendered="#{TemplateFormPage.networkEdit or 
                                 TemplateFormPage.studyMap[sfc.otherId].templateField.fieldInputLevelString != 'disabled'}"
-                             styleClass="vdcEditStudyTable" rowClasses="#{TemplateFormPage.otherIdLevel}" value="dummy_datatable">
+                             styleClass="vdcEditStudyTable" rowClasses="#{TemplateFormPage.studyMap[sfc.otherId].templateField.fieldInputLevelString}" value="dummy_datatable">
                 <ice:column>
                   <ice:dataTable cellpadding="0" cellspacing="0" width="100%"
                                  styleClass="vdcEditStudyInnerTable" columnClasses="vdcEditStudyCol1b, vdcEditStudyCol2, vdcEditStudyCol3"
@@ -197,12 +197,12 @@
                     </ice:column>
                     <ice:column>
                       <div class="vdcEditStudyFieldFloatWrap">
-                        <div jsfc="ice:panelGroup" styleClass="vdcEditStudyFieldFloat1 #{TemplateFormPage.studyMap[sfc.otherId].templateField.fieldInputLevelString}">
+                        <div jsfc="ice:panelGroup" styleClass="vdcEditStudyFieldFloat1">
                           <ice:outputText styleClass="dvnInlineHelpLabel dvnInlineHelpTip" value="#{editstudybundle.otheridLabel}" title="#{editstudybundle.otheridHelpHeading} - #{editstudybundle.otheridHelp}"/>
                           <ice:inputText maxlength="255" binding="#{TemplateFormPage.inputOtherId}" id="input_otherId" value="#{currentRow.otherId}" />
                           <ice:message styleClass="errorMessage" for="input_otherId"/>
                         </div>
-                        <div jsfc="ice:panelGroup" styleClass="vdcEditStudyFieldFloat2 vdcEditStudyGroupField #{TemplateFormPage.studyMap[sfc.otherIdAgency].templateField.fieldInputLevelString}">
+                        <div jsfc="ice:panelGroup" styleClass="vdcEditStudyFieldFloat2 vdcEditStudyGroupField">
                           <ice:outputText styleClass="dvnInlineHelpLabel dvnInlineHelpTip" value="#{editstudybundle.otherAgencyLabel}" title="#{editstudybundle.otherAgencyHelpHeading} - #{editstudybundle.otherAgencyHelp}"/>
                           <ice:inputText maxlength="255" binding="#{TemplateFormPage.inputOtherIdAgency}" 
                                          id="input_otherIdAgency" value="#{currentRow.agency}" />
@@ -229,7 +229,7 @@
               <ice:dataTable cellpadding="0" cellspacing="0" width="100%"
                                 rendered="#{TemplateFormPage.networkEdit or 
                                 TemplateFormPage.studyMap[sfc.author].templateField.fieldInputLevelString != 'disabled'}"
-                             styleClass="vdcEditStudyTable" rowClasses="#{TemplateFormPage.authorInputLevel}" value="dummy_datatable" >
+                             styleClass="vdcEditStudyTable" rowClasses="#{TemplateFormPage.studyMap[sfc.author].templateField.fieldInputLevelString}" value="dummy_datatable" >
                 <ice:column>
                   <ice:dataTable cellpadding="0" cellspacing="0" width="100%"
                                  styleClass="vdcEditStudyInnerTable" columnClasses="vdcEditStudyCol1b, vdcEditStudyCol2, vdcEditStudyCol3"
@@ -244,7 +244,7 @@
                     </ice:column>
                     <ice:column>
                       <div class="vdcEditStudyFieldFloatWrap">
-                        <div jsfc="ice:panelGroup" styleClass="vdcEditStudyFieldFloat1 #{TemplateFormPage.studyMap[sfc.authorName].templateField.fieldInputLevelString}">
+                        <div jsfc="ice:panelGroup" styleClass="vdcEditStudyFieldFloat1">
                           <ice:outputText styleClass="dvnInlineHelpLabel dvnInlineHelpTip" value="#{editstudybundle.authorNameLabel}" title="#{editstudybundle.authorNameHelpHeading} - #{editstudybundle.authorNameHelp}"/>
                           <ice:inputText id="input_authorName"
                                          value="#{currentAuthor.name}"
@@ -254,7 +254,7 @@
                           <ice:outputText styleClass="vdcEditStudyFormatExample" value="(FirstName LastName)"/>
                           <ice:message styleClass="errorMessage" for="input_authorName"/>
                         </div>
-                        <div jsfc="ice:panelGroup" styleClass="vdcEditStudyFieldFloat2 #{TemplateFormPage.studyMap[sfc.authorAffiliation].templateField.fieldInputLevelString}">
+                        <div jsfc="ice:panelGroup" styleClass="vdcEditStudyFieldFloat2">
                           <ice:outputText styleClass="dvnInlineHelpLabel dvnInlineHelpTip" value="#{editstudybundle.authorAffiliationLabel}" title="#{editstudybundle.authorAffiliationHelpHeading} - #{editstudybundle.authorAffiliationHelp}"/>
                           <ice:inputText id="input_authorAffiliation" size="45" maxlength="255"
                                          binding="#{TemplateFormPage.inputAuthorAffiliation}"
@@ -284,7 +284,7 @@
               <ice:dataTable cellpadding="0" cellspacing="0" width="100%"
                                 rendered="#{TemplateFormPage.networkEdit or 
                                 TemplateFormPage.studyMap[sfc.producer].templateField.fieldInputLevelString != 'disabled'}"
-                             styleClass="vdcEditStudyTable" rowClasses="#{TemplateFormPage.producerInputLevel}" value="dummy_datatable">
+                             styleClass="vdcEditStudyTable" rowClasses="#{TemplateFormPage.studyMap[sfc.producer].templateField.fieldInputLevelString}" value="dummy_datatable">
                 <ice:column>
                   <ice:dataTable cellpadding="0" cellspacing="0" width="100%"
                                  styleClass="vdcEditStudyInnerTable" columnClasses="vdcEditStudyCol1b, vdcEditStudyCol2, vdcEditStudyCol3"
@@ -299,18 +299,18 @@
                     </ice:column>
                     <ice:column>
                       <div class="vdcEditStudyFieldFloatWrap">
-                        <div jsfc="ice:panelGroup" styleClass="vdcEditStudyFieldFloat1 vdcEditStudyGroupField #{TemplateFormPage.studyMap[sfc.producerName].templateField.fieldInputLevelString}">
+                        <div jsfc="ice:panelGroup" styleClass="vdcEditStudyFieldFloat1 ">
                           <ice:outputText styleClass="dvnInlineHelpLabel dvnInlineHelpTip" value="#{editstudybundle.producerLabel}" title="#{editstudybundle.producerHelpHeading} - #{editstudybundle.producerHelp}"/>
                           <ice:inputText maxlength="255" binding="#{TemplateFormPage.inputProducerName}" id="input_producerName" value="#{currentRow.name}" size="45"/>
                           <ice:message styleClass="errorMessage" for="input_producerName"/>
                         </div>
-                        <div jsfc="ice:panelGroup" styleClass="vdcEditStudyFieldFloat2 vdcEditStudyGroupField #{TemplateFormPage.studyMap[sfc.producerAbbreviation].templateField.fieldInputLevelString}">
+                        <div jsfc="ice:panelGroup" styleClass="vdcEditStudyFieldFloat2">
                           <ice:outputText styleClass="dvnInlineHelpLabel dvnInlineHelpTip" value="#{editstudybundle.producerAbbreviationLabel}" title="#{editstudybundle.producerAbbreviationHelpHeading} - #{editstudybundle.producerAbbreviationHelp}"/>
                           <ice:inputText maxlength="255"  binding="#{TemplateFormPage.inputProducerAbbreviation}" 
                                          id="input_producerAbbreviation" value="#{currentRow.abbreviation}" />
                           <ice:message styleClass="errorMessage" for="input_producerAbbreviation"/>
                         </div>
-                        <div jsfc="ice:panelGroup" styleClass="vdcEditStudyFieldFloat3 vdcEditStudyGroupField #{TemplateFormPage.studyMap[sfc.producerAffiliation].templateField.fieldInputLevelString}">
+                        <div jsfc="ice:panelGroup" styleClass="vdcEditStudyFieldFloat3">
                           <ice:outputText styleClass="dvnInlineHelpLabel dvnInlineHelpTip" value="#{editstudybundle.producerAffiliationLabel}" title="#{editstudybundle.producerAffiliationHelpHeading} - #{editstudybundle.producerAffiliationHelp}"/>
                           <ice:inputText maxlength="255"  binding="#{TemplateFormPage.inputProducerAffiliation}" 
                                          id="input_producerAffiliation" size="45" value="#{currentRow.affiliation}" 
@@ -318,7 +318,7 @@
                           </ice:inputText>
                           <ice:message styleClass="errorMessage" for="input_producerAffiliation"/>
                         </div>
-                        <div jsfc="ice:panelGroup" styleClass="vdcEditStudyGroupField #{TemplateFormPage.studyMap[sfc.producerURL].templateField.fieldInputLevelString}">
+                        <div jsfc="ice:panelGroup" styleClass="vdcEditStudyGroupField">
                           <ice:outputText styleClass="dvnInlineHelpLabel dvnInlineHelpTip" value="#{editstudybundle.producerURLLabel}" title="#{editstudybundle.producerURLHelpHeading} - #{editstudybundle.producerURLHelp}"/>
                           <ice:inputText id="input_producerURL"
                                          binding="#{TemplateFormPage.inputProducerUrl}"
@@ -329,7 +329,7 @@
                           <ice:outputText styleClass="vdcEditStudyFormatExample" value="(http://example-domain.edu/)"/>
                           <ice:message styleClass="errorMessage" for="input_producerURL"/>
                         </div>
-                        <div jsfc="ice:panelGroup" styleClass="vdcEditStudyGroupField  #{TemplateFormPage.studyMap[sfc.producerLogo].templateField.fieldInputLevelString}">
+                        <div jsfc="ice:panelGroup" styleClass="vdcEditStudyGroupField">
                           <ice:outputText styleClass="dvnInlineHelpLabel dvnInlineHelpTip" value="#{editstudybundle.producerLogoLabel}" title="#{editstudybundle.producerLogoHelpHeading} - #{editstudybundle.producerLogoHelp}"/>
                           <ice:inputText id="input_producerLogo"
                                          binding="#{TemplateFormPage.inputProducerLogo}"
@@ -407,7 +407,7 @@
               <ice:dataTable cellpadding="0" cellspacing="0" width="100%"
                                 rendered="#{TemplateFormPage.networkEdit or 
                                 TemplateFormPage.studyMap[sfc.software].templateField.fieldInputLevelString != 'disabled'}"
-                             styleClass="vdcEditStudyTable" rowClasses="#{TemplateFormPage.softwareInputLevel}" value="dummy_datatable">
+                             styleClass="vdcEditStudyTable" rowClasses="#{TemplateFormPage.studyMap[sfc.software].templateField.fieldInputLevelString}" value="dummy_datatable">
                 <ice:column>
                   <ice:dataTable cellpadding="0" cellspacing="0" width="100%"
                                  styleClass="vdcEditStudyInnerTable" columnClasses="vdcEditStudyCol1b, vdcEditStudyCol2, vdcEditStudyCol3"
@@ -422,12 +422,12 @@
                     </ice:column>
                     <ice:column>
                       <div class="vdcEditStudyFieldFloatWrap">
-                        <div jsfc="ice:panelGroup" styleClass="vdcEditStudyFieldFloat1 #{TemplateFormPage.studyMap[sfc.softwareName].templateField.fieldInputLevelString}">
+                        <div jsfc="ice:panelGroup" styleClass="vdcEditStudyFieldFloat1">
                           <ice:outputText styleClass="dvnInlineHelpLabel dvnInlineHelpTip" value="#{editstudybundle.softwareNameLabel}" title="#{editstudybundle.softwareNameHelpHeading} - #{editstudybundle.softwareNameHelp}"/>
                           <ice:inputText maxlength="255" binding="#{TemplateFormPage.inputSoftwareName}" id="input_softwareName" size="45" value="#{currentRow.name}"/>
                           <ice:message styleClass="errorMessage" for="input_softwareName"/>
                         </div>
-                        <div jsfc="ice:panelGroup" styleClass="vdcEditStudyFieldFloat2 vdcEditStudyGroupField #{TemplateFormPage.studyMap[sfc.softwareVersion].templateField.fieldInputLevelString}">
+                        <div jsfc="ice:panelGroup" styleClass="vdcEditStudyFieldFloat2">
                           <ice:outputText styleClass="dvnInlineHelpLabel dvnInlineHelpTip" value="#{editstudybundle.softwareVersionLabel}" title="#{editstudybundle.softwareVersionHelpHeading} - #{editstudybundle.softwareVersionHelp}"/>
                           <ice:inputText maxlength="255" binding="#{TemplateFormPage.inputSoftwareVersion}"  id="input_softwareVersion" value="#{currentRow.softwareVersion}"/>
                           <ice:message styleClass="errorMessage" for="input_softwareVersion"/>
@@ -474,7 +474,7 @@
               <!-- this is a dummy datatable wrapper used to force data retention on validation error-->
               <ice:dataTable cellpadding="0" cellspacing="0" width="100%"
                              rendered="#{TemplateFormPage.networkEdit or TemplateFormPage.studyMap[sfc.grantNumber].templateField.fieldInputLevelString != 'disabled'}"
-                             styleClass="vdcEditStudyTable" rowClasses="#{TemplateFormPage.grantInputLevel}" value="dummy_datatable">
+                             styleClass="vdcEditStudyTable" rowClasses="#{TemplateFormPage.studyMap[sfc.grantNumber].templateField.fieldInputLevelString}" value="dummy_datatable">
                 <ice:column>
                   <ice:dataTable cellpadding="0" cellspacing="0"
                                  styleClass="vdcEditStudyInnerTable" columnClasses="vdcEditStudyCol1b, vdcEditStudyCol2, vdcEditStudyCol3"
@@ -489,12 +489,12 @@
                     </ice:column>
                     <ice:column>
                       <div>
-                        <div jsfc="ice:panelGroup" styleClass="vdcEditStudyGroupField #{TemplateFormPage.studyMap[sfc.grantNumber].templateField.fieldInputLevelString}">
+                        <div jsfc="ice:panelGroup" styleClass="vdcEditStudyGroupField">
                           <ice:outputText styleClass="dvnInlineHelpLabel dvnInlineHelpTip" value="#{editstudybundle.grantNumberLabel}" title="#{editstudybundle.grantNumberHelpHeading} - #{editstudybundle.grantNumberHelp}"/>
                           <ice:inputText maxlength="255" immediate="true" binding="#{TemplateFormPage.inputGrantNumber}" id="input_grantNumber" size="45" value="#{currentRow.number}"/>
                           <ice:message styleClass="errorMessage" for="input_grantNumber"/>
                         </div>
-                        <div jsfc="ice:panelGroup" styleClass="vdcEditStudyGroupField #{TemplateFormPage.studyMap[sfc.grantNumberAgency].templateField.fieldInputLevelString}">
+                        <div jsfc="ice:panelGroup" styleClass="vdcEditStudyGroupField">
                           <ice:outputText styleClass="dvnInlineHelpLabel dvnInlineHelpTip" value="#{editstudybundle.grantingAgencyLabel}" title="#{editstudybundle.grantingAgencyHelpHeading} - #{editstudybundle.grantingAgencyHelp}"/>
                           <ice:inputText maxlength="255" immediate="true" binding="#{TemplateFormPage.inputGrantAgency}"  id="input_grantNumberAgency" size="45" value="#{currentRow.agency}"/>
                           <ice:message styleClass="errorMessage" for="input_grantNumberAgency"/>
@@ -519,7 +519,7 @@
               <ice:dataTable cellpadding="0" cellspacing="0" width="100%"
                                 rendered="#{TemplateFormPage.networkEdit or 
                                 TemplateFormPage.studyMap[sfc.distributor].templateField.fieldInputLevelString != 'disabled'}"
-                             styleClass="vdcEditStudyTable" rowClasses="#{TemplateFormPage.distributorInputLevel}" value="dummy_datatable">
+                             styleClass="vdcEditStudyTable" rowClasses="#{TemplateFormPage.studyMap[sfc.distributor].templateField.fieldInputLevelString}" value="dummy_datatable">
                 <ice:column>
                   <ice:dataTable cellpadding="0" cellspacing="0" width="100%"
                                  styleClass="vdcEditStudyInnerTable" columnClasses="vdcEditStudyCol1b, vdcEditStudyCol2, vdcEditStudyCol3"
@@ -534,17 +534,17 @@
                     </ice:column>
                     <ice:column>
                       <div styleClass="vdcEditStudyFieldFloatWrap">
-                        <div jsfc="ice:panelGroup" styleClass="vdcEditStudyFieldFloat1 #{TemplateFormPage.studyMap[sfc.distributorName].templateField.fieldInputLevelString}">
+                        <div jsfc="ice:panelGroup" styleClass="vdcEditStudyFieldFloat1">
                           <ice:outputText styleClass="dvnInlineHelpLabel dvnInlineHelpTip" value="#{editstudybundle.distributorLabel}" title="#{editstudybundle.distributorHelpHeading} - #{editstudybundle.distributorHelp}"/>
                           <ice:inputText maxlength="255" binding="#{TemplateFormPage.inputDistributorName}" id="input_distributorName" value="#{currentRow.name}" size="45"/>
                           <ice:message styleClass="errorMessage" for="input_distributorName"/>
                         </div>
-                        <div jsfc="ice:panelGroup" styleClass="vdcEditStudyFieldFloat2 vdcEditStudyGroupField #{TemplateFormPage.studyMap[sfc.distributorAbbreviation].templateField.fieldInputLevelString}">
+                        <div jsfc="ice:panelGroup" styleClass="vdcEditStudyFieldFloat2 vdcEditStudyGroupField">
                           <ice:outputText styleClass="dvnInlineHelpLabel dvnInlineHelpTip" value="#{editstudybundle.distributorAbbreviationLabel}" title="#{editstudybundle.distributorAbbreviationHelpHeading} - #{editstudybundle.distributorAbbreviationHelp}"/>
                           <ice:inputText maxlength="255"  binding="#{TemplateFormPage.inputDistributorAbbreviation}" id="input_distributorAbbreviation" value="#{currentRow.abbreviation}"/>
                           <ice:message styleClass="errorMessage" for="input_distributorAbbreviation"/>
                         </div>
-                        <div jsfc="ice:panelGroup" styleClass="vdcEditStudyFieldFloat3 vdcEditStudyGroupField #{TemplateFormPage.studyMap[sfc.distributorAffiliation].templateField.fieldInputLevelString}">
+                        <div jsfc="ice:panelGroup" styleClass="vdcEditStudyFieldFloat3 vdcEditStudyGroupField">
                           <ice:outputText styleClass="dvnInlineHelpLabel dvnInlineHelpTip" value="#{editstudybundle.distributorAffiliationLabel}" title="#{editstudybundle.distributorAffiliationHelpHeading} - #{editstudybundle.distributorAffiliationHelp}"/>
                           <ice:inputText maxlength="255" id="input_distributorAffiliation"  binding="#{TemplateFormPage.inputDistributorAffiliation}" size="45"
                                          value="#{currentRow.affiliation}"
@@ -552,7 +552,7 @@
                           </ice:inputText>
                           <ice:message styleClass="errorMessage" for="input_distributorAffiliation"/>
                         </div>
-                        <div jsfc="ice:panelGroup" styleClass="vdcEditStudyGroupField #{TemplateFormPage.studyMap[sfc.distributorURL].templateField.fieldInputLevelString}">
+                        <div jsfc="ice:panelGroup" styleClass="vdcEditStudyGroupField">
                           <ice:outputText styleClass="dvnInlineHelpLabel dvnInlineHelpTip" value="#{editstudybundle.distributorURLLabel}" title="#{editstudybundle.distributorURLHelpHeading} - #{editstudybundle.distributorURLHelp}"/>
                           <ice:inputText id="input_distributorURL"
                                          binding="#{TemplateFormPage.inputDistributorUrl}"
@@ -563,7 +563,7 @@
                           <ice:outputText styleClass="vdcEditStudyFormatExample" value="(http://example-domain.edu/)"/>
                           <ice:message styleClass="errorMessage" for="input_distributorURL"/>
                         </div>
-                        <div jsfc="ice:panelGroup" styleClass="vdcEditStudyGroupField  #{TemplateFormPage.studyMap[sfc.distributorLogo].templateField.fieldInputLevelString}">
+                        <div jsfc="ice:panelGroup" styleClass="vdcEditStudyGroupField">
                           <ice:outputText styleClass="dvnInlineHelpLabel dvnInlineHelpTip" value="#{editstudybundle.distributorLogoLabel}" title="#{editstudybundle.distributorLogoHelpHeading} - #{editstudybundle.distributorLogoHelp}"/>
                           <ice:inputText binding="#{TemplateFormPage.inputDistributorLogo}" id="input_distributorLogo"
                                          value="#{currentRow.logo}"
@@ -592,19 +592,19 @@
               <ice:panelGrid cellpadding="0" cellspacing="0" columns="3" width="100%"
                                 rendered="#{TemplateFormPage.networkEdit or 
                                 TemplateFormPage.studyMap[sfc.distributorContact].templateField.fieldInputLevelString != 'disabled'}"
-                             styleClass="vdcEditStudyTable #{TemplateFormPage.distributorInputLevel}" columnClasses="vdcEditStudyCol1, vdcEditStudyCol2, vdcEditStudyCol3">
-                <ice:column styleClass="vdcEditStudyField #{TemplateFormPage.distributorInputLevel}">
+                             styleClass="vdcEditStudyTable #{TemplateFormPage.studyMap[sfc.distributorContact].templateField.fieldInputLevelString}" columnClasses="vdcEditStudyCol1, vdcEditStudyCol2, vdcEditStudyCol3">
+                <ice:column styleClass="vdcEditStudyField">
                   <ice:outputText styleClass="dvnInlineHelpLabel dvnInlineHelpTip" value="#{editstudybundle.distributorContactLabel}" title="#{editstudybundle.distributorContactHelpHeading} - #{editstudybundle.distributorContactHelp}"/>
                   <ice:graphicImage value="/resources/images/icon_required.gif" rendered="#{TemplateFormPage.studyMap[sfc.distributorContact].required}"/>
                   <ice:graphicImage value="/resources/images/icon_recommended.gif" rendered="#{TemplateFormPage.studyMap[sfc.distributorContact].recommended}"/>
                 </ice:column>
                 <ice:column styleClass="vdcEditStudyFieldFloatWrap">
-                  <div jsfc="ice:panelGroup" styleClass="vdcEditStudyFieldFloat1 #{TemplateFormPage.studyMap[sfc.distributorContact].templateField.fieldInputLevelString}">
+                  <div jsfc="ice:panelGroup" styleClass="vdcEditStudyFieldFloat1">
                     <ice:outputText styleClass="dvnInlineHelpLabel dvnInlineHelpTip" value="#{editstudybundle.distributorContactLabel}" title="#{editstudybundle.distributorContactHelpHeading} - #{editstudybundle.distributorContactHelp}"/>
                     <ice:inputText binding ="#{TemplateFormPage.inputDistributorContact}" id="input_distributorContact" size="45" value="#{TemplateFormPage.template.metadata.distributorContact}"  />
                     <ice:message styleClass="errorMessage" for="input_distributorContact"/>
                   </div>
-                  <div jsfc="ice:panelGroup" styleClass="vdcEditStudyFieldFloat2 vdcEditStudyGroupField #{TemplateFormPage.studyMap[sfc.distributorContactAffiliation].templateField.fieldInputLevelString}">
+                  <div jsfc="ice:panelGroup" styleClass="vdcEditStudyFieldFloat2 vdcEditStudyGroupField">
                     <ice:outputText styleClass="dvnInlineHelpLabel dvnInlineHelpTip" value="#{editstudybundle.distributorContactAffiliationLabel}" title="#{editstudybundle.distributorContactAffiliationHelpHeading} - #{editstudybundle.distributorContactAffiliationHelp}"/>
                     <ice:inputText id="distributorContactAffiliation"
                                    binding ="#{TemplateFormPage.inputDistributorContactAffiliation}"
@@ -613,7 +613,7 @@
                     </ice:inputText>
                     <ice:message styleClass="errorMessage" for="distributorContactAffiliation"/>
                   </div>
-                  <div jsfc="ice:panelGroup" styleClass="vdcEditStudyFieldFloat3 vdcEditStudyGroupField #{TemplateFormPage.studyMap[sfc.distributorContactEmail].templateField.fieldInputLevelString}">
+                  <div jsfc="ice:panelGroup" styleClass="vdcEditStudyFieldFloat3 vdcEditStudyGroupField">
                     <ice:outputText styleClass="dvnInlineHelpLabel dvnInlineHelpTip" value="#{editstudybundle.distributorContactEmailLabel}" title="#{editstudybundle.distributorContactEmailHelpHeading} - #{editstudybundle.distributorContactEmailHelp}"/>
                     <ice:inputText binding ="#{TemplateFormPage.inputDistributorContactEmail}" id="input_distributorContactEmail" size="45" 
                                    value="#{TemplateFormPage.template.metadata.distributorContactEmail}"/>
@@ -634,7 +634,7 @@
                                 TemplateFormPage.studyMap[sfc.distributionDate].templateField.fieldInputLevelString != 'disabled'}"
                              styleClass="vdcEditStudyTable #{TemplateFormPage.studyMap[sfc.distributionDate].templateField.fieldInputLevelString}"
                              columnClasses="vdcEditStudyCol1, vdcEditStudyCol2, vdcEditStudyCol3">
-                <ice:column id="groupPanel49" styleClass="vdcEditStudyField #{TemplateFormPage.studyMap[sfc.distributionDate].templateField.fieldInputLevelString}">
+                <ice:column id="groupPanel49" styleClass="vdcEditStudyField">
                   <ice:outputText styleClass="dvnInlineHelpLabel dvnInlineHelpTip" value="#{editstudybundle.distributionDateLabel}" title="#{editstudybundle.distributionDateHelpHeading} - #{editstudybundle.distributionDateHelp}"/>
                   <ice:graphicImage value="/resources/images/icon_required.gif" rendered="#{TemplateFormPage.studyMap[sfc.distributionDate].required}"/>
                   <ice:graphicImage value="/resources/images/icon_recommended.gif" rendered="#{TemplateFormPage.studyMap[sfc.distributionDate].recommended}"/>
@@ -683,7 +683,7 @@
                                 TemplateFormPage.studyMap[sfc.dateOfDeposit].templateField.fieldInputLevelString != 'disabled'}"
                              styleClass="vdcEditStudyTable #{TemplateFormPage.studyMap[sfc.dateOfDeposit].templateField.fieldInputLevelString}"
                              columnClasses="vdcEditStudyCol1, vdcEditStudyCol2, vdcEditStudyCol3">
-                <ice:column styleClass="vdcEditStudyField #{TemplateFormPage.studyMap[sfc.dateOfDeposit].templateField.fieldInputLevelString}">
+                <ice:column styleClass="vdcEditStudyField">
                   <ice:outputText styleClass="dvnInlineHelpLabel dvnInlineHelpTip" value="#{editstudybundle.depositDateLabel}" title="#{editstudybundle.depositDateHelpHeading} - #{editstudybundle.depositDateHelp}"/>
                   <ice:graphicImage value="/resources/images/icon_required.gif" rendered="#{TemplateFormPage.studyMap[sfc.dateOfDeposit].required}"/>
                   <ice:graphicImage value="/resources/images/icon_recommended.gif" rendered="#{TemplateFormPage.studyMap[sfc.dateOfDeposit].recommended}"/>
@@ -705,15 +705,15 @@
               <ice:panelGrid cellpadding="0" cellspacing="0" columns="3" width="100%"
                                 rendered="#{TemplateFormPage.networkEdit or 
                                 TemplateFormPage.studyMap[sfc.series].templateField.fieldInputLevelString != 'disabled'}"
-                             styleClass="vdcEditStudyTable #{TemplateFormPage.seriesInputLevel}"
+                             styleClass="vdcEditStudyTable #{TemplateFormPage.studyMap[sfc.series].templateField.fieldInputLevelString}"
                              columnClasses="vdcEditStudyCol1, vdcEditStudyCol2, vdcEditStudyCol3">
-                <ice:column styleClass="vdcEditStudyField #{TemplateFormPage.seriesInputLevel}">
+                <ice:column styleClass="vdcEditStudyField">
                   <ice:outputText styleClass="dvnInlineHelpLabel dvnInlineHelpTip" value="#{editstudybundle.seriesLabel}" title="#{editstudybundle.seriesHelpHeading} - #{editstudybundle.seriesHelp}"/>
                   <ice:graphicImage value="/resources/images/icon_required.gif" rendered="#{TemplateFormPage.seriesInputLevel=='required'}"/>
                   <ice:graphicImage value="/resources/images/icon_recommended.gif" rendered="#{TemplateFormPage.seriesInputLevel=='recommended'}"/>
                 </ice:column>
                 <ice:column>
-                  <div jsfc="ice:panelGroup" id="groupPanel29" styleClass="vdcEditStudyField #{TemplateFormPage.studyMap[sfc.seriesName].templateField.fieldInputLevelString}">
+                  <div jsfc="ice:panelGroup" id="groupPanel29" styleClass="vdcEditStudyField">
                     <ice:outputText styleClass="dvnInlineHelpLabel dvnInlineHelpTip" value="#{editstudybundle.seriesLabel}" title="#{editstudybundle.seriesHelpHeading} - #{editstudybundle.seriesHelp}"/>
                     <ice:inputText binding="#{TemplateFormPage.inputSeries}" id="input_seriesName"
                                    value="#{TemplateFormPage.template.metadata.seriesName}"
@@ -721,7 +721,7 @@
                     </ice:inputText>
                     <ice:message styleClass="errorMessage" for="input_seriesName"/>
                   </div>
-                  <div jsfc="ice:panelGroup" styleClass="vdcEditStudyGroupField #{TemplateFormPage.studyMap[sfc.seriesName].templateField.fieldInputLevelString}" >
+                  <div jsfc="ice:panelGroup" styleClass="vdcEditStudyGroupField" >
                     <ice:outputText styleClass="dvnInlineHelpLabel dvnInlineHelpTip" value="#{editstudybundle.seriesInformationLabel}" title="#{editstudybundle.seriesInformationHelpHeading} - #{editstudybundle.seriesInformationHelp}"/>
                     <ice:inputText binding ="#{TemplateFormPage.inputSeriesInformation}" id="input_seriesInformation"
                                    size="45"
@@ -741,22 +741,22 @@
               </ice:panelGrid>
 
               <ice:panelGrid cellpadding="0" cellspacing="0" columns="3" width="100%"
-                             styleClass="vdcEditStudyTable #{TemplateFormPage.versionInputLevel}"
+                             styleClass="vdcEditStudyTable #{TemplateFormPage.studyMap[sfc.studyVersion].templateField.fieldInputLevelString}"
                              rendered="#{TemplateFormPage.networkEdit or 
                                 TemplateFormPage.studyMap[sfc.studyVersion].templateField.fieldInputLevelString != 'disabled'}"
                              columnClasses="vdcEditStudyCol1, vdcEditStudyCol2, vdcEditStudyCol3">
-                <ice:column styleClass="vdcEditStudyField #{TemplateFormPage.versionInputLevel}">
+                <ice:column styleClass="vdcEditStudyField">
                   <ice:outputText styleClass="dvnInlineHelpLabel dvnInlineHelpTip" value="#{editstudybundle.seriesVersionLabel}" title="#{editstudybundle.seriesVersionHelpHeading} - #{editstudybundle.seriesVersionHelp}"/>
-                  <ice:graphicImage value="/resources/images/icon_required.gif" rendered="#{TemplateFormPage.versionInputLevel=='required'}"/>
-                  <ice:graphicImage value="/resources/images/icon_recommended.gif" rendered="#{TemplateFormPage.versionInputLevel=='recommended'}"/>
+                  <ice:graphicImage value="/resources/images/icon_required.gif" rendered="#{TemplateFormPage.studyMap[sfc.studyVersion].templateField.fieldInputLevelString =='required'}"/>
+                  <ice:graphicImage value="/resources/images/icon_recommended.gif" rendered="#{TemplateFormPage.studyMap[sfc.studyVersion].templateField.fieldInputLevelString =='recommended'}"/>
                 </ice:column>
                 <ice:column>
-                  <div jsfc="ice:panelGroup" styleClass="#{TemplateFormPage.studyMap[sfc.studyVersion].templateField.fieldInputLevelString}">
+                  <div jsfc="ice:panelGroup" styleClass="vdcEditStudyGroupField">
                     <ice:outputText styleClass="dvnInlineHelpLabel dvnInlineHelpTip" value="#{editstudybundle.seriesVersionLabel}" title="#{editstudybundle.seriesVersionHelpHeading} - #{editstudybundle.seriesVersionHelp}"/>
                     <ice:inputText binding="#{TemplateFormPage.inputVersion}" id="input_studyVersion" value="#{TemplateFormPage.template.metadata.studyVersionText}"/>
                     <ice:message styleClass="errorMessage" for="input_studyVersion"/>
                   </div>
-                  <div jsfc="ice:panelGroup" styleClass="vdcEditStudyGroupField #{TemplateFormPage.studyMap[sfc.versionDate].templateField.fieldInputLevelString}">
+                  <div jsfc="ice:panelGroup" styleClass="vdcEditStudyGroupField">
                     <ice:outputText styleClass="dvnInlineHelpLabel dvnInlineHelpTip" value="#{editstudybundle.seriesVersionDateLabel}" title="#{editstudybundle.seriesVersionDateHelpHeading} - #{editstudybundle.seriesVersionDateHelp}"/>
                     <ice:inputText binding="#{TemplateFormPage.inputVersionDate}" 
                                    id="input_versionDate" styleClass="formDateFormat" value="#{TemplateFormPage.template.metadata.versionDate}">
@@ -783,7 +783,7 @@
               <ice:dataTable cellpadding="0" cellspacing="0" width="100%"
                                 rendered="#{TemplateFormPage.networkEdit or 
                                 TemplateFormPage.studyMap[sfc.description].templateField.fieldInputLevelString != 'disabled'}"
-                             styleClass="vdcEditStudyTable" rowClasses="#{TemplateFormPage.abstractInputLevel}" value="dummy_datatable">
+                             styleClass="vdcEditStudyTable" rowClasses="#{TemplateFormPage.studyMap[sfc.description].templateField.fieldInputLevelString}" value="dummy_datatable">
                 <ice:column>
                   <ice:dataTable cellpadding="0" cellspacing="0" width="100%"
                                  styleClass="vdcEditStudyInnerTable" columnClasses="vdcEditStudyCol1b, vdcEditStudyCol2, vdcEditStudyCol3"
@@ -798,7 +798,7 @@
                     </ice:column>
                     <ice:column>
                       <div>
-                        <div styleClass="#{TemplateFormPage.studyMap[sfc.description].templateField.fieldInputLevelString}">
+                        <div>
                           <p>
                               <ice:graphicImage value="/resources/images/icon_warning.18.png" styleClass="dvn_icon"/>
                               <ice:outputText styleClass="vdcHelpText" value=" Copying and pasting from a Word document can create errors when you save this page."/>
@@ -812,7 +812,7 @@
                           </ice:inputTextarea>
                           <ice:message styleClass="errorMessage" for="input_abstractText"/>
                         </div>
-                        <div jsfc="ice:panelGroup" styleClass="vdcEditStudyGroupField #{TemplateFormPage.studyMap[sfc.abstractDate].templateField.fieldInputLevelString}">
+                        <div jsfc="ice:panelGroup" styleClass="vdcEditStudyGroupField">
                           <ice:outputText styleClass="dvnInlineHelpLabel dvnInlineHelpTip" value="#{editstudybundle.abstractDateLabel}" title="#{editstudybundle.abstractDateHelpHeading} - #{editstudybundle.abstractDateHelp}"/>
                           <ice:inputText binding="#{TemplateFormPage.inputAbstractDate}" 
                                          id="input_abstractDate" styleClass="formDateFormat" value="#{currentRow.date}">
@@ -840,7 +840,7 @@
               <ice:dataTable cellpadding="0" cellspacing="0" width="100%"
                                 rendered="#{TemplateFormPage.networkEdit or 
                                 TemplateFormPage.studyMap[sfc.keyword].templateField.fieldInputLevelString != 'disabled'}"
-                             styleClass="vdcEditStudyTable" rowClasses="#{TemplateFormPage.keywordInputLevel}" value="dummy_datatable">
+                             styleClass="vdcEditStudyTable" rowClasses="#{TemplateFormPage.studyMap[sfc.keyword].templateField.fieldInputLevelString}" value="dummy_datatable">
                 <ice:column>
                   <ice:dataTable cellpadding="0" cellspacing="0" width="100%"
                                  styleClass="vdcEditStudyInnerTable" columnClasses="vdcEditStudyCol1b, vdcEditStudyCol2, vdcEditStudyCol3"
@@ -855,17 +855,17 @@
                     </ice:column>
                     <ice:column>
                       <div class="vdcEditStudyFieldFloatWrap">
-                        <div jsfc="ice:panelGroup" styleClass="vdcEditStudyFieldFloat1 #{TemplateFormPage.studyMap[sfc.keywordValue].templateField.fieldInputLevelString}">
+                        <div jsfc="ice:panelGroup" styleClass="vdcEditStudyFieldFloat1 vdcEditStudyGroupField">
                           <ice:outputText styleClass="dvnInlineHelpLabel dvnInlineHelpTip" value="#{editstudybundle.keywordLabel}" title="#{editstudybundle.keywordHelpHeading} - #{editstudybundle.keywordHelp}"/>
                           <ice:inputText binding="#{TemplateFormPage.inputKeywordValue}" id="input_keywordValue" value="#{currentRow.value}"/>
                           <ice:message styleClass="errorMessage" for="input_keywordValue"/>
                         </div>
-                        <div jsfc="ice:panelGroup" styleClass="vdcEditStudyFieldFloat2 vdcEditStudyGroupField #{TemplateFormPage.studyMap[sfc.keywordVocab].templateField.fieldInputLevelString}">
+                        <div jsfc="ice:panelGroup" styleClass="vdcEditStudyFieldFloat2 vdcEditStudyGroupField">
                           <ice:outputText styleClass="dvnInlineHelpLabel dvnInlineHelpTip" value="#{editstudybundle.keywordVocabularyLabel}" title="#{editstudybundle.keywordVocabularyHelpHeading} - #{editstudybundle.keywordVocabularyHelp}"/>
                           <ice:inputText  binding="#{TemplateFormPage.inputKeywordVocab}" id="input_keywordVocab" value="#{currentRow.vocab}"/>
                           <ice:message styleClass="errorMessage" for="input_keywordVocab"/>
                         </div>
-                        <div jsfc="ice:panelGroup" styleClass="vdcEditStudyFieldFloat3 vdcEditStudyGroupField #{TemplateFormPage.studyMap[sfc.keywordVocabURI].templateField.fieldInputLevelString}">
+                        <div jsfc="ice:panelGroup" styleClass="vdcEditStudyFieldFloat3 vdcEditStudyGroupField">
                           <ice:outputText styleClass="dvnInlineHelpLabel dvnInlineHelpTip" value="#{editstudybundle.keywordVocabularyURLLabel}" title="#{editstudybundle.keywordVocabularyURLHelpHeading} - #{editstudybundle.keywordVocabularyURLHelp}"/>
                           <ice:inputText id="input_keywordVocabURI"
                                          binding="#{TemplateFormPage.inputKeywordVocabUri}"
@@ -896,7 +896,7 @@
               <ice:dataTable cellpadding="0" cellspacing="0" width="100%"
                                 rendered="#{TemplateFormPage.networkEdit or 
                                 TemplateFormPage.studyMap[sfc.topicClassification].templateField.fieldInputLevelString != 'disabled'}"
-                             styleClass="vdcEditStudyTable" rowClasses="#{TemplateFormPage.topicInputLevel}" value="dummy_datatable">
+                             styleClass="vdcEditStudyTable" rowClasses="#{TemplateFormPage.studyMap[sfc.topicClassification].templateField.fieldInputLevelString}" value="dummy_datatable">
                 <ice:column>
                   <ice:dataTable cellpadding="0" cellspacing="0" width="100%"
                                  styleClass="vdcEditStudyInnerTable" columnClasses="vdcEditStudyCol1b, vdcEditStudyCol2, vdcEditStudyCol3"
@@ -912,17 +912,17 @@
                     </ice:column>
                     <ice:column>
                       <div class="vdcEditStudyFieldFloatWrap">
-                        <div jsfc="ice:panelGroup" styleClass="vdcEditStudyFieldFloat1 vdcEditStudyGroupField #{TemplateFormPage.studyMap[sfc.topicClassification].templateField.fieldInputLevelString}">
+                        <div jsfc="ice:panelGroup" styleClass="vdcEditStudyFieldFloat1 vdcEditStudyGroupField">
                           <ice:outputText styleClass="dvnInlineHelpLabel dvnInlineHelpTip" value="#{editstudybundle.topicClassificationLabel}" title="#{editstudybundle.topicClassificationHelpHeading} - #{editstudybundle.topicClassificationHelp}"/>
                           <ice:inputText binding="#{TemplateFormPage.inputTopicClassValue}" id="input_topicClassValue" value="#{currentRow.value}"/>
                           <ice:message styleClass="errorMessage" for="input_topicClassValue"/>
                         </div>
-                        <div jsfc="ice:panelGroup" styleClass="vdcEditStudyFieldFloat2 vdcEditStudyGroupField #{TemplateFormPage.studyMap[sfc.topicClassVocab].templateField.fieldInputLevelString}">
+                        <div jsfc="ice:panelGroup" styleClass="vdcEditStudyFieldFloat2 vdcEditStudyGroupField">
                           <ice:outputText styleClass="dvnInlineHelpLabel dvnInlineHelpTip" value="#{editstudybundle.topicClassVocabularyLabel}" title="#{editstudybundle.topicClassVocabularyHelpHeading} - #{editstudybundle.topicClassVocabularyHelp}"/>
                           <ice:inputText maxlength="255"  binding="#{TemplateFormPage.inputTopicClassVocab}" id="input_topicClassVocab" value="#{currentRow.vocab}" />
                           <ice:message styleClass="errorMessage" for="input_topicClassVocab"/>
                         </div>
-                        <div jsfc="ice:panelGroup" styleClass="vdcEditStudyFieldFloat3 vdcEditStudyGroupField #{TemplateFormPage.studyMap[sfc.topicClassVocabURI].templateField.fieldInputLevelString}">
+                        <div jsfc="ice:panelGroup" styleClass="vdcEditStudyFieldFloat3 vdcEditStudyGroupField">
                           <ice:outputText styleClass="dvnInlineHelpLabel dvnInlineHelpTip" value="#{editstudybundle.topicClassVocabularyURLLabel}" title="#{editstudybundle.topicClassVocabularyURLHelpHeading} - #{editstudybundle.topicClassVocabularyURLHelp}"/>
                           <ice:inputText id="input_topicClassVocabURI"
                                          binding="#{TemplateFormPage.inputTopicClassVocabUri}"
@@ -1251,7 +1251,7 @@
 
               <ice:panelGrid cellpadding="0" cellspacing="0" columns="3" width="100%"
                              rendered="#{TemplateFormPage.networkEdit or 
-                                TemplateFormPage.studyMap[sfc.westLongitude].templateField.fieldInputLevelString != 'disabled'}"
+                                TemplateFormPage.studyMap[sfc.geographicBoundingBox].templateField.fieldInputLevelString != 'disabled'}"
                              styleClass="vdcEditStudyTable #{TemplateFormPage.studyMap[sfc.geographicBoundingBox].templateField.fieldInputLevelString}"
                              columnClasses="vdcEditStudyCol1, vdcEditStudyCol2, vdcEditStudyCol3">
                 <ice:column styleClass="vdcEditStudyField">
@@ -1423,7 +1423,7 @@
                                binding="#{TemplateFormPage.customFieldsPanelSeries}">                                  
                   <ice:dataTable cellpadding="0" cellspacing="0" width="100%" 
                                  rendered="#{empty(customFieldsDataModel[0].controlledVocabulary) and (TemplateFormPage.networkEdit or customFieldsDataModel[0].fieldInputLevelString != 'disabled')}"
-                                 styleClass="vdcEditStudyTable" columnClasses="vdcEditStudyCol1, vdcEditStudyCol2, vdcEditStudyCol3"
+                                 styleClass="vdcEditStudyTable #{customFieldsDataModel[0].fieldInputLevelString}" columnClasses="vdcEditStudyCol1, vdcEditStudyCol2, vdcEditStudyCol3"
                                  value="#{customFieldsDataModel[1]}" var="customValuesDataModel">
                     <ice:column styleClass="vdcEditStudyField">
                        <ice:outputText styleClass="dvnInlineHelpLabel dvnInlineHelpTip" value="#{customFieldsDataModel[0].studyField.title}" 
@@ -2458,7 +2458,7 @@
                              styleClass="vdcEditStudyTable"
                              rendered="#{TemplateFormPage.networkEdit or 
                                             TemplateFormPage.studyMap[sfc.note].templateField.fieldInputLevelString != 'disabled'}"
-                             rowClasses="#{TemplateFormPage.noteInputLevel}" value="dummy_datatable">
+                             rowClasses="#{TemplateFormPage.studyMap[sfc.note].templateField.fieldInputLevelString}" value="dummy_datatable">
                 <ice:column>
                   <ice:dataTable id="dataTableNotes" cellpadding="0" cellspacing="0" width="100%"
                                  styleClass="vdcEditStudyInnerTable" columnClasses="vdcEditStudyCol1b, vdcEditStudyCol2, vdcEditStudyCol3"
@@ -2473,7 +2473,7 @@
                     </ice:column>
                     <ice:column>
                       <div class="vdcEditStudyFieldFloatWrap">
-                        <div jsfc="ice:panelGroup" styleClass="vdcEditStudyFieldFloat1 #{TemplateFormPage.studyMap[sfc.notesInformationType].templateField.fieldInputLevelString}">
+                        <div jsfc="ice:panelGroup" styleClass="vdcEditStudyFieldFloat1 vdcEditStudyGroupField">
                           <ice:outputText styleClass="dvnInlineHelpLabel dvnInlineHelpTip" value="#{editstudybundle.notesTypeLabel}" title="#{editstudybundle.notesTypeHelpHeading} - #{editstudybundle.notesTypeHelp}"/>
                           <ice:inputText maxlength="255" binding="#{TemplateFormPage.inputNoteType}" id="input_notesInformationType"
                                          value="#{currentRow.type}"
@@ -2481,7 +2481,7 @@
                           </ice:inputText>
                           <ice:message styleClass="errorMessage" for="input_notesInformationType"/>
                         </div>
-                        <div jsfc="ice:panelGroup" styleClass="vdcEditStudyFieldFloat2 vdcEditStudyGroupField #{TemplateFormPage.studyMap[sfc.notesInformationSubject].templateField.fieldInputLevelString}">
+                        <div jsfc="ice:panelGroup" styleClass="vdcEditStudyFieldFloat2 vdcEditStudyGroupField">
                           <ice:outputText styleClass="dvnInlineHelpLabel dvnInlineHelpTip" value="#{editstudybundle.notesSubjectLabel}" title="#{editstudybundle.notesSubjectHelpHeading} - #{editstudybundle.notesSubjectHelp}"/>
                           <ice:inputText id="input_notesInformationSubject"
                                          maxlength="255"
@@ -2491,7 +2491,7 @@
                           </ice:inputText>
                           <ice:message styleClass="errorMessage" for="input_notesInformationSubject"/>
                         </div>
-                        <div jsfc="ice:panelGroup" styleClass="vdcEditStudyFieldFloat3 vdcEditStudyGroupField #{TemplateFormPage.studyMap[sfc.notesText].templateField.fieldInputLevelString}">
+                        <div jsfc="ice:panelGroup" styleClass="vdcEditStudyFieldFloat3 vdcEditStudyGroupField">
                           <ice:outputText styleClass="dvnInlineHelpLabel dvnInlineHelpTip" value="#{editstudybundle.notesTextLabel}" title="#{editstudybundle.notesTextHelpHeading} - #{editstudybundle.notesTextHelp}"/>
                           <ice:inputText id="input_notesText"
                                          size="90"

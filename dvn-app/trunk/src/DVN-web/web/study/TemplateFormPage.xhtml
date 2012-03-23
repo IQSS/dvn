@@ -164,7 +164,7 @@
                           <ice:commandButton partialSubmit="true" alt="Add Row" title="Add Row" image="/resources/images/icon_add.gif" actionListener="#{TemplateFormPage.addRow}"/>
                           <ice:commandButton partialSubmit="true" rendered="#{TemplateFormPage.dataTableRelPublications.rowCount gt 1}" alt="Remove Row" title="Remove Row" image="/resources/images/icon_remove.gif" actionListener="#{TemplateFormPage.removeRow}" />
                           <ice:selectOneMenu immediate="false" partialSubmit="true" 
-                                                value="#{TemplateFormPage.studyMap[sfc.relatedPublications].templateField.fieldInputLevelString}"
+                                                value="#{TemplateFormPage.studyMap[sfc.publication].templateField.fieldInputLevelString}"
                                                 rendered ="#{TemplateFormPage.dataTableRelPublications.rowIndex==0}">
                                    <f:attribute name="fieldName" value="relatedPublications"/>
                                    <f:selectItems value="#{TemplateFormPage.fieldInputLevelSelectItems}"/>
@@ -505,7 +505,7 @@
                       <ice:commandButton partialSubmit="true" alt="Add Row" title="Add Row" image="/resources/images/icon_add.gif" actionListener="#{TemplateFormPage.addRow}"/>
                       <ice:commandButton partialSubmit="true" rendered="#{TemplateFormPage.dataTableGrants.rowCount gt 1}" alt="Remove Row" title="Remove Row" image="/resources/images/icon_remove.gif" actionListener="#{TemplateFormPage.removeRow}"/>
                       <ice:selectOneMenu immediate="false" partialSubmit="true" 
-                                        value="#{TemplateFormPage.studyMap[sfc.grant].templateField.fieldInputLevelString}"
+                                        value="#{TemplateFormPage.studyMap[sfc.grantNumber].templateField.fieldInputLevelString}"
                                         rendered ="#{TemplateFormPage.dataTableGrants.rowIndex==0}">
                             <f:attribute name="fieldName" value="grantNumber" />
                             <f:selectItems value="#{TemplateFormPage.fieldInputLevelSelectItems}"/>
@@ -753,7 +753,7 @@
                 <ice:column>
                   <div jsfc="ice:panelGroup" styleClass="#{TemplateFormPage.studyMap[sfc.studyVersion].templateField.fieldInputLevelString}">
                     <ice:outputText styleClass="dvnInlineHelpLabel dvnInlineHelpTip" value="#{editstudybundle.seriesVersionLabel}" title="#{editstudybundle.seriesVersionHelpHeading} - #{editstudybundle.seriesVersionHelp}"/>
-                    <ice:inputText binding="#{TemplateFormPage.inputVersion}" id="input_studyVersion" value="#{TemplateFormPage.template.metadata.studyVersionValue}"/>
+                    <ice:inputText binding="#{TemplateFormPage.inputVersion}" id="input_studyVersion" value="#{TemplateFormPage.template.metadata.studyVersionText}"/>
                     <ice:message styleClass="errorMessage" for="input_studyVersion"/>
                   </div>
                   <div jsfc="ice:panelGroup" styleClass="vdcEditStudyGroupField #{TemplateFormPage.studyMap[sfc.versionDate].templateField.fieldInputLevelString}">
@@ -2457,7 +2457,7 @@
               <ice:dataTable cellpadding="0" cellspacing="0" width="100%"
                              styleClass="vdcEditStudyTable"
                              rendered="#{TemplateFormPage.networkEdit or 
-                                            TemplateFormPage.studyMap[sfc.notes].templateField.fieldInputLevelString != 'disabled'}"
+                                            TemplateFormPage.studyMap[sfc.note].templateField.fieldInputLevelString != 'disabled'}"
                              rowClasses="#{TemplateFormPage.noteInputLevel}" value="dummy_datatable">
                 <ice:column>
                   <ice:dataTable id="dataTableNotes" cellpadding="0" cellspacing="0" width="100%"
@@ -2467,8 +2467,8 @@
                     <ice:column>
                       <div class="vdcEditStudyField">
                         <ice:outputText styleClass="dvnInlineHelpLabel dvnInlineHelpTip" value="#{editstudybundle.notesTypeLabel}" title="#{editstudybundle.notesTypeHelpHeading} - #{editstudybundle.notesTypeHelp}"/>
-                        <ice:graphicImage value="/resources/images/icon_required.gif" rendered="#{TemplateFormPage.notes=='required'}"/>
-                        <ice:graphicImage value="/resources/images/icon_recommended.gif" rendered="#{TemplateFormPage.notes=='recommended'}"/>
+                        <ice:graphicImage value="/resources/images/icon_required.gif" rendered="#{TemplateFormPage.studyMap[sfc.note].required}"/>
+                        <ice:graphicImage value="/resources/images/icon_recommended.gif" rendered="#{TemplateFormPage.studyMap[sfc.note].recommended}"/>
                       </div>
                     </ice:column>
                     <ice:column>
@@ -2507,7 +2507,7 @@
                       <ice:commandButton partialSubmit="true" alt="Add Row" title="Add Row" image="/resources/images/icon_add.gif" actionListener="#{TemplateFormPage.addRow}"/>
                       <ice:commandButton partialSubmit="true" rendered="#{TemplateFormPage.dataTableNotes.rowCount gt 1}" alt="Remove Row" title="Remove Row" image="/resources/images/icon_remove.gif" actionListener="#{TemplateFormPage.removeRow}"/>
                       <ice:selectOneMenu immediate="false" partialSubmit="true" rendered ="#{TemplateFormPage.dataTableNotes.rowIndex==0}"
-                                        value="#{TemplateFormPage.studyMap[sfc.notes].templateField.fieldInputLevelString}">
+                                        value="#{TemplateFormPage.studyMap[sfc.note].templateField.fieldInputLevelString}">
                             <f:attribute name="fieldName" value="notesInformationType" />
                             <f:selectItems value="#{TemplateFormPage.fieldInputLevelSelectItems}"/>
                       </ice:selectOneMenu>

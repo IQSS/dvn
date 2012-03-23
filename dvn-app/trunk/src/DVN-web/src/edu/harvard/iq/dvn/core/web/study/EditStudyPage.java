@@ -1800,7 +1800,7 @@ public class EditStudyPage extends VDCBaseBean implements java.io.Serializable  
                 countValid = false;
             }
             
-            if( ((StudyMapValue) getStudyMap().get(StudyFieldConstant.westLongitude)).isRequired()  && numLatitude==0 && numLongitude==0 ){
+            if( ((StudyMapValue) getStudyMap().get(StudyFieldConstant.geographicBoundingBox)).isRequired()  && numLatitude==0 && numLongitude==0 ){
                  requiredValid = false;
              }
 

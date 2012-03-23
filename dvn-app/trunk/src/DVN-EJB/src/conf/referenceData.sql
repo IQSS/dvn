@@ -928,27 +928,26 @@ INSERT INTO templatefield(id, version, template_id, studyfield_id, fieldinputlev
 INSERT INTO templatefield(id, version, template_id, studyfield_id, fieldinputlevelstring, displayorder) VALUES(96,1,1,96,'optional',-1);
 INSERT INTO templatefield(id, version, template_id, studyfield_id, fieldinputlevelstring, displayorder) VALUES(97,1,1,97,'optional',-1);
 INSERT INTO templatefield(id, version, template_id, studyfield_id, fieldinputlevelstring, displayorder) VALUES(98,1,1,98,'optional',-1);
+INSERT INTO templatefield(id, version, template_id, studyfield_id, fieldinputlevelstring, displayorder) VALUES(99,1,1,99,'optional',-1);
+INSERT INTO templatefield(id, version, template_id, studyfield_id, fieldinputlevelstring, displayorder) VALUES(100,1,1,100,'optional',-1);
+INSERT INTO templatefield(id, version, template_id, studyfield_id, fieldinputlevelstring, displayorder) VALUES(101,1,1,101,'optional',-1);
+INSERT INTO templatefield(id, version, template_id, studyfield_id, fieldinputlevelstring, displayorder) VALUES(102,1,1,102,'optional',-1);
+INSERT INTO templatefield(id, version, template_id, studyfield_id, fieldinputlevelstring, displayorder) VALUES(103,1,1,103,'optional',-1);
+INSERT INTO templatefield(id, version, template_id, studyfield_id, fieldinputlevelstring, displayorder) VALUES(104,1,1,104,'optional',-1);
+INSERT INTO templatefield(id, version, template_id, studyfield_id, fieldinputlevelstring, displayorder) VALUES(105,1,1,105,'optional',-1);
+INSERT INTO templatefield(id, version, template_id, studyfield_id, fieldinputlevelstring, displayorder) VALUES(106,1,1,106,'optional',-1);
+INSERT INTO templatefield(id, version, template_id, studyfield_id, fieldinputlevelstring, displayorder) VALUES(107,1,1,107,'optional',-1);
+INSERT INTO templatefield(id, version, template_id, studyfield_id, fieldinputlevelstring, displayorder) VALUES(108,1,1,108,'optional',-1);
+INSERT INTO templatefield(id, version, template_id, studyfield_id, fieldinputlevelstring, displayorder) VALUES(109,1,1,109,'optional',-1);
+INSERT INTO templatefield(id, version, template_id, studyfield_id, fieldinputlevelstring, displayorder) VALUES(110,1,1,110,'optional',-1);
+INSERT INTO templatefield(id, version, template_id, studyfield_id, fieldinputlevelstring, displayorder) VALUES(111,1,1,111,'optional',-1);
+INSERT INTO templatefield(id, version, template_id, studyfield_id, fieldinputlevelstring, displayorder) VALUES(112,1,1,112,'optional',-1);
+INSERT INTO templatefield(id, version, template_id, studyfield_id, fieldinputlevelstring, displayorder) VALUES(113,1,1,113,'optional',-1);
+INSERT INTO templatefield(id, version, template_id, studyfield_id, fieldinputlevelstring, displayorder) VALUES(114,1,1,114,'optional',-1);
+INSERT INTO templatefield(id, version, template_id, studyfield_id, fieldinputlevelstring, displayorder) VALUES(115,1,1,115,'optional',-1);
+INSERT INTO templatefield(id, version, template_id, studyfield_id, fieldinputlevelstring, displayorder) VALUES(116,1,1,116,'optional',-1);
 
-INSERT INTO templatefield(version, template_id, studyfield_id, fieldinputlevelstring, displayorder) select 1,template.id, studyfield.id, 'optional', -1 from template, studyfield where studyfield.name = 'authorName';
-INSERT INTO templatefield(version, template_id, studyfield_id, fieldinputlevelstring, displayorder) select 1,template.id, studyfield.id, 'optional', -1 from template, studyfield where studyfield.name = 'producerName';
-INSERT INTO templatefield(version, template_id, studyfield_id, fieldinputlevelstring, displayorder) select 1,template.id, studyfield.id, 'optional', -1 from template, studyfield where studyfield.name = 'distributorName';
-INSERT INTO templatefield(version, template_id, studyfield_id, fieldinputlevelstring, displayorder) select 1,template.id, studyfield.id, 'optional', -1 from template, studyfield where studyfield.name = 'distributorContactName';
-INSERT INTO templatefield(version, template_id, studyfield_id, fieldinputlevelstring, displayorder) select 1,template.id, studyfield.id, 'optional', -1 from template, studyfield where studyfield.name = 'descriptionText';
-INSERT INTO templatefield(version, template_id, studyfield_id, fieldinputlevelstring, displayorder) select 1,template.id, studyfield.id, 'optional', -1 from template, studyfield where studyfield.name = 'keywordValue';
-INSERT INTO templatefield(version, template_id, studyfield_id, fieldinputlevelstring, displayorder) select 1,template.id, studyfield.id, 'optional', -1 from template, studyfield where studyfield.name = 'topicClassValue';
-INSERT INTO templatefield(version, template_id, studyfield_id, fieldinputlevelstring, displayorder) select 1,template.id, studyfield.id, 'optional', -1 from template, studyfield where studyfield.name = 'otherIdValue';
-INSERT INTO templatefield(version, template_id, studyfield_id, fieldinputlevelstring, displayorder) select 1,template.id, studyfield.id, 'optional', -1 from template, studyfield where studyfield.name = 'softwareName';
-INSERT INTO templatefield(version, template_id, studyfield_id, fieldinputlevelstring, displayorder) select 1,template.id, studyfield.id, 'optional', -1 from template, studyfield where studyfield.name = 'grantNumberValue';
-INSERT INTO templatefield(version, template_id, studyfield_id, fieldinputlevelstring, displayorder) select 1,template.id, studyfield.id, 'optional', -1 from template, studyfield where studyfield.name = 'seriesName';
-INSERT INTO templatefield(version, template_id, studyfield_id, fieldinputlevelstring, displayorder) select 1,template.id, studyfield.id, 'optional', -1 from template, studyfield where studyfield.name = 'studyVersionValue';
-INSERT INTO templatefield(version, template_id, studyfield_id, fieldinputlevelstring, displayorder) select 1,template.id, studyfield.id, 'optional', -1 from template, studyfield where studyfield.name = 'westLongitude';
-INSERT INTO templatefield(version, template_id, studyfield_id, fieldinputlevelstring, displayorder) select 1,template.id, studyfield.id, 'optional', -1 from template, studyfield where studyfield.name = 'noteInformationType';
-INSERT INTO templatefield(version, template_id, studyfield_id, fieldinputlevelstring, displayorder) select 1,template.id, studyfield.id, 'optional', -1 from template, studyfield where studyfield.name = 'publicationCitation';
-INSERT INTO templatefield(version, template_id, studyfield_id, fieldinputlevelstring, displayorder) select 1,template.id, studyfield.id, 'optional', -1 from template, studyfield where studyfield.name = 'publicationIDType';
-INSERT INTO templatefield(version, template_id, studyfield_id, fieldinputlevelstring, displayorder) select 1,template.id, studyfield.id, 'optional', -1 from template, studyfield where studyfield.name = 'publicationIDNumber';
-INSERT INTO templatefield(version, template_id, studyfield_id, fieldinputlevelstring, displayorder) select 1,template.id, studyfield.id, 'optional', -1 from template, studyfield where studyfield.name = 'publicationURL';
-
-SELECT pg_catalog.setval(pg_catalog.pg_get_serial_sequence('templatefield', 'id'), 100, false);
+SELECT pg_catalog.setval(pg_catalog.pg_get_serial_sequence('templatefield', 'id'), 150, false);
 
 
 ALTER TABLE templatefield ENABLE TRIGGER ALL;

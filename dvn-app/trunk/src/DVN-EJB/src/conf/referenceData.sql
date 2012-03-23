@@ -481,7 +481,7 @@ INSERT INTO studyfield (id,title,description, name,basicSearchField,advancedSear
 INSERT INTO studyfield (id,title,description, name,basicSearchField,advancedSearchField, searchResultField, customField) VALUES (108, '', '', 'grantNumberValue', FALSE, FALSE, FALSE, FALSE );
 INSERT INTO studyfield (id,title,description, name,basicSearchField,advancedSearchField, searchResultField, customField) VALUES (109, '', '', 'seriesName', FALSE, FALSE, FALSE, FALSE );
 INSERT INTO studyfield (id,title,description, name,basicSearchField,advancedSearchField, searchResultField, customField) VALUES (110, '', '', 'studyVersionValue', FALSE, FALSE, FALSE, FALSE );
-INSERT INTO studyfield (id,title,description, name,basicSearchField,advancedSearchField, searchResultField, customField) VALUES (111, '', '', 'westLongitutde', FALSE, FALSE, FALSE, FALSE );
+INSERT INTO studyfield (id,title,description, name,basicSearchField,advancedSearchField, searchResultField, customField) VALUES (111, '', '', 'westLongitude', FALSE, FALSE, FALSE, FALSE );
 INSERT INTO studyfield (id,title,description, name,basicSearchField,advancedSearchField, searchResultField, customField) VALUES (112, '', '', 'noteInformationType', FALSE, FALSE, FALSE, FALSE );
 
 INSERT INTO studyfield (id,title,description, name,basicSearchField,advancedSearchField, searchResultField, customField) VALUES (113, '', '', 'publicationCitation', FALSE, FALSE, FALSE, FALSE );

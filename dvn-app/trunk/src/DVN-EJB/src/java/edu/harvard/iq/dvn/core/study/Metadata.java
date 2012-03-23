@@ -206,19 +206,7 @@ public class Metadata implements java.io.Serializable {
         if( copyField(tfMap.get(StudyFieldConstant.distributionDate), copyHidden, copyDisabled) ) {
              this.setDistributionDate(source.distributionDate); 
         }
-
-        if( copyField(tfMap.get(StudyFieldConstant.distributorContact), copyHidden, copyDisabled) ) {
-             this.setDistributorContact(source.distributorContact); 
-        }
-        
-        if( copyField(tfMap.get(StudyFieldConstant.distributorContactAffiliation), copyHidden, copyDisabled) ) {
-             this.setDistributorContactAffiliation(source.distributorContactAffiliation); 
-        }
-
-        if( copyField(tfMap.get(StudyFieldConstant.distributorContactEmail), copyHidden, copyDisabled) ) {
-             this.setDistributorContactEmail(source.distributorContactEmail); 
-        }   
-        
+               
         if( copyField(tfMap.get(StudyFieldConstant.frequencyOfDataCollection), copyHidden, copyDisabled) ) {
              this.setFrequencyOfDataCollection(source.frequencyOfDataCollection); 
         } 
@@ -282,21 +270,9 @@ public class Metadata implements java.io.Serializable {
         if (copyField(tfMap.get(StudyFieldConstant.samplingProcedure), copyHidden, copyDisabled)) {
             this.setSamplingProcedure(source.samplingProcedure);
         }
-
-        if (copyField(tfMap.get(StudyFieldConstant.seriesInformation), copyHidden, copyDisabled)) {
-            this.setSeriesInformation(source.seriesInformation);
-        }
-
-        if (copyField(tfMap.get(StudyFieldConstant.seriesName), copyHidden, copyDisabled)) {
-            this.setSeriesName(source.seriesName);
-        }
  
         if (copyField(tfMap.get(StudyFieldConstant.specialPermissions), copyHidden, copyDisabled)) {
             this.setSpecialPermissions(source.specialPermissions);
-        }
-
-        if (copyField(tfMap.get(StudyFieldConstant.studyVersion), copyHidden, copyDisabled)) {
-            this.setStudyVersionText(source.studyVersionText);
         }
 
         if (copyField(tfMap.get(StudyFieldConstant.subTitle), copyHidden, copyDisabled)) {
@@ -327,9 +303,6 @@ public class Metadata implements java.io.Serializable {
             this.setUniverse(source.universe);
         }
 
-        if (copyField(tfMap.get(StudyFieldConstant.versionDate), copyHidden, copyDisabled)) {
-            this.setVersionDate(source.versionDate);
-        }
 
         if (copyField(tfMap.get(StudyFieldConstant.weighting), copyHidden, copyDisabled)) {
             this.setWeighting(source.weighting);
@@ -341,7 +314,24 @@ public class Metadata implements java.io.Serializable {
 
         if (copyField(tfMap.get(StudyFieldConstant.studyCompletion), copyHidden, copyDisabled)) {
             this.setStudyCompletion(source.studyCompletion);
-        }            
+        }
+        
+        // compound and/or multiple fields
+        if( copyField(tfMap.get(StudyFieldConstant.distributorContact), copyHidden, copyDisabled) ) {
+             this.setDistributorContact(source.distributorContact); 
+             this.setDistributorContactAffiliation(source.distributorContactAffiliation); 
+             this.setDistributorContactEmail(source.distributorContactEmail); 
+        }   
+        
+        if (copyField(tfMap.get(StudyFieldConstant.series), copyHidden, copyDisabled)) {
+            this.setSeriesName(source.seriesName);
+            this.setSeriesInformation(source.seriesInformation);
+        }        
+        
+        if (copyField(tfMap.get(StudyFieldConstant.studyVersion), copyHidden, copyDisabled)) {
+            this.setStudyVersionText(source.studyVersionText);
+            this.setVersionDate(source.versionDate);            
+        }         
 
         if (copyField(tfMap.get(StudyFieldConstant.description), copyHidden, copyDisabled)) {
             this.setStudyAbstracts(new ArrayList<StudyAbstract>());

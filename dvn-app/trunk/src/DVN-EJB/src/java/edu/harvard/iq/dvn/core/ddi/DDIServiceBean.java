@@ -1767,7 +1767,7 @@ public class DDIServiceBean implements DDIServiceLocal {
         try {
             reader = new StringReader(xmlToParse);
             xmlr =  xmlInputFactory.createXMLStreamReader(reader);
-            processDDI( xmlr, studyVersion, filesMap);
+            processDDI( xmlr, studyVersion, filesMap, false);
         } catch (XMLStreamException ex) {
             Logger.getLogger("global").log(Level.SEVERE, null, ex);
             throw new EJBException("ERROR occurred in mapDDI.", ex);
@@ -1781,7 +1781,7 @@ public class DDIServiceBean implements DDIServiceLocal {
         return filesMap;
     }
 
-    public Map mapDDI(File ddiFile, StudyVersion studyVersion) {
+    public Map mapDDI(File ddiFile, StudyVersion studyVersion, Boolean noSubsettables) {
         FileInputStream in = null;
         XMLStreamReader xmlr = null;
         Map filesMap = new HashMap();
@@ -1789,7 +1789,7 @@ public class DDIServiceBean implements DDIServiceLocal {
         try {
             in = new FileInputStream(ddiFile);
             xmlr =  xmlInputFactory.createXMLStreamReader(in);
-            processDDI( xmlr, studyVersion, filesMap );
+            processDDI( xmlr, studyVersion, filesMap, noSubsettables );
         } catch (FileNotFoundException ex) {
             Logger.getLogger("global").log(Level.SEVERE, null, ex);
             throw new EJBException("ERROR occurred in mapDDI: File Not Found!");
@@ -1838,7 +1838,15 @@ public class DDIServiceBean implements DDIServiceLocal {
         FileInputStream in = null;
         XMLStreamReader xmlr = null;
         Map variablesMap;
-
+        
+        if (ddiFile == null) {
+            // re-map all the TabularFiles on the map as non-subsettable!
+            for (Object fileId : filesMap.keySet()) {
+              
+            }
+            return null; 
+        }
+        
         try {
             in = new FileInputStream(ddiFile);
             xmlr =  xmlInputFactory.createXMLStreamReader(in);
@@ -1862,7 +1870,7 @@ public class DDIServiceBean implements DDIServiceLocal {
     }
 
     // <editor-fold defaultstate="collapsed" desc="import methods">
-    private void processDDI( XMLStreamReader xmlr, StudyVersion studyVersion, Map filesMap) throws XMLStreamException {
+    private void processDDI( XMLStreamReader xmlr, StudyVersion studyVersion, Map filesMap, Boolean noSubsettables) throws XMLStreamException {
         initializeCollections(studyVersion); // not sure we need this call; to be investigated
         
         // make sure we have a codeBook
@@ -1885,7 +1893,7 @@ public class DDIServiceBean implements DDIServiceLocal {
         // In fact, we should only use these IDs when no ID is available down 
         // in the study description section!
         
-        processCodeBook(xmlr, studyVersion, filesMap);
+        processCodeBook(xmlr, studyVersion, filesMap, noSubsettables);
         
         if (codeBookLevelId != null && !codeBookLevelId.equals("")) {
             if (studyVersion.getMetadata().getStudyOtherIds().size() == 0) {
@@ -1934,7 +1942,7 @@ public class DDIServiceBean implements DDIServiceLocal {
         studyVersion.setFileMetadatas( new ArrayList() );
     }
 
-    private void processCodeBook( XMLStreamReader xmlr, StudyVersion studyVersion, Map filesMap) throws XMLStreamException {
+    private void processCodeBook( XMLStreamReader xmlr, StudyVersion studyVersion, Map filesMap, Boolean noSubsettables) throws XMLStreamException {
         Metadata metadata = studyVersion.getMetadata();
 
         for (int event = xmlr.next(); event != XMLStreamConstants.END_DOCUMENT; event = xmlr.next()) {
@@ -1946,7 +1954,11 @@ public class DDIServiceBean implements DDIServiceLocal {
                     processStdyDscr(xmlr, studyVersion);
                 }
                 else if (xmlr.getLocalName().equals("fileDscr")) {
-                    processFileDscr(xmlr, studyVersion, filesMap);
+                    if (noSubsettables) {
+                        processFileDscrAsOtherMat(xmlr, studyVersion);
+                    } else {
+                        processFileDscr(xmlr, studyVersion, filesMap);
+                    }
                 }
                 //else if (xmlr.getLocalName().equals("dataDscr")) processDataDscr(xmlr, filesMap);
                 else if (xmlr.getLocalName().equals("otherMat")) {
@@ -2547,7 +2559,59 @@ public class DDIServiceBean implements DDIServiceLocal {
         }
     }
     
-    
+    private void processFileDscrAsOtherMat(XMLStreamReader xmlr, StudyVersion studyVersion) throws XMLStreamException {
+        FileMetadata fmd = new FileMetadata();
+        fmd.setStudyVersion(studyVersion);
+        studyVersion.getFileMetadatas().add(fmd);
+
+        StudyFile sf = new OtherFile(studyVersion.getStudy());
+        fmd.setStudyFile(sf);
+        sf.setFileSystemLocation( xmlr.getAttributeValue(null, "URI"));
+
+
+        
+        /// the following Strings are used to determine the category
+        String catName = null;
+        String icpsrDesc = null;
+        String icpsrId = null;
+
+
+        for (int event = xmlr.next(); event != XMLStreamConstants.END_DOCUMENT; event = xmlr.next()) {
+            if (event == XMLStreamConstants.START_ELEMENT) {
+                if (xmlr.getLocalName().equals("fileTxt")) {
+                    processFileTxtAsLabel(xmlr, fmd);
+                    sf.setFileType( FileUtil.determineFileType( fmd.getLabel() ) );
+                } else if (xmlr.getLocalName().equals("notes")) {
+                    String noteType = xmlr.getAttributeValue(null, "type");
+                    if ("vdc:category".equalsIgnoreCase(noteType) ) {
+                        catName = parseText(xmlr);
+                    } else if ("icpsr:category".equalsIgnoreCase(noteType) ) {
+                        String subjectType = xmlr.getAttributeValue(null, "subject");
+                        if ("description".equalsIgnoreCase(subjectType)) {
+                            icpsrDesc = parseText(xmlr);
+                        } else if ("id".equalsIgnoreCase(subjectType)) {
+                            icpsrId = parseText(xmlr);
+                        }
+                    }
+                }
+
+            } else if (event == XMLStreamConstants.END_ELEMENT) {
+                if (xmlr.getLocalName().equals("fileDscr")) {
+                    // post process
+                    // post process
+                    if (fmd.getLabel() == null || fmd.getLabel().trim().equals("") ) {
+                        fmd.setLabel("file");
+                    }
+
+
+                    fmd.setCategory(determineFileCategory(catName, icpsrDesc, icpsrId));
+                    return;
+                }
+            }
+        }
+
+    }
+
     private void processFileDscr(XMLStreamReader xmlr, StudyVersion studyVersion, Map filesMap) throws XMLStreamException {
         FileMetadata fmd = new FileMetadata();
         fmd.setStudyVersion(studyVersion);
@@ -2556,7 +2620,7 @@ public class DDIServiceBean implements DDIServiceLocal {
         //StudyFile sf = new OtherFile(studyVersion.getStudy()); // until we connect the sf and dt, we have to assume it's an other file
         // as an experiment, I'm going to do it the other way around:
         // assume that every fileDscr is a subsettable file now, and convert them
-        // to otherFiles later if no variables are referemming it -- L.A.
+        // to otherFiles later if no variables are referencing it -- L.A.
 
 
         TabularDataFile sf = new TabularDataFile(studyVersion.getStudy()); 
@@ -3185,6 +3249,23 @@ public class DDIServiceBean implements DDIServiceLocal {
         }
     }
 
+    private void processFileTxtAsLabel(XMLStreamReader xmlr, FileMetadata fmd) throws XMLStreamException {
+        String label = null;
+
+        for (int event = xmlr.next(); event != XMLStreamConstants.END_DOCUMENT; event = xmlr.next()) {
+            if (event == XMLStreamConstants.START_ELEMENT) {
+                if (xmlr.getLocalName().equals("fileName")) {
+                    fmd.setLabel( parseText(xmlr) );
+                } else if (xmlr.getLocalName().equals("fileType")) {
+                    fmd.setDescription( parseText(xmlr) );
+		}
+
+            } else if (event == XMLStreamConstants.END_ELEMENT) {
+                if (xmlr.getLocalName().equals("fileTxt")) return;
+            }
+        }
+    }
+    
     private void processOtherMat(XMLStreamReader xmlr, StudyVersion studyVersion) throws XMLStreamException {
         FileMetadata fmd = new FileMetadata();
         fmd.setStudyVersion(studyVersion);

@@ -1836,15 +1836,15 @@ public class StudyServiceBean implements edu.harvard.iq.dvn.core.study.StudyServ
                     // operation, since it doesn't parse the data portion of the
                     // ddi.
 
-                    ddiService.mapDDI(ddiFile, tmpStudyVersion);
+                    ddiService.mapDDI(ddiFile, tmpStudyVersion, true);
 
                     if (tmpStudyVersion.getMetadata().getStudyOtherIds().size() > 0) {
                         tmpStudyId = tmpStudyVersion.getMetadata().getStudyOtherIds().get(0).getOtherId();
+                        
+                        // We may need to go through the list of "other Ids" (instead of
+                        // just grabbing the first one); and apply some logic to get the 
+                        // best one. -- L.A.
                     }
-                    
-                    // We may need to go through the list of "other Ids" (instead of
-                    // just grabbing the first one); and apply some logic to get the 
-                    // best one. -- L.A.
 
                     if (tmpStudyId == null || !isValidStudyIdString(tmpStudyId)) {
                         throw new EJBException("No suitable ID was found in the Nesstar-harvested metadata.");
@@ -1898,7 +1898,13 @@ public class StudyServiceBean implements edu.harvard.iq.dvn.core.study.StudyServ
 
 
         // Step 3: map the ddi
-        Map dataFilesMap = ddiService.mapDDI(ddiFile, studyVersion);
+        Map dataFilesMap = null; 
+
+	if (isNesstarHarvest) {
+	    ddiService.mapDDI(ddiFile, studyVersion, true);
+	} else {
+	    ddiService.mapDDI(ddiFile, studyVersion, false);
+	}
 
         logger.info("doImportStudy: ddi mapped");
 
@@ -1915,13 +1921,21 @@ public class StudyServiceBean implements edu.harvard.iq.dvn.core.study.StudyServ
             if (isNesstarHarvest) {
                 String nServerURL = vdc.getHarvestingDataverse().getServerUrl();
                 // chop any trailing slashes in the server URL - or they will result
-                // in multiple slashes in the final URL pointing to the study 
-                // on server of origin; Nesstar doesn't like it, apparently. 
-                nServerURL = nServerURL.replaceAll("/*$", "");
+	        // in multiple slashes in the final URL pointing to the study 
+		// on server of origin; Nesstar doesn't like it, apparently. 
+		nServerURL = nServerURL.replaceAll("/*$", "");
+
+		String nServerURLencoded = nServerURL;
+
+		nServerURLencoded.replace(":", "%3A");
+		nServerURLencoded.replace("/", "%2F");
+
                 String nWebviewLocation = nServerURL + 
-                        "/webview/velocity?mode=documentation&submode=abstract&study=" + 
-                        nServerURL+"/obj/fStudy/" + 
-                        harvestIdentifier; 
+                        "/webview/?mode=documentation&submode=abstract&studydoc=" + 
+                        nServerURLencoded+"%2Fobj%2FfStudy%2F" + 
+                        harvestIdentifier +
+                        "&top=yes"; 
+
                 studyVersion.getMetadata().setHarvestHoldings(nWebviewLocation);
             }
             
@@ -1947,38 +1961,39 @@ public class StudyServiceBean implements edu.harvard.iq.dvn.core.study.StudyServ
            em.persist( fmd.getStudyFile() );
         }
 
-        Map variablesMap = ddiService.reMapDDI(ddiFile, studyVersion, dataFilesMap);
+        if (!isNesstarHarvest) {
+            Map variablesMap = ddiService.reMapDDI(ddiFile, studyVersion, dataFilesMap);
 
-        logger.info("doImportStudy: ddi re-mapped");
+            logger.info("doImportStudy: ddi re-mapped");
 
-        logger.info("reading the variables map;");
+            logger.info("reading the variables map;");
 
-        if (variablesMap != null) {
-        
-            for (Object mapKey : variablesMap.keySet()) {
-                List<DataVariable> variablesMapEntry = (List<DataVariable>) variablesMap.get(mapKey);
-                Long fileId = (Long)mapKey;
-                if (variablesMapEntry != null) {
-                    logger.info("found non-empty map entry for datatable id "+fileId);
+            if (variablesMap != null) {
 
-                    DataVariable dv = variablesMapEntry.get(0);
-                    DataTable tmpDt = dv.getDataTable();
+                for (Object mapKey : variablesMap.keySet()) {
+                    List<DataVariable> variablesMapEntry = (List<DataVariable>) variablesMap.get(mapKey);
+                    Long fileId = (Long) mapKey;
+                    if (variablesMapEntry != null) {
+                        logger.info("found non-empty map entry for datatable id " + fileId);
 
-                    if (tmpDt != null) {
-                        tmpDt.setDataVariables(variablesMapEntry);
-                        logger.info("added variables to datatable "+tmpDt.getId());
+                        DataVariable dv = variablesMapEntry.get(0);
+                        DataTable tmpDt = dv.getDataTable();
+
+                        if (tmpDt != null) {
+                            tmpDt.setDataVariables(variablesMapEntry);
+                            logger.info("added variables to datatable " + tmpDt.getId());
+                        } else {
+                            logger.info("first variable on the map for id " + tmpDt.getId() + " is referencing NULL datatable! WTF?");
+                        }
+
                     } else {
-                        logger.info("first variable on the map for id "+tmpDt.getId()+" is referencing NULL datatable! WTF?");
+                        logger.info("found empty map entry for datatable id " + fileId);
                     }
 
-                } else {
-                    logger.info("found empty map entry for datatable id "+fileId);
-             }
-  
+                }
             }
         }
         
-
         saveStudyVersion(studyVersion, userId);
         if (isHarvest) {
             studyVersion.setReleaseTime( new Date() );

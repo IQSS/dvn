@@ -43,7 +43,7 @@ import javax.ejb.Local;
 public interface DDIServiceLocal extends StudyExporter, java.io.Serializable {
 
     Map mapDDI(String xmlToParse, StudyVersion studyVersion);
-    Map mapDDI(File ddiFile, StudyVersion studyVersion);
+    Map mapDDI(File ddiFile, StudyVersion studyVersion, Boolean noSubsettables);
     Map reMapDDI(String xmlToParse, StudyVersion studyVersion, Map filesMap);
     Map reMapDDI(File ddiFile, StudyVersion studyVersion, Map filesMap);
 

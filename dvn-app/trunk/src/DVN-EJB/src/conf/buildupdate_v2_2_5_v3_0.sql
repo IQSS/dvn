@@ -34,7 +34,6 @@ update studyfield set name = 'keyword' where name = 'keywordValue';
 update studyfield set name = 'topicClassification' where name = 'topicClassValue';
 update studyfield set name = 'software' where name = 'softwareName';
 update studyfield set name = 'series' where name = 'seriesName';
-update studyfield set name = 'version' where name = 'studyVersion';
 update studyfield set name = 'geographicBoundingBox' where name = 'westLongitude';
 update studyfield set name = 'note' where name = 'notesInformationType';
 update studyfield set name = 'publication' where name = 'relatedPublications';

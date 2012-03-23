@@ -796,7 +796,7 @@ public class TemplateFormPage extends VDCBaseBean implements java.io.Serializabl
     }
     
      public String getAbstractAndScopeInputLevel() {
-        return getInputLevel(//StudyFieldConstant.de
+        return getInputLevel(
                StudyFieldConstant.description,
                StudyFieldConstant.keyword,
                StudyFieldConstant.topicClassification,
@@ -810,10 +810,7 @@ public class TemplateFormPage extends VDCBaseBean implements java.io.Serializabl
                StudyFieldConstant.country,
                StudyFieldConstant.geographicCoverage,
                StudyFieldConstant.geographicUnit,
-               StudyFieldConstant.eastLongitude,
-               StudyFieldConstant.westLongitude,
-               StudyFieldConstant.northLatitude,
-               StudyFieldConstant.southLatitude,
+               StudyFieldConstant.geographicBoundingBox,
                StudyFieldConstant.unitOfAnalysis,
                StudyFieldConstant.kindOfData,
                StudyFieldConstant.universe);
@@ -864,103 +861,7 @@ public class TemplateFormPage extends VDCBaseBean implements java.io.Serializabl
                 StudyFieldConstant.studyCompletion);
 
     }
-   public String getGeoBoundingInputLevel() {
-        return getInputLevel(StudyFieldConstant.eastLongitude,
-                StudyFieldConstant.westLongitude,
-                StudyFieldConstant.northLatitude,
-                StudyFieldConstant.southLatitude);
 
-    }
-    public String getOtherInformationInputLevel() {
-        return getInputLevel(StudyFieldConstant.notesInformationSubject,
-                StudyFieldConstant.notesInformationType,
-                StudyFieldConstant.notesText);
-
-    }
-
-    public String getOtherIdLevel() {
-        return getInputLevel(StudyFieldConstant.otherId,
-                StudyFieldConstant.otherIdAgency);
-
-    }
-
-    public String getAuthorInputLevel() {
-        return getInputLevel( StudyFieldConstant.author,   StudyFieldConstant.authorName,
-                StudyFieldConstant.authorAffiliation);
-
-
-    }
-
-    public String getProducerInputLevel() {
-        return getInputLevel(StudyFieldConstant.producer, StudyFieldConstant.producerName,
-                StudyFieldConstant.producerAffiliation,
-                StudyFieldConstant.producerAbbreviation,
-                StudyFieldConstant.producerURL,
-                StudyFieldConstant.producerLogo);
-    }
-
-    public String getSeriesInputLevel() {
-        return getInputLevel(StudyFieldConstant.series, StudyFieldConstant.seriesName,
-                StudyFieldConstant.seriesInformation);
-
-    }
-    
-    public String getVersionInputLevel() {
-        return getInputLevel(StudyFieldConstant.studyVersion);
-
-    }
-
-    public String getSoftwareInputLevel() {
-        return getInputLevel(StudyFieldConstant.software, StudyFieldConstant.softwareName,
-                StudyFieldConstant.softwareVersion);
-
-    }
-
-    public String getGrantInputLevel() {
-        return getInputLevel(StudyFieldConstant.grantNumber, StudyFieldConstant.grantNumberValue,
-                StudyFieldConstant.grantNumberAgency);
-    }
-
-    public String getDistributorInputLevel() {
-        return getInputLevel(StudyFieldConstant.distributor, StudyFieldConstant.distributorName,
-                StudyFieldConstant.distributorAffiliation,
-                StudyFieldConstant.distributorAbbreviation,
-                StudyFieldConstant.distributorURL,
-                StudyFieldConstant.distributorLogo);
-
-    }
-
-    public String getContactInputLevel() {
-        return getInputLevel(StudyFieldConstant.distributor, StudyFieldConstant.distributorContact,
-                StudyFieldConstant.distributorContactAffiliation,
-                StudyFieldConstant.distributorContactEmail);
-
-    }
-
-    public String getAbstractInputLevel() {
-        return getInputLevel(StudyFieldConstant.description);
-
-    }
-
-    public String getKeywordInputLevel() {
-        return getInputLevel(StudyFieldConstant.keyword, StudyFieldConstant.keywordValue,
-                StudyFieldConstant.keywordVocab,
-                StudyFieldConstant.keywordVocabURI);
-
-    }
-
-    public String getTopicInputLevel() {
-        return getInputLevel(StudyFieldConstant.topicClassification, StudyFieldConstant.topicClassValue,
-                StudyFieldConstant.topicClassVocab,
-                StudyFieldConstant.topicClassVocabURI);
-    }
-
-    public String getNoteInputLevel() {
-        return getInputLevel(StudyFieldConstant.note, StudyFieldConstant.notesText,
-                StudyFieldConstant.notesInformationType,
-                StudyFieldConstant.notesInformationSubject);
-
-    }
 
  
   
@@ -1047,6 +948,9 @@ public class TemplateFormPage extends VDCBaseBean implements java.io.Serializabl
         return "/admin/ManageTemplatesPage?faces-redirect=true" + getNavigationVDCSuffix();
     }
     
+    
+    // TODO: since we no longer do any validation on the template form (besides the name of the form, we can
+    // remove all these validation methods
     public void validateStudyPublication(FacesContext context,
             UIComponent toValidate,
             Object value) {

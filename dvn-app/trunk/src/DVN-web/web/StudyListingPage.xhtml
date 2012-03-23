@@ -250,7 +250,7 @@
                           <ice:outputText value="Distributor:" styleClass="dvnStudyListTableOptionalFieldLabel"/>
                           <ice:outputText value="#{studyUI.distributors}" escape="false"/>
                       </div>
-                      <div jsfc="ice:panelGroup" styleClass="dvnStudyListTableOptionalField" rendered="#{!empty StudyListingPage.studyFields[sfc.replicationFor] and !empty studyUI.replicationFor}">
+                      <div jsfc="ice:panelGroup" styleClass="dvnStudyListTableOptionalField" rendered="#{!empty StudyListingPage.studyFields[sfc.publicationReplicationData] and !empty studyUI.replicationFor}">
                           <ice:outputText value="Replication For:" styleClass="dvnStudyListTableOptionalFieldLabel"/>
                           <ice:outputText value="#{studyUI.replicationFor}" escape="false"/>
                       </div>

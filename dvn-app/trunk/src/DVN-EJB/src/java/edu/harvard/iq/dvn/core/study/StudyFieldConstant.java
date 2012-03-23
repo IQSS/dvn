@@ -572,83 +572,83 @@ public class StudyFieldConstant implements java.io.Serializable  {
         return numberOfFiles;
     }
 
-    public static String getAuthor() {
+    public String getAuthor() {
         return author;
     }
 
-    public static String getDistributorContact() {
+    public String getDistributorContact() {
         return distributorContact;
     }
 
-    public static String getDescription() {
+    public String getDescription() {
         return description;
     }
 
-    public static String getDistributor() {
+    public String getDistributor() {
         return distributor;
     }
 
-    public static String getGeographicBoundingBox() {
+    public String getGeographicBoundingBox() {
         return geographicBoundingBox;
     }
 
-    public static String getGrantNumberValue() {
+    public String getGrantNumberValue() {
         return grantNumberValue;
     }
 
-    public static String getKeyword() {
+    public String getKeyword() {
         return keyword;
     }
 
-    public static String getNote() {
+    public String getNote() {
         return note;
     }
 
-    public static String getOtherIdValue() {
+    public String getOtherIdValue() {
         return otherIdValue;
     }
 
-    public static String getProducer() {
+    public String getProducer() {
         return producer;
     }
 
-    public static String getPublication() {
+    public String getPublication() {
         return publication;
     }
 
-    public static String getPublicationCitation() {
+    public String getPublicationCitation() {
         return publicationCitation;
     }
 
-    public static String getPublicationIDNumber() {
+    public String getPublicationIDNumber() {
         return publicationIDNumber;
     }
 
-    public static String getPublicationIDType() {
+    public String getPublicationIDType() {
         return publicationIDType;
     }
 
-    public static String getPublicationReplicationData() {
+    public String getPublicationReplicationData() {
         return publicationReplicationData;
     }
 
-    public static String getPublicationURL() {
+    public String getPublicationURL() {
         return publicationURL;
     }
 
-    public static String getSeries() {
+    public String getSeries() {
         return series;
     }
 
-    public static String getSoftware() {
+    public String getSoftware() {
         return software;
     }
 
-    public static String getTopicClassification() {
+    public String getTopicClassification() {
         return topicClassification;
     }
 
-    public static String getStudyVersionValue() {
+    public String getStudyVersionValue() {
         return studyVersionValue;
     }
     

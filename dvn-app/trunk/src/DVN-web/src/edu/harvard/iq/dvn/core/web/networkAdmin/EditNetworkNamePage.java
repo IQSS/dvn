@@ -138,11 +138,11 @@ public class EditNetworkNamePage extends VDCBaseBean  implements java.io.Seriali
         vdcNetworkService.edit(thisVdcNetwork);
         getVDCRequestBean().setVdcNetwork(thisVdcNetwork);        
         getVDCRenderBean().getFlash().put("successMessage", "Successfully updated network name.");
-        return "myNetworkOptions";
+        return "/networkAdmin/NetworkOptionsPage.xhtml?faces-redirect=true";
     }
 
     public String cancel(){
-        return "myNetworkOptions";
+        return "/networkAdmin/NetworkOptionsPage.xhtml?faces-redirect=true";
     }
 
 }

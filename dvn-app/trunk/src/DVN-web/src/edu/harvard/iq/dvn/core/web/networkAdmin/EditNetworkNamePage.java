@@ -64,19 +64,11 @@ public class EditNetworkNamePage extends VDCBaseBean  implements java.io.Seriali
     public String getNetworkName(){
         return networkName;
     }
-    // <editor-fold defaultstate="collapsed" desc="Creator-managed Component Definition">
-    private int __placeholder;
+
     
     public void init() {
         VDCNetwork thisVdcNetwork = vdcNetworkService.find(new Long(1));
         networkName=thisVdcNetwork.getName();
-    }
-    /**
-     * <p>Automatically managed component initialization.  <strong>WARNING:</strong>
-     * This method is automatically generated, so any user-specified code inserted
-     * here is subject to being replaced.</p>
-     */
-    private void _init() throws Exception {
     }
 
     private HtmlInputText textField1 = new HtmlInputText();
@@ -89,7 +81,6 @@ public class EditNetworkNamePage extends VDCBaseBean  implements java.io.Seriali
         this.textField1 = hit;
     }
     
-    // </editor-fold>
 
 
     /** 
@@ -99,39 +90,6 @@ public class EditNetworkNamePage extends VDCBaseBean  implements java.io.Seriali
     }
 
 
-
-    /** 
-     * <p>Callback method that is called after the component tree has been
-     * restored, but before any event processing takes place.  This method
-     * will <strong>only</strong> be called on a postback request that
-     * is processing a form submit.  Customize this method to allocate
-     * resources that will be required in your event handlers.</p>
-     */
-    public void preprocess() {
-    }
-
-    /** 
-     * <p>Callback method that is called just before rendering takes place.
-     * This method will <strong>only</strong> be called for the page that
-     * will actually be rendered (and not, for example, on a page that
-     * handled a postback and then navigated to a different page).  Customize
-     * this method to allocate resources that will be required for rendering
-     * this page.</p>
-     */
-    public void prerender() {
-    }
-    
-    /** 
-     * <p>Callback method that is called after rendering is completed for
-     * this request, if <code>init()</code> was called (regardless of whether
-     * or not this was the page that was actually rendered).  Customize this
-     * method to release resources acquired in the <code>init()</code>,
-     * <code>preprocess()</code>, or <code>prerender()</code> methods (or
-     * acquired during execution of an event handler).</p>
-     */
-    public void destroy() {
-    }
-    
     public String saveNetworkName(){
         VDCNetwork thisVdcNetwork = vdcNetworkService.find(new Long(1));
         thisVdcNetwork.setName((String)textField1.getValue());

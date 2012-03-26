@@ -192,8 +192,8 @@
                                  value="#{TemplateFormPage.template.metadata.studyOtherIds}" var="currentRow">
                     <ice:column styleClass="vdcEditStudyField">
                         <ice:outputText styleClass="dvnInlineHelpLabel dvnInlineHelpTip" value="#{editstudybundle.otheridLabel}" title="#{editstudybundle.otheridHelpHeading} - #{editstudybundle.otheridHelp}"/>
-                        <ice:graphicImage value="/resources/images/icon_required.gif" rendered="#{TemplateFormPage.otherIdLevel=='required'}"/>
-                        <ice:graphicImage value="/resources/images/icon_recommended.gif" rendered="#{TemplateFormPage.otherIdLevel=='recommended'}"/>
+                        <ice:graphicImage value="/resources/images/icon_required.gif" rendered="#{TemplateFormPage.studyMap[sfc.otherId].templateField.fieldInputLevelString=='required'}"/>
+                        <ice:graphicImage value="/resources/images/icon_recommended.gif" rendered="#{TemplateFormPage.studyMap[sfc.otherId].templateField.fieldInputLevelString=='recommended'}"/>
                     </ice:column>
                     <ice:column>
                       <div class="vdcEditStudyFieldFloatWrap">
@@ -238,8 +238,8 @@
                     <ice:column>
                       <div class="vdcEditStudyField">
                         <ice:outputText styleClass="dvnInlineHelpLabel dvnInlineHelpTip" value="#{editstudybundle.authorLabel}" title="#{editstudybundle.authorHelpHeading} - #{editstudybundle.authorHelp}"/>
-                        <ice:graphicImage value="/resources/images/icon_required.gif" rendered="#{TemplateFormPage.authorInputLevel=='required'}"/>
-                        <ice:graphicImage value="/resources/images/icon_recommended.gif" rendered="#{TemplateFormPage.authorInputLevel=='recommended'}"/>
+                        <ice:graphicImage value="/resources/images/icon_required.gif" rendered="#{TemplateFormPage.studyMap[sfc.author].templateField.fieldInputLevelString=='required'}"/>
+                        <ice:graphicImage value="/resources/images/icon_recommended.gif" rendered="#{TemplateFormPage.studyMap[sfc.author].templateField.fieldInputLevelString=='recommended'}"/>
                       </div>
                     </ice:column>
                     <ice:column>
@@ -293,8 +293,8 @@
                     <ice:column>
                       <div class="vdcEditStudyField">                          
                         <ice:outputText styleClass="dvnInlineHelpLabel dvnInlineHelpTip" value="#{editstudybundle.producerLabel}" title="#{editstudybundle.producerHelpHeading} - #{editstudybundle.producerHelp}"/>
-                        <ice:graphicImage value="/resources/images/icon_required.gif" rendered="#{TemplateFormPage.producerInputLevel=='required'}"/>
-                        <ice:graphicImage value="/resources/images/icon_recommended.gif" rendered="#{TemplateFormPage.producerInputLevel=='recommended'}"/>
+                        <ice:graphicImage value="/resources/images/icon_required.gif" rendered="#{TemplateFormPage.studyMap[sfc.producer].templateField.fieldInputLevelString=='required'}"/>
+                        <ice:graphicImage value="/resources/images/icon_recommended.gif" rendered="#{TemplateFormPage.studyMap[sfc.producer].templateField.fieldInputLevelString=='recommended'}"/>
                       </div>
                     </ice:column>
                     <ice:column>
@@ -416,8 +416,8 @@
                     <ice:column>
                       <div class="vdcEditStudyField">
                         <ice:outputText styleClass="dvnInlineHelpLabel dvnInlineHelpTip" value="#{editstudybundle.softwareNameLabel}" title="#{editstudybundle.softwareNameHelpHeading} - #{editstudybundle.softwareNameHelp}"/>
-                        <ice:graphicImage value="/resources/images/icon_required.gif" rendered="#{TemplateFormPage.softwareInputLevel=='required'}"/>
-                        <ice:graphicImage value="/resources/images/icon_recommended.gif" rendered="#{TemplateFormPage.softwareInputLevel=='recommended'}"/>
+                        <ice:graphicImage value="/resources/images/icon_required.gif" rendered="#{TemplateFormPage.studyMap[sfc.software].templateField.fieldInputLevelString=='required'}"/>
+                        <ice:graphicImage value="/resources/images/icon_recommended.gif" rendered="#{TemplateFormPage.studyMap[sfc.software].templateField.fieldInputLevelString}=='recommended'}"/>
                       </div>
                     </ice:column>
                     <ice:column>
@@ -483,8 +483,8 @@
                     <ice:column>
                       <div class="vdcEditStudyField">
                         <ice:outputText styleClass="dvnInlineHelpLabel dvnInlineHelpTip" value="#{editstudybundle.grantNumberLabel}" title="#{editstudybundle.grantNumberHelpHeading} - #{editstudybundle.grantNumberHelp}"/>
-                        <ice:graphicImage value="/resources/images/icon_required.gif" rendered="#{TemplateFormPage.grantInputLevel=='required'}"/>
-                        <ice:graphicImage value="/resources/images/icon_recommended.gif" rendered="#{TemplateFormPage.grantInputLevel=='recommended'}"/>
+                        <ice:graphicImage value="/resources/images/icon_required.gif" rendered="#{TemplateFormPage.studyMap[sfc.grantNumber].templateField.fieldInputLevelString=='required'}"/>
+                        <ice:graphicImage value="/resources/images/icon_recommended.gif" rendered="#{TemplateFormPage.studyMap[sfc.grantNumber].templateField.fieldInputLevelString=='recommended'}"/>
                       </div>
                     </ice:column>
                     <ice:column>
@@ -528,8 +528,8 @@
                     <ice:column>
                       <div class="vdcEditStudyField">
                         <ice:outputText styleClass="dvnInlineHelpLabel dvnInlineHelpTip" value="#{editstudybundle.distributorLabel}" title="#{editstudybundle.distributorHelpHeading} - #{editstudybundle.distributorHelp}"/>
-                        <ice:graphicImage value="/resources/images/icon_required.gif" rendered="#{TemplateFormPage.distributorInputLevel=='required'}"/>
-                        <ice:graphicImage value="/resources/images/icon_recommended.gif" rendered="#{TemplateFormPage.distributorInputLevel=='recommended'}"/>
+                        <ice:graphicImage value="/resources/images/icon_required.gif" rendered="#{TemplateFormPage.studyMap[sfc.distributor].templateField.fieldInputLevelString=='required'}"/>
+                        <ice:graphicImage value="/resources/images/icon_recommended.gif" rendered="#{TemplateFormPage.studyMap[sfc.distributor].templateField.fieldInputLevelString=='recommended'}"/>
                       </div>
                     </ice:column>
                     <ice:column>
@@ -709,8 +709,8 @@
                              columnClasses="vdcEditStudyCol1, vdcEditStudyCol2, vdcEditStudyCol3">
                 <ice:column styleClass="vdcEditStudyField">
                   <ice:outputText styleClass="dvnInlineHelpLabel dvnInlineHelpTip" value="#{editstudybundle.seriesLabel}" title="#{editstudybundle.seriesHelpHeading} - #{editstudybundle.seriesHelp}"/>
-                  <ice:graphicImage value="/resources/images/icon_required.gif" rendered="#{TemplateFormPage.seriesInputLevel=='required'}"/>
-                  <ice:graphicImage value="/resources/images/icon_recommended.gif" rendered="#{TemplateFormPage.seriesInputLevel=='recommended'}"/>
+                  <ice:graphicImage value="/resources/images/icon_required.gif" rendered="#{TemplateFormPage.studyMap[sfc.series].templateField.fieldInputLevelString=='required'}"/>
+                  <ice:graphicImage value="/resources/images/icon_recommended.gif" rendered="#{TemplateFormPage.studyMap[sfc.series].templateField.fieldInputLevelString=='recommended'}"/>
                 </ice:column>
                 <ice:column>
                   <div jsfc="ice:panelGroup" id="groupPanel29" styleClass="vdcEditStudyField">
@@ -792,8 +792,8 @@
                     <ice:column>
                       <div class="vdcEditStudyField">
                         <ice:outputText styleClass="dvnInlineHelpLabel dvnInlineHelpTip" value="#{editstudybundle.abstractLabel}" title="#{editstudybundle.abstractHelpHeading} - #{editstudybundle.abstractHelp}"/>
-                        <ice:graphicImage value="/resources/images/icon_required.gif" rendered="#{TemplateFormPage.abstractInputLevel=='required'}"/>
-                        <ice:graphicImage value="/resources/images/icon_recommended.gif" rendered="#{TemplateFormPage.abstractInputLevel=='recommended'}"/>
+                        <ice:graphicImage value="/resources/images/icon_required.gif" rendered="#{TemplateFormPage.studyMap[sfc.description].templateField.fieldInputLevelString=='required'}"/>
+                        <ice:graphicImage value="/resources/images/icon_recommended.gif" rendered="#{TemplateFormPage.studyMap[sfc.description].templateField.fieldInputLevelString=='recommended'}"/>
                       </div>
                     </ice:column>
                     <ice:column>

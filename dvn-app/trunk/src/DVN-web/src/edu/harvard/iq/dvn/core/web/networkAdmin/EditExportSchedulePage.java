@@ -125,7 +125,7 @@ public class EditExportSchedulePage extends VDCBaseBean implements java.io.Seria
         remoteTimerService.createExportTimer(vdcnetwork);
         getVDCRenderBean().getFlash().put("successMessage","Successfully updated export schedule.");
 
-        return "myNetworkOptions";
+        return "/networkAdmin/NetworkOptionsPage.xhtml?faces-redirect=true";
      
     }
     

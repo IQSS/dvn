@@ -350,11 +350,11 @@ public class EditCollectionPage extends VDCBaseBean implements java.io.Serializa
             vdcCollectionService.edit(collection);
         }
 
-        return "manageCollections";
+        return "/collection/ManageCollectionsPage.xhtml?faces-redirect=true" + getNavigationVDCSuffix();
     }
 
     public String cancel_action() {
-        return "manageCollections";
+        return "/collection/ManageCollectionsPage.xhtml?faces-redirect=true" + getNavigationVDCSuffix();
     }
 
     public void addRemoveStudyListener(RowSelectorEvent event) {

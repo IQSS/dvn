@@ -113,7 +113,7 @@ public class AddLinkPage extends VDCBaseBean implements java.io.Serializable  {
             vdcService.edit(vdc);
         }
         
-        return "manageCollections";
+        return "/collection/ManageCollectionsPage.xhtml?faces-redirect=true" + getNavigationVDCSuffix();
     }
        
         

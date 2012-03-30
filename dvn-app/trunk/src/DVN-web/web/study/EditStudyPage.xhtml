@@ -565,7 +565,7 @@
                                             ) or 
                                             (EditStudyPage.showAll 
                                             and !EditStudyPage.studyMap[sfc.fundingAgency].hidden
-                                            and !EditStudyPage.studyMap[sfc.fundingAgency].required)}">
+                                            and !EditStudyPage.studyMap[sfc.fundingAgency].disabled)}">
                     <div jsfc="ice:panelGroup" styleClass="vdcEditStudyField">
                       <ice:outputText styleClass="dvnInlineHelpLabel dvnInlineHelpTip" value="#{editstudybundle.fundingAgencyLabel}" title="#{editstudybundle.fundingAgencyHelpHeading} - #{editstudybundle.fundingAgencyHelp}"/>
                       <ice:graphicImage value="/resources/images/icon_required.gif" rendered="#{EditStudyPage.studyMap[sfc.fundingAgency].required}"/>

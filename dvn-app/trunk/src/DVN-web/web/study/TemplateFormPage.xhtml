@@ -882,7 +882,7 @@
                       <ice:commandButton partialSubmit="true" alt="Add Row" title="Add Row" image="/resources/images/icon_add.gif" actionListener="#{TemplateFormPage.addRow}"/>
                       <ice:commandButton partialSubmit="true" rendered="#{TemplateFormPage.dataTableKeywords.rowCount gt 1}" alt="Remove Row" title="Remove Row" image="/resources/images/icon_remove.gif" actionListener="#{TemplateFormPage.removeRow}"/>
                       <ice:selectOneMenu immediate="false" partialSubmit="true" 
-                                        value="#{TemplateFormPage.studyMap[sfc.keywordValue].templateField.fieldInputLevelString}"
+                                        value="#{TemplateFormPage.studyMap[sfc.keyword].templateField.fieldInputLevelString}"
                                         rendered ="#{TemplateFormPage.dataTableKeywords.rowIndex==0}">
                             <f:attribute name="fieldName" value="keywordValue" />
                            <f:selectItems value="#{TemplateFormPage.fieldInputLevelSelectItems}"/>
@@ -2343,6 +2343,8 @@
 
               <ice:panelGrid cellpadding="0" cellspacing="0" columns="3" width="100%"
                              styleClass="vdcEditStudyTable #{TemplateFormPage.studyMap[sfc.citationRequirements].templateField.fieldInputLevelString}"
+                             rendered="#{TemplateFormPage.networkEdit or 
+                                TemplateFormPage.studyMap[sfc.citationRequirements].templateField.fieldInputLevelString != 'disabled'}"                           
                              columnClasses="vdcEditStudyCol1, vdcEditStudyCol2, vdcEditStudyCol3">
                 <ice:column styleClass="vdcEditStudyField">
                   <ice:outputText styleClass="dvnInlineHelpLabel dvnInlineHelpTip" value="#{editstudybundle.citationRequirementsLabel}" title="#{editstudybundle.citationRequirementsHelpHeading} - #{editstudybundle.citationRequirementsHelp}"/>
@@ -2358,9 +2360,7 @@
                 </ice:column>
                 <ice:column>
                   <ice:selectOneMenu immediate="false" partialSubmit="true"
-                                        value="#{TemplateFormPage.studyMap[sfc.citationRequirements].templateField.fieldInputLevelString}"
-                                        rendered="#{TemplateFormPage.networkEdit or 
-                                            TemplateFormPage.studyMap[sfc.citationRequirements].templateField.fieldInputLevelString != 'disabled'}">
+                                        value="#{TemplateFormPage.studyMap[sfc.citationRequirements].templateField.fieldInputLevelString}">
                             <f:attribute name="fieldName" value="citationRequirements" />
                   <f:selectItems value="#{TemplateFormPage.fieldInputLevelSelectItems}"/>
                   </ice:selectOneMenu>

@@ -87,7 +87,7 @@ public class EditAccountUseTermsPage extends VDCBaseBean implements java.io.Seri
             vdcNetworkService.edit(vdcNetwork);
             userService.clearAgreedTermsOfUse();
             getVDCRenderBean().getFlash().put("successMessage", "Successfully updated terms for account creation.");
-            return "myNetworkOptions";
+            return "/networkAdmin/NetworkOptionsPage.xhtml?faces-redirect=true";
         } else {
             return null;
         }
@@ -95,7 +95,7 @@ public class EditAccountUseTermsPage extends VDCBaseBean implements java.io.Seri
     }
 
     public String cancel_action() {
-        return "cancelNetwork";
+        return "/networkAdmin/NetworkOptionsPage.xhtml?faces-redirect=true";
     }
 
     private boolean validateTerms() {

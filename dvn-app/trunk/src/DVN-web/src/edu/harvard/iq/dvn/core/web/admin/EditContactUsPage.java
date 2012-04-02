@@ -153,7 +153,7 @@ public class EditContactUsPage extends VDCBaseBean implements java.io.Serializab
             System.out.println("the email address is " + this.getContactUsEmail());
             vdcnetwork.setContactEmail(this.getContactUsEmail());
             vdcNetworkService.edit(vdcnetwork);
-            forwardPage="myNetworkOptions";
+            forwardPage="/networkAdmin/NetworkOptionsPage?faces-redirect=true";
         } else {
             VDC vdc = vdcService.find(new Long(getVDCRequestBean().getCurrentVDC().getId()));
             vdc.setContactEmail(this.getContactUsEmail());
@@ -166,7 +166,7 @@ public class EditContactUsPage extends VDCBaseBean implements java.io.Serializab
     
     public String cancel_action(){
         if (getVDCRequestBean().getCurrentVDCId() == null)
-            return "cancelNetwork";
+            return "/networkAdmin/NetworkOptionsPage?faces-redirect=true";
         else
             return "/admin/OptionsPage?faces-redirect=true&vdcId="+getVDCRequestBean().getCurrentVDC().getId();
     }

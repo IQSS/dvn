@@ -56,7 +56,7 @@ import edu.harvard.iq.dvn.ingest.dsb.FieldCutter;
 import edu.harvard.iq.dvn.ingest.dsb.impl.DvnJavaFieldCutter;
 import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileReader;
+import java.io.FileReader; 
 import java.io.IOException;
 import java.util.*;
 import javax.ejb.EJB;
@@ -549,9 +549,7 @@ public class SetUpDataExplorationPage extends VDCBaseBean implements java.io.Ser
             VarGroupType varGroupType = varGroupTypeUI2.getVarGroupType();
             List varGroupTypeList = (List) dataTable2.getValue();
             if (hasAssignedGroups(varGroupType)) {
-                FacesMessage message = new FacesMessage("You may not delete a type that is assigned to a measure or filter.");
-                FacesContext fc = FacesContext.getCurrentInstance();
-                fc.addMessage(validateButton.getClientId(fc), message);
+                getVDCRenderBean().getFlash().put("warningMessage", "You may not delete a type that is assigned to a measure or filter.");
                 return;
             }
 
@@ -747,6 +745,8 @@ public class SetUpDataExplorationPage extends VDCBaseBean implements java.io.Ser
 
         varGroupTypeUI.getVarGroupType().setName(getName);               
         varGroupTypeUI.setEditMode(false);
+        getEditManageMeasureGroupTypeName().setValue("");
+        getEditMeasureGroupTypeName().setValue("");
         edited = true;
     }
 
@@ -877,9 +877,7 @@ public class SetUpDataExplorationPage extends VDCBaseBean implements java.io.Ser
             }
         }
         if (countSelected > 1) {
-            FacesMessage message = new FacesMessage("You may not select more than one variable.");
-            FacesContext fc = FacesContext.getCurrentInstance();
-            fc.addMessage(validateButton.getClientId(fc), message);
+            getVDCRenderBean().getFlash().put("warningMessage", "You may not select more than one variable.");
         }
 
         if (countSelected == 1){
@@ -905,9 +903,7 @@ public class SetUpDataExplorationPage extends VDCBaseBean implements java.io.Ser
         String chkGroupName = (String) getInputMeasureGroupingName().getValue();
 
         if (chkGroupName.isEmpty() || chkGroupName.trim().equals("") ) {
-            FacesMessage message = new FacesMessage("Please enter a Measure Label.");
-            FacesContext fc = FacesContext.getCurrentInstance();
-            fc.addMessage(validateButton.getClientId(fc), message);
+            getVDCRenderBean().getFlash().put("warningMessage", "Please enter a Measure Label.");
             return;
         }
 
@@ -929,9 +925,7 @@ public class SetUpDataExplorationPage extends VDCBaseBean implements java.io.Ser
         String chkGroupName = (String) getInputSourceName().getValue();
 
         if (chkGroupName.isEmpty() || chkGroupName.trim().equals("") ) {
-            FacesMessage message = new FacesMessage("Please enter a Source Name.");
-            FacesContext fc = FacesContext.getCurrentInstance();
-            fc.addMessage(validateButton.getClientId(fc), message);
+            getVDCRenderBean().getFlash().put("warningMessage", "Please enter a Source Name.");
             return;
         }
 
@@ -958,9 +952,7 @@ public class SetUpDataExplorationPage extends VDCBaseBean implements java.io.Ser
         String chkGroupName = (String) getInputMeasureName().getValue();
 
         if (chkGroupName.isEmpty() || chkGroupName.trim().equals("") ) {
-            FacesMessage message = new FacesMessage("Please enter a Measure Name.");
-            FacesContext fc = FacesContext.getCurrentInstance();
-            fc.addMessage(validateButton.getClientId(fc), message);
+            getVDCRenderBean().getFlash().put("warningMessage", "Please enter a Measure Name.");
             return;
         }
 
@@ -995,9 +987,7 @@ public class SetUpDataExplorationPage extends VDCBaseBean implements java.io.Ser
         String chkGroupName = (String) getInputFilterGroupName().getValue();
 
         if (chkGroupName.isEmpty() || chkGroupName.trim().equals("")) {
-            FacesMessage message = new FacesMessage("Please enter a Filter Name.");
-            FacesContext fc = FacesContext.getCurrentInstance();
-            fc.addMessage(validateButton.getClientId(fc), message);
+            getVDCRenderBean().getFlash().put("warningMessage", "Please enter a Filter Name.");
             return;
         }
     
@@ -1167,10 +1157,7 @@ public class SetUpDataExplorationPage extends VDCBaseBean implements java.io.Ser
             }
             
             if (duplicates) {
-                FacesContext fc = FacesContext.getCurrentInstance();
-                String fullErrorMessage = "This name already exists. Please enter another.<br></br>" ;
-                FacesMessage message = new FacesMessage(fullErrorMessage);
-                fc.addMessage(validateButton.getClientId(fc), message);
+                getVDCRenderBean().getFlash().put("warningMessage", "This name already exists. Please enter another.");
                 return;
             }
 
@@ -1187,9 +1174,7 @@ public class SetUpDataExplorationPage extends VDCBaseBean implements java.io.Ser
             editFilterVarGrouping  = null;
 
         }  else {
-            FacesMessage message = new FacesMessage("Please enter a Filter Group Name.");
-            FacesContext fc = FacesContext.getCurrentInstance();
-            fc.addMessage(validateButton.getClientId(fc), message);
+            getVDCRenderBean().getFlash().put("warningMessage", "Please enter a Filter Group Name.");
             return;
         }
             
@@ -1398,10 +1383,7 @@ public class SetUpDataExplorationPage extends VDCBaseBean implements java.io.Ser
     private boolean checkForDuplicateEntries(VarGrouping varGrouping,  String name, boolean group, Object testObject){
         boolean duplicates = visualizationService.checkForDuplicateEntries(varGrouping, name, group, testObject);
             if (duplicates) {
-                FacesContext fc = FacesContext.getCurrentInstance();
-                String fullErrorMessage = "This name already exists. Please enter another.<br></br>" ;
-                FacesMessage message = new FacesMessage(fullErrorMessage);
-                fc.addMessage(validateButton.getClientId(fc), message);
+                getVDCRenderBean().getFlash().put("warningMessage", "This name already exists. Please enter another.");
             }
          return duplicates;
     }
@@ -1517,9 +1499,7 @@ public class SetUpDataExplorationPage extends VDCBaseBean implements java.io.Ser
 
             VarGroup varGroup = varGroupUI2.getVarGroup();
             if (hasAssignedGroupTypes(varGroup)) {
-                FacesMessage message = new FacesMessage("You may not delete a group that is assigned to a type.");
-                FacesContext fc = FacesContext.getCurrentInstance();
-                fc.addMessage(validateButton.getClientId(fc), message);
+                getVDCRenderBean().getFlash().put("warningMessage", "You may not delete a group that is assigned to a type.");
                 return;
             }
 
@@ -1553,9 +1533,7 @@ public class SetUpDataExplorationPage extends VDCBaseBean implements java.io.Ser
             
             VarGroup varGroup = varGroupUI2.getVarGroup();
             if(hasAssignedGroupTypes(varGroup)){
-                FacesMessage message = new FacesMessage("You may not delete a group that is assigned to a type.");
-                FacesContext fc = FacesContext.getCurrentInstance();
-                fc.addMessage(validateButton.getClientId(fc), message);
+                getVDCRenderBean().getFlash().put("warningMessage", "You may not delete a group that is assigned to a type.");
                 return;
             }
             deleteVariablesFromGroup(varGroup);
@@ -1732,7 +1710,7 @@ public class SetUpDataExplorationPage extends VDCBaseBean implements java.io.Ser
 
         if (!xAxisSet || !visualizationService.validateXAxisMapping(dataTable, xAxisVariableId)) {
             if (messages) {
-                fullErrorMessage += "<br></br>You must select one X-axis variable and it cannot be mapped to any Measure or Filter.<br></br>";
+                fullErrorMessage += "<br></br>You must select one X-axis variable and it cannot be mapped to any Measure or Filter.";
             }
             valid = false;
         }
@@ -1768,7 +1746,7 @@ public class SetUpDataExplorationPage extends VDCBaseBean implements java.io.Ser
                         }
                     }
                     fullErrorMessage += "</li></ul>";
-                    fullErrorMessage += "To correct this, create filters to limit each measure filter combination to a single variable or assign only one variable to each measure.<br></br>";
+                    fullErrorMessage += "To correct this, create filters to limit each measure filter combination to a single variable or assign only one variable to each measure.";
                 }
             }
 
@@ -1819,7 +1797,7 @@ public class SetUpDataExplorationPage extends VDCBaseBean implements java.io.Ser
                         fullErrorMessage = fullErrorMessage + "<li>Measures " + measureErrorMessage + " contain no variables.</li>";
                     }
                     fullErrorMessage += "</ul>";
-                    fullErrorMessage += "To correct this, assign at least one variable or remove the empty measures or filters.<br></br>";
+                    fullErrorMessage += "To correct this, assign at least one variable or remove the empty measures or filters.";
 
                 }
 
@@ -1856,7 +1834,7 @@ public class SetUpDataExplorationPage extends VDCBaseBean implements java.io.Ser
                         }
                     }
                     fullErrorMessage += "</li></ul>";
-                    fullErrorMessage += "To correct this, remove unassigned variables or assign them to measures.<br></br>";
+                    fullErrorMessage += "To correct this, remove unassigned variables or assign them to measures.";
                 }
             }
 
@@ -1897,7 +1875,7 @@ public class SetUpDataExplorationPage extends VDCBaseBean implements java.io.Ser
                     }
                 }
                 fullErrorMessage += "</li></ul>";
-                fullErrorMessage += "To correct this, map each variable to a single measure.<br></br>";
+                fullErrorMessage += "To correct this, map each variable to a single measure.";
             }
 
             valid = false;
@@ -1936,7 +1914,7 @@ public class SetUpDataExplorationPage extends VDCBaseBean implements java.io.Ser
                     }
                 }
                 fullErrorMessage += "</li></ul>";
-                fullErrorMessage += "To correct this, map each variable to a single filter within each group.<br></br>";
+                fullErrorMessage += "To correct this, map each variable to a single filter within each group.";
             }
 
             valid = false;
@@ -1944,9 +1922,9 @@ public class SetUpDataExplorationPage extends VDCBaseBean implements java.io.Ser
 
         if (!visualizationService.validateAtLeastOneMeasureMapping(dataTable)) {
             if (messages) {
-                fullErrorMessage += "<br></br>Measure-filter combinations were found that would result in no variables selected at visualization.<br></br>";
-                fullErrorMessage += " No Measures or filters configured.<br></br>";
-                fullErrorMessage += "To correct this, configure at least one measure or one measure-filter combination.<br></br>";
+                fullErrorMessage += "<br></br>Measure-filter combinations were found that would result in no variables selected at visualization.";
+                fullErrorMessage += " No Measures or filters configured.";
+                fullErrorMessage += "To correct this, configure at least one measure or one measure-filter combination.";
             }
             valid = false;
         }
@@ -1983,7 +1961,7 @@ public class SetUpDataExplorationPage extends VDCBaseBean implements java.io.Ser
                         }
                     }
                     fullErrorMessage += "</li></ul>";
-                    fullErrorMessage += "To correct this, for measures where multiple variables are assigned, also assign each variable to a filter where the measure-filter combinations result in a single variable selected at visualization.<br></br>";
+                    fullErrorMessage += "To correct this, for measures where multiple variables are assigned, also assign each variable to a filter where the measure-filter combinations result in a single variable selected at visualization.";
                 }
             }
             returnListOfErrors.clear();
@@ -1995,7 +1973,8 @@ public class SetUpDataExplorationPage extends VDCBaseBean implements java.io.Ser
         }
         if (!valid && messages) {
             // add rounded corners to the validation message box
-            fullErrorMessage = "This configuration is invalid so it cannot be released. <br></br>" + fullErrorMessage;
+            fullErrorMessage = "This configuration is invalid so it cannot be released. " + fullErrorMessage;
+            System.out.print(fullErrorMessage);
             getVDCRenderBean().getFlash().put("warningMessage", fullErrorMessage);
         }
         return valid;
@@ -2041,7 +2020,6 @@ public class SetUpDataExplorationPage extends VDCBaseBean implements java.io.Ser
        if (dataTable.isVisualizationEnabled()){
            if (!validateForRelease(false)) {
                dataTable.setVisualizationEnabled(false);
-               FacesContext fc = FacesContext.getCurrentInstance();
                getVDCRenderBean().getFlash().put("warningMessage","Your current changes are invalid. This visualization has been set to 'unreleased'. Click Validate button to get a full list of validation issues.");             
                successMessage = false;
            }
@@ -2051,7 +2029,6 @@ public class SetUpDataExplorationPage extends VDCBaseBean implements java.io.Ser
        visualizationService.saveAndContinue();
        
        if (successMessage){
-               FacesContext fc = FacesContext.getCurrentInstance();
                getVDCRenderBean().getFlash().put("successMessage","Successfully saved changes. You may exit or continue editing.");
        }
        edited = false;

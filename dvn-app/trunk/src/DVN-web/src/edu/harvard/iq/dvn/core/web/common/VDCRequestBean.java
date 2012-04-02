@@ -303,9 +303,9 @@ public class VDCRequestBean extends VDCBaseBean implements java.io.Serializable 
     
     public String home() {
         if (getCurrentVDC() != null) {
-            return "dvHome";
+            return "/StudyListingPage.xhtml?faces-redirect=true";
         } else {
-            return "home";
+            return "/HomePage.xhtml?faces-redirect=true";
         }
     }
 

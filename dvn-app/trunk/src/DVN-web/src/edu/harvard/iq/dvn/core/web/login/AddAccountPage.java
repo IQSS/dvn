@@ -187,9 +187,9 @@ public class AddAccountPage extends VDCBaseBean implements java.io.Serializable 
         // if not logged in, to the appropriate home page
         if (getVDCSessionBean().getLoginBean() != null) {
             if (getVDCRequestBean().getCurrentVDC() != null) {
-                return "cancelVDC";
+                return "/admin/OptionsPage?faces-redirect=true" + getNavigationVDCSuffix();
             } else {
-                return "cancelNetwork";
+                return "/networkAdmin/NetworkOptionsPage.xhtml?faces-redirect=true";
             }
         } else {
             return getVDCRequestBean().home();

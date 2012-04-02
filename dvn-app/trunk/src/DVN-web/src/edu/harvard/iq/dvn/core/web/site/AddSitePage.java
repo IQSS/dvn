@@ -404,7 +404,7 @@ public class AddSitePage extends VDCBaseBean implements java.io.Serializable  {
     public String cancel() {
         VDCUser user = getVDCSessionBean().getLoginBean().getUser();
         if (user.isNetworkAdmin()) {
-            return "/networkAdmin/NetworkOptionsPage?faces-redirect=tru";
+            return "/networkAdmin/NetworkOptionsPage?faces-redirect=true";
         } else {
             return "/login/AccountOptionsPage?faces-redirect=true&userId="+user.getId();
         }

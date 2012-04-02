@@ -245,7 +245,7 @@ public class NetworkPrivilegedUsersPage extends VDCBaseBean implements java.io.S
         privileges.save(creatorUrl);
         privileges.init();
         getVDCRenderBean().getFlash().put("successMessage", "Successfully updated network permissions.");
-        return "myNetworkOptions";
+        return "/networkAdmin/NetworkOptionsPage.xhtml?faces-redirect=true";
     } 
 
     
@@ -302,10 +302,9 @@ public class NetworkPrivilegedUsersPage extends VDCBaseBean implements java.io.S
     }
 
     public String cancel() {
-        String forwardPage="myNetworkOptions";
         privileges.cancel();
         this.sessionRemove(privileges.getClass().getName());
-        return  forwardPage;
+        return "/networkAdmin/NetworkOptionsPage.xhtml?faces-redirect=true";
     }   
 }
 

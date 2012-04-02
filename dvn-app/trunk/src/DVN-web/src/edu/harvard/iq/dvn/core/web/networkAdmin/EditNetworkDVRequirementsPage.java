@@ -157,14 +157,11 @@ VDCNetwork vdcnetwork;
             vdcnetwork.setRequireDVstudiesforrelease(requireDvstudiesforrelease);
             vdcNetworkService.edit(vdcnetwork);
             getVDCRenderBean().getFlash().put("successMessage", "Successfully updated the network dataverse creation and release requirements.  ");
-            return "myNetworkOptions";
+            return "/networkAdmin/NetworkOptionsPage?faces-redirect=true";
     }
 
     public String cancel_action(){
-        if (getVDCRequestBean().getCurrentVDCId() == null)
-            return "cancelNetwork";
-        else
-            return "cancelVDC";
+            return "/networkAdmin/NetworkOptionsPage?faces-redirect=true";
     }
 
 }

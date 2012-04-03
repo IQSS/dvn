@@ -1703,14 +1703,14 @@ public class SetUpDataExplorationPage extends VDCBaseBean implements java.io.Ser
 
         if (!visualizationService.validateDisplayOptions(dataTable)) {
             if (messages) {
-                fullErrorMessage += "<br></br>Please select at least one view and the default view must be selected.<br></br>";
+                fullErrorMessage += "Please select at least one view and the default view must be selected.";
             }
             valid = false;
         }
 
         if (!xAxisSet || !visualizationService.validateXAxisMapping(dataTable, xAxisVariableId)) {
             if (messages) {
-                fullErrorMessage += "<br></br>You must select one X-axis variable and it cannot be mapped to any Measure or Filter.";
+                fullErrorMessage += "You must select one X-axis variable and it cannot be mapped to any Measure or Filter.";
             }
             valid = false;
         }
@@ -1719,7 +1719,7 @@ public class SetUpDataExplorationPage extends VDCBaseBean implements java.io.Ser
 
             if (messages) {
                 if (!returnListOfErrors.isEmpty()) {
-                    fullErrorMessage += "<br></br>Measure-filter combinations were found that would result in multiple variables selected at visualization. ";
+                    fullErrorMessage += "<p>Measure-filter combinations were found that would result in multiple variables selected at visualization.</p>";
                     boolean newgroup = false;
                     boolean firstVar = true;
                     for (Object errorObject : returnListOfErrors) {
@@ -1746,7 +1746,7 @@ public class SetUpDataExplorationPage extends VDCBaseBean implements java.io.Ser
                         }
                     }
                     fullErrorMessage += "</li></ul>";
-                    fullErrorMessage += "To correct this, create filters to limit each measure filter combination to a single variable or assign only one variable to each measure.";
+                    fullErrorMessage += "<p>To correct this, create filters to limit each measure filter combination to a single variable or assign only one variable to each measure.</p>";
                 }
             }
 
@@ -1758,7 +1758,7 @@ public class SetUpDataExplorationPage extends VDCBaseBean implements java.io.Ser
         if (!visualizationService.validateAllGroupsAreMapped(dataTable, returnListOfErrors)) {
             if (messages) {
                 if (!returnListOfErrors.isEmpty()) {
-                    fullErrorMessage += "<br></br>Measure-filter combinations were found that would result in no variables selected at visualization.";
+                    fullErrorMessage += "<p>Measure-filter combinations were found that would result in no variables selected at visualization.</p>";
                     fullErrorMessage += "<ul>";
                     String filterErrorMessage = "";
                     int filterCount = 0;
@@ -1797,7 +1797,7 @@ public class SetUpDataExplorationPage extends VDCBaseBean implements java.io.Ser
                         fullErrorMessage = fullErrorMessage + "<li>Measures " + measureErrorMessage + " contain no variables.</li>";
                     }
                     fullErrorMessage += "</ul>";
-                    fullErrorMessage += "To correct this, assign at least one variable or remove the empty measures or filters.";
+                    fullErrorMessage += "<p>To correct this, assign at least one variable or remove the empty measures or filters.</p>";
 
                 }
 
@@ -1809,7 +1809,7 @@ public class SetUpDataExplorationPage extends VDCBaseBean implements java.io.Ser
         if (!visualizationService.validateMoreThanZeroMeasureMapping(dataTable, returnListOfErrors)) {
             if (messages) {
                 if (!returnListOfErrors.isEmpty()) {
-                    fullErrorMessage += "<br></br>At least one filter was found that is not mapped to any measures.";;
+                    fullErrorMessage += "<p>At least one filter was found that is not mapped to any measures.</p>";
                     boolean firstVar = true;
                     boolean newgroup = false;
                     for (Object errorObject : returnListOfErrors) {
@@ -1834,7 +1834,7 @@ public class SetUpDataExplorationPage extends VDCBaseBean implements java.io.Ser
                         }
                     }
                     fullErrorMessage += "</li></ul>";
-                    fullErrorMessage += "To correct this, remove unassigned variables or assign them to measures.";
+                    fullErrorMessage += "<p>To correct this, remove unassigned variables or assign them to measures.</p>";
                 }
             }
 
@@ -1847,7 +1847,7 @@ public class SetUpDataExplorationPage extends VDCBaseBean implements java.io.Ser
             if (messages) {
                 if (!returnListOfErrors.isEmpty()) {
 
-                    fullErrorMessage += "<br></br>Variables were found that are mapped to multiple measures. ";
+                    fullErrorMessage += "<p>Variables were found that are mapped to multiple measures.</p>";
                     boolean firstGroup = true;
                     boolean newvar = false;
                     for (Object dataVariableIn : returnListOfErrors) {
@@ -1875,7 +1875,7 @@ public class SetUpDataExplorationPage extends VDCBaseBean implements java.io.Ser
                     }
                 }
                 fullErrorMessage += "</li></ul>";
-                fullErrorMessage += "To correct this, map each variable to a single measure.";
+                fullErrorMessage += "<p>To correct this, map each variable to a single measure.</p>";
             }
 
             valid = false;
@@ -1887,7 +1887,7 @@ public class SetUpDataExplorationPage extends VDCBaseBean implements java.io.Ser
             if (messages) {
                 if (!returnListOfErrors.isEmpty()) {
 
-                    fullErrorMessage += "<br></br>Variables were found that are mapped to multiple filters within a single filter group. ";
+                    fullErrorMessage += "<p>Variables were found that are mapped to multiple filters within a single filter group.</p>";
                     boolean firstGroup = true;
                     boolean newvar = false;
                     for (Object dataVariableIn : returnListOfErrors) {
@@ -1914,7 +1914,7 @@ public class SetUpDataExplorationPage extends VDCBaseBean implements java.io.Ser
                     }
                 }
                 fullErrorMessage += "</li></ul>";
-                fullErrorMessage += "To correct this, map each variable to a single filter within each group.";
+                fullErrorMessage += "<p>To correct this, map each variable to a single filter within each group.</p>";
             }
 
             valid = false;
@@ -1922,9 +1922,9 @@ public class SetUpDataExplorationPage extends VDCBaseBean implements java.io.Ser
 
         if (!visualizationService.validateAtLeastOneMeasureMapping(dataTable)) {
             if (messages) {
-                fullErrorMessage += "<br></br>Measure-filter combinations were found that would result in no variables selected at visualization.";
-                fullErrorMessage += " No Measures or filters configured.";
-                fullErrorMessage += "To correct this, configure at least one measure or one measure-filter combination.";
+                fullErrorMessage += "<p>Measure-filter combinations were found that would result in no variables selected at visualization.</p>";
+                fullErrorMessage += "No Measures or filters configured.";
+                fullErrorMessage += "<p>To correct this, configure at least one measure or one measure-filter combination.</p>";
             }
             valid = false;
         }
@@ -1934,7 +1934,7 @@ public class SetUpDataExplorationPage extends VDCBaseBean implements java.io.Ser
 
             if (messages) {
                 if (!returnListOfErrors.isEmpty()) {
-                    fullErrorMessage += "<br></br>Measure-filter combinations were found that would result in multiple variables selected at visualization. ";
+                    fullErrorMessage += "<p>Measure-filter combinations were found that would result in multiple variables selected at visualization.</p>";
                     boolean firstVar = true;
                     boolean newgroup = false;;
                     for (Object errorObject : returnListOfErrors) {
@@ -1961,7 +1961,7 @@ public class SetUpDataExplorationPage extends VDCBaseBean implements java.io.Ser
                         }
                     }
                     fullErrorMessage += "</li></ul>";
-                    fullErrorMessage += "To correct this, for measures where multiple variables are assigned, also assign each variable to a filter where the measure-filter combinations result in a single variable selected at visualization.";
+                    fullErrorMessage += "<p>To correct this, for measures where multiple variables are assigned, also assign each variable to a filter where the measure-filter combinations result in a single variable selected at visualization.</p>";
                 }
             }
             returnListOfErrors.clear();
@@ -1972,8 +1972,7 @@ public class SetUpDataExplorationPage extends VDCBaseBean implements java.io.Ser
             getVDCRenderBean().getFlash().put("successMessage", "The Data Visualization is valid for release.");
         }
         if (!valid && messages) {
-            // add rounded corners to the validation message box
-            fullErrorMessage = "This configuration is invalid so it cannot be released. " + fullErrorMessage;
+            fullErrorMessage = "This configuration is invalid so it cannot be released.</span></p> " + fullErrorMessage;
             System.out.print(fullErrorMessage);
             getVDCRenderBean().getFlash().put("warningMessage", fullErrorMessage);
         }

@@ -1155,14 +1155,9 @@ public class EditStudyPage extends VDCBaseBean implements java.io.Serializable  
         // Commented out those study fields which are part of a compund field and cannot actually have their input levels set through the UI
         // nor do they determine if the field as a whole is shown
         List tfList = getStudyMapTemplateFields(
-               //StudyFieldConstant.abstractDate,
                StudyFieldConstant.description,
-               StudyFieldConstant.keywordValue,             
-               //StudyFieldConstant.keywordVocab,
-               //StudyFieldConstant.keywordVocabURI,
-               StudyFieldConstant.topicClassValue,              
-               //StudyFieldConstant.topicClassVocab,
-               //StudyFieldConstant.topicClassVocabURI,
+               StudyFieldConstant.keyword,
+               StudyFieldConstant.topicClassification,
                StudyFieldConstant.relatedMaterial,
                StudyFieldConstant.relatedStudies,
                StudyFieldConstant.otherReferences,
@@ -1173,10 +1168,7 @@ public class EditStudyPage extends VDCBaseBean implements java.io.Serializable  
                StudyFieldConstant.country,
                StudyFieldConstant.geographicCoverage,
                StudyFieldConstant.geographicUnit,            
-               //StudyFieldConstant.eastLongitude,
-               StudyFieldConstant.westLongitude,
-               //StudyFieldConstant.northLatitude,
-               //StudyFieldConstant.southLatitude,
+               StudyFieldConstant.geographicBoundingBox,
                StudyFieldConstant.unitOfAnalysis,
                StudyFieldConstant.kindOfData,
                StudyFieldConstant.universe);

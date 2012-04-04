@@ -1042,6 +1042,11 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
         }  else {
              yAxisLabel =  yAxisLabelForIndex(indexDate);
         }
+        disableIneligibleYears();
+        callDrawVisualization();
+    }
+    
+    private void disableIneligibleYears(){
         List <SelectItem> selectEndYearsTest = new ArrayList();
         for (SelectItem present: selectEndYears){
             selectEndYearsTest.add(present);
@@ -1057,7 +1062,21 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
             present.setDisabled(disabled);
             selectEndYears.add(present);
         }
-        callDrawVisualization();
+        List <SelectItem> selectBeginYearsTest = new ArrayList();        
+        for (SelectItem present: selectBeginYears){
+            selectBeginYearsTest.add(present);
+        }        
+        selectBeginYears.clear();        
+        for (SelectItem present: selectBeginYearsTest){
+            disabled = false;
+            Integer testYear = new Integer((String)present.getValue()).intValue();
+            if (testYear.intValue() >= new Integer(this.endYear).intValue() ){
+                disabled = true;
+            }
+            present.setDisabled(disabled);
+            selectBeginYears.add(present);
+        }
+        
     }
     
     public void update_LegendPosition(){
@@ -1083,21 +1102,7 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
         }  else {
              yAxisLabel =  yAxisLabelForIndex(indexDate);
         }
-        boolean disabled;
-        List <SelectItem> selectBeginYearsTest = new ArrayList();        
-        for (SelectItem present: selectBeginYears){
-            selectBeginYearsTest.add(present);
-        }        
-        selectBeginYears.clear();        
-        for (SelectItem present: selectBeginYearsTest){
-            disabled = false;
-            Integer testYear = new Integer((String)present.getValue()).intValue();
-            if (testYear.intValue() >= new Integer(this.endYear).intValue() ){
-                disabled = true;
-            }
-            present.setDisabled(disabled);
-            selectBeginYears.add(present);
-        }
+        disableIneligibleYears();
         callDrawVisualization();
     }
 

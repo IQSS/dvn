@@ -1036,15 +1036,26 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
     public void update_StartYear(){
         Object value= this.selectStartYear.getValue();
         this.startYear = (String) value;
-        if (new Integer(this.startYear).intValue() >= new Integer(this.endYear).intValue()){
-            Integer newEnd = new Integer(this.startYear).intValue() + 1;
-            this.endYear = newEnd.toString();            
-        }
         getDataTable(true);
         if (!this.displayIndexes){
             yAxisLabel=  getYAxisLabelFromVizLines(); 
         }  else {
              yAxisLabel =  yAxisLabelForIndex(indexDate);
+        }
+        List <SelectItem> selectEndYearsTest = new ArrayList();
+        for (SelectItem present: selectEndYears){
+            selectEndYearsTest.add(present);
+        }        
+        selectEndYears.clear(); 
+        boolean disabled;
+        for (SelectItem present: selectEndYearsTest){
+            disabled = false;
+            Integer testYear = new Integer((String)present.getValue()).intValue();
+            if (testYear.intValue() <= new Integer(this.startYear).intValue() ){
+                disabled = true;               
+            }
+            present.setDisabled(disabled);
+            selectEndYears.add(present);
         }
         callDrawVisualization();
     }
@@ -1066,15 +1077,26 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
     public void update_EndYear(){
         Object value= this.selectEndYear.getValue();
         this.endYear = (String) value ;
-        if (new Integer(this.startYear).intValue() >= new Integer(this.endYear).intValue()){
-            Integer newStart = new Integer(this.endYear).intValue() - 1;
-            this.startYear = newStart.toString();            
-        }
         getDataTable(true);
         if (!this.displayIndexes){
             yAxisLabel=  getYAxisLabelFromVizLines(); 
         }  else {
              yAxisLabel =  yAxisLabelForIndex(indexDate);
+        }
+        boolean disabled;
+        List <SelectItem> selectBeginYearsTest = new ArrayList();        
+        for (SelectItem present: selectBeginYears){
+            selectBeginYearsTest.add(present);
+        }        
+        selectBeginYears.clear();        
+        for (SelectItem present: selectBeginYearsTest){
+            disabled = false;
+            Integer testYear = new Integer((String)present.getValue()).intValue();
+            if (testYear.intValue() >= new Integer(this.endYear).intValue() ){
+                disabled = true;
+            }
+            present.setDisabled(disabled);
+            selectBeginYears.add(present);
         }
         callDrawVisualization();
     }

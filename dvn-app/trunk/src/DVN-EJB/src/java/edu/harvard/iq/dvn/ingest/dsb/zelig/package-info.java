@@ -17,4 +17,5 @@
    Developed at the Institute for Quantitative Social Science, Harvard University.
    Version 3.0.
 */
+@javax.xml.bind.annotation.XmlSchema(namespace = "http://gking.harvard.edu/zelig", elementFormDefault = javax.xml.bind.annotation.XmlNsForm.QUALIFIED)
 package edu.harvard.iq.dvn.ingest.dsb.zelig;

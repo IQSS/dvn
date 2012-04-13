@@ -1901,9 +1901,9 @@ public class StudyServiceBean implements edu.harvard.iq.dvn.core.study.StudyServ
         Map dataFilesMap = null; 
 
 	if (isNesstarHarvest) {
-	    ddiService.mapDDI(ddiFile, studyVersion, true);
+	    dataFilesMap = ddiService.mapDDI(ddiFile, studyVersion, true);
 	} else {
-	    ddiService.mapDDI(ddiFile, studyVersion, false);
+	    dataFilesMap = ddiService.mapDDI(ddiFile, studyVersion, false);
 	}
 
         logger.info("doImportStudy: ddi mapped");

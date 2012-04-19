@@ -170,23 +170,23 @@
                                         <ice:outputText styleClass="dvn_totalsValue"
                                                         value="#{homePage.vdcUIListSize}"/>
                                         <ice:outputText escape="false"
-                                                        rendered="#{homePage.groupName == 'All Dataverses' and homePage.isAlphaSort == false}"
+                                                        rendered="#{homePage.groupName == 'Released Dataverses' and homePage.isAlphaSort == false}"
                                                         styleClass="dvn_totalsLabel"
                                                         value=" | "/>
-                                        <ice:outputText rendered="#{homePage.groupName == 'All Dataverses' and homePage.isAlphaSort == false}"
+                                        <ice:outputText rendered="#{homePage.groupName == 'Released Dataverses' and homePage.isAlphaSort == false}"
                                                         styleClass="dvn_totalsLabel"
                                                         value ="Studies: "/>
-                                        <ice:outputText rendered="#{homePage.groupName == 'All Dataverses' and homePage.isAlphaSort == false}"
+                                        <ice:outputText rendered="#{homePage.groupName == 'Released Dataverses' and homePage.isAlphaSort == false}"
                                                         styleClass="dvn_totalsValue"
                                                         value="#{homePage.studyCount}"/>
                                         <ice:outputText escape="false"
-                                                        rendered="#{homePage.groupName == 'All Dataverses' and homePage.isAlphaSort == false}"
+                                                        rendered="#{homePage.groupName == 'Released Dataverses' and homePage.isAlphaSort == false}"
                                                         styleClass="dvn_totalsLabel"
                                                         value=" | "/>
-                                        <ice:outputText rendered="#{homePage.groupName == 'All Dataverses' and homePage.isAlphaSort == false }"
+                                        <ice:outputText rendered="#{homePage.groupName == 'Released Dataverses' and homePage.isAlphaSort == false }"
                                                         styleClass="dvn_totalsLabel"
                                                         value="Files: " />
-                                        <ice:outputText rendered="#{homePage.groupName == 'All Dataverses' and homePage.isAlphaSort == false }"
+                                        <ice:outputText rendered="#{homePage.groupName == 'Released Dataverses' and homePage.isAlphaSort == false }"
                                                         styleClass="dvn_totalsValue"
                                                         value="#{homePage.fileCount}"/>
                                     </div>
@@ -338,7 +338,7 @@
                                                         <ice:commandLink onclick="deselect_active_children(this);setHiddenValues(-1);"
                                                                          partialSubmit="true"
                                                                          styleClass="head">
-                                                            <ice:outputText value="Show All Dataverses"/>
+                                                            <ice:outputText value="Show Released Dataverses"/>
                                                             <f:attribute name="groupId" value="-1"/>
                                                         </ice:commandLink>
                                                     </h4>

@@ -314,7 +314,7 @@ public class HomePage extends VDCBaseBean implements Serializable {
         } 
         if (groupId == null || groupId.equals(new Long("-1")) ) {
             group = null;
-            setGroupName("All Dataverses");
+            setGroupName("Released Dataverses");
         } else {
             group = vdcGroupService.findById(groupId);
             setGroupName(group.getName());

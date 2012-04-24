@@ -668,6 +668,21 @@ system "stty cbreak </dev/tty >/dev/tty 2>&1";
 
 print "\nWriting glassfish configuration file (domain.xml)... ";
 
+# 5cc. FIND THE "special-admin-indicator" IN THE ORIGINAL GLASSFISH CONFIG:
+
+open ( GFCNFG, $glassfish_dir."/glassfish/domains/domain1/config/domain.xml") || die $@; 
+
+while ( <GFCNFG> )
+{
+    if (/<secure-admin special-admin-indicator=\"([^\"]*)\"/)
+    {
+	$CONFIG_DEFAULTS{'GF_SPEC_INDICATOR'} = $1;
+    }
+}
+
+# (is it really a problem if we haven't found it?)
+
+close GFCNFG;
 
 open TEMPLATEIN, 'domain.xml.TEMPLATE'; 
 open CONFIGOUT, '>domain.xml';

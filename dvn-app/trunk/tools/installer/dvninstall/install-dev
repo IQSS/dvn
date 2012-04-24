@@ -659,6 +659,9 @@ system ( "/bin/cp -f ../../../lib/dvn-lib-NetworkData/*.jar ".$glassfish_dir."/g
 system ( "/bin/cp -f ../../../lib/dvn-lib-NetworkData-EXTRA/*.jar ".$glassfish_dir."/glassfish/domains/domain1/config/networkData/lib"); 
 #diagnostics needed!
 
+# install pre-configured robots.txt blocking bot crawlers:
+system ( "/bin/cp -f robots.txt ".$glassfish_dir."/glassfish/domains/domain1/docroot"); 
+
 print "done!\n";
 
 print "\nInstalling the Glassfish PostgresQL driver... ";
@@ -676,6 +679,13 @@ unless ( ($exit_code=system ($glassfish_dir."/bin/asadmin stop-domain domain1"))
 {
 	print STDERR "(that's OK!)\n";
 }
+
+# 5dd. INSTALL PATCHED WEBCORE GLASSFISH MODULE: 
+
+$gf_webcore_jar = $glassfish_dir."/glassfish/modules/web-core.jar";
+
+system ("/bin/mv -f ".$gf_webcore_jar . " " . $gf_webcore_jar.".PRESERVED");
+system ("/bin/cp web-core.jar ".$gf_webcore_jar); 
 
 # 5e. START GLASSFISH:
 print "\nStarting glassfish.\n";

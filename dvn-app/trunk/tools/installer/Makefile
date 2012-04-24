@@ -3,7 +3,7 @@ installer:	dvninstall.zip
 
 DVN_WAR_FILE=dvninstall/appdeploy/dist/DVN-web.war
 
-DVN_CONFIG_FILES=dvninstall/config/error.xsl dvninstall/config/fgdc2ddi.xsl dvninstall/config/graphml.props dvninstall/config/header.xsl dvninstall/config/jhove.conf dvninstall/config/logging.properties dvninstall/config/metadata.xsl dvninstall/config/mif2ddi.xsl dvninstall/config/neodb.props dvninstall/config/oai_dc2ddi.xsl dvninstall/config/oaicat.properties
+DVN_CONFIG_FILES=dvninstall/config/error.xsl dvninstall/config/fgdc2ddi.xsl dvninstall/config/graphml.props dvninstall/config/header.xsl dvninstall/config/jhove.conf dvninstall/config/logging.properties dvninstall/config/metadata.xsl dvninstall/config/mif2ddi.xsl dvninstall/config/neodb.props dvninstall/config/oai_dc2ddi.xsl dvninstall/config/oaicat.properties dvninstall/web-core.jar dvninstall/robots.txt
 
 DVN_SQL_FILES=dvninstall/referenceData.sql dvninstall/ejbtimer.sql dvninstall/buildupdate_v2_2_5_v3_0.sql
 

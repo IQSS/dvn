@@ -742,29 +742,30 @@ unless ( ($exit_code=system ($glassfish_dir."/bin/asadmin start-domain domain1")
 
 # 6. DEPLOY APPLICATION:
 # 6a. DO WE HAVE ANT? 
+#  (we are no longer using ant to deply -- L.A.)
+#
+#$sys_path = $ENV{'PATH'}; 
+#@sys_path_dirs = split ( ":", $sys_path ); 
 
-$sys_path = $ENV{'PATH'}; 
-@sys_path_dirs = split ( ":", $sys_path ); 
-
-$ant_exec = ""; 
-
-for $sys_path_dir ( @sys_path_dirs )
-{
-    if ( -x $sys_path_dir . "/ant" ) 
-    {
-	$ant_exec = $sys_path_dir . "/ant"; 
-	last; 
-    }
-}
-
-if ( $ant_exec eq "" )
-{
-    print STDERR "\nERROR: I haven't been able to find ant command in your PATH!\n";
-    print STDERR "Please make sure and is installed and in your PATH; then try again.\n\n";
-
-    exit 1; 
-}
-
+#$ant_exec = ""; 
+#
+#for $sys_path_dir ( @sys_path_dirs )
+#{
+#    if ( -x $sys_path_dir . "/ant" ) 
+#    {
+#	$ant_exec = $sys_path_dir . "/ant"; 
+#	last; 
+#    }
+#}
+#
+#if ( $ant_exec eq "" )
+#{
+#    print STDERR "\nERROR: I haven't been able to find ant command in your PATH!\n";
+#    print STDERR "Please make sure and is installed and in your PATH; then try again.\n\n";
+#
+#    exit 1; 
+#}
+f
 # 6b. TRY TO DEPLOY:
 print "\nAttempting to deploy the application:\n\n";
 
@@ -776,26 +777,41 @@ $CONFIG_DEFAULTS{'GLASSFISH_ADMIN_PASSWORD'} = 'adminadmin';
 my $glassfish_password = $CONFIG_DEFAULTS{'GLASSFISH_ADMIN_PASSWORD'}; 
 
 # create deployment properties files:
+#   (these properties files are no longer used, because we are no longer
+#   using ant to deploy the app. -- L.A.)
 
-for $prop_file ('AS', 'glassfish') 
+#for $prop_file ('AS', 'glassfish') 
+#{
+#    open ( TEMPLIN, "appdeploy/" . $prop_file . ".properties.TEMPLATE" ) 
+#	|| die "failed to open appdeploy/" . $prop_file . ".properties.TEMPLATE";
+#    open ( PROPOUT, ">appdeploy/" . $prop_file . ".properties" ) 
+#	|| die "failed to open appdeploy/" . $prop_file . ".properties for writing";
+#
+#    while( <TEMPLIN> )
+#    {
+#	s/%GF_ADMIN_PASSWORD%/$glassfish_password/g;
+#	s/%GF_ROOT_DIR%/$glassfish_dir/g;
+#	print PROPOUT $_; 
+#    }
+#
+#    close TEMPLIN; 
+#    close PROPOUT; 
+#}
+
+# Create the .asadminpass file, or replace it, if exists:
+
+$asadminpass_file = $ENV{'HOME'} . "/.asadminpass";
+
+if ( -e $asadminpass_file )
 {
-    open ( TEMPLIN, "appdeploy/" . $prop_file . ".properties.TEMPLATE" ) 
-	|| die "failed to open appdeploy/" . $prop_file . ".properties.TEMPLATE";
-    open ( PROPOUT, ">appdeploy/" . $prop_file . ".properties" ) 
-	|| die "failed to open appdeploy/" . $prop_file . ".properties for writing";
-
-    while( <TEMPLIN> )
-    {
-	s/%GF_ADMIN_PASSWORD%/$glassfish_password/g;
-	s/%GF_ROOT_DIR%/$glassfish_dir/g;
-	print PROPOUT $_; 
-    }
-
-    close TEMPLIN; 
-    close PROPOUT; 
+    system ("/bin/mv -f " . $asadminpass_file . " " . $asadminpass_file . ".PRESERVED");
 }
 
- unless ( ($exit_code = system ("cd appdeploy; " . $ant_exec)) == 0 )
+system ("echo 'asadmin://admin@localhost:4848 ' > " . $asadminpass_file); 
+
+$deploy_command = ."/bin/asadmin deploy --force=true --name=DVN-web dist/DVN-web.war";
+
+unless ( ($exit_code = system ("cd appdeploy; " . $deploy_command)) == 0 )
 {
 	print STDERR "Could not deploy DVN application!\n";
 	print STDERR "(exit code: " . $exitcode . ")\n";

@@ -790,8 +790,8 @@ unless ( ($exit_code=system ($glassfish_dir."/bin/asadmin start-domain domain1")
 #
 #    exit 1; 
 #}
-f
 # 6b. TRY TO DEPLOY:
+
 print "\nAttempting to deploy the application:\n\n";
 
 $CONFIG_DEFAULTS{'GLASSFISH_ADMIN_PASSWORD'} = 'adminadmin'; 
@@ -834,7 +834,7 @@ if ( -e $asadminpass_file )
 
 system ("echo 'asadmin://admin@localhost:4848 ' > " . $asadminpass_file); 
 
-$deploy_command = ."/bin/asadmin deploy --force=true --name=DVN-web dist/DVN-web.war";
+$deploy_command = $glassfish_dir."/bin/asadmin deploy --force=true --name=DVN-web dist/DVN-web.war";
 
 unless ( ($exit_code = system ("cd appdeploy; " . $deploy_command)) == 0 )
 {

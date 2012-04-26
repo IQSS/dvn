@@ -935,7 +935,6 @@ $< = 0;
 
 # 8. START GLASSFISH AGAIN:
 print "\nStarting glassfish, again:\n\n";
-system ($glassfish_dir."/bin/asadmin start-domain domain1");
 
 $gf_start_command = $glassfish_dir."/bin/asadmin start-domain domain1"; 
 
@@ -943,7 +942,7 @@ unless ( ($exit_code = system ($gf_start_command)) == 0 )
 {
 	print STDERR "Could not start glassfish!\n";
 	print STDERR "(command line: " . $gf_start_command . ")\n";
-	print STDERR "(exit code: " . $exitcode . ")\n";
+	print STDERR "(exit code: " . $exit_code . ")\n";
 	exit 1; 
 }
 

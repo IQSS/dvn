@@ -419,7 +419,7 @@ if ( $CONFIG_DEFAULTS{'POSTGRES_SERVER'} eq 'localhost' )
 
     # 4c. CHECK IF THIS DB ALREADY EXISTS:
 
-    $psql_command_dbcheck = $psql_exec . "/psql -c \"\" -d " . $CONFIG_DEFAULTS{'POSTGRES_DATABASE'} . ">/dev/null"; 
+    $psql_command_dbcheck = $psql_exec . "/psql -c \"\" -d " . $CONFIG_DEFAULTS{'POSTGRES_DATABASE'} . ">/dev/null 2>&1"; 
     if ( ($exitcode = system($psql_command_dbcheck)) == 0 )
     {
 	print "WARNING! Database " . $CONFIG_DEFAULTS{'POSTGRES_DATABASE'} . " already exists!\n";
@@ -440,7 +440,7 @@ if ( $CONFIG_DEFAULTS{'POSTGRES_SERVER'} eq 'localhost' )
 
     # 4d. CHECK IF THIS USER ALREADY EXISTS:
 
-    $psql_command_rolecheck = $psql_exec . "/psql -c \"\" -d postgres " . $CONFIG_DEFAULTS{'POSTGRES_USER'};
+    $psql_command_rolecheck = $psql_exec . "/psql -c \"\" -d postgres " . $CONFIG_DEFAULTS{'POSTGRES_USER'} . " >/dev/null 2>&1";
     if ( ($exitcode = system($psql_command_rolecheck)) == 0 )
     {
 	print "User (role) . " . $CONFIG_DEFAULTS{'POSTGRES_USER'} . " already exists;\n";

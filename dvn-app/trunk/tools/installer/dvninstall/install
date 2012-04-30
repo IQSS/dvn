@@ -638,7 +638,9 @@ elsif ( -x "/usr/sbin/sysctl" )
 
 if ( $sys_mem_total > 0 )
 {
-    $gf_heap_default = ( int ($sys_mem_total / (2 * 1024) ) ); 
+    # setting the default heap size limit to 3/8 of the available 
+    # amount of memory: 
+    $gf_heap_default = ( int ($sys_mem_total / (8 / 3 * 1024) ) ); 
 
     print "\nSetting the heap limit for Glassfish to " . $gf_heap_default . "MB. \n"; 
     print "You may need to adjust this setting to better suit \n";

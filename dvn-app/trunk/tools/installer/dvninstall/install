@@ -881,7 +881,7 @@ unless ( ($exit_code = system ($gf_stop_command)) == 0 )
 
 	$psql_command = $psql_exec . "/psql -d $CONFIG_DEFAULTS{'POSTGRES_DATABASE'} -f " . $SQL_REFERENCE_DATA;
 
-	print STDERR $psql_exec . "\n\n";
+	print STDERR $psql_command . "\n\n";
 	print STDERR "Then start glassfish again... Voila, you should then have \n";
 	print STDERR "a running DVN instance at the following URL:\n\n";
 	print STDERR "  http://" . $CONFIG_DEFAULTS{'HOST_DNS_ADDRESS'} . "/dvn\n";
@@ -900,7 +900,7 @@ if ( $pg_local_connection )
 
     $< = $POSTGRES_SYS_UID; 
     $> = $POSTGRES_SYS_UID; 
-    $psql_command = "psql -d $CONFIG_DEFAULTS{'POSTGRES_DATABASE'} -f referenceData.sql";
+    $psql_command = $psql_exec . "/psql -d $CONFIG_DEFAULTS{'POSTGRES_DATABASE'} -f referenceData.sql";
 
     unless ( ($exitcode = system("$psql_command")) == 0 ) 
     {

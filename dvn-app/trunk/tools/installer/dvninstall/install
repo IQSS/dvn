@@ -313,6 +313,14 @@ if ( $CONFIG_DEFAULTS{'POSTGRES_SERVER'} eq 'localhost' )
 
     if ( $psql_exec eq "" && $WORKING_OS eq "MacOSX" )
     {
+	for $pg_minor_version ( "1", "0" )
+	{
+	    if ( -x "/Library/PostgreSQL/9." . $pg_minor_version . "/bin/psql" ) 
+	    {
+		$psql_exec = "/Library/PostgreSQL/9." . $pg_minor_version . "/bin";
+		last; 
+	    }
+	}
 	for $pg_minor_version ( "4", "3" )
 	{
 	    if ( -x "/Library/PostgreSQL/8." . $pg_minor_version . "/bin/psql" ) 
@@ -321,6 +329,7 @@ if ( $CONFIG_DEFAULTS{'POSTGRES_SERVER'} eq 'localhost' )
 		last; 
 	    }
 	}
+
     }
 
     if ( $psql_exec eq "" )
@@ -354,7 +363,7 @@ if ( $CONFIG_DEFAULTS{'POSTGRES_SERVER'} eq 'localhost' )
 
     my (@postgres_version_tokens) = split ( '\.', $postgresVersion ); 
 
-    unless ( $postgres_version_tokens[0] >= 8 && $postgres_version_tokens[1] >= 3 )
+    unless ( ($postgres_version_tokens[0] == 8 && $postgres_version_tokens[1] >= 3) || ($postgres_version_tokens[0] >= 9) )
     {
 	print STDERR "\nERROR: PostgresQL version 8.3, or newer, is required!\n";
 	print STDERR "Found a copy of psql ($psql_exec/psql) that belongs to version $postgresVersion.\n\n";

@@ -25,6 +25,9 @@ alter table StudyField add ALLOWMULTIPLES boolean;
 ALTER TABLE StudyField ADD COLUMN parentstudyfield_id bigint;
 ALTER TABLE StudyField ALTER COLUMN parentstudyfield_id SET STORAGE PLAIN;
 
+--Update studyfield titles
+UPDATE studyfield set title=description WHERE description != '';
+
 -- replace primary study fields with parents
 update studyfield set name = 'author' where name = 'authorName';
 update studyfield set name = 'producer' where name = 'producerName';
@@ -38,6 +41,12 @@ update studyfield set name = 'geographicBoundingBox' where name = 'westLongitude
 update studyfield set name = 'note' where name = 'notesInformationType';
 update studyfield set name = 'publication' where name = 'relatedPublications';
 update studyfield set name = 'publicationReplicationData' where name = 'replicationFor';
+UPDATE studyfield set name = 'note' where name = 'NotesInformationType';
+
+--Update of Notes related study fields
+UPDATE studyfield set name = 'noteInformationSubject' where name = 'NotesInformationSubject';
+UPDATE studyfield set name = 'noteText' where name = 'NotesText';
+
 
 -- now re add primary fields and a few new
 INSERT INTO studyfield (id,title,description, name,basicSearchField,advancedSearchField, searchResultField, customField) VALUES (99, '', '', 'authorName', FALSE, FALSE, FALSE, FALSE );
@@ -190,11 +199,6 @@ INSERT INTO metadataformattype (id, name, mimetype, namespace, formatschema, par
 INSERT INTO metadataformattype (id, name, mimetype, namespace, formatschema, partialexcludesupported, partialselectsupported) VALUES (2, 'oai_dc', 'application/xml', 'http://www.openarchives.org/OAI/2.0/oai_dc/', 'http://www.openarchives.org/OAI/2.0/oai_dc.xsd', false, false);
 INSERT INTO metadataformattype (id, name, mimetype, namespace, formatschema, partialexcludesupported, partialselectsupported) VALUES (3, 'marc', 'application/octet-stream', 'http://www.loc.gov/marc/', 'MARC 21', false, false);
 
---Update of Notes related study fields
-UPDATE studyfield set name = 'notesInformationType' where name = 'NotesInformationType';
-UPDATE studyfield set name = 'notesInformationSubject' where name = 'NotesInformationSubject';
-UPDATE studyfield set name = 'notesText' where name = 'NotesText';
-UPDATE studyfield set title=description WHERE description != '';
 
 --new columns to related publications
 ALTER table StudyRelPublication ADD COLUMN idType character varying(255);

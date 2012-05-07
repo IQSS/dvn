@@ -326,4 +326,5 @@ table.dvnCreateDvClassificationTable table{width:100%;border-top:1px solid #dcdd
 .dvnPromotionalSample span,.dvnPromotionalCode span,.dvnPromotionalTip span{color:gray}
 .dvnPromotionalSample textarea,.dvnPromotionalCode textarea,.dvnPromotionalTip textarea{width:90%;border:1px solid #6e7f90;overflow:scroll}
 /* UTILITIES */
-.dvnUtilitiesTable{margin-left:auto;margin-right:auto;}
+.dvnUtilitiesTable{display:table; margin:.5em auto;}
+.dvnUtilitiesTable td.dvnUtilitiesTableCol1{border-bottom:1px solid gold;}

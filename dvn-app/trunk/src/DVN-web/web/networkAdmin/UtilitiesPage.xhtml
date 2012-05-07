@@ -41,7 +41,7 @@
                 </ice:outputLink>
                 <ice:graphicImage styleClass="vdcNoBorders" value="/resources/images/icon_expand.gif" rendered="#{UtilitiesPage.studyLockPanelRendered}"/>
               </div>
-              <ice:panelGrid styleClass="dvnUtilitiesTable" rendered="#{UtilitiesPage.studyLockPanelRendered}">
+              <ice:panelGroup styleClass="dvnUtilitiesTable" rendered="#{UtilitiesPage.studyLockPanelRendered}">
                 <ice:messages id="studyLockMessage" styleClass="errorMessage"/>
                 <ice:outputText value="Current Locks:"/>
                 <ice:dataTable value="#{UtilitiesPage.studyLockList}" var="studyLock" width="100%">
@@ -76,7 +76,7 @@
                   <ice:inputText value="#{UtilitiesPage.studyLockStudyId}" size="6"/>
                   <ice:commandButton value="Remove Lock" action="#{UtilitiesPage.removeLock_action}"/>
                 </div>
-              </ice:panelGrid>
+              </ice:panelGroup>
               <!-- INDEX PANEL -->
               <div class="vdcStudyInfoHeader dvnFormPadding">
                 <ice:outputText value="Index Utilities"/>
@@ -85,7 +85,7 @@
                 </ice:outputLink>
                 <ice:graphicImage styleClass="vdcNoBorders" value="/resources/images/icon_expand.gif" rendered="#{UtilitiesPage.indexPanelRendered}"/>
               </div>
-              <ice:panelGrid styleClass="dvnUtilitiesTable" rendered="#{UtilitiesPage.indexPanelRendered}">
+              <ice:panelGroup styleClass="dvnUtilitiesTable" rendered="#{UtilitiesPage.indexPanelRendered}">
                 <ice:messages id="indexMessage" styleClass="errorMessage"/>
                 <ice:outputText value="To reindex all studies, click on the button below (please note: the index directory must be empty before 'index all' can be run):"/>
                 <div>
@@ -101,7 +101,9 @@
                 <ice:outputText value="To index arbitrary studies, input the study ids and click on the button below:"/>
                 <div>
                   <ice:inputTextarea value="#{UtilitiesPage.indexStudyIds}" rows="8" cols="80"/>
-                  <ice:commandButton value="Index Studies" action="#{UtilitiesPage.indexStudies_action}"/>
+                  <div class="dvnFormPadding">
+                      <ice:commandButton value="Index Studies" action="#{UtilitiesPage.indexStudies_action}"/>
+                  </div>
                 </div>
                 <hr/>
                 <ice:outputText value="To index unindexed studies, click on the button below:"/>
@@ -110,10 +112,10 @@
                 </div>
                 <hr/>
                 <ice:outputText value="#{UtilitiesPage.indexLocks}"/>
-                <div>
+                <div class="dvnFormPadding">
                   <ice:commandButton value="Delete Lock" action="#{UtilitiesPage.indexLocks_action}" disabled="#{UtilitiesPage.deleteLockDisabled}"/>
                 </div>
-              </ice:panelGrid>
+              </ice:panelGroup>
               <!-- EXPORT PANEL -->
               <div class="vdcStudyInfoHeader dvnFormPadding">
                 <ice:outputText value="Export Utilities"/>
@@ -122,7 +124,7 @@
                 </ice:outputLink>
                 <ice:graphicImage styleClass="vdcNoBorders" value="/resources/images/icon_expand.gif" rendered="#{UtilitiesPage.exportPanelRendered}"/>
               </div>
-              <ice:panelGrid styleClass="dvnUtilitiesTable" rendered="#{UtilitiesPage.exportPanelRendered}">
+              <ice:panelGroup styleClass="dvnUtilitiesTable" rendered="#{UtilitiesPage.exportPanelRendered}">
                 <ice:messages id="exportMessage" styleClass="errorMessage"/>
                 <ice:outputText value="To run export now (all updated studies in all formats will be exported and update harvest studies will be run), click on the button below:"/>
                 <div>
@@ -133,7 +135,6 @@
                 <div>
                   <ice:commandButton value="Update Harvest Studies" action="#{UtilitiesPage.updateHarvestStudies_action}"/>
                 </div>
-                <hr/>
                 <hr/>
                 <ice:outputText value="OR, for a CUSTOM export (note: harvest studies will NOT be updated), select export format, then either:"/>
                 <ice:selectOneMenu id="dropdown1" value="#{UtilitiesPage.exportFormat}">
@@ -157,9 +158,11 @@
                 <ice:outputText value="c) export arbitrary studies (regardless of update time), input the study ids and click on the button below:"/>
                 <div>
                   <ice:inputTextarea value="#{UtilitiesPage.exportStudyIds}" rows="8" cols="80"/>
-                  <ice:commandButton value="Export Studies" action="#{UtilitiesPage.exportStudies_action}"/>
+                  <div class="dvnFormPadding">
+                      <ice:commandButton value="Export Studies" action="#{UtilitiesPage.exportStudies_action}"/>
+                  </div>
                 </div>
-              </ice:panelGrid>
+              </ice:panelGroup>
               <!-- HARVEST PANEL -->
               <div class="vdcStudyInfoHeader dvnFormPadding">
                 <ice:outputText value="Harvest Utilities"/>
@@ -168,7 +171,7 @@
                 </ice:outputLink>
                 <ice:graphicImage styleClass="vdcNoBorders" value="/resources/images/icon_expand.gif" rendered="#{UtilitiesPage.harvestPanelRendered}"/>
               </div>
-              <ice:panelGrid styleClass="dvnUtilitiesTable" rendered="#{UtilitiesPage.harvestPanelRendered}">
+              <ice:panelGroup styleClass="dvnUtilitiesTable" rendered="#{UtilitiesPage.harvestPanelRendered}">
                 <ice:messages id="harvestMessage"  styleClass="errorMessage"/>
                 <ice:outputText value="To harvest a specific study, input the DV and the harvest identifier, and click on the button below:"/>
                 <div jsfc="ice:panelGroup">
@@ -178,7 +181,7 @@
                   <ice:inputText value="#{UtilitiesPage.harvestIdentifier}" size="60"/>
                   <ice:commandButton value="Harvest Study" action="#{UtilitiesPage.harvestStudy_action}"/>
                 </div>
-              </ice:panelGrid>
+              </ice:panelGroup>
               <!-- FILE PANEL -->
               <div class="vdcStudyInfoHeader dvnFormPadding">
                 <ice:outputText value="File Utilities"/>
@@ -187,7 +190,7 @@
                 </ice:outputLink>
                 <ice:graphicImage styleClass="vdcNoBorders" value="/resources/images/icon_expand.gif" rendered="#{UtilitiesPage.filePanelRendered}"/>
               </div>
-              <ice:panelGrid styleClass="dvnUtilitiesTable" rendered="#{UtilitiesPage.filePanelRendered}">
+              <ice:panelGroup styleClass="dvnUtilitiesTable" rendered="#{UtilitiesPage.filePanelRendered}">
                 <ice:messages id="fileMessage" styleClass="errorMessage"/>
                 <ice:outputText value="To determine the file types for files with a particular extension:"/>
                 <div jsfc="ice:panelGroup">
@@ -196,9 +199,14 @@
                 </div>
                 <hr/>
                 <ice:outputText value="To determine the file types for files in arbitrary studies, input the study ids and click on the button below:"/>
-                <ice:inputTextarea value="#{UtilitiesPage.fileStudyIds}" rows="8" cols="80"/>
-                <ice:commandButton value="Determine File Types for Studies" action="#{UtilitiesPage.determineFileTypeForStudies_action}"/>
-              </ice:panelGrid>
+                <div>
+                    <ice:inputTextarea value="#{UtilitiesPage.fileStudyIds}" rows="8" cols="80"/>
+                    <div class="dvnFormPadding">
+                        <ice:commandButton value="Determine File Types for Studies" action="#{UtilitiesPage.determineFileTypeForStudies_action}"/>
+                    </div>
+                
+                </div>
+              </ice:panelGroup>
               <!-- IMPORT PANEL -->
               <div class="vdcStudyInfoHeader dvnFormPadding">
                 <ice:outputText value="Import Utilities"/>
@@ -207,7 +215,7 @@
                 </ice:outputLink>
                 <ice:graphicImage styleClass="vdcNoBorders" value="/resources/images/icon_expand.gif" rendered="#{UtilitiesPage.importPanelRendered}"/>
               </div>
-              <ice:panelGrid styleClass="dvnUtilitiesTable" rendered="#{UtilitiesPage.importPanelRendered}">
+              <ice:panelGroup styleClass="dvnUtilitiesTable" rendered="#{UtilitiesPage.importPanelRendered}">
                 <ice:messages id="importMessage" styleClass="errorMessage"/>
                 <ice:outputText value="Select the file format and the dataverse for the import, then either:"/>
                 <div>
@@ -243,14 +251,15 @@
                         maxFileSizeMessage="Submitted file is too large." 
                         maxTotalSize="2147483648" 
                         maxTotalSizeMessage="Total size of submitted files is too large." 
-                                                useOriginalFilename="true" 
-                        useSessionSubdir="false" />
+                        useOriginalFilename="true" 
+                        useSessionSubdir="false"/>
                     <span class="top">
-                        <h:commandButton class="submit" type="submit" value="Upload File"/>
+                        <h:commandButton styleClass="submit" type="submit" value="Upload File"/>
                     </span>
-                  <ice:commandButton value="Single Import" id="buttonEV"
+                  <div class="dvnFormPadding">
+                    <ice:commandButton value="Single Import" id="buttonEV"
                                      action="#{UtilitiesPage.importSingleFile_action}"/>
-                  
+                  </div>
                   <ice:message for="inputImportFileComponent"/>
                   <!-- Progress display for the old-style import:
                   <ice:outputProgress
@@ -258,8 +267,7 @@
                   </ice:outputProgress>
                   L.A. -->
                 </div>
-                <hr/>
-              </ice:panelGrid>
+              </ice:panelGroup>
               <!-- DELETE PANEL -->
               <div class="vdcStudyInfoHeader dvnFormPadding">
                 <ice:outputText value="Delete Utilities"/>
@@ -268,15 +276,17 @@
                 </ice:outputLink>
                 <ice:graphicImage styleClass="vdcNoBorders" value="/resources/images/icon_expand.gif" rendered="#{UtilitiesPage.deletePanelRendered}"/>
               </div>
-              <ice:panelGrid styleClass="dvnUtilitiesTable" rendered="#{UtilitiesPage.deletePanelRendered}">
+              <ice:panelGroup styleClass="dvnUtilitiesTable" rendered="#{UtilitiesPage.deletePanelRendered}">
                 <ice:messages id="deleteMessage" styleClass="errorMessage"/>
                 <ice:outputText value="To delete arbitrary studies, input the study ids and click on the button below:"/>
                 <div>
                   <ice:inputTextarea value="#{UtilitiesPage.deleteStudyIds}" rows="8" cols="80"/>
-                  <ice:commandButton value="Delete Studies" action="#{UtilitiesPage.deleteStudies_action}"
+                  <div class="dvnFormPadding">
+                      <ice:commandButton value="Delete Studies" action="#{UtilitiesPage.deleteStudies_action}"
                                      onclick="if(!confirm('Please confirm this DELETE request. This change CANNOT be undone.')){ return false; };"/>
-              </div>
-          </ice:panelGrid>
+                  </div>
+                </div>
+              </ice:panelGroup>
               <!-- HANDLE PANEL -->
               <div class="vdcStudyInfoHeader dvnFormPadding">
                 <ice:outputText value="Handle Utilities"/>
@@ -285,7 +295,7 @@
                 </ice:outputLink>
                 <ice:graphicImage styleClass="vdcNoBorders" value="/resources/images/icon_expand.gif" rendered="#{UtilitiesPage.handlePanelRendered}"/>
               </div>
-              <ice:panelGrid styleClass="dvnUtilitiesTable" rendered="#{UtilitiesPage.handlePanelRendered}">
+              <ice:panelGroup styleClass="dvnUtilitiesTable" rendered="#{UtilitiesPage.handlePanelRendered}">
                 <ice:messages id="handleMessage" styleClass="errorMessage"/>
                 <ice:outputText value="To register all unregistered handles, click on the button below:"/>
                 <div>
@@ -309,9 +319,7 @@
                   <ice:commandButton value="Check Handles" action="#{UtilitiesPage.handleCheckRange_action}"/>
                   <ice:inputTextarea value="#{UtilitiesPage.handleCheckReport}" rows="8" cols="32" readonly="true" rendered="#{! empty UtilitiesPage.handleCheckReport}"/>
                 </div>
-                
-                
-              </ice:panelGrid>
+              </ice:panelGroup>
               <!-- STUDY PANEL -->
               <div class="vdcStudyInfoHeader dvnFormPadding">
                 <ice:outputText value="Study Utilities"/>
@@ -320,14 +328,18 @@
                 </ice:outputLink>
                 <ice:graphicImage styleClass="vdcNoBorders" value="/resources/images/icon_expand.gif" rendered="#{UtilitiesPage.studyPanelRendered}"/>
               </div>
-              <ice:panelGrid styleClass="dvnUtilitiesTable" rendered="#{UtilitiesPage.studyPanelRendered}">
-                <ice:messages id="studyMessage" styleClass="errorMessage"/>
-                <ice:outputText value="To create draft versions of studies, input the study ids and click on the button below. Note: If the study already has a draft (or in review) version, that study will be ignored:"/>
-                <div>
-                  <ice:inputTextarea value="#{UtilitiesPage.createStudyDraftIds}" rows="8" cols="80"/>
-                  <ice:commandButton value="Create Drafts" action="#{UtilitiesPage.createStudyDrafts_action}"/>
-              </div>
-          </ice:panelGrid>
+              <ice:panelGroup styleClass="dvnUtilitiesTable" rendered="#{UtilitiesPage.studyPanelRendered}">
+                  <ice:column>
+                    <ice:messages id="studyMessage" styleClass="errorMessage"/>
+                    <ice:outputText value="To create draft versions of studies, input the study ID's and click on the button below. Note: If the study already has a draft (or in review) version, that study will be ignored:"/>
+                    <div>
+                      <ice:inputTextarea value="#{UtilitiesPage.createStudyDraftIds}" rows="8" cols="80"/>
+                      <div class="dvnFormPadding">
+                          <ice:commandButton value="Create Drafts" action="#{UtilitiesPage.createStudyDrafts_action}"/>
+                      </div>
+                    </div>
+                  </ice:column>
+              </ice:panelGroup>
             </div>
           </div>
         </div>

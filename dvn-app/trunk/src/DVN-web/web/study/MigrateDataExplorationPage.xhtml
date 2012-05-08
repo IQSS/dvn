@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:jsp="http://java.sun.com/JSP/Page"
+      xmlns:t="/WEB-INF/tlds/scroller"
+      xmlns:ice="http://www.icesoft.com/icefaces/component">
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+    </head>
+    <body>
+        <ui:composition template="/template.xhtml">
+            <ui:param name="pageTitle" value="Migrate Data Exploration - #{VDCRequest.dataversePageTitle}"/>
+            <ui:define name="metadata">
+                <f:metadata>
+                     <f:viewParam name="studyId" value ="#{MigrateDataExplorationPage.studyId}"/>
+                    <f:event type="preRenderView" listener="#{MigrateDataExplorationPage.preRenderView}" />
+                </f:metadata>
+            </ui:define>
+            <ui:define name="body">
+                <ice:form id="form1">
+                    <ice:inputHidden id="vdcId" value="#{VDCRequest.currentVDCId}"/>
+
+
+                    <style type="text/css">
+                        .dvnstudyadminboxfloat {width:414px;}
+                        .iceDatTbl .dvnDataTableHeaderForm {text-align:left;}
+                        .iceDatTbl .dvnDataTableHeaderForm label.dvnDataTableHeaderFilter {font-weight:normal;}
+                        .iceDatTbl.dvnExplorationFilterGroups {background:none;}
+                        .iceDatTbl.dvnExplorationFilterGroups tr {border:0; background:none;}
+                        .iceDatTbl.dvnExplorationFilterGroups td.dvnExplorationFilterGroupsCol1 {border:0;}
+                        .iceDatTbl.dvnExplorationFilterGroups .iceDatTbl {margin-bottom:2em;}
+                    </style>
+
+                    <div class="dvn_section">
+                        <div class="dvnstudytitleblock dvn_padBot">
+                            <div class="dvnstudyadminboxfloat dvn_right">
+                                <div class="dvnFormMargin">
+                                     <ice:commandButton type="submit" value="Exit" style="margin:0" action="#{MigrateDataExplorationPage.exit}"/>
+                               </div>
+                            </div>
+                        </div>
+                        <div style="overflow:hidden;">
+                            <div style="float:left; margin-right:2em;">
+                                <ice:outputText  value="Source File: "/>
+                                <ice:selectOneMenu value="#{MigrateDataExplorationPage.studyOldFileId}">                                                   
+                                    <f:selectItems value="#{MigrateDataExplorationPage.studyOldFileIdSelectItems}"/>
+                                </ice:selectOneMenu>
+                            </div>
+                            <div style="float:right; margin-right:2em;">
+                                <ice:outputText  value="Target File: "/>
+                                <ice:selectOneMenu value="#{MigrateDataExplorationPage.studyNewFileId}">                                                   
+                                    <f:selectItems value="#{MigrateDataExplorationPage.studyNewFileIdSelectItems}"/>
+                                </ice:selectOneMenu>
+                            </div>
+                        </div>
+                        <ice:commandButton id="autoDataMigration"
+                                action="#{MigrateDataExplorationPage.runDataMigration}"
+                                value="Migrate Set Up"/>
+                    </div>
+
+
+                </ice:form>
+            </ui:define>
+        </ui:composition>
+    </body>
+</html>

@@ -101,6 +101,8 @@ span.vdcStudyFileRowFileDetails{font-size:90% !important;color:darkgray;white-sp
 .vdcStudyFileRowFileDownload{padding:.25em 0}
 a.vdcStudyFileRowFileDownloadLink:link,a.vdcStudyFileRowFileDownloadLink:hover,a.vdcStudyFileRowFileDownloadLink:active,a.vdcStudyFileRowFileDownloadLink:visited{padding:2px 0px 2px 24px;background:url(/dvn/resources/images/icon_download.gif) no-repeat;font-size:90% !important;vertical-align:top}
 span.vdcStudyFileRowFileDownloadRestricted{margin-left:3px;font-size:90% !important;color:darkgray;vertical-align:top}
+a.vdcStudyFileRowFileDownloadRequestLink {margin-left:.5em;vertical-align:top}
+a.vdcStudyFileRowFileDownloadRequestLink span.iceOutTxt {font-size:90% !important}
 img.vdcStudyFileRowFileDownloadAsIcon{border:0;vertical-align:middle}
 select.vdcStudyFileRowFileDownloadAsList{margin-left:.5em}
 .vdcStudyDesc a.vdcTruncatorLinkLess{display:block;text-align:right}

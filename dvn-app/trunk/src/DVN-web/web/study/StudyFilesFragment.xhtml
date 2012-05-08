@@ -116,7 +116,12 @@
                                                                 <ice:column id="column12">
                                                                     <div jsfc="ice:panelGroup" styleClass="vdcStudyFileRowFileDownload">
                                                                         <ice:graphicImage styleClass="vdcNoBorders" value="/resources/images/icon_download_locked.gif" rendered="#{studyFileUI.restrictedForUser}" alt="You do not have permissions to access this file."/>
-                                                                        <ice:outputText styleClass="vdcStudyFileRowFileDownloadRestricted" value=" Restricted Access" rendered="#{studyFileUI.restrictedForUser}"/>
+                                                                        <ice:outputText styleClass="vdcStudyFileRowFileDownloadRestricted" value=" Restricted" rendered="#{studyFileUI.restrictedForUser}"/>
+                                                                        
+                                                                        <ice:commandLink styleClass="vdcStudyFileRowFileDownloadRequestLink" action="#{studyPage.beginRequestWorkflow}" rendered="#{studyFileUI.restrictedForUser}">
+                                                                            <ice:outputText value="(Request Access)"/>
+                                                                        </ice:commandLink>
+                                                                        
                                                                         <ice:outputLink styleClass="vdcStudyFileRowFileDownloadLink" value="javascript:downloadFile('#{studyFileUI.fileDownloadURL}&amp;versionNumber=#{studyPage.studyUI.studyVersion.versionNumber}')" rendered="#{!studyFileUI.restrictedForUser and !studyFileUI.studyFile.subsettable}">
                                                                             <ice:outputText value="Download" rendered="#{!studyFileUI.restrictedForUser and !studyFileUI.studyFile.subsettable}"/>
                                                                         </ice:outputLink>

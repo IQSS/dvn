@@ -45,6 +45,7 @@ import javax.ejb.TransactionAttributeType;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.PersistenceContextType;
+import javax.persistence.Query;
 
 /**
  *
@@ -70,7 +71,7 @@ public class VisualizationServiceBean implements VisualizationServiceLocal {
         }
     }
 
-        @Override
+    @Override
     public void setDataTableFromStudyFileId(Long studyFileId) {
         String query = "SELECT d FROM  DataTable d where d.studyFile.id = " + studyFileId + "  ";
         dt = (DataTable) em.createQuery(query).getSingleResult();
@@ -728,7 +729,6 @@ public class VisualizationServiceBean implements VisualizationServiceLocal {
     }
 
     public void removeCollectionElement(List list,int index) {
-        System.out.println("index is "+index+", list size is "+list.size());
         em.remove(list.get(index));
         list.remove(index);
     }
@@ -1003,5 +1003,105 @@ public class VisualizationServiceBean implements VisualizationServiceLocal {
 
         return valid;
     }
+    
+    @Override
+    @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
+    public boolean migrateVisualization(Long oldFileId, Long newFileId) {
+        em.createNativeQuery("DROP TABLE IF EXISTS vargroupingjoin").executeUpdate();
+        em.createNativeQuery("DROP TABLE IF EXISTS vargroupjoin").executeUpdate();
+        em.createNativeQuery("DROP TABLE IF EXISTS vargrouptypejoin").executeUpdate();
 
+        String queryString = "INSERT INTO vargrouping  "
+                + "(name, groupingtype, datatable_id) "
+                + " SELECT name, groupingtype, " + newFileId
+                + " FROM vargrouping "
+                + " WHERE datatable_id = " + oldFileId;
+
+        Query query = em.createNativeQuery(queryString);
+        query.executeUpdate();
+            
+        
+        queryString = "SELECT vg1.id as id1, vg2.id as id2, vg1.name  "
+                + " into varGroupingJoin "
+                + " FROM varGrouping vg1, varGrouping vg2 " 
+                + " where vg1.datatable_id = " + oldFileId
+                + " and vg2.datatable_id = " + newFileId
+                + " and vg1.name = vg2.name";
+
+        query = em.createNativeQuery(queryString);
+        query.executeUpdate();
+        
+        
+        queryString = "INSERT INTO vargroup (name, units, varGrouping_id)  "
+                + " select vgr.name, vgr.units, vj.id2 " 
+                + " from varGroup vgr, varGroupingjoin vj " 
+                + " where vj.id1 = vgr.vargrouping_id ";
+            
+        query = em.createNativeQuery(queryString);
+        query.executeUpdate();
+        
+        queryString = "SELECT vg1.id as id1, vg2.id as id2, vg1.name "
+                + " into varGroupJoin " 
+                + " FROM varGroup vg1, varGroup vg2, varGroupingjoin vgj " 
+                + " where vg1.vargrouping_id = vgj.id1 and vg2.vargrouping_id = vgj.id2  and vg1.name = vg2.name ";
+            
+        query = em.createNativeQuery(queryString);
+        query.executeUpdate();
+        
+        queryString = "INSERT INTO vargroupType (name, varGrouping_id) "
+                + " select vgr.name, vj.id2 " 
+                + " from varGroupType vgr, varGroupingjoin vj " 
+                + " where vj.id1 = vgr.vargrouping_id ";
+            
+        query = em.createNativeQuery(queryString);
+        query.executeUpdate();
+        
+        queryString = " SELECT vg1.id as id1, vg2.id as id2, vg1.name "
+                + " into varGroupTypeJoin" 
+                + " FROM varGroupType vg1, varGroupType vg2, varGroupingjoin vgj " 
+                + " where vg1.vargrouping_id = vgj.id1 and vg2.vargrouping_id = vgj.id2 and vg1.name = vg2.name ";
+            
+        query = em.createNativeQuery(queryString);
+        query.executeUpdate();
+
+        queryString = " INSERT INTO group_groupTypes (group_id, group_type_id) "
+                + " select   vgj.id2, vtj.id2 " 
+                + " from varGroupTypeJoin vtj, varGroupjoin vgj, group_groupTypes ggt " 
+                + " where ggt.group_id in ( select id from varGroup where vargrouping_id in (select id from vargrouping "
+                + " where datatable_id =  " +  oldFileId + ")) "
+                + " and group_type_id in ( select id from varGrouptype where vargrouping_id in (select id from vargrouping " 
+                + " where datatable_id =  "  +  oldFileId + ")) "
+                + " and vtj.id1 = ggt.group_type_id  and vgj.id1 = ggt.group_id " ;      
+        query = em.createNativeQuery(queryString);
+        query.executeUpdate();
+        
+        queryString = "  INSERT INTO datavariablemapping (label, x_axis, datavariable_id, vargrouping_id, vargroup_id, datatable_id) "
+                + " select dm.label, dm.x_axis, dv2.id, gpj.id2, gj.id2, " + newFileId 
+                + " from datavariablemapping dm, datavariable dv1,  datavariable dv2,  varGroupJoin gj, varGroupingJoin gpj" 
+                + " where dm.datatable_id = " +  oldFileId 
+                + " and dm.datavariable_id = dv1.id "
+                + " and dv1.name = dv2.name and dv2.datatable_id = "  + newFileId 
+                + " and gj.id1 = dm.vargroup_id and gpj.id1 = dm.vargrouping_id " ;     
+        query = em.createNativeQuery(queryString);
+        query.executeUpdate();
+        
+        queryString = "  INSERT INTO datavariablemapping (label, x_axis, datavariable_id,  datatable_id) "
+                + " select dm.label, dm.x_axis, dv2.id, " + newFileId 
+                + " from datavariablemapping dm, datavariable dv1,  datavariable dv2 " 
+                + " where dm.datatable_id = " +  oldFileId 
+                + " and dm.datavariable_id = dv1.id "
+                + " and dv1.name = dv2.name and dv2.datatable_id = "  + newFileId 
+                + " and dm.x_axis = true " ;     
+        query = em.createNativeQuery(queryString);
+        query.executeUpdate();       
+        
+        queryString = "  INSERT INTO visualizationdisplay( showdatatable, defaultdisplay, showimagegraph, sourceinfolabel, measuretypelabel, showflashgraph, datatable_id)"
+                + " SELECT showdatatable, defaultdisplay, showimagegraph, sourceinfolabel,  measuretypelabel, showflashgraph, " + newFileId 
+                + "   FROM visualizationdisplay " 
+                + " where datatable_id = " +  oldFileId;    
+        query = em.createNativeQuery(queryString);
+        query.executeUpdate();        
+        
+        return true;
+    }
 }

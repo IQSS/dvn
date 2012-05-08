@@ -101,4 +101,6 @@ public interface VisualizationServiceLocal extends java.io.Serializable {
 
     @javax.ejb.TransactionAttribute(value = javax.ejb.TransactionAttributeType.REQUIRED)
     public void saveAndContinue();
+    
+    public boolean migrateVisualization(Long oldFileId, Long newFileId);
 }

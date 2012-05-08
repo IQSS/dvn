@@ -90,9 +90,9 @@ public class DataVisServlet extends HttpServlet {
         OutputStream out = null;
 
         try {
-
+            System.out.println("googleImageURL " + googleImageURL);
             String decoded = URLDecoder.decode(googleImageURL, "UTF-8");
-
+            System.out.println("decoded " + decoded);
 
 
             out = res.getOutputStream();

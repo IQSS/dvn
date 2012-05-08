@@ -23,7 +23,6 @@
  */
 package edu.harvard.iq.dvn.core.web;
 
-
 import edu.harvard.iq.dvn.core.study.DataTable;
 import edu.harvard.iq.dvn.core.visualization.VarGroup;
 import edu.harvard.iq.dvn.core.visualization.VarGroupType;
@@ -134,11 +133,10 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
 
     private String measureLabel;
     private String measureTypeCue;
-
     private String lineLabel;
-
     private String lineColor;
     private String dataTableId = "";
+    
     private List <VarGrouping> varGroupings = new ArrayList();
     private List <VarGroupingUI> filterGroupings = new ArrayList();
 
@@ -150,24 +148,14 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
 
     private List <SelectItem> selectEndYears = new ArrayList();    
     private List <SelectItem> selectView = new ArrayList();
-
-    public List<SelectItem> getSelectView() {
-        return selectView;
-    }
-    
     private List <VisualizationLineDefinition> vizLines = new ArrayList();
 
     private Long selectedMeasureId = new Long(0);
     private boolean selectedMeasureHasFilterTypes = false;
     private boolean selectedMeasureHasFilters = false;
 
-    private Long selectedFilterGroupId = new Long(0);
-    
+    private Long selectedFilterGroupId = new Long(0);    
     private Integer selectedIndex = new Integer(0);
-
-    public Integer getSelectedIndex() {
-        return selectedIndex;
-    }
     private int groupTypeId = 0;
     private List <DataVariable> dvList;
     private List <DataVariableMapping> sourceList = new ArrayList();;
@@ -191,8 +179,6 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
     private String sources = "";
     private String sourceString = "";
 
-    private String imageSourceFooter = "";
-    private String imageSourceFooterNoYLabel = "";
     private String displaySourceFooter = "";
     private String displaySourceFooterNoYLabel = "";
     private String imageAxisLabel = "";
@@ -230,15 +216,13 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
     private String variableLabel = "";
     private boolean variableLabelLink = false;
     private String xAxisLabel = "";
+    private String yAxisLabel = "";
     private String sourceLineLabel = "";
     private Long studyFileId;
-
-    private String yAxisLabel = "";
 
     private boolean displayLegend = true;
     private int legendInt = 2;   
     private int heightInt = 2;
-
 
     private Integer defaultView = new Integer(2);
     private String[] transformedData;
@@ -250,7 +234,6 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
     private Float lowValStandard = new Float(0);
     private Float lowValIndex = new Float (100);
     private Float highValStandard = new Float (0);
-
     private Float highValIndex = new Float(0);
 
     public ExploreDataPage() {
@@ -290,7 +273,6 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
         // count:
         vdc = getVDCRequestBean().getCurrentVDC();
 
-
         measureLabel = loadMeasureLabel();  
         if (dt.getVisualizationDisplay() != null && dt.getVisualizationDisplay().getMeasureTypeLabel() != null ){
             measureTypeCue = loadMeasureTypeCue();
@@ -317,9 +299,6 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
         }               
     }
     
-    private void reInit(){
-        setUp();
-    }
     
     private void refreshSettings(){        
         titleEdited = false;
@@ -395,19 +374,18 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
         return retVal;
     }
 
-    private void loadFilterGroupings(){
-        
-        
+    private void loadFilterGroupings() {
+
         filterStrings.clear();
         filterGroupings.clear();
-        List <VarGrouping> localVGList = new ArrayList();
+        List<VarGrouping> localVGList = new ArrayList();
         Iterator i = filterGroupingMeasureAssociation.listIterator();
         int count = 0;
-        while (i.hasNext()){
+        while (i.hasNext()) {
             Object test = i.next();
-            if ( count % 2 == 0 ){
+            if (count % 2 == 0) {
                 Long id = (Long) test;
-                if (id.equals(selectedMeasureId)){
+                if (id.equals(selectedMeasureId)) {
                     localVGList.add((VarGrouping) i.next());
                     count++;
                 }
@@ -415,27 +393,25 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
             count++;
         }
 
+        for (VarGrouping varGrouping : localVGList) {
 
-        for (VarGrouping varGrouping: localVGList){
+            if (varGrouping.getGroupingType().equals(GroupingType.FILTER)) {
 
-            if (varGrouping.getGroupingType().equals(GroupingType.FILTER)){
-                
-                List <VarGroup> filterGroups = new ArrayList();
-                List <VarGroupTypeUI> filterGroupTypes = new ArrayList();
+                List<VarGroup> filterGroups = new ArrayList();
+                List<VarGroupTypeUI> filterGroupTypes = new ArrayList();
                 VarGroupingUI vgUI = new VarGroupingUI();
                 vgUI.setVarGrouping(varGrouping);
                 loadFilterGroups(filterGroups);
                 loadFilterGroupTypes(filterGroupTypes, varGrouping.getId());
                 vgUI.setVarGroupTypesUI(filterGroupTypes);
                 selectedMeasureHasFilters = true;
-                if (!filterGroupTypes.isEmpty()){
+                if (!filterGroupTypes.isEmpty()) {
                     selectedMeasureHasFilterTypes = true;
                 }
-                
-                vgUI.setSelectedGroupId(new Long (0));
+
+                vgUI.setSelectedGroupId(new Long(0));
                 filterGroupings.add(vgUI);
             }
-
         }
     }
 
@@ -489,7 +465,6 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
 
     private void loadAllFilterGroupTypes(){
 
-
         for (VarGrouping varGroupingTest: allVarGroupings){
             if (varGroupingTest.getGroupingType().equals(GroupingType.FILTER)){
                      List <VarGroupType> varGroupTypesBack = visualizationService.getGroupTypesFromGroupingId(varGroupingTest.getId());
@@ -505,62 +480,58 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
     }
 
 
-    private void loadFilterGroups(List <VarGroup> inList){
+    private void loadFilterGroups(List<VarGroup> inList) {
         inList.clear();
-         List <VarGroup> localVGList = new ArrayList();
+        List<VarGroup> localVGList = new ArrayList();
 
         Iterator i = filterGroupMeasureAssociation.listIterator();
         int count = 0;
-        while (i.hasNext()){
+        while (i.hasNext()) {
             Object test = i.next();
-            if ( count % 2 == 0 ){
+            if (count % 2 == 0) {
                 Long id = (Long) test;
-                if (id.equals(selectedMeasureId)){
+                if (id.equals(selectedMeasureId)) {
                     localVGList.add((VarGroup) i.next());
                     count++;
                 }
             }
-
             count++;
         }
 
-        for (VarGroup varGroup: localVGList ){
+        for (VarGroup varGroup : localVGList) {
             inList.add(varGroup);
         }
     }
 
-    private List <VarGroup> getFilterGroupsFromMeasureId(Long MeasureId){
-    
-        
+    private List<VarGroup> getFilterGroupsFromMeasureId(Long MeasureId) {
+
         List returnList = new ArrayList();
-         List <VarGroup> localVGList = new ArrayList();
+        List<VarGroup> localVGList = new ArrayList();
 
         Iterator i = filterGroupMeasureAssociation.listIterator();
         int count = 0;
-        while (i.hasNext()){
+        while (i.hasNext()) {
             Object test = i.next();
-            if ( count % 2 == 0 ){
+            if (count % 2 == 0) {
                 Long id = (Long) test;
-                if (id.equals(MeasureId)){
+                if (id.equals(MeasureId)) {
                     localVGList.add((VarGroup) i.next());
                     count++;
                 }
             }
-
             count++;
         }
 
-        for (VarGroup varGroup: localVGList ){
+        for (VarGroup varGroup : localVGList) {
             returnList.add(varGroup);
         }
 
-       return returnList;
+        return returnList;
     }
 
 
     private void loadFilterGroupTypes(List <VarGroupTypeUI> inList, Long groupingId){
         
-
         List <VarGroupType> localVGList = new ArrayList();
 
         Iterator i = groupingTypeAssociation.listIterator();
@@ -581,12 +552,10 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
         List <VarGroup> varGroupsAll = (List<VarGroup>)  getFilterGroupsFromMeasureId(selectedMeasureId);
             List <VarGroupType> varGroupTypesAll = new ArrayList();
             for (VarGroup varGroupFilter:varGroupsAll){
-                ;
                 for (VarGroupType vgt: varGroupFilter.getGroupTypes()){
                     varGroupTypesAll.add(vgt);
                 }
             }
-
 
         for (VarGroupType varGroupType: localVGList ){
             if (varGroupTypesAll.contains(varGroupType) ){
@@ -672,76 +641,69 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
     }
     
    
-    public void updateLineLabelForFilter(ValueChangeEvent ae){
-       Long filterId =  (Long) ae.getNewValue();
-       
-       VarGroup filterGroup = getFilterGroupFromId(filterId);
-       
-       String tmpLineLabel = ""; 
-       
-       VarGrouping updatedGrouping = new VarGrouping();
-       
-       if (filterGroup != null){
-           updatedGrouping =  filterGroup.getGroupAssociation();
-       }
-       
-       for (VarGroupingUI varGroupingUI: filterGroupings){
-                if (updatedGrouping.equals(varGroupingUI.getVarGrouping())){
-                   varGroupingUI.setSelectedGroupId(filterId); 
-                }
-                Long gfilterId = varGroupingUI.getSelectedGroupId();
-                if (gfilterId > 0){
-                    if (tmpLineLabel.isEmpty()) {
-                        tmpLineLabel += getFilterGroupFromId(gfilterId).getName();  
-                    } else {
-                        tmpLineLabel += ", " + getFilterGroupFromId(gfilterId).getName(); 
-                    }
-                      
-                } 
+    public void updateLineLabelForFilter(ValueChangeEvent ae) {
+        Long filterId = (Long) ae.getNewValue();
+        VarGroup filterGroup = getFilterGroupFromId(filterId);
+        String tmpLineLabel = "";
+        VarGrouping updatedGrouping = new VarGrouping();
+
+        if (filterGroup != null) {
+            updatedGrouping = filterGroup.getGroupAssociation();
         }
-       
-      
-       getInputLineLabel().setValue(tmpLineLabel);                      
+
+        for (VarGroupingUI varGroupingUI : filterGroupings) {
+            if (updatedGrouping.equals(varGroupingUI.getVarGrouping())) {
+                varGroupingUI.setSelectedGroupId(filterId);
+            }
+            Long gfilterId = varGroupingUI.getSelectedGroupId();
+            if (gfilterId > 0) {
+                if (tmpLineLabel.isEmpty()) {
+                    tmpLineLabel += getFilterGroupFromId(gfilterId).getName();
+                } else {
+                    tmpLineLabel += ", " + getFilterGroupFromId(gfilterId).getName();
+                }
+            }
+        }
+        getInputLineLabel().setValue(tmpLineLabel);
     }
     
-    public List<SelectItem> loadSelectMeasureItems(int grouptype_id) {
+    private List<SelectItem> loadSelectMeasureItems(int grouptype_id) {
         boolean resetSelected = true;
 
         List selectItems = new ArrayList<SelectItem>();
-        List <VarGroup> varGroups = new ArrayList();
+        List<VarGroup> varGroups = new ArrayList();
         varGroupings = dt.getVarGroupings();
         Iterator iterator = varGroupings.iterator();
-        while (iterator.hasNext() ){
+        while (iterator.hasNext()) {
             VarGrouping varGrouping = (VarGrouping) iterator.next();
-            if (varGrouping.getGroupingType().equals(GroupingType.MEASURE)){
+            if (varGrouping.getGroupingType().equals(GroupingType.MEASURE)) {
 
                 if (grouptype_id == 0) {
                     varGroups = (List<VarGroup>) varGrouping.getVarGroups();
                 } else {
-                    List <VarGroup> varGroupsTest = (List<VarGroup>) varGrouping.getVarGroups();
-                    for (VarGroup vgTest: varGroupsTest){
-                       List <VarGroupType> varGroupTypes = vgTest.getGroupTypes();
-                       for (VarGroupType vgTypeTest: varGroupTypes ){
-                           if(vgTypeTest.getId().intValue() == grouptype_id ){
-                               varGroups.add(vgTest);
-                           }
-                       }
+                    List<VarGroup> varGroupsTest = (List<VarGroup>) varGrouping.getVarGroups();
+                    for (VarGroup vgTest : varGroupsTest) {
+                        List<VarGroupType> varGroupTypes = vgTest.getGroupTypes();
+                        for (VarGroupType vgTypeTest : varGroupTypes) {
+                            if (vgTypeTest.getId().intValue() == grouptype_id) {
+                                varGroups.add(vgTest);
+                            }
+                        }
                     }
                 }
- 
-                for(VarGroup varGroup: varGroups) {
-                    boolean added = false;
-                    Long testId  = varGroup.getId();
-                    for (Object testItem:  selectItems){
-                         SelectItem testListSI = (SelectItem) testItem;
-                         if(testId.equals(testListSI.getValue())){
-                             added = true;
-                         }
-                    }
-                    if (!added ){
-                        selectItems.add(new SelectItem(varGroup.getId(), varGroup.getName()));
-                        if (varGroup.getId().equals(selectedMeasureId)){
 
+                for (VarGroup varGroup : varGroups) {
+                    boolean added = false;
+                    Long testId = varGroup.getId();
+                    for (Object testItem : selectItems) {
+                        SelectItem testListSI = (SelectItem) testItem;
+                        if (testId.equals(testListSI.getValue())) {
+                            added = true;
+                        }
+                    }
+                    if (!added) {
+                        selectItems.add(new SelectItem(varGroup.getId(), varGroup.getName()));
+                        if (varGroup.getId().equals(selectedMeasureId)) {
                         }
                         added = true;
                     }
@@ -749,55 +711,55 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
                 }
             }
         }
-        if (resetSelected){
+        if (resetSelected) {
             selectedMeasureId = new Long(0);
         }
         return selectItems;
     }
 
-    public List<SelectItem> loadSelectViewItems() {
+    private List<SelectItem> loadSelectViewItems() {
         defaultView = 0;
         boolean image = false;
         boolean flash = false;
         boolean datatable = false;
-        
+
         List selectItems = new ArrayList<SelectItem>();
-
-
-        
         int defaultViewDisplay = dt.getVisualizationDisplay().getDefaultDisplay();
-        
 
         switch (defaultViewDisplay) {
-            case 0:  defaultView = 2;  
-                        selectItems.add(new SelectItem(2, "Image Graph"));
-                        imageAvailable = true;
-                        image = true;
-                        break;
-            case 1:  defaultView = 1;   
-                        selectItems.add(new SelectItem(1, "Flash Graph"));  
-                        flash = true;
-                        break;
-            case 2:  defaultView = 3;   
-                        selectItems.add(new SelectItem(3, "Data Table"));
-                        dataTableAvailable = true; 
-                        datatable = true;
-                        break;
-            default:    break;
+            case 0:
+                defaultView = 2;
+                selectItems.add(new SelectItem(2, "Image Graph"));
+                imageAvailable = true;
+                image = true;
+                break;
+            case 1:
+                defaultView = 1;
+                selectItems.add(new SelectItem(1, "Flash Graph"));
+                flash = true;
+                break;
+            case 2:
+                defaultView = 3;
+                selectItems.add(new SelectItem(3, "Data Table"));
+                dataTableAvailable = true;
+                datatable = true;
+                break;
+            default:
+                break;
         }
-        
-        if ( !image && dt.getVisualizationDisplay().isShowImageGraph()) {
+
+        if (!image && dt.getVisualizationDisplay().isShowImageGraph()) {
             selectItems.add(new SelectItem(2, "Image Graph"));
             imageAvailable = true;
         }
         if (!flash && dt.getVisualizationDisplay().isShowFlashGraph()) {
-            selectItems.add(new SelectItem(1, "Flash Graph"));  
+            selectItems.add(new SelectItem(1, "Flash Graph"));
         }
         if (!datatable && dt.getVisualizationDisplay().isShowDataTable()) {
             selectItems.add(new SelectItem(3, "Data Table"));
-            dataTableAvailable = true;  
+            dataTableAvailable = true;
         }
-        
+
         includeImage = true;
         includePdf = true;
         includeExcel = true;
@@ -811,11 +773,11 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
         if (!dt.getVisualizationDisplay().isShowDataTable()) {
             includeExcel = false;
         }
-        
+
         return selectItems;
     }
     
-    public List<SelectItem> loadSelectMeasureGroupTypes() {
+    private List<SelectItem> loadSelectMeasureGroupTypes() {
         List selectItems = new ArrayList<SelectItem>();
         for(VarGrouping varGrouping: allVarGroupings) {           
             if (varGrouping.getGroupingType().equals(GroupingType.MEASURE)){
@@ -829,26 +791,9 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
         }
         return selectItems;
     }
-
-    public List<SelectItem> loadSelectFilterGroupTypes() {
-        List selectItems = new ArrayList<SelectItem>();
-
-        Iterator iterator = varGroupings.iterator();
-        while (iterator.hasNext() ){
-            VarGrouping varGrouping = (VarGrouping) iterator.next();
-            if (varGrouping.getGroupingType().equals(GroupingType.FILTER)){
-                List <VarGroupType> varGroupTypes = (List<VarGroupType>) varGrouping.getVarGroupTypes();
-                for(VarGroupType varGroupType: varGroupTypes) {
-                    selectItems.add(new SelectItem(varGroupType.getId(), varGroupType.getName()));
-                }
-            }
-        }
-        return selectItems;
-    }
     
     public List<SelectItem> getSelectFilterGroups(Long groupingId) {
-        if (!selectedMeasureId.equals(new Long(0))){
-          
+        if (!selectedMeasureId.equals(new Long(0))){         
             return getFilterGroupsWithMeasure(groupingId);
         }
         return null;
@@ -858,161 +803,136 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
     public List<SelectItem> getSelectFilterGroupTypes(Long groupingId) {
         showFilterGroupTypes = false;
         List selectItems = new ArrayList<SelectItem>();
-        if (!selectedMeasureId.equals(new Long(0))){
-
-            List <VarGroup> varGroupsAll = (List<VarGroup>)  getFilterGroupsFromMeasureId(selectedMeasureId);
-            List <VarGroupType> varGroupTypesAll = new ArrayList();
-            for (VarGroup varGroupFilter:varGroupsAll){
-                ;
-                for (VarGroupType vgt: varGroupFilter.getGroupTypes()){
+        if (!selectedMeasureId.equals(new Long(0))) {
+            List<VarGroup> varGroupsAll = (List<VarGroup>) getFilterGroupsFromMeasureId(selectedMeasureId);
+            List<VarGroupType> varGroupTypesAll = new ArrayList();
+            for (VarGroup varGroupFilter : varGroupsAll) {
+                for (VarGroupType vgt : varGroupFilter.getGroupTypes()) {
                     varGroupTypesAll.add(vgt);
                 }
             }
-            
-            List <VarGroupType> varGroupTypes = (List<VarGroupType>)  visualizationService.getGroupTypesFromGroupingId(new Long(groupingId));
-                for(VarGroupType varGroupType: varGroupTypes) {
-                    if (varGroupTypesAll.contains(varGroupType) ){
-                        selectItems.add(new SelectItem(varGroupType.getId(), varGroupType.getName()));
-                        showFilterGroupTypes = true;
-                    }
-                    
+
+            List<VarGroupType> varGroupTypes = (List<VarGroupType>) visualizationService.getGroupTypesFromGroupingId(new Long(groupingId));
+            for (VarGroupType varGroupType : varGroupTypes) {
+                if (varGroupTypesAll.contains(varGroupType)) {
+                    selectItems.add(new SelectItem(varGroupType.getId(), varGroupType.getName()));
+                    showFilterGroupTypes = true;
                 }
-            
+
+            }
+
         }
         return selectItems;
     }
 
-    public List<VarGroupType> loadFilterGroupTypes() {
-        Long groupingId = new Long(0);
 
-        List selectItems = new ArrayList<VarGroupType>();
+    private List<SelectItem> getFilterGroupsWithMeasure(Long groupingId) {
 
-                List <VarGroupType> varGroupTypes = (List<VarGroupType>)  visualizationService.getGroupTypesFromGroupingId(new Long(groupingId));
-                for(VarGroupType varGroupType: varGroupTypes) {
-                    selectItems.add(new SelectItem(varGroupType.getId(), varGroupType.getName()));
-                }
-
-        return selectItems;
-    }
-
-
-    private List<SelectItem> getFilterGroupsWithMeasure(Long groupingId){
-
-         List selectItems = new ArrayList<SelectItem>();
-          boolean addAll = false;
-          List <VarGroup> multipleSelections = new ArrayList <VarGroup>();
-          List <VarGroup> varGroupsAll = (List<VarGroup>)  getFilterGroupsFromMeasureId(selectedMeasureId);
-              for(VarGroup varGroup: varGroupsAll) {
-                  boolean added = false;
-                  for (VarGroupingUI varGroupingUI :filterGroupings){
-                      if (varGroupingUI.getVarGrouping().getId().equals(groupingId)){
-                        List <VarGroupTypeUI> varGroupTypesUI = varGroupingUI.getVarGroupTypesUI();
-                        if (!varGroupTypesUI.isEmpty()){
-                            boolean allFalse = true;
-                            for (VarGroupTypeUI varGroupTypeUI: varGroupTypesUI){
-                                allFalse &= !varGroupTypeUI.isEnabled();
+        List selectItems = new ArrayList<SelectItem>();
+        List<VarGroup> multipleSelections = new ArrayList<VarGroup>();
+        List<VarGroup> varGroupsAll = (List<VarGroup>) getFilterGroupsFromMeasureId(selectedMeasureId);
+        for (VarGroup varGroup : varGroupsAll) {
+            boolean added = false;
+            for (VarGroupingUI varGroupingUI : filterGroupings) {
+                if (varGroupingUI.getVarGrouping().getId().equals(groupingId)) {
+                    List<VarGroupTypeUI> varGroupTypesUI = varGroupingUI.getVarGroupTypesUI();
+                    if (!varGroupTypesUI.isEmpty()) {
+                        boolean allFalse = true;
+                        for (VarGroupTypeUI varGroupTypeUI : varGroupTypesUI) {
+                            allFalse &= !varGroupTypeUI.isEnabled();
+                        }
+                        if (allFalse) {
+                            for (VarGroup varGroupTest : varGroupsAll) {
+                                if (!added && varGroupTest.getId().equals(varGroup.getId()) && varGroup.getGroupAssociation().equals(varGroupingUI.getVarGrouping())) {
+                                    selectItems.add(new SelectItem(varGroup.getId(), varGroup.getName()));
+                                    added = true;
+                                }
                             }
-                            if (allFalse){
-                                
-                                       for (VarGroup varGroupTest: varGroupsAll) {
-                                            if (!added && varGroupTest.getId().equals(varGroup.getId())  && varGroup.getGroupAssociation().equals(varGroupingUI.getVarGrouping()) ){
+                        }
+                        if (!allFalse) {
+                            int countEnabled = 0;
+                            for (VarGroupTypeUI varGroupTypeUI : varGroupTypesUI) {
+                                if (varGroupTypeUI.isEnabled()) {
+                                    countEnabled++;
+                                }
+                            }
+                            if (countEnabled == 1) {
+                                for (VarGroupTypeUI varGroupTypeUI : varGroupTypesUI) {
+                                    if (varGroupTypeUI.isEnabled()) {
+                                        List<VarGroup> varGroups = (List) varGroupTypeUI.getVarGroupType().getGroups();
+                                        for (VarGroup varGroupTest : varGroups) {
+                                            if (!added && varGroupTest.getId().equals(varGroup.getId())
+                                                    && varGroup.getGroupAssociation().equals(varGroupingUI.getVarGrouping())
+                                                    && varGroupsAll.contains(varGroupTest)) {
                                                 selectItems.add(new SelectItem(varGroup.getId(), varGroup.getName()));
                                                 added = true;
                                             }
                                         }
 
-
-                            }
-                            if (!allFalse){
-                                int countEnabled = 0;
-                                for (VarGroupTypeUI varGroupTypeUI: varGroupTypesUI){
-                                    if (varGroupTypeUI.isEnabled()){
-                                        countEnabled++;
                                     }
                                 }
-                                if( countEnabled == 1){
-                                    for (VarGroupTypeUI varGroupTypeUI: varGroupTypesUI){
-                                    if (varGroupTypeUI.isEnabled()){
-                                        List <VarGroup> varGroups = (List) varGroupTypeUI.getVarGroupType().getGroups();
-                                            for (VarGroup varGroupTest: varGroups) {
-                                                if (!added && varGroupTest.getId().equals(varGroup.getId())  
-                                                        && varGroup.getGroupAssociation().equals(varGroupingUI.getVarGrouping()) 
-                                                            && varGroupsAll.contains(varGroupTest) ){
-                                                    selectItems.add(new SelectItem(varGroup.getId(), varGroup.getName()));
-                                                    added = true;
-                                                }
-                                            }
+                            }
+                            if (countEnabled > 1) {
+                                int counter = countEnabled;
+                                List[] varGroupArrayList = new List[countEnabled];
 
-                                        }
-                                      }
-                                }
-                                if( countEnabled > 1){
-                                    int counter = countEnabled;
-                                    List[] varGroupArrayList = new  List [countEnabled];
 
-                                    
-                                    for (VarGroupTypeUI varGroupTypeUI: varGroupTypesUI){
-                                    if (varGroupTypeUI.isEnabled()){
-                                        List <VarGroup> varGroups = (List) varGroupTypeUI.getVarGroupType().getGroups();
-                                        varGroupArrayList[counter-1] = varGroups;
+                                for (VarGroupTypeUI varGroupTypeUI : varGroupTypesUI) {
+                                    if (varGroupTypeUI.isEnabled()) {
+                                        List<VarGroup> varGroups = (List) varGroupTypeUI.getVarGroupType().getGroups();
+                                        varGroupArrayList[counter - 1] = varGroups;
                                         counter--;
+                                    }
+                                }
+                                List<VarGroup> varGroupsSaveGet = new ArrayList((List) varGroupArrayList[0]);
+                                List<VarGroup> varGroupsTempGet = new ArrayList((List) varGroupArrayList[0]);
+                                List<VarGroup> varGroupsSave = new ArrayList(varGroupsSaveGet);
+                                List<VarGroup> varGroupsTemp = new ArrayList(varGroupsTempGet);
+                                List<VarGroup> vsrGroupRemove = new ArrayList();
+                                for (int i = 1; i <= countEnabled - 1; i++) {
+                                    List<VarGroup> varGroupsTest = (List) varGroupArrayList[i];
+                                    for (VarGroup vgs : varGroupsTemp) {
+                                        boolean save = false;
+                                        for (VarGroup vgt : varGroupsTest) {
+                                            if (vgt.getId().equals(vgs.getId()) && varGroupsAll.contains(vgs)) {
+                                                save = true;
+                                            }
+
+                                        }
+                                        if (!save) {
+                                            vsrGroupRemove.add(vgs);
                                         }
                                     }
-                                    List <VarGroup> varGroupsSaveGet = new ArrayList((List) varGroupArrayList[0]);
-                                    List <VarGroup> varGroupsTempGet = new ArrayList((List) varGroupArrayList[0]);
-                                    List <VarGroup> varGroupsSave = new ArrayList(varGroupsSaveGet);
-                                    List <VarGroup> varGroupsTemp = new ArrayList(varGroupsTempGet);
-                                    List <VarGroup> vsrGroupRemove = new ArrayList();
-                                    for (int i=1; i<=countEnabled-1; i++){
-                                        List <VarGroup> varGroupsTest = (List) varGroupArrayList[i];
-                                        for (VarGroup vgs: varGroupsTemp){
-                                            boolean save = false;
-                                            for(VarGroup vgt : varGroupsTest){
-                                               if (vgt.getId().equals(vgs.getId())  && varGroupsAll.contains(vgs) ){
-                                                   save=true;
-                                               }
-                                                
-                                            }
-                                            if (!save){
-                                                vsrGroupRemove.add(vgs);
-                                            }
-                                        }
+                                }
 
-                                        
-                                     }
-
-
-                                     for(VarGroup vgr : vsrGroupRemove){
-                                          varGroupsSave.remove(vgr);
-                                     }
-                                     multipleSelections = varGroupsSave;                                    
-                                }                                
+                                for (VarGroup vgr : vsrGroupRemove) {
+                                    varGroupsSave.remove(vgr);
+                                }
+                                multipleSelections = varGroupsSave;
                             }
-
-
-                        } else {
-                               if (!added && varGroup.getGroupAssociation().equals(varGroupingUI.getVarGrouping())){
-                                    selectItems.add(new SelectItem(varGroup.getId(), varGroup.getName()));
-                                    added = true;
-                               }
                         }
-                      }
-                  }                   
-              }
-              if (multipleSelections.size()>0){
-                  for (VarGroup vgs: multipleSelections){
-                      if (varGroupsAll.contains(vgs)){
-                          selectItems.add(new SelectItem(vgs.getId(), vgs.getName()));
-                      }                     
-                  }
-              }
-          return selectItems;
 
+                    } else {
+                        if (!added && varGroup.getGroupAssociation().equals(varGroupingUI.getVarGrouping())) {
+                            selectItems.add(new SelectItem(varGroup.getId(), varGroup.getName()));
+                            added = true;
+                        }
+                    }
+                }
+            }
+        }
+        if (multipleSelections.size() > 0) {
+            for (VarGroup vgs : multipleSelections) {
+                if (varGroupsAll.contains(vgs)) {
+                    selectItems.add(new SelectItem(vgs.getId(), vgs.getName()));
+                }
+            }
+        }
+        return selectItems;
     }
 
 
     public List<SelectItem> getSelectMeasureGroupTypes() {
-
         return this.selectMeasureGroupTypes;
     }
 
@@ -1022,8 +942,7 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
         callDrawVisualization();
     }
     
-    private String yAxisLabelForIndex(String strIn){
-        
+    private String yAxisLabelForIndex(String strIn){       
         return strIn + " = 100";
     }
     
@@ -1041,6 +960,33 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
             yAxisLabel=  getYAxisLabelFromVizLines(); 
         }  else {
              yAxisLabel =  yAxisLabelForIndex(indexDate);
+        }
+        disableIneligibleYears();
+        callDrawVisualization();
+    }
+    
+    public void update_LegendPosition() {
+        Object value = this.selectLegendPosition.getValue();
+        Integer intVal = (Integer) value;
+        this.legendInt = intVal.intValue();
+        callDrawVisualization();
+    }
+
+    public void update_GraphHeight() {
+        Object value = this.selectGraphHeight.getValue();
+        Integer intVal = (Integer) value;
+        this.heightInt = intVal.intValue();
+        callDrawVisualization();
+    }
+
+    public void update_EndYear() {
+        Object value = this.selectEndYear.getValue();
+        this.endYear = (String) value;
+        getDataTable(true);
+        if (!this.displayIndexes) {
+            yAxisLabel = getYAxisLabelFromVizLines();
+        } else {
+            yAxisLabel = yAxisLabelForIndex(indexDate);
         }
         disableIneligibleYears();
         callDrawVisualization();
@@ -1075,35 +1021,7 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
             }
             present.setDisabled(disabled);
             selectBeginYears.add(present);
-        }
-        
-    }
-    
-    public void update_LegendPosition(){
-        Object value= this.selectLegendPosition.getValue();
-        Integer intVal =  (Integer) value;
-        this.legendInt = intVal.intValue();
-        callDrawVisualization();
-    }
-    
-    public void update_GraphHeight(){
-        Object value= this.selectGraphHeight.getValue();
-        Integer intVal =  (Integer) value;
-        this.heightInt = intVal.intValue();
-        callDrawVisualization();
-    }
-
-    public void update_EndYear(){
-        Object value= this.selectEndYear.getValue();
-        this.endYear = (String) value ;
-        getDataTable(true);
-        if (!this.displayIndexes){
-            yAxisLabel=  getYAxisLabelFromVizLines(); 
-        }  else {
-             yAxisLabel =  yAxisLabelForIndex(indexDate);
-        }
-        disableIneligibleYears();
-        callDrawVisualization();
+        }        
     }
 
     public void update_IndexYear(){
@@ -1116,15 +1034,15 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
         callDrawVisualization();
     }
 
-    public void updateUseIndex(){
-        Object value= this.useIndicesCheckBox.getValue();
+    public void updateUseIndex() {
+        Object value = this.useIndicesCheckBox.getValue();
 
         this.displayIndexes = (Boolean) value;
-        if (!this.displayIndexes){
-            forcedIndexMessage = ""; 
-            yAxisLabel=  getYAxisLabelFromVizLines(); 
-        }  else {
-             yAxisLabel = yAxisLabelForIndex(indexDate);
+        if (!this.displayIndexes) {
+            forcedIndexMessage = "";
+            yAxisLabel = getYAxisLabelFromVizLines();
+        } else {
+            yAxisLabel = yAxisLabelForIndex(indexDate);
         }
         callDrawVisualization();
     }
@@ -1151,39 +1069,35 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
     }
     
     
-    private VarGroup getFilterGroupFromId(Long Id) {
-        
+    private VarGroup getFilterGroupFromId(Long Id) {       
         for (VarGroup varGroupTest: allFilterGroups){
             if (varGroupTest.getId().equals(Id)){
                 return varGroupTest;
             }
         }
-        return null;
-        
+        return null;        
     }
     
-    private void updateGraphTitleForMeasure(){
-        String tmpLineLabel = "";       
-        Set<String> set = new HashSet(); 
-        for (VisualizationLineDefinition vld: vizLines){
-            
+    private void updateGraphTitleForMeasure() {
+        String tmpLineLabel = "";
+        Set<String> set = new HashSet();
+        for (VisualizationLineDefinition vld : vizLines) {
             String checkName = vld.getMeasureGroup().getName();
-            if (!checkName.isEmpty()){
-                 if (tmpLineLabel.isEmpty()){
-                        
-                        tmpLineLabel = checkName;
-                        set.add(checkName);
-                 } else if (!set.contains(checkName)){
-                     
-                        tmpLineLabel += ", ";
-                        tmpLineLabel += checkName;
-                       set.add(checkName);
-                 }
+            if (!checkName.isEmpty()) {
+                if (tmpLineLabel.isEmpty()) {
+
+                    tmpLineLabel = checkName;
+                    set.add(checkName);
+                } else if (!set.contains(checkName)) {
+
+                    tmpLineLabel += ", ";
+                    tmpLineLabel += checkName;
+                    set.add(checkName);
+                }
             }
         }
-
-           setGraphTitle(tmpLineLabel);
-           getInputGraphTitle().setValue(tmpLineLabel);                
+        setGraphTitle(tmpLineLabel);
+        getInputGraphTitle().setValue(tmpLineLabel);
     }
 
 
@@ -1195,181 +1109,161 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
         this.groupTypeId = groupTypeId;
     }
 
+    public void addLine(ActionEvent ae) {
 
-    public void addLine(ActionEvent ae){
-    
         dataNotAddedMessage = "";
-        
-        if ( lineLabel.isEmpty() || lineLabel.trim().equals("") ) {
+
+        if (lineLabel.isEmpty() || lineLabel.trim().equals("")) {
             FacesMessage message = new FacesMessage("Please complete your selections");
             FacesContext fc = FacesContext.getCurrentInstance();
             fc.addMessage(addLineButton.getClientId(fc), message);
             return;
         }
 
-        if (vizLines.size() >= 8){
-            FacesMessage message = new FacesMessage("A maximum of 8 lines may be displayed in a single graph");
+        if (vizLines.size() >= 20) {
+            FacesMessage message = new FacesMessage("A maximum of 20 lines may be displayed in a single graph");
             FacesContext fc = FacesContext.getCurrentInstance();
             fc.addMessage(addLineButton.getClientId(fc), message);
             return;
         }
 
-        if (validateSelections()){
-            for (VisualizationLineDefinition vl :vizLines) {
-                if (vl.getVariableId().equals(dataVariableSelected.getId())){
-                   FacesMessage message = new FacesMessage("This data has already been selected");
+        if (validateSelections()) {
+            for (VisualizationLineDefinition vl : vizLines) {
+                if (vl.getVariableId().equals(dataVariableSelected.getId())) {
+                    FacesMessage message = new FacesMessage("This data has already been selected");
                     FacesContext fc = FacesContext.getCurrentInstance();
                     fc.addMessage(addLineButton.getClientId(fc), message);
                     return;
-                }                
-            }                            
+                }
+            }
         }
 
-        if (validateSelections()){
-           FacesContext.getCurrentInstance().renderResponse();
-           VisualizationLineDefinition vizLine = new VisualizationLineDefinition();
+        if (validateSelections()) {
+            FacesContext.getCurrentInstance().renderResponse();
+            VisualizationLineDefinition vizLine = new VisualizationLineDefinition();
 
-           vizLine.setMeasureGroup(visualizationService.getGroupFromId(selectedMeasureId));
+            vizLine.setMeasureGroup(visualizationService.getGroupFromId(selectedMeasureId));
 
-           List <VarGroup> selectedFilterGroups = new ArrayList();
-           for(VarGroupingUI varGrouping: filterGroupings) {
-               if (!(varGrouping.getSelectedGroupId() == 0)){
-                    for (VarGroup filterGroup: allFilterGroups){
-                        if (filterGroup.getGroupAssociation().equals(varGrouping.getVarGrouping()) && filterGroup.getId().equals(varGrouping.getSelectedGroupId())){
-                               selectedFilterGroups.add(filterGroup);
+            List<VarGroup> selectedFilterGroups = new ArrayList();
+            for (VarGroupingUI varGrouping : filterGroupings) {
+                if (!(varGrouping.getSelectedGroupId() == 0)) {
+                    for (VarGroup filterGroup : allFilterGroups) {
+                        if (filterGroup.getGroupAssociation().equals(varGrouping.getVarGrouping()) && filterGroup.getId().equals(varGrouping.getSelectedGroupId())) {
+                            selectedFilterGroups.add(filterGroup);
                         }
-                    }                                              
-               }
-           }
-           vizLine.setFilterGroups(selectedFilterGroups);
-           vizLine.setLabel(lineLabel);
-           vizLine.setMeasureLabel(measureLabel);
-           vizLine.setColor(lineColor);
-           vizLine.setBorder("background-color:black;");
-           vizLine.setVariableId(dataVariableSelected.getId());
-           vizLine.setVariableName(dataVariableSelected.getName());
-           vizLine.setVariableLabel(dataVariableSelected.getLabel());
-           
-           vizLines.add(vizLine);
-           this.numberOfColumns = new Long(vizLines.size());
-           startYear = "0";
-           endYear = "3000";
-           getDataTable(true);
-           resetLineBorder();
-           getSourceList();
-           checkUnits();
-           finalizeForcedIndexMessage();
-           
-                   
+                    }
+                }
+            }
+            
+            vizLine.setFilterGroups(selectedFilterGroups);
+            vizLine.setLabel(lineLabel);
+            vizLine.setMeasureLabel(measureLabel);
+            vizLine.setColor(lineColor);
+            vizLine.setBorder("background-color:black;");
+            vizLine.setVariableId(dataVariableSelected.getId());
+            vizLine.setVariableName(dataVariableSelected.getName());
+            vizLine.setVariableLabel(dataVariableSelected.getLabel());
+
+            vizLines.add(vizLine);
+            this.numberOfColumns = new Long(vizLines.size());
+            startYear = "0";
+            endYear = "3000";
+            getDataTable(true);
+            resetLineBorder();
+            getSourceList();
+            checkUnits();
+            finalizeForcedIndexMessage();
+
             if (new Integer(indexDate).intValue() == 0) {
                 dataNotAddedMessage = "You cannot add this line as an index. It does not have any time period in common with the previously selected lines.";
                 deleteLatestLine();
             }
-           
-           updateImageFooters();
 
-           if (!titleEdited){
+            updateImageFooters();
+
+            if (!titleEdited) {
                 updateGraphTitleForMeasure();
-           }
+            }
 
             dataTableVizLines.getChildren().clear();
             dataTableVizLines.getSavedChildren().clear();
-            
             callDrawVisualization();
-
-           return;
         } else {
             FacesContext fc = FacesContext.getCurrentInstance();
         }
-
     }
     
-    private void finalizeForcedIndexMessage(){
-
-        if (!forcedIndexMessage.isEmpty()  && new Integer(indexDate).intValue() > 0){
-                yAxisLabel =  yAxisLabelForIndex(indexDate);
-                setIndexDate(indexDate);          
-        }  
-
-                
+    private void finalizeForcedIndexMessage() {
+        if (!forcedIndexMessage.isEmpty() && new Integer(indexDate).intValue() > 0) {
+            yAxisLabel = yAxisLabelForIndex(indexDate);
+            setIndexDate(indexDate);
+        }
     }
     
-    private void deleteLatestLine(){
-        
-        List <VisualizationLineDefinition> removeList = new ArrayList();
+    private void deleteLatestLine() {
 
-        List <VisualizationLineDefinition> tempList = new ArrayList(vizLines);
-        
-        VisualizationLineDefinition  removeLine = null;
-        
-           for(VisualizationLineDefinition vizLineCheck: tempList){
-               
-               removeLine = vizLineCheck;
+        List<VisualizationLineDefinition> removeList = new ArrayList();
 
-             }
+        List<VisualizationLineDefinition> tempList = new ArrayList(vizLines);
 
-           removeList.add(removeLine);
-           
-           for(VisualizationLineDefinition vizLineRem : removeList){
-                        vizLines.remove(vizLineRem);
-           }
-           
-           this.numberOfColumns = new Long(vizLines.size());
-            
-            dataTableVizLines.getChildren().clear();
-            dataTableVizLines.getSavedChildren().clear();
-           startYear = "0";
-           endYear = "3000";
-           getDataTable(true);
-           resetLineBorder();
-           getSourceList();
-           setDisplayIndexes(false);
-           checkUnits();
-           finalizeForcedIndexMessage();
-           updateImageFooters();
-           
-           if (!this.displayIndexes){               
-                yAxisLabel=  getYAxisLabelFromVizLines(); 
-            }  else {
-                yAxisLabel = yAxisLabelForIndex(indexDate);
-            }
-           
-           if (!titleEdited){
-                updateGraphTitleForMeasure();
-           }
+        VisualizationLineDefinition removeLine = null;
+
+        for (VisualizationLineDefinition vizLineCheck : tempList) {
+            removeLine = vizLineCheck;
+        }
+
+        removeList.add(removeLine);
+
+        for (VisualizationLineDefinition vizLineRem : removeList) {
+            vizLines.remove(vizLineRem);
+        }
+
+        this.numberOfColumns = new Long(vizLines.size());
+
+        dataTableVizLines.getChildren().clear();
+        dataTableVizLines.getSavedChildren().clear();
+        startYear = "0";
+        endYear = "3000";
+        getDataTable(true);
+        resetLineBorder();
+        getSourceList();
+        setDisplayIndexes(false);
+        checkUnits();
+        finalizeForcedIndexMessage();
+        updateImageFooters();
+
+        if (!this.displayIndexes) {
+            yAxisLabel = getYAxisLabelFromVizLines();
+        } else {
+            yAxisLabel = yAxisLabelForIndex(indexDate);
+        }
+
+        if (!titleEdited) {
+            updateGraphTitleForMeasure();
+        }
 
         callDrawVisualization();
     }
 
-    public void removeAllLines(ActionEvent ae){
-    
-        List <VisualizationLineDefinition> vizLinesRemove = new ArrayList();
-        for (VisualizationLineDefinition vld: vizLines){
-            
+    public void removeAllLines(ActionEvent ae) {
+
+        List<VisualizationLineDefinition> vizLinesRemove = new ArrayList();
+        for (VisualizationLineDefinition vld : vizLines) {
+
             vizLinesRemove.add(vld);
         }
-        
-           for (VisualizationLineDefinition vl :vizLines) {
-                dataTableFilterGroups.setValue(null);
-            }
-        
-        for (VisualizationLineDefinition vld: vizLinesRemove){
+
+        for (VisualizationLineDefinition vl : vizLines) {
+            dataTableFilterGroups.setValue(null);
+        }
+
+        for (VisualizationLineDefinition vld : vizLinesRemove) {
             vizLines.remove(vld);
-        }        
+        }
 
         vizLines = new ArrayList();
         dataTableVizLines.getChildren().clear();
         dataTableVizLines.getChildren().clear();
- /*       
-        getDataTable();
-        resetLineBorder();
-        sourceList.clear();
-        updateImageFooters();
-        FacesContext fc = FacesContext.getCurrentInstance();
-        JavascriptContext.addJavascriptCall(fc, "drawVisualization();");           
-        JavascriptContext.addJavascriptCall(fc, "initLineDetails");
-         * 
-         */
         refreshSettings();
     }
    
@@ -1377,30 +1271,67 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
         int i = 0;
         if (vizLines.size()>=1){
             for (VisualizationLineDefinition vl: vizLines){
-                if (i==0){
-                    vl.setBorder("background-color:#4684EE;");
+                if ((i)==0){
+                    vl.setBorder("background-color:#FF0000;");
                 }
-                if (i==1){
-                    vl.setBorder("background-color:#DC3912;");
+                if ((i)==1){
+                    vl.setBorder("background-color:#0000CC;");
                 }
-                if (i==2){
-                    vl.setBorder("background-color:#FF9900;");
+                if ((i)==2){
+                    vl.setBorder("background-color:#FFCC00;");
                 }
-                if (i==3){
-                    vl.setBorder("background-color:#008000;");
+                if ((i)==3){
+                    vl.setBorder("background-color:#006600;");
                 }
-                if (i==4){
-                    vl.setBorder("background-color:#4942CC;");
+                if ((i)==4){
+                    vl.setBorder("background-color:#660066;");
                 }
-                if (i==5){
-                    vl.setBorder("background-color:#990099;");
+                if ((i)==5){
+                    vl.setBorder("background-color:#FF3300;");
                 }
-                if (i==6){
-                    vl.setBorder("background-color:#FF80F2;");
+                if ((i)==6){
+                    vl.setBorder("background-color:#666666;");
                 }
-                if (i==7){
-                    vl.setBorder("background-color:#7FD127;");
+                if ((i)==7){
+                    vl.setBorder("background-color:#CC0000;");
                 }
+                if ((i)==8){
+                    vl.setBorder("background-color:#0066CC;");
+                }
+                if ((i)==9){
+                    vl.setBorder("background-color:#FFCC33;");
+                }
+                if ((i)==10){
+                    vl.setBorder("background-color:#33CC00;");
+                }                
+                if ((i)==11){
+                    vl.setBorder("background-color:#CC00CC;");
+                }
+                if ((i)==12){
+                    vl.setBorder("background-color:#CC3300;");
+                }
+                if ((i)==13){
+                    vl.setBorder("background-color:#FF9933;");
+                }
+                if ((i)==14){
+                    vl.setBorder("background-color:#FF3333;");
+                }
+                if ((i)==15){
+                    vl.setBorder("background-color:#00CCFF;");
+                }
+                if ((i)==16){
+                    vl.setBorder("background-color:#CCFF33;");
+                }
+                if ((i)==17){
+                    vl.setBorder("background-color:#99FF00;");
+                }
+                if ((i)==18){
+                    vl.setBorder("background-color:#6600CC;");
+                }
+                if ((i)==19){
+                    vl.setBorder("background-color:#FF3333;");
+                }
+                
                 i++;
             }
         }
@@ -1429,202 +1360,191 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
     }
 
     
-    public void deleteLine(ActionEvent ae){
+    public void deleteLine(ActionEvent ae) {
 
         UIComponent uiComponent = ae.getComponent().getParent();
-        while (!(uiComponent instanceof HtmlDataTable)){
+        while (!(uiComponent instanceof HtmlDataTable)) {
             uiComponent = uiComponent.getParent();
         }
         HtmlDataTable tempTable = (HtmlDataTable) uiComponent;
         VisualizationLineDefinition vizLine = (VisualizationLineDefinition) tempTable.getRowData();
-        
 
-        List <VisualizationLineDefinition> removeList = new ArrayList();
+        List<VisualizationLineDefinition> removeList = new ArrayList();
 
-        List <VisualizationLineDefinition> tempList = new ArrayList(vizLines);
-           for(VisualizationLineDefinition vizLineCheck: tempList){
-                if (vizLineCheck.equals(vizLine)){
-                    removeList.add(vizLineCheck);
-                }
-             }
-
-           for(VisualizationLineDefinition vizLineRem : removeList){
-                        vizLines.remove(vizLineRem);
-           }
-           
-           this.numberOfColumns = new Long(vizLines.size());
-           if (numberOfColumns == 0){
-                   titleEdited = false;
-                   sourceEdited = false;              
-           }
-            dataTableVizLines.getChildren().clear();
-            dataTableVizLines.getSavedChildren().clear();
-           startYear = "0";
-           endYear = "3000";
-           getDataTable(true);
-           resetLineBorder();
-           getSourceList();
-           checkUnits();
-           finalizeForcedIndexMessage();
-           updateImageFooters();
-           
-           if (!this.displayIndexes){               
-                yAxisLabel=  getYAxisLabelFromVizLines(); 
-            }  else {
-                yAxisLabel = yAxisLabelForIndex(indexDate);
+        List<VisualizationLineDefinition> tempList = new ArrayList(vizLines);
+        for (VisualizationLineDefinition vizLineCheck : tempList) {
+            if (vizLineCheck.equals(vizLine)) {
+                removeList.add(vizLineCheck);
             }
-           
-           if (!titleEdited){
-                updateGraphTitleForMeasure();
-           }
+        }
+
+        for (VisualizationLineDefinition vizLineRem : removeList) {
+            vizLines.remove(vizLineRem);
+        }
+
+        this.numberOfColumns = new Long(vizLines.size());
+        if (numberOfColumns == 0) {
+            titleEdited = false;
+            sourceEdited = false;
+        }
+        dataTableVizLines.getChildren().clear();
+        dataTableVizLines.getSavedChildren().clear();
+        startYear = "0";
+        endYear = "3000";
+        getDataTable(true);
+        resetLineBorder();
+        getSourceList();
+        checkUnits();
+        finalizeForcedIndexMessage();
+        updateImageFooters();
+
+        if (!this.displayIndexes) {
+            yAxisLabel = getYAxisLabelFromVizLines();
+        } else {
+            yAxisLabel = yAxisLabelForIndex(indexDate);
+        }
+
+        if (!titleEdited) {
+            updateGraphTitleForMeasure();
+        }
 
         callDrawVisualization();
 
     }
     
-    private boolean validateSelections(){
-        boolean valid  = true;
+    private boolean validateSelections() {
+        boolean valid = true;
         int count = 0;
 
-        if (selectedMeasureId == 0){
+        if (selectedMeasureId == 0) {
             FacesMessage message = new FacesMessage("Please complete your selections.");
             FacesContext fc = FacesContext.getCurrentInstance();
             fc.addMessage(addLineButton.getClientId(fc), message);
             return false;
         }
 
+        if (!filterGroupings.isEmpty()) {
 
-
-        if (!filterGroupings.isEmpty()){
-            
-            for(VarGroupingUI varGrouping: filterGroupings) {
-               if(varGrouping.getSelectedGroupId()==0){
+            for (VarGroupingUI varGrouping : filterGroupings) {
+                if (varGrouping.getSelectedGroupId() == 0) {
                     FacesMessage message = new FacesMessage("Please complete your selections.");
                     FacesContext fc = FacesContext.getCurrentInstance();
                     fc.addMessage(addLineButton.getClientId(fc), message);
                     return false;
-               }
+                }
             }
 
         }
 
-           
-           List <DataVariable> resultList = new ArrayList();
+        List<DataVariable> resultList = new ArrayList();
 
-           Iterator varIter = dvList.iterator();
-           while (varIter.hasNext()) {
-                DataVariable dv = (DataVariable) varIter.next();
-                Collection <DataVariableMapping> dvMappings = dv.getDataVariableMappings();
-                for(DataVariableMapping dvMapping:dvMappings ) {
+        Iterator varIter = dvList.iterator();
+        while (varIter.hasNext()) {
+            DataVariable dv = (DataVariable) varIter.next();
+            Collection<DataVariableMapping> dvMappings = dv.getDataVariableMappings();
+            for (DataVariableMapping dvMapping : dvMappings) {
 
-                    if (!dvMapping.isX_axis() && dvMapping.getGroup().getId().equals(selectedMeasureId)){
-                        resultList.add(dv);
-                         count++;
-                    }
+                if (!dvMapping.isX_axis() && dvMapping.getGroup().getId().equals(selectedMeasureId)) {
+                    resultList.add(dv);
+                    count++;
                 }
-           }
-           List <ArrayList> filterGroupingList = new ArrayList();
+            }
+        }
+        List<ArrayList> filterGroupingList = new ArrayList();
 
-           List <DataVariable> resultListFilter = new ArrayList();
-           
-           List <DataVariable> measureList = resultList;
+        List<DataVariable> resultListFilter = new ArrayList();
 
-           List <ArrayList> filterGroupsList = new ArrayList();
-           int filterGroupListCount = 0;
-           for(VarGroupingUI varGrouping: filterGroupings) {
-               if(varGrouping.getSelectedGroupId()!=0){
-                   ArrayList <DataVariable> tempList = new ArrayList();
-                   for (DataVariable dv : dvList){
-                       Collection <DataVariableMapping> dvMappings = dv.getDataVariableMappings();
-                        for(DataVariableMapping dvMapping:dvMappings ) {
-                            if (!dvMapping.isX_axis() && dvMapping.getGroup().getId().equals(varGrouping.getSelectedGroupId())){
-                                tempList.add(dv);
-                                 count++;
-                            }
-                        }                       
-                   }
-                   filterGroupsList.add(tempList);
-                   filterGroupListCount++;
-               }
-               
-               if (filterGroupListCount == 0){
-                    FacesMessage message = new FacesMessage("Please complete your selections.");
-                    FacesContext fc = FacesContext.getCurrentInstance();
-                    fc.addMessage(addLineButton.getClientId(fc), message);
-                    return false;
-                }
-               
-           }
-           
+        List<DataVariable> measureList = resultList;
 
-           
-           if (filterGroupListCount == 1){
-               for (List groupList: filterGroupsList){
-                   for (Object dvGroup: groupList){
-                       DataVariable dvGroupFilter = (DataVariable) dvGroup;
-                       for (DataVariable dvMeasure: measureList){
-                           if (dvGroupFilter.equals(dvMeasure)){
-                                dataVariableSelected = dvMeasure;
-                                return true;
-                           }                      
-                       }                  
-                   }              
-               }               
-           }
-           
-                     
-           
-           for(VarGroupingUI varGrouping: filterGroupings) {
-               ArrayList <DataVariable> tempList = new ArrayList();
-               if(varGrouping.getSelectedGroupId().intValue() !=0){
-                   Iterator varIterb = resultList.iterator();
-                   while (varIterb.hasNext()) {
-                        DataVariable dv = (DataVariable) varIterb.next();
-                        Collection <DataVariableMapping> dvMappings = dv.getDataVariableMappings();
-                        for(DataVariableMapping dvMapping:dvMappings ) {  
-                            if (!dvMapping.isX_axis() && dvMapping.getGroup().getId().equals(varGrouping.getSelectedGroupId())){
-                                resultListFilter.add(dv);
-                                tempList.add(dv);
-                                count++;
-                            }
+        List<ArrayList> filterGroupsList = new ArrayList();
+        int filterGroupListCount = 0;
+        for (VarGroupingUI varGrouping : filterGroupings) {
+            if (varGrouping.getSelectedGroupId() != 0) {
+                ArrayList<DataVariable> tempList = new ArrayList();
+                for (DataVariable dv : dvList) {
+                    Collection<DataVariableMapping> dvMappings = dv.getDataVariableMappings();
+                    for (DataVariableMapping dvMapping : dvMappings) {
+                        if (!dvMapping.isX_axis() && dvMapping.getGroup().getId().equals(varGrouping.getSelectedGroupId())) {
+                            tempList.add(dv);
+                            count++;
                         }
-                   }
-                   filterGroupingList.add(tempList);
-
-                           List <DataVariable> removeList = new ArrayList();
-                    for (DataVariable dv : measureList){
-                        boolean remove = true;
-                            for (Object dvO: tempList){
-                                DataVariable dvF = (DataVariable) dvO;
-                                    if (dvF.equals(dv)){
-                                        remove = false;
-                                    }
-                            }
-                            if (remove) removeList.add(dv);
                     }
+                }
+                filterGroupsList.add(tempList);
+                filterGroupListCount++;
+            }
 
+            if (filterGroupListCount == 0) {
+                FacesMessage message = new FacesMessage("Please complete your selections.");
+                FacesContext fc = FacesContext.getCurrentInstance();
+                fc.addMessage(addLineButton.getClientId(fc), message);
+                return false;
+            }
 
-                    for(DataVariable dataVarRemove : removeList){
-                          measureList.remove(dataVarRemove);
+        }
+
+        if (filterGroupListCount == 1) {
+            for (List groupList : filterGroupsList) {
+                for (Object dvGroup : groupList) {
+                    DataVariable dvGroupFilter = (DataVariable) dvGroup;
+                    for (DataVariable dvMeasure : measureList) {
+                        if (dvGroupFilter.equals(dvMeasure)) {
+                            dataVariableSelected = dvMeasure;
+                            return true;
+                        }
                     }
+                }
+            }
+        }
 
-               } else {
-                    FacesMessage message = new FacesMessage("Please complete your selections.");
-                    FacesContext fc = FacesContext.getCurrentInstance();
-                    fc.addMessage(addLineButton.getClientId(fc), message);
-                    return false;
+        for (VarGroupingUI varGrouping : filterGroupings) {
+            ArrayList<DataVariable> tempList = new ArrayList();
+            if (varGrouping.getSelectedGroupId().intValue() != 0) {
+                Iterator varIterb = resultList.iterator();
+                while (varIterb.hasNext()) {
+                    DataVariable dv = (DataVariable) varIterb.next();
+                    Collection<DataVariableMapping> dvMappings = dv.getDataVariableMappings();
+                    for (DataVariableMapping dvMapping : dvMappings) {
+                        if (!dvMapping.isX_axis() && dvMapping.getGroup().getId().equals(varGrouping.getSelectedGroupId())) {
+                            resultListFilter.add(dv);
+                            tempList.add(dv);
+                            count++;
+                        }
+                    }
+                }
+                filterGroupingList.add(tempList);
 
-               }
-           }
+                List<DataVariable> removeList = new ArrayList();
+                for (DataVariable dv : measureList) {
+                    boolean remove = true;
+                    for (Object dvO : tempList) {
+                        DataVariable dvF = (DataVariable) dvO;
+                        if (dvF.equals(dv)) {
+                            remove = false;
+                        }
+                    }
+                    if (remove) {
+                        removeList.add(dv);
+                    }
+                }
 
+                for (DataVariable dataVarRemove : removeList) {
+                    measureList.remove(dataVarRemove);
+                }
 
+            } else {
+                FacesMessage message = new FacesMessage("Please complete your selections.");
+                FacesContext fc = FacesContext.getCurrentInstance();
+                fc.addMessage(addLineButton.getClientId(fc), message);
+                return false;
 
+            }
+        }
 
-        List <DataVariable> finalList = new ArrayList();
+        List<DataVariable> finalList = new ArrayList();
         finalList = measureList;
 
-
-        if(finalList.size() == 1) {
+        if (finalList.size() == 1) {
             dataVariableSelected = finalList.get(0);
         } else {
             FacesMessage message = new FacesMessage("Please complete your selections.");
@@ -1633,9 +1553,7 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
             return false;
         }
 
-
-
-        if (!valid){
+        if (!valid) {
             FacesMessage message = new FacesMessage("You must select a filter for each group.");
             FacesContext fc = FacesContext.getCurrentInstance();
             fc.addMessage(addLineButton.getClientId(fc), message);
@@ -1766,78 +1684,82 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
     public String getyAxisLabel() {
         return yAxisLabel;
     }
+    
+    
+    public Integer getSelectedIndex() {
+        return selectedIndex;
+    }
+    public List<SelectItem> getSelectView() {
+        return selectView;
+    }
 
-    public String getDataTable(boolean resetIndexYear){
+    private String getDataTable(boolean resetIndexYear) {
+        csvColumnString = "";
+        dtColumnString = "";
+        columnString = "";
+        imageColumnString = "";
+        try {
+            File tmpSubsetFile = File.createTempFile("tempsubsetfile.", ".tab");
+            List<DataVariable> dvsIn = new ArrayList();
+            dvsIn.add(xAxisVar);
+            columnString += xAxisVar.getName();
+            csvColumnString += xAxisVar.getName();
+            dtColumnString += xAxisVar.getName();
+            for (VisualizationLineDefinition vld : vizLines) {
 
-    StudyFile sf = dt.getStudyFile();
-    csvColumnString = "";
-    dtColumnString = "";
-    columnString = "";
-    imageColumnString = "";
-    try {
-        File tmpSubsetFile = File.createTempFile("tempsubsetfile.", ".tab");
-        List <DataVariable> dvsIn = new ArrayList();
-        dvsIn.add(xAxisVar);
-        columnString += xAxisVar.getName();
-        csvColumnString += xAxisVar.getName();
-        dtColumnString += xAxisVar.getName();
-        for (VisualizationLineDefinition vld: vizLines){
-
-            Long testId = vld.getVariableId();
-            for (DataVariable dv : dt.getDataVariables()){
-                if (dv.getId().equals(testId)){
-                     dvsIn.add(dv);
-                     columnString = columnString + "|" + vld.getLabel();
-                     if (!vld.getMeasureGroup().getUnits().isEmpty()){                          
-                         dtColumnString = dtColumnString + "|" + vld.getLabel();
-                     } else {
-                         dtColumnString = dtColumnString + "|" + vld.getLabel();
-                     }                     
-                     csvColumnString = csvColumnString + "," + getSafeCString( vld.getLabel());
-                     imageColumnString= imageColumnString + "|" + vld.getLabel();
+                Long testId = vld.getVariableId();
+                for (DataVariable dv : dt.getDataVariables()) {
+                    if (dv.getId().equals(testId)) {
+                        dvsIn.add(dv);
+                        columnString = columnString + "|" + vld.getLabel();
+                        if (!vld.getMeasureGroup().getUnits().isEmpty()) {
+                            dtColumnString = dtColumnString + "|" + vld.getLabel();
+                        } else {
+                            dtColumnString = dtColumnString + "|" + vld.getLabel();
+                        }
+                        csvColumnString = csvColumnString + "," + getSafeCString(vld.getLabel());
+                        imageColumnString = imageColumnString + "|" + vld.getLabel();
+                    }
                 }
             }
 
-        }
-
-        Set<Integer> fields = new LinkedHashSet<Integer>();
-        List<DataVariable> dvs = dvsIn;
-        sourceList.clear();
-        List <DataVariableMapping> variableMappings = new ArrayList();
-        for (Iterator el = dvs.iterator(); el.hasNext();) {
-            DataVariable dv = (DataVariable) el.next();
-            variableMappings = visualizationService.getSourceMappings((List)  dv.getDataVariableMappings());
-                for (DataVariableMapping dvm: variableMappings ){
-                sourceList.add(dvm);
+            Set<Integer> fields = new LinkedHashSet<Integer>();
+            List<DataVariable> dvs = dvsIn;
+            sourceList.clear();
+            List<DataVariableMapping> variableMappings = new ArrayList();
+            for (Iterator el = dvs.iterator(); el.hasNext();) {
+                DataVariable dv = (DataVariable) el.next();
+                variableMappings = visualizationService.getSourceMappings((List) dv.getDataVariableMappings());
+                for (DataVariableMapping dvm : variableMappings) {
+                    sourceList.add(dvm);
+                }
+                fields.add(dv.getFileOrder());
             }
-            fields.add(dv.getFileOrder());
-        }
 
-        // Execute the subsetting request:
-        FieldCutter fc = new DvnJavaFieldCutter();
+            // Execute the subsetting request:
+            FieldCutter fc = new DvnJavaFieldCutter();
 
+            fc.subsetFile(
+                    sf.getFileSystemLocation(),
+                    tmpSubsetFile.getAbsolutePath(),
+                    fields,
+                    dt.getCaseQuantity());
 
-        fc.subsetFile(
-            sf.getFileSystemLocation(),
-            tmpSubsetFile.getAbsolutePath(),
-            fields,
-            dt.getCaseQuantity() );
-
-        if (tmpSubsetFile.exists()) {
-            Long subsetFileSize = tmpSubsetFile.length();
-            List <String>  fileList = new ArrayList();
-            BufferedReader reader = new BufferedReader(new FileReader(tmpSubsetFile));
-            String line = null;
-            while ((line=reader.readLine()) != null) {
-               String check =  line.toString();
-               fileList.add(check);
+            if (tmpSubsetFile.exists()) {
+                Long subsetFileSize = tmpSubsetFile.length();
+                List<String> fileList = new ArrayList();
+                BufferedReader reader = new BufferedReader(new FileReader(tmpSubsetFile));
+                String line = null;
+                while ((line = reader.readLine()) != null) {
+                    String check = line.toString();
+                    fileList.add(check);
+                }
+                loadDataTableData(fileList, resetIndexYear);
+                return subsetFileSize.toString();
             }
-            loadDataTableData(fileList, resetIndexYear);           
-            return subsetFileSize.toString();
-        }
-        return "";
+            return "";
 
-        } catch  (IOException e) {
+        } catch (IOException e) {
             e.printStackTrace();
             return "failure";
         }
@@ -1867,380 +1789,362 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
         return retString;
     }
 
-    private void loadDataTableData(List inStr, boolean resetIndexYear){
-    selectBeginYears = new ArrayList();
-    selectEndYears = new ArrayList();
-    selectIndexDate = new ArrayList();
-    selectEndYears.add(new SelectItem(3000, "Max"));
-    lowValStandard = new Float(0);
-    lowValIndex = new Float (100);
-    highValStandard = new Float (0);
-    highValIndex = new Float(0);
-    boolean indexesAvailable = false;
-    
-    int startYearTransform = 0;
-    boolean startYearTransformSet = false;
-    int endYearTransform = 3000;
-    boolean endYearTransformSet = false;
-    boolean firstYearSet = false;
-    String maxYear = "";
-    String output = "";
-    String indexedOutput = "";
-    String csvOutput = csvColumnString + "\n";
+    private void loadDataTableData(List inStr, boolean resetIndexYear) {
+        selectBeginYears = new ArrayList();
+        selectEndYears = new ArrayList();
+        selectIndexDate = new ArrayList();
+        selectEndYears.add(new SelectItem(3000, "Max"));
+        lowValStandard = new Float(0);
+        lowValIndex = new Float(100);
+        highValStandard = new Float(0);
+        highValIndex = new Float(0);
+        boolean indexesAvailable = false;
 
-    boolean addIndexDate = false;
-    boolean[] getIndexes = new boolean[9];
-    boolean firstIndexDateSet = false;
-    int firstIndexDate = 0;
-    int indexYearForCalc = 0;
-    
-    if (new Integer(startYear.toString()).intValue() != 0){
-        startYearTransform = new Integer(startYear.toString()).intValue();
-        startYearTransformSet = true;
-    }
-    
-    if (new Integer(endYear.toString()).intValue() != 3000){
-        endYearTransform = new Integer(endYear.toString()).intValue();
-        endYearTransformSet = true;
-    }
-    
-    if (indexDate != null && !indexDate.isEmpty()){
-        indexYearForCalc = new Integer(indexDate.toString()).intValue();
-    }
-    
-    for (int i = 1; i<9; i++){
-        getIndexes[i] = false;
-    }
-    String[] indexVals = new String[9];
-    int maxLength = 0;
-    for (Object inObj: inStr ){
-        String nextStr = (String) inObj;
-        String[] columnDetail = nextStr.split("\t");
-        String[] test = columnDetail;
-        if (test.length -1 > maxLength){
-            maxLength = test.length -1;
-        }
-    }
-    
-    for (Object inObj: inStr ){
-        String nextStr = (String) inObj;
-        String[] columnDetail = nextStr.split("\t");
-        String[] test = columnDetail;
-        if (!startYearTransformSet && test.length > 1){
+        int startYearTransform = 0;
+        boolean startYearTransformSet = false;
+        int endYearTransform = 3000;
+        boolean endYearTransformSet = false;
+        boolean firstYearSet = false;
+        String maxYear = "";
+        String output = "";
+        String indexedOutput = "";
+        String csvOutput = csvColumnString + "\n";
+
+        boolean addIndexDate = false;
+        boolean[] getIndexes = new boolean[vizLines.size()+1];
+        boolean firstIndexDateSet = false;
+        int firstIndexDate = 0;
+        int indexYearForCalc = 0;
+        //Start year entered by user
+        if (new Integer(startYear.toString()).intValue() != 0) {
+            startYearTransform = new Integer(startYear.toString()).intValue();
             startYearTransformSet = true;
-            startYearTransform = new Integer(test[0]).intValue();
         }
-        if (!endYearTransformSet && test.length > 1  && (new Integer(test[0]).intValue() > endYearTransform  || endYearTransform == 3000) ){
-            endYearTransform = new Integer(test[0]).intValue();
+        //End year entered by user
+        if (new Integer(endYear.toString()).intValue() != 3000) {
+            endYearTransform = new Integer(endYear.toString()).intValue();
+            endYearTransformSet = true;
+        }
+        //Index year entered by user
+        if (indexDate != null && !indexDate.isEmpty()) {
+            indexYearForCalc = new Integer(indexDate.toString()).intValue();
+        }
+        //reset arrays for indexes and start/end dates
+        for (int i = 1; i < vizLines.size()+1; i++) {
+            getIndexes[i] = false;
         }
         
-        addIndexDate = true;
-        for (int i=0; i<test.length; i++){
-            if (test.length - 1 == maxLength){
-                if (i>0 && (test[i].isEmpty()  || new Float(test[i]).floatValue() == 0)){
-                    addIndexDate = false;
-                }                             
-            }  else {
-                addIndexDate = false;
+        String[] indexVals = new String[vizLines.size()+1];
+        //First determine the number of data points we're dealing with
+        int maxLength = 0;
+        for (Object inObj : inStr) {
+            String nextStr = (String) inObj;
+            String[] columnDetail = nextStr.split("\t");
+            String[] test = columnDetail;
+            if (test.length - 1 > maxLength) {
+                maxLength = test.length - 1;
             }
-                 
         }
-        
-        if (addIndexDate){
-              for (int k = 1; k<maxLength+1; k++){
-                  getIndexes[k] = true;
-              }
-              if(!firstIndexDateSet){
-                 firstIndexDateSet = true; 
-                 firstIndexDate =  new Integer(test[0].toString()).intValue();
-              }
-              selectIndexDate.add(new SelectItem(test[0], test[0]));  
-        }
-            if (!resetIndexYear){
+
+        //Then get start and end dates and index dates...
+        for (Object inObj : inStr) {
+            String nextStr = (String) inObj;
+            String[] columnDetail = nextStr.split("\t");
+            String[] test = columnDetail;
+            if (!startYearTransformSet && test.length > 1) {
+                startYearTransformSet = true;
+                startYearTransform = new Integer(test[0]).intValue();
+            }
+            if (!endYearTransformSet && test.length > 1 && (new Integer(test[0]).intValue() > endYearTransform || endYearTransform == 3000)) {
+                endYearTransform = new Integer(test[0]).intValue();
+            }
+
+            addIndexDate = true;
+            for (int i = 0; i < test.length; i++) {
+                if (test.length - 1 == maxLength) {
+                    if (i > 0 && (test[i].isEmpty() || new Float(test[i]).floatValue() == 0)) {
+                        addIndexDate = false;
+                    }
+                } else {
+                    addIndexDate = false;
+                }
+            }
+            //found earliest date where all streams have data
+            if (addIndexDate) {
+                for (int k = 1; k < maxLength + 1; k++) {
+                    getIndexes[k] = true;
+                }
+                if (!firstIndexDateSet) {
+                    firstIndexDateSet = true;
+                    firstIndexDate = new Integer(test[0].toString()).intValue();
+                }
+                selectIndexDate.add(new SelectItem(test[0], test[0]));
+            }
+            if (!resetIndexYear) {
                 indexYearForCalc = Math.max(firstIndexDate, indexYearForCalc);
             } else {
-                if (new Integer(this.startYear).intValue() > 0){
+                if (new Integer(this.startYear).intValue() > 0) {
                     indexYearForCalc = Math.max(firstIndexDate, new Integer(this.startYear).intValue());
                 } else {
-                      indexYearForCalc = firstIndexDate;
-                }                  
-            }                         
+                    indexYearForCalc = firstIndexDate;
+                }
+            }
             indexDate = new Integer(indexYearForCalc).toString();
-    }
-    
-    transformedData = new String[maxLength + 1];
-    transformedDataIndexed = new String[maxLength + 1];
-    boolean indexesDone = false;
-    for (Object inObj: inStr ){
-        String nextStr = (String) inObj;
-        String[] columnDetail = nextStr.split("\t");
-        String[] test = columnDetail;
+        }
 
-        String col = "";
-        String csvCol = "";
-        int testYear = 0;
-        if (test.length > 1) {
-                for (int i=0; i<test.length; i++){
-                if (i == 0) {
-                    testYear = new Integer(test[0]).intValue();
-                    col =  test[i];
-                    csvCol  = test[i];
+        transformedData = new String[maxLength + 1];
+        transformedDataIndexed = new String[maxLength + 1];
+        boolean indexesDone = false;
+        // scroll through table data to load transformed data
+        for (Object inObj : inStr) {
+            String nextStr = (String) inObj;
+            String[] columnDetail = nextStr.split("\t");
+            String[] test = columnDetail;
+            String col = "";
+            String csvCol = "";
+            int testYear = 0;
+            if (test.length > 1) {
+                for (int i = 0; i < test.length; i++) {
+                    if (i == 0) {
+                        testYear = new Integer(test[0]).intValue();
+                        col = test[i];
+                        csvCol = test[i];
 
-                    if (!firstYearSet){
-                         selectBeginYears.add(new SelectItem(col, "Min"));
-                         firstYearSet = true;
-                    }
-
-                    maxYear = col;
-                    selectBeginYears.add(new SelectItem( col, col));
-                    selectEndYears.add(new SelectItem(col, col));
-                    transformedData[i] = "";
-                } else {
-                        col = col + ", " +  test[i];
-                        csvCol = csvCol + ", " +  test[i];
-                        if (testYear >= startYearTransform && testYear <= endYearTransform){
-                            transformedData[i] += test[0] +", " + test[i] + ", ";      
+                        if (!firstYearSet) {
+                            selectBeginYears.add(new SelectItem(col, "Min"));
+                            firstYearSet = true;
                         }
-                                                  
-                        if(!test[i].isEmpty()  && testYear >= startYearTransform && testYear <= endYearTransform){
-                            if (lowValStandard.equals(new Float  (0))  || lowValStandard.compareTo(new Float (test[i])) > 0) {
+
+                        maxYear = col;
+                        selectBeginYears.add(new SelectItem(col, col));
+                        selectEndYears.add(new SelectItem(col, col));
+                        transformedData[i] = "";
+                    } else {
+                        col = col + ", " + test[i];
+                        csvCol = csvCol + ", " + test[i];
+                        if (testYear >= startYearTransform && testYear <= endYearTransform) {
+                            transformedData[i] += test[0] + ", " + test[i] + ", ";
+                        }
+                        if (!test[i].isEmpty() && testYear >= startYearTransform && testYear <= endYearTransform) {
+                            if (lowValStandard.equals(new Float(0)) || lowValStandard.compareTo(new Float(test[i])) > 0) {
                                 lowValStandard = new Float(test[i]);
                             }
-                            if (highValStandard.equals(new Float (0))  || highValStandard.compareTo(new Float (test[i])) < 0 ){
+                            if (highValStandard.equals(new Float(0)) || highValStandard.compareTo(new Float(test[i])) < 0) {
                                 highValStandard = new Float(test[i]);
-                            }                            
+                            }
                         }
-                                                
-                        Double testIndexVal = new Double (0);
-                        if (!test[i].isEmpty()  ){
-                            testIndexVal =  new Double (test[i]);
+
+                        Double testIndexVal = new Double(0);
+                        if (!test[i].isEmpty()) {
+                            testIndexVal = new Double(test[i]);
                         }
-                        if (getIndexes[i] && testIndexVal > 0){
+                        if (getIndexes[i] && testIndexVal > 0) {
                             indexVals[i] = test[i];
                             getIndexes[i] = false;
                         }
                         boolean allfalse = true;
-                        for (int j = 1; j<9; j++){
-                            if( getIndexes[j] == true){
+                        for (int j = 1; j < vizLines.size()+1; j++) {
+                            if (getIndexes[j] == true) {
                                 allfalse = false;
                             }
                         }
-                        
-                        if (allfalse && !indexesDone && testYear == indexYearForCalc){
-                            for (int q = 1; q<test.length; q++){
-                                    indexVals[q] = test[q];
-                                    indexesDone = true; 
-                                    indexesAvailable = true;
+
+                        if (allfalse && !indexesDone && testYear == indexYearForCalc) {
+                            for (int q = 1; q < test.length; q++) {
+                                indexVals[q] = test[q];
+                                indexesDone = true;
+                                indexesAvailable = true;
                             }
                         }
                     }
 
                 }
-                  col = col + ";";
-                  csvCol = csvCol + "\n";
-           } else {
-            
+                col = col + ";";
+                csvCol = csvCol + "\n";
+            } else {
+            }
+            output = output + col;
+            csvOutput = csvOutput + csvCol;
         }
-           output = output + col;
-           csvOutput = csvOutput + csvCol;           
-    }
-    
-    for (Object inObj: inStr ){
-        String nextStr = (String) inObj;
-        String[] columnDetail = nextStr.split("\t");
-        String[] test = columnDetail;
-        String indexCol = "";   
-        int testYear = 0;
-        if (test.length > 1)
-            {
-                for (int i=0; i<test.length; i++){
+
+        for (Object inObj : inStr) {
+            String nextStr = (String) inObj;
+            String[] columnDetail = nextStr.split("\t");
+            String[] test = columnDetail;
+            String indexCol = "";
+            int testYear = 0;
+            if (test.length > 1) {
+                for (int i = 0; i < test.length; i++) {
                     if (i == 0) {
                         indexCol = test[i];
                         testYear = new Integer(test[0]).intValue();
                     } else {
 
-                            Float numerator = new Float(0);
-                            if (!test[i].isEmpty()){
-                                numerator = new Float (test[i]);
-                            }
-                            Float denominator = new Float (0);
-                            if (indexesAvailable && indexVals[i] != null && !indexVals[i].isEmpty()){
-                                denominator = new Float (indexVals[i]);
-                            }
+                        Float numerator = new Float(0);
+                        if (!test[i].isEmpty()) {
+                            numerator = new Float(test[i]);
+                        }
+                        Float denominator = new Float(0);
+                        if (indexesAvailable && indexVals[i] != null && !indexVals[i].isEmpty()) {
+                            denominator = new Float(indexVals[i]);
+                        }
 
-                            Float result = new Float(0);
-                            Object outputIndex = new Double(0);
-                            if (!denominator.equals(new Float (0))  && !numerator.equals(new Float (0))){
-                                outputIndex = Math.round((numerator / denominator) *  new Double (10000))/ new Float(100);                              
-                                result = (numerator / denominator) *  new Float (100);
-                                if ((lowValIndex.compareTo(result) > 0)){
-                                    if (testYear >= startYearTransform && testYear <= endYearTransform){
-                                        lowValIndex = result;
-                                    }
-                                } 
-                                if (!test[i].isEmpty() && (highValIndex.equals(new Float (0))  || highValIndex.compareTo(result) < 0 )){
-                                    if (testYear >= startYearTransform && testYear <= endYearTransform){
-                                        highValIndex = result;
-                                    }
-                                    
+                        Float result = null;
+                        Object outputIndex = null;
+                        if (!denominator.equals(new Float(0)) && !numerator.equals(new Float(0))) {
+                            outputIndex = Math.round((numerator / denominator) * new Double(10000)) / new Float(100);
+                            result = (numerator / denominator) * new Float(100);
+                            if ((lowValIndex.compareTo(result) > 0)) {
+                                if (testYear >= startYearTransform && testYear <= endYearTransform) {
+                                    lowValIndex = result;
                                 }
-                            } else {
-                                outputIndex = "";
-                            } 
-                            if (testYear >= startYearTransform && testYear <= endYearTransform){
-                                    transformedDataIndexed[i] += test[0] + ", " + outputIndex.toString() + ", ";
-                             }
-                            indexCol = indexCol + ", " +  outputIndex.toString();
+                            }
+                            if (!test[i].isEmpty() && (highValIndex.equals(new Float(0)) || highValIndex.compareTo(result) < 0)) {
+                                if (testYear >= startYearTransform && testYear <= endYearTransform) {
+                                    highValIndex = result;
+                                }
+                            }
+                        } else {
+                            outputIndex = "";
+                        }
+                        if (testYear >= startYearTransform && testYear <= endYearTransform) {
+                            transformedDataIndexed[i] += test[0] + ", " + outputIndex.toString() + ", ";
+                        }
+                        indexCol = indexCol + ", " + outputIndex.toString();
                     }
                 }
-                  indexCol = indexCol + ";";
-           }
+                indexCol = indexCol + ";";
+            }
+            indexedOutput = indexedOutput + indexCol;
+        }
 
-
-           indexedOutput = indexedOutput + indexCol;
-    }
-
-          SelectItem setSI = selectEndYears.get(0);
-          setSI.setValue(maxYear);
-          selectEndYears.set(0, setSI);
-          csvString = csvOutput;
-          dataString = output;
-          indexedDataString = indexedOutput;          
-          cleanUpTransformedData(startYearTransform, endYearTransform);
+        SelectItem setSI = selectEndYears.get(0);
+        setSI.setValue(maxYear);
+        selectEndYears.set(0, setSI);
+        csvString = csvOutput;
+        dataString = output;
+        indexedDataString = indexedOutput;
+        cleanUpTransformedData(startYearTransform, endYearTransform);
     }
     
-    private void cleanUpTransformedData(int startYear, int endYear){
-        
+    private void cleanUpTransformedData(int startYear, int endYear) {
         transformedDataOut = "";
         transformedDataIndexedOut = "";
         int maxLength = transformedData.length;
-        
         double maxYear = 0;
-        
-        for (int i = 1; i<maxLength; i++){
-            
-            if (transformedData[i] != null){               
+
+        //In this for loop trim off leading null---
+        for (int i = 1; i < maxLength; i++) {
+            if (transformedData[i] != null) {
                 transformedData[i] = transformedData[i].substring(4);
                 transformedDataIndexed[i] = transformedDataIndexed[i].substring(4);
-            }             
+            }
         }
-        for (int i = 1; i<maxLength; i++){
-            
-            if (transformedData[i] != null){
-
+        //In this for loop get max year...
+        for (int i = 1; i < maxLength; i++) {
+            if (transformedData[i] != null) {
                 String[] transformedDataSplit = transformedData[i].split(",");
-                for (int t = 0; t < transformedDataSplit.length ; t=t+2){
-                        double testYr = 0;
-                        if (!transformedDataSplit[t].trim().isEmpty()){
-                            testYr = new Float(transformedDataSplit[t]).floatValue();
-                        }
-                        if (testYr > maxYear){
-                            maxYear = testYr;   
-                        }
+                for (int t = 0; t < transformedDataSplit.length; t = t + 2) {
+                    double testYr = 0;
+                    if (!transformedDataSplit[t].trim().isEmpty()) {
+                        testYr = new Float(transformedDataSplit[t]).floatValue();
+                    }
+                    if (testYr > maxYear) {
+                        maxYear = testYr;
+                    }
                 }
-                
-            } 
-
+            }
         }
-        
-        for (int i = 1; i<maxLength; i++){
+        //in this for loop add trailing commas to transformed data 
+        for (int i = 1; i < maxLength; i++) {
             double dataMaxYear = 0;
-            
-            if (transformedData[i] != null){
-
+            if (transformedData[i] != null) {
                 String[] transformedDataSplit = transformedData[i].split(",");
-                for (int t = 0; t < transformedDataSplit.length ; t=t+2){
-                        double testYr = 0;
-                        if (!transformedDataSplit[t].trim().isEmpty()){
-                            testYr = new Float(transformedDataSplit[t]).floatValue();
-                        }
-                        if (testYr > dataMaxYear){
-                            dataMaxYear = testYr;   
-                        }
+                for (int t = 0; t < transformedDataSplit.length; t = t + 2) {
+                    double testYr = 0;
+                    if (!transformedDataSplit[t].trim().isEmpty()) {
+                        testYr = new Float(transformedDataSplit[t]).floatValue();
+                    }
+                    if (testYr > dataMaxYear) {
+                        dataMaxYear = testYr;
+                    }
                 }
-                
             }
-            if (dataMaxYear < maxYear){
-                int iDataMax = new Double (dataMaxYear).intValue();
-                int iMaxYear = new Double (maxYear).intValue();
-                for (int j=iDataMax + 1; j <= iMaxYear; j++){
-                     transformedData[i] += j +", , "; 
-                     transformedDataIndexed[i] += j +", , ";
+            if (dataMaxYear < maxYear) {
+                int iDataMax = new Double(dataMaxYear).intValue();
+                int iMaxYear = new Double(maxYear).intValue();
+                for (int j = iDataMax + 1; j <= iMaxYear; j++) {
+                    transformedData[i] += j + ", , ";
+                    transformedDataIndexed[i] += j + ", , ";
                 }
-                
             }
         }
-        
-        
-        
-        for (int i = 1; i<maxLength; i++){           
-            if (transformedData[i] != null){
+        //Trim off last two characters
+        for (int i = 1; i < maxLength; i++) {
+            if (transformedData[i] != null) {
                 int len = transformedData[i].length();
-                transformedData[i] =  transformedData[i].substring(0, len-2) ; 
-            } 
+                transformedData[i] = transformedData[i].substring(0, len - 2);
+            }
+            if (transformedDataIndexed[i] != null) {
+                int lenI = transformedDataIndexed[i].length();
+                transformedDataIndexed[i] = transformedDataIndexed[i].substring(0, lenI - 2);
+            }
         }
         
-        for (int i = 1; i<maxLength; i++){           
-            if (transformedDataIndexed[i] != null){
-                int lenI = transformedDataIndexed[i].length();
-                transformedDataIndexed[i] =  transformedDataIndexed[i].substring(0, lenI-2);  
-            } 
-        }
-        for (int i = 1; i<maxLength; i++){
-            if (transformedData[i] != null){
+        //Bring all of the array into one string each for raw data and indexed data to be passed to page...
+        for (int i = 1; i < maxLength; i++) {
+            if (transformedData[i] != null) {
                 String transformedDataSelect = "";
                 String transformedDataIndexSelect = "";
                 String[] transformedDataSplit = transformedData[i].split(",");
                 String[] transformedDataIndexSplit = transformedDataIndexed[i].split(",");
-                for (int yr = startYear; yr <= endYear; yr++ ){
+                for (int yr = startYear; yr <= endYear; yr++) {
                     String getVal = "";
-                    for (int t = 0; t < transformedDataSplit.length ; t++){
+                    for (int t = 0; t < transformedDataSplit.length; t++) {
                         double testYr = 0;
-                        if (!transformedDataSplit[t].trim().isEmpty()){
+                        if (!transformedDataSplit[t].trim().isEmpty()) {
                             testYr = new Float(transformedDataSplit[t]).floatValue();
                         }
-                            
-                        if (yr == testYr  ){
-                            getVal = transformedDataSplit[t+1];
+                        if (yr == testYr) {
+                            getVal = transformedDataSplit[t + 1].trim();
                         }
-                    }                    
-                        transformedDataSelect += getVal + ",";        
-                }               
-                for (int yr = startYear; yr <= endYear; yr++ ){
+                    }
+                    transformedDataSelect += getVal + ",";
+                }
+                for (int yr = startYear; yr <= endYear; yr++) {
                     String getValIndex = "";
-                    for (int t = 0; t < transformedDataIndexSplit.length ; t++){
+                    for (int t = 0; t < transformedDataIndexSplit.length; t++) {
                         double testYr = 0;
-                        if (!transformedDataIndexSplit[t].trim().isEmpty()){
+                        if (!transformedDataIndexSplit[t].trim().isEmpty()) {
                             testYr = new Float(transformedDataIndexSplit[t]).floatValue();
                         }
-                            
-                        if (yr == testYr ){
-                            getValIndex = transformedDataIndexSplit[t+1];
+                        if (yr == testYr) {
+                            getValIndex = transformedDataIndexSplit[t + 1].trim();
                         }
                     }
                     transformedDataIndexSelect += getValIndex + ",";
                 }
 
-                while (dataHasGaps(transformedDataSelect)){
+                while (dataHasGaps(transformedDataSelect)) {
                     transformedDataSelect = fillInGaps(transformedDataSelect);
                 }
-                
-                while (dataHasGaps(transformedDataIndexSelect)){
+
+                while (dataHasGaps(transformedDataIndexSelect)) {
                     transformedDataIndexSelect = fillInGaps(transformedDataIndexSelect);
                 }
-                
+
                 int len = transformedDataSelect.length();
                 int lenI = transformedDataIndexSelect.length();
-                transformedDataSelect =  transformedDataSelect.substring(0, len-1) ;
-                transformedDataIndexSelect =  transformedDataIndexSelect.substring(0, lenI-1);               
-                if (i > 1){
+                transformedDataSelect = transformedDataSelect.substring(0, len - 1);
+                transformedDataIndexSelect = transformedDataIndexSelect.substring(0, lenI - 1);
+                if (i > 1) {
                     transformedDataOut += ";";
                     transformedDataIndexedOut += ";";
                 }
                 transformedDataIndexedOut += transformedDataIndexSelect;
-                transformedDataOut += transformedDataSelect;   
-            }            
-        }  
+                transformedDataOut += transformedDataSelect;
+            }
+        }
     }
     
     private boolean dataHasGaps(String stringIn){
@@ -2258,9 +2162,7 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
             }
             if (firstVal && checkString.trim().isEmpty()){
                 endBlank = true;
-            }
-            
-            
+            }            
         }
         
         return retVal;
@@ -2400,55 +2302,51 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
         try {
             String decoded = URLDecoder.decode(imageURL, "UTF-8");
 
-        if (!decoded.isEmpty()){
+            if (!decoded.isEmpty()) {
                 URL imageURLnew = new URL(imageURL);
-                
-                try{
-                    BufferedImage image =     ImageIO.read(imageURLnew);
-                                  
+
+                try {
+                    BufferedImage image = ImageIO.read(imageURLnew);
+
                     BufferedImage combinedImage = getCompositeImage(image);
- 
-                    if (fileIn != null) {                         
-                        ImageIO.write(combinedImage, "png", fileIn);                         
+
+                    if (fileIn != null) {
+                        ImageIO.write(combinedImage, "png", fileIn);
                     }
 
-                    if (pdfFileIn != null) {                        
-                        File imagePngFile = File.createTempFile("pdfDownload","png");
+                    if (pdfFileIn != null) {
+                        File imagePngFile = File.createTempFile("pdfDownload", "png");
                         ImageIO.write(combinedImage, "png", imagePngFile);
-                        Document convertPngToPdf=new Document();
+                        Document convertPngToPdf = new Document();
                         PdfWriter.getInstance(convertPngToPdf, new FileOutputStream(pdfFileIn, true));
                         convertPngToPdf.open();
-                        Image convertBmp=PngImage.getImage(imagePngFile.getAbsolutePath());
+                        Image convertBmp = PngImage.getImage(imagePngFile.getAbsolutePath());
                         convertBmp.scaleToFit(530f, 500f);
                         convertPngToPdf.add(convertBmp);
                         convertPngToPdf.close();
                     }
-                } catch (IIOException io){
+                } catch (IIOException io) {
                     System.out.println(io.getMessage().toString());
-                     System.out.println(io.getCause().toString());
-                     System.out.println("IIOException " + imageURLnew);
-                    
-                }    catch (FontFormatException ff){
+                    System.out.println(io.getCause().toString());
+                    System.out.println("IIOException " + imageURLnew);
+
+                } catch (FontFormatException ff) {
                     System.out.println("FontFormatException " + imageURLnew);
-                    
+
                     System.out.println("FontFormatException " + ff.toString());
                 }
             }
 
-        } catch (UnsupportedEncodingException uee){
-              System.out.println("UnsupportedEncodingException ");
-
-        } catch (MalformedURLException mue){
+        } catch (UnsupportedEncodingException uee) {
+            System.out.println("UnsupportedEncodingException ");
+        } catch (MalformedURLException mue) {
             System.out.println("MalformedURLException ");
-        } catch (IOException io){
+        } catch (IOException io) {
             System.out.println("IOException - outer ");
-        } 
-
-        catch (DocumentException io){
+        } catch (DocumentException io) {
             System.out.println("IOException - document ");
             System.out.println(io.getMessage());
-
-        } 
+        }
     }
     
     
@@ -2571,85 +2469,77 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
         zout.closeEntry();
      }
     
-  private void writeExcelFile   (File fileIn) throws IOException {
-      String parseString = dataString;
-      List list = Arrays.asList(parseString.split(";"));
-      String parseColumn = columnString;
-      
-      try {
+    private void writeExcelFile(File fileIn) throws IOException {
+        String parseString = dataString;
+        List list = Arrays.asList(parseString.split(";"));
+        String parseColumn = columnString;
+
+        try {
             WorkbookSettings ws = new WorkbookSettings();
             ws.setLocale(new Locale("en", "EN"));
-            WritableWorkbook w =
-            Workbook.createWorkbook(fileIn, ws);
+            WritableWorkbook w = Workbook.createWorkbook(fileIn, ws);
 
             WritableSheet s = w.createSheet("Data", 0);
-            
+
             int rowCounter = 0;
-            
-            if (!graphTitle.isEmpty()){
-                Label h = new Label (0, 0,  graphTitle.toString());
+
+            if (!graphTitle.isEmpty()) {
+                Label h = new Label(0, 0, graphTitle.toString());
                 s.addCell(h);
                 rowCounter++;
             }
-            
-            List columnHeads = Arrays.asList(parseColumn.split("\\|"));
-            
 
-            
+            List columnHeads = Arrays.asList(parseColumn.split("\\|"));
+
             int ccounter = 0;
-            for (Object c: columnHeads){
-                 Label h = new Label (ccounter, rowCounter,  c.toString());
-                 s.addCell(h);
-                 ccounter++;
+            for (Object c : columnHeads) {
+                Label h = new Label(ccounter, rowCounter, c.toString());
+                s.addCell(h);
+                ccounter++;
             }
             rowCounter++;
-            
-            for (Object o: list){
+
+            for (Object o : list) {
                 List dataFields = Arrays.asList(o.toString().split(","));
                 int dcounter = 0;
-                for (Object d: dataFields){
-                    if (dcounter == 0){
-                      Label l = new Label (dcounter, rowCounter,  d.toString());
-                      s.addCell(l);
+                for (Object d : dataFields) {
+                    if (dcounter == 0) {
+                        Label l = new Label(dcounter, rowCounter, d.toString());
+                        s.addCell(l);
 
                     } else {
-                        if ( !d.toString().trim().isEmpty()){
-                            jxl.write.Number n = new jxl.write.Number(dcounter, rowCounter,  new Double(d.toString()));
+                        if (!d.toString().trim().isEmpty()) {
+                            jxl.write.Number n = new jxl.write.Number(dcounter, rowCounter, new Double(d.toString()));
                             s.addCell(n);
                         } else {
-                            Label m = new Label  (dcounter, rowCounter,  "N/A");
+                            Label m = new Label(dcounter, rowCounter, "N/A");
                             s.addCell(m);
                         }
                     }
-                    
+
                     dcounter++;
                 }
                 rowCounter++;
             }
-            
-            if(!sourceString.isEmpty()){
-                
-                Label h = new Label (0, rowCounter,  "" );
+
+            if (!sourceString.isEmpty()) {
+                Label h = new Label(0, rowCounter, "");
                 s.addCell(h);
                 rowCounter++;
-                
-                 h = new Label (0, rowCounter,   sourceString.toString());
+                h = new Label(0, rowCounter, sourceString.toString());
                 s.addCell(h);
                 rowCounter++;
-                
             }
-            
+
             w.write();
             w.close();
-        }
-            catch (Exception e){
-                
-                 System.out.println("excel creation exception  " ); 
-                 System.out.println(e.getMessage().toString());
-                 System.out.println(e.getCause().toString());
+        } catch (Exception e) {
+            System.out.println("excel creation exception  ");
+            System.out.println(e.getMessage().toString());
+            System.out.println(e.getCause().toString());
         }
 
-  }
+    }
 
     private void getSourceList(  ) {
         String returnString = "";
@@ -2677,84 +2567,73 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
         sources = returnString;
     }
     
-    private void checkUnits() {   
+    private void checkUnits() {
 
-        Set<String> set = new HashSet(); 
+        Set<String> set = new HashSet();
         int countLines = 0;
         forcedIndexMessage = "";
-            for (VisualizationLineDefinition vld: vizLines){
-                countLines++;
+        for (VisualizationLineDefinition vld : vizLines) {
+            countLines++;
             String checkUnit = vld.getMeasureGroup().getUnits();
 
-                if (!set.isEmpty() && !set.contains(checkUnit) && countLines > 1){
-                    setDisplayIndexes(true);
-                    yAxisLabel = "";
-                    forcedIndexMessage = "Series have been displayed as indices because their measurement units are different.";
-                } else {
+            if (!set.isEmpty() && !set.contains(checkUnit) && countLines > 1) {
+                setDisplayIndexes(true);
+                yAxisLabel = "";
+                forcedIndexMessage = "Series have been displayed as indices because their measurement units are different.";
+            } else {
 
-                    set.add(checkUnit);
-                    yAxisLabel = checkUnit;
-                }
-
+                set.add(checkUnit);
+                yAxisLabel = checkUnit;
             }
-      
+        }
     }
 
     private void updateImageFooters() {
 
-        String footerNotes = "";
-        String footerNotesNoY = "";
-        String displayFooterNotes = "";
-        String displayFooterNotesNoY = "";
-        
-        Set<String> set = new HashSet();
+
+        String displayFooterNotes;
+        String displayFooterNotesNoY;
         String axisLabelTemp = "x,y";
         String axisLabelTempNoY = "x,y";
-          Integer lineNum = 4;
-          Integer lineNumNoY = 4;
-          footerNotesNoY = "|";
-          footerNotes = "|";
-          displayFooterNotesNoY = "|";
-          displayFooterNotes = "|";
-          
-        if (!yAxisLabel.isEmpty()){
-               axisLabelTemp += ",y";
-              String codedYAxisLabel = "";
-              try {
-                  codedYAxisLabel = URLEncoder.encode(yAxisLabel, "UTF-8");
-              } catch (Exception e) {
-                  codedYAxisLabel = yAxisLabel;
-              }
-               footerNotes += "|" + lineNum + ":||"+ codedYAxisLabel +"|";
-               displayFooterNotes += "|" + lineNum + ":||"+ yAxisLabel +"|";
-               lineNum++;
+        Integer lineNum = 4;
+        Integer lineNumNoY = 4;
+
+        displayFooterNotesNoY = "|";
+        displayFooterNotes = "|";
+
+        if (!yAxisLabel.isEmpty()) {
+            axisLabelTemp += ",y";
+            String codedYAxisLabel = "";
+            try {
+                codedYAxisLabel = URLEncoder.encode(yAxisLabel, "UTF-8");
+            } catch (Exception e) {
+                codedYAxisLabel = yAxisLabel;
+            }
+            displayFooterNotes += "|" + lineNum + ":||" + yAxisLabel + "|";
+            lineNum++;
         }
-        
-        if (!xAxisLabel.isEmpty()){
-               axisLabelTemp += ",x";
-               axisLabelTempNoY += ",x";
-               String codedXAxisLabel = "";
-              try {
-                  codedXAxisLabel = URLEncoder.encode(xAxisLabel, "UTF-8");
-              } catch (Exception e) {                
-                  codedXAxisLabel = xAxisLabel;
-              }
-               footerNotes += "|" + lineNum + ":||"+ codedXAxisLabel +"|";
-               footerNotesNoY += "|" + lineNumNoY + ":||"+ codedXAxisLabel +"|";
-               displayFooterNotes += "|" + lineNum + ":||"+ xAxisLabel +"|";
-               displayFooterNotesNoY += "|" + lineNumNoY + ":||"+ xAxisLabel +"|";
-               lineNum++;
-               lineNumNoY++;
+
+        if (!xAxisLabel.isEmpty()) {
+            axisLabelTemp += ",x";
+            axisLabelTempNoY += ",x";
+            String codedXAxisLabel;
+            try {
+                codedXAxisLabel = URLEncoder.encode(xAxisLabel, "UTF-8");
+            } catch (Exception e) {
+                codedXAxisLabel = xAxisLabel;
+            }
+            displayFooterNotes += "|" + lineNum + ":||" + codedXAxisLabel + "|";
+            displayFooterNotesNoY += "|" + lineNumNoY + ":||" + codedXAxisLabel + "|";
+            lineNum++;
+            lineNumNoY++;
         }
-          setImageAxisLabel(axisLabelTemp);
-          setImageSourceFooter(footerNotes);
-          setImageAxisLabelNoYLabel(axisLabelTempNoY);
-          setImageSourceFooterNoYLabel(footerNotesNoY);
-          setDisplaySourceFooter(displayFooterNotes);
-          setDisplaySourceFooterNoYLabel(displayFooterNotesNoY);          
+        setImageAxisLabel(axisLabelTemp);
+        setImageAxisLabelNoYLabel(axisLabelTempNoY);
+        setDisplaySourceFooter(displayFooterNotes);
+        setDisplaySourceFooterNoYLabel(displayFooterNotesNoY);
 
     }
-    
+
 
     public String getTitleOut() {
         return "";
@@ -2778,7 +2657,7 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
     
     private String convertVariableLabel(String variableLabelIn){
                 String s = variableLabelIn;
-        // separete input by spaces ( URLs don't have spaces )
+        // separate input by spaces ( URLs don't have spaces )
         String [] parts = s.split("\\s");
         String retString = "";
         // Attempt to convert each item into an URL.   
@@ -2894,17 +2773,10 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
         return imageAxisLabel;
     }
 
-    public String getImageSourceFooter() {
-        return imageSourceFooter;
-    }
-
     public void setImageAxisLabel(String imageAxisLabel) {
         this.imageAxisLabel = imageAxisLabel;
     }
 
-    public void setImageSourceFooter(String imageSourceFooter) {
-        this.imageSourceFooter = imageSourceFooter;
-    }
     HtmlSelectOneMenu selectIndexYear;
 
     public HtmlSelectOneMenu getSelectIndexYear() {
@@ -3210,11 +3082,7 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
     public void setImageColumnString(String imageColumnString) {
         this.imageColumnString = imageColumnString;
     }
-    
-    public String getImageSourceFooterNoYLabel() {
-        return imageSourceFooterNoYLabel;
-    }
-    
+       
     
     public boolean isDataTableAvailable() {
         return dataTableAvailable;
@@ -3243,11 +3111,6 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
     public Integer getDefaultView() {
 
         return defaultView;
-    }
-
-
-    public void setImageSourceFooterNoYLabel(String imageSourceFooterNoYLabel) {
-        this.imageSourceFooterNoYLabel = imageSourceFooterNoYLabel;
     }
 
     private HtmlSelectBooleanCheckbox dataExcelCheckBox;

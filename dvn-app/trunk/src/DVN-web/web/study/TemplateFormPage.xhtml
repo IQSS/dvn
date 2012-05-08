@@ -61,6 +61,17 @@
                       </ice:column>
                   </ice:panelGrid>
                 </div>
+                <div class="dvnstudytitlefloat">
+                  <ice:panelGrid cellpadding="0" cellspacing="0" columns="2">
+                      <ice:column>
+                        <ice:outputText value="Template Description "/>
+                      </ice:column>
+                      <ice:column>
+                        <ice:inputTextarea id="template_description" size="255" value='#{TemplateFormPage.template.description}'/>
+                        <ice:message styleClass="errorMessage" for="template_description"/>
+                      </ice:column>
+                  </ice:panelGrid>
+                </div>
               </div>
               <!-- TITLE -->
               <ice:panelGrid cellpadding="0" cellspacing="0" columns="2" width="100%"
@@ -390,10 +401,20 @@
                   <ice:graphicImage value="/resources/images/icon_recommended.gif" rendered="#{TemplateFormPage.studyMap[sfc.productionPlace].recommended}"/>
                 </ice:column>
                 <ice:column>
-                  <ice:inputText id="input_productionPlace" size="45" value="#{TemplateFormPage.template.metadata.productionPlace}"/>
-                  <ice:message styleClass="errorMessage" for="input_productionPlace"/>
-                </ice:column>
-                <ice:column>                  
+                  <ice:inputText id="input_productionPlace" size="45" 
+                                 rendered="#{empty(TemplateFormPage.studyMap[sfc.productionPlace].templateField.controlledVocabulary)}"
+                                 value="#{TemplateFormPage.template.metadata.productionPlace}"/>
+                        <ice:message styleClass="errorMessage" for="input_productionPlace"/>
+                        <ice:selectOneMenu immediate="false"   id="selectOneProductionPlace" rendered="#{!empty(TemplateFormPage.studyMap[sfc.productionPlace].templateField.controlledVocabulary)}"                                          
+                                           value="#{TemplateFormPage.template.metadata.productionPlace}" 
+                                           >
+                            <f:selectItem itemLabel="No Value" itemValue=""/>
+                            <f:selectItems value="#{TemplateFormPage.studyMap[sfc.productionPlace].templateField.controlledVocabulary.selectItems}"/>
+                        </ice:selectOneMenu>  
+                </ice:column>  
+                <ice:column>   
+                  <ice:commandLink value="Select Vocabulary" rendered="#{TemplateFormPage.networkEdit}" 
+                                       action="#{TemplateFormPage.openPopupStandard(TemplateFormPage.studyMap[sfc.productionPlace].templateField)}"/>
                   <ice:selectOneMenu immediate="false" partialSubmit="true" 
                                         value="#{TemplateFormPage.studyMap[sfc.productionPlace].templateField.fieldInputLevelString}">
                             <f:attribute name="fieldName" value="productionPlace" />
@@ -459,10 +480,20 @@
                   <ice:graphicImage value="/resources/images/icon_recommended.gif" rendered="#{TemplateFormPage.studyMap[sfc.fundingAgency].recommended}"/>
                 </ice:column>
                 <ice:column>
-                  <ice:inputText id="input_fundingAgency" size="45" value="#{TemplateFormPage.template.metadata.fundingAgency}"/>
+                  <ice:inputText id="input_fundingAgency" size="45" rendered="#{empty(TemplateFormPage.studyMap[sfc.fundingAgency].templateField.controlledVocabulary)}" 
+                                 value="#{TemplateFormPage.template.metadata.fundingAgency}"/>
                   <ice:message styleClass="errorMessage" for="input_fundingAgency"/>
+                        <ice:selectOneMenu immediate="false"   id="selectOneFundingAgency" rendered="#{!empty(TemplateFormPage.studyMap[sfc.fundingAgency].templateField.controlledVocabulary)}"                                          
+                                           value="#{TemplateFormPage.template.metadata.fundingAgency}" 
+                                           >
+                            <f:selectItem itemLabel="No Value" itemValue=""/>
+                            <f:selectItems value="#{TemplateFormPage.studyMap[sfc.fundingAgency].templateField.controlledVocabulary.selectItems}"/>
+                            <f:attribute name="sf_id" value="#{TemplateFormPage.studyMap[sfc.fundingAgency].templateField.studyField.id}"/>
+                        </ice:selectOneMenu> 
                 </ice:column>
                 <ice:column>
+                  <ice:commandLink value="Select Vocabulary" rendered="#{TemplateFormPage.networkEdit}" 
+                                       action="#{TemplateFormPage.openPopupStandard(TemplateFormPage.studyMap[sfc.fundingAgency].templateField)}"/>
                   <ice:selectOneMenu immediate="false"  partialSubmit="true" 
                                         value="#{TemplateFormPage.studyMap[sfc.fundingAgency].templateField.fieldInputLevelString}">
                             <f:attribute name="fieldName" value="fundingAgency" />
@@ -666,10 +697,20 @@
                   <ice:graphicImage value="/resources/images/icon_recommended.gif" rendered="#{TemplateFormPage.studyMap[sfc.depositor].recommended}"/>
                 </ice:column>
                 <ice:column styleClass="#{TemplateFormPage.studyMap[sfc.depositor].templateField.fieldInputLevelString}">
-                  <ice:inputText id="input_depositor" size="45" value="#{TemplateFormPage.template.metadata.depositor}" />
+                  <ice:inputText id="input_depositor" size="45" rendered="#{empty(TemplateFormPage.studyMap[sfc.depositor].templateField.controlledVocabulary)}"
+                                 value="#{TemplateFormPage.template.metadata.depositor}" />
                   <ice:message styleClass="errorMessage" for="input_depositor"/>
+                  <ice:selectOneMenu immediate="false"   id="selectOneDepositor" 
+                                     rendered="#{!empty(TemplateFormPage.studyMap[sfc.depositor].templateField.controlledVocabulary)}"                                          
+                                           value="#{TemplateFormPage.template.metadata.depositor}" 
+                                           >
+                            <f:selectItem itemLabel="No Value" itemValue=""/>
+                            <f:selectItems value="#{TemplateFormPage.studyMap[sfc.depositor].templateField.controlledVocabulary.selectItems}"/>
+                 </ice:selectOneMenu>  
                 </ice:column>
                 <ice:column>
+                 <ice:commandLink value="Select Vocabulary" rendered="#{TemplateFormPage.networkEdit}" 
+                                       action="#{TemplateFormPage.openPopupStandard(TemplateFormPage.studyMap[sfc.depositor].templateField)}"/>
                   <ice:selectOneMenu immediate="false" partialSubmit="true" 
                                         value="#{TemplateFormPage.studyMap[sfc.depositor].templateField.fieldInputLevelString}">
                             <f:attribute name="fieldName" value="depositor" />
@@ -1191,10 +1232,21 @@
                   <ice:graphicImage value="/resources/images/icon_recommended.gif" rendered="#{TemplateFormPage.studyMap[sfc.country].recommended}"/>
                 </ice:column>
                 <ice:column>
-                  <ice:inputText id="input_country" size="45" value="#{TemplateFormPage.template.metadata.country}" />
+                  <ice:inputText id="input_country" size="45" value="#{TemplateFormPage.template.metadata.country}" 
+                                 rendered="#{empty(TemplateFormPage.studyMap[sfc.country].templateField.controlledVocabulary)}"/>
                   <ice:message styleClass="errorMessage" for="input_country"/>
+
+                  <ice:selectOneMenu immediate="false"   id="selectOneCountry" 
+                                     rendered="#{!empty(TemplateFormPage.studyMap[sfc.country].templateField.controlledVocabulary)}"                                          
+                                           value="#{TemplateFormPage.template.metadata.country}" 
+                                           >
+                            <f:selectItem itemLabel="No Value" itemValue=""/>
+                            <f:selectItems value="#{TemplateFormPage.studyMap[sfc.country].templateField.controlledVocabulary.selectItems}"/>
+                 </ice:selectOneMenu>  
                 </ice:column>
                 <ice:column>
+                 <ice:commandLink value="Select Vocabulary" rendered="#{TemplateFormPage.networkEdit}" 
+                                       action="#{TemplateFormPage.openPopupStandard(TemplateFormPage.studyMap[sfc.country].templateField)}"/>
                   <ice:selectOneMenu immediate="false" partialSubmit="true" 
                                         value="#{TemplateFormPage.studyMap[sfc.country].templateField.fieldInputLevelString}">
                             <f:attribute name="fieldName" value="country" />
@@ -1214,10 +1266,21 @@
                   <ice:graphicImage value="/resources/images/icon_recommended.gif" rendered="#{TemplateFormPage.studyMap[sfc.geographicCoverage].recommended}"/>
                 </ice:column>
                 <ice:column>
-                  <ice:inputText id="input_geographicCoverage" size="45" value="#{TemplateFormPage.template.metadata.geographicCoverage}" />
+                  <ice:inputText id="input_geographicCoverage" size="45"
+                                 rendered="#{empty(TemplateFormPage.studyMap[sfc.geographicCoverage].templateField.controlledVocabulary)}" 
+                                 value="#{TemplateFormPage.template.metadata.geographicCoverage}" />
                   <ice:message styleClass="errorMessage" for="input_geographicCoverage"/>
+                  <ice:selectOneMenu immediate="false"   id="selectOneGeographicCoverage" 
+                                     rendered="#{!empty(TemplateFormPage.studyMap[sfc.geographicCoverage].templateField.controlledVocabulary)}"                                          
+                                           value="#{TemplateFormPage.template.metadata.geographicCoverage}" 
+                                           >
+                            <f:selectItem itemLabel="No Value" itemValue=""/>
+                            <f:selectItems value="#{TemplateFormPage.studyMap[sfc.geographicCoverage].templateField.controlledVocabulary.selectItems}"/>
+                 </ice:selectOneMenu>  
                 </ice:column>
                 <ice:column>
+                 <ice:commandLink value="Select Vocabulary" rendered="#{TemplateFormPage.networkEdit}" 
+                                       action="#{TemplateFormPage.openPopupStandard(TemplateFormPage.studyMap[sfc.geographicCoverage].templateField)}"/>
                   <ice:selectOneMenu immediate="false" partialSubmit="true" 
                                         value="#{TemplateFormPage.studyMap[sfc.geographicCoverage].templateField.fieldInputLevelString}">
                             <f:attribute name="fieldName" value="geographicCoverage" />
@@ -1237,10 +1300,21 @@
                   <ice:graphicImage value="/resources/images/icon_recommended.gif" rendered="#{TemplateFormPage.studyMap[sfc.geographicUnit].recommended}"/>
                 </ice:column>
                 <ice:column>
-                  <ice:inputText id="input_geographicUnit" size="45" value="#{TemplateFormPage.template.metadata.geographicUnit}" />
+                  <ice:inputText id="input_geographicUnit" size="45"
+                                 rendered="#{empty(TemplateFormPage.studyMap[sfc.geographicUnit].templateField.controlledVocabulary)}"
+                                 value="#{TemplateFormPage.template.metadata.geographicUnit}" />
                   <ice:message styleClass="errorMessage" for="input_geographicUnit"/>
+                  <ice:selectOneMenu immediate="false"   id="selectOneGeographicUnit" 
+                                     rendered="#{!empty(TemplateFormPage.studyMap[sfc.geographicUnit].templateField.controlledVocabulary)}"                                          
+                                           value="#{TemplateFormPage.template.metadata.geographicUnit}" 
+                                           >
+                            <f:selectItem itemLabel="No Value" itemValue=""/>
+                            <f:selectItems value="#{TemplateFormPage.studyMap[sfc.geographicUnit].templateField.controlledVocabulary.selectItems}"/>
+                 </ice:selectOneMenu>  
                 </ice:column>
                 <ice:column>
+                 <ice:commandLink value="Select Vocabulary" rendered="#{TemplateFormPage.networkEdit}" 
+                                       action="#{TemplateFormPage.openPopupStandard(TemplateFormPage.studyMap[sfc.geographicUnit].templateField)}"/>
                   <ice:selectOneMenu immediate="false" partialSubmit="true" 
                                         value="#{TemplateFormPage.studyMap[sfc.geographicUnit].templateField.fieldInputLevelString}">
                             <f:attribute name="fieldName" value="geographicUnit" />
@@ -1439,7 +1513,7 @@
                           <ice:message styleClass="errorMessage" for="input_TextDefault"/>
                           <ice:inputText id="input_HtmlEnabled" size="90" rendered="#{customFieldsDataModel[0].studyField.fieldType == 'html'}"                                          
                                          value="#{customValuesDataModel[0].strValue}"
-                                         styleClass="formHtmlEnabled">>
+                                         styleClass="formHtmlEnabled">
                           </ice:inputText>
                           <ice:message styleClass="errorMessage" for="input_HtmlEnabled"/>
                           <ice:inputTextarea id="input_HtmlEnabledArea" cols="90" rows="4" rendered="#{customFieldsDataModel[0].studyField.fieldType == 'htmlarea'}"                                          
@@ -1493,7 +1567,8 @@
 <!-- Start of Controlled vocab stuff-->
                   <ice:panelGrid cellpadding="0" cellspacing="0" columns="3" width="100%"
                              styleClass="vdcEditStudyTable #{customFieldsDataModel[0].fieldInputLevelString}"
-                             rendered="#{!empty(customFieldsDataModel[0].controlledVocabulary) and (TemplateFormPage.networkEdit or customFieldsDataModel[0].fieldInputLevelString != 'disabled')}"
+                             rendered="#{!empty(customFieldsDataModel[0].controlledVocabulary) 
+                                         and (TemplateFormPage.networkEdit or customFieldsDataModel[0].fieldInputLevelString != 'disabled')}"
                              columnClasses="vdcEditStudyCol1, vdcEditStudyCol2, vdcEditStudyCol3">
                     <ice:column styleClass="vdcEditStudyField">                          
                         <ice:outputText styleClass="dvnInlineHelpLabel dvnInlineHelpTip" value="#{customFieldsDataModel[0].studyField.title}" 

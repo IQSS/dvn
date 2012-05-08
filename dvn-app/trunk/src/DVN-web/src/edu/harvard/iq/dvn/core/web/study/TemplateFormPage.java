@@ -192,50 +192,78 @@ public class TemplateFormPage extends VDCBaseBean implements java.io.Serializabl
     }
     
     public void initStudyFields() {
-        
+
         // first, let's get the values into the transient study field list of metadata
         template.getMetadata().getStudyFields();
         //and remove from the regular list or they will still get saved!
         template.getMetadata().getStudyFieldValues().clear();
-        
+
         String controlledVocabularyUpdateMessage = "";
         String errorMessage = "";
         studyMap = new HashMap();
-        for (Iterator<TemplateField> it =template.getTemplateFields().iterator(); it.hasNext();) {
+        for (Iterator<TemplateField> it = template.getTemplateFields().iterator(); it.hasNext();) {
             TemplateField tf = it.next();
             StudyMapValue smv = new StudyMapValue();
             smv.setTemplateFieldUI(new TemplateFieldUI(tf));
-            if(!tf.getStudyField().isCustomField()){
-                studyMap.put(tf.getStudyField().getName(),smv); 
-
-            } else {
-                if (tf.getControlledVocabulary() !=null){
-                   errorMessage +=verifyControlledVocabValues(tf);
-                }
-            }          
-        }
-        if (!errorMessage.isEmpty()){
-            controlledVocabularyUpdateMessage = "Please review the following data entries:";
-            controlledVocabularyUpdateMessage += errorMessage;
-            getVDCRenderBean().getFlash().put("warningMessage",controlledVocabularyUpdateMessage);
-        }
-    }
-    
-
-    
-    
-    private String verifyControlledVocabValues(TemplateField tfIn){
-        
-        StudyField studyField = new StudyField();
-        for (StudyField sf : template.getMetadata().getStudyFields()) {
-            if (sf.getName().equals(tfIn.getStudyField().getName())) {
-                studyField = sf;
-                break;
+            if (!tf.getStudyField().isCustomField()) {
+                studyMap.put(tf.getStudyField().getName(), smv);
+            }
+            if (tf.getControlledVocabulary() != null) {
+                errorMessage += verifyControlledVocabValues(tf);
             }
         }
+        if (!errorMessage.isEmpty()) {
+            controlledVocabularyUpdateMessage = "Please review the following data entries:";
+            controlledVocabularyUpdateMessage += errorMessage;
+            getVDCRenderBean().getFlash().put("warningMessage", controlledVocabularyUpdateMessage);
+        }
+    }
+
+    private String getMetadataValueForControlledVocabularyValidation(StudyField studyField){
+        if (studyField.getName().equals(StudyFieldConstant.productionPlace)){
+            return template.getMetadata().getProductionPlace();
+        }
+        if (studyField.getName().equals(StudyFieldConstant.fundingAgency)){
+            return template.getMetadata().getFundingAgency();
+        }
+        if (studyField.getName().equals(StudyFieldConstant.depositor)){
+            return template.getMetadata().getDepositor();
+        }
+        if (studyField.getName().equals(StudyFieldConstant.country)){
+            return template.getMetadata().getCountry();
+        }
+        if (studyField.getName().equals(StudyFieldConstant.geographicCoverage)){
+            return template.getMetadata().getGeographicCoverage();
+        }
+        if (studyField.getName().equals(StudyFieldConstant.geographicUnit)){
+            return template.getMetadata().getGeographicUnit();
+        }
+        return "";
+    }
+   
+    private String verifyControlledVocabValues(TemplateField tfIn){
+        List <String> studyFieldValues = new ArrayList();
+        StudyField studyField = new StudyField();
+        if (tfIn.getStudyField().isCustomField()){
+            for (StudyField sf : template.getMetadata().getStudyFields()) {
+                if (sf.getName().equals(tfIn.getStudyField().getName())) {
+                    studyField = sf;
+                    break;
+                }
+            }
+            for (String studyFieldValue: studyField.getStudyFieldValueStrings()){
+                studyFieldValues.add(studyFieldValue);
+            }
+        } else {
+            String metadataValue = getMetadataValueForControlledVocabularyValidation(tfIn.getStudyField());
+            if (metadataValue != null && !metadataValue.isEmpty()){
+                studyFieldValues.add(metadataValue);
+            }            
+        }
+
         String errorMessage = "";
         boolean inControlledVocab = false;
-        for (String studyFieldValue: studyField.getStudyFieldValueStrings()){
+        for (String studyFieldValue: studyFieldValues){
             inControlledVocab = false;
             for (ControlledVocabularyValue controlledVocabValue : tfIn.getControlledVocabulary().getControlledVocabularyValues() ){
                 if(studyFieldValue.equals(controlledVocabValue.getValue())){
@@ -243,7 +271,7 @@ public class TemplateFormPage extends VDCBaseBean implements java.io.Serializabl
                 }
             }
             if(!inControlledVocab){
-                errorMessage += "<br/>" + studyField.getName() +  " has had value " + studyFieldValue + " removed from its controlled vocabulary. ";
+                errorMessage += "<br/>" + tfIn.getStudyField().getName() +  " has had value " + studyFieldValue + " removed from its controlled vocabulary. ";
             }
         }          
         return errorMessage;
@@ -2765,6 +2793,13 @@ public class TemplateFormPage extends VDCBaseBean implements java.io.Serializabl
     public String getPopupSelectId() { return popupSelectId; }
     public void setPopupSelectId(String popupSelectId) { this.popupSelectId = popupSelectId; }
   
+    
+    public void openPopupStandard(TemplateField templateFieldIn) { 
+        popupTemplateField = templateFieldIn;
+        popupControlledVocabulary = templateFieldIn.getControlledVocabulary();
+        popupSelectId = popupControlledVocabulary != null ? popupControlledVocabulary.getId().toString() : "";
+        showPopup = true;
+    } 
     
     public void openPopup(ActionEvent ae) {
         Object[] fieldsRowData = getCustomFieldsRowData( customFieldsPanelSeries.getRowIndex() );

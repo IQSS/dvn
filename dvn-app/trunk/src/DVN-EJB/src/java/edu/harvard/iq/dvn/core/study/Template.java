@@ -54,8 +54,9 @@ public class Template implements java.io.Serializable {
     
     public Template(Template source) {
         metadata = new Metadata();
-        metadata.setTemplate(this);        
-        
+        metadata.setTemplate(this); 
+        String sourceDescription = source.getDescription();
+        this.setDescription(sourceDescription);
         List<TemplateField> sourceTemplateFields = source.getTemplateFields();
         templateFields = new ArrayList();
         for(TemplateField sourceField : sourceTemplateFields) {
@@ -122,6 +123,17 @@ public class Template implements java.io.Serializable {
     public void setName(String name) {
         this.name = name;
     }
+    
+    private String description;
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+    
     
     private boolean enabled;
 

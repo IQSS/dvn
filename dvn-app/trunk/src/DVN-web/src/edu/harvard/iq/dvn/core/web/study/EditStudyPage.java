@@ -304,12 +304,11 @@ public class EditStudyPage extends VDCBaseBean implements java.io.Serializable  
     }
     
     public void initStudyFields() {
-        
         // first, let's get the values into the transient study field list of metadata
         metadata.getStudyFields();
         //and remove from the regular list or they will still get saved!
         metadata.getStudyFieldValues().clear();
-        
+
         String controlledVocabularyUpdateMessage = "";
         String errorMessage = "";
         studyMap = new HashMap();
@@ -319,34 +318,63 @@ public class EditStudyPage extends VDCBaseBean implements java.io.Serializable  
                 StudyMapValue smv = new StudyMapValue();
                 smv.setTemplateFieldUI(new TemplateFieldUI(tf));
                 studyMap.put(tf.getStudyField().getName(), smv);
-            } else {
-                if (tf.getControlledVocabulary() !=null){
-                    errorMessage +=verifyControlledVocabValues(tf);
-                }
-            } 
+            }
+            if (tf.getControlledVocabulary() != null) {
+                errorMessage += verifyControlledVocabValues(tf);
+            }
         }
-        
-        if (!errorMessage.isEmpty()){
+        if (!errorMessage.isEmpty()) {
             controlledVocabularyUpdateMessage = "Please review the following data entries:";
             controlledVocabularyUpdateMessage += errorMessage;
-            getVDCRenderBean().getFlash().put("warningMessage",controlledVocabularyUpdateMessage);
+            getVDCRenderBean().getFlash().put("warningMessage", controlledVocabularyUpdateMessage);
         }
     }
     
-
-    
-    
-    private String verifyControlledVocabValues(TemplateField tfIn){        
-        StudyField studyField = new StudyField();
-        for (StudyField sf : metadata.getStudyFields()) {
-            if (sf.getName().equals(tfIn.getStudyField().getName())) {
-                studyField = sf;
-                break;
-            }
+    private String getMetadataValueForControlledVocabularyValidation(StudyField studyField){
+        if (studyField.getName().equals(StudyFieldConstant.productionPlace)){
+            return metadata.getProductionPlace();
         }
+        if (studyField.getName().equals(StudyFieldConstant.fundingAgency)){
+            return metadata.getFundingAgency();
+        }
+        if (studyField.getName().equals(StudyFieldConstant.depositor)){
+            return metadata.getDepositor();
+        }
+        if (studyField.getName().equals(StudyFieldConstant.country)){
+            return metadata.getCountry();
+        }
+        if (studyField.getName().equals(StudyFieldConstant.geographicCoverage)){
+            return metadata.getGeographicCoverage();
+        }
+        if (studyField.getName().equals(StudyFieldConstant.geographicUnit)){
+            return metadata.getGeographicUnit();
+        }
+        return "";
+    }
+    
+    private String verifyControlledVocabValues(TemplateField tfIn){
+        List <String> studyFieldValues = new ArrayList();
+        StudyField studyField = new StudyField();
+        if (tfIn.getStudyField().isCustomField()){
+            for (StudyField sf : metadata.getStudyFields()) {
+                if (sf.getName().equals(tfIn.getStudyField().getName())) {
+                    studyField = sf;
+                    break;
+                }
+            }
+            for (String studyFieldValue: studyField.getStudyFieldValueStrings()){
+                studyFieldValues.add(studyFieldValue);
+            }
+        } else {
+            String metadataValue = getMetadataValueForControlledVocabularyValidation(tfIn.getStudyField());
+            if (metadataValue != null && !metadataValue.isEmpty()){
+                studyFieldValues.add(metadataValue);
+            }            
+        }
+
         String errorMessage = "";
         boolean inControlledVocab = false;
-        for (String studyFieldValue: studyField.getStudyFieldValueStrings()){
+        for (String studyFieldValue: studyFieldValues){
             inControlledVocab = false;
             for (ControlledVocabularyValue controlledVocabValue : tfIn.getControlledVocabulary().getControlledVocabularyValues() ){
                 if(studyFieldValue.equals(controlledVocabValue.getValue())){
@@ -354,7 +382,7 @@ public class EditStudyPage extends VDCBaseBean implements java.io.Serializable  
                 }
             }
             if(!inControlledVocab){
-                errorMessage += "<br/>" + studyField.getName() +  " has had value " + studyFieldValue + " removed from its controlled vocabulary.";
+                errorMessage += "<br/>" + tfIn.getStudyField().getName() +  " has had value " + studyFieldValue + " removed from its controlled vocabulary. ";
             }
         }          
         return errorMessage;
@@ -422,7 +450,7 @@ public class EditStudyPage extends VDCBaseBean implements java.io.Serializable  
 
     }
     
-    public void changeSingleValCV(ValueChangeEvent event) {;
+    public void changeSingleValCV(ValueChangeEvent event) {
         Object[] fieldsRowData = getCustomFieldsRowData( customFieldsPanelSeries.getRowIndex() );  
         StudyField studyField = (StudyField) fieldsRowData[3];
         removeStudyFieldValues(studyField);  
@@ -1445,6 +1473,7 @@ public class EditStudyPage extends VDCBaseBean implements java.io.Serializable  
     }
     
     public String save() {
+        System.out.print("In Save");
         metadata.getStudyVersion().setVersionNote(versionNotesPopup.getVersionNote());
 
             

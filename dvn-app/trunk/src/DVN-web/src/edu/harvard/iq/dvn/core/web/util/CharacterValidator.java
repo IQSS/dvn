@@ -64,6 +64,30 @@ public class CharacterValidator implements Validator, java.io.Serializable  {
         } 
     }
     
+    public void validateWEmail(FacesContext context, UIComponent component, 
+                            Object value) {
+        EmailValidator emailValidator = new EmailValidator();
+        if (value == null) return;
+        String characterString = (String) value;
+        try {
+            if ( validateChars(characterString) ) {
+                if (emailValidator.validateEmail(characterString)){
+                    //If it passes email validation, we will accept as valid......
+                } else {
+                    msg += "  Note that you may also enter a valid EMail address";
+                    FacesMessage message = new FacesMessage(msg);
+                    message.setSeverity(FacesMessage.SEVERITY_ERROR);
+                    ((UIInput)component).setValid(false);
+                    context.addMessage(component.getClientId(context), message);
+                    context.renderResponse();
+                }
+
+            }
+        } catch (Exception e) {
+            System.out.println("An exception was thrown ... " + e.toString());
+        } 
+    }
+    
     private static boolean validateChars (String characterString) {
        boolean isInvalidChars = false;
         try {
@@ -72,7 +96,7 @@ public class CharacterValidator implements Validator, java.io.Serializable  {
                 Matcher matcher          = pattern.matcher(characterString);
                 isInvalidChars             = matcher.find();
                 if (isInvalidChars)
-                    msg = "Found an illegal character(s) starting with:  " + characterString.charAt(matcher.start()) + "The match was found at position " + (matcher.start()+1) + ".";
+                    msg = "Found an illegal character(s) starting with:  " + characterString.charAt(matcher.start()) + "The match was found at position " + (matcher.start()+1) + ".";                    
         } catch (Exception e) {
             throw new FacesException(e);
         } finally {

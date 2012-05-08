@@ -151,7 +151,7 @@ public class AddAccountPage extends VDCBaseBean implements java.io.Serializable 
             UIComponent toValidate,
             Object value) {
         CharacterValidator charactervalidator = new CharacterValidator();
-        charactervalidator.validate(context, toValidate, value);
+        charactervalidator.validateWEmail(context, toValidate, value);
         String userName = (String) value;
         
         boolean userNameFound = false;

@@ -1582,9 +1582,13 @@ public class StudyServiceBean implements edu.harvard.iq.dvn.core.study.StudyServ
         List returnList = new ArrayList();
 
         if (studyIds != null && studyIds.size() > 0) {
+            // we first create a temp table with all the study ids; this is because when the list is too large
+            // SQL cannot handle it
+            generateTempTableString(studyIds);
             // dynamically generate the query
-            StringBuffer queryString = new StringBuffer("select id from study s ");
-            StringBuffer whereClause = new StringBuffer("where ( restricted = false ");
+            StringBuffer queryString = new StringBuffer("select id from study s, tempid ts ");
+            StringBuffer whereClause = new StringBuffer("where s.id = ts.tempid ");
+            whereClause.append("and ( restricted = false ");
             boolean groupJoinAdded = false;
 
             if (vdcId != null) { // if this parameter is passed, the user is an admin or curator of this vdc
@@ -1608,18 +1612,6 @@ public class StudyServiceBean implements edu.harvard.iq.dvn.core.study.StudyServ
 
             whereClause.append(") ");
 
-            // now add ids part of where clause
-            for (int i = 0; i < studyIds.size(); i++) {
-                if (i == 0) {
-                    whereClause.append("and id in ( ?");
-                } else {
-                    whereClause.append(", ?");
-                }
-            }
-
-            whereClause.append(" )");
-
-
             // we are now ready to create the query
             Query query = em.createNativeQuery( queryString.toString() + whereClause.toString() );
 
@@ -1637,10 +1629,6 @@ public class StudyServiceBean implements edu.harvard.iq.dvn.core.study.StudyServ
 
             if (ipUserGroupId != null) {
                 query.setParameter(parameterCount++, ipUserGroupId);
-            }
-
-            for (Long id : studyIds) {
-                query.setParameter(parameterCount++, id);
             }
 
             for (Object currentResult : query.getResultList()) {

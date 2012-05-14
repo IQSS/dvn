@@ -118,7 +118,11 @@
                                                                         <ice:graphicImage styleClass="vdcNoBorders" value="/resources/images/icon_download_locked.gif" rendered="#{studyFileUI.restrictedForUser}" alt="You do not have permissions to access this file."/>
                                                                         <ice:outputText styleClass="vdcStudyFileRowFileDownloadRestricted" value=" Restricted" rendered="#{studyFileUI.restrictedForUser}"/>
                                                                         
-                                                                        <ice:commandLink styleClass="vdcStudyFileRowFileDownloadRequestLink" action="#{studyPage.beginRequestWorkflow}" rendered="#{studyFileUI.restrictedForUser}">
+                                                                        <ice:outputLink styleClass="vdcStudyFileRowFileDownloadRequestLink" action="#{studyPage.beginRequestWorkflow}" rendered="#{studyPage.studyUI.study.requestAccess and VDCSession.loginBean!=null}" value="/dvn#{VDCRequest.currentVDCURL}/faces/login/FileRequestPage.xhtml?studyId=#{studyPage.studyId}">
+                                                                            <ice:outputText value="(Request Access)"/>
+                                                                        </ice:outputLink>
+                                                                        
+                                                                        <ice:commandLink styleClass="vdcStudyFileRowFileDownloadRequestLink" action="#{studyPage.beginRequestWorkflow}" rendered="#{studyPage.studyUI.study.requestAccess and VDCSession.loginBean==null}">
                                                                             <ice:outputText value="(Request Access)"/>
                                                                         </ice:commandLink>
                                                                         

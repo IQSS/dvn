@@ -945,13 +945,29 @@ public class TemplateFormPage extends VDCBaseBean implements java.io.Serializabl
     }
     public String save() {       
         boolean isNewTemplate = template.getId() == null;        
-        
+        boolean stringValidation = true;
         if(StringUtil.isEmpty(template.getName())){
             FacesMessage message = new FacesMessage("Template name is required.");
             FacesContext.getCurrentInstance().addMessage("templateForm:template_name", message);
-            return "";
+            stringValidation = false;
         }
         
+        if(template.getName().length() > 255){
+            FacesMessage message = new FacesMessage("Template name may not be longer than 255 characters.");
+            FacesContext.getCurrentInstance().addMessage("templateForm:template_name", message);
+            stringValidation = false;
+        }
+        
+        if(template.getDescription().length() > 255){
+            FacesMessage message = new FacesMessage("Template description may not be longer than 255 characters.");
+            FacesContext.getCurrentInstance().addMessage("templateForm:template_description", message);
+            stringValidation = false;
+        }
+        if (!stringValidation){
+            return "";
+        }
+
+                
         removeEmptyRows();
         template.getMetadata().setDisplayOrders();
 

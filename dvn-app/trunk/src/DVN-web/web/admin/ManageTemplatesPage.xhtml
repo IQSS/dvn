@@ -45,6 +45,18 @@
             </ice:panelGrid>
           </div>
           <div>
+              <script type="text/javascript">
+                    // <![CDATA[
+                    
+                    function toggleTemplateDesc(toggDesc) {
+                      jQuery(toggDesc).next().slideToggle(500);
+                      var toggleDescText = (jQuery(toggDesc).children('span.iceOutTxt').text() == 'Description [+]') ? 'Description [-]' : 'Description [+]';
+                      jQuery(toggDesc).children('span.iceOutTxt').text(toggleDescText);
+                      return false;
+                    };
+
+                // ]]>
+              </script>
               <ice:dataTable cellpadding="0" cellspacing="0" width="100%"
                              columnWidths="25%,20%,15%,15%,10%,5%,10%"
                              styleClass="dvnManageTable"
@@ -56,6 +68,13 @@
                     <ice:outputText value="Name"/>
                   </f:facet>
                   <ice:outputText value="#{template.name}" styleClass="#{(template.enabled) ? 'dvnStudyTemplateEnabled' : 'dvnStudyTemplateNotEnabled'}"/>
+                  
+                  <ice:outputLink value="#" onclick="return toggleTemplateDesc(this)" styleClass="dvnStudyTemplateDescLink" rendered="#{template.description != null}">
+                    <ice:outputText value="Description [+]"/>
+                  </ice:outputLink>
+                  <div jsfc="ice:panelGroup" rendered="#{template.description != null}" styleClass="dvnStudyTemplateDesc" style="display: none;">
+                    <ice:outputText value="#{template.description}"/>
+                  </div>
                 </ice:column>
                 <ice:column>
                   <f:facet name="header">

@@ -37,19 +37,18 @@
                   <ice:outputText value="#{bundlePageInfo.editTemplateHelp}" escape="false"/>
                 </div>
               </div>
-                <!-- validation errors occurred? -->
-
-                
-                <div id="messagePanel" class="errorMessage">
+              <!-- validation errors occurred? -->
+              <div id="messagePanel" class="errorMessage">
                   <ice:outputText value="Please check messages below" rendered="#{!empty facesContext.maximumSeverity}"/>
-                </div>
+              </div>
+                
               <div class="dvnstudytitleblock dvnStudyTemplateTitleBlock">
                 <div id="groupPanel10" class="dvnstudyadminboxfloat dvnFormMargin">
                   <ice:commandButton id="button1" value="Save" action="#{TemplateFormPage.save}"/>
                   <ice:commandButton immediate="true" id="button2" value="Cancel" action="#{TemplateFormPage.cancel}"/>
                 </div>
                 <div class="dvnstudytitlefloat">
-                  <ice:panelGrid cellpadding="0" cellspacing="0" columns="2">
+                  <ice:panelGrid cellpadding="0" cellspacing="0" columns="2" width="100%">
                       <ice:column>
                         <ice:outputText value="Template Name "/>
                       </ice:column>
@@ -62,7 +61,7 @@
                   </ice:panelGrid>
                 </div>
                 <div class="dvnstudytitlefloat">
-                  <ice:panelGrid cellpadding="0" cellspacing="0" columns="2">
+                  <ice:panelGrid cellpadding="0" cellspacing="0" columns="2" width="100%">
                       <ice:column>
                         <ice:outputText value="Template Description "/>
                       </ice:column>
@@ -73,6 +72,11 @@
                   </ice:panelGrid>
                 </div>
               </div>
+              
+              <div class="vdcStudyInfoHeader">
+                <ice:outputText value="Study Cataloging Information"/>
+              </div>
+              
               <!-- TITLE -->
               <ice:panelGrid cellpadding="0" cellspacing="0" columns="2" width="100%"
                              styleClass="vdcEditStudyTable" columnClasses="vdcEditStudyCol1, vdcEditStudyCol2">

@@ -42,6 +42,7 @@ div.dvnOptionsTableLicense{padding-top:.5em}
 /* MANAGE + EDIT STUDY + TEMPLATE */
 .vdcStudyTemplateFormTable{margin:12px 12px 0 12px}
 .dvnStudyTemplateTitleBlock{margin-top:1.5em; padding:4px 0; border-bottom:1px solid #DADEE0}
+div.dvnStudyTemplateTitleBlock div.dvnstudytitlefloat table.icePnlGrd td.icePnlGrdCol1 {width:220px;}
 .dvnStudyTemplateTitleBlock .dvnstudyadminboxfloat{text-align:right}
 .dvnStudyTemplateDCMBlock{border-bottom:1px solid #DADEE0; padding-bottom:1em;}
 .dvnStudyTemplateDCMBlock table.icePnlGrd{padding:4px;background:#FAF4E0;}
@@ -131,7 +132,10 @@ td.vdcEditFilesColB .errorMessage{display:block;}
 .dvnStudyTemplateTableDCM tr.iceDatTblRow1, .dvnStudyTemplateTableDCM tr.iceDatTblRow2 {border-width:0 0 0 0;}
 .dvnStudyTemplateTableDCM td {border-width:0 0 1px 0;}
 .dvnCGAmapLink span.iceOutTxt, .dvnCGAmapLink a.iceOutLnk {display:inline !important;}
+span.dvnStudyTemplateNotEnabled, span.dvnStudyTemplateEnabled {float:left;}
 span.dvnStudyTemplateNotEnabled{background:url(/dvn/resources/images/icon_warning.18.png) center right no-repeat;padding-right:22px !important}
+.dvnStudyTemplateDescLink {float:right;}
+.dvnStudyTemplateDesc {clear:both;}
 /* CONTROLLED VOCAB */
 .dvnControlledVocabInput input[type=text] {width:200px;}
 .dvnControlledVocabInput select {min-width:208px;max-height:8em;}

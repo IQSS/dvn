@@ -156,7 +156,9 @@ public class VDC implements java.io.Serializable  {
 
     private boolean allowContributorsEditAll=false;
     
-   
+    @OneToOne(mappedBy="vdc",cascade={CascadeType.REMOVE, CascadeType.MERGE, CascadeType.PERSIST })
+    private GuestBookQuestionnaire guestBookQuestionnaire;
+
     /** Creates a new instance of VDC */
     public VDC() {
         VDCActivity vdcActivity = new VDCActivity();
@@ -391,6 +393,15 @@ public class VDC implements java.io.Serializable  {
     public void setContactEmail(String contactEmail) {
         this.contactEmail = contactEmail;
     }
+    
+    public GuestBookQuestionnaire getGuestBookQuestionnaire() {
+        return guestBookQuestionnaire;
+    }
+
+    public void setGuestBookQuestionnaire(GuestBookQuestionnaire guestBookQuestionnaire) {
+        this.guestBookQuestionnaire = guestBookQuestionnaire;
+    }
+   
     
     
     

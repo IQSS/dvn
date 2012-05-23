@@ -118,4 +118,8 @@ public interface VDCServiceLocal extends java.io.Serializable  {
 
    public double getMaxDownloadCount();
 
+    @javax.ejb.Remove
+    @javax.ejb.TransactionAttribute(value = javax.ejb.TransactionAttributeType.REQUIRED)
+    public void save(edu.harvard.iq.dvn.core.vdc.VDC vDC);
+
 }

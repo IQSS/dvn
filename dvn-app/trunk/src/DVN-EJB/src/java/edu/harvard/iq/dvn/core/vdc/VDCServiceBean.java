@@ -49,8 +49,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.logging.Logger;
 import javax.annotation.Resource;
-import javax.ejb.EJB;
-import javax.ejb.Stateless;
+import javax.ejb.*;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
@@ -191,6 +190,12 @@ public class VDCServiceBean implements VDCServiceLocal {
     /** end scholar dataverse methods */
     public void edit(VDC vDC) {
         em.merge(vDC);
+    }
+    
+    @Remove
+    @TransactionAttribute(TransactionAttributeType.REQUIRED)
+    public void save(VDC vDC) {
+         em.merge(vDC);
     }
 
     public void destroy(VDC vDC) {

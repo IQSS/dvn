@@ -510,18 +510,12 @@ public class EditStudyPage extends VDCBaseBean implements java.io.Serializable  
     
     public boolean isTitleRequired() {
         TemplateField tf = (TemplateField)( editStudyService.getStudyMap().get("title"));
-        return tf.isRequired();
-        
+        return tf.isRequired();        
     }
-
     
     public void addCustomRow(ActionEvent ae) {
-
-
-        HtmlDataTable dataTable = (HtmlDataTable) ae.getComponent().getParent().getParent();
-        
+        HtmlDataTable dataTable = (HtmlDataTable) ae.getComponent().getParent().getParent();        
         Object[] data = (Object[]) ((ListDataModel) dataTable.getValue()).getRowData();
-
         StudyFieldValue newElem = new StudyFieldValue();
         newElem.setMetadata(metadata);
         newElem.setStudyField(((StudyFieldValue) data[0]).getStudyField());
@@ -530,14 +524,10 @@ public class EditStudyPage extends VDCBaseBean implements java.io.Serializable  
     }
 
     public void removeCustomRow(ActionEvent ae) {
-
         HtmlDataTable dataTable = (HtmlDataTable) ae.getComponent().getParent().getParent();
-         System.out.println("datatable in remove " + dataTable );
-         System.out.println("datatable title in remove " + dataTable.getTitle() );
         if (dataTable.getRowCount() > 1) {
             Object[] data = (Object[]) ((ListDataModel) dataTable.getValue()).getRowData();
             editStudyService.removeCollectionElement((List) data[1], data[0]);
-
         }
     }
     

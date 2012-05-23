@@ -27,14 +27,14 @@
  */
 package edu.harvard.iq.dvn.core.web.study;
 
+import edu.harvard.iq.dvn.core.study.StudyFile;
+import edu.harvard.iq.dvn.core.study.StudyFileServiceLocal;
 import edu.harvard.iq.dvn.core.study.StudyServiceLocal;
-import edu.harvard.iq.dvn.core.vdc.VDC;
-import edu.harvard.iq.dvn.core.vdc.VDCNetwork;
-import edu.harvard.iq.dvn.core.vdc.VDCNetworkServiceLocal;
+import edu.harvard.iq.dvn.core.vdc.*;
 import edu.harvard.iq.dvn.core.web.common.VDCBaseBean;
 import edu.harvard.iq.dvn.core.web.servlet.TermsOfUseFilter;
 import java.io.IOException;
-import java.util.Map;
+import java.util.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.ejb.EJB;
@@ -45,6 +45,7 @@ import javax.faces.component.UIComponent;
 import javax.faces.component.UIInput;
 import javax.faces.component.html.HtmlInputHidden;
 import javax.faces.context.FacesContext;
+import javax.faces.model.SelectItem;
 import javax.inject.Named;
 
 /**
@@ -54,13 +55,16 @@ import javax.inject.Named;
 @Named("TermsOfUsePage")
 @ViewScoped
 public class TermsOfUsePage extends VDCBaseBean {
-    @EJB  private StudyServiceLocal studyService;
+    @EJB private StudyServiceLocal studyService;
     @EJB private VDCNetworkServiceLocal vdcNetworkService;
+    @EJB private GuestBookResponseServiceBean guestBookResponseServiceBean;
+    @EJB StudyFileServiceLocal studyFileService;
     
     public TermsOfUsePage() {}
     
   
     private Long studyId;
+    private String fileId;
     private edu.harvard.iq.dvn.core.study.Study study;
     private String redirectPage;
     private String touParam;  // Describes type of terms of use to be displayed (download or deposit)
@@ -70,7 +74,10 @@ public class TermsOfUsePage extends VDCBaseBean {
     private boolean downloadStudyTermsRequired;
     private boolean depositDataverseTermsRequired;
     private boolean depositDvnTermsRequired;
-
+    private boolean guestbookRequired;
+    private GuestBookResponse guestBookResponse;
+    private List <CustomQuestionResponseUI> customQuestionResponseUIs = new ArrayList();
+    
     public HtmlInputHidden getHiddenTou() {
         return hiddenTou;
     }
@@ -89,6 +96,10 @@ public class TermsOfUsePage extends VDCBaseBean {
 
     public boolean isTouTypeDownload() {
         return getTouType()!=null && getTouType().equals(TermsOfUseFilter.TOU_DOWNLOAD);
+    }
+    
+    public boolean isTouTypeGuestBook() {
+        return getTouType()!=null && getTouType().equals(TermsOfUseFilter.TOU_DOWNLOAD)  && getVDCRequestBean().getCurrentVDC().getGuestBookQuestionnaire().isEnabled();
     }
     
     public boolean isTouTypeDeposit() {
@@ -158,8 +169,48 @@ public class TermsOfUsePage extends VDCBaseBean {
         }
 
         setRequiredFlags();
+        if (guestbookRequired){
+            initGuestBookResponse ();
+        }
       
-    }       
+    }   
+    
+    private void initGuestBookResponse (){
+        guestBookResponse = new GuestBookResponse();
+        guestBookResponse.setGuestBookQuestionnaire(study.getOwner().getGuestBookQuestionnaire());
+        guestBookResponse.setStudy(study);
+        fileId = getRequestParam("fileId");
+        //guestBookResponse.setStudyFile(studyFile);
+        guestBookResponse.setResponseTime(new Date());
+
+        if (study.getOwner().getGuestBookQuestionnaire().getCustomQuestions() != null && !study.getOwner().getGuestBookQuestionnaire().getCustomQuestions().isEmpty()) {
+            guestBookResponse.setCustomQuestionResponses(new ArrayList());
+            customQuestionResponseUIs.clear();
+            for (CustomQuestion cq : study.getOwner().getGuestBookQuestionnaire().getCustomQuestions()) {
+                    CustomQuestionResponse response = new CustomQuestionResponse();
+                    CustomQuestionResponseUI responseUI = new CustomQuestionResponseUI();
+                    response.setGuestBookResponse(guestBookResponse);
+                    response.setResponse("");
+                    response.setStaticQuestionString(cq.getQuestionString());
+                    responseUI.setCustomQuestionResponse(response);
+                    responseUI.setRequired(cq.isRequired());
+                    responseUI.setQuestionType(cq.getQuestionType());
+                    if (cq.getQuestionType().equals("radiobuttons")){
+                        responseUI.setResponseSelectItems(setResponseUISelectItems(cq));
+                    }
+                    customQuestionResponseUIs.add(responseUI);
+                    guestBookResponse.getCustomQuestionResponses().add(response);
+            }
+        }
+        if (getVDCSessionBean().getLoginBean() != null) {
+            guestBookResponse.setEmail(getVDCSessionBean().getLoginBean().getUser().getEmail());
+            guestBookResponse.setFirstname(getVDCSessionBean().getLoginBean().getUser().getFirstName());
+            guestBookResponse.setLastname(getVDCSessionBean().getLoginBean().getUser().getLastName());
+            guestBookResponse.setInstitution(getVDCSessionBean().getLoginBean().getUser().getInstitution());
+            guestBookResponse.setPosition(getVDCSessionBean().getLoginBean().getUser().getPosition());
+            guestBookResponse.setVdcUser(getVDCSessionBean().getLoginBean().getUser());
+        }
+    }
     
     
     public String getDepositDataverseTerms() {
@@ -196,7 +247,23 @@ public class TermsOfUsePage extends VDCBaseBean {
     public boolean isDepositDvnTermsRequired() {
         return   depositDvnTermsRequired; 
     }
- 
+    
+    public boolean isGuestbookRequired() {
+        return guestbookRequired;
+    }
+
+    public void setGuestbookRequired(boolean guestbookRequired) {
+        this.guestbookRequired = guestbookRequired;
+    }
+    
+    public GuestBookResponse getGuestBookResponse() {
+        return guestBookResponse;
+    }
+
+    public void setGuestBookResponse(GuestBookResponse guestBookResponse) {
+        this.guestBookResponse = guestBookResponse;
+    }
+    
     private boolean termsAccepted;
  
     private String test;
@@ -215,7 +282,15 @@ public class TermsOfUsePage extends VDCBaseBean {
 
     public void setTermsAccepted(boolean termsAccepted) {
         this.termsAccepted = termsAccepted;
-    }    
+    } 
+    
+    public List<CustomQuestionResponseUI> getCustomQuestionResponseUIs() {
+        return customQuestionResponseUIs;
+    }
+
+    public void setCustomQuestionResponseUIs(List<CustomQuestionResponseUI> customQuestionResponseUIs) {
+        this.customQuestionResponseUIs = customQuestionResponseUIs;
+    }
     
     public String acceptTerms_action () {
         Map termsOfUseMap = getTermsOfUseMap();
@@ -229,6 +304,41 @@ public class TermsOfUsePage extends VDCBaseBean {
         }
         */
 
+        if (guestbookRequired) {
+            if (!validateEntries()) {
+                return "";
+            }
+            try { //if there are multiple files in the download
+                // each one gets its own guest book response for reporting purposes
+                
+                if (fileId.indexOf(",") > -1) {
+                    StringTokenizer st = new StringTokenizer(fileId, ",");
+                    while (st.hasMoreTokens()) {
+                        StudyFile file = studyFileService.getStudyFile(new Long(st.nextToken()));
+                        GuestBookResponse gbSave = new GuestBookResponse(guestBookResponse);
+                        gbSave.setStudyFile(file);
+                        guestBookResponseServiceBean.update(gbSave);
+                    }
+                } else {
+                    //only one file downloaded.....
+                    Long fileLongId = new Long(fileId);
+                    StudyFile file = studyFileService.getStudyFile(fileLongId);
+                    guestBookResponse.setStudyFile(file);
+                    guestBookResponseServiceBean.update(guestBookResponse);
+                }
+
+            } catch (Exception ex) {
+                if (ex.getCause() instanceof IllegalArgumentException) {
+                    // do nothing.
+                    // if the file does not exist, there sure 
+                    // isn't a license/terms of use for it!
+                } else {
+                    ex.printStackTrace();
+                }
+            }
+        }
+
+        
         if ( termsAccepted && isTouTypeDownload() && isDownloadStudyTermsRequired() )  {         
             termsOfUseMap.put( "study_download_" + study.getId(), "accepted" );
         }
@@ -237,7 +347,10 @@ public class TermsOfUsePage extends VDCBaseBean {
         }        
         if ( termsAccepted &&  isTouTypeDownload() && this.isDownloadDvnTermsRequired() ) { 
             termsOfUseMap.put( "dvn_download", "accepted" );
-        }           
+        }
+        if ( termsAccepted &&  isTouTypeDownload() && this.isGuestbookRequired() ) { 
+            termsOfUseMap.put( "study_guestbook_"  + study.getId(), "accepted" );
+        }
         if ( termsAccepted &&  isTouTypeDeposit() && this.isDepositDataverseTermsRequired() ) { 
             termsOfUseMap.put( "vdc_deposit_"+getDepositVDC().getId(), "accepted" );
         }      
@@ -291,11 +404,20 @@ public class TermsOfUsePage extends VDCBaseBean {
             if (study.getReleasedVersion() != null) {
                 downloadStudyTermsRequired = TermsOfUseFilter.isDownloadStudyTermsRequired(study, getTermsOfUseMap());
                 downloadDataverseTermsRequired = TermsOfUseFilter.isDownloadDataverseTermsRequired(study, getTermsOfUseMap());
+                guestbookRequired =  TermsOfUseFilter.isGuestbookRequired(study, getTermsOfUseMap());
                 downloadDvnTermsRequired = TermsOfUseFilter.isDownloadDvnTermsRequired(vdcNetworkService.find(), getTermsOfUseMap());
             }
         }
     }
     
+    private List <SelectItem> setResponseUISelectItems(CustomQuestion cq){
+        List  <SelectItem> retList = new ArrayList();
+        for (CustomQuestionValue cqv: cq.getCustomQuestionValues()){
+            SelectItem si = new SelectItem(cqv.getValueString(), cqv.getValueString());
+            retList.add(si);
+        }
+        return retList;
+    }
     
     private VDC getDepositVDC() {          
         if (study!=null) {
@@ -303,6 +425,41 @@ public class TermsOfUsePage extends VDCBaseBean {
         } else {
             return getVDCRequestBean().getCurrentVDC();
         }
+    }
+    
+    private boolean validateEntries() {
+        boolean retval = true;
+
+        if (study.getOwner().getGuestBookQuestionnaire().isFirstNameRequired() && guestBookResponse.getFirstname().trim().isEmpty()) {
+            getVDCRenderBean().getFlash().put("inputFirstNameWarningMessage", "Please enter your first name.");
+            retval = false;
+        }
+        if (study.getOwner().getGuestBookQuestionnaire().isLastNameRequired() && guestBookResponse.getLastname().trim().isEmpty()) {
+            getVDCRenderBean().getFlash().put("inputLastNameWarningMessage", "Please enter your last name.");
+            retval = false;
+        }
+        if (study.getOwner().getGuestBookQuestionnaire().isEmailRequired() && guestBookResponse.getEmail().trim().isEmpty()) {
+            getVDCRenderBean().getFlash().put("inputEmailWarningMessage", "Please enter your email address.");
+            retval = false;
+        }
+        if (study.getOwner().getGuestBookQuestionnaire().isInstitutionRequired() && guestBookResponse.getInstitution().trim().isEmpty()) {
+            getVDCRenderBean().getFlash().put("inputInstitutionWarningMessage", "Please enter your institution.");
+            retval = false;
+        }
+        if (study.getOwner().getGuestBookQuestionnaire().isPositionRequired() && guestBookResponse.getPosition().trim().isEmpty()) {
+            getVDCRenderBean().getFlash().put("inputPositionWarningMessage", "Please enter your position.");
+            retval = false;
+        }
+        Iterator iterator = customQuestionResponseUIs.iterator();
+        while (iterator.hasNext()) {
+            CustomQuestionResponseUI customQuestionResponseUI = (CustomQuestionResponseUI) iterator.next();
+            if ((customQuestionResponseUI.getCustomQuestionResponse().getResponse() == null  || customQuestionResponseUI.getCustomQuestionResponse().getResponse().trim().isEmpty())
+                    && customQuestionResponseUI.isRequired()) {
+                retval = false;
+                getVDCRenderBean().getFlash().put("inputCustomReponse", "Please complete required response(s).");
+            }
+        }
+        return retval;
     }
 
 }

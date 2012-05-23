@@ -92,6 +92,14 @@ public class TermsOfUseFilter implements Filter {
         if (vdcTermsRequired) {
             return termsOfUseMap.get("vdc_download_" + study.getOwner().getId()) == null;
         }
+        return false;
+    }
+    
+    public static boolean isGuestbookRequired(Study study, Map termsOfUseMap) {
+        boolean vdcTermsRequired = study.getOwner().getGuestBookQuestionnaire().isEnabled();
+        if (vdcTermsRequired) {
+            return termsOfUseMap.get("study_guestbook_" + study.getOwner().getId()) == null;
+        }
 
         return false;
     }
@@ -283,7 +291,6 @@ public class TermsOfUseFilter implements Filter {
         String versionNumber = req.getParameter("versionNumber");
         String requestPath = req.getPathInfo();
         String imageThumb = req.getParameter("imageThumb");
-
         Study study = null;
         if (req.getServletPath().equals("/FileDownload")) {
             if (fileId != null) {
@@ -349,6 +356,7 @@ public class TermsOfUseFilter implements Filter {
         // if we've populate the study, then check the TermsOfUse'
         // We only need to display the terms if the study is Released.
         if (study.getReleasedVersion() != null) {
+            System.out.print("study released version != null...");
 
             // the code below is for determining if the request is from 
             // our registered DSB host; (then no agreement form should be 
@@ -370,7 +378,8 @@ public class TermsOfUseFilter implements Filter {
             if ( dsbHost.equals(req.getRemoteHost()) ||
 		 localHostByName.equals(req.getRemoteHost()) ||
 		 localHostNumeric.equals(req.getRemoteHost()) ) {
-                NOTaDSBrequest = false;
+                
+                //NOTaDSBrequest = false;
             } else {
                 try {
                     String dsbHostIPAddress = InetAddress.getByName(dsbHost).getHostAddress();
@@ -391,16 +400,20 @@ public class TermsOfUseFilter implements Filter {
             if (NOTaDSBrequest) {
                 Map termsOfUseMap = getTermsOfUseMap();
                 if (isDownloadDvnTermsRequired(vdcNetworkService.find(), termsOfUseMap) || isDownloadDataverseTermsRequired(study, termsOfUseMap) || isDownloadStudyTermsRequired(study, termsOfUseMap)) {
-                 VDC currentVDC = vdcService.getVDCFromRequest(req);
+                    VDC currentVDC = vdcService.getVDCFromRequest(req);
                     String params = "?studyId=" + study.getId();
                     if ( versionNumber != null ) {
                         params += "&versionNumber=" + versionNumber;
+                    }
+                    if ( fileId != null && !fileId.trim().isEmpty() ) {
+                        params += "&fileId=" + fileId;
                     }
                     params += "&redirectPage=" + URLEncoder.encode(req.getServletPath() + req.getPathInfo() + "?" + req.getQueryString(), "UTF-8");
                     params += "&tou="+TOU_DOWNLOAD;
                     if (currentVDC != null) {
                         params += "&vdcId=" + currentVDC.getId();
                     }
+                    System.out.print("parama....." + params);
                     res.sendRedirect(req.getContextPath() + "/faces/study/TermsOfUsePage.xhtml" + params);
                     return true; // don't continue with chain since we are redirecting'
                 }

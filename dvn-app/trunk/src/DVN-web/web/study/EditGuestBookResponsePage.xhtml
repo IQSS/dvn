@@ -1,0 +1,148 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:jsp="http://java.sun.com/JSP/Page"
+      xmlns:ice="http://www.icesoft.com/icefaces/component">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+</head>
+<body>
+  <ui:composition template="/template.xhtml">
+    <ui:param name="pageTitle" value="#{bundlePageInfo.editGuestBookResponseTitle} - #{VDCRequest.dataversePageTitle}"/>
+    <ui:define name="metadata">
+        <f:metadata>
+             <f:event type="preRenderView" listener="#{EditGuestBookResponsePage.preRenderView}"/>
+        </f:metadata>
+    </ui:define>
+    <ui:define name="body">
+      <ice:form id="form1">
+        <ice:inputHidden id="vdcId" value="#{VDCRequest.currentVDCId}"/>
+        <div class="dvn_section">
+          <div class="dvn_sectionTitle">
+            <ice:outputText value="#{bundlePageInfo.editGuestBookResponseTitle}"/>
+          </div>
+          <div class="dvn_sectionBox dvnEditTermsForm">
+            <div class="dvn_margin12">
+              <div jsfc="ice:panelGroup" styleClass="dvnInformationMessage">
+                <div class="dvnMsgBlockContainer">
+                  <ice:outputText value="#{bundlePageInfo.editGuestBookResponseHelp}" escape="false"/>
+                </div>
+              </div>
+
+              <ice:message for="warningMessage" styleClass="warningMessage" id="warningMessage"/>
+
+              <div class="dvnGuestBookNameInputLevel">
+                <ice:outputText value="First Name " />
+                <ice:graphicImage value="/resources/images/icon_required.gif" rendered="#{EditGuestBookResponsePage.guestBookQuestionnaire.firstNameRequired}"/>
+                    <ice:inputText id="input_nameText" size="140" 
+                                   value="#{EditGuestBookResponsePage.guestBookResponse.firstname}"
+                                   />
+              </div>
+              <div jsfc="ice:panelGroup" styleClass="dvnWarningMessage" rendered="#{!empty VDCRender.flash.inputFirstNameWarningMessage}">
+               <div class="dvnMsgBlockContainer">
+                            <p><ice:outputText id="firstnameMessage" value="#{VDCRender.flash.inputFirstNameWarningMessage}"/></p>
+                          </div>
+               </div>
+                            <div class="dvnGuestBookNameInputLevel">
+                <ice:outputText value="Last Name " />
+                <ice:graphicImage value="/resources/images/icon_required.gif" rendered="#{EditGuestBookResponsePage.guestBookQuestionnaire.lastNameRequired}"/>
+                    <ice:inputText id="input_lastnameText" size="140" 
+                                   value="#{EditGuestBookResponsePage.guestBookResponse.lastname}"
+                                   />
+              </div>
+              <div jsfc="ice:panelGroup" styleClass="dvnWarningMessage" rendered="#{!empty VDCRender.flash.inputLastNameWarningMessage}">
+               <div class="dvnMsgBlockContainer">
+                            <p><ice:outputText id="lastnameMessage" value="#{VDCRender.flash.inputLastNameWarningMessage}"/></p>
+                          </div>
+               </div>
+              <div class="dvnGuestBookEmailInputLevel">
+                <ice:outputText value="E-Mail "  />
+                <ice:graphicImage value="/resources/images/icon_required.gif" rendered="#{EditGuestBookResponsePage.guestBookQuestionnaire.emailRequired}"/>
+                    <ice:inputText id="input_EmailText" size="140" 
+                                   value="#{EditGuestBookResponsePage.guestBookResponse.email}"
+                                   />
+              </div>
+               <div jsfc="ice:panelGroup" styleClass="dvnWarningMessage" rendered="#{!empty VDCRender.flash.inputEmailWarningMessage}">
+                          <div class="dvnMsgBlockContainer">
+                            <p><ice:outputText id="emailMessage" value="#{VDCRender.flash.inputEmailWarningMessage}"/></p>
+                          </div>
+               </div>
+              
+              <div class="dvnGuestBookNameInstitutionLevel">
+                <ice:outputText value="Institution " />
+                <ice:graphicImage value="/resources/images/icon_required.gif" rendered="#{EditGuestBookResponsePage.guestBookQuestionnaire.institutionRequired}"/>
+                    <ice:inputText id="input_InstitutionText" 
+                                   size="140" value="#{EditGuestBookResponsePage.guestBookResponse.institution}"/>
+              </div>
+              
+                <div jsfc="ice:panelGroup" styleClass="dvnWarningMessage" rendered="#{!empty VDCRender.flash.inputInstitutionWarningMessage}">
+                          <div class="dvnMsgBlockContainer">
+                            <p><ice:outputText id="institutionMessage" value="#{VDCRender.flash.inputInstitutionWarningMessage}"/></p>
+                          </div>
+               </div>
+              
+              <div class="dvnGuestBookNamePositionLevel">
+                <ice:outputText value="Position " />
+                <ice:graphicImage value="/resources/images/icon_required.gif" rendered="#{EditGuestBookResponsePage.guestBookQuestionnaire.positionRequired}"/>
+                  <div jsfc="ice:panelGroup">
+                    <ice:selectOneMenu value="#{EditGuestBookResponsePage.guestBookResponse.position}">
+                      <f:selectItem itemLabel="Student" itemValue="Student"/>
+                      <f:selectItem itemLabel="Faculty" itemValue="Faculty"/>
+                      <f:selectItem itemLabel="Staff" itemValue="Staff"/>
+                      <f:selectItem itemLabel="Other" itemValue="Other"/>
+                    </ice:selectOneMenu>
+                  </div>
+              </div>
+              
+                <div jsfc="ice:panelGroup" styleClass="dvnWarningMessage" rendered="#{!empty VDCRender.flash.inputPositionWarningMessage}">
+                          <div class="dvnMsgBlockContainer">
+                            <p><ice:outputText id="positionMessage" value="#{VDCRender.flash.inputPositionWarningMessage}"/></p>
+                          </div>
+               </div>
+
+              
+               <div jsfc="ice:panelGroup" styleClass="dvnWarningMessage" rendered="#{!empty VDCRender.flash.inputCustomReponse}">
+                          <div class="dvnMsgBlockContainer">
+                            <p><ice:outputText id="customMessage" value="#{VDCRender.flash.inputCustomReponse}"/></p>
+                          </div>
+               </div>
+                  <ice:dataTable cellpadding="0" cellspacing="0" width="100%" 
+                                  columnClasses="vdcEditStudyCol1, vdcEditStudyCol2, vdcEditStudyCol3"
+                                  binding="#{EditGuestBookResponsePage.customQuestionsDataTable}"
+                                  value="#{EditGuestBookResponsePage.customQuestionResponseUIs}" var="customQuestionResponseUI">
+
+                    <ice:column styleClass="vdcEditStudyField" >
+                       <ice:outputText styleClass="dvnInlineHelpLabel dvnInlineHelpTip" value="#{customQuestionResponseUI.customQuestionResponse.staticQuestionString}" 
+                                        />
+                       <ice:graphicImage value="/resources/images/icon_required.gif" rendered="#{customQuestionResponseUI.required}"/>
+                    </ice:column>
+
+                    <ice:column rendered="#{customQuestionResponseUI.questionType == 'text'}">
+                       <ice:inputText id="input_questionText" size="140" 
+                                      rendered="#{ customQuestionResponseUI.questionType == 'text'}"
+                                      value="#{customQuestionResponseUI.customQuestionResponse.response}"></ice:inputText>                 
+                    </ice:column>
+                     <ice:column rendered="#{customQuestionResponseUI.questionType == 'radiobuttons'}">
+                       <ice:selectOneRadio value="#{customQuestionResponseUI.customQuestionResponse.response}" partialSubmit="true"
+                                           rendered="#{  customQuestionResponseUI.questionType == 'radiobuttons'}">
+                           <f:selectItems value="#{customQuestionResponseUI.responseSelectItems}"></f:selectItems>  
+                       </ice:selectOneRadio>                 
+                    </ice:column>  
+                      
+                  </ice:dataTable>
+
+              <div class="dvnFormPadding dvnFormMargin">
+                <ice:commandButton id="button1" value="Save" action="#{EditGuestBookResponsePage.save_action}"/>
+                <ice:commandButton id="button2" value="Cancel" action="#{EditGuestBookResponsePage.cancel_action}"/>
+              </div>
+            </div>
+          </div>
+        </div>
+      </ice:form>
+    </ui:define>
+  </ui:composition>
+</body>
+</html>

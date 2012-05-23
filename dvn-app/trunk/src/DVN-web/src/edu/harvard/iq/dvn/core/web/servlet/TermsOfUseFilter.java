@@ -356,7 +356,6 @@ public class TermsOfUseFilter implements Filter {
         // if we've populate the study, then check the TermsOfUse'
         // We only need to display the terms if the study is Released.
         if (study.getReleasedVersion() != null) {
-            System.out.print("study released version != null...");
 
             // the code below is for determining if the request is from 
             // our registered DSB host; (then no agreement form should be 
@@ -413,7 +412,7 @@ public class TermsOfUseFilter implements Filter {
                     if (currentVDC != null) {
                         params += "&vdcId=" + currentVDC.getId();
                     }
-                    System.out.print("parama....." + params);
+
                     res.sendRedirect(req.getContextPath() + "/faces/study/TermsOfUsePage.xhtml" + params);
                     return true; // don't continue with chain since we are redirecting'
                 }

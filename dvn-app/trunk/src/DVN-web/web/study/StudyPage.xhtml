@@ -310,13 +310,6 @@
                                         </ice:outputLink>
                                     </li>
                                 </span>
-                                <span jsfc="ice:panelGroup" rendered="#{(studyPage.studyUI.userCuratorOrAdmin or VDCSession.loginBean.networkAdmin) and studyPage.studyUI.subsettable}" >
-                                    <li>
-                                        <ice:outputLink styleClass="dvnInlineHelpLabel dvnInlineHelpTip" title="#{studybundle.migrateVizText} - #{studybundle.migrateVizTip}" value="/dvn#{VDCRequest.currentVDCURL}/faces/study/MigrateDataExplorationPage.xhtml?studyId=#{studyPage.studyUI.study.id}">
-                                            <ice:outputText nospan="true" value="#{studybundle.migrateVizText}"/>
-                                        </ice:outputLink>
-                                    </li>
-                                </span>
                                 <span jsfc="ice:panelGroup" rendered="#{(studyPage.studyUI.userCuratorOrAdmin or VDCSession.loginBean.networkAdmin) and studyPage.studyUI.studyVersion.released}">
                                     <li>
                                         <ice:outputLink styleClass="dvnInlineHelpLabel dvnInlineHelpTip" title="#{studybundle.removeText} - #{studybundle.removeTip}" value="/dvn#{VDCRequest.currentVDCURL}/faces/study/DeaccessionStudyPage.xhtml?studyId=#{studyPage.studyUI.study.id}#{VDCRequest.studyListingIndexAsParameter}">

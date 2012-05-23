@@ -13,6 +13,7 @@
 }
 /* End Hack */
 .dvn_navblockWrap{width:expression(document.body.clientWidth < 450? "450px": "auto" );}
+.dvn_navblockLinks ul li{display:inline;}
 .dvn_content form {margin:0;padding:0;}
 .dvn_content fieldset{padding:0;}
 .vdcTooltip{width:16em}

@@ -92,10 +92,12 @@
             // ]]>
         </script>
         <script type="text/javascript">
-          if (self != top)
+          // <![CDATA[
+          if (window != top)
           {
             document.write ('<link rel="stylesheet" type="text/css" href="/dvn/resources/css/dvnframes.css"/>');
           }
+          // ]]>
         </script>
         <ice:outputText escape="false" nospan="true"
                         rendered="#{applicationScope.googleAnalyticsKey != null || MainLayoutBean.googleAnalyticsKey != null}"

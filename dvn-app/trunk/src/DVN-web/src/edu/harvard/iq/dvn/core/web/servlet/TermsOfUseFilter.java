@@ -379,7 +379,7 @@ public class TermsOfUseFilter implements Filter {
 		 localHostByName.equals(req.getRemoteHost()) ||
 		 localHostNumeric.equals(req.getRemoteHost()) ) {
                 
-                //NOTaDSBrequest = false;
+                NOTaDSBrequest = false;
             } else {
                 try {
                     String dsbHostIPAddress = InetAddress.getByName(dsbHost).getHostAddress();

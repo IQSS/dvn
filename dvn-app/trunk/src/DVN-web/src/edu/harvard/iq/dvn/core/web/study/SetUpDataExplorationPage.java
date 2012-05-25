@@ -101,6 +101,7 @@ public class SetUpDataExplorationPage extends VDCBaseBean implements java.io.Ser
     private List <VarGroupingUI> filterGroupings = new ArrayList();
 
     private List <SelectItem> studyFileIdSelectItems = new ArrayList();
+    private List <SelectItem> studyFileHasExplorationSelectItems = new ArrayList();
     private VisualizationDisplay visualizationDisplay;
 
     private DataVariable xAxisVariable = new DataVariable();
@@ -110,6 +111,7 @@ public class SetUpDataExplorationPage extends VDCBaseBean implements java.io.Ser
     private Study study;
     private StudyUI studyUI;
     private Long studyFileId = new Long(0);
+    private Long sourceFileId = new Long(0);
     private Long studyId ;
     private Metadata metadata;
     private String xAxisUnits = "";
@@ -140,7 +142,9 @@ public class SetUpDataExplorationPage extends VDCBaseBean implements java.io.Ser
     private boolean hasFilterGroupings = false;
     private boolean hasFilterGroups = false;
     private boolean edited = false;
-
+    
+    private boolean hasExploration;
+    private boolean showMigrationPopup = false;
 
     private VarGroupUI editFragmentVarGroup = new VarGroupUI();
     private VarGroupUI editFilterVarGroup = new VarGroupUI();
@@ -189,6 +193,7 @@ public class SetUpDataExplorationPage extends VDCBaseBean implements java.io.Ser
         }
          studyUI = new StudyUI(studyVersion, null);
          studyFileIdSelectItems = loadStudyFileSelectItems();
+         studyFileHasExplorationSelectItems = loadStudyFileMigrationSelectItems();
     }
 
 
@@ -205,21 +210,38 @@ public class SetUpDataExplorationPage extends VDCBaseBean implements java.io.Ser
                     studyFileName = studyFile.getFileName();
             }
         }
-        studyFileId = (Long) value;
-        if (!studyFileId.equals(new Long(0))) {          
-            loadDataTable();
-            showCommands = true;
-            selectFile = false;
+        studyFileId = (Long) value;       
+        if (!studyFileId.equals(new Long(0))) {  
+            if (!popupMigration()){
+               loadDataTable(true);
+                showCommands = true;
+                selectFile = false;
+                hasExploration = true;
+            } else {
+                hasExploration = false;
+                showMigrationPopup = true;
+            }
         }    
     }
     
-
-
-    private void loadDataTable(){
-
+    private boolean popupMigration(){
         dataTable = new DataTable();
         visualizationService.setDataTableFromStudyFileId(studyFileId);
         dataTable = visualizationService.getDataTable();
+        if ( (dataTable.getVarGroupings() == null || dataTable.getVarGroupings().isEmpty()) && 
+                !studyFileHasExplorationSelectItems.isEmpty()){
+            return true;
+        }  
+        return false;
+    }
+
+    private void loadDataTable(boolean getFromDataBase){
+        if (getFromDataBase){
+            dataTable = new DataTable();
+            visualizationService.setDataTableFromStudyFileId(studyFileId);
+            dataTable = visualizationService.getDataTable();            
+        }
+
         varGroupings = dataTable.getVarGroupings();
         dvList = dataTable.getDataVariables();
         measureGrouping = new VarGroupingUI();
@@ -228,22 +250,25 @@ public class SetUpDataExplorationPage extends VDCBaseBean implements java.io.Ser
 
         dvNumericListUI = loadDvListUIs(false);
         dvDateListUI = loadDvListUIs(true);
-        xAxisVariable = visualizationService.getXAxisVariable(dataTable.getId());
-        xAxisVariableId = xAxisVariable.getId();
-        if (xAxisVariableId.intValue() > 0) {
-            xAxisSet = true;
-        } else {
-            xAxisSet = false;
-            editXAxisAction();
-        }
+        if (getFromDataBase) {
+            xAxisVariable = visualizationService.getXAxisVariable(dataTable.getId());
+            xAxisVariableId = xAxisVariable.getId();
+            if (xAxisVariableId.intValue() > 0) {
+                xAxisSet = true;
+            } else {
+                xAxisSet = false;
+                editXAxisAction();
+            }
 
-        if (xAxisSet) {
-            for (DataVariableMapping mapping : xAxisVariable.getDataVariableMappings()) {
-                if (mapping.isX_axis()) {
-                    xAxisUnits = mapping.getLabel();
+            if (xAxisSet) {
+                for (DataVariableMapping mapping : xAxisVariable.getDataVariableMappings()) {
+                    if (mapping.isX_axis()) {
+                        xAxisUnits = mapping.getLabel();
+                    }
                 }
             }
         }
+
 
         if (measureGrouping.getVarGrouping() == null) {
             addNewGrouping(measureGrouping, GroupingType.MEASURE);
@@ -266,7 +291,7 @@ public class SetUpDataExplorationPage extends VDCBaseBean implements java.io.Ser
             visualizationDisplay = getDefaultVisualizationDisplay();
             dataTable.setVisualizationDisplay(visualizationDisplay);
         }
-        edited = false;
+        edited = !getFromDataBase;
     }
     
     private VisualizationDisplay getDefaultVisualizationDisplay(){
@@ -1467,6 +1492,121 @@ public class SetUpDataExplorationPage extends VDCBaseBean implements java.io.Ser
         visualizationService.cancel();
         return returnToStudy();
     }
+    
+    public String runMigration() {
+        migrateVisualization();
+        loadDataTable(false);
+        showCommands = true;
+        selectFile = false;
+        showMigrationPopup = false;
+        return "";
+    }
+    
+    private void migrateVisualization() {
+        
+        visualizationService.setDataTableFromStudyFileId(sourceFileId);
+        DataTable sourceDT = visualizationService.getDataTable();
+        visualizationService.setDataTableFromStudyFileId(studyFileId);
+        dataTable = visualizationService.getDataTable();
+        for (VarGrouping varGroupingSource : sourceDT.getVarGroupings()) {
+            VarGrouping addVarGrouping = new VarGrouping();
+            addVarGrouping.setDataTable(dataTable);
+            addVarGrouping.setGroupingType(varGroupingSource.getGroupingType());
+            addVarGrouping.setName(varGroupingSource.getName());
+            addVarGrouping.setGroups(new ArrayList());
+            addVarGrouping.setDataVariableMappings(new ArrayList());
+            addVarGrouping.setVarGroupTypes(new ArrayList());
+            dataTable.getVarGroupings().add(addVarGrouping);
+            for (VarGroup varGroupSource : varGroupingSource.getVarGroups()) {
+                VarGroup addVarGroup = new VarGroup();
+                addVarGroup.setGroupAssociation(addVarGrouping);
+                addVarGroup.setName(varGroupSource.getName());
+                addVarGroup.setUnits(varGroupSource.getUnits());
+                addVarGrouping.getVarGroups().add(addVarGroup);
+            }
+
+            for (VarGroupType varGroupTypeSource : varGroupingSource.getVarGroupTypes()) {
+                VarGroupType addVarGroupType = new VarGroupType();
+                addVarGroupType.setVarGrouping(addVarGrouping);
+                addVarGroupType.setName(varGroupTypeSource.getName());
+                addVarGroupType.setGroups(new ArrayList());
+                for (VarGroup varGroupGroupTypeSource : varGroupTypeSource.getGroups()) {
+                    for (VarGroup addGroupGroupTypeSource : addVarGrouping.getVarGroups()) {
+                        if (varGroupGroupTypeSource.getName().equals(addGroupGroupTypeSource.getName())) {
+                            addVarGroupType.getGroups().add(addGroupGroupTypeSource);
+                            if (addGroupGroupTypeSource.getGroupTypes() == null) {
+                                addGroupGroupTypeSource.setGroupTypes(new ArrayList());
+                            }
+                            addGroupGroupTypeSource.getGroupTypes().add(addVarGroupType);
+                        }
+                    }
+                }
+                addVarGrouping.getVarGroupTypes().add(addVarGroupType);
+            }
+            for (DataVariableMapping dataVariableMappingSource : varGroupingSource.getDataVariableMappings()){
+                DataVariableMapping adddataVariableMapping = new DataVariableMapping();
+                adddataVariableMapping.setVarGrouping(addVarGrouping);
+                adddataVariableMapping.setLabel(dataVariableMappingSource.getLabel());
+                adddataVariableMapping.setDataTable(dataTable);
+                    for (VarGroup addGroupVariableSource : addVarGrouping.getVarGroups()) {
+                        if (dataVariableMappingSource.getGroup().getName().equals(addGroupVariableSource.getName())) {
+                            adddataVariableMapping.setGroup(addGroupVariableSource);                                 
+                        }
+                    }
+                for (DataVariable dataVariableTarget: dataTable.getDataVariables()){
+                    if (dataVariableTarget.getName().equals(dataVariableMappingSource.getDataVariable().getName())){
+                        adddataVariableMapping.setDataVariable(dataVariableTarget);
+                        if (dataVariableTarget.getDataVariableMappings() == null){
+                           dataVariableTarget.setDataVariableMappings(new ArrayList()); 
+                        }
+                        dataVariableTarget.getDataVariableMappings().add(adddataVariableMapping);
+                    }
+                }
+                addVarGrouping.getDataVariableMappings().add(adddataVariableMapping);
+            }
+        }
+        DataVariable xAxisVariableSource = visualizationService.getXAxisVariable(sourceDT.getId());
+        DataVariableMapping xAxisMapping = new DataVariableMapping();
+        for (DataVariable dataVariableTarget : dataTable.getDataVariables()) {
+            if (dataVariableTarget.getName().equals(xAxisVariableSource.getName())) {
+                xAxisMapping.setDataVariable(dataVariableTarget);
+                xAxisMapping.setX_axis(true);
+                xAxisMapping.setLabel(xAxisVariableSource.getLabel());
+                if(xAxisMapping.getLabel() == null){
+                   xAxisMapping.setLabel(""); 
+                }
+                xAxisMapping.setDataTable(dataTable);
+                if (dataVariableTarget.getDataVariableMappings() == null) {
+                    dataVariableTarget.setDataVariableMappings(new ArrayList());
+                }
+                dataVariableTarget.getDataVariableMappings().add(xAxisMapping);
+                xAxisSet = true;
+                xAxisVariable = dataVariableTarget;
+                xAxisVariableId = dataVariableTarget.getId();
+                
+            }
+        }
+        
+    }
+       
+    public String cancelMigration() {
+        loadDataTable(true);
+        showCommands = true;
+        selectFile = false;
+        showMigrationPopup = false;
+        return "";
+    }
+    
+    private boolean checkVisualizationDisplay(){
+        dataTable = new DataTable();
+        visualizationService.setDataTableFromStudyFileId(studyFileId);
+        dataTable = visualizationService.getDataTable();
+        System.out.print("number of groupings " + dataTable.getVarGroupings().size());
+        visualizationDisplay = dataTable.getVisualizationDisplay();
+        System.out.print("visualizationDisplay" + dataTable.getVisualizationDisplay()==null);
+        return dataTable.getVisualizationDisplay()==null;
+        
+    }
         
     private String returnToStudy() {        
         Long redirectVersionNumber = new Long(0);
@@ -1488,8 +1628,13 @@ public class SetUpDataExplorationPage extends VDCBaseBean implements java.io.Ser
         this.showInProgressPopup = showInProgressPopup;
     }
     
-    public void togglePopup(javax.faces.event.ActionEvent event) {
+    public void togglePopup(ActionEvent event) {
          showInProgressPopup = !showInProgressPopup;
+    }
+    
+    public void toggleMigrationPopup(ActionEvent event) {
+         
+         showMigrationPopup = !showMigrationPopup;
     }
     
     private void cancelAddEdit(){
@@ -2196,6 +2341,17 @@ public class SetUpDataExplorationPage extends VDCBaseBean implements java.io.Ser
         }
         return selectItems;
     }
+   
+    public List<SelectItem> loadStudyFileMigrationSelectItems(){
+        List selectItems = new ArrayList<SelectItem>();
+        selectItems.add(new SelectItem(0, "Select a File"));
+        for (FileMetadata fileMetaData: studyVersion.getFileMetadatas()){
+            if (fileMetaData.getStudyFile().isSubsettable() && !fileMetaData.getStudyFile().getDataTables().get(0).getVarGroupings().isEmpty() ){
+                    selectItems.add(new SelectItem(fileMetaData.getStudyFile().getId(), fileMetaData.getStudyFile().getFileName()));
+            }
+        }
+        return selectItems;
+    }
 
     public void updateGenericGroupVariableList(String checkString) {
 
@@ -2897,5 +3053,36 @@ public class SetUpDataExplorationPage extends VDCBaseBean implements java.io.Ser
 
     public void changeTab(TabChangeEvent te){
         cancelAddEdit();
+    }
+    
+    public Long getSourceFileId() {
+        return sourceFileId;
+    }
+
+    public void setSourceFileId(Long sourceFileId) {
+        this.sourceFileId = sourceFileId;
+    }
+    public boolean isShowMigrationPopup() {
+        return showMigrationPopup;
+    }
+
+    public void setShowMigrationPopup(boolean showMigrationPopup) {
+        this.showMigrationPopup = showMigrationPopup;
+    }
+
+    public boolean isHasExploration() {
+        return hasExploration;
+    }
+
+    public void setHasExploration(boolean hasExploration) {
+        this.hasExploration = hasExploration;
+    }
+
+    public List<SelectItem> getStudyFileHasExplorationSelectItems() {
+        return studyFileHasExplorationSelectItems;
+    }
+
+    public void setStudyFileHasExplorationSelectItems(List<SelectItem> studyFileHasExplorationSelectItems) {
+        this.studyFileHasExplorationSelectItems = studyFileHasExplorationSelectItems;
     }
 }

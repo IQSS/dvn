@@ -55,10 +55,8 @@ import javax.persistence.Query;
 @TransactionAttribute(TransactionAttributeType.NOT_SUPPORTED)
 public class VisualizationServiceBean implements VisualizationServiceLocal {
 
-
     @PersistenceContext(type = PersistenceContextType.EXTENDED,unitName="VDCNet-ejbPU")
     EntityManager em;
-
     DataTable dt;
 
         /**
@@ -1007,11 +1005,14 @@ public class VisualizationServiceBean implements VisualizationServiceLocal {
     @Override
     @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
     public boolean migrateVisualization(Long oldFileId, Long newFileId) {
+        String       queryString ="";
+        queryString  = "SELECT g FROM  VarGrouping g where g.dataTable.id = " + newFileId + "  ORDER BY g.id";
+        System.out.print("Before: " + em.createQuery(queryString).getResultList());
         em.createNativeQuery("DROP TABLE IF EXISTS vargroupingjoin").executeUpdate();
         em.createNativeQuery("DROP TABLE IF EXISTS vargroupjoin").executeUpdate();
         em.createNativeQuery("DROP TABLE IF EXISTS vargrouptypejoin").executeUpdate();
 
-        String queryString = "INSERT INTO vargrouping  "
+         queryString = "INSERT INTO vargrouping  "
                 + "(name, groupingtype, datatable_id) "
                 + " SELECT name, groupingtype, " + newFileId
                 + " FROM vargrouping "
@@ -1102,6 +1103,10 @@ public class VisualizationServiceBean implements VisualizationServiceLocal {
         query = em.createNativeQuery(queryString);
         query.executeUpdate();        
         
+        queryString = "SELECT g FROM  VarGrouping g where g.dataTable.id = " + newFileId + "  ORDER BY g.id";
+        System.out.print("after: " + em.createQuery(queryString).getResultList());
+        saveAndContinue();
+        setDataTableFromStudyFileId(newFileId);
         return true;
     }
 }

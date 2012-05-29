@@ -217,12 +217,23 @@ span.dvnAddClassificationDvNotReleased{background:url(/dvn/resources/images/icon
 .iceDatTbl td.dvnCommentReviewCol6 a.iceCmdLnk, td.dvnCommentReviewCol6 a.iceCmdLnk span.iceOutTxt{display:inline}
 .dvnCommentReviewCol6 input, .dvnCommentReviewCol6 a.iceCmdLnk{margin-right:2em}
 .dvnCommentReviewCol6 input:last-child, .dvnCommentReviewCol6 a.iceCmdLnk:last-child{margin-right:0}
-/* TERMS OF USE */
+/* TERMS OF USE + GUESTBOOK */
 .dvnstudypreviouslisting{text-align:right;}
 .termsAgreeChkBxBlock{width:380px;}
 .termsAgreeChkBxBlock p{font-size: .9em !important;}
 .dvnEditTermsForm .dvnEditTermsCheckbox{margin-bottom:1em;}
 .dvnEditTermsForm .errorMessage{margin-bottom:1em;}
+.dvnGuestbookCustomQuestions.dvnStaticTable {border-top:1px solid lightgray;}
+.dvnGuestbookCustomQuestionsCol1 {width:10%;text-align:center;}
+.dvnGuestbookCustomQuestionsCol3 {width:20%;text-align:center;}
+.dvnGuestbookCustomQuestionsCol3 .iceCmdLnk:first-child {margin-right:2em;}
+.dvnGuestbookCustomQuestions.iceDatTbl, .dvnGuestbookCustomQuestions.iceDatTbl tr, .dvnGuestbookCustomQuestions.iceDatTbl td, .dvnGuestbookCustomQuestions.iceDatTbl table {border:0;background:none;}
+.dvnGuestbookCustomQuestions.iceDatTbl {margin-top:0;}
+.dvnGuestbookCustomQuestions.iceDatTbl td.iceDatTblCol1 {text-align:center;}
+.dvnGuestbookCustomQuestions.iceDatTbl td span.iceOutTxt {display:inline;color:#464646;}
+.dvnGuestbookCustomQuestions.iceDatTbl tr {border-bottom:1px solid lightgray;}
+.dvnGuestbookCustomQuestions.iceDatTbl .iceDatTbl {margin-left:1em;}
+.dvnGuestbookCustomQuestions.iceDatTbl tr tr {border:0;}
 /* PERMISSIONS */
 .dvnPermissionsTable{width:100%;text-align:left}
 .dvnPermissionsTable td{padding:.5em 2em;border-bottom:1px solid lightgray}

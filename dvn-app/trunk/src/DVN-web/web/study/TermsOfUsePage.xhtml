@@ -41,125 +41,98 @@
                 <ice:outputText value="&lt; Back to the Study"/>
               </ice:outputLink>
           </div>
-            
-          <div jsfc="ice:panelGroup" styleClass="dvnguestbookresponse" rendered="#{TermsOfUsePage.touTypeDownload  and TermsOfUsePage.guestbookRequired}">
-                          <div class="dvn_margin12">
-              <div jsfc="ice:panelGroup" styleClass="dvnInformationMessage">
-                <div class="dvnMsgBlockContainer">
-                  <ice:outputText value="#{bundlePageInfo.editGuestBookResponseHelp}" escape="false"/>
-                </div>
-              </div>
-
-              <ice:message for="warningMessage" styleClass="warningMessage" id="warningMessage"/>
-
-              <div class="dvnGuestBookNameInputLevel">
-                <ice:outputText value="First Name " />
-                <ice:graphicImage value="/resources/images/icon_required.gif" rendered="#{TermsOfUsePage.study.owner.guestBookQuestionnaire.firstNameRequired}"/>
-                    <ice:inputText id="input_nameText" size="140" 
-                                   value="#{TermsOfUsePage.guestBookResponse.firstname}"
-                                   />
-              </div>
-              <div jsfc="ice:panelGroup" styleClass="dvnWarningMessage" rendered="#{!empty VDCRender.flash.inputFirstNameWarningMessage}">
-               <div class="dvnMsgBlockContainer">
-                            <p><ice:outputText id="firstnameMessage" value="#{VDCRender.flash.inputFirstNameWarningMessage}"/></p>
-                          </div>
-               </div>
-                            <div class="dvnGuestBookNameInputLevel">
-                <ice:outputText value="Last Name " />
-                <ice:graphicImage value="/resources/images/icon_required.gif" rendered="#{TermsOfUsePage.study.owner.guestBookQuestionnaire.lastNameRequired}"/>
-                    <ice:inputText id="input_lastnameText" size="140" 
-                                   value="#{TermsOfUsePage.guestBookResponse.lastname}"
-                                   />
-              </div>
-              <div jsfc="ice:panelGroup" styleClass="dvnWarningMessage" rendered="#{!empty VDCRender.flash.inputLastNameWarningMessage}">
-               <div class="dvnMsgBlockContainer">
-                            <p><ice:outputText id="lastnameMessage" value="#{VDCRender.flash.inputLastNameWarningMessage}"/></p>
-                          </div>
-               </div>
-              <div class="dvnGuestBookEmailInputLevel">
-                <ice:outputText value="E-Mail "  />
-                <ice:graphicImage value="/resources/images/icon_required.gif" rendered="#{TermsOfUsePage.study.owner.guestBookQuestionnaire.emailRequired}"/>
-                    <ice:inputText id="input_EmailText" size="140" 
-                                   value="#{TermsOfUsePage.guestBookResponse.email}"
-                                   />
-              </div>
-               <div jsfc="ice:panelGroup" styleClass="dvnWarningMessage" rendered="#{!empty VDCRender.flash.inputEmailWarningMessage}">
-                          <div class="dvnMsgBlockContainer">
-                            <p><ice:outputText id="emailMessage" value="#{VDCRender.flash.inputEmailWarningMessage}"/></p>
-                          </div>
-               </div>
-              
-              <div class="dvnGuestBookNameInstitutionLevel">
-                <ice:outputText value="Institution " />
-                <ice:graphicImage value="/resources/images/icon_required.gif" rendered="#{TermsOfUsePage.study.owner.guestBookQuestionnaire.institutionRequired}"/>
-                    <ice:inputText id="input_InstitutionText" 
-                                   size="140" value="#{TermsOfUsePage.guestBookResponse.institution}"/>
-              </div>
-              
-                <div jsfc="ice:panelGroup" styleClass="dvnWarningMessage" rendered="#{!empty VDCRender.flash.inputInstitutionWarningMessage}">
-                          <div class="dvnMsgBlockContainer">
-                            <p><ice:outputText id="institutionMessage" value="#{VDCRender.flash.inputInstitutionWarningMessage}"/></p>
-                          </div>
-               </div>
-              
-              <div class="dvnGuestBookNamePositionLevel">
-                <ice:outputText value="Position " />
-                <ice:graphicImage value="/resources/images/icon_required.gif" rendered="#{TermsOfUsePage.study.owner.guestBookQuestionnaire.positionRequired}"/>
-                  <div jsfc="ice:panelGroup">
-                    <ice:selectOneMenu value="#{TermsOfUsePage.guestBookResponse.position}">
-                      <f:selectItem itemLabel="Student" itemValue="Student"/>
-                      <f:selectItem itemLabel="Faculty" itemValue="Faculty"/>
-                      <f:selectItem itemLabel="Staff" itemValue="Staff"/>
-                      <f:selectItem itemLabel="Other" itemValue="Other"/>
-                    </ice:selectOneMenu>
-                  </div>
-              </div>
-              
-                <div jsfc="ice:panelGroup" styleClass="dvnWarningMessage" rendered="#{!empty VDCRender.flash.inputPositionWarningMessage}">
-                          <div class="dvnMsgBlockContainer">
-                            <p><ice:outputText id="positionMessage" value="#{VDCRender.flash.inputPositionWarningMessage}"/></p>
-                          </div>
-               </div>
-
-              
-               <div jsfc="ice:panelGroup" styleClass="dvnWarningMessage" rendered="#{!empty VDCRender.flash.inputCustomReponse}">
-                          <div class="dvnMsgBlockContainer">
-                            <p><ice:outputText id="customMessage" value="#{VDCRender.flash.inputCustomReponse}"/></p>
-                          </div>
-               </div>
-                  <ice:dataTable cellpadding="0" cellspacing="0" width="100%" 
-                                  columnClasses="vdcEditStudyCol1, vdcEditStudyCol2, vdcEditStudyCol3"
-                                  value="#{TermsOfUsePage.customQuestionResponseUIs}" var="customQuestionResponseUI">
-
-                    <ice:column styleClass="vdcEditStudyField" >
-                       <ice:outputText styleClass="dvnInlineHelpLabel dvnInlineHelpTip" value="#{customQuestionResponseUI.customQuestionResponse.staticQuestionString}" 
-                                        />
-                       <ice:graphicImage value="/resources/images/icon_required.gif" rendered="#{customQuestionResponseUI.required}"/>
-                    </ice:column>
-
-                    <ice:column rendered="#{customQuestionResponseUI.questionType == 'text'}">
-                       <ice:inputText id="input_questionText" size="140" 
-                                      rendered="#{ customQuestionResponseUI.questionType == 'text'}"
-                                      value="#{customQuestionResponseUI.customQuestionResponse.response}"></ice:inputText>                 
-                    </ice:column>
-                     <ice:column rendered="#{customQuestionResponseUI.questionType == 'radiobuttons'}">
-                       <ice:selectOneRadio value="#{customQuestionResponseUI.customQuestionResponse.response}" partialSubmit="false"
-                                           rendered="#{  customQuestionResponseUI.questionType == 'radiobuttons'}">
-                           <f:selectItems value="#{customQuestionResponseUI.responseSelectItems}"></f:selectItems>  
-                       </ice:selectOneRadio>                 
-                    </ice:column>  
-                      
-                  </ice:dataTable>
-
-            </div>
-
-          </div>
-
           <div class="dvn_sectionTitle">
             <ice:outputText value="Terms of Use"/>
           </div>
           <div class="dvn_sectionBox">
             <div class="dvn_margin12">
+              <div jsfc="ice:panelGroup" styleClass="dvnguestbookresponse" style="margin-bottom:2em;" rendered="#{TermsOfUsePage.touTypeDownload  and TermsOfUsePage.guestbookRequired}">
+                
+                  <div jsfc="ice:panelGroup" styleClass="dvnInformationMessage">
+                    <div class="dvnMsgBlockContainer">
+                      <ice:outputText value="#{bundlePageInfo.touGuestBookResponseHelp}" escape="false"/>
+                    </div>
+                  </div>
+
+                  <ice:message for="warningMessage" styleClass="warningMessage" id="warningMessage"/>
+
+                  <ice:panelGrid cellpadding="0" cellspacing="0" columns="2"
+                               columnClasses="vdcColPadded, vdcColPadded" id="gridPanel2">
+                      <div jsfc="ice:panelGroup">
+                        <ice:outputText value="First Name"/>
+                        <ice:graphicImage value="/resources/images/icon_required.gif" rendered="#{TermsOfUsePage.study.owner.guestBookQuestionnaire.firstNameRequired}"/>
+                      </div>
+                      <div jsfc="ice:panelGroup">
+                        <ice:inputText id="input_nameText" value="#{TermsOfUsePage.guestBookResponse.firstname}"/>
+                        <ice:outputText id="firstnameMessage" styleClass="errorMessage" value="#{VDCRender.flash.inputFirstNameWarningMessage}" rendered="#{!empty VDCRender.flash.inputFirstNameWarningMessage}"/>
+                      </div>
+                      <div jsfc="ice:panelGroup">
+                        <ice:outputText value="Last Name"/>
+                        <ice:graphicImage value="/resources/images/icon_required.gif" rendered="#{TermsOfUsePage.study.owner.guestBookQuestionnaire.lastNameRequired}"/>
+                      </div>
+                      <div jsfc="ice:panelGroup">
+                        <ice:inputText id="input_lastnameText" value="#{TermsOfUsePage.guestBookResponse.lastname}"/>
+                        <ice:outputText id="lastnameMessage" styleClass="errorMessage" value="#{VDCRender.flash.inputLastNameWarningMessage}" rendered="#{!empty VDCRender.flash.inputLastNameWarningMessage}"/>
+                      </div>
+                      <div jsfc="ice:panelGroup">
+                        <ice:outputText value="E-Mail"/>
+                        <ice:graphicImage value="/resources/images/icon_required.gif" rendered="#{TermsOfUsePage.study.owner.guestBookQuestionnaire.emailRequired}"/>
+                      </div>
+                      <div jsfc="ice:panelGroup">
+                        <ice:inputText id="input_EmailText" size="40" value="#{TermsOfUsePage.guestBookResponse.email}"/>
+                        <ice:outputText id="emailMessage" styleClass="errorMessage" value="#{VDCRender.flash.inputEmailWarningMessage}" rendered="#{!empty VDCRender.flash.inputEmailWarningMessage}"/>
+                      </div>
+                      <div jsfc="ice:panelGroup">
+                        <ice:outputText value="Institution"/>
+                        <ice:graphicImage value="/resources/images/icon_required.gif" rendered="#{TermsOfUsePage.study.owner.guestBookQuestionnaire.institutionRequired}"/>
+                      </div>
+                      <div jsfc="ice:panelGroup">
+                        <ice:inputText id="input_InstitutionText" size="40" value="#{TermsOfUsePage.guestBookResponse.institution}"/>
+                        <ice:outputText id="institutionMessage" styleClass="errorMessage" value="#{VDCRender.flash.inputInstitutionWarningMessage}" rendered="#{!empty VDCRender.flash.inputInstitutionWarningMessage}"/>
+                      </div>
+                      <div jsfc="ice:panelGroup">
+                        <ice:outputText value="Position"/>
+                        <ice:graphicImage value="/resources/images/icon_required.gif" rendered="#{TermsOfUsePage.study.owner.guestBookQuestionnaire.positionRequired}"/>
+                      </div>
+                      <div jsfc="ice:panelGroup">
+                        <ice:selectOneMenu value="#{TermsOfUsePage.guestBookResponse.position}">
+                          <f:selectItem itemLabel="Student" itemValue="Student"/>
+                          <f:selectItem itemLabel="Faculty" itemValue="Faculty"/>
+                          <f:selectItem itemLabel="Staff" itemValue="Staff"/>
+                          <f:selectItem itemLabel="Other" itemValue="Other"/>
+                        </ice:selectOneMenu>
+                      </div>
+                  </ice:panelGrid>
+                  <div jsfc="ice:panelGroup" styleClass="dvnWarningMessage" rendered="#{!empty VDCRender.flash.inputPositionWarningMessage}">
+                      <div class="dvnMsgBlockContainer">
+                        <p><ice:outputText id="positionMessage" value="#{VDCRender.flash.inputPositionWarningMessage}"/></p>
+                      </div>
+                  </div>
+                  <div jsfc="ice:panelGroup" styleClass="dvnWarningMessage" rendered="#{!empty VDCRender.flash.inputCustomReponse}">
+                      <div class="dvnMsgBlockContainer">
+                        <p><ice:outputText id="customMessage" value="#{VDCRender.flash.inputCustomReponse}"/></p>
+                      </div>
+                  </div>
+                  <ice:dataTable cellpadding="0" cellspacing="0" width="100%" 
+                                  styleClass="dvnGuestbookCustomQuestions"
+                                  value="#{TermsOfUsePage.customQuestionResponseUIs}" var="customQuestionResponseUI">
+                    <ice:column  >
+                       <ice:outputText value="#{customQuestionResponseUI.customQuestionResponse.staticQuestionString}"/>
+                       <ice:graphicImage value="/resources/images/icon_required.gif" rendered="#{customQuestionResponseUI.required}"/>
+                    </ice:column>
+                    <ice:column>
+                       <ice:inputText id="input_questionText" size="100" value="#{customQuestionResponseUI.customQuestionResponse.response}"
+                                      rendered="#{customQuestionResponseUI.questionType == 'text'}"/>                 
+                    
+                       <ice:selectOneRadio value="#{customQuestionResponseUI.customQuestionResponse.response}" partialSubmit="false"
+                                           rendered="#{customQuestionResponseUI.questionType == 'radiobuttons'}">
+                           <f:selectItems value="#{customQuestionResponseUI.responseSelectItems}"/>  
+                       </ice:selectOneRadio>                 
+                    </ice:column>
+                  </ice:dataTable>
+                
+              </div>
+                
               <div class="termsAgreementBox">
                 <div jsfc="ice:panelGroup" rendered="#{TermsOfUsePage.touTypeDownload}">
                   <!-- Study Terms of Use -->

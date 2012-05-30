@@ -343,3 +343,4 @@ label.dvnGraphIndicesTitle {font-weight:bold;}
 .variableInfoPopup table {width:100%;}
 .variableInfoPopup div.popupBody {word-break:break-all;}
 .variableInfoPopup a.popupHeaderClose {float:right;}
+.dvnExplorationMigrationPopup select.iceSelOneMnu {margin:0 0 1em 0;}

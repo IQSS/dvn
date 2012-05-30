@@ -540,7 +540,7 @@
                                            width="100%" cellpadding="0"
                                            cellspacing="0" columns="2"
                                            columnClasses="none,popupButton">
-                                <ice:outputText value="New Exploration"/>
+                                <ice:outputText value="New Data Exploration Set-up"/>
                                 <ice:commandLink id="autoCentMigrationPopupClose"
                                                  actionListener="#{SetUpDataExplorationPage.toggleMigrationPopup}"
                                                  styleClass="popupModalClose">
@@ -552,18 +552,23 @@
                             <ice:panelGrid id="autoCentMigration"
                                            width="100%" cellpadding="0"
                                            cellspacing="0" columns="1"
-                                           styleClass="popupModalBody">
-                                <ice:outputText value="This file has no exploration. Would you like to migrate from a previous file?"/>
+                                           styleClass="popupModalBody dvnExplorationMigrationPopup">
+                                <ice:outputText value="This file has no data exploration set-up. Would you like to migrate the set-up from a previous file?"/>
                                 <div jsfc="ice:panelGroup" styleClass="dvnFormPadding dvnFormMargin">
-                                <ice:selectOneMenu value="#{SetUpDataExplorationPage.sourceFileId}"  partialSubmit="true">
-                                    <f:selectItems value="#{SetUpDataExplorationPage.studyFileHasExplorationSelectItems}"/>
-                                </ice:selectOneMenu>
+                                    <ice:selectOneMenu value="#{SetUpDataExplorationPage.sourceFileId}" partialSubmit="true">
+                                        <f:selectItems value="#{SetUpDataExplorationPage.studyFileHasExplorationSelectItems}"/>
+                                    </ice:selectOneMenu>
                                     <ice:commandButton id="autoCentMigrationPopupCancel" disabled="#{SetUpDataExplorationPage.sourceFileId == 0}"
                                                        actionListener="#{SetUpDataExplorationPage.runMigration}"
-                                                       value="Migrate Exploration from Selected File"/>
+                                                       value="Migrate Exploration Set-up"/>
+                                </div>
+                                
+                                <ice:outputText value="Or start a new data exploration set-up."/>
+                                <div jsfc="ice:panelGroup" styleClass="dvnFormPadding dvnFormMargin">
+                                    
                                     <ice:commandButton id="autoCentMigrationPopupExit"
                                                        action="#{SetUpDataExplorationPage.cancelMigration}"
-                                                       value="Start New Exploration"/>
+                                                       value="Start New Exploration Set-up"/>
                                 </div>
                             </ice:panelGrid>
                         </f:facet>

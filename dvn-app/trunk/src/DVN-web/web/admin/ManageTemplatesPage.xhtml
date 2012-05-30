@@ -69,10 +69,10 @@
                   </f:facet>
                   <ice:outputText value="#{template.name}" styleClass="#{(template.enabled) ? 'dvnStudyTemplateEnabled' : 'dvnStudyTemplateNotEnabled'}"/>
                   
-                  <ice:outputLink value="#" onclick="return toggleTemplateDesc(this)" styleClass="dvnStudyTemplateDescLink" rendered="#{template.description != null}">
+                  <ice:outputLink value="#" onclick="return toggleTemplateDesc(this)" styleClass="dvnStudyTemplateDescLink" rendered="#{!empty(template.description)}">
                     <ice:outputText value="Description [+]"/>
                   </ice:outputLink>
-                  <div jsfc="ice:panelGroup" rendered="#{template.description != null}" styleClass="dvnStudyTemplateDesc" style="display: none;">
+                  <div jsfc="ice:panelGroup" rendered="#{!empty(template.description)}" styleClass="dvnStudyTemplateDesc" style="display: none;">
                     <ice:outputText value="#{template.description}"/>
                   </div>
                 </ice:column>

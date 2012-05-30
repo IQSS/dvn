@@ -180,7 +180,6 @@ public class TermsOfUsePage extends VDCBaseBean {
         guestBookResponse.setGuestBookQuestionnaire(study.getOwner().getGuestBookQuestionnaire());
         guestBookResponse.setStudy(study);
         fileId = getRequestParam("fileId");
-        //guestBookResponse.setStudyFile(studyFile);
         guestBookResponse.setResponseTime(new Date());
 
         if (study.getOwner().getGuestBookQuestionnaire().getCustomQuestions() != null && !study.getOwner().getGuestBookQuestionnaire().getCustomQuestions().isEmpty()) {
@@ -348,7 +347,7 @@ public class TermsOfUsePage extends VDCBaseBean {
         if ( termsAccepted &&  isTouTypeDownload() && this.isDownloadDvnTermsRequired() ) { 
             termsOfUseMap.put( "dvn_download", "accepted" );
         }
-        if ( termsAccepted &&  isTouTypeDownload() && this.isGuestbookRequired() ) { 
+        if ( termsAccepted && this.isGuestbookRequired()  && getVDCSessionBean().getLoginBean() !=null ) { 
             termsOfUseMap.put( "study_guestbook_"  + study.getId(), "accepted" );
         }
         if ( termsAccepted &&  isTouTypeDeposit() && this.isDepositDataverseTermsRequired() ) { 

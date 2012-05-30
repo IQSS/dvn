@@ -181,7 +181,7 @@
                   <ice:outputText value="#{TermsOfUsePage.depositDataverseTerms}" rendered="#{TermsOfUsePage.depositDataverseTermsRequired}" escape="false"/>
                 </div>
               </div>
-              <div class="termsAgreeChkBxBlock">
+              <div class="termsAgreeChkBxBlock" rendered="#{TermsOfUsePage.touTypeDownload or TermsOfUsePage.touTypeDeposit }" >
                 <ice:outputText rendered="#{TermsOfUsePage.touTypeDownload}" value="#{bundlePageInfo.termsofUseDownloadAgree}" escape="false"/>
                 <ice:selectBooleanCheckbox id="termsAccepted" required="true" validator="#{TermsOfUsePage.validateTermsAccepted}" value="#{TermsOfUsePage.termsAccepted}"/>
                 <ice:outputText styleClass="vdcFieldTitle" value="I agree and accept these terms of use."/>

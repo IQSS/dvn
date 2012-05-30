@@ -96,9 +96,13 @@ public class TermsOfUseFilter implements Filter {
     }
     
     public static boolean isGuestbookRequired(Study study, Map termsOfUseMap) {
-        boolean vdcTermsRequired = study.getOwner().getGuestBookQuestionnaire().isEnabled();
+        
+        boolean vdcTermsRequired = false;
+        if (study.getOwner().getGuestBookQuestionnaire() != null){
+               vdcTermsRequired =  study.getOwner().getGuestBookQuestionnaire().isEnabled();
+        }        
         if (vdcTermsRequired) {
-            return termsOfUseMap.get("study_guestbook_" + study.getOwner().getId()) == null;
+            return termsOfUseMap.get("study_guestbook_" + study.getId()) == null;
         }
 
         return false;
@@ -378,7 +382,7 @@ public class TermsOfUseFilter implements Filter {
 		 localHostByName.equals(req.getRemoteHost()) ||
 		 localHostNumeric.equals(req.getRemoteHost()) ) {
                 
-                NOTaDSBrequest = false;
+               // NOTaDSBrequest = false;
             } else {
                 try {
                     String dsbHostIPAddress = InetAddress.getByName(dsbHost).getHostAddress();
@@ -398,7 +402,10 @@ public class TermsOfUseFilter implements Filter {
 
             if (NOTaDSBrequest) {
                 Map termsOfUseMap = getTermsOfUseMap();
-                if (isDownloadDvnTermsRequired(vdcNetworkService.find(), termsOfUseMap) || isDownloadDataverseTermsRequired(study, termsOfUseMap) || isDownloadStudyTermsRequired(study, termsOfUseMap)) {
+                if (isDownloadDvnTermsRequired(vdcNetworkService.find(), termsOfUseMap) 
+                        || isDownloadDataverseTermsRequired(study, termsOfUseMap) 
+                        || isDownloadStudyTermsRequired(study, termsOfUseMap)
+                        || isGuestbookRequired(study, termsOfUseMap)) {
                     VDC currentVDC = vdcService.getVDCFromRequest(req);
                     String params = "?studyId=" + study.getId();
                     if ( versionNumber != null ) {

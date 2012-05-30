@@ -229,7 +229,7 @@ public class SetUpDataExplorationPage extends VDCBaseBean implements java.io.Ser
         visualizationService.setDataTableFromStudyFileId(studyFileId);
         dataTable = visualizationService.getDataTable();
         if ( (dataTable.getVarGroupings() == null || dataTable.getVarGroupings().isEmpty()) && 
-                !studyFileHasExplorationSelectItems.isEmpty()){
+                studyFileHasExplorationSelectItems.size() > 1){
             return true;
         }  
         return false;

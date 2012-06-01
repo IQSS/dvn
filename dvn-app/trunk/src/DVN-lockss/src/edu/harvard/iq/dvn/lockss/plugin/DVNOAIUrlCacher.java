@@ -18,45 +18,56 @@
    Version 3.0.
 */
 /*
-Copyright (c) 2000-2010 Board of Trustees of Leland Stanford Jr. University,
+
+Copyright (c) 2000-2012 Board of Trustees of Leland Stanford Jr. University,
 all rights reserved.
+
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
 in the Software without restriction, including without limitation the rights
 to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
 copies of the Software, and to permit persons to whom the Software is
 furnished to do so, subject to the following conditions:
+
 The above copyright notice and this permission notice shall be included in
 all copies or substantial portions of the Software.
+
 THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
 IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
 FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.  IN NO EVENT SHALL
 STANFORD UNIVERSITY BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,
 WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR
 IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+
 Except as contained in this notice, the name of Stanford University shall not
 be used in advertising or otherwise to promote the sale, use or other dealings
 in this Software without prior written authorization from Stanford University.
+
 */
+
+//DVN CUSTOM -- BEGIN
 package edu.harvard.iq.dvn.lockss.plugin;
-//D-E
+//DVN CUSTOM -- END
 
 import java.io.*;
 import java.net.*;
 import java.util.*;
 import java.text.*;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 
 import org.lockss.app.*;
 import org.lockss.state.*;
 import org.lockss.config.*;
 import org.lockss.plugin.*;
+import org.lockss.plugin.base.BaseArchivalUnit;
 import org.lockss.repository.*;
 import org.lockss.util.*;
 import org.lockss.util.urlconn.*;
 import org.lockss.daemon.*;
 import org.lockss.crawler.*;
 
-//D-B
+//DVN CUSTOM -- BEGIN
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -65,7 +76,7 @@ import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.methods.GetMethod;
 
 import edu.harvard.iq.dvn.core.web.dvnremote.DvnTermsOfUseAccess;
-//D-E
+//DVN CUSTOM -- END
 
 /**
  * Basic, fully functional UrlCacher.  Utilizes the LockssRepository for
@@ -74,15 +85,20 @@ import edu.harvard.iq.dvn.core.web.dvnremote.DvnTermsOfUseAccess;
  * authentication.  The redirection semantics offered here must be
  * preserved.
  */
-//D-B
+//DVN CUSTOM -- BEGIN
 public class DVNOAIUrlCacher implements UrlCacher {
     protected static Logger logger = Logger.getLogger("DVNOAIUrlCacher");
-  //D-E
+  //DVN CUSTOM -- END
 
   /** If true, normalize redirect targets (location header). */
   public static final String PARAM_NORMALIZE_REDIRECT_URL =
     Configuration.PREFIX + "baseuc.normalizeRedirectUrl";
   public static final boolean DEFAULT_NORMALIZE_REDIRECT_URL = true;
+
+  /** The algorithm to use for content checksum calculation. An empty value disables checksums */
+  public static final String PARAM_CHECKSUM_ALGORITHM =
+		    Configuration.PREFIX + "baseuc.checksumAlgorithm";
+  public static final String DEFAULT_CHECKSUM_ALGORITHM = null;
 
   /** Limit on rewinding the network input stream after checking for a
    * login page.  If LoginPageChecker returns false after reading father
@@ -92,9 +108,9 @@ public class DVNOAIUrlCacher implements UrlCacher {
   public static final int DEFAULT_LOGIN_CHECKER_MARK_LIMIT = 24 * 1024;
 
   /** Maximum number of redirects that will be followed */
-  //D-B
+  //DVN CUSTOM -- BEGIN
   static final int MAX_REDIRECTS = 1;
-  //D-E
+  //DVN CUSTOM -- END
 
   // Preferred date format according to RFC 2068(HTTP1.1),
   // RFC 822 and RFC 1123
@@ -122,13 +138,14 @@ public class DVNOAIUrlCacher implements UrlCacher {
   private Properties reqProps;
   private LockssWatchdog wdog;
   private String previousContentType;
+  private CrawlRateLimiter crl;
   private BitSet fetchFlags = new BitSet();
 
   private static final String SHOULD_REFETCH_ON_SET_COOKIE =
     "refetch_on_set_cookie";
   private static final boolean DEFAULT_SHOULD_REFETCH_ON_SET_COOKIE = true;
 
-//D-B
+//DVN CUSTOM -- BEGIN
   private HttpClient client = null;
 
   private HttpClient getClient() {
@@ -138,25 +155,26 @@ public class DVNOAIUrlCacher implements UrlCacher {
     client = new HttpClient();
     return client;
   }
-//D-E
+//DVN CUSTOM -- END
 
-  //D-B
+  
+  //DVN CUSTOM -- BEGIN
   public DVNOAIUrlCacher(ArchivalUnit owner, String url) {
-  //D-E
+  //DVN CUSTOM -- END
     this.origUrl = url;
     this.fetchUrl = url;
     //au = owner.getArchivalUnit();
     au = owner;
-    // D-B
+    //DVN CUSTOM -- BEGIN
     DVNOAIPlugin plugin = (DVNOAIPlugin)au.getPlugin();
-    // D-E
+    //DVN CUSTOM -- END
 
     repository = plugin.getDaemon().getLockssRepository(au);
     nodeMgr = plugin.getDaemon().getNodeManager(au);
     logger.debug3("Node manager "+nodeMgr);
-    // D-B
+    //DVN CUSTOM -- BEGIN
     resultMap = plugin.getCacheResultMap();
-    //D-E
+    //DVN CUSTOM -- END
 
   }
 
@@ -255,6 +273,10 @@ public class DVNOAIUrlCacher implements UrlCacher {
     this.previousContentType = previousContentType;
   }
 
+  public void setCrawlRateLimiter(CrawlRateLimiter crl) {
+    this.crl = crl;
+  }
+
   private boolean isDamaged() {
     DamagedNodeSet dnSet = nodeMgr.getDamagedNodes();
     if (dnSet == null) {
@@ -281,11 +303,6 @@ public class DVNOAIUrlCacher implements UrlCacher {
   }
 
   private int cache(String lastModified) throws IOException {
-    logger.debug3("Pausing before fetching content");
-    //pauseBeforeFetch() is no longer in the AU, as of daemon 1.52;
-    //commenting out -- L.A.
-    //au.pauseBeforeFetch(previousContentType);
-    logger.debug3("Done pausing");
     InputStream input = getUncachedInputStream(lastModified);
     // null input indicates unmodified content, so skip caching
     if (input == null) {
@@ -385,9 +402,9 @@ public class DVNOAIUrlCacher implements UrlCacher {
   }
 
   private boolean shouldRefetchOnCookies() {
-    //D-B
+    //DVN CUSTOM -- BEGIN
     return false;
-    //D-E
+    //DVN CUSTOM -- END
   }
 
   private CIProperties getHeaders() throws IOException {
@@ -463,8 +480,20 @@ public class DVNOAIUrlCacher implements UrlCacher {
 	leaf = repository.createNewNode(url);
 	leaf.makeNewVersion();
 
+	MessageDigest checksumProducer = null;
+	String checksumAlgorithm =
+	  CurrentConfig.getParam(PARAM_CHECKSUM_ALGORITHM,
+				 DEFAULT_CHECKSUM_ALGORITHM);
+	if (!StringUtil.isNullString(checksumAlgorithm)) {
+	  try {
+	    checksumProducer = MessageDigest.getInstance(checksumAlgorithm);
+	  } catch (NoSuchAlgorithmException ex) {
+	    logger.warning(String.format("Checksum algorithm %s not found, checksuming disabled", checksumAlgorithm));
+	  }
+	}
+
 	os = leaf.getNewOutputStream();
-	StreamUtil.copy(input, os, -1, wdog, true);
+	StreamUtil.copy(input, os, -1, wdog, true, checksumProducer);
 	if (!fetchFlags.get(DONT_CLOSE_INPUT_STREAM_FLAG)) {
 	  try {
 	    input.close();
@@ -478,6 +507,12 @@ public class DVNOAIUrlCacher implements UrlCacher {
 	}
 	os.close();
 	headers.setProperty(CachedUrl.PROPERTY_NODE_URL, url);
+	if (checksumProducer != null) {
+	  byte bdigest[] = checksumProducer.digest();
+	  String sdigest = ByteArray.toHexString(bdigest);
+	  headers.setProperty(CachedUrl.PROPERTY_CHECKSUM,
+			      String.format("%s:%s", checksumAlgorithm, sdigest));
+	}
 	leaf.setNewProperties(headers);
 	leaf.sealNewVersion();
       } catch (StreamUtil.InputException ex) {
@@ -644,10 +679,10 @@ public class DVNOAIUrlCacher implements UrlCacher {
     int retry = 0;
     while (true) {
       try {
-        openOneConnection(lastModified);
-        break;
+	openOneConnection(lastModified);
+	break;
       } catch (CacheException.NoRetryNewUrlException e) {
-        //D-B
+        //DVN CUSTOM -- BEGIN
         //get the location header to find out where to redirect to
         String location = conn.getResponseHeaderValue("location");
         if (logger.isDebug3()) {
@@ -665,7 +700,7 @@ public class DVNOAIUrlCacher implements UrlCacher {
         }
         checkConnectException(conn);
         break;
-        //D-E
+        //DVN CUSTOM -- END
       }
     }
   }
@@ -689,40 +724,45 @@ public class DVNOAIUrlCacher implements UrlCacher {
   }
 
   /**
-   * If we haven't already connected, creates a connection from url, setting
-   * the user-agent and ifmodifiedsince values.  Then actually connects to the
-   * site and throws if we get an error code
+   * Create a connection object from url, set the user-agent and
+   * ifmodifiedsince values.  Then actually connect to the site and throw
+   * if we get an error response
    */
   private void openOneConnection(String lastModified) throws IOException {
+    if (conn != null) {
+      throw
+	new IllegalStateException("Must call reset() before reusing UrlCacher");
+    }
     try {
       conn = makeConnection(fetchUrl, connectionPool);
       if (proxyHost != null) {
-    	if (logger.isDebug3()) logger.debug3("Proxying through " + proxyHost
-            + ":" + proxyPort);
-        conn.setProxy(proxyHost, proxyPort);
+	if (logger.isDebug3()) logger.debug3("Proxying through " + proxyHost
+					     + ":" + proxyPort);
+	conn.setProxy(proxyHost, proxyPort);
       }
       if (localAddr != null) {
-        conn.setLocalAddress(localAddr);
+	conn.setLocalAddress(localAddr);
       }
       String userPass = getUserPass();
       if (userPass != null) {
-        List<String> lst = StringUtil.breakAt(userPass, ':');
-        if (lst.size() == 2) {
-            conn.setCredentials(lst.get(0), lst.get(1));
-        }
+	List<String> lst = StringUtil.breakAt(userPass, ':');
+	if (lst.size() == 2) {
+	  conn.setCredentials(lst.get(0), lst.get(1));
+	}
       }
       if (reqProps != null) {
-        for (Iterator iter = reqProps.keySet().iterator(); iter.hasNext(); ) {
-            String key = (String)iter.next();
-            conn.setRequestProperty(key, reqProps.getProperty(key));
-        }
+	for (Iterator iter = reqProps.keySet().iterator(); iter.hasNext(); ) {
+	  String key = (String)iter.next();
+	  conn.setRequestProperty(key, reqProps.getProperty(key));
+	}
       }
       conn.setFollowRedirects(isRedirectOption(REDIRECT_OPTION_FOLLOW_AUTO));
       conn.setRequestProperty("user-agent", LockssDaemon.getUserAgent());
 
       if (lastModified != null) {
-        conn.setIfModifiedSince(lastModified);
+	conn.setIfModifiedSince(lastModified);
       }
+      pauseBeforeFetch();
       conn.execute();
     } catch (MalformedURLException ex) {
       logger.debug2("openConnection", ex);
@@ -742,6 +782,12 @@ public class DVNOAIUrlCacher implements UrlCacher {
       logger.debug3("conn isn't null, releasing");
       conn.release();
       conn = null;
+    }
+  }
+
+  protected void pauseBeforeFetch() {
+    if (crl != null) {
+      crl.pauseBeforeFetch(fetchUrl, previousContentType);
     }
   }
 
@@ -783,18 +829,18 @@ public class DVNOAIUrlCacher implements UrlCacher {
       }
       // Check redirect to login page *before* crawl spec, else plugins
       // would have to include login page URLs in crawl spec
-      // D-B
+      //DVN CUSTOM -- BEGIN
       logger.debug3("Checking if a login page");
-      // D-E
+      //DVN CUSTOM -- END
 
       if (au.isLoginPageUrl(newUrlString)) {
-       // D-B
+       //DVN CUSTOM -- BEGIN
         String msg = "Redirected to login page: " + newUrlString;
         logger.debug3(msg);
         // BaseCrawler throws an exception here;
         // we don't want to throw an exception,
         // we want to go ahead and authenticate.
-        // D-E
+        //DVN CUSTOM -- END
 
       }
       if (isRedirectOption(REDIRECT_OPTION_IF_CRAWL_SPEC)) {
@@ -850,8 +896,8 @@ public class DVNOAIUrlCacher implements UrlCacher {
     }
   }
     
-    // D-B
-    // Very D-specific, custom case -- the content is protected
+    //DVN CUSTOM -- BEGIN
+    // Very DVN-specific, custom case -- the content is protected
     // by a Terms-of-Use agreement clickthrough, but otherwise is
     // available to the public.
     private boolean processTermsOfUseResponse() throws IOException {
@@ -937,7 +983,7 @@ public class DVNOAIUrlCacher implements UrlCacher {
 
         return true;
     }
-    //D-E
+    //DVN CUSTOM -- END
 
 
   /** Return true iff there are options in common between the argument and
@@ -965,6 +1011,17 @@ public class DVNOAIUrlCacher implements UrlCacher {
     this.permissionMapSource = permissionMapSource;
   }
 
+  //DVN CUSTOM -- BEGIN
+  protected DVNOAIArchivalUnit.ParamHandlerMap getParamMap() {
+    try {
+      DVNOAIArchivalUnit bau = (DVNOAIArchivalUnit) au;
+      return bau.getParamMap();
+    } catch (ClassCastException ex) {
+      logger.error("Expected au to be DVNOAIArchivalUnit", ex);
+    }
+    return null;
+  }
+  //DVN CUSTOM -- END
 
 
 }

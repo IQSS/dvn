@@ -52,6 +52,7 @@ import org.lockss.config.Configuration;
 import org.lockss.daemon.*;
 import org.lockss.plugin.UrlCacher; 
 import org.lockss.plugin.definable.*;
+import org.lockss.plugin.base.BaseArchivalUnit;
 import org.lockss.util.*;
 import org.lockss.oai.*;
 
@@ -69,6 +70,10 @@ public class DVNOAIArchivalUnit extends DefinableArchivalUnit {
     public DVNOAIArchivalUnit(DefinablePlugin myPlugin,
 			      ExternalizableMap map) {
 	super(myPlugin, map);
+    }
+
+    public ParamHandlerMap getParamMap() {
+        return (ParamHandlerMap) paramMap;
     }
 
 
@@ -183,4 +188,36 @@ public class DVNOAIArchivalUnit extends DefinableArchivalUnit {
 	return new DVNOAIUrlCacher(this, url);
     }
 
+    public static class ParamHandlerMap extends BaseArchivalUnit.ParamHandlerMap {
+        public HashMap<String,ParamHandler> handlerMap = new HashMap<String,ParamHandler>();
+        
+        public ParamHandlerMap() {
+            super();
+        }
+
+        @Override
+        public void addParamHandler(String paramKey, ParamHandler handler) {
+            handlerMap.put(paramKey, handler);
+        }
+
+        @Override
+        public ParamHandler removeParamHandler(String paramKey) {
+            synchronized (handlerMap) {
+                return (ParamHandler) handlerMap.remove(paramKey);
+            }
+        }
+
+        @Override
+        public Object getMapElement(String paramKey) {
+            synchronized (handlerMap) {
+                ParamHandler handler = (ParamHandler)handlerMap.get(paramKey);
+                if(handler != null) {
+                    return handler.getParamValue(paramKey);
+                }
+            }
+            return super.getMapElement(paramKey);
+        }
+    }
+
+    
 }

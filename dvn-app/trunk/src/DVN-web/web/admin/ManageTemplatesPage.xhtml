@@ -58,9 +58,9 @@
                 // ]]>
               </script>
               <ice:dataTable cellpadding="0" cellspacing="0" width="100%"
-                             columnWidths="25%,20%,15%,15%,10%,5%,10%"
-                             styleClass="dvnManageTable"
-                             headerClass="list-header-left vdcColPadded" id="dataTable1"
+                             columnWidths="25%,20%,55%"
+                             styleClass="dvnManageTable dvnManageStudyTemplatesTable" id="dataTable1"
+                             headerClass="list-header-left vdcColPadded" columnClasses="dvnMngStudyTempCol1,dvnMngStudyTempCol2,dvnMngStudyTempCol3"
                              rowClasses="list-row-even vdcColPadded, list-row-odd vdcColPadded"
                              value="#{ManageTemplatesPage.templateList}" var="template">
                 <ice:column>
@@ -86,61 +86,54 @@
                 </ice:column>
                 <ice:column>
                   <f:facet name="header">
-                    <ice:outputText value="Enabled"/>
+                    <ice:outputText value="Action"/>
                   </f:facet>
-                  <ice:outputText value="Cannot Disable" rendered="#{template.enabled and (ManageTemplatesPage.isDefault(template.id) 
-                                               or (empty(VDCRequest.currentVDC) and ManageTemplatesPage.isVDCDefault(template.id)) 
-                                               or (!empty(VDCRequest.currentVDC) and template.network))}" />
-                  <ice:commandLink value="Disable" action="#{ManageTemplatesPage.updateEnabledAction(template.id)}"
-                                   rendered="#{template.enabled and !(ManageTemplatesPage.isDefault(template.id) 
-                                               or (empty(VDCRequest.currentVDC) and ManageTemplatesPage.isVDCDefault(template.id)) 
-                                               or (!empty(VDCRequest.currentVDC) and template.network))}" />
-                  <ice:commandLink value="Enable" action="#{ManageTemplatesPage.updateEnabledAction(template.id)}"
-                                   rendered="#{!template.enabled}" />
-                </ice:column> 
-                <ice:column>
-                  <f:facet name="header">
-                    <ice:outputText value="Default"/>
-                  </f:facet>
-                  <ice:outputText value="Default" rendered="#{ManageTemplatesPage.isDefault(template.id)}"/>
-                  <ice:outputText value="Cannot Make Default" rendered="#{!ManageTemplatesPage.isDefault(template.id) and !template.enabled}"/>
+                    <ice:panelGrid cellpadding="0" cellspacing="0" border="0" columns="5" width="100%"
+                                   styleClass="dvnManageStudyTemplatesActionTable">
+                        <ice:column>
+                          <ice:outputText value="Cannot Disable" rendered="#{template.enabled and (ManageTemplatesPage.isDefault(template.id) 
+                                                       or (empty(VDCRequest.currentVDC) and ManageTemplatesPage.isVDCDefault(template.id)) 
+                                                       or (!empty(VDCRequest.currentVDC) and template.network))}" />
+                          <ice:commandLink value="Disable" action="#{ManageTemplatesPage.updateEnabledAction(template.id)}"
+                                           rendered="#{template.enabled and !(ManageTemplatesPage.isDefault(template.id) 
+                                                       or (empty(VDCRequest.currentVDC) and ManageTemplatesPage.isVDCDefault(template.id)) 
+                                                       or (!empty(VDCRequest.currentVDC) and template.network))}" />
+                          <ice:commandLink value="Enable" action="#{ManageTemplatesPage.updateEnabledAction(template.id)}"
+                                           rendered="#{!template.enabled}" />
+                        </ice:column>
+                        <ice:column>
+                          <ice:outputText styleClass="dvnManageStudyTemplatesDefault" value="Default" rendered="#{ManageTemplatesPage.isDefault(template.id)}"/>
+                          <ice:outputText value="Cannot Make Default" rendered="#{!ManageTemplatesPage.isDefault(template.id) and !template.enabled}"/>
 
-                  <ice:commandLink value="Make Default" rendered="#{!ManageTemplatesPage.isDefault(template.id) and template.enabled}" 
-                                   action="#{ManageTemplatesPage.updateDefaultAction(template.id)}"/>
-                </ice:column>
-                <ice:column>
-                  <f:facet name="header">
-                    <ice:outputText value="Edit"/>
-                  </f:facet>
-                  <ice:outputLink rendered="#{(empty(VDCRequest.currentVDC) and template.network) or (!empty(VDCRequest.currentVDC) and !template.network)}" 
-                                  value="/dvn#{VDCRequest.currentVDCURL}/faces/study/TemplateFormPage.xhtml?templateId=#{template.id}">
-                    <ice:outputText value="Edit"/>
-                  </ice:outputLink>
-                  <ice:outputText value="Cannot Edit" rendered="#{!empty(VDCRequest.currentVDC) and template.network}"/>
-                </ice:column>
-                <ice:column>
-                  <f:facet name="header">
-                    <ice:outputText value="Clone"/>
-                  </f:facet>
-                  <ice:outputLink rendered="#{(empty(VDCRequest.currentVDC) and template.network) or (!empty(VDCRequest.currentVDC) and !template.network)}" 
-                                  value="/dvn#{VDCRequest.currentVDCURL}/faces/study/TemplateFormPage.xhtml?sourceTemplateId=#{template.id}">
-                    <ice:outputText value="Clone"/>
-                  </ice:outputLink>
-                  <ice:outputLink rendered="#{!empty(VDCRequest.currentVDC) and template.network}" 
-                                  value="/dvn#{VDCRequest.currentVDCURL}/faces/study/TemplateFormPage.xhtml?sourceTemplateId=#{template.id}">
-                    <ice:outputText value="Clone"/>
-                  </ice:outputLink>
-                </ice:column>
-                <ice:column>
-                  <f:facet name="header">
-                    <ice:outputText value="Delete"/>
-                  </f:facet>
-                  <ice:outputText rendered="#{(!empty(VDCRequest.currentVDC) and template.network)  or   ManageTemplatesPage.isInUse(template.id) or  ManageTemplatesPage.isVDCDefault(template.id)  or  ManageTemplatesPage.isDefault(template.id)}"
-                                  value="Cannot Delete"/>
-                  <ice:outputLink rendered="#{!(!empty(VDCRequest.currentVDC) and template.network) and !ManageTemplatesPage.isInUse(template.id) and !ManageTemplatesPage.isVDCDefault(template.id) and !ManageTemplatesPage.isDefault(template.id)}" 
-                                  value="/dvn#{VDCRequest.currentVDCURL}/faces/study/DeleteTemplatePage.xhtml?templateId=#{template.id}">
-                    <ice:outputText value="Delete"/>
-                  </ice:outputLink>
+                          <ice:commandLink value="Make Default" rendered="#{!ManageTemplatesPage.isDefault(template.id) and template.enabled}" 
+                                           action="#{ManageTemplatesPage.updateDefaultAction(template.id)}"/>
+                        </ice:column>
+                        <ice:column>
+                          <ice:outputLink rendered="#{(empty(VDCRequest.currentVDC) and template.network) or (!empty(VDCRequest.currentVDC) and !template.network)}" 
+                                          value="/dvn#{VDCRequest.currentVDCURL}/faces/study/TemplateFormPage.xhtml?templateId=#{template.id}">
+                            <ice:outputText value="Edit" nospan="true"/>
+                          </ice:outputLink>
+                          <ice:outputText value="Cannot Edit" rendered="#{!empty(VDCRequest.currentVDC) and template.network}"/>
+                        </ice:column>
+                        <ice:column>
+                          <ice:outputLink rendered="#{(empty(VDCRequest.currentVDC) and template.network) or (!empty(VDCRequest.currentVDC) and !template.network)}" 
+                                          value="/dvn#{VDCRequest.currentVDCURL}/faces/study/TemplateFormPage.xhtml?sourceTemplateId=#{template.id}">
+                            <ice:outputText value="Clone" nospan="true"/>
+                          </ice:outputLink>
+                          <ice:outputLink rendered="#{!empty(VDCRequest.currentVDC) and template.network}" 
+                                          value="/dvn#{VDCRequest.currentVDCURL}/faces/study/TemplateFormPage.xhtml?sourceTemplateId=#{template.id}">
+                            <ice:outputText value="Clone" nospan="true"/>
+                          </ice:outputLink>
+                        </ice:column>
+                        <ice:column>
+                          <ice:outputText rendered="#{(!empty(VDCRequest.currentVDC) and template.network) or ManageTemplatesPage.isInUse(template.id) or  ManageTemplatesPage.isVDCDefault(template.id) or ManageTemplatesPage.isDefault(template.id)}"
+                                          value="Cannot Delete"/>
+                          <ice:outputLink rendered="#{!(!empty(VDCRequest.currentVDC) and template.network) and !ManageTemplatesPage.isInUse(template.id) and !ManageTemplatesPage.isVDCDefault(template.id) and !ManageTemplatesPage.isDefault(template.id)}" 
+                                          value="/dvn#{VDCRequest.currentVDCURL}/faces/study/DeleteTemplatePage.xhtml?templateId=#{template.id}">
+                            <ice:outputText value="Delete" nospan="true"/>
+                          </ice:outputLink>
+                        </ice:column>
+                    </ice:panelGrid>
                 </ice:column>
               </ice:dataTable>
             </div>

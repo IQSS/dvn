@@ -136,6 +136,12 @@ span.dvnStudyTemplateNotEnabled, span.dvnStudyTemplateEnabled {float:left;}
 span.dvnStudyTemplateNotEnabled{background:url(/dvn/resources/images/icon_warning.18.png) center right no-repeat;padding-right:22px !important}
 .dvnStudyTemplateDescLink {float:right;}
 .dvnStudyTemplateDesc {clear:both;}
+.dvnManageStudyTemplatesTable td.dvnMngStudyTempCol3 .icePnlGrd, .dvnManageStudyTemplatesTable td.dvnMngStudyTempCol3 .icePnlGrd td {border:0;}
+.dvnManageStudyTemplatesTable td.dvnMngStudyTempCol3 a.iceCmdLnk, .dvnManageStudyTemplatesTable td.dvnMngStudyTempCol3 a.iceOutLnk, .dvnManageStudyTemplatesTable td.dvnMngStudyTempCol3 span.iceOutTxt {display:inline;margin-right:2em;}
+.dvnManageStudyTemplatesTable td.dvnMngStudyTempCol3 a.iceCmdLnk:last-child, .dvnManageStudyTemplatesTable td.dvnMngStudyTempCol3 a.iceOutLnk:last-child, .dvnManageStudyTemplatesTable td.dvnMngStudyTempCol3 span.iceOutTxt:last-child {margin-right:0;}
+.dvnManageStudyTemplatesActionTable td {width:20%;text-align:center;}
+.dvnManageStudyTemplatesActionTable span.iceOutTxt {color:grey;font-style:italic;}
+span.iceOutTxt.dvnManageStudyTemplatesDefault {color:black;font-style:normal;font-weight:bold;}
 /* CONTROLLED VOCAB */
 .dvnControlledVocabInput input[type=text] {width:200px;}
 .dvnControlledVocabInput select {min-width:208px;max-height:8em;}

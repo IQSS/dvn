@@ -491,7 +491,9 @@ public class VisualizationServiceBean implements VisualizationServiceLocal {
         Set<String> setString = new HashSet();
         List<DataVariable> variables = datatable.getDataVariables();
         List<VarGrouping> varGroupings = datatable.getVarGroupings();
-
+        if (variables == null){
+            return duplicateVariables;
+        }
         for (DataVariable var: variables) {
             if (!var.getDataVariableMappings().isEmpty()){
                 ArrayList<String> groupMembership = getGroupMembership(var,varGroupings);
@@ -508,9 +510,7 @@ public class VisualizationServiceBean implements VisualizationServiceLocal {
                         }
                     }
                 }
-
             }
-
         }
             List <DataVariableMapping> allMappings = new ArrayList();
 
@@ -538,9 +538,7 @@ public class VisualizationServiceBean implements VisualizationServiceLocal {
                             }
                         }
                     }
-
                 }
-
             }
         
         return duplicateVariables;
@@ -552,9 +550,9 @@ public class VisualizationServiceBean implements VisualizationServiceLocal {
         int countgroups = 0;
         ArrayList<String> membership = new ArrayList<String>();
         for (VarGrouping grouping : groupings) {
-            if (!grouping.getGroupingType().equals(GroupingType.SOURCE)){
+            if (!grouping.getGroupingType().equals(GroupingType.SOURCE)  && grouping.getDataVariableMappings() != null ){
                 for (DataVariableMapping dvm : grouping.getDataVariableMappings()) {
-                    if (dvm.getDataVariable().getId().equals(var.getId())) {
+                    if (dvm.getDataVariable() !=null && dvm.getDataVariable().getId().equals(var.getId())) {
                         membership.add(dvm.getGroup().getName());
                         countgroups++;
                     }

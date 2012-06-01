@@ -952,10 +952,13 @@ public class SetUpDataExplorationPage extends VDCBaseBean implements java.io.Ser
             editMeasureVarGroup.getVarGroup().setName(chkGroupName);
             editMeasureVarGroup.getVarGroup().setUnits((String) getInputMeasureUnits().getValue());
         }
-
+        System.out.print("before save group fragment...");
         saveGroupFragment(editMeasureVarGroup);
+        System.out.print("before group types");
         saveGroupTypes(editMeasureVarGroup);
+        System.out.print("after group types");
         setVarGroupUIList(measureGrouping);
+                System.out.print("after set group type list");
         editMeasureVarGroup = null;
         cancelAddEdit();
         edited = true;
@@ -998,8 +1001,11 @@ public class SetUpDataExplorationPage extends VDCBaseBean implements java.io.Ser
     }
 
     private void saveGroupFragment(VarGroupUI varGroupIn){
+        System.out.print("before update variables");
         updateVariablesByGroup(varGroupIn);
+                System.out.print("after update variables");
         updateGroupTypesByGroup(varGroupIn);
+                        System.out.print("after update group types");
     }
 
     private void saveGroupTypes(VarGroupUI varGroupIn){
@@ -1034,7 +1040,7 @@ public class SetUpDataExplorationPage extends VDCBaseBean implements java.io.Ser
         if (varGroupUIin.getDataVariablesSelected() != null) {
             for (Long id : varGroupUIin.getDataVariablesSelected()) {
                 priorVariablesSelected.add(id);
-            }
+            }                       
             varGroupUIin.getDataVariablesSelected().clear();
         } else {
             varGroupUIin.setDataVariablesSelected(new ArrayList());
@@ -1091,7 +1097,6 @@ public class SetUpDataExplorationPage extends VDCBaseBean implements java.io.Ser
     }
     
     private void updateGroupTypesByGroup(VarGroupUI varGroupUIin) {
-
         if (varGroupUIin.getVarGroupTypesSelectItems() != null) {
             varGroupUIin.getVarGroupTypesSelectItems().clear();
         } else {
@@ -1102,17 +1107,20 @@ public class SetUpDataExplorationPage extends VDCBaseBean implements java.io.Ser
                 varGroupUIin.getVarGroupTypesSelectItems().add(varGroupTypeUI);
             }
         }
-
-        VarGroup varGroup = varGroupUIin.getVarGroup();
-        varGroup.getGroupTypes().clear();
         String groupTypesSelectedString = "";
-        for (VarGroupTypeUI vgtUI : varGroupUIin.getVarGroupTypesSelectItems()) {
-            varGroup.getGroupTypes().add(vgtUI.getVarGroupType());
-            if (groupTypesSelectedString.isEmpty()) {
-                groupTypesSelectedString += vgtUI.getVarGroupType().getName();
-            } else {
-                groupTypesSelectedString = groupTypesSelectedString + ", " + vgtUI.getVarGroupType().getName();
+        VarGroup varGroup = varGroupUIin.getVarGroup();
+        if (varGroup.getGroupTypes() != null) {
+            varGroup.getGroupTypes().clear();
+
+            for (VarGroupTypeUI vgtUI : varGroupUIin.getVarGroupTypesSelectItems()) {
+                varGroup.getGroupTypes().add(vgtUI.getVarGroupType());
+                if (groupTypesSelectedString.isEmpty()) {
+                    groupTypesSelectedString += vgtUI.getVarGroupType().getName();
+                } else {
+                    groupTypesSelectedString = groupTypesSelectedString + ", " + vgtUI.getVarGroupType().getName();
+                }
             }
+
         }
         varGroupUIin.setGroupTypesSelectedString(groupTypesSelectedString);
     }
@@ -1587,6 +1595,20 @@ public class SetUpDataExplorationPage extends VDCBaseBean implements java.io.Ser
             }
         }
         
+        VisualizationDisplay sourceVisualizationDisplay = sourceDT.getVisualizationDisplay();
+
+        if (sourceVisualizationDisplay != null) {
+            visualizationDisplay = new VisualizationDisplay();
+            visualizationDisplay.setDataTable(dataTable);
+            visualizationDisplay.setDefaultDisplay(sourceVisualizationDisplay.getDefaultDisplay());
+            visualizationDisplay.setMeasureTypeLabel(sourceVisualizationDisplay.getMeasureTypeLabel());
+            visualizationDisplay.setShowDataTable(sourceVisualizationDisplay.isShowDataTable());
+            visualizationDisplay.setShowFlashGraph(sourceVisualizationDisplay.isShowFlashGraph());
+            visualizationDisplay.setShowImageGraph(sourceVisualizationDisplay.isShowImageGraph());
+            visualizationDisplay.setSourceInfoLabel(sourceVisualizationDisplay.getSourceInfoLabel());
+            dataTable.setVisualizationDisplay(visualizationDisplay);
+        }
+        
     }
        
     public String cancelMigration() {
@@ -1601,9 +1623,7 @@ public class SetUpDataExplorationPage extends VDCBaseBean implements java.io.Ser
         dataTable = new DataTable();
         visualizationService.setDataTableFromStudyFileId(studyFileId);
         dataTable = visualizationService.getDataTable();
-        System.out.print("number of groupings " + dataTable.getVarGroupings().size());
         visualizationDisplay = dataTable.getVisualizationDisplay();
-        System.out.print("visualizationDisplay" + dataTable.getVisualizationDisplay()==null);
         return dataTable.getVisualizationDisplay()==null;
         
     }

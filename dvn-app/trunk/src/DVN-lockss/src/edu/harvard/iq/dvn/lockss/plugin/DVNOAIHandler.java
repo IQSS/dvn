@@ -143,31 +143,44 @@ public class DVNOAIHandler extends OaiHandler {
 
 	break; //apart from badResumptionToken, we cannot do much of other error case, thus just break
       }
-
-
-      //see what is inside the lisRecord
-//      logger.debug3("The content of listRecord : \n" + listRecords.toString() );
-      //toString on ListRecords is currently not thread safe, so I commented this out
-      //TSR 4/13/06
-
-      //collect and store all the oai records
-//       collectOaiRecords(listRecords); //XXX info collected is not being used now,
-                                      //can turn off to increase performance
-
-      //parser urls by some implementation of oaiMetadataHander
+      
+      // First, parse the ListRecords output and find the (handle) ids of the 
+      // documents: 
+      
+      Set ddiUrls = new HashSet();
+      
+      NodeList identifierNodeList = 
+              listRecords.getDocument().getElementsByTagName("identifier");
+               
+      String dvnHostName = oaiData.getOaiRequestHandlerUrl();
+      baseUrl.replaceFirst("^https*://", "");
+      baseUrl.replaceFirst("[:/].*$", "");
+      
+      for(int i = 0; i < identifierNodeList.getLength(); i++) {
+	    Node node = identifierNodeList.item(i);
+            
+            String globalId = node.getFirstChild().getNodeValue();
+            // The OAI id may contain the OAI set name, in addition to the
+            // global id; strip it: 
+            globalId.replaceFirst("^[^/]*//", "");
+            // Now, create the DVN API URL for the full DDI for this study: 
+            String ddiURL = "https://" + dvnHostName + "/dvn/api/metadata/" + globalId; 
+            
+            ddiUrls.add(ddiURL);
+      }
+      
+      // Add the DDI urls to the crawl list: 
+      
+      updatedUrls.addAll(ddiUrls);
+      
+      // Now, parse the URLs using the implementation of oaiMetadataHander:
+      
       NodeList metadataNodeList =
 	listRecords.getDocument().getElementsByTagName("metadata");
 
       String metadataPrefix = oaiData.getMetadataPrefix();
       String oai_namespace  = oaiData.getMetadataNamespaceUrl();
       String oai_tagname  = oaiData.getUrlContainerTagName();
-
-      // "Oai_dcHandler" has the DC format and "identifier" tag 
-      // hard-coded. Commented out, replaced with more generic 
-      // constructor call creating a new handler with the parameters
-      // supplied in the OaiRequestData object. -- L.A.
-
-      //OaiMetadataHandler metadataHandler = new Oai_dcHandler();
 
       OaiMetadataHandler metadataHandler = null; 
 

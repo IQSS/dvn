@@ -1120,8 +1120,8 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
             return;
         }
 
-        if (vizLines.size() >= 20) {
-            FacesMessage message = new FacesMessage("A maximum of 20 lines may be displayed in a single graph");
+        if (vizLines.size() >= 8) {
+            FacesMessage message = new FacesMessage("A maximum of 8 lines may be displayed in a single graph");
             FacesContext fc = FacesContext.getCurrentInstance();
             fc.addMessage(addLineButton.getClientId(fc), message);
             return;

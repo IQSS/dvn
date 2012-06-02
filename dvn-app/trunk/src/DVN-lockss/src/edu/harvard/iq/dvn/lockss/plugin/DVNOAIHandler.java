@@ -153,8 +153,8 @@ public class DVNOAIHandler extends OaiHandler {
               listRecords.getDocument().getElementsByTagName("identifier");
                
       String dvnHostName = oaiData.getOaiRequestHandlerUrl();
-      baseUrl.replaceFirst("^https*://", "");
-      baseUrl.replaceFirst("[:/].*$", "");
+      dvnHostName = dvnHostName.replaceFirst("^https*://", "");
+      dvnHostName = dvnHostName.replaceFirst("[:/].*$", "");
       
       for(int i = 0; i < identifierNodeList.getLength(); i++) {
 	    Node node = identifierNodeList.item(i);
@@ -162,9 +162,9 @@ public class DVNOAIHandler extends OaiHandler {
             String globalId = node.getFirstChild().getNodeValue();
             // The OAI id may contain the OAI set name, in addition to the
             // global id; strip it: 
-            globalId.replaceFirst("^[^/]*//", "");
+            globalId = globalId.replaceFirst("^[^/]*//", "");
             // Now, create the DVN API URL for the full DDI for this study: 
-            String ddiURL = "https://" + dvnHostName + "/dvn/api/metadata/" + globalId; 
+            String ddiURL = "http://" + dvnHostName + "/dvn/api/metadata/" + globalId; 
             
             ddiUrls.add(ddiURL);
       }

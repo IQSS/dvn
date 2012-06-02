@@ -734,6 +734,19 @@ public class DVNOAIUrlCacher implements UrlCacher {
 	new IllegalStateException("Must call reset() before reusing UrlCacher");
     }
     try {
+        if (fetchUrl.matches(".*/dvn/api/metadata/.*")) {
+            /* 
+             *  This is a bit of a hack: 
+             *  Metadata API is accessible over HTTPS only;
+             *  However, LOCKSS thinks that https://foobar/ is a different
+             *  location from http://foobar/. So to make it crawl, we store
+             *  these urls with the "http://" prefix, then change it to 
+             *  https:// in real time. 
+             *  I'm hoping to come up with a better solution eventually.
+             *          -- L.A. 
+             */
+            fetchUrl = fetchUrl.replaceFirst("^http:", "https:");
+        }
       conn = makeConnection(fetchUrl, connectionPool);
       if (proxyHost != null) {
 	if (logger.isDebug3()) logger.debug3("Proxying through " + proxyHost

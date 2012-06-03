@@ -99,19 +99,51 @@ public class DvnTermsOfUseAccess {
 	    }
 
 	    String icesession     = null; 
-	    String viewstate      = null; 
+	    String iceview        = null;
+            String facesviewstate = null;
 	    String studyid        = null; 
 	    String remotefileid   = null; 
 	    String remotehost     = null; 
 
 	    String iceFacesUpdate = null; 
+            
+            /* 
+             * As of DVN 3.0 (and IceFaces 3.*), the following has changed: 
+             *  icesession - no longer used;
+             *  ice.window - appears to have replaced the above;
+             *  the old regex pattern for ViewState no longer works (see below);
+             *  in fact, javax.faces.ViewState and ice.view must be 
+             *  treated as separate parameters! (again, see below)
+             *  (the last one needs to be verified; there's a chance that 
+             *  javax.faces.ViewState is still not necessary... -- L.A.)
+             * 
+             * TODO: add re-test with DVN 2.* and make sure backward compatibility
+             * mechanism is in place. -- L.A.
+             *  
+             */
 
 	    String regexpRemoteFileId = "(/FileDownload.*)";
 	    String regexpJsession = "JSESSIONID=([^;]*);"; 
 	    String regexpRemoteHost = "(http://[^/]*/)";
 
-	    String regexpIceSession = "session: \'([^\']*)\'"; 
+            /* old ice.session; no longer used in 3.0:
+	    String regexpIceSession = "session: \'([^\']*)\'";
+             */
+            
+            /* ice.window, appears to have replaced ice.session above:
+             */
+            String regexpIceSession = "input [^>]*ice.window\"[^>]*value=\"([^\"]*)\"";
+            
+            /* ice.view pattern, changed:
 	    String regexpIceViewState = "view: ([^,]*),"; 
+             */
+            String regexpIceViewState = "<input [^>]*ice.view\"[^>]*value=\"([^\"]*)\"";
+            
+            /* New in DVN/IceFaces 3.*: separate pattern of javax.faces.ViewState:
+             */
+            String regexpFacesViewState = "<input [^>]*ViewState\"[^>]*value=\"([^\"]*)\"";
+           
+            
 	    String regexpStudyId = "studyId\"[^>]*value=\"([0-9]*)\""; 
 	    //String regexpRemoteFileId = "(/FileDownload.*fileId=[0-9]*)";
 	    String regexpOldStyleForm = "content:termsOfUsePageView:";
@@ -121,8 +153,9 @@ public class DvnTermsOfUseAccess {
 	    Pattern patternRemoteFileId = Pattern.compile(regexpRemoteFileId); 
 	    Pattern patternRemoteHost = Pattern.compile(regexpRemoteHost); 
 
-	    Pattern patternIceSession= Pattern.compile(regexpIceSession); 
-	    Pattern patternIceViewState= Pattern.compile(regexpIceViewState); 
+	    Pattern patternIceSession = Pattern.compile(regexpIceSession); 
+	    Pattern patternIceViewState = Pattern.compile(regexpIceViewState);
+            Pattern patternFacesViewState = Pattern.compile(regexpFacesViewState);
 	    Pattern patternStudyId = Pattern.compile(regexpStudyId); 
 	    Pattern patternOldStyleForm = Pattern.compile(regexpOldStyleForm); 
 			    
@@ -165,7 +198,13 @@ public class DvnTermsOfUseAccess {
 		matcher = patternRemoteHost.matcher(downloadURL);
 		if ( matcher.find() ) {
 		    remotehost = matcher.group(1); 
-		    iceFacesUpdate = remotehost + "dvn/block/send-receive-updates"; 
+                    // The update URL, below, only works with IceFaces < 2.0, 
+                    // i.e., only if the remote DVN is v2.*:
+		    //iceFacesUpdate = remotehost + "dvn/block/send-receive-updates";
+                    // For IceFaces and DVN 3.*, the POST must be submitted to 
+                    // the terms of use page itself:
+                    // (needs to be verified -- L.A.)
+                    iceFacesUpdate = remotehost + "dvn/faces/study/TermsOfUsePage.xhtml";
 		    dbgLog.fine("TOU found remotehost: "+remotehost); 
 
 		}
@@ -180,8 +219,13 @@ public class DvnTermsOfUseAccess {
 		}
 		matcher = patternIceViewState.matcher(line);
 		if ( matcher.find() ) {
-		    viewstate = matcher.group(1); 
-		    dbgLog.fine("TOU found view state: "+viewstate); 
+		    iceview = matcher.group(1); 
+		    dbgLog.fine("TOU found ice view: "+iceview);
+		}
+                matcher = patternFacesViewState.matcher(line);
+		if ( matcher.find() ) {
+		    facesviewstate = matcher.group(1); 
+		    dbgLog.fine("TOU found faces view state: "+facesviewstate);
 		}
 		matcher = patternStudyId.matcher(line);
 		if ( matcher.find() ) {
@@ -228,12 +272,19 @@ public class DvnTermsOfUseAccess {
 
 				
 		NameValuePair[] postParameters = {
-		    new NameValuePair( "javax.faces.ViewState", viewstate ), 
+                    /* new in 3.0: ViewState different from ice.view: */
+		    new NameValuePair( "javax.faces.ViewState", facesviewstate ),
+                    /* new in 3.0: no longer necessary: 
 		    new NameValuePair( "javax.faces.RenderKitId", "ICEfacesRenderKit" ),
+                     */
+                    /* new in 3.0: no longer necessary: 
 		    new NameValuePair( "ice.submit.partial", "false" ),
+                     */
 		    new NameValuePair( "icefacesCssUpdates", "" ),
-		    new NameValuePair( "ice.session", icesession ),
-		    new NameValuePair( "ice.view", viewstate ),
+                    /* new in 3.0: ice.window instead of icesession: */
+		    new NameValuePair( "ice.window", icesession ),
+                    /* new in 3.0: ice.view different from viewstate: */
+		    new NameValuePair( "ice.view", iceview ),
 		    new NameValuePair( "ice.focus", "form1:termsButton" ), 
 
 		    new NameValuePair( "pageName", "TermsOfUsePage" ),

@@ -40,6 +40,7 @@ import edu.harvard.iq.dvn.core.study.StudyFileServiceLocal;
 import edu.harvard.iq.dvn.core.study.StudyServiceLocal;
 import edu.harvard.iq.dvn.core.study.TabularDataFile;
 import edu.harvard.iq.dvn.core.study.DataVariable;
+import edu.harvard.iq.dvn.core.study.StudyVersion;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -81,12 +82,14 @@ public class DSBIngestMessageBean implements MessageListener {
     @TransactionAttribute(TransactionAttributeType.NOT_SUPPORTED)
     public void onMessage(Message message) {
         DSBIngestMessage ingestMessage = null;
+        StudyVersion sv = null;
         List successfulFiles = new ArrayList();
         List problemFiles = new ArrayList();
         
         try {           
             ObjectMessage om = (ObjectMessage) message;
             ingestMessage = (DSBIngestMessage) om.getObject();
+            sv = studyService.getStudyVersionById( ingestMessage.getStudyVersionId() );
             String detail = "Ingest processing for " +ingestMessage.getFileBeans().size() + " file(s).";
                       
             Iterator iter = ingestMessage.getFileBeans().iterator();
@@ -118,7 +121,7 @@ public class DSBIngestMessageBean implements MessageListener {
             
             
             if ( ingestMessage.sendInfoMessage() || ( problemFiles.size() >= 0 && ingestMessage.sendErrorMessage() ) ) {
-                mailService.sendIngestCompletedNotification(ingestMessage.getIngestEmail(), successfulFiles, problemFiles);
+                mailService.sendIngestCompletedNotification(ingestMessage.getIngestEmail(), sv, successfulFiles, problemFiles);
             }
             
         } catch (JMSException ex) {
@@ -128,7 +131,7 @@ public class DSBIngestMessageBean implements MessageListener {
             ex.printStackTrace();
             // if a general exception is caught that means the entire upload failed
             if (ingestMessage.sendErrorMessage()) {
-                mailService.sendIngestCompletedNotification(ingestMessage.getIngestEmail(), null, ingestMessage.getFileBeans());
+                mailService.sendIngestCompletedNotification(ingestMessage.getIngestEmail(), sv, null, ingestMessage.getFileBeans());
             }
             
         } finally {

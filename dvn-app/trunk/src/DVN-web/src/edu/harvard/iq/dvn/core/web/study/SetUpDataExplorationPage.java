@@ -1574,14 +1574,19 @@ public class SetUpDataExplorationPage extends VDCBaseBean implements java.io.Ser
             }
         }
         DataVariable xAxisVariableSource = visualizationService.getXAxisVariable(sourceDT.getId());
+        
+        List sourceXAxisMappings = (List) xAxisVariableSource.getDataVariableMappings();
+        
+
+        
         DataVariableMapping xAxisMapping = new DataVariableMapping();
         for (DataVariable dataVariableTarget : dataTable.getDataVariables()) {
             if (dataVariableTarget.getName().equals(xAxisVariableSource.getName())) {
                 xAxisMapping.setDataVariable(dataVariableTarget);
                 xAxisMapping.setX_axis(true);
                 xAxisMapping.setLabel(xAxisVariableSource.getLabel());
-                if(xAxisMapping.getLabel() == null){
-                   xAxisMapping.setLabel(""); 
+                if (xAxisMapping.getLabel() == null) {
+                    xAxisMapping.setLabel("");
                 }
                 xAxisMapping.setDataTable(dataTable);
                 if (dataVariableTarget.getDataVariableMappings() == null) {
@@ -1591,7 +1596,11 @@ public class SetUpDataExplorationPage extends VDCBaseBean implements java.io.Ser
                 xAxisSet = true;
                 xAxisVariable = dataVariableTarget;
                 xAxisVariableId = dataVariableTarget.getId();
-                
+                for (Object objSource : sourceXAxisMappings) {
+                    DataVariableMapping dvmSource = (DataVariableMapping) objSource;                    
+                    xAxisUnits = dvmSource.getLabel();
+                    xAxisMapping.setLabel(dvmSource.getLabel());
+                }
             }
         }
         
@@ -1608,7 +1617,7 @@ public class SetUpDataExplorationPage extends VDCBaseBean implements java.io.Ser
             visualizationDisplay.setSourceInfoLabel(sourceVisualizationDisplay.getSourceInfoLabel());
             dataTable.setVisualizationDisplay(visualizationDisplay);
         }
-        
+                        System.out.print("xAxisUnits  " + xAxisUnits);
     }
        
     public String cancelMigration() {

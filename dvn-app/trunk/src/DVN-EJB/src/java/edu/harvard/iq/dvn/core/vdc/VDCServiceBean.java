@@ -225,7 +225,7 @@ public class VDCServiceBean implements VDCServiceLocal {
     }
 
     public VDC findByAlias(String alias) {
-        String query = "SELECT v from VDC v where v.alias = :fieldName";
+        String query = "SELECT v from VDC v where lower(v.alias) = lower(:fieldName)";
         VDC vdc = null;
         try {
             vdc = (VDC) em.createQuery(query).setParameter("fieldName", alias).getSingleResult();

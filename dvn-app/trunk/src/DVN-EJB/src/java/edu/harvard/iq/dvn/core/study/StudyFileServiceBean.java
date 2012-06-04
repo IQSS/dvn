@@ -328,7 +328,7 @@ public class StudyFileServiceBean implements StudyFileServiceLocal {
 
                 // send an e-mail
                 if (ingestMessage.sendInfoMessage()) {
-                    mailService.sendIngestRequestedNotification(ingestEmail, subsettableFiles);
+                    mailService.sendIngestRequestedNotification(ingestEmail, studyVersion, subsettableFiles);
                 }
 
             } catch (JMSException ex) {

@@ -28,6 +28,7 @@
 package edu.harvard.iq.dvn.core.mail;
 
 import edu.harvard.iq.dvn.core.study.StudyFileEditBean;
+import edu.harvard.iq.dvn.core.study.StudyVersion;
 import edu.harvard.iq.dvn.core.vdc.VDC;
 import edu.harvard.iq.dvn.core.vdc.VDCNetworkServiceLocal;
 import java.util.Iterator;
@@ -139,21 +140,38 @@ public class MailServiceBean implements edu.harvard.iq.dvn.core.mail.MailService
               
     }
    
-    public void sendIngestRequestedNotification(String userEmail, List subsettableFiles) {
-        String msgText = "You have requested the following subsettable files to be uploaded: \n";
+    private String getIngestMessagePrefix(StudyVersion studyVersion) {
+        String studyTitle = studyVersion.getMetadata().getTitle();
+        String studyGlobalId = studyVersion.getStudy().getGlobalId();
+        Long versionNumber = studyVersion.getVersionNumber();
+        String dvnName = studyVersion.getStudy().getOwner().getName();        
+        
+        String messagePrefix = "";
+        messagePrefix += "Dataverse: " + dvnName + "\n";
+        messagePrefix += "Study Global Id: " + studyGlobalId + " (v" + versionNumber + ")\n";
+        messagePrefix += "Study Title: " + studyTitle + "\n";
+        return messagePrefix;
+    }
+   
+    public void sendIngestRequestedNotification(String userEmail, StudyVersion studyVersion, List subsettableFiles) {
+        String msgSubject = "Dataverse Network: The upload of your subsettable file(s) is in progress";
+        String msgText = getIngestMessagePrefix(studyVersion);
+        
+        msgText += "\nYou have requested the following subsettable files to be uploaded: \n";
         Iterator iter = subsettableFiles.iterator();
         while (iter.hasNext()) {
             StudyFileEditBean fileBean = (StudyFileEditBean) iter.next();
             msgText += "  " + fileBean.getFileMetadata().getLabel() + "\n";
         }
         msgText +="\nUpload in progress ...";
-        sendDoNotReplyMail(userEmail, "Dataverse Network: The upload of your subsettable file(s) is in progress", msgText );
+        sendDoNotReplyMail(userEmail, msgSubject, msgText );
     }
     
-    public void sendIngestCompletedNotification(String userEmail, List successfulFiles, List problemFiles) {
+    public void sendIngestCompletedNotification(String userEmail, StudyVersion studyVersion, List successfulFiles, List problemFiles) {
         String msgSubject = "Dataverse Network: Upload request complete";
+        String msgText = getIngestMessagePrefix(studyVersion);      
         
-        String msgText = "Your upload request has completed.\n";
+        msgText += "\nYour upload request has completed.\n";
          if (successfulFiles != null && successfulFiles.size() != 0) {               
             msgText +=  "\nThe following subsettable files were successfully uploaded: \n";
             Iterator iter = successfulFiles.iterator();
@@ -303,7 +321,9 @@ public class MailServiceBean implements edu.harvard.iq.dvn.core.mail.MailService
           if (harvestError) {
               subject="Harvest Error Notification"; 
           }else {
-              subject="Harvest Success Notification";
+              return; // in 3.1 we've decided to only send e-mails when a harvest gas a failure
+              // TODO: we should make this configurable at the DVN level for all messages, all non-zero messages, only error messages
+              //subject="Harvest Success Notification";
           }
           subject +=" ("+vdcName+","+logTimestamp+")";
           String messageText=null;

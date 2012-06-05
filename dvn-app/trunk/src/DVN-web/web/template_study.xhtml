@@ -52,9 +52,13 @@
   <link rel="stylesheet" type="text/css" href="/dvn/resources/css/dvnstudy.css"/>
   <!-- IE SPECIFIC STYLESHEET -->
   <ice:outputText escape="false" nospan="true"
-    value="&#60;!--[if lte IE 8]&#62;
-	&#60;link rel=&#34;stylesheet&#34; type=&#34;text/css&#34; href=&#34;/dvn/resources/css/iefix.css&#34;/&#62;
-    &#60;![endif]--&#62;"/>
+                  value="&#60;!--[if lte IE 8]&#62;
+                  &#60;link rel=&#34;stylesheet&#34; type=&#34;text/css&#34; href=&#34;/dvn/resources/css/iefix.css&#34;/&#62;
+                  &#60;![endif]--&#62;"/>
+  <ice:outputText escape="false" nospan="true"
+                  value="&#60;!--[if IE 8]&#62;
+                  &#60;link rel=&#34;stylesheet&#34; type=&#34;text/css&#34; href=&#34;/dvn/resources/css/ie8fix.css&#34;/&#62;
+                  &#60;![endif]--&#62;"/>
   <script type="text/javascript" src="/dvn/resources/javascript/EventCapture.js"/>
   <script type="text/javascript" src="/dvn/resources/javascript/jquery.js"/>
   <script type="text/javascript" src="/dvn/resources/javascript/jquery.truncator.js"/>

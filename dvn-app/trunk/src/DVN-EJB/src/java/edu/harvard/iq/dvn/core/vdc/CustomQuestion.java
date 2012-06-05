@@ -82,6 +82,23 @@ public class CustomQuestion implements Serializable {
     public List<CustomQuestionValue> getCustomQuestionValues() {
         return customQuestionValues;
     }
+    
+    public String getCustomQuestionValueString(){
+        String retString = "";
+        
+        if (customQuestionValues != null && !this.customQuestionValues.isEmpty()){
+            for (CustomQuestionValue customQuestionValue : this.customQuestionValues){
+                if (!retString.isEmpty()){
+                    retString += ", ";
+                } else {
+                    retString += "Answers:  ";
+                }
+                retString += customQuestionValue.getValueString();
+            }
+        }
+        
+        return retString;
+    }
 
     public void setCustomQuestionValues(List<CustomQuestionValue> customQuestionValues) {
         this.customQuestionValues = customQuestionValues;

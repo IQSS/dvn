@@ -50,7 +50,8 @@
                         <ice:outputText value="Custom Field Type"/>
                     </div>
                     <div jsfc="ice:panelGroup">
-                        <ice:selectOneMenu immediate="false" partialSubmit="false" value="#{EditGuestbookQuestionnairePage.questionType}">
+                        <ice:selectOneMenu immediate="false" partialSubmit="true" valueChangeListener="#{EditGuestbookQuestionnairePage.toggleQuestionType}"
+                                           value="#{EditGuestbookQuestionnairePage.questionType}" binding="#{EditGuestbookQuestionnairePage.questionTypeListBox}">
                             <f:selectItems value="#{EditGuestbookQuestionnairePage.questionTypeSelectItems}"/>
                         </ice:selectOneMenu>
                     </div>
@@ -60,6 +61,31 @@
                     <div jsfc="ice:panelGroup">
                         <ice:inputText id="input_questionText" size="90" binding="#{EditGuestbookQuestionnairePage.inputCustomQuestionText}"></ice:inputText>
                     </div>
+                    
+                            <ice:dataTable cellpadding="0" cellspacing="0" rendered="#{EditGuestbookQuestionnairePage.questionType == 'radiobuttons'}"
+                                      value="#{EditGuestbookQuestionnairePage.newQuestion.customQuestionValues}" var="addValue">
+                              <ice:column>
+                                <div jsfc="ice:panelGroup">               
+                                  <div jsfc="ice:panelGroup">
+                                    <ice:outputText value="Answer"/>
+                                    <ice:inputText id="input_AnswerValueAdd"
+                                                   value="#{addValue.valueString}"
+                                                   size="45"
+                                                   maxlength="255"
+                                                   required="true" requiredMessage="This field is required."/>
+                                    <ice:message styleClass="errorMessage" for="input_AnswerValue"/>
+                                  </div>
+                                </div>
+                              </ice:column>
+                              <ice:column>
+                                <ice:commandButton image="/resources/images/icon_add.gif" actionListener="#{EditGuestbookQuestionnairePage.addCustomRowInit}"/>
+                                <ice:commandButton 
+                                    rendered="#{EditGuestbookQuestionnairePage.newQuestion.customQuestionValues.size() > 1}" 
+                                    image="/resources/images/icon_remove.gif" actionListener="#{EditGuestbookQuestionnairePage.removeCustomRowInit}" />
+                              </ice:column>
+                           </ice:dataTable>
+                    
+                    
                 </ice:panelGrid>
 
                 <div class="dvnFormPadding">
@@ -79,7 +105,7 @@
                                 <span class="iceOutTxt">Required</span>
                             </th>
                             <th class="iceDatTblColHdr2 dvnGuestbookCustomQuestionsColHdr2 dvnGuestbookCustomQuestionsHdr">
-                                <span class="iceOutTxt">Guestbook User Information + Custom Question</span>
+                                <span class="iceOutTxt">Guestbook User Information + Custom Questions</span>
                             </th>
                             <th class="iceDatTblColHdr1 dvnGuestbookCustomQuestionsColHdr3 dvnGuestbookCustomQuestionsHdr">
                                 <span class="iceOutTxt">Action</span>
@@ -149,14 +175,23 @@
                                       styleClass="dvnGuestbookCustomQuestions"
                                       columnClasses="dvnGuestbookCustomQuestionsCol1,dvnGuestbookCustomQuestionsCol2,dvnGuestbookCustomQuestionsCol3"
                                       binding="#{EditGuestbookQuestionnairePage.customQuestionsDataTable}"
-                                      value="#{EditGuestbookQuestionnairePage.guestBookQuestionnaire.customQuestions}" var="customQuestion">
+                                      value="#{EditGuestbookQuestionnairePage.customQuestions}" var="customQuestion">
                         <ice:column>
-                          <ice:selectBooleanCheckbox value="#{customQuestion.required}"/>
+                          <ice:selectBooleanCheckbox value="#{customQuestion.customQuestion.required}"/>
                         </ice:column>
                         <ice:column>
-                          <ice:outputText value="#{customQuestion.questionString}"/>
-                          <ice:dataTable cellpadding="0" cellspacing="0" 
-                                      value="#{customQuestion.customQuestionValues}" var="value">
+                          <ice:outputText value="#{customQuestion.customQuestion.questionString}" 
+                                          rendered="#{!customQuestion.editMode}"/>
+                          <div>
+                          <ice:outputText value="#{customQuestion.customQuestion.customQuestionValueString}" 
+                                          rendered="#{!customQuestion.editMode}"/>
+                          </div>
+                          <ice:inputText id="input_questionTextTable" size="90" 
+                                         binding="#{EditGuestbookQuestionnairePage.inputCustomQuestionTextTable}"
+                                         value="#{customQuestion.customQuestion.questionString}"
+                                         rendered="#{customQuestion.editMode}"></ice:inputText>
+                          <ice:dataTable cellpadding="0" cellspacing="0" rendered="#{customQuestion.editMode}"
+                                      value="#{customQuestion.customQuestion.customQuestionValues}" var="value">
                               <ice:column>
                                 <div jsfc="ice:panelGroup">               
                                   <div jsfc="ice:panelGroup">
@@ -173,13 +208,14 @@
                               <ice:column>
                                 <ice:commandButton image="/resources/images/icon_add.gif" actionListener="#{EditGuestbookQuestionnairePage.addCustomRow}"/>
                                 <ice:commandButton 
-                                    rendered="#{customQuestion.customQuestionValues.size() > 1}" 
+                                    rendered="#{customQuestion.customQuestion.customQuestionValues.size() > 1}" 
                                     image="/resources/images/icon_remove.gif" actionListener="#{EditGuestbookQuestionnairePage.removeCustomRow}" />
                               </ice:column>
                            </ice:dataTable>
                         </ice:column>
                         <ice:column>
-                            <ice:outputText value="Edit"/>
+                            <ice:commandLink value="Edit" actionListener="#{EditGuestbookQuestionnairePage.editCustomQuestion}" rendered="#{!customQuestion.editMode}"/>
+                            <ice:commandLink value="Save" actionListener="#{EditGuestbookQuestionnairePage.saveCustomQuestion}" rendered="#{customQuestion.editMode}"/>
                             <ice:commandLink value="Remove" rendered="#{EditGuestbookQuestionnairePage.questionRemovable}" 
                                              actionListener="#{EditGuestbookQuestionnairePage.removeCustomQuestion}"/>
                         </ice:column>

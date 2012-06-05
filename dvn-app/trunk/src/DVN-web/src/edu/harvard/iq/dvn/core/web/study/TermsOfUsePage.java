@@ -99,7 +99,7 @@ public class TermsOfUsePage extends VDCBaseBean {
     }
     
     public boolean isTouTypeGuestBook() {
-        return getTouType()!=null && getTouType().equals(TermsOfUseFilter.TOU_DOWNLOAD)  && getVDCRequestBean().getCurrentVDC().getGuestBookQuestionnaire().isEnabled();
+        return  getVDCRequestBean().getCurrentVDC().getGuestBookQuestionnaire().isEnabled();
     }
     
     public boolean isTouTypeDeposit() {
@@ -250,6 +250,10 @@ public class TermsOfUsePage extends VDCBaseBean {
     public boolean isGuestbookRequired() {
         return guestbookRequired;
     }
+    
+    public boolean isGuestbookOnlyRequired() {
+        return guestbookRequired && !(downloadDataverseTermsRequired || downloadStudyTermsRequired || downloadDvnTermsRequired  );
+    }
 
     public void setGuestbookRequired(boolean guestbookRequired) {
         this.guestbookRequired = guestbookRequired;
@@ -292,8 +296,11 @@ public class TermsOfUsePage extends VDCBaseBean {
     }
     
     public String acceptTerms_action () {
+        System.out.print("in accept terms...");
         Map termsOfUseMap = getTermsOfUseMap();
-        
+        if (isGuestbookOnlyRequired()){
+            termsAccepted = true;
+        }
         /*
         if ( studyTermsAccepted )  {         
             termsOfUseMap.put( "study_" + study.getId(), "accepted" );
@@ -338,7 +345,7 @@ public class TermsOfUsePage extends VDCBaseBean {
         }
 
         
-        if ( termsAccepted && isTouTypeDownload() && isDownloadStudyTermsRequired() )  {         
+        if ( termsAccepted && isTouTypeDownload() && isDownloadStudyTermsRequired() )  {    
             termsOfUseMap.put( "study_download_" + study.getId(), "accepted" );
         }
         if ( termsAccepted &&  isTouTypeDownload() && isDownloadDataverseTermsRequired() ) { 
@@ -355,7 +362,7 @@ public class TermsOfUsePage extends VDCBaseBean {
         }      
         if ( termsAccepted &&  isTouTypeDeposit() && this.isDepositDvnTermsRequired() ) { 
             termsOfUseMap.put( "dvn_deposit", "accepted" );
-        }      
+        }  
         if (redirectPage != null) {
             // piggy back on the login redirect logic for now
             String redirect = this.getExternalContext().getRequestContextPath() + getVDCRequestBean().getCurrentVDCURL() + redirectPage;

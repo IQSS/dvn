@@ -60,7 +60,7 @@ public class SAVFileReader extends StatDataFileReader{
     private static String[] EXTENSIONS = {"sav"};
     private static String[] MIME_TYPE = {"application/x-spss-sav"};
 
-
+    
     // constants (static final) variables ---------------------------------------------------------//
 
     // block length
@@ -269,6 +269,10 @@ public class SAVFileReader extends StatDataFileReader{
 
 
     Map<String, String> OBSTypeHexValue = new LinkedHashMap<String, String>();    
+    
+    
+    /* We should be defaulting to ISO-Latin, NOT US-ASCII! -- L.A. */
+    private String defaultCharSet = "ISO-8859-1";
 
 
     /**
@@ -1073,8 +1077,10 @@ public class SAVFileReader extends StatDataFileReader{
                     // the bytes would result in getting out of sync with the RT record
                     // borders. So we always read the bytes, but only use them for
                     // the real variable entries.
+                        /*String variableLabel = new String(Arrays.copyOfRange(variable_label,
+                                0, rawVariableLabelLength),"US-ASCII");*/
                         String variableLabel = new String(Arrays.copyOfRange(variable_label,
-                                0, rawVariableLabelLength),"US-ASCII");
+                                0, rawVariableLabelLength),defaultCharSet);
                         dbgLog.fine("RT2: variableLabel="+variableLabel+"<-");
 
                         variableLabelMap.put(variableName, variableLabel);
@@ -1413,7 +1419,7 @@ public class SAVFileReader extends StatDataFileReader{
 		    // ByteBuffer bb_label = ByteBuffer.wrap(valueLabel,0,labelLength);
 
 		    valueLabel[i] = StringUtils.stripEnd(new
-							 String(Arrays.copyOfRange(valueLabelBytes, 0, rawLabelLength),"US-ASCII"), " ");
+							 String(Arrays.copyOfRange(valueLabelBytes, 0, rawLabelLength),defaultCharSet), " ");
 		    dbgLog.fine(i+"-th valueLabel="+valueLabel[i]+"<-");
 
 		} // iter rt3
@@ -1941,7 +1947,27 @@ public class SAVFileReader extends StatDataFileReader{
                     break;
                 case 20:
                     // Encoding, aka code page
-                    parseRT7SubTypefield(stream);
+                    /*parseRT7SubTypefield(stream);*/
+                    headerSection = parseRT7SubTypefieldHeader(stream);
+
+                    if (headerSection != null){
+                        int unitLength = headerSection[0];
+                        dbgLog.fine("RT7-20: unitLength="+unitLength);
+                        int numberOfUnits = headerSection[1];
+                        dbgLog.fine("RT7-20: numberOfUnits="+numberOfUnits);
+                        byte[] rt7st20bytes = new byte[unitLength*numberOfUnits];
+                        int nbytes20 = stream.read(rt7st20bytes);
+
+                        String dataCharSet = new String(rt7st20bytes,"US-ASCII");
+
+                        if (dataCharSet != null && !(dataCharSet.equals(""))) {
+                            dbgLog.fine("RT7-20: data charset: "+ dataCharSet);
+                            defaultCharSet = dataCharSet; 
+                        }
+                    } else {
+                        // throw new IOException
+                    }
+
                     break;
                 case 21:
                     // Value labels for long strings

@@ -116,21 +116,20 @@
                   <ice:dataTable cellpadding="0" cellspacing="0" width="100%" 
                                   styleClass="dvnGuestbookCustomQuestions"
                                   value="#{TermsOfUsePage.customQuestionResponseUIs}" var="customQuestionResponseUI">
-                    <ice:column  >
+                    <ice:column>
                        <ice:outputText value="#{customQuestionResponseUI.customQuestionResponse.staticQuestionString}"/>
                        <ice:graphicImage value="/resources/images/icon_required.gif" rendered="#{customQuestionResponseUI.required}"/>
-                    </ice:column>
-                    <ice:column>
-                       <ice:inputText id="input_questionText" size="100" value="#{customQuestionResponseUI.customQuestionResponse.response}"
-                                      rendered="#{customQuestionResponseUI.questionType == 'text'}"/>                 
-                    
-                       <ice:selectOneRadio value="#{customQuestionResponseUI.customQuestionResponse.response}" partialSubmit="false"
-                                           rendered="#{customQuestionResponseUI.questionType == 'radiobuttons'}">
-                           <f:selectItems value="#{customQuestionResponseUI.responseSelectItems}"/>  
-                       </ice:selectOneRadio>                 
+                       <div class="dvnGuestbookCustomQuestionInnerBlock">
+                           <ice:inputText id="input_questionText" size="100" value="#{customQuestionResponseUI.customQuestionResponse.response}"
+                                          rendered="#{customQuestionResponseUI.questionType == 'text'}"/>                 
+
+                           <ice:selectOneRadio value="#{customQuestionResponseUI.customQuestionResponse.response}" partialSubmit="false"
+                                               rendered="#{customQuestionResponseUI.questionType == 'radiobuttons'}">
+                               <f:selectItems value="#{customQuestionResponseUI.responseSelectItems}"/>  
+                           </ice:selectOneRadio>
+                       </div>
                     </ice:column>
                   </ice:dataTable>
-                
               </div>
                 
               <div jsfc="ice:panelGroup" styleClass="termsAgreementBox" rendered="#{!TermsOfUsePage.guestbookOnlyRequired}">

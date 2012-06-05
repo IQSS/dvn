@@ -71,8 +71,9 @@
     nbproject/build-impl.xml file. 
 
     -->
+
     <target name="-post-jar" 
-	    description="Once all the sources are compiled, builds and signs the LOCKSS plugin">
+	description="Once all the sources are compiled, builds and signs the LOCKSS plugin; then deploys it in into the plugin directory">
       <jar destfile="${dist.jar.dir}/DVNOAIPlugin.jar">
         <fileset dir="${build.classes.dir}">
           <include name="edu/harvard/iq/dvn/lockss/plugin/*.class" />
@@ -95,7 +96,11 @@
                keypass="dplockss"
                storepass="dplockss"
                alias="dvnlockss"/>
-       
+
+      <echo>Installing the plugin "${dist.jar.dir}/DVNOAIPlugin.jar"...</echo> 
+      <exec dir="/usr/local/glassfish3/glassfish/domains/domain1/docroot/lockss/plugin" executable="./mk_index.pl"> 
+        <arg value="${dist.jar.dir}/DVNOAIPlugin.jar"/> 
+      </exec>
     </target>
 
 </project>

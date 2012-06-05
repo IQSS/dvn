@@ -133,8 +133,8 @@
                 
               </div>
                 
-              <div class="termsAgreementBox" rendered ="#{!TermsOfUsePage.guestbookOnlyRequired}" >
-                <div jsfc="ice:panelGroup" rendered ="#{!TermsOfUsePage.guestbookOnlyRequired}" >
+              <div jsfc="ice:panelGroup" styleClass="termsAgreementBox" rendered="#{!TermsOfUsePage.guestbookOnlyRequired}">
+                <div>
                   <!-- Study Terms of Use -->
                   <ice:outputText value="#{studybundle.confidentialityLabel}" styleClass="termsAgreementMessageTitle" rendered="#{!empty TermsOfUsePage.study.releasedVersion.metadata.confidentialityDeclaration}"/>
                   <ice:outputText value="#{TermsOfUsePage.study.releasedVersion.metadata.confidentialityDeclaration}" rendered="#{!empty TermsOfUsePage.study.releasedVersion.metadata.confidentialityDeclaration}" escape="false"/>
@@ -181,7 +181,7 @@
                   <ice:outputText value="#{TermsOfUsePage.depositDataverseTerms}" rendered="#{TermsOfUsePage.depositDataverseTermsRequired}" escape="false"/>
                 </div>
               </div>
-              <div class="termsAgreeChkBxBlock" rendered ="#{!TermsOfUsePage.guestbookOnlyRequired}" >
+              <div jsfc="ice:panelGroup" styleClass="termsAgreeChkBxBlock" rendered="#{!TermsOfUsePage.guestbookOnlyRequired}" >
                 <ice:outputText rendered ="#{!TermsOfUsePage.guestbookOnlyRequired}" value="#{bundlePageInfo.termsofUseDownloadAgree}" escape="false"/>
                 <ice:selectBooleanCheckbox  rendered ="#{!TermsOfUsePage.guestbookOnlyRequired}" id="termsAccepted" required="true" validator="#{TermsOfUsePage.validateTermsAccepted}" value="#{TermsOfUsePage.termsAccepted}"/>
                 <ice:outputText rendered ="#{!TermsOfUsePage.guestbookOnlyRequired}" styleClass="vdcFieldTitle" value="I agree and accept these terms of use."/>

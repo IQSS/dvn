@@ -178,7 +178,7 @@
                             alert ("No files selected");
                             return false;
                         }
-                        downloadFile("/FileDownload/study_#{studyPage.studyUI.study.studyId}.zip?fileId=" + fileIdStr + "&versionNumber=#{studyPage.studyUI.studyVersion.versionNumber}" + "#{studyPage.xff}");
+                        downloadFile("#{VDCRequest.currentVDCURL}/FileDownload/study_#{studyPage.studyUI.study.studyId}.zip?fileId=" + fileIdStr + "&versionNumber=#{studyPage.studyUI.studyVersion.versionNumber}" + "#{studyPage.xff}");
                         return false;
                     }
 

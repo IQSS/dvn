@@ -225,7 +225,8 @@ span.dvnAddClassificationDvNotReleased{background:url(/dvn/resources/images/icon
 .dvnCommentReviewCol6 input:last-child, .dvnCommentReviewCol6 a.iceCmdLnk:last-child{margin-right:0}
 /* TERMS OF USE + GUESTBOOK */
 .dvnstudypreviouslisting{text-align:right;}
-.termsAgreeChkBxBlock{width:380px;}
+.termsAgreeChkBxBlock{width:590px;}
+.termsAgreeChkBxBlock.dvnCreateDvWorkflow{width:380px;}
 .termsAgreeChkBxBlock p{font-size: .9em !important;}
 .dvnEditTermsForm .dvnEditTermsCheckbox{margin-bottom:1em;}
 .dvnEditTermsForm .errorMessage{margin-bottom:1em;}
@@ -326,7 +327,8 @@ strong.requestWorkflowCompleted{color:#035899 !important;font-weight:bold !impor
 .dvn_createDvRequest .requestContentFormRight textarea{width:22.5em}
 .dvn_createDvRequest .requestContinueLink{padding:2em 0 0;text-align:center}
 span.termsAgreementMessageTitle{display:block;padding-top:1em;color:#526f76;font-size:120% !important;font-weight:bold;text-transform:uppercase}
-.termsAgreementBox{margin-bottom:20px;padding:4px;width:380px;height:300px;border:1px solid #035899;overflow:scroll;overflow-x:auto}
+.termsAgreementBox{margin-bottom:20px;padding:4px;width:590px;height:300px;border:1px solid #035899;overflow:scroll;overflow-x:auto}
+.termsAgreementBox.dvnCreateDvWorkflow{width:380px;}
 .requestContentSucess a{font-weight:700}
 .requestContentSucess ul{margin-left:1.5em;list-style:disc}
 .dvnCreateDvClassificationTable td span.iceOutTxt{font-size:90% !important}

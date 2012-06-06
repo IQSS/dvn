@@ -27,11 +27,10 @@
           <div class="dvn_sectionBox dvnEditTermsForm">
             <div class="dvn_margin12">
                   <ice:dataTable cellpadding="0" cellspacing="0" width="100%" 
-                                  columnClasses="vdcEditStudyCol1, vdcEditStudyCol2, vdcEditStudyCol3"
+
                                   value="#{GuestBookResponseDataPage.guestBookResponses}" var="guestBookResponse">
                     <ice:column>
                        <ice:outputText id="firstnameText" 
-
                                       value="#{guestBookResponse.firstname}"></ice:outputText>                 
                     </ice:column>
                     <ice:column>
@@ -51,6 +50,11 @@
                        <ice:outputText id="positionText" 
                                       value="#{guestBookResponse.position}"></ice:outputText>                 
                     </ice:column>
+                    <ice:column>
+                       <ice:outputText id="responseTimeText" 
+                                       value="#{guestBookResponse.responseTime}"></ice:outputText>                 
+                    </ice:column>
+                   <ice:column>
                    <ice:dataTable cellpadding="0" cellspacing="0" width="100%" 
                                   columnClasses="vdcEditStudyCol1, vdcEditStudyCol2, vdcEditStudyCol3"
                                   value="#{guestBookResponse.customQuestionResponses}" var="customResponse">
@@ -62,7 +66,9 @@
                        <ice:outputText id="responseText" 
                                       value="#{customResponse.response}"></ice:outputText>                 
                     </ice:column>
-                  </ice:dataTable>                      
+
+                  </ice:dataTable> 
+                   </ice:column>
                   </ice:dataTable>
                 
               <div class="dvnFormPadding dvnFormMargin">

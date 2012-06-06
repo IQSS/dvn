@@ -273,6 +273,7 @@ public class SAVFileReader extends StatDataFileReader{
     
     /* We should be defaulting to ISO-Latin, NOT US-ASCII! -- L.A. */
     private String defaultCharSet = "ISO-8859-1";
+    private int    spssVersionNumber = 0; 
 
 
     /**
@@ -522,6 +523,7 @@ public class SAVFileReader extends StatDataFileReader{
             throw new IllegalArgumentException("given file is not spss-sav type");
         }
 
+        smd.getFileInformation().put("charset", defaultCharSet);
         dbgLog.fine("smd dump:"+smd.toString());
         dbgLog.fine("***** decodeHeader(): end *****");
 
@@ -568,6 +570,32 @@ public class SAVFileReader extends StatDataFileReader{
             // add the info to the fileInfo
             smd.getFileInformation().put("productInfo", productInfo);
             
+            // try to parse out the SPSS version that created this data
+            // file: 
+            
+            String spssVersionNumberTag = null; 
+            
+            String regexpVersionNumber = ".*Release ([0-9]*)";
+            Pattern patternJsession = Pattern.compile(regexpVersionNumber);
+            Matcher matcher = patternJsession.matcher(productInfo);
+            if ( matcher.find() ) {
+                spssVersionNumberTag = matcher.group(1); 
+                dbgLog.fine("SPSS Version Number: "+spssVersionNumberTag); 
+            }
+            
+            if (spssVersionNumberTag != null && !spssVersionNumberTag.equals("")) {
+                spssVersionNumber = Integer.valueOf(spssVersionNumberTag).intValue();
+                
+                /*
+                 *  Starting with SPSS version 16, the default encoding is 
+                 *  UTF-8. 
+                 */
+                if (spssVersionNumber > 15) {
+                    defaultCharSet = "UTF-8";
+                }
+            }
+                      
+            smd.getFileInformation().put("charset", defaultCharSet); 
             
             // 1.2) 4-byte file-layout-code (byte-order)
             
@@ -867,7 +895,7 @@ public class SAVFileReader extends StatDataFileReader{
                 // we can make the decision on whether this variable is part
                 // of a compound variable:
 
-                String RawVariableName = new String(Arrays.copyOfRange(recordType2Fixed, 24, (24+LENGTH_VARIABLE_NAME)),"US-ASCII");
+                String RawVariableName = new String(Arrays.copyOfRange(recordType2Fixed, 24, (24+LENGTH_VARIABLE_NAME)),defaultCharSet);
                 //offset +=LENGTH_VARIABLE_NAME;
                 String variableName = null;
                 if (RawVariableName.indexOf(' ') >= 0){
@@ -1252,7 +1280,7 @@ public class SAVFileReader extends StatDataFileReader{
 
                             missingValues[i] =
                                     StringUtils.stripEnd(new
-                            String(Arrays.copyOfRange(missing_value_code_units, offset_start, offset_end),"US-ASCII"), " ");
+                            String(Arrays.copyOfRange(missing_value_code_units, offset_start, offset_end),defaultCharSet), " ");
                             dbgLog.fine("missing value="+missingValues[i]+"<-");
 
                             offset_start = offset_end;
@@ -1504,7 +1532,7 @@ public class SAVFileReader extends StatDataFileReader{
 		    dbgLog.fine("processing of a string value-label table");
 		    for (int j=0;j<numberOfValueLabels;j++){
 			valueLabelPair.put(
-					   StringUtils.stripEnd(new String((tempBB[j].array()),"US-ASCII"), " "),valueLabel[j] );
+					   StringUtils.stripEnd(new String((tempBB[j].array()),defaultCharSet), " "),valueLabel[j] );
 		    }
 		}
 
@@ -1603,7 +1631,7 @@ public class SAVFileReader extends StatDataFileReader{
                
                 documentRecord[i] = StringUtils.stripEnd(new
                     String(Arrays.copyOfRange(line,
-                    0, LENGTH_RT6_DOCUMENT_LINE),"US-ASCII"), " ");
+                    0, LENGTH_RT6_DOCUMENT_LINE),defaultCharSet), " ");
                     
                 dbgLog.fine(i+"-th line ="+documentRecord[i]+"<-");
             }
@@ -1908,7 +1936,7 @@ public class SAVFileReader extends StatDataFileReader{
                         byte[] work = new byte[unitLength*numberOfUnits];
                         int nbtyes13 = stream.read(work);
 
-                        String[] extendedVariablesSizePairs = new String(work,"US-ASCII").split("\000\t");
+                        String[] extendedVariablesSizePairs = new String(work,defaultCharSet).split("\000\t");
 
                         for (int i=0; i<extendedVariablesSizePairs.length; i++){
                             dbgLog.fine("RT7.14: "+i+"-th pair"+extendedVariablesSizePairs[i]);
@@ -1947,7 +1975,9 @@ public class SAVFileReader extends StatDataFileReader{
                     break;
                 case 20:
                     // Encoding, aka code page
-                    /*parseRT7SubTypefield(stream);*/
+                    parseRT7SubTypefield(stream);
+                    /* TODO: This needs to be researched; 
+                     * Is this field really used, ever?
                     headerSection = parseRT7SubTypefieldHeader(stream);
 
                     if (headerSection != null){
@@ -1967,6 +1997,8 @@ public class SAVFileReader extends StatDataFileReader{
                     } else {
                         // throw new IOException
                     }
+                     * 
+                     */
 
                     break;
                 case 21:
@@ -2318,7 +2350,7 @@ public class SAVFileReader extends StatDataFileReader{
                                 // decode as a string object
                                 String strdatum = new String(
                                         Arrays.copyOfRange(uncompressedByte,
-                                        0, LENGTH_SAV_OBS_BLOCK), "US-ASCII");
+                                        0, LENGTH_SAV_OBS_BLOCK), defaultCharSet);
                                 //out.println("str_datum="+strdatum+"<-");
                                 // add this non-missing-value string datum
                                 casewiseRecordForTabFile.add(strdatum);
@@ -2326,7 +2358,7 @@ public class SAVFileReader extends StatDataFileReader{
                             } else if (OBSwiseTypelList.get(typeIndex) == -2) {
                                 String strdatum = new String(
                                         Arrays.copyOfRange(uncompressedByte,
-                                        0, LENGTH_SAV_OBS_BLOCK - 1), "US-ASCII");
+                                        0, LENGTH_SAV_OBS_BLOCK - 1), defaultCharSet);
                                 casewiseRecordForTabFile.add(strdatum);
                             //out.println("casewiseRecordForTabFile(String)="+casewiseRecordForTabFile);
                             } else if (OBSwiseTypelList.get(typeIndex) == 0) {
@@ -2954,7 +2986,7 @@ public class SAVFileReader extends StatDataFileReader{
                         
                         String strdatum = new String(
                             Arrays.copyOfRange(buffer,
-                            offset, (offset+LENGTH_SAV_OBS_BLOCK)),"US-ASCII");
+                            offset, (offset+LENGTH_SAV_OBS_BLOCK)),defaultCharSet);
                         dbgLog.finer("str_datum="+strdatum);
                         // add this non-missing-value string datum 
                         casewiseRecordForTabFile.add(strdatum);

@@ -87,7 +87,9 @@ public class GuestBookResponseServiceBean {
     public void addGuestBookRecord(Study study, VDCUser vdcUser, StudyFile studyFile){
         GuestBookResponse guestBookResponseSource =  findByStudyFileAndUser(study, vdcUser);
         GuestBookResponse guestBookResponseAdd = initGuestBookResponse(guestBookResponseSource, study, studyFile);
-        em.persist(guestBookResponseAdd);
+        if (!guestBookResponseSource.getStudyFile().equals(studyFile)){
+                    em.persist(guestBookResponseAdd);
+        }
     }
     
     public GuestBookResponse findById(Long id) {

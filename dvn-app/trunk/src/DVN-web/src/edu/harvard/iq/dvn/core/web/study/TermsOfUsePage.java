@@ -355,6 +355,9 @@ public class TermsOfUsePage extends VDCBaseBean {
             termsOfUseMap.put( "dvn_download", "accepted" );
         }
         if ( termsAccepted && this.isGuestbookRequired()  && getVDCSessionBean().getLoginBean() !=null ) { 
+            termsOfUseMap.put( "study_guestbook_logged_in_"  + study.getId(), "accepted" );
+        }
+        if ( termsAccepted && this.isGuestbookRequired()) { 
             termsOfUseMap.put( "study_guestbook_"  + study.getId(), "accepted" );
         }
         if ( termsAccepted &&  isTouTypeDeposit() && this.isDepositDataverseTermsRequired() ) { 

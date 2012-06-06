@@ -194,6 +194,14 @@
                                             </td>
                                             <td><ice:outputText styleClass="dvnOptionsTableNote" value="#{bundlePageInfo.editDvGuestbookText}"/></td>
                                         </tr>
+                                        <tr>                                        
+                                            <td class="dvnOptionsTableOption">
+                                                <ice:outputLink id="hyperlinkGuestBookDataDump" value="/dvn#{VDCRequest.currentVDCURL}/faces/admin/GuestBookResponseDataPage.xhtml">
+                                                    <ice:outputText id="hyperlinkGuestBookDataDumptext" value="#{bundlePageInfo.guestbookDataDumpTitle}"/>
+                                                </ice:outputLink>
+                                            </td>
+                                            <td><ice:outputText styleClass="dvnOptionsTableNote" value="#{bundlePageInfo.guestbookDataDumpText}"/></td>
+                                        </tr>
                                     </table>
 
                                     <table class="dvnOptionsTable" cellspacing="0" cellpadding="0" border="0">

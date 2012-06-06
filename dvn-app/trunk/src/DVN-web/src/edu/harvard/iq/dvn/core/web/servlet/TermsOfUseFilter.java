@@ -108,6 +108,19 @@ public class TermsOfUseFilter implements Filter {
         return false;
     }
     
+    public static boolean isGuestbookBypassed(Study study,  Map termsOfUseMap) {
+        
+        boolean vdcTermsRequired = false;
+        if (study.getOwner().getGuestBookQuestionnaire() != null){
+               vdcTermsRequired =  study.getOwner().getGuestBookQuestionnaire().isEnabled();
+        }        
+        if (vdcTermsRequired) {
+            return termsOfUseMap.get("study_guestbook_logged_in_" + study.getId()) == null;
+        }
+
+        return false;
+    }
+    
     private  void addGuestbookRecords(Study study, String fileId ) {
         if (vdcSession.getLoginBean() == null){
             return;
@@ -426,7 +439,7 @@ public class TermsOfUseFilter implements Filter {
 
             if (NOTaDSBrequest) {
                 Map termsOfUseMap = getTermsOfUseMap();
-                if (!isGuestbookRequired(study, termsOfUseMap)){
+                if (!isGuestbookBypassed(study, termsOfUseMap)){
                      addGuestbookRecords(study, fileId);
                 }
                 if (isDownloadDvnTermsRequired(vdcNetworkService.find(), termsOfUseMap) 

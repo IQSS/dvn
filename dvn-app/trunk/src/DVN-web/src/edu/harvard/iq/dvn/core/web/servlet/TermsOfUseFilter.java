@@ -24,16 +24,14 @@
  */
 package edu.harvard.iq.dvn.core.web.servlet;
 
+import edu.harvard.iq.dvn.core.admin.VDCUser;
 import edu.harvard.iq.dvn.core.study.DataTable;
 import edu.harvard.iq.dvn.core.study.Study;
 import edu.harvard.iq.dvn.core.study.StudyFile;
 import edu.harvard.iq.dvn.core.study.StudyFileServiceLocal;
 import edu.harvard.iq.dvn.core.study.StudyServiceLocal;
 import edu.harvard.iq.dvn.core.study.VariableServiceLocal;
-import edu.harvard.iq.dvn.core.vdc.VDC;
-import edu.harvard.iq.dvn.core.vdc.VDCNetwork;
-import edu.harvard.iq.dvn.core.vdc.VDCNetworkServiceLocal;
-import edu.harvard.iq.dvn.core.vdc.VDCServiceLocal;
+import edu.harvard.iq.dvn.core.vdc.*;
 import edu.harvard.iq.dvn.core.web.common.VDCSessionBean;
 import java.io.*;
 import java.util.HashMap;
@@ -85,6 +83,8 @@ public class TermsOfUseFilter implements Filter {
     @EJB
     StudyFileServiceLocal studyFileService;
     
+    @EJB private GuestBookResponseServiceBean guestBookResponseServiceBean;
+    
     @Inject VDCSessionBean vdcSession;
 
     public static boolean isDownloadDataverseTermsRequired(Study study, Map termsOfUseMap) {
@@ -95,7 +95,7 @@ public class TermsOfUseFilter implements Filter {
         return false;
     }
     
-    public static boolean isGuestbookRequired(Study study, Map termsOfUseMap) {
+    public static boolean isGuestbookRequired(Study study,  Map termsOfUseMap) {
         
         boolean vdcTermsRequired = false;
         if (study.getOwner().getGuestBookQuestionnaire() != null){
@@ -106,6 +106,30 @@ public class TermsOfUseFilter implements Filter {
         }
 
         return false;
+    }
+    
+    private  void addGuestbookRecords(Study study, String fileId ) {
+        if (vdcSession.getLoginBean() == null){
+            return;
+        }
+        boolean vdcTermsRequired = false;
+        if (study.getOwner().getGuestBookQuestionnaire() != null){
+               vdcTermsRequired =  study.getOwner().getGuestBookQuestionnaire().isEnabled();
+        }        
+        if (vdcTermsRequired  && !fileId.trim().isEmpty()) {
+            StringTokenizer st = new StringTokenizer(fileId, ",");
+
+            while (st.hasMoreTokens()) {
+                StudyFile file = studyFileService.getStudyFile(new Long(st.nextToken()));
+                if (study == null) {
+                    study = file.getStudy();
+
+                } 
+                guestBookResponseServiceBean.addGuestBookRecord(study,  vdcSession.getLoginBean().getUser() ,file);
+            }
+        }
+
+
     }
 
     public static boolean isDepositDataverseTermsRequired(VDC currentVDC,
@@ -402,6 +426,9 @@ public class TermsOfUseFilter implements Filter {
 
             if (NOTaDSBrequest) {
                 Map termsOfUseMap = getTermsOfUseMap();
+                if (!isGuestbookRequired(study, termsOfUseMap)){
+                     addGuestbookRecords(study, fileId);
+                }
                 if (isDownloadDvnTermsRequired(vdcNetworkService.find(), termsOfUseMap) 
                         || isDownloadDataverseTermsRequired(study, termsOfUseMap) 
                         || isDownloadStudyTermsRequired(study, termsOfUseMap)

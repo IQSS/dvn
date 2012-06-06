@@ -19,7 +19,11 @@
 */
 package edu.harvard.iq.dvn.core.vdc;
 
+import edu.harvard.iq.dvn.core.admin.VDCUser;
+import edu.harvard.iq.dvn.core.study.Study;
+import edu.harvard.iq.dvn.core.study.StudyFile;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
@@ -38,7 +42,52 @@ public class GuestBookResponseServiceBean {
     private EntityManager em; 
     
     public List<GuestBookResponse> findAll() {
-        return em.createQuery("select object(o) from GuestBookResponse as o order by o.name").getResultList();
+        return em.createQuery("select object(o) from GuestBookResponse as o order by o.responseTime").getResultList();
+    }
+    
+    private GuestBookResponse findByStudyFileAndUser(Study study, VDCUser vdcUser) {
+        GuestBookResponse response = new GuestBookResponse();
+        String queryStr = "SELECT gbr FROM GuestBookResponse gbr WHERE gbr.study.id = " + study.getId() + " and gbr.vdcUser.id = " + vdcUser.getId() + " order by gbr.responseTime DESC ";
+        Query query = em.createQuery(queryStr);
+        List resultList = query.getResultList();
+
+        if (resultList.size() >= 1) {
+           response = (GuestBookResponse) resultList.get(0);
+        }
+        return response;
+    }
+    
+    private GuestBookResponse initGuestBookResponse(GuestBookResponse guestBookResponseSource, Study study, StudyFile studyFile) {
+        GuestBookResponse guestBookResponse = new GuestBookResponse();
+        guestBookResponse.setGuestBookQuestionnaire(guestBookResponseSource.getGuestBookQuestionnaire());
+        guestBookResponse.setStudy(study);
+        guestBookResponse.setResponseTime(new Date());
+
+        if (study.getOwner().getGuestBookQuestionnaire().getCustomQuestions() != null && !study.getOwner().getGuestBookQuestionnaire().getCustomQuestions().isEmpty()) {
+            guestBookResponse.setCustomQuestionResponses(new ArrayList());
+            for (CustomQuestionResponse cq : guestBookResponseSource.getCustomQuestionResponses()) {
+                CustomQuestionResponse response = new CustomQuestionResponse();
+                response.setGuestBookResponse(guestBookResponse);
+                response.setResponse(cq.getResponse());
+                response.setStaticQuestionString(cq.getStaticQuestionString());
+                guestBookResponse.getCustomQuestionResponses().add(response);
+            }
+        }
+        guestBookResponse.setEmail(guestBookResponseSource.getEmail());
+        guestBookResponse.setFirstname(guestBookResponseSource.getFirstname());
+        guestBookResponse.setLastname(guestBookResponseSource.getLastname());
+        guestBookResponse.setInstitution(guestBookResponseSource.getInstitution());
+        guestBookResponse.setPosition(guestBookResponseSource.getPosition());
+        guestBookResponse.setVdcUser(guestBookResponseSource.getVdcUser());
+        guestBookResponse.setStudyFile(studyFile);
+        return guestBookResponse;
+    }
+    
+    @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
+    public void addGuestBookRecord(Study study, VDCUser vdcUser, StudyFile studyFile){
+        GuestBookResponse guestBookResponseSource =  findByStudyFileAndUser(study, vdcUser);
+        GuestBookResponse guestBookResponseAdd = initGuestBookResponse(guestBookResponseSource, study, studyFile);
+        em.persist(guestBookResponseAdd);
     }
     
     public GuestBookResponse findById(Long id) {

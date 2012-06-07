@@ -340,6 +340,7 @@ public class DVNOAIListRecords extends ListRecords {
 	    byte[] dataBuffer = new byte[8192]; 
 
 	    int i = 0;
+            int j = 0; 
             int headInit = 0; 
             int x = -1;
             String lineBuffer = "";
@@ -369,7 +370,7 @@ public class DVNOAIListRecords extends ListRecords {
                     tempOutRecordStream.flush();
                     tempOutRecordStream.close();
 
-                    produceRecordExtract(new File("/tmp/ListRecords.record." + TmpId + ".xml"), tempOutFileStream);
+                    produceRecordExtract(new File("/tmp/ListRecords.record." + TmpId + "." + j + ".xml"), tempOutFileStream);
                     tempOutRecordStream = null;
 
 
@@ -377,15 +378,15 @@ public class DVNOAIListRecords extends ListRecords {
                 }
                 
                 while (tempOutRecordStream == null && (x = dataLine.indexOf("<record>")) > -1) {
-                    tempOutRecordStream = new FileOutputStream("/tmp/ListRecords.record." + TmpId + ".xml");
+                    tempOutRecordStream = new FileOutputStream("/tmp/ListRecords.record." + TmpId + "." + j + ".xml");
 
                     int y = dataLine.indexOf("</record>");
                     if (y > 0) {
-                        tempOutRecordStream.write(dataLine.substring(x, y - x + "</record>".length()).getBytes());
+                        tempOutRecordStream.write(dataLine.substring(x, y+"</record>".length()).getBytes());
                         tempOutRecordStream.flush();
                         tempOutRecordStream.close();
 
-                        produceRecordExtract(new File("/tmp/ListRecords.record." + TmpId + ".xml"), tempOutFileStream);
+                        produceRecordExtract(new File("/tmp/ListRecords.record." + TmpId + "." + j + ".xml"), tempOutFileStream);
                         tempOutRecordStream = null;
 
                         dataLine = dataLine.substring(y - x + "</record>".length());
@@ -460,7 +461,6 @@ public class DVNOAIListRecords extends ListRecords {
 	// delete the extract file too: 
 
 	// new File ("/tmp/ListRecords.extract." + TmpId + ".xml").delete();
-        // new File ("/tmp/ListRecords.record." + TmpId + ".xml").delete();
     }
     
     

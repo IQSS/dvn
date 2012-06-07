@@ -21,6 +21,7 @@ package edu.harvard.iq.dvn.lockss.plugin;
 
 import java.io.PrintWriter; 
 import org.xml.sax.SAXException; 
+import org.xml.sax.SAXParseException; 
 import org.xml.sax.helpers.DefaultHandler; 
 import org.xml.sax.Attributes; 
 import org.lockss.util.*;
@@ -35,6 +36,9 @@ public class DVNOAIFilterHandler extends DefaultHandler {
 
     private int printflag = 1;
     private int textprintflag = 1;
+    private int idflag = 0; 
+    private String currentIdentifier = null; 
+    private String lastIdentifier = null; 
 
     private PrintWriter myout = null; 
 
@@ -107,19 +111,6 @@ public class DVNOAIFilterHandler extends DefaultHandler {
 		}
 	    }
 
-	    /*
-		int i = attributes.getLength(); 
-
-		for ( int j = 0; j < i; j++ ) {
-		    String aQName = attributes.getQName (j); 
-		    String aValue = attributes.getValue (j); 
-
-		    if (aQName.matches(".*LOCKSS.*")) {
-			attString =  attString + " " + aQName + "=\"" + aValue + "\""; 
-		    }
-		}
-		}*/
-
 	    if ( printflag != 0 ) {
 		if ( attString != null && attString.length() > 0 ) {
 		    myout.println("<" + qName + attString + ">"); 
@@ -127,6 +118,13 @@ public class DVNOAIFilterHandler extends DefaultHandler {
 		    myout.print("<" + qName + ">"); 
 		}
 	    }
+            
+            // If this is the OAI <identifier> tag, we want to cache it.
+            
+            if (qName.equals("identifier") && printflag == 1) {
+                idflag = 1; 
+            }
+          
 	}   
     }
 	
@@ -150,6 +148,11 @@ public class DVNOAIFilterHandler extends DefaultHandler {
 	if (qName.equals("notes")) {
             textprintflag = 0;
         }
+        
+        if (qName.equals("record")) {
+            lastIdentifier = currentIdentifier; 
+            currentIdentifier = null; 
+        }
 
     }
        
@@ -162,6 +165,24 @@ public class DVNOAIFilterHandler extends DefaultHandler {
 	     output.length() != 0) {
 	    myout.print(output); 
 	}
+        
+        if (idflag == 1) {
+            currentIdentifier = output; 
+            idflag = 0;
+        }
+    }
+    
+    public void fatalError (SAXParseException spx) throws SAXException {
+        if (currentIdentifier != null) {
+            throw new SAXException ("Failed to process ListRecords; offending record: " + currentIdentifier + "; " + spx.getMessage());
+        }
+        
+        if (lastIdentifier != null) {
+            throw new SAXException ("Failed to process ListRecords; last successfully processed record: " + lastIdentifier + "; " + spx.getMessage());
+        }
+        
+        throw new SAXException ("Failed to process ListRecords; " + spx.getMessage()); 
+        
     }
 
     private static String minimallyEncodeString(String textString) {

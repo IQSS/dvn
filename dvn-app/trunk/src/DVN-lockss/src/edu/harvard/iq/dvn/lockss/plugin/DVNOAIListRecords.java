@@ -82,6 +82,7 @@ import org.w3c.dom.NodeList;
 import org.xml.sax.InputSource;
 import org.xml.sax.XMLReader;
 import org.xml.sax.SAXException;
+import org.xml.sax.SAXParseException;
 import javax.xml.parsers.SAXParser; 
 import javax.xml.parsers.SAXParserFactory; 
 
@@ -356,8 +357,17 @@ public class DVNOAIListRecords extends ListRecords {
 	    // And now re-open the filtered extract: 
 
 	    in = new FileInputStream(new File ("/tmp/ListRecords.extract." + TmpCount + ".xml"));
+        } catch (SAXParseException spx) {
+            logger.info("DVN/ListRecords: Parsing Error Encountered. "+spx.getMessage());
+            responseCode = 577;
+	    return;      
 
-	} catch (Exception ex) {
+	} catch (SAXException sx) {
+            logger.info("DVN/ListRecords: Error Encountered. "+sx.getMessage());
+            responseCode = 577;
+	    return;      
+
+	}catch (Exception ex) {
 	    logger.info(requestURL, ex);
 	    responseCode = 577;
 	    return; 

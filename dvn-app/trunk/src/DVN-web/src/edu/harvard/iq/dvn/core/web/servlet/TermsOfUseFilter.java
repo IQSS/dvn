@@ -382,6 +382,7 @@ public class TermsOfUseFilter implements Filter {
                 if (dtId != null) {
                     DataTable dt = variableService.getDataTable(new Long(dtId));
                     study = dt.getStudyFile().getStudy();
+                    fileId = dt.getStudyFile().getId().toString();
                 }
 
             }

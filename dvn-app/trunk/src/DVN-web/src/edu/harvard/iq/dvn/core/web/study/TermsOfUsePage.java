@@ -167,7 +167,7 @@ public class TermsOfUsePage extends VDCBaseBean {
         if (studyId != null) {
             study = studyService.getStudy(studyId);
         }
-
+        fileId = getRequestParam("fileId");
         setRequiredFlags();
         if (guestbookRequired){
             initGuestBookResponse ();
@@ -179,7 +179,6 @@ public class TermsOfUsePage extends VDCBaseBean {
         guestBookResponse = new GuestBookResponse();
         guestBookResponse.setGuestBookQuestionnaire(study.getOwner().getGuestBookQuestionnaire());
         guestBookResponse.setStudy(study);
-        fileId = getRequestParam("fileId");
         guestBookResponse.setResponseTime(new Date());
 
         if (study.getOwner().getGuestBookQuestionnaire().getCustomQuestions() != null && !study.getOwner().getGuestBookQuestionnaire().getCustomQuestions().isEmpty()) {

@@ -347,6 +347,7 @@ public class DVNOAIListRecords extends ListRecords {
             
 	    while ( ( i = in.read (dataBuffer) ) > 0 ) {
                 String dataLine = lineBuffer + new String (dataBuffer);
+                lineBuffer = "";
                 
                 if (headInit == 0) {
                     // Extract OAI header; 
@@ -393,6 +394,7 @@ public class DVNOAIListRecords extends ListRecords {
                         tempOutRecordStream.close();
 
                         produceRecordExtract(new File("/tmp/ListRecords.record." + TmpId + "." + j + ".xml"), tempOutFileStream);
+                        j++;
                         tempOutRecordStream = null;
 
                         dataLine = dataLine.substring(x + "</record>".length());

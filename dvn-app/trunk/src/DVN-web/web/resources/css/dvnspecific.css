@@ -234,12 +234,14 @@ span.dvnAddClassificationDvNotReleased{background:url(/dvn/resources/images/icon
 .dvnGuestbookCustomQuestionsCol1 {width:10%;text-align:center;}
 .dvnGuestbookCustomQuestionsCol3 {width:20%;text-align:center;}
 .dvnGuestbookCustomQuestionsCol3 .iceCmdLnk:first-child {margin-right:2em;}
-.dvnGuestbookCustomQuestions.iceDatTbl, .dvnGuestbookCustomQuestions.iceDatTbl tr, .dvnGuestbookCustomQuestions.iceDatTbl td, .dvnGuestbookCustomQuestions.iceDatTbl table {border:0;background:none;}
-.dvnGuestbookCustomQuestions.iceDatTbl {margin-top:0;}
+.dvnEditGuestbookCustomQuestions.iceDatTbl, .dvnEditGuestbookCustomQuestions.iceDatTbl tr, .dvnEditGuestbookCustomQuestions.iceDatTbl td, .dvnEditGuestbookCustomQuestions.iceDatTbl table, .dvnGuestbookCustomQuestions.iceDatTbl, .dvnGuestbookCustomQuestions.iceDatTbl tr, .dvnGuestbookCustomQuestions.iceDatTbl td, .dvnGuestbookCustomQuestions.iceDatTbl table {border:0;background:none;}
+.dvnEditGuestbookCustomQuestions.iceDatTbl {margin-top:0;}
+.dvnGuestbookCustomQuestions.iceDatTbl {margin-top:0;border-top:1px solid lightgray;}
+.dvnGuestbookCustomQuestions.iceDatTbl td.iceDatTblCol1 {text-align:left;}
 .dvnGuestbookCustomQuestions.iceDatTbl td span.iceOutTxt {display:inline;color:#464646;}
-.dvnGuestbookCustomQuestions.iceDatTbl tr {border-bottom:1px solid lightgray;}
+.dvnEditGuestbookCustomQuestions.iceDatTbl tr, .dvnGuestbookCustomQuestions.iceDatTbl tr {border-bottom:1px solid lightgray;}
 .dvnGuestbookCustomQuestions.iceDatTbl .iceDatTbl {margin-left:1em;}
-.dvnGuestbookCustomQuestions.iceDatTbl tr tr {border:0;}
+.dvnEditGuestbookCustomQuestions.iceDatTbl tr tr, .dvnGuestbookCustomQuestions.iceDatTbl tr tr {border:0;}
 .dvnGuestbookCustomQuestionInnerBlock {margin-left:6.25em;}
 /* PERMISSIONS */
 .dvnPermissionsTable{width:100%;text-align:left}

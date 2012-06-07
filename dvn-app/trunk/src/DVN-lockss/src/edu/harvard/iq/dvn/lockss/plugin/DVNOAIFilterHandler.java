@@ -92,6 +92,7 @@ public class DVNOAIFilterHandler extends DefaultHandler {
 		qName.equals("request") ||
 		qName.equals("resumptionToken") ||
 		qName.equals("notes") ||
+                qName.equals("header") ||
 		qName.equals("codeBook")) {
 		int i = attributes.getLength(); 
 
@@ -174,14 +175,14 @@ public class DVNOAIFilterHandler extends DefaultHandler {
     
     public void fatalError (SAXParseException spx) throws SAXException {
         if (currentIdentifier != null) {
-            throw new SAXException ("Failed to process ListRecords; offending record: " + currentIdentifier + "; " + spx.getMessage());
+            throw new SAXException ("Can't parse ListRecords stream; offending record: " + currentIdentifier + "; " + spx.getMessage());
         }
         
         if (lastIdentifier != null) {
-            throw new SAXException ("Failed to process ListRecords; last successfully processed record: " + lastIdentifier + "; " + spx.getMessage());
+            throw new SAXException ("Can't parse ListRecords stream; last successfully processed record: " + lastIdentifier + "; " + spx.getMessage());
         }
         
-        throw new SAXException ("Failed to process ListRecords; " + spx.getMessage()); 
+        throw new SAXException ("Can't parse ListRecords stream; " + spx.getMessage()); 
         
     }
 

@@ -47,6 +47,7 @@ import java.io.OutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.StringWriter;
 import java.io.PrintWriter; 
 import java.net.HttpURLConnection;
@@ -314,64 +315,126 @@ public class DVNOAIListRecords extends ListRecords {
             in = con.getInputStream();
         }
         
-	// We're going to save this stuff in a temporary file: 
+	// (TODO - add detailed comments explaining the whole process -- L.A.)
 
+        FileOutputStream tempOutFileStream = null; 
+        FileOutputStream tempOutRecordStream = null;
+        int TmpId = new LockssRandom().nextInt() & 0xffff;
+        
 	try {
-	    int TmpCount = new LockssRandom().nextInt() & 0xffff;
-	    FileOutputStream tempOutFileStream = new FileOutputStream("/tmp/ListRecords." + TmpCount + ".xml");
+            // Here's the deal: 
+            // We want to parse 1 record at a time, so that we know which one
+            // fails to parse; then we can skip it, log it, and continue 
+            // with the parsing and crawling. 
+            // One way of doing this would be to use ListIdentifiers/GetRecord
+            // instead of ListRecords. But that would result in a great 
+            // increase of the remote server calls. So we should rather 
+            // spend a little extra effort going through the ListRecords stream
+            // and separating individual records (and service headers).
+           
+	    tempOutFileStream = new FileOutputStream("/tmp/ListRecords." + TmpId + ".xml");
+            tempOutRecordStream = null; 
 	
+            tempOutFileStream = new FileOutputStream("/tmp/ListRecords.extract." + TmpId + ".xml");
+            
 	    byte[] dataBuffer = new byte[8192]; 
 
 	    int i = 0;
+            int headInit = 0; 
+            int x = -1;
+            String lineBuffer = "";
+            
 	    while ( ( i = in.read (dataBuffer) ) > 0 ) {
-		tempOutFileStream.write(dataBuffer,0,i); 
-		tempOutFileStream.flush();  
-	    }
-	    in.close();
-	    tempOutFileStream.flush(); 
-	    tempOutFileStream.close(); 
+                String dataLine = lineBuffer + new String (dataBuffer);
+                
+                if (headInit == 0) {
+                    // Extract OAI header; 
+                    // TODO: check for "no records found" and other error conditions! -- L.A.
+                    x = dataLine.indexOf("<record>");
+                    if ( x > 0) {
+                        tempOutFileStream.write(dataLine.substring(0, x).getBytes());
+                        tempOutFileStream.flush(); 
+                        dataLine = dataLine.substring(x);
+                                    
+                        
+                        headInit = 1;                    
+                    } else {
+                        throw new SAXException("Bad OAI ListRecords response.");
+                    }
+                } //else {
+                    
+                    
+                if (tempOutRecordStream != null && (x = dataLine.indexOf("</record>")) > -1) {
+                    tempOutRecordStream.write(dataLine.substring(0, x + "</record>".length()).getBytes());
+                    tempOutRecordStream.flush();
+                    tempOutRecordStream.close();
 
-	    FileInputStream tempInFileStream = new FileInputStream(new File ("/tmp/ListRecords." + TmpCount + ".xml"));
-	    InputSource tempData = new InputSource(tempInFileStream);
+                    produceRecordExtract(new File("/tmp/ListRecords.record." + TmpId + ".xml"), tempOutFileStream);
+                    tempOutRecordStream = null;
 
 
-	    SAXParserFactory spf = SAXParserFactory.newInstance(); 
-	    //spf.setValidating (true); 
-	    SAXParser parser = spf.newSAXParser(); 
+                    dataLine = dataLine.substring(x + "</record>".length());
+                }
+                
+                while (tempOutRecordStream == null && (x = dataLine.indexOf("<record>")) > -1) {
+                    tempOutRecordStream = new FileOutputStream("/tmp/ListRecords.record." + TmpId + ".xml");
 
-	    XMLReader reader = parser.getXMLReader(); 
+                    int y = dataLine.indexOf("</record>");
+                    if (y > 0) {
+                        tempOutRecordStream.write(dataLine.substring(x, y - x + "</record>".length()).getBytes());
+                        tempOutRecordStream.flush();
+                        tempOutRecordStream.close();
+
+                        produceRecordExtract(new File("/tmp/ListRecords.record." + TmpId + ".xml"), tempOutFileStream);
+                        tempOutRecordStream = null;
+
+                        dataLine = dataLine.substring(y - x + "</record>".length());
+                    }
+                }
+
+                if (dataLine.matches("<[^>]*$")) {
+                    int y = dataLine.lastIndexOf("<");
+                    lineBuffer = dataLine.substring(y);
+                    dataLine = dataLine.substring(0, y);
+                }
+
+                tempOutRecordStream.write(dataLine.getBytes());
+            }
+               
+            // What's left in the buffer is, presumably, the tail end of the 
+            // OAI Response. Dump it into the extract file: 
+                
+            tempOutFileStream.write(lineBuffer.getBytes());    
+            tempOutFileStream.flush();  
 	    
-	    tempOutFileStream = new FileOutputStream("/tmp/ListRecords.extract." + TmpCount + ".xml");
-	    PrintWriter pout = new PrintWriter (tempOutFileStream, true); 
+        } catch (SAXException sx) {
+            logger.info("Error Encountered. "+sx.getMessage());
+            responseCode = 577;
+            throw sx; 
+	} catch (IOException ex) {
+	    logger.info(requestURL, ex);
+	    responseCode = 577;
+	    throw ex; 
+	} finally {
+            in.close();
+            if (tempOutFileStream != null) {
+                tempOutFileStream.close(); 
+            }
+            if (tempOutRecordStream != null) {
+                tempOutRecordStream.close(); 
+            }
+            
+            // Delete the saved full-size original (no longer saved -- L.A.
+            // (but let's make sure the single Record file gets deleted, once
+            // we are done with it. -- TODO. 
 
-	    DVNOAIFilterHandler hd = new DVNOAIFilterHandler(pout); 
-	    reader.setContentHandler(hd); 
-	    reader.setErrorHandler(hd); 
-	    reader.parse(tempData); 
-
-	    tempInFileStream.close(); 
-	    // Delete the saved full-size original: 
-
-	    new File("/tmp/ListRecords." + TmpCount + ".xml").delete(); 
+	    ////new File("/tmp/ListRecords." + TmpId + ".xml").delete(); 
 
 	    // And now re-open the filtered extract: 
 
-	    in = new FileInputStream(new File ("/tmp/ListRecords.extract." + TmpCount + ".xml"));
-        } catch (SAXParseException spx) {
-            logger.info("DVN/ListRecords: Parsing Error Encountered. "+spx.getMessage());
-            responseCode = 577;
-	    return;      
-
-	} catch (SAXException sx) {
-            logger.info("DVN/ListRecords: Error Encountered. "+sx.getMessage());
-            responseCode = 577;
-	    return;      
-
-	}catch (Exception ex) {
-	    logger.info(requestURL, ex);
-	    responseCode = 577;
-	    return; 
-	}
+	    in = new FileInputStream(new File ("/tmp/ListRecords.extract." + TmpId + ".xml"));
+            
+        }
 
 
         InputSource data = new InputSource(in);
@@ -396,7 +459,55 @@ public class DVNOAIListRecords extends ListRecords {
 
 	// delete the extract file too: 
 
-	// new File ("/tmp/ListRecords.extract." + TmpCount + ".xml").delete();
+	// new File ("/tmp/ListRecords.extract." + TmpId + ".xml").delete();
+        // new File ("/tmp/ListRecords.record." + TmpId + ".xml").delete();
+    }
+    
+    
+    void produceRecordExtract ( File recordTempFile, FileOutputStream tempExtractFileStream) throws SAXException, IOException {
+        // try to parse the record and produce the extract: 
+        
+        FileInputStream tempInRecordStream = null;
+        ByteArrayOutputStream extractByteStream = null;
+
+        try {
+
+            tempInRecordStream = new FileInputStream(recordTempFile);
+            InputSource tempData = new InputSource(tempInRecordStream);
+
+            SAXParserFactory spf = SAXParserFactory.newInstance();
+            //spf.setValidating (true); 
+            SAXParser parser = spf.newSAXParser();
+
+            XMLReader reader = parser.getXMLReader();
+
+            extractByteStream = new ByteArrayOutputStream();
+            PrintWriter pout = new PrintWriter(extractByteStream, true);
+
+            DVNOAIFilterHandler hd = new DVNOAIFilterHandler(pout);
+            reader.setContentHandler(hd);
+            reader.setErrorHandler(hd);
+            reader.parse(tempData);
+
+
+            // If we've made it all the way down here without 
+            // catching any exceptions, it means we've got the
+            // record parsed and extract produced. We can save 
+            // it.
+
+            tempExtractFileStream.write(extractByteStream.toByteArray());
+        } catch (SAXException sx) {
+            logger.info("SAX error encountered. " + sx.getMessage());
+        } catch (Exception ex) {
+            logger.info("Unknown error encountered. " + ex.getMessage());
+        } finally {
+            if (tempInRecordStream != null) {
+                tempInRecordStream.close();
+            }
+            if (extractByteStream != null) {
+                extractByteStream.close();
+            }
+        }
     }
     
     /**

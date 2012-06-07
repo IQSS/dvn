@@ -48,7 +48,7 @@ public class DVNOAIFilterHandler extends DefaultHandler {
     }
 
     public void startDocument() throws SAXException {
-	myout.println ("<?xml version='1.0'?>\n"); 
+	//myout.println ("<?xml version='1.0'?>\n"); 
     }
     public void endDocument() throws SAXException {
 	myout.flush(); 

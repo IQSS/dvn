@@ -356,13 +356,18 @@ public class DVNOAIListRecords extends ListRecords {
                         tempOutFileStream.write(dataLine.substring(0, x).getBytes());
                         tempOutFileStream.flush(); 
                         dataLine = dataLine.substring(x);
+                    } else if (dataLine.indexOf("<error>") > 0 
+                            || dataLine.indexOf("</ListRecords>") > 0) {
+                        // Error (or empty) OAI response; ok.
                                     
                         
-                        headInit = 1;                    
                     } else {
                         throw new SAXException("Bad OAI ListRecords response.");
                     }
-                } //else {
+                    
+                    headInit = 1;                    
+
+                } 
                     
                     
                 if (tempOutRecordStream != null && (x = dataLine.indexOf("</record>")) > -1) {
@@ -371,6 +376,7 @@ public class DVNOAIListRecords extends ListRecords {
                     tempOutRecordStream.close();
 
                     produceRecordExtract(new File("/tmp/ListRecords.record." + TmpId + "." + j + ".xml"), tempOutFileStream);
+                    j++; 
                     tempOutRecordStream = null;
 
 
@@ -389,17 +395,21 @@ public class DVNOAIListRecords extends ListRecords {
                         produceRecordExtract(new File("/tmp/ListRecords.record." + TmpId + "." + j + ".xml"), tempOutFileStream);
                         tempOutRecordStream = null;
 
-                        dataLine = dataLine.substring(y - x + "</record>".length());
+                        dataLine = dataLine.substring(x + "</record>".length());
                     }
                 }
 
-                if (dataLine.matches("<[^>]*$")) {
-                    int y = dataLine.lastIndexOf("<");
-                    lineBuffer = dataLine.substring(y);
-                    dataLine = dataLine.substring(0, y);
-                }
+                if (tempOutRecordStream != null) {
+                    if (dataLine.matches("<[^>]*$")) {
+                        int y = dataLine.lastIndexOf("<");
+                        lineBuffer = dataLine.substring(y);
+                        dataLine = dataLine.substring(0, y);
+                    }
 
-                tempOutRecordStream.write(dataLine.getBytes());
+                    tempOutRecordStream.write(dataLine.getBytes());
+                } else {
+                    lineBuffer = dataLine; 
+                }
             }
                
             // What's left in the buffer is, presumably, the tail end of the 

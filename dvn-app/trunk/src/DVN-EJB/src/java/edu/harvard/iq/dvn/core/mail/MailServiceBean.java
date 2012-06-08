@@ -28,9 +28,11 @@
 package edu.harvard.iq.dvn.core.mail;
 
 import edu.harvard.iq.dvn.core.study.StudyFileEditBean;
+import edu.harvard.iq.dvn.core.study.StudyServiceLocal;
 import edu.harvard.iq.dvn.core.study.StudyVersion;
 import edu.harvard.iq.dvn.core.vdc.VDC;
 import edu.harvard.iq.dvn.core.vdc.VDCNetworkServiceLocal;
+import edu.harvard.iq.dvn.ingest.dsb.DSBIngestMessage;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Properties;
@@ -54,6 +56,7 @@ import javax.mail.internet.MimeMessage;
 public class MailServiceBean implements edu.harvard.iq.dvn.core.mail.MailServiceLocal, java.io.Serializable {
 
     @EJB VDCNetworkServiceLocal vdcNetworkService;
+    @EJB StudyServiceLocal studyService;
 
     /**
      * Creates a new instance of MailServiceBean
@@ -140,22 +143,17 @@ public class MailServiceBean implements edu.harvard.iq.dvn.core.mail.MailService
               
     }
    
-    private String getIngestMessagePrefix(StudyVersion studyVersion) {
-        String studyTitle = studyVersion.getMetadata().getTitle();
-        String studyGlobalId = studyVersion.getStudy().getGlobalId();
-        Long versionNumber = studyVersion.getVersionNumber();
-        String dvnName = studyVersion.getStudy().getOwner().getName();        
-        
+    private String getIngestMessagePrefix(DSBIngestMessage ingestMessage) {
         String messagePrefix = "";
-        messagePrefix += "Dataverse: " + dvnName + "\n";
-        messagePrefix += "Study Global Id: " + studyGlobalId + " (v" + versionNumber + ")\n";
-        messagePrefix += "Study Title: " + studyTitle + "\n";
+        messagePrefix += "Dataverse: " + ingestMessage.getDataverseName() + "\n";
+        messagePrefix += "Study Global Id: " + ingestMessage.getStudyGlobalId() + " (v" + ingestMessage.getStudyVersionNumber() + ")\n";
+        messagePrefix += "Study Title: " + ingestMessage.getStudyTitle() + "\n";
         return messagePrefix;
     }
    
-    public void sendIngestRequestedNotification(String userEmail, StudyVersion studyVersion, List subsettableFiles) {
+    public void sendIngestRequestedNotification(DSBIngestMessage ingestMessage, List subsettableFiles) {
         String msgSubject = "Dataverse Network: The upload of your subsettable file(s) is in progress";
-        String msgText = getIngestMessagePrefix(studyVersion);
+        String msgText = getIngestMessagePrefix(ingestMessage);
         
         msgText += "\nYou have requested the following subsettable files to be uploaded: \n";
         Iterator iter = subsettableFiles.iterator();
@@ -164,12 +162,12 @@ public class MailServiceBean implements edu.harvard.iq.dvn.core.mail.MailService
             msgText += "  " + fileBean.getFileMetadata().getLabel() + "\n";
         }
         msgText +="\nUpload in progress ...";
-        sendDoNotReplyMail(userEmail, msgSubject, msgText );
+        sendDoNotReplyMail(ingestMessage.getIngestEmail(), msgSubject, msgText );
     }
     
-    public void sendIngestCompletedNotification(String userEmail, StudyVersion studyVersion, List successfulFiles, List problemFiles) {
+    public void sendIngestCompletedNotification(DSBIngestMessage ingestMessage, List successfulFiles, List problemFiles) {
         String msgSubject = "Dataverse Network: Upload request complete";
-        String msgText = getIngestMessagePrefix(studyVersion);      
+        String msgText = getIngestMessagePrefix( ingestMessage );      
         
         msgText += "\nYour upload request has completed.\n";
          if (successfulFiles != null && successfulFiles.size() != 0) {               
@@ -192,7 +190,7 @@ public class MailServiceBean implements edu.harvard.iq.dvn.core.mail.MailService
             }
         }
         
-        sendDoNotReplyMail(userEmail, msgSubject, msgText);
+        sendDoNotReplyMail(ingestMessage.getIngestEmail(), msgSubject, msgText);
     }
     
   
@@ -317,28 +315,34 @@ public class MailServiceBean implements edu.harvard.iq.dvn.core.mail.MailService
               sendDoNotReplyMail(email,subject,messageText);
       }
       public void sendHarvestNotification(String email, String vdcName, String logFileName, String logTimestamp, boolean harvestError, int harvestedStudyCount, List<String> failedIdentifiers) {
+          // in 3.1 we've decided to only send e-mails when a harvest has a failure
+          // TODO: we should make this configurable at the DVN level for all messages, all non-zero messages, only error messages         
+          boolean sendMail = false;
           String subject = null;
+          String messageText=null;
+          String messageSuffix = null;
+          
           if (harvestError) {
-              subject="Harvest Error Notification"; 
+              sendMail = true;
+              subject="Harvest Error Notification";
+              messageText = "A harvest has run for "+vdcName+" Dataverse, with errors.\n";
+              messageSuffix = "Please see "+logFileName+" and server.log for details of harvest errors.";
           }else {
-              return; // in 3.1 we've decided to only send e-mails when a harvest gas a failure
-              // TODO: we should make this configurable at the DVN level for all messages, all non-zero messages, only error messages
-              //subject="Harvest Success Notification";
+              subject="Harvest Success Notification";
+              messageText = "A harvest has successfully completed for "+vdcName+" Dataverse. \n";
+              messageSuffix = "Please see "+logFileName+" for more details.";
           }
           subject +=" ("+vdcName+","+logTimestamp+")";
-          String messageText=null;
-          if (!harvestError) {
-              messageText = "A harvest has successfully completed for "+vdcName+" Dataverse. \n";
-          } else {
-            messageText = "A harvest has run for "+vdcName+" Dataverse, with errors.\n";
-          }
+         
                
           if (!harvestError && harvestedStudyCount==0) {
             messageText += " No studies have been harvested (no updates found since last harvest). ";
           } else {
             messageText += ""+harvestedStudyCount+" studies were successfully harvested.\n";
           }
+          
           if (failedIdentifiers.size()>0) {
+                sendMail = true;
                 messageText+= "Harvest failed for the following identifiers - \n";
                 Iterator iter = failedIdentifiers.iterator();
                 while (iter.hasNext()) {
@@ -346,12 +350,10 @@ public class MailServiceBean implements edu.harvard.iq.dvn.core.mail.MailService
                 }                 
           
           }
-          if (harvestError ) {
-              messageText+="Please see "+logFileName+" and server.log for details of harvest errors.";
-          } else {
-              messageText+="Please see "+logFileName+" for more details.";
+          
+          if (sendMail) {
+            sendDoNotReplyMail(email,subject,messageText + messageSuffix);
           }
-          sendDoNotReplyMail(email,subject,messageText);
       }   
       
     public void sendExportErrorNotification(String email, String vdcNetworkName) {

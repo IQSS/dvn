@@ -21,6 +21,7 @@ package edu.harvard.iq.dvn.core.mail;
 
 import edu.harvard.iq.dvn.core.study.StudyVersion;
 import edu.harvard.iq.dvn.core.vdc.VDC;
+import edu.harvard.iq.dvn.ingest.dsb.DSBIngestMessage;
 import java.util.List;
 import javax.ejb.Local;
 
@@ -51,9 +52,9 @@ public interface MailServiceLocal  extends java.io.Serializable  {
     public void sendFileAccessRejectNotification(String userEmail, String studyTitle,String globalId,String adminEmail);
 
     
-    public void sendIngestRequestedNotification(String userMail, StudyVersion studyVersion, List subsettableFiles);
+    public void sendIngestRequestedNotification(DSBIngestMessage ingestMessage, List subsettableFiles);
 
-    public void sendIngestCompletedNotification(String userEmail, StudyVersion studyVersion, List successfulFiles, List problemFiles);    
+    public void sendIngestCompletedNotification(DSBIngestMessage ingestMessage, List successfulFiles, List problemFiles);    
 
     public void sendAddSiteNotification(String dataverseCreatorEmail, String siteName, String siteAddress);
 

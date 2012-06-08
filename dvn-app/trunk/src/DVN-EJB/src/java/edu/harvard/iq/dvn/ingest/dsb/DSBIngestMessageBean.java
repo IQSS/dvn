@@ -89,7 +89,6 @@ public class DSBIngestMessageBean implements MessageListener {
         try {           
             ObjectMessage om = (ObjectMessage) message;
             ingestMessage = (DSBIngestMessage) om.getObject();
-            sv = studyService.getStudyVersionById( ingestMessage.getStudyVersionId() );
             String detail = "Ingest processing for " +ingestMessage.getFileBeans().size() + " file(s).";
                       
             Iterator iter = ingestMessage.getFileBeans().iterator();
@@ -121,7 +120,7 @@ public class DSBIngestMessageBean implements MessageListener {
             
             
             if ( ingestMessage.sendInfoMessage() || ( problemFiles.size() >= 0 && ingestMessage.sendErrorMessage() ) ) {
-                mailService.sendIngestCompletedNotification(ingestMessage.getIngestEmail(), sv, successfulFiles, problemFiles);
+                mailService.sendIngestCompletedNotification(ingestMessage, successfulFiles, problemFiles);
             }
             
         } catch (JMSException ex) {
@@ -131,7 +130,7 @@ public class DSBIngestMessageBean implements MessageListener {
             ex.printStackTrace();
             // if a general exception is caught that means the entire upload failed
             if (ingestMessage.sendErrorMessage()) {
-                mailService.sendIngestCompletedNotification(ingestMessage.getIngestEmail(), sv, null, ingestMessage.getFileBeans());
+                mailService.sendIngestCompletedNotification(ingestMessage, null, ingestMessage.getFileBeans());
             }
             
         } finally {

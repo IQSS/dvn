@@ -159,14 +159,23 @@ public class DVNOAIHandler extends OaiHandler {
       for(int i = 0; i < identifierNodeList.getLength(); i++) {
 	    Node node = identifierNodeList.item(i);
             
-            String globalId = node.getFirstChild().getNodeValue();
-            // The OAI id may contain the OAI set name, in addition to the
-            // global id; strip it: 
-            globalId = globalId.replaceFirst("^[^/]*//", "");
-            // Now, create the DVN API URL for the full DDI for this study: 
-            String ddiURL = "http://" + dvnHostName + "/dvn/api/metadata/" + globalId; 
+            // Some of these identifiers may be *deleted*! 
+            // (and some <identifier>...</identifier> blocks 
+            // can be empty! -- see DVNOAIFilterHandler for details. 
+            // So do assume that getFirstChild below may return null!
             
-            ddiUrls.add(ddiURL);
+            if (node.getFirstChild() != null) {
+                String globalId = node.getFirstChild().getNodeValue();
+                // The OAI id may contain the OAI set name, in addition to the
+                // global id; strip it: 
+                if (globalId != null && !(globalId.equals(""))) {
+                    globalId = globalId.replaceFirst("^[^/]*//", "");
+                    // Now, create the DVN API URL for the full DDI for this study: 
+                    String ddiURL = "http://" + dvnHostName + "/dvn/api/metadata/" + globalId; 
+            
+                    ddiUrls.add(ddiURL);
+                }
+            }
       }
       
       // Add the DDI urls to the crawl list: 

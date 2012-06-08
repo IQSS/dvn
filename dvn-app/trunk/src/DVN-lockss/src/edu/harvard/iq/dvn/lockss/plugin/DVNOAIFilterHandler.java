@@ -37,6 +37,7 @@ public class DVNOAIFilterHandler extends DefaultHandler {
     private int printflag = 1;
     private int textprintflag = 1;
     private int idflag = 0; 
+    private int deletedflag = 0; 
     private String currentIdentifier = null; 
     private String lastIdentifier = null; 
 
@@ -109,6 +110,12 @@ public class DVNOAIFilterHandler extends DefaultHandler {
 			aValue.equals("LOCKSS:CRAWLING")) {
 			textprintflag = 1;
 		    }
+                    
+                    if (qName.equals("header") &&
+                        aQName.equals("status") &&
+                        aValue.equals("deleted")) {
+                        deletedflag = 1;
+                    }
 		}
 	    }
 
@@ -122,8 +129,11 @@ public class DVNOAIFilterHandler extends DefaultHandler {
             
             // If this is the OAI <identifier> tag, we want to cache it.
             
-            if (qName.equals("identifier") && printflag == 1) {
-                idflag = 1; 
+            if (qName.equals("identifier") && printflag != 0) {
+                idflag = 1;
+                if (deletedflag != 0) {
+                    textprintflag = 0;
+                }
             }
           
 	}   
@@ -155,6 +165,13 @@ public class DVNOAIFilterHandler extends DefaultHandler {
             currentIdentifier = null; 
         }
 
+        if (qName.equals("header")) {
+            deletedflag = 0; 
+        }
+        
+        if (qName.equals("identifier") && printflag != 0) {
+            textprintflag = 1;
+        }
     }
        
     public void characters(char buf[], int offset, int len) throws SAXException {

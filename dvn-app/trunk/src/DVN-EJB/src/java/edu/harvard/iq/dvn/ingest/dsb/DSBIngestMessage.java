@@ -56,6 +56,11 @@ public class DSBIngestMessage implements Serializable{
     private Long studyVersionId;
     private List fileBeans;
     private String versionNote;
+    
+    private String dataverseName;
+    private String studyGlobalId;
+    private String studyVersionNumber;
+    private String studyTitle;
 
     public String getVersionNote() {
         return versionNote;
@@ -121,4 +126,38 @@ public class DSBIngestMessage implements Serializable{
     public boolean sendErrorMessage() {
         return messageLevel >= INGEST_MESAGE_LEVEL_ERROR;
     }
+
+    public String getDataverseName() {
+        return dataverseName;
+    }
+
+    public void setDataverseName(String dataverseName) {
+        this.dataverseName = dataverseName;
+    }
+
+    public String getStudyGlobalId() {
+        return studyGlobalId;
+    }
+
+    public void setStudyGlobalId(String studyGlobalId) {
+        this.studyGlobalId = studyGlobalId;
+    }
+
+    public String getStudyTitle() {
+        return studyTitle;
+    }
+
+    public void setStudyTitle(String studyTitle) {
+        this.studyTitle = studyTitle;
+    }
+
+    public String getStudyVersionNumber() {
+        return studyVersionNumber;
+    }
+
+    public void setStudyVersionNumber(String studyVersionNumber) {
+        this.studyVersionNumber = studyVersionNumber;
+    }
+    
+    
 }

@@ -314,6 +314,12 @@ public class StudyFileServiceBean implements StudyFileServiceLocal {
                 ingestMessage.setStudyId(study.getId());
                 ingestMessage.setStudyVersionId(studyVersion.getId());
                 ingestMessage.setVersionNote(studyVersion.getVersionNote());
+
+                ingestMessage.setStudyTitle( studyVersion.getMetadata().getTitle() );
+                ingestMessage.setStudyGlobalId( studyVersion.getStudy().getGlobalId() );
+                ingestMessage.setStudyVersionNumber( studyVersion.getVersionNumber().toString() );
+                ingestMessage.setDataverseName( studyVersion.getStudy().getOwner().getName() );                 
+                
                 Message message = session.createObjectMessage(ingestMessage);
 
                 String detail = "Ingest processing for " + subsettableFiles.size() + " file(s).";
@@ -328,7 +334,7 @@ public class StudyFileServiceBean implements StudyFileServiceLocal {
 
                 // send an e-mail
                 if (ingestMessage.sendInfoMessage()) {
-                    mailService.sendIngestRequestedNotification(ingestEmail, studyVersion, subsettableFiles);
+                    mailService.sendIngestRequestedNotification(ingestMessage, subsettableFiles);
                 }
 
             } catch (JMSException ex) {

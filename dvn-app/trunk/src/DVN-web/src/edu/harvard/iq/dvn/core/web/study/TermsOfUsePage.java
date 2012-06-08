@@ -33,6 +33,7 @@ import edu.harvard.iq.dvn.core.study.StudyServiceLocal;
 import edu.harvard.iq.dvn.core.vdc.*;
 import edu.harvard.iq.dvn.core.web.common.VDCBaseBean;
 import edu.harvard.iq.dvn.core.web.servlet.TermsOfUseFilter;
+import edu.harvard.iq.dvn.core.web.util.CharacterValidator;
 import java.io.IOException;
 import java.util.*;
 import java.util.logging.Level;
@@ -417,6 +418,13 @@ public class TermsOfUsePage extends VDCBaseBean {
             }
         }
     }
+    
+    public void validateEmail(FacesContext context, 
+                          UIComponent toValidate,
+                          Object value) {
+    CharacterValidator charactervalidator = new CharacterValidator();
+    charactervalidator.validateWEmail(context, toValidate, value);
+        }
     
     private List <SelectItem> setResponseUISelectItems(CustomQuestion cq){
         List  <SelectItem> retList = new ArrayList();

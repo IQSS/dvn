@@ -79,8 +79,10 @@
                         <ice:graphicImage value="/resources/images/icon_required.gif" rendered="#{TermsOfUsePage.study.owner.guestBookQuestionnaire.emailRequired}"/>
                       </div>
                       <div jsfc="ice:panelGroup">
-                        <ice:inputText id="input_EmailText" size="40" value="#{TermsOfUsePage.guestBookResponse.email}"/>
+                          <ice:inputText id="input_EmailText" size="40" value="#{TermsOfUsePage.guestBookResponse.email}">
+                                                             <f:validator validatorId="EmailValidator"/></ice:inputText>
                         <ice:outputText id="emailMessage" styleClass="errorMessage" value="#{VDCRender.flash.inputEmailWarningMessage}" rendered="#{!empty VDCRender.flash.inputEmailWarningMessage}"/>
+                       <ice:message for="input_EmailText" styleClass="errorMessage"/>
                       </div>
                       <div jsfc="ice:panelGroup">
                         <ice:outputText value="Institution"/>

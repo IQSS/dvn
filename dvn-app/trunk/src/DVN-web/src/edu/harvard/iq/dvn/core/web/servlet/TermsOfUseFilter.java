@@ -98,7 +98,7 @@ public class TermsOfUseFilter implements Filter {
     public static boolean isGuestbookRequired(Study study,  Map termsOfUseMap) {
         
         boolean vdcTermsRequired = false;
-        if (study.getOwner().getGuestBookQuestionnaire() != null){
+        if (study.getOwner().getGuestBookQuestionnaire() != null){ 
                vdcTermsRequired =  study.getOwner().getGuestBookQuestionnaire().isEnabled();
         }        
         if (vdcTermsRequired) {
@@ -115,7 +115,7 @@ public class TermsOfUseFilter implements Filter {
                vdcTermsRequired =  study.getOwner().getGuestBookQuestionnaire().isEnabled();
         }        
         if (vdcTermsRequired) {
-            return termsOfUseMap.get("study_guestbook_logged_in_" + study.getId()) == null;
+            return termsOfUseMap.get("study_guestbook_logged_in_" + study.getId()) != null;
         }
 
         return false;
@@ -141,9 +141,17 @@ public class TermsOfUseFilter implements Filter {
                 guestBookResponseServiceBean.addGuestBookRecord(study,  vdcSession.getLoginBean().getUser() ,file);
             }
         }
-
-
     }
+    
+    private  void updateMap(Study study, Map termsOfUseMap ) {
+                    //need to check for the "second run through to the TOU" for non-logged in users.
+            //  if you aren't logged in we remove the map so that any subsequent 
+            // downloads are run through the Guest book
+            if (vdcSession.getLoginBean() == null){
+                termsOfUseMap.remove("study_guestbook_" + study.getId());
+            }
+    }
+
 
     public static boolean isDepositDataverseTermsRequired(VDC currentVDC,
             Map termsOfUseMap) {
@@ -439,14 +447,21 @@ public class TermsOfUseFilter implements Filter {
 	    }
 
             if (NOTaDSBrequest) {
+
                 Map termsOfUseMap = getTermsOfUseMap();
-                if (!isGuestbookBypassed(study, termsOfUseMap)){
+                //Do a pre-test so that we can remove the map for any non-logged-in users
+                boolean guestbookRequiredPreTest = isGuestbookRequired(study, termsOfUseMap);
+                if (isGuestbookBypassed(study, termsOfUseMap)){
                      addGuestbookRecords(study, fileId);
                 }
+                if (!guestbookRequiredPreTest){
+                     updateMap(study, termsOfUseMap);
+                }
+               
                 if (isDownloadDvnTermsRequired(vdcNetworkService.find(), termsOfUseMap) 
                         || isDownloadDataverseTermsRequired(study, termsOfUseMap) 
                         || isDownloadStudyTermsRequired(study, termsOfUseMap)
-                        || isGuestbookRequired(study, termsOfUseMap)) {
+                        || guestbookRequiredPreTest) {
                     VDC currentVDC = vdcService.getVDCFromRequest(req);
                     String params = "?studyId=" + study.getId();
                     if ( versionNumber != null ) {
@@ -460,7 +475,6 @@ public class TermsOfUseFilter implements Filter {
                     if (currentVDC != null) {
                         params += "&vdcId=" + currentVDC.getId();
                     }
-
                     res.sendRedirect(req.getContextPath() + "/faces/study/TermsOfUsePage.xhtml" + params);
                     return true; // don't continue with chain since we are redirecting'
                 }

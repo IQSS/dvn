@@ -417,7 +417,7 @@
                         </ice:selectOneMenu>  
                 </ice:column>  
                 <ice:column>   
-                  <ice:commandLink value="Select Vocabulary" rendered="#{TemplateFormPage.networkEdit}" 
+                  <ice:commandLink value="Select Vocabulary" 
                                        action="#{TemplateFormPage.openPopupStandard(TemplateFormPage.studyMap[sfc.productionPlace].templateField)}"/>
                   <ice:selectOneMenu immediate="false" partialSubmit="true" 
                                         value="#{TemplateFormPage.studyMap[sfc.productionPlace].templateField.fieldInputLevelString}">
@@ -496,7 +496,7 @@
                         </ice:selectOneMenu> 
                 </ice:column>
                 <ice:column>
-                  <ice:commandLink value="Select Vocabulary" rendered="#{TemplateFormPage.networkEdit}" 
+                  <ice:commandLink value="Select Vocabulary" 
                                        action="#{TemplateFormPage.openPopupStandard(TemplateFormPage.studyMap[sfc.fundingAgency].templateField)}"/>
                   <ice:selectOneMenu immediate="false"  partialSubmit="true" 
                                         value="#{TemplateFormPage.studyMap[sfc.fundingAgency].templateField.fieldInputLevelString}">
@@ -713,7 +713,7 @@
                  </ice:selectOneMenu>  
                 </ice:column>
                 <ice:column>
-                 <ice:commandLink value="Select Vocabulary" rendered="#{TemplateFormPage.networkEdit}" 
+                 <ice:commandLink value="Select Vocabulary" 
                                        action="#{TemplateFormPage.openPopupStandard(TemplateFormPage.studyMap[sfc.depositor].templateField)}"/>
                   <ice:selectOneMenu immediate="false" partialSubmit="true" 
                                         value="#{TemplateFormPage.studyMap[sfc.depositor].templateField.fieldInputLevelString}">
@@ -1249,7 +1249,7 @@
                  </ice:selectOneMenu>  
                 </ice:column>
                 <ice:column>
-                 <ice:commandLink value="Select Vocabulary" rendered="#{TemplateFormPage.networkEdit}" 
+                 <ice:commandLink value="Select Vocabulary"
                                        action="#{TemplateFormPage.openPopupStandard(TemplateFormPage.studyMap[sfc.country].templateField)}"/>
                   <ice:selectOneMenu immediate="false" partialSubmit="true" 
                                         value="#{TemplateFormPage.studyMap[sfc.country].templateField.fieldInputLevelString}">
@@ -1283,7 +1283,7 @@
                  </ice:selectOneMenu>  
                 </ice:column>
                 <ice:column>
-                 <ice:commandLink value="Select Vocabulary" rendered="#{TemplateFormPage.networkEdit}" 
+                 <ice:commandLink value="Select Vocabulary" 
                                        action="#{TemplateFormPage.openPopupStandard(TemplateFormPage.studyMap[sfc.geographicCoverage].templateField)}"/>
                   <ice:selectOneMenu immediate="false" partialSubmit="true" 
                                         value="#{TemplateFormPage.studyMap[sfc.geographicCoverage].templateField.fieldInputLevelString}">
@@ -1317,7 +1317,7 @@
                  </ice:selectOneMenu>  
                 </ice:column>
                 <ice:column>
-                 <ice:commandLink value="Select Vocabulary" rendered="#{TemplateFormPage.networkEdit}" 
+                 <ice:commandLink value="Select Vocabulary" 
                                        action="#{TemplateFormPage.openPopupStandard(TemplateFormPage.studyMap[sfc.geographicUnit].templateField)}"/>
                   <ice:selectOneMenu immediate="false" partialSubmit="true" 
                                         value="#{TemplateFormPage.studyMap[sfc.geographicUnit].templateField.fieldInputLevelString}">
@@ -1549,7 +1549,7 @@
                         <ice:commandButton rendered="#{customValuesDataModel[1].size() > 1}" 
                                 alt="Remove Row" title="Remove Row" image="/resources/images/icon_remove.gif" actionListener="#{TemplateFormPage.removeCustomRow}"/>
 
-                        <ice:commandLink value="Select Vocabulary" rendered="#{TemplateFormPage.networkEdit and customFieldsDataModel[1].rowIndex == 0 
+                        <ice:commandLink value="Select Vocabulary" rendered="#{customFieldsDataModel[1].rowIndex == 0 
                                                                                and ( customFieldsDataModel[0].studyField.fieldType == 'textBox' or customFieldsDataModel[0].studyField.fieldType == 'html')}" 
                                        actionListener="#{TemplateFormPage.openPopup}"/>
 

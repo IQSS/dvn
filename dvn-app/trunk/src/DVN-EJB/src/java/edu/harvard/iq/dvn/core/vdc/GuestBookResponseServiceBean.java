@@ -87,7 +87,9 @@ public class GuestBookResponseServiceBean {
     public void addGuestBookRecord(Study study, VDCUser vdcUser, StudyFile studyFile){
         GuestBookResponse guestBookResponseSource =  findByStudyFileAndUser(study, vdcUser);
         GuestBookResponse guestBookResponseAdd = initGuestBookResponse(guestBookResponseSource, study, studyFile);
-        if (!guestBookResponseSource.getStudyFile().equals(studyFile)){
+        Long timeDiff = guestBookResponseAdd.getResponseTime().getTime() - guestBookResponseSource.getResponseTime().getTime();
+        if (!(guestBookResponseSource.getStudyFile().equals(studyFile))
+                || timeDiff > 30000   ){
                     em.persist(guestBookResponseAdd);
         }
     }

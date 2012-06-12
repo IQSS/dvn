@@ -119,7 +119,7 @@
                                   styleClass="dvnGuestbookCustomQuestions"
                                   value="#{TermsOfUsePage.customQuestionResponseUIs}" var="customQuestionResponseUI">
                     <ice:column>
-                       <ice:outputText value="#{customQuestionResponseUI.customQuestionResponse.staticQuestionString}"/>
+                       <ice:outputText value="#{customQuestionResponseUI.customQuestionResponse.customQuestion.questionString}"/>
                        <ice:graphicImage value="/resources/images/icon_required.gif" rendered="#{customQuestionResponseUI.required}"/>
                        <div class="dvnGuestbookCustomQuestionInnerBlock">
                            <ice:inputText id="input_questionText" size="100" value="#{customQuestionResponseUI.customQuestionResponse.response}"

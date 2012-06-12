@@ -190,7 +190,7 @@ public class TermsOfUsePage extends VDCBaseBean {
                     CustomQuestionResponseUI responseUI = new CustomQuestionResponseUI();
                     response.setGuestBookResponse(guestBookResponse);
                     response.setResponse("");
-                    response.setStaticQuestionString(cq.getQuestionString());
+                    response.setCustomQuestion(cq);
                     responseUI.setCustomQuestionResponse(response);
                     responseUI.setRequired(cq.isRequired());
                     responseUI.setQuestionType(cq.getQuestionType());
@@ -296,8 +296,9 @@ public class TermsOfUsePage extends VDCBaseBean {
     }
     
     public String acceptTerms_action () {
-        System.out.print("in accept terms...");
         Map termsOfUseMap = getTermsOfUseMap();
+        Map guestbookResponseMap = getGuestbookResponseMap();
+        
         if (isGuestbookOnlyRequired()){
             termsAccepted = true;
         }
@@ -323,14 +324,19 @@ public class TermsOfUsePage extends VDCBaseBean {
                         StudyFile file = studyFileService.getStudyFile(new Long(st.nextToken()));
                         GuestBookResponse gbSave = new GuestBookResponse(guestBookResponse);
                         gbSave.setStudyFile(file);
-                        guestBookResponseServiceBean.update(gbSave);
+                        //Change to add to hashmap
+                        guestbookResponseMap.put("guestBookResponse_" + file.getId(), guestBookResponse);
+                                                    System.out.print("Add to map" + guestBookResponse );
+                        //guestBookResponseServiceBean.update(gbSave);
                     }
                 } else {
                     //only one file downloaded.....
                     Long fileLongId = new Long(fileId);
                     StudyFile file = studyFileService.getStudyFile(fileLongId);
                     guestBookResponse.setStudyFile(file);
-                    guestBookResponseServiceBean.update(guestBookResponse);
+                    //Change to add to hashmap
+                    guestbookResponseMap.put("guestBookResponse_" + file.getStudy().getId(), guestBookResponse);
+                    //guestBookResponseServiceBean.update(guestBookResponse);
                 }
 
             } catch (Exception ex) {
@@ -354,12 +360,9 @@ public class TermsOfUsePage extends VDCBaseBean {
         if ( termsAccepted &&  isTouTypeDownload() && this.isDownloadDvnTermsRequired() ) { 
             termsOfUseMap.put( "dvn_download", "accepted" );
         }
-        if ( termsAccepted && this.isGuestbookRequired()  && getVDCSessionBean().getLoginBean() !=null ) { 
-            termsOfUseMap.put( "study_guestbook_logged_in_"  + study.getId(), "accepted" );
-        }
         if ( termsAccepted && this.isGuestbookRequired()) { 
             termsOfUseMap.put( "study_guestbook_"  + study.getId(), "accepted" );
-        }
+        }        
         if ( termsAccepted &&  isTouTypeDeposit() && this.isDepositDataverseTermsRequired() ) { 
             termsOfUseMap.put( "vdc_deposit_"+getDepositVDC().getId(), "accepted" );
         }      
@@ -388,6 +391,11 @@ public class TermsOfUsePage extends VDCBaseBean {
             return getVDCSessionBean().getTermsfUseMap();
         }        
     }
+    
+    private Map getGuestbookResponseMap(){
+        return getVDCSessionBean().getGuestbookResponseMap();
+    }
+    
     
     
     public void validateTermsAccepted(FacesContext context,

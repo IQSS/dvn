@@ -45,6 +45,7 @@ import edu.harvard.iq.dvn.core.vdc.VDC;
 import edu.harvard.iq.dvn.core.vdc.VDCServiceLocal;
 import edu.harvard.iq.dvn.core.vdc.VDCNetworkServiceLocal;
 import edu.harvard.iq.dvn.core.admin.LockssAuthServiceLocal;
+import edu.harvard.iq.dvn.core.vdc.*;
 
 //import edu.harvard.iq.dvn.core.vdc.LockssServer;
 //import edu.harvard.iq.dvn.core.vdc.LockssConfig;
@@ -137,6 +138,8 @@ public class FileDownloadServlet extends HttpServlet {
     VDCNetworkServiceLocal vdcNetworkService;
     @EJB
     LockssAuthServiceLocal lockssAuthService;
+    @EJB
+    GuestBookResponseServiceBean guestBookResponseServiceBean;
     
     @Inject VDCSessionBean vdcSession;
 
@@ -251,6 +254,7 @@ public class FileDownloadServlet extends HttpServlet {
 
             if (!isLockssCrawlRequest(req) && imageThumb == null) {
                 incrementDownloadCounts(file, vdc);
+                addGuestbookRecords(file);
             }
 
             // done!
@@ -1098,6 +1102,15 @@ public class FileDownloadServlet extends HttpServlet {
             studyService.incrementNumberOfDownloads(file.getId(), vdc.getId());
         } else {
             studyService.incrementNumberOfDownloads(file.getId(), (Long)null);
+        }
+    }
+    
+    private void addGuestbookRecords(StudyFile file){
+        GuestBookResponse guestbookResponse = (GuestBookResponse) vdcSession.getGuestbookResponseMap().get("guestBookResponse_" + file.getStudy().getId());
+        guestbookResponse.setStudyFile(file); 
+        guestbookResponse.setResponseTime(new Date());
+        if (guestbookResponse != null){
+             guestBookResponseServiceBean.update(guestbookResponse);
         }
     }
 

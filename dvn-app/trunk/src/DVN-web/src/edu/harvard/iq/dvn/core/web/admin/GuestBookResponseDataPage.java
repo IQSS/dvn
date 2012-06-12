@@ -47,7 +47,13 @@ public class GuestBookResponseDataPage extends VDCBaseBean implements java.io.Se
             if (gbr.getStudy().getOwner().equals(vdc)){
                 guestBookResponses.add(gbr);
             }
-        }       
+            if (gbr.getCustomQuestionResponses() !=null && !gbr.getCustomQuestionResponses().isEmpty()){
+                for (CustomQuestionResponse cqr : gbr.getCustomQuestionResponses()){
+                    System.out.print(cqr.getCustomQuestion().getQuestionString());
+                    System.out.print(cqr.getResponse());            
+                }
+            }
+        }  
     }
     
     public List<GuestBookResponse> getGuestBookResponses() {

@@ -36,8 +36,11 @@ public class CustomQuestionResponse implements Serializable {
     @ManyToOne
     @JoinColumn(nullable = false)
     private GuestBookResponse guestBookResponse;
-    private String staticQuestionString;
 
+    @ManyToOne
+    @JoinColumn(nullable = false)
+    private CustomQuestion customQuestion;
+    
     private String response;
 
     public Long getId() {
@@ -65,12 +68,12 @@ public class CustomQuestionResponse implements Serializable {
     }
     
     
-    public String getStaticQuestionString() {
-        return staticQuestionString;
+    public CustomQuestion getCustomQuestion() {
+        return customQuestion;
     }
 
-    public void setStaticQuestionString(String staticQuestionString) {
-        this.staticQuestionString = staticQuestionString;
+    public void setCustomQuestion(CustomQuestion customQuestion) {
+        this.customQuestion = customQuestion;
     }
 
     @Override

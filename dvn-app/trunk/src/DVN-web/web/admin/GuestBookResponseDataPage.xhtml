@@ -69,14 +69,21 @@
                             <ice:outputText value="Study Title"/>
                         </f:facet>
                        <ice:outputText id="studyText" 
-                                      value="This Is A Study Title"></ice:outputText>
+                                      value="#{guestBookResponse.study.handleURL}"></ice:outputText>
+                    </ice:column>
+                    <ice:column>
+                        <f:facet name="header">
+                            <ice:outputText value="Study Name"/>
+                        </f:facet>
+                       <ice:outputText id="studyTitle" 
+                                       value="#{guestBookResponse.study.latestVersion.metadata.title}"></ice:outputText>
                     </ice:column>
                     <ice:column>
                         <f:facet name="header">
                             <ice:outputText value="Study File"/>
                         </f:facet>
                        <ice:outputText id="fileText" 
-                                      value="thisisafilename.txt"></ice:outputText>
+                                      value="#{guestBookResponse.studyFile.fileName}"></ice:outputText>
                     </ice:column>
                     <ice:column>
                         <f:facet name="header">
@@ -85,17 +92,14 @@
                        <ice:outputText id="responseTimeText" 
                                        value="#{guestBookResponse.responseTime}"></ice:outputText>                 
                     </ice:column>
-                    
-                    <ui:repeat value="#{guestBookResponse.customQuestionResponses}" var="customResponse">
-                        <ice:column>
-                            <f:facet name="header">
-                                <ice:outputText id="staticQuestionStringText" 
-                                          value="#{customResponse.staticQuestionString}"></ice:outputText>
-                            </f:facet>
-                           <ice:outputText id="responseText" 
-                                          value="#{customResponse.response}"></ice:outputText>
-                        </ice:column>
-                    </ui:repeat>
+                    <ice:columns value="#{guestBookResponse.customQuestionResponses}" var="customResponse">                                        
+                 	<f:facet name="header">
+                     	      <ice:outputText value="#{customResponse.customQuestion.questionString}"/>
+                 	</f:facet>
+                         <ice:outputText value="#{customResponse.customQuestion.questionString}"/>
+                         <ice:outputText value="#{customResponse.response}"/>
+                    </ice:columns> 
+
                   </ice:dataTable>
             </div>
           </div>

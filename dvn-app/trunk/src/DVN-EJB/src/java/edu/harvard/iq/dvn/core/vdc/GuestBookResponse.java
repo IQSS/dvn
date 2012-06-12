@@ -55,9 +55,6 @@ public class GuestBookResponse implements Serializable {
     @JoinColumn(nullable=true)
     private VDCUser vdcUser;
 
-
-    
-
     @OneToMany(mappedBy="guestBookResponse",cascade={CascadeType.REMOVE, CascadeType.MERGE, CascadeType.PERSIST},orphanRemoval=true)
     private List<CustomQuestionResponse> customQuestionResponses;
 
@@ -90,7 +87,7 @@ public class GuestBookResponse implements Serializable {
             for (CustomQuestionResponse customQuestionResponse : source.getCustomQuestionResponses() ){
                 CustomQuestionResponse customQuestionResponseAdd = new CustomQuestionResponse();
                 customQuestionResponseAdd.setResponse(customQuestionResponse.getResponse());  
-                customQuestionResponseAdd.setStaticQuestionString(customQuestionResponse.getStaticQuestionString());
+                customQuestionResponseAdd.setCustomQuestion(customQuestionResponse.getCustomQuestion());
                 customQuestionResponseAdd.setGuestBookResponse(this);
                 customQuestionResponses.add(customQuestionResponseAdd);
             }           

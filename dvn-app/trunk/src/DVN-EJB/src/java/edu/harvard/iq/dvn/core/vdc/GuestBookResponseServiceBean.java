@@ -69,7 +69,7 @@ public class GuestBookResponseServiceBean {
                 CustomQuestionResponse response = new CustomQuestionResponse();
                 response.setGuestBookResponse(guestBookResponse);
                 response.setResponse(cq.getResponse());
-                response.setStaticQuestionString(cq.getStaticQuestionString());
+                response.setCustomQuestion(cq.getCustomQuestion());
                 guestBookResponse.getCustomQuestionResponses().add(response);
             }
         }

@@ -55,6 +55,7 @@ public class EditGuestBookResponsePage extends VDCBaseBean implements java.io.Se
     private GuestBookResponse guestBookResponse;
     private Long studyId;
     private Long studyFileId;
+    
     private Study study;
     private StudyFile studyFile;
 
@@ -102,7 +103,7 @@ public class EditGuestBookResponsePage extends VDCBaseBean implements java.io.Se
                     CustomQuestionResponseUI responseUI = new CustomQuestionResponseUI();
                     response.setGuestBookResponse(guestBookResponse);
                     response.setResponse("");
-                    response.setStaticQuestionString(cq.getQuestionString());
+                    response.setCustomQuestion(cq);
                     responseUI.setCustomQuestionResponse(response);
                     responseUI.setRequired(cq.isRequired());
                     responseUI.setQuestionType(cq.getQuestionType());

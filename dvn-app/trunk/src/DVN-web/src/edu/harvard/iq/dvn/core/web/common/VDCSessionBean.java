@@ -72,6 +72,14 @@ public class VDCSessionBean  implements java.io.Serializable  {
         this.loginBean = loginBean;
     }
 
+    public Map getGuestbookResponseMap() {
+        return guestbookResponseMap;
+    }
+
+    public void setGuestbookResponseMap(Map guestbookResponseMap) {
+        this.guestbookResponseMap = guestbookResponseMap;
+    }
+
     private Map termsfUseMap = new HashMap();
 
     public Map getTermsfUseMap() {
@@ -81,6 +89,10 @@ public class VDCSessionBean  implements java.io.Serializable  {
     public void setTermsfUseMap(Map termsfUseMap) {
         this.termsfUseMap = termsfUseMap;
     } 
+    
+    private Map guestbookResponseMap = new HashMap();
+    
+    
     
     public VDCUser getUser() {
         if (loginBean != null) {

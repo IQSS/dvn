@@ -20,6 +20,7 @@
 package edu.harvard.iq.dvn.core.vdc;
 
 import java.io.Serializable;
+import java.util.Date;
 import java.util.List;
 import javax.persistence.*;
 
@@ -46,12 +47,13 @@ public class CustomQuestion implements Serializable {
     @JoinColumn(nullable=false)
     private GuestBookQuestionnaire guestBookQuestionnaire;
     
+    @OneToMany(mappedBy="customQuestion",cascade={CascadeType.REMOVE, CascadeType.MERGE, CascadeType.PERSIST},orphanRemoval=true)
+    private List<CustomQuestionResponse> customQuestionResponses;
 
     @OneToMany(mappedBy="customQuestion",cascade={CascadeType.REMOVE, CascadeType.MERGE, CascadeType.PERSIST},orphanRemoval=true)
     private List<CustomQuestionValue> customQuestionValues;
     
     private String questionType;
-
     private String questionString;
     private boolean required;
 
@@ -112,6 +114,15 @@ public class CustomQuestion implements Serializable {
         this.questionType = questionType;
     }
     
+    public List<CustomQuestionResponse> getCustomQuestionResponses() {
+        return customQuestionResponses;
+    }
+
+    public void setCustomQuestionResponses(List<CustomQuestionResponse> customQuestionResponses) {
+        this.customQuestionResponses = customQuestionResponses;
+    }
+    
+       
     @Override
     public int hashCode() {
         int hash = 0;

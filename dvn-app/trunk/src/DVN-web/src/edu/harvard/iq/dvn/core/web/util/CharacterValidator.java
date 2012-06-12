@@ -52,7 +52,7 @@ public class CharacterValidator implements Validator, java.io.Serializable  {
         if (value == null) return;
         String characterString = (String) value;
         try {
-            if ( validateChars(characterString) ) {
+            if ( !validateChars(characterString) ) {
                 FacesMessage message = new FacesMessage(msg);
                 message.setSeverity(FacesMessage.SEVERITY_ERROR);
                 ((UIInput)component).setValid(false);
@@ -70,7 +70,7 @@ public class CharacterValidator implements Validator, java.io.Serializable  {
         if (value == null) return;
         String characterString = (String) value;
         try {
-            if ( validateChars(characterString) ) {
+            if ( !validateChars(characterString) ) {
                 if (emailValidator.validateEmail(characterString)){
                     //If it passes email validation, we will accept as valid......
                 } else {
@@ -88,19 +88,13 @@ public class CharacterValidator implements Validator, java.io.Serializable  {
         } 
     }
     
-    private static boolean validateChars (String characterString) {
-       boolean isInvalidChars = false;
-        try {
-                String regexp = "['\\@\\#\\$%\\^&\\*\\(\\)_\\+\\:\\<\\>\\/\\[\\]\\\\{\\}\\|\\p{Punct}\\p{Space}]";
-                Pattern pattern = Pattern.compile(regexp);
-                Matcher matcher          = pattern.matcher(characterString);
-                isInvalidChars             = matcher.find();
-                if (isInvalidChars)
-                    msg = "Found an illegal character(s) starting with:  " + characterString.charAt(matcher.start()) + "The match was found at position " + (matcher.start()+1) + ".";                    
-        } catch (Exception e) {
-            throw new FacesException(e);
-        } finally {
-          return isInvalidChars;
+    private static boolean validateChars (String characterString) {        
+        if (characterString.matches("[a-zA-z0-9\\_\\-]*")) {
+            return true;
+        } else {
+
+            msg = "Found an illegal character(s). Valid characters are a-Z, 0-9, '_', and '-' ";                    
+            return false;
         }
     }
 }

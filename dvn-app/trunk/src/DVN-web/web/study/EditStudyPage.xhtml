@@ -19,7 +19,7 @@
             <f:event type="preRenderView" listener="#{EditStudyPage.preRenderView}" />
         </f:metadata>  
     </ui:define>    
-    <ui:define name="body">
+    <ui:define name="body">first name
       <f:loadBundle basename="EditStudyBundle" var="editstudybundle"/>
       <script type="text/javascript">
           // <![CDATA[
@@ -364,7 +364,7 @@
                                                maxlength="255"
                                                binding="#{EditStudyPage.inputAuthorName}"
                                                required="#{EditStudyPage.studyMap[sfc.author].required  and EditStudyPage.validateRequired}" requiredMessage="This field is required." />
-                                <ice:outputText styleClass="vdcEditStudyFormatExample" value="(FirstName LastName)"/>
+                                <ice:outputText styleClass="vdcEditStudyFormatExample" value="(LastName, FirstName)"/>
                                 <ice:message styleClass="errorMessage" for="input_authorName"/>
                               </div>
                               <div jsfc="ice:panelGroup" styleClass="vdcEditStudyFieldFloat2" >

@@ -28,76 +28,76 @@
             <div class="dvn_margin12">
                   <ice:dataTable cellpadding="0" cellspacing="0" width="100%" 
 
-                                  value="#{GuestBookResponseDataPage.guestBookResponses}" var="guestBookResponse">
+                                  value="#{GuestBookResponseDataPage.guestBookResponsesDisplay}" var="guestBookResponseDisplay">
                     <ice:column>
                         <f:facet name="header">
                             <ice:outputText value="First Name"/>
                         </f:facet>
                        <ice:outputText id="firstnameText" 
-                                      value="#{guestBookResponse.firstname}"></ice:outputText>
+                                      value="#{guestBookResponseDisplay.guestBookResponse.firstname}"></ice:outputText>
                     </ice:column>
                     <ice:column>
                         <f:facet name="header">
                             <ice:outputText value="Last Name"/>
                         </f:facet>
                        <ice:outputText id="lastnameText" 
-                                      value="#{guestBookResponse.lastname}"></ice:outputText>
+                                      value="#{guestBookResponseDisplay.guestBookResponse.lastname}"></ice:outputText>
                     </ice:column>
                     <ice:column>
                         <f:facet name="header">
                             <ice:outputText value="Email"/>
                         </f:facet>
                        <ice:outputText id="emailText" 
-                                      value="#{guestBookResponse.email}"></ice:outputText>
+                                      value="#{guestBookResponseDisplay.guestBookResponse.email}"></ice:outputText>
                     </ice:column>
                     <ice:column>
                         <f:facet name="header">
                             <ice:outputText value="Institution"/>
                         </f:facet>
                        <ice:outputText id="institutionText" 
-                                      value="#{guestBookResponse.institution}"></ice:outputText>
+                                      value="#{guestBookResponseDisplay.guestBookResponse.institution}"></ice:outputText>
                     </ice:column>
                     <ice:column>
                         <f:facet name="header">
                             <ice:outputText value="Position"/>
                         </f:facet>
                        <ice:outputText id="positionText" 
-                                      value="#{guestBookResponse.position}"></ice:outputText>
+                                      value="#{guestBookResponseDisplay.guestBookResponse.position}"></ice:outputText>
                     </ice:column>
                     <ice:column>
                         <f:facet name="header">
                             <ice:outputText value="Study Title"/>
                         </f:facet>
                        <ice:outputText id="studyText" 
-                                      value="#{guestBookResponse.study.handleURL}"></ice:outputText>
+                                      value="#{guestBookResponseDisplay.guestBookResponse.study.handleURL}"></ice:outputText>
                     </ice:column>
                     <ice:column>
                         <f:facet name="header">
                             <ice:outputText value="Study Name"/>
                         </f:facet>
                        <ice:outputText id="studyTitle" 
-                                       value="#{guestBookResponse.study.latestVersion.metadata.title}"></ice:outputText>
+                                       value="#{guestBookResponseDisplay.guestBookResponse.study.latestVersion.metadata.title}"></ice:outputText>
                     </ice:column>
                     <ice:column>
                         <f:facet name="header">
                             <ice:outputText value="Study File"/>
                         </f:facet>
                        <ice:outputText id="fileText" 
-                                      value="#{guestBookResponse.studyFile.fileName}"></ice:outputText>
+                                      value="#{guestBookResponseDisplay.guestBookResponse.studyFile.fileName}"></ice:outputText>
                     </ice:column>
                     <ice:column>
                         <f:facet name="header">
                             <ice:outputText value="Time"/>
                         </f:facet>
                        <ice:outputText id="responseTimeText" 
-                                       value="#{guestBookResponse.responseTime}"></ice:outputText>                 
+                                       value="#{guestBookResponseDisplay.guestBookResponse.responseTime}"></ice:outputText>                 
                     </ice:column>
-                    <ice:columns value="#{guestBookResponse.customQuestionResponses}" var="customResponse">                                        
+                      <ice:columns value="#{guestBookResponseDisplay.customQuestionResponses}" var="customResponse">                                        
                  	<f:facet name="header">
-                     	      <ice:outputText value="#{customResponse.customQuestion.questionString}"/>
+                     	      <ice:outputText value="#{GuestBookResponseDataPage.columnHeadings}"/>
+                              <ice:outputText value="Header String"/>
                  	</f:facet>
-                         <ice:outputText value="#{customResponse.customQuestion.questionString}"/>
-                         <ice:outputText value="#{customResponse.response}"/>
+                         <ice:outputText value="#{customResponse}"/>
                     </ice:columns> 
 
                   </ice:dataTable>

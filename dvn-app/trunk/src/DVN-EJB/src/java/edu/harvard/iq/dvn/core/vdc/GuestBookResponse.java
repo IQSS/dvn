@@ -56,6 +56,7 @@ public class GuestBookResponse implements Serializable {
     private VDCUser vdcUser;
 
     @OneToMany(mappedBy="guestBookResponse",cascade={CascadeType.REMOVE, CascadeType.MERGE, CascadeType.PERSIST},orphanRemoval=true)
+    @OrderBy ("id")
     private List<CustomQuestionResponse> customQuestionResponses;
 
 

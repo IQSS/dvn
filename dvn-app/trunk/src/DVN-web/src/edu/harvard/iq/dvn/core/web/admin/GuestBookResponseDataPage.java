@@ -35,25 +35,58 @@ import javax.inject.Named;
 @ViewScoped
 @Named("GuestBookResponseDataPage")
 public class GuestBookResponseDataPage extends VDCBaseBean implements java.io.Serializable {
-    @EJB GuestBookResponseServiceBean guestBookResponseServiceBean;
-    private List <GuestBookResponse> guestBookResponses = new ArrayList();
-    private List <GuestBookResponse> guestBookResponsesAll = new ArrayList();
+
+    @EJB
+    GuestBookResponseServiceBean guestBookResponseServiceBean;
+    private List<GuestBookResponse> guestBookResponses = new ArrayList();
+    private List<GuestBookResponseDisplay> guestBookResponsesDisplay = new ArrayList();
+    private List<GuestBookResponse> guestBookResponsesAll = new ArrayList();
+    private List<String> columnHeadings = new ArrayList();
+    private List<Long> customQuestionIds = new ArrayList();
     private VDC vdc;
-        
+
     public void init() {
         guestBookResponsesAll = guestBookResponseServiceBean.findAll();
         vdc = getVDCRequestBean().getCurrentVDC();
-        for (GuestBookResponse gbr : guestBookResponsesAll ){
-            if (gbr.getStudy().getOwner().equals(vdc)){
+        for (GuestBookResponse gbr : guestBookResponsesAll) {
+            if (gbr.getStudy().getOwner().equals(vdc)) {
                 guestBookResponses.add(gbr);
-            }
-            if (gbr.getCustomQuestionResponses() !=null && !gbr.getCustomQuestionResponses().isEmpty()){
-                for (CustomQuestionResponse cqr : gbr.getCustomQuestionResponses()){
-                    System.out.print(cqr.getCustomQuestion().getQuestionString());
-                    System.out.print(cqr.getResponse());            
+                if (!gbr.getCustomQuestionResponses().isEmpty()) {
+                    for (CustomQuestionResponse cqr : gbr.getCustomQuestionResponses()) {
+                        if (!customQuestionIds.contains(cqr.getCustomQuestion().getId())) {
+                            customQuestionIds.add(cqr.getCustomQuestion().getId());
+                            columnHeadings.add(cqr.getCustomQuestion().getQuestionString());
+                        }
+                    }
                 }
             }
-        }  
+        }
+        if (!customQuestionIds.isEmpty()) {
+            for (GuestBookResponse gbr : guestBookResponses) {
+                GuestBookResponseDisplay guestBookResponseDisplay = new GuestBookResponseDisplay();
+                guestBookResponseDisplay.setGuestBookResponse(gbr);
+                List<String> customQuestionResponseStrings = new ArrayList(customQuestionIds.size());
+                if (!gbr.getCustomQuestionResponses().isEmpty()) {
+                    for (Long id : customQuestionIds) {
+                        int index = customQuestionIds.indexOf(id);
+                        for (CustomQuestionResponse cqr : gbr.getCustomQuestionResponses()) {
+                            if (cqr.getCustomQuestion().getId().equals(id)) {
+                                customQuestionResponseStrings.add(index, cqr.getResponse());
+                            }
+                        }
+                    }
+                }
+                guestBookResponseDisplay.setCustomQuestionResponses(customQuestionResponseStrings);
+                guestBookResponsesDisplay.add(guestBookResponseDisplay);
+            }
+        } else {
+            for (GuestBookResponse gbr : guestBookResponses) {
+                GuestBookResponseDisplay guestBookResponseDisplay = new GuestBookResponseDisplay();
+                guestBookResponseDisplay.setGuestBookResponse(gbr);
+                guestBookResponsesDisplay.add(guestBookResponseDisplay);
+            }
+            
+        }
     }
     
     public List<GuestBookResponse> getGuestBookResponses() {
@@ -62,6 +95,23 @@ public class GuestBookResponseDataPage extends VDCBaseBean implements java.io.Se
 
     public void setGuestBookResponses(List<GuestBookResponse> guestBookResponses) {
         this.guestBookResponses = guestBookResponses;
+    }
+    
+    
+    public List<String> getColumnHeadings() {
+        return columnHeadings;
+    }
+
+    public void setColumnHeadings(List<String> columnHeadings) {
+        this.columnHeadings = columnHeadings;
+    }
+
+    public List<GuestBookResponseDisplay> getGuestBookResponsesDisplay() {
+        return guestBookResponsesDisplay;
+    }
+
+    public void setGuestBookResponsesDisplay(List<GuestBookResponseDisplay> guestBookResponsesDisplay) {
+        this.guestBookResponsesDisplay = guestBookResponsesDisplay;
     }
     
     public String cancel_action() {

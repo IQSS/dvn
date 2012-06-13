@@ -73,7 +73,7 @@ import edu.harvard.iq.dvn.core.admin.VDCUser;
 
 import edu.harvard.iq.dvn.core.vdc.VDC;
 import edu.harvard.iq.dvn.core.vdc.VDCServiceLocal;
-
+import edu.harvard.iq.dvn.core.vdc.GuestBookResponseServiceBean;
 
 import edu.harvard.iq.dvn.ingest.dsb.*;
 import edu.harvard.iq.dvn.ingest.dsb.impl.*;
@@ -96,6 +96,7 @@ import com.icesoft.faces.context.ByteArrayResource;
 import com.icesoft.faces.context.Resource;
 import com.icesoft.faces.component.outputresource.*;
 import com.icesoft.faces.component.datapaginator.*;
+import edu.harvard.iq.dvn.core.vdc.GuestBookResponse;
 import edu.harvard.iq.dvn.core.web.study.StudyUI;
 import edu.harvard.iq.dvn.core.web.VersionPage;
 import edu.harvard.iq.dvn.unf.*;
@@ -118,6 +119,9 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
     StudyServiceLocal studyService;
     @EJB
     private VDCServiceLocal vdcService;
+    
+    @EJB
+    GuestBookResponseServiceBean guestBookResponseServiceBean;
     
     @Inject VersionPage versionPageClass;
 
@@ -1275,8 +1279,10 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
 
                     if ( vdc != null ) {
                         studyService.incrementNumberOfDownloads(sf.getId(), vdc.getId());
+                        addGuestbookRecords(sf);
                     } else {
                         studyService.incrementNumberOfDownloads(sf.getId(), (Long)null);
+                        addGuestbookRecords(sf);
                     }
 
 
@@ -1617,7 +1623,15 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
         
     }
 
-    
+    private void addGuestbookRecords(StudyFile file){
+        GuestBookResponse guestbookResponse = (GuestBookResponse) getVDCSessionBean().getGuestbookResponseMap().get("guestBookResponse_" + file.getStudy().getId());
+        if (guestbookResponse != null) {
+            guestbookResponse.setStudyFile(file);
+            guestbookResponse.setResponseTime(new Date());
+            guestBookResponseServiceBean.update(guestbookResponse);
+        }
+    }
+
     
     // -----------------------------------------------------------------------
     // recode section

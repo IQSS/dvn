@@ -1107,10 +1107,10 @@ public class FileDownloadServlet extends HttpServlet {
     
     private void addGuestbookRecords(StudyFile file){
         GuestBookResponse guestbookResponse = (GuestBookResponse) vdcSession.getGuestbookResponseMap().get("guestBookResponse_" + file.getStudy().getId());
-        guestbookResponse.setStudyFile(file); 
-        guestbookResponse.setResponseTime(new Date());
-        if (guestbookResponse != null){
-             guestBookResponseServiceBean.update(guestbookResponse);
+        if (guestbookResponse != null) {
+            guestbookResponse.setStudyFile(file);
+            guestbookResponse.setResponseTime(new Date());
+            guestBookResponseServiceBean.update(guestbookResponse);
         }
     }
 

@@ -186,6 +186,7 @@ public class TermsOfUsePage extends VDCBaseBean {
             guestBookResponse.setCustomQuestionResponses(new ArrayList());
             customQuestionResponseUIs.clear();
             for (CustomQuestion cq : study.getOwner().getGuestBookQuestionnaire().getCustomQuestions()) {
+                if (!cq.isHidden()){
                     CustomQuestionResponse response = new CustomQuestionResponse();
                     CustomQuestionResponseUI responseUI = new CustomQuestionResponseUI();
                     response.setGuestBookResponse(guestBookResponse);
@@ -198,7 +199,8 @@ public class TermsOfUsePage extends VDCBaseBean {
                         responseUI.setResponseSelectItems(setResponseUISelectItems(cq));
                     }
                     customQuestionResponseUIs.add(responseUI);
-                    guestBookResponse.getCustomQuestionResponses().add(response);
+                    guestBookResponse.getCustomQuestionResponses().add(response);                    
+                }
             }
         }
         if (getVDCSessionBean().getLoginBean() != null) {

@@ -49,12 +49,10 @@ public class EditGuestbookQuestionnairePage extends VDCBaseBean implements java.
     @EJB
     VDCServiceLocal vdcService;
     private GuestBookQuestionnaire guestBookQuestionnaire;
-    private List<CustomQuestionUI> customQuestions = new  ArrayList();
+    private List<CustomQuestionUI> customQuestions = new ArrayList();
     private VDC vdc;
     private String questionType;
     private CustomQuestion newQuestion;
-
-
 
     public void init() {
         super.init();
@@ -78,10 +76,13 @@ public class EditGuestbookQuestionnairePage extends VDCBaseBean implements java.
                 guestBookQuestionnaire.setCustomQuestions(new ArrayList());
             } else {
                 for (CustomQuestion customQuestion : guestBookQuestionnaire.getCustomQuestions()) {
-                    CustomQuestionUI customQuestionUI = new CustomQuestionUI();
-                    customQuestionUI.setCustomQuestion(customQuestion);
-                    customQuestionUI.setEditMode(false);
-                    customQuestions.add(customQuestionUI);
+                    if (!customQuestion.isHidden()) {
+                        CustomQuestionUI customQuestionUI = new CustomQuestionUI();
+                        customQuestionUI.setCustomQuestion(customQuestion);
+                        customQuestionUI.setEditMode(false);
+                        customQuestions.add(customQuestionUI);
+
+                    }
                 }
             }
         }
@@ -112,14 +113,13 @@ public class EditGuestbookQuestionnairePage extends VDCBaseBean implements java.
     public boolean isQuestionRemovable() {
         return true;
     }
-    
+
     private List<SelectItem> loadQuestionTypeSelectItems() {
         List selectItems = new ArrayList<SelectItem>();
         selectItems.add(new SelectItem("text", "Plain Text Input"));
         selectItems.add(new SelectItem("radiobuttons", "Radio Buttons"));
         return selectItems;
     }
-    
     private List<SelectItem> questionTypeSelectItems = new ArrayList();
 
     public List<SelectItem> getQuestionTypeSelectItems() {
@@ -129,17 +129,14 @@ public class EditGuestbookQuestionnairePage extends VDCBaseBean implements java.
     public void setQuestionTypeSelectItems(List<SelectItem> questionTypeSelectItems) {
         this.questionTypeSelectItems = questionTypeSelectItems;
     }
-    
     private List<SelectItem> questionInputLevelSelectItems = new ArrayList();
 
     public List<SelectItem> getQuestionInputLevelSelectItems() {
         return this.questionInputLevelSelectItems;
     }
-    
     private HtmlSelectOneMenu questionTypeListBox;
     private HtmlInputText inputCustomQuestionText;
     private HtmlInputText inputCustomQuestionTextTable;
-
     private HtmlDataTable customQuestionsDataTable;
 
     public HtmlDataTable getCustomQuestionsDataTable() {
@@ -157,8 +154,7 @@ public class EditGuestbookQuestionnairePage extends VDCBaseBean implements java.
     public void setInputCustomQuestionText(HtmlInputText inputQuestionText) {
         this.inputCustomQuestionText = inputQuestionText;
     }
-    
-    
+
     public HtmlInputText getInputCustomQuestionTextTable() {
         return inputCustomQuestionTextTable;
     }
@@ -166,7 +162,7 @@ public class EditGuestbookQuestionnairePage extends VDCBaseBean implements java.
     public void setInputCustomQuestionTextTable(HtmlInputText inputCustomQuestionTextTable) {
         this.inputCustomQuestionTextTable = inputCustomQuestionTextTable;
     }
-    
+
     public HtmlSelectOneMenu getQuestionTypeListBox() {
         return questionTypeListBox;
     }
@@ -186,16 +182,16 @@ public class EditGuestbookQuestionnairePage extends VDCBaseBean implements java.
     public void setGuestBookQuestionnaire(GuestBookQuestionnaire guestBookQuestionnaire) {
         this.guestBookQuestionnaire = guestBookQuestionnaire;
     }
-    
-    public void toggleQuestionType(ValueChangeEvent ae){
-        if (newQuestion.getCustomQuestionValues().isEmpty()){
-           CustomQuestionValue addCQV = new CustomQuestionValue();
-           addCQV.setCustomQuestion(newQuestion);
-           newQuestion.getCustomQuestionValues().add(addCQV);
+
+    public void toggleQuestionType(ValueChangeEvent ae) {
+        if (newQuestion.getCustomQuestionValues().isEmpty()) {
+            CustomQuestionValue addCQV = new CustomQuestionValue();
+            addCQV.setCustomQuestion(newQuestion);
+            newQuestion.getCustomQuestionValues().add(addCQV);
         }
-        
+
     }
-    
+
     public void addCustomQuestion() {
         String questionText = (String) inputCustomQuestionText.getValue();
         if (questionText.trim().isEmpty()) {
@@ -221,12 +217,12 @@ public class EditGuestbookQuestionnairePage extends VDCBaseBean implements java.
         newQuestion.setGuestBookQuestionnaire(guestBookQuestionnaire);
         newQuestion.setQuestionString(questionText);
 
-        
 
-        if (guestBookQuestionnaire.getCustomQuestions() == null){
-           guestBookQuestionnaire.setCustomQuestions(new ArrayList()); 
+
+        if (guestBookQuestionnaire.getCustomQuestions() == null) {
+            guestBookQuestionnaire.setCustomQuestions(new ArrayList());
         }
-        
+
         CustomQuestionUI customQuestionUI = new CustomQuestionUI();
         customQuestionUI.setCustomQuestion(newQuestion);
         customQuestionUI.setEditMode(false);
@@ -235,32 +231,42 @@ public class EditGuestbookQuestionnairePage extends VDCBaseBean implements java.
         inputCustomQuestionText.setValue("");
         newQuestion = new CustomQuestion();
         newQuestion.setCustomQuestionValues(new ArrayList());
-        questionType = "text";       
+        questionType = "text";
     }
 
     public void removeCustomQuestion(ActionEvent ae) {
+        //we will do an actual remove if there are no responses and a virtual remove if there are responses
+        boolean remove = false;
         CustomQuestionUI customQuestionUI = (CustomQuestionUI) customQuestionsDataTable.getRowData();
         CustomQuestionUI customQuestionUIRemove = new CustomQuestionUI();
         for (CustomQuestionUI customQuestionUITest : customQuestions) {
             if (customQuestionUITest.getCustomQuestion().getQuestionString().equals(customQuestionUI.getCustomQuestion().getQuestionString())) {
                 customQuestionUIRemove = customQuestionUITest;
+                if (customQuestionUITest.getCustomQuestion().getId() != null && !customQuestionUITest.getCustomQuestion().getCustomQuestionResponses().isEmpty()) {
+                    customQuestionUITest.getCustomQuestion().setHidden(true);
+                } else {
+                    remove = true;
+                }
+
             }
         }
         customQuestions.remove(customQuestionUIRemove);
-        vdc.getGuestBookQuestionnaire().getCustomQuestions().remove(customQuestionsDataTable.getRowIndex());
+        if (remove) {
+            vdc.getGuestBookQuestionnaire().getCustomQuestions().remove(customQuestionsDataTable.getRowIndex());
+        }
     }
-    
+
     public void editCustomQuestion(ActionEvent ae) {
         CustomQuestionUI customQuestionUI = (CustomQuestionUI) customQuestionsDataTable.getRowData();
         getInputCustomQuestionTextTable().setValue(customQuestionUI.getCustomQuestion().getQuestionString());
-        customQuestionUI.setEditMode(true);       
+        customQuestionUI.setEditMode(true);
     }
-    
+
     public void saveCustomQuestion(ActionEvent ae) {
         CustomQuestionUI customQuestionUI = (CustomQuestionUI) customQuestionsDataTable.getRowData();
-        customQuestionUI.setEditMode(false);       
+        customQuestionUI.setEditMode(false);
     }
-    
+
     public List<CustomQuestionUI> getCustomQuestions() {
         return customQuestions;
     }
@@ -269,48 +275,46 @@ public class EditGuestbookQuestionnairePage extends VDCBaseBean implements java.
         this.customQuestions = customQuestions;
     }
 
-
     public void addCustomRow(ActionEvent ae) {
-        HtmlDataTable dataTable = (HtmlDataTable) ae.getComponent().getParent().getParent();    
+        HtmlDataTable dataTable = (HtmlDataTable) ae.getComponent().getParent().getParent();
         int row = dataTable.getRowIndex();
-        CustomQuestionValue data = (CustomQuestionValue)  dataTable.getRowData();
+        CustomQuestionValue data = (CustomQuestionValue) dataTable.getRowData();
         CustomQuestionValue newElem = new CustomQuestionValue();
-        newElem.setCustomQuestion( data.getCustomQuestion());
-        newElem.setValueString("");  
+        newElem.setCustomQuestion(data.getCustomQuestion());
+        newElem.setValueString("");
         data.getCustomQuestion().getCustomQuestionValues().add(newElem);
     }
 
     public void removeCustomRow(ActionEvent ae) {
         HtmlDataTable dataTable = (HtmlDataTable) ae.getComponent().getParent().getParent();
         if (dataTable.getRowCount() > 1) {
-            CustomQuestionValue data = (CustomQuestionValue)  dataTable.getRowData();    
-            for (CustomQuestion cq: getGuestBookQuestionnaire().getCustomQuestions() ){
-                if (cq.getQuestionString().equals(data.getCustomQuestion().getQuestionString())){
-                     cq.getCustomQuestionValues().remove(data);
+            CustomQuestionValue data = (CustomQuestionValue) dataTable.getRowData();
+            for (CustomQuestion cq : getGuestBookQuestionnaire().getCustomQuestions()) {
+                if (cq.getQuestionString().equals(data.getCustomQuestion().getQuestionString())) {
+                    cq.getCustomQuestionValues().remove(data);
                 }
             }
         }
     }
-    
+
     public void addCustomRowInit(ActionEvent ae) {
-        HtmlDataTable dataTable = (HtmlDataTable) ae.getComponent().getParent().getParent();    
+        HtmlDataTable dataTable = (HtmlDataTable) ae.getComponent().getParent().getParent();
         int row = dataTable.getRowIndex();
-        CustomQuestionValue data = (CustomQuestionValue)  dataTable.getRowData();
+        CustomQuestionValue data = (CustomQuestionValue) dataTable.getRowData();
         CustomQuestionValue newElem = new CustomQuestionValue();
         newElem.setCustomQuestion(newQuestion);
-        newElem.setValueString("");  
+        newElem.setValueString("");
         data.getCustomQuestion().getCustomQuestionValues().add(newElem);
     }
 
     public void removeCustomRowInit(ActionEvent ae) {
         HtmlDataTable dataTable = (HtmlDataTable) ae.getComponent().getParent().getParent();
         if (dataTable.getRowCount() > 1) {
-            CustomQuestionValue data = (CustomQuestionValue)  dataTable.getRowData();    
+            CustomQuestionValue data = (CustomQuestionValue) dataTable.getRowData();
             newQuestion.getCustomQuestionValues().remove(data);
         }
     }
-    
-    
+
     public String getQuestionType() {
         return questionType;
     }
@@ -318,7 +322,8 @@ public class EditGuestbookQuestionnairePage extends VDCBaseBean implements java.
     public void setQuestionType(String questionType) {
         this.questionType = questionType;
     }
-        public CustomQuestion getNewQuestion() {
+
+    public CustomQuestion getNewQuestion() {
         return newQuestion;
     }
 

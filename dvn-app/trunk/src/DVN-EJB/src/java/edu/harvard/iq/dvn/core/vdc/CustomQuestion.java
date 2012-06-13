@@ -56,6 +56,16 @@ public class CustomQuestion implements Serializable {
     private String questionType;
     private String questionString;
     private boolean required;
+    
+    private boolean hidden;  //when a question is marked for removal, but it has data it is set to hidden
+
+    public boolean isHidden() {
+        return hidden;
+    }
+
+    public void setHidden(boolean hidden) {
+        this.hidden = hidden;
+    }
 
     public boolean isRequired() {
         return required;

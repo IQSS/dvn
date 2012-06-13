@@ -214,8 +214,6 @@
                            </ice:dataTable>
                         </ice:column>
                         <ice:column>
-                            <ice:commandLink value="Edit" actionListener="#{EditGuestbookQuestionnairePage.editCustomQuestion}" rendered="#{!customQuestion.editMode}"/>
-                            <ice:commandLink value="Save" actionListener="#{EditGuestbookQuestionnairePage.saveCustomQuestion}" rendered="#{customQuestion.editMode}"/>
                             <ice:commandLink value="Remove" rendered="#{EditGuestbookQuestionnairePage.questionRemovable}" 
                                              actionListener="#{EditGuestbookQuestionnairePage.removeCustomQuestion}"/>
                         </ice:column>

@@ -60,6 +60,8 @@ import edu.harvard.iq.dvn.core.study.StudyFile;
 import edu.harvard.iq.dvn.core.study.VariableServiceLocal;
 import edu.harvard.iq.dvn.core.visualization.DataVariableMapping;
 import edu.harvard.iq.dvn.core.study.StudyServiceLocal;
+import edu.harvard.iq.dvn.core.vdc.GuestBookResponse;
+import edu.harvard.iq.dvn.core.vdc.GuestBookResponseServiceBean;
 import edu.harvard.iq.dvn.core.vdc.VDC;
 import edu.harvard.iq.dvn.core.vdc.VDCServiceLocal;
 import edu.harvard.iq.dvn.core.web.study.StudyUI;
@@ -129,7 +131,8 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
     StudyServiceLocal studyService;
     @EJB
     VDCServiceLocal vdcService;
-
+    @EJB
+    GuestBookResponseServiceBean guestBookResponseServiceBean;
 
     private String measureLabel;
     private String measureTypeCue;
@@ -3225,6 +3228,15 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
         this.heightInt = heightInt;
     }
     
+    private void addGuestbookRecords(StudyFile file){
+        GuestBookResponse guestbookResponse = (GuestBookResponse) getVDCSessionBean().getGuestbookResponseMap().get("guestBookResponse_" + file.getStudy().getId());
+        if (guestbookResponse != null) {
+            guestbookResponse.setStudyFile(file);
+            guestbookResponse.setResponseTime(new Date());
+            guestBookResponseServiceBean.update(guestbookResponse);
+        }
+    }
+    
     public class ExportFileResource implements Resource, Serializable{
         File file;
         String fileType;
@@ -3264,8 +3276,10 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
 
             if ( vdc != null ) {
                 studyService.incrementNumberOfDownloads(sf.getId(), vdc.getId());
+                addGuestbookRecords(sf);
             } else {
                 studyService.incrementNumberOfDownloads(sf.getId(), (Long)null);
+                addGuestbookRecords(sf);
             }
 
 

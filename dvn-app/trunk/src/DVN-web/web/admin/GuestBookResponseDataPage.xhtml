@@ -92,14 +92,15 @@
                        <ice:outputText id="responseTimeText" 
                                        value="#{guestBookResponseDisplay.guestBookResponse.responseTime}"></ice:outputText>                 
                     </ice:column>
-                      <ice:columns value="#{guestBookResponseDisplay.customQuestionResponses}" var="customResponse">                                        
-                 	<f:facet name="header">
-                     	      <ice:outputText value="#{GuestBookResponseDataPage.columnHeadings}"/>
-                              <ice:outputText value="Header String"/>
-                 	</f:facet>
+                    <ice:columns value="#{guestBookResponseDisplay.customQuestionResponses}" var="customResponse">                                        
                          <ice:outputText value="#{customResponse}"/>
                     </ice:columns> 
 
+                    <ice:columns value="#{GuestBookResponseDataPage.columnHeadings}" var="heading">                                        
+                 	<f:facet name="header">
+                     	      <ice:outputText value="#{heading}"/>
+                 	</f:facet>
+                    </ice:columns>
                   </ice:dataTable>
             </div>
           </div>

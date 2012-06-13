@@ -66,12 +66,15 @@ public class GuestBookResponseDataPage extends VDCBaseBean implements java.io.Se
                 GuestBookResponseDisplay guestBookResponseDisplay = new GuestBookResponseDisplay();
                 guestBookResponseDisplay.setGuestBookResponse(gbr);
                 List<String> customQuestionResponseStrings = new ArrayList(customQuestionIds.size());
+                for (int i=0; i<customQuestionIds.size(); i++){
+                    customQuestionResponseStrings.add(i, "");
+                }
                 if (!gbr.getCustomQuestionResponses().isEmpty()) {
                     for (Long id : customQuestionIds) {
                         int index = customQuestionIds.indexOf(id);
                         for (CustomQuestionResponse cqr : gbr.getCustomQuestionResponses()) {
                             if (cqr.getCustomQuestion().getId().equals(id)) {
-                                customQuestionResponseStrings.add(index, cqr.getResponse());
+                                customQuestionResponseStrings.set(index, cqr.getResponse());
                             }
                         }
                     }

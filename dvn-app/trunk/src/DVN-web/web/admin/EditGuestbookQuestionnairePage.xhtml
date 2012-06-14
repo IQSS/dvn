@@ -60,32 +60,29 @@
                     </div>
                     <div jsfc="ice:panelGroup">
                         <ice:inputText id="input_questionText" size="90" binding="#{EditGuestbookQuestionnairePage.inputCustomQuestionText}"></ice:inputText>
+                        <ice:dataTable cellpadding="0" cellspacing="0" 
+                                       styleClass="dvnEditGuestbookCustomQuestions"
+                                       rendered="#{EditGuestbookQuestionnairePage.questionType == 'radiobuttons'}"
+                                       value="#{EditGuestbookQuestionnairePage.newQuestion.customQuestionValues}" var="addValue">
+                          <ice:column>
+                            <ice:outputText value="Answer"/>
+                          </ice:column>
+                          <ice:column>
+                            <ice:inputText id="input_AnswerValueAdd"
+                                           value="#{addValue.valueString}"
+                                           size="45"
+                                           maxlength="255"
+                                           required="true" requiredMessage="This field is required."/>
+                            <ice:message styleClass="errorMessage" for="input_AnswerValue"/>
+                          </ice:column>
+                          <ice:column>
+                            <ice:commandButton image="/resources/images/icon_add.gif" actionListener="#{EditGuestbookQuestionnairePage.addCustomRowInit}"/>
+                            <ice:commandButton 
+                                rendered="#{EditGuestbookQuestionnairePage.newQuestion.customQuestionValues.size() > 1}" immediate="true"
+                                image="/resources/images/icon_remove.gif" actionListener="#{EditGuestbookQuestionnairePage.removeCustomRowInit}" />
+                          </ice:column>
+                       </ice:dataTable>
                     </div>
-                    
-                            <ice:dataTable cellpadding="0" cellspacing="0" rendered="#{EditGuestbookQuestionnairePage.questionType == 'radiobuttons'}"
-                                      value="#{EditGuestbookQuestionnairePage.newQuestion.customQuestionValues}" var="addValue">
-                              <ice:column>
-                                <div jsfc="ice:panelGroup">               
-                                  <div jsfc="ice:panelGroup">
-                                    <ice:outputText value="Answer"/>
-                                    <ice:inputText id="input_AnswerValueAdd"
-                                                   value="#{addValue.valueString}"
-                                                   size="45"
-                                                   maxlength="255"
-                                                   required="true" requiredMessage="This field is required."/>
-                                    <ice:message styleClass="errorMessage" for="input_AnswerValue"/>
-                                  </div>
-                                </div>
-                              </ice:column>
-                              <ice:column>
-                                <ice:commandButton image="/resources/images/icon_add.gif"  actionListener="#{EditGuestbookQuestionnairePage.addCustomRowInit}"/>
-                                <ice:commandButton 
-                                    rendered="#{EditGuestbookQuestionnairePage.newQuestion.customQuestionValues.size() > 1}" immediate="true"
-                                    image="/resources/images/icon_remove.gif" actionListener="#{EditGuestbookQuestionnairePage.removeCustomRowInit}" />
-                              </ice:column>
-                           </ice:dataTable>
-                    
-                    
                 </ice:panelGrid>
 
                 <div class="dvnFormPadding">
@@ -175,7 +172,8 @@
                                       styleClass="dvnEditGuestbookCustomQuestions"
                                       columnClasses="dvnGuestbookCustomQuestionsCol1,dvnGuestbookCustomQuestionsCol2,dvnGuestbookCustomQuestionsCol3"
                                       binding="#{EditGuestbookQuestionnairePage.customQuestionsDataTable}"
-                                      value="#{EditGuestbookQuestionnairePage.customQuestions}" var="customQuestion">
+                                      value="#{EditGuestbookQuestionnairePage.customQuestions}" var="customQuestion"
+                                      >
                         <ice:column>
                           <ice:selectBooleanCheckbox value="#{customQuestion.customQuestion.required}"/>
                         </ice:column>
@@ -183,8 +181,8 @@
                           <ice:outputText value="#{customQuestion.customQuestion.questionString}" 
                                           rendered="#{!customQuestion.editMode}"/>
                           <div>
-                          <ice:outputText value="#{customQuestion.customQuestion.customQuestionValueString}" 
-                                          rendered="#{!customQuestion.editMode}"/>
+                            <ice:outputText value="#{customQuestion.customQuestion.customQuestionValueString}" 
+                                            rendered="#{!customQuestion.editMode}"/>
                           </div>
                           <ice:inputText id="input_questionTextTable" size="90" 
                                          binding="#{EditGuestbookQuestionnairePage.inputCustomQuestionTextTable}"

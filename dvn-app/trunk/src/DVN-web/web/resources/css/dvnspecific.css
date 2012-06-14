@@ -104,8 +104,7 @@ td.vdcEditFilesColB .errorMessage{display:block;}
 .dvnManageStudiesTableTop{width:100%}
 .dvnManageStudiesTableTop .dvnPaginatorWrap{padding:.5em 0}
 .dvnManageStudiesTableBlock{position:relative;width:100%;overflow:auto}
-.dvnManageStudiesTable{position:absolute;top:0;left:0}
-.dvnManageStudiesTable{margin-top:0}
+.dvnManageStudiesTable{position:absolute;top:0;left:0;margin-top:0}
 .dvnManageStudiesTable span.iceOutTxt{font-size:90% !important}
 .dvnManageStudiesTable th span.iceOutTxt{font-size:100% !important}
 .dvnManageStudiesTable th table td{font-size:100% !important;font-weight:700}
@@ -243,6 +242,9 @@ span.dvnAddClassificationDvNotReleased{background:url(/dvn/resources/images/icon
 .dvnGuestbookCustomQuestions.iceDatTbl .iceDatTbl {margin-left:1em;}
 .dvnEditGuestbookCustomQuestions.iceDatTbl tr tr, .dvnGuestbookCustomQuestions.iceDatTbl tr tr {border:0;}
 .dvnGuestbookCustomQuestionInnerBlock {margin-left:6.25em;}
+.dvnGuestBookResponseTableBlock{position:relative;width:100%;overflow:auto}
+.dvnGuestBookResponseTable{position:absolute;top:0;left:0;margin-top:0}
+.dvnGuestBookResponseTable th span.dvnGuestbookCustomResponseHeader{min-width:120px;display:block;}
 /* PERMISSIONS */
 .dvnPermissionsTable{width:100%;text-align:left}
 .dvnPermissionsTable td{padding:.5em 2em;border-bottom:1px solid lightgray}

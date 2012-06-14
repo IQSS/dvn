@@ -26,82 +26,134 @@
           </div>
           <div class="dvn_sectionBox dvnEditTermsForm">
             <div class="dvn_margin12">
-                  <ice:dataTable cellpadding="0" cellspacing="0" width="100%" 
+                
+                <script type="text/javascript">
+                    //<![CDATA[
+                    jQuery(function(jQuery){
+                      jQuery.fn.fixOverflow = function(){
+                        if (jQuery.browser.msie) {
+                          return this.each(function(){
+                            if (this.scrollWidth > this.offsetWidth){
+                              jQuery(this).css({"padding-bottom" : "20px", "overflow-y" : "hidden"});
+                            }
+                          })
+                        } else {
+                          return this;
+                        }
+                      };
+                    });
 
-                                  value="#{GuestBookResponseDataPage.guestBookResponsesDisplay}" var="guestBookResponseDisplay">
-                    <ice:column>
-                        <f:facet name="header">
-                            <ice:outputText value="First Name"/>
-                        </f:facet>
-                       <ice:outputText id="firstnameText" 
-                                      value="#{guestBookResponseDisplay.guestBookResponse.firstname}"></ice:outputText>
-                    </ice:column>
-                    <ice:column>
-                        <f:facet name="header">
-                            <ice:outputText value="Last Name"/>
-                        </f:facet>
-                       <ice:outputText id="lastnameText" 
-                                      value="#{guestBookResponseDisplay.guestBookResponse.lastname}"></ice:outputText>
-                    </ice:column>
-                    <ice:column>
-                        <f:facet name="header">
-                            <ice:outputText value="Email"/>
-                        </f:facet>
-                       <ice:outputText id="emailText" 
-                                      value="#{guestBookResponseDisplay.guestBookResponse.email}"></ice:outputText>
-                    </ice:column>
-                    <ice:column>
-                        <f:facet name="header">
-                            <ice:outputText value="Institution"/>
-                        </f:facet>
-                       <ice:outputText id="institutionText" 
-                                      value="#{guestBookResponseDisplay.guestBookResponse.institution}"></ice:outputText>
-                    </ice:column>
-                    <ice:column>
-                        <f:facet name="header">
-                            <ice:outputText value="Position"/>
-                        </f:facet>
-                       <ice:outputText id="positionText" 
-                                      value="#{guestBookResponseDisplay.guestBookResponse.position}"></ice:outputText>
-                    </ice:column>
-                    <ice:column>
-                        <f:facet name="header">
-                            <ice:outputText value="Study Global Id"/>
-                        </f:facet>
-                       <ice:outputText id="studyText" 
-                                      value="#{guestBookResponseDisplay.guestBookResponse.study.globalId}"></ice:outputText>
-                    </ice:column>
-                    <ice:column>
-                        <f:facet name="header">
-                            <ice:outputText value="Study Title"/>
-                        </f:facet>
-                       <ice:outputText id="studyTitle" 
-                                       value="#{guestBookResponseDisplay.guestBookResponse.study.latestVersion.metadata.title}"></ice:outputText>
-                    </ice:column>
-                    <ice:column>
-                        <f:facet name="header">
-                            <ice:outputText value="Study File"/>
-                        </f:facet>
-                       <ice:outputText id="fileText" 
-                                      value="#{guestBookResponseDisplay.guestBookResponse.studyFile.fileName}"></ice:outputText>
-                    </ice:column>
-                    <ice:column>
-                        <f:facet name="header">
-                            <ice:outputText value="Time"/>
-                        </f:facet>
-                       <ice:outputText id="responseTimeText" 
-                                       value="#{guestBookResponseDisplay.guestBookResponse.responseTime}"></ice:outputText>                 
-                    </ice:column>
-                    <ice:columns value="#{guestBookResponseDisplay.customQuestionResponses}" var="customResponse">                                        
-                         <ice:outputText value="#{customResponse}"/>
-                    </ice:columns> 
+                    jQuery(document).ready(function(){
+                        var $div = jQuery(".dvnGuestBookResponseTable");
+                        y = $div.outerHeight() + 17;
+                        jQuery(".dvnGuestBookResponseTableBlock").css("height", y);                
+                    });
 
-                    <ice:columns value="#{GuestBookResponseDataPage.columnHeadings}" var="heading">                                        
-                 	<f:facet name="header">
-                     	      <ice:outputText value="#{heading}"/>
-                 	</f:facet>
-                    </ice:columns>
-                  </ice:dataTable>
+                   Ice.onAsynchronousReceive("document:body", function(){
+                       jQuery(function(jQuery){
+                          jQuery.fn.fixOverflow = function(){
+                            if (jQuery.browser.msie) {
+                              return this.each(function(){
+                                if (this.scrollWidth > this.offsetWidth){
+                                  jQuery(this).css({"padding-bottom" : "20px", "overflow-y" : "hidden"});
+                                }
+                              })
+                            } else {
+                              return this;
+                            }
+                          };
+                        });
+
+                        var $div = jQuery(".dvnGuestBookResponseTable");
+                        y = $div.outerHeight() + 17;
+                        jQuery(".dvnGuestBookResponseTableBlock").css("height", y);
+                   });
+                   //]]>
+                </script>
+                
+                <ice:panelGrid cellpadding="0" cellspacing="0" width="100%">
+                    
+                    <div jsfc="ice:panelGroup" styleClass="dvnGuestBookResponseTableBlock">
+
+                      <ice:dataTable cellpadding="0" cellspacing="0" width="100%" 
+                                     styleClass="dvnGuestBookResponseTable"
+                                      value="#{GuestBookResponseDataPage.guestBookResponsesDisplay}" var="guestBookResponseDisplay">
+                        <ice:column>
+                            <f:facet name="header">
+                                <ice:outputText value="First Name"/>
+                            </f:facet>
+                           <ice:outputText id="firstnameText" 
+                                          value="#{guestBookResponseDisplay.guestBookResponse.firstname}"></ice:outputText>
+                        </ice:column>
+                        <ice:column>
+                            <f:facet name="header">
+                                <ice:outputText value="Last Name"/>
+                            </f:facet>
+                           <ice:outputText id="lastnameText" 
+                                          value="#{guestBookResponseDisplay.guestBookResponse.lastname}"></ice:outputText>
+                        </ice:column>
+                        <ice:column>
+                            <f:facet name="header">
+                                <ice:outputText value="Email"/>
+                            </f:facet>
+                           <ice:outputText id="emailText" 
+                                          value="#{guestBookResponseDisplay.guestBookResponse.email}"></ice:outputText>
+                        </ice:column>
+                        <ice:column>
+                            <f:facet name="header">
+                                <ice:outputText value="Institution"/>
+                            </f:facet>
+                           <ice:outputText id="institutionText" 
+                                          value="#{guestBookResponseDisplay.guestBookResponse.institution}"></ice:outputText>
+                        </ice:column>
+                        <ice:column>
+                            <f:facet name="header">
+                                <ice:outputText value="Position"/>
+                            </f:facet>
+                           <ice:outputText id="positionText" 
+                                          value="#{guestBookResponseDisplay.guestBookResponse.position}"></ice:outputText>
+                        </ice:column>
+                        <ice:column>
+                            <f:facet name="header">
+                                <ice:outputText value="Study Global ID"/>
+                            </f:facet>
+                           <ice:outputText id="studyText" 
+                                          value="#{guestBookResponseDisplay.guestBookResponse.study.globalId}"></ice:outputText>
+                        </ice:column>
+                        <ice:column>
+                            <f:facet name="header">
+                                <ice:outputText value="Study Title"/>
+                            </f:facet>
+                           <ice:outputText id="studyTitle" 
+                                           value="#{guestBookResponseDisplay.guestBookResponse.study.latestVersion.metadata.title}"></ice:outputText>
+                        </ice:column>
+                        <ice:column>
+                            <f:facet name="header">
+                                <ice:outputText value="Study File"/>
+                            </f:facet>
+                           <ice:outputText id="fileText" 
+                                          value="#{guestBookResponseDisplay.guestBookResponse.studyFile.fileName}"></ice:outputText>
+                        </ice:column>
+                        <ice:column>
+                            <f:facet name="header">
+                                <ice:outputText value="Time"/>
+                            </f:facet>
+                           <ice:outputText id="responseTimeText" 
+                                           value="#{guestBookResponseDisplay.guestBookResponse.responseTime}"></ice:outputText>                 
+                        </ice:column>
+                        <ice:columns value="#{guestBookResponseDisplay.customQuestionResponses}" var="customResponse">                                        
+                            <ice:outputText value="#{customResponse}"/>
+                        </ice:columns>
+                        <ice:columns value="#{GuestBookResponseDataPage.columnHeadings}" var="heading">                                        
+                            <f:facet name="header">
+                                  <ice:outputText styleClass="dvnGuestbookCustomResponseHeader" value="#{heading}"/>
+                            </f:facet>
+                        </ice:columns>
+                      </ice:dataTable>
+
+                    </div>
+                </ice:panelGrid>
+                
             </div>
           </div>
         </div>

@@ -1388,12 +1388,26 @@
                   <ice:graphicImage value="/resources/images/icon_required.gif" rendered="#{TemplateFormPage.studyMap[sfc.unitOfAnalysis].required}"/>
                   <ice:graphicImage value="/resources/images/icon_recommended.gif" rendered="#{TemplateFormPage.studyMap[sfc.unitOfAnalysis].recommended}"/>
                 </ice:column>
-                <ice:column>
-                  <ice:inputTextarea id="input_unitOfAnalysis" cols="90" rows="2" value="#{TemplateFormPage.template.metadata.unitOfAnalysis}" styleClass="formHtmlEnabled">
+		<ice:column>
+                  <ice:inputTextarea cols="90" rows="4"
+                                     id="input_unitOfAnalysis"
+                                     value="#{TemplateFormPage.template.metadata.unitOfAnalysis}"                                     
+                                     styleClass="formHtmlEnabled">
                   </ice:inputTextarea>
+
                   <ice:message styleClass="errorMessage" for="input_unitOfAnalysis"/>
+
+                  <ice:selectOneMenu immediate="false"   id="selectOneUnitOfAnalysis" 
+                                     rendered="#{!empty(TemplateFormPage.studyMap[sfc.unitOfAnalysis].templateField.controlledVocabulary)}"                                          
+                                           value="#{TemplateFormPage.template.metadata.unitOfAnalysis}" 
+                                           >
+                            <f:selectItem itemLabel="No Value" itemValue=""/>
+                            <f:selectItems value="#{TemplateFormPage.studyMap[sfc.unitOfAnalysis].templateField.controlledVocabulary.selectItems}"/>
+                 </ice:selectOneMenu>  
                 </ice:column>
                 <ice:column>
+                 <ice:commandLink value="Select Vocabulary"
+                                       action="#{TemplateFormPage.openPopupStandard(TemplateFormPage.studyMap[sfc.unitOfAnalysis].templateField)}"/>
                   <ice:selectOneMenu immediate="false" partialSubmit="true" 
                                         value="#{TemplateFormPage.studyMap[sfc.unitOfAnalysis].templateField.fieldInputLevelString}">
                             <f:attribute name="fieldName" value="unitOfAnalysis" />
@@ -1412,12 +1426,26 @@
                   <ice:graphicImage value="/resources/images/icon_required.gif" rendered="#{TemplateFormPage.studyMap[sfc.universe].required}"/>
                   <ice:graphicImage value="/resources/images/icon_recommended.gif" rendered="#{TemplateFormPage.studyMap[sfc.universe].recommended}"/>
                 </ice:column>
-                <ice:column>
-                  <ice:inputTextarea id="input_universe" cols="90" rows="2" value="#{TemplateFormPage.template.metadata.universe}"  styleClass="formHtmlEnabled">
+		<ice:column>
+                  <ice:inputTextarea cols="90" rows="4"
+                                     id="input_universe"
+                                     value="#{TemplateFormPage.template.metadata.universe}"                                     
+                                     styleClass="formHtmlEnabled">
                   </ice:inputTextarea>
+
                   <ice:message styleClass="errorMessage" for="input_universe"/>
+
+                  <ice:selectOneMenu immediate="false"   id="selectOneUniverse" 
+                                     rendered="#{!empty(TemplateFormPage.studyMap[sfc.universe].templateField.controlledVocabulary)}"                                          
+                                           value="#{TemplateFormPage.template.metadata.universe}" 
+                                           >
+                            <f:selectItem itemLabel="No Value" itemValue=""/>
+                            <f:selectItems value="#{TemplateFormPage.studyMap[sfc.universe].templateField.controlledVocabulary.selectItems}"/>
+                 </ice:selectOneMenu>  
                 </ice:column>
                 <ice:column>
+                 <ice:commandLink value="Select Vocabulary"
+                                       action="#{TemplateFormPage.openPopupStandard(TemplateFormPage.studyMap[sfc.universe].templateField)}"/>
                   <ice:selectOneMenu immediate="false" partialSubmit="true" 
                                         value="#{TemplateFormPage.studyMap[sfc.universe].templateField.fieldInputLevelString}">
                             <f:attribute name="fieldName" value="universe" />
@@ -1436,15 +1464,29 @@
                   <ice:graphicImage value="/resources/images/icon_required.gif" rendered="#{TemplateFormPage.studyMap[sfc.kindOfData].required}"/>
                   <ice:graphicImage value="/resources/images/icon_recommended.gif" rendered="#{TemplateFormPage.studyMap[sfc.kindOfData].recommended}"/>
                 </ice:column>
-                <ice:column>
-                  <ice:inputTextarea id="input_kindOfData" cols="90" rows="2" value="#{TemplateFormPage.template.metadata.kindOfData}"  styleClass="formHtmlEnabled">
+		<ice:column>
+                  <ice:inputTextarea cols="90" rows="4"
+                                     id="input_kindOfData"
+                                     value="#{TemplateFormPage.template.metadata.kindOfData}"                                     
+                                     styleClass="formHtmlEnabled">
                   </ice:inputTextarea>
+
                   <ice:message styleClass="errorMessage" for="input_kindOfData"/>
+
+                  <ice:selectOneMenu immediate="false"   id="selectOneKindOfData" 
+                                     rendered="#{!empty(TemplateFormPage.studyMap[sfc.kindOfData].templateField.controlledVocabulary)}"                                          
+                                           value="#{TemplateFormPage.template.metadata.kindOfData}" 
+                                           >
+                            <f:selectItem itemLabel="No Value" itemValue=""/>
+                            <f:selectItems value="#{TemplateFormPage.studyMap[sfc.kindOfData].templateField.controlledVocabulary.selectItems}"/>
+                 </ice:selectOneMenu>  
                 </ice:column>
                 <ice:column>
+                 <ice:commandLink value="Select Vocabulary"
+                                       action="#{TemplateFormPage.openPopupStandard(TemplateFormPage.studyMap[sfc.kindOfData].templateField)}"/>
                   <ice:selectOneMenu immediate="false" partialSubmit="true" 
                                         value="#{TemplateFormPage.studyMap[sfc.kindOfData].templateField.fieldInputLevelString}">
-                            <f:attribute name="fieldName" value="universe" />
+                            <f:attribute name="fieldName" value="kindOfData" />
                            <f:selectItems value="#{TemplateFormPage.fieldInputLevelSelectItems}"/>
                   </ice:selectOneMenu>
                 </ice:column>
@@ -1632,19 +1674,27 @@
                   <ice:graphicImage value="/resources/images/icon_required.gif" rendered="#{TemplateFormPage.studyMap[sfc.timeMethod].required}"/>
                   <ice:graphicImage value="/resources/images/icon_recommended.gif" rendered="#{TemplateFormPage.studyMap[sfc.timeMethod].recommended}"/>
                 </ice:column>
-                <ice:column>
-                  <ice:inputText id="input_timeMethod" size="90"
-                                 value="#{TemplateFormPage.template.metadata.timeMethod}"                                 
-                                 styleClass="formHtmlEnabled">
-                  </ice:inputText>
+		<ice:column>
+                  <ice:inputText id="input_timeMethod" size="45" value="#{TemplateFormPage.template.metadata.timeMethod}" 
+                                 rendered="#{empty(TemplateFormPage.studyMap[sfc.timeMethod].templateField.controlledVocabulary)}" styleClass="formHtmlEnabled"/>
                   <ice:message styleClass="errorMessage" for="input_timeMethod"/>
+
+                  <ice:selectOneMenu immediate="false"   id="selectOneTimeMethod" 
+                                     rendered="#{!empty(TemplateFormPage.studyMap[sfc.timeMethod].templateField.controlledVocabulary)}"                                          
+                                           value="#{TemplateFormPage.template.metadata.timeMethod}" 
+                                           >
+                            <f:selectItem itemLabel="No Value" itemValue=""/>
+                            <f:selectItems value="#{TemplateFormPage.studyMap[sfc.timeMethod].templateField.controlledVocabulary.selectItems}"/>
+                 </ice:selectOneMenu>  
                 </ice:column>
                 <ice:column>
-                    <ice:selectOneMenu immediate="false" partialSubmit="true" 
-                                       value="#{TemplateFormPage.studyMap[sfc.timeMethod].templateField.fieldInputLevelString}">                                      
-                           <f:attribute name="fieldName" value="timeMethod"/>
+                 <ice:commandLink value="Select Vocabulary"
+                                       action="#{TemplateFormPage.openPopupStandard(TemplateFormPage.studyMap[sfc.timeMethod].templateField)}"/>
+                  <ice:selectOneMenu immediate="false" partialSubmit="true" 
+                                        value="#{TemplateFormPage.studyMap[sfc.timeMethod].templateField.fieldInputLevelString}">
+                            <f:attribute name="fieldName" value="timeMethod" />
                            <f:selectItems value="#{TemplateFormPage.fieldInputLevelSelectItems}"/>
-                    </ice:selectOneMenu>
+                  </ice:selectOneMenu>
                 </ice:column>
               </ice:panelGrid>
 
@@ -1659,14 +1709,22 @@
                   <ice:graphicImage value="/resources/images/icon_required.gif" rendered="#{TemplateFormPage.studyMap[sfc.dataCollector].required}"/>
                   <ice:graphicImage value="/resources/images/icon_recommended.gif" rendered="#{TemplateFormPage.studyMap[sfc.dataCollector].recommended}"/>
                 </ice:column>
-                <ice:column>
-                  <ice:inputText id="input_dataCollector" size="90"
-                                 value="#{TemplateFormPage.template.metadata.dataCollector}"
-                                 styleClass="formHtmlEnabled">
-                  </ice:inputText>
+		<ice:column>
+                  <ice:inputText id="input_dataCollector" size="45" value="#{TemplateFormPage.template.metadata.dataCollector}" 
+                                 rendered="#{empty(TemplateFormPage.studyMap[sfc.dataCollector].templateField.controlledVocabulary)}" styleClass="formHtmlEnabled"/>
                   <ice:message styleClass="errorMessage" for="input_dataCollector"/>
+
+                  <ice:selectOneMenu immediate="false"   id="selectOneDataCollector" 
+                                     rendered="#{!empty(TemplateFormPage.studyMap[sfc.dataCollector].templateField.controlledVocabulary)}"                                          
+                                           value="#{TemplateFormPage.template.metadata.dataCollector}" 
+                                           >
+                            <f:selectItem itemLabel="No Value" itemValue=""/>
+                            <f:selectItems value="#{TemplateFormPage.studyMap[sfc.dataCollector].templateField.controlledVocabulary.selectItems}"/>
+                 </ice:selectOneMenu>  
                 </ice:column>
                 <ice:column>
+                 <ice:commandLink value="Select Vocabulary"
+                                       action="#{TemplateFormPage.openPopupStandard(TemplateFormPage.studyMap[sfc.dataCollector].templateField)}"/>
                   <ice:selectOneMenu immediate="false" partialSubmit="true" 
                                         value="#{TemplateFormPage.studyMap[sfc.dataCollector].templateField.fieldInputLevelString}">
                             <f:attribute name="fieldName" value="dataCollector" />
@@ -1686,14 +1744,22 @@
                   <ice:graphicImage value="/resources/images/icon_required.gif" rendered="#{TemplateFormPage.studyMap[sfc.frequencyOfDataCollection].required}"/>
                   <ice:graphicImage value="/resources/images/icon_recommended.gif" rendered="#{TemplateFormPage.studyMap[sfc.frequencyOfDataCollection].recommended}"/>
                 </ice:column>
-                <ice:column>
-                  <ice:inputText id="input_frequencyOfDataCollection" size="90"
-                                 value="#{TemplateFormPage.template.metadata.frequencyOfDataCollection}"
-                                 styleClass="formHtmlEnabled">
-                  </ice:inputText>
+		<ice:column>
+                  <ice:inputText id="input_frequencyOfDataCollection" size="45" value="#{TemplateFormPage.template.metadata.frequencyOfDataCollection}" 
+                                 rendered="#{empty(TemplateFormPage.studyMap[sfc.frequencyOfDataCollection].templateField.controlledVocabulary)}" styleClass="formHtmlEnabled"/>
                   <ice:message styleClass="errorMessage" for="input_frequencyOfDataCollection"/>
+
+                  <ice:selectOneMenu immediate="false"   id="selectOneFrequencyOfDataCollection" 
+                                     rendered="#{!empty(TemplateFormPage.studyMap[sfc.frequencyOfDataCollection].templateField.controlledVocabulary)}"                                          
+                                           value="#{TemplateFormPage.template.metadata.frequencyOfDataCollection}" 
+                                           >
+                            <f:selectItem itemLabel="No Value" itemValue=""/>
+                            <f:selectItems value="#{TemplateFormPage.studyMap[sfc.frequencyOfDataCollection].templateField.controlledVocabulary.selectItems}"/>
+                 </ice:selectOneMenu>  
                 </ice:column>
                 <ice:column>
+                 <ice:commandLink value="Select Vocabulary"
+                                       action="#{TemplateFormPage.openPopupStandard(TemplateFormPage.studyMap[sfc.frequencyOfDataCollection].templateField)}"/>
                   <ice:selectOneMenu immediate="false" partialSubmit="true" 
                                         value="#{TemplateFormPage.studyMap[sfc.frequencyOfDataCollection].templateField.fieldInputLevelString}">
                             <f:attribute name="fieldName" value="frequencyOfDataCollection" />
@@ -1713,15 +1779,26 @@
                   <ice:graphicImage value="/resources/images/icon_required.gif" rendered="#{TemplateFormPage.studyMap[sfc.samplingProcedure].required}"/>
                   <ice:graphicImage value="/resources/images/icon_recommended.gif" rendered="#{TemplateFormPage.studyMap[sfc.samplingProcedure].recommended}"/>
                 </ice:column>
-                <ice:column>
-                  <ice:inputTextarea id="input_samplingProcedure"
-                                     cols="90" rows="4"
-                                     value="#{TemplateFormPage.template.metadata.samplingProcedure}"
+		<ice:column>
+                  <ice:inputTextarea cols="90" rows="4"
+                                     id="input_samplingProcedure"
+                                     value="#{TemplateFormPage.template.metadata.samplingProcedure}"                                     
                                      styleClass="formHtmlEnabled">
                   </ice:inputTextarea>
+
                   <ice:message styleClass="errorMessage" for="input_samplingProcedure"/>
+
+                  <ice:selectOneMenu immediate="false"   id="selectOneSamplingProcedure" 
+                                     rendered="#{!empty(TemplateFormPage.studyMap[sfc.samplingProcedure].templateField.controlledVocabulary)}"                                          
+                                           value="#{TemplateFormPage.template.metadata.samplingProcedure}" 
+                                           >
+                            <f:selectItem itemLabel="No Value" itemValue=""/>
+                            <f:selectItems value="#{TemplateFormPage.studyMap[sfc.samplingProcedure].templateField.controlledVocabulary.selectItems}"/>
+                 </ice:selectOneMenu>  
                 </ice:column>
-                  <ice:column>
+                <ice:column>
+                 <ice:commandLink value="Select Vocabulary"
+                                       action="#{TemplateFormPage.openPopupStandard(TemplateFormPage.studyMap[sfc.samplingProcedure].templateField)}"/>
                   <ice:selectOneMenu immediate="false" partialSubmit="true" 
                                         value="#{TemplateFormPage.studyMap[sfc.samplingProcedure].templateField.fieldInputLevelString}">
                             <f:attribute name="fieldName" value="samplingProcedure" />
@@ -1741,15 +1818,26 @@
                   <ice:graphicImage value="/resources/images/icon_required.gif" rendered="#{TemplateFormPage.studyMap[sfc.deviationsFromSampleDesign].required}"/>
                   <ice:graphicImage value="/resources/images/icon_recommended.gif" rendered="#{TemplateFormPage.studyMap[sfc.deviationsFromSampleDesign].recommended}"/>
                 </ice:column>
-                <ice:column>
+		<ice:column>
                   <ice:inputTextarea cols="90" rows="4"
                                      id="input_deviationsFromSampleDesign"
-                                     value="#{TemplateFormPage.template.metadata.deviationsFromSampleDesign}"
+                                     value="#{TemplateFormPage.template.metadata.deviationsFromSampleDesign}"                                     
                                      styleClass="formHtmlEnabled">
                   </ice:inputTextarea>
+
                   <ice:message styleClass="errorMessage" for="input_deviationsFromSampleDesign"/>
+
+                  <ice:selectOneMenu immediate="false"   id="selectOneDeviationsFromSampleDesign" 
+                                     rendered="#{!empty(TemplateFormPage.studyMap[sfc.deviationsFromSampleDesign].templateField.controlledVocabulary)}"                                          
+                                           value="#{TemplateFormPage.template.metadata.deviationsFromSampleDesign}" 
+                                           >
+                            <f:selectItem itemLabel="No Value" itemValue=""/>
+                            <f:selectItems value="#{TemplateFormPage.studyMap[sfc.deviationsFromSampleDesign].templateField.controlledVocabulary.selectItems}"/>
+                 </ice:selectOneMenu>  
                 </ice:column>
                 <ice:column>
+                 <ice:commandLink value="Select Vocabulary"
+                                       action="#{TemplateFormPage.openPopupStandard(TemplateFormPage.studyMap[sfc.deviationsFromSampleDesign].templateField)}"/>
                   <ice:selectOneMenu immediate="false" partialSubmit="true" 
                                         value="#{TemplateFormPage.studyMap[sfc.deviationsFromSampleDesign].templateField.fieldInputLevelString}">
                             <f:attribute name="fieldName" value="deviationsFromSampleDesign" />
@@ -1769,14 +1857,22 @@
                   <ice:graphicImage value="/resources/images/icon_required.gif" rendered="#{TemplateFormPage.studyMap[sfc.collectionMode].required}"/>
                   <ice:graphicImage value="/resources/images/icon_recommended.gif" rendered="#{TemplateFormPage.studyMap[sfc.collectionMode].recommended}"/>
                 </ice:column>
-                <ice:column>
-                  <ice:inputText id="input_collectionMode" size="90"
-                                 value="#{TemplateFormPage.template.metadata.collectionMode}"
-                                 styleClass="formHtmlEnabled">
-                  </ice:inputText>
+		<ice:column>
+                  <ice:inputText id="input_collectionMode" size="45" value="#{TemplateFormPage.template.metadata.collectionMode}" 
+                                 rendered="#{empty(TemplateFormPage.studyMap[sfc.collectionMode].templateField.controlledVocabulary)}" styleClass="formHtmlEnabled"/>
                   <ice:message styleClass="errorMessage" for="input_collectionMode"/>
+
+                  <ice:selectOneMenu immediate="false"   id="selectOneCollectionMode" 
+                                     rendered="#{!empty(TemplateFormPage.studyMap[sfc.collectionMode].templateField.controlledVocabulary)}"                                          
+                                           value="#{TemplateFormPage.template.metadata.collectionMode}" 
+                                           >
+                            <f:selectItem itemLabel="No Value" itemValue=""/>
+                            <f:selectItems value="#{TemplateFormPage.studyMap[sfc.collectionMode].templateField.controlledVocabulary.selectItems}"/>
+                 </ice:selectOneMenu>  
                 </ice:column>
                 <ice:column>
+                 <ice:commandLink value="Select Vocabulary"
+                                       action="#{TemplateFormPage.openPopupStandard(TemplateFormPage.studyMap[sfc.collectionMode].templateField)}"/>
                   <ice:selectOneMenu immediate="false" partialSubmit="true" 
                                         value="#{TemplateFormPage.studyMap[sfc.collectionMode].templateField.fieldInputLevelString}">
                             <f:attribute name="fieldName" value="collectionMode" />
@@ -1796,15 +1892,22 @@
                   <ice:graphicImage value="/resources/images/icon_required.gif" rendered="#{TemplateFormPage.studyMap[sfc.researchInstrument].required}"/>
                   <ice:graphicImage value="/resources/images/icon_recommended.gif" rendered="#{TemplateFormPage.studyMap[sfc.researchInstrument].recommended}"/>
                 </ice:column>
-                <ice:column>
-                  <ice:inputText id="input_researchInstrument"
-                                 size="90"
-                                 value="#{TemplateFormPage.template.metadata.researchInstrument}"
-                                 styleClass="formHtmlEnabled">
-                  </ice:inputText>
+		<ice:column>
+                  <ice:inputText id="input_researchInstrument" size="45" value="#{TemplateFormPage.template.metadata.researchInstrument}" 
+                                 rendered="#{empty(TemplateFormPage.studyMap[sfc.researchInstrument].templateField.controlledVocabulary)}" styleClass="formHtmlEnabled"/>
                   <ice:message styleClass="errorMessage" for="input_researchInstrument"/>
+
+                  <ice:selectOneMenu immediate="false"   id="selectOneResearchInstrument" 
+                                     rendered="#{!empty(TemplateFormPage.studyMap[sfc.researchInstrument].templateField.controlledVocabulary)}"                                          
+                                           value="#{TemplateFormPage.template.metadata.researchInstrument}" 
+                                           >
+                            <f:selectItem itemLabel="No Value" itemValue=""/>
+                            <f:selectItems value="#{TemplateFormPage.studyMap[sfc.researchInstrument].templateField.controlledVocabulary.selectItems}"/>
+                 </ice:selectOneMenu>  
                 </ice:column>
                 <ice:column>
+                 <ice:commandLink value="Select Vocabulary"
+                                       action="#{TemplateFormPage.openPopupStandard(TemplateFormPage.studyMap[sfc.researchInstrument].templateField)}"/>
                   <ice:selectOneMenu immediate="false" partialSubmit="true" 
                                         value="#{TemplateFormPage.studyMap[sfc.researchInstrument].templateField.fieldInputLevelString}">
                             <f:attribute name="fieldName" value="researchInstrument" />
@@ -1824,14 +1927,22 @@
                   <ice:graphicImage value="/resources/images/icon_required.gif" rendered="#{TemplateFormPage.studyMap[sfc.dataSources].required}"/>
                   <ice:graphicImage value="/resources/images/icon_recommended.gif" rendered="#{TemplateFormPage.studyMap[sfc.dataSources].recommended}"/>
                 </ice:column>
-                <ice:column>
-                  <ice:inputText id="input_dataSources" size="90"
-                                 value="#{TemplateFormPage.template.metadata.dataSources}"
-                                 styleClass="formHtmlEnabled">
-                  </ice:inputText>
+		<ice:column>
+                  <ice:inputText id="input_dataSources" size="45" value="#{TemplateFormPage.template.metadata.dataSources}" 
+                                 rendered="#{empty(TemplateFormPage.studyMap[sfc.dataSources].templateField.controlledVocabulary)}" styleClass="formHtmlEnabled"/>
                   <ice:message styleClass="errorMessage" for="input_dataSources"/>
+
+                  <ice:selectOneMenu immediate="false"   id="selectOneDataSources" 
+                                     rendered="#{!empty(TemplateFormPage.studyMap[sfc.dataSources].templateField.controlledVocabulary)}"                                          
+                                           value="#{TemplateFormPage.template.metadata.dataSources}" 
+                                           >
+                            <f:selectItem itemLabel="No Value" itemValue=""/>
+                            <f:selectItems value="#{TemplateFormPage.studyMap[sfc.dataSources].templateField.controlledVocabulary.selectItems}"/>
+                 </ice:selectOneMenu>  
                 </ice:column>
                 <ice:column>
+                 <ice:commandLink value="Select Vocabulary"
+                                       action="#{TemplateFormPage.openPopupStandard(TemplateFormPage.studyMap[sfc.dataSources].templateField)}"/>
                   <ice:selectOneMenu immediate="false" partialSubmit="true" 
                                         value="#{TemplateFormPage.studyMap[sfc.dataSources].templateField.fieldInputLevelString}">
                             <f:attribute name="fieldName" value="dataSources" />
@@ -1851,14 +1962,22 @@
                   <ice:graphicImage value="/resources/images/icon_required.gif" rendered="#{TemplateFormPage.studyMap[sfc.originOfSources].required}"/>
                   <ice:graphicImage value="/resources/images/icon_recommended.gif" rendered="#{TemplateFormPage.studyMap[sfc.originOfSources].recommended}"/>
                 </ice:column>
-                <ice:column>
-                  <ice:inputText id="input_originOfSources" size="90"
-                                 value="#{TemplateFormPage.template.metadata.originOfSources}"
-                                 styleClass="formHtmlEnabled">
-                  </ice:inputText>
+		<ice:column>
+                  <ice:inputText id="input_originOfSources" size="45" value="#{TemplateFormPage.template.metadata.originOfSources}" 
+                                 rendered="#{empty(TemplateFormPage.studyMap[sfc.originOfSources].templateField.controlledVocabulary)}" styleClass="formHtmlEnabled"/>
                   <ice:message styleClass="errorMessage" for="input_originOfSources"/>
+
+                  <ice:selectOneMenu immediate="false"   id="selectOneOriginOfSources" 
+                                     rendered="#{!empty(TemplateFormPage.studyMap[sfc.originOfSources].templateField.controlledVocabulary)}"                                          
+                                           value="#{TemplateFormPage.template.metadata.originOfSources}" 
+                                           >
+                            <f:selectItem itemLabel="No Value" itemValue=""/>
+                            <f:selectItems value="#{TemplateFormPage.studyMap[sfc.originOfSources].templateField.controlledVocabulary.selectItems}"/>
+                 </ice:selectOneMenu>  
                 </ice:column>
                 <ice:column>
+                 <ice:commandLink value="Select Vocabulary"
+                                       action="#{TemplateFormPage.openPopupStandard(TemplateFormPage.studyMap[sfc.originOfSources].templateField)}"/>
                   <ice:selectOneMenu immediate="false" partialSubmit="true" 
                                         value="#{TemplateFormPage.studyMap[sfc.originOfSources].templateField.fieldInputLevelString}">
                             <f:attribute name="fieldName" value="originOfSources" />
@@ -1878,15 +1997,22 @@
                   <ice:graphicImage value="/resources/images/icon_required.gif" rendered="#{TemplateFormPage.studyMap[sfc.characteristicOfSources].required}"/>
                   <ice:graphicImage value="/resources/images/icon_recommended.gif" rendered="#{TemplateFormPage.studyMap[sfc.characteristicOfSources].recommended}"/>
                 </ice:column>
-                <ice:column>
-                  <ice:inputText id="input_characteristicOfSources"
-                                 size="90"
-                                 value="#{TemplateFormPage.template.metadata.characteristicOfSources}"
-                                 styleClass="formHtmlEnabled">
-                  </ice:inputText>
+		<ice:column>
+                  <ice:inputText id="input_characteristicOfSources" size="45" value="#{TemplateFormPage.template.metadata.characteristicOfSources}" 
+                                 rendered="#{empty(TemplateFormPage.studyMap[sfc.characteristicOfSources].templateField.controlledVocabulary)}" styleClass="formHtmlEnabled"/>
                   <ice:message styleClass="errorMessage" for="input_characteristicOfSources"/>
+
+                  <ice:selectOneMenu immediate="false"   id="selectOneCharacteristicOfSources" 
+                                     rendered="#{!empty(TemplateFormPage.studyMap[sfc.characteristicOfSources].templateField.controlledVocabulary)}"                                          
+                                           value="#{TemplateFormPage.template.metadata.characteristicOfSources}" 
+                                           >
+                            <f:selectItem itemLabel="No Value" itemValue=""/>
+                            <f:selectItems value="#{TemplateFormPage.studyMap[sfc.characteristicOfSources].templateField.controlledVocabulary.selectItems}"/>
+                 </ice:selectOneMenu>  
                 </ice:column>
                 <ice:column>
+                 <ice:commandLink value="Select Vocabulary"
+                                       action="#{TemplateFormPage.openPopupStandard(TemplateFormPage.studyMap[sfc.characteristicOfSources].templateField)}"/>
                   <ice:selectOneMenu immediate="false" partialSubmit="true" 
                                         value="#{TemplateFormPage.studyMap[sfc.characteristicOfSources].templateField.fieldInputLevelString}">
                             <f:attribute name="fieldName" value="characteristicOfSources" />
@@ -1906,15 +2032,26 @@
                   <ice:graphicImage value="/resources/images/icon_required.gif" rendered="#{TemplateFormPage.studyMap[sfc.accessToSources].required}"/>
                   <ice:graphicImage value="/resources/images/icon_recommended.gif" rendered="#{TemplateFormPage.studyMap[sfc.accessToSources].recommended}"/>
                 </ice:column>
-                <ice:column>
+		<ice:column>
                   <ice:inputTextarea cols="90" rows="4"
                                      id="input_accessToSources"
-                                     value="#{TemplateFormPage.template.metadata.accessToSources}"
+                                     value="#{TemplateFormPage.template.metadata.accessToSources}"                                     
                                      styleClass="formHtmlEnabled">
                   </ice:inputTextarea>
+
                   <ice:message styleClass="errorMessage" for="input_accessToSources"/>
+
+                  <ice:selectOneMenu immediate="false"   id="selectOneAccessToSources" 
+                                     rendered="#{!empty(TemplateFormPage.studyMap[sfc.accessToSources].templateField.controlledVocabulary)}"                                          
+                                           value="#{TemplateFormPage.template.metadata.accessToSources}" 
+                                           >
+                            <f:selectItem itemLabel="No Value" itemValue=""/>
+                            <f:selectItems value="#{TemplateFormPage.studyMap[sfc.accessToSources].templateField.controlledVocabulary.selectItems}"/>
+                 </ice:selectOneMenu>  
                 </ice:column>
                 <ice:column>
+                 <ice:commandLink value="Select Vocabulary"
+                                       action="#{TemplateFormPage.openPopupStandard(TemplateFormPage.studyMap[sfc.accessToSources].templateField)}"/>
                   <ice:selectOneMenu immediate="false" partialSubmit="true" 
                                         value="#{TemplateFormPage.studyMap[sfc.accessToSources].templateField.fieldInputLevelString}">
                             <f:attribute name="fieldName" value="accessToSources" />
@@ -1934,15 +2071,22 @@
                   <ice:graphicImage value="/resources/images/icon_required.gif" rendered="#{TemplateFormPage.studyMap[sfc.dataCollectionSituation].required}"/>
                   <ice:graphicImage value="/resources/images/icon_recommended.gif" rendered="#{TemplateFormPage.studyMap[sfc.dataCollectionSituation].recommended}"/>
                 </ice:column>
-                <ice:column>
-                  <ice:inputText id="input_dataCollectionSituation"
-                                 size="90"
-                                 value="#{TemplateFormPage.template.metadata.dataCollectionSituation}"
-                                 styleClass="formHtmlEnabled">
-                  </ice:inputText>
+		<ice:column>
+                  <ice:inputText id="input_dataCollectionSituation" size="45" value="#{TemplateFormPage.template.metadata.dataCollectionSituation}" 
+                                 rendered="#{empty(TemplateFormPage.studyMap[sfc.dataCollectionSituation].templateField.controlledVocabulary)}" styleClass="formHtmlEnabled"/>
                   <ice:message styleClass="errorMessage" for="input_dataCollectionSituation"/>
+
+                  <ice:selectOneMenu immediate="false"   id="selectOneDataCollectionSituation" 
+                                     rendered="#{!empty(TemplateFormPage.studyMap[sfc.dataCollectionSituation].templateField.controlledVocabulary)}"                                          
+                                           value="#{TemplateFormPage.template.metadata.dataCollectionSituation}" 
+                                           >
+                            <f:selectItem itemLabel="No Value" itemValue=""/>
+                            <f:selectItems value="#{TemplateFormPage.studyMap[sfc.dataCollectionSituation].templateField.controlledVocabulary.selectItems}"/>
+                 </ice:selectOneMenu>  
                 </ice:column>
                 <ice:column>
+                 <ice:commandLink value="Select Vocabulary"
+                                       action="#{TemplateFormPage.openPopupStandard(TemplateFormPage.studyMap[sfc.dataCollectionSituation].templateField)}"/>
                   <ice:selectOneMenu immediate="false" partialSubmit="true" 
                                         value="#{TemplateFormPage.studyMap[sfc.dataCollectionSituation].templateField.fieldInputLevelString}">
                             <f:attribute name="fieldName" value="dataCollectionSituation" />
@@ -1962,15 +2106,22 @@
                   <ice:graphicImage value="/resources/images/icon_required.gif" rendered="#{TemplateFormPage.studyMap[sfc.actionsToMinimizeLoss].required}"/>
                   <ice:graphicImage value="/resources/images/icon_recommended.gif" rendered="#{TemplateFormPage.studyMap[sfc.actionsToMinimizeLoss].recommended}"/>
                 </ice:column>
-                <ice:column>
-                  <ice:inputText id="input_actionsToMinimizeLoss"
-                                 size="90"
-                                 value="#{TemplateFormPage.template.metadata.actionsToMinimizeLoss}"
-                                 styleClass="formHtmlEnabled">
-                  </ice:inputText>
+		<ice:column>
+                  <ice:inputText id="input_actionsToMinimizeLoss" size="45" value="#{TemplateFormPage.template.metadata.actionsToMinimizeLoss}" 
+                                 rendered="#{empty(TemplateFormPage.studyMap[sfc.actionsToMinimizeLoss].templateField.controlledVocabulary)}" styleClass="formHtmlEnabled"/>
                   <ice:message styleClass="errorMessage" for="input_actionsToMinimizeLoss"/>
+
+                  <ice:selectOneMenu immediate="false"   id="selectOneActionsToMinimizeLoss" 
+                                     rendered="#{!empty(TemplateFormPage.studyMap[sfc.actionsToMinimizeLoss].templateField.controlledVocabulary)}"                                          
+                                           value="#{TemplateFormPage.template.metadata.actionsToMinimizeLoss}" 
+                                           >
+                            <f:selectItem itemLabel="No Value" itemValue=""/>
+                            <f:selectItems value="#{TemplateFormPage.studyMap[sfc.actionsToMinimizeLoss].templateField.controlledVocabulary.selectItems}"/>
+                 </ice:selectOneMenu>  
                 </ice:column>
                 <ice:column>
+                 <ice:commandLink value="Select Vocabulary"
+                                       action="#{TemplateFormPage.openPopupStandard(TemplateFormPage.studyMap[sfc.actionsToMinimizeLoss].templateField)}"/>
                   <ice:selectOneMenu immediate="false" partialSubmit="true" 
                                         value="#{TemplateFormPage.studyMap[sfc.actionsToMinimizeLoss].templateField.fieldInputLevelString}">
                             <f:attribute name="fieldName" value="actionsToMinimizeLoss" />
@@ -1990,15 +2141,22 @@
                   <ice:graphicImage value="/resources/images/icon_required.gif" rendered="#{TemplateFormPage.studyMap[sfc.controlOperations].required}"/>
                   <ice:graphicImage value="/resources/images/icon_recommended.gif" rendered="#{TemplateFormPage.studyMap[sfc.controlOperations].recommended}"/>
                 </ice:column>
-                <ice:column>
-                  <ice:inputText id="input_controlOperations"
-                                 size="90"
-                                 value="#{TemplateFormPage.template.metadata.controlOperations}"
-                                 styleClass="formHtmlEnabled">
-                  </ice:inputText>
+		<ice:column>
+                  <ice:inputText id="input_controlOperations" size="45" value="#{TemplateFormPage.template.metadata.controlOperations}" 
+                                 rendered="#{empty(TemplateFormPage.studyMap[sfc.controlOperations].templateField.controlledVocabulary)}" styleClass="formHtmlEnabled"/>
                   <ice:message styleClass="errorMessage" for="input_controlOperations"/>
+
+                  <ice:selectOneMenu immediate="false"   id="selectOneControlOperations" 
+                                     rendered="#{!empty(TemplateFormPage.studyMap[sfc.controlOperations].templateField.controlledVocabulary)}"                                          
+                                           value="#{TemplateFormPage.template.metadata.controlOperations}" 
+                                           >
+                            <f:selectItem itemLabel="No Value" itemValue=""/>
+                            <f:selectItems value="#{TemplateFormPage.studyMap[sfc.controlOperations].templateField.controlledVocabulary.selectItems}"/>
+                 </ice:selectOneMenu>  
                 </ice:column>
                 <ice:column>
+                 <ice:commandLink value="Select Vocabulary"
+                                       action="#{TemplateFormPage.openPopupStandard(TemplateFormPage.studyMap[sfc.controlOperations].templateField)}"/>
                   <ice:selectOneMenu immediate="false" partialSubmit="true" 
                                         value="#{TemplateFormPage.studyMap[sfc.controlOperations].templateField.fieldInputLevelString}">
                             <f:attribute name="fieldName" value="controlOperations" />
@@ -2018,14 +2176,22 @@
                   <ice:graphicImage value="/resources/images/icon_required.gif" rendered="#{TemplateFormPage.studyMap[sfc.weighting].required}"/>
                   <ice:graphicImage value="/resources/images/icon_recommended.gif" rendered="#{TemplateFormPage.studyMap[sfc.weighting].recommended}"/>
                 </ice:column>
-                <ice:column>
-                  <ice:inputText id="input_weighting" size="90"
-                                 value="#{TemplateFormPage.template.metadata.weighting}"
-                                 styleClass="formHtmlEnabled">
-                  </ice:inputText>
+		<ice:column>
+                  <ice:inputText id="input_weighting" size="45" value="#{TemplateFormPage.template.metadata.weighting}" 
+                                 rendered="#{empty(TemplateFormPage.studyMap[sfc.weighting].templateField.controlledVocabulary)}" styleClass="formHtmlEnabled"/>
                   <ice:message styleClass="errorMessage" for="input_weighting"/>
+
+                  <ice:selectOneMenu immediate="false"   id="selectOneWeighting" 
+                                     rendered="#{!empty(TemplateFormPage.studyMap[sfc.weighting].templateField.controlledVocabulary)}"                                          
+                                           value="#{TemplateFormPage.template.metadata.weighting}" 
+                                           >
+                            <f:selectItem itemLabel="No Value" itemValue=""/>
+                            <f:selectItems value="#{TemplateFormPage.studyMap[sfc.weighting].templateField.controlledVocabulary.selectItems}"/>
+                 </ice:selectOneMenu>  
                 </ice:column>
                 <ice:column>
+                 <ice:commandLink value="Select Vocabulary"
+                                       action="#{TemplateFormPage.openPopupStandard(TemplateFormPage.studyMap[sfc.weighting].templateField)}"/>
                   <ice:selectOneMenu immediate="false" partialSubmit="true" 
                                         value="#{TemplateFormPage.studyMap[sfc.weighting].templateField.fieldInputLevelString}">
                             <f:attribute name="fieldName" value="weighting" />
@@ -2045,14 +2211,22 @@
                   <ice:graphicImage value="/resources/images/icon_required.gif" rendered="#{TemplateFormPage.studyMap[sfc.cleaningOperations].required}"/>
                   <ice:graphicImage value="/resources/images/icon_recommended.gif" rendered="#{TemplateFormPage.studyMap[sfc.cleaningOperations].recommended}"/>
                 </ice:column>
-                <ice:column>
-                  <ice:inputText id="input_cleaningOperations" size="90"
-                                 value="#{TemplateFormPage.template.metadata.cleaningOperations}"
-                                 styleClass="formHtmlEnabled">
-                  </ice:inputText>
+		<ice:column>
+                  <ice:inputText id="input_cleaningOperations" size="45" value="#{TemplateFormPage.template.metadata.cleaningOperations}" 
+                                 rendered="#{empty(TemplateFormPage.studyMap[sfc.cleaningOperations].templateField.controlledVocabulary)}" styleClass="formHtmlEnabled"/>
                   <ice:message styleClass="errorMessage" for="input_cleaningOperations"/>
+
+                  <ice:selectOneMenu immediate="false"   id="selectOneCleaningOperations" 
+                                     rendered="#{!empty(TemplateFormPage.studyMap[sfc.cleaningOperations].templateField.controlledVocabulary)}"                                          
+                                           value="#{TemplateFormPage.template.metadata.cleaningOperations}" 
+                                           >
+                            <f:selectItem itemLabel="No Value" itemValue=""/>
+                            <f:selectItems value="#{TemplateFormPage.studyMap[sfc.cleaningOperations].templateField.controlledVocabulary.selectItems}"/>
+                 </ice:selectOneMenu>  
                 </ice:column>
                 <ice:column>
+                 <ice:commandLink value="Select Vocabulary"
+                                       action="#{TemplateFormPage.openPopupStandard(TemplateFormPage.studyMap[sfc.cleaningOperations].templateField)}"/>
                   <ice:selectOneMenu immediate="false" partialSubmit="true" 
                                         value="#{TemplateFormPage.studyMap[sfc.cleaningOperations].templateField.fieldInputLevelString}">
                             <f:attribute name="fieldName" value="cleaningOperations" />
@@ -2072,16 +2246,24 @@
                   <ice:graphicImage value="/resources/images/icon_required.gif" rendered="#{TemplateFormPage.studyMap[sfc.studyLevelErrorNotes].required}"/>
                   <ice:graphicImage value="/resources/images/icon_recommended.gif" rendered="#{TemplateFormPage.studyMap[sfc.studyLevelErrorNotes].recommended}"/>
                 </ice:column>
-                <ice:column>
-                  <ice:inputText id="input_studyLevelErrorNotes" size="90"
-                                 value="#{TemplateFormPage.template.metadata.studyLevelErrorNotes}"
-                                 styleClass="formHtmlEnabled">
-                  </ice:inputText>
+		<ice:column>
+                  <ice:inputText id="input_studyLevelErrorNotes" size="45" value="#{TemplateFormPage.template.metadata.studyLevelErrorNotes}" 
+                                 rendered="#{empty(TemplateFormPage.studyMap[sfc.studyLevelErrorNotes].templateField.controlledVocabulary)}" styleClass="formHtmlEnabled"/>
                   <ice:message styleClass="errorMessage" for="input_studyLevelErrorNotes"/>
+
+                  <ice:selectOneMenu immediate="false"   id="selectOneStudyLevelErrorNotes" 
+                                     rendered="#{!empty(TemplateFormPage.studyMap[sfc.studyLevelErrorNotes].templateField.controlledVocabulary)}"                                          
+                                           value="#{TemplateFormPage.template.metadata.studyLevelErrorNotes}" 
+                                           >
+                            <f:selectItem itemLabel="No Value" itemValue=""/>
+                            <f:selectItems value="#{TemplateFormPage.studyMap[sfc.studyLevelErrorNotes].templateField.controlledVocabulary.selectItems}"/>
+                 </ice:selectOneMenu>  
                 </ice:column>
                 <ice:column>
+                 <ice:commandLink value="Select Vocabulary"
+                                       action="#{TemplateFormPage.openPopupStandard(TemplateFormPage.studyMap[sfc.studyLevelErrorNotes].templateField)}"/>
                   <ice:selectOneMenu immediate="false" partialSubmit="true" 
-                                     value="#{TemplateFormPage.studyMap[sfc.studyLevelErrorNotes].templateField.fieldInputLevelString}">
+                                        value="#{TemplateFormPage.studyMap[sfc.studyLevelErrorNotes].templateField.fieldInputLevelString}">
                             <f:attribute name="fieldName" value="studyLevelErrorNotes" />
                            <f:selectItems value="#{TemplateFormPage.fieldInputLevelSelectItems}"/>
                   </ice:selectOneMenu>
@@ -2099,14 +2281,22 @@
                   <ice:graphicImage value="/resources/images/icon_required.gif" rendered="#{TemplateFormPage.studyMap[sfc.responseRate].required}"/>
                   <ice:graphicImage value="/resources/images/icon_recommended.gif" rendered="#{TemplateFormPage.studyMap[sfc.responseRate].recommended}"/>
                 </ice:column>
-                <ice:column>
-                  <ice:inputText id="input_responseRate" size="90"
-                                 value="#{TemplateFormPage.template.metadata.responseRate}"
-                                 styleClass="formHtmlEnabled">
-                  </ice:inputText>
+		<ice:column>
+                  <ice:inputText id="input_responseRate" size="45" value="#{TemplateFormPage.template.metadata.responseRate}" 
+                                 rendered="#{empty(TemplateFormPage.studyMap[sfc.responseRate].templateField.controlledVocabulary)}" styleClass="formHtmlEnabled"/>
                   <ice:message styleClass="errorMessage" for="input_responseRate"/>
+
+                  <ice:selectOneMenu immediate="false"   id="selectOneResponseRate" 
+                                     rendered="#{!empty(TemplateFormPage.studyMap[sfc.responseRate].templateField.controlledVocabulary)}"                                          
+                                           value="#{TemplateFormPage.template.metadata.responseRate}" 
+                                           >
+                            <f:selectItem itemLabel="No Value" itemValue=""/>
+                            <f:selectItems value="#{TemplateFormPage.studyMap[sfc.responseRate].templateField.controlledVocabulary.selectItems}"/>
+                 </ice:selectOneMenu>  
                 </ice:column>
                 <ice:column>
+                 <ice:commandLink value="Select Vocabulary"
+                                       action="#{TemplateFormPage.openPopupStandard(TemplateFormPage.studyMap[sfc.responseRate].templateField)}"/>
                   <ice:selectOneMenu immediate="false" partialSubmit="true" 
                                         value="#{TemplateFormPage.studyMap[sfc.responseRate].templateField.fieldInputLevelString}">
                             <f:attribute name="fieldName" value="responseRate" />
@@ -2126,14 +2316,22 @@
                   <ice:graphicImage value="/resources/images/icon_required.gif" rendered="#{TemplateFormPage.studyMap[sfc.samplingErrorEstimates].required}"/>
                   <ice:graphicImage value="/resources/images/icon_recommended.gif" rendered="#{TemplateFormPage.studyMap[sfc.samplingErrorEstimates].recommended}"/>
                 </ice:column>
-                <ice:column>
-                  <ice:inputText id="input_samplingErrorEstimates" size="90"
-                                 value="#{TemplateFormPage.template.metadata.samplingErrorEstimate}"
-                                 styleClass="formHtmlEnabled">
-                  </ice:inputText>
+		<ice:column>
+                  <ice:inputText id="input_samplingErrorEstimates" size="45" value="#{TemplateFormPage.template.metadata.samplingErrorEstimate}" 
+                                 rendered="#{empty(TemplateFormPage.studyMap[sfc.samplingErrorEstimates].templateField.controlledVocabulary)}" styleClass="formHtmlEnabled"/>
                   <ice:message styleClass="errorMessage" for="input_samplingErrorEstimates"/>
+
+                  <ice:selectOneMenu immediate="false"   id="selectOneSamplingErrorEstimates" 
+                                     rendered="#{!empty(TemplateFormPage.studyMap[sfc.samplingErrorEstimates].templateField.controlledVocabulary)}"                                          
+                                           value="#{TemplateFormPage.template.metadata.samplingErrorEstimate}" 
+                                           >
+                            <f:selectItem itemLabel="No Value" itemValue=""/>
+                            <f:selectItems value="#{TemplateFormPage.studyMap[sfc.samplingErrorEstimates].templateField.controlledVocabulary.selectItems}"/>
+                 </ice:selectOneMenu>  
                 </ice:column>
                 <ice:column>
+                 <ice:commandLink value="Select Vocabulary"
+                                       action="#{TemplateFormPage.openPopupStandard(TemplateFormPage.studyMap[sfc.samplingErrorEstimates].templateField)}"/>
                   <ice:selectOneMenu immediate="false" partialSubmit="true" 
                                         value="#{TemplateFormPage.studyMap[sfc.samplingErrorEstimates].templateField.fieldInputLevelString}">
                             <f:attribute name="fieldName" value="samplingErrorEstimates" />
@@ -2153,15 +2351,22 @@
                   <ice:graphicImage value="/resources/images/icon_required.gif" rendered="#{TemplateFormPage.studyMap[sfc.otherDataAppraisal].required}"/>
                   <ice:graphicImage value="/resources/images/icon_recommended.gif" rendered="#{TemplateFormPage.studyMap[sfc.otherDataAppraisal].recommended}"/>
                 </ice:column>
-                <ice:column>
-                  <ice:inputText id="input_otherDataAppraisal"
-                                 size="90"
-                                 value="#{TemplateFormPage.template.metadata.otherDataAppraisal}"
-                                 styleClass="formHtmlEnabled">
-                  </ice:inputText>
+		<ice:column>
+                  <ice:inputText id="input_otherDataAppraisal" size="45" value="#{TemplateFormPage.template.metadata.otherDataAppraisal}" 
+                                 rendered="#{empty(TemplateFormPage.studyMap[sfc.otherDataAppraisal].templateField.controlledVocabulary)}" styleClass="formHtmlEnabled"/>
                   <ice:message styleClass="errorMessage" for="input_otherDataAppraisal"/>
+
+                  <ice:selectOneMenu immediate="false"   id="selectOneOtherDataAppraisal" 
+                                     rendered="#{!empty(TemplateFormPage.studyMap[sfc.otherDataAppraisal].templateField.controlledVocabulary)}"                                          
+                                           value="#{TemplateFormPage.template.metadata.otherDataAppraisal}" 
+                                           >
+                            <f:selectItem itemLabel="No Value" itemValue=""/>
+                            <f:selectItems value="#{TemplateFormPage.studyMap[sfc.otherDataAppraisal].templateField.controlledVocabulary.selectItems}"/>
+                 </ice:selectOneMenu>  
                 </ice:column>
                 <ice:column>
+                 <ice:commandLink value="Select Vocabulary"
+                                       action="#{TemplateFormPage.openPopupStandard(TemplateFormPage.studyMap[sfc.otherDataAppraisal].templateField)}"/>
                   <ice:selectOneMenu immediate="false" partialSubmit="true" 
                                         value="#{TemplateFormPage.studyMap[sfc.otherDataAppraisal].templateField.fieldInputLevelString}">
                             <f:attribute name="fieldName" value="otherDataAppraisal" />
@@ -2187,16 +2392,23 @@
                   <ice:graphicImage value="/resources/images/icon_required.gif" rendered="#{TemplateFormPage.studyMap[sfc.placeOfAccess].required}"/>
                   <ice:graphicImage value="/resources/images/icon_recommended.gif" rendered="#{TemplateFormPage.studyMap[sfc.placeOfAccess].recommended}"/>
                 </ice:column>
-                <ice:column>
-                  <ice:inputText id="input_placeOfAccess"
-                                 size="90"
-                                 value="#{TemplateFormPage.template.metadata.placeOfAccess}"
-                                 styleClass="formHtmlEnabled">
-                  </ice:inputText>
+		<ice:column>
+                  <ice:inputText id="input_placeOfAccess" size="45" value="#{TemplateFormPage.template.metadata.placeOfAccess}" 
+                                 rendered="#{empty(TemplateFormPage.studyMap[sfc.placeOfAccess].templateField.controlledVocabulary)}" styleClass="formHtmlEnabled"/>
                   <ice:message styleClass="errorMessage" for="input_placeOfAccess"/>
+
+                  <ice:selectOneMenu immediate="false"   id="selectOnePlaceOfAccess" 
+                                     rendered="#{!empty(TemplateFormPage.studyMap[sfc.placeOfAccess].templateField.controlledVocabulary)}"                                          
+                                           value="#{TemplateFormPage.template.metadata.placeOfAccess}" 
+                                           >
+                            <f:selectItem itemLabel="No Value" itemValue=""/>
+                            <f:selectItems value="#{TemplateFormPage.studyMap[sfc.placeOfAccess].templateField.controlledVocabulary.selectItems}"/>
+                 </ice:selectOneMenu>  
                 </ice:column>
                 <ice:column>
-                  <ice:selectOneMenu immediate="false" partialSubmit="true"
+                 <ice:commandLink value="Select Vocabulary"
+                                       action="#{TemplateFormPage.openPopupStandard(TemplateFormPage.studyMap[sfc.placeOfAccess].templateField)}"/>
+                  <ice:selectOneMenu immediate="false" partialSubmit="true" 
                                         value="#{TemplateFormPage.studyMap[sfc.placeOfAccess].templateField.fieldInputLevelString}">
                             <f:attribute name="fieldName" value="placeOfAccess" />
                            <f:selectItems value="#{TemplateFormPage.fieldInputLevelSelectItems}"/>
@@ -2214,19 +2426,26 @@
                   <ice:graphicImage value="/resources/images/icon_required.gif" rendered="#{TemplateFormPage.studyMap[sfc.originalArchive].required}"/>
                   <ice:graphicImage value="/resources/images/icon_recommended.gif" rendered="#{TemplateFormPage.studyMap[sfc.originalArchive].recommended}"/>
                 </ice:column>
-                <ice:column>
-                  <ice:inputText id="input_originalArchive"
-                                 size="90"
-                                 value="#{TemplateFormPage.template.metadata.originalArchive}"
-                                 styleClass="formHtmlEnabled">
-                  </ice:inputText>
+		<ice:column>
+                  <ice:inputText id="input_originalArchive" size="45" value="#{TemplateFormPage.template.metadata.originalArchive}" 
+                                 rendered="#{empty(TemplateFormPage.studyMap[sfc.originalArchive].templateField.controlledVocabulary)}" styleClass="formHtmlEnabled"/>
                   <ice:message styleClass="errorMessage" for="input_originalArchive"/>
+
+                  <ice:selectOneMenu immediate="false"   id="selectOneOriginalArchive" 
+                                     rendered="#{!empty(TemplateFormPage.studyMap[sfc.originalArchive].templateField.controlledVocabulary)}"                                          
+                                           value="#{TemplateFormPage.template.metadata.originalArchive}" 
+                                           >
+                            <f:selectItem itemLabel="No Value" itemValue=""/>
+                            <f:selectItems value="#{TemplateFormPage.studyMap[sfc.originalArchive].templateField.controlledVocabulary.selectItems}"/>
+                 </ice:selectOneMenu>  
                 </ice:column>
                 <ice:column>
-                  <ice:selectOneMenu immediate="false" partialSubmit="true"
+                 <ice:commandLink value="Select Vocabulary"
+                                       action="#{TemplateFormPage.openPopupStandard(TemplateFormPage.studyMap[sfc.originalArchive].templateField)}"/>
+                  <ice:selectOneMenu immediate="false" partialSubmit="true" 
                                         value="#{TemplateFormPage.studyMap[sfc.originalArchive].templateField.fieldInputLevelString}">
                             <f:attribute name="fieldName" value="originalArchive" />
-                  <f:selectItems value="#{TemplateFormPage.fieldInputLevelSelectItems}"/>
+                           <f:selectItems value="#{TemplateFormPage.fieldInputLevelSelectItems}"/>
                   </ice:selectOneMenu>
                 </ice:column>
               </ice:panelGrid>
@@ -2241,18 +2460,26 @@
                   <ice:graphicImage value="/resources/images/icon_required.gif" rendered="#{TemplateFormPage.studyMap[sfc.availabilityStatus].required}"/>
                   <ice:graphicImage value="/resources/images/icon_recommended.gif" rendered="#{TemplateFormPage.studyMap[sfc.availabilityStatus].recommended}"/>
                 </ice:column>
-                <ice:column>
-                  <ice:inputText id="input_availabilityStatus" size="90"
-                                 value="#{TemplateFormPage.template.metadata.availabilityStatus}"
-                                 styleClass="formHtmlEnabled">
-                  </ice:inputText>
+		<ice:column>
+                  <ice:inputText id="input_availabilityStatus" size="45" value="#{TemplateFormPage.template.metadata.availabilityStatus}" 
+                                 rendered="#{empty(TemplateFormPage.studyMap[sfc.availabilityStatus].templateField.controlledVocabulary)}" styleClass="formHtmlEnabled"/>
                   <ice:message styleClass="errorMessage" for="input_availabilityStatus"/>
+
+                  <ice:selectOneMenu immediate="false"   id="selectOneAvailabilityStatus" 
+                                     rendered="#{!empty(TemplateFormPage.studyMap[sfc.availabilityStatus].templateField.controlledVocabulary)}"                                          
+                                           value="#{TemplateFormPage.template.metadata.availabilityStatus}" 
+                                           >
+                            <f:selectItem itemLabel="No Value" itemValue=""/>
+                            <f:selectItems value="#{TemplateFormPage.studyMap[sfc.availabilityStatus].templateField.controlledVocabulary.selectItems}"/>
+                 </ice:selectOneMenu>  
                 </ice:column>
                 <ice:column>
-                  <ice:selectOneMenu immediate="false" partialSubmit="true"
+                 <ice:commandLink value="Select Vocabulary"
+                                       action="#{TemplateFormPage.openPopupStandard(TemplateFormPage.studyMap[sfc.availabilityStatus].templateField)}"/>
+                  <ice:selectOneMenu immediate="false" partialSubmit="true" 
                                         value="#{TemplateFormPage.studyMap[sfc.availabilityStatus].templateField.fieldInputLevelString}">
                             <f:attribute name="fieldName" value="availabilityStatus" />
-                  <f:selectItems value="#{TemplateFormPage.fieldInputLevelSelectItems}"/>
+                           <f:selectItems value="#{TemplateFormPage.fieldInputLevelSelectItems}"/>
                   </ice:selectOneMenu>
                 </ice:column>
               </ice:panelGrid>
@@ -2267,19 +2494,26 @@
                   <ice:graphicImage value="/resources/images/icon_required.gif" rendered="#{TemplateFormPage.studyMap[sfc.collectionSize].required}"/>
                   <ice:graphicImage value="/resources/images/icon_recommended.gif" rendered="#{TemplateFormPage.studyMap[sfc.collectionSize].recommended}"/>
                 </ice:column>
-                <ice:column>
-                  <ice:inputText id="input_collectionSize"
-                                 size="90"
-                                 value="#{TemplateFormPage.template.metadata.collectionSize}"
-                                 styleClass="formHtmlEnabled">
-                  </ice:inputText>
+		<ice:column>
+                  <ice:inputText id="input_collectionSize" size="45" value="#{TemplateFormPage.template.metadata.collectionSize}" 
+                                 rendered="#{empty(TemplateFormPage.studyMap[sfc.collectionSize].templateField.controlledVocabulary)}" styleClass="formHtmlEnabled"/>
                   <ice:message styleClass="errorMessage" for="input_collectionSize"/>
+
+                  <ice:selectOneMenu immediate="false"   id="selectOneCollectionSize" 
+                                     rendered="#{!empty(TemplateFormPage.studyMap[sfc.collectionSize].templateField.controlledVocabulary)}"                                          
+                                           value="#{TemplateFormPage.template.metadata.collectionSize}" 
+                                           >
+                            <f:selectItem itemLabel="No Value" itemValue=""/>
+                            <f:selectItems value="#{TemplateFormPage.studyMap[sfc.collectionSize].templateField.controlledVocabulary.selectItems}"/>
+                 </ice:selectOneMenu>  
                 </ice:column>
                 <ice:column>
-                  <ice:selectOneMenu immediate="false" partialSubmit="true"
+                 <ice:commandLink value="Select Vocabulary"
+                                       action="#{TemplateFormPage.openPopupStandard(TemplateFormPage.studyMap[sfc.collectionSize].templateField)}"/>
+                  <ice:selectOneMenu immediate="false" partialSubmit="true" 
                                         value="#{TemplateFormPage.studyMap[sfc.collectionSize].templateField.fieldInputLevelString}">
                             <f:attribute name="fieldName" value="collectionSize" />
-                  <f:selectItems value="#{TemplateFormPage.fieldInputLevelSelectItems}"/>
+                           <f:selectItems value="#{TemplateFormPage.fieldInputLevelSelectItems}"/>
                   </ice:selectOneMenu>
                 </ice:column>
               </ice:panelGrid>
@@ -2294,18 +2528,26 @@
                   <ice:graphicImage value="/resources/images/icon_required.gif" rendered="#{TemplateFormPage.studyMap[sfc.studyCompletion].required}"/>
                   <ice:graphicImage value="/resources/images/icon_recommended.gif" rendered="#{TemplateFormPage.studyMap[sfc.studyCompletion].recommended}"/>
                 </ice:column>
-                <ice:column>
-                  <ice:inputText size="90" id="input_studyCompletion"
-                                 value="#{TemplateFormPage.template.metadata.studyCompletion}"
-                                 styleClass="formHtmlEnabled">
-                  </ice:inputText>
+		<ice:column>
+                  <ice:inputText id="input_studyCompletion" size="45" value="#{TemplateFormPage.template.metadata.studyCompletion}" 
+                                 rendered="#{empty(TemplateFormPage.studyMap[sfc.studyCompletion].templateField.controlledVocabulary)}" styleClass="formHtmlEnabled"/>
                   <ice:message styleClass="errorMessage" for="input_studyCompletion"/>
+
+                  <ice:selectOneMenu immediate="false"   id="selectOneStudyCompletion" 
+                                     rendered="#{!empty(TemplateFormPage.studyMap[sfc.studyCompletion].templateField.controlledVocabulary)}"                                          
+                                           value="#{TemplateFormPage.template.metadata.studyCompletion}" 
+                                           >
+                            <f:selectItem itemLabel="No Value" itemValue=""/>
+                            <f:selectItems value="#{TemplateFormPage.studyMap[sfc.studyCompletion].templateField.controlledVocabulary.selectItems}"/>
+                 </ice:selectOneMenu>  
                 </ice:column>
                 <ice:column>
-                  <ice:selectOneMenu immediate="false" partialSubmit="true"
+                 <ice:commandLink value="Select Vocabulary"
+                                       action="#{TemplateFormPage.openPopupStandard(TemplateFormPage.studyMap[sfc.studyCompletion].templateField)}"/>
+                  <ice:selectOneMenu immediate="false" partialSubmit="true" 
                                         value="#{TemplateFormPage.studyMap[sfc.studyCompletion].templateField.fieldInputLevelString}">
                             <f:attribute name="fieldName" value="studyCompletion" />
-                  <f:selectItems value="#{TemplateFormPage.fieldInputLevelSelectItems}"/>
+                           <f:selectItems value="#{TemplateFormPage.fieldInputLevelSelectItems}"/>
                   </ice:selectOneMenu>
                 </ice:column>
               </ice:panelGrid>
@@ -2324,19 +2566,30 @@
                   <ice:graphicImage value="/resources/images/icon_required.gif" rendered="#{TemplateFormPage.studyMap[sfc.confidentialityDeclaration].required}"/>
                   <ice:graphicImage value="/resources/images/icon_recommended.gif" rendered="#{TemplateFormPage.studyMap[sfc.confidentialityDeclaration].recommended}"/>
                 </ice:column>
-                <ice:column>
+		<ice:column>
                   <ice:inputTextarea cols="90" rows="4"
                                      id="input_confidentialityDeclaration"
                                      value="#{TemplateFormPage.template.metadata.confidentialityDeclaration}"                                     
                                      styleClass="formHtmlEnabled">
                   </ice:inputTextarea>
+
                   <ice:message styleClass="errorMessage" for="input_confidentialityDeclaration"/>
+
+                  <ice:selectOneMenu immediate="false"   id="selectOneConfidentialityDeclaration" 
+                                     rendered="#{!empty(TemplateFormPage.studyMap[sfc.confidentialityDeclaration].templateField.controlledVocabulary)}"                                          
+                                           value="#{TemplateFormPage.template.metadata.confidentialityDeclaration}" 
+                                           >
+                            <f:selectItem itemLabel="No Value" itemValue=""/>
+                            <f:selectItems value="#{TemplateFormPage.studyMap[sfc.confidentialityDeclaration].templateField.controlledVocabulary.selectItems}"/>
+                 </ice:selectOneMenu>  
                 </ice:column>
                 <ice:column>
-                  <ice:selectOneMenu immediate="false" partialSubmit="true"
+                 <ice:commandLink value="Select Vocabulary"
+                                       action="#{TemplateFormPage.openPopupStandard(TemplateFormPage.studyMap[sfc.confidentialityDeclaration].templateField)}"/>
+                  <ice:selectOneMenu immediate="false" partialSubmit="true" 
                                         value="#{TemplateFormPage.studyMap[sfc.confidentialityDeclaration].templateField.fieldInputLevelString}">
                             <f:attribute name="fieldName" value="confidentialityDeclaration" />
-                  <f:selectItems value="#{TemplateFormPage.fieldInputLevelSelectItems}"/>
+                           <f:selectItems value="#{TemplateFormPage.fieldInputLevelSelectItems}"/>
                   </ice:selectOneMenu>
                 </ice:column>
               </ice:panelGrid>
@@ -2351,18 +2604,30 @@
                   <ice:graphicImage value="/resources/images/icon_required.gif" rendered="#{TemplateFormPage.studyMap[sfc.specialPermissions].required}"/>
                   <ice:graphicImage value="/resources/images/icon_recommended.gif" rendered="#{TemplateFormPage.studyMap[sfc.specialPermissions].recommended}"/>
                 </ice:column>
-                <ice:column>
-                  <ice:inputTextarea cols="90" rows="4" id="input_specialPermissions"
+		<ice:column>
+                  <ice:inputTextarea cols="90" rows="4"
+                                     id="input_specialPermissions"
                                      value="#{TemplateFormPage.template.metadata.specialPermissions}"                                     
                                      styleClass="formHtmlEnabled">
                   </ice:inputTextarea>
+
                   <ice:message styleClass="errorMessage" for="input_specialPermissions"/>
+
+                  <ice:selectOneMenu immediate="false"   id="selectOneSpecialPermissions" 
+                                     rendered="#{!empty(TemplateFormPage.studyMap[sfc.specialPermissions].templateField.controlledVocabulary)}"                                          
+                                           value="#{TemplateFormPage.template.metadata.specialPermissions}" 
+                                           >
+                            <f:selectItem itemLabel="No Value" itemValue=""/>
+                            <f:selectItems value="#{TemplateFormPage.studyMap[sfc.specialPermissions].templateField.controlledVocabulary.selectItems}"/>
+                 </ice:selectOneMenu>  
                 </ice:column>
                 <ice:column>
-                  <ice:selectOneMenu immediate="false" partialSubmit="true"
+                 <ice:commandLink value="Select Vocabulary"
+                                       action="#{TemplateFormPage.openPopupStandard(TemplateFormPage.studyMap[sfc.specialPermissions].templateField)}"/>
+                  <ice:selectOneMenu immediate="false" partialSubmit="true" 
                                         value="#{TemplateFormPage.studyMap[sfc.specialPermissions].templateField.fieldInputLevelString}">
                             <f:attribute name="fieldName" value="specialPermissions" />
-                  <f:selectItems value="#{TemplateFormPage.fieldInputLevelSelectItems}"/>
+                           <f:selectItems value="#{TemplateFormPage.fieldInputLevelSelectItems}"/>
                   </ice:selectOneMenu>
                 </ice:column>
               </ice:panelGrid>
@@ -2377,19 +2642,30 @@
                   <ice:graphicImage value="/resources/images/icon_required.gif" rendered="#{TemplateFormPage.studyMap[sfc.restrictions].required}"/>
                   <ice:graphicImage value="/resources/images/icon_recommended.gif" rendered="#{TemplateFormPage.studyMap[sfc.restrictions].recommended}"/>
                 </ice:column>
-                <ice:column>
+		<ice:column>
                   <ice:inputTextarea cols="90" rows="4"
                                      id="input_restrictions"
-                                     value="#{TemplateFormPage.template.metadata.restrictions}"                                   
+                                     value="#{TemplateFormPage.template.metadata.restrictions}"                                     
                                      styleClass="formHtmlEnabled">
                   </ice:inputTextarea>
+
                   <ice:message styleClass="errorMessage" for="input_restrictions"/>
+
+                  <ice:selectOneMenu immediate="false"   id="selectOneRestrictions" 
+                                     rendered="#{!empty(TemplateFormPage.studyMap[sfc.restrictions].templateField.controlledVocabulary)}"                                          
+                                           value="#{TemplateFormPage.template.metadata.restrictions}" 
+                                           >
+                            <f:selectItem itemLabel="No Value" itemValue=""/>
+                            <f:selectItems value="#{TemplateFormPage.studyMap[sfc.restrictions].templateField.controlledVocabulary.selectItems}"/>
+                 </ice:selectOneMenu>  
                 </ice:column>
                 <ice:column>
-                  <ice:selectOneMenu immediate="false" partialSubmit="true"
+                 <ice:commandLink value="Select Vocabulary"
+                                       action="#{TemplateFormPage.openPopupStandard(TemplateFormPage.studyMap[sfc.restrictions].templateField)}"/>
+                  <ice:selectOneMenu immediate="false" partialSubmit="true" 
                                         value="#{TemplateFormPage.studyMap[sfc.restrictions].templateField.fieldInputLevelString}">
                             <f:attribute name="fieldName" value="restrictions" />
-                  <f:selectItems value="#{TemplateFormPage.fieldInputLevelSelectItems}"/>
+                           <f:selectItems value="#{TemplateFormPage.fieldInputLevelSelectItems}"/>
                   </ice:selectOneMenu>
                 </ice:column>
               </ice:panelGrid>
@@ -2404,19 +2680,26 @@
                   <ice:graphicImage value="/resources/images/icon_required.gif" rendered="#{TemplateFormPage.studyMap[sfc.contact].required}"/>
                   <ice:graphicImage value="/resources/images/icon_recommended.gif" rendered="#{TemplateFormPage.studyMap[sfc.contact].recommended}"/>
                 </ice:column>
-                <ice:column>
-                  <ice:inputText id="input_contact"
-                                 size="90"
-                                 value="#{TemplateFormPage.template.metadata.contact}"
-                                 styleClass="formHtmlEnabled">
-                  </ice:inputText>
+		<ice:column>
+                  <ice:inputText id="input_contact" size="45" value="#{TemplateFormPage.template.metadata.contact}" 
+                                 rendered="#{empty(TemplateFormPage.studyMap[sfc.contact].templateField.controlledVocabulary)}" styleClass="formHtmlEnabled"/>
                   <ice:message styleClass="errorMessage" for="input_contact"/>
+
+                  <ice:selectOneMenu immediate="false"   id="selectOneContact" 
+                                     rendered="#{!empty(TemplateFormPage.studyMap[sfc.contact].templateField.controlledVocabulary)}"                                          
+                                           value="#{TemplateFormPage.template.metadata.contact}" 
+                                           >
+                            <f:selectItem itemLabel="No Value" itemValue=""/>
+                            <f:selectItems value="#{TemplateFormPage.studyMap[sfc.contact].templateField.controlledVocabulary.selectItems}"/>
+                 </ice:selectOneMenu>  
                 </ice:column>
                 <ice:column>
-                  <ice:selectOneMenu immediate="false" partialSubmit="true"
+                 <ice:commandLink value="Select Vocabulary"
+                                       action="#{TemplateFormPage.openPopupStandard(TemplateFormPage.studyMap[sfc.contact].templateField)}"/>
+                  <ice:selectOneMenu immediate="false" partialSubmit="true" 
                                         value="#{TemplateFormPage.studyMap[sfc.contact].templateField.fieldInputLevelString}">
                             <f:attribute name="fieldName" value="contact" />
-                  <f:selectItems value="#{TemplateFormPage.fieldInputLevelSelectItems}"/>
+                           <f:selectItems value="#{TemplateFormPage.fieldInputLevelSelectItems}"/>
                   </ice:selectOneMenu>
                 </ice:column>
               </ice:panelGrid>
@@ -2431,18 +2714,30 @@
                   <ice:graphicImage value="/resources/images/icon_required.gif" rendered="#{TemplateFormPage.studyMap[sfc.citationRequirements].required}"/>
                   <ice:graphicImage value="/resources/images/icon_recommended.gif" rendered="#{TemplateFormPage.studyMap[sfc.citationRequirements].recommended}"/>
                 </ice:column>
-                <ice:column>
-                  <ice:inputTextarea cols="90" rows="4" id="input_citationRequirements"
-                                     value="#{TemplateFormPage.template.metadata.citationRequirements}"
+		<ice:column>
+                  <ice:inputTextarea cols="90" rows="4"
+                                     id="input_citationRequirements"
+                                     value="#{TemplateFormPage.template.metadata.citationRequirements}"                                     
                                      styleClass="formHtmlEnabled">
                   </ice:inputTextarea>
+
                   <ice:message styleClass="errorMessage" for="input_citationRequirements"/>
+
+                  <ice:selectOneMenu immediate="false"   id="selectOneCitationRequirements" 
+                                     rendered="#{!empty(TemplateFormPage.studyMap[sfc.citationRequirements].templateField.controlledVocabulary)}"                                          
+                                           value="#{TemplateFormPage.template.metadata.citationRequirements}" 
+                                           >
+                            <f:selectItem itemLabel="No Value" itemValue=""/>
+                            <f:selectItems value="#{TemplateFormPage.studyMap[sfc.citationRequirements].templateField.controlledVocabulary.selectItems}"/>
+                 </ice:selectOneMenu>  
                 </ice:column>
                 <ice:column>
-                  <ice:selectOneMenu immediate="false" partialSubmit="true"
+                 <ice:commandLink value="Select Vocabulary"
+                                       action="#{TemplateFormPage.openPopupStandard(TemplateFormPage.studyMap[sfc.citationRequirements].templateField)}"/>
+                  <ice:selectOneMenu immediate="false" partialSubmit="true" 
                                         value="#{TemplateFormPage.studyMap[sfc.citationRequirements].templateField.fieldInputLevelString}">
                             <f:attribute name="fieldName" value="citationRequirements" />
-                  <f:selectItems value="#{TemplateFormPage.fieldInputLevelSelectItems}"/>
+                           <f:selectItems value="#{TemplateFormPage.fieldInputLevelSelectItems}"/>
                   </ice:selectOneMenu>
                 </ice:column>
               </ice:panelGrid>
@@ -2457,20 +2752,30 @@
                   <ice:graphicImage value="/resources/images/icon_required.gif" rendered="#{TemplateFormPage.studyMap[sfc.depositorRequirements].required}"/>
                   <ice:graphicImage value="/resources/images/icon_recommended.gif" rendered="#{TemplateFormPage.studyMap[sfc.depositorRequirements].recommended}"/>
                 </ice:column>
-                <ice:column>
+		<ice:column>
                   <ice:inputTextarea cols="90" rows="4"
                                      id="input_depositorRequirements"
-                                     value="#{TemplateFormPage.template.metadata.depositorRequirements}"
-                                     
+                                     value="#{TemplateFormPage.template.metadata.depositorRequirements}"                                     
                                      styleClass="formHtmlEnabled">
                   </ice:inputTextarea>
+
                   <ice:message styleClass="errorMessage" for="input_depositorRequirements"/>
+
+                  <ice:selectOneMenu immediate="false"   id="selectOneDepositorRequirements" 
+                                     rendered="#{!empty(TemplateFormPage.studyMap[sfc.depositorRequirements].templateField.controlledVocabulary)}"                                          
+                                           value="#{TemplateFormPage.template.metadata.depositorRequirements}" 
+                                           >
+                            <f:selectItem itemLabel="No Value" itemValue=""/>
+                            <f:selectItems value="#{TemplateFormPage.studyMap[sfc.depositorRequirements].templateField.controlledVocabulary.selectItems}"/>
+                 </ice:selectOneMenu>  
                 </ice:column>
                 <ice:column>
-                  <ice:selectOneMenu immediate="false" partialSubmit="true"
+                 <ice:commandLink value="Select Vocabulary"
+                                       action="#{TemplateFormPage.openPopupStandard(TemplateFormPage.studyMap[sfc.depositorRequirements].templateField)}"/>
+                  <ice:selectOneMenu immediate="false" partialSubmit="true" 
                                         value="#{TemplateFormPage.studyMap[sfc.depositorRequirements].templateField.fieldInputLevelString}">
                             <f:attribute name="fieldName" value="depositorRequirements" />
-                  <f:selectItems value="#{TemplateFormPage.fieldInputLevelSelectItems}"/>
+                           <f:selectItems value="#{TemplateFormPage.fieldInputLevelSelectItems}"/>
                   </ice:selectOneMenu>
                 </ice:column>
               </ice:panelGrid>
@@ -2485,19 +2790,30 @@
                   <ice:graphicImage value="/resources/images/icon_required.gif" rendered="#{TemplateFormPage.studyMap[sfc.conditions].required}"/>
                   <ice:graphicImage value="/resources/images/icon_recommended.gif" rendered="#{TemplateFormPage.studyMap[sfc.conditions].recommended}"/>
                 </ice:column>
-                <ice:column>
+		<ice:column>
                   <ice:inputTextarea cols="90" rows="4"
                                      id="input_conditions"
-                                     value="#{TemplateFormPage.template.metadata.conditions}"       
+                                     value="#{TemplateFormPage.template.metadata.conditions}"                                     
                                      styleClass="formHtmlEnabled">
                   </ice:inputTextarea>
+
                   <ice:message styleClass="errorMessage" for="input_conditions"/>
+
+                  <ice:selectOneMenu immediate="false"   id="selectOneConditions" 
+                                     rendered="#{!empty(TemplateFormPage.studyMap[sfc.conditions].templateField.controlledVocabulary)}"                                          
+                                           value="#{TemplateFormPage.template.metadata.conditions}" 
+                                           >
+                            <f:selectItem itemLabel="No Value" itemValue=""/>
+                            <f:selectItems value="#{TemplateFormPage.studyMap[sfc.conditions].templateField.controlledVocabulary.selectItems}"/>
+                 </ice:selectOneMenu>  
                 </ice:column>
                 <ice:column>
-                  <ice:selectOneMenu immediate="false" partialSubmit="true"
+                 <ice:commandLink value="Select Vocabulary"
+                                       action="#{TemplateFormPage.openPopupStandard(TemplateFormPage.studyMap[sfc.conditions].templateField)}"/>
+                  <ice:selectOneMenu immediate="false" partialSubmit="true" 
                                         value="#{TemplateFormPage.studyMap[sfc.conditions].templateField.fieldInputLevelString}">
                             <f:attribute name="fieldName" value="conditions" />
-                  <f:selectItems value="#{TemplateFormPage.fieldInputLevelSelectItems}"/>
+                           <f:selectItems value="#{TemplateFormPage.fieldInputLevelSelectItems}"/>
                   </ice:selectOneMenu>
                 </ice:column>
               </ice:panelGrid>
@@ -2512,19 +2828,30 @@
                   <ice:graphicImage value="/resources/images/icon_required.gif" rendered="#{TemplateFormPage.studyMap[sfc.disclaimer].required}"/>
                   <ice:graphicImage value="/resources/images/icon_recommended.gif" rendered="#{TemplateFormPage.studyMap[sfc.disclaimer].recommended}"/>
                 </ice:column>
-                <ice:column>
+		<ice:column>
                   <ice:inputTextarea cols="90" rows="4"
                                      id="input_disclaimer"
                                      value="#{TemplateFormPage.template.metadata.disclaimer}"                                     
                                      styleClass="formHtmlEnabled">
                   </ice:inputTextarea>
+
                   <ice:message styleClass="errorMessage" for="input_disclaimer"/>
+
+                  <ice:selectOneMenu immediate="false"   id="selectOneDisclaimer" 
+                                     rendered="#{!empty(TemplateFormPage.studyMap[sfc.disclaimer].templateField.controlledVocabulary)}"                                          
+                                           value="#{TemplateFormPage.template.metadata.disclaimer}" 
+                                           >
+                            <f:selectItem itemLabel="No Value" itemValue=""/>
+                            <f:selectItems value="#{TemplateFormPage.studyMap[sfc.disclaimer].templateField.controlledVocabulary.selectItems}"/>
+                 </ice:selectOneMenu>  
                 </ice:column>
                 <ice:column>
-                  <ice:selectOneMenu immediate="false" partialSubmit="true"
+                 <ice:commandLink value="Select Vocabulary"
+                                       action="#{TemplateFormPage.openPopupStandard(TemplateFormPage.studyMap[sfc.disclaimer].templateField)}"/>
+                  <ice:selectOneMenu immediate="false" partialSubmit="true" 
                                         value="#{TemplateFormPage.studyMap[sfc.disclaimer].templateField.fieldInputLevelString}">
                             <f:attribute name="fieldName" value="disclaimer" />
-                  <f:selectItems value="#{TemplateFormPage.fieldInputLevelSelectItems}"/>
+                           <f:selectItems value="#{TemplateFormPage.fieldInputLevelSelectItems}"/>
                   </ice:selectOneMenu>
                 </ice:column>
               </ice:panelGrid>

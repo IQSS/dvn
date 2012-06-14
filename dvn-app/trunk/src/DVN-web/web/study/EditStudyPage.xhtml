@@ -1479,11 +1479,22 @@
                       <ice:graphicImage value="/resources/images/icon_required.gif" rendered="#{EditStudyPage.studyMap[sfc.unitOfAnalysis].required}"/>
                       <ice:graphicImage value="/resources/images/icon_recommended.gif" rendered="#{EditStudyPage.studyMap[sfc.unitOfAnalysis].recommended}"/>
                     </div>
-                    <div jsfc="ice:panelGroup">
-                      <ice:inputTextarea id="input_unitOfAnalysis" cols="90" rows="2" value="#{EditStudyPage.metadata.unitOfAnalysis}" required="#{EditStudyPage.studyMap[sfc.unitOfAnalysis].required and EditStudyPage.validateRequired}"  requiredMessage="This field is required." styleClass="formHtmlEnabled">
-                        <f:validator validatorId="XhtmlValidator"/>
-                      </ice:inputTextarea>
-                      <ice:message styleClass="errorMessage" for="input_unitOfAnalysis"/>
+		
+                    <div jsfc="ice:panelGroup" id="groupPanel62">
+                      <ice:inputText id="input_unitOfAnalysis" size="45" value="#{EditStudyPage.metadata.unitOfAnalysis}" 
+                                     required="#{EditStudyPage.studyMap[sfc.unitOfAnalysis].required and EditStudyPage.validateRequired}" 
+                                     rendered="#{empty(EditStudyPage.studyMap[sfc.unitOfAnalysis].templateField.controlledVocabulary)}"
+                                     requiredMessage="This field is required." />
+                      <ice:message styleClass="errorMessage" for="input_unitOfAnalysis"/>                      
+                      <ice:selectOneMenu immediate="false" id="unitOfAnalysis_SelectOne"
+                                          rendered="#{!empty(EditStudyPage.studyMap[sfc.unitOfAnalysis].templateField.controlledVocabulary)}"
+                                          required="#{EditStudyPage.studyMap[sfc.unitOfAnalysis].required and EditStudyPage.validateRequired}" 
+                                           value="#{EditStudyPage.metadata.unitOfAnalysis}"  
+                                           requiredMessage="This field is required." >
+                                <f:selectItem itemLabel="No Value" itemValue=""/>
+                                <f:selectItems value="#{EditStudyPage.studyMap[sfc.unitOfAnalysis].templateField.controlledVocabulary.selectItems}"/>
+                       </ice:selectOneMenu>
+                       <ice:message styleClass="errorMessage" for="unitOfAnalysis_SelectOne"/> 
                     </div>
                   </ice:panelGrid>
 
@@ -1501,11 +1512,22 @@
                       <ice:graphicImage value="/resources/images/icon_required.gif" rendered="#{EditStudyPage.studyMap[sfc.universe].required}"/>
                       <ice:graphicImage value="/resources/images/icon_recommended.gif" rendered="#{EditStudyPage.studyMap[sfc.universe].recommended}"/>
                     </div>
-                    <div jsfc="ice:panelGroup">
-                      <ice:inputTextarea id="input_universe" cols="90" rows="2"  value="#{EditStudyPage.metadata.universe}" required="#{EditStudyPage.studyMap[sfc.universe].required and EditStudyPage.validateRequired}"  requiredMessage="This field is required." styleClass="formHtmlEnabled">
-                        <f:validator validatorId="XhtmlValidator"/>
-                      </ice:inputTextarea>
-                      <ice:message styleClass="errorMessage" for="input_universe"/>
+		
+                    <div jsfc="ice:panelGroup" id="groupPanel63">
+                      <ice:inputText id="input_universe" size="45" value="#{EditStudyPage.metadata.universe}" 
+                                     required="#{EditStudyPage.studyMap[sfc.universe].required and EditStudyPage.validateRequired}" 
+                                     rendered="#{empty(EditStudyPage.studyMap[sfc.universe].templateField.controlledVocabulary)}"
+                                     requiredMessage="This field is required." />
+                      <ice:message styleClass="errorMessage" for="input_universe"/>                      
+                      <ice:selectOneMenu immediate="false" id="universe_SelectOne"
+                                          rendered="#{!empty(EditStudyPage.studyMap[sfc.universe].templateField.controlledVocabulary)}"
+                                          required="#{EditStudyPage.studyMap[sfc.universe].required and EditStudyPage.validateRequired}" 
+                                           value="#{EditStudyPage.metadata.universe}"  
+                                           requiredMessage="This field is required." >
+                                <f:selectItem itemLabel="No Value" itemValue=""/>
+                                <f:selectItems value="#{EditStudyPage.studyMap[sfc.universe].templateField.controlledVocabulary.selectItems}"/>
+                       </ice:selectOneMenu>
+                       <ice:message styleClass="errorMessage" for="universe_SelectOne"/> 
                     </div>
                   </ice:panelGrid>
 
@@ -1523,9 +1545,22 @@
                       <ice:graphicImage value="/resources/images/icon_required.gif" rendered="#{EditStudyPage.studyMap[sfc.kindOfData].required}"/>
                       <ice:graphicImage value="/resources/images/icon_recommended.gif" rendered="#{EditStudyPage.studyMap[sfc.kindOfData].recommended}"/>
                     </div>
-                    <div jsfc="ice:panelGroup">
-                      <ice:inputText id="input_kindOfData" size="45" value="#{EditStudyPage.metadata.kindOfData}" required="#{EditStudyPage.studyMap[sfc.kindOfData].required and EditStudyPage.validateRequired}" requiredMessage="This field is required." />
-                      <ice:message styleClass="errorMessage" for="input_kindOfData"/>
+		
+                    <div jsfc="ice:panelGroup" id="groupPanel64">
+                      <ice:inputText id="input_kindOfData" size="45" value="#{EditStudyPage.metadata.kindOfData}" 
+                                     required="#{EditStudyPage.studyMap[sfc.kindOfData].required and EditStudyPage.validateRequired}" 
+                                     rendered="#{empty(EditStudyPage.studyMap[sfc.kindOfData].templateField.controlledVocabulary)}"
+                                     requiredMessage="This field is required." />
+                      <ice:message styleClass="errorMessage" for="input_kindOfData"/>                      
+                      <ice:selectOneMenu immediate="false" id="kindOfData_SelectOne"
+                                          rendered="#{!empty(EditStudyPage.studyMap[sfc.kindOfData].templateField.controlledVocabulary)}"
+                                          required="#{EditStudyPage.studyMap[sfc.kindOfData].required and EditStudyPage.validateRequired}" 
+                                           value="#{EditStudyPage.metadata.kindOfData}"  
+                                           requiredMessage="This field is required." >
+                                <f:selectItem itemLabel="No Value" itemValue=""/>
+                                <f:selectItems value="#{EditStudyPage.studyMap[sfc.kindOfData].templateField.controlledVocabulary.selectItems}"/>
+                       </ice:selectOneMenu>
+                       <ice:message styleClass="errorMessage" for="kindOfData_SelectOne"/> 
                     </div>
                   </ice:panelGrid>
                   
@@ -1685,14 +1720,22 @@
                       <ice:graphicImage value="/resources/images/icon_required.gif" rendered="#{EditStudyPage.studyMap[sfc.timeMethod].required}"/>
                       <ice:graphicImage value="/resources/images/icon_recommended.gif" rendered="#{EditStudyPage.studyMap[sfc.timeMethod].recommended}"/>
                     </div>
-                    <div jsfc="ice:panelGroup">
-                      <ice:inputText id="input_timeMethod" size="90"
-                                     value="#{EditStudyPage.metadata.timeMethod}"
-                                     required="#{EditStudyPage.studyMap[sfc.timeMethod].required and EditStudyPage.validateRequired}" requiredMessage="This field is required."
-                                     styleClass="formHtmlEnabled">
-                        <f:validator validatorId="XhtmlValidator"/>
-                      </ice:inputText>
-                      <ice:message styleClass="errorMessage" for="input_timeMethod"/>
+		
+                    <div jsfc="ice:panelGroup" id="groupPanel65">
+                      <ice:inputText id="input_timeMethod" size="45" value="#{EditStudyPage.metadata.timeMethod}" 
+                                     required="#{EditStudyPage.studyMap[sfc.timeMethod].required and EditStudyPage.validateRequired}" 
+                                     rendered="#{empty(EditStudyPage.studyMap[sfc.timeMethod].templateField.controlledVocabulary)}"
+                                     requiredMessage="This field is required." />
+                      <ice:message styleClass="errorMessage" for="input_timeMethod"/>                      
+                      <ice:selectOneMenu immediate="false" id="timeMethod_SelectOne"
+                                          rendered="#{!empty(EditStudyPage.studyMap[sfc.timeMethod].templateField.controlledVocabulary)}"
+                                          required="#{EditStudyPage.studyMap[sfc.timeMethod].required and EditStudyPage.validateRequired}" 
+                                           value="#{EditStudyPage.metadata.timeMethod}"  
+                                           requiredMessage="This field is required." >
+                                <f:selectItem itemLabel="No Value" itemValue=""/>
+                                <f:selectItems value="#{EditStudyPage.studyMap[sfc.timeMethod].templateField.controlledVocabulary.selectItems}"/>
+                       </ice:selectOneMenu>
+                       <ice:message styleClass="errorMessage" for="timeMethod_SelectOne"/> 
                     </div>
                   </ice:panelGrid>
                   <ice:panelGrid cellpadding="0" cellspacing="0" columns="2" width="100%"
@@ -1710,14 +1753,22 @@
                       <ice:graphicImage value="/resources/images/icon_required.gif" rendered="#{EditStudyPage.studyMap[sfc.dataCollector].required}"/>
                       <ice:graphicImage value="/resources/images/icon_recommended.gif" rendered="#{EditStudyPage.studyMap[sfc.dataCollector].recommended}"/>
                     </div>
-                    <div jsfc="ice:panelGroup">
-                      <ice:inputText id="input_dataCollector" size="90"
-                                     value="#{EditStudyPage.metadata.dataCollector}"
-                                     required="#{EditStudyPage.studyMap[sfc.dataCollector].required and EditStudyPage.validateRequired}" requiredMessage="This field is required."
-                                     styleClass="formHtmlEnabled">
-                        <f:validator validatorId="XhtmlValidator"/>
-                      </ice:inputText>
-                      <ice:message styleClass="errorMessage" for="input_dataCollector"/>
+		
+                    <div jsfc="ice:panelGroup" id="groupPanel66">
+                      <ice:inputText id="input_dataCollector" size="45" value="#{EditStudyPage.metadata.dataCollector}" 
+                                     required="#{EditStudyPage.studyMap[sfc.dataCollector].required and EditStudyPage.validateRequired}" 
+                                     rendered="#{empty(EditStudyPage.studyMap[sfc.dataCollector].templateField.controlledVocabulary)}"
+                                     requiredMessage="This field is required." />
+                      <ice:message styleClass="errorMessage" for="input_dataCollector"/>                      
+                      <ice:selectOneMenu immediate="false" id="dataCollector_SelectOne"
+                                          rendered="#{!empty(EditStudyPage.studyMap[sfc.dataCollector].templateField.controlledVocabulary)}"
+                                          required="#{EditStudyPage.studyMap[sfc.dataCollector].required and EditStudyPage.validateRequired}" 
+                                           value="#{EditStudyPage.metadata.dataCollector}"  
+                                           requiredMessage="This field is required." >
+                                <f:selectItem itemLabel="No Value" itemValue=""/>
+                                <f:selectItems value="#{EditStudyPage.studyMap[sfc.dataCollector].templateField.controlledVocabulary.selectItems}"/>
+                       </ice:selectOneMenu>
+                       <ice:message styleClass="errorMessage" for="dataCollector_SelectOne"/> 
                     </div>
                   </ice:panelGrid>
 
@@ -1736,14 +1787,22 @@
                       <ice:graphicImage value="/resources/images/icon_required.gif" rendered="#{EditStudyPage.studyMap[sfc.frequencyOfDataCollection].required}"/>
                       <ice:graphicImage value="/resources/images/icon_recommended.gif" rendered="#{EditStudyPage.studyMap[sfc.frequencyOfDataCollection].recommended}"/>
                     </div>
-                    <div jsfc="ice:panelGroup">
-                      <ice:inputText id="input_frequencyOfDataCollection" size="90"
-                                     value="#{EditStudyPage.metadata.frequencyOfDataCollection}"
-                                     required="#{EditStudyPage.studyMap[sfc.frequencyOfDataCollection].required and EditStudyPage.validateRequired}" requiredMessage="This field is required."
-                                     styleClass="formHtmlEnabled">
-                        <f:validator validatorId="XhtmlValidator"/>
-                      </ice:inputText>
-                      <ice:message styleClass="errorMessage" for="input_frequencyOfDataCollection"/>
+		
+                    <div jsfc="ice:panelGroup" id="groupPanel67">
+                      <ice:inputText id="input_frequencyOfDataCollection" size="45" value="#{EditStudyPage.metadata.frequencyOfDataCollection}" 
+                                     required="#{EditStudyPage.studyMap[sfc.frequencyOfDataCollection].required and EditStudyPage.validateRequired}" 
+                                     rendered="#{empty(EditStudyPage.studyMap[sfc.frequencyOfDataCollection].templateField.controlledVocabulary)}"
+                                     requiredMessage="This field is required." />
+                      <ice:message styleClass="errorMessage" for="input_frequencyOfDataCollection"/>                      
+                      <ice:selectOneMenu immediate="false" id="frequencyOfDataCollection_SelectOne"
+                                          rendered="#{!empty(EditStudyPage.studyMap[sfc.frequencyOfDataCollection].templateField.controlledVocabulary)}"
+                                          required="#{EditStudyPage.studyMap[sfc.frequencyOfDataCollection].required and EditStudyPage.validateRequired}" 
+                                           value="#{EditStudyPage.metadata.frequencyOfDataCollection}"  
+                                           requiredMessage="This field is required." >
+                                <f:selectItem itemLabel="No Value" itemValue=""/>
+                                <f:selectItems value="#{EditStudyPage.studyMap[sfc.frequencyOfDataCollection].templateField.controlledVocabulary.selectItems}"/>
+                       </ice:selectOneMenu>
+                       <ice:message styleClass="errorMessage" for="frequencyOfDataCollection_SelectOne"/> 
                     </div>
                   </ice:panelGrid>
 
@@ -1762,15 +1821,22 @@
                       <ice:graphicImage value="/resources/images/icon_required.gif" rendered="#{EditStudyPage.studyMap[sfc.samplingProcedure].required}"/>
                       <ice:graphicImage value="/resources/images/icon_recommended.gif" rendered="#{EditStudyPage.studyMap[sfc.samplingProcedure].recommended}"/>
                     </div>
-                    <div jsfc="ice:panelGroup">
-                      <ice:inputTextarea id="input_samplingProcedure"
-                                         cols="90" rows="4"
-                                         value="#{EditStudyPage.metadata.samplingProcedure}"
-                                         required="#{EditStudyPage.studyMap[sfc.samplingProcedure].required and EditStudyPage.validateRequired}" requiredMessage="This field is required."
-                                         styleClass="formHtmlEnabled">
-                        <f:validator validatorId="XhtmlValidator"/>
-                      </ice:inputTextarea>
-                      <ice:message styleClass="errorMessage" for="input_samplingProcedure"/>
+		
+                    <div jsfc="ice:panelGroup" id="groupPanel68">
+                      <ice:inputText id="input_samplingProcedure" size="45" value="#{EditStudyPage.metadata.samplingProcedure}" 
+                                     required="#{EditStudyPage.studyMap[sfc.samplingProcedure].required and EditStudyPage.validateRequired}" 
+                                     rendered="#{empty(EditStudyPage.studyMap[sfc.samplingProcedure].templateField.controlledVocabulary)}"
+                                     requiredMessage="This field is required." />
+                      <ice:message styleClass="errorMessage" for="input_samplingProcedure"/>                      
+                      <ice:selectOneMenu immediate="false" id="samplingProcedure_SelectOne"
+                                          rendered="#{!empty(EditStudyPage.studyMap[sfc.samplingProcedure].templateField.controlledVocabulary)}"
+                                          required="#{EditStudyPage.studyMap[sfc.samplingProcedure].required and EditStudyPage.validateRequired}" 
+                                           value="#{EditStudyPage.metadata.samplingProcedure}"  
+                                           requiredMessage="This field is required." >
+                                <f:selectItem itemLabel="No Value" itemValue=""/>
+                                <f:selectItems value="#{EditStudyPage.studyMap[sfc.samplingProcedure].templateField.controlledVocabulary.selectItems}"/>
+                       </ice:selectOneMenu>
+                       <ice:message styleClass="errorMessage" for="samplingProcedure_SelectOne"/> 
                     </div>
                   </ice:panelGrid>
 
@@ -1789,15 +1855,22 @@
                       <ice:graphicImage value="/resources/images/icon_required.gif" rendered="#{EditStudyPage.studyMap[sfc.deviationsFromSampleDesign].required}"/>
                       <ice:graphicImage value="/resources/images/icon_recommended.gif" rendered="#{EditStudyPage.studyMap[sfc.deviationsFromSampleDesign].recommended}"/>
                     </div>
-                    <div jsfc="ice:panelGroup">
-                      <ice:inputTextarea cols="90" rows="4"
-                                         id="input_deviationsFromSampleDesign"
-                                         value="#{EditStudyPage.metadata.deviationsFromSampleDesign}"
-                                         required="#{EditStudyPage.studyMap[sfc.deviationsFromSampleDesign].required and EditStudyPage.validateRequired}" requiredMessage="This field is required."
-                                         styleClass="formHtmlEnabled">
-                        <f:validator validatorId="XhtmlValidator"/>
-                      </ice:inputTextarea>
-                      <ice:message styleClass="errorMessage" for="input_deviationsFromSampleDesign"/>
+		
+                    <div jsfc="ice:panelGroup" id="groupPanel69">
+                      <ice:inputText id="input_deviationsFromSampleDesign" size="45" value="#{EditStudyPage.metadata.deviationsFromSampleDesign}" 
+                                     required="#{EditStudyPage.studyMap[sfc.deviationsFromSampleDesign].required and EditStudyPage.validateRequired}" 
+                                     rendered="#{empty(EditStudyPage.studyMap[sfc.deviationsFromSampleDesign].templateField.controlledVocabulary)}"
+                                     requiredMessage="This field is required." />
+                      <ice:message styleClass="errorMessage" for="input_deviationsFromSampleDesign"/>                      
+                      <ice:selectOneMenu immediate="false" id="deviationsFromSampleDesign_SelectOne"
+                                          rendered="#{!empty(EditStudyPage.studyMap[sfc.deviationsFromSampleDesign].templateField.controlledVocabulary)}"
+                                          required="#{EditStudyPage.studyMap[sfc.deviationsFromSampleDesign].required and EditStudyPage.validateRequired}" 
+                                           value="#{EditStudyPage.metadata.deviationsFromSampleDesign}"  
+                                           requiredMessage="This field is required." >
+                                <f:selectItem itemLabel="No Value" itemValue=""/>
+                                <f:selectItems value="#{EditStudyPage.studyMap[sfc.deviationsFromSampleDesign].templateField.controlledVocabulary.selectItems}"/>
+                       </ice:selectOneMenu>
+                       <ice:message styleClass="errorMessage" for="deviationsFromSampleDesign_SelectOne"/> 
                     </div>
                   </ice:panelGrid>
 
@@ -1816,14 +1889,22 @@
                       <ice:graphicImage value="/resources/images/icon_required.gif" rendered="#{EditStudyPage.studyMap[sfc.collectionMode].required}"/>
                       <ice:graphicImage value="/resources/images/icon_recommended.gif" rendered="#{EditStudyPage.studyMap[sfc.collectionMode].recommended}"/>
                     </div>
-                    <div jsfc="ice:panelGroup">
-                      <ice:inputText id="input_collectionMode" size="90"
-                                     value="#{EditStudyPage.metadata.collectionMode}"
-                                     required="#{EditStudyPage.studyMap[sfc.collectionMode].required and EditStudyPage.validateRequired}" requiredMessage="This field is required."
-                                     styleClass="formHtmlEnabled">
-                        <f:validator validatorId="XhtmlValidator"/>
-                      </ice:inputText>
-                      <ice:message styleClass="errorMessage" for="input_collectionMode"/>
+		
+                    <div jsfc="ice:panelGroup" id="groupPanel70">
+                      <ice:inputText id="input_collectionMode" size="45" value="#{EditStudyPage.metadata.collectionMode}" 
+                                     required="#{EditStudyPage.studyMap[sfc.collectionMode].required and EditStudyPage.validateRequired}" 
+                                     rendered="#{empty(EditStudyPage.studyMap[sfc.collectionMode].templateField.controlledVocabulary)}"
+                                     requiredMessage="This field is required." />
+                      <ice:message styleClass="errorMessage" for="input_collectionMode"/>                      
+                      <ice:selectOneMenu immediate="false" id="collectionMode_SelectOne"
+                                          rendered="#{!empty(EditStudyPage.studyMap[sfc.collectionMode].templateField.controlledVocabulary)}"
+                                          required="#{EditStudyPage.studyMap[sfc.collectionMode].required and EditStudyPage.validateRequired}" 
+                                           value="#{EditStudyPage.metadata.collectionMode}"  
+                                           requiredMessage="This field is required." >
+                                <f:selectItem itemLabel="No Value" itemValue=""/>
+                                <f:selectItems value="#{EditStudyPage.studyMap[sfc.collectionMode].templateField.controlledVocabulary.selectItems}"/>
+                       </ice:selectOneMenu>
+                       <ice:message styleClass="errorMessage" for="collectionMode_SelectOne"/> 
                     </div>
                   </ice:panelGrid>
 
@@ -1842,14 +1923,22 @@
                       <ice:graphicImage value="/resources/images/icon_required.gif" rendered="#{EditStudyPage.studyMap[sfc.researchInstrument].required}"/>
                       <ice:graphicImage value="/resources/images/icon_recommended.gif" rendered="#{EditStudyPage.studyMap[sfc.researchInstrument].recommended}"/>
                     </div>
-                    <div jsfc="ice:panelGroup">
-                      <ice:inputText id="input_researchInstrument" size="90"
-                                     value="#{EditStudyPage.metadata.researchInstrument}"
-                                     required="#{EditStudyPage.studyMap[sfc.researchInstrument].required and EditStudyPage.validateRequired}" requiredMessage="This field is required."
-                                     styleClass="formHtmlEnabled">
-                        <f:validator validatorId="XhtmlValidator"/>
-                      </ice:inputText>
-                      <ice:message styleClass="errorMessage" for="input_researchInstrument"/>
+		
+                    <div jsfc="ice:panelGroup" id="groupPanel71">
+                      <ice:inputText id="input_researchInstrument" size="45" value="#{EditStudyPage.metadata.researchInstrument}" 
+                                     required="#{EditStudyPage.studyMap[sfc.researchInstrument].required and EditStudyPage.validateRequired}" 
+                                     rendered="#{empty(EditStudyPage.studyMap[sfc.researchInstrument].templateField.controlledVocabulary)}"
+                                     requiredMessage="This field is required." />
+                      <ice:message styleClass="errorMessage" for="input_researchInstrument"/>                      
+                      <ice:selectOneMenu immediate="false" id="researchInstrument_SelectOne"
+                                          rendered="#{!empty(EditStudyPage.studyMap[sfc.researchInstrument].templateField.controlledVocabulary)}"
+                                          required="#{EditStudyPage.studyMap[sfc.researchInstrument].required and EditStudyPage.validateRequired}" 
+                                           value="#{EditStudyPage.metadata.researchInstrument}"  
+                                           requiredMessage="This field is required." >
+                                <f:selectItem itemLabel="No Value" itemValue=""/>
+                                <f:selectItems value="#{EditStudyPage.studyMap[sfc.researchInstrument].templateField.controlledVocabulary.selectItems}"/>
+                       </ice:selectOneMenu>
+                       <ice:message styleClass="errorMessage" for="researchInstrument_SelectOne"/> 
                     </div>
                   </ice:panelGrid>
 
@@ -1868,14 +1957,22 @@
                       <ice:graphicImage value="/resources/images/icon_required.gif" rendered="#{EditStudyPage.studyMap[sfc.dataSources].required}"/>
                       <ice:graphicImage value="/resources/images/icon_recommended.gif" rendered="#{EditStudyPage.studyMap[sfc.dataSources].recommended}"/>
                     </div>
-                    <div jsfc="ice:panelGroup">
-                      <ice:inputText id="input_dataSources" size="90"
-                                     value="#{EditStudyPage.metadata.dataSources}"
-                                     required="#{EditStudyPage.studyMap[sfc.dataSources].required and EditStudyPage.validateRequired}" requiredMessage="This field is required."
-                                     styleClass="formHtmlEnabled">
-                        <f:validator validatorId="XhtmlValidator"/>
-                      </ice:inputText>
-                      <ice:message styleClass="errorMessage" for="input_dataSources"/>
+		
+                    <div jsfc="ice:panelGroup" id="groupPanel72">
+                      <ice:inputText id="input_dataSources" size="45" value="#{EditStudyPage.metadata.dataSources}" 
+                                     required="#{EditStudyPage.studyMap[sfc.dataSources].required and EditStudyPage.validateRequired}" 
+                                     rendered="#{empty(EditStudyPage.studyMap[sfc.dataSources].templateField.controlledVocabulary)}"
+                                     requiredMessage="This field is required." />
+                      <ice:message styleClass="errorMessage" for="input_dataSources"/>                      
+                      <ice:selectOneMenu immediate="false" id="dataSources_SelectOne"
+                                          rendered="#{!empty(EditStudyPage.studyMap[sfc.dataSources].templateField.controlledVocabulary)}"
+                                          required="#{EditStudyPage.studyMap[sfc.dataSources].required and EditStudyPage.validateRequired}" 
+                                           value="#{EditStudyPage.metadata.dataSources}"  
+                                           requiredMessage="This field is required." >
+                                <f:selectItem itemLabel="No Value" itemValue=""/>
+                                <f:selectItems value="#{EditStudyPage.studyMap[sfc.dataSources].templateField.controlledVocabulary.selectItems}"/>
+                       </ice:selectOneMenu>
+                       <ice:message styleClass="errorMessage" for="dataSources_SelectOne"/> 
                     </div>
                   </ice:panelGrid>
 
@@ -1894,14 +1991,22 @@
                       <ice:graphicImage value="/resources/images/icon_required.gif" rendered="#{EditStudyPage.studyMap[sfc.originOfSources].required}"/>
                       <ice:graphicImage value="/resources/images/icon_recommended.gif" rendered="#{EditStudyPage.studyMap[sfc.originOfSources].recommended}"/>
                     </div>
-                    <div jsfc="ice:panelGroup">
-                      <ice:inputText id="input_originOfSources" size="90"
-                                     value="#{EditStudyPage.metadata.originOfSources}"
-                                     required="#{EditStudyPage.studyMap[sfc.originOfSources].required and EditStudyPage.validateRequired}" requiredMessage="This field is required."
-                                     styleClass="formHtmlEnabled">
-                        <f:validator validatorId="XhtmlValidator"/>
-                      </ice:inputText>
-                      <ice:message styleClass="errorMessage" for="input_originOfSources"/>
+		
+                    <div jsfc="ice:panelGroup" id="groupPanel73">
+                      <ice:inputText id="input_originOfSources" size="45" value="#{EditStudyPage.metadata.originOfSources}" 
+                                     required="#{EditStudyPage.studyMap[sfc.originOfSources].required and EditStudyPage.validateRequired}" 
+                                     rendered="#{empty(EditStudyPage.studyMap[sfc.originOfSources].templateField.controlledVocabulary)}"
+                                     requiredMessage="This field is required." />
+                      <ice:message styleClass="errorMessage" for="input_originOfSources"/>                      
+                      <ice:selectOneMenu immediate="false" id="originOfSources_SelectOne"
+                                          rendered="#{!empty(EditStudyPage.studyMap[sfc.originOfSources].templateField.controlledVocabulary)}"
+                                          required="#{EditStudyPage.studyMap[sfc.originOfSources].required and EditStudyPage.validateRequired}" 
+                                           value="#{EditStudyPage.metadata.originOfSources}"  
+                                           requiredMessage="This field is required." >
+                                <f:selectItem itemLabel="No Value" itemValue=""/>
+                                <f:selectItems value="#{EditStudyPage.studyMap[sfc.originOfSources].templateField.controlledVocabulary.selectItems}"/>
+                       </ice:selectOneMenu>
+                       <ice:message styleClass="errorMessage" for="originOfSources_SelectOne"/> 
                     </div>
                   </ice:panelGrid>
 
@@ -1920,14 +2025,22 @@
                       <ice:graphicImage value="/resources/images/icon_required.gif" rendered="#{EditStudyPage.studyMap[sfc.characteristicOfSources].required}"/>
                       <ice:graphicImage value="/resources/images/icon_recommended.gif" rendered="#{EditStudyPage.studyMap[sfc.characteristicOfSources].recommended}"/>
                     </div>
-                    <div jsfc="ice:panelGroup">
-                      <ice:inputText id="input_characteristicOfSources" size="90"
-                                     value="#{EditStudyPage.metadata.characteristicOfSources}"
-                                     required="#{EditStudyPage.studyMap[sfc.characteristicOfSources].required and EditStudyPage.validateRequired}" requiredMessage="This field is required."
-                                     styleClass="formHtmlEnabled">
-                        <f:validator validatorId="XhtmlValidator"/>
-                      </ice:inputText>
-                      <ice:message styleClass="errorMessage" for="input_characteristicOfSources"/>
+		
+                    <div jsfc="ice:panelGroup" id="groupPanel74">
+                      <ice:inputText id="input_characteristicOfSources" size="45" value="#{EditStudyPage.metadata.characteristicOfSources}" 
+                                     required="#{EditStudyPage.studyMap[sfc.characteristicOfSources].required and EditStudyPage.validateRequired}" 
+                                     rendered="#{empty(EditStudyPage.studyMap[sfc.characteristicOfSources].templateField.controlledVocabulary)}"
+                                     requiredMessage="This field is required." />
+                      <ice:message styleClass="errorMessage" for="input_characteristicOfSources"/>                      
+                      <ice:selectOneMenu immediate="false" id="characteristicOfSources_SelectOne"
+                                          rendered="#{!empty(EditStudyPage.studyMap[sfc.characteristicOfSources].templateField.controlledVocabulary)}"
+                                          required="#{EditStudyPage.studyMap[sfc.characteristicOfSources].required and EditStudyPage.validateRequired}" 
+                                           value="#{EditStudyPage.metadata.characteristicOfSources}"  
+                                           requiredMessage="This field is required." >
+                                <f:selectItem itemLabel="No Value" itemValue=""/>
+                                <f:selectItems value="#{EditStudyPage.studyMap[sfc.characteristicOfSources].templateField.controlledVocabulary.selectItems}"/>
+                       </ice:selectOneMenu>
+                       <ice:message styleClass="errorMessage" for="characteristicOfSources_SelectOne"/> 
                     </div>
                   </ice:panelGrid>
 
@@ -1946,15 +2059,22 @@
                       <ice:graphicImage value="/resources/images/icon_required.gif" rendered="#{EditStudyPage.studyMap[sfc.accessToSources].required}"/>
                       <ice:graphicImage value="/resources/images/icon_recommended.gif" rendered="#{EditStudyPage.studyMap[sfc.accessToSources].recommended}"/>
                     </div>
-                    <div jsfc="ice:panelGroup">
-                      <ice:inputTextarea cols="90" rows="4"
-                                         id="input_accessToSources"
-                                         value="#{EditStudyPage.metadata.accessToSources}"
-                                         required="#{EditStudyPage.studyMap[sfc.accessToSources].required and EditStudyPage.validateRequired}" requiredMessage="This field is required."
-                                         styleClass="formHtmlEnabled">
-                        <f:validator validatorId="XhtmlValidator"/>
-                      </ice:inputTextarea>
-                      <ice:message styleClass="errorMessage" for="input_accessToSources"/>
+		
+                    <div jsfc="ice:panelGroup" id="groupPanel75">
+                      <ice:inputText id="input_accessToSources" size="45" value="#{EditStudyPage.metadata.accessToSources}" 
+                                     required="#{EditStudyPage.studyMap[sfc.accessToSources].required and EditStudyPage.validateRequired}" 
+                                     rendered="#{empty(EditStudyPage.studyMap[sfc.accessToSources].templateField.controlledVocabulary)}"
+                                     requiredMessage="This field is required." />
+                      <ice:message styleClass="errorMessage" for="input_accessToSources"/>                      
+                      <ice:selectOneMenu immediate="false" id="accessToSources_SelectOne"
+                                          rendered="#{!empty(EditStudyPage.studyMap[sfc.accessToSources].templateField.controlledVocabulary)}"
+                                          required="#{EditStudyPage.studyMap[sfc.accessToSources].required and EditStudyPage.validateRequired}" 
+                                           value="#{EditStudyPage.metadata.accessToSources}"  
+                                           requiredMessage="This field is required." >
+                                <f:selectItem itemLabel="No Value" itemValue=""/>
+                                <f:selectItems value="#{EditStudyPage.studyMap[sfc.accessToSources].templateField.controlledVocabulary.selectItems}"/>
+                       </ice:selectOneMenu>
+                       <ice:message styleClass="errorMessage" for="accessToSources_SelectOne"/> 
                     </div>
                   </ice:panelGrid>
 
@@ -1973,14 +2093,22 @@
                       <ice:graphicImage value="/resources/images/icon_required.gif" rendered="#{EditStudyPage.studyMap[sfc.dataCollectionSituation].required}"/>
                       <ice:graphicImage value="/resources/images/icon_recommended.gif" rendered="#{EditStudyPage.studyMap[sfc.dataCollectionSituation].recommended}"/>
                     </div>
-                    <div jsfc="ice:panelGroup">
-                      <ice:inputText id="input_dataCollectionSituation" size="90"
-                                     value="#{EditStudyPage.metadata.dataCollectionSituation}"
-                                     required="#{EditStudyPage.studyMap[sfc.dataCollectionSituation].required and EditStudyPage.validateRequired}" requiredMessage="This field is required."
-                                     styleClass="formHtmlEnabled">
-                        <f:validator validatorId="XhtmlValidator"/>
-                      </ice:inputText>
-                      <ice:message styleClass="errorMessage" for="input_dataCollectionSituation"/>
+		
+                    <div jsfc="ice:panelGroup" id="groupPanel76">
+                      <ice:inputText id="input_dataCollectionSituation" size="45" value="#{EditStudyPage.metadata.dataCollectionSituation}" 
+                                     required="#{EditStudyPage.studyMap[sfc.dataCollectionSituation].required and EditStudyPage.validateRequired}" 
+                                     rendered="#{empty(EditStudyPage.studyMap[sfc.dataCollectionSituation].templateField.controlledVocabulary)}"
+                                     requiredMessage="This field is required." />
+                      <ice:message styleClass="errorMessage" for="input_dataCollectionSituation"/>                      
+                      <ice:selectOneMenu immediate="false" id="dataCollectionSituation_SelectOne"
+                                          rendered="#{!empty(EditStudyPage.studyMap[sfc.dataCollectionSituation].templateField.controlledVocabulary)}"
+                                          required="#{EditStudyPage.studyMap[sfc.dataCollectionSituation].required and EditStudyPage.validateRequired}" 
+                                           value="#{EditStudyPage.metadata.dataCollectionSituation}"  
+                                           requiredMessage="This field is required." >
+                                <f:selectItem itemLabel="No Value" itemValue=""/>
+                                <f:selectItems value="#{EditStudyPage.studyMap[sfc.dataCollectionSituation].templateField.controlledVocabulary.selectItems}"/>
+                       </ice:selectOneMenu>
+                       <ice:message styleClass="errorMessage" for="dataCollectionSituation_SelectOne"/> 
                     </div>
                   </ice:panelGrid>
 
@@ -1999,14 +2127,22 @@
                       <ice:graphicImage value="/resources/images/icon_required.gif" rendered="#{EditStudyPage.studyMap[sfc.actionsToMinimizeLoss].required}"/>
                       <ice:graphicImage value="/resources/images/icon_recommended.gif" rendered="#{EditStudyPage.studyMap[sfc.actionsToMinimizeLoss].recommended}"/>
                     </div>
-                    <div jsfc="ice:panelGroup">
-                      <ice:inputText id="input_actionsToMinimizeLoss" size="90"
-                                     value="#{EditStudyPage.metadata.actionsToMinimizeLoss}"
-                                     required="#{EditStudyPage.studyMap[sfc.actionsToMinimizeLoss].required and EditStudyPage.validateRequired}" requiredMessage="This field is required."
-                                     styleClass="formHtmlEnabled">
-                        <f:validator validatorId="XhtmlValidator"/>
-                      </ice:inputText>
-                      <ice:message styleClass="errorMessage" for="input_actionsToMinimizeLoss"/>
+		
+                    <div jsfc="ice:panelGroup" id="groupPanel77">
+                      <ice:inputText id="input_actionsToMinimizeLoss" size="45" value="#{EditStudyPage.metadata.actionsToMinimizeLoss}" 
+                                     required="#{EditStudyPage.studyMap[sfc.actionsToMinimizeLoss].required and EditStudyPage.validateRequired}" 
+                                     rendered="#{empty(EditStudyPage.studyMap[sfc.actionsToMinimizeLoss].templateField.controlledVocabulary)}"
+                                     requiredMessage="This field is required." />
+                      <ice:message styleClass="errorMessage" for="input_actionsToMinimizeLoss"/>                      
+                      <ice:selectOneMenu immediate="false" id="actionsToMinimizeLoss_SelectOne"
+                                          rendered="#{!empty(EditStudyPage.studyMap[sfc.actionsToMinimizeLoss].templateField.controlledVocabulary)}"
+                                          required="#{EditStudyPage.studyMap[sfc.actionsToMinimizeLoss].required and EditStudyPage.validateRequired}" 
+                                           value="#{EditStudyPage.metadata.actionsToMinimizeLoss}"  
+                                           requiredMessage="This field is required." >
+                                <f:selectItem itemLabel="No Value" itemValue=""/>
+                                <f:selectItems value="#{EditStudyPage.studyMap[sfc.actionsToMinimizeLoss].templateField.controlledVocabulary.selectItems}"/>
+                       </ice:selectOneMenu>
+                       <ice:message styleClass="errorMessage" for="actionsToMinimizeLoss_SelectOne"/> 
                     </div>
                   </ice:panelGrid>
 
@@ -2025,14 +2161,22 @@
                       <ice:graphicImage value="/resources/images/icon_required.gif" rendered="#{EditStudyPage.studyMap[sfc.controlOperations].required}"/>
                       <ice:graphicImage value="/resources/images/icon_recommended.gif" rendered="#{EditStudyPage.studyMap[sfc.controlOperations].recommended}"/>
                     </div>
-                    <div jsfc="ice:panelGroup">
-                      <ice:inputText id="input_controlOperations" size="90"
-                                     value="#{EditStudyPage.metadata.controlOperations}"
-                                     required="#{EditStudyPage.studyMap[sfc.controlOperations].required and EditStudyPage.validateRequired}" requiredMessage="This field is required."
-                                     styleClass="formHtmlEnabled">
-                        <f:validator validatorId="XhtmlValidator"/>
-                      </ice:inputText>
-                      <ice:message styleClass="errorMessage" for="input_controlOperations"/>
+		
+                    <div jsfc="ice:panelGroup" id="groupPanel78">
+                      <ice:inputText id="input_controlOperations" size="45" value="#{EditStudyPage.metadata.controlOperations}" 
+                                     required="#{EditStudyPage.studyMap[sfc.controlOperations].required and EditStudyPage.validateRequired}" 
+                                     rendered="#{empty(EditStudyPage.studyMap[sfc.controlOperations].templateField.controlledVocabulary)}"
+                                     requiredMessage="This field is required." />
+                      <ice:message styleClass="errorMessage" for="input_controlOperations"/>                      
+                      <ice:selectOneMenu immediate="false" id="controlOperations_SelectOne"
+                                          rendered="#{!empty(EditStudyPage.studyMap[sfc.controlOperations].templateField.controlledVocabulary)}"
+                                          required="#{EditStudyPage.studyMap[sfc.controlOperations].required and EditStudyPage.validateRequired}" 
+                                           value="#{EditStudyPage.metadata.controlOperations}"  
+                                           requiredMessage="This field is required." >
+                                <f:selectItem itemLabel="No Value" itemValue=""/>
+                                <f:selectItems value="#{EditStudyPage.studyMap[sfc.controlOperations].templateField.controlledVocabulary.selectItems}"/>
+                       </ice:selectOneMenu>
+                       <ice:message styleClass="errorMessage" for="controlOperations_SelectOne"/> 
                     </div>
                   </ice:panelGrid>
 
@@ -2051,14 +2195,22 @@
                       <ice:graphicImage value="/resources/images/icon_required.gif" rendered="#{EditStudyPage.studyMap[sfc.weighting].required}"/>
                       <ice:graphicImage value="/resources/images/icon_recommended.gif" rendered="#{EditStudyPage.studyMap[sfc.weighting].recommended}"/>
                     </div>
-                    <div jsfc="ice:panelGroup">
-                      <ice:inputText id="input_weighting" size="90"
-                                     value="#{EditStudyPage.metadata.weighting}"
-                                     required="#{EditStudyPage.studyMap[sfc.weighting].required and EditStudyPage.validateRequired}" requiredMessage="This field is required."
-                                     styleClass="formHtmlEnabled">
-                        <f:validator validatorId="XhtmlValidator"/>
-                      </ice:inputText>
-                      <ice:message styleClass="errorMessage" for="input_weighting"/>
+		
+                    <div jsfc="ice:panelGroup" id="groupPanel79">
+                      <ice:inputText id="input_weighting" size="45" value="#{EditStudyPage.metadata.weighting}" 
+                                     required="#{EditStudyPage.studyMap[sfc.weighting].required and EditStudyPage.validateRequired}" 
+                                     rendered="#{empty(EditStudyPage.studyMap[sfc.weighting].templateField.controlledVocabulary)}"
+                                     requiredMessage="This field is required." />
+                      <ice:message styleClass="errorMessage" for="input_weighting"/>                      
+                      <ice:selectOneMenu immediate="false" id="weighting_SelectOne"
+                                          rendered="#{!empty(EditStudyPage.studyMap[sfc.weighting].templateField.controlledVocabulary)}"
+                                          required="#{EditStudyPage.studyMap[sfc.weighting].required and EditStudyPage.validateRequired}" 
+                                           value="#{EditStudyPage.metadata.weighting}"  
+                                           requiredMessage="This field is required." >
+                                <f:selectItem itemLabel="No Value" itemValue=""/>
+                                <f:selectItems value="#{EditStudyPage.studyMap[sfc.weighting].templateField.controlledVocabulary.selectItems}"/>
+                       </ice:selectOneMenu>
+                       <ice:message styleClass="errorMessage" for="weighting_SelectOne"/> 
                     </div>
                   </ice:panelGrid>
 
@@ -2077,14 +2229,22 @@
                       <ice:graphicImage value="/resources/images/icon_required.gif" rendered="#{EditStudyPage.studyMap[sfc.cleaningOperations].required}"/>
                       <ice:graphicImage value="/resources/images/icon_recommended.gif" rendered="#{EditStudyPage.studyMap[sfc.cleaningOperations].recommended}"/>
                     </div>
-                    <div jsfc="ice:panelGroup">
-                      <ice:inputText id="input_cleaningOperations" size="90"
-                                     value="#{EditStudyPage.metadata.cleaningOperations}"
-                                     required="#{EditStudyPage.studyMap[sfc.cleaningOperations].required and EditStudyPage.validateRequired}" requiredMessage="This field is required."
-                                     styleClass="formHtmlEnabled">
-                        <f:validator validatorId="XhtmlValidator"/>
-                      </ice:inputText>
-                      <ice:message styleClass="errorMessage" for="input_cleaningOperations"/>
+		
+                    <div jsfc="ice:panelGroup" id="groupPanel80">
+                      <ice:inputText id="input_cleaningOperations" size="45" value="#{EditStudyPage.metadata.cleaningOperations}" 
+                                     required="#{EditStudyPage.studyMap[sfc.cleaningOperations].required and EditStudyPage.validateRequired}" 
+                                     rendered="#{empty(EditStudyPage.studyMap[sfc.cleaningOperations].templateField.controlledVocabulary)}"
+                                     requiredMessage="This field is required." />
+                      <ice:message styleClass="errorMessage" for="input_cleaningOperations"/>                      
+                      <ice:selectOneMenu immediate="false" id="cleaningOperations_SelectOne"
+                                          rendered="#{!empty(EditStudyPage.studyMap[sfc.cleaningOperations].templateField.controlledVocabulary)}"
+                                          required="#{EditStudyPage.studyMap[sfc.cleaningOperations].required and EditStudyPage.validateRequired}" 
+                                           value="#{EditStudyPage.metadata.cleaningOperations}"  
+                                           requiredMessage="This field is required." >
+                                <f:selectItem itemLabel="No Value" itemValue=""/>
+                                <f:selectItems value="#{EditStudyPage.studyMap[sfc.cleaningOperations].templateField.controlledVocabulary.selectItems}"/>
+                       </ice:selectOneMenu>
+                       <ice:message styleClass="errorMessage" for="cleaningOperations_SelectOne"/> 
                     </div>
                   </ice:panelGrid>
 
@@ -2103,14 +2263,22 @@
                       <ice:graphicImage value="/resources/images/icon_required.gif" rendered="#{EditStudyPage.studyMap[sfc.studyLevelErrorNotes].required}"/>
                       <ice:graphicImage value="/resources/images/icon_recommended.gif" rendered="#{EditStudyPage.studyMap[sfc.studyLevelErrorNotes].recommended}"/>
                     </div>
-                    <div jsfc="ice:panelGroup">
-                      <ice:inputText id="input_studyLevelErrorNotes" size="90"
-                                     value="#{EditStudyPage.metadata.studyLevelErrorNotes}"
-                                     required="#{EditStudyPage.studyMap[sfc.studyLevelErrorNotes].required and EditStudyPage.validateRequired}" requiredMessage="This field is required."
-                                     styleClass="formHtmlEnabled">
-                        <f:validator validatorId="XhtmlValidator"/>
-                      </ice:inputText>
-                      <ice:message styleClass="errorMessage" for="input_studyLevelErrorNotes"/>
+		
+                    <div jsfc="ice:panelGroup" id="groupPanel81">
+                      <ice:inputText id="input_studyLevelErrorNotes" size="45" value="#{EditStudyPage.metadata.studyLevelErrorNotes}" 
+                                     required="#{EditStudyPage.studyMap[sfc.studyLevelErrorNotes].required and EditStudyPage.validateRequired}" 
+                                     rendered="#{empty(EditStudyPage.studyMap[sfc.studyLevelErrorNotes].templateField.controlledVocabulary)}"
+                                     requiredMessage="This field is required." />
+                      <ice:message styleClass="errorMessage" for="input_studyLevelErrorNotes"/>                      
+                      <ice:selectOneMenu immediate="false" id="studyLevelErrorNotes_SelectOne"
+                                          rendered="#{!empty(EditStudyPage.studyMap[sfc.studyLevelErrorNotes].templateField.controlledVocabulary)}"
+                                          required="#{EditStudyPage.studyMap[sfc.studyLevelErrorNotes].required and EditStudyPage.validateRequired}" 
+                                           value="#{EditStudyPage.metadata.studyLevelErrorNotes}"  
+                                           requiredMessage="This field is required." >
+                                <f:selectItem itemLabel="No Value" itemValue=""/>
+                                <f:selectItems value="#{EditStudyPage.studyMap[sfc.studyLevelErrorNotes].templateField.controlledVocabulary.selectItems}"/>
+                       </ice:selectOneMenu>
+                       <ice:message styleClass="errorMessage" for="studyLevelErrorNotes_SelectOne"/> 
                     </div>
                   </ice:panelGrid>
 
@@ -2129,14 +2297,22 @@
                       <ice:graphicImage value="/resources/images/icon_required.gif" rendered="#{EditStudyPage.studyMap[sfc.responseRate].required}"/>
                       <ice:graphicImage value="/resources/images/icon_recommended.gif" rendered="#{EditStudyPage.studyMap[sfc.responseRate].recommended}"/>
                     </div>
-                    <div jsfc="ice:panelGroup">
-                      <ice:inputText id="input_responseRate" size="90"
-                                     value="#{EditStudyPage.metadata.responseRate}"
-                                     required="#{EditStudyPage.studyMap[sfc.responseRate].required and EditStudyPage.validateRequired}" requiredMessage="This field is required."
-                                     styleClass="formHtmlEnabled">
-                        <f:validator validatorId="XhtmlValidator"/>
-                      </ice:inputText>
-                      <ice:message styleClass="errorMessage" for="input_responseRate"/>
+		
+                    <div jsfc="ice:panelGroup" id="groupPanel82">
+                      <ice:inputText id="input_responseRate" size="45" value="#{EditStudyPage.metadata.responseRate}" 
+                                     required="#{EditStudyPage.studyMap[sfc.responseRate].required and EditStudyPage.validateRequired}" 
+                                     rendered="#{empty(EditStudyPage.studyMap[sfc.responseRate].templateField.controlledVocabulary)}"
+                                     requiredMessage="This field is required." />
+                      <ice:message styleClass="errorMessage" for="input_responseRate"/>                      
+                      <ice:selectOneMenu immediate="false" id="responseRate_SelectOne"
+                                          rendered="#{!empty(EditStudyPage.studyMap[sfc.responseRate].templateField.controlledVocabulary)}"
+                                          required="#{EditStudyPage.studyMap[sfc.responseRate].required and EditStudyPage.validateRequired}" 
+                                           value="#{EditStudyPage.metadata.responseRate}"  
+                                           requiredMessage="This field is required." >
+                                <f:selectItem itemLabel="No Value" itemValue=""/>
+                                <f:selectItems value="#{EditStudyPage.studyMap[sfc.responseRate].templateField.controlledVocabulary.selectItems}"/>
+                       </ice:selectOneMenu>
+                       <ice:message styleClass="errorMessage" for="responseRate_SelectOne"/> 
                     </div>
                   </ice:panelGrid>
 
@@ -2155,14 +2331,22 @@
                       <ice:graphicImage value="/resources/images/icon_required.gif" rendered="#{EditStudyPage.studyMap[sfc.samplingErrorEstimates].required}"/>
                       <ice:graphicImage value="/resources/images/icon_recommended.gif" rendered="#{EditStudyPage.studyMap[sfc.samplingErrorEstimates].recommended}"/>
                     </div>
-                    <div jsfc="ice:panelGroup">
-                      <ice:inputText id="input_samplingErrorEstimates" size="90"
-                                     value="#{EditStudyPage.metadata.samplingErrorEstimate}"
-                                     required="#{EditStudyPage.studyMap[sfc.samplingErrorEstimates].required and EditStudyPage.validateRequired}" requiredMessage="This field is required."
-                                     styleClass="formHtmlEnabled">
-                        <f:validator validatorId="XhtmlValidator"/>
-                      </ice:inputText>
-                      <ice:message styleClass="errorMessage" for="input_samplingErrorEstimates"/>
+		
+                    <div jsfc="ice:panelGroup" id="groupPanel83">
+                      <ice:inputText id="input_samplingErrorEstimates" size="45" value="#{EditStudyPage.metadata.samplingErrorEstimate}" 
+                                     required="#{EditStudyPage.studyMap[sfc.samplingErrorEstimates].required and EditStudyPage.validateRequired}" 
+                                     rendered="#{empty(EditStudyPage.studyMap[sfc.samplingErrorEstimates].templateField.controlledVocabulary)}"
+                                     requiredMessage="This field is required." />
+                      <ice:message styleClass="errorMessage" for="input_samplingErrorEstimates"/>                      
+                      <ice:selectOneMenu immediate="false" id="samplingErrorEstimates_SelectOne"
+                                          rendered="#{!empty(EditStudyPage.studyMap[sfc.samplingErrorEstimates].templateField.controlledVocabulary)}"
+                                          required="#{EditStudyPage.studyMap[sfc.samplingErrorEstimates].required and EditStudyPage.validateRequired}" 
+                                           value="#{EditStudyPage.metadata.samplingErrorEstimate}"  
+                                           requiredMessage="This field is required." >
+                                <f:selectItem itemLabel="No Value" itemValue=""/>
+                                <f:selectItems value="#{EditStudyPage.studyMap[sfc.samplingErrorEstimates].templateField.controlledVocabulary.selectItems}"/>
+                       </ice:selectOneMenu>
+                       <ice:message styleClass="errorMessage" for="samplingErrorEstimates_SelectOne"/> 
                     </div>
                   </ice:panelGrid>
 
@@ -2181,14 +2365,22 @@
                       <ice:graphicImage value="/resources/images/icon_required.gif" rendered="#{EditStudyPage.studyMap[sfc.otherDataAppraisal].required}"/>
                       <ice:graphicImage value="/resources/images/icon_recommended.gif" rendered="#{EditStudyPage.studyMap[sfc.otherDataAppraisal].recommended}"/>
                     </div>
-                    <div jsfc="ice:panelGroup">
-                      <ice:inputText id="input_otherDataAppraisal" size="90"
-                                     value="#{EditStudyPage.metadata.otherDataAppraisal}"
-                                     required="#{EditStudyPage.studyMap[sfc.otherDataAppraisal].required and EditStudyPage.validateRequired}" requiredMessage="This field is required."
-                                     styleClass="formHtmlEnabled">
-                        <f:validator validatorId="XhtmlValidator"/>
-                      </ice:inputText>
-                      <ice:message styleClass="errorMessage" for="input_otherDataAppraisal"/>
+		
+                    <div jsfc="ice:panelGroup" id="groupPanel84">
+                      <ice:inputText id="input_otherDataAppraisal" size="45" value="#{EditStudyPage.metadata.otherDataAppraisal}" 
+                                     required="#{EditStudyPage.studyMap[sfc.otherDataAppraisal].required and EditStudyPage.validateRequired}" 
+                                     rendered="#{empty(EditStudyPage.studyMap[sfc.otherDataAppraisal].templateField.controlledVocabulary)}"
+                                     requiredMessage="This field is required." />
+                      <ice:message styleClass="errorMessage" for="input_otherDataAppraisal"/>                      
+                      <ice:selectOneMenu immediate="false" id="otherDataAppraisal_SelectOne"
+                                          rendered="#{!empty(EditStudyPage.studyMap[sfc.otherDataAppraisal].templateField.controlledVocabulary)}"
+                                          required="#{EditStudyPage.studyMap[sfc.otherDataAppraisal].required and EditStudyPage.validateRequired}" 
+                                           value="#{EditStudyPage.metadata.otherDataAppraisal}"  
+                                           requiredMessage="This field is required." >
+                                <f:selectItem itemLabel="No Value" itemValue=""/>
+                                <f:selectItems value="#{EditStudyPage.studyMap[sfc.otherDataAppraisal].templateField.controlledVocabulary.selectItems}"/>
+                       </ice:selectOneMenu>
+                       <ice:message styleClass="errorMessage" for="otherDataAppraisal_SelectOne"/> 
                     </div>
                   </ice:panelGrid>
                   
@@ -2215,14 +2407,22 @@
                       <ice:graphicImage value="/resources/images/icon_required.gif" rendered="#{EditStudyPage.studyMap[sfc.placeOfAccess].required}"/>
                       <ice:graphicImage value="/resources/images/icon_recommended.gif" rendered="#{EditStudyPage.studyMap[sfc.placeOfAccess].recommended}"/>
                     </div>
-                    <div jsfc="ice:panelGroup">
-                      <ice:inputText id="input_placeOfAccess" size="90"
-                                     value="#{EditStudyPage.metadata.placeOfAccess}"
-                                     required="#{EditStudyPage.studyMap[sfc.placeOfAccess].required and EditStudyPage.validateRequired}" requiredMessage="This field is required."
-                                     styleClass="formHtmlEnabled">
-                        <f:validator validatorId="XhtmlValidator"/>
-                      </ice:inputText>
-                      <ice:message styleClass="errorMessage" for="input_placeOfAccess"/>
+		
+                    <div jsfc="ice:panelGroup" id="groupPanel85">
+                      <ice:inputText id="input_placeOfAccess" size="45" value="#{EditStudyPage.metadata.placeOfAccess}" 
+                                     required="#{EditStudyPage.studyMap[sfc.placeOfAccess].required and EditStudyPage.validateRequired}" 
+                                     rendered="#{empty(EditStudyPage.studyMap[sfc.placeOfAccess].templateField.controlledVocabulary)}"
+                                     requiredMessage="This field is required." />
+                      <ice:message styleClass="errorMessage" for="input_placeOfAccess"/>                      
+                      <ice:selectOneMenu immediate="false" id="placeOfAccess_SelectOne"
+                                          rendered="#{!empty(EditStudyPage.studyMap[sfc.placeOfAccess].templateField.controlledVocabulary)}"
+                                          required="#{EditStudyPage.studyMap[sfc.placeOfAccess].required and EditStudyPage.validateRequired}" 
+                                           value="#{EditStudyPage.metadata.placeOfAccess}"  
+                                           requiredMessage="This field is required." >
+                                <f:selectItem itemLabel="No Value" itemValue=""/>
+                                <f:selectItems value="#{EditStudyPage.studyMap[sfc.placeOfAccess].templateField.controlledVocabulary.selectItems}"/>
+                       </ice:selectOneMenu>
+                       <ice:message styleClass="errorMessage" for="placeOfAccess_SelectOne"/> 
                     </div>
                   </ice:panelGrid>
 
@@ -2240,14 +2440,22 @@
                       <ice:graphicImage value="/resources/images/icon_required.gif" rendered="#{EditStudyPage.studyMap[sfc.originalArchive].required}"/>
                       <ice:graphicImage value="/resources/images/icon_recommended.gif" rendered="#{EditStudyPage.studyMap[sfc.originalArchive].recommended}"/>
                     </div>
-                    <div jsfc="ice:panelGroup">
-                      <ice:inputText id="input_originalArchive" size="90"
-                                     value="#{EditStudyPage.metadata.originalArchive}"
-                                     required="#{EditStudyPage.studyMap[sfc.originalArchive].required and EditStudyPage.validateRequired}" requiredMessage="This field is required."
-                                     styleClass="formHtmlEnabled">
-                        <f:validator validatorId="XhtmlValidator"/>
-                      </ice:inputText>
-                      <ice:message styleClass="errorMessage" for="input_originalArchive"/>
+		
+                    <div jsfc="ice:panelGroup" id="groupPanel86">
+                      <ice:inputText id="input_originalArchive" size="45" value="#{EditStudyPage.metadata.originalArchive}" 
+                                     required="#{EditStudyPage.studyMap[sfc.originalArchive].required and EditStudyPage.validateRequired}" 
+                                     rendered="#{empty(EditStudyPage.studyMap[sfc.originalArchive].templateField.controlledVocabulary)}"
+                                     requiredMessage="This field is required." />
+                      <ice:message styleClass="errorMessage" for="input_originalArchive"/>                      
+                      <ice:selectOneMenu immediate="false" id="originalArchive_SelectOne"
+                                          rendered="#{!empty(EditStudyPage.studyMap[sfc.originalArchive].templateField.controlledVocabulary)}"
+                                          required="#{EditStudyPage.studyMap[sfc.originalArchive].required and EditStudyPage.validateRequired}" 
+                                           value="#{EditStudyPage.metadata.originalArchive}"  
+                                           requiredMessage="This field is required." >
+                                <f:selectItem itemLabel="No Value" itemValue=""/>
+                                <f:selectItems value="#{EditStudyPage.studyMap[sfc.originalArchive].templateField.controlledVocabulary.selectItems}"/>
+                       </ice:selectOneMenu>
+                       <ice:message styleClass="errorMessage" for="originalArchive_SelectOne"/> 
                     </div>
                   </ice:panelGrid>
 
@@ -2265,14 +2473,22 @@
                       <ice:graphicImage value="/resources/images/icon_required.gif" rendered="#{EditStudyPage.studyMap[sfc.availabilityStatus].required}"/>
                       <ice:graphicImage value="/resources/images/icon_recommended.gif" rendered="#{EditStudyPage.studyMap[sfc.availabilityStatus].recommended}"/>
                     </div>
-                    <div jsfc="ice:panelGroup">
-                      <ice:inputText id="input_availabilityStatus" size="90"
-                                     value="#{EditStudyPage.metadata.availabilityStatus}"
-                                     required="#{EditStudyPage.studyMap[sfc.availabilityStatus].required and EditStudyPage.validateRequired}" requiredMessage="This field is required."
-                                     styleClass="formHtmlEnabled">
-                        <f:validator validatorId="XhtmlValidator"/>
-                      </ice:inputText>
-                      <ice:message styleClass="errorMessage" for="input_availabilityStatus"/>
+		
+                    <div jsfc="ice:panelGroup" id="groupPanel87">
+                      <ice:inputText id="input_availabilityStatus" size="45" value="#{EditStudyPage.metadata.availabilityStatus}" 
+                                     required="#{EditStudyPage.studyMap[sfc.availabilityStatus].required and EditStudyPage.validateRequired}" 
+                                     rendered="#{empty(EditStudyPage.studyMap[sfc.availabilityStatus].templateField.controlledVocabulary)}"
+                                     requiredMessage="This field is required." />
+                      <ice:message styleClass="errorMessage" for="input_availabilityStatus"/>                      
+                      <ice:selectOneMenu immediate="false" id="availabilityStatus_SelectOne"
+                                          rendered="#{!empty(EditStudyPage.studyMap[sfc.availabilityStatus].templateField.controlledVocabulary)}"
+                                          required="#{EditStudyPage.studyMap[sfc.availabilityStatus].required and EditStudyPage.validateRequired}" 
+                                           value="#{EditStudyPage.metadata.availabilityStatus}"  
+                                           requiredMessage="This field is required." >
+                                <f:selectItem itemLabel="No Value" itemValue=""/>
+                                <f:selectItems value="#{EditStudyPage.studyMap[sfc.availabilityStatus].templateField.controlledVocabulary.selectItems}"/>
+                       </ice:selectOneMenu>
+                       <ice:message styleClass="errorMessage" for="availabilityStatus_SelectOne"/> 
                     </div>
                   </ice:panelGrid>
 
@@ -2290,14 +2506,22 @@
                       <ice:graphicImage value="/resources/images/icon_required.gif" rendered="#{EditStudyPage.studyMap[sfc.collectionSize].required}"/>
                       <ice:graphicImage value="/resources/images/icon_recommended.gif" rendered="#{EditStudyPage.studyMap[sfc.collectionSize].recommended}"/>
                     </div>
-                    <div jsfc="ice:panelGroup">
-                      <ice:inputText id="input_collectionSize" size="90"
-                                     value="#{EditStudyPage.metadata.collectionSize}"
-                                     required="#{EditStudyPage.studyMap[sfc.collectionSize].required and EditStudyPage.validateRequired}" requiredMessage="This field is required."
-                                     styleClass="formHtmlEnabled">
-                        <f:validator validatorId="XhtmlValidator"/>
-                      </ice:inputText>
-                      <ice:message styleClass="errorMessage" for="input_collectionSize"/>
+		
+                    <div jsfc="ice:panelGroup" id="groupPanel88">
+                      <ice:inputText id="input_collectionSize" size="45" value="#{EditStudyPage.metadata.collectionSize}" 
+                                     required="#{EditStudyPage.studyMap[sfc.collectionSize].required and EditStudyPage.validateRequired}" 
+                                     rendered="#{empty(EditStudyPage.studyMap[sfc.collectionSize].templateField.controlledVocabulary)}"
+                                     requiredMessage="This field is required." />
+                      <ice:message styleClass="errorMessage" for="input_collectionSize"/>                      
+                      <ice:selectOneMenu immediate="false" id="collectionSize_SelectOne"
+                                          rendered="#{!empty(EditStudyPage.studyMap[sfc.collectionSize].templateField.controlledVocabulary)}"
+                                          required="#{EditStudyPage.studyMap[sfc.collectionSize].required and EditStudyPage.validateRequired}" 
+                                           value="#{EditStudyPage.metadata.collectionSize}"  
+                                           requiredMessage="This field is required." >
+                                <f:selectItem itemLabel="No Value" itemValue=""/>
+                                <f:selectItems value="#{EditStudyPage.studyMap[sfc.collectionSize].templateField.controlledVocabulary.selectItems}"/>
+                       </ice:selectOneMenu>
+                       <ice:message styleClass="errorMessage" for="collectionSize_SelectOne"/> 
                     </div>
                   </ice:panelGrid>
 
@@ -2315,14 +2539,22 @@
                       <ice:graphicImage value="/resources/images/icon_required.gif" rendered="#{EditStudyPage.studyMap[sfc.studyCompletion].required}"/>
                       <ice:graphicImage value="/resources/images/icon_recommended.gif" rendered="#{EditStudyPage.studyMap[sfc.studyCompletion].recommended}"/>
                     </div>
-                    <div jsfc="ice:panelGroup">
-                      <ice:inputText size="90" id="input_studyCompletion"
-                                     value="#{EditStudyPage.metadata.studyCompletion}"
-                                     required="#{EditStudyPage.studyMap[sfc.studyCompletion].required and EditStudyPage.validateRequired}" requiredMessage="This field is required."
-                                     styleClass="formHtmlEnabled">
-                        <f:validator validatorId="XhtmlValidator"/>
-                      </ice:inputText>
-                      <ice:message styleClass="errorMessage" for="input_studyCompletion"/>
+		
+                    <div jsfc="ice:panelGroup" id="groupPanel89">
+                      <ice:inputText id="input_studyCompletion" size="45" value="#{EditStudyPage.metadata.studyCompletion}" 
+                                     required="#{EditStudyPage.studyMap[sfc.studyCompletion].required and EditStudyPage.validateRequired}" 
+                                     rendered="#{empty(EditStudyPage.studyMap[sfc.studyCompletion].templateField.controlledVocabulary)}"
+                                     requiredMessage="This field is required." />
+                      <ice:message styleClass="errorMessage" for="input_studyCompletion"/>                      
+                      <ice:selectOneMenu immediate="false" id="studyCompletion_SelectOne"
+                                          rendered="#{!empty(EditStudyPage.studyMap[sfc.studyCompletion].templateField.controlledVocabulary)}"
+                                          required="#{EditStudyPage.studyMap[sfc.studyCompletion].required and EditStudyPage.validateRequired}" 
+                                           value="#{EditStudyPage.metadata.studyCompletion}"  
+                                           requiredMessage="This field is required." >
+                                <f:selectItem itemLabel="No Value" itemValue=""/>
+                                <f:selectItems value="#{EditStudyPage.studyMap[sfc.studyCompletion].templateField.controlledVocabulary.selectItems}"/>
+                       </ice:selectOneMenu>
+                       <ice:message styleClass="errorMessage" for="studyCompletion_SelectOne"/> 
                     </div>
                   </ice:panelGrid>
                   <ice:panelGrid cellpadding="0" cellspacing="0" columns="1" width="100%"
@@ -2346,15 +2578,22 @@
                       <ice:graphicImage value="/resources/images/icon_required.gif" rendered="#{EditStudyPage.studyMap[sfc.confidentialityDeclaration].required}"/>
                       <ice:graphicImage value="/resources/images/icon_recommended.gif" rendered="#{EditStudyPage.studyMap[sfc.confidentialityDeclaration].recommended}"/>
                     </div>
-                    <div jsfc="ice:panelGroup">
-                      <ice:inputTextarea cols="90" rows="4"
-                                         id="input_confidentialityDeclaration"
-                                         value="#{EditStudyPage.metadata.confidentialityDeclaration}"
-                                         required="#{EditStudyPage.studyMap[sfc.confidentialityDeclaration].required and EditStudyPage.validateRequired}" requiredMessage="This field is required."
-                                         styleClass="formHtmlEnabled">
-                        <f:validator validatorId="XhtmlValidator"/>
-                      </ice:inputTextarea>
-                      <ice:message styleClass="errorMessage" for="input_confidentialityDeclaration"/>
+		
+                    <div jsfc="ice:panelGroup" id="groupPanel90">
+                      <ice:inputText id="input_confidentialityDeclaration" size="45" value="#{EditStudyPage.metadata.confidentialityDeclaration}" 
+                                     required="#{EditStudyPage.studyMap[sfc.confidentialityDeclaration].required and EditStudyPage.validateRequired}" 
+                                     rendered="#{empty(EditStudyPage.studyMap[sfc.confidentialityDeclaration].templateField.controlledVocabulary)}"
+                                     requiredMessage="This field is required." />
+                      <ice:message styleClass="errorMessage" for="input_confidentialityDeclaration"/>                      
+                      <ice:selectOneMenu immediate="false" id="confidentialityDeclaration_SelectOne"
+                                          rendered="#{!empty(EditStudyPage.studyMap[sfc.confidentialityDeclaration].templateField.controlledVocabulary)}"
+                                          required="#{EditStudyPage.studyMap[sfc.confidentialityDeclaration].required and EditStudyPage.validateRequired}" 
+                                           value="#{EditStudyPage.metadata.confidentialityDeclaration}"  
+                                           requiredMessage="This field is required." >
+                                <f:selectItem itemLabel="No Value" itemValue=""/>
+                                <f:selectItems value="#{EditStudyPage.studyMap[sfc.confidentialityDeclaration].templateField.controlledVocabulary.selectItems}"/>
+                       </ice:selectOneMenu>
+                       <ice:message styleClass="errorMessage" for="confidentialityDeclaration_SelectOne"/> 
                     </div>
                   </ice:panelGrid>
 
@@ -2372,14 +2611,22 @@
                       <ice:graphicImage value="/resources/images/icon_required.gif" rendered="#{EditStudyPage.studyMap[sfc.specialPermissions].required}"/>
                       <ice:graphicImage value="/resources/images/icon_recommended.gif" rendered="#{EditStudyPage.studyMap[sfc.specialPermissions].recommended}"/>
                     </div>
-                    <div jsfc="ice:panelGroup">
-                      <ice:inputTextarea cols="90" rows="4" id="input_specialPermissions"
-                                         value="#{EditStudyPage.metadata.specialPermissions}"
-                                         required="#{EditStudyPage.studyMap[sfc.specialPermissions].required and EditStudyPage.validateRequired}" requiredMessage="This field is required."
-                                         styleClass="formHtmlEnabled">
-                        <f:validator validatorId="XhtmlValidator"/>
-                      </ice:inputTextarea>
-                      <ice:message styleClass="errorMessage" for="input_specialPermissions"/>
+		
+                    <div jsfc="ice:panelGroup" id="groupPanel91">
+                      <ice:inputText id="input_specialPermissions" size="45" value="#{EditStudyPage.metadata.specialPermissions}" 
+                                     required="#{EditStudyPage.studyMap[sfc.specialPermissions].required and EditStudyPage.validateRequired}" 
+                                     rendered="#{empty(EditStudyPage.studyMap[sfc.specialPermissions].templateField.controlledVocabulary)}"
+                                     requiredMessage="This field is required." />
+                      <ice:message styleClass="errorMessage" for="input_specialPermissions"/>                      
+                      <ice:selectOneMenu immediate="false" id="specialPermissions_SelectOne"
+                                          rendered="#{!empty(EditStudyPage.studyMap[sfc.specialPermissions].templateField.controlledVocabulary)}"
+                                          required="#{EditStudyPage.studyMap[sfc.specialPermissions].required and EditStudyPage.validateRequired}" 
+                                           value="#{EditStudyPage.metadata.specialPermissions}"  
+                                           requiredMessage="This field is required." >
+                                <f:selectItem itemLabel="No Value" itemValue=""/>
+                                <f:selectItems value="#{EditStudyPage.studyMap[sfc.specialPermissions].templateField.controlledVocabulary.selectItems}"/>
+                       </ice:selectOneMenu>
+                       <ice:message styleClass="errorMessage" for="specialPermissions_SelectOne"/> 
                     </div>
                   </ice:panelGrid>
 
@@ -2397,15 +2644,22 @@
                       <ice:graphicImage value="/resources/images/icon_required.gif" rendered="#{EditStudyPage.studyMap[sfc.restrictions].required}"/>
                       <ice:graphicImage value="/resources/images/icon_recommended.gif" rendered="#{EditStudyPage.studyMap[sfc.restrictions].recommended}"/>
                     </div>
-                    <div jsfc="ice:panelGroup">
-                      <ice:inputTextarea cols="90" rows="4"
-                                         id="input_restrictions"
-                                         value="#{EditStudyPage.metadata.restrictions}"
-                                         required="#{EditStudyPage.studyMap[sfc.restrictions].required and EditStudyPage.validateRequired}" requiredMessage="This field is required."
-                                         styleClass="formHtmlEnabled">
-                        <f:validator validatorId="XhtmlValidator"/>
-                      </ice:inputTextarea>
-                      <ice:message styleClass="errorMessage" for="input_restrictions"/>
+		
+                    <div jsfc="ice:panelGroup" id="groupPanel92">
+                      <ice:inputText id="input_restrictions" size="45" value="#{EditStudyPage.metadata.restrictions}" 
+                                     required="#{EditStudyPage.studyMap[sfc.restrictions].required and EditStudyPage.validateRequired}" 
+                                     rendered="#{empty(EditStudyPage.studyMap[sfc.restrictions].templateField.controlledVocabulary)}"
+                                     requiredMessage="This field is required." />
+                      <ice:message styleClass="errorMessage" for="input_restrictions"/>                      
+                      <ice:selectOneMenu immediate="false" id="restrictions_SelectOne"
+                                          rendered="#{!empty(EditStudyPage.studyMap[sfc.restrictions].templateField.controlledVocabulary)}"
+                                          required="#{EditStudyPage.studyMap[sfc.restrictions].required and EditStudyPage.validateRequired}" 
+                                           value="#{EditStudyPage.metadata.restrictions}"  
+                                           requiredMessage="This field is required." >
+                                <f:selectItem itemLabel="No Value" itemValue=""/>
+                                <f:selectItems value="#{EditStudyPage.studyMap[sfc.restrictions].templateField.controlledVocabulary.selectItems}"/>
+                       </ice:selectOneMenu>
+                       <ice:message styleClass="errorMessage" for="restrictions_SelectOne"/> 
                     </div>
                   </ice:panelGrid>
 
@@ -2423,14 +2677,22 @@
                       <ice:graphicImage value="/resources/images/icon_required.gif" rendered="#{EditStudyPage.studyMap[sfc.contact].required}"/>
                       <ice:graphicImage value="/resources/images/icon_recommended.gif" rendered="#{EditStudyPage.studyMap[sfc.contact].recommended}"/>
                     </div>
-                    <div jsfc="ice:panelGroup">
-                      <ice:inputText id="input_contact" size="90"
-                                     value="#{EditStudyPage.metadata.contact}"
-                                     required="#{EditStudyPage.studyMap[sfc.contact].required and EditStudyPage.validateRequired}" requiredMessage="This field is required."
-                                     styleClass="formHtmlEnabled">
-                        <f:validator validatorId="XhtmlValidator"/>
-                      </ice:inputText>
-                      <ice:message styleClass="errorMessage" for="input_contact"/>
+		
+                    <div jsfc="ice:panelGroup" id="groupPanel93">
+                      <ice:inputText id="input_contact" size="45" value="#{EditStudyPage.metadata.contact}" 
+                                     required="#{EditStudyPage.studyMap[sfc.contact].required and EditStudyPage.validateRequired}" 
+                                     rendered="#{empty(EditStudyPage.studyMap[sfc.contact].templateField.controlledVocabulary)}"
+                                     requiredMessage="This field is required." />
+                      <ice:message styleClass="errorMessage" for="input_contact"/>                      
+                      <ice:selectOneMenu immediate="false" id="contact_SelectOne"
+                                          rendered="#{!empty(EditStudyPage.studyMap[sfc.contact].templateField.controlledVocabulary)}"
+                                          required="#{EditStudyPage.studyMap[sfc.contact].required and EditStudyPage.validateRequired}" 
+                                           value="#{EditStudyPage.metadata.contact}"  
+                                           requiredMessage="This field is required." >
+                                <f:selectItem itemLabel="No Value" itemValue=""/>
+                                <f:selectItems value="#{EditStudyPage.studyMap[sfc.contact].templateField.controlledVocabulary.selectItems}"/>
+                       </ice:selectOneMenu>
+                       <ice:message styleClass="errorMessage" for="contact_SelectOne"/> 
                     </div>
                   </ice:panelGrid>
 
@@ -2448,14 +2710,22 @@
                       <ice:graphicImage value="/resources/images/icon_required.gif" rendered="#{EditStudyPage.studyMap[sfc.citationRequirements].required}"/>
                       <ice:graphicImage value="/resources/images/icon_recommended.gif" rendered="#{EditStudyPage.studyMap[sfc.citationRequirements].recommended}"/>
                     </div>
-                    <div jsfc="ice:panelGroup">
-                      <ice:inputTextarea cols="90" rows="4" id="input_citationRequirements"
-                                         value="#{EditStudyPage.metadata.citationRequirements}"
-                                         required="#{EditStudyPage.studyMap[sfc.citationRequirements].required and EditStudyPage.validateRequired}" requiredMessage="This field is required."
-                                         styleClass="formHtmlEnabled">
-                        <f:validator validatorId="XhtmlValidator"/>
-                      </ice:inputTextarea>
-                      <ice:message styleClass="errorMessage" for="input_citationRequirements"/>
+		
+                    <div jsfc="ice:panelGroup" id="groupPanel94">
+                      <ice:inputText id="input_citationRequirements" size="45" value="#{EditStudyPage.metadata.citationRequirements}" 
+                                     required="#{EditStudyPage.studyMap[sfc.citationRequirements].required and EditStudyPage.validateRequired}" 
+                                     rendered="#{empty(EditStudyPage.studyMap[sfc.citationRequirements].templateField.controlledVocabulary)}"
+                                     requiredMessage="This field is required." />
+                      <ice:message styleClass="errorMessage" for="input_citationRequirements"/>                      
+                      <ice:selectOneMenu immediate="false" id="citationRequirements_SelectOne"
+                                          rendered="#{!empty(EditStudyPage.studyMap[sfc.citationRequirements].templateField.controlledVocabulary)}"
+                                          required="#{EditStudyPage.studyMap[sfc.citationRequirements].required and EditStudyPage.validateRequired}" 
+                                           value="#{EditStudyPage.metadata.citationRequirements}"  
+                                           requiredMessage="This field is required." >
+                                <f:selectItem itemLabel="No Value" itemValue=""/>
+                                <f:selectItems value="#{EditStudyPage.studyMap[sfc.citationRequirements].templateField.controlledVocabulary.selectItems}"/>
+                       </ice:selectOneMenu>
+                       <ice:message styleClass="errorMessage" for="citationRequirements_SelectOne"/> 
                     </div>
                   </ice:panelGrid>
 
@@ -2473,15 +2743,22 @@
                       <ice:graphicImage value="/resources/images/icon_required.gif" rendered="#{EditStudyPage.studyMap[sfc.depositorRequirements].required}"/>
                       <ice:graphicImage value="/resources/images/icon_recommended.gif" rendered="#{EditStudyPage.studyMap[sfc.depositorRequirements].recommended}"/>
                     </div>
-                    <div jsfc="ice:panelGroup">
-                      <ice:inputTextarea cols="90" rows="4"
-                                         id="input_depositorRequirements"
-                                         value="#{EditStudyPage.metadata.depositorRequirements}"
-                                         required="#{EditStudyPage.studyMap[sfc.depositorRequirements].required and EditStudyPage.validateRequired}" requiredMessage="This field is required."
-                                         styleClass="formHtmlEnabled">
-                        <f:validator validatorId="XhtmlValidator"/>
-                      </ice:inputTextarea>
-                      <ice:message styleClass="errorMessage" for="input_depositorRequirements"/>
+		
+                    <div jsfc="ice:panelGroup" id="groupPanel95">
+                      <ice:inputText id="input_depositorRequirements" size="45" value="#{EditStudyPage.metadata.depositorRequirements}" 
+                                     required="#{EditStudyPage.studyMap[sfc.depositorRequirements].required and EditStudyPage.validateRequired}" 
+                                     rendered="#{empty(EditStudyPage.studyMap[sfc.depositorRequirements].templateField.controlledVocabulary)}"
+                                     requiredMessage="This field is required." />
+                      <ice:message styleClass="errorMessage" for="input_depositorRequirements"/>                      
+                      <ice:selectOneMenu immediate="false" id="depositorRequirements_SelectOne"
+                                          rendered="#{!empty(EditStudyPage.studyMap[sfc.depositorRequirements].templateField.controlledVocabulary)}"
+                                          required="#{EditStudyPage.studyMap[sfc.depositorRequirements].required and EditStudyPage.validateRequired}" 
+                                           value="#{EditStudyPage.metadata.depositorRequirements}"  
+                                           requiredMessage="This field is required." >
+                                <f:selectItem itemLabel="No Value" itemValue=""/>
+                                <f:selectItems value="#{EditStudyPage.studyMap[sfc.depositorRequirements].templateField.controlledVocabulary.selectItems}"/>
+                       </ice:selectOneMenu>
+                       <ice:message styleClass="errorMessage" for="depositorRequirements_SelectOne"/> 
                     </div>
                   </ice:panelGrid>
 
@@ -2499,15 +2776,22 @@
                       <ice:graphicImage value="/resources/images/icon_required.gif" rendered="#{EditStudyPage.studyMap[sfc.conditions].required}"/>
                       <ice:graphicImage value="/resources/images/icon_recommended.gif" rendered="#{EditStudyPage.studyMap[sfc.conditions].recommended}"/>
                     </div>
-                    <div jsfc="ice:panelGroup">
-                      <ice:inputTextarea cols="90" rows="4"
-                                         id="input_conditions"
-                                         value="#{EditStudyPage.metadata.conditions}"
-                                         required="#{EditStudyPage.studyMap[sfc.conditions].required and EditStudyPage.validateRequired}" requiredMessage="This field is required."
-                                         styleClass="formHtmlEnabled">
-                        <f:validator validatorId="XhtmlValidator"/>
-                      </ice:inputTextarea>
-                      <ice:message styleClass="errorMessage" for="input_conditions"/>
+		
+                    <div jsfc="ice:panelGroup" id="groupPanel96">
+                      <ice:inputText id="input_conditions" size="45" value="#{EditStudyPage.metadata.conditions}" 
+                                     required="#{EditStudyPage.studyMap[sfc.conditions].required and EditStudyPage.validateRequired}" 
+                                     rendered="#{empty(EditStudyPage.studyMap[sfc.conditions].templateField.controlledVocabulary)}"
+                                     requiredMessage="This field is required." />
+                      <ice:message styleClass="errorMessage" for="input_conditions"/>                      
+                      <ice:selectOneMenu immediate="false" id="conditions_SelectOne"
+                                          rendered="#{!empty(EditStudyPage.studyMap[sfc.conditions].templateField.controlledVocabulary)}"
+                                          required="#{EditStudyPage.studyMap[sfc.conditions].required and EditStudyPage.validateRequired}" 
+                                           value="#{EditStudyPage.metadata.conditions}"  
+                                           requiredMessage="This field is required." >
+                                <f:selectItem itemLabel="No Value" itemValue=""/>
+                                <f:selectItems value="#{EditStudyPage.studyMap[sfc.conditions].templateField.controlledVocabulary.selectItems}"/>
+                       </ice:selectOneMenu>
+                       <ice:message styleClass="errorMessage" for="conditions_SelectOne"/> 
                     </div>
                   </ice:panelGrid>
 
@@ -2525,15 +2809,22 @@
                       <ice:graphicImage value="/resources/images/icon_required.gif" rendered="#{EditStudyPage.studyMap[sfc.disclaimer].required}"/>
                       <ice:graphicImage value="/resources/images/icon_recommended.gif" rendered="#{EditStudyPage.studyMap[sfc.disclaimer].recommended}"/>
                     </div>
-                    <div jsfc="ice:panelGroup">
-                      <ice:inputTextarea cols="90" rows="4"
-                                         id="input_disclaimer"
-                                         value="#{EditStudyPage.metadata.disclaimer}"
-                                         required="#{EditStudyPage.studyMap[sfc.disclaimer].required and EditStudyPage.validateRequired}" requiredMessage="This field is required."
-                                         styleClass="formHtmlEnabled">
-                        <f:validator validatorId="XhtmlValidator"/>
-                      </ice:inputTextarea>
-                      <ice:message styleClass="errorMessage" for="input_disclaimer"/>
+		
+                    <div jsfc="ice:panelGroup" id="groupPanel97">
+                      <ice:inputText id="input_disclaimer" size="45" value="#{EditStudyPage.metadata.disclaimer}" 
+                                     required="#{EditStudyPage.studyMap[sfc.disclaimer].required and EditStudyPage.validateRequired}" 
+                                     rendered="#{empty(EditStudyPage.studyMap[sfc.disclaimer].templateField.controlledVocabulary)}"
+                                     requiredMessage="This field is required." />
+                      <ice:message styleClass="errorMessage" for="input_disclaimer"/>                      
+                      <ice:selectOneMenu immediate="false" id="disclaimer_SelectOne"
+                                          rendered="#{!empty(EditStudyPage.studyMap[sfc.disclaimer].templateField.controlledVocabulary)}"
+                                          required="#{EditStudyPage.studyMap[sfc.disclaimer].required and EditStudyPage.validateRequired}" 
+                                           value="#{EditStudyPage.metadata.disclaimer}"  
+                                           requiredMessage="This field is required." >
+                                <f:selectItem itemLabel="No Value" itemValue=""/>
+                                <f:selectItems value="#{EditStudyPage.studyMap[sfc.disclaimer].templateField.controlledVocabulary.selectItems}"/>
+                       </ice:selectOneMenu>
+                       <ice:message styleClass="errorMessage" for="disclaimer_SelectOne"/> 
                     </div>
                   </ice:panelGrid>
 

@@ -310,8 +310,8 @@ public class EditGuestbookQuestionnairePage extends VDCBaseBean implements java.
     public void removeCustomRowInit(ActionEvent ae) {
         HtmlDataTable dataTable = (HtmlDataTable) ae.getComponent().getParent().getParent();
         if (dataTable.getRowCount() > 1) {
-            CustomQuestionValue data = (CustomQuestionValue) dataTable.getRowData();
-            newQuestion.getCustomQuestionValues().remove(data);
+            int index =  dataTable.getRowIndex();
+            newQuestion.getCustomQuestionValues().remove(index);
         }
     }
 

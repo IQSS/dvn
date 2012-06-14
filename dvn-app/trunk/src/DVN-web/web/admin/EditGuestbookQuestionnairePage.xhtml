@@ -78,9 +78,9 @@
                                 </div>
                               </ice:column>
                               <ice:column>
-                                <ice:commandButton image="/resources/images/icon_add.gif" actionListener="#{EditGuestbookQuestionnairePage.addCustomRowInit}"/>
+                                <ice:commandButton image="/resources/images/icon_add.gif"  actionListener="#{EditGuestbookQuestionnairePage.addCustomRowInit}"/>
                                 <ice:commandButton 
-                                    rendered="#{EditGuestbookQuestionnairePage.newQuestion.customQuestionValues.size() > 1}" 
+                                    rendered="#{EditGuestbookQuestionnairePage.newQuestion.customQuestionValues.size() > 1}" immediate="true"
                                     image="/resources/images/icon_remove.gif" actionListener="#{EditGuestbookQuestionnairePage.removeCustomRowInit}" />
                               </ice:column>
                            </ice:dataTable>

@@ -66,14 +66,14 @@
                     </ice:column>
                     <ice:column>
                         <f:facet name="header">
-                            <ice:outputText value="Study Title"/>
+                            <ice:outputText value="Study Global Id"/>
                         </f:facet>
                        <ice:outputText id="studyText" 
-                                      value="#{guestBookResponseDisplay.guestBookResponse.study.handleURL}"></ice:outputText>
+                                      value="#{guestBookResponseDisplay.guestBookResponse.study.globalId}"></ice:outputText>
                     </ice:column>
                     <ice:column>
                         <f:facet name="header">
-                            <ice:outputText value="Study Name"/>
+                            <ice:outputText value="Study Title"/>
                         </f:facet>
                        <ice:outputText id="studyTitle" 
                                        value="#{guestBookResponseDisplay.guestBookResponse.study.latestVersion.metadata.title}"></ice:outputText>

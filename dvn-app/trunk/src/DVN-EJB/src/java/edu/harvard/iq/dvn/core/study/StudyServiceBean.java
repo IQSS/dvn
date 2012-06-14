@@ -308,6 +308,8 @@ public class StudyServiceBean implements edu.harvard.iq.dvn.core.study.StudyServ
         }
         //System.out.println("DEBUG: " + (new Date().getTime() - start) + "\t - deleteStudy - delete data variables");
         studyService.deleteDataVariables(study.getId());
+        //force cascade delete of 
+        deleteGuestBookResponses(study.getId());
 
         //System.out.println("DEBUG: " + (new Date().getTime() - start) + "\t - deleteStudy - delete relationships");
         study.getAllowedGroups().clear();
@@ -568,7 +570,36 @@ public class StudyServiceBean implements edu.harvard.iq.dvn.core.study.StudyServ
         //em.createNativeQuery(DELETE_VARIABLE_RANGES).setParameter(1, studyId).executeUpdate();
         //em.createNativeQuery(DELETE_DATA_VARIABLES).setParameter(1, studyId).executeUpdate();
     }
+    
+    private static final String DELETE_CUSTOMQUESTIONRESPONSE_PREFIX = "delete from customquestionresponse where guestbookresponse_id in ";
+    private static final String DELETE_GUESTBOOKRESPONSE_PREFIX = "delete from guestbookresponse where id in ";
+    private static final String SELECT_GUESTBOOK_RESPONSE_IDS = "select gbr.id from study s,  guestbookresponse gbr " +
+            "where s.id= ? " +
+            "and s.id = gbr.study_id " ;
 
+
+    public void deleteGuestBookResponses(Long studyId) {
+        // because the delte was taking a while, we tested spearate queires to get the info and it seemed to work much
+        // faster, so now this delete goes in steps
+
+        // step 1: determine dtIds
+        List gbrIdList = new ArrayList();
+        Query query = em.createNativeQuery(SELECT_GUESTBOOK_RESPONSE_IDS).setParameter(1, studyId);
+        for (Object currentResult : query.getResultList()) {
+            gbrIdList.add(new Long(((Integer)currentResult).longValue()));
+        }
+
+        if ( !gbrIdList.isEmpty() ) {
+            // step 2: determine variables
+
+                String varString = "(" + generateTempTableString(gbrIdList) + ")";
+
+                em.createNativeQuery(DELETE_CUSTOMQUESTIONRESPONSE_PREFIX + varString).executeUpdate();
+                em.createNativeQuery(DELETE_GUESTBOOKRESPONSE_PREFIX + varString).executeUpdate();
+        }
+    }
+    
+    
     /**
      *   Gets Study without any of its dependent objects
      *

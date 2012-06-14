@@ -228,7 +228,11 @@ public class LoginWorkflowBean extends VDCBaseBean implements java.io.Serializab
         vdcSessionBean.setLoginBean(loginBean);
 
         // copy all terms of use from session TermsOfUseMap
-        loginBean.getTermsfUseMap().putAll(vdcSessionBean.getTermsfUseMap());
+        // change for 3.1 - DO Not COPY TOU Map
+        // because of the guest book we are not moving the TOU map
+        // upon login.  they will have to re-enter guestbook data 
+        //and re-accept TOU if necessary
+        //loginBean.getTermsfUseMap().putAll(vdcSessionBean.getTermsfUseMap());
         // then clear the sessions version
         vdcSessionBean.getTermsfUseMap().clear();
         // clear the studylistings from prelogin

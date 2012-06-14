@@ -304,7 +304,7 @@ public class EditGuestbookQuestionnairePage extends VDCBaseBean implements java.
         CustomQuestionValue newElem = new CustomQuestionValue();
         newElem.setCustomQuestion(newQuestion);
         newElem.setValueString("");
-        data.getCustomQuestion().getCustomQuestionValues().add(newElem);
+        newQuestion.getCustomQuestionValues().add(newElem);
     }
 
     public void removeCustomRowInit(ActionEvent ae) {

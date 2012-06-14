@@ -19,7 +19,7 @@
     </ui:define>
     <ui:define name="body">
       <ice:form id="form1">
-        <ice:inputHidden id="vdcId" value="#{VDCRequest.currentVDCId}"/>
+        <ice:inputHidden id="vdcId" value="#{VDCRequest.currentVDCId}"/>       
         <div class="dvn_section">
           <div class="dvn_sectionTitle">
             <ice:outputText value="#{bundlePageInfo.editGuestBookQuestionnaireTitle}"/>
@@ -72,7 +72,7 @@
                                            value="#{addValue.valueString}"
                                            size="45"
                                            maxlength="255"
-                                           required="true" requiredMessage="This field is required."/>
+                                           />
                             <ice:message styleClass="errorMessage" for="input_AnswerValue"/>
                           </ice:column>
                           <ice:column>

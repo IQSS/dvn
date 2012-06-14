@@ -29,14 +29,10 @@ import com.icesoft.faces.context.Resource;
 import edu.harvard.iq.dvn.core.analysis.NetworkDataServiceLocal;
 import edu.harvard.iq.dvn.core.analysis.NetworkDataSubsetResult;
 import edu.harvard.iq.dvn.core.analysis.NetworkMeasureParameter;
-import edu.harvard.iq.dvn.core.study.DataTable;
-import edu.harvard.iq.dvn.core.study.DataVariable;
-import edu.harvard.iq.dvn.core.study.NetworkDataFile;
-import edu.harvard.iq.dvn.core.study.StudyFileServiceLocal;
-import edu.harvard.iq.dvn.core.study.StudyServiceLocal;
-import edu.harvard.iq.dvn.core.study.StudyVersion;
+import edu.harvard.iq.dvn.core.study.*;
 import edu.harvard.iq.dvn.core.util.FileUtil;
 import edu.harvard.iq.dvn.core.util.StringUtil;
+import edu.harvard.iq.dvn.core.vdc.GuestBookResponse;
 import edu.harvard.iq.dvn.core.web.common.VDCBaseBean;
 import edu.harvard.iq.dvn.core.web.study.StudyUI;
 import java.io.File;
@@ -706,8 +702,16 @@ public class NetworkDataAnalysisPage extends VDCBaseBean implements Serializable
                 Logger.getLogger(NetworkDataAnalysisPage.class.getName()).log(Level.SEVERE, null, ex);
                 throw new IOException("There was a problem attempting to get the export file");
             }
+            
+            StudyFile sfile = (NetworkDataFile) studyFileService.getStudyFile(fileId);
+            if (sfile != null) {
+                GuestBookResponse guestbookResponse = (GuestBookResponse) getVDCSessionBean().getGuestbookResponseMap().get("guestBookResponse_" + sfile.getStudy().getId());
+                studyService.incrementNumberOfDownloads(fileId, vdcId, (GuestBookResponse) guestbookResponse);
+            } else {
+                studyService.incrementNumberOfDownloads(fileId, vdcId, (GuestBookResponse) null);
+            }
+            
 
-            studyService.incrementNumberOfDownloads(fileId, vdcId);
 
             return new FileInputStream(file);              
         }

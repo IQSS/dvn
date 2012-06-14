@@ -3228,14 +3228,6 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
         this.heightInt = heightInt;
     }
     
-    private void addGuestbookRecords(StudyFile file){
-        GuestBookResponse guestbookResponse = (GuestBookResponse) getVDCSessionBean().getGuestbookResponseMap().get("guestBookResponse_" + file.getStudy().getId());
-        if (guestbookResponse != null) {
-            guestbookResponse.setStudyFile(file);
-            guestbookResponse.setResponseTime(new Date());
-            guestBookResponseServiceBean.update(guestbookResponse);
-        }
-    }
     
     public class ExportFileResource implements Resource, Serializable{
         File file;
@@ -3273,13 +3265,11 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
             }
 
             // Increment download count:
-
+            GuestBookResponse guestbookResponse = (GuestBookResponse) getVDCSessionBean().getGuestbookResponseMap().get("guestBookResponse_" + sf.getStudy().getId());
             if ( vdc != null ) {
-                studyService.incrementNumberOfDownloads(sf.getId(), vdc.getId());
-                addGuestbookRecords(sf);
+                studyService.incrementNumberOfDownloads(sf.getId(), vdc.getId(), (GuestBookResponse) guestbookResponse);
             } else {
-                studyService.incrementNumberOfDownloads(sf.getId(), (Long)null);
-                addGuestbookRecords(sf);
+                studyService.incrementNumberOfDownloads(sf.getId(), (Long)null, (GuestBookResponse) guestbookResponse);
             }
 
 

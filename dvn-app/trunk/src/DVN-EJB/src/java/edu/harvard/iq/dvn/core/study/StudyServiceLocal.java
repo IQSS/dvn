@@ -20,6 +20,7 @@
 package edu.harvard.iq.dvn.core.study;
 
 import edu.harvard.iq.dvn.core.admin.VDCUser;
+import edu.harvard.iq.dvn.core.vdc.GuestBookResponse;
 import edu.harvard.iq.dvn.core.vdc.VDC;
 import java.io.File;
 import java.io.IOException;
@@ -106,6 +107,9 @@ public interface StudyServiceLocal extends java.io.Serializable {
 
     //4
     public void incrementNumberOfDownloads(Long studyFileId, Long currentVDCId, Date lastDownloadTime);
+    
+    //4
+    public void incrementNumberOfDownloads(Long studyFileId, Long currentVDCId, GuestBookResponse guestbookResponse);
 
     //4
     public RemoteAccessAuth lookupRemoteAuthByHost(String remoteHost);

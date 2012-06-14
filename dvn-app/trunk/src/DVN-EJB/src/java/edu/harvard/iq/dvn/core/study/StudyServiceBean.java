@@ -40,12 +40,7 @@ import edu.harvard.iq.dvn.core.mail.MailServiceLocal;
 import edu.harvard.iq.dvn.core.study.StudyVersion.VersionState;
 import edu.harvard.iq.dvn.core.util.FileUtil;
 import edu.harvard.iq.dvn.core.util.StringUtil;
-import edu.harvard.iq.dvn.core.vdc.VDC;
-import edu.harvard.iq.dvn.core.vdc.VDCActivity;
-import edu.harvard.iq.dvn.core.vdc.VDCCollection;
-import edu.harvard.iq.dvn.core.vdc.VDCNetwork;
-import edu.harvard.iq.dvn.core.vdc.VDCNetworkServiceLocal;
-import edu.harvard.iq.dvn.core.vdc.VDCServiceLocal;
+import edu.harvard.iq.dvn.core.vdc.*;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -126,6 +121,8 @@ public class StudyServiceBean implements edu.harvard.iq.dvn.core.study.StudyServ
     StudyFileServiceLocal studyFileService;
     @EJB
     RoleServiceLocal roleService;
+        @EJB
+    GuestBookResponseServiceBean guestBookResponseServiceBean;
 
     /**
      * Creates a new instance of StudyServiceBean
@@ -1208,13 +1205,24 @@ public class StudyServiceBean implements edu.harvard.iq.dvn.core.study.StudyServ
     }
 
     public void incrementNumberOfDownloads(Long studyFileId, Long currentVDCId) {
-        incrementNumberOfDownloads( studyFileId, currentVDCId, new Date() );
+        incrementNumberOfDownloads( studyFileId, currentVDCId, new Date(), (GuestBookResponse) null);
+    }
+    
+    public void incrementNumberOfDownloads(Long studyFileId, Long currentVDCId, Date lastDownloadTime){
+         incrementNumberOfDownloads( studyFileId, currentVDCId, lastDownloadTime, (GuestBookResponse) null );
+    }
+    
+    @Override
+    public void incrementNumberOfDownloads(Long studyFileId, Long currentVDCId, GuestBookResponse guestbookResponse) {
+         incrementNumberOfDownloads( studyFileId, currentVDCId, new Date(), guestbookResponse );
     }
 
-    public void incrementNumberOfDownloads(Long studyFileId, Long currentVDCId, Date lastDownloadTime) {
+    public void incrementNumberOfDownloads(Long studyFileId, Long currentVDCId, Date lastDownloadTime, GuestBookResponse guestbookResponse) {
         StudyFile sf = studyFileService.getStudyFile(studyFileId);
         Study study = sf.getStudy();
         StudyFileActivity sfActivity = sf.getStudyFileActivity();
+        
+        addGuestbookRecords(sf,guestbookResponse );
 
         if (sfActivity == null) {
             sfActivity = new StudyFileActivity();
@@ -1244,6 +1252,14 @@ public class StudyServiceBean implements edu.harvard.iq.dvn.core.study.StudyServ
             vdcActivity2.setForeignStudyLocalDownloadCount( vdcActivity2.getForeignStudyLocalDownloadCount() + 1);
         }
 
+    }
+    
+    private void addGuestbookRecords(StudyFile file, GuestBookResponse guestbookResponse){
+        if (guestbookResponse != null) {
+            guestbookResponse.setStudyFile(file);
+            guestbookResponse.setResponseTime(new Date());
+            guestBookResponseServiceBean.update(guestbookResponse);
+        }
     }
 
     public RemoteAccessAuth lookupRemoteAuthByHost (String hostName) {
@@ -2165,7 +2181,9 @@ public class StudyServiceBean implements edu.harvard.iq.dvn.core.study.StudyServ
         String queryStr = "SELECT f FROM MetadataFormatType f";
         Query query = em.createQuery(queryStr);
         return query.getResultList();
-    }    
+    }
+
+
 
     public class ConvertedFilenamesFilter implements FilenameFilter{
 

@@ -138,8 +138,7 @@ public class FileDownloadServlet extends HttpServlet {
     VDCNetworkServiceLocal vdcNetworkService;
     @EJB
     LockssAuthServiceLocal lockssAuthService;
-    @EJB
-    GuestBookResponseServiceBean guestBookResponseServiceBean;
+
     
     @Inject VDCSessionBean vdcSession;
 
@@ -254,7 +253,6 @@ public class FileDownloadServlet extends HttpServlet {
 
             if (!isLockssCrawlRequest(req) && imageThumb == null) {
                 incrementDownloadCounts(file, vdc);
-                addGuestbookRecords(file);
             }
 
             // done!
@@ -1098,21 +1096,15 @@ public class FileDownloadServlet extends HttpServlet {
 
 
     public void incrementDownloadCounts (StudyFile file, VDC vdc) {
+        GuestBookResponse guestbookResponse = (GuestBookResponse) vdcSession.getGuestbookResponseMap().get("guestBookResponse_" + file.getStudy().getId());
         if ( vdc != null ) {
-            studyService.incrementNumberOfDownloads(file.getId(), vdc.getId());
+            studyService.incrementNumberOfDownloads(file.getId(), vdc.getId(), (GuestBookResponse) guestbookResponse);
         } else {
-            studyService.incrementNumberOfDownloads(file.getId(), (Long)null);
+            studyService.incrementNumberOfDownloads(file.getId(), (Long)null, (GuestBookResponse) guestbookResponse);
         }
     }
     
-    private void addGuestbookRecords(StudyFile file){
-        GuestBookResponse guestbookResponse = (GuestBookResponse) vdcSession.getGuestbookResponseMap().get("guestBookResponse_" + file.getStudy().getId());
-        if (guestbookResponse != null) {
-            guestbookResponse.setStudyFile(file);
-            guestbookResponse.setResponseTime(new Date());
-            guestBookResponseServiceBean.update(guestbookResponse);
-        }
-    }
+
 
     public void streamData (InputStream in, OutputStream out, String varHeader) {
 

@@ -1276,13 +1276,11 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
                     // downloads for the study file:
 
                     VDC vdc = vdcService.getVDCFromRequest(req);
-
+                    GuestBookResponse guestbookResponse = (GuestBookResponse) getVDCSessionBean().getGuestbookResponseMap().get("guestBookResponse_" + sf.getStudy().getId());
                     if ( vdc != null ) {
-                        studyService.incrementNumberOfDownloads(sf.getId(), vdc.getId());
-                        addGuestbookRecords(sf);
+                        studyService.incrementNumberOfDownloads(sf.getId(), vdc.getId(), (GuestBookResponse) guestbookResponse);
                     } else {
-                        studyService.incrementNumberOfDownloads(sf.getId(), (Long)null);
-                        addGuestbookRecords(sf);
+                        studyService.incrementNumberOfDownloads(sf.getId(), (Long)null, (GuestBookResponse) guestbookResponse);
                     }
 
 
@@ -1621,15 +1619,6 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
         } // end: checking params
         
         
-    }
-
-    private void addGuestbookRecords(StudyFile file){
-        GuestBookResponse guestbookResponse = (GuestBookResponse) getVDCSessionBean().getGuestbookResponseMap().get("guestBookResponse_" + file.getStudy().getId());
-        if (guestbookResponse != null) {
-            guestbookResponse.setStudyFile(file);
-            guestbookResponse.setResponseTime(new Date());
-            guestBookResponseServiceBean.update(guestbookResponse);
-        }
     }
 
     

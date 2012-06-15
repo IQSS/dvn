@@ -122,7 +122,7 @@
                         </ice:column>
                         <ice:column>
                             <f:facet name="header">
-                                <ice:outputText value="Study Title"/>
+                                <ice:outputText styleClass="dvnGuestbookStudyTitleHeader" value="Study Title"/>
                             </f:facet>
                            <ice:outputText id="studyTitle" 
                                            value="#{guestBookResponseDisplay.guestBookResponse.study.latestVersion.metadata.title}"></ice:outputText>
@@ -136,7 +136,7 @@
                         </ice:column>
                         <ice:column>
                             <f:facet name="header">
-                                <ice:outputText value="Time"/>
+                                <ice:outputText styleClass="dvnGuestbookTimeHeader" value="Time"/>
                             </f:facet>
                            <ice:outputText id="responseTimeText" 
                                            value="#{guestBookResponseDisplay.guestBookResponse.responseTime}"></ice:outputText>                 

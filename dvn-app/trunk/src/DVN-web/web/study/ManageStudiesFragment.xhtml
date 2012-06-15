@@ -22,10 +22,14 @@
                 });
 
                 jQuery(document).ready(function(){
+                      initManageStudiesTableBlockHeight();
+                });
+                
+                function initManageStudiesTableBlockHeight(){
                     var $div = jQuery(".dvnManageStudiesTable");
                     y = $div.outerHeight() + 17;
-                    jQuery(".dvnManageStudiesTableBlock").css("height", y);                
-                });
+                    jQuery(".dvnManageStudiesTableBlock").css("height", y);
+                };
 
                Ice.onAsynchronousReceive("document:body", function(){
                    jQuery(function(jQuery){
@@ -42,9 +46,7 @@
                       };
                     });
 
-                    var $div = jQuery(".dvnManageStudiesTable");
-                    y = $div.outerHeight() + 17;
-                    jQuery(".dvnManageStudiesTableBlock").css("height", y);
+                    initManageStudiesTableBlockHeight();
                });
                //]]>
             </script>

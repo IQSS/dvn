@@ -27,6 +27,7 @@ import com.icesoft.faces.component.datapaginator.DataPaginator;
 import com.icesoft.faces.component.ext.HtmlDataTable;
 import com.icesoft.faces.component.ext.HtmlSelectBooleanCheckbox;
 import com.icesoft.faces.component.ext.HtmlSelectOneMenu;
+import com.icesoft.faces.context.effects.JavascriptContext;
 import edu.harvard.iq.dvn.core.admin.VDCUser;
 import edu.harvard.iq.dvn.core.study.StudyServiceLocal;
 import edu.harvard.iq.dvn.core.study.StudyVersion;
@@ -38,6 +39,7 @@ import java.util.List;
 import java.util.logging.Logger;
 import javax.ejb.EJB;
 import javax.faces.bean.ViewScoped;
+import javax.faces.context.FacesContext;
 import javax.faces.event.ActionEvent;
 import javax.faces.event.ValueChangeEvent;
 import javax.faces.model.SelectItem;
@@ -525,7 +527,9 @@ public class ManageStudiesList extends VDCBaseBean {
         oldSort = sortColumnName;
         // make sure sortColumnName on first render
         oldAscending = !ascending;
-
+        
+        JavascriptContext.addJavascriptCall(FacesContext.getCurrentInstance(), "initManageStudiesTableBlockHeight();");
+        
     }
 
     private void checkSort() {

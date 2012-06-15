@@ -1392,7 +1392,7 @@
                   <ice:inputTextarea cols="90" rows="4"
                                      id="input_unitOfAnalysis"
                                      value="#{TemplateFormPage.template.metadata.unitOfAnalysis}"                                     
-                                     styleClass="formHtmlEnabled">
+                                     rendered="#{empty(TemplateFormPage.studyMap[sfc.unitOfAnalysis].templateField.controlledVocabulary)}" styleClass="formHtmlEnabled">
                   </ice:inputTextarea>
 
                   <ice:message styleClass="errorMessage" for="input_unitOfAnalysis"/>
@@ -1430,7 +1430,7 @@
                   <ice:inputTextarea cols="90" rows="4"
                                      id="input_universe"
                                      value="#{TemplateFormPage.template.metadata.universe}"                                     
-                                     styleClass="formHtmlEnabled">
+                                     rendered="#{empty(TemplateFormPage.studyMap[sfc.universe].templateField.controlledVocabulary)}" styleClass="formHtmlEnabled">
                   </ice:inputTextarea>
 
                   <ice:message styleClass="errorMessage" for="input_universe"/>
@@ -1468,7 +1468,7 @@
                   <ice:inputTextarea cols="90" rows="4"
                                      id="input_kindOfData"
                                      value="#{TemplateFormPage.template.metadata.kindOfData}"                                     
-                                     styleClass="formHtmlEnabled">
+                                     rendered="#{empty(TemplateFormPage.studyMap[sfc.kindOfData].templateField.controlledVocabulary)}" styleClass="formHtmlEnabled">
                   </ice:inputTextarea>
 
                   <ice:message styleClass="errorMessage" for="input_kindOfData"/>
@@ -1783,7 +1783,7 @@
                   <ice:inputTextarea cols="90" rows="4"
                                      id="input_samplingProcedure"
                                      value="#{TemplateFormPage.template.metadata.samplingProcedure}"                                     
-                                     styleClass="formHtmlEnabled">
+                                     rendered="#{empty(TemplateFormPage.studyMap[sfc.samplingProcedure].templateField.controlledVocabulary)}" styleClass="formHtmlEnabled">
                   </ice:inputTextarea>
 
                   <ice:message styleClass="errorMessage" for="input_samplingProcedure"/>
@@ -1822,7 +1822,7 @@
                   <ice:inputTextarea cols="90" rows="4"
                                      id="input_deviationsFromSampleDesign"
                                      value="#{TemplateFormPage.template.metadata.deviationsFromSampleDesign}"                                     
-                                     styleClass="formHtmlEnabled">
+                                     rendered="#{empty(TemplateFormPage.studyMap[sfc.deviationsFromSampleDesign].templateField.controlledVocabulary)}" styleClass="formHtmlEnabled">
                   </ice:inputTextarea>
 
                   <ice:message styleClass="errorMessage" for="input_deviationsFromSampleDesign"/>
@@ -2036,7 +2036,7 @@
                   <ice:inputTextarea cols="90" rows="4"
                                      id="input_accessToSources"
                                      value="#{TemplateFormPage.template.metadata.accessToSources}"                                     
-                                     styleClass="formHtmlEnabled">
+                                     rendered="#{empty(TemplateFormPage.studyMap[sfc.accessToSources].templateField.controlledVocabulary)}" styleClass="formHtmlEnabled">
                   </ice:inputTextarea>
 
                   <ice:message styleClass="errorMessage" for="input_accessToSources"/>
@@ -2570,7 +2570,7 @@
                   <ice:inputTextarea cols="90" rows="4"
                                      id="input_confidentialityDeclaration"
                                      value="#{TemplateFormPage.template.metadata.confidentialityDeclaration}"                                     
-                                     styleClass="formHtmlEnabled">
+                                     rendered="#{empty(TemplateFormPage.studyMap[sfc.confidentialityDeclaration].templateField.controlledVocabulary)}" styleClass="formHtmlEnabled">
                   </ice:inputTextarea>
 
                   <ice:message styleClass="errorMessage" for="input_confidentialityDeclaration"/>
@@ -2608,7 +2608,7 @@
                   <ice:inputTextarea cols="90" rows="4"
                                      id="input_specialPermissions"
                                      value="#{TemplateFormPage.template.metadata.specialPermissions}"                                     
-                                     styleClass="formHtmlEnabled">
+                                     rendered="#{empty(TemplateFormPage.studyMap[sfc.specialPermissions].templateField.controlledVocabulary)}" styleClass="formHtmlEnabled">
                   </ice:inputTextarea>
 
                   <ice:message styleClass="errorMessage" for="input_specialPermissions"/>
@@ -2646,7 +2646,7 @@
                   <ice:inputTextarea cols="90" rows="4"
                                      id="input_restrictions"
                                      value="#{TemplateFormPage.template.metadata.restrictions}"                                     
-                                     styleClass="formHtmlEnabled">
+                                     rendered="#{empty(TemplateFormPage.studyMap[sfc.restrictions].templateField.controlledVocabulary)}" styleClass="formHtmlEnabled">
                   </ice:inputTextarea>
 
                   <ice:message styleClass="errorMessage" for="input_restrictions"/>
@@ -2718,7 +2718,7 @@
                   <ice:inputTextarea cols="90" rows="4"
                                      id="input_citationRequirements"
                                      value="#{TemplateFormPage.template.metadata.citationRequirements}"                                     
-                                     styleClass="formHtmlEnabled">
+                                     rendered="#{empty(TemplateFormPage.studyMap[sfc.citationRequirements].templateField.controlledVocabulary)}" styleClass="formHtmlEnabled">
                   </ice:inputTextarea>
 
                   <ice:message styleClass="errorMessage" for="input_citationRequirements"/>
@@ -2756,7 +2756,7 @@
                   <ice:inputTextarea cols="90" rows="4"
                                      id="input_depositorRequirements"
                                      value="#{TemplateFormPage.template.metadata.depositorRequirements}"                                     
-                                     styleClass="formHtmlEnabled">
+                                     rendered="#{empty(TemplateFormPage.studyMap[sfc.depositorRequirements].templateField.controlledVocabulary)}" styleClass="formHtmlEnabled">
                   </ice:inputTextarea>
 
                   <ice:message styleClass="errorMessage" for="input_depositorRequirements"/>
@@ -2794,7 +2794,7 @@
                   <ice:inputTextarea cols="90" rows="4"
                                      id="input_conditions"
                                      value="#{TemplateFormPage.template.metadata.conditions}"                                     
-                                     styleClass="formHtmlEnabled">
+                                     rendered="#{empty(TemplateFormPage.studyMap[sfc.conditions].templateField.controlledVocabulary)}" styleClass="formHtmlEnabled">
                   </ice:inputTextarea>
 
                   <ice:message styleClass="errorMessage" for="input_conditions"/>
@@ -2832,7 +2832,7 @@
                   <ice:inputTextarea cols="90" rows="4"
                                      id="input_disclaimer"
                                      value="#{TemplateFormPage.template.metadata.disclaimer}"                                     
-                                     styleClass="formHtmlEnabled">
+                                     rendered="#{empty(TemplateFormPage.studyMap[sfc.disclaimer].templateField.controlledVocabulary)}" styleClass="formHtmlEnabled">
                   </ice:inputTextarea>
 
                   <ice:message styleClass="errorMessage" for="input_disclaimer"/>

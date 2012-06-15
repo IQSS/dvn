@@ -33,7 +33,7 @@ $select_vocab_column_textarea = qq{<ice:column>
                   <ice:inputTextarea cols="90" rows="4"
                                      id="input_%FIELDNAME%"
                                      value="#{TemplateFormPage.template.metadata.%FIELDNAME%}"                                     
-                                     styleClass="formHtmlEnabled">
+                                     rendered="#{empty(TemplateFormPage.studyMap[sfc.%FIELDNAME%].templateField.controlledVocabulary)}" styleClass="formHtmlEnabled">
                   </ice:inputTextarea>
 
                   <ice:message styleClass="errorMessage" for="input_%FIELDNAME%"/>

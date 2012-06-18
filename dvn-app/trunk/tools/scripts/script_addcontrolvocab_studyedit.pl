@@ -5,12 +5,17 @@ $replacement_counter = 0;
 $noprintflag = 0; 
 $panelidcounter = 62; 
 
+
+
 $new_vocab_div = qq{
                     <div jsfc="ice:panelGroup" id="groupPanel%PANELID%">
                       <ice:inputText id="input_%FIELDNAME%" size="45" value="#{EditStudyPage.metadata.%FIELDNAME%}" 
                                      required="#{EditStudyPage.studyMap[sfc.%FIELDNAME%].required and EditStudyPage.validateRequired}" 
                                      rendered="#{empty(EditStudyPage.studyMap[sfc.%FIELDNAME%].templateField.controlledVocabulary)}"
-                                     requiredMessage="This field is required." />
+                                     requiredMessage="This field is required."
+                                     styleClass="formHtmlEnabled">
+                        <f:validator validatorId="XhtmlValidator"/> 
+                      </ice:inputText> 
                       <ice:message styleClass="errorMessage" for="input_%FIELDNAME%"/>                      
                       <ice:selectOneMenu immediate="false" id="%FIELDNAME%_SelectOne"
                                           rendered="#{!empty(EditStudyPage.studyMap[sfc.%FIELDNAME%].templateField.controlledVocabulary)}"
@@ -20,16 +25,36 @@ $new_vocab_div = qq{
                                 <f:selectItem itemLabel="No Value" itemValue=""/>
                                 <f:selectItems value="#{EditStudyPage.studyMap[sfc.%FIELDNAME%].templateField.controlledVocabulary.selectItems}"/>
                        </ice:selectOneMenu>
-                       <ice:message styleClass="errorMessage" for="%FIELDNAME%_SelectOne"/> 
+                    </div>
+};
+
+$new_vocab_div_textarea = qq{
+                    <div jsfc="ice:panelGroup" id="groupPanel%PANELID%">
+                      <ice:inputTextarea id="input_%FIELDNAME%" 
+                                     cols="90" 
+                                     rows="2" 
+                                     rendered="#{empty(EditStudyPage.studyMap[sfc.%FIELDNAME%].templateField.controlledVocabulary)}"
+                                     value="#{EditStudyPage.metadata.unitOfAnalysis}" 
+                                     required="#{EditStudyPage.studyMap[sfc.unitOfAnalysis].required and EditStudyPage.validateRequired}" 
+                                     requiredMessage="This field is required." 
+                                     styleClass="formHtmlEnabled">
+                        <f:validator validatorId="XhtmlValidator"/> 
+                      </ice:inputTextarea> 
+                      <ice:message styleClass="errorMessage" for="input_%FIELDNAME%"/>                      
+                      <ice:selectOneMenu immediate="false" id="%FIELDNAME%_SelectOne"
+                                          rendered="#{!empty(EditStudyPage.studyMap[sfc.%FIELDNAME%].templateField.controlledVocabulary)}"
+                                          required="#{EditStudyPage.studyMap[sfc.%FIELDNAME%].required and EditStudyPage.validateRequired}" 
+                                           value="#{EditStudyPage.metadata.%FIELDNAME%}"  
+                                           requiredMessage="This field is required." >
+                                <f:selectItem itemLabel="No Value" itemValue=""/>
+                                <f:selectItems value="#{EditStudyPage.studyMap[sfc.%FIELDNAME%].templateField.controlledVocabulary.selectItems}"/>
+                       </ice:selectOneMenu>
                     </div>
 };
 
 
 
 %htmltags = (
-	"relatedMaterial",1,
-	"relatedStudies",1,
-	"otherReferences",1,
 	"unitOfAnalysis",1,
 	"universe",1,
 	"kindOfData",1,
@@ -68,6 +93,22 @@ $new_vocab_div = qq{
 	"disclaimer",1
 ); 
 
+%textareatags = (
+        "unitOfAnalysis", 1,
+        "universe", 1,
+        "kindOfData", 1,
+        "samplingProcedure", 1,
+        "deviationsFromSampleDesign", 1,
+        "accessToSources", 1,
+        "confidentialityDeclaration", 1,
+        "specialPermissions", 1,
+        "restrictions", 1,
+        "citationRequirements", 1,
+        "depositorRequirements", 1,
+        "conditions", 1,
+        "disclaimer", 1,
+    );
+
 
 while (<>) 
 {
@@ -83,7 +124,16 @@ while (<>)
 		{
 		    print STDERR "entering the div mode...\n";
 		    $noprintflag = 1; 
-		    $vocab_entry = $new_vocab_div; 
+
+                    if ( $textareatags{$field} == 1 )
+                    {
+                        $vocab_entry = $new_vocab_div_textarea;
+                    }
+                    else
+                    {
+                        $vocab_entry = $new_vocab_div;
+                    }
+
 			
 		    $vocab_entry =~s/%FIELDNAME%/$field/g;
 		    $ufield = $field; 

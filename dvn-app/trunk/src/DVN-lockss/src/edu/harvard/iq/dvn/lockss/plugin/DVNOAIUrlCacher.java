@@ -598,7 +598,8 @@ public class DVNOAIUrlCacher implements UrlCacher {
     } finally {
       if (conn != null && input == null) {
 	logger.debug3("Releasing connection");
-	conn.release();
+	//conn.release();
+        IOUtil.safeRelease(conn);
       }
     }
     return input;
@@ -793,7 +794,8 @@ public class DVNOAIUrlCacher implements UrlCacher {
   private void releaseConnection() {
     if (conn != null) {
       logger.debug3("conn isn't null, releasing");
-      conn.release();
+      //conn.release();
+      IOUtil.safeRelease(conn);
       conn = null;
     }
   }

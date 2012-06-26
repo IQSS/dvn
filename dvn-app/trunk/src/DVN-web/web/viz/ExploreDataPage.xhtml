@@ -171,6 +171,10 @@
                     <ice:graphicImage value="/resources/images/icon_warning.18.png" styleClass="dvn_icon"/>
                     <ice:outputText styleClass="vdcHelpText" value=" #{ExploreDataPage.forcedIndexMessage}"/>
                 </div>
+                <div jsfc="ice:panelGroup" styleClass="dvnGraphWarningBlock" rendered="#{!empty ExploreDataPage.forcedDataTableMessage}">
+                    <ice:graphicImage value="/resources/images/icon_warning.18.png" styleClass="dvn_icon"/>
+                    <ice:outputText styleClass="vdcHelpText" value=" #{ExploreDataPage.forcedDataTableMessage}"/>
+                </div>
                 <div jsfc="ice:panelGroup" styleClass="dvnGraphWarningBlock" rendered="#{!empty ExploreDataPage.dataNotAddedMessage}">
                     <ice:graphicImage value="/resources/images/icon_warning.18.png" styleClass="dvn_icon"/>
                     <ice:outputText styleClass="vdcHelpText" value=" #{ExploreDataPage.dataNotAddedMessage}"/>
@@ -1038,6 +1042,10 @@ function drawVisualization() {
                 "|1," + calcedStartYear + "," + calcedEndYear ;
             if (calcedEndYear - calcedStartYear < 8){
                 chartParams = chartParams + ",1";
+            }
+            
+            if (lowValDouble < 0){
+                chartParams = chartParams + "&chm=h,999999,0," + (-lowValDouble) / (highValDouble - lowValDouble) + ",1"
             }
 
             var values = "&chd=e:";

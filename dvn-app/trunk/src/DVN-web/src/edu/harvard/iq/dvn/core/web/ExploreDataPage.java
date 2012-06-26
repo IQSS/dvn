@@ -233,6 +233,7 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
     private String[] transformedDataIndexed;
     private String transformedDataIndexedOut;
     private String forcedIndexMessage; 
+    private String forcedDataTableMessage;
     private String dataNotAddedMessage;
     private Float lowValStandard = new Float(0);
     private Float lowValIndex = new Float (100);
@@ -325,6 +326,7 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
         groupTypeId = 0;
         this.selectMeasureItems = loadSelectMeasureItems(0);
         lineLabel = "";
+        forcedDataTableMessage="";
         displayType = new Long(defaultView);     
     }
 
@@ -1115,6 +1117,7 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
     public void addLine(ActionEvent ae) {
 
         dataNotAddedMessage = "";
+        forcedDataTableMessage = "";
 
         if (lineLabel.isEmpty() || lineLabel.trim().equals("")) {
             FacesMessage message = new FacesMessage("Please complete your selections");
@@ -1123,11 +1126,16 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
             return;
         }
 
-        if (vizLines.size() >= 8) {
+        if (vizLines.size() >= 8 && !dataTableAvailable) {            
             FacesMessage message = new FacesMessage("A maximum of 8 lines may be displayed in a single graph");
             FacesContext fc = FacesContext.getCurrentInstance();
             fc.addMessage(addLineButton.getClientId(fc), message);
             return;
+        }
+        
+        if (vizLines.size() >= 8 && dataTableAvailable) {
+            forcedDataTableMessage = "When more than 8 variables are selected the display is set to a data table.";
+           displayType = new Long(3);
         }
 
         if (validateSelections()) {
@@ -3075,6 +3083,16 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
     }
 
     
+   
+    public String getForcedDataTableMessage() {
+        return forcedDataTableMessage;
+    }
+
+    public void setForcedDataTableMessage(String forcedDataTableMessage) {
+        this.forcedDataTableMessage = forcedDataTableMessage;
+    } 
+    
+    
     public void setForcedIndexMessage(String forcedIndexMessage) {
         this.forcedIndexMessage = forcedIndexMessage;
     }
@@ -3266,6 +3284,9 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
 
             // Increment download count:
             GuestBookResponse guestbookResponse = (GuestBookResponse) getVDCSessionBean().getGuestbookResponseMap().get("guestBookResponse_" + sf.getStudy().getId());
+            if (guestbookResponse != null){
+                guestbookResponse.setDownloadtype("Data Visualization"); 
+            }
             if ( vdc != null ) {
                 studyService.incrementNumberOfDownloads(sf.getId(), vdc.getId(), (GuestBookResponse) guestbookResponse);
             } else {

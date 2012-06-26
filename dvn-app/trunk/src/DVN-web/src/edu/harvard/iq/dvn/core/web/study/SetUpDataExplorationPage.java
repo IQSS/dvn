@@ -952,13 +952,9 @@ public class SetUpDataExplorationPage extends VDCBaseBean implements java.io.Ser
             editMeasureVarGroup.getVarGroup().setName(chkGroupName);
             editMeasureVarGroup.getVarGroup().setUnits((String) getInputMeasureUnits().getValue());
         }
-        System.out.print("before save group fragment...");
         saveGroupFragment(editMeasureVarGroup);
-        System.out.print("before group types");
         saveGroupTypes(editMeasureVarGroup);
-        System.out.print("after group types");
         setVarGroupUIList(measureGrouping);
-                System.out.print("after set group type list");
         editMeasureVarGroup = null;
         cancelAddEdit();
         edited = true;
@@ -1556,6 +1552,7 @@ public class SetUpDataExplorationPage extends VDCBaseBean implements java.io.Ser
                 adddataVariableMapping.setVarGrouping(addVarGrouping);
                 adddataVariableMapping.setLabel(dataVariableMappingSource.getLabel());
                 adddataVariableMapping.setDataTable(dataTable);
+                adddataVariableMapping.setDataVariable(null);
                     for (VarGroup addGroupVariableSource : addVarGrouping.getVarGroups()) {
                         if (dataVariableMappingSource.getGroup().getName().equals(addGroupVariableSource.getName())) {
                             adddataVariableMapping.setGroup(addGroupVariableSource);                                 
@@ -1570,7 +1567,9 @@ public class SetUpDataExplorationPage extends VDCBaseBean implements java.io.Ser
                         dataVariableTarget.getDataVariableMappings().add(adddataVariableMapping);
                     }
                 }
-                addVarGrouping.getDataVariableMappings().add(adddataVariableMapping);
+                if (adddataVariableMapping.getDataVariable() != null){
+                   addVarGrouping.getDataVariableMappings().add(adddataVariableMapping);
+                }
             }
         }
         DataVariable xAxisVariableSource = visualizationService.getXAxisVariable(sourceDT.getId());
@@ -2128,6 +2127,10 @@ public class SetUpDataExplorationPage extends VDCBaseBean implements java.io.Ser
         if (varGroup.getGroupTypes() == null) return;
         for (VarGroupType varGroupType : varGroup.getGroupTypes()) {
             removeList.add(varGroupType);
+        }
+        
+        for (VarGroupType varGroupType : varGroup.getGroupTypes()) {
+            varGroupType.getGroups().remove(varGroup);
         }
 
         for (VarGroupType varGroupTypeRemove : removeList) {

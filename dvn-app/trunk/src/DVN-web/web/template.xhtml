@@ -45,30 +45,39 @@
         <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
         <meta http-equiv="Content-Language" content="en"/>
         <meta http-equiv="imagetoolbar" content="no"/>
-        <link rel="stylesheet" type="text/css" href="/dvn/resources/icefaces/dvn_rime/dvn_rime.css"/>
-        <link rel="stylesheet" type="text/css" href="/dvn/resources/css/dvngeneral.css"/>
-        <link rel="stylesheet" type="text/css" href="/dvn/resources/css/dvnspecific.css"/>
-        <link rel="stylesheet" type="text/css" href="/dvn/resources/css/dvnhome.css"/>
-        <link rel="stylesheet" type="text/css" href="/dvn/resources/css/dvnstudy.css"/>
+        <link rel="stylesheet" type="text/css" href="/dvn/resources/icefaces/dvn_rime/dvn_rime.css?v=#{VersionPage.versionNumber}"/>
+        <link rel="stylesheet" type="text/css" href="/dvn/resources/css/dvngeneral.css?v=#{VersionPage.versionNumber}"/>
+        <link rel="stylesheet" type="text/css" href="/dvn/resources/css/dvnspecific.css?v=#{VersionPage.versionNumber}"/>
+        <link rel="stylesheet" type="text/css" href="/dvn/resources/css/dvnhome.css?v=#{VersionPage.versionNumber}"/>
+        <link rel="stylesheet" type="text/css" href="/dvn/resources/css/dvnstudy.css?v=#{VersionPage.versionNumber}"/>
         <!-- IE SPECIFIC STYLESHEET -->
         <ice:outputText escape="false" nospan="true"
                         value="&#60;!--[if lte IE 8]&#62;
-                        &#60;link rel=&#34;stylesheet&#34; type=&#34;text/css&#34; href=&#34;/dvn/resources/css/iefix.css&#34;/&#62;
+                        &#60;link rel=&#34;stylesheet&#34; type=&#34;text/css&#34; href=&#34;/dvn/resources/css/iefix.css?v=#{VersionPage.versionNumber}&#34;/&#62;
                         &#60;![endif]--&#62;"/>
         <ice:outputText escape="false" nospan="true"
                         value="&#60;!--[if IE 8]&#62;
-                        &#60;link rel=&#34;stylesheet&#34; type=&#34;text/css&#34; href=&#34;/dvn/resources/css/ie8fix.css&#34;/&#62;
+                        &#60;link rel=&#34;stylesheet&#34; type=&#34;text/css&#34; href=&#34;/dvn/resources/css/ie8fix.css?v=#{VersionPage.versionNumber}&#34;/&#62;
                         &#60;![endif]--&#62;"/>
-        <script type="text/javascript" src="/dvn/resources/javascript/EventCapture.js"/>
-        <script type="text/javascript" src="/dvn/resources/javascript/jquery.js"/>
-        <script type="text/javascript" src="/dvn/resources/javascript/jquery.truncator.js"/>
-        <script type="text/javascript" src="/dvn/resources/javascript/sgbeal-togglepane.jquery.js"/>
-        <script type="text/javascript" src="/dvn/resources/javascript/jquery.accordion.js"/>
-        <script type="text/javascript" src="/dvn/resources/javascript/jquery.dimensions.js"/>
-        <script type="text/javascript" src="/dvn/resources/javascript/jquery.tooltip.min.js"/>
-        <script type="text/javascript" src="/dvn/resources/javascript/jquery.cookie.js"/>
-        <script type="text/javascript" src="/dvn/resources/javascript/jcap.js"/>
-        <script type="text/javascript" src="/dvn/resources/javascript/md5.js"/>
+        <!-- FRAMES SPECIFIC STYLESHEET -->
+        <script type="text/javascript">
+          // <![CDATA[
+          if (window != top)
+          {
+            document.write ('<link rel="stylesheet" type="text/css" href="/dvn/resources/css/dvnframes.css?v=#{VersionPage.versionNumber}"/>');
+          }
+          // ]]>
+        </script>
+        <script type="text/javascript" src="/dvn/resources/javascript/EventCapture.js?v=#{VersionPage.versionNumber}"/>
+        <script type="text/javascript" src="/dvn/resources/javascript/jquery.js?v=#{VersionPage.versionNumber}"/>
+        <script type="text/javascript" src="/dvn/resources/javascript/jquery.truncator.js?v=#{VersionPage.versionNumber}"/>
+        <script type="text/javascript" src="/dvn/resources/javascript/sgbeal-togglepane.jquery.js?v=#{VersionPage.versionNumber}"/>
+        <script type="text/javascript" src="/dvn/resources/javascript/jquery.accordion.js?v=#{VersionPage.versionNumber}"/>
+        <script type="text/javascript" src="/dvn/resources/javascript/jquery.dimensions.js?v=#{VersionPage.versionNumber}"/>
+        <script type="text/javascript" src="/dvn/resources/javascript/jquery.tooltip.min.js?v=#{VersionPage.versionNumber}"/>
+        <script type="text/javascript" src="/dvn/resources/javascript/jquery.cookie.js?v=#{VersionPage.versionNumber}"/>
+        <script type="text/javascript" src="/dvn/resources/javascript/jcap.js?v=#{VersionPage.versionNumber}"/>
+        <script type="text/javascript" src="/dvn/resources/javascript/md5.js?v=#{VersionPage.versionNumber}"/>
         <!-- The following script is in place to make sure that the template code is reloaded when a forward happens
           or when a page goes back to itself but with a different "view" (as with tabs); each page should, if need be,
           define a uniquifier for each "view" (for example, a tabbed page would just use the selectedIndex of the tabSet) -->
@@ -94,14 +103,6 @@
                 
             };
             // ]]>
-        </script>
-        <script type="text/javascript">
-          // <![CDATA[
-          if (window != top)
-          {
-            document.write ('<link rel="stylesheet" type="text/css" href="/dvn/resources/css/dvnframes.css"/>');
-          }
-          // ]]>
         </script>
         <ice:outputText escape="false" nospan="true"
                         rendered="#{applicationScope.googleAnalyticsKey != null || MainLayoutBean.googleAnalyticsKey != null}"

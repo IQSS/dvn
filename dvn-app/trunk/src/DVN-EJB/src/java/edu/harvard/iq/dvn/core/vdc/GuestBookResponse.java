@@ -65,6 +65,7 @@ public class GuestBookResponse implements Serializable {
     private String email;
     private String institution;
     private String position;
+    private String downloadtype;
     
     @Temporal(value = TemporalType.TIMESTAMP)
     private Date responseTime;
@@ -192,6 +193,14 @@ public class GuestBookResponse implements Serializable {
 
     public void setVdcUser(VDCUser vdcUser) {
         this.vdcUser = vdcUser;
+    }
+    
+    public String getDownloadtype() {
+        return downloadtype;
+    }
+
+    public void setDownloadtype(String downloadtype) {
+        this.downloadtype = downloadtype;
     }
     
     @Override

@@ -125,6 +125,7 @@ public class ManageDataversesPage extends VDCBaseBean implements Serializable {
     private void initAlphabeticFilter() {
         if (alphaCharacterList == null) {
             alphaCharacterList = new ArrayList();
+            alphaCharacterList.add(String.valueOf('#')); 
             for ( char ch = 'A';  ch <= 'Z';  ch++ ) {
               alphaCharacterList.add(String.valueOf(ch));
             }

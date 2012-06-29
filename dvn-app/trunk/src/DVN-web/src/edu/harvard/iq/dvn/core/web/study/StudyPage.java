@@ -60,6 +60,8 @@ import javax.servlet.http.HttpServletRequest;
 import  com.sun.enterprise.config.serverbeans.Config;
 import  com.sun.enterprise.util.SystemPropertyConstants;
 import  com.sun.grizzly.config.dom.NetworkListener;
+import edu.harvard.iq.dvn.core.study.StudyComment;
+import edu.harvard.iq.dvn.core.study.StudyCommentService;
 import  org.glassfish.internal.api.Globals;
 import  org.glassfish.internal.api.ServerContext;
 import org.jvnet.hk2.component.Habitat;
@@ -73,6 +75,7 @@ public class StudyPage extends VDCBaseBean implements java.io.Serializable  {
     private static Logger dbgLog = Logger.getLogger(StudyPage.class.getCanonicalName());
     @EJB private StudyServiceLocal studyService;
     @EJB private StudyFileServiceLocal studyFileService; 
+    @EJB private StudyCommentService studyCommentService;
 
     @Inject private VersionNotesPopupBean versionNotesPopup;
     
@@ -83,6 +86,7 @@ public class StudyPage extends VDCBaseBean implements java.io.Serializable  {
     private String globalId;
     private Long studyId;
     private Long versionNumber;
+    private List<StudyComment> studyComments;
 
     private boolean studyUIContainsFileDetails=false; // TODO: needed??
     private int selectedIndex;
@@ -188,6 +192,8 @@ public class StudyPage extends VDCBaseBean implements java.io.Serializable  {
             }
 
             allowStudyComments = studyUI.getStudy().getOwner().isAllowStudyComments();
+            
+            studyComments = studyCommentService.getStudyComments(studyId);
 
             /* TODO: do we need this code still for closing all file categories?
             // flag added to start with all file categories closed
@@ -204,7 +210,7 @@ public class StudyPage extends VDCBaseBean implements java.io.Serializable  {
         } else {
             // WE SHOULD HAVE A STUDY ID, throw an error
             System.out.println("ERROR: in StudyPage, without a globalId or a studyId");
-        }
+        }    
     }
 
     /**
@@ -1084,6 +1090,15 @@ public class StudyPage extends VDCBaseBean implements java.io.Serializable  {
 
         return null;
     }
-
+    
+    // Get number of comments
+    
+    public int getStudyCommentsCount() {
+        if (studyComments != null){
+            return studyComments.size();
+        }
+        
+        return 0;
+    }
     
 }

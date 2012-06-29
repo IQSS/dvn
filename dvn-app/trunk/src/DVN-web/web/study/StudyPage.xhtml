@@ -801,7 +801,7 @@
                         </ui:include>
                     </ice:panelTab>
                     <!-- Study comments -->
-                    <ice:panelTab id="comments" label="Comments" rendered="#{studyPage.allowStudyComments}">
+                    <ice:panelTab id="comments" label="Comments (#{studyPage.studyCommentsCount})" rendered="#{studyPage.allowStudyComments}">
                         <ui:include src="StudyCommentsFragment.xhtml">
                         </ui:include>
                     </ice:panelTab>

@@ -811,10 +811,14 @@ public class VDCServiceBean implements VDCServiceLocal {
             whereClause += "and vv.vdcgroup_id in ( select id from vdcgroup where id = ? or parent = ?) ";
         }
         if (letter != null) {
-            whereClause += "and ((dtype != 'Scholar' and upper(v.name) like '" + letter.toUpperCase() + "%') ";
-            whereClause += "or (dtype = 'Scholar' and upper(v.lastname) like '" + letter.toUpperCase() + "%')) ";
+            if (letter.equals("#")) {
+                whereClause += "and ((dtype != 'Scholar' and v.name ~ '^[0-9]') ";
+                whereClause += "or (dtype = 'Scholar' and v.lastname ~ '^[0-9]')) ";
+            } else {
+                whereClause += "and ((dtype != 'Scholar' and upper(v.name) like '" + letter.toUpperCase() + "%') ";
+                whereClause += "or (dtype = 'Scholar' and upper(v.lastname) like '" + letter.toUpperCase() + "%')) ";
+            }
         }
-
         String queryString = selectClause + fromClause + whereClause + orderingClause;
 
         logger.info ("query: "+queryString);

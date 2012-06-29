@@ -9,7 +9,7 @@
 <ElementValue xsi:type="java:java.lang.String" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">OAI</ElementValue>
 </MapElement>
 <MapElement>
-<ElementKey>au_manifest</ElementKey>
+<ElementKey>au_permission_url</ElementKey>
 <ElementValue xsi:type="java:java.util.ArrayList" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
 <string xsi:type="java:java.lang.String">"%s", base_url2</string>
 </ElementValue>

@@ -559,7 +559,7 @@ public class SetUpDataExplorationPage extends VDCBaseBean implements java.io.Ser
                     deleteGroupsFromType(varGroupTypeUIToDelete.getVarGroupType());
                     for (VarGroupUI varGroupUI : varGroupUIList ){
                         removeTypeFromGroupUI(varGroupUI, varGroupTypeUIToDelete);
-                        updateGroupTypesByGroup(varGroupUI);
+                        updateGroupTypesForRemoveType(varGroupUI);
                     }
                     setVarGroupUIList(varGroupingUI);  
                 }
@@ -576,7 +576,8 @@ public class SetUpDataExplorationPage extends VDCBaseBean implements java.io.Ser
             List<VarGroupUI> varGroupUIList = measureGrouping.getVarGroupUIList().getVarGroupUIList();
             for (VarGroupUI varGroupUI : varGroupUIList) {
                 removeTypeFromGroupUI(varGroupUI, varGroupTypeUIToDelete);
-                updateGroupTypesByGroup(varGroupUI);
+                deleteSingleTypeFromGroup(varGroupUI.getVarGroup(), varGroupTypeUIToDelete.getVarGroupType());
+                updateGroupTypesForRemoveType(varGroupUI);
             }
             setVarGroupUIList(measureGrouping);
         }
@@ -997,11 +998,8 @@ public class SetUpDataExplorationPage extends VDCBaseBean implements java.io.Ser
     }
 
     private void saveGroupFragment(VarGroupUI varGroupIn){
-        System.out.print("before update variables");
         updateVariablesByGroup(varGroupIn);
-                System.out.print("after update variables");
         updateGroupTypesByGroup(varGroupIn);
-                        System.out.print("after update group types");
     }
 
     private void saveGroupTypes(VarGroupUI varGroupIn){
@@ -1116,8 +1114,24 @@ public class SetUpDataExplorationPage extends VDCBaseBean implements java.io.Ser
                     groupTypesSelectedString = groupTypesSelectedString + ", " + vgtUI.getVarGroupType().getName();
                 }
             }
-
         }
+        varGroupUIin.setGroupTypesSelectedString(groupTypesSelectedString);
+    }
+    
+    private void updateGroupTypesForRemoveType(VarGroupUI varGroupUIin) {
+
+        String groupTypesSelectedString = "";
+        VarGroup varGroup = varGroupUIin.getVarGroup();
+        System.out.print("varGroupUIin " + varGroupUIin.getVarGroup().getName());
+
+            for (VarGroupType vgt : varGroup.getGroupTypes()) {
+                if (groupTypesSelectedString.isEmpty()) {
+                    groupTypesSelectedString += vgt.getName();
+                } else {
+                    groupTypesSelectedString = groupTypesSelectedString + ", " + vgt.getName();
+                }
+            }
+
         varGroupUIin.setGroupTypesSelectedString(groupTypesSelectedString);
     }
      
@@ -1616,7 +1630,6 @@ public class SetUpDataExplorationPage extends VDCBaseBean implements java.io.Ser
             visualizationDisplay.setSourceInfoLabel(sourceVisualizationDisplay.getSourceInfoLabel());
             dataTable.setVisualizationDisplay(visualizationDisplay);
         }
-                        System.out.print("xAxisUnits  " + xAxisUnits);
     }
        
     public String cancelMigration() {
@@ -2138,6 +2151,14 @@ public class SetUpDataExplorationPage extends VDCBaseBean implements java.io.Ser
         }
     }
     
+    private void deleteSingleTypeFromGroup(VarGroup varGroup, VarGroupType varGroupTypeRemove) {
+        if (varGroup.getGroupTypes() == null) {
+            return;
+        }
+        varGroupTypeRemove.getGroups().remove(varGroup);
+        visualizationService.removeCollectionElement(varGroup.getGroupTypes(), varGroupTypeRemove);
+    }
+
     private void deleteGroupsFromType(VarGroupType varGroupType) {
         List<VarGroup> removeList = new ArrayList();
         if (varGroupType.getGroups() == null) return;

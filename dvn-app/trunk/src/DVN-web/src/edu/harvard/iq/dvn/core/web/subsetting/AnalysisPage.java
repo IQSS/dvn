@@ -1277,10 +1277,18 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
 
                     VDC vdc = vdcService.getVDCFromRequest(req);
                     GuestBookResponse guestbookResponse = (GuestBookResponse) getVDCSessionBean().getGuestbookResponseMap().get("guestBookResponse_" + sf.getStudy().getId());
-                    if ( vdc != null ) {
+
+                    if (guestbookResponse == null) {
+                        //need to set up dummy network response
+                        guestbookResponse = guestBookResponseServiceBean.initNetworkGuestBookResponse(sf.getStudy(), sf, getVDCSessionBean().getLoginBean());                        
+                    }
+                    guestbookResponse.setSessionId(getVDCSessionBean().toString());
+                    guestbookResponse.setDownloadtype("Subsetting");
+
+                    if (vdc != null) {
                         studyService.incrementNumberOfDownloads(sf.getId(), vdc.getId(), (GuestBookResponse) guestbookResponse);
                     } else {
-                        studyService.incrementNumberOfDownloads(sf.getId(), (Long)null, (GuestBookResponse) guestbookResponse);
+                        studyService.incrementNumberOfDownloads(sf.getId(), (Long) null, (GuestBookResponse) guestbookResponse);
                     }
 
 

@@ -42,7 +42,9 @@
               </ice:outputLink>
           </div>
           <div class="dvn_sectionTitle">
-            <ice:outputText value="Terms of Use"/>
+              <ice:outputText value="Terms of Use" rendered="#{!TermsOfUsePage.guestbookOnlyRequired}"/>
+              <ice:outputText value=" and " rendered="#{!TermsOfUsePage.guestbookOnlyRequired and TermsOfUsePage.touTypeDownload and TermsOfUsePage.guestbookRequired}"/>
+              <ice:outputText value="Guestbook" rendered="#{TermsOfUsePage.touTypeDownload and TermsOfUsePage.guestbookRequired}"/>
           </div>
           <div class="dvn_sectionBox">
             <div class="dvn_margin12">
@@ -114,6 +116,14 @@
                       <div class="dvnMsgBlockContainer">
                         <p><ice:outputText id="customMessage" value="#{VDCRender.flash.inputCustomReponse}"/></p>
                       </div>
+                  </div>
+                  <div jsfc="ice:panelGroup"  rendered="#{TermsOfUsePage.VDCSessionBean.loginBean != null}">
+                      <ice:selectBooleanCheckbox id="updateAccountCheckBox"
+                                                                               value="#{TermsOfUsePage.updateAccount}" 
+                                                                               rendered="#{TermsOfUsePage.VDCSessionBean.loginBean != null}" />
+                      <ice:outputText styleClass="agreeCheckbox" value="Update my Account with any changes."
+                                      rendered="#{TermsOfUsePage.VDCSessionBean.loginBean != null}"/>
+                      <ice:outputText id="updateAccountMessage" styleClass="errorMessage" value="#{VDCRender.flash.updateAccountWarningMessage}" rendered="#{!empty VDCRender.flash.updateAccountWarningMessage}"/>
                   </div>
                   <ice:dataTable cellpadding="0" cellspacing="0" width="100%" 
                                   styleClass="dvnGuestbookCustomQuestions"

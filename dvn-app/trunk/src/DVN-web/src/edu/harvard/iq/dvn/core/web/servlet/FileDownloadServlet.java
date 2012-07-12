@@ -2,8 +2,8 @@
    Copyright (C) 2005-2012, by the President and Fellows of Harvard College.
 
    Licensed under the Apache License, Version 2.0 (the "License");
-   you may not use this file except in compliance with the License.
-   You may obtain a copy of the License at
+   you may not use this file except in compliance with the License. 
+  You may obtain a copy of the License at
 
          http://www.apache.org/licenses/LICENSE-2.0
 
@@ -138,6 +138,8 @@ public class FileDownloadServlet extends HttpServlet {
     VDCNetworkServiceLocal vdcNetworkService;
     @EJB
     LockssAuthServiceLocal lockssAuthService;
+    @EJB
+    GuestBookResponseServiceBean guestBookResponseServiceBean;
 
     
     @Inject VDCSessionBean vdcSession;
@@ -252,7 +254,7 @@ public class FileDownloadServlet extends HttpServlet {
             // (but only if it's not a LOCKSS crawl OR a thumbnail!)
 
             if (!isLockssCrawlRequest(req) && imageThumb == null) {
-                incrementDownloadCounts(file, vdc);
+                incrementDownloadCounts(file, vdc, formatRequested);
             }
 
             // done!
@@ -1095,8 +1097,16 @@ public class FileDownloadServlet extends HttpServlet {
     }
 
 
-    public void incrementDownloadCounts (StudyFile file, VDC vdc) {
+    public void incrementDownloadCounts (StudyFile file, VDC vdc, String formatRequested) {
         GuestBookResponse guestbookResponse = (GuestBookResponse) vdcSession.getGuestbookResponseMap().get("guestBookResponse_" + file.getStudy().getId());
+        if (guestbookResponse == null) {
+            guestbookResponse = guestBookResponseServiceBean.initNetworkGuestBookResponse(file.getStudy(), file, vdcSession.getLoginBean());
+        }
+        guestbookResponse.setSessionId(vdcSession.toString());
+        if (formatRequested == null){
+            formatRequested = file.getFileType();
+        }
+        guestbookResponse.setDownloadtype("File Download - " + formatRequested);
         if ( vdc != null ) {
             studyService.incrementNumberOfDownloads(file.getId(), vdc.getId(), (GuestBookResponse) guestbookResponse);
         } else {
@@ -2011,10 +2021,19 @@ public class FileDownloadServlet extends HttpServlet {
             Iterator it = successList.iterator();
             while (it.hasNext()) {
                 Long fid = (Long) it.next();
+                StudyFile file = studyFileService.getStudyFile(new Long(fid));
+                GuestBookResponse guestbookResponse = (GuestBookResponse) vdcSession.getGuestbookResponseMap().get("guestBookResponse_" + file.getStudy().getId());
+                if (guestbookResponse == null) {
+                    //need to set up dummy network response
+                    guestbookResponse = guestBookResponseServiceBean.initNetworkGuestBookResponse(file.getStudy(), file, vdcSession.getLoginBean());
+                }
+                guestbookResponse.setSessionId(vdcSession.toString());
+                guestbookResponse.setDownloadtype("File Download - " + file.getFileType()); 
+
                 if ( vdc != null ) {
-                    studyService.incrementNumberOfDownloads(fid, vdc.getId());
+                    studyService.incrementNumberOfDownloads(fid, vdc.getId(), (GuestBookResponse) guestbookResponse);
                 } else {
-                    studyService.incrementNumberOfDownloads(fid, (Long)null);
+                    studyService.incrementNumberOfDownloads(fid, (Long)null, (GuestBookResponse) guestbookResponse);
                 }
             }
 

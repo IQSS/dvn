@@ -24,6 +24,16 @@
           <div class="dvn_sectionTitle">
             <ice:outputText value="#{bundlePageInfo.guestbookDataDumpTitle}"/>
           </div>
+          <div >
+            <ice:outputText value="#{bundlePageInfo.guestbookDataDumpEnableText}"/>
+          </div>
+            
+          <div >
+            <ice:outputText value="#{bundlePageInfo.guestbookDataCountText}  #{GuestBookResponseDataPage.fullCount}"/>
+          </div>  
+          <div >
+            <ice:outputText value="#{bundlePageInfo.guestbookData30DayCountText}  #{GuestBookResponseDataPage.thirtyDayCount}"/>
+          </div> 
           <div class="dvn_sectionBox dvnEditTermsForm">
             <div class="dvn_margin12">
                 
@@ -68,7 +78,11 @@
                         y = $div.outerHeight() + 17;
                         jQuery(".dvnGuestBookResponseTableBlock").css("height", y);
                    });
-                   //]]>
+                   
+                   function startDownload() {  
+                        document.getElementById('form1:downloadCSV').click();    
+                   }
+//]]>
                 </script>
                 
                 <ice:panelGrid cellpadding="0" cellspacing="0" width="100%">
@@ -113,6 +127,13 @@
                            <ice:outputText id="positionText" 
                                           value="#{guestBookResponseDisplay.guestBookResponse.position}"></ice:outputText>
                         </ice:column>
+                          <ice:column rendered="#{GuestBookResponseDataPage.vdc == null}">
+                            <f:facet name="header">
+                                <ice:outputText value="Dataverse"/>
+                            </f:facet>
+                           <ice:outputText id="dataverseName" 
+                                           value="#{guestBookResponseDisplay.guestBookResponse.study.owner.name}"></ice:outputText>
+                        </ice:column>
                         <ice:column>
                             <f:facet name="header">
                                 <ice:outputText value="Study Global ID"/>
@@ -141,6 +162,13 @@
                            <ice:outputText id="responseTimeText" 
                                            value="#{guestBookResponseDisplay.guestBookResponse.responseTime}"></ice:outputText>                 
                         </ice:column>
+                        <ice:column>
+                            <f:facet name="header">
+                                <ice:outputText value="Type"/>
+                            </f:facet>
+                           <ice:outputText id="downloadTypeText" 
+                                           value="#{guestBookResponseDisplay.guestBookResponse.downloadtype}"></ice:outputText>                 
+                        </ice:column>
                         <ice:columns value="#{guestBookResponseDisplay.customQuestionResponses}" var="customResponse">                                        
                             <ice:outputText value="#{customResponse}"/>
                         </ice:columns>
@@ -156,6 +184,12 @@
                 
             </div>
           </div>
+            <div class="dvnFormButtonMargin">
+                <ice:commandButton visible="true" value="Export Results" id="exportResults" type="submit" onclick="startDownload();" />
+                <ice:outputResource label="Export" type="button" style="display:none;"
+                                    id="downloadCSV" mimeType="text/comma-separated-values"
+                                    resource="#{GuestBookResponseDataPage.downloadCSV}" shared="false"/>
+            </div>
         </div>
       </ice:form>
     </ui:define>

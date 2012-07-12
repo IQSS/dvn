@@ -83,8 +83,6 @@ public class TermsOfUseFilter implements Filter {
     @EJB
     StudyFileServiceLocal studyFileService;
     
-    @EJB private GuestBookResponseServiceBean guestBookResponseServiceBean;
-    
     @Inject VDCSessionBean vdcSession;
 
     public static boolean isDownloadDataverseTermsRequired(Study study, Map termsOfUseMap) {
@@ -170,8 +168,10 @@ public class TermsOfUseFilter implements Filter {
 
         boolean redirected = false;
         
-        if (req.getServletPath().equals("/FileDownload") || (req.getServletPath().equals("/faces") 
-                && req.getPathInfo().startsWith("/subsetting/SubsettingPage"))
+        if (req.getServletPath().equals("/FileDownload") 
+                || (req.getServletPath().equals("/faces") && req.getPathInfo().startsWith("/subsetting/SubsettingPage"))
+                //Add for Network Data Analysis Page
+                || (req.getServletPath().equals("/faces") && req.getPathInfo().startsWith("/subsetting/NetworkDataAnalysisPage"))
                 || req.getServletPath().equals("/faces") && (req.getPathInfo().startsWith("/viz/ExploreDataPage"))) {
             redirected = checkDownloadTermsOfUse(req, res);
         } else if (req.getServletPath().equals("/faces") && (req.getPathInfo().startsWith("/study/EditStudyPage") || req.getPathInfo().startsWith("/study/AddFilesPage") ) ) {
@@ -350,6 +350,14 @@ public class TermsOfUseFilter implements Filter {
 
             }
             if (requestPath.startsWith("/viz/ExploreDataPage")) {
+                String vFileId = req.getParameter("fileId");
+                StudyFile file = studyFileService.getStudyFile(new Long(vFileId));
+                if (study == null) {
+                    study = file.getStudy();
+                }
+            }
+            // Add for Network Data Analysis Page
+            if (requestPath.startsWith("/subsetting/NetworkDataAnalysisPage")) {
                 String vFileId = req.getParameter("fileId");
                 StudyFile file = studyFileService.getStudyFile(new Long(vFileId));
                 if (study == null) {

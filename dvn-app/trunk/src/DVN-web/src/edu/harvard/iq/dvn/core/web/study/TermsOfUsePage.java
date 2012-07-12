@@ -27,6 +27,9 @@
  */
 package edu.harvard.iq.dvn.core.web.study;
 
+import edu.harvard.iq.dvn.core.admin.EditUserService;
+import edu.harvard.iq.dvn.core.admin.UserServiceLocal;
+import edu.harvard.iq.dvn.core.admin.VDCUser;
 import edu.harvard.iq.dvn.core.study.StudyFile;
 import edu.harvard.iq.dvn.core.study.StudyFileServiceLocal;
 import edu.harvard.iq.dvn.core.study.StudyServiceLocal;
@@ -60,6 +63,10 @@ public class TermsOfUsePage extends VDCBaseBean {
     @EJB private VDCNetworkServiceLocal vdcNetworkService;
     @EJB private GuestBookResponseServiceBean guestBookResponseServiceBean;
     @EJB StudyFileServiceLocal studyFileService;
+    @EJB EditUserService editUserService;
+    @EJB UserServiceLocal userService;
+    private Long userId;
+    private VDCUser user;
     
     public TermsOfUsePage() {}
     
@@ -70,12 +77,15 @@ public class TermsOfUsePage extends VDCBaseBean {
     private String redirectPage;
     private String touParam;  // Describes type of terms of use to be displayed (download or deposit)
     private HtmlInputHidden hiddenTou;
+    private boolean updateAccount = true;
+
     private boolean downloadDataverseTermsRequired;
     private boolean downloadDvnTermsRequired;
     private boolean downloadStudyTermsRequired;
     private boolean depositDataverseTermsRequired;
     private boolean depositDvnTermsRequired;
     private boolean guestbookRequired;
+    
     private GuestBookResponse guestBookResponse;
     private List <CustomQuestionResponseUI> customQuestionResponseUIs = new ArrayList();
     
@@ -204,6 +214,9 @@ public class TermsOfUsePage extends VDCBaseBean {
             }
         }
         if (getVDCSessionBean().getLoginBean() != null) {
+            userId = getVDCSessionBean().getLoginBean().getUser().getId();
+            editUserService.setUser(userId);        
+            user = editUserService.getUser();   
             guestBookResponse.setEmail(getVDCSessionBean().getLoginBean().getUser().getEmail());
             guestBookResponse.setFirstname(getVDCSessionBean().getLoginBean().getUser().getFirstName());
             guestBookResponse.setLastname(getVDCSessionBean().getLoginBean().getUser().getLastName());
@@ -295,6 +308,15 @@ public class TermsOfUsePage extends VDCBaseBean {
 
     public void setCustomQuestionResponseUIs(List<CustomQuestionResponseUI> customQuestionResponseUIs) {
         this.customQuestionResponseUIs = customQuestionResponseUIs;
+    }
+    
+    
+    public boolean isUpdateAccount() {
+        return updateAccount;
+    }
+
+    public void setUpdateAccount(boolean updateAccount) {
+        this.updateAccount = updateAccount;
     }
     
     public String acceptTerms_action () {
@@ -485,7 +507,41 @@ public class TermsOfUsePage extends VDCBaseBean {
                 getVDCRenderBean().getFlash().put("inputCustomReponse", "Please complete required response(s).");
             }
         }
+        if (retval && updateAccount){
+            saveAction();
+        }
         return retval;
+    }
+    
+    private void saveAction() {
+        if (validateAccountFields()) {
+            user.setFirstName(guestBookResponse.getFirstname());
+            user.setLastName(guestBookResponse.getLastname());
+            user.setEmail(guestBookResponse.getEmail());
+            user.setInstitution(guestBookResponse.getInstitution());
+            user.setPosition(guestBookResponse.getPosition());
+            editUserService.save();
+            // If the currently logged-in user is updating is account, reset the User object in the session
+            if (getVDCSessionBean().getLoginBean().getUser().getId().equals(user.getId())) {
+                this.getVDCSessionBean().getLoginBean().setUser(user);
+            }
+        } else {
+           getVDCRenderBean().getFlash().put("updateAccountWarningMessage", "Account not updated because required fields are missing."); 
+        }
+    }
+    
+    private boolean validateAccountFields(){
+        boolean retVal = true;
+        if (guestBookResponse.getFirstname().trim().isEmpty()){
+            retVal = false;
+        }
+        if (guestBookResponse.getLastname().trim().isEmpty()){
+            retVal = false;
+        }
+        if (guestBookResponse.getEmail().trim().isEmpty()){
+            retVal = false;
+        }
+        return retVal;
     }
 
 }

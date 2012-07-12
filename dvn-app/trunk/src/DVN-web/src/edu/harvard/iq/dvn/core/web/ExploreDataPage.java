@@ -954,6 +954,7 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
     private void callDrawVisualization(){
         FacesContext fc = FacesContext.getCurrentInstance();
         JavascriptContext.addJavascriptCall(fc, "drawVisualization();");
+        
         //JavascriptContext.addJavascriptCall(fc, "initLineDetails"); // commented out because this was throwing JS error and we couldn't find how it was getting called; leaving in, in case we need to investigate further
     }
     
@@ -3284,9 +3285,12 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
 
             // Increment download count:
             GuestBookResponse guestbookResponse = (GuestBookResponse) getVDCSessionBean().getGuestbookResponseMap().get("guestBookResponse_" + sf.getStudy().getId());
-            if (guestbookResponse != null){
-                guestbookResponse.setDownloadtype("Data Visualization"); 
-            }
+            if (guestbookResponse == null){
+                //need to set up dummy network response
+                guestbookResponse = guestBookResponseServiceBean.initNetworkGuestBookResponse(studyIn, sf, getVDCSessionBean().getLoginBean());                
+            } 
+            guestbookResponse.setSessionId(getVDCSessionBean().toString());            
+            guestbookResponse.setDownloadtype("Data Visualization");
             if ( vdc != null ) {
                 studyService.incrementNumberOfDownloads(sf.getId(), vdc.getId(), (GuestBookResponse) guestbookResponse);
             } else {

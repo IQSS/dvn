@@ -20,6 +20,7 @@
 package edu.harvard.iq.dvn.core.vdc;
 
 import java.io.Serializable;
+import java.util.Date;
 import java.util.List;
 import javax.persistence.*;
 
@@ -38,7 +39,7 @@ public class GuestBookQuestionnaire implements Serializable {
      * Holds value of the vdc
      */
     @OneToOne
-    @JoinColumn(nullable=false)
+    @JoinColumn(nullable=true)
     private VDC vdc;
     
     @OneToMany(mappedBy="guestBookQuestionnaire",cascade={CascadeType.REMOVE, CascadeType.MERGE, CascadeType.PERSIST},orphanRemoval=true)
@@ -50,7 +51,7 @@ public class GuestBookQuestionnaire implements Serializable {
     private boolean institutionRequired;
     private boolean positionRequired;
     private boolean enabled;
-
+    
     public Long getId() {
         return id;
     }
@@ -66,8 +67,7 @@ public class GuestBookQuestionnaire implements Serializable {
 
     public void setEnabled(boolean enabled) {
         this.enabled = enabled;
-    }
-    
+    }        
     
     public boolean isEmailRequired() {
         return emailRequired;

@@ -22,6 +22,7 @@ package edu.harvard.iq.dvn.core.vdc;
 import edu.harvard.iq.dvn.core.admin.VDCUser;
 import edu.harvard.iq.dvn.core.study.Study;
 import edu.harvard.iq.dvn.core.study.StudyFile;
+import edu.harvard.iq.dvn.core.web.common.LoginBean;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -45,54 +46,44 @@ public class GuestBookResponseServiceBean {
         return em.createQuery("select object(o) from GuestBookResponse as o order by o.responseTime").getResultList();
     }
     
-    private GuestBookResponse findByStudyFileAndUser(Study study, VDCUser vdcUser) {
-        GuestBookResponse response = new GuestBookResponse();
-        String queryStr = "SELECT gbr FROM GuestBookResponse gbr WHERE gbr.study.id = " + study.getId() + " and gbr.vdcUser.id = " + vdcUser.getId() + " order by gbr.responseTime DESC ";
+    
+    private GuestBookQuestionnaire findNetworkQuestionniare(){
+        GuestBookQuestionnaire questionniare = new GuestBookQuestionnaire();
+        String queryStr = "SELECT gbq FROM GuestBookQuestionnaire gbq WHERE gbq.vdc is null; ";
         Query query = em.createQuery(queryStr);
         List resultList = query.getResultList();
 
         if (resultList.size() >= 1) {
-           response = (GuestBookResponse) resultList.get(0);
+           questionniare = (GuestBookQuestionnaire) resultList.get(0);
         }
-        return response;
+        return questionniare;
+        
     }
     
-    private GuestBookResponse initGuestBookResponse(GuestBookResponse guestBookResponseSource, Study study, StudyFile studyFile) {
+    public GuestBookResponse initNetworkGuestBookResponse(Study study, StudyFile studyFile, LoginBean loginBean) {
         GuestBookResponse guestBookResponse = new GuestBookResponse();
-        guestBookResponse.setGuestBookQuestionnaire(guestBookResponseSource.getGuestBookQuestionnaire());
+        guestBookResponse.setGuestBookQuestionnaire(findNetworkQuestionniare());
         guestBookResponse.setStudy(study);
         guestBookResponse.setResponseTime(new Date());
+        if (loginBean != null) {
+            guestBookResponse.setEmail(loginBean.getUser().getEmail());
+            guestBookResponse.setFirstname(loginBean.getUser().getFirstName());
+            guestBookResponse.setLastname(loginBean.getUser().getLastName());
+            guestBookResponse.setInstitution(loginBean.getUser().getInstitution());
+            guestBookResponse.setPosition(loginBean.getUser().getPosition());
+            guestBookResponse.setVdcUser(loginBean.getUser());
+        } else {
+            guestBookResponse.setEmail("");
+            guestBookResponse.setFirstname("");
+            guestBookResponse.setLastname("");
+            guestBookResponse.setInstitution("");
+            guestBookResponse.setPosition("");
+            guestBookResponse.setVdcUser(null);
 
-        if (study.getOwner().getGuestBookQuestionnaire().getCustomQuestions() != null && !study.getOwner().getGuestBookQuestionnaire().getCustomQuestions().isEmpty()) {
-            guestBookResponse.setCustomQuestionResponses(new ArrayList());
-            for (CustomQuestionResponse cq : guestBookResponseSource.getCustomQuestionResponses()) {
-                CustomQuestionResponse response = new CustomQuestionResponse();
-                response.setGuestBookResponse(guestBookResponse);
-                response.setResponse(cq.getResponse());
-                response.setCustomQuestion(cq.getCustomQuestion());
-                guestBookResponse.getCustomQuestionResponses().add(response);
-            }
         }
-        guestBookResponse.setEmail(guestBookResponseSource.getEmail());
-        guestBookResponse.setFirstname(guestBookResponseSource.getFirstname());
-        guestBookResponse.setLastname(guestBookResponseSource.getLastname());
-        guestBookResponse.setInstitution(guestBookResponseSource.getInstitution());
-        guestBookResponse.setPosition(guestBookResponseSource.getPosition());
-        guestBookResponse.setVdcUser(guestBookResponseSource.getVdcUser());
-        guestBookResponse.setStudyFile(studyFile);
         return guestBookResponse;
     }
     
-    @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
-    public void addGuestBookRecord(Study study, VDCUser vdcUser, StudyFile studyFile){
-        GuestBookResponse guestBookResponseSource =  findByStudyFileAndUser(study, vdcUser);
-        GuestBookResponse guestBookResponseAdd = initGuestBookResponse(guestBookResponseSource, study, studyFile);
-        Long timeDiff = guestBookResponseAdd.getResponseTime().getTime() - guestBookResponseSource.getResponseTime().getTime();
-        if (!(guestBookResponseSource.getStudyFile().equals(studyFile))
-                || timeDiff > 30000   ){
-                    em.persist(guestBookResponseAdd);
-        }
-    }
     
     public GuestBookResponse findById(Long id) {
        return em.find(GuestBookResponse.class,id);

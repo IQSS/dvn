@@ -66,6 +66,7 @@ public class GuestBookResponse implements Serializable {
     private String institution;
     private String position;
     private String downloadtype;
+    private String sessionId;
     
     @Temporal(value = TemporalType.TIMESTAMP)
     private Date responseTime;
@@ -84,6 +85,7 @@ public class GuestBookResponse implements Serializable {
         this.setResponseTime(source.getResponseTime());
         this.setStudy(source.getStudy());
         this.setVdcUser(source.getVdcUser());
+        this.setSessionId(source.getSessionId());
         List <CustomQuestionResponse> customQuestionResponses = new ArrayList();
         if (!source.getCustomQuestionResponses().isEmpty()){
             for (CustomQuestionResponse customQuestionResponse : source.getCustomQuestionResponses() ){
@@ -201,6 +203,14 @@ public class GuestBookResponse implements Serializable {
 
     public void setDownloadtype(String downloadtype) {
         this.downloadtype = downloadtype;
+    }
+    
+    public String getSessionId() {
+        return sessionId;
+    }
+
+    public void setSessionId(String sessionId) {
+        this.sessionId = sessionId;
     }
     
     @Override

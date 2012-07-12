@@ -33,6 +33,7 @@ import edu.harvard.iq.dvn.core.study.*;
 import edu.harvard.iq.dvn.core.util.FileUtil;
 import edu.harvard.iq.dvn.core.util.StringUtil;
 import edu.harvard.iq.dvn.core.vdc.GuestBookResponse;
+import edu.harvard.iq.dvn.core.vdc.GuestBookResponseServiceBean;
 import edu.harvard.iq.dvn.core.web.common.VDCBaseBean;
 import edu.harvard.iq.dvn.core.web.study.StudyUI;
 import java.io.File;
@@ -75,6 +76,8 @@ public class NetworkDataAnalysisPage extends VDCBaseBean implements Serializable
     StudyServiceLocal studyService;
     @EJB
     StudyFileServiceLocal studyFileService;
+    @EJB
+    GuestBookResponseServiceBean guestBookResponseServiceBean;
 
     NetworkDataServiceLocal networkDataService;
     
@@ -706,13 +709,17 @@ public class NetworkDataAnalysisPage extends VDCBaseBean implements Serializable
             StudyFile sfile = (NetworkDataFile) studyFileService.getStudyFile(fileId);
             if (sfile != null) {
                 GuestBookResponse guestbookResponse = (GuestBookResponse) getVDCSessionBean().getGuestbookResponseMap().get("guestBookResponse_" + sfile.getStudy().getId());
+
+                if (guestbookResponse == null) {
+                    //need to set up dummy network response
+                    guestbookResponse = guestBookResponseServiceBean.initNetworkGuestBookResponse(sfile.getStudy(), sfile, getVDCSessionBean().getLoginBean());
+                }
+                guestbookResponse.setDownloadtype("Subset");
+                guestbookResponse.setSessionId(getVDCSessionBean().toString());
                 studyService.incrementNumberOfDownloads(fileId, vdcId, (GuestBookResponse) guestbookResponse);
             } else {
                 studyService.incrementNumberOfDownloads(fileId, vdcId, (GuestBookResponse) null);
             }
-            
-
-
             return new FileInputStream(file);              
         }
 

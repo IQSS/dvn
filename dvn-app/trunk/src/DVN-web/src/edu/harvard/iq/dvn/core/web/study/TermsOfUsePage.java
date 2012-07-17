@@ -182,6 +182,8 @@ public class TermsOfUsePage extends VDCBaseBean {
         setRequiredFlags();
         if (guestbookRequired){
             initGuestBookResponse ();
+        } else {
+            updateAccount = false;
         }
       
     }   
@@ -223,6 +225,8 @@ public class TermsOfUsePage extends VDCBaseBean {
             guestBookResponse.setInstitution(getVDCSessionBean().getLoginBean().getUser().getInstitution());
             guestBookResponse.setPosition(getVDCSessionBean().getLoginBean().getUser().getPosition());
             guestBookResponse.setVdcUser(getVDCSessionBean().getLoginBean().getUser());
+        } else {
+            updateAccount = false;
         }
     }
     
@@ -350,7 +354,6 @@ public class TermsOfUsePage extends VDCBaseBean {
                         gbSave.setStudyFile(file);
                         //Change to add to hashmap
                         guestbookResponseMap.put("guestBookResponse_" + file.getId(), guestBookResponse);
-                                                    System.out.print("Add to map" + guestBookResponse );
                         //guestBookResponseServiceBean.update(gbSave);
                     }
                 } else {
@@ -373,7 +376,6 @@ public class TermsOfUsePage extends VDCBaseBean {
                 }
             }
         }
-
         
         if ( termsAccepted && isTouTypeDownload() && isDownloadStudyTermsRequired() )  {    
             termsOfUseMap.put( "study_download_" + study.getId(), "accepted" );
@@ -404,7 +406,6 @@ public class TermsOfUsePage extends VDCBaseBean {
                 throw new FacesException(ex);
             }
         }
-        
         return null;
     }    
 

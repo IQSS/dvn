@@ -296,7 +296,7 @@ INSERT INTO pagedef ( name, path, role_id, networkrole_id ) VALUES ( 'SearchFiel
 INSERT INTO pagedef ( name, path, role_id, networkrole_id ) VALUES ( 'PromotionalLinkSearchBoxPage','/admin/PromotionalLinkSearchBoxPage.xhtml',3,null );
 INSERT INTO pagedef ( name, path, role_id, networkrole_id ) VALUES ( 'EditLockssConfigPage','/admin/EditLockssConfigPage.xhtml',3,2 );
 INSERT INTO pagedef ( name, path, role_id, networkrole_id ) VALUES ( 'EditGuestbookQuestionnairePage', '/admin/EditGuestbookQuestionnairePage.xhtml', 3,null );
-INSERT INTO pagedef ( name, path, role_id, networkrole_id ) VALUES ( 'GuestBookResponseDataPage', '/admin/GuestBookResponseDataPage.xhtml', 3,null );
+INSERT INTO pagedef ( name, path, role_id, networkrole_id ) VALUES ( 'GuestBookResponseDataPage', '/admin/GuestBookResponseDataPage.xhtml', 3,2 );
 -- Pages that require Network Role authorization
 -- Creator Role 
 INSERT INTO pagedef ( name, path, role_id, networkrole_id ) VALUES ( 'AddSitePage', '/site/AddSitePage.xhtml', null,1 );

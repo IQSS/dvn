@@ -24,16 +24,7 @@
           <div class="dvn_sectionTitle">
             <ice:outputText value="#{bundlePageInfo.guestbookDataDumpTitle}"/>
           </div>
-          <div >
-            <ice:outputText value="#{bundlePageInfo.guestbookDataDumpEnableText}"/>
-          </div>
-            
-          <div >
-            <ice:outputText value="#{bundlePageInfo.guestbookDataCountText}  #{GuestBookResponseDataPage.fullCount}"/>
-          </div>  
-          <div >
-            <ice:outputText value="#{bundlePageInfo.guestbookData30DayCountText}  #{GuestBookResponseDataPage.thirtyDayCount}"/>
-          </div> 
+           
           <div class="dvn_sectionBox dvnEditTermsForm">
             <div class="dvn_margin12">
                 
@@ -84,6 +75,35 @@
                    }
 //]]>
                 </script>
+                
+                <div jsfc="ice:panelGroup" styleClass="dvnManageTableTop" style="border:0;">
+                  <div jsfc="ice:panelGroup" styleClass="dvn_margin12 dvnInformationMessage">
+                    <div class="dvnMsgBlockContainer">
+                        <p>
+                            <ice:outputText value="#{bundlePageInfo.guestbookDataDumpEnableText}"/>
+                        </p>
+                    </div>
+                  </div>
+                  <div class="dvnGuestBookResponseDownloadCountBlock">
+                    <ice:outputText styleClass="dvnGuestBookResponseDwnldTtlLbl" value="Number of Downloads"/> 
+                    <ice:outputText value="#{bundlePageInfo.guestbookDataCountText} #{GuestBookResponseDataPage.fullCount}"/> 
+                    <ice:outputText value="#{bundlePageInfo.guestbookData30DayCountText} #{GuestBookResponseDataPage.thirtyDayCount}"/>
+                  </div>
+                    
+                    <ice:panelGrid cellpadding="0" cellspacing="0" border="0" columns="2" id="gridPanel2"
+                                   styleClass="dvnHmpgGroupTableTop"
+                                   columnClasses="dvnHmpgGroupTotals, dvnPaginatorWrap">
+                        <div jsfc="ice:panelGroup">
+                            <ice:commandButton visible="true" value="Export Results" id="exportResults" type="submit" onclick="startDownload();" />
+                            <ice:outputResource label="Export" type="button" style="display:none;"
+                                                id="downloadCSV" mimeType="text/comma-separated-values"
+                                                resource="#{GuestBookResponseDataPage.downloadCSV}" shared="false"/>
+                        </div>
+                        <div jsfc="ice:panelGroup" styleClass="dvnPaginatorFloatRight">
+                            <!-- Paginator -->
+                        </div>
+                    </ice:panelGrid>
+                </div>
                 
                 <ice:panelGrid cellpadding="0" cellspacing="0" width="100%">
                     
@@ -184,12 +204,6 @@
                 
             </div>
           </div>
-            <div class="dvnFormButtonMargin">
-                <ice:commandButton visible="true" value="Export Results" id="exportResults" type="submit" onclick="startDownload();" />
-                <ice:outputResource label="Export" type="button" style="display:none;"
-                                    id="downloadCSV" mimeType="text/comma-separated-values"
-                                    resource="#{GuestBookResponseDataPage.downloadCSV}" shared="false"/>
-            </div>
         </div>
       </ice:form>
     </ui:define>

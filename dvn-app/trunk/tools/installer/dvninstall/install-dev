@@ -2,6 +2,7 @@
 
 use Getopt::Long;
 use Socket; 
+use File::Copy;
 
 my( %opts ) = ( );
 my( $rez ) = GetOptions( \%opts, "pg_only!");
@@ -230,6 +231,10 @@ unless ( -f "../../../src/DVN-web/dist/DVN-web.war" )
     exit 0; 
 }
 
+# check the working (installer) dir:
+chomp($cwd = `pwd`);
+
+
 # 3. CHECK POSTGRES AVAILABILITY: 
 
 my $pg_local_connection = 0; 
@@ -344,9 +349,17 @@ if ( $CONFIG_DEFAULTS{'POSTGRES_SERVER'} eq 'localhost' )
     # 4a. CHECK IF POSTGRES IS RUNNING:
     print "Checking if a local instance of Postgres is running and accessible...\n";
 
+    # (change to /tmp before executing the command below -
+    # we are trying to do it as user postgres, and it may not have
+    # access to the current, installer directory; the command would still
+    # work, but there would be an error message from the shell init on screen
+    # - potentially confusing)
+    chdir ("/tmp");
+
     if (!system ($psql_exec . "/psql -c 'SELECT * FROM pg_roles' > /dev/null 2>&1"))
     {
 	print "Yes, it is.\n";
+	chdir ($cwd);
     }
     else
     {
@@ -385,6 +398,7 @@ if ( $CONFIG_DEFAULTS{'POSTGRES_SERVER'} eq 'localhost' )
 
     # 4c. CHECK IF THIS DB ALREADY EXISTS:
 
+    chdir ("/tmp");
     $psql_command_dbcheck = $psql_exec . "/psql -c \"\" -d " . $CONFIG_DEFAULTS{'POSTGRES_DATABASE'} . " > /dev/null 2>&1"; 
     if ( ($exitcode = system($psql_command_dbcheck)) == 0 )
     {
@@ -473,23 +487,24 @@ if ( $CONFIG_DEFAULTS{'POSTGRES_SERVER'} eq 'localhost' )
 
     #4g. CREATE TIMER: (is this really necessary?? - probably not!)
 
-    print "\nCreating database entry for the DVN/EJB timer:\n\n";
+#    print "\nCreating database entry for the DVN/EJB timer:\n\n";
 
-    $psql_command = $psql_exec . "/psql -d $CONFIG_DEFAULTS{'POSTGRES_DATABASE'} -f " . $SQL_TIMER;
+#    $psql_command = $psql_exec . "/psql -d $CONFIG_DEFAULTS{'POSTGRES_DATABASE'} -f " . $SQL_TIMER;
 
-    unless ( ($exitcode = system("$psql_command")) == 0 ) 
-    {
-	print STDERR "Could not create EJB timer entry in the database!\n";
-	print STDERR "(command: " . $psql_command . ")\n";
-	print STDERR "(psql exit code: " . $exitcode . ")\n";
-	print STDERR "Please consult the installation manual and/or\n";
-	print STDERR "seek support from the DVN team.\n\n";
-	exit 1; 
-	
-    }
+#    unless ( ($exitcode = system("$psql_command")) == 0 ) 
+#    {
+#	print STDERR "Could not create EJB timer entry in the database!\n";
+#	print STDERR "(command: " . $psql_command . ")\n";
+#	print STDERR "(psql exit code: " . $exitcode . ")\n";
+#	print STDERR "Please consult the installation manual and/or\n";
+#	print STDERR "seek support from the DVN team.\n\n";
+#	exit 1; 
+#	
+#    }
 
-    print "done.\n";
+#    print "done.\n";
 
+    chdir ($cwd);
 }
 else 
 {
@@ -522,11 +537,12 @@ else
     print "Press any key to continue the installation process once that has been\n";
     print "done. Or press ctrl-C to exit the installer.\n\n";
 
-
+    chdir ("/tmp"); 
     system "stty cbreak </dev/tty >/dev/tty 2>&1";
     my $key = getc(STDIN);
     system "stty -cbreak </dev/tty >/dev/tty 2>&1";
     print "\n";
+    chdir ($cwd); 
 
     # Check if the role and database have been created on the remote server:
     # -- TODO; 
@@ -826,8 +842,14 @@ if ( $pg_local_connection )
     # 7a. POPULATE LOCALLY:
     print "\nPopulating the database (local PostgresQL instance):\n\n";
 
+    # Copy the SQL file to /tmp, where user postgres will definitely
+    # have read access to it:
+
+    copy("referenceData.sql","/tmp") or die "Could not copy referenceData.sql to /tmp: $!";
+
     $< = $POSTGRES_SYS_UID; 
     $> = $POSTGRES_SYS_UID; 
+    chdir ("/tmp");
     $psql_command = $psql_exec . "/psql -d $CONFIG_DEFAULTS{'POSTGRES_DATABASE'} -f " . $SQL_REFERENCE_DATA;
 
     unless ( ($exitcode = system("$psql_command")) == 0 ) 
@@ -842,6 +864,7 @@ if ( $pg_local_connection )
 	
     }
 
+    chdir ($cwd);
     print "\nOK, done!\n";
 
 }

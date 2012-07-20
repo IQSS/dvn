@@ -210,22 +210,43 @@
                         <ice:graphicImage value="/resources/images/icon_required.gif" rendered="#{TemplateFormPage.studyMap[sfc.otherId].templateField.fieldInputLevelString=='required'}"/>
                         <ice:graphicImage value="/resources/images/icon_recommended.gif" rendered="#{TemplateFormPage.studyMap[sfc.otherId].templateField.fieldInputLevelString=='recommended'}"/>
                     </ice:column>
-                    <ice:column>
+                    <ice:column >
                       <div class="vdcEditStudyFieldFloatWrap">
                         <div jsfc="ice:panelGroup" styleClass="vdcEditStudyFieldFloat1">
                           <ice:outputText styleClass="dvnInlineHelpLabel dvnInlineHelpTip" value="#{editstudybundle.otheridLabel}" title="#{editstudybundle.otheridHelpHeading} - #{editstudybundle.otheridHelp}"/>
-                          <ice:inputText maxlength="255" binding="#{TemplateFormPage.inputOtherId}" id="input_otherId" value="#{currentRow.otherId}" />
+                          <ice:inputText maxlength="255" binding="#{TemplateFormPage.inputOtherId}" id="input_otherId" 
+                                         rendered="#{empty(TemplateFormPage.studyMap[sfc.otherIdValue].templateField.controlledVocabulary)}" 
+                                         value="#{currentRow.otherId}" />
                           <ice:message styleClass="errorMessage" for="input_otherId"/>
+                        <ice:selectOneMenu immediate="false"   id="selectOneOtherId"                                          
+                                           value="#{currentRow.otherId}" 
+                                           rendered="#{!empty(TemplateFormPage.studyMap[sfc.otherIdValue].templateField.controlledVocabulary)}" 
+                                           >
+                            <f:selectItem itemLabel="No Value" itemValue=""/>
+                            <f:selectItems value="#{TemplateFormPage.studyMap[sfc.otherIdValue].templateField.controlledVocabulary.selectItems}"/>
+                        </ice:selectOneMenu>  
+                        
                         </div>
                         <div jsfc="ice:panelGroup" styleClass="vdcEditStudyFieldFloat2 vdcEditStudyGroupField">
                           <ice:outputText styleClass="dvnInlineHelpLabel dvnInlineHelpTip" value="#{editstudybundle.otherAgencyLabel}" title="#{editstudybundle.otherAgencyHelpHeading} - #{editstudybundle.otherAgencyHelp}"/>
                           <ice:inputText maxlength="255" binding="#{TemplateFormPage.inputOtherIdAgency}" 
-                                         id="input_otherIdAgency" value="#{currentRow.agency}" />
+                                         id="input_otherIdAgency" value="#{currentRow.agency}" 
+                                         rendered="#{empty(TemplateFormPage.studyMap[sfc.otherIdAgency].templateField.controlledVocabulary)}"
+                                         />
+                        <ice:selectOneMenu immediate="false"   id="selectOneOtherIdAgency"                                          
+                                           value="#{currentRow.agency}" 
+                                           rendered="#{!empty(TemplateFormPage.studyMap[sfc.otherIdAgency].templateField.controlledVocabulary)}" 
+                                           >
+                            <f:selectItem itemLabel="No Value" itemValue=""/>
+                            <f:selectItems value="#{TemplateFormPage.studyMap[sfc.otherIdAgency].templateField.controlledVocabulary.selectItems}"/>
+                        </ice:selectOneMenu> 
                           <ice:message styleClass="errorMessage" for="input_otherIdAgency"/>
                         </div>
                       </div>
                     </ice:column>
                     <ice:column id="groupPanel61">
+                      <ice:commandLink value="Select Vocabulary" 
+                                       action="#{TemplateFormPage.openPopupStandard(TemplateFormPage.studyMap[sfc.otherId].templateField)}"/>
                       <ice:commandButton partialSubmit="true" alt="Add Row" title="Add Row" image="/resources/images/icon_add.gif" actionListener="#{TemplateFormPage.addRow}"/>
                       <ice:commandButton partialSubmit="true" rendered="#{TemplateFormPage.dataTableOtherIds.rowCount gt 1}" alt="Remove Row" title="Remove Row" image="/resources/images/icon_remove.gif" actionListener="#{TemplateFormPage.removeRow}"/>
                       <ice:selectOneMenu immediate="false" partialSubmit="true" 
@@ -265,22 +286,41 @@
                                          value="#{currentAuthor.name}"
                                          size="45"
                                          maxlength="255"
+                                         rendered="#{empty(TemplateFormPage.studyMap[sfc.authorName].templateField.controlledVocabulary)}"
                                          binding="#{TemplateFormPage.inputAuthorName}"/>
-                          <ice:outputText styleClass="vdcEditStudyFormatExample" value="(LastName, FirstName)"/>
+
                           <ice:message styleClass="errorMessage" for="input_authorName"/>
+                          <ice:selectOneMenu immediate="false"   id="selectOneAuthorName"                                          
+                                           value="#{currentAuthor.name}" 
+                                           rendered="#{!empty(TemplateFormPage.studyMap[sfc.authorName].templateField.controlledVocabulary)}" 
+                                           >
+                            <f:selectItem itemLabel="No Value" itemValue=""/>
+                            <f:selectItems value="#{TemplateFormPage.studyMap[sfc.authorName].templateField.controlledVocabulary.selectItems}"/>
+                        </ice:selectOneMenu>  
+                          <ice:outputText styleClass="vdcEditStudyFormatExample" value="(LastName, FirstName)"/>
                         </div>
                         <div jsfc="ice:panelGroup" styleClass="vdcEditStudyFieldFloat2">
                           <ice:outputText styleClass="dvnInlineHelpLabel dvnInlineHelpTip" value="#{editstudybundle.authorAffiliationLabel}" title="#{editstudybundle.authorAffiliationHelpHeading} - #{editstudybundle.authorAffiliationHelp}"/>
                           <ice:inputText id="input_authorAffiliation" size="45" maxlength="255"
                                          binding="#{TemplateFormPage.inputAuthorAffiliation}"
-                                         value="#{currentAuthor.affiliation}"                           
+                                         value="#{currentAuthor.affiliation}" 
+                                         rendered="#{empty(TemplateFormPage.studyMap[sfc.authorAffiliation].templateField.controlledVocabulary)}"
                                          styleClass="formHtmlEnabled">
                           </ice:inputText>
                           <ice:message styleClass="errorMessage" for="input_authorAffiliation"/>
+                          <ice:selectOneMenu immediate="false"   id="selectOneAuthorAffiliation"                                          
+                                           value="#{currentAuthor.affiliation}" 
+                                           rendered="#{!empty(TemplateFormPage.studyMap[sfc.authorAffiliation].templateField.controlledVocabulary)}" 
+                                           >
+                            <f:selectItem itemLabel="No Value" itemValue=""/>
+                            <f:selectItems value="#{TemplateFormPage.studyMap[sfc.authorAffiliation].templateField.controlledVocabulary.selectItems}"/>
+                        </ice:selectOneMenu> 
                         </div>
                       </div>
                     </ice:column>
                     <ice:column>
+                      <ice:commandLink value="Select Vocabulary" 
+                                       action="#{TemplateFormPage.openPopupStandard(TemplateFormPage.studyMap[sfc.author].templateField)}"/>
                       <ice:commandButton partialSubmit="true" alt="Add Row" title="Add Row" image="/resources/images/icon_add.gif" actionListener="#{TemplateFormPage.addRow}"/>
                       <ice:commandButton partialSubmit="true" rendered="#{TemplateFormPage.dataTableAuthors.rowCount gt 1}" alt="Remove Row" title="Remove Row" image="/resources/images/icon_remove.gif" actionListener="#{TemplateFormPage.removeRow}"/>
                       <ice:selectOneMenu immediate="false"  partialSubmit="true" 
@@ -2946,17 +2986,24 @@
             <f:facet name="body">
                 <ice:panelGrid id="autoCentContent" width="100%" cellpadding="0" cellspacing="0" columns="1" styleClass="popupModalBody">
                     <ice:column>
-                        <div>
-                            <ice:outputText value="Controlled Vocabulary"/>
-                            <ice:selectOneMenu immediate="false" partialSubmit="true" value="#{TemplateFormPage.popupSelectId}" valueChangeListener="#{TemplateFormPage.changePopupControlledVocabulary}">
-                                <f:selectItem itemLabel="--none--" itemValue=""/>
+                        <ui:repeat  value="#{TemplateFormPage.templateFieldCVs}" var="currentRow">
+                            <ice:outputText value="Controlled Vocabulary for #{currentRow.templateField.studyField.title}" />
+                            <ice:selectOneMenu immediate="false" partialSubmit="true" value="#{currentRow.cvId}">
+                                <f:selectItem itemLabel="--none--" itemValue="0"/>
+                                <f:selectItems value="#{TemplateFormPage.controlledVocabularySelectItems}"/>
+                            </ice:selectOneMenu>  
+                            </ui:repeat>  
+                        <ice:outputText value="View Description and Values " />
+                        <ice:selectOneMenu immediate="false" partialSubmit="true" value="#{TemplateFormPage.popupSelectId}" 
+                                               valueChangeListener="#{TemplateFormPage.changePopupControlledVocabulary}">
                                 <f:selectItems value="#{TemplateFormPage.controlledVocabularySelectItems}"/>
                             </ice:selectOneMenu>
-                        </div>
                         <div class="dvnFormPadding">
-                            <ice:outputText value="Description: #{TemplateFormPage.popupControlledVocabulary.description}" rendered="#{!empty TemplateFormPage.popupControlledVocabulary}"/>
-                        </div>
-                        <div jsfc="ice:panelGroup" styleClass="dvnControlledVocabularyValuesBlock dvnFormPadding" rendered="#{!empty TemplateFormPage.popupControlledVocabulary}">
+                            <ice:outputText value="Description: #{TemplateFormPage.popupControlledVocabulary.description}" 
+                                            rendered="#{!empty TemplateFormPage.popupControlledVocabulary}"/>
+                        </div>                                                
+                        <div jsfc="ice:panelGroup" styleClass="dvnControlledVocabularyValuesBlock dvnFormPadding"
+                             rendered="#{!empty TemplateFormPage.popupControlledVocabulary}">
                             <ui:repeat value="#{TemplateFormPage.popupControlledVocabulary.controlledVocabularyValues}" var="item">
                                 <ice:outputText value="#{item.value}"/>
                             </ui:repeat>

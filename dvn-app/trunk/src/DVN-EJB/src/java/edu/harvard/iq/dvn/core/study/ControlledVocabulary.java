@@ -48,10 +48,10 @@ public class ControlledVocabulary implements Serializable {
     private Long id;
     private String name;
     @Column(columnDefinition="TEXT") 
-    private String description;
+    private String description;    
     @OneToMany(mappedBy="controlledVocabulary", orphanRemoval=true, cascade={CascadeType.REMOVE, CascadeType.MERGE, CascadeType.PERSIST})
     @OrderBy ("value")
-    private List<ControlledVocabularyValue> controlledVocabularyValues;
+    private List<ControlledVocabularyValue> controlledVocabularyValues;   
     @OneToMany(mappedBy="controlledVocabulary")
     private List<TemplateField> templateFields;    
     
@@ -71,12 +71,12 @@ public class ControlledVocabulary implements Serializable {
     public void setControlledVocabularyValues(List<ControlledVocabularyValue> controlledVocabularyValues) {
         this.controlledVocabularyValues = controlledVocabularyValues;
     }
-    
+        
     public List<SelectItem> getSelectItems(){
         List selectItems = new ArrayList<SelectItem>();
-        for (ControlledVocabularyValue cvv: controlledVocabularyValues){
-              selectItems.add(new SelectItem(cvv.getValue(), cvv.getValue()));
-        }
+            for (ControlledVocabularyValue cvv : controlledVocabularyValues) {
+                selectItems.add(new SelectItem(cvv.getValue(), cvv.getValue()));
+            }
         return selectItems;
     }
 
@@ -95,7 +95,7 @@ public class ControlledVocabulary implements Serializable {
     public void setName(String name) {
         this.name = name;
     }
-
+    
     public List<TemplateField> getTemplateFields() {
         return templateFields;
     }

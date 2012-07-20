@@ -349,6 +349,114 @@ public class EditStudyPage extends VDCBaseBean implements java.io.Serializable  
         if (studyField.getName().equals(StudyFieldConstant.geographicUnit)){
             return metadata.getGeographicUnit();
         }
+        if (studyField.getName().equals(StudyFieldConstant.unitOfAnalysis)){
+            return metadata.getUnitOfAnalysis();
+        }
+        if (studyField.getName().equals(StudyFieldConstant.universe)){
+            return metadata.getUniverse();
+        }
+        if (studyField.getName().equals(StudyFieldConstant.kindOfData)){
+            return metadata.getKindOfData();
+        } 
+        if (studyField.getName().equals(StudyFieldConstant.timeMethod)){
+            return metadata.getTimeMethod();
+        }
+        if (studyField.getName().equals(StudyFieldConstant.dataCollector)){
+            return metadata.getDataCollector();
+        }
+        if (studyField.getName().equals(StudyFieldConstant.frequencyOfDataCollection)){
+            return metadata.getFrequencyOfDataCollection();
+        }
+        if (studyField.getName().equals(StudyFieldConstant.samplingProcedure)){
+            return metadata.getSamplingProcedure();
+        }
+        if (studyField.getName().equals(StudyFieldConstant.deviationsFromSampleDesign)){
+            return metadata.getDeviationsFromSampleDesign();
+        }
+        if (studyField.getName().equals(StudyFieldConstant.collectionMode)){
+            return metadata.getCollectionMode();
+        }
+        if (studyField.getName().equals(StudyFieldConstant.researchInstrument)){
+            return metadata.getResearchInstrument();
+        }
+        if (studyField.getName().equals(StudyFieldConstant.dataSources)){
+            return metadata.getDataSources();
+        }
+        if (studyField.getName().equals(StudyFieldConstant.originOfSources)){
+            return metadata.getOriginOfSources();
+        }
+        if (studyField.getName().equals(StudyFieldConstant.characteristicOfSources)){
+            return metadata.getCharacteristicOfSources();
+        }
+        if (studyField.getName().equals(StudyFieldConstant.accessToSources)){
+            return metadata.getAccessToSources();
+        }
+        if (studyField.getName().equals(StudyFieldConstant.dataCollectionSituation)){
+            return metadata.getDataCollectionSituation();
+        }
+        if (studyField.getName().equals(StudyFieldConstant.actionsToMinimizeLoss)){
+            return metadata.getActionsToMinimizeLoss();
+        }
+        if (studyField.getName().equals(StudyFieldConstant.controlOperations)){
+            return metadata.getControlOperations();
+        }
+        if (studyField.getName().equals(StudyFieldConstant.weighting)){
+            return metadata.getWeighting();
+        }
+        if (studyField.getName().equals(StudyFieldConstant.cleaningOperations)){
+            return metadata.getCleaningOperations();
+        }
+        if (studyField.getName().equals(StudyFieldConstant.studyLevelErrorNotes)){
+            return metadata.getStudyLevelErrorNotes();
+        }
+        if (studyField.getName().equals(StudyFieldConstant.responseRate)){
+            return metadata.getResponseRate();
+        }
+        if (studyField.getName().equals(StudyFieldConstant.samplingErrorEstimates)){
+            return metadata.getSamplingErrorEstimate();
+        }
+        if (studyField.getName().equals(StudyFieldConstant.otherDataAppraisal)){
+            return metadata.getOtherDataAppraisal();
+        }
+        if (studyField.getName().equals(StudyFieldConstant.placeOfAccess)){
+            return metadata.getPlaceOfAccess();
+        }
+        if (studyField.getName().equals(StudyFieldConstant.originalArchive)){
+            return metadata.getOriginalArchive();
+        }
+        if (studyField.getName().equals(StudyFieldConstant.availabilityStatus)){
+            return metadata.getAvailabilityStatus();
+        }
+        if (studyField.getName().equals(StudyFieldConstant.collectionSize)){
+            return metadata.getCollectionSize();
+        }        
+        if (studyField.getName().equals(StudyFieldConstant.studyCompletion)){
+            return metadata.getStudyCompletion();
+        }
+        if (studyField.getName().equals(StudyFieldConstant.confidentialityDeclaration)){
+            return metadata.getConfidentialityDeclaration();
+        } 
+        if (studyField.getName().equals(StudyFieldConstant.specialPermissions)){
+            return metadata.getSpecialPermissions();
+        }
+        if (studyField.getName().equals(StudyFieldConstant.restrictions)){
+            return metadata.getRestrictions();
+        }
+        if (studyField.getName().equals(StudyFieldConstant.contact)){
+            return metadata.getContact();
+        }
+        if (studyField.getName().equals(StudyFieldConstant.citationRequirements)){
+            return metadata.getCitationRequirements();
+        }
+        if (studyField.getName().equals(StudyFieldConstant.depositorRequirements)){
+            return metadata.getDepositorRequirements();
+        }
+        if (studyField.getName().equals(StudyFieldConstant.conditions)){
+            return metadata.getConditions();
+        }
+        if (studyField.getName().equals(StudyFieldConstant.disclaimer)){
+            return metadata.getDisclaimer();
+        }
         return "";
     }
     

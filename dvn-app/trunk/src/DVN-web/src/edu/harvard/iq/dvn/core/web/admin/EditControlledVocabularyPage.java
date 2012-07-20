@@ -24,6 +24,7 @@
 package edu.harvard.iq.dvn.core.web.admin;
 
 import edu.harvard.iq.dvn.core.study.ControlledVocabulary;
+import edu.harvard.iq.dvn.core.study.ControlledVocabularyOtherId;
 import edu.harvard.iq.dvn.core.study.ControlledVocabularyValue;
 import edu.harvard.iq.dvn.core.study.TemplateServiceLocal;
 import edu.harvard.iq.dvn.core.web.common.VDCBaseBean;
@@ -34,6 +35,7 @@ import java.util.Iterator;
 import java.util.List;
 import javax.ejb.EJB;
 import javax.faces.bean.ViewScoped;
+import javax.faces.event.ValueChangeEvent;
 import javax.faces.model.SelectItem;
 import javax.inject.Named;
 
@@ -49,11 +51,10 @@ public class EditControlledVocabularyPage extends VDCBaseBean implements java.io
     @EJB TemplateServiceLocal templateService;
        
     private Long cvId;
-    private ControlledVocabulary controlledVocabulary;
-    
+    private ControlledVocabulary controlledVocabulary;   
     private String newControlledVocabularyValue;
     private List<String> selectedControlledVocabularyValues;
-    
+    private boolean showPopup = false;
     
     public void init(){
         if (cvId != null) {
@@ -61,7 +62,7 @@ public class EditControlledVocabularyPage extends VDCBaseBean implements java.io
         } else {
            controlledVocabulary = new ControlledVocabulary();
            controlledVocabulary.setControlledVocabularyValues(new ArrayList());
-        }        
+        }  
     }
 
     public ControlledVocabulary getControlledVocabulary() {
@@ -87,7 +88,15 @@ public class EditControlledVocabularyPage extends VDCBaseBean implements java.io
     public void setNewControlledVocabularyValue(String newControlledVocabularyValue) {
         this.newControlledVocabularyValue = newControlledVocabularyValue;
     }
+    
+    public boolean isShowPopup() {
+        return showPopup;
+    }
 
+    public void setShowPopup(boolean showPopup) {
+        this.showPopup = showPopup;
+    }
+    
     public List<String> getSelectedControlledVocabularyValues() {
         return selectedControlledVocabularyValues;
     }
@@ -96,16 +105,19 @@ public class EditControlledVocabularyPage extends VDCBaseBean implements java.io
         this.selectedControlledVocabularyValues = selectedControlledVocabularyValues;
     }
 
+
     
+    public void exit() {
+    }
     public List<SelectItem> getControlledVocabularySelectItems() {
         List selectItems = new ArrayList();
-        for (ControlledVocabularyValue cvv : controlledVocabulary.getControlledVocabularyValues()) {
-            SelectItem si = new SelectItem(cvv.getValue());
-            selectItems.add(si);
-        }
+            for (ControlledVocabularyValue cvv : controlledVocabulary.getControlledVocabularyValues()) {
+                SelectItem si = new SelectItem(cvv.getValue());
+                selectItems.add(si);
+            }
         return selectItems;
     }
-
+    
     public void addControlledVocabularyValue() {
         if(newControlledVocabularyValue.isEmpty()){
             return;
@@ -122,10 +134,9 @@ public class EditControlledVocabularyPage extends VDCBaseBean implements java.io
 
         controlledVocabulary.getControlledVocabularyValues().add(cvv);
         Collections.sort(controlledVocabulary.getControlledVocabularyValues());
-    }                
+    }
             
-    public void removeControlledVocabularyValues() {       
-       
+    public void removeControlledVocabularyValues() {              
         for (String selectedCVV: selectedControlledVocabularyValues ){
             for (Iterator<ControlledVocabularyValue> it = controlledVocabulary.getControlledVocabularyValues().iterator(); it.hasNext();) {
                 if (selectedCVV.equals(it.next().getValue())) {

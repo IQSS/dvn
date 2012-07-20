@@ -238,6 +238,114 @@ public class TemplateFormPage extends VDCBaseBean implements java.io.Serializabl
         if (studyField.getName().equals(StudyFieldConstant.geographicUnit)){
             return template.getMetadata().getGeographicUnit();
         }
+        if (studyField.getName().equals(StudyFieldConstant.unitOfAnalysis)){
+            return template.getMetadata().getUnitOfAnalysis();
+        }
+        if (studyField.getName().equals(StudyFieldConstant.universe)){
+            return template.getMetadata().getUniverse();
+        }
+        if (studyField.getName().equals(StudyFieldConstant.kindOfData)){
+            return template.getMetadata().getKindOfData();
+        } 
+        if (studyField.getName().equals(StudyFieldConstant.timeMethod)){
+            return template.getMetadata().getTimeMethod();
+        }
+        if (studyField.getName().equals(StudyFieldConstant.dataCollector)){
+            return template.getMetadata().getDataCollector();
+        }
+        if (studyField.getName().equals(StudyFieldConstant.frequencyOfDataCollection)){
+            return template.getMetadata().getFrequencyOfDataCollection();
+        }
+        if (studyField.getName().equals(StudyFieldConstant.samplingProcedure)){
+            return template.getMetadata().getSamplingProcedure();
+        }
+        if (studyField.getName().equals(StudyFieldConstant.deviationsFromSampleDesign)){
+            return template.getMetadata().getDeviationsFromSampleDesign();
+        }
+        if (studyField.getName().equals(StudyFieldConstant.collectionMode)){
+            return template.getMetadata().getCollectionMode();
+        }
+        if (studyField.getName().equals(StudyFieldConstant.researchInstrument)){
+            return template.getMetadata().getResearchInstrument();
+        }
+        if (studyField.getName().equals(StudyFieldConstant.dataSources)){
+            return template.getMetadata().getDataSources();
+        }
+        if (studyField.getName().equals(StudyFieldConstant.originOfSources)){
+            return template.getMetadata().getOriginOfSources();
+        }
+        if (studyField.getName().equals(StudyFieldConstant.characteristicOfSources)){
+            return template.getMetadata().getCharacteristicOfSources();
+        }
+        if (studyField.getName().equals(StudyFieldConstant.accessToSources)){
+            return template.getMetadata().getAccessToSources();
+        }
+        if (studyField.getName().equals(StudyFieldConstant.dataCollectionSituation)){
+            return template.getMetadata().getDataCollectionSituation();
+        }
+        if (studyField.getName().equals(StudyFieldConstant.actionsToMinimizeLoss)){
+            return template.getMetadata().getActionsToMinimizeLoss();
+        }
+        if (studyField.getName().equals(StudyFieldConstant.controlOperations)){
+            return template.getMetadata().getControlOperations();
+        }
+        if (studyField.getName().equals(StudyFieldConstant.weighting)){
+            return template.getMetadata().getWeighting();
+        }
+        if (studyField.getName().equals(StudyFieldConstant.cleaningOperations)){
+            return template.getMetadata().getCleaningOperations();
+        }
+        if (studyField.getName().equals(StudyFieldConstant.studyLevelErrorNotes)){
+            return template.getMetadata().getStudyLevelErrorNotes();
+        }
+        if (studyField.getName().equals(StudyFieldConstant.responseRate)){
+            return template.getMetadata().getResponseRate();
+        }
+        if (studyField.getName().equals(StudyFieldConstant.samplingErrorEstimates)){
+            return template.getMetadata().getSamplingErrorEstimate();
+        }
+        if (studyField.getName().equals(StudyFieldConstant.otherDataAppraisal)){
+            return template.getMetadata().getOtherDataAppraisal();
+        }
+        if (studyField.getName().equals(StudyFieldConstant.placeOfAccess)){
+            return template.getMetadata().getPlaceOfAccess();
+        }
+        if (studyField.getName().equals(StudyFieldConstant.originalArchive)){
+            return template.getMetadata().getOriginalArchive();
+        }
+        if (studyField.getName().equals(StudyFieldConstant.availabilityStatus)){
+            return template.getMetadata().getAvailabilityStatus();
+        }
+        if (studyField.getName().equals(StudyFieldConstant.collectionSize)){
+            return template.getMetadata().getCollectionSize();
+        }        
+        if (studyField.getName().equals(StudyFieldConstant.studyCompletion)){
+            return template.getMetadata().getStudyCompletion();
+        }
+        if (studyField.getName().equals(StudyFieldConstant.confidentialityDeclaration)){
+            return template.getMetadata().getConfidentialityDeclaration();
+        } 
+        if (studyField.getName().equals(StudyFieldConstant.specialPermissions)){
+            return template.getMetadata().getSpecialPermissions();
+        }
+        if (studyField.getName().equals(StudyFieldConstant.restrictions)){
+            return template.getMetadata().getRestrictions();
+        }
+        if (studyField.getName().equals(StudyFieldConstant.contact)){
+            return template.getMetadata().getContact();
+        }
+        if (studyField.getName().equals(StudyFieldConstant.citationRequirements)){
+            return template.getMetadata().getCitationRequirements();
+        }
+        if (studyField.getName().equals(StudyFieldConstant.depositorRequirements)){
+            return template.getMetadata().getDepositorRequirements();
+        }
+        if (studyField.getName().equals(StudyFieldConstant.conditions)){
+            return template.getMetadata().getConditions();
+        }
+        if (studyField.getName().equals(StudyFieldConstant.disclaimer)){
+            return template.getMetadata().getDisclaimer();
+        }
         return "";
     }
    
@@ -943,7 +1051,7 @@ public class TemplateFormPage extends VDCBaseBean implements java.io.Serializabl
     public String addTemplateAction() {
         return "templateForm";
     }
-    public String save() {       
+    public String save() {    
         boolean isNewTemplate = template.getId() == null;        
         boolean stringValidation = true;
         if(StringUtil.isEmpty(template.getName())){
@@ -2796,13 +2904,26 @@ public class TemplateFormPage extends VDCBaseBean implements java.io.Serializabl
     
     // Popup related fields and methods   
     boolean showPopup;
-    private TemplateField popupTemplateField;
     private ControlledVocabulary popupControlledVocabulary;
     private String popupSelectId;
+    private String singleFieldName;
+    private boolean hasChildFields;
+    private List <TemplateFieldControlledVocabulary> templateFieldCVs = new ArrayList();
+    private List <TemplateField> templateFieldPopup = new ArrayList();
+
+    
+    public boolean isHasChildFields() {return hasChildFields;}
+    public void setHasChildFields(boolean hasChildFields) {this.hasChildFields = hasChildFields;}
+
+    public String getSingleFieldName() {return singleFieldName;}
+    public void setSingleFieldName(String singleFieldName) {this.singleFieldName = singleFieldName;}
       
     public boolean isShowPopup() { return showPopup; }
     public void setShowPopup(boolean showPopup) { this.showPopup = showPopup;}
-
+    
+    public List<TemplateFieldControlledVocabulary> getTemplateFieldCVs() {return templateFieldCVs;}
+    public void setTemplateFieldCVs(List<TemplateFieldControlledVocabulary> templateFieldCVs) {this.templateFieldCVs = templateFieldCVs;}
+    
     public ControlledVocabulary getPopupControlledVocabulary() { return popupControlledVocabulary;}
     public void setPopupControlledVocabulary(ControlledVocabulary popupControlledVocabulary) { this.popupControlledVocabulary = popupControlledVocabulary; }
 
@@ -2811,25 +2932,44 @@ public class TemplateFormPage extends VDCBaseBean implements java.io.Serializabl
   
     
     public void openPopupStandard(TemplateField templateFieldIn) { 
-        popupTemplateField = templateFieldIn;
+        //turn this into a list for updating.....
+        templateFieldCVs.clear();
         popupControlledVocabulary = templateFieldIn.getControlledVocabulary();
+        
+        if (templateFieldIn.getStudyField().getChildStudyFields().isEmpty()){
+            hasChildFields = false;
+            TemplateFieldControlledVocabulary tfcv = new TemplateFieldControlledVocabulary(templateFieldIn);
+            templateFieldCVs.add(tfcv);
+        } else {
+            hasChildFields = true;
+            for (StudyField child : templateFieldIn.getStudyField().getChildStudyFields()){
+                for (TemplateField tf : template.getTemplateFields()){
+                    if (tf.getStudyField().equals(child)){
+                        TemplateFieldControlledVocabulary tfcv = new TemplateFieldControlledVocabulary(tf);
+                        templateFieldCVs.add(tfcv);              
+                    }                    
+                }
+            }
+        }
         popupSelectId = popupControlledVocabulary != null ? popupControlledVocabulary.getId().toString() : "";
         showPopup = true;
     } 
     
     public void openPopup(ActionEvent ae) {
+        templateFieldCVs.clear();
         Object[] fieldsRowData = getCustomFieldsRowData( customFieldsPanelSeries.getRowIndex() );
-        TemplateField templateField = (TemplateField) fieldsRowData[0]; 
-        popupTemplateField = templateField;
+        TemplateField templateField = (TemplateField) fieldsRowData[0];  
+        TemplateFieldControlledVocabulary tfcv = new TemplateFieldControlledVocabulary(templateField);
+        templateFieldCVs.add(tfcv);
         popupControlledVocabulary = templateField.getControlledVocabulary();
         popupSelectId = popupControlledVocabulary != null ? popupControlledVocabulary.getId().toString() : "";
         showPopup = true;
-    }    
-
+    } 
+    
     public List<SelectItem> getControlledVocabularySelectItems(){
         List selectItems = new ArrayList<SelectItem>();
         for (ControlledVocabulary cv: templateService.getNetworkControlledVocabulary()){
-              selectItems.add(new SelectItem(cv.getId(), cv.getName()));
+                selectItems.add(new SelectItem(cv.getId(), cv.getName()));
         }
         return selectItems;
     }
@@ -2853,17 +2993,43 @@ public class TemplateFormPage extends VDCBaseBean implements java.io.Serializabl
         }
     }    
     
-    public void savePopup(ActionEvent ae) {
-        if (popupControlledVocabulary != null) {
-            editTemplateService.setTemplateFieldControlledVocabulary(popupTemplateField, popupControlledVocabulary.getId());
-        } else {
-            popupTemplateField.setControlledVocabulary(null);
-        }
+    public void savePopup(ActionEvent ae) {            
+            for (TemplateFieldControlledVocabulary tfcv : templateFieldCVs){
+                if (!tfcv.getCvId().trim().isEmpty()){
+                    editTemplateService.setTemplateFieldControlledVocabulary(tfcv.getTemplateField(), new Long (tfcv.getCvId()));
+                } else {
+                    tfcv.getTemplateField().setControlledVocabulary(null);
+                }
+            }           
         showPopup = false;
     }  
     
     public void closePopup(ActionEvent ae) {
         showPopup = false;
+    }
+    
+    public class TemplateFieldControlledVocabulary {
+        TemplateField templateField;
+
+        public TemplateField getTemplateField() {
+            return templateField;
+        }
+
+        public void setTemplateField(TemplateField templateField) {
+            this.templateField = templateField;
+        }
+        String cvId;
+       
+        public  TemplateFieldControlledVocabulary(TemplateField templateField) {
+            this.templateField = templateField;
+            this.cvId = templateField.getControlledVocabulary() != null ? templateField.getControlledVocabulary().getId().toString() : "";
+        }
+        public String getCvId(){
+            return cvId;
+        }
+        public void setCvId(String cvId) {
+            this.cvId = cvId;
+        }
     }
               
 }

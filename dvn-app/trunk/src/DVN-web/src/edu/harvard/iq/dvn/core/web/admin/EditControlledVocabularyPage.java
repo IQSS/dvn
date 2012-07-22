@@ -24,7 +24,6 @@
 package edu.harvard.iq.dvn.core.web.admin;
 
 import edu.harvard.iq.dvn.core.study.ControlledVocabulary;
-import edu.harvard.iq.dvn.core.study.ControlledVocabularyOtherId;
 import edu.harvard.iq.dvn.core.study.ControlledVocabularyValue;
 import edu.harvard.iq.dvn.core.study.TemplateServiceLocal;
 import edu.harvard.iq.dvn.core.web.common.VDCBaseBean;

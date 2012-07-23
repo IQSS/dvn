@@ -58,20 +58,11 @@
                   </div>
                   <div jsfc="ice:panelGroup">
                     <ice:inputTextarea id="input_controlledVocabularyDesc" cols="60" rows="4" value="#{editControlledVocabularyPage.controlledVocabulary.description}"/>
-                  </div>
-                  <div jsfc="ice:panelGroup" id="groupPanel4" styleClass="vdcFieldTitle" rendered ="#{!empty(editControlledVocabularyPage.compoundFieldSelectItems)}">
-                    Select Field
-                  </div>                    
-                 <ice:selectOneMenu immediate="false" partialSubmit="true" rendered ="#{!empty(editControlledVocabularyPage.compoundFieldSelectItems)}"
-                                    value="#{editControlledVocabularyPage.selectedField}"  >
-                            <f:attribute name="fieldName" value="studyVersion" />
-                           <f:selectItems value="#{editControlledVocabularyPage.compoundFieldSelectItems}"/>
-                  </ice:selectOneMenu>  
+                  </div> 
                   <div jsfc="ice:panelGroup" styleClass="vdcFieldTitle">
                     Values
                   </div>
-                  <ice:panelGrid cellpadding="0" cellspacing="0" columns="2" width="100%"
-                                 visible="#{editControlledVocabularyPage.selectedField == 'general'}">
+                    <ice:panelGrid cellpadding="0" cellspacing="0" columns="2" width="100%">                                 
                   <div jsfc="ice:panelGroup" styleClass="dvnControlledVocabInput">
                     <ice:inputText value="#{editControlledVocabularyPage.newControlledVocabularyValue}"></ice:inputText>
                     <ice:commandButton action="#{editControlledVocabularyPage.addControlledVocabularyValue}" 
@@ -87,34 +78,7 @@
                     <ice:commandButton action="#{editControlledVocabularyPage.removeControlledVocabularyValues}" alt="Remove Row" title="Remove Row" image="/resources/images/icon_remove.gif"/>
                   </div> 
                   </ice:panelGrid>
-                  <ice:panelGrid id="autoCentContent" width="100%" cellpadding="0" cellspacing="0" columns="1"
-                               visible="#{editControlledVocabularyPage.selectedField == 'otherId'}" >
-                    <ice:column>
-                        <div>
-                            <ice:outputText value="Other Id Controlled Vocabulary"/>
-                        </div>
-                        <div jsfc="ice:panelGroup" styleClass="vdcFieldTitle">
-                            Other ID
-                        </div>
-                        <div jsfc="ice:panelGroup" styleClass="dvnControlledVocabInput">
-                            <ice:inputText value="#{editControlledVocabularyPage.newOtherIDValue}"></ice:inputText>
-                        </div>
-                        <div jsfc="ice:panelGroup" styleClass="vdcFieldTitle">
-                            Other ID Agency
-                        </div>
-                        <div jsfc="ice:panelGroup" styleClass="dvnControlledVocabInput">
-                            <ice:inputText value="#{editControlledVocabularyPage.newOtherIDAgencyValue}"></ice:inputText>
-                        </div>
-                  <div jsfc="ice:panelGroup" styleClass="dvnControlledVocabInput" rendered="#{!empty editControlledVocabularyPage.controlledVocabulary.controlledVocabularyOtherIds}">
-                    <ice:selectManyListbox value="#{editControlledVocabularyPage.selectedControlledVocabularyValues}">                                                                    
-                        <f:selectItems value="#{editControlledVocabularyPage.controlledVocabularySelectItems}"/>
-                    </ice:selectManyListbox>
-                    <ice:commandButton action="#{editControlledVocabularyPage.removeControlledVocabularyValues}" alt="Remove Row" title="Remove Row" image="/resources/images/icon_remove.gif"/>
-                  </div> 
-                    <ice:commandButton action="#{editControlledVocabularyPage.addOtherIDValue}" 
-                                               alt="Add Row" title="Add Row" image="/resources/images/icon_add.gif"/>
-                    </ice:column>
-                </ice:panelGrid>
+
                 </ice:panelGrid>
               </div>
               <div class="dvnFormPadding dvnFormMargin">

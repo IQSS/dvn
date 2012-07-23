@@ -48,6 +48,9 @@ import java.io.FilenameFilter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.io.PrintWriter; 
+import java.io.BufferedReader; 
+import java.io.InputStreamReader; 
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -1870,7 +1873,56 @@ public class StudyServiceBean implements edu.harvard.iq.dvn.core.study.StudyServ
                     // to achieve this; note that mapDDI is a fairly cheap
                     // operation, since it doesn't parse the data portion of the
                     // ddi.
+                    
+                    // an experimental hack: 
+                    // it appears that some Nesstar-provided DDIs are failing to 
+                    // import because of the illegal "xml:lang=..." attributes in
+                    // them; and some fail because of the DTD-style schema headers
+                    // (<?DOCTYPE codeBook ...) Let's try to just strip them out - 
+                    // and see if that helps:
+                    
+                    BufferedReader rd = null; 
+                    PrintWriter ddiProcessedOut = null; 
+                    File ddiFileProcessed = null;
+                    
+                    try {
+                        ddiFileProcessed = File.createTempFile ("NesstarDdiProcessed.", ".xml");
+                        
+                        FileOutputStream ddiProcessedStream = new FileOutputStream(ddiFileProcessed); 
+                        ddiProcessedOut = new PrintWriter (ddiProcessedStream, true);
+                        
+                        rd = new BufferedReader (new InputStreamReader(new FileInputStream(ddiFile)));
+                        
+                        
+                        String line = null; 
+                         
+                        while ( (line = rd.readLine()) != null ) {
+                            if ( line.matches("^<.DOCTYPE codeBook.*") || line.equals("")) {
+                                // skip this line
+                            } else {
+                                line = line.replaceAll(" xml:lang=\"[^\"]*\"", "");
+                                ddiProcessedOut.println(line);
+                            }
+                        } 
+                        
+                    } catch (IOException ex) {
+                        throw new EJBException ("Failed to process and parse Nesstar ddi.");
+                    } finally {
+                        if (rd != null) {
+                            try {
+                                rd.close();
+                            } catch (Exception ex) {}
+                        }
+                        
+                        ddiFile.delete(); 
+                        
+                        if (ddiProcessedOut != null) {
+                            ddiProcessedOut.close();
+                        }
+                        
+                    }
 
+                    ddiFile = ddiFileProcessed;
                     ddiService.mapDDI(ddiFile, tmpStudyVersion, true);
 
                     if (tmpStudyVersion.getMetadata().getStudyOtherIds().size() > 0) {

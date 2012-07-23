@@ -188,6 +188,7 @@ td.dvnDifferanceTableHeaderCol1{border-top:0 !important;}
 label.dvnDeaccessionCommentsLabel{display:block;font-weight:bold;}
 label.dvnDeaccessionFormLabel {font-weight: bold;}
 /* SUBSETTING + ANALYSIS RESULTS */
+.dvnTabs.dvnSubsettingTabSet .icePnlTbSetCnt {padding:0;}
 .vdcAnalysisCol1{padding-left:4px;padding-right:4px;padding-top:4px;vertical-align:top;width:200px}
 .vdcAnalysisCol2{padding-left:4px;padding-right:4px;padding-top:20px;text-align:left;vertical-align:top}
 .pgDataTable{border-collapse:collapse;width:100%}

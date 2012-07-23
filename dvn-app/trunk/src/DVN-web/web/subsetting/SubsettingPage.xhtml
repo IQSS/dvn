@@ -199,7 +199,7 @@
             <!--tab block starts here -->
 
             <!-- ui:tabSet binding="{AnalysisPage.tabSet1}" id="tabSet1" lite="true" mini="true" selected="{AnalysisPage.tab}" styleClass="vdcStudyTabSet" -->
-            <ice:panelTabSet id="tabSet1" styleClass="dvnTabs"
+            <ice:panelTabSet id="tabSet1" styleClass="dvnTabs dvnSubsettingTabSet"
                 binding="#{AnalysisPage.tabSet1}"
                 tabChangeListener="#{AnalysisPage.processTabChange}">
 
@@ -1421,6 +1421,8 @@
                 </ice:panelGrid>
             </ice:panelGrid>
 
+            <div class="dvn_padTop">Statistical analysis powered by <a href="http://projects.iq.harvard.edu/zelig" target="_blank">Zelig</a></div>
+            
         </div>
     </div>
 

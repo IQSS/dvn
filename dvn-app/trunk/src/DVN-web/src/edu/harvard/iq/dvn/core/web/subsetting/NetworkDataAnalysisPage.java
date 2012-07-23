@@ -714,7 +714,14 @@ public class NetworkDataAnalysisPage extends VDCBaseBean implements Serializable
                     //need to set up dummy network response
                     guestbookResponse = guestBookResponseServiceBean.initNetworkGuestBookResponse(sfile.getStudy(), sfile, getVDCSessionBean().getLoginBean());
                 }
-                guestbookResponse.setDownloadtype("Subset");
+                
+                String formatRequested = "";
+                for (DataFileFormatType type : studyService.getDataFileFormatTypes()) {
+                    if (sfile.getFileType().equals(type.getValue())) {
+                        formatRequested = type.getName();
+                    }
+                }
+                guestbookResponse.setDownloadtype("Subsetting - " + formatRequested);
                 guestbookResponse.setSessionId(getVDCSessionBean().toString());
                 studyService.incrementNumberOfDownloads(fileId, vdcId, (GuestBookResponse) guestbookResponse);
             } else {

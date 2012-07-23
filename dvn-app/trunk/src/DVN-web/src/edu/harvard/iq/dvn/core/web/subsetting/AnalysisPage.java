@@ -96,6 +96,7 @@ import com.icesoft.faces.context.ByteArrayResource;
 import com.icesoft.faces.context.Resource;
 import com.icesoft.faces.component.outputresource.*;
 import com.icesoft.faces.component.datapaginator.*;
+import edu.harvard.iq.dvn.core.study.*;
 import edu.harvard.iq.dvn.core.vdc.GuestBookResponse;
 import edu.harvard.iq.dvn.core.web.study.StudyUI;
 import edu.harvard.iq.dvn.core.web.VersionPage;
@@ -1283,7 +1284,13 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
                         guestbookResponse = guestBookResponseServiceBean.initNetworkGuestBookResponse(sf.getStudy(), sf, getVDCSessionBean().getLoginBean());                        
                     }
                     guestbookResponse.setSessionId(getVDCSessionBean().toString());
-                    guestbookResponse.setDownloadtype("Subsetting");
+                    String formatRequested = "";
+                    for (DataFileFormatType type : studyService.getDataFileFormatTypes()) {
+                        if (sf.getFileType().equals(type.getValue())) {
+                            formatRequested = type.getName();
+                        }
+                    }
+                    guestbookResponse.setDownloadtype("Subsetting - " + formatRequested);
 
                     if (vdc != null) {
                         studyService.incrementNumberOfDownloads(sf.getId(), vdc.getId(), (GuestBookResponse) guestbookResponse);

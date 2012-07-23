@@ -45,6 +45,7 @@ import edu.harvard.iq.dvn.core.vdc.VDC;
 import edu.harvard.iq.dvn.core.vdc.VDCServiceLocal;
 import edu.harvard.iq.dvn.core.vdc.VDCNetworkServiceLocal;
 import edu.harvard.iq.dvn.core.admin.LockssAuthServiceLocal;
+import edu.harvard.iq.dvn.core.study.*;
 import edu.harvard.iq.dvn.core.vdc.*;
 
 //import edu.harvard.iq.dvn.core.vdc.LockssServer;
@@ -1106,7 +1107,12 @@ public class FileDownloadServlet extends HttpServlet {
         if (formatRequested == null){
             formatRequested = file.getFileType();
         }
-        guestbookResponse.setDownloadtype("File Download - " + formatRequested);
+        for (DataFileFormatType type : studyService.getDataFileFormatTypes()) {
+            if (file.getFileType().equals(type.getValue())) {
+                formatRequested = type.getName();
+            }
+        }
+        guestbookResponse.setDownloadtype("File Download - " + formatRequested);       
         if ( vdc != null ) {
             studyService.incrementNumberOfDownloads(file.getId(), vdc.getId(), (GuestBookResponse) guestbookResponse);
         } else {
@@ -2029,7 +2035,7 @@ public class FileDownloadServlet extends HttpServlet {
                 }
                 guestbookResponse.setSessionId(vdcSession.toString());
                 guestbookResponse.setDownloadtype("File Download - " + file.getFileType()); 
-
+                //guestbookResponse.setDownloadtype("File Download - " + file.); 
                 if ( vdc != null ) {
                     studyService.incrementNumberOfDownloads(fid, vdc.getId(), (GuestBookResponse) guestbookResponse);
                 } else {

@@ -730,6 +730,10 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
 
         List selectItems = new ArrayList<SelectItem>();
         int defaultViewDisplay = dt.getVisualizationDisplay().getDefaultDisplay();
+        
+        if (vizLines.size() >= 8){
+            defaultViewDisplay = 2;
+        }
 
         switch (defaultViewDisplay) {
             case 0:
@@ -753,7 +757,7 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
                 break;
         }
 
-        if (!image && dt.getVisualizationDisplay().isShowImageGraph()) {
+        if (!image && dt.getVisualizationDisplay().isShowImageGraph() && vizLines.size() < 8) {
             selectItems.add(new SelectItem(2, "Image Graph"));
             imageAvailable = true;
         }
@@ -770,7 +774,7 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
         includeExcel = true;
         includeCSV = true;
 
-        if (!dt.getVisualizationDisplay().isShowImageGraph()) {
+        if (!dt.getVisualizationDisplay().isShowImageGraph() || vizLines.size() >= 8 ) {
             includeImage = false;
             includePdf = false;
         }
@@ -778,7 +782,10 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
         if (!dt.getVisualizationDisplay().isShowDataTable()) {
             includeExcel = false;
         }
-
+        System.out.print("Image available" + imageAvailable);
+        System.out.print("include Image " + includeImage);
+        System.out.print("Image " + image);
+        
         return selectItems;
     }
     
@@ -1133,11 +1140,19 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
             fc.addMessage(addLineButton.getClientId(fc), message);
             return;
         }
+
+        if (vizLines.size() >= 20 ) {            
+            FacesMessage message = new FacesMessage("A maximum of 20 variables may be displayed in a single data table");
+            FacesContext fc = FacesContext.getCurrentInstance();
+            fc.addMessage(addLineButton.getClientId(fc), message);
+            return;
+        }
         
         if (vizLines.size() >= 8 && dataTableAvailable) {
             forcedDataTableMessage = "When more than 8 variables are selected the display is set to a data table.";
            displayType = new Long(3);
         }
+                
 
         if (validateSelections()) {
             for (VisualizationLineDefinition vl : vizLines) {
@@ -1149,6 +1164,8 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
                 }
             }
         }
+        
+        selectView = loadSelectViewItems();
 
         if (validateSelections()) {
             FacesContext.getCurrentInstance().renderResponse();
@@ -1243,7 +1260,7 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
         checkUnits();
         finalizeForcedIndexMessage();
         updateImageFooters();
-
+        selectView = loadSelectViewItems();
         if (!this.displayIndexes) {
             yAxisLabel = getYAxisLabelFromVizLines();
         } else {
@@ -3115,7 +3132,12 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
     }
 
     public boolean isImageAvailable() {
-        return imageAvailable;
+        if (vizLines.size() <= 8){
+            return imageAvailable;
+        } else {
+            return false;
+        }
+
     }
 
     public void setImageAvailable(boolean imageAvailable) {

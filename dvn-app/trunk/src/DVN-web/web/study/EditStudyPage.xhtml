@@ -338,12 +338,14 @@
                                              required="#{EditStudyPage.studyMap[sfc.otherIdAgency].required and EditStudyPage.validateRequired}"/>
                              <ice:selectOneMenu immediate="false"   id="selectOneOtherIdAgency"                                          
                                            value="#{currentRow.agency}" 
+                                           validator="#{EditStudyPage.validateStudyOtherId}"
                                            rendered="#{!empty(EditStudyPage.studyMap[sfc.otherIdAgency].templateField.controlledVocabulary)}" 
                                            >
                             <f:selectItem itemLabel="No Value" itemValue=""/>
                             <f:selectItems value="#{EditStudyPage.studyMap[sfc.otherIdAgency].templateField.controlledVocabulary.selectItems}"/>
                             </ice:selectOneMenu> 
                               <ice:message styleClass="errorMessage" for="input_otherIdAgency"/>
+                              <ice:message styleClass="errorMessage" for="selectOneOtherIdAgency"/>
                             </div>
                           </div>
                         </ice:column>
@@ -413,12 +415,14 @@
                                 </ice:inputText>
                             <ice:selectOneMenu immediate="false"   id="selectOneAuthorAffiliation"                                          
                                            value="#{currentAuthor.affiliation}" 
+                                           validator="#{EditStudyPage.validateStudyAuthor}"
                                            rendered="#{!empty(EditStudyPage.studyMap[sfc.authorAffiliation].templateField.controlledVocabulary)}" 
                                            >
                             <f:selectItem itemLabel="No Value" itemValue=""/>
                             <f:selectItems value="#{EditStudyPage.studyMap[sfc.authorAffiliation].templateField.controlledVocabulary.selectItems}"/>
                             </ice:selectOneMenu>
-                                <ice:message styleClass="errorMessage" for="input_authorAffiliation"/>
+                            <ice:message styleClass="errorMessage" for="input_authorAffiliation"/>
+                            <ice:message styleClass="errorMessage" for="selectOneAuthorAffiliation"/>
                               </div>
                             </div>
                           </ice:column>

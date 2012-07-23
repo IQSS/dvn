@@ -234,14 +234,11 @@ public class EditStudyPage extends VDCBaseBean implements java.io.Serializable  
     }
     
     public String changeTemplateAction() {
-        System.out.println("change template action");
         Object value= this.selectTemplate.getValue();
-        System.out.println("value = " +  value);
         if (value!=null ) {           
             editStudyService.changeTemplate((Long)value);
             metadata = editStudyService.getStudyVersion().getMetadata();    
         }
-        System.out.println("after edit study service  ");
         initStudyFields();  // Reset Recommended flag for all fields
         return "";
      }
@@ -1571,10 +1568,8 @@ public class EditStudyPage extends VDCBaseBean implements java.io.Serializable  
     }
     
     public String save() {
-        System.out.print("In Save");
         metadata.getStudyVersion().setVersionNote(versionNotesPopup.getVersionNote());
-
-            
+           
         versionNotesPopup.setShowPopup(false);
 
         removeEmptyRows();
@@ -1675,8 +1670,9 @@ public class EditStudyPage extends VDCBaseBean implements java.io.Serializable  
             boolean valid=true;
             // StudyAuthor
             String name = (String)inputAuthorName.getLocalValue();
+            name = name.trim();
             String affiliation = value.toString();
-
+            affiliation = affiliation.trim();
             if (StringUtil.isEmpty(name) && !StringUtil.isEmpty(affiliation)) {
                 valid=false;
             }

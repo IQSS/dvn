@@ -2986,29 +2986,33 @@
             <f:facet name="body">
                 <ice:panelGrid id="autoCentContent" width="100%" cellpadding="0" cellspacing="0" columns="1" styleClass="popupModalBody">
                     <ice:column>
-                        <ui:repeat  value="#{TemplateFormPage.templateFieldCVs}" var="currentRow">
-                            <ice:outputText value="Controlled Vocabulary for #{currentRow.templateField.studyField.title}" />
-                            <ice:selectOneMenu immediate="false" partialSubmit="true" value="#{currentRow.cvId}">
-                                <f:selectItem itemLabel="--none--" itemValue="0"/>
-                                <f:selectItems value="#{TemplateFormPage.controlledVocabularySelectItems}"/>
-                            </ice:selectOneMenu>  
-                            </ui:repeat>  
-                        <ice:outputText value="View Description and Values " />
-                        <ice:selectOneMenu immediate="false" partialSubmit="true" value="#{TemplateFormPage.popupSelectId}" 
-                                               valueChangeListener="#{TemplateFormPage.changePopupControlledVocabulary}">
-                                <f:selectItems value="#{TemplateFormPage.controlledVocabularySelectItems}"/>
-                            </ice:selectOneMenu>
+                        <div>Select the controlled vocabulary terms that apply to this study template.</div>
                         <div class="dvnFormPadding">
-                            <ice:outputText value="Description: #{TemplateFormPage.popupControlledVocabulary.description}" 
-                                            rendered="#{!empty TemplateFormPage.popupControlledVocabulary}"/>
-                        </div>                                                
-                        <div jsfc="ice:panelGroup" styleClass="dvnControlledVocabularyValuesBlock dvnFormPadding"
-                             rendered="#{!empty TemplateFormPage.popupControlledVocabulary}">
+                            <ui:repeat value="#{TemplateFormPage.templateFieldCVs}" var="currentRow">
+                                <div>
+                                    <ice:outputText value="Controlled Vocabulary for #{currentRow.templateField.studyField.title}"/>
+                                    <ice:selectOneMenu immediate="false" partialSubmit="true" value="#{currentRow.cvId}">
+                                        <f:selectItem itemLabel="--none--" itemValue="0"/>
+                                        <f:selectItems value="#{TemplateFormPage.controlledVocabularySelectItems}"/>
+                                    </ice:selectOneMenu>
+                                </div>
+                            </ui:repeat>
+                            <!--<ice:outputText value="View Description and Values " />
+                            <ice:selectOneMenu immediate="false" partialSubmit="true" value="#{TemplateFormPage.popupSelectId}" 
+                                                   valueChangeListener="#{TemplateFormPage.changePopupControlledVocabulary}">
+                                <f:selectItems value="#{TemplateFormPage.controlledVocabularySelectItems}"/>
+                            </ice:selectOneMenu>-->
+                            <div jsfc="ice:panelGroup" rendered="#{!empty TemplateFormPage.popupControlledVocabulary}">
+                                <ice:outputText value="Description: #{TemplateFormPage.popupControlledVocabulary.description}"/>
+                            </div>
+                        </div>
+                        <div jsfc="ice:panelGroup" styleClass="dvnControlledVocabularyValuesBlock dvnFormPadding" rendered="#{!empty TemplateFormPage.popupControlledVocabulary}">
+                            <ice:outputText value="Values: "/>
                             <ui:repeat value="#{TemplateFormPage.popupControlledVocabulary.controlledVocabularyValues}" var="item">
                                 <ice:outputText value="#{item.value}"/>
                             </ui:repeat>
                         </div>
-                        <div jsfc="ice:panelGroup" styleClass="dvnFormPadding dvnFormMargin">
+                        <div class="dvnFormPadding dvnFormMargin">
                             <ice:commandButton id="autoCentPopupApply" immediate="true" actionListener="#{TemplateFormPage.savePopup}" value="Save"/>
                             <ice:commandButton id="autoCentPopupCancel" immediate="true" actionListener="#{TemplateFormPage.closePopup}" value="Cancel"/>
                         </div>

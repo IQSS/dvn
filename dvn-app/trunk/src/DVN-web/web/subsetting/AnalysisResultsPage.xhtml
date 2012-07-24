@@ -24,13 +24,13 @@
                                 value="/dvn#{VDCRequest.currentVDCURL}/faces/subsetting/SubsettingPage.xhtml?dtId=#{AnalysisResultsPage.dtId}"
                                 rendered="#{! AnalysisResultsPage.versionNumberSupplied}">
                                 <ice:outputText
-                                    value="Back to Analysis and Subsetting"/>
+                                    value="&lt; Back to Analysis and Subsetting"/>
                             </ice:outputLink>
                             <ice:outputLink
                                 value="/dvn#{VDCRequest.currentVDCURL}/faces/subsetting/SubsettingPage.xhtml?dtId=#{AnalysisResultsPage.dtId}&amp;versionNumber=#{AnalysisResultsPage.versionNumber}"
                                 rendered="#{AnalysisResultsPage.versionNumberSupplied}">
                                 <ice:outputText
-                                    value="Back to Analysis and Subsetting"/>
+                                    value="&lt; Back to Analysis and Subsetting"/>
                             </ice:outputLink>
                         </div>
                         <ui:include src="/study/StudyTitleFragment.xhtml">
@@ -100,6 +100,7 @@
                                 </div>
                             </div>
                         </h:panelGroup>
+                        <div class="dvn_padTop">Statistical analysis powered by <a href="http://projects.iq.harvard.edu/zelig" target="_blank">Zelig</a></div>
                     </div>
                 </div>
             </h:form>

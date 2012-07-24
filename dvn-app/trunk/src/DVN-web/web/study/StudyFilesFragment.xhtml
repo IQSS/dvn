@@ -172,10 +172,10 @@
                                                                 <ice:column id="column22" rendered="#{studyFileUI.studyFile.subsettable}">
                                                                     <div jsfc="ice:panelGroup" styleClass="vdcStudyFileSubsetAnalysis">
                                                                         <ice:outputLink rendered="#{studyFileUI.tabularDataFile}" id="fileSubsetTabular" styleClass="vdcStudyFileSubsetAnalysisLink" value="/dvn#{VDCRequest.currentVDCURL}/faces/subsetting/SubsettingPage.xhtml?dtId=#{studyFileUI.studyFile.dataTable.id}&amp;versionNumber=#{studyPage.studyUI.studyVersion.versionNumber}#{VDCRequest.studyListingIndexAsParameter}">
-                                                                            <ice:outputText value="Access Subset/Analysis"/>
+                                                                            <ice:outputText value="Access Analysis + Subsetting"/>
                                                                         </ice:outputLink>
                                                                         <ice:outputLink rendered="#{studyFileUI.networkDataFile}" id="fileSubsetNetwork" styleClass="vdcStudyFileSubsetAnalysisLink" value="/dvn#{VDCRequest.currentVDCURL}/faces/subsetting/NetworkDataAnalysisPage.xhtml?fileId=#{studyFileUI.studyFile.id}&amp;versionNumber=#{studyPage.studyUI.studyVersion.versionNumber}#{VDCRequest.studyListingIndexAsParameter}">
-                                                                            <ice:outputText value="Access Subset/Analysis"/>
+                                                                            <ice:outputText value="Access Analysis + Subsetting"/>
                                                                         </ice:outputLink>
                                                                         <ice:outputLink rendered="#{studyFileUI.visualizationReleased and !studyFileUI.restrictedForUser}" id="datavisualization" styleClass="vdcStudyFileSubsetAnalysisLink dvnStudyFileVisualizationLink" value="/dvn#{VDCRequest.currentVDCURL}/faces/viz/ExploreDataPage.xhtml?fileId=#{studyFileUI.studyFile.id}&amp;versionNumber=#{studyPage.studyUI.studyVersion.versionNumber}#{VDCRequest.studyListingIndexAsParameter}">
                                                                             <ice:outputText value="Data Visualization"/>

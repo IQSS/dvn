@@ -58,7 +58,7 @@
                       <p><ice:outputText value="Please read and agree to the terms of use for the #{VDCRequest.vdcNetwork.name} Dataverse Network. Check the &quot;I agree and accept&quot; box and click &lt;em&gt;Continue&lt;/em&gt;." escape="false"/></p>
                     </div>
                 </div>
-                <div class="termsAgreementBox dvnCreateDvWorkflow">
+                <div class="termsAgreementBox #{(LoginWorkflowBean.creatorWorkflow or LoginWorkflowBean.contributorWorkflow) ? 'dvnCreateDvWorkflow' : ''}">
                   <ice:outputText value="#{AccountTermsOfUsePage.termsOfUse}" escape="false"/>
                 </div>
                 <div class="termsAgreeChkBxBlock dvnCreateDvWorkflow">

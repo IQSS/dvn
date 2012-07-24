@@ -317,10 +317,11 @@
                               <ice:inputText maxlength="255" binding="#{EditStudyPage.inputOtherId}" 
                                              id="input_otherId" value="#{currentRow.otherId}"
                                              requiredMessage="This field is required." 
-                                             required="#{EditStudyPage.studyMap[sfc.otherId].required and EditStudyPage.validateRequired and EditStudyPage.validateRequired}"
+                                             required="#{EditStudyPage.studyMap[sfc.otherId].required and EditStudyPage.validateRequired }"
                                              rendered="#{empty(EditStudyPage.studyMap[sfc.otherIdValue].templateField.controlledVocabulary)}"/>
                             <ice:selectOneMenu immediate="false"   id="selectOneOtherId"                                          
                                            value="#{currentRow.otherId}" 
+                                           required="#{EditStudyPage.studyMap[sfc.otherId].required and EditStudyPage.validateRequired }"
                                            rendered="#{!empty(EditStudyPage.studyMap[sfc.otherIdValue].templateField.controlledVocabulary)}" 
                                            >
                             <f:selectItem itemLabel="No Value" itemValue=""/>
@@ -335,10 +336,12 @@
                                              id="input_otherIdAgency" value="#{currentRow.agency}"  
                                              requiredMessage="This field is required." 
                                              rendered="#{empty(EditStudyPage.studyMap[sfc.otherIdAgency].templateField.controlledVocabulary)}" 
-                                             required="#{EditStudyPage.studyMap[sfc.otherIdAgency].required and EditStudyPage.validateRequired}"/>
+                                             required="#{EditStudyPage.studyMap[sfc.otherId].required and EditStudyPage.validateRequired}"/>
                              <ice:selectOneMenu immediate="false"   id="selectOneOtherIdAgency"                                          
                                            value="#{currentRow.agency}" 
                                            validator="#{EditStudyPage.validateStudyOtherId}"
+                                           requiredMessage="This field is required."
+                                           required="#{EditStudyPage.studyMap[sfc.otherId].required and EditStudyPage.validateRequired}"
                                            rendered="#{!empty(EditStudyPage.studyMap[sfc.otherIdAgency].templateField.controlledVocabulary)}" 
                                            >
                             <f:selectItem itemLabel="No Value" itemValue=""/>
@@ -392,8 +395,10 @@
                                                rendered="#{empty(EditStudyPage.studyMap[sfc.authorName].templateField.controlledVocabulary)}"
                                                requiredMessage="This field is required." />
                             <ice:selectOneMenu immediate="false"   id="selectOneAuthorName"                                          
-                                           value="#{currentAuthor.name}" 
+                                           value="#{currentAuthor.name}"
+                                           required="#{EditStudyPage.studyMap[sfc.author].required  and EditStudyPage.validateRequired}" 
                                            rendered="#{!empty(EditStudyPage.studyMap[sfc.authorName].templateField.controlledVocabulary)}" 
+                                           requiredMessage="This field is required."
                                            >
                             <f:selectItem itemLabel="No Value" itemValue=""/>
                             <f:selectItems value="#{EditStudyPage.studyMap[sfc.authorName].templateField.controlledVocabulary.selectItems}"/>
@@ -416,6 +421,7 @@
                             <ice:selectOneMenu immediate="false"   id="selectOneAuthorAffiliation"                                          
                                            value="#{currentAuthor.affiliation}" 
                                            validator="#{EditStudyPage.validateStudyAuthor}"
+                                           required="#{EditStudyPage.studyMap[sfc.authorAffiliation].required  and EditStudyPage.validateRequired}" requiredMessage="This field is required."
                                            rendered="#{!empty(EditStudyPage.studyMap[sfc.authorAffiliation].templateField.controlledVocabulary)}" 
                                            >
                             <f:selectItem itemLabel="No Value" itemValue=""/>

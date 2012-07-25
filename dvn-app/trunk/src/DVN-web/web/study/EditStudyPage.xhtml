@@ -209,15 +209,25 @@
                         <ice:column>
                           <div jsfc="ice:panelGroup" styleClass="vdcEditStudyFieldFloatWrap">
                             <div jsfc="ice:panelGroup">
-                               <ice:outputText styleClass="dvnInlineHelpLabel dvnInlineHelpTip" value="#{editstudybundle.relatedPublicationTextLabel}" title="#{editstudybundle.relatedPublicationTextHelpHeading} - #{editstudybundle.relatedPublicationTextHelp}"/>
+                               <ice:outputText styleClass="dvnInlineHelpLabel dvnInlineHelpTip" value="#{editstudybundle.publicationCitationLabel}" title="#{editstudybundle.relatedPublicationTextHelpHeading} - #{editstudybundle.relatedPublicationTextHelp}"/>
                                <ice:inputTextarea cols="90" rows="4"
                                                id="input_relatedPublicationText"
                                                binding="#{EditStudyPage.inputRelPublicationText}"
                                                value="#{currentRow.text}"
+                                               rendered="#{empty(EditStudyPage.studyMap[sfc.publicationCitation].templateField.controlledVocabulary)}"
                                                required="#{EditStudyPage.studyMap[sfc.publication].required and EditStudyPage.validateRequired}" requiredMessage="This field is required."
                                                styleClass="formHtmlEnabled">
                                 <f:validator validatorId="XhtmlValidator"/>
                               </ice:inputTextarea>
+                             <ice:selectOneMenu immediate="false"   id="selectOneRelPublicationText"                                          
+                                           value="#{currentRow.text}" 
+                                            binding="#{EditStudyPage.inputRelPublicationCitation}"
+                                           required="#{EditStudyPage.studyMap[sfc.publication].required and EditStudyPage.validateRequired}" requiredMessage="This field is required."
+                                           rendered="#{!empty(EditStudyPage.studyMap[sfc.publicationCitation].templateField.controlledVocabulary)}" 
+                                           >
+                            <f:selectItem itemLabel="No Value" itemValue=""/>
+                            <f:selectItems value="#{EditStudyPage.studyMap[sfc.publicationCitation].templateField.controlledVocabulary.selectItems}"/>
+                            </ice:selectOneMenu>
                               <ice:message styleClass="errorMessage" for="input_relatedPublicationText"/>
                             </div>                                
                             <div jsfc="ice:panelGroup" styleClass="dvnFormPadding" rendered="#{EditStudyPage.dataTableRelPublications.rowIndex==0}">
@@ -228,7 +238,7 @@
                                 <ice:message styleClass="errorMessage" for="input_relatedPublicationReplicationData"/>
                             </div>
                             <div jsfc="ice:panelGroup" styleClass="vdcEditStudyFieldFloat1">
-                              <ice:outputText styleClass="dvnInlineHelpLabel dvnInlineHelpTip" value="#{editstudybundle.relatedPublicationIDTypeLabel}" title="#{editstudybundle.relatedPublicationIDTypeHelpHeading} - #{editstudybundle.relatedPublicationIDTypeHelp}"/>
+                              <ice:outputText styleClass="dvnInlineHelpLabel dvnInlineHelpTip" value="#{editstudybundle.publicationIDTypeLabel}" title="#{editstudybundle.relatedPublicationIDTypeHelpHeading} - #{editstudybundle.relatedPublicationIDTypeHelp}"/>
                               <ice:selectOneMenu validator="#{EditStudyPage.validateStudyPublication}" binding="#{EditStudyPage.inputRelPublicationIDType}" id="input_relatedPublicationIDType" value="#{currentRow.idType}" required="#{EditStudyPage.studyMap[sfc.publicationIDType].required}" requiredMessage="This field is required.">
                                 <f:selectItem itemLabel="Select" itemValue=""/>
                                 <f:selectItem itemLabel="DOI" itemValue="DOI"/>
@@ -237,21 +247,43 @@
                               <ice:message styleClass="errorMessage" for="input_relatedPublicationIDType"/>
                             </div>
                             <div jsfc="ice:panelGroup" styleClass="vdcEditStudyFieldFloat2 vdcEditStudyGroupField">
-                              <ice:outputText styleClass="dvnInlineHelpLabel dvnInlineHelpTip" value="#{editstudybundle.relatedPublicationIDNumberLabel}" title="#{editstudybundle.relatedPublicationIDNumberHelpHeading} - #{editstudybundle.relatedPublicationIDNumberHelp}"/>
-                              <ice:inputText validator="#{EditStudyPage.validateStudyPublication}" binding="#{EditStudyPage.inputRelPublicationIDNumber}" id="input_relatedPublicationIDNumber" value="#{currentRow.idNumber}" required="#{EditStudyPage.studyMap[sfc.publicationIDNumber].required and EditStudyPage.validateRequired}"  requiredMessage="This field is required." maxlength="255"/>
+                              <ice:outputText styleClass="dvnInlineHelpLabel dvnInlineHelpTip" value="#{editstudybundle.publicationIDNumberLabel}" title="#{editstudybundle.relatedPublicationIDNumberHelpHeading} - #{editstudybundle.relatedPublicationIDNumberHelp}"/>
+                              <ice:inputText validator="#{EditStudyPage.validateStudyPublication}" 
+                                             binding="#{EditStudyPage.inputRelPublicationIDNumber}" 
+                                             id="input_relatedPublicationIDNumber" value="#{currentRow.idNumber}" 
+                                             rendered="#{empty(EditStudyPage.studyMap[sfc.publicationIDNumber].templateField.controlledVocabulary)}" 
+                                             required="#{EditStudyPage.studyMap[sfc.publicationIDNumber].required and EditStudyPage.validateRequired}"  
+                                             requiredMessage="This field is required." maxlength="255"/>
+                            <ice:selectOneMenu immediate="false"   id="selectOneRelPubIdNumber"                                          
+                                           value="#{currentRow.idNumber}" 
+                                           required="#{EditStudyPage.studyMap[sfc.publication].required and EditStudyPage.validateRequired}" requiredMessage="This field is required."
+                                           rendered="#{!empty(EditStudyPage.studyMap[sfc.publicationIDNumber].templateField.controlledVocabulary)}" 
+                                           >
+                            <f:selectItem itemLabel="No Value" itemValue=""/>
+                            <f:selectItems value="#{EditStudyPage.studyMap[sfc.publicationIDNumber].templateField.controlledVocabulary.selectItems}"/>
+                            </ice:selectOneMenu>
                               <ice:message styleClass="errorMessage" for="input_relatedPublicationIDNumber"/>
                             </div>                            
                             <div jsfc="ice:panelGroup" styleClass="vdcEditStudyFieldFloat2 vdcEditStudyGroupField">
-                              <ice:outputText styleClass="dvnInlineHelpLabel dvnInlineHelpTip" value="#{editstudybundle.relatedPublicationURLLabel}" title="#{editstudybundle.relatedPublicationURLHelpHeading} - #{editstudybundle.relatedPublicationURLHelp}"/>
+                              <ice:outputText styleClass="dvnInlineHelpLabel dvnInlineHelpTip" value="#{editstudybundle.publicationURLLabel}" title="#{editstudybundle.relatedPublicationURLHelpHeading} - #{editstudybundle.relatedPublicationURLHelp}"/>
                               <ice:inputText id="input_relatedPublicationURL"
                                              validator="#{EditStudyPage.validateStudyPublication}"
                                              binding="#{EditStudyPage.inputRelPublicationURL}"
+                                             rendered="#{empty(EditStudyPage.studyMap[sfc.publicationURL].templateField.controlledVocabulary)}" 
                                              size="45"
                                              maxlength="255"
                                              value="#{currentRow.url}"
                                              required="#{EditStudyPage.studyMap[sfc.publicationURL].required and EditStudyPage.validateRequired}" requiredMessage="This field is required." >
                                 <f:validator validatorId="UrlValidator"/>
                               </ice:inputText>
+                              <ice:selectOneMenu immediate="false"   id="selectOneRelPubURL"                                          
+                                           value="#{currentRow.url}" 
+                                           required="#{EditStudyPage.studyMap[sfc.publication].required and EditStudyPage.validateRequired}" requiredMessage="This field is required."
+                                           rendered="#{!empty(EditStudyPage.studyMap[sfc.publicationURL].templateField.controlledVocabulary)}" 
+                                           >
+                            <f:selectItem itemLabel="No Value" itemValue=""/>
+                            <f:selectItems value="#{EditStudyPage.studyMap[sfc.publicationURL].templateField.controlledVocabulary.selectItems}"/>
+                            </ice:selectOneMenu>
                               <ice:outputText styleClass="vdcEditStudyFormatExample" value="(http://example-domain.edu/)"/>
                               <ice:message styleClass="errorMessage" for="input_relatedPublicationURL"/>
                             </div>
@@ -304,7 +336,7 @@
                                      value="#{EditStudyPage.metadata.studyOtherIds}" var="currentRow" width="100%">
                         <ice:column>
                           <div jsfc="ice:panelGroup" styleClass="vdcEditStudyField">
-                            <ice:outputText styleClass="dvnInlineHelpLabel dvnInlineHelpTip" value="#{editstudybundle.otheridLabel}" title="#{editstudybundle.otheridHelpHeading} - #{editstudybundle.otheridHelp}"/>
+                            <ice:outputText styleClass="dvnInlineHelpLabel dvnInlineHelpTip" value="#{editstudybundle.otherIdLabel}" title="#{editstudybundle.otheridHelpHeading} - #{editstudybundle.otheridHelp}"/>
                             <ice:graphicImage value="/resources/images/icon_required.gif" rendered="#{EditStudyPage.studyMap[sfc.otherId].required}"/>
                             <ice:graphicImage value="/resources/images/icon_recommended.gif" rendered="#{EditStudyPage.studyMap[sfc.otherId].recommended}"/>
                           </div>
@@ -313,7 +345,7 @@
                           <div jsfc="ice:panelGroup" styleClass="vdcEditStudyFieldFloatWrap">
                             <div jsfc="ice:panelGroup" styleClass="vdcEditStudyFieldFloat1 ">
                               <ice:outputText styleClass="dvnInlineHelpLabel dvnInlineHelpTip" 
-                                              value="#{editstudybundle.otheridLabel}" title="#{editstudybundle.otheridHelpHeading} - #{editstudybundle.otheridHelp}"/>
+                                              value="#{editstudybundle.otherIdLabel}" title="#{editstudybundle.otheridHelpHeading} - #{editstudybundle.otheridHelp}"/>
                               <ice:inputText maxlength="255" binding="#{EditStudyPage.inputOtherId}" 
                                              id="input_otherId" value="#{currentRow.otherId}"
                                              requiredMessage="This field is required." 
@@ -331,7 +363,7 @@
                             </div>
                             <div jsfc="ice:panelGroup" styleClass="vdcEditStudyFieldFloat2 vdcEditStudyGroupField">
                               <ice:outputText styleClass="dvnInlineHelpLabel dvnInlineHelpTip" 
-                                              value="#{editstudybundle.otherAgencyLabel}" title="#{editstudybundle.otherAgencyHelpHeading} - #{editstudybundle.otherAgencyHelp}"/>
+                                              value="#{editstudybundle.otherIdAgencyLabel}" title="#{editstudybundle.otherAgencyHelpHeading} - #{editstudybundle.otherAgencyHelp}"/>
                               <ice:inputText maxlength="255" binding="#{EditStudyPage.inputOtherIdAgency}" validator="#{EditStudyPage.validateStudyOtherId}"
                                              id="input_otherIdAgency" value="#{currentRow.agency}"  
                                              requiredMessage="This field is required." 
@@ -396,6 +428,7 @@
                                                requiredMessage="This field is required." />
                             <ice:selectOneMenu immediate="false"   id="selectOneAuthorName"                                          
                                            value="#{currentAuthor.name}"
+                                           binding="#{EditStudyPage.inputStudyAuthorName}"
                                            required="#{EditStudyPage.studyMap[sfc.author].required  and EditStudyPage.validateRequired}" 
                                            rendered="#{!empty(EditStudyPage.studyMap[sfc.authorName].templateField.controlledVocabulary)}" 
                                            requiredMessage="This field is required."
@@ -1852,7 +1885,7 @@
                                             and !EditStudyPage.studyMap[sfc.frequencyOfDataCollection].hidden
                                             and !EditStudyPage.studyMap[sfc.frequencyOfDataCollection].disabled)}">
                     <div jsfc="ice:panelGroup" styleClass="vdcEditStudyField">
-                      <ice:outputText styleClass="dvnInlineHelpLabel dvnInlineHelpTip" value="#{editstudybundle.frequencyLabel}" 
+                      <ice:outputText styleClass="dvnInlineHelpLabel dvnInlineHelpTip" value="#{editstudybundle.frequencyOfDataCollectionLabel}" 
                                       title="#{editstudybundle.frequencyHelpHeading} - #{editstudybundle.frequencyHelp}"/>
                       <ice:graphicImage value="/resources/images/icon_required.gif" rendered="#{EditStudyPage.studyMap[sfc.frequencyOfDataCollection].required}"/>
                       <ice:graphicImage value="/resources/images/icon_recommended.gif" rendered="#{EditStudyPage.studyMap[sfc.frequencyOfDataCollection].recommended}"/>

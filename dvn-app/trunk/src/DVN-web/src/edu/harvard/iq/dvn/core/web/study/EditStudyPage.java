@@ -758,7 +758,16 @@ public class EditStudyPage extends VDCBaseBean implements java.io.Serializable  
     //
 
     // StudyAuthor
+    private HtmlSelectOneMenu inputStudyAuthorName;
 
+    public HtmlSelectOneMenu getInputStudyAuthorName() {
+        return inputStudyAuthorName;
+    }
+
+    public void setInputStudyAuthorName(HtmlSelectOneMenu inputStudyAuthorName) {
+        this.inputStudyAuthorName = inputStudyAuthorName;
+    }
+    
     public boolean isStudyAuthorsEmpty() {
         return isGroupEmpty(metadata.getStudyAuthors());
     }
@@ -1668,8 +1677,14 @@ public class EditStudyPage extends VDCBaseBean implements java.io.Serializable  
             Object value) {
         if (isValidateRequired()) {
             boolean valid=true;
-            // StudyAuthor
-            String name = (String)inputAuthorName.getLocalValue();
+            // StudyAuthor get name from text or dropdown input
+            String name = (String)inputAuthorName.getLocalValue(); //text
+            if (name == null){
+                name = (String) inputStudyAuthorName.getValue(); //dropdown
+            }
+            if (name == null){
+                name = "";
+            }
             name = name.trim();
             String affiliation = value.toString();
             affiliation = affiliation.trim();
@@ -1962,8 +1977,14 @@ public class EditStudyPage extends VDCBaseBean implements java.io.Serializable  
         
         if (isValidateRequired()) {
             boolean valid=true;
-            if (StringUtil.isEmpty((String)inputRelPublicationText.getLocalValue())
-            && ( (value instanceof String && !StringUtil.isEmpty((String)value)) || (value instanceof Boolean && ((Boolean)value).booleanValue()) ) ){
+            String testString = (String)inputRelPublicationText.getLocalValue();
+            if (testString == null) {
+                testString = (String) inputRelPublicationCitation.getValue();
+            }
+            if (StringUtil.isEmpty(testString)
+            && ( (value instanceof String && !StringUtil.isEmpty((String)value)) 
+                    || (value instanceof Boolean && ((Boolean)value).booleanValue()) )){
+
                 valid=false;
             }
             if (!valid) {
@@ -2547,11 +2568,21 @@ public class EditStudyPage extends VDCBaseBean implements java.io.Serializable  
      * Holds value of property inputRelPublicationName.
      */
     private HtmlInputTextarea inputRelPublicationText;
+    private HtmlSelectOneMenu inputRelPublicationCitation;
     private HtmlSelectBooleanCheckbox inputRelPublicationReplicationData;
     private HtmlSelectOneMenu inputRelPublicationIDType;
     private HtmlInputText inputRelPublicationIDNumber;
     private HtmlInputText inputRelPublicationURL;
 
+    
+    public HtmlSelectOneMenu getInputRelPublicationCitation() {
+        return inputRelPublicationCitation;
+    }
+
+    public void setInputRelPublicationCitation(HtmlSelectOneMenu inputRelPublicationCitation) {
+        this.inputRelPublicationCitation = inputRelPublicationCitation;
+    }
+    
     public HtmlInputText getInputRelPublicationIDNumber() {
         return inputRelPublicationIDNumber;
     }

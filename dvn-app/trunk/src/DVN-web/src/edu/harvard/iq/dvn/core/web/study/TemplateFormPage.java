@@ -74,7 +74,7 @@ import edu.harvard.iq.dvn.core.study.StudyField;
 import edu.harvard.iq.dvn.core.study.StudyFieldValue;
 import edu.harvard.iq.dvn.core.study.TemplateServiceLocal;
 import edu.harvard.iq.dvn.core.vdc.VDC;
-import java.util.Collections;
+import java.util.*;
 import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
 import javax.faces.event.ActionEvent;
@@ -98,7 +98,7 @@ public class TemplateFormPage extends VDCBaseBean implements java.io.Serializabl
     @Inject EditTemplateService editTemplateService;
     @EJB StudyServiceLocal studyService;
     @EJB TemplateServiceLocal templateService;
-
+    private ResourceBundle studybundle = ResourceBundle.getBundle("StudyBundle");
     
     /**
      * <p>Construct a new Page bean instance.</p>
@@ -2622,7 +2622,7 @@ public class TemplateFormPage extends VDCBaseBean implements java.io.Serializabl
 
     
     // Custom value related fields and methods    
-    private PanelSeries customFieldsPanelSeries;    
+    private PanelSeries customFieldsPanelSeries;      
     private HtmlInputText inputStudyFieldName;
     private HtmlInputText inputStudyFieldDescription;
     HtmlSelectOneMenu selectFieldType;
@@ -2905,12 +2905,16 @@ public class TemplateFormPage extends VDCBaseBean implements java.io.Serializabl
     // Popup related fields and methods   
     boolean showPopup;
     private ControlledVocabulary popupControlledVocabulary;
+    private PanelSeries controlledVocabularyPopupPanelSeries;
     private String popupSelectId;
     private String singleFieldName;
     private boolean hasChildFields;
     private List <TemplateFieldControlledVocabulary> templateFieldCVs = new ArrayList();
     private List <TemplateField> templateFieldPopup = new ArrayList();
 
+    public PanelSeries getControlledVocabularyPopupPanelSeries() { return controlledVocabularyPopupPanelSeries; }
+    public void setControlledVocabularyPopupPanelSeries(PanelSeries controlledVocabularyPopupPanelSeries) { this.controlledVocabularyPopupPanelSeries = controlledVocabularyPopupPanelSeries; }
+    
     
     public boolean isHasChildFields() {return hasChildFields;}
     public void setHasChildFields(boolean hasChildFields) {this.hasChildFields = hasChildFields;}
@@ -2935,17 +2939,17 @@ public class TemplateFormPage extends VDCBaseBean implements java.io.Serializabl
         //turn this into a list for updating.....
         templateFieldCVs.clear();
         popupControlledVocabulary = templateFieldIn.getControlledVocabulary();
-        
+        Long index = new Long(0);
         if (templateFieldIn.getStudyField().getChildStudyFields().isEmpty()){
             hasChildFields = false;
-            TemplateFieldControlledVocabulary tfcv = new TemplateFieldControlledVocabulary(templateFieldIn);
+            TemplateFieldControlledVocabulary tfcv = new TemplateFieldControlledVocabulary(templateFieldIn, index++);
             templateFieldCVs.add(tfcv);
         } else {
             hasChildFields = true;
             for (StudyField child : templateFieldIn.getStudyField().getChildStudyFields()){
                 for (TemplateField tf : template.getTemplateFields()){
                     if (tf.getStudyField().equals(child)){
-                        TemplateFieldControlledVocabulary tfcv = new TemplateFieldControlledVocabulary(tf);
+                        TemplateFieldControlledVocabulary tfcv = new TemplateFieldControlledVocabulary(tf, index++);
                         templateFieldCVs.add(tfcv);              
                     }                    
                 }
@@ -2984,15 +2988,19 @@ public class TemplateFormPage extends VDCBaseBean implements java.io.Serializabl
         return selectItems;
     }
     
-    public void changePopupControlledVocabulary(ValueChangeEvent event){
-        String changeCVId = (String)event.getNewValue();
-        if ( !StringUtil.isEmpty(changeCVId) ) {
-            popupControlledVocabulary = templateService.getControlledVocabulary(new Long(changeCVId));
-        } else {
-            popupControlledVocabulary = null;
+
+    public void changePopupControlledVocabulary(ValueChangeEvent event) {
+
+        String changeCVId = (String) event.getNewValue();
+        Long rowIndex = new Long(controlledVocabularyPopupPanelSeries.getRowIndex());
+        
+        for (TemplateFieldControlledVocabulary tfcv : templateFieldCVs) {
+            if (rowIndex.equals(tfcv.getIndex())) {
+                tfcv.setControlledVocabDisplay(templateService.getControlledVocabulary(new Long(changeCVId)));
+            }
         }
-    }    
-    
+    }
+
     public void savePopup(ActionEvent ae) {            
             for (TemplateFieldControlledVocabulary tfcv : templateFieldCVs){
                 if (!tfcv.getCvId().trim().isEmpty()){
@@ -3019,10 +3027,71 @@ public class TemplateFormPage extends VDCBaseBean implements java.io.Serializabl
             this.templateField = templateField;
         }
         String cvId;
+        String studyBundleLabel;
+        Long index;
+        ControlledVocabulary controlledVocabDisplay;
+
+        public ControlledVocabulary getControlledVocabDisplay() {
+            return controlledVocabDisplay;
+        }
+
+        public void setControlledVocabDisplay(ControlledVocabulary controlledVocabDisplay) {
+            this.controlledVocabDisplay = controlledVocabDisplay;
+        }
+
+        public Long getIndex() {
+            return index;
+        }
+
+        public void setIndex(Long index) {
+            this.index = index;
+        }
+
+        public String getStudyBundleLabel() {
+            return studyBundleLabel;
+        }
+
+        public void setStudyBundleLabel(String studyBundleLabel) {
+            this.studyBundleLabel = studyBundleLabel;
+        }
        
         public  TemplateFieldControlledVocabulary(TemplateField templateField) {
             this.templateField = templateField;
             this.cvId = templateField.getControlledVocabulary() != null ? templateField.getControlledVocabulary().getId().toString() : "";
+            if (!cvId.equals("")){
+                this.controlledVocabDisplay = templateService.getControlledVocabulary(new Long(cvId));
+            }
+            String getString = templateField.getStudyField().getName() + "Label";            
+            try {
+                studyBundleLabel      = studybundle.getString(getString);
+            } catch (Exception uee) {
+                System.out.println("Exception:  " + uee.toString());
+                studyBundleLabel = this.templateField.getStudyField().getTitle();
+                if (studyBundleLabel.isEmpty()){
+                    studyBundleLabel = this.templateField.getStudyField().getName();
+                }
+            }
+        }
+        public  TemplateFieldControlledVocabulary(TemplateField templateField, Long index) {
+            this.templateField = templateField;
+            this.index = index;
+            this.cvId = templateField.getControlledVocabulary() != null ? templateField.getControlledVocabulary().getId().toString() : "";
+            String getString = templateField.getStudyField().getName() + "Label";
+            if (!cvId.equals("")){
+                this.controlledVocabDisplay = templateService.getControlledVocabulary(new Long(cvId));
+            }
+            
+            try {
+                studyBundleLabel      = studybundle.getString(getString);
+            } catch (Exception uee) {
+                System.out.println("Exception:  " + uee.toString());
+                studyBundleLabel = this.templateField.getStudyField().getTitle();
+                if (studyBundleLabel.isEmpty()){
+                    studyBundleLabel = this.templateField.getStudyField().getName();
+                }
+            }
+            
+
         }
         public String getCvId(){
             return cvId;

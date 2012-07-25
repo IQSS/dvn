@@ -433,7 +433,7 @@
                                 <ice:outputText styleClass="dvnInlineHelpLabel dvnInlineHelpTip" value="#{studybundle.studyGlobalIdLabel}" title="#{studybundle.studyGlobalIdHelpHeading} - #{studybundle.studyGlobalIdHelp}"/>
                                 <ice:outputText id="text2" value="#{studyPage.studyUI.study.globalId}"/>
 
-                                <ice:outputText styleClass="dvnInlineHelpLabel dvnInlineHelpTip" value="#{studybundle.otheridLabel}" title="#{studybundle.otheridHelpHeading} - #{studybundle.otheridHelp}" rendered="#{studyPage.studyUI.otherIds != ''}"/>
+                                <ice:outputText styleClass="dvnInlineHelpLabel dvnInlineHelpTip" value="#{studybundle.otherIdLabel}" title="#{studybundle.otheridHelpHeading} - #{studybundle.otheridHelp}" rendered="#{studyPage.studyUI.otherIds != ''}"/>
                                 <ice:outputText id="text3" value="#{studyPage.studyUI.otherIds}" rendered="#{!empty studyPage.studyUI.otherIds}"/>
 
                                 <ice:outputText styleClass="dvnInlineHelpLabel dvnInlineHelpTip" value="#{studybundle.authorLabel}" title="#{studybundle.authorHelpHeading} - #{studybundle.authorHelp}" rendered="#{studyPage.studyUI.authorAffiliations != ''}"/>
@@ -580,7 +580,7 @@
                                 <ice:outputText styleClass="dvnInlineHelpLabel dvnInlineHelpTip" value="#{studybundle.dataCollectorLabel}" title="#{studybundle.dataCollectorHelpHeading} - #{studybundle.dataCollectorHelp}" rendered="#{studyPage.studyUI.metadata.dataCollector != '' and studyPage.studyUI.metadata.dataCollector != null}"/>
                                 <ice:outputText id="outputText77" value="#{studyPage.studyUI.metadata.dataCollector}" rendered="#{!empty studyPage.studyUI.metadata.dataCollector }" escape="false"/>
 
-                                <ice:outputText styleClass="dvnInlineHelpLabel dvnInlineHelpTip" value="#{studybundle.frequencyLabel}" title="#{studybundle.frequencyHelpHeading} - #{studybundle.frequencyHelp}" rendered="#{studyPage.studyUI.metadata.frequencyOfDataCollection != '' and studyPage.studyUI.metadata.frequencyOfDataCollection != null}"/>
+                                <ice:outputText styleClass="dvnInlineHelpLabel dvnInlineHelpTip" value="#{studybundle.frequencyOfDataCollectionLabel}" title="#{studybundle.frequencyHelpHeading} - #{studybundle.frequencyHelp}" rendered="#{studyPage.studyUI.metadata.frequencyOfDataCollection != '' and studyPage.studyUI.metadata.frequencyOfDataCollection != null}"/>
                                 <ice:outputText id="outputText80" value="#{studyPage.studyUI.metadata.frequencyOfDataCollection}" rendered="#{!empty studyPage.studyUI.metadata.frequencyOfDataCollection}" escape="false"/>
 
                                 <ice:outputText styleClass="dvnInlineHelpLabel dvnInlineHelpTip" value="#{studybundle.samplingProcedureLabel}" title="#{studybundle.samplingProcedureHelpHeading} - #{studybundle.samplingProcedureHelp}" rendered="#{studyPage.studyUI.metadata.samplingProcedure != '' and studyPage.studyUI.metadata.samplingProcedure != null}"/>

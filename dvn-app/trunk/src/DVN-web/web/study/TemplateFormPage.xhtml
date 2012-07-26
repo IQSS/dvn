@@ -793,26 +793,55 @@
                 <ice:column styleClass="vdcEditStudyFieldFloatWrap">
                   <div jsfc="ice:panelGroup" styleClass="vdcEditStudyFieldFloat1">
                     <ice:outputText styleClass="dvnInlineHelpLabel dvnInlineHelpTip" value="#{editstudybundle.distributorContactLabel}" title="#{editstudybundle.distributorContactHelpHeading} - #{editstudybundle.distributorContactHelp}"/>
-                    <ice:inputText binding ="#{TemplateFormPage.inputDistributorContact}" id="input_distributorContact" size="45" value="#{TemplateFormPage.template.metadata.distributorContact}"  />
+                    <ice:inputText binding ="#{TemplateFormPage.inputDistributorContact}" 
+                                   id="input_distributorContact" size="45" 
+                                   rendered="#{empty(TemplateFormPage.studyMap[sfc.distributorContactName].templateField.controlledVocabulary)}"
+                                   value="#{TemplateFormPage.template.metadata.distributorContact}"  />
+                        <ice:selectOneMenu immediate="false"   id="selectOneDistributorContact"                                          
+                                           value="#{TemplateFormPage.template.metadata.distributorContact}" 
+                                           rendered="#{!empty(TemplateFormPage.studyMap[sfc.distributorContactName].templateField.controlledVocabulary)}" 
+                                           >
+                            <f:selectItem itemLabel="No Value" itemValue=""/>
+                            <f:selectItems value="#{TemplateFormPage.studyMap[sfc.distributorContactName].templateField.controlledVocabulary.selectItems}"/>
+                        </ice:selectOneMenu>
                     <ice:message styleClass="errorMessage" for="input_distributorContact"/>
                   </div>
                   <div jsfc="ice:panelGroup" styleClass="vdcEditStudyFieldFloat2 vdcEditStudyGroupField">
                     <ice:outputText styleClass="dvnInlineHelpLabel dvnInlineHelpTip" value="#{editstudybundle.distributorContactAffiliationLabel}" title="#{editstudybundle.distributorContactAffiliationHelpHeading} - #{editstudybundle.distributorContactAffiliationHelp}"/>
                     <ice:inputText id="distributorContactAffiliation"
                                    binding ="#{TemplateFormPage.inputDistributorContactAffiliation}"
+                                   rendered="#{empty(TemplateFormPage.studyMap[sfc.distributorContactAffiliation].templateField.controlledVocabulary)}" 
                                   value="#{TemplateFormPage.template.metadata.distributorContactAffiliation}"
                                    styleClass="formHtmlEnabled">
                     </ice:inputText>
+                    <ice:selectOneMenu immediate="false"   id="selectOneDistributorContactAffiliation"                                          
+                                           value="#{TemplateFormPage.template.metadata.distributorContactAffiliation}" 
+                                           rendered="#{!empty(TemplateFormPage.studyMap[sfc.distributorContactAffiliation].templateField.controlledVocabulary)}" 
+                                           >
+                            <f:selectItem itemLabel="No Value" itemValue=""/>
+                            <f:selectItems value="#{TemplateFormPage.studyMap[sfc.distributorContactAffiliation].templateField.controlledVocabulary.selectItems}"/>
+                        </ice:selectOneMenu>
                     <ice:message styleClass="errorMessage" for="distributorContactAffiliation"/>
+                    <ice:message styleClass="errorMessage" for="selectOneDistributorContactAffiliation"/>
                   </div>
                   <div jsfc="ice:panelGroup" styleClass="vdcEditStudyFieldFloat3 vdcEditStudyGroupField">
                     <ice:outputText styleClass="dvnInlineHelpLabel dvnInlineHelpTip" value="#{editstudybundle.distributorContactEmailLabel}" title="#{editstudybundle.distributorContactEmailHelpHeading} - #{editstudybundle.distributorContactEmailHelp}"/>
                     <ice:inputText binding ="#{TemplateFormPage.inputDistributorContactEmail}" id="input_distributorContactEmail" size="45" 
+                                   rendered="#{empty(TemplateFormPage.studyMap[sfc.distributorContactEmail].templateField.controlledVocabulary)}"
                                    value="#{TemplateFormPage.template.metadata.distributorContactEmail}"/>
+                                        <ice:selectOneMenu immediate="false"   id="selectOneDistributorContactEmail"                                          
+                                           value="#{TemplateFormPage.template.metadata.distributorContactEmail}" 
+                                           rendered="#{!empty(TemplateFormPage.studyMap[sfc.distributorContactEmail].templateField.controlledVocabulary)}" 
+                                           >
+                            <f:selectItem itemLabel="No Value" itemValue=""/>
+                            <f:selectItems value="#{TemplateFormPage.studyMap[sfc.distributorContactEmail].templateField.controlledVocabulary.selectItems}"/>
+                        </ice:selectOneMenu>
                     <ice:message styleClass="errorMessage" for="input_distributorContactEmail"/>
                   </div>
                 </ice:column>
                 <ice:column>
+                   <ice:commandLink value="Select Vocabulary" 
+                                       action="#{TemplateFormPage.openPopupStandard(TemplateFormPage.studyMap[sfc.distributorContact].templateField)}"/>
                   <ice:selectOneMenu immediate="false" partialSubmit="true" 
                                         value="#{TemplateFormPage.studyMap[sfc.distributorContact].templateField.fieldInputLevelString}">
                             <f:attribute name="fieldName" value="distributorContact" />

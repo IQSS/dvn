@@ -243,9 +243,10 @@ span.dvnAddClassificationDvNotReleased{background:url(/dvn/resources/images/icon
 .dvnEditGuestbookCustomQuestions.iceDatTbl tr tr, .dvnGuestbookCustomQuestions.iceDatTbl tr tr {border:0;}
 .dvnGuestbookCustomQuestionInnerBlock {margin-left:6.25em;}
 .dvnGuestBookResponseTableBlock{position:relative;width:100%;overflow:auto}
-.dvnGuestBookResponseDownloadCountBlock {margin-bottom:1em;}
+.dvnGuestBookResponseDownloadCountBlock {margin-right:1em; float:left; text-align:right;}
 .dvnGuestBookResponseDwnldTtlLbl {font-weight:bold;}
 .dvnGuestBookResponseDownloadCountBlock span.iceOutTxt{margin-right:1em;}
+.dvnGuestBookResponseDownloadPaginatorBlock {float:left; text-align:right;}
 .dvnGuestBookResponseTable{position:absolute;top:0;left:0;margin-top:0}
 .dvnGuestBookResponseTable th span.dvnGuestbookStudyTitleHeader, .dvnGuestBookResponseTable th span.dvnGuestbookTimeHeader, .dvnGuestBookResponseTable th span.dvnGuestbookCustomResponseHeader{min-width:200px;display:block;}
 /* PERMISSIONS */

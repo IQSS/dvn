@@ -756,6 +756,16 @@ public class EditStudyPage extends VDCBaseBean implements java.io.Serializable  
     //
     //  The following methods are used in the Edit Study form display logic for metadata dependent collections
     //
+    // StudyAuthor
+    private HtmlSelectOneMenu inputStudyProducerName;
+
+    public HtmlSelectOneMenu getInputStudyProducerName() {
+        return inputStudyProducerName;
+    }
+
+    public void setInputStudyProducerName(HtmlSelectOneMenu inputStudyProducerName) {
+        this.inputStudyProducerName = inputStudyProducerName;
+    }
 
     // StudyAuthor
     private HtmlSelectOneMenu inputStudyAuthorName;
@@ -1952,10 +1962,15 @@ public class EditStudyPage extends VDCBaseBean implements java.io.Serializable  
             Object value) {
         if (isValidateRequired()) {
             boolean valid = true;
-
-
-
-        if (StringUtil.isEmpty((String)inputProducerName.getLocalValue())
+            String name = (String)inputProducerName.getLocalValue(); //text
+            if (name == null){
+                name = (String) inputStudyProducerName.getValue(); //dropdown
+            }
+            if (name == null){
+                name = "";
+            }
+            name = name.trim();
+        if (StringUtil.isEmpty(name)
         && (!StringUtil.isEmpty((String)inputProducerAbbreviation.getLocalValue())
              || !StringUtil.isEmpty((String)inputProducerAffiliation.getLocalValue())
              || !StringUtil.isEmpty((String)inputProducerLogo.getLocalValue())

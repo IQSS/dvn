@@ -826,23 +826,62 @@
                           <div jsfc="ice:panelGroup" styleClass="vdcEditStudyFieldFloatWrap">
                             <div jsfc="ice:panelGroup" styleClass="vdcEditStudyFieldFloat1">
                               <ice:outputText styleClass="dvnInlineHelpLabel dvnInlineHelpTip" value="#{editstudybundle.distributorLabel}" title="#{editstudybundle.distributorHelpHeading} - #{editstudybundle.distributorHelp}"/>
-                              <ice:inputText maxlength="255" binding="#{EditStudyPage.inputDistributorName}" id="input_distributorName" value="#{currentRow.name}" size="45" required="#{EditStudyPage.studyMap[sfc.distributor].required}" requiredMessage="This field is required." />
+                              <ice:inputText maxlength="255" binding="#{EditStudyPage.inputDistributorName}" 
+                                             id="input_distributorName" value="#{currentRow.name}" size="45" 
+                                             rendered="#{empty(EditStudyPage.studyMap[sfc.distributorName].templateField.controlledVocabulary)}"
+                                             required="#{EditStudyPage.studyMap[sfc.distributor].required}" requiredMessage="This field is required." />
+                             <ice:selectOneMenu immediate="false"   id="selectOneDistributorName"                                          
+                                           value="#{currentRow.name}" 
+                                           binding="#{EditStudyPage.inputStudyDistributorName}"
+                                           required="#{EditStudyPage.studyMap[sfc.distributor].required  and EditStudyPage.validateRequired}" requiredMessage="This field is required."
+                                           rendered="#{!empty(EditStudyPage.studyMap[sfc.distributorName].templateField.controlledVocabulary)}" 
+                                           >
+                            <f:selectItem itemLabel="No Value" itemValue=""/>
+                            <f:selectItems value="#{EditStudyPage.studyMap[sfc.distributorName].templateField.controlledVocabulary.selectItems}"/>
+                            </ice:selectOneMenu>
                               <ice:message styleClass="errorMessage" for="input_distributorName"/>
+                              <ice:message styleClass="errorMessage" for="selectOneDistributorName"/>
                             </div>
                             <div jsfc="ice:panelGroup" styleClass="vdcEditStudyFieldFloat2 vdcEditStudyGroupField">
                               <ice:outputText styleClass="dvnInlineHelpLabel dvnInlineHelpTip" value="#{editstudybundle.distributorAbbreviationLabel}" title="#{editstudybundle.distributorAbbreviationHelpHeading} - #{editstudybundle.distributorAbbreviationHelp}"/>
-                              <ice:inputText maxlength="255" validator="#{EditStudyPage.validateStudyDistributor}" binding="#{EditStudyPage.inputDistributorAbbreviation}" id="input_distributorAbbreviation" value="#{currentRow.abbreviation}"  required="#{EditStudyPage.studyMap[sfc.distributorAbbreviation].required and EditStudyPage.validateRequired}" requiredMessage="This field is required." />
-                              <ice:message styleClass="errorMessage" for="input_distributorAbbreviation"/>
+                              <ice:inputText maxlength="255" validator="#{EditStudyPage.validateStudyDistributor}" 
+                                             binding="#{EditStudyPage.inputDistributorAbbreviation}" 
+                                             id="input_distributorAbbreviation" value="#{currentRow.abbreviation}" 
+                                             rendered="#{empty(EditStudyPage.studyMap[sfc.distributorAbbreviation].templateField.controlledVocabulary)}"
+                                             required="#{EditStudyPage.studyMap[sfc.distributorAbbreviation].required and EditStudyPage.validateRequired}" requiredMessage="This field is required." />
+                            <ice:selectOneMenu immediate="false"   id="selectOneDistributorAbbreviation"                                          
+                                           value="#{currentRow.abbreviation}" 
+                                           validator="#{EditStudyPage.validateStudyDistributor}"
+                                           required="#{EditStudyPage.studyMap[sfc.distributor].required  and EditStudyPage.validateRequired}" requiredMessage="This field is required."
+                                           rendered="#{!empty(EditStudyPage.studyMap[sfc.distributorAbbreviation].templateField.controlledVocabulary)}" 
+                                           >
+                            <f:selectItem itemLabel="No Value" itemValue=""/>
+                            <f:selectItems value="#{EditStudyPage.studyMap[sfc.distributorAbbreviation].templateField.controlledVocabulary.selectItems}"/>
+                            </ice:selectOneMenu>
+                              <ice:message styleClass="errorMessage" for="input_distributorAbbreviation"/>                             
+                              <ice:message styleClass="errorMessage" for="selectOneDistributorAbbreviation"/>
                             </div>
                             <div jsfc="ice:panelGroup" styleClass="vdcEditStudyFieldFloat3 vdcEditStudyGroupField">
                               <ice:outputText styleClass="dvnInlineHelpLabel dvnInlineHelpTip" value="#{editstudybundle.distributorAffiliationLabel}" title="#{editstudybundle.distributorAffiliationHelpHeading} - #{editstudybundle.distributorAffiliationHelp}"/>
                               <ice:inputText maxlength="255" id="input_distributorAffiliation" validator="#{EditStudyPage.validateStudyDistributor}" binding="#{EditStudyPage.inputDistributorAffiliation}" size="45"
                                              value="#{currentRow.affiliation}"
                                              required="#{EditStudyPage.studyMap[sfc.distributorAffiliation].required  and EditStudyPage.validateRequired}" requiredMessage="This field is required."
+                                             rendered="#{empty(EditStudyPage.studyMap[sfc.distributorAffiliation].templateField.controlledVocabulary)}"
                                              styleClass="formHtmlEnabled">
                                 <f:validator validatorId="XhtmlValidator"/>
                               </ice:inputText>
+                            <ice:selectOneMenu immediate="false"   id="selectOneDistributorAffiliation"                                          
+                                           value="#{currentRow.affiliation}" 
+                                           validator="#{EditStudyPage.validateStudyDistributor}"
+                                           required="#{EditStudyPage.studyMap[sfc.distributor].required  and EditStudyPage.validateRequired}" requiredMessage="This field is required."
+                                           rendered="#{!empty(EditStudyPage.studyMap[sfc.distributorAffiliation].templateField.controlledVocabulary)}" 
+                                           >
+                            <f:selectItem itemLabel="No Value" itemValue=""/>
+                             <f:validator validatorId="XhtmlValidator"/>
+                            <f:selectItems value="#{EditStudyPage.studyMap[sfc.distributorAffiliation].templateField.controlledVocabulary.selectItems}"/>
+                            </ice:selectOneMenu>
                               <ice:message styleClass="errorMessage" for="input_distributorAffiliation"/>
+                            <ice:message styleClass="errorMessage" for="selectOneDistributorAffiliation"/>
                             </div>
                             <div jsfc="ice:panelGroup" styleClass="vdcEditStudyGroupField ">
                               <ice:outputText styleClass="dvnInlineHelpLabel dvnInlineHelpTip" value="#{editstudybundle.distributorURLLabel}" title="#{editstudybundle.distributorURLHelpHeading} - #{editstudybundle.distributorURLHelp}"/>
@@ -852,11 +891,23 @@
                                              value="#{currentRow.url}"
                                              size="45"
                                              maxlength="255"
+                                             rendered="#{empty(EditStudyPage.studyMap[sfc.distributorURL].templateField.controlledVocabulary)}" 
                                              required="#{EditStudyPage.studyMap[sfc.distributorURL].required and EditStudyPage.validateRequired}" requiredMessage="This field is required." >
                                 <f:validator validatorId="UrlValidator"/>
                               </ice:inputText>
+                            <ice:selectOneMenu immediate="false"   id="selectOneDistributorURL"                                          
+                                           value="#{currentRow.url}" 
+                                           validator="#{EditStudyPage.validateStudyDistributor}"
+                                           required="#{EditStudyPage.studyMap[sfc.distributor].required  and EditStudyPage.validateRequired}" requiredMessage="This field is required."
+                                           rendered="#{!empty(EditStudyPage.studyMap[sfc.distributorURL].templateField.controlledVocabulary)}" 
+                                           >
+                            <f:selectItem itemLabel="No Value" itemValue=""/>
+                                <f:validator validatorId="UrlValidator"/>
+                            <f:selectItems value="#{EditStudyPage.studyMap[sfc.distributorURL].templateField.controlledVocabulary.selectItems}"/>
+                            </ice:selectOneMenu>
                               <ice:outputText styleClass="vdcEditStudyFormatExample" value="(http://example-domain.edu/)"/>
                               <ice:message styleClass="errorMessage" for="input_distributorURL"/>
+                              <ice:message styleClass="errorMessage" for="selectOneDistributorURL"/>
                             </div>
                             <div jsfc="ice:panelGroup" styleClass="vdcEditStudyGroupField">
                               <ice:outputText styleClass="dvnInlineHelpLabel dvnInlineHelpTip" value="#{editstudybundle.distributorLogoLabel}" title="#{editstudybundle.distributorLogoHelpHeading} - #{editstudybundle.distributorLogoHelp}"/>
@@ -865,11 +916,23 @@
                                              value="#{currentRow.logo}"
                                              size="45"
                                              maxlength="255"
+                                             rendered="#{empty(EditStudyPage.studyMap[sfc.distributorLogo].templateField.controlledVocabulary)}" 
                                              required="#{EditStudyPage.studyMap[sfc.distributorLogo].required and EditStudyPage.validateRequired}" requiredMessage="This field is required." >
                                 <f:validator validatorId="UrlValidator"/>
                               </ice:inputText>
+                             <ice:selectOneMenu immediate="false"   id="selectOneDistributorLogo"                                          
+                                           value="#{currentRow.logo}" 
+                                           validator="#{EditStudyPage.validateStudyDistributor}"
+                                           required="#{EditStudyPage.studyMap[sfc.distributor].required  and EditStudyPage.validateRequired}" requiredMessage="This field is required."
+                                           rendered="#{!empty(EditStudyPage.studyMap[sfc.distributorLogo].templateField.controlledVocabulary)}" 
+                                           >
+                            <f:selectItem itemLabel="No Value" itemValue=""/>
+                                <f:validator validatorId="UrlValidator"/>
+                            <f:selectItems value="#{EditStudyPage.studyMap[sfc.distributorLogo].templateField.controlledVocabulary.selectItems}"/>
+                            </ice:selectOneMenu>
                               <ice:outputText styleClass="vdcEditStudyFormatExample" value="(http://example-domain.edu/image)"/>
                               <ice:message styleClass="errorMessage" for="input_distributorLogo"/>
+                              <ice:message styleClass="errorMessage" for="selectOneDistributorLogo"/>
                             </div>
                           </div>
                         </ice:column>

@@ -778,6 +778,17 @@ public class EditStudyPage extends VDCBaseBean implements java.io.Serializable  
         this.inputStudyAuthorName = inputStudyAuthorName;
     }
     
+        // StudyAuthor
+    private HtmlSelectOneMenu inputStudyDistributorName;
+
+    public HtmlSelectOneMenu getInputStudyDistributorName() {
+        return inputStudyDistributorName;
+    }
+
+    public void setInputStudyDistributorName(HtmlSelectOneMenu inputStudyDistributorName) {
+        this.inputStudyDistributorName = inputStudyDistributorName;
+    }
+    
     public boolean isStudyAuthorsEmpty() {
         return isGroupEmpty(metadata.getStudyAuthors());
     }
@@ -1844,7 +1855,17 @@ public class EditStudyPage extends VDCBaseBean implements java.io.Serializable  
         
         if (isValidateRequired()) {
             boolean valid=true;
-            if (StringUtil.isEmpty((String)inputDistributorName.getLocalValue())
+            
+                        // StudyDistributor get name from text or dropdown input
+            String name = (String)inputDistributorName.getLocalValue(); //text
+            if (name == null){
+                name = (String) inputStudyDistributorName.getValue(); //dropdown
+            }
+            if (name == null){
+                name = "";
+            }
+            name = name.trim();
+            if (StringUtil.isEmpty(name)
             && (!StringUtil.isEmpty((String)inputDistributorAbbreviation.getLocalValue())
                  || !StringUtil.isEmpty((String)inputDistributorAffiliation.getLocalValue())
                  || !StringUtil.isEmpty((String)inputDistributorLogo.getLocalValue())

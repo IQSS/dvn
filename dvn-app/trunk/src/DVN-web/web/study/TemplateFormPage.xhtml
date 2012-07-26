@@ -684,20 +684,46 @@
                       <div styleClass="vdcEditStudyFieldFloatWrap">
                         <div jsfc="ice:panelGroup" styleClass="vdcEditStudyFieldFloat1">
                           <ice:outputText styleClass="dvnInlineHelpLabel dvnInlineHelpTip" value="#{editstudybundle.distributorLabel}" title="#{editstudybundle.distributorHelpHeading} - #{editstudybundle.distributorHelp}"/>
-                          <ice:inputText maxlength="255" binding="#{TemplateFormPage.inputDistributorName}" id="input_distributorName" value="#{currentRow.name}" size="45"/>
+                          <ice:inputText maxlength="255" binding="#{TemplateFormPage.inputDistributorName}" 
+                                         rendered="#{empty(TemplateFormPage.studyMap[sfc.distributorName].templateField.controlledVocabulary)}" 
+                                         id="input_distributorName" value="#{currentRow.name}" size="45"/>
                           <ice:message styleClass="errorMessage" for="input_distributorName"/>
                         </div>
+                        <ice:selectOneMenu immediate="false"   id="selectOneDistributorName"                                          
+                                           value="#{currentRow.name}" 
+                                           rendered="#{!empty(TemplateFormPage.studyMap[sfc.distributorName].templateField.controlledVocabulary)}" 
+                                           >
+                            <f:selectItem itemLabel="No Value" itemValue=""/>
+                            <f:selectItems value="#{TemplateFormPage.studyMap[sfc.distributorName].templateField.controlledVocabulary.selectItems}"/>
+                        </ice:selectOneMenu> 
                         <div jsfc="ice:panelGroup" styleClass="vdcEditStudyFieldFloat2 vdcEditStudyGroupField">
                           <ice:outputText styleClass="dvnInlineHelpLabel dvnInlineHelpTip" value="#{editstudybundle.distributorAbbreviationLabel}" title="#{editstudybundle.distributorAbbreviationHelpHeading} - #{editstudybundle.distributorAbbreviationHelp}"/>
-                          <ice:inputText maxlength="255"  binding="#{TemplateFormPage.inputDistributorAbbreviation}" id="input_distributorAbbreviation" value="#{currentRow.abbreviation}"/>
+                          <ice:inputText maxlength="255"  binding="#{TemplateFormPage.inputDistributorAbbreviation}"
+                                         rendered="#{empty(TemplateFormPage.studyMap[sfc.distributorAbbreviation].templateField.controlledVocabulary)}" 
+                                         id="input_distributorAbbreviation" value="#{currentRow.abbreviation}"/>
+                           <ice:selectOneMenu immediate="false"   id="selectOneDistributorAbbreviation"                                          
+                                           value="#{currentRow.abbreviation}" 
+                                           rendered="#{!empty(TemplateFormPage.studyMap[sfc.distributorAbbreviation].templateField.controlledVocabulary)}" 
+                                           >
+                            <f:selectItem itemLabel="No Value" itemValue=""/>
+                            <f:selectItems value="#{TemplateFormPage.studyMap[sfc.distributorAbbreviation].templateField.controlledVocabulary.selectItems}"/>
+                        </ice:selectOneMenu> 
                           <ice:message styleClass="errorMessage" for="input_distributorAbbreviation"/>
                         </div>
                         <div jsfc="ice:panelGroup" styleClass="vdcEditStudyFieldFloat3 vdcEditStudyGroupField">
                           <ice:outputText styleClass="dvnInlineHelpLabel dvnInlineHelpTip" value="#{editstudybundle.distributorAffiliationLabel}" title="#{editstudybundle.distributorAffiliationHelpHeading} - #{editstudybundle.distributorAffiliationHelp}"/>
                           <ice:inputText maxlength="255" id="input_distributorAffiliation"  binding="#{TemplateFormPage.inputDistributorAffiliation}" size="45"
+                                         rendered="#{empty(TemplateFormPage.studyMap[sfc.distributorAffiliation].templateField.controlledVocabulary)}"
                                          value="#{currentRow.affiliation}"
                                          styleClass="formHtmlEnabled">
                           </ice:inputText>
+                          <ice:selectOneMenu immediate="false"   id="selectOneDistributorAffiliation"                                          
+                                           value="#{currentRow.affiliation}" 
+                                           rendered="#{!empty(TemplateFormPage.studyMap[sfc.distributorAffiliation].templateField.controlledVocabulary)}" 
+                                           >
+                            <f:selectItem itemLabel="No Value" itemValue=""/>
+                            <f:selectItems value="#{TemplateFormPage.studyMap[sfc.distributorAffiliation].templateField.controlledVocabulary.selectItems}"/>
+                        </ice:selectOneMenu>
                           <ice:message styleClass="errorMessage" for="input_distributorAffiliation"/>
                         </div>
                         <div jsfc="ice:panelGroup" styleClass="vdcEditStudyGroupField">
@@ -706,8 +732,16 @@
                                          binding="#{TemplateFormPage.inputDistributorUrl}"
                                          value="#{currentRow.url}"
                                          size="45"
+                                         rendered="#{empty(TemplateFormPage.studyMap[sfc.distributorURL].templateField.controlledVocabulary)}" 
                                          maxlength="255">
                           </ice:inputText>
+                          <ice:selectOneMenu immediate="false"   id="selectOneDistributorUrl"                                          
+                                           value="#{currentRow.url}" 
+                                           rendered="#{!empty(TemplateFormPage.studyMap[sfc.distributorURL].templateField.controlledVocabulary)}" 
+                                           >
+                            <f:selectItem itemLabel="No Value" itemValue=""/>
+                            <f:selectItems value="#{TemplateFormPage.studyMap[sfc.distributorURL].templateField.controlledVocabulary.selectItems}"/>
+                        </ice:selectOneMenu>
                           <ice:outputText styleClass="vdcEditStudyFormatExample" value="(http://example-domain.edu/)"/>
                           <ice:message styleClass="errorMessage" for="input_distributorURL"/>
                         </div>
@@ -716,8 +750,16 @@
                           <ice:inputText binding="#{TemplateFormPage.inputDistributorLogo}" id="input_distributorLogo"
                                          value="#{currentRow.logo}"
                                          size="45"
+                                         rendered="#{empty(TemplateFormPage.studyMap[sfc.distributorLogo].templateField.controlledVocabulary)}" 
                                          maxlength="255">
                           </ice:inputText>
+                         <ice:selectOneMenu immediate="false"   id="selectOneDistributorlogo"                                          
+                                           value="#{currentRow.logo}" 
+                                           rendered="#{!empty(TemplateFormPage.studyMap[sfc.distributorLogo].templateField.controlledVocabulary)}" 
+                                           >
+                            <f:selectItem itemLabel="No Value" itemValue=""/>
+                            <f:selectItems value="#{TemplateFormPage.studyMap[sfc.distributorLogo].templateField.controlledVocabulary.selectItems}"/>
+                        </ice:selectOneMenu>
                           <ice:outputText styleClass="vdcEditStudyFormatExample" value="(http://example-domain.edu/image)"/>
                           <ice:message styleClass="errorMessage" for="input_distributorLogo"/>
                         </div>
@@ -726,6 +768,8 @@
                     <ice:column>
                       <ice:commandButton partialSubmit="true" alt="Add Row" title="Add Row" image="/resources/images/icon_add.gif" actionListener="#{TemplateFormPage.addRow}"/>
                       <ice:commandButton partialSubmit="true" rendered="#{TemplateFormPage.dataTableDistributors.rowCount gt 1}" alt="Remove Row" title="Remove Row" image="/resources/images/icon_remove.gif" actionListener="#{TemplateFormPage.removeRow}"/>
+                      <ice:commandLink value="Select Vocabulary" rendered ="#{TemplateFormPage.dataTableDistributors.rowIndex==0}"
+                                       action="#{TemplateFormPage.openPopupStandard(TemplateFormPage.studyMap[sfc.distributor].templateField)}"/>
                       <ice:selectOneMenu immediate="false" partialSubmit="true" 
                                         value="#{TemplateFormPage.studyMap[sfc.distributor].templateField.fieldInputLevelString}"
                                         rendered ="#{TemplateFormPage.dataTableDistributors.rowIndex==0}">

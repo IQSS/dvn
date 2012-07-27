@@ -27,6 +27,7 @@
  */
 package edu.harvard.iq.dvn.core.web.study;
 
+import com.icesoft.faces.context.effects.JavascriptContext;
 import edu.harvard.iq.dvn.core.admin.EditUserService;
 import edu.harvard.iq.dvn.core.admin.UserServiceLocal;
 import edu.harvard.iq.dvn.core.admin.VDCUser;
@@ -396,7 +397,10 @@ public class TermsOfUsePage extends VDCBaseBean {
             termsOfUseMap.put( "dvn_deposit", "accepted" );
         }  
         if (redirectPage != null) {
-            // piggy back on the login redirect logic for now
+            // send javascript call to download file
+            JavascriptContext.addJavascriptCall(getFacesContext(), "downloadFile();");            
+            
+            /*
             String redirect = this.getExternalContext().getRequestContextPath() + getVDCRequestBean().getCurrentVDCURL() + redirectPage;
 
             try {
@@ -404,7 +408,7 @@ public class TermsOfUsePage extends VDCBaseBean {
             } catch (IOException ex) {
                 Logger.getLogger(TermsOfUsePage.class.getName()).log(Level.SEVERE, null, ex);
                 throw new FacesException(ex);
-            }
+            }*/
         }
         return null;
     }    

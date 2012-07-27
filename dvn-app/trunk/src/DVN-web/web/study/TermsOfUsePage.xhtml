@@ -20,6 +20,14 @@
         </f:metadata>  
     </ui:define>
     <ui:define name="body">
+      <script type="text/javascript">
+          // <![CDATA[    
+          function downloadFile() {
+              fileUrl = "/dvn#{VDCRequest.currentVDCURL}#{TermsOfUsePage.redirectPage}";
+              window.location=fileUrl;
+          }   
+          // ]]>
+      </script>          
       <f:loadBundle basename="StudyBundle" var="studybundle"/>
       <ice:form  id="form1">
         <ice:inputHidden id="vdcId" value="#{VDCRequest.currentVDCId}"/>

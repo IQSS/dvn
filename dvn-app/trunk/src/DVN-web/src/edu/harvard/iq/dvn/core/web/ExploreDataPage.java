@@ -731,7 +731,7 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
         List selectItems = new ArrayList<SelectItem>();
         int defaultViewDisplay = dt.getVisualizationDisplay().getDefaultDisplay();
         
-        if (vizLines.size() >= 8){
+        if (vizLines.size() > 8){
             defaultViewDisplay = 2;
         }
 
@@ -757,11 +757,11 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
                 break;
         }
 
-        if (!image && dt.getVisualizationDisplay().isShowImageGraph() && vizLines.size() < 8) {
+        if (!image && dt.getVisualizationDisplay().isShowImageGraph() && vizLines.size() <= 8) {
             selectItems.add(new SelectItem(2, "Image Graph"));
             imageAvailable = true;
         }
-        if (!flash && dt.getVisualizationDisplay().isShowFlashGraph()) {
+        if (!flash && dt.getVisualizationDisplay().isShowFlashGraph() && vizLines.size() <= 8) {
             selectItems.add(new SelectItem(1, "Flash Graph"));
         }
         if (!datatable && dt.getVisualizationDisplay().isShowDataTable()) {
@@ -774,7 +774,7 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
         includeExcel = true;
         includeCSV = true;
 
-        if (!dt.getVisualizationDisplay().isShowImageGraph() || vizLines.size() >= 8 ) {
+        if (!dt.getVisualizationDisplay().isShowImageGraph() || vizLines.size() > 8 ) {
             includeImage = false;
             includePdf = false;
         }
@@ -1146,13 +1146,7 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
             FacesContext fc = FacesContext.getCurrentInstance();
             fc.addMessage(addLineButton.getClientId(fc), message);
             return;
-        }
-        
-        if (vizLines.size() >= 8 && dataTableAvailable) {
-            forcedDataTableMessage = "When more than 8 variables are selected the display is set to a data table.";
-           displayType = new Long(3);
-        }
-                
+        }      
 
         if (validateSelections()) {
             for (VisualizationLineDefinition vl : vizLines) {
@@ -1165,7 +1159,6 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
             }
         }
         
-        selectView = loadSelectViewItems();
 
         if (validateSelections()) {
             FacesContext.getCurrentInstance().renderResponse();
@@ -1216,6 +1209,11 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
 
             dataTableVizLines.getChildren().clear();
             dataTableVizLines.getSavedChildren().clear();
+            if (vizLines.size() > 8 && dataTableAvailable) {
+                forcedDataTableMessage = "When more than 8 variables are selected the display is set to a data table.";
+                displayType = new Long(3);
+            }
+            selectView = loadSelectViewItems();
             callDrawVisualization();
         } else {
             FacesContext fc = FacesContext.getCurrentInstance();
@@ -1293,6 +1291,7 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
         vizLines = new ArrayList();
         dataTableVizLines.getChildren().clear();
         dataTableVizLines.getChildren().clear();
+        selectView = loadSelectViewItems();
         refreshSettings();
     }
    
@@ -1390,7 +1389,7 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
 
     
     public void deleteLine(ActionEvent ae) {
-
+        forcedDataTableMessage = "";
         UIComponent uiComponent = ae.getComponent().getParent();
         while (!(uiComponent instanceof HtmlDataTable)) {
             uiComponent = uiComponent.getParent();
@@ -1436,7 +1435,11 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
         if (!titleEdited) {
             updateGraphTitleForMeasure();
         }
-
+        selectView = loadSelectViewItems();
+        if (vizLines.size() > 8 && dataTableAvailable) {
+           forcedDataTableMessage = "When more than 8 variables are selected the display is set to a data table.";
+           displayType = new Long(3);
+        }
         callDrawVisualization();
 
     }

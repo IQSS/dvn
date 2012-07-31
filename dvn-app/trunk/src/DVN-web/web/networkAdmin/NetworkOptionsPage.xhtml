@@ -13,8 +13,11 @@
     <ui:composition template="/template.xhtml">
         <ui:param name="pageTitle" value="Dataverse Network Admin Options - #{VDCRequest.dataversePageTitle}"/>
         <ui:define name="metadata">
-            <f:metadata></f:metadata>
-        </ui:define>
+            <f:metadata>
+                <f:event type="preRenderView" listener="#{OptionsPage.preRenderView}"/>  
+                <f:viewParam name="oauth_verifier" value="#{OptionsPage.twitterVerifier}"/>
+            </f:metadata>
+        </ui:define> 
         <ui:define name="body">
             <ice:form id="form1" rendered="#{VDCRequest.currentVDC == null}">
             <div class="dvn_section">
@@ -155,6 +158,17 @@
                                     </td>
                                     <td><ice:outputText styleClass="dvnOptionsTableNote" value="#{bundlePageInfo.editDvnNotificationsText}"/></td>
                                 </tr>
+                                <tr>
+                                    <td class="dvnOptionsTableOption">
+                                        <ice:commandLink action="#{OptionsPage.authorizeTwitter}" rendered="#{OptionsPage.twitterConfigured and !OptionsPage.twitterEnabled}">
+                                            <ice:outputText  value="Enable Twitter"/>
+                                        </ice:commandLink>
+                                        <ice:commandLink action="#{OptionsPage.removeTwitter}" rendered="#{OptionsPage.twitterConfigured and OptionsPage.twitterEnabled}">
+                                            <ice:outputText  value="Disable Twitter"/>
+                                        </ice:commandLink>                                        
+                                    </td>
+                                    <td><ice:outputText styleClass="dvnOptionsTableNote" value="Enable or disable automatic tweets"/></td>
+                                </tr>                                
                             </table>
                             <table class="dvnOptionsTable" cellspacing="0" cellpadding="0" border="0">
                                 <tr><td colspan="2" class="dvnOptionsTableHeader"><ice:outputText value="#{bundlePageInfo.dvnTermsSectionTitle}"/></td></tr>

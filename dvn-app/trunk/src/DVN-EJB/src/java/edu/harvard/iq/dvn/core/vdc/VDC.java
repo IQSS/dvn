@@ -1170,6 +1170,17 @@ public class VDC implements java.io.Serializable  {
         this.lockssConfig = lockssConfig;
     }
     
+    @OneToOne(mappedBy = "vdc", cascade = {CascadeType.REMOVE, CascadeType.MERGE, CascadeType.PERSIST})
+    private TwitterCredentials twitterCredentials;
+
+    public TwitterCredentials getTwitterCredentials() {
+        return twitterCredentials;
+    }
+
+    public void setTwitterCredentials(TwitterCredentials twitterCredentials) {
+        this.twitterCredentials = twitterCredentials;
+    }    
+    
 
     /**
      * @return the allowStudyComments

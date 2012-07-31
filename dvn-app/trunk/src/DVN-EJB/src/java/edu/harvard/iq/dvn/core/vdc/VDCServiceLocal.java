@@ -122,4 +122,7 @@ public interface VDCServiceLocal extends java.io.Serializable  {
     @javax.ejb.TransactionAttribute(value = javax.ejb.TransactionAttributeType.REQUIRED)
     public void save(edu.harvard.iq.dvn.core.vdc.VDC vDC);
 
+    
+    public void setTwitterCredentials(String accessToken, String accessTokenSecret, Long vdcId);
+    public void removeTwitterCredentials(Long vdcId);     
 }

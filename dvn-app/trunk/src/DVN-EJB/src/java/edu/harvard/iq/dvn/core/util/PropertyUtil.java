@@ -85,7 +85,7 @@ public class PropertyUtil implements java.io.Serializable  {
     }
     
     
-    public boolean isTwitterConsumerConfigured() {
+    public static boolean isTwitterConsumerConfigured() {
         if (System.getProperty("twitter4j.oauth.consumerKey") != null && System.getProperty("twitter4j.oauth.consumerSecret") != null ) {
             return true;
         }

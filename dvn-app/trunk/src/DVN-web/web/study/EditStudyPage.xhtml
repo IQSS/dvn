@@ -215,7 +215,7 @@
                                                binding="#{EditStudyPage.inputRelPublicationText}"
                                                value="#{currentRow.text}"
                                                rendered="#{empty(EditStudyPage.studyMap[sfc.publicationCitation].templateField.controlledVocabulary)}"
-                                               required="#{EditStudyPage.studyMap[sfc.publication].required and EditStudyPage.validateRequired }" 
+                                               required="#{EditStudyPage.studyMap[sfc.publicationCitation].required and EditStudyPage.validateRequired }" 
                                                requiredMessage="This field is required."
                                                styleClass="formHtmlEnabled">
                                 <f:validator validatorId="XhtmlValidator"/>
@@ -223,7 +223,7 @@
                              <ice:selectOneMenu immediate="false"   id="selectOneRelPublicationText"                                          
                                            value="#{currentRow.text}" 
                                             binding="#{EditStudyPage.inputRelPublicationCitation}"
-                                           required="#{EditStudyPage.studyMap[sfc.publication].required and EditStudyPage.validateRequired }" requiredMessage="This field is required."
+                                           required="#{EditStudyPage.studyMap[sfc.publicationCitation].required and EditStudyPage.validateRequired }" requiredMessage="This field is required."
                                            rendered="#{!empty(EditStudyPage.studyMap[sfc.publicationCitation].templateField.controlledVocabulary)}" 
                                            >
                             <f:selectItem itemLabel="No Value" itemValue=""/>
@@ -257,7 +257,7 @@
                                              requiredMessage="This field is required." maxlength="255"/>
                             <ice:selectOneMenu immediate="false"   id="selectOneRelPubIdNumber"                                          
                                            value="#{currentRow.idNumber}" 
-                                           required="#{EditStudyPage.studyMap[sfc.publication].required and EditStudyPage.validateRequired}" 
+                                           required="#{EditStudyPage.studyMap[sfc.publicationIDNumber].required and EditStudyPage.validateRequired}" 
                                            requiredMessage="This field is required."
                                            rendered="#{!empty(EditStudyPage.studyMap[sfc.publicationIDNumber].templateField.controlledVocabulary)}" 
                                            >
@@ -377,12 +377,12 @@
                                              id="input_otherIdAgency" value="#{currentRow.agency}"  
                                              requiredMessage="This field is required." 
                                              rendered="#{empty(EditStudyPage.studyMap[sfc.otherIdAgency].templateField.controlledVocabulary)}" 
-                                             required="#{EditStudyPage.studyMap[sfc.otherId].required and EditStudyPage.validateRequired }"/>
+                                             required="#{EditStudyPage.studyMap[sfc.otherIdAgency].required and EditStudyPage.validateRequired }"/>
                              <ice:selectOneMenu immediate="false"   id="selectOneOtherIdAgency"                                          
                                            value="#{currentRow.agency}" 
                                            validator="#{EditStudyPage.validateStudyOtherId}"
                                            requiredMessage="This field is required."
-                                           required="#{EditStudyPage.studyMap[sfc.otherId].required and EditStudyPage.validateRequired}"
+                                           required="#{EditStudyPage.studyMap[sfc.otherIdAgency].required and EditStudyPage.validateRequired}"
                                            rendered="#{!empty(EditStudyPage.studyMap[sfc.otherIdAgency].templateField.controlledVocabulary)}" 
                                            >
                             <f:selectItem itemLabel="No Value" itemValue=""/>
@@ -457,7 +457,7 @@
                                                value="#{currentAuthor.affiliation}"
                                                rendered="#{empty(EditStudyPage.studyMap[sfc.authorAffiliation].templateField.controlledVocabulary)}"
                                                validator="#{EditStudyPage.validateStudyAuthor}"
-                                               required="#{EditStudyPage.studyMap[sfc.author].required  and EditStudyPage.validateRequired }" 
+                                               required="#{EditStudyPage.studyMap[sfc.authorAffiliation].required  and EditStudyPage.validateRequired }" 
                                                requiredMessage="This field is required."
                                                styleClass="formHtmlEnabled">
                                   <f:validator validatorId="XhtmlValidator"/>
@@ -465,7 +465,7 @@
                             <ice:selectOneMenu immediate="false"   id="selectOneAuthorAffiliation"                                          
                                            value="#{currentAuthor.affiliation}" 
                                            validator="#{EditStudyPage.validateStudyAuthor}"
-                                           required="#{EditStudyPage.studyMap[sfc.author].required and EditStudyPage.validateRequired}" 
+                                           required="#{EditStudyPage.studyMap[sfc.authorAffiliation].required and EditStudyPage.validateRequired}" 
                                            requiredMessage="This field is required."
                                            rendered="#{!empty(EditStudyPage.studyMap[sfc.authorAffiliation].templateField.controlledVocabulary)}" 
                                            >
@@ -543,7 +543,7 @@
                             <ice:selectOneMenu immediate="false"   id="selectOneProducerAbbreviation"                                          
                                            value="#{currentRow.abbreviation}" 
                                            validator="#{EditStudyPage.validateStudyProducer}"
-                                           required="#{EditStudyPage.studyMap[sfc.producer].required  and EditStudyPage.validateRequired }" 
+                                           required="#{EditStudyPage.studyMap[sfc.producerAbbreviation].required  and EditStudyPage.validateRequired }" 
                                            requiredMessage="This field is required."
                                            rendered="#{!empty(EditStudyPage.studyMap[sfc.producerAbbreviation].templateField.controlledVocabulary)}" 
                                            >
@@ -566,7 +566,7 @@
                             <ice:selectOneMenu immediate="false"   id="selectOneProducerAffiliation"                                          
                                            value="#{currentRow.affiliation}" 
                                            validator="#{EditStudyPage.validateStudyProducer}"
-                                           required="#{EditStudyPage.studyMap[sfc.producer].required  and EditStudyPage.validateRequired }" 
+                                           required="#{EditStudyPage.studyMap[sfc.producerAffiliation].required  and EditStudyPage.validateRequired }" 
                                            requiredMessage="This field is required."
                                            rendered="#{!empty(EditStudyPage.studyMap[sfc.producerAffiliation].templateField.controlledVocabulary)}" 
                                            >
@@ -592,7 +592,7 @@
                             <ice:selectOneMenu immediate="false"   id="selectOneProducerURL"                                          
                                            value="#{currentRow.url}" 
                                            validator="#{EditStudyPage.validateStudyProducer}"
-                                           required="#{EditStudyPage.studyMap[sfc.producer].required  and EditStudyPage.validateRequired }" 
+                                           required="#{EditStudyPage.studyMap[sfc.producerURL].required  and EditStudyPage.validateRequired }" 
                                            requiredMessage="This field is required."
                                            rendered="#{!empty(EditStudyPage.studyMap[sfc.producerURL].templateField.controlledVocabulary)}" 
                                            >
@@ -620,7 +620,7 @@
                             <ice:selectOneMenu immediate="false"   id="selectOneProducerLogo"                                          
                                            value="#{currentRow.logo}" 
                                            validator="#{EditStudyPage.validateStudyProducer}"
-                                           required="#{EditStudyPage.studyMap[sfc.producer].required  and EditStudyPage.validateRequired }" 
+                                           required="#{EditStudyPage.studyMap[sfc.producerLogo].required  and EditStudyPage.validateRequired }" 
                                            requiredMessage="This field is required."
                                            rendered="#{!empty(EditStudyPage.studyMap[sfc.producerLogo].templateField.controlledVocabulary)}" 
                                            >
@@ -749,7 +749,7 @@
                               <ice:message styleClass="errorMessage" for="input_softwareVersion"/>
                               <ice:selectOneMenu immediate="false" id="softwareVersion_SelectOne"
                                           rendered="#{!empty(EditStudyPage.studyMap[sfc.softwareVersion].templateField.controlledVocabulary)}"
-                                          required="#{EditStudyPage.studyMap[sfc.software].required and EditStudyPage.validateRequired}" 
+                                          required="#{EditStudyPage.studyMap[sfc.softwareVersion].required and EditStudyPage.validateRequired}" 
                                            value="#{currentRow.softwareVersion}"  
                                            validator="#{EditStudyPage.validateStudySoftware}"
                                            requiredMessage="This field is required." >
@@ -853,7 +853,7 @@
                                              requiredMessage="This field is required." />
                                 <ice:selectOneMenu immediate="false" id="grantAgency_SelectOne"
                                           rendered="#{!empty(EditStudyPage.studyMap[sfc.grantNumberAgency].templateField.controlledVocabulary)}"
-                                          required="#{EditStudyPage.studyMap[sfc.grantNumber].required and EditStudyPage.validateRequired}" 
+                                          required="#{EditStudyPage.studyMap[sfc.grantNumberAgency].required and EditStudyPage.validateRequired}" 
                                            value="#{currentRow.agency}" 
                                            validator="#{EditStudyPage.validateStudyGrant}"
                                            requiredMessage="This field is required." >
@@ -926,7 +926,7 @@
                             <ice:selectOneMenu immediate="false"   id="selectOneDistributorAbbreviation"                                          
                                            value="#{currentRow.abbreviation}" 
                                            validator="#{EditStudyPage.validateStudyDistributor}"
-                                           required="#{EditStudyPage.studyMap[sfc.distributor].required  and EditStudyPage.validateRequired}" requiredMessage="This field is required."
+                                           required="#{EditStudyPage.studyMap[sfc.distributorAbbreviation].required  and EditStudyPage.validateRequired}" requiredMessage="This field is required."
                                            rendered="#{!empty(EditStudyPage.studyMap[sfc.distributorAbbreviation].templateField.controlledVocabulary)}" 
                                            >
                             <f:selectItem itemLabel="No Value" itemValue=""/>
@@ -947,7 +947,7 @@
                             <ice:selectOneMenu immediate="false"   id="selectOneDistributorAffiliation"                                          
                                            value="#{currentRow.affiliation}" 
                                            validator="#{EditStudyPage.validateStudyDistributor}"
-                                           required="#{EditStudyPage.studyMap[sfc.distributor].required  and EditStudyPage.validateRequired}" requiredMessage="This field is required."
+                                           required="#{EditStudyPage.studyMap[sfc.distributorAbbreviation].required  and EditStudyPage.validateRequired}" requiredMessage="This field is required."
                                            rendered="#{!empty(EditStudyPage.studyMap[sfc.distributorAffiliation].templateField.controlledVocabulary)}" 
                                            >
                             <f:selectItem itemLabel="No Value" itemValue=""/>
@@ -972,7 +972,8 @@
                             <ice:selectOneMenu immediate="false"   id="selectOneDistributorURL"                                          
                                            value="#{currentRow.url}" 
                                            validator="#{EditStudyPage.validateStudyDistributor}"
-                                           required="#{EditStudyPage.studyMap[sfc.distributor].required  and EditStudyPage.validateRequired}" requiredMessage="This field is required."
+                                           required="#{EditStudyPage.studyMap[sfc.distributorURL].required  and EditStudyPage.validateRequired}" 
+                                           requiredMessage="This field is required."
                                            rendered="#{!empty(EditStudyPage.studyMap[sfc.distributorURL].templateField.controlledVocabulary)}" 
                                            >
                             <f:selectItem itemLabel="No Value" itemValue=""/>
@@ -997,7 +998,7 @@
                              <ice:selectOneMenu immediate="false"   id="selectOneDistributorLogo"                                          
                                            value="#{currentRow.logo}" 
                                            validator="#{EditStudyPage.validateStudyDistributor}"
-                                           required="#{EditStudyPage.studyMap[sfc.distributor].required  and EditStudyPage.validateRequired}" requiredMessage="This field is required."
+                                           required="#{EditStudyPage.studyMap[sfc.distributorLogo].required  and EditStudyPage.validateRequired}" requiredMessage="This field is required."
                                            rendered="#{!empty(EditStudyPage.studyMap[sfc.distributorLogo].templateField.controlledVocabulary)}" 
                                            >
                             <f:selectItem itemLabel="No Value" itemValue=""/>
@@ -1086,7 +1087,7 @@
                             <ice:selectOneMenu immediate="false"   id="selectOneDistributorContactEmail" 
                                            value="#{EditStudyPage.metadata.distributorContactEmail}" 
                                            validator="#{EditStudyPage.validateDistributorContact}"
-                                           required="#{EditStudyPage.studyMap[sfc.distributorContact].required  and EditStudyPage.validateRequired}" requiredMessage="This field is required."
+                                           required="#{EditStudyPage.studyMap[sfc.distributorContactEmail].required  and EditStudyPage.validateRequired}" requiredMessage="This field is required."
                                            rendered="#{!empty(EditStudyPage.studyMap[sfc.distributorContactEmail].templateField.controlledVocabulary)}" 
                                            >
                             <f:selectItem itemLabel="No Value" itemValue=""/>
@@ -1228,7 +1229,7 @@
                         </ice:inputText>
                         <ice:selectOneMenu immediate="false"   id="selectOneSeriesInformation"                                          
                                            value="#{EditStudyPage.metadata.seriesInformation}" 
-                                           required="#{EditStudyPage.studyMap[sfc.series].required  and EditStudyPage.validateRequired}" 
+                                           required="#{EditStudyPage.studyMap[sfc.seriesInformation].required  and EditStudyPage.validateRequired}" 
                                            requiredMessage="This field is required."
                                            rendered="#{!empty(EditStudyPage.studyMap[sfc.seriesInformation].templateField.controlledVocabulary)}" 
                                            validator="#{EditStudyPage.validateSeries}"
@@ -1285,14 +1286,14 @@
                                        id="input_versionDate" styleClass="formDateFormat" 
                                        value="#{EditStudyPage.metadata.versionDate}" 
                                        rendered="#{empty(EditStudyPage.studyMap[sfc.versionDate].templateField.controlledVocabulary)}"
-                                       required="#{EditStudyPage.studyMap[sfc.studyVersion].required and EditStudyPage.validateRequired}" 
+                                       required="#{EditStudyPage.studyMap[sfc.versionDate].required and EditStudyPage.validateRequired}" 
                                        requiredMessage="This field is required."  >
                           <f:validator validatorId="DateValidator"/>
                         </ice:inputText>
                         <ice:selectOneMenu immediate="false"   id="selectOneStudyVersionDate"
                                            binding="#{EditStudyPage.inputStudyVersionDate}"
                                            value="#{EditStudyPage.metadata.versionDate}" 
-                                           required="#{EditStudyPage.studyMap[sfc.studyVersion].required  and EditStudyPage.validateRequired}" 
+                                           required="#{EditStudyPage.studyMap[sfc.versionDate].required  and EditStudyPage.validateRequired}" 
                                            requiredMessage="This field is required."
                                            rendered="#{!empty(EditStudyPage.studyMap[sfc.versionDate].templateField.controlledVocabulary)}" 
                                            >
@@ -1427,7 +1428,7 @@
                                                binding="#{EditStudyPage.inputStudyKeywordVocab}"
                                            value="#{currentRow.vocab}" 
                                            validator="#{EditStudyPage.validateStudyKeyword}"
-                                           required="#{EditStudyPage.studyMap[sfc.keyword].required  and EditStudyPage.validateRequired}" 
+                                           required="#{EditStudyPage.studyMap[sfc.keywordVocab].required  and EditStudyPage.validateRequired}" 
                                            requiredMessage="This field is required."
                                            rendered="#{!empty(EditStudyPage.studyMap[sfc.keywordVocab].templateField.controlledVocabulary)}" 
                                            >
@@ -1446,14 +1447,14 @@
                                              size="45"
                                              maxlength="255"
                                              value="#{currentRow.vocabURI}"
-                                             required="#{EditStudyPage.studyMap[sfc.keyword].required and EditStudyPage.validateRequired}" requiredMessage="This field is required." >
+                                             required="#{EditStudyPage.studyMap[sfc.keywordVocabURI].required and EditStudyPage.validateRequired}" requiredMessage="This field is required." >
                                 <f:validator validatorId="UrlValidator"/>
                               </ice:inputText>
                              <ice:selectOneMenu immediate="false"   id="selectOneKeywordVocabURI"  
                                                binding="#{EditStudyPage.inputStudyKeywordVocabURI}"
                                            value="#{currentRow.vocabURI}" 
                                            validator="#{EditStudyPage.validateStudyKeyword}"
-                                           required="#{EditStudyPage.studyMap[sfc.keyword].required  and EditStudyPage.validateRequired}" 
+                                           required="#{EditStudyPage.studyMap[sfc.keywordVocabURI].required  and EditStudyPage.validateRequired}" 
                                            requiredMessage="This field is required."
                                            rendered="#{!empty(EditStudyPage.studyMap[sfc.keywordVocabURI].templateField.controlledVocabulary)}" 
                                            >

@@ -25,7 +25,13 @@
           function downloadFile() {
               fileUrl = "/dvn#{VDCRequest.currentVDCURL}#{TermsOfUsePage.redirectPage}";
               window.location=fileUrl;
-          }   
+              
+              if (fileUrl.indexOf("FileDownload") !=-1) {
+                  jQuery('#dvnDownloadMessageBlock').css('display','block');
+                  jQuery('#dvnDownloadFormBlock').css('display','none');
+              }
+               
+          };
           // ]]>
       </script>          
       <f:loadBundle basename="StudyBundle" var="studybundle"/>
@@ -36,178 +42,196 @@
         <ice:inputHidden id="redirectPage" value="#{TermsOfUsePage.redirectPage}"/>
         <ice:inputHidden id="tou" value="#{TermsOfUsePage.touParam}"/>
         <div class="dvn_section">
-          <div jsfc="ice:panelGroup" styleClass="dvnstudypreviouslisting" rendered="#{TermsOfUsePage.studyId!=null and TermsOfUsePage.touTypeDownload}">
-              <ice:outputLink
-                value="/dvn#{VDCRequest.currentVDCURL}/faces/study/StudyPage.xhtml?studyId=#{TermsOfUsePage.study.id}&amp;tab=files"
-                rendered="#{VDCRequest.studyVersionNumber == null}">
-                <ice:outputText value="&lt; Back to the Study"/>
-              </ice:outputLink>
-
-              <ice:outputLink
-                value="/dvn#{VDCRequest.currentVDCURL}/faces/study/StudyPage.xhtml?studyId=#{TermsOfUsePage.study.id}&amp;versionNumber=#{VDCRequest.studyVersionNumber}&amp;tab=files"
-                rendered="#{VDCRequest.studyVersionNumber != null}">
-                <ice:outputText value="&lt; Back to the Study"/>
-              </ice:outputLink>
-          </div>
+          
           <div class="dvn_sectionTitle">
               <ice:outputText value="#{!TermsOfUsePage.guestbookOnlyRequired ? 'Terms of Use' : ''}#{(!TermsOfUsePage.guestbookOnlyRequired and TermsOfUsePage.touTypeDownload and TermsOfUsePage.guestbookRequired) ? ' + ' : ''}#{(TermsOfUsePage.touTypeDownload and TermsOfUsePage.guestbookRequired) ? 'Guestbook' : ''}"/>
           </div>
           <div class="dvn_sectionBox">
             <div class="dvn_margin12">
-              <div jsfc="ice:panelGroup" styleClass="dvnguestbookresponse" style="margin-bottom:2em;" rendered="#{TermsOfUsePage.touTypeDownload and TermsOfUsePage.guestbookRequired}">
-                
+              
+              <div id="dvnDownloadMessageBlock">
+                  
                   <div jsfc="ice:panelGroup" styleClass="dvnInformationMessage">
                     <div class="dvnMsgBlockContainer">
-                      <ice:outputText value="#{bundlePageInfo.touGuestBookResponseHelp}" escape="false"/>
+                      <ice:outputText value="#{bundlePageInfo.touDownloadMessage}" escape="false"/>
                     </div>
                   </div>
+                  
+                  <div jsfc="ice:panelGroup" styleClass="dvnDownloadMessageLink" rendered="#{TermsOfUsePage.studyId!=null and TermsOfUsePage.touTypeDownload}">
+                      <ice:outputLink
+                        value="/dvn#{VDCRequest.currentVDCURL}/faces/study/StudyPage.xhtml?studyId=#{TermsOfUsePage.study.id}&amp;tab=files"
+                        rendered="#{VDCRequest.studyVersionNumber == null}">
+                        <ice:outputText value="&lt; Back to the Study"/>
+                      </ice:outputLink>
 
-                  <ice:message for="warningMessage" styleClass="warningMessage" id="warningMessage"/>
-
-                  <ice:panelGrid cellpadding="0" cellspacing="0" columns="2"
-                               columnClasses="vdcColPadded, vdcColPadded" id="gridPanel2">
-                      <div jsfc="ice:panelGroup">
-                        <ice:outputText value="First Name"/>
-                        <ice:graphicImage value="/resources/images/icon_required.gif" rendered="#{TermsOfUsePage.study.owner.guestBookQuestionnaire.firstNameRequired}"/>
-                      </div>
-                      <div jsfc="ice:panelGroup">
-                        <ice:inputText id="input_nameText" value="#{TermsOfUsePage.guestBookResponse.firstname}"/>
-                        <ice:outputText id="firstnameMessage" styleClass="errorMessage" value="#{VDCRender.flash.inputFirstNameWarningMessage}" rendered="#{!empty VDCRender.flash.inputFirstNameWarningMessage}"/>
-                      </div>
-                      <div jsfc="ice:panelGroup">
-                        <ice:outputText value="Last Name"/>
-                        <ice:graphicImage value="/resources/images/icon_required.gif" rendered="#{TermsOfUsePage.study.owner.guestBookQuestionnaire.lastNameRequired}"/>
-                      </div>
-                      <div jsfc="ice:panelGroup">
-                        <ice:inputText id="input_lastnameText" value="#{TermsOfUsePage.guestBookResponse.lastname}"/>
-                        <ice:outputText id="lastnameMessage" styleClass="errorMessage" value="#{VDCRender.flash.inputLastNameWarningMessage}" rendered="#{!empty VDCRender.flash.inputLastNameWarningMessage}"/>
-                      </div>
-                      <div jsfc="ice:panelGroup">
-                        <ice:outputText value="E-Mail"/>
-                        <ice:graphicImage value="/resources/images/icon_required.gif" rendered="#{TermsOfUsePage.study.owner.guestBookQuestionnaire.emailRequired}"/>
-                      </div>
-                      <div jsfc="ice:panelGroup">
-                          <ice:inputText id="input_EmailText" size="40" value="#{TermsOfUsePage.guestBookResponse.email}">
-                                                             <f:validator validatorId="EmailValidator"/></ice:inputText>
-                        <ice:outputText id="emailMessage" styleClass="errorMessage" value="#{VDCRender.flash.inputEmailWarningMessage}" rendered="#{!empty VDCRender.flash.inputEmailWarningMessage}"/>
-                       <ice:message for="input_EmailText" styleClass="errorMessage"/>
-                      </div>
-                      <div jsfc="ice:panelGroup">
-                        <ice:outputText value="Institution"/>
-                        <ice:graphicImage value="/resources/images/icon_required.gif" rendered="#{TermsOfUsePage.study.owner.guestBookQuestionnaire.institutionRequired}"/>
-                      </div>
-                      <div jsfc="ice:panelGroup">
-                        <ice:inputText id="input_InstitutionText" size="40" value="#{TermsOfUsePage.guestBookResponse.institution}"/>
-                        <ice:outputText id="institutionMessage" styleClass="errorMessage" value="#{VDCRender.flash.inputInstitutionWarningMessage}" rendered="#{!empty VDCRender.flash.inputInstitutionWarningMessage}"/>
-                      </div>
-                      <div jsfc="ice:panelGroup">
-                        <ice:outputText value="Position"/>
-                        <ice:graphicImage value="/resources/images/icon_required.gif" rendered="#{TermsOfUsePage.study.owner.guestBookQuestionnaire.positionRequired}"/>
-                      </div>
-                      <div jsfc="ice:panelGroup">
-                        <ice:selectOneMenu value="#{TermsOfUsePage.guestBookResponse.position}">
-                          <f:selectItem itemLabel="Student" itemValue="Student"/>
-                          <f:selectItem itemLabel="Faculty" itemValue="Faculty"/>
-                          <f:selectItem itemLabel="Staff" itemValue="Staff"/>
-                          <f:selectItem itemLabel="Other" itemValue="Other"/>
-                        </ice:selectOneMenu>
-                      </div>
-                  </ice:panelGrid>
-                  <div jsfc="ice:panelGroup" styleClass="dvnWarningMessage" rendered="#{!empty VDCRender.flash.inputPositionWarningMessage}">
-                      <div class="dvnMsgBlockContainer">
-                        <p><ice:outputText id="positionMessage" value="#{VDCRender.flash.inputPositionWarningMessage}"/></p>
-                      </div>
+                      <ice:outputLink
+                        value="/dvn#{VDCRequest.currentVDCURL}/faces/study/StudyPage.xhtml?studyId=#{TermsOfUsePage.study.id}&amp;versionNumber=#{VDCRequest.studyVersionNumber}&amp;tab=files"
+                        rendered="#{VDCRequest.studyVersionNumber != null}">
+                        <ice:outputText value="&lt; Back to the Study"/>
+                      </ice:outputLink>
                   </div>
-                  <div jsfc="ice:panelGroup" styleClass="dvnWarningMessage" rendered="#{!empty VDCRender.flash.inputCustomReponse}">
-                      <div class="dvnMsgBlockContainer">
-                        <p><ice:outputText id="customMessage" value="#{VDCRender.flash.inputCustomReponse}"/></p>
+              
+              </div>
+              
+              <div id="dvnDownloadFormBlock">
+              
+                  <div jsfc="ice:panelGroup" styleClass="dvnguestbookresponse" style="margin-bottom:2em;" rendered="#{TermsOfUsePage.touTypeDownload and TermsOfUsePage.guestbookRequired}">
+
+                      <div jsfc="ice:panelGroup" styleClass="dvnInformationMessage">
+                        <div class="dvnMsgBlockContainer">
+                          <ice:outputText value="#{bundlePageInfo.touGuestBookResponseHelp}" escape="false"/>
+                        </div>
                       </div>
+
+                      <ice:message for="warningMessage" styleClass="warningMessage" id="warningMessage"/>
+
+                      <ice:panelGrid cellpadding="0" cellspacing="0" columns="2"
+                                   columnClasses="vdcColPadded, vdcColPadded" id="gridPanel2">
+                          <div jsfc="ice:panelGroup">
+                            <ice:outputText value="First Name"/>
+                            <ice:graphicImage value="/resources/images/icon_required.gif" rendered="#{TermsOfUsePage.study.owner.guestBookQuestionnaire.firstNameRequired}"/>
+                          </div>
+                          <div jsfc="ice:panelGroup">
+                            <ice:inputText id="input_nameText" value="#{TermsOfUsePage.guestBookResponse.firstname}"/>
+                            <ice:outputText id="firstnameMessage" styleClass="errorMessage" value="#{VDCRender.flash.inputFirstNameWarningMessage}" rendered="#{!empty VDCRender.flash.inputFirstNameWarningMessage}"/>
+                          </div>
+                          <div jsfc="ice:panelGroup">
+                            <ice:outputText value="Last Name"/>
+                            <ice:graphicImage value="/resources/images/icon_required.gif" rendered="#{TermsOfUsePage.study.owner.guestBookQuestionnaire.lastNameRequired}"/>
+                          </div>
+                          <div jsfc="ice:panelGroup">
+                            <ice:inputText id="input_lastnameText" value="#{TermsOfUsePage.guestBookResponse.lastname}"/>
+                            <ice:outputText id="lastnameMessage" styleClass="errorMessage" value="#{VDCRender.flash.inputLastNameWarningMessage}" rendered="#{!empty VDCRender.flash.inputLastNameWarningMessage}"/>
+                          </div>
+                          <div jsfc="ice:panelGroup">
+                            <ice:outputText value="E-Mail"/>
+                            <ice:graphicImage value="/resources/images/icon_required.gif" rendered="#{TermsOfUsePage.study.owner.guestBookQuestionnaire.emailRequired}"/>
+                          </div>
+                          <div jsfc="ice:panelGroup">
+                              <ice:inputText id="input_EmailText" size="40" value="#{TermsOfUsePage.guestBookResponse.email}">
+                                                                 <f:validator validatorId="EmailValidator"/></ice:inputText>
+                            <ice:outputText id="emailMessage" styleClass="errorMessage" value="#{VDCRender.flash.inputEmailWarningMessage}" rendered="#{!empty VDCRender.flash.inputEmailWarningMessage}"/>
+                           <ice:message for="input_EmailText" styleClass="errorMessage"/>
+                          </div>
+                          <div jsfc="ice:panelGroup">
+                            <ice:outputText value="Institution"/>
+                            <ice:graphicImage value="/resources/images/icon_required.gif" rendered="#{TermsOfUsePage.study.owner.guestBookQuestionnaire.institutionRequired}"/>
+                          </div>
+                          <div jsfc="ice:panelGroup">
+                            <ice:inputText id="input_InstitutionText" size="40" value="#{TermsOfUsePage.guestBookResponse.institution}"/>
+                            <ice:outputText id="institutionMessage" styleClass="errorMessage" value="#{VDCRender.flash.inputInstitutionWarningMessage}" rendered="#{!empty VDCRender.flash.inputInstitutionWarningMessage}"/>
+                          </div>
+                          <div jsfc="ice:panelGroup">
+                            <ice:outputText value="Position"/>
+                            <ice:graphicImage value="/resources/images/icon_required.gif" rendered="#{TermsOfUsePage.study.owner.guestBookQuestionnaire.positionRequired}"/>
+                          </div>
+                          <div jsfc="ice:panelGroup">
+                            <ice:selectOneMenu value="#{TermsOfUsePage.guestBookResponse.position}">
+                              <f:selectItem itemLabel="Student" itemValue="Student"/>
+                              <f:selectItem itemLabel="Faculty" itemValue="Faculty"/>
+                              <f:selectItem itemLabel="Staff" itemValue="Staff"/>
+                              <f:selectItem itemLabel="Other" itemValue="Other"/>
+                            </ice:selectOneMenu>
+                          </div>
+                      </ice:panelGrid>
+                      <div jsfc="ice:panelGroup" styleClass="dvnWarningMessage" rendered="#{!empty VDCRender.flash.inputPositionWarningMessage}">
+                          <div class="dvnMsgBlockContainer">
+                            <p><ice:outputText id="positionMessage" value="#{VDCRender.flash.inputPositionWarningMessage}"/></p>
+                          </div>
+                      </div>
+                      <div jsfc="ice:panelGroup" styleClass="dvnWarningMessage" rendered="#{!empty VDCRender.flash.inputCustomReponse}">
+                          <div class="dvnMsgBlockContainer">
+                            <p><ice:outputText id="customMessage" value="#{VDCRender.flash.inputCustomReponse}"/></p>
+                          </div>
+                      </div>
+                      <div jsfc="ice:panelGroup" styleClass="dvnFormPadding" rendered="#{TermsOfUsePage.VDCSessionBean.loginBean != null}">
+                          <ice:selectBooleanCheckbox id="updateAccountCheckBox" value="#{TermsOfUsePage.updateAccount}"/>
+                          <ice:outputText styleClass="agreeCheckbox" value="Update my Account with any changes."/>
+                          <ice:outputText id="updateAccountMessage" styleClass="errorMessage" value="#{VDCRender.flash.updateAccountWarningMessage}" rendered="#{!empty VDCRender.flash.updateAccountWarningMessage}"/>
+                      </div>
+                      <ice:dataTable cellpadding="0" cellspacing="0" width="100%" 
+                                     styleClass="dvnGuestbookCustomQuestions"
+                                     value="#{TermsOfUsePage.customQuestionResponseUIs}" var="customQuestionResponseUI"
+                                     rendered="#{!empty TermsOfUsePage.customQuestionResponseUIs}">
+                        <ice:column>
+                           <ice:outputText value="#{customQuestionResponseUI.customQuestionResponse.customQuestion.questionString}"/>
+                           <ice:graphicImage value="/resources/images/icon_required.gif" rendered="#{customQuestionResponseUI.required}"/>
+                           <div class="dvnGuestbookCustomQuestionInnerBlock">
+                               <ice:inputText id="input_questionText" size="100" value="#{customQuestionResponseUI.customQuestionResponse.response}"
+                                              rendered="#{customQuestionResponseUI.questionType == 'text'}"/>                 
+
+                               <ice:selectOneRadio value="#{customQuestionResponseUI.customQuestionResponse.response}" layout="pageDirection" partialSubmit="false"
+                                                   rendered="#{customQuestionResponseUI.questionType == 'radiobuttons'}">
+                                   <f:selectItems value="#{customQuestionResponseUI.responseSelectItems}"/>  
+                               </ice:selectOneRadio>
+                           </div>
+                        </ice:column>
+                      </ice:dataTable>
                   </div>
-                  <div jsfc="ice:panelGroup" styleClass="dvnFormPadding" rendered="#{TermsOfUsePage.VDCSessionBean.loginBean != null}">
-                      <ice:selectBooleanCheckbox id="updateAccountCheckBox" value="#{TermsOfUsePage.updateAccount}"/>
-                      <ice:outputText styleClass="agreeCheckbox" value="Update my Account with any changes."/>
-                      <ice:outputText id="updateAccountMessage" styleClass="errorMessage" value="#{VDCRender.flash.updateAccountWarningMessage}" rendered="#{!empty VDCRender.flash.updateAccountWarningMessage}"/>
+
+                  <div jsfc="ice:panelGroup" styleClass="termsAgreementBox" rendered="#{!TermsOfUsePage.guestbookOnlyRequired}">
+                    <div>
+                      <!-- Study Terms of Use -->
+                      <ice:outputText value="#{studybundle.confidentialityLabel}" styleClass="termsAgreementMessageTitle" rendered="#{!empty TermsOfUsePage.study.releasedVersion.metadata.confidentialityDeclaration}"/>
+                      <ice:outputText value="#{TermsOfUsePage.study.releasedVersion.metadata.confidentialityDeclaration}" rendered="#{!empty TermsOfUsePage.study.releasedVersion.metadata.confidentialityDeclaration}" escape="false"/>
+
+                      <ice:outputText value="#{studybundle.specialPermissionsLabel}" styleClass="termsAgreementMessageTitle" rendered="#{!empty TermsOfUsePage.study.releasedVersion.metadata.specialPermissions}"/>
+                      <ice:outputText value="#{TermsOfUsePage.study.releasedVersion.metadata.specialPermissions}" rendered="#{!empty TermsOfUsePage.study.releasedVersion.metadata.specialPermissions}" escape="false"/>
+
+                      <ice:outputText value="#{studybundle.restrictionsLabel}" styleClass="termsAgreementMessageTitle" rendered="#{!empty TermsOfUsePage.study.releasedVersion.metadata.restrictions}"/>
+                      <ice:outputText value="#{TermsOfUsePage.study.releasedVersion.metadata.restrictions}" rendered="#{!empty TermsOfUsePage.study.releasedVersion.metadata.restrictions}" escape="false"/>
+
+                      <ice:outputText value="#{studybundle.contactLabel}" styleClass="termsAgreementMessageTitle" rendered="#{!empty TermsOfUsePage.study.releasedVersion.metadata.contact}"/>
+                      <ice:outputText value="#{TermsOfUsePage.study.releasedVersion.metadata.contact}" rendered="#{!empty TermsOfUsePage.study.releasedVersion.metadata.contact}" escape="false"/>
+
+                      <ice:outputText value="#{studybundle.citationRequirementsLabel}" styleClass="termsAgreementMessageTitle" rendered="#{!empty TermsOfUsePage.study.releasedVersion.metadata.citationRequirements}"/>
+                      <ice:outputText value="#{TermsOfUsePage.study.releasedVersion.metadata.citationRequirements}" rendered="#{!empty TermsOfUsePage.study.releasedVersion.metadata.citationRequirements}" escape="false"/>
+
+                      <ice:outputText value="#{studybundle.depositorRequirementsLabel}" styleClass="termsAgreementMessageTitle" rendered="#{!empty TermsOfUsePage.study.releasedVersion.metadata.depositorRequirements}"/>
+                      <ice:outputText value="#{TermsOfUsePage.study.releasedVersion.metadata.depositorRequirements}" rendered="#{!empty TermsOfUsePage.study.releasedVersion.metadata.depositorRequirements}" escape="false"/>
+
+                      <ice:outputText value="#{studybundle.conditionsLabel}" styleClass="termsAgreementMessageTitle" rendered="#{!empty TermsOfUsePage.study.releasedVersion.metadata.conditions}"/>
+                      <ice:outputText value="#{TermsOfUsePage.study.releasedVersion.metadata.conditions}" rendered="#{!empty TermsOfUsePage.study.releasedVersion.metadata.conditions}" escape="false"/>
+
+                      <ice:outputText value="#{studybundle.disclaimerLabel}" styleClass="termsAgreementMessageTitle" rendered="#{!empty TermsOfUsePage.study.releasedVersion.metadata.disclaimer}"/>
+                      <ice:outputText value="#{TermsOfUsePage.study.releasedVersion.metadata.disclaimer}" rendered="#{!empty TermsOfUsePage.study.releasedVersion.metadata.disclaimer}" escape="false"/>
+
+                      <!-- Dataverse, Dataverse Network and Harvest Terms of Use -->
+                      <ice:outputText value="#{studybundle.dataverseTermsofUseLabel}" styleClass="termsAgreementMessageTitle" rendered="#{TermsOfUsePage.downloadDataverseTermsRequired}" />
+                      <ice:outputText value="#{TermsOfUsePage.study.owner.downloadTermsOfUse}" rendered="#{TermsOfUsePage.downloadDataverseTermsRequired}" escape="false"/>
+
+                      <ice:outputText value="#{studybundle.networkTermsofUseLabel}" styleClass="termsAgreementMessageTitle" rendered="#{TermsOfUsePage.downloadDvnTermsRequired}"/>
+                      <ice:outputText value="#{TermsOfUsePage.vdcNetwork.downloadTermsOfUse}" rendered="#{TermsOfUsePage.downloadDvnTermsRequired}" escape="false"/>
+
+                      <ice:outputText value="#{studybundle.harvestedTermsofUseLabel}" styleClass="termsAgreementMessageTitle" rendered="#{!empty TermsOfUsePage.study.releasedVersion.metadata.harvestDVTermsOfUse}"/>
+                      <ice:outputText value="#{TermsOfUsePage.study.releasedVersion.metadata.harvestDVTermsOfUse}" rendered="#{!empty TermsOfUsePage.study.releasedVersion.metadata.harvestDVTermsOfUse}" escape="false"/>
+
+                      <ice:outputText value="#{studybundle.networkHarvestedTermsofUseLabel}" styleClass="termsAgreementMessageTitle" rendered="#{!empty TermsOfUsePage.study.releasedVersion.metadata.harvestDVNTermsOfUse}"/>
+                      <ice:outputText value="#{TermsOfUsePage.study.releasedVersion.metadata.harvestDVNTermsOfUse}" rendered="#{!empty TermsOfUsePage.study.releasedVersion.metadata.harvestDVNTermsOfUse}" escape="false"/>
+                    </div>
+                    <div jsfc="ice:panelGroup" rendered="#{TermsOfUsePage.touTypeDeposit}">
+                      <ice:outputText value="#{studybundle.networkStudyCreationTermsofUseLabel}" styleClass="termsAgreementMessageTitle" rendered="#{TermsOfUsePage.depositDvnTermsRequired}"/>
+                      <ice:outputText value="#{TermsOfUsePage.vdcNetwork.depositTermsOfUse}" rendered="#{TermsOfUsePage.depositDvnTermsRequired}" escape="false"/>
+
+                      <ice:outputText value="#{studybundle.dataverseStudyCreationTermsofUseLabel}" styleClass="termsAgreementMessageTitle" rendered="#{TermsOfUsePage.depositDataverseTermsRequired}"/>
+                      <ice:outputText value="#{TermsOfUsePage.depositDataverseTerms}" rendered="#{TermsOfUsePage.depositDataverseTermsRequired}" escape="false"/>
+                    </div>
                   </div>
-                  <ice:dataTable cellpadding="0" cellspacing="0" width="100%" 
-                                 styleClass="dvnGuestbookCustomQuestions"
-                                 value="#{TermsOfUsePage.customQuestionResponseUIs}" var="customQuestionResponseUI"
-                                 rendered="#{!empty TermsOfUsePage.customQuestionResponseUIs}">
-                    <ice:column>
-                       <ice:outputText value="#{customQuestionResponseUI.customQuestionResponse.customQuestion.questionString}"/>
-                       <ice:graphicImage value="/resources/images/icon_required.gif" rendered="#{customQuestionResponseUI.required}"/>
-                       <div class="dvnGuestbookCustomQuestionInnerBlock">
-                           <ice:inputText id="input_questionText" size="100" value="#{customQuestionResponseUI.customQuestionResponse.response}"
-                                          rendered="#{customQuestionResponseUI.questionType == 'text'}"/>                 
-
-                           <ice:selectOneRadio value="#{customQuestionResponseUI.customQuestionResponse.response}" layout="pageDirection" partialSubmit="false"
-                                               rendered="#{customQuestionResponseUI.questionType == 'radiobuttons'}">
-                               <f:selectItems value="#{customQuestionResponseUI.responseSelectItems}"/>  
-                           </ice:selectOneRadio>
-                       </div>
-                    </ice:column>
-                  </ice:dataTable>
+                  <div jsfc="ice:panelGroup" styleClass="termsAgreeChkBxBlock" rendered="#{!TermsOfUsePage.guestbookOnlyRequired}" >
+                    <ice:outputText rendered ="#{!TermsOfUsePage.guestbookOnlyRequired}" value="#{bundlePageInfo.termsofUseDownloadAgree}" escape="false"/>
+                    <ice:selectBooleanCheckbox  rendered ="#{!TermsOfUsePage.guestbookOnlyRequired}" id="termsAccepted" required="true" validator="#{TermsOfUsePage.validateTermsAccepted}" value="#{TermsOfUsePage.termsAccepted}"/>
+                    <ice:outputText rendered ="#{!TermsOfUsePage.guestbookOnlyRequired}" styleClass="vdcFieldTitle" value="I agree and accept these terms of use."/>
+                    <ice:message for="termsAccepted" styleClass="errorMessage"/>
+                  </div>
+                  <div class="dvnFormPadding dvnFormMargin">
+                    <ice:commandButton id="termsButton" value="Continue" action="#{TermsOfUsePage.acceptTerms_action}"/>
+                    <ice:commandButton id="cancelButton1" value="Cancel" onclick="window.location='/dvn#{VDCRequest.currentVDCURL}/faces/study/StudyPage.xhtml?studyId=#{TermsOfUsePage.study.id}&amp;versionNumber=-1';return false;" rendered="#{TermsOfUsePage.touTypeDeposit and TermsOfUsePage.studyId!=null}"/>
+                    <ice:commandButton id="cancelButton2" value="Cancel" onclick="window.location='/dvn#{VDCRequest.currentVDCURL}/faces/study/StudyPage.xhtml?studyId=#{TermsOfUsePage.study.id}&amp;tab=files';return false;" rendered="#{TermsOfUsePage.touTypeDownload and VDCRequest.studyVersionNumber == null}"/>
+                    <ice:commandButton id="cancelButton3" value="Cancel" onclick="window.location='/dvn#{VDCRequest.currentVDCURL}/faces/study/StudyPage.xhtml?studyId=#{TermsOfUsePage.study.id}&amp;versionNumber=#{VDCRequest.studyVersionNumber}&amp;tab=files';return false;" rendered="#{TermsOfUsePage.touTypeDownload and VDCRequest.studyVersionNumber != null}"/>
+                  </div>
+              
               </div>
-                
-              <div jsfc="ice:panelGroup" styleClass="termsAgreementBox" rendered="#{!TermsOfUsePage.guestbookOnlyRequired}">
-                <div>
-                  <!-- Study Terms of Use -->
-                  <ice:outputText value="#{studybundle.confidentialityLabel}" styleClass="termsAgreementMessageTitle" rendered="#{!empty TermsOfUsePage.study.releasedVersion.metadata.confidentialityDeclaration}"/>
-                  <ice:outputText value="#{TermsOfUsePage.study.releasedVersion.metadata.confidentialityDeclaration}" rendered="#{!empty TermsOfUsePage.study.releasedVersion.metadata.confidentialityDeclaration}" escape="false"/>
-
-                  <ice:outputText value="#{studybundle.specialPermissionsLabel}" styleClass="termsAgreementMessageTitle" rendered="#{!empty TermsOfUsePage.study.releasedVersion.metadata.specialPermissions}"/>
-                  <ice:outputText value="#{TermsOfUsePage.study.releasedVersion.metadata.specialPermissions}" rendered="#{!empty TermsOfUsePage.study.releasedVersion.metadata.specialPermissions}" escape="false"/>
-
-                  <ice:outputText value="#{studybundle.restrictionsLabel}" styleClass="termsAgreementMessageTitle" rendered="#{!empty TermsOfUsePage.study.releasedVersion.metadata.restrictions}"/>
-                  <ice:outputText value="#{TermsOfUsePage.study.releasedVersion.metadata.restrictions}" rendered="#{!empty TermsOfUsePage.study.releasedVersion.metadata.restrictions}" escape="false"/>
-
-                  <ice:outputText value="#{studybundle.contactLabel}" styleClass="termsAgreementMessageTitle" rendered="#{!empty TermsOfUsePage.study.releasedVersion.metadata.contact}"/>
-                  <ice:outputText value="#{TermsOfUsePage.study.releasedVersion.metadata.contact}" rendered="#{!empty TermsOfUsePage.study.releasedVersion.metadata.contact}" escape="false"/>
-
-                  <ice:outputText value="#{studybundle.citationRequirementsLabel}" styleClass="termsAgreementMessageTitle" rendered="#{!empty TermsOfUsePage.study.releasedVersion.metadata.citationRequirements}"/>
-                  <ice:outputText value="#{TermsOfUsePage.study.releasedVersion.metadata.citationRequirements}" rendered="#{!empty TermsOfUsePage.study.releasedVersion.metadata.citationRequirements}" escape="false"/>
-
-                  <ice:outputText value="#{studybundle.depositorRequirementsLabel}" styleClass="termsAgreementMessageTitle" rendered="#{!empty TermsOfUsePage.study.releasedVersion.metadata.depositorRequirements}"/>
-                  <ice:outputText value="#{TermsOfUsePage.study.releasedVersion.metadata.depositorRequirements}" rendered="#{!empty TermsOfUsePage.study.releasedVersion.metadata.depositorRequirements}" escape="false"/>
-
-                  <ice:outputText value="#{studybundle.conditionsLabel}" styleClass="termsAgreementMessageTitle" rendered="#{!empty TermsOfUsePage.study.releasedVersion.metadata.conditions}"/>
-                  <ice:outputText value="#{TermsOfUsePage.study.releasedVersion.metadata.conditions}" rendered="#{!empty TermsOfUsePage.study.releasedVersion.metadata.conditions}" escape="false"/>
-
-                  <ice:outputText value="#{studybundle.disclaimerLabel}" styleClass="termsAgreementMessageTitle" rendered="#{!empty TermsOfUsePage.study.releasedVersion.metadata.disclaimer}"/>
-                  <ice:outputText value="#{TermsOfUsePage.study.releasedVersion.metadata.disclaimer}" rendered="#{!empty TermsOfUsePage.study.releasedVersion.metadata.disclaimer}" escape="false"/>
-
-                  <!-- Dataverse, Dataverse Network and Harvest Terms of Use -->
-                  <ice:outputText value="#{studybundle.dataverseTermsofUseLabel}" styleClass="termsAgreementMessageTitle" rendered="#{TermsOfUsePage.downloadDataverseTermsRequired}" />
-                  <ice:outputText value="#{TermsOfUsePage.study.owner.downloadTermsOfUse}" rendered="#{TermsOfUsePage.downloadDataverseTermsRequired}" escape="false"/>
-
-                  <ice:outputText value="#{studybundle.networkTermsofUseLabel}" styleClass="termsAgreementMessageTitle" rendered="#{TermsOfUsePage.downloadDvnTermsRequired}"/>
-                  <ice:outputText value="#{TermsOfUsePage.vdcNetwork.downloadTermsOfUse}" rendered="#{TermsOfUsePage.downloadDvnTermsRequired}" escape="false"/>
-
-                  <ice:outputText value="#{studybundle.harvestedTermsofUseLabel}" styleClass="termsAgreementMessageTitle" rendered="#{!empty TermsOfUsePage.study.releasedVersion.metadata.harvestDVTermsOfUse}"/>
-                  <ice:outputText value="#{TermsOfUsePage.study.releasedVersion.metadata.harvestDVTermsOfUse}" rendered="#{!empty TermsOfUsePage.study.releasedVersion.metadata.harvestDVTermsOfUse}" escape="false"/>
-
-                  <ice:outputText value="#{studybundle.networkHarvestedTermsofUseLabel}" styleClass="termsAgreementMessageTitle" rendered="#{!empty TermsOfUsePage.study.releasedVersion.metadata.harvestDVNTermsOfUse}"/>
-                  <ice:outputText value="#{TermsOfUsePage.study.releasedVersion.metadata.harvestDVNTermsOfUse}" rendered="#{!empty TermsOfUsePage.study.releasedVersion.metadata.harvestDVNTermsOfUse}" escape="false"/>
-                </div>
-                <div jsfc="ice:panelGroup" rendered="#{TermsOfUsePage.touTypeDeposit}">
-                  <ice:outputText value="#{studybundle.networkStudyCreationTermsofUseLabel}" styleClass="termsAgreementMessageTitle" rendered="#{TermsOfUsePage.depositDvnTermsRequired}"/>
-                  <ice:outputText value="#{TermsOfUsePage.vdcNetwork.depositTermsOfUse}" rendered="#{TermsOfUsePage.depositDvnTermsRequired}" escape="false"/>
-
-                  <ice:outputText value="#{studybundle.dataverseStudyCreationTermsofUseLabel}" styleClass="termsAgreementMessageTitle" rendered="#{TermsOfUsePage.depositDataverseTermsRequired}"/>
-                  <ice:outputText value="#{TermsOfUsePage.depositDataverseTerms}" rendered="#{TermsOfUsePage.depositDataverseTermsRequired}" escape="false"/>
-                </div>
-              </div>
-              <div jsfc="ice:panelGroup" styleClass="termsAgreeChkBxBlock" rendered="#{!TermsOfUsePage.guestbookOnlyRequired}" >
-                <ice:outputText rendered ="#{!TermsOfUsePage.guestbookOnlyRequired}" value="#{bundlePageInfo.termsofUseDownloadAgree}" escape="false"/>
-                <ice:selectBooleanCheckbox  rendered ="#{!TermsOfUsePage.guestbookOnlyRequired}" id="termsAccepted" required="true" validator="#{TermsOfUsePage.validateTermsAccepted}" value="#{TermsOfUsePage.termsAccepted}"/>
-                <ice:outputText rendered ="#{!TermsOfUsePage.guestbookOnlyRequired}" styleClass="vdcFieldTitle" value="I agree and accept these terms of use."/>
-                <ice:message for="termsAccepted" styleClass="errorMessage"/>
-              </div>
-              <div class="dvnFormPadding dvnFormMargin">
-                <ice:commandButton id="termsButton" value="Continue" action="#{TermsOfUsePage.acceptTerms_action}"/>
-                <ice:commandButton id="cancelButton1" value="Cancel" onclick="window.location='/dvn#{VDCRequest.currentVDCURL}/faces/study/StudyPage.xhtml?studyId=#{TermsOfUsePage.study.id}&amp;versionNumber=-1';return false;" rendered="#{TermsOfUsePage.touTypeDeposit and TermsOfUsePage.studyId!=null}"/>
-                <ice:commandButton id="cancelButton2" value="Cancel" onclick="window.location='/dvn#{VDCRequest.currentVDCURL}/faces/study/StudyPage.xhtml?studyId=#{TermsOfUsePage.study.id}&amp;tab=files';return false;" rendered="#{TermsOfUsePage.touTypeDownload and VDCRequest.studyVersionNumber == null}"/>
-                <ice:commandButton id="cancelButton3" value="Cancel" onclick="window.location='/dvn#{VDCRequest.currentVDCURL}/faces/study/StudyPage.xhtml?studyId=#{TermsOfUsePage.study.id}&amp;versionNumber=#{VDCRequest.studyVersionNumber}&amp;tab=files';return false;" rendered="#{TermsOfUsePage.touTypeDownload and VDCRequest.studyVersionNumber != null}"/>
-              </div>
+              
             </div>
           </div>
         </div>

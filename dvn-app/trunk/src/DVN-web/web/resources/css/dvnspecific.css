@@ -223,7 +223,8 @@ span.dvnAddClassificationDvNotReleased{background:url(/dvn/resources/images/icon
 .dvnCommentReviewCol6 input, .dvnCommentReviewCol6 a.iceCmdLnk{margin-right:2em}
 .dvnCommentReviewCol6 input:last-child, .dvnCommentReviewCol6 a.iceCmdLnk:last-child{margin-right:0}
 /* TERMS OF USE + GUESTBOOK */
-.dvnstudypreviouslisting{text-align:right;}
+#dvnDownloadMessageBlock{display:none;}
+.dvnDownloadMessageLink{}
 .termsAgreeChkBxBlock{width:590px;}
 .termsAgreeChkBxBlock.dvnCreateDvWorkflow{width:380px;}
 .termsAgreeChkBxBlock p{font-size: .9em !important;}

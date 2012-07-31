@@ -870,4 +870,45 @@ public class VDCServiceBean implements VDCServiceLocal {
         return (maxDLCount != null ? maxDLCount.doubleValue() : 0);
 
     }  
+    
+    
+    public void setTwitterCredentials(String accessToken, String accessTokenSecret, Long vdcId) {
+        TwitterCredentials tc;
+        VDC vdc = null;
+        
+        if (vdcId != null) {
+            vdc = (VDC) em.find(VDC.class, new Long(vdcId));
+            tc = vdc.getTwitterCredentials();
+        } else {
+            tc = vdcNetworkService.getTwitterCredentials();
+        
+        }
+        
+        if (tc == null) {
+            tc = new TwitterCredentials();
+            em.persist(tc);
+        }
+        
+        tc.setVDC(vdc);
+        tc.setAccessToken(accessToken);
+        tc.setAccessTokenSecret(accessTokenSecret);
+        
+        em.merge(tc);
+    }
+    
+    public void removeTwitterCredentials(Long vdcId) {
+        TwitterCredentials tc;
+        VDC vdc = null;
+        
+        if (vdcId != null) {
+            vdc = (VDC) em.find(VDC.class, new Long(vdcId));
+            tc = vdc.getTwitterCredentials();
+        } else {
+            tc = vdcNetworkService.getTwitterCredentials();
+        
+        }
+        
+        em.remove(tc);
+    }    
+    
 }

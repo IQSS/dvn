@@ -756,7 +756,6 @@ public class EditStudyPage extends VDCBaseBean implements java.io.Serializable  
     //
     //  The following methods are used in the Edit Study form display logic for metadata dependent collections
     //
-    // StudyAuthor
     private HtmlSelectOneMenu inputDistributorContactName;
 
     public HtmlSelectOneMenu getInputDistributorContactName() {
@@ -775,6 +774,16 @@ public class EditStudyPage extends VDCBaseBean implements java.io.Serializable  
 
     public void setInputStudyProducerName(HtmlSelectOneMenu inputStudyProducerName) {
         this.inputStudyProducerName = inputStudyProducerName;
+    }
+    
+    private HtmlSelectOneMenu inputStudyOtherId;
+
+    public HtmlSelectOneMenu getInputStudyOtherId() {
+        return inputStudyOtherId;
+    }
+
+    public void setInputStudyOtherId(HtmlSelectOneMenu inputStudyOtherId) {
+        this.inputStudyOtherId = inputStudyOtherId;
     }
 
     // StudyAuthor
@@ -802,7 +811,75 @@ public class EditStudyPage extends VDCBaseBean implements java.io.Serializable  
     public boolean isStudyAuthorsEmpty() {
         return isGroupEmpty(metadata.getStudyAuthors());
     }
+    
+    private HtmlSelectOneMenu inputStudySoftwareName;
 
+    public HtmlSelectOneMenu getInputStudySoftwareName() {
+        return inputStudySoftwareName;
+    }
+
+    public void setInputStudySoftwareName(HtmlSelectOneMenu inputStudySoftwareName) {
+        this.inputStudySoftwareName = inputStudySoftwareName;
+    }
+    
+    private HtmlSelectOneMenu inputStudyGrantNumber;
+
+    public HtmlSelectOneMenu getInputStudyGrantNumber() {
+        return inputStudyGrantNumber;
+    }
+
+    public void setInputStudyGrantNumber(HtmlSelectOneMenu inputStudyGrantNumber) {
+        this.inputStudyGrantNumber = inputStudyGrantNumber;
+    }
+    
+    private HtmlSelectOneMenu inputStudySeriesName;
+
+    public HtmlSelectOneMenu getInputStudySeriesName() {
+        return inputStudySeriesName;
+    }
+
+    public void setInputStudySeriesName(HtmlSelectOneMenu inputStudySeriesName) {
+        this.inputStudySeriesName = inputStudySeriesName;
+    }
+    private HtmlSelectOneMenu inputStudyVersionDate;
+
+    public HtmlSelectOneMenu getInputStudyVersionDate() {
+        return inputStudyVersionDate;
+    }
+
+    public void setInputStudyVersionDate(HtmlSelectOneMenu inputStudyVersionDate) {
+        this.inputStudyVersionDate = inputStudyVersionDate;
+    }
+    
+    private HtmlSelectOneMenu inputStudyKeywordValue;
+
+    public HtmlSelectOneMenu getInputStudyKeywordValue() {
+        return inputStudyKeywordValue;
+    }
+
+    public void setInputStudyKeywordValue(HtmlSelectOneMenu inputStudyKeywordValue) {
+        this.inputStudyKeywordValue = inputStudyKeywordValue;
+    }
+    
+    private HtmlSelectOneMenu inputStudyKeywordVocab;
+
+    public HtmlSelectOneMenu getInputStudyKeywordVocab() {
+        return inputStudyKeywordVocab;
+    }
+
+    public void setInputStudyKeywordVocab(HtmlSelectOneMenu inputStudyKeywordVocab) {
+        this.inputStudyKeywordVocab = inputStudyKeywordVocab;
+    }
+    
+    private HtmlSelectOneMenu inputStudyKeywordVocabURI;
+
+    public HtmlSelectOneMenu getInputStudyKeywordVocabURI() {
+        return inputStudyKeywordVocabURI;
+    }
+
+    public void setInputStudyKeywordVocabURI(HtmlSelectOneMenu inputStudyKeywordVocabURI) {
+        this.inputStudyKeywordVocabURI = inputStudyKeywordVocabURI;
+    }
     // StudyAbstract
 
     public boolean isStudyAbstractsEmpty() {
@@ -1737,7 +1814,16 @@ public class EditStudyPage extends VDCBaseBean implements java.io.Serializable  
         
         if (isValidateRequired()) {
             boolean valid=true;
-            if (StringUtil.isEmpty((String)inputOtherId.getLocalValue())
+            // Study Other Id get name from text or dropdown input
+            String name = (String)inputOtherId.getLocalValue(); //text
+            if (name == null){
+                name = (String) inputStudyOtherId.getValue(); //dropdown
+            }
+            if (name == null){
+                name = "";
+            }
+            name = name.trim();
+            if (StringUtil.isEmpty(name)
             && !StringUtil.isEmpty((String)value)  ) {
                 valid=false;
             }
@@ -1753,8 +1839,16 @@ public class EditStudyPage extends VDCBaseBean implements java.io.Serializable  
             UIComponent toValidate, Object value) {
         
         if (isValidateRequired()) {
-                boolean valid=true;
-            if (StringUtil.isEmpty((String)inputSeries.getLocalValue())
+            boolean valid=true;
+            String name = (String)inputSeries.getLocalValue(); //text
+            if (name == null){
+                name = (String) inputStudySeriesName.getValue(); //dropdown
+            }
+            if (name == null){
+                name = "";
+            }
+            name = name.trim();
+            if (StringUtil.isEmpty(name)
             && !StringUtil.isEmpty((String)value))   {
                 valid=false;
             }
@@ -1771,7 +1865,15 @@ public class EditStudyPage extends VDCBaseBean implements java.io.Serializable  
         
         if (isValidateRequired()){
             boolean valid=true;
-            if (StringUtil.isEmpty((String)inputVersion.getLocalValue())
+            String name = (String)inputVersion.getLocalValue(); //text
+            if (name == null){
+                name = (String) inputStudyVersionDate.getValue(); //dropdown
+            }
+            if (name == null){
+                name = "";
+            }
+            name = name.trim();
+            if (StringUtil.isEmpty(name)
             && !StringUtil.isEmpty((String)value)) {
                 valid=false;
             }
@@ -1827,8 +1929,19 @@ public class EditStudyPage extends VDCBaseBean implements java.io.Serializable  
             Object value) {
         
         if (isValidateRequired()) {
+            
             boolean valid=true;
-            if (StringUtil.isEmpty((String)this.inputSoftwareName.getLocalValue())
+            
+                        // Study Other Id get name from text or dropdown input
+            String name = (String)inputSoftwareName.getLocalValue(); //text
+            if (name == null){
+                name = (String) inputStudySoftwareName.getValue(); //dropdown
+            }
+            if (name == null){
+                name = "";
+            }
+            name = name.trim();
+            if (StringUtil.isEmpty(name)
             && !StringUtil.isEmpty((String)value)  ) {
                 valid=false;
             }
@@ -1846,7 +1959,15 @@ public class EditStudyPage extends VDCBaseBean implements java.io.Serializable  
         
         if (isValidateRequired()){
             boolean valid=true;
-            if (StringUtil.isEmpty((String)inputGrantNumber.getLocalValue())
+            String name = (String)inputGrantNumber.getLocalValue(); //text
+            if (name == null){
+                name = (String) inputStudyGrantNumber.getValue(); //dropdown
+            }
+            if (name == null){
+                name = "";
+            }
+            name = name.trim();
+            if (StringUtil.isEmpty(name)
             && !StringUtil.isEmpty((String)value)  ) {
                 valid=false;
             }
@@ -1927,9 +2048,34 @@ public class EditStudyPage extends VDCBaseBean implements java.io.Serializable  
         
         if (isValidateRequired()) {
             boolean valid=true;
-            if (StringUtil.isEmpty((String)inputKeywordValue.getLocalValue())
-            && (!StringUtil.isEmpty((String)inputKeywordVocab.getLocalValue())
-                 || !StringUtil.isEmpty((String)value) )) {
+            String name = (String)inputKeywordValue.getLocalValue(); //text
+            if (name == null){
+                name = (String) inputStudyKeywordValue.getValue(); //dropdown
+            }
+            if (name == null){
+                name = "";
+            }
+            name = name.trim();
+            String vocab = (String)inputKeywordVocab.getLocalValue(); //text
+            if (vocab == null){
+                vocab = (String) inputStudyKeywordVocab.getValue(); //dropdown
+            }
+            if (vocab == null){
+                vocab = "";
+            }
+            vocab = vocab.trim();
+            String uri = (String)inputKeywordVocabUri.getLocalValue(); //text
+            if (uri == null){
+                uri = (String) inputStudyKeywordVocabURI.getValue(); //dropdown
+            }
+            if (uri == null){
+                uri = "";
+            }
+            uri = uri.trim();
+            if (StringUtil.isEmpty(name)
+            && (!StringUtil.isEmpty(vocab)
+                 || !StringUtil.isEmpty(uri) 
+                    || !StringUtil.isEmpty((String)value) )) {
                 valid=false;
             }
             if (!valid) {

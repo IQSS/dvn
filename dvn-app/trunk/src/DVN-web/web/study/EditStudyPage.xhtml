@@ -215,14 +215,15 @@
                                                binding="#{EditStudyPage.inputRelPublicationText}"
                                                value="#{currentRow.text}"
                                                rendered="#{empty(EditStudyPage.studyMap[sfc.publicationCitation].templateField.controlledVocabulary)}"
-                                               required="#{EditStudyPage.studyMap[sfc.publication].required and EditStudyPage.validateRequired}" requiredMessage="This field is required."
+                                               required="#{EditStudyPage.studyMap[sfc.publication].required and EditStudyPage.validateRequired }" 
+                                               requiredMessage="This field is required."
                                                styleClass="formHtmlEnabled">
                                 <f:validator validatorId="XhtmlValidator"/>
                               </ice:inputTextarea>
                              <ice:selectOneMenu immediate="false"   id="selectOneRelPublicationText"                                          
                                            value="#{currentRow.text}" 
                                             binding="#{EditStudyPage.inputRelPublicationCitation}"
-                                           required="#{EditStudyPage.studyMap[sfc.publication].required and EditStudyPage.validateRequired}" requiredMessage="This field is required."
+                                           required="#{EditStudyPage.studyMap[sfc.publication].required and EditStudyPage.validateRequired }" requiredMessage="This field is required."
                                            rendered="#{!empty(EditStudyPage.studyMap[sfc.publicationCitation].templateField.controlledVocabulary)}" 
                                            >
                             <f:selectItem itemLabel="No Value" itemValue=""/>
@@ -252,11 +253,12 @@
                                              binding="#{EditStudyPage.inputRelPublicationIDNumber}" 
                                              id="input_relatedPublicationIDNumber" value="#{currentRow.idNumber}" 
                                              rendered="#{empty(EditStudyPage.studyMap[sfc.publicationIDNumber].templateField.controlledVocabulary)}" 
-                                             required="#{EditStudyPage.studyMap[sfc.publicationIDNumber].required and EditStudyPage.validateRequired}"  
+                                             required="#{EditStudyPage.studyMap[sfc.publicationIDNumber].required and EditStudyPage.validateRequired }"  
                                              requiredMessage="This field is required." maxlength="255"/>
                             <ice:selectOneMenu immediate="false"   id="selectOneRelPubIdNumber"                                          
                                            value="#{currentRow.idNumber}" 
-                                           required="#{EditStudyPage.studyMap[sfc.publication].required and EditStudyPage.validateRequired}" requiredMessage="This field is required."
+                                           required="#{EditStudyPage.studyMap[sfc.publication].required and EditStudyPage.validateRequired}" 
+                                           requiredMessage="This field is required."
                                            rendered="#{!empty(EditStudyPage.studyMap[sfc.publicationIDNumber].templateField.controlledVocabulary)}" 
                                            >
                             <f:selectItem itemLabel="No Value" itemValue=""/>
@@ -273,12 +275,14 @@
                                              size="45"
                                              maxlength="255"
                                              value="#{currentRow.url}"
-                                             required="#{EditStudyPage.studyMap[sfc.publicationURL].required and EditStudyPage.validateRequired}" requiredMessage="This field is required." >
+                                             required="#{EditStudyPage.studyMap[sfc.publicationURL].required and EditStudyPage.validateRequired }" 
+                                             requiredMessage="This field is required." >
                                 <f:validator validatorId="UrlValidator"/>
                               </ice:inputText>
                               <ice:selectOneMenu immediate="false"   id="selectOneRelPubURL"                                          
                                            value="#{currentRow.url}" 
-                                           required="#{EditStudyPage.studyMap[sfc.publication].required and EditStudyPage.validateRequired}" requiredMessage="This field is required."
+                                           required="#{EditStudyPage.studyMap[sfc.publication].required and EditStudyPage.validateRequired }" 
+                                           requiredMessage="This field is required."
                                            rendered="#{!empty(EditStudyPage.studyMap[sfc.publicationURL].templateField.controlledVocabulary)}" 
                                            >
                             <f:selectItem itemLabel="No Value" itemValue=""/>
@@ -353,15 +357,18 @@
                                              requiredMessage="This field is required." 
                                              required="#{EditStudyPage.studyMap[sfc.otherId].required and EditStudyPage.validateRequired }"
                                              rendered="#{empty(EditStudyPage.studyMap[sfc.otherIdValue].templateField.controlledVocabulary)}"/>
-                            <ice:selectOneMenu immediate="false"   id="selectOneOtherId"                                          
+                            <ice:selectOneMenu immediate="false"   id="selectOneOtherId"  
+                                               binding="#{EditStudyPage.inputStudyOtherId}"
                                            value="#{currentRow.otherId}" 
-                                           required="#{EditStudyPage.studyMap[sfc.otherId].required and EditStudyPage.validateRequired }"
+                                           required="#{EditStudyPage.studyMap[sfc.otherId].required and EditStudyPage.validateRequired  }"
                                            rendered="#{!empty(EditStudyPage.studyMap[sfc.otherIdValue].templateField.controlledVocabulary)}" 
+                                           requiredMessage="This field is required." 
                                            >
                             <f:selectItem itemLabel="No Value" itemValue=""/>
                             <f:selectItems value="#{EditStudyPage.studyMap[sfc.otherIdValue].templateField.controlledVocabulary.selectItems}"/>
                         </ice:selectOneMenu>
                               <ice:message styleClass="errorMessage" for="input_otherId"/>
+                               <ice:message styleClass="errorMessage" for="selectOneOtherId"/>
                             </div>
                             <div jsfc="ice:panelGroup" styleClass="vdcEditStudyFieldFloat2 vdcEditStudyGroupField">
                               <ice:outputText styleClass="dvnInlineHelpLabel dvnInlineHelpTip" 
@@ -370,7 +377,7 @@
                                              id="input_otherIdAgency" value="#{currentRow.agency}"  
                                              requiredMessage="This field is required." 
                                              rendered="#{empty(EditStudyPage.studyMap[sfc.otherIdAgency].templateField.controlledVocabulary)}" 
-                                             required="#{EditStudyPage.studyMap[sfc.otherId].required and EditStudyPage.validateRequired}"/>
+                                             required="#{EditStudyPage.studyMap[sfc.otherId].required and EditStudyPage.validateRequired }"/>
                              <ice:selectOneMenu immediate="false"   id="selectOneOtherIdAgency"                                          
                                            value="#{currentRow.agency}" 
                                            validator="#{EditStudyPage.validateStudyOtherId}"
@@ -425,7 +432,7 @@
                                                size="45"
                                                maxlength="255"
                                                binding="#{EditStudyPage.inputAuthorName}"
-                                               required="#{EditStudyPage.studyMap[sfc.author].required  and EditStudyPage.validateRequired}" 
+                                               required="#{EditStudyPage.studyMap[sfc.author].required  and EditStudyPage.validateRequired }" 
                                                rendered="#{empty(EditStudyPage.studyMap[sfc.authorName].templateField.controlledVocabulary)}"
                                                requiredMessage="This field is required." />
                             <ice:selectOneMenu immediate="false"   id="selectOneAuthorName"                                          
@@ -441,6 +448,7 @@
                                 
                                 <ice:outputText styleClass="vdcEditStudyFormatExample" value="(LastName, FirstName)"/>
                                 <ice:message styleClass="errorMessage" for="input_authorName"/>
+                                <ice:message styleClass="errorMessage" for="selectOneAuthorName"/>
                               </div>
                               <div jsfc="ice:panelGroup" styleClass="vdcEditStudyFieldFloat2" >
                                 <ice:outputText styleClass="dvnInlineHelpLabel dvnInlineHelpTip" value="#{editstudybundle.authorAffiliationLabel}" title="#{editstudybundle.authorAffiliationHelpHeading} - #{editstudybundle.authorAffiliationHelp}"/>
@@ -449,14 +457,16 @@
                                                value="#{currentAuthor.affiliation}"
                                                rendered="#{empty(EditStudyPage.studyMap[sfc.authorAffiliation].templateField.controlledVocabulary)}"
                                                validator="#{EditStudyPage.validateStudyAuthor}"
-                                               required="#{EditStudyPage.studyMap[sfc.authorAffiliation].required  and EditStudyPage.validateRequired}" requiredMessage="This field is required."
+                                               required="#{EditStudyPage.studyMap[sfc.author].required  and EditStudyPage.validateRequired }" 
+                                               requiredMessage="This field is required."
                                                styleClass="formHtmlEnabled">
                                   <f:validator validatorId="XhtmlValidator"/>
                                 </ice:inputText>
                             <ice:selectOneMenu immediate="false"   id="selectOneAuthorAffiliation"                                          
                                            value="#{currentAuthor.affiliation}" 
                                            validator="#{EditStudyPage.validateStudyAuthor}"
-                                           required="#{EditStudyPage.studyMap[sfc.authorAffiliation].required  and EditStudyPage.validateRequired}" requiredMessage="This field is required."
+                                           required="#{EditStudyPage.studyMap[sfc.author].required and EditStudyPage.validateRequired}" 
+                                           requiredMessage="This field is required."
                                            rendered="#{!empty(EditStudyPage.studyMap[sfc.authorAffiliation].templateField.controlledVocabulary)}" 
                                            >
                             <f:selectItem itemLabel="No Value" itemValue=""/>
@@ -506,12 +516,13 @@
                               <ice:inputText maxlength="255" binding="#{EditStudyPage.inputProducerName}" 
                                              id="input_producerName" value="#{currentRow.name}" size="45" 
                                              rendered="#{empty(EditStudyPage.studyMap[sfc.producerName].templateField.controlledVocabulary)}" 
-                                             required="#{EditStudyPage.studyMap[sfc.producer].required and EditStudyPage.validateRequired}" 
+                                             required="#{EditStudyPage.studyMap[sfc.producer].required and EditStudyPage.validateRequired }" 
                                              requiredMessage="This field is required." />
                              <ice:selectOneMenu immediate="false"   id="selectOneProducerName"                                          
                                            value="#{currentRow.name}" 
                                            binding="#{EditStudyPage.inputStudyProducerName}"
-                                           required="#{EditStudyPage.studyMap[sfc.producer].required  and EditStudyPage.validateRequired}" requiredMessage="This field is required."
+                                           required="#{EditStudyPage.studyMap[sfc.producer].required  and EditStudyPage.validateRequired}" 
+                                           requiredMessage="This field is required."
                                            rendered="#{!empty(EditStudyPage.studyMap[sfc.producerName].templateField.controlledVocabulary)}" 
                                            >
                             <f:selectItem itemLabel="No Value" itemValue=""/>
@@ -532,7 +543,8 @@
                             <ice:selectOneMenu immediate="false"   id="selectOneProducerAbbreviation"                                          
                                            value="#{currentRow.abbreviation}" 
                                            validator="#{EditStudyPage.validateStudyProducer}"
-                                           required="#{EditStudyPage.studyMap[sfc.producer].required  and EditStudyPage.validateRequired}" requiredMessage="This field is required."
+                                           required="#{EditStudyPage.studyMap[sfc.producer].required  and EditStudyPage.validateRequired }" 
+                                           requiredMessage="This field is required."
                                            rendered="#{!empty(EditStudyPage.studyMap[sfc.producerAbbreviation].templateField.controlledVocabulary)}" 
                                            >
                             <f:selectItem itemLabel="No Value" itemValue=""/>
@@ -540,12 +552,13 @@
                             </ice:selectOneMenu>
                             </div>
                             <div jsfc="ice:panelGroup" styleClass="vdcEditStudyFieldFloat3 vdcEditStudyGroupField">
-                              <ice:outputText styleClass="dvnInlineHelpLabel dvnInlineHelpTip" value="#{editstudybundle.producerAffiliationLabel}" title="#{editstudybundle.producerAffiliationHelpHeading} - #{editstudybundle.producerAffiliationHelp}"/>
+                              <ice:outputText styleClass="dvnInlineHelpLabel dvnInlineHelpTip" value="#{editstudybundle.producerAffiliationLabel}" 
+                                              title="#{editstudybundle.producerAffiliationHelpHeading} - #{editstudybundle.producerAffiliationHelp}"/>
                               <ice:inputText maxlength="255" validator="#{EditStudyPage.validateStudyProducer}" 
                                              binding="#{EditStudyPage.inputProducerAffiliation}" 
                                              id="input_producerAffiliation" size="45" value="#{currentRow.affiliation}" 
                                              rendered="#{empty(EditStudyPage.studyMap[sfc.producerAffiliation].templateField.controlledVocabulary)}"
-                                             required="#{EditStudyPage.studyMap[sfc.producerAffiliation].required and EditStudyPage.validateRequired}" 
+                                             required="#{EditStudyPage.studyMap[sfc.producerAffiliation].required and EditStudyPage.validateRequired }" 
                                              requiredMessage="This field is required."
                                              styleClass="formHtmlEnabled">
                                 <f:validator validatorId="XhtmlValidator"/>
@@ -553,7 +566,8 @@
                             <ice:selectOneMenu immediate="false"   id="selectOneProducerAffiliation"                                          
                                            value="#{currentRow.affiliation}" 
                                            validator="#{EditStudyPage.validateStudyProducer}"
-                                           required="#{EditStudyPage.studyMap[sfc.producer].required  and EditStudyPage.validateRequired}" requiredMessage="This field is required."
+                                           required="#{EditStudyPage.studyMap[sfc.producer].required  and EditStudyPage.validateRequired }" 
+                                           requiredMessage="This field is required."
                                            rendered="#{!empty(EditStudyPage.studyMap[sfc.producerAffiliation].templateField.controlledVocabulary)}" 
                                            >
                             <f:selectItem itemLabel="No Value" itemValue=""/>
@@ -571,13 +585,15 @@
                                              size="45"
                                              maxlength="255"
                                              rendered="#{empty(EditStudyPage.studyMap[sfc.producerURL].templateField.controlledVocabulary)}"
-                                             required="#{EditStudyPage.studyMap[sfc.producerURL].required  and EditStudyPage.validateRequired}" requiredMessage="This field is required." >
+                                             required="#{EditStudyPage.studyMap[sfc.producerURL].required  and EditStudyPage.validateRequired }" 
+                                             requiredMessage="This field is required." >
                                 <f:validator validatorId="UrlValidator"/>
                               </ice:inputText>
                             <ice:selectOneMenu immediate="false"   id="selectOneProducerURL"                                          
                                            value="#{currentRow.url}" 
                                            validator="#{EditStudyPage.validateStudyProducer}"
-                                           required="#{EditStudyPage.studyMap[sfc.producer].required  and EditStudyPage.validateRequired}" requiredMessage="This field is required."
+                                           required="#{EditStudyPage.studyMap[sfc.producer].required  and EditStudyPage.validateRequired }" 
+                                           requiredMessage="This field is required."
                                            rendered="#{!empty(EditStudyPage.studyMap[sfc.producerURL].templateField.controlledVocabulary)}" 
                                            >
                             <f:selectItem itemLabel="No Value" itemValue=""/>
@@ -597,13 +613,15 @@
                                              size="45"
                                              maxlength="255"
                                              rendered="#{empty(EditStudyPage.studyMap[sfc.producerLogo].templateField.controlledVocabulary)}"
-                                             required="#{EditStudyPage.studyMap[sfc.producerLogo].required and EditStudyPage.validateRequired}" requiredMessage="This field is required." >
+                                             required="#{EditStudyPage.studyMap[sfc.producerLogo].required and EditStudyPage.validateRequired }" 
+                                             requiredMessage="This field is required." >
                                 <f:validator validatorId="UrlValidator"/>
                               </ice:inputText>
                             <ice:selectOneMenu immediate="false"   id="selectOneProducerLogo"                                          
                                            value="#{currentRow.logo}" 
                                            validator="#{EditStudyPage.validateStudyProducer}"
-                                           required="#{EditStudyPage.studyMap[sfc.producer].required  and EditStudyPage.validateRequired}" requiredMessage="This field is required."
+                                           required="#{EditStudyPage.studyMap[sfc.producer].required  and EditStudyPage.validateRequired }" 
+                                           requiredMessage="This field is required."
                                            rendered="#{!empty(EditStudyPage.studyMap[sfc.producerLogo].templateField.controlledVocabulary)}" 
                                            >
                             <f:selectItem itemLabel="No Value" itemValue=""/>
@@ -704,13 +722,41 @@
                           <div jsfc="ice:panelGroup" styleClass="vdcEditStudyFieldFloatWrap">
                             <div jsfc="ice:panelGroup" styleClass="vdcEditStudyFieldFloat1">
                               <ice:outputText styleClass="dvnInlineHelpLabel dvnInlineHelpTip" value="#{editstudybundle.softwareNameLabel}" title="#{editstudybundle.softwareNameHelpHeading} - #{editstudybundle.softwareNameHelp}"/>
-                              <ice:inputText maxlength="255" binding="#{EditStudyPage.inputSoftwareName}" id="input_softwareName" size="45"  value="#{currentRow.name}" required="#{EditStudyPage.studyMap[sfc.software].required and EditStudyPage.validateRequired}" requiredMessage="This field is required." />
+                              <ice:inputText maxlength="255" binding="#{EditStudyPage.inputSoftwareName}" 
+                                             rendered="#{empty(EditStudyPage.studyMap[sfc.softwareName].templateField.controlledVocabulary)}"
+                                             id="input_softwareName" size="45"  value="#{currentRow.name}" 
+                                             required="#{EditStudyPage.studyMap[sfc.software].required and EditStudyPage.validateRequired}" 
+                                             requiredMessage="This field is required." />
                               <ice:message styleClass="errorMessage" for="input_softwareName"/>
+                              <ice:selectOneMenu immediate="false" id="softwareName_SelectOne"
+                                          binding="#{EditStudyPage.inputStudySoftwareName}"
+                                          rendered="#{!empty(EditStudyPage.studyMap[sfc.softwareName].templateField.controlledVocabulary)}"
+                                          required="#{EditStudyPage.studyMap[sfc.software].required and EditStudyPage.validateRequired}" 
+                                           value="#{currentRow.name}"  
+                                           requiredMessage="This field is required." >
+                                <f:selectItem itemLabel="No Value" itemValue=""/>
+                                <f:selectItems value="#{EditStudyPage.studyMap[sfc.softwareName].templateField.controlledVocabulary.selectItems}"/>
+                              </ice:selectOneMenu>
+                              <ice:message styleClass="errorMessage" for="softwareName_SelectOne"/>
                             </div>
                             <div jsfc="ice:panelGroup" styleClass="vdcEditStudyFieldFloat2 vdcEditStudyGroupField">
                               <ice:outputText styleClass="dvnInlineHelpLabel dvnInlineHelpTip" value="#{editstudybundle.softwareVersionLabel}" title="#{editstudybundle.softwareVersionHelpHeading} - #{editstudybundle.softwareVersionHelp}"/>
-                              <ice:inputText maxlength="255" binding="#{EditStudyPage.inputSoftwareVersion}" validator="#{EditStudyPage.validateStudySoftware}" id="input_softwareVersion" value="#{currentRow.softwareVersion}" required="#{EditStudyPage.studyMap[sfc.softwareVersion].required and EditStudyPage.validateRequired}" requiredMessage="This field is required." />
+                              <ice:inputText maxlength="255" binding="#{EditStudyPage.inputSoftwareVersion}" 
+                                             rendered="#{empty(EditStudyPage.studyMap[sfc.softwareVersion].templateField.controlledVocabulary)}"
+                                             validator="#{EditStudyPage.validateStudySoftware}" id="input_softwareVersion"
+                                             value="#{currentRow.softwareVersion}" required="#{EditStudyPage.studyMap[sfc.softwareVersion].required and EditStudyPage.validateRequired}" 
+                                             requiredMessage="This field is required." />
                               <ice:message styleClass="errorMessage" for="input_softwareVersion"/>
+                              <ice:selectOneMenu immediate="false" id="softwareVersion_SelectOne"
+                                          rendered="#{!empty(EditStudyPage.studyMap[sfc.softwareVersion].templateField.controlledVocabulary)}"
+                                          required="#{EditStudyPage.studyMap[sfc.software].required and EditStudyPage.validateRequired}" 
+                                           value="#{currentRow.softwareVersion}"  
+                                           validator="#{EditStudyPage.validateStudySoftware}"
+                                           requiredMessage="This field is required." >
+                                <f:selectItem itemLabel="No Value" itemValue=""/>
+                                <f:selectItems value="#{EditStudyPage.studyMap[sfc.softwareVersion].templateField.controlledVocabulary.selectItems}"/>
+                              </ice:selectOneMenu>
+                              <ice:message styleClass="errorMessage" for="softwareVersion_SelectOne"/>
                             </div>
                           </div>
                         </ice:column>
@@ -781,13 +827,41 @@
                           <div jsfc="ice:panelGroup">
                             <div jsfc="ice:panelGroup" styleClass="vdcEditStudyGroupField">
                               <ice:outputText styleClass="dvnInlineHelpLabel dvnInlineHelpTip" value="#{editstudybundle.grantNumberLabel}" title="#{editstudybundle.grantNumberHelpHeading} - #{editstudybundle.grantNumberHelp}"/>
-                              <ice:inputText maxlength="255"  binding="#{EditStudyPage.inputGrantNumber}" id="input_grantNumber" size="45"  value="#{currentRow.number}" required="#{EditStudyPage.studyMap[sfc.grantNumber].required and EditStudyPage.validateRequired}" requiredMessage="This field is required." />
+                              <ice:inputText maxlength="255"  binding="#{EditStudyPage.inputGrantNumber}" 
+                                             id="input_grantNumber" size="45"  value="#{currentRow.number}" 
+                                             rendered="#{empty(EditStudyPage.studyMap[sfc.grantNumberValue].templateField.controlledVocabulary)}"
+                                             required="#{EditStudyPage.studyMap[sfc.grantNumber].required and EditStudyPage.validateRequired}" 
+                                             requiredMessage="This field is required." />
                               <ice:message styleClass="errorMessage" for="input_grantNumber"/>
+                              <ice:selectOneMenu immediate="false" id="grantNumber_SelectOne"
+                                          binding="#{EditStudyPage.inputStudyGrantNumber}"
+                                          rendered="#{!empty(EditStudyPage.studyMap[sfc.grantNumberValue].templateField.controlledVocabulary)}"
+                                          required="#{EditStudyPage.studyMap[sfc.grantNumber].required and EditStudyPage.validateRequired}" 
+                                           value="#{currentRow.number}"  
+                                           requiredMessage="This field is required." >
+                                <f:selectItem itemLabel="No Value" itemValue=""/>
+                                <f:selectItems value="#{EditStudyPage.studyMap[sfc.grantNumberValue].templateField.controlledVocabulary.selectItems}"/>
+                              </ice:selectOneMenu>
                             </div>
                             <div jsfc="ice:panelGroup" styleClass="vdcEditStudyGroupField">
                               <ice:outputText styleClass="dvnInlineHelpLabel dvnInlineHelpTip" value="#{editstudybundle.grantingAgencyLabel}" title="#{editstudybundle.grantingAgencyHelpHeading} - #{editstudybundle.grantingAgencyHelp}"/>
-                              <ice:inputText maxlength="255"  binding="#{EditStudyPage.inputGrantAgency}" validator="#{EditStudyPage.validateStudyGrant}" id="input_grantNumberAgency" size="45" value="#{currentRow.agency}" required="#{EditStudyPage.studyMap[sfc.grantNumberAgency].required and EditStudyPage.validateRequired}" requiredMessage="This field is required." />
+                              <ice:inputText maxlength="255"  binding="#{EditStudyPage.inputGrantAgency}" 
+                                              rendered="#{empty(EditStudyPage.studyMap[sfc.grantNumberAgency].templateField.controlledVocabulary)}"
+                                             validator="#{EditStudyPage.validateStudyGrant}" 
+                                             id="input_grantNumberAgency" size="45" value="#{currentRow.agency}" 
+                                             required="#{EditStudyPage.studyMap[sfc.grantNumberAgency].required and EditStudyPage.validateRequired}" 
+                                             requiredMessage="This field is required." />
+                                <ice:selectOneMenu immediate="false" id="grantAgency_SelectOne"
+                                          rendered="#{!empty(EditStudyPage.studyMap[sfc.grantNumberAgency].templateField.controlledVocabulary)}"
+                                          required="#{EditStudyPage.studyMap[sfc.grantNumber].required and EditStudyPage.validateRequired}" 
+                                           value="#{currentRow.agency}" 
+                                           validator="#{EditStudyPage.validateStudyGrant}"
+                                           requiredMessage="This field is required." >
+                                <f:selectItem itemLabel="No Value" itemValue=""/>
+                                <f:selectItems value="#{EditStudyPage.studyMap[sfc.grantNumberAgency].templateField.controlledVocabulary.selectItems}"/>
+                              </ice:selectOneMenu>
                               <ice:message styleClass="errorMessage" for="input_grantNumberAgency"/>
+                              <ice:message styleClass="errorMessage" for="grantAgency_SelectOne"/>
                             </div>
                           </div>
                         </ice:column>
@@ -1122,23 +1196,49 @@
                         <ice:outputText styleClass="dvnInlineHelpLabel dvnInlineHelpTip" value="#{editstudybundle.seriesLabel}" title="#{editstudybundle.seriesHelpHeading} - #{editstudybundle.seriesHelp}"/>
                         <ice:inputText binding="#{EditStudyPage.inputSeries}" id="input_seriesName"
                                        value="#{EditStudyPage.metadata.seriesName}"
+                                       rendered="#{empty(EditStudyPage.studyMap[sfc.seriesName].templateField.controlledVocabulary)}"
                                        required="#{EditStudyPage.studyMap[sfc.series].required and EditStudyPage.validateRequired}" requiredMessage="This field is required."
                                        styleClass="formHtmlEnabled">
                           <f:validator validatorId="XhtmlValidator"/>
                         </ice:inputText>
+                        <ice:selectOneMenu immediate="false"   id="selectOneSeriesName"                                          
+                                           value="#{EditStudyPage.metadata.seriesName}" 
+                                          binding="#{EditStudyPage.inputStudySeriesName}"
+                                           required="#{EditStudyPage.studyMap[sfc.series].required  and EditStudyPage.validateRequired}" requiredMessage="This field is required."
+                                           rendered="#{!empty(EditStudyPage.studyMap[sfc.seriesName].templateField.controlledVocabulary)}" 
+                                           >
+                            <f:selectItem itemLabel="No Value" itemValue=""/>
+                             <f:validator validatorId="XhtmlValidator"/>
+                            <f:selectItems value="#{EditStudyPage.studyMap[sfc.seriesName].templateField.controlledVocabulary.selectItems}"/>
+                        </ice:selectOneMenu>
                         <ice:message styleClass="errorMessage" for="input_seriesName"/>
+                        <ice:message styleClass="errorMessage" for="selectOneSeriesName"/>
                       </div>
                       <div jsfc="ice:panelGroup" styleClass="vdcEditStudyGroupField">
                         <ice:outputText styleClass="dvnInlineHelpLabel dvnInlineHelpTip" value="#{editstudybundle.seriesInformationLabel}" title="#{editstudybundle.seriesInformationHelpHeading} - #{editstudybundle.seriesInformationHelp}"/>
                         <ice:inputText binding="#{EditStudyPage.inputSeriesInformation}" id="input_seriesInformation"
                                        size="45"
                                        value="#{EditStudyPage.metadata.seriesInformation}"
-                                       required="#{EditStudyPage.studyMap[sfc.seriesInformation].required and EditStudyPage.validateRequired}" requiredMessage="This field is required."
-                                       validator="#{EditStudyPage.validateSeries }"
+                                       rendered="#{empty(EditStudyPage.studyMap[sfc.seriesInformation].templateField.controlledVocabulary)}"
+                                       required="#{EditStudyPage.studyMap[sfc.seriesInformation].required and EditStudyPage.validateRequired}" 
+                                       requiredMessage="This field is required."
+                                       validator="#{EditStudyPage.validateSeries}"
                                        styleClass="formHtmlEnabled">
                           <f:validator validatorId="XhtmlValidator"/>
                         </ice:inputText>
+                        <ice:selectOneMenu immediate="false"   id="selectOneSeriesInformation"                                          
+                                           value="#{EditStudyPage.metadata.seriesInformation}" 
+                                           required="#{EditStudyPage.studyMap[sfc.series].required  and EditStudyPage.validateRequired}" 
+                                           requiredMessage="This field is required."
+                                           rendered="#{!empty(EditStudyPage.studyMap[sfc.seriesInformation].templateField.controlledVocabulary)}" 
+                                           validator="#{EditStudyPage.validateSeries}"
+                                           >
+                            <f:selectItem itemLabel="No Value" itemValue=""/>
+                             <f:validator validatorId="XhtmlValidator"/>
+                            <f:selectItems value="#{EditStudyPage.studyMap[sfc.seriesInformation].templateField.controlledVocabulary.selectItems}"/>
+                        </ice:selectOneMenu>
                         <ice:message styleClass="errorMessage" for="input_seriesInformation"/>
+                        <ice:message styleClass="errorMessage" for="selectOneSeriesInformation"/>
                       </div>
                     </div>
                   </ice:panelGrid>
@@ -1160,16 +1260,49 @@
                     <div jsfc="ice:panelGroup" id="groupPanel30">
                       <div jsfc="ice:panelGroup" >
                         <ice:outputText styleClass="dvnInlineHelpLabel dvnInlineHelpTip" value="#{editstudybundle.seriesVersionLabel}" title="#{editstudybundle.seriesVersionHelpHeading} - #{editstudybundle.seriesVersionHelp}"/>
-                        <ice:inputText binding="#{EditStudyPage.inputVersion}" id="input_studyVersion" value="#{EditStudyPage.metadata.studyVersionText}"  required="#{EditStudyPage.studyMap[sfc.studyVersion].required and EditStudyPage.validateRequired}" requiredMessage="This field is required." />
+                        <ice:inputText binding="#{EditStudyPage.inputVersion}" 
+                                       id="input_studyVersion" value="#{EditStudyPage.metadata.studyVersionText}"  
+                                       required="#{EditStudyPage.studyMap[sfc.studyVersion].required and EditStudyPage.validateRequired}" 
+                                       rendered="#{empty(EditStudyPage.studyMap[sfc.studyVersionValue].templateField.controlledVocabulary)}"
+                                       requiredMessage="This field is required." />
+                       <ice:selectOneMenu immediate="false"   id="selectOneStudyVersionText"                                          
+                                           value="#{EditStudyPage.metadata.studyVersionText}" 
+                                           required="#{EditStudyPage.studyMap[sfc.studyVersion].required  and EditStudyPage.validateRequired}" 
+                                           requiredMessage="This field is required."
+                                           rendered="#{!empty(EditStudyPage.studyMap[sfc.studyVersionValue].templateField.controlledVocabulary)}" 
+                                           >
+                            <f:selectItem itemLabel="No Value" itemValue=""/>
+                             <f:validator validatorId="XhtmlValidator"/>
+                            <f:selectItems value="#{EditStudyPage.studyMap[sfc.studyVersionValue].templateField.controlledVocabulary.selectItems}"/>
+                        </ice:selectOneMenu>
                         <ice:message styleClass="errorMessage" for="input_studyVersion"/>
+                        <ice:message styleClass="errorMessage" for="selectOneStudyVersionText"/>
                       </div>
                       <div jsfc="ice:panelGroup" styleClass="vdcEditStudyGroupField">
                         <ice:outputText styleClass="dvnInlineHelpLabel dvnInlineHelpTip" value="#{editstudybundle.seriesVersionDateLabel}" title="#{editstudybundle.seriesVersionDateHelpHeading} - #{editstudybundle.seriesVersionDateHelp}"/>
-                        <ice:inputText binding="#{EditStudyPage.inputVersionDate}" validator="#{EditStudyPage.validateVersion}" id="input_versionDate" styleClass="formDateFormat" value="#{EditStudyPage.metadata.versionDate}" required="#{EditStudyPage.studyMap[sfc.versionDate].required and EditStudyPage.validateRequired}" requiredMessage="This field is required."  >
+                        <ice:inputText binding="#{EditStudyPage.inputVersionDate}" 
+                                       validator="#{EditStudyPage.validateVersion}" 
+                                       id="input_versionDate" styleClass="formDateFormat" 
+                                       value="#{EditStudyPage.metadata.versionDate}" 
+                                       rendered="#{empty(EditStudyPage.studyMap[sfc.versionDate].templateField.controlledVocabulary)}"
+                                       required="#{EditStudyPage.studyMap[sfc.studyVersion].required and EditStudyPage.validateRequired}" 
+                                       requiredMessage="This field is required."  >
                           <f:validator validatorId="DateValidator"/>
                         </ice:inputText>
+                        <ice:selectOneMenu immediate="false"   id="selectOneStudyVersionDate"
+                                           binding="#{EditStudyPage.inputStudyVersionDate}"
+                                           value="#{EditStudyPage.metadata.versionDate}" 
+                                           required="#{EditStudyPage.studyMap[sfc.studyVersion].required  and EditStudyPage.validateRequired}" 
+                                           requiredMessage="This field is required."
+                                           rendered="#{!empty(EditStudyPage.studyMap[sfc.versionDate].templateField.controlledVocabulary)}" 
+                                           >
+                            <f:selectItem itemLabel="No Value" itemValue=""/>
+                            <f:validator validatorId="DateValidator"/>
+                            <f:selectItems value="#{EditStudyPage.studyMap[sfc.versionDate].templateField.controlledVocabulary.selectItems}"/>
+                        </ice:selectOneMenu>                        
                         <ice:outputText styleClass="vdcEditStudyFormatExample" value="#{editstudybundle.dateFormatDescription}"/>
                         <ice:message styleClass="errorMessage" for="input_versionDate"/>
+                        <ice:message styleClass="errorMessage" for="selectOneStudyVersionDate"/>
                       </div>
                     </div>
                   </ice:panelGrid>
@@ -1264,27 +1397,73 @@
                           <div jsfc="ice:panelGroup" styleClass="vdcEditStudyFieldFloatWrap">
                             <div jsfc="ice:panelGroup" styleClass="vdcEditStudyFieldFloat1">
                               <ice:outputText styleClass="dvnInlineHelpLabel dvnInlineHelpTip" value="#{editstudybundle.keywordLabel}" title="#{editstudybundle.keywordHelpHeading} - #{editstudybundle.keywordHelp}"/>
-                              <ice:inputText binding="#{EditStudyPage.inputKeywordValue}" id="input_keywordValue" value="#{currentRow.value}" required="#{EditStudyPage.studyMap[sfc.keyword].required}" requiredMessage="This field is required." />
+                              <ice:inputText binding="#{EditStudyPage.inputKeywordValue}" 
+                                             id="input_keywordValue" value="#{currentRow.value}" 
+                                             required="#{EditStudyPage.studyMap[sfc.keyword].required}" 
+                                             rendered="#{empty(EditStudyPage.studyMap[sfc.keywordValue].templateField.controlledVocabulary)}"
+                                             requiredMessage="This field is required." />
+                             <ice:selectOneMenu immediate="false"   id="selectOneKeywordValue" 
+                                                binding="#{EditStudyPage.inputStudyKeywordValue}"
+                                           value="#{currentRow.value}" 
+                                           required="#{EditStudyPage.studyMap[sfc.keyword].required  and EditStudyPage.validateRequired}" 
+                                           requiredMessage="This field is required."
+                                           rendered="#{!empty(EditStudyPage.studyMap[sfc.keywordValue].templateField.controlledVocabulary)}" 
+                                           >
+                            <f:selectItem itemLabel="No Value" itemValue=""/>
+                            <f:selectItems value="#{EditStudyPage.studyMap[sfc.keywordValue].templateField.controlledVocabulary.selectItems}"/>
+                            </ice:selectOneMenu>
                               <ice:message styleClass="errorMessage" for="input_keywordValue"/>
+                              <ice:message styleClass="errorMessage" for="selectOneKeywordValue"/>
                             </div>
                             <div jsfc="ice:panelGroup" styleClass="vdcEditStudyFieldFloat2 vdcEditStudyGroupField">
                               <ice:outputText styleClass="dvnInlineHelpLabel dvnInlineHelpTip" value="#{editstudybundle.keywordVocabularyLabel}" title="#{editstudybundle.keywordVocabularyHelpHeading} - #{editstudybundle.keywordVocabularyHelp}"/>
-                              <ice:inputText validator="#{EditStudyPage.validateStudyKeyword}" binding="#{EditStudyPage.inputKeywordVocab}" id="input_keywordVocab" value="#{currentRow.vocab}" required="#{EditStudyPage.studyMap[sfc.keywordVocab].required and EditStudyPage.validateRequired}"  requiredMessage="This field is required." maxlength="255"/>
+                              <ice:inputText validator="#{EditStudyPage.validateStudyKeyword}" 
+                                             binding="#{EditStudyPage.inputKeywordVocab}" id="input_keywordVocab" 
+                                             value="#{currentRow.vocab}" 
+                                             rendered="#{empty(EditStudyPage.studyMap[sfc.keywordVocab].templateField.controlledVocabulary)}" 
+                                             required="#{EditStudyPage.studyMap[sfc.keywordVocab].required and EditStudyPage.validateRequired}"  
+                                             requiredMessage="This field is required." maxlength="255"/>
+                            <ice:selectOneMenu immediate="false"   id="selectOneKeywordVocab"  
+                                               binding="#{EditStudyPage.inputStudyKeywordVocab}"
+                                           value="#{currentRow.vocab}" 
+                                           validator="#{EditStudyPage.validateStudyKeyword}"
+                                           required="#{EditStudyPage.studyMap[sfc.keyword].required  and EditStudyPage.validateRequired}" 
+                                           requiredMessage="This field is required."
+                                           rendered="#{!empty(EditStudyPage.studyMap[sfc.keywordVocab].templateField.controlledVocabulary)}" 
+                                           >
+                            <f:selectItem itemLabel="No Value" itemValue=""/>
+                            <f:selectItems value="#{EditStudyPage.studyMap[sfc.keywordVocab].templateField.controlledVocabulary.selectItems}"/>
+                            </ice:selectOneMenu>
                               <ice:message styleClass="errorMessage" for="input_keywordVocab"/>
+                               <ice:message styleClass="errorMessage" for="selectOneKeywordVocab"/>
                             </div>
                             <div jsfc="ice:panelGroup" styleClass="vdcEditStudyFieldFloat3 vdcEditStudyGroupField ">
                               <ice:outputText styleClass="dvnInlineHelpLabel dvnInlineHelpTip" value="#{editstudybundle.keywordVocabularyURLLabel}" title="#{editstudybundle.keywordVocabularyURLHelpHeading} - #{editstudybundle.keywordVocabularyURLHelp}"/>
                               <ice:inputText id="input_keywordVocabURI"
                                              validator="#{EditStudyPage.validateStudyKeyword}"
                                              binding="#{EditStudyPage.inputKeywordVocabUri}"
+                                             rendered="#{empty(EditStudyPage.studyMap[sfc.keywordVocabURI].templateField.controlledVocabulary)}"
                                              size="45"
                                              maxlength="255"
                                              value="#{currentRow.vocabURI}"
-                                             required="#{EditStudyPage.studyMap[sfc.keywordVocabURI].required and EditStudyPage.validateRequired}" requiredMessage="This field is required." >
+                                             required="#{EditStudyPage.studyMap[sfc.keyword].required and EditStudyPage.validateRequired}" requiredMessage="This field is required." >
                                 <f:validator validatorId="UrlValidator"/>
                               </ice:inputText>
+                             <ice:selectOneMenu immediate="false"   id="selectOneKeywordVocabURI"  
+                                               binding="#{EditStudyPage.inputStudyKeywordVocabURI}"
+                                           value="#{currentRow.vocabURI}" 
+                                           validator="#{EditStudyPage.validateStudyKeyword}"
+                                           required="#{EditStudyPage.studyMap[sfc.keyword].required  and EditStudyPage.validateRequired}" 
+                                           requiredMessage="This field is required."
+                                           rendered="#{!empty(EditStudyPage.studyMap[sfc.keywordVocabURI].templateField.controlledVocabulary)}" 
+                                           >
+                            <f:selectItem itemLabel="No Value" itemValue=""/>
+                            <f:selectItems value="#{EditStudyPage.studyMap[sfc.keywordVocabURI].templateField.controlledVocabulary.selectItems}"/>
+                            <f:validator validatorId="UrlValidator"/>
+                             </ice:selectOneMenu>
                               <ice:outputText styleClass="vdcEditStudyFormatExample" value="(http://example-domain.edu/)"/>
                               <ice:message styleClass="errorMessage" for="input_keywordVocabURI"/>
+                              <ice:message styleClass="errorMessage" for="selectOneKeywordVocabURI"/>
                             </div>
                           </div>
                         </ice:column>

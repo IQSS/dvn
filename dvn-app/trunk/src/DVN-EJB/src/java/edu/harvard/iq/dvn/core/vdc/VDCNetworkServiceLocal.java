@@ -51,6 +51,8 @@ public interface VDCNetworkServiceLocal extends java.io.Serializable  {
 
     public LockssConfig getLockssConfig();
     
+    public TwitterCredentials getTwitterCredentials();     
+
     public void addTermsOfUse(TermsOfUse tou);  
 
     VDCNetwork find(Object pk);

@@ -110,6 +110,17 @@ public class VDCNetworkServiceBean implements VDCNetworkServiceLocal {
         return lc;
         
     }
+    
+    public TwitterCredentials getTwitterCredentials() {
+        TwitterCredentials tc = null;
+        try {
+            tc = (TwitterCredentials) em.createQuery("select t from TwitterCredentials t where t.vdc is null").getSingleResult();
+        } catch (NoResultException e) {
+            
+            // no result is ok - just return a null object
+        }
+        return tc;        
+    }       
       
    public TermsOfUse getCurrentTermsOfUse() {
         String queryStr = "SELECT t FROM TermsOfUse t WHERE t.vdc_id  is null order by createTime";

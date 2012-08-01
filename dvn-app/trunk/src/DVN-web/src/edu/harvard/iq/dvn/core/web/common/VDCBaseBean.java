@@ -238,9 +238,11 @@ public class VDCBaseBean  implements java.io.Serializable  {
         if ( !( url.startsWith("http://") || url.startsWith("https://") ) ) {        
             url = "/dvn" + getVDCRequestBean().getCurrentVDCURL() + url;
         }
-        try {                      
-            response.sendRedirect(url);
+        
+        try {
+            fc.getExternalContext().redirect(url);
             fc.responseComplete();
+            
         } catch (IOException ex) {
             throw new RuntimeException("IOException thrown while trying to redirect to " + url);
         }

@@ -1117,16 +1117,32 @@
                           <ice:inputTextarea cols="90" rows="12"
                                              id="input_abstractText"
                                              binding="#{TemplateFormPage.inputAbstractText}"
+                                             rendered="#{empty(TemplateFormPage.studyMap[sfc.descriptionText].templateField.controlledVocabulary)}"
                                              value="#{currentRow.text}"
                                              styleClass="formHtmlEnabled">
                           </ice:inputTextarea>
+                         <ice:selectOneMenu immediate="false"   id="selectOneDescriptionText"                                          
+                                           value="#{currentRow.text}" 
+                                           rendered="#{!empty(TemplateFormPage.studyMap[sfc.descriptionText].templateField.controlledVocabulary)}"
+                                           >
+                            <f:selectItem itemLabel="No Value" itemValue=""/>
+                            <f:selectItems value="#{TemplateFormPage.studyMap[sfc.descriptionText].templateField.controlledVocabulary.selectItems}"/>
+                        </ice:selectOneMenu> 
                           <ice:message styleClass="errorMessage" for="input_abstractText"/>
                         </div>
                         <div jsfc="ice:panelGroup" styleClass="vdcEditStudyGroupField">
                           <ice:outputText styleClass="dvnInlineHelpLabel dvnInlineHelpTip" value="#{editstudybundle.abstractDateLabel}" title="#{editstudybundle.abstractDateHelpHeading} - #{editstudybundle.abstractDateHelp}"/>
                           <ice:inputText binding="#{TemplateFormPage.inputAbstractDate}" 
+                                          rendered="#{empty(TemplateFormPage.studyMap[sfc.descriptionDate].templateField.controlledVocabulary)}"
                                          id="input_abstractDate" styleClass="formDateFormat" value="#{currentRow.date}">
                               </ice:inputText>
+                            <ice:selectOneMenu immediate="false"   id="selectOneDescriptionDate"                                          
+                                           value="#{currentRow.date}" 
+                                           rendered="#{!empty(TemplateFormPage.studyMap[sfc.descriptionDate].templateField.controlledVocabulary)}"
+                                           >
+                            <f:selectItem itemLabel="No Value" itemValue=""/>
+                            <f:selectItems value="#{TemplateFormPage.studyMap[sfc.descriptionDate].templateField.controlledVocabulary.selectItems}"/>
+                        </ice:selectOneMenu> 
                           <ice:outputText styleClass="vdcEditStudyFormatExample" value="#{editstudybundle.dateFormatDescription}"/>
                           <ice:message styleClass="errorMessage" for="input_abstractDate"/>
                         </div>
@@ -1135,6 +1151,9 @@
                     <ice:column>
                       <ice:commandButton partialSubmit="true" alt="Add Row" title="Add Row" image="/resources/images/icon_add.gif" actionListener="#{TemplateFormPage.addRow}"/>
                       <ice:commandButton partialSubmit="true" rendered="#{TemplateFormPage.dataTableAbstracts.rowCount gt 1}" alt="Remove Row" title="Remove Row" image="/resources/images/icon_remove.gif" actionListener="#{TemplateFormPage.removeRow}"/>
+                     <ice:commandLink value="Select Vocabulary"
+                                       rendered ="#{TemplateFormPage.dataTableAbstracts.rowIndex==0}"
+                                       action="#{TemplateFormPage.openPopupStandard(TemplateFormPage.studyMap[sfc.description].templateField)}"/>
                       <ice:selectOneMenu immediate="false" partialSubmit="true" 
                                         value="#{TemplateFormPage.studyMap[sfc.description].templateField.fieldInputLevelString}"
                                         rendered ="#{TemplateFormPage.dataTableAbstracts.rowIndex==0}">
@@ -3207,28 +3226,52 @@
                           <ice:outputText styleClass="dvnInlineHelpLabel dvnInlineHelpTip" value="#{editstudybundle.notesTypeLabel}" title="#{editstudybundle.notesTypeHelpHeading} - #{editstudybundle.notesTypeHelp}"/>
                           <ice:inputText maxlength="255" binding="#{TemplateFormPage.inputNoteType}" id="input_notesInformationType"
                                          value="#{currentRow.type}"
+                                         rendered="#{empty(TemplateFormPage.studyMap[sfc.notesInformationType].templateField.controlledVocabulary)}" 
                                          styleClass="formHtmlEnabled">
-                          </ice:inputText>
+                          </ice:inputText>                        
+                         <ice:selectOneMenu immediate="false"   id="selectOnenoteType" 
+                                     rendered="#{!empty(TemplateFormPage.studyMap[sfc.notesInformationType].templateField.controlledVocabulary)}"                                          
+                                           value="#{currentRow.type}" 
+                                           >
+                            <f:selectItem itemLabel="No Value" itemValue=""/>
+                            <f:selectItems value="#{TemplateFormPage.studyMap[sfc.notesInformationType].templateField.controlledVocabulary.selectItems}"/>
+                        </ice:selectOneMenu>  
                           <ice:message styleClass="errorMessage" for="input_notesInformationType"/>
                         </div>
                         <div jsfc="ice:panelGroup" styleClass="vdcEditStudyFieldFloat2 vdcEditStudyGroupField">
                           <ice:outputText styleClass="dvnInlineHelpLabel dvnInlineHelpTip" value="#{editstudybundle.notesSubjectLabel}" title="#{editstudybundle.notesSubjectHelpHeading} - #{editstudybundle.notesSubjectHelp}"/>
                           <ice:inputText id="input_notesInformationSubject"
                                          maxlength="255"
+                                         rendered="#{empty(TemplateFormPage.studyMap[sfc.notesInformationSubject].templateField.controlledVocabulary)}" 
                                          binding="#{TemplateFormPage.inputNoteSubject}"
                                          value="#{currentRow.subject}"
                                          styleClass="formHtmlEnabled">
                           </ice:inputText>
+                        <ice:selectOneMenu immediate="false"   id="selectOnenoteSubject" 
+                                     rendered="#{!empty(TemplateFormPage.studyMap[sfc.notesInformationSubject].templateField.controlledVocabulary)}"                                          
+                                           value="#{currentRow.type}" 
+                                           >
+                            <f:selectItem itemLabel="No Value" itemValue=""/>
+                            <f:selectItems value="#{TemplateFormPage.studyMap[sfc.notesInformationSubject].templateField.controlledVocabulary.selectItems}"/>
+                        </ice:selectOneMenu> 
                           <ice:message styleClass="errorMessage" for="input_notesInformationSubject"/>
                         </div>
                         <div jsfc="ice:panelGroup" styleClass="vdcEditStudyFieldFloat3 vdcEditStudyGroupField">
                           <ice:outputText styleClass="dvnInlineHelpLabel dvnInlineHelpTip" value="#{editstudybundle.notesTextLabel}" title="#{editstudybundle.notesTextHelpHeading} - #{editstudybundle.notesTextHelp}"/>
                           <ice:inputText id="input_notesText"
                                          size="90"
+                                         rendered="#{empty(TemplateFormPage.studyMap[sfc.notesText].templateField.controlledVocabulary)}"
                                          binding="#{TemplateFormPage.inputNoteText}"
                                          value="#{currentRow.text}"
                                          styleClass="formHtmlEnabled">
                           </ice:inputText>
+                          <ice:selectOneMenu immediate="false"   id="selectOnenotesText" 
+                                     rendered="#{!empty(TemplateFormPage.studyMap[sfc.notesText].templateField.controlledVocabulary)}"                                          
+                                           value="#{currentRow.type}" 
+                                           >
+                            <f:selectItem itemLabel="No Value" itemValue=""/>
+                            <f:selectItems value="#{TemplateFormPage.studyMap[sfc.notesText].templateField.controlledVocabulary.selectItems}"/>
+                        </ice:selectOneMenu>
                           <ice:message styleClass="errorMessage" for="input_notesText"/>
                         </div>
                       </div>
@@ -3236,6 +3279,8 @@
                     <ice:column>
                       <ice:commandButton partialSubmit="true" alt="Add Row" title="Add Row" image="/resources/images/icon_add.gif" actionListener="#{TemplateFormPage.addRow}"/>
                       <ice:commandButton partialSubmit="true" rendered="#{TemplateFormPage.dataTableNotes.rowCount gt 1}" alt="Remove Row" title="Remove Row" image="/resources/images/icon_remove.gif" actionListener="#{TemplateFormPage.removeRow}"/>
+                      <ice:commandLink value="Select Vocabulary" rendered ="#{TemplateFormPage.dataTableNotes.rowIndex==0}"
+                                       action="#{TemplateFormPage.openPopupStandard(TemplateFormPage.studyMap[sfc.note].templateField)}"/>                      
                       <ice:selectOneMenu immediate="false" partialSubmit="true" rendered ="#{TemplateFormPage.dataTableNotes.rowIndex==0}"
                                         value="#{TemplateFormPage.studyMap[sfc.note].templateField.fieldInputLevelString}">
                             <f:attribute name="fieldName" value="notesInformationType" />

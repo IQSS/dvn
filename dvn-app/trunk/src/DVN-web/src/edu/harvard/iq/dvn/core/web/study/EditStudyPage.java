@@ -851,6 +851,16 @@ public class EditStudyPage extends VDCBaseBean implements java.io.Serializable  
         this.inputStudyVersionDate = inputStudyVersionDate;
     }
     
+    private HtmlSelectOneMenu inputStudyVersionName;
+
+    public HtmlSelectOneMenu getInputStudyVersionName() {
+        return inputStudyVersionName;
+    }
+
+    public void setInputStudyVersionName(HtmlSelectOneMenu inputStudyVersionName) {
+        this.inputStudyVersionName = inputStudyVersionName;
+    }
+    
     private HtmlSelectOneMenu inputStudyKeywordValue;
 
     public HtmlSelectOneMenu getInputStudyKeywordValue() {
@@ -870,6 +880,57 @@ public class EditStudyPage extends VDCBaseBean implements java.io.Serializable  
 
     public void setInputStudyKeywordVocab(HtmlSelectOneMenu inputStudyKeywordVocab) {
         this.inputStudyKeywordVocab = inputStudyKeywordVocab;
+    }
+    
+        
+    private HtmlSelectOneMenu inputStudyAbstractDate;
+
+    public HtmlSelectOneMenu getInputStudyAbstractDate() {
+        return inputStudyAbstractDate;
+    }
+
+    public void setInputStudyAbstractDate(HtmlSelectOneMenu inputStudyAbstractDate) {
+        this.inputStudyAbstractDate = inputStudyAbstractDate;
+    }
+    
+    
+    private HtmlSelectOneMenu inputStudyNoteType;
+
+    public HtmlSelectOneMenu getInputStudyNoteType() {
+        return inputStudyNoteType;
+    }
+
+    public void setInputStudyNoteType(HtmlSelectOneMenu inputStudyNoteType) {
+        this.inputStudyNoteType = inputStudyNoteType;
+    }
+
+    private HtmlSelectOneMenu inputStudyNoteSubject;
+
+    public HtmlSelectOneMenu getInputStudyNoteSubject() {
+        return inputStudyNoteSubject;
+    }
+
+    public void setInputStudyNoteSubject(HtmlSelectOneMenu inputStudyNoteSubject) {
+        this.inputStudyNoteSubject = inputStudyNoteSubject;
+    }
+        private HtmlSelectOneMenu inputStudyNoteText;
+
+    public HtmlSelectOneMenu getInputStudyNoteText() {
+        return inputStudyNoteText;
+    }
+
+    public void setInputStudyNoteText(HtmlSelectOneMenu inputStudyNoteText) {
+        this.inputStudyNoteText = inputStudyNoteText;
+    }
+    
+    private HtmlSelectOneMenu inputStudyAbstractText;
+
+    public HtmlSelectOneMenu getInputStudyAbstractText() {
+        return inputStudyAbstractText;
+    }
+
+    public void setInputStudyAbstractText(HtmlSelectOneMenu inputStudyAbstractText) {
+        this.inputStudyAbstractText = inputStudyAbstractText;
     }
     
     private HtmlSelectOneMenu inputStudyKeywordVocabURI;
@@ -1899,7 +1960,7 @@ public class EditStudyPage extends VDCBaseBean implements java.io.Serializable  
             boolean valid=true;
             String name = (String)inputVersion.getLocalValue(); //text
             if (name == null){
-                name = (String) inputStudyVersionDate.getValue(); //dropdown
+                name = (String) inputStudyVersionName.getValue(); //dropdown
             }
             if (name == null){
                 name = "";
@@ -1923,7 +1984,14 @@ public class EditStudyPage extends VDCBaseBean implements java.io.Serializable  
         
         if (isValidateRequired()) {
             boolean valid=true;
-            if (StringUtil.isEmpty((String)inputAbstractText.getLocalValue())
+            String text = (String)inputAbstractText.getLocalValue(); //text
+            if (text == null){
+                text = (String) inputStudyAbstractText.getValue(); //dropdown
+            }
+            if (text == null){
+                text = "";
+            }
+            if (StringUtil.isEmpty((String)text)
             && !StringUtil.isEmpty((String)value)  ) {
                 valid=false;
             }
@@ -1941,9 +2009,35 @@ public class EditStudyPage extends VDCBaseBean implements java.io.Serializable  
         
         if (isValidateRequired()) {
             boolean valid=true;
-            if (StringUtil.isEmpty((String)this.inputNoteType.getLocalValue())
-            && (!StringUtil.isEmpty((String)this.inputNoteText.getLocalValue())
-                || !StringUtil.isEmpty((String)this.inputNoteSubject.getLocalValue())
+            
+            String type = (String)inputNoteType.getLocalValue(); //text
+            if (type == null){
+                type = (String) inputStudyNoteType.getValue(); //dropdown
+            }
+            if (type == null){
+                type = "";
+            }
+            type = type.trim();
+            String text = (String)inputNoteText.getLocalValue(); //text
+            if (text == null){
+                text = (String) inputStudyNoteText.getValue(); //dropdown
+            }
+            if (text == null){
+                text = "";
+            }
+            text = text.trim();
+            String subject = (String)inputKeywordVocabUri.getLocalValue(); //text
+            if (subject == null){
+                subject = (String) inputStudyKeywordVocabURI.getValue(); //dropdown
+            }
+            if (subject == null){
+                subject = "";
+            }
+            subject = subject.trim();
+            
+            if (StringUtil.isEmpty(type)
+            && (!StringUtil.isEmpty(text)
+                || !StringUtil.isEmpty(subject)
                 || !StringUtil.isEmpty((String)value))  ) {
                 valid=false;
             }

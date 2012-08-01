@@ -1361,15 +1361,26 @@
                         <ice:inputTextarea cols="90" rows="4"
                                            id="input_relatedMaterial"
                                            binding="#{TemplateFormPage.inputRelMaterial}"
+                                           rendered="#{empty(TemplateFormPage.studyMap[sfc.relatedMaterial].templateField.controlledVocabulary)}"
                                            value="#{currentRow.text}"
                                            styleClass="formHtmlEnabled">
                         </ice:inputTextarea>
+                        <ice:selectOneMenu immediate="false"   id="selectOneRelMaterial"                                          
+                                           value="#{currentRow.text}" 
+                                           rendered="#{!empty(TemplateFormPage.studyMap[sfc.relatedMaterial].templateField.controlledVocabulary)}"
+                                           >
+                            <f:selectItem itemLabel="No Value" itemValue=""/>
+                            <f:selectItems value="#{TemplateFormPage.studyMap[sfc.relatedMaterial].templateField.controlledVocabulary.selectItems}"/>
+                        </ice:selectOneMenu> 
                         <ice:message styleClass="errorMessage" for="input_relatedMaterial"/>
                       </div>
                     </ice:column>
                     <ice:column>
                       <ice:commandButton partialSubmit="true" alt="Add Row" title="Add Row" image="/resources/images/icon_add.gif" actionListener="#{TemplateFormPage.addRow}"/>
                       <ice:commandButton partialSubmit="true" rendered="#{TemplateFormPage.dataTableRelMaterials.rowCount gt 1}" alt="Remove Row" title="Remove Row" image="/resources/images/icon_remove.gif" actionListener="#{TemplateFormPage.removeRow}"/>
+                       <ice:commandLink value="Select Vocabulary"
+                                       rendered ="#{TemplateFormPage.dataTableRelMaterials.rowIndex==0}"
+                                       action="#{TemplateFormPage.openPopupStandard(TemplateFormPage.studyMap[sfc.relatedMaterial].templateField)}"/> 
                       <ice:selectOneMenu immediate="false" partialSubmit="true" 
                                         value="#{TemplateFormPage.studyMap[sfc.relatedMaterial].templateField.fieldInputLevelString}"
                                         rendered ="#{TemplateFormPage.dataTableRelMaterials.rowIndex==0}">
@@ -1404,15 +1415,26 @@
                         <ice:inputTextarea cols="90" rows="4"
                                            id="input_relatedStudies"
                                            binding="#{TemplateFormPage.inputRelStudy}"
+                                           rendered="#{empty(TemplateFormPage.studyMap[sfc.relatedStudies].templateField.controlledVocabulary)}"
                                            value="#{currentRow.text}"
                                            styleClass="formHtmlEnabled">
                         </ice:inputTextarea>
+                        <ice:selectOneMenu immediate="false"   id="selectOneRelStudy"                                          
+                                           value="#{currentRow.text}" 
+                                           rendered="#{!empty(TemplateFormPage.studyMap[sfc.relatedStudies].templateField.controlledVocabulary)}"
+                                           >
+                            <f:selectItem itemLabel="No Value" itemValue=""/>
+                            <f:selectItems value="#{TemplateFormPage.studyMap[sfc.relatedStudies].templateField.controlledVocabulary.selectItems}"/>
+                        </ice:selectOneMenu> 
                         <ice:message styleClass="errorMessage" for="input_relatedStudies"/>
                       </div>
                     </ice:column>
                     <ice:column>
                       <ice:commandButton partialSubmit="true" alt="Add Row" title="Add Row" image="/resources/images/icon_add.gif" actionListener="#{TemplateFormPage.addRow}"/>
                       <ice:commandButton partialSubmit="true" rendered="#{TemplateFormPage.dataTableRelStudies.rowCount gt 1}" alt="Remove Row" title="Remove Row" image="/resources/images/icon_remove.gif" actionListener="#{TemplateFormPage.removeRow}"/>
+                      <ice:commandLink value="Select Vocabulary"
+                                       rendered ="#{TemplateFormPage.dataTableRelStudies.rowIndex==0}"
+                                       action="#{TemplateFormPage.openPopupStandard(TemplateFormPage.studyMap[sfc.relatedStudies].templateField)}"/> 
                       <ice:selectOneMenu immediate="false" partialSubmit="true" 
                                         value="#{TemplateFormPage.studyMap[sfc.relatedStudies].templateField.fieldInputLevelString}"
                                         rendered ="#{TemplateFormPage.dataTableRelStudies.rowIndex==0}">
@@ -1446,16 +1468,27 @@
                       <div>
                         <ice:inputText id="input_otherReferences"
                                        binding="#{TemplateFormPage.inputOtherReference}"
+                                       rendered="#{empty(TemplateFormPage.studyMap[sfc.otherReferences].templateField.controlledVocabulary)}"
                                        value="#{currentRow.text}"
                                        size="90"
                                        styleClass="formHtmlEnabled">
                         </ice:inputText>
+                        <ice:selectOneMenu immediate="false"   id="selectOneOtherRef"                                          
+                                           value="#{currentRow.text}" 
+                                           rendered="#{!empty(TemplateFormPage.studyMap[sfc.otherReferences].templateField.controlledVocabulary)}"
+                                           >
+                            <f:selectItem itemLabel="No Value" itemValue=""/>
+                            <f:selectItems value="#{TemplateFormPage.studyMap[sfc.otherReferences].templateField.controlledVocabulary.selectItems}"/>
+                        </ice:selectOneMenu> 
                         <ice:message styleClass="errorMessage" for="input_otherReferences"/>
                       </div>
                     </ice:column>
                     <ice:column>
                       <ice:commandButton partialSubmit="true" alt="Add Row" title="Add Row" image="/resources/images/icon_add.gif" actionListener="#{TemplateFormPage.addRow}"/>
                       <ice:commandButton partialSubmit="true" rendered="#{TemplateFormPage.dataTableOtherReferences.rowCount gt 1}" alt="Remove Row" title="Remove Row" image="/resources/images/icon_remove.gif" actionListener="#{TemplateFormPage.removeRow}"/>
+                      <ice:commandLink value="Select Vocabulary"
+                                       rendered ="#{TemplateFormPage.dataTableOtherReferences.rowIndex==0}"
+                                       action="#{TemplateFormPage.openPopupStandard(TemplateFormPage.studyMap[sfc.otherReferences].templateField)}"/> 
                       <ice:selectOneMenu immediate="false" partialSubmit="true" 
                                         value="#{TemplateFormPage.studyMap[sfc.otherReferences].templateField.fieldInputLevelString}"
                                         rendered ="#{TemplateFormPage.dataTableOtherReferences.rowIndex==0}">

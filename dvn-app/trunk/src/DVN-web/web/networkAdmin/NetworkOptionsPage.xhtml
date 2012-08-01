@@ -158,17 +158,19 @@
                                     </td>
                                     <td><ice:outputText styleClass="dvnOptionsTableNote" value="#{bundlePageInfo.editDvnNotificationsText}"/></td>
                                 </tr>
-                                <tr>
-                                    <td class="dvnOptionsTableOption">
-                                        <ice:commandLink action="#{OptionsPage.authorizeTwitter}" rendered="#{OptionsPage.twitterConfigured and !OptionsPage.twitterEnabled}">
-                                            <ice:outputText  value="Enable Twitter"/>
-                                        </ice:commandLink>
-                                        <ice:commandLink action="#{OptionsPage.removeTwitter}" rendered="#{OptionsPage.twitterConfigured and OptionsPage.twitterEnabled}">
-                                            <ice:outputText  value="Disable Twitter"/>
-                                        </ice:commandLink>                                        
-                                    </td>
-                                    <td><ice:outputText styleClass="dvnOptionsTableNote" value="Enable or disable automatic tweets"/></td>
-                                </tr>                                
+                                <ui:fragment rendered="#{OptionsPage.twitterConfigured}">
+                                    <tr>
+                                        <td class="dvnOptionsTableOption">
+                                            <ice:commandLink action="#{OptionsPage.authorizeTwitter}" rendered="#{!OptionsPage.twitterEnabled}">
+                                                <ice:outputText  value="Enable Twitter"/>
+                                            </ice:commandLink>
+                                            <ice:commandLink action="#{OptionsPage.removeTwitter}" rendered="#{OptionsPage.twitterEnabled}">
+                                                <ice:outputText  value="Disable Twitter"/>
+                                            </ice:commandLink>                                        
+                                        </td>
+                                        <td><ice:outputText styleClass="dvnOptionsTableNote" value="Enable or disable automatic tweets"/></td>
+                                    </tr>
+                                </ui:fragment>
                             </table>
                             <table class="dvnOptionsTable" cellspacing="0" cellpadding="0" border="0">
                                 <tr><td colspan="2" class="dvnOptionsTableHeader"><ice:outputText value="#{bundlePageInfo.dvnTermsSectionTitle}"/></td></tr>

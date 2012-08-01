@@ -861,6 +861,7 @@ public class EditStudyPage extends VDCBaseBean implements java.io.Serializable  
         this.inputStudyKeywordValue = inputStudyKeywordValue;
     }
     
+    
     private HtmlSelectOneMenu inputStudyKeywordVocab;
 
     public HtmlSelectOneMenu getInputStudyKeywordVocab() {
@@ -879,6 +880,37 @@ public class EditStudyPage extends VDCBaseBean implements java.io.Serializable  
 
     public void setInputStudyKeywordVocabURI(HtmlSelectOneMenu inputStudyKeywordVocabURI) {
         this.inputStudyKeywordVocabURI = inputStudyKeywordVocabURI;
+    }
+    
+    private HtmlSelectOneMenu inputStudyTopicClassValue;
+
+    public HtmlSelectOneMenu getInputStudyTopicClassValue() {
+        return inputStudyTopicClassValue;
+    }
+
+    public void setInputStudyTopicClassValue(HtmlSelectOneMenu inputStudyTopicClassValue) {
+        this.inputStudyTopicClassValue = inputStudyTopicClassValue;
+    }
+    
+    
+    private HtmlSelectOneMenu inputStudyTopicClassVocab;
+
+    public HtmlSelectOneMenu getInputStudyTopicClassVocab() {
+        return inputStudyTopicClassVocab;
+    }
+
+    public void setInputStudyTopicClassVocab(HtmlSelectOneMenu inputStudyTopicClassVocab) {
+        this.inputStudyTopicClassVocab = inputStudyTopicClassVocab;
+    }
+    
+    private HtmlSelectOneMenu inputStudyTopicClassVocabURI;
+
+    public HtmlSelectOneMenu getInputStudyTopicClassVocabURI() {
+        return inputStudyTopicClassVocabURI;
+    }
+
+    public void setInputStudyTopicClassVocabURI(HtmlSelectOneMenu inputStudyTopicClassVocabURI) {
+        this.inputStudyTopicClassVocabURI = inputStudyTopicClassVocabURI;
     }
     // StudyAbstract
 
@@ -2093,8 +2125,33 @@ public class EditStudyPage extends VDCBaseBean implements java.io.Serializable  
         
         if( isValidateRequired()) {
             boolean valid=true;
-            if (StringUtil.isEmpty((String)inputTopicClassValue.getLocalValue())
-            && (!StringUtil.isEmpty((String)inputTopicClassVocab.getLocalValue())
+            String name = (String)inputTopicClassValue.getLocalValue(); //text
+            if (name == null){
+                name = (String) inputStudyTopicClassValue.getValue(); //dropdown
+            }
+            if (name == null){
+                name = "";
+            }
+            name = name.trim();
+            String vocab = (String)inputTopicClassVocab.getLocalValue(); //text
+            if (vocab == null){
+                vocab = (String) inputStudyTopicClassVocab.getValue(); //dropdown
+            }
+            if (vocab == null){
+                vocab = "";
+            }
+            vocab = vocab.trim();
+            String uri = (String)inputTopicClassVocabUri.getLocalValue(); //text
+            if (uri == null){
+                uri = (String) inputStudyTopicClassVocabURI.getValue(); //dropdown
+            }
+            if (uri == null){
+                uri = "";
+            }
+            uri = uri.trim();
+            if (StringUtil.isEmpty(name)
+            && (!StringUtil.isEmpty(vocab
+                    )
                  || !StringUtil.isEmpty((String)value) )) {
                 valid=false;
             }

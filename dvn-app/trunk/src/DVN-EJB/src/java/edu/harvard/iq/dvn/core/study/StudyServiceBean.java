@@ -40,6 +40,7 @@ import edu.harvard.iq.dvn.core.mail.MailServiceLocal;
 import edu.harvard.iq.dvn.core.study.StudyVersion.VersionState;
 import edu.harvard.iq.dvn.core.util.FileUtil;
 import edu.harvard.iq.dvn.core.util.StringUtil;
+import edu.harvard.iq.dvn.core.util.TwitterUtil;
 import edu.harvard.iq.dvn.core.vdc.*;
 import java.io.File;
 import java.io.FileInputStream;
@@ -51,6 +52,8 @@ import java.io.OutputStream;
 import java.io.PrintWriter; 
 import java.io.BufferedReader; 
 import java.io.InputStreamReader; 
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -250,6 +253,15 @@ public class StudyServiceBean implements edu.harvard.iq.dvn.core.study.StudyServ
             mailService.sendStudyReleasedNotification(study.getCreator().getEmail(), latestVersion.getMetadata().getTitle(), study.getOwner().getName());
         }
 
+        
+        // tweet release of study
+        TwitterCredentials tc = study.getOwner().getTwitterCredentials();
+        if (tc != null) {  
+            String message = "New study released: " + latestVersion.getMetadata().getTitle();
+            URL url = new GlobalId(latestVersion.getStudy().getProtocol(),latestVersion.getStudy().getAuthority(),latestVersion.getStudy().getStudyId()).toURL();
+            TwitterUtil.tweet(tc, message, url);
+        }        
+        
         // finally, re-index the study metadata:
         indexService.updateStudy(studyId);
     }

@@ -35,9 +35,11 @@ import edu.harvard.iq.dvn.core.admin.VDCUser;
 import edu.harvard.iq.dvn.core.util.DateUtil;
 import edu.harvard.iq.dvn.core.vdc.VDC;
 import edu.harvard.iq.dvn.core.web.common.VDCBaseBean;
+import java.net.MalformedURLException;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.logging.Level;
 import javax.ejb.EJB;
 import javax.faces.application.FacesMessage;
 import javax.faces.component.UIComponent;
@@ -48,12 +50,16 @@ import com.icesoft.faces.component.ext.HtmlInputText;
 import edu.harvard.iq.dvn.core.admin.VDCRole;
 import edu.harvard.iq.dvn.core.mail.MailServiceLocal;
 import edu.harvard.iq.dvn.core.util.PropertyUtil;
+import edu.harvard.iq.dvn.core.util.TwitterUtil;
+import edu.harvard.iq.dvn.core.vdc.TwitterCredentials;
 import edu.harvard.iq.dvn.core.vdc.VDCCollection;
 import edu.harvard.iq.dvn.core.vdc.VDCCollectionServiceLocal;
 import edu.harvard.iq.dvn.core.vdc.VDCGroup;
+import edu.harvard.iq.dvn.core.vdc.VDCNetworkServiceLocal;
 import edu.harvard.iq.dvn.core.web.collection.CollectionUI;
 import edu.harvard.iq.dvn.core.web.push.beans.NetworkStatsBean;
 import edu.harvard.iq.dvn.core.web.site.VDCUI;
+import java.net.URL;
 import java.util.logging.Logger;
 import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
@@ -77,9 +83,9 @@ public class PrivilegedUsersPage extends VDCBaseBean implements java.io.Serializ
     @EJB UserServiceLocal userService;
     @EJB GroupServiceLocal groupService;
     @EJB MailServiceLocal mailService;
-        @EJB
-    VDCCollectionServiceLocal vdcCollectionService;
-
+    @EJB VDCCollectionServiceLocal vdcCollectionService;
+    @EJB VDCNetworkServiceLocal vdcNetworkService;
+    
     public class RoleListItem {
         private VDCRole vdcRole;
         private Long selectedRoleId;
@@ -328,6 +334,18 @@ public class PrivilegedUsersPage extends VDCBaseBean implements java.io.Serializ
                     statsBean.releaseAndUpdateInlineDataverseValue(vdc.getId(), (List<VDCGroup>)vdc.getVdcGroups());
                 vdc.setReleaseDate(DateUtil.getTimestamp());
                 sendReleaseEmails();
+                
+                // tweet release of dataverse
+                TwitterCredentials tc = vdcNetworkService.getTwitterCredentials();
+                if (tc != null) {              
+                    try {
+                        String message = "New dataverse released: " + vdc.getName();
+                        URL url = new URL("http://" + PropertyUtil.getHostUrl() + "/dvn/dv/" + vdc.getAlias());
+                        TwitterUtil.tweet(tc, message, url);
+                    } catch (MalformedURLException ex) {
+                        Logger.getLogger(PrivilegedUsersPage.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+                }        
             }
             vdc.setRestricted(false);
             

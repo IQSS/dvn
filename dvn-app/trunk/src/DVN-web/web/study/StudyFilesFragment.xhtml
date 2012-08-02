@@ -43,6 +43,12 @@
                                         </ice:outputLink>
                                     </p>
                                 </div>
+                                <div jsfc="ice:panelGroup" rendered="#{studyPage.studyUI.study.isHarvested}">
+                                    <p>
+                                        <ice:graphicImage value="#{bundle.iconRequired}"/>
+                                        <ice:outputText value=" Download numbers are only totalled from the date of the last harvest from the original source."/>
+                                    </p>
+                                </div>
                                 <div jsfc="ice:panelGroup" rendered="#{studyPage.studyUI.anyFileRestricted}">
                                     <p>
                                         <ice:graphicImage value="/resources/images/icon_warning.18.png" styleClass="dvn_icon"/>
@@ -110,6 +116,7 @@
                                                                             <ice:outputText styleClass="vdcStudyFileRowFileDetails" value=" - #{studyFileUI.downloadCount} download/analysis" rendered="#{studyFileUI.downloadCount == 1 and studyFileUI.studyFile.subsettable}"/>
                                                                             <ice:outputText styleClass="vdcStudyFileRowFileDetails" value=" - #{studyFileUI.downloadCount} downloads" rendered="#{studyFileUI.downloadCount != 1 and !studyFileUI.studyFile.subsettable}"/>
                                                                             <ice:outputText styleClass="vdcStudyFileRowFileDetails" value=" - #{studyFileUI.downloadCount} downloads + analyses" rendered="#{studyFileUI.downloadCount != 1 and studyFileUI.studyFile.subsettable}"/>
+                                                                            <ice:graphicImage value="#{bundle.iconRequired}" rendered="#{studyPage.studyUI.study.isHarvested}"/>
                                                                         </div>
                                                                     </div>
                                                                 </ice:column>

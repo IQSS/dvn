@@ -715,13 +715,14 @@ public class NetworkDataAnalysisPage extends VDCBaseBean implements Serializable
                     guestbookResponse = guestBookResponseServiceBean.initNetworkGuestBookResponse(sfile.getStudy(), sfile, getVDCSessionBean().getLoginBean());
                 }
                 
-                String formatRequested = "";
-                for (DataFileFormatType type : studyService.getDataFileFormatTypes()) {
-                    if (sfile.getFileType().equals(type.getValue())) {
-                        formatRequested = type.getName();
-                    }
+                String formatRequested = "Network Download - ";
+                if (getGraphML){
+                    formatRequested += "GraphML";
+                    if (getTabular) formatRequested += "/Tabular";
+                } else {
+                    if (getTabular) formatRequested += "Tabular";
                 }
-                guestbookResponse.setDownloadtype("Subsetting - " + formatRequested);
+                guestbookResponse.setDownloadtype(formatRequested);
                 guestbookResponse.setSessionId(getVDCSessionBean().toString());
                 studyService.incrementNumberOfDownloads(fileId, vdcId, (GuestBookResponse) guestbookResponse);
             } else {

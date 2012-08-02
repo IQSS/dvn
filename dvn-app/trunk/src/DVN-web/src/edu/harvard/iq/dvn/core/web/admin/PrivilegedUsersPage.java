@@ -339,7 +339,7 @@ public class PrivilegedUsersPage extends VDCBaseBean implements java.io.Serializ
                 TwitterCredentials tc = vdcNetworkService.getTwitterCredentials();
                 if (tc != null) {              
                     try {
-                        String message = "New dataverse released: " + vdc.getName();
+                        String message = "New dataverse released: " + vdc.getName() + "Dataverse";
                         URL url = new URL("http://" + PropertyUtil.getHostUrl() + "/dvn/dv/" + vdc.getAlias());
                         TwitterUtil.tweet(tc, message, url);
                     } catch (MalformedURLException ex) {

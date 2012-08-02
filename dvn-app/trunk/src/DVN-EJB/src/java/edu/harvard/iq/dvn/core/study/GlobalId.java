@@ -23,6 +23,12 @@
  */
 package edu.harvard.iq.dvn.core.study;
 
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
+
 /**
  *
  * @author gdurand
@@ -87,6 +93,18 @@ public class GlobalId implements java.io.Serializable {
     public String toString() {
         return protocol + ":" + authority + "/" + studyId;
     }
+    
+    public URL toURL() {
+        // TODO: add logic to support multiple protocols
+        URL url = null;
+        try {
+            url = new URL("http://hdl.handle.net/" + authority + "/" + studyId);
+        } catch (MalformedURLException ex) {
+            Logger.getLogger(GlobalId.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        
+        return url;
+    }    
 
 
 }

@@ -1048,7 +1048,7 @@
                                            rendered="#{!empty(EditStudyPage.studyMap[sfc.distributorContactName].templateField.controlledVocabulary)}" 
                                            >
                             <f:selectItem itemLabel="No Value" itemValue=""/>
-                            <f:selectItems value="#{EditStudyPage.studyMap[sfc.distributorContact].templateField.controlledVocabulary.selectItems}"/>
+                            <f:selectItems value="#{EditStudyPage.studyMap[sfc.distributorContactName].templateField.controlledVocabulary.selectItems}"/>
                             </ice:selectOneMenu>
                         <ice:message styleClass="errorMessage" for="input_distributorContact"/>
                                                 <ice:message styleClass="errorMessage" for="selectOneDistributorContact"/>
@@ -1582,6 +1582,7 @@
                                              size="45"
                                              maxlength="255"
                                              value="#{currentRow.vocabURI}"
+                                             rendered="#{empty(EditStudyPage.studyMap[sfc.topicClassVocabURI].templateField.controlledVocabulary)}" 
                                              required="#{EditStudyPage.studyMap[sfc.topicClassVocabURI].required and EditStudyPage.validateRequired}" requiredMessage="This field is required." >
                                 <f:validator validatorId="UrlValidator"/>
                               </ice:inputText>

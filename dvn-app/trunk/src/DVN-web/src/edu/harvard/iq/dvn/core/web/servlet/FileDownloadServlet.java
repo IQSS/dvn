@@ -1108,7 +1108,7 @@ public class FileDownloadServlet extends HttpServlet {
             formatRequested = file.getFileType();
         }
         for (DataFileFormatType type : studyService.getDataFileFormatTypes()) {
-            if (file.getFileType().equals(type.getValue())) {
+            if (formatRequested.equals(type.getValue())) {
                 formatRequested = type.getName();
             }
         }

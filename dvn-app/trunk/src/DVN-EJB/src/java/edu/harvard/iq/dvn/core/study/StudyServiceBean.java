@@ -256,8 +256,9 @@ public class StudyServiceBean implements edu.harvard.iq.dvn.core.study.StudyServ
         
         // tweet release of study
         TwitterCredentials tc = study.getOwner().getTwitterCredentials();
-        if (tc != null) {  
-            String message = "New study released: " + latestVersion.getMetadata().getTitle();
+        if (tc != null) {
+            String message = latestVersion.getVersionNumber() == 1 ? "New study released: " : "Study updated: ";
+            message += latestVersion.getMetadata().getTitle();
             URL url = new GlobalId(latestVersion.getStudy().getProtocol(),latestVersion.getStudy().getAuthority(),latestVersion.getStudy().getStudyId()).toURL();
             TwitterUtil.tweet(tc, message, url);
         }        

@@ -1286,7 +1286,7 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
                     guestbookResponse.setSessionId(getVDCSessionBean().toString());
                     String formatRequested = "";
                     for (DataFileFormatType type : studyService.getDataFileFormatTypes()) {
-                        if (sf.getFileType().equals(type.getValue())) {
+                        if (formatType.equals(type.getValue())) {
                             formatRequested = type.getName();
                         }
                     }

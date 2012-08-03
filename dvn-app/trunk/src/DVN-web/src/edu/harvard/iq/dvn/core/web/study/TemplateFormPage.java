@@ -2948,7 +2948,7 @@ public class TemplateFormPage extends VDCBaseBean implements java.io.Serializabl
             hasChildFields = true;
             for (StudyField child : templateFieldIn.getStudyField().getChildStudyFields()){
                 for (TemplateField tf : template.getTemplateFields()){
-                    if (tf.getStudyField().equals(child)){
+                    if (tf.getStudyField().equals(child)  && child.isAllowControlledVocabulary()){
                         TemplateFieldControlledVocabulary tfcv = new TemplateFieldControlledVocabulary(tf, index++);
                         templateFieldCVs.add(tfcv);              
                     }                    

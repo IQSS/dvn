@@ -3282,7 +3282,7 @@
                           </ice:inputText>
                         <ice:selectOneMenu immediate="false"   id="selectOnenoteSubject" 
                                      rendered="#{!empty(TemplateFormPage.studyMap[sfc.notesInformationSubject].templateField.controlledVocabulary)}"                                          
-                                           value="#{currentRow.type}" 
+                                           value="#{currentRow.subject}" 
                                            >
                             <f:selectItem itemLabel="No Value" itemValue=""/>
                             <f:selectItems value="#{TemplateFormPage.studyMap[sfc.notesInformationSubject].templateField.controlledVocabulary.selectItems}"/>
@@ -3300,7 +3300,7 @@
                           </ice:inputText>
                           <ice:selectOneMenu immediate="false"   id="selectOnenotesText" 
                                      rendered="#{!empty(TemplateFormPage.studyMap[sfc.notesText].templateField.controlledVocabulary)}"                                          
-                                           value="#{currentRow.type}" 
+                                           value="#{currentRow.text}" 
                                            >
                             <f:selectItem itemLabel="No Value" itemValue=""/>
                             <f:selectItems value="#{TemplateFormPage.studyMap[sfc.notesText].templateField.controlledVocabulary.selectItems}"/>

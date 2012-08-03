@@ -2026,9 +2026,9 @@ public class EditStudyPage extends VDCBaseBean implements java.io.Serializable  
                 text = "";
             }
             text = text.trim();
-            String subject = (String)inputKeywordVocabUri.getLocalValue(); //text
+            String subject = (String)inputNoteSubject.getLocalValue(); //text
             if (subject == null){
-                subject = (String) inputStudyKeywordVocabURI.getValue(); //dropdown
+                subject = (String) inputStudyNoteSubject.getValue(); //dropdown
             }
             if (subject == null){
                 subject = "";

@@ -3586,7 +3586,7 @@
                                                 binding="#{EditStudyPage.inputStudyNoteText}"
                                           rendered="#{!empty(EditStudyPage.studyMap[sfc.notesText].templateField.controlledVocabulary)}"
                                           required="#{EditStudyPage.studyMap[sfc.note].required and EditStudyPage.validateRequired}" 
-                                           value="#{currentRow.subject}"  
+                                           value="#{currentRow.text}"  
                                            validator="#{EditStudyPage.validateStudyNote}"
                                            requiredMessage="This field is required." >
                                 <f:selectItem itemLabel="No Value" itemValue=""/>

@@ -16,7 +16,6 @@ import twitter4j.TwitterException;
 import twitter4j.TwitterFactory;
 import twitter4j.auth.AccessToken;
 import twitter4j.auth.RequestToken;
-import twitter4j.auth.RequestToken;
 
 /**
  *
@@ -51,7 +50,7 @@ public class OptionsPage extends VDCBaseBean  implements java.io.Serializable {
     
 
     public String authorizeTwitter() {
-        String callbackURL = "http://localhost:8080/dvn";
+        String callbackURL = "http://" + PropertyUtil.getHostUrl() + "/dvn";
         callbackURL += getVDCRequestBean().getCurrentVDC() == null ? "/faces/networkAdmin/NetworkOptionsPage.xhtml" : 
               getVDCRequestBean().getCurrentVDCURL() + "/faces/admin/OptionsPage.xhtml";
                 

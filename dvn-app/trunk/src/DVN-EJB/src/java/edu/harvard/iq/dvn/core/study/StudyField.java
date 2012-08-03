@@ -47,6 +47,7 @@ public class StudyField implements Serializable {
                                 // mouse-overs, etc. 
     private boolean customField;
     private String fieldType;
+    private boolean allowControlledVocabulary;
     
    
     /** Creates a new instance of StudyField */
@@ -106,6 +107,13 @@ public class StudyField implements Serializable {
         this.customField = customField;
     }
     
+    public boolean isAllowControlledVocabulary() {
+        return allowControlledVocabulary;
+    }
+
+    public void setAllowControlledVocabulary(boolean allowControlledVocabulary) {
+        this.allowControlledVocabulary = allowControlledVocabulary;
+    }
         
     /**
      * Holds value of property allow multiples.

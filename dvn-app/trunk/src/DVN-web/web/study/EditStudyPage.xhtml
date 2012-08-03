@@ -1374,6 +1374,7 @@
                               <ice:inputText binding="#{EditStudyPage.inputAbstractDate}" validator="#{EditStudyPage.validateStudyAbstract}" 
                                              id="input_abstractDate" styleClass="formDateFormat" value="#{currentRow.date}" 
                                              required="#{EditStudyPage.studyMap[sfc.descriptionDate].required and EditStudyPage.validateRequired}" 
+                                             rendered="#{empty(EditStudyPage.studyMap[sfc.descriptionDate].templateField.controlledVocabulary)}"
                                              requiredMessage="This field is required.">
                                 <f:validator validatorId="DateValidator"/>
                               </ice:inputText>

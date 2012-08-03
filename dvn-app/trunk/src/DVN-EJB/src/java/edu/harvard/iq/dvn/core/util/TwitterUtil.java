@@ -34,8 +34,9 @@ public class TwitterUtil implements java.io.Serializable  {
             try {        
                 Twitter twitter = twitterFactory.getInstance( new AccessToken(tc.getAccessToken(), tc.getAccessTokenSecret() ) );
 
-
-                if (message.length() > 119) { //21 characters are used by the space and link added appended to end
+                // Tweets are limited to 140 characters; though any link is treated as exactly 20 characters;
+                // since we also have a space before the link, that leaves 119 characters for the rest of the text
+                if (message.length() > 119) {
                     message = message.substring(0,116) + "...";
                 }
                 message += " " + url.toString();

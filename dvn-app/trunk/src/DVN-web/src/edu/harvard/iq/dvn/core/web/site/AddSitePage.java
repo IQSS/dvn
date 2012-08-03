@@ -325,7 +325,6 @@ public class AddSitePage extends VDCBaseBean implements java.io.Serializable  {
             createdVDC.setAffiliation(strAffiliation);
             createdVDC.setDvnDescription(strShortDescription);
             createdVDC.setAnnouncements(strShortDescription); // also set default dv home page description from the the DVN home page short description
-            createdVDC.setGuestBookQuestionnaire(createNewGuestBook(createdVDC));
             vdcService.edit(createdVDC);
 
             String hostUrl = PropertyUtil.getHostUrl();
@@ -347,18 +346,6 @@ public class AddSitePage extends VDCBaseBean implements java.io.Serializable  {
             return null;
         }
 
-    }
-    
-    private GuestBookQuestionnaire createNewGuestBook(VDC vdcIn){
-        GuestBookQuestionnaire guestBookQuestionnaire = new GuestBookQuestionnaire();
-        guestBookQuestionnaire.setEmailRequired(true);
-        guestBookQuestionnaire.setFirstNameRequired(true);
-        guestBookQuestionnaire.setLastNameRequired(true);
-        guestBookQuestionnaire.setInstitutionRequired(false);
-        guestBookQuestionnaire.setPositionRequired(false);
-        guestBookQuestionnaire.setEnabled(true);
-        guestBookQuestionnaire.setVdc(vdcIn);
-        return guestBookQuestionnaire;
     }
 
     private void saveClassifications(VDC createdVDC) {
@@ -392,7 +379,6 @@ public class AddSitePage extends VDCBaseBean implements java.io.Serializable  {
             createdScholarDataverse.setContactEmail(getVDCSessionBean().getLoginBean().getUser().getEmail());
             createdScholarDataverse.setDvnDescription(strShortDescription);
             createdScholarDataverse.setAnnouncements(strShortDescription); // also set default dv home page description from the the DVN home page short description
-            createdScholarDataverse.setGuestBookQuestionnaire(createNewGuestBook(createdScholarDataverse));
             vdcService.edit(createdScholarDataverse);
     
             String hostUrl = PropertyUtil.getHostUrl();           

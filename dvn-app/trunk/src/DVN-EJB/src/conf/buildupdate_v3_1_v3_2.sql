@@ -21,3 +21,9 @@ SELECT true, true, true, true,
             false, false, null;
 
 
+ALTER TABLE studyField ADD allowControlledVocabulary boolean;
+
+update studyField set allowControlledVocabulary = true;
+
+update studyField set allowControlledVocabulary = false
+where name = 'publicationIDType' or name = 'publicationReplicationData';

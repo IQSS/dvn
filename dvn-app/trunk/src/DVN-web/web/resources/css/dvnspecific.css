@@ -250,6 +250,7 @@ span.dvnAddClassificationDvNotReleased{background:url(/dvn/resources/images/icon
 .dvnGuestBookResponseDownloadPaginatorBlock {float:left; text-align:right;}
 .dvnGuestBookResponseTable{position:absolute;top:0;left:0;margin-top:0}
 .dvnGuestBookResponseTable th span.dvnGuestbookStudyTitleHeader, .dvnGuestBookResponseTable th span.dvnGuestbookTimeHeader, .dvnGuestBookResponseTable th span.dvnGuestbookCustomResponseHeader{min-width:200px;display:block;}
+.dvnGuestBookResponseTableColHdr1, .dvnGuestBookResponseTableColHdr2, .dvnGuestBookResponseTableCol1, .dvnGuestBookResponseTableCol2 {white-space:nowrap;}
 /* PERMISSIONS */
 .dvnPermissionsTable{width:100%;text-align:left}
 .dvnPermissionsTable td{padding:.5em 2em;border-bottom:1px solid lightgray}

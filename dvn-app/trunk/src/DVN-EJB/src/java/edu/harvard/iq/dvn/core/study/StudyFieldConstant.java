@@ -163,7 +163,7 @@ public class StudyFieldConstant implements java.io.Serializable  {
     public final static String relatedStudies="relatedStudies";
     public final static String otherReferences="otherReferences";
     public final static String notesText="notesText";
-    public final static String notesInformationType="notesInformationType";
+    public final static String noteInformationType="noteInformationType";
     public final static String notesInformationSubject="notesInformationSubject";
     
     /*
@@ -516,7 +516,7 @@ public class StudyFieldConstant implements java.io.Serializable  {
     }
     
     public String getNotesInformationType() {
-        return notesInformationType;
+        return noteInformationType;
     }
     
     public String getNotesInformationSubject() {

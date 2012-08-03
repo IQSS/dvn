@@ -102,6 +102,7 @@ import javax.imageio.stream.ImageOutputStream;
 import edu.harvard.iq.dvn.ingest.dsb.impl.*;
 import java.io.BufferedOutputStream;
 import java.util.logging.Logger;
+import javax.faces.context.FacesContext;
 import javax.inject.Inject;
 
 /**
@@ -1101,9 +1102,15 @@ public class FileDownloadServlet extends HttpServlet {
     public void incrementDownloadCounts (StudyFile file, VDC vdc, String formatRequested) {
         GuestBookResponse guestbookResponse = (GuestBookResponse) vdcSession.getGuestbookResponseMap().get("guestBookResponse_" + file.getStudy().getId());
         if (guestbookResponse == null) {
-            guestbookResponse = guestBookResponseServiceBean.initNetworkGuestBookResponse(file.getStudy(), file, vdcSession.getLoginBean());
+            guestbookResponse = guestBookResponseServiceBean.initNetworkGuestBookResponse(file.getStudy(), file, vdcSession.getLoginBean());            
         }
-        guestbookResponse.setSessionId(vdcSession.toString());
+
+        String[] stringArray = vdcSession.toString().split("@");
+        String sessiodId = stringArray[1];
+        if (FacesContext.getCurrentInstance() != null){
+            sessiodId = FacesContext.getCurrentInstance().getExternalContext().getSession(false).toString();
+        }
+        guestbookResponse.setSessionId(sessiodId);
         if (formatRequested == null){
             formatRequested = file.getFileType();
         }
@@ -2033,9 +2040,24 @@ public class FileDownloadServlet extends HttpServlet {
                     //need to set up dummy network response
                     guestbookResponse = guestBookResponseServiceBean.initNetworkGuestBookResponse(file.getStudy(), file, vdcSession.getLoginBean());
                 }
-                guestbookResponse.setSessionId(vdcSession.toString());
-                guestbookResponse.setDownloadtype("File Download - " + file.getFileType()); 
-                //guestbookResponse.setDownloadtype("File Download - " + file.); 
+                String[] stringArray = vdcSession.toString().toString().split("@");
+                String sessiodId = stringArray[1];
+                if (FacesContext.getCurrentInstance() != null) {
+                    sessiodId = FacesContext.getCurrentInstance().getExternalContext().getSession(false).toString();
+                }
+                guestbookResponse.setSessionId(sessiodId);
+                
+
+                
+                String formatRequested = file.getFileType();
+                String formatType = file.getFileType();               
+                for (DataFileFormatType type : studyService.getDataFileFormatTypes()) {
+                    if (formatType.equals(type.getValue())) {
+                        formatRequested = type.getName();
+                    }
+                }
+                guestbookResponse.setDownloadtype("File Download - " + formatRequested);
+                
                 if ( vdc != null ) {
                     studyService.incrementNumberOfDownloads(fid, vdc.getId(), (GuestBookResponse) guestbookResponse);
                 } else {

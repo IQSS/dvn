@@ -137,6 +137,15 @@
                                      rows="10" value="#{GuestBookResponseDataPage.guestBookResponsesDisplay}" var="guestBookResponseDisplay">
                         <ice:column>
                             <f:facet name="header">
+                                <ice:outputText value="User Name"/>
+                            </f:facet>
+                            <ice:outputText id="userNameText" rendered="#{!empty guestBookResponseDisplay.guestBookResponse.vdcUser}"
+                                          value="#{guestBookResponseDisplay.guestBookResponse.vdcUser.userName}"></ice:outputText>
+                             <ice:outputText id="sessionIdText" rendered="#{empty guestBookResponseDisplay.guestBookResponse.vdcUser}"
+                                          value="Anonymous - #{guestBookResponseDisplay.guestBookResponse.sessionId}"></ice:outputText>
+                        </ice:column>
+                        <ice:column>
+                            <f:facet name="header">
                                 <ice:outputText value="First Name"/>
                             </f:facet>
                            <ice:outputText id="firstnameText" 

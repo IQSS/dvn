@@ -3314,7 +3314,13 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
                 //need to set up dummy network response
                 guestbookResponse = guestBookResponseServiceBean.initNetworkGuestBookResponse(studyIn, sf, getVDCSessionBean().getLoginBean());                
             } 
-            guestbookResponse.setSessionId(getVDCSessionBean().toString());            
+            
+            String[] stringArray = getVDCSessionBean().toString().split("@");
+            String sessiodId = stringArray[1];
+            if (FacesContext.getCurrentInstance() != null) {
+                sessiodId = FacesContext.getCurrentInstance().getExternalContext().getSession(false).toString();
+            }
+            guestbookResponse.setSessionId(sessiodId);
             guestbookResponse.setDownloadtype("Data Visualization");
             if ( vdc != null ) {
                 studyService.incrementNumberOfDownloads(sf.getId(), vdc.getId(), (GuestBookResponse) guestbookResponse);

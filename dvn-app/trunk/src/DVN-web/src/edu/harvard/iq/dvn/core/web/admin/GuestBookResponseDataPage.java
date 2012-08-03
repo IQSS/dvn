@@ -128,7 +128,7 @@ public class GuestBookResponseDataPage extends VDCBaseBean implements java.io.Se
     
     private String getColumnString() {
         String csvColumnString = "";
-        csvColumnString += "First Name,Last Name,Email,Institution,Position,";
+        csvColumnString += "User/Session,First Name,Last Name,Email,Institution,Position,";
         if (vdc==null){
            csvColumnString += "Dataverse,";
         }
@@ -149,7 +149,12 @@ public class GuestBookResponseDataPage extends VDCBaseBean implements java.io.Se
         String csvCol;
         for (GuestBookResponseDisplay gbrd: guestBookResponsesDisplay){
             csvCol = "";
-            csvCol += getSafeCString(gbrd.getGuestBookResponse().getFirstname());
+            if(gbrd.getGuestBookResponse().getVdcUser() != null){
+               csvCol += gbrd.getGuestBookResponse().getVdcUser().getUserName();
+            } else {
+               csvCol += "Anonymous - + " + gbrd.getGuestBookResponse().getSessionId();
+            }
+            csvCol += "," +getSafeCString(gbrd.getGuestBookResponse().getFirstname());
             csvCol += "," + getSafeCString(gbrd.getGuestBookResponse().getLastname());   
             csvCol += "," + getSafeCString(gbrd.getGuestBookResponse().getEmail());
             csvCol += "," + getSafeCString(gbrd.getGuestBookResponse().getInstitution());

@@ -715,7 +715,7 @@ public class NetworkDataAnalysisPage extends VDCBaseBean implements Serializable
                     guestbookResponse = guestBookResponseServiceBean.initNetworkGuestBookResponse(sfile.getStudy(), sfile, getVDCSessionBean().getLoginBean());
                 }
                 
-                String formatRequested = "Network Download - ";
+                String formatRequested = "Network Subsetting - ";
                 if (getGraphML){
                     formatRequested += "GraphML";
                     if (getTabular) formatRequested += "/Tabular";
@@ -723,7 +723,12 @@ public class NetworkDataAnalysisPage extends VDCBaseBean implements Serializable
                     if (getTabular) formatRequested += "Tabular";
                 }
                 guestbookResponse.setDownloadtype(formatRequested);
-                guestbookResponse.setSessionId(getVDCSessionBean().toString());
+                String[] stringArray = getVDCSessionBean().toString().split("@");
+                String sessiodId = stringArray[1];
+                if (FacesContext.getCurrentInstance() != null) {
+                    sessiodId = FacesContext.getCurrentInstance().getExternalContext().getSession(false).toString();
+                }
+                guestbookResponse.setSessionId(sessiodId);
                 studyService.incrementNumberOfDownloads(fileId, vdcId, (GuestBookResponse) guestbookResponse);
             } else {
                 studyService.incrementNumberOfDownloads(fileId, vdcId, (GuestBookResponse) null);

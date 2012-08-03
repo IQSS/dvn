@@ -256,7 +256,15 @@ public class FileDownloadServlet extends HttpServlet {
             // (but only if it's not a LOCKSS crawl OR a thumbnail!)
 
             if (!isLockssCrawlRequest(req) && imageThumb == null) {
-                incrementDownloadCounts(file, vdc, formatRequested);
+                String jsessionId = null; 
+                javax.servlet.http.Cookie cookies[] = req.getCookies();
+                
+                for ( int i = 0; i < cookies.length; i++) {
+                    if ("JSESSIONID".equals(cookies[i].getName())) {                
+                        jsessionId = cookies[i].getValue();
+                    }
+                }
+                incrementDownloadCounts(file, vdc, formatRequested, jsessionId);
             }
 
             // done!
@@ -1099,18 +1107,21 @@ public class FileDownloadServlet extends HttpServlet {
     }
 
 
-    public void incrementDownloadCounts (StudyFile file, VDC vdc, String formatRequested) {
+    public void incrementDownloadCounts (StudyFile file, VDC vdc, String formatRequested, String jsessionId) {
         GuestBookResponse guestbookResponse = (GuestBookResponse) vdcSession.getGuestbookResponseMap().get("guestBookResponse_" + file.getStudy().getId());
         if (guestbookResponse == null) {
             guestbookResponse = guestBookResponseServiceBean.initNetworkGuestBookResponse(file.getStudy(), file, vdcSession.getLoginBean());            
         }
 
-        String[] stringArray = vdcSession.toString().split("@");
-        String sessiodId = stringArray[1];
-        if (FacesContext.getCurrentInstance() != null){
-            sessiodId = FacesContext.getCurrentInstance().getExternalContext().getSession(false).toString();
+        if (jsessionId == null || "".equals(jsessionId)) {
+                String[] stringArray = vdcSession.toString().split("@");
+                jsessionId = stringArray[1];
+                //if (FacesContext.getCurrentInstance() != null){
+                //    sessionId = FacesContext.getCurrentInstance().getExternalContext().getSession(false).toString();
+                //}
         }
-        guestbookResponse.setSessionId(sessiodId);
+      
+        guestbookResponse.setSessionId(jsessionId);
         if (formatRequested == null){
             formatRequested = file.getFileType();
         }
@@ -1836,6 +1847,21 @@ public class FileDownloadServlet extends HttpServlet {
 
         String fileManifest = "";
 
+        String sessionId = null; 
+        javax.servlet.http.Cookie cookies[] = req.getCookies();
+                
+        for ( int i = 0; i < cookies.length; i++) {
+            if ("JSESSIONID".equals(cookies[i].getName())) {                
+                sessionId = cookies[i].getValue();
+            }
+        }
+        
+        if (sessionId == null || "".equals(sessionId)) {
+            // if there's no JSESSIONID, we'll use the vdcSession id, for 
+            // logging the download counts: 
+            String[] stringArray = vdcSession.toString().toString().split("@");
+            sessionId = stringArray[1];
+        }
 
         if (fileId != null) {
             String[] idTokens = fileId.split(",");
@@ -2040,12 +2066,8 @@ public class FileDownloadServlet extends HttpServlet {
                     //need to set up dummy network response
                     guestbookResponse = guestBookResponseServiceBean.initNetworkGuestBookResponse(file.getStudy(), file, vdcSession.getLoginBean());
                 }
-                String[] stringArray = vdcSession.toString().toString().split("@");
-                String sessiodId = stringArray[1];
-                if (FacesContext.getCurrentInstance() != null) {
-                    sessiodId = FacesContext.getCurrentInstance().getExternalContext().getSession(false).toString();
-                }
-                guestbookResponse.setSessionId(sessiodId);
+                
+                guestbookResponse.setSessionId(sessionId);
                 
 
                 

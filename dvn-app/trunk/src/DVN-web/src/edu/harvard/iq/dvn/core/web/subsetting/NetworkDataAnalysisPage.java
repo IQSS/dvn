@@ -700,29 +700,25 @@ public class NetworkDataAnalysisPage extends VDCBaseBean implements Serializable
         boolean firstCall = true;
         
         public InputStream open() throws IOException {
-            System.out.println("***** IN OPEN METHOD");
-            if (firstCall) {
-                firstCall = false; // skip the first (incorrect) call to open
+            if (firstCall) { // this is the first call to open(); we toggle the boolean and skip this time around
+                firstCall = false;
                 return new NullInputStream(0);
-            } else {
-                firstCall = true; // reset, so that the next call will work
+            } else { // this is the second call top open(); we reset the boolean and let the call proceed
+                firstCall = true; 
             }
             
-            System.out.println("***** AFTER FIRST CALL CHECK");
             try {
                 file = networkDataService.getSubsetExport(getGraphML, getTabular);
             } catch (ConcurrentAccessException a){
-                System.out.println("***** ConcurrentAccessException");
                setShowInProgressPopup(true);  
                throw new IOExceptionInProgress(599, "There was a download or query already in progress.  Please wait.");
 
             } 
             catch (Exception ex) {
-                System.out.println("***** Exception");
                 Logger.getLogger(NetworkDataAnalysisPage.class.getName()).log(Level.SEVERE, null, ex);
                 throw new IOException("There was a problem attempting to get the export file");
             }
-            System.out.println("***** After get Subset export");
+
             StudyFile sfile = (NetworkDataFile) studyFileService.getStudyFile(fileId);
             if (sfile != null) {
                 GuestBookResponse guestbookResponse = (GuestBookResponse) getVDCSessionBean().getGuestbookResponseMap().get("guestBookResponse_" + sfile.getStudy().getId());
@@ -746,7 +742,6 @@ public class NetworkDataAnalysisPage extends VDCBaseBean implements Serializable
                     sessionId = ((HttpSession)FacesContext.getCurrentInstance().getExternalContext().getSession(false)).getId();
                 }
                 guestbookResponse.setSessionId(sessionId);
-                System.out.println("***** PRE INCREMENT");
                 studyService.incrementNumberOfDownloads(fileId, vdcId, (GuestBookResponse) guestbookResponse);
             } else {
                 studyService.incrementNumberOfDownloads(fileId, vdcId, (GuestBookResponse) null);

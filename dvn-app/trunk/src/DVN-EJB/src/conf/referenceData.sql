@@ -1070,3 +1070,6 @@ insert into licensetype (id, shortname, name, licenseurl, rdfurl, imageurl) valu
 INSERT INTO metadataformattype (id, name, mimetype, namespace, formatschema, partialexcludesupported, partialselectsupported) VALUES (1, 'ddi', 'application/xml', 'http://www.icpsr.umich.edu/DDI', 'http://www.icpsr.umich.edu/DDI/Version2-0.xsd', true, true);
 INSERT INTO metadataformattype (id, name, mimetype, namespace, formatschema, partialexcludesupported, partialselectsupported) VALUES (2, 'oai_dc', 'application/xml', 'http://www.openarchives.org/OAI/2.0/oai_dc/', 'http://www.openarchives.org/OAI/2.0/oai_dc.xsd', false, false);
 INSERT INTO metadataformattype (id, name, mimetype, namespace, formatschema, partialexcludesupported, partialselectsupported) VALUES (3, 'marc', 'application/octet-stream', 'http://www.loc.gov/marc/', 'MARC 21', false, false);
+
+/*create network guest book*/
+INSERT INTO guestbookquestionnaire(enabled,firstnamerequired, lastnamerequired, emailrequired, institutionrequired,  positionrequired, vdc_id) SELECT true, true, true, true, false, false, null;

@@ -228,6 +228,22 @@ public class FileUtil implements java.io.Serializable  {
         return tempFileType;
      }     
     
+     public static String getUserFriendlyTypeForMime (String mimeType) {
+        
+        if (mimeType != null) {
+            if ( mimeType.indexOf(";") != -1 ) {
+                mimeType = mimeType.substring( 0, mimeType.indexOf(";") );
+            }
+        
+            try {
+                return ResourceBundle.getBundle("FileTypeBundle").getString( mimeType );
+            } catch (MissingResourceException e) {
+                return mimeType;
+            }
+        }
+        
+        return mimeType;
+     }
     public static String getUserFriendlyOriginalType(StudyFile sf) {
         String originalType = sf.getOriginalFileType();
         

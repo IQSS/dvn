@@ -1122,15 +1122,33 @@ public class FileDownloadServlet extends HttpServlet {
         }
       
         guestbookResponse.setSessionId(jsessionId);
-        if (formatRequested == null){
-            formatRequested = file.getFileType();
-        }
-        for (DataFileFormatType type : studyService.getDataFileFormatTypes()) {
-            if (formatRequested.equals(type.getValue())) {
-                formatRequested = type.getName();
+        String friendlyFormatName = "";
+        String formatRequestedMimeType = ""; 
+        
+        if (formatRequested != null && !"".equals(formatRequested)) {
+            if (formatRequested.equals("D00")) {
+                formatRequestedMimeType = "text/tab-separated-values"; // tabular
+            } else if (formatRequested.equals("D01")) {
+                formatRequestedMimeType = "text/x-fixed-field"; // fixed-field
+            } else {
+                for (DataFileFormatType type : studyService.getDataFileFormatTypes()) {
+                    if (formatRequested.equals(type.getValue())) {
+                        //formatRequested = type.getName();
+                        formatRequestedMimeType = type.getMimeType();
+                    }
+                }
             }
+        } else {
+            formatRequestedMimeType = file.getFileType();
         }
-        guestbookResponse.setDownloadtype("File Download - " + formatRequested);       
+        
+        if (formatRequestedMimeType == null || "".equals(formatRequestedMimeType)) {
+            formatRequestedMimeType = "application/x-unknown";
+        }
+        
+        friendlyFormatName = FileUtil.getUserFriendlyTypeForMime(formatRequestedMimeType);
+        
+        guestbookResponse.setDownloadtype("File Download - " + friendlyFormatName);       
         if ( vdc != null ) {
             studyService.incrementNumberOfDownloads(file.getId(), vdc.getId(), (GuestBookResponse) guestbookResponse);
         } else {

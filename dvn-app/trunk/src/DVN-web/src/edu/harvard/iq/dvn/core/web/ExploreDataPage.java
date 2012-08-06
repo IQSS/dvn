@@ -114,6 +114,7 @@ import jxl.WorkbookSettings;
 import jxl.write.Label;
 import jxl.write.WritableSheet;
 import jxl.write.WritableWorkbook;
+import org.apache.commons.io.input.NullInputStream;
 
 
 
@@ -3292,8 +3293,20 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
         public Date lastModified() {
             return file != null ? new Date(file.lastModified()) : null;
         }
+        
+        // TODO: WE ARE ADDING THIS CALL AS A WORKAROUND FOR AN ICEFACES ISSUE WHERE THE OPEN
+        // METHOD IS CALLED TWICE; THIS IS FIXED IN A MORE RECENT VERSION OF ICEFACES, SO WHEN WE
+        // UPGRADE WE WILL NEED TO REMOVE THIS WORKAROUND
+        boolean firstCall = true;        
 
         public InputStream open() throws IOException {
+            if (firstCall) { // this is the first call to open(); we toggle the boolean and skip this time around
+                firstCall = false;
+                return new NullInputStream(0);
+            } else { // this is the second call top open(); we reset the boolean and let the call proceed
+                firstCall = true; 
+            }            
+            
             file = File.createTempFile("downloadFile","tmp");
             if ("png".equals(fileType) ) {
                  writeImageFile(file, null);

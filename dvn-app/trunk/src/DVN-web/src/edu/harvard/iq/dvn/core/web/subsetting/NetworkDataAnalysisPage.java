@@ -60,6 +60,7 @@ import javax.faces.model.SelectItem;
 import javax.inject.Named;
 import javax.naming.Context;
 import javax.naming.InitialContext;
+import org.apache.commons.io.input.NullInputStream;
 
 /**
  *
@@ -701,7 +702,7 @@ public class NetworkDataAnalysisPage extends VDCBaseBean implements Serializable
             System.out.println("***** IN OPEN METHOD");
             if (firstCall) {
                 firstCall = false; // skip the first (incorrect) call to open
-                return null;
+                return new NullInputStream(0);
             } else {
                 firstCall = true; // reset, so that the next call will work
             }

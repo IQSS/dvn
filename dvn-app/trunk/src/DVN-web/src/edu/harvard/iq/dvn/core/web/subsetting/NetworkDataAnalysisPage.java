@@ -698,14 +698,15 @@ public class NetworkDataAnalysisPage extends VDCBaseBean implements Serializable
         boolean firstCall = true;
         
         public InputStream open() throws IOException {
+            System.out.println("***** IN OPEN METHOD");
             if (firstCall) {
-                firstCall = false; // skip the next (incorrect) call to open
+                firstCall = false; // skip the first (incorrect) call to open
+                return null;
             } else {
                 firstCall = true; // reset, so that the next call will work
-                return null;
             }
             
-            System.out.println("***** IN OPEN METHOD");
+            System.out.println("***** AFTER FIRST CALL CHECK");
             try {
                 file = networkDataService.getSubsetExport(getGraphML, getTabular);
             } catch (ConcurrentAccessException a){

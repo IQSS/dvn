@@ -60,6 +60,7 @@ import javax.faces.model.SelectItem;
 import javax.inject.Named;
 import javax.naming.Context;
 import javax.naming.InitialContext;
+import javax.servlet.http.HttpSession;
 import org.apache.commons.io.input.NullInputStream;
 
 /**
@@ -740,11 +741,11 @@ public class NetworkDataAnalysisPage extends VDCBaseBean implements Serializable
                 }
                 guestbookResponse.setDownloadtype(formatRequested);
                 String[] stringArray = getVDCSessionBean().toString().split("@");
-                String sessiodId = stringArray[1];
+                String sessionId = stringArray[1];
                 if (FacesContext.getCurrentInstance() != null) {
-                    sessiodId = FacesContext.getCurrentInstance().getExternalContext().getSession(false).toString();
+                    sessionId = ((HttpSession)FacesContext.getCurrentInstance().getExternalContext().getSession(false)).getId();
                 }
-                guestbookResponse.setSessionId(sessiodId);
+                guestbookResponse.setSessionId(sessionId);
                 System.out.println("***** PRE INCREMENT");
                 studyService.incrementNumberOfDownloads(fileId, vdcId, (GuestBookResponse) guestbookResponse);
             } else {

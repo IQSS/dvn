@@ -1284,11 +1284,11 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
                         guestbookResponse = guestBookResponseServiceBean.initNetworkGuestBookResponse(sf.getStudy(), sf, getVDCSessionBean().getLoginBean());                        
                     }
                     String[] stringArray = getVDCSessionBean().toString().split("@");
-                    String sessiodId = stringArray[1];
+                    String sessionId = stringArray[1];
                     if (FacesContext.getCurrentInstance() != null) {
-                        sessiodId = FacesContext.getCurrentInstance().getExternalContext().getSession(false).toString();
+                        sessionId = ((HttpSession)FacesContext.getCurrentInstance().getExternalContext().getSession(false)).getId();
                     }
-                    guestbookResponse.setSessionId(sessiodId);
+                    guestbookResponse.setSessionId(sessionId);
                     String formatRequested = "";
                     for (DataFileFormatType type : studyService.getDataFileFormatTypes()) {
                         if (formatType.equals(type.getValue())) {

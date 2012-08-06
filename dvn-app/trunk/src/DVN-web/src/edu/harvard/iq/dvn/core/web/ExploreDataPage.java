@@ -39,6 +39,8 @@ import javax.faces.event.ActionEvent;
 import javax.faces.event.ValueChangeEvent;
 import javax.faces.model.SelectItem;
 
+import javax.servlet.http.HttpSession; 
+
 import com.icesoft.faces.component.ext.HtmlCommandButton;
 import com.icesoft.faces.component.ext.HtmlDataTable;
 import com.icesoft.faces.component.ext.HtmlInputText;
@@ -3316,11 +3318,11 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
             } 
             
             String[] stringArray = getVDCSessionBean().toString().split("@");
-            String sessiodId = stringArray[1];
+            String sessionId = stringArray[1];
             if (FacesContext.getCurrentInstance() != null) {
-                sessiodId = FacesContext.getCurrentInstance().getExternalContext().getSession(false).toString();
+                sessionId = ((HttpSession)FacesContext.getCurrentInstance().getExternalContext().getSession(false)).getId();
             }
-            guestbookResponse.setSessionId(sessiodId);
+            guestbookResponse.setSessionId(sessionId);
             guestbookResponse.setDownloadtype("Data Visualization");
             if ( vdc != null ) {
                 studyService.incrementNumberOfDownloads(sf.getId(), vdc.getId(), (GuestBookResponse) guestbookResponse);

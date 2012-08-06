@@ -692,7 +692,19 @@ public class NetworkDataAnalysisPage extends VDCBaseBean implements Serializable
             return file != null ? new Date(file.lastModified()) : null;
         }
 
+        // TODO: WE ARE ADDING THIS CALL AS A WORKAROUND FOR AN ICEFACES ISSUE WHERE THE OPEN
+        // METHOD IS CALLED TWICE; THIS IS FIXED IN A MORE RECENT VERSION OF ICEFACES, SO WHEN WE
+        // UPGRADE WE WILL NEED TO REMOVE THIS WORKAROUND
+        boolean firstCall = true;
+        
         public InputStream open() throws IOException {
+            if (firstCall) {
+                firstCall = false; // skip the next (incorrect) call to open
+            } else {
+                firstCall = true; // reset, so that the next call will work
+                return null;
+            }
+            
             System.out.println("***** IN OPEN METHOD");
             try {
                 file = networkDataService.getSubsetExport(getGraphML, getTabular);

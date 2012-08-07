@@ -61,6 +61,8 @@ import javax.inject.Named;
 import javax.naming.Context;
 import javax.naming.InitialContext;
 import javax.servlet.http.HttpSession;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.Cookie;
 import org.apache.commons.io.input.NullInputStream;
 
 /**
@@ -736,11 +738,22 @@ public class NetworkDataAnalysisPage extends VDCBaseBean implements Serializable
                     if (getTabular) formatRequested += "Tab Separated";
                 }
                 guestbookResponse.setDownloadtype(formatRequested);
-                String[] stringArray = getVDCSessionBean().toString().split("@");
-                String sessionId = stringArray[1];
-                if (FacesContext.getCurrentInstance() != null) {
-                    sessionId = ((HttpSession)FacesContext.getCurrentInstance().getExternalContext().getSession(false)).getId();
+                
+                HttpServletRequest req = (HttpServletRequest) FacesContext.getCurrentInstance().getExternalContext().getRequest();
+                String sessionId = null; 
+                Cookie cookies[] = req.getCookies();
+                
+                for (int i = 0; i < cookies.length; i++) {
+                    if ("JSESSIONID".equals(cookies[i].getName())) {
+                        sessionId = cookies[i].getValue();
+                    }
                 }
+
+                if (sessionId == null || "".equals(sessionId)) {
+                    String[] stringArray = getVDCSessionBean().toString().split("@");
+                    sessionId = stringArray[1];
+                }
+                
                 guestbookResponse.setSessionId(sessionId);
                 studyService.incrementNumberOfDownloads(fileId, vdcId, (GuestBookResponse) guestbookResponse);
             } else {

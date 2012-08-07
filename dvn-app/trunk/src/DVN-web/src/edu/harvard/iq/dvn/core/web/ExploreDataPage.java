@@ -107,6 +107,8 @@ import javax.faces.component.UIComponent;
 import javax.faces.context.FacesContext;
 import javax.imageio.IIOException;
 import javax.imageio.ImageIO;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.Cookie;
 
 import javax.inject.Named;
 import jxl.Workbook;
@@ -3330,11 +3332,21 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
                 guestbookResponse = guestBookResponseServiceBean.initNetworkGuestBookResponse(studyIn, sf, getVDCSessionBean().getLoginBean());                
             } 
             
-            String[] stringArray = getVDCSessionBean().toString().split("@");
-            String sessionId = stringArray[1];
-            if (FacesContext.getCurrentInstance() != null) {
-                sessionId = ((HttpSession)FacesContext.getCurrentInstance().getExternalContext().getSession(false)).getId();
+            HttpServletRequest req = (HttpServletRequest) FacesContext.getCurrentInstance().getExternalContext().getRequest();
+            String sessionId = null;
+            Cookie cookies[] = req.getCookies();
+
+            for (int i = 0; i < cookies.length; i++) {
+                if ("JSESSIONID".equals(cookies[i].getName())) {
+                    sessionId = cookies[i].getValue();
+                }
             }
+
+            if (sessionId == null || "".equals(sessionId)) {
+                String[] stringArray = getVDCSessionBean().toString().split("@");
+                sessionId = stringArray[1];
+            }
+                      
             guestbookResponse.setSessionId(sessionId);
             guestbookResponse.setDownloadtype("Data Visualization");
             if ( vdc != null ) {

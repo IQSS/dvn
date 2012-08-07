@@ -264,7 +264,7 @@ public class FileDownloadServlet extends HttpServlet {
                         jsessionId = cookies[i].getValue();
                     }
                 }
-                incrementDownloadCounts(file, vdc, formatRequested, jsessionId);
+                incrementDownloadCounts(file, vdc, fileDownloadObject.getMimeType(), jsessionId);
             }
 
             // done!
@@ -1107,7 +1107,7 @@ public class FileDownloadServlet extends HttpServlet {
     }
 
 
-    public void incrementDownloadCounts (StudyFile file, VDC vdc, String formatRequested, String jsessionId) {
+    public void incrementDownloadCounts (StudyFile file, VDC vdc, String formatMimeType, String jsessionId) {
         GuestBookResponse guestbookResponse = (GuestBookResponse) vdcSession.getGuestbookResponseMap().get("guestBookResponse_" + file.getStudy().getId());
         if (guestbookResponse == null) {
             guestbookResponse = guestBookResponseServiceBean.initNetworkGuestBookResponse(file.getStudy(), file, vdcSession.getLoginBean());            
@@ -1116,37 +1116,17 @@ public class FileDownloadServlet extends HttpServlet {
         if (jsessionId == null || "".equals(jsessionId)) {
                 String[] stringArray = vdcSession.toString().split("@");
                 jsessionId = stringArray[1];
-                //if (FacesContext.getCurrentInstance() != null){
-                //    sessionId = FacesContext.getCurrentInstance().getExternalContext().getSession(false).toString();
-                //}
         }
       
         guestbookResponse.setSessionId(jsessionId);
         String friendlyFormatName = "";
-        String formatRequestedMimeType = ""; 
         
-        if (formatRequested != null && !"".equals(formatRequested)) {
-            if (formatRequested.equals("D00")) {
-                formatRequestedMimeType = "text/tab-separated-values"; // tabular
-            } else if (formatRequested.equals("D01")) {
-                formatRequestedMimeType = "text/x-fixed-field"; // fixed-field
-            } else {
-                for (DataFileFormatType type : studyService.getDataFileFormatTypes()) {
-                    if (formatRequested.equals(type.getValue())) {
-                        //formatRequested = type.getName();
-                        formatRequestedMimeType = type.getMimeType();
-                    }
-                }
-            }
-        } else {
-            formatRequestedMimeType = file.getFileType();
+        
+        if (formatMimeType == null || "".equals(formatMimeType)) {
+            formatMimeType = "application/x-unknown";
         }
         
-        if (formatRequestedMimeType == null || "".equals(formatRequestedMimeType)) {
-            formatRequestedMimeType = "application/x-unknown";
-        }
-        
-        friendlyFormatName = FileUtil.getUserFriendlyTypeForMime(formatRequestedMimeType);
+        friendlyFormatName = FileUtil.getUserFriendlyTypeForMime(formatMimeType);
         
         guestbookResponse.setDownloadtype("File Download - " + friendlyFormatName);       
         if ( vdc != null ) {

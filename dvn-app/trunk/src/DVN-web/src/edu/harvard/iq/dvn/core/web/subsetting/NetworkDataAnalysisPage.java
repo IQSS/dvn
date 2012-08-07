@@ -730,10 +730,10 @@ public class NetworkDataAnalysisPage extends VDCBaseBean implements Serializable
                 
                 String formatRequested = "Network Subsetting - ";
                 if (getGraphML){
-                    formatRequested += "GraphML";
-                    if (getTabular) formatRequested += "/Tabular";
+                    formatRequested += "GraphML Network Data";
+                    if (getTabular) formatRequested += "/Tab Separated";
                 } else {
-                    if (getTabular) formatRequested += "Tabular";
+                    if (getTabular) formatRequested += "Tab Separated";
                 }
                 guestbookResponse.setDownloadtype(formatRequested);
                 String[] stringArray = getVDCSessionBean().toString().split("@");

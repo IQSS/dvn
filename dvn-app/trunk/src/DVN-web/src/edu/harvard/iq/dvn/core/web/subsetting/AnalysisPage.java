@@ -1301,24 +1301,17 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
                     
                     guestbookResponse.setSessionId(jsessionId);
                     
-                    String formatRequested = "";
-                    for (DataFileFormatType type : studyService.getDataFileFormatTypes()) {
-                        if (formatType.equals(type.getValue())) {
-                            formatRequested = type.getName();
-                        }
-                    }
-                    
                     String friendlyFormatName = "";
                     String formatRequestedMimeType = ""; 
         
-                    if (formatRequested != null && !"".equals(formatRequested)) {
-                        if (formatRequested.equals("D00")) {
+                    if (formatType != null && !"".equals(formatType)) {
+                        if (formatType.equals("D00")) {
                             formatRequestedMimeType = "text/tab-separated-values"; // tabular
-                        } else if (formatRequested.equals("D01")) {
+                        } else if (formatType.equals("D01")) {
                             formatRequestedMimeType = "text/tab-separated-values"; // fixed-field
                         } else {
                             for (DataFileFormatType type : studyService.getDataFileFormatTypes()) {
-                                if (formatRequested.equals(type.getValue())) {
+                                if (formatType.equals(type.getValue())) {
                                     formatRequestedMimeType = type.getMimeType();
                                 }
                             }

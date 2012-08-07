@@ -79,6 +79,7 @@ import edu.harvard.iq.dvn.ingest.dsb.*;
 import edu.harvard.iq.dvn.ingest.dsb.impl.*;
 
 import edu.harvard.iq.dvn.core.web.dataaccess.*;
+import edu.harvard.iq.dvn.core.util.FileUtil;
 
 
 import java.io.File;
@@ -1289,13 +1290,37 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
                         sessionId = ((HttpSession)FacesContext.getCurrentInstance().getExternalContext().getSession(false)).getId();
                     }
                     guestbookResponse.setSessionId(sessionId);
+                    
                     String formatRequested = "";
                     for (DataFileFormatType type : studyService.getDataFileFormatTypes()) {
                         if (formatType.equals(type.getValue())) {
                             formatRequested = type.getName();
                         }
                     }
-                    guestbookResponse.setDownloadtype("Subsetting - " + formatRequested);
+                    
+                    String friendlyFormatName = "";
+                    String formatRequestedMimeType = ""; 
+        
+                    if (formatRequested != null && !"".equals(formatRequested)) {
+                        if (formatRequested.equals("D00")) {
+                            formatRequestedMimeType = "text/tab-separated-values"; // tabular
+                        } else if (formatRequested.equals("D01")) {
+                            formatRequestedMimeType = "text/tab-separated-values"; // fixed-field
+                        } else {
+                            for (DataFileFormatType type : studyService.getDataFileFormatTypes()) {
+                                if (formatRequested.equals(type.getValue())) {
+                                    formatRequestedMimeType = type.getMimeType();
+                                }
+                            }
+                        }
+                    } 
+        
+                    if (formatRequestedMimeType == null || "".equals(formatRequestedMimeType)) {
+                        formatRequestedMimeType = "application/x-unknown";
+                    }
+        
+                    friendlyFormatName = FileUtil.getUserFriendlyTypeForMime(formatRequestedMimeType);
+                    guestbookResponse.setDownloadtype("Subsetting - " + friendlyFormatName);
 
                     if (vdc != null) {
                         studyService.incrementNumberOfDownloads(sf.getId(), vdc.getId(), (GuestBookResponse) guestbookResponse);

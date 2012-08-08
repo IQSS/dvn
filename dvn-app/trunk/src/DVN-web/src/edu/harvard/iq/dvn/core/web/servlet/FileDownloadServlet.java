@@ -2066,17 +2066,10 @@ public class FileDownloadServlet extends HttpServlet {
                 }
                 
                 guestbookResponse.setSessionId(sessionId);
+                               
+                String friendlyFormatType = FileUtil.getUserFriendlyTypeForMime(file.getFileType());
                 
-
-                
-                String formatRequested = file.getFileType();
-                String formatType = file.getFileType();               
-                for (DataFileFormatType type : studyService.getDataFileFormatTypes()) {
-                    if (formatType.equals(type.getValue())) {
-                        formatRequested = type.getName();
-                    }
-                }
-                guestbookResponse.setDownloadtype("File Download - " + formatRequested);
+                guestbookResponse.setDownloadtype("File Download (as Zip archive) - " + friendlyFormatType);
                 
                 if ( vdc != null ) {
                     studyService.incrementNumberOfDownloads(fid, vdc.getId(), (GuestBookResponse) guestbookResponse);

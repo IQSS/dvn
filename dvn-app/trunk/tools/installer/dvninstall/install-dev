@@ -845,7 +845,7 @@ if ( $pg_local_connection )
     # Copy the SQL file to /tmp, where user postgres will definitely
     # have read access to it:
 
-    copy("referenceData.sql","/tmp") or die "Could not copy referenceData.sql to /tmp: $!";
+    copy($SQL_REFERENCE_DATA,"/tmp") or die "Could not copy referenceData.sql to /tmp: $!";
 
     $< = $POSTGRES_SYS_UID; 
     $> = $POSTGRES_SYS_UID; 

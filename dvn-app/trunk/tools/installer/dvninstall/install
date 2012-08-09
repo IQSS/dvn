@@ -317,12 +317,16 @@ if ( $CONFIG_DEFAULTS{'POSTGRES_SERVER'} eq 'localhost' )
 	}
     }
 
+    $pg_major_version = 0; 
+    $pg_minor_version = 0; 
+
     if ( $psql_exec eq "" && $WORKING_OS eq "MacOSX" )
     {
 	for $pg_minor_version ( "1", "0" )
 	{
 	    if ( -x "/Library/PostgreSQL/9." . $pg_minor_version . "/bin/psql" ) 
 	    {
+		$pg_major_version = 9;
 		$psql_exec = "/Library/PostgreSQL/9." . $pg_minor_version . "/bin";
 		last; 
 	    }
@@ -331,6 +335,7 @@ if ( $CONFIG_DEFAULTS{'POSTGRES_SERVER'} eq 'localhost' )
 	{
 	    if ( -x "/Library/PostgreSQL/8." . $pg_minor_version . "/bin/psql" ) 
 	    {
+		$pg_major_version = 8; 
 		$psql_exec = "/Library/PostgreSQL/8." . $pg_minor_version . "/bin";
 		last; 
 	    }
@@ -382,6 +387,8 @@ if ( $CONFIG_DEFAULTS{'POSTGRES_SERVER'} eq 'localhost' )
 
     print "\n\nFound Postgres psql command, version $postgresVersion. Good.\n\n";
 
+    $pg_major_version = $postgres_version_tokens[0];
+    $pg_minor_version = $postgres_version_tokens[1];
 
     # 4. CONFIGURE POSTGRES: 
 
@@ -763,7 +770,33 @@ print "done!\n";
 
 print "\nInstalling the Glassfish PostgresQL driver... ";
 
-system ( "/bin/cp -f pgdriver/* ".$glassfish_dir."/glassfish/lib"); 
+open PGLS, "ls pgdriver |" || "Could not read the pgdriver directory!\n";
+
+while ( $driver_jar = <PGLS> )
+{
+    chop $driver_jar; 
+    if ( $driver_jar =~/postgresql\-([0-9])+\.([0-9]+)\-[0-9]*\.jdbc4\.jar/ )
+    {
+	$pg_ma = $1; 
+	$pg_mi = $2; 
+
+	if ( $pg_major_version == $pg_ma && $pg_minor_version == $pg_mi ) 
+	{
+	    $install_driver_jar = $driver_jar; 
+	    last; 
+	}
+    }
+}
+
+close PGLS;
+
+unless ( $install_driver_jar ) 
+{
+    die "Installer could not find POSTGRES JDBC driver for your version of PostgresQL!\n";
+
+} 
+
+system ( "/bin/cp -f pgdriver/" . $install_driver_jar . " ".$glassfish_dir."/glassfish/lib"); 
 #diagnostics needed!
 
 print "done!\n";
@@ -976,6 +1009,9 @@ $< = 0;
 print "\nStarting glassfish, again:\n\n";
 
 $gf_start_command = $glassfish_dir."/bin/asadmin start-domain domain1"; 
+
+# delete the EJB TIMER app lock file, if exists (just in case!): 
+system ( "/bin/rm -f ".$glassfish_dir."/glassfish/domains/domain1/generated/ejb-timer-service-app" ); 
 
 unless ( ($exit_code = system ($gf_start_command)) == 0 )
 {

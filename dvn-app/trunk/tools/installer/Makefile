@@ -15,7 +15,7 @@ DVN_CONFIG_TEMPLATES=dvninstall/domain.xml.TEMPLATE
 
 DVN_DEPLOYMENT_FRAMEWORK=dvninstall/appdeploy/ant-deploy.xml dvninstall/appdeploy/build-impl.xml dvninstall/appdeploy/build.xml dvninstall/appdeploy/glassfish.properties.TEMPLATE dvninstall/appdeploy/private.properties dvninstall/appdeploy/project.properties dvninstall/appdeploy/AS.properties.TEMPLATE 
 
-DVN_POSTGRES_DRIVER=dvninstall/pgdriver/postgresql-8.3-603.jdbc4.jar
+DVN_POSTGRES_DRIVERS=dvninstall/pgdriver/postgresql-8.3-603.jdbc4.jar dvninstall/pgdriver/postgresql-8.4-703.jdbc4.jar dvninstall/pgdriver/postgresql-9.0-802.jdbc4.jar dvninstall/pgdriver/postgresql-9.1-902.jdbc4.jar
 
 ${DVN_WAR_FILE}:	../../src/DVN-web/dist/DVN-web.war
 	@/bin/cp ../../src/DVN-web/dist/DVN-web.war dvninstall/appdeploy/dist
@@ -29,9 +29,9 @@ ${DVN_WAR_FILE}:	../../src/DVN-web/dist/DVN-web.war
 	@exit 1
 
 #@zip -r dvninstall.zip dvninstall
-dvninstall.zip: ${DVN_CONFIG_TEMPLATES} ${DVN_INSTALLER_SCRIPT} ${DVN_POSTGRES_DRIVER} ${DVN_WAR_FILE} ${DVN_CONFIG_FILES} ${DVN_SQL_FILES} ${DVN_NETWORKDATA_LIBS} ${DVN_DEPLOYMENT_FRAMEWORK}
+dvninstall.zip: ${DVN_CONFIG_TEMPLATES} ${DVN_INSTALLER_SCRIPT} ${DVN_POSTGRES_DRIVERS} ${DVN_WAR_FILE} ${DVN_CONFIG_FILES} ${DVN_SQL_FILES} ${DVN_NETWORKDATA_LIBS} ${DVN_DEPLOYMENT_FRAMEWORK}
 	@echo making installer...
-	@zip dvninstall.zip ${DVN_CONFIG_TEMPLATES} ${DVN_INSTALLER_SCRIPT} ${DVN_POSTGRES_DRIVER} ${DVN_WAR_FILE} ${DVN_CONFIG_FILES} ${DVN_SQL_FILES} ${DVN_NETWORKDATA_LIBS} ${DVN_DEPLOYMENT_FRAMEWORK}
+	@zip dvninstall.zip ${DVN_CONFIG_TEMPLATES} ${DVN_INSTALLER_SCRIPT} ${DVN_POSTGRES_DRIVERS} ${DVN_WAR_FILE} ${DVN_CONFIG_FILES} ${DVN_SQL_FILES} ${DVN_NETWORKDATA_LIBS} ${DVN_DEPLOYMENT_FRAMEWORK}
 	@echo 
 	@echo "Done!"
 

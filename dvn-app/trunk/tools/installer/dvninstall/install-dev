@@ -721,8 +721,7 @@ unless ( $install_driver_jar )
 
 }
 
-system ( "/bin/cp -f pgdriver/" . $install_driver_jar . " ".$glassfish_dir."/glassfish/lib");#diagnostics needed!
-
+system ( "cp", "pgdriver/" . $install_driver_jar, $glassfish_dir."/glassfish/lib");
 print "done!\n";
 
 

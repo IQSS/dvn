@@ -74,6 +74,15 @@ my %CONFIG_PROMPTS =
 
 	    ); 
 
+# Supported Posstgres JDBC drivers: 
+# (have to be configured explicitely, so that Perl "taint" (security) mode 
+# doesn't get paranoid)
+
+my $POSTGRES_DRIVER_8_3 = "postgresql-8.3-603.jdbc4.jar";  
+my $POSTGRES_DRIVER_8_4 = "postgresql-8.4-703.jdbc4.jar";
+my $POSTGRES_DRIVER_9_0 = "postgresql-9.0-802.jdbc4.jar";
+my $POSTGRES_DRIVER_9_1 = "postgresql-9.1-902.jdbc4.jar";
+
 # A few preliminary checks: 
 
 # user -- must be root: 
@@ -697,29 +706,36 @@ print "done!\n";
 
 print "\nInstalling the Glassfish PostgresQL driver... ";
 
-while ( $driver_jar = <PGLS> )
-{
-    chop $driver_jar;
-    if ( $driver_jar =~/postgresql\-([0-9])+\.([0-9]+)\-[0-9]*\.jdbc4\.jar/ )
-    {
-        $pg_ma = $1;
-        $pg_mi = $2;
+my $install_driver_jar = "";
 
-        if ( $pg_major_version == $pg_ma && $pg_minor_version == $pg_mi )
-        {
-            $install_driver_jar = $driver_jar;
-            last;
-        }
+if ( $pg_major_version == 8 ) 
+{
+    if ( $pg_minor_version == 3 ) 
+    {
+        $install_driver_jar = $POSTGRES_DRIVER_8_3;
+    }
+    elsif ( $pg_minor_version == 4 ) 
+    {
+        $install_driver_jar = $POSTGRES_DRIVER_8_4;
     }
 }
+elsif ( $pg_major_version == 9 )
+{
+    if ( $pg_minor_version == 0 ) 
+    {
+        $install_driver_jar = $POSTGRES_DRIVER_9_0;
+    }
+    elsif ( $pg_minor_version == 1 ) 
+    {
+        $install_driver_jar = $POSTGRES_DRIVER_9_1;
+    }
+} 
 
-close PGLS;
-
-unless ( $install_driver_jar )
+unless ( $install_driver_jar ) 
 {
     die "Installer could not find POSTGRES JDBC driver for your version of PostgresQL!\n";
 
-}
+} 
 
 system ( "cp", "pgdriver/" . $install_driver_jar, $glassfish_dir."/glassfish/lib");
 print "done!\n";
@@ -739,6 +755,11 @@ $gf_webcore_jar = $glassfish_dir."/glassfish/modules/web-core.jar";
 
 system ("/bin/mv -f ".$gf_webcore_jar . " " . $gf_webcore_jar.".PRESERVED");
 system ("/bin/cp web-core.jar ".$gf_webcore_jar); 
+
+# 5ddd. DELETE EJB TIMER APP LOCK FILE, if exists (just in case!):
+
+system ( "/bin/rm -f ".$glassfish_dir."/glassfish/domains/domain1/generated/ejb-timer-service-app" );
+
 
 # 5e. START GLASSFISH:
 print "\nStarting glassfish.\n";

@@ -357,23 +357,35 @@ if ( $CONFIG_DEFAULTS{'POSTGRES_SERVER'} eq 'localhost' )
 
     print "\nConfiguring Postgres Database:\n";
 
-    $< = $POSTGRES_SYS_UID; 
-    $> = $POSTGRES_SYS_UID; 
+
+    # 4b. CHECK IF THE SQL FILES ARE IN PLACE: 
+
+    $SQL_REFERENCE_DATA = "../../../src/DVN-EJB/src/conf/referenceData.sql"; 
+
+    unless ( -f $SQL_REFERENCE_DATA )
+    {
+	print "\nWARNING: Can't find .sql files in ../../../src/DVN-EJB/src/conf!\n"; 
+	print "(are you running the installer in the right directory?)\n";
+    
+	exit 0; 
+    }
 
     # 4a. CHECK IF POSTGRES IS RUNNING:
     print "Checking if a local instance of Postgres is running and accessible...\n";
 
-    # (change to /tmp before executing the command below -
+    # (change to /tmp before switching user to postgres and executing 
+    # the command below -
     # we are trying to do it as user postgres, and it may not have
     # access to the current, installer directory; the command would still
     # work, but there would be an error message from the shell init on screen
     # - potentially confusing)
     chdir ("/tmp");
+    $< = $POSTGRES_SYS_UID; 
+    $> = $POSTGRES_SYS_UID; 
 
     if (!system ($psql_exec . "/psql -c 'SELECT * FROM pg_roles' > /dev/null 2>&1"))
     {
 	print "Yes, it is.\n";
-	chdir ($cwd);
     }
     else
     {
@@ -396,26 +408,9 @@ if ( $CONFIG_DEFAULTS{'POSTGRES_SERVER'} eq 'localhost' )
 	exit 1; 
     }
 
-    # 4b. CHECK IF THE SQL FILES ARE IN PLACE: 
-
-    $SQL_REFERENCE_DATA = "../../../src/DVN-EJB/src/conf/referenceData.sql"; 
-    $SQL_TIMER = "../../../src/DVN-EJB/src/conf/ejbtimer.sql"; 
-
-    # we are still in /tmp! so let's go back to the installer directory...
-    chdir ($cwd);
-
-    unless ( -f $SQL_REFERENCE_DATA && -f $SQL_TIMER )
-    {
-	print "\nWARNING: Can't find .sql files in ../../../src/DVN-EJB/src/conf!\n"; 
-	print "(are you running the installer in the right directory?)\n";
-    
-	exit 0; 
-    }
-
 
     # 4c. CHECK IF THIS DB ALREADY EXISTS:
 
-    chdir ("/tmp");
     $psql_command_dbcheck = $psql_exec . "/psql -c \"\" -d " . $CONFIG_DEFAULTS{'POSTGRES_DATABASE'} . " > /dev/null 2>&1"; 
     if ( ($exitcode = system($psql_command_dbcheck)) == 0 )
     {
@@ -502,26 +497,13 @@ if ( $CONFIG_DEFAULTS{'POSTGRES_SERVER'} eq 'localhost' )
 	
     }
 
-    #4g. CREATE TIMER: (is this really necessary?? - probably not!)
+# Changing back to root UID: 
 
-#    print "\nCreating database entry for the DVN/EJB timer:\n\n";
-
-#    $psql_command = $psql_exec . "/psql -d $CONFIG_DEFAULTS{'POSTGRES_DATABASE'} -f " . $SQL_TIMER;
-
-#    unless ( ($exitcode = system("$psql_command")) == 0 ) 
-#    {
-#	print STDERR "Could not create EJB timer entry in the database!\n";
-#	print STDERR "(command: " . $psql_command . ")\n";
-#	print STDERR "(psql exit code: " . $exitcode . ")\n";
-#	print STDERR "Please consult the installation manual and/or\n";
-#	print STDERR "seek support from the DVN team.\n\n";
-#	exit 1; 
-#	
-#    }
-
-#    print "done.\n";
+    $> = 0; 
+    $< = 0;      
 
     chdir ($cwd);
+
 }
 else 
 {
@@ -554,22 +536,16 @@ else
     print "Press any key to continue the installation process once that has been\n";
     print "done. Or press ctrl-C to exit the installer.\n\n";
 
-    chdir ("/tmp"); 
     system "stty cbreak </dev/tty >/dev/tty 2>&1";
     my $key = getc(STDIN);
     system "stty -cbreak </dev/tty >/dev/tty 2>&1";
     print "\n";
-    chdir ($cwd); 
 
     # Check if the role and database have been created on the remote server:
     # -- TODO; 
 
 }
 
-# Changing back to root UID: 
-
-$> = 0; 
-$< = 0;      
 
 # 5. CONFIGURE GLASSFISH
 
@@ -915,7 +891,6 @@ if ( $pg_local_connection )
 	
     }
 
-    chdir ($cwd);
     print "\nOK, done!\n";
 
 }
@@ -945,6 +920,7 @@ else
 
 $> = 0; 
 $< = 0; 
+chdir ($cwd);
 
 # 8. INSTRUCT THE USER TO START GLASSFISH AGAIN, MANUALLY:
 

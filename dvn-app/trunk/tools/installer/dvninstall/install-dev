@@ -360,7 +360,9 @@ if ( $CONFIG_DEFAULTS{'POSTGRES_SERVER'} eq 'localhost' )
 
     # 4b. CHECK IF THE SQL FILES ARE IN PLACE: 
 
-    $SQL_REFERENCE_DATA = "../../../src/DVN-EJB/src/conf/referenceData.sql"; 
+    $SQL_FILE_DIRECTORY = "../../../src/DVN-EJB/src/conf";
+    $SQL_REFERENCE_DATA_FILE = "referenceData.sql"; 
+    $SQL_REFERENCE_DATA = $SQL_FILE_DIRECTORY . "/" . $SQL_REFERENCE_DATA_FILE;
 
     unless ( -f $SQL_REFERENCE_DATA )
     {
@@ -877,7 +879,7 @@ if ( $pg_local_connection )
     $< = $POSTGRES_SYS_UID; 
     $> = $POSTGRES_SYS_UID; 
     chdir ("/tmp");
-    $psql_command = $psql_exec . "/psql -d $CONFIG_DEFAULTS{'POSTGRES_DATABASE'} -f " . $SQL_REFERENCE_DATA;
+    $psql_command = $psql_exec . "/psql -d $CONFIG_DEFAULTS{'POSTGRES_DATABASE'} -f " . $SQL_REFERENCE_DATA_FILE;
 
     unless ( ($exitcode = system("$psql_command")) == 0 ) 
     {

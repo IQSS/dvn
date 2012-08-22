@@ -401,6 +401,9 @@ if ( $CONFIG_DEFAULTS{'POSTGRES_SERVER'} eq 'localhost' )
     $SQL_REFERENCE_DATA = "../../../src/DVN-EJB/src/conf/referenceData.sql"; 
     $SQL_TIMER = "../../../src/DVN-EJB/src/conf/ejbtimer.sql"; 
 
+    # we are still in /tmp! so let's go back to the installer directory...
+    chdir ($cwd);
+
     unless ( -f $SQL_REFERENCE_DATA && -f $SQL_TIMER )
     {
 	print "\nWARNING: Can't find .sql files in ../../../src/DVN-EJB/src/conf!\n"; 

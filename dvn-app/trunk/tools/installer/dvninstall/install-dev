@@ -909,7 +909,7 @@ if ( $pg_local_connection )
     # have read access to it:
 
     open DATATEMPLATEIN, $SQL_REFERENCE_DATA || die $@;
-    open SQLDATAOUT, '>/tmp/'.$SQL_REFERENCE_FILE || die $@;
+    open SQLDATAOUT, '>/tmp/'.$SQL_REFERENCE_DATA_FILE || die $@;
 
     while( <DATATEMPLATEIN> )
     {

@@ -914,9 +914,9 @@ if ( $pg_local_connection )
     while( <DATATEMPLATEIN> )
     {
 	s/dvnApp/$POSTGRES_USER/g;
+	print SQLDATAOUT $_;
     }
 
-    print SQLDATAOUT $_;
     close DATATEMPLATEIN;
 
 

@@ -309,9 +309,9 @@ open SQLDATAOUT, '>'.$SQL_REFERENCE_DATA || die $@;
 while( <DATATEMPLATEIN> )
 {
     s/%POSTGRES_USER%/$POSTGRES_USER/g;
+    print SQLDATAOUT $_; 
 }
 
-print SQLDATAOUT $_; 
 
 close DATATEMPLATEIN; 
 close SQLDATAOUT; 

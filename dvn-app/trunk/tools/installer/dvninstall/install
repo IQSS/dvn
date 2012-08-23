@@ -88,7 +88,8 @@ my %CONFIG_PROMPTS =
 # doesn't get paranoid)
 
 my $POSTGRES_DRIVER_8_3 = "postgresql-8.3-603.jdbc4.jar";  
-my $POSTGRES_DRIVER_8_4 = "postgresql-8.4-703.jdbc4.jar";
+#my $POSTGRES_DRIVER_8_4 = "postgresql-8.4-703.jdbc4.jar";
+my $POSTGRES_DRIVER_8_4 = "postgresql-8.3-603.jdbc4.jar";  
 my $POSTGRES_DRIVER_9_0 = "postgresql-9.0-802.jdbc4.jar";
 my $POSTGRES_DRIVER_9_1 = "postgresql-9.1-902.jdbc4.jar";
 
@@ -289,6 +290,31 @@ unless ( -f "appdeploy/dist/DVN-web.war" )
 my $cwd; 
 chomp($cwd = `pwd`);
 
+# 2b. CHECK IF THE SQL TEMPLATE IS IN PLACE AND CREATE THE SQL FILE 
+
+$SQL_REFERENCE_DATA = "referenceData.sql"; 
+$SQL_REFERENCE_TEMPLATE = "referenceData.sql.TEMPLATE"; 
+
+unless ( -f $SQL_REFERENCE_TEMPLATE  )
+{
+    print "\nWARNING: Can't find .sql data template!\n"; 
+    print "(are you running the installer in the right directory?)\n";
+    
+    exit 0; 
+}
+
+open DATATEMPLATEIN, $SQL_REFERENCE_TEMPLATE || die $@; 
+open SQLDATAOUT, '>'.$SQL_REFERENCE_DATA || die $@;
+
+while( <DATATEMPLATEIN> )
+{
+    s/%POSTGRES_USER%/$POSTGRES_USER/g;
+}
+
+print SQLDATAOUT $_; 
+
+close DATATEMPLATEIN; 
+close SQLDATAOUT; 
 
 # 3. CHECK POSTGRES AVAILABILITY: 
 
@@ -449,19 +475,6 @@ if ( $CONFIG_DEFAULTS{'POSTGRES_SERVER'} eq 'localhost' )
 	exit 1; 
     }
 
-    # 4b. CHECK IF THE SQL FILES ARE IN PLACE: 
-
-    $SQL_REFERENCE_DATA = "referenceData.sql"; 
-    $SQL_TIMER = "ejbtimer.sql"; 
-
-    unless ( -f $SQL_REFERENCE_DATA && -f $SQL_TIMER )
-    {
-	print "\nWARNING: Can't find .sql files!\n"; 
-	print "(are you running the installer in the right directory?)\n";
-    
-	exit 0; 
-    }
-
 
     # 4c. CHECK IF THIS DB ALREADY EXISTS:
     
@@ -541,23 +554,6 @@ if ( $CONFIG_DEFAULTS{'POSTGRES_SERVER'} eq 'localhost' )
 	exit 1; 
     }
 
-    #4g. CREATE TIMER: (is this really necessary?? - probably not!)
-
-#    print "\nCreating database entry for the DVN/EJB timer:\n\n";
-
-#    $psql_command = $psql_exec . "/psql -d $CONFIG_DEFAULTS{'POSTGRES_DATABASE'} -f " . $SQL_TIMER;
-
-#    unless ( ($exitcode = system("$psql_command")) == 0 ) 
-#    {
-#	print STDERR "Could not create EJB timer entry in the database!\n";
-#	print STDERR "(command: " . $psql_command . ")\n";
-#	print STDERR "(psql exit code: " . $exitcode . ")\n";
-#	print STDERR "Please consult the installation manual and/or\n";
-#	print STDERR "seek support from the DVN team.\n\n";
-#	exit 1; 
-#    }
-
-#    print "done.\n";
 
 # Changing back to root UID: 
 

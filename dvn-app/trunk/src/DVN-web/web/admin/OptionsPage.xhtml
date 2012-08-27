@@ -25,219 +25,258 @@
                 <div class="dvn_section">
                     <ice:panelTabSet id="tabSet1" styleClass="dvnTabs" selectedIndex="#{(VDCSession.loginBean.networkAdmin or VDCSession.loginBean.curatorOrAbove or (not VDCRequest.currentVDC.harvestingDv and (VDCSession.loginBean.contributor or VDCRequest.currentVDC.allowRegisteredUsersToContribute))) ? 0 : 1}">
                         <!-- STUDY OPTIONS -->
-                        <ice:panelTab id="studyOptions" label="Study Options" url="/dvn#{VDCRequest.currentVDCURL}/faces/admin/OptionsPage.xhtml&amp;tab=studyOptions" rendered="#{VDCSession.loginBean.networkAdmin or VDCSession.loginBean.curatorOrAbove or (not VDCRequest.currentVDC.harvestingDv and (VDCSession.loginBean.contributor or VDCRequest.currentVDC.allowRegisteredUsersToContribute))}">
+                        <ice:panelTab id="studies" label="Studies" url="/dvn#{VDCRequest.currentVDCURL}/faces/admin/OptionsPage.xhtml&amp;tab=studies" rendered="#{VDCSession.loginBean.networkAdmin or VDCSession.loginBean.curatorOrAbove or (not VDCRequest.currentVDC.harvestingDv and (VDCSession.loginBean.contributor or VDCRequest.currentVDC.allowRegisteredUsersToContribute))}">
                             <div jsfc="ice:panelGroup" id="layoutPanel2" panelLayout="flow">
-                                <table class="dvnOptionsTable" cellspacing="0" cellpadding="0" border="0">
-                                    <ui:fragment rendered="#{not VDCRequest.currentVDC.harvestingDv}">
-                                        <tr>
-                                            <td class="dvnOptionsTableOption dvnOptionsTableNoHeader">
-                                                <ice:outputLink id="hyperlink5" value="/dvn#{VDCRequest.currentVDCURL}/faces/study/EditStudyPage.xhtml">
-                                                    <ice:outputText id="hyperlink1Text1" value="#{bundlePageInfo.createStudyTitle}"/>
-                                                </ice:outputLink>
-                                            </td>
-                                            <td class="dvnOptionsTableNoHeader"><ice:outputText styleClass="dvnOptionsTableNote" value="#{bundlePageInfo.createStudyText}"/></td>
-                                        </tr>
-                                        <tr>
-                                            <td class="dvnOptionsTableOption">
-                                                <ice:outputLink id="hyperlink6" value="/dvn#{VDCRequest.currentVDCURL}/faces/study/ManageStudiesPage.xhtml">
-                                                    <ice:outputText id="hyperlink2Text1" value="#{bundlePageInfo.manageStudiesTitle}"/>
-                                                </ice:outputLink>
-                                            </td>
-                                            <td><ice:outputText styleClass="dvnOptionsTableNote" value="#{bundlePageInfo.manageStudiesText}"/></td>
-                                        </tr>
-                                    </ui:fragment>
-
-                                    <ui:fragment rendered="#{VDCSession.loginBean.networkAdmin or VDCSession.loginBean.curatorOrAbove}">
-                                        <ui:fragment rendered="#{not VDCRequest.currentVDC.harvestingDv}">
-                                            <tr>
-                                                <td class="dvnOptionsTableOption">
-                                                    <ice:outputLink value="/dvn#{VDCRequest.currentVDCURL}/faces/admin/ManageTemplatesPage.xhtml?mode=4" >
-                                                        <ice:outputText value="#{bundlePageInfo.manageTemplatesTitle}" escape="false"/>
-                                                    </ice:outputLink>
-                                                </td>
-                                                <td><ice:outputText styleClass="dvnOptionsTableNote" value="#{bundlePageInfo.manageTemplatesText}"/></td>
-                                            </tr>
-                                        </ui:fragment>
-                                        <tr>
-                                            <td class="dvnOptionsTableOption">
-                                                <ice:outputLink id="hyperlink8" value="/dvn#{VDCRequest.currentVDCURL}/faces/collection/ManageCollectionsPage.xhtml">
-                                                    <ice:outputText id="hyperlink4Text1" value="#{bundlePageInfo.manageCollectionsTitle}"/>
-                                                </ice:outputLink>
-                                            </td>
-                                            <td><ice:outputText styleClass="dvnOptionsTableNote" value="#{bundlePageInfo.manageCollectionsText}"/></td>
-                                        </tr>
-                                    </ui:fragment>
-                                </table>
+                                <ui:include src="/study/ManageStudiesFragment.xhtml"></ui:include>
+                            </div>
+                        </ice:panelTab>
+                        <!-- COLLECTIONS OPTIONS -->
+                        <ice:panelTab id="collections" label="Collections" url="/dvn#{VDCRequest.currentVDCURL}/faces/admin/OptionsPage.xhtml&amp;tab=collections" rendered="#{VDCSession.loginBean.networkAdmin or VDCSession.loginBean.curatorOrAbove or (VDCSession.loginBean.contributor or VDCRequest.currentVDC.allowRegisteredUsersToContribute)}">
+                            <div jsfc="ice:panelGroup" id="layoutPanel3" panelLayout="flow">
+                                <ui:include src="/collection/ManageCollectionsPage.xhtml"></ui:include>
+                            </div>
+                        </ice:panelTab>
+                        <!-- TEMPLATES OPTIONS -->
+                        <ice:panelTab id="templates" label="Templates" url="/dvn#{VDCRequest.currentVDCURL}/faces/admin/OptionsPage.xhtml&amp;tab=templates" rendered="#{VDCSession.loginBean.networkAdmin or VDCSession.loginBean.curatorOrAbove or (not VDCRequest.currentVDC.harvestingDv and (VDCSession.loginBean.contributor or VDCRequest.currentVDC.allowRegisteredUsersToContribute))}">
+                            <div jsfc="ice:panelGroup" id="layoutPanel4" panelLayout="flow">
+                                <ui:include src="ManageTemplatesPage.xhtml"></ui:include>
+                            </div>
+                        </ice:panelTab>
+                        <!-- PERMISSIONS OPTIONS -->
+                        <ice:panelTab id="permissions" label="Permissions" url="/dvn#{VDCRequest.currentVDCURL}/faces/admin/OptionsPage.xhtml&amp;tab=permissions" rendered="#{VDCSession.loginBean.networkAdmin or VDCSession.loginBean.curatorOrAbove or (not VDCRequest.currentVDC.harvestingDv and (VDCSession.loginBean.contributor or VDCRequest.currentVDC.allowRegisteredUsersToContribute))}">
+                            <div jsfc="ice:panelGroup" id="layoutPanel5" panelLayout="flow">
+                                <ice:panelTabSet id="tabSet2" styleClass="dvnTabs dvnSubTabs">
+                                    <!-- PERMISSIONS -->
+                                    <ice:panelTab id="permissionsSub" label="Permissions">
+                                        <div jsfc="ice:panelGroup">
+                                            <table class="dvnOptionsTable" cellspacing="0" cellpadding="0" border="0">
+                                                <tr>
+                                                    <td class="dvnOptionsTableOption">
+                                                        <ice:outputLink id="hyperlink11" value="/dvn#{VDCRequest.currentVDCURL}/faces/admin/PrivilegedUsersPage.xhtml">
+                                                            <ice:outputText id="hyperlink1Text3" value="#{bundlePageInfo.manageDvPermissionsTitle}"/>
+                                                        </ice:outputLink>
+                                                    </td>
+                                                    <td><ice:outputText styleClass="dvnOptionsTableNote" value="#{bundlePageInfo.manageDvPermissionsText}"/></td>
+                                                </tr>
+                                                <tr>
+                                                    <td class="dvnOptionsTableOption">
+                                                        <ice:outputLink value="/dvn#{VDCRequest.currentVDCURL}/faces/login/AddAccountPage.xhtml">
+                                                            <ice:outputText value="#{bundlePageInfo.createAccountTitle}"/>
+                                                        </ice:outputLink>
+                                                    </td>
+                                                    <td><ice:outputText styleClass="dvnOptionsTableNote" value="#{bundlePageInfo.createAccountText}"/></td>
+                                                </tr>
+                                            </table>
+                                        </div>
+                                    </ice:panelTab>
+                                    <!-- TERMS -->
+                                    <ice:panelTab id="termsSub" label="Terms">
+                                        <div jsfc="ice:panelGroup">
+                                            <table class="dvnOptionsTable" cellspacing="0" cellpadding="0" border="0">
+                                                <ui:fragment rendered="#{not VDCRequest.currentVDC.harvestingDv}">
+                                                    <tr>
+                                                        <td class="dvnOptionsTableOption">
+                                                            <ice:outputLink value="/dvn#{VDCRequest.currentVDCURL}/faces/admin/EditDepositUseTermsPage.xhtml" >
+                                                                <ice:outputText id="hyperlink5Text3" value="#{bundlePageInfo.editDvDepositTermsTitle}"/>
+                                                            </ice:outputLink>
+                                                        </td>
+                                                        <td><ice:outputText styleClass="dvnOptionsTableNote" value="#{bundlePageInfo.editDvDepositTermsText}"/></td>
+                                                    </tr>
+                                                </ui:fragment>
+                                                <tr>
+                                                    <td class="dvnOptionsTableOption">
+                                                        <ice:outputLink id="hyperlink14" value="/dvn#{VDCRequest.currentVDCURL}/faces/admin/EditUseTermsPage.xhtml">
+                                                            <ice:outputText id="hyperlink4Text3" value="#{bundlePageInfo.editDvDownloadTermsTitle}"/>
+                                                        </ice:outputLink>
+                                                    </td>
+                                                    <td><ice:outputText styleClass="dvnOptionsTableNote" value="#{bundlePageInfo.editDvDownloadTermsText}"/></td>
+                                                </tr>
+                                            </table>
+                                        </div>
+                                    </ice:panelTab>
+                                    <!-- GUESTBOOK -->
+                                    <ice:panelTab id="guestbookSub" label="Guestbook">
+                                        <div jsfc="ice:panelGroup">
+                                            <table class="dvnOptionsTable" cellspacing="0" cellpadding="0" border="0">
+                                                <tr>
+                                                    <td class="dvnOptionsTableOption">
+                                                        <ice:outputLink id="hyperlinkGuestBook" value="/dvn#{VDCRequest.currentVDCURL}/faces/admin/EditGuestbookQuestionnairePage.xhtml">
+                                                            <ice:outputText id="hyperlinkGuestBooktext" value="#{bundlePageInfo.editDvGuestbookTitle}"/>
+                                                        </ice:outputLink>
+                                                    </td>
+                                                    <td><ice:outputText styleClass="dvnOptionsTableNote" value="#{bundlePageInfo.editDvGuestbookText}"/></td>
+                                                </tr>
+                                                <tr>                                        
+                                                    <td class="dvnOptionsTableOption">
+                                                        <ice:outputLink id="hyperlinkGuestBookDataDump" value="/dvn#{VDCRequest.currentVDCURL}/faces/admin/GuestBookResponseDataPage.xhtml">
+                                                            <ice:outputText id="hyperlinkGuestBookDataDumptext" value="#{bundlePageInfo.guestbookDataDumpTitle}"/>
+                                                        </ice:outputLink>
+                                                    </td>
+                                                    <td><ice:outputText styleClass="dvnOptionsTableNote" value="#{bundlePageInfo.guestbookDataDumpText}"/></td>
+                                                </tr>
+                                            </table>
+                                        </div>
+                                    </ice:panelTab>
+                                </ice:panelTabSet>
                             </div>
                         </ice:panelTab>
                         <!-- DATAVERSE OPTIONS -->
-                        <ice:panelTab id="dataverseOptions" label="Dataverse Settings" url="/dvn#{VDCRequest.currentVDCURL}/faces/admin/OptionsPage.xhtml&amp;tab=dataverseOptions" rendered="#{VDCSession.loginBean.networkAdmin or VDCSession.loginBean.admin}">
+                        <ice:panelTab id="settings" label="Settings" url="/dvn#{VDCRequest.currentVDCURL}/faces/admin/OptionsPage.xhtml&amp;tab=settings" rendered="#{VDCSession.loginBean.networkAdmin or VDCSession.loginBean.admin}">
                             <div jsfc="ice:panelGroup" id="layoutPanel1" panelLayout="flow">
                                 <!-- REMOVED CODE -->
                                 <div jsfc="ice:panelGroup">
-                                    <table class="dvnOptionsTable" cellspacing="0" cellpadding="0" border="0">
-                                        <tr><td colspan="2" class="dvnOptionsTableHeader"><ice:outputText value="#{bundlePageInfo.dvSettingsSectionTitle}"/></td></tr>
-                                        <ui:fragment rendered="#{not VDCRequest.currentVDC.harvestingDv or (VDCSession.loginBean.networkAdmin == false and VDCRequest.currentVDC.harvestingDv)}">
-                                            <tr>
-                                                <td class="dvnOptionsTableOption">
-                                                    <ice:outputLink id="hyperlink15a" value="/dvn#{VDCRequest.currentVDCURL}/faces/site/EditSitePage.xhtml">
-                                                        <ice:outputText id="hyperlink15aText" value="#{bundlePageInfo.editDvSettingsTitle}"/>
-                                                    </ice:outputLink>
-                                                </td>
-                                                <td><ice:outputText styleClass="dvnOptionsTableNote" value="#{bundlePageInfo.editDvSettingsText}"/></td>
-                                            </tr>
-                                        </ui:fragment>
-                                        <ui:fragment rendered="#{VDCRequest.currentVDC.harvestingDv and VDCSession.loginBean.networkAdmin == true}">
-                                            <tr>
-                                                <td class="dvnOptionsTableOption">
-                                                    <ice:outputLink id="hyperlink15b" value="/dvn#{VDCRequest.currentVDCURL}/faces/site/EditHarvestSitePage.xhtml">
-                                                        <f:param name="harvestId" value="#{VDCRequest.currentVDC.harvestingDataverse.id}"/>
-                                                        <f:param name="from" value="myOptions"/>
-                                                        <ice:outputText id="hyperlink15bText" value="#{bundlePageInfo.dvHarvestSettingsTitle}"/>
-                                                    </ice:outputLink>
-                                                </td>
-                                                <td><ice:outputText styleClass="dvnOptionsTableNote" value="#{bundlePageInfo.dvHarvestSettingsText}"/></td>
-                                            </tr>
-                                        </ui:fragment>
-                                        <tr>
-                                            <td class="dvnOptionsTableOption">
-                                                <ice:outputLink  value="/dvn#{VDCRequest.currentVDCURL}/faces/admin/EditLockssConfigPage.xhtml">
-                                                    <ice:outputText  value="#{bundlePageInfo.editLockssAUTitle}"/>
-                                                </ice:outputLink>
-                                            </td>
-                                            <td><ice:outputText styleClass="dvnOptionsTableNote" value="#{bundlePageInfo.editLockssAUText}"/></td>
-                                        </tr>
-
-                                        <tr>
-                                            <td class="dvnOptionsTableOption">
-                                                <ice:outputLink id="hyperlink3" value="/dvn#{VDCRequest.currentVDCURL}/faces/admin/EditBannerFooterPage.xhtml">
-                                                    <ice:outputText id="hyperlink1Text2" value="#{bundlePageInfo.editDvBrandingTitle}"/>
-                                                </ice:outputLink>
-                                            </td>
-                                            <td><ice:outputText styleClass="dvnOptionsTableNote" value="#{bundlePageInfo.editDvBrandingText}"/></td>
-                                        </tr>
-                                        <tr>
-                                            <td class="dvnOptionsTableOption">
-                                                <ice:outputLink id="hyperlink4" value="/dvn#{VDCRequest.currentVDCURL}/faces/admin/EditHomePanelsPage.xhtml">
-                                                    <ice:outputText id="hyperlink2Text2" value="#{bundlePageInfo.editDvDescriptionTitle}"/>
-                                                </ice:outputLink>
-                                            </td>
-                                            <td><ice:outputText styleClass="dvnOptionsTableNote" value="#{bundlePageInfo.editDvDescriptionText}"/></td>
-                                        </tr>
-                                        <!-- study comments -->
-                                        <tr>
-                                            <td class="dvnOptionsTableOption">
-                                                <ice:outputLink id="studycommentslink" value="/dvn#{VDCRequest.currentVDCURL}/faces/admin/EditStudyCommentsPage.xhtml">
-                                                    <ice:outputText id="studycommentslinktext" value="#{bundlePageInfo.editStudyCommentsTitle}"/>
-                                                </ice:outputLink>
-                                            </td>
-                                            <td><ice:outputText styleClass="dvnOptionsTableNote" value="#{bundlePageInfo.editStudyCommentsText}"/></td>
-                                        </tr>
-                                        <!-- end study comments -->
-                                        <tr>
-                                            <td class="dvnOptionsTableOption">
-                                                <ice:outputLink id="hyperlink17" value="/dvn#{VDCRequest.currentVDCURL}/faces/admin/EditContactUsPage.xhtml">
-                                                    <ice:outputText id="hyperlink17Text" value="#{bundlePageInfo.editDvNotificationsTitle}"/>
-                                                </ice:outputLink>
-                                            </td>
-                                            <td><ice:outputText styleClass="dvnOptionsTableNote" value="#{bundlePageInfo.editDvNotificationsText}"/></td>
-                                        </tr>
-                                        <tr>
-                                            <td class="dvnOptionsTableOption">
-                                                <ice:outputLink  value="/dvn#{VDCRequest.currentVDCURL}/faces/admin/SearchFieldsPage.xhtml">
-                                                    <ice:outputText  value="#{bundlePageInfo.fieldsSearchResultsTitle}"/>
-                                                </ice:outputLink>
-                                            </td>
-                                            <td><ice:outputText styleClass="dvnOptionsTableNote" value="#{bundlePageInfo.fieldsSearchResultsText}"/></td>
-                                        </tr>
-                                        <tr>
-                                            <td class="dvnOptionsTableOption">
-                                                <ice:outputLink  value="/dvn#{VDCRequest.currentVDCURL}/faces/admin/DefaultSortOrderPage.xhtml">
-                                                    <ice:outputText value="#{bundlePageInfo.defaultStudySortOrderTitle}"/>
-                                                </ice:outputLink>
-                                            </td>
-                                            <td><ice:outputText styleClass="dvnOptionsTableNote" value="#{bundlePageInfo.defaultStudySortOrderText}"/></td>
-                                        </tr>
-                                        <ui:fragment rendered="#{OptionsPage.twitterConfigured}">
-                                            <tr>
-                                                <td class="dvnOptionsTableOption">
-                                                    <ice:commandLink action="#{OptionsPage.authorizeTwitter}" rendered="#{!OptionsPage.twitterEnabled}">
-                                                        <ice:outputText  value="Enable Twitter"/>
-                                                    </ice:commandLink>
-                                                    <ice:commandLink action="#{OptionsPage.removeTwitter}" rendered="#{OptionsPage.twitterEnabled}">
-                                                        <ice:outputText  value="Disable Twitter"/>
-                                                    </ice:commandLink>                                        
-                                                </td>
-                                                <td><ice:outputText styleClass="dvnOptionsTableNote" value="Enable or disable automatic tweets"/></td>
-                                            </tr>
-                                        </ui:fragment>
-                                        <tr>
-                                            <td class="dvnOptionsTableOption">
-                                                <ice:outputLink value="/dvn#{VDCRequest.currentVDCURL}/faces/admin/PromotionalLinkSearchBoxPage.xhtml">
-                                                    <ice:outputText value="#{bundlePageInfo.codePromotionalTitle}"/>
-                                                </ice:outputLink>
-                                            </td>
-                                            <td><ice:outputText styleClass="dvnOptionsTableNote" value="#{bundlePageInfo.codePromotionalText}"/></td>
-                                        </tr>
-                                    </table>
-
-                                    <table class="dvnOptionsTable" cellspacing="0" cellpadding="0" border="0">
-                                        <tr><td colspan="2" class="dvnOptionsTableHeader"><ice:outputText value="#{bundlePageInfo.dvTermsSectionTitle}"/></td></tr>
-                                        <ui:fragment rendered="#{not VDCRequest.currentVDC.harvestingDv}">
-                                            <tr>
-                                                <td class="dvnOptionsTableOption">
-                                                    <ice:outputLink value="/dvn#{VDCRequest.currentVDCURL}/faces/admin/EditDepositUseTermsPage.xhtml" >
-                                                        <ice:outputText id="hyperlink5Text3" value="#{bundlePageInfo.editDvDepositTermsTitle}"/>
-                                                    </ice:outputLink>
-                                                </td>
-                                                <td><ice:outputText styleClass="dvnOptionsTableNote" value="#{bundlePageInfo.editDvDepositTermsText}"/></td>
-                                            </tr>
-                                        </ui:fragment>
-                                        <tr>
-                                            <td class="dvnOptionsTableOption">
-                                                <ice:outputLink id="hyperlink14" value="/dvn#{VDCRequest.currentVDCURL}/faces/admin/EditUseTermsPage.xhtml">
-                                                    <ice:outputText id="hyperlink4Text3" value="#{bundlePageInfo.editDvDownloadTermsTitle}"/>
-                                                </ice:outputLink>
-                                            </td>
-                                            <td><ice:outputText styleClass="dvnOptionsTableNote" value="#{bundlePageInfo.editDvDownloadTermsText}"/></td>
-                                        </tr>
-                                        <tr>
-                                            <td class="dvnOptionsTableOption">
-                                                <ice:outputLink id="hyperlinkGuestBook" value="/dvn#{VDCRequest.currentVDCURL}/faces/admin/EditGuestbookQuestionnairePage.xhtml">
-                                                    <ice:outputText id="hyperlinkGuestBooktext" value="#{bundlePageInfo.editDvGuestbookTitle}"/>
-                                                </ice:outputLink>
-                                            </td>
-                                            <td><ice:outputText styleClass="dvnOptionsTableNote" value="#{bundlePageInfo.editDvGuestbookText}"/></td>
-                                        </tr>
-                                        <tr>                                        
-                                            <td class="dvnOptionsTableOption">
-                                                <ice:outputLink id="hyperlinkGuestBookDataDump" value="/dvn#{VDCRequest.currentVDCURL}/faces/admin/GuestBookResponseDataPage.xhtml">
-                                                    <ice:outputText id="hyperlinkGuestBookDataDumptext" value="#{bundlePageInfo.guestbookDataDumpTitle}"/>
-                                                </ice:outputLink>
-                                            </td>
-                                            <td><ice:outputText styleClass="dvnOptionsTableNote" value="#{bundlePageInfo.guestbookDataDumpText}"/></td>
-                                        </tr>
-                                    </table>
-
-                                    <table class="dvnOptionsTable" cellspacing="0" cellpadding="0" border="0">
-                                        <tr><td colspan="2" class="dvnOptionsTableHeader"><ice:outputText value="#{bundlePageInfo.dvPermissionsSectionTitle}"/></td></tr>
-                                        <tr>
-                                            <td class="dvnOptionsTableOption">
-                                                <ice:outputLink id="hyperlink11" value="/dvn#{VDCRequest.currentVDCURL}/faces/admin/PrivilegedUsersPage.xhtml">
-                                                    <ice:outputText id="hyperlink1Text3" value="#{bundlePageInfo.manageDvPermissionsTitle}"/>
-                                                </ice:outputLink>
-                                            </td>
-                                            <td><ice:outputText styleClass="dvnOptionsTableNote" value="#{bundlePageInfo.manageDvPermissionsText}"/></td>
-                                        </tr>
-                                        <tr>
-                                            <td class="dvnOptionsTableOption">
-                                                <ice:outputLink value="/dvn#{VDCRequest.currentVDCURL}/faces/login/AddAccountPage.xhtml">
-                                                    <ice:outputText value="#{bundlePageInfo.createAccountTitle}"/>
-                                                </ice:outputLink>
-                                            </td>
-                                            <td><ice:outputText styleClass="dvnOptionsTableNote" value="#{bundlePageInfo.createAccountText}"/></td>
-                                        </tr>
-                                    </table>
+                                    <ice:panelTabSet id="tabSet3" styleClass="dvnTabs dvnSubTabs">
+                                        <!-- GENERAL -->
+                                        <ice:panelTab id="generalSub" label="General">
+                                            <div jsfc="ice:panelGroup" styleClass="dvnInformationMessage" style="margin-top:0;">
+                                                <div class="dvnMsgBlockContainer">
+                                                    <p>Release your dataverse, edit the settings, enable the homepage description, classify your dataverse. Save your changes before navigating to another page or tab, or you will lose them.</p>
+                                                </div>
+                                            </div>
+                                            <div jsfc="ice:panelGroup">
+                                                
+                                                <ui:include src="EditHomePanelsPage.xhtml"></ui:include>
+                                                
+                                                <ui:include src="EditContactUsPage.xhtml"></ui:include>
+                                                
+                                                <ui:include src="EditStudyCommentsPage.xhtml"></ui:include>
+                                                
+                                                <table class="dvnOptionsTable" cellspacing="0" cellpadding="0" border="0">
+                                                    <ui:fragment rendered="#{not VDCRequest.currentVDC.harvestingDv or (VDCSession.loginBean.networkAdmin == false and VDCRequest.currentVDC.harvestingDv)}">
+                                                        <tr>
+                                                            <td class="dvnOptionsTableOption">
+                                                                <ice:outputLink id="hyperlink15a" value="/dvn#{VDCRequest.currentVDCURL}/faces/site/EditSitePage.xhtml">
+                                                                    <ice:outputText id="hyperlink15aText" value="#{bundlePageInfo.editDvSettingsTitle}"/>
+                                                                </ice:outputLink>
+                                                            </td>
+                                                            <td><ice:outputText styleClass="dvnOptionsTableNote" value="#{bundlePageInfo.editDvSettingsText}"/></td>
+                                                        </tr>
+                                                    </ui:fragment>
+                                                    <!-- study comments -->
+                                                    <!-- <tr>
+                                                        <td class="dvnOptionsTableOption">
+                                                            <ice:outputLink id="studycommentslink" value="/dvn#{VDCRequest.currentVDCURL}/faces/admin/EditStudyCommentsPage.xhtml">
+                                                                <ice:outputText id="studycommentslinktext" value="#{bundlePageInfo.editStudyCommentsTitle}"/>
+                                                            </ice:outputLink>
+                                                        </td>
+                                                        <td><ice:outputText styleClass="dvnOptionsTableNote" value="#{bundlePageInfo.editStudyCommentsText}"/></td>
+                                                    </tr> -->
+                                                    <!-- end study comments -->
+                                                    
+                                                    <!--<tr>
+                                                        <td class="dvnOptionsTableOption">
+                                                            <ice:outputLink id="hyperlink4" value="/dvn#{VDCRequest.currentVDCURL}/faces/admin/EditHomePanelsPage.xhtml">
+                                                                <ice:outputText id="hyperlink2Text2" value="#{bundlePageInfo.editDvDescriptionTitle}"/>
+                                                            </ice:outputLink>
+                                                        </td>
+                                                        <td><ice:outputText styleClass="dvnOptionsTableNote" value="#{bundlePageInfo.editDvDescriptionText}"/></td>
+                                                    </tr>-->
+                                                    <!--<tr>
+                                                        <td class="dvnOptionsTableOption">
+                                                            <ice:outputLink id="hyperlink17" value="/dvn#{VDCRequest.currentVDCURL}/faces/admin/EditContactUsPage.xhtml">
+                                                                <ice:outputText id="hyperlink17Text" value="#{bundlePageInfo.editDvNotificationsTitle}"/>
+                                                            </ice:outputLink>
+                                                        </td>
+                                                        <td><ice:outputText styleClass="dvnOptionsTableNote" value="#{bundlePageInfo.editDvNotificationsText}"/></td>
+                                                    </tr>-->
+                                                </table>
+                                                
+                                                <div id="groupPanel6" class="dvnFormPadding dvnFormMargin">
+                                                    <ice:commandButton id="btnSave" value="#{bundle.saveButtonLabel} Changes" action="#{EditContactUsPage.save_action}"/>
+                                                    <!--<ice:commandButton id="btnCancel" immediate="true" value="#{bundle.cancelButtonLabel}" action="#{EditContactUsPage.cancel_action}"/>-->
+                                                </div>
+                                            </div>
+                                        </ice:panelTab>
+                                        <!-- ADVANCED -->
+                                        <ice:panelTab id="advancedSub" label="Advanced">
+                                            <div jsfc="ice:panelGroup">
+                                                <table class="dvnOptionsTable" cellspacing="0" cellpadding="0" border="0">
+                                                    <ui:fragment rendered="#{VDCRequest.currentVDC.harvestingDv and VDCSession.loginBean.networkAdmin == true}">
+                                                        <tr>
+                                                            <td class="dvnOptionsTableOption">
+                                                                <ice:outputLink id="hyperlink15b" value="/dvn#{VDCRequest.currentVDCURL}/faces/site/EditHarvestSitePage.xhtml">
+                                                                    <f:param name="harvestId" value="#{VDCRequest.currentVDC.harvestingDataverse.id}"/>
+                                                                    <f:param name="from" value="myOptions"/>
+                                                                    <ice:outputText id="hyperlink15bText" value="#{bundlePageInfo.dvHarvestSettingsTitle}"/>
+                                                                </ice:outputLink>
+                                                            </td>
+                                                            <td><ice:outputText styleClass="dvnOptionsTableNote" value="#{bundlePageInfo.dvHarvestSettingsText}"/></td>
+                                                        </tr>
+                                                    </ui:fragment>
+                                                    <tr>
+                                                        <td class="dvnOptionsTableOption">
+                                                            <ice:outputLink  value="/dvn#{VDCRequest.currentVDCURL}/faces/admin/EditLockssConfigPage.xhtml">
+                                                                <ice:outputText  value="#{bundlePageInfo.editLockssAUTitle}"/>
+                                                            </ice:outputLink>
+                                                        </td>
+                                                        <td><ice:outputText styleClass="dvnOptionsTableNote" value="#{bundlePageInfo.editLockssAUText}"/></td>
+                                                    </tr>
+                                                </table>
+                                            </div>
+                                        </ice:panelTab>
+                                        <!-- CUSTOMIZATION -->
+                                        <ice:panelTab id="customizationSub" label="Customization">
+                                            <div jsfc="ice:panelGroup">
+                                                
+                                                <ui:include src="EditBannerFooterPage.xhtml"></ui:include>
+                                                
+                                                <table class="dvnOptionsTable" cellspacing="0" cellpadding="0" border="0">
+                                                    <!--<tr>
+                                                        <td class="dvnOptionsTableOption">
+                                                            <ice:outputLink id="hyperlink3" value="/dvn#{VDCRequest.currentVDCURL}/faces/admin/EditBannerFooterPage.xhtml">
+                                                                <ice:outputText id="hyperlink1Text2" value="#{bundlePageInfo.editDvBrandingTitle}"/>
+                                                            </ice:outputLink>
+                                                        </td>
+                                                        <td><ice:outputText styleClass="dvnOptionsTableNote" value="#{bundlePageInfo.editDvBrandingText}"/></td>
+                                                    </tr>-->
+                                                    <tr>
+                                                        <td class="dvnOptionsTableOption">
+                                                            <ice:outputLink  value="/dvn#{VDCRequest.currentVDCURL}/faces/admin/SearchFieldsPage.xhtml">
+                                                                <ice:outputText  value="#{bundlePageInfo.fieldsSearchResultsTitle}"/>
+                                                            </ice:outputLink>
+                                                        </td>
+                                                        <td><ice:outputText styleClass="dvnOptionsTableNote" value="#{bundlePageInfo.fieldsSearchResultsText}"/></td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td class="dvnOptionsTableOption">
+                                                            <ice:outputLink  value="/dvn#{VDCRequest.currentVDCURL}/faces/admin/DefaultSortOrderPage.xhtml">
+                                                                <ice:outputText value="#{bundlePageInfo.defaultStudySortOrderTitle}"/>
+                                                            </ice:outputLink>
+                                                        </td>
+                                                        <td><ice:outputText styleClass="dvnOptionsTableNote" value="#{bundlePageInfo.defaultStudySortOrderText}"/></td>
+                                                    </tr>
+                                                </table>
+                                            </div>
+                                        </ice:panelTab>
+                                        <!-- PROMOTE -->
+                                        <ice:panelTab id="promoteSub" label="Promote Your Dataverse">
+                                            <div jsfc="ice:panelGroup">
+                                                <table class="dvnOptionsTable" cellspacing="0" cellpadding="0" border="0">
+                                                    <ui:fragment rendered="#{OptionsPage.twitterConfigured}">
+                                                        <tr>
+                                                            <td class="dvnOptionsTableOption">
+                                                                <ice:commandLink action="#{OptionsPage.authorizeTwitter}" rendered="#{!OptionsPage.twitterEnabled}">
+                                                                    <ice:outputText  value="Enable Twitter"/>
+                                                                </ice:commandLink>
+                                                                <ice:commandLink action="#{OptionsPage.removeTwitter}" rendered="#{OptionsPage.twitterEnabled}">
+                                                                    <ice:outputText  value="Disable Twitter"/>
+                                                                </ice:commandLink>                                        
+                                                            </td>
+                                                            <td><ice:outputText styleClass="dvnOptionsTableNote" value="Enable or disable automatic tweets"/></td>
+                                                        </tr>
+                                                    </ui:fragment>
+                                                    <tr>
+                                                        <td class="dvnOptionsTableOption">
+                                                            <ice:outputLink value="/dvn#{VDCRequest.currentVDCURL}/faces/admin/PromotionalLinkSearchBoxPage.xhtml">
+                                                                <ice:outputText value="#{bundlePageInfo.codePromotionalTitle}"/>
+                                                            </ice:outputLink>
+                                                        </td>
+                                                        <td><ice:outputText styleClass="dvnOptionsTableNote" value="#{bundlePageInfo.codePromotionalText}"/></td>
+                                                    </tr>
+                                                </table>
+                                            </div>
+                                        </ice:panelTab>
+                                    </ice:panelTabSet>
                                 </div>
                             </div>
                         </ice:panelTab>

@@ -26,6 +26,7 @@ package edu.harvard.iq.dvn.core.web.admin;
 
 import com.icesoft.faces.component.ext.HtmlInputHidden;
 import com.icesoft.faces.component.ext.HtmlInputTextarea;
+import com.icesoft.faces.context.effects.JavascriptContext;
 import edu.harvard.iq.dvn.core.vdc.VDC;
 import edu.harvard.iq.dvn.core.vdc.VDCNetwork;
 import edu.harvard.iq.dvn.core.vdc.VDCNetworkServiceLocal;
@@ -33,6 +34,7 @@ import edu.harvard.iq.dvn.core.vdc.VDCServiceLocal;
 import edu.harvard.iq.dvn.core.web.common.VDCBaseBean;
 import javax.ejb.EJB;
 import javax.faces.bean.ViewScoped;
+import javax.faces.context.FacesContext;
 import javax.inject.Inject;
 import javax.inject.Named;
 
@@ -205,6 +207,8 @@ public class EditBannerFooterPage extends VDCBaseBean  implements java.io.Serial
 
     public void setDisplayInFrame(boolean displayInFrame) {
         this.displayInFrame = displayInFrame;
+        // add javascript call on each partial submit to trigger jQuery
+        JavascriptContext.addJavascriptCall(getFacesContext(), "initOpenScholarDataverse();");
     }
 
     public String getParentSite() {
@@ -214,7 +218,5 @@ public class EditBannerFooterPage extends VDCBaseBean  implements java.io.Serial
     public void setParentSite(String parentSite) {
         this.parentSite = parentSite;
     }
-    
-  
+      
 }
-

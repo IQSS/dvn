@@ -1,58 +1,37 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml"
-      xmlns:ui="http://java.sun.com/jsf/facelets"
-      xmlns:h="http://java.sun.com/jsf/html"
-      xmlns:f="http://java.sun.com/jsf/core"
-      xmlns:jsp="http://java.sun.com/JSP/Page"
-      xmlns:ice="http://www.icesoft.com/icefaces/component">
-<head>
-    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
-</head>
-<body>
-  <ui:composition template="/template.xhtml">
-    <ui:param name="pageTitle" value="#{bundlePageInfo.editDvDescriptionTitle} - #{VDCRequest.dataversePageTitle}"/>
-    <ui:define name="metadata">
-        <f:event type="preRenderView" listener="#{EditHomePanelsPage.preRenderView}"/>
-    </ui:define>
-    <ui:define name="body">
-      <ice:form id="editHomePanelsForm">
-        <ice:inputHidden rendered="#{VDCRequest.currentVDCId != null}" id="vdcId" value="#{VDCRequest.currentVDCId}"/>
-        <div class="dvn_section">
-          <div class="dvn_sectionTitle">
-            <ice:outputText value="#{bundlePageInfo.editDvDescriptionTitle}"/>
-          </div>
-          <div class="dvn_sectionBox">
-            <div class="dvn_margin12">
-              <div jsfc="ice:panelGroup" styleClass="dvnInformationMessage">
+<div xmlns:ui="http://java.sun.com/jsf/facelets"
+                      xmlns:h="http://java.sun.com/jsf/html"
+                      xmlns:f="http://java.sun.com/jsf/core"
+                      xmlns:jsp="http://java.sun.com/JSP/Page"
+                      xmlns:ice="http://www.icesoft.com/icefaces/component"
+                      xmlns:dvn="/WEB-INF/tlds/dvn-components"
+                      jsfc="ice:panelGroup">
+              <!--<div jsfc="ice:panelGroup" styleClass="dvnInformationMessage">
                  <div class="dvnMsgBlockContainer">
-                   <ice:outputText value="#{bundlePageInfo.editDvDescriptionHelp}" escape="false"/>
+                   
                  </div>
-              </div>
-              <div>
-                <ice:selectBooleanCheckbox id="chkLocalAnnouncements" value="#{EditHomePanelsPage.chkLocalAnnouncements}"/>
-                <ice:outputText id="outputText3" value="#{bundle.displayLocalAnnouncementsLabel}"/>
-              </div>
-              <ice:message id="announcementsMsg"
-                           for="localAnnouncements"
-                           styleClass="errorMessage"/>
-              <br/>
-              <div jsfc="ice:panelGroup" id="groupPanel5">
-                <ice:inputTextarea cols="100" rows="15"
-                                   id="localAnnouncements" value="#{EditHomePanelsPage.localAnnouncements}"
-                                   styleClass="formHtmlEnabled">
-                  <f:validator validatorId="XhtmlValidator"/>
-                </ice:inputTextarea>
-              </div>
-              <div class="dvnFormPadding dvnFormMargin">
+              </div>-->
+              <ice:panelGrid cellpadding="0" cellspacing="0" columns="2"
+                             columnClasses="vdcColPadded, vdcColPadded" styleClass="dvnOptionsTable">
+                  <div jsfc="ice:panelGroup" styleClass="dvnOptionsTableOption">
+                    <ice:outputText value="Homepage Description"/>
+                  </div>
+                  <div jsfc="ice:panelGroup" id="groupPanel5">
+                    <ice:selectBooleanCheckbox id="chkLocalAnnouncements" value="#{EditHomePanelsPage.chkLocalAnnouncements}"/>
+                    <ice:outputText id="outputText3" value="#{bundle.displayLocalAnnouncementsLabel}"/>
+                    <ice:message id="announcementsMsg"
+                               for="localAnnouncements"
+                               styleClass="errorMessage"/>
+                    <br/>
+                    <ice:inputTextarea cols="100" rows="5"
+                                       id="localAnnouncements" value="#{EditHomePanelsPage.localAnnouncements}"
+                                       styleClass="formHtmlEnabled">
+                      <f:validator validatorId="XhtmlValidator"/>
+                    </ice:inputTextarea>
+                    <ice:outputText value="#{bundlePageInfo.editDvDescriptionHelp}" escape="false"/>
+                  </div>
+              </ice:panelGrid>
+              <!--<div class="dvnFormPadding dvnFormMargin">
                 <ice:commandButton id="btnSave" value="#{bundle.saveButtonLabel}" action="#{EditHomePanelsPage.save_action}"/>
                 <ice:commandButton id="btnCancel" value="#{bundle.cancelButtonLabel}" action="#{EditHomePanelsPage.cancel_action}"/>
-              </div>
-            </div>
-          </div>
-        </div>
-      </ice:form>
-    </ui:define>
-  </ui:composition>
-</body>
-</html>
+              </div>-->
+</div>

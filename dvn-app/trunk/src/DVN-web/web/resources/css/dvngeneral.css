@@ -212,6 +212,12 @@ li.dvnAlphaBrowseSelected a{padding:2px 5px;font-weight:bold;color:white}
 .dvnTabs .icePnlTbOff .MidMid td, .dvnTabs .icePnlTbOver .MidMid td {font-weight: normal;}
 .dvnTabs .icePnlTbSetSpcr {border-bottom: 0;}
 .dvnTabs .icePnlTbSetCnt {border-top: 1px solid #D9D9D9;}
+.dvnTabs.dvnSubTabs .icePnlTbOn .LftTop, .dvnTabs.dvnSubTabs .icePnlTbOn .MidTop, .dvnTabs.dvnSubTabs .icePnlTbOn .RtTop, .dvnTabs.dvnSubTabs .icePnlTbOff .LftTop, .dvnTabs.dvnSubTabs .icePnlTbOff .MidTop, .dvnTabs.dvnSubTabs .icePnlTbOff .RtTop, .dvnTabs.dvnSubTabs .icePnlTbOver .LftTop, .dvnTabs.dvnSubTabs .icePnlTbOver .MidTop, .dvnTabs.dvnSubTabs .icePnlTbOver .RtTop {height: 1px; background: transparent;}
+.dvnTabs.dvnSubTabs .icePnlTbOn .MidMid, .dvnTabs.dvnSubTabs .icePnlTbOff .MidMid, .dvnTabs.dvnSubTabs .icePnlTbOver .MidMid {border:0; background: transparent none;}
+.dvnTabs.dvnSubTabs .icePnlTbOn .MidMid a {margin:0; text-transform:none;}
+.dvnTabs.dvnSubTabs .icePnlTbOn .MidMid a td {font-size: 1em !important;}
+.dvnTabs.dvnSubTabs .icePnlTbOff .LftTop, .dvnTabs.dvnSubTabs .icePnlTbOff .MidTop, .dvnTabs.dvnSubTabs .icePnlTbOff .RtTop, .dvnTabs.dvnSubTabs .icePnlTbOff .LftMid, .dvnTabs.dvnSubTabs .icePnlTbOff .MidMid, .dvnTabs.dvnSubTabs .icePnlTbOff .RtMid, .dvnTabs.dvnSubTabs .icePnlTbOver .LftTop, .dvnTabs.dvnSubTabs .icePnlTbOver .MidTop, .dvnTabs.dvnSubTabs .icePnlTbOver .RtTop, .dvnTabs.dvnSubTabs .icePnlTbOver .LftMid, .dvnTabs.dvnSubTabs .icePnlTbOver .MidMid, .dvnTabs.dvnSubTabs .icePnlTbOver .RtMid {background: transparent;}
+.dvnTabs.dvnSubTabs .icePnlTbSetCnt {border:0; background:transparent;}
 /* ICEFACES */
 .iceSelOneRb tr,.iceSelOneRb td{border:0}
 .MidMid a{padding-right:4px !important}

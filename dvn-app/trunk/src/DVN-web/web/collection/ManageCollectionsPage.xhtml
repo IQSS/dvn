@@ -1,29 +1,12 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml"
-      xmlns:ui="http://java.sun.com/jsf/facelets"
-      xmlns:h="http://java.sun.com/jsf/html"
-      xmlns:f="http://java.sun.com/jsf/core"
-      xmlns:jsp="http://java.sun.com/JSP/Page"
-      xmlns:ice="http://www.icesoft.com/icefaces/component">
-<head>
-  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
-</head>
-<body>
-  <ui:composition template="/template.xhtml">
-    <ui:param name="pageTitle" value="#{bundlePageInfo.manageCollectionsTitle} - #{VDCRequest.dataversePageTitle}"/>
-    <ui:define name="metadata">    
-        <!--f:metadata - COMMENTED OUT SINCE THERE ARE NO VIEW PARAMS - WORKAROUND-->  
-            <f:event type="preRenderView" listener="#{ManageCollectionsPage.preRenderView}" />
-        <!--f:metadata-->  
-    </ui:define> 
-    <ui:define name="body">
-      <ice:form id="form1">
-        <ice:inputHidden id="vdcId" value="#{VDCRequest.currentVDCId}"/>
-        <div class="dvn_section">
-          <div class="dvn_sectionTitle">
-            <ice:outputText value="#{bundlePageInfo.manageCollectionsTitle}"/>
-          </div>
+     <div xmlns:ui="http://java.sun.com/jsf/facelets"
+                      xmlns:h="http://java.sun.com/jsf/html"
+                      xmlns:f="http://java.sun.com/jsf/core"
+                      xmlns:jsp="http://java.sun.com/JSP/Page"
+                      xmlns:ice="http://www.icesoft.com/icefaces/component"
+                      xmlns:dvn="/WEB-INF/tlds/dvn-components"
+                      jsfc="ice:panelGroup">
+         
+     
           <div class="dvnManageTableTop">
             <div jsfc="ice:panelGroup" styleClass="dvn_margin12 dvnInformationMessage">
                 <div class="dvnMsgBlockContainer">
@@ -113,9 +96,5 @@
               </ice:commandLink>
             </ice:column>
           </ice:dataTable>
-        </div>
-      </ice:form>
-    </ui:define>
-  </ui:composition>
-</body>
-</html>
+
+         </div>

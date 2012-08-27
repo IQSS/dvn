@@ -787,9 +787,6 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
         if (!dt.getVisualizationDisplay().isShowDataTable()) {
             includeExcel = false;
         }
-        System.out.print("Image available" + imageAvailable);
-        System.out.print("include Image " + includeImage);
-        System.out.print("Image " + image);
         
         return selectItems;
     }
@@ -1128,7 +1125,6 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
     }
 
     public void addLine(ActionEvent ae) {
-
         dataNotAddedMessage = "";
         forcedDataTableMessage = "";
 
@@ -1931,6 +1927,7 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
 
         transformedData = new String[maxLength + 1];
         transformedDataIndexed = new String[maxLength + 1];
+        
         boolean indexesDone = false;
         // scroll through table data to load transformed data
         for (Object inObj : inStr) {
@@ -2003,7 +2000,6 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
             output = output + col;
             csvOutput = csvOutput + csvCol;
         }
-
         for (Object inObj : inStr) {
             String nextStr = (String) inObj;
             String[] columnDetail = nextStr.split("\t");
@@ -2054,7 +2050,6 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
             }
             indexedOutput = indexedOutput + indexCol;
         }
-
         SelectItem setSI = selectEndYears.get(0);
         setSI.setValue(maxYear);
         selectEndYears.set(0, setSI);
@@ -2161,7 +2156,6 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
                     }
                     transformedDataIndexSelect += getValIndex + ",";
                 }
-
                 while (dataHasGaps(transformedDataSelect)) {
                     transformedDataSelect = fillInGaps(transformedDataSelect);
                 }
@@ -2214,12 +2208,12 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
            int indexUpdate = 0;
            int firstIndex = 0;
            int lastIndex = 0;
-           for (int i = 0; i < stringInSplit.length; i++ ){
+           for (int i = 0; i < stringInSplit.length; i++ ){  
                if (!gapFound  && !stringInSplit[i].trim().isEmpty()){
                    firstVal = new Double (stringInSplit[i].trim());
                    firstIndex = i;
                }
-               if (!gapFound  && firstVal > 0 && stringInSplit[i].trim().isEmpty()){
+               if (!gapFound  && firstVal != 0 && stringInSplit[i].trim().isEmpty()){
                    gapFound = true;
                    indexUpdate = i;
                }
@@ -2228,14 +2222,14 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
                    lastIndex = i;                   
                }                              
            }
-           Double interVal = (firstVal * (lastIndex - indexUpdate) + endVal) / (lastIndex - firstIndex) ;
+           Double interVal = (firstVal * (lastIndex - indexUpdate) + endVal) / (lastIndex - firstIndex) ;  
            stringInSplit[indexUpdate] = interVal.toString();
            
            String retString = "";
            for (int i = 0; i < stringInSplit.length; i++ ){
                 retString += stringInSplit[i] + ",";              
            }
-           
+
         return retString;
     }
 

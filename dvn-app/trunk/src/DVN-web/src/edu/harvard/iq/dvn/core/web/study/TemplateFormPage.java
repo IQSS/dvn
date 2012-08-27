@@ -2712,7 +2712,11 @@ public class TemplateFormPage extends VDCBaseBean implements java.io.Serializabl
             return "";
         }
         
-        
+        if(fieldDescription.trim().length() > 255){
+            getVDCRenderBean().getFlash().put("customFieldWarningMessage","New field description must not be more than 255 characters."); 
+            return "";
+        }
+                
         // We are in the process of changing how we are using the fields of
         // the fieldName object:
         //
@@ -3018,18 +3022,111 @@ public class TemplateFormPage extends VDCBaseBean implements java.io.Serializabl
     
     public class TemplateFieldControlledVocabulary {
         TemplateField templateField;
-
-        public TemplateField getTemplateField() {
-            return templateField;
-        }
-
-        public void setTemplateField(TemplateField templateField) {
-            this.templateField = templateField;
-        }
         String cvId;
         String studyBundleLabel;
         Long index;
         ControlledVocabulary controlledVocabDisplay;
+        private List<SelectItem> controlledVocabularyOptions = new ArrayList();
+        private boolean cvAvailable = false;
+
+        public boolean isCvAvailable() {
+            return cvAvailable;
+        }
+
+        public void setCvAvailable(boolean cvAvailable) {
+            this.cvAvailable = cvAvailable;
+        }
+        
+        public  TemplateFieldControlledVocabulary(TemplateField templateField) {
+            this.templateField = templateField;
+            this.cvId = templateField.getControlledVocabulary() != null ? templateField.getControlledVocabulary().getId().toString() : "";
+            if (!cvId.equals("")){
+                this.controlledVocabDisplay = templateService.getControlledVocabulary(new Long(cvId));
+            }
+            String getString = templateField.getStudyField().getName() + "Label";            
+            try {
+                studyBundleLabel      = studybundle.getString(getString);
+            } catch (Exception uee) {
+                System.out.println("Exception:  " + uee.toString());
+                studyBundleLabel = this.templateField.getStudyField().getTitle();
+                if (studyBundleLabel.isEmpty()){
+                    studyBundleLabel = this.templateField.getStudyField().getName();
+                }
+            }
+            
+            //System.out.println("templateField.getStudyField().getFieldType():  " + templateField.getStudyField().getFieldType());
+
+            for (ControlledVocabulary cv: templateService.getNetworkControlledVocabulary()){
+                if (templateField.getStudyField().getFieldType() == null){
+                       cvAvailable = true;
+                       controlledVocabularyOptions.add(new SelectItem(cv.getId(), cv.getName())); 
+                } else if (templateField.getStudyField().getFieldType().equals("date")){
+                    if (cv.getFieldType() != null && cv.getFieldType().equals("date")) {
+                        cvAvailable = true;
+                          controlledVocabularyOptions.add(new SelectItem(cv.getId(), cv.getName())); 
+                    }
+                } else if (templateField.getStudyField().getFieldType().equals("url")){
+                    if (cv.getFieldType() != null && cv.getFieldType().equals("url")) {
+                        cvAvailable = true;
+                          controlledVocabularyOptions.add(new SelectItem(cv.getId(), cv.getName())); 
+                    }
+                } else if (templateField.getStudyField().getFieldType().equals("email")){
+                    if ( cv.getFieldType() != null && cv.getFieldType().equals("email")) {
+                          controlledVocabularyOptions.add(new SelectItem(cv.getId(), cv.getName())); 
+                    }
+                } else {
+                    cvAvailable = true;
+                    controlledVocabularyOptions.add(new SelectItem(cv.getId(), cv.getName())); 
+                                        System.out.println("Final Else -after add ");
+                }                
+            }
+        }
+        public  TemplateFieldControlledVocabulary(TemplateField templateField, Long index) {
+            this.templateField = templateField;
+            this.index = index;
+            this.cvId = templateField.getControlledVocabulary() != null ? templateField.getControlledVocabulary().getId().toString() : "";
+            String getString = templateField.getStudyField().getName() + "Label";
+            if (!cvId.equals("")){
+                this.controlledVocabDisplay = templateService.getControlledVocabulary(new Long(cvId));
+            }
+            
+            try {
+                studyBundleLabel      = studybundle.getString(getString);
+            } catch (Exception uee) {
+                System.out.println("Exception:  " + uee.toString());
+                studyBundleLabel = this.templateField.getStudyField().getTitle();
+                if (studyBundleLabel.isEmpty()){
+                    studyBundleLabel = this.templateField.getStudyField().getName();
+                }
+            }
+            
+            //System.out.println("templateField.getStudyField().getFieldType():  " + templateField.getStudyField().getFieldType());
+            for (ControlledVocabulary cv : templateService.getNetworkControlledVocabulary()) {
+                if (templateField.getStudyField().getFieldType() == null) {
+                    cvAvailable = true;
+                    controlledVocabularyOptions.add(new SelectItem(cv.getId(), cv.getName()));
+                } else if (templateField.getStudyField().getFieldType().equals("date")) {
+                    if (cv.getFieldType() != null && cv.getFieldType().equals("date")) {
+                        cvAvailable = true;
+                        controlledVocabularyOptions.add(new SelectItem(cv.getId(), cv.getName()));
+                    }
+                } else if (templateField.getStudyField().getFieldType().equals("url")) {
+                    if (cv.getFieldType() != null && cv.getFieldType().equals("url")) {
+                        cvAvailable = true;
+                        controlledVocabularyOptions.add(new SelectItem(cv.getId(), cv.getName()));
+                    }
+                } else if (templateField.getStudyField().getFieldType().equals("email")) {
+                    if (cv.getFieldType() != null && cv.getFieldType().equals("email")) {
+                        cvAvailable = true;
+                        controlledVocabularyOptions.add(new SelectItem(cv.getId(), cv.getName()));
+                    }
+                } else {
+                    cvAvailable = true;
+                    controlledVocabularyOptions.add(new SelectItem(cv.getId(), cv.getName()));
+                }
+            }
+
+        }
 
         public ControlledVocabulary getControlledVocabDisplay() {
             return controlledVocabDisplay;
@@ -3054,45 +3151,23 @@ public class TemplateFormPage extends VDCBaseBean implements java.io.Serializabl
         public void setStudyBundleLabel(String studyBundleLabel) {
             this.studyBundleLabel = studyBundleLabel;
         }
-       
-        public  TemplateFieldControlledVocabulary(TemplateField templateField) {
-            this.templateField = templateField;
-            this.cvId = templateField.getControlledVocabulary() != null ? templateField.getControlledVocabulary().getId().toString() : "";
-            if (!cvId.equals("")){
-                this.controlledVocabDisplay = templateService.getControlledVocabulary(new Long(cvId));
-            }
-            String getString = templateField.getStudyField().getName() + "Label";            
-            try {
-                studyBundleLabel      = studybundle.getString(getString);
-            } catch (Exception uee) {
-                System.out.println("Exception:  " + uee.toString());
-                studyBundleLabel = this.templateField.getStudyField().getTitle();
-                if (studyBundleLabel.isEmpty()){
-                    studyBundleLabel = this.templateField.getStudyField().getName();
-                }
-            }
+        
+        public TemplateField getTemplateField() {
+            return templateField;
         }
-        public  TemplateFieldControlledVocabulary(TemplateField templateField, Long index) {
-            this.templateField = templateField;
-            this.index = index;
-            this.cvId = templateField.getControlledVocabulary() != null ? templateField.getControlledVocabulary().getId().toString() : "";
-            String getString = templateField.getStudyField().getName() + "Label";
-            if (!cvId.equals("")){
-                this.controlledVocabDisplay = templateService.getControlledVocabulary(new Long(cvId));
-            }
-            
-            try {
-                studyBundleLabel      = studybundle.getString(getString);
-            } catch (Exception uee) {
-                System.out.println("Exception:  " + uee.toString());
-                studyBundleLabel = this.templateField.getStudyField().getTitle();
-                if (studyBundleLabel.isEmpty()){
-                    studyBundleLabel = this.templateField.getStudyField().getName();
-                }
-            }
-            
 
+        public void setTemplateField(TemplateField templateField) {
+            this.templateField = templateField;
         }
+       
+        public List<SelectItem> getControlledVocabularyOptions() {
+            return controlledVocabularyOptions;
+        }
+
+        public void setControlledVocabularyOptions(List<SelectItem> controlledVocabularyOptions) {
+            this.controlledVocabularyOptions = controlledVocabularyOptions;
+        }
+        
         public String getCvId(){
             return cvId;
         }

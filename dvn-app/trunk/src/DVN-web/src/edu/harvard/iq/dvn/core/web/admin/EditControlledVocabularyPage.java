@@ -26,12 +26,18 @@ package edu.harvard.iq.dvn.core.web.admin;
 import edu.harvard.iq.dvn.core.study.ControlledVocabulary;
 import edu.harvard.iq.dvn.core.study.ControlledVocabularyValue;
 import edu.harvard.iq.dvn.core.study.TemplateServiceLocal;
+import edu.harvard.iq.dvn.core.util.DateUtil;
 import edu.harvard.iq.dvn.core.web.common.VDCBaseBean;
+import edu.harvard.iq.dvn.core.web.util.EmailValidator;
+import edu.harvard.iq.dvn.core.web.util.UrlValidator;
+import java.net.MalformedURLException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.ejb.EJB;
 import javax.faces.bean.ViewScoped;
 import javax.faces.event.ValueChangeEvent;
@@ -146,15 +152,68 @@ public class EditControlledVocabularyPage extends VDCBaseBean implements java.io
     }
 
     public String save_action() {
-            boolean isNewControlledVocabulary = controlledVocabulary.getId() == null;
+        boolean isNewControlledVocabulary = controlledVocabulary.getId() == null;
+        
+        if (!validateDescription()){
+            getVDCRenderBean().getFlash().put("warningMessage", "Description may not be more than 255 characters.");
+            return "";
+        }
+        
+        
+        if (validateEntries()) {
             templateService.saveControlledVocabulary(controlledVocabulary);
-            
+
             if (isNewControlledVocabulary) {
                 getVDCRenderBean().getFlash().put("successMessage", "Successfully added new Controlled Vocabulary.");
             } else {
                 getVDCRenderBean().getFlash().put("successMessage", "Successfully updated Controlled Vocabulary.");
             }
             return "/admin/ManageControlledVocabularyPage?faces-redirect=true";
+
+        } else {
+            getVDCRenderBean().getFlash().put("warningMessage", "One or more entries do not match the chosen Field Type.");
+            return "";
+        }
+    }
+    
+    private boolean validateDescription(){
+        boolean isValid = true;
+        if (controlledVocabulary.getDescription().length() > 255){
+            isValid = false;
+        }
+        return isValid;
+    }
+    
+    private boolean validateEntries(){
+        boolean isValid = true;
+        if (controlledVocabulary.getFieldType() == null || controlledVocabulary.getFieldType().isEmpty() || controlledVocabulary.getControlledVocabularyValues().isEmpty()){
+            return isValid;
+        }
+        List <ControlledVocabularyValue> testValues = controlledVocabulary.getControlledVocabularyValues();
+        EmailValidator emailVaildator = new EmailValidator();
+        UrlValidator urlVaildator = new UrlValidator();
+        if (controlledVocabulary.getFieldType().equals("email")){
+            for (ControlledVocabularyValue entry: testValues ){
+                isValid &= emailVaildator.validateEmail(entry.getValue());
+            }
+        }        
+        if (controlledVocabulary.getFieldType().equals("url")){
+            for (ControlledVocabularyValue entry: testValues ){
+                try {
+                    isValid &= urlVaildator.validateUrl(entry.getValue());
+                } catch (MalformedURLException ex) {
+                    isValid = false;
+                    Logger.getLogger(EditControlledVocabularyPage.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            }
+        }
+        
+       if (controlledVocabulary.getFieldType().equals("date")){
+            for (ControlledVocabularyValue entry: testValues ){
+                isValid &= DateUtil.validateDate(entry.getValue());
+            }
+        } 
+        return isValid;
     }
 
 }

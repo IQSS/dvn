@@ -58,7 +58,19 @@
                   </div>
                   <div jsfc="ice:panelGroup">
                     <ice:inputTextarea id="input_controlledVocabularyDesc" cols="60" rows="4" value="#{editControlledVocabularyPage.controlledVocabulary.description}"/>
-                  </div> 
+                  </div>
+                  <div jsfc="ice:panelGroup" id="groupPanel3FieldType" styleClass="vdcFieldTitle">
+                    Field Type
+                  </div>
+                  <div jsfc="ice:panelGroup">
+                            <ice:selectOneMenu immediate="false" partialSubmit="true" value="#{editControlledVocabularyPage.controlledVocabulary.fieldType}"
+                                               >
+                                <f:selectItem itemLabel="General" itemValue=""/>
+                                <f:selectItem itemLabel="Date" itemValue="date"/>
+                                <f:selectItem itemLabel="Email" itemValue="email"/>
+                                <f:selectItem itemLabel="URL" itemValue="url"/>
+                            </ice:selectOneMenu>  
+                  </div>                    
                   <div jsfc="ice:panelGroup" styleClass="vdcFieldTitle">
                     Values
                   </div>

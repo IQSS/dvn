@@ -3356,7 +3356,7 @@
                             <ice:selectOneMenu immediate="false" partialSubmit="true" value="#{currentRow.cvId}"
                                                valueChangeListener="#{TemplateFormPage.changePopupControlledVocabulary}">
                                 <f:selectItem itemLabel="--none--" itemValue="0"/>
-                                <f:selectItems value="#{TemplateFormPage.controlledVocabularySelectItems}"/>
+                                <f:selectItems value="#{currentRow.controlledVocabularyOptions}"/>
                             </ice:selectOneMenu>  
                             </div>
                          <div></div>

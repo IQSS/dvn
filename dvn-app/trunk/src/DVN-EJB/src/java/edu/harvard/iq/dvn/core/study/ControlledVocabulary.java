@@ -47,6 +47,8 @@ public class ControlledVocabulary implements Serializable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String name;
+    private String fieldType;
+
     @Column(columnDefinition="TEXT") 
     private String description;    
     @OneToMany(mappedBy="controlledVocabulary", orphanRemoval=true, cascade={CascadeType.REMOVE, CascadeType.MERGE, CascadeType.PERSIST})
@@ -61,7 +63,7 @@ public class ControlledVocabulary implements Serializable {
     }
 
     public void setId(Long id) {
-        this.id = id;
+        this.id = id;   
     }
 
     public List<ControlledVocabularyValue> getControlledVocabularyValues() {
@@ -94,6 +96,15 @@ public class ControlledVocabulary implements Serializable {
 
     public void setName(String name) {
         this.name = name;
+    }
+    
+    
+    public String getFieldType() {
+        return fieldType;
+    }
+
+    public void setFieldType(String fieldType) {
+        this.fieldType = fieldType;
     }
     
     public List<TemplateField> getTemplateFields() {

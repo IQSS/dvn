@@ -172,7 +172,7 @@ public class StudyField implements Serializable {
 
     
     @OneToMany(mappedBy = "parentStudyField", cascade = {CascadeType.REMOVE, CascadeType.MERGE, CascadeType.PERSIST})
-    @OrderBy("name ASC")
+    @OrderBy("displayOrder ASC")
     private Collection<StudyField> childStudyFields;
 
     public Collection<StudyField> getChildStudyFields() {

@@ -5,7 +5,7 @@
                       xmlns:ice="http://www.icesoft.com/icefaces/component"
                       xmlns:dvn="/WEB-INF/tlds/dvn-components"
                       jsfc="ice:panelGroup">
-        <script type="text/javascript">
+    <script type="text/javascript">
           // <![CDATA[
           function combineStrings() {
               var bannerText = document.getElementById('editBannerFooterForm:banner').value;
@@ -26,9 +26,9 @@
               </div>-->
               <div jsfc="ice:panelGroup" rendered="#{VDCRequest.currentVDC != null}">
 
-                <div class="dvn_padBot">
+                
                     <ice:panelGrid cellpadding="0" cellspacing="0" columns="2"
-                                   columnClasses="vdcColPadded, vdcColPadded" styleClass="dvnOptionsTable">
+                                   columnClasses="vdcColPadded, vdcColPadded" styleClass="dvnOptionsTable dvnCustomizationDisableTable">
                         <div jsfc="ice:panelGroup" styleClass="dvnOptionsTableOption">
                             <ice:outputText value="Disable Customization"/>
                         </div>
@@ -36,124 +36,110 @@
                             <ice:selectBooleanCheckbox id="chkOpenScholarDataverse" value="#{EditBannerFooterPage.displayInFrame}" partialSubmit="true"/>
                             <ice:outputText value="Disable customization for Dataverses linked to an OpenScholar or your personal site."/>
                             <script type="text/javascript">
-                                function initOpenScholarDataverse() {
-                                        if (('#form1\\:chkOpenScholarDataverse').checked == true) {
-                                            jQuery('input.dvnCustomizationSelectSite[value="personal"]').prop('checked', false);
-                                            jQuery('input.dvnCustomizationSelectSite[value="openscholar"]').prop('checked', true);
-                                            jQuery('input#form1\\:urlOpenScholarDataverse').val('');
-                                            jQuery('.dvnUrlPersonalSite').hide();
-                                        }
-                                        jQuery("tr.dvnCustomizationSelectSiteBlockRow1").toggle();
-                                        jQuery("tr.dvnCustomizationSelectSiteBlockRow2").toggle();
-                                        jQuery("tr.dvnCustomizationSelectSiteBlockRow3").toggle();
-                                        jQuery('.dvnUrlOpenScholar').toggle();
-                                        jQuery(".dvnCustomBannerFooterFieldsBlock").toggle();
-                                    };
-                                    
+                                // <![CDATA[
                                 jQuery(document).ready(function(){
-                                    jQuery('tr.dvnCustomizationSelectSiteBlockRow1').hide();
-                                    jQuery('tr.dvnCustomizationSelectSiteBlockRow2').hide();
-                                    jQuery('tr.dvnCustomizationSelectSiteBlockRow3').hide();
-                                    jQuery('.dvnUrlOpenScholar').hide();
-                                    jQuery('.dvnUrlPersonalSite').hide();
-
-                                    var siteURL = jQuery('input#form1\\:urlOpenScholarDataverse');
+                                    initCheckSiteType();
+                                    initChangeSiteType();
+                                });
+                                function initCheckSiteType() {
+                                    
+                                    var siteURL = jQuery('#dvnUrlOpenScholar input');
+                                    var selectSiteBlock = jQuery('#dvnCustomizationSelectSiteBlock');
 
                                     if ( siteURL.val() != '' ) {
                                         if ( jQuery(siteURL).val().startsWith('http://scholar.harvard.edu') || jQuery(siteURL).val().startsWith('http://projects.iq.harvard.edu') ) {
-                                            jQuery('input#form1\\:urlOpenScholarDataverse').parents('.dvnUrlOpenScholar').prev('.dvnCustomizationSelectSiteBlock').children('input[value=openscholar]').prop('checked', true);
-                                            jQuery('.dvnUrlOpenScholar').show();
+                                            jQuery(siteURL).parents('table.dvnCustomizationSelectSiteTable').find(selectSiteBlock).children('input[value=openscholar]').prop('checked', true);
+                                            jQuery('tr.dvnCustomizationSelectSiteBlockRow2').show();
+                                            jQuery('tr.dvnCustomizationSelectSiteBlockRow3').hide();
                                         }
                                         else {
-                                            jQuery('input#form1\\:urlOpenScholarDataverse').parents('.dvnUrlOpenScholar').prev('.dvnCustomizationSelectSiteBlock').children('input[value=personal]').prop('checked', true);
-                                            jQuery('.dvnUrlOpenScholar').show();
-                                            jQuery('.dvnUrlPersonalSite').show();
+                                            jQuery(siteURL).parents('table.dvnCustomizationSelectSiteTable').find(selectSiteBlock).children('input[value=personal]').prop('checked', true);
+                                            jQuery('tr.dvnCustomizationSelectSiteBlockRow2').show();
+                                            jQuery('tr.dvnCustomizationSelectSiteBlockRow3').show();
                                         }
                                     }
-
-                                    jQuery('#form1\\:chkOpenScholarDataverse[checked]').each(function() {
-                                       jQuery('tr.dvnCustomizationSelectSiteBlockRow1').show();
-                                       jQuery('tr.dvnCustomizationSelectSiteBlockRow2').show();
-                                       jQuery('tr.dvnCustomizationSelectSiteBlockRow3').show();
-                                       jQuery(".dvnCustomBannerFooterFieldsBlock").hide();
-                                    });
-
-                                    jQuery("input[name='iframesite']").change(function(){
-                                        if (jQuery("input[name='iframesite']:checked").val() == 'personal') {
-                                            jQuery('.dvnUrlOpenScholar').show();
-                                            jQuery('.dvnUrlPersonalSite').show();
-                                        }
-                                        else{
-                                            jQuery('.dvnUrlOpenScholar').show();
-                                            jQuery('.dvnUrlPersonalSite').hide();
-                                        }
-                                    });
-
+                                    else {
+                                        jQuery('tr.dvnCustomizationSelectSiteBlockRow2').show();
+                                        jQuery('tr.dvnCustomizationSelectSiteBlockRow3').hide();
+                                    }
+                                };
+                                
+                                function initChangeSiteType() {
                                     jQuery('#form1\\:chkOpenScholarDataverse').change(function(){
                                         if (('#form1\\:chkOpenScholarDataverse').checked == true) {
-                                            jQuery('input.dvnCustomizationSelectSite[value="personal"]').prop('checked', false);
-                                            jQuery('input.dvnCustomizationSelectSite[value="openscholar"]').prop('checked', true);
+                                            jQuery('#dvnCustomizationSelectSiteBlock input.dvnCustomizationSelectSite[value="personal"]').prop('checked', false);
+                                            jQuery('#dvnCustomizationSelectSiteBlock input.dvnCustomizationSelectSite[value="openscholar"]').prop('checked', true);
                                             jQuery('input#form1\\:urlOpenScholarDataverse').val('');
-                                            jQuery('.dvnUrlPersonalSite').hide();
+                                            jQuery('#dvnUrlPersonalSiteLabel').hide();
+                                            jQuery('#dvnUrlPersonalSite').hide();
                                         }
-                                        jQuery("tr.dvnCustomizationSelectSiteBlockRow1").toggle();
-                                        jQuery("tr.dvnCustomizationSelectSiteBlockRow2").toggle();
-                                        jQuery("tr.dvnCustomizationSelectSiteBlockRow3").toggle();
-                                        jQuery('.dvnUrlOpenScholar').toggle();
+                                        jQuery("table.dvnCustomizationSelectSiteTable").toggle();
+                                        jQuery('tr.dvnCustomizationSelectSiteBlockRow3').toggle();
                                         jQuery(".dvnCustomBannerFooterFieldsBlock").toggle();
                                     });
-                                });
+                                };
+                                // ]]>
                             </script>
                         </div>
                     </ice:panelGrid>
-                            
-                </div>
+                    
+                
                 <ice:panelGrid cellpadding="0" cellspacing="0" columns="2"
                                columnClasses="vdcColPadded, vdcColPadded" 
                                rowClasses="dvnCustomizationSelectSiteBlockRow1, dvnCustomizationSelectSiteBlockRow2, dvnCustomizationSelectSiteBlockRow3" 
-                               styleClass="dvnOptionsTable dvnCustomizationSelectSiteBlock">
+                               styleClass="dvnOptionsTable dvnCustomizationSelectSiteTable"
+                                rendered="#{EditBannerFooterPage.displayInFrame}">
                     <div jsfc="ice:panelGroup" styleClass="dvnOptionsTableOption">
                         <ice:outputText value="Host Site Type"/>
                     </div>
-                    <div jsfc="ice:panelGroup">
+                    <div jsfc="ice:panelGroup" styleClass="dvnOptionsTableOptionBlock">
                         <ice:graphicImage value="/resources/images/icon_information.18.png" styleClass="dvn_icon"/>
                         <ice:outputText styleClass="vdcHelpText" value=" Select which site you will be hosting your dataverse."/>
-                        <div>
-                            <input type="radio" class="dvnCustomizationSelectSite" name="iframesite" value="openscholar" checked="checked" /> OpenScholar<br />
-                            <input type="radio" class="dvnCustomizationSelectSite" name="iframesite" value="personal" /> Personal Site
+                        <div id="dvnCustomizationSelectSiteBlock">
+                            <input type="radio" class="dvnCustomizationSelectSite" name="iframesite" onclick="jQuery('tr.dvnCustomizationSelectSiteBlockRow3').toggle();" value="openscholar" checked="checked" /> OpenScholar<br/>
+                            <input type="radio" class="dvnCustomizationSelectSite" name="iframesite" onclick="jQuery('tr.dvnCustomizationSelectSiteBlockRow3').toggle();" value="personal" /> Personal Site
                         </div>
                     </div>
-                    <div jsfc="ice:panelGroup" styleClass="dvnOptionsTableOption">
-                        <ice:outputText value="Site URL"/>
-                        <ice:graphicImage value="#{bundle.iconRequired}"/>
-                    </div>
-                    <div jsfc="ice:panelGroup" styleClass="dvnUrlOpenScholar">
-                        <ice:outputText nospan="true" escape="false" value="&#60;div style=&#34;margin-bottom:1em;&#34; class=&#34;warnMessage&#34;&#62;&#60;img src=&#34;/dvn/resources/images/icon_warning.18.png&#34; class=&#34;dvn_icon&#34; /&#62; &#60;span class=&#34;iceOutTxt&#34;&#62;Before disabling the customization for your Dataverse, make sure you first have your OpenScholar or personal site properly set up.&#60;/span&#62;&#60;/div&#62;"/>
-
-                        <ice:inputText id="urlOpenScholarDataverse" size="60" value="#{EditBannerFooterPage.parentSite}"
-                         required="#{EditBannerFooterPage.displayInFrame}"
-                         requiredMessage="This field is required."/>
-                        <ice:message for="urlOpenScholarDataverse" showSummary="true" showDetail="false" errorClass="errorMessage" styleClass="errorMessage"/>
-                        <br/>
-                        <ice:outputText styleClass="vdcHelpText" value="For OpenScholar, enter the URL, including the &#34;/data&#34; directory, e.g., http://scholar.harvard.edu/youralias/data" escape="false"/>
-
-                    </div>
-                    <div jsfc="ice:panelGroup" styleClass="dvnOptionsTableOption">
-                        <ice:outputText value="Host Site Code"/>
-                    </div>
-                    <div jsfc="ice:panelGroup" styleClass="dvnUrlPersonalSite">
-                        <div class="dvn_padBot">
-                            <ice:graphicImage value="/resources/images/icon_information.18.png" styleClass="dvn_icon"/>
-                            <ice:outputText styleClass="vdcHelpText" value=" Copy this Javascript and paste it into a page, hosted on your personal site. For more detailed instructions, see the &#60;a href=&#34;http://guides.thedata.org/book/edit-layout-branding&#34; target=&#34;_blank&#34;&#62;Users Guides&#60;/a&#62;." escape="false"/>
+                    <div jsfc="ice:panelGroup">
+                        <div id="dvnUrlOpenScholarLabel">
+                            <ice:outputText value="Host Site URL"/>
+                            <ice:graphicImage value="#{bundle.iconRequired}"/>
                         </div>
-                        <textarea name="text_area1" rows="4">
-                          <ice:outputText nospan="true" value="&lt;script type=&quot;text/javascript&quot;&gt;&#013;&#010;var dvn_url = &quot;http://#{VDCRequest.hostUrl}/dvn#{VDCRequest.currentVDCURL}&quot;;&#013;&#010;var regexS = &quot;[\\?&amp;]dvn_subpage=([^&amp;#]*)&quot;;&#013;&#010;var regex = new RegExp( regexS );&#013;&#010;var results = regex.exec( window.location.href );&#013;&#010;if( results != null ) dvn_url = dvn_url + results[1];&#013;&#010;document.write(&#39;&lt;iframe src=&quot;&#39; + dvn_url + &#39;&quot; onLoad=&quot;set_dvn_url(this)&quot; width=&quot;100%&quot; height=&quot;500&quot;&gt;&lt;/iframe&gt;&#39;);&#013;&#010;&lt;/script&gt;"/>
-                        </textarea>
+                    </div>
+                    <div jsfc="ice:panelGroup">
+                        <div id="dvnUrlOpenScholar">
+                            <ice:outputText nospan="true" escape="false" value="&#60;div style=&#34;margin-bottom:1em;&#34; class=&#34;warnMessage&#34;&#62;&#60;img src=&#34;/dvn/resources/images/icon_warning.18.png&#34; class=&#34;dvn_icon&#34; /&#62; &#60;span class=&#34;iceOutTxt&#34;&#62;Before disabling the customization for your Dataverse, make sure you first have your OpenScholar or personal site properly set up.&#60;/span&#62;&#60;/div&#62;"/>
+
+                            <ice:inputText id="urlOpenScholarDataverse" size="60" value="#{EditBannerFooterPage.parentSite}"
+                             required="#{EditBannerFooterPage.displayInFrame}"
+                             requiredMessage="This field is required."/>
+                            <ice:message for="urlOpenScholarDataverse" showSummary="true" showDetail="false" errorClass="errorMessage" styleClass="errorMessage"/>
+                            <br/>
+                            <ice:outputText styleClass="vdcHelpText" value="For OpenScholar, enter the URL, including the &#34;/data&#34; directory, e.g., http://scholar.harvard.edu/youralias/data" escape="false"/>
+                        </div>
+                    </div>
+                    <div jsfc="ice:panelGroup">
+                        <div id="dvnUrlPersonalSiteLabel">
+                            <ice:outputText value="Host Site Code"/>
+                            <ice:graphicImage value="#{bundle.iconRequired}"/>
+                        </div>
+                    </div>
+                    <div jsfc="ice:panelGroup">
+                        <div id="dvnUrlPersonalSite">
+                            <div class="dvn_padBot">
+                                <ice:graphicImage value="/resources/images/icon_information.18.png" styleClass="dvn_icon"/>
+                                <ice:outputText styleClass="vdcHelpText" value=" Copy this Javascript and paste it into a page, hosted on your personal site. For more detailed instructions, see the &#60;a href=&#34;http://guides.thedata.org/book/edit-layout-branding&#34; target=&#34;_blank&#34;&#62;Users Guides&#60;/a&#62;." escape="false"/>
+                            </div>
+                            <textarea name="text_area1" rows="4">
+                              <ice:outputText nospan="true" value="&lt;script type=&quot;text/javascript&quot;&gt;&#013;&#010;var dvn_url = &quot;http://#{VDCRequest.hostUrl}/dvn#{VDCRequest.currentVDCURL}&quot;;&#013;&#010;var regexS = &quot;[\\?&amp;]dvn_subpage=([^&amp;#]*)&quot;;&#013;&#010;var regex = new RegExp( regexS );&#013;&#010;var results = regex.exec( window.location.href );&#013;&#010;if( results != null ) dvn_url = dvn_url + results[1];&#013;&#010;document.write(&#39;&lt;iframe src=&quot;&#39; + dvn_url + &#39;&quot; onLoad=&quot;set_dvn_url(this)&quot; width=&quot;100%&quot; height=&quot;500&quot;&gt;&lt;/iframe&gt;&#39;);&#013;&#010;&lt;/script&gt;"/>
+                            </textarea>
+                        </div>
                     </div>
                 </ice:panelGrid>
               </div>
               <ice:panelGrid cellpadding="0" cellspacing="0" columns="2"
-                             columnClasses="vdcColPadded, vdcColPadded" styleClass="dvnOptionsTable dvnCustomBannerFooterFieldsBlock">
+                             columnClasses="vdcColPadded, vdcColPadded" styleClass="dvnOptionsTable dvnCustomBannerFooterFieldsBlock"
+                              rendered="#{! EditBannerFooterPage.displayInFrame}">
                   <div jsfc="ice:panelGroup" styleClass="dvnOptionsTableOption">
                     <ice:outputText value="#{bundle.editCustomBannerLabel}"/>
                   </div>

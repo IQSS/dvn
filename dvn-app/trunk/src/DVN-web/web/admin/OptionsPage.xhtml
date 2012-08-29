@@ -15,7 +15,8 @@
         <ui:param name="pageTitle" value="#{bundlePageInfo.dvOptionsTitle} - #{VDCRequest.dataversePageTitle}"/>
         <ui:define name="metadata">
             <f:metadata>
-                <f:event type="preRenderView" listener="#{OptionsPage.preRenderView}"/>  
+                <f:event type="preRenderView" listener="#{OptionsPage.preRenderView}"/> 
+                <f:event type="preRenderView" listener="#{EditBannerFooterPage.preRenderView}"/> 
                 <f:viewParam name="oauth_verifier" value="#{OptionsPage.twitterVerifier}"/>
             </f:metadata> 
         </ui:define>

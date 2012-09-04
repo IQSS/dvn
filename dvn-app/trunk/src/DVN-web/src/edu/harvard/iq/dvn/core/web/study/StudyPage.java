@@ -62,6 +62,7 @@ import  com.sun.enterprise.util.SystemPropertyConstants;
 import  com.sun.grizzly.config.dom.NetworkListener;
 import edu.harvard.iq.dvn.core.study.StudyComment;
 import edu.harvard.iq.dvn.core.study.StudyCommentService;
+import javax.print.attribute.Size2DSyntax;
 import  org.glassfish.internal.api.Globals;
 import  org.glassfish.internal.api.ServerContext;
 import org.jvnet.hk2.component.Habitat;
@@ -87,6 +88,14 @@ public class StudyPage extends VDCBaseBean implements java.io.Serializable  {
     private Long studyId;
     private Long versionNumber;
     private List<StudyComment> studyComments;
+
+    public List<StudyComment> getStudyComments() {
+        return studyComments;
+    }
+    
+   public Integer howManyStudyComments(Long studyId){
+       return studyComments.size();
+   }
 
     private boolean studyUIContainsFileDetails=false; // TODO: needed??
     private int selectedIndex;
@@ -1091,14 +1100,6 @@ public class StudyPage extends VDCBaseBean implements java.io.Serializable  {
         return null;
     }
     
-    // Get number of comments
     
-    public int getStudyCommentsCount() {
-        if (studyComments != null){
-            return studyComments.size();
-        }
-        
-        return 0;
-    }
     
 }

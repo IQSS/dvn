@@ -71,7 +71,12 @@ public class StudyCommentsFragment extends VDCBaseBean implements Serializable {
     private Long versionNumber;
     private StudyVersion studyVersion;
     private boolean renderStudyVersionReference;
-
+    
+    
+    public int getStudyCommentsCount() {
+        return getStudyComments().size();
+    }
+    
      public void init() {
         super.init();        
         if (studyId == null) {
@@ -97,6 +102,9 @@ public class StudyCommentsFragment extends VDCBaseBean implements Serializable {
      public void togglePopup(javax.faces.event.ActionEvent event) {
          if (reportAbuseLink.getAttributes().get("commentId") != null) {
              flaggedCommentId = new Long(reportAbuseLink.getAttributes().get("commentId").toString());
+             
+            
+             //commentsCount = getStudyCommentsCount();
          }
          showPopup = !showPopup;
          actionComplete = false;
@@ -112,6 +120,7 @@ public class StudyCommentsFragment extends VDCBaseBean implements Serializable {
      public void toggleDeletePopup(javax.faces.event.ActionEvent event) {
           if (deleteCommentLink.getAttributes().get("commentId") != null) {
              flaggedCommentId = new Long(deleteCommentLink.getAttributes().get("commentId").toString());
+        
          }
          showDeletePopup = !showDeletePopup;
          actionComplete = false;
@@ -168,6 +177,7 @@ public class StudyCommentsFragment extends VDCBaseBean implements Serializable {
          getVDCRequestBean().setStudyId(studyId);
          getVDCRequestBean().setSelectedTab("comments");
          studyComments = null;
+  
      }
 
      public void ignoreCommentFlag(ActionEvent event) {
@@ -303,6 +313,7 @@ public class StudyCommentsFragment extends VDCBaseBean implements Serializable {
      */
     public List<StudyCommentUI> getStudyComments() {
         if (studyComments == null) {
+            
             studyComments = new ArrayList();
             List<StudyComment> tempStudyComments = studyCommentService.getStudyComments(studyId);
             Iterator iterator = tempStudyComments.iterator();
@@ -517,6 +528,8 @@ public class StudyCommentsFragment extends VDCBaseBean implements Serializable {
         LoginBean loginBean = getVDCSessionBean().getLoginBean();
         if (loginBean != null && loginBean.isNetworkAdmin()) {
             authorizedToDeleteComment = true;
+            
+         
         }
         return authorizedToDeleteComment;
     }

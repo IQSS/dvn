@@ -583,7 +583,12 @@
                             </ice:selectOneMenu>
                               <ice:message styleClass="errorMessage" for="input_producerAffiliation"/>
                             </div>
-                            <div jsfc="ice:panelGroup" styleClass="vdcEditStudyGroupField">
+                           
+                              
+                           
+                           
+                              
+                              <div jsfc="ice:panelGroup" styleClass="vdcEditStudyGroupField">
                               <ice:outputText styleClass="dvnInlineHelpLabel dvnInlineHelpTip" value="#{editstudybundle.producerURLLabel}" title="#{editstudybundle.producerURLHelpHeading} - #{editstudybundle.producerURLHelp}"/>
                               <ice:inputText id="input_producerURL"
                                              validator="#{EditStudyPage.validateStudyProducer}"
@@ -601,8 +606,7 @@
                                            validator="#{EditStudyPage.validateStudyProducer}"
                                            required="#{EditStudyPage.studyMap[sfc.producerURL].required  and EditStudyPage.validateRequired }" 
                                            requiredMessage="This field is required."
-                                           rendered="#{!empty(EditStudyPage.studyMap[sfc.producerURL].templateField.controlledVocabulary)}" 
-                                           >
+                                           rendered="#{!empty(EditStudyPage.studyMap[sfc.producerURL].templateField.controlledVocabulary)}">
                             <f:selectItem itemLabel="No Value" itemValue=""/>
                             <f:selectItems value="#{EditStudyPage.studyMap[sfc.producerURL].templateField.controlledVocabulary.selectItems}"/>
                              <o:validator validatorId="UrlValidator" disabled="#{!EditStudyPage.validateRequired}"/>
@@ -611,6 +615,16 @@
                               <ice:message styleClass="errorMessage" for="input_producerURL"/>
                               <ice:message styleClass="errorMessage" for="selectOneProducerURL"/>
                             </div>
+                           
+                           
+                           
+                           
+                           
+                           
+                           
+                            
+                            
+                            
                             <div jsfc="ice:panelGroup" styleClass="vdcEditStudyGroupField">
                               <ice:outputText styleClass="dvnInlineHelpLabel dvnInlineHelpTip" value="#{editstudybundle.producerLogoLabel}" title="#{editstudybundle.producerLogoHelpHeading} - #{editstudybundle.producerLogoHelp}"/>
                               <ice:inputText id="input_producerLogo"
@@ -648,7 +662,6 @@
                       </ice:dataTable>
                     </ice:column>
                   </ice:dataTable>
-
                   <ice:panelGrid cellpadding="0" cellspacing="0" columns="2" width="100%"
                                  styleClass="vdcEditStudyTable " columnClasses="vdcEditStudyCol1, vdcEditStudyCol2"
                                  visible="#{(!empty EditStudyPage.metadata.productionDate 
@@ -1084,25 +1097,39 @@
                         <ice:message styleClass="errorMessage" for="distributorContactAffiliation"/>
                         <ice:message styleClass="errorMessage" for="selectOneDistributorContactAffiliation"/>
                       </div>
+                        
+                        
+                        
+                        
+                        
                       <div jsfc="ice:panelGroup" styleClass="vdcEditStudyFieldFloat3 vdcEditStudyGroupField " >
                         <ice:outputText styleClass="dvnInlineHelpLabel dvnInlineHelpTip" value="#{editstudybundle.distributorContactEmailLabel}" title="#{editstudybundle.distributorContactEmailHelpHeading} - #{editstudybundle.distributorContactEmailHelp}"/>
                         <ice:inputText binding="#{EditStudyPage.inputDistributorContactEmail}" 
-                                       id="input_distributorContactEmail" size="45" value="#{EditStudyPage.metadata.distributorContactEmail}" 
+                                       id="input_distributorContactEmail" 
+                                       size="45" 
+                                       value="#{EditStudyPage.metadata.distributorContactEmail}" 
                                        required="#{EditStudyPage.studyMap[sfc.distributorContactEmail].required and EditStudyPage.validateRequired}" 
                                        rendered="#{empty(EditStudyPage.studyMap[sfc.distributorContactEmail].templateField.controlledVocabulary)}"
-                                       requiredMessage="This field is required."/>
-                            <ice:selectOneMenu immediate="false"   id="selectOneDistributorContactEmail" 
+                                       requiredMessage="This field is required.">
+                               <f:validator validatorId="EmailValidator"/>
+                        </ice:inputText>
+                             <ice:selectOneMenu immediate="false"   id="selectOneDistributorContactEmail" 
                                            value="#{EditStudyPage.metadata.distributorContactEmail}" 
                                            validator="#{EditStudyPage.validateDistributorContact}"
                                            required="#{EditStudyPage.studyMap[sfc.distributorContactEmail].required  and EditStudyPage.validateRequired}" requiredMessage="This field is required."
-                                           rendered="#{!empty(EditStudyPage.studyMap[sfc.distributorContactEmail].templateField.controlledVocabulary)}" 
-                                           >
+                                           rendered="#{!empty(EditStudyPage.studyMap[sfc.distributorContactEmail].templateField.controlledVocabulary)}" >
                             <f:selectItem itemLabel="No Value" itemValue=""/>
                             <f:selectItems value="#{EditStudyPage.studyMap[sfc.distributorContactEmail].templateField.controlledVocabulary.selectItems}"/>
+                               <f:validator validatorId="EmailValidator"/>
                             </ice:selectOneMenu>
-                        <ice:message styleClass="errorMessage" for="input_distributorContactEmail"/>
-                        <ice:message styleClass="errorMessage" for="selectOneDistributorContactEmail"/>
+                                <ice:message styleClass="errorMessage" for="input_distributorContactEmail"/>
+                                <ice:message styleClass="errorMessage" for="selectOneDistributorContactEmail"/>
                       </div>
+                       
+                        
+                        
+                        
+                        
                     </div>
                   </ice:panelGrid>
 

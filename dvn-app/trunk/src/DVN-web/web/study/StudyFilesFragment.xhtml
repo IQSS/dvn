@@ -68,14 +68,23 @@
                                         <ice:outputText value=" if you would like to access the restricted files in this study." rendered="#{studyPage.studyUI.study.requestAccess}"/>
                                     </p>
                                 </div>
-                                <ice:panelGrid columns="2" columnClasses="vdcStudyFilesDownloadAllSelect,vdcStudyFilesDownloadAllButton" width="100%" styleClass="vdcStudyFilesDownloadAll">
+
+                                <ice:panelGrid columns="4" columnClasses="vdcStudyFilesDownloadAllSelect,vdcStudyFilesDownloadAllButton" width="100%" styleClass="vdcStudyFilesDownloadAll">
                                     <ice:column>
                                         <ice:selectBooleanCheckbox id="studyCheckBox" styleClass="studyCheckBox" onclick="toggleCheckBoxes(this)" disabled="#{!studyPage.studyUI.anyFileUnrestricted}"/> <ice:outputText value=" Select all files"/>
                                     </ice:column>
                                     <ice:column>
                                         <input type="button" id="downloadAllButton" onclick="downloadSelectedFiles();" value="Download All Selected Files" disabled="disabled"/>
                                     </ice:column>
-                                </ice:panelGrid>
+                                    
+                                    <ice:column>
+                                        <ice:outputText styleClass="dvn_totalsLabel" value="Total Downloads: "/>
+                                    </ice:column>
+                                     <ice:column>
+                                        <ice:outputText styleClass="dvn_totalsValue" value="#{studyPage.studyUI.downloadCount}"/>
+                                    </ice:column>
+      
+                                    </ice:panelGrid>
 
                                 <ice:dataTable cellpadding="0" cellspacing="0" value="#{studyPage.studyUI.categoryUIList}" id="catDataTable" var="catUI" width="100%">
                                     <ice:column id="catColumn">

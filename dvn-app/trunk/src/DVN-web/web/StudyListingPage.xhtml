@@ -175,6 +175,20 @@
                                     <ice:outputText styleClass="dvn_totalsLabel" value="Studies: "/>
                                     <ice:outputText styleClass="dvn_totalsValue" value="#{StudyListingPage.studyCount}"/>
                                   </div>
+                                  
+                                  <br/>
+                                  <div jsfc="ice:panelGroup" rendered="#{StudyListingPage.renderDownloadCount}">
+                                    <div jsfc="ice:panelGroup">
+                                        <ice:outputText styleClass="dvn_totalsLabel" value="All files downloaded from this dataverse: "/>
+                                        <ice:outputText styleClass="dvn_totalsValue" value="#{StudyListingPage.localDownloadCount}" />
+                                     </div>
+                                     <br/>
+                                     <div jsfc="ice:panelGroup" rendered ="#{StudyListingPage.foreignDownloadCount != 0}">
+                                        <ice:outputText styleClass="dvn_totalsLabel" value="Owned files downloaded from other dataverses: "/>
+                                     <ice:outputText styleClass="dvn_totalsValue" value="#{StudyListingPage.foreignDownloadCount}"/>
+                                    </div>
+                                  </div>
+                               
                                   <div jsfc="ice:panelGroup" id="groupPanel4" rendered="#{StudyListingPage.renderScroller}">
                                     <ice:dataPaginator id="studyListingPaginatorTop" styleClass="dvnPaginatorRight"
                                                        binding="#{StudyListingPage.paginator}"

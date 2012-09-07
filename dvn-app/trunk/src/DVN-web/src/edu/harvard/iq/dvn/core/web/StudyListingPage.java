@@ -39,7 +39,6 @@ import edu.harvard.iq.dvn.core.study.StudyField;
 import edu.harvard.iq.dvn.core.study.StudyServiceLocal;
 import edu.harvard.iq.dvn.core.study.StudyVersion;
 import edu.harvard.iq.dvn.core.study.VariableServiceLocal;
-import edu.harvard.iq.dvn.core.util.StringUtil;
 import edu.harvard.iq.dvn.core.vdc.VDC;
 import edu.harvard.iq.dvn.core.vdc.VDCCollection;
 import edu.harvard.iq.dvn.core.vdc.VDCCollectionServiceLocal;
@@ -109,11 +108,30 @@ public class StudyListingPage extends VDCBaseBean implements java.io.Serializabl
     private boolean renderDescription;
     private boolean renderContributorLink;
     private boolean renderDVPermissionsBox;
+    private boolean renderDownloadCount;
+
+    public boolean isRenderDownloadCount() {
+        return renderDownloadCount;
+    }
+
+    public void setRenderDownloadCount(boolean renderDownloadCount) {
+        this.renderDownloadCount = renderDownloadCount;
+    }
 
     String listHeader;
     String listMessage;
     String listDescription;
+  
 
+    public int getLocalDownloadCount() {
+        return getVDCRequestBean().getCurrentVDC().getVDCActivity().getForeignStudyLocalDownloadCount() + getVDCRequestBean().getCurrentVDC().getVDCActivity().getLocalStudyLocalDownloadCount();
+    }
+
+    public int getForeignDownloadCount() {
+        return getVDCRequestBean().getCurrentVDC().getVDCActivity().getLocalStudyForeignDownloadCount() + getVDCRequestBean().getCurrentVDC().getVDCActivity().getLocalStudyNetworkDownloadCount();
+    }
+    
+    
     public StudyListing getStudyListing() {
         return studyListing;
     }
@@ -453,6 +471,8 @@ public class StudyListingPage extends VDCBaseBean implements java.io.Serializabl
         renderDescription = false;
         renderContributorLink = false;
         renderTree = false;
+        renderDownloadCount = false;
+
 
         
         if (mode == StudyListing.SEARCH) {
@@ -490,7 +510,8 @@ public class StudyListingPage extends VDCBaseBean implements java.io.Serializabl
             } else {
                 renderTree = true;
             }
-
+                
+            renderDownloadCount = true;
             renderSearchCollectionFilter = renderTree;
             renderDescription = getVDCRequestBean().getCurrentVDC().isDisplayAnnouncements();
 
@@ -512,7 +533,7 @@ public class StudyListingPage extends VDCBaseBean implements java.io.Serializabl
         } else if (mode == StudyListing.GENERIC_LIST) {
             // this needs to be fleshed out if it's ever used
             listHeader = "Studies";
-
+            
         } else {
             // in this case we have an invalid list
             if (mode == StudyListing.GENERIC_ERROR) {

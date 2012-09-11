@@ -1,25 +1,10 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:ui="http://java.sun.com/jsf/facelets"
       xmlns:h="http://java.sun.com/jsf/html"
       xmlns:f="http://java.sun.com/jsf/core"
       xmlns:jsp="http://java.sun.com/JSP/Page"
-      xmlns:ice="http://www.icesoft.com/icefaces/component">
-<head>
-    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
-</head>
-<body>
-  <ui:composition template="/template.xhtml">
-    <ui:param name="pageTitle" value="#{bundlePageInfo.editGuestBookQuestionnaireTitle} - #{VDCRequest.dataversePageTitle}"/>
-    <ui:define name="metadata">
-        <f:metadata>
-             <f:event type="preRenderView" listener="#{EditGuestbookQuestionnairePage.preRenderView}"/>
-        </f:metadata>
-    </ui:define>
-    <ui:define name="body">
-      <ice:form id="form1">
-        <ice:inputHidden id="vdcId" value="#{VDCRequest.currentVDCId}"/>       
+      xmlns:ice="http://www.icesoft.com/icefaces/component">      
         <div class="dvn_section">
           <div class="dvn_sectionTitle">
             <ice:outputText value="#{bundlePageInfo.editGuestBookQuestionnaireTitle}"/>
@@ -35,7 +20,7 @@
               <ice:message for="warningMessage" styleClass="warningMessage" id="warningMessage"/>
               
               <div class="dvnGuestBookCheckbox">
-                <ice:selectBooleanCheckbox value="#{EditGuestbookQuestionnairePage.guestBookQuestionnaire.enabled}"/>
+                <ice:selectBooleanCheckbox value="#{OptionsPage.guestBookQuestionnaire.enabled}"/>
                 <ice:outputText value="Enable File Download Guestbook"/>
               </div>
               
@@ -50,20 +35,20 @@
                         <ice:outputText value="Custom Field Type"/>
                     </div>
                     <div jsfc="ice:panelGroup">
-                        <ice:selectOneMenu immediate="false" partialSubmit="true" valueChangeListener="#{EditGuestbookQuestionnairePage.toggleQuestionType}"
-                                           value="#{EditGuestbookQuestionnairePage.questionType}" binding="#{EditGuestbookQuestionnairePage.questionTypeListBox}">
-                            <f:selectItems value="#{EditGuestbookQuestionnairePage.questionTypeSelectItems}"/>
+                        <ice:selectOneMenu immediate="false" partialSubmit="true" valueChangeListener="#{OptionsPage.toggleQuestionType}"
+                                           value="#{OptionsPage.questionType}" binding="#{OptionsPage.questionTypeListBox}">
+                            <f:selectItems value="#{OptionsPage.questionTypeSelectItems}"/>
                         </ice:selectOneMenu>
                     </div>
                     <div jsfc="ice:panelGroup">
                         <ice:outputText value="Custom Field Question"/>
                     </div>
                     <div jsfc="ice:panelGroup">
-                        <ice:inputText id="input_questionText" size="90" binding="#{EditGuestbookQuestionnairePage.inputCustomQuestionText}"></ice:inputText>
+                        <ice:inputText id="input_questionText" size="90" binding="#{OptionsPage.inputCustomQuestionText}"></ice:inputText>
                         <ice:dataTable cellpadding="0" cellspacing="0" 
                                        styleClass="dvnEditGuestbookCustomQuestions"
-                                       rendered="#{EditGuestbookQuestionnairePage.questionType == 'radiobuttons'}"
-                                       value="#{EditGuestbookQuestionnairePage.newQuestion.customQuestionValues}" var="addValue">
+                                       rendered="#{OptionsPage.questionType == 'radiobuttons'}"
+                                       value="#{OptionsPage.newQuestion.customQuestionValues}" var="addValue">
                           <ice:column>
                             <ice:outputText value="Answer"/>
                           </ice:column>
@@ -76,17 +61,17 @@
                             <ice:message styleClass="errorMessage" for="input_AnswerValue"/>
                           </ice:column>
                           <ice:column>
-                            <ice:commandButton image="/resources/images/icon_add.gif" actionListener="#{EditGuestbookQuestionnairePage.addCustomRowInit}"/>
+                            <ice:commandButton image="/resources/images/icon_add.gif" actionListener="#{OptionsPage.addCustomRowInit}"/>
                             <ice:commandButton 
-                                rendered="#{EditGuestbookQuestionnairePage.newQuestion.customQuestionValues.size() > 1}" 
-                                image="/resources/images/icon_remove.gif" actionListener="#{EditGuestbookQuestionnairePage.removeCustomRowInit}" />
+                                rendered="#{OptionsPage.newQuestion.customQuestionValues.size() > 1}" 
+                                image="/resources/images/icon_remove.gif" actionListener="#{OptionsPage.removeCustomRowInit}" />
                           </ice:column>
                        </ice:dataTable>
                     </div>
                 </ice:panelGrid>
 
                 <div class="dvnFormPadding">
-                    <ice:commandButton partialSubmit="true" value="Add Custom Field" action="#{EditGuestbookQuestionnairePage.addCustomQuestion}"/>
+                    <ice:commandButton partialSubmit="true" value="Add Custom Field" action="#{OptionsPage.addCustomQuestion}"/>
                 </div>
                 
                 <div jsfc="ice:panelGroup" styleClass="dvnWarningMessage" rendered="#{!empty VDCRender.flash.customQuestionWarningMessage}">
@@ -112,7 +97,7 @@
                     <tbody>
                         <tr class="iceDatTblRow1 dvnGuestbookCustomQuestionsRow1">
                             <td class="iceDatTblCol1 dvnGuestbookCustomQuestionsCol1">
-                                <ice:selectBooleanCheckbox value="#{EditGuestbookQuestionnairePage.guestBookQuestionnaire.firstNameRequired}"/>
+                                <ice:selectBooleanCheckbox value="#{OptionsPage.guestBookQuestionnaire.firstNameRequired}"/>
                             </td>
                             <td class="iceDatTblCol2 dvnGuestbookCustomQuestionsCol2">
                                 <ice:outputText value="First Name"/>
@@ -124,7 +109,7 @@
 
                         <tr class="iceDatTblRow1 dvnGuestbookCustomQuestionsRow1">
                             <td class="iceDatTblCol1 dvnGuestbookCustomQuestionsCol1">
-                                <ice:selectBooleanCheckbox value="#{EditGuestbookQuestionnairePage.guestBookQuestionnaire.lastNameRequired}"/>
+                                <ice:selectBooleanCheckbox value="#{OptionsPage.guestBookQuestionnaire.lastNameRequired}"/>
                             </td>
                             <td class="iceDatTblCol2 dvnGuestbookCustomQuestionsCol2">
                                 <ice:outputText value="Last Name"/>
@@ -135,7 +120,7 @@
                         </tr>
                         <tr class="iceDatTblRow1 dvnGuestbookCustomQuestionsRow1">
                             <td class="iceDatTblCol1 dvnGuestbookCustomQuestionsCol1">
-                                <ice:selectBooleanCheckbox value="#{EditGuestbookQuestionnairePage.guestBookQuestionnaire.emailRequired}"/>
+                                <ice:selectBooleanCheckbox value="#{OptionsPage.guestBookQuestionnaire.emailRequired}"/>
                             </td>
                             <td class="iceDatTblCol2 dvnGuestbookCustomQuestionsCol2">
                                 <ice:outputText value="E-Mail"/>
@@ -146,7 +131,7 @@
                         </tr>
                         <tr class="iceDatTblRow1 dvnGuestbookCustomQuestionsRow1">
                             <td class="iceDatTblCol1 dvnGuestbookCustomQuestionsCol1">
-                                <ice:selectBooleanCheckbox value="#{EditGuestbookQuestionnairePage.guestBookQuestionnaire.institutionRequired}"/>
+                                <ice:selectBooleanCheckbox value="#{OptionsPage.guestBookQuestionnaire.institutionRequired}"/>
                             </td>
                             <td class="iceDatTblCol2 dvnGuestbookCustomQuestionsCol2">
                                 <ice:outputText value="Institution"/>
@@ -157,7 +142,7 @@
                         </tr>
                         <tr class="iceDatTblRow1 dvnGuestbookCustomQuestionsRow1">
                             <td class="iceDatTblCol1 dvnGuestbookCustomQuestionsCol1">
-                                <ice:selectBooleanCheckbox value="#{EditGuestbookQuestionnairePage.guestBookQuestionnaire.positionRequired}"/>
+                                <ice:selectBooleanCheckbox value="#{OptionsPage.guestBookQuestionnaire.positionRequired}"/>
                             </td>
                             <td class="iceDatTblCol2 dvnGuestbookCustomQuestionsCol2">
                                 <ice:outputText value="Position"/>
@@ -171,8 +156,8 @@
                 <ice:dataTable cellpadding="0" cellspacing="0" width="100%" 
                                       styleClass="dvnEditGuestbookCustomQuestions"
                                       columnClasses="dvnGuestbookCustomQuestionsCol1,dvnGuestbookCustomQuestionsCol2,dvnGuestbookCustomQuestionsCol3"
-                                      binding="#{EditGuestbookQuestionnairePage.customQuestionsDataTable}"
-                                      value="#{EditGuestbookQuestionnairePage.customQuestions}" var="customQuestion"
+                                      binding="#{OptionsPage.customQuestionsDataTable}"
+                                      value="#{OptionsPage.customQuestions}" var="customQuestion"
                                       >
                         <ice:column>
                           <ice:selectBooleanCheckbox value="#{customQuestion.customQuestion.required}"/>
@@ -185,7 +170,7 @@
                                             rendered="#{!customQuestion.editMode}"/>
                           </div>
                           <ice:inputText id="input_questionTextTable" size="90" 
-                                         binding="#{EditGuestbookQuestionnairePage.inputCustomQuestionTextTable}"
+                                         binding="#{OptionsPage.inputCustomQuestionTextTable}"
                                          value="#{customQuestion.customQuestion.questionString}"
                                          rendered="#{customQuestion.editMode}"></ice:inputText>
                           <ice:dataTable cellpadding="0" cellspacing="0" rendered="#{customQuestion.editMode}"
@@ -204,29 +189,25 @@
                                 </div>
                               </ice:column>
                               <ice:column>
-                                <ice:commandButton image="/resources/images/icon_add.gif" actionListener="#{EditGuestbookQuestionnairePage.addCustomRow}"/>
+                                <ice:commandButton image="/resources/images/icon_add.gif" actionListener="#{OptionsPage.addCustomRow}"/>
                                 <ice:commandButton 
                                     rendered="#{customQuestion.customQuestion.customQuestionValues.size() > 1}" 
-                                    image="/resources/images/icon_remove.gif" actionListener="#{EditGuestbookQuestionnairePage.removeCustomRow}" />
+                                    image="/resources/images/icon_remove.gif" actionListener="#{OptionsPage.removeCustomRow}" />
                               </ice:column>
                            </ice:dataTable>
                         </ice:column>
                         <ice:column>
-                            <ice:commandLink value="Remove" rendered="#{EditGuestbookQuestionnairePage.questionRemovable}" 
-                                             actionListener="#{EditGuestbookQuestionnairePage.removeCustomQuestion}"/>
+                            <ice:commandLink value="Remove" rendered="#{OptionsPage.questionRemovable}" 
+                                             actionListener="#{OptionsPage.removeCustomQuestion}"/>
                         </ice:column>
                 </ice:dataTable>
               </div>
               
               <div class="dvnFormPadding dvnFormMargin">
-                <ice:commandButton id="button1" value="Save" action="#{EditGuestbookQuestionnairePage.save_action}"/>
-                <ice:commandButton id="button2" value="Cancel" action="#{EditGuestbookQuestionnairePage.cancel_action}"/>
+                <ice:commandButton id="button1" value="Save" action="#{OptionsPage.guestbooksave_action}"/>
+                <ice:commandButton id="button2" value="Cancel" action="#{OptionsPage.guestbookcancel_action}"/>
               </div>
             </div>
           </div>
         </div>
-      </ice:form>
-    </ui:define>
-  </ui:composition>
-</body>
 </html>

@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:ui="http://java.sun.com/jsf/facelets"
       xmlns:h="http://java.sun.com/jsf/html"
@@ -7,18 +6,6 @@
       xmlns:jsp="http://java.sun.com/JSP/Page"
       xmlns:ice="http://www.icesoft.com/icefaces/component"
       xmlns:dvn="/WEB-INF/tlds/dvn-components">
-    <h:head>
-        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
-    </h:head>
-    <h:body>
-        <ui:composition template="/template.xhtml">
-        <ui:param name="pageTitle" value="#{bundlePageInfo.manageDvsTitle} - #{VDCRequest.dataversePageTitle}"/>
-        <ui:define name="metadata">
-            <f:metadata>
-                <f:event type="preRenderView" listener="#{manageDataversesPage.preRenderView}" />
-            </f:metadata>
-        </ui:define>
-        <ui:define name="body">
             <script type="text/javascript">
           // <![CDATA[
             function setHiddenValues(alphaKey) {
@@ -26,10 +13,6 @@
               }
            // ]]>
          </script>
-        <ice:form id="manageDataversesForm">
-             <ice:inputHidden  binding="#{manageDataversesPage.hiddenAlphaCharacter}"
-                                    id="alphaCharacter"
-                                    valueChangeListener="#{manageDataversesPage.changeAlphaCharacter}"/>
         <div class="dvn_section">
             <div class="dvn_sectionTitle">
                 <ice:outputText value="#{bundlePageInfo.manageDvsTitle}"/>
@@ -87,7 +70,7 @@
                         <ice:outputText value=" Indicates a dataverse is not released."/>
                     </div>
                     <div jsfc="ice:panelGroup" styleClass="dvnPaginatorFloatRight">
-                        <ice:dataPaginator for="dataverseList"
+                        <ice:dataPaginator for="dataverseListManage"
                                            binding="#{manageDataversesPage.paginator}"
                                            id="dataScroller"
                                            paginator="true" fastStep="3"
@@ -120,7 +103,7 @@
                 <div jsfc="ice:panelGroup" styleClass="dvnManageTableEmpty" rendered="#{empty(manageDataversesPage.vdcUIList.vdcUIList)}">
                     <ice:outputText styleClass="dvnManageTableEmptyMessage" value="There are no results to display. Select &#34;All&#34; or another letter to continue."/>
                 </div>
-                <ice:dataTable id="dataverseList" width="100%"
+                <ice:dataTable id="dataverseListManage" width="100%"
                                columnWidths="20%,20%,10%,10%,10%,10%,10%,10%,10%"
                                headerClass="groupRow"
                                rendered="#{!empty(manageDataversesPage.vdcUIList.vdcUIList)}"
@@ -235,11 +218,6 @@
                     </ice:outputLink>
                 </ice:column>
                 </ice:dataTable>
-            </div>
-            
+            </div>           
         </div>
-        </ice:form>
-        </ui:define>
-        </ui:composition>
-    </h:body>
 </html>

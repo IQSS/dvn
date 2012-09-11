@@ -148,7 +148,8 @@ public class EditCollectionPage extends VDCBaseBean implements java.io.Serializa
     // if not redirect
     private boolean isCollectionInCurrentVDC() {
         if (!collection.getOwner().getId().equals(getVDCRequestBean().getCurrentVDCId()) ) {
-            redirect("/faces/collection/ManageCollectionsPage.xhtml");
+            //redirect("/faces/collection/ManageCollectionsPage.xhtml");
+            //SEK 8/27/12 what should the re-direct do here?
             return false;
         }
         
@@ -350,11 +351,19 @@ public class EditCollectionPage extends VDCBaseBean implements java.io.Serializa
             vdcCollectionService.edit(collection);
         }
 
-        return "/collection/ManageCollectionsPage.xhtml?faces-redirect=true" + getNavigationVDCSuffix();
+        if (getVDCRequestBean().getCurrentVDC() != null) {
+            return "/admin/OptionsPage?faces-redirect=true" + getNavigationVDCSuffix();
+        } else {
+            return "/networkAdmin/NetworkOptionsPage.xhtml?faces-redirect=true";
+        }
     }
 
     public String cancel_action() {
-        return "/collection/ManageCollectionsPage.xhtml?faces-redirect=true" + getNavigationVDCSuffix();
+        if (getVDCRequestBean().getCurrentVDC() != null) {
+            return "/admin/OptionsPage?faces-redirect=true" + getNavigationVDCSuffix();
+        } else {
+            return "/networkAdmin/NetworkOptionsPage.xhtml?faces-redirect=true";
+        }
     }
 
     public void addRemoveStudyListener(RowSelectorEvent event) {

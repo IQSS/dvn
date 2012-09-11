@@ -1,25 +1,10 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:ui="http://java.sun.com/jsf/facelets"
       xmlns:h="http://java.sun.com/jsf/html"
       xmlns:f="http://java.sun.com/jsf/core"
       xmlns:jsp="http://java.sun.com/JSP/Page"
       xmlns:ice="http://www.icesoft.com/icefaces/component">
-<head>
-  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1"/>
-</head>
-<body>
-  <ui:composition template="/template.xhtml">
-    <ui:param name="pageTitle" value="#{bundlePageInfo.fieldsSearchResultsTitle} - #{VDCRequest.dataversePageTitle}"/>
-    <ui:define name="metadata">
-        <f:metadata>
-             <f:event type="preRenderView" listener="#{SearchFieldsPage.preRenderView}"/>
-        </f:metadata>
-    </ui:define>
-    <ui:define name="body">
-      <ice:form id="form1">
-        <ice:inputHidden id="vdcId" value="#{VDCRequest.currentVDCId}"/>
         <div class="dvn_section">
           <div class="dvn_sectionTitle">
             <ice:outputText value="#{bundlePageInfo.fieldsSearchResultsTitle}"/>
@@ -32,48 +17,41 @@
                 </div>
               </div>
               <div class="dvnFormPadding">
-                <ice:selectBooleanCheckbox binding="#{SearchFieldsPage.productionDateCheckbox}" id="productiondatecheckbox" value="#{SearchFieldsPage.productionDateResults}"/>
+                <ice:selectBooleanCheckbox id="productiondatecheckbox" value="#{OptionsPage.productionDateResults}"/>
                 <ice:outputLabel for="productiondatecheckbox" value="Production Date"/>
               </div>
               <div class="dvnFormPadding">
-                <ice:selectBooleanCheckbox binding="#{SearchFieldsPage.producerCheckbox}" id="producercheckbox" value="#{SearchFieldsPage.producerResults}"/>
+                <ice:selectBooleanCheckbox  id="producercheckbox" value="#{OptionsPage.producerResults}"/>
                 <ice:outputLabel for="producercheckbox" value="Producer"/>
                 <ice:outputText value=" (The Producer name, logo and URL will be displayed, if they are available.)"/>
               </div>
               <div class="dvnFormPadding">
-                <ice:selectBooleanCheckbox binding="#{SearchFieldsPage.distributionDateCheckbox}" id="distributiondatecheckbox"  value="#{SearchFieldsPage.distributionDateResults}"/>
+                <ice:selectBooleanCheckbox  id="distributiondatecheckbox"  value="#{OptionsPage.distributionDateResults}"/>
                 <ice:outputLabel for="distributiondatecheckbox" value="Distribution Date"/>
               </div>
               <div class="dvnFormPadding">
-                <ice:selectBooleanCheckbox binding="#{SearchFieldsPage.distributorCheckbox}" id="distributorcheckbox" value="#{SearchFieldsPage.distributorResults}"/>
+                <ice:selectBooleanCheckbox  id="distributorcheckbox" value="#{OptionsPage.distributorResults}"/>
                 <ice:outputLabel for="distributorcheckbox" value="Distributor"/>
                 <ice:outputText value=" (The Distributor name, logo and URL will be displayed, if they are available.)"/>
               </div>
               <div class="dvnFormPadding">
-                <ice:selectBooleanCheckbox binding="#{SearchFieldsPage.replicationCheckbox}" id="replicationcheckbox"  value="#{SearchFieldsPage.replicationForResults}"/>
+                <ice:selectBooleanCheckbox  id="replicationcheckbox"  value="#{OptionsPage.replicationForResults}"/>
                 <ice:outputLabel for="replicationcheckbox" value="Replication For"/>
               </div>
               <div class="dvnFormPadding">
-                <ice:selectBooleanCheckbox binding="#{SearchFieldsPage.relatedpubCheckbox}" id="relatedpubcheckbox" value="#{SearchFieldsPage.relatedPublicationsResults}"/>
+                <ice:selectBooleanCheckbox  id="relatedpubcheckbox" value="#{OptionsPage.relatedPublicationsResults}"/>
                 <ice:outputLabel for="relatedpubcheckbox" value="Related Publications"/>
               </div>
               <div class="dvnFormPadding">
-                <ice:selectBooleanCheckbox binding="#{SearchFieldsPage.relatedmatCheckbox}" id="relatedmatcheckbox"  value="#{SearchFieldsPage.relatedMaterialResults}"/>
+                <ice:selectBooleanCheckbox  id="relatedmatcheckbox"  value="#{OptionsPage.relatedMaterialResults}"/>
                 <ice:outputLabel for="relatedmatcheckbox" value="Related Material"/>
               </div>
               <div class="dvnFormPadding">
-                <ice:selectBooleanCheckbox binding="#{SearchFieldsPage.relatedstudiesCheckbox}" id="relatedstudiescheckbox" value="#{SearchFieldsPage.relatedStudiesResults}"/>
+                <ice:selectBooleanCheckbox  id="relatedstudiescheckbox" value="#{OptionsPage.relatedStudiesResults}"/>
                 <ice:outputLabel for="relatedstudiescheckbox" value="Related Studies"/>
               </div>
-              <div class="dvnFormPadding dvnFormMargin">
-                <ice:commandButton id="saveButton" value="Save" action="#{SearchFieldsPage.save}"/>
-                <ice:commandButton id="cancelButton" value="Cancel" action="#{SearchFieldsPage.cancel}"/>
-              </div>
+
             </div>
           </div>
         </div>
-      </ice:form>
-    </ui:define>
-  </ui:composition>
-</body>
 </html>

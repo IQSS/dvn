@@ -1,25 +1,10 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:ui="http://java.sun.com/jsf/facelets"
       xmlns:h="http://java.sun.com/jsf/html"
       xmlns:f="http://java.sun.com/jsf/core"
       xmlns:jsp="http://java.sun.com/JSP/Page"
       xmlns:ice="http://www.icesoft.com/icefaces/component">
-<head>
-  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1"/>
-</head>
-<body>
-  <ui:composition template="/template.xhtml">
-    <ui:param name="pageTitle" value="#{bundlePageInfo.defaultStudySortOrderTitle} - #{VDCRequest.dataversePageTitle}"/>
-    <ui:define name="metadata">
-        <f:metadata>
-             <f:event type="preRenderView" listener="#{DefaultSortOrderPage.preRenderView}"/>
-        </f:metadata>
-    </ui:define>
-    <ui:define name="body">
-      <ice:form id="setDefaultStudyListingSortOrderForm">
-        <ice:inputHidden id="vdcId" value="#{VDCRequest.currentVDCId}"/>
         <div class="dvn_section">
           <div class="dvn_sectionTitle">
             <ice:outputText value="#{bundlePageInfo.defaultStudySortOrderTitle}"/>
@@ -32,14 +17,14 @@
                 </div>
               </div>
               <ice:panelGrid cellpadding="0" cellspacing="0" columns="2"
-                             columnClasses="vdcColPadded, vdcColPadded" id="gridPanel2">
-                <div jsfc="ice:panelGroup" id="groupPanel1">
+                             columnClasses="vdcColPadded, vdcColPadded" id="gridPanel2Sort">
+                <div jsfc="ice:panelGroup" id="groupPanel1Sort">
                   <ice:outputLabel for="defaultsort" id="defaultsortLabel">
                     <ice:outputText value="Default Sort Order"/>
                   </ice:outputLabel>
                 </div>
                 <div jsfc="ice:panelGroup">
-                  <ice:selectOneMenu id="defaultsort" value="#{DefaultSortOrderPage.defaultSortOrder}">
+                  <ice:selectOneMenu id="defaultsort" value="#{OptionsPage.defaultSortOrder}">
                    <f:selectItem itemLabel="Global ID" itemValue="globalId"/>
                    <f:selectItem itemLabel="Title" itemValue="title"/>
                    <f:selectItem itemLabel="Last Released" itemValue="releaseTime"/>
@@ -48,15 +33,7 @@
                   </ice:selectOneMenu>
                 </div>
               </ice:panelGrid>
-              <div id="groupPanel6" class="dvnFormPadding dvnFormMargin">
-                <ice:commandButton id="saveButton" value="Save" action="#{DefaultSortOrderPage.save}"/>
-                <ice:commandButton id="cancelButton" value="Cancel" immediate="true" action="#{DefaultSortOrderPage.cancel}"/>
-              </div>
             </div>
           </div>
         </div>
-      </ice:form>
-    </ui:define>
-  </ui:composition>
-</body>
 </html>

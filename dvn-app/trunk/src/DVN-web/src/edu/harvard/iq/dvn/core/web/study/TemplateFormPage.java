@@ -693,8 +693,11 @@ public class TemplateFormPage extends VDCBaseBean implements java.io.Serializabl
         }*/
         editTemplateService.cancel();
 
-        return "/admin/ManageTemplatesPage?faces-redirect=true" + ((getVDCRequestBean().getCurrentVDCId() != null) ? "&vdcId=" + getVDCRequestBean().getCurrentVDCId() : "");
- 
+        if (getVDCRequestBean().getCurrentVDC() != null) {
+            return "/admin/OptionsPage?faces-redirect=true" + getNavigationVDCSuffix();
+        } else {
+            return "/networkAdmin/NetworkOptionsPage.xhtml?faces-redirect=true";
+        } 
     }
     
     
@@ -1095,9 +1098,14 @@ public class TemplateFormPage extends VDCBaseBean implements java.io.Serializabl
         getVDCRenderBean().getFlash().put("successMessage", "Successfully added new template.");
         } else {
         getVDCRenderBean().getFlash().put("successMessage", "Successfully updated template.");
-        }       
+        }   
         
-        return "/admin/ManageTemplatesPage?faces-redirect=true" + getNavigationVDCSuffix();
+        if (getVDCRequestBean().getCurrentVDC() != null) {
+            return "/admin/OptionsPage?faces-redirect=true" + getNavigationVDCSuffix();
+        } else {
+            return "/networkAdmin/NetworkOptionsPage.xhtml?faces-redirect=true";
+        }
+        
     }
     
     

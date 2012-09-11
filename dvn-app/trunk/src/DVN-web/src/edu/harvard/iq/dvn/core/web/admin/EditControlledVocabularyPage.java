@@ -153,13 +153,6 @@ public class EditControlledVocabularyPage extends VDCBaseBean implements java.io
 
     public String save_action() {
         boolean isNewControlledVocabulary = controlledVocabulary.getId() == null;
-        
-        if (!validateDescription()){
-            getVDCRenderBean().getFlash().put("warningMessage", "Description may not be more than 255 characters.");
-            return "";
-        }
-        
-        
         if (validateEntries()) {
             templateService.saveControlledVocabulary(controlledVocabulary);
 
@@ -178,9 +171,10 @@ public class EditControlledVocabularyPage extends VDCBaseBean implements java.io
     
     private boolean validateDescription(){
         boolean isValid = true;
+        /*
         if (controlledVocabulary.getDescription().length() > 255){
             isValid = false;
-        }
+        }*/
         return isValid;
     }
     

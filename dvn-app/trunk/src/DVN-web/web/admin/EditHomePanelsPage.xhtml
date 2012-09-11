@@ -16,14 +16,14 @@
                     <ice:outputText value="Homepage Description"/>
                   </div>
                   <div jsfc="ice:panelGroup" id="groupPanel5">
-                    <ice:selectBooleanCheckbox id="chkLocalAnnouncements" value="#{EditHomePanelsPage.chkLocalAnnouncements}"/>
+                    <ice:selectBooleanCheckbox id="chkLocalAnnouncements" value="#{OptionsPage.chkLocalAnnouncements}"/>
                     <ice:outputText id="outputText3" value="#{bundle.displayLocalAnnouncementsLabel}"/>
                     <ice:message id="announcementsMsg"
                                for="localAnnouncements"
                                styleClass="errorMessage"/>
                     <br/>
                     <ice:inputTextarea cols="100" rows="5"
-                                       id="localAnnouncements" value="#{EditHomePanelsPage.localAnnouncements}"
+                                       id="localAnnouncements" value="#{OptionsPage.localAnnouncements}"
                                        styleClass="formHtmlEnabled">
                       <f:validator validatorId="XhtmlValidator"/>
                     </ice:inputTextarea>

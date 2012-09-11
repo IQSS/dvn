@@ -46,13 +46,14 @@ import javax.inject.Named;
 @Named("EditGuestbookQuestionnairePage")
 public class EditGuestbookQuestionnairePage extends VDCBaseBean implements java.io.Serializable {
 
-    @EJB
-    VDCServiceLocal vdcService;
+    @EJB VDCServiceLocal vdcService;
     private GuestBookQuestionnaire guestBookQuestionnaire;
     private List<CustomQuestionUI> customQuestions = new ArrayList();
-    private VDC vdc;
+
     private String questionType;
     private CustomQuestion newQuestion;
+    
+    private VDC vdc;
 
     public void init() {
         super.init();

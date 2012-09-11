@@ -47,8 +47,7 @@ import javax.inject.Named;
 @Named("GuestBookResponseDataPage")
 public class GuestBookResponseDataPage extends VDCBaseBean implements java.io.Serializable {
 
-    @EJB
-    GuestBookResponseServiceBean guestBookResponseServiceBean;
+    @EJB GuestBookResponseServiceBean guestBookResponseServiceBean;
     private List<GuestBookResponse> guestBookResponses = new ArrayList();
     private List<GuestBookResponseDisplay> guestBookResponsesDisplay = new ArrayList();
     private List<GuestBookResponse> guestBookResponsesAll = new ArrayList();

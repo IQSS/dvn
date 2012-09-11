@@ -1,24 +1,10 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:ui="http://java.sun.com/jsf/facelets"
       xmlns:h="http://java.sun.com/jsf/html"
       xmlns:f="http://java.sun.com/jsf/core"
       xmlns:jsp="http://java.sun.com/JSP/Page"
       xmlns:ice="http://www.icesoft.com/icefaces/component">
-<head>
-    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
-</head>
-<body>
-  <ui:composition template="/template.xhtml">
-    <ui:param name="pageTitle" value="#{bundlePageInfo.manageDvPermissionsTitle} - #{VDCRequest.dataversePageTitle}"/>
-    <ui:define name="metadata">
-        <f:metadata>
-            <f:event type="preRenderView" listener="#{PrivilegedUsersPage.preRenderView}"/>
-        </f:metadata>
-    </ui:define>
-    <ui:define name="body">
-      <ice:form id="privilegedUsersForm">
         <div id="hiddenDiv"></div>
         <input type="hidden" name="pageName" value="PrivilegedUsersPage"/>
         <ice:inputHidden id="vdcId" value="#{VDCRequest.currentVDCId}"/>
@@ -40,12 +26,12 @@
                       <ice:outputText value="Dataverse Release Settings"/>
                     </td>
                     <td>
-                        <ice:selectOneMenu value="#{PrivilegedUsersPage.siteRestriction}"  disabled="#{!(PrivilegedUsersPage.enableSelectRelease)}">
+                        <ice:selectOneMenu value="#{OptionsPage.siteRestriction}"  disabled="#{!(OptionsPage.enableSelectRelease)}">
                             <f:selectItem itemLabel="Not Released" itemValue="Restricted"/>
                             <f:selectItem itemLabel="Released" itemValue="Public"/>
                         </ice:selectOneMenu>
-                        <ice:outputText styleClass="errorMessageBlock" value="#{bundlePageInfo.releasableDVErrorMessage}" rendered="#{(PrivilegedUsersPage.notReleasableAndNotReleased)}"/>
-                        <ice:outputText styleClass="errorMessageBlock" value="#{bundlePageInfo.invalidReleasedDVErrorMessage}" rendered="#{(PrivilegedUsersPage.releasedWithoutRequiredStudies)}"/>
+                        <ice:outputText styleClass="errorMessageBlock" value="#{bundlePageInfo.releasableDVErrorMessage}" rendered="#{(OptionsPage.notReleasableAndNotReleased)}"/>
+                        <ice:outputText styleClass="errorMessageBlock" value="#{bundlePageInfo.invalidReleasedDVErrorMessage}" rendered="#{(OptionsPage.releasedWithoutRequiredStudies)}"/>
                     </td>
                   </tr>
                   <div jsfc="ice:panelGroup" rendered="#{!PrivilegedUsersPage.vdc.harvestingDv}">
@@ -54,7 +40,7 @@
                           <td>
                               <ice:selectOneRadio
                                   layout="pageDirection"
-                                  value="#{PrivilegedUsersPage.selectedSetting}"
+                                  value="#{OptionsPage.selectedSetting}"
                                   required="true"
                                   requiredMessage="This field is required.">
                                   <f:selectItem itemLabel = "Contributors can create and edit their own studies. " itemValue="CONTRIB_CREATE"/>
@@ -72,10 +58,10 @@
 
                   <tr>
                     <td colspan="2">
-                      <ice:dataTable binding="#{PrivilegedUsersPage.userTable}" cellpadding="0" cellspacing="0" width="100%"
+                      <ice:dataTable binding="#{OptionsPage.userTable}" cellpadding="0" cellspacing="0" width="100%"
                                      columnClasses="vdcColPadded, vdcColPadded, vdcColPadded" headerClass="list-header-left" id="dataTable1"
                                      columnWidths="20%,60%,20%"
-                                     rowClasses="list-row-even,list-row-odd" value="#{PrivilegedUsersPage.vdcRoleList}" var="currentRow">
+                                     rowClasses="list-row-even,list-row-odd" value="#{OptionsPage.vdcRoleList}" var="currentRow">
                         <ice:column id="column1">
                           <f:facet name="header">
                             <ice:outputText id="outputText3" value="Username"/>
@@ -84,7 +70,7 @@
                             <ice:outputLink id="hyperlink2"  rendered="#{currentRow.vdcRole!=null}" value="/dvn#{VDCRequest.currentVDCURL}/faces/login/AccountPage.xhtml?userId=#{currentRow.vdcRole.vdcUser.id}">
                             <ice:outputText id="hyperlink2Text" value="#{currentRow.vdcRole.vdcUser.userName}"/>
                           </ice:outputLink>
-                          <ice:inputText rendered="#{currentRow.vdcRole==null}" binding="#{PrivilegedUsersPage.userInputText}" id="userName" value="#{PrivilegedUsersPage.newUserName}" onclick="this.value='';" />
+                          <ice:inputText rendered="#{currentRow.vdcRole==null}" binding="#{OptionsPage.userInputText}" id="userName" value="#{OptionsPage.newUserName}" onclick="this.value='';" />
                         </ice:column>
                         <ice:column id="column9">
                           <f:facet name="header">
@@ -92,16 +78,16 @@
                               <ice:outputText id="outputText16" value="Permission Setting"/>
                             </div>
                           </f:facet>
-                          <ice:selectOneMenu rendered="#{currentRow.vdcRole==null}" id="newRoleSelectMenu" value="#{PrivilegedUsersPage.newRoleId}">
+                          <ice:selectOneMenu rendered="#{currentRow.vdcRole==null}" id="newRoleSelectMenu" value="#{OptionsPage.newRoleId}">
                             <ice:message for="roleSelectMenu" styleClass="errorMessage"/>
-                            <f:selectItems id="roleSelectItems0" value="#{PrivilegedUsersPage.roleSelectItems}"/>
+                            <f:selectItems id="roleSelectItems0" value="#{OptionsPage.roleSelectItems}"/>
                           </ice:selectOneMenu>
                            <ice:selectOneMenu rendered="#{currentRow.vdcRole!=null and currentRow.vdcRole.vdcUser.id!=PrivilegedUsersPage.vdc.creator.id}" id="roleSelectMenu" value="#{currentRow.selectedRoleId}">
                             <ice:message for="roleSelectMenu" styleClass="errorMessage"/>
-                            <f:selectItems id="roleSelectItems1" value="#{PrivilegedUsersPage.roleSelectItems}"/>
+                            <f:selectItems id="roleSelectItems1" value="#{OptionsPage.roleSelectItems}"/>
                           </ice:selectOneMenu>
-                         <ice:outputText rendered="#{currentRow.vdcRole!=null and currentRow.vdcRole.vdcUser.id==PrivilegedUsersPage.vdc.creator.id}" id="disabledRole" value="Admin"/>
-                         <ice:commandButton rendered="#{currentRow.vdcRole==null}" id="addUserButton" value="Add" actionListener="#{PrivilegedUsersPage.addUser}"/>
+                         <ice:outputText rendered="#{currentRow.vdcRole!=null and currentRow.vdcRole.vdcUser.id==OptionsPage.vdc.creator.id}" id="disabledRole" value="Admin"/>
+                         <ice:commandButton rendered="#{currentRow.vdcRole==null}" id="addUserButton" value="Add" actionListener="#{OptionsPage.addUser}"/>
 
                          <ice:outputLink rendered="#{currentRow.vdcRole==null}" value="http://guides.thedata.org/book/manage-permissions" styleClass="dvninlinelink" target="_blank" title="View Role Descriptions">
                             <ice:outputText value="View Role Descriptions"/>
@@ -110,8 +96,8 @@
                          <ice:message styleClass="errorMessage" for="userName"/>
                         </ice:column>
                         <ice:column>
-                          <ice:commandButton id="removeRoleButton" value="Remove" rendered="#{currentRow.vdcRole!=null and currentRow.vdcRole.vdcUser.id!=PrivilegedUsersPage.vdc.creator.id}" actionListener="#{PrivilegedUsersPage.removeRole}"/>
-                          <ice:outputText value="Dataverse Creator&lt;br&#47;&gt;(Cannot modify Role)" escape="false" rendered="#{currentRow.vdcRole.vdcUser.id==PrivilegedUsersPage.vdc.creator.id}"/>
+                          <ice:commandButton id="removeRoleButton" value="Remove" rendered="#{currentRow.vdcRole!=null and currentRow.vdcRole.vdcUser.id!=OptionsPage.vdc.creator.id}" actionListener="#{OptionsPage.removeRole}"/>
+                          <ice:outputText value="Dataverse Creator&lt;br&#47;&gt;(Cannot modify Role)" escape="false" rendered="#{currentRow.vdcRole.vdcUser.id==OptionsPage.vdc.creator.id}"/>
                         </ice:column>
                       </ice:dataTable>
                     </td>
@@ -122,8 +108,8 @@
                     </td>
                     <td class="dvnPermissionsStackedCells">
                       <ice:outputText value="Group Name: "/>
-                      <ice:inputText id="groupName" binding="#{PrivilegedUsersPage.groupInputText}" value="#{PrivilegedUsersPage.groupName}" onkeypress="if (window.event) return processEvent('', 'privilegedUsersForm:addGroupButton'); else return processEvent(event, 'privilegedUsersForm:addGroupButton');"/>
-                      <ice:commandButton id="addGroupButton" value="Add" actionListener="#{PrivilegedUsersPage.addGroup}"/>
+                      <ice:inputText id="groupName" binding="#{OptionsPage.groupInputText}" value="#{OptionsPage.groupName}" onkeypress="if (window.event) return processEvent('', 'privilegedUsersForm:addGroupButton'); else return processEvent(event, 'privilegedUsersForm:addGroupButton');"/>
+                      <ice:commandButton id="addGroupButton" value="Add" actionListener="#{OptionsPage.addGroup}"/>
                       <ice:message styleClass="errorMessage" for="groupName"/>
                       <br/>
                       <ice:outputText styleClass="vdcHelpText" value="Enter group name to allow a group access to the dataverse."/>
@@ -131,13 +117,13 @@
                   </tr>
                   <tr>
                     <td colspan="2">
-                      <div jsfc="ice:panelGroup" rendered="#{empty PrivilegedUsersPage.vdc.allowedGroups}" styleClass="dvnPermissionsEmpty">
+                      <div jsfc="ice:panelGroup" rendered="#{empty OptionsPage.vdc.allowedGroups}" styleClass="dvnPermissionsEmpty">
                         <ice:outputText value="No groups have been given permission to access the dataverse."/>
                       </div>
                       <ice:dataTable binding="#{PrivilegedUsersPage.groupTable}" cellpadding="0" cellspacing="0" width="100%"
                                      columnClasses="vdcColPadded, vdcColPadded, vdcColPadded" headerClass="list-header-left"
                                      columnWidths="20%,60%,20%"
-                                     rowClasses="list-row-even,list-row-odd" value="#{PrivilegedUsersPage.vdc.allowedGroups}" var="currentRow"
+                                     rowClasses="list-row-even,list-row-odd" value="#{OptionsPage.vdc.allowedGroups}" var="currentRow"
                                      rendered="#{! empty PrivilegedUsersPage.vdc.allowedGroups}">
                         <ice:column>
                           <f:facet name="header">
@@ -154,7 +140,7 @@
                           <ice:outputText value="Access To Site"/>
                         </ice:column>
                         <ice:column>
-                          <ice:commandButton id="removeGroupButton" value="Remove Group" actionListener="#{PrivilegedUsersPage.removeGroup}"/>
+                          <ice:commandButton id="removeGroupButton" value="Remove Group" actionListener="#{OptionsPage.removeGroup}"/>
                         </ice:column>
                       </ice:dataTable>
                     </td>
@@ -168,7 +154,7 @@
                       <ice:outputText value="Restrict ALL files in this dataverse"/>
                     </td>
                     <td>
-                      <ice:selectOneMenu id="dropdown3" styleClass="dvnFilesRestrictedSelector" value="#{PrivilegedUsersPage.filesRestricted}" onchange="checkSubsetting(true)">
+                      <ice:selectOneMenu id="dropdown3" styleClass="dvnFilesRestrictedSelector" value="#{OptionsPage.filesRestricted}" onchange="checkSubsetting(true)">
                         <f:selectItem itemLabel="Not Selected" itemValue="false"/>
                         <f:selectItem itemLabel="Yes" itemValue="true"/>
                       </ice:selectOneMenu>
@@ -218,14 +204,14 @@
                   </tr>
                   <tr class="dvnfilesrestrictselected">
                     <td colspan="2">
-                      <div jsfc="ice:panelGroup" rendered="#{empty PrivilegedUsersPage.vdc.allowedFileUsers}" styleClass="dvnPermissionsEmpty">
+                      <div jsfc="ice:panelGroup" rendered="#{empty OptionsPage.vdc.allowedFileUsers}" styleClass="dvnPermissionsEmpty">
                         <ice:outputText value="No users have been given permission to access dataverse files."/>
                       </div>
-                      <ice:dataTable binding="#{PrivilegedUsersPage.fileUserTable}" cellpadding="0" cellspacing="0" width="100%"
+                      <ice:dataTable binding="#{OptionsPage.fileUserTable}" cellpadding="0" cellspacing="0" width="100%"
                                      columnClasses="vdcColPadded, vdcColPadded" headerClass="list-header-left"
                                      columnWidths="80%,20%"
-                                     rowClasses="list-row-even,list-row-odd" value="#{PrivilegedUsersPage.vdc.allowedFileUsers}" var="currentRow"
-                                     rendered="#{not empty PrivilegedUsersPage.vdc.allowedFileUsers}">
+                                     rowClasses="list-row-even,list-row-odd" value="#{OptionsPage.vdc.allowedFileUsers}" var="currentRow"
+                                     rendered="#{not empty OptionsPage.vdc.allowedFileUsers}">
                         <ice:column>
                           <f:facet name="header">
                             <ice:outputText id="users_tcol1" value="User Name"/>
@@ -235,7 +221,7 @@
                           </ice:outputLink>
                         </ice:column>
                         <ice:column>
-                          <ice:commandButton id="removeUserButton" value="Remove User" actionListener="#{PrivilegedUsersPage.removeFileUser}"/>
+                          <ice:commandButton id="removeUserButton" value="Remove User" actionListener="#{OptionsPage.removeFileUser}"/>
                         </ice:column>
                       </ice:dataTable>
                     </td>
@@ -246,8 +232,8 @@
                     </td>
                     <td class="dvnPermissionsStackedCells">
                       <ice:outputText value="Group Name: "/>
-                      <ice:inputText id="fileGroupName" binding="#{PrivilegedUsersPage.fileGroupInputText}" value="#{PrivilegedUsersPage.addFileGroupName}"/>
-                      <ice:commandButton value="Add" actionListener="#{PrivilegedUsersPage.addFileGroup}"/>
+                      <ice:inputText id="fileGroupName" binding="#{OptionsPage.fileGroupInputText}" value="#{OptionsPage.addFileGroupName}"/>
+                      <ice:commandButton value="Add" actionListener="#{OptionsPage.addFileGroup}"/>
                       <ice:message styleClass="errorMessage" for="fileGroupName"/>
                       <br/>
                       <ice:outputText styleClass="vdcHelpText" value="Enter group name to allow a group access to restricted files."/>
@@ -255,14 +241,14 @@
                   </tr>
                   <tr class="dvnfilesrestrictselected">
                     <td colspan="2">
-                      <div jsfc="ice:panelGroup" rendered="#{empty PrivilegedUsersPage.vdc.allowedFileGroups}" styleClass="dvnPermissionsEmpty">
+                      <div jsfc="ice:panelGroup" rendered="#{empty OptionsPage.vdc.allowedFileGroups}" styleClass="dvnPermissionsEmpty">
                         <ice:outputText value="No groups have been given permission to access dataverse files."/>
                       </div>
-                      <ice:dataTable binding="#{PrivilegedUsersPage.fileGroupTable}" cellpadding="0" cellspacing="0" width="100%"
+                      <ice:dataTable binding="#{OptionsPage.fileGroupTable}" cellpadding="0" cellspacing="0" width="100%"
                                      columnClasses="vdcColPadded, vdcColPadded" headerClass="list-header-left"
                                      columnWidths="80%,20%"
-                                     rowClasses="list-row-even,list-row-odd" value="#{PrivilegedUsersPage.vdc.allowedFileGroups}" var="currentRow"
-                                     rendered="#{not empty PrivilegedUsersPage.vdc.allowedFileGroups}">
+                                     rowClasses="list-row-even,list-row-odd" value="#{OptionsPage.vdc.allowedFileGroups}" var="currentRow"
+                                     rendered="#{not empty OptionsPage.vdc.allowedFileGroups}">
                         <ice:column>
                           <f:facet name="header">
                             <ice:outputText id="groups_tcol1" value="User Name"/>
@@ -272,21 +258,17 @@
                           </ice:outputLink>
                         </ice:column>
                         <ice:column>
-                          <ice:commandButton id="removeGroupButton" value="Remove Group" actionListener="#{PrivilegedUsersPage.removeFileGroup}"/>
+                          <ice:commandButton id="removeGroupButton" value="Remove Group" actionListener="#{OptionsPage.removeFileGroup}"/>
                         </ice:column>
                       </ice:dataTable>
                     </td>
                   </tr>
                 </table>
                   <div class="dvnFormPadding dvnFormMargin">
-                    <ice:commandButton id="saveChangesButton" value="Save Changes" action="#{PrivilegedUsersPage.saveChanges}"/>
-                    <ice:commandButton immediate="true" id="cancelButton" value="Cancel" action="#{PrivilegedUsersPage.cancel}"/>
+                    <ice:commandButton id="saveChangesButton" value="Save Changes" action="#{OptionsPage.saveChanges}"/>
+                    <ice:commandButton immediate="true" id="cancelButton" value="Cancel" action="#{OptionsPage.cancel}"/>
                   </div>
             </div>
           </div>
         </div>
-      </ice:form>
-    </ui:define>
-  </ui:composition>
-</body>
 </html>

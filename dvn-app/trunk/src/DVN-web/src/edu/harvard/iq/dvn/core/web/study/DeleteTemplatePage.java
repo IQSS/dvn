@@ -101,12 +101,22 @@ public class DeleteTemplatePage extends VDCBaseBean implements java.io.Serializa
     public String delete() {
         templateService.deleteTemplate(templateId);
         getVDCRenderBean().getFlash().put("successMessage","Successfully deleted template.");
-        return "/admin/ManageTemplatesPage.xhtml?faces-redirect=true" + getNavigationVDCSuffix();
+        //return "/admin/ManageTemplatesPage.xhtml?faces-redirect=true" + getNavigationVDCSuffix();
+        if (getVDCRequestBean().getCurrentVDC() != null) {
+            return "/admin/OptionsPage?faces-redirect=true" + getNavigationVDCSuffix();
+        } else {
+            return "/networkAdmin/NetworkOptionsPage.xhtml?faces-redirect=true";
+        } 
     }
     
     public String cancel() {
         
-        return "/admin/ManageTemplatesPage?faces-redirect=true" + getNavigationVDCSuffix();
+        //return "/admin/ManageTemplatesPage?faces-redirect=true" + getNavigationVDCSuffix();
+        if (getVDCRequestBean().getCurrentVDC() != null) {
+            return "/admin/OptionsPage?faces-redirect=true" + getNavigationVDCSuffix();
+        } else {
+            return "/networkAdmin/NetworkOptionsPage.xhtml?faces-redirect=true";
+        } 
     }
 
    private Long templateId;

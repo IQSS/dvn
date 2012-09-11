@@ -33,7 +33,7 @@
                             <ice:outputText value="Disable Customization"/>
                         </div>
                         <div jsfc="ice:panelGroup">
-                            <ice:selectBooleanCheckbox id="chkOpenScholarDataverse" value="#{EditBannerFooterPage.displayInFrame}" partialSubmit="true"/>
+                            <ice:selectBooleanCheckbox id="chkOpenScholarDataverse" value="#{OptionsPage.displayInFrame}" partialSubmit="true"/>
                             <ice:outputText value="Disable customization for Dataverses linked to an OpenScholar or your personal site."/>
                             <script type="text/javascript">
                                 // <![CDATA[
@@ -88,7 +88,7 @@
                                columnClasses="vdcColPadded, vdcColPadded" 
                                rowClasses="dvnCustomizationSelectSiteBlockRow1, dvnCustomizationSelectSiteBlockRow2, dvnCustomizationSelectSiteBlockRow3" 
                                styleClass="dvnOptionsTable dvnCustomizationSelectSiteTable"
-                                rendered="#{EditBannerFooterPage.displayInFrame}">
+                                rendered="#{OptionsPage.displayInFrame}">
                     <div jsfc="ice:panelGroup" styleClass="dvnOptionsTableOption">
                         <ice:outputText value="Host Site Type"/>
                     </div>
@@ -110,8 +110,8 @@
                         <div id="dvnUrlOpenScholar">
                             <ice:outputText nospan="true" escape="false" value="&#60;div style=&#34;margin-bottom:1em;&#34; class=&#34;warnMessage&#34;&#62;&#60;img src=&#34;/dvn/resources/images/icon_warning.18.png&#34; class=&#34;dvn_icon&#34; /&#62; &#60;span class=&#34;iceOutTxt&#34;&#62;Before disabling the customization for your Dataverse, make sure you first have your OpenScholar or personal site properly set up.&#60;/span&#62;&#60;/div&#62;"/>
 
-                            <ice:inputText id="urlOpenScholarDataverse" size="60" value="#{EditBannerFooterPage.parentSite}"
-                             required="#{EditBannerFooterPage.displayInFrame}"
+                            <ice:inputText id="urlOpenScholarDataverse" size="60" value="#{OptionsPage.parentSite}"
+                             required="#{OptionsPage.displayInFrame}"
                              requiredMessage="This field is required."/>
                             <ice:message for="urlOpenScholarDataverse" showSummary="true" showDetail="false" errorClass="errorMessage" styleClass="errorMessage"/>
                             <br/>
@@ -139,7 +139,7 @@
               </div>
               <ice:panelGrid cellpadding="0" cellspacing="0" columns="2"
                              columnClasses="vdcColPadded, vdcColPadded" styleClass="dvnOptionsTable dvnCustomBannerFooterFieldsBlock"
-                              rendered="#{! EditBannerFooterPage.displayInFrame}">
+                              rendered="#{! OptionsPage.displayInFrame}">
                   <div jsfc="ice:panelGroup" styleClass="dvnOptionsTableOption">
                     <ice:outputText value="#{bundle.editCustomBannerLabel}"/>
                   </div>
@@ -150,9 +150,8 @@
                                  styleClass="errorMessage"/>
                     <br/>
                     <ice:inputTextarea id="banner"
-                                       binding="#{EditBannerFooterPage.bannerTextField}"
                                        rows="15"
-                                       value="#{EditBannerFooterPage.banner}"
+                                       value="#{OptionsPage.banner}"
                                        styleClass="formHtmlEnabled">
                     </ice:inputTextarea>
                   </div>
@@ -165,20 +164,15 @@
                                  styleClass="errorMessage"/>
                     <br/>
                     <ice:inputTextarea id="footer"
-                                       binding="#{EditBannerFooterPage.footerTextField}"
                                        rows="7"
-                                       value="#{EditBannerFooterPage.footer}"
+                                       value="#{OptionsPage.footer}"
                                        styleClass="formHtmlEnabled">
                     </ice:inputTextarea>
-                    <ice:inputHidden id="combined" binding="#{EditBannerFooterPage.combinedTextField}">
+                    <ice:inputHidden id="combined" binding="#{OptionsPage.combinedTextField}">
                         <f:validator validatorId="XhtmlValidator"/>
                     </ice:inputHidden>
                   </div>
               </ice:panelGrid>
-              <!--<div class="dvnFormPadding dvnFormMargin">
-                <ice:commandButton id="btnSave" onclick="combineStrings();" value="#{bundle.saveButtonLabel}" action="#{EditBannerFooterPage.save_action}"/>
-                <ice:commandButton id="btnCancel" immediate="true" value="#{bundle.cancelButtonLabel}" action="#{EditBannerFooterPage.cancel_action}"/>
-              </div>-->
 
       <!--</ice:form>-->
 </div>

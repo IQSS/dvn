@@ -1,25 +1,10 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:ui="http://java.sun.com/jsf/facelets"
       xmlns:h="http://java.sun.com/jsf/html"
       xmlns:f="http://java.sun.com/jsf/core"
       xmlns:jsp="http://java.sun.com/JSP/Page"
       xmlns:ice="http://www.icesoft.com/icefaces/component">
-<head>
-    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
-</head>
-<body>
-  <ui:composition template="/template.xhtml">
-    <ui:param name="pageTitle" value="#{bundlePageInfo.guestbookDataDumpTitle} - #{VDCRequest.dataversePageTitle}"/>
-    <ui:define name="metadata">
-        <f:metadata>
-             <f:event type="preRenderView" listener="#{GuestBookResponseDataPage.preRenderView}"/>
-        </f:metadata>
-    </ui:define>
-    <ui:define name="body">
-      <ice:form id="form1">
-        <ice:inputHidden id="vdcId" value="#{VDCRequest.currentVDCId}"/>
         <div class="dvn_section">
           <div class="dvn_sectionTitle">
             <ice:outputText value="#{bundlePageInfo.guestbookDataDumpTitle}"/>
@@ -71,7 +56,7 @@
                    });
                    
                    function startDownload() {  
-                        document.getElementById('form1:downloadCSV').click();    
+                        document.getElementById('form1:tabSet1:0:tabSetPermissions:0:downloadCSV').click();    
                    }
 //]]>
                 </script>
@@ -85,20 +70,21 @@
                     </div>
                   </div>
                     
-                    <ice:panelGrid cellpadding="0" cellspacing="0" border="0" columns="2" id="gridPanel2"
+                    <ice:panelGrid cellpadding="0" cellspacing="0" border="0" columns="2" id="gridPanelResponse"
                                    styleClass="dvnHmpgGroupTableTop"
                                    columnClasses="dvnHmpgGroupTotals, dvnPaginatorWrap">
                         <div jsfc="ice:panelGroup">
                             <ice:commandButton visible="true" value="Export Results" id="exportResults" type="submit" onclick="startDownload();" />
                             <ice:outputResource label="Export" type="button" style="display:none;"
+                                                action="#{OptionsPage.tousave_action}"
                                                 id="downloadCSV" mimeType="text/comma-separated-values"
-                                                resource="#{GuestBookResponseDataPage.downloadCSV}" shared="false"/>
+                                                resource="#{OptionsPage.downloadCSV}" shared="false"/>
                         </div>
                         <div jsfc="ice:panelGroup" styleClass="dvnPaginatorFloatRight">
                             <div class="dvnGuestBookResponseDownloadCountBlock">
                                 <ice:outputText styleClass="dvnGuestBookResponseDwnldTtlLbl" value="Number of Downloads"/> 
-                                <ice:outputText value="#{bundlePageInfo.guestbookDataCountText} #{GuestBookResponseDataPage.fullCount}"/> 
-                                <ice:outputText value="#{bundlePageInfo.guestbookData30DayCountText} #{GuestBookResponseDataPage.thirtyDayCount}"/>
+                                <ice:outputText value="#{bundlePageInfo.guestbookDataCountText} #{OptionsPage.fullCount}"/> 
+                                <ice:outputText value="#{bundlePageInfo.guestbookData30DayCountText} #{OptionsPage.thirtyDayCount}"/>
                             </div>
                             <div class="dvnGuestBookResponseDownloadPaginatorBlock">
                             <ice:dataPaginator id="scroll_1" styleClass="dvnPaginatorRight" for="guestBookResponseData" fastStep="3"
@@ -134,7 +120,7 @@
 
                       <ice:dataTable cellpadding="0" cellspacing="0" width="100%" 
                                      id="guestBookResponseData" styleClass="dvnGuestBookResponseTable"
-                                     rows="10" value="#{GuestBookResponseDataPage.guestBookResponsesDisplay}" var="guestBookResponseDisplay">
+                                     rows="10" value="#{OptionsPage.guestBookResponsesDisplay}" var="guestBookResponseDisplay">
                         <ice:column>
                             <f:facet name="header">
                                 <ice:outputText value="User Name"/>
@@ -179,7 +165,7 @@
                            <ice:outputText id="positionText" 
                                           value="#{guestBookResponseDisplay.guestBookResponse.position}"></ice:outputText>
                         </ice:column>
-                          <ice:column rendered="#{GuestBookResponseDataPage.vdc == null}">
+                          <ice:column rendered="#{OptionsPage.vdc == null}">
                             <f:facet name="header">
                                 <ice:outputText value="Dataverse"/>
                             </f:facet>
@@ -224,7 +210,7 @@
                         <ice:columns value="#{guestBookResponseDisplay.customQuestionResponses}" var="customResponse">                                        
                             <ice:outputText value="#{customResponse}"/>
                         </ice:columns>
-                        <ice:columns value="#{GuestBookResponseDataPage.columnHeadings}" var="heading">                                        
+                        <ice:columns value="#{OptionsPage.columnHeadings}" var="heading">                                        
                             <f:facet name="header">
                                   <ice:outputText styleClass="dvnGuestbookCustomResponseHeader" value="#{heading}"/>
                             </f:facet>
@@ -237,8 +223,4 @@
             </div>
           </div>
         </div>
-      </ice:form>
-    </ui:define>
-  </ui:composition>
-</body>
 </html>

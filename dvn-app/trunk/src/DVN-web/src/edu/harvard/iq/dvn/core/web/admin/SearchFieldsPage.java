@@ -71,9 +71,6 @@ public class SearchFieldsPage extends VDCBaseBean implements java.io.Serializabl
         if (msg == null){
             msg =  (StatusMessage)getRequestMap().get("statusMessage");
         }
-        System.out.println("getVDCRequestBean is "+getVDCRequestBean().toString());
-        System.out.println("getCurrentVDC() is "+getVDCRequestBean().getCurrentVDC().toString());
-        System.out.println("getSearchResultFields() is "+getVDCRequestBean().getCurrentVDC().getSearchResultFields().toString());
         searchResultsFields = getVDCRequestBean().getCurrentVDC().getSearchResultFields();
         for (Iterator it = searchResultsFields.iterator(); it.hasNext();) {
             StudyField elem = (StudyField) it.next();
@@ -203,86 +200,7 @@ public class SearchFieldsPage extends VDCBaseBean implements java.io.Serializabl
         return studyFieldService;
     }
 
-    private HtmlSelectBooleanCheckbox productionDateCheckbox = new HtmlSelectBooleanCheckbox();
 
-    public HtmlSelectBooleanCheckbox getProductionDateCheckbox() {
-        return productionDateCheckbox;
-    }
-
-    public void setProductionDateCheckbox(HtmlSelectBooleanCheckbox productionDateCheckbox) {
-        this.productionDateCheckbox = productionDateCheckbox;
-    }
-    
-    private HtmlSelectBooleanCheckbox producerCheckbox = new HtmlSelectBooleanCheckbox();
-
-    public HtmlSelectBooleanCheckbox getProducerCheckbox() {
-        return producerCheckbox;
-    }
-
-    public void setProducerCheckbox(HtmlSelectBooleanCheckbox hsbc) {
-        this.producerCheckbox = hsbc;
-    }
-
-
-    private HtmlSelectBooleanCheckbox distributionDateCheckbox = new HtmlSelectBooleanCheckbox();
-
-    public HtmlSelectBooleanCheckbox getDistributionDateCheckbox() {
-        return distributionDateCheckbox;
-    }
-
-    public void setDistributionDateCheckbox(HtmlSelectBooleanCheckbox hsbc) {
-        this.distributionDateCheckbox = hsbc;
-    }
-
-    private HtmlSelectBooleanCheckbox distributorCheckbox = new HtmlSelectBooleanCheckbox();
-
-    public HtmlSelectBooleanCheckbox getDistributorCheckbox() {
-        return distributorCheckbox;
-    }
-
-    public void setDistributorCheckbox(HtmlSelectBooleanCheckbox hsbc) {
-        this.distributorCheckbox = hsbc;
-    }
-
-    private HtmlSelectBooleanCheckbox replicationCheckbox = new HtmlSelectBooleanCheckbox();
-
-    public HtmlSelectBooleanCheckbox getReplicationCheckbox() {
-        return replicationCheckbox;
-    }
-
-    public void setReplicationCheckbox(HtmlSelectBooleanCheckbox hsbc) {
-        this.replicationCheckbox = hsbc;
-    }
-
-    private HtmlSelectBooleanCheckbox relatedpubCheckbox = new HtmlSelectBooleanCheckbox();
-
-    public HtmlSelectBooleanCheckbox getRelatedpubCheckbox() {
-        return relatedpubCheckbox;
-    }
-
-    public void setRelatedpubCheckbox(HtmlSelectBooleanCheckbox hsbc) {
-        this.relatedpubCheckbox = hsbc;
-    }
-
-    private HtmlSelectBooleanCheckbox relatedmatCheckbox = new HtmlSelectBooleanCheckbox();
-
-    public HtmlSelectBooleanCheckbox getRelatedmatCheckbox() {
-        return relatedmatCheckbox;
-    }
-
-    public void setRelatedmatCheckbox(HtmlSelectBooleanCheckbox hsbc) {
-        this.relatedmatCheckbox = hsbc;
-    }
-
-    private HtmlSelectBooleanCheckbox relatedstudiesCheckbox = new HtmlSelectBooleanCheckbox();
-
-    public HtmlSelectBooleanCheckbox getRelatedstudiesCheckbox() {
-        return relatedstudiesCheckbox;
-    }
-
-    public void setRelatedstudiesCheckbox(HtmlSelectBooleanCheckbox hsbc) {
-        this.relatedstudiesCheckbox = hsbc;
-    }
 
     // </editor-fold>
 
@@ -400,35 +318,35 @@ public class SearchFieldsPage extends VDCBaseBean implements java.io.Serializabl
     public String save(){
         VDC thisVDC = getVDCRequestBean().getCurrentVDC();
         List <StudyField> newSearchResultsFields = getDefaultSearchResultsFields();
-        if (productionDateCheckbox.isSelected()){
+        if (productionDateResults){
             StudyField productionDateResultsField = studyFieldService.findByName("productionDate");
             newSearchResultsFields.add(productionDateResultsField);
         }        
-        if (producerCheckbox.isSelected()){
+        if (producerResults){
             StudyField producerResultsField = studyFieldService.findByName("producer");
             newSearchResultsFields.add(producerResultsField);
         }
-        if (distributionDateCheckbox.isSelected()){
+        if (distributionDateResults){
             StudyField distributionDateResultsField = studyFieldService.findByName("distributionDate");
             newSearchResultsFields.add(distributionDateResultsField);
         }
-        if (distributorCheckbox.isSelected()){
+        if (distributorResults){
             StudyField distributorResultsField = studyFieldService.findByName("distributor");
             newSearchResultsFields.add(distributorResultsField);
         }
-        if (replicationCheckbox.isSelected()){
+        if (replicationForResults){
             StudyField replicationResultsField = studyFieldService.findByName("publicationReplicationData");
             newSearchResultsFields.add(replicationResultsField);
         }
-        if (relatedpubCheckbox.isSelected()){
+        if (relatedPublicationsResults){
             StudyField relatedpubResultsField = studyFieldService.findByName("publication");
             newSearchResultsFields.add(relatedpubResultsField);
         }
-        if (relatedmatCheckbox.isSelected()){
+        if (relatedMaterialResults){
             StudyField relatedmatResultsField = studyFieldService.findByName("relatedMaterial");
             newSearchResultsFields.add(relatedmatResultsField);
         }
-        if (relatedstudiesCheckbox.isSelected()){
+        if (relatedStudiesResults){
             StudyField relatedstudiesResultsField = studyFieldService.findByName("relatedStudies");
             newSearchResultsFields.add(relatedstudiesResultsField);
         }

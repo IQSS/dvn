@@ -77,8 +77,9 @@ div.vdcStudyFilesMessage{width:60%;padding:0.75em;margin:0 auto 12px;text-align:
 div.vdcStudyFilesMessage span{display:block;padding:.5em 0}
 div.vdcStudyFilesMessage a:link,div.vdcStudyFilesMessage a:visited,div.vdcStudyFilesMessage a:hover,div.vdcStudyFilesMessage a:active{font-weight:700}
 .vdcStudyFilesDownloadAll{width:100%;margin-bottom:0.5em}
-td.vdcStudyFilesDownloadAllSelect{width:40%}
-td.vdcStudyFilesDownloadAllButton{width:60%}
+td.vdcStudyFilesDownloadAllSelect{width:50%}
+td.vdcStudyFilesDownloadAllSelect input.studyDownloadAllButton{margin-left:2em;}
+td.vdcStudyFilesDownloadCount{width:50%;text-align:right;}
 .vdcStudyFilesCat{background-color:#d2d2d2;border-bottom-color:#fff;border-bottom-style:solid;border-bottom-width:1px;padding:2px .25em;height:1.5em}
 .vdcStudyFilesCatLabel input.iceSelBoolChkbx,.vdcStudyFilesCatLabel input.iceSelBoolChkbx-dis{margin:0 .5em 0 0;padding:0;vertical-align:middle}
 .vdcStudyFilesCatLabel span.iceOutTxt{display:inline}

@@ -337,7 +337,7 @@ strong.requestWorkflowCompleted{color:#035899 !important;font-weight:bold !impor
 .dvn_createDvRequest .requestContentFormRight textarea{width:22.5em}
 .dvn_createDvRequest .requestContinueLink{padding:2em 0 0;text-align:center}
 span.termsAgreementMessageTitle{display:block;padding-top:1em;color:#526f76;font-size:120% !important;font-weight:bold;text-transform:uppercase}
-.termsAgreementBox{margin-bottom:20px;padding:4px;width:590px;height:300px;border:1px solid #035899;overflow:scroll;overflow-x:auto}
+.termsAgreementBox{margin-bottom:20px;padding:4px;width:590px;height:300px;border:1px solid #035899;background:#FFF;overflow:scroll;overflow-x:auto}
 .termsAgreementBox.dvnCreateDvWorkflow{width:380px;}
 .requestContentSucess a{font-weight:700}
 .requestContentSucess ul{margin-left:1.5em;list-style:disc}

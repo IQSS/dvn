@@ -1,29 +1,24 @@
-
-<html xmlns="http://www.w3.org/1999/xhtml"
-      xmlns:ui="http://java.sun.com/jsf/facelets"
-      xmlns:h="http://java.sun.com/jsf/html"
-      xmlns:f="http://java.sun.com/jsf/core"
-      xmlns:jsp="http://java.sun.com/JSP/Page"
-      xmlns:ice="http://www.icesoft.com/icefaces/component">
-        <div class="dvn_section">
-          <div class="dvn_sectionTitle">
-            <ice:outputText value="#{bundlePageInfo.defaultStudySortOrderTitle}"/>
-          </div>
-          <div class="dvn_sectionBox">
-            <div class="dvn_margin12">
-              <div jsfc="ice:panelGroup" styleClass="dvnInformationMessage">
-                <div class="dvnMsgBlockContainer">
-                  <ice:outputText value="#{bundlePageInfo.defaultStudySortOrderHelp}" escape="false"/>
-                </div>
-              </div>
+<div xmlns:ui="http://java.sun.com/jsf/facelets"
+                      xmlns:h="http://java.sun.com/jsf/html"
+                      xmlns:f="http://java.sun.com/jsf/core"
+                      xmlns:jsp="http://java.sun.com/JSP/Page"
+                      xmlns:ice="http://www.icesoft.com/icefaces/component"
+                      xmlns:dvn="/WEB-INF/tlds/dvn-components"
+                      jsfc="ice:panelGroup">
+              
               <ice:panelGrid cellpadding="0" cellspacing="0" columns="2"
-                             columnClasses="vdcColPadded, vdcColPadded" id="gridPanel2Sort">
+                             columnClasses="dvnOptionsTableOption, vdcColPadded" id="gridPanel2Sort" styleClass="dvnOptionsTable">
                 <div jsfc="ice:panelGroup" id="groupPanel1Sort">
                   <ice:outputLabel for="defaultsort" id="defaultsortLabel">
                     <ice:outputText value="Default Sort Order"/>
                   </ice:outputLabel>
                 </div>
                 <div jsfc="ice:panelGroup">
+                    <div jsfc="ice:panelGroup" styleClass="dvnInformationMessage">
+                        <div class="dvnMsgBlockContainer">
+                          <ice:outputText value="#{bundlePageInfo.defaultStudySortOrderHelp}" escape="false"/>
+                        </div>
+                    </div>
                   <ice:selectOneMenu id="defaultsort" value="#{OptionsPage.defaultSortOrder}">
                    <f:selectItem itemLabel="Global ID" itemValue="globalId"/>
                    <f:selectItem itemLabel="Title" itemValue="title"/>
@@ -33,7 +28,5 @@
                   </ice:selectOneMenu>
                 </div>
               </ice:panelGrid>
-            </div>
-          </div>
-        </div>
-</html>
+
+</div>

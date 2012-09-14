@@ -27,9 +27,9 @@ fieldset.dvnLoginPageAffiliate input.iceCmdBtn{display:block;float:right}
 .dvnContributorRequestFormLinks{padding-top:10px;text-align:center;}
 /* MY OPTIONS */
 .dvnOptionsTable{width:100%;text-align:left}
-.dvnOptionsTable td{padding:.5em 2em;border-bottom:1px solid lightgray}
+.dvnOptionsTable td{padding:.5em 1em;border-bottom:1px solid lightgray}
 td.dvnOptionsTableHeader{padding:.5em 1em;background:gainsboro;color:gray;text-transform:uppercase}
-.dvnOptionsTableOption{width:240px}
+.dvnOptionsTableOption{width:200px;padding-bottom:3px;padding-left:4px;padding-top:3px;text-align:left;vertical-align:top}
 span.dvnOptionsTableNote{font-size:90% !important}
 div.dvnOptionsTableLicense{padding-top:.5em}
 .dvnOptionsTableNoHeader{border-top:1px solid lightgray;}
@@ -231,6 +231,7 @@ span.dvnAddClassificationDvNotReleased{background:url(/dvn/resources/images/icon
 .termsAgreeChkBxBlock p{font-size: .9em !important;}
 .dvnEditTermsForm .dvnEditTermsCheckbox{margin-bottom:1em;}
 .dvnEditTermsForm .errorMessage{margin-bottom:1em;}
+.dvnGuestBookCheckbox, .dvnGuestbookCustomQuestionsBlock {text-align:left;}
 .dvnGuestbookCustomQuestions.dvnStaticTable {border-top:1px solid lightgray;}
 .dvnGuestbookCustomQuestionsCol1 {width:10%;text-align:center;}
 .dvnGuestbookCustomQuestionsCol3 {width:20%;text-align:center;}

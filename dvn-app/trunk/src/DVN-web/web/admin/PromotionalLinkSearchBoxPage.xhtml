@@ -1,21 +1,12 @@
 
-<html xmlns="http://www.w3.org/1999/xhtml"
-      xmlns:ui="http://java.sun.com/jsf/facelets"
-      xmlns:h="http://java.sun.com/jsf/html"
-      xmlns:f="http://java.sun.com/jsf/core"
-      xmlns:jsp="http://java.sun.com/JSP/Page"
-      xmlns:ice="http://www.icesoft.com/icefaces/component">
-        <div class="dvn_section">
-          <div class="dvn_sectionTitle">
-            <ice:outputText value="#{bundlePageInfo.codePromotionalTitle}"/>
-          </div>
-          <div class="dvn_sectionBox">
-              <div class="dvn_margin12">
-                  <div jsfc="ice:panelGroup" styleClass="dvnInformationMessage">
-                     <div class="dvnMsgBlockContainer">
-                       <ice:outputText value="#{bundlePageInfo.codePromotionalHelp}" escape="false"/>
-                     </div>
-                  </div>
+<div xmlns:ui="http://java.sun.com/jsf/facelets"
+                      xmlns:h="http://java.sun.com/jsf/html"
+                      xmlns:f="http://java.sun.com/jsf/core"
+                      xmlns:jsp="http://java.sun.com/JSP/Page"
+                      xmlns:ice="http://www.icesoft.com/icefaces/component"
+                      xmlns:dvn="/WEB-INF/tlds/dvn-components"
+                      jsfc="ice:panelGroup">
+                  
                   <div class="dvnPromotionalLinks">
                       <div class="dvnPromotionalLinksBlock">
                         <div class="dvnPromotionalLinksHeader">
@@ -28,9 +19,7 @@
                           </div>
                           <div class="dvnPromotionalCode">
                             <span>Code</span><br/>
-                            <textarea name="text_area1" rows="4">
-                              <ice:outputText nospan="true" value="&lt;strong&gt;&lt;a href=&quot;http://#{VDCRequest.hostUrl}/dvn#{VDCRequest.currentVDCURL}&quot;&gt;View My Dataverse&lt;/a&gt;&lt;/strong&gt;"/>
-                            </textarea>
+                            <textarea name="text_area1" rows="4"><ice:outputText nospan="true" value="&lt;strong&gt;&lt;a href=&quot;http://#{VDCRequest.hostUrl}/dvn#{VDCRequest.currentVDCURL}&quot;&gt;View My Dataverse&lt;/a&gt;&lt;/strong&gt;"/></textarea>
                             <br/>
                             <input type="button" value="Select All Code" onClick="javascript:this.form.text_area1.focus();this.form.text_area1.select();"/>
                           </div>
@@ -51,9 +40,7 @@
                           </div>
                           <div class="dvnPromotionalCode">
                             <span>Code</span><br/>
-                            <textarea name="text_area2" rows="4">
-                               <ice:outputText nospan="true" value="&lt;span style=&quot;padding: 4px 8px; border: 1px solid #c55b28; background: #e6ebed;&quot;&gt;&lt;strong&gt;&lt;a href=&quot;http://#{VDCRequest.hostUrl}/dvn#{VDCRequest.currentVDCURL}&quot; style=&quot;color: #c55b28;&quot;&gt;View My Dataverse&lt;/a&gt;&lt;/strong&gt;&lt;/span&gt;"/>
-                            </textarea>
+                            <textarea name="text_area2" rows="4"><ice:outputText nospan="true" value="&lt;span style=&quot;padding: 4px 8px; border: 1px solid #c55b28; background: #e6ebed;&quot;&gt;&lt;strong&gt;&lt;a href=&quot;http://#{VDCRequest.hostUrl}/dvn#{VDCRequest.currentVDCURL}&quot; style=&quot;color: #c55b28;&quot;&gt;View My Dataverse&lt;/a&gt;&lt;/strong&gt;&lt;/span&gt;"/></textarea>
                             <br/>
                             <input type="button" value="Select All Code" onClick="javascript:this.form.text_area2.focus();this.form.text_area2.select();"/>
                           </div>
@@ -75,9 +62,7 @@
                           </div>
                           <div class="dvnPromotionalCode">
                             <span>Code</span><br/>
-                            <textarea name="text_area3" rows="4">
-                              <ice:outputText nospan="true" value="&lt;span style=&quot;color: #526f76; text-transform: uppercase;&quot;&gt;Search&lt;/span&gt;&#38;#160;&lt;span style=&quot;color: #c55b28;&quot;&gt;My Dataverse&lt;/span&gt;&lt;br/&gt;&lt;input type=&quot;text&quot;/&gt;&#38;#160;&lt;input value=&quot;Search&quot; type=&quot;button&quot; onclick=&quot;location='http://#{VDCRequest.hostUrl}/dvn#{VDCRequest.currentVDCURL}/faces/StudyListingPage.xhtml?mode=2&amp;searchValue=' + this.previousSibling.previousSibling.value&quot; /&gt;"/>
-                            </textarea>
+                            <textarea name="text_area3" rows="4"><ice:outputText nospan="true" value="&lt;span style=&quot;color: #526f76; text-transform: uppercase;&quot;&gt;Search&lt;/span&gt;&#38;#160;&lt;span style=&quot;color: #c55b28;&quot;&gt;My Dataverse&lt;/span&gt;&lt;br/&gt;&lt;input type=&quot;text&quot;/&gt;&#38;#160;&lt;input value=&quot;Search&quot; type=&quot;button&quot; onclick=&quot;location='http://#{VDCRequest.hostUrl}/dvn#{VDCRequest.currentVDCURL}/faces/StudyListingPage.xhtml?mode=2&amp;searchValue=' + this.previousSibling.previousSibling.value&quot; /&gt;"/></textarea>
                             <br/>
                             <input type="button" value="Select All Code" onClick="javascript:text_area3.focus();text_area3.select();"/>
                           </div>
@@ -88,7 +73,5 @@
                         </div>
                       </div>
                  </div>
-            </div>
-          </div>
-        </div>
-</html>
+
+</div>

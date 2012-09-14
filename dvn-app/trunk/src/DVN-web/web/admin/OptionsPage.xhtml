@@ -67,9 +67,11 @@
                                             </div> 
                                             <div jsfc="ice:panelGroup"  panelLayout="flow">
                                                 <ui:include src="EditUseTermsPage.xhtml"></ui:include>
-                                            </div> 
-                                            <ice:commandButton  styleClass="dvnListenSave" value="Save" action="#{OptionsPage.tousave_action}"/>
-                                            <ice:commandButton  value="Cancel" action="#{OptionsPage.toucancel_action}"/>
+                                            </div>
+                                            <div class="dvnFormPadding dvnFormMargin">
+                                                <ice:commandButton  styleClass="dvnListenSave" value="Save Changes" action="#{OptionsPage.tousave_action}"/>
+                                                <!--<ice:commandButton  value="Cancel" action="#{OptionsPage.toucancel_action}"/>-->
+                                            </div>
                                         </div>
                                     </ice:panelTab>
                                     <!-- GUESTBOOK -->
@@ -142,32 +144,42 @@
                                                 <ui:include src="/admin/SearchFieldsPage.xhtml"></ui:include>
                                                 <ui:include src="/admin/DefaultSortOrderPage.xhtml"></ui:include> 
                                                 <div class="dvnFormPadding dvnFormMargin">
-                                                <ice:commandButton id="saveButton" value="Save" action="#{OptionsPage.saveCustomization}"/>
-                                                <ice:commandButton id="cancelButton" value="Cancel" action="#{OptionsPage.cancelCustomization}"/>   
+                                                <ice:commandButton id="saveButton" value="Save Changes" action="#{OptionsPage.saveCustomization}"/>
+                                                <!--<ice:commandButton id="cancelButton" value="Cancel" action="#{OptionsPage.cancelCustomization}"/>-->
                                                 </div>
                                             </div>
                                         </ice:panelTab>
                                         <!-- PROMOTE -->
                                         <ice:panelTab id="promoteSub" label="Promote Your Dataverse">
                                             <div jsfc="ice:panelGroup">
-                                                <table class="dvnOptionsTable" cellspacing="0" cellpadding="0" border="0">
-                                                    <ui:fragment rendered="#{OptionsPage.twitterConfigured}">
-                                                        <tr>
-                                                            <td class="dvnOptionsTableOption">
+                                                <div jsfc="ice:panelGroup" styleClass="dvnInformationMessage">
+                                                     <div class="dvnMsgBlockContainer">
+                                                       <ice:outputText value="#{bundlePageInfo.codePromotionalHelp}" escape="false"/>
+                                                     </div>
+                                                </div>
+                                                
+                                                    <div jsfc="ice:panelGroup" styleClass="dvnPromotionalLinks" rendered="#{OptionsPage.twitterConfigured}">
+                                                      <div class="dvnPromotionalLinksBlock">
+                                                        <div class="dvnPromotionalLinksHeader">
+                                                          <ice:outputText value="Sync Twitter Account"/>
+                                                        </div>
+                                                        <div class="f">
+                                                            <div class="f" style="float:left">
                                                                 <ice:commandLink action="#{OptionsPage.authorizeTwitter}" rendered="#{!OptionsPage.twitterEnabled}">
                                                                     <ice:outputText  value="Enable Twitter"/>
                                                                 </ice:commandLink>
                                                                 <ice:commandLink action="#{OptionsPage.removeTwitter}" rendered="#{OptionsPage.twitterEnabled}">
                                                                     <ice:outputText  value="Disable Twitter"/>
                                                                 </ice:commandLink>                                        
-                                                            </td>
-                                                            <td><ice:outputText styleClass="dvnOptionsTableNote" value="Enable or disable automatic tweets"/></td>
-                                                        </tr>
-                                                    </ui:fragment>
-                                                    <tr>
-                                                        <ui:include src="/admin/PromotionalLinkSearchBoxPage.xhtml"></ui:include>
-                                                    </tr>
-                                                </table>
+                                                            </div>
+                                                            <div class="f" style="float:left">
+                                                                <ice:outputText value="Enable or disable automatic tweets"/>
+                                                            </div>
+                                                        </div>
+                                                      </div>
+                                                    </div>
+                                                
+                                                <ui:include src="/admin/PromotionalLinkSearchBoxPage.xhtml"></ui:include>
                                             </div>
                                         </ice:panelTab>
                                     </ice:panelTabSet>

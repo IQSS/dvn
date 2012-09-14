@@ -61,10 +61,6 @@
                                styleClass="dvnManageStudiesTableTop" columnClasses="dvn_StudyListTotals, dvnPaginatorWrap">
                     <div jsfc="ice:panelGroup" id="groupPanel3" styleClass="dvn_StudyListTotals">
                         <div jsfc="ice:panelGroup" styleClass="dvnManageStudiesTableFilter" rendered="#{ManageStudiesList.contributorFilterRendered}">
-                            <ice:outputLink value="/dvn#{VDCRequest.currentVDCURL}/faces/study/EditStudyPage.xhtml">
-                                <ice:outputText value="#{bundlePageInfo.createStudyTitle}"/>
-                            </ice:outputLink>
-                            
                             <ice:selectOneMenu id="studyScopeSelectMenu" binding="#{ManageStudiesList.filterDropdown}">
                                 <ice:message for="studyScopeSelectMenu" styleClass="errorMessage"/>
                                 <f:selectItems id="studyScopeSelectItems" value="#{ManageStudiesList.studyScopeSelectItems}"/>
@@ -77,6 +73,9 @@
                             <ice:outputText id="outputText3" value="#{bundle.showArchivedStudiesLabel}"/>
                         </div>
                         <div class="dvnManageStudiesTablePaginator">
+                            <ice:outputLink value="/dvn#{VDCRequest.currentVDCURL}/faces/study/EditStudyPage.xhtml" style="margin-right:2em;">
+                                <ice:outputText value="#{bundlePageInfo.createStudyTitle}"/>
+                            </ice:outputLink>
                             <ice:dataPaginator id="scroll_2"
                                                binding="#{ManageStudiesList.paginator}"
                                                for="studyData"

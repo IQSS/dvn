@@ -17,24 +17,24 @@
       <!--<ice:form id="editBannerFooterForm">
         <ice:inputHidden rendered="#{VDCRequest.currentVDC != null}" id="vdcId" value="#{VDCRequest.currentVDCId}"/>-->
         
-        
-              <!--<div jsfc="ice:panelGroup" styleClass="dvnInformationMessage">
+              <div jsfc="ice:panelGroup" styleClass="dvnInformationMessage">
                 <div class="dvnMsgBlockContainer">
                   <ice:outputText value="#{bundlePageInfo.editDvnBrandingHelp}" escape="false" rendered="#{VDCRequest.currentVDC == null}"/>
                   <ice:outputText value="#{bundlePageInfo.editDvBrandingHelp}" escape="false" rendered="#{VDCRequest.currentVDC != null}"/>
                 </div>
-              </div>-->
+              </div>
               <div jsfc="ice:panelGroup" rendered="#{VDCRequest.currentVDC != null}">
-
                 
                     <ice:panelGrid cellpadding="0" cellspacing="0" columns="2"
-                                   columnClasses="vdcColPadded, vdcColPadded" styleClass="dvnOptionsTable dvnCustomizationDisableTable">
-                        <div jsfc="ice:panelGroup" styleClass="dvnOptionsTableOption">
-                            <ice:outputText value="Disable Customization"/>
+                                   columnClasses="dvnOptionsTableOption, vdcColPadded" styleClass="dvnOptionsTable dvnCustomizationDisableTable">
+                        <div jsfc="ice:panelGroup">
+                            <ice:outputLabel for="chkOpenScholarDataverse" id="chkOpenScholarDataverseLabel">
+                                <ice:outputText id="chkOpenScholarDataverseText" value="Disable Customization"/>
+                            </ice:outputLabel>
                         </div>
                         <div jsfc="ice:panelGroup">
                             <ice:selectBooleanCheckbox id="chkOpenScholarDataverse" value="#{OptionsPage.displayInFrame}" partialSubmit="true"/>
-                            <ice:outputText value="Disable customization for Dataverses linked to an OpenScholar or your personal site."/>
+                            <ice:outputText value="Disable customization to link Dataverse to an OpenScholar or personal site."/>
                             <script type="text/javascript">
                                 // <![CDATA[
                                 jQuery(document).ready(function(){
@@ -83,14 +83,15 @@
                         </div>
                     </ice:panelGrid>
                     
-                
                 <ice:panelGrid cellpadding="0" cellspacing="0" columns="2"
-                               columnClasses="vdcColPadded, vdcColPadded" 
+                               columnClasses="dvnOptionsTableOption, vdcColPadded" 
                                rowClasses="dvnCustomizationSelectSiteBlockRow1, dvnCustomizationSelectSiteBlockRow2, dvnCustomizationSelectSiteBlockRow3" 
                                styleClass="dvnOptionsTable dvnCustomizationSelectSiteTable"
                                 rendered="#{OptionsPage.displayInFrame}">
-                    <div jsfc="ice:panelGroup" styleClass="dvnOptionsTableOption">
-                        <ice:outputText value="Host Site Type"/>
+                    <div jsfc="ice:panelGroup">
+                        <ice:outputLabel for="iframesite" id="hostSiteTypeLabel">
+                            <ice:outputText id="hostSiteTypeText" value="Host Site Type"/>
+                        </ice:outputLabel>
                     </div>
                     <div jsfc="ice:panelGroup" styleClass="dvnOptionsTableOptionBlock">
                         <ice:graphicImage value="/resources/images/icon_information.18.png" styleClass="dvn_icon"/>
@@ -102,8 +103,10 @@
                     </div>
                     <div jsfc="ice:panelGroup">
                         <div id="dvnUrlOpenScholarLabel">
-                            <ice:outputText value="Host Site URL"/>
-                            <ice:graphicImage value="#{bundle.iconRequired}"/>
+                            <ice:outputLabel for="urlOpenScholarDataverse" id="hostSiteURLLabel">
+                                <ice:outputText id="hostSiteURLText" value="Host Site URL"/>
+                                <ice:graphicImage value="#{bundle.iconRequired}"/>
+                            </ice:outputLabel>
                         </div>
                     </div>
                     <div jsfc="ice:panelGroup">
@@ -120,8 +123,10 @@
                     </div>
                     <div jsfc="ice:panelGroup">
                         <div id="dvnUrlPersonalSiteLabel">
-                            <ice:outputText value="Host Site Code"/>
-                            <ice:graphicImage value="#{bundle.iconRequired}"/>
+                            <ice:outputLabel for="text_area1" id="hostSiteCodeLabel">
+                                <ice:outputText id="hostSiteCodeText" value="Host Site Code"/>
+                                <ice:graphicImage value="#{bundle.iconRequired}"/>
+                            </ice:outputLabel>
                         </div>
                     </div>
                     <div jsfc="ice:panelGroup">
@@ -138,10 +143,12 @@
                 </ice:panelGrid>
               </div>
               <ice:panelGrid cellpadding="0" cellspacing="0" columns="2"
-                             columnClasses="vdcColPadded, vdcColPadded" styleClass="dvnOptionsTable dvnCustomBannerFooterFieldsBlock"
+                             columnClasses="dvnOptionsTableOption, vdcColPadded" styleClass="dvnOptionsTable dvnCustomBannerFooterFieldsBlock"
                               rendered="#{! OptionsPage.displayInFrame}">
-                  <div jsfc="ice:panelGroup" styleClass="dvnOptionsTableOption">
-                    <ice:outputText value="#{bundle.editCustomBannerLabel}"/>
+                  <div jsfc="ice:panelGroup">
+                    <ice:outputLabel for="banner" id="bannerLabel">
+                        <ice:outputText id="bannerText" value="#{bundle.editCustomBannerLabel}"/>
+                    </ice:outputLabel>
                   </div>
                   <div jsfc="ice:panelGroup">
                     <ice:message for="combined" styleClass="errorMessage"/>
@@ -155,8 +162,10 @@
                                        styleClass="formHtmlEnabled">
                     </ice:inputTextarea>
                   </div>
-                  <div jsfc="ice:panelGroup" styleClass="dvnOptionsTableOption">
-                    <ice:outputText id="footerLabel" value="#{bundle.editCustomFooterLabel}"/>
+                  <div jsfc="ice:panelGroup">
+                    <ice:outputLabel for="footer" id="footerLabel">
+                        <ice:outputText id="footerText" value="#{bundle.editCustomFooterLabel}"/>
+                    </ice:outputLabel>
                   </div>
                   <div jsfc="ice:panelGroup">
                     <ice:message id="footerMsg"

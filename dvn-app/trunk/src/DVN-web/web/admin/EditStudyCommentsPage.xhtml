@@ -10,22 +10,25 @@
                    
                 </div>
               </div>-->
-              <ice:inputHidden id="vdcId1" value="#{VDCRequest.currentVDCId}"/>
-              <div jsfc="ice:panelGroup" styleClass="#{EditSitePage.msg.styleClass}" rendered="#{!empty EditSitePage.msg.messageText}">
-                <ice:outputText id="statusMessage" value="#{EditSitePage.msg.messageText}"/>
-              </div>
+              
               <ice:panelGrid cellpadding="0" cellspacing="0" columns="2"
-                             columnClasses="vdcColPadded, vdcColPadded" id="gridPanel1" styleClass="dvnOptionsTable">
-                <div jsfc="ice:panelGroup" styleClass="dvnOptionsTableOption">
-                  <ice:outputText value="Allow Study Comments"/>
+                             columnClasses="dvnOptionsTableOption, vdcColPadded" id="gridPanel1" styleClass="dvnOptionsTable">
+                <div jsfc="ice:panelGroup">
+                  <ice:outputLabel for="allowStudyComments" id="allowStudyCommentsLabel">
+                      <ice:outputText id="allowStudyCommentsText" value="Allow Study Comments"/>
+                  </ice:outputLabel>
                 </div>
                 <div jsfc="ice:panelGroup">
-                 <ice:selectBooleanCheckbox
-                     id="allowStudyComments"
-                     binding="#{OptionsPage.allowStudyCommentsCheckbox}"
-                     partialSubmit="false"
-                     value="#{OptionsPage.allowStudyComments}"/>
-                 <ice:outputText value="#{bundlePageInfo.editStudyCommentsHelp}" escape="false"/>
+                    <ice:inputHidden id="vdcId1" value="#{VDCRequest.currentVDCId}"/>
+                    <div jsfc="ice:panelGroup" styleClass="#{EditSitePage.msg.styleClass}" rendered="#{!empty EditSitePage.msg.messageText}">
+                        <ice:outputText id="statusMessage" value="#{EditSitePage.msg.messageText}"/>
+                    </div>
+                    <ice:selectBooleanCheckbox
+                         id="allowStudyComments"
+                         binding="#{OptionsPage.allowStudyCommentsCheckbox}"
+                         partialSubmit="false"
+                         value="#{OptionsPage.allowStudyComments}"/>
+                    <ice:outputText value="#{bundlePageInfo.editStudyCommentsHelp}" escape="false"/>
                 </div>
               </ice:panelGrid>
               <!--<div class="dvnFormPadding dvnFormMargin">

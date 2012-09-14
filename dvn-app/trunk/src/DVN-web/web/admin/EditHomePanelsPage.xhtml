@@ -11,9 +11,11 @@
                  </div>
               </div>-->
               <ice:panelGrid cellpadding="0" cellspacing="0" columns="2"
-                             columnClasses="vdcColPadded, vdcColPadded" styleClass="dvnOptionsTable">
-                  <div jsfc="ice:panelGroup" styleClass="dvnOptionsTableOption">
-                    <ice:outputText value="Homepage Description"/>
+                             columnClasses="dvnOptionsTableOption, vdcColPadded" styleClass="dvnOptionsTable">
+                  <div jsfc="ice:panelGroup">
+                    <ice:outputLabel for="localAnnouncements" id="homepageDescriptionLabel">
+                      <ice:outputText id="homepageDescriptionText" value="Homepage Description"/>
+                    </ice:outputLabel>
                   </div>
                   <div jsfc="ice:panelGroup" id="groupPanel5">
                     <ice:selectBooleanCheckbox id="chkLocalAnnouncements" value="#{OptionsPage.chkLocalAnnouncements}"/>

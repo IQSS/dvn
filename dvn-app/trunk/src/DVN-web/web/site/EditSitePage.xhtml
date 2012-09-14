@@ -1,10 +1,10 @@
-
-<html xmlns="http://www.w3.org/1999/xhtml"
-      xmlns:ui="http://java.sun.com/jsf/facelets"
-      xmlns:h="http://java.sun.com/jsf/html"
-      xmlns:f="http://java.sun.com/jsf/core"
-      xmlns:jsp="http://java.sun.com/JSP/Page"
-      xmlns:ice="http://www.icesoft.com/icefaces/component">
+<div xmlns:ui="http://java.sun.com/jsf/facelets"
+                      xmlns:h="http://java.sun.com/jsf/html"
+                      xmlns:f="http://java.sun.com/jsf/core"
+                      xmlns:jsp="http://java.sun.com/JSP/Page"
+                      xmlns:ice="http://www.icesoft.com/icefaces/component"
+                      xmlns:dvn="/WEB-INF/tlds/dvn-components"
+                      jsfc="ice:panelGroup">
            <ice:message for="editsiteform" id ="boxErrorMsg1"  styleClass="errorMessage"/>
         <script type="text/javascript">
             //<![CDATA[
@@ -42,12 +42,7 @@
             }
             // ]]>
         </script>
-        <div class="dvn_section">
-          <div class="dvn_sectionTitle">
-            <ice:outputText value="#{bundlePageInfo.editDvSettingsTitle}"/>
-          </div>
-          <div class="dvn_sectionBox">
-            <div class="dvn_margin12">
+        
               <div jsfc="ice:panelGroup" styleClass="dvnInformationMessage">
                 <div class="dvnMsgBlockContainer">
                   <ice:outputText value="#{bundlePageInfo.editDvSettingsHelp}" escape="false"/>
@@ -58,7 +53,7 @@
                 <ice:outputText id="statusMessageEditSite" value="#{OptionsPage.msg.messageText}"/>
               </div>
               <ice:panelGrid cellpadding="0" cellspacing="0" columns="2"
-                             columnClasses="vdcAddSiteCol1, vdcAddSiteCol2" id="gridPanelEditSite">
+                             columnClasses="dvnOptionsTableOption, vdcColPadded" id="gridPanelEditSite" styleClass="dvnOptionsTable">
                 <div jsfc="ice:panelGroup" rendered="{not VDCRequest.currentVDC.harvestingDv}">
                   <ice:outputLabel for="dataverseOption" id="dataverseLabel">
                     <ice:outputText value="Type of Dataverse"/>
@@ -219,13 +214,11 @@
                 <ice:commandButton immediate="true" binding="#{EditSitePage.button2}" id="button2" value="Cancel" action="#{EditSitePage.cancel}"/>
               </div>
               -->
-            </div>
-          </div>
-        </div>
+
         <script type="text/javascript">
             //<![CDATA[
             // this is done to ensure that the scholar fields are properly inited. wjb
             showAll();
             // ]]>
         </script>
-</html>
+</div>

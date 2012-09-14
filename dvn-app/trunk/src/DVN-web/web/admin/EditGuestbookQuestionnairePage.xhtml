@@ -1,16 +1,10 @@
-
-<html xmlns="http://www.w3.org/1999/xhtml"
-      xmlns:ui="http://java.sun.com/jsf/facelets"
-      xmlns:h="http://java.sun.com/jsf/html"
-      xmlns:f="http://java.sun.com/jsf/core"
-      xmlns:jsp="http://java.sun.com/JSP/Page"
-      xmlns:ice="http://www.icesoft.com/icefaces/component">      
-        <div class="dvn_section">
-          <div class="dvn_sectionTitle">
-            <ice:outputText value="#{bundlePageInfo.editGuestBookQuestionnaireTitle}"/>
-          </div>
-          <div class="dvn_sectionBox dvnEditTermsForm">
-            <div class="dvn_margin12">
+<div xmlns:ui="http://java.sun.com/jsf/facelets"
+                      xmlns:h="http://java.sun.com/jsf/html"
+                      xmlns:f="http://java.sun.com/jsf/core"
+                      xmlns:jsp="http://java.sun.com/JSP/Page"
+                      xmlns:ice="http://www.icesoft.com/icefaces/component"
+                      xmlns:dvn="/WEB-INF/tlds/dvn-components"
+                      jsfc="ice:panelGroup">
               <div jsfc="ice:panelGroup" styleClass="dvnInformationMessage">
                 <div class="dvnMsgBlockContainer">
                   <ice:outputText value="#{bundlePageInfo.editGuestBookQuestionnaireHelp}" escape="false"/>
@@ -24,7 +18,7 @@
                 <ice:outputText value="Enable File Download Guestbook"/>
               </div>
               
-              <div class="dvn_padTop dvn_padBottom"> 
+              <div class="dvnGuestbookCustomQuestionsBlock dvn_padTop dvn_padBottom"> 
                 <p>
                   <ice:graphicImage value="/resources/images/icon_info.gif" styleClass="dvn_icon"/>
                   <ice:outputText styleClass="vdcHelpText" value=" #{bundlePageInfo.editGuestBookAddQuestionHelp}" escape="false"/>
@@ -157,8 +151,7 @@
                                       styleClass="dvnEditGuestbookCustomQuestions"
                                       columnClasses="dvnGuestbookCustomQuestionsCol1,dvnGuestbookCustomQuestionsCol2,dvnGuestbookCustomQuestionsCol3"
                                       binding="#{OptionsPage.customQuestionsDataTable}"
-                                      value="#{OptionsPage.customQuestions}" var="customQuestion"
-                                      >
+                                      value="#{OptionsPage.customQuestions}" var="customQuestion">
                         <ice:column>
                           <ice:selectBooleanCheckbox value="#{customQuestion.customQuestion.required}"/>
                         </ice:column>
@@ -204,10 +197,8 @@
               </div>
               
               <div class="dvnFormPadding dvnFormMargin">
-                <ice:commandButton id="button1" value="Save" action="#{OptionsPage.guestbooksave_action}"/>
-                <ice:commandButton id="button2" value="Cancel" action="#{OptionsPage.guestbookcancel_action}"/>
+                <ice:commandButton id="button1" value="Save Changes" action="#{OptionsPage.guestbooksave_action}"/>
+                <!--<ice:commandButton id="button2" value="Cancel" action="#{OptionsPage.guestbookcancel_action}"/>-->
               </div>
-            </div>
-          </div>
-        </div>
-</html>
+
+</div>

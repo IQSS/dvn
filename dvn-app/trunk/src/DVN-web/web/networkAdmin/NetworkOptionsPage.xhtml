@@ -24,24 +24,21 @@
             <div class="dvn_section">
                 <ice:panelTabSet id="tabSet1" styleClass="dvnTabs">
                     <!-- DATAVERSE OPTIONS -->   
-                    <ice:panelTab id="networkOptions" label="Dataverse" url="/dvn#{VDCRequest.currentVDCURL}/faces/admin/OptionsPage.xhtml&amp;tab=dataverseOptions" rendered="#{VDCSession.loginBean.networkAdmin}">
+                    <ice:panelTab id="networkOptions" label="Dataverses" url="/dvn#{VDCRequest.currentVDCURL}/faces/networkAdmin/NetworkOptionsPage.xhtml&amp;tab=dataverseOptions" rendered="#{VDCSession.loginBean.networkAdmin}">
 
-                            <div jsfc="ice:panelGroup" id="layoutPanel5"  label="Dataverses" panelLayout="flow">
+                            <div jsfc="ice:panelGroup" id="layoutPanel5" label="Dataverses" panelLayout="flow">
                                 <ice:panelTabSet id="tabSetDataverses" styleClass="dvnTabs dvnSubTabs">
                                     <!-- Create New -->
-                                    <ice:panelTab id="manageDvsSub" label="Manage Dataverses">
+                                    <ice:panelTab id="manageDvsSub" label="Dataverses">
                                         <div jsfc="ice:panelGroup">
-                                            <div jsfc="ice:panelGroup"  panelLayout="flow">
+                                            <div jsfc="ice:panelGroup" panelLayout="flow">
                                                 <ui:include src="/networkAdmin/ManageDataversesPage.xhtml"></ui:include>
                                             </div> 
                                         </div>
                                     </ice:panelTab>
-
-
-
-                                     <ice:panelTab id="reviewComments" label="Review Comments">
+                                     <ice:panelTab id="reviewComments" label="Study Comments">
                                         <div jsfc="ice:panelGroup">
-                                            <div jsfc="ice:panelGroup"  panelLayout="flow">
+                                            <div jsfc="ice:panelGroup" panelLayout="flow">
                                                 <ui:include src="/networkAdmin/CommentReviewPage.xhtml"></ui:include>
                                             </div> 
                                         </div>
@@ -49,150 +46,194 @@
                                 </ice:panelTabSet>
                             </div>
           
-              </ice:panelTab> 
-                    
-              <ice:panelTab id="collections" label="Classifications" url="/dvn#{VDCRequest.currentVDCURL}/faces/admin/OptionsPage.xhtml&amp;tab=collections" rendered="#{VDCSession.loginBean.networkAdmin}">
-              
-                                    <ice:panelTab id="manageClassifications" label="Manage Classifications">
-                                        <div jsfc="ice:panelGroup">
-                                            <div jsfc="ice:panelGroup"  panelLayout="flow">
-                                                <ui:include src="/networkAdmin/ManageClassificationsPage.xhtml"></ui:include>
-                                            </div> 
-                                        </div>
-                                    </ice:panelTab>
-                  
-              </ice:panelTab> 
-                    
-              <ice:panelTab id="templates" label="Templates" url="/dvn#{VDCRequest.currentVDCURL}/faces/admin/OptionsPage.xhtml&amp;tab=collections" rendered="#{VDCSession.loginBean.networkAdmin}">
-              
-                                    <ice:panelTab id="manageTemplates" label="Manage Templates">
-                                        <div jsfc="ice:panelGroup">
-                                            <div jsfc="ice:panelGroup"  panelLayout="flow">
-                                                <ui:include src="/admin/ManageTemplatesPage.xhtml"></ui:include>
-                                            </div> 
-                                        </div>
-                                    </ice:panelTab>
-                  
-              </ice:panelTab> 
-                    
-              <ice:panelTab id="controlledVocab" label="Controlled Vocabulary" url="/dvn#{VDCRequest.currentVDCURL}/faces/admin/OptionsPage.xhtml&amp;tab=collections" rendered="#{VDCSession.loginBean.networkAdmin}">
-              
-                                    <ice:panelTab id="manageControlledVocabulary" label="Manage Controlled Vocabulary">
-                                        <div jsfc="ice:panelGroup">
-                                            <div jsfc="ice:panelGroup"  panelLayout="flow">
-                                                <ui:include src="/admin/ManageControlledVocabularyPage.xhtml"></ui:include>
-                                            </div> 
-                                        </div>
-                                    </ice:panelTab>
-                  
-              </ice:panelTab> 
-                        
-                            
+                      </ice:panelTab>
+                      
+                      <ice:panelTab id="networkSettingsTab" label="Settings" url="/dvn#{VDCRequest.currentVDCURL}/faces/networkAdmin/NetworkOptionsPage.xhtml&amp;tab=settings" rendered="#{VDCSession.loginBean.networkAdmin}">
+                         <ice:panelTabSet id="tabSetSettings" styleClass="dvnTabs dvnSubTabs">
+                             <ice:panelTab id="networkGeneralSettings" label="General">
+                                 <div jsfc="ice:panelGroup">
+                                     <ui:include src="/networkAdmin/EditNetworkNamePage.xhtml"></ui:include>
+                                     <ui:include src="/networkAdmin/EditNetworkAnnouncementsPage.xhtml"></ui:include>
+                                     <ui:include src="/admin/EditContactUsPage.xhtml"></ui:include>
+                                     <table class="dvnOptionsTable" cellspacing="0" cellpadding="0" border="0">
+                                        <tr>
+                                            <td class="dvnOptionsTableOption">
+                                                <ice:outputText rendered="#{MainLayoutBean.googleAnalyticsKey == null }"
+                                                                value="Google Analytics"/>
+                                                <ice:outputLink rendered="#{MainLayoutBean.googleAnalyticsKey != null }"
+                                                                id="siteStatslink"
+                                                                value="http://www.google.com/analytics/"
+                                                                target="_blank">
+                                                    <ice:outputText value="#{bundlePageInfo.webStatsTitle}"/>
+                                                </ice:outputLink>
+                                            </td>
+                                            <td>
+                                                <ice:outputText styleClass="dvnOptionsTableNote" rendered="#{MainLayoutBean.googleAnalyticsKey != null }" value="#{bundlePageInfo.webStatsText}"/>
+                                                <ice:outputText styleClass="dvnOptionsTableNote" rendered="#{MainLayoutBean.googleAnalyticsKey == null }"
+                                                                id="siteStatsText"
+                                                                value="NOTE: Google Analytics is not configured for this Dataverse Network"/>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td class="dvnOptionsTableOption">
+                                                <ice:outputText value="Dataverse Network Version"/>
+                                            </td>
+                                            <td>
+                                                <ice:outputText styleClass="dvnOptionsTableNote" value="#{VersionPage.versionNumber} build number #{VersionPage.bambooBuild}"/>
+                                                <ice:outputText value=" - "/>
+                                                <ice:outputLink value="http://thedata.org/book/software-license" target="_blank">
+                                                    <ice:outputText value="License Information"/>
+                                                </ice:outputLink>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td class="dvnOptionsTableOption">
+                                                <ice:outputText value="Served by"/>
+                                            </td>
+                                            <td><ice:outputText styleClass="dvnOptionsTableNote" value="#{VersionPage.serverName}"/></td>
+                                        </tr>
+                                     </table>
+                                     <div id="groupPanel6" class="dvnFormPadding dvnFormMargin">
+                                         <ice:commandButton id="btnSaveSettings" value="#{bundle.saveButtonLabel} Changes" action="#{OptionsPage.saveNetworkGeneralSettings_action}"/>
+                                     </div>
+                                 </div>
+                             </ice:panelTab>
+                            <ice:panelTab id="networkAdvancedSettings" label="Advanced">
+                                 <ui:include src="/networkAdmin/EditNetworkDVRequirementsPage.xhtml"></ui:include>
+                                 <div id="groupPanelAdvanced" class="dvnFormPadding dvnFormMargin">
+                                    <ice:commandButton id="btnSaveAdvanced" value="#{bundle.saveButtonLabel} Changes" action="#{OptionsPage.saveNetworkAdvancedSettings_action}"/>
+                                 </div>
+                            </ice:panelTab>
+                            <ice:panelTab id="networkCustomizartionSettings" label="Customization">
+                                 <ui:include src="/admin/EditBannerFooterPage.xhtml"></ui:include>
+                                 <div class="dvnFormPadding dvnFormMargin">
+                                    <ice:commandButton id="saveButton" value="Save" action="#{OptionsPage.saveNetworkCustomization}"/>  
+                                 </div>
+                            </ice:panelTab>
+                            <ice:panelTab id="twitterSettings" label="Promote Your Network" rendered="#{OptionsPage.twitterConfigured}">
+                                <table class="dvnOptionsTable" cellspacing="0" cellpadding="0" border="0">
+                                        <tr>
+                                            <td class="dvnOptionsTableOption">
+                                                <ice:outputText value="Sync Twitter"/>
+                                            </td>
+                                            <td>
+                                                <ice:outputText styleClass="dvnOptionsTableNote" value="Enable or disable automatic tweets"/>
+                                                <ice:commandLink action="#{OptionsPage.authorizeTwitter}" rendered="#{!OptionsPage.twitterEnabled}">
+                                                     <ice:outputText value="Enable Twitter"/>
+                                                 </ice:commandLink>
+                                                 <ice:commandLink action="#{OptionsPage.removeTwitter}" rendered="#{OptionsPage.twitterEnabled}">
+                                                     <ice:outputText value="Disable Twitter"/>
+                                                 </ice:commandLink>
+                                            </td>
+                                        </tr>
+                                </table>
+                            </ice:panelTab>
+                        </ice:panelTabSet>
 
-                            
-                        <ice:panelTab id="harvestOptions" label="Harvesting" url="/dvn#{VDCRequest.currentVDCURL}/faces/admin/OptionsPage.xhtml&amp;tab=harvestOptions" 
-                                      rendered="#{VDCSession.loginBean.networkAdmin}">
-                            <ice:panelTabSet id="tabSetHarvest" styleClass="dvnTabs dvnSubTabs">
-                                        <ice:panelTab id="manageHarvestSites" label="Manage Harvesting">
-                                        <div jsfc="ice:panelGroup">
-                                            <div jsfc="ice:panelGroup"  panelLayout="flow">
-                                                <ui:include src="/site/HarvestSitesPage.xhtml"></ui:include>
-                                            </div> 
-                                        </div>
-                                        <div jsfc="ice:panelGroup">
-                                            <div jsfc="ice:panelGroup"  panelLayout="flow">
-                                                <ui:include src="/networkAdmin/OAISetsPage.xhtml"></ui:include>
-                                            </div> 
-                                        </div>
-                                    </ice:panelTab>
-                                    <ice:panelTab id="editExportSchedule" label="Settings">
-                                        <div jsfc="ice:panelGroup">
-                                            <div jsfc="ice:panelGroup"  panelLayout="flow">
-                                                <ui:include src="/networkAdmin/EditExportSchedulePage.xhtml"></ui:include>
-                                            </div> 
-                                            <div jsfc="ice:panelGroup"  panelLayout="flow">
-                                                <ui:include src="/admin/EditLockssConfigPage.xhtml"></ui:include>
-                                            </div> 
-                                        </div>
-                                    </ice:panelTab>
-                            </ice:panelTabSet>
-                        </ice:panelTab>
-                            
-             <ice:panelTab id="networkSettingsTab" label="Settings" url="/dvn#{VDCRequest.currentVDCURL}/faces/admin/OptionsPage.xhtml&amp;tab=settings" rendered="#{VDCSession.loginBean.networkAdmin}">
-                 <ice:panelTabSet id="tabSetSettings" styleClass="dvnTabs dvnSubTabs">
-                     <ice:panelTab id="networkGeneralSettings" label="General">
-                         <div jsfc="ice:panelGroup">
-                             <ui:include src="/networkAdmin/EditNetworkNamePage.xhtml"></ui:include>
-                             <ui:include src="/networkAdmin/EditNetworkAnnouncementsPage.xhtml"></ui:include>
-                             <ui:include src="/admin/EditContactUsPage.xhtml"></ui:include>
-                             <div id="groupPanel6" class="dvnFormPadding dvnFormMargin">
-                                 <ice:commandButton id="btnSaveSettings" value="#{bundle.saveButtonLabel} Changes" action="#{OptionsPage.saveNetworkGeneralSettings_action}"/>
-                             </div>
-                         </div>
+                      </ice:panelTab>
+
+                      <ice:panelTab id="collections" label="Classifications" url="/dvn#{VDCRequest.currentVDCURL}/faces/networkAdmin/NetworkOptionsPage.xhtml&amp;tab=classifications" rendered="#{VDCSession.loginBean.networkAdmin}">
+
+                            <ice:panelTab id="manageClassifications" label="Manage Classifications">
+                                <div jsfc="ice:panelGroup">
+                                    <div jsfc="ice:panelGroup" panelLayout="flow">
+                                        <ui:include src="/networkAdmin/ManageClassificationsPage.xhtml"></ui:include>
+                                    </div> 
+                                </div>
+                            </ice:panelTab>
+
+                      </ice:panelTab> 
+
+                      <ice:panelTab id="templates" label="Templates" url="/dvn#{VDCRequest.currentVDCURL}/faces/networkAdmin/NetworkOptionsPage.xhtml&amp;tab=templates" rendered="#{VDCSession.loginBean.networkAdmin}">
+
+                            <ice:panelTab id="manageTemplates" label="Manage Templates">
+                                <div jsfc="ice:panelGroup">
+                                    <div jsfc="ice:panelGroup" panelLayout="flow">
+                                        <ui:include src="/admin/ManageTemplatesPage.xhtml"></ui:include>
+                                    </div> 
+                                </div>
+                            </ice:panelTab>
+
+                      </ice:panelTab> 
+
+                      <ice:panelTab id="controlledVocab" label="Vocabulary" url="/dvn#{VDCRequest.currentVDCURL}/faces/networkAdmin/NetworkOptionsPage.xhtml&amp;tab=vocabulary" rendered="#{VDCSession.loginBean.networkAdmin}">
+
+                            <ice:panelTab id="manageControlledVocabulary" label="Manage Controlled Vocabulary">
+                                <div jsfc="ice:panelGroup">
+                                    <div jsfc="ice:panelGroup" panelLayout="flow">
+                                        <ui:include src="/admin/ManageControlledVocabularyPage.xhtml"></ui:include>
+                                    </div> 
+                                </div>
+                            </ice:panelTab>
+
+                      </ice:panelTab>
+
+                     <ice:panelTab id="harvestOptions" label="Harvesting" url="/dvn#{VDCRequest.currentVDCURL}/faces/networkAdmin/NetworkOptionsPage.xhtml&amp;tab=harvestOptions" 
+                                  rendered="#{VDCSession.loginBean.networkAdmin}">
+                        <ice:panelTabSet id="tabSetHarvest" styleClass="dvnTabs dvnSubTabs">
+                            <ice:panelTab id="manageHarvestSites" label="Harvesting Dataverses">
+                                <div jsfc="ice:panelGroup">
+                                    <div jsfc="ice:panelGroup" panelLayout="flow">
+                                        <ui:include src="/site/HarvestSitesPage.xhtml"></ui:include>
+                                    </div> 
+                                </div>
+                            </ice:panelTab>
+                            <ice:panelTab id="manageOAIHarvestingSets" label="OAI Harversting Sets">
+                                <div jsfc="ice:panelGroup">
+                                    <div jsfc="ice:panelGroup" panelLayout="flow">
+                                        <ui:include src="/networkAdmin/OAISetsPage.xhtml"></ui:include>
+                                    </div> 
+                                </div>
+                            </ice:panelTab>
+                            <ice:panelTab id="editExportSchedule" label="Settings">
+                                <div jsfc="ice:panelGroup">
+                                    <div jsfc="ice:panelGroup" panelLayout="flow">
+                                        <ui:include src="/networkAdmin/EditExportSchedulePage.xhtml"></ui:include>
+                                    </div> 
+                                    <div jsfc="ice:panelGroup" panelLayout="flow">
+                                        <ui:include src="/admin/EditLockssConfigPage.xhtml"></ui:include>
+                                    </div> 
+                                </div>
+                            </ice:panelTab>
+                        </ice:panelTabSet>
                      </ice:panelTab>
-                                    <ice:panelTab id="networkAdvancedSettings" label="Advanced">
-                                        <ui:include src="/networkAdmin/EditNetworkDVRequirementsPage.xhtml"></ui:include>
-                                          <div id="groupPanelAdvanced" class="dvnFormPadding dvnFormMargin">
-                                                <ice:commandButton id="btnSaveAdvanced" value="#{bundle.saveButtonLabel} Changes" action="#{OptionsPage.saveNetworkAdvancedSettings_action}"/>
-                                         </div>
-                                    </ice:panelTab>
-                                    <ice:panelTab id="networkCustomizartionSettings" label="Customization">
-                                                <ui:include src="/admin/EditBannerFooterPage.xhtml"></ui:include>
-                                                 <div class="dvnFormPadding dvnFormMargin">
-                                                <ice:commandButton id="saveButton" value="Save" action="#{OptionsPage.saveNetworkCustomization}"/>  
-                                                </div>
-                                    </ice:panelTab>
-                                    <ice:panelTab id="twitterSettings" label="Promote your Network" rendered="#{OptionsPage.twitterConfigured}">
 
-                                         <ice:commandLink action="#{OptionsPage.authorizeTwitter}" rendered="#{!OptionsPage.twitterEnabled}">
-                                             <ice:outputText  value="Enable Twitter"/>
-                                         </ice:commandLink>
-                                         <ice:commandLink action="#{OptionsPage.removeTwitter}" rendered="#{OptionsPage.twitterEnabled}">
-                                             <ice:outputText  value="Disable Twitter"/>
-                                         </ice:commandLink>                                        
-
-                                     <ice:outputText styleClass="dvnOptionsTableNote" value="Enable or disable automatic tweets"/>
-                                    </ice:panelTab>
-                     </ice:panelTabSet>
-                  
-              </ice:panelTab> 
-                            
-             <ice:panelTab id="permissions" label="Permissions" url="/dvn#{VDCRequest.currentVDCURL}/faces/admin/OptionsPage.xhtml&amp;tab=permissions" rendered="#{VDCSession.loginBean.networkAdmin or VDCSession.loginBean.curatorOrAbove or (not VDCRequest.currentVDC.harvestingDv and (VDCSession.loginBean.contributor or VDCRequest.currentVDC.allowRegisteredUsersToContribute))}">
+                     <ice:panelTab id="permissions" label="Permissions" url="/dvn#{VDCRequest.currentVDCURL}/faces/networkAdmin/NetworkOptionsPage.xhtml&amp;tab=permissions" rendered="#{VDCSession.loginBean.networkAdmin or VDCSession.loginBean.curatorOrAbove or (not VDCRequest.currentVDC.harvestingDv and (VDCSession.loginBean.contributor or VDCRequest.currentVDC.allowRegisteredUsersToContribute))}">
                             <div jsfc="ice:panelGroup" id="layoutPanelGroupPermissions" panelLayout="flow">
                                 <ice:panelTabSet id="tabSetPermissions" styleClass="dvnTabs dvnSubTabs">
                                     <!-- PERMISSIONS -->
-                                    <ice:panelTab id="permissionsSub" label="Manage Permissions">
-                                            <div jsfc="ice:panelGroup"  panelLayout="flow">
+                                    <ice:panelTab id="permissionsSub" label="Permissions">
+                                            <div jsfc="ice:panelGroup" panelLayout="flow">
                                                 <ui:include src="/networkAdmin/NetworkPrivilegedUsersPage.xhtml"></ui:include>
                                             </div>  
                                     </ice:panelTab>
-                                    <ice:panelTab id="usersSub" label="Manage Users">
-                                            <div jsfc="ice:panelGroup"  panelLayout="flow">
+                                    <ice:panelTab id="usersSub" label="Users">
+                                            <div jsfc="ice:panelGroup" panelLayout="flow">
                                                 <ui:include src="/networkAdmin/AllUsersPage.xhtml"></ui:include>
                                             </div>  
                                     </ice:panelTab>
-                                    <ice:panelTab id="groupsSub" label="Manage Groups">
-                                            <div jsfc="ice:panelGroup"  panelLayout="flow">
+                                    <ice:panelTab id="groupsSub" label="Groups">
+                                            <div jsfc="ice:panelGroup" panelLayout="flow">
                                                 <ui:include src="/networkAdmin/UserGroupsPage.xhtml"></ui:include>
                                             </div>  
                                     </ice:panelTab>
 
                                     <!-- Add Account-->
                                     <ice:panelTab id="addAccountSub" label="Add Account">
-                                            <div jsfc="ice:panelGroup"  panelLayout="flow">
+                                            <div jsfc="ice:panelGroup" panelLayout="flow">
                                                 <ui:include src="/login/AddAccountPage.xhtml"></ui:include>
                                             </div>  
                                     </ice:panelTab>
                                     <!-- TERMS -->
                                     <ice:panelTab id="termsSub" label="Terms">
                                         <div jsfc="ice:panelGroup">   
-                                           <div jsfc="ice:panelGroup"  panelLayout="flow">
+                                           <div jsfc="ice:panelGroup" panelLayout="flow">
                                                 <ui:include src="/networkAdmin/EditAccountUseTermsPage.xhtml"></ui:include>
                                             </div>    
-                                             <div jsfc="ice:panelGroup"  panelLayout="flow">
+                                             <div jsfc="ice:panelGroup" panelLayout="flow">
                                                 <ui:include src="/networkAdmin/EditNetworkDepositUseTermsPage.xhtml"></ui:include>
                                             </div> 
-                                            <div jsfc="ice:panelGroup"  panelLayout="flow">
+                                            <div jsfc="ice:panelGroup" panelLayout="flow">
                                                 <ui:include src="/networkAdmin/EditNetworkDownloadUseTermsPage.xhtml"></ui:include>
                                             </div>
 
@@ -204,7 +245,7 @@
                                     </ice:panelTab>
                                     <ice:panelTab id="downloadDataSub" label="Download Tracking Data">
                                         <div jsfc="ice:panelGroup">
-                                            <div jsfc="ice:panelGroup"  panelLayout="flow">
+                                            <div jsfc="ice:panelGroup" panelLayout="flow">
                                                 <ui:include src="/admin/GuestBookResponseDataPage.xhtml"></ui:include>
                                             </div> 
                                         </div>
@@ -212,10 +253,10 @@
                                 </ice:panelTabSet>
                             </div>
                         </ice:panelTab>                          
-                            <ice:panelTab id="utilties" label="Maintenance" url="/dvn#{VDCRequest.currentVDCURL}/faces/admin/OptionsPage.xhtml&amp;tab=utilities" rendered="#{VDCSession.loginBean.networkAdmin}">
+                        <ice:panelTab id="utilties" label="Maintenance" url="/dvn#{VDCRequest.currentVDCURL}/faces/networkAdmin/NetworkOptionsPage.xhtml&amp;tab=utilities" rendered="#{VDCSession.loginBean.networkAdmin}">
                                 <div jsfc="ice:panelGroup" id="layoutPanelGroupUtilities" panelLayout="flow">
                                     <ice:panelTabSet id="tabSetUtilities" styleClass="dvnTabs dvnSubTabs">
-                                        <ice:panelTab id="studyLockOptions" label="StudyLock Utilities"  rendered="#{VDCSession.loginBean.networkAdmin}">
+                                        <ice:panelTab id="studyLockOptions" label="StudyLock"  rendered="#{VDCSession.loginBean.networkAdmin}">
                                             <ice:panelGroup styleClass="dvnUtilitiesTable" >
                                                 <ice:messages id="studyLockMessage" styleClass="errorMessage"/>
                                                 <ice:outputText value="Current Locks:"/>
@@ -253,7 +294,7 @@
                                                 </div>
                                             </ice:panelGroup>          
                                         </ice:panelTab>   
-                                        <ice:panelTab id="indexUtilties" label="Index Utilities"  rendered="#{VDCSession.loginBean.networkAdmin}">
+                                        <ice:panelTab id="indexUtilties" label="Index" rendered="#{VDCSession.loginBean.networkAdmin}">
                                             <ice:panelGroup styleClass="dvnUtilitiesTable" >
                                                 <ice:messages id="indexMessage" styleClass="errorMessage"/>
                                                 <ice:outputText value="To reindex all studies, click on the button below (please note: the index directory must be empty before 'index all' can be run):"/>
@@ -286,7 +327,7 @@
                                                 </div>
                                             </ice:panelGroup>         
                                         </ice:panelTab>
-                                        <ice:panelTab id="exportOptions" label="Export Utilities"  rendered="#{VDCSession.loginBean.networkAdmin}">
+                                        <ice:panelTab id="exportOptions" label="Export" rendered="#{VDCSession.loginBean.networkAdmin}">
                                             <ice:panelGroup styleClass="dvnUtilitiesTable" >
                                                 <ice:messages id="exportMessage" styleClass="errorMessage"/>
                                                 <ice:outputText value="To run export now (all updated studies in all formats will be exported and update harvest studies will be run), click on the button below:"/>
@@ -327,7 +368,7 @@
                                                 </div>
                                             </ice:panelGroup>         
                                         </ice:panelTab> 
-                                        <ice:panelTab id="harvestOptions" label="Harvest Utilities"  rendered="#{VDCSession.loginBean.networkAdmin}">
+                                        <ice:panelTab id="harvestOptions" label="Harvest"  rendered="#{VDCSession.loginBean.networkAdmin}">
                                             <ice:panelGroup styleClass="dvnUtilitiesTable">
                                                 <ice:messages id="harvestMessage"  styleClass="errorMessage"/>
                                                 <ice:outputText value="To harvest a specific study, input the DV and the harvest identifier, and click on the button below:"/>
@@ -340,7 +381,7 @@
                                                 </div>
                                             </ice:panelGroup>         
                                         </ice:panelTab> 
-                                        <ice:panelTab id="fileOptions" label="File Utilities"  rendered="#{VDCSession.loginBean.networkAdmin}">
+                                        <ice:panelTab id="fileOptions" label="File"  rendered="#{VDCSession.loginBean.networkAdmin}">
                                             <ice:panelGroup styleClass="dvnUtilitiesTable">
                                                 <ice:messages id="fileMessage" styleClass="errorMessage"/>
                                                 <ice:outputText value="To determine the file types for files with a particular extension:"/>
@@ -358,7 +399,7 @@
                                                 </div>
                                             </ice:panelGroup>         
                                         </ice:panelTab> 
-                                         <ice:panelTab id="importOptions" label="Import Utilities"  rendered="#{VDCSession.loginBean.networkAdmin}">
+                                         <ice:panelTab id="importOptions" label="Import"  rendered="#{VDCSession.loginBean.networkAdmin}">
                                             <ice:panelGroup styleClass="dvnUtilitiesTable" >
                                                 <ice:messages id="importMessage" styleClass="errorMessage"/>
                                                 <ice:outputText value="Select the file format and the dataverse for the import, then either:"/>
@@ -413,7 +454,7 @@
                                                 </div>
                                             </ice:panelGroup>       
                                         </ice:panelTab>
-                                        <ice:panelTab id="deleteOptions" label="Delete Utilities"  rendered="#{VDCSession.loginBean.networkAdmin}">
+                                        <ice:panelTab id="deleteOptions" label="Delete"  rendered="#{VDCSession.loginBean.networkAdmin}">
                                             <ice:panelGroup styleClass="dvnUtilitiesTable" >
                                                 <ice:messages id="deleteMessage" styleClass="errorMessage"/>
                                                 <ice:outputText value="To delete arbitrary studies, input the study ids and click on the button below:"/>
@@ -426,7 +467,7 @@
                                                 </div>
                                             </ice:panelGroup>         
                                         </ice:panelTab> 
-                                        <ice:panelTab id="handleOptions" label="Handle Utilities"  rendered="#{VDCSession.loginBean.networkAdmin}">
+                                        <ice:panelTab id="handleOptions" label="Handle"  rendered="#{VDCSession.loginBean.networkAdmin}">
                                             <ice:panelGroup styleClass="dvnUtilitiesTable">
                                                 <ice:messages id="handleMessage" styleClass="errorMessage"/>
                                                 <ice:outputText value="To register all unregistered handles, click on the button below:"/>
@@ -453,7 +494,7 @@
                                                 </div>
                                             </ice:panelGroup>       
                                         </ice:panelTab> 
-                                        <ice:panelTab id="studyOptions" label="Study Utilities"  rendered="#{VDCSession.loginBean.networkAdmin}">
+                                        <ice:panelTab id="studyOptions" label="Study"  rendered="#{VDCSession.loginBean.networkAdmin}">
                                             <ice:panelGroup styleClass="dvnUtilitiesTable" >
                                                 <ice:column>
                                                     <ice:messages id="studyMessage" styleClass="errorMessage"/>
@@ -469,49 +510,9 @@
                                         </ice:panelTab>
                                     </ice:panelTabSet>
                                 </div>                  
-              </ice:panelTab> 
-              <ice:panelTab id="aboutTab" label="About" url="/dvn#{VDCRequest.currentVDCURL}/faces/admin/OptionsPage.xhtml&amp;tab=about" rendered="#{VDCSession.loginBean.networkAdmin}">
-                <table class="dvnOptionsTable" cellspacing="0" cellpadding="0" border="0">
-                                <tr>
-                                    <td class="dvnOptionsTableOption">
-                                        <ice:outputText rendered="#{MainLayoutBean.googleAnalyticsKey == null }"
-                                                        value="Google Analytics"/>
-                                        <ice:outputLink rendered="#{MainLayoutBean.googleAnalyticsKey != null }"
-                                                        id="siteStatslink"
-                                                        value="http://www.google.com/analytics/"
-                                                        target="_blank">
-                                            <ice:outputText value="#{bundlePageInfo.webStatsTitle}"/>
-                                        </ice:outputLink>
-                                    </td>
-                                    <td>
-                                        <ice:outputText styleClass="dvnOptionsTableNote" rendered="#{MainLayoutBean.googleAnalyticsKey != null }" value="#{bundlePageInfo.webStatsText}"/>
-                                        <ice:outputText styleClass="dvnOptionsTableNote" rendered="#{MainLayoutBean.googleAnalyticsKey == null }"
-                                                        id="siteStatsText"
-                                                        value="NOTE: Google Analytics is not configured for this Dataverse Network"/>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td class="dvnOptionsTableOption">
-                                        <ice:outputText value="Dataverse Network Version"/>
-                                    </td>
-                                    <td>
-                                        <ice:outputText styleClass="dvnOptionsTableNote" value="#{VersionPage.versionNumber} build number #{VersionPage.bambooBuild}"/>
-                                        <ice:outputText value=" - "/>
-                                        <ice:outputLink value="http://thedata.org/book/software-license" target="_blank">
-                                            <ice:outputText value="License Information"/>
-                                        </ice:outputLink>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td class="dvnOptionsTableOption">
-                                        <ice:outputText value="Served by"/>
-                                    </td>
-                                    <td><ice:outputText styleClass="dvnOptionsTableNote" value="#{VersionPage.serverName}"/></td>
-                                </tr>
-                            </table>                        
-              </ice:panelTab>                                            
-             </ice:panelTabSet>
-            </div>
+                        </ice:panelTab>
+                    </ice:panelTabSet>
+                </div>
             </ice:form>
         </ui:define>
     </ui:composition>

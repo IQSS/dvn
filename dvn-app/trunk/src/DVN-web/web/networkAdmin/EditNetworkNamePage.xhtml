@@ -1,33 +1,31 @@
-
-<html xmlns="http://www.w3.org/1999/xhtml"
-      xmlns:ui="http://java.sun.com/jsf/facelets"
+<div xmlns:ui="http://java.sun.com/jsf/facelets"
       xmlns:h="http://java.sun.com/jsf/html"
       xmlns:f="http://java.sun.com/jsf/core"
       xmlns:jsp="http://java.sun.com/JSP/Page"
-      xmlns:ice="http://www.icesoft.com/icefaces/component">
+      xmlns:ice="http://www.icesoft.com/icefaces/component"
+      xmlns:dvn="/WEB-INF/tlds/dvn-components"
+      jsfc="ice:panelGroup">
 
-        <div class="dvn_section">
-          <div class="dvn_sectionTitle">
-            <ice:outputText value="#{bundlePageInfo.editDvnNameTitle}"/>
-          </div>
-          <div class="dvn_sectionBox">
-            <div class="dvn_margin12">
-              <div jsfc="ice:panelGroup" styleClass="dvnInformationMessage">
-                <div class="dvnMsgBlockContainer">
-                  <ice:outputText value="#{bundlePageInfo.editDvnNameHelp}" escape="false"/>
-                </div>
-              </div>
-              <div jsfc="ice:panelGroup" styleClass="#{OptionsPage.msg.styleClass}" rendered="#{!empty OptionsPage.msg.messageText}">
-                <ice:outputText id="statusMessage" value="#{OptionsPage.msg.messageText}"/>
-              </div>
-              <div jsfc="ice:panelGroup">
-                <ice:outputText id="outputText2" value="Network Name "/>
-                <ice:inputText binding="#{OptionsPage.textFieldNetworkName}" id="textField1" size="20" value="#{OptionsPage.networkName}" onkeypress="if (window.event) return processEvent('', 'form1:button1'); else return processEvent(event, 'form1:button1');"/>
-              </div>
-              <div jsfc="ice:panelGroup" id="groupPanel2" styleClass="dvnFormPadding dvnFormMargin">
-              </div>
-            </div>
-          </div>
-        </div>
+          <table class="dvnOptionsTable" cellspacing="0" cellpadding="0" border="0">
+            <tr>
+                <td class="dvnOptionsTableOption">
+                    <ice:outputText value="Network Name"/>
+                </td>
+                <td>
+                    <div jsfc="ice:panelGroup" styleClass="dvnInformationMessage">
+                        <div class="dvnMsgBlockContainer">
+                          <ice:outputText value="#{bundlePageInfo.editDvnNameHelp}" escape="false"/>
+                        </div>
+                    </div>
+                    <div jsfc="ice:panelGroup" styleClass="#{OptionsPage.msg.styleClass}" rendered="#{!empty OptionsPage.msg.messageText}">
+                        <ice:outputText id="statusMessage" value="#{OptionsPage.msg.messageText}"/>
+                    </div>
+                    <div jsfc="ice:panelGroup">
+                        <ice:outputText value="Network Name "/>
+                        <ice:inputText binding="#{OptionsPage.textFieldNetworkName}" id="textField1" size="20" value="#{OptionsPage.networkName}" onkeypress="if (window.event) return processEvent('', 'form1:button1'); else return processEvent(event, 'form1:button1');"/>
+                    </div>
+                </td>
+            </tr>
+          </table>
 
-</html>
+</div>

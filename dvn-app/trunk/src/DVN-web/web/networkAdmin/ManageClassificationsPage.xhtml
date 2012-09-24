@@ -1,15 +1,11 @@
-
-<html xmlns="http://www.w3.org/1999/xhtml"
-      xmlns:ui="http://java.sun.com/jsf/facelets"
+<div xmlns:ui="http://java.sun.com/jsf/facelets"
       xmlns:h="http://java.sun.com/jsf/html"
       xmlns:f="http://java.sun.com/jsf/core"
       xmlns:jsp="http://java.sun.com/JSP/Page"
       xmlns:ice="http://www.icesoft.com/icefaces/component"
-      xmlns:dvn="/WEB-INF/tlds/dvn-components">
-        <div class="dvn_section">
-          <div class="dvn_sectionTitle">
-            <ice:outputText value="#{bundlePageInfo.manageClassificationsTitle}"/>
-          </div>
+      xmlns:dvn="/WEB-INF/tlds/dvn-components"
+      jsfc="ice:panelGroup">
+
           <div class="dvnManageClassificationsTableTop">
             <div jsfc="ice:panelGroup" styleClass="dvn_margin12 dvnInformationMessage">
                 <div class="dvnMsgBlockContainer">
@@ -110,5 +106,5 @@
               </ice:outputLink>
             </ice:column>
           </ice:dataTable>
-        </div>
-</html>
+
+</div>

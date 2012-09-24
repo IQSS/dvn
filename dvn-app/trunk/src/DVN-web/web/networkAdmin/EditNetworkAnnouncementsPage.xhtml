@@ -1,36 +1,36 @@
-
-<html xmlns="http://www.w3.org/1999/xhtml"
-      xmlns:ui="http://java.sun.com/jsf/facelets"
+<div xmlns:ui="http://java.sun.com/jsf/facelets"
       xmlns:h="http://java.sun.com/jsf/html"
       xmlns:f="http://java.sun.com/jsf/core"
       xmlns:jsp="http://java.sun.com/JSP/Page"
-      xmlns:ice="http://www.icesoft.com/icefaces/component">
-        <div class="dvn_section">
-          <div class="dvn_sectionTitle">
-            <ice:outputText value="#{bundlePageInfo.editDvnDescriptionTitle}"/>
-          </div>
-          <div class="dvn_sectionBox">
-            <div class="dvn_margin12">
-              <div jsfc="ice:panelGroup" styleClass="dvnInformationMessage">
-                <div class="dvnMsgBlockContainer">
-                  <ice:outputText value="#{bundlePageInfo.editDvnDescriptionHelp}" escape="false"/>
-                </div>
-              </div>
-              <div jsfc="ice:panelGroup" id="groupPanel2Label">
-                <ice:selectBooleanCheckbox id="chkEnableNetworkAnnouncements" value="#{OptionsPage.chkEnableNetworkAnnouncements}"/>
-                <ice:outputText id="outputText4" value=" #{bundle.enableNetworkAnnouncementsLabel}"/>
-              </div>
-              <ice:message id="networkAnnouncementsMsg" for="networkAnnouncements" styleClass="errorMessage"/>
-              <br/>
-              <div jsfc="ice:panelGroup" id="groupPanel3">
-                <ice:inputTextarea cols="100" rows="15" styleClass="formHtmlEnabled"
-                                   id="networkAnnouncements" value="#{OptionsPage.networkAnnouncements}">
-                  <f:validator validatorId="XhtmlValidator"/>
-                </ice:inputTextarea>
-              </div>
-              <div jsfc="ice:panelGroup" id="groupPanel5" styleClass="dvnFormPadding dvnFormMargin">
-              </div>
-            </div>
-          </div>
-        </div>
-</html>
+      xmlns:ice="http://www.icesoft.com/icefaces/component"
+      xmlns:dvn="/WEB-INF/tlds/dvn-components"
+      jsfc="ice:panelGroup">
+
+          <table class="dvnOptionsTable" cellspacing="0" cellpadding="0" border="0">
+            <tr>
+                <td class="dvnOptionsTableOption">
+                    <ice:outputText value="Network Description"/>
+                </td>
+                <td>
+                    <div jsfc="ice:panelGroup" styleClass="dvnInformationMessage">
+                        <div class="dvnMsgBlockContainer">
+                          <ice:outputText value="#{bundlePageInfo.editDvnDescriptionHelp}" escape="false"/>
+                        </div>
+                    </div>
+                    <div jsfc="ice:panelGroup">
+                        <ice:selectBooleanCheckbox id="chkEnableNetworkAnnouncements" value="#{OptionsPage.chkEnableNetworkAnnouncements}"/>
+                        <ice:outputText value=" #{bundle.enableNetworkAnnouncementsLabel}"/>
+                    </div>
+                    <ice:message id="networkAnnouncementsMsg" for="networkAnnouncements" styleClass="errorMessage"/>
+                    <br/>
+                    <div jsfc="ice:panelGroup">
+                        <ice:inputTextarea cols="100" rows="15" styleClass="formHtmlEnabled"
+                                           id="networkAnnouncements" value="#{OptionsPage.networkAnnouncements}">
+                          <f:validator validatorId="XhtmlValidator"/>
+                        </ice:inputTextarea>
+                    </div>
+                </td>
+            </tr>
+          </table>
+
+</div>

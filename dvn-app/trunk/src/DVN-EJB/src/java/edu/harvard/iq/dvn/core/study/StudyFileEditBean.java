@@ -34,6 +34,7 @@ import java.io.IOException;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.Map; 
 
 
 
@@ -167,7 +168,17 @@ public class StudyFileEditBean implements Serializable {
     private String ingestedSystemFileLocation;
     private boolean deleteFlag;
     private Long sizeFormatted = null;
+    
+    private java.util.Map<String, String> extendedVariableLabelMap = null; 
+    
+    public void setExtendedVariableLabelMap (Map<String,String> varLabelMap ) {
+        extendedVariableLabelMap = varLabelMap;
+    }
 
+    public Map<String,String> getExtendedVariableLabelMap () {
+        return extendedVariableLabelMap; 
+    }
+    
     public FileMetadata getFileMetadata() {
         return fileMetadata;
     }

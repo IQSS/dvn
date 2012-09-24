@@ -33,6 +33,8 @@ package edu.harvard.iq.dvn.core.web.study;
 
 import edu.harvard.iq.dvn.core.web.common.VDCBaseBean;
 import java.io.File;
+import java.io.FileInputStream; 
+import java.io.FileOutputStream; 
 import javax.ejb.EJB;
 import javax.faces.application.FacesMessage;
 import javax.faces.component.UIComponent;
@@ -46,6 +48,8 @@ import javax.faces.model.SelectItem;
 import javax.faces.model.SelectItemGroup;
 import java.util.*;
 import java.util.logging.*;
+import java.util.zip.ZipInputStream;
+import java.util.zip.ZipEntry; 
 import org.icefaces.component.fileentry.*;
 //import com.icesoft.faces.component.inputfile.InputFile;
 
@@ -64,6 +68,7 @@ import edu.harvard.iq.dvn.core.util.StringUtil;
 //import edu.harvard.iq.dvn.ingest.org.thedata.statdataio.*;
 //import edu.harvard.iq.dvn.ingest.org.thedata.statdataio.metadata.*;
 import edu.harvard.iq.dvn.ingest.dsb.DSBWrapper;
+import edu.harvard.iq.dvn.core.study.TabularDataFile;
 import javax.faces.bean.ViewScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -260,7 +265,7 @@ public class AddFilesPage extends VDCBaseBean implements java.io.Serializable {
         
         StudyFileEditBean fileBean = null;
 
-        if ( ("spss".equals(selectFileType.getValue()) || "ddi".equals(selectFileType.getValue())) && (!controlCardIngestInProgress)) {
+        if ( ("spss".equals(selectFileType.getValue()) || "ddi".equals(selectFileType.getValue()) || "porextra".equals(selectFileType.getValue())) && (!controlCardIngestInProgress)) {
             // This is a 2 step process:
             // First (in this step) they upload the control card;
             // we store its file bean for the next step, where
@@ -333,6 +338,15 @@ public class AddFilesPage extends VDCBaseBean implements java.io.Serializable {
 
             // Add the fileBean to the list:
             fileList.add( fileBean );
+        } else if ("multizip".equals(selectFileType.getValue())) {
+            List <StudyFileEditBean> fileBeanList = null;
+            
+            fileBeanList = createStudyFilesFromZip (uploadedFile);
+            
+            for (StudyFileEditBean fb : fileBeanList) {
+                fileList.add(fb);
+            }
+            
         } else {
             // This is a simple, 1-file ingest, we simply add the file bean
             // to the file list:
@@ -420,7 +434,17 @@ public class AddFilesPage extends VDCBaseBean implements java.io.Serializable {
 
             //  File fstudy = FileUtil.createTempFile(sessionId, file.getName());
             if (controlCardTempLocation != null) {
-                f = new StudyFileEditBean(file, studyService.generateFileSystemNameSequence(), study,controlCardTempLocation, controlCardType);
+                 if ("porextra".equals(controlCardType)) {
+                     Map<String,String> varLabelMap = null; 
+                     varLabelMap = createLabelMap (controlCardTempLocation);
+                     f = new StudyFileEditBean(file, studyService.generateFileSystemNameSequence(), study);
+                     if (f != null && f.getStudyFile() instanceof TabularDataFile) {
+                         f.setExtendedVariableLabelMap(varLabelMap);
+                     }
+                     
+                 } else {   
+                    f = new StudyFileEditBean(file, studyService.generateFileSystemNameSequence(), study,controlCardTempLocation, controlCardType);
+                 }
             } else if ("other".equals(selectFileType.getValue())) {
                 // Forced ingest as non-subsettable, even if it is a potentially subsettable type.
                 f = new StudyFileEditBean(file, studyService.generateFileSystemNameSequence(), study, true);
@@ -431,14 +455,91 @@ public class AddFilesPage extends VDCBaseBean implements java.io.Serializable {
             f.setSizeFormatted(file.length());
 
         } catch (Exception ex) {
-            String m = "Fail to create the study file. ";
+            String m = "Failed to create the study file. ";
             dbgLog.warning(m);
             dbgLog.warning(ex.getMessage());
         }
         return f;
     }
 
+    private Map<String,String> createLabelMap (String extendedLabelsFileLocation) {
+        Map<String,String> varLabelMap = new HashMap<String,String>(); 
+        
+        // Simply open the text file supplied, and read the variable-lable 
+        // pairs supplied: 
+        
+        return varLabelMap;
+    }
 
+    private List <StudyFileEditBean> createStudyFilesFromZip(File uploadedInputFile) {
+        List <StudyFileEditBean> fbList = new ArrayList <StudyFileEditBean>();
+        
+        // This is a Zip archive that we want to unpack, then upload/ingest individual
+        // files separately
+        
+        ZipInputStream ziStream = null; 
+        ZipEntry zEntry = null; 
+        FileOutputStream tempOutStream = null; 
+        
+        try {
+            // Create ingest directory for the study: 
+            File dir = new File(uploadedInputFile.getParentFile(), study.getId().toString() );
+            if ( !dir.exists() ) {
+                dir.mkdir();
+            }
+            
+            // Open Zip stream: 
+            
+            ziStream = new ZipInputStream (new FileInputStream (uploadedInputFile));
+            
+            if (ziStream == null) {
+                return null; 
+            }
+            while ((zEntry = ziStream.getNextEntry()) != null) {
+                
+                File tempUploadedFile = FileUtil.createTempFile(dir, zEntry.getName());
+            
+                tempOutStream = new FileOutputStream (tempUploadedFile); 
+                
+                byte[] dataBuffer = new byte[8192];
+                int i = 0;
+                
+                while ((i = ziStream.read(dataBuffer)) > 0) {
+                    tempOutStream.write(dataBuffer, 0, i);
+                    tempOutStream.flush(); 
+                }
+                
+                ziStream.closeEntry(); 
+                tempOutStream.close(); 
+                
+                // We now have the unzipped file saved in the upload directory;
+                
+                
+                StudyFileEditBean tempFileBean = new StudyFileEditBean(tempUploadedFile, studyService.generateFileSystemNameSequence(), study);
+                tempFileBean.setSizeFormatted(tempUploadedFile.length());
+                
+                fbList.add(tempFileBean);
+                
+            }
+            
+        } catch (Exception ex) {
+            String msg = "Failed ot unpack Zip file/create individual study files";
+            
+            dbgLog.warning(msg); 
+            dbgLog.warning(ex.getMessage());
+            
+            //return null; 
+        } finally {
+            if (ziStream != null) {
+                try {ziStream.close();} catch (Exception zEx) {}
+            }
+            if (tempOutStream != null) {
+                try {tempOutStream.close();} catch (Exception ioEx) {}
+            }
+        }
+        
+        return fbList; 
+    }
 
     /**
      * <p>This method is bound to the inputFile component and is executed
@@ -565,6 +666,9 @@ public class AddFilesPage extends VDCBaseBean implements java.io.Serializable {
         return controlCardIngestInProgress && "ddi".equals(controlCardType);
     }
 
+    public boolean isPorExtraIngestInProgress() {
+        return controlCardIngestInProgress && "porextra".equals(controlCardType);
+    }
 
     public boolean isControlCardIngestRequested() {
         dbgLog.fine("AddFiles: is CCrequested: selectFileType value="+selectFileType.getValue());
@@ -594,6 +698,16 @@ public class AddFilesPage extends VDCBaseBean implements java.io.Serializable {
         // as above, but for DDI card only:
 
         if ( ("ddi".equals(selectFileType.getValue())) && (!controlCardIngestInProgress)) {
+            return true;
+        }
+
+        return false;
+    }
+    
+    public boolean isPorExtraIngestRequested() {
+        // as above, but for DDI card only:
+
+        if ( ("porextra".equals(selectFileType.getValue())) && (!controlCardIngestInProgress)) {
             return true;
         }
 
@@ -730,7 +844,7 @@ public class AddFilesPage extends VDCBaseBean implements java.io.Serializable {
         if (fileTypes == null) {
             fileTypes = new ArrayList();
 
-            fileTypesSubsettable = new SelectItem[5];
+            fileTypesSubsettable = new SelectItem[6];
             fileTypesNetwork = new SelectItem[1];
             //fileTypesOther = new SelectItem[1];
 
@@ -740,13 +854,15 @@ public class AddFilesPage extends VDCBaseBean implements java.io.Serializable {
             fileTypesSubsettable[2] = new SelectItem("dta", "Stata");
             fileTypesSubsettable[3] = new SelectItem("spss", "CSV (w/SPSS card)");
             fileTypesSubsettable[4] = new SelectItem("ddi", "TAB (w/DDI)");
+            fileTypesSubsettable[5] = new SelectItem("porextra", "SPSS/POR,(w/labels)");
 
             fileTypes.add( new SelectItemGroup("Tabular Data", "", false, fileTypesSubsettable) );
 
             fileTypesNetwork[0] = new SelectItem("graphml", "GraphML");
 
             fileTypes.add( new SelectItemGroup("Network Data", "", false, fileTypesNetwork) );
-
+            
+            fileTypes.add( new SelectItem("multizip", "Zip Archive (Multiple Files)"));
             fileTypes.add( new SelectItem("other", "Other") );
         }
 

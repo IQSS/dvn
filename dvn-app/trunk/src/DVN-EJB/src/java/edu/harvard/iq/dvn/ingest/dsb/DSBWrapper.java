@@ -262,6 +262,11 @@ public class DSBWrapper implements java.io.Serializable  {
             // As of now, there are 2 supported methods: 
             // 1. CSV raw data file + SPSS control card;
             // 2. TAB raw data file + DDI control card;
+            // NOTE, that "POR file with the Extended Labels" is NOT a 2-file.
+            // control card-based ingest! Rather, we ingest the file as a regular
+            // SPSS/POR dataset, then modify the variable labels in the resulting
+            // TabularFile. 
+            
             
             File rawDataFile = tempFile;
             
@@ -339,6 +344,17 @@ public class DSBWrapper implements java.io.Serializable  {
 
         // store the tab-file location
         file.setIngestedSystemFileLocation(newFile.getAbsolutePath());
+        
+        // finally, if we have an extended variable map, let's replace the 
+        // labels that have been found in the data file: 
+        
+        if (file.getExtendedVariableLabelMap() != null) {
+            for (String varName : file.getExtendedVariableLabelMap().keySet()) {
+                if (smd.getVariableLabel().containsKey(varName)) {
+                    smd.getVariableLabel().put(varName,file.getExtendedVariableLabelMap().get(varName));
+                }
+            }
+        }
 
         // return xmlToParse;
         DDIWriter dw = new DDIWriter(smd);
@@ -357,7 +373,18 @@ public class DSBWrapper implements java.io.Serializable  {
             // As of now, there are 2 supported control card-based ingests:
             // 1. CSV raw data file + SPSS control card;
             // 2. TAB raw data file + DDI control card;
+            // plus
+            // 3. SPSS/Por data file + extended variable labels in a text file,
+            // which is not a control card ingest, strictly speaking, but 
+            // we are using the same "2 file ingest" framework for it.  
 
+            if ("porextra".equals(controlCardType)) {
+                // Should be validated for simple consistency - each line 
+                // must contain at least one TAB character, separating 2 
+                // non-empty character strings.
+                return; 
+            }
+            
             // We are going to check if we have Ingest readers for the
             // control card supplied:
 

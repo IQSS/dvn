@@ -125,12 +125,14 @@
                                         <ice:panelTab id="advancedSub" label="Advanced">
                                             <div jsfc="ice:panelGroup">
                                                 <table class="dvnOptionsTable" cellspacing="0" cellpadding="0" border="0">
-                                                    <ui:fragment rendered="#{VDCRequest.currentVDC.harvestingDv and VDCSession.loginBean.networkAdmin == true}">
-                                                        <tr>
-                                                            <ui:include src="/site/EditHarvestSitePage.xhtml"></ui:include>
-                                                            <td><ice:outputText styleClass="dvnOptionsTableNote" value="#{bundlePageInfo.dvHarvestSettingsText}"/></td>
-                                                        </tr>
-                                                    </ui:fragment>
+                                                                                                                <td class="dvnOptionsTableOption">
+                                                                <ice:outputLink id="hyperlink15b" value="/dvn#{VDCRequest.currentVDCURL}/faces/site/EditHarvestSitePage.xhtml">
+                                                                    <f:param name="harvestId" value="#{VDCRequest.currentVDC.harvestingDataverse.id}"/>
+                                                                    <f:param name="from" value="myOptions"/>
+                                                                    <ice:outputText id="hyperlink15bText" value="#{bundlePageInfo.dvHarvestSettingsTitle}"/>
+                                                                </ice:outputLink>
+                                                            </td>
+
                                                     <tr>
                                                         <ui:include src="EditLockssConfigPage.xhtml"></ui:include>
                                                     </tr>

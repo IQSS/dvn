@@ -5,7 +5,19 @@
                       xmlns:ice="http://www.icesoft.com/icefaces/component"
                       xmlns:dvn="/WEB-INF/tlds/dvn-components"
                       jsfc="ice:panelGroup">
-
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+</head>
+<body>
+  <ui:composition template="/template.xhtml">
+    <ui:param name="pageTitle" value="#{EditHarvestSitePage.pageTitle} - #{VDCRequest.dataversePageTitle}"/>
+        <ui:define name="metadata">
+                <f:metadata>
+                    <f:viewParam name="harvestId" value ="#{EditHarvestSitePage.harvestId}"/>
+                    <f:event type="preRenderView" listener="#{EditHarvestSitePage.preRenderView}" />
+                </f:metadata>
+        </ui:define>
+    <ui:define name="body">
       <script type="text/javascript">
           // <![CDATA[
           function checkSubsetting( copyValue ) {
@@ -79,8 +91,10 @@
           }
           //]]>
       </script>
+      <ice:form id="form1">
+        <ice:inputHidden id="vdcId" value="#{VDCRequest.currentVDCId}"/>
         <input type="hidden" name="pageName" value="EditHarvestSitePage"/>
-        <ice:inputHidden id="harvestId" value="#{OptionsPage.harvestId}"/>
+        <ice:inputHidden id="harvestId" value="#{EditHarvestSitePage.harvestId}"/>
 
               <div jsfc="ice:panelGroup" styleClass="dvnInformationMessage">
                 <div class="dvnMsgBlockContainer">
@@ -96,9 +110,9 @@
                     <td>
                         <ice:selectOneRadio id="harvestType"
                                             layout="pageDirection"
-                                            binding="#{OptionsPage.inputHarvestType}"
+                                            binding="#{EditHarvestSitePage.inputHarvestType}"
                                             onclick="hideScheduling()"
-                                            value="#{OptionsPage.harvestingDataverse.harvestType}"
+                                            value="#{EditHarvestSitePage.harvestingDataverse.harvestType}"
                                             required="true"
                                             requiredMessage="This field is required.">
                             <f:selectItem itemLabel="OAI Server" itemValue="oai"/>
@@ -111,7 +125,7 @@
                         <ice:outputText value="Dataverse Name"/>
                     </td>
                     <td>
-                        <ice:inputText id="dataverseNameHarvest" value="#{OptionsPage.dataverseNameHarvest}" required="true" requiredMessage="This field is required." validator="#{OptionsPage.validateName}" size="60"/>
+                        <ice:inputText id="dataverseName" value="#{EditHarvestSitePage.dataverseName}" required="true" requiredMessage="This field is required." validator="#{EditHarvestSitePage.validateName}" size="60"/>
                         <ice:message styleClass="errorMessage" for="dataverseName"/>
                         <br/>
                         <ice:outputText styleClass="vdcHelpText" value="Name used to refer to this dataverse in Dataverse Network Homepage and other pages."/>
@@ -122,7 +136,7 @@
                         <ice:outputText value="Dataverse Alias"/>
                     </td>
                     <td>
-                        <ice:inputText id="dataverseAliasHarvest" value="#{OptionsPage.dataverseAliasHarvest}" validator="#{OptionsPage.validateAlias}" required="true" requiredMessage="This field is required." />
+                        <ice:inputText id="dataverseAlias" value="#{EditHarvestSitePage.dataverseAlias}" validator="#{EditHarvestSitePage.validateAlias}" required="true" requiredMessage="This field is required." />
                         <ice:message styleClass="errorMessage" for="dataverseAlias"/>
                         <br/>
                         <ice:outputText styleClass="vdcHelpText" value="Short name used to build the URL for this dataverse, e.g., http://.../dv/'alias'. It is case sensitive."/>
@@ -133,7 +147,7 @@
                         <ice:outputText value="Dataverse Affiliation"/>
                     </td>
                     <td>
-                        <ice:inputText id="dataverseAffiliationHarvest" value="#{OptionsPage.dataverseAffiliationHarvest}"/>
+                        <ice:inputText id="dataverseAffiliation" value="#{EditHarvestSitePage.dataverseAffiliation}"/>
                         <ice:message styleClass="errorMessage" for="dataverseAffiliation"/>
                         <br/>
                         <ice:outputText styleClass="vdcHelpText" value="University, center, or research project."/>
@@ -144,7 +158,7 @@
                         <ice:outputText value="Server URL"/>
                     </td>
                     <td>
-                        <ice:inputText id="dataverseServerHarvest" validator="#{OptionsPage.validateOAIServer}" value="#{OptionsPage.harvestingDataverse.serverUrl}"  required="true" requiredMessage="This field is required." size="60">
+                        <ice:inputText id="dataverseServer" validator="#{EditHarvestSitePage.validateOAIServer}" value="#{EditHarvestSitePage.harvestingDataverse.serverUrl}"  required="true" requiredMessage="This field is required." size="60">
                             <f:validator validatorId="UrlValidator"/>
                         </ice:inputText>
                         <ice:commandButton value="Validate"/>
@@ -152,36 +166,36 @@
                         <br/>
                         <ice:outputText styleClass="vdcHelpText" value="Enter server name, e.g., http://dvn.iq.harvard.edu/dvn/OAIHandler"/>
                         <ice:outputText styleClass="errorMessageBlock" value="This Server does not support sets. If you are harvesting another DVN and a set is not specified, all studies owned by that DVN will be harvested (without including studies harvested by that DVN)."
-                                        rendered="#{OptionsPage.editHarvestSiteService.harvestingSets==null and OptionsPage.harvestingDataverse.serverUrl !=null}"/>
+                                        rendered="#{EditHarvestSitePage.editHarvestSiteService.harvestingSets==null and EditHarvestSitePage.harvestingDataverse.serverUrl !=null}"/>
                     </td>
                   </tr>
               </table>
               <ice:panelGrid cellpadding="0" cellspacing="0" columns="2" width="100%"
-                             id="gridPanel1Harvest" styleClass="dvnPermissionsTable"
+                             id="gridPanel1" styleClass="dvnPermissionsTable"
                              columnClasses="dvnPermissionsTableOption, dvnPermissionsTableOptionCol2"
-                             rendered="#{not empty OptionsPage.editHarvestSiteService.harvestingSets}">
+                             rendered="#{not empty EditHarvestSitePage.editHarvestSiteService.harvestingSets}">
                 <ice:column>
                   <ice:outputText value="Harvesting Set"/>
                 </ice:column>
                 <ice:column>
-                  <ice:selectOneMenu id="radioButtonList1" value="#{OptionsPage.harvestingDataverse.harvestingSet}">
+                  <ice:selectOneMenu id="radioButtonList1" value="#{EditHarvestSitePage.harvestingDataverse.harvestingSet}">
                     <f:selectItem itemValue="" itemLabel="No Set (harvest all)"/>
-                    <f:selectItems id="radio1SelectItem" value="#{OptionsPage.harvestingSetsSelect}"/>
+                    <f:selectItems id="radio1SelectItem" value="#{EditHarvestSitePage.harvestingSetsSelect}"/>
                   </ice:selectOneMenu>
                   <br/>
                   <ice:outputText styleClass="vdcHelpText" value="Select the set you would like to harvest. If you are harvesting another DVN and a set is not specified, all studies owned by that DVN will be harvested (without including studies harvested by that DVN)."/>
                 </ice:column>
               </ice:panelGrid>
               <ice:panelGrid cellpadding="0" cellspacing="0" columns="2" width="100%"
-                             id="gridPanel2Harvest" styleClass="dvnPermissionsTable"
+                             id="gridPanel2" styleClass="dvnPermissionsTable"
                              columnClasses="dvnPermissionsTableOption, dvnPermissionsTableOptionCol2"
-                             rendered="#{not empty OptionsPage.editHarvestSiteService.metadataFormats}">
+                             rendered="#{not empty EditHarvestSitePage.editHarvestSiteService.metadataFormats}">
                 <ice:column>
                   <ice:outputText value="Harvesting Format"/>
                 </ice:column>
                 <ice:column>
-                  <ice:selectOneMenu value="#{OptionsPage.editHarvestSiteService.selectedMetadataPrefixId}">
-                    <f:selectItems value="#{OptionsPage.metadataFormatsSelect}"/>
+                  <ice:selectOneMenu value="#{EditHarvestSitePage.editHarvestSiteService.selectedMetadataPrefixId}">
+                    <f:selectItems value="#{EditHarvestSitePage.metadataFormatsSelect}"/>
                   </ice:selectOneMenu>
                   <br/>
                   <ice:outputText styleClass="vdcHelpText" value="This is the XML format when used harvesting studies from this Server."/>
@@ -193,9 +207,9 @@
                         <ice:outputText value="Handle Registration"/>
                     </td>
                     <td>
-                        <ice:selectOneMenu binding="#{OptionsPage.handlePrefixSelectOneMenu}" value="#{OptionsPage.editHarvestSiteService.selectedHandlePrefixId}" >
+                        <ice:selectOneMenu binding="#{EditHarvestSitePage.handlePrefixSelectOneMenu}" value="#{EditHarvestSitePage.editHarvestSiteService.selectedHandlePrefixId}" >
                             <f:selectItem itemValue="" itemLabel="Do not register harvested studies (studies must already have a handle)"/>
-                            <f:selectItems value="#{OptionsPage.handlePrefixSelect}"/>
+                            <f:selectItems value="#{EditHarvestSitePage.handlePrefixSelect}"/>
                         </ice:selectOneMenu>
                     </td>
                   </tr>
@@ -207,7 +221,7 @@
                         <ice:outputText value="Schedule Harvesting"/>
                     </td>
                     <td>
-                        <ice:selectBooleanCheckbox binding="#{OptionsPage.scheduledCheckbox}" id="scheduledCheckBox" value="#{OptionsPage.harvestingDataverse.scheduled}" onclick='updateScheduleInput();'/>
+                        <ice:selectBooleanCheckbox binding="#{EditHarvestSitePage.scheduledCheckbox}" id="scheduledCheckBox" value="#{EditHarvestSitePage.harvestingDataverse.scheduled}" onclick='updateScheduleInput();'/>
                         <ice:outputText id="outputText15" value=" Enable scheduled harvest based on settings below."/>
                     </td>
                   </tr>
@@ -216,7 +230,7 @@
                         <ice:outputText value="Scheduled Harvesting Period"/>
                     </td>
                     <td>
-                        <ice:selectOneMenu binding="#{OptionsPage.schedulePeriod}" validator="#{OptionsPage.validateSchedulePeriod}" id="selectSchedulePeriod" value="#{OptionsPage.harvestingDataverse.schedulePeriod}"  onchange='updateScheduleInput();' >
+                        <ice:selectOneMenu binding="#{EditHarvestSitePage.schedulePeriod}" validator="#{EditHarvestSitePage.validateSchedulePeriod}" id="selectSchedulePeriod" value="#{EditHarvestSitePage.harvestingDataverse.schedulePeriod}"  onchange='updateScheduleInput();' >
                             <f:selectItem itemValue="notSelected" itemLabel="Not Selected"/>
                             <f:selectItem itemValue="daily" itemLabel="Harvest daily"/>
                             <f:selectItem itemValue="weekly" itemLabel="Harvest weekly"/>
@@ -230,11 +244,11 @@
                     </td>
                     <td>
                         <!--
-                        <ice:inputText required="true" requiredMessage="This field is required." id="inputScheduleHourOfDay" value="#{OptionsPage.harvestingDataverse.scheduleHourOfDay}">
+                        <ice:inputText required="true" requiredMessage="This field is required." id="inputScheduleHourOfDay" value="#{EditHarvestSitePage.harvestingDataverse.scheduleHourOfDay}">
                             <f:validateLongRange minimum="0" maximum="23" />
                         </ice:inputText>
                         -->
-                        <ice:selectOneMenu validator="#{OptionsPage.validateHourOfDay}" id="inputScheduleHourOfDay" value="#{OptionsPage.harvestingDataverse.scheduleHourOfDay}">
+                        <ice:selectOneMenu validator="#{EditHarvestSitePage.validateHourOfDay}" id="inputScheduleHourOfDay" value="#{EditHarvestSitePage.harvestingDataverse.scheduleHourOfDay}">
                             <f:selectItem itemValue="-1" itemLabel="Not Selected"/>
                             <f:selectItem itemValue="0" itemLabel="12:00 AM"/>
                             <f:selectItem itemValue="1" itemLabel="1:00 AM"/>
@@ -270,11 +284,11 @@
                     </td>
                     <td>
                         <!--
-                        <ice:inputText required="true" requiredMessage="This field is required." id="inputScheduleDayOfWeek" value="#{OptionsPage.harvestingDataverse.scheduleDayOfWeek}">
+                        <ice:inputText required="true" requiredMessage="This field is required." id="inputScheduleDayOfWeek" value="#{EditHarvestSitePage.harvestingDataverse.scheduleDayOfWeek}">
                             <f:validateLongRange minimum="1" maximum="7"/>
                         </ice:inputText>
                         -->
-                        <ice:selectOneMenu validator="#{OptionsPage.validateDayOfWeek}" id="inputScheduleDayOfWeek" value="#{OptionsPage.harvestingDataverse.scheduleDayOfWeek}">
+                        <ice:selectOneMenu validator="#{EditHarvestSitePage.validateDayOfWeek}" id="inputScheduleDayOfWeek" value="#{EditHarvestSitePage.harvestingDataverse.scheduleDayOfWeek}">
                             <f:selectItem itemValue="-1" itemLabel="Not Selected"/>
                             <f:selectItem itemValue="1" itemLabel="Sunday"/>
                             <f:selectItem itemValue="2" itemLabel="Monday"/>
@@ -295,7 +309,7 @@
                         <ice:outputText value="File Permissions"/>
                     </td>
                     <td>
-                        <ice:selectOneMenu id="dropdown3" value="#{OptionsPage.filesRestricted}" onchange="checkSubsetting(true)">
+                        <ice:selectOneMenu id="dropdown3" value="#{EditHarvestSitePage.filesRestricted}" onchange="checkSubsetting(true)">
                             <f:selectItem itemLabel="Public" itemValue="false"/>
                             <f:selectItem itemLabel="Restricted" itemValue="true"/>
                         </ice:selectOneMenu>
@@ -308,7 +322,7 @@
                         <ice:outputText value="Subset Permissions"/>
                     </td>
                     <td>
-                        <ice:selectOneMenu id="dropdown4" value="#{OptionsPage.subsetRestrictedWrapper}">
+                        <ice:selectOneMenu id="dropdown4" value="#{EditHarvestSitePage.subsetRestrictedWrapper}">
                             <f:selectItem itemLabel="Public" itemValue="false"/>
                             <f:selectItem itemLabel="Restricted" itemValue="true"/>
                         </ice:selectOneMenu>
@@ -321,14 +335,14 @@
                         <ice:outputText value="Restricted File User Access"/>
                     </td>
                     <td>
-                        <ice:inputText binding="#{OptionsPage.userInputTextHarvest}" value="#{OptionsPage.addUserName}"/>
-                        <ice:commandButton value="Add" actionListener="#{OptionsPage.addUser}"/>
+                        <ice:inputText binding="#{EditHarvestSitePage.userInputText}" value="#{EditHarvestSitePage.addUserName}"/>
+                        <ice:commandButton value="Add" actionListener="#{EditHarvestSitePage.addUser}"/>
                         <br/>
                         <ice:outputText styleClass="vdcHelpText" value="Enter username to allow them to access restricted studies."/>
-                        <ice:dataTable binding="#{OptionsPage.userTableHarvest}" cellpadding="0" cellspacing="0"
+                        <ice:dataTable binding="#{EditHarvestSitePage.userTable}" cellpadding="0" cellspacing="0"
                                        columnClasses="vdcColPadded, vdcColPadded, vdcColPadded, vdcColPadded" headerClass="list-header-left"
-                                       rowClasses="list-row-even,list-row-odd" value="#{OptionsPage.allowedFileUsers}" var="currentRow" width="100%"
-                                       rendered="#{not empty OptionsPage.allowedFileUsers}">
+                                       rowClasses="list-row-even,list-row-odd" value="#{EditHarvestSitePage.allowedFileUsers}" var="currentRow" width="100%"
+                                       rendered="#{not empty EditHarvestSitePage.allowedFileUsers}">
                             <ice:column>
                                 <f:facet name="header">
                                     <ice:outputText id="users_tcol1" value="User Name"/>
@@ -338,7 +352,7 @@
                                 </ice:outputLink>
                             </ice:column>
                             <ice:column>
-                                <ice:commandButton id="removeUserButton" value="Remove User" actionListener="#{OptionsPage.removeUser}"/>
+                                <ice:commandButton id="removeUserButton" value="Remove User" actionListener="#{EditHarvestSitePage.removeUser}"/>
                             </ice:column>
                         </ice:dataTable>
                     </td>
@@ -348,14 +362,14 @@
                         <ice:outputText value="Restricted File Group Access"/>
                     </td>
                     <td>
-                        <ice:inputText value="#{OptionsPage.addGroupName}"/>
-                        <ice:commandButton value="Add" actionListener="#{OptionsPage.addGroup}"/>
+                        <ice:inputText value="#{EditHarvestSitePage.addGroupName}"/>
+                        <ice:commandButton value="Add" actionListener="#{EditHarvestSitePage.addGroup}"/>
                         <br/>
                         <ice:outputText styleClass="vdcHelpText" value="Enter group name to allow them to access restricted studies."/>
-                        <ice:dataTable binding="#{OptionsPage.groupTable}" cellpadding="0" cellspacing="0"
+                        <ice:dataTable binding="#{EditHarvestSitePage.groupTable}" cellpadding="0" cellspacing="0"
                                        columnClasses="vdcColPadded, vdcColPadded, vdcColPadded, vdcColPadded" headerClass="list-header-left"
-                                       rowClasses="list-row-even,list-row-odd" value="#{OptionsPage.allowedFileGroups}" var="currentRow" width="100%"
-                                       rendered="#{not empty OptionsPage.allowedFileGroups}">
+                                       rowClasses="list-row-even,list-row-odd" value="#{EditHarvestSitePage.allowedFileGroups}" var="currentRow" width="100%"
+                                       rendered="#{not empty EditHarvestSitePage.allowedFileGroups}">
                             <ice:column>
                                 <f:facet name="header">
                                     <ice:outputText id="groups_tcol1" value="User Name"/>
@@ -365,13 +379,14 @@
                                 </ice:outputLink>
                             </ice:column>
                             <ice:column>
-                                <ice:commandButton id="removeGroupButton" value="Remove Group" actionListener="#{OptionsPage.removeGroup}"/>
+                                <ice:commandButton id="removeGroupButton" value="Remove Group" actionListener="#{EditHarvestSitePage.removeGroup}"/>
                             </ice:column>
                         </ice:dataTable>
                     </td>
                   </tr>
               </table>
 
+      </ice:form>
       <script type="text/javascript">
           // initial call to disable subsetting Restricted (if needed)
           checkSubsetting( false );

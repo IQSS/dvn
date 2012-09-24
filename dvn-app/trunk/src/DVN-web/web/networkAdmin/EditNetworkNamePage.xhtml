@@ -1,22 +1,11 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:ui="http://java.sun.com/jsf/facelets"
       xmlns:h="http://java.sun.com/jsf/html"
       xmlns:f="http://java.sun.com/jsf/core"
       xmlns:jsp="http://java.sun.com/JSP/Page"
       xmlns:ice="http://www.icesoft.com/icefaces/component">
-<head>
-  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
-</head>
-<body>
-  <ui:composition template="/template.xhtml">
-    <ui:param name="pageTitle" value="#{bundlePageInfo.editDvnNameTitle} - #{VDCRequest.dataversePageTitle}"/>
-    <ui:define name="metadata">
-        <f:event type="preRenderView" listener="#{EditNetworkNamePage.preRenderView}"/>   
-    </ui:define> 
-    <ui:define name="body">
-      <ice:form id="form1">
+
         <div class="dvn_section">
           <div class="dvn_sectionTitle">
             <ice:outputText value="#{bundlePageInfo.editDvnNameTitle}"/>
@@ -28,22 +17,17 @@
                   <ice:outputText value="#{bundlePageInfo.editDvnNameHelp}" escape="false"/>
                 </div>
               </div>
-              <div jsfc="ice:panelGroup" styleClass="#{EditNetworkNamePage.msg.styleClass}" rendered="#{!empty EditNetworkNamePage.msg.messageText}">
-                <ice:outputText id="statusMessage" value="#{EditNetworkNamePage.msg.messageText}"/>
+              <div jsfc="ice:panelGroup" styleClass="#{OptionsPage.msg.styleClass}" rendered="#{!empty OptionsPage.msg.messageText}">
+                <ice:outputText id="statusMessage" value="#{OptionsPage.msg.messageText}"/>
               </div>
               <div jsfc="ice:panelGroup">
                 <ice:outputText id="outputText2" value="Network Name "/>
-                <ice:inputText binding="#{EditNetworkNamePage.textField1}" id="textField1" size="20" value="#{EditNetworkNamePage.networkName}" onkeypress="if (window.event) return processEvent('', 'form1:button1'); else return processEvent(event, 'form1:button1');"/>
+                <ice:inputText binding="#{OptionsPage.textFieldNetworkName}" id="textField1" size="20" value="#{OptionsPage.networkName}" onkeypress="if (window.event) return processEvent('', 'form1:button1'); else return processEvent(event, 'form1:button1');"/>
               </div>
               <div jsfc="ice:panelGroup" id="groupPanel2" styleClass="dvnFormPadding dvnFormMargin">
-                <ice:commandButton id="button1" value="Save" action="#{EditNetworkNamePage.saveNetworkName}"/>
-                <ice:commandButton id="button2" value="Cancel" action="#{EditNetworkNamePage.cancel}"/>
               </div>
             </div>
           </div>
         </div>
-      </ice:form>
-    </ui:define>
-  </ui:composition>
-</body>
+
 </html>

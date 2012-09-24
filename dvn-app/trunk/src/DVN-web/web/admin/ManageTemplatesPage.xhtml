@@ -12,7 +12,7 @@
                   <ice:outputText value="#{bundlePageInfo.manageTemplatesHelp}" escape="false"/>
                 </div>
             </div>
-            <ice:panelGrid cellpadding="0" cellspacing="0" border="0" columns="2" id="gridPanel2"
+            <ice:panelGrid cellpadding="0" cellspacing="0" border="0" columns="2" id="gridPanel2templates"
                                styleClass="dvnHmpgGroupTableTop"
                                columnClasses="dvnHmpgGroupTotals, dvnPaginatorWrap">
                 <div jsfc="ice:panelGroup">
@@ -125,7 +125,7 @@
                              styleClass="dvnManageTable dvnManageStudyTemplatesTable" id="networkDataTable"
                              headerClass="list-header-left vdcColPadded" columnClasses="dvnMngStudyTempCol1,dvnMngStudyTempCol2,dvnMngStudyTempCol3"
                              rowClasses="list-row-even vdcColPadded, list-row-odd vdcColPadded"
-                             value="#{NetworkOptionsPage.templateList}" var="template">
+                             value="#{OptionsPage.templateList}" var="template">
                 <ice:column>
                   <f:facet name="header">
                     <ice:outputText value="Name"/>

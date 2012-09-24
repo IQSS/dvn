@@ -60,8 +60,6 @@ public class ManageControlledVocabularyPage extends VDCBaseBean implements java.
 
     public void setControlledVocabularyList(List<ControlledVocabulary> controlledVocabularyList) {
         this.controlledVocabularyList = controlledVocabularyList;
-    }
-
-    
+    }  
     
 }

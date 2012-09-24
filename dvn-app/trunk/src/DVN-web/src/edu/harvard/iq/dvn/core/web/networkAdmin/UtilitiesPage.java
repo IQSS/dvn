@@ -117,6 +117,7 @@ public class UtilitiesPage extends VDCBaseBean implements java.io.Serializable  
         super.init();
         vdcId = getVDCRequestBean().getCurrentVDCId();
         selectedPanel = getRequestParam("selectedPanel");
+        System.out.print("In utilites init...");
     }
 
     public String getSelectedPanel() {

@@ -1,22 +1,10 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:ui="http://java.sun.com/jsf/facelets"
       xmlns:h="http://java.sun.com/jsf/html"
       xmlns:f="http://java.sun.com/jsf/core"
       xmlns:jsp="http://java.sun.com/JSP/Page"
       xmlns:ice="http://www.icesoft.com/icefaces/component">
-<head>
-    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
-</head>
-<body>
-  <ui:composition template="/template.xhtml">
-    <ui:param name="pageTitle" value="#{bundlePageInfo.manageGroupsTitle} - #{VDCRequest.dataversePageTitle}"/>
-    <ui:define name="metadata">
-        <f:event type="preRenderView" listener="#{UserGroupsPage.preRenderView}"/>  
-    </ui:define>
-    <ui:define name="body">
-      <ice:form id="form1">
         <div class="dvn_section">
           <div class="dvn_sectionTitle">
             <ice:outputText value="#{bundlePageInfo.manageGroupsTitle}"/>
@@ -34,10 +22,10 @@
             </div>
           </div>
           <ice:dataTable cellpadding="0" cellspacing="0" width="100%"
-                         binding="#{UserGroupsPage.dataTable}" id="dataTable1"
+                          id="dataTable1UserGroups"
                          styleClass="dvnManageTable" columnClasses="vdcColPadded, vdcColPadded" headerClass="list-header-left"
-                         rowClasses="list-row-even,list-row-odd" value="#{UserGroupsPage.groups}" var="currentRow">
-            <ice:column id="column1">
+                         rowClasses="list-row-even,list-row-odd" value="#{OptionsPage.groups}" var="currentRow">
+            <ice:column id="column1UserGroup">
               <f:facet name="header">
                 <ice:outputText id="column1Header" value="Group"/>
               </f:facet>
@@ -46,7 +34,7 @@
                  <ice:outputText value="#{currentRow.group.name}"/>
               </ice:outputLink>
             </ice:column>
-            <ice:column id="column2">
+            <ice:column id="column2UserGroup">
               <f:facet name="header">
                 <ice:outputText id="column2Header" value="Friendly Group Name"/>
               </f:facet>
@@ -54,14 +42,14 @@
                 <ice:outputText value="#{currentRow.group.friendlyName}"/>
               </ice:outputLink>
             </ice:column>
-            <ice:column id="column3">
+            <ice:column id="column3UserGroup">
               <f:facet name="header">
                 <ice:outputText id="column3Header" value="Users"/>
               </f:facet>
               <ice:outputText value="#{currentRow.details}"/>
             </ice:column>
             <!-- add later - group pin service -->
-            <ice:column id="column4">
+            <ice:column id="column4UserGroup">
               <f:facet name="header">
                 <ice:outputText id="outputText10" value="Delete"/>
               </f:facet>
@@ -71,8 +59,5 @@
             </ice:column>
           </ice:dataTable>
         </div>
-      </ice:form>
-    </ui:define>
-  </ui:composition>
-</body>
+
 </html>

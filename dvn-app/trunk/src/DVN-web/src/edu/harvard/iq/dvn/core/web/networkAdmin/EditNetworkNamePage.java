@@ -71,14 +71,14 @@ public class EditNetworkNamePage extends VDCBaseBean  implements java.io.Seriali
         networkName=thisVdcNetwork.getName();
     }
 
-    private HtmlInputText textField1 = new HtmlInputText();
+    private HtmlInputText textFieldNetworkName = new HtmlInputText();
 
     public HtmlInputText getTextField1() {
-        return textField1;
+        return textFieldNetworkName;
     }
 
     public void setTextField1(HtmlInputText hit) {
-        this.textField1 = hit;
+        this.textFieldNetworkName = hit;
     }
     
 
@@ -92,7 +92,7 @@ public class EditNetworkNamePage extends VDCBaseBean  implements java.io.Seriali
 
     public String saveNetworkName(){
         VDCNetwork thisVdcNetwork = vdcNetworkService.find(new Long(1));
-        thisVdcNetwork.setName((String)textField1.getValue());
+        thisVdcNetwork.setName((String)textFieldNetworkName.getValue());
         vdcNetworkService.edit(thisVdcNetwork);
         getVDCRequestBean().setVdcNetwork(thisVdcNetwork);        
         getVDCRenderBean().getFlash().put("successMessage", "Successfully updated network name.");

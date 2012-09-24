@@ -1,21 +1,10 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:ui="http://java.sun.com/jsf/facelets"
       xmlns:h="http://java.sun.com/jsf/html"
       xmlns:f="http://java.sun.com/jsf/core"
       xmlns:jsp="http://java.sun.com/JSP/Page"
       xmlns:ice="http://www.icesoft.com/icefaces/component">
-<head>
-    <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1"/>
-</head>
-<body>
-  <ui:composition template="/template.xhtml">
-    <ui:param name="pageTitle" value="#{bundlePageInfo.manageDvnPermissionsTitle} - #{VDCRequest.dataversePageTitle}"/>
-    <ui:define name="metadata">
-        <f:event type="preRenderView" listener="#{NetworkPrivilegedUsersPage.preRenderView}" />  
-    </ui:define>
-    <ui:define name="body">
-      <ice:form id="NetworkPrivilegedUsersPageView">
         <input type="hidden" name="pageName" value="NetworkPrivilegedUsersPage"/>
         <div class="dvn_section">
           <div class="dvn_sectionTitle">
@@ -35,7 +24,7 @@
                           <ice:outputText value="Creating a New Dataverse"/>
                         </td>
                         <td>
-                          <ice:selectBooleanCheckbox id="checkbox1" value="#{NetworkPrivilegedUsersPage.privileges.network.allowCreateRequest}"/>
+                          <ice:selectBooleanCheckbox id="checkbox1" value="#{OptionsPage.privileges.network.allowCreateRequest}"/>
                           <ice:outputText id="outputText5" value=" Allow users to create a new Dataverse when they create an account."/>
                         </td>
                       </tr>
@@ -48,23 +37,23 @@
                         </td>
                         <td class="dvnPermissionsStackedCells">
                           <ice:outputText id="outputText7" value="Username: "/>
-                          <ice:inputText onkeypress="if (window.event) return processEvent('', 'addUserbutton'); else return processEvent(event, 'addUserbutton');" id="textField1" value="#{NetworkPrivilegedUsersPage.userName}"/>
-                          <ice:commandButton id="addUserButton" value="Add" actionListener="#{NetworkPrivilegedUsersPage.addUser}"/>
-                          <ice:outputText styleClass="errorMessage" value="User not found." rendered="#{NetworkPrivilegedUsersPage.userNotFound}"/>
+                          <ice:inputText onkeypress="if (window.event) return processEvent('', 'addUserbutton'); else return processEvent(event, 'addUserbutton');" id="textField1" value="#{OptionsPage.userName}"/>
+                          <ice:commandButton id="addUserButton" value="Add" actionListener="#{OptionsPage.addNetworkUser}"/>
+                          <ice:outputText styleClass="errorMessage" value="User not found." rendered="#{OptionsPage.userNotFound}"/>
                           <br/>
                           <ice:outputText styleClass="vdcHelpText" value="Enter username to assign Network Admin or Dataverse Creator privileges."/>
                         </td>
                       </tr>
                       <tr>
                         <td colspan="2">
-                          <div jsfc="ice:panelGroup" rendered="#{!NetworkPrivilegedUsersPage.displayPrivilegedUsers}" styleClass="dvnPermissionsEmpty">
+                          <div jsfc="ice:panelGroup" rendered="#{!OptionsPage.displayPrivilegedUsers}" styleClass="dvnPermissionsEmpty">
                             <ice:outputText value="No users have been given privileged access this dataverse network."/>
                           </div>
-                          <ice:dataTable binding="#{NetworkPrivilegedUsersPage.userTable}" cellpadding="0" cellspacing="0" width="98%"
+                          <ice:dataTable binding="#{OptionsPage.userTable}" cellpadding="0" cellspacing="0" width="98%"
                                          columnClasses="vdcColPadded, vdcColPadded, vdcColPadded, vdcColPadded" headerClass="list-header-left"
-                                         rowClasses="list-row-even,list-row-odd" value="#{NetworkPrivilegedUsersPage.privileges.privilegedUsers}" var="currentRow"
-                                         rendered="#{NetworkPrivilegedUsersPage.displayPrivilegedUsers}">
-                            <ice:column id="column1" rendered="#{currentRow.user.id!=NetworkPrivilegedUsersPage.privileges.network.defaultNetworkAdmin.id}">
+                                         rowClasses="list-row-even,list-row-odd" value="#{OptionsPage.privileges.privilegedUsers}" var="currentRow"
+                                         rendered="#{OptionsPage.displayPrivilegedUsers}">
+                            <ice:column id="column1" rendered="#{currentRow.user.id!=OptionsPage.privileges.network.defaultNetworkAdmin.id}">
                               <f:facet name="header">
                                 <ice:outputText id="outputText3" value="Username"/>
                               </f:facet>
@@ -72,17 +61,17 @@
                                 <ice:outputText id="hyperlink2Text" value="#{currentRow.user.userName}"/>
                               </ice:outputLink>
                             </ice:column>
-                            <ice:column id="column9" rendered="#{currentRow.user.id!=NetworkPrivilegedUsersPage.privileges.network.defaultNetworkAdmin.id}">
+                            <ice:column id="column9" rendered="#{currentRow.user.id!=OptionsPage.privileges.network.defaultNetworkAdmin.id}">
                               <f:facet name="header">
                                 <ice:outputText id="outputText16" value="Privileged Role"/>
                               </f:facet>
                               <ice:selectOneRadio id="roleSelectMenu" value="#{currentRow.networkRoleId}">
-                                <f:selectItems id="roleSelectItems" value="#{NetworkPrivilegedUsersPage.roleSelectItems}"/>
+                                <f:selectItems id="roleSelectItems" value="#{OptionsPage.networkRoleSelectItems}"/>
                                 <ice:message for="roleSelectMenu" styleClass="errorMessage"/>
                               </ice:selectOneRadio>
                             </ice:column>
-                            <ice:column rendered="#{currentRow.user.id!=NetworkPrivilegedUsersPage.privileges.network.defaultNetworkAdmin.id}">
-                              <ice:commandButton value="Clear Role" actionListener="#{NetworkPrivilegedUsersPage.clearRole}"/>
+                            <ice:column rendered="#{currentRow.user.id!=OptionsPage.privileges.network.defaultNetworkAdmin.id}">
+                              <ice:commandButton value="Clear Role" actionListener="#{OptionsPage.clearRole}"/>
                             </ice:column>
                           </ice:dataTable>
                         </td>
@@ -98,22 +87,22 @@
                             <ice:outputText styleClass="warnMessage" value=" We advise you to have a written agreement with authorized parties before allowing them to access data sets, bypassing the Terms of Use. The authorized party should be responsible for enforcing the Terms of Use to their end users. For more information, contact us at dvn_support@hmdc.harvard.edu."/>
                           </p>
                           <ice:outputText id="outputText117" value="Username: "/>
-                          <ice:inputText onkeypress="if (window.event) return processEvent('', 'addUserbutton100'); else return processEvent(event, 'addUserbutton100');" id="textField101" value="#{NetworkPrivilegedUsersPage.TOUUserName}"/>
-                          <ice:commandButton id="addUserButton100" value="Add" actionListener="#{NetworkPrivilegedUsersPage.addTOUUser}"/>
-                          <ice:outputText styleClass="errorMessage" value="User not found." rendered="#{NetworkPrivilegedUsersPage.TOUUserNotFound}"/>
+                          <ice:inputText onkeypress="if (window.event) return processEvent('', 'addUserbutton100'); else return processEvent(event, 'addUserbutton100');" id="textField101" value="#{OptionsPage.TOUUserName}"/>
+                          <ice:commandButton id="addUserButton100" value="Add" actionListener="#{OptionsPage.addTOUUser}"/>
+                          <ice:outputText styleClass="errorMessage" value="User not found." rendered="#{OptionsPage.TOUUserNotFound}"/>
                           <br/>
                           <ice:outputText styleClass="vdcHelpText" value="Enter username to authorize to bypass Terms of Use"/>
                         </td>
                       </tr>
                       <tr>
                         <td colspan="2">
-                          <div jsfc="ice:panelGroup" rendered="#{!NetworkPrivilegedUsersPage.displayTOUPrivilegedUsers}" styleClass="dvnPermissionsEmpty">
+                          <div jsfc="ice:panelGroup" rendered="#{!OptionsPage.displayTOUPrivilegedUsers}" styleClass="dvnPermissionsEmpty">
                             <ice:outputText value="No users have been authorized to bypass Terms of Use on this dataverse network."/>
                           </div>
-                          <ice:dataTable binding="#{NetworkPrivilegedUsersPage.userTOUTable}" cellpadding="0" cellspacing="0" width="98%"
+                          <ice:dataTable binding="#{OptionsPage.userTOUTable}" cellpadding="0" cellspacing="0" width="98%"
                                          columnClasses="vdcColPadded, vdcColPadded, vdcColPadded, vdcColPadded" headerClass="list-header-left"
-                                         rowClasses="list-row-even,list-row-odd" value="#{NetworkPrivilegedUsersPage.privileges.TOUPrivilegedUsers}" var="currentRow"
-                                         rendered="#{NetworkPrivilegedUsersPage.displayTOUPrivilegedUsers}">
+                                         rowClasses="list-row-even,list-row-odd" value="#{OptionsPage.privileges.TOUPrivilegedUsers}" var="currentRow"
+                                         rendered="#{OptionsPage.displayTOUPrivilegedUsers}">
                             <ice:column id="column100">
                               <f:facet name="header">
                                 <ice:outputText id="outputText103" value="Username"/>
@@ -124,21 +113,16 @@
                             </ice:column>
 
                             <ice:column>
-                              <ice:commandButton value="Revoke" actionListener="#{NetworkPrivilegedUsersPage.clearTOURole}" rendered="#{currentRow.bypassTermsOfUse}"/>
+                              <ice:commandButton value="Revoke" actionListener="#{OptionsPage.clearTOURole}" rendered="#{currentRow.bypassTermsOfUse}"/>
                             </ice:column>
                           </ice:dataTable>
                         </td>
                       </tr>
                     </table>
                   <div id="groupPanel6" class="dvnFormPadding dvnFormMargin">
-                    <ice:commandButton id="button5" value="Save Changes" action="#{NetworkPrivilegedUsersPage.save}"/>
-                    <ice:commandButton immediate="true" id="cancelButton" value="Cancel" action="#{NetworkPrivilegedUsersPage.cancel}"/>
+                    <ice:commandButton id="button5" value="Save Changes" action="#{OptionsPage.saveNetworkPrivilegedUsersPage}"/>
                   </div>
               </div>
           </div>
         </div>
-      </ice:form>
-    </ui:define>
-  </ui:composition>
-</body>
 </html>

@@ -17,6 +17,9 @@
             <div class="dvn_sectionTitle">
                 <ice:outputText value="#{bundlePageInfo.manageDvsTitle}"/>
             </div>
+            <ice:outputLink value="/dvn/faces/site/AddSitePage.xhtml">
+                 <ice:outputText value="Create New Dataverse"/>
+            </ice:outputLink>
           <div jsfc="ice:panelGroup" styleClass="dvnManageTableTop">
               <div jsfc="ice:panelGroup" styleClass="dvn_margin12 dvnInformationMessage">
                 <div class="dvnMsgBlockContainer">
@@ -25,23 +28,23 @@
               </div>  
               <div jsfc="ice:panelGroup" styleClass="dvnHmpgGroupAlphaSortBlock" rendered="#{VDCRequest.currentVDC == null}">
                     <ul class="dvnAlphaBrowseBlock">
-                        <ui:fragment rendered="#{(manageDataversesPage.vdcUIList.alphaCharacter == '' or manageDataversesPage.vdcUIList.alphaCharacter == null)}">
+                        <ui:fragment rendered="#{(OptionsPage.vdcUIList.alphaCharacter == '' or OptionsPage.vdcUIList.alphaCharacter == null)}">
                             <li class="dvnAlphaBrowseSelected" onmouseover="this.className='dvnAlphaBrowseHover'" onmouseout="this.className='dvnAlphaBrowseSelected'">
                                 <ice:commandLink  onclick="setHiddenValues('All');">
                                         <ice:outputText value="ALL"/>
                                 </ice:commandLink>
                             </li>
                         </ui:fragment>
-                        <ui:fragment rendered="#{(manageDataversesPage.vdcUIList.alphaCharacter != '' and manageDataversesPage.vdcUIList.alphaCharacter != null)}">
+                        <ui:fragment rendered="#{(OptionsPage.vdcUIList.alphaCharacter != '' and OptionsPage.vdcUIList.alphaCharacter != null)}">
                             <li class="dvnAlphaBrowse" onmouseover="this.className='dvnAlphaBrowseHover'" onmouseout="this.className='dvnAlphaBrowse'">
                                 <ice:commandLink  onclick="setHiddenValues('All');">
                                         <ice:outputText value="ALL"/>
                                 </ice:commandLink>
                             </li>
                         </ui:fragment>
-                        <ui:repeat value="#{manageDataversesPage.alphaCharacterList}"
+                        <ui:repeat value="#{OptionsPage.alphaCharacterList}"
                                     var="item">
-                            <ui:fragment rendered="#{(manageDataversesPage.vdcUIList.alphaCharacter == item)}">
+                            <ui:fragment rendered="#{(OptionsPage.vdcUIList.alphaCharacter == item)}">
                                 <li class="dvnAlphaBrowseSelected" onmouseover="this.className='dvnAlphaBrowseHover'" onmouseout="this.className='dvnAlphaBrowseSelected'">
                                     <ice:commandLink onclick="setHiddenValues(document.getElementById('#{item}');">
                                         <ice:outputText value="#{item}"/>
@@ -50,7 +53,7 @@
                                     </ice:commandLink>
                                 </li>
                             </ui:fragment>
-                            <ui:fragment rendered="#{(manageDataversesPage.vdcUIList.alphaCharacter != item)}">
+                            <ui:fragment rendered="#{(OptionsPage.vdcUIList.alphaCharacter != item)}">
                                 <li class="dvnAlphaBrowse" onmouseover="this.className='dvnAlphaBrowseHover'" onmouseout="this.className='dvnAlphaBrowse'">
                                     <ice:commandLink onclick="setHiddenValues('#{item}');">
                                         <ice:outputText value="#{item}"/>
@@ -71,7 +74,7 @@
                     </div>
                     <div jsfc="ice:panelGroup" styleClass="dvnPaginatorFloatRight">
                         <ice:dataPaginator for="dataverseListManage"
-                                           binding="#{manageDataversesPage.paginator}"
+                                           binding="#{OptionsPage.paginator}"
                                            id="dataScroller"
                                            paginator="true" fastStep="3"
                                            paginatorMaxPages="4"
@@ -100,18 +103,18 @@
                 </ice:panelGrid>
             </div>
             <div jsfc="ice:panelGroup">
-                <div jsfc="ice:panelGroup" styleClass="dvnManageTableEmpty" rendered="#{empty(manageDataversesPage.vdcUIList.vdcUIList)}">
+                <div jsfc="ice:panelGroup" styleClass="dvnManageTableEmpty" rendered="#{empty(OptionsPage.vdcUIList.vdcUIList)}">
                     <ice:outputText styleClass="dvnManageTableEmptyMessage" value="There are no results to display. Select &#34;All&#34; or another letter to continue."/>
                 </div>
                 <ice:dataTable id="dataverseListManage" width="100%"
                                columnWidths="20%,20%,10%,10%,10%,10%,10%,10%,10%"
                                headerClass="groupRow"
-                               rendered="#{!empty(manageDataversesPage.vdcUIList.vdcUIList)}"
+                               rendered="#{!empty(OptionsPage.vdcUIList.vdcUIList)}"
                                rowClasses="evenRow oddRow" rows="10"
                                styleClass="dvnManageTable"
-                               sortColumn="#{manageDataversesPage.vdcUIList.sortColumnName}"
-                               sortAscending="#{manageDataversesPage.vdcUIList.ascending}"
-                               value="#{manageDataversesPage.vdcUIList.vdcUIList}"
+                               sortColumn="#{OptionsPage.vdcUIList.sortColumnName}"
+                               sortAscending="#{OptionsPage.vdcUIList.ascending}"
+                               value="#{OptionsPage.vdcUIList.vdcUIList}"
                                var="item">
                 <!-- name number -->
                 <f:facet name="header">
@@ -119,9 +122,9 @@
                 <ice:column>
                 <f:facet name="header">
                     <ice:commandSortHeader
-                        columnName="#{manageDataversesPage.vdcUIList.nameColumnName}"
+                        columnName="#{OptionsPage.vdcUIList.nameColumnName}"
                         arrow="true">
-                    <ice:outputText value="#{manageDataversesPage.vdcUIList.nameColumnName}"/>
+                    <ice:outputText value="#{OptionsPage.vdcUIList.nameColumnName}"/>
                     </ice:commandSortHeader>
                 </f:facet>
                 <ice:outputLink id="dataverse_link" value="/dvn/dv/#{item.vdc.alias}">
@@ -133,9 +136,9 @@
                 <ice:column>
                 <f:facet name="header">
                     <ice:commandSortHeader
-                        columnName="#{manageDataversesPage.vdcUIList.affiliationColumnName}"
+                        columnName="#{OptionsPage.vdcUIList.affiliationColumnName}"
                         arrow="true">
-                    <ice:outputText value="#{manageDataversesPage.vdcUIList.affiliationColumnName}"/>
+                    <ice:outputText value="#{OptionsPage.vdcUIList.affiliationColumnName}"/>
                     </ice:commandSortHeader>
                 </f:facet>
                 <ice:outputText value="#{item.vdc.affiliation}"/>
@@ -144,9 +147,9 @@
                 <ice:column>
                 <f:facet name="header">
                     <ice:commandSortHeader
-                        columnName="#{manageDataversesPage.vdcUIList.typeColumnName}"
+                        columnName="#{OptionsPage.vdcUIList.typeColumnName}"
                         arrow="true">
-                    <ice:outputText value="#{manageDataversesPage.vdcUIList.typeColumnName}"/>
+                    <ice:outputText value="#{OptionsPage.vdcUIList.typeColumnName}"/>
                     </ice:commandSortHeader>
                 </f:facet>
                 <ice:outputText value="#{item.type}"/>
@@ -155,9 +158,9 @@
                 <ice:column>
                 <f:facet name="header">
                     <ice:commandSortHeader
-                        columnName="#{manageDataversesPage.vdcUIList.dateCreatedColumnName}"
+                        columnName="#{OptionsPage.vdcUIList.dateCreatedColumnName}"
                         arrow="true">
-                    <ice:outputText value="#{manageDataversesPage.vdcUIList.dateCreatedColumnName}"/>
+                    <ice:outputText value="#{OptionsPage.vdcUIList.dateCreatedColumnName}"/>
                     </ice:commandSortHeader>
                 </f:facet>
                 <ice:outputText value="#{item.createdDate}"/>
@@ -166,9 +169,9 @@
                 <ice:column>
                 <f:facet name="header">
                     <ice:commandSortHeader
-                        columnName="#{manageDataversesPage.vdcUIList.createdByColumnName}"
+                        columnName="#{OptionsPage.vdcUIList.createdByColumnName}"
                         arrow="true">
-                    <ice:outputText value="#{manageDataversesPage.vdcUIList.createdByColumnName}"/>
+                    <ice:outputText value="#{OptionsPage.vdcUIList.createdByColumnName}"/>
                     </ice:commandSortHeader>
                 </f:facet>
                 <ice:outputText value="#{item.creator}"/>
@@ -177,9 +180,9 @@
                 <ice:column>
                 <f:facet name="header">
                     <ice:commandSortHeader
-                        columnName="#{manageDataversesPage.vdcUIList.dateReleasedColumnName}"
+                        columnName="#{OptionsPage.vdcUIList.dateReleasedColumnName}"
                         arrow="true">
-                    <ice:outputText value="#{manageDataversesPage.vdcUIList.dateReleasedColumnName}"/>
+                    <ice:outputText value="#{OptionsPage.vdcUIList.dateReleasedColumnName}"/>
                     </ice:commandSortHeader>
                 </f:facet>
                 <ice:outputText value="#{item.releaseDate}"/>
@@ -188,9 +191,9 @@
                 <ice:column>
                 <f:facet name="header">
                     <ice:commandSortHeader
-                        columnName="#{manageDataversesPage.vdcUIList.ownedStudiesColumnName}"
+                        columnName="#{OptionsPage.vdcUIList.ownedStudiesColumnName}"
                         arrow="true">
-                    <ice:outputText value="#{manageDataversesPage.vdcUIList.ownedStudiesColumnName}"/>
+                    <ice:outputText value="#{OptionsPage.vdcUIList.ownedStudiesColumnName}"/>
                     </ice:commandSortHeader>
                 </f:facet>
                 <ice:outputText value="#{item.numberOwnedStudies}"/>
@@ -199,9 +202,9 @@
                 <ice:column>
                 <f:facet name="header">
                     <ice:commandSortHeader
-                        columnName="#{manageDataversesPage.vdcUIList.lastUpdatedColumnName}"
+                        columnName="#{OptionsPage.vdcUIList.lastUpdatedColumnName}"
                         arrow="true">
-                    <ice:outputText value="#{manageDataversesPage.vdcUIList.lastUpdatedColumnName}"/>
+                    <ice:outputText value="#{OptionsPage.vdcUIList.lastUpdatedColumnName}"/>
                     </ice:commandSortHeader>
                 </f:facet>
                 <ice:outputText value="#{item.lastUpdateTime}"/>

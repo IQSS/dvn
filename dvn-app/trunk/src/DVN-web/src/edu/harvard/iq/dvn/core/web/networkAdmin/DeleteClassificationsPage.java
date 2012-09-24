@@ -82,11 +82,11 @@ public class DeleteClassificationsPage extends VDCBaseBean implements Serializab
 
         }
 
-        return "/networkAdmin/ManageClassificationsPage?faces-redirect=true";
+        return "/networkAdmin/NetworkOptionsPage?faces-redirect=true";
     }
     
     public String cancel() {
-        return "/networkAdmin/ManageClassificationsPage?faces-redirect=true";
+        return "/networkAdmin/NetworkOptionsPage?faces-redirect=true";
     }
 
 

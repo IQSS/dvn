@@ -4,30 +4,36 @@
  */
 package edu.harvard.iq.dvn.core.web.admin;
 
+import com.icesoft.faces.component.datapaginator.DataPaginator;
 import com.icesoft.faces.component.ext.*;
 import com.icesoft.faces.context.Resource;
 import com.icesoft.faces.context.effects.JavascriptContext;
 import edu.harvard.iq.dvn.core.admin.*;
+import edu.harvard.iq.dvn.core.gnrs.GNRSServiceLocal;
 import edu.harvard.iq.dvn.core.harvest.HarvestFormatType;
+import edu.harvard.iq.dvn.core.harvest.HarvestStudyServiceLocal;
 import edu.harvard.iq.dvn.core.harvest.HarvesterServiceLocal;
 import edu.harvard.iq.dvn.core.harvest.SetDetailBean;
 import edu.harvard.iq.dvn.core.index.IndexServiceLocal;
+import edu.harvard.iq.dvn.core.index.Indexer;
 import edu.harvard.iq.dvn.core.mail.MailServiceLocal;
 import edu.harvard.iq.dvn.core.study.*;
-import edu.harvard.iq.dvn.core.util.DateUtil;
-import edu.harvard.iq.dvn.core.util.PropertyUtil;
-import edu.harvard.iq.dvn.core.util.StringUtil;
-import edu.harvard.iq.dvn.core.util.TwitterUtil;
+import edu.harvard.iq.dvn.core.util.*;
 import edu.harvard.iq.dvn.core.vdc.*;
 import edu.harvard.iq.dvn.core.web.VDCUIList;
 import edu.harvard.iq.dvn.core.web.collection.CollectionUI;
 import edu.harvard.iq.dvn.core.web.common.StatusMessage;
 import edu.harvard.iq.dvn.core.web.common.VDCBaseBean;
 import edu.harvard.iq.dvn.core.web.login.LoginWorkflowBean;
+import edu.harvard.iq.dvn.core.web.networkAdmin.AllUsersDataBean;
+import edu.harvard.iq.dvn.core.web.networkAdmin.IndexLockFileNameFilter;
+import edu.harvard.iq.dvn.core.web.networkAdmin.UserGroupsInfoBean;
+import edu.harvard.iq.dvn.core.web.networkAdmin.UtilitiesPage;
 import edu.harvard.iq.dvn.core.web.push.beans.NetworkStatsBean;
 import edu.harvard.iq.dvn.core.web.site.ClassificationList;
 import edu.harvard.iq.dvn.core.web.site.ClassificationUI;
 import edu.harvard.iq.dvn.core.web.site.VDCUI;
+import edu.harvard.iq.dvn.core.web.study.StudyCommentUI;
 import edu.harvard.iq.dvn.core.web.util.CharacterValidator;
 import edu.harvard.iq.dvn.core.web.util.ExceptionMessageWriter;
 import java.io.*;
@@ -37,6 +43,7 @@ import java.nio.ByteBuffer;
 import java.nio.channels.WritableByteChannel;
 import java.text.SimpleDateFormat;
 import java.util.*;
+import java.util.logging.FileHandler;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.ejb.EJB;
@@ -52,7 +59,12 @@ import javax.faces.event.ValueChangeEvent;
 import javax.faces.model.SelectItem;
 import javax.inject.Named;
 import javax.servlet.http.HttpServletRequest;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.apache.commons.validator.routines.InetAddressValidator;
+import org.icefaces.component.fileentry.FileEntry;
+import org.icefaces.component.fileentry.FileEntryEvent;
+import org.icefaces.component.fileentry.FileEntryResults;
 import twitter4j.Twitter;
 import twitter4j.TwitterException;
 import twitter4j.TwitterFactory;
@@ -81,27 +93,24 @@ public class OptionsPage extends VDCBaseBean  implements java.io.Serializable {
     @EJB OAISetServiceLocal oaiService;
     @EJB EditLockssService editLockssService;
     @EJB EditHarvestSiteService editHarvestSiteService;
-    DvnTimerRemote remoteTimerService;
+    @EJB (name="dvnTimer")DvnTimerRemote remoteTimerService;
     @EJB HarvesterServiceLocal harvesterService;
     @EJB HandlePrefixServiceLocal handlePrefixService;
     @EJB StudyFieldServiceLocal studyFieldService;
     @EJB IndexServiceLocal indexService;
     @EJB EditUserService editUserService;
     @EJB StudyServiceLocal studyService;
-
-    private String twitterVerifier;
-
-    public String getTwitterVerifier() {
-        return twitterVerifier;
-    }
-
-    public void setTwitterVerifier(String twitterVerifier) {
-        this.twitterVerifier = twitterVerifier;
-    }
+    @EJB VDCGroupServiceLocal vdcGroupService;
+    @EJB StudyCommentService studyCommentService;
+    @EJB HarvestingDataverseServiceLocal harvestingDataverseService;
+    @EJB OAISetServiceLocal oaiSetService;    
+    @EJB  EditNetworkPrivilegesService privileges;
+    @EJB  NetworkRoleServiceLocal networkRoleService;
+    @EJB StudyFileServiceLocal studyFileService;
+    @EJB HarvestStudyServiceLocal harvestStudyService;
+    @EJB GNRSServiceLocal gnrsService;
     
-    
-    
-    public void init() {       
+    public void init() {   
         if (twitterVerifier != null && getSessionMap().get("requestToken") != null) {
             addTwitter();           
         }                 
@@ -127,34 +136,34 @@ public class OptionsPage extends VDCBaseBean  implements java.io.Serializable {
             }
         }
         
-        //Privileged users page        
-        vdcId = getVDCRequestBean().getCurrentVDC().getId();
-        editVDCPrivileges.setVdc(vdcId);
-        vdc = editVDCPrivileges.getVdc();
-        if (vdc.isRestricted()) {
-            siteRestriction = "Restricted";
-        } else {
-            siteRestriction = "Public";
-        }
-        initContributorSetting();
-        initUserName();
-        vdcRoleList = new ArrayList<RoleListItem>();
+        //Privileged users page 
+        if (getVDCRequestBean().getCurrentVDC() != null) {
+            vdcId = getVDCRequestBean().getCurrentVDC().getId();
+            editVDCPrivileges.setVdc(vdcId);
+            vdc = editVDCPrivileges.getVdc();
+            if (vdc.isRestricted()) {
+                siteRestriction = "Restricted";
+            } else {
+                siteRestriction = "Public";
+            }
+            initContributorSetting();
+            initUserName();
+            vdcRoleList = new ArrayList<RoleListItem>();
 
-        // Add empty VDCRole to list, to allow user input of a new VDCRole
-        vdcRoleList.add(new RoleListItem(null,null));
-        // Add rest of items to the list from vdc object
-        for (VDCRole vdcRole : vdc.getVdcRoles()) {
-            vdcRoleList.add(new RoleListItem(vdcRole, vdcRole.getRoleId()));
-        }       
-        setFilesRestricted(vdc.isFilesRestricted());
-        
-        //terms of use
-        depositTermsOfUse = getVDCRequestBean().getCurrentVDC().getDepositTermsOfUse();
-        depositTermsOfUseEnabled = getVDCRequestBean().getCurrentVDC().isDepositTermsOfUseEnabled();
-        downloadTermsOfUse = getVDCRequestBean().getCurrentVDC().getDownloadTermsOfUse();
-        downloadTermsOfUseEnabled = getVDCRequestBean().getCurrentVDC().isDownloadTermsOfUseEnabled();
-        
-        //guestbook questionnaire
+            // Add empty VDCRole to list, to allow user input of a new VDCRole
+            vdcRoleList.add(new RoleListItem(null, null));
+            // Add rest of items to the list from vdc object
+            for (VDCRole vdcRole : vdc.getVdcRoles()) {
+                vdcRoleList.add(new RoleListItem(vdcRole, vdcRole.getRoleId()));
+            }
+            setFilesRestricted(vdc.isFilesRestricted());
+
+            //terms of use
+            depositTermsOfUse = getVDCRequestBean().getCurrentVDC().getDepositTermsOfUse();
+            depositTermsOfUseEnabled = getVDCRequestBean().getCurrentVDC().isDepositTermsOfUseEnabled();
+            downloadTermsOfUse = getVDCRequestBean().getCurrentVDC().getDownloadTermsOfUse();
+            downloadTermsOfUseEnabled = getVDCRequestBean().getCurrentVDC().isDownloadTermsOfUseEnabled();
+                    //guestbook questionnaire
         guestBookQuestionnaire = getVDCRequestBean().getCurrentVDC().getGuestBookQuestionnaire();
         newQuestion = new CustomQuestion();
         newQuestion.setCustomQuestionValues(new ArrayList());
@@ -248,24 +257,30 @@ public class OptionsPage extends VDCBaseBean  implements java.io.Serializable {
             
         }
         writeCSVString();
+        }
         
         // Home panels
-        success = false;       
-        chkNetworkAnnouncements = getVDCRequestBean().getCurrentVDC().isDisplayNetworkAnnouncements();
-        chkLocalAnnouncements = getVDCRequestBean().getCurrentVDC().isDisplayAnnouncements();
-        localAnnouncements = getVDCRequestBean().getCurrentVDC().getAnnouncements();
-        chkNewStudies = getVDCRequestBean().getCurrentVDC().isDisplayNewStudies();
-        
-        //Contact us page
-        this.setContactUsEmail(vdc.getContactEmail());
-        
-        //Edit Study Comments
-        allowStudyComments = vdc.isAllowStudyComments();
-        allowStudyCommentsCheckbox.setValue(allowStudyComments);
-        
-        //edit site page       
-        HttpServletRequest request = (HttpServletRequest)FacesContext.getCurrentInstance().getExternalContext().getRequest();
-        Iterator iterator = request.getParameterMap().keySet().iterator();
+        success = false;
+        if (getVDCRequestBean().getCurrentVDC() != null) {
+            chkNetworkAnnouncements = getVDCRequestBean().getCurrentVDC().isDisplayNetworkAnnouncements();
+            chkLocalAnnouncements = getVDCRequestBean().getCurrentVDC().isDisplayAnnouncements();
+            localAnnouncements = getVDCRequestBean().getCurrentVDC().getAnnouncements();
+            chkNewStudies = getVDCRequestBean().getCurrentVDC().isDisplayNewStudies();
+
+            //Contact us page
+            this.setContactUsEmail(vdc.getContactEmail());
+
+            //Edit Study Comments
+            allowStudyComments = vdc.isAllowStudyComments();
+            allowStudyCommentsCheckbox.setValue(allowStudyComments);
+        } else {
+            this.setContactUsEmail(vdcNetworkService.find().getContactEmail());
+        }
+               
+        //edit site page  
+        if (getVDCRequestBean().getCurrentVDC() != null) {
+                    HttpServletRequest request = (HttpServletRequest)FacesContext.getCurrentInstance().getExternalContext().getRequest();
+                    Iterator iterator = request.getParameterMap().keySet().iterator();
         while (iterator.hasNext()) {
             Object key = (Object) iterator.next();
             if ( key instanceof String && ((String) key).indexOf("dataverseType") != -1 && !request.getParameter((String)key).equals("")) {
@@ -311,7 +326,9 @@ public class OptionsPage extends VDCBaseBean  implements java.io.Serializable {
                 if (classUI.getVdcGroup().getVdcs().contains(vdc)) {
                     classUI.setSelected(true);
                 }
-           }           
+           }            
+        }
+           
         //Edit Lockss settings
         Long lockssConfigId = null;
         
@@ -357,6 +374,7 @@ public class OptionsPage extends VDCBaseBean  implements java.io.Serializable {
         combinedTextField.setValue(banner + footer);
         
         // Search Fields
+      if (getVDCRequestBean().getCurrentVDC() != null) {
         searchResultsFields = getVDCRequestBean().getCurrentVDC().getSearchResultFields();
         for (Iterator it = searchResultsFields.iterator(); it.hasNext();) {
             StudyField elem = (StudyField) it.next();
@@ -386,7 +404,10 @@ public class OptionsPage extends VDCBaseBean  implements java.io.Serializable {
             }
         }
         defaultSortOrder = getVDCRequestBean().getCurrentVDC().getDefaultSortOrder();
+      }
         //Add site page
+        HttpServletRequest request = (HttpServletRequest) FacesContext.getCurrentInstance().getExternalContext().getRequest();
+        Iterator iterator = request.getParameterMap().keySet().iterator();
         iterator = request.getParameterMap().keySet().iterator();
         while (iterator.hasNext()) {
             Object key = (Object) iterator.next();
@@ -422,7 +443,56 @@ public class OptionsPage extends VDCBaseBean  implements java.io.Serializable {
         if (studyId!=null) {
             study = studyService.getStudy(studyId);
         }
+        // Manage Controlled Vocab...
+        controlledVocabularyList = templateService.getNetworkControlledVocabulary();
+        //Manage Classifications
+        List list = (List)vdcGroupService.findAll();
+        itemBeansSize = list.size();
+        initClassifications();
+        //Edit export schedule page
+                VDCNetwork vdcNetwork = this.getVDCRequestBean().getVdcNetwork();
+        exportSchedulePeriod = vdcNetwork.getExportPeriod();
+        exportHourOfDay = vdcNetwork.getExportHourOfDay();
+        exportDayOfWeek = vdcNetwork.getExportDayOfWeek();
+
+        setSelectExportPeriod(loadSelectExportPeriod());       
+        //OAI Sets 
+                initSetData();
+                
+        //Network Settings
+        VDCNetwork thisVdcNetwork = vdcNetworkService.find(new Long(1));
+        networkName=thisVdcNetwork.getName();
+        this.setChkEnableNetworkAnnouncements(thisVdcNetwork.isDisplayAnnouncements()) ;
+        this.setNetworkAnnouncements( thisVdcNetwork.getAnnouncements());  
+        
+        //DV requirements page
+        setRequireDvaffiliation(thisVdcNetwork.isRequireDVaffiliation());
+        setRequireDvclassification(thisVdcNetwork.isRequireDVclassification());
+        setRequireDvdescription(thisVdcNetwork.isRequireDVdescription());
+        setRequireDvstudiesforrelease(thisVdcNetwork.isRequireDVstudiesforrelease());
+        
+        //NetworkPrivileges page
+                    privileges.init();
+            sessionPut( getPrivileges().getClass().getName(),privileges);
+         
+        //Network Terms of Use
+        networkAccountTermsOfUse = getVDCRequestBean().getVdcNetwork().getTermsOfUse();
+        networkAccountTermsOfUseEnabled = getVDCRequestBean().getVdcNetwork().isTermsOfUseEnabled();
+        networkDepositTermsOfUse = getVDCRequestBean().getVdcNetwork().getDepositTermsOfUse();
+        networkDepositTermsOfUseEnabled = getVDCRequestBean().getVdcNetwork().isDepositTermsOfUseEnabled();
+        networkDownloadTermsOfUse = getVDCRequestBean().getVdcNetwork().getDownloadTermsOfUse();
+        networkDownloadTermsOfUseEnabled = getVDCRequestBean().getVdcNetwork().isDownloadTermsOfUseEnabled();
+        
+        //usergroups page
+        initGroupData();
+        //all user page
+        initUserData();
+        //end init
     }
+    
+    private String twitterVerifier;
+    public String getTwitterVerifier() {return twitterVerifier;}
+    public void setTwitterVerifier(String twitterVerifier) {this.twitterVerifier = twitterVerifier;}
     
     public void updateEnabledAction(Long templateId) {
         Template template = null;
@@ -1051,7 +1121,7 @@ public class OptionsPage extends VDCBaseBean  implements java.io.Serializable {
             vdc.setDownloadTermsOfUseEnabled(downloadTermsOfUseEnabled);
             vdcService.edit(vdc);
             String    forwardPage="/admin/OptionsPage?faces-redirect=true&vdcId="+getVDCRequestBean().getCurrentVDC().getId();
-            getVDCRenderBean().getFlash().put("successMessage","Successfully updated terms of use for study creation.");
+            getVDCRenderBean().getFlash().put("successMessage","Successfully updated terms of use for this dataverse.");
             return forwardPage;                      
         } else {
             return null;
@@ -1067,14 +1137,14 @@ public class OptionsPage extends VDCBaseBean  implements java.io.Serializable {
         boolean isUseTerms = true;
         if ( (elementValue == null || elementValue.equals("")) && (downloadTermsOfUseEnabled) ) {
             isUseTerms = false;
-            FacesMessage message = new FacesMessage("This field is required.");
+            FacesMessage message = new FacesMessage("To enable this feature, you must also enter terms of use in the field below.  Please enter terms of use as either plain text or html.");
             FacesContext fc = FacesContext.getCurrentInstance();
             fc.addMessage(textAreaDownloadUse.getClientId(fc), message);
         }
         elementValue = depositTermsOfUse;
         if ( (elementValue == null || elementValue.equals("")) && (depositTermsOfUseEnabled) ) {
             isUseTerms = false;
-            FacesMessage message = new FacesMessage("This field is required.");
+            FacesMessage message = new FacesMessage("To enable this feature, you must also enter terms of use in the field below.  Please enter terms of use as either plain text or html.");
             FacesContext fc = FacesContext.getCurrentInstance();
             fc.addMessage(textAreaDepositUse.getClientId(fc), message);
         }             
@@ -1435,7 +1505,6 @@ public class OptionsPage extends VDCBaseBean  implements java.io.Serializable {
             }
 
             writeFile(file, csvString, csvString.length());
-            System.out.print("after write file" );
             return new FileInputStream(file);
         }
 
@@ -1485,7 +1554,7 @@ public class OptionsPage extends VDCBaseBean  implements java.io.Serializable {
     
     //Edit Site Page
     private StatusMessage   msg;
-    private HtmlInputText          affiliation;
+    private HtmlInputText   affiliation;
     private HtmlInputText   dataverseAlias;
     private HtmlInputText   dataverseName;
     private HtmlInputTextarea shortDescriptionInput;
@@ -1617,13 +1686,11 @@ public class OptionsPage extends VDCBaseBean  implements java.io.Serializable {
             success = false;
             return "result";
         }
-
         if (validateClassificationCheckBoxes()) {
             String dataversetype = dataverseType;
             vdc.setDtype(dataversetype);
             vdc.setName((String) dataverseName.getValue());
             vdc.setAlias((String) dataverseAlias.getValue());
-            vdc.setAffiliation((String) affiliation.getValue());
             vdc.setDvnDescription((String) shortDescription.getValue());
             if (dataverseType.equals("Scholar")) {
                 vdc.setFirstName(this.firstName);
@@ -2190,8 +2257,7 @@ public class OptionsPage extends VDCBaseBean  implements java.io.Serializable {
     }
 
     public void validateHourOfDay(FacesContext context, UIComponent toValidate, Object value) {       
-        boolean valid=true;      
-         
+        boolean valid=true;             
         if (isOai() && schedulePeriod!=null && schedulePeriod.getLocalValue()!=null &&(schedulePeriod.getLocalValue().equals("daily") || schedulePeriod.getLocalValue().equals("weekly"))) {
             if ( value==null || ((Integer)value).equals(new Integer(-1))) {
                 valid=false;
@@ -2201,13 +2267,11 @@ public class OptionsPage extends VDCBaseBean  implements java.io.Serializable {
             ((UIInput)toValidate).setValid(false);
             FacesMessage message = new FacesMessage("This field is required.");
             context.addMessage(toValidate.getClientId(context), message);
-        }
-        
+        }     
     }
 
     public void validateDayOfWeek(FacesContext context, UIComponent toValidate, Object value) {       
-        boolean valid=true;      
-         
+        boolean valid=true;               
         if (isOai() && schedulePeriod!=null&& schedulePeriod.getLocalValue()!=null && schedulePeriod.getLocalValue().equals("weekly") ) {
                if ( value==null || ((Integer)value).equals(new Integer(-1))) {
                 valid=false;
@@ -2454,6 +2518,19 @@ public class OptionsPage extends VDCBaseBean  implements java.io.Serializable {
         vdcUIList.getVdcUIList();
         vdcUIListSize = new Long(String.valueOf(vdcUIList.getVdcUIList().size()));
     }
+    
+        public DataPaginator getPaginator() {
+        if (this.vdcUIList != null) {
+            return this.vdcUIList.getPaginator();
+        }
+        return null; 
+    }
+    
+    public void setPaginator (DataPaginator paginator) {
+       if (this.vdcUIList != null) {
+            this.vdcUIList.setPaginator(paginator);
+        }
+    }
 //Add Acount PAge
     private VDCUser user;
     public VDCUser getUser() {return this.user;}
@@ -2473,12 +2550,10 @@ public class OptionsPage extends VDCBaseBean  implements java.io.Serializable {
         String workflowValue=null;
         user.setActive(true);
         editUserService.save();
-        System.out.print("After save");
         if (StringUtil.isEmpty(workflowValue)) {
             getVDCRenderBean().getFlash().put("successMessage", "User account created successfully." );
         } 
         LoginWorkflowBean loginWorkflowBean = (LoginWorkflowBean)this.getBean("LoginWorkflowBean");   
-        System.out.print("After get bean");
         return loginWorkflowBean.processAddAccount(user);     
     }
     
@@ -2511,4 +2586,1651 @@ public class OptionsPage extends VDCBaseBean  implements java.io.Serializable {
             context.addMessage(toValidate.getClientId(context), message);
         }       
     }
-}
+    
+    //manage controlled vocab
+    private List<ControlledVocabulary> controlledVocabularyList;
+    public List<ControlledVocabulary> getControlledVocabularyList() {return controlledVocabularyList;}
+    public void setControlledVocabularyList(List<ControlledVocabulary> controlledVocabularyList) {this.controlledVocabularyList = controlledVocabularyList;}  
+    
+    //manage classifications
+    private int itemBeansSize = 0;
+    public int getItemBeansSize() {return itemBeansSize;}
+    protected void initClassifications() {
+         if (list == null) {
+             list = new ClassificationList();
+         }
+         list.getClassificationUIs(new Long("-1"));
+     }
+     ClassificationList list = null;
+     public ClassificationList getList() {return list;}
+
+     //Comment review page
+     protected List<StudyCommentUI> commentsForReview = null;
+     protected Long totalNotifications;
+    public Long getTotalNotifications() {return totalNotifications;}
+    protected HtmlCommandLink deleteCommentLink;
+    public HtmlCommandLink getDeleteCommentLink() {return deleteCommentLink;}
+    public void setDeleteCommentLink(HtmlCommandLink deleteCommentLink) {this.deleteCommentLink = deleteCommentLink;}
+    protected HtmlCommandLink ignoreCommentFlagLink;
+    public HtmlCommandLink getIgnoreCommentFlagLink() {return ignoreCommentFlagLink;}
+    public void setIgnoreCommentFlagLink(HtmlCommandLink ignoreCommentFlagLink) {this.ignoreCommentFlagLink = ignoreCommentFlagLink;}
+        protected Long flaggedCommentId;
+    
+     public List<StudyCommentUI> getCommentsForReview() {
+        if (commentsForReview == null) {
+            commentsForReview = new ArrayList();
+            List<StudyComment> tempCommentsForReview = studyCommentService.getAbusiveStudyComments();
+            Iterator iterator = tempCommentsForReview.iterator();
+            while (iterator.hasNext()) {
+                StudyComment studyComment     = (StudyComment)iterator.next();
+                StudyCommentUI studyCommentUI = new StudyCommentUI(studyComment);
+                commentsForReview.add(studyCommentUI);
+            }
+            totalNotifications = new Long(Integer.toString(commentsForReview.size()));
+        }
+        return commentsForReview;
+    }
+         public void deleteFlaggedComment(ActionEvent event) {
+         if (deleteCommentLink.getAttributes().get("commentId") != null) {
+             flaggedCommentId = new Long(deleteCommentLink.getAttributes().get("commentId").toString());
+         }
+         String deletedMessage = "You reported as abusive a comment in the study titled, " +
+                                getFlaggedStudyTitle() + ". " + "\n" +
+                                "The comment was, \"" + getFlaggedStudyComment() + "\". " + "\n" +
+                               "This comment was deleted in accordance with the " +
+                                "study comments terms of use.";
+         studyCommentService.deleteComment(flaggedCommentId, deletedMessage);
+         getVDCRenderBean().getFlash().put("successMessage","Successfully deleted the flagged comment.");
+         //cleanup
+         flaggedCommentId  = new Long("0");
+         commentsForReview = null;
+     }
+
+     public void ignoreCommentFlag(ActionEvent event) {
+         if (ignoreCommentFlagLink.getAttributes().get("commentId") != null) {
+             flaggedCommentId = new Long(ignoreCommentFlagLink.getAttributes().get("commentId").toString());
+         }
+         String okMessage = "You reported as abusive a comment in the study titled, " +
+                                getFlaggedStudyTitle() + ". " + "\n" +
+                                "The comment was, \"" + getFlaggedStudyComment() + "\". " + "\n" +
+                                "According to the terms of use of this study, the " +
+                                "reported comment is not an abuse. This comment will remain posted, and will " +
+                                "no longer appear to you as reported.";
+         studyCommentService.okComment(flaggedCommentId, okMessage);
+         getVDCRenderBean().getFlash().put("successMessage","Successfully ignored the flagged comment.");
+         //cleanup
+         flaggedCommentId  = new Long("0");
+         commentsForReview = null;
+     }
+     protected String getFlaggedStudyComment() {
+         String comment = new String("");
+         Iterator iterator = commentsForReview.iterator();
+         while (iterator.hasNext()) {
+             StudyCommentUI studycommentui = (StudyCommentUI)iterator.next();
+             if (studycommentui.getStudyComment().getId().equals(flaggedCommentId)) {
+                 comment = studycommentui.getStudyComment().getComment();
+                 break;
+             }
+         }
+         return comment;
+     }
+     protected String getFlaggedStudyTitle() {
+         String title = new String("");
+         Iterator iterator = commentsForReview.iterator();
+         while (iterator.hasNext()) {
+             StudyCommentUI studycommentui = (StudyCommentUI)iterator.next();
+             if (studycommentui.getStudyComment().getId().equals(flaggedCommentId)) {              
+                 title = studycommentui.getStudyComment().getStudyVersion().getStudy().getReleasedVersion().getMetadata().getTitle();
+                 break;
+             }
+         }
+         return title;
+     }
+     
+     //harvest sites page
+    private List<HarvestingDataverse> harvestSiteList;
+    public List<HarvestingDataverse> getHarvestSiteList() {
+        if (harvestSiteList==null) {
+            harvestSiteList = harvestingDataverseService.findAll();
+        }
+        return harvestSiteList;
+    }
+    //Edit Export Schedule page
+    HtmlSelectOneMenu exportPeriod;    
+    private String exportSchedulePeriod;
+    Integer exportDayOfWeek;
+    Integer exportHourOfDay;
+    private List <SelectItem> selectExportPeriod = new ArrayList();
+
+    public HtmlSelectOneMenu getExportPeriod() {return exportPeriod;}
+    public void setExportPeriod(HtmlSelectOneMenu exportPeriod) {this.exportPeriod = exportPeriod;}
+    public String getExportSchedulePeriod() {return exportSchedulePeriod;}
+    public void setExportSchedulePeriod(String exportSchedulePeriod) {this.exportSchedulePeriod = exportSchedulePeriod;}    
+    public Integer getExportDayOfWeek() {return exportDayOfWeek;}
+    public void setExportDayOfWeek(Integer exportDayOfWeek) {this.exportDayOfWeek = exportDayOfWeek;}
+    public Integer getExportHourOfDay() {return exportHourOfDay;}
+    public void setExportHourOfDay(Integer exportHourOfDay) {this.exportHourOfDay = exportHourOfDay;}    
+    public void setSelectExportPeriod(List<SelectItem> selectExportPeriod) {this.selectExportPeriod = selectExportPeriod;}
+    public List<SelectItem> getSelectExportPeriod() {return selectExportPeriod;}
+    private HtmlDataTable dataTable;
+    public HtmlDataTable getDataTable() {return this.dataTable;}
+    public void setDataTable(HtmlDataTable dataTable) {this.dataTable = dataTable;}
+    
+    public List<SelectItem> loadSelectExportPeriod() {
+        List selectItems = new ArrayList<SelectItem>();
+        if (this.getVDCRequestBean().getVdcNetwork().getExportPeriod() == null
+            || this.getVDCRequestBean().getVdcNetwork().getExportPeriod().equals("")){
+            selectItems.add(new SelectItem("", "Not Selected"));
+        }
+         selectItems.add(new SelectItem("daily", "Export daily"));
+         selectItems.add(new SelectItem("weekly", "Export weekly"));
+        if ((this.getVDCRequestBean().getVdcNetwork().getExportPeriod() != null)
+            && (!this.getVDCRequestBean().getVdcNetwork().getExportPeriod().equals(""))){
+            selectItems.add(new SelectItem("none", "Disable export"));
+        }
+        return selectItems;
+    }
+    
+    public void validateExportHourOfDay(FacesContext context, UIComponent toValidate, Object value) {
+        boolean valid = true;
+        if (exportPeriod.getLocalValue() != null && (exportPeriod.getLocalValue().equals("daily") || exportPeriod.getLocalValue().equals("weekly"))) {
+            if (value == null || ((Integer) value).equals(new Integer(-1))) {
+                valid = false;
+            }
+        }
+        if (!valid) {
+            ((UIInput) toValidate).setValid(false);
+            FacesMessage message = new FacesMessage("This field is required.");
+            context.addMessage(toValidate.getClientId(context), message);
+        }
+    }
+
+    public void validateExportDayOfWeek(FacesContext context, UIComponent toValidate, Object value) {
+        boolean valid = true;
+        if (exportPeriod != null && exportPeriod.getLocalValue() != null && exportPeriod.getLocalValue().equals("weekly")) {
+            if (value == null || ((Integer) value).equals(new Integer(-1))) {
+                valid = false;
+            }
+        }
+        if (!valid) {
+            ((UIInput) toValidate).setValid(false);
+            FacesMessage message = new FacesMessage("This field is required.");
+            context.addMessage(toValidate.getClientId(context), message);
+        }
+    }
+
+    public void validateExportPeriod(FacesContext context, UIComponent toValidate, Object value) {
+        boolean valid = true;
+        if (((String) value).equals("notSelected")) {
+            exportPeriod.setValue("notSelected");
+            valid = false;
+        }
+        if (!valid) {
+            ((UIInput) toValidate).setValid(false);
+            FacesMessage message = new FacesMessage("This field is required.");
+            context.addMessage(toValidate.getClientId(context), message);
+        }
+    }
+    public String saveExportSchedule() {
+        VDCNetwork vdcnetwork = getVDCRequestBean().getVdcNetwork();
+        vdcnetwork.setExportPeriod(exportSchedulePeriod);
+        vdcnetwork.setExportHourOfDay(exportHourOfDay);
+        if (exportDayOfWeek != null && exportDayOfWeek.intValue()==-1){
+            exportDayOfWeek = null;
+        }
+        vdcnetwork.setExportDayOfWeek(exportDayOfWeek);
+        vdcNetworkService.edit(vdcnetwork);
+        remoteTimerService.createExportTimer(vdcnetwork);
+        getVDCRenderBean().getFlash().put("successMessage","Successfully updated export schedule.");
+        return "/networkAdmin/NetworkOptionsPage.xhtml?faces-redirect=true";   
+    }
+    
+    //OAI sets data
+    List<OAISet> oaiSets; 
+    public  List<OAISet> getOaiSets() { return oaiSets;}
+    private void initSetData() {oaiSets = oaiSetService.findAllOrderedSorted();}
+    public void deleteSet(ActionEvent ae) {
+        OAISet oaiSet=(OAISet)dataTable.getRowData();        
+        oaiSetService.remove(oaiSet.getId());
+        initSetData();  // Re-fetch list to reflect Delete action       
+        getVDCRenderBean().getFlash().put("successMessage", "Successfully deleted OAI set.");
+    }
+    
+   public String saveNetworkGeneralSettings_action() {
+        VDCNetwork thisVdcNetwork = vdcNetworkService.find(new Long(1));
+        thisVdcNetwork.setName((String)textFieldNetworkName.getValue());
+        thisVdcNetwork.setContactEmail(this.getContactUsEmail());
+        thisVdcNetwork.setDisplayAnnouncements(this.isChkEnableNetworkAnnouncements());
+        thisVdcNetwork.setAnnouncements(this.getNetworkAnnouncements());
+        vdcNetworkService.edit(thisVdcNetwork);
+        getVDCRequestBean().setVdcNetwork(thisVdcNetwork);        
+        getVDCRenderBean().getFlash().put("successMessage", "Successfully updated general network settings.");
+        return "/networkAdmin/NetworkOptionsPage.xhtml?faces-redirect=true";
+    }
+   
+   
+   
+    String networkName;
+    public void setNetworkName(String name){networkName=name;}
+    public String getNetworkName(){return networkName;}
+    private HtmlInputText textFieldNetworkName = new HtmlInputText();
+    public HtmlInputText getTextFieldNetworkName() {return textFieldNetworkName;}
+    public void setTextFieldNetworkName(HtmlInputText hit) {this.textFieldNetworkName = hit;}
+    private String networkAnnouncements;   
+    public String getNetworkAnnouncements() {return networkAnnouncements;}    
+    public void setNetworkAnnouncements(String networkAnnouncements) {this.networkAnnouncements = networkAnnouncements;}   
+    private boolean chkEnableNetworkAnnouncements;   
+    public boolean isChkEnableNetworkAnnouncements() {return chkEnableNetworkAnnouncements;}    
+    public void setChkEnableNetworkAnnouncements(boolean chkEnableNetworkAnnouncements) {this.chkEnableNetworkAnnouncements = chkEnableNetworkAnnouncements;}
+    
+    //Network Customization
+    public String saveNetworkCustomization() {
+        VDCNetwork thisVdcNetwork = vdcNetworkService.find(new Long(1));
+        thisVdcNetwork.setNetworkPageHeader(banner);
+        thisVdcNetwork.setNetworkPageFooter(footer);     
+        vdcNetworkService.edit(thisVdcNetwork);
+        getVDCRenderBean().getFlash().put("successMessage", "Successfully updated network customization.");
+        return "/networkAdmin/NetworkOptionsPage.xhtml?faces-redirect=true";
+    }
+    
+    //DV Requirements
+    private boolean requireDvdescription;
+    public boolean isRequireDvdescription() {return requireDvdescription;}
+    public void setRequireDvdescription(boolean requireDvdescription) {this.requireDvdescription = requireDvdescription;}
+    private boolean requireDvaffiliation;
+    public boolean isRequireDvaffiliation() {return requireDvaffiliation;}
+    public void setRequireDvaffiliation(boolean requireDvaffiliation) {this.requireDvaffiliation = requireDvaffiliation;}
+    private boolean requireDvclassification;
+    public boolean isRequireDvclassification() {return requireDvclassification;}
+    public void setRequireDvclassification(boolean requireDvclassification) {this.requireDvclassification = requireDvclassification;}
+    private boolean requireDvstudiesforrelease;
+    public boolean isRequireDvstudiesforrelease() {return requireDvstudiesforrelease;}
+    public void setRequireDvstudiesforrelease(boolean requireDvstudiesforrelease) {this.requireDvstudiesforrelease = requireDvstudiesforrelease;}
+
+    public String saveNetworkAdvancedSettings_action() {
+            VDCNetwork vdcnetwork = vdcNetworkService.find(new Long(1));
+            vdcnetwork.setRequireDVaffiliation(requireDvaffiliation);
+            vdcnetwork.setRequireDVclassification(requireDvclassification);
+            vdcnetwork.setRequireDVdescription(requireDvdescription);
+            vdcnetwork.setRequireDVstudiesforrelease(requireDvstudiesforrelease);
+            vdcNetworkService.edit(vdcnetwork);
+            getVDCRenderBean().getFlash().put("successMessage", "Successfully updated the network dataverse creation and release requirements.  ");
+            return "/networkAdmin/NetworkOptionsPage?faces-redirect=true";
+    }
+    
+    //Network Priviledged users page
+    public EditNetworkPrivilegesService getPrivileges() {return privileges;}
+    public void setPrivileges(EditNetworkPrivilegesService privileges) {this.privileges = privileges;}
+    private String userName;
+    public String getUserName() {return this.userName;}
+    public void setUserName(String userName) {this.userName = userName;}       
+    private String TOUuserName;   
+    public String getTOUUserName() {return this.TOUuserName;}
+    public void setTOUUserName(String name) {this.TOUuserName = name;}
+    
+    /*
+    private UIData userTable;
+    
+     public javax.faces.component.UIData getUserTable() {
+        return userTable;
+    }
+
+    public void setUserTable(javax.faces.component.UIData userTable) {
+        this.userTable = userTable;
+    }
+*/
+    private UIData TOUuserTable;    
+    public UIData getUserTOUTable() {return TOUuserTable;}
+    public void setUserTOUTable(javax.faces.component.UIData tut) {this.TOUuserTable = tut;}
+
+    public List getNetworkRoleSelectItems() {
+        List selectItems = new ArrayList();
+        NetworkRole role = networkRoleService.findByName(NetworkRoleServiceLocal.CREATOR);
+        selectItems.add(new SelectItem(role.getId(), "Dataverse Creator"));
+        selectItems.add(new SelectItem(networkRoleService.findByName(NetworkRoleServiceLocal.ADMIN).getId(), "Network Admin"));
+        return selectItems;
+    }
+      
+    public void clearRole(ActionEvent ea) {
+        NetworkPrivilegedUserBean user = (NetworkPrivilegedUserBean)userTable.getRowData();
+        user.setNetworkRoleId(null);
+    }
+    
+    public void clearTOURole(ActionEvent ea) {
+        VDCUser user = (VDCUser)TOUuserTable.getRowData();
+        user.setBypassTermsOfUse(false);
+    }
+    
+    public void addNetworkUser(ActionEvent ae) {
+        VDCUser user = null;
+        if (userName.indexOf("'") != -1) {
+            setUserNotFound(true);
+        } else {
+            user = userService.findByUserName(userName);
+            if (user==null) {
+                setUserNotFound(true);
+            } else {
+                this.privileges.addPrivilegedUser(user.getId());
+            }
+        }
+    } 
+    
+    public void addTOUUser(ActionEvent ae) {
+        VDCUser user = null; 
+        // See comment in the addUser method!
+        if (TOUuserName.indexOf("'") != -1) {
+            setTOUUserNotFound(true);
+        } else {
+            user = userService.findByUserName(TOUuserName);
+            if (user==null) {
+                setTOUUserNotFound(true);
+            } else {
+                this.privileges.addTOUPrivilegedUser(user.getId());
+            }
+        }
+    }
+    
+    private boolean userNotFound;
+    public boolean isUserNotFound() {return userNotFound;}
+    public void setUserNotFound(boolean userNotFound) {this.userNotFound = userNotFound;}    
+    private boolean TOUuserNotFound;    
+    public boolean isTOUUserNotFound() {return TOUuserNotFound; }   
+    public void setTOUUserNotFound(boolean userNotFound) {this.TOUuserNotFound = userNotFound; }
+    public boolean getDisplayPrivilegedUsers() {return getPrivileges().getPrivilegedUsers().size()>1;}    
+    public boolean getDisplayTOUPrivilegedUsers() {return getPrivileges().getTOUPrivilegedUsers().size()>0;}
+    public String saveNetworkPrivilegedUsersPage() {
+        HttpServletRequest request = (HttpServletRequest)this.getExternalContext().getRequest();
+        String hostName=request.getLocalName();
+        int port = request.getLocalPort();
+        String portStr="";
+        if (port!=80) {
+            portStr=":"+port;
+        }
+        // Needed to send an approval email to approved creators
+        String creatorUrl = "http://"+hostName+portStr+request.getContextPath()+"/faces/site/AddSitePage.xhtml";
+        privileges.save(creatorUrl);
+        privileges.init();
+        getVDCRenderBean().getFlash().put("successMessage", "Successfully updated network permissions.");
+        return "/networkAdmin/NetworkOptionsPage.xhtml?faces-redirect=true";
+    }
+    
+    //NetworkTerms of Use
+    private boolean networkAccountTermsOfUseEnabled;
+    private String networkAccountTermsOfUse;
+    public boolean isNetworkAccountTermsOfUseEnabled() {return networkAccountTermsOfUseEnabled;}
+    public void setNetworkAccountTermsOfUseEnabled(boolean termsOfUseEnabled) {this.networkAccountTermsOfUseEnabled = termsOfUseEnabled;}
+    public String getNetworkAccountTermsOfUse() {return networkAccountTermsOfUse;}
+    public void setNetworkAccountTermsOfUse(String termsOfUse) {this.networkAccountTermsOfUse = termsOfUse;}
+    private boolean networkDepositTermsOfUseEnabled;
+    private String networkDepositTermsOfUse;
+    public boolean isNetworkDepositTermsOfUseEnabled() {return networkDepositTermsOfUseEnabled;}
+    public void setNetworkDepositTermsOfUseEnabled(boolean termsOfUseEnabled) {this.networkDepositTermsOfUseEnabled = termsOfUseEnabled;}
+    public String getNetworkDepositTermsOfUse() {return networkDepositTermsOfUse;}
+    public void setNetworkDepositTermsOfUse(String termsOfUse) {this.networkDepositTermsOfUse = termsOfUse;}
+    private boolean networkDownloadTermsOfUseEnabled;
+    private String networkDownloadTermsOfUse;
+    public boolean isNetworkDownloadTermsOfUseEnabled() {return networkDownloadTermsOfUseEnabled;}
+    public void setNetworkDownloadTermsOfUseEnabled(boolean termsOfUseEnabled) {this.networkDownloadTermsOfUseEnabled = termsOfUseEnabled;}
+    public String getnetworkDownloadTermsOfUse() {return networkDownloadTermsOfUse;}
+    public void setnetworkDownloadTermsOfUse(String termsOfUse) {this.networkDownloadTermsOfUse = termsOfUse;}
+
+    public String save_NetworkTermsOfUseAction() {
+        if (validateAccountTerms()) {
+            // action code here
+            VDCNetwork vdcNetwork = vdcNetworkService.find();
+            vdcNetwork.setTermsOfUse(networkAccountTermsOfUse);
+            vdcNetwork.setTermsOfUseEnabled(networkAccountTermsOfUseEnabled);
+            vdcNetwork.setDepositTermsOfUse(networkDepositTermsOfUse);
+            vdcNetwork.setDepositTermsOfUseEnabled(networkDepositTermsOfUseEnabled);
+            vdcNetwork.setDownloadTermsOfUse(networkDownloadTermsOfUse);
+            vdcNetwork.setDownloadTermsOfUseEnabled(networkDownloadTermsOfUseEnabled);
+            vdcNetwork.setTermsOfUseUpdated(new Date());
+            vdcNetworkService.edit(vdcNetwork);
+            userService.clearAgreedTermsOfUse();
+            getVDCRenderBean().getFlash().put("successMessage", "Successfully updated network terms of use.");
+            return "/networkAdmin/NetworkOptionsPage.xhtml?faces-redirect=true";
+        } else {
+            getVDCRenderBean().getFlash().put("warningMessage", "To enable this terms of use, you must also enter terms of use in the field below.  Please enter terms of use as either plain text or html.");
+            return null;
+        }
+    }
+
+    private boolean validateAccountTerms() {
+        String elementValue = networkAccountTermsOfUse;
+        boolean isUseTerms = true;
+        if ((elementValue == null || elementValue.equals("")) && (networkAccountTermsOfUseEnabled)) {
+            isUseTerms = false;
+            FacesMessage message = new FacesMessage("To enable this feature, you must also enter terms of use in the field below.  Please enter terms of use as either plain text or html.");
+            FacesContext.getCurrentInstance().addMessage("form1:textArea1", message);
+        }
+        elementValue = networkDepositTermsOfUse;
+        if ((elementValue == null || elementValue.equals("")) && (networkDepositTermsOfUseEnabled)) {
+            isUseTerms = false;
+            FacesMessage message = new FacesMessage("To enable this feature, you must also enter terms of use in the field below.  Please enter terms of use as either plain text or html.");
+            FacesContext.getCurrentInstance().addMessage("form1:textArea1", message);
+        }
+        elementValue = networkDownloadTermsOfUse;
+        if ((elementValue == null || elementValue.equals("")) && (networkDownloadTermsOfUseEnabled)) {
+            isUseTerms = false;
+            FacesMessage message = new FacesMessage("To enable this feature, you must also enter terms of use in the field below.  Please enter terms of use as either plain text or html.");
+            FacesContext.getCurrentInstance().addMessage("form1:textArea1", message);
+        }
+        return isUseTerms;
+    }    
+    
+    //Utilities page
+    
+    private File uploadedDdiFile = null; 
+        // <editor-fold defaultstate="collapsed" desc="studyLock utilities">  
+
+    
+    String studyLockStudyId;
+
+    public String getStudyLockStudyId() {
+        return studyLockStudyId;
+    }
+
+    public void setStudyLockStudyId(String studyLockStudyId) {
+        this.studyLockStudyId = studyLockStudyId;
+    }
+    
+    public List getStudyLockList() {
+        return studyService.getStudyLocks();
+    }
+    
+    public String removeLock_action() {
+        try {
+            studyService.removeStudyLock( new Long( studyLockStudyId) );
+            addMessage( "studyLockMessage", "Study lock removed (for study id = " + studyLockStudyId + ")" );
+        } catch (NumberFormatException nfe) {
+            addMessage( "studyLockMessage", "Action failed: The study id must be of type Long." );
+        } catch (Exception e) {
+            e.printStackTrace();
+            addMessage( "studyLockMessage", "Action failed: An unknown error occurred trying to remove lock for study id = " + studyLockStudyId );
+        }
+       
+        return null;
+    }    
+    // </editor-fold>        
+
+    
+
+    
+    String indexDVId;
+    String indexStudyIds;
+    private String fixGlobalId; 
+    private String studyIdRange;
+    private String handleCheckReport; 
+
+    public String getIndexDVId() {
+        return indexDVId;
+    }
+
+    public void setIndexDVId(String indexDVId) {
+        this.indexDVId = indexDVId;
+    }
+
+    public String getIndexStudyIds() {
+        return indexStudyIds;
+    }
+    
+    public void setIndexStudyIds(String indexStudyIds) {
+        this.indexStudyIds = indexStudyIds;
+    }
+    
+    public String getFixGlobalId() {
+        return fixGlobalId; 
+    }
+    
+    public void setFixGlobalId(String gid) {
+        fixGlobalId = gid; 
+    }
+
+    public String getStudyIdRange() {
+        return studyIdRange; 
+    }
+    
+    public void setStudyIdRange(String sir) {
+        studyIdRange = sir; 
+    }
+    
+    public String getHandleCheckReport() {
+        return handleCheckReport; 
+    }
+    
+    public void setHandleCheckReport(String hcr) {
+        handleCheckReport = hcr; 
+    }
+
+    private boolean deleteLockDisabled;
+    
+    public String getIndexLocks(){
+        String indexLocks = "There is no index lock at this time";
+        deleteLockDisabled = true;
+        File lockFile = getLockFile();
+        if (lockFile != null) {
+            indexLocks = "There has been a lock on the index since " + (new Date(lockFile.lastModified())).toString();
+            deleteLockDisabled = false;
+        }
+        return indexLocks;
+    }
+
+    private File getLockFileFromDir(File lockFileDir) {
+        File lockFile=null;
+        if (lockFileDir.exists()) {
+            File[] locks = lockFileDir.listFiles(new IndexLockFileNameFilter());
+            if (locks.length > 0) {
+                lockFile = locks[0];
+            }
+        }
+        return lockFile;
+    }
+    
+    private File getLockFile() {
+        File lockFile = null;
+        File lockFileDir = null;
+        String lockDir = System.getProperty("org.apache.lucene.lockDir");
+        if (lockDir != null) {
+            lockFileDir = new File(lockDir);
+            lockFile = getLockFileFromDir(lockFileDir);
+        } else {
+            lockFileDir = new File(Indexer.getInstance().getIndexDir());
+            lockFile = getLockFileFromDir(lockFileDir);
+        }
+        return lockFile;
+
+    }
+    
+    public String indexAll_action() {
+        try {
+            File indexDir = new File( Indexer.getInstance().getIndexDir() );
+            if (!indexDir.exists() || indexDir.list().length == 0) {
+                indexService.indexAll();
+                 addMessage( "indexMessage", "Reindexing completed." );
+            } else {
+                addMessage( "indexMessage", "Reindexing failed: The index directory must be empty before 'index all' can be run." );
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            addMessage( "indexMessage", "Reindexing failed: An unknown error occurred trying to reindex the DVN." );
+        } 
+       
+        return null;
+    }
+    
+    public String indexDV_action() {
+        try {
+            VDC vdc =  vdcService.findById( new Long( indexDVId) );
+            if (vdc != null) { 
+                List studyIDList = new ArrayList();
+                for (Study study :  vdc.getOwnedStudies() ) {
+                    studyIDList.add( study.getId() );
+                }
+                indexService.updateIndexList( studyIDList );
+                addMessage( "indexMessage", "Indexing completed (for dataverse id = " + indexDVId + ")" );
+            } else {
+                addMessage( "indexMessage", "Indexing failed: There is no dataverse with dvId = " + indexDVId );                    
+            }
+        } catch (NumberFormatException nfe) {
+            addMessage( "indexMessage", "Indexing failed: The dataverse id must be of type Long." );
+        } catch (Exception e) {
+            e.printStackTrace();
+            addMessage( "indexMessage", "Indexing failed: An unknown error occurred trying to index dataverse with id = " + indexDVId );
+        } 
+            
+        return null;
+    }    
+    
+    public String indexStudies_action() {
+        try {
+            Map tokenizedLists = determineStudyIds(indexStudyIds);
+            indexService.updateIndexList( (List) tokenizedLists.get("idList") );
+
+            addMessage( "indexMessage", "Indexing request completed." );
+            addStudyMessages( "indexMessage", tokenizedLists);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            addMessage( "indexMessage", "Indexing failed: An unknown error occurred trying to index the following: \"" + indexStudyIds + "\"" );
+        }            
+ 
+        return null;
+    }   
+    
+    public String indexLocks_action(){
+        File lockFile = getLockFile();
+        if (lockFile.exists()){
+            if (lockFile.delete()){
+                addMessage("indexMessage", "Index lock deleted");
+            } else {
+                addMessage("indexMessage", "Index lock could not be deleted");
+            }
+        }
+        return null;
+    }
+    
+    public String indexBatch_action() {
+        try {
+            indexService.indexBatch();
+            addMessage("indexMessage", "Indexing update completed.");
+        } catch (Exception e) {
+            e.printStackTrace();
+            addMessage("indexMessage", "Indexing failed: An unknown error occurred trying to update the index");
+        }
+        return null;
+    }
+    // </editor-fold>
+    
+    
+    // <editor-fold defaultstate="collapsed" desc="export utilities">    
+
+    String exportFormat;
+    String exportDVId;
+    String exportStudyIds;
+    
+    public String getExportFormat() {
+        return exportFormat;
+    }
+
+    public void setExportFormat(String exportFormat) {
+        this.exportFormat = exportFormat == null || exportFormat.equals("") ? null : exportFormat;
+    }
+
+    public String getExportDVId() {
+        return exportDVId;
+    }
+
+    public void setExportDVId(String exportDVId) {
+        this.exportDVId = exportDVId;
+    }
+
+    public String getExportStudyIds() {
+        return exportStudyIds;
+    }
+
+    public void setExportStudyIds(String exportStudyIds) {
+        this.exportStudyIds = exportStudyIds;
+    }
+    
+     public String exportUpdated_action() {
+        try {
+            studyService.exportUpdatedStudies();
+            addMessage( "exportMessage", "Export succeeded (for updated studies).");
+        } catch (Exception e) {
+            addMessage( "exportMessage", "Export failed: Exception occurred while exporting studies.  See export log for details.");   
+        }
+        return null;
+    }  
+     
+     public String updateHarvestStudies_action() {
+        try {
+            harvestStudyService.updateHarvestStudies();
+            addMessage( "exportMessage", "Update Harvest Studies succeeded.");
+        } catch (Exception e) {
+            addMessage( "exportMessage", "Export failed: An unknown exception occurred while updating harvest studies.");   
+        }
+        return null;
+    }       
+     
+    public String exportAll_action() {
+        try {
+            List<Long> allStudyIds = studyService.getAllStudyIds();
+            studyService.exportStudies(allStudyIds, exportFormat);
+            addMessage( "exportMessage", "Export succeeded for all studies." );
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            addMessage( "exportMessage", "Export failed: An unknown error occurred trying to export all studies." );
+        }    
+        
+        return null;
+    }  
+    
+    public String exportDV_action() {
+        try {
+            VDC vdc =  vdcService.findById( new Long(exportDVId) );
+            if (vdc != null) { 
+                List studyIDList = new ArrayList();
+                for (Study study :  vdc.getOwnedStudies() ) {
+                    studyIDList.add( study.getId() );
+                }
+
+                studyService.exportStudies(studyIDList, exportFormat);
+                addMessage( "exportMessage", "Export succeeded (for dataverse id = " + exportDVId + ")" );
+            } else {
+                addMessage( "exportMessage", "Export failed: There is no dataverse with dvId = " + exportDVId );                    
+            }
+        } catch (NumberFormatException nfe) {
+            addMessage( "exportMessage", "Export failed: The dataverse id must be of type Long.");
+        } catch (Exception e) {
+            e.printStackTrace();
+            addMessage( "exportMessage", "Export failed: An unknown error occurred trying to export dataverse with id = " + exportDVId );
+        } 
+        
+        return null;
+    }      
+    
+    public String exportStudies_action() {
+        try {
+            Map tokenizedLists = determineStudyIds(exportStudyIds);
+            studyService.exportStudies( (List) tokenizedLists.get("idList"), exportFormat );
+         
+            addMessage( "exportMessage", "Export request completed." );
+            addStudyMessages( "exportMessage", tokenizedLists);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            addMessage( "exportMessage", "Export failed: An unknown error occurred trying to export the following: \"" + exportStudyIds + "\"" );
+        }        
+        return null;
+    }    
+    // </editor-fold>        
+
+    
+    // <editor-fold defaultstate="collapsed" desc="harvest utilities">  
+
+    Long harvestDVId;
+    String harvestIdentifier;
+
+    public Long getHarvestDVId() {
+        return harvestDVId;
+    }
+
+    public void setHarvestDVId(Long harvestDVId) {
+        this.harvestDVId = harvestDVId;
+    }
+
+    public String getHarvestIdentifier() {
+        return harvestIdentifier;
+    }
+
+    public void setHarvestIdentifier(String harvestIdentifier) {
+        this.harvestIdentifier = harvestIdentifier;
+    }
+    
+    public List<SelectItem> getHarvestDVs() {
+        System.out.print("in get Harvest DVs");
+        List harvestDVSelectItems = new ArrayList<SelectItem>();
+        Iterator iter = harvestingDataverseService.findAll().iterator();
+        while (iter.hasNext()) {
+            HarvestingDataverse hd = (HarvestingDataverse) iter.next();
+            harvestDVSelectItems.add( new SelectItem(hd.getId(), hd.getVdc().getName()) );
+            
+        }
+        return harvestDVSelectItems;
+    }
+    
+    public String harvestStudy_action() {
+        String link = null;
+        HarvestingDataverse hd = null;
+        try {
+            hd = harvestingDataverseService.find( harvestDVId );
+            Long studyId = harvesterService.getRecord(hd, harvestIdentifier, hd.getHarvestFormatType().getMetadataPrefix());
+            
+            if (studyId != null) {
+                indexService.updateStudy(studyId);
+                
+                // create link String
+                HttpServletRequest req = (HttpServletRequest) getExternalContext().getRequest();
+                link = req.getScheme() +"://" + req.getServerName() + ":" + req.getServerPort() + req.getContextPath() 
+                        + "/dv/" + hd.getVdc().getAlias() + "/faces/study/StudyPage.xhtml?studyId=" + studyId;
+            }
+                       
+            addMessage( "harvestMessage", "Harvest succeeded" + (link == null ? "." : ": " + link ) );
+        } catch (Exception e) {
+            e.printStackTrace();
+            addMessage( "harvestMessage", "Harvest failed: An unexpected error occurred trying to get this record." );
+            addMessage( "harvestMessage", "Exception message: " + e.getMessage() );
+            addMessage( "harvestMessage", "Harvest URL: " + hd.getServerUrl() + "?verb=GetRecord&identifier=" + harvestIdentifier + "&metadataPrefix=" + hd.getHarvestFormatType().getMetadataPrefix() );
+        }
+       
+        return null;
+    }    
+    // </editor-fold>        
+
+    
+    // <editor-fold defaultstate="collapsed" desc="file utilities">    
+
+    
+    String fileExtension;
+    String fileStudyIds;
+
+    public String getFileExtension() {
+        return fileExtension;
+    }
+
+    public void setFileExtension(String fileExtension) {
+        this.fileExtension = fileExtension;
+    }
+
+    public String getFileStudyIds() {
+        return fileStudyIds;
+    }
+
+    public void setFileStudyIds(String fileStudyIds) {
+        this.fileStudyIds = fileStudyIds;
+    }
+  
+    public String determineFileTypeForExtension_action() {
+        try {
+            List<FileMetadata> fileMetadatas = studyFileService.getStudyFilesByExtension(fileExtension);
+            Map<String,Integer> fileTypeCounts = new HashMap<String,Integer>();
+            
+            for ( FileMetadata fmd : fileMetadatas ) {
+                StudyFile sf = fmd.getStudyFile();
+                String newFileType = FileUtil.determineFileType( fmd );
+                sf.setFileType( newFileType );
+                studyFileService.updateStudyFile(sf);
+                
+                Integer count = fileTypeCounts.get(newFileType);
+                if ( fileTypeCounts.containsKey(newFileType)) {
+                    fileTypeCounts.put( newFileType, fileTypeCounts.get(newFileType) + 1 );     
+                } else {
+                    fileTypeCounts.put( newFileType, 1 );    
+                }
+            }
+            
+            addMessage( "fileMessage", "Determine File Type request completed for extension ." + fileExtension );
+            for (String key : fileTypeCounts.keySet()) {
+                addMessage( "fileMessage", fileTypeCounts.get(key) + (fileTypeCounts.get(key) == 1 ? " file" : " files") + " set to type: " + key);                
+            }
+
+        
+        } catch (Exception e) {
+            e.printStackTrace();
+            addMessage( "fileMessage", "Request failed: An unknown error occurred trying to process the following extension: \"" + fileExtension + "\"" );
+        }       
+
+        return null;
+    }
+    
+    public String determineFileTypeForStudies_action() {
+        try {
+            Map tokenizedLists = determineStudyIds(fileStudyIds);
+
+            for (Iterator<Long>  iter = ((List<Long>) tokenizedLists.get("idList")).iterator(); iter.hasNext();) {
+                Long studyId = iter.next();
+                Study study = studyService.getStudy(studyId);
+                // determine the file type for the latest version of the study
+                for ( FileMetadata fmd : study.getLatestVersion().getFileMetadatas() ) {
+                    fmd.getStudyFile().setFileType( FileUtil.determineFileType( fmd ) );
+                } 
+                
+                studyService.updateStudy(study);
+            }          
+        
+            addMessage( "fileMessage", "Determine File Type request completed." );
+            addStudyMessages("fileMessage", tokenizedLists);
+            
+        } catch (Exception e) {
+            e.printStackTrace();
+            addMessage( "fileMessage", "Request failed: An unknown error occurred trying to process the following: \"" + fileStudyIds + "\"" );
+        }            
+ 
+        return null;
+    }   
+    // </editor-fold>
+    
+   
+    // <editor-fold defaultstate="collapsed" desc="import utilities">    
+ 
+    
+    private Long importDVId;
+    private Long importFileFormat;
+    private String importBatchDir;
+    
+    // file upload completed percent (Progress)
+    private int fileProgress;
+    // render manager for the application, uses session id for on demand
+    // render group.
+    private String sessionId;
+    //L.A.private RenderManager renderManager;
+    //L.A.private PersistentFacesState persistentFacesState;
+    public static final Log mLog = LogFactory.getLog(UtilitiesPage.class);
+    //L.A.private InputFile inputFile; 
+    public Long getImportDVId() {
+        return importDVId;
+    }
+
+    public void setImportDVId(Long importDVId) {
+        this.importDVId = importDVId;
+    }
+
+    public Long getImportFileFormat() {
+        return importFileFormat;
+    }
+
+    public void setImportFileFormat(Long importFileFormat) {
+        this.importFileFormat = importFileFormat;
+    }
+
+    public String getImportBatchDir() {
+        return importBatchDir;
+    }
+
+    public void setImportBatchDir(String importBatchDir) {
+        this.importBatchDir = importBatchDir;
+    }
+    public int getFileProgress(){
+        return fileProgress;
+    }
+    public void setFileProgress(int p){
+        fileProgress=p;
+    }  
+    //L.A.public InputFile getInputFile(){
+    //L.A.    return inputFile;
+    //L.A. }
+           
+    //L.A. public void setInputFile(InputFile in){
+    //L.A.    inputFile = in;
+    //L.A.}
+  
+     public List<SelectItem> getImportDVs() {
+        List importDVsSelectItems = new ArrayList<SelectItem>();
+        Iterator iter = vdcService.findAllNonHarvesting().iterator();
+        while (iter.hasNext()) {
+            VDC vdc = (VDC) iter.next();
+            importDVsSelectItems.add( new SelectItem(vdc.getId(), vdc.getName()) );
+            
+        }
+        return importDVsSelectItems;        
+    } 
+     
+    public List<SelectItem> getImportFileFormatTypes() {
+        List<SelectItem> metadataFormatsSelect = new ArrayList<SelectItem>();
+                
+        for (HarvestFormatType hft : harvesterService.findAllHarvestFormatTypes() ) {
+            metadataFormatsSelect.add(new SelectItem(hft.getId(),hft.getName()));
+        }
+
+        return metadataFormatsSelect;
+    }      
+     
+    public String importBatch_action() {
+        FileHandler logFileHandler = null;
+        Logger importLogger = null;
+        
+        if(importBatchDir==null || importBatchDir.equals("")) return null;
+        try {
+            int importFailureCount = 0;
+            int fileFailureCount = 0;
+            List<Long> studiesToIndex = new ArrayList<Long>();
+            //sessionId =  ((HttpSession) FacesContext.getCurrentInstance().getExternalContext().getSession(false)).getId();
+
+            File batchDir = new File(importBatchDir);
+            if (batchDir.exists() && batchDir.isDirectory()) {
+ 
+                // create Logger
+                String logTimestamp = new SimpleDateFormat("yyyy-MM-dd'T'HH-mm-ss").format(new Date());
+                String dvAlias = vdcService.find(importDVId).getAlias();
+                importLogger = Logger.getLogger("edu.harvard.iq.dvn.core.web.networkAdmin.UtilitiesPage." + dvAlias + "_" + logTimestamp);
+                String logFileName = FileUtil.getImportFileDir() + File.separator + "batch_" + dvAlias + "_" + logTimestamp + ".log";
+                logFileHandler = new FileHandler(logFileName);                
+                importLogger.addHandler(logFileHandler ); 
+               
+                importLogger.info("BEGIN BATCH IMPORT (dvId = " + importDVId + ") from directory: " + importBatchDir);
+                
+                for (int i=0; i < batchDir.listFiles().length; i++ ) {
+                    File studyDir = batchDir.listFiles()[i];
+                    if (studyDir.isDirectory()) { // one directory per study
+                        importLogger.info("Found study directory: " + studyDir.getName());
+                        
+                        File xmlFile = null;
+                        Map<File,String> filesToUpload = new HashMap();
+                        
+                        for (int j=0; j < studyDir.listFiles().length; j++ ) {
+                            File file = studyDir.listFiles()[j];
+                            if ( "study.xml".equals(file.getName()) ) {
+                                xmlFile = file;
+                            } else {
+                                addFile(file, "", filesToUpload);
+                            }
+                        }
+                        
+                        if (xmlFile != null) {                                
+                            try {
+                                importLogger.info("Found study.xml and " + filesToUpload.size() + " other " + (filesToUpload.size() == 1 ? "file." : "files."));
+                                // TODO: we need to incorporate the add files step into the same transaction of the import!!!
+                                Study study = studyService.importStudy( 
+                                        xmlFile, importFileFormat, importDVId, getVDCSessionBean().getLoginBean().getUser().getId());
+                                study.getLatestVersion().setVersionNote("Study imported via batch import.");
+                                importLogger.info("Import of study.xml succeeded: study id = " + study.getId());
+                                studiesToIndex.add(study.getId());
+                                
+                                if ( !filesToUpload.isEmpty() ) {
+
+                                    List<StudyFileEditBean> fileBeans = new ArrayList();
+                                    for (File file : filesToUpload.keySet()) {
+                                        StudyFileEditBean fileBean = new StudyFileEditBean( file, studyService.generateFileSystemNameSequence(), study );
+                                        fileBean.getFileMetadata().setCategory (filesToUpload.get(file));
+                                        fileBeans.add(fileBean);
+                                    }
+
+                                    try {
+                                        studyFileService.addFiles( study.getLatestVersion(), fileBeans, getVDCSessionBean().getLoginBean().getUser() );
+                                        importLogger.info("File upload succeeded.");
+                                    } catch (Exception e) {
+                                        fileFailureCount++;
+                                        importLogger.severe("File Upload failed (dir = " + studyDir.getName() + "): exception message = " + e.getMessage());
+                                        logException (e, importLogger);
+                                    }
+                                }
+  
+                            } catch (Exception e) {
+                                importFailureCount++;
+                                importLogger.severe("Import failed (dir = " + studyDir.getName() + "): exception message = " + e.getMessage());
+                                logException (e, importLogger);
+                            }
+                            
+                            
+                        } else { // no ddi.xml found in studyDir
+                            importLogger.warning("No study.xml file was found in study directory. Skipping... ");    
+                        }
+                    } else {
+                        importLogger.warning("Found non directory at top level. Skipping... (filename = " + studyDir.getName() +")");
+                    }
+                }
+                
+                // generate status message
+                String statusMessage = studiesToIndex.size() + (studiesToIndex.size() == 1 ? " study" : " studies") + " successfully imported";
+                statusMessage += (fileFailureCount == 0 ? "" : " (" + fileFailureCount + " of which failed file upload)");
+                statusMessage += (importFailureCount == 0 ? "." : "; " + importFailureCount + (importFailureCount == 1 ? " study" : " studies") + " failed import.");                 
+                
+                importLogger.info("COMPLETED BATCH IMPORT: " + statusMessage );
+                
+                // now index all studies
+                importLogger.info("POST BATCH IMPORT, start calls to index.");
+                indexService.updateIndexList(studiesToIndex);
+                importLogger.info("POST BATCH IMPORT, calls to index finished.");
+
+                
+                addMessage( "importMessage", "Batch Import request completed." );
+                addMessage( "importMessage", statusMessage );
+                addMessage( "importMessage", "For more detail see log file at: " + logFileName );
+
+            } else {
+                addMessage( "importMessage", "Batch Import failed: " + importBatchDir + " does not exist or is not a directory." );    
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            addMessage( "importMessage", "Batch Import failed: An unexpected error occurred during processing." );
+            addMessage( "importMessage", "Exception message: " + e.getMessage() );
+        } finally {
+            if ( logFileHandler != null ) {
+                logFileHandler.close();
+                importLogger.removeHandler(logFileHandler);
+            }
+         //   importBatchDir = "";
+        }
+
+        return null;       
+    }
+
+    private void addFile(File file, String catName, Map<File,String> filesToUpload) throws Exception{
+        if ( file.getName()!= null && file.getName().startsWith(".")) {
+             // ignore hidden files (ie files that start with "."
+        } else if (file.isDirectory()) {
+            String tempCatName = StringUtil.isEmpty(catName) ?  file.getName() : catName + " - " + file.getName();
+            for (int j=0; j < file.listFiles().length; j++ ) {
+                addFile( file.listFiles()[j], tempCatName, filesToUpload );
+            }
+        } else {
+            File tempFile = FileUtil.createTempFile( sessionId, file.getName() );
+            FileUtil.copyFile(file, tempFile);
+            filesToUpload.put(tempFile, catName);
+        }
+    }
+
+   /**
+     * Return the reference to the
+     * {@link com.icesoft.faces.webapp.xmlhttp.PersistentFacesState
+     * PersistentFacesState} associated with this Renderable.
+     * <p/>
+     * The typical (and recommended usage) is to get and hold a reference to the
+     * PersistentFacesState in the constructor of your managed bean and return
+     * that reference from this method.
+     *
+     * @return the PersistentFacesState associated with this Renderable
+     */
+    //L.A.public PersistentFacesState getState() {
+    //L.A.    return persistentFacesState;
+    //L.A.}
+
+    //L.A.public void setRenderManager(RenderManager renderManager) {
+    //L.A.    this.renderManager = renderManager;
+    //L.A    renderManager.getOnDemandRenderer(sessionId).add(this);
+        
+    //L.A.}
+  /**
+     * Callback method that is called if any exception occurs during an attempt
+     * to render this Renderable.
+     * <p/>
+     * It is up to the application developer to implement appropriate policy
+     * when a RenderingException occurs.  Different policies might be
+     * appropriate based on the severity of the exception.  For example, if the
+     * exception is fatal (the session has expired), no further attempts should
+     * be made to render this Renderable and the application may want to remove
+     * the Renderable from some or all of the
+     * {@link com.icesoft.faces.async.render.GroupAsyncRenderer}s it
+     * belongs to. If it is a transient exception (like a client's connection is
+     * temporarily unavailable) then the application has the option of removing
+     * the Renderable from GroupRenderers or leaving them and allowing another
+     * render call to be attempted.
+     *
+     * @param renderingException The exception that occurred when attempting to
+     *                           render this Renderable.
+     */
+    /*
+     Commenting out the entire method -- L.A.
+    public void renderingException(RenderingException renderingException) {
+        if (mLog.isTraceEnabled() &&
+                renderingException instanceof TransientRenderingException) {
+            mLog.trace("InputFileController Transient Rendering excpetion:", renderingException);
+        } else if (renderingException instanceof FatalRenderingException) {
+            if (mLog.isTraceEnabled()) {
+                mLog.trace("InputFileController Fatal rendering exception: ", renderingException);
+            }
+            renderManager.getOnDemandRenderer(sessionId).remove(this);
+            renderManager.getOnDemandRenderer(sessionId).dispose();
+        }
+    }
+     L.A. */
+   
+    /**
+     * Dispose callback called due to a view closing or session
+     * invalidation/timeout
+     */
+
+    public void dispose() throws Exception {
+               
+       if (mLog.isTraceEnabled()) {
+            mLog.trace("OutputProgressController dispose OnDemandRenderer for session: " + sessionId);
+        }
+        //L.A. renderManager.getOnDemandRenderer(sessionId).remove(this); 
+        //L.A. renderManager.getOnDemandRenderer(sessionId).dispose();
+    }   
+     /**
+     * <p>This method is bound to the inputFile component and is executed
+     * multiple times during the file upload process.  Every call allows
+     * the user to finds out what percentage of the file has been uploaded.
+     * This progress information can then be used with a progressBar component
+     * for user feedback on the file upload progress. </p>
+     *
+     * @param event holds a InputFile object in its source which can be probed
+     *              for the file upload percentage complete.
+     */
+    public void fileUploadProgress(EventObject event) {
+        //L.A.InputFile ifile = (InputFile) event.getSource();
+        //L.A.fileProgress = ifile.getFileInfo().getPercent();
+        getImportFileFormat();
+        getImportDVId();
+        //  System.out.println("sessid "+ sessionId);
+        //getImportFileFormat()getImportFileFormat() System.out.println("render "+ renderManager.getOnDemandRenderer(sessionId).toString()); 
+        //L.A.if (persistentFacesState !=null) {
+        //L.A.    renderManager.getOnDemandRenderer(sessionId).requestRender();} 
+    }  
+   
+    public String importSingleFile_action(){
+        //L.A.if(inputFile==null) return null; 
+        //L.A.File originalFile = inputFile.getFile();
+          
+        //File originalFile = null; 
+        
+        if (uploadedDdiFile != null) {
+            
+            try {
+        
+                Study study = studyService.importStudy( 
+                    uploadedDdiFile,getImportFileFormat(), getImportDVId(), getVDCSessionBean().getLoginBean().getUser().getId());
+                indexService.updateStudy(study.getId());
+                // create result message
+                HttpServletRequest req = (HttpServletRequest) getExternalContext().getRequest();
+                String studyURL = req.getScheme() +"://" + req.getServerName() + ":" + req.getServerPort() + req.getContextPath() 
+                    + "/dv/" + study.getOwner().getAlias() + "/faces/study/StudyPage.xhtml?globalId=" + study.getGlobalId();
+
+                addMessage( "importMessage", "Import succeeded." );
+                addMessage( "importMessage", "Study URL: " + studyURL );
+
+            }catch(Exception e) {
+                e.printStackTrace();
+                addMessage( "harvestMessage", "Import failed: An unexpected error occurred trying to import this study." );
+                addMessage( "harvestMessage", "Exception message: " + e.getMessage() );            
+            }
+        }
+                
+        return null;  
+    }
+        
+   public String uploadFile() {
+     
+       //L.A. inputFile =getInputFile();  
+       
+        String str="";
+   
+        
+        /* Commenting out everything InputFile-related: -- L.A. 
+	if (inputFile.getStatus() != InputFile.SAVED){
+            str = "File " + inputFile.getFileInfo().getFileName()+ " has not been saved. \n"+
+                    "Status: "+ inputFile.getStatus();
+            logger.info(str); 
+            addMessage("importMessage",str);
+           if(inputFile.getStatus() != InputFile.INVALID) 
+            return null;
+          }
+         -- L.A. */
+       return null; 
+   }
+   
+   
+    public void uploadFileListener(FileEntryEvent fileEvent) {
+        
+        File uploadedFile = null; 
+        
+        FileEntry fe = (FileEntry)fileEvent.getComponent();
+        FileEntryResults results = fe.getResults();
+        File parent = null;
+        StringBuilder m = null;
+
+        for (FileEntryResults.FileInfo i : results.getFiles()) {
+            //Note that the fileentry component has capabilities for 
+            //simultaneous uploads of multiple files.
+            
+            uploadedFile = i.getFile(); 
+        }                                                          
+
+        uploadedDdiFile = uploadedFile; 
+    }
+  
+// </editor-fold>
+
+    
+    // <editor-fold defaultstate="collapsed" desc="delete utilities">    
+
+    
+    String deleteStudyIds;
+
+    public String getDeleteStudyIds() {
+        return deleteStudyIds;
+    }
+
+    public void setDeleteStudyIds(String deleteStudyIds) {
+        this.deleteStudyIds = deleteStudyIds;
+    }
+
+  
+    
+    public String deleteStudies_action() {
+        try {
+            Map tokenizedLists = determineStudyIds(deleteStudyIds);
+            studyService.deleteStudyList( (List) tokenizedLists.get("idList") );
+
+            addMessage( "deleteMessage", "Delete request completed." );
+            addStudyMessages( "deleteMessage", tokenizedLists);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            addMessage( "deleteMessage", "Delete failed: An unknown error occurred trying to delete the following: \"" + deleteStudyIds + "\"" );
+        }            
+ 
+        return null;
+    }   
+    
+
+    // </editor-fold>
+
+    // <editor-fold defaultstate="collapsed" desc="handle utilities">
+
+
+       public String handleRegisterAll_action() {
+        try {
+            gnrsService.registerAll();
+
+            addMessage( "handleMessage", "Handle registration request completed." );
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            addMessage( "handleMessage", "Handle registration failed: An unknown error occurred trying to index the following: \"" + indexStudyIds + "\"" );
+        }
+
+        return null;
+    }
+
+
+    
+        public String handleFixAll_action() {
+        try {
+            gnrsService.fixAll();
+
+            addMessage( "handleMessage", "Handle re-registration request completed." );
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            addMessage( "handleMessage", "Handle registration failed: An unknown error occurred trying to index the following: \"" + indexStudyIds + "\"" );
+        }
+
+        return null;
+    }
+        
+    public String handleFixSingle_action() {
+        // TODO: also need a method to do this on a range of study IDs (?)
+        String hdl = fixGlobalId; 
+        
+        hdl = hdl.replaceFirst("^hdl:", "");
+        
+        try {
+            gnrsService.fixHandle(hdl);
+
+            addMessage( "handleMessage", "Re-registered handle "+hdl );
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            addMessage( "handleMessage", "Handle (re)registration failed for \"" + hdl + "\"" );
+        }
+
+        return null;
+    }
+    
+    
+    public String handleCheckRange_action() {
+        handleCheckReport = null; 
+        
+        if (studyIdRange == null || 
+                !(studyIdRange.matches("^[0-9][0-9]*$") || 
+                studyIdRange.matches("^[0-9][0-9]*\\-[0-9][0-9]*$"))) {
+            addMessage("handleMessage", "Invalid study ID range!");
+            return null; 
+            
+        }
+        
+        String checkOutput = ""; 
+        
+        if (studyIdRange.indexOf('-') > 0) {
+            // range: 
+            Long idStart = null; 
+            Long idEnd = null; 
+            
+            try {
+                String rangeStart = studyIdRange.substring(0, studyIdRange.indexOf('-'));
+                String rangeEnd = studyIdRange.substring(studyIdRange.indexOf('-')+1);
+ 
+                idStart = new Long (rangeStart);
+                idEnd = new Long (rangeEnd); 
+            } catch (Exception ex) {
+                addMessage("handleMessage", "Invalid study ID range: "+studyIdRange);
+                return null; 
+            }
+                
+            if (!(idStart.compareTo(idEnd) < 0)) {
+                addMessage("handleMessage", "Invalid numeric range: " + studyIdRange);
+                return null;
+            }
+
+            Long studyId = idStart;
+
+            while (studyId.compareTo(idEnd) <= 0) {
+                try {
+                    Study chkStudy = studyService.getStudy(studyId);
+                    String chkHandle = chkStudy.getAuthority() + "/" + chkStudy.getStudyId();
+                    if (gnrsService.isHandleRegistered(chkHandle)) {
+                        checkOutput = checkOutput.concat(studyId + "\thdl:" + chkHandle + "\tok\n");
+                    } else {
+                        checkOutput = checkOutput.concat(studyId + "\thdl:" + chkHandle + "\tNOT REGISTERED\n");
+                    }
+                    
+                } catch (Exception ex) {
+                    checkOutput = checkOutput.concat(studyId + "\t\tNO SUCH STUDY\n");
+                }
+                studyId = studyId + 1;
+            }
+            //addMessage("handleMessage", checkOutput);
+            handleCheckReport = checkOutput; 
+
+            
+            
+        } else {
+            // single id: 
+            try {
+                Long studyId = new Long (studyIdRange);
+                Study chkStudy = studyService.getStudy(studyId);
+                String chkHandle = chkStudy.getAuthority() + "/" + chkStudy.getStudyId();
+                if (gnrsService.isHandleRegistered(chkHandle)) {
+                    checkOutput = studyId + "\thdl:" + chkHandle + "\t\tok\n";
+                } else {
+                    checkOutput = studyId + "\thdl:" + chkHandle + "\t\tNOT REGISTERED\n";
+                }
+
+                //addMessage("handleMessage", checkOutput);
+                handleCheckReport = checkOutput;
+                
+            } catch (Exception ex) {
+                addMessage("handleMessage", "No such study: id="+studyIdRange);
+            }
+        }
+        return null; 
+    }
+
+    // </editor-fold>
+
+    // <editor-fold defaultstate="collapsed" desc="study utilities">
+
+
+    String createStudyDraftIds;
+
+    public String getCreateStudyDraftIds() {
+        return createStudyDraftIds;
+    }
+
+    public void setCreateStudyDraftIds(String createStudyDraftIds) {
+        this.createStudyDraftIds = createStudyDraftIds;
+    }
+
+
+
+
+
+    public String createStudyDrafts_action() {
+        try {
+            Map tokenizedLists = determineStudyIds(createStudyDraftIds);
+            List ignoredList = new ArrayList();
+
+            for (Iterator it = ((List) tokenizedLists.get("idList")).iterator(); it.hasNext();) {
+                Long studyId = (Long) it.next();
+                Study study = studyService.getStudy(studyId);
+                Long currentVersionNumber = study.getLatestVersion().getVersionNumber();
+                StudyVersion editVersion = study.getEditVersion();
+                if ( currentVersionNumber.equals(editVersion.getVersionNumber()) ){
+                    // working copy already exists
+                    it.remove();
+                    ignoredList.add(studyId);
+                } else {
+                    // save new version
+                    studyService.saveStudyVersion(editVersion, getVDCSessionBean().getLoginBean().getUser().getId());
+                    studyService.updateStudyVersion(editVersion);
+                }
+            }
+
+            tokenizedLists.put("ignoredList", ignoredList );
+            tokenizedLists.put("ignoredReason", "working verison already exists" );
+
+            addMessage( "studyMessage", "Create Study Draft request completed." );
+            addStudyMessages( "studyMessage", tokenizedLists);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            addMessage( "studyMessage", "Create Drafts failed: An unknown error occurred trying to delete the following: \"" + deleteStudyIds + "\"" );
+        }
+
+        return null;
+    }
+
+
+    // </editor-fold>
+
+    // ****************************
+    // Common methods
+    // ****************************
+    
+    private void addMessage(String component, String message) {
+        FacesMessage facesMsg = new FacesMessage(message);
+        FacesContext context = FacesContext.getCurrentInstance();
+        context.addMessage(component, facesMsg);          
+    }
+    
+    private void addStudyMessages (String component, Map tokenizedLists) {
+
+            if ( tokenizedLists.get("idList") != null && !((List) tokenizedLists.get("idList")).isEmpty() ) {            
+                addMessage( component, "The following studies were successfully processed: " + tokenizedLists.get("idList") );
+            }
+            if ( tokenizedLists.get("ignoredList") != null && !((List) tokenizedLists.get("ignoredList")).isEmpty() ) {            
+                addMessage( component, "The following studies were ignored (" 
+                        + ((String) tokenizedLists.get("ignoredReason")) + "): " + tokenizedLists.get("ignoredList") );
+            }            
+            if ( tokenizedLists.get("invalidStudyIdList") != null && !((List) tokenizedLists.get("invalidStudyIdList")).isEmpty() ) {
+                addMessage( component, "The following study ids were invalid: " + tokenizedLists.get("invalidStudyIdList") ); 
+            }
+            if ( tokenizedLists.get("failedTokenList") != null && !((List) tokenizedLists.get("failedTokenList")).isEmpty() ) {
+                addMessage( component, "The following tokens could not be interpreted: " + tokenizedLists.get("failedTokenList") );
+            }
+    }
+
+    
+    private Map determineIds(String ids) {
+        List<Long> idList = new ArrayList();
+        List<String> failedTokenList = new ArrayList(); 
+                    
+        StringTokenizer st = new StringTokenizer(ids, ",; \t\n\r\f");
+        while (st.hasMoreTokens()) {
+            String token = st.nextToken();
+            
+            try {
+                idList.add( new Long(token) );
+            } catch (NumberFormatException nfe) {
+                if ( token.indexOf("-") == -1 ) {
+                    failedTokenList.add(token);
+                } else {
+                    try {
+                        Long startId = new Long( token.substring( 0, token.indexOf("-") ) );
+                        Long endId = new Long( token.substring( token.indexOf("-") + 1 ) );  
+                        for (long i = startId.longValue(); i <= endId.longValue(); i++) {
+                            idList.add( new Long(i) );
+                        }
+                    } catch (NumberFormatException nfe2) {
+                        failedTokenList.add( token );
+                    }
+                }
+            }
+        }
+        
+        Map returnMap = new HashMap();
+        returnMap.put("idList", idList);
+        returnMap.put("failedTokenList", failedTokenList);
+        
+        return returnMap;
+    }   
+
+
+    private Map determineStudyIds(String studyIds) {
+        Map tokenizedLists = determineIds(studyIds);
+        List invalidStudyIdList = new ArrayList();
+
+        for (Iterator<Long>  iter = ((List<Long>) tokenizedLists.get("idList")).iterator(); iter.hasNext();) {
+            Long id = iter.next();
+            try {
+                studyService.getStudy(id);
+            } catch (EJBException e) {  
+                if (e.getCause() instanceof IllegalArgumentException) {
+                    invalidStudyIdList.add(id);
+                    iter.remove();
+                } else {
+                    throw e;
+                }
+            }  
+        }
+
+        tokenizedLists.put("invalidStudyIdList", invalidStudyIdList);
+        return tokenizedLists;
+    }
+    
+    // duplicate from harvester
+    private void logException(Throwable e, Logger logger) {
+
+        boolean cause = false;
+        String fullMessage = "";
+        do {
+            String message = e.getClass().getName() + " " + e.getMessage();
+            if (cause) {
+                message = "\nCaused By Exception.................... " + e.getClass().getName() + " " + e.getMessage();
+            }
+            StackTraceElement[] ste = e.getStackTrace();
+            message += "\nStackTrace: \n";
+            for (int m = 0; m < ste.length; m++) {
+                message += ste[m].toString() + "\n";
+            }
+            fullMessage += message;
+            cause = true;
+        } while ((e = e.getCause()) != null);
+        logger.severe(fullMessage);
+    }
+
+    public boolean isDeleteLockDisabled() {
+        return deleteLockDisabled;
+    }
+
+    public void setDeleteLockDisabled(boolean deleteLockDisabled) {
+        this.deleteLockDisabled = deleteLockDisabled;
+    }
+    
+    // user groups page
+    List<UserGroupsInfoBean> groups; 
+    public  List<UserGroupsInfoBean> getGroups() {return groups;}
+    
+    private void initGroupData() {
+        groups = new ArrayList<UserGroupsInfoBean>();
+        List<UserGroup> userGroups = groupService.findAll();
+        for (Iterator it = userGroups.iterator(); it.hasNext();) {
+            UserGroup elem = (UserGroup) it.next();
+            groups.add(new UserGroupsInfoBean(elem));
+        }
+       
+    }
+    
+      public void deleteGroup(ActionEvent ae) {
+        UserGroupsInfoBean bean=(UserGroupsInfoBean)dataTable.getRowData();
+        UserGroup userGroup = bean.getGroup();
+        groupService.remove(userGroup.getId());
+        initGroupData();  // Re-fetch list to reflect Delete action
+        
+        
+    }
+
+    
+    // All user page
+        public void initUserData() {
+        
+        userData = new ArrayList();
+        List users = userService.findAll();
+        for (Iterator it = users.iterator(); it.hasNext();) {
+            VDCUser elem = (VDCUser) it.next();
+            boolean defaultNetworkAdmin = elem.getNetworkRole()!=null
+                    && elem.getId().equals(vdcNetworkService.find().getDefaultNetworkAdmin().getId());
+            userData.add(new AllUsersDataBean(elem, defaultNetworkAdmin));
+            System.out.println("elem is "+elem+", elem id is "+elem.getId());
+        }
+    }
+    private List<edu.harvard.iq.dvn.core.web.networkAdmin.AllUsersDataBean> userData;
+    public List<edu.harvard.iq.dvn.core.web.networkAdmin.AllUsersDataBean> getUserData() {return this.userData;}
+    public void setUserData(List<edu.harvard.iq.dvn.core.web.networkAdmin.AllUsersDataBean> userData) {this.userData = userData;}
+    public void activateUser(ActionEvent ae) {
+        AllUsersDataBean bean=(AllUsersDataBean)dataTable.getRowData();
+        VDCUser user = bean.getUser();
+        userService.setActiveStatus(bean.getUser().getId(),true);
+        initUserData();  // Re-fetch list to reflect Delete action       
+    }
+    
+     public void deactivateUser(ActionEvent ae) {
+        AllUsersDataBean bean=(AllUsersDataBean)dataTable.getRowData();
+        userService.setActiveStatus(bean.getUser().getId(),false);
+        initUserData();  // Re-fetch list to reflect Delete action        
+    }
+
+}    

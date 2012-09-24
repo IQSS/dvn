@@ -5,6 +5,7 @@
       xmlns:h="http://java.sun.com/jsf/html"
       xmlns:f="http://java.sun.com/jsf/core"
       xmlns:jsp="http://java.sun.com/JSP/Page"
+      xmlns:ace="http://www.icefaces.org/icefaces/components"
       xmlns:ice="http://www.icesoft.com/icefaces/component">
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
@@ -22,236 +23,455 @@
             <ice:form id="form1" rendered="#{VDCRequest.currentVDC == null}">
             <div class="dvn_section">
                 <ice:panelTabSet id="tabSet1" styleClass="dvnTabs">
-                    <!-- DATAVERSE OPTIONS -->
-                    <ice:panelTab id="networkOptions" label="Network Options" url="/dvn#{VDCRequest.currentVDCURL}/faces/admin/OptionsPage.xhtml&amp;tab=dataverseOptions" rendered="#{VDCSession.loginBean.networkAdmin}">
-                            <table class="dvnOptionsTable" cellspacing="0" cellpadding="0" border="0">
-                                <tr><td colspan="2" class="dvnOptionsTableHeader"><ice:outputText value="#{bundlePageInfo.dvsSectionTitle}"/></td></tr>
-                                <tr>
-                                    <td class="dvnOptionsTableOption">
-                                        <ice:outputLink id="hyperlink4" value="/dvn/faces/site/AddSitePage.xhtml">
-                                            <ice:outputText id="hyperlink4Text" value="#{bundlePageInfo.createDvTitle}"/>
-                                        </ice:outputLink>
-                                    </td>
-                                    <td><ice:outputText styleClass="dvnOptionsTableNote" value="#{bundlePageInfo.createDvText}"/></td>
-                                </tr>
-                                <tr>
-                                    <td class="dvnOptionsTableOption">
-                                        <ice:outputLink value="/dvn/faces/networkAdmin/ManageDataversesPage.xhtml">
-                                            <ice:outputText value="#{bundlePageInfo.manageDvsTitle}"/>
-                                        </ice:outputLink>
-                                    </td>
-                                    <td><ice:outputText styleClass="dvnOptionsTableNote" value="#{bundlePageInfo.manageDvsText}"/></td>
-                                </tr>
-                                <tr>
-                                    <td class="dvnOptionsTableOption">
-                                        <ice:outputLink value="/dvn/faces/admin/ManageTemplatesPage.xhtml">
-                                            <ice:outputText value="#{bundlePageInfo.manageNetworkStudyTemplatesTitle}"/>
-                                        </ice:outputLink>
-                                    </td>
-                                    <td><ice:outputText styleClass="dvnOptionsTableNote" value="#{bundlePageInfo.manageNetworkStudyTemplatesText}"/></td>
-                                </tr>
-                                <tr>
-                                    <td class="dvnOptionsTableOption">
-                                        <ice:outputLink value="/dvn/faces/admin/ManageControlledVocabularyPage.xhtml">
-                                            <ice:outputText value="#{bundlePageInfo.manageControlledVocabularyTitle}"/>
-                                        </ice:outputLink>
-                                    </td>
-                                    <td><ice:outputText styleClass="dvnOptionsTableNote" value="#{bundlePageInfo.manageControlledVocabularyText}"/></td>
-                                </tr>                                
-                                <tr>
-                                    <td class="dvnOptionsTableOption">
-                                        <ice:outputLink value="/dvn/faces/networkAdmin/ManageClassificationsPage.xhtml">
-                                            <ice:outputText value="#{bundlePageInfo.manageClassificationsTitle}"/>
-                                        </ice:outputLink>
-                                    </td>
-                                    <td><ice:outputText styleClass="dvnOptionsTableNote" value="#{bundlePageInfo.manageClassificationsText}"/></td>
-                                </tr>
-                                <tr>
-                                    <td class="dvnOptionsTableOption">
-                                        <ice:outputLink value="/dvn/faces/networkAdmin/CommentReviewPage.xhtml">
-                                            <ice:outputText value="#{bundlePageInfo.commentReviewTitle}"/>
-                                        </ice:outputLink>
-                                    </td>
-                                    <td><ice:outputText styleClass="dvnOptionsTableNote" value="#{bundlePageInfo.commentReviewText}"/></td>
-                                </tr>
-                                <tr><td colspan="2" class="dvnOptionsTableHeader"><ice:outputText value="#{bundlePageInfo.harvestingSectionTitle}"/></td></tr>
-                                <tr>
-                                    <td class="dvnOptionsTableOption">
-                                        <ice:outputLink value="/dvn/faces/site/EditHarvestSitePage.xhtml">
-                                            <ice:outputText value="#{bundlePageInfo.createHarvestingDvTitle}"/>
-                                            <f:param name="from" value="myNetworkOptions"/>
-                                        </ice:outputLink>
-                                    </td>
-                                    <td><ice:outputText styleClass="dvnOptionsTableNote" value="#{bundlePageInfo.createHarvestingDvText}"/></td>
-                                </tr>
-                                <tr>
-                                    <td class="dvnOptionsTableOption">
-                                        <ice:outputLink value="/dvn/faces/site/HarvestSitesPage.xhtml">
-                                            <ice:outputText value="#{bundlePageInfo.manageHarvestingTitle}"/>
-                                        </ice:outputLink>
-                                    </td>
-                                    <td><ice:outputText styleClass="dvnOptionsTableNote" value="#{bundlePageInfo.manageHarvestingText}"/></td>
-                                </tr>
-                                <tr>
-                                    <td class="dvnOptionsTableOption">
-                                        <ice:outputLink value="/dvn/faces/networkAdmin/EditExportSchedulePage.xhtml">
-                                            <ice:outputText value="#{bundlePageInfo.exportsTitle}"/>
-                                        </ice:outputLink>
-                                    </td>
-                                    <td><ice:outputText styleClass="dvnOptionsTableNote" value="#{bundlePageInfo.exportsText}"/></td>
-                                </tr>
-                                <tr>
-                                    <td class="dvnOptionsTableOption">
-                                        <ice:outputLink value="/dvn/faces/networkAdmin/OAISetsPage.xhtml">
-                                            <ice:outputText value="#{bundlePageInfo.oaiSetsTitle}"/>
-                                        </ice:outputLink>
-                                    </td>
-                                    <td><ice:outputText styleClass="dvnOptionsTableNote" value="#{bundlePageInfo.oaiSetsText}"/></td>
-                                </tr>
-                                <tr>
-                                    <td class="dvnOptionsTableOption">
-                                        <ice:outputLink  value="/dvn/faces/admin/EditLockssConfigPage.xhtml">
-                                            <ice:outputText  value="#{bundlePageInfo.editLockssAUTitle}"/>
-                                        </ice:outputLink>
-                                    </td>
-                                    <td><ice:outputText styleClass="dvnOptionsTableNote" value="#{bundlePageInfo.editLockssAUText}"/></td>
-                                </tr>
-                            </table>
-                            <table class="dvnOptionsTable" cellspacing="0" cellpadding="0" border="0">
-                                <tr><td colspan="2" class="dvnOptionsTableHeader"><ice:outputText id="outputText3" value="#{bundlePageInfo.dvnSettingsSectionTitle}"/></td></tr>
-                                <tr>
-                                    <td class="dvnOptionsTableOption">
-                                        <ice:outputLink id="hyperlink12" value="/dvn/faces/networkAdmin/EditNetworkNamePage.xhtml">
-                                            <ice:outputText id="hyperlink12Text" value="#{bundlePageInfo.editDvnNameTitle}"/>
-                                        </ice:outputLink>
-                                    </td>
-                                    <td><ice:outputText styleClass="dvnOptionsTableNote" value="#{bundlePageInfo.editDvnNameText}"/></td>
-                                </tr>
-                                <tr>
-                                    <td styleClass="dvnOptionsTableOption">
-                                        <ice:outputLink id="hyperlink3" value="/dvn/faces/admin/EditBannerFooterPage.xhtml">
-                                            <ice:outputText id="hyperlink1Text2" value="#{bundlePageInfo.editDvnBrandingTitle}"/>
-                                        </ice:outputLink>
-                                    </td>
-                                    <td><ice:outputText styleClass="dvnOptionsTableNote" value="#{bundlePageInfo.editDvnBrandingText}"/></td>
-                                </tr>
-                                <tr>
-                                    <td class="dvnOptionsTableOption">
-                                        <ice:outputLink id="hyperlink5" value="/dvn/faces/networkAdmin/EditNetworkAnnouncementsPage.xhtml">
-                                            <ice:outputText id="hyperlink3Text1" value="#{bundlePageInfo.editDvnDescriptionTitle}"/>
-                                        </ice:outputLink>
-                                    </td>
-                                    <td><ice:outputText styleClass="dvnOptionsTableNote" value="#{bundlePageInfo.editDvnDescriptionText}"/></td>
-                                </tr>
-                                <tr>
-                                    <td class="dvnOptionsTableOption">
-                                        <ice:outputLink id="hyperlink8" value="/dvn/faces/networkAdmin/EditNetworkDVRequirementsPage.xhtml">
-                                            <ice:outputText id="hyperlink8Text" value="#{bundlePageInfo.editNetworkDvRequirementsTitle}"/>
-                                        </ice:outputLink>
-                                    </td>
-                                    <td><ice:outputText styleClass="dvnOptionsTableNote" value="#{bundlePageInfo.editNetworkDvRequirementsText}"/></td>
-                                </tr>                        <tr>
-                                    <td class="dvnOptionsTableOption">
-                                        <ice:outputLink id="hyperlink17" value="/dvn/faces/admin/EditContactUsPage.xhtml">
-                                            <ice:outputText id="hyperlink17Text" value="#{bundlePageInfo.editDvnNotificationsTitle}"/>
-                                        </ice:outputLink>
-                                    </td>
-                                    <td><ice:outputText styleClass="dvnOptionsTableNote" value="#{bundlePageInfo.editDvnNotificationsText}"/></td>
-                                </tr>
-                                <ui:fragment rendered="#{OptionsPage.twitterConfigured}">
-                                    <tr>
-                                        <td class="dvnOptionsTableOption">
-                                            <ice:commandLink action="#{OptionsPage.authorizeTwitter}" rendered="#{!OptionsPage.twitterEnabled}">
-                                                <ice:outputText  value="Enable Twitter"/>
-                                            </ice:commandLink>
-                                            <ice:commandLink action="#{OptionsPage.removeTwitter}" rendered="#{OptionsPage.twitterEnabled}">
-                                                <ice:outputText  value="Disable Twitter"/>
-                                            </ice:commandLink>                                        
-                                        </td>
-                                        <td><ice:outputText styleClass="dvnOptionsTableNote" value="Enable or disable automatic tweets"/></td>
-                                    </tr>
-                                </ui:fragment>
-                            </table>
-                            <table class="dvnOptionsTable" cellspacing="0" cellpadding="0" border="0">
-                                <tr><td colspan="2" class="dvnOptionsTableHeader"><ice:outputText value="#{bundlePageInfo.dvnTermsSectionTitle}"/></td></tr>
-                                <tr>
-                                    <td class="dvnOptionsTableOption">
-                                        <ice:outputLink value="/dvn/faces/networkAdmin/EditAccountUseTermsPage.xhtml">
-                                            <ice:outputText value="#{bundlePageInfo.editDvnAccountTermsTitle}"/>
-                                        </ice:outputLink>
-                                    </td>
-                                    <td><ice:outputText styleClass="dvnOptionsTableNote" value="#{bundlePageInfo.editDvnAccountTermsText}"/></td>
-                                </tr>
-                                <tr>
-                                    <td class="dvnOptionsTableOption">
-                                        <ice:outputLink value="/dvn/faces/networkAdmin/EditNetworkDepositUseTermsPage.xhtml">
-                                            <ice:outputText value="#{bundlePageInfo.editDvnDepositTermsTitle}"/>
-                                        </ice:outputLink>
-                                    </td>
-                                    <td><ice:outputText styleClass="dvnOptionsTableNote" value="#{bundlePageInfo.editDvnDepositTermsText}"/></td>
-                                </tr>
-                                <tr>
-                                    <td class="dvnOptionsTableOption">
-                                        <ice:outputLink value="/dvn/faces/networkAdmin/EditNetworkDownloadUseTermsPage.xhtml">
-                                            <ice:outputText value="#{bundlePageInfo.editDvnDownloadTermsTitle}"/>
-                                        </ice:outputLink>
-                                    </td>
-                                    <td><ice:outputText styleClass="dvnOptionsTableNote" value="#{bundlePageInfo.editDvnDownloadTermsText}"/></td>
-                                </tr>
-                                <tr>                                        
-                                    <td class="dvnOptionsTableOption">
-                                        <ice:outputLink id="hyperlinkGuestBookDataDump" value="/dvn#{VDCRequest.currentVDCURL}/faces/admin/GuestBookResponseDataPage.xhtml">
-                                             <ice:outputText id="hyperlinkGuestBookDataDumptext" value="#{bundlePageInfo.guestbookDataDumpTitle}"/>
-                                        </ice:outputLink>
-                                    </td>
-                                    <td><ice:outputText styleClass="dvnOptionsTableNote" value="#{bundlePageInfo.guestbookDataDumpText}"/></td>
-                                </tr>
-                            </table>
-                            <table class="dvnOptionsTable" cellspacing="0" cellpadding="0" border="0">
-                                <tr><td colspan="2" class="dvnOptionsTableHeader"><ice:outputText value="#{bundlePageInfo.dvnPermissionsSectionTitle}"/></td></tr>
-                                <tr>
-                                    <td class="dvnOptionsTableOption">
-                                        <ice:outputLink id="hyperlink1" value="/dvn/faces/networkAdmin/NetworkPrivilegedUsersPage.xhtml">
-                                            <ice:outputText id="hyperlink1Text1" value="#{bundlePageInfo.manageDvnPermissionsTitle}"/>
-                                        </ice:outputLink>
-                                    </td>
-                                    <td><ice:outputText styleClass="dvnOptionsTableNote" value="#{bundlePageInfo.manageDvnPermissionsText}"/></td>
-                                </tr>
-                                <tr>
-                                    <td class="dvnOptionsTableOption">
-                                        <ice:outputLink value="/dvn/faces/login/AddAccountPage.xhtml">
-                                            <ice:outputText value="#{bundlePageInfo.createAccountTitle}"/>
-                                        </ice:outputLink>
-                                    </td>
-                                    <td><ice:outputText styleClass="dvnOptionsTableNote" value="#{bundlePageInfo.createAccountText}"/></td>
-                                </tr>
-                                <tr>
-                                    <td class="dvnOptionsTableOption">
-                                        <ice:outputLink id="hyperlink6" value="/dvn/faces/networkAdmin/AllUsersPage.xhtml">
-                                            <ice:outputText id="hyperlink6Text" value="#{bundlePageInfo.manageUsersTitle}"/>
-                                        </ice:outputLink>
-                                    </td>
-                                    <td><ice:outputText styleClass="dvnOptionsTableNote" value="#{bundlePageInfo.manageUsersText}"/></td>
-                                </tr>
-                                <tr>
-                                    <td class="dvnOptionsTableOption">
-                                        <ice:outputLink id="hyperlink7" value="/dvn/faces/networkAdmin/UserGroupsPage.xhtml">
-                                            <ice:outputText id="hyperlink7Text" value="#{bundlePageInfo.manageGroupsTitle}"/>
-                                        </ice:outputLink>
-                                    </td>
-                                    <td><ice:outputText styleClass="dvnOptionsTableNote" value="#{bundlePageInfo.manageGroupsText}"/></td>
-                                </tr>
-                            </table>
-                            <table class="dvnOptionsTable" cellspacing="0" cellpadding="0" border="0">
-                                <tr><td colspan="2" class="dvnOptionsTableHeader"><ice:outputText value="#{bundlePageInfo.troubleshootSectionTitle}"/></td></tr>
-                                <tr>
-                                    <td class="dvnOptionsTableOption">
-                                        <ice:outputLink value="/dvn/faces/networkAdmin/UtilitiesPage.xhtml">
-                                            <ice:outputText value="#{bundlePageInfo.utilitiesTitle}"/>
-                                        </ice:outputLink>
-                                    </td>
-                                    <td><ice:outputText styleClass="dvnOptionsTableNote" value="#{bundlePageInfo.utilitiesText}"/></td>
-                                </tr>
+                    <!-- DATAVERSE OPTIONS -->   
+                    <ice:panelTab id="networkOptions" label="Dataverse" url="/dvn#{VDCRequest.currentVDCURL}/faces/admin/OptionsPage.xhtml&amp;tab=dataverseOptions" rendered="#{VDCSession.loginBean.networkAdmin}">
+
+                            <div jsfc="ice:panelGroup" id="layoutPanel5"  label="Dataverses" panelLayout="flow">
+                                <ice:panelTabSet id="tabSetDataverses" styleClass="dvnTabs dvnSubTabs">
+                                    <!-- Create New -->
+                                    <ice:panelTab id="manageDvsSub" label="Manage Dataverses">
+                                        <div jsfc="ice:panelGroup">
+                                            <div jsfc="ice:panelGroup"  panelLayout="flow">
+                                                <ui:include src="/networkAdmin/ManageDataversesPage.xhtml"></ui:include>
+                                            </div> 
+                                        </div>
+                                    </ice:panelTab>
+
+
+
+                                     <ice:panelTab id="reviewComments" label="Review Comments">
+                                        <div jsfc="ice:panelGroup">
+                                            <div jsfc="ice:panelGroup"  panelLayout="flow">
+                                                <ui:include src="/networkAdmin/CommentReviewPage.xhtml"></ui:include>
+                                            </div> 
+                                        </div>
+                                    </ice:panelTab>
+                                </ice:panelTabSet>
+                            </div>
+          
+              </ice:panelTab> 
+                    
+              <ice:panelTab id="collections" label="Classifications" url="/dvn#{VDCRequest.currentVDCURL}/faces/admin/OptionsPage.xhtml&amp;tab=collections" rendered="#{VDCSession.loginBean.networkAdmin}">
+              
+                                    <ice:panelTab id="manageClassifications" label="Manage Classifications">
+                                        <div jsfc="ice:panelGroup">
+                                            <div jsfc="ice:panelGroup"  panelLayout="flow">
+                                                <ui:include src="/networkAdmin/ManageClassificationsPage.xhtml"></ui:include>
+                                            </div> 
+                                        </div>
+                                    </ice:panelTab>
+                  
+              </ice:panelTab> 
+                    
+              <ice:panelTab id="templates" label="Templates" url="/dvn#{VDCRequest.currentVDCURL}/faces/admin/OptionsPage.xhtml&amp;tab=collections" rendered="#{VDCSession.loginBean.networkAdmin}">
+              
+                                    <ice:panelTab id="manageTemplates" label="Manage Templates">
+                                        <div jsfc="ice:panelGroup">
+                                            <div jsfc="ice:panelGroup"  panelLayout="flow">
+                                                <ui:include src="/admin/ManageTemplatesPage.xhtml"></ui:include>
+                                            </div> 
+                                        </div>
+                                    </ice:panelTab>
+                  
+              </ice:panelTab> 
+                    
+              <ice:panelTab id="controlledVocab" label="Controlled Vocabulary" url="/dvn#{VDCRequest.currentVDCURL}/faces/admin/OptionsPage.xhtml&amp;tab=collections" rendered="#{VDCSession.loginBean.networkAdmin}">
+              
+                                    <ice:panelTab id="manageControlledVocabulary" label="Manage Controlled Vocabulary">
+                                        <div jsfc="ice:panelGroup">
+                                            <div jsfc="ice:panelGroup"  panelLayout="flow">
+                                                <ui:include src="/admin/ManageControlledVocabularyPage.xhtml"></ui:include>
+                                            </div> 
+                                        </div>
+                                    </ice:panelTab>
+                  
+              </ice:panelTab> 
+                        
+                            
+
+                            
+                        <ice:panelTab id="harvestOptions" label="Harvesting" url="/dvn#{VDCRequest.currentVDCURL}/faces/admin/OptionsPage.xhtml&amp;tab=harvestOptions" 
+                                      rendered="#{VDCSession.loginBean.networkAdmin}">
+                            <ice:panelTabSet id="tabSetHarvest" styleClass="dvnTabs dvnSubTabs">
+                                        <ice:panelTab id="manageHarvestSites" label="Manage Harvesting">
+                                        <div jsfc="ice:panelGroup">
+                                            <div jsfc="ice:panelGroup"  panelLayout="flow">
+                                                <ui:include src="/site/HarvestSitesPage.xhtml"></ui:include>
+                                            </div> 
+                                        </div>
+                                        <div jsfc="ice:panelGroup">
+                                            <div jsfc="ice:panelGroup"  panelLayout="flow">
+                                                <ui:include src="/networkAdmin/OAISetsPage.xhtml"></ui:include>
+                                            </div> 
+                                        </div>
+                                    </ice:panelTab>
+                                    <ice:panelTab id="editExportSchedule" label="Settings">
+                                        <div jsfc="ice:panelGroup">
+                                            <div jsfc="ice:panelGroup"  panelLayout="flow">
+                                                <ui:include src="/networkAdmin/EditExportSchedulePage.xhtml"></ui:include>
+                                            </div> 
+                                            <div jsfc="ice:panelGroup"  panelLayout="flow">
+                                                <ui:include src="/admin/EditLockssConfigPage.xhtml"></ui:include>
+                                            </div> 
+                                        </div>
+                                    </ice:panelTab>
+                            </ice:panelTabSet>
+                        </ice:panelTab>
+                            
+             <ice:panelTab id="networkSettingsTab" label="Settings" url="/dvn#{VDCRequest.currentVDCURL}/faces/admin/OptionsPage.xhtml&amp;tab=settings" rendered="#{VDCSession.loginBean.networkAdmin}">
+                 <ice:panelTabSet id="tabSetSettings" styleClass="dvnTabs dvnSubTabs">
+                     <ice:panelTab id="networkGeneralSettings" label="General">
+                         <div jsfc="ice:panelGroup">
+                             <ui:include src="/networkAdmin/EditNetworkNamePage.xhtml"></ui:include>
+                             <ui:include src="/networkAdmin/EditNetworkAnnouncementsPage.xhtml"></ui:include>
+                             <ui:include src="/admin/EditContactUsPage.xhtml"></ui:include>
+                             <div id="groupPanel6" class="dvnFormPadding dvnFormMargin">
+                                 <ice:commandButton id="btnSaveSettings" value="#{bundle.saveButtonLabel} Changes" action="#{OptionsPage.saveNetworkGeneralSettings_action}"/>
+                             </div>
+                         </div>
+                     </ice:panelTab>
+                                    <ice:panelTab id="networkAdvancedSettings" label="Advanced">
+                                        <ui:include src="/networkAdmin/EditNetworkDVRequirementsPage.xhtml"></ui:include>
+                                          <div id="groupPanelAdvanced" class="dvnFormPadding dvnFormMargin">
+                                                <ice:commandButton id="btnSaveAdvanced" value="#{bundle.saveButtonLabel} Changes" action="#{OptionsPage.saveNetworkAdvancedSettings_action}"/>
+                                         </div>
+                                    </ice:panelTab>
+                                    <ice:panelTab id="networkCustomizartionSettings" label="Customization">
+                                                <ui:include src="/admin/EditBannerFooterPage.xhtml"></ui:include>
+                                                 <div class="dvnFormPadding dvnFormMargin">
+                                                <ice:commandButton id="saveButton" value="Save" action="#{OptionsPage.saveNetworkCustomization}"/>  
+                                                </div>
+                                    </ice:panelTab>
+                                    <ice:panelTab id="twitterSettings" label="Promote your Network" rendered="#{OptionsPage.twitterConfigured}">
+
+                                         <ice:commandLink action="#{OptionsPage.authorizeTwitter}" rendered="#{!OptionsPage.twitterEnabled}">
+                                             <ice:outputText  value="Enable Twitter"/>
+                                         </ice:commandLink>
+                                         <ice:commandLink action="#{OptionsPage.removeTwitter}" rendered="#{OptionsPage.twitterEnabled}">
+                                             <ice:outputText  value="Disable Twitter"/>
+                                         </ice:commandLink>                                        
+
+                                     <ice:outputText styleClass="dvnOptionsTableNote" value="Enable or disable automatic tweets"/>
+                                    </ice:panelTab>
+                     </ice:panelTabSet>
+                  
+              </ice:panelTab> 
+                            
+             <ice:panelTab id="permissions" label="Permissions" url="/dvn#{VDCRequest.currentVDCURL}/faces/admin/OptionsPage.xhtml&amp;tab=permissions" rendered="#{VDCSession.loginBean.networkAdmin or VDCSession.loginBean.curatorOrAbove or (not VDCRequest.currentVDC.harvestingDv and (VDCSession.loginBean.contributor or VDCRequest.currentVDC.allowRegisteredUsersToContribute))}">
+                            <div jsfc="ice:panelGroup" id="layoutPanelGroupPermissions" panelLayout="flow">
+                                <ice:panelTabSet id="tabSetPermissions" styleClass="dvnTabs dvnSubTabs">
+                                    <!-- PERMISSIONS -->
+                                    <ice:panelTab id="permissionsSub" label="Manage Permissions">
+                                            <div jsfc="ice:panelGroup"  panelLayout="flow">
+                                                <ui:include src="/networkAdmin/NetworkPrivilegedUsersPage.xhtml"></ui:include>
+                                            </div>  
+                                    </ice:panelTab>
+                                    <ice:panelTab id="usersSub" label="Manage Users">
+                                            <div jsfc="ice:panelGroup"  panelLayout="flow">
+                                                <ui:include src="/networkAdmin/AllUsersPage.xhtml"></ui:include>
+                                            </div>  
+                                    </ice:panelTab>
+                                    <ice:panelTab id="groupsSub" label="Manage Groups">
+                                            <div jsfc="ice:panelGroup"  panelLayout="flow">
+                                                <ui:include src="/networkAdmin/UserGroupsPage.xhtml"></ui:include>
+                                            </div>  
+                                    </ice:panelTab>
+
+                                    <!-- Add Account-->
+                                    <ice:panelTab id="addAccountSub" label="Add Account">
+                                            <div jsfc="ice:panelGroup"  panelLayout="flow">
+                                                <ui:include src="/login/AddAccountPage.xhtml"></ui:include>
+                                            </div>  
+                                    </ice:panelTab>
+                                    <!-- TERMS -->
+                                    <ice:panelTab id="termsSub" label="Terms">
+                                        <div jsfc="ice:panelGroup">   
+                                           <div jsfc="ice:panelGroup"  panelLayout="flow">
+                                                <ui:include src="/networkAdmin/EditAccountUseTermsPage.xhtml"></ui:include>
+                                            </div>    
+                                             <div jsfc="ice:panelGroup"  panelLayout="flow">
+                                                <ui:include src="/networkAdmin/EditNetworkDepositUseTermsPage.xhtml"></ui:include>
+                                            </div> 
+                                            <div jsfc="ice:panelGroup"  panelLayout="flow">
+                                                <ui:include src="/networkAdmin/EditNetworkDownloadUseTermsPage.xhtml"></ui:include>
+                                            </div>
+
+                                            <div class="dvnFormPadding dvnFormMargin">
+                                                <ice:commandButton  styleClass="dvnListenSave" value="Save Changes" action="#{OptionsPage.save_NetworkTermsOfUseAction}"/>
+                                                <!--<ice:commandButton  value="Cancel" action="#{OptionsPage.toucancel_action}"/>-->
+                                            </div>
+                                        </div>
+                                    </ice:panelTab>
+                                    <ice:panelTab id="downloadDataSub" label="Download Tracking Data">
+                                        <div jsfc="ice:panelGroup">
+                                            <div jsfc="ice:panelGroup"  panelLayout="flow">
+                                                <ui:include src="/admin/GuestBookResponseDataPage.xhtml"></ui:include>
+                                            </div> 
+                                        </div>
+                                    </ice:panelTab>
+                                </ice:panelTabSet>
+                            </div>
+                        </ice:panelTab>                          
+                            <ice:panelTab id="utilties" label="Maintenance" url="/dvn#{VDCRequest.currentVDCURL}/faces/admin/OptionsPage.xhtml&amp;tab=utilities" rendered="#{VDCSession.loginBean.networkAdmin}">
+                                <div jsfc="ice:panelGroup" id="layoutPanelGroupUtilities" panelLayout="flow">
+                                    <ice:panelTabSet id="tabSetUtilities" styleClass="dvnTabs dvnSubTabs">
+                                        <ice:panelTab id="studyLockOptions" label="StudyLock Utilities"  rendered="#{VDCSession.loginBean.networkAdmin}">
+                                            <ice:panelGroup styleClass="dvnUtilitiesTable" >
+                                                <ice:messages id="studyLockMessage" styleClass="errorMessage"/>
+                                                <ice:outputText value="Current Locks:"/>
+                                                <ice:dataTable value="#{OptionsPage.studyLockList}" var="studyLock" width="100%">
+                                                    <ice:column>
+                                                        <f:facet name="header">
+                                                            <ice:outputText value="Study Id"/>
+                                                        </f:facet>
+                                                        <ice:outputText value="#{studyLock.study.id}"/>
+                                                    </ice:column>
+                                                    <ice:column>
+                                                        <f:facet name="header">
+                                                            <ice:outputText value="User Name"/>
+                                                        </f:facet>
+                                                        <ice:outputText value="#{studyLock.user.userName}"/>
+                                                    </ice:column>
+                                                    <ice:column>
+                                                        <f:facet name="header">
+                                                            <ice:outputText value="Start Time"/>
+                                                        </f:facet>
+                                                        <ice:outputText value="#{studyLock.startTime}"/>
+                                                    </ice:column>
+                                                    <ice:column>
+                                                        <f:facet name="header">
+                                                            <ice:outputText value="Detail"/>
+                                                        </f:facet>
+                                                        <ice:outputText value="#{studyLock.detail}"/>
+                                                    </ice:column>
+                                                </ice:dataTable>
+                                                <hr/>
+                                                <ice:outputText value="To remove a study lock, input the study id and click on the button below:"/>
+                                                <div>
+                                                    <ice:inputText value="#{OptionsPage.studyLockStudyId}" size="6"/>
+                                                    <ice:commandButton value="Remove Lock" action="#{OptionsPage.removeLock_action}"/>
+                                                </div>
+                                            </ice:panelGroup>          
+                                        </ice:panelTab>   
+                                        <ice:panelTab id="indexUtilties" label="Index Utilities"  rendered="#{VDCSession.loginBean.networkAdmin}">
+                                            <ice:panelGroup styleClass="dvnUtilitiesTable" >
+                                                <ice:messages id="indexMessage" styleClass="errorMessage"/>
+                                                <ice:outputText value="To reindex all studies, click on the button below (please note: the index directory must be empty before 'index all' can be run):"/>
+                                                <div>
+                                                    <ice:commandButton value="Index All" action="#{OptionsPage.indexAll_action}"/>
+                                                </div>
+                                                <hr/>
+                                                <ice:outputText value="To index studies owned by a specific dataverse, input the dataverse id and click on the button below:"/>
+                                                <div>
+                                                    <ice:inputText value="#{OptionsPage.indexDVId}" size="6"/>
+                                                    <ice:commandButton value="Index Dataverse" action="#{OptionsPage.indexDV_action}"/>
+                                                </div>
+                                                <hr/>
+                                                <ice:outputText value="To index arbitrary studies, input the study ids and click on the button below:"/>
+                                                <div>
+                                                    <ice:inputTextarea value="#{OptionsPage.indexStudyIds}" rows="8" cols="80"/>
+                                                    <div class="dvnFormPadding">
+                                                        <ice:commandButton value="Index Studies" action="#{OptionsPage.indexStudies_action}"/>
+                                                    </div>
+                                                </div>
+                                                <hr/>
+                                                <ice:outputText value="To index unindexed studies, click on the button below:"/>
+                                                <div>
+                                                    <ice:commandButton value="Index Update" action="#{OptionsPage.indexBatch_action}"/>
+                                                </div>
+                                                <hr/>
+                                                <ice:outputText value="#{OptionsPage.indexLocks}"/>
+                                                <div class="dvnFormPadding">
+                                                    <ice:commandButton value="Delete Lock" action="#{OptionsPage.indexLocks_action}" disabled="#{OptionsPage.deleteLockDisabled}"/>
+                                                </div>
+                                            </ice:panelGroup>         
+                                        </ice:panelTab>
+                                        <ice:panelTab id="exportOptions" label="Export Utilities"  rendered="#{VDCSession.loginBean.networkAdmin}">
+                                            <ice:panelGroup styleClass="dvnUtilitiesTable" >
+                                                <ice:messages id="exportMessage" styleClass="errorMessage"/>
+                                                <ice:outputText value="To run export now (all updated studies in all formats will be exported and update harvest studies will be run), click on the button below:"/>
+                                                <div>
+                                                    <ice:commandButton value="Run Export" action="#{OptionsPage.exportUpdated_action}"/>
+                                                </div>
+                                                <hr/>
+                                                <ice:outputText value="To update harvest studies, click on the button below:"/>
+                                                <div>
+                                                    <ice:commandButton value="Update Harvest Studies" action="#{OptionsPage.updateHarvestStudies_action}"/>
+                                                </div>
+                                                <hr/>
+                                                <ice:outputText value="OR, for a CUSTOM export (note: harvest studies will NOT be updated), select export format, then either:"/>
+                                                <ice:selectOneMenu id="dropdown1" value="#{OptionsPage.exportFormat}">
+                                                    <f:selectItem itemLabel="Export all formats" itemValue=""/>
+                                                    <f:selectItem itemLabel="- Export DDI only" itemValue="ddi"/>
+                                                    <f:selectItem itemLabel="- Export Dublin Core only" itemValue="oai_dc"/>
+                                                    <f:selectItem itemLabel="- Export Marc only" itemValue="marc"/>
+                                                </ice:selectOneMenu>
+                                                <hr/>
+                                                <ice:outputText value="a) export all studies (regardless of update time), click the button below:"/>
+                                                <div>
+                                                    <ice:commandButton  value="Export All" action="#{OptionsPage.exportAll_action}"/>
+                                                </div>
+                                                <hr/>
+                                                <ice:outputText value="b) export studies owned by a specific dataverse (regardless of update time), input the dataverse id and click on the button below:"/>
+                                                <div>
+                                                    <ice:inputText value="#{OptionsPage.exportDVId}" size="6"/>
+                                                    <ice:commandButton value="Export Dataverse" action="#{OptionsPage.exportDV_action}"/>
+                                                </div>
+                                                <hr/>
+                                                <ice:outputText value="c) export arbitrary studies (regardless of update time), input the study ids and click on the button below:"/>
+                                                <div>
+                                                    <ice:inputTextarea value="#{OptionsPage.exportStudyIds}" rows="8" cols="80"/>
+                                                    <div class="dvnFormPadding">
+                                                        <ice:commandButton value="Export Studies" action="#{OptionsPage.exportStudies_action}"/>
+                                                    </div>
+                                                </div>
+                                            </ice:panelGroup>         
+                                        </ice:panelTab> 
+                                        <ice:panelTab id="harvestOptions" label="Harvest Utilities"  rendered="#{VDCSession.loginBean.networkAdmin}">
+                                            <ice:panelGroup styleClass="dvnUtilitiesTable">
+                                                <ice:messages id="harvestMessage"  styleClass="errorMessage"/>
+                                                <ice:outputText value="To harvest a specific study, input the DV and the harvest identifier, and click on the button below:"/>
+                                                <div jsfc="ice:panelGroup">
+                                                <ice:selectOneMenu value="#{OptionsPage.harvestDVId}">
+                                                    <f:selectItems value="#{OptionsPage.harvestDVs}"/>
+                                                </ice:selectOneMenu>
+                                                <ice:inputText value="#{OptionsPage.harvestIdentifier}" size="60"/>
+                                                <ice:commandButton value="Harvest Study" action="#{OptionsPage.harvestStudy_action}"/>
+                                                </div>
+                                            </ice:panelGroup>         
+                                        </ice:panelTab> 
+                                        <ice:panelTab id="fileOptions" label="File Utilities"  rendered="#{VDCSession.loginBean.networkAdmin}">
+                                            <ice:panelGroup styleClass="dvnUtilitiesTable">
+                                                <ice:messages id="fileMessage" styleClass="errorMessage"/>
+                                                <ice:outputText value="To determine the file types for files with a particular extension:"/>
+                                                <div jsfc="ice:panelGroup">
+                                                <ice:inputText value="#{OptionsPage.fileExtension}" size="6"/>
+                                                <ice:commandButton value="Determine File Types for Extension" action="#{OptionsPage.determineFileTypeForExtension_action}"/>
+                                                </div>
+                                                <hr/>
+                                                <ice:outputText value="To determine the file types for files in arbitrary studies, input the study ids and click on the button below:"/>
+                                                <div>
+                                                    <ice:inputTextarea value="#{OptionsPage.fileStudyIds}" rows="8" cols="80"/>
+                                                    <div class="dvnFormPadding">
+                                                        <ice:commandButton value="Determine File Types for Studies" action="#{OptionsPage.determineFileTypeForStudies_action}"/>
+                                                    </div>
+                                                </div>
+                                            </ice:panelGroup>         
+                                        </ice:panelTab> 
+                                         <ice:panelTab id="importOptions" label="Import Utilities"  rendered="#{VDCSession.loginBean.networkAdmin}">
+                                            <ice:panelGroup styleClass="dvnUtilitiesTable" >
+                                                <ice:messages id="importMessage" styleClass="errorMessage"/>
+                                                <ice:outputText value="Select the file format and the dataverse for the import, then either:"/>
+                                                <div>
+                                                <ice:selectOneMenu value="#{OptionsPage.importFileFormat}">
+                                                    <f:selectItems value="#{OptionsPage.importFileFormatTypes}"/>
+                                                </ice:selectOneMenu>
+                                                <ice:selectOneMenu value="#{OptionsPage.importDVId}">
+                                                    <f:selectItems value="#{OptionsPage.importDVs}"/>
+                                                </ice:selectOneMenu>
+                                                </div>
+                                                <hr/>
+                                                <ice:outputText value="a) Batch import - input directory and click on the button:"/>
+                                                <div>
+                                                <ice:inputText value="#{OptionsPage.importBatchDir}" size="80"/>
+                                                <ice:commandButton value="Batch Import" action="#{OptionsPage.importBatch_action}"/>
+                                                </div>
+                                                <hr/>
+                                                <ice:outputText value="or b) Single import - browse for the file and click on the button:"/>
+                                                <div>
+                                                    <!-- Commenting out the InputFile section: - L.A.
+                                                <ice:inputFile id="inputImportFileComponent" label="Upload"
+                                                                action="#{UtilitiesPage.uploadFile}" binding="#{UtilitiesPage.inputFile}"
+                                                                progressListener="#{UtilitiesPage.fileUploadProgress}"
+                                                                accept="#{UtilitiesPage.importDVId}, #{UtilitiesPage.importFileFormat}">
+                                                </ice:inputFile>
+                                                    L.A. -->
+                                                    <ace:fileEntry id="inputImportFileComponent"
+                                                        relativePath="/temp/" 
+                                                        maxFileCount="1" 
+                                                        maxFileCountMessage="Limited to 1 file upload only (for now)" 
+                                                        fileEntryListener="#{OptionsPage.uploadFileListener}" 
+                                                        maxFileSize="2147483648" 
+                                                        maxFileSizeMessage="Submitted file is too large." 
+                                                        maxTotalSize="2147483648" 
+                                                        maxTotalSizeMessage="Total size of submitted files is too large." 
+                                                        useOriginalFilename="true" 
+                                                        useSessionSubdir="false"/>
+                                                    <span class="top">
+                                                        <h:commandButton styleClass="submit" type="submit" value="Upload File"/>
+                                                    </span>
+                                                <div class="dvnFormPadding">
+                                                    <ice:commandButton value="Single Import" id="buttonEV"
+                                                                    action="#{OptionsPage.importSingleFile_action}"/>
+                                                </div>
+                                                <ice:message for="inputImportFileComponent"/>
+                                                <!-- Progress display for the old-style import:
+                                                <ice:outputProgress
+                                                    value="#{UtilitiesPage.fileProgress}">
+                                                </ice:outputProgress>
+                                                L.A. -->
+                                                </div>
+                                            </ice:panelGroup>       
+                                        </ice:panelTab>
+                                        <ice:panelTab id="deleteOptions" label="Delete Utilities"  rendered="#{VDCSession.loginBean.networkAdmin}">
+                                            <ice:panelGroup styleClass="dvnUtilitiesTable" >
+                                                <ice:messages id="deleteMessage" styleClass="errorMessage"/>
+                                                <ice:outputText value="To delete arbitrary studies, input the study ids and click on the button below:"/>
+                                                <div>
+                                                <ice:inputTextarea value="#{OptionsPage.deleteStudyIds}" rows="8" cols="80"/>
+                                                <div class="dvnFormPadding">
+                                                    <ice:commandButton value="Delete Studies" action="#{OptionsPage.deleteStudies_action}"
+                                                                    onclick="if(!confirm('Please confirm this DELETE request. This change CANNOT be undone.')){ return false; };"/>
+                                                </div>
+                                                </div>
+                                            </ice:panelGroup>         
+                                        </ice:panelTab> 
+                                        <ice:panelTab id="handleOptions" label="Handle Utilities"  rendered="#{VDCSession.loginBean.networkAdmin}">
+                                            <ice:panelGroup styleClass="dvnUtilitiesTable">
+                                                <ice:messages id="handleMessage" styleClass="errorMessage"/>
+                                                <ice:outputText value="To register all unregistered handles, click on the button below:"/>
+                                                <div>
+                                                <ice:commandButton value="Register All" action="#{OptionsPage.handleRegisterAll_action}"/>
+                                                </div>
+                                                <hr/>
+                                                <ice:outputText value="To re-register all registered handles, click on the button below:"/>
+                                                <div>
+                                                <ice:commandButton value="Fix Handles" action="#{OptionsPage.handleFixAll_action}"/>
+                                                </div>
+                                                <hr/>
+                                                <ice:outputText value="To re-register a single handle, enter the global id and click on the button below:"/>
+                                                <div>
+                                                <ice:inputText value="#{OptionsPage.fixGlobalId}" size="6"/>
+                                                <ice:commandButton value="Fix Handle" action="#{OptionsPage.handleFixSingle_action}"/>
+                                                </div>
+                                                <hr/>
+                                                <ice:outputText value="To check the Handle registration status of a range of studies, enter the range of db ids and click below:"/>
+                                                <div>
+                                                <ice:inputText value="#{OptionsPage.studyIdRange}" size="12"/>
+                                                <ice:commandButton value="Check Handles" action="#{OptionsPage.handleCheckRange_action}"/>
+                                                <ice:inputTextarea value="#{OptionsPage.handleCheckReport}" rows="8" cols="32" readonly="true" rendered="#{! empty OptionsPage.handleCheckReport}"/>
+                                                </div>
+                                            </ice:panelGroup>       
+                                        </ice:panelTab> 
+                                        <ice:panelTab id="studyOptions" label="Study Utilities"  rendered="#{VDCSession.loginBean.networkAdmin}">
+                                            <ice:panelGroup styleClass="dvnUtilitiesTable" >
+                                                <ice:column>
+                                                    <ice:messages id="studyMessage" styleClass="errorMessage"/>
+                                                    <ice:outputText value="To create draft versions of studies, input the study ID's and click on the button below. Note: If the study already has a draft (or in review) version, that study will be ignored:"/>
+                                                    <div>
+                                                    <ice:inputTextarea value="#{OptionsPage.createStudyDraftIds}" rows="8" cols="80"/>
+                                                    <div class="dvnFormPadding">
+                                                        <ice:commandButton value="Create Drafts" action="#{OptionsPage.createStudyDrafts_action}"/>
+                                                    </div>
+                                                    </div>
+                                                </ice:column>
+                                            </ice:panelGroup>        
+                                        </ice:panelTab>
+                                    </ice:panelTabSet>
+                                </div>                  
+              </ice:panelTab> 
+              <ice:panelTab id="aboutTab" label="About" url="/dvn#{VDCRequest.currentVDCURL}/faces/admin/OptionsPage.xhtml&amp;tab=about" rendered="#{VDCSession.loginBean.networkAdmin}">
+                <table class="dvnOptionsTable" cellspacing="0" cellpadding="0" border="0">
                                 <tr>
                                     <td class="dvnOptionsTableOption">
                                         <ice:outputText rendered="#{MainLayoutBean.googleAnalyticsKey == null }"
@@ -288,10 +508,9 @@
                                     </td>
                                     <td><ice:outputText styleClass="dvnOptionsTableNote" value="#{VersionPage.serverName}"/></td>
                                 </tr>
-                            </table>
-                        
-                    </ice:panelTab>
-                </ice:panelTabSet>
+                            </table>                        
+              </ice:panelTab>                                            
+             </ice:panelTabSet>
             </div>
             </ice:form>
         </ui:define>

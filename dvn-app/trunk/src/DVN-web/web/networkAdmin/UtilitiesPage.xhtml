@@ -1,26 +1,11 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:ui="http://java.sun.com/jsf/facelets"
       xmlns:h="http://java.sun.com/jsf/html"
       xmlns:f="http://java.sun.com/jsf/core"
       xmlns:ace="http://www.icefaces.org/icefaces/components"
       xmlns:ice="http://www.icesoft.com/icefaces/component">
-<h:head>
-  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
-</h:head>
-<h:body>
-  <ui:composition template="/template.xhtml">
-    <ui:param name="pageTitle" value="#{bundlePageInfo.utilitiesTitle} - #{VDCRequest.dataversePageTitle}"/>
-    <ui:define name="metadata">
-        <f:metadata>
-            <f:viewParam name="selectedPanel" value ="#{UtilitiesPage.selectedPanel}"/>
-            <f:event type="preRenderView" listener="#{UtilitiesPage.preRenderView}" />
-        </f:metadata>
-    </ui:define>
-    <ui:define name="body">
-      <ice:form id="utilitiesForm1">
-        <ice:inputHidden rendered="#{VDCRequest.currentVDCId != null}" id="vdcId" value="#{VDCRequest.currentVDCId}"/>
+
         <input type ="hidden"  name="selectedPanel" value="${UtilitiesPage.selectedPanel}"/>
         <div class="dvn_section">
           <div class="dvn_sectionTitle">
@@ -33,7 +18,83 @@
                   <ice:outputText value="#{bundlePageInfo.utilitiesHelp}" escape="false"/>
                 </div>
               </div>
+ 
+             <ice:panelTab id="utilityOptions" label="StudyLock Utilities"  rendered="#{VDCSession.loginBean.networkAdmin}">
+              <ice:panelGroup styleClass="dvnUtilitiesTable" >
+                <ice:messages id="studyLockMessage" styleClass="errorMessage"/>
+                <ice:outputText value="Current Locks:"/>
+                <ice:dataTable value="#{UtilitiesPage.studyLockList}" var="studyLock" width="100%">
+                  <ice:column>
+                    <f:facet name="header">
+                      <ice:outputText value="Study Id"/>
+                    </f:facet>
+                    <ice:outputText value="#{studyLock.study.id}"/>
+                  </ice:column>
+                  <ice:column>
+                    <f:facet name="header">
+                      <ice:outputText value="User Name"/>
+                    </f:facet>
+                    <ice:outputText value="#{studyLock.user.userName}"/>
+                  </ice:column>
+                  <ice:column>
+                    <f:facet name="header">
+                      <ice:outputText value="Start Time"/>
+                    </f:facet>
+                    <ice:outputText value="#{studyLock.startTime}"/>
+                  </ice:column>
+                  <ice:column>
+                    <f:facet name="header">
+                      <ice:outputText value="Detail"/>
+                    </f:facet>
+                    <ice:outputText value="#{studyLock.detail}"/>
+                  </ice:column>
+                </ice:dataTable>
+                <hr/>
+                <ice:outputText value="To remove a study lock, input the study id and click on the button below:"/>
+                <div>
+                  <ice:inputText value="#{UtilitiesPage.studyLockStudyId}" size="6"/>
+                  <ice:commandButton value="Remove Lock" action="#{UtilitiesPage.removeLock_action}"/>
+                </div>
+              </ice:panelGroup>          
+             </ice:panelTab>   
+             <ice:panelTab id="indexUtilties" label="Index Utilities"  rendered="#{VDCSession.loginBean.networkAdmin}">
+              <ice:panelGroup styleClass="dvnUtilitiesTable" >
+                <ice:messages id="indexMessage" styleClass="errorMessage"/>
+                <ice:outputText value="To reindex all studies, click on the button below (please note: the index directory must be empty before 'index all' can be run):"/>
+                <div>
+                  <ice:commandButton value="Index All" action="#{UtilitiesPage.indexAll_action}"/>
+                </div>
+                <hr/>
+                <ice:outputText value="To index studies owned by a specific dataverse, input the dataverse id and click on the button below:"/>
+                <div>
+                  <ice:inputText value="#{UtilitiesPage.indexDVId}" size="6"/>
+                  <ice:commandButton value="Index Dataverse" action="#{UtilitiesPage.indexDV_action}"/>
+                </div>
+                <hr/>
+                <ice:outputText value="To index arbitrary studies, input the study ids and click on the button below:"/>
+                <div>
+                  <ice:inputTextarea value="#{UtilitiesPage.indexStudyIds}" rows="8" cols="80"/>
+                  <div class="dvnFormPadding">
+                      <ice:commandButton value="Index Studies" action="#{UtilitiesPage.indexStudies_action}"/>
+                  </div>
+                </div>
+                <hr/>
+                <ice:outputText value="To index unindexed studies, click on the button below:"/>
+                <div>
+                  <ice:commandButton value="Index Update" action="#{UtilitiesPage.indexBatch_action}"/>
+                </div>
+                <hr/>
+                <ice:outputText value="#{UtilitiesPage.indexLocks}"/>
+                <div class="dvnFormPadding">
+                  <ice:commandButton value="Delete Lock" action="#{UtilitiesPage.indexLocks_action}" disabled="#{UtilitiesPage.deleteLockDisabled}"/>
+                </div>
+              </ice:panelGroup>         
+             </ice:panelTab>
+                
+                
               <!-- STUDY LOCK PANEL -->
+              
+             <!-- 
               <div class="vdcStudyInfoHeader dvnFormPadding">
                 <ice:outputText value="StudyLock Utilities"/>
                 <ice:outputLink title="Display this panel" rendered="#{!UtilitiesPage.studyLockPanelRendered}" value="/dvn#{VDCRequest.currentVDCURL}/faces/networkAdmin/UtilitiesPage.xhtml?selectedPanel=studyLock">
@@ -77,7 +138,10 @@
                   <ice:commandButton value="Remove Lock" action="#{UtilitiesPage.removeLock_action}"/>
                 </div>
               </ice:panelGroup>
+             -->
               <!-- INDEX PANEL -->
+              
+              <!--
               <div class="vdcStudyInfoHeader dvnFormPadding">
                 <ice:outputText value="Index Utilities"/>
                 <ice:outputLink title="Display this panel" rendered="#{!UtilitiesPage.indexPanelRendered}" value="/dvn#{VDCRequest.currentVDCURL}/faces/networkAdmin/UtilitiesPage.xhtml?selectedPanel=index">
@@ -116,6 +180,7 @@
                   <ice:commandButton value="Delete Lock" action="#{UtilitiesPage.indexLocks_action}" disabled="#{UtilitiesPage.deleteLockDisabled}"/>
                 </div>
               </ice:panelGroup>
+              -->
               <!-- EXPORT PANEL -->
               <div class="vdcStudyInfoHeader dvnFormPadding">
                 <ice:outputText value="Export Utilities"/>
@@ -343,8 +408,5 @@
             </div>
           </div>
         </div>
-      </ice:form>
-    </ui:define>
-  </ui:composition>
-</h:body>
+
 </html>

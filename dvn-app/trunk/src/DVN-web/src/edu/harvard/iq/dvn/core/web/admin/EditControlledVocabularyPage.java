@@ -161,7 +161,7 @@ public class EditControlledVocabularyPage extends VDCBaseBean implements java.io
             } else {
                 getVDCRenderBean().getFlash().put("successMessage", "Successfully updated Controlled Vocabulary.");
             }
-            return "/admin/ManageControlledVocabularyPage?faces-redirect=true";
+            return "/networkAdmin/NetworkOptionsPage.xhtml?faces-redirect=true";
 
         } else {
             getVDCRenderBean().getFlash().put("warningMessage", "One or more entries do not match the chosen Field Type.");

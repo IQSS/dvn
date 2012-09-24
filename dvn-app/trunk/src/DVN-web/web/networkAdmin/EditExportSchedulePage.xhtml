@@ -1,23 +1,11 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:ui="http://java.sun.com/jsf/facelets"
       xmlns:h="http://java.sun.com/jsf/html"
       xmlns:f="http://java.sun.com/jsf/core"
       xmlns:jsp="http://java.sun.com/JSP/Page"
       xmlns:ice="http://www.icesoft.com/icefaces/component">
-<head>
-  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
-</head>
-<body>
-  <ui:composition template="/template.xhtml">
-    <ui:param name="pageTitle" value="#{bundlePageInfo.exportsTitle} - #{VDCRequest.dataversePageTitle}"/>
-    <ui:define name="metadata">
-        <f:metadata>
-            <f:event type="preRenderView" listener="#{EditExportSchedulePage.preRenderView}" />
-        </f:metadata>
-    </ui:define>
-    <ui:define name="body">
+
       <script type="text/javascript">
           //<![CDATA[
           function updateExportInput(  ) {
@@ -56,7 +44,6 @@
           }
           // ]]>
       </script>
-      <ice:form id="form1">
         <input type="hidden" name="pageName" value="EditExportSchedulePage"/>
         <div class="dvn_section">
           <div class="dvn_sectionTitle">
@@ -75,8 +62,8 @@
                   <ice:outputText value="Export Period"/>
                 </div>
                 <div jsfc="ice:panelGroup">
-                    <ice:selectOneMenu binding="#{EditExportSchedulePage.exportPeriod}" validator="#{EditExportSchedulePage.validateExportPeriod}" id="exportPeriod" value="#{EditExportSchedulePage.exportSchedulePeriod}"  onchange='updateExportInput();' >
-                        <f:selectItems value="#{EditExportSchedulePage.selectExportPeriod}"/>
+                    <ice:selectOneMenu binding="#{OptionsPage.exportPeriod}" validator="#{EditExportSchedulePage.validateExportPeriod}" id="exportPeriod" value="#{EditExportSchedulePage.exportSchedulePeriod}"  onchange='updateExportInput();' >
+                        <f:selectItems value="#{OptionsPage.selectExportPeriod}"/>
                     </ice:selectOneMenu>
                   <ice:message styleClass="errorMessage" for="exportPeriod" />
                 </div>
@@ -84,7 +71,7 @@
                   <ice:outputText value="Export Hour of Day"/>
                 </div>
                 <div jsfc="ice:panelGroup">
-                        <ice:selectOneMenu validator="#{EditExportSchedulePage.validateHourOfDay}" id="exportHourOfDay" value="#{EditExportSchedulePage.exportHourOfDay}">
+                        <ice:selectOneMenu validator="#{OptionsPage.validateExportHourOfDay}" id="exportHourOfDay" value="#{OptionsPage.exportHourOfDay}">
                             <f:selectItem itemValue="-1" itemLabel="Not Selected"/>
                             <f:selectItem itemValue="0" itemLabel="12:00 AM"/>
                             <f:selectItem itemValue="1" itemLabel="1:00 AM"/>
@@ -121,7 +108,7 @@
                 </div>
                 <div jsfc="ice:panelGroup">
                   <div id="requiredDayOfWeekText">
-                         <ice:selectOneMenu validator="#{EditExportSchedulePage.validateDayOfWeek}" id="exportDayOfWeek" value="#{EditExportSchedulePage.exportDayOfWeek}">
+                         <ice:selectOneMenu validator="#{OptionsPage.validateExportDayOfWeek}" id="exportDayOfWeek" value="#{OptionsPage.exportDayOfWeek}">
                             <f:selectItem itemValue="-1" itemLabel="Not Selected"/>
                             <f:selectItem itemValue="1" itemLabel="Sunday"/>
                             <f:selectItem itemValue="2" itemLabel="Monday"/>
@@ -136,18 +123,15 @@
                 </div>
               </ice:panelGrid>
               <div jsfc="ice:panelGroup" styleClass="dvnFormPadding dvnFormMargin">
-                <ice:commandButton value="Save" action="#{EditExportSchedulePage.save}"/>
+                <ice:commandButton value="Save" action="#{OptionsPage.saveExportSchedule}"/>
                 <ice:commandButton immediate="true" value="Cancel" action="/networkAdmin/NetworkOptionsPage.xhtml?faces-redirect=true"/>
               </div>
             </div>
           </div>
         </div>
-      </ice:form>
+
       <script type="text/javascript">
           // initial call to disable dropdowns(if needed)
           updateExportInput();
       </script>
-    </ui:define>
-  </ui:composition>
-</body>
 </html>

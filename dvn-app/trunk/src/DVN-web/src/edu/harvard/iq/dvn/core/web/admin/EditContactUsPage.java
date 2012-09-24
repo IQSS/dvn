@@ -150,7 +150,6 @@ public class EditContactUsPage extends VDCBaseBean implements java.io.Serializab
         if (getVDCRequestBean().getCurrentVDCId() == null) {
             // this is a save against the network
             VDCNetwork vdcnetwork = getVDCRequestBean().getVdcNetwork();
-            System.out.println("the email address is " + this.getContactUsEmail());
             vdcnetwork.setContactEmail(this.getContactUsEmail());
             vdcNetworkService.edit(vdcnetwork);
             forwardPage="/networkAdmin/NetworkOptionsPage?faces-redirect=true";

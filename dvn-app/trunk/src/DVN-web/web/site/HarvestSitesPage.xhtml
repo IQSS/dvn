@@ -1,25 +1,10 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:ui="http://java.sun.com/jsf/facelets"
       xmlns:h="http://java.sun.com/jsf/html"
       xmlns:f="http://java.sun.com/jsf/core"
       xmlns:jsp="http://java.sun.com/JSP/Page"
       xmlns:ice="http://www.icesoft.com/icefaces/component">
-<head>
-    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
-</head>
-<body>
-  <ui:composition template="/template.xhtml">
-    <ui:param name="pageTitle" value="#{bundlePageInfo.manageHarvestingTitle} - #{VDCRequest.dataversePageTitle}"/>
-        <ui:define name="metadata">
-                <f:metadata>
-                    <f:event type="preRenderView" listener="#{HarvestSitesPage.preRenderView}"/>
-                </f:metadata>
-        </ui:define>
-    <ui:define name="body">
-      <ice:form id="form1">
-        <ice:inputHidden id="vdcId" value="#{VDCRequest.currentVDCId}"/>
         <div class="dvn_section">
           <div class="dvn_sectionTitle">
             <ice:outputText value="#{bundlePageInfo.manageHarvestingTitle}"/>
@@ -32,13 +17,18 @@
             </div>
           </div>
           <div>
+                                    <td class="dvnOptionsTableOption">
+                                        <ice:outputLink value="/dvn/faces/site/EditHarvestSitePage.xhtml">
+                                            <ice:outputText value="#{bundlePageInfo.createHarvestingDvTitle}"/>
+                                            <f:param name="from" value="myNetworkOptions"/>
+                                        </ice:outputLink>
+                                    </td>
               <ice:dataTable cellpadding="0" cellspacing="0" width="100%"
-                             binding="#{HarvestSitesPage.harvestDataTable}"
                              styleClass="dvnHarvestSitesTable" id="dataTable1"
                              headerClass="iceDatTblColHdr1 list-header-left vdcColPadded"
                              columnWidths="25%,8%,18%,20%,17%,7%,5%"
                              rowClasses="list-row-even vdcColPadded, list-row-odd vdcColPadded"
-                             value="#{HarvestSitesPage.harvestSiteList}" var="currentRow">
+                             value="#{OptionsPage.harvestSiteList}" var="currentRow">
                 <ice:column>
                   <f:facet name="header">
                     <ice:outputText value="Dataverse"/>
@@ -112,8 +102,4 @@
               </ice:dataTable>
           </div>
         </div>
-      </ice:form>
-    </ui:define>
-  </ui:composition>
-</body>
 </html>

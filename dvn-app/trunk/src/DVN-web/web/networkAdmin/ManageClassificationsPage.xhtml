@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:ui="http://java.sun.com/jsf/facelets"
       xmlns:h="http://java.sun.com/jsf/html"
@@ -7,17 +6,6 @@
       xmlns:jsp="http://java.sun.com/JSP/Page"
       xmlns:ice="http://www.icesoft.com/icefaces/component"
       xmlns:dvn="/WEB-INF/tlds/dvn-components">
-<head>
-  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
-</head>
-<body>
-  <ui:composition template="/template.xhtml">
-    <ui:param name="pageTitle" value="#{bundlePageInfo.manageClassificationsTitle} - #{VDCRequest.dataversePageTitle}"/>
-        <ui:define name="metadata">
-                <f:event type="preRenderView" listener="#{manageClassificationsPage.preRenderView}"/>  
-        </ui:define>
-    <ui:define name="body">
-      <ice:form>
         <div class="dvn_section">
           <div class="dvn_sectionTitle">
             <ice:outputText value="#{bundlePageInfo.manageClassificationsTitle}"/>
@@ -38,17 +26,17 @@
               </ice:outputLink>
             </div>
           </div>
-          <div jsfc="ice:panelGroup" styleClass="dvnManageTableEmpty" rendered="#{manageClassificationsPage.itemBeansSize == 0}">
+          <div jsfc="ice:panelGroup" styleClass="dvnManageTableEmpty" rendered="#{OptionsPage.itemBeansSize == 0}">
               <ice:outputText value="There are no classifications set up for this Dataverse Network."/>
           </div>
-          <ice:dataTable id="dataverseList" binding="#{manageClassificationsPage.mainTable}"
-                         rendered="#{manageClassificationsPage.itemBeansSize != 0}"
+          <ice:dataTable id="dataverseListClass" 
+                         rendered="#{OptionsPage.itemBeansSize != 0}"
                          styleClass="dvnManageClassificationsTable"
                          rowClasses="evenRow, oddRow" headerClass="groupRow"
                          columnClasses="dvnMngClssTableSelect,dvnMngClssTableName,dvnMngClssTableDesc,dvnMngClssTableCount,dvnMngClssTableDelete"
-                         sortAscending="#{manageClassificationsPage.list.ascending}"
-                         sortColumn="#{manageClassificationsPage.list.sortColumnName}"
-                         value="#{manageClassificationsPage.list.visibleClassificationUIs}" var="dvItems">
+                         sortAscending="#{OptionsPage.list.ascending}"
+                         sortColumn="#{OptionsPage.list.sortColumnName}"
+                         value="#{OptionsPage.list.visibleClassificationUIs}" var="dvItems">
             <!-- name number -->
             <f:facet name="header">
               
@@ -57,7 +45,7 @@
             <ice:column>
               <ice:panelGroup>
                 <!-- Render the expand/contract if there is an image -->
-                <ice:commandLink actionListener="#{manageClassificationsPage.toggleChildren}">
+                <ice:commandLink actionListener="#{OptionsPage.toggleChildren}">
                   <ice:graphicImage id="expandContractImage"
                                     binding="#{manageClassificationsPage.toggleImage}"
                                     rendered="#{dvItems.expandContractImage != null and dvItems.level != 3}"
@@ -74,9 +62,9 @@
             <ice:column>
               <f:facet name="header">
                 <ice:commandSortHeader
-                  columnName="#{manageClassificationsPage.list.nameColumnName}"
+                  columnName="#{OptionsPage.list.nameColumnName}"
                   arrow="true">
-                  <ice:outputText value="#{manageClassificationsPage.list.nameColumnName}"/>
+                  <ice:outputText value="#{OptionsPage.list.nameColumnName}"/>
                 </ice:commandSortHeader>
               </f:facet>
               <ice:outputLink
@@ -91,10 +79,10 @@
             <ice:column>
               <f:facet name="header">
                 <ice:commandSortHeader
-                  columnName="#{manageClassificationsPage.list.descriptionColumnName}"
+                  columnName="#{OptionsPage.list.descriptionColumnName}"
                   arrow="true"
                   >
-                  <ice:outputText value="#{manageClassificationsPage.list.descriptionColumnName}"/>
+                  <ice:outputText value="#{OptionsPage.list.descriptionColumnName}"/>
                 </ice:commandSortHeader>
               </f:facet>
               <ice:outputText value="#{dvItems.vdcGroup.description}"/>
@@ -103,10 +91,10 @@
             <ice:column>
               <f:facet name="header">
                 <ice:commandSortHeader
-                  columnName="#{manageClassificationsPage.list.subclassificationsColumnName}"
+                  columnName="#{OptionsPage.list.subclassificationsColumnName}"
                   arrow="true"
                   >
-                  <ice:outputText value="#{manageClassificationsPage.list.subclassificationsColumnName}"/>
+                  <ice:outputText value="#{OptionsPage.list.subclassificationsColumnName}"/>
                 </ice:commandSortHeader>
               </f:facet>
               <ice:outputText value="#{dvItems.totalSubclassifications}"/>
@@ -123,8 +111,4 @@
             </ice:column>
           </ice:dataTable>
         </div>
-      </ice:form>
-    </ui:define>
-  </ui:composition>
-</body>
 </html>

@@ -329,7 +329,7 @@ public class AddClassificationsPage extends VDCBaseBean implements Serializable 
         } catch (Exception e) {
             getVDCRenderBean().getFlash().put("warningMessage",FAIL_MESSAGE);
         } finally {
-            return "/networkAdmin/ManageClassificationsPage.xhtml?faces-redirect=true";
+            return "/networkAdmin/NetworkOptionsPage.xhtml?faces-redirect=true";
         }
         
     }
@@ -366,7 +366,7 @@ public class AddClassificationsPage extends VDCBaseBean implements Serializable 
             
       
             getVDCRenderBean().getFlash().put("successMessage",SUCCESS_MESSAGE);
-            return "/networkAdmin/ManageClassificationsPage.xhtml?faces-redirect=true";
+            return "/networkAdmin/NetworkOptionsPage.xhtml?faces-redirect=true";
         
     }
 

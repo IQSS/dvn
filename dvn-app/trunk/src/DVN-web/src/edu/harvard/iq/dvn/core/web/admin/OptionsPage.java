@@ -195,69 +195,10 @@ public class OptionsPage extends VDCBaseBean  implements java.io.Serializable {
         newQuestion.setGuestBookQuestionnaire(guestBookQuestionnaire);
         questionTypeSelectItems = loadQuestionTypeSelectItems();
                
-        //guestbook responses
-        Date today = new Date();
-        Calendar cal = new GregorianCalendar();
-        cal.setTime(today);
-        cal.add(Calendar.DAY_OF_MONTH, -30);
-        Date today30 = cal.getTime();     
-        
-        guestBookResponsesAll = guestBookResponseServiceBean.findAll();           
-        for (GuestBookResponse gbr : guestBookResponsesAll) {
-            if (vdc !=null && gbr.getStudy().getOwner().equals(vdc)) {
-                guestBookResponses.add(gbr);
-                fullCount++;
-                if (today30.before(gbr.getResponseTime())){
-                    thirtyDayCount++;
-                }
-                if (!gbr.getCustomQuestionResponses().isEmpty()) {
-                    for (CustomQuestionResponse cqr : gbr.getCustomQuestionResponses()) {
-                        if (!customQuestionIds.contains(cqr.getCustomQuestion().getId())) {
-                            customQuestionIds.add(cqr.getCustomQuestion().getId());
-                            columnHeadings.add(cqr.getCustomQuestion().getQuestionString());
-                        }
-                    }
-                }
-            }  else if (vdc == null) {
-                  guestBookResponses.add(gbr);
-                  fullCount++;
-                if (today30.before(gbr.getResponseTime())){
-                    thirtyDayCount++;
-                }
-            }
+ 
         }
         
-        if (!customQuestionIds.isEmpty()) {
-            for (GuestBookResponse gbr : guestBookResponses) {
-                GuestBookResponseDisplay guestBookResponseDisplay = new GuestBookResponseDisplay();
-                guestBookResponseDisplay.setGuestBookResponse(gbr);
-                List<String> customQuestionResponseStrings = new ArrayList(customQuestionIds.size());
-                for (int i=0; i<customQuestionIds.size(); i++){
-                    customQuestionResponseStrings.add(i, "");
-                }
-                if (!gbr.getCustomQuestionResponses().isEmpty()) {
-                    for (Long id : customQuestionIds) {
-                        int index = customQuestionIds.indexOf(id);
-                        for (CustomQuestionResponse cqr : gbr.getCustomQuestionResponses()) {
-                            if (cqr.getCustomQuestion().getId().equals(id)) {
-                                customQuestionResponseStrings.set(index, cqr.getResponse());
-                            }
-                        }
-                    }
-                }
-                guestBookResponseDisplay.setCustomQuestionResponses(customQuestionResponseStrings);
-                guestBookResponsesDisplay.add(guestBookResponseDisplay);
-            }
-        } else {
-            for (GuestBookResponse gbr : guestBookResponses) {
-                GuestBookResponseDisplay guestBookResponseDisplay = new GuestBookResponseDisplay();
-                guestBookResponseDisplay.setGuestBookResponse(gbr);
-                guestBookResponsesDisplay.add(guestBookResponseDisplay);
-            }
-            
-        }
-        writeCSVString();
-        }
+        setGuestBookResponses();
         
         // Home panels
         success = false;
@@ -488,6 +429,71 @@ public class OptionsPage extends VDCBaseBean  implements java.io.Serializable {
         //all user page
         initUserData();
         //end init
+    }
+    
+    private void setGuestBookResponses(){
+               //guestbook responses
+        Date today = new Date();
+        Calendar cal = new GregorianCalendar();
+        cal.setTime(today);
+        cal.add(Calendar.DAY_OF_MONTH, -30);
+        Date today30 = cal.getTime();     
+        
+        guestBookResponsesAll = guestBookResponseServiceBean.findAll();           
+        for (GuestBookResponse gbr : guestBookResponsesAll) {
+            if (vdc !=null && gbr.getStudy().getOwner().equals(vdc)) {
+                guestBookResponses.add(gbr);
+                fullCount++;
+                if (today30.before(gbr.getResponseTime())){
+                    thirtyDayCount++;
+                }
+                if (!gbr.getCustomQuestionResponses().isEmpty()) {
+                    for (CustomQuestionResponse cqr : gbr.getCustomQuestionResponses()) {
+                        if (!customQuestionIds.contains(cqr.getCustomQuestion().getId())) {
+                            customQuestionIds.add(cqr.getCustomQuestion().getId());
+                            columnHeadings.add(cqr.getCustomQuestion().getQuestionString());
+                        }
+                    }
+                }
+            }  else if (vdc == null) {
+                  guestBookResponses.add(gbr);
+                  fullCount++;
+                if (today30.before(gbr.getResponseTime())){
+                    thirtyDayCount++;
+                }
+            }
+        }
+        
+        if (!customQuestionIds.isEmpty()) {
+            for (GuestBookResponse gbr : guestBookResponses) {
+                GuestBookResponseDisplay guestBookResponseDisplay = new GuestBookResponseDisplay();
+                guestBookResponseDisplay.setGuestBookResponse(gbr);
+                List<String> customQuestionResponseStrings = new ArrayList(customQuestionIds.size());
+                for (int i=0; i<customQuestionIds.size(); i++){
+                    customQuestionResponseStrings.add(i, "");
+                }
+                if (!gbr.getCustomQuestionResponses().isEmpty()) {
+                    for (Long id : customQuestionIds) {
+                        int index = customQuestionIds.indexOf(id);
+                        for (CustomQuestionResponse cqr : gbr.getCustomQuestionResponses()) {
+                            if (cqr.getCustomQuestion().getId().equals(id)) {
+                                customQuestionResponseStrings.set(index, cqr.getResponse());
+                            }
+                        }
+                    }
+                }
+                guestBookResponseDisplay.setCustomQuestionResponses(customQuestionResponseStrings);
+                guestBookResponsesDisplay.add(guestBookResponseDisplay);
+            }
+        } else {
+            for (GuestBookResponse gbr : guestBookResponses) {
+                GuestBookResponseDisplay guestBookResponseDisplay = new GuestBookResponseDisplay();
+                guestBookResponseDisplay.setGuestBookResponse(gbr);
+                guestBookResponsesDisplay.add(guestBookResponseDisplay);
+            }
+            
+        }
+        writeCSVString();
     }
     
     private String twitterVerifier;

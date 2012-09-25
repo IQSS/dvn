@@ -1511,12 +1511,21 @@
                   <ice:graphicImage value="/resources/images/icon_recommended.gif" rendered="#{TemplateFormPage.studyMap[sfc.timePeriodCoveredStart].recommended}"/>
                 </ice:column>
                 <ice:column>
-                  <ice:inputText id="input_timePeriodCoveredStart" styleClass="formDateFormat" value="#{TemplateFormPage.template.metadata.timePeriodCoveredStart}" >
-                  </ice:inputText>
-                  <ice:outputText styleClass="vdcEditStudyFormatExample" value="#{editstudybundle.dateFormatDescription}"/>
+                  <ice:inputText id="input_timePeriodCoveredStart" styleClass="formDateFormat" value="#{TemplateFormPage.template.metadata.timePeriodCoveredStart}" 
+                                 rendered="#{empty(TemplateFormPage.studyMap[sfc.timePeriodCoveredStart].templateField.controlledVocabulary)}"/>
                   <ice:message styleClass="errorMessage" for="input_timePeriodCoveredStart"/>
+                  <ice:selectOneMenu immediate="false"   id="selectTimePeriodCoveredStart" 
+                                     rendered="#{!empty(TemplateFormPage.studyMap[sfc.timePeriodCoveredStart].templateField.controlledVocabulary)}"                                          
+                                           value="#{TemplateFormPage.template.metadata.timePeriodCoveredStart}" 
+                                           >
+                            <f:selectItem itemLabel="No Value" itemValue=""/>
+                            <f:selectItems value="#{TemplateFormPage.studyMap[sfc.timePeriodCoveredStart].templateField.controlledVocabulary.selectItems}"/>
+                 </ice:selectOneMenu>
+                 <ice:outputText styleClass="vdcEditStudyFormatExample" value="#{editstudybundle.dateFormatDescription}"/>
                 </ice:column>
                 <ice:column>
+                    <ice:commandLink value="Select Vocabulary"
+                                       action="#{TemplateFormPage.openPopupStandard(TemplateFormPage.studyMap[sfc.timePeriodCoveredStart].templateField)}"/>
                   <ice:selectOneMenu immediate="false" partialSubmit="true" 
                                         value="#{TemplateFormPage.studyMap[sfc.timePeriodCoveredStart].templateField.fieldInputLevelString}">
                             <f:attribute name="fieldName" value="timePeriodCoveredStart" />
@@ -1536,12 +1545,22 @@
                   <ice:graphicImage value="/resources/images/icon_recommended.gif" rendered="#{TemplateFormPage.studyMap[sfc.timePeriodCoveredEnd].recommended}"/>
                 </ice:column>
                 <ice:column>
-                  <ice:inputText id="input_timePeriodCoveredEnd" styleClass="formDateFormat" value="#{TemplateFormPage.template.metadata.timePeriodCoveredEnd}" >
-                  </ice:inputText>
+                  <ice:inputText id="input_timePeriodCoveredEnd" styleClass="formDateFormat" value="#{TemplateFormPage.template.metadata.timePeriodCoveredEnd}" 
+                                 rendered="#{empty(TemplateFormPage.studyMap[sfc.timePeriodCoveredEnd].templateField.controlledVocabulary)}"/>
+                  <ice:message styleClass="errorMessage" for="input_timePeriodCoveredStart"/>
+                  <ice:selectOneMenu immediate="false"   id="selectTimePeriodCoveredEnd" 
+                                     rendered="#{!empty(TemplateFormPage.studyMap[sfc.timePeriodCoveredEnd].templateField.controlledVocabulary)}"                                          
+                                           value="#{TemplateFormPage.template.metadata.timePeriodCoveredEnd}" 
+                                           >
+                            <f:selectItem itemLabel="No Value" itemValue=""/>
+                            <f:selectItems value="#{TemplateFormPage.studyMap[sfc.timePeriodCoveredEnd].templateField.controlledVocabulary.selectItems}"/>
+                 </ice:selectOneMenu>
                   <ice:outputText styleClass="vdcEditStudyFormatExample" value="#{editstudybundle.dateFormatDescription}"/>
                   <ice:message styleClass="errorMessage" for="input_timePeriodCoveredEnd"/>
                 </ice:column>
                 <ice:column>
+                  <ice:commandLink value="Select Vocabulary"
+                                       action="#{TemplateFormPage.openPopupStandard(TemplateFormPage.studyMap[sfc.timePeriodCoveredEnd].templateField)}"/>
                   <ice:selectOneMenu immediate="false" partialSubmit="true" 
                                         value="#{TemplateFormPage.studyMap[sfc.timePeriodCoveredEnd].templateField.fieldInputLevelString}">
                             <f:attribute name="fieldName" value="timePeriodCoveredEnd" />
@@ -1561,12 +1580,22 @@
                   <ice:graphicImage value="/resources/images/icon_recommended.gif" rendered="#{TemplateFormPage.studyMap[sfc.dateOfCollectionStart].recommended}"/>
                 </ice:column>
                 <ice:column>
-                  <ice:inputText id="input_dateOfCollectionStart" styleClass="formDateFormat" value="#{TemplateFormPage.template.metadata.dateOfCollectionStart}">
-                  </ice:inputText>
+                  <ice:inputText id="input_dateOfCollectionStart" styleClass="formDateFormat" value="#{TemplateFormPage.template.metadata.dateOfCollectionStart}" 
+                                 rendered="#{empty(TemplateFormPage.studyMap[sfc.dateOfCollectionStart].templateField.controlledVocabulary)}"/>
+                  <ice:message styleClass="errorMessage" for="input_dateOfCollectionStart"/>
+                  <ice:selectOneMenu immediate="false"   id="selectdateOfCollectionStart" 
+                                     rendered="#{!empty(TemplateFormPage.studyMap[sfc.dateOfCollectionStart].templateField.controlledVocabulary)}"                                          
+                                           value="#{TemplateFormPage.template.metadata.dateOfCollectionStart}" 
+                                           >
+                            <f:selectItem itemLabel="No Value" itemValue=""/>
+                            <f:selectItems value="#{TemplateFormPage.studyMap[sfc.dateOfCollectionStart].templateField.controlledVocabulary.selectItems}"/>
+                 </ice:selectOneMenu>
                   <ice:outputText styleClass="vdcEditStudyFormatExample" value="#{editstudybundle.dateFormatDescription}"/>
                   <ice:message styleClass="errorMessage" for="input_dateOfCollectionStart"/>
                 </ice:column>
                 <ice:column>
+                  <ice:commandLink value="Select Vocabulary"
+                                       action="#{TemplateFormPage.openPopupStandard(TemplateFormPage.studyMap[sfc.dateOfCollectionStart].templateField)}"/>
                   <ice:selectOneMenu immediate="false" partialSubmit="true" 
                                         value="#{TemplateFormPage.studyMap[sfc.dateOfCollectionStart].templateField.fieldInputLevelString}">
                             <f:attribute name="fieldName" value="dateOfCollectionStart" />
@@ -1586,12 +1615,22 @@
                   <ice:graphicImage value="/resources/images/icon_recommended.gif" rendered="#{TemplateFormPage.studyMap[sfc.dateOfCollectionEnd].recommended}"/>
                 </ice:column>
                 <ice:column>
-                  <ice:inputText id="input_dateOfCollectionEnd" styleClass="formDateFormat" value="#{TemplateFormPage.template.metadata.dateOfCollectionEnd}"  >
-                  </ice:inputText>
+                  <ice:inputText id="input_timePerioddateOfCollectionEnd" styleClass="formDateFormat" value="#{TemplateFormPage.template.metadata.dateOfCollectionEnd}" 
+                                 rendered="#{empty(TemplateFormPage.studyMap[sfc.dateOfCollectionEnd].templateField.controlledVocabulary)}"/>
+                  <ice:message styleClass="errorMessage" for="input_timePerioddateOfCollectionEnd"/>
+                  <ice:selectOneMenu immediate="false"   id="selectdateOfCollectionEnd" 
+                                     rendered="#{!empty(TemplateFormPage.studyMap[sfc.dateOfCollectionEnd].templateField.controlledVocabulary)}"                                          
+                                           value="#{TemplateFormPage.template.metadata.dateOfCollectionEnd}" 
+                                           >
+                            <f:selectItem itemLabel="No Value" itemValue=""/>
+                            <f:selectItems value="#{TemplateFormPage.studyMap[sfc.dateOfCollectionEnd].templateField.controlledVocabulary.selectItems}"/>
+                 </ice:selectOneMenu>
                   <ice:outputText styleClass="vdcEditStudyFormatExample" value="#{editstudybundle.dateFormatDescription}"/>
                   <ice:message styleClass="errorMessage" for="input_dateOfCollectionEnd"/>
                 </ice:column>
                 <ice:column>
+                  <ice:commandLink value="Select Vocabulary"
+                                       action="#{TemplateFormPage.openPopupStandard(TemplateFormPage.studyMap[sfc.dateOfCollectionEnd].templateField)}"/>
                   <ice:selectOneMenu immediate="false" partialSubmit="true" 
                                         value="#{TemplateFormPage.studyMap[sfc.dateOfCollectionEnd].templateField.fieldInputLevelString}">
                             <f:attribute name="fieldName" value="dateOfCollectionEnd" />
@@ -1966,8 +2005,7 @@
                         <ice:commandButton rendered="#{customValuesDataModel[1].size() > 1}" 
                                 alt="Remove Row" title="Remove Row" image="/resources/images/icon_remove.gif" actionListener="#{TemplateFormPage.removeCustomRow}"/>
 
-                        <ice:commandLink value="Select Vocabulary" rendered="#{customFieldsDataModel[1].rowIndex == 0 
-                                                                               and ( customFieldsDataModel[0].studyField.fieldType == 'textBox' or customFieldsDataModel[0].studyField.fieldType == 'html')}" 
+                        <ice:commandLink value="Select Vocabulary" rendered="#{customFieldsDataModel[1].rowIndex == 0 }" 
                                        actionListener="#{TemplateFormPage.openPopup}"/>
 
                         <ice:selectOneMenu immediate="false" partialSubmit="true" rendered="#{customFieldsDataModel[1].rowIndex==0}"

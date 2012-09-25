@@ -1828,11 +1828,23 @@
                       <ice:graphicImage value="/resources/images/icon_recommended.gif" rendered="#{EditStudyPage.studyMap[sfc.timePeriodCoveredStart].recommended}"/>
                     </div>
                     <div jsfc="ice:panelGroup">
-                      <ice:inputText id="input_timePeriodCoveredStart" styleClass="formDateFormat" value="#{EditStudyPage.metadata.timePeriodCoveredStart}" required="#{EditStudyPage.studyMap[sfc.timePeriodCoveredStart].required and EditStudyPage.validateRequired}" requiredMessage="This field is required." >
+                      <ice:inputText id="input_timePeriodCoveredStart" styleClass="formDateFormat" 
+                                     value="#{EditStudyPage.metadata.timePeriodCoveredStart}" 
+                                     rendered="#{empty(EditStudyPage.studyMap[sfc.timePeriodCoveredStart].templateField.controlledVocabulary)}"
+                                     required="#{EditStudyPage.studyMap[sfc.timePeriodCoveredStart].required and EditStudyPage.validateRequired}" requiredMessage="This field is required." >
                         <o:validator validatorId="DateValidator" disabled="#{!EditStudyPage.validateRequired}"/>
                       </ice:inputText>
+                      <ice:selectOneMenu immediate="false" id="timePeriodCoveredStart_SelectOne"
+                                          rendered="#{!empty(EditStudyPage.studyMap[sfc.timePeriodCoveredStart].templateField.controlledVocabulary)}"
+                                          required="#{EditStudyPage.studyMap[sfc.timePeriodCoveredStart].required and EditStudyPage.validateRequired}" 
+                                           value="#{EditStudyPage.metadata.timePeriodCoveredStart}"  
+                                           requiredMessage="This field is required." >
+                                <f:selectItem itemLabel="No Value" itemValue=""/>
+                                <f:selectItems value="#{EditStudyPage.studyMap[sfc.timePeriodCoveredStart].templateField.controlledVocabulary.selectItems}"/>
+                       </ice:selectOneMenu>
                       <ice:outputText value="#{editstudybundle.dateFormatDescription}"/>
                       <ice:message styleClass="errorMessage" for="input_timePeriodCoveredStart"/>
+                       <ice:message styleClass="errorMessage" for="timePeriodCoveredStart_SelectOne"/>
                     </div>
                   </ice:panelGrid>
 
@@ -1851,11 +1863,22 @@
                       <ice:graphicImage value="/resources/images/icon_recommended.gif" rendered="#{EditStudyPage.studyMap[sfc.timePeriodCoveredEnd].recommended}"/>
                     </div>
                     <div jsfc="ice:panelGroup">
-                      <ice:inputText id="input_timePeriodCoveredEnd" styleClass="formDateFormat" value="#{EditStudyPage.metadata.timePeriodCoveredEnd}" required="#{EditStudyPage.studyMap[sfc.timePeriodCoveredEnd].required and EditStudyPage.validateRequired}" requiredMessage="This field is required." >
+                      <ice:inputText id="input_timePeriodCoveredEnd" styleClass="formDateFormat"
+                                     rendered="#{empty(EditStudyPage.studyMap[sfc.timePeriodCoveredEnd].templateField.controlledVocabulary)}"
+                                     value="#{EditStudyPage.metadata.timePeriodCoveredEnd}" required="#{EditStudyPage.studyMap[sfc.timePeriodCoveredEnd].required and EditStudyPage.validateRequired}" requiredMessage="This field is required." >
                         <o:validator validatorId="DateValidator" disabled="#{!EditStudyPage.validateRequired}"/>
                       </ice:inputText>
+                       <ice:selectOneMenu immediate="false" id="timePeriodCoveredEnd_SelectOne"
+                                          rendered="#{!empty(EditStudyPage.studyMap[sfc.timePeriodCoveredEnd].templateField.controlledVocabulary)}"
+                                          required="#{EditStudyPage.studyMap[sfc.timePeriodCoveredEnd].required and EditStudyPage.validateRequired}" 
+                                           value="#{EditStudyPage.metadata.timePeriodCoveredEnd}"  
+                                           requiredMessage="This field is required." >
+                                <f:selectItem itemLabel="No Value" itemValue=""/>
+                                <f:selectItems value="#{EditStudyPage.studyMap[sfc.timePeriodCoveredEnd].templateField.controlledVocabulary.selectItems}"/>
+                       </ice:selectOneMenu>
                       <ice:outputText value="#{editstudybundle.dateFormatDescription}"/>
                       <ice:message styleClass="errorMessage" for="input_timePeriodCoveredEnd"/>
+                      <ice:message styleClass="errorMessage" for="timePeriodCoveredEnd_SelectOne"/>
                     </div>
                   </ice:panelGrid>
 
@@ -1874,11 +1897,22 @@
                       <ice:graphicImage value="/resources/images/icon_recommended.gif" rendered="#{EditStudyPage.studyMap[sfc.dateOfCollectionStart].recommended}"/>
                     </div>
                     <div jsfc="ice:panelGroup">
-                      <ice:inputText id="input_dateOfCollectionStart" styleClass="formDateFormat" value="#{EditStudyPage.metadata.dateOfCollectionStart}"  required="#{EditStudyPage.studyMap[sfc.dateOfCollectionStart].required and EditStudyPage.validateRequired}" requiredMessage="This field is required." >
+                      <ice:inputText id="input_dateOfCollectionStart" styleClass="formDateFormat" 
+                                     rendered="#{empty(EditStudyPage.studyMap[sfc.dateOfCollectionStart].templateField.controlledVocabulary)}"
+                                     value="#{EditStudyPage.metadata.dateOfCollectionStart}"  required="#{EditStudyPage.studyMap[sfc.dateOfCollectionStart].required and EditStudyPage.validateRequired}" requiredMessage="This field is required." >
                         <o:validator validatorId="DateValidator" disabled="#{!EditStudyPage.validateRequired}"/>
                       </ice:inputText>
+                      <ice:selectOneMenu immediate="false" id="dateOfCollectionStart"
+                                          rendered="#{!empty(EditStudyPage.studyMap[sfc.dateOfCollectionStart].templateField.controlledVocabulary)}"
+                                          required="#{EditStudyPage.studyMap[sfc.dateOfCollectionStart].required and EditStudyPage.validateRequired}" 
+                                           value="#{EditStudyPage.metadata.dateOfCollectionStart}"  
+                                           requiredMessage="This field is required." >
+                                <f:selectItem itemLabel="No Value" itemValue=""/>
+                                <f:selectItems value="#{EditStudyPage.studyMap[sfc.dateOfCollectionStart].templateField.controlledVocabulary.selectItems}"/>
+                       </ice:selectOneMenu>
                       <ice:outputText value="#{editstudybundle.dateFormatDescription}"/>
                       <ice:message styleClass="errorMessage" for="input_dateOfCollectionStart"/>
+                      <ice:message styleClass="errorMessage" for="dateOfCollectionStart"/>
                     </div>
                   </ice:panelGrid>
 
@@ -1897,11 +1931,22 @@
                       <ice:graphicImage value="/resources/images/icon_recommended.gif" rendered="#{EditStudyPage.studyMap[sfc.dateOfCollectionEnd].recommended}"/>
                     </div>
                     <div jsfc="ice:panelGroup">
-                      <ice:inputText id="input_dateOfCollectionEnd" styleClass="formDateFormat" value="#{EditStudyPage.metadata.dateOfCollectionEnd}"  required="#{EditStudyPage.studyMap[sfc.dateOfCollectionEnd].required and EditStudyPage.validateRequired}" requiredMessage="This field is required." >
+                      <ice:inputText id="input_dateOfCollectionEnd" styleClass="formDateFormat" 
+                                     rendered="#{empty(EditStudyPage.studyMap[sfc.dateOfCollectionEnd].templateField.controlledVocabulary)}"
+                                     value="#{EditStudyPage.metadata.dateOfCollectionEnd}"  required="#{EditStudyPage.studyMap[sfc.dateOfCollectionEnd].required and EditStudyPage.validateRequired}" requiredMessage="This field is required." >
                         <o:validator validatorId="DateValidator" disabled="#{!EditStudyPage.validateRequired}"/>
                       </ice:inputText>
+                       <ice:selectOneMenu immediate="false" id="dateOfCollectionEnd"
+                                          rendered="#{!empty(EditStudyPage.studyMap[sfc.dateOfCollectionEnd].templateField.controlledVocabulary)}"
+                                          required="#{EditStudyPage.studyMap[sfc.dateOfCollectionEnd].required and EditStudyPage.validateRequired}" 
+                                           value="#{EditStudyPage.metadata.dateOfCollectionEnd}"  
+                                           requiredMessage="This field is required." >
+                                <f:selectItem itemLabel="No Value" itemValue=""/>
+                                <f:selectItems value="#{EditStudyPage.studyMap[sfc.dateOfCollectionEnd].templateField.controlledVocabulary.selectItems}"/>
+                       </ice:selectOneMenu>
                       <ice:outputText value="#{editstudybundle.dateFormatDescription}"/>
                       <ice:message styleClass="errorMessage" for="input_dateOfCollectionEnd"/>
+                      <ice:message styleClass="errorMessage" for="dateOfCollectionEnd"/>
                     </div>
                   </ice:panelGrid>
 

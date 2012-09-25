@@ -1,10 +1,10 @@
-
-<html xmlns="http://www.w3.org/1999/xhtml"
-      xmlns:ui="http://java.sun.com/jsf/facelets"
-      xmlns:h="http://java.sun.com/jsf/html"
-      xmlns:f="http://java.sun.com/jsf/core"
-      xmlns:jsp="http://java.sun.com/JSP/Page"
-      xmlns:ice="http://www.icesoft.com/icefaces/component">
+<div xmlns:ui="http://java.sun.com/jsf/facelets"
+                      xmlns:h="http://java.sun.com/jsf/html"
+                      xmlns:f="http://java.sun.com/jsf/core"
+                      xmlns:jsp="http://java.sun.com/JSP/Page"
+                      xmlns:ice="http://www.icesoft.com/icefaces/component"
+                      xmlns:dvn="/WEB-INF/tlds/dvn-components"
+                      jsfc="ice:panelGroup">
 
       <script type="text/javascript">
           //<![CDATA[
@@ -45,93 +45,94 @@
           // ]]>
       </script>
         <input type="hidden" name="pageName" value="EditExportSchedulePage"/>
-        <div class="dvn_section">
-          <div class="dvn_sectionTitle">
-            <ice:outputText value="#{bundlePageInfo.exportsTitle}"/>
-          </div>
-          <div class="dvn_sectionBox">
-            <div class="dvn_margin12">
-              <div jsfc="ice:panelGroup" styleClass="dvnInformationMessage">
-                <div class="dvnMsgBlockContainer">
-                  <ice:outputText value="#{bundlePageInfo.exportsHelp}" escape="false"/>
-                </div>
-              </div>
-              <ice:panelGrid cellpadding="0" cellspacing="0" columns="2"
-                             columnClasses="vdcColPadded, vdcColPadded" id="gridPanel2">
-                <div jsfc="ice:panelGroup">
-                  <ice:outputText value="Export Period"/>
-                </div>
-                <div jsfc="ice:panelGroup">
-                    <ice:selectOneMenu binding="#{OptionsPage.exportPeriod}" validator="#{EditExportSchedulePage.validateExportPeriod}" id="exportPeriod" value="#{EditExportSchedulePage.exportSchedulePeriod}"  onchange='updateExportInput();' >
-                        <f:selectItems value="#{OptionsPage.selectExportPeriod}"/>
-                    </ice:selectOneMenu>
-                  <ice:message styleClass="errorMessage" for="exportPeriod" />
-                </div>
-                <div jsfc="ice:panelGroup">
-                  <ice:outputText value="Export Hour of Day"/>
-                </div>
-                <div jsfc="ice:panelGroup">
-                        <ice:selectOneMenu validator="#{OptionsPage.validateExportHourOfDay}" id="exportHourOfDay" value="#{OptionsPage.exportHourOfDay}">
-                            <f:selectItem itemValue="-1" itemLabel="Not Selected"/>
-                            <f:selectItem itemValue="0" itemLabel="12:00 AM"/>
-                            <f:selectItem itemValue="1" itemLabel="1:00 AM"/>
-                            <f:selectItem itemValue="2" itemLabel="2:00 AM"/>
-                            <f:selectItem itemValue="3" itemLabel="3:00 AM"/>
-                            <f:selectItem itemValue="4" itemLabel="4:00 AM"/>
-                            <f:selectItem itemValue="5" itemLabel="5:00 AM"/>
-                            <f:selectItem itemValue="6" itemLabel="6:00 AM"/>
-                            <f:selectItem itemValue="7" itemLabel="7:00 AM"/>
-                            <f:selectItem itemValue="8" itemLabel="8:00 AM"/>
-                            <f:selectItem itemValue="9" itemLabel="9:00 AM"/>
-                            <f:selectItem itemValue="10" itemLabel="10:00 AM"/>
-                            <f:selectItem itemValue="11" itemLabel="11:00 AM"/>
-                            <f:selectItem itemValue="12" itemLabel="12:00 PM"/>
-                            <f:selectItem itemValue="13" itemLabel="1:00 PM"/>
-                            <f:selectItem itemValue="14" itemLabel="2:00 PM"/>
-                            <f:selectItem itemValue="15" itemLabel="3:00 PM"/>
-                            <f:selectItem itemValue="16" itemLabel="4:00 PM"/>
-                            <f:selectItem itemValue="17" itemLabel="5:00 PM"/>
-                            <f:selectItem itemValue="18" itemLabel="6:00 PM"/>
-                            <f:selectItem itemValue="19" itemLabel="7:00 PM"/>
-                            <f:selectItem itemValue="20" itemLabel="8:00 PM"/>
-                            <f:selectItem itemValue="21" itemLabel="9:00 PM"/>
-                            <f:selectItem itemValue="22" itemLabel="10:00 PM"/>
-                            <f:selectItem itemValue="23" itemLabel="11:00 PM"/>
-                        </ice:selectOneMenu>
-                        <ice:message  styleClass="errorMessage" for="exportHourOfDay"/>
-                </div>
-                <div jsfc="ice:panelGroup">
-                  <div id="requiredDayOfWeek">
-                    <ice:outputText  value="Export Day of Week"/>
-                    <!--ice:graphicImage  value="/resources/images/icon_required.gif"/-->
-                  </div>
-                </div>
-                <div jsfc="ice:panelGroup">
-                  <div id="requiredDayOfWeekText">
-                         <ice:selectOneMenu validator="#{OptionsPage.validateExportDayOfWeek}" id="exportDayOfWeek" value="#{OptionsPage.exportDayOfWeek}">
-                            <f:selectItem itemValue="-1" itemLabel="Not Selected"/>
-                            <f:selectItem itemValue="1" itemLabel="Sunday"/>
-                            <f:selectItem itemValue="2" itemLabel="Monday"/>
-                            <f:selectItem itemValue="3" itemLabel="Tuesday"/>
-                            <f:selectItem itemValue="4" itemLabel="Wednesday"/>
-                            <f:selectItem itemValue="5" itemLabel="Thursday"/>
-                            <f:selectItem itemValue="6" itemLabel="Friday"/>
-                            <f:selectItem itemValue="7" itemLabel="Saturday"/>
-                        </ice:selectOneMenu>
-                        <ice:message  styleClass="errorMessage" for="exportDayOfWeek"/>
-                  </div>
-                </div>
-              </ice:panelGrid>
-              <div jsfc="ice:panelGroup" styleClass="dvnFormPadding dvnFormMargin">
+
+          <div>
+              
+              <table class="dvnPermissionsTable" cellspacing="0" cellpadding="0" border="0">
+                      <tr><td colspan="2" class="dvnPermissionsTableHeader"><ice:outputText value="Export Settings"/></td></tr>
+                      <tr>
+                        <td class="dvnPermissionsTableOption">
+                            <ice:outputText value="Export Schedule"/>
+                        </td>
+                        <td>
+                            <div jsfc="ice:panelGroup" styleClass="dvnInformationMessage">
+                                <div class="dvnMsgBlockContainer">
+                                  <ice:outputText value="#{bundlePageInfo.exportsHelp}" escape="false"/>
+                                </div>
+                            </div>
+                            <ice:panelGrid columns="2">
+                                <div jsfc="ice:panelGroup">
+                                    <ice:outputText value="Period"/>
+                                </div>
+                                <div jsfc="ice:panelGroup">
+                                    <ice:selectOneMenu binding="#{OptionsPage.exportPeriod}" validator="#{EditExportSchedulePage.validateExportPeriod}" id="exportPeriod" value="#{EditExportSchedulePage.exportSchedulePeriod}"  onchange='updateExportInput();' >
+                                        <f:selectItems value="#{OptionsPage.selectExportPeriod}"/>
+                                    </ice:selectOneMenu>
+                                    <ice:message styleClass="errorMessage" for="exportPeriod" />
+                                </div>
+                                <div jsfc="ice:panelGroup">
+                                    <ice:outputText value="Hour of Day"/>
+                                </div>
+                                <div jsfc="ice:panelGroup">
+                                    <ice:selectOneMenu validator="#{OptionsPage.validateExportHourOfDay}" id="exportHourOfDay" value="#{OptionsPage.exportHourOfDay}">
+                                        <f:selectItem itemValue="-1" itemLabel="Not Selected"/>
+                                        <f:selectItem itemValue="0" itemLabel="12:00 AM"/>
+                                        <f:selectItem itemValue="1" itemLabel="1:00 AM"/>
+                                        <f:selectItem itemValue="2" itemLabel="2:00 AM"/>
+                                        <f:selectItem itemValue="3" itemLabel="3:00 AM"/>
+                                        <f:selectItem itemValue="4" itemLabel="4:00 AM"/>
+                                        <f:selectItem itemValue="5" itemLabel="5:00 AM"/>
+                                        <f:selectItem itemValue="6" itemLabel="6:00 AM"/>
+                                        <f:selectItem itemValue="7" itemLabel="7:00 AM"/>
+                                        <f:selectItem itemValue="8" itemLabel="8:00 AM"/>
+                                        <f:selectItem itemValue="9" itemLabel="9:00 AM"/>
+                                        <f:selectItem itemValue="10" itemLabel="10:00 AM"/>
+                                        <f:selectItem itemValue="11" itemLabel="11:00 AM"/>
+                                        <f:selectItem itemValue="12" itemLabel="12:00 PM"/>
+                                        <f:selectItem itemValue="13" itemLabel="1:00 PM"/>
+                                        <f:selectItem itemValue="14" itemLabel="2:00 PM"/>
+                                        <f:selectItem itemValue="15" itemLabel="3:00 PM"/>
+                                        <f:selectItem itemValue="16" itemLabel="4:00 PM"/>
+                                        <f:selectItem itemValue="17" itemLabel="5:00 PM"/>
+                                        <f:selectItem itemValue="18" itemLabel="6:00 PM"/>
+                                        <f:selectItem itemValue="19" itemLabel="7:00 PM"/>
+                                        <f:selectItem itemValue="20" itemLabel="8:00 PM"/>
+                                        <f:selectItem itemValue="21" itemLabel="9:00 PM"/>
+                                        <f:selectItem itemValue="22" itemLabel="10:00 PM"/>
+                                        <f:selectItem itemValue="23" itemLabel="11:00 PM"/>
+                                    </ice:selectOneMenu>
+                                    <ice:message  styleClass="errorMessage" for="exportHourOfDay"/>
+                                </div>
+                                <div jsfc="ice:panelGroup">
+                                    <ice:outputText value="Day of Week"/>
+                                </div>
+                                <div jsfc="ice:panelGroup">
+                                    <ice:selectOneMenu validator="#{OptionsPage.validateExportDayOfWeek}" id="exportDayOfWeek" value="#{OptionsPage.exportDayOfWeek}">
+                                        <f:selectItem itemValue="-1" itemLabel="Not Selected"/>
+                                        <f:selectItem itemValue="1" itemLabel="Sunday"/>
+                                        <f:selectItem itemValue="2" itemLabel="Monday"/>
+                                        <f:selectItem itemValue="3" itemLabel="Tuesday"/>
+                                        <f:selectItem itemValue="4" itemLabel="Wednesday"/>
+                                        <f:selectItem itemValue="5" itemLabel="Thursday"/>
+                                        <f:selectItem itemValue="6" itemLabel="Friday"/>
+                                        <f:selectItem itemValue="7" itemLabel="Saturday"/>
+                                    </ice:selectOneMenu>
+                                    <ice:message  styleClass="errorMessage" for="exportDayOfWeek"/>
+                                </div>
+                            </ice:panelGrid>
+                                
+                        </td>
+                      </tr>
+              </table>
+              
+              <!--<div jsfc="ice:panelGroup" styleClass="dvnFormPadding dvnFormMargin">
                 <ice:commandButton value="Save" action="#{OptionsPage.saveExportSchedule}"/>
                 <ice:commandButton immediate="true" value="Cancel" action="/networkAdmin/NetworkOptionsPage.xhtml?faces-redirect=true"/>
-              </div>
-            </div>
+              </div>-->
           </div>
-        </div>
 
       <script type="text/javascript">
           // initial call to disable dropdowns(if needed)
           updateExportInput();
       </script>
-</html>
+</div>

@@ -1,20 +1,17 @@
+<div xmlns:ui="http://java.sun.com/jsf/facelets"
+                      xmlns:h="http://java.sun.com/jsf/html"
+                      xmlns:f="http://java.sun.com/jsf/core"
+                      xmlns:jsp="http://java.sun.com/JSP/Page"
+                      xmlns:ice="http://www.icesoft.com/icefaces/component"
+                      xmlns:dvn="/WEB-INF/tlds/dvn-components"
+                      jsfc="ice:panelGroup">
 
-<html xmlns="http://www.w3.org/1999/xhtml"
-      xmlns:ui="http://java.sun.com/jsf/facelets"
-      xmlns:h="http://java.sun.com/jsf/html"
-      xmlns:f="http://java.sun.com/jsf/core"
-      xmlns:jsp="http://java.sun.com/JSP/Page"
-      xmlns:ice="http://www.icesoft.com/icefaces/component">
-        <div class="dvn_section">
-          <div class="dvn_sectionTitle">
-            <ice:outputText value="#{bundlePageInfo.manageGroupsTitle}"/>
-          </div>
           <div class="dvnManageTableTop">
             <div jsfc="ice:panelGroup" styleClass="dvn_margin12 dvnInformationMessage">
-            <div class="dvnMsgBlockContainer">
-              <ice:outputText value="#{bundlePageInfo.manageGroupsHelp}" escape="false"/>
+              <div class="dvnMsgBlockContainer">
+                <ice:outputText value="#{bundlePageInfo.manageGroupsHelp}" escape="false"/>
+              </div>
             </div>
-          </div>
             <div class="dvnManageTableCreateLink">
               <ice:outputLink value="/dvn/faces/networkAdmin/EditUserGroupPage.xhtml">
                 <ice:outputText value="Create Group"/>
@@ -58,6 +55,5 @@
               </ice:commandLink>
             </ice:column>
           </ice:dataTable>
-        </div>
 
-</html>
+</div>

@@ -1,36 +1,32 @@
-
-<html xmlns="http://www.w3.org/1999/xhtml"
-      xmlns:ui="http://java.sun.com/jsf/facelets"
-      xmlns:h="http://java.sun.com/jsf/html"
-      xmlns:f="http://java.sun.com/jsf/core"
-      xmlns:jsp="http://java.sun.com/JSP/Page"
-      xmlns:ice="http://www.icesoft.com/icefaces/component">
-        <div class="dvn_section">
-          <div class="dvn_sectionTitle">
-            <ice:outputText value="#{bundlePageInfo.editDvnDepositTermsTitle}"/>
-          </div>
-          <div class="dvn_sectionBox">
-            <div class="dvn_margin12">
-              <div jsfc="ice:panelGroup" styleClass="dvnInformationMessage">
-                <div class="dvnMsgBlockContainer">
-                  <ice:outputText value="#{bundlePageInfo.editDvnDepositTermsHelp}" escape="false"/>
-                </div>
-              </div>
-              <div jsfc="ice:panelGroup">
-                <ice:selectBooleanCheckbox value="#{OptionsPage.networkDepositTermsOfUseEnabled}"/>
-                <ice:outputText value=" Enable Terms of Use"/>
-              </div>
-              <ice:message for="textArea1" styleClass="errorMessage" id="outputText2MsgDeposit"/>
-              <br/>
-              <div jsfc="ice:panelGroup">
-                <ice:outputText id="outputText2Deposit" value="Terms of Use:"/>
-                <br/>
-                <ice:inputTextarea rows="8" cols="70" id="textArea1Deposit"
-                                   styleClass="formHtmlEnabled" immediate="true" value="#{OptionsPage.networkDepositTermsOfUse}">
-                  <f:validator validatorId="XhtmlValidator"/>
-                </ice:inputTextarea>
-              </div>
-            </div>
-          </div>
+<div xmlns:ui="http://java.sun.com/jsf/facelets"
+                      xmlns:h="http://java.sun.com/jsf/html"
+                      xmlns:f="http://java.sun.com/jsf/core"
+                      xmlns:jsp="http://java.sun.com/JSP/Page"
+                      xmlns:ice="http://www.icesoft.com/icefaces/component"
+                      xmlns:dvn="/WEB-INF/tlds/dvn-components"
+                      jsfc="ice:panelGroup">
+<tr>
+    <td class="dvnOptionsTableOption">
+        <ice:outputText value="Deposit Term of Use"/>
+    </td>
+    <td>
+      <div jsfc="ice:panelGroup" styleClass="dvnInformationMessage">
+        <div class="dvnMsgBlockContainer">
+          <ice:outputText value="#{bundlePageInfo.editDvnDepositTermsHelp}" escape="false"/>
         </div>
-</html>
+      </div>
+      <div jsfc="ice:panelGroup">
+        <ice:selectBooleanCheckbox value="#{OptionsPage.networkDepositTermsOfUseEnabled}"/>
+        <ice:outputText value=" Enable Terms of Use"/>
+      </div>
+      <ice:message for="textArea1" styleClass="errorMessage" id="outputText2MsgDeposit"/>
+      <br/>
+      <div jsfc="ice:panelGroup">
+        <ice:inputTextarea rows="8" cols="70" id="textArea1Deposit"
+                           styleClass="formHtmlEnabled" immediate="true" value="#{OptionsPage.networkDepositTermsOfUse}">
+          <f:validator validatorId="XhtmlValidator"/>
+        </ice:inputTextarea>
+      </div>
+    </td>
+</tr>
+</div>

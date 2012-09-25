@@ -217,26 +217,14 @@
                                                 <ui:include src="/networkAdmin/UserGroupsPage.xhtml"></ui:include>
                                             </div>  
                                     </ice:panelTab>
-
-                                    <!-- Add Account-->
-                                    <ice:panelTab id="addAccountSub" label="Add Account">
-                                            <div jsfc="ice:panelGroup" panelLayout="flow">
-                                                <ui:include src="/login/AddAccountPage.xhtml"></ui:include>
-                                            </div>  
-                                    </ice:panelTab>
                                     <!-- TERMS -->
                                     <ice:panelTab id="termsSub" label="Terms">
-                                        <div jsfc="ice:panelGroup">   
-                                           <div jsfc="ice:panelGroup" panelLayout="flow">
-                                                <ui:include src="/networkAdmin/EditAccountUseTermsPage.xhtml"></ui:include>
-                                            </div>    
-                                             <div jsfc="ice:panelGroup" panelLayout="flow">
-                                                <ui:include src="/networkAdmin/EditNetworkDepositUseTermsPage.xhtml"></ui:include>
-                                            </div> 
-                                            <div jsfc="ice:panelGroup" panelLayout="flow">
-                                                <ui:include src="/networkAdmin/EditNetworkDownloadUseTermsPage.xhtml"></ui:include>
-                                            </div>
-
+                                        <table class="dvnOptionsTable" cellspacing="0" cellpadding="0" border="0">
+                                            <ui:include src="/networkAdmin/EditAccountUseTermsPage.xhtml"></ui:include>
+                                            <ui:include src="/networkAdmin/EditNetworkDepositUseTermsPage.xhtml"></ui:include>
+                                            <ui:include src="/networkAdmin/EditNetworkDownloadUseTermsPage.xhtml"></ui:include>
+                                        </table>
+                                        <div jsfc="ice:panelGroup">
                                             <div class="dvnFormPadding dvnFormMargin">
                                                 <ice:commandButton  styleClass="dvnListenSave" value="Save Changes" action="#{OptionsPage.save_NetworkTermsOfUseAction}"/>
                                                 <!--<ice:commandButton  value="Cancel" action="#{OptionsPage.toucancel_action}"/>-->

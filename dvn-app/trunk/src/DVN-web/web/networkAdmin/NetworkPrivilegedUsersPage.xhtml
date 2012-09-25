@@ -1,17 +1,13 @@
-
-<html xmlns="http://www.w3.org/1999/xhtml"
-      xmlns:ui="http://java.sun.com/jsf/facelets"
-      xmlns:h="http://java.sun.com/jsf/html"
-      xmlns:f="http://java.sun.com/jsf/core"
-      xmlns:jsp="http://java.sun.com/JSP/Page"
-      xmlns:ice="http://www.icesoft.com/icefaces/component">
+<div xmlns:ui="http://java.sun.com/jsf/facelets"
+                      xmlns:h="http://java.sun.com/jsf/html"
+                      xmlns:f="http://java.sun.com/jsf/core"
+                      xmlns:jsp="http://java.sun.com/JSP/Page"
+                      xmlns:ice="http://www.icesoft.com/icefaces/component"
+                      xmlns:dvn="/WEB-INF/tlds/dvn-components"
+                      jsfc="ice:panelGroup">
         <input type="hidden" name="pageName" value="NetworkPrivilegedUsersPage"/>
-        <div class="dvn_section">
-          <div class="dvn_sectionTitle">
-            <ice:outputText value="#{bundlePageInfo.manageDvnPermissionsTitle}"/>
-          </div>
-          <div class="dvn_sectionBox">
-              <div class="dvn_margin12">
+
+          <div>
                     <div jsfc="ice:panelGroup" styleClass="dvnInformationMessage">
                         <div class="dvnMsgBlockContainer">
                           <ice:outputText value="#{bundlePageInfo.manageDvnPermissionsHelp}" escape="false"/>
@@ -122,7 +118,7 @@
                   <div id="groupPanel6" class="dvnFormPadding dvnFormMargin">
                     <ice:commandButton id="button5" value="Save Changes" action="#{OptionsPage.saveNetworkPrivilegedUsersPage}"/>
                   </div>
-              </div>
+
           </div>
-        </div>
-</html>
+
+</div>

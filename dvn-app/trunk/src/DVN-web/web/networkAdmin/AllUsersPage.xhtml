@@ -11,15 +11,45 @@
                   <ice:outputText value="#{bundlePageInfo.manageUsersHelp}" escape="false"/>
                 </div>
               </div>
-              <div jsfc="ice:panelGroup" styleClass="dvnPaginatorFloatRight">
-                    <ice:outputLink value="/dvn/faces/login/AddAccountPage.xhtml">
-                      <ice:outputText value="Create New User"/>
-                    </ice:outputLink>
-              </div>
+              <ice:panelGrid cellpadding="0" cellspacing="0" border="0" columns="2"
+                               styleClass="dvnManageStudiesTableTop" columnClasses="dvn_StudyListTotals, dvnPaginatorWrap">
+                    <div jsfc="ice:panelGroup">
+                            <ice:outputLink value="/dvn/faces/login/AddAccountPage.xhtml">
+                              <ice:outputText value="Create New User"/>
+                            </ice:outputLink>
+                    </div>
+                    <div jsfc="ice:panelGroup" styleClass="dvnPaginatorWrap">
+                        <ice:dataPaginator for="allUsersList"
+                                           binding="#{OptionsPage.paginator}"
+                                           id="dataScroller"
+                                           paginator="true" fastStep="3"
+                                           paginatorMaxPages="4"
+                                           renderFacetsIfSinglePage="false">
+                            <f:facet name="first">
+                                <ice:graphicImage url="/resources/icefaces/dvn_rime/css-images/arrow-first.gif" title="First Page"/>
+                            </f:facet>
+                            <f:facet name="fastrewind">
+                                <ice:graphicImage url="/resources/icefaces/dvn_rime/css-images/arrow-fr.gif" title="Fast Backward"/>
+                            </f:facet>
+                            <f:facet name="previous">
+                                <ice:graphicImage url="/resources/icefaces/dvn_rime/css-images/arrow-previous.gif" title="Previous"/>
+                            </f:facet>
+                            <f:facet name="next">
+                                <ice:graphicImage url="/resources/icefaces/dvn_rime/css-images/arrow-next.gif" title="Previous"/>
+                            </f:facet>
+                            <f:facet name="fastforward">
+                                <ice:graphicImage url="/resources/icefaces/dvn_rime/css-images/arrow-ff.gif" title="Fast Forward"/>
+                            </f:facet>
+                            <f:facet name="last">
+                                <ice:graphicImage url="/resources/icefaces/dvn_rime/css-images/arrow-last.gif" title="Previous"/>
+                            </f:facet>
+                        </ice:dataPaginator>
+                    </div>
+              </ice:panelGrid>
           </div>
-          <ice:dataTable  cellpadding="0" cellspacing="0" width="100%"
-                         styleClass="dvnDataTable" columnClasses="vdcColPadded, vdcColPadded, vdcColPadded, vdcColPadded" headerClass="list-header-left" id="dataTable1"
-                         rowClasses="list-row-even,list-row-odd" value="#{OptionsPage.userData}" var="currentRow">
+          <ice:dataTable cellpadding="0" cellspacing="0" width="100%"
+                         styleClass="dvnDataTable" columnClasses="vdcColPadded, vdcColPadded, vdcColPadded, vdcColPadded" headerClass="list-header-left" id="allUsersList"
+                         rows="10" rowClasses="list-row-even,list-row-odd" value="#{OptionsPage.userData}" var="currentRow">
                 <ice:column id="column1">
                   <f:facet name="header">
                     <ice:outputText id="outputText2" value="Username"/>

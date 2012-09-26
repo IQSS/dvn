@@ -382,7 +382,10 @@ public class DSBWrapper implements java.io.Serializable  {
                 // Should be validated for simple consistency - each line 
                 // must contain at least one TAB character, separating 2 
                 // non-empty character strings.
-                return; 
+                if (parseLabelFile(controlCardFile)) {
+                    return; 
+                }
+                throw new IllegalArgumentException("Ingest: Bad Extended Labels File.");
             }
             
             // We are going to check if we have Ingest readers for the
@@ -420,6 +423,46 @@ public class DSBWrapper implements java.io.Serializable  {
         dbgLog.fine("Validate: control card file is valid.");
     }
 
+    private static Boolean parseLabelFile (File extendedLabelsFile) {
+        
+        // open the text file supplied, check that they are at least 
+        // parseable.
+        
+        BufferedReader labelsFileReader = null;
+        
+        try {
+            labelsFileReader = new BufferedReader(new InputStreamReader(new FileInputStream(extendedLabelsFile)));
+            
+            String inLine = null; 
+            String[] valueTokens = new String[2];
+            
+            while ((inLine = labelsFileReader.readLine() ) != null) {
+                valueTokens = inLine.split("\t", 2);
+                
+                if (!(valueTokens[0] != null && !"".equals(valueTokens[0]) &&
+                    valueTokens[1] != null && !"".equals(valueTokens[1]))) {
+                    
+                    return false;
+                }
+            }
+            
+        } catch (java.io.FileNotFoundException fnfex) {
+            dbgLog.warning("Ingest: could not open Extended Labels file");
+            dbgLog.warning(fnfex.getMessage());
+            return false;
+        } catch (IOException ioex) {
+            dbgLog.warning("Ingest: caught exception trying to process Labels File");
+            dbgLog.warning(ioex.getMessage());
+            return false;
+        } finally {
+            if (labelsFileReader != null) {
+                try {labelsFileReader.close();}catch(Exception x){};
+            }
+        }
+        
+        return true;
+        
+    }
 
     public String calculateUNF(StudyVersion sv) throws IOException {
         List unfs = new ArrayList();

@@ -34,7 +34,11 @@ package edu.harvard.iq.dvn.core.web.study;
 import edu.harvard.iq.dvn.core.web.common.VDCBaseBean;
 import java.io.File;
 import java.io.FileInputStream; 
-import java.io.FileOutputStream; 
+import java.io.FileOutputStream;
+import java.io.InputStreamReader;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.FileNotFoundException; 
 import javax.ejb.EJB;
 import javax.faces.application.FacesMessage;
 import javax.faces.component.UIComponent;
@@ -438,7 +442,7 @@ public class AddFilesPage extends VDCBaseBean implements java.io.Serializable {
                      Map<String,String> varLabelMap = null; 
                      varLabelMap = createLabelMap (controlCardTempLocation);
                      f = new StudyFileEditBean(file, studyService.generateFileSystemNameSequence(), study);
-                     if (f != null && f.getStudyFile() instanceof TabularDataFile) {
+                     if (f != null && f.getStudyFile() instanceof TabularDataFile && varLabelMap != null) {
                          f.setExtendedVariableLabelMap(varLabelMap);
                      }
                      
@@ -467,6 +471,39 @@ public class AddFilesPage extends VDCBaseBean implements java.io.Serializable {
         
         // Simply open the text file supplied, and read the variable-lable 
         // pairs supplied: 
+        
+        BufferedReader labelsFileReader = null;
+        
+        try {
+            labelsFileReader = new BufferedReader(new InputStreamReader(new FileInputStream(extendedLabelsFileLocation)));
+            
+            String inLine = null; 
+            String[] valueTokens = new String[2];
+            
+            while ((inLine = labelsFileReader.readLine() ) != null) {
+                valueTokens = inLine.split("\t", 2);
+                
+                if (valueTokens[0] != null && !"".equals(valueTokens[0]) &&
+                    valueTokens[1] != null && !"".equals(valueTokens[1])) {
+                    
+                    valueTokens[1] = valueTokens[1].replaceAll("[\n\r]", ""); 
+                    varLabelMap.put(valueTokens[0], valueTokens[1]);
+                }
+            }
+            
+        } catch (java.io.FileNotFoundException fnfex) {
+            dbgLog.warning("Ingest: could not open Extended Labels file");
+            dbgLog.warning(fnfex.getMessage());
+            return null; 
+        } catch (IOException ioex) {
+            dbgLog.warning("Ingest: caught exception trying to process Labels File");
+            dbgLog.warning(ioex.getMessage());
+            return null;
+        } finally {
+            if (labelsFileReader != null) {
+                try {labelsFileReader.close();}catch(Exception x){};
+            }
+        }
         
         return varLabelMap;
     }

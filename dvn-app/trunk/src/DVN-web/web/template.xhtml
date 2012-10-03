@@ -7,14 +7,6 @@
       xmlns:ice="http://www.icesoft.com/icefaces/component"
       xmlns:dvn="/WEB-INF/tlds/dvn-components">
     <h:head>
-        <script type="text/javascript">
-            // <![CDATA[
-            // check to see if page is loading in hidden grame; if so "pop" out to top level
-              if(self.name == "hiddenDownloadFrame"){
-                  parent.location.replace(self.location.href);
-              }
-            // ]]>
-        </script>
         <ice:outputText nospan="true" escape="false" rendered="#{VDCRequest.currentVDCId == null or (VDCRequest.currentVDCId != null and !VDCRequest.displayInFrame)}">
             <script type="text/javascript">
                 // <![CDATA[

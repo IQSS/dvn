@@ -7,14 +7,6 @@
       xmlns:ice="http://www.icesoft.com/icefaces/component"
       xmlns:dvn="/WEB-INF/tlds/dvn-components">
 <h:head>
-  <script type="text/javascript">
-      // <![CDATA[
-      // check to see if page is loading in hidden grame; if so "pop" out to top level
-        if(self.name == "hiddenDownloadFrame"){
-            parent.location.replace(self.location.href);
-        }
-      // ]]>
-  </script>
   <ice:outputText nospan="true" escape="false" rendered="#{VDCRequest.currentVDCId == null or (VDCRequest.currentVDCId != null and !VDCRequest.displayInFrame)}">
     <script type="text/javascript">
         // <![CDATA[
@@ -103,7 +95,6 @@
 </h:head>
 <!--  this template is example 4.3 in the Facelets Shortcut -->
 <h:body>
-    <iframe  style="display: none;" name="hiddenDownloadFrame"/>
     <f:loadBundle basename="Bundle" var="bundle"/>
     <f:loadBundle basename="BundlePageInfo" var="bundlePageInfo"/>
     <ui:insert name="metadata"><!-- Default Metadata --></ui:insert>

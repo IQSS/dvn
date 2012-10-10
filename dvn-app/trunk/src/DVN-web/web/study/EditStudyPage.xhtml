@@ -1111,7 +1111,7 @@
                                        required="#{EditStudyPage.studyMap[sfc.distributorContactEmail].required and EditStudyPage.validateRequired}" 
                                        rendered="#{empty(EditStudyPage.studyMap[sfc.distributorContactEmail].templateField.controlledVocabulary)}"
                                        requiredMessage="This field is required.">
-                               <f:validator validatorId="EmailValidator"/>
+                               <o:validator validatorId="EmailValidator"/>
                         </ice:inputText>
                              <ice:selectOneMenu immediate="false"   id="selectOneDistributorContactEmail" 
                                            value="#{EditStudyPage.metadata.distributorContactEmail}" 
@@ -1120,7 +1120,7 @@
                                            rendered="#{!empty(EditStudyPage.studyMap[sfc.distributorContactEmail].templateField.controlledVocabulary)}" >
                             <f:selectItem itemLabel="No Value" itemValue=""/>
                             <f:selectItems value="#{EditStudyPage.studyMap[sfc.distributorContactEmail].templateField.controlledVocabulary.selectItems}"/>
-                               <f:validator validatorId="EmailValidator"/>
+                               <o:validator validatorId="EmailValidator"/>
                             </ice:selectOneMenu>
                                 <ice:message styleClass="errorMessage" for="input_distributorContactEmail"/>
                                 <ice:message styleClass="errorMessage" for="selectOneDistributorContactEmail"/>

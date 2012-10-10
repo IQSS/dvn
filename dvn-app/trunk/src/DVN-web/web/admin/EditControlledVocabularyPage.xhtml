@@ -75,7 +75,7 @@
                   </div>
                   <ice:panelGrid cellpadding="0" cellspacing="0" columns="2" width="100%">                                 
                   <div jsfc="ice:panelGroup" styleClass="dvnControlledVocabInput">
-                    <ice:inputText value="#{editControlledVocabularyPage.newControlledVocabularyValue}"></ice:inputText>
+                    <ice:inputTextarea value="#{editControlledVocabularyPage.newControlledVocabularyValue}"></ice:inputTextarea>
                     <ice:commandButton action="#{editControlledVocabularyPage.addControlledVocabularyValue}" 
                                        alt="Add Row" title="Add Row" image="/resources/images/icon_add.gif"/>
                     <div jsfc="ice:panelGroup" rendered="#{editControlledVocabularyPage.controlledVocabulary.fieldType =='date'}">

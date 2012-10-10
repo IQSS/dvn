@@ -109,11 +109,10 @@ public class EditControlledVocabularyPage extends VDCBaseBean implements java.io
     public void setSelectedControlledVocabularyValues(List<String> selectedControlledVocabularyValues) {
         this.selectedControlledVocabularyValues = selectedControlledVocabularyValues;
     }
-
-
     
     public void exit() {
     }
+    
     public List<SelectItem> getControlledVocabularySelectItems() {
         List selectItems = new ArrayList();
             for (ControlledVocabularyValue cvv : controlledVocabulary.getControlledVocabularyValues()) {
@@ -124,6 +123,7 @@ public class EditControlledVocabularyPage extends VDCBaseBean implements java.io
     }
     
     public void addControlledVocabularyValue() {
+        boolean success = true;
         if(newControlledVocabularyValue.isEmpty()){
             return;
         }
@@ -134,11 +134,36 @@ public class EditControlledVocabularyPage extends VDCBaseBean implements java.io
         }
                
         ControlledVocabularyValue cvv = new ControlledVocabularyValue();
-        cvv.setControlledVocabulary(controlledVocabulary);
-        cvv.setValue(newControlledVocabularyValue);
+        if (!newControlledVocabularyValue.contains("\n")){
+            cvv.setControlledVocabulary(controlledVocabulary);
+            cvv.setValue(newControlledVocabularyValue);
+            controlledVocabulary.getControlledVocabularyValues().add(cvv);
+        } else {
+            String splitString[] = newControlledVocabularyValue.split("\n");
+            for (int i = 0; i < splitString.length; i++) {
+                boolean added = false;
+                ControlledVocabularyValue cvvm = new ControlledVocabularyValue();
+                System.out.print(splitString[i] + " " + i);
+                cvvm.setControlledVocabulary(controlledVocabulary);
+                cvvm.setValue(splitString[i]);
 
-        controlledVocabulary.getControlledVocabularyValues().add(cvv);
-        Collections.sort(controlledVocabulary.getControlledVocabularyValues());
+                for (ControlledVocabularyValue cvvTestMulti: controlledVocabulary.getControlledVocabularyValues() ){
+                    if (splitString[i].equals(cvvTestMulti.getValue())) {
+                        success = false;
+                        added = true;
+                    }
+                }
+                if (!added){
+                    controlledVocabulary.getControlledVocabularyValues().add(cvvm);
+                }
+            }           
+        }
+        if (success){
+           //If added successfully clear out the value(s)
+           newControlledVocabularyValue = "";
+        }
+
+        Collections.sort(controlledVocabulary.getControlledVocabularyValues());     
     }
             
     public void removeControlledVocabularyValues() {              

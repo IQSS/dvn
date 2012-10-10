@@ -38,6 +38,7 @@ tr.dvnCustomizationSelectSiteBlockRow3 {display:none;}
 .dvnMyDataverseTableTop{border:1px solid #d9d9d9;border-bottom:0;width:100%}
 .dvnMyDataverseTableTop td{text-align:right}
 .dvnMyDataverseTableTop td div{padding:.5em .25em}
+.dvnMyDataverseTableEmpty td {padding:20px 0; border:1px solid #D9D9D9; text-align: center;}
 .dvnMyDataverseTableName{width:70%;padding-bottom:3px;padding-left:4px;padding-top:3px;text-align:left;vertical-align:top}
 .dvnMyDataverseTableRole{width:30%;padding-bottom:3px;padding-left:4px;padding-top:3px;text-align:center;vertical-align:top}
 /* MANAGE + EDIT STUDY + TEMPLATE */

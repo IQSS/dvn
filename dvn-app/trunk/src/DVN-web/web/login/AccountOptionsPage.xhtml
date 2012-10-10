@@ -32,7 +32,7 @@
                         </ui:include>
                     </ice:panelTab>
                     <!-- MY DATAVERSES -->
-                    <ice:panelTab id="myDataverses" label="Dataverses" rendered="#{!VDCSession.loginBean.networkAdmin and (VDCRequest.vdcNetwork.allowCreateRequest or VDCSession.loginBean.hasDataverses)}">
+                    <ice:panelTab id="myDataverses" label="Dataverses" rendered="#{(VDCRequest.vdcNetwork.allowCreateRequest or VDCSession.loginBean.hasDataverses or VDCSession.loginBean.networkCreator) and !VDCSession.loginBean.networkAdmin}">
                         <ui:include src="/networkAdmin/MyDataversesFragment.xhtml">
                         </ui:include>
                     </ice:panelTab>

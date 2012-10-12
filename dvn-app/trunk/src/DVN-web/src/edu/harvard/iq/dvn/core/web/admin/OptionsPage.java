@@ -137,6 +137,7 @@ public class OptionsPage extends VDCBaseBean  implements java.io.Serializable {
         }
         
         //Privileged users page 
+        
         if (getVDCRequestBean().getCurrentVDC() != null) {
             vdcId = getVDCRequestBean().getCurrentVDC().getId();
             editVDCPrivileges.setVdc(vdcId);
@@ -197,8 +198,6 @@ public class OptionsPage extends VDCBaseBean  implements java.io.Serializable {
                
  
         }
-        
-        setGuestBookResponses();
         
         // Home panels
         success = false;
@@ -302,6 +301,7 @@ public class OptionsPage extends VDCBaseBean  implements java.io.Serializable {
         for (LicenseType licenseType : editLockssService.getLicenseTypes()) {
             licenseTypes.put(licenseType.getId(), licenseType);
         }
+        
         initCollection();       
         if (this.getBanner() == null){
             setBanner( (getVDCRequestBean().getCurrentVDCId() == null) ? getVDCRequestBean().getVdcNetwork().getNetworkPageHeader(): getVDCRequestBean().getCurrentVDC().getHeader());
@@ -312,6 +312,7 @@ public class OptionsPage extends VDCBaseBean  implements java.io.Serializable {
                 setParentSite(getVDCRequestBean().getCurrentVDC().getParentSite());
             }
         }
+        
         combinedTextField.setValue(banner + footer);
         
         // Search Fields
@@ -347,9 +348,9 @@ public class OptionsPage extends VDCBaseBean  implements java.io.Serializable {
         defaultSortOrder = getVDCRequestBean().getCurrentVDC().getDefaultSortOrder();
       }
         //Add site page
-        HttpServletRequest request = (HttpServletRequest) FacesContext.getCurrentInstance().getExternalContext().getRequest();
+      if (getVDCRequestBean().getCurrentVDC() == null){
+                  HttpServletRequest request = (HttpServletRequest) FacesContext.getCurrentInstance().getExternalContext().getRequest();
         Iterator iterator = request.getParameterMap().keySet().iterator();
-        iterator = request.getParameterMap().keySet().iterator();
         while (iterator.hasNext()) {
             Object key = (Object) iterator.next();
             if (key instanceof String && ((String) key).indexOf("dataverseType") != -1 && !request.getParameter((String) key).equals("")) {
@@ -358,19 +359,19 @@ public class OptionsPage extends VDCBaseBean  implements java.io.Serializable {
         }
         //manage dataverses page
         initAlphabeticFilter();
-        populateVDCUIList(false);
-        
+        populateVDCUIList(false);         
+      }
+       
         //add account page
         if ( isFromPage("AddAccountPage") ) {
             editUserService = (EditUserService) sessionGet(editUserService.getClass().getName());
-            user = editUserService.getUser();
-            
+            user = editUserService.getUser();            
         } else {
             editUserService.newUser();
             sessionPut( editUserService.getClass().getName(), editUserService);
             //sessionPut( (studyService.getClass().getName() + "."  + studyId.toString()), studyService);
             user = editUserService.getUser();
-            request = (HttpServletRequest)FacesContext.getCurrentInstance().getExternalContext().getRequest();
+           HttpServletRequest request = (HttpServletRequest)FacesContext.getCurrentInstance().getExternalContext().getRequest();
             if (request.getAttribute("studyId") != null) {
                 studyId = new Long(request.getAttribute("studyId").toString());
                 editUserService.setRequestStudyId(studyId);
@@ -384,55 +385,62 @@ public class OptionsPage extends VDCBaseBean  implements java.io.Serializable {
         if (studyId!=null) {
             study = studyService.getStudy(studyId);
         }
-        // Manage Controlled Vocab...
-        controlledVocabularyList = templateService.getNetworkControlledVocabulary();
-        //Manage Classifications
-        List list = (List)vdcGroupService.findAll();
-        itemBeansSize = list.size();
-        initClassifications();
-        //Edit export schedule page
-                VDCNetwork vdcNetwork = this.getVDCRequestBean().getVdcNetwork();
-        exportSchedulePeriod = vdcNetwork.getExportPeriod();
-        exportHourOfDay = vdcNetwork.getExportHourOfDay();
-        exportDayOfWeek = vdcNetwork.getExportDayOfWeek();
+        
+        if (getVDCRequestBean().getCurrentVDC() == null){
+            // Manage Controlled Vocab...
+            controlledVocabularyList = templateService.getNetworkControlledVocabulary();
+            //Manage Classifications
+            List list = (List)vdcGroupService.findAll();
+            itemBeansSize = list.size();
+            initClassifications();
+            //Edit export schedule page
+            VDCNetwork vdcNetwork = this.getVDCRequestBean().getVdcNetwork();
+            exportSchedulePeriod = vdcNetwork.getExportPeriod();
+            exportHourOfDay = vdcNetwork.getExportHourOfDay();
+            exportDayOfWeek = vdcNetwork.getExportDayOfWeek();
 
-        setSelectExportPeriod(loadSelectExportPeriod());       
-        //OAI Sets 
-                initSetData();
-                
-        //Network Settings
-        VDCNetwork thisVdcNetwork = vdcNetworkService.find(new Long(1));
-        networkName=thisVdcNetwork.getName();
-        this.setChkEnableNetworkAnnouncements(thisVdcNetwork.isDisplayAnnouncements()) ;
-        this.setNetworkAnnouncements( thisVdcNetwork.getAnnouncements());  
-        
-        //DV requirements page
-        setRequireDvaffiliation(thisVdcNetwork.isRequireDVaffiliation());
-        setRequireDvclassification(thisVdcNetwork.isRequireDVclassification());
-        setRequireDvdescription(thisVdcNetwork.isRequireDVdescription());
-        setRequireDvstudiesforrelease(thisVdcNetwork.isRequireDVstudiesforrelease());
-        
-        //NetworkPrivileges page
-                    privileges.init();
+            setSelectExportPeriod(loadSelectExportPeriod());       
+            //OAI Sets 
+            initSetData();
+
+            //Network Settings
+            VDCNetwork thisVdcNetwork = vdcNetworkService.find(new Long(1));
+            networkName=thisVdcNetwork.getName();
+            this.setChkEnableNetworkAnnouncements(thisVdcNetwork.isDisplayAnnouncements()) ;
+            this.setNetworkAnnouncements( thisVdcNetwork.getAnnouncements());  
+
+            //DV requirements page
+            setRequireDvaffiliation(thisVdcNetwork.isRequireDVaffiliation());
+            setRequireDvclassification(thisVdcNetwork.isRequireDVclassification());
+            setRequireDvdescription(thisVdcNetwork.isRequireDVdescription());
+            setRequireDvstudiesforrelease(thisVdcNetwork.isRequireDVstudiesforrelease());
+
+            //NetworkPrivileges page
+            privileges.init();
             sessionPut( getPrivileges().getClass().getName(),privileges);
-         
-        //Network Terms of Use
-        networkAccountTermsOfUse = getVDCRequestBean().getVdcNetwork().getTermsOfUse();
-        networkAccountTermsOfUseEnabled = getVDCRequestBean().getVdcNetwork().isTermsOfUseEnabled();
-        networkDepositTermsOfUse = getVDCRequestBean().getVdcNetwork().getDepositTermsOfUse();
-        networkDepositTermsOfUseEnabled = getVDCRequestBean().getVdcNetwork().isDepositTermsOfUseEnabled();
-        networkDownloadTermsOfUse = getVDCRequestBean().getVdcNetwork().getDownloadTermsOfUse();
-        networkDownloadTermsOfUseEnabled = getVDCRequestBean().getVdcNetwork().isDownloadTermsOfUseEnabled();
-        
-        //usergroups page
-        initGroupData();
-        //all user page
-        initUserData();
+
+            //Network Terms of Use
+            networkAccountTermsOfUse = getVDCRequestBean().getVdcNetwork().getTermsOfUse();
+            networkAccountTermsOfUseEnabled = getVDCRequestBean().getVdcNetwork().isTermsOfUseEnabled();
+            networkDepositTermsOfUse = getVDCRequestBean().getVdcNetwork().getDepositTermsOfUse();
+            networkDepositTermsOfUseEnabled = getVDCRequestBean().getVdcNetwork().isDepositTermsOfUseEnabled();
+            networkDownloadTermsOfUse = getVDCRequestBean().getVdcNetwork().getDownloadTermsOfUse();
+            networkDownloadTermsOfUseEnabled = getVDCRequestBean().getVdcNetwork().isDownloadTermsOfUseEnabled();
+        }
+
+        if (getVDCRequestBean().getCurrentVDC() == null){
+            //usergroups page  
+            initGroupData();
+            //all user page
+            //initUserData(); -- moved to click event on the tab
+            
+        }
         //end init
     }
     
-    private void setGuestBookResponses(){
-               //guestbook responses
+    public String initGuestBookResponses(){
+
+        //guestbook responses
         Date today = new Date();
         Calendar cal = new GregorianCalendar();
         cal.setTime(today);
@@ -494,6 +502,7 @@ public class OptionsPage extends VDCBaseBean  implements java.io.Serializable {
             
         }
         writeCSVString();
+        return "";
     }
     
     private String twitterVerifier;
@@ -1718,7 +1727,7 @@ public class OptionsPage extends VDCBaseBean  implements java.io.Serializable {
             getVDCRequestBean().setCurrentVDC(vdc);
             getVDCRenderBean().getFlash().put("successMessage", "Successfully updated general settings.");
             return "/admin/OptionsPage?faces-redirect=true&vdcId=" + vdc.getId();
-        } else {
+        } else {                   
             success = false;
             return null;
         }
@@ -2537,7 +2546,7 @@ public class OptionsPage extends VDCBaseBean  implements java.io.Serializable {
             this.vdcUIList.setPaginator(paginator);
         }
     }
-//Add Acount PAge
+//Add Acount Page
     private VDCUser user;
     public VDCUser getUser() {return this.user;}
     public void setUser(VDCUser user) {this.user = user;}
@@ -4196,23 +4205,17 @@ public class OptionsPage extends VDCBaseBean  implements java.io.Serializable {
         for (Iterator it = userGroups.iterator(); it.hasNext();) {
             UserGroup elem = (UserGroup) it.next();
             groups.add(new UserGroupsInfoBean(elem));
-        }
-       
+        }      
     }
     
-      public void deleteGroup(ActionEvent ae) {
+    public void deleteGroup(ActionEvent ae) {
         UserGroupsInfoBean bean=(UserGroupsInfoBean)dataTable.getRowData();
         UserGroup userGroup = bean.getGroup();
         groupService.remove(userGroup.getId());
-        initGroupData();  // Re-fetch list to reflect Delete action
-        
-        
+        initGroupData();  // Re-fetch list to reflect Delete action       
     }
-
     
-    // All user page
-        public void initUserData() {
-        
+    public void initUserData() {        
         userData = new ArrayList();
         List users = userService.findAll();
         for (Iterator it = users.iterator(); it.hasNext();) {
@@ -4220,9 +4223,9 @@ public class OptionsPage extends VDCBaseBean  implements java.io.Serializable {
             boolean defaultNetworkAdmin = elem.getNetworkRole()!=null
                     && elem.getId().equals(vdcNetworkService.find().getDefaultNetworkAdmin().getId());
             userData.add(new AllUsersDataBean(elem, defaultNetworkAdmin));
-            System.out.println("elem is "+elem+", elem id is "+elem.getId());
         }
     }
+    
     private List<edu.harvard.iq.dvn.core.web.networkAdmin.AllUsersDataBean> userData;
     public List<edu.harvard.iq.dvn.core.web.networkAdmin.AllUsersDataBean> getUserData() {return this.userData;}
     public void setUserData(List<edu.harvard.iq.dvn.core.web.networkAdmin.AllUsersDataBean> userData) {this.userData = userData;}

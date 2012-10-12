@@ -11,6 +11,7 @@
 </head>
 
 <body>
+
     <ui:composition template="/template.xhtml">                
         <ui:param name="pageTitle" value="#{bundlePageInfo.dvOptionsTitle} - #{VDCRequest.dataversePageTitle}"/>
         <ui:define name="metadata">
@@ -22,6 +23,14 @@
         </ui:define>
         <ui:define name="body">            
             <ice:form id="form1">
+            <script type="text/javascript">
+                // <![CDATA[
+                    function initGuestBookResponses(){
+                        document.getElementById('form1:initGuestBookResponse').click();
+                    }                   
+                // ]]>
+            </script>
+            <ice:commandButton visible="false" id="initGuestBookResponse" action="#{OptionsPage.initGuestBookResponses}"/>
                 <ice:inputHidden id="vdcId" value="#{VDCRequest.currentVDCId}"/>                    
                 <div class="dvn_section">
                     <ice:panelTabSet id="tabSet1" styleClass="dvnTabs" selectedIndex="#{(VDCSession.loginBean.networkAdmin or VDCSession.loginBean.curatorOrAbove or (not VDCRequest.currentVDC.harvestingDv and (VDCSession.loginBean.contributor or VDCRequest.currentVDC.allowRegisteredUsersToContribute))) ? 0 : 1}">
@@ -32,7 +41,8 @@
                             </div>
                         </ice:panelTab>
                         <!-- COLLECTIONS OPTIONS -->
-                        <ice:panelTab id="collections" label="Collections" url="/dvn#{VDCRequest.currentVDCURL}/faces/admin/OptionsPage.xhtml&amp;tab=collections" rendered="#{VDCSession.loginBean.networkAdmin or VDCSession.loginBean.curatorOrAbove or (VDCSession.loginBean.contributor or VDCRequest.currentVDC.allowRegisteredUsersToContribute)}">
+                        <ice:panelTab id="collections" label="Collections" url="/dvn#{VDCRequest.currentVDCURL}/faces/admin/OptionsPage.xhtml&amp;tab=collections" 
+                                      rendered="#{VDCSession.loginBean.networkAdmin or VDCSession.loginBean.curatorOrAbove or (VDCSession.loginBean.contributor or VDCRequest.currentVDC.allowRegisteredUsersToContribute)}">
                             <div jsfc="ice:panelGroup" id="layoutPanel3" panelLayout="flow">
                                 <ui:include src="/collection/ManageCollectionsPage.xhtml"></ui:include>
                             </div>
@@ -44,7 +54,8 @@
                             </div>
                         </ice:panelTab>
                         <!-- PERMISSIONS OPTIONS -->
-                        <ice:panelTab id="permissions" label="Permissions" url="/dvn#{VDCRequest.currentVDCURL}/faces/admin/OptionsPage.xhtml&amp;tab=permissions" rendered="#{VDCSession.loginBean.networkAdmin or VDCSession.loginBean.curatorOrAbove or (not VDCRequest.currentVDC.harvestingDv and (VDCSession.loginBean.contributor or VDCRequest.currentVDC.allowRegisteredUsersToContribute))}">
+                        <ice:panelTab id="permissions" label="Permissions" url="/dvn#{VDCRequest.currentVDCURL}/faces/admin/OptionsPage.xhtml&amp;tab=permissions" 
+                                      rendered="#{VDCSession.loginBean.networkAdmin or VDCSession.loginBean.curatorOrAbove or (not VDCRequest.currentVDC.harvestingDv and (VDCSession.loginBean.contributor or VDCRequest.currentVDC.allowRegisteredUsersToContribute))}">
                             <div jsfc="ice:panelGroup" id="layoutPanel5" panelLayout="flow">
                                 <ice:panelTabSet id="tabSetPermissions" styleClass="dvnTabs dvnSubTabs">
                                     <!-- PERMISSIONS -->
@@ -82,7 +93,7 @@
                                             </div> 
                                         </div>
                                     </ice:panelTab>
-                                    <ice:panelTab id="downloadDataSub" label="Download Tracking Data">
+                                    <ice:panelTab id="downloadDataSub" label="Download Tracking Data" onclick="initGuestBookResponses();" >
                                         <div jsfc="ice:panelGroup">
                                             <div jsfc="ice:panelGroup"  panelLayout="flow">
                                                 <ui:include src="GuestBookResponseDataPage.xhtml"></ui:include>

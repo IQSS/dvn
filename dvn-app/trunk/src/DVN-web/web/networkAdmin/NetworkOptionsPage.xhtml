@@ -21,6 +21,18 @@
         </ui:define> 
         <ui:define name="body">
             <ice:form id="form1" rendered="#{VDCRequest.currentVDC == null}">
+            <script type="text/javascript">
+                // <![CDATA[
+                    function initGuestBookResponses(){
+                        document.getElementById('form1:initGuestBookResponse').click();
+                    }
+                    function initUserData(){
+                        document.getElementById('form1:initUserData').click();
+                    } 
+                // ]]>
+            </script>
+            <ice:commandButton visible="false" id="initGuestBookResponse" action="#{OptionsPage.initGuestBookResponses}"/>
+            <ice:commandButton visible="false" id="initUserData" action="#{OptionsPage.initUserData}"/>
             <div class="dvn_section">
                 <ice:panelTabSet id="tabSet1" styleClass="dvnTabs">
                     <!-- DATAVERSE OPTIONS -->   
@@ -207,7 +219,7 @@
                                                 <ui:include src="/networkAdmin/NetworkPrivilegedUsersPage.xhtml"></ui:include>
                                             </div>  
                                     </ice:panelTab>
-                                    <ice:panelTab id="usersSub" label="Users">
+                                    <ice:panelTab id="usersSub" label="Users" onclick="initUserData();">
                                             <div jsfc="ice:panelGroup" panelLayout="flow">
                                                 <ui:include src="/networkAdmin/AllUsersPage.xhtml"></ui:include>
                                             </div>  
@@ -231,7 +243,7 @@
                                             </div>
                                         </div>
                                     </ice:panelTab>
-                                    <ice:panelTab id="downloadDataSub" label="Download Tracking Data">
+                                    <ice:panelTab id="downloadDataSub" label="Download Tracking Data" onclick="initGuestBookResponses();">
                                         <div jsfc="ice:panelGroup">
                                             <div jsfc="ice:panelGroup" panelLayout="flow">
                                                 <ui:include src="/admin/GuestBookResponseDataPage.xhtml"></ui:include>

@@ -30,7 +30,7 @@
                         <ice:outputText styleClass="errorMessageBlock" value="#{bundlePageInfo.invalidReleasedDVErrorMessage}" rendered="#{(OptionsPage.releasedWithoutRequiredStudies)}"/>
                     </td>
                   </tr>
-                  <div jsfc="ice:panelGroup" rendered="#{!PrivilegedUsersPage.vdc.harvestingDv}">
+                  <div jsfc="ice:panelGroup" rendered="#{!OptionsPage.vdc.harvestingDv}">
                       <tr>
                           <td>Contribution Settings</td>
                           <td>
@@ -116,11 +116,11 @@
                       <div jsfc="ice:panelGroup" rendered="#{empty OptionsPage.vdc.allowedGroups}" styleClass="dvnPermissionsEmpty">
                         <ice:outputText value="No groups have been given permission to access the dataverse."/>
                       </div>
-                      <ice:dataTable binding="#{PrivilegedUsersPage.groupTable}" cellpadding="0" cellspacing="0" width="100%"
+                      <ice:dataTable binding="#{OptionsPage.groupTable}" cellpadding="0" cellspacing="0" width="100%"
                                      columnClasses="vdcColPadded, vdcColPadded, vdcColPadded" headerClass="list-header-left"
                                      columnWidths="20%,60%,20%"
                                      rowClasses="list-row-even,list-row-odd" value="#{OptionsPage.vdc.allowedGroups}" var="currentRow"
-                                     rendered="#{! empty PrivilegedUsersPage.vdc.allowedGroups}">
+                                     rendered="#{! empty OptionsPage.vdc.allowedGroups}">
                         <ice:column>
                           <f:facet name="header">
                             <ice:outputText id="groups_tcol1" value="Group Name"/>
@@ -191,8 +191,8 @@
                     </td>
                     <td class="dvnPermissionsStackedCells">
                       <ice:outputText value="Username: "/>
-                      <ice:inputText id="fileUserName" binding="#{PrivilegedUsersPage.fileUserInputText}" value="#{PrivilegedUsersPage.addFileUserName}"/>
-                      <ice:commandButton value="Add" actionListener="#{PrivilegedUsersPage.addFileUser}"/>
+                      <ice:inputText id="fileUserName" binding="#{OptionsPage.fileUserInputText}" value="#{OptionsPage.addFileUserName}"/>
+                      <ice:commandButton value="Add" actionListener="#{OptionsPage.addFileUser}"/>
                       <ice:message styleClass="errorMessage" for="fileUserName"/>
                       <br/>
                       <ice:outputText styleClass="vdcHelpText" value="Enter username to allow an user access to restricted files."/>

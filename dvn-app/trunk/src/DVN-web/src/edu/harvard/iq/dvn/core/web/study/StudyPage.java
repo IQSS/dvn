@@ -1045,7 +1045,15 @@ public class StudyPage extends VDCBaseBean implements java.io.Serializable  {
         // this value is calculated from InetAddress.getCanonicalHostName when the AS is
         // installed.  asadmin then passes this value as a system property when the server
         // is started.
-        String myHost = System.getProperty(SystemPropertyConstants.HOST_NAME_PROPERTY);
+        //String myHost = System.getProperty(SystemPropertyConstants.HOST_NAME_PROPERTY);
+        // Actually, no, we don't necessarily want to use the "real" name of the host! 
+        // Not when it may be different from the public "front" name, such as in
+        // the IQSS production scenario - where you have the content switch/
+        // load balancer, with the public DNS name (dvn.iq.harvard.edu), and 2 
+        // or more "real" servers sitting behind it (dvn-3.hmdc.harvard.edu, 
+        // dvn-4.hmdc.harvard.edu, etc.)
+        
+        String myHost = System.getProperty("dvn.inetAddress"); 
                 
         return myHost; 
     }

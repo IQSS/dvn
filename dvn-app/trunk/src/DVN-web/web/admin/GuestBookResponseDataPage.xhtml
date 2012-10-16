@@ -51,8 +51,13 @@
                    function startDownload() {  
                         document.getElementById('form1:tabSet1:0:tabSetPermissions:0:downloadCSV').click();    
                    }
+                   function initGuestBookResponses(){
+                        document.getElementById('form1:initGuestBookResponse').click();
+                   }
 //]]>
                 </script>
+    
+            <ice:commandButton visible="false" id="initGuestBookResponse" action="#{OptionsPage.initGuestBookResponses}"/>
                 
                 <div jsfc="ice:panelGroup" styleClass="dvnManageTableTop" style="border:0;">
                   <div jsfc="ice:panelGroup" styleClass="dvn_margin12 dvnInformationMessage">
@@ -75,8 +80,11 @@
                         </div>
                         <div jsfc="ice:panelGroup" styleClass="dvnPaginatorFloatRight">
                             <div class="dvnGuestBookResponseDownloadCountBlock">
+                                <!-- check box for showing only most recent 30 days -->
+                                <ice:selectBooleanCheckbox value="#{OptionsPage.show30Days}" onchange="initGuestBookResponses();"   />
+                                <ice:outputText styleClass="dvnGuestBookResponse30DayLabel" value="Show results for most recent 30 days. (Uncheck to show all) "/> 
                                 <ice:outputText styleClass="dvnGuestBookResponseDwnldTtlLbl" value="Number of Downloads"/> 
-                                <ice:outputText value="#{bundlePageInfo.guestbookDataCountText} #{OptionsPage.fullCount}"/> 
+                                <ice:outputText rendered="#{!OptionsPage.show30Days}" value="#{bundlePageInfo.guestbookDataCountText} #{OptionsPage.fullCount}"/> 
                                 <ice:outputText value="#{bundlePageInfo.guestbookData30DayCountText} #{OptionsPage.thirtyDayCount}"/>
                             </div>
                             <div class="dvnGuestBookResponseDownloadPaginatorBlock">

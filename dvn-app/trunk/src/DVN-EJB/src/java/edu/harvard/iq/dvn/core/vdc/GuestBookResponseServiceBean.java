@@ -23,7 +23,9 @@ import edu.harvard.iq.dvn.core.admin.VDCUser;
 import edu.harvard.iq.dvn.core.study.Study;
 import edu.harvard.iq.dvn.core.study.StudyFile;
 import edu.harvard.iq.dvn.core.web.common.LoginBean;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import javax.ejb.Stateless;
@@ -46,6 +48,48 @@ public class GuestBookResponseServiceBean {
         return em.createQuery("select object(o) from GuestBookResponse as o order by o.responseTime desc").getResultList();
     }
     
+    public List<GuestBookResponse> findAllByVdc(Long vdcId) {
+        return em.createQuery("select object(o) from GuestBookResponse  o, Study s where o.study.id = s.id and s.owner.id = " + vdcId  +  " order by o.responseTime desc").getResultList();
+    }
+    
+    public List<GuestBookResponse> findAllWithin30Days() {
+        String beginTime;
+        String endTime;
+
+        Calendar cal = Calendar.getInstance();
+        cal.add(Calendar.DAY_OF_YEAR, -30);
+        beginTime = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(cal.getTime());  // Use yesterday as default value
+        cal.add(Calendar.DAY_OF_YEAR, 1);
+        endTime = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(cal.getTime());
+
+        String queryString = "select object(o) from GuestBookResponse as o where ";
+        queryString += " o.responseTime >='" + beginTime + "'";
+        queryString += " and o.responseTime<='" + endTime + "'";
+        queryString += "  order by o.responseTime desc";
+        Query query = em.createQuery(queryString);
+
+        return query.getResultList();
+    }
+
+    public List<GuestBookResponse> findByVdcWithin30Days(Long vdcId) {
+        String beginTime;
+        String endTime;
+
+        Calendar cal = Calendar.getInstance();
+        cal.add(Calendar.DAY_OF_YEAR, -30);
+        beginTime = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(cal.getTime());  // Use yesterday as default value
+        cal.add(Calendar.DAY_OF_YEAR, 1);
+        endTime = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(cal.getTime());
+
+        String queryString = "select object(o) from GuestBookResponse as o , Study s where o.study.id = s.id ";
+        queryString += " and s.owner.id = " + vdcId   ;
+        queryString += " and o.responseTime >='" + beginTime + "'";
+        queryString += " and o.responseTime<='" + endTime + "'";
+        queryString += "  order by o.responseTime desc";
+        Query query = em.createQuery(queryString);
+
+        return query.getResultList();
+    }
     
     private GuestBookQuestionnaire findNetworkQuestionniare(){
         GuestBookQuestionnaire questionniare = new GuestBookQuestionnaire();

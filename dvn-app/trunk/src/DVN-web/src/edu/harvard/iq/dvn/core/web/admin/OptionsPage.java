@@ -416,8 +416,7 @@ public class OptionsPage extends VDCBaseBean  implements java.io.Serializable {
             setRequireDvstudiesforrelease(thisVdcNetwork.isRequireDVstudiesforrelease());
 
             //NetworkPrivileges page
-            privileges.init();
-            sessionPut( getPrivileges().getClass().getName(),privileges);
+
 
             //Network Terms of Use
             networkAccountTermsOfUse = getVDCRequestBean().getVdcNetwork().getTermsOfUse();
@@ -438,6 +437,10 @@ public class OptionsPage extends VDCBaseBean  implements java.io.Serializable {
         //end init
     }
     
+    public void updateGuestBookResponses(ValueChangeEvent vce) {
+        initGuestBookResponses();
+    }
+       
     public String initGuestBookResponses(){
 
         //guestbook responses
@@ -446,8 +449,25 @@ public class OptionsPage extends VDCBaseBean  implements java.io.Serializable {
         cal.setTime(today);
         cal.add(Calendar.DAY_OF_MONTH, -30);
         Date today30 = cal.getTime();     
-        
-        guestBookResponsesAll = guestBookResponseServiceBean.findAll();           
+        if (getVDCRequestBean().getCurrentVDC() != null) {
+            vdcId = getVDCRequestBean().getCurrentVDC().getId();
+            if (!show30Days){
+                guestBookResponsesAll = guestBookResponseServiceBean.findAllByVdc(vdcId);
+            } else {
+                guestBookResponsesAll = guestBookResponseServiceBean.findAllWithin30Days();
+            }
+        } else {
+           if (!show30Days){
+               guestBookResponsesAll = guestBookResponseServiceBean.findAll(); 
+           } else {
+               guestBookResponsesAll = guestBookResponseServiceBean.findAllWithin30Days();
+           }
+           
+        } 
+        guestBookResponses.clear();
+        guestBookResponsesDisplay.clear();
+        fullCount = new Long(0);
+        thirtyDayCount = new Long(0);
         for (GuestBookResponse gbr : guestBookResponsesAll) {
             if (vdc !=null && gbr.getStudy().getOwner().equals(vdc)) {
                 guestBookResponses.add(gbr);
@@ -1381,6 +1401,9 @@ public class OptionsPage extends VDCBaseBean  implements java.io.Serializable {
     private List<GuestBookResponse> guestBookResponses = new ArrayList();
     private List<GuestBookResponseDisplay> guestBookResponsesDisplay = new ArrayList();
     private List<GuestBookResponse> guestBookResponsesAll = new ArrayList();
+    private boolean show30Days = true;
+    public boolean isShow30Days() {return show30Days;}
+    public void setShow30Days(boolean show30Days) {this.show30Days = show30Days;}
     private List<String> columnHeadings = new ArrayList();
     private List<Long> customQuestionIds = new ArrayList();
     private Long fullCount = new Long(0);
@@ -4224,6 +4247,11 @@ public class OptionsPage extends VDCBaseBean  implements java.io.Serializable {
                     && elem.getId().equals(vdcNetworkService.find().getDefaultNetworkAdmin().getId());
             userData.add(new AllUsersDataBean(elem, defaultNetworkAdmin));
         }
+    }
+    
+    public void initPrivilegedUserData() {        
+            privileges.init();
+            sessionPut( getPrivileges().getClass().getName(),privileges);
     }
     
     private List<edu.harvard.iq.dvn.core.web.networkAdmin.AllUsersDataBean> userData;

@@ -8,6 +8,11 @@
 
         <script type="text/javascript">
           // <![CDATA[
+
+            jQuery(document).ready(function(){
+                hideOptions();               
+            });
+            
            function getRadioValue( id ) {
               elements=document.getElementsByTagName("input");
               for(i=0; i < elements.length; i++) {

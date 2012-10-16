@@ -1,10 +1,11 @@
-<div xmlns:ui="http://java.sun.com/jsf/facelets"
-                      xmlns:h="http://java.sun.com/jsf/html"
-                      xmlns:f="http://java.sun.com/jsf/core"
-                      xmlns:jsp="http://java.sun.com/JSP/Page"
-                      xmlns:ice="http://www.icesoft.com/icefaces/component"
-                      xmlns:dvn="/WEB-INF/tlds/dvn-components"
-                      jsfc="ice:panelGroup">
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:jsp="http://java.sun.com/JSP/Page"
+      xmlns:ice="http://www.icesoft.com/icefaces/component">
 <head>
   <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
 </head>
@@ -95,7 +96,12 @@
         <ice:inputHidden id="vdcId" value="#{VDCRequest.currentVDCId}"/>
         <input type="hidden" name="pageName" value="EditHarvestSitePage"/>
         <ice:inputHidden id="harvestId" value="#{EditHarvestSitePage.harvestId}"/>
-
+        <div class="dvn_section">
+          <div class="dvn_sectionTitle">
+            <ice:outputText value="#{EditHarvestSitePage.pageTitle}"/>
+          </div>
+          <div class="dvn_sectionBox">
+            <div class="dvn_margin12">
               <div jsfc="ice:panelGroup" styleClass="dvnInformationMessage">
                 <div class="dvnMsgBlockContainer">
                   <ice:outputText value="#{bundlePageInfo.createHarvestingDvHelp}" escape="false"/>
@@ -385,7 +391,13 @@
                     </td>
                   </tr>
               </table>
-
+              <div class="dvnFormPadding dvnFormMargin">
+                  <ice:commandButton id="button1" binding ="#{EditHarvestSitePage.saveCommand}" value="Save" action="#{EditHarvestSitePage.save}"/>
+                <ice:commandButton id="button2" immediate="true" value="Cancel" action="#{EditHarvestSitePage.cancel}"/>
+              </div>
+            </div>
+          </div>
+        </div>
       </ice:form>
       <script type="text/javascript">
           // initial call to disable subsetting Restricted (if needed)
@@ -393,4 +405,8 @@
           updateScheduleInput();
           hideScheduling();
       </script>
-</div>
+    </ui:define>
+  </ui:composition>
+</body>
+</html>
+

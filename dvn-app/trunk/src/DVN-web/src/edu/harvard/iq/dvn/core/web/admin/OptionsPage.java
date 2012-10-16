@@ -522,6 +522,7 @@ public class OptionsPage extends VDCBaseBean  implements java.io.Serializable {
             
         }
         writeCSVString();
+        JavascriptContext.addJavascriptCall(getFacesContext(), "updateGuestBookTableSize();");
         return "";
     }
     

@@ -53,6 +53,12 @@
                    }
                    function initGuestBookResponses(){
                         document.getElementById('form1:initGuestBookResponse').click();
+
+                   }
+                   function updateGuestBookTableSize(){
+                        var $div = jQuery(".dvnGuestBookResponseTable");
+                        y = $div.outerHeight() + 17;
+                        jQuery(".dvnGuestBookResponseTableBlock").css("height", y);                       
                    }
 //]]>
                 </script>

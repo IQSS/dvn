@@ -19,6 +19,7 @@
             </div>
           </div>
           <ice:dataTable cellpadding="0" cellspacing="0" width="100%"
+                         binding="#{OptionsPage.dataTableUserGroups}"
                           id="dataTable1UserGroups"
                          styleClass="dvnManageTable" columnClasses="vdcColPadded, vdcColPadded" headerClass="list-header-left"
                          rowClasses="list-row-even,list-row-odd" value="#{OptionsPage.groups}" var="currentRow">
@@ -50,7 +51,7 @@
               <f:facet name="header">
                 <ice:outputText id="outputText10" value="Delete"/>
               </f:facet>
-              <ice:commandLink actionListener="#{UserGroupsPage.deleteGroup}">
+              <ice:commandLink actionListener="#{OptionsPage.deleteGroup}">
                 <ice:outputText value="Delete Group"/>
               </ice:commandLink>
             </ice:column>

@@ -2755,6 +2755,10 @@ public class OptionsPage extends VDCBaseBean  implements java.io.Serializable {
     public HtmlDataTable getDataTable() {return this.dataTable;}
     public void setDataTable(HtmlDataTable dataTable) {this.dataTable = dataTable;}
     
+    private HtmlDataTable dataTableUserGroups;
+    public HtmlDataTable getDataTableUserGroups() {return this.dataTableUserGroups;}
+    public void setDataTableUserGroups(HtmlDataTable dataTable) {this.dataTableUserGroups = dataTable;}
+    
     public List<SelectItem> loadSelectExportPeriod() {
         List selectItems = new ArrayList<SelectItem>();
         if (this.getVDCRequestBean().getVdcNetwork().getExportPeriod() == null
@@ -4233,7 +4237,7 @@ public class OptionsPage extends VDCBaseBean  implements java.io.Serializable {
     }
     
     public void deleteGroup(ActionEvent ae) {
-        UserGroupsInfoBean bean=(UserGroupsInfoBean)dataTable.getRowData();
+        UserGroupsInfoBean bean=(UserGroupsInfoBean)dataTableUserGroups.getRowData();
         UserGroup userGroup = bean.getGroup();
         groupService.remove(userGroup.getId());
         initGroupData();  // Re-fetch list to reflect Delete action       

@@ -60,14 +60,11 @@
                                 <ice:panelTabSet id="tabSetPermissions" styleClass="dvnTabs dvnSubTabs">
                                     <!-- PERMISSIONS -->
                                     <ice:panelTab id="permissionsSub" label="Permissions">
+                                           <ice:outputLink value="/dvn/faces/login/AddAccountPage.xhtml">
+                                                <ice:outputText value="Create New User"/>
+                                            </ice:outputLink>
                                             <div jsfc="ice:panelGroup"  panelLayout="flow">
                                                 <ui:include src="PrivilegedUsersPage.xhtml"></ui:include>
-                                            </div>  
-                                    </ice:panelTab>
-                                    <!-- Add Account-->
-                                    <ice:panelTab id="addAccountSub" label="Add Account">
-                                            <div jsfc="ice:panelGroup"  panelLayout="flow">
-                                                <ui:include src="/login/AddAccountPage.xhtml"></ui:include>
                                             </div>  
                                     </ice:panelTab>
                                     <!-- TERMS -->

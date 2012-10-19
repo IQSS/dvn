@@ -86,10 +86,11 @@
                                                 </ice:outputLink>
                                             </td>
                                             <td>
-                                                <ice:outputText styleClass="dvnOptionsTableNote" rendered="#{MainLayoutBean.googleAnalyticsKey != null }" value="#{bundlePageInfo.webStatsText}"/>
-                                                <ice:outputText styleClass="dvnOptionsTableNote" rendered="#{MainLayoutBean.googleAnalyticsKey == null }"
+                                                <ice:outputText rendered="#{MainLayoutBean.googleAnalyticsKey != null}" value="#{bundlePageInfo.webStatsText}"/>
+                                                <ice:graphicImage rendered="#{MainLayoutBean.googleAnalyticsKey == null}" value="/resources/images/icon_warning.18.png" styleClass="dvn_icon"/>
+                                                <ice:outputText rendered="#{MainLayoutBean.googleAnalyticsKey == null}"
                                                                 id="siteStatsText"
-                                                                value="NOTE: Google Analytics is not configured for this Dataverse Network"/>
+                                                                value=" Google Analytics is not configured for this Dataverse Network"/>
                                             </td>
                                         </tr>
                                         <tr>
@@ -97,7 +98,7 @@
                                                 <ice:outputText value="Dataverse Network Version"/>
                                             </td>
                                             <td>
-                                                <ice:outputText styleClass="dvnOptionsTableNote" value="#{VersionPage.versionNumber} build number #{VersionPage.bambooBuild}"/>
+                                                <ice:outputText value="#{VersionPage.versionNumber} build number #{VersionPage.bambooBuild}"/>
                                                 <ice:outputText value=" - "/>
                                                 <ice:outputLink value="http://thedata.org/book/software-license" target="_blank">
                                                     <ice:outputText value="License Information"/>
@@ -106,9 +107,9 @@
                                         </tr>
                                         <tr>
                                             <td class="dvnOptionsTableOption">
-                                                <ice:outputText value="Served by"/>
+                                                <ice:outputText value="Served By"/>
                                             </td>
-                                            <td><ice:outputText styleClass="dvnOptionsTableNote" value="#{VersionPage.serverName}"/></td>
+                                            <td><ice:outputText value="#{VersionPage.serverName}"/></td>
                                         </tr>
                                      </table>
                                      <div id="groupPanel6" class="dvnFormPadding dvnFormMargin">
@@ -135,13 +136,13 @@
                                                 <ice:outputText value="Sync Twitter"/>
                                             </td>
                                             <td>
-                                                <ice:outputText styleClass="dvnOptionsTableNote" value="Enable or disable automatic tweets"/>
                                                 <ice:commandLink action="#{OptionsPage.authorizeTwitter}" rendered="#{!OptionsPage.twitterEnabled}">
                                                      <ice:outputText value="Enable Twitter"/>
-                                                 </ice:commandLink>
-                                                 <ice:commandLink action="#{OptionsPage.removeTwitter}" rendered="#{OptionsPage.twitterEnabled}">
+                                                </ice:commandLink>
+                                                <ice:commandLink action="#{OptionsPage.removeTwitter}" rendered="#{OptionsPage.twitterEnabled}">
                                                      <ice:outputText value="Disable Twitter"/>
-                                                 </ice:commandLink>
+                                                </ice:commandLink>
+                                                <ice:outputText value=" syncing with your Dataverse to send automatic tweets."/>
                                             </td>
                                         </tr>
                                 </table>
@@ -260,7 +261,7 @@
                                 </ice:panelTabSet>
                             </div>
                         </ice:panelTab>                          
-                        <ice:panelTab id="utilties" label="Maintenance" url="/dvn#{VDCRequest.currentVDCURL}/faces/networkAdmin/NetworkOptionsPage.xhtml&amp;tab=utilities" rendered="#{VDCSession.loginBean.networkAdmin}">
+                        <ice:panelTab id="utilties" label="Utilities" url="/dvn#{VDCRequest.currentVDCURL}/faces/networkAdmin/NetworkOptionsPage.xhtml&amp;tab=utilities" rendered="#{VDCSession.loginBean.networkAdmin}">
                                 <div jsfc="ice:panelGroup" id="layoutPanelGroupUtilities" panelLayout="flow">
                                     <ice:panelTabSet id="tabSetUtilities" styleClass="dvnTabs dvnSubTabs">
                                         <ice:panelTab id="studyLockOptions" label="StudyLock"  rendered="#{VDCSession.loginBean.networkAdmin}">

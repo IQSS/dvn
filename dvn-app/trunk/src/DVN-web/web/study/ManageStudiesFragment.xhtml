@@ -58,8 +58,19 @@
                 </div>
                 <!-- STUDY OPTIONS -->
                 <ice:panelGrid cellpadding="0" cellspacing="0" border="0" columns="2"
-                               styleClass="dvnManageStudiesTableTop" columnClasses="dvn_StudyListTotals, dvnPaginatorWrap">
-                    <div jsfc="ice:panelGroup" id="groupPanel3" styleClass="dvn_StudyListTotals">
+                               styleClass="dvnManageTableControls" columnClasses="dvnManageTableControl, dvnPaginatorCol">
+                    <div jsfc="ice:panelGroup">
+                        <div class="dvnManageStudiesTableShowArchive">
+                            <ice:selectBooleanCheckbox id="showArchivedStudies" binding="#{ManageStudiesList.archiveCheckBox}" value="#{ManageStudiesList.showArchivedStudies}" valueChangeListener="#{ManageStudiesList.changeArchive}" onclick="submit()"/>
+                            <ice:outputText id="outputText3" value="#{bundle.showArchivedStudiesLabel}"/>
+                        </div>
+                    </div>
+                    <div jsfc="ice:panelGroup" styleClass="dvnManageTableCreateLink">
+                        <ice:outputLink value="/dvn#{VDCRequest.currentVDCURL}/faces/study/EditStudyPage.xhtml">
+                            <ice:outputText value="#{bundlePageInfo.createStudyTitle}"/>
+                        </ice:outputLink>
+                    </div>
+                    <div jsfc="ice:panelGroup" id="groupPanel3" styleClass="dvnManageTableControlPad">
                         <div jsfc="ice:panelGroup" styleClass="dvnManageStudiesTableFilter" rendered="#{ManageStudiesList.contributorFilterRendered}">
                             <ice:selectOneMenu id="studyScopeSelectMenu" binding="#{ManageStudiesList.filterDropdown}">
                                 <ice:message for="studyScopeSelectMenu" styleClass="errorMessage"/>
@@ -68,14 +79,32 @@
                             <ice:commandButton id="filterButton" value="Filter" actionListener="#{ManageStudiesList.filter}"/>
                             <ice:message styleClass="errorMessage" for="userName"/>
                         </div>
-                        <div class="dvnManageStudiesTableShowArchive">
-                            <ice:selectBooleanCheckbox id="showArchivedStudies" binding="#{ManageStudiesList.archiveCheckBox}" value="#{ManageStudiesList.showArchivedStudies}" valueChangeListener="#{ManageStudiesList.changeArchive}" onclick="submit()"/>
-                            <ice:outputText id="outputText3" value="#{bundle.showArchivedStudiesLabel}"/>
-                        </div>
-                        <div class="dvnManageStudiesTablePaginator">
-                            <ice:outputLink value="/dvn#{VDCRequest.currentVDCURL}/faces/study/EditStudyPage.xhtml" style="margin-right:2em;">
-                                <ice:outputText value="#{bundlePageInfo.createStudyTitle}"/>
-                            </ice:outputLink>
+                    </div>
+                    <div jsfc="ice:panelGroup" id="groupPanel4" styleClass="dvnPaginatorWrap">
+                        <ice:dataPaginator id="scroll_1" styleClass="dvnPaginatorFloatRight"
+                                           for="studyData" fastStep="3"
+                                           pageCountVar="pageCount" pageIndexVar="pageIndex"
+                                           paginator="true" paginatorMaxPages="4" renderFacetsIfSinglePage="false">
+                          <f:facet name="first">
+                            <ice:graphicImage url="/resources/icefaces/dvn_rime/css-images/arrow-first.gif"/>
+                          </f:facet>
+                          <f:facet name="last">
+                            <ice:graphicImage url="/resources/icefaces/dvn_rime/css-images/arrow-last.gif"/>
+                          </f:facet>
+                          <f:facet name="previous">
+                            <ice:graphicImage url="/resources/icefaces/dvn_rime/css-images/arrow-previous.gif"/>
+                          </f:facet>
+                          <f:facet name="next">
+                            <ice:graphicImage url="/resources/icefaces/dvn_rime/css-images/arrow-next.gif"/>
+                          </f:facet>
+                          <f:facet name="fastforward">
+                            <ice:graphicImage url="/resources/icefaces/dvn_rime/css-images/arrow-ff.gif"/>
+                          </f:facet>
+                          <f:facet name="fastrewind">
+                            <ice:graphicImage url="/resources/icefaces/dvn_rime/css-images/arrow-fr.gif"/>
+                          </f:facet>
+                        </ice:dataPaginator>
+                        <div class="dvnManageTableTotals">
                             <ice:dataPaginator id="scroll_2"
                                                binding="#{ManageStudiesList.paginator}"
                                                for="studyData"
@@ -85,40 +114,16 @@
                                                lastRowIndexVar="lastRowIndex"
                                                pageCountVar="pageCount"
                                                pageIndexVar="pageIndex">
-                                <ice:outputText value="1 Study" rendered="#{rowsCount == 1}" styleClass="dvn_totalsValue"/>
-                                <ice:outputText value="#{rowsCount} Studies" rendered="#{rowsCount > 1}" styleClass="dvn_totalsValue" />
-                                <ice:outputFormat rendered="#{rowsCount > displayedRowsCountVar}" value=", displaying {0} to {1}" styleClass="dvn_totalsValue">
+                                <ice:outputText value="Studies: " />
+                                <ice:outputText value="#{rowsCount}" styleClass="dvn_totalsValue" />
+                                <ice:outputText value=", displaying " rendered="#{rowsCount > displayedRowsCountVar}"/>
+                                <ice:outputFormat rendered="#{rowsCount > displayedRowsCountVar}" value="{0} to {1}" styleClass="dvn_totalsValue">
                                     <f:param value="#{firstRowIndex}"/>
                                     <f:param value="#{lastRowIndex}"/>
                                 </ice:outputFormat>
                             </ice:dataPaginator>
                         </div>
                     </div>
-                    <div jsfc="ice:panelGroup" id="groupPanel4" styleClass="dvnPaginatorWrap">
-                    <ice:dataPaginator id="scroll_1" styleClass="dvnPaginatorRight"
-                                       for="studyData" fastStep="3"
-                                       pageCountVar="pageCount" pageIndexVar="pageIndex"
-                                       paginator="true" paginatorMaxPages="4" renderFacetsIfSinglePage="false">
-                      <f:facet name="first">
-                        <ice:graphicImage url="/resources/icefaces/dvn_rime/css-images/arrow-first.gif"/>
-                      </f:facet>
-                      <f:facet name="last">
-                        <ice:graphicImage url="/resources/icefaces/dvn_rime/css-images/arrow-last.gif"/>
-                      </f:facet>
-                      <f:facet name="previous">
-                        <ice:graphicImage url="/resources/icefaces/dvn_rime/css-images/arrow-previous.gif"/>
-                      </f:facet>
-                      <f:facet name="next">
-                        <ice:graphicImage url="/resources/icefaces/dvn_rime/css-images/arrow-next.gif"/>
-                      </f:facet>
-                      <f:facet name="fastforward">
-                        <ice:graphicImage url="/resources/icefaces/dvn_rime/css-images/arrow-ff.gif"/>
-                      </f:facet>
-                      <f:facet name="fastrewind">
-                        <ice:graphicImage url="/resources/icefaces/dvn_rime/css-images/arrow-fr.gif"/>
-                      </f:facet>
-                    </ice:dataPaginator>
-                  </div>
                 </ice:panelGrid>
             </div>
             <ice:panelGrid cellpadding="0" cellspacing="0" width="100%">

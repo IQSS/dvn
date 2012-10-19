@@ -13,8 +13,13 @@
                   <ice:outputText value="#{bundlePageInfo.manageCollectionsHelp}" escape="false"/>
                 </div>
             </div>
-            <div jsfc="ice:panelGroup" styleClass="dvnManageTableTotals">
+            <div jsfc="ice:panelGroup" styleClass="dvnManageCollectionsTableTitle">
               <ice:outputText value="Study Collections"/>
+            </div>
+            <div jsfc="ice:panelGroup" styleClass="dvnManageTableCreateLink">
+              <ice:outputLink value="/dvn#{VDCRequest.currentVDCURL}/faces/collection/EditCollectionPage.xhtml">
+                <ice:outputText value="Create Study Collection"/>
+              </ice:outputLink>
             </div>
           </div>
           <ice:dataTable id="collectionsDataTbl" styleClass="dvnManageCollectionsTable"
@@ -62,12 +67,12 @@
             </ice:column>
           </ice:dataTable>
           <div class="dvnManageTableTop dvnManageSecondTable">
-            <div jsfc="ice:panelGroup" styleClass="dvnManageTableTotals">
+            <div jsfc="ice:panelGroup" styleClass="dvnManageCollectionsTableTitle">
               <ice:outputText value="Linked Collections"/>
             </div>
             <div jsfc="ice:panelGroup" styleClass="dvnManageTableCreateLink">
               <ice:outputLink id="hyperlinkAddLink" value="/dvn#{VDCRequest.currentVDCURL}/faces/collection/AddLinkPage.xhtml">
-                <ice:outputText id="hyperlinkTextAddLink" value="Add Collection Link"/>
+                <ice:outputText id="hyperlinkTextAddLink" value="Create Linked Collection"/>
               </ice:outputLink>
             </div>
           </div>

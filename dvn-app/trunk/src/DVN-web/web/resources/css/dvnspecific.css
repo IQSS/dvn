@@ -29,6 +29,8 @@ fieldset.dvnLoginPageAffiliate input.iceCmdBtn{display:block;float:right}
 .dvnOptionsTable{width:100%;text-align:left}
 .dvnOptionsTable td{padding:.5em 1em;border-bottom:1px solid lightgray}
 td.dvnOptionsTableHeader{padding:.5em 1em;background:gainsboro;color:gray;text-transform:uppercase}
+.dvnOptionsTable label {font-weight:normal;}
+.dvnOptionsTable .dvnInformationMessage p:first-child {margin-top:0;}
 .dvnOptionsTableOption{width:200px;padding-bottom:3px;padding-left:4px;padding-top:3px;text-align:left;vertical-align:top}
 span.dvnOptionsTableNote{font-size:90% !important}
 div.dvnOptionsTableLicense{padding-top:.5em}
@@ -105,6 +107,7 @@ td.vdcEditFilesColB .errorMessage{display:block;}
 .vdcEditStudyIconLegend{float:left;margin-left:2em}
 .dvnManageStudiesTableTop{width:100%}
 .dvnManageStudiesTableTop .dvnPaginatorWrap{padding:.5em 0}
+.dvn_ManageStudiesTotals {padding:.5em; text-align:right;}
 .dvnManageStudiesTableBlock{position:relative;width:100%;overflow:auto}
 .dvnManageStudiesTable{position:absolute;top:0;left:0;margin-top:0}
 .dvnManageStudiesTable span.iceOutTxt{font-size:90% !important}
@@ -118,7 +121,7 @@ td.vdcEditFilesColB .errorMessage{display:block;}
 .dvnManageStudiesTableStatus input.iceCmdBtn{font-size:90% !important}
 .dvnManageStudiesTableTop .dvn_StudyListTotals {overflow: hidden;}
 .dvnManageStudiesTableTop .dvnManageStudiesTableFilter {float: left;}
-.dvnManageStudiesTableShowArchive {float: left; padding-left: 1em;}
+.dvnManageStudiesTableShowArchive {float: left;}
 .dvnManageStudiesTablePaginator {float: right; text-align: right;}
 .dvnManageStudiesTableAction {white-space: nowrap;}
 .dvnManageStudiesTableAction a.iceCmdLnk, .dvnManageStudiesTableAction a.iceOutLnk {margin-left: .75em;}
@@ -159,6 +162,7 @@ span.iceOutTxt.dvnManageStudyTemplatesDefault {color:black;font-style:normal;fon
 .dvnAddFilesTableCategory select.iceSelOneMnu{display:inline}
 .dvnAddFilesInputContainer {overflow: hidden; border:1px solid #D9D9D9; border-width:1px 0; padding:1em 0; margin-bottom:1em;}
 /* MANAGE + EDIT COLLECTIONS */
+.dvnManageCollectionsTableTitle {float:left;padding:0.5em 0.25em;}
 .dvnManageCollectionsTable{width:100%;margin-top:0}
 .dvnManageCollectionsTableChild{padding-left:18px;background:url(/dvn/resources/icefaces/dvn_rime/css-images/tree_line_last_node.gif) 0 0 no-repeat}
 .dvnEditCollectionStudySelectedList{border:1px solid #dcdddf;margin:0;padding:0}
@@ -183,8 +187,9 @@ span.iceOutTxt.dvnManageStudyTemplatesDefault {color:black;font-style:normal;fon
 .dvnManageClassificationsTable{width:100%;margin:0}
 .dvnManageClassificationsTable img{border:0}
 .dvnManageClassificationsTableTop{border:1px solid #d9d9d9;border-bottom:0;background:#FFFFFF url(/dvn/resources/icefaces/dvn_rime/css-images/contentContainer_bg.gif) repeat-x left top;overflow:hidden}
-.dvnManageClassificationsTableTotals{float:left;width:75%;padding:.5em .25em;text-align:left}
-.dvnManageClassificationsTableCreateLink{float:right;width:20%;padding:.5em .25em;text-align:right}
+.dvnManageClassificationsTableTotals{padding:0 .5em .5em .5em; text-align:right;color:#526F76;}
+.dvnManageClassificationsTableCreateLink{padding:0 .5em .5em .5em; text-align:right}
+.dvnManageClassificationsTableCreateLink a.iceOutLnk {font-weight:bold;color:#C55B28;}
 .dvnMngClssTableSelect{width:1%}
 .dvnMngClssTableName{width:40%}
 .dvnMngClssTableDesc{width:35%}
@@ -247,10 +252,7 @@ span.dvnAddClassificationDvNotReleased{background:url(/dvn/resources/images/icon
 .dvnEditGuestbookCustomQuestions.iceDatTbl tr tr, .dvnGuestbookCustomQuestions.iceDatTbl tr tr {border:0;}
 .dvnGuestbookCustomQuestionInnerBlock {margin-left:6.25em;}
 .dvnGuestBookResponseTableBlock{position:relative;width:100%;overflow:auto}
-.dvnGuestBookResponseDownloadCountBlock {margin-right:1em; float:left; text-align:right;}
 .dvnGuestBookResponseDwnldTtlLbl {font-weight:bold;}
-.dvnGuestBookResponseDownloadCountBlock span.iceOutTxt{margin-right:1em;}
-.dvnGuestBookResponseDownloadPaginatorBlock {float:left; text-align:right;}
 .dvnGuestBookResponseTable{position:absolute;top:0;left:0;margin-top:0}
 .dvnGuestBookResponseTable th span.dvnGuestbookStudyTitleHeader, .dvnGuestBookResponseTable th span.dvnGuestbookTimeHeader, .dvnGuestBookResponseTable th span.dvnGuestbookCustomResponseHeader{min-width:200px;display:block;}
 .dvnGuestBookResponseTableColHdr1, .dvnGuestBookResponseTableColHdr2, .dvnGuestBookResponseTableCol1, .dvnGuestBookResponseTableCol2 {white-space:nowrap;}

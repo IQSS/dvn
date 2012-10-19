@@ -73,7 +73,7 @@ a.dvnHmpgGroupCreateLink:link,a.dvnHmpgGroupCreateLink:visited,a.dvnHmpgGroupCre
 .dvnHmpgGroupTableWrap{border:1px solid #dcdddf;border-bottom:0}
 .dvnHmpgGroupTableTop{width:100%}
 .dvnHmpgGroupTableTop td.dvnHmpgGroupTableTopCol{padding-bottom:.5em}
-.dvnHmpgGroupAlphaSortBlock{margin:.5em .5em 0;overflow:auto;width:100%}
+.dvnHmpgGroupAlphaSortBlock{margin:1em .5em;overflow:auto;width:100%}
 .dvnHmpgGroupTotals{padding:0 .5em;text-align:left}
 .dvnHmpgGroupDataTable{margin:0;width:100%}
 .dvnHmpgGroupDataTable span{font-size:90% !important}

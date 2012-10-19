@@ -6,11 +6,6 @@
                       xmlns:dvn="/WEB-INF/tlds/dvn-components"
                       jsfc="ice:panelGroup">
          
-              <!-- <div jsfc="ice:panelGroup" styleClass="dvnInformationMessage">
-                <div class="dvnMsgBlockContainer">
-                  
-                </div>
-              </div> -->
               <ice:panelGrid cellpadding="0" cellspacing="0" columns="2"
                              columnClasses="dvnOptionsTableOption, vdcColPadded" id="gridPanel2" styleClass="dvnOptionsTable">
                 <div jsfc="ice:panelGroup">
@@ -20,6 +15,12 @@
                     </ice:outputLabel>
                 </div>
                 <div jsfc="ice:panelGroup">
+                  <div jsfc="ice:panelGroup" styleClass="dvnInformationMessage">
+                        <div class="dvnMsgBlockContainer">
+                          <ice:outputText value="#{bundlePageInfo.editDvnNotificationsHelp}" escape="false" rendered="#{VDCRequest.currentVDCId == null}"/>
+                          <ice:outputText value="#{bundlePageInfo.editDvNotificationsHelp}" escape="false" rendered="#{VDCRequest.currentVDCId != null}"/>
+                        </div>
+                  </div>
                   <ice:inputText onkeypress="if (window.event) return processEvent('', 'editContactUsForm:btnSave'); else return processEvent('editContactUsForm:btnSave');"
                                  id="contactUsEmail"
                                  size="50"
@@ -31,8 +32,6 @@
                   <ice:message id="emailAddressMsg"
                                for="contactUsEmail"
                                styleClass="errorMessage"/>
-                  <ice:outputText value="#{bundlePageInfo.editDvnNotificationsHelp}" escape="false" rendered="#{VDCRequest.currentVDCId == null}"/>
-                  <ice:outputText value="#{bundlePageInfo.editDvNotificationsHelp}" escape="false" rendered="#{VDCRequest.currentVDCId != null}"/>
                 </div>
               </ice:panelGrid>
               <!-- <div id="groupPanel6" class="dvnFormPadding dvnFormMargin">

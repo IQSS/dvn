@@ -13,15 +13,16 @@
                 </div>
               </div>
             <ice:panelGrid cellpadding="0" cellspacing="0" border="0" columns="2" width="100%"
-                           columnClasses="dvn_StudyListTotals, dvnPaginatorWrap">
-              <div jsfc="ice:panelGroup" styleClass="dvn_StudyListTotals">
+                           columnClasses="dvn_StudyListTotals, dvnPaginatorWrap" rendered="#{!empty OptionsPage.commentsForReview}">
+              <div jsfc="ice:panelGroup" styleClass="dvnManageTableTotals">
                 <ice:dataPaginator id="scroll_2" for="commentReviewData"
                                    rowsCountVar="rowsCount" displayedRowsCountVar="displayedRowsCountVar"
                                    firstRowIndexVar="firstRowIndex" lastRowIndexVar="lastRowIndex"
                                    pageCountVar="pageCount" pageIndexVar="pageIndex">
-                 <ice:outputText value="1 Comment for Review" rendered="#{rowsCount == 1}" styleClass="dvn_totalsValue" />
-                  <ice:outputText value="#{rowsCount} Comments for Review" rendered="#{rowsCount > 1}" styleClass="dvn_totalsValue" />
-                  <ice:outputFormat rendered="#{rowsCount > displayedRowsCountVar}" value=", displaying {0} to {1}" styleClass="dvn_totalsValue">
+                 <ice:outputText value="Comments for Review: " />
+                  <ice:outputText value="#{rowsCount}" styleClass="dvn_totalsValue" />
+                 <ice:outputText rendered="#{rowsCount > displayedRowsCountVar}" value=", displaying " />
+                  <ice:outputFormat rendered="#{rowsCount > displayedRowsCountVar}" value="{0} to {1}" styleClass="dvn_totalsValue">
                     <f:param value="#{firstRowIndex}"/>
                     <f:param value="#{lastRowIndex}"/>
                   </ice:outputFormat>
@@ -54,8 +55,10 @@
             </ice:panelGrid>
           </div>
           <div jsfc="ice:panelGroup">
-              <ice:dataTable 
-                             cellpadding="0" cellspacing="0" width="100%"
+              <div jsfc="ice:panelGroup" styleClass="dvnManageTableEmpty" rendered="#{empty OptionsPage.commentsForReview}">
+                  <ice:outputText value="There are no study comments flagged for review."/>
+              </div>
+              <ice:dataTable cellpadding="0" cellspacing="0" width="100%"  rendered="#{!empty OptionsPage.commentsForReview}"
                              styleClass="dvnManageTable dvnCommentReviewTable"
                              headerClass="list-header-left vdcColPadded" id="commentReviewData"
                              rows="10"

@@ -64,9 +64,6 @@
                                 <ice:panelTabSet id="tabSetPermissions" styleClass="dvnTabs dvnSubTabs">
                                     <!-- PERMISSIONS -->
                                     <ice:panelTab id="permissionsSub" label="Permissions">
-                                           <ice:outputLink value="/dvn/faces/login/AddAccountPage.xhtml">
-                                                <ice:outputText value="Create User"/>
-                                            </ice:outputLink>
                                             <div jsfc="ice:panelGroup"  panelLayout="flow">
                                                 <ui:include src="PrivilegedUsersPage.xhtml"></ui:include>
                                             </div>  
@@ -112,7 +109,7 @@
                                     <ice:panelTabSet id="tabSet3" styleClass="dvnTabs dvnSubTabs">
                                         <!-- GENERAL -->
                                         <ice:panelTab id="generalSub" label="General">
-                                            <div jsfc="ice:panelGroup" styleClass="dvnInformationMessage" style="margin-top:0;">
+                                            <div jsfc="ice:panelGroup" styleClass="dvnInformationMessage">
                                                 <div class="dvnMsgBlockContainer">
                                                     <p>Release your dataverse, edit the settings, enable the homepage description, classify your dataverse. Save your changes before navigating to another page or tab, or you will lose them.</p>
                                                 </div>

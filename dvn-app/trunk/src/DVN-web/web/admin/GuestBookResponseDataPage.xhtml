@@ -65,7 +65,7 @@
     
             <ice:commandButton visible="false" id="initGuestBookResponse" action="#{OptionsPage.initGuestBookResponses}"/>
                 
-                <div jsfc="ice:panelGroup" styleClass="dvnManageTableTop" style="border:0;">
+                <div jsfc="ice:panelGroup" styleClass="dvnManageTableTop">
                   <div jsfc="ice:panelGroup" styleClass="dvn_margin12 dvnInformationMessage">
                     <div class="dvnMsgBlockContainer">
                         <p>
@@ -75,26 +75,24 @@
                   </div>
                     
                     <ice:panelGrid cellpadding="0" cellspacing="0" border="0" columns="2" id="gridPanelResponse"
-                                   styleClass="dvnHmpgGroupTableTop"
-                                   columnClasses="dvnHmpgGroupTotals, dvnPaginatorWrap">
-                        <div jsfc="ice:panelGroup">
+                                   styleClass="dvnManageTableControls"
+                                   columnClasses="dvnManageTableControl, dvnPaginatorCol">
+                        <div jsfc="ice:panelGroup" styleClass="dvnManageTableExportButton">
                             <ice:commandButton visible="true" value="Export Results" id="exportResults" type="submit" onclick="startDownload();" />
                             <ice:outputResource label="Export" type="button" style="display:none;"
                                                 action="#{OptionsPage.tousave_action}"
                                                 id="downloadCSV" mimeType="text/comma-separated-values"
                                                 resource="#{OptionsPage.downloadCSV}" shared="false"/>
                         </div>
-                        <div jsfc="ice:panelGroup" styleClass="dvnPaginatorFloatRight">
-                            <div class="dvnGuestBookResponseDownloadCountBlock">
-                                <!-- check box for showing only most recent 30 days -->
-                                <ice:selectBooleanCheckbox value="#{OptionsPage.show30Days}" onchange="initGuestBookResponses();"   />
-                                <ice:outputText styleClass="dvnGuestBookResponse30DayLabel" value="Show results for most recent 30 days. (Uncheck to show all) "/> 
-                                <ice:outputText styleClass="dvnGuestBookResponseDwnldTtlLbl" value="Number of Downloads"/> 
-                                <ice:outputText rendered="#{!OptionsPage.show30Days}" value="#{bundlePageInfo.guestbookDataCountText} #{OptionsPage.fullCount}"/> 
-                                <ice:outputText value="#{bundlePageInfo.guestbookData30DayCountText} #{OptionsPage.thirtyDayCount}"/>
-                            </div>
-                            <div class="dvnGuestBookResponseDownloadPaginatorBlock">
-                            <ice:dataPaginator id="scroll_1" styleClass="dvnPaginatorRight" for="guestBookResponseData" fastStep="3"
+                        <div jsfc="ice:panelGroup">
+                            <!-- EMPTY -->
+                        </div>
+                        <div jsfc="ice:panelGroup" styleClass="dvnManageTableControlPad">
+                            <ice:selectBooleanCheckbox value="#{OptionsPage.show30Days}" onchange="initGuestBookResponses();"   />
+                            <ice:outputText styleClass="dvnGuestBookResponse30DayLabel" value="Show results for most recent 30 days."/>
+                        </div>
+                        <div jsfc="ice:panelGroup" styleClass="dvnPaginatorWrap">
+                            <ice:dataPaginator id="scroll_1" styleClass="dvnPaginatorFloatRight" for="guestBookResponseData" fastStep="3"
                                    pageCountVar="pageCount" pageIndexVar="pageIndex"
                                    paginator="true" paginatorMaxPages="4" renderFacetsIfSinglePage="false">
                               <f:facet name="first">
@@ -116,15 +114,20 @@
                                 <ice:graphicImage url="/resources/icefaces/dvn_rime/css-images/arrow-fr.gif"/>
                               </f:facet>
                             </ice:dataPaginator>
+                            <div class="dvnManageTableTotals">
+                                <ice:outputText styleClass="dvnGuestBookResponseDwnldTtlLbl" value="Downloads "/> 
+                                <ice:outputText value="#{bundlePageInfo.guestbookDataCountText} "/> 
+                                <ice:outputText value="#{OptionsPage.fullCount}" styleClass="dvn_totalsValue"/> 
+                                <ice:outputText value=" | "/>
+                                <ice:outputText value="#{bundlePageInfo.guestbookData30DayCountText} "/>
+                                <ice:outputText value="#{OptionsPage.thirtyDayCount}" styleClass="dvn_totalsValue"/>
                             </div>
                         </div>
                     </ice:panelGrid>
                 </div>
                 
                 <ice:panelGrid cellpadding="0" cellspacing="0" width="100%">
-                    
                     <div jsfc="ice:panelGroup" styleClass="dvnGuestBookResponseTableBlock">
-
                       <ice:dataTable cellpadding="0" cellspacing="0" width="100%" 
                                      id="guestBookResponseData" styleClass="dvnGuestBookResponseTable"
                                      rows="10" value="#{OptionsPage.guestBookResponsesDisplay}" var="guestBookResponseDisplay">
@@ -223,7 +226,6 @@
                             </f:facet>
                         </ice:columns>
                       </ice:dataTable>
-
                     </div>
                 </ice:panelGrid>
                 

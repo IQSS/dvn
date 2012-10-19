@@ -18,7 +18,7 @@
                     <ice:outputText value="#{bundlePageInfo.manageDvsHelp}" escape="false"/>
                 </div>
               </div>
-              <div jsfc="ice:panelGroup" styleClass="dvnHmpgGroupAlphaSortBlock" rendered="#{VDCRequest.currentVDC == null}">
+              <div jsfc="ice:panelGroup" styleClass="dvnManageTableControls" rendered="#{VDCRequest.currentVDC == null}">
                     <ul class="dvnAlphaBrowseBlock">
                         <ui:fragment rendered="#{(OptionsPage.vdcUIList.alphaCharacter == '' or OptionsPage.vdcUIList.alphaCharacter == null)}">
                             <li class="dvnAlphaBrowseSelected" onmouseover="this.className='dvnAlphaBrowseHover'" onmouseout="this.className='dvnAlphaBrowseSelected'">
@@ -56,25 +56,27 @@
                             </ui:fragment>
                         </ui:repeat>
                     </ul>
+                    <div jsfc="ice:panelGroup" styleClass="dvnManageTableCreateLink">
+                        <ice:outputLink value="/dvn/faces/site/AddSitePage.xhtml">
+                          <ice:outputText value="Create Dataverse"/>
+                        </ice:outputLink>
+                    </div>
                 </div>
                 <ice:panelGrid cellpadding="0" cellspacing="0" border="0" columns="2" id="gridPanel2"
-                               styleClass="dvnHmpgGroupTableTop"
-                               columnClasses="dvnHmpgGroupTotals, dvnPaginatorWrap">
+                               styleClass="dvnManageTableControls2"
+                               columnClasses="dvnManageTableControlPad, dvnPaginatorCol">
                     <div jsfc="ice:panelGroup">
                         <img class="dvn_icon" src="/dvn/resources/images/icon_warning.18.png" alt=""/>
                         <ice:outputText value=" Indicates a dataverse is not released."/>
                     </div>
-                    <div jsfc="ice:panelGroup" styleClass="dvnPaginatorFloatRight">
-                        <ice:outputLink value="/dvn/faces/site/AddSitePage.xhtml">
-                          <ice:outputText value="Create New Dataverse"/>
-                        </ice:outputLink>
+                    <div jsfc="ice:panelGroup" styleClass="dvnPaginatorWrap">
                         <ice:dataPaginator for="dataverseListManage"
                                            binding="#{OptionsPage.paginator}"
                                            id="dataScroller"
                                            paginator="true" fastStep="3"
                                            paginatorMaxPages="4"
                                            renderFacetsIfSinglePage="false"
-                                           styleClass="dvnPaginatorRight">
+                                           styleClass="dvnPaginatorFloatRight">
                             <f:facet name="first">
                                 <ice:graphicImage url="/resources/icefaces/dvn_rime/css-images/arrow-first.gif" title="First Page"/>
                             </f:facet>
@@ -94,6 +96,13 @@
                                 <ice:graphicImage url="/resources/icefaces/dvn_rime/css-images/arrow-last.gif" title="Previous"/>
                             </f:facet>
                         </ice:dataPaginator>
+                        <div class="dvnManageTableTotals">
+                                <ice:outputText value="Dataverses: "/>
+                                <ice:outputText value="##" styleClass="dvn_totalsValue"/>
+                                <ice:outputText value=" | "/>
+                                <ice:outputText value="Unreleased: "/>
+                                <ice:outputText value="##" styleClass="dvn_totalsValue"/>
+                        </div>
                     </div>
                 </ice:panelGrid>
             </div>
@@ -105,7 +114,7 @@
                                columnWidths="20%,20%,10%,10%,10%,10%,10%,10%,10%"
                                headerClass="groupRow"
                                rendered="#{!empty(OptionsPage.vdcUIList.vdcUIList)}"
-                               rowClasses="evenRow oddRow" rows="10"
+                               rowClasses="evenRow oddRow" rows="6"
                                styleClass="dvnManageTable"
                                sortColumn="#{OptionsPage.vdcUIList.sortColumnName}"
                                sortAscending="#{OptionsPage.vdcUIList.ascending}"

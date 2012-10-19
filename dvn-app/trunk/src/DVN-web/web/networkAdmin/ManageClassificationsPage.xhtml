@@ -13,13 +13,14 @@
                 </div>
             </div>
             
-            <div jsfc="ice:panelGroup" styleClass="dvnManageClassificationsTableTotals">
-              <ice:outputText value="Classifications: #{manageClassificationsPage.itemBeansSize}"/>
-            </div>
             <div jsfc="ice:panelGroup" styleClass="dvnManageClassificationsTableCreateLink">
               <ice:outputLink value="/dvn#{VDCRequest.currentVDCURL}/faces/networkAdmin/AddClassificationsPage.xhtml">
                 <ice:outputText id="createClassification" value="Create Classification"/>
               </ice:outputLink>
+            </div>
+            <div jsfc="ice:panelGroup" styleClass="dvnManageClassificationsTableTotals">
+              <ice:outputText value="Classifications: "/>
+              <ice:outputText value="#{manageClassificationsPage.itemBeansSize}" styleClass="dvn_totalsValue"/>
             </div>
           </div>
           <div jsfc="ice:panelGroup" styleClass="dvnManageTableEmpty" rendered="#{OptionsPage.itemBeansSize == 0}">

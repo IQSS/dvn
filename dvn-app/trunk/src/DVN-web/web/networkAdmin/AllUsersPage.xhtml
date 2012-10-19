@@ -12,16 +12,23 @@
                 </div>
               </div>
               <ice:panelGrid cellpadding="0" cellspacing="0" border="0" columns="2"
-                               styleClass="dvnManageStudiesTableTop" columnClasses="dvn_StudyListTotals, dvnPaginatorWrap">
+                               styleClass="dvnManageTableControls" columnClasses="dvnManageTableControl, dvnPaginatorCol">
                     <div jsfc="ice:panelGroup">
+                            <!-- EMPTY -->
+                    </div>
+                    <div jsfc="ice:panelGroup" styleClass="dvnManageTableCreateLink">
                             <ice:outputLink value="/dvn/faces/login/AddAccountPage.xhtml">
-                              <ice:outputText value="Create New User"/>
+                              <ice:outputText value="Create User"/>
                             </ice:outputLink>
+                    </div>
+                    <div jsfc="ice:panelGroup">
+                            <!-- EMPTY -->
                     </div>
                     <div jsfc="ice:panelGroup" styleClass="dvnPaginatorWrap">
                         <ice:dataPaginator for="allUsersList"
                                            binding="#{OptionsPage.paginator}"
                                            id="dataScroller"
+                                           styleClass="dvnPaginatorFloatRight"
                                            paginator="true" fastStep="3"
                                            paginatorMaxPages="4"
                                            renderFacetsIfSinglePage="false">
@@ -44,6 +51,11 @@
                                 <ice:graphicImage url="/resources/icefaces/dvn_rime/css-images/arrow-last.gif" title="Previous"/>
                             </f:facet>
                         </ice:dataPaginator>
+                        
+                        <div class="dvnManageTableTotals">
+                                <ice:outputText value="Users: " />
+                                <ice:outputText value="#" styleClass="dvn_totalsValue" />
+                        </div>
                     </div>
               </ice:panelGrid>
           </div>

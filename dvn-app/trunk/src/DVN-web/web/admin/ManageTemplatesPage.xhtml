@@ -13,15 +13,15 @@
                 </div>
             </div>
             <ice:panelGrid cellpadding="0" cellspacing="0" border="0" columns="2" id="gridPanel2templates"
-                               styleClass="dvnHmpgGroupTableTop"
-                               columnClasses="dvnHmpgGroupTotals, dvnPaginatorWrap">
-                <div jsfc="ice:panelGroup">
+                               styleClass="dvnManageTableControls"
+                               columnClasses="dvnManageTableControl, dvnPaginatorCol">
+                <div jsfc="ice:panelGroup" styleClass="dvnManageTableControls">
                     <img class="dvn_icon" src="/dvn/resources/images/icon_warning.18.png" alt=""/>
                     <ice:outputText value=" Indicates a template is disabled."/>
                 </div>
-                <div jsfc="ice:panelGroup" styleClass="dvn_right">
-                    <ice:outputLink value="/dvn/faces/study/TemplateFormPage.xhtml" rendered="#{VDCRequest.currentVDCId==null}">
-                        <ice:outputText value="Create New Network Template"/>
+                <div jsfc="ice:panelGroup" styleClass="dvnManageTableCreateLink" rendered="#{VDCRequest.currentVDCId==null}">
+                    <ice:outputLink value="/dvn/faces/study/TemplateFormPage.xhtml">
+                        <ice:outputText value="Create Network Template"/>
                     </ice:outputLink>
                 </div>
             </ice:panelGrid>

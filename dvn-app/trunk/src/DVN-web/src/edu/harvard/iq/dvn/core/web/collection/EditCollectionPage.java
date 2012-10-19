@@ -352,17 +352,19 @@ public class EditCollectionPage extends VDCBaseBean implements java.io.Serializa
         }
 
         if (getVDCRequestBean().getCurrentVDC() != null) {
-            return "/admin/OptionsPage?faces-redirect=true" + getNavigationVDCSuffix();
+            getVDCRenderBean().getFlash().put("successMessage", "Successfully updated collection.");
+            return "/admin/OptionsPage?faces-redirect=true" + getNavigationVDCSuffix() + "&tab=collections";
         } else {
-            return "/networkAdmin/NetworkOptionsPage.xhtml?faces-redirect=true";
+            return "/networkAdmin/NetworkOptionsPage.xhtml?faces-redirect=true&tab=collections";
         }
     }
 
     public String cancel_action() {
         if (getVDCRequestBean().getCurrentVDC() != null) {
-            return "/admin/OptionsPage?faces-redirect=true" + getNavigationVDCSuffix();
+            getVDCRenderBean().getFlash().put("successMessage", "Successfully updated collection.");
+            return "/admin/OptionsPage?faces-redirect=true" + getNavigationVDCSuffix() + "&tab=collections" ;
         } else {
-            return "/networkAdmin/NetworkOptionsPage.xhtml?faces-redirect=true";
+            return "/networkAdmin/NetworkOptionsPage.xhtml?faces-redirect=true&tab=collections";
         }
     }
 

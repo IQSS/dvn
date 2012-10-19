@@ -117,7 +117,6 @@ public class EditLockssConfigPage extends VDCBaseBean implements java.io.Seriali
             licenseTypes.put(licenseType.getId(), licenseType);
         }
         initCollection();
-        JavascriptContext.addJavascriptCall(getFacesContext(), "hideOptions();");
     }
     
     public List<SelectItem> getSelectOAISets() {

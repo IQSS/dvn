@@ -435,9 +435,7 @@ public class OptionsPage extends VDCBaseBean  implements java.io.Serializable {
             //initUserData(); -- moved to click event on the tab
             
         }        
-        System.out.print("selectHarvestType " + selectHarvestType);
         initSelectedTabIndex();
-        JavascriptContext.addJavascriptCall(getFacesContext(), "hideOptions();");
         //end init
     }
     
@@ -483,11 +481,6 @@ public class OptionsPage extends VDCBaseBean  implements java.io.Serializable {
         initGuestBookResponses();
     }
     
-    public String hideOptions(){
-        System.out.print("in hide options on optionspage.java");
-        JavascriptContext.addJavascriptCall(getFacesContext(), "hideOptionsPage();");
-        return "";
-    }
        
     public String initGuestBookResponses(){
 
@@ -3441,7 +3434,6 @@ public class OptionsPage extends VDCBaseBean  implements java.io.Serializable {
     }
     
     public List<SelectItem> getHarvestDVs() {
-        System.out.print("in get Harvest DVs");
         List harvestDVSelectItems = new ArrayList<SelectItem>();
         Iterator iter = harvestingDataverseService.findAll().iterator();
         while (iter.hasNext()) {

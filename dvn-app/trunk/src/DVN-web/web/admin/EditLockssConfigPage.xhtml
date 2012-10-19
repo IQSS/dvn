@@ -9,8 +9,11 @@
         <script type="text/javascript">
           // <![CDATA[
 
-            jQuery(document).ready(function(){
-                hideOptions();               
+            jQuery(document).ready(function(){ 
+                hideOptions(); 
+                jQuery('harvestType1').on('focus', function(){ hideOptions(); });
+                jQuery('harvestType2').on('focus', function(){ hideOptions(); });
+                jQuery(document).on('focus', function(){ hideOptions(); });
             });
             
            function getRadioValue( id ) {
@@ -23,7 +26,7 @@
                   }
               }
           }
-            function getElementsByClassName( strClassName, obj ) {
+          function getElementsByClassName( strClassName, obj ) {
               var ar = arguments[2] || new Array();
               var re = new RegExp("\\b" + strClassName + "\\b", "g");
               if ( re.test(obj.className) ) {
@@ -34,7 +37,6 @@
               return ar;
           }
           function hideOptions() {
-         //     alert("begin hideOptions");
               harvestType = getRadioValue("harvestType");
               var configElements = getElementsByClassName("lockssConfig", document.body);
               if (harvestType  == 'NONE') {
@@ -78,6 +80,7 @@
                             <ice:selectOneRadio id="harvestType1"
                                                 layout="pageDirection"
                                                 required="true"
+                                                partialSubmit="true"
                                                 onclick="hideOptions()"
                                                 value="#{OptionsPage.selectHarvestType}"
                                                 requiredMessage="This field is required.">
@@ -90,6 +93,7 @@
                             <ice:selectOneRadio id="harvestType2"
                                                 layout="pageDirection"
                                                 required="true"
+                                                partialSubmit="true"
                                                 onclick="hideOptions()"
                                                 value="#{OptionsPage.selectHarvestType}"
                                                 requiredMessage="This field is required.">
@@ -100,8 +104,8 @@
                           </ui:fragment>
                         </td>
                       </tr>
-                      <ui:fragment rendered ="#{VDCRequest.currentVDC==null}">
-                      <tr class="lockssConfig">
+                      <ui:fragment rendered ="#{VDCRequest.currentVDC==null and OptionsPage.selectHarvestType!='NONE'}">
+                      <tr class="lockssConfig"  rendered="#{OptionsPage.selectHarvestType!='NONE'}">
                         <td class="dvnPermissionsTableOption">
                             <ice:outputText value="OAI Set"/>
                         </td>
@@ -117,18 +121,19 @@
                         </td>
                       </tr>
                       </ui:fragment>
-                      <tr class="lockssConfig">
+                      <ui:fragment rendered="#{OptionsPage.selectHarvestType!='NONE'}">
+                      <tr class="lockssConfig" >
                         <td class="dvnPermissionsTableOption">
-                            <ice:outputText value="Restricted Data Files"/>
+                            <ice:outputText value="Restricted Data Files" />
                         </td>
                         <td>
-                            <ice:selectBooleanCheckbox id="enableRestrictedCheckBox" value="#{OptionsPage.lockssConfig.allowRestricted}"/>
-                            <ice:outputText id="enableRestrictedLabel" value=" Enable LOCKSS harvesting of restricted data files by specified servers."/>
+                            <ice:selectBooleanCheckbox id="enableRestrictedCheckBox" value="#{OptionsPage.lockssConfig.allowRestricted}" />
+                            <ice:outputText id="enableRestrictedLabel" value=" Enable LOCKSS harvesting of restricted data files by specified servers." />
                         </td>
                       </tr>
-                      <tr class="lockssConfig">
+                      <tr class="lockssConfig" >
                         <td class="dvnPermissionsTableOption">
-                            <ice:outputText value="LOCKSS Server Addresses"/>
+                            <ice:outputText value="LOCKSS Server Addresses" />
                         </td>
                         <td>
                             <div jsfc="ice:panelGroup" styleClass="vdcHelpText">
@@ -136,7 +141,7 @@
                               <ice:outputText value="Enter IP addresses (192.168.2.1) and/or domain names (www.host.edu) in the field below. Wildcards are acceptable (for example, 192.168.*, or *.host.edu ). "/>
                             </div>
                             <ice:message for="serverTable" styleClass="errorMessage"/>
-                            <ice:dataTable styleClass="dvnFormDataTable"
+                            <ice:dataTable styleClass="dvnFormDataTable" 
                                            id ="serverTable"
                                            cellpadding="0"
                                            cellspacing="0"
@@ -157,7 +162,8 @@
                             </ice:dataTable>
                         </td>
                       </tr>
-                      <tr class="lockssConfig"><td colspan="2" class="dvnPermissionsTableHeader"><ice:outputText value="Licensing Settings"/></td></tr>
+                      <tr class="lockssConfig">
+                          <td colspan="2" class="dvnPermissionsTableHeader"><ice:outputText value="Licensing Settings"/></td></tr>
                       <tr class="lockssConfig">
                         <td class="dvnPermissionsTableOption">
                             <ice:outputText value="Licensing Options"/>
@@ -187,6 +193,7 @@
                             </ice:inputTextarea>
                         </td>
                       </tr>
+                     </ui:fragment>
                     </table>
                     <div class="dvnFormPadding dvnFormMargin">
                         <ice:commandButton id="button1" value="Save Changes" action="#{OptionsPage.locksSS_save}"/>

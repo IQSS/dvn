@@ -6,6 +6,7 @@ package edu.harvard.iq.dvn.core.web.admin;
 
 import com.icesoft.faces.component.datapaginator.DataPaginator;
 import com.icesoft.faces.component.ext.*;
+import com.icesoft.faces.component.paneltabset.PanelTabSet;
 import com.icesoft.faces.context.Resource;
 import com.icesoft.faces.context.effects.JavascriptContext;
 import edu.harvard.iq.dvn.core.admin.*;
@@ -230,7 +231,7 @@ public class OptionsPage extends VDCBaseBean  implements java.io.Serializable {
         if (this.dataverseType == null && getVDCRequestBean().getCurrentVDC().getDtype() != null) {
             this.setDataverseType(getVDCRequestBean().getCurrentVDC().getDtype());
         }
-            if ( (this.dataverseType == null || this.dataverseType.equals("Scholar")) ) {
+        if ( (this.dataverseType == null || this.dataverseType.equals("Scholar")) ) {
                 //set the default values for the fields
                 VDC scholardataverse = (VDC)vdcService.findScholarDataverseByAlias(vdc.getAlias());
                 setDataverseType("Scholar");
@@ -433,12 +434,59 @@ public class OptionsPage extends VDCBaseBean  implements java.io.Serializable {
             //all user page
             //initUserData(); -- moved to click event on the tab
             
-        }
+        }        
+        System.out.print("selectHarvestType " + selectHarvestType);
+        initSelectedTabIndex();
+        JavascriptContext.addJavascriptCall(getFacesContext(), "hideOptions();");
         //end init
+    }
+    
+    private String tab;
+
+    public String getTab() {return tab;}
+    public void setTab(String tab) {
+        if ( tab == null || tab.equals("studies") || tab.equals("collections") || tab.equals("templates") || tab.equals("permissions") ) {
+            this.tab = tab;
+        }
+    }
+    private int selectedIndex;
+    public int getSelectedIndex() {return selectedIndex;}
+    public void setSelectedIndex(int selectedIndex) {this.selectedIndex = selectedIndex;}
+    private PanelTabSet tabSet1 = new PanelTabSet();
+    public PanelTabSet getTabSet1() {return tabSet1;}
+    public void setTabSet1(PanelTabSet tabSet1) {this.tabSet1 = tabSet1;}
+    
+    private void initSelectedTabIndex() {
+         
+        if (tab == null && getVDCRequestBean().getSelectedTab() != null) {
+            tab = getVDCRequestBean().getSelectedTab();
+        }
+        if (tab != null) {
+            if (tab.equals("studies")) {
+                selectedIndex=0;
+            } else if (tab.equals("collections")) {
+                selectedIndex=1;
+            } else if (tab.equals("templates")) {
+                selectedIndex=2;
+            } else if (tab.equals("permissions")) {
+                selectedIndex=3;
+            } else if (tab.equals("settings")) {
+                selectedIndex=4;
+            } 
+
+            tabSet1.setSelectedIndex(selectedIndex);
+
+        }
     }
     
     public void updateGuestBookResponses(ValueChangeEvent vce) {
         initGuestBookResponses();
+    }
+    
+    public String hideOptions(){
+        System.out.print("in hide options on optionspage.java");
+        JavascriptContext.addJavascriptCall(getFacesContext(), "hideOptionsPage();");
+        return "";
     }
        
     public String initGuestBookResponses(){
@@ -612,44 +660,8 @@ public class OptionsPage extends VDCBaseBean  implements java.io.Serializable {
         return forwardPage;
     }
     
-    public String saveChanges() {
-        NetworkStatsBean statsBean = (NetworkStatsBean) FacesContext.getCurrentInstance().getExternalContext().getRequestMap().get("NetworkStatsBean");
-        if (siteRestriction.equals("Public")) {
-            if (vdc.getReleaseDate() == null) {
-                 // update the network stats bean
-                if (statsBean != null)
-                    statsBean.releaseAndUpdateInlineDataverseValue(vdc.getId(), (List<VDCGroup>)vdc.getVdcGroups());
-                vdc.setReleaseDate(DateUtil.getTimestamp());
-                sendReleaseEmails();             
-                // tweet release of dataverse
-                TwitterCredentials tc = vdcNetworkService.getTwitterCredentials();
-                if (tc != null) {              
-                    try {
-                        String message = "New dataverse released: " + vdc.getName() + " Dataverse";
-                        URL url = new URL("http://" + PropertyUtil.getHostUrl() + "/dvn/dv/" + vdc.getAlias());
-                        TwitterUtil.tweet(tc, message, url);
-                    } catch (MalformedURLException ex) {
-                        Logger.getLogger(PrivilegedUsersPage.class.getName()).log(Level.SEVERE, null, ex);
-                    }
-                }        
-            }
-            vdc.setRestricted(false);          
-        } else {
-            if (vdc.getReleaseDate() != null) {
-                //update the network stats bean
-                if (statsBean != null)
-                    statsBean.restrictAndUpdateInlineDataverseValue(vdc.getId(), (List<VDCGroup>)vdc.getVdcGroups());
-                vdc.setReleaseDate(null);
-            }
-            vdc.setRestricted(true);
-        }
+    public String savePermissionsChanges() {
 
-        if (filesRestricted != vdc.isFilesRestricted()) {
-            vdc.setFilesRestricted(filesRestricted);
-            if (vdc.getHarvestingDataverse() != null) {
-                vdc.getHarvestingDataverse().setSubsetRestricted(filesRestricted);
-            }
-        }
 
         saveContributorSetting();
 
@@ -1720,6 +1732,43 @@ public class OptionsPage extends VDCBaseBean  implements java.io.Serializable {
     }
     
     public String saveGeneralSettings_action() {
+                NetworkStatsBean statsBean = (NetworkStatsBean) FacesContext.getCurrentInstance().getExternalContext().getRequestMap().get("NetworkStatsBean");
+        if (siteRestriction.equals("Public")) {
+            if (vdc.getReleaseDate() == null) {
+                 // update the network stats bean
+                if (statsBean != null)
+                    statsBean.releaseAndUpdateInlineDataverseValue(vdc.getId(), (List<VDCGroup>)vdc.getVdcGroups());
+                vdc.setReleaseDate(DateUtil.getTimestamp());
+                sendReleaseEmails();             
+                // tweet release of dataverse
+                TwitterCredentials tc = vdcNetworkService.getTwitterCredentials();
+                if (tc != null) {              
+                    try {
+                        String message = "New dataverse released: " + vdc.getName() + " Dataverse";
+                        URL url = new URL("http://" + PropertyUtil.getHostUrl() + "/dvn/dv/" + vdc.getAlias());
+                        TwitterUtil.tweet(tc, message, url);
+                    } catch (MalformedURLException ex) {
+                        Logger.getLogger(PrivilegedUsersPage.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+                }        
+            }
+            vdc.setRestricted(false);          
+        } else {
+            if (vdc.getReleaseDate() != null) {
+                //update the network stats bean
+                if (statsBean != null)
+                    statsBean.restrictAndUpdateInlineDataverseValue(vdc.getId(), (List<VDCGroup>)vdc.getVdcGroups());
+                vdc.setReleaseDate(null);
+            }
+            vdc.setRestricted(true);
+        }
+
+        if (filesRestricted != vdc.isFilesRestricted()) {
+            vdc.setFilesRestricted(filesRestricted);
+            if (vdc.getHarvestingDataverse() != null) {
+                vdc.getHarvestingDataverse().setSubsetRestricted(filesRestricted);
+            }
+        }
         success = true;
         if (!validateAnnouncementsText()) {
             success = false;

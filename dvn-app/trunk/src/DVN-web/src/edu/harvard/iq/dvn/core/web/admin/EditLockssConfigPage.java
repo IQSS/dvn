@@ -30,6 +30,7 @@ package edu.harvard.iq.dvn.core.web.admin;
 import com.icesoft.faces.component.ext.HtmlDataTable;
 import com.icesoft.faces.component.ext.HtmlInputText;
 import com.icesoft.faces.component.ext.HtmlSelectOneMenu;
+import com.icesoft.faces.context.effects.JavascriptContext;
 import edu.harvard.iq.dvn.core.admin.EditLockssService;
 import edu.harvard.iq.dvn.core.vdc.LicenseType;
 import edu.harvard.iq.dvn.core.vdc.LockssConfig;
@@ -103,7 +104,6 @@ public class EditLockssConfigPage extends VDCBaseBean implements java.io.Seriali
             selectOAISetId = new Long(-1);
         } else {
             editLockssService.initLockssConfig(lockssConfigId);
-            System.out.println("in init - editLockssService" + editLockssService); 
             lockssConfig = editLockssService.getLockssConfig();
             selectLicenseId = lockssConfig.getLicenseType().getId();
             selectHarvestType = HarvestType.valueOf(lockssConfig.getserverAccess().toString());
@@ -117,7 +117,7 @@ public class EditLockssConfigPage extends VDCBaseBean implements java.io.Seriali
             licenseTypes.put(licenseType.getId(), licenseType);
         }
         initCollection();
-
+        JavascriptContext.addJavascriptCall(getFacesContext(), "hideOptions();");
     }
     
     public List<SelectItem> getSelectOAISets() {

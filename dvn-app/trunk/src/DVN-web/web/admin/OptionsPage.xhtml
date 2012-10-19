@@ -19,6 +19,7 @@
                 <f:event type="preRenderView" listener="#{OptionsPage.preRenderView}"/> 
                 <f:event type="preRenderView" listener="#{EditBannerFooterPage.preRenderView}"/> 
                 <f:viewParam name="oauth_verifier" value="#{OptionsPage.twitterVerifier}"/>
+                <f:viewParam name="tab" value="#{OptionsPage.tab}"/>
             </f:metadata> 
         </ui:define>
         <ui:define name="body">            
@@ -27,13 +28,15 @@
                 // <![CDATA[
                     function initGuestBookResponses(){
                         document.getElementById('form1:initGuestBookResponse').click();
-                    }                   
+                    } 
                 // ]]>
             </script>
             <ice:commandButton visible="false" id="initGuestBookResponse" action="#{OptionsPage.initGuestBookResponses}"/>
                 <ice:inputHidden id="vdcId" value="#{VDCRequest.currentVDCId}"/>                    
                 <div class="dvn_section">
-                    <ice:panelTabSet id="tabSet1" styleClass="dvnTabs" selectedIndex="#{(VDCSession.loginBean.networkAdmin or VDCSession.loginBean.curatorOrAbove or (not VDCRequest.currentVDC.harvestingDv and (VDCSession.loginBean.contributor or VDCRequest.currentVDC.allowRegisteredUsersToContribute))) ? 0 : 1}">
+                    <ice:panelTabSet id="tabSet1"
+                                     binding="#{OptionsPage.tabSet1}" 
+                                     styleClass="dvnTabs" selectedIndex="#{(VDCSession.loginBean.networkAdmin or VDCSession.loginBean.curatorOrAbove or (not VDCRequest.currentVDC.harvestingDv and (VDCSession.loginBean.contributor or VDCRequest.currentVDC.allowRegisteredUsersToContribute))) ? 0 : 1}">
                         <!-- STUDY OPTIONS -->
                         <ice:panelTab id="studies" label="Studies" url="/dvn#{VDCRequest.currentVDCURL}/faces/admin/OptionsPage.xhtml&amp;tab=studies" rendered="#{VDCSession.loginBean.networkAdmin or VDCSession.loginBean.curatorOrAbove or (not VDCRequest.currentVDC.harvestingDv and (VDCSession.loginBean.contributor or VDCRequest.currentVDC.allowRegisteredUsersToContribute))}">
                             <div jsfc="ice:panelGroup" id="layoutPanel2" panelLayout="flow">
@@ -46,6 +49,7 @@
                             <div jsfc="ice:panelGroup" id="layoutPanel3" panelLayout="flow">
                                 <ui:include src="/collection/ManageCollectionsPage.xhtml"></ui:include>
                             </div>
+                           <f:param name="tab" value="collections"/>
                         </ice:panelTab>
                         <!-- TEMPLATES OPTIONS -->
                         <ice:panelTab id="templates" label="Templates" url="/dvn#{VDCRequest.currentVDCURL}/faces/admin/OptionsPage.xhtml&amp;tab=templates" rendered="#{VDCSession.loginBean.networkAdmin or VDCSession.loginBean.curatorOrAbove or (not VDCRequest.currentVDC.harvestingDv and (VDCSession.loginBean.contributor or VDCRequest.currentVDC.allowRegisteredUsersToContribute))}">
@@ -114,6 +118,22 @@
                                                 </div>
                                             </div>
                                             <div jsfc="ice:panelGroup">
+                                              <table class="dvnPermissionsTable" cellspacing="0" cellpadding="0" border="0">
+                                                    <tr><td colspan="2" class="dvnPermissionsTableHeader"><ice:outputText value="Dataverse Permission Settings"/></td></tr>
+                                                    <tr>
+                                                        <td class="dvnPermissionsTableOption">
+                                                        <ice:outputText value="Dataverse Release Settings"/>
+                                                        </td>
+                                                        <td>
+                                                            <ice:selectOneMenu value="#{OptionsPage.siteRestriction}"  disabled="#{!(OptionsPage.enableSelectRelease)}">
+                                                                <f:selectItem itemLabel="Not Released" itemValue="Restricted"/>
+                                                                <f:selectItem itemLabel="Released" itemValue="Public"/>
+                                                            </ice:selectOneMenu>
+                                                            <ice:outputText styleClass="errorMessageBlock" value="#{bundlePageInfo.releasableDVErrorMessage}" rendered="#{(OptionsPage.notReleasableAndNotReleased)}"/>
+                                                            <ice:outputText styleClass="errorMessageBlock" value="#{bundlePageInfo.invalidReleasedDVErrorMessage}" rendered="#{(OptionsPage.releasedWithoutRequiredStudies)}"/>
+                                                        </td>
+                                                    </tr>
+                                                </table>
                                                 
                                                 <ui:include src="/site/EditSitePage.xhtml"></ui:include>
                                                 
@@ -131,12 +151,8 @@
                                         </ice:panelTab>
                                         <!-- ADVANCED -->
                                         <ice:panelTab id="advancedSub" label="Advanced">
-                                            <div jsfc="ice:panelGroup">
-                                                <table class="dvnOptionsTable" cellspacing="0" cellpadding="0" border="0">
-                                                    <tr>
-                                                        <ui:include src="EditLockssConfigPage.xhtml"></ui:include>
-                                                    </tr>
-                                                </table>
+                                           <div jsfc="ice:panelGroup" panelLayout="flow">
+                                                <ui:include src="/admin/EditLockssConfigPage.xhtml"></ui:include>
                                             </div>
                                         </ice:panelTab>
                                         <!-- CUSTOMIZATION -->

@@ -16,23 +16,10 @@
                     </div>
                 </div>
                 <table class="dvnPermissionsTable" cellspacing="0" cellpadding="0" border="0">
-                  <tr><td colspan="2" class="dvnPermissionsTableHeader"><ice:outputText value="Dataverse Permission Settings"/></td></tr>
-                  <tr>
-                    <td class="dvnPermissionsTableOption">
-                      <ice:outputText value="Dataverse Release Settings"/>
-                    </td>
-                    <td>
-                        <ice:selectOneMenu value="#{OptionsPage.siteRestriction}"  disabled="#{!(OptionsPage.enableSelectRelease)}">
-                            <f:selectItem itemLabel="Not Released" itemValue="Restricted"/>
-                            <f:selectItem itemLabel="Released" itemValue="Public"/>
-                        </ice:selectOneMenu>
-                        <ice:outputText styleClass="errorMessageBlock" value="#{bundlePageInfo.releasableDVErrorMessage}" rendered="#{(OptionsPage.notReleasableAndNotReleased)}"/>
-                        <ice:outputText styleClass="errorMessageBlock" value="#{bundlePageInfo.invalidReleasedDVErrorMessage}" rendered="#{(OptionsPage.releasedWithoutRequiredStudies)}"/>
-                    </td>
-                  </tr>
+                  <tr><td colspan="2" class="dvnPermissionsTableHeader"><ice:outputText value="Dataverse Contribution Settings"/></td></tr>
+
                   <div jsfc="ice:panelGroup" rendered="#{!OptionsPage.vdc.harvestingDv}">
                       <tr>
-                          <td>Contribution Settings</td>
                           <td>
                               <ice:selectOneRadio
                                   layout="pageDirection"
@@ -261,7 +248,7 @@
                   </tr>
                 </table>
                   <div class="dvnFormPadding dvnFormMargin">
-                    <ice:commandButton id="saveChangesButton" value="Save Changes" action="#{OptionsPage.saveChanges}"/>
+                    <ice:commandButton id="saveChangesButton" value="Save Changes" action="#{OptionsPage.savePermissionsChanges}"/>
                     <!--<ice:commandButton immediate="true" id="cancelButton" value="Cancel" action="#{OptionsPage.cancel}"/>-->
                   </div>
 

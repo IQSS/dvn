@@ -152,3 +152,10 @@ update studyfield set fieldtype = 'url' where id = 17;
 update studyfield set fieldtype = 'url' where id = 29;
 update studyfield set fieldtype = 'url' where id = 32;
 update studyfield set fieldtype = 'url' where id = 116;
+
+--Ticket 2513 - allow custom field names to be more than 255 characters
+ALTER TABLE studyfield ALTER COLUMN "name" TYPE text;
+ALTER TABLE studyfield ALTER COLUMN "name" SET STORAGE EXTENDED;
+
+ALTER TABLE studyfield ALTER COLUMN "title" TYPE text;
+ALTER TABLE studyfield ALTER COLUMN "title" SET STORAGE EXTENDED;

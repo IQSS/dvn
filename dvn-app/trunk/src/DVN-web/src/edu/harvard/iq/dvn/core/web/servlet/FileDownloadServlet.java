@@ -911,14 +911,22 @@ public class FileDownloadServlet extends HttpServlet {
                     if (headerName.equals("Set-Cookie") ||
                         headerName.equals("Set-cookie")) {
                         String cookieHeader = method.getResponseHeaders()[i].getValue();
+                        dbgLog.fine("file download; [redirect] cookie header: "+cookieHeader);
                         Matcher cookieMatcher = patternCookie.matcher(cookieHeader);
-                        if ( cookieMatcher.find() ) {
+                        String regexpJsession = "JSESSIONID=([^;]*);";
+                        Pattern patternJsession = Pattern.compile (regexpJsession);
+                        Matcher jsessionMatcher = patternJsession.matcher(cookieHeader);
+                        if ( (jsessionid == null || jsessionid.equals("")) && jsessionMatcher.find() ) {
+                            jsessionid = jsessionMatcher.group(1);
+                            dbgLog.fine("file download; [redirect] extracted jsessionid: "+jsessionid);
+                        } else if ( cookieMatcher.find() ) {
                             extraCookies = cookieMatcher.group(1);
                         }
                     }
                 }
 
                 if (redirectLocation.matches(".*TermsOfUsePage.*")) {
+                    dbgLog.fine("file download; redirect location: "+redirectLocation);
 
                     // Accept the TOU agreement:
 

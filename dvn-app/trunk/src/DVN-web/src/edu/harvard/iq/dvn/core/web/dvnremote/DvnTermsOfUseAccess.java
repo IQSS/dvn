@@ -170,9 +170,10 @@ public class DvnTermsOfUseAccess {
 		//dbgLog.info("TOU found header: "+headerName); 
 		    
 		if (headerName.equals("Set-Cookie")) {
-		    dbgLog.fine("TOU found cookie header;"); 
 
 		    String cookieHeader = TOUgetMethod.getResponseHeaders()[i].getValue();
+                    dbgLog.fine("TOU found cookie header: " + cookieHeader); 
+
 		    matcher = patternJsession.matcher(cookieHeader);
 		    if ( matcher.find() ) {
 			jsessionid = matcher.group(1); 

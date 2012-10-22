@@ -2720,10 +2720,7 @@ public class TemplateFormPage extends VDCBaseBean implements java.io.Serializabl
             return "";
         }
         
-        if(fieldDescription.trim().length() > 255){
-            getVDCRenderBean().getFlash().put("customFieldWarningMessage","New field description must not be more than 255 characters."); 
-            return "";
-        }
+
                 
         // We are in the process of changing how we are using the fields of
         // the fieldName object:

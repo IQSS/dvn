@@ -5,9 +5,35 @@
                       xmlns:ice="http://www.icesoft.com/icefaces/component"
                       xmlns:dvn="/WEB-INF/tlds/dvn-components"
                       jsfc="ice:panelGroup">
+<script type="text/javascript">
+    // <![CDATA[
+    jQuery(document).ready(function(){
+        
+        initCheckAccountTermsEnabled();
+        
+    });
+    
+    function initCheckAccountTermsEnabled() {
+        
+        jQuery('div.dvnAccountTermsField').hide();
+        
+        jQuery('.dvnAccountTermsEnable input.iceSelBoolChkbx').live("click", function(){
+            jQuery(this).parent().siblings('div.dvnAccountTermsField').toggle();
+        });
+        
+        var checkbox = jQuery('div.dvnAccountTermsEnable input.iceSelBoolChkbx[type=checkbox]');
+        
+        if ( checkbox.is(':checked') ) {
+            jQuery('div.dvnAccountTermsField').show();
+        }
+    
+    };
+
+    // ]]>
+</script>
 <tr>
     <td class="dvnOptionsTableOption">
-        <ice:outputText value="Account Term of Use"/>
+        <ice:outputText value="Account Term of Use 5"/>
     </td>
     <td>
         <div jsfc="ice:panelGroup" styleClass="dvnInformationMessage">
@@ -15,13 +41,13 @@
                 <ice:outputText value="#{bundlePageInfo.editDvnAccountTermsHelp}" escape="false"/>
             </div>
         </div>
-        <div jsfc="ice:panelGroup">
-            <ice:selectBooleanCheckbox value="#{OptionsPage.networkAccountTermsOfUseEnabled}"/>
+        <div jsfc="ice:panelGroup" styleClass="dvnAccountTermsEnable">
+            <ice:selectBooleanCheckbox value="#{OptionsPage.networkAccountTermsOfUseEnabled}" onclick="checkAccountTermsEnabled();"/>
             <ice:outputText value=" Enable Terms of Use"/>
         </div>
         <ice:message for="textArea1" styleClass="errorMessage" id="outputText2Msg"/>
         <br/>
-        <div jsfc="ice:panelGroup">
+        <div jsfc="ice:panelGroup" styleClass="dvnAccountTermsField">
             <ice:inputTextarea styleClass="formHtmlEnabled" cols="70" rows="8"
                                id="textArea1" immediate="true"
                                value="#{OptionsPage.networkAccountTermsOfUse}">

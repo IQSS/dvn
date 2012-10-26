@@ -38,13 +38,13 @@
                                      binding="#{OptionsPage.tabSet1}" 
                                      styleClass="dvnTabs" selectedIndex="#{(VDCSession.loginBean.networkAdmin or VDCSession.loginBean.curatorOrAbove or (not VDCRequest.currentVDC.harvestingDv and (VDCSession.loginBean.contributor or VDCRequest.currentVDC.allowRegisteredUsersToContribute))) ? 0 : 1}">
                         <!-- STUDY OPTIONS -->
-                        <ice:panelTab id="studies" label="Studies" url="/dvn#{VDCRequest.currentVDCURL}/faces/admin/OptionsPage.xhtml&amp;tab=studies" rendered="#{VDCSession.loginBean.networkAdmin or VDCSession.loginBean.curatorOrAbove or (not VDCRequest.currentVDC.harvestingDv and (VDCSession.loginBean.contributor or VDCRequest.currentVDC.allowRegisteredUsersToContribute))}">
+                        <ice:panelTab id="studies" label="Studies" url="/dvn#{VDCRequest.currentVDCURL}/faces/admin/OptionsPage.xhtml?tab=studies" rendered="#{VDCSession.loginBean.networkAdmin or VDCSession.loginBean.curatorOrAbove or (not VDCRequest.currentVDC.harvestingDv and (VDCSession.loginBean.contributor or VDCRequest.currentVDC.allowRegisteredUsersToContribute))}">
                             <div jsfc="ice:panelGroup" id="layoutPanel2" panelLayout="flow">
                                 <ui:include src="/study/ManageStudiesFragment.xhtml"></ui:include>
                             </div>
                         </ice:panelTab>
                         <!-- COLLECTIONS OPTIONS -->
-                        <ice:panelTab id="collections" label="Collections" url="/dvn#{VDCRequest.currentVDCURL}/faces/admin/OptionsPage.xhtml&amp;tab=collections" 
+                        <ice:panelTab id="collections" label="Collections" url="/dvn#{VDCRequest.currentVDCURL}/faces/admin/OptionsPage.xhtml?tab=collections" 
                                       rendered="#{VDCSession.loginBean.networkAdmin or VDCSession.loginBean.curatorOrAbove or (VDCSession.loginBean.contributor or VDCRequest.currentVDC.allowRegisteredUsersToContribute)}">
                             <div jsfc="ice:panelGroup" id="layoutPanel3" panelLayout="flow">
                                 <ui:include src="/collection/ManageCollectionsPage.xhtml"></ui:include>
@@ -52,13 +52,13 @@
                            <f:param name="tab" value="collections"/>
                         </ice:panelTab>
                         <!-- TEMPLATES OPTIONS -->
-                        <ice:panelTab id="templates" label="Templates" url="/dvn#{VDCRequest.currentVDCURL}/faces/admin/OptionsPage.xhtml&amp;tab=templates" rendered="#{VDCSession.loginBean.networkAdmin or VDCSession.loginBean.curatorOrAbove or (not VDCRequest.currentVDC.harvestingDv and (VDCSession.loginBean.contributor or VDCRequest.currentVDC.allowRegisteredUsersToContribute))}">
+                        <ice:panelTab id="templates" label="Templates" url="/dvn#{VDCRequest.currentVDCURL}/faces/admin/OptionsPage.xhtml?tab=templates" rendered="#{VDCSession.loginBean.networkAdmin or VDCSession.loginBean.curatorOrAbove or (not VDCRequest.currentVDC.harvestingDv and (VDCSession.loginBean.contributor or VDCRequest.currentVDC.allowRegisteredUsersToContribute))}">
                             <div jsfc="ice:panelGroup" id="layoutPanel4" panelLayout="flow">
                                 <ui:include src="ManageTemplatesPage.xhtml"></ui:include>
                             </div>
                         </ice:panelTab>
                         <!-- PERMISSIONS OPTIONS -->
-                        <ice:panelTab id="permissions" label="Permissions" url="/dvn#{VDCRequest.currentVDCURL}/faces/admin/OptionsPage.xhtml&amp;tab=permissions" 
+                        <ice:panelTab id="permissions" label="Permissions" url="/dvn#{VDCRequest.currentVDCURL}/faces/admin/OptionsPage.xhtml?tab=permissions" 
                                       rendered="#{VDCSession.loginBean.networkAdmin or VDCSession.loginBean.curatorOrAbove or (not VDCRequest.currentVDC.harvestingDv and (VDCSession.loginBean.contributor or VDCRequest.currentVDC.allowRegisteredUsersToContribute))}">
                             <div jsfc="ice:panelGroup" id="layoutPanel5" panelLayout="flow">
                                 <ice:panelTabSet id="tabSetPermissions" styleClass="dvnTabs dvnSubTabs">
@@ -102,7 +102,7 @@
                             </div>
                         </ice:panelTab>
                         <!-- DATAVERSE OPTIONS -->
-                        <ice:panelTab id="settings" label="Settings" url="/dvn#{VDCRequest.currentVDCURL}/faces/admin/OptionsPage.xhtml&amp;tab=settings" rendered="#{VDCSession.loginBean.networkAdmin or VDCSession.loginBean.admin}">
+                        <ice:panelTab id="settings" label="Settings" url="/dvn#{VDCRequest.currentVDCURL}/faces/admin/OptionsPage.xhtml?tab=settings" rendered="#{VDCSession.loginBean.networkAdmin or VDCSession.loginBean.admin}">
                             <div jsfc="ice:panelGroup" id="layoutPanel1" panelLayout="flow">
                                 <!-- REMOVED CODE -->
                                 <div jsfc="ice:panelGroup">

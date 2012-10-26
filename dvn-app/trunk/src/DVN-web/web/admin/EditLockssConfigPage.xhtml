@@ -11,8 +11,8 @@
 
             jQuery(document).ready(function(){ 
                 hideOptions(); 
-                jQuery('harvestType1').on('focus', function(){ hideOptions(); });
-                jQuery('harvestType2').on('focus', function(){ hideOptions(); });
+                jQuery('[id$=harvestType1]').on('focus', function(){ hideOptions(); });
+                jQuery('[id$=harvestType2]').on('focus', function(){ hideOptions(); });
                 jQuery(document).on('focus', function(){ hideOptions(); });
             });
             
@@ -69,13 +69,12 @@
                           </p>
                         </div>
                     </div>
-                    <table class="dvnPermissionsTable" cellspacing="0" cellpadding="0" border="0">
-                      <tr><td colspan="2" class="dvnPermissionsTableHeader"><ice:outputText value="Harvest Settings"/></td></tr>
+                    <table class="dvnOptionsTable" columns="2" cellpadding="0" cellspacing="0">
                       <tr>
-                        <td class="dvnPermissionsTableOption">
+                        <td class="dvnOptionsTableOption">
                             <ice:outputText value="Harvesting Type"/>
                         </td>
-                        <td>
+                        <td class="dvnOptionsTableForm">
                           <ui:fragment rendered ="#{VDCRequest.currentVDC==null}">
                             <ice:selectOneRadio id="harvestType1"
                                                 layout="pageDirection"
@@ -104,12 +103,13 @@
                           </ui:fragment>
                         </td>
                       </tr>
-                      <ui:fragment rendered ="#{VDCRequest.currentVDC==null and OptionsPage.selectHarvestType!='NONE'}">
-                      <tr class="lockssConfig"  rendered="#{OptionsPage.selectHarvestType!='NONE'}">
-                        <td class="dvnPermissionsTableOption">
+                      <ui:fragment rendered="#{VDCRequest.currentVDC==null and OptionsPage.selectHarvestType!='NONE'}">
+                      <tr class="lockssConfig" rendered="#{OptionsPage.selectHarvestType!='NONE'}">
+                        <td class="dvnOptionsTableOption">
                             <ice:outputText value="OAI Set"/>
                         </td>
-                        <td><div jsfc="ice:panelGroup" styleClass="vdcHelpText">
+                        <td class="dvnOptionsTableForm">
+                            <div jsfc="ice:panelGroup" styleClass="vdcHelpText">
                               <ice:graphicImage alt="Information" title="Information" styleClass="vdcNoBorders" value="/resources/images/icon_info.gif"/>
                               <ice:outputText value="Choose an OAI Set for harvesting by LOCKSS. Please note that LOCKSS servers can only harvest data that is local to this Dataverse Network."/>
                             </div>
@@ -122,20 +122,20 @@
                       </tr>
                       </ui:fragment>
                       <ui:fragment rendered="#{OptionsPage.selectHarvestType!='NONE'}">
-                      <tr class="lockssConfig" >
-                        <td class="dvnPermissionsTableOption">
-                            <ice:outputText value="Restricted Data Files" />
+                      <tr class="lockssConfig">
+                        <td class="dvnOptionsTableOption">
+                            <ice:outputText value="Restricted Data Files"/>
                         </td>
-                        <td>
+                        <td class="dvnOptionsTableForm">
                             <ice:selectBooleanCheckbox id="enableRestrictedCheckBox" value="#{OptionsPage.lockssConfig.allowRestricted}" />
                             <ice:outputText id="enableRestrictedLabel" value=" Enable LOCKSS harvesting of restricted data files by specified servers." />
                         </td>
                       </tr>
-                      <tr class="lockssConfig" >
-                        <td class="dvnPermissionsTableOption">
-                            <ice:outputText value="LOCKSS Server Addresses" />
+                      <tr class="lockssConfig">
+                        <td class="dvnOptionsTableOption">
+                            <ice:outputText value="LOCKSS Server Addresses"/>
                         </td>
-                        <td>
+                        <td class="dvnOptionsTableForm">
                             <div jsfc="ice:panelGroup" styleClass="vdcHelpText">
                               <ice:graphicImage alt="Information" title="Information" styleClass="vdcNoBorders" value="/resources/images/icon_info.gif"/>
                               <ice:outputText value="Enter IP addresses (192.168.2.1) and/or domain names (www.host.edu) in the field below. Wildcards are acceptable (for example, 192.168.*, or *.host.edu ). "/>
@@ -163,12 +163,10 @@
                         </td>
                       </tr>
                       <tr class="lockssConfig">
-                          <td colspan="2" class="dvnPermissionsTableHeader"><ice:outputText value="Licensing Settings"/></td></tr>
-                      <tr class="lockssConfig">
-                        <td class="dvnPermissionsTableOption">
+                        <td class="dvnOptionsTableOption">
                             <ice:outputText value="Licensing Options"/>
                         </td>
-                        <td>
+                        <td class="dvnOptionsTableForm">
                             <div jsfc="ice:panelGroup" styleClass="vdcHelpText">
                               <ice:graphicImage alt="Information" title="Information" styleClass="vdcNoBorders" value="/resources/images/icon_info.gif"/>
                               <ice:outputText value="Designate the license terms to be associated with harvesting content. For more information about CC licenses, please refer to the &#60;a href=&#34;http://creativecommons.org/about/licenses&#34;&#62; Creative Commons site&#60;/a&#62;, or &#60;a href=&#34;http://creativeCommons.org/about/cc0&#34;&#62; About CC0&#60;/a&#62;." escape="false"/>
@@ -183,10 +181,10 @@
                         </td>
                       </tr>
                       <tr class="lockssConfig">
-                        <td class="dvnPermissionsTableOption">
+                        <td class="dvnOptionsTableOption">
                             <ice:outputText value="Additional Terms"/>
                         </td>
-                        <td>
+                        <td class="dvnOptionsTableForm">
                             <ice:inputTextarea cols="100" rows="5" styleClass="formHtmlEnabled"
                                                id="additionalLicensingTerms" value="#{OptionsPage.lockssConfig.licenseText}">
                               <f:validator validatorId="XhtmlValidator"/>

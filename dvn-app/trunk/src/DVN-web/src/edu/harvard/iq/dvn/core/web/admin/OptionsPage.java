@@ -3075,7 +3075,7 @@ public class OptionsPage extends VDCBaseBean  implements java.io.Serializable {
             getVDCRenderBean().getFlash().put("successMessage", "Successfully updated network terms of use.");
             return "/networkAdmin/NetworkOptionsPage.xhtml?faces-redirect=true";
         } else {
-            getVDCRenderBean().getFlash().put("warningMessage", "To enable this terms of use, you must also enter terms of use in the field below.  Please enter terms of use as either plain text or html.");
+            getVDCRenderBean().getFlash().put("warningMessage", "To enable this terms of use, you must also enter terms of use in the field below. Please enter terms of use as either plain text or html.");
             return null;
         }
     }
@@ -3085,19 +3085,19 @@ public class OptionsPage extends VDCBaseBean  implements java.io.Serializable {
         boolean isUseTerms = true;
         if ((elementValue == null || elementValue.equals("")) && (networkAccountTermsOfUseEnabled)) {
             isUseTerms = false;
-            FacesMessage message = new FacesMessage("To enable this feature, you must also enter terms of use in the field below.  Please enter terms of use as either plain text or html.");
+            FacesMessage message = new FacesMessage("To enable this feature, you must also enter terms of use in the field below. Please enter terms of use as either plain text or html.");
             FacesContext.getCurrentInstance().addMessage("form1:textArea1", message);
         }
         elementValue = networkDepositTermsOfUse;
         if ((elementValue == null || elementValue.equals("")) && (networkDepositTermsOfUseEnabled)) {
             isUseTerms = false;
-            FacesMessage message = new FacesMessage("To enable this feature, you must also enter terms of use in the field below.  Please enter terms of use as either plain text or html.");
+            FacesMessage message = new FacesMessage("To enable this feature, you must also enter terms of use in the field below. Please enter terms of use as either plain text or html.");
             FacesContext.getCurrentInstance().addMessage("form1:textArea1", message);
         }
         elementValue = networkDownloadTermsOfUse;
         if ((elementValue == null || elementValue.equals("")) && (networkDownloadTermsOfUseEnabled)) {
             isUseTerms = false;
-            FacesMessage message = new FacesMessage("To enable this feature, you must also enter terms of use in the field below.  Please enter terms of use as either plain text or html.");
+            FacesMessage message = new FacesMessage("To enable this feature, you must also enter terms of use in the field below. Please enter terms of use as either plain text or html.");
             FacesContext.getCurrentInstance().addMessage("form1:textArea1", message);
         }
         return isUseTerms;
@@ -3190,11 +3190,11 @@ public class OptionsPage extends VDCBaseBean  implements java.io.Serializable {
     private boolean deleteLockDisabled;
     
     public String getIndexLocks(){
-        String indexLocks = "There is no index lock at this time";
+        String indexLocks = "There is no index lock at this time.";
         deleteLockDisabled = true;
         File lockFile = getLockFile();
         if (lockFile != null) {
-            indexLocks = "There has been a lock on the index since " + (new Date(lockFile.lastModified())).toString();
+            indexLocks = "There has been a lock on the index since " + (new Date(lockFile.lastModified())).toString() + ".";
             deleteLockDisabled = false;
         }
         return indexLocks;
@@ -3252,15 +3252,15 @@ public class OptionsPage extends VDCBaseBean  implements java.io.Serializable {
                     studyIDList.add( study.getId() );
                 }
                 indexService.updateIndexList( studyIDList );
-                addMessage( "indexMessage", "Indexing completed (for dataverse id = " + indexDVId + ")" );
+                addMessage( "indexMessage", "Indexing completed (for dataverse id = " + indexDVId + ".)" );
             } else {
-                addMessage( "indexMessage", "Indexing failed: There is no dataverse with dvId = " + indexDVId );                    
+                addMessage( "indexMessage", "Indexing failed: There is no dataverse with dvId = " + indexDVId + "." );                    
             }
         } catch (NumberFormatException nfe) {
             addMessage( "indexMessage", "Indexing failed: The dataverse id must be of type Long." );
         } catch (Exception e) {
             e.printStackTrace();
-            addMessage( "indexMessage", "Indexing failed: An unknown error occurred trying to index dataverse with id = " + indexDVId );
+            addMessage( "indexMessage", "Indexing failed: An unknown error occurred trying to index dataverse with id = " + indexDVId + "." );
         } 
             
         return null;
@@ -3276,7 +3276,7 @@ public class OptionsPage extends VDCBaseBean  implements java.io.Serializable {
 
         } catch (Exception e) {
             e.printStackTrace();
-            addMessage( "indexMessage", "Indexing failed: An unknown error occurred trying to index the following: \"" + indexStudyIds + "\"" );
+            addMessage( "indexMessage", "Indexing failed: An unknown error occurred trying to index the following: \"" + indexStudyIds + "\"." );
         }            
  
         return null;
@@ -3286,9 +3286,9 @@ public class OptionsPage extends VDCBaseBean  implements java.io.Serializable {
         File lockFile = getLockFile();
         if (lockFile.exists()){
             if (lockFile.delete()){
-                addMessage("indexMessage", "Index lock deleted");
+                addMessage("indexMessage", "Index lock deleted.");
             } else {
-                addMessage("indexMessage", "Index lock could not be deleted");
+                addMessage("indexMessage", "Index lock could not be deleted.");
             }
         }
         return null;
@@ -3300,7 +3300,7 @@ public class OptionsPage extends VDCBaseBean  implements java.io.Serializable {
             addMessage("indexMessage", "Indexing update completed.");
         } catch (Exception e) {
             e.printStackTrace();
-            addMessage("indexMessage", "Indexing failed: An unknown error occurred trying to update the index");
+            addMessage("indexMessage", "Indexing failed: An unknown error occurred trying to update the index.");
         }
         return null;
     }
@@ -4163,17 +4163,17 @@ public class OptionsPage extends VDCBaseBean  implements java.io.Serializable {
     private void addStudyMessages (String component, Map tokenizedLists) {
 
             if ( tokenizedLists.get("idList") != null && !((List) tokenizedLists.get("idList")).isEmpty() ) {            
-                addMessage( component, "The following studies were successfully processed: " + tokenizedLists.get("idList") );
+                addMessage( component, "The following studies were successfully processed: " + tokenizedLists.get("idList") + "." );
             }
             if ( tokenizedLists.get("ignoredList") != null && !((List) tokenizedLists.get("ignoredList")).isEmpty() ) {            
                 addMessage( component, "The following studies were ignored (" 
-                        + ((String) tokenizedLists.get("ignoredReason")) + "): " + tokenizedLists.get("ignoredList") );
+                        + ((String) tokenizedLists.get("ignoredReason")) + "): " + tokenizedLists.get("ignoredList") + "." );
             }            
             if ( tokenizedLists.get("invalidStudyIdList") != null && !((List) tokenizedLists.get("invalidStudyIdList")).isEmpty() ) {
-                addMessage( component, "The following study ids were invalid: " + tokenizedLists.get("invalidStudyIdList") ); 
+                addMessage( component, "The following study ids were invalid: " + tokenizedLists.get("invalidStudyIdList") + "." ); 
             }
             if ( tokenizedLists.get("failedTokenList") != null && !((List) tokenizedLists.get("failedTokenList")).isEmpty() ) {
-                addMessage( component, "The following tokens could not be interpreted: " + tokenizedLists.get("failedTokenList") );
+                addMessage( component, "The following tokens could not be interpreted: " + tokenizedLists.get("failedTokenList") + "." );
             }
     }
 

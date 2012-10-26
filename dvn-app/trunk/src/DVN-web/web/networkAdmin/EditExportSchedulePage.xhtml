@@ -48,19 +48,18 @@
 
           <div>
               
-              <table class="dvnPermissionsTable" cellspacing="0" cellpadding="0" border="0">
-                      <tr><td colspan="2" class="dvnPermissionsTableHeader"><ice:outputText value="Export Settings"/></td></tr>
+              <table class="dvnOptionsTable" columns="2" cellpadding="0" cellspacing="0">
                       <tr>
-                        <td class="dvnPermissionsTableOption">
+                        <td class="dvnOptionsTableOption">
                             <ice:outputText value="Export Schedule"/>
                         </td>
-                        <td>
+                        <td class="dvnOptionsTableForm">
                             <div jsfc="ice:panelGroup" styleClass="dvnInformationMessage">
                                 <div class="dvnMsgBlockContainer">
                                   <ice:outputText value="#{bundlePageInfo.exportsHelp}" escape="false"/>
                                 </div>
                             </div>
-                            <ice:panelGrid columns="2">
+                            <ice:panelGrid columns="2" cellspacing="0" cellpadding="0">
                                 <div jsfc="ice:panelGroup">
                                     <ice:outputText value="Period"/>
                                 </div>

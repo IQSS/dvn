@@ -15,13 +15,13 @@
           <ice:outputText value="#{bundlePageInfo.editDvnDownloadTermsHelp}" escape="false"/>
         </div>
       </div>
-      <div jsfc="ice:panelGroup">
+      <div jsfc="ice:panelGroup" styleClass="dvnAccountTermsEnable">
         <ice:selectBooleanCheckbox value="#{OptionsPage.networkDownloadTermsOfUseEnabled}"/>
         <ice:outputText value=" Enable Terms of Use"/>
       </div>
       <ice:message for="textArea1" styleClass="errorMessage" id="outputText2MsgDL"/>
       <br/>
-      <div jsfc="ice:panelGroup">
+      <div jsfc="ice:panelGroup" styleClass="dvnAccountTermsField">
         <ice:inputTextarea cols="70" rows="8"
                            styleClass="formHtmlEnabled" id="textArea1DL" immediate="true"
                            value="#{OptionsPage.networkDownloadTermsOfUse}">

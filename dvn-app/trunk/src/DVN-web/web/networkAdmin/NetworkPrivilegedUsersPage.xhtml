@@ -17,7 +17,7 @@
                       <tr><td colspan="2" class="dvnPermissionsTableHeader"><ice:outputText value="Network Dataverse Permission Settings"/></td></tr>
                       <tr>
                         <td class="dvnPermissionsTableOption">
-                          <ice:outputText value="Creating a New Dataverse"/>
+                          <ice:outputText value="Creating a Dataverse"/>
                         </td>
                         <td>
                           <ice:selectBooleanCheckbox id="checkbox1" value="#{OptionsPage.privileges.network.allowCreateRequest}"/>
@@ -75,13 +75,15 @@
 
                       <tr>
                         <td class="dvnPermissionsTableOption dvnPermissionsStackedCells">
-                            <ice:outputText value="Users Authorized to bypass Terms of Use"/>
+                            <ice:outputText value="Authorize Users to Bypass Terms of Use"/>
                         </td>
                         <td class="dvnPermissionsStackedCells">
-                          <p>
-                            <ice:graphicImage value="/resources/images/icon_warning.18.png" styleClass="dvn_icon"/>
-                            <ice:outputText styleClass="warnMessage" value=" We advise you to have a written agreement with authorized parties before allowing them to access data sets, bypassing the Terms of Use. The authorized party should be responsible for enforcing the Terms of Use to their end users. For more information, contact us at dvn_support@hmdc.harvard.edu."/>
-                          </p>
+                          <div class="dvnInformationMessage">
+                              <p>
+                                <ice:graphicImage value="/resources/images/icon_warning.18.png" styleClass="dvn_icon"/>
+                                <ice:outputText styleClass="warnMessage" value=" We advise you to have a written agreement with authorized parties before allowing them to access data sets, bypassing the Terms of Use. The authorized party should be responsible for enforcing the Terms of Use to their end users. For more information, contact us at dvn_support@hmdc.harvard.edu."/>
+                              </p>
+                          </div>
                           <ice:outputText id="outputText117" value="Username: "/>
                           <ice:inputText onkeypress="if (window.event) return processEvent('', 'addUserbutton100'); else return processEvent(event, 'addUserbutton100');" id="textField101" value="#{OptionsPage.TOUUserName}"/>
                           <ice:commandButton id="addUserButton100" value="Add" actionListener="#{OptionsPage.addTOUUser}"/>

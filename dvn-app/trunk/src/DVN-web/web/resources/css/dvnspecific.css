@@ -28,6 +28,7 @@ fieldset.dvnLoginPageAffiliate input.iceCmdBtn{display:block;float:right}
 /* MY OPTIONS */
 .dvnOptionsTable{width:100%;text-align:left}
 .dvnOptionsTable td{padding:.5em 1em;border-bottom:1px solid lightgray}
+.dvnOptionsTable td .icePnlGrd td, .dvnOptionsTable td .iceSelOneRb td {border:0;}
 td.dvnOptionsTableHeader{padding:.5em 1em;background:gainsboro;color:gray;text-transform:uppercase}
 .dvnOptionsTable label {font-weight:normal;}
 .dvnOptionsTable .dvnInformationMessage p:first-child {margin-top:0;}
@@ -272,6 +273,7 @@ td.dvnPermissionsTableOption{width:240px;padding-top:.75em;padding-bottom:.75em;
 .dvnPermissionsTable table.iceSelOneRb td{padding:0 .25em;border:0}
 .dvnPermissionsTable label.iceSelOneRb{font-size:90% !important}
 .dvnPermissionsTable .iceDatTbl span{font-size:90% !important}
+.dvnPermissionsTable div.dvnInformationMessage p:first-child {margin-top:0;}
 .dvnStudyPermissionsFileDetails th:first-child{width:10%;text-align:center}
 .dvnStudyPermissionsFileDetails table.iceDatTbl{margin-top:0;border-top:1px solid #d9d9d9}
 .dvnStudyPermissionsFileDetails table.iceDatTbl,.dvnStudyPermissionsFileDetails table.iceDatTbl td.iceDatTblCol1,.dvnStudyPermissionsFileDetails table.iceDatTbl td.iceDatTblCol2,.dvnStudyPermissionsFileDetails table.iceDatTbl tr.iceDatTblRow1,.dvnStudyPermissionsFileDetails table.iceDatTbl tr.iceDatTblRow2{border-left:0;border-right:0}

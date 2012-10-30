@@ -533,30 +533,61 @@ public class AddFilesPage extends VDCBaseBean implements java.io.Serializable {
                 return null; 
             }
             while ((zEntry = ziStream.getNextEntry()) != null) {
+                // Note that some zip entries may be directories - we 
+                // simply skip them:
+                if (!zEntry.isDirectory()) {
                 
-                File tempUploadedFile = FileUtil.createTempFile(dir, zEntry.getName());
+                    String fileEntryName = zEntry.getName();
+                    
+                    if (fileEntryName != null && !fileEntryName.equals("")) {
+                        
+                        String dirName = null;
+                        String finalFileName = null; 
+                        
+                        int ind = fileEntryName.lastIndexOf('/');
+                        
+                        if (ind > -1) {
+                            finalFileName = fileEntryName.substring(ind+1);
+                            if (ind > 0) {
+                                dirName = fileEntryName.substring(0, ind);
+                                dirName = dirName.replace('/', '-');
+                            }   
+                        } else {
+                            finalFileName = fileEntryName; 
+                        }
+                    
+                        File tempUploadedFile = FileUtil.createTempFile(dir, finalFileName);
             
-                tempOutStream = new FileOutputStream (tempUploadedFile); 
+                        tempOutStream = new FileOutputStream (tempUploadedFile); 
+                    
+                        byte[] dataBuffer = new byte[8192];
+                        int i = 0;
                 
-                byte[] dataBuffer = new byte[8192];
-                int i = 0;
+                        while ((i = ziStream.read(dataBuffer)) > 0) {
+                            tempOutStream.write(dataBuffer, 0, i);
+                            tempOutStream.flush(); 
+                        }
                 
-                while ((i = ziStream.read(dataBuffer)) > 0) {
-                    tempOutStream.write(dataBuffer, 0, i);
-                    tempOutStream.flush(); 
+                        tempOutStream.close(); 
+                
+                        // We now have the unzipped file saved in the upload directory;
+                
+                
+                        StudyFileEditBean tempFileBean = new StudyFileEditBean(tempUploadedFile, studyService.generateFileSystemNameSequence(), study);
+                        tempFileBean.setSizeFormatted(tempUploadedFile.length());
+                        
+                        // And, if this file was in a legit (non-null) directory, 
+                        // we'll use its name as the file category: 
+                        
+                        if (dirName != null) {
+                            tempFileBean.getFileMetadata().setCategory(dirName);
+                        }
+                
+                        fbList.add(tempFileBean);
+                    }
                 }
-                
                 ziStream.closeEntry(); 
-                tempOutStream.close(); 
-                
-                // We now have the unzipped file saved in the upload directory;
-                
-                
-                StudyFileEditBean tempFileBean = new StudyFileEditBean(tempUploadedFile, studyService.generateFileSystemNameSequence(), study);
-                tempFileBean.setSizeFormatted(tempUploadedFile.length());
-                
-                fbList.add(tempFileBean);
-                
+
             }
             
         } catch (Exception ex) {

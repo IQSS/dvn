@@ -43,11 +43,7 @@
             // ]]>
         </script>
         
-              <div jsfc="ice:panelGroup" styleClass="dvnInformationMessage">
-                <div class="dvnMsgBlockContainer">
-                  <ice:outputText value="#{bundlePageInfo.editDvSettingsHelp}" escape="false"/>
-                </div>
-              </div>
+              
               <ice:inputHidden id="vdcId" value="#{VDCRequest.currentVDCId}"/>
               <div jsfc="ice:panelGroup" styleClass="#{OptionsPage.msg.styleClass}" rendered="#{!empty OptionsPage.msg.messageText}">
                 <ice:outputText id="statusMessageEditSite" value="#{OptionsPage.msg.messageText}"/>

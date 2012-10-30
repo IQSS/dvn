@@ -259,12 +259,11 @@ span.dvnAddClassificationDvNotReleased{background:url(/dvn/resources/images/icon
 .dvnGuestBookResponseTableColHdr1, .dvnGuestBookResponseTableColHdr2, .dvnGuestBookResponseTableCol1, .dvnGuestBookResponseTableCol2 {white-space:nowrap;}
 /* PERMISSIONS */
 .dvnPermissionsTable{width:100%;text-align:left}
-.dvnPermissionsTable td{padding:.5em 2em;border-bottom:1px solid lightgray}
-.dvnPermissionsTable td.dvnPermissionsStackedCells{border-bottom:none}
+.dvnPermissionsTable td{padding:.5em 1em;border-bottom:1px solid lightgray}
 .dvnPermissionsTable td.dvnStudyFilePermTblChk{padding:10px 5px 5px 5px; vertical-align:top; text-align:center;}
 td.dvnPermissionsTableHeader{padding:.5em 1em;background:gainsboro;color:gray;text-transform:uppercase}
 td.dvnPermissionsTableOption{width:240px;padding-top:.75em;padding-bottom:.75em;display:table-cell;vertical-align:top}
-.dvnPermissionsTable .dvnPermissionsEmpty{text-align:center}
+.dvnPermissionsTable .dvnPermissionsEmpty{margin-top:10px;}
 .dvnPermissionsTable .dvnPermissionsEmpty span.iceOutTxt{color:gray}
 .dvnPermissionsTable fieldset.iceSelOneRb-dis{border:0;padding:0;background:none}
 .dvnPermissionsTable table.iceSelOneRb-dis td{padding:0 .25em;border:0}
@@ -277,6 +276,7 @@ td.dvnPermissionsTableOption{width:240px;padding-top:.75em;padding-bottom:.75em;
 .dvnStudyPermissionsFileDetails th:first-child{width:10%;text-align:center}
 .dvnStudyPermissionsFileDetails table.iceDatTbl{margin-top:0;border-top:1px solid #d9d9d9}
 .dvnStudyPermissionsFileDetails table.iceDatTbl,.dvnStudyPermissionsFileDetails table.iceDatTbl td.iceDatTblCol1,.dvnStudyPermissionsFileDetails table.iceDatTbl td.iceDatTblCol2,.dvnStudyPermissionsFileDetails table.iceDatTbl tr.iceDatTblRow1,.dvnStudyPermissionsFileDetails table.iceDatTbl tr.iceDatTblRow2{border-left:0;border-right:0}
+.dvnUserPermissionsTable tr:first-child td {background:#EEF3FB;}
 /* VARIABLE PAGE */
 .dvnVariableStatisticsBlock{margin-bottom:30px;padding:20px 10px;border:1px solid #cccccc;background:#F2F2F2;}
 /* ADD SITE */

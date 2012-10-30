@@ -15,11 +15,13 @@
                       <ice:outputText value="#{bundlePageInfo.manageDvPermissionsHelp}" escape="false" />
                     </div>
                 </div>
-                <table class="dvnPermissionsTable" cellspacing="0" cellpadding="0" border="0">
-                  <tr><td colspan="2" class="dvnPermissionsTableHeader"><ice:outputText value="Dataverse Contribution Settings"/></td></tr>
+                <table class="dvnPermissionsTable dvnOptionsTable" cellspacing="0" cellpadding="0" border="0">
 
                   <div jsfc="ice:panelGroup" rendered="#{!OptionsPage.vdc.harvestingDv}">
                       <tr>
+                          <td class="dvnOptionsTableOption">
+                            <ice:outputText value="Contributors Settings"/>
+                          </td>
                           <td>
                               <ice:selectOneRadio
                                   layout="pageDirection"
@@ -34,26 +36,33 @@
                           </td>
                       </tr>
                   </div>
-                </table>
-                <table class="dvnPermissionsTable" cellspacing="0" cellpadding="0" border="0">
-                  <tr><td colspan="2" class="dvnPermissionsTableHeader"><ice:outputText value="User Permission Settings"/></td></tr>
 
                   <tr>
-                    <td colspan="2">
+                    <td class="dvnOptionsTableOption">
+                        <ice:outputText value="User Permissions"/>
+                    </td>
+                    <td>
+                      <div jsfc="ice:panelGroup" rendered="#{currentRow.vdcRole==null}">
+                        <ice:graphicImage value="/resources/images/icon_information.18.png" styleClass="dvn_icon"/>
+                        <ice:outputText value=" Refer to the Dataverse Administration Guides for the "/>
+                        <ice:outputLink value="http://guides.thedata.org/book/manage-permissions" target="_blank" title="View Role Descriptions">
+                            <ice:outputText value="Role Descriptions"/>
+                         </ice:outputLink>
+                        <ice:outputText value="."/>
+                      </div>
                       <div class="dvnManageTableCreateLink">
                             <ice:outputLink value="/dvn/faces/login/AddAccountPage.xhtml">
-                                <ice:outputText value="Create New User"/>
+                                <ice:outputText value="Create User"/>
                             </ice:outputLink>
                       </div>
                       <ice:dataTable binding="#{OptionsPage.userTable}" cellpadding="0" cellspacing="0" width="100%"
-                                     columnClasses="vdcColPadded, vdcColPadded, vdcColPadded" headerClass="list-header-left" id="dataTable1"
-                                     columnWidths="20%,60%,20%"
-                                     rowClasses="list-row-even,list-row-odd" value="#{OptionsPage.vdcRoleList}" var="currentRow">
+                                     columnClasses="vdcColPadded, vdcColPadded, vdcColPadded" headerClass="list-header-left" rowClasses="list-row-even,list-row-odd" 
+                                     id="dataTable1" styleClass="dvnUserPermissionsTable"
+                                     columnWidths="20%,60%,20%" value="#{OptionsPage.vdcRoleList}" var="currentRow">
                         <ice:column id="column1">
                           <f:facet name="header">
                             <ice:outputText id="outputText3" value="Username"/>
                           </f:facet>
-
                             <ice:outputLink id="hyperlink2"  rendered="#{currentRow.vdcRole!=null}" value="/dvn#{VDCRequest.currentVDCURL}/faces/login/AccountPage.xhtml?userId=#{currentRow.vdcRole.vdcUser.id}">
                             <ice:outputText id="hyperlink2Text" value="#{currentRow.vdcRole.vdcUser.userName}"/>
                           </ice:outputLink>
@@ -61,28 +70,21 @@
                         </ice:column>
                         <ice:column id="column9">
                           <f:facet name="header">
-                            <div>
-                              <ice:outputText id="outputText16" value="Permission Setting"/>
-                            </div>
+                            <ice:outputText id="outputText16" value="Permission Setting"/>
                           </f:facet>
                           <ice:selectOneMenu rendered="#{currentRow.vdcRole==null}" id="newRoleSelectMenu" value="#{OptionsPage.newRoleId}">
                             <ice:message for="roleSelectMenu" styleClass="errorMessage"/>
                             <f:selectItems id="roleSelectItems0" value="#{OptionsPage.roleSelectItems}"/>
                           </ice:selectOneMenu>
-                           <ice:selectOneMenu rendered="#{currentRow.vdcRole!=null and currentRow.vdcRole.vdcUser.id!=PrivilegedUsersPage.vdc.creator.id}" id="roleSelectMenu" value="#{currentRow.selectedRoleId}">
+                          <ice:selectOneMenu rendered="#{currentRow.vdcRole!=null and currentRow.vdcRole.vdcUser.id!=PrivilegedUsersPage.vdc.creator.id}" id="roleSelectMenu" value="#{currentRow.selectedRoleId}">
                             <ice:message for="roleSelectMenu" styleClass="errorMessage"/>
                             <f:selectItems id="roleSelectItems1" value="#{OptionsPage.roleSelectItems}"/>
                           </ice:selectOneMenu>
                          <ice:outputText rendered="#{currentRow.vdcRole!=null and currentRow.vdcRole.vdcUser.id==OptionsPage.vdc.creator.id}" id="disabledRole" value="Admin"/>
-                         <ice:commandButton rendered="#{currentRow.vdcRole==null}" id="addUserButton" value="Add" actionListener="#{OptionsPage.addUser}"/>
-
-                         <ice:outputLink rendered="#{currentRow.vdcRole==null}" value="http://guides.thedata.org/book/manage-permissions" styleClass="dvninlinelink" target="_blank" title="View Role Descriptions">
-                            <ice:outputText value="View Role Descriptions"/>
-                         </ice:outputLink>
-
                          <ice:message styleClass="errorMessage" for="userName"/>
                         </ice:column>
                         <ice:column>
+                          <ice:commandButton rendered="#{currentRow.vdcRole==null}" id="addUserButton" value="Add" actionListener="#{OptionsPage.addUser}"/>
                           <ice:commandButton id="removeRoleButton" value="Remove" rendered="#{currentRow.vdcRole!=null and currentRow.vdcRole.vdcUser.id!=OptionsPage.vdc.creator.id}" actionListener="#{OptionsPage.removeRole}"/>
                           <ice:outputText value="Dataverse Creator&lt;br&#47;&gt;(Cannot modify Role)" escape="false" rendered="#{currentRow.vdcRole.vdcUser.id==OptionsPage.vdc.creator.id}"/>
                         </ice:column>
@@ -90,20 +92,17 @@
                     </td>
                   </tr>
                   <tr>
-                    <td class="dvnPermissionsTableOption dvnPermissionsStackedCells">
+                    <td class="dvnOptionsTableOption">
                       <ice:outputText value="Privileged Groups"/>
                     </td>
-                    <td class="dvnPermissionsStackedCells">
+                    <td>
                       <ice:outputText value="Group Name: "/>
                       <ice:inputText id="groupName" binding="#{OptionsPage.groupInputText}" value="#{OptionsPage.groupName}" onkeypress="if (window.event) return processEvent('', 'privilegedUsersForm:addGroupButton'); else return processEvent(event, 'privilegedUsersForm:addGroupButton');"/>
                       <ice:commandButton id="addGroupButton" value="Add" actionListener="#{OptionsPage.addGroup}"/>
                       <ice:message styleClass="errorMessage" for="groupName"/>
                       <br/>
                       <ice:outputText styleClass="vdcHelpText" value="Enter group name to allow a group access to the dataverse."/>
-                    </td>
-                  </tr>
-                  <tr>
-                    <td colspan="2">
+                      
                       <div jsfc="ice:panelGroup" rendered="#{empty OptionsPage.vdc.allowedGroups}" styleClass="dvnPermissionsEmpty">
                         <ice:outputText value="No groups have been given permission to access the dataverse."/>
                       </div>
@@ -132,15 +131,13 @@
                       </ice:dataTable>
                     </td>
                   </tr>
-                </table>
 
-                <table class="dvnPermissionsTable" cellspacing="0" cellpadding="0" border="0">
-                  <tr><td colspan="2" class="dvnPermissionsTableHeader"><ice:outputText value="Dataverse File Permission Settings"/></td></tr>
                   <tr>
-                    <td class="dvnPermissionsTableOption">
-                      <ice:outputText value="Restrict ALL files in this dataverse"/>
+                    <td class="dvnOptionsTableOption">
+                      <ice:outputText value="File Restriction Settings"/>
                     </td>
                     <td>
+                      <ice:outputText value="Restrict ALL files in this Dataverse: "/>
                       <ice:selectOneMenu id="dropdown3"  styleClass="dvnFilesRestrictedSelector"  partialSubmit="true" 
                                          value="#{OptionsPage.filesRestricted}" >
                         <f:selectItem itemLabel="Not Selected" itemValue="false"/>
@@ -182,17 +179,14 @@
                     <td class="dvnPermissionsTableOption dvnPermissionsStackedCells">
                       <ice:outputText value="Restricted File User Access"/>
                     </td>
-                    <td class="dvnPermissionsStackedCells">
+                    <td>
                       <ice:outputText value="Username: "/>
                       <ice:inputText id="fileUserName" binding="#{OptionsPage.fileUserInputText}" value="#{OptionsPage.addFileUserName}"/>
                       <ice:commandButton value="Add" actionListener="#{OptionsPage.addFileUser}"/>
                       <ice:message styleClass="errorMessage" for="fileUserName"/>
                       <br/>
                       <ice:outputText styleClass="vdcHelpText" value="Enter username to allow an user access to restricted files."/>
-                    </td>
-                  </tr>
-                  <tr class="dvnfilesrestrictselected">
-                    <td colspan="2">
+                      
                       <div jsfc="ice:panelGroup" rendered="#{empty OptionsPage.vdc.allowedFileUsers}" styleClass="dvnPermissionsEmpty">
                         <ice:outputText value="No users have been given permission to access dataverse files."/>
                       </div>
@@ -226,10 +220,7 @@
                       <ice:message styleClass="errorMessage" for="fileGroupName"/>
                       <br/>
                       <ice:outputText styleClass="vdcHelpText" value="Enter group name to allow a group access to restricted files."/>
-                    </td>
-                  </tr>
-                  <tr class="dvnfilesrestrictselected">
-                    <td colspan="2">
+                      
                       <div jsfc="ice:panelGroup" rendered="#{empty OptionsPage.vdc.allowedFileGroups}" styleClass="dvnPermissionsEmpty">
                         <ice:outputText value="No groups have been given permission to access dataverse files."/>
                       </div>

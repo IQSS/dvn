@@ -111,15 +111,14 @@
                                         <ice:panelTab id="generalSub" label="General">
                                             <div jsfc="ice:panelGroup" styleClass="dvnInformationMessage">
                                                 <div class="dvnMsgBlockContainer">
-                                                    <p>Release your dataverse, edit the settings, enable the homepage description, classify your dataverse. Save your changes before navigating to another page or tab, or you will lose them.</p>
+                                                  <ice:outputText value="#{bundlePageInfo.editDvSettingsHelp}" escape="false"/>
                                                 </div>
                                             </div>
                                             <div jsfc="ice:panelGroup">
-                                              <table class="dvnPermissionsTable" cellspacing="0" cellpadding="0" border="0">
-                                                    <tr><td colspan="2" class="dvnPermissionsTableHeader"><ice:outputText value="Dataverse Permission Settings"/></td></tr>
+                                              <table class="dvnOptionsTable" cellspacing="0" cellpadding="0" border="0">
                                                     <tr>
-                                                        <td class="dvnPermissionsTableOption">
-                                                        <ice:outputText value="Dataverse Release Settings"/>
+                                                        <td class="dvnOptionsTableOption">
+                                                            <ice:outputText value="Dataverse Release Settings"/>
                                                         </td>
                                                         <td>
                                                             <ice:selectOneMenu value="#{OptionsPage.siteRestriction}"  disabled="#{!(OptionsPage.enableSelectRelease)}">
@@ -156,8 +155,8 @@
                                         <ice:panelTab id="customizationSub" label="Customization">
                                             <div jsfc="ice:panelGroup">
                                                 <ui:include src="EditBannerFooterPage.xhtml"></ui:include>
+                                                <ui:include src="/admin/DefaultSortOrderPage.xhtml"></ui:include>
                                                 <ui:include src="/admin/SearchFieldsPage.xhtml"></ui:include>
-                                                <ui:include src="/admin/DefaultSortOrderPage.xhtml"></ui:include> 
                                                 <div class="dvnFormPadding dvnFormMargin">
                                                 <ice:commandButton id="saveButton" value="Save Changes" action="#{OptionsPage.saveCustomization}"/>
                                                 <!--<ice:commandButton id="cancelButton" value="Cancel" action="#{OptionsPage.cancelCustomization}"/>-->
@@ -172,27 +171,25 @@
                                                        <ice:outputText value="#{bundlePageInfo.codePromotionalHelp}" escape="false"/>
                                                      </div>
                                                 </div>
-                                                
-                                                    <div jsfc="ice:panelGroup" styleClass="dvnPromotionalLinks" rendered="#{OptionsPage.twitterConfigured}">
-                                                      <div class="dvnPromotionalLinksBlock">
-                                                        <div class="dvnPromotionalLinksHeader">
-                                                          <ice:outputText value="Sync Twitter Account"/>
-                                                        </div>
-                                                        <div class="f">
-                                                            <div class="f" style="float:left">
-                                                                <ice:commandLink action="#{OptionsPage.authorizeTwitter}" rendered="#{!OptionsPage.twitterEnabled}">
-                                                                    <ice:outputText  value="Enable Twitter"/>
-                                                                </ice:commandLink>
-                                                                <ice:commandLink action="#{OptionsPage.removeTwitter}" rendered="#{OptionsPage.twitterEnabled}">
-                                                                    <ice:outputText  value="Disable Twitter"/>
-                                                                </ice:commandLink>                                        
-                                                            </div>
-                                                            <div class="f" style="float:left">
-                                                                <ice:outputText value="Enable or disable automatic tweets"/>
-                                                            </div>
-                                                        </div>
-                                                      </div>
-                                                    </div>
+                                                <div jsfc="ice:panelGroup" styleClass="dvnPromotionalLinks" rendered="#{OptionsPage.twitterConfigured}">
+                                                <table class="dvnOptionsTable" cellspacing="0" cellpadding="0" border="0">
+                                                    <tr><td colspan="2" class="dvnPermissionsTableHeader"><ice:outputText value="Twitter"/></td></tr>
+                                                    <tr>
+                                                        <td class="dvnOptionsTableOption">
+                                                            <ice:outputText value="Sync Dataverse With Twitter"/>
+                                                        </td>
+                                                        <td>
+                                                            <ice:commandLink action="#{OptionsPage.authorizeTwitter}" rendered="#{!OptionsPage.twitterEnabled}">
+                                                                <ice:outputText  value="Enable Twitter"/>
+                                                            </ice:commandLink>
+                                                            <ice:commandLink action="#{OptionsPage.removeTwitter}" rendered="#{OptionsPage.twitterEnabled}">
+                                                                <ice:outputText  value="Disable Twitter"/>
+                                                            </ice:commandLink>
+                                                            <ice:outputText value=" syncing with your Dataverse to send automatic tweets."/>
+                                                        </td>
+                                                    </tr>
+                                                </table>
+                                                </div>
                                                 
                                                 <ui:include src="/admin/PromotionalLinkSearchBoxPage.xhtml"></ui:include>
                                             </div>

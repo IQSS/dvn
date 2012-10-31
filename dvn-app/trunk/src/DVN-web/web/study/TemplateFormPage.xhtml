@@ -2005,7 +2005,8 @@
                         <ice:commandButton rendered="#{customValuesDataModel[1].size() > 1}" 
                                 alt="Remove Row" title="Remove Row" image="/resources/images/icon_remove.gif" actionListener="#{TemplateFormPage.removeCustomRow}"/>
 
-                        <ice:commandLink value="Select Vocabulary" rendered="#{customFieldsDataModel[1].rowIndex == 0 }" 
+                       <ice:commandLink value="Select Vocabulary" 
+                                        rendered="#{customFieldsDataModel[1].rowIndex==0}" 
                                        actionListener="#{TemplateFormPage.openPopup}"/>
 
                         <ice:selectOneMenu immediate="false" partialSubmit="true" rendered="#{customFieldsDataModel[1].rowIndex==0}"
@@ -2056,7 +2057,7 @@
                          <ice:message styleClass="errorMessage" for="selectManyCustom"/>
                     </ice:column>
                     <ice:column>
-                        <ice:commandLink value="Select Vocabulary" rendered="#{ customFieldsDataModel[0].studyField.fieldType == 'textBox'}" 
+                        <ice:commandLink value="Select Vocabulary" 
                                          actionListener="#{TemplateFormPage.openPopup}"/>
 
                         <ice:selectOneMenu immediate="false" partialSubmit="true"

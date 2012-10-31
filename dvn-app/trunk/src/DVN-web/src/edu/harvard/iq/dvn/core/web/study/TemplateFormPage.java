@@ -694,9 +694,9 @@ public class TemplateFormPage extends VDCBaseBean implements java.io.Serializabl
         editTemplateService.cancel();
 
         if (getVDCRequestBean().getCurrentVDC() != null) {
-            return "/admin/OptionsPage?faces-redirect=true" + getNavigationVDCSuffix();
+            return "/admin/OptionsPage?faces-redirect=true&tab=templates" + getNavigationVDCSuffix();
         } else {
-            return "/networkAdmin/NetworkOptionsPage.xhtml?faces-redirect=true";
+            return "/networkAdmin/NetworkOptionsPage.xhtml?faces-redirect=true&tab=templates";
         } 
     }
     
@@ -1101,9 +1101,9 @@ public class TemplateFormPage extends VDCBaseBean implements java.io.Serializabl
         }   
         
         if (getVDCRequestBean().getCurrentVDC() != null) {
-            return "/admin/OptionsPage?faces-redirect=true" + getNavigationVDCSuffix();
+            return "/admin/OptionsPage?faces-redirect=true&tab=templates" + getNavigationVDCSuffix();
         } else {
-            return "/networkAdmin/NetworkOptionsPage.xhtml?faces-redirect=true";
+            return "/networkAdmin/NetworkOptionsPage.xhtml?faces-redirect=true&tab=templates";
         }
         
     }
@@ -2972,7 +2972,7 @@ public class TemplateFormPage extends VDCBaseBean implements java.io.Serializabl
         templateFieldCVs.clear();
         Object[] fieldsRowData = getCustomFieldsRowData( customFieldsPanelSeries.getRowIndex() );
         TemplateField templateField = (TemplateField) fieldsRowData[0];  
-        TemplateFieldControlledVocabulary tfcv = new TemplateFieldControlledVocabulary(templateField);
+        TemplateFieldControlledVocabulary tfcv = new TemplateFieldControlledVocabulary(templateField, new Long(0));
         templateFieldCVs.add(tfcv);
         popupControlledVocabulary = templateField.getControlledVocabulary();
         popupSelectId = popupControlledVocabulary != null ? popupControlledVocabulary.getId().toString() : "";
@@ -3001,9 +3001,11 @@ public class TemplateFormPage extends VDCBaseBean implements java.io.Serializabl
     public void changePopupControlledVocabulary(ValueChangeEvent event) {
 
         String changeCVId = (String) event.getNewValue();
+        System.out.print("changeCVId " + changeCVId);
         Long rowIndex = new Long(controlledVocabularyPopupPanelSeries.getRowIndex());
-        
+                System.out.print("controlledVocabularyPopupPanelSeries.getRowIndex() " + controlledVocabularyPopupPanelSeries.getRowIndex());
         for (TemplateFieldControlledVocabulary tfcv : templateFieldCVs) {
+                    System.out.print("tfcv.getIndex() " + tfcv.getIndex());
             if (rowIndex.equals(tfcv.getIndex())) {
                 tfcv.setControlledVocabDisplay(templateService.getControlledVocabulary(new Long(changeCVId)));
             }
@@ -3058,8 +3060,6 @@ public class TemplateFormPage extends VDCBaseBean implements java.io.Serializabl
                     studyBundleLabel = this.templateField.getStudyField().getName();
                 }
             }
-            
-            //System.out.println("templateField.getStudyField().getFieldType():  " + templateField.getStudyField().getFieldType());
 
             for (ControlledVocabulary cv: templateService.getNetworkControlledVocabulary()){
                 if (templateField.getStudyField().getFieldType() == null){
@@ -3082,7 +3082,7 @@ public class TemplateFormPage extends VDCBaseBean implements java.io.Serializabl
                 } else {
                     cvAvailable = true;
                     controlledVocabularyOptions.add(new SelectItem(cv.getId(), cv.getName())); 
-                                        System.out.println("Final Else -after add ");
+                    System.out.println("custom cv.getId()  " + cv.getId());
                 }                
             }
         }
@@ -3096,7 +3096,7 @@ public class TemplateFormPage extends VDCBaseBean implements java.io.Serializabl
             }
             
             try {
-                studyBundleLabel      = studybundle.getString(getString);
+                studyBundleLabel  = studybundle.getString(getString);
             } catch (Exception uee) {
                 System.out.println("Exception:  " + uee.toString());
                 studyBundleLabel = this.templateField.getStudyField().getTitle();
@@ -3105,7 +3105,6 @@ public class TemplateFormPage extends VDCBaseBean implements java.io.Serializabl
                 }
             }
             
-            //System.out.println("templateField.getStudyField().getFieldType():  " + templateField.getStudyField().getFieldType());
             for (ControlledVocabulary cv : templateService.getNetworkControlledVocabulary()) {
                 if (templateField.getStudyField().getFieldType() == null) {
                     cvAvailable = true;
@@ -3128,9 +3127,9 @@ public class TemplateFormPage extends VDCBaseBean implements java.io.Serializabl
                 } else {
                     cvAvailable = true;
                     controlledVocabularyOptions.add(new SelectItem(cv.getId(), cv.getName()));
+                    System.out.println("standard cv.getId()  " + cv.getId());
                 }
             }
-
         }
 
         public ControlledVocabulary getControlledVocabDisplay() {

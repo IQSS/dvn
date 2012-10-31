@@ -17,6 +17,8 @@
             <f:metadata>
                 <f:event type="preRenderView" listener="#{OptionsPage.preRenderView}"/>  
                 <f:viewParam name="oauth_verifier" value="#{OptionsPage.twitterVerifier}"/>
+                <f:viewParam name="tab" value="#{OptionsPage.tab}"/>
+                <f:viewParam name="tab2" value="#{OptionsPage.tab2}"/>
             </f:metadata>
         </ui:define> 
         <ui:define name="body">
@@ -38,9 +40,8 @@
             <ice:commandButton visible="false" id="initGuestBookResponse" action="#{OptionsPage.initGuestBookResponses}"/>
             <ice:commandButton visible="false" id="initUserData" action="#{OptionsPage.initUserData}"/>
             <ice:commandButton visible="false" id="initPrivilegedUserData" action="#{OptionsPage.initPrivilegedUserData}"/>
-            
             <div class="dvn_section">
-                <ice:panelTabSet id="tabSet1" styleClass="dvnTabs">
+                <ice:panelTabSet id="tabSet1" binding="#{OptionsPage.tabSet1}"  styleClass="dvnTabs">
                     <!-- DATAVERSE OPTIONS -->   
                     <ice:panelTab id="networkOptions" label="Dataverses" url="/dvn#{VDCRequest.currentVDCURL}/faces/networkAdmin/NetworkOptionsPage.xhtml?tab=dataverseOptions" rendered="#{VDCSession.loginBean.networkAdmin}">
 
@@ -112,21 +113,26 @@
                                             <td><ice:outputText value="#{VersionPage.serverName}"/></td>
                                         </tr>
                                      </table>
-                                     <div id="groupPanel6" class="dvnFormPadding dvnFormMargin">
-                                         <ice:commandButton id="btnSaveSettings" value="#{bundle.saveButtonLabel} Changes" action="#{OptionsPage.saveNetworkGeneralSettings_action}"/>
+                                     <div id="groupPanel6" class="dvnFormPadding dvnFormMargin" >
+                                         <ice:commandButton id="btnSaveSettings" value="#{bundle.saveButtonLabel} Changes"
+                                                            rendered="#{!VDCRequest.readOnlyDatabase}"
+                                                            action="#{OptionsPage.saveNetworkGeneralSettings_action}"/>
                                      </div>
                                  </div>
                              </ice:panelTab>
                             <ice:panelTab id="networkAdvancedSettings" label="Advanced">
                                  <ui:include src="/networkAdmin/EditNetworkDVRequirementsPage.xhtml"></ui:include>
                                  <div id="groupPanelAdvanced" class="dvnFormPadding dvnFormMargin">
-                                    <ice:commandButton id="btnSaveAdvanced" value="#{bundle.saveButtonLabel} Changes" action="#{OptionsPage.saveNetworkAdvancedSettings_action}"/>
+                                    <ice:commandButton id="btnSaveAdvanced" value="#{bundle.saveButtonLabel} Changes" 
+                                                       rendered="#{!VDCRequest.readOnlyDatabase}"
+                                                       action="#{OptionsPage.saveNetworkAdvancedSettings_action}"/>
                                  </div>
                             </ice:panelTab>
                             <ice:panelTab id="networkCustomizartionSettings" label="Customization">
                                  <ui:include src="/admin/EditBannerFooterPage.xhtml"></ui:include>
                                  <div class="dvnFormPadding dvnFormMargin">
-                                    <ice:commandButton id="saveButton" value="Save" action="#{OptionsPage.saveNetworkCustomization}"/>  
+                                    <ice:commandButton id="saveButton" value="Save" rendered="#{!VDCRequest.readOnlyDatabase}"
+                                                       action="#{OptionsPage.saveNetworkCustomization}"/>  
                                  </div>
                             </ice:panelTab>
                             <ice:panelTab id="twitterSettings" label="Promote Your Network" rendered="#{OptionsPage.twitterConfigured}">
@@ -136,10 +142,10 @@
                                                 <ice:outputText value="Sync Twitter"/>
                                             </td>
                                             <td>
-                                                <ice:commandLink action="#{OptionsPage.authorizeTwitter}" rendered="#{!OptionsPage.twitterEnabled}">
+                                                <ice:commandLink action="#{OptionsPage.authorizeTwitter}" rendered="#{!OptionsPage.twitterEnabled and !VDCRequest.readOnlyDatabase}">
                                                      <ice:outputText value="Enable Twitter"/>
                                                 </ice:commandLink>
-                                                <ice:commandLink action="#{OptionsPage.removeTwitter}" rendered="#{OptionsPage.twitterEnabled}">
+                                                <ice:commandLink action="#{OptionsPage.removeTwitter}" rendered="#{OptionsPage.twitterEnabled and !VDCRequest.readOnlyDatabase}">
                                                      <ice:outputText value="Disable Twitter"/>
                                                 </ice:commandLink>
                                                 <ice:outputText value=" syncing with your Dataverse to send automatic tweets."/>
@@ -220,7 +226,7 @@
                      <ice:panelTab id="permissions" label="Permissions" onclick="initPrivilegedUserData();"
                                    url="/dvn#{VDCRequest.currentVDCURL}/faces/networkAdmin/NetworkOptionsPage.xhtml?tab=permissions" rendered="#{VDCSession.loginBean.networkAdmin or VDCSession.loginBean.curatorOrAbove or (not VDCRequest.currentVDC.harvestingDv and (VDCSession.loginBean.contributor or VDCRequest.currentVDC.allowRegisteredUsersToContribute))}">
                             <div jsfc="ice:panelGroup" id="layoutPanelGroupPermissions" panelLayout="flow">
-                                <ice:panelTabSet id="tabSetPermissions" styleClass="dvnTabs dvnSubTabs">
+                                <ice:panelTabSet id="tabSetPermissions" styleClass="dvnTabs dvnSubTabs" binding="#{OptionsPage.permissionsSubTab}">
                                     <!-- PERMISSIONS -->
                                     <ice:panelTab id="permissionsSub" label="Permissions" >
                                             <div jsfc="ice:panelGroup" panelLayout="flow">
@@ -246,7 +252,8 @@
                                         </table>
                                         <div jsfc="ice:panelGroup">
                                             <div class="dvnFormPadding dvnFormMargin">
-                                                <ice:commandButton  styleClass="dvnListenSave" value="Save Changes" action="#{OptionsPage.save_NetworkTermsOfUseAction}"/>
+                                                <ice:commandButton  styleClass="dvnListenSave" value="Save Changes"
+                                                                    rendered="#{!VDCRequest.readOnlyDatabase}" action="#{OptionsPage.save_NetworkTermsOfUseAction}"/>
                                                 <!--<ice:commandButton  value="Cancel" action="#{OptionsPage.toucancel_action}"/>-->
                                             </div>
                                         </div>

@@ -239,7 +239,7 @@ public class VDCNetwork implements java.io.Serializable  {
      * @return Value of property allowCreateRequest.
      */
     public boolean isAllowCreateRequest() {
-        return this.allowCreateRequest;
+        return this.allowCreateRequest  && !this.readonly;
     }
 
     /**
@@ -770,4 +770,26 @@ public class VDCNetwork implements java.io.Serializable  {
     public void setRequireDVstudiesforrelease(boolean requireDVstudiesforrelease) {
         this.requireDVstudiesforrelease = requireDVstudiesforrelease;
     }
+    
+    private boolean readonly;
+
+    public boolean isReadonly() {
+        return readonly;
+    }
+
+    public void setReadonly(boolean readonly) {
+        this.readonly = readonly;
+    }
+    
+    @Column(name="statusnotice", columnDefinition="TEXT")
+    private String statusNotice;
+
+    public String getStatusNotice() {
+        return statusNotice;
+    }
+
+    public void setStatusNotice(String statusNotice) {
+        this.statusNotice = statusNotice;
+    }
+    
 }

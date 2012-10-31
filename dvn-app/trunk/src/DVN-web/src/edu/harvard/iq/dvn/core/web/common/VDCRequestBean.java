@@ -191,7 +191,18 @@ public class VDCRequestBean extends VDCBaseBean implements java.io.Serializable 
 
         return logoutPage.booleanValue();
 
-    }    
+    }   
+    
+    private Boolean readOnlyDatabase = null;
+    
+    public boolean isReadOnlyDatabase() {
+            if (getVdcNetwork().isReadonly()) {
+                readOnlyDatabase = Boolean.TRUE;
+            } else {
+                readOnlyDatabase = Boolean.FALSE;
+            }
+        return readOnlyDatabase.booleanValue();
+    } 
 
     public String getPageDefName() {
 

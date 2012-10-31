@@ -29,6 +29,7 @@
           <div>
               <ice:dataTable cellpadding="0" cellspacing="0" width="100%"
                              styleClass="dvnHarvestSitesTable" id="dataTable1"
+                             binding="#{OptionsPage.harvestDataTable}"
                              headerClass="iceDatTblColHdr1 list-header-left vdcColPadded"
                              columnWidths="25%,8%,18%,20%,17%,7%,5%"
                              rowClasses="list-row-even vdcColPadded, list-row-odd vdcColPadded"
@@ -89,7 +90,7 @@
                   <f:facet name="header">
                     <ice:outputText value="Harvest"/>
                   </f:facet>
-                  <ice:commandButton value="Run Now" rendered="#{!currentRow.harvestingNow}" actionListener="#{HarvestSitesPage.doRunNow}"/>
+                  <ice:commandButton value="Run Now" rendered="#{!currentRow.harvestingNow}" actionListener="#{OptionsPage.doRunNow}"/>
                   <ice:outputText value="(Nesstar resource: dataverse will be re-harvested from scratch; update-based harvesting not yet supported)" rendered="#{currentRow.nesstar and !currentRow.harvestingNow}"/>
                   <ice:outputText value="Currently Running" rendered="#{currentRow.harvestingNow}"/>
                 </ice:column>

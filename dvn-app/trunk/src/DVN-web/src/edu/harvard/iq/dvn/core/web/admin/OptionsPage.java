@@ -59,6 +59,8 @@ import javax.faces.event.ActionEvent;
 import javax.faces.event.ValueChangeEvent;
 import javax.faces.model.SelectItem;
 import javax.inject.Named;
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
 import javax.servlet.http.HttpServletRequest;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -110,6 +112,9 @@ public class OptionsPage extends VDCBaseBean  implements java.io.Serializable {
     @EJB StudyFileServiceLocal studyFileService;
     @EJB HarvestStudyServiceLocal harvestStudyService;
     @EJB GNRSServiceLocal gnrsService;
+    
+    @PersistenceContext(unitName = "VDCNet-ejbPU")
+    EntityManager em;
     
     public void init() {   
         if (twitterVerifier != null && getSessionMap().get("requestToken") != null) {
@@ -440,11 +445,19 @@ public class OptionsPage extends VDCBaseBean  implements java.io.Serializable {
     }
     
     private String tab;
-
     public String getTab() {return tab;}
     public void setTab(String tab) {
-        if ( tab == null || tab.equals("studies") || tab.equals("collections") || tab.equals("templates") || tab.equals("permissions") ) {
+        if ( tab == null || tab.equals("studies") || tab.equals("collections") || tab.equals("vocabulary")
+                || tab.equals("harvesting")
+                || tab.equals("classifications") || tab.equals("templates") || tab.equals("permissions") ) {
             this.tab = tab;
+        }
+    }
+    private String tab2;
+    public String getTab2() {return tab2;}
+    public void setTab2(String tab2) {
+        if ( tab2 == null || tab2.equals("groups") || tab2.equals("users") ) {
+            this.tab2 = tab2;
         }
     }
     private int selectedIndex;
@@ -453,13 +466,16 @@ public class OptionsPage extends VDCBaseBean  implements java.io.Serializable {
     private PanelTabSet tabSet1 = new PanelTabSet();
     public PanelTabSet getTabSet1() {return tabSet1;}
     public void setTabSet1(PanelTabSet tabSet1) {this.tabSet1 = tabSet1;}
+     private PanelTabSet permissionsSubTab = new PanelTabSet();
+    public PanelTabSet getPermissionsSubTab() {return permissionsSubTab;}
+    public void setPermissionsSubTab(PanelTabSet permissionsSubTab) {this.permissionsSubTab = permissionsSubTab;}
     
     private void initSelectedTabIndex() {
-         
+        
         if (tab == null && getVDCRequestBean().getSelectedTab() != null) {
             tab = getVDCRequestBean().getSelectedTab();
         }
-        if (tab != null) {
+        if (tab != null  && vdc != null) {
             if (tab.equals("studies")) {
                 selectedIndex=0;
             } else if (tab.equals("collections")) {
@@ -471,9 +487,36 @@ public class OptionsPage extends VDCBaseBean  implements java.io.Serializable {
             } else if (tab.equals("settings")) {
                 selectedIndex=4;
             } 
-
             tabSet1.setSelectedIndex(selectedIndex);
-
+        }
+        if (tab != null  && vdc == null) {
+            if (tab.equals("dataverseOptions")) {
+                selectedIndex=0;
+            } else if (tab.equals("settings")) {
+                selectedIndex=1;
+            } else if (tab.equals("classifications")) {
+                selectedIndex=2;
+            } else if (tab.equals("templates")) {
+                selectedIndex=3;
+            } else if (tab.equals("vocabulary")){
+                selectedIndex=4;
+            } else if (tab.equals("harvesting")) {
+                selectedIndex=5;
+            } else if (tab.equals("permissions")) {
+                initPrivilegedUserData();
+                permissionsSubTab.setSelectedIndex(0);
+                if (tab2 != null && tab2.equals("users")){
+                   initUserData();
+                   permissionsSubTab.setSelectedIndex(1); 
+                }
+                if (tab2 != null && tab2.equals("groups")){
+                   permissionsSubTab.setSelectedIndex(2); 
+                }
+                selectedIndex=6;
+            } else if (tab.equals("utilities")) {
+                selectedIndex=7;
+            } 
+            tabSet1.setSelectedIndex(selectedIndex);
         }
     }
     
@@ -2190,7 +2233,39 @@ public class OptionsPage extends VDCBaseBean  implements java.io.Serializable {
     private HtmlDataTable userTableHarvest;
     public HtmlDataTable getUserTableHarvest() {return this.userTableHarvest;}
     public void setUserTableHarvest(HtmlDataTable userTable) {this.userTableHarvest = userTable;}
-
+    
+    private HtmlDataTable harvestDataTable;
+    public HtmlDataTable getHarvestDataTable() {return this.harvestDataTable;}
+    public void setHarvestDataTable(HtmlDataTable userTable) {this.harvestDataTable = userTable;}
+    
+   public void doRunNow(ActionEvent ae) {
+        HarvestingDataverse hd = (HarvestingDataverse) this.harvestDataTable.getRowData();
+        harvesterService.doAsyncHarvest(hd);
+        Date previousDate = hd.getLastHarvestTime();
+        HarvestingDataverse tempHD = null;
+        Date tempDate = null;
+        try {
+            do {
+                Thread.sleep(100);  // sleep for 1/10 second to wait for harvestingNow or lastHarvestDate to be updated
+                tempHD = harvestingDataverseService.find(hd.getId());
+                tempDate = tempHD.getLastHarvestTime();
+            } while (!tempHD.isHarvestingNow() && !isHarvestingDateUpdated(previousDate, tempDate));
+        } catch (InterruptedException e) {
+        }
+        this.harvestSiteList = harvestingDataverseService.findAll();
+    }
+    private boolean isHarvestingDateUpdated(Date previousDate, Date tempDate) {
+        boolean isUpdated=false;
+        if (previousDate==null) {
+            if (tempDate!=null) {
+                isUpdated=true;
+            }
+        } else if (!previousDate.equals(tempDate)){
+            isUpdated= true;
+        }
+        return isUpdated;
+    }
+    
     private String addUserName;
     public String getAddUserName() {return this.addUserName;}
     public void setAddUserName(String addUserName) {this.addUserName = addUserName;}
@@ -4315,5 +4390,5 @@ public class OptionsPage extends VDCBaseBean  implements java.io.Serializable {
         userService.setActiveStatus(bean.getUser().getId(),false);
         initUserData();  // Re-fetch list to reflect Delete action        
     }
-
+     
 }    

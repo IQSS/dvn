@@ -1768,13 +1768,17 @@ public class OptionsPage extends VDCBaseBean  implements java.io.Serializable {
     }
     
     public String saveGeneralSettings_action() {
-                NetworkStatsBean statsBean = (NetworkStatsBean) FacesContext.getCurrentInstance().getExternalContext().getRequestMap().get("NetworkStatsBean");
+        System.out.print("in save general settings");
+        System.out.print("siteRestriction " + siteRestriction);
+        NetworkStatsBean statsBean = (NetworkStatsBean) FacesContext.getCurrentInstance().getExternalContext().getRequestMap().get("NetworkStatsBean");
         if (siteRestriction.equals("Public")) {
             if (vdc.getReleaseDate() == null) {
                  // update the network stats bean
                 if (statsBean != null)
                     statsBean.releaseAndUpdateInlineDataverseValue(vdc.getId(), (List<VDCGroup>)vdc.getVdcGroups());
+
                 vdc.setReleaseDate(DateUtil.getTimestamp());
+                System.out.print("getReleaseDate " + vdc.getReleaseDate());
                 sendReleaseEmails();             
                 // tweet release of dataverse
                 TwitterCredentials tc = vdcNetworkService.getTwitterCredentials();
@@ -1805,6 +1809,9 @@ public class OptionsPage extends VDCBaseBean  implements java.io.Serializable {
                 vdc.getHarvestingDataverse().setSubsetRestricted(filesRestricted);
             }
         }
+        
+                System.out.print("vdc.isRestricted()" + vdc.isRestricted());
+                System.out.print("getReleaseDate " + vdc.getReleaseDate());
         success = true;
         if (!validateAnnouncementsText()) {
             success = false;
@@ -2156,7 +2163,7 @@ public class OptionsPage extends VDCBaseBean  implements java.io.Serializable {
             context.addMessage(toValidate.getClientId(context), message);
         }
     }
-
+    
     public void getOAISets(ActionEvent ea) {        }
 
     private Long harvestId;
@@ -2253,6 +2260,23 @@ public class OptionsPage extends VDCBaseBean  implements java.io.Serializable {
         } catch (InterruptedException e) {
         }
         this.harvestSiteList = harvestingDataverseService.findAll();
+    }
+    public void doSchedule(ActionEvent ae) {
+        HarvestingDataverse hd = (HarvestingDataverse) this.harvestDataTable.getRowData();
+        hd.setScheduled(true);
+        remoteTimerService.updateHarvestTimer(hd);
+        harvestingDataverseService.edit(hd);
+        // set list to null, to force a fresh retrieval of data
+        harvestSiteList=null;
+    }
+
+    public void doUnschedule(ActionEvent ae) {
+        HarvestingDataverse hd = (HarvestingDataverse) this.harvestDataTable.getRowData();
+        hd.setScheduled(false);
+        remoteTimerService.updateHarvestTimer(hd);
+        harvestingDataverseService.edit(hd);
+        // set list to null, to force a fresh retrieval of data
+        harvestSiteList=null;
     }
     private boolean isHarvestingDateUpdated(Date previousDate, Date tempDate) {
         boolean isUpdated=false;

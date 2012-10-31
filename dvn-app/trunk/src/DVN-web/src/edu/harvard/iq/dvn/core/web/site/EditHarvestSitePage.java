@@ -275,7 +275,7 @@ public class EditHarvestSitePage extends VDCBaseBean implements java.io.Serializ
     
     public String cancel() {
         if (isCreateMode()) {
-            return "/networkAdmin/NetworkOptionsPage?faces-redirect=true";
+            return "/networkAdmin/NetworkOptionsPage?faces-redirect=true&tab=harvesting";
         } else {
             return generateReturnPage();
         }
@@ -285,7 +285,7 @@ public class EditHarvestSitePage extends VDCBaseBean implements java.io.Serializ
         if (getVDCRequestBean().getCurrentVDCId() != null) {
             return "/admin/OptionsPage?faces-redirect=true&vdcId=" + getVDCRequestBean().getCurrentVDCId();
         } else {
-            return "/site/HarvestSitesPage.xhtml?faces-redirect=true";
+            return "/networkAdmin/NetworkOptionsPage?faces-redirect=true&tab=harvesting";
         }
     }
     

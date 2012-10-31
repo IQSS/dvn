@@ -60,8 +60,8 @@
                     </ice:outputLink>
                     <ice:outputText value="(Unscheduled)" rendered="#{currentRow.oai and !empty currentRow.schedulePeriod and !currentRow.scheduled}"/>
                     <ice:outputText value="(Scheduled)" rendered="#{currentRow.oai and !empty currentRow.schedulePeriod and currentRow.scheduled}"/>
-                    <ice:commandButton value="Schedule" rendered="#{!currentRow.harvestingNow and currentRow.oai and !empty currentRow.schedulePeriod and !currentRow.scheduled}" actionListener="#{HarvestSitesPage.doSchedule}"/>
-                    <ice:commandButton value="Unschedule" rendered="#{!currentRow.harvestingNow and currentRow.oai and !empty currentRow.schedulePeriod and currentRow.scheduled}" actionListener="#{HarvestSitesPage.doUnschedule}"/>
+                    <ice:commandButton value="Schedule" rendered="#{!currentRow.harvestingNow and currentRow.oai and !empty currentRow.schedulePeriod and !currentRow.scheduled}" actionListener="#{OptionsPage.doSchedule}"/>
+                    <ice:commandButton value="Unschedule" rendered="#{!currentRow.harvestingNow and currentRow.oai and !empty currentRow.schedulePeriod and currentRow.scheduled}" actionListener="#{OptionsPage.doUnschedule}"/>
                 </ice:panelGroup>
                 </ice:column>
                 <ice:column>

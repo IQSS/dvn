@@ -150,6 +150,12 @@
                                            <div jsfc="ice:panelGroup" panelLayout="flow">
                                                 <ui:include src="/admin/EditLockssConfigPage.xhtml"></ui:include>
                                             </div>
+                                            <div jsfc="ice:panelGroup" panelLayout="flow" rendered ="#{OptionsPage.showEditExportSchedulePage}">
+                                                <ui:include src="/networkAdmin/EditExportSchedulePage.xhtml"></ui:include>
+                                            </div> 
+                                            <div class="dvnFormPadding dvnFormMargin">
+                                                <ice:commandButton id="button1DV" value="Save Changes" action="#{OptionsPage.locksSS_save}"/>
+                                            </div>
                                         </ice:panelTab>
                                         <!-- CUSTOMIZATION -->
                                         <ice:panelTab id="customizationSub" label="Customization">

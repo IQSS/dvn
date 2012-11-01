@@ -57,18 +57,20 @@
       </script>
         <input type="hidden" name="pageName" value="EditDataFilesHarverstPage"/>
 
-                    <div jsfc="ice:panelGroup" styleClass="dvnInformationMessage" rendered="#{VDCRequest.vdcNetwork.exportPeriod ==null}">
+                    <div jsfc="ice:panelGroup" styleClass="dvnInformationMessage" >
                         <div class="dvnMsgBlockContainer">
                           <p>
                             <ice:outputText value="In order for LOCKSS to harvest studies, study exports must be scheduled."/>
-                            <ice:outputText rendered="#{!VDCSession.loginBean.networkAdmin}" value=" Please contact your network administrator to schedule study exports."/>
-                            <ice:outputText rendered="#{VDCSession.loginBean.networkAdmin}" value=" To schedule study exports, go to "/>
-                            <ice:outputLink rendered="#{VDCSession.loginBean.networkAdmin}" value="/dvn/faces/networkAdmin/EditExportSchedulePage.xhtml">
-                               <ice:outputText nospan="true" value="Schedule Study Exports"/>
-                            </ice:outputLink>
+                            <ui:fragment rendered ="#{VDCRequest.currentVDC!=null}">
+                                <ice:outputText rendered="#{!VDCSession.loginBean.networkAdmin}" value=" Please contact your network administrator to schedule study exports."/>
+                                <ice:outputText rendered="#{VDCSession.loginBean.networkAdmin}" value=" To schedule study exports, go to "/>
+                                <ice:commandLink value="Schedule Study Exports" id="removeFile" actionListener="#{OptionsPage.showEditExportSchedulePageAction}">                               
+                                </ice:commandLink>
+                            </ui:fragment>
                           </p>
                         </div>
                     </div>
+
                     <table class="dvnOptionsTable" columns="2" cellpadding="0" cellspacing="0">
                       <tr>
                         <td class="dvnOptionsTableOption">
@@ -193,10 +195,7 @@
                       </tr>
                      </ui:fragment>
                     </table>
-                    <div class="dvnFormPadding dvnFormMargin">
-                        <ice:commandButton id="button1" value="Save Changes" action="#{OptionsPage.locksSS_save}"/>
-                        <!--<ice:commandButton id="button2" immediate="true" value="Cancel" action="#{EditLockssConfigPage.locksSS_cancel}"/>-->
-                    </div>
+
 
       <script type="text/javascript">
           // initial call to hide LOCKSS config options, if LOCKSS is disabled

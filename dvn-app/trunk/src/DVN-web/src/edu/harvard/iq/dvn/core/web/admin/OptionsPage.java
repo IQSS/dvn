@@ -1891,6 +1891,19 @@ public class OptionsPage extends VDCBaseBean  implements java.io.Serializable {
     private HtmlSelectOneMenu licenseMenu;
     private HtmlSelectOneMenu oaiSetMenu;
     private HtmlDataTable serverTable;
+    private boolean showEditExportSchedulePage = false;
+    public boolean isShowEditExportSchedulePage() {return showEditExportSchedulePage;}
+    public void setShowEditExportSchedulePage(boolean showEditExportSchedulePage) {this.showEditExportSchedulePage = showEditExportSchedulePage;}
+    
+    public void showEditExportSchedulePageAction(ActionEvent event){
+            VDCNetwork vdcNetwork = this.getVDCRequestBean().getVdcNetwork();
+            exportSchedulePeriod = vdcNetwork.getExportPeriod();
+            exportHourOfDay = vdcNetwork.getExportHourOfDay();
+            exportDayOfWeek = vdcNetwork.getExportDayOfWeek();
+
+            setSelectExportPeriod(loadSelectExportPeriod());  
+        setShowEditExportSchedulePage(true);
+    }
     
     public List<SelectItem> getSelectOAISets() {
         List selectItems = new ArrayList<SelectItem>();
@@ -2053,6 +2066,9 @@ public class OptionsPage extends VDCBaseBean  implements java.io.Serializable {
                     getVDCRequestBean().getCurrentVDC().setLockssConfig(null);
                 } else {
                     getVDCRequestBean().getCurrentVDC().setLockssConfig(lockssConfig);
+                }
+                if(showEditExportSchedulePage){
+                    saveExportSchedule();
                 }
             } else {
                 saveExportSchedule();

@@ -1777,9 +1777,7 @@ public class OptionsPage extends VDCBaseBean  implements java.io.Serializable {
                     statsBean.releaseAndUpdateInlineDataverseValue(vdc.getId(), (List<VDCGroup>)vdc.getVdcGroups());
 
                 vdc.setReleaseDate(DateUtil.getTimestamp());
-                System.out.print("getReleaseDate " + vdc.getReleaseDate());
                 sendReleaseEmails();   
-                System.out.print("getReleaseDate after send " + vdc.getReleaseDate());
                 // tweet release of dataverse
                 TwitterCredentials tc = vdcNetworkService.getTwitterCredentials();
                 if (tc != null) {              
@@ -1792,7 +1790,6 @@ public class OptionsPage extends VDCBaseBean  implements java.io.Serializable {
                     }
                 }        
             }
-            System.out.print("getReleaseDate end of if " + vdc.getReleaseDate());
             vdc.setRestricted(false);          
         } else {
             if (vdc.getReleaseDate() != null) {
@@ -1810,9 +1807,6 @@ public class OptionsPage extends VDCBaseBean  implements java.io.Serializable {
                 vdc.getHarvestingDataverse().setSubsetRestricted(filesRestricted);
             }
         }
-        
-                System.out.print("vdc.isRestricted()" + vdc.isRestricted());
-                System.out.print("getReleaseDate " + vdc.getReleaseDate());
         success = true;
         if (!validateAnnouncementsText()) {
             success = false;

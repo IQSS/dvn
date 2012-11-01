@@ -826,7 +826,6 @@ public class OptionsPage extends VDCBaseBean  implements java.io.Serializable {
     
     private void sendReleaseEmails() {
         String networkAdminEmailAddress = getVDCRequestBean().getVdcNetwork().getContactEmail();
-        vdc = vdcService.find(new Long(getVDCRequestBean().getCurrentVDC().getId()));
         String toMailAddress = vdc.getContactEmail();
         String siteAddress = "unknown";
         String hostUrl = PropertyUtil.getHostUrl();
@@ -1779,7 +1778,8 @@ public class OptionsPage extends VDCBaseBean  implements java.io.Serializable {
 
                 vdc.setReleaseDate(DateUtil.getTimestamp());
                 System.out.print("getReleaseDate " + vdc.getReleaseDate());
-                sendReleaseEmails();             
+                sendReleaseEmails();   
+                System.out.print("getReleaseDate after send " + vdc.getReleaseDate());
                 // tweet release of dataverse
                 TwitterCredentials tc = vdcNetworkService.getTwitterCredentials();
                 if (tc != null) {              
@@ -1792,6 +1792,7 @@ public class OptionsPage extends VDCBaseBean  implements java.io.Serializable {
                     }
                 }        
             }
+            System.out.print("getReleaseDate end of if " + vdc.getReleaseDate());
             vdc.setRestricted(false);          
         } else {
             if (vdc.getReleaseDate() != null) {

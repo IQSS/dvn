@@ -64,7 +64,7 @@
                                     <ice:outputText value="Period"/>
                                 </div>
                                 <div jsfc="ice:panelGroup">
-                                    <ice:selectOneMenu binding="#{OptionsPage.exportPeriod}" validator="#{EditExportSchedulePage.validateExportPeriod}" id="exportPeriod" value="#{EditExportSchedulePage.exportSchedulePeriod}"  onchange='updateExportInput();' >
+                                    <ice:selectOneMenu binding="#{OptionsPage.exportPeriod}" validator="#{OptionsPage.validateExportPeriod}" id="exportPeriod" value="#{OptionsPage.exportSchedulePeriod}"  onchange='updateExportInput();' >
                                         <f:selectItems value="#{OptionsPage.selectExportPeriod}"/>
                                     </ice:selectOneMenu>
                                     <ice:message styleClass="errorMessage" for="exportPeriod" />

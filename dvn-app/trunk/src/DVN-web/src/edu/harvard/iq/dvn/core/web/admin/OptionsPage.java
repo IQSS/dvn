@@ -2059,7 +2059,10 @@ public class OptionsPage extends VDCBaseBean  implements java.io.Serializable {
                 } else {
                     getVDCRequestBean().getCurrentVDC().setLockssConfig(lockssConfig);
                 }
-            } // network level changes is determined at runtime by db call           
+            } else {
+                saveExportSchedule();
+            }    
+            
             getVDCRenderBean().getFlash().put("successMessage", "Successfully updated LOCKSS harvest settings.");                     
             return getReturnPage();
         } else {                   
@@ -2955,7 +2958,7 @@ public class OptionsPage extends VDCBaseBean  implements java.io.Serializable {
             context.addMessage(toValidate.getClientId(context), message);
         }
     }
-    public String saveExportSchedule() {
+    private void saveExportSchedule() {
         VDCNetwork vdcnetwork = getVDCRequestBean().getVdcNetwork();
         vdcnetwork.setExportPeriod(exportSchedulePeriod);
         vdcnetwork.setExportHourOfDay(exportHourOfDay);
@@ -2965,8 +2968,7 @@ public class OptionsPage extends VDCBaseBean  implements java.io.Serializable {
         vdcnetwork.setExportDayOfWeek(exportDayOfWeek);
         vdcNetworkService.edit(vdcnetwork);
         remoteTimerService.createExportTimer(vdcnetwork);
-        getVDCRenderBean().getFlash().put("successMessage","Successfully updated export schedule.");
-        return "/networkAdmin/NetworkOptionsPage.xhtml?faces-redirect=true";   
+        getVDCRenderBean().getFlash().put("successMessage","Successfully updated export schedule.");  
     }
     
     //OAI sets data

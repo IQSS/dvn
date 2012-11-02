@@ -2796,6 +2796,10 @@ public class OptionsPage extends VDCBaseBean  implements java.io.Serializable {
     //manage classifications
     private int itemBeansSize = 0;
     public int getItemBeansSize() {return itemBeansSize;}
+    private HtmlGraphicImage toggleImage = new HtmlGraphicImage();
+    public HtmlGraphicImage getToggleImage() {return toggleImage;}
+    public void setToggleImage(HtmlGraphicImage toggleImage) {this.toggleImage = toggleImage;}
+    
     protected void initClassifications() {
          if (list == null) {
              list = new ClassificationList();
@@ -2804,7 +2808,10 @@ public class OptionsPage extends VDCBaseBean  implements java.io.Serializable {
      }
      ClassificationList list = null;
      public ClassificationList getList() {return list;}
-
+    public void toggleChildren(javax.faces.event.ActionEvent event) {
+        Long parentNodeId = new Long(toggleImage.getAttributes().get("groupingId").toString());
+        list.getClassificationUIs(parentNodeId);  
+    }
      //Comment review page
      protected List<StudyCommentUI> commentsForReview = null;
      protected Long totalNotifications;

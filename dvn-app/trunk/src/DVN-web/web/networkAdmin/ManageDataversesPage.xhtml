@@ -8,7 +8,7 @@
          <script type="text/javascript">
           // <![CDATA[
             function setHiddenValues(alphaKey) {
-                document.getElementById('manageDataversesForm:alphaCharacter').value = arguments[0];
+                document.getElementById('form1:alphaCharacter').value = arguments[0];
               }
            // ]]>
          </script>
@@ -56,7 +56,7 @@
                             </ui:fragment>
                         </ui:repeat>
                     </ul>
-                    <div jsfc="ice:panelGroup" styleClass="dvnManageTableCreateLink">
+                    <div jsfc="ice:panelGroup" styleClass="dvnManageTableCreateLink" rendered="#{!VDCRequest.readOnlyDatabase}">
                         <ice:outputLink value="/dvn/faces/site/AddSitePage.xhtml">
                           <ice:outputText value="Create Dataverse"/>
                         </ice:outputLink>

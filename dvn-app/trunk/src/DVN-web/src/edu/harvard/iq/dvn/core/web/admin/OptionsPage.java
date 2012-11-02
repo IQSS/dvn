@@ -2700,6 +2700,20 @@ public class OptionsPage extends VDCBaseBean  implements java.io.Serializable {
     public void setHiddenAlphaCharacter(HtmlInputHidden hiddenAlphaCharacter) {this.hiddenAlphaCharacter = hiddenAlphaCharacter;}
     private Long groupId = new Long("-1");
     
+    public void changeAlphaCharacter(ValueChangeEvent event) {
+        String newValue = (String)event.getNewValue();
+        String oldValue = (String)event.getOldValue();
+        if (!newValue.isEmpty()) {
+            if (newValue.equals("All")) {
+                populateVDCUIList(false);
+            } else {
+                this.vdcUIList.getPaginator().gotoFirstPage();
+                hiddenAlphaCharacter.setValue(newValue);
+                populateVDCUIList(true);
+            }
+        }
+    }
+    
     private void populateVDCUIList(boolean isAlphaSort) {
         // new logic for alpha sort
         if (!isAlphaSort) {

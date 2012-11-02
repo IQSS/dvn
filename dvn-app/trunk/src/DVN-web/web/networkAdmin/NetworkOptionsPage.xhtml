@@ -23,6 +23,9 @@
         </ui:define> 
         <ui:define name="body">
             <ice:form id="form1" rendered="#{VDCRequest.currentVDC == null}">
+            <ice:inputHidden binding="#{OptionsPage.hiddenAlphaCharacter}"
+                      id="alphaCharacter"
+                valueChangeListener="#{OptionsPage.changeAlphaCharacter}"/>
             <script type="text/javascript">
                 // <![CDATA[
                     function initGuestBookResponses(){
@@ -195,7 +198,7 @@
 
                      <ice:panelTab id="harvestOptions" label="Harvesting" url="/dvn#{VDCRequest.currentVDCURL}/faces/networkAdmin/NetworkOptionsPage.xhtml?tab=harvestOptions" 
                                   rendered="#{VDCSession.loginBean.networkAdmin}">
-                        <ice:panelTabSet id="tabSetHarvest" styleClass="dvnTabs dvnSubTabs">
+                        <ice:panelTabSet id="tabSetHarvest" styleClass="dvnTabs dvnSubTabs" binding="#{OptionsPage.harvestingSubTab}">
                             <ice:panelTab id="manageHarvestSites" label="Harvesting Dataverses">
                                 <div jsfc="ice:panelGroup">
                                     <div jsfc="ice:panelGroup" panelLayout="flow">

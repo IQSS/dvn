@@ -104,6 +104,11 @@ public class EditOAISetPage extends VDCBaseBean implements java.io.Serializable 
         if(oaiSetService.specExists(spec)) {
             valid = false;
         }
+        //SEK added 11/02/2012 - based on commented code above this should be OK
+ 
+        if (spec.equals(originalSpec) ) {
+            valid = true;
+        }
         if (!valid) {
             ((UIInput) toValidate).setValid(false);
             FacesMessage message = new FacesMessage("OAI Spec already exists.");

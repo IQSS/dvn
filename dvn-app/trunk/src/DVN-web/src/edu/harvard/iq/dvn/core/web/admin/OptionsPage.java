@@ -2693,7 +2693,10 @@ public class OptionsPage extends VDCBaseBean  implements java.io.Serializable {
     public void setAlphaCharacterList(ArrayList list) {this.alphaCharacterList = list;}
     private VDCUIList vdcUIList;
     public VDCUIList getVdcUIList() {return this.vdcUIList;}
-    private Long vdcUIListSize;   
+    private Long vdcUIListSize;
+    public Long getVdcUIListSize() {return vdcUIListSize;}
+    private Long vdcUnreleased;
+    public Long getVdcUnreleased() {return vdcUnreleased;}
     private boolean hideRestricted = false;
     private HtmlInputHidden hiddenAlphaCharacter = new HtmlInputHidden();
     public HtmlInputHidden getHiddenAlphaCharacter() {return hiddenAlphaCharacter;}
@@ -2731,7 +2734,13 @@ public class OptionsPage extends VDCBaseBean  implements java.io.Serializable {
             }
         }
         vdcUIList.getVdcUIList();
+        vdcUnreleased = new Long(0);
         vdcUIListSize = new Long(String.valueOf(vdcUIList.getVdcUIList().size()));
+        for (VDCUI vdcUI : vdcUIList.getVdcUIList()){
+            if(vdcUI.getVdc().isRestricted()){
+                vdcUnreleased++;
+            }
+        }
     }
     
         public DataPaginator getPaginator() {

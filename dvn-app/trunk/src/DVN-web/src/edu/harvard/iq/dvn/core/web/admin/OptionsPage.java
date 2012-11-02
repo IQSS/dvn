@@ -456,7 +456,7 @@ public class OptionsPage extends VDCBaseBean  implements java.io.Serializable {
     private String tab2;
     public String getTab2() {return tab2;}
     public void setTab2(String tab2) {
-        if ( tab2 == null || tab2.equals("groups") || tab2.equals("users") ) {
+        if ( tab2 == null || tab2.equals("groups") || tab2.equals("users") || tab2.equals("oaisets")) {
             this.tab2 = tab2;
         }
     }
@@ -469,6 +469,9 @@ public class OptionsPage extends VDCBaseBean  implements java.io.Serializable {
      private PanelTabSet permissionsSubTab = new PanelTabSet();
     public PanelTabSet getPermissionsSubTab() {return permissionsSubTab;}
     public void setPermissionsSubTab(PanelTabSet permissionsSubTab) {this.permissionsSubTab = permissionsSubTab;}
+    private PanelTabSet harvestingSubTab = new PanelTabSet();
+    public PanelTabSet getHarvestingSubTab() {return harvestingSubTab;}
+    public void setHarvestingSubTab(PanelTabSet harvestingSubTab) {this.harvestingSubTab = harvestingSubTab;}
     
     private void initSelectedTabIndex() {
         
@@ -502,6 +505,10 @@ public class OptionsPage extends VDCBaseBean  implements java.io.Serializable {
                 selectedIndex=4;
             } else if (tab.equals("harvesting")) {
                 selectedIndex=5;
+                if (tab2 != null && tab2.equals("oaisets")){
+                   initUserData();
+                   harvestingSubTab.setSelectedIndex(1); 
+                }
             } else if (tab.equals("permissions")) {
                 initPrivilegedUserData();
                 permissionsSubTab.setSelectedIndex(0);
@@ -2984,10 +2991,13 @@ public class OptionsPage extends VDCBaseBean  implements java.io.Serializable {
     
     //OAI sets data
     List<OAISet> oaiSets; 
+    private HtmlDataTable oaiSetDataTable;
+    public HtmlDataTable getOaiSetDataTable() {return this.oaiSetDataTable;}
+    public void setOaiSetDataTable(HtmlDataTable dataTable) {this.oaiSetDataTable = dataTable;}
     public  List<OAISet> getOaiSets() { return oaiSets;}
     private void initSetData() {oaiSets = oaiSetService.findAllOrderedSorted();}
     public void deleteSet(ActionEvent ae) {
-        OAISet oaiSet=(OAISet)dataTable.getRowData();        
+        OAISet oaiSet=(OAISet)oaiSetDataTable.getRowData();        
         oaiSetService.remove(oaiSet.getId());
         initSetData();  // Re-fetch list to reflect Delete action       
         getVDCRenderBean().getFlash().put("successMessage", "Successfully deleted OAI set.");

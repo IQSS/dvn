@@ -44,7 +44,7 @@
                 <!-- Render the expand/contract if there is an image -->
                 <ice:commandLink actionListener="#{OptionsPage.toggleChildren}">
                   <ice:graphicImage id="expandContractImage"
-                                    binding="#{manageClassificationsPage.toggleImage}"
+                                    binding="#{OptionsPage.toggleImage}"
                                     rendered="#{dvItems.expandContractImage != null and dvItems.level != 3}"
                                     value="#{dvItems.expandContractImage}"><!--  -->
                     <f:attribute name="groupingId" value="#{dvItems.vdcGroup.id}"/>

@@ -118,7 +118,7 @@
                                                      styleClass="errorMessage"/>
                                     </ice:column>
                                 </ice:panelGrid>
-                                <ice:panelGrid>
+                                <ice:panelGrid rendered="#{!empty(ContactUsPage.captcha)}">
                                     <p>Enter the code as it is shown:</p>
                                     <p>This field helps prevent automated access.</p>
                                     <ice:inputHidden id="recaptcha" validator="#{ContactUsPage.validateCaptcha}" value="captcha">

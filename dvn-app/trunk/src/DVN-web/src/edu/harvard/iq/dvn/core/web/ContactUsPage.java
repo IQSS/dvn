@@ -57,6 +57,8 @@ public class ContactUsPage extends VDCBaseBean implements java.io.Serializable {
     @EJB MailServiceLocal mailService;
     @EJB CaptchaServiceLocal captchService;
     
+    private static Logger dbgLog = Logger.getLogger(ContactUsPage.class.getCanonicalName());
+    
     private String SUCCESS_MESSAGE = new String("An e-mail has been sent successfully!");
     private String EMAIL_ERROR_MESSAGE = new String("An error occurred. The message was not sent.");
     private Captcha c;
@@ -231,7 +233,11 @@ public class ContactUsPage extends VDCBaseBean implements java.io.Serializable {
             getVDCRenderBean().getFlash().put("emailAddress",emailAddress);
             getVDCRenderBean().getFlash().put("selectedSubject",selectedSubject);
             getVDCRenderBean().getFlash().put("emailBody",emailBody);
-            return "/ContactUsConfirmPage.xhtml?faces-redirect=true";             
+            
+            if (getVDCRequestBean().getCurrentVDCId() == null ) {
+                return "/ContactUsConfirmPage.xhtml?faces-redirect=true";    
+            }
+            return "/ContactUsConfirmPage.xhtml?faces-redirect=true&vdcId="+getVDCRequestBean().getCurrentVDCId();
             
             
         } catch (Exception e) {
@@ -288,6 +294,7 @@ public class ContactUsPage extends VDCBaseBean implements java.io.Serializable {
         c = captchService.findCaptcha();
         String retVal = null;
         if (c != null) {
+            dbgLog.info("ContactUsPage: captcha service returned non-null value");
             r = new ReCaptchaImpl();
             l = new SimpleHttpLoader();
 
@@ -298,6 +305,7 @@ public class ContactUsPage extends VDCBaseBean implements java.io.Serializable {
             r.setPublicKey(c.getPublicKey());
             Logger.getLogger(ContactUsPage.class.getName()).info("PUBLIC: "+c.getPublicKey()+" -- PRIVATE: "+c.getPrivateKey()+" -- HOST: "+c.getHost());
             retVal = r.createRecaptchaHtml(null, null);
+            
 
         } else {
             retVal = "";

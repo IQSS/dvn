@@ -735,6 +735,7 @@ public class AddFilesPage extends VDCBaseBean implements java.io.Serializable {
     }
 
     public boolean isPorExtraIngestInProgress() {
+        dbgLog.info("AddFiles: checking if SPSS portable ingest with extra labels is in progress.");
         return controlCardIngestInProgress && "porextra".equals(controlCardType);
     }
 
@@ -773,9 +774,10 @@ public class AddFilesPage extends VDCBaseBean implements java.io.Serializable {
     }
     
     public boolean isPorExtraIngestRequested() {
-        // as above, but for DDI card only:
-
+        // as above, but for the "extra labels" file only:
+        
         if ( ("porextra".equals(selectFileType.getValue())) && (!controlCardIngestInProgress)) {
+            dbgLog.info("AddFiles: SPSS portable ingest with extra labels is requested.");
             return true;
         }
 

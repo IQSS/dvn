@@ -128,16 +128,16 @@
                                             rendered="#{AddFilesPage.DDICCIngestRequested and AddFilesPage.controlCardValidationErrorMessage == null}"/>
                             <ice:outputText nospan="true" escape="false"
                                             value="&#60;p style=&#34;margin-top:0;&#34; class=&#34;warnMessage&#34;&#62;&#60;img src=&#34;/dvn/resources/images/icon_warning.18.png&#34; class=&#34;dvn_icon&#34; /&#62; You have selected to ingest a SPSS-Portable file, *with the extendel labels in an auxilary file*. (The support for this type of ingest is still in beta; please report any issues found to the Network Administrator using the &lt;a href=&#34;/dvn#{VDCRequest.currentVDCURL}/faces/ContactUsPage.xhtml&#34;&gt;Contact&lt;/a&gt; form.)&#60;p&#62;"
-                                            rendered="#{AddFilesPage.PorExtraIngestRequested and AddFilesPage.controlCardValidationErrorMessage == null}"/>
+                                            rendered="#{AddFilesPage.porExtraIngestRequested and AddFilesPage.controlCardValidationErrorMessage == null}"/>
                             <ice:outputText id="controlCardIngestMessageDDI" nospan="true" escape="false"
                                             value="&#60;p&#62;First, click Browse to select a DDI Control Card file. Once you've selected the DDI, click Browse again to select the TAB file.&#60;/p&#62;" rendered="#{AddFilesPage.DDICCIngestRequested}"/>
                             <ice:outputText id="controlCardIngestMessagePorExtra" nospan="true" escape="false"
-                                            value="&#60;p&#62;First, click Browse to select a text file with the extended variable labels. Once you've selected the labels file, click Browse again to select the SPSS/POR file.&#60;/p&#62;" rendered="#{AddFilesPage.PorExtraIngestRequested}"/>
+                                            value="&#60;p&#62;First, click Browse to select a text file with the extended variable labels. Once you've selected the labels file, click Browse again to select the SPSS/POR file.&#60;/p&#62;" rendered="#{AddFilesPage.porExtraIngestRequested}"/>
                         </ice:panelGroup>
                         <ice:panelGroup rendered="#{AddFilesPage.controlCardIngestInProgress}">
                             <ice:outputText styleClass="vdcTextStandout" value="SPSS Control Card uploaded. Please click Browse to select the CSV file." rendered="#{AddFilesPage.SPSSCCIngestInProgress}"/>
                             <ice:outputText styleClass="vdcTextStandout" value="DDI Control Card uploaded. Please click Browse to select the TAB file." rendered="#{AddFilesPage.DDICCIngestInProgress}"/>
-                            <ice:outputText styleClass="vdcTextStandout" value="Extra Labels uploaded. Please click Browse to select the POR file." rendered="#{AddFilesPage.PorExtraIngestInProgress}"/>
+                            <ice:outputText styleClass="vdcTextStandout" value="Extra Labels uploaded. Please click Browse to select the POR file." rendered="#{AddFilesPage.porExtraIngestInProgress}"/>
                         </ice:panelGroup>
                         <ice:panelGroup rendered="#{AddFilesPage.otherSubsettableIngestRequested}">
                             <ice:outputText styleClass="vdcTextStandout" value="SPSS and STATA files will be converted to a tab delimited format and made available for automated subsetting. You will still be able to download the original file, as well as other formats."/>

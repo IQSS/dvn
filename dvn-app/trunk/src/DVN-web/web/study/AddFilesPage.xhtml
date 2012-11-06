@@ -149,7 +149,7 @@
                             <ice:outputText styleClass="vdcTextStandout" value="GraphML files will be made available for online network data analysis."/>
                         </ice:panelGroup>
                         <ice:panelGroup rendered="#{AddFilesPage.zipMultipleFilesSelected}">
-                            <ice:outputText styleClass="vdcTextStandout" value="You have selected to upload *multiple files* in a zipped archive. Click Browse to select the valid Zip file; it will be unpacked, and the individual files will be ingested separately."/>
+                            <ice:outputText styleClass="vdcTextStandout" escape="false" value="You have selected to upload *multiple files* in a zipped archive. Click Browse to select the valid Zip file; it will be unpacked, and the individual items will be ingested as separate Study Files. &#60;strong&#62;If you would like to ingest a Zip archive as a single file, upload it as type &quot;other&quot;&#60;/strong&#62;."/>
                         </ice:panelGroup>
                         <ice:panelGroup rendered="#{!AddFilesPage.typeNotSelected and !AddFilesPage.controlCardIngestRequested and !AddFilesPage.controlCardIngestInProgress and !AddFilesPage.otherSubsettableIngestRequested and !AddFilesPage.networkDataIngestRequested and !AddFilesPage.zipMultipleFilesSelected}">
                             <ice:outputText styleClass="vdcTextStandout" value="Click Browse to select the file you wish to upload."/>

@@ -711,7 +711,7 @@ public class AddFilesPage extends VDCBaseBean implements java.io.Serializable {
 
 
     public boolean isTypeNotSelected () {
-        dbgLog.info("AddFiles: isTypeNotSelected: selectFileType value="+selectFileType.getValue());
+        dbgLog.fine("AddFiles: isTypeNotSelected: selectFileType value="+selectFileType.getValue());
 
         if ( selectFileType == null 
             || selectFileType.getValue() == null
@@ -735,7 +735,7 @@ public class AddFilesPage extends VDCBaseBean implements java.io.Serializable {
     }
 
     public boolean isPorExtraIngestInProgress() {
-        dbgLog.info("AddFiles: checking if SPSS portable ingest with extra labels is in progress.");
+        dbgLog.fine("AddFiles: checking if SPSS portable ingest with extra labels is in progress.");
         return controlCardIngestInProgress && "porextra".equals(controlCardType);
     }
 
@@ -777,7 +777,7 @@ public class AddFilesPage extends VDCBaseBean implements java.io.Serializable {
         // as above, but for the "extra labels" file only:
         
         if ( ("porextra".equals(selectFileType.getValue())) && (!controlCardIngestInProgress)) {
-            dbgLog.info("AddFiles: SPSS portable ingest with extra labels is requested.");
+            dbgLog.fine("AddFiles: SPSS portable ingest with extra labels is requested.");
             return true;
         }
 
@@ -805,6 +805,14 @@ public class AddFilesPage extends VDCBaseBean implements java.io.Serializable {
 
         return false;
     }
+    
+    public boolean isZipMultipleFilesSelected() {
+        if ( "multizip".equals(selectFileType.getValue())) {
+            return true;
+        }
+        return false;
+    }
+    
     public boolean isEmailRequested() {
         for (StudyFileEditBean fileBean : fileList) {
             if (fileBean.getStudyFile().isSubsettable()) {

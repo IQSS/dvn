@@ -746,7 +746,7 @@ public class AddFilesPage extends VDCBaseBean implements java.io.Serializable {
         // file upload, when one of the control card-based ingests was selected
         // in the menu, but before the control card has been uploaded.
 
-        if ( ("spss".equals(selectFileType.getValue()) || "ddi".equals(selectFileType.getValue())) && (!controlCardIngestInProgress)) {
+        if ( ("spss".equals(selectFileType.getValue()) || "ddi".equals(selectFileType.getValue()) || "porextra".equals(selectFileType.getValue())) && (!controlCardIngestInProgress)) {
             return true;
         }
 

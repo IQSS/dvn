@@ -62,10 +62,7 @@
                           <p>
                             <ice:outputText value="In order for LOCKSS to harvest studies, study exports must be scheduled."/>
                             <ui:fragment rendered ="#{VDCRequest.currentVDC!=null}">
-                                <ice:outputText rendered="#{!VDCSession.loginBean.networkAdmin}" value=" Please contact your network administrator to schedule study exports."/>
-                                <ice:outputText rendered="#{VDCSession.loginBean.networkAdmin}" value=" To schedule study exports, go to "/>
-                                <ice:commandLink value="Schedule Study Exports" id="removeFile" actionListener="#{OptionsPage.showEditExportSchedulePageAction}">                               
-                                </ice:commandLink>
+                                <ice:outputText rendered="#{!VDCSession.loginBean.networkAdmin}" value=" Please contact your network administrator to schedule study exports."/>                              
                             </ui:fragment>
                           </p>
                         </div>

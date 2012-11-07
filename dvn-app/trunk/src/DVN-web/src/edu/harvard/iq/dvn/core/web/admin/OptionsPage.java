@@ -705,6 +705,12 @@ public class OptionsPage extends VDCBaseBean  implements java.io.Serializable {
     
     public String savePermissionsChanges() {
 
+        if (filesRestricted != vdc.isFilesRestricted()) {
+            vdc.setFilesRestricted(filesRestricted);
+            if (vdc.getHarvestingDataverse() != null) {
+                vdc.getHarvestingDataverse().setSubsetRestricted(filesRestricted);
+            }
+        }
 
         saveContributorSetting();
 

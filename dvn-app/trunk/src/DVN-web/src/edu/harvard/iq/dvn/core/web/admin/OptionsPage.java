@@ -1282,14 +1282,11 @@ public class OptionsPage extends VDCBaseBean  implements java.io.Serializable {
     public void setQuestionTypeSelectItems(List<SelectItem> questionTypeSelectItems) {this.questionTypeSelectItems = questionTypeSelectItems;}
     
     public String guestbooksave_action() {
-        if (validateTerms()) {
-            vdcService.save(vdc);
+            vdc.setGuestBookQuestionnaire(guestBookQuestionnaire);
+            vdcService.edit(vdc);
             String forwardPage = "/admin/OptionsPage?faces-redirect=true&vdcId=" + getVDCRequestBean().getCurrentVDC().getId();
             getVDCRenderBean().getFlash().put("successMessage", "Successfully updated guest book questionnaire.");
             return forwardPage;
-        } else {
-            return null;
-        }
     }
 
     public String guestbookcancel_action() {
@@ -2743,7 +2740,7 @@ public class OptionsPage extends VDCBaseBean  implements java.io.Serializable {
         }
     }
     
-        public DataPaginator getPaginator() {
+    public DataPaginator getPaginator() {
         if (this.vdcUIList != null) {
             return this.vdcUIList.getPaginator();
         }
@@ -2861,7 +2858,7 @@ public class OptionsPage extends VDCBaseBean  implements java.io.Serializable {
         }
         return commentsForReview;
     }
-         public void deleteFlaggedComment(ActionEvent event) {
+    public void deleteFlaggedComment(ActionEvent event) {
          if (deleteCommentLink.getAttributes().get("commentId") != null) {
              flaggedCommentId = new Long(deleteCommentLink.getAttributes().get("commentId").toString());
          }

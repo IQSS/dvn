@@ -59,9 +59,8 @@ public class GuestBookResponseServiceBean {
         Calendar cal = Calendar.getInstance();
         cal.add(Calendar.DAY_OF_YEAR, -30);
         beginTime = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(cal.getTime());  // Use yesterday as default value
-        cal.add(Calendar.DAY_OF_YEAR, 1);
+        cal.add(Calendar.DAY_OF_YEAR, 31);
         endTime = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(cal.getTime());
-
         String queryString = "select object(o) from GuestBookResponse as o where ";
         queryString += " o.responseTime >='" + beginTime + "'";
         queryString += " and o.responseTime<='" + endTime + "'";
@@ -78,7 +77,7 @@ public class GuestBookResponseServiceBean {
         Calendar cal = Calendar.getInstance();
         cal.add(Calendar.DAY_OF_YEAR, -30);
         beginTime = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(cal.getTime());  // Use yesterday as default value
-        cal.add(Calendar.DAY_OF_YEAR, 1);
+        cal.add(Calendar.DAY_OF_YEAR, 31);
         endTime = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(cal.getTime());
 
         String queryString = "select object(o) from GuestBookResponse as o , Study s where o.study.id = s.id ";

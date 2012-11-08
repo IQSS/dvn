@@ -51,7 +51,10 @@
                         <ice:outputText value="."/>
                       </div>
                       <div class="dvnManageTableCreateLink">
-                            <ice:outputLink value="/dvn/faces/login/AddAccountPage.xhtml">
+                            <ice:outputLink value="/dvn/faces/login/AddAccountPage.xhtml" rendered="#{VDCRequest.currentVDCId == null}">
+                                <ice:outputText value="Create User"/>
+                            </ice:outputLink>
+                            <ice:outputLink value="/dvn#{VDCRequest.currentVDCURL}/faces/login/AddAccountPage.xhtml" rendered="#{VDCRequest.currentVDCId != null}">                                
                                 <ice:outputText value="Create User"/>
                             </ice:outputLink>
                       </div>
@@ -84,7 +87,7 @@
                          <ice:message styleClass="errorMessage" for="userName"/>
                         </ice:column>
                         <ice:column>
-                          <ice:commandButton rendered="#{currentRow.vdcRole==null}" id="addUserButton" value="Add" actionListener="#{OptionsPage.addUser}"/>
+                          <ice:commandButton rendered="#{currentRow.vdcRole==null}" id="addUserButton" value="Add" actionListener="#{OptionsPage.addUserDV}"/>
                           <ice:commandButton id="removeRoleButton" value="Remove" rendered="#{currentRow.vdcRole!=null and currentRow.vdcRole.vdcUser.id!=OptionsPage.vdc.creator.id}" actionListener="#{OptionsPage.removeRole}"/>
                           <ice:outputText value="Dataverse Creator&lt;br&#47;&gt;(Cannot modify Role)" escape="false" rendered="#{currentRow.vdcRole.vdcUser.id==OptionsPage.vdc.creator.id}"/>
                         </ice:column>
@@ -98,7 +101,7 @@
                     <td>
                       <ice:outputText value="Group Name: "/>
                       <ice:inputText id="groupName" binding="#{OptionsPage.groupInputText}" value="#{OptionsPage.groupName}" onkeypress="if (window.event) return processEvent('', 'privilegedUsersForm:addGroupButton'); else return processEvent(event, 'privilegedUsersForm:addGroupButton');"/>
-                      <ice:commandButton id="addGroupButton" value="Add" actionListener="#{OptionsPage.addGroup}"/>
+                      <ice:commandButton id="addGroupButton" value="Add" actionListener="#{OptionsPage.addGroupDV}"/>
                       <ice:message styleClass="errorMessage" for="groupName"/>
                       <br/>
                       <ice:outputText styleClass="vdcHelpText" value="Enter group name to allow a group access to the dataverse."/>
@@ -126,7 +129,7 @@
                           <ice:outputText value="Access To Site"/>
                         </ice:column>
                         <ice:column>
-                          <ice:commandButton id="removeGroupButton" value="Remove Group" actionListener="#{OptionsPage.removeGroup}"/>
+                          <ice:commandButton id="removeGroupButton" value="Remove Group" actionListener="#{OptionsPage.removeGroupDV}"/>
                         </ice:column>
                       </ice:dataTable>
                     </td>

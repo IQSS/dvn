@@ -1031,6 +1031,7 @@ public class OptionsPage extends VDCBaseBean  implements java.io.Serializable {
         String msg=null;
         boolean valid=true;
         VDCUser user = null;
+        System.out.print(userNameStr);
    
             user = userService.findByUserName(userNameStr);
             if (user==null) {
@@ -2337,6 +2338,47 @@ public class OptionsPage extends VDCBaseBean  implements java.io.Serializable {
             addUserName="";
         }        
     }
+    
+    public void addUserDV(ActionEvent ae) {
+     
+        if (validateUserName(FacesContext.getCurrentInstance(),userInputText, newUserName)) {
+            VDCUser user = userService.findByUserName(newUserName);
+
+            VDCRole vdcRole = new VDCRole();
+            vdcRole.setVdcUser(user);
+            vdcRole.setRole(roleService.findById(newRoleId));
+            vdcRole.setVdc(vdc);
+            // Add the new vdcRole object to the second position in the display list -
+            // the first position stays null to allow for more inserts.
+            vdcRoleList.add(1, new OptionsPage.RoleListItem(vdcRole, vdcRole.getRoleId()));
+            // Add new vdcRole to the actual list in the vdc object
+            vdc.getVdcRoles().add(0,vdcRole);
+
+            // Reset newUserName, to be ready for new input from user
+            initUserName();
+            // Reset newRoleId, to be ready for new input from user
+            newRoleId=null;    
+        }        
+    }
+    
+    public void addGroupDV(ActionEvent ae) {
+        if (validateGroupName(FacesContext.getCurrentInstance(), groupInputText, groupName)) {
+            UserGroup group = groupService.findByName(groupName);
+            this.editVDCPrivileges.addAllowedGroup(group.getId());
+            groupName="";
+        }       
+    }
+    
+    public void removeGroupDV(ActionEvent ae) {
+        editVDCPrivileges.removeAllowedGroup(((UserGroup)groupTable.getRowData()).getId());   
+    }
+    
+    public void removeRole(ActionEvent ea) {      
+        vdcRoleList.remove(userTable.getRowIndex());
+        editVDCPrivileges.removeRole(userTable.getRowIndex()-1);     
+    }
+    
+    
        
     public void addGroup(ActionEvent ae) {
         if (validateGroupName(FacesContext.getCurrentInstance(), groupInputText, addGroupName)) {
@@ -2346,6 +2388,7 @@ public class OptionsPage extends VDCBaseBean  implements java.io.Serializable {
         }        
     }
 
+    
     private HtmlInputText userInputTextHarvest;
     public HtmlInputText getUserInputTextHarvest() {return this.userInputTextHarvest;}
     public void setUserInputTextHarvest(HtmlInputText userInputText) {this.userInputTextHarvest = userInputText;}

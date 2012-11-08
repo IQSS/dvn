@@ -423,7 +423,6 @@ public class OptionsPage extends VDCBaseBean  implements java.io.Serializable {
 
             //NetworkPrivileges page
 
-
             //Network Terms of Use
             networkAccountTermsOfUse = getVDCRequestBean().getVdcNetwork().getTermsOfUse();
             networkAccountTermsOfUseEnabled = getVDCRequestBean().getVdcNetwork().isTermsOfUseEnabled();
@@ -445,11 +444,11 @@ public class OptionsPage extends VDCBaseBean  implements java.io.Serializable {
     }
     
     private String tab;
-    public String getTab() {return tab;}
+    public String getTab() { return tab;}
     public void setTab(String tab) {
         if ( tab == null || tab.equals("studies") || tab.equals("collections") || tab.equals("vocabulary")
                 || tab.equals("harvesting")
-                || tab.equals("classifications") || tab.equals("templates") || tab.equals("permissions") ) {
+                || tab.equals("classifications") || tab.equals("templates") || tab.equals("permissions") || tab.equals("settings")) {
             this.tab = tab;
         }
     }
@@ -466,7 +465,7 @@ public class OptionsPage extends VDCBaseBean  implements java.io.Serializable {
     private PanelTabSet tabSet1 = new PanelTabSet();
     public PanelTabSet getTabSet1() {return tabSet1;}
     public void setTabSet1(PanelTabSet tabSet1) {this.tabSet1 = tabSet1;}
-     private PanelTabSet permissionsSubTab = new PanelTabSet();
+    private PanelTabSet permissionsSubTab = new PanelTabSet();
     public PanelTabSet getPermissionsSubTab() {return permissionsSubTab;}
     public void setPermissionsSubTab(PanelTabSet permissionsSubTab) {this.permissionsSubTab = permissionsSubTab;}
     private PanelTabSet harvestingSubTab = new PanelTabSet();
@@ -474,10 +473,11 @@ public class OptionsPage extends VDCBaseBean  implements java.io.Serializable {
     public void setHarvestingSubTab(PanelTabSet harvestingSubTab) {this.harvestingSubTab = harvestingSubTab;}
     
     private void initSelectedTabIndex() {
-        
+        System.out.print("in init");
         if (tab == null && getVDCRequestBean().getSelectedTab() != null) {
             tab = getVDCRequestBean().getSelectedTab();
         }
+        System.out.print("tab " + tab);
         if (tab != null  && vdc != null) {
             if (tab.equals("studies")) {
                 selectedIndex=0;

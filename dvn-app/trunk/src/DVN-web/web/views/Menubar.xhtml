@@ -53,14 +53,14 @@
                                             <ice:outputText value="#{bundle.contactUsLabel}"/>
                                         </ice:outputLink>
                                     </li>
-                                    <ice:outputText nospan="true" escape="false" rendered="#{VDCRequest.currentVDC == null and !VDCRequest.logoutPage and (VDCSession.loginBean.networkAdmin)}">
+                                    <ice:outputText nospan="true" escape="false" rendered="#{VDCRequest.currentVDC == null and !VDCRequest.logoutPage and (VDCSession.loginBean.networkAdmin) and !VDCRequest.readOnlyDatabase}">
                                         <li>
                                             <ice:outputLink styleClass="navicon naviconoptions" value="/dvn#{VDCRequest.currentVDCURL}/faces/networkAdmin/NetworkOptionsPage.xhtml" title="#{VDCRequest.vdcNetwork.name} Dataverse Network Admin Options">
                                                 <ice:outputText value="Options"/>
                                             </ice:outputLink>
                                         </li>
                                     </ice:outputText>
-                                    <ice:outputText nospan="true" escape="false" rendered="#{VDCRequest.currentVDC != null and !VDCRequest.logoutPage and (VDCSession.loginBean.admin or VDCSession.loginBean.curator or VDCSession.loginBean.contributor or VDCSession.loginBean.networkAdmin or VDCRequest.currentVDC.allowRegisteredUsersToContribute)}">
+                                    <ice:outputText nospan="true" escape="false" rendered="#{VDCRequest.currentVDC != null and !VDCRequest.logoutPage and !VDCRequest.readOnlyDatabase and (VDCSession.loginBean.admin or VDCSession.loginBean.curator or VDCSession.loginBean.contributor or VDCSession.loginBean.networkAdmin or VDCRequest.currentVDC.allowRegisteredUsersToContribute)}">
                                         <li>
                                             <ice:outputLink styleClass="navicon naviconoptions" value="/dvn#{VDCRequest.currentVDCURL}/faces/admin/OptionsPage.xhtml" title="Options in #{VDCRequest.currentVDC.name} dataverse">
                                                 <ice:outputText value="#{bundle.myOptionsLabel}"/>
@@ -111,9 +111,11 @@
                                 <ice:outputLink value="/dvn/dv/#{VDCRequest.currentVDC.alias}" title="#{VDCRequest.currentVDC.name} dataverse Homepage" rendered="#{VDCRequest.currentVDC != null}">
                                     <ice:outputText value="#{VDCRequest.currentVDC.name} Dataverse" nospan="true"/>
                                 </ice:outputLink>
-                                <ice:outputLink value="/dvn#{VDCRequest.currentVDCURL}/faces/admin/PrivilegedUsersPage.xhtml" styleClass="dvnUnreleasedDVIcon dvnInlineHelpTip" 
+                                <ice:outputLink value="/dvn#{VDCRequest.currentVDCURL}/faces/admin/OptionsPage.xhtml?tab=settings" styleClass="dvnUnreleasedDVIcon dvnInlineHelpTip" 
                                                 rendered="#{VDCRequest.currentVDC != null and VDCRequest.currentVDC.restricted}" title="Unreleased Dataverse - Your dataverse is currently set to Not Released, and will not be featured on the network homepage until it is released. To release the dataverse, click this icon, to go to the Dataverse Permissions page."
-                                                ><img src="/dvn/resources/images/icon_warning.18.png" alt="Unreleased Dataverse"/></ice:outputLink>
+                                                ><img src="/dvn/resources/images/icon_warning.18.png" alt="Unreleased Dataverse"/>                                    
+                                </ice:outputLink>
+                                
                             </div>
                         </td>
                     </tr>

@@ -98,18 +98,15 @@ import org.xml.sax.SAXException;
  * @author Ellen Kraffmiller
  */
 @Stateless(name = "harvesterService")
-@EJB(name = "editStudyService", beanInterface = edu.harvard.iq.dvn.core.study.EditStudyService.class)
+//@EJB(name = "editStudyService", beanInterface = edu.harvard.iq.dvn.core.study.EditStudyService.class)
 public class HarvesterServiceBean implements HarvesterServiceLocal {
-    @PersistenceContext(unitName = "VDCNet-ejbPU")
-    EntityManager em;
     @Resource
     javax.ejb.TimerService timerService;
     @Resource
     SessionContext ejbContext;
 
     @EJB
-    DvnTimerLocal dvnTimerService;
-    
+    DvnTimerLocal dvnTimerService;    
     @EJB
     StudyServiceLocal studyService;
     @EJB
@@ -122,6 +119,8 @@ public class HarvesterServiceBean implements HarvesterServiceLocal {
     VDCNetworkServiceLocal vdcNetworkService;
     @EJB
     MailServiceLocal mailService;
+    @PersistenceContext(unitName = "VDCNet-ejbPU")
+    EntityManager em;
     private static final Logger logger = Logger.getLogger("edu.harvard.iq.dvn.core.harvest.HarvesterServiceBean");
     private static final String HARVEST_TIMER = "HarvestTimer";
     private static final SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
@@ -164,14 +163,24 @@ public class HarvesterServiceBean implements HarvesterServiceLocal {
     }
 
     public void createScheduledHarvestTimers() {
+        logger.log(Level.INFO, "HarvesterService: going to (re)create Scheduled harvest timers.");
         // First clear all previous Harvesting timers 
-        for (Iterator it = timerService.getTimers().iterator(); it.hasNext();) {
-            Timer timer = (Timer) it.next();
-            if (timer.getInfo() instanceof HarvestTimerInfo) {
-                timer.cancel();
-            }
-
-        }
+        ////timerService = ejbContext.getTimerService();
+        ////int i = 1; 
+        ////for (Iterator it = timerService.getTimers().iterator(); it.hasNext();) {
+             
+        ////    Timer timer = (Timer) it.next();
+        ////    logger.log(Level.INFO, "HarvesterService: checking timer "+i);
+            
+        ////    if (timer.getInfo() instanceof HarvestTimerInfo) {
+        ////        logger.log(Level.INFO, "HarvesterService: timer "+i+" is a harvesting one; canceling.");
+        ////        timer.cancel();
+        ////    }
+            
+        ////    i++; 
+        ////}
+        
+        dvnTimerService.removeHarvestTimers();
 
         List dataverses = harvestingDataverseService.findAll();
         for (Iterator it = dataverses.iterator(); it.hasNext();) {

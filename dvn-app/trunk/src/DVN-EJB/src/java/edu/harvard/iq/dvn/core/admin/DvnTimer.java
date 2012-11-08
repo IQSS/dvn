@@ -265,6 +265,25 @@ public class DvnTimer implements DvnTimerRemote, DvnTimerLocal {
     }
 
 
+    public void removeHarvestTimers() {
+        // Remove all the harvest timers, if exist: 
+        
+        logger.log(Level.INFO,"Removing existing harvest timers..");
+        
+        int i = 1; 
+        for (Iterator it = timerService.getTimers().iterator(); it.hasNext();) {
+             
+            Timer timer = (Timer) it.next();
+            logger.log(Level.INFO, "HarvesterService: checking timer "+i);
+            
+            if (timer.getInfo() instanceof HarvestTimerInfo) {
+                logger.log(Level.INFO, "HarvesterService: timer "+i+" is a harvesting one; canceling.");
+                timer.cancel();
+            }
+            
+            i++; 
+        }
+    }
 
     private void createHarvestTimer(HarvestingDataverse dataverse) {
         if (dataverse.isScheduled()) {

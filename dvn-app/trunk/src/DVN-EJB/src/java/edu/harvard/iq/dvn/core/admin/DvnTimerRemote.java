@@ -51,5 +51,6 @@ public interface DvnTimerRemote extends java.io.Serializable {
     public void createExportTimer(edu.harvard.iq.dvn.core.vdc.VDCNetwork vdcNetwork);
 
     public void updateHarvestTimer(edu.harvard.iq.dvn.core.vdc.HarvestingDataverse dataverse);
-    
+ 
+    public void removeHarvestTimers();
 }

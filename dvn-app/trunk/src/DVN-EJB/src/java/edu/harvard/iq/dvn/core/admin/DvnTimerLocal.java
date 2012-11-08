@@ -47,5 +47,5 @@ public interface DvnTimerLocal {
 
     public void updateHarvestTimer(edu.harvard.iq.dvn.core.vdc.HarvestingDataverse dataverse);
 
-
+    public void removeHarvestTimers();
 }

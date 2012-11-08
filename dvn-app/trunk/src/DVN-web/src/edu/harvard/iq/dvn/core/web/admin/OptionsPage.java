@@ -455,7 +455,7 @@ public class OptionsPage extends VDCBaseBean  implements java.io.Serializable {
     private String tab2;
     public String getTab2() {return tab2;}
     public void setTab2(String tab2) {
-        if ( tab2 == null || tab2.equals("groups") || tab2.equals("users") || tab2.equals("oaisets")) {
+        if ( tab2 == null || tab2.equals("groups") || tab2.equals("users") || tab2.equals("customization")|| tab2.equals("oaisets")) {
             this.tab2 = tab2;
         }
     }
@@ -471,6 +471,9 @@ public class OptionsPage extends VDCBaseBean  implements java.io.Serializable {
     private PanelTabSet harvestingSubTab = new PanelTabSet();
     public PanelTabSet getHarvestingSubTab() {return harvestingSubTab;}
     public void setHarvestingSubTab(PanelTabSet harvestingSubTab) {this.harvestingSubTab = harvestingSubTab;}
+    private PanelTabSet dvSettingsSubTab = new PanelTabSet();
+    public PanelTabSet getDvSettingsSubTab() {return dvSettingsSubTab;}
+    public void setDvSettingsSubTab(PanelTabSet dvSettingsSubTab) {this.dvSettingsSubTab = dvSettingsSubTab;}
     
     private void initSelectedTabIndex() {
         System.out.print("in init");
@@ -489,6 +492,10 @@ public class OptionsPage extends VDCBaseBean  implements java.io.Serializable {
                 selectedIndex=3;
             } else if (tab.equals("settings")) {
                 selectedIndex=4;
+                dvSettingsSubTab.setSelectedIndex(0); 
+                if (tab2 != null && tab2.equals("customization")){
+                   dvSettingsSubTab.setSelectedIndex(2); 
+                }
             } 
             tabSet1.setSelectedIndex(selectedIndex);
         }

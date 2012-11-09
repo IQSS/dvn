@@ -65,9 +65,10 @@ public class GuestBookResponseDataPage extends VDCBaseBean implements java.io.Se
         Date today = new Date();
         Calendar cal = new GregorianCalendar();
         cal.setTime(today);
+        System.out.print("before " + cal.getTime());
         cal.add(Calendar.DAY_OF_MONTH, -30);
         Date today30 = cal.getTime();     
-        
+        System.out.print("after " + today30.toString());
         guestBookResponsesAll = guestBookResponseServiceBean.findAll();
         vdc = getVDCRequestBean().getCurrentVDC();        
         for (GuestBookResponse gbr : guestBookResponsesAll) {

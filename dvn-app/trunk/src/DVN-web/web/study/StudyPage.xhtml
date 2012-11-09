@@ -220,7 +220,7 @@
                         </ice:outputLink>
                     </div>
                     <div jsfc="ice:panelGroup" styleClass="dvnstudyadminbox" rendered="#{VDCSession.loginBean.user!=null and studyPage.studyUI.userAuthorizedToEdit}">
-                        <div jsfc="ice:panelGroup" rendered="#{studyPage.studyUI.study.studyLock==null}">
+                        <div jsfc="ice:panelGroup" rendered="#{studyPage.studyUI.study.studyLock==null and !VDCRequest.readOnlyDatabase}">
                             <ul class="dvnstudyadminlinksL">
                                 <span jsfc="ice:panelGroup" rendered="#{studyPage.studyUI.studyVersion != studyPage.studyUI.study.latestVersion and (studyPage.studyUI.studyVersion.released or studyPage.studyUI.studyVersion.deaccessioned)}">
                                     <li class="dvnStudyEditDisableMsg">
@@ -339,11 +339,14 @@
                                 </span>
                             </ul>
                         </div>
-                        <div jsfc="ice:panelGroup" rendered="#{!(studyPage.studyUI.study.studyLock==null)}">
+                        <div jsfc="ice:panelGroup" rendered="#{!(studyPage.studyUI.study.studyLock==null)  and !VDCRequest.readOnlyDatabase}">
                             <ice:outputText styleClass="vdcStudyStatus" value="Currently unavailable for editing because file upload is in progress. " rendered="#{studyPage.studyUI.userAuthorizedToEdit and !(studyPage.studyUI.study.studyLock==null)}"/>
                             <ice:outputLink styleClass="vdcStudyStatus" value="/dvn#{VDCRequest.currentVDCURL}/faces/study/StudyPage.xhtml?globalId=#{studyPage.studyUI.study.globalId}&amp;versionNumber=-1&amp;tab=#{studyPage.tab}#{VDCRequest.studyListingIndexAsParameter}" rendered="#{studyPage.studyUI.userAuthorizedToEdit and !(studyPage.studyUI.study.studyLock==null)}">
                                 <ice:outputText nospan="true" value="Refresh"/>
                             </ice:outputLink>
+                        </div>
+                        <div jsfc="ice:panelGroup" rendered="#{VDCRequest.readOnlyDatabase}">
+                            <ice:outputText styleClass="vdcStudyStatus" value="Currently unavailable for editing because database is in read-only state. " rendered="#{studyPage.studyUI.userAuthorizedToEdit }"/>
                         </div>
                     </div>
                     <div jsfc="ice:panelGroup" styleClass="dvnstudyadminbox" rendered="#{VDCSession.loginBean.user==null and studyPage.studyUI.study.owner.allowRegisteredUsersToContribute and studyPage.studyUI.study.owner.allowContributorsEditAll}">

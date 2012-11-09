@@ -1613,10 +1613,10 @@ public class StudyServiceBean implements edu.harvard.iq.dvn.core.study.StudyServ
 
     private String generateTempTableString(List<Long> studyIds) {
         // first step: create the temp table with the ids
-        em.createNativeQuery("DROP TABLE IF EXISTS tempid").executeUpdate();
-        em.createNativeQuery("CREATE TEMPORARY TABLE tempid (tempid integer primary key, orderby integer)").executeUpdate();
-        em.createNativeQuery("INSERT INTO tempid VALUES " + generateIDsforTempInsert(studyIds)).executeUpdate();
 
+        em.createNativeQuery(" BEGIN; SET TRANSACTION READ WRITE; DROP TABLE IF EXISTS tempid; END;").executeUpdate();
+        em.createNativeQuery(" BEGIN; SET TRANSACTION READ WRITE; CREATE TEMPORARY TABLE tempid (tempid integer primary key, orderby integer); END;").executeUpdate();
+        em.createNativeQuery(" BEGIN; SET TRANSACTION READ WRITE; INSERT INTO tempid VALUES " + generateIDsforTempInsert(studyIds) + "; END;").executeUpdate();
         return "select tempid from tempid";
     }
 

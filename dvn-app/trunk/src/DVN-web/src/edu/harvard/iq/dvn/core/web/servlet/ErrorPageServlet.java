@@ -38,6 +38,8 @@ import javax.servlet.http.HttpServletResponse;
 import java.util.Enumeration;
 import javax.persistence.OptimisticLockException;
 import javax.servlet.http.HttpSession;
+import java.sql.SQLException;
+
 
 public class ErrorPageServlet extends HttpServlet  {
 
@@ -53,14 +55,19 @@ public class ErrorPageServlet extends HttpServlet  {
         Exception exception = null;
         exception = (Exception) req.getAttribute("exception");
         String virtualPath = null;
+
         if (req.getAttribute("virtualPath") != null) {
             virtualPath = (String) req.getAttribute("virtualPath"); // set in the VDCFacesServlet wjb
         }
         boolean optimisticLock=false;
+        boolean readOnly=false;
         if (exception != null) {
             if (checkForOptimistLockException(exception) ) {
                  optimisticLock=true;
                  cause = "%20%20The form could not be saved because it contains stale data (due to concurrent editing by another user).  Please reload the form and try again.";
+            } else if (checkForReadOnlyException(exception) ){
+                readOnly=true;
+                cause = "%20%20The form could not be saved beacuse the database is in read-only mode at this time.  Please wait until notified that the database is back on-line.";
             } else {
                 cause = "%20%20" + exception.getCause().toString();
             }
@@ -68,11 +75,14 @@ public class ErrorPageServlet extends HttpServlet  {
         else if (req.getQueryString() != null)  {
             cause = req.getQueryString();
         }
-        else if (req.getSession().getAttribute("exception") != null) {
+        else if (req.getSession().getAttribute("exception") != null) {            
             if (checkForOptimistLockException(((Exception)req.getSession().getAttribute("exception"))) ) {
                  optimisticLock=true;
                  cause = "%20%20The form could not be saved because it contains stale data (due to concurrent editing by another user).  Please reload the form and try again.";
-            } else {
+            } else if (checkForReadOnlyException(((Exception)req.getSession().getAttribute("exception"))) ){
+                readOnly=true;
+                cause = "%20%20The form could not be saved because the database is in read-only mode at this time.  Please wait until notified that the database is back on-line.";
+            } else {                
                 cause = ((Exception)req.getSession().getAttribute("exception")).getCause().toString();
             }
             req.getSession().removeAttribute("exception");
@@ -81,7 +91,7 @@ public class ErrorPageServlet extends HttpServlet  {
             cause = "We are sorry. An unspecified error occurred.";
         }
         String time="";
-        if (!optimisticLock) {
+        if (!optimisticLock  && !readOnly) {
             cause += "%20%20If this continues to occur%2C please <a href=\"/dvn/faces/ContactUsPage.xhtml\">Contact</a> the Dataverse Network admin with this message.";
             time = "&time=" + URLEncoder.encode(this.getTimeStamp().toString(), "UTF-8");
         }
@@ -127,6 +137,20 @@ public class ErrorPageServlet extends HttpServlet  {
             return true;
         } else {
             return checkForOptimistLockException( t.getCause() );
+        }
+    }
+    
+    private boolean checkForReadOnlyException (Throwable t) {
+        if (t == null) {
+            return false;
+        } else if (t instanceof SQLException ) {
+            if (t.toString().endsWith("read-only")){
+                return true;
+            } else {
+                return false;
+            }            
+        } else {
+            return checkForReadOnlyException( t.getCause() );
         }
     }
         

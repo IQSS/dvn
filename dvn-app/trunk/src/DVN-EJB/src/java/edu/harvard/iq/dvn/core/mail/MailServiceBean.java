@@ -88,6 +88,7 @@ public class MailServiceBean implements edu.harvard.iq.dvn.core.mail.MailService
     private Session session;
     public void sendDoNotReplyMail(String to, String subject, String messageText){
         try {
+            System.out.print(to);
             Message msg = new MimeMessage(session);
             msg.setFrom();
             msg.setRecipients(Message.RecipientType.TO,

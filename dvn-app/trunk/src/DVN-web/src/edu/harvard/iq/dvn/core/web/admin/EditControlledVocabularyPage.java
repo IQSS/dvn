@@ -186,12 +186,16 @@ public class EditControlledVocabularyPage extends VDCBaseBean implements java.io
             } else {
                 getVDCRenderBean().getFlash().put("successMessage", "Successfully updated Controlled Vocabulary.");
             }
-            return "/networkAdmin/NetworkOptionsPage.xhtml?faces-redirect=true";
+            return "/networkAdmin/NetworkOptionsPage.xhtml?faces-redirect=true&tab=vocabulary";
 
         } else {
             getVDCRenderBean().getFlash().put("warningMessage", "One or more entries do not match the chosen Field Type.");
             return "";
         }
+    }
+    
+    public String cancel_action(){
+         return "/networkAdmin/NetworkOptionsPage.xhtml?faces-redirect=true&tab=vocabulary";
     }
     
     private boolean validateDescription(){

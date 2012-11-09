@@ -16,7 +16,7 @@
             <div jsfc="ice:panelGroup" styleClass="dvnManageCollectionsTableTitle">
               <ice:outputText value="Study Collections"/>
             </div>
-            <div jsfc="ice:panelGroup" styleClass="dvnManageTableCreateLink">
+            <div jsfc="ice:panelGroup" styleClass="dvnManageTableCreateLink" rendered="#{!VDCRequest.readOnlyDatabase}">
               <ice:outputLink value="/dvn#{VDCRequest.currentVDCURL}/faces/collection/EditCollectionPage.xhtml">
                 <ice:outputText value="Create Study Collection"/>
               </ice:outputLink>
@@ -48,7 +48,7 @@
               </f:facet>
               <ice:outputText id="type" value="#{collUI.collection.type}"/>
             </ice:column>
-            <ice:column>
+            <ice:column rendered="#{!VDCRequest.readOnlyDatabase}">
               <f:facet name="header">
                 <ice:outputText id="createCol" value="Create Child"/>
               </f:facet>
@@ -56,7 +56,7 @@
                 <ice:outputText value="Create"/>
               </ice:outputLink>
             </ice:column>
-            <ice:column>
+            <ice:column rendered="#{!VDCRequest.readOnlyDatabase}">
               <f:facet name="header">
                 <ice:outputText id="deleteCol" value="Delete Collection"/>
               </f:facet>
@@ -70,7 +70,7 @@
             <div jsfc="ice:panelGroup" styleClass="dvnManageCollectionsTableTitle">
               <ice:outputText value="Linked Collections"/>
             </div>
-            <div jsfc="ice:panelGroup" styleClass="dvnManageTableCreateLink">
+            <div jsfc="ice:panelGroup" styleClass="dvnManageTableCreateLink" rendered="#{!VDCRequest.readOnlyDatabase}">
               <ice:outputLink id="hyperlinkAddLink" value="/dvn#{VDCRequest.currentVDCURL}/faces/collection/AddLinkPage.xhtml">
                 <ice:outputText id="hyperlinkTextAddLink" value="Create Linked Collection"/>
               </ice:outputLink>

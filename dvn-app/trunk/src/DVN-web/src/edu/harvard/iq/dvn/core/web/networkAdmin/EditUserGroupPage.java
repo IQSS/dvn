@@ -147,8 +147,8 @@ public class EditUserGroupPage extends VDCBaseBean implements java.io.Serializab
        }
     }
     
-       public String cancel() {
-           return "/networkAdmin/NetworkOptionsPage.xhtml?faces-redirect=true";
+       public String cancel() {          
+           return "/networkAdmin/NetworkOptionsPage.xhtml?faces-redirect=true&tab=permissions&tab2=groups";
        }
        
 
@@ -264,12 +264,12 @@ public class EditUserGroupPage extends VDCBaseBean implements java.io.Serializab
             else if (this.userGroupType.equals("ipgroup")) {
                 userDetails.clear();
                 editUserGroupService.save();
-                return "/networkAdmin/NetworkOptionsPage.xhtml?faces-redirect=true";
+                return "/networkAdmin/NetworkOptionsPage.xhtml?faces-redirect=true&tab=permissions&tab2=groups";
             } else {
                 editUserGroupService.removeLoginDomains();
                 editUserGroupService.setUserDetailBeans(userDetails);
                 editUserGroupService.save();
-                return "/networkAdmin/NetworkOptionsPage.xhtml?faces-redirect=true";
+                return "/networkAdmin/NetworkOptionsPage.xhtml?faces-redirect=true&tab=permissions&tab2=groups";
             }
         }
         

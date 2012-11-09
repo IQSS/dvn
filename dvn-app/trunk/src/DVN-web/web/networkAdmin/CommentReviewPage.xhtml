@@ -106,12 +106,12 @@
                     <ice:outputText value="Action"/>
                   </f:facet>
                 <ice:commandLink binding="#{OptionsPage.deleteCommentLink}"
-                                 actionListener="#{CommentReviewPage.deleteFlaggedComment}">
+                                 actionListener="#{OptionsPage.deleteFlaggedComment}">
                     <f:attribute name="commentId" value="#{currentRow.studyComment.id}" />
                     <ice:outputText value="Delete"/>
                   </ice:commandLink>
                 <ice:commandLink binding="#{OptionsPage.ignoreCommentFlagLink}"
-                                 actionListener="#{CommentReviewPage.ignoreCommentFlag}">
+                                 actionListener="#{OptionsPage.ignoreCommentFlag}">
                     <f:attribute name="commentId" value="#{currentRow.studyComment.id}" />
                     <ice:outputText value="Ignore"/>
                  </ice:commandLink>

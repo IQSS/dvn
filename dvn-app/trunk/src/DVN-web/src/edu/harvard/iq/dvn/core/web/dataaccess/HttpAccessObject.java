@@ -246,7 +246,12 @@ public class HttpAccessObject extends DataAccessObject {
                         headerName.equals("Set-cookie")) {
                         String cookieHeader = method.getResponseHeaders()[i].getValue();
                         Matcher cookieMatcher = patternCookie.matcher(cookieHeader);
-                        if ( cookieMatcher.find() ) {
+                        String regexpJsession = "JSESSIONID=([^;]*);";
+                        Pattern patternJsession = Pattern.compile (regexpJsession);
+                        Matcher jsessionMatcher = patternJsession.matcher(cookieHeader);
+                        if ( (jsessionid == null || jsessionid.equals("")) && jsessionMatcher.find() ) {
+                            jsessionid = jsessionMatcher.group(1);
+                        } else if ( cookieMatcher.find() ) {
                             extraCookies = cookieMatcher.group(1);
                         }
                     }

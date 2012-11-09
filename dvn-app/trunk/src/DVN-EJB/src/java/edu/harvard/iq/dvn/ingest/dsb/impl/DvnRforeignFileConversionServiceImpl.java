@@ -79,15 +79,11 @@ public class DvnRforeignFileConversionServiceImpl{
     static {
     
         DSB_TMP_DIR = System.getProperty("vdc.dsb.temp.dir");
+        DVN_TMP_DIR ="/tmp/VDC";
         
         // fallout case: last resort
         if (DSB_TMP_DIR == null){
-//            DSB_TMP_DIR="/tmp/VDC/DSB";
-//            WEB_TMP_DIR="/tmp/VDC/webtemp";
-            
-            DVN_TMP_DIR ="/tmp/VDC";
-            DSB_TMP_DIR = DVN_TMP_DIR + "/DSB";
-            
+            DSB_TMP_DIR = DVN_TMP_DIR + "/DSB";            
         }
         
         RSERVE_HOST = System.getProperty("vdc.dsb.host");
@@ -183,11 +179,15 @@ public class DvnRforeignFileConversionServiceImpl{
     
     public void setupWorkingDirectory(RConnection c){
         try{
-            // set up the working directory
-            // parent dir
-            String checkWrkDir = "if (file_test('-d', '"+DSB_TMP_DIR+"')) {Sys.chmod('"+
-            DVN_TMP_DIR+"', mode = '0777'); Sys.chmod('"+DSB_TMP_DIR+"', mode = '0777');} else {dir.create('"+DSB_TMP_DIR+"', showWarnings = FALSE, recursive = TRUE);Sys.chmod('"+DVN_TMP_DIR+"', mode = '0777');Sys.chmod('"+
-            DSB_TMP_DIR+"', mode = '0777');}";
+            // set up the working directories:
+            // (note that DVN_TMP_DIR is not necessarily a child directory of 
+            // DSB_TMP_DIR -- see the code above...)
+            
+            String checkWrkDir = "if (!file_test('-d', '"+DVN_TMP_DIR+"')) {dir.create('"+DVN_TMP_DIR+"', showWarnings = FALSE, recursive = TRUE);} "
+                    + "if (!file_test('-d', '"+DSB_TMP_DIR+"')) {dir.create('"+DSB_TMP_DIR+"', showWarnings = FALSE, recursive = TRUE);} "
+                    + "if (!file_test('-d', '"+wrkdir+"')) {dir.create('"+wrkdir+"', showWarnings = FALSE, recursive = TRUE);} "
+                    + "Sys.chmod('"+ DVN_TMP_DIR+"', mode = '0777'); Sys.chmod('"+DSB_TMP_DIR+"', mode = '0777'); Sys.chmod('"+wrkdir+"', mode = '0777');";
+            
             dbgLog.fine("w permission="+checkWrkDir);
             c.voidEval(checkWrkDir);
 

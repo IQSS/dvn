@@ -164,21 +164,6 @@ public class HarvesterServiceBean implements HarvesterServiceLocal {
 
     public void createScheduledHarvestTimers() {
         logger.log(Level.INFO, "HarvesterService: going to (re)create Scheduled harvest timers.");
-        // First clear all previous Harvesting timers 
-        ////timerService = ejbContext.getTimerService();
-        ////int i = 1; 
-        ////for (Iterator it = timerService.getTimers().iterator(); it.hasNext();) {
-             
-        ////    Timer timer = (Timer) it.next();
-        ////    logger.log(Level.INFO, "HarvesterService: checking timer "+i);
-            
-        ////    if (timer.getInfo() instanceof HarvestTimerInfo) {
-        ////        logger.log(Level.INFO, "HarvesterService: timer "+i+" is a harvesting one; canceling.");
-        ////        timer.cancel();
-        ////    }
-            
-        ////    i++; 
-        ////}
         
         dvnTimerService.removeHarvestTimers();
 

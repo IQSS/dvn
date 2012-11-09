@@ -267,6 +267,10 @@ public class DvnTimer implements DvnTimerRemote, DvnTimerLocal {
 
     public void removeHarvestTimers() {
         // Remove all the harvest timers, if exist: 
+        //
+        // (the logging messages below are set to level INFO; it's ok, 
+        // since this code is only called on startup of the application, 
+        // and it may be useful to know what existing timers were encountered).
         
         logger.log(Level.INFO,"Removing existing harvest timers..");
         
@@ -277,7 +281,7 @@ public class DvnTimer implements DvnTimerRemote, DvnTimerLocal {
             logger.log(Level.INFO, "HarvesterService: checking timer "+i);
             
             if (timer.getInfo() instanceof HarvestTimerInfo) {
-                logger.log(Level.INFO, "HarvesterService: timer "+i+" is a harvesting one; canceling.");
+                logger.log(Level.INFO, "HarvesterService: timer "+i+" is a harvesting one; removing.");
                 timer.cancel();
             }
             

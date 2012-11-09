@@ -476,11 +476,9 @@ public class OptionsPage extends VDCBaseBean  implements java.io.Serializable {
     public void setDvSettingsSubTab(PanelTabSet dvSettingsSubTab) {this.dvSettingsSubTab = dvSettingsSubTab;}
     
     private void initSelectedTabIndex() {
-        System.out.print("in init");
         if (tab == null && getVDCRequestBean().getSelectedTab() != null) {
             tab = getVDCRequestBean().getSelectedTab();
         }
-        System.out.print("tab " + tab);
         if (tab != null  && vdc != null) {
             if (tab.equals("studies")) {
                 selectedIndex=0;

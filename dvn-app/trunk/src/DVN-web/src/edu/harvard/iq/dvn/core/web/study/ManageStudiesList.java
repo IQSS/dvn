@@ -218,7 +218,7 @@ public class ManageStudiesList extends VDCBaseBean {
     public void doConfirmVersionNotesPopup(ActionEvent ae) {
       StudyUI studyUI = studyUIList.get(selectedIndex);
         versionNotesPopupBean.setShowPopup(false);
-
+        this.versionNotesPopupBean.setActionType(VersionNotesPopupBean.ActionType.MANAGE_STUDIES);  
         if (versionPopupMode.equals(VersionPopupMode.REVIEW)) {
             studyService.setReadyForReview(studyUI.getStudyId(), versionNotesPopupBean.getVersionNote());
         } else
@@ -230,6 +230,7 @@ public class ManageStudiesList extends VDCBaseBean {
     public void doShowReviewPopup(ActionEvent ae) {
         selectedIndex=studyDataTable.getRowIndex();
         versionPopupMode = VersionPopupMode.REVIEW;
+        this.versionNotesPopupBean.setActionType(VersionNotesPopupBean.ActionType.MANAGE_STUDIES);
         versionNotesPopupBean.setVersionNote(studyUIList.get(selectedIndex).getStudyVersion().getVersionNote());
         versionNotesPopupBean.setShowPopup(true);
     }
@@ -238,6 +239,7 @@ public class ManageStudiesList extends VDCBaseBean {
         selectedIndex=studyDataTable.getRowIndex();
         versionPopupMode = VersionPopupMode.RELEASE;
         versionNotesPopupBean.setVersionNote(studyUIList.get(selectedIndex).getStudyVersion().getVersionNote());
+        this.versionNotesPopupBean.setActionType(VersionNotesPopupBean.ActionType.MANAGE_STUDIES);
         versionNotesPopupBean.setShowPopup(true);
     }
 
@@ -312,7 +314,7 @@ public class ManageStudiesList extends VDCBaseBean {
 
     public void confirmDeleteAction (ActionEvent event) {
         showStudyDeletePopup = true;
-
+        this.versionNotesPopupBean.setActionType(VersionNotesPopupBean.ActionType.MANAGE_STUDIES);  
         StudyUI studyUI = null; 
         
         if (currentStudyUI == null) {
@@ -320,7 +322,6 @@ public class ManageStudiesList extends VDCBaseBean {
         } else {
             studyUI = currentStudyUI;
         }
-
         if ( studyUI != null ) {
             currentStudyUI = studyUI;
             showStudyDeletePopup = true;
@@ -355,7 +356,6 @@ public class ManageStudiesList extends VDCBaseBean {
     private boolean contributorFilter;
 
     public void filter(ActionEvent event){
-        System.out.println("Filter is "+ filterDropdown.getValue());
         contributorFilter = Boolean.valueOf((String)filterDropdown.getValue());
         studyUIList = null;
     }

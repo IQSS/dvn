@@ -223,7 +223,7 @@ public class MainLayoutBean implements java.io.Serializable  {
     public boolean isInManageStudiesPageByViewID() {
         String viewId = getCurrentViewId();
         if (viewId != null) {
-            return viewId.indexOf("/ManageStudiesPage.xhtml") != -1;
+            return (viewId.indexOf("/ManageStudiesPage.xhtml") != -1 || viewId.indexOf("/OptionsPage.xhtml") != -1 ) ;
         }
         return false;
     }

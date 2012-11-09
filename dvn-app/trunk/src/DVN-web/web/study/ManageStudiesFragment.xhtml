@@ -65,7 +65,7 @@
                             <ice:outputText id="outputText3" value="#{bundle.showArchivedStudiesLabel}"/>
                         </div>
                     </div>
-                    <div jsfc="ice:panelGroup" styleClass="dvnManageTableCreateLink">
+                    <div jsfc="ice:panelGroup" styleClass="dvnManageTableCreateLink"  rendered="#{!VDCRequest.readOnlyDatabase}">
                         <ice:outputLink value="/dvn#{VDCRequest.currentVDCURL}/faces/study/EditStudyPage.xhtml">
                             <ice:outputText value="#{bundlePageInfo.createStudyTitle}"/>
                         </ice:outputLink>

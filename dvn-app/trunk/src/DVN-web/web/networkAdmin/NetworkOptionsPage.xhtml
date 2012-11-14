@@ -37,7 +37,20 @@
                     function initPrivilegedUserData(){
                         document.getElementById('form1:initPrivilegedUserData').click();
                     }
-                    
+                    function initCheckTermsEnabled() {
+                        jQuery('div.dvnTermsEnable input.iceSelBoolChkbx[type=checkbox]').each(function(){
+                            if ( jQuery(this).is(':checked') ) {
+                                jQuery(this).parent().siblings('div.dvnTermsField').show();
+                            } else {
+                                jQuery(this).parent().siblings('div.dvnTermsField').hide();
+                            }
+                        });
+                        jQuery('div.dvnTermsEnable input.iceSelBoolChkbx').bind("change", function(){
+                            var self = jQuery(this);
+
+                            self.parent().siblings('div.dvnTermsField').toggle();
+                        });
+                    }
                 // ]]>
             </script>
             <ice:commandButton visible="false" id="initGuestBookResponse" action="#{OptionsPage.initGuestBookResponses}"/>
@@ -247,7 +260,7 @@
                                     <ice:panelTab id="groupsSub" label="Groups">
                                             <div jsfc="ice:panelGroup" panelLayout="flow">
                                                 <ui:include src="/networkAdmin/UserGroupsPage.xhtml"></ui:include>
-                                            </div>  
+                                            </div>
                                     </ice:panelTab>
                                     <!-- TERMS -->
                                     <ice:panelTab id="termsSub" label="Terms">

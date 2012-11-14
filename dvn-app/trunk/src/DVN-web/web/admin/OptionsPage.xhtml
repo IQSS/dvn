@@ -29,7 +29,16 @@
                 // <![CDATA[
                     function initGuestBookResponses(){
                         document.getElementById('form1:initGuestBookResponse').click();
-                    } 
+                    }
+                    function initCheckDVTermsEnabled() {
+                        jQuery('div.dvnTermsEnable input.iceSelBoolChkbx[type=checkbox]').each(function(){
+                            if ( jQuery(this).is(':checked') ) {
+                                jQuery(this).parent().siblings('div.dvnTermsField').show();
+                            } else {
+                                jQuery(this).parent().siblings('div.dvnTermsField').hide();
+                            }
+                        });
+                    }
                 // ]]>
             </script>
             <ice:commandButton visible="false" id="initGuestBookResponse" action="#{OptionsPage.initGuestBookResponses}"/>
@@ -71,13 +80,11 @@
                                     </ice:panelTab>
                                     <!-- TERMS -->
                                     <ice:panelTab id="termsSub" label="Terms">
-                                        <div jsfc="ice:panelGroup">                                           
-                                            <div jsfc="ice:panelGroup"  panelLayout="flow">
-                                                <ui:include src="EditDepositUseTermsPage.xhtml"></ui:include>
-                                            </div> 
-                                            <div jsfc="ice:panelGroup"  panelLayout="flow">
-                                                <ui:include src="EditUseTermsPage.xhtml"></ui:include>
-                                            </div>
+                                        <table class="dvnOptionsTable" cellspacing="0" cellpadding="0" border="0">
+                                            <ui:include src="EditDepositUseTermsPage.xhtml"></ui:include>
+                                            <ui:include src="EditUseTermsPage.xhtml"></ui:include>
+                                        </table>
+                                        <div jsfc="ice:panelGroup">
                                             <div class="dvnFormPadding dvnFormMargin">
                                                 <ice:commandButton  styleClass="dvnListenSave" value="Save Changes" action="#{OptionsPage.tousave_action}"/>
                                                 <!--<ice:commandButton  value="Cancel" action="#{OptionsPage.toucancel_action}"/>-->

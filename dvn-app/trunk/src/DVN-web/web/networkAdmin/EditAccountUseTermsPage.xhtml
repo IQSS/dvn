@@ -9,26 +9,9 @@
     // <![CDATA[
     jQuery(document).ready(function(){
         
-        initCheckAccountTermsEnabled();
+        initCheckTermsEnabled();
         
     });
-    
-    function initCheckAccountTermsEnabled() {
-        
-        jQuery('div.dvnAccountTermsField').hide();
-        
-        jQuery('.dvnAccountTermsEnable input.iceSelBoolChkbx').live("click", function(){
-            jQuery(this).parent().siblings('div.dvnAccountTermsField').toggle();
-        });
-        
-        var checkbox = jQuery('div.dvnAccountTermsEnable input.iceSelBoolChkbx[type=checkbox]');
-        
-        if ( checkbox.is(':checked') ) {
-            jQuery('div.dvnAccountTermsField').show();
-        }
-    
-    };
-
     // ]]>
 </script>
 <tr>
@@ -41,13 +24,13 @@
                 <ice:outputText value="#{bundlePageInfo.editDvnAccountTermsHelp}" escape="false"/>
             </div>
         </div>
-        <div jsfc="ice:panelGroup" styleClass="dvnAccountTermsEnable">
+        <div jsfc="ice:panelGroup" styleClass="dvnTermsEnable">
             <ice:selectBooleanCheckbox value="#{OptionsPage.networkAccountTermsOfUseEnabled}" onclick="checkAccountTermsEnabled();"/>
             <ice:outputText value=" Enable Terms of Use"/>
         </div>
         <ice:message for="textArea1" styleClass="errorMessage" id="outputText2Msg"/>
         <br/>
-        <div jsfc="ice:panelGroup" styleClass="dvnAccountTermsField">
+        <div jsfc="ice:panelGroup" styleClass="dvnTermsField" style="#{OptionsPage.networkAccountTermsOfUseEnabled} ? 'display:block;' : 'display:none;'">
             <ice:inputTextarea styleClass="formHtmlEnabled" cols="70" rows="8"
                                id="textArea1" immediate="true"
                                value="#{OptionsPage.networkAccountTermsOfUse}">

@@ -5,25 +5,34 @@
                       xmlns:ice="http://www.icesoft.com/icefaces/component"
                       xmlns:dvn="/WEB-INF/tlds/dvn-components"
                       jsfc="ice:panelGroup">
-
-              <ice:panelGrid cellpadding="0" cellspacing="0" columns="2"
-                             columnClasses="dvnOptionsTableOption, vdcColPadded" styleClass="dvnOptionsTable">
-                  
-                  <div jsfc="ice:panelGroup">
-                    <ice:outputLabel for="textAreaDepositUse" id="depositUseLabel">
+<script type="text/javascript">
+    // <![CDATA[
+    jQuery(document).ready(function(){
+        
+        initCheckDVTermsEnabled();
+        
+    });
+                    
+    // ]]>
+</script>
+<tr>
+    <td class="dvnOptionsTableOption">
+        <ice:outputLabel for="textAreaDepositUse" id="depositUseLabel">
                         <ice:outputText id="depositUseText" value="Deposit Terms of Use"/>
                     </ice:outputLabel>
-                  </div>
-                  <div jsfc="ice:panelGroup">
-                      <div jsfc="ice:panelGroup" styleClass="dvnInformationMessage">
+    </td>
+    <td>
+        <div jsfc="ice:panelGroup" styleClass="dvnInformationMessage">
                          <div class="dvnMsgBlockContainer">
                            <ice:outputText value="#{bundlePageInfo.editDvDepositTermsHelp}" escape="false"/>
                          </div>
-                      </div>
-                    <ice:selectBooleanCheckbox value="#{OptionsPage.depositTermsOfUseEnabled}"/>
-                    <ice:outputText value=" Enable Terms of Use"/>
-                    <ice:message for="textAreaDeposit" styleClass="errorMessage" id="outputText2Deposit"/>
-                    <div>
+                    </div>
+                    <div jsfc="ice:panelGroup" styleClass="dvnTermsEnable">
+                        <ice:selectBooleanCheckbox value="#{OptionsPage.depositTermsOfUseEnabled}" onclick="jQuery(this).parent().siblings('div.dvnTermsField').toggle();"/>
+                        <ice:outputText value=" Enable Terms of Use"/>
+                        <ice:message for="textAreaDeposit" styleClass="errorMessage" id="outputText2Deposit"/>
+                    </div>
+                    <div jsfc="ice:panelGroup" styleClass="dvnTermsField" style="#{OptionsPage.depositTermsOfUseEnabled} ? 'display:block;' : 'display:none;'">
                         <ice:inputTextarea styleClass="formHtmlEnabled" cols="70" rows="8"
                                            id="textAreaDepositUse" immediate="true"
                                            binding="#{OptionsPage.textAreaDepositUse}"
@@ -32,7 +41,6 @@
                         </ice:inputTextarea>
                         <ice:message for="textAreaDepositUse" id="boxErrorMsgDeposit" styleClass="errorMessage"/>
                     </div>
-                  </div>
-              </ice:panelGrid>
- 
+    </td>
+</tr>
 </div>

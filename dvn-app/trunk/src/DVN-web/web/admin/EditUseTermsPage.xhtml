@@ -5,26 +5,33 @@
                       xmlns:ice="http://www.icesoft.com/icefaces/component"
                       xmlns:dvn="/WEB-INF/tlds/dvn-components"
                       jsfc="ice:panelGroup">
-
-              <ice:panelGrid cellpadding="0" cellspacing="0" columns="2"
-                             columnClasses="dvnOptionsTableOption, vdcColPadded" styleClass="dvnOptionsTable">
-                  <div jsfc="ice:panelGroup">
-                    <ice:outputText value=""/>
-                    <ice:outputLabel for="textAreaDownloadUse" id="downloadUseLabel">
+<script type="text/javascript">
+    // <![CDATA[
+    jQuery(document).ready(function(){
+        
+        initCheckDVTermsEnabled();
+        
+    });
+    // ]]>
+</script>
+<tr>
+    <td class="dvnOptionsTableOption">
+        <ice:outputLabel for="textAreaDownloadUse" id="downloadUseLabel">
                         <ice:outputText id="downloadUseText" value="Download Terms of Use"/>
                     </ice:outputLabel>
-                  </div>
-                  
-                  <div jsfc="ice:panelGroup">
-                      <div jsfc="ice:panelGroup" styleClass="dvnInformationMessage">
+    </td>
+    <td>
+        <div jsfc="ice:panelGroup" styleClass="dvnInformationMessage">
                         <div class="dvnMsgBlockContainer">
                           <ice:outputText value="#{bundlePageInfo.editDvDownloadTermsHelp}" escape="false"/>
                         </div>
                       </div>
-                      <ice:message for="textAreaUse" styleClass="errorMessage" id="outputTextUse"/>
-                    <ice:selectBooleanCheckbox value="#{OptionsPage.downloadTermsOfUseEnabled}"/>
-                    <ice:outputText value=" Enable Terms of Use"/>
-                    <div>
+                      <div jsfc="ice:panelGroup" styleClass="dvnTermsEnable">
+                        <ice:selectBooleanCheckbox value="#{OptionsPage.downloadTermsOfUseEnabled}" onclick="jQuery(this).parent().siblings('div.dvnTermsField').toggle();"/>
+                        <ice:outputText value=" Enable Terms of Use"/>
+                        <ice:message for="textAreaUse" styleClass="errorMessage" id="outputTextUse"/>
+                      </div>
+                      <div jsfc="ice:panelGroup" styleClass="dvnTermsField" style="#{OptionsPage.downloadTermsOfUseEnabled} ? 'display:block;' : 'display:none;'">
                         <ice:inputTextarea styleClass="formHtmlEnabled" cols="70" rows="8"
                                            binding="#{OptionsPage.textAreaDownloadUse}"
                                            id="textAreaDownloadUse" immediate="true"
@@ -32,8 +39,7 @@
                           <f:validator validatorId="XhtmlValidator"/>
                         </ice:inputTextarea>
                         <ice:message for="textAreaDownloadUse" id="boxErrorMsg2" styleClass="errorMessage"/>
-                    </div>
-                  </div>
-              </ice:panelGrid>
-
+                      </div>
+    </td>
+</tr>
 </div>

@@ -60,7 +60,7 @@ public class FileUtil implements java.io.Serializable  {
     
     private static Logger dbgLog = Logger.getLogger(FileUtil.class.getCanonicalName());
 
-    private static final String[] SUBSETTABLE_FORMAT_SET = {"POR", "SAV", "DTA"};
+    private static final String[] SUBSETTABLE_FORMAT_SET = {"POR", "SAV", "DTA", "RDA"};
 
     private static Map<String, String> STATISTICAL_SYNTAX_FILE_EXTENSION = new HashMap<String, String>();
     static {
@@ -153,6 +153,7 @@ public class FileUtil implements java.io.Serializable  {
         dbgLog.fine("f: abs path="+f.getAbsolutePath());
         fileType = sfchk.detectSubsettableFormat(f);
         
+        dbgLog.info("determineFileType: subs. checker found "+fileType);
         // step 2: If not found, check if graphml
         if (fileType==null) {
             if (isGraphMLFile(f))  {

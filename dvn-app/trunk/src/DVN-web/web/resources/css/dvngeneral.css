@@ -118,6 +118,7 @@ div.dvnWarningMessage span{font-weight:bold;background:transparent}
 div.dvnWarningMessage p, div.dvnWarningMessage li{color:#8B0404;}
 .dvnWarningMessage.dvnMessageLink a{font-weight:bold;}
 .dvnWarningMessage.dvnMessageCapLock span.warnMessage {text-transform: uppercase;}
+.dvnReadOnlyBlock {background-color:#e6e4d3 !important;}
 .warnMessage{color:#8B0404}
 .errorMessage{color:red;font-weight:700}
 .errorMessageBlock{color:red;font-weight:bold;display:block}

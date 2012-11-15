@@ -104,6 +104,14 @@
             <ui:include src="views/CustomBanner.xhtml"/>
             <!-- <ui:include src="views/ConnectedBanner.xhtml"/> -->
         </ui:insert>
+         <div jsfc="ice:panelGroup" styleClass="#{VDCRequest.vdcNetwork.readonly ? 'dvnWarningMessage' : 'dvnInformationMessage'}" rendered="#{!empty VDCRequest.vdcNetwork.statusNotice }">
+             <div class="dvnMsgBlockContainer">
+               <p>
+                   <ice:outputText id="statusNotice" value="#{VDCRequest.vdcNetwork.statusNotice}" escape="false" rendered="#{!VDCRequest.vdcNetwork.readonly}"/>
+                   <ice:outputText id="readOnlyStatusNotice" value="#{VDCRequest.vdcNetwork.statusNotice}" escape="false" rendered="#{VDCRequest.vdcNetwork.readonly}"/>
+               </p>
+            </div>
+         </div>
         <div class="dvn_wrapper" id="dvn_wrapper">
             <div class="dvn_content" id="content-frame">
                 <!-- required to fix a bug in firefox where the connection status box can be displayed erroneously -->
@@ -112,6 +120,7 @@
                     <!-- *** MENUBAR (Included from template) *** -->
                     <ui:include src="views/Menubar.xhtml"/>
                 </ui:insert>
+
                 <div jsfc="ice:panelGroup" styleClass="#{!empty(VDCRender.flash.warningMessage) ? 'dvnWarningMessage' : 'dvnSuccessMessage'}" rendered="#{!empty VDCRender.flash.successMessage or !empty VDCRender.flash.warningMessage}">
                   <div class="dvnMsgBlockContainer">
                     <p>

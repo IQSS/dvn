@@ -445,20 +445,10 @@ public class OptionsPage extends VDCBaseBean  implements java.io.Serializable {
     
     private String tab;
     public String getTab() { return tab;}
-    public void setTab(String tab) {
-        if ( tab == null || tab.equals("studies") || tab.equals("collections") || tab.equals("vocabulary")
-                || tab.equals("harvesting")
-                || tab.equals("classifications") || tab.equals("templates") || tab.equals("permissions") || tab.equals("settings")) {
-            this.tab = tab;
-        }
-    }
+    public void setTab(String tab) {this.tab = tab;}
     private String tab2;
     public String getTab2() {return tab2;}
-    public void setTab2(String tab2) {
-        if ( tab2 == null || tab2.equals("groups") || tab2.equals("users") || tab2.equals("customization")|| tab2.equals("oaisets")) {
-            this.tab2 = tab2;
-        }
-    }
+    public void setTab2(String tab2) { this.tab2 = tab2;}
     private int selectedIndex;
     public int getSelectedIndex() {return selectedIndex;}
     public void setSelectedIndex(int selectedIndex) {this.selectedIndex = selectedIndex;}
@@ -474,11 +464,17 @@ public class OptionsPage extends VDCBaseBean  implements java.io.Serializable {
     private PanelTabSet dvSettingsSubTab = new PanelTabSet();
     public PanelTabSet getDvSettingsSubTab() {return dvSettingsSubTab;}
     public void setDvSettingsSubTab(PanelTabSet dvSettingsSubTab) {this.dvSettingsSubTab = dvSettingsSubTab;}
+    private PanelTabSet networkGeneralSettingsSubTab = new PanelTabSet();
+    public PanelTabSet getNetworkGeneralSettingsSubTab() {return networkGeneralSettingsSubTab;}
+    public void setNetworkGeneralSettingsSubTab(PanelTabSet networkGeneralSettingsSubTab) {this.networkGeneralSettingsSubTab = networkGeneralSettingsSubTab;}
     
     private void initSelectedTabIndex() {
+        
         if (tab == null && getVDCRequestBean().getSelectedTab() != null) {
             tab = getVDCRequestBean().getSelectedTab();
         }
+        System.out.print("tab " + tab);
+        System.out.print("tab2 " + tab2);
         if (tab != null  && vdc != null) {
             if (tab.equals("studies")) {
                 selectedIndex=0;
@@ -502,6 +498,10 @@ public class OptionsPage extends VDCBaseBean  implements java.io.Serializable {
                 selectedIndex=0;
             } else if (tab.equals("settings")) {
                 selectedIndex=1;
+                networkGeneralSettingsSubTab.setSelectedIndex(0);
+                if (tab2 != null && tab2.equals("advanced")){
+                   networkGeneralSettingsSubTab.setSelectedIndex(1); 
+                }
             } else if (tab.equals("classifications")) {
                 selectedIndex=2;
             } else if (tab.equals("templates")) {
@@ -514,6 +514,10 @@ public class OptionsPage extends VDCBaseBean  implements java.io.Serializable {
                    initUserData();
                    harvestingSubTab.setSelectedIndex(1); 
                 }
+                if (tab2 != null && tab2.equals("settings")){
+                   initUserData();
+                   harvestingSubTab.setSelectedIndex(2); 
+                }
             } else if (tab.equals("permissions")) {
                 initPrivilegedUserData();
                 permissionsSubTab.setSelectedIndex(0);
@@ -523,6 +527,9 @@ public class OptionsPage extends VDCBaseBean  implements java.io.Serializable {
                 }
                 if (tab2 != null && tab2.equals("groups")){
                    permissionsSubTab.setSelectedIndex(2); 
+                }
+                if (tab2 != null && tab2.equals("tou")){
+                   permissionsSubTab.setSelectedIndex(3); 
                 }
                 selectedIndex=6;
             } else if (tab.equals("utilities")) {
@@ -1783,8 +1790,7 @@ public class OptionsPage extends VDCBaseBean  implements java.io.Serializable {
     }
     
     public String saveGeneralSettings_action() {
-        System.out.print("in save general settings");
-        System.out.print("siteRestriction " + siteRestriction);
+
         NetworkStatsBean statsBean = (NetworkStatsBean) FacesContext.getCurrentInstance().getExternalContext().getRequestMap().get("NetworkStatsBean");
         if (siteRestriction.equals("Public")) {
             if (vdc.getReleaseDate() == null) {
@@ -2104,7 +2110,8 @@ public class OptionsPage extends VDCBaseBean  implements java.io.Serializable {
     
     private String getReturnPage() {
         if (getVDCRequestBean().getCurrentVDC() == null) {
-            return "/networkAdmin/NetworkOptionsPage?faces-redirect=true";
+            return "/networkAdmin/NetworkOptionsPage?faces-redirect=true&tab=harvesting&tab2=settings";
+            
         } else {
             return "/admin/OptionsPage?faces-redirect=true&vdcId="+getVDCRequestBean().getCurrentVDC().getId();
         }
@@ -3093,7 +3100,7 @@ public class OptionsPage extends VDCBaseBean  implements java.io.Serializable {
         vdcNetworkService.edit(thisVdcNetwork);
         getVDCRequestBean().setVdcNetwork(thisVdcNetwork);        
         getVDCRenderBean().getFlash().put("successMessage", "Successfully updated general network settings.");
-        return "/networkAdmin/NetworkOptionsPage.xhtml?faces-redirect=true";
+        return "/networkAdmin/NetworkOptionsPage.xhtml?faces-redirect=true&tab=settings&tab2=general";
     }
    
    
@@ -3143,7 +3150,7 @@ public class OptionsPage extends VDCBaseBean  implements java.io.Serializable {
             vdcnetwork.setRequireDVstudiesforrelease(requireDvstudiesforrelease);
             vdcNetworkService.edit(vdcnetwork);
             getVDCRenderBean().getFlash().put("successMessage", "Successfully updated the network dataverse creation and release requirements.  ");
-            return "/networkAdmin/NetworkOptionsPage?faces-redirect=true";
+            return "/networkAdmin/NetworkOptionsPage?faces-redirect=true&tab=settings&tab2=advanced";
     }
     
     //Network Priviledged users page
@@ -3239,7 +3246,7 @@ public class OptionsPage extends VDCBaseBean  implements java.io.Serializable {
         privileges.save(creatorUrl);
         privileges.init();
         getVDCRenderBean().getFlash().put("successMessage", "Successfully updated network permissions.");
-        return "/networkAdmin/NetworkOptionsPage.xhtml?faces-redirect=true";
+        return "/networkAdmin/NetworkOptionsPage.xhtml?faces-redirect=true&tab=permissions";
     }
     
     //NetworkTerms of Use
@@ -3276,7 +3283,7 @@ public class OptionsPage extends VDCBaseBean  implements java.io.Serializable {
             vdcNetworkService.edit(vdcNetwork);
             userService.clearAgreedTermsOfUse();
             getVDCRenderBean().getFlash().put("successMessage", "Successfully updated network terms of use.");
-            return "/networkAdmin/NetworkOptionsPage.xhtml?faces-redirect=true";
+            return "/networkAdmin/NetworkOptionsPage.xhtml?faces-redirect=true&tab=permissions&tab2=tou";
         } else {
             getVDCRenderBean().getFlash().put("warningMessage", "To enable this terms of use, you must also enter terms of use in the field below. Please enter terms of use as either plain text or html.");
             return null;

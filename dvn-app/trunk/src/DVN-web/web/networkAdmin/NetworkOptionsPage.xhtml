@@ -84,7 +84,7 @@
                       </ice:panelTab>
                       
                       <ice:panelTab id="networkSettingsTab" label="Settings" url="/dvn#{VDCRequest.currentVDCURL}/faces/networkAdmin/NetworkOptionsPage.xhtml?tab=settings" rendered="#{VDCSession.loginBean.networkAdmin}">
-                         <ice:panelTabSet id="tabSetSettings" styleClass="dvnTabs dvnSubTabs">
+                          <ice:panelTabSet id="tabSetSettings" styleClass="dvnTabs dvnSubTabs" binding="#{OptionsPage.networkGeneralSettingsSubTab}">
                              <ice:panelTab id="networkGeneralSettings" label="General">
                                  <div jsfc="ice:panelGroup">
                                      <ui:include src="/networkAdmin/EditNetworkNamePage.xhtml"></ui:include>

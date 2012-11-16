@@ -22,8 +22,8 @@
                         <ice:outputText id="linkAction2Text" value="Change Password"/>
                     </ice:outputLink>
                     <ice:outputText value=" | " rendered="#{VDCSession.loginBean.networkAdmin and VDCRequest.currentVDC == null}"/>
-                    <ice:outputLink rendered="#{VDCSession.loginBean.networkAdmin and VDCRequest.currentVDC == null}" value="/dvn/faces/networkAdmin/AllUsersPage.xhtml?vdcId=#{VDCRequest.currentVDCId}">
-                        <ice:outputText value="Go To All Users List"/>
+                    <ice:outputLink rendered="#{VDCSession.loginBean.networkAdmin and VDCRequest.currentVDC == null}" value="/dvn/faces/networkAdmin/NetworkOptionsPage.xhtml?tab=permissions&amp;tab2=users">
+                        <ice:outputText value="Go To All Users List"/>  
                     </ice:outputLink>
                 </div>
                 <ice:panelGrid cellpadding="0" cellspacing="0" columns="2"

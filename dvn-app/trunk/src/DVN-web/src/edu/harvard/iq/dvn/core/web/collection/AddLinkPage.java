@@ -113,11 +113,11 @@ public class AddLinkPage extends VDCBaseBean implements java.io.Serializable  {
             vdcService.edit(vdc);
         }
         
-        return "/admin/OptionsPage?faces-redirect=true" + getNavigationVDCSuffix();
+        return "/admin/OptionsPage?faces-redirect=true&tab=collections" + getNavigationVDCSuffix();
     }
     
     public String cancel_action() {
-        return "/admin/OptionsPage?faces-redirect=true" + getNavigationVDCSuffix();
+        return "/admin/OptionsPage?faces-redirect=true&tab=collections" + getNavigationVDCSuffix();
     }
        
         

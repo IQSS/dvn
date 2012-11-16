@@ -107,6 +107,14 @@
         <div class="dvn_content" id="content-frame">
             <!-- required to fix a bug in firefox where the connection status box can be displayed erroneously -->
             <ice:outputConnectionStatus showPopupOnDisconnect="false"/>
+            <div jsfc="ice:panelGroup" styleClass="dvnWarningMessage dvnReadOnlyBlock" rendered="#{!empty VDCRequest.vdcNetwork.statusNotice }">
+                 <div class="dvnMsgBlockContainer">
+                   <p>
+                       <ice:outputText id="statusNotice" value="#{VDCRequest.vdcNetwork.statusNotice}" escape="false" rendered="#{!VDCRequest.vdcNetwork.readonly}"/>
+                       <ice:outputText id="readOnlyStatusNotice" value="#{VDCRequest.vdcNetwork.statusNotice}" escape="false" rendered="#{VDCRequest.vdcNetwork.readonly}"/>
+                   </p>
+                </div>
+            </div>
             <ui:insert name="title">
                 <!-- *** MENUBAR (Included from template) *** -->
                 <ui:include src="views/Menubar.xhtml"/>

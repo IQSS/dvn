@@ -69,6 +69,7 @@ import edu.harvard.iq.dvn.core.vdc.VDCServiceLocal;
 import edu.harvard.iq.dvn.core.web.study.StudyUI;
 import edu.harvard.iq.dvn.ingest.dsb.FieldCutter;
 import edu.harvard.iq.dvn.ingest.dsb.impl.DvnJavaFieldCutter;
+import edu.harvard.iq.dvn.core.util.FileUtil;
 import java.awt.Color;
 import java.awt.FontFormatException;
 import java.awt.Graphics2D;
@@ -1731,8 +1732,12 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
         dtColumnString = "";
         columnString = "";
         imageColumnString = "";
+        
+        String retValue = "";
+        File tmpSubsetFile = null; 
+        
         try {
-            File tmpSubsetFile = File.createTempFile("tempsubsetfile.", ".tab");
+            tmpSubsetFile = File.createTempFile("tempsubsetfile.", ".tab");
             List<DataVariable> dvsIn = new ArrayList();
             dvsIn.add(xAxisVar);
             columnString += xAxisVar.getName();
@@ -1794,8 +1799,16 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
 
         } catch (IOException e) {
             e.printStackTrace();
-            return "failure";
+            retValue ="failure";
+        } finally {
+            if (tmpSubsetFile != null && tmpSubsetFile.exists()) {
+                if (!FileUtil.keepTempFiles("core.web.ExploreDataPage")) {
+                    tmpSubsetFile.delete();
+                }          
+            }
         }
+        
+        return retValue;
     }
     
     private String getSafeCString(String strIn){
@@ -2249,6 +2262,11 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
                 //writeFile(csvFile, csvString.toString().toCharArray(), csvString.length());
                 writeFile(csvFile, csvString, csvString.length() );
                 addZipEntry(zout, csvFile.getAbsolutePath(), "csvData_" + exportTimestamp + ".txt");
+                if (csvFile != null && csvFile.exists()) {
+                if (!FileUtil.keepTempFiles("core.web.ExploreDataPage")) {
+                    csvFile.delete();
+                }          
+            }
 
             }
             if (includeImage || includePdf) {
@@ -2261,11 +2279,26 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
                 if (includePdf) {
                     addZipEntry(zout, imagePdfFile.getAbsolutePath(), "imagePdf_" + exportTimestamp + ".pdf");
                 }
+                if (imageUrlFile != null && imageUrlFile.exists()) {
+                    if (!FileUtil.keepTempFiles("core.web.ExploreDataPage")) {
+                        imageUrlFile.delete();
+                    }          
+                }
+                if (imagePdfFile != null && imagePdfFile.exists()) {
+                    if (!FileUtil.keepTempFiles("core.web.ExploreDataPage")) {
+                        imagePdfFile.delete();
+                    }          
+                }
             }
             if (includeExcel) {
                 File excelDataFile = File.createTempFile("dataDownload","xls");
                 writeExcelFile(excelDataFile);
                 addZipEntry(zout, excelDataFile.getAbsolutePath(), "excelData_" + exportTimestamp + ".xls");
+                if (excelDataFile != null && excelDataFile.exists()) {
+                    if (!FileUtil.keepTempFiles("core.web.ExploreDataPage")) {
+                        excelDataFile.delete();
+                    }          
+                }
             }
 
             zout.close();
@@ -2275,7 +2308,8 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
             zipOutputFile = null;
         }
 
-
+        // TODO: make sure the zip file itself gets deleted as well. 
+        // - L.A. 
         return zipOutputFile;
     }
 
@@ -2329,7 +2363,9 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
     }
 
     private void writeImageFile(File fileIn, File pdfFileIn) {
-
+        
+        File imagePngFile = null;
+        
         try {
             String decoded = URLDecoder.decode(imageURL, "UTF-8");
 
@@ -2346,7 +2382,7 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
                     }
 
                     if (pdfFileIn != null) {
-                        File imagePngFile = File.createTempFile("pdfDownload", "png");
+                        imagePngFile = File.createTempFile("pdfDownload", "png");
                         ImageIO.write(combinedImage, "png", imagePngFile);
                         Document convertPngToPdf = new Document();
                         PdfWriter.getInstance(convertPngToPdf, new FileOutputStream(pdfFileIn, true));
@@ -2377,6 +2413,12 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
         } catch (DocumentException io) {
             System.out.println("IOException - document ");
             System.out.println(io.getMessage());
+        } finally {
+            if (imagePngFile != null && imagePngFile.exists()) {
+                if (!FileUtil.keepTempFiles("core.web.ExploreDataPage")) {
+                    imagePngFile.delete();
+                }          
+            }
         }
     }
     
@@ -2398,6 +2440,11 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
        
         File retFile = generateImageString("16", "620x", "South", "0", graphTitle);       
         BufferedImage titleImage =     ImageIO.read(retFile);
+        if (!FileUtil.keepTempFiles("core.web.ExploreDataPage")) {
+            if (retFile != null && retFile.exists()) {
+                retFile.delete();
+            }          
+        }
 
         String source = "";
 
@@ -2410,12 +2457,22 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
         }
         retFile = generateImageString("14", "676x", "NorthWest", "0", source);        
         BufferedImage sourceImage =     ImageIO.read(retFile);
+        if (!FileUtil.keepTempFiles("core.web.ExploreDataPage")) {
+            if (retFile != null && retFile.exists()) {
+                retFile.delete();
+            }          
+        }
         
         if(yAxisLabel.trim().isEmpty()){
             yAxisLabel = " ";
         }                
         retFile = generateImageString("14", new Integer(350 + heightAdjustment) + "x", "South", "-90", yAxisLabel);        
         BufferedImage yAxisVertImage =     ImageIO.read(retFile);
+        if (!FileUtil.keepTempFiles("core.web.ExploreDataPage")) {
+            if (retFile != null && retFile.exists()) {
+                retFile.delete();
+            }          
+        }
         
         Graphics2D yag2 = yAxisImage.createGraphics();
         Graphics2D cig2 = combinedImage.createGraphics();
@@ -2444,6 +2501,10 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
         // let's attempt to generate the Text image:
         int exitValue = 0;
         File file = File.createTempFile("imageString","tmp");
+        
+        // TODO: hard-coded pathname for the ImageMagick "convert"!
+        // - L.A.
+        
         if (new File("/usr/bin/convert").exists()) {           
             
             String ImageMagickCmd[] = new String[15];
@@ -3349,7 +3410,10 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
                 studyService.incrementNumberOfDownloads(sf.getId(), (Long)null, (GuestBookResponse) guestbookResponse);
             }
 
-
+            // TODO: 
+            // Make sure this temp file also gets deleted (somehow?)
+            // - L.A.
+            
             return new FileInputStream(file);
         }
 

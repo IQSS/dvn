@@ -28,6 +28,7 @@
 package edu.harvard.iq.dvn.core.web.servlet;
 
 
+import edu.harvard.iq.dvn.core.util.FileUtil;
 import java.awt.FontFormatException;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
@@ -181,8 +182,22 @@ public class DataVisServlet extends HttpServlet {
             graphTitle = " ";
         }
        
+        // Do we need some diagnostics here? Should we throw an exception or
+        // display an error message if generateImageString returns null? 
+        // Or is this on purpose (the title being considered a non-essential
+        // thing)? 
+        //
+        // - L.A. 
+        
         File retFile = generateImageString("16", "620x", "South", "0", graphTitle);       
         BufferedImage titleImage =     ImageIO.read(retFile);
+        
+        if (!FileUtil.keepTempFiles("core.web.servlet.DataVisServlet")) {
+            if (retFile != null && retFile.exists()) {
+                retFile.delete();
+            }
+            
+        }
 
         String source = "";
 
@@ -204,9 +219,24 @@ public class DataVisServlet extends HttpServlet {
         
         if(yAxisLabel.trim().isEmpty()){
             yAxisLabel = " ";
-        }                
+        }  
+        
+        if (!FileUtil.keepTempFiles("core.web.servlet.DataVisServlet")) {
+            if (retFile.exists()) {
+                retFile.delete();
+            }
+            
+        }
+        
         retFile = generateImageString("14", new Integer(350 + heightAdjustment) + "x", "South", "-90", yAxisLabel);        
         BufferedImage yAxisVertImage =     ImageIO.read(retFile);
+        
+        if (!FileUtil.keepTempFiles("core.web.servlet.DataVisServlet")) {
+            if (retFile != null && retFile.exists()) {
+                retFile.delete();
+            }
+            
+        }
         
         Graphics2D yag2 = yAxisImage.createGraphics();
         Graphics2D cig2 = combinedImage.createGraphics();

@@ -417,4 +417,28 @@ public class FileUtil implements java.io.Serializable  {
         return displaySize;
     }
 
+    public static boolean keepTempFiles (String component) {
+        String jvmOptionProperty = "dvn.temp.preserve";
+        
+        if (component == null || component.equals("")) {
+            if ("true".equals(System.getProperty(jvmOptionProperty))) {
+                return true;
+            }
+        }
+        
+        String componentTokens = component; 
+        
+        while (!componentTokens.equals("")) {
+            jvmOptionProperty = jvmOptionProperty.concat(".".concat(componentTokens));
+            
+            if ("true".equals(System.getProperty(jvmOptionProperty))) {
+                return true;
+            }
+            
+            componentTokens = componentTokens.replaceFirst("[^\\.]*$", "");
+            componentTokens = componentTokens.replaceFirst("\\.$", "");
+        }
+        
+        return false; 
+    }
 }

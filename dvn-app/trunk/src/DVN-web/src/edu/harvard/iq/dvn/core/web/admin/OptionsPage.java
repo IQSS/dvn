@@ -753,7 +753,8 @@ public class OptionsPage extends VDCBaseBean  implements java.io.Serializable {
         editVDCPrivileges.setVdc(vdc.getId());
         vdc = editVDCPrivileges.getVdc();
         getVDCRenderBean().getFlash().put("successMessage","Successfully updated dataverse permissions.");
-        return "/admin/OptionsPage?faces-redirect=true&vdcId="+getVDCRequestBean().getCurrentVDC().getId();
+        return "";
+        /*return "/admin/OptionsPage?faces-redirect=true&vdcId="+getVDCRequestBean().getCurrentVDC().getId()+ "&tab=permissions";*/
     } 
     
     public String cancel_action(){
@@ -774,7 +775,6 @@ public class OptionsPage extends VDCBaseBean  implements java.io.Serializable {
     private String parentSite;
 
     public boolean isDisplayInFrame() {return displayInFrame;}
-
     public void setDisplayInFrame(boolean displayInFrame) {
         this.displayInFrame = displayInFrame;
         // add javascript call on each partial submit to trigger jQuery
@@ -786,11 +786,9 @@ public class OptionsPage extends VDCBaseBean  implements java.io.Serializable {
     
     private String banner;    
     public String getBanner(){return banner;}    
-    public void setBanner(String banner) {this.banner = banner;}
-    
+    public void setBanner(String banner) {this.banner = banner;}    
     private String footer;
-    public String getFooter() {return footer;}
-    
+    public String getFooter() {return footer;}    
     public void setFooter(String footer) {this.footer = footer;}
     
     protected HtmlInputHidden combinedTextField = new HtmlInputHidden();
@@ -1841,7 +1839,6 @@ public class OptionsPage extends VDCBaseBean  implements java.io.Serializable {
         success = true;
         if (!validateAnnouncementsText()) {
             getVDCRenderBean().getFlash().put("warningMessage", "To enable announcements, you must also enter announcements in the field below.  Please enter local announcements as either plain text or html.)");   
-
             success = false;
             return "result";
         }
@@ -1870,7 +1867,7 @@ public class OptionsPage extends VDCBaseBean  implements java.io.Serializable {
             vdcService.edit(vdc);
             getVDCRequestBean().setCurrentVDC(vdc);
             getVDCRenderBean().getFlash().put("successMessage", "Successfully updated general settings.");
-            return "/admin/OptionsPage?faces-redirect=true&vdcId=" + vdc.getId();
+            return "/admin/OptionsPage?faces-redirect=true&vdcId=" + vdc.getId() + "&tab=settings&tab2=general";
         } else {  
             getVDCRenderBean().getFlash().put("warningMessage", "Could not update general settings.");
             success = false;
@@ -2125,7 +2122,7 @@ public class OptionsPage extends VDCBaseBean  implements java.io.Serializable {
             return "/networkAdmin/NetworkOptionsPage?faces-redirect=true&tab=harvesting&tab2=settings";
             
         } else {
-            return "/admin/OptionsPage?faces-redirect=true&vdcId="+getVDCRequestBean().getCurrentVDC().getId();
+            return "";
         }
     }
 
@@ -2694,9 +2691,8 @@ public class OptionsPage extends VDCBaseBean  implements java.io.Serializable {
         
         vdc.setDefaultSortOrder(defaultSortOrder);       
         vdcService.edit(vdc);
-        forwardPage = "/admin/OptionsPage?faces-redirect=true&vdcId=" + getVDCRequestBean().getCurrentVDC().getId();
         getVDCRenderBean().getFlash().put("successMessage", "Successfully updated customization settings.");
-        return forwardPage;
+        return "";
     }
 
     public String cancelCustomization() {

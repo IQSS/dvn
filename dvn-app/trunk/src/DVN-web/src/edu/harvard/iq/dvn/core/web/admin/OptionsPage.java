@@ -464,6 +464,9 @@ public class OptionsPage extends VDCBaseBean  implements java.io.Serializable {
     private PanelTabSet dvSettingsSubTab = new PanelTabSet();
     public PanelTabSet getDvSettingsSubTab() {return dvSettingsSubTab;}
     public void setDvSettingsSubTab(PanelTabSet dvSettingsSubTab) {this.dvSettingsSubTab = dvSettingsSubTab;}
+    private PanelTabSet dvPermissionsSubTab = new PanelTabSet();
+    public PanelTabSet getDvPermissionsSubTab() {return dvPermissionsSubTab;}
+    public void setDvPermissionsSubTab(PanelTabSet dvPermissionsSubTab) {this.dvPermissionsSubTab = dvPermissionsSubTab;}
     private PanelTabSet networkGeneralSettingsSubTab = new PanelTabSet();
     public PanelTabSet getNetworkGeneralSettingsSubTab() {return networkGeneralSettingsSubTab;}
     public void setNetworkGeneralSettingsSubTab(PanelTabSet networkGeneralSettingsSubTab) {this.networkGeneralSettingsSubTab = networkGeneralSettingsSubTab;}
@@ -484,6 +487,13 @@ public class OptionsPage extends VDCBaseBean  implements java.io.Serializable {
                 selectedIndex=2;
             } else if (tab.equals("permissions")) {
                 selectedIndex=3;
+                dvPermissionsSubTab.setSelectedIndex(0);
+                if (tab2 != null && tab2.equals("tou")){
+                   dvPermissionsSubTab.setSelectedIndex(1); 
+                }
+                if (tab2 != null && tab2.equals("guestbook")){
+                   dvPermissionsSubTab.setSelectedIndex(2); 
+                }
             } else if (tab.equals("settings")) {
                 selectedIndex=4;
                 dvSettingsSubTab.setSelectedIndex(0); 
@@ -1229,9 +1239,8 @@ public class OptionsPage extends VDCBaseBean  implements java.io.Serializable {
             vdc.setDownloadTermsOfUse(downloadTermsOfUse);
             vdc.setDownloadTermsOfUseEnabled(downloadTermsOfUseEnabled);
             vdcService.edit(vdc);
-            String    forwardPage="/admin/OptionsPage?faces-redirect=true&vdcId="+getVDCRequestBean().getCurrentVDC().getId();
             getVDCRenderBean().getFlash().put("successMessage","Successfully updated terms of use for this dataverse.");
-            return forwardPage;                      
+            return "/admin/OptionsPage?faces-redirect=true&vdcId="+getVDCRequestBean().getCurrentVDC().getId()+"&tab=permissions&tab2=tou";                      
         } else {
             return null;
         }
@@ -1303,7 +1312,7 @@ public class OptionsPage extends VDCBaseBean  implements java.io.Serializable {
     public String guestbooksave_action() {
             vdc.setGuestBookQuestionnaire(guestBookQuestionnaire);
             vdcService.edit(vdc);
-            String forwardPage = "/admin/OptionsPage?faces-redirect=true&vdcId=" + getVDCRequestBean().getCurrentVDC().getId();
+            String forwardPage = "/admin/OptionsPage?faces-redirect=true&vdcId=" + getVDCRequestBean().getCurrentVDC().getId() + "&tab=permissions&tab2=guestbook";
             getVDCRenderBean().getFlash().put("successMessage", "Successfully updated guest book questionnaire.");
             return forwardPage;
     }
@@ -1831,6 +1840,8 @@ public class OptionsPage extends VDCBaseBean  implements java.io.Serializable {
         }
         success = true;
         if (!validateAnnouncementsText()) {
+            getVDCRenderBean().getFlash().put("warningMessage", "To enable announcements, you must also enter announcements in the field below.  Please enter local announcements as either plain text or html.)");   
+
             success = false;
             return "result";
         }
@@ -1860,7 +1871,8 @@ public class OptionsPage extends VDCBaseBean  implements java.io.Serializable {
             getVDCRequestBean().setCurrentVDC(vdc);
             getVDCRenderBean().getFlash().put("successMessage", "Successfully updated general settings.");
             return "/admin/OptionsPage?faces-redirect=true&vdcId=" + vdc.getId();
-        } else {                   
+        } else {  
+            getVDCRenderBean().getFlash().put("warningMessage", "Could not update general settings.");
             success = false;
             return null;
         }
@@ -1898,7 +1910,7 @@ public class OptionsPage extends VDCBaseBean  implements java.io.Serializable {
             success = false;
             FacesMessage message = new FacesMessage("To enable announcements, you must also enter announcements in the field below.  Please enter local announcements as either plain text or html.");
             FacesContext context = FacesContext.getCurrentInstance();
-            context.addMessage("editHomePanelsForm:localAnnouncements", message);
+            context.addMessage("OptionsPage:localAnnouncements", message);
             context.renderResponse();
         }
         return isAnnouncements;

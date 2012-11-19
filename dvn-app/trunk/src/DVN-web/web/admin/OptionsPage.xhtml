@@ -71,7 +71,7 @@
                         <ice:panelTab id="permissions" label="Permissions" url="/dvn#{VDCRequest.currentVDCURL}/faces/admin/OptionsPage.xhtml?tab=permissions" 
                                       rendered="#{VDCSession.loginBean.networkAdmin or VDCSession.loginBean.curatorOrAbove or (not VDCRequest.currentVDC.harvestingDv and (VDCSession.loginBean.contributor or VDCRequest.currentVDC.allowRegisteredUsersToContribute))}">
                             <div jsfc="ice:panelGroup" id="layoutPanel5" panelLayout="flow">
-                                <ice:panelTabSet id="tabSetPermissions" styleClass="dvnTabs dvnSubTabs">
+                                <ice:panelTabSet id="tabSetPermissions" styleClass="dvnTabs dvnSubTabs" binding="#{OptionsPage.dvPermissionsSubTab}">
                                     <!-- PERMISSIONS -->
                                     <ice:panelTab id="permissionsSub" label="Permissions">
                                             <div jsfc="ice:panelGroup"  panelLayout="flow">

@@ -69,7 +69,7 @@
                                     </ice:outputText>
                                     <ice:outputText nospan="true" escape="false" rendered="#{VDCRequest.logoutPage or VDCSession.loginBean.user==null}">
                                         <li class="dvn_navUserName">
-                                            <ice:form>
+                                            <ice:form rendered="#{!VDCRequest.readOnlyDatabase}">
                                                 <ice:commandLink action="#{LoginWorkflowBean.beginContributorWorkflow}" title="Create Account">
                                                     <ice:outputText value="#{bundle.createaccountLabel}"/>
                                                 </ice:commandLink>

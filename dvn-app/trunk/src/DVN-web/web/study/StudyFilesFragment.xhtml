@@ -140,7 +140,7 @@
                                                                             <ice:outputText value="Download" rendered="#{!studyFileUI.restrictedForUser and !studyFileUI.studyFile.subsettable}"/>
                                                                         </ice:outputLink>
                                                                     </div>
-                                                                    <div jsfc="ice:panelGroup" rendered="#{!studyFileUI.restrictedForUser and studyFileUI.studyFile.subsettable}">
+                                                                    <div jsfc="ice:panelGroup" rendered="#{!studyFileUI.restrictedForUser and studyFileUI.studyFile.subsettable and !VDCRequest.readOnlyDatabase}">
                                                                         <ice:graphicImage styleClass="vdcStudyFileRowFileDownloadAsIcon" value="/resources/images/icon_download.gif" alt="Download"/>
                                                                         <ice:selectOneMenu styleClass="vdcStudyFileRowFileDownloadAsList" id="downloadList" onchange="downloadSingleFile(this);">
                                                                             <f:selectItem itemLabel="Download as..." itemValue=""/>
@@ -157,7 +157,7 @@
                                                                 <ice:column id="column20" rendered="#{studyFileUI.studyFile.subsettable}">
                                                                     <input type="checkbox" id="checkboxHiddenSpacer" class="iceSelBoolChkbx" style="visibility:hidden"/>
                                                                 </ice:column>
-                                                                <ice:column id="column21" rendered="#{studyFileUI.studyFile.subsettable}">
+                                                                <ice:column id="column21" rendered="#{studyFileUI.studyFile.subsettable and !VDCRequest.readOnlyDatabase}">
                                                                     <div jsfc="ice:panelGroup" styleClass="vdcStudyFileSubset">
                                                                         <ice:panelGrid styleClass="vdcStudyFileSubsetTable" columns="3" cellpadding="2" cellspacing="0" border="0">
                                                                             <ice:column id="column1">
@@ -179,7 +179,7 @@
                                                                         </ice:panelGrid>
                                                                     </div>
                                                                 </ice:column>
-                                                                <ice:column id="column22" rendered="#{studyFileUI.studyFile.subsettable}">
+                                                                <ice:column id="column22" rendered="#{studyFileUI.studyFile.subsettable and !VDCRequest.readOnlyDatabase}">
                                                                     <div jsfc="ice:panelGroup" styleClass="vdcStudyFileSubsetAnalysis">
                                                                         <ice:outputLink rendered="#{studyFileUI.tabularDataFile}" id="fileSubsetTabular" styleClass="vdcStudyFileSubsetAnalysisLink" value="/dvn#{VDCRequest.currentVDCURL}/faces/subsetting/SubsettingPage.xhtml?dtId=#{studyFileUI.studyFile.dataTable.id}&amp;versionNumber=#{studyPage.studyUI.studyVersion.versionNumber}#{VDCRequest.studyListingIndexAsParameter}">
                                                                             <ice:outputText value="Access Analysis + Subsetting"/>

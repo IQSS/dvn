@@ -128,7 +128,11 @@ public class StudyListingPage extends VDCBaseBean implements java.io.Serializabl
     }
 
     public int getForeignDownloadCount() {
-        return getVDCRequestBean().getCurrentVDC().getVDCActivity().getLocalStudyForeignDownloadCount() + getVDCRequestBean().getCurrentVDC().getVDCActivity().getLocalStudyNetworkDownloadCount();
+        if (getVDCRequestBean().getCurrentVDC() !=null){
+                  return getVDCRequestBean().getCurrentVDC().getVDCActivity().getLocalStudyForeignDownloadCount() + getVDCRequestBean().getCurrentVDC().getVDCActivity().getLocalStudyNetworkDownloadCount();  
+        } else {
+            return 0;
+        }
     }
     
     

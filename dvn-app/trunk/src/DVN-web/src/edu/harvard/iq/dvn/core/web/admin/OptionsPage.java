@@ -4505,10 +4505,11 @@ public class OptionsPage extends VDCBaseBean  implements java.io.Serializable {
     public void initUserData() {        
         userData = new ArrayList();
         List users = userService.findAll();
+        Long defaultNetworkAdminId = vdcNetworkService.find().getDefaultNetworkAdmin().getId();
         for (Iterator it = users.iterator(); it.hasNext();) {
             VDCUser elem = (VDCUser) it.next();
             boolean defaultNetworkAdmin = elem.getNetworkRole()!=null
-                    && elem.getId().equals(vdcNetworkService.find().getDefaultNetworkAdmin().getId());
+                    && elem.getId().equals(defaultNetworkAdminId);
             userData.add(new AllUsersDataBean(elem, defaultNetworkAdmin));
         }
     }
@@ -4518,18 +4519,22 @@ public class OptionsPage extends VDCBaseBean  implements java.io.Serializable {
             sessionPut( getPrivileges().getClass().getName(),privileges);
     }
     
+    private HtmlDataTable userDataTable;
+    public HtmlDataTable getUserDataTable() {return this.userDataTable;}
+    public void setUserDataTable(HtmlDataTable userDataTable) {this.userDataTable = userDataTable;}
+    
     private List<edu.harvard.iq.dvn.core.web.networkAdmin.AllUsersDataBean> userData;
     public List<edu.harvard.iq.dvn.core.web.networkAdmin.AllUsersDataBean> getUserData() {return this.userData;}
     public void setUserData(List<edu.harvard.iq.dvn.core.web.networkAdmin.AllUsersDataBean> userData) {this.userData = userData;}
     public void activateUser(ActionEvent ae) {
-        AllUsersDataBean bean=(AllUsersDataBean)dataTable.getRowData();
+        AllUsersDataBean bean=(AllUsersDataBean)userDataTable.getRowData();
         VDCUser user = bean.getUser();
         userService.setActiveStatus(bean.getUser().getId(),true);
         initUserData();  // Re-fetch list to reflect Delete action       
     }
     
      public void deactivateUser(ActionEvent ae) {
-        AllUsersDataBean bean=(AllUsersDataBean)dataTable.getRowData();
+        AllUsersDataBean bean=(AllUsersDataBean)userDataTable.getRowData();
         userService.setActiveStatus(bean.getUser().getId(),false);
         initUserData();  // Re-fetch list to reflect Delete action        
     }

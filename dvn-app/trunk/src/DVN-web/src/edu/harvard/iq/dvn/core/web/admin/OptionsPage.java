@@ -58,6 +58,7 @@ import javax.faces.context.FacesContext;
 import javax.faces.event.ActionEvent;
 import javax.faces.event.ValueChangeEvent;
 import javax.faces.model.SelectItem;
+import javax.faces.context.ExternalContext;
 import javax.inject.Named;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -3858,6 +3859,7 @@ public class OptionsPage extends VDCBaseBean  implements java.io.Serializable {
             int fileFailureCount = 0;
             List<Long> studiesToIndex = new ArrayList<Long>();
             //sessionId =  ((HttpSession) FacesContext.getCurrentInstance().getExternalContext().getSession(false)).getId();
+            sessionId = "batchimportsession";
 
             File batchDir = new File(importBatchDir);
             if (batchDir.exists() && batchDir.isDirectory()) {
@@ -3885,7 +3887,7 @@ public class OptionsPage extends VDCBaseBean  implements java.io.Serializable {
                             if ( "study.xml".equals(file.getName()) ) {
                                 xmlFile = file;
                             } else {
-                                addFile(file, "", filesToUpload);
+                                addFile(file, "", filesToUpload, importLogger);
                             }
                         }
                         
@@ -3968,15 +3970,16 @@ public class OptionsPage extends VDCBaseBean  implements java.io.Serializable {
         return null;       
     }
 
-    private void addFile(File file, String catName, Map<File,String> filesToUpload) throws Exception{
+    private void addFile(File file, String catName, Map<File,String> filesToUpload, Logger importLogger) throws Exception{
         if ( file.getName()!= null && file.getName().startsWith(".")) {
              // ignore hidden files (ie files that start with "."
         } else if (file.isDirectory()) {
             String tempCatName = StringUtil.isEmpty(catName) ?  file.getName() : catName + " - " + file.getName();
             for (int j=0; j < file.listFiles().length; j++ ) {
-                addFile( file.listFiles()[j], tempCatName, filesToUpload );
+                addFile( file.listFiles()[j], tempCatName, filesToUpload, importLogger );
             }
         } else {
+            importLogger.info("Attempting to create temp file "+sessionId+"/"+file.getName());
             File tempFile = FileUtil.createTempFile( sessionId, file.getName() );
             FileUtil.copyFile(file, tempFile);
             filesToUpload.put(tempFile, catName);

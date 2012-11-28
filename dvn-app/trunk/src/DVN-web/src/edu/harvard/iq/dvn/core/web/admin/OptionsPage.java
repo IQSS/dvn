@@ -326,28 +326,28 @@ public class OptionsPage extends VDCBaseBean  implements java.io.Serializable {
         searchResultsFields = getVDCRequestBean().getCurrentVDC().getSearchResultFields();
         for (Iterator it = searchResultsFields.iterator(); it.hasNext();) {
             StudyField elem = (StudyField) it.next();
-            if (elem.getName().equals("productionDate")){
+            if (elem.getName().equals(StudyFieldConstant.productionDate)){
                 productionDateResults = true;
             }            
-            if (elem.getName().equals("producerName")){
+            if (elem.getName().equals(StudyFieldConstant.producer)){
                 producerResults = true;
             }
-            if (elem.getName().equals("distributionDate")){
+            if (elem.getName().equals(StudyFieldConstant.distributionDate)){
                 distributionDateResults = true;
             }
-            if (elem.getName().equals("distributorName")){
+            if (elem.getName().equals(StudyFieldConstant.distributor)){
                 distributorResults = true;
             }
-            if (elem.getName().equals("replicationFor")){
+            if (elem.getName().equals(StudyFieldConstant.publicationReplicationData)){
                 replicationForResults = true;
             }
-            if (elem.getName().equals("relatedPublications")){
+            if (elem.getName().equals(StudyFieldConstant.publication)){
                 relatedPublicationsResults = true;
             }
-            if (elem.getName().equals("relatedMaterial")){
+            if (elem.getName().equals(StudyFieldConstant.relatedMaterial)){
                 relatedMaterialResults = true;
             }
-            if (elem.getName().equals("relatedStudies")){
+            if (elem.getName().equals(StudyFieldConstant.relatedStudies)){
                 relatedStudiesResults = true;
             }
         }
@@ -2654,35 +2654,35 @@ public class OptionsPage extends VDCBaseBean  implements java.io.Serializable {
         vdc.setParentSite(parentSite);
         List <StudyField> newSearchResultsFields = getDefaultSearchResultsFields();
         if (productionDateResults){
-            StudyField productionDateResultsField = studyFieldService.findByName("productionDate");
+            StudyField productionDateResultsField = studyFieldService.findByName(StudyFieldConstant.productionDate);
             newSearchResultsFields.add(productionDateResultsField);
         }        
         if (producerResults){
-            StudyField producerResultsField = studyFieldService.findByName("producer");
+            StudyField producerResultsField = studyFieldService.findByName(StudyFieldConstant.producer);
             newSearchResultsFields.add(producerResultsField);
         }
         if (distributionDateResults){
-            StudyField distributionDateResultsField = studyFieldService.findByName("distributionDate");
+            StudyField distributionDateResultsField = studyFieldService.findByName(StudyFieldConstant.distributionDate);
             newSearchResultsFields.add(distributionDateResultsField);
         }
         if (distributorResults){
-            StudyField distributorResultsField = studyFieldService.findByName("distributor");
+            StudyField distributorResultsField = studyFieldService.findByName(StudyFieldConstant.distributor);
             newSearchResultsFields.add(distributorResultsField);
         }
         if (replicationForResults){
-            StudyField replicationResultsField = studyFieldService.findByName("publicationReplicationData");
+            StudyField replicationResultsField = studyFieldService.findByName(StudyFieldConstant.publicationReplicationData);
             newSearchResultsFields.add(replicationResultsField);
         }
         if (relatedPublicationsResults){
-            StudyField relatedpubResultsField = studyFieldService.findByName("publication");
+            StudyField relatedpubResultsField = studyFieldService.findByName(StudyFieldConstant.publication);
             newSearchResultsFields.add(relatedpubResultsField);
         }
         if (relatedMaterialResults){
-            StudyField relatedmatResultsField = studyFieldService.findByName("relatedMaterial");
+            StudyField relatedmatResultsField = studyFieldService.findByName(StudyFieldConstant.relatedMaterial);
             newSearchResultsFields.add(relatedmatResultsField);
         }
         if (relatedStudiesResults){
-            StudyField relatedstudiesResultsField = studyFieldService.findByName("relatedStudies");
+            StudyField relatedstudiesResultsField = studyFieldService.findByName(StudyFieldConstant.relatedStudies);
             newSearchResultsFields.add(relatedstudiesResultsField);
         }
         if (!newSearchResultsFields.isEmpty()){

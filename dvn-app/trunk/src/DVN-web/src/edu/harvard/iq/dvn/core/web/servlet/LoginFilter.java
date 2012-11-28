@@ -308,6 +308,11 @@ public class LoginFilter implements Filter {
         }
         // Do special authorization for EditStudyPages 
         if (isEditStudyPage(pageDef)) {
+            
+            if (isPopup(request)) {
+                return true;
+            }            
+            
             return isAuthorizedToEditStudy(pageDef, user, request, currentVDC);
         }
 

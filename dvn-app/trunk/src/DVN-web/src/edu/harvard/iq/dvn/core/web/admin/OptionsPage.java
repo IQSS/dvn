@@ -4513,7 +4513,11 @@ public class OptionsPage extends VDCBaseBean  implements java.io.Serializable {
             Long elem = (Long) it.next();
             userData.add(new AllUsersDataBean(elem, defaultNetworkAdminId));
         }
+        userDataCount = new Long(userData.size());
     }
+    private Long userDataCount;
+    public Long getUserDataCount() {return userDataCount;}
+    public void setUserDataCount(Long userDataCount) {this.userDataCount = userDataCount;}
         
     public void initPrivilegedUserData() {        
             privileges.init();

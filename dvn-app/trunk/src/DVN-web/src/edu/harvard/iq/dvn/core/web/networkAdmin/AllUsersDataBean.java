@@ -28,21 +28,26 @@
 package edu.harvard.iq.dvn.core.web.networkAdmin;
 
 import edu.harvard.iq.dvn.core.admin.NetworkRoleServiceLocal;
+import edu.harvard.iq.dvn.core.admin.UserServiceLocal;
 import edu.harvard.iq.dvn.core.admin.VDCRole;
 import edu.harvard.iq.dvn.core.admin.VDCUser;
 import java.util.Iterator;
+import javax.naming.InitialContext;
 
 /**
  *
  * @author Ellen Kraffmiller
  */
 public class AllUsersDataBean implements java.io.Serializable  {
-    
+    private UserServiceLocal userService;    
     /**
      * Creates a new instance of AllUsersDataBean
      */
     public AllUsersDataBean() {
     }
+    
+    private Long userId;
+    private Long defaultNetworkAdminId;
 
     /**
      * Holds value of property user.
@@ -54,9 +59,31 @@ public class AllUsersDataBean implements java.io.Serializable  {
      * @return Value of property user.
      */
     public VDCUser getUser() {
-        return this.user;
+        if (this.user != null){
+            return this.user;
+        } else {
+            return this.user = initUser(userId);
+        }       
     }
 
+    
+    private VDCUser initUser(Long id){
+        if (userService == null){
+            initUserService();
+        }
+        return userService.find(id);       
+    }
+    
+    private void initUserService() {
+        if (userService == null) {
+            try {
+                userService = (UserServiceLocal) new InitialContext().lookup("java:comp/env/vdcUserService");
+            } catch (Exception e) {
+               
+                e.printStackTrace();
+            }
+        }
+    }
     /**
      * Setter for property user.
      * @param user New value of property user.
@@ -92,21 +119,29 @@ public class AllUsersDataBean implements java.io.Serializable  {
        return str;
     }
     
+    public AllUsersDataBean(Long id, Long defaultId){
+        this.userId = id;
+        this.defaultNetworkAdminId = defaultId;
+    }
    
 
     public AllUsersDataBean(VDCUser user, boolean defaultNetworkAdmin) {
         this.user=user; 
-        this.defaultNetworkAdmin = defaultNetworkAdmin;
-       
+        this.defaultNetworkAdmin = defaultNetworkAdmin;       
     } 
 
-    private boolean defaultNetworkAdmin;
+    private Boolean defaultNetworkAdmin;
   
     /**
      * Getter for property defaultNetworkAdmin.
      * @return Value of property defaultNetworkAdmin.
      */
     public boolean isDefaultNetworkAdmin() {
+        if (this.user ==null){
+            initUser(this.userId);
+        }
+        this.defaultNetworkAdmin = this.user.getNetworkRole()!=null
+                    && this.user.getId().equals(defaultNetworkAdminId);
         return defaultNetworkAdmin;
     }
 

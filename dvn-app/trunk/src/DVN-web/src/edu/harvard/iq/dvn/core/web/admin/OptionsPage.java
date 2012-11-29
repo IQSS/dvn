@@ -4507,16 +4507,14 @@ public class OptionsPage extends VDCBaseBean  implements java.io.Serializable {
     
     public void initUserData() {        
         userData = new ArrayList();
-        List users = userService.findAll();
+        List users = userService.findAllIds();
         Long defaultNetworkAdminId = vdcNetworkService.find().getDefaultNetworkAdmin().getId();
         for (Iterator it = users.iterator(); it.hasNext();) {
-            VDCUser elem = (VDCUser) it.next();
-            boolean defaultNetworkAdmin = elem.getNetworkRole()!=null
-                    && elem.getId().equals(defaultNetworkAdminId);
-            userData.add(new AllUsersDataBean(elem, defaultNetworkAdmin));
+            Long elem = (Long) it.next();
+            userData.add(new AllUsersDataBean(elem, defaultNetworkAdminId));
         }
     }
-    
+        
     public void initPrivilegedUserData() {        
             privileges.init();
             sessionPut( getPrivileges().getClass().getName(),privileges);

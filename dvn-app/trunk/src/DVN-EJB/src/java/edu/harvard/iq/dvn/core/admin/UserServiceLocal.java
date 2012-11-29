@@ -42,6 +42,8 @@ public interface UserServiceLocal extends java.io.Serializable  {
 
     public List findAll();
     
+    public List findAllIds();
+    
     public void remove(Long id);
     
     public VDCUser findByUserName(String userName);

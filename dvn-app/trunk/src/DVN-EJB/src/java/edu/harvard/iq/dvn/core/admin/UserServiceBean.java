@@ -30,15 +30,13 @@ package edu.harvard.iq.dvn.core.admin;
 import edu.harvard.iq.dvn.core.mail.MailServiceLocal;
 import edu.harvard.iq.dvn.core.study.Study;
 import edu.harvard.iq.dvn.core.study.StudyFile;
+import edu.harvard.iq.dvn.core.study.StudyVersion;
 import edu.harvard.iq.dvn.core.vdc.VDC;
 import edu.harvard.iq.dvn.core.vdc.VDCNetwork;
 import edu.harvard.iq.dvn.core.vdc.VDCNetworkServiceLocal;
 import java.lang.String;
 import java.lang.String;
-import java.util.Collection;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Vector;
+import java.util.*;
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
@@ -155,6 +153,20 @@ public class UserServiceBean implements UserServiceLocal {
 
         }
         return userList;
+    }
+    
+    public List findAllIds() {
+        String queryString = "select o.id from VDCUser as o order by o.userName";
+        List userList = new ArrayList();
+        
+            Query query = em.createNativeQuery(queryString);
+            for (Object currentResult : query.getResultList()) {
+                // convert results into Longs
+                userList.add(new Long(((Integer)currentResult).longValue()));
+            }
+
+        return userList;
+
     }
 
     public void addVdcRole(Long userId, Long vdcId, String roleName) {

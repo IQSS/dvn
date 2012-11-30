@@ -117,7 +117,7 @@
         </div>
      
           <div class="dvn_sectionBox">
-            <div panelLayout="flow" class="vdcStudyTemplateFormTable">
+            <div id="vdcStudyTemplateBlock" class="vdcStudyTemplateFormTable">
               <div jsfc="ice:panelGroup" styleClass="dvnInformationMessage">
                 <div class="dvnMsgBlockContainer">
                   <ice:outputText styleClass="dvnEditStudyHelp" value="#{bundlePageInfo.editStudyCatalogingHelp}" escape="false"/>
@@ -148,45 +148,283 @@
                         </ice:selectOneRadio>
                       </div>
                     </ice:panelGrid>
-
-                  <!-- TITLE -->
-                  <ice:panelGrid cellpadding="0" cellspacing="0" columns="2" width="100%"
-                                 styleClass="vdcEditStudyTable"
-                                 columnClasses="vdcEditStudyCol1, vdcEditStudyCol2">
-                    <div jsfc="ice:panelGroup" id="groupPanel37" styleClass="vdcEditStudyField">
-                      <ice:outputText styleClass="dvnInlineHelpLabel dvnInlineHelpTip" value="#{editstudybundle.titleLabel}" title="#{editstudybundle.titleHelpHeading} - #{editstudybundle.titleHelp}"/>
-                      <ice:graphicImage id="image39" value="/resources/images/icon_required.gif" rendered="#{EditStudyPage.studyMap[sfc.title].required}" />
-                      <ice:graphicImage id="image40" value="/resources/images/icon_recommended.gif" rendered="#{EditStudyPage.studyMap[sfc.title].recommended}"/>
-                    </div>
-                    <div jsfc="ice:panelGroup" id="groupPanel16">
-                      <ice:inputText binding="#{EditStudyPage.inputTitle}" id="input_title" size="90"
-                                     value="#{EditStudyPage.metadata.title}"
-                                     required ="#{EditStudyPage.studyMap[sfc.title].required and EditStudyPage.validateRequired}"
-                                     requiredMessage="This field is required." />
-                      <ice:message styleClass="errorMessage" for="input_title"/>
-                    </div>
-                  </ice:panelGrid>
-                  <!-- SUBTITLE -->
-                  <ice:panelGrid cellpadding="0" cellspacing="0" columns="2" width="100%"
-                                 styleClass="vdcEditStudyTable" visible="#{(!empty EditStudyPage.metadata.subTitle 
-                                                                           or EditStudyPage.studyMap[sfc.subTitle].recommended
-                                                                           or EditStudyPage.studyMap[sfc.subTitle].required) 
-                                                                           or (EditStudyPage.showAll and !EditStudyPage.studyMap[sfc.subTitle].hidden
-                                                                           and !EditStudyPage.studyMap[sfc.subTitle].disabled) }"
-                                 columnClasses="vdcEditStudyCol1, vdcEditStudyCol2">
-                    <div jsfc="ice:panelGroup" styleClass="vdcEditStudyField">
-                      <ice:outputText styleClass="dvnInlineHelpLabel dvnInlineHelpTip" value="#{editstudybundle.subtitleLabel}" title="#{editstudybundle.subtitleHelpHeading} - #{editstudybundle.subtitleHelp}"/>
-                      <ice:graphicImage value="/resources/images/icon_required.gif" rendered="#{EditStudyPage.studyMap[sfc.subTitle].required}" />
-                      <ice:graphicImage value="/resources/images/icon_recommended.gif" rendered="#{EditStudyPage.studyMap[sfc.subTitle].recommended}"/>
-                    </div>
-                    <div jsfc="ice:panelGroup">
-                      <ice:inputText id="input_subtitle" size="90" value="#{EditStudyPage.metadata.subTitle}" 
-                                     requiredMessage="This field is required." required="#{EditStudyPage.studyMap[sfc.subTitle].required and EditStudyPage.validateRequired}"/>
-                      <ice:message styleClass="errorMessage" for="input_subtitle"/>
-                    </div>
+<style type="text/css">
+div.dvnDataCitationWidgetInputBlock {display:none;}
+</style>
+<script type="text/javascript">
+// <![CDATA[
+jQuery(document).ready(function(){
+    
+    // Fill in widget fields
+    jQuery("input[id$=input_authorNameSync]").val(jQuery("input[id$=input_authorName]").val());
+    jQuery("input[id$=input_productionDateSync]").val(jQuery("input[id$=input_productionDate]").val());
+    jQuery("input[id$=input_titleSync]").val(jQuery("input[id$=input_title]").val());
+    jQuery("input[id$=input_studyIdSync]").val(jQuery("input[id$=input_studyId]").val());
+    jQuery("input[id$=input_distributorNameSync]").val(jQuery("input[id$=input_distributorName]").val());
+    
+    // Sync widget label/links
+    // jQuery('a.dvnDataCitationWidgetLabel').text(jQuery(this).parents('div.dvnDataCitationWidgetBlock').find('div.dvnDataCitationWidgetInputBlock input').val())
+    // var inputBlock = jQuery('div.dvnDataCitationWidgetInputBlock');
+    // var inputField = jQuery('div.dvnDataCitationWidgetInputBlock input');
+    // var inputValue = jQuery('div.dvnDataCitationWidgetInputBlock input').val();
+    
+    var inputAuthorVal = jQuery('input[id$=input_authorName]').val();
+    
+    if (inputAuthorVal !== '' ){
+        jQuery('#dvnDataCitationWidgetBlockAuthor a.dvnDataCitationWidgetLabel').text(inputAuthorVal);
+    };
+    
+    var inputDateVal = jQuery('input[id$=input_productionDate]').val();
+    
+    if (inputDateVal !== '' ){
+        jQuery('#dvnDataCitationWidgetBlockDate a.dvnDataCitationWidgetLabel').text(inputDateVal);
+    };
+    
+    var inputTitleVal = jQuery('input[id$=input_title]').val();
+    
+    if (inputTitleVal !== '' ){
+        jQuery('#dvnDataCitationWidgetBlockTitle a.dvnDataCitationWidgetLabel').text(inputTitleVal);
+    };
+    
+    var inputStudyIDVal = jQuery('input[id$=input_studyId]').val();
+    var inputStudyIDPrfx = jQuery('span[id$=input_studyIdPrfx]').text();
+    
+    if (inputStudyIDVal !== '' ){
+        jQuery('#dvnDataCitationWidgetBlockStudyID div.dvnDataCitationWidgetLabelBlock').prepend(inputStudyIDPrfx)
+        jQuery('#dvnDataCitationWidgetBlockStudyID a.dvnDataCitationWidgetLabel').text(inputStudyIDVal);
+    };
+    
+    var inputDistributorVal = jQuery('input[id$=input_distributorName]').val();
+    
+    if (inputDistributorVal !== '' ){
+        jQuery('#dvnDataCitationWidgetBlockDistributor a.dvnDataCitationWidgetLabel').text(inputDistributorVal);
+    };
+    
+    // Open+close widget fields
+    jQuery('.dvnDataCitationWidgetLabel').bind("click", function() {
+        
+        var widgetInput = jQuery(this).parents('div.dvnDataCitationWidget').find('div.dvnDataCitationWidgetInputBlock');
+        
+        if (jQuery(widgetInput).is(':visible')) {
+            jQuery(widgetInput).hide();
+            jQuery(widgetInput).prev('div.dvnDataCitationWidgetLabelBlock').show();
+        }
+        
+        jQuery(this).parent().css({'display':'none'}).next().css({'display':'block'});
+        
+        return false;
+    });
+    
+    // Sync widget fields
+    // Sync AUTHOR
+    jQuery("input[id$=input_authorNameSync]").bind("change input cut keyup paste", function() {
+        jQuery("input[id$=input_authorName]").val(jQuery(this).val());
+        jQuery(this).parents('div.dvnDataCitationWidgetBlock').find('a.dvnDataCitationWidgetLabel').text(jQuery(this).val());
+    });
+    jQuery("input[id$=input_authorName]").bind("change input cut keyup paste", function() {
+        jQuery("input[id$=input_authorNameSync]").val(jQuery(this).val());
+        jQuery(this).parents('#vdcStudyTemplateBlock').find('#dvnDataCitationWidgetBlockAuthor a.dvnDataCitationWidgetLabel').text(jQuery(this).val());
+    });
+    
+    // Sync DATE
+    jQuery("input[id$=input_productionDateSync]").bind("change input cut keyup paste", function() {
+        jQuery("input[id$=input_productionDate]").val(jQuery(this).val());
+        jQuery(this).parents('div.dvnDataCitationWidgetBlock').find('a.dvnDataCitationWidgetLabel').text(jQuery(this).val());
+    });
+    jQuery("input[id$=input_productionDate]").bind("change input cut keyup paste", function() {
+        jQuery("input[id$=input_productionDateSync]").val(jQuery(this).val());
+        jQuery(this).parents('#vdcStudyTemplateBlock').find('#dvnDataCitationWidgetBlockDate a.dvnDataCitationWidgetLabel').text(jQuery(this).val());
+    });
+    
+    // Sync TITLE
+    jQuery("input[id$=input_titleSync]").bind("change input cut keyup paste", function() {
+        jQuery("input[id$=input_title]").val(jQuery(this).val());
+        jQuery(this).parents('div.dvnDataCitationWidgetBlock').find('a.dvnDataCitationWidgetLabel').text(jQuery(this).val());
+    });
+    jQuery("input[id$=input_title]").bind("change input cut keyup paste", function() {
+        jQuery("input[id$=input_titleSync]").val(jQuery(this).val());
+        jQuery(this).parents('#vdcStudyTemplateBlock').find('#dvnDataCitationWidgetBlockTitle a.dvnDataCitationWidgetLabel').text(jQuery(this).val());
+    });
+    
+    // Sync ID
+    jQuery("input[id$=input_studyIdSync]").bind("change input cut keyup paste", function() {
+        jQuery("input[id$=input_studyId]").val(jQuery(this).val());
+        jQuery(this).parents('div.dvnDataCitationWidgetBlock').find('a.dvnDataCitationWidgetLabel').text(jQuery(this).val());
+    });
+    jQuery("input[id$=input_studyId]").bind("change input cut keyup paste", function() {
+        
+        // var studyidlabel = jQuery(this).parents('#vdcStudyTemplateBlock').find('#dvnDataCitationWidgetBlockStudyID a.dvnDataCitationWidgetLabel');
+        
+        // var studyidval = jQuery(this).val();
+        
+        // var studyidhandle = inputStudyIDPrfx += studyidval;
+        
+        // jQuery("input[id$=input_studyIdSync]").val(jQuery(this).val());
+        // jQuery(studyidlabel).text(studyidhandle);
+        
+        jQuery("input[id$=input_studyIdSync]").val(jQuery(this).val());
+        jQuery(this).parents('#vdcStudyTemplateBlock').find('#dvnDataCitationWidgetBlockStudyID a.dvnDataCitationWidgetLabel').text(jQuery(this).val());
+    });
+    
+    // Sync DISTRIBUTOR
+    jQuery("input[id$=input_distributorNameSync]").bind("change input cut keyup paste", function() {
+        jQuery("input[id$=input_distributorName]").val(jQuery(this).val());
+        jQuery(this).parents('div.dvnDataCitationWidgetBlock').find('a.dvnDataCitationWidgetLabel').text(jQuery(this).val());
+    });
+    jQuery("input[id$=input_distributorName]").bind("change input cut keyup paste", function() {
+        jQuery("input[id$=input_distributorNameSync]").val(jQuery(this).val());
+        jQuery(this).parents('#vdcStudyTemplateBlock').find('#dvnDataCitationWidgetBlockDistributor a.dvnDataCitationWidgetLabel').text(jQuery(this).val());
+    });
+});
+// ]]>
+</script>
+                  <!-- Data Citation -->
+                  <ice:panelGrid cellpadding="0" cellspacing="0" width="100%"
+                                 styleClass="vdcEditStudyTable">
+                    <ice:column>
+                      <ice:panelGrid cellpadding="0" cellspacing="0" width="100%" columns="2"
+                                     styleClass="vdcEditStudyInnerTable" columnClasses="vdcEditStudyCol1b, vdcEditStudyCol2">
+                        <ice:column>
+                          <div jsfc="ice:panelGroup" styleClass="vdcEditStudyField">
+                            <ice:outputText styleClass="dvnInlineHelpLabel dvnInlineHelpTip" value="Data Citation" title="#{editstudybundle.relatedPublicationHelpHeading} - #{editstudybundle.relatedPublicationHelp}"/>
+                          </div>
+                        </ice:column>
+                        <ice:column>
+                          <p>
+                            <ice:graphicImage value="/resources/images/icon_information.18.png" styleClass="dvn_icon"/>
+                            <ice:outputText styleClass="vdcHelpText" value=" Use the Data Citation Widget below to enter all the metadata needed for your citation."/>
+                          </p>
+                          <div jsfc="ice:panelGroup" styleClass="dvnDataCitationWidget vdcEditStudyFieldFloatWrap" style="padding:4px; background:#f5f5dc;">
+                            <div>
+                                Data Citation Widget
+                            </div>
+                            <div jsfc="ice:panelGroup" styleClass="dvnDataCitationWidgetBlock vdcEditStudyFieldFloat1">
+                              <!-- Author -->
+                                <div id="dvnDataCitationWidgetBlockAuthor" style="overflow:hidden;">
+                                    <div style="float:left;">
+                                        [&nbsp;
+                                    </div>
+                                    <div style="float:left;">
+                                        <div class="dvnDataCitationWidgetLabelBlock">
+                                            <a href="#" class="dvnDataCitationWidgetLabel">Author</a>
+                                        </div>
+                                        <div class="dvnDataCitationWidgetInputBlock">
+                                            <ice:outputText styleClass="dvnInlineHelpLabel dvnInlineHelpTip" value="Author #{editstudybundle.authorNameLabel}" title="#{editstudybundle.authorNameHelpHeading} - #{editstudybundle.authorNameHelp}"/>
+                                            <ice:inputText id="input_authorNameSync"
+                                                           size="45"
+                                                           maxlength="255" />
+                                            <ice:outputText styleClass="vdcEditStudyFormatExample" value="(LastName, FirstName)"/>
+                                        </div>
+                                    </div>
+                                    <div style="float:left;">
+                                        &nbsp;],
+                                    </div>
+                                </div>
+                              <!-- End Author -->
+                            </div>
+                            <div jsfc="ice:panelGroup" styleClass="dvnDataCitationWidgetBlock vdcEditStudyFieldFloat2">
+                              <!-- Date -->
+                                <div id="dvnDataCitationWidgetBlockDate" style="overflow:hidden;">
+                                    <div style="float:left;">
+                                        [&nbsp;
+                                    </div>
+                                    <div style="float:left;">
+                                        <div class="dvnDataCitationWidgetLabelBlock">
+                                            <a href="#" class="dvnDataCitationWidgetLabel">Date</a>
+                                        </div>
+                                        <div class="dvnDataCitationWidgetInputBlock">
+                                            <ice:outputText styleClass="dvnInlineHelpLabel dvnInlineHelpTip" value="#{editstudybundle.productionDateLabel}" title="#{editstudybundle.productionDateHelpHeading} - #{editstudybundle.productionDateHelp}"/>
+                                            <ice:inputText id="input_productionDateSync" styleClass="formDateFormat"/>
+                                            <ice:outputText styleClass="vdcEditStudyFormatExample" value="#{editstudybundle.dateFormatDescription}"/>
+                                        </div>
+                                    </div>
+                                    <div style="float:left;">
+                                        &nbsp;],
+                                    </div>
+                                </div>
+                              <!-- End Date -->
+                            </div>
+                            <div jsfc="ice:panelGroup" styleClass="vdcEditStudyFieldFloat2">
+                              <!-- Title -->
+                                <div id="dvnDataCitationWidgetBlockTitle" style="overflow:hidden;">
+                                    <div style="float:left;">
+                                        [&nbsp;
+                                    </div>
+                                    <div style="float:left;">
+                                        <div class="dvnDataCitationWidgetLabelBlock">
+                                            <a href="#" class="dvnDataCitationWidgetLabel">Title</a>
+                                        </div>
+                                        <div class="dvnDataCitationWidgetInputBlock">
+                                            <ice:outputText styleClass="dvnInlineHelpLabel dvnInlineHelpTip" value="#{editstudybundle.titleLabel}" title="#{editstudybundle.titleHelpHeading} - #{editstudybundle.titleHelp}"/>
+                                            <ice:inputText id="input_titleSync" size="90"/>
+                                        </div>
+                                    </div>
+                                    <div style="float:left;">
+                                        &nbsp;],
+                                    </div>
+                                </div>
+                              <!-- End Title -->
+                            </div>
+                            <div jsfc="ice:panelGroup" styleClass="vdcEditStudyFieldFloat2">
+                              <!-- Study ID -->
+                                <div id="dvnDataCitationWidgetBlockStudyID" style="overflow:hidden;">
+                                    <div style="float:left;">
+                                        [&nbsp;
+                                    </div>
+                                    <div style="float:left;">
+                                        <div jsfc="ice:panelGroup" styleClass="dvnDataCitationWidgetLabelBlock" rendered="#{EditStudyPage.study.id==null}">
+                                            <a href="#" class="dvnDataCitationWidgetLabel">Study ID</a>
+                                        </div>
+                                        <div jsfc="ice:panelGroup" styleClass="dvnDataCitationWidgetInputBlock" rendered="#{EditStudyPage.study.id==null}">
+                                            <ice:outputText styleClass="dvnInlineHelpLabel dvnInlineHelpTip" value="#{editstudybundle.studyidLabel}" title="#{editstudybundle.studyidHelpHeading} - #{editstudybundle.studyidHelp}"/>
+                                            <ice:outputText value="#{EditStudyPage.study.protocol}:#{EditStudyPage.study.authority}/"/>
+                                            <ice:inputText maxlength="255" id="input_studyIdSync"/>
+                                        </div>
+                                        <div jsfc="ice:panelGroup" styleClass="dvnDataCitationWidgetTextBlock" rendered="#{EditStudyPage.study.id!=null}">
+                                            <ice:outputText id="input_studyIdTextSync" value="#{EditStudyPage.study.globalId}"/>
+                                        </div>
+                                    </div>
+                                    <div style="float:left;">
+                                        &nbsp;],
+                                    </div>
+                                </div>
+                              <!-- End Study ID -->
+                            </div>
+                            <div jsfc="ice:panelGroup" styleClass="vdcEditStudyFieldFloat2">
+                              <!-- Distributor -->
+                                <div id="dvnDataCitationWidgetBlockDistributor" style="overflow:hidden;">
+                                    <div style="float:left;">
+                                        [&nbsp;
+                                    </div>
+                                    <div style="float:left;">
+                                        <div class="dvnDataCitationWidgetLabelBlock">
+                                            <a href="#" class="dvnDataCitationWidgetLabel">Distributor</a>
+                                        </div>
+                                        <div class="dvnDataCitationWidgetInputBlock">
+                                            <ice:outputText styleClass="dvnInlineHelpLabel dvnInlineHelpTip" value="#{editstudybundle.distributorLabel}" title="#{editstudybundle.distributorHelpHeading} - #{editstudybundle.distributorHelp}"/>
+                                            <ice:inputText maxlength="255" size="45" id="input_distributorNameSync"/>
+                                        </div>
+                                    </div>
+                                    <div style="float:left;">
+                                        &nbsp;],
+                                    </div>
+                                </div>
+                              <!-- End Distributor -->
+                            </div>
+                            <div jsfc="ice:panelGroup" styleClass="vdcEditStudyFieldFloat2">
+                              <!-- Version -->
+                                <div>
+                                    <ice:outputText value="V#{EditStudyPage.metadata.studyVersion.versionNumber} [Version]" style="padding:0;"/>
+                                </div>
+                              <!-- End Version -->
+                            </div>
+                          </div>                            
+                        </ice:column>
+                      </ice:panelGrid>
+                    </ice:column>
                   </ice:panelGrid>
                   
-                <!-- this is a dummy datatable wrapper used to force data retention on validation error-->
+                  <!-- Publication -->
                   <ice:dataTable cellpadding="0" cellspacing="0" width="100%"
                                  styleClass="vdcEditStudyTable" rendered="#{(!EditStudyPage.studyRelPublicationsEmpty 
                                                                             or EditStudyPage.studyMap[sfc.publication].recommended
@@ -302,10 +540,10 @@
                         </ice:column>
                       </ice:dataTable>
                     </ice:column>
-                  </ice:dataTable>                 
-                  
+                  </ice:dataTable>
+
                   <div jsfc="ice:panelGroup" id="groupPanel9" styleClass="vdcStudyInfoHeader">
-                    <ice:outputText id="outputText26" value="Data Citation Information"/>
+                    <ice:outputText id="outputText26" value="Data Citation Details"/>
                   </div>
                   
                   <div jsfc="ice:panelGroup" styleClass="dvnInformationMessage">
@@ -313,6 +551,44 @@
                       <ice:outputText styleClass="dvnEditStudyHelp" value="#{bundlePageInfo.editStudyDataCitationHelp}" escape="false"/>
                     </div>
                   </div>
+                  
+                  <!-- TITLE -->
+                  <ice:panelGrid cellpadding="0" cellspacing="0" columns="2" width="100%"
+                                 styleClass="vdcEditStudyTable"
+                                 columnClasses="vdcEditStudyCol1, vdcEditStudyCol2">
+                    <div jsfc="ice:panelGroup" id="groupPanel37" styleClass="vdcEditStudyField">
+                      <ice:outputText styleClass="dvnInlineHelpLabel dvnInlineHelpTip" value="#{editstudybundle.titleLabel}" title="#{editstudybundle.titleHelpHeading} - #{editstudybundle.titleHelp}"/>
+                      <ice:graphicImage id="image39" value="/resources/images/icon_required.gif" rendered="#{EditStudyPage.studyMap[sfc.title].required}" />
+                      <ice:graphicImage id="image40" value="/resources/images/icon_recommended.gif" rendered="#{EditStudyPage.studyMap[sfc.title].recommended}"/>
+                    </div>
+                    <div jsfc="ice:panelGroup" id="groupPanel16">
+                      <ice:inputText binding="#{EditStudyPage.inputTitle}" id="input_title" size="90"
+                                     value="#{EditStudyPage.metadata.title}"
+                                     required ="#{EditStudyPage.studyMap[sfc.title].required and EditStudyPage.validateRequired}"
+                                     requiredMessage="This field is required." />
+                      <ice:message styleClass="errorMessage" for="input_title"/>
+                    </div>
+                  </ice:panelGrid>
+                  
+                  <!-- SUBTITLE -->
+                  <ice:panelGrid cellpadding="0" cellspacing="0" columns="2" width="100%"
+                                 styleClass="vdcEditStudyTable" visible="#{(!empty EditStudyPage.metadata.subTitle 
+                                                                           or EditStudyPage.studyMap[sfc.subTitle].recommended
+                                                                           or EditStudyPage.studyMap[sfc.subTitle].required) 
+                                                                           or (EditStudyPage.showAll and !EditStudyPage.studyMap[sfc.subTitle].hidden
+                                                                           and !EditStudyPage.studyMap[sfc.subTitle].disabled) }"
+                                 columnClasses="vdcEditStudyCol1, vdcEditStudyCol2">
+                    <div jsfc="ice:panelGroup" styleClass="vdcEditStudyField">
+                      <ice:outputText styleClass="dvnInlineHelpLabel dvnInlineHelpTip" value="#{editstudybundle.subtitleLabel}" title="#{editstudybundle.subtitleHelpHeading} - #{editstudybundle.subtitleHelp}"/>
+                      <ice:graphicImage value="/resources/images/icon_required.gif" rendered="#{EditStudyPage.studyMap[sfc.subTitle].required}" />
+                      <ice:graphicImage value="/resources/images/icon_recommended.gif" rendered="#{EditStudyPage.studyMap[sfc.subTitle].recommended}"/>
+                    </div>
+                    <div jsfc="ice:panelGroup">
+                      <ice:inputText id="input_subtitle" size="90" value="#{EditStudyPage.metadata.subTitle}" 
+                                     requiredMessage="This field is required." required="#{EditStudyPage.studyMap[sfc.subTitle].required and EditStudyPage.validateRequired}"/>
+                      <ice:message styleClass="errorMessage" for="input_subtitle"/>
+                    </div>
+                  </ice:panelGrid>
 
                   <!-- STUDY ID-->
                   <ice:panelGrid cellpadding="0" cellspacing="0" columns="2" width="100%"
@@ -324,9 +600,9 @@
                       <ice:graphicImage value="/resources/images/icon_recommended.gif" rendered="#{EditStudyPage.studyMap[sfc.studyId].recommended and EditStudyPage.study.id==null}"/>
                     </div>
                     <div jsfc="ice:panelGroup">
-                      <ice:outputText value="#{EditStudyPage.study.protocol}:#{EditStudyPage.study.authority}/" rendered="#{EditStudyPage.study.id==null}" />
-                      <ice:inputText maxlength="255" id="input_studyId" value="#{EditStudyPage.study.studyId}" validator="#{EditStudyPage.validateStudyId}"   required="#{EditStudyPage.studyMap[sfc.studyId].required  and EditStudyPage.validateRequired}" requiredMessage="This field is required." rendered="#{EditStudyPage.study.id==null}" />
-                      <ice:outputText value="#{EditStudyPage.study.globalId}" rendered="#{EditStudyPage.study.id!=null}"/>
+                      <ice:outputText id="input_studyIdPrfx" value="#{EditStudyPage.study.protocol}:#{EditStudyPage.study.authority}/" rendered="#{EditStudyPage.study.id==null}"/>
+                      <ice:inputText maxlength="255" id="input_studyId" value="#{EditStudyPage.study.studyId}" validator="#{EditStudyPage.validateStudyId}" required="#{EditStudyPage.studyMap[sfc.studyId].required  and EditStudyPage.validateRequired}" requiredMessage="This field is required." rendered="#{EditStudyPage.study.id==null}"/>
+                      <ice:outputText id="input_studyIdText" value="#{EditStudyPage.study.globalId}" rendered="#{EditStudyPage.study.id!=null}"/>
                       <ice:message styleClass="errorMessage" for="input_studyId"/>
                     </div>
                   </ice:panelGrid>
@@ -583,12 +859,7 @@
                             </ice:selectOneMenu>
                               <ice:message styleClass="errorMessage" for="input_producerAffiliation"/>
                             </div>
-                           
-                              
-                           
-                           
-                              
-                              <div jsfc="ice:panelGroup" styleClass="vdcEditStudyGroupField">
+                            <div jsfc="ice:panelGroup" styleClass="vdcEditStudyGroupField">
                               <ice:outputText styleClass="dvnInlineHelpLabel dvnInlineHelpTip" value="#{editstudybundle.producerURLLabel}" title="#{editstudybundle.producerURLHelpHeading} - #{editstudybundle.producerURLHelp}"/>
                               <ice:inputText id="input_producerURL"
                                              validator="#{EditStudyPage.validateStudyProducer}"
@@ -615,16 +886,6 @@
                               <ice:message styleClass="errorMessage" for="input_producerURL"/>
                               <ice:message styleClass="errorMessage" for="selectOneProducerURL"/>
                             </div>
-                           
-                           
-                           
-                           
-                           
-                           
-                           
-                            
-                            
-                            
                             <div jsfc="ice:panelGroup" styleClass="vdcEditStudyGroupField">
                               <ice:outputText styleClass="dvnInlineHelpLabel dvnInlineHelpTip" value="#{editstudybundle.producerLogoLabel}" title="#{editstudybundle.producerLogoHelpHeading} - #{editstudybundle.producerLogoHelp}"/>
                               <ice:inputText id="input_producerLogo"
@@ -662,6 +923,8 @@
                       </ice:dataTable>
                     </ice:column>
                   </ice:dataTable>
+                  
+                  <!-- Production Date -->
                   <ice:panelGrid cellpadding="0" cellspacing="0" columns="2" width="100%"
                                  styleClass="vdcEditStudyTable " columnClasses="vdcEditStudyCol1, vdcEditStudyCol2"
                                  visible="#{(!empty EditStudyPage.metadata.productionDate 
@@ -1097,11 +1360,6 @@
                         <ice:message styleClass="errorMessage" for="distributorContactAffiliation"/>
                         <ice:message styleClass="errorMessage" for="selectOneDistributorContactAffiliation"/>
                       </div>
-                        
-                        
-                        
-                        
-                        
                       <div jsfc="ice:panelGroup" styleClass="vdcEditStudyFieldFloat3 vdcEditStudyGroupField " >
                         <ice:outputText styleClass="dvnInlineHelpLabel dvnInlineHelpTip" value="#{editstudybundle.distributorContactEmailLabel}" title="#{editstudybundle.distributorContactEmailHelpHeading} - #{editstudybundle.distributorContactEmailHelp}"/>
                         <ice:inputText binding="#{EditStudyPage.inputDistributorContactEmail}" 
@@ -1125,11 +1383,6 @@
                                 <ice:message styleClass="errorMessage" for="input_distributorContactEmail"/>
                                 <ice:message styleClass="errorMessage" for="selectOneDistributorContactEmail"/>
                       </div>
-                       
-                        
-                        
-                        
-                        
                     </div>
                   </ice:panelGrid>
 
@@ -2290,8 +2543,6 @@
                                                    visible="#{empty(customFieldsDataModel[0].controlledVocabulary)}">
                               </ice:inputTextarea>
                                <ice:message styleClass="errorMessage" for="input_TextArea"/>
-
-
                             </ice:column>
                           </div>
                         </ice:column>
@@ -2345,12 +2596,9 @@
                         </ice:column> 
                      </ice:panelGrid>
                   </ice:panelSeries>
-                  
                   <!-- End Revised generic control-->
-                  
 
                   <!-- End of Generic Control -->
-                  
                     <ice:panelGrid cellpadding="0" cellspacing="0" columns="2" width="100%"
                                  styleClass="vdcEditStudyTable"
                                  columnClasses="vdcEditStudyCol1, vdcEditStudyCol2"

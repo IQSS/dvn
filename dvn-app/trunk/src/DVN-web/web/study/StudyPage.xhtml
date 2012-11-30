@@ -364,17 +364,12 @@
                         </div>
                     </div>
                 </div>
-               
                 <ui:include src="StudyTitleFragment.xhtml">
                     <ui:param name="studyUI" value="#{studyPage.studyUI}"/>
                     <ui:param name="displayReleaseLink" value="true"/>
                     <ui:param name="displayVersionInfo" value="true"/>
                     <ui:param name="displayStatusBox" value="true"/>
                 </ui:include>
-            
-                
-                    
-                
             </div>
             <div class="dvn_sectionBoxNoBorders">
                 <ice:panelTabSet id="tabSet1" styleClass="dvnTabs" binding="#{studyPage.tabSet1}" tabChangeListener="#{studyPage.processTabChange}">
@@ -406,7 +401,6 @@
                                     <label for="citationformat">Citation Format</label> <select id="dvnCitationSelector"><option value="Print" selected="selected">Print</option><option value="Web">Web</option></select>
                                 </div>
                                 
-                                
                                 <ice:outputText styleClass="dvnInlineHelpLabel dvnInlineHelpTip" value="#{studybundle.replicationForLabel}" title="#{studybundle.replicationForHelpHeading} - #{studybundle.replicationForHelp}" rendered="#{studyPage.studyUI.replicationFor != '' and studyPage.studyUI.replicationFor != null}"/>
                                 <div jsfc="ice:panelGroup" styleClass="dvnhowtocitecitationfloat" rendered="#{!empty studyPage.studyUI.replicationFor}">
                                     <div class="dvn_padBot">
@@ -429,6 +423,10 @@
                             <ice:panelGrid binding="#{studyPage.citationInformationPanel}" id="panelGridCitationInfo" cellpadding="0" cellspacing="0"
                                            columnClasses="vdcStudyInfoCol1, vdcStudyInfoCol2" columns="2" width="100%" rendered="#{studyPage.studyUI.citationInformationPanelIsRendered}">
                                 <!-- REMOVE CODE 3 -->
+                                
+                                <ice:outputText styleClass="dvnInlineHelpLabel dvnInlineHelpTip" value="#{studybundle.titleLabel}" title="#{studybundle.titleHelpHeading} - #{studybundle.titleHelp}"/>
+                                <ice:outputText id="text0" value="#{studyPage.studyUI.metadata.title}"/>
+                                
                                 <ice:outputText styleClass="dvnInlineHelpLabel dvnInlineHelpTip" value="#{studybundle.subtitleLabel}" title="#{studybundle.subtitleHelpHeading} - #{studybundle.subtitleHelp}" rendered="#{studyPage.studyUI.metadata.subTitle!='' and studyPage.studyUI.metadata.subTitle!=null}"/>
                                 <ice:outputText id="text1" value="#{studyPage.studyUI.metadata.subTitle}" rendered="#{!empty studyPage.studyUI.metadata.subTitle}"/>
 

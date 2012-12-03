@@ -189,6 +189,7 @@ public interface StudyServiceLocal extends java.io.Serializable {
    
     //1
     public long getStudyDownloadCount(Long studyId);
+    public long getStudyVersionDownloadCount(Long studyId);
     public Long getActivityCount(Long vdcId);
     public Long getTotalActivityCount();
 

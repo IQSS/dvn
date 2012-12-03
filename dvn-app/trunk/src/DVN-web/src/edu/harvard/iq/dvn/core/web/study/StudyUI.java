@@ -1165,7 +1165,7 @@ public class StudyUI  implements java.io.Serializable {
     public Long getVersionDownloadCount() {
         if (versionDownloadCount == null) {
             initStudyService();
-            downloadCount = studyService.getStudyVersionDownloadCount(studyId);
+            versionDownloadCount = studyService.getStudyVersionDownloadCount(studyId);
         }
 
         return versionDownloadCount;

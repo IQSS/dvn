@@ -62,7 +62,9 @@ public class CSVFileReader implements java.io.Serializable {
     // should be used.
 
 
-    public int read(BufferedReader csvReader, SDIOMetadata smd, PrintWriter pwout) throws IOException {
+  public int read(BufferedReader csvReader, SDIOMetadata smd, PrintWriter pwout) throws IOException {
+    dbgLog.warning("CSVFileReader: Inside CSV File Reader");
+      
         //DataTable csvData = new DataTable();
         int varQnty = 0;
 

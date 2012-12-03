@@ -1111,6 +1111,10 @@ public class SAVFileReader extends StatDataFileReader{
                                 0, rawVariableLabelLength),defaultCharSet);
                         dbgLog.fine("RT2: variableLabel="+variableLabel+"<-");
 
+                        dbgLog.info(variableName + " => " + variableLabel);
+                        dbgLog.info(variableName + " => " + variableLabel);
+                        dbgLog.info(variableName + " => " + variableLabel);
+                        
                         variableLabelMap.put(variableName, variableLabel);
                     }
                 }
@@ -2184,7 +2188,7 @@ public class SAVFileReader extends StatDataFileReader{
         }
         
         dbgLog.fine("file-unf="+fileUnfValue);
-        
+
         savDataSection.setUnf(unfValues);
 
         savDataSection.setFileUnf(fileUnfValue);
@@ -3664,6 +3668,9 @@ public class SAVFileReader extends StatDataFileReader{
         } // switch
 
         dbgLog.fine("unfvalue(last)="+unfValue);
+        
+        dbgLog.info("UNF = " + unfValue);
+        
         return unfValue;
     }
 

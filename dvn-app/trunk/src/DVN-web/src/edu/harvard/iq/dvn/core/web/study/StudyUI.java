@@ -1151,6 +1151,7 @@ public class StudyUI  implements java.io.Serializable {
     }
 
     private Long downloadCount = null;
+    private Long versionDownloadCount = null;
     
     public Long getDownloadCount() {
         if (downloadCount == null) {
@@ -1160,6 +1161,16 @@ public class StudyUI  implements java.io.Serializable {
 
         return downloadCount;
     }
+
+    public Long getVersionDownloadCount() {
+        if (versionDownloadCount == null) {
+            initStudyService();
+            downloadCount = studyService.getStudyVersionDownloadCount(studyId);
+        }
+
+        return versionDownloadCount;
+    }
+    
 
     private boolean selected;
     private boolean selectable = true;

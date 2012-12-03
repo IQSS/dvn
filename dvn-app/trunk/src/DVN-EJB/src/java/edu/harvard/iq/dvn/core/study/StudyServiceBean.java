@@ -2246,6 +2246,23 @@ public class StudyServiceBean implements edu.harvard.iq.dvn.core.study.StudyServ
 
         return studyDownloadCount != null ? studyDownloadCount.longValue() : 0;
     }
+    
+    // get the sum of downloads of files associated with a particular version
+    public long getStudyVersionDownloadCount(Long studyVersionId) {
+        String queryString  = "select sum(downloadcount) " +
+            "from studyfileactivity  sfa, studyversion sv, filemetadata fmd " +
+            "where sfa.study_id = sv.study_id " +
+            "and fmd.studyversion_id=sv.id " +
+            "and sfa.studyfile_id=fmd.studyfile_id " +
+            "and sv.id = " + studyVersionId;
+        Long studyDownloadCount = null;
+        Query query = em.createNativeQuery(queryString);
+        try {
+            studyDownloadCount = (Long) query.getSingleResult();
+        } catch (Exception nre) {} // empty catch; return 0
+
+        return studyDownloadCount != null ? studyDownloadCount.longValue() : 0;
+    }    
 
     public Long getActivityCount(Long vdcId) {
         String queryString  = " select sum(downloadcount) " +

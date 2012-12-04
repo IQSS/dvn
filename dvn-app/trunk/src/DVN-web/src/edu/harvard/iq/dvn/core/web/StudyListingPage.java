@@ -121,6 +121,15 @@ public class StudyListingPage extends VDCBaseBean implements java.io.Serializabl
     String listHeader;
     String listMessage;
     String listDescription;
+    
+    Long downloadCount;
+    
+    public Long getDownloadCount() {
+        if (downloadCount == null) {
+            downloadCount = studyService.getStudyDownloadCount(studyListing.getStudyIds());         
+        }
+        return downloadCount;
+    }
   
 
     public int getLocalDownloadCount() {

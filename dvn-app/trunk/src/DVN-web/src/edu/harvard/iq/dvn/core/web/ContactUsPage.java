@@ -28,9 +28,12 @@ import edu.harvard.iq.dvn.core.mail.MailServiceLocal;
 import edu.harvard.iq.dvn.core.web.util.ExceptionMessageWriter;
 import edu.harvard.iq.dvn.core.vdc.Captcha;
 import edu.harvard.iq.dvn.core.vdc.CaptchaServiceLocal;
+import edu.harvard.iq.dvn.core.admin.UserGroup;
+import edu.harvard.iq.dvn.core.admin.VDCUser; 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.HashMap; 
 import javax.ejb.EJB;
 import javax.faces.application.FacesMessage;
 import javax.faces.bean.ViewScoped;
@@ -38,6 +41,7 @@ import javax.faces.event.ValueChangeEvent;
 import javax.faces.component.UIComponent;
 import javax.faces.component.UIInput;
 import javax.faces.context.FacesContext;
+import  com.sun.enterprise.util.SystemPropertyConstants;
 
 /*
  * ContactUsPage.java
@@ -226,6 +230,77 @@ public class ContactUsPage extends VDCBaseBean implements java.io.Serializable {
         boolean success = true;
         try {
             String fromAddress = "\"" + fullName + "\"<" + emailAddress.trim() + ">";
+            
+            // We want to supply as much information as possible about the 
+            // user, the nature of the request, etc. We package these fields
+            // into custom X-DVN-INFO-... mail headers. 
+            
+            HashMap extraHeaders = new HashMap(); 
+            
+            String userName = "anonymous"; 
+            String institution = "unknown";
+            String dvOwner = "false";
+            String dvnNetAddress = "unknown";
+            String groupName = "";
+            
+            if (getVDCSessionBean().getLoginBean() != null) {
+                
+                VDCUser vdcUser = getVDCSessionBean().getLoginBean().getUser();
+                
+                if (vdcUser != null && !(vdcUser.getUserName() == null || vdcUser.getUserName().equals(""))) {
+                    userName = vdcUser.getUserName();
+                } else {
+                    if (getVDCSessionBean().getIpUserGroup() != null) {
+                        userName = "unknown";
+                        groupName = getVDCSessionBean().getIpUserGroup().getFriendlyName();
+                    }
+                }
+                
+                if (vdcUser != null) {
+                    if (vdcUser.getInstitution() != null && !vdcUser.getInstitution().equals("")) {
+                        institution = vdcUser.getInstitution();
+                    }
+                    
+                    if (vdcUser.isCurator(getVDCRequestBean().getCurrentVDC())) {
+                        dvOwner = "true";
+                    }
+                }                                
+            }
+
+            // finally, we'll try to determine the Net address of this DVN. 
+            // first we'll check our "dvn.inetAddress" option - it may be 
+            // preferrable to the real host name/address, in situations
+            // like our production setup - where the physical servers are hidden
+            // behind the publicly advertised "front", the address of the load
+            // balancer. The latter being more valuable than the former:
+            
+            String netAddress = System.getProperty("dvn.inetAddress");
+
+            if (netAddress != null && !(netAddress.equals("") || netAddress.equals("localhost"))) {
+                dvnNetAddress = netAddress;
+            } else {
+                // if dvn.inetAddress isn't set, we'll check the host name 
+                // property supplied by AS: 
+
+                netAddress = System.getProperty(SystemPropertyConstants.HOST_NAME_PROPERTY);
+                if (netAddress != null && !(netAddress.equals("") || netAddress.equals("localhost"))) {
+                    dvnNetAddress = netAddress;
+                }
+            }
+            
+    
+            // Now we can populate the headers. 
+            // Note that we have fall-back placeholders for the values that 
+            // are not set or cannot be determined - "anonymous", "unknown", etc.
+            
+            extraHeaders.put("X-DVN-INFO-USERNAME", userName);
+            extraHeaders.put("X-DVN-INFO-INSTITUTION", institution);
+            extraHeaders.put("X-DVN-INFO-DVOWNER", dvOwner);
+            extraHeaders.put("X-DVN-INFO-DVNNETADDRESS", dvnNetAddress);
+            if (!"".equals(groupName)) { 
+                extraHeaders.put("X-DVN-INFO-GROUPNAME", groupName);
+            }
+
             mailService.sendMail(fromAddress, getToEmailAddress(), (getVDCRequestBean().getCurrentVDCId()==null) ? getVDCRequestBean().getVdcNetwork().getName()  + " Dataverse Network: " + selectedSubject.trim() : getVDCRequestBean().getCurrentVDC().getName() + " dataverse: " + selectedSubject.trim(), emailBody.trim());
   
             getVDCRenderBean().getFlash().put("successMessage",SUCCESS_MESSAGE);

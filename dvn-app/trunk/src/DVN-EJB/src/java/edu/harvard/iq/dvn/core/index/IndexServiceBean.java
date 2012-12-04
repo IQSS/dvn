@@ -32,6 +32,7 @@ import edu.harvard.iq.dvn.core.study.Study;
 import edu.harvard.iq.dvn.core.study.StudyServiceLocal;
 import edu.harvard.iq.dvn.core.util.FileUtil;
 import edu.harvard.iq.dvn.core.vdc.VDC;
+import edu.harvard.iq.dvn.core.vdc.VDCNetwork;
 import edu.harvard.iq.dvn.core.vdc.VDCCollection;
 import edu.harvard.iq.dvn.core.vdc.VDCCollectionServiceLocal;
 import edu.harvard.iq.dvn.core.vdc.VDCNetworkServiceLocal;
@@ -161,13 +162,27 @@ public class IndexServiceBean implements edu.harvard.iq.dvn.core.index.IndexServ
     @TransactionAttribute(TransactionAttributeType.NOT_SUPPORTED)
     public void handleTimeout(javax.ejb.Timer timer) {
         System.out.println("in handleTimeout, timer = "+timer.getInfo());
+        
         try {
+            // read-only mode check:
+        
+            VDCNetwork thisNetwork = vdcNetworkService.find(new Long(1));
+            boolean readOnly = thisNetwork.isReadonly();
+
             if (timer.getInfo().equals(INDEX_TIMER)) {
-                logger.log(Level.INFO, "Index update");
-                indexBatch();
+                if (readOnly) {
+                    logger.log(Level.ALL, "Network is in read-only mode; skipping scheduled index job.");
+                } else {
+                    logger.log(Level.INFO, "Index update");
+                    indexBatch();
+                }
             } else if (timer.getInfo().equals(INDEX_NOTIFICATION_TIMER)) {
-                logger.log(Level.INFO, "Index notify");
-                indexProblemNotify();
+                if (readOnly) {
+                    logger.log(Level.ALL, "Network is in read-only mode; skipping scheduled index notification.");
+                } else {
+                    logger.log(Level.INFO, "Index notify");
+                    indexProblemNotify();
+                } 
             }
         } catch (Throwable e) {
             mailService.sendIndexUpdateErrorNotification(vdcNetworkService.find().getContactEmail(), vdcNetworkService.find().getName());

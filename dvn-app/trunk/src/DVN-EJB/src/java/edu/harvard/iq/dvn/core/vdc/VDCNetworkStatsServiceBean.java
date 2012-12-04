@@ -73,10 +73,19 @@ public class VDCNetworkStatsServiceBean implements VDCNetworkStatsServiceLocal {
     @Timeout
     public void handleTimeout(javax.ejb.Timer timer) {
         logger.log(Level.FINE,"in handleTimeout, timer = "+timer.getInfo());
+        
+
         try {
+            VDCNetwork thisNetwork = vdcNetworkService.find(new Long(1));
+            boolean readOnly = thisNetwork.isReadonly();
+            
             if (timer.getInfo().equals(STATS_TIMER)) {
-                logger.log(Level.FINE, "Stats update");
-                updateStats();
+                if (readOnly) {
+                    logger.log(Level.ALL, "Network is in read-only mode; skipping scheduled network stats job."); 
+                } else {
+                    logger.log(Level.FINE, "Stats update");
+                    updateStats();
+                }
             }
         } catch (Throwable e) {
             e.printStackTrace();

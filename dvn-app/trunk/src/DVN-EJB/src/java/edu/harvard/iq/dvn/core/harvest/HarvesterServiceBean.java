@@ -51,6 +51,7 @@ import edu.harvard.iq.dvn.core.util.FileUtil;
 import edu.harvard.iq.dvn.core.util.StringUtil;
 import edu.harvard.iq.dvn.core.vdc.HarvestingDataverse;
 import edu.harvard.iq.dvn.core.vdc.HarvestingDataverseServiceLocal;
+import edu.harvard.iq.dvn.core.vdc.VDCNetwork;
 import edu.harvard.iq.dvn.core.vdc.VDCNetworkServiceLocal;
 import java.io.BufferedWriter;
 import java.io.File;
@@ -244,18 +245,29 @@ public class HarvesterServiceBean implements HarvesterServiceLocal {
         // call the method a second time. (The minimum number of re-tries for a Timer method is 1)
        
             if (timer.getInfo() instanceof HarvestTimerInfo) {
-                 HarvestTimerInfo info = (HarvestTimerInfo) timer.getInfo();
-             try {
-               
+            HarvestTimerInfo info = (HarvestTimerInfo) timer.getInfo();
+            try {
+                // First, check if we are in read-only mode: 
+
+                VDCNetwork thisNetwork = vdcNetworkService.find(new Long(1));
+
+                if (thisNetwork.isReadonly()) {
+                    logger.log(Level.ALL, "Network is in read-only mode.");
+                    return;
+
+                }
+
+                // Proceeding with the scheduled harvest: 
+                
                 logger.log(Level.INFO, "DO HARVESTING of dataverse " + info.getHarvestingDataverseId());
                 doHarvesting(info.getHarvestingDataverseId());
-            
+
             } catch (Throwable e) {
                 harvestingDataverseService.setHarvestResult(info.getHarvestingDataverseId(), HarvestingDataverse.HARVEST_RESULT_FAILED);
                 mailService.sendHarvestErrorNotification(vdcNetworkService.find().getContactEmail(), vdcNetworkService.find().getName());
                 logException(e, logger);
-        }
             }
+        }
     }
 
     /**
@@ -685,7 +697,6 @@ public class HarvesterServiceBean implements HarvesterServiceLocal {
 
         List<Long> harvestedStudyIds = new ArrayList<Long>();
 
-      
 
             hdLogger.log(Level.INFO, "BEGIN HARVEST..., nesstarServer=" + dataverse.getServerUrl() + ", metadataPrefix=" + dataverse.getHarvestFormatType().getMetadataPrefix());
 

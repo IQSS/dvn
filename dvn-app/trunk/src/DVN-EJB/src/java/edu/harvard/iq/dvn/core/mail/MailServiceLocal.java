@@ -23,6 +23,7 @@ import edu.harvard.iq.dvn.core.study.StudyVersion;
 import edu.harvard.iq.dvn.core.vdc.VDC;
 import edu.harvard.iq.dvn.ingest.dsb.DSBIngestMessage;
 import java.util.List;
+import java.util.Map;
 import javax.ejb.Local;
 
 
@@ -34,6 +35,8 @@ public interface MailServiceLocal  extends java.io.Serializable  {
     public void sendMail(String host, String from, String to, String subject, String messageTest);
 
     public void sendMail( String from, String to, String subject, String messageTest);
+    
+    public void sendMail(String from, String to, String subject, String messageText, Map extraHeaders);
 
     public void sendDoNotReplyMail(String to, String subject, String messageText);
     

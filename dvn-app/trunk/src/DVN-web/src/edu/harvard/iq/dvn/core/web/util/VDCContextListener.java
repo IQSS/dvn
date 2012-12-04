@@ -36,6 +36,7 @@ import edu.harvard.iq.dvn.core.vdc.HarvestingDataverseServiceLocal;
 import edu.harvard.iq.dvn.core.vdc.VDCNetworkServiceLocal;
 import edu.harvard.iq.dvn.core.vdc.VDCNetworkStatsServiceLocal;
 import edu.harvard.iq.dvn.core.web.common.VDCBaseBean;
+import edu.harvard.iq.dvn.core.vdc.VDCNetwork;
 import javax.ejb.EJB;
 import javax.ejb.EJBs;
 import javax.naming.InitialContext;
@@ -82,36 +83,34 @@ public class VDCContextListener implements ServletContextListener,ServletRequest
         VDCNetworkServiceLocal vdcNetworkService=null;
          
         try {
-            harvesterService=(HarvesterServiceLocal)new InitialContext().lookup("java:comp/env/harvesterService");
-            harvestingDataverseService=(HarvestingDataverseServiceLocal)new InitialContext().lookup("java:comp/env/harvestingDataverseService");
             vdcNetworkService = (VDCNetworkServiceLocal)new InitialContext().lookup("java:comp/env/vdcNetworkService");        
-            indexService=(IndexServiceLocal)new InitialContext().lookup("java:comp/env/indexService");
-            vdcNetworkStatsService = (VDCNetworkStatsServiceLocal)new InitialContext().lookup("java:comp/env/vdcNetworkStatsService");
-           
-       
-            harvestingDataverseService.resetAllHarvestingStatus();         
-            harvesterService.createScheduledHarvestTimers();
-            
-            indexService.createIndexTimer();
-            indexService.createIndexNotificationTimer();
-    
-            vdcNetworkService.updateExportTimer();
-            
-            vdcNetworkStatsService.updateStats();
-            vdcNetworkStatsService.createStatsTimer();
+            VDCNetwork thisNetwork = vdcNetworkService.find(new Long(1));
+  
+            if (thisNetwork.isReadonly()) {
+                System.out.println("Network is in read-only mode; skipping timer initialization.");
+            } else {
+                harvesterService = (HarvesterServiceLocal) new InitialContext().lookup("java:comp/env/harvesterService");
+                harvestingDataverseService = (HarvestingDataverseServiceLocal) new InitialContext().lookup("java:comp/env/harvestingDataverseService");
+                indexService = (IndexServiceLocal) new InitialContext().lookup("java:comp/env/indexService");
+                vdcNetworkStatsService = (VDCNetworkStatsServiceLocal) new InitialContext().lookup("java:comp/env/vdcNetworkStatsService");
 
+
+                harvestingDataverseService.resetAllHarvestingStatus();
+                harvesterService.createScheduledHarvestTimers();
+
+                indexService.createIndexTimer();
+                indexService.createIndexNotificationTimer();
+
+                vdcNetworkService.updateExportTimer();
+
+                vdcNetworkStatsService.updateStats();
+                vdcNetworkStatsService.createStatsTimer();
+            }
 
         } catch (Exception e) {
             e.printStackTrace();
         }
-        
-     
-        
-   
-
-
-      
-              
+                      
     }
   public void attributeAdded(ServletRequestAttributeEvent event) {
       Object value = event.getValue();

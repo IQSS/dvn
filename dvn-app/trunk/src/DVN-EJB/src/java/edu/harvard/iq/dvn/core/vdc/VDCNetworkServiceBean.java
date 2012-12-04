@@ -61,7 +61,8 @@ public class VDCNetworkServiceBean implements VDCNetworkServiceLocal {
     private EntityManager em;
     @Resource javax.ejb.TimerService timerService;
     @EJB MailServiceLocal mailService;
-     @EJB StudyServiceLocal studyService;
+    @EJB StudyServiceLocal studyService;
+    @EJB VDCNetworkServiceLocal vdcNetworkService; 
 
     @EJB
     DvnTimerLocal dvnTimerService;
@@ -197,14 +198,24 @@ public class VDCNetworkServiceBean implements VDCNetworkServiceLocal {
     @Timeout
     @TransactionAttribute(TransactionAttributeType.NOT_SUPPORTED)
     public void handleTimeout(javax.ejb.Timer timer) {
-        // We have to put all the code in a try/catch block because
-        // if an exception is thrown from this method, Glassfish will automatically
-        // call the method a second time. (The minimum number of re-tries for a Timer method is 1)
+        
         try {
+            // We have to put all the code in a try/catch block because
+            // if an exception is thrown from this method, Glassfish will automatically
+            // call the method a second time. (The minimum number of re-tries for a Timer method is 1)
+            
+            // First, read-only mode check: 
+            VDCNetwork thisNetwork = vdcNetworkService.find(new Long(1));
+            boolean readOnly = thisNetwork.isReadonly();
+            
             if (timer.getInfo() instanceof ExportTimerInfo) {
-                ExportTimerInfo info = (ExportTimerInfo)timer.getInfo();
-                logger.info("handling timeout");
-                studyService.exportUpdatedStudies();             
+                if (readOnly) {
+                    logger.info("Network is in read-only mode; skipping scheduled (timer) export job.");
+                } else {
+                    ExportTimerInfo info = (ExportTimerInfo)timer.getInfo();
+                    logger.info("handling timeout");
+                    studyService.exportUpdatedStudies();  
+                }
             }
          } catch (Throwable e) {
             mailService.sendExportErrorNotification(find().getContactEmail(), this.find().getName());

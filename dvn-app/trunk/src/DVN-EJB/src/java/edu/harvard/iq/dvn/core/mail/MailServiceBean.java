@@ -36,6 +36,8 @@ import edu.harvard.iq.dvn.ingest.dsb.DSBIngestMessage;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Properties;
+import java.util.Map;
+import java.util.HashMap;
 import javax.annotation.Resource;
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
@@ -105,6 +107,10 @@ public class MailServiceBean implements edu.harvard.iq.dvn.core.mail.MailService
     
 //    @Resource(name="mail/notifyMailSession")
     public void sendMail(String from, String to, String subject, String messageText){
+        sendMail(from, to, subject, messageText, new HashMap());
+    }
+    
+    public void sendMail(String from, String to, String subject, String messageText, Map extraHeaders) {
         try {
             Message msg = new MimeMessage(session);
             msg.setFrom(new InternetAddress(from));
@@ -112,6 +118,16 @@ public class MailServiceBean implements edu.harvard.iq.dvn.core.mail.MailService
                     InternetAddress.parse(to, false));
             msg.setSubject(subject);
             msg.setText(messageText);
+            
+            if (extraHeaders != null) {
+                for (Object key : extraHeaders.keySet()) {
+                    String headerName = key.toString();
+                    String headerValue = extraHeaders.get(key).toString();
+                    
+                    msg.addHeader(headerName, headerValue);
+                }
+            }
+            
             Transport.send(msg);
         } catch (AddressException ae) {
             ae.printStackTrace(System.out);
@@ -119,7 +135,6 @@ public class MailServiceBean implements edu.harvard.iq.dvn.core.mail.MailService
             me.printStackTrace(System.out);
         }
     }
-    
     public void sendPasswordUpdateNotification(String userEmail, String userFirstName,String userName, String newPassword) {
         String subject = "Dataverse Network: New Password Request";
         String msgText ="Hello "+userFirstName+",\n";

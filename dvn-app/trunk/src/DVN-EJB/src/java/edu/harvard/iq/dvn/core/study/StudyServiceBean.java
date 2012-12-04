@@ -2233,7 +2233,20 @@ public class StudyServiceBean implements edu.harvard.iq.dvn.core.study.StudyServ
         Timestamp timestamp = (Timestamp) query.getSingleResult();
         return timestamp;
     }
+    
+    
+    public long getStudyDownloadCount(List studyIds) {
+        String queryString  = "select sum(downloadcount) " +
+                "from studyfileactivity  sfa " +
+                "where sfa.study_id in (" + generateTempTableString(studyIds) + ")";
+        Long studyDownloadCount = null;
+        Query query = em.createNativeQuery(queryString);
+        try {
+            studyDownloadCount = (Long) query.getSingleResult();
+        } catch (Exception nre) {} // empty catch; return 0
 
+        return studyDownloadCount != null ? studyDownloadCount.longValue() : 0;
+    }
     public long getStudyDownloadCount(Long studyId) {
         String queryString  = "select sum(downloadcount) " +
                 "from studyfileactivity  sfa " +

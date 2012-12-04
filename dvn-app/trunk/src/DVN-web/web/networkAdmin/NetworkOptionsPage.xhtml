@@ -34,6 +34,9 @@
                     function initUserData(){
                         document.getElementById('form1:initUserData').click();
                     } 
+                    function initControlledVocabulary(){
+                        document.getElementById('form1:initControlledVocabulary').click();
+                    }
                     function initPrivilegedUserData(){
                         document.getElementById('form1:initPrivilegedUserData').click();
                     }
@@ -55,6 +58,7 @@
             </script>
             <ice:commandButton visible="false" id="initGuestBookResponse" action="#{OptionsPage.initGuestBookResponses}"/>
             <ice:commandButton visible="false" id="initUserData" action="#{OptionsPage.initUserData}"/>
+            <ice:commandButton visible="false" id="initControlledVocabulary" action="#{OptionsPage.initControlledVocabulary}"/>
             <ice:commandButton visible="false" id="initPrivilegedUserData" action="#{OptionsPage.initPrivilegedUserData}"/>
             <div class="dvn_section">
                 <ice:panelTabSet id="tabSet1" binding="#{OptionsPage.tabSet1}"  styleClass="dvnTabs">
@@ -197,7 +201,9 @@
 
                       </ice:panelTab>
 
-                      <ice:panelTab id="controlledVocab" label="Vocabulary" url="/dvn#{VDCRequest.currentVDCURL}/faces/networkAdmin/NetworkOptionsPage.xhtml?tab=vocabulary" rendered="#{VDCSession.loginBean.networkAdmin}">
+                    <ice:panelTab id="controlledVocab" label="Vocabulary" url="/dvn#{VDCRequest.currentVDCURL}/faces/networkAdmin/NetworkOptionsPage.xhtml?tab=vocabulary" 
+                                  onclick="initControlledVocabulary();"
+                                    rendered="#{VDCSession.loginBean.networkAdmin}">
 
                             <ice:panelTab id="manageControlledVocabulary" label="Manage Controlled Vocabulary">
                                 <div jsfc="ice:panelGroup">
@@ -247,9 +253,9 @@
                             <div jsfc="ice:panelGroup" id="layoutPanelGroupPermissions" panelLayout="flow">
                                 <ice:panelTabSet id="tabSetPermissions" styleClass="dvnTabs dvnSubTabs" binding="#{OptionsPage.permissionsSubTab}">
                                     <!-- PERMISSIONS -->
-                                    <ice:panelTab id="permissionsSub" label="Permissions" >
-                                            <div jsfc="ice:panelGroup" panelLayout="flow">
-                                                <ui:include src="/networkAdmin/NetworkPrivilegedUsersPage.xhtml"></ui:include>
+                                    <ice:panelTab id="permissionsSub" label="Permissions"   onclick="initPrivilegedUserData();" immediate="true">
+                                            <div jsfc="ice:panelGroup" panelLayout="flow" >
+                                                <ui:include src="/networkAdmin/NetworkPrivilegedUsersPage.xhtml"  ></ui:include>
                                             </div>  
                                     </ice:panelTab>
                                     <ice:panelTab id="usersSub" label="Users" onclick="initUserData();">

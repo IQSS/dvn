@@ -356,7 +356,7 @@ public class OptionsPage extends VDCBaseBean  implements java.io.Serializable {
       }
         //Add site page
       if (getVDCRequestBean().getCurrentVDC() == null){
-                  HttpServletRequest request = (HttpServletRequest) FacesContext.getCurrentInstance().getExternalContext().getRequest();
+        HttpServletRequest request = (HttpServletRequest) FacesContext.getCurrentInstance().getExternalContext().getRequest();
         Iterator iterator = request.getParameterMap().keySet().iterator();
         while (iterator.hasNext()) {
             Object key = (Object) iterator.next();
@@ -393,9 +393,10 @@ public class OptionsPage extends VDCBaseBean  implements java.io.Serializable {
             study = studyService.getStudy(studyId);
         }
         
+        
+        
         if (getVDCRequestBean().getCurrentVDC() == null){
-            // Manage Controlled Vocab...
-            controlledVocabularyList = templateService.getNetworkControlledVocabulary();
+            
             //Manage Classifications
             List list = (List)vdcGroupService.findAll();
             itemBeansSize = list.size();
@@ -477,8 +478,6 @@ public class OptionsPage extends VDCBaseBean  implements java.io.Serializable {
         if (tab == null && getVDCRequestBean().getSelectedTab() != null) {
             tab = getVDCRequestBean().getSelectedTab();
         }
-        System.out.print("tab " + tab);
-        System.out.print("tab2 " + tab2);
         if (tab != null  && vdc != null) {
             if (tab.equals("studies")) {
                 selectedIndex=0;
@@ -518,6 +517,7 @@ public class OptionsPage extends VDCBaseBean  implements java.io.Serializable {
             } else if (tab.equals("templates")) {
                 selectedIndex=3;
             } else if (tab.equals("vocabulary")){
+                initControlledVocabulary();
                 selectedIndex=4;
             } else if (tab.equals("harvesting")) {
                 selectedIndex=5;
@@ -3163,7 +3163,8 @@ public class OptionsPage extends VDCBaseBean  implements java.io.Serializable {
     }
     
     //Network Priviledged users page
-    public EditNetworkPrivilegesService getPrivileges() {return privileges;}
+    public EditNetworkPrivilegesService getPrivileges() {        
+        return privileges;}
     public void setPrivileges(EditNetworkPrivilegesService privileges) {this.privileges = privileges;}
     private String userName;
     public String getUserName() {return this.userName;}
@@ -3219,6 +3220,36 @@ public class OptionsPage extends VDCBaseBean  implements java.io.Serializable {
         }
     } 
     
+    public void searchForPrivilegedUsers(ActionEvent ae) {
+
+        List<NetworkPrivilegedUserBean> searchResult = privileges.getPrivilegedUsersByName(userName);
+        for (NetworkPrivilegedUserBean npub: searchResult){
+            boolean found = false;
+            if (privilegedUsersSearchList != null){
+                for (NetworkPrivilegedUserBean test : privilegedUsersSearchList){
+                if (npub.getUser().equals(test.getUser())){
+                    found = true;
+                }
+            }
+            if (!found){
+               privilegedUsersSearchList.add(npub); 
+            }
+                
+            } else {
+                privilegedUsersSearchList = new ArrayList();
+                privilegedUsersSearchList.add(npub); 
+                if (privileges.getPrivilegedUsers() == null){
+                    privileges.setPrivilegedUsers(new ArrayList<NetworkPrivilegedUserBean>());
+                }
+                privileges.getPrivilegedUsers().add(npub);
+            }
+        }
+    }
+    
+    List<NetworkPrivilegedUserBean> privilegedUsersSearchList;
+    public List<NetworkPrivilegedUserBean> getPrivilegedUsersSearchList() {return privilegedUsersSearchList;}
+    public void setPrivilegedUsersSearchList(List<NetworkPrivilegedUserBean> privilegedUsersSearchList) {this.privilegedUsersSearchList = privilegedUsersSearchList;}
+    
     public void addTOUUser(ActionEvent ae) {
         VDCUser user = null; 
         // See comment in the addUser method!
@@ -3238,10 +3269,11 @@ public class OptionsPage extends VDCBaseBean  implements java.io.Serializable {
     public boolean isUserNotFound() {return userNotFound;}
     public void setUserNotFound(boolean userNotFound) {this.userNotFound = userNotFound;}    
     private boolean TOUuserNotFound;    
+    
     public boolean isTOUUserNotFound() {return TOUuserNotFound; }   
     public void setTOUUserNotFound(boolean userNotFound) {this.TOUuserNotFound = userNotFound; }
-    public boolean getDisplayPrivilegedUsers() {return getPrivileges().getPrivilegedUsers().size()>1;}    
-    public boolean getDisplayTOUPrivilegedUsers() {return getPrivileges().getTOUPrivilegedUsers().size()>0;}
+    public boolean getDisplayPrivilegedUsers() {if (tab2.equals("users")) return false; return getPrivileges().getPrivilegedUsers().size()>1;}    
+    public boolean getDisplayTOUPrivilegedUsers() { return getPrivileges().getTOUPrivilegedUsers().size()>0;}
     public String saveNetworkPrivilegedUsersPage() {
         HttpServletRequest request = (HttpServletRequest)this.getExternalContext().getRequest();
         String hostName=request.getLocalName();
@@ -3255,6 +3287,7 @@ public class OptionsPage extends VDCBaseBean  implements java.io.Serializable {
         privileges.save(creatorUrl);
         privileges.init();
         getVDCRenderBean().getFlash().put("successMessage", "Successfully updated network permissions.");
+        tab2="";
         return "/networkAdmin/NetworkOptionsPage.xhtml?faces-redirect=true&tab=permissions";
     }
     
@@ -4505,7 +4538,14 @@ public class OptionsPage extends VDCBaseBean  implements java.io.Serializable {
         initGroupData();  // Re-fetch list to reflect Delete action       
     }
     
-    public void initUserData() {        
+    public void initControlledVocabulary() {
+        // Manage Controlled Vocab...
+        controlledVocabularyList = templateService.getNetworkControlledVocabulary();
+    }
+    
+    public void initUserData() {  
+        //getPrivileges().getPrivilegedUsers().clear();
+        tab2="users";
         userData = new ArrayList();
         List users = userService.findAllIds();
         Long defaultNetworkAdminId = vdcNetworkService.find().getDefaultNetworkAdmin().getId();
@@ -4515,12 +4555,18 @@ public class OptionsPage extends VDCBaseBean  implements java.io.Serializable {
         }
         userDataCount = new Long(userData.size());
     }
+    
+    public Long getDefaultNetworkAdminId(){
+        return vdcNetworkService.find().getDefaultNetworkAdmin().getId();
+    }
+    
     private Long userDataCount;
     public Long getUserDataCount() {return userDataCount;}
     public void setUserDataCount(Long userDataCount) {this.userDataCount = userDataCount;}
         
-    public void initPrivilegedUserData() {        
-            privileges.init();
+    public void initPrivilegedUserData() { 
+            privileges.initTOUPrivilegedUsers();
+            privileges.setNetwork(vdcNetworkService.find());
             sessionPut( getPrivileges().getClass().getName(),privileges);
     }
     
@@ -4531,6 +4577,9 @@ public class OptionsPage extends VDCBaseBean  implements java.io.Serializable {
     private List<edu.harvard.iq.dvn.core.web.networkAdmin.AllUsersDataBean> userData;
     public List<edu.harvard.iq.dvn.core.web.networkAdmin.AllUsersDataBean> getUserData() {return this.userData;}
     public void setUserData(List<edu.harvard.iq.dvn.core.web.networkAdmin.AllUsersDataBean> userData) {this.userData = userData;}
+    
+    
+    
     public void activateUser(ActionEvent ae) {
         AllUsersDataBean bean=(AllUsersDataBean)userDataTable.getRowData();
         VDCUser user = bean.getUser();

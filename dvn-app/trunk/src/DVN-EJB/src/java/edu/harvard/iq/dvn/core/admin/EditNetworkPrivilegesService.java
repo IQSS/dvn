@@ -50,6 +50,8 @@ public interface EditNetworkPrivilegesService  extends java.io.Serializable  {
     VDCNetwork getNetwork();
 
     List<NetworkPrivilegedUserBean> getPrivilegedUsers();
+    
+    List<NetworkPrivilegedUserBean>getPrivilegedUsersByName(String searchName);
 
     /**
      *  Initialize the bean with a Study for editing
@@ -71,5 +73,7 @@ public interface EditNetworkPrivilegesService  extends java.io.Serializable  {
     public List<VDCUser> getTOUPrivilegedUsers();
     public void setTOUPrivilegedUsers(List<VDCUser> TOUprivilegedUsers);    
     public void addTOUPrivilegedUser(Long userId );
+
+    public void initTOUPrivilegedUsers();
     
 }

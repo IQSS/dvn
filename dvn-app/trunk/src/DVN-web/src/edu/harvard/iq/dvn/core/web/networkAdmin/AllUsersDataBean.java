@@ -55,7 +55,7 @@ public class AllUsersDataBean implements java.io.Serializable  {
     private VDCUser user;
 
     /**
-     * Getter for property user.
+     * Getter for property user. init if necessary
      * @return Value of property user.
      */
     public VDCUser getUser() {

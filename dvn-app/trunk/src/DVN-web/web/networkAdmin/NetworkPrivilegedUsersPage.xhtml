@@ -32,24 +32,22 @@
                           <ice:outputText value="Network Privileged Users"/>
                         </td>
                         <td class="dvnPermissionsStackedCells">
-                          <ice:outputText id="outputText7" value="Username: "/>
+                          <ice:outputText id="outputText7" value="Username (or Last Name): "/>
                           <ice:inputText onkeypress="if (window.event) return processEvent('', 'addUserbutton'); else return processEvent(event, 'addUserbutton');" id="textField1" value="#{OptionsPage.userName}"/>
-                          <ice:commandButton id="addUserButton" value="Add" actionListener="#{OptionsPage.addNetworkUser}"/>
+                          <ice:commandButton id="addUserButton" value="Find" actionListener="#{OptionsPage.searchForPrivilegedUsers}"/>
                           <ice:outputText styleClass="errorMessage" value="User not found." rendered="#{OptionsPage.userNotFound}"/>
                           <br/>
-                          <ice:outputText styleClass="vdcHelpText" value="Enter username to assign Network Admin or Dataverse Creator privileges."/>
+                          <ice:outputText styleClass="vdcHelpText" value="Enter username or last name to assign Network Admin or Dataverse Creator privileges."/>
                         </td>
                       </tr>
                       <tr>
                         <td colspan="2">
-                          <div jsfc="ice:panelGroup" rendered="#{!OptionsPage.displayPrivilegedUsers}" styleClass="dvnPermissionsEmpty">
-                            <ice:outputText value="No users have been given privileged access this dataverse network."/>
-                          </div>
+
                           <ice:dataTable binding="#{OptionsPage.userTable}" cellpadding="0" cellspacing="0" width="98%"
                                          columnClasses="vdcColPadded, vdcColPadded, vdcColPadded, vdcColPadded" headerClass="list-header-left"
                                          rowClasses="list-row-even,list-row-odd" value="#{OptionsPage.privileges.privilegedUsers}" var="currentRow"
-                                         rendered="#{OptionsPage.displayPrivilegedUsers}">
-                            <ice:column id="column1" rendered="#{currentRow.user.id!=OptionsPage.privileges.network.defaultNetworkAdmin.id}">
+                                         >
+                            <ice:column id="column1" rendered="#{currentRow.user.id!=OptionsPage.defaultNetworkAdminId}">
                               <f:facet name="header">
                                 <ice:outputText id="outputText3" value="Username"/>
                               </f:facet>
@@ -57,7 +55,7 @@
                                 <ice:outputText id="hyperlink2Text" value="#{currentRow.user.userName}"/>
                               </ice:outputLink>
                             </ice:column>
-                            <ice:column id="column9" rendered="#{currentRow.user.id!=OptionsPage.privileges.network.defaultNetworkAdmin.id}">
+                            <ice:column id="column9" rendered="#{currentRow.user.id!=OptionsPage.defaultNetworkAdminId}">
                               <f:facet name="header">
                                 <ice:outputText id="outputText16" value="Privileged Role"/>
                               </f:facet>
@@ -66,7 +64,7 @@
                                 <ice:message for="roleSelectMenu" styleClass="errorMessage"/>
                               </ice:selectOneRadio>
                             </ice:column>
-                            <ice:column rendered="#{currentRow.user.id!=OptionsPage.privileges.network.defaultNetworkAdmin.id}">
+                            <ice:column rendered="#{currentRow.user.id!=OptionsPage.defaultNetworkAdminId}">
                               <ice:commandButton value="Clear Role" actionListener="#{OptionsPage.clearRole}"/>
                             </ice:column>
                           </ice:dataTable>

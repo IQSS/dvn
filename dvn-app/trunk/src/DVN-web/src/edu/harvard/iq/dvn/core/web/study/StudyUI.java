@@ -168,6 +168,7 @@ public class StudyUI  implements java.io.Serializable {
      */
     public StudyUI(StudyVersion sv, VDCUser u) {
         this.studyVersion = sv;
+        this.studyVersionId = studyVersion.getId();
         this.study = sv.getStudy();
         this.studyId = this.study.getId();
         this.user = u;
@@ -186,6 +187,7 @@ public class StudyUI  implements java.io.Serializable {
      */
     public StudyUI(StudyVersion sv, VDC vdc, VDCUser user, UserGroup ipUserGroup) {
         this.studyVersion = sv;
+        this.studyVersionId = studyVersion.getId();
         this.study = sv.getStudy();
         this.studyId = this.study.getId();
 
@@ -203,6 +205,7 @@ public class StudyUI  implements java.io.Serializable {
 
     public StudyUI(StudyVersion sv, VDCUser user, boolean withFiles) {
         this.studyVersion = sv;
+        this.studyVersionId = studyVersion.getId();
         this.study = sv.getStudy();
         this.studyId = this.study.getId();
         this.user = user;
@@ -265,6 +268,7 @@ public class StudyUI  implements java.io.Serializable {
         } else if (studyVersionId!=null) {
                 studyVersion = studyService.getStudyVersionById(studyVersionId);
                 study = studyVersion.getStudy();
+                studyId = study.getId();
         }
     }
 
@@ -284,6 +288,8 @@ public class StudyUI  implements java.io.Serializable {
         else { 
             studyVersion = study.getLatestVersion();
         }
+        
+        studyVersionId = studyVersion.getId();
     }
 
     public Metadata getMetadata() {

@@ -175,14 +175,8 @@
                                     <ice:outputText styleClass="dvn_totalsLabel" value="Studies: "/>
                                     <ice:outputText styleClass="dvn_totalsValue" value="#{StudyListingPage.studyCount}"/>
                                     
-                                    <ice:outputText styleClass="dvn_totalsLabel" value=" | Downloads: " rendered="#{StudyListingPage.renderDownloadCount}"/>
-                                    <ice:outputText styleClass="dvn_totalsValue" value="#{StudyListingPage.downloadCount}" rendered="#{StudyListingPage.renderDownloadCount}"/>
-                                    
-                                    <ice:outputText styleClass="dvn_totalsLabel" value=" | Downloads (from this dataverse): " rendered="#{StudyListingPage.renderDownloadCount}"/>
-                                    <ice:outputText styleClass="dvn_totalsValue" value="#{StudyListingPage.localDownloadCount}" rendered="#{StudyListingPage.renderDownloadCount}"/>
-                                    
-                                    <ice:outputText styleClass="dvn_totalsLabel" value=" | Downloads (from outside this dataverse): " rendered="#{StudyListingPage.foreignDownloadCount != 0}"/>
-                                    <ice:outputText styleClass="dvn_totalsValue" value="#{StudyListingPage.foreignDownloadCount}" rendered="#{StudyListingPage.foreignDownloadCount != 0}"/>
+                                    <ice:outputText styleClass="dvn_totalsLabel" value=" | Downloads: "/>
+                                    <ice:outputText styleClass="dvn_totalsValue" value="#{StudyListingPage.downloadCount}"/>
                                   </div>
                                
                                   <div jsfc="ice:panelGroup" id="groupPanel4" rendered="#{StudyListingPage.renderScroller}">

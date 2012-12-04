@@ -130,20 +130,7 @@ public class StudyListingPage extends VDCBaseBean implements java.io.Serializabl
         }
         return downloadCount;
     }
-  
-
-    public int getLocalDownloadCount() {
-        return getVDCRequestBean().getCurrentVDC().getVDCActivity().getForeignStudyLocalDownloadCount() + getVDCRequestBean().getCurrentVDC().getVDCActivity().getLocalStudyLocalDownloadCount();
-    }
-
-    public int getForeignDownloadCount() {
-        if (getVDCRequestBean().getCurrentVDC() !=null){
-                  return getVDCRequestBean().getCurrentVDC().getVDCActivity().getLocalStudyForeignDownloadCount() + getVDCRequestBean().getCurrentVDC().getVDCActivity().getLocalStudyNetworkDownloadCount();  
-        } else {
-            return 0;
-        }
-    }
-    
+      
     
     public StudyListing getStudyListing() {
         return studyListing;

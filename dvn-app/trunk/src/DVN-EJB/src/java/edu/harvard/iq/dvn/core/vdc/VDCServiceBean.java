@@ -718,6 +718,42 @@ public class VDCServiceBean implements VDCServiceLocal {
         return (Long) query.getSingleResult();
     }
 
+    public Long getRestrictedVdcCount(boolean restricted, List<Long> vdcIds  ) {
+        String restrictedBooleanString = "false";
+        if(restricted){
+            restrictedBooleanString = "true";
+        }
+        String varString = "(" + generateTempTableString(vdcIds) + ")";
+        String queryString = "SELECT count(id) FROM vdc g " +
+                "WHERE g.id in " + varString +
+                " AND restricted = " +  restrictedBooleanString + "" ;
+        Query query = em.createNativeQuery(queryString);
+        return (Long) query.getSingleResult();
+    }
+    
+     private String generateTempTableString(List<Long> studyIds) {
+        // first step: create the temp table with the ids
+
+        em.createNativeQuery(" BEGIN; SET TRANSACTION READ WRITE; DROP TABLE IF EXISTS tempid; END;").executeUpdate();
+        em.createNativeQuery(" BEGIN; SET TRANSACTION READ WRITE; CREATE TEMPORARY TABLE tempid (tempid integer primary key, orderby integer); END;").executeUpdate();
+        em.createNativeQuery(" BEGIN; SET TRANSACTION READ WRITE; INSERT INTO tempid VALUES " + generateIDsforTempInsert(studyIds) + "; END;").executeUpdate();
+        return "select tempid from tempid";
+    }
+    private String generateIDsforTempInsert(List idList) {
+        int count = 0;
+        StringBuffer sb = new StringBuffer();
+        Iterator iter = idList.iterator();
+        while (iter.hasNext()) {
+            Long id = (Long) iter.next();
+            sb.append("(").append(id).append(",").append(count++).append(")");
+            if (iter.hasNext()) {
+                sb.append(",");
+            }
+        }
+
+        return sb.toString();
+    }
+    
     public Long getVdcCount() {
         String queryString = "SELECT count(id) FROM vdc v";
         Long longValue = null;

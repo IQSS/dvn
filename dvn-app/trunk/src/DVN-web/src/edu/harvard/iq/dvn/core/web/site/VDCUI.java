@@ -211,6 +211,11 @@ public class VDCUI  implements java.io.Serializable {
 
         return vdc;
     }
+    
+    public Long getVdcId() {
+        // check to see if study is loaded or if we only have the studyId
+        return this.vdcId;
+    }
 
 
     //setters

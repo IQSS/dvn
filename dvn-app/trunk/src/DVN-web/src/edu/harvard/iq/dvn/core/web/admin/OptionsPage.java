@@ -117,8 +117,12 @@ public class OptionsPage extends VDCBaseBean  implements java.io.Serializable {
     @PersistenceContext(unitName = "VDCNet-ejbPU")
     EntityManager em;
     
-    public void init(){
-        if (getVDCRequestBean().getCurrentVDC() == null){
+
+    
+    public void init() {   
+        
+        
+         if (getVDCRequestBean().getCurrentVDC() == null){
         HttpServletRequest request = (HttpServletRequest) FacesContext.getCurrentInstance().getExternalContext().getRequest();
         Iterator iterator = request.getParameterMap().keySet().iterator();
         while (iterator.hasNext()) {
@@ -131,9 +135,6 @@ public class OptionsPage extends VDCBaseBean  implements java.io.Serializable {
         initAlphabeticFilter();
         populateVDCUIList(false);         
       }
-    }
-    
-    public void initAll() {   
         if (twitterVerifier != null && getSessionMap().get("requestToken") != null) {
             addTwitter();           
         }                 
@@ -2807,11 +2808,13 @@ public class OptionsPage extends VDCBaseBean  implements java.io.Serializable {
         vdcUIList.getVdcUIList();
         vdcUnreleased = new Long(0);
         vdcUIListSize = new Long(String.valueOf(vdcUIList.getVdcUIList().size()));
+        List <Long> vdcIds = new ArrayList();
         for (VDCUI vdcUI : vdcUIList.getVdcUIList()){
-            if(vdcUI.getVdc().isRestricted()){
-                vdcUnreleased++;
-            }
+            vdcIds.add(vdcUI.getVdcId());
         }
+        
+        vdcUnreleased = vdcService.getRestrictedVdcCount(true, vdcIds);
+
     }
     
     public DataPaginator getPaginator() {

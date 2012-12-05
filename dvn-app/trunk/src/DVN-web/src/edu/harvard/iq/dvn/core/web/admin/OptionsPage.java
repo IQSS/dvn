@@ -3220,9 +3220,19 @@ public class OptionsPage extends VDCBaseBean  implements java.io.Serializable {
         }
     } 
     
+    private boolean privilegedUserNotFound = false;
+    public boolean isPrivilegedUserNotFound() {return privilegedUserNotFound;}
+    public void setPrivilegedUserNotFound(boolean privilegedUserNotFound) {this.privilegedUserNotFound = privilegedUserNotFound;}
+    
     public void searchForPrivilegedUsers(ActionEvent ae) {
+        privilegedUserNotFound = false;
 
         List<NetworkPrivilegedUserBean> searchResult = privileges.getPrivilegedUsersByName(userName);
+        if (searchResult.isEmpty()){
+            privilegedUserNotFound = true;
+            return;
+        }
+
         for (NetworkPrivilegedUserBean npub: searchResult){
             boolean found = false;
             if (privilegedUsersSearchList != null){
@@ -3233,6 +3243,7 @@ public class OptionsPage extends VDCBaseBean  implements java.io.Serializable {
             }
             if (!found){
                privilegedUsersSearchList.add(npub); 
+               privileges.getPrivilegedUsers().add(npub);
             }
                 
             } else {

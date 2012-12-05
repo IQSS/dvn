@@ -708,7 +708,7 @@ public class VDCServiceBean implements VDCServiceLocal {
             return list;
         }
     }
-
+//Not used anywhere....
     public Long getUnrestrictedVdcCount(long vdcGroupId) {
         String queryString = (vdcGroupId != 0) ? "SELECT count(vdcgroup_id) FROM vdcgroup_vdcs g " +
                 "WHERE g.vdcgroup_id = " + vdcGroupId +
@@ -717,16 +717,32 @@ public class VDCServiceBean implements VDCServiceLocal {
         Query query = em.createNativeQuery(queryString);
         return (Long) query.getSingleResult();
     }
+    
+    public Long getVdcCount() {
+        return getVdcCount(null, null);
+    }
 
-    public Long getRestrictedVdcCount(boolean restricted, List<Long> vdcIds  ) {
+    public Long getVdcCount( List<Long> vdcIds, Boolean restricted  ) {
         String restrictedBooleanString = "false";
-        if(restricted){
+        if(restricted != null && restricted.booleanValue() == true ){
             restrictedBooleanString = "true";
         }
-        String varString = "(" + generateTempTableString(vdcIds) + ")";
-        String queryString = "SELECT count(id) FROM vdc g " +
-                "WHERE g.id in " + varString +
-                " AND restricted = " +  restrictedBooleanString + "" ;
+
+        String queryString = "SELECT count(id) FROM vdc g ";
+        if (restricted !=null || vdcIds != null) {
+            queryString += " Where ";
+        }
+        if (vdcIds !=null && !vdcIds.isEmpty()){
+           String varString = "(" + generateTempTableString(vdcIds) + ") ";
+             queryString += " g.id in " + varString; 
+        }
+        if ( vdcIds !=null && restricted !=null){
+            queryString += " and ";
+        }
+        if ( restricted != null ) {
+           queryString += " restricted = " +  restrictedBooleanString + "" ;
+        }
+               
         Query query = em.createNativeQuery(queryString);
         return (Long) query.getSingleResult();
     }
@@ -754,12 +770,7 @@ public class VDCServiceBean implements VDCServiceLocal {
         return sb.toString();
     }
     
-    public Long getVdcCount() {
-        String queryString = "SELECT count(id) FROM vdc v";
-        Long longValue = null;
-        Query query = em.createNativeQuery(queryString);
-        return (Long) query.getSingleResult();
-    }
+
 
     // metho to get an ordered list of vdcIds
     public List<Long> getOrderedVDCIds(String orderBy) {
@@ -945,6 +956,6 @@ public class VDCServiceBean implements VDCServiceLocal {
         }
         
         em.remove(tc);
-    }    
-    
+    }
+
 }

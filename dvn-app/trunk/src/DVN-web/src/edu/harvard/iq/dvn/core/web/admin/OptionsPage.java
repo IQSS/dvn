@@ -2805,16 +2805,10 @@ public class OptionsPage extends VDCBaseBean  implements java.io.Serializable {
                 vdcUIList.setSortColumnName(vdcUIList.getNameColumnName());
             }
         }
-        vdcUIList.getVdcUIList();
+        vdcUIList.getVdcUIList();       
         vdcUnreleased = new Long(0);
         vdcUIListSize = new Long(String.valueOf(vdcUIList.getVdcUIList().size()));
-        List <Long> vdcIds = new ArrayList();
-        for (VDCUI vdcUI : vdcUIList.getVdcUIList()){
-            vdcIds.add(vdcUI.getVdcId());
-        }
-        
-        vdcUnreleased = vdcService.getRestrictedVdcCount(true, vdcIds);
-
+        vdcUnreleased = vdcService.getVdcCount(vdcUIList.getVdcIds(), Boolean.TRUE);
     }
     
     public DataPaginator getPaginator() {

@@ -262,6 +262,14 @@ public class VDCUIList extends SortableList {
         }
         return vdcUIList;
     }
+    
+    public List<Long> getVdcIds() {
+        List <Long> retList = new ArrayList();
+        for (VDCUI vdcui: vdcUIList){
+            retList.add(vdcui.getVdcId());
+        }
+        return retList;
+    }
 
     public int getVdcGroupSize() {
         return getVdcUIList().size();

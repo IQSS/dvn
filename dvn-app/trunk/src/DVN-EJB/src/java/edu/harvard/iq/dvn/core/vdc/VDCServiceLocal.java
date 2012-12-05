@@ -106,10 +106,10 @@ public interface VDCServiceLocal extends java.io.Serializable  {
     public List getManagedPagedData(int firstRow, int totalRows, String orderBy, String order);
 
     public Long getUnrestrictedVdcCount(long vdcGroupId);
-    public Long getRestrictedVdcCount(boolean restricted, List<Long> vdcIds  );
 
     public Long getVdcCount();
-
+    public Long getVdcCount(List <Long> vdcIds, Boolean resticted);
+    
    public List<Long> getOrderedVDCIds (String orderBy);
    public List<Long> getOrderedVDCIds(String orderBy, boolean hideRestrictedVDCs);
    public List<Long> getOrderedVDCIds (String letter, String orderBy);

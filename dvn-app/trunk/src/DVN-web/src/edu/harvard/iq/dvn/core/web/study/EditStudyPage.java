@@ -651,6 +651,8 @@ public class EditStudyPage extends VDCBaseBean implements java.io.Serializable  
             StudyAuthor newElem = new StudyAuthor();
             newElem.setMetadata(metadata);
             metadata.getStudyAuthors().add(dataTable.getRowIndex()+1,newElem);
+            JavascriptContext.addJavascriptCall(getFacesContext(),"jQuery('div.dvnDataCitationWidget').css({'background':'gold'});");
+            JavascriptContext.addJavascriptCall(getFacesContext(),"initAddAuthorSync();");
         } else  if (dataTable.equals(dataTableAbstracts)) {
             StudyAbstract newElem = new StudyAbstract();
             newElem.setMetadata(metadata);

@@ -301,7 +301,7 @@ public class ContactUsPage extends VDCBaseBean implements java.io.Serializable {
                 extraHeaders.put("X-DVN-INFO-GROUPNAME", groupName);
             }
 
-            mailService.sendMail(fromAddress, getToEmailAddress(), (getVDCRequestBean().getCurrentVDCId()==null) ? getVDCRequestBean().getVdcNetwork().getName()  + " Dataverse Network: " + selectedSubject.trim() : getVDCRequestBean().getCurrentVDC().getName() + " dataverse: " + selectedSubject.trim(), emailBody.trim());
+            mailService.sendMail(fromAddress, getToEmailAddress(), (getVDCRequestBean().getCurrentVDCId()==null) ? getVDCRequestBean().getVdcNetwork().getName()  + " Dataverse Network: " + selectedSubject.trim() : getVDCRequestBean().getCurrentVDC().getName() + " dataverse: " + selectedSubject.trim(), emailBody.trim(), extraHeaders);
   
             getVDCRenderBean().getFlash().put("successMessage",SUCCESS_MESSAGE);
             getVDCRenderBean().getFlash().put("fullName",fullName);

@@ -117,7 +117,23 @@ public class OptionsPage extends VDCBaseBean  implements java.io.Serializable {
     @PersistenceContext(unitName = "VDCNet-ejbPU")
     EntityManager em;
     
-    public void init() {   
+    public void init(){
+        if (getVDCRequestBean().getCurrentVDC() == null){
+        HttpServletRequest request = (HttpServletRequest) FacesContext.getCurrentInstance().getExternalContext().getRequest();
+        Iterator iterator = request.getParameterMap().keySet().iterator();
+        while (iterator.hasNext()) {
+            Object key = (Object) iterator.next();
+            if (key instanceof String && ((String) key).indexOf("dataverseType") != -1 && !request.getParameter((String) key).equals("")) {
+                this.setDataverseType(request.getParameter((String) key));
+            }
+        }
+        //manage dataverses page
+        initAlphabeticFilter();
+        populateVDCUIList(false);         
+      }
+    }
+    
+    public void initAll() {   
         if (twitterVerifier != null && getSessionMap().get("requestToken") != null) {
             addTwitter();           
         }                 
@@ -355,21 +371,9 @@ public class OptionsPage extends VDCBaseBean  implements java.io.Serializable {
         defaultSortOrder = getVDCRequestBean().getCurrentVDC().getDefaultSortOrder();
       }
         //Add site page
-      if (getVDCRequestBean().getCurrentVDC() == null){
-        HttpServletRequest request = (HttpServletRequest) FacesContext.getCurrentInstance().getExternalContext().getRequest();
-        Iterator iterator = request.getParameterMap().keySet().iterator();
-        while (iterator.hasNext()) {
-            Object key = (Object) iterator.next();
-            if (key instanceof String && ((String) key).indexOf("dataverseType") != -1 && !request.getParameter((String) key).equals("")) {
-                this.setDataverseType(request.getParameter((String) key));
-            }
-        }
-        //manage dataverses page
-        initAlphabeticFilter();
-        populateVDCUIList(false);         
-      }
+
        
-        //add account page
+      //add account page
         if ( isFromPage("AddAccountPage") ) {
             editUserService = (EditUserService) sessionGet(editUserService.getClass().getName());
             user = editUserService.getUser();            

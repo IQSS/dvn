@@ -47,7 +47,7 @@
                                          columnClasses="vdcColPadded, vdcColPadded, vdcColPadded, vdcColPadded" headerClass="list-header-left"
                                          rowClasses="list-row-even,list-row-odd" value="#{OptionsPage.privileges.privilegedUsers}" var="currentRow"
                                          >
-                            <ice:column id="column1" rendered="#{currentRow.user.id!=OptionsPage.defaultNetworkAdminId}">
+                            <ice:column id="column1" >
                               <f:facet name="header">
                                 <ice:outputText id="outputText3" value="Username"/>
                               </f:facet>
@@ -63,6 +63,12 @@
                                 <f:selectItems id="roleSelectItems" value="#{OptionsPage.networkRoleSelectItems}"/>
                                 <ice:message for="roleSelectMenu" styleClass="errorMessage"/>
                               </ice:selectOneRadio>
+                            </ice:column>
+                            <ice:column id="columnAdmin1" rendered="#{currentRow.user.id==OptionsPage.defaultNetworkAdminId}">
+                              <f:facet name="header">
+                                <ice:outputText id="outputTextadminhearder" value="Privileged Role"/>
+                              </f:facet>
+                                <ice:outputText value="Cannot Edit Default Network Administrator Permissions"/>
                             </ice:column>
                             <ice:column rendered="#{currentRow.user.id!=OptionsPage.defaultNetworkAdminId}">
                               <ice:commandButton value="Clear Role" actionListener="#{OptionsPage.clearRole}"/>

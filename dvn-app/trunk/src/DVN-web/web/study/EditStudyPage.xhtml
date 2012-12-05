@@ -150,20 +150,21 @@
                     </ice:panelGrid>
 <style type="text/css">
 #dvnDataCitationWidgetAuthorInputBlock, #dvnDataCitationWidgetDateInputBlock, #dvnDataCitationWidgetTitleInputBlock, #dvnDataCitationWidgetStudyIDInputBlock, #dvnDataCitationWidgetDistributorInputBlock {display:none;}
+span[id$=input_studyIdPrfxSync], span[id$=input_studyIdPrfx], input[id$=input_studyIdSync], input[id$=input_studyId] {display:inline !important;}
 </style>
 <script type="text/javascript">
 // <![CDATA[
 jQuery(document).ready(function(){
     
     // Fill in widget fields
-    jQuery("input[id$=input_authorNameSync]").val(jQuery("input[id$=input_authorName]").val());
+    jQuery("input[id$=input_authorNameSync]").val(jQuery("input[id$=0\\:input_authorName]").val());
     jQuery("input[id$=input_productionDateSync]").val(jQuery("input[id$=input_productionDate]").val());
     jQuery("input[id$=input_titleSync]").val(jQuery("input[id$=input_title]").val());
     jQuery("input[id$=input_studyIdSync]").val(jQuery("input[id$=input_studyId]").val());
     jQuery("input[id$=input_distributorNameSync]").val(jQuery("input[id$=input_distributorName]").val());
     
     // Sync widget label/links
-    var inputAuthorVal = jQuery('input[id$=input_authorName]').val();
+    var inputAuthorVal = jQuery('input[id$=0\\:input_authorName]').val();
     if (inputAuthorVal !== '' ){
         jQuery('#dvnDataCitationWidgetBlockAuthor a.dvnDataCitationWidgetLabel').text(inputAuthorVal);
     };
@@ -278,10 +279,10 @@ jQuery(document).ready(function(){
     
     // Sync AUTHOR
     jQuery("input[id$=input_authorNameSync]").bind("change input cut keyup paste", function() {
-        jQuery("input[id$=input_authorName]").val(jQuery(this).val());
+        jQuery("input[id$=0\\:input_authorName]").val(jQuery(this).val());
         jQuery('#dvnDataCitationWidgetBlockAuthor a.dvnDataCitationWidgetLabel').text(jQuery(this).val());
     });
-    jQuery("input[id$=input_authorName]").bind("change input cut keyup paste", function() {
+    jQuery("input[id$=0\\:input_authorName]").bind("change input cut keyup paste", function() {
         jQuery("input[id$=input_authorNameSync]").val(jQuery(this).val());
         jQuery('#dvnDataCitationWidgetBlockAuthor a.dvnDataCitationWidgetLabel').text(jQuery(this).val());
     });
@@ -360,7 +361,7 @@ function initAddAuthorSync(){
                                 Data Citation Widget
                             </div>
                               
-                              <div id="dvnDataCitationWidgetInputBlock" style="display:inline-block; background:gold; margin-bottom:.5em; padding:4px; ">
+                              <div id="dvnDataCitationWidgetInputBlock" style="display:inline-block; background:gold; margin-bottom:.5em; padding:4px; margin:2px;">
                                   <!-- None -->
                                   <div class="dvnDataCitationWidgetInput">Click one of the links below for a data citation value, in order to enter that metadata.</div>
                                   <!-- Author -->
@@ -384,8 +385,8 @@ function initAddAuthorSync(){
                                   </div>
                                   <!-- Study ID -->
                                   <div id="dvnDataCitationWidgetStudyIDInputBlock" class="dvnDataCitationWidgetInput">
-                                      <ice:outputText styleClass="dvnInlineHelpLabel dvnInlineHelpTip" value="#{editstudybundle.studyidLabel}" title="#{editstudybundle.studyidHelpHeading} - #{editstudybundle.studyidHelp}"/>
-                                        <ice:outputText value="#{EditStudyPage.study.protocol}:#{EditStudyPage.study.authority}/"/>
+                                      <ice:outputText styleClass="dvnInlineHelpLabel dvnInlineHelpTip" value="#{editstudybundle.studyidLabel}" title="#{editstudybundle.studyidHelpHeading} - #{editstudybundle.studyidHelp}"/><br/>
+                                        <ice:outputText id="input_studyIdPrfxSync" value="#{EditStudyPage.study.protocol}:#{EditStudyPage.study.authority}/"/>
                                         <ice:inputText maxlength="255" id="input_studyIdSync"/>
                                   </div>
                                   <!-- Distributor -->

@@ -30,6 +30,7 @@ import javax.ejb.Local;
 public interface HarvestingDataverseServiceLocal extends java.io.Serializable {
 
     public List findAll();
+    public List<Object[]> findInfoAll(); // returns harvesting dv id and vdc name
 
     public HarvestingDataverse find(Long id);
 

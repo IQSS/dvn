@@ -265,7 +265,7 @@ public class VDCBaseBean  implements java.io.Serializable  {
     public List<SelectItem> createSelectItemList(List<Object[]> items, Object excludeItem) {
         List selectItems = new ArrayList();
         for (Object[] item : items) {
-            if (excludeItem != null && !excludeItem.equals(item[0])) {
+            if (excludeItem == null || !excludeItem.equals(item[0])) {
                 selectItems.add(new SelectItem(item[0], (String) item[1]));
             }
         }

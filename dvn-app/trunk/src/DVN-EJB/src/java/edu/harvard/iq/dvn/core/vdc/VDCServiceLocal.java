@@ -58,8 +58,10 @@ public interface VDCServiceLocal extends java.io.Serializable  {
     public VDC findById(Long id);
 
     public List findAll();
+    public List<Object[]> findInfoAll(); // returns id, name, afilliation, and restricted
 
     public List<VDC> findAllPublic();
+    public List<Object[]> findInfoAllPublic(); // returns id and name
 
     public VDC findByAlias(String alias);
 
@@ -76,6 +78,7 @@ public interface VDCServiceLocal extends java.io.Serializable  {
     public void delete (Long vdcId);
     
     public List findAllNonHarvesting();
+    public List<Object[]> findInfoAllNonHarvesting(); // returns id and name
 
     public List findVdcsNotInGroups();
     

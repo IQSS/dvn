@@ -74,16 +74,15 @@ public class AddLinkPage extends VDCBaseBean implements java.io.Serializable  {
     }
 
 
-
+    
+    private List<SelectItem> dvItems;
+    
     public List<SelectItem> getDvItems() {
-        List dvSelectItems = new ArrayList<SelectItem>();
-        for (VDC vdc : vdcService.findAllPublic()) {
-            if (!vdc.getId().equals(getVDCRequestBean().getCurrentVDC().getId()) ) {
-                dvSelectItems.add(new SelectItem(vdc.getId(), vdc.getName()));
-            }
+        if (dvItems == null) {
+            dvItems = createSelectItemList( vdcService.findInfoAllPublic(), getVDCRequestBean().getCurrentVDC().getId() );
         }
 
-        return dvSelectItems;
+        return dvItems;
     }
 
     public List<SelectItem> getCollectionItems() {

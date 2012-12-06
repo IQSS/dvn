@@ -28,12 +28,15 @@ package edu.harvard.iq.dvn.core.web.common;
 import edu.harvard.iq.dvn.core.vdc.VDCNetworkServiceLocal;
 import edu.harvard.iq.dvn.core.vdc.VDCServiceLocal;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import javax.ejb.EJB;
 import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
+import javax.faces.model.SelectItem;
 import javax.inject.Inject;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -250,5 +253,22 @@ public class VDCBaseBean  implements java.io.Serializable  {
     
     public String getNavigationVDCSuffix() {
         return (getVDCRequestBean().getCurrentVDCId() != null) ? "&vdcId=" + getVDCRequestBean().getCurrentVDCId() : "";
+    }
+    
+
+    public List<SelectItem> createSelectItemList(List<Object[]> items) {
+        return createSelectItemList(items, null);
+    }
+
+    // this methods expect a list of 2 dimensional object array, where the 2nd elements are Strings for the labels
+    // the second parameter is an Object (corresponding to the first element of the Object[]) to exclude    
+    public List<SelectItem> createSelectItemList(List<Object[]> items, Object excludeItem) {
+        List selectItems = new ArrayList();
+        for (Object[] item : items) {
+            if (excludeItem != null && !excludeItem.equals(item[0])) {
+                selectItems.add(new SelectItem(item[0], (String) item[1]));
+            }
+        }
+        return selectItems;
     }
 }

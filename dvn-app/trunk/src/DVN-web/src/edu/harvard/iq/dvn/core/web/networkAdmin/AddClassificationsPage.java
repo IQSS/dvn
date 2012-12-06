@@ -133,12 +133,12 @@ public class AddClassificationsPage extends VDCBaseBean implements Serializable 
     }
 
      private void initItemBeans() {
-         List list = (List)vdcService.findAll();
+         List list = (List)vdcService.findInfoAll();
          Iterator iterator = list.iterator();
          while(iterator.hasNext()) {
-             VDC vdc = (VDC)iterator.next();
-             DataverseGrouping dataversegrouping = new DataverseGrouping(vdc.getId(), vdc.getName(), vdc.getAffiliation());
-             dataversegrouping.setRestricted(vdc.isRestricted());
+             Object[] vdcInfo = (Object[])iterator.next();
+             DataverseGrouping dataversegrouping = new DataverseGrouping((Long) vdcInfo[0], (String) vdcInfo[1], (String) vdcInfo[2]);
+             dataversegrouping.setRestricted((Boolean) vdcInfo[3]);
              dataverses.add(dataversegrouping);
          }
     }

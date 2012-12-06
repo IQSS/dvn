@@ -270,21 +270,21 @@ public class EditCollectionPage extends VDCBaseBean implements java.io.Serializa
         }
     }
 
+    private List<SelectItem> browseDVItems;
+    
     public List<SelectItem> getBrowseDVItems() {
-        List dvSelectItems = new ArrayList<SelectItem>();
-        
-        // first add current
-        VDC currentVDC = getVDCRequestBean().getCurrentVDC();
-        dvSelectItems.add(new SelectItem(currentVDC.getId(), currentVDC.getName()));
-        dvSelectItems.add(new SelectItem("", "-----", null, true));
-        
-        for (VDC vdc : vdcService.findAllPublic()) {
-            if (!vdc.equals(currentVDC)) {
-                dvSelectItems.add(new SelectItem(vdc.getId(), vdc.getName()));
-            }
+        if (browseDVItems == null) {
+            browseDVItems = new ArrayList<SelectItem>();
+
+            // first add current
+            VDC currentVDC = getVDCRequestBean().getCurrentVDC();
+            browseDVItems.add(new SelectItem(currentVDC.getId(), currentVDC.getName()));
+            browseDVItems.add(new SelectItem("", "-----", null, true));
+
+            browseDVItems.addAll(createSelectItemList( vdcService.findInfoAllPublic(), currentVDC.getId() ));
         }
 
-        return dvSelectItems;
+        return browseDVItems;
     }
 
     public List<SelectItem> getBrowseCollectionItems() {

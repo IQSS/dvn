@@ -253,12 +253,39 @@ public class VDCServiceBean implements VDCServiceLocal {
         return vdc;
     }
 
+    // helper method used by findInfo methods
+    // findInfo methods return an Object[] with needed info rather than the whole VDC
+    // this is done for primarily for performance reasons
+    private List<Object[]> convertIntegerToLong(List<Object[]> list, int index) {
+        for (Object[] item : list) {
+            item[index] = new Long( (Integer) item[index]);
+        }
+           
+        return list;
+    }    
+    
     public List findAll() {
         return em.createQuery("select object(o) from VDC as o order by o.name").getResultList();
     }
 
+    public List<Object[]> findInfoAll() {  
+        String queryString = "SELECT vdc.id, vdc.name, vdc.affiliation, vdc.restricted from vdc order by name";
+        Query query = em.createNativeQuery(queryString);
+        
+        return convertIntegerToLong(query.getResultList(),0);
+    }    
+
+    
     public List<VDC> findAllPublic() {
         return em.createQuery("select object(o) from VDC as o where o.restricted=false order by o.name").getResultList();
+    }
+    
+    public List<Object[]> findInfoAllPublic() {  
+        String queryString = "SELECT vdc.id, vdc.name from vdc where restricted=false order by name";
+        Query query = em.createNativeQuery(queryString);
+        
+        return convertIntegerToLong(query.getResultList(),0);
+
     }
 
     public List findBasic() {
@@ -431,6 +458,14 @@ public class VDCServiceBean implements VDCServiceLocal {
         return em.createQuery("select object(o) from VDC as o where o.harvestingDataverse is null order by o.name").getResultList();
 
     }
+    
+    public List<Object[]> findInfoAllNonHarvesting() {  
+        String queryString = "SELECT vdc.id, vdc.name from vdc where harvestingDataverse is null order by name";
+        Query query = em.createNativeQuery(queryString);
+        
+        return convertIntegerToLong(query.getResultList(),0);
+
+    }    
 
     /**
      * findVdcsNotInGroups
@@ -723,24 +758,14 @@ public class VDCServiceBean implements VDCServiceLocal {
     }
 
     public Long getVdcCount( List<Long> vdcIds, Boolean restricted  ) {
-        String restrictedBooleanString = "false";
-        if(restricted != null && restricted.booleanValue() == true ){
-            restrictedBooleanString = "true";
-        }
+        String queryString = "SELECT count(id) FROM vdc g where 1=1 ";
 
-        String queryString = "SELECT count(id) FROM vdc g ";
-        if (restricted !=null || vdcIds != null) {
-            queryString += " Where ";
-        }
         if (vdcIds !=null && !vdcIds.isEmpty()){
            String varString = "(" + generateTempTableString(vdcIds) + ") ";
-             queryString += " g.id in " + varString; 
-        }
-        if ( vdcIds !=null && restricted !=null){
-            queryString += " and ";
+             queryString += "and g.id in " + varString; 
         }
         if ( restricted != null ) {
-           queryString += " restricted = " +  restrictedBooleanString + "" ;
+           queryString += "and restricted = " +  restricted.toString() + "" ;
         }
                
         Query query = em.createNativeQuery(queryString);

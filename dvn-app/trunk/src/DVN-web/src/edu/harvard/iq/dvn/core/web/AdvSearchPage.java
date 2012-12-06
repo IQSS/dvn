@@ -581,6 +581,7 @@ public class AdvSearchPage extends VDCBaseBean implements java.io.Serializable {
         for (Iterator it = advSearchFields.iterator(); it.hasNext();) {
             StudyField elem = (StudyField) it.next();
             elem.getId();
+            
             // check if we have a "user-friendly" description for this field 
             // in our resource bundle: 
             advS[i] = getUserFriendlySearchField(elem.getName());
@@ -597,27 +598,6 @@ public class AdvSearchPage extends VDCBaseBean implements java.io.Serializable {
         return advS;
     }
 
-    /* The method below doesn't appear like it's being used any longer; 
-     * needs to be removed? -- L.A.
-     */
-    private String[] getFieldList(String[] advSearchFields) {
-        String[] advS = new String[advSearchFields.length];
-        for (int i = 0; i < advS.length; i++) {
-            advS[i] = getUserFriendlySearchField(advSearchFields[i]);
-            advSearchFieldMap.put(getUserFriendlySearchField(advSearchFields[i]), advSearchFields[i]);
-        }
-//        DefaultSelectItemsArray dsia = new DefaultSelectItemsArray();
-        /*
-        int i=0;
-        for (Iterator it = advSearchFields.iterator(); it.hasNext();) {
-        String name =  (String) it.next();
-        advS[i++]=messages.getString(name);
-        advSearchFieldMap.put(messages.getString(name),name);
-
-        }
-         */
-        return advS;
-    }
     
     private String getUserFriendlySearchField(String searchField) {
         try {

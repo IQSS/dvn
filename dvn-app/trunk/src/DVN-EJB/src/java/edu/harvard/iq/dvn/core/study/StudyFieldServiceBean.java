@@ -71,7 +71,7 @@ public class StudyFieldServiceBean implements StudyFieldServiceLocal, java.io.Se
     }
 
     public List findAdvSearchDefault() {
-        List <StudyField> studyFields = (List <StudyField>) em.createQuery("SELECT sf from StudyField sf where sf.advancedSearchField = true").getResultList();
+        List <StudyField> studyFields = (List <StudyField>) em.createQuery("SELECT sf from StudyField sf where sf.advancedSearchField = true ORDER by sf.id").getResultList();
         return studyFields;
         
         /* hard-coded defaults; used until 3.0: 

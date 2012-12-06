@@ -37,6 +37,7 @@ import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import javax.persistence.Query;
 
 /**
  *
@@ -56,8 +57,27 @@ public class HarvestingDataverseServiceBean implements edu.harvard.iq.dvn.core.v
     public HarvestingDataverseServiceBean() {
     }
     
+    // helper method used by findInfo methods
+    // findInfo methods return an Object[] with needed info rather than the whole VDC
+    // this is done for primarily for performance reasons
+    private List<Object[]> convertIntegerToLong(List<Object[]> list, int index) {
+        for (Object[] item : list) {
+            item[index] = new Long( (Integer) item[index]);
+        }
+           
+        return list;
+    }     
+    
     public List findAll() {
         return em.createQuery("select object(o) from HarvestingDataverse as o order by o.vdc.name").getResultList();
+    }
+    
+    // returns harvesting dv id and vdc name
+    public List<Object[]> findInfoAll() {
+        String queryString = "SELECT hd.id, vdc.name from harvestingdataverse hd, vdc where hd.id = vdc.harvestingdataverse_id order by name";
+        Query query = em.createNativeQuery(queryString);
+        
+        return convertIntegerToLong(query.getResultList(),0);        
     }
     
     public HarvestingDataverse find(Long id) {

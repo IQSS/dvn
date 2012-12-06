@@ -460,7 +460,7 @@ public class VDCServiceBean implements VDCServiceLocal {
     }
     
     public List<Object[]> findInfoAllNonHarvesting() {  
-        String queryString = "SELECT vdc.id, vdc.name from vdc where harvestingDataverse is null order by name";
+        String queryString = "SELECT vdc.id, vdc.name from vdc where harvestingdataverse_id is null order by name";
         Query query = em.createNativeQuery(queryString);
         
         return convertIntegerToLong(query.getResultList(),0);

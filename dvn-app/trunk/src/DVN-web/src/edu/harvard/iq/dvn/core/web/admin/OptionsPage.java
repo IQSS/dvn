@@ -3697,13 +3697,11 @@ public class OptionsPage extends VDCBaseBean  implements java.io.Serializable {
         this.harvestIdentifier = harvestIdentifier;
     }
     
+    private List<SelectItem> harvestDVSelectItems;
+    
     public List<SelectItem> getHarvestDVs() {
-        List harvestDVSelectItems = new ArrayList<SelectItem>();
-        Iterator iter = harvestingDataverseService.findAll().iterator();
-        while (iter.hasNext()) {
-            HarvestingDataverse hd = (HarvestingDataverse) iter.next();
-            harvestDVSelectItems.add( new SelectItem(hd.getId(), hd.getVdc().getName()) );
-            
+        if (harvestDVSelectItems == null) {
+            harvestDVSelectItems = createSelectItemList(harvestingDataverseService.findInfoAll());
         }
         return harvestDVSelectItems;
     }
@@ -3872,14 +3870,12 @@ public class OptionsPage extends VDCBaseBean  implements java.io.Serializable {
     //L.A. public void setInputFile(InputFile in){
     //L.A.    inputFile = in;
     //L.A.}
-  
-     public List<SelectItem> getImportDVs() {
-        List importDVsSelectItems = new ArrayList<SelectItem>();
-        Iterator iter = vdcService.findAllNonHarvesting().iterator();
-        while (iter.hasNext()) {
-            VDC vdc = (VDC) iter.next();
-            importDVsSelectItems.add( new SelectItem(vdc.getId(), vdc.getName()) );
-            
+    
+    private List<SelectItem> importDVsSelectItems;
+    
+    public List<SelectItem> getImportDVs() {
+        if (importDVsSelectItems == null) {
+            importDVsSelectItems = createSelectItemList( vdcService.findInfoAllNonHarvesting() );
         }
         return importDVsSelectItems;        
     } 

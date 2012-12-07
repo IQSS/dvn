@@ -568,4 +568,8 @@ public abstract class StudyFile implements Serializable {
 //            return ToStringBuilder.reflectionToString(this,
 //                ToStringStyle.MULTI_LINE_STYLE);
 //    }
+    
+    public String getCategory(Long versionNumber) {          
+        return getFileMetadata(versionNumber).getCategory();
+    }
 }

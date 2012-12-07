@@ -405,7 +405,8 @@ public class OptionsPage extends VDCBaseBean  implements java.io.Serializable {
             }
             // initialize the select
            for (ClassificationUI classUI: classificationList.getClassificationUIs()) {
-                if (classUI.getVdcGroup().getVdcs().contains(getVDCRequestBean().getCurrentVDC())) {
+                Long currentVDCId = getVDCRequestBean().getCurrentVDC().getId();
+                if (vdcGroupService.findVDCIdsByVDCGroupId(classUI.getVdcGroup().getId()).contains(currentVDCId)) {
                     classUI.setSelected(true);
                 }
            }            

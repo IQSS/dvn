@@ -99,7 +99,19 @@ public class VDCGroupServiceBean implements VDCGroupServiceLocal {
         List<VDCGroup> vdcgroups = (List<VDCGroup>)query.getResultList();
         return vdcgroups;
     }
-
+    
+    private static final String SELECT_VDC_IDS = "select vd.vdc_id from vdcgroup_vdcs vd where vd.vdcgroup_id = ?;";
+    
+    public List<Long> findVDCIdsByVDCGroupId(Long id) {
+        Query query = null;
+        List<Long> vdcids = new ArrayList();       
+        query = em.createNativeQuery(SELECT_VDC_IDS).setParameter(1, id);
+        for (Object currentResult : query.getResultList()) {
+            vdcids.add(new Long(((Long)currentResult).longValue()));
+        }
+        return vdcids;
+    }
+    
     List<VDCGroup> allDescendants = new ArrayList();
             
     @Remove

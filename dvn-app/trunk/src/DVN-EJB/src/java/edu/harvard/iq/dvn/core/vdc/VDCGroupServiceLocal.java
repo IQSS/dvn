@@ -56,5 +56,7 @@ public interface VDCGroupServiceLocal extends java.io.Serializable  {
     public void updateWithVdcs(VDCGroup vdcgroup, Long[] vdcs);
     
     public int getNextInOrder();
+
+    public java.util.List<java.lang.Long> findVDCIdsByVDCGroupId(java.lang.Long id);
     
 }

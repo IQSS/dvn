@@ -1846,7 +1846,8 @@ public class FileDownloadServlet extends HttpServlet {
 
         String fileId = req.getParameter("fileId");
         String studyId = req.getParameter("studyId");
-
+        String versionNumber = req.getParameter("versionNumber");
+    
         Study study = null;
         Collection files = new ArrayList();
         boolean createDirectoriesForCategories = false;
@@ -2004,10 +2005,20 @@ public class FileDownloadServlet extends HttpServlet {
                     }
 
                     if (Success) {
-                        String zipEntryName = file.getFileName();
+                        // String zipEntryName = file.getFileName();
+                        
+                        // get file name and category according to study version number chosen by user 
+                        
+                        Long versionNum = null; 
+                        if (versionNumber != null) versionNum = Long.valueOf(versionNumber).longValue();          
+                        String zipEntryName = file.getFileName(versionNum); 
                         zipEntryName = checkZipEntryName(zipEntryName, nameList);
-                        ZipEntry e = new ZipEntry(zipEntryName);
-
+                         
+                        // ZipEntry e = new ZipEntry(zipEntryName);
+                         
+                        String zipEntryDirectoryName = file.getCategory(versionNum); 
+                        ZipEntry e = new ZipEntry(zipEntryDirectoryName + "/" + zipEntryName);  
+                                         
                         zout.putNextEntry(e);
 
                         if (varHeaderLine != null) {

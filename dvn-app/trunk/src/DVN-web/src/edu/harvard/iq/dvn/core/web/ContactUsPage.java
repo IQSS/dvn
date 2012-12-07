@@ -242,18 +242,17 @@ public class ContactUsPage extends VDCBaseBean implements java.io.Serializable {
             String dvnNetAddress = "unknown";
             String groupName = "";
             
+            // If this is a logged-in user, we'll determine their username 
+            // and, possibly, some extra information, such as affiliation 
+            // and their curator status: 
+            
             if (getVDCSessionBean().getLoginBean() != null) {
                 
                 VDCUser vdcUser = getVDCSessionBean().getLoginBean().getUser();
                 
                 if (vdcUser != null && !(vdcUser.getUserName() == null || vdcUser.getUserName().equals(""))) {
                     userName = vdcUser.getUserName();
-                } else {
-                    if (getVDCSessionBean().getIpUserGroup() != null) {
-                        userName = "unknown";
-                        groupName = getVDCSessionBean().getIpUserGroup().getFriendlyName();
-                    }
-                }
+                } 
                 
                 if (vdcUser != null) {
                     if (vdcUser.getInstitution() != null && !vdcUser.getInstitution().equals("")) {
@@ -265,6 +264,18 @@ public class ContactUsPage extends VDCBaseBean implements java.io.Serializable {
                     }
                 }                                
             }
+            
+            // If there was no login session and no user information is 
+            // available, it is possible that they are recognized as a 
+            // member of a privileged network group: 
+            
+            if ("anonymous".equals(userName)) {
+                if (getVDCSessionBean().getIpUserGroup() != null) {
+                    userName = "unknown";
+                    groupName = getVDCSessionBean().getIpUserGroup().getFriendlyName();
+                }
+            }
+                
 
             // finally, we'll try to determine the Net address of this DVN. 
             // first we'll check our "dvn.inetAddress" option - it may be 
@@ -279,7 +290,7 @@ public class ContactUsPage extends VDCBaseBean implements java.io.Serializable {
                 dvnNetAddress = netAddress;
             } else {
                 // if dvn.inetAddress isn't set, we'll check the host name 
-                // property supplied by AS: 
+                // property supplied by the AS: 
 
                 netAddress = System.getProperty(SystemPropertyConstants.HOST_NAME_PROPERTY);
                 if (netAddress != null && !(netAddress.equals("") || netAddress.equals("localhost"))) {
@@ -296,7 +307,7 @@ public class ContactUsPage extends VDCBaseBean implements java.io.Serializable {
             extraHeaders.put("X-DVN-INFO-INSTITUTION", institution);
             extraHeaders.put("X-DVN-INFO-DVOWNER", dvOwner);
             extraHeaders.put("X-DVN-INFO-DVNNETADDRESS", dvnNetAddress);
-            if (!"".equals(groupName)) { 
+            if (!("".equals(groupName))) { 
                 extraHeaders.put("X-DVN-INFO-GROUPNAME", groupName);
             }
 

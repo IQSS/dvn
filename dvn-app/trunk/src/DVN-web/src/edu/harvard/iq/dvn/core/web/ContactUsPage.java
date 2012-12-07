@@ -161,7 +161,6 @@ public class ContactUsPage extends VDCBaseBean implements java.io.Serializable {
         arr.add(new SelectItem("Issue logging in or creating an account"));
         arr.add(new SelectItem("Issues with Analysis and Subsetting"));
         arr.add(new SelectItem("Curator/Administration Issues"));
-        arr.add(new SelectItem("Issues with Analysis and Subsetting"));
         arr.add(new SelectItem("Need more information about a topic"));
         arr.add(new SelectItem("Other question or issue"));
         return arr;

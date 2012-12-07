@@ -40,6 +40,9 @@
                     function initPrivilegedUserData(){
                         document.getElementById('form1:initPrivilegedUserData').click();
                     }
+                    function initTemplates(){
+                        document.getElementById('form1:initTemplates').click();
+                    }
                     function initCheckTermsEnabled() {
                         jQuery('div.dvnTermsEnable input.iceSelBoolChkbx[type=checkbox]').each(function(){
                             if ( jQuery(this).is(':checked') ) {
@@ -60,6 +63,7 @@
             <ice:commandButton visible="false" id="initUserData" action="#{OptionsPage.initUserData}"/>
             <ice:commandButton visible="false" id="initControlledVocabulary" action="#{OptionsPage.initControlledVocabulary}"/>
             <ice:commandButton visible="false" id="initPrivilegedUserData" action="#{OptionsPage.initPrivilegedUserData}"/>
+            <ice:commandButton visible="false" id="initTemplates" action="#{OptionsPage.initTemplates}"/>
             <div class="dvn_section">
                 <ice:panelTabSet id="tabSet1" binding="#{OptionsPage.tabSet1}"  styleClass="dvnTabs">
                     <!-- DATAVERSE OPTIONS -->   
@@ -189,7 +193,9 @@
 
                       </ice:panelTab> 
 
-                      <ice:panelTab id="templates" label="Templates" url="/dvn#{VDCRequest.currentVDCURL}/faces/networkAdmin/NetworkOptionsPage.xhtml?tab=templates" rendered="#{VDCSession.loginBean.networkAdmin}">
+                      <ice:panelTab id="templates" label="Templates" url="/dvn#{VDCRequest.currentVDCURL}/faces/networkAdmin/NetworkOptionsPage.xhtml?tab=templates" 
+                                    onclick="initTemplates();"
+                                    rendered="#{VDCSession.loginBean.networkAdmin}">
 
                             <ice:panelTab id="manageTemplates" label="Manage Templates">
                                 <div jsfc="ice:panelGroup">

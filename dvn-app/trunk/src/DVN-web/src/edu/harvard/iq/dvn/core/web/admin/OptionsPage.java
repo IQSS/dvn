@@ -119,110 +119,31 @@ public class OptionsPage extends VDCBaseBean  implements java.io.Serializable {
     
 
     
-    public void init() {   
-        
-        
-         if (getVDCRequestBean().getCurrentVDC() == null){
-        HttpServletRequest request = (HttpServletRequest) FacesContext.getCurrentInstance().getExternalContext().getRequest();
-        Iterator iterator = request.getParameterMap().keySet().iterator();
-        while (iterator.hasNext()) {
-            Object key = (Object) iterator.next();
-            if (key instanceof String && ((String) key).indexOf("dataverseType") != -1 && !request.getParameter((String) key).equals("")) {
-                this.setDataverseType(request.getParameter((String) key));
-            }
-        }
-        //manage dataverses page
-        initAlphabeticFilter();
-        populateVDCUIList(false);         
-      }
-        if (twitterVerifier != null && getSessionMap().get("requestToken") != null) {
-            addTwitter();           
-        }                 
-        //manage templates
-        if (getVDCRequestBean().getCurrentVDC() != null){
-           templateList = templateService.getEnabledNetworkTemplates();
-           templateList.addAll(templateService.getVDCTemplates(getVDCRequestBean().getCurrentVDCId()));
-           defaultTemplateId = getVDCRequestBean().getCurrentVDC().getDefaultTemplate().getId();            
-        } else {
-           templateList = templateService.getNetworkTemplates();
-           defaultTemplateId = getVDCRequestBean().getVdcNetwork().getDefaultTemplate().getId();
-        }
-        
-        // whether a template is being used determines if it can be removed or not (initialized here, so the page doesn't call thew service bean multiple times)
-        for (Template template : templateList) {
-            if (templateService.isTemplateUsed(template.getId() )) 
-            { 
-                templateInUseList.add(template.getId());
-            }            
-            if (templateService.isTemplateUsedAsVDCDefault(template.getId() )) 
-            { 
-                templateinsUseAsVDCDefaultList.add(template.getId());
-            }
-        }
-        
-        //Privileged users page 
-        
+    public void init() {
         if (getVDCRequestBean().getCurrentVDC() != null) {
             vdcId = getVDCRequestBean().getCurrentVDC().getId();
             editVDCPrivileges.setVdc(vdcId);
             vdc = editVDCPrivileges.getVdc();
-            if (vdc.isRestricted()) {
-                siteRestriction = "Restricted";
-            } else {
-                siteRestriction = "Public";
-            }
-            initContributorSetting();
-            initUserName();
-            vdcRoleList = new ArrayList<RoleListItem>();
-
-            // Add empty VDCRole to list, to allow user input of a new VDCRole
-            vdcRoleList.add(new RoleListItem(null, null));
-            // Add rest of items to the list from vdc object
-            for (VDCRole vdcRole : vdc.getVdcRoles()) {
-                vdcRoleList.add(new RoleListItem(vdcRole, vdcRole.getRoleId()));
-            }
-            setFilesRestricted(vdc.isFilesRestricted());
-
-            //terms of use
-            depositTermsOfUse = getVDCRequestBean().getCurrentVDC().getDepositTermsOfUse();
-            depositTermsOfUseEnabled = getVDCRequestBean().getCurrentVDC().isDepositTermsOfUseEnabled();
-            downloadTermsOfUse = getVDCRequestBean().getCurrentVDC().getDownloadTermsOfUse();
-            downloadTermsOfUseEnabled = getVDCRequestBean().getCurrentVDC().isDownloadTermsOfUseEnabled();
-                    //guestbook questionnaire
-        guestBookQuestionnaire = getVDCRequestBean().getCurrentVDC().getGuestBookQuestionnaire();
-        newQuestion = new CustomQuestion();
-        newQuestion.setCustomQuestionValues(new ArrayList());
-        if (guestBookQuestionnaire == null) { // set up default guest book questionnaire
-            guestBookQuestionnaire = new GuestBookQuestionnaire();
-            guestBookQuestionnaire.setEnabled(false);
-            guestBookQuestionnaire.setEmailRequired(true);
-            guestBookQuestionnaire.setFirstNameRequired(true);
-            guestBookQuestionnaire.setLastNameRequired(true);
-            guestBookQuestionnaire.setPositionRequired(true);
-            guestBookQuestionnaire.setInstitutionRequired(true);
-            guestBookQuestionnaire.setVdc(vdc);
-            guestBookQuestionnaire.setCustomQuestions(new ArrayList());
-            vdc.setGuestBookQuestionnaire(guestBookQuestionnaire);
-        } else {
-            if (guestBookQuestionnaire.getCustomQuestions() == null) {
-                guestBookQuestionnaire.setCustomQuestions(new ArrayList());
-            } else {
-                for (CustomQuestion customQuestion : guestBookQuestionnaire.getCustomQuestions()) {
-                    if (!customQuestion.isHidden()) {
-                        CustomQuestionUI customQuestionUI = new CustomQuestionUI();
-                        customQuestionUI.setCustomQuestion(customQuestion);
-                        customQuestionUI.setEditMode(false);
-                        customQuestions.add(customQuestionUI);
-                    }
-                }
-            }
-        }
-        newQuestion.setGuestBookQuestionnaire(guestBookQuestionnaire);
-        questionTypeSelectItems = loadQuestionTypeSelectItems();
-               
- 
         }
         
+        if (getVDCRequestBean().getCurrentVDC() == null) {
+            HttpServletRequest request = (HttpServletRequest) FacesContext.getCurrentInstance().getExternalContext().getRequest();
+            Iterator iterator = request.getParameterMap().keySet().iterator();
+            while (iterator.hasNext()) {
+                Object key = (Object) iterator.next();
+                if (key instanceof String && ((String) key).indexOf("dataverseType") != -1 && !request.getParameter((String) key).equals("")) {
+                    this.setDataverseType(request.getParameter((String) key));
+                }
+            }
+            //manage dataverses page
+            initAlphabeticFilter();
+            populateVDCUIList(false);
+        }
+        
+        if (twitterVerifier != null && getSessionMap().get("requestToken") != null) {
+            addTwitter();           
+        }                 
+
         // Home panels
         success = false;
         if (getVDCRequestBean().getCurrentVDC() != null) {
@@ -232,66 +153,16 @@ public class OptionsPage extends VDCBaseBean  implements java.io.Serializable {
             chkNewStudies = getVDCRequestBean().getCurrentVDC().isDisplayNewStudies();
 
             //Contact us page
-            this.setContactUsEmail(vdc.getContactEmail());
+            this.setContactUsEmail(getVDCRequestBean().getCurrentVDC().getContactEmail());
 
             //Edit Study Comments
-            allowStudyComments = vdc.isAllowStudyComments();
+            allowStudyComments = getVDCRequestBean().getCurrentVDC().isAllowStudyComments();
             allowStudyCommentsCheckbox.setValue(allowStudyComments);
         } else {
             this.setContactUsEmail(vdcNetworkService.find().getContactEmail());
         }
                
-        //edit site page  
-        if (getVDCRequestBean().getCurrentVDC() != null) {
-                    HttpServletRequest request = (HttpServletRequest)FacesContext.getCurrentInstance().getExternalContext().getRequest();
-                    Iterator iterator = request.getParameterMap().keySet().iterator();
-        while (iterator.hasNext()) {
-            Object key = (Object) iterator.next();
-            if ( key instanceof String && ((String) key).indexOf("dataverseType") != -1 && !request.getParameter((String)key).equals("")) {
-                this.setDataverseType(request.getParameter((String)key));
-            }
-        }
-        if (this.dataverseType == null && getVDCRequestBean().getCurrentVDC().getDtype() != null) {
-            this.setDataverseType(getVDCRequestBean().getCurrentVDC().getDtype());
-        }
-        if ( (this.dataverseType == null || this.dataverseType.equals("Scholar")) ) {
-                //set the default values for the fields
-                VDC scholardataverse = (VDC)vdcService.findScholarDataverseByAlias(vdc.getAlias());
-                setDataverseType("Scholar");
-                setFirstName(scholardataverse.getFirstName());
-                setLastName(scholardataverse.getLastName());
-                HtmlInputText affiliationText = new HtmlInputText();
-                affiliationText.setValue(scholardataverse.getAffiliation());
-                setAffiliation(affiliationText);
-                HtmlInputText nameText = new HtmlInputText();
-                nameText.setValue(scholardataverse.getName());
-                setDataverseName(nameText);
-                HtmlInputText aliasText = new HtmlInputText();
-                aliasText.setValue(scholardataverse.getAlias());
-                HtmlInputTextarea descriptionText = new HtmlInputTextarea();
-                descriptionText.setValue(scholardataverse.getDescription());
-                setShortDescription(descriptionText);
-            } else if (!this.dataverseType.equals("Scholar")) {
-                setDataverseType("Basic");
-                HtmlInputText nameText = new HtmlInputText();
-                nameText.setValue(vdc.getName());
-                setDataverseName(nameText);
-                HtmlInputText affiliationText = new HtmlInputText();
-                affiliationText.setValue(vdc.getAffiliation());
-                setAffiliation(affiliationText);
-                HtmlInputText aliasText = new HtmlInputText();
-                aliasText.setValue(vdc.getAlias());
-                HtmlInputTextarea descriptionText = new HtmlInputTextarea();
-                descriptionText.setValue(vdc.getDvnDescription());
-                setShortDescription(descriptionText);
-            }
-            // initialize the select
-           for (ClassificationUI classUI: classificationList.getClassificationUIs()) {
-                if (classUI.getVdcGroup().getVdcs().contains(vdc)) {
-                    classUI.setSelected(true);
-                }
-           }            
-        }
+
            
         //Edit Lockss settings
         Long lockssConfigId = null;
@@ -445,9 +316,160 @@ public class OptionsPage extends VDCBaseBean  implements java.io.Serializable {
             //all user page
             //initUserData(); -- moved to click event on the tab
             
-        }        
+        }  
+                System.out.print("init selected tab" + new Date());
         initSelectedTabIndex();
+                System.out.print("End" + new Date());
         //end init
+        
+    }
+    
+    public void initTemplates() {
+        if (getVDCRequestBean().getCurrentVDC() != null) {
+            templateList = templateService.getEnabledNetworkTemplates();
+            templateList.addAll(templateService.getVDCTemplates(getVDCRequestBean().getCurrentVDCId()));
+            defaultTemplateId = getVDCRequestBean().getCurrentVDC().getDefaultTemplate().getId();
+        } else {
+            templateList = templateService.getNetworkTemplates();
+            defaultTemplateId = getVDCRequestBean().getVdcNetwork().getDefaultTemplate().getId();
+        }
+
+        // whether a template is being used determines if it can be removed or not (initialized here, so the page doesn't call thew service bean multiple times)
+        for (Template template : templateList) {
+            if (templateService.isTemplateUsed(template.getId())) {
+                templateInUseList.add(template.getId());
+            }
+            if (templateService.isTemplateUsedAsVDCDefault(template.getId())) {
+                templateinsUseAsVDCDefaultList.add(template.getId());
+            }
+        }
+    }
+    
+    public void initDVTerms(){       
+            depositTermsOfUse = getVDCRequestBean().getCurrentVDC().getDepositTermsOfUse();
+            depositTermsOfUseEnabled = getVDCRequestBean().getCurrentVDC().isDepositTermsOfUseEnabled();
+            downloadTermsOfUse = getVDCRequestBean().getCurrentVDC().getDownloadTermsOfUse();
+            downloadTermsOfUseEnabled = getVDCRequestBean().getCurrentVDC().isDownloadTermsOfUseEnabled();       
+    }
+    
+    public void initDVGeneralSettings(){   
+        if (vdc.isRestricted()) {
+                siteRestriction = "Restricted";
+            } else {
+                siteRestriction = "Public";
+        }
+        //edit site page  
+        if (getVDCRequestBean().getCurrentVDC() != null) {
+                    HttpServletRequest request = (HttpServletRequest)FacesContext.getCurrentInstance().getExternalContext().getRequest();
+                    Iterator iterator = request.getParameterMap().keySet().iterator();
+        while (iterator.hasNext()) {
+            Object key = (Object) iterator.next();
+            if ( key instanceof String && ((String) key).indexOf("dataverseType") != -1 && !request.getParameter((String)key).equals("")) {
+                this.setDataverseType(request.getParameter((String)key));
+            }
+        }
+
+        if (this.dataverseType == null && getVDCRequestBean().getCurrentVDC().getDtype() != null) {
+            this.setDataverseType(getVDCRequestBean().getCurrentVDC().getDtype());
+        }
+        if ( (this.dataverseType == null || this.dataverseType.equals("Scholar")) ) {
+                //set the default values for the fields
+                VDC scholardataverse = (VDC)vdcService.findScholarDataverseByAlias(vdc.getAlias());
+                setDataverseType("Scholar");
+                setFirstName(scholardataverse.getFirstName());
+                setLastName(scholardataverse.getLastName());
+                HtmlInputText affiliationText = new HtmlInputText();
+                affiliationText.setValue(scholardataverse.getAffiliation());
+                setAffiliation(affiliationText);
+                HtmlInputText nameText = new HtmlInputText();
+                nameText.setValue(scholardataverse.getName());
+                setDataverseName(nameText);
+                HtmlInputText aliasText = new HtmlInputText();
+                aliasText.setValue(scholardataverse.getAlias());
+                HtmlInputTextarea descriptionText = new HtmlInputTextarea();
+                descriptionText.setValue(scholardataverse.getDescription());
+                setShortDescription(descriptionText);
+            } else if (!this.dataverseType.equals("Scholar")) {
+                setDataverseType("Basic");
+                HtmlInputText nameText = new HtmlInputText();
+                nameText.setValue(getVDCRequestBean().getCurrentVDC().getName());
+                setDataverseName(nameText);
+                HtmlInputText affiliationText = new HtmlInputText();
+                affiliationText.setValue(getVDCRequestBean().getCurrentVDC().getAffiliation());
+                setAffiliation(affiliationText);
+                HtmlInputText aliasText = new HtmlInputText();
+                aliasText.setValue(getVDCRequestBean().getCurrentVDC().getAlias());
+                HtmlInputTextarea descriptionText = new HtmlInputTextarea();
+                descriptionText.setValue(getVDCRequestBean().getCurrentVDC().getDvnDescription());
+                setShortDescription(descriptionText);
+            }
+            // initialize the select
+           for (ClassificationUI classUI: classificationList.getClassificationUIs()) {
+                if (classUI.getVdcGroup().getVdcs().contains(getVDCRequestBean().getCurrentVDC())) {
+                    classUI.setSelected(true);
+                }
+           }            
+        } 
+        
+    }
+    
+    public void initGuestbookQuestionnaire() {
+                  //guestbook questionnaire
+            guestBookQuestionnaire = getVDCRequestBean().getCurrentVDC().getGuestBookQuestionnaire();
+            newQuestion = new CustomQuestion();
+            newQuestion.setCustomQuestionValues(new ArrayList());
+            if (guestBookQuestionnaire == null) { // set up default guest book questionnaire
+                guestBookQuestionnaire = new GuestBookQuestionnaire();
+                guestBookQuestionnaire.setEnabled(false);
+                guestBookQuestionnaire.setEmailRequired(true);
+                guestBookQuestionnaire.setFirstNameRequired(true);
+                guestBookQuestionnaire.setLastNameRequired(true);
+                guestBookQuestionnaire.setPositionRequired(true);
+                guestBookQuestionnaire.setInstitutionRequired(true);
+                guestBookQuestionnaire.setVdc(vdc);
+                guestBookQuestionnaire.setCustomQuestions(new ArrayList());
+                vdc.setGuestBookQuestionnaire(guestBookQuestionnaire);
+            } else {
+                if (guestBookQuestionnaire.getCustomQuestions() == null) {
+                    guestBookQuestionnaire.setCustomQuestions(new ArrayList());
+                } else {
+                    for (CustomQuestion customQuestion : guestBookQuestionnaire.getCustomQuestions()) {
+                        if (!customQuestion.isHidden()) {
+                            CustomQuestionUI customQuestionUI = new CustomQuestionUI();
+                            customQuestionUI.setCustomQuestion(customQuestion);
+                            customQuestionUI.setEditMode(false);
+                            customQuestions.add(customQuestionUI);
+                        }
+                    }
+                }
+            }
+            newQuestion.setGuestBookQuestionnaire(guestBookQuestionnaire);
+            questionTypeSelectItems = loadQuestionTypeSelectItems();
+    }
+    
+    
+    public void initDVPrivilegedUsers(){
+         
+            vdcId = getVDCRequestBean().getCurrentVDC().getId();
+            editVDCPrivileges.setVdc(vdcId);
+            vdc = editVDCPrivileges.getVdc();
+            if (vdc.isRestricted()) {
+                siteRestriction = "Restricted";
+            } else {
+                siteRestriction = "Public";
+            }
+            initContributorSetting();
+            initUserName();
+            vdcRoleList = new ArrayList<RoleListItem>();
+
+            // Add empty VDCRole to list, to allow user input of a new VDCRole
+            vdcRoleList.add(new RoleListItem(null, null));
+            // Add rest of items to the list from vdc object
+            for (VDCRole vdcRole : vdc.getVdcRoles()) {
+                vdcRoleList.add(new RoleListItem(vdcRole, vdcRole.getRoleId()));
+            }
+            setFilesRestricted(vdc.isFilesRestricted());
+            
     }
     
     private String tab;
@@ -489,19 +511,24 @@ public class OptionsPage extends VDCBaseBean  implements java.io.Serializable {
             } else if (tab.equals("collections")) {
                 selectedIndex=1;
             } else if (tab.equals("templates")) {
+                initTemplates();
                 selectedIndex=2;
             } else if (tab.equals("permissions")) {
                 selectedIndex=3;
                 dvPermissionsSubTab.setSelectedIndex(0);
+                initDVPrivilegedUsers();
                 if (tab2 != null && tab2.equals("tou")){
+                   initDVTerms();
                    dvPermissionsSubTab.setSelectedIndex(1); 
                 }
                 if (tab2 != null && tab2.equals("guestbook")){
+                    initGuestbookQuestionnaire();
                    dvPermissionsSubTab.setSelectedIndex(2); 
                 }
             } else if (tab.equals("settings")) {
                 selectedIndex=4;
                 dvSettingsSubTab.setSelectedIndex(0); 
+                initDVGeneralSettings();
                 if (tab2 != null && tab2.equals("customization")){
                    dvSettingsSubTab.setSelectedIndex(2); 
                 }
@@ -520,6 +547,7 @@ public class OptionsPage extends VDCBaseBean  implements java.io.Serializable {
             } else if (tab.equals("classifications")) {
                 selectedIndex=2;
             } else if (tab.equals("templates")) {
+                initTemplates();
                 selectedIndex=3;
             } else if (tab.equals("vocabulary")){
                 initControlledVocabulary();

@@ -30,6 +30,21 @@
                     function initGuestBookResponses(){
                         document.getElementById('form1:initGuestBookResponse').click();
                     }
+                    function initTemplates(){
+                        document.getElementById('form1:initTemplates').click();
+                    }
+                    function initDVPrivilegedUsers(){
+                        document.getElementById('form1:initDVPrivilegedUsers').click();
+                    }
+                    function initDVTerms(){
+                        document.getElementById('form1:initDVTerms').click();
+                    }
+                    function initGuestbookQuestionnaire(){
+                        document.getElementById('form1:initGuestbookQuestionnaire').click();
+                    } 
+                    function initDVGeneralSettings(){
+                        document.getElementById('form1:initDVGeneralSettings').click();
+                    }
                     function initCheckDVTermsEnabled() {
                         jQuery('div.dvnTermsEnable input.iceSelBoolChkbx[type=checkbox]').each(function(){
                             if ( jQuery(this).is(':checked') ) {
@@ -42,6 +57,11 @@
                 // ]]>
             </script>
             <ice:commandButton visible="false" id="initGuestBookResponse" action="#{OptionsPage.initGuestBookResponses}"/>
+            <ice:commandButton visible="false" id="initTemplates" action="#{OptionsPage.initTemplates}"/>
+            <ice:commandButton visible="false" id="initDVPrivilegedUsers" action="#{OptionsPage.initDVPrivilegedUsers}"/>
+            <ice:commandButton visible="false" id="initDVTerms" action="#{OptionsPage.initDVTerms}"/>
+            <ice:commandButton visible="false" id="initGuestbookQuestionnaire" action="#{OptionsPage.initGuestbookQuestionnaire}"/>
+            <ice:commandButton visible="false" id="initDVGeneralSettings" action="#{OptionsPage.initDVGeneralSettings}"/>
                 <ice:inputHidden id="vdcId" value="#{VDCRequest.currentVDCId}"/>                    
                 <div class="dvn_section">
                     <ice:panelTabSet id="tabSet1"
@@ -62,14 +82,20 @@
                            <f:param name="tab" value="collections"/>
                         </ice:panelTab>
                         <!-- TEMPLATES OPTIONS -->
-                        <ice:panelTab id="templates" label="Templates" url="/dvn#{VDCRequest.currentVDCURL}/faces/admin/OptionsPage.xhtml?tab=templates" rendered="#{VDCSession.loginBean.networkAdmin or VDCSession.loginBean.curatorOrAbove or (not VDCRequest.currentVDC.harvestingDv and (VDCSession.loginBean.contributor or VDCRequest.currentVDC.allowRegisteredUsersToContribute))}">
+                        <ice:panelTab id="templates" label="Templates" url="/dvn#{VDCRequest.currentVDCURL}/faces/admin/OptionsPage.xhtml?tab=templates" 
+                                      onclick="initTemplates();"
+                                      rendered="#{VDCSession.loginBean.networkAdmin or VDCSession.loginBean.curatorOrAbove 
+                                                  or (not VDCRequest.currentVDC.harvestingDv and (VDCSession.loginBean.contributor 
+                                                  or VDCRequest.currentVDC.allowRegisteredUsersToContribute))}">
                             <div jsfc="ice:panelGroup" id="layoutPanel4" panelLayout="flow">
                                 <ui:include src="ManageTemplatesPage.xhtml"></ui:include>
                             </div>
                         </ice:panelTab>
                         <!-- PERMISSIONS OPTIONS -->
                         <ice:panelTab id="permissions" label="Permissions" url="/dvn#{VDCRequest.currentVDCURL}/faces/admin/OptionsPage.xhtml?tab=permissions" 
-                                      rendered="#{VDCSession.loginBean.networkAdmin or VDCSession.loginBean.curatorOrAbove or (not VDCRequest.currentVDC.harvestingDv and (VDCSession.loginBean.contributor or VDCRequest.currentVDC.allowRegisteredUsersToContribute))}">
+                                      onclick="initDVPrivilegedUsers();"
+                                      rendered="#{VDCSession.loginBean.networkAdmin or VDCSession.loginBean.curatorOrAbove or 
+                                                  (not VDCRequest.currentVDC.harvestingDv and (VDCSession.loginBean.contributor or VDCRequest.currentVDC.allowRegisteredUsersToContribute))}">
                             <div jsfc="ice:panelGroup" id="layoutPanel5" panelLayout="flow">
                                 <ice:panelTabSet id="tabSetPermissions" styleClass="dvnTabs dvnSubTabs" binding="#{OptionsPage.dvPermissionsSubTab}">
                                     <!-- PERMISSIONS -->
@@ -79,7 +105,7 @@
                                             </div>  
                                     </ice:panelTab>
                                     <!-- TERMS -->
-                                    <ice:panelTab id="termsSub" label="Terms">
+                                    <ice:panelTab id="termsSub" label="Terms"  onclick="initDVTerms();">
                                         <table class="dvnOptionsTable" cellspacing="0" cellpadding="0" border="0">
                                             <ui:include src="EditDepositUseTermsPage.xhtml"></ui:include>
                                             <ui:include src="EditUseTermsPage.xhtml"></ui:include>
@@ -92,7 +118,7 @@
                                         </div>
                                     </ice:panelTab>
                                     <!-- GUESTBOOK -->
-                                    <ice:panelTab id="guestbookSub" label="Guestbook">
+                                    <ice:panelTab id="guestbookSub" label="Guestbook"  onclick="initGuestbookQuestionnaire();">
                                         <div jsfc="ice:panelGroup">
                                             <div jsfc="ice:panelGroup"  panelLayout="flow">
                                                 <ui:include src="EditGuestbookQuestionnairePage.xhtml"></ui:include>
@@ -110,13 +136,16 @@
                             </div>
                         </ice:panelTab>
                         <!-- DATAVERSE OPTIONS -->
-                        <ice:panelTab id="settings" label="Settings" url="/dvn#{VDCRequest.currentVDCURL}/faces/admin/OptionsPage.xhtml?tab=settings" rendered="#{VDCSession.loginBean.networkAdmin or VDCSession.loginBean.admin}">
+                        <ice:panelTab id="settings" label="Settings" 
+                                      onclick="initDVGeneralSettings();"
+                                      url="/dvn#{VDCRequest.currentVDCURL}/faces/admin/OptionsPage.xhtml?tab=settings" 
+                                      rendered="#{VDCSession.loginBean.networkAdmin or VDCSession.loginBean.admin}">
                             <div jsfc="ice:panelGroup" id="layoutPanel1" panelLayout="flow">
                                 <!-- REMOVED CODE -->
                                 <div jsfc="ice:panelGroup">
                                     <ice:panelTabSet id="tabSet3" styleClass="dvnTabs dvnSubTabs" binding="#{OptionsPage.dvSettingsSubTab}">
                                         <!-- GENERAL -->
-                                        <ice:panelTab id="generalSub" label="General">
+                                        <ice:panelTab id="generalSub" label="General"    onclick="initDVGeneralSettings();">
                                             <div jsfc="ice:panelGroup" styleClass="dvnInformationMessage">
                                                 <div class="dvnMsgBlockContainer">
                                                   <ice:outputText value="#{bundlePageInfo.editDvSettingsHelp}" escape="false"/>

@@ -34,6 +34,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern; 
 
 import org.apache.commons.httpclient.HttpClient;
+import org.apache.commons.httpclient.MultiThreadedHttpConnectionManager;
 import org.apache.commons.httpclient.NameValuePair;
 import org.apache.commons.httpclient.methods.GetMethod; 
 import org.apache.commons.httpclient.methods.PostMethod; 
@@ -49,25 +50,39 @@ public class DvnTermsOfUseAccess {
     private static Logger dbgLog = Logger.getLogger(DvnTermsOfUseAccess.class.getPackage().getName());
 
     private HttpClient client = null;
-
+    private static String cachedJsessionID = null; 
+    private static int cachedJsessionTimestamp = 0; 
 
     
     /* Simple constructor:  */
     public DvnTermsOfUseAccess() {
     }
 
-    /* No recycling of HttpClients, for now; 
-       It's seriously inefficient, but helps eliminate
-       more potential problems during testing. */
 
     private HttpClient getClient() {
-	//if (client == null) {
-        //    client = new HttpClient( new MultiThreadedHttpConnectionManager() );
-        //}
-        //return client;
-        return new HttpClient();
+	if (client == null) {
+            client = new HttpClient( new MultiThreadedHttpConnectionManager() );
+        }
+        return client;
+        //return new HttpClient();
     }
 
+    public static String getCachedJsessionID () {
+        return cachedJsessionID; 
+    }
+    
+    public static void setCachedJsessionID (String jsessionid) {
+        cachedJsessionID = jsessionid; 
+    }
+    
+    public static int getCachedJsessionTimestamp () {
+        return cachedJsessionTimestamp; 
+    }
+    
+    public static void setCachedJsessionTimestamp (int timestamp) {
+        cachedJsessionTimestamp = timestamp; 
+    }
+    
     /* 
        The method below accepts the Terms Of Use agreement presented by a 
        remote DVN, follows all the redirects then returns the cookie
@@ -93,7 +108,22 @@ public class DvnTermsOfUseAccess {
 	    TOUgetMethod = new GetMethod ( TOUurl );
 	    if ( jsessionid != null ) {
 		TOUgetMethod.addRequestHeader("Cookie", "JSESSIONID=" + jsessionid ); 
-	    }
+	    } else {
+                // Do we have a cached jsessionid? 
+                if (cachedJsessionID != null) {
+                    // is it fresh? 
+                    int currentTime = (int)(System.currentTimeMillis()/1000);
+                    if (currentTime - cachedJsessionTimestamp < 3 * 3600) { // 3 hours lifespan
+                        
+                        TOUgetMethod.addRequestHeader("Cookie", "JSESSIONID=" + cachedJsessionID); 
+                    } else {
+                        cachedJsessionID = null; 
+                        cachedJsessionTimestamp = 0; 
+                    }
+                }
+            }
+            
+            
 	    if ( extraCookies != null ) {
 		TOUgetMethod.addRequestHeader("Cookie", extraCookies); 
 	    }
@@ -177,7 +207,7 @@ public class DvnTermsOfUseAccess {
 		    matcher = patternJsession.matcher(cookieHeader);
 		    if ( matcher.find() ) {
 			jsessionid = matcher.group(1); 
-			dbgLog.fine("TOU found jsessionid: "+jsessionid); 
+			dbgLog.fine("TOU - jsessionid issued (as a cookie): "+jsessionid); 
 		    }
 		}
 	    }
@@ -252,10 +282,10 @@ public class DvnTermsOfUseAccess {
 
 	    if ( jsessionid != null ) {
 		
-		// We seem to have been issued a new JSESSIONID; 
-		// or perhaps already had a JSESSIONID issued
-		// to us when we logged in.
-		// Now we can make the call agreeing to
+		// We have either been issued a new JSESSIONID.
+		// already had a JSESSIONID issued
+		// to us when we logged in. Either way we can 
+		// now make the final call agreeing to
 		// to the Terms of Use;
 		// it has to be a POST method: 
 

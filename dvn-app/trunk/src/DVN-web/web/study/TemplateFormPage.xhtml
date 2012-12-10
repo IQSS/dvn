@@ -356,7 +356,7 @@
                       <ice:selectOneMenu immediate="false"  partialSubmit="true" 
                                         value="#{TemplateFormPage.studyMap[sfc.author].templateField.fieldInputLevelString}"
                                         rendered ="#{TemplateFormPage.dataTableAuthors.rowIndex==0}">
-                            <f:selectItems value="#{TemplateFormPage.fieldInputLevelSelectItems}"/>
+                            <f:selectItems value="#{TemplateFormPage.displayAlwaysFieldInputLevelSelectItems}"/>
                             <f:attribute name="fieldName" value="authorName" />
                       </ice:selectOneMenu> 
                     </ice:column>
@@ -503,7 +503,7 @@
                   <ice:selectOneMenu immediate="false" partialSubmit="true" 
                                         value="#{TemplateFormPage.studyMap[sfc.productionDate].templateField.fieldInputLevelString}">
                             <f:attribute name="fieldName" value="productionDate" />
-                            <f:selectItems value="#{TemplateFormPage.fieldInputLevelSelectItems}"/>
+                            <f:selectItems value="#{TemplateFormPage.displayAlwaysFieldInputLevelSelectItems}"/>
                   </ice:selectOneMenu>
                 </ice:column>
               </ice:panelGrid>
@@ -815,7 +815,7 @@
                                         value="#{TemplateFormPage.studyMap[sfc.distributor].templateField.fieldInputLevelString}"
                                         rendered ="#{TemplateFormPage.dataTableDistributors.rowIndex==0}">
                             <f:attribute name="fieldName" value="distributorName" />
-                            <f:selectItems value="#{TemplateFormPage.fieldInputLevelSelectItems}"/>
+                            <f:selectItems value="#{TemplateFormPage.displayAlwaysFieldInputLevelSelectItems}"/>
                       </ice:selectOneMenu>
                     </ice:column>
                   </ice:dataTable>
@@ -912,7 +912,7 @@
                     <ice:selectOneMenu immediate="false" partialSubmit="true" 
                                         value="#{TemplateFormPage.studyMap[sfc.distributionDate].templateField.fieldInputLevelString}">
                            <f:attribute name="fieldName" value="distributionDate" />
-                           <f:selectItems value="#{TemplateFormPage.fieldInputLevelSelectItems}"/>
+                           <f:selectItems value="#{TemplateFormPage.displayAlwaysFieldInputLevelSelectItems}"/>
                     </ice:selectOneMenu>
                 </ice:column>
               </ice:panelGrid>

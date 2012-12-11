@@ -3164,7 +3164,7 @@ public class OptionsPage extends VDCBaseBean  implements java.io.Serializable {
         thisVdcNetwork.setNetworkPageFooter(footer);     
         vdcNetworkService.edit(thisVdcNetwork);
         getVDCRenderBean().getFlash().put("successMessage", "Successfully updated network customization.");
-        return "/networkAdmin/NetworkOptionsPage.xhtml?faces-redirect=true";
+        return "";
     }
     
     //DV Requirements

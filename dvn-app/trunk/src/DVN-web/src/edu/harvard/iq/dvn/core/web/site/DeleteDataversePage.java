@@ -99,7 +99,7 @@ public class DeleteDataversePage extends VDCBaseBean implements java.io.Serializ
         super.init();
 
         if ("manageDataverses".equals(from)) {
-            from = "/networkAdmin/NetworkOptionsPage?faces-redirect=true&tab=harvesting";
+            from = "/networkAdmin/NetworkOptionsPage?faces-redirect=true&tab=dataverses";
         } else if ("manageHarvesting".equals(from)){
             from = "/networkAdmin/NetworkOptionsPage?faces-redirect=true&tab=harvesting";
         } else {

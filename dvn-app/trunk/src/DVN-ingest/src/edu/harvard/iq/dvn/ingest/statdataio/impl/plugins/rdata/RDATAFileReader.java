@@ -46,6 +46,7 @@ import edu.harvard.iq.dvn.ingest.org.thedata.statdataio.*;
 import edu.harvard.iq.dvn.ingest.org.thedata.statdataio.spi.*;
 import edu.harvard.iq.dvn.ingest.org.thedata.statdataio.metadata.*;
 import edu.harvard.iq.dvn.ingest.org.thedata.statdataio.data.*;
+import edu.harvard.iq.dvn.ingest.statdataio.impl.plugins.util.CSVFileReader;
 import edu.harvard.iq.dvn.unf.*;
 import edu.harvard.iq.dvn.rserve.*;
 import org.apache.commons.io.FileUtils;
@@ -175,18 +176,6 @@ public class RDATAFileReader extends StatDataFileReader {
     else
       DSB_PORT = Integer.parseInt(System.getProperty("vdc.dsb.port"));
     
-    
-    /*
-    // If DSB properties are not configured, then make good guesses
-    if (DVN_TEMP_DIR == null)
-      DVN_TEMP_DIR = "/tmp/VDC";
-    
-    if (DSB_TEMP_DIR == null)
-      DSB_TEMP_DIR = String.format("%s/DSB");
-    
-    if (WEB_TEMP_DIR == null)
-      WEB_TEMP_DIR = String.format("%s/webtemp");
-    
     /*
      * Build the Rscripts to execute.
      * Potentially this can be improved by keeping the script file as a separate
@@ -278,17 +267,82 @@ public class RDATAFileReader extends StatDataFileReader {
     mRWorkspace.stream(stream);
     mRWorkspace.create();
     mRWorkspace.saveRdataFile();
+    mRWorkspace.saveCsvFile();
     
+    // Copy CSV file to a local, temporary directory
+    File localCsvFile = copyBackCsvFile(mRWorkspace.mCsvDataFile);
+    
+    CSVFileReader csvFileReader = new CSVFileReader('\t');
+    BufferedReader localBufferedReader = new BufferedReader(new InputStreamReader(new FileInputStream(localCsvFile)));
+    
+    // int lineCount = csvFileReader.read(localBufferedReader, smd, null);
+    File tabFiledestination = File.createTempFile("data-", ".tab");
+    PrintWriter tabFileWriter = new PrintWriter(tabFiledestination.getAbsolutePath());
+
+        
     // Get basic information about data set
     putFileInformation();
     
+    // Use CSVFileReader
+    int lineCount = csvFileReader.read(localBufferedReader, smd, tabFileWriter);
+
     // Create a data table in local memory
-    createDataTable();
+    // createDataTable();
     
     // Destroy R workspace
-    // mRWorkspace.destroy();
+    mRWorkspace.destroy();
     
     return null;
+  }
+  /**
+   * Copy Remote File on R-server to a Local Target
+   * @param target
+   * @return 
+   */
+  private File copyBackCsvFile (File target) {
+    File destination;
+    FileOutputStream csvDestinationStream;
+    
+    try {
+      destination = File.createTempFile("data", ".csv");
+      LOG.info(String.format("RDATAFileReader: Writing local CSV File to `%s`", destination.getAbsolutePath()));
+      csvDestinationStream = new FileOutputStream(destination);
+    }
+    catch (IOException ex) {
+      LOG.warning("RDATAFileReader: Could not create temporary file!");
+      return null;
+    }
+    
+    try {
+      // Open connection to R-serve
+      RConnection rServeConnection = new RConnection(RSERVE_HOST, RSERVE_PORT);
+      rServeConnection.login(RSERVE_USER, RSERVE_PASSWORD);
+      
+      // Open file for reading from R-serve
+      RFileInputStream rServeInputStream = rServeConnection.openFile(target.getAbsolutePath());
+      
+      // Buffer char
+      int b;
+      
+      LOG.info("RDATAFileReader: Beginning to write to local destination file");
+      
+      // Read from stream one character at a time
+      while ((b = rServeInputStream.read()) != -1) {
+        csvDestinationStream.write(b);
+      }
+      
+      LOG.info(String.format("RDATAFileReader: Finished writing to destination at `%s`", target.getAbsolutePath()));
+      
+      LOG.info("RDATAFileReader: Closing CSVFileReader R Connection");
+      rServeConnection.close();
+    }
+    /*
+     * TO DO: Make this error catching more intelligent
+     */
+    catch (Exception ex) {
+    }
+    
+    return destination;
   }
   /**
    * Create Data Table
@@ -367,7 +421,7 @@ public class RDATAFileReader extends StatDataFileReader {
             .append(String.format("load(\"%s\")\n", mRWorkspace.getRdataAbsolutePath()))
             .append(String.format("setwd(\"%s\")\n", parentDirectory))
             .append(RSCRIPT_GET_DATASET)
-            .append(String.format("write.table(data.set, \"%s\", row.names=F, col.names=F, na=\"\", sep=\",\")\n", tabFile.getAbsolutePath()))
+            .append(String.format("write.table(data.set, \"%s\", row.names=F, col.names=F, na=\"\", sep=\"\t\", eol=\"\r\n\")\n", tabFile.getAbsolutePath()))
             .append(RSCRIPT_DATASET_INFO_SCRIPT)
             .toString();
     
@@ -425,7 +479,7 @@ public class RDATAFileReader extends StatDataFileReader {
    */
   private class RWorkspace {
     public String mParent, mWeb, mDvn, mDsb;
-    public File mDataFile;
+    public File mDataFile, mCsvDataFile;
     public RRequest mRRequest;
     public BufferedInputStream mInStream;
     /**
@@ -434,6 +488,7 @@ public class RDATAFileReader extends StatDataFileReader {
     public RWorkspace () {
       mParent = mWeb = mDvn = mDsb = "";
       mDataFile = null;
+      mCsvDataFile = null;
       mInStream = null;
     }
     /**
@@ -615,6 +670,23 @@ public class RDATAFileReader extends StatDataFileReader {
       }
       
       return mDataFile;
+    }
+    private File saveCsvFile () {
+      mCsvDataFile = new File(mRWorkspace.getRdataFile().getParent(), "data.csv");
+      
+      String csvScript = new StringBuilder("")
+        .append(String.format("load(\"%s\")\n", mRWorkspace.getRdataAbsolutePath()))
+        .append(RSCRIPT_GET_DATASET)
+        .append("\n")
+        .append(String.format("write.table(data.set, file=\"%s\", na=\"\", sep=\",\", eol=\"\r\n\", quote=TRUE, row.names=FALSE, col.names=FALSE)", mCsvDataFile.getAbsolutePath()))
+        .toString();
+    
+      RRequest csvRequest = mRequestBuilder.build();
+      
+      LOG.info(String.format("RDATAFileReader: Attempting to write table to `%s`", mCsvDataFile.getAbsolutePath()));
+      csvRequest.script(csvScript).eval();
+
+      return mCsvDataFile;
     }
     /**
      * Return Rdata File Handle on R Server

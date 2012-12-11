@@ -60,7 +60,7 @@
                     <div id="dvn_mainSection">
                         <div class="dvhmpgdescactionboxblock">
                             <div class="dvhmpgactionboxfloat">
-                                <div jsfc="ice:panelGroup" id="createDataverse" styleClass="dvhmpgactionbox" rendered="#{VDCRequest.vdcNetwork.allowCreateRequest}">
+                                <div jsfc="ice:panelGroup" id="createDataverse" styleClass="dvhmpgactionbox" rendered="#{VDCRequest.vdcNetwork.allowCreateRequest and !VDCRequest.readOnlyDatabase}">
                                     <div jsfc="ice:panelGroup">
                                         <div>
                                             <ice:outputText value="Create a Dataverse"/>

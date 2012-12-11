@@ -31,6 +31,7 @@ import edu.harvard.iq.dvn.core.util.PropertyUtil;
 import edu.harvard.iq.dvn.core.util.StringUtil;
 import edu.harvard.iq.dvn.core.vdc.VDC;
 import edu.harvard.iq.dvn.core.vdc.VDCNetwork;
+import edu.harvard.iq.dvn.core.vdc.VDCNetworkServiceLocal;
 import edu.harvard.iq.dvn.core.web.StudyListing;
 import javax.ejb.EJB;
 import javax.faces.bean.ViewScoped;
@@ -55,6 +56,7 @@ import javax.servlet.http.HttpSession;
 public class VDCRequestBean extends VDCBaseBean implements java.io.Serializable  {
     @EJB PageDefServiceLocal pageDefService;
     @EJB LockssAuthServiceLocal lockssAuthService;
+    @EJB VDCNetworkServiceLocal networkService;
    
     /** 
      * <p>Construct a new request data bean instance.</p>
@@ -196,7 +198,7 @@ public class VDCRequestBean extends VDCBaseBean implements java.io.Serializable 
     private Boolean readOnlyDatabase = null;
     
     public boolean isReadOnlyDatabase() {
-            if (getVdcNetwork().isReadonly()) {
+            if (networkService.defaultTransactionReadOnly()) {
                 readOnlyDatabase = Boolean.TRUE;
             } else {
                 readOnlyDatabase = Boolean.FALSE;

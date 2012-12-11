@@ -112,8 +112,7 @@
                 <div jsfc="ice:panelGroup" styleClass="dvnWarningMessage dvnReadOnlyBlock" rendered="#{!empty VDCRequest.vdcNetwork.statusNotice }">
                      <div class="dvnMsgBlockContainer">
                        <p>
-                           <ice:outputText id="statusNotice" value="#{VDCRequest.vdcNetwork.statusNotice}" escape="false" rendered="#{!VDCRequest.vdcNetwork.readonly}"/>
-                           <ice:outputText id="readOnlyStatusNotice" value="#{VDCRequest.vdcNetwork.statusNotice}" escape="false" rendered="#{VDCRequest.vdcNetwork.readonly}"/>
+                           <ice:outputText id="statusNotice" value="#{VDCRequest.vdcNetwork.statusNotice}" escape="false" />
                        </p>
                     </div>
                 </div>

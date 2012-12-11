@@ -133,6 +133,15 @@ public class VDCNetworkServiceBean implements VDCNetworkServiceLocal {
         }
         return termsOfUse;
    }     
+   
+    public Boolean defaultTransactionReadOnly() {
+        Object object = em.createNativeQuery("SHOW default_transaction_read_only ").getSingleResult();
+        if (object.equals("on")) {
+            return Boolean.TRUE;
+        } else {
+            return Boolean.FALSE;
+        }
+    }
     
     private void removeExportTimer() {
         dvnTimerService.removeExportTimer();

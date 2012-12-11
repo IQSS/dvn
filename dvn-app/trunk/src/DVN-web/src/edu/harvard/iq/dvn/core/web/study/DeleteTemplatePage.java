@@ -105,7 +105,7 @@ public class DeleteTemplatePage extends VDCBaseBean implements java.io.Serializa
         if (getVDCRequestBean().getCurrentVDC() != null) {
             return "/admin/OptionsPage?faces-redirect=true" + getNavigationVDCSuffix();
         } else {
-            return "/networkAdmin/NetworkOptionsPage.xhtml?faces-redirect=true";
+            return "/networkAdmin/NetworkOptionsPage.xhtml?faces-redirect=true&tab=templates";
         } 
     }
     
@@ -115,7 +115,7 @@ public class DeleteTemplatePage extends VDCBaseBean implements java.io.Serializa
         if (getVDCRequestBean().getCurrentVDC() != null) {
             return "/admin/OptionsPage?faces-redirect=true" + getNavigationVDCSuffix();
         } else {
-            return "/networkAdmin/NetworkOptionsPage.xhtml?faces-redirect=true";
+            return "/networkAdmin/NetworkOptionsPage.xhtml?faces-redirect=true&tab=templates";
         } 
     }
 

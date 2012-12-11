@@ -33,7 +33,7 @@
                         </td>
                         <td class="dvnPermissionsStackedCells">
                           <ice:outputText id="outputText7" value="Username (or Last Name): "/>
-                          <ice:inputText onkeypress="if (window.event) return processEvent('', 'addUserbutton'); else return processEvent(event, 'addUserbutton');" id="textField1" value="#{OptionsPage.userName}"/>
+                          <ice:inputText  id="textField1" value="#{OptionsPage.userName}" actionListener="#{OptionsPage.searchForPrivilegedUsers}"/>
                           <ice:commandButton id="addUserButton" value="Find" actionListener="#{OptionsPage.searchForPrivilegedUsers}"/>
                           <ice:outputText styleClass="errorMessage" value="User not found." rendered="#{OptionsPage.privilegedUserNotFound}"/>
                           <br/>

@@ -77,7 +77,7 @@
                                     <ice:column>
                                         <ice:outputText styleClass="dvn_totalsLabel" value="Total Downloads: "/>
                                         <ice:outputText styleClass="dvn_totalsValue" value="#{studyPage.studyUI.downloadCount}"/>
-                                        <ice:outputText styleClass="dvn_totalsLabel" value="Downloads of Files in this Version: " rendered="#{studyPage.studyUI.downloadCount != studyPage.studyUI.versionDownloadCount}"/>
+                                        <ice:outputText styleClass="dvn_totalsLabel dvn_indent" value="Downloads of Files in This Version: " rendered="#{studyPage.studyUI.downloadCount != studyPage.studyUI.versionDownloadCount}"/>
                                         <ice:outputText styleClass="dvn_totalsValue" value="#{studyPage.studyUI.versionDownloadCount}" rendered ="#{studyPage.studyUI.downloadCount != studyPage.studyUI.versionDownloadCount}"/>
                                     </ice:column>
                                 </ice:panelGrid>

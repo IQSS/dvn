@@ -98,6 +98,30 @@ public class AdvSearchPage extends VDCBaseBean implements java.io.Serializable {
     private boolean collectionsIncluded;
     private boolean variableSearch;
     private List <SearchTerm>  variableInfoList = new ArrayList();
+    
+    // 3.3: 
+    // We are no longer using the hard-coded list of "advanced search fields" 
+    // (i.e., the fields that appear in the pulldown menu on the AdvancedSearch 
+    // page); instead we retrieve the list from the StudyField database table. 
+    // However, at this point some extra processing of that list is required: 
+    // some field names need to be changed, because the names of the 
+    // corresponding Lucene indexes do not match. 
+    // So for these we still have to maintain the following hard-coded map.
+    // 
+    // We are planning to clean this up, possibly as early as in 3.4, by 
+    // introducing another database table that would keep this mapping, 
+    // between the metadata fields and the Lucene indexes. 
+    // -L.A. 
+    
+    private static Map<String, String> StudyFields2Indexes = new HashMap<String,String>(); 
+    static {
+        StudyFields2Indexes.put("description", "abstractText");
+        StudyFields2Indexes.put("studyId", "globalId");
+        StudyFields2Indexes.put("publicationCitation", "relatedPublications");
+        StudyFields2Indexes.put("publicationReplicationData", "replicationFor");
+
+    }
+    
   
     public boolean isVariableSearch() {
         return variableSearch;
@@ -592,7 +616,21 @@ public class AdvSearchPage extends VDCBaseBean implements java.io.Serializable {
                 }
             }
             
-            advSearchFieldMap.put(advS[i++], elem.getName());
+        
+            String sfname = elem.getName();
+            
+            // And one final post-processing step is required on the name of
+            // the field too: 
+            // (see the comment above, where StudyFields2Indexes map is defined)
+            // -L.A.
+            
+            if (sfname != null) {
+                if (StudyFields2Indexes.get(sfname) != null) {
+                    sfname = StudyFields2Indexes.get(sfname);
+                }              
+            }        
+            
+            advSearchFieldMap.put(advS[i++], sfname);
 
         }
         return advS;

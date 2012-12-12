@@ -51,28 +51,6 @@ public class StudyFieldServiceBean implements StudyFieldServiceLocal, java.io.Se
     private static final String ID_QUERY = "SELECT sf from StudyField sf where id = :fieldId";
     
     private static String[] advancedSearchFields = {"title", "authorName", "globalId", "otherId", "abstractText", "keywordValue", "keywordVocabulary", "topicClassValue", "topicClassVocabulary", "producerName", "distributorName", "fundingAgency", "productionDate", "distributionDate", "dateOfDeposit", "timePeriodCoveredStart", "timePeriodCoveredEnd", "country", "geographicCoverage", "geographicUnit", "universe", "kindOfData", "extnFld4"};
-    // 3.3: 
-    // We are no longer using the hard-coded list of "advanced search fields" 
-    // (i.e., the fields that appear in the pulldown menu on the AdvancedSearch 
-    // page); instead we retrieve the list from the StudyField database table. 
-    // However, at this point some extra processing of that list is required: 
-    // some field names need to be changed, because the names of the 
-    // corresponding Lucene indexes do not match. 
-    // So for these we still have to maintain the following hard-coded map.
-    // 
-    // We are planning to clean this up, possibly as early as in 3.4, by 
-    // introducing another database table that would keep this mapping, 
-    // between the metadata fields and the Lucene indexes. 
-    // -L.A. 
-    
-    private static Map<String, String> StudyFields2Indexes = new HashMap<String,String>(); 
-    static {
-        StudyFields2Indexes.put("description", "abstractText");
-        StudyFields2Indexes.put("studyId", "globalId");
-        StudyFields2Indexes.put("publicationCitation", "relatedPublications");
-        StudyFields2Indexes.put("publicationReplicationData", "replicationFor");
-
-    }
     
     private static List<StudyField> advancedStudyFields = null; 
 
@@ -97,21 +75,6 @@ public class StudyFieldServiceBean implements StudyFieldServiceLocal, java.io.Se
 
     public List findAdvSearchDefault() {
         List <StudyField> studyFields = (List <StudyField>) em.createQuery("SELECT sf from StudyField sf where sf.advancedSearchField = true ORDER by sf.id").getResultList();
-        
-        // Some post-processing is required: 
-        // (see the comment above, where StudyFields2Indexes map is defined)
-        // -L.A.
-        
-        for (int i = 0; i < studyFields.size(); i++) {
-            String sfname = studyFields.get(i) != null ? studyFields.get(i).getName() : null;
-            
-            if (sfname != null) {
-                if (StudyFields2Indexes.get(sfname) != null) {
-                    studyFields.get(i).setName(StudyFields2Indexes.get(sfname));
-                }              
-            }
-        }
-        
         return studyFields;
         
         /* hard-coded defaults; used until 3.0: 

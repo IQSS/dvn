@@ -32,6 +32,7 @@ import java.util.logging.*;
 import java.text.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern; 
+import java.util.HashMap; 
 
 import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.MultiThreadedHttpConnectionManager;
@@ -50,9 +51,8 @@ public class DvnTermsOfUseAccess {
     private static Logger dbgLog = Logger.getLogger(DvnTermsOfUseAccess.class.getPackage().getName());
 
     private HttpClient client = null;
-    private static String cachedJsessionID = null; 
-    private static int cachedJsessionTimestamp = 0; 
-
+    private static HashMap<String, String> cachedJsessionIDs = new HashMap<String,String>(); 
+    private static HashMap<String, Integer> cachedJsessionTimestamps = new HashMap<String, Integer>(); 
     
     /* Simple constructor:  */
     public DvnTermsOfUseAccess() {
@@ -67,22 +67,30 @@ public class DvnTermsOfUseAccess {
         //return new HttpClient();
     }
 
-    public static String getCachedJsessionID () {
-        return cachedJsessionID; 
+    
+    public static String getCachedJsessionID (String hostName) {
+        if (cachedJsessionIDs.get(hostName) != null) {
+            int currentTime = (int)(System.currentTimeMillis()/1000);
+            if ((currentTime - (int)cachedJsessionTimestamps.get(hostName)) < 3 * 3600) {
+                return cachedJsessionIDs.get(hostName);
+            } else {
+                cachedJsessionIDs.put(hostName, null); 
+                cachedJsessionTimestamps.put(hostName, new Integer(0));
+            }
+        }
+        return null;
     }
     
-    public static void setCachedJsessionID (String jsessionid) {
-        cachedJsessionID = jsessionid; 
+    public static void setCachedJsessionID (String hostName, String jsessionid) {
+        cachedJsessionIDs.put(hostName, jsessionid);
+        cachedJsessionTimestamps.put(hostName, (Integer)(int)(System.currentTimeMillis()/1000));
+        
     }
     
-    public static int getCachedJsessionTimestamp () {
-        return cachedJsessionTimestamp; 
+    public static void resetCachedJsessionId (String hostName) {
+        cachedJsessionIDs.put(hostName, null);
+        cachedJsessionTimestamps.put(hostName, new Integer(0));
     }
-    
-    public static void setCachedJsessionTimestamp (int timestamp) {
-        cachedJsessionTimestamp = timestamp; 
-    }
-    
     /* 
        The method below accepts the Terms Of Use agreement presented by a 
        remote DVN, follows all the redirects then returns the cookie
@@ -102,24 +110,45 @@ public class DvnTermsOfUseAccess {
 	String compatibilityPrefix = ""; 
 	Boolean compatibilityMode = false; 
 
-	try { 
+        Matcher matcher = null; 
 
+        String remotehosturl = null; 
+        String remotehost = null;
+        String regexpRemoteHostURL = "(https*://[^/]*/)";
+        Pattern patternRemoteHostURL = Pattern.compile(regexpRemoteHostURL);
+        
+        if (downloadURL != null) {
+            matcher = patternRemoteHostURL.matcher(downloadURL);
+            if (matcher.find()) {
+                remotehosturl = matcher.group(1);
+                dbgLog.fine("TOU found remote url: " + remotehosturl);
+            }
+        }
+
+	try { 
 
 	    TOUgetMethod = new GetMethod ( TOUurl );
 	    if ( jsessionid != null ) {
 		TOUgetMethod.addRequestHeader("Cookie", "JSESSIONID=" + jsessionid ); 
 	    } else {
                 // Do we have a cached jsessionid? 
-                if (cachedJsessionID != null) {
-                    // is it fresh? 
-                    int currentTime = (int)(System.currentTimeMillis()/1000);
-                    if (currentTime - cachedJsessionTimestamp < 3 * 3600) { // 3 hours lifespan
+                String cachedJsessionID = null; 
+                
+                if (remotehosturl != null) {
+                    String regexpRemoteHost = "https*://([^/]*)/";
+                    Pattern patternRemoteHost = Pattern.compile(regexpRemoteHost);
+        
+                    matcher = patternRemoteHost.matcher(remotehosturl);
+                    if (matcher.find()) {
+                        remotehost = matcher.group(1);
+                    
+                        cachedJsessionID = getCachedJsessionID(remotehost);
+                        if (cachedJsessionID != null) { 
                         
-                        TOUgetMethod.addRequestHeader("Cookie", "JSESSIONID=" + cachedJsessionID); 
-                    } else {
-                        cachedJsessionID = null; 
-                        cachedJsessionTimestamp = 0; 
-                    }
+                            TOUgetMethod.addRequestHeader("Cookie", "JSESSIONID=" + cachedJsessionID); 
+                            jsessionid = cachedJsessionID;
+                        }
+                    } 
                 }
             }
             
@@ -133,8 +162,7 @@ public class DvnTermsOfUseAccess {
             String facesviewstate = null;
 	    String studyid        = null; 
 	    String remotefileid   = null; 
-	    String remotehost     = null; 
-
+	   
 	    String iceFacesUpdate = null; 
             
             /* 
@@ -153,8 +181,7 @@ public class DvnTermsOfUseAccess {
              */
 
 	    String regexpRemoteFileId = "(/FileDownload.*)";
-	    String regexpJsession = "JSESSIONID=([^;]*);"; 
-	    String regexpRemoteHost = "(http://[^/]*/)";
+	    String regexpJsession = "JSESSIONID=([^;]*);";
 
             /* old ice.session; no longer used in 3.0:
 	    String regexpIceSession = "session: \'([^\']*)\'";
@@ -181,7 +208,6 @@ public class DvnTermsOfUseAccess {
 
 	    Pattern patternJsession = Pattern.compile(regexpJsession); 
 	    Pattern patternRemoteFileId = Pattern.compile(regexpRemoteFileId); 
-	    Pattern patternRemoteHost = Pattern.compile(regexpRemoteHost); 
 
 	    Pattern patternIceSession = Pattern.compile(regexpIceSession); 
 	    Pattern patternIceViewState = Pattern.compile(regexpIceViewState);
@@ -189,8 +215,6 @@ public class DvnTermsOfUseAccess {
 	    Pattern patternStudyId = Pattern.compile(regexpStudyId); 
 	    Pattern patternOldStyleForm = Pattern.compile(regexpOldStyleForm); 
 			    
-
-	    Matcher matcher = null; 
 
 
 	    int status = getClient().executeMethod(TOUgetMethod);
@@ -208,6 +232,10 @@ public class DvnTermsOfUseAccess {
 		    if ( matcher.find() ) {
 			jsessionid = matcher.group(1); 
 			dbgLog.fine("TOU - jsessionid issued (as a cookie): "+jsessionid); 
+                        
+                        // TODO: 
+                        // Any scenarios where we would want to cache it here? 
+                        // -L.A.
 		    }
 		}
 	    }
@@ -226,18 +254,14 @@ public class DvnTermsOfUseAccess {
 		    remotefileid = matcher.group(1); 
 		    dbgLog.fine("TOU found remotefileid: "+remotefileid); 
 		}
-		matcher = patternRemoteHost.matcher(downloadURL);
-		if ( matcher.find() ) {
-		    remotehost = matcher.group(1); 
+		if ( remotehosturl != null ) { 
                     // The update URL, below, only works with IceFaces < 2.0, 
                     // i.e., only if the remote DVN is v2.*:
-		    //iceFacesUpdate = remotehost + "dvn/block/send-receive-updates";
+		    //iceFacesUpdate = remoteurl + "dvn/block/send-receive-updates";
                     // For IceFaces and DVN 3.*, the POST must be submitted to 
                     // the terms of use page itself:
                     // (needs to be verified -- L.A.)
-                    iceFacesUpdate = remotehost + "dvn/faces/study/TermsOfUsePage.xhtml";
-		    dbgLog.fine("TOU found remotehost: "+remotehost); 
-
+                    iceFacesUpdate = remotehosturl + "dvn/faces/study/TermsOfUsePage.xhtml";
 		}
 	    }
 
@@ -282,7 +306,8 @@ public class DvnTermsOfUseAccess {
 
 	    if ( jsessionid != null ) {
 		
-		// We have either been issued a new JSESSIONID.
+		// We have either been issued a new JSESSIONID, or had one
+                // cached for this host, or 
 		// already had a JSESSIONID issued
 		// to us when we logged in. Either way we can 
 		// now make the final call agreeing to

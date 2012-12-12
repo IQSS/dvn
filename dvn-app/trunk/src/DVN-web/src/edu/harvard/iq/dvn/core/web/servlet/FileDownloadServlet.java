@@ -813,6 +813,7 @@ public class FileDownloadServlet extends HttpServlet {
             method = new GetMethod(remoteFileUrl);
 
             String jsessionid = null;
+            String jsessionidAuth = null; 
             String remoteAuthHeader = null;
 
             String remoteAuthType = remoteAuthRequired(remoteHost);
@@ -831,7 +832,7 @@ public class FileDownloadServlet extends HttpServlet {
                 } else if (remoteAuthType.equals("dvn")) {
                     // Authenticate with the remote DVN:
 
-                    jsessionid = dvnRemoteAuth(remoteHost);
+                    jsessionidAuth = dvnRemoteAuth(remoteHost);
                 } else if (remoteAuthType.equals("icpsr")) {
                     method = null;
                     //remoteHost = "www.icpsr.umich.edu";
@@ -855,8 +856,12 @@ public class FileDownloadServlet extends HttpServlet {
                 }
             }
 
-            if (jsessionid != null) {
-                method.addRequestHeader("Cookie", "JSESSIONID=" + jsessionid);
+            if (jsessionidAuth != null) {
+                method.addRequestHeader("Cookie", "JSESSIONID=" + jsessionidAuth);
+            } else {
+                if (DvnTermsOfUseAccess.getCachedJsessionID(remoteHost) != null) {
+                    method.addRequestHeader("Cookie", "JSESSIONID=" + DvnTermsOfUseAccess.getCachedJsessionID(remoteHost));
+                }
             }
 
             // normally, the HTTP client follows redirects
@@ -911,14 +916,15 @@ public class FileDownloadServlet extends HttpServlet {
                     if (headerName.equals("Set-Cookie") ||
                         headerName.equals("Set-cookie")) {
                         String cookieHeader = method.getResponseHeaders()[i].getValue();
-                        dbgLog.fine("file download; [redirect] cookie header: "+cookieHeader);
+                        dbgLog.info("file download; [redirect] cookie header: "+cookieHeader);
                         Matcher cookieMatcher = patternCookie.matcher(cookieHeader);
                         String regexpJsession = "JSESSIONID=([^;]*);";
                         Pattern patternJsession = Pattern.compile (regexpJsession);
                         Matcher jsessionMatcher = patternJsession.matcher(cookieHeader);
-                        if ( (jsessionid == null || jsessionid.equals("")) && jsessionMatcher.find() ) {
+                        if ( (jsessionidAuth == null || jsessionidAuth.equals("")) && jsessionMatcher.find() ) {
                             jsessionid = jsessionMatcher.group(1);
-                            dbgLog.fine("file download; [redirect] extracted jsessionid: "+jsessionid);
+                            dbgLog.info("file download; [redirect] extracted jsessionid: "+jsessionid);
+                            DvnTermsOfUseAccess.setCachedJsessionID(remoteHost,jsessionid);
                         } else if ( cookieMatcher.find() ) {
                             extraCookies = cookieMatcher.group(1);
                         }
@@ -930,7 +936,7 @@ public class FileDownloadServlet extends HttpServlet {
 
                     // Accept the TOU agreement:
 
-                    method = remoteAccessTOU(redirectLocation, jsessionid, remoteFileUrl, extraCookies);
+                    method = remoteAccessTOU(redirectLocation, jsessionidAuth, remoteFileUrl, extraCookies);
 
                     // If everything has worked right
                     // we should be redirected to the final

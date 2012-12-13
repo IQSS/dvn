@@ -616,7 +616,8 @@ public class OptionsPage extends VDCBaseBean  implements java.io.Serializable {
         guestBookResponses.clear();
         guestBookResponsesDisplay.clear();
         columnHeadings.clear();
-        if (vdc !=null){
+        customQuestionIds.clear();
+        if (vdc !=null && vdc.getGuestBookQuestionnaire() != null){
             GuestBookQuestionnaire gbq = vdc.getGuestBookQuestionnaire();
             if (gbq.getCustomQuestions().size() > 0){
                 for (CustomQuestion cq : gbq.getCustomQuestions() ){

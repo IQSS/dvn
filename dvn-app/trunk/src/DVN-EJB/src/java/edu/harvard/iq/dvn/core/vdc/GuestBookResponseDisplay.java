@@ -77,7 +77,6 @@ public class GuestBookResponseDisplay {
         }        
         GuestBookResponse gbr = gbrServiceBean.findById(id);
         if (gbr.getCustomQuestionResponses() !=null && gbr.getCustomQuestionResponses().size() > 0) {
-            this.setGuestBookResponse(gbr);
             List<String> customQuestionResponseStrings = new ArrayList(customQuestionIds.size());
             for (int i = 0; i < gbr.getCustomQuestionResponses().size(); i++) {
                 customQuestionResponseStrings.add(i, "");

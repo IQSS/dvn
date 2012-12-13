@@ -155,19 +155,102 @@ span[id$=input_studyIdPrfxSync], span[id$=input_studyIdPrfx], input[id$=input_st
 <script type="text/javascript">
 // <![CDATA[
 jQuery(document).ready(function(){
+    dataCitationWidgetSync();
+});
+
+function dataCitationWidgetSync(){
+    // Sync author widget label/links
+    
+    jQuery('#dvnDataCitationWidgetBlockAuthor a.dvnDataCitationWidgetLabel').html(
+        jQuery('input.input_authorName').map(function(){
+              
+              var authorLinkVal = jQuery(this).val();
+              var allids = /\d+(?=\D*$)/.exec( jQuery(this).map(function() { return this.id; }).get() );
+              var authorLinkText = '<span id="authorNameSync' + allids + '">' + authorLinkVal + '</span>';
+              var authorLinkDefaultText = '<span id="authorNameSync' + allids + '">Author</span>';
+              
+              // var cloneinput = jQuery('#dvnDataCitationWidgetAuthorInputBlock div.dvnDataCitationWidgetAuthorInputWrap').first().clone();
+              
+              if (! authorLinkVal) {
+                  return authorLinkDefaultText;
+              } 
+              else {
+                  // jQuery('#dvnDataCitationWidgetAuthorInputBlock').append(cloneinput);
+                  return authorLinkText;
+              }
+              
+        }).get().join(', ')
+    );
+    
+    // Multiple author widget fields
+    
+    var authorInputs = jQuery('input.input_authorName').length;
+    
+    var widgetBind = function( inputField, spanField ) { 
+            return function() { 
+                    jQuery(inputField).val(jQuery(this).val()); 
+                    jQuery(spanField).text(jQuery(this).val());
+            }; 
+    }
+    
+    for ( i = 0; i < authorInputs; i++) {
+        
+        // clone widget author field
+        
+        var boba = jQuery('#dvnDataCitationWidgetAuthorInputBlock div.dvnDataCitationWidgetAuthorInputBoba');
+    
+        var trooper = jQuery(boba).clone(true);
+        
+        jQuery('#dvnDataCitationWidgetAuthorInputBlock').append(jQuery(trooper).attr({ id: 'input_authorNameSync' + i, class: 'dvnDataCitationWidgetAuthorInputClone' }).show());
+        
+        // sync cloned author fields
+        
+        jQuery('div[id=input_authorNameSync' + i + ']').children('input.input_authorNameSync').val(jQuery('input[id$=' + i + '\\:input_authorName]').val());
+        
+        // this works for 0
+        
+        
+        
+        // this works for 2
+
+        var input_authorName = 'input[id$=' + i + '\\:input_authorName]';
+        
+        var input_authorNameSync = 'div#input_authorNameSync' + i + ' input.input_authorNameSync';
+        
+        var span_authorName = 'span#authorNameSync' + i;
+        
+        jQuery(input_authorNameSync).bind("change input cut keyup paste", widgetBind(input_authorName, span_authorName) );       
+	jQuery(input_authorName).bind("change input cut keyup paste", widgetBind(input_authorNameSync, span_authorName) );
+        
+    };
+
+    // jQuery('#dvnDataCitationWidgetAuthorInputBlock div.dvnDataCitationWidgetAuthorInputWrap').first().remove();
+    
+    jQuery('#dvnDataCitationWidgetAuthorInputBlock div.dvnDataCitationWidgetAuthorInputBoba').hide();
+    
+    
+    
+    
+    // ^^^^^^^ AUTHOR ^^^^^^^
+    
+    
+    
+    // vvvvvvv EVERYTHING ELSE vvvvvv
+    
+    
     
     // Fill in widget fields
-    jQuery("input[id$=input_authorNameSync]").val(jQuery("input[id$=0\\:input_authorName]").val());
+    // jQuery("input[id$=input_authorNameSync]").val(jQuery("input[id$=0\\:input_authorName]").val());
     jQuery("input[id$=input_productionDateSync]").val(jQuery("input[id$=input_productionDate]").val());
     jQuery("input[id$=input_titleSync]").val(jQuery("input[id$=input_title]").val());
     jQuery("input[id$=input_studyIdSync]").val(jQuery("input[id$=input_studyId]").val());
     jQuery("input[id$=input_distributorNameSync]").val(jQuery("input[id$=input_distributorName]").val());
     
     // Sync widget label/links
-    var inputAuthorVal = jQuery('input[id$=0\\:input_authorName]').val();
-    if (inputAuthorVal !== '' ){
-        jQuery('#dvnDataCitationWidgetBlockAuthor a.dvnDataCitationWidgetLabel').text(inputAuthorVal);
-    };
+    //var inputAuthorVal = jQuery('input[id$=0\\:input_authorName]').val();
+    //if (inputAuthorVal !== '' ){
+        // jQuery('#dvnDataCitationWidgetBlockAuthor a.dvnDataCitationWidgetLabel').text(inputAuthorVal);
+    //};
     
     var inputDateVal = jQuery('input[id$=input_productionDate]').val();
     if (inputDateVal !== '' ){
@@ -188,7 +271,7 @@ jQuery(document).ready(function(){
     
     var inputDistributorVal = jQuery('input[id$=input_distributorName]').val();
     if (inputDistributorVal !== '' ){
-        jQuery('#dvnDataCitationWidgetBlockDistributor a.dvnDataCitationWidgetLabel').text(inputDistributorVal);
+        jQuery('#dvnDataCitationWidgetBlockDistributor a.dvnDataCitationWidgetLabel').text(inputDistributorVal).after(' Distributor');
     };
     
     // Open+Close Author
@@ -278,14 +361,14 @@ jQuery(document).ready(function(){
     });
     
     // Sync AUTHOR
-    jQuery("input[id$=input_authorNameSync]").bind("change input cut keyup paste", function() {
-        jQuery("input[id$=0\\:input_authorName]").val(jQuery(this).val());
-        jQuery('#dvnDataCitationWidgetBlockAuthor a.dvnDataCitationWidgetLabel').text(jQuery(this).val());
-    });
-    jQuery("input[id$=0\\:input_authorName]").bind("change input cut keyup paste", function() {
-        jQuery("input[id$=input_authorNameSync]").val(jQuery(this).val());
-        jQuery('#dvnDataCitationWidgetBlockAuthor a.dvnDataCitationWidgetLabel').text(jQuery(this).val());
-    });
+    // jQuery("input[id$=input_authorNameSync]").bind("change input cut keyup paste", function() {
+        // jQuery("input[id$=0\\:input_authorName]").val(jQuery(this).val());
+        // jQuery('#dvnDataCitationWidgetBlockAuthor a.dvnDataCitationWidgetLabel').text(jQuery(this).val());
+    // });
+    // jQuery("input[id$=0\\:input_authorName]").bind("change input cut keyup paste", function() {
+        // jQuery("input[id$=input_authorNameSync]").val(jQuery(this).val());
+        // jQuery('#dvnDataCitationWidgetBlockAuthor a.dvnDataCitationWidgetLabel').text(jQuery(this).val());
+    // });
     // Sync DATE
     jQuery("input[id$=input_productionDateSync]").bind("change input cut keyup paste", function() {
         jQuery("input[id$=input_productionDate]").val(jQuery(this).val());
@@ -322,21 +405,18 @@ jQuery(document).ready(function(){
         jQuery("input[id$=input_distributorNameSync]").val(jQuery(this).val());
         jQuery('#dvnDataCitationWidgetBlockDistributor a.dvnDataCitationWidgetLabel').text(jQuery(this).val());
     });
-    
-    
-    // How many authors?
-    
-    var clone = jQuery('div.dvnDataCitationWidgetAuthorSyncBlock').clone();
-    
-    var length = jQuery('input.input_authorName').length;
-    
-    for (x=0; x < length; x++) {  
-        jQuery(clone).before('#dvnDataCitationWidgetAuthorSyncEnd');
-    }
-});
+};
 
 function initAddAuthorSync(){
-    jQuery('#dvnDataCitationWidgetAuthorSyncBlock').clone().before('#dvnDataCitationWidgetAuthorSyncEnd');
+    // Let's do something about all these authors.
+    jQuery('#dvnDataCitationWidgetBlockAuthor a.dvnDataCitationWidgetLabel').append(', <span id="new"></span>');
+    jQuery('#dvnDataCitationWidgetAuthorInputBlock div.dvnDataCitationWidgetAuthorInputClone').remove();
+};
+
+function initRemoveAuthorSync(){
+    // TOO MANY AUTHORS!!!!
+    // jQuery('#dvnDataCitationWidgetBlockAuthor a.dvnDataCitationWidgetLabel').append(', <span id="new"></span>');
+    jQuery('#dvnDataCitationWidgetAuthorInputBlock div.dvnDataCitationWidgetAuthorInputClone').remove();
 };
 // ]]>
 </script>
@@ -366,11 +446,14 @@ function initAddAuthorSync(){
                                   <div class="dvnDataCitationWidgetInput">Click one of the links below for a data citation value, in order to enter that metadata.</div>
                                   <!-- Author -->
                                   <div id="dvnDataCitationWidgetAuthorInputBlock" class="dvnDataCitationWidgetInput">
+                                      <div class="dvnDataCitationWidgetAuthorInputBoba">
                                       <ice:outputText styleClass="dvnInlineHelpLabel dvnInlineHelpTip" value="Author #{editstudybundle.authorNameLabel}" title="#{editstudybundle.authorNameHelpHeading} - #{editstudybundle.authorNameHelp}"/>
-                                        <ice:inputText id="input_authorNameSync"
+                                        <ice:inputText 
+                                                       styleClass="input_authorNameSync"
                                                        size="45"
                                                        maxlength="255" />
                                         <ice:outputText styleClass="vdcEditStudyFormatExample" value="(LastName, FirstName)"/>
+                                      </div>
                                   </div>
                                   <!-- Date -->
                                   <div id="dvnDataCitationWidgetDateInputBlock" class="dvnDataCitationWidgetInput">
@@ -400,7 +483,7 @@ function initAddAuthorSync(){
                               <!-- Author -->
                                 <div id="dvnDataCitationWidgetBlockAuthor">
                                         [&nbsp;
-                                            <a href="#" class="dvnDataCitationWidgetLabel">Author</a>
+                                            <a href="#" class="dvnDataCitationWidgetLabel"></a>
                                         &nbsp;],
                                 </div>
                               <!-- End Author -->
@@ -805,8 +888,8 @@ function initAddAuthorSync(){
                             </div>
                           </ice:column>
                           <ice:column>
-                            <ice:commandButton image="/resources/images/icon_add.gif" actionListener="#{EditStudyPage.addRow}"/>
-                            <ice:commandButton rendered="#{EditStudyPage.dataTableAuthors.rowCount gt 1}" image="/resources/images/icon_remove.gif" actionListener="#{EditStudyPage.removeRow}" />
+                            <ice:commandButton id="add_authorbutton" image="/resources/images/icon_add.gif" actionListener="#{EditStudyPage.addRow}"/>
+                            <ice:commandButton id="remove_authorbutton" rendered="#{EditStudyPage.dataTableAuthors.rowCount gt 1}" image="/resources/images/icon_remove.gif" actionListener="#{EditStudyPage.removeRow}" />
                           </ice:column>
                         </ice:dataTable>
                       </ice:column>

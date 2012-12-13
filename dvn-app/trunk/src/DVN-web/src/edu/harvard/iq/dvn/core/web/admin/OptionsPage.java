@@ -1507,38 +1507,40 @@ public class OptionsPage extends VDCBaseBean  implements java.io.Serializable {
     private String writeCSVString() {
         String csvOutput = getColumnString() + "\n";
         String csvCol;
-        for (GuestBookResponseDisplay gbrd: guestBookResponsesDisplay){
-            csvCol = "";
-            if(gbrd.getGuestBookResponse().getVdcUser() != null){
-               csvCol += gbrd.getGuestBookResponse().getVdcUser().getUserName();
-            } else {
-               csvCol += "Anonymous - + " + gbrd.getGuestBookResponse().getSessionId();
-            }
-            csvCol += "," +getSafeCString(gbrd.getGuestBookResponse().getFirstname());
-            csvCol += "," + getSafeCString(gbrd.getGuestBookResponse().getLastname());   
-            csvCol += "," + getSafeCString(gbrd.getGuestBookResponse().getEmail());
-            csvCol += "," + getSafeCString(gbrd.getGuestBookResponse().getInstitution());
-            csvCol += "," + getSafeCString(gbrd.getGuestBookResponse().getPosition());
-            if (vdc==null){
-                csvCol += "," + getSafeCString(gbrd.getGuestBookResponse().getStudy().getOwner().getName());
-            }
-            csvCol += "," + getSafeCString(gbrd.getGuestBookResponse().getStudy().getGlobalId());
-            csvCol += "," + getSafeCString(gbrd.getGuestBookResponse().getStudy().getLatestVersion().getMetadata().getTitle());
-            csvCol += "," + getSafeCString(gbrd.getGuestBookResponse().getStudyFile().getFileName());
-            csvCol += "," + getSafeCString(gbrd.getGuestBookResponse().getResponseTime().toString());
-            csvCol += "," + getSafeCString(gbrd.getGuestBookResponse().getDownloadtype());
-            csvCol += "," + getSafeCString(gbrd.getGuestBookResponse().getSessionId());
-            if (!gbrd.getCustomQuestionResponses().isEmpty()){
-                for (String response: gbrd.getCustomQuestionResponses()){
-                    csvCol += "," + getSafeCString(response);
+        for (GuestBookResponseDisplay gbrd : guestBookResponsesDisplay) {
+            if (gbrd.getGuestBookResponse() != null) {
+                csvCol = "";
+                if (gbrd.getGuestBookResponse().getVdcUser() != null) {
+                    csvCol += gbrd.getGuestBookResponse().getVdcUser().getUserName();
+                } else {
+                    csvCol += "Anonymous - + " + gbrd.getGuestBookResponse().getSessionId();
                 }
+                csvCol += "," + getSafeCString(gbrd.getGuestBookResponse().getFirstname());
+                csvCol += "," + getSafeCString(gbrd.getGuestBookResponse().getLastname());
+                csvCol += "," + getSafeCString(gbrd.getGuestBookResponse().getEmail());
+                csvCol += "," + getSafeCString(gbrd.getGuestBookResponse().getInstitution());
+                csvCol += "," + getSafeCString(gbrd.getGuestBookResponse().getPosition());
+                if (vdc == null) {
+                    csvCol += "," + getSafeCString(gbrd.getGuestBookResponse().getStudy().getOwner().getName());
+                }
+                csvCol += "," + getSafeCString(gbrd.getGuestBookResponse().getStudy().getGlobalId());
+                csvCol += "," + getSafeCString(gbrd.getGuestBookResponse().getStudy().getLatestVersion().getMetadata().getTitle());
+                csvCol += "," + getSafeCString(gbrd.getGuestBookResponse().getStudyFile().getFileName());
+                csvCol += "," + getSafeCString(gbrd.getGuestBookResponse().getResponseTime().toString());
+                csvCol += "," + getSafeCString(gbrd.getGuestBookResponse().getDownloadtype());
+                csvCol += "," + getSafeCString(gbrd.getGuestBookResponse().getSessionId());
+                if (gbrd.getCustomQuestionResponses() !=null && !gbrd.getCustomQuestionResponses().isEmpty()) {
+                    for (String response : gbrd.getCustomQuestionResponses()) {
+                        csvCol += "," + getSafeCString(response);
+                    }
+                }
+                csvCol += "\n";
+                csvOutput = csvOutput + csvCol;
             }
-            csvCol += "\n";
-            csvOutput = csvOutput + csvCol;
         }
         return csvOutput;
     }
-    
+
     private String getSafeCString(String strIn){
         String retString = strIn;
         if (strIn == null){

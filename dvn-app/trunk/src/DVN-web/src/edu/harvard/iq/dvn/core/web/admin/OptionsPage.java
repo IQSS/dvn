@@ -63,6 +63,7 @@ import javax.inject.Named;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.servlet.http.HttpServletRequest;
+import org.apache.commons.io.input.NullInputStream;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.commons.validator.routines.InetAddressValidator;
@@ -1505,6 +1506,8 @@ public class OptionsPage extends VDCBaseBean  implements java.io.Serializable {
         return csvColumnString;
     }
     
+    
+    
     private String writeCSVString() {
         String csvOutput = getColumnString() + "\n";
         String csvCol;
@@ -1616,8 +1619,21 @@ public class OptionsPage extends VDCBaseBean  implements java.io.Serializable {
         public Date lastModified() {
             return file != null ? new Date(file.lastModified()) : null;
         }
+        
+        // TODO: WE ARE ADDING THIS CALL AS A WORKAROUND FOR AN ICEFACES ISSUE WHERE THE OPEN
+        // METHOD IS CALLED TWICE; THIS IS FIXED IN A MORE RECENT VERSION OF ICEFACES, SO WHEN WE
+        // UPGRADE WE WILL NEED TO REMOVE THIS WORKAROUND
+        boolean firstCall = true;        
 
         public InputStream open() throws IOException {
+            
+            if (firstCall) { // this is the first call to open(); we toggle the boolean and skip this time around
+                firstCall = false;
+                return new NullInputStream(0);
+            } else { // this is the second call top open(); we reset the boolean and let the call proceed
+                firstCall = true; 
+            } 
+            
             try {
                 file = File.createTempFile("downloadFile","tmp");
             } catch (IOException ioException){               

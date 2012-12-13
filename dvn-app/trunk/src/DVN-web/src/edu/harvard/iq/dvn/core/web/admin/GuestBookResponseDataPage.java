@@ -94,9 +94,9 @@ public class GuestBookResponseDataPage extends VDCBaseBean implements java.io.Se
                 }
             }
         }
-        if (!customQuestionIds.isEmpty()) {
+        /*if (!customQuestionIds.isEmpty()) {
             for (GuestBookResponse gbr : guestBookResponses) {
-                GuestBookResponseDisplay guestBookResponseDisplay = new GuestBookResponseDisplay();
+                GuestBookResponseDisplay guestBookResponseDisplay = new GuestBookResponseDisplay(new Long (1));
                 guestBookResponseDisplay.setGuestBookResponse(gbr);
                 List<String> customQuestionResponseStrings = new ArrayList(customQuestionIds.size());
                 for (int i=0; i<customQuestionIds.size(); i++){
@@ -117,13 +117,15 @@ public class GuestBookResponseDataPage extends VDCBaseBean implements java.io.Se
             }
         } else {
             for (GuestBookResponse gbr : guestBookResponses) {
-                GuestBookResponseDisplay guestBookResponseDisplay = new GuestBookResponseDisplay();
+                GuestBookResponseDisplay guestBookResponseDisplay = new GuestBookResponseDisplay(new Long (1));
                 guestBookResponseDisplay.setGuestBookResponse(gbr);
                 guestBookResponsesDisplay.add(guestBookResponseDisplay);
             }
             
         }
         writeCSVString();
+        * 
+        */
     }
     
     private String getColumnString() {

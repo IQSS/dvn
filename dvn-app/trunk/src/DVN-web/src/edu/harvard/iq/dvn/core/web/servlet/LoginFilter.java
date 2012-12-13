@@ -92,6 +92,7 @@ import javax.servlet.http.HttpSession;
 @EJB(name = "vdcService", beanInterface = edu.harvard.iq.dvn.core.vdc.VDCServiceLocal.class),
 @EJB(name = "vdcUserService", beanInterface = edu.harvard.iq.dvn.core.admin.UserServiceLocal.class),
 @EJB(name = "vdcNetworkService", beanInterface = edu.harvard.iq.dvn.core.vdc.VDCNetworkServiceLocal.class),
+@EJB(name = "guestBookResponseService", beanInterface = edu.harvard.iq.dvn.core.vdc.GuestBookResponseServiceBean.class),
 @EJB(name = "lockssAuth", beanInterface = edu.harvard.iq.dvn.core.admin.LockssAuthServiceLocal.class)
 })
 public class LoginFilter implements Filter {

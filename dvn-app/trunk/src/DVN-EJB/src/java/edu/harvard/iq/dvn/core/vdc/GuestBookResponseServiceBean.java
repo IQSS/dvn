@@ -48,20 +48,34 @@ public class GuestBookResponseServiceBean {
         return em.createQuery("select object(o) from GuestBookResponse as o order by o.responseTime desc").getResultList();
     }
     
-    public List<GuestBookResponse> findAllByVdc(Long vdcId) {
-        return em.createQuery("select object(o) from GuestBookResponse  o, Study s where o.study.id = s.id and s.owner.id = " + vdcId  +  " order by o.responseTime desc").getResultList();
+    public List<Long> findAllIds() {
+        return findAllIds(null);
+    }
+
+    public List<Long> findAllIds(Long vdcId) {
+        if (vdcId == null){
+           return em.createQuery("select o.id from GuestBookResponse as o order by o.responseTime desc").getResultList(); 
+        } 
+        return em.createQuery("select o.id from GuestBookResponse  o, Study s where o.study.id = s.id and s.owner.id = " + vdcId  +  " order by o.responseTime desc").getResultList();
+    }   
+    public List<Long> findAllIds30Days() {
+        return findAllIds30Days(null);
     }
     
-    public List<GuestBookResponse> findAllWithin30Days() {
+    public List<Long> findAllIds30Days(Long vdcId) {
         String beginTime;
         String endTime;
-
         Calendar cal = Calendar.getInstance();
         cal.add(Calendar.DAY_OF_YEAR, -30);
         beginTime = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(cal.getTime());  // Use yesterday as default value
         cal.add(Calendar.DAY_OF_YEAR, 31);
         endTime = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(cal.getTime());
-        String queryString = "select object(o) from GuestBookResponse as o where ";
+        String queryString = "select o.id from GuestBookResponse as o  ";
+        if (vdcId != null){
+             queryString += ", Study s where o.study.id = s.id and s.owner.id = " + vdcId + " and "  ;
+        } else {
+            queryString += " where ";
+        }
         queryString += " o.responseTime >='" + beginTime + "'";
         queryString += " and o.responseTime<='" + endTime + "'";
         queryString += "  order by o.responseTime desc";
@@ -69,20 +83,70 @@ public class GuestBookResponseServiceBean {
 
         return query.getResultList();
     }
-
-    public List<GuestBookResponse> findByVdcWithin30Days(Long vdcId) {
+    
+    public Long findCount30Days(){
+        return findCount30Days(null);
+    }
+    
+    public Long findCount30Days(Long vdcId) {
         String beginTime;
         String endTime;
-
         Calendar cal = Calendar.getInstance();
         cal.add(Calendar.DAY_OF_YEAR, -30);
         beginTime = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(cal.getTime());  // Use yesterday as default value
         cal.add(Calendar.DAY_OF_YEAR, 31);
         endTime = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(cal.getTime());
+        String queryString = "select count(o.id) from GuestBookResponse as o  ";
+        if (vdcId != null){
+             queryString += ", Study s where o.study_id = s.id and s.owner_id = " + vdcId + " and "  ;
+        } else {
+            queryString += " where ";
+        }
+        queryString += " o.responseTime >='" + beginTime + "'";
+        queryString += " and o.responseTime<='" + endTime + "'";
+        Query query = em.createNativeQuery(queryString);
+        return (Long) query.getSingleResult();   
+    }
+    
+    public Long findCountAll(){
+        return findCountAll(null);
+    }
+    
+    public Long findCountAll(Long vdcId) {
+        String queryString = "";
+        if (vdcId !=null){
+            queryString = "select count(o.id) from GuestBookResponse  o, Study s where o.study_id = s.id and s.owner_id = " + vdcId  +  " "; 
+        } else {
+            queryString = "select count(o.id) from GuestBookResponse  o ";
+        }
 
-        String queryString = "select object(o) from GuestBookResponse as o , Study s where o.study.id = s.id ";
-        queryString += " and s.owner.id = " + vdcId   ;
-        queryString += " and o.responseTime >='" + beginTime + "'";
+        Query query = em.createNativeQuery(queryString);
+        return (Long) query.getSingleResult();    
+    }
+
+    public List<GuestBookResponse> findAllByVdc(Long vdcId) {
+        return em.createQuery("select object(o) from GuestBookResponse  o, Study s where o.study.id = s.id and s.owner.id = " + vdcId  +  " order by o.responseTime desc").getResultList();
+    }
+    
+    public List<GuestBookResponse> findAllWithin30Days() {
+        return findAllWithin30Days(null);
+    }
+
+    public List<GuestBookResponse> findAllWithin30Days(Long vdcId) {
+        String beginTime;
+        String endTime;
+        Calendar cal = Calendar.getInstance();
+        cal.add(Calendar.DAY_OF_YEAR, -30);
+        beginTime = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(cal.getTime());  // Use yesterday as default value
+        cal.add(Calendar.DAY_OF_YEAR, 31);
+        endTime = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(cal.getTime());
+        String queryString = "select object(o) from GuestBookResponse as o  ";
+        if (vdcId != null){
+             queryString += ", Study s where o.study.id = s.id and s.owner.id = " + vdcId + " and "  ;
+        } else {
+            queryString += " where ";
+        }
+        queryString += " o.responseTime >='" + beginTime + "'";
         queryString += " and o.responseTime<='" + endTime + "'";
         queryString += "  order by o.responseTime desc";
         Query query = em.createQuery(queryString);

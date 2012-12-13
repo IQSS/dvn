@@ -49,6 +49,7 @@
                    });
                    
                    function startDownload() {  
+
                         document.getElementById('form1:tabSet1:0:tabSetPermissions:0:downloadCSV').click();    
                    }
                    function initGuestBookResponses(){
@@ -63,8 +64,8 @@
 //]]>
                 </script>
     
-            <ice:commandButton visible="false" id="initGuestBookResponse" action="#{OptionsPage.initGuestBookResponses}"/>
-                
+            <ice:commandButton visible="false" id="initGuestBookResponse" action="#{OptionsPage.initGuestBookResponse}"/>
+ 
                 <div jsfc="ice:panelGroup" styleClass="dvnManageTableTop">
                   <div jsfc="ice:panelGroup" styleClass="dvn_margin12 dvnInformationMessage">
                     <div class="dvnMsgBlockContainer">

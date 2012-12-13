@@ -21,15 +21,23 @@ package edu.harvard.iq.dvn.core.vdc;
 
 import java.util.ArrayList;
 import java.util.List;
+import javax.naming.InitialContext;
 
 /**
  *
  * @author skraffmiller
  */
 public class GuestBookResponseDisplay {
+    private GuestBookResponseServiceBean gbrServiceBean;
+    private Long id;
     private GuestBookResponse guestBookResponse;
     private List <String> customQuestionResponses = new ArrayList();
+    private List <Long> customQuestionIds = new ArrayList();
     
+    public GuestBookResponseDisplay(Long id, List<Long> cqIds){
+        this.id = id;
+        this.customQuestionIds = cqIds;
+    }
     
     public List<String> getCustomQuestionResponses() {
         return customQuestionResponses;
@@ -40,10 +48,57 @@ public class GuestBookResponseDisplay {
     }
 
     public GuestBookResponse getGuestBookResponse() {
-        return guestBookResponse;
+        if (this.guestBookResponse !=null){
+            return guestBookResponse;
+        } else {
+            return this.guestBookResponse = initGuestBookResponse(id);
+        }
+        
     }
+    
+
 
     public void setGuestBookResponse(GuestBookResponse guestBookResponse) {
         this.guestBookResponse = guestBookResponse;
+    }
+    
+    
+    private void initGuestBookResponseService() {
+        if (gbrServiceBean == null) {
+            try {
+                gbrServiceBean = (GuestBookResponseServiceBean) new InitialContext().lookup("java:comp/env/guestBookResponseService");
+            } catch (Exception e) {
+               
+                e.printStackTrace();
+            }
+        }
+    }
+    
+    private GuestBookResponse initGuestBookResponse(long id) {
+        if (gbrServiceBean == null) {
+            initGuestBookResponseService();
+        }
+
+        GuestBookResponse gbr = gbrServiceBean.findById(id);
+        if (gbr.getCustomQuestionResponses().size() > 0) {
+            this.setGuestBookResponse(gbr);
+            List<String> customQuestionResponseStrings = new ArrayList(customQuestionIds.size());
+            for (int i = 0; i < gbr.getCustomQuestionResponses().size(); i++) {
+                customQuestionResponseStrings.add(i, "");
+            }
+            if (!gbr.getCustomQuestionResponses().isEmpty()) {
+                for (Long qid : customQuestionIds) {
+                    int index = customQuestionIds.indexOf(qid);
+                    for (CustomQuestionResponse cqr : gbr.getCustomQuestionResponses()) {
+                        if (cqr.getCustomQuestion().getId().equals(qid)) {
+                            customQuestionResponseStrings.set(index, cqr.getResponse());
+                        }
+                    }
+                }
+            }
+            this.setCustomQuestionResponses(customQuestionResponseStrings);
+
+        }
+        return gbr;
     }
 }

@@ -509,10 +509,12 @@ public abstract class StudyFile implements Serializable {
     // get the filename of a given studyFile -- unless I'm missing something).
     //  -- L.A.
     public String getFileName() {
-        if (getLatestFileMetadata() == null) {
+        FileMetadata fmd = getLatestFileMetadata();
+        
+        if (fmd == null) {
             return null;
         }
-        return getLatestFileMetadata().getLabel();
+        return fmd.getLabel();
     }
 
 

@@ -29,11 +29,7 @@ public class CustomQuestionUI {
     }
     
     public boolean isRemovable(){
-        if (this.customQuestion.getCustomQuestionResponses().isEmpty()){
-            return true;
-        } else{
-            return false;
-        }
+        return true;
     }
 
     public void setEditMode(boolean editMode) {

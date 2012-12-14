@@ -20,6 +20,7 @@
 package edu.harvard.iq.dvn.core.web.admin;
 
 import com.icesoft.faces.context.Resource;
+import com.icesoft.faces.context.effects.JavascriptContext;
 import edu.harvard.iq.dvn.core.study.DataVariable;
 import edu.harvard.iq.dvn.core.vdc.*;
 import edu.harvard.iq.dvn.core.visualization.DataVariableMapping;
@@ -49,8 +50,9 @@ public class GuestBookResponseDataPage extends VDCBaseBean implements java.io.Se
 
     @EJB GuestBookResponseServiceBean guestBookResponseServiceBean;
     private List<GuestBookResponse> guestBookResponses = new ArrayList();
-    private List<GuestBookResponseDisplay> guestBookResponsesDisplay = new ArrayList();
+    private List<GuestBookResponseUI> guestBookResponsesDisplay = new ArrayList();
     private List<GuestBookResponse> guestBookResponsesAll = new ArrayList();
+    private List<Long> guestBookResponsesAllIds = new ArrayList();
     private List<String> columnHeadings = new ArrayList();
     private List<Long> customQuestionIds = new ArrayList();
     private GuestBookQuestionnaire guestBookQuestionnaire;
@@ -58,7 +60,9 @@ public class GuestBookResponseDataPage extends VDCBaseBean implements java.io.Se
     private Long thirtyDayCount = new Long(0);
     private String csvString = "";
     private VDC vdc;
-
+    
+    
+    
     public void init() {
 
          //Date thirtyDaysAgo = now.     
@@ -149,7 +153,7 @@ public class GuestBookResponseDataPage extends VDCBaseBean implements java.io.Se
 
         String csvOutput = getColumnString() + "\n";
         String csvCol;
-        for (GuestBookResponseDisplay gbrd: guestBookResponsesDisplay){
+        for (GuestBookResponseUI gbrd: guestBookResponsesDisplay){
             csvCol = "";
             if(gbrd.getGuestBookResponse().getVdcUser() != null){
                csvCol += gbrd.getGuestBookResponse().getVdcUser().getUserName();
@@ -256,11 +260,11 @@ public class GuestBookResponseDataPage extends VDCBaseBean implements java.io.Se
         this.columnHeadings = columnHeadings;
     }
 
-    public List<GuestBookResponseDisplay> getGuestBookResponsesDisplay() {
+    public List<GuestBookResponseUI> getGuestBookResponsesDisplay() {
         return guestBookResponsesDisplay;
     }
 
-    public void setGuestBookResponsesDisplay(List<GuestBookResponseDisplay> guestBookResponsesDisplay) {
+    public void setGuestBookResponsesDisplay(List<GuestBookResponseUI> guestBookResponsesDisplay) {
         this.guestBookResponsesDisplay = guestBookResponsesDisplay;
     }
     

@@ -594,20 +594,16 @@ public class OptionsPage extends VDCBaseBean  implements java.io.Serializable {
         if (getVDCRequestBean().getCurrentVDC() != null) {
             vdcId = getVDCRequestBean().getCurrentVDC().getId();
             if (!show30Days){
-                guestBookResponsesAll = guestBookResponseServiceBean.findAllByVdc(vdcId);
                 guestBookResponsesAllIds = guestBookResponseServiceBean.findAllIds(vdcId);
             } else {
-                guestBookResponsesAll = guestBookResponseServiceBean.findAllWithin30Days(vdcId);
                 guestBookResponsesAllIds = guestBookResponseServiceBean.findAllIds30Days(vdcId);
             }
             fullCount = guestBookResponseServiceBean.findCountAll(vdcId);
             thirtyDayCount = guestBookResponseServiceBean.findCount30Days(vdcId);
         } else {
            if (!show30Days){
-               guestBookResponsesAll = guestBookResponseServiceBean.findAll(); 
                guestBookResponsesAllIds = guestBookResponseServiceBean.findAllIds(null);
            } else {
-               guestBookResponsesAll = guestBookResponseServiceBean.findAllWithin30Days();
                guestBookResponsesAllIds = guestBookResponseServiceBean.findAllIds30Days(null);
            }
             fullCount = guestBookResponseServiceBean.findCountAll(null);
@@ -629,7 +625,7 @@ public class OptionsPage extends VDCBaseBean  implements java.io.Serializable {
         }
         
         for (Long gbr : guestBookResponsesAllIds) {
-                GuestBookResponseDisplay guestBookResponseDisplay = new GuestBookResponseDisplay(gbr,customQuestionIds );
+                GuestBookResponseUI guestBookResponseDisplay = new GuestBookResponseUI(gbr,customQuestionIds );
                 guestBookResponsesDisplay.add(guestBookResponseDisplay);
         }
 
@@ -1380,6 +1376,7 @@ public class OptionsPage extends VDCBaseBean  implements java.io.Serializable {
         }
         newQuestion.setGuestBookQuestionnaire(guestBookQuestionnaire);
         newQuestion.setQuestionString(questionText);
+        newQuestion.setCustomQuestionResponses(new ArrayList());
 
         if (guestBookQuestionnaire.getCustomQuestions() == null) {
             guestBookQuestionnaire.setCustomQuestions(new ArrayList());
@@ -1411,8 +1408,9 @@ public class OptionsPage extends VDCBaseBean  implements java.io.Serializable {
                 }
             }
         }
-        customQuestions.remove(customQuestionUIRemove);
+        customQuestions.remove(customQuestionUIRemove);       
         if (remove) {
+            guestBookQuestionnaire.getCustomQuestions().remove(customQuestionsDataTable.getRowIndex());
             vdc.getGuestBookQuestionnaire().getCustomQuestions().remove(customQuestionsDataTable.getRowIndex());
         }
     }
@@ -1479,7 +1477,7 @@ public class OptionsPage extends VDCBaseBean  implements java.io.Serializable {
     //Download Response Page
     
     private List<GuestBookResponse> guestBookResponses = new ArrayList();
-    private List<GuestBookResponseDisplay> guestBookResponsesDisplay = new ArrayList();
+    private List<GuestBookResponseUI> guestBookResponsesDisplay = new ArrayList();
     private List<GuestBookResponse> guestBookResponsesAll = new ArrayList();
     private List<Long> guestBookResponsesAllIds = new ArrayList();
     private boolean show30Days = true;
@@ -1511,7 +1509,7 @@ public class OptionsPage extends VDCBaseBean  implements java.io.Serializable {
     private String writeCSVString() {
         String csvOutput = getColumnString() + "\n";
         String csvCol;
-        for (GuestBookResponseDisplay gbrd : guestBookResponsesDisplay) {
+        for (GuestBookResponseUI gbrd : guestBookResponsesDisplay) {
             if (gbrd.getGuestBookResponse() != null) {
                 csvCol = "";
                 if (gbrd.getGuestBookResponse().getVdcUser() != null) {
@@ -1581,8 +1579,8 @@ public class OptionsPage extends VDCBaseBean  implements java.io.Serializable {
     
     public List<String> getColumnHeadings() {return columnHeadings;}
     public void setColumnHeadings(List<String> columnHeadings) {this.columnHeadings = columnHeadings;}
-    public List<GuestBookResponseDisplay> getGuestBookResponsesDisplay() {return guestBookResponsesDisplay;}
-    public void setGuestBookResponsesDisplay(List<GuestBookResponseDisplay> guestBookResponsesDisplay) {this.guestBookResponsesDisplay = guestBookResponsesDisplay;}
+    public List<GuestBookResponseUI> getGuestBookResponsesDisplay() {return guestBookResponsesDisplay;}
+    public void setGuestBookResponsesDisplay(List<GuestBookResponseUI> guestBookResponsesDisplay) {this.guestBookResponsesDisplay = guestBookResponsesDisplay;}
     
     public Resource getDownloadCSV() {return new OptionsPage.ExportFileResource("csv");}
     

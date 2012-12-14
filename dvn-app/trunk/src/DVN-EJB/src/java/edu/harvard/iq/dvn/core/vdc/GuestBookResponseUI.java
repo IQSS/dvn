@@ -27,14 +27,14 @@ import javax.naming.InitialContext;
  *
  * @author skraffmiller
  */
-public class GuestBookResponseDisplay {
+public class GuestBookResponseUI {
     private GuestBookResponseServiceBean gbrServiceBean;
     private Long id;
     private GuestBookResponse guestBookResponse;
     private List <String> customQuestionResponses = new ArrayList();
     private List <Long> customQuestionIds = new ArrayList();
     
-    public GuestBookResponseDisplay(Long id, List<Long> cqIds){
+    public GuestBookResponseUI(Long id, List<Long> cqIds){
         this.id = id;
         this.customQuestionIds = cqIds;
     }

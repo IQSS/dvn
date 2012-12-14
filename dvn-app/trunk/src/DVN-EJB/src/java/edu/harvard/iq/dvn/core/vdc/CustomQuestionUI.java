@@ -15,7 +15,7 @@ public class CustomQuestionUI {
     private CustomQuestion customQuestion;
     private List <SelectItem> questionSelectItems;
     private boolean editMode;
-
+    
     public CustomQuestion getCustomQuestion() {
         return customQuestion;
     }
@@ -26,6 +26,14 @@ public class CustomQuestionUI {
 
     public boolean isEditMode() {
         return editMode;
+    }
+    
+    public boolean isRemovable(){
+        if (this.customQuestion.getCustomQuestionResponses().isEmpty()){
+            return true;
+        } else{
+            return false;
+        }
     }
 
     public void setEditMode(boolean editMode) {

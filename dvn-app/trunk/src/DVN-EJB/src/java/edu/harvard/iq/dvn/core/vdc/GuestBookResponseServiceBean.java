@@ -24,10 +24,7 @@ import edu.harvard.iq.dvn.core.study.Study;
 import edu.harvard.iq.dvn.core.study.StudyFile;
 import edu.harvard.iq.dvn.core.web.common.LoginBean;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
@@ -154,6 +151,82 @@ public class GuestBookResponseServiceBean {
         return query.getResultList();
     }
     
+    private List<Object[]> convertIntegerToLong(List<Object[]> list, int index) {
+        for (Object[] item : list) {
+            item[index] = new Long( (Integer) item[index]);
+        }
+           
+        return list;
+    } 
+    
+
+
+    private String generateTempTableString(List<Long> studyIds) {
+        // first step: create the temp table with the ids
+
+        em.createNativeQuery(" BEGIN; SET TRANSACTION READ WRITE; DROP TABLE IF EXISTS tempid; END;").executeUpdate();
+        em.createNativeQuery(" BEGIN; SET TRANSACTION READ WRITE; CREATE TEMPORARY TABLE tempid (tempid integer primary key, orderby integer); END;").executeUpdate();
+        em.createNativeQuery(" BEGIN; SET TRANSACTION READ WRITE; INSERT INTO tempid VALUES " + generateIDsforTempInsert(studyIds) + "; END;").executeUpdate();
+        return "select tempid from tempid";
+    }
+    
+    private String generateIDsforTempInsert(List idList) {
+        int count = 0;
+        StringBuffer sb = new StringBuffer();
+        Iterator iter = idList.iterator();
+        while (iter.hasNext()) {
+            Long id = (Long) iter.next();
+            sb.append("(").append(id).append(",").append(count++).append(")");
+            if (iter.hasNext()) {
+                sb.append(",");
+            }
+        }
+
+        return sb.toString();
+    }
+    
+    public List<Object[]> findDownloadInfoAll(List<Long> gbrIds) {  
+        //this query will return multiple rows per response where the study name has changed over version
+        //these multiples are filtered out by the method that actually writes the download csv,
+            String varString = "(" + generateTempTableString(gbrIds) + ") ";
+            String gbrDownloadQueryString = "select u.username, gbr.sessionid, "
+            + " gbr.firstname, gbr.lastname, gbr.email, gbr.institution, "
+            + " vdc.name, s.protocol, s.authority, m.title, fmd.label, gbr.responsetime, gbr.position, gbr.study_id, gbr.id, gbr.downloadType "
+            + " from guestbookresponse gbr LEFT OUTER JOIN vdcuser u ON  " 
+            + "(gbr.vdcuser_id =u.id),  " 
+            + " vdc, study s, studyversion sv, metadata m, studyfile sf, filemetadata  fmd  " 
+            + "where gbr.study_id = s.id  " 
+            + "and s.owner_id = vdc.id  " 
+            + "and s.id = sv.study_id  " 
+            + "and sv.metadata_id = m.id " 
+            + "and gbr.studyfile_id = fmd.studyfile_id " 
+            + "and sv.id = fmd.studyversion_id " 
+            + "and sv.id = fmd.studyversion_id   " 
+            + " and gbr.id in " + varString
+            + " group by u.username, gbr.sessionid, "
+            + " gbr.firstname, gbr.lastname, gbr.email, gbr.institution, "
+            + " vdc.name, s.protocol, s.authority, m.title, fmd.label, gbr.responsetime, gbr.position, gbr.study_id, gbr.id, s.id, gbr.downloadType  "    +    
+            "order by s.id, gbr.id,  max(sv.versionNumber) desc ";
+
+        Query query = em.createNativeQuery(gbrDownloadQueryString);
+        
+        return  convertIntegerToLong(query.getResultList(),14);
+    } 
+    
+    public List<Object[]> findCustomResponsePerGuestbookResponse(Long gbrId) {
+
+        String gbrCustomQuestionQueryString = "select response, cq.id "
+                + " from guestbookresponse gbr, customquestion cq, customquestionresponse cqr "
+                + "where gbr.guestbookquestionnaire_id = cq.guestbookquestionnaire_id "
+                + "and cq.id = cqr.customquestion_id "
+                + " and cqr.guestbookresponse_id =  " + gbrId;
+
+        Query query = em.createNativeQuery(gbrCustomQuestionQueryString);
+
+        return convertIntegerToLong(query.getResultList(),1);
+    } 
+
+        
     private GuestBookQuestionnaire findNetworkQuestionniare(){
         GuestBookQuestionnaire questionniare = new GuestBookQuestionnaire();
         String queryStr = "SELECT gbq FROM GuestBookQuestionnaire gbq WHERE gbq.vdc is null; ";

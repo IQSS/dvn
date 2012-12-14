@@ -21,6 +21,7 @@ import edu.harvard.iq.dvn.core.mail.MailServiceLocal;
 import edu.harvard.iq.dvn.core.study.*;
 import edu.harvard.iq.dvn.core.util.*;
 import edu.harvard.iq.dvn.core.vdc.*;
+import edu.harvard.iq.dvn.core.web.DataverseGrouping;
 import edu.harvard.iq.dvn.core.web.VDCUIList;
 import edu.harvard.iq.dvn.core.web.collection.CollectionUI;
 import edu.harvard.iq.dvn.core.web.common.StatusMessage;
@@ -1503,12 +1504,95 @@ public class OptionsPage extends VDCBaseBean  implements java.io.Serializable {
         }
         return csvColumnString;
     }
+   
     
-    
+    private String writeCSVStringQuery() {
+        String csvCol;
+        String csvOutput = getColumnString() + "\n";
+        List list = (List) guestBookResponseServiceBean.findDownloadInfoAll(guestBookResponsesAllIds);
+        Iterator iterator = list.iterator();
+        Long grbOld = new Long(0);
+        while (iterator.hasNext()) {
+
+            Object[] gbrInfo = (Object[]) iterator.next();
+            if (grbOld.longValue() != (Long) gbrInfo[14]) {
+                csvCol = "";
+                String userName = (String) gbrInfo[0];
+                if (!(userName == null) && !userName.isEmpty()) {
+                    csvCol += getSafeCString(userName);
+                } else {
+                    csvCol += getSafeCString("Anonymous - + " + gbrInfo[1]);
+                }
+                csvCol += "," + getSafeCString((String) gbrInfo[2]);
+                csvCol += "," + getSafeCString((String) gbrInfo[3]);
+                csvCol += "," + getSafeCString((String) gbrInfo[4]);
+                csvCol += "," + getSafeCString((String) gbrInfo[5]);
+                csvCol += "," + getSafeCString((String) gbrInfo[12]);
+                if (vdc == null) {
+                    csvCol += "," + getSafeCString((String) gbrInfo[6]);
+                }
+                csvCol += "," + getSafeCString((String) gbrInfo[7] + ":" + (String) gbrInfo[8] + "/" + (Long) gbrInfo[13]);
+                csvCol += "," + getSafeCString((String) gbrInfo[9]);
+                csvCol += "," + getSafeCString((String) gbrInfo[10]);
+                Date responseTime = (Date) gbrInfo[11];
+                csvCol += "," + getSafeCString(responseTime.toString());
+                csvCol += "," + getSafeCString((String) gbrInfo[15]);
+                csvCol += "," + getSafeCString((String) gbrInfo[1]);
+                if (!customQuestionIds.isEmpty()) {
+                    List customQuestionResponsesQueryResults = guestBookResponseServiceBean.findCustomResponsePerGuestbookResponse((Long) gbrInfo[14]);
+                    Iterator cqIterator = customQuestionResponsesQueryResults.iterator();
+                    List<CustomQuestionResponse> cqrList = new ArrayList();
+                    /*
+                    while (cqIterator.hasNext()) {
+                        Object[] cqResponse = (Object[]) cqIterator.next();                       
+                        System.out.print("crq0" + (String) cqResponse[0] + " gbrid " + (Long) gbrInfo[14] );
+                        System.out.print("crq1" + (String) cqResponse[1] );
+                    }*/
+
+                    while (cqIterator.hasNext()) {
+                        Object[] cqResponse = (Object[]) cqIterator.next();
+                        CustomQuestionResponse cqrAdd = new CustomQuestionResponse();
+                        cqrAdd.setResponse((String) cqResponse[0]);
+                        CustomQuestion dummyQuestion = new CustomQuestion();
+                        dummyQuestion.setId((Long) cqResponse[1]);
+                        cqrAdd.setCustomQuestion(dummyQuestion);
+                        cqrList.add(cqrAdd);
+                    }
+
+                    if (!cqrList.isEmpty()) {
+                        List<String> customQuestionResponseStrings = new ArrayList(customQuestionIds.size());
+                        for (int i = 0; i < cqrList.size(); i++) {
+                            customQuestionResponseStrings.add(i, "");
+                        }
+                        for (Long qid : customQuestionIds) {
+                            int index = customQuestionIds.indexOf(qid);
+                            for (CustomQuestionResponse cqr : cqrList) {
+                                if (cqr.getCustomQuestion().getId().equals(qid)) {
+                                    customQuestionResponseStrings.set(index, cqr.getResponse());
+                                }
+                            }
+                        }
+                        for (String response : customQuestionResponseStrings) {
+                            csvCol += "," + getSafeCString(response);
+                        }
+                    } 
+                }
+                csvCol += "\n";
+                csvOutput = csvOutput + csvCol;
+                grbOld = (Long) gbrInfo[14];
+            }
+
+
+        }
+
+        return csvOutput;
+    }
     
     private String writeCSVString() {
         String csvOutput = getColumnString() + "\n";
         String csvCol;
+        csvOutput = writeCSVStringQuery();
+        /*
         for (GuestBookResponseUI gbrd : guestBookResponsesDisplay) {
             if (gbrd.getGuestBookResponse() != null) {
                 csvCol = "";
@@ -1540,6 +1624,7 @@ public class OptionsPage extends VDCBaseBean  implements java.io.Serializable {
                 csvOutput = csvOutput + csvCol;
             }
         }
+        * */
         return csvOutput;
     }
 

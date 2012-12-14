@@ -606,21 +606,10 @@ public class AdvSearchPage extends VDCBaseBean implements java.io.Serializable {
             StudyField elem = (StudyField) it.next();
             elem.getId();
             
-            // check if we have a "user-friendly" description for this field 
-            // in our resource bundle: 
-            advS[i] = getUserFriendlySearchField(elem.getName());
-            // if not, check if the field has a description in the database: 
-            if (advS[i].equals(elem.getName())) {
-                if (elem.getTitle() != null && !elem.getTitle().equals("")) {
-                    advS[i] = elem.getTitle();
-                }
-            }
-            
-        
             String sfname = elem.getName();
             
             // And one final post-processing step is required on the name of
-            // the field too: 
+            // the field: 
             // (see the comment above, where StudyFields2Indexes map is defined)
             // -L.A.
             
@@ -629,6 +618,18 @@ public class AdvSearchPage extends VDCBaseBean implements java.io.Serializable {
                     sfname = StudyFields2Indexes.get(sfname);
                 }              
             }        
+            
+            // Now check if we have a "user-friendly" description for this field 
+            // in our resource bundle: 
+            advS[i] = getUserFriendlySearchField(sfname);
+            // if not, check if the field has a description in the database: 
+            if (advS[i].equals(sfname)) {
+                if (elem.getTitle() != null && !elem.getTitle().equals("")) {
+                    advS[i] = elem.getTitle();
+                }
+            }
+            
+        
             
             advSearchFieldMap.put(advS[i++], sfname);
 

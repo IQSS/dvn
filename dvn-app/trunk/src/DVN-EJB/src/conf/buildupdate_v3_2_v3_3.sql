@@ -164,8 +164,6 @@ ALTER TABLE studyfield ALTER COLUMN "description" TYPE text;
 ALTER TABLE studyfield ALTER COLUMN "description" SET STORAGE EXTENDED;
 
 --Ticket 2566 - add Read Only Mode 
-ALTER TABLE vdcNetwork
- ADD readonly boolean;
 
 ALTER TABLE vdcNetwork
  ADD statusnotice  text;

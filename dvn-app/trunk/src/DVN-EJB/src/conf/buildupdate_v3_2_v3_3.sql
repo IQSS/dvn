@@ -169,3 +169,6 @@ ALTER TABLE vdcNetwork
  ADD statusnotice  text;
 
 ALTER TABLE vdcNetwork ALTER COLUMN "statusnotice" SET STORAGE EXTENDED;
+
+-- Ticket xxxx - add version to guestbookresponse table
+Alter TABLE guestbookresponse add studyVersion_id bigint;

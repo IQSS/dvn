@@ -22,6 +22,7 @@ package edu.harvard.iq.dvn.core.vdc;
 import edu.harvard.iq.dvn.core.admin.VDCUser;
 import edu.harvard.iq.dvn.core.study.Study;
 import edu.harvard.iq.dvn.core.study.StudyFile;
+import edu.harvard.iq.dvn.core.study.StudyVersion;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Date;
@@ -50,6 +51,10 @@ public class GuestBookResponse implements Serializable {
     @ManyToOne
     @JoinColumn(nullable=false)
     private Study study;
+    
+    @ManyToOne
+    @JoinColumn(nullable=true)
+    private StudyVersion studyVersion;
 
     @ManyToOne
     @JoinColumn(nullable=true)
@@ -84,6 +89,7 @@ public class GuestBookResponse implements Serializable {
         this.setPosition(source.getPosition());
         this.setResponseTime(source.getResponseTime());
         this.setStudy(source.getStudy());
+        this.setStudyVersion(source.getStudyVersion());
         this.setVdcUser(source.getVdcUser());
         this.setSessionId(source.getSessionId());
         List <CustomQuestionResponse> customQuestionResponses = new ArrayList();
@@ -188,7 +194,15 @@ public class GuestBookResponse implements Serializable {
     public void setStudyFile(StudyFile studyFile) {
         this.studyFile = studyFile;
     }
-    
+       
+    public StudyVersion getStudyVersion() {
+        return studyVersion;
+    }
+
+    public void setStudyVersion(StudyVersion studyVersion) {
+        this.studyVersion = studyVersion;
+    }
+
     public VDCUser getVdcUser() {
         return vdcUser;
     }

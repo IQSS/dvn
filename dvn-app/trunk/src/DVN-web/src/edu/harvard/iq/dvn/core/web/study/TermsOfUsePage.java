@@ -193,6 +193,7 @@ public class TermsOfUsePage extends VDCBaseBean {
         guestBookResponse = new GuestBookResponse();
         guestBookResponse.setGuestBookQuestionnaire(study.getOwner().getGuestBookQuestionnaire());
         guestBookResponse.setStudy(study);
+        guestBookResponse.setStudyVersion(study.getLatestVersion());
         guestBookResponse.setResponseTime(new Date());
 
         if (study.getOwner().getGuestBookQuestionnaire().getCustomQuestions() != null && !study.getOwner().getGuestBookQuestionnaire().getCustomQuestions().isEmpty()) {

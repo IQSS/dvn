@@ -70,9 +70,9 @@
                                 </div>
 
                                 <ice:panelGrid columns="2" columnClasses="vdcStudyFilesDownloadAllSelect,vdcStudyFilesDownloadCount" width="100%" styleClass="vdcStudyFilesDownloadAll">
-                                    <ice:column>
+                                    <ice:column rendered="#{!VDCRequest.readOnlyDatabase}">
                                         <ice:selectBooleanCheckbox id="studyCheckBox" styleClass="studyCheckBox" onclick="toggleCheckBoxes(this)" disabled="#{!studyPage.studyUI.anyFileUnrestricted}"/> <ice:outputText value=" Select all files"/>
-                                        <input type="button" id="downloadAllButton" class="studyDownloadAllButton" onclick="downloadSelectedFiles();" value="Download All Selected Files" disabled="disabled"/>
+                                        <input type="button" id="downloadAllButton" class="studyDownloadAllButton" onclick="downloadSelectedFiles();" rendered="#{!VDCRequest.readOnlyDatabase}" value="Download All Selected Files" disabled="disabled"/>
                                     </ice:column>
                                     <ice:column>
                                         <ice:outputText styleClass="dvn_totalsLabel" value="Total Downloads: "/>
@@ -138,8 +138,8 @@
                                                                             <ice:outputText value="(Request Access)"/>
                                                                         </ice:commandLink>
                                                                         
-                                                                        <ice:outputLink styleClass="vdcStudyFileRowFileDownloadLink" value="javascript:downloadFile('#{studyFileUI.fileDownloadURL}&amp;versionNumber=#{studyPage.studyUI.studyVersion.versionNumber}')" rendered="#{!studyFileUI.restrictedForUser and !studyFileUI.studyFile.subsettable}">
-                                                                            <ice:outputText value="Download" rendered="#{!studyFileUI.restrictedForUser and !studyFileUI.studyFile.subsettable}"/>
+                                                                        <ice:outputLink styleClass="vdcStudyFileRowFileDownloadLink" value="javascript:downloadFile('#{studyFileUI.fileDownloadURL}&amp;versionNumber=#{studyPage.studyUI.studyVersion.versionNumber}')" rendered="#{!studyFileUI.restrictedForUser and !studyFileUI.studyFile.subsettable and !VDCRequest.readOnlyDatabase}">
+                                                                            <ice:outputText value="Download" rendered="#{!studyFileUI.restrictedForUser and !studyFileUI.studyFile.subsettable and !VDCRequest.readOnlyDatabase}"/>
                                                                         </ice:outputLink>
                                                                     </div>
                                                                     <div jsfc="ice:panelGroup" rendered="#{!studyFileUI.restrictedForUser and studyFileUI.studyFile.subsettable and !VDCRequest.readOnlyDatabase}">

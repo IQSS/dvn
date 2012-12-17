@@ -218,9 +218,9 @@ public class GuestBookResponseServiceBean {
         String gbrCustomQuestionQueryString = "select response, cq.id "
                 + " from guestbookresponse gbr, customquestion cq, customquestionresponse cqr "
                 + "where gbr.guestbookquestionnaire_id = cq.guestbookquestionnaire_id "
+                + " and gbr.id = cqr.guestbookresponse_id "
                 + "and cq.id = cqr.customquestion_id "
                 + " and cqr.guestbookresponse_id =  " + gbrId;
-
         Query query = em.createNativeQuery(gbrCustomQuestionQueryString);
 
         return convertIntegerToLong(query.getResultList(),1);

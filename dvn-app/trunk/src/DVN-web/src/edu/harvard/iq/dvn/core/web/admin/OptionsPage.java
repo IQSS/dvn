@@ -1560,6 +1560,7 @@ public class OptionsPage extends VDCBaseBean  implements java.io.Serializable {
                     }
 
                     if (!cqrList.isEmpty()) {
+                        System.out.print ("size " + cqrList.size());
                         List<String> customQuestionResponseStrings = new ArrayList(customQuestionIds.size());
                         for (int i = 0; i < cqrList.size(); i++) {
                             customQuestionResponseStrings.add(i, "");

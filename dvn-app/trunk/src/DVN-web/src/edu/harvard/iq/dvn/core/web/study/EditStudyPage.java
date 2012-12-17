@@ -237,7 +237,8 @@ public class EditStudyPage extends VDCBaseBean implements java.io.Serializable  
         Object value= this.selectTemplate.getValue();
         if (value!=null ) {           
             editStudyService.changeTemplate((Long)value);
-            metadata = editStudyService.getStudyVersion().getMetadata();    
+            metadata = editStudyService.getStudyVersion().getMetadata();
+            JavascriptContext.addJavascriptCall(getFacesContext(),"dataCitationWidgetSync();");
         }
         initStudyFields();  // Reset Recommended flag for all fields
         return "";
@@ -651,7 +652,6 @@ public class EditStudyPage extends VDCBaseBean implements java.io.Serializable  
             StudyAuthor newElem = new StudyAuthor();
             newElem.setMetadata(metadata);
             metadata.getStudyAuthors().add(dataTable.getRowIndex()+1,newElem);
-            JavascriptContext.addJavascriptCall(getFacesContext(),"jQuery('div.dvnDataCitationWidget').css({'background':'#CFDDEA'});");
             JavascriptContext.addJavascriptCall(getFacesContext(),"initAddAuthorSync();");
             JavascriptContext.addJavascriptCall(getFacesContext(),"dataCitationWidgetSync();");
         } else  if (dataTable.equals(dataTableAbstracts)) {
@@ -662,6 +662,8 @@ public class EditStudyPage extends VDCBaseBean implements java.io.Serializable  
             StudyDistributor newElem = new StudyDistributor();
             newElem.setMetadata(metadata);
             metadata.getStudyDistributors().add(dataTable.getRowIndex()+1,newElem);
+            JavascriptContext.addJavascriptCall(getFacesContext(),"initAddDistributorSync();");
+            JavascriptContext.addJavascriptCall(getFacesContext(),"dataCitationWidgetSync();");
         } else  if (dataTable.equals(dataTableGrants)) {
             StudyGrant newElem = new StudyGrant();
             newElem.setMetadata(metadata);
@@ -715,7 +717,6 @@ public class EditStudyPage extends VDCBaseBean implements java.io.Serializable  
         if (dataTable.getRowCount()>1) { 
             List data = (List)dataTable.getValue();
             editStudyService.removeCollectionElement(data,dataTable.getRowIndex());
-            JavascriptContext.addJavascriptCall(getFacesContext(),"initRemoveAuthorSync();");
             JavascriptContext.addJavascriptCall(getFacesContext(),"dataCitationWidgetSync();");
         }
     }

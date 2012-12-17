@@ -84,9 +84,8 @@ public class VDCContextListener implements ServletContextListener,ServletRequest
          
         try {
             vdcNetworkService = (VDCNetworkServiceLocal)new InitialContext().lookup("java:comp/env/vdcNetworkService");        
-            VDCNetwork thisNetwork = vdcNetworkService.find(new Long(1));
   
-            if (thisNetwork.isReadonly()) {
+            if (vdcNetworkService.defaultTransactionReadOnly()) {
                 System.out.println("Network is in read-only mode; skipping timer initialization.");
             } else {
                 harvesterService = (HarvesterServiceLocal) new InitialContext().lookup("java:comp/env/harvesterService");

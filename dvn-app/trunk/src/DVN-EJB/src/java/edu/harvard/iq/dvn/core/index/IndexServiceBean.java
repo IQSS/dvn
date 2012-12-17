@@ -165,9 +165,7 @@ public class IndexServiceBean implements edu.harvard.iq.dvn.core.index.IndexServ
         
         try {
             // read-only mode check:
-        
-            VDCNetwork thisNetwork = vdcNetworkService.find(new Long(1));
-            boolean readOnly = thisNetwork.isReadonly();
+            boolean readOnly = vdcNetworkService.defaultTransactionReadOnly();
 
             if (timer.getInfo().equals(INDEX_TIMER)) {
                 if (readOnly) {

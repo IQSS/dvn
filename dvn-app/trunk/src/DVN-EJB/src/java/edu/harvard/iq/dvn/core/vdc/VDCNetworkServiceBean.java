@@ -214,8 +214,7 @@ public class VDCNetworkServiceBean implements VDCNetworkServiceLocal {
             // call the method a second time. (The minimum number of re-tries for a Timer method is 1)
             
             // First, read-only mode check: 
-            VDCNetwork thisNetwork = vdcNetworkService.find(new Long(1));
-            boolean readOnly = thisNetwork.isReadonly();
+            boolean readOnly = defaultTransactionReadOnly();
             
             if (timer.getInfo() instanceof ExportTimerInfo) {
                 if (readOnly) {

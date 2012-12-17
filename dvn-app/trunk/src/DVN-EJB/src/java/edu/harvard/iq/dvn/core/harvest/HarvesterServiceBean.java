@@ -249,9 +249,7 @@ public class HarvesterServiceBean implements HarvesterServiceLocal {
             try {
                 // First, check if we are in read-only mode: 
 
-                VDCNetwork thisNetwork = vdcNetworkService.find(new Long(1));
-
-                if (thisNetwork.isReadonly()) {
+                if (vdcNetworkService.defaultTransactionReadOnly()) {
                     logger.log(Level.ALL, "Network is in read-only mode.");
                     return;
 

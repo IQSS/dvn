@@ -76,8 +76,7 @@ public class VDCNetworkStatsServiceBean implements VDCNetworkStatsServiceLocal {
         
 
         try {
-            VDCNetwork thisNetwork = vdcNetworkService.find(new Long(1));
-            boolean readOnly = thisNetwork.isReadonly();
+            boolean readOnly = vdcNetworkService.defaultTransactionReadOnly();
             
             if (timer.getInfo().equals(STATS_TIMER)) {
                 if (readOnly) {

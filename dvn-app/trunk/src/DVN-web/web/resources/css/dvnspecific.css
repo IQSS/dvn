@@ -106,6 +106,12 @@ td.vdcEditFilesColB .errorMessage{display:block;}
 .vdcEditStudyField{padding-top:6px;padding-bottom:6px}
 .vdcEditStudyGroupField{white-space:nowrap}
 .vdcEditStudyIconLegend{float:left;margin-left:2em}
+div[id$='dvnDataCitationWidget'] {padding:4px !important; background:#f5f5dc;}
+div[id$='dvnDataCitationWidget'] div {white-space: normal;}
+#dvnDataCitationWidgetInputBlock {display:inline-block; background:gold; margin-bottom:.5em; padding:4px; margin:2px;}
+.dvnDataCitationWidgetInput p:first-child {margin-top:0;}
+#dvnDataCitationWidgetBlockStudyID .dvnDataCitationWidgetLabelBlock, #dvnDataCitationWidgetBlockStudyID .dvnDataCitationWidgetTextBlock, span[id$='input_studyIdTextSync'] {display:inline !important;}
+#dvnDataCitationWidgetBlockVersion span.iceOutTxt {padding:0;}
 .dvnManageStudiesTableTop{width:100%}
 .dvnManageStudiesTableTop .dvnPaginatorWrap{padding:.5em 0}
 .dvn_ManageStudiesTotals {padding:.5em; text-align:right;}

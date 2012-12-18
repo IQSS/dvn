@@ -619,116 +619,119 @@ function initAddDistributorSync(){
                             <ice:graphicImage value="/resources/images/icon_information.18.png" styleClass="dvn_icon"/>
                             <ice:outputText styleClass="vdcHelpText" value=" Use the Data Citation Widget below to enter all the metadata needed for your citation."/>
                           </p>
-                          <div jsfc="ice:panelGroup" id="dvnDataCitationWidget" styleClass="dvnDataCitationWidget vdcEditStudyFieldFloatWrap" style="padding:4px; background:#f5f5dc;">
+                          <div jsfc="ice:panelGroup" id="dvnDataCitationWidget" styleClass="dvnDataCitationWidget vdcEditStudyFieldFloatWrap">
                             <div>
                                 Data Citation Widget
                             </div>
-                              
-                            <div id="dvnDataCitationWidgetInputBlock" style="display:inline-block; background:gold; margin-bottom:.5em; padding:4px; margin:2px;">
-                              <!-- None -->
-                              <div class="dvnDataCitationWidgetInput">Click the links below, to enter the data citation value metadata.</div>
-                              <!-- Author -->
-                              <div id="dvnDataCitationWidgetAuthorInputBlock" class="dvnDataCitationWidgetInput">
-                                  <div class="dvnDataCitationWidgetAuthorInputBoba">
-                                    <ice:outputText styleClass="dvnInlineHelpLabel dvnInlineHelpTip" value="Author #{editstudybundle.authorNameLabel}" title="#{editstudybundle.authorNameHelpHeading} - #{editstudybundle.authorNameHelp}"/>
-                                    <ice:inputText 
-                                                   styleClass="input_authorNameSync"
-                                                   size="45"
-                                                   maxlength="255" />
-                                    <ice:outputText styleClass="vdcEditStudyFormatExample" value="(LastName, FirstName)"/>
+                            
+                            <div>
+                                
+                                <div id="dvnDataCitationWidgetInputBlock">
+                                  <!-- None -->
+                                  <div class="dvnDataCitationWidgetInput">Click the links below, to enter the data citation value metadata.</div>
+                                  <!-- Author -->
+                                  <div id="dvnDataCitationWidgetAuthorInputBlock" class="dvnDataCitationWidgetInput">
+                                      <div class="dvnDataCitationWidgetAuthorInputBoba">
+                                        <ice:outputText styleClass="dvnInlineHelpLabel dvnInlineHelpTip" value="Author #{editstudybundle.authorNameLabel}" title="#{editstudybundle.authorNameHelpHeading} - #{editstudybundle.authorNameHelp}"/>
+                                        <ice:inputText 
+                                                       styleClass="input_authorNameSync"
+                                                       size="45"
+                                                       maxlength="255" />
+                                        <ice:outputText styleClass="vdcEditStudyFormatExample" value="(LastName, FirstName)"/>
+                                      </div>
+                                      <div class="dvnDataCitationWidgetAuthorSelectBoba">
+                                        <ice:outputText styleClass="dvnInlineHelpLabel dvnInlineHelpTip" value="Author #{editstudybundle.authorNameLabel}" title="#{editstudybundle.authorNameHelpHeading} - #{editstudybundle.authorNameHelp}"/>
+                                        <ice:selectOneMenu immediate="false"  
+                                               styleClass="select_authorNameSync">
+                                            <f:selectItem itemLabel="No Value" itemValue=""/>
+                                            <f:selectItems value="#{EditStudyPage.studyMap[sfc.authorName].templateField.controlledVocabulary.selectItems}"/>
+                                        </ice:selectOneMenu>
+                                        <ice:outputText styleClass="vdcEditStudyFormatExample" value="(LastName, FirstName)"/>
+                                      </div>
                                   </div>
-                                  <div class="dvnDataCitationWidgetAuthorSelectBoba">
-                                    <ice:outputText styleClass="dvnInlineHelpLabel dvnInlineHelpTip" value="Author #{editstudybundle.authorNameLabel}" title="#{editstudybundle.authorNameHelpHeading} - #{editstudybundle.authorNameHelp}"/>
-                                    <ice:selectOneMenu immediate="false"  
-                                           styleClass="select_authorNameSync">
-                                        <f:selectItem itemLabel="No Value" itemValue=""/>
-                                        <f:selectItems value="#{EditStudyPage.studyMap[sfc.authorName].templateField.controlledVocabulary.selectItems}"/>
-                                    </ice:selectOneMenu>
-                                    <ice:outputText styleClass="vdcEditStudyFormatExample" value="(LastName, FirstName)"/>
+                                  <!-- Date -->
+                                  <div id="dvnDataCitationWidgetDateInputBlock" class="dvnDataCitationWidgetInput">
+                                      <p>
+                                        <ice:graphicImage value="/resources/images/icon_information.18.png" styleClass="dvn_icon"/>
+                                        <ice:outputText styleClass="vdcHelpText" value=" In the data citation, the Distribution Date supersedes the Production Date."/>
+                                      </p>
+                                      <div>
+                                        <ice:outputText styleClass="dvnInlineHelpLabel dvnInlineHelpTip" value="#{editstudybundle.distributionDateLabel}" title="#{editstudybundle.distributionDateHelpHeading} - #{editstudybundle.distributionDateHelp}"/>
+                                        <ice:inputText id="input_distributionDateSync" styleClass="formDateFormat"/>
+                                        <ice:outputText styleClass="vdcEditStudyFormatExample" value="#{editstudybundle.dateFormatDescription}"/>
+                                      </div>
+                                      <div>
+                                        <ice:outputText styleClass="dvnInlineHelpLabel dvnInlineHelpTip" value="#{editstudybundle.productionDateLabel}" title="#{editstudybundle.productionDateHelpHeading} - #{editstudybundle.productionDateHelp}"/>
+                                        <ice:inputText id="input_productionDateSync" styleClass="formDateFormat"/>
+                                        <ice:outputText styleClass="vdcEditStudyFormatExample" value="#{editstudybundle.dateFormatDescription}"/>
+                                      </div>
                                   </div>
-                              </div>
-                              <!-- Date -->
-                              <div id="dvnDataCitationWidgetDateInputBlock" class="dvnDataCitationWidgetInput">
-                                  <p style="margin-top:0;">
-                                    <ice:graphicImage value="/resources/images/icon_information.18.png" styleClass="dvn_icon"/>
-                                    <ice:outputText styleClass="vdcHelpText" value=" In the data citation, the Distribution Date supersedes the Production Date."/>
-                                  </p>
-                                  <div>
-                                    <ice:outputText styleClass="dvnInlineHelpLabel dvnInlineHelpTip" value="#{editstudybundle.distributionDateLabel}" title="#{editstudybundle.distributionDateHelpHeading} - #{editstudybundle.distributionDateHelp}"/>
-                                    <ice:inputText id="input_distributionDateSync" styleClass="formDateFormat"/>
-                                    <ice:outputText styleClass="vdcEditStudyFormatExample" value="#{editstudybundle.dateFormatDescription}"/>
+                                  <!-- Title -->
+                                  <div id="dvnDataCitationWidgetTitleInputBlock" class="dvnDataCitationWidgetInput">
+                                      <ice:outputText styleClass="dvnInlineHelpLabel dvnInlineHelpTip" value="#{editstudybundle.titleLabel}" title="#{editstudybundle.titleHelpHeading} - #{editstudybundle.titleHelp}"/>
+                                      <ice:inputText id="input_titleSync" size="90"/>
                                   </div>
-                                  <div>
-                                    <ice:outputText styleClass="dvnInlineHelpLabel dvnInlineHelpTip" value="#{editstudybundle.productionDateLabel}" title="#{editstudybundle.productionDateHelpHeading} - #{editstudybundle.productionDateHelp}"/>
-                                    <ice:inputText id="input_productionDateSync" styleClass="formDateFormat"/>
-                                    <ice:outputText styleClass="vdcEditStudyFormatExample" value="#{editstudybundle.dateFormatDescription}"/>
+                                  <!-- Study ID -->
+                                  <div id="dvnDataCitationWidgetStudyIDInputBlock" class="dvnDataCitationWidgetInput">
+                                      <ice:outputText styleClass="dvnInlineHelpLabel dvnInlineHelpTip" value="#{editstudybundle.studyidLabel}" title="#{editstudybundle.studyidHelpHeading} - #{editstudybundle.studyidHelp}"/><br/>
+                                        <ice:outputText id="input_studyIdPrfxSync" value="#{EditStudyPage.study.protocol}:#{EditStudyPage.study.authority}/"/>
+                                        <ice:inputText maxlength="255" id="input_studyIdSync"/>
                                   </div>
-                              </div>
-                              <!-- Title -->
-                              <div id="dvnDataCitationWidgetTitleInputBlock" class="dvnDataCitationWidgetInput">
-                                  <ice:outputText styleClass="dvnInlineHelpLabel dvnInlineHelpTip" value="#{editstudybundle.titleLabel}" title="#{editstudybundle.titleHelpHeading} - #{editstudybundle.titleHelp}"/>
-                                  <ice:inputText id="input_titleSync" size="90"/>
-                              </div>
-                              <!-- Study ID -->
-                              <div id="dvnDataCitationWidgetStudyIDInputBlock" class="dvnDataCitationWidgetInput">
-                                  <ice:outputText styleClass="dvnInlineHelpLabel dvnInlineHelpTip" value="#{editstudybundle.studyidLabel}" title="#{editstudybundle.studyidHelpHeading} - #{editstudybundle.studyidHelp}"/><br/>
-                                    <ice:outputText id="input_studyIdPrfxSync" value="#{EditStudyPage.study.protocol}:#{EditStudyPage.study.authority}/"/>
-                                    <ice:inputText maxlength="255" id="input_studyIdSync"/>
-                              </div>
-                              <!-- Distributor -->
-                              <div id="dvnDataCitationWidgetDistributorInputBlock" class="dvnDataCitationWidgetInput">
-                                  <div class="dvnDataCitationWidgetDistributorInputBoba">
-                                    <ice:outputText styleClass="dvnInlineHelpLabel dvnInlineHelpTip" value="#{editstudybundle.distributorLabel}" title="#{editstudybundle.distributorHelpHeading} - #{editstudybundle.distributorHelp}"/>
-                                    <ice:inputText 
-                                                   styleClass="input_distributorNameSync"
-                                                   size="45"
-                                                   maxlength="255" />
+                                  <!-- Distributor -->
+                                  <div id="dvnDataCitationWidgetDistributorInputBlock" class="dvnDataCitationWidgetInput">
+                                      <div class="dvnDataCitationWidgetDistributorInputBoba">
+                                        <ice:outputText styleClass="dvnInlineHelpLabel dvnInlineHelpTip" value="#{editstudybundle.distributorLabel}" title="#{editstudybundle.distributorHelpHeading} - #{editstudybundle.distributorHelp}"/>
+                                        <ice:inputText 
+                                                       styleClass="input_distributorNameSync"
+                                                       size="45"
+                                                       maxlength="255" />
+                                      </div>
+                                      <div class="dvnDataCitationWidgetDistributorSelectBoba">
+                                        <ice:outputText styleClass="dvnInlineHelpLabel dvnInlineHelpTip" value="#{editstudybundle.distributorLabel}" title="#{editstudybundle.distributorHelpHeading} - #{editstudybundle.distributorHelp}"/>
+                                        <ice:selectOneMenu immediate="false"  
+                                               styleClass="select_distributorNameSync">
+                                            <f:selectItem itemLabel="No Value" itemValue=""/>
+                                            <f:selectItems value="#{EditStudyPage.studyMap[sfc.distributorName].templateField.controlledVocabulary.selectItems}"/>
+                                        </ice:selectOneMenu>
+                                      </div>
                                   </div>
-                                  <div class="dvnDataCitationWidgetDistributorSelectBoba">
-                                    <ice:outputText styleClass="dvnInlineHelpLabel dvnInlineHelpTip" value="#{editstudybundle.distributorLabel}" title="#{editstudybundle.distributorHelpHeading} - #{editstudybundle.distributorHelp}"/>
-                                    <ice:selectOneMenu immediate="false"  
-                                           styleClass="select_distributorNameSync">
-                                        <f:selectItem itemLabel="No Value" itemValue=""/>
-                                        <f:selectItems value="#{EditStudyPage.studyMap[sfc.distributorName].templateField.controlledVocabulary.selectItems}"/>
-                                    </ice:selectOneMenu>
-                                  </div>
-                              </div>
-                            </div>
-                              
-                            <div jsfc="ice:panelGroup" styleClass="dvnDataCitationWidgetBlock vdcEditStudyFieldFloat1">
-                              <!-- Author -->
-                                <div id="dvnDataCitationWidgetBlockAuthor">
-                                    &lt;&nbsp;
-                                    <a href="#" class="dvnDataCitationWidgetLabel"></a>
-                                    &nbsp;&gt;,
                                 </div>
-                              <!-- End Author -->
+                                
                             </div>
-                            <div jsfc="ice:panelGroup" styleClass="dvnDataCitationWidgetBlock vdcEditStudyFieldFloat2">
-                              <!-- Date -->
-                                <div id="dvnDataCitationWidgetBlockDate">
-                                    &lt;&nbsp;
-                                    <a href="#" class="dvnDataCitationWidgetLabel">Date</a>
-                                    &nbsp;&gt;,
-                                </div>
-                              <!-- End Date -->
-                            </div>
-                            <div jsfc="ice:panelGroup" styleClass="dvnDataCitationWidgetBlock vdcEditStudyFieldFloat2">
-                              <!-- Title -->
-                                <div id="dvnDataCitationWidgetBlockTitle">
-                                    &lt;&nbsp;
-                                    <a href="#" class="dvnDataCitationWidgetLabel">Title</a>
-                                    &nbsp;&gt;,
-                                </div>
-                              <!-- End Title -->
-                            </div>
-                            <div jsfc="ice:panelGroup" styleClass="dvnDataCitationWidgetBlock vdcEditStudyFieldFloat2">
-                              <!-- Study ID -->
-                                <div id="dvnDataCitationWidgetBlockStudyID" style="overflow:hidden;">
-                                    <div style="float:left;">
+                            
+                            <div>
+                                
+                                <div jsfc="ice:panelGroup" styleClass="dvnDataCitationWidgetBlock vdcEditStudyFieldFloat1">
+                                  <!-- Author -->
+                                    <div id="dvnDataCitationWidgetBlockAuthor">
                                         &lt;&nbsp;
+                                        <a href="#" class="dvnDataCitationWidgetLabel"></a>
+                                        &nbsp;&gt;,
                                     </div>
-                                    <div style="float:left;">
+                                  <!-- End Author -->
+                                </div>
+                                <div jsfc="ice:panelGroup" styleClass="dvnDataCitationWidgetBlock vdcEditStudyFieldFloat2">
+                                  <!-- Date -->
+                                    <div id="dvnDataCitationWidgetBlockDate">
+                                        &lt;&nbsp;
+                                        <a href="#" class="dvnDataCitationWidgetLabel">Date</a>
+                                        &nbsp;&gt;,
+                                    </div>
+                                  <!-- End Date -->
+                                </div>
+                                <div jsfc="ice:panelGroup" styleClass="dvnDataCitationWidgetBlock vdcEditStudyFieldFloat2">
+                                  <!-- Title -->
+                                    <div id="dvnDataCitationWidgetBlockTitle">
+                                        &lt;&nbsp;
+                                        <a href="#" class="dvnDataCitationWidgetLabel">Title</a>
+                                        &nbsp;&gt;,
+                                    </div>
+                                  <!-- End Title -->
+                                </div>
+                                <div jsfc="ice:panelGroup" styleClass="dvnDataCitationWidgetBlock vdcEditStudyFieldFloat2">
+                                  <!-- Study ID -->
+                                    <div id="dvnDataCitationWidgetBlockStudyID">
+                                        &lt;&nbsp;
                                         <div jsfc="ice:panelGroup" styleClass="dvnDataCitationWidgetLabelBlock" rendered="#{EditStudyPage.study.id==null}">
                                             <span class="dvnStudyIDPrfx"></span>
                                             <a href="#" class="dvnDataCitationWidgetLabel">Study ID</a>
@@ -737,29 +740,28 @@ function initAddDistributorSync(){
                                             <span class="dvnStudyIDPrfx"></span>
                                             <ice:outputText id="input_studyIdTextSync" value="#{EditStudyPage.study.globalId}"/>
                                         </div>
-                                    </div>
-                                    <div style="float:left;">
                                         &nbsp;&gt;,
                                     </div>
+                                  <!-- End Study ID -->
                                 </div>
-                              <!-- End Study ID -->
-                            </div>
-                            <div jsfc="ice:panelGroup" styleClass="dvnDataCitationWidgetBlock vdcEditStudyFieldFloat2">
-                              <!-- Distributor -->
-                                <div id="dvnDataCitationWidgetBlockDistributor">
-                                    &lt;&nbsp;
-                                    <a href="#" class="dvnDataCitationWidgetLabel">Distributor</a>
-                                    <span id="dvnDataCitationWidgetDistributorLabel"> [Distributor]</span>
-                                    &nbsp;&gt;,
+                                <div jsfc="ice:panelGroup" styleClass="dvnDataCitationWidgetBlock vdcEditStudyFieldFloat2">
+                                  <!-- Distributor -->
+                                    <div id="dvnDataCitationWidgetBlockDistributor">
+                                        &lt;&nbsp;
+                                        <a href="#" class="dvnDataCitationWidgetLabel">Distributor</a>
+                                        <span id="dvnDataCitationWidgetDistributorLabel"> [Distributor]</span>
+                                        &nbsp;&gt;,
+                                    </div>
+                                  <!-- End Distributor -->
                                 </div>
-                              <!-- End Distributor -->
-                            </div>
-                            <div jsfc="ice:panelGroup" styleClass="dvnDataCitationWidgetBlock vdcEditStudyFieldFloat2">
-                              <!-- Version -->
-                                <div>
-                                    <ice:outputText value="V#{EditStudyPage.metadata.studyVersion.versionNumber} [Version]" style="padding:0;"/>
+                                <div jsfc="ice:panelGroup" styleClass="dvnDataCitationWidgetBlock vdcEditStudyFieldFloat2">
+                                  <!-- Version -->
+                                    <div id="dvnDataCitationWidgetBlockVersion">
+                                        <ice:outputText value="V#{EditStudyPage.metadata.studyVersion.versionNumber} [Version]"/>
+                                    </div>
+                                  <!-- End Version -->
                                 </div>
-                              <!-- End Version -->
+                                
                             </div>
                             
                           </div>

@@ -75,5 +75,7 @@ public interface EditNetworkPrivilegesService  extends java.io.Serializable  {
     public void addTOUPrivilegedUser(Long userId );
 
     public void initTOUPrivilegedUsers();
+
+    public void save(java.lang.String creatorUrl, boolean allowCreate);
     
 }

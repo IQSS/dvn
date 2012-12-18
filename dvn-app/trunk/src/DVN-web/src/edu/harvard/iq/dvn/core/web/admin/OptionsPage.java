@@ -631,9 +631,7 @@ public class OptionsPage extends VDCBaseBean  implements java.io.Serializable {
         }
         
         JavascriptContext.addJavascriptCall(getFacesContext(), "initDownloadDataTableBlockHeight();");
-        
-       /* writeCSVString();*/
-        
+               
         return "";
     }
         
@@ -1506,86 +1504,78 @@ public class OptionsPage extends VDCBaseBean  implements java.io.Serializable {
    
     
     private String writeCSVStringQuery() {
-        String csvCol;
-        String csvOutput = getColumnString() + "\n";
+
+
+        StringBuffer csvOutput = new StringBuffer();
+               csvOutput.append(getColumnString());
+               csvOutput.append("\n");
         List list = (List) guestBookResponseServiceBean.findDownloadInfoAll(guestBookResponsesAllIds);
         Iterator iterator = list.iterator();
-        Long grbOld = new Long(0);
+
         while (iterator.hasNext()) {
+            StringBuffer csvCol= new StringBuffer();
 
             Object[] gbrInfo = (Object[]) iterator.next();
-            if (grbOld.longValue() != (Long) gbrInfo[14]) {
-                csvCol = "";
-                String userName = (String) gbrInfo[0];
-                if (!(userName == null) && !userName.isEmpty()) {
-                    csvCol += getSafeCString(userName);
-                } else {
-                    csvCol += getSafeCString("Anonymous - + " + gbrInfo[1]);
-                }
-                csvCol += "," + getSafeCString((String) gbrInfo[2]);
-                csvCol += "," + getSafeCString((String) gbrInfo[3]);
-                csvCol += "," + getSafeCString((String) gbrInfo[4]);
-                csvCol += "," + getSafeCString((String) gbrInfo[5]);
-                csvCol += "," + getSafeCString((String) gbrInfo[12]);
-                if (vdc == null) {
-                    csvCol += "," + getSafeCString((String) gbrInfo[6]);
-                }
-                csvCol += "," + getSafeCString((String) gbrInfo[7] + ":" + (String) gbrInfo[8] + "/" + (Long) gbrInfo[13]);
-                csvCol += "," + getSafeCString((String) gbrInfo[9]);
-                csvCol += "," + getSafeCString((String) gbrInfo[10]);
-                Date responseTime = (Date) gbrInfo[11];
-                csvCol += "," + getSafeCString(responseTime.toString());
-                csvCol += "," + getSafeCString((String) gbrInfo[15]);
-                csvCol += "," + getSafeCString((String) gbrInfo[1]);
-                if (!customQuestionIds.isEmpty()) {
-                    List customQuestionResponsesQueryResults = guestBookResponseServiceBean.findCustomResponsePerGuestbookResponse((Long) gbrInfo[14]);
-                    Iterator cqIterator = customQuestionResponsesQueryResults.iterator();
-                    List<CustomQuestionResponse> cqrList = new ArrayList();
-                    /*
-                    while (cqIterator.hasNext()) {
-                        Object[] cqResponse = (Object[]) cqIterator.next();                       
-                        System.out.print("crq0" + (String) cqResponse[0] + " gbrid " + (Long) gbrInfo[14] );
-                        System.out.print("crq1" + (String) cqResponse[1] );
-                    }*/
+            String userName = (String) gbrInfo[0];
+            if (!(userName == null) && !userName.isEmpty()) {
+                csvCol.append(getSafeCString(userName));
+            } else {
+                csvCol.append(getSafeCString("Anonymous - + " + gbrInfo[1]));
+            }
+            csvCol.append(",").append(getSafeCString((String) gbrInfo[2]));
+            csvCol.append(",").append(getSafeCString((String) gbrInfo[3]));
+            csvCol.append(",").append(getSafeCString((String) gbrInfo[4]));
+            csvCol.append(",").append(getSafeCString((String) gbrInfo[5]));
+            csvCol.append(",").append(getSafeCString((String) gbrInfo[12]));
+            if (vdc == null) {
+                csvCol.append(",").append(getSafeCString((String) gbrInfo[6]));
+            }
+            csvCol.append(",").append(getSafeCString((String) gbrInfo[7] + ":" + (String) gbrInfo[8] + "/" + (Long) gbrInfo[13]));
+            csvCol.append(",").append(getSafeCString((String) gbrInfo[9]));
+            csvCol.append(",").append(getSafeCString((String) gbrInfo[10]));
+            Date responseTime = (Date) gbrInfo[11];
+            csvCol.append(",").append(getSafeCString(responseTime.toString()));
+            csvCol.append(",").append(getSafeCString((String) gbrInfo[15]));
+            csvCol.append(",").append(getSafeCString((String) gbrInfo[1]));
+            if (!customQuestionIds.isEmpty()) {
+                List customQuestionResponsesQueryResults = guestBookResponseServiceBean.findCustomResponsePerGuestbookResponse((Long) gbrInfo[14]);
+                Iterator cqIterator = customQuestionResponsesQueryResults.iterator();
+                List<CustomQuestionResponse> cqrList = new ArrayList();
 
-                    while (cqIterator.hasNext()) {
-                        Object[] cqResponse = (Object[]) cqIterator.next();
-                        CustomQuestionResponse cqrAdd = new CustomQuestionResponse();
-                        cqrAdd.setResponse((String) cqResponse[0]);
-                        CustomQuestion dummyQuestion = new CustomQuestion();
-                        dummyQuestion.setId((Long) cqResponse[1]);
-                        cqrAdd.setCustomQuestion(dummyQuestion);
-                        cqrList.add(cqrAdd);
+                while (cqIterator.hasNext()) {
+                    Object[] cqResponse = (Object[]) cqIterator.next();
+                    CustomQuestionResponse cqrAdd = new CustomQuestionResponse();
+                    cqrAdd.setResponse((String) cqResponse[0]);
+                    CustomQuestion dummyQuestion = new CustomQuestion();
+                    dummyQuestion.setId((Long) cqResponse[1]);
+                    cqrAdd.setCustomQuestion(dummyQuestion);
+                    cqrList.add(cqrAdd);
+                }
+
+                if (!cqrList.isEmpty()) {
+                    System.out.print("size " + cqrList.size());
+                    List<String> customQuestionResponseStrings = new ArrayList(customQuestionIds.size());
+                    for (int i = 0; i < cqrList.size(); i++) {
+                        customQuestionResponseStrings.add(i, "");
                     }
-
-                    if (!cqrList.isEmpty()) {
-                        System.out.print ("size " + cqrList.size());
-                        List<String> customQuestionResponseStrings = new ArrayList(customQuestionIds.size());
-                        for (int i = 0; i < cqrList.size(); i++) {
-                            customQuestionResponseStrings.add(i, "");
-                        }
-                        for (Long qid : customQuestionIds) {
-                            int index = customQuestionIds.indexOf(qid);
-                            for (CustomQuestionResponse cqr : cqrList) {
-                                if (cqr.getCustomQuestion().getId().equals(qid)) {
-                                    customQuestionResponseStrings.set(index, cqr.getResponse());
-                                }
+                    for (Long qid : customQuestionIds) {
+                        int index = customQuestionIds.indexOf(qid);
+                        for (CustomQuestionResponse cqr : cqrList) {
+                            if (cqr.getCustomQuestion().getId().equals(qid)) {
+                                customQuestionResponseStrings.set(index, cqr.getResponse());
                             }
                         }
-                        for (String response : customQuestionResponseStrings) {
-                            csvCol += "," + getSafeCString(response);
-                        }
-                    } 
+                    }
+                    for (String response : customQuestionResponseStrings) {
+                        csvCol.append(",").append(getSafeCString(response));
+                    }
                 }
-                csvCol += "\n";
-                csvOutput = csvOutput + csvCol;
-                grbOld = (Long) gbrInfo[14];
             }
-
-
+            csvCol.append("\n");
+            csvOutput.append(csvCol);
+            
         }
-
-        return csvOutput;
+        return csvOutput.toString();
     }
     
     private String writeCSVString() {
@@ -3261,8 +3251,7 @@ public class OptionsPage extends VDCBaseBean  implements java.io.Serializable {
     }
     
     //Network Priviledged users page
-    public EditNetworkPrivilegesService getPrivileges() {        
-        return privileges;}
+    public EditNetworkPrivilegesService getPrivileges() {return privileges;}
     public void setPrivileges(EditNetworkPrivilegesService privileges) {this.privileges = privileges;}
     private String userName;
     public String getUserName() {return this.userName;}
@@ -3394,7 +3383,6 @@ public class OptionsPage extends VDCBaseBean  implements java.io.Serializable {
         // Needed to send an approval email to approved creators
         String creatorUrl = "http://"+hostName+portStr+request.getContextPath()+"/faces/site/AddSitePage.xhtml";
         privileges.save(creatorUrl);
-        privileges.init();
         getVDCRenderBean().getFlash().put("successMessage", "Successfully updated network permissions.");
         tab2="";
         return "/networkAdmin/NetworkOptionsPage.xhtml?faces-redirect=true&tab=permissions";
@@ -4669,10 +4657,10 @@ public class OptionsPage extends VDCBaseBean  implements java.io.Serializable {
     public Long getUserDataCount() {return userDataCount;}
     public void setUserDataCount(Long userDataCount) {this.userDataCount = userDataCount;}
         
-    public void initPrivilegedUserData() { 
-            privileges.initTOUPrivilegedUsers();
-            privileges.setNetwork(vdcNetworkService.find());
-            sessionPut( getPrivileges().getClass().getName(),privileges);
+    public void initPrivilegedUserData() {
+        privileges.setNetwork(vdcNetworkService.find());
+        privileges.initTOUPrivilegedUsers();
+        sessionPut(getPrivileges().getClass().getName(), privileges);
     }
     
     private HtmlDataTable userDataTable;

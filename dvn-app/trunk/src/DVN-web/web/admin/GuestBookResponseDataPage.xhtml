@@ -54,9 +54,16 @@
                         document.getElementById('form1:tabSet1:0:tabSetPermissions:0:downloadCSV').click();    
                    };
                    function initGuestBookResponses(){
+                       
                         jQuery('input[id$=initGuestBookResponse]').click();
-                   };
-                    //]]>
+
+                   }
+                   function initDownloadDataTableBlockHeight(){
+                        var $div = jQuery(".dvnGuestBookResponseTable");
+                        y = $div.outerHeight() + 17;
+                        jQuery(".dvnGuestBookResponseTableBlock").css("height", y);                       
+                   } 
+//]]>
                 </script>
     
             <ice:commandButton visible="false" id="initGuestBookResponse" action="#{OptionsPage.initGuestBookResponses}"/>

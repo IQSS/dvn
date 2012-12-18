@@ -201,12 +201,13 @@ public class GuestBookResponseServiceBean {
             + "and sv.metadata_id = m.id " 
             + "and gbr.studyfile_id = fmd.studyfile_id " 
             + "and sv.id = fmd.studyversion_id " 
+            + "and sv.id = gbr.studyversion_id " 
             + " and gbr.id in " + varString
             + " group by u.username, gbr.sessionid, "
             + " gbr.firstname, gbr.lastname, gbr.email, gbr.institution, "
             + " vdc.name, s.protocol, s.authority, m.title, fmd.label, gbr.responsetime, gbr.position, gbr.study_id, gbr.id, s.id, gbr.downloadType  "    +    
-            "order by s.id, gbr.id,  max(sv.versionNumber) desc ";
-
+            "order by s.id, gbr.id";
+            System.out.print(gbrDownloadQueryString);
         Query query = em.createNativeQuery(gbrDownloadQueryString);
         
         return  convertIntegerToLong(query.getResultList(),14);

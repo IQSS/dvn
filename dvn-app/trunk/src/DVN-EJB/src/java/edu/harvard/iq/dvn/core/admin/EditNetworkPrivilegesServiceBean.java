@@ -107,7 +107,7 @@ public class EditNetworkPrivilegesServiceBean implements EditNetworkPrivilegesSe
 
    // @Remove
     @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
-    public void save(String creatorUrl) {
+    public void save(String creatorUrl, boolean allowCreate) {
 
         if (privilegedUsers != null) {
             for (Iterator it = privilegedUsers.iterator(); it.hasNext();) {
@@ -128,7 +128,7 @@ public class EditNetworkPrivilegesServiceBean implements EditNetworkPrivilegesSe
                 elem.setBypassTermsOfUse(Boolean.TRUE);
             }
         }
-
+        network.setAllowCreateRequest(allowCreate);
         em.flush();
     }
 
@@ -197,6 +197,33 @@ public class EditNetworkPrivilegesServiceBean implements EditNetworkPrivilegesSe
 
     public void setTOUPrivilegedUsers(List<VDCUser> userList) {
         this.TOUprivilegedUsers = userList;
+    }
+
+    @Override
+    @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
+    public void save(String creatorUrl) {
+        
+        if (privilegedUsers != null) {
+            for (Iterator it = privilegedUsers.iterator(); it.hasNext();) {
+                NetworkPrivilegedUserBean elem = (NetworkPrivilegedUserBean) it.next();
+                if (elem.getUser().getId() != network.getDefaultNetworkAdmin().getId()) {
+                    if (elem.getNetworkRoleId() == null) {
+                        elem.getUser().setNetworkRole(null);
+                    } else {
+                        elem.getUser().setNetworkRole(em.find(NetworkRole.class, elem.getNetworkRoleId()));
+                    }
+                }
+            }
+        }
+
+        for (Iterator it = TOUprivilegedUsers.iterator(); it.hasNext();) {
+            VDCUser elem = (VDCUser) it.next();
+            if (elem.isBypassTermsOfUse()) {
+                elem.setBypassTermsOfUse(Boolean.TRUE);
+            }
+        }
+        
+        em.flush();
     }
     
 

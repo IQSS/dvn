@@ -23,10 +23,14 @@
                     });
 
                     jQuery(document).ready(function(){
+                          initDownloadDataTableBlockHeight();
+                    });
+
+                    function initDownloadDataTableBlockHeight(){
                         var $div = jQuery(".dvnGuestBookResponseTable");
                         y = $div.outerHeight() + 17;
-                        jQuery(".dvnGuestBookResponseTableBlock").css("height", y);                
-                    });
+                        jQuery(".dvnGuestBookResponseTableBlock").css("height", y);
+                    };
 
                    Ice.onAsynchronousReceive("document:body", function(){
                        jQuery(function(jQuery){
@@ -43,28 +47,19 @@
                           };
                         });
 
-                        var $div = jQuery(".dvnGuestBookResponseTable");
-                        y = $div.outerHeight() + 17;
-                        jQuery(".dvnGuestBookResponseTableBlock").css("height", y);
+                        initDownloadDataTableBlockHeight();
                    });
                    
-                   function startDownload() {  
-
+                   function startDownload() {
                         document.getElementById('form1:tabSet1:0:tabSetPermissions:0:downloadCSV').click();    
-                   }
+                   };
                    function initGuestBookResponses(){
-                        document.getElementById('form1:initGuestBookResponse').click();
-
-                   }
-                   function updateGuestBookTableSize(){
-                        var $div = jQuery(".dvnGuestBookResponseTable");
-                        y = $div.outerHeight() + 17;
-                        jQuery(".dvnGuestBookResponseTableBlock").css("height", y);                       
-                   }
-//]]>
+                        jQuery('input[id$=initGuestBookResponse]').click();
+                   };
+                    //]]>
                 </script>
     
-            <ice:commandButton visible="false" id="initGuestBookResponse" action="#{OptionsPage.initGuestBookResponse}"/>
+            <ice:commandButton visible="false" id="initGuestBookResponse" action="#{OptionsPage.initGuestBookResponses}"/>
  
                 <div jsfc="ice:panelGroup" styleClass="dvnManageTableTop">
                   <div jsfc="ice:panelGroup" styleClass="dvn_margin12 dvnInformationMessage">

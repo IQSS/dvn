@@ -629,12 +629,11 @@ public class OptionsPage extends VDCBaseBean  implements java.io.Serializable {
                 GuestBookResponseUI guestBookResponseDisplay = new GuestBookResponseUI(gbr,customQuestionIds );
                 guestBookResponsesDisplay.add(guestBookResponseDisplay);
         }
-
-
-
+        
+        JavascriptContext.addJavascriptCall(getFacesContext(), "initDownloadDataTableBlockHeight();");
+        
        /* writeCSVString();*/
         
-        JavascriptContext.addJavascriptCall(getFacesContext(), "updateGuestBookTableSize();");
         return "";
     }
         

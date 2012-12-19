@@ -191,3 +191,26 @@ and fmd.studyfile_id = sf.id
 and sf.id in (select studyfile_id from guestbookresponse where studyversion_id is null)
 group by sf.id) sfsv
 where gbr.studyfile_id = sfsv.sf_id;
+
+-- Modify the searchable field configuration, so that it matches
+-- the existing Lucene indexes; this fixes the Advanced Search 
+-- page. - L.A.
+
+UPDATE StudyField SET advancedSearchField=false,basicSearchField=false,searchresultfield=false WHERE id=3;
+UPDATE StudyField SET advancedSearchField=true,basicSearchField=true,title='Author',description='Author',searchresultfield=true,displayorder=0 WHERE id=99;
+
+UPDATE StudyField SET advancedSearchField=false,searchresultfield=false WHERE name='topicClassification';
+UPDATE StudyField SET advancedSearchField=true,searchresultfield=true WHERE name='topicClassValue';
+
+UPDATE StudyField SET advancedSearchField=false,searchresultfield=false WHERE name='keyword';
+UPDATE StudyField SET advancedSearchField=true,searchresultfield=true WHERE name='keywordValue';
+
+UPDATE StudyField SET advancedSearchField=false,searchresultfield=false WHERE name='producer';
+UPDATE StudyField SET advancedSearchField=true,searchresultfield=true WHERE name='producerName';
+
+UPDATE StudyField SET advancedSearchField=false,searchresultfield=false WHERE name='distributor';
+UPDATE StudyField SET advancedSearchField=true,searchresultfield=true WHERE name='distributorName';
+
+UPDATE StudyField SET advancedSearchField=false,searchresultfield=false WHERE name='publication';
+
+ 

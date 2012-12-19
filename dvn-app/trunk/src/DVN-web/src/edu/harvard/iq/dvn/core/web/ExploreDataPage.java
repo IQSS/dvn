@@ -3386,7 +3386,7 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
                 //need to set up dummy network response
                 guestbookResponse = guestBookResponseServiceBean.initNetworkGuestBookResponse(studyIn, sf, getVDCSessionBean().getLoginBean());                
             } 
-            
+            guestbookResponse.setStudyVersion(sf.getStudy().getStudyVersionByNumber(versionNumber));
             HttpServletRequest req = (HttpServletRequest) FacesContext.getCurrentInstance().getExternalContext().getRequest();
             String sessionId = null;
             Cookie cookies[] = req.getCookies();

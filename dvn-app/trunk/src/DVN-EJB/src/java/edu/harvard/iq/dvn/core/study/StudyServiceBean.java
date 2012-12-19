@@ -1268,7 +1268,10 @@ public class StudyServiceBean implements edu.harvard.iq.dvn.core.study.StudyServ
         StudyFile sf = studyFileService.getStudyFile(studyFileId);
         Study study = sf.getStudy();
         StudyFileActivity sfActivity = sf.getStudyFileActivity();
-        
+        if (guestbookResponse.getStudyVersion() == null || guestbookResponse.getStudyVersion().isDraft() ){
+            //if our studyversion is in draft or doesn't exist we don't want to count it or save GB responses.
+            return;
+        }
         addGuestbookRecords(sf,guestbookResponse );
 
         if (sfActivity == null) {

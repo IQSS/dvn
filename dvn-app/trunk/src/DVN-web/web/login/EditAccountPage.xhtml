@@ -91,7 +91,7 @@
                 <ice:inputText id="inputPhoneNumber" value="#{EditAccountPage.user.phoneNumber}"/>
               </table>
               <div class="dvnFormPadding dvnFormMargin">
-                <ice:commandButton  value="Save" action="#{EditAccountPage.saveAction}"/><ice:commandButton  value="Cancel" immediate ="true" action="#{EditAccountPage.cancelAction}"/>
+                <ice:commandButton  value="Save" action="#{EditAccountPage.saveAction}" disabled="#{VDCRequest.readOnlyDatabase}"/><ice:commandButton  value="Cancel" immediate ="true" action="#{EditAccountPage.cancelAction}"/>
               </div>
                 
               </div>

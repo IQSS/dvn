@@ -673,6 +673,7 @@ public class NetworkDataAnalysisPage extends VDCBaseBean implements Serializable
     class RFileResource implements Resource, Serializable{
         File file;
         Long vdcId;
+        StudyVersion sv;
         boolean getGraphML = false;
         boolean getTabular = false;
 
@@ -738,7 +739,8 @@ public class NetworkDataAnalysisPage extends VDCBaseBean implements Serializable
                     if (getTabular) formatRequested += "Tab Delimited";
                 }
                 guestbookResponse.setDownloadtype(formatRequested);
-                
+                sv = sfile.getStudy().getStudyVersionByNumber(versionNumber);
+                guestbookResponse.setStudyVersion(sv);
                 HttpServletRequest req = (HttpServletRequest) FacesContext.getCurrentInstance().getExternalContext().getRequest();
                 String sessionId = null; 
                 Cookie cookies[] = req.getCookies();

@@ -1284,7 +1284,7 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
                         //need to set up dummy network response
                         guestbookResponse = guestBookResponseServiceBean.initNetworkGuestBookResponse(sf.getStudy(), sf, getVDCSessionBean().getLoginBean());                        
                     }
-                    
+                    guestbookResponse.setStudyVersion(sf.getStudy().getStudyVersionByNumber(versionNumber));
                     String jsessionId = null; 
                     Cookie cookies[] = req.getCookies();
                 

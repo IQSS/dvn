@@ -172,7 +172,7 @@ public class FileDownloadServlet extends HttpServlet {
         String downloadOriginalFormat = req.getParameter("downloadOriginalFormat");
         String imageThumb = req.getParameter("imageThumb");
         String noVarHeader = req.getParameter("noVarHeader");
-
+        String versionNumber = req.getParameter("versionNumber");
 
         // Single file download request:
 
@@ -264,7 +264,7 @@ public class FileDownloadServlet extends HttpServlet {
                         jsessionId = cookies[i].getValue();
                     }
                 }
-                incrementDownloadCounts(file, vdc, fileDownloadObject.getMimeType(), jsessionId);
+                incrementDownloadCounts(file, vdc, fileDownloadObject.getMimeType(), jsessionId, versionNumber);
             }
 
             // done!
@@ -1121,17 +1121,21 @@ public class FileDownloadServlet extends HttpServlet {
     }
 
 
-    public void incrementDownloadCounts (StudyFile file, VDC vdc, String formatMimeType, String jsessionId) {
+    public void incrementDownloadCounts (StudyFile file, VDC vdc, String formatMimeType, String jsessionId, String versionNumber) {
         GuestBookResponse guestbookResponse = (GuestBookResponse) vdcSession.getGuestbookResponseMap().get("guestBookResponse_" + file.getStudy().getId());
         if (guestbookResponse == null) {
             guestbookResponse = guestBookResponseServiceBean.initNetworkGuestBookResponse(file.getStudy(), file, vdcSession.getLoginBean());            
         }
-
+        
         if (jsessionId == null || "".equals(jsessionId)) {
                 String[] stringArray = vdcSession.toString().split("@");
                 jsessionId = stringArray[1];
         }
-      
+        
+        Long versionNum = null;
+        if (versionNumber != null) versionNum = Long.valueOf(versionNumber).longValue();           
+        StudyVersion sv = file.getStudy().getStudyVersionByNumber(versionNum);
+        guestbookResponse.setStudyVersion(sv);
         guestbookResponse.setSessionId(jsessionId);
         String friendlyFormatName = "";
         
@@ -1853,7 +1857,7 @@ public class FileDownloadServlet extends HttpServlet {
         String fileId = req.getParameter("fileId");
         String studyId = req.getParameter("studyId");
         String versionNumber = req.getParameter("versionNumber");
-    
+        System.out.print("zip multiple files version number" + versionNumber);
         Study study = null;
         Collection files = new ArrayList();
         boolean createDirectoriesForCategories = false;
@@ -2018,6 +2022,7 @@ public class FileDownloadServlet extends HttpServlet {
                         Long versionNum = null; 
                         if (versionNumber != null) versionNum = Long.valueOf(versionNumber).longValue();          
                         String zipEntryName = file.getFileName(versionNum); 
+
                         zipEntryName = checkZipEntryName(zipEntryName, nameList);
                          
                         // ZipEntry e = new ZipEntry(zipEntryName);
@@ -2084,12 +2089,16 @@ public class FileDownloadServlet extends HttpServlet {
             while (it.hasNext()) {
                 Long fid = (Long) it.next();
                 StudyFile file = studyFileService.getStudyFile(new Long(fid));
+                Long versionNum = null; 
+                if (versionNumber != null) versionNum = Long.valueOf(versionNumber).longValue();   
+                System.out.print("versionNumber " + versionNumber);
+                StudyVersion sv = file.getStudy().getStudyVersionByNumber(versionNum);
                 GuestBookResponse guestbookResponse = (GuestBookResponse) vdcSession.getGuestbookResponseMap().get("guestBookResponse_" + file.getStudy().getId());
                 if (guestbookResponse == null) {
                     //need to set up dummy network response
                     guestbookResponse = guestBookResponseServiceBean.initNetworkGuestBookResponse(file.getStudy(), file, vdcSession.getLoginBean());
                 }
-                
+                guestbookResponse.setStudyVersion(sv);
                 guestbookResponse.setSessionId(sessionId);
                                
                 String friendlyFormatType = FileUtil.getUserFriendlyTypeForMime(file.getFileType());

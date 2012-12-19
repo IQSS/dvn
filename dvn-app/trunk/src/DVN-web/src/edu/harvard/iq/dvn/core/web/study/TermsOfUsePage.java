@@ -34,6 +34,7 @@ import edu.harvard.iq.dvn.core.admin.VDCUser;
 import edu.harvard.iq.dvn.core.study.StudyFile;
 import edu.harvard.iq.dvn.core.study.StudyFileServiceLocal;
 import edu.harvard.iq.dvn.core.study.StudyServiceLocal;
+import edu.harvard.iq.dvn.core.study.StudyVersion;
 import edu.harvard.iq.dvn.core.vdc.*;
 import edu.harvard.iq.dvn.core.web.common.VDCBaseBean;
 import edu.harvard.iq.dvn.core.web.servlet.TermsOfUseFilter;
@@ -193,7 +194,8 @@ public class TermsOfUsePage extends VDCBaseBean {
         guestBookResponse = new GuestBookResponse();
         guestBookResponse.setGuestBookQuestionnaire(study.getOwner().getGuestBookQuestionnaire());
         guestBookResponse.setStudy(study);
-        guestBookResponse.setStudyVersion(study.getLatestVersion());
+                Long version = study.getVersion();
+                System.out.print("version " + version);
         guestBookResponse.setResponseTime(new Date());
 
         if (study.getOwner().getGuestBookQuestionnaire().getCustomQuestions() != null && !study.getOwner().getGuestBookQuestionnaire().getCustomQuestions().isEmpty()) {

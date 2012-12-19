@@ -170,5 +170,24 @@ ALTER TABLE vdcNetwork
 
 ALTER TABLE vdcNetwork ALTER COLUMN "statusnotice" SET STORAGE EXTENDED;
 
--- Ticket xxxx - add version to guestbookresponse table
+-- Ticket 2682 - add version to guestbookresponse table
 Alter TABLE guestbookresponse add studyVersion_id bigint;
+
+-- populate the new field for existing records...
+
+update guestbookresponse gbr set studyversion_id = sv.id
+from studyversion sv, filemetadata fmd
+where gbr.studyfile_id = fmd.studyfile_id
+and fmd.studyversion_id = sv.id
+and sv.versionstate='RELEASED';
+
+update guestbookresponse gbr set studyversion_id = sfsv.sv_id
+from
+(select sf.id sf_id, max(sv.id) sv_id
+from studyfile sf, studyversion sv, filemetadata fmd
+where 1=1
+and fmd.studyversion_id = sv.id
+and fmd.studyfile_id = sf.id
+and sf.id in (select studyfile_id from guestbookresponse where studyversion_id is null)
+group by sf.id) sfsv
+where gbr.studyfile_id = sfsv.sf_id;

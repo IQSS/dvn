@@ -222,7 +222,8 @@ public class VDCUser implements java.io.Serializable  {
     /**
      *
      * @param vdc - the dataverse where we are checking the role
-     * @return true if this user has been assigned the curator role in the VDC.
+     * @return true if this user has created, or been assigned the curator role in the 
+     * dataverse.
      *
      *  Simply a helper method - easier than calling getVDCRole() and checking the result.
      */
@@ -231,6 +232,25 @@ public class VDCUser implements java.io.Serializable  {
         return  vdcRole!=null && vdcRole.getRole().getName().equals(RoleServiceLocal.ADMIN);
     }
 
+    /**
+     *
+     * The network-wide version of isAdmin()
+     * @return true if this user has created a dataverse, or been assigned the admin role 
+     * for a dataverse anywhere on the network. 
+     *
+     *  Simply a helper method - easier than calling getVDCRole() and checking the result.
+     */
+    public boolean isAdmin() {
+        for (Iterator it = vdcRoles.iterator(); it.hasNext();) {
+            VDCRole elem = (VDCRole) it.next();
+            if (elem != null && elem.getRole() != null) {
+                if (RoleServiceLocal.ADMIN.equals(elem.getRole().getName())) {
+                    return true;
+                }
+            }
+        }
+        return false; 
+    }
 
     /**
      * Setter for property vdcRoles.

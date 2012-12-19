@@ -261,10 +261,11 @@ public class ContactUsPage extends VDCBaseBean implements java.io.Serializable {
                     
                     // Check if "dv owner"; 
                     // Note that for these purposes (extra information for more 
-                    // meaningful support request statistics) we are considering 
-                    // both the admins and curators "owners". 
+                    // meaningful support request statistics) "dvnowner" means a 
+                    // user who has an admin role anywhere on the DVN; i.e., has
+                    // either created a DVN, or been assigned the admin role there. 
                     
-                    if (vdcUser.isCurator(getVDCRequestBean().getCurrentVDC()) || vdcUser.isCurator(getVDCRequestBean().getCurrentVDC())) {
+                    if (vdcUser.isAdmin()) {
                         dvOwner = "true";
                     }
                 }                                

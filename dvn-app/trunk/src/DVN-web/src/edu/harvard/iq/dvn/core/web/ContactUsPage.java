@@ -259,7 +259,12 @@ public class ContactUsPage extends VDCBaseBean implements java.io.Serializable {
                         institution = vdcUser.getInstitution();
                     }
                     
-                    if (vdcUser.isCurator(getVDCRequestBean().getCurrentVDC())) {
+                    // Check if "dv owner"; 
+                    // Note that for these purposes (extra information for more 
+                    // meaningful support request statistics) we are considering 
+                    // both the admins and curators "owners". 
+                    
+                    if (vdcUser.isCurator(getVDCRequestBean().getCurrentVDC()) || vdcUser.isCurator(getVDCRequestBean().getCurrentVDC())) {
                         dvOwner = "true";
                     }
                 }                                

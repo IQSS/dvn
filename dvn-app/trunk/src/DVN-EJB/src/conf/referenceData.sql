@@ -374,9 +374,9 @@ ALTER TABLE studyfield DISABLE TRIGGER ALL;
 
 INSERT INTO studyfield (id,title,description, name,basicSearchField,advancedSearchField, searchResultField, customField, allowControlledVocabulary) VALUES (1, 'Title', 'Title', 'title', TRUE, TRUE, TRUE, FALSE, TRUE );
 INSERT INTO studyfield (id,title,description, name,basicSearchField,advancedSearchField, searchResultField, customField, allowControlledVocabulary) VALUES (2, 'Study ID', 'Study ID', 'studyId', TRUE, TRUE, TRUE, FALSE, TRUE );
-INSERT INTO studyfield (id,title,description, name,basicSearchField,advancedSearchField, searchResultField, customField, allowControlledVocabulary) VALUES (3, 'Author', 'Author', 'author', TRUE, TRUE, TRUE, FALSE, TRUE );
+INSERT INTO studyfield (id,title,description, name,basicSearchField,advancedSearchField, searchResultField, customField, allowControlledVocabulary) VALUES (3, 'Author', 'Author', 'author', FALSE, FALSE, FALSE, FALSE, TRUE );
 INSERT INTO studyfield (id,title,description, name,basicSearchField,advancedSearchField, searchResultField, customField, allowControlledVocabulary) VALUES (4, 'Author Affiliation', 'Author Affiliation', 'authorAffiliation', FALSE, FALSE, FALSE, FALSE, TRUE );
-INSERT INTO studyfield (id,title,description, name,basicSearchField,advancedSearchField, searchResultField, customField, allowControlledVocabulary) VALUES (5, 'Producer', 'Producer', 'producer', FALSE, TRUE, FALSE, FALSE, TRUE );
+INSERT INTO studyfield (id,title,description, name,basicSearchField,advancedSearchField, searchResultField, customField, allowControlledVocabulary) VALUES (5, 'Producer', 'Producer', 'producer', FALSE, FALSE, FALSE, FALSE, TRUE );
 INSERT INTO studyfield (id,title,description, name,basicSearchField,advancedSearchField, searchResultField, customField, allowControlledVocabulary) VALUES (6, 'Producer URL', 'Producer URL', 'producerURL', FALSE, FALSE, FALSE, FALSE, TRUE );
 INSERT INTO studyfield (id,title,description, name,basicSearchField,advancedSearchField, searchResultField, customField, allowControlledVocabulary) VALUES (7, 'URL to Producer Logo', 'URL to Producer Logo', 'producerLogo', FALSE, FALSE, FALSE, FALSE, TRUE );
 INSERT INTO studyfield (id,title,description, name,basicSearchField,advancedSearchField, searchResultField, customField, allowControlledVocabulary) VALUES (8, 'Producer Name Abbreviation', 'Producer Name Abbreviation', 'producerAbbreviation', FALSE, FALSE, FALSE, FALSE, TRUE );
@@ -386,7 +386,7 @@ INSERT INTO studyfield (id,title,description, name,basicSearchField,advancedSear
 INSERT INTO studyfield (id,title,description, name,basicSearchField,advancedSearchField, searchResultField, customField, allowControlledVocabulary) VALUES (12, 'Funding Agency', 'Funding Agency', 'fundingAgency', FALSE, FALSE, FALSE, FALSE, TRUE );
 INSERT INTO studyfield (id,title,description, name,basicSearchField,advancedSearchField, searchResultField, customField, allowControlledVocabulary) VALUES (13, 'Grant Number', 'Grant Number', 'grantNumber', FALSE, FALSE, FALSE, FALSE, TRUE );
 INSERT INTO studyfield (id,title,description, name,basicSearchField,advancedSearchField, searchResultField, customField, allowControlledVocabulary) VALUES (14, 'Grant Number Agency', 'Grant Number Agency', 'grantNumberAgency', FALSE, FALSE, FALSE, FALSE, TRUE );
-INSERT INTO studyfield (id,title,description, name,basicSearchField,advancedSearchField, searchResultField, customField, allowControlledVocabulary) VALUES (15, '', '', 'distributor', FALSE, TRUE, FALSE, FALSE, TRUE );
+INSERT INTO studyfield (id,title,description, name,basicSearchField,advancedSearchField, searchResultField, customField, allowControlledVocabulary) VALUES (15, '', '', 'distributor', FALSE, FALSE, FALSE, FALSE, TRUE );
 INSERT INTO studyfield (id,title,description, name,basicSearchField,advancedSearchField, searchResultField, customField, allowControlledVocabulary) VALUES (16, '', '', 'distributorURL', FALSE, FALSE, FALSE, FALSE, TRUE );
 INSERT INTO studyfield (id,title,description, name,basicSearchField,advancedSearchField, searchResultField, customField, allowControlledVocabulary) VALUES (17, '', '', 'distributorLogo', FALSE, FALSE, FALSE, FALSE, TRUE );
 INSERT INTO studyfield (id,title,description, name,basicSearchField,advancedSearchField, searchResultField, customField, allowControlledVocabulary) VALUES (18, '', '', 'distributionDate', FALSE, TRUE, FALSE, FALSE, TRUE );
@@ -398,10 +398,10 @@ INSERT INTO studyfield (id,title,description, name,basicSearchField,advancedSear
 INSERT INTO studyfield (id,title,description, name,basicSearchField,advancedSearchField, searchResultField, customField, allowControlledVocabulary) VALUES (24, '', '', 'series', FALSE, FALSE, FALSE, FALSE, TRUE );
 INSERT INTO studyfield (id,title,description, name,basicSearchField,advancedSearchField, searchResultField, customField, allowControlledVocabulary) VALUES (25, '', '', 'seriesInformation', FALSE, FALSE, FALSE, FALSE, TRUE );
 INSERT INTO studyfield (id,title,description, name,basicSearchField,advancedSearchField, searchResultField, customField, allowControlledVocabulary) VALUES (26, '', '', 'studyVersion', FALSE, FALSE, FALSE, FALSE, TRUE );
-INSERT INTO studyfield (id,title,description, name,basicSearchField,advancedSearchField, searchResultField, customField, allowControlledVocabulary) VALUES (27, '', '', 'keyword', FALSE, TRUE, FALSE, FALSE, TRUE );
+INSERT INTO studyfield (id,title,description, name,basicSearchField,advancedSearchField, searchResultField, customField, allowControlledVocabulary) VALUES (27, '', '', 'keyword', FALSE, FALSE, FALSE, FALSE, TRUE );
 INSERT INTO studyfield (id,title,description, name,basicSearchField,advancedSearchField, searchResultField, customField, allowControlledVocabulary) VALUES (28, '', '', 'keywordVocab', FALSE, FALSE, FALSE, FALSE, TRUE );
 INSERT INTO studyfield (id,title,description, name,basicSearchField,advancedSearchField, searchResultField, customField, allowControlledVocabulary) VALUES (29, '', '', 'keywordVocabURI', FALSE, FALSE, FALSE, FALSE, TRUE );
-INSERT INTO studyfield (id,title,description, name,basicSearchField,advancedSearchField, searchResultField, customField, allowControlledVocabulary) VALUES (30, '', '', 'topicClassification', FALSE, TRUE, FALSE, FALSE, TRUE );
+INSERT INTO studyfield (id,title,description, name,basicSearchField,advancedSearchField, searchResultField, customField, allowControlledVocabulary) VALUES (30, '', '', 'topicClassification', FALSE, FALSE, FALSE, FALSE, TRUE );
 INSERT INTO studyfield (id,title,description, name,basicSearchField,advancedSearchField, searchResultField, customField, allowControlledVocabulary) VALUES (31, '', '', 'topicClassVocab', FALSE, FALSE, FALSE, FALSE, TRUE );
 INSERT INTO studyfield (id,title,description, name,basicSearchField,advancedSearchField, searchResultField, customField, allowControlledVocabulary) VALUES (32, '', '', 'topicClassVocabURI', FALSE, FALSE, FALSE, FALSE, TRUE );
 INSERT INTO studyfield (id,title,description, name,basicSearchField,advancedSearchField, searchResultField, customField, allowControlledVocabulary) VALUES (33, '', '', 'description', FALSE, TRUE, TRUE, FALSE, TRUE );
@@ -450,7 +450,7 @@ INSERT INTO studyfield (id,title,description, name,basicSearchField,advancedSear
 INSERT INTO studyfield (id,title,description, name,basicSearchField,advancedSearchField, searchResultField, customField, allowControlledVocabulary) VALUES (76, '', '', 'conditions', FALSE, FALSE, FALSE, FALSE, TRUE );
 INSERT INTO studyfield (id,title,description, name,basicSearchField,advancedSearchField, searchResultField, customField, allowControlledVocabulary) VALUES (77, '', '', 'disclaimer', FALSE, FALSE, FALSE, FALSE, TRUE );
 INSERT INTO studyfield (id,title,description, name,basicSearchField,advancedSearchField, searchResultField, customField, allowControlledVocabulary) VALUES (78, '', '', 'relatedMaterial', FALSE, FALSE, FALSE, FALSE, TRUE );
-INSERT INTO studyfield (id,title,description, name,basicSearchField,advancedSearchField, searchResultField, customField, allowControlledVocabulary) VALUES (79, '', '', 'publication', FALSE, TRUE, FALSE, FALSE, TRUE );
+INSERT INTO studyfield (id,title,description, name,basicSearchField,advancedSearchField, searchResultField, customField, allowControlledVocabulary) VALUES (79, '', '', 'publication', FALSE, FALSE, FALSE, FALSE, TRUE );
 INSERT INTO studyfield (id,title,description, name,basicSearchField,advancedSearchField, searchResultField, customField, allowControlledVocabulary) VALUES (80, '', '', 'relatedStudies', FALSE, FALSE, FALSE, FALSE, TRUE );
 INSERT INTO studyfield (id,title,description, name,basicSearchField,advancedSearchField, searchResultField, customField, allowControlledVocabulary) VALUES (81, '', '', 'otherReferences', FALSE, FALSE, FALSE, FALSE, TRUE );
 INSERT INTO studyfield (id,title,description, name,basicSearchField,advancedSearchField, searchResultField, customField, allowControlledVocabulary) VALUES (82, '', '', 'notesText', FALSE, FALSE, FALSE, FALSE, TRUE );
@@ -460,7 +460,7 @@ INSERT INTO studyfield (id,title,description, name,basicSearchField,advancedSear
 INSERT INTO studyfield (id,title,description, name,basicSearchField,advancedSearchField, searchResultField, customField, allowControlledVocabulary) VALUES (86, '', '', 'otherIdAgency', FALSE, FALSE, FALSE, FALSE, TRUE );
 INSERT INTO studyfield (id,title,description, name,basicSearchField,advancedSearchField, searchResultField, customField, allowControlledVocabulary) VALUES (87, '', '', 'productionPlace', FALSE, FALSE, FALSE, FALSE, TRUE );
 INSERT INTO studyfield (id,title,description, name,basicSearchField,advancedSearchField, searchResultField, customField, allowControlledVocabulary) VALUES (88, '', '', 'numberOfFiles', FALSE, FALSE, FALSE, FALSE, TRUE );
-INSERT INTO studyfield (id,title,description, name,basicSearchField,advancedSearchField, searchResultField, customField, allowControlledVocabulary) VALUES (89, '', '', 'publicationReplicationData', FALSE, FALSE, FALSE, FALSE, FALSE );
+INSERT INTO studyfield (id,title,description, name,basicSearchField,advancedSearchField, searchResultField, customField, allowControlledVocabulary) VALUES (89, '', '', 'publicationReplicationData', FALSE, TRUE, FALSE, FALSE, FALSE );
 INSERT INTO studyfield (id,title,description, name,basicSearchField,advancedSearchField, searchResultField, customField, allowControlledVocabulary) VALUES (90, '', '', 'subTitle', FALSE, FALSE, FALSE, FALSE, TRUE );
 INSERT INTO studyfield (id,title,description, name,basicSearchField,advancedSearchField, searchResultField, customField, allowControlledVocabulary) VALUES (91, '', '', 'versionDate', FALSE, FALSE, FALSE, FALSE, TRUE );
 INSERT INTO studyfield (id,title,description, name,basicSearchField,advancedSearchField, searchResultField, customField, allowControlledVocabulary) VALUES (92, '', '', 'geographicBoundingBox', FALSE, FALSE, FALSE, FALSE, TRUE );
@@ -470,14 +470,13 @@ INSERT INTO studyfield (id,title,description, name,basicSearchField,advancedSear
 INSERT INTO studyfield (id,title,description, name,basicSearchField,advancedSearchField, searchResultField, customField, allowControlledVocabulary) VALUES (96, '', '', 'producerAffiliation', FALSE, FALSE, FALSE, FALSE, TRUE );
 INSERT INTO studyfield (id,title,description, name,basicSearchField,advancedSearchField, searchResultField, customField, allowControlledVocabulary) VALUES (97, '', '', 'distributorAffiliation', FALSE, FALSE, FALSE, FALSE, TRUE );
 INSERT INTO studyfield (id,title,description, name,basicSearchField,advancedSearchField, searchResultField, customField, allowControlledVocabulary) VALUES (98, '', '', 'distributorAbbreviation', FALSE, FALSE, FALSE, FALSE, TRUE );
-
-INSERT INTO studyfield (id,title,description, name,basicSearchField,advancedSearchField, searchResultField, customField, allowControlledVocabulary) VALUES (99, '', '', 'authorName', FALSE, FALSE, FALSE, FALSE, TRUE );
-INSERT INTO studyfield (id,title,description, name,basicSearchField,advancedSearchField, searchResultField, customField, allowControlledVocabulary) VALUES (100, '', '', 'producerName', FALSE, FALSE, FALSE, FALSE, TRUE );
-INSERT INTO studyfield (id,title,description, name,basicSearchField,advancedSearchField, searchResultField, customField, allowControlledVocabulary) VALUES (101, '', '', 'distributorName', FALSE, FALSE, FALSE, FALSE, TRUE );
+INSERT INTO studyfield (id,title,description, name,basicSearchField,advancedSearchField, searchResultField, customField, allowControlledVocabulary) VALUES (99, 'Author', 'Author', 'authorName', TRUE, TRUE, TRUE, FALSE, TRUE );
+INSERT INTO studyfield (id,title,description, name,basicSearchField,advancedSearchField, searchResultField, customField, allowControlledVocabulary) VALUES (100, '', '', 'producerName', FALSE, TRUE, FALSE, FALSE, TRUE );
+INSERT INTO studyfield (id,title,description, name,basicSearchField,advancedSearchField, searchResultField, customField, allowControlledVocabulary) VALUES (101, '', '', 'distributorName', FALSE, TRUE, FALSE, FALSE, TRUE );
 INSERT INTO studyfield (id,title,description, name,basicSearchField,advancedSearchField, searchResultField, customField, allowControlledVocabulary) VALUES (102, '', '', 'distributorContactName', FALSE, FALSE, FALSE, FALSE, TRUE );
 INSERT INTO studyfield (id,title,description, name,basicSearchField,advancedSearchField, searchResultField, customField, allowControlledVocabulary) VALUES (103, '', '', 'descriptionText', FALSE, FALSE, FALSE, FALSE, TRUE );
-INSERT INTO studyfield (id,title,description, name,basicSearchField,advancedSearchField, searchResultField, customField, allowControlledVocabulary) VALUES (104, '', '', 'keywordValue', FALSE, FALSE, FALSE, FALSE, TRUE );
-INSERT INTO studyfield (id,title,description, name,basicSearchField,advancedSearchField, searchResultField, customField, allowControlledVocabulary) VALUES (105, '', '', 'topicClassValue', FALSE, FALSE, FALSE, FALSE, TRUE );
+INSERT INTO studyfield (id,title,description, name,basicSearchField,advancedSearchField, searchResultField, customField, allowControlledVocabulary) VALUES (104, '', '', 'keywordValue', FALSE, TRUE, FALSE, FALSE, TRUE );
+INSERT INTO studyfield (id,title,description, name,basicSearchField,advancedSearchField, searchResultField, customField, allowControlledVocabulary) VALUES (105, '', '', 'topicClassValue', FALSE, TRUE, FALSE, FALSE, TRUE );
 INSERT INTO studyfield (id,title,description, name,basicSearchField,advancedSearchField, searchResultField, customField, allowControlledVocabulary) VALUES (106, '', '', 'otherIdValue', FALSE, FALSE, FALSE, FALSE, TRUE );
 INSERT INTO studyfield (id,title,description, name,basicSearchField,advancedSearchField, searchResultField, customField, allowControlledVocabulary) VALUES (107, '', '', 'softwareName', FALSE, FALSE, FALSE, FALSE, TRUE );
 INSERT INTO studyfield (id,title,description, name,basicSearchField,advancedSearchField, searchResultField, customField, allowControlledVocabulary) VALUES (108, '', '', 'grantNumberValue', FALSE, FALSE, FALSE, FALSE, TRUE );
@@ -486,7 +485,7 @@ INSERT INTO studyfield (id,title,description, name,basicSearchField,advancedSear
 INSERT INTO studyfield (id,title,description, name,basicSearchField,advancedSearchField, searchResultField, customField, allowControlledVocabulary) VALUES (111, '', '', 'westLongitude', FALSE, FALSE, FALSE, FALSE, TRUE );
 INSERT INTO studyfield (id,title,description, name,basicSearchField,advancedSearchField, searchResultField, customField, allowControlledVocabulary) VALUES (112, '', '', 'noteInformationType', FALSE, FALSE, FALSE, FALSE, TRUE );
 
-INSERT INTO studyfield (id,title,description, name,basicSearchField,advancedSearchField, searchResultField, customField, allowControlledVocabulary) VALUES (113, '', '', 'publicationCitation', FALSE, FALSE, FALSE, FALSE, TRUE );
+INSERT INTO studyfield (id,title,description, name,basicSearchField,advancedSearchField, searchResultField, customField, allowControlledVocabulary) VALUES (113, '', '', 'publicationCitation', FALSE, TRUE, FALSE, FALSE, TRUE );
 INSERT INTO studyfield (id,title,description, name,basicSearchField,advancedSearchField, searchResultField, customField, allowControlledVocabulary) VALUES (114, '', '', 'publicationIDType', FALSE, FALSE, FALSE, FALSE, FALSE );
 INSERT INTO studyfield (id,title,description, name,basicSearchField,advancedSearchField, searchResultField, customField, allowControlledVocabulary) VALUES (115, '', '', 'publicationIDNumber', FALSE, FALSE, FALSE, FALSE, TRUE );
 INSERT INTO studyfield (id,title,description, name,basicSearchField,advancedSearchField, searchResultField, customField, allowControlledVocabulary) VALUES (116, '', '', 'publicationURL', FALSE, FALSE, FALSE, FALSE, TRUE );
@@ -552,8 +551,7 @@ update studyfield set parentstudyfield_id = 79 where id = 115;
 update studyfield set parentstudyfield_id = 79 where id = 116;
 update studyfield set parentstudyfield_id = 79 where id = 89;
 
-update studyfield set displayorder = 1 where name = 'authorName';
-update studyfield set displayorder = 1 where name = 'authorName';
+update studyfield set displayorder = 0 where name = 'authorName';
 update studyfield set displayorder = 2 where name = 'authorAffiliation';
 update studyfield set displayorder = 2 where name = 'producerAbbreviation';
 update studyfield set displayorder = 1 where name = 'producerName';

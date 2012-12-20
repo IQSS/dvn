@@ -200,17 +200,18 @@ UPDATE StudyField SET advancedSearchField=false,basicSearchField=false,searchres
 UPDATE StudyField SET advancedSearchField=true,basicSearchField=true,title='Author',description='Author',searchresultfield=true,displayorder=0 WHERE id=99;
 
 UPDATE StudyField SET advancedSearchField=false,searchresultfield=false WHERE name='topicClassification';
-UPDATE StudyField SET advancedSearchField=true,searchresultfield=true WHERE name='topicClassValue';
+UPDATE StudyField SET advancedSearchField=true WHERE name='topicClassValue';
 
 UPDATE StudyField SET advancedSearchField=false,searchresultfield=false WHERE name='keyword';
-UPDATE StudyField SET advancedSearchField=true,searchresultfield=true WHERE name='keywordValue';
+UPDATE StudyField SET advancedSearchField=true WHERE name='keywordValue';
 
 UPDATE StudyField SET advancedSearchField=false,searchresultfield=false WHERE name='producer';
-UPDATE StudyField SET advancedSearchField=true,searchresultfield=true WHERE name='producerName';
+UPDATE StudyField SET advancedSearchField=true WHERE name='producerName';
 
 UPDATE StudyField SET advancedSearchField=false,searchresultfield=false WHERE name='distributor';
-UPDATE StudyField SET advancedSearchField=true,searchresultfield=true WHERE name='distributorName';
+UPDATE StudyField SET advancedSearchField=true WHERE name='distributorName';
 
 UPDATE StudyField SET advancedSearchField=false,searchresultfield=false WHERE name='publication';
 
- 
+UPDATE StudyField SET advancedSearchField=true WHERE name='publicationCitation';
+UPDATE StudyField SET advancedSearchField=true WHERE name='publicationReplicationData'; 

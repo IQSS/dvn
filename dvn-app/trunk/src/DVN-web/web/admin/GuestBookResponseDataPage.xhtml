@@ -22,13 +22,13 @@
                       };
                     });
 
-                    jQuery(document).ready(function(){
+                    jQuery(document).ready(function(){                       
                           initDownloadDataTableBlockHeight();
                     });
 
                     function initDownloadDataTableBlockHeight(){
                         var $div = jQuery(".dvnGuestBookResponseTable");
-                        y = $div.outerHeight() + 17;
+                        y = $div.outerHeight() + 51;
                         jQuery(".dvnGuestBookResponseTableBlock").css("height", y);
                     };
 
@@ -46,23 +46,16 @@
                             }
                           };
                         });
-
                         initDownloadDataTableBlockHeight();
                    });
                    
                    function startDownload() {
                         document.getElementById('form1:tabSet1:0:tabSetPermissions:0:downloadCSV').click();    
                    };
-                   function initGuestBookResponses(){
-                       
+                   function initGuestBookResponses(){                      
                         jQuery('input[id$=initGuestBookResponse]').click();
-
                    }
-                   function initDownloadDataTableBlockHeight(){
-                        var $div = jQuery(".dvnGuestBookResponseTable");
-                        y = $div.outerHeight() + 17;
-                        jQuery(".dvnGuestBookResponseTableBlock").css("height", y);                       
-                   } 
+ 
 //]]>
                 </script>
     

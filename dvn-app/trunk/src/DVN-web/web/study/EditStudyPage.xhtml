@@ -220,7 +220,7 @@ function dataCitationWidgetSync(){
 
             var trooperA = jQuery(bobaA).clone(true);
 
-            jQuery('#dvnDataCitationWidgetAuthorInputBlock').append(jQuery(trooperA).attr({ id: 'input_authorNameSync' + i, class: 'dvnDataCitationWidgetAuthorInputClone' }).show());
+            jQuery('#dvnDataCitationWidgetAuthorInputBlock').append(jQuery(trooperA).attr({ id: 'input_authorNameSync' + i, 'class': 'dvnDataCitationWidgetAuthorInputClone' }).show());
 
             // sync cloned author fields
 
@@ -268,7 +268,7 @@ function dataCitationWidgetSync(){
 
             var trooperSelectA = jQuery(bobaSelectA).clone(true);
             
-            jQuery('#dvnDataCitationWidgetAuthorInputBlock').append(jQuery(trooperSelectA).attr({ id: 'select_authorNameSync' + i, class: 'dvnDataCitationWidgetAuthorSelectClone' }).show());
+            jQuery('#dvnDataCitationWidgetAuthorInputBlock').append(jQuery(trooperSelectA).attr({ id: 'select_authorNameSync' + i, 'class': 'dvnDataCitationWidgetAuthorSelectClone' }).show());
 
             // sync cloned author select
             
@@ -328,7 +328,7 @@ function dataCitationWidgetSync(){
 
             var trooperD = jQuery(bobaD).clone(true);
 
-            jQuery('#dvnDataCitationWidgetDistributorInputBlock').append(jQuery(trooperD).attr({ id: 'input_distributorNameSync' + i, class: 'dvnDataCitationWidgetDistributorInputClone' }).show());
+            jQuery('#dvnDataCitationWidgetDistributorInputBlock').append(jQuery(trooperD).attr({ id: 'input_distributorNameSync' + i, 'class': 'dvnDataCitationWidgetDistributorInputClone' }).show());
 
             // sync cloned distributor fields
 
@@ -376,7 +376,7 @@ function dataCitationWidgetSync(){
 
             var trooperSelectD = jQuery(bobaSelectD).clone(true);
             
-            jQuery('#dvnDataCitationWidgetDistributorInputBlock').append(jQuery(trooperSelectD).attr({ id: 'select_distributorNameSync' + i, class: 'dvnDataCitationWidgetDistributorSelectClone' }).show());
+            jQuery('#dvnDataCitationWidgetDistributorInputBlock').append(jQuery(trooperSelectD).attr({ id: 'select_distributorNameSync' + i, 'class': 'dvnDataCitationWidgetDistributorSelectClone' }).show());
 
             // sync cloned author select
             
@@ -619,7 +619,7 @@ function initAddDistributorSync(){
                             <ice:graphicImage value="/resources/images/icon_information.18.png" styleClass="dvn_icon"/>
                             <ice:outputText styleClass="vdcHelpText" value=" Use the Data Citation Widget below to enter all the metadata needed for your citation."/>
                           </p>
-                          <div jsfc="ice:panelGroup" id="dvnDataCitationWidget" styleClass="dvnDataCitationWidget vdcEditStudyFieldFloatWrap">
+                          <div jsfc="ice:panelGroup" id="dvnDataCitationWidget" styleClass="dvnDataCitationWidget vdcEditStudyFieldFloatWrap" style="background:yellow;">
                             <div>
                                 Data Citation Widget
                             </div>
@@ -628,7 +628,7 @@ function initAddDistributorSync(){
                                 
                                 <div id="dvnDataCitationWidgetInputBlock">
                                   <!-- None -->
-                                  <div class="dvnDataCitationWidgetInput">Click the links below, to enter the data citation value metadata.</div>
+                                  <div class="dvnDataCitationWidgetInput">Click the links below to enter the data citation value metadata.</div>
                                   <!-- Author -->
                                   <div id="dvnDataCitationWidgetAuthorInputBlock" class="dvnDataCitationWidgetInput">
                                       <div class="dvnDataCitationWidgetAuthorInputBoba">

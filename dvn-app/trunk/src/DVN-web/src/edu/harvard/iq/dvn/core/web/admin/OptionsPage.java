@@ -319,9 +319,7 @@ public class OptionsPage extends VDCBaseBean  implements java.io.Serializable {
             //initUserData(); -- moved to click event on the tab
             
         }  
-                System.out.print("init selected tab" + new Date());
         initSelectedTabIndex();
-                System.out.print("End" + new Date());
         //end init
         
     }
@@ -418,6 +416,7 @@ public class OptionsPage extends VDCBaseBean  implements java.io.Serializable {
     
     public void initGuestbookQuestionnaire() {
                   //guestbook questionnaire
+        customQuestions.clear();
             guestBookQuestionnaire = getVDCRequestBean().getCurrentVDC().getGuestBookQuestionnaire();
             newQuestion = new CustomQuestion();
             newQuestion.setCustomQuestionValues(new ArrayList());
@@ -629,9 +628,7 @@ public class OptionsPage extends VDCBaseBean  implements java.io.Serializable {
                 GuestBookResponseUI guestBookResponseDisplay = new GuestBookResponseUI(gbr,customQuestionIds );
                 guestBookResponsesDisplay.add(guestBookResponseDisplay);
         }
-        
-        JavascriptContext.addJavascriptCall(getFacesContext(), "initDownloadDataTableBlockHeight();");
-               
+        JavascriptContext.addJavascriptCall(getFacesContext(), "initDownloadDataTableBlockHeight();");      
         return "";
     }
         
@@ -1047,7 +1044,6 @@ public class OptionsPage extends VDCBaseBean  implements java.io.Serializable {
         String msg=null;
         boolean valid=true;
         VDCUser user = null;
-        System.out.print(userNameStr);
    
             user = userService.findByUserName(userNameStr);
             if (user==null) {
@@ -1553,7 +1549,6 @@ public class OptionsPage extends VDCBaseBean  implements java.io.Serializable {
                 }
 
                 if (!cqrList.isEmpty()) {
-                    System.out.print("size " + cqrList.size());
                     List<String> customQuestionResponseStrings = new ArrayList(customQuestionIds.size());
                     for (int i = 0; i < cqrList.size(); i++) {
                         customQuestionResponseStrings.add(i, "");

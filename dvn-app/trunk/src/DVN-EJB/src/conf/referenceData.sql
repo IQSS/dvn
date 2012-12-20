@@ -1218,4 +1218,5 @@ INSERT INTO metadataformattype (id, name, mimetype, namespace, formatschema, par
 INSERT INTO metadataformattype (id, name, mimetype, namespace, formatschema, partialexcludesupported, partialselectsupported) VALUES (3, 'marc', 'application/octet-stream', 'http://www.loc.gov/marc/', 'MARC 21', false, false);
 
 /*create network guest book*/
-INSERT INTO guestbookquestionnaire(enabled,firstnamerequired, lastnamerequired, emailrequired, institutionrequired,  positionrequired, vdc_id) SELECT true, true, true, true, false, false, null;
+
+INSERT INTO guestbookquestionnaire(enabled,firstnamerequired, lastnamerequired, emailrequired, institutionrequired,  positionrequired, vdc_id) VALUES (true, true, true, true, false, false, null);

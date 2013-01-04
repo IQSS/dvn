@@ -426,7 +426,7 @@ public class DVNOAIListRecords extends ListRecords {
                     
                     String outputLine = null; 
                     
-                    if (dataLine.toString().matches("<[^>]*$")) {
+                    if (dataLine.toString().matches(".*<[^>]*$")) {
                         int z = dataLine.lastIndexOf("<");
                         lineBuffer = new StringBuffer( dataLine.substring(z) );
                         outputLine = dataLine.substring(0, z);
@@ -538,6 +538,10 @@ public class DVNOAIListRecords extends ListRecords {
             recordTempFile.delete(); 
         } catch (SAXException sx) {
             logger.info("SAX error encountered. " + sx.getMessage());
+            //throw sx;
+        } catch (IOException ioex) {
+            logger.info("IO Exception encountered. " + ioex.getMessage());
+            //throw ioex;
         } catch (Exception ex) {
             logger.info("Unknown error encountered. " + ex.getMessage());
         } finally {

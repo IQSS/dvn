@@ -1,3 +1,0 @@
-
-Name: edu/harvard/hmdc/dvnplugin/DVNOAIPlugin.class
-Lockss-Plugin: true

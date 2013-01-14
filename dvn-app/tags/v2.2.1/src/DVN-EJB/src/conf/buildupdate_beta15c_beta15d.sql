@@ -1,1 +1,0 @@
-insert into dvnversion( id, buildnumber,versionnumber) values (1,15,1);

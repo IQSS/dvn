@@ -352,29 +352,29 @@ public class OptionsPage extends VDCBaseBean  implements java.io.Serializable {
             downloadTermsOfUseEnabled = getVDCRequestBean().getCurrentVDC().isDownloadTermsOfUseEnabled();       
     }
     
-    public void initDVGeneralSettings(){   
+    public void initDVGeneralSettings() {
         if (vdc.isRestricted()) {
-                siteRestriction = "Restricted";
-            } else {
-                siteRestriction = "Public";
+            siteRestriction = "Restricted";
+        } else {
+            siteRestriction = "Public";
         }
         //edit site page  
         if (getVDCRequestBean().getCurrentVDC() != null) {
-                    HttpServletRequest request = (HttpServletRequest)FacesContext.getCurrentInstance().getExternalContext().getRequest();
-                    Iterator iterator = request.getParameterMap().keySet().iterator();
-        while (iterator.hasNext()) {
-            Object key = (Object) iterator.next();
-            if ( key instanceof String && ((String) key).indexOf("dataverseType") != -1 && !request.getParameter((String)key).equals("")) {
-                this.setDataverseType(request.getParameter((String)key));
+            HttpServletRequest request = (HttpServletRequest) FacesContext.getCurrentInstance().getExternalContext().getRequest();
+            Iterator iterator = request.getParameterMap().keySet().iterator();
+            while (iterator.hasNext()) {
+                Object key = (Object) iterator.next();
+                if (key instanceof String && ((String) key).indexOf("dataverseType") != -1 && !request.getParameter((String) key).equals("")) {
+                    this.setDataverseType(request.getParameter((String) key));
+                }
             }
-        }
 
-        if (this.dataverseType == null && getVDCRequestBean().getCurrentVDC().getDtype() != null) {
-            this.setDataverseType(getVDCRequestBean().getCurrentVDC().getDtype());
-        }
-        if ( (this.dataverseType == null || this.dataverseType.equals("Scholar")) ) {
+            if (this.dataverseType == null && getVDCRequestBean().getCurrentVDC().getDtype() != null) {
+                this.setDataverseType(getVDCRequestBean().getCurrentVDC().getDtype());
+            }
+            if ((this.dataverseType == null || this.dataverseType.equals("Scholar"))) {
                 //set the default values for the fields
-                VDC scholardataverse = (VDC)vdcService.findScholarDataverseByAlias(vdc.getAlias());
+                VDC scholardataverse = (VDC) vdcService.findScholarDataverseByAlias(vdc.getAlias());
                 setDataverseType("Scholar");
                 setFirstName(scholardataverse.getFirstName());
                 setLastName(scholardataverse.getLastName());
@@ -404,74 +404,71 @@ public class OptionsPage extends VDCBaseBean  implements java.io.Serializable {
                 setShortDescription(descriptionText);
             }
             // initialize the select
-           for (ClassificationUI classUI: classificationList.getClassificationUIs()) {
+            for (ClassificationUI classUI : classificationList.getClassificationUIs()) {
                 Long currentVDCId = getVDCRequestBean().getCurrentVDC().getId();
                 if (vdcGroupService.findVDCIdsByVDCGroupId(classUI.getVdcGroup().getId()).contains(currentVDCId)) {
                     classUI.setSelected(true);
                 }
-           }            
-        } 
-        
+            }
+        }
     }
     
     public void initGuestbookQuestionnaire() {
-                  //guestbook questionnaire
+        //guestbook questionnaire
         customQuestions.clear();
-            guestBookQuestionnaire = getVDCRequestBean().getCurrentVDC().getGuestBookQuestionnaire();
-            newQuestion = new CustomQuestion();
-            newQuestion.setCustomQuestionValues(new ArrayList());
-            if (guestBookQuestionnaire == null) { // set up default guest book questionnaire
-                guestBookQuestionnaire = new GuestBookQuestionnaire();
-                guestBookQuestionnaire.setEnabled(false);
-                guestBookQuestionnaire.setEmailRequired(true);
-                guestBookQuestionnaire.setFirstNameRequired(true);
-                guestBookQuestionnaire.setLastNameRequired(true);
-                guestBookQuestionnaire.setPositionRequired(true);
-                guestBookQuestionnaire.setInstitutionRequired(true);
-                guestBookQuestionnaire.setVdc(vdc);
+        guestBookQuestionnaire = getVDCRequestBean().getCurrentVDC().getGuestBookQuestionnaire();
+        newQuestion = new CustomQuestion();
+        newQuestion.setCustomQuestionValues(new ArrayList());
+        if (guestBookQuestionnaire == null) { // set up default guest book questionnaire
+            guestBookQuestionnaire = new GuestBookQuestionnaire();
+            guestBookQuestionnaire.setEnabled(false);
+            guestBookQuestionnaire.setEmailRequired(true);
+            guestBookQuestionnaire.setFirstNameRequired(true);
+            guestBookQuestionnaire.setLastNameRequired(true);
+            guestBookQuestionnaire.setPositionRequired(true);
+            guestBookQuestionnaire.setInstitutionRequired(true);
+            guestBookQuestionnaire.setVdc(vdc);
+            guestBookQuestionnaire.setCustomQuestions(new ArrayList());
+            vdc.setGuestBookQuestionnaire(guestBookQuestionnaire);
+        } else {
+            if (guestBookQuestionnaire.getCustomQuestions() == null) {
                 guestBookQuestionnaire.setCustomQuestions(new ArrayList());
-                vdc.setGuestBookQuestionnaire(guestBookQuestionnaire);
             } else {
-                if (guestBookQuestionnaire.getCustomQuestions() == null) {
-                    guestBookQuestionnaire.setCustomQuestions(new ArrayList());
-                } else {
-                    for (CustomQuestion customQuestion : guestBookQuestionnaire.getCustomQuestions()) {
-                        if (!customQuestion.isHidden()) {
-                            CustomQuestionUI customQuestionUI = new CustomQuestionUI();
-                            customQuestionUI.setCustomQuestion(customQuestion);
-                            customQuestionUI.setEditMode(false);
-                            customQuestions.add(customQuestionUI);
-                        }
+                for (CustomQuestion customQuestion : guestBookQuestionnaire.getCustomQuestions()) {
+                    if (!customQuestion.isHidden()) {
+                        CustomQuestionUI customQuestionUI = new CustomQuestionUI();
+                        customQuestionUI.setCustomQuestion(customQuestion);
+                        customQuestionUI.setEditMode(false);
+                        customQuestions.add(customQuestionUI);
                     }
                 }
             }
-            newQuestion.setGuestBookQuestionnaire(guestBookQuestionnaire);
-            questionTypeSelectItems = loadQuestionTypeSelectItems();
+        }
+        newQuestion.setGuestBookQuestionnaire(guestBookQuestionnaire);
+        questionTypeSelectItems = loadQuestionTypeSelectItems();
     }
     
     
-    public void initDVPrivilegedUsers(){
-         
-            vdcId = getVDCRequestBean().getCurrentVDC().getId();
-            editVDCPrivileges.setVdc(vdcId);
-            vdc = editVDCPrivileges.getVdc();
-            if (vdc.isRestricted()) {
-                siteRestriction = "Restricted";
-            } else {
-                siteRestriction = "Public";
-            }
-            initContributorSetting();
-            initUserName();
-            vdcRoleList = new ArrayList<RoleListItem>();
+    public void initDVPrivilegedUsers() {
+        vdcId = getVDCRequestBean().getCurrentVDC().getId();
+        editVDCPrivileges.setVdc(vdcId);
+        vdc = editVDCPrivileges.getVdc();
+        if (vdc.isRestricted()) {
+            siteRestriction = "Restricted";
+        } else {
+            siteRestriction = "Public";
+        }
+        initContributorSetting();
+        initUserName();
+        vdcRoleList = new ArrayList<RoleListItem>();
 
-            // Add empty VDCRole to list, to allow user input of a new VDCRole
-            vdcRoleList.add(new RoleListItem(null, null));
-            // Add rest of items to the list from vdc object
-            for (VDCRole vdcRole : vdc.getVdcRoles()) {
-                vdcRoleList.add(new RoleListItem(vdcRole, vdcRole.getRoleId()));
-            }
-            setFilesRestricted(vdc.isFilesRestricted());
-            
+        // Add empty VDCRole to list, to allow user input of a new VDCRole
+        vdcRoleList.add(new RoleListItem(null, null));
+        // Add rest of items to the list from vdc object
+        for (VDCRole vdcRole : vdc.getVdcRoles()) {
+            vdcRoleList.add(new RoleListItem(vdcRole, vdcRole.getRoleId()));
+        }
+        setFilesRestricted(vdc.isFilesRestricted());
     }
     
     private String tab;
@@ -507,6 +504,7 @@ public class OptionsPage extends VDCBaseBean  implements java.io.Serializable {
         if (tab == null && getVDCRequestBean().getSelectedTab() != null) {
             tab = getVDCRequestBean().getSelectedTab();
         }
+        System.out.print("tab " + tab);
         if (tab != null  && vdc != null) {
             if (tab.equals("studies")) {
                 selectedIndex=0;
@@ -527,6 +525,9 @@ public class OptionsPage extends VDCBaseBean  implements java.io.Serializable {
                     initGuestbookQuestionnaire();
                    dvPermissionsSubTab.setSelectedIndex(2); 
                 }
+                if (tab2 != null && tab2.equals("responses")){
+                   dvPermissionsSubTab.setSelectedIndex(3); 
+                }
             } else if (tab.equals("settings")) {
                 selectedIndex=4;
                 dvSettingsSubTab.setSelectedIndex(0); 
@@ -545,6 +546,9 @@ public class OptionsPage extends VDCBaseBean  implements java.io.Serializable {
                 networkGeneralSettingsSubTab.setSelectedIndex(0);
                 if (tab2 != null && tab2.equals("advanced")){
                    networkGeneralSettingsSubTab.setSelectedIndex(1); 
+                }
+                if (tab2 != null && tab2.equals("customization")){
+                   networkGeneralSettingsSubTab.setSelectedIndex(2); 
                 }
             } else if (tab.equals("classifications")) {
                 selectedIndex=2;
@@ -577,12 +581,18 @@ public class OptionsPage extends VDCBaseBean  implements java.io.Serializable {
                 if (tab2 != null && tab2.equals("tou")){
                    permissionsSubTab.setSelectedIndex(3); 
                 }
+                if (tab2 != null && tab2.equals("responses")){
+                   permissionsSubTab.setSelectedIndex(4); 
+                }
                 selectedIndex=6;
             } else if (tab.equals("utilities")) {
                 selectedIndex=7;
             } 
             tabSet1.setSelectedIndex(selectedIndex);
         }
+        System.out.print("tab = " + tab);
+        System.out.print("tab2 = " + tab2);
+        System.out.print("end of set tabs");
     }
     
     public void updateGuestBookResponses(ValueChangeEvent vce) {
@@ -591,6 +601,7 @@ public class OptionsPage extends VDCBaseBean  implements java.io.Serializable {
     
        
     public String initGuestBookResponses(){
+
         if (getVDCRequestBean().getCurrentVDC() != null) {
             vdcId = getVDCRequestBean().getCurrentVDC().getId();
             if (!show30Days){
@@ -622,13 +633,48 @@ public class OptionsPage extends VDCBaseBean  implements java.io.Serializable {
                     customQuestionIds.add(cq.getId());
                 }               
             }
-        }
-        
+        }       
         for (Long gbr : guestBookResponsesAllIds) {
                 GuestBookResponseUI guestBookResponseDisplay = new GuestBookResponseUI(gbr,customQuestionIds );
                 guestBookResponsesDisplay.add(guestBookResponseDisplay);
         }
-        JavascriptContext.addJavascriptCall(getFacesContext(), "initDownloadDataTableBlockHeight();");      
+        JavascriptContext.addJavascriptCall(getFacesContext(), "initDownloadDataTableBlockHeight();");    
+        return "";
+    }
+    
+    public String toggle30Days(){
+        if (getVDCRequestBean().getCurrentVDC() != null) {
+            vdcId = getVDCRequestBean().getCurrentVDC().getId();
+            if (!show30Days){
+                guestBookResponsesAllIds = guestBookResponseServiceBean.findAllIds(vdcId);
+            } else {
+                guestBookResponsesAllIds = guestBookResponseServiceBean.findAllIds30Days(vdcId);
+            }
+        } else {
+           if (!show30Days){
+               guestBookResponsesAllIds = guestBookResponseServiceBean.findAllIds(null);
+           } else {
+               guestBookResponsesAllIds = guestBookResponseServiceBean.findAllIds30Days(null);
+           }        
+        }         
+        guestBookResponses.clear();
+        guestBookResponsesDisplay.clear();
+        columnHeadings.clear();
+        customQuestionIds.clear();
+        if (vdc !=null && vdc.getGuestBookQuestionnaire() != null){
+            GuestBookQuestionnaire gbq = vdc.getGuestBookQuestionnaire();
+            if (gbq.getCustomQuestions().size() > 0){
+                for (CustomQuestion cq : gbq.getCustomQuestions() ){
+                    columnHeadings.add(cq.getQuestionString());
+                    customQuestionIds.add(cq.getId());
+                }               
+            }
+        }        
+        for (Long gbr : guestBookResponsesAllIds) {
+                GuestBookResponseUI guestBookResponseDisplay = new GuestBookResponseUI(gbr,customQuestionIds );
+                guestBookResponsesDisplay.add(guestBookResponseDisplay);
+        }
+        JavascriptContext.addJavascriptCall(getFacesContext(), "initDownloadDataTableBlockHeight();");  
         return "";
     }
         
@@ -1575,41 +1621,7 @@ public class OptionsPage extends VDCBaseBean  implements java.io.Serializable {
     
     private String writeCSVString() {
         String csvOutput = getColumnString() + "\n";
-        String csvCol;
         csvOutput = writeCSVStringQuery();
-        /*
-        for (GuestBookResponseUI gbrd : guestBookResponsesDisplay) {
-            if (gbrd.getGuestBookResponse() != null) {
-                csvCol = "";
-                if (gbrd.getGuestBookResponse().getVdcUser() != null) {
-                    csvCol += gbrd.getGuestBookResponse().getVdcUser().getUserName();
-                } else {
-                    csvCol += "Anonymous - + " + gbrd.getGuestBookResponse().getSessionId();
-                }
-                csvCol += "," + getSafeCString(gbrd.getGuestBookResponse().getFirstname());
-                csvCol += "," + getSafeCString(gbrd.getGuestBookResponse().getLastname());
-                csvCol += "," + getSafeCString(gbrd.getGuestBookResponse().getEmail());
-                csvCol += "," + getSafeCString(gbrd.getGuestBookResponse().getInstitution());
-                csvCol += "," + getSafeCString(gbrd.getGuestBookResponse().getPosition());
-                if (vdc == null) {
-                    csvCol += "," + getSafeCString(gbrd.getGuestBookResponse().getStudy().getOwner().getName());
-                }
-                csvCol += "," + getSafeCString(gbrd.getGuestBookResponse().getStudy().getGlobalId());
-                csvCol += "," + getSafeCString(gbrd.getGuestBookResponse().getStudy().getLatestVersion().getMetadata().getTitle());
-                csvCol += "," + getSafeCString(gbrd.getGuestBookResponse().getStudyFile().getFileName());
-                csvCol += "," + getSafeCString(gbrd.getGuestBookResponse().getResponseTime().toString());
-                csvCol += "," + getSafeCString(gbrd.getGuestBookResponse().getDownloadtype());
-                csvCol += "," + getSafeCString(gbrd.getGuestBookResponse().getSessionId());
-                if (gbrd.getCustomQuestionResponses() !=null && !gbrd.getCustomQuestionResponses().isEmpty()) {
-                    for (String response : gbrd.getCustomQuestionResponses()) {
-                        csvCol += "," + getSafeCString(response);
-                    }
-                }
-                csvCol += "\n";
-                csvOutput = csvOutput + csvCol;
-            }
-        }
-        * */
         return csvOutput;
     }
 
@@ -1818,17 +1830,36 @@ public class OptionsPage extends VDCBaseBean  implements java.io.Serializable {
         String newValue = (String) value;
         if (newValue != null && newValue.trim().length() > 0) {
             if (newValue.length() > 255) {
-                ((UIInput) toValidate).setValid(false);
                 FacesMessage message = new FacesMessage("The field cannot be more than 255 characters in length.");
                 context.addMessage(toValidate.getClientId(context), message);
             }
         }
         if ((newValue == null || newValue.trim().length() == 0) && getVDCRequestBean().getVdcNetwork().isRequireDVdescription()) {
-            ((UIInput) toValidate).setValid(false);
             FacesMessage message = new FacesMessage("The field must have a value.");
             context.addMessage(toValidate.getClientId(context), message);
             context.renderResponse();
+        } 
+    }
+    
+    public boolean validateShortDescriptionForSave() {
+        boolean retVal = true;
+        String newValue = (String) shortDescription.getValue();
+        if (newValue != null && newValue.trim().length() > 0) {
+            if (newValue.length() > 255) {
+                ((UIInput) shortDescription).setValid(false);
+                retVal = false;
+                FacesMessage message = new FacesMessage("The field cannot be more than 255 characters in length.");
+                FacesContext.getCurrentInstance().addMessage(shortDescription.getClientId(FacesContext.getCurrentInstance()), message);
+            }
         }
+        if ((newValue == null || newValue.trim().length() == 0) && getVDCRequestBean().getVdcNetwork().isRequireDVdescription()) {
+            FacesMessage message = new FacesMessage("The field must have a value.");
+            retVal = false;
+            ((UIInput) shortDescription).setValid(false);
+            FacesContext.getCurrentInstance().addMessage(shortDescription.getClientId(FacesContext.getCurrentInstance()), message);
+            FacesContext.getCurrentInstance().renderResponse();
+        }
+        return retVal;
     }
 
     public void validateIsEmptyRequiredAffiliation(FacesContext context, UIComponent toValidate, Object value) {
@@ -1929,6 +1960,11 @@ public class OptionsPage extends VDCBaseBean  implements java.io.Serializable {
             getVDCRenderBean().getFlash().put("warningMessage", "To enable announcements, you must also enter announcements in the field below.  Please enter local announcements as either plain text or html.)");   
             success = false;
             return "result";
+        }
+
+        if (!validateShortDescriptionForSave()){ 
+            success = false;
+            return "result";           
         }
         if (validateClassificationCheckBoxes()) {
             String dataversetype = dataverseType;
@@ -3217,7 +3253,7 @@ public class OptionsPage extends VDCBaseBean  implements java.io.Serializable {
         thisVdcNetwork.setNetworkPageFooter(footer);     
         vdcNetworkService.edit(thisVdcNetwork);
         getVDCRenderBean().getFlash().put("successMessage", "Successfully updated network customization.");
-        return "";
+        return "/networkAdmin/NetworkOptionsPage?faces-redirect=true&tab=settings&tab2=customization";
     }
     
     //DV Requirements
@@ -4643,6 +4679,21 @@ public class OptionsPage extends VDCBaseBean  implements java.io.Serializable {
         }
         userDataCount = new Long(userData.size());
     }
+    
+    public void allUsersSearchAction(){
+        tab2="users";
+        userData = new ArrayList();
+        List users = userService.findAllIdsSearch(allUsersSearchTerm);
+        Long defaultNetworkAdminId = vdcNetworkService.find().getDefaultNetworkAdmin().getId();
+        for (Iterator it = users.iterator(); it.hasNext();) {
+            Long elem = (Long) it.next();
+            userData.add(new AllUsersDataBean(elem, defaultNetworkAdminId));
+        }        
+    }
+    
+    private String allUsersSearchTerm;
+    public String getAllUsersSearchTerm() {return allUsersSearchTerm;}
+    public void setAllUsersSearchTerm(String allUsersSearchTerm) {this.allUsersSearchTerm = allUsersSearchTerm;}
     
     public Long getDefaultNetworkAdminId(){
         return vdcNetworkService.find().getDefaultNetworkAdmin().getId();

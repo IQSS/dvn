@@ -296,5 +296,21 @@ public class UserServiceBean implements UserServiceLocal {
             return false;
         }
      }
+         public List findAllIdsSearch(String searchTerm) {
+        String queryString = "select o.id from VDCUser as o "
+                + " where lastname like '" + searchTerm +"%'"
+                + " or username like '" + searchTerm +"%'"
+                + " order by o.userName";
+        List userList = new ArrayList();
+        
+            Query query = em.createNativeQuery(queryString);
+            for (Object currentResult : query.getResultList()) {
+                // convert results into Longs
+                userList.add(new Long(((Integer)currentResult).longValue()));
+            }
+
+        return userList;
+
+    } 
 
 }

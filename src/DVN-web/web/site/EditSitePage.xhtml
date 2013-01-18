@@ -76,8 +76,6 @@
                 </div>
                 <div jsfc="ice:panelGroup" rendered="#{OptionsPage.dataverseType == 'Scholar'}">
                   <ice:inputText id="firstName"
-                                 required="#{(OptionsPage.dataverseType == 'Scholar') ? true : false}"
-                                 requiredMessage="This field is required."
                                  value="#{OptionsPage.firstName}"
                                  validator="#{OptionsPage.validateIsEmpty}"/>
                   <ice:message for="firstName" showSummary="true" showDetail="false" errorClass="errorMessage" styleClass="errorMessage"/>
@@ -91,8 +89,6 @@
                 </div>
                 <div jsfc="ice:panelGroup" rendered="#{OptionsPage.dataverseType == 'Scholar'}">
                   <ice:inputText id="lastName"
-                                 required="#{(OptionsPage.dataverseType == 'Scholar') ? true : false}"
-                                 requiredMessage="This field is required."
                                  value="#{OptionsPage.lastName}"
                                  validator="#{OptionsPage.validateIsEmpty}"/>
                   <ice:message for="lastName" showSummary="true" showDetail="false" errorClass="errorMessage" styleClass="errorMessage"/>
@@ -106,10 +102,9 @@
                 </div>
                 <div jsfc="ice:panelGroup">
                   <ice:inputText id="affiliation"
-                                 value="#{OptionsPage.vdc.affiliation}"
-                                 required="#{VDCRequest.vdcNetwork.requireDVaffiliation}"
+                                 value="#{OptionsPage.vdc.affiliation}"                                 
                                  validator="#{OptionsPage.validateIsEmptyRequiredAffiliation}"
-                                 requiredMessage="This field is required."/>
+                                 />
                    <ice:message for="affiliation" showSummary="true" showDetail="false" errorClass="errorMessage" styleClass="errorMessage"/>
                 </div>
                 <!-- dataverse name -->
@@ -122,8 +117,6 @@
                 <div jsfc="ice:panelGroup">
                   <ice:inputText binding="#{OptionsPage.dataverseName}"
                                  id="dataverseName"
-                                 required="true"
-                                 requiredMessage="This field is required."
                                  size="60"
                                  validator="#{OptionsPage.validateName}"
                                  value="#{VDCRequest.currentVDC.name}"/>
@@ -142,8 +135,6 @@
                 <div jsfc="ice:panelGroup">
                   <ice:inputText binding="#{OptionsPage.dataverseAlias}"
                                  id="dataverseAlias"
-                                 required="true"
-                                 requiredMessage="This field is required."
                                  validator="#{OptionsPage.validateAlias}"
                                  value="#{VDCRequest.currentVDC.alias}"/>
                   <br/>
@@ -159,11 +150,9 @@
                 </div>
                 <div jsfc="ice:panelGroup">
                   <ice:inputTextarea binding="#{OptionsPage.shortDescription}"
-                                     id="dataverseShortDescription"
-                                     required="#{VDCRequest.vdcNetwork.requireDVdescription}"
+                                     id="dataverseShortDescription"                                     
                                      validator="#{OptionsPage.validateShortDescription}"
                                      value="#{VDCRequest.currentVDC.dvnDescription}"
-                                     requiredMessage="This field is required."
                                      />
                   <br/>
                   <ice:outputText styleClass="vdcHelpText" value="Short description to appear on the network home page with your dataverse listing."/>

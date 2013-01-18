@@ -77,5 +77,7 @@ public interface UserServiceLocal extends java.io.Serializable  {
     public boolean hasUserCreatedDataverse(Long userId);
 
     public boolean hasUserContributed(Long userId);
+
+    public List findAllIdsSearch(String searchTerm);
     
 }

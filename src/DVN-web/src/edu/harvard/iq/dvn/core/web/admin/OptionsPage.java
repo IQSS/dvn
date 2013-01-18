@@ -2816,7 +2816,8 @@ public class OptionsPage extends VDCBaseBean  implements java.io.Serializable {
         vdc.setDefaultSortOrder(defaultSortOrder);       
         vdcService.edit(vdc);
         getVDCRenderBean().getFlash().put("successMessage", "Successfully updated customization settings.");
-        return "";
+        return "/admin/OptionsPage?faces-redirect=true&vdcId="+getVDCRequestBean().getCurrentVDC().getId()+ "&tab=permissions&tab2=customization";
+       
     }
 
     public String cancelCustomization() {

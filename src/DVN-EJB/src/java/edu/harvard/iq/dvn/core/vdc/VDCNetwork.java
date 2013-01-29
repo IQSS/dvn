@@ -783,4 +783,6 @@ public class VDCNetwork implements java.io.Serializable  {
         this.statusNotice = statusNotice;
     }
     
+    //add new column to vdcnetwork table - xyang
+    
 }

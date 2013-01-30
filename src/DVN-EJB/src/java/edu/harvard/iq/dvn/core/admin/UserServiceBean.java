@@ -298,8 +298,8 @@ public class UserServiceBean implements UserServiceLocal {
      }
          public List findAllIdsSearch(String searchTerm) {
         String queryString = "select o.id from VDCUser as o "
-                + " where lastname like '" + searchTerm +"%'"
-                + " or username like '" + searchTerm +"%'"
+                + " where lower(lastname) like lower('" + searchTerm +"%')"
+                + " or lower(username) like lower('" + searchTerm +"%')"
                 + " order by o.userName";
         List userList = new ArrayList();
         

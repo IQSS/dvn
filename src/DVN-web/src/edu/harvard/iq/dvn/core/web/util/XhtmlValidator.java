@@ -30,6 +30,7 @@ package edu.harvard.iq.dvn.core.web.util;
 import com.icesoft.faces.component.ext.HtmlInputTextarea;
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
+import java.util.List;
 import javax.faces.application.FacesMessage;
 import javax.faces.component.UIComponent;
 import javax.faces.component.UIInput;
@@ -69,6 +70,8 @@ public class XhtmlValidator implements Validator, java.io.Serializable  {
         } 
     }
     
+
+    
     public static boolean validateXhtml (String htmlString)
         throws javax.xml.parsers.ParserConfigurationException, java.io.UnsupportedEncodingException, 
             org.xml.sax.SAXException, java.io.IOException {
@@ -105,6 +108,62 @@ public class XhtmlValidator implements Validator, java.io.Serializable  {
       } catch (java.io.IOException ioe) {
           System.out.println( "IO Exception . . . " + ioe.toString());
           msg = "IO Exception . . . " + ioe.toString();
+          isValidXhtml = false;
+      } finally {
+          return isValidXhtml;
+      }
+    }
+    
+    public boolean validateXhtmlMessage (String htmlString, List errorMsg)
+        throws javax.xml.parsers.ParserConfigurationException, java.io.UnsupportedEncodingException, 
+            org.xml.sax.SAXException, java.io.IOException {
+      boolean isValidXhtml = true;
+      htmlString = "<validate>" + htmlString + "</validate>";// avoid prolog errors
+      try {
+          DocumentBuilderFactory dbfactory = DocumentBuilderFactory.newInstance();
+          DocumentBuilder docbuilder = dbfactory.newDocumentBuilder();
+          InputStream inputStream = new ByteArrayInputStream(htmlString.getBytes("UTF-8"));// set up the InputSource to send to the parser
+          Document document = docbuilder.parse(inputStream);
+      } catch (javax.xml.parsers.ParserConfigurationException pce) {
+          System.out.println( "ParserConfigurationException . . . " + pce.toString());
+          msg = "ParserConfigurationException . . . " + pce.toString();
+          if (errorMsg !=null ){
+              errorMsg.add("ParserConfigurationException . . . " + pce.toString()); 
+          }
+          isValidXhtml = false;
+      } catch (java.io.UnsupportedEncodingException uee) {
+          System.out.println( "Unsupported Encoding Exception . . . " + uee.toString());
+          msg = "Unsupported Encoding Exception . . . " + uee.toString();
+          if (errorMsg !=null ){
+              errorMsg.add("Unsupported Encoding Exception . . . " + uee.toString());
+          }
+          isValidXhtml = false;
+      } catch (org.xml.sax.SAXException se) {
+          String cause = new String();
+          if (se.toString().indexOf("element type \"validate\" must be terminated") != -1)
+              cause = "Found a closing html tag (ex. &lt;/tagname...) without a starting html tag (ex. &lt;tagname...).";
+          else if (se.toString().indexOf("element type \"br\" must be terminated") != -1)
+              cause = "Please check that all \"br\" tags are formatted properly. Change all \"<br>\" to  \"&lt;br /&gt;\".";
+          else if (se.toString().indexOf("element type \"image\" must be terminated") != -1)
+              cause = "Please check that all \"img\" tags are formatted properly. Make sure that the end of the tag is closed: \"&lt;img /&gt;\".";
+          else if (se.toString().indexOf("The entity name must immediately follow the '&' in the entity") !=-1)
+              cause = "Please check that all \"&\" tags are properly escaped. Change \"&\" to \"&amp;\".";  
+          else if (se.toString().indexOf("element type \"div\" must be terminated") != -1)
+              cause = "The element type \"div\" must be terminated by the matching end-tag \"/div\". It's possible the end tag is missing, or the markup is unbalanced.";       
+          else
+              cause = se.toString().substring(se.toString().indexOf(":")+1, se.toString().length()) + " It's possible the end tag is missing, or the markup is unbalanced.";
+          System.out.println( "HTML Error . . . " + cause);
+          msg = "HTML Error . . . " + cause;
+          if (errorMsg !=null ){
+              errorMsg.add("HTML Error . . . " + cause);
+          }
+          isValidXhtml = false;
+      } catch (java.io.IOException ioe) {
+          System.out.println( "IO Exception . . . " + ioe.toString());
+          msg = "IO Exception . . . " + ioe.toString();
+          if (errorMsg !=null ){
+              errorMsg.add("IO Exception . . . " + ioe.toString());
+          }
           isValidXhtml = false;
       } finally {
           return isValidXhtml;

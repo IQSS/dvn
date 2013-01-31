@@ -2779,13 +2779,14 @@ public class OptionsPage extends VDCBaseBean  implements java.io.Serializable {
         ArrayList <String> errorMessage = new ArrayList();
         XhtmlValidator validator = new XhtmlValidator();
         validXML = validator.validateXhtmlMessage(banner + footer, errorMessage);
-        System.out.print ("errorMessage: "+ errorMessage.get(0));
         if (!validXML){
-            getVDCRenderBean().getFlash().put("warningMessage",errorMessage.get(0)); 
+            if (errorMessage.size() > 0){
+                getVDCRenderBean().getFlash().put("warningMessage",errorMessage.get(0)); 
+            } else {
+                getVDCRenderBean().getFlash().put("warningMessage","HTML Error . . .It's possible an end tag is missing, or the markup is unbalanced."); 
+            }
             return "";
         }
-        
-        /*XhtmlValidator.validateXhtml(banner + footer);*/
         vdc.setHeader(banner);
         vdc.setFooter(footer);
         vdc.setDisplayInFrame(displayInFrame);
@@ -3270,7 +3271,11 @@ public class OptionsPage extends VDCBaseBean  implements java.io.Serializable {
         XhtmlValidator validator = new XhtmlValidator();
         validXML = validator.validateXhtmlMessage(banner + footer, errorMessage);
         if (!validXML){
-            getVDCRenderBean().getFlash().put("warningMessage",errorMessage); 
+            if (errorMessage.size() > 0){
+                getVDCRenderBean().getFlash().put("warningMessage",errorMessage.get(0)); 
+            } else {
+                getVDCRenderBean().getFlash().put("warningMessage","HTML Error . . .It's possible an end tag is missing, or the markup is unbalanced."); 
+            }
             return "";
         }
         VDCNetwork thisVdcNetwork = vdcNetworkService.find(new Long(1));

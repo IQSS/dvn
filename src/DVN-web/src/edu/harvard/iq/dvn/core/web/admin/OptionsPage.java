@@ -38,6 +38,7 @@ import edu.harvard.iq.dvn.core.web.site.VDCUI;
 import edu.harvard.iq.dvn.core.web.study.StudyCommentUI;
 import edu.harvard.iq.dvn.core.web.util.CharacterValidator;
 import edu.harvard.iq.dvn.core.web.util.ExceptionMessageWriter;
+import edu.harvard.iq.dvn.core.web.util.XhtmlValidator;
 import java.io.*;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -64,6 +65,9 @@ import javax.inject.Named;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.servlet.http.HttpServletRequest;
+import javax.xml.bind.JAXBException;
+import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.transform.TransformerException;
 import org.apache.commons.io.input.NullInputStream;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -71,6 +75,7 @@ import org.apache.commons.validator.routines.InetAddressValidator;
 import org.icefaces.component.fileentry.FileEntry;
 import org.icefaces.component.fileentry.FileEntryEvent;
 import org.icefaces.component.fileentry.FileEntryResults;
+import org.xml.sax.SAXException;
 import twitter4j.Twitter;
 import twitter4j.TwitterException;
 import twitter4j.TwitterFactory;
@@ -504,7 +509,6 @@ public class OptionsPage extends VDCBaseBean  implements java.io.Serializable {
         if (tab == null && getVDCRequestBean().getSelectedTab() != null) {
             tab = getVDCRequestBean().getSelectedTab();
         }
-        System.out.print("tab " + tab);
         if (tab != null  && vdc != null) {
             if (tab.equals("studies")) {
                 selectedIndex=0;
@@ -590,9 +594,6 @@ public class OptionsPage extends VDCBaseBean  implements java.io.Serializable {
             } 
             tabSet1.setSelectedIndex(selectedIndex);
         }
-        System.out.print("tab = " + tab);
-        System.out.print("tab2 = " + tab2);
-        System.out.print("end of set tabs");
     }
     
     public void updateGuestBookResponses(ValueChangeEvent vce) {
@@ -2770,8 +2771,22 @@ public class OptionsPage extends VDCBaseBean  implements java.io.Serializable {
         return searchResultsFields;        
     }
 
-    public String saveCustomization() {
-        String forwardPage;
+    public String saveCustomization() throws java.io.IOException, ParserConfigurationException, SAXException, TransformerException, JAXBException {
+        combinedTextField.setValue(banner + footer);
+        boolean validXML = true;
+        String retString = "/admin/OptionsPage?faces-redirect=true&vdcId="+getVDCRequestBean().getCurrentVDC().getId()+ "&tab=settings&tab2=customization";
+        
+        ArrayList <String> errorMessage = new ArrayList();
+        XhtmlValidator validator = new XhtmlValidator();
+        validXML = validator.validateXhtmlMessage(banner + footer, errorMessage);
+        if (!validXML){
+            if (errorMessage.size() > 0){
+                getVDCRenderBean().getFlash().put("warningMessage",errorMessage.get(0)); 
+            } else {
+                getVDCRenderBean().getFlash().put("warningMessage","HTML Error . . .It's possible an end tag is missing, or the markup is unbalanced."); 
+            }
+            return "";
+        }
         vdc.setHeader(banner);
         vdc.setFooter(footer);
         vdc.setDisplayInFrame(displayInFrame);
@@ -2816,7 +2831,7 @@ public class OptionsPage extends VDCBaseBean  implements java.io.Serializable {
         vdc.setDefaultSortOrder(defaultSortOrder);       
         vdcService.edit(vdc);
         getVDCRenderBean().getFlash().put("successMessage", "Successfully updated customization settings.");
-        return "/admin/OptionsPage?faces-redirect=true&vdcId="+getVDCRequestBean().getCurrentVDC().getId()+ "&tab=settings&tab2=customization";
+        return retString;
        
     }
 
@@ -3248,13 +3263,27 @@ public class OptionsPage extends VDCBaseBean  implements java.io.Serializable {
     public void setChkEnableNetworkAnnouncements(boolean chkEnableNetworkAnnouncements) {this.chkEnableNetworkAnnouncements = chkEnableNetworkAnnouncements;}
     
     //Network Customization
-    public String saveNetworkCustomization() {
+    public String saveNetworkCustomization() throws java.io.IOException, ParserConfigurationException, SAXException, TransformerException, JAXBException{
+        combinedTextField.setValue(banner + footer);
+        boolean validXML = true;
+        String retString = "/networkAdmin/NetworkOptionsPage?faces-redirect=true&tab=settings&tab2=customization";
+        ArrayList <String> errorMessage = new ArrayList();
+        XhtmlValidator validator = new XhtmlValidator();
+        validXML = validator.validateXhtmlMessage(banner + footer, errorMessage);
+        if (!validXML){
+            if (errorMessage.size() > 0){
+                getVDCRenderBean().getFlash().put("warningMessage",errorMessage.get(0)); 
+            } else {
+                getVDCRenderBean().getFlash().put("warningMessage","HTML Error . . .It's possible an end tag is missing, or the markup is unbalanced."); 
+            }
+            return "";
+        }
         VDCNetwork thisVdcNetwork = vdcNetworkService.find(new Long(1));
         thisVdcNetwork.setNetworkPageHeader(banner);
         thisVdcNetwork.setNetworkPageFooter(footer);     
         vdcNetworkService.edit(thisVdcNetwork);
         getVDCRenderBean().getFlash().put("successMessage", "Successfully updated network customization.");
-        return "/networkAdmin/NetworkOptionsPage?faces-redirect=true&tab=settings&tab2=customization";
+        return retString;
     }
     
     //DV Requirements

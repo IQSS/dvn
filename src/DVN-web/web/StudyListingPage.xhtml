@@ -209,115 +209,144 @@
                       </tr>
                   </table>
                 </div>
-                <ice:dataTable rows="10" headerClass="list-header" id="studyListTable1" width="100%"
-                               binding="#{StudyListingPage.studyTable}"
-                               styleClass="dvnStudyListTable" rowClasses="list-row-odd, list-row-even" columnClasses="dvnStudyListTableColInfo, dvnStudyListTableColID" value="#{StudyListingPage.studies}" var="studyUI">
-                  <ice:column id="column1">
-                    <div class="dvnStudyListStudyInfo">
-                      <div jsfc="ice:panelGroup" styleClass="#{!studyUI.study.restricted ? 'dvn_nostyle' : (studyUI.studyRestricted ? 'dvnStudyRestricted' : 'dvnStudyPublic')}" id="groupPanel1">
-                        <ice:outputLink value="/dvn#{VDCRequest.currentVDCURL}/faces/study/StudyPage.xhtml?globalId=#{studyUI.study.globalId}&amp;studyListingIndex=#{StudyListingPage.studyListingIndex}" id="hyperlink3">
-                          <ice:outputText id="hyperlink3Text" value="#{studyUI.metadata.title}"/>
-                        </ice:outputLink>
-                        <ice:outputText id="outputText13" styleClass="dvnStudyListStudyAuthor" value="by #{studyUI.authors}" rendered="#{studyUI.authors != null and studyUI.authors != ''}"/>
-                      </div>
-                      <!--
-                              NO FILES NEED TO GO SOMEWHERE ELSE
-                              <div>
-                                <ice:graphicImage alt="This study contains no files." rendered="#{!studyUI.files}"
-                                                  title="This study contains no files." value="/resources/images/icon_nofiles.gif" />
-                                <ice:outputLink value="/dvn#{VDCRequest.currentVDCURL}/faces/study/StudyPage.xhtml?globalId=#{studyUI.study.globalId}&amp;tab=files&amp;studyListingIndex=#{StudyListingPage.studyListingIndex}" rendered="#{studyUI.files}">
-                                  <ice:graphicImage styleClass="vdcNoBorders" alt="This study contains subsettable files." rendered="#{studyUI.subsettable}"
-                                                    title="This study contains subsettable files." value="/resources/images/icon_subsettable.gif" />
-                                  <ice:graphicImage styleClass="vdcNoBorders" alt="This study contains only non-subsettable files." rendered="#{!studyUI.subsettable}"
-                                                    title="This study contains only non-subsettable files." value="/resources/images/icon_files.gif" />
+                <div style="overflow:hidden;">
+                <div jsfc="ice:panelGroup" styleClass="dvnStudyFacetBlock" rendered="#{(StudyListingPage.renderSearchResultsFilter)}">
+                    <style type="text/css">
+                    .dvnStudyFacetBlock {width:30%; float:right; text-align:left;}
+                    .dvnStudyListBlockSearch {width:70%; border-right:1px solid #C55B28;}
+                    .dvnStudyFacetBlockTitle {padding:3px 5px; margin-bottom:.5em; color:#464646; font-weight:bold;}
+                    .dvnStudyFacetCategoryBlock {padding:3px 5px; margin-bottom:1em;}
+                    .dvnStudyFacetCategoryTitle {color:#C55B28; font-weight:bold;}
+                    .dvnStudyFacetCategoryBlock ul, .dvnStudyFacetCategoryBlock li {margin:0; padding:0; list-style:none;}
+                    .dvnStudyFacetCategoryBlock li {border-bottom:1px dotted #D9D9D9;}
+                    .dvnStudyFacetResultNumber {color:grey;}
+                    </style>
+                    <div class="dvnStudyFacetBlockTitle">Refine Results</div>
+                    <div class="dvnStudyFacetCategoryBlock">
+                        <div class="dvnStudyFacetCategoryTitle">Result Category 1</div>
+                        <ul>
+                            <li><a href="#">Result Link 1</a> <span class="dvnStudyFacetResultNumber">(88)</span></li>
+                        </ul>
+                    </div>
+                    <div class="dvnStudyFacetCategoryBlock">
+                        <div class="dvnStudyFacetCategoryTitle">Result Category 2</div>
+                        <ul>
+                            <li><a href="#">Result Link 2</a> <span class="dvnStudyFacetResultNumber">(88)</span></li>
+                        </ul>
+                    </div>
+                </div>
+                <div jsfc="ice:panelGroup" styleClass="#{(StudyListingPage.renderSearchResultsFilter) ? 'dvnStudyListBlockSearch' : 'dvnStudyListBlockHomePage'}">
+                    <ice:dataTable rows="10" headerClass="list-header" id="studyListTable1" width="100%"
+                                binding="#{StudyListingPage.studyTable}"
+                                styleClass="dvnStudyListTable" rowClasses="list-row-odd, list-row-even" columnClasses="dvnStudyListTableColInfo, dvnStudyListTableColID" value="#{StudyListingPage.studies}" var="studyUI">
+                        <ice:column id="column1">
+                            <div class="dvnStudyListStudyInfo">
+                            <div jsfc="ice:panelGroup" styleClass="#{!studyUI.study.restricted ? 'dvn_nostyle' : (studyUI.studyRestricted ? 'dvnStudyRestricted' : 'dvnStudyPublic')}" id="groupPanel1">
+                                <ice:outputLink value="/dvn#{VDCRequest.currentVDCURL}/faces/study/StudyPage.xhtml?globalId=#{studyUI.study.globalId}&amp;studyListingIndex=#{StudyListingPage.studyListingIndex}" id="hyperlink3">
+                                <ice:outputText id="hyperlink3Text" value="#{studyUI.metadata.title}"/>
                                 </ice:outputLink>
-                              </div>
-                              -->
-                      <div jsfc="ice:panelGroup" id="groupPanel2" rendered="#{studyUI.abstracts != null and studyUI.abstracts != ''}">
-                          <ice:outputText id="outputText14" styleClass="dvnStudyListTableAbstract" escape="false" value="Description: &#60;div class=&#34;dvnStudyListTableAbstractBlock&#34;&#62;#{studyUI.abstracts}&#60;/div&#62;"/>
-                      </div>
-                      <!-- Optional search fields -->
-                      
-                      <div jsfc="ice:panelGroup" styleClass="dvnStudyListTableOptionalField" rendered="#{!empty StudyListingPage.studyFields[sfc.productionDate] and !empty studyUI.metadata.productionDate}">
-                          <ice:outputText value="Production Date:" styleClass="dvnStudyListTableOptionalFieldLabel"/>
-                          <ice:outputText value="#{studyUI.productionDate}"/>
-                      </div>
-                      <div jsfc="ice:panelGroup" styleClass="dvnStudyListTableOptionalField" rendered="#{!empty StudyListingPage.studyFields[sfc.producer] and !empty studyUI.producers}">
-                          <ice:outputText value="Producer:" styleClass="dvnStudyListTableOptionalFieldLabel"/>
-                          <ice:outputText value="#{studyUI.producers}" escape="false"/>
-                      </div>
-                      <div jsfc="ice:panelGroup" styleClass="dvnStudyListTableOptionalField" rendered="#{!empty StudyListingPage.studyFields[sfc.distributionDate] and !empty studyUI.metadata.distributionDate}">
-                          <ice:outputText value="Distribution Date:" styleClass="dvnStudyListTableOptionalFieldLabel"/>
-                          <ice:outputText value="#{studyUI.distributionDate}" escape="false"/>
-                      </div>
-                      <div jsfc="ice:panelGroup" styleClass="dvnStudyListTableOptionalField" rendered="#{!empty StudyListingPage.studyFields[sfc.distributor] and !empty studyUI.distributors}">
-                          <ice:outputText value="Distributor:" styleClass="dvnStudyListTableOptionalFieldLabel"/>
-                          <ice:outputText value="#{studyUI.distributors}" escape="false"/>
-                      </div>
-                      <div jsfc="ice:panelGroup" styleClass="dvnStudyListTableOptionalField" rendered="#{!empty StudyListingPage.studyFields[sfc.publicationReplicationData] and !empty studyUI.replicationFor}">
-                          <ice:outputText value="Replication For:" styleClass="dvnStudyListTableOptionalFieldLabel"/>
-                          <ice:outputText value="#{studyUI.replicationFor}" escape="false"/>
-                      </div>
-                      <div jsfc="ice:panelGroup" styleClass="dvnStudyListTableOptionalField" rendered="#{!empty StudyListingPage.studyFields[sfc.publication] and !empty studyUI.relPublications}">
-                          <ice:outputText value="Related Publications:" styleClass="dvnStudyListTableOptionalFieldLabel"/>
-                          <ice:outputText value="#{studyUI.relPublications}" escape="false"/>
-                      </div>
-                      <div jsfc="ice:panelGroup" styleClass="dvnStudyListTableOptionalField" rendered="#{!empty StudyListingPage.studyFields[sfc.relatedMaterial] and !empty studyUI.relMaterials}">
-                          <ice:outputText value="Related Material:" styleClass="dvnStudyListTableOptionalFieldLabel"/>
-                          <ice:outputText value="#{studyUI.relMaterials}" escape="false"/>
-                      </div>
-                      <div jsfc="ice:panelGroup" styleClass="dvnStudyListTableOptionalField" rendered="#{!empty StudyListingPage.studyFields[sfc.relatedStudies] and !empty studyUI.relStudies}">
-                          <ice:outputText value="Related Studies:" styleClass="dvnStudyListTableOptionalFieldLabel"/>
-                          <ice:outputText value="#{studyUI.relStudies}" escape="false"/>
-                      </div>
-                      <div jsfc="ice:panelGroup" styleClass="dvnStudyListTableOptionalField" rendered="#{ !empty studyUI.foundInVariables}">
-                          <ice:outputText value="Found In Variables:" styleClass="dvnStudyListTableOptionalFieldLabel"/>
-                          <ice:dataTable cellspacing="0" cellpadding="0" width="100%" id="dvDataTable" value="#{studyUI.foundInVariables}" var="dv">
-                              <ice:column>
-                                  <ice:outputLink value="/dvn#{VDCRequest.currentVDCURL}/faces/study/VariablePage.xhtml?dvId=#{dv.id}&amp;studyListingIndex=#{StudyListingPage.studyListingIndex}">
-                                      <ice:outputText value="#{dv.name}"/>
-                                  </ice:outputLink>
-                              </ice:column>
-                              <ice:column>
-                                  <ice:outputText value="#{dv.label}"/>
-                              </ice:column>
-                              <ice:column>
-                                  <ice:outputText value="#{dv.dataTable.studyFile.fileName}"/>
-                              </ice:column>
-                          </ice:dataTable>
-                      </div>
-                      <div jsfc="ice:panelGroup" styleClass="dvnStudyListTableOptionalField" rendered="#{ studyUI.displayVersions and !empty studyUI.foundInVersions}">
-                          <ice:outputText value="The UNF was not found in the current version of this study; however it was found in the following archived versions:"/>
-                          <ice:dataTable cellspacing="0" cellpadding="0" width="100%" id="versionDataTable" value="#{studyUI.foundInVersions}" var="version">
-                              <ice:column>
-                                  <ice:outputLink value="/dvn#{VDCRequest.currentVDCURL}/faces/study/StudyPage.xhtml">
-                                      <f:param name="globalId" value="#{studyUI.study.globalId}"/>
-                                      <f:param name="versionNumber" value="#{version.versionNumber}"/>
-                                      <f:param name="studyListingIndex" value="#{StudyListingPage.studyListingIndex}"/>
-                                      <ice:outputText value="Version #{version.versionNumber}"/>
-                                  </ice:outputLink>
-                              </ice:column>
-                          </ice:dataTable>
-                      </div>
-                    </div>
-                  </ice:column>
-                  <ice:column id="column2">
-                    <div class="dvnStudyListIDDownloads">
-                      <ice:outputText styleClass="dvnStudyListGlobalId" value="#{studyUI.study.globalId}"/>
-                      <div class="dvnStudyListDownloadCount">
-                      <ice:outputLink value="/dvn#{VDCRequest.currentVDCURL}/faces/study/StudyPage.xhtml?globalId=#{studyUI.study.globalId}&amp;tab=files&amp;studyListingIndex=#{StudyListingPage.studyListingIndex}">
-                          <ice:graphicImage url="/resources/images/icon_analyze.gif" title="View and Analyze study files" rendered="#{studyUI.files and studyUI.subsettable}"/>
-                          <ice:graphicImage url="/resources/images/icon_files.gif" title="View study files" rendered="#{studyUI.files and !studyUI.subsettable}"/>
-                      </ice:outputLink>
-                      <ice:outputText styleClass="dvnStudyListIDDownloadsNonSubsettable" value="#{studyUI.downloadCount} download" rendered="#{studyUI.downloadCount == 1 and !studyUI.subsettable}"/>
-                      <ice:outputText styleClass="dvnStudyListIDDownloadsSubsettable" value="#{studyUI.downloadCount} download/analysis" rendered="#{studyUI.downloadCount == 1 and studyUI.subsettable}"/>
-                      <ice:outputText styleClass="dvnStudyListIDDownloadsNonSubsettable" value="#{studyUI.downloadCount} downloads" rendered="#{studyUI.files and studyUI.downloadCount != 1 and !studyUI.subsettable}"/>
-                      <ice:outputText styleClass="dvnStudyListIDDownloadsSubsettable" value="#{studyUI.downloadCount} downloads + analyses" rendered="#{studyUI.files and studyUI.downloadCount != 1 and studyUI.subsettable}"/>
-                      </div>
-                      <ice:outputText value="Last Released: #{studyUI.releaseTime}"/>
-                    </div>
-                  </ice:column>
-                </ice:dataTable>
+                                <ice:outputText id="outputText13" styleClass="dvnStudyListStudyAuthor" value="by #{studyUI.authors}" rendered="#{studyUI.authors != null and studyUI.authors != ''}"/>
+                            </div>
+                            <!--
+                                    NO FILES NEED TO GO SOMEWHERE ELSE
+                                    <div>
+                                        <ice:graphicImage alt="This study contains no files." rendered="#{!studyUI.files}"
+                                                        title="This study contains no files." value="/resources/images/icon_nofiles.gif" />
+                                        <ice:outputLink value="/dvn#{VDCRequest.currentVDCURL}/faces/study/StudyPage.xhtml?globalId=#{studyUI.study.globalId}&amp;tab=files&amp;studyListingIndex=#{StudyListingPage.studyListingIndex}" rendered="#{studyUI.files}">
+                                        <ice:graphicImage styleClass="vdcNoBorders" alt="This study contains subsettable files." rendered="#{studyUI.subsettable}"
+                                                            title="This study contains subsettable files." value="/resources/images/icon_subsettable.gif" />
+                                        <ice:graphicImage styleClass="vdcNoBorders" alt="This study contains only non-subsettable files." rendered="#{!studyUI.subsettable}"
+                                                            title="This study contains only non-subsettable files." value="/resources/images/icon_files.gif" />
+                                        </ice:outputLink>
+                                    </div>
+                                    -->
+                            <div jsfc="ice:panelGroup" id="groupPanel2" rendered="#{studyUI.abstracts != null and studyUI.abstracts != ''}">
+                                <ice:outputText id="outputText14" styleClass="dvnStudyListTableAbstract" escape="false" value="Description: &#60;div class=&#34;dvnStudyListTableAbstractBlock&#34;&#62;#{studyUI.abstracts}&#60;/div&#62;"/>
+                            </div>
+                            <!-- Optional search fields -->
+
+                            <div jsfc="ice:panelGroup" styleClass="dvnStudyListTableOptionalField" rendered="#{!empty StudyListingPage.studyFields[sfc.productionDate] and !empty studyUI.metadata.productionDate}">
+                                <ice:outputText value="Production Date:" styleClass="dvnStudyListTableOptionalFieldLabel"/>
+                                <ice:outputText value="#{studyUI.productionDate}"/>
+                            </div>
+                            <div jsfc="ice:panelGroup" styleClass="dvnStudyListTableOptionalField" rendered="#{!empty StudyListingPage.studyFields[sfc.producer] and !empty studyUI.producers}">
+                                <ice:outputText value="Producer:" styleClass="dvnStudyListTableOptionalFieldLabel"/>
+                                <ice:outputText value="#{studyUI.producers}" escape="false"/>
+                            </div>
+                            <div jsfc="ice:panelGroup" styleClass="dvnStudyListTableOptionalField" rendered="#{!empty StudyListingPage.studyFields[sfc.distributionDate] and !empty studyUI.metadata.distributionDate}">
+                                <ice:outputText value="Distribution Date:" styleClass="dvnStudyListTableOptionalFieldLabel"/>
+                                <ice:outputText value="#{studyUI.distributionDate}" escape="false"/>
+                            </div>
+                            <div jsfc="ice:panelGroup" styleClass="dvnStudyListTableOptionalField" rendered="#{!empty StudyListingPage.studyFields[sfc.distributor] and !empty studyUI.distributors}">
+                                <ice:outputText value="Distributor:" styleClass="dvnStudyListTableOptionalFieldLabel"/>
+                                <ice:outputText value="#{studyUI.distributors}" escape="false"/>
+                            </div>
+                            <div jsfc="ice:panelGroup" styleClass="dvnStudyListTableOptionalField" rendered="#{!empty StudyListingPage.studyFields[sfc.publicationReplicationData] and !empty studyUI.replicationFor}">
+                                <ice:outputText value="Replication For:" styleClass="dvnStudyListTableOptionalFieldLabel"/>
+                                <ice:outputText value="#{studyUI.replicationFor}" escape="false"/>
+                            </div>
+                            <div jsfc="ice:panelGroup" styleClass="dvnStudyListTableOptionalField" rendered="#{!empty StudyListingPage.studyFields[sfc.publication] and !empty studyUI.relPublications}">
+                                <ice:outputText value="Related Publications:" styleClass="dvnStudyListTableOptionalFieldLabel"/>
+                                <ice:outputText value="#{studyUI.relPublications}" escape="false"/>
+                            </div>
+                            <div jsfc="ice:panelGroup" styleClass="dvnStudyListTableOptionalField" rendered="#{!empty StudyListingPage.studyFields[sfc.relatedMaterial] and !empty studyUI.relMaterials}">
+                                <ice:outputText value="Related Material:" styleClass="dvnStudyListTableOptionalFieldLabel"/>
+                                <ice:outputText value="#{studyUI.relMaterials}" escape="false"/>
+                            </div>
+                            <div jsfc="ice:panelGroup" styleClass="dvnStudyListTableOptionalField" rendered="#{!empty StudyListingPage.studyFields[sfc.relatedStudies] and !empty studyUI.relStudies}">
+                                <ice:outputText value="Related Studies:" styleClass="dvnStudyListTableOptionalFieldLabel"/>
+                                <ice:outputText value="#{studyUI.relStudies}" escape="false"/>
+                            </div>
+                            <div jsfc="ice:panelGroup" styleClass="dvnStudyListTableOptionalField" rendered="#{ !empty studyUI.foundInVariables}">
+                                <ice:outputText value="Found In Variables:" styleClass="dvnStudyListTableOptionalFieldLabel"/>
+                                <ice:dataTable cellspacing="0" cellpadding="0" width="100%" id="dvDataTable" value="#{studyUI.foundInVariables}" var="dv">
+                                    <ice:column>
+                                        <ice:outputLink value="/dvn#{VDCRequest.currentVDCURL}/faces/study/VariablePage.xhtml?dvId=#{dv.id}&amp;studyListingIndex=#{StudyListingPage.studyListingIndex}">
+                                            <ice:outputText value="#{dv.name}"/>
+                                        </ice:outputLink>
+                                    </ice:column>
+                                    <ice:column>
+                                        <ice:outputText value="#{dv.label}"/>
+                                    </ice:column>
+                                    <ice:column>
+                                        <ice:outputText value="#{dv.dataTable.studyFile.fileName}"/>
+                                    </ice:column>
+                                </ice:dataTable>
+                            </div>
+                            <div jsfc="ice:panelGroup" styleClass="dvnStudyListTableOptionalField" rendered="#{ studyUI.displayVersions and !empty studyUI.foundInVersions}">
+                                <ice:outputText value="The UNF was not found in the current version of this study; however it was found in the following archived versions:"/>
+                                <ice:dataTable cellspacing="0" cellpadding="0" width="100%" id="versionDataTable" value="#{studyUI.foundInVersions}" var="version">
+                                    <ice:column>
+                                        <ice:outputLink value="/dvn#{VDCRequest.currentVDCURL}/faces/study/StudyPage.xhtml">
+                                            <f:param name="globalId" value="#{studyUI.study.globalId}"/>
+                                            <f:param name="versionNumber" value="#{version.versionNumber}"/>
+                                            <f:param name="studyListingIndex" value="#{StudyListingPage.studyListingIndex}"/>
+                                            <ice:outputText value="Version #{version.versionNumber}"/>
+                                        </ice:outputLink>
+                                    </ice:column>
+                                </ice:dataTable>
+                            </div>
+                            </div>
+                        </ice:column>
+                        <ice:column id="column2">
+                            <div class="dvnStudyListIDDownloads">
+                            <ice:outputText styleClass="dvnStudyListGlobalId" value="#{studyUI.study.globalId}"/>
+                            <div class="dvnStudyListDownloadCount">
+                            <ice:outputLink value="/dvn#{VDCRequest.currentVDCURL}/faces/study/StudyPage.xhtml?globalId=#{studyUI.study.globalId}&amp;tab=files&amp;studyListingIndex=#{StudyListingPage.studyListingIndex}">
+                                <ice:graphicImage url="/resources/images/icon_analyze.gif" title="View and Analyze study files" rendered="#{studyUI.files and studyUI.subsettable}"/>
+                                <ice:graphicImage url="/resources/images/icon_files.gif" title="View study files" rendered="#{studyUI.files and !studyUI.subsettable}"/>
+                            </ice:outputLink>
+                            <ice:outputText styleClass="dvnStudyListIDDownloadsNonSubsettable" value="#{studyUI.downloadCount} download" rendered="#{studyUI.downloadCount == 1 and !studyUI.subsettable}"/>
+                            <ice:outputText styleClass="dvnStudyListIDDownloadsSubsettable" value="#{studyUI.downloadCount} download/analysis" rendered="#{studyUI.downloadCount == 1 and studyUI.subsettable}"/>
+                            <ice:outputText styleClass="dvnStudyListIDDownloadsNonSubsettable" value="#{studyUI.downloadCount} downloads" rendered="#{studyUI.files and studyUI.downloadCount != 1 and !studyUI.subsettable}"/>
+                            <ice:outputText styleClass="dvnStudyListIDDownloadsSubsettable" value="#{studyUI.downloadCount} downloads + analyses" rendered="#{studyUI.files and studyUI.downloadCount != 1 and studyUI.subsettable}"/>
+                            </div>
+                            <ice:outputText value="Last Released: #{studyUI.releaseTime}"/>
+                            </div>
+                        </ice:column>
+                    </ice:dataTable>
+                </div>
+                </div>
                 <ice:panelGrid cellpadding="0" cellspacing="0" border="0" columns="2" id="gridPanel22"
                                styleClass="dvnStudyListResultsBottom" columnClasses="dvn_StudyListTotals, dvnPaginatorWrap"
                                rendered="#{StudyListingPage.renderScroller}">

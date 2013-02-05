@@ -7,7 +7,7 @@
                       jsfc="ice:panelGroup">
                 
                 <script type="text/javascript">
-                    //<![CDATA[
+                  // <![CDATA[
                     jQuery(function(jQuery){
                       jQuery.fn.fixOverflow = function(){
                         if (jQuery.browser.msie) {
@@ -23,13 +23,12 @@
                     });
 
                     jQuery(document).ready(function(){                       
-                          initDownloadDataTableBlockHeight();
+                         initDownloadDataTableBlockHeight();
                     });
 
                     function initDownloadDataTableBlockHeight(){
-                        var $div = jQuery(".dvnGuestBookResponseTable");
-                        y = $div.outerHeight() + 51;
-                        jQuery(".dvnGuestBookResponseTableBlock").css("height", y);
+                        y = jQuery(".dvnGuestBookResponseTable").outerHeight() + 115;
+                        jQuery(".dvnGuestBookResponseTableBlock").css({"height" : y});
                     };
 
                    Ice.onAsynchronousReceive("document:body", function(){
@@ -55,8 +54,7 @@
                    function initGuestBookResponses(){                      
                         jQuery('input[id$=initGuestBookResponse]').click();
                    }
- 
-//]]>
+                  // ]]>
                 </script>
     
             <ice:commandButton visible="false" id="initGuestBookResponse" action="#{OptionsPage.initGuestBookResponses}"/>
@@ -84,7 +82,7 @@
                             <!-- EMPTY -->
                         </div>
                         <div jsfc="ice:panelGroup" styleClass="dvnManageTableControlPad">
-                            <ice:selectBooleanCheckbox value="#{OptionsPage.show30Days}" onchange="initGuestBookResponses();"   />
+                            <ice:selectBooleanCheckbox value="#{OptionsPage.show30Days}" onchange="initGuestBookResponses();"/>
                             <ice:outputText styleClass="dvnGuestBookResponse30DayLabel" value="Show results for most recent 30 days."/>
                         </div>
                         <div jsfc="ice:panelGroup" styleClass="dvnPaginatorWrap">

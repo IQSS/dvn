@@ -325,6 +325,10 @@ public class AddSitePage extends VDCBaseBean implements java.io.Serializable  {
             createdVDC.setAffiliation(strAffiliation);
             createdVDC.setDvnDescription(strShortDescription);
             createdVDC.setAnnouncements(strShortDescription); // also set default dv home page description from the the DVN home page short description
+            //on create if description is blank uncheck display flag
+            if(strShortDescription.isEmpty()){
+                createdVDC.setDisplayAnnouncements(false);
+            }
             vdcService.edit(createdVDC);
 
             String hostUrl = PropertyUtil.getHostUrl();
@@ -371,8 +375,12 @@ public class AddSitePage extends VDCBaseBean implements java.io.Serializable  {
             saveClassifications(createdScholarDataverse);
   
             //  add default values to the VDC table and commit/set the vdc bean props
-            createdScholarDataverse.setDisplayNetworkAnnouncements(getVDCRequestBean().getVdcNetwork().isDisplayAnnouncements());
+            createdScholarDataverse.setDisplayNetworkAnnouncements(getVDCRequestBean().getVdcNetwork().isDisplayAnnouncements());           
             createdScholarDataverse.setDisplayAnnouncements(getVDCRequestBean().getVdcNetwork().isDisplayVDCAnnouncements());
+             //on create if description is blank uncheck display flag
+            if(strShortDescription.isEmpty()){
+                createdScholarDataverse.setDisplayAnnouncements(false);
+            }
             createdScholarDataverse.setAnnouncements(getVDCRequestBean().getVdcNetwork().getDefaultVDCAnnouncements());
             createdScholarDataverse.setDisplayNewStudies(getVDCRequestBean().getVdcNetwork().isDisplayVDCRecentStudies());
             createdScholarDataverse.setAboutThisDataverse(getVDCRequestBean().getVdcNetwork().getDefaultVDCAboutText());

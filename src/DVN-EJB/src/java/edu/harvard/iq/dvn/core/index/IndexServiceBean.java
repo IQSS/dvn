@@ -183,7 +183,7 @@ public class IndexServiceBean implements edu.harvard.iq.dvn.core.index.IndexServ
                 } 
             }
         } catch (Throwable e) {
-            mailService.sendIndexUpdateErrorNotification(vdcNetworkService.find().getContactEmail(), vdcNetworkService.find().getName());
+            mailService.sendIndexUpdateErrorNotification(vdcNetworkService.find().getSystemEmail(), vdcNetworkService.find().getName());
             e.printStackTrace();
         }
     }
@@ -198,7 +198,7 @@ public class IndexServiceBean implements edu.harvard.iq.dvn.core.index.IndexServ
     private void handleIOProblems(boolean ioProblem, Long ioProblemCount) {
         if (ioProblem) {
             try {
-                mailService.sendDoNotReplyMail(vdcNetworkService.find().getContactEmail(), "IO problem", ioProblemCount +" studies may not have been indexed" + InetAddress.getLocalHost().getHostAddress());
+                mailService.sendDoNotReplyMail(vdcNetworkService.find().getSystemEmail(), "IO problem", ioProblemCount +" studies may not have been indexed" + InetAddress.getLocalHost().getHostAddress());
             } catch (UnknownHostException ex) {
                 Logger.getLogger(IndexServiceBean.class.getName()).log(Level.SEVERE, null, ex);
             }
@@ -208,7 +208,7 @@ public class IndexServiceBean implements edu.harvard.iq.dvn.core.index.IndexServ
     private void indexProblemNotify() {
         List<Study> studies = (List<Study>) em.createQuery("SELECT s from Study s where s.lastIndexTime < s.lastUpdateTime OR s.lastIndexTime is NULL").getResultList();
         if (studies.size() > 0) {
-            mailService.sendIndexErrorNotification(vdcNetworkService.find().getContactEmail(), vdcNetworkService.find().getName(), studies.size());
+            mailService.sendIndexErrorNotification(vdcNetworkService.find().getSystemEmail(), vdcNetworkService.find().getName(), studies.size());
         }
     }
 

@@ -639,7 +639,8 @@ public class OptionsPage extends VDCBaseBean  implements java.io.Serializable {
                 GuestBookResponseUI guestBookResponseDisplay = new GuestBookResponseUI(gbr,customQuestionIds );
                 guestBookResponsesDisplay.add(guestBookResponseDisplay);
         }
-        JavascriptContext.addJavascriptCall(getFacesContext(), "initDownloadDataTableBlockHeight(); jQuery('.dvnGuestBookResponseTableBlock').css({'border' : '1px solid red'});");
+        JavascriptContext.addJavascriptCall(getFacesContext(), "initDownloadDataTableBlockHeight();");
+        JavascriptContext.addJavascriptCall(getFacesContext(), "initAddBorder();");
         return "";
     }
     
@@ -675,7 +676,7 @@ public class OptionsPage extends VDCBaseBean  implements java.io.Serializable {
                 GuestBookResponseUI guestBookResponseDisplay = new GuestBookResponseUI(gbr,customQuestionIds );
                 guestBookResponsesDisplay.add(guestBookResponseDisplay);
         }
-        // JavascriptContext.addJavascriptCall(getFacesContext(), "initDownloadDataTableBlockHeight(); jQuery('.dvnGuestBookResponseTableBlock').css({'border' : '1px solid blue'});");
+        // JavascriptContext.addJavascriptCall(getFacesContext(), "initDownloadDataTableBlockHeight();");
         return "";
     }
         

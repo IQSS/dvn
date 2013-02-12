@@ -27,8 +27,11 @@
                     });
 
                     function initDownloadDataTableBlockHeight(){
-                        y = jQuery(".dvnGuestBookResponseTable").outerHeight() + 115;
+                        y = jQuery(".dvnGuestBookResponseTable").outerHeight() + 15;
                         jQuery(".dvnGuestBookResponseTableBlock").css({"height" : y});
+                    };
+                    function initAddBorder(){
+                        jQuery(".dvnGuestBookResponseTableBlock").css({"border" : "1px solid gold"});
                     };
 
                    Ice.onAsynchronousReceive("document:body", function(){

@@ -88,13 +88,18 @@ public class EditNetworkPrivilegesServiceBean implements EditNetworkPrivilegesSe
         System.out.print (queryString);
         List<VDCUser> users = em.createQuery(queryString).getResultList();
         List<NetworkPrivilegedUserBean> returnList = new ArrayList<NetworkPrivilegedUserBean>();
+        int i = 1;
         for (Object entry : users){
+            i++;
             VDCUser elem = (VDCUser) entry;
             if (elem.getNetworkRole() != null){
                 returnList.add(new NetworkPrivilegedUserBean(elem, elem.getNetworkRole().getId()));
             } else {
                 returnList.add(new NetworkPrivilegedUserBean(elem, null));
             } 
+            if (i > 100){
+                return returnList;
+            }
         }
         return returnList;
     }

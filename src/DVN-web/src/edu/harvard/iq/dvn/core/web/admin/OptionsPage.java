@@ -38,6 +38,7 @@ import edu.harvard.iq.dvn.core.web.site.VDCUI;
 import edu.harvard.iq.dvn.core.web.study.StudyCommentUI;
 import edu.harvard.iq.dvn.core.web.util.CharacterValidator;
 import edu.harvard.iq.dvn.core.web.util.ExceptionMessageWriter;
+import edu.harvard.iq.dvn.core.web.util.XhtmlValidator;
 import java.io.*;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -64,6 +65,9 @@ import javax.inject.Named;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.servlet.http.HttpServletRequest;
+import javax.xml.bind.JAXBException;
+import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.transform.TransformerException;
 import org.apache.commons.io.input.NullInputStream;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -71,6 +75,7 @@ import org.apache.commons.validator.routines.InetAddressValidator;
 import org.icefaces.component.fileentry.FileEntry;
 import org.icefaces.component.fileentry.FileEntryEvent;
 import org.icefaces.component.fileentry.FileEntryResults;
+import org.xml.sax.SAXException;
 import twitter4j.Twitter;
 import twitter4j.TwitterException;
 import twitter4j.TwitterFactory;
@@ -354,6 +359,7 @@ public class OptionsPage extends VDCBaseBean  implements java.io.Serializable {
     }
     
     public void initDVGeneralSettings() {
+        
         if (vdc.isRestricted()) {
             siteRestriction = "Restricted";
         } else {
@@ -369,8 +375,7 @@ public class OptionsPage extends VDCBaseBean  implements java.io.Serializable {
                     this.setDataverseType(request.getParameter((String) key));
                 }
             }
-
-            if (this.dataverseType == null && getVDCRequestBean().getCurrentVDC().getDtype() != null) {
+            if ((this.dataverseType == null || this.dataverseType.isEmpty()) && getVDCRequestBean().getCurrentVDC().getDtype() != null) {
                 this.setDataverseType(getVDCRequestBean().getCurrentVDC().getDtype());
             }
             if ((this.dataverseType == null || this.dataverseType.equals("Scholar"))) {
@@ -411,6 +416,7 @@ public class OptionsPage extends VDCBaseBean  implements java.io.Serializable {
                     classUI.setSelected(true);
                 }
             }
+            System.out.print("dv type" + this.dataverseType);
         }
     }
     
@@ -505,7 +511,6 @@ public class OptionsPage extends VDCBaseBean  implements java.io.Serializable {
         if (tab == null && getVDCRequestBean().getSelectedTab() != null) {
             tab = getVDCRequestBean().getSelectedTab();
         }
-        System.out.print("tab " + tab);
         if (tab != null  && vdc != null) {
             if (tab.equals("studies")) {
                 selectedIndex=0;
@@ -527,6 +532,7 @@ public class OptionsPage extends VDCBaseBean  implements java.io.Serializable {
                    dvPermissionsSubTab.setSelectedIndex(2); 
                 }
                 if (tab2 != null && tab2.equals("responses")){
+                    System.err.print("in init selected tab index vdc !=null");
                    dvPermissionsSubTab.setSelectedIndex(3); 
                 }
             } else if (tab.equals("settings")) {
@@ -583,6 +589,7 @@ public class OptionsPage extends VDCBaseBean  implements java.io.Serializable {
                    permissionsSubTab.setSelectedIndex(3); 
                 }
                 if (tab2 != null && tab2.equals("responses")){
+                    System.err.print("in init selected tab index vdc == null (network)");
                    permissionsSubTab.setSelectedIndex(4); 
                 }
                 selectedIndex=6;
@@ -591,18 +598,9 @@ public class OptionsPage extends VDCBaseBean  implements java.io.Serializable {
             } 
             tabSet1.setSelectedIndex(selectedIndex);
         }
-        System.out.print("tab = " + tab);
-        System.out.print("tab2 = " + tab2);
-        System.out.print("end of set tabs");
     }
-    
-    public void updateGuestBookResponses(ValueChangeEvent vce) {
-        initGuestBookResponses();
-    }
-    
-       
-    public String initGuestBookResponses(){
 
+    public String initGuestBookResponses(){                
         if (getVDCRequestBean().getCurrentVDC() != null) {
             vdcId = getVDCRequestBean().getCurrentVDC().getId();
             if (!show30Days){
@@ -620,8 +618,7 @@ public class OptionsPage extends VDCBaseBean  implements java.io.Serializable {
            }
             fullCount = guestBookResponseServiceBean.findCountAll(null);
             thirtyDayCount = guestBookResponseServiceBean.findCount30Days(null);           
-        } 
-        
+        }         
         guestBookResponses.clear();
         guestBookResponsesDisplay.clear();
         columnHeadings.clear();
@@ -639,43 +636,7 @@ public class OptionsPage extends VDCBaseBean  implements java.io.Serializable {
                 GuestBookResponseUI guestBookResponseDisplay = new GuestBookResponseUI(gbr,customQuestionIds );
                 guestBookResponsesDisplay.add(guestBookResponseDisplay);
         }
-        JavascriptContext.addJavascriptCall(getFacesContext(), "initDownloadDataTableBlockHeight();");    
-        return "";
-    }
-    
-    public String toggle30Days(){
-        if (getVDCRequestBean().getCurrentVDC() != null) {
-            vdcId = getVDCRequestBean().getCurrentVDC().getId();
-            if (!show30Days){
-                guestBookResponsesAllIds = guestBookResponseServiceBean.findAllIds(vdcId);
-            } else {
-                guestBookResponsesAllIds = guestBookResponseServiceBean.findAllIds30Days(vdcId);
-            }
-        } else {
-           if (!show30Days){
-               guestBookResponsesAllIds = guestBookResponseServiceBean.findAllIds(null);
-           } else {
-               guestBookResponsesAllIds = guestBookResponseServiceBean.findAllIds30Days(null);
-           }        
-        }         
-        guestBookResponses.clear();
-        guestBookResponsesDisplay.clear();
-        columnHeadings.clear();
-        customQuestionIds.clear();
-        if (vdc !=null && vdc.getGuestBookQuestionnaire() != null){
-            GuestBookQuestionnaire gbq = vdc.getGuestBookQuestionnaire();
-            if (gbq.getCustomQuestions().size() > 0){
-                for (CustomQuestion cq : gbq.getCustomQuestions() ){
-                    columnHeadings.add(cq.getQuestionString());
-                    customQuestionIds.add(cq.getId());
-                }               
-            }
-        }        
-        for (Long gbr : guestBookResponsesAllIds) {
-                GuestBookResponseUI guestBookResponseDisplay = new GuestBookResponseUI(gbr,customQuestionIds );
-                guestBookResponsesDisplay.add(guestBookResponseDisplay);
-        }
-        JavascriptContext.addJavascriptCall(getFacesContext(), "initDownloadDataTableBlockHeight();");  
+        JavascriptContext.addJavascriptCall(getFacesContext(), "initDownloadDataTableBlockHeight();");       
         return "";
     }
         
@@ -1755,6 +1716,10 @@ public class OptionsPage extends VDCBaseBean  implements java.io.Serializable {
     public boolean isChkNewStudies() {return chkNewStudies;}    
     public void setChkNewStudies(boolean chkNewStudies) {this.chkNewStudies = chkNewStudies;}
     
+    private HtmlInputTextarea localAnnouncementsInputText;
+    public HtmlInputTextarea getLocalAnnouncementsInputText() {return this.localAnnouncementsInputText;}
+    public void setLocalAnnouncementsInputText(HtmlInputTextarea localAnnouncementsInputText) {this.localAnnouncementsInputText = localAnnouncementsInputText;}
+    
     //Contact Us Page
     private String contactUsEmail;   
     public String getContactUsEmail() {return this.contactUsEmail;}   
@@ -1778,6 +1743,8 @@ public class OptionsPage extends VDCBaseBean  implements java.io.Serializable {
     private HtmlInputText   affiliation;
     private HtmlInputText   dataverseAlias;
     private HtmlInputText   dataverseName;
+    private HtmlInputText   dataverseFirstName;
+    private HtmlInputText   dataverseLastName;
     private HtmlInputTextarea shortDescriptionInput;
     private String          dataverseType = "";
     private String          firstName = new String("");
@@ -1801,18 +1768,25 @@ public class OptionsPage extends VDCBaseBean  implements java.io.Serializable {
     public HtmlInputText getDataverseAlias() {return dataverseAlias;} 
     public HtmlInputTextarea getShortDescription() {return shortDescription;}
     public void setDataverseAlias(HtmlInputText hit) {this.dataverseAlias = hit;}
+    public HtmlInputText getDataverseFirstName() {return dataverseFirstName;}
+    public void setDataverseFirstName(HtmlInputText dataverseFirstName) {this.dataverseFirstName = dataverseFirstName;}
+    public HtmlInputText getDataverseLastName() {return dataverseLastName;}
+    public void setDataverseLastName(HtmlInputText dataverseLastName) {this.dataverseLastName = dataverseLastName;}
     private HtmlCommandButton button1 = new HtmlCommandButton();
     public HtmlCommandButton getButton1() {return button1;}
     public void setButton1(HtmlCommandButton hcb) {this.button1 = hcb;}
 
     private HtmlCommandButton button2 = new HtmlCommandButton();
     public HtmlCommandButton getButton2() {return button2;}
+    public String getFirstName() {return firstName;}
+    public String getLastName() {return lastName;}
     public void setButton2(HtmlCommandButton hcb) {this.button2 = hcb;}
     public void setMsg(StatusMessage msg){this.msg = msg;}
     public void setDataverseType(String dataverseType) {this.dataverseType = dataverseType;}
     public void setFirstName(String firstName) {this.firstName = firstName;}
     public void setLastName(String lastname) {this.lastName = lastname;}
     public void setAffiliation(HtmlInputText affiliation) {this.affiliation = affiliation;}
+    public HtmlInputText getAffiliation() {return affiliation;} 
     public void setShortDescription(HtmlInputTextarea shortDescription) {this.shortDescription = shortDescription;}
     public void setShortDescriptionInput(HtmlInputTextarea shortDescriptionInput) {this.shortDescriptionInput = shortDescriptionInput;}
 
@@ -1871,6 +1845,7 @@ public class OptionsPage extends VDCBaseBean  implements java.io.Serializable {
         String newValue = (String) value;
         if ((newValue == null || newValue.trim().length() == 0) && getVDCRequestBean().getVdcNetwork().isRequireDVaffiliation()) {
             FacesMessage message = new FacesMessage("The field must have a value.");
+            generalDVSettingsValid = false;
             context.addMessage(toValidate.getClientId(context), message);
             ((UIInput) toValidate).setValid(false);
             context.renderResponse();
@@ -1880,6 +1855,7 @@ public class OptionsPage extends VDCBaseBean  implements java.io.Serializable {
     public void validateName(FacesContext context, UIComponent toValidate, Object value) {
         String name = (String) value;
         if (name != null && name.trim().length() == 0) {
+            generalDVSettingsValid = false;
             FacesMessage message = new FacesMessage("The dataverse name field must have a value.");
             context.addMessage(toValidate.getClientId(context), message);
             ((UIInput)toValidate).setValid(false);
@@ -1892,7 +1868,8 @@ public class OptionsPage extends VDCBaseBean  implements java.io.Serializable {
                 nameFound=true;
             }            
             if (nameFound) {
-                ((UIInput)toValidate).setValid(false);                
+                ((UIInput)toValidate).setValid(false);  
+                generalDVSettingsValid = false;
                 FacesMessage message = new FacesMessage("This name is already taken.");
                 context.addMessage(toValidate.getClientId(context), message);
             }
@@ -1904,6 +1881,11 @@ public class OptionsPage extends VDCBaseBean  implements java.io.Serializable {
         charactervalidator.validate(context, toValidate, value);
         String alias = (String) value;
         StringTokenizer strTok = new StringTokenizer(alias);
+        if (alias.isEmpty()){
+            generalDVSettingsValid = false;
+            FacesMessage message = new FacesMessage("This field must have a value.");
+            context.addMessage(toValidate.getClientId(context), message);
+        }
         VDC thisVDC = getVDCRequestBean().getCurrentVDC();
         if (!alias.equals(thisVDC.getAlias())) {
             boolean aliasFound = false;
@@ -1914,14 +1896,28 @@ public class OptionsPage extends VDCBaseBean  implements java.io.Serializable {
 
             if (aliasFound) {
                 ((UIInput) toValidate).setValid(false);
+                generalDVSettingsValid = false;
                 FacesMessage message = new FacesMessage("This alias is already taken.");
                 context.addMessage(toValidate.getClientId(context), message);
             }
         }
     }
+    private Boolean generalDVSettingsValid = true;
     
     public String saveGeneralSettings_action() {
-
+        generalDVSettingsValid = true;
+        validateAlias(FacesContext.getCurrentInstance(), dataverseAlias, dataverseAlias.getValue());
+        validateName(FacesContext.getCurrentInstance(), dataverseName, dataverseName.getValue());
+        validateIsEmptyRequiredAffiliation(FacesContext.getCurrentInstance(), affiliation, affiliation.getValue());
+        if (dataverseType.equals("Scholar")) {
+            validateIsEmpty(FacesContext.getCurrentInstance(), dataverseFirstName, dataverseFirstName.getValue());
+            validateIsEmpty(FacesContext.getCurrentInstance(), dataverseLastName, dataverseLastName.getValue());
+        }
+        if (!generalDVSettingsValid) {
+            getVDCRenderBean().getFlash().put("warningMessage", "Could not update general settings.");
+            success = false;
+            return null;
+        }
         NetworkStatsBean statsBean = (NetworkStatsBean) FacesContext.getCurrentInstance().getExternalContext().getRequestMap().get("NetworkStatsBean");
         if (siteRestriction.equals("Public")) {
             if (vdc.getReleaseDate() == null) {
@@ -1962,7 +1958,10 @@ public class OptionsPage extends VDCBaseBean  implements java.io.Serializable {
         }
         success = true;
         if (!validateAnnouncementsText()) {
-            getVDCRenderBean().getFlash().put("warningMessage", "To enable announcements, you must also enter announcements in the field below.  Please enter local announcements as either plain text or html.)");   
+            getVDCRenderBean().getFlash().put("warningMessage", "Could not update general settings.   Please see message(s) below.");   
+            FacesMessage message = new FacesMessage("To enable Homepage Description, you must also enter Homepage Description in the field below.  Please enter Homepage Description as either plain text or html.");
+            FacesContext context = FacesContext.getCurrentInstance();
+            FacesContext.getCurrentInstance().addMessage(localAnnouncementsInputText.getClientId(context), message);
             success = false;
             return "result";
         }
@@ -1971,6 +1970,7 @@ public class OptionsPage extends VDCBaseBean  implements java.io.Serializable {
             success = false;
             return "result";           
         }
+        
         if (validateClassificationCheckBoxes()) {
             String dataversetype = dataverseType;
             vdc.setDtype(dataversetype);
@@ -2775,8 +2775,22 @@ public class OptionsPage extends VDCBaseBean  implements java.io.Serializable {
         return searchResultsFields;        
     }
 
-    public String saveCustomization() {
-        String forwardPage;
+    public String saveCustomization() throws java.io.IOException, ParserConfigurationException, SAXException, TransformerException, JAXBException {
+        combinedTextField.setValue(banner + footer);
+        boolean validXML = true;
+        String retString = "/admin/OptionsPage?faces-redirect=true&vdcId="+getVDCRequestBean().getCurrentVDC().getId()+ "&tab=settings&tab2=customization";
+        
+        ArrayList <String> errorMessage = new ArrayList();
+        XhtmlValidator validator = new XhtmlValidator();
+        validXML = validator.validateXhtmlMessage(banner + footer, errorMessage);
+        if (!validXML){
+            if (errorMessage.size() > 0){
+                getVDCRenderBean().getFlash().put("warningMessage",errorMessage.get(0)); 
+            } else {
+                getVDCRenderBean().getFlash().put("warningMessage","HTML Error . . .It's possible an end tag is missing, or the markup is unbalanced."); 
+            }
+            return "";
+        }
         vdc.setHeader(banner);
         vdc.setFooter(footer);
         vdc.setDisplayInFrame(displayInFrame);
@@ -2821,7 +2835,7 @@ public class OptionsPage extends VDCBaseBean  implements java.io.Serializable {
         vdc.setDefaultSortOrder(defaultSortOrder);       
         vdcService.edit(vdc);
         getVDCRenderBean().getFlash().put("successMessage", "Successfully updated customization settings.");
-        return "/admin/OptionsPage?faces-redirect=true&vdcId="+getVDCRequestBean().getCurrentVDC().getId()+ "&tab=settings&tab2=customization";
+        return retString;
        
     }
 
@@ -3254,13 +3268,27 @@ public class OptionsPage extends VDCBaseBean  implements java.io.Serializable {
     public void setChkEnableNetworkAnnouncements(boolean chkEnableNetworkAnnouncements) {this.chkEnableNetworkAnnouncements = chkEnableNetworkAnnouncements;}
     
     //Network Customization
-    public String saveNetworkCustomization() {
+    public String saveNetworkCustomization() throws java.io.IOException, ParserConfigurationException, SAXException, TransformerException, JAXBException{
+        combinedTextField.setValue(banner + footer);
+        boolean validXML = true;
+        String retString = "/networkAdmin/NetworkOptionsPage?faces-redirect=true&tab=settings&tab2=customization";
+        ArrayList <String> errorMessage = new ArrayList();
+        XhtmlValidator validator = new XhtmlValidator();
+        validXML = validator.validateXhtmlMessage(banner + footer, errorMessage);
+        if (!validXML){
+            if (errorMessage.size() > 0){
+                getVDCRenderBean().getFlash().put("warningMessage",errorMessage.get(0)); 
+            } else {
+                getVDCRenderBean().getFlash().put("warningMessage","HTML Error . . .It's possible an end tag is missing, or the markup is unbalanced."); 
+            }
+            return "";
+        }
         VDCNetwork thisVdcNetwork = vdcNetworkService.find(new Long(1));
         thisVdcNetwork.setNetworkPageHeader(banner);
         thisVdcNetwork.setNetworkPageFooter(footer);     
         vdcNetworkService.edit(thisVdcNetwork);
         getVDCRenderBean().getFlash().put("successMessage", "Successfully updated network customization.");
-        return "/networkAdmin/NetworkOptionsPage?faces-redirect=true&tab=settings&tab2=customization";
+        return retString;
     }
     
     //DV Requirements

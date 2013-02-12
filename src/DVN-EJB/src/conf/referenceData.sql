@@ -1218,3 +1218,5 @@ INSERT INTO metadataformattype (id, name, mimetype, namespace, formatschema, par
 /*create network guest book*/
 
 INSERT INTO guestbookquestionnaire(enabled,firstnamerequired, lastnamerequired, emailrequired, institutionrequired,  positionrequired, vdc_id) VALUES (true, true, true, true, false, false, null);
+
+UPDATE vdcnetwork SET systememail = contactemail WHERE id = 1;

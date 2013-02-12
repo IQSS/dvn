@@ -162,6 +162,7 @@ public class OptionsPage extends VDCBaseBean  implements java.io.Serializable {
             allowStudyCommentsCheckbox.setValue(allowStudyComments);
         } else {
             this.setContactUsEmail(vdcNetworkService.find().getContactEmail());
+            this.setEditSystemEmail(vdcNetworkService.find().getSystemEmail());
         }
                
 
@@ -897,7 +898,7 @@ public class OptionsPage extends VDCBaseBean  implements java.io.Serializable {
     }
     
     private void sendReleaseEmails() {
-        String networkAdminEmailAddress = getVDCRequestBean().getVdcNetwork().getContactEmail();
+        String networkAdminEmailAddress = getVDCRequestBean().getVdcNetwork().getSystemEmail();
         String toMailAddress = vdc.getContactEmail();
         String siteAddress = "unknown";
         String hostUrl = PropertyUtil.getHostUrl();
@@ -1758,6 +1759,10 @@ public class OptionsPage extends VDCBaseBean  implements java.io.Serializable {
     private String contactUsEmail;   
     public String getContactUsEmail() {return this.contactUsEmail;}   
     public void setContactUsEmail(String contactUsEmail) {this.contactUsEmail = contactUsEmail;}
+    
+    private String editSystemEmail;  
+    public String getEditSystemEmail() {return this.editSystemEmail;}   
+    public void setEditSystemEmail(String editSystemEmail) {this.editSystemEmail = editSystemEmail;}
     
     // Edit Study Comments
     
@@ -3224,6 +3229,7 @@ public class OptionsPage extends VDCBaseBean  implements java.io.Serializable {
         VDCNetwork thisVdcNetwork = vdcNetworkService.find(new Long(1));
         thisVdcNetwork.setName((String)textFieldNetworkName.getValue());
         thisVdcNetwork.setContactEmail(this.getContactUsEmail());
+        thisVdcNetwork.setSystemEmail(this.getEditSystemEmail()); 
         thisVdcNetwork.setDisplayAnnouncements(this.isChkEnableNetworkAnnouncements());
         thisVdcNetwork.setAnnouncements(this.getNetworkAnnouncements());
         vdcNetworkService.edit(thisVdcNetwork);

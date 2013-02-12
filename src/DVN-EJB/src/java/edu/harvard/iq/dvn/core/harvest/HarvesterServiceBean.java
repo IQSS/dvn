@@ -262,7 +262,7 @@ public class HarvesterServiceBean implements HarvesterServiceLocal {
 
             } catch (Throwable e) {
                 harvestingDataverseService.setHarvestResult(info.getHarvestingDataverseId(), HarvestingDataverse.HARVEST_RESULT_FAILED);
-                mailService.sendHarvestErrorNotification(vdcNetworkService.find().getContactEmail(), vdcNetworkService.find().getName());
+                mailService.sendHarvestErrorNotification(vdcNetworkService.find().getSystemEmail(), vdcNetworkService.find().getName());
                 logException(e, logger);
             }
         }
@@ -340,7 +340,7 @@ public class HarvesterServiceBean implements HarvesterServiceLocal {
                     hdLogger.log(Level.SEVERE, "Cannot begin harvesting, Unknown harvest type."); 
                 }
             }
-            mailService.sendHarvestNotification(vdcNetworkService.find().getContactEmail(), dataverse.getVdc().getName(), logFileName, logTimestamp, harvestErrorOccurred.booleanValue(), harvestedStudyIds.size(), failedIdentifiers);
+            mailService.sendHarvestNotification(vdcNetworkService.find().getSystemEmail(), dataverse.getVdc().getName(), logFileName, logTimestamp, harvestErrorOccurred.booleanValue(), harvestedStudyIds.size(), failedIdentifiers);
           } catch (Throwable e) {
             harvestErrorOccurred.setValue(true);
             String message = "Exception processing harvest, server= " + dataverse.getServerUrl() + ",format=" + dataverse.getHarvestFormatType().getMetadataPrefix() + " " + e.getClass().getName() + " " + e.getMessage();

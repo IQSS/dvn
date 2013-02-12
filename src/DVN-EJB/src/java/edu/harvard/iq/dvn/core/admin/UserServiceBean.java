@@ -224,7 +224,7 @@ public class UserServiceBean implements UserServiceLocal {
         // so don't need to change the role.
         if (user.getNetworkRole()==null) {
             user.setNetworkRole(networkRoleService.getCreatorRole());
-            mailService.sendCreatorAccountNotification(vdcNetwork.getContactEmail(), user.getUserName());         
+            mailService.sendCreatorAccountNotification(vdcNetwork.getSystemEmail(), user.getUserName());         
 
         }
     }

@@ -76,6 +76,7 @@
                 </div>
                 <div jsfc="ice:panelGroup" rendered="#{OptionsPage.dataverseType == 'Scholar'}">
                   <ice:inputText id="firstName"
+                                 binding="#{OptionsPage.dataverseFirstName}"
                                  value="#{OptionsPage.firstName}"
                                  validator="#{OptionsPage.validateIsEmpty}"/>
                   <ice:message for="firstName" showSummary="true" showDetail="false" errorClass="errorMessage" styleClass="errorMessage"/>
@@ -89,6 +90,7 @@
                 </div>
                 <div jsfc="ice:panelGroup" rendered="#{OptionsPage.dataverseType == 'Scholar'}">
                   <ice:inputText id="lastName"
+                                 binding="#{OptionsPage.dataverseLastName}"
                                  value="#{OptionsPage.lastName}"
                                  validator="#{OptionsPage.validateIsEmpty}"/>
                   <ice:message for="lastName" showSummary="true" showDetail="false" errorClass="errorMessage" styleClass="errorMessage"/>
@@ -102,6 +104,7 @@
                 </div>
                 <div jsfc="ice:panelGroup">
                   <ice:inputText id="affiliation"
+                                 binding="#{OptionsPage.affiliation}"
                                  value="#{OptionsPage.vdc.affiliation}"                                 
                                  validator="#{OptionsPage.validateIsEmptyRequiredAffiliation}"
                                  />

@@ -129,7 +129,7 @@ public class IndexMessage implements MessageListener, java.io.Serializable {
         } catch (IOException ex) {
             ex.printStackTrace();
             try {
-                mailService.sendDoNotReplyMail(vdcNetworkService.find().getContactEmail(),"IO problem", "Check index write lock "+InetAddress.getLocalHost().getHostAddress() + " , studyId " + studyId);
+                mailService.sendDoNotReplyMail(vdcNetworkService.find().getSystemEmail(),"IO problem", "Check index write lock "+InetAddress.getLocalHost().getHostAddress() + " , studyId " + studyId);
             } catch (UnknownHostException u) {
                 u.printStackTrace();
             }

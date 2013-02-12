@@ -167,6 +167,7 @@ public class OptionsPage extends VDCBaseBean  implements java.io.Serializable {
             allowStudyCommentsCheckbox.setValue(allowStudyComments);
         } else {
             this.setContactUsEmail(vdcNetworkService.find().getContactEmail());
+            this.setEditSystemEmail(vdcNetworkService.find().getSystemEmail());
         }
                
 
@@ -358,6 +359,7 @@ public class OptionsPage extends VDCBaseBean  implements java.io.Serializable {
     }
     
     public void initDVGeneralSettings() {
+        
         if (vdc.isRestricted()) {
             siteRestriction = "Restricted";
         } else {
@@ -373,8 +375,7 @@ public class OptionsPage extends VDCBaseBean  implements java.io.Serializable {
                     this.setDataverseType(request.getParameter((String) key));
                 }
             }
-
-            if (this.dataverseType == null && getVDCRequestBean().getCurrentVDC().getDtype() != null) {
+            if ((this.dataverseType == null || this.dataverseType.isEmpty()) && getVDCRequestBean().getCurrentVDC().getDtype() != null) {
                 this.setDataverseType(getVDCRequestBean().getCurrentVDC().getDtype());
             }
             if ((this.dataverseType == null || this.dataverseType.equals("Scholar"))) {
@@ -415,6 +416,7 @@ public class OptionsPage extends VDCBaseBean  implements java.io.Serializable {
                     classUI.setSelected(true);
                 }
             }
+            System.out.print("dv type" + this.dataverseType);
         }
     }
     
@@ -530,6 +532,7 @@ public class OptionsPage extends VDCBaseBean  implements java.io.Serializable {
                    dvPermissionsSubTab.setSelectedIndex(2); 
                 }
                 if (tab2 != null && tab2.equals("responses")){
+                    System.err.print("in init selected tab index vdc !=null");
                    dvPermissionsSubTab.setSelectedIndex(3); 
                 }
             } else if (tab.equals("settings")) {
@@ -586,6 +589,7 @@ public class OptionsPage extends VDCBaseBean  implements java.io.Serializable {
                    permissionsSubTab.setSelectedIndex(3); 
                 }
                 if (tab2 != null && tab2.equals("responses")){
+                    System.err.print("in init selected tab index vdc == null (network)");
                    permissionsSubTab.setSelectedIndex(4); 
                 }
                 selectedIndex=6;
@@ -595,14 +599,8 @@ public class OptionsPage extends VDCBaseBean  implements java.io.Serializable {
             tabSet1.setSelectedIndex(selectedIndex);
         }
     }
-    
-    public void updateGuestBookResponses(ValueChangeEvent vce) {
-        initGuestBookResponses();
-    }
-    
-       
-    public String initGuestBookResponses(){
 
+    public String initGuestBookResponses(){                
         if (getVDCRequestBean().getCurrentVDC() != null) {
             vdcId = getVDCRequestBean().getCurrentVDC().getId();
             if (!show30Days){
@@ -620,8 +618,7 @@ public class OptionsPage extends VDCBaseBean  implements java.io.Serializable {
            }
             fullCount = guestBookResponseServiceBean.findCountAll(null);
             thirtyDayCount = guestBookResponseServiceBean.findCount30Days(null);           
-        } 
-        
+        }         
         guestBookResponses.clear();
         guestBookResponsesDisplay.clear();
         columnHeadings.clear();
@@ -899,7 +896,7 @@ public class OptionsPage extends VDCBaseBean  implements java.io.Serializable {
     }
     
     private void sendReleaseEmails() {
-        String networkAdminEmailAddress = getVDCRequestBean().getVdcNetwork().getContactEmail();
+        String networkAdminEmailAddress = getVDCRequestBean().getVdcNetwork().getSystemEmail();
         String toMailAddress = vdc.getContactEmail();
         String siteAddress = "unknown";
         String hostUrl = PropertyUtil.getHostUrl();
@@ -1756,10 +1753,18 @@ public class OptionsPage extends VDCBaseBean  implements java.io.Serializable {
     public boolean isChkNewStudies() {return chkNewStudies;}    
     public void setChkNewStudies(boolean chkNewStudies) {this.chkNewStudies = chkNewStudies;}
     
+    private HtmlInputTextarea localAnnouncementsInputText;
+    public HtmlInputTextarea getLocalAnnouncementsInputText() {return this.localAnnouncementsInputText;}
+    public void setLocalAnnouncementsInputText(HtmlInputTextarea localAnnouncementsInputText) {this.localAnnouncementsInputText = localAnnouncementsInputText;}
+    
     //Contact Us Page
     private String contactUsEmail;   
     public String getContactUsEmail() {return this.contactUsEmail;}   
     public void setContactUsEmail(String contactUsEmail) {this.contactUsEmail = contactUsEmail;}
+    
+    private String editSystemEmail;  
+    public String getEditSystemEmail() {return this.editSystemEmail;}   
+    public void setEditSystemEmail(String editSystemEmail) {this.editSystemEmail = editSystemEmail;}
     
     // Edit Study Comments
     
@@ -1775,6 +1780,8 @@ public class OptionsPage extends VDCBaseBean  implements java.io.Serializable {
     private HtmlInputText   affiliation;
     private HtmlInputText   dataverseAlias;
     private HtmlInputText   dataverseName;
+    private HtmlInputText   dataverseFirstName;
+    private HtmlInputText   dataverseLastName;
     private HtmlInputTextarea shortDescriptionInput;
     private String          dataverseType = "";
     private String          firstName = new String("");
@@ -1798,18 +1805,25 @@ public class OptionsPage extends VDCBaseBean  implements java.io.Serializable {
     public HtmlInputText getDataverseAlias() {return dataverseAlias;} 
     public HtmlInputTextarea getShortDescription() {return shortDescription;}
     public void setDataverseAlias(HtmlInputText hit) {this.dataverseAlias = hit;}
+    public HtmlInputText getDataverseFirstName() {return dataverseFirstName;}
+    public void setDataverseFirstName(HtmlInputText dataverseFirstName) {this.dataverseFirstName = dataverseFirstName;}
+    public HtmlInputText getDataverseLastName() {return dataverseLastName;}
+    public void setDataverseLastName(HtmlInputText dataverseLastName) {this.dataverseLastName = dataverseLastName;}
     private HtmlCommandButton button1 = new HtmlCommandButton();
     public HtmlCommandButton getButton1() {return button1;}
     public void setButton1(HtmlCommandButton hcb) {this.button1 = hcb;}
 
     private HtmlCommandButton button2 = new HtmlCommandButton();
     public HtmlCommandButton getButton2() {return button2;}
+    public String getFirstName() {return firstName;}
+    public String getLastName() {return lastName;}
     public void setButton2(HtmlCommandButton hcb) {this.button2 = hcb;}
     public void setMsg(StatusMessage msg){this.msg = msg;}
     public void setDataverseType(String dataverseType) {this.dataverseType = dataverseType;}
     public void setFirstName(String firstName) {this.firstName = firstName;}
     public void setLastName(String lastname) {this.lastName = lastname;}
     public void setAffiliation(HtmlInputText affiliation) {this.affiliation = affiliation;}
+    public HtmlInputText getAffiliation() {return affiliation;} 
     public void setShortDescription(HtmlInputTextarea shortDescription) {this.shortDescription = shortDescription;}
     public void setShortDescriptionInput(HtmlInputTextarea shortDescriptionInput) {this.shortDescriptionInput = shortDescriptionInput;}
 
@@ -1868,6 +1882,7 @@ public class OptionsPage extends VDCBaseBean  implements java.io.Serializable {
         String newValue = (String) value;
         if ((newValue == null || newValue.trim().length() == 0) && getVDCRequestBean().getVdcNetwork().isRequireDVaffiliation()) {
             FacesMessage message = new FacesMessage("The field must have a value.");
+            generalDVSettingsValid = false;
             context.addMessage(toValidate.getClientId(context), message);
             ((UIInput) toValidate).setValid(false);
             context.renderResponse();
@@ -1877,6 +1892,7 @@ public class OptionsPage extends VDCBaseBean  implements java.io.Serializable {
     public void validateName(FacesContext context, UIComponent toValidate, Object value) {
         String name = (String) value;
         if (name != null && name.trim().length() == 0) {
+            generalDVSettingsValid = false;
             FacesMessage message = new FacesMessage("The dataverse name field must have a value.");
             context.addMessage(toValidate.getClientId(context), message);
             ((UIInput)toValidate).setValid(false);
@@ -1889,7 +1905,8 @@ public class OptionsPage extends VDCBaseBean  implements java.io.Serializable {
                 nameFound=true;
             }            
             if (nameFound) {
-                ((UIInput)toValidate).setValid(false);                
+                ((UIInput)toValidate).setValid(false);  
+                generalDVSettingsValid = false;
                 FacesMessage message = new FacesMessage("This name is already taken.");
                 context.addMessage(toValidate.getClientId(context), message);
             }
@@ -1901,6 +1918,11 @@ public class OptionsPage extends VDCBaseBean  implements java.io.Serializable {
         charactervalidator.validate(context, toValidate, value);
         String alias = (String) value;
         StringTokenizer strTok = new StringTokenizer(alias);
+        if (alias.isEmpty()){
+            generalDVSettingsValid = false;
+            FacesMessage message = new FacesMessage("This field must have a value.");
+            context.addMessage(toValidate.getClientId(context), message);
+        }
         VDC thisVDC = getVDCRequestBean().getCurrentVDC();
         if (!alias.equals(thisVDC.getAlias())) {
             boolean aliasFound = false;
@@ -1911,14 +1933,28 @@ public class OptionsPage extends VDCBaseBean  implements java.io.Serializable {
 
             if (aliasFound) {
                 ((UIInput) toValidate).setValid(false);
+                generalDVSettingsValid = false;
                 FacesMessage message = new FacesMessage("This alias is already taken.");
                 context.addMessage(toValidate.getClientId(context), message);
             }
         }
     }
+    private Boolean generalDVSettingsValid = true;
     
     public String saveGeneralSettings_action() {
-
+        generalDVSettingsValid = true;
+        validateAlias(FacesContext.getCurrentInstance(), dataverseAlias, dataverseAlias.getValue());
+        validateName(FacesContext.getCurrentInstance(), dataverseName, dataverseName.getValue());
+        validateIsEmptyRequiredAffiliation(FacesContext.getCurrentInstance(), affiliation, affiliation.getValue());
+        if (dataverseType.equals("Scholar")) {
+            validateIsEmpty(FacesContext.getCurrentInstance(), dataverseFirstName, dataverseFirstName.getValue());
+            validateIsEmpty(FacesContext.getCurrentInstance(), dataverseLastName, dataverseLastName.getValue());
+        }
+        if (!generalDVSettingsValid) {
+            getVDCRenderBean().getFlash().put("warningMessage", "Could not update general settings.");
+            success = false;
+            return null;
+        }
         NetworkStatsBean statsBean = (NetworkStatsBean) FacesContext.getCurrentInstance().getExternalContext().getRequestMap().get("NetworkStatsBean");
         if (siteRestriction.equals("Public")) {
             if (vdc.getReleaseDate() == null) {
@@ -1959,7 +1995,10 @@ public class OptionsPage extends VDCBaseBean  implements java.io.Serializable {
         }
         success = true;
         if (!validateAnnouncementsText()) {
-            getVDCRenderBean().getFlash().put("warningMessage", "To enable announcements, you must also enter announcements in the field below.  Please enter local announcements as either plain text or html.)");   
+            getVDCRenderBean().getFlash().put("warningMessage", "Could not update general settings.   Please see message(s) below.");   
+            FacesMessage message = new FacesMessage("To enable Homepage Description, you must also enter Homepage Description in the field below.  Please enter Homepage Description as either plain text or html.");
+            FacesContext context = FacesContext.getCurrentInstance();
+            FacesContext.getCurrentInstance().addMessage(localAnnouncementsInputText.getClientId(context), message);
             success = false;
             return "result";
         }
@@ -1968,6 +2007,7 @@ public class OptionsPage extends VDCBaseBean  implements java.io.Serializable {
             success = false;
             return "result";           
         }
+        
         if (validateClassificationCheckBoxes()) {
             String dataversetype = dataverseType;
             vdc.setDtype(dataversetype);
@@ -3240,6 +3280,7 @@ public class OptionsPage extends VDCBaseBean  implements java.io.Serializable {
         VDCNetwork thisVdcNetwork = vdcNetworkService.find(new Long(1));
         thisVdcNetwork.setName((String)textFieldNetworkName.getValue());
         thisVdcNetwork.setContactEmail(this.getContactUsEmail());
+        thisVdcNetwork.setSystemEmail(this.getEditSystemEmail()); 
         thisVdcNetwork.setDisplayAnnouncements(this.isChkEnableNetworkAnnouncements());
         thisVdcNetwork.setAnnouncements(this.getNetworkAnnouncements());
         vdcNetworkService.edit(thisVdcNetwork);

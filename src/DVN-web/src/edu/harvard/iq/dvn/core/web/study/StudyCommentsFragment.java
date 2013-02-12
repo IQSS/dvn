@@ -137,7 +137,7 @@ public class StudyCommentsFragment extends VDCBaseBean implements Serializable {
       */
      public String reportAbuse(ActionEvent event) {
          studyCommentService.flagStudyCommentAbuse(flaggedCommentId, getVDCSessionBean().getUser().getId());
-         mailService.sendMail(getVDCSessionBean().getUser().getEmail(), getVDCRequestBean().getVdcNetwork().getContactEmail(), "Study Comment Abuse Reported", "A study comment " +
+         mailService.sendMail(getVDCSessionBean().getUser().getEmail(), getVDCRequestBean().getVdcNetwork().getSystemEmail(), "Study Comment Abuse Reported", "A study comment " +
                                 "has been reported for abuse.  Please review the details below. " +
                                 "\n\r" + "\n\r" +
                                 "Study Name: " + studyVersion.getStudy().getReleasedVersion().getMetadata().getTitle() +

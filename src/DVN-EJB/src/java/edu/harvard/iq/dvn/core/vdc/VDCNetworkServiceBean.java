@@ -226,7 +226,7 @@ public class VDCNetworkServiceBean implements VDCNetworkServiceLocal {
                 }
             }
          } catch (Throwable e) {
-            mailService.sendExportErrorNotification(find().getContactEmail(), this.find().getName());
+            mailService.sendExportErrorNotification(find().getSystemEmail(), this.find().getName());
            logException(e,logger);
         }
     }

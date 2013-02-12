@@ -636,7 +636,44 @@ public class OptionsPage extends VDCBaseBean  implements java.io.Serializable {
                 GuestBookResponseUI guestBookResponseDisplay = new GuestBookResponseUI(gbr,customQuestionIds );
                 guestBookResponsesDisplay.add(guestBookResponseDisplay);
         }
-        JavascriptContext.addJavascriptCall(getFacesContext(), "initDownloadDataTableBlockHeight();");       
+        JavascriptContext.addJavascriptCall(getFacesContext(), "initDownloadDataTableBlockHeight();");
+        JavascriptContext.addJavascriptCall(getFacesContext(), "initAddBorder();");
+        return "";
+    }
+    
+    public String toggle30Days(){
+        if (getVDCRequestBean().getCurrentVDC() != null) {
+            vdcId = getVDCRequestBean().getCurrentVDC().getId();
+            if (!show30Days){
+                guestBookResponsesAllIds = guestBookResponseServiceBean.findAllIds(vdcId);
+            } else {
+                guestBookResponsesAllIds = guestBookResponseServiceBean.findAllIds30Days(vdcId);
+            }
+        } else {
+           if (!show30Days){
+               guestBookResponsesAllIds = guestBookResponseServiceBean.findAllIds(null);
+           } else {
+               guestBookResponsesAllIds = guestBookResponseServiceBean.findAllIds30Days(null);
+           }        
+        }         
+        guestBookResponses.clear();
+        guestBookResponsesDisplay.clear();
+        columnHeadings.clear();
+        customQuestionIds.clear();
+        if (vdc !=null && vdc.getGuestBookQuestionnaire() != null){
+            GuestBookQuestionnaire gbq = vdc.getGuestBookQuestionnaire();
+            if (gbq.getCustomQuestions().size() > 0){
+                for (CustomQuestion cq : gbq.getCustomQuestions() ){
+                    columnHeadings.add(cq.getQuestionString());
+                    customQuestionIds.add(cq.getId());
+                }               
+            }
+        }        
+        for (Long gbr : guestBookResponsesAllIds) {
+                GuestBookResponseUI guestBookResponseDisplay = new GuestBookResponseUI(gbr,customQuestionIds );
+                guestBookResponsesDisplay.add(guestBookResponseDisplay);
+        }
+        // JavascriptContext.addJavascriptCall(getFacesContext(), "initDownloadDataTableBlockHeight();");
         return "";
     }
         

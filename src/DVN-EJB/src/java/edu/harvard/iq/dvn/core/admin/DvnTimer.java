@@ -114,7 +114,7 @@ public class DvnTimer implements DvnTimerRemote, DvnTimerLocal {
 
             } catch (Throwable e) {
                 harvestingDataverseService.setHarvestResult(info.getHarvestingDataverseId(), HarvestingDataverse.HARVEST_RESULT_FAILED);
-                mailService.sendHarvestErrorNotification(vdcNetworkService.find().getContactEmail(), vdcNetworkService.find().getName());
+                mailService.sendHarvestErrorNotification(vdcNetworkService.find().getSystemEmail(), vdcNetworkService.find().getName());
                 logException(e, logger);
             }
         }
@@ -124,7 +124,7 @@ public class DvnTimer implements DvnTimerRemote, DvnTimerLocal {
                 logger.info("handling timeout");
                 studyService.exportUpdatedStudies();
             } catch (Throwable e) {
-                mailService.sendExportErrorNotification(vdcNetworkService.find().getContactEmail(), vdcNetworkService.find().getName());
+                mailService.sendExportErrorNotification(vdcNetworkService.find().getSystemEmail(), vdcNetworkService.find().getName());
                 logException(e, logger);
             }
         }

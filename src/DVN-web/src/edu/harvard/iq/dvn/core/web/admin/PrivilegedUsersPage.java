@@ -405,7 +405,7 @@ public class PrivilegedUsersPage extends VDCBaseBean implements java.io.Serializ
     }
 
     private void sendReleaseEmails() {
-        String networkAdminEmailAddress = getVDCRequestBean().getVdcNetwork().getContactEmail();
+        String networkAdminEmailAddress = getVDCRequestBean().getVdcNetwork().getSystemEmail();
 
         String toMailAddress = vdc.getContactEmail();
         String siteAddress = "unknown";

@@ -1,0 +1,2 @@
+# service providers by the "Special Other" file ingest implementation
+edu.harvard.iq.dvn.ingest.specialother.impl.plugins.fits.FITSFileIngesterSpi

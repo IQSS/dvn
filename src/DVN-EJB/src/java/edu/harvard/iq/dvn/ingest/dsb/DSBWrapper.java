@@ -61,6 +61,7 @@ import org.apache.commons.httpclient.methods.PostMethod;
 
 import edu.harvard.iq.dvn.ingest.org.thedata.statdataio.*;
 import edu.harvard.iq.dvn.ingest.org.thedata.statdataio.metadata.*;
+import edu.harvard.iq.dvn.ingest.specialother.*;
 
 
 import java.io.BufferedInputStream;
@@ -78,23 +79,12 @@ public class DSBWrapper implements java.io.Serializable  {
     private static Logger dbgLog = Logger.getLogger(DSBWrapper.class.getPackage().getName());
     private HttpClient client = null;
     
-    public static final String DSB_ANALYZE = "Analyze";
-    public static final String DSB_INGEST = "Ingest";
-    public static final String DSB_CALCULATE_UNF = "CalculateUNF";
-    public static final String DSB_GET_ZELIG_CONFIG = "GetZeligConfig";
-    public static final String DSB_DISSEMINATE = "Disseminate";
-    public static final String DSB_FILE_CONVERSION = "FileConversion";
-
-    private static final String FORMAT_TYPE_TAB = "D01";
-    private static final String FORMAT_TYPE_SPLUS = "D02";
-    private static final String FORMAT_TYPE_STATA = "D03";
-    private static final String FORMAT_TYPE_R = "D04";
-    
     
     /** Creates a new instance of DSBWrapper */
     public DSBWrapper() {
     }
 
+    /*
     public static boolean useNew(String verb) {
         String useNewProperty = System.getProperty("vdc.dsb.useNew");
         if (useNewProperty != null && verb != null) {
@@ -108,7 +98,8 @@ public class DSBWrapper implements java.io.Serializable  {
 
         return false;    
     }
-    
+    */
+    /*
     private String generateUrl(String verb) throws IOException{
         String dsbHost = System.getProperty("vdc.dsb.host");
         String dsbPort = System.getProperty("vdc.dsb.port");
@@ -131,14 +122,16 @@ public class DSBWrapper implements java.io.Serializable  {
         }
         
     }
-    
+    */
+    /*
     private HttpClient getClient() {
         if (client == null) {
             client = new HttpClient( new MultiThreadedHttpConnectionManager() );
         }
         return client;
     }
-    
+    */
+    /*
     private void executeMethod(PostMethod method) throws IOException {
         int state = getClient().executeMethod(method);
         
@@ -149,72 +142,9 @@ public class DSBWrapper implements java.io.Serializable  {
                     : "DSB Error");
         }
     }
+    * */
     
     
-    public String analyze(File f) throws IOException{
-        BufferedReader rd = null;
-        PostMethod method = null;
-        
-        try {
-            String fileType = null;
-            
-            // create method
-            method = new PostMethod(generateUrl(DSB_ANALYZE));
-            method.addParameter("file_name", f.getName());
-            method.addParameter("file_header", new String(Base64.encodeBase64(getHeaderFromFile(f))) );
-            
-            // execute
-            executeMethod(method);
-            
-            // parse the response
-            rd = new BufferedReader(new InputStreamReader(method.getResponseBodyAsStream()  ));
-            String line;
-            while ((line = rd.readLine()) != null) {
-                System.out.println(line);
-                int startIndex = line.indexOf("<mime>");
-                if (startIndex != -1) {
-                    int endIndex = line.indexOf("</mime>");
-                    fileType = line.substring( startIndex+6,endIndex );
-                    //break;
-                }
-            }
-            
-            return fileType;
-            
-        } finally {
-            if (method != null) { method.releaseConnection(); }
-            try {
-                if (rd != null) { rd.close(); }
-            } catch (IOException ex) {
-            }
-        }
-    }
-    
-    private static byte[] getHeaderFromFile(File f) throws IOException{
-        FileInputStream fin = null;
-        try {
-            byte[] header = new byte[1024];
-            fin = new FileInputStream(f);
-            
-            // Get the first 'headerLength' bytes from the file
-            if (f.length() > 1024) {
-                fin.read(header, 0, 1024);
-            } else {
-                //byte[] b = new byte[(int) f.length()];
-                header = new byte[(int) f.length()];
-                //fin.read(b);
-                fin.read(header);
-            }
-            
-            return header;
-            
-        } finally {
-            try {
-                if (fin != null) { fin.close(); }
-            } catch (IOException ex) {
-            }
-        }
-    }
     
     public String ingest(StudyFileEditBean file)throws IOException{
         dbgLog.fine("***** DSBWrapper: ingest(): start *****\n");
@@ -224,7 +154,7 @@ public class DSBWrapper implements java.io.Serializable  {
         BufferedInputStream infile = null;
    
         // ingest-source file
-        File tempFile = new File(file.getTempSystemFileLocation()); //
+        File tempFile = new File(file.getTempSystemFileLocation()); 
         SDIOData sd = null;
 
         if (file.getControlCardSystemFileLocation() == null) {
@@ -240,22 +170,24 @@ public class DSBWrapper implements java.io.Serializable  {
            Iterator<StatDataFileReader> itr =
                 StatDataIO.getStatDataFileReadersByMIMEType(mime_type);
 
-            if (!itr.hasNext()){ 
+            if (itr.hasNext()){                 
+                // use the first Subsettable data reader
+                StatDataFileReader sdioReader = itr.next();
+
+                dbgLog.info("reader class name="+sdioReader.getClass().getName());
+
+                if (mime_type != null){
+                    sd = sdioReader.read(infile, null);
+                } else {
+                    // fail-safe block if mime_type is null
+                    // check the format type again and then read the file
+                    dbgLog.info("mime-type was null: use the back-up method");
+                    sd = StatDataIO.read(infile, null);
+                }
+            } else {
+                
                 throw new IllegalArgumentException("No FileReader Class found" +
                     " for this mime type="+ mime_type);
-            }
-            // use the first reader
-            StatDataFileReader sdioReader = itr.next();
-
-            dbgLog.info("reader class name="+sdioReader.getClass().getName());
-
-            if (mime_type != null){
-                sd = sdioReader.read(infile, null);
-            } else {
-                // fail-safe block if mime_type is null
-                // check the format type again and then read the file
-                dbgLog.info("mime-type was null: use the back-up method");
-                sd = StatDataIO.read(infile, null);
             }
         } else {
             // This is a 2-file ingest.
@@ -297,7 +229,8 @@ public class DSBWrapper implements java.io.Serializable  {
             sd = sdioReader.read(infile, rawDataFile);
             
         }
-            
+        
+        if (sd != null) {
         SDIOMetadata smd = sd.getMetadata();
 
         // tab-file: source file
@@ -362,8 +295,48 @@ public class DSBWrapper implements java.io.Serializable  {
 
 
         return ddi;
+        }
+        return null; 
     }
 
+    
+    public void ingestSpecialOther(StudyFileEditBean file) throws IOException {
+        dbgLog.fine("***** DSBWrapper: ingestSpecialOther(): start *****\n");
+
+        File tempFile = new File(file.getTempSystemFileLocation());
+
+        BufferedInputStream infile = null;
+
+        String mime_type = file.getStudyFile().getFileType();
+
+        infile = new BufferedInputStream(new FileInputStream(tempFile));
+
+        dbgLog.info("\nfile mimeType=" + mime_type + "\n\n");
+
+        if (mime_type == null || mime_type.equals("")) {
+            throw new IllegalArgumentException("No mime type provided!");
+        }
+
+        // get available FileIngesters for this MIME-type
+        Iterator<FileIngester> itr = null; 
+        // OtherFileIngestSP.getIngestersByMIMEType(mime_type);
+
+        if (itr.hasNext()) {
+            // use the first Subsettable data reader
+            FileIngester fileIngester = itr.next();
+
+            dbgLog.info("reader class name=" + fileIngester.getClass().getName());
+
+
+            fileIngester.ingest(infile);
+
+        } else {
+
+            throw new IllegalArgumentException("No FileReader Class found"
+                    + " for this mime type=" + mime_type);
+        }
+    }
+    
     public static void validateControlCard(File controlCardFile, String controlCardType)throws IOException{
         dbgLog.fine("***** DSBWrapper: validateControlCard(): start *****\n");
 
@@ -486,6 +459,7 @@ public class DSBWrapper implements java.io.Serializable  {
         }
     }
     
+    /*
     public String calculateUNF(List unfs) throws IOException{
         PostMethod method = null;
         
@@ -512,26 +486,10 @@ public class DSBWrapper implements java.io.Serializable  {
             if (method != null) { method.releaseConnection(); }
         }
     }
+    * */
     
-    public String getZeligConfig() throws IOException{
-        PostMethod method = null;
-        
-        try {
-            // create method
-            method = new PostMethod(generateUrl(DSB_GET_ZELIG_CONFIG));
-            
-            // execute
-            executeMethod(method);
-            
-            // parse the response
-            String zeligConfig = method.getResponseBodyAsString();
-            return zeligConfig;
-            
-        } finally {
-            if (method != null) { method.releaseConnection(); }
-        }
-    }
     
+    /*
     public void disseminate(HttpServletResponse res, TabularDataFile tdf, String serverPrefix, String formatType) throws IOException{
         Map parameters = new HashMap();
         List variables = tdf.getDataTable().getDataVariables();
@@ -633,7 +591,8 @@ public class DSBWrapper implements java.io.Serializable  {
             if (out != null) { out.close(); }
         }
     }
-    
+    */
+    /*
     public List generateVariableListForDisseminate(List dvs) {
         List variableList = new ArrayList();
         if (dvs != null) {
@@ -645,7 +604,9 @@ public class DSBWrapper implements java.io.Serializable  {
         }
         return variableList;
     }
+    * */
     
+    /*
     private String generateUrlForDDI(String serverPrefix, Long fileId) {
         String studyDDI = serverPrefix + "/ddi/?fileId=" + fileId;
         System.out.println(studyDDI);
@@ -661,7 +622,14 @@ public class DSBWrapper implements java.io.Serializable  {
         System.out.println(file);
         return file;
     }
+    * */
 
+    
+    /* the method below, isDSBRequest() is still being used by some servlets, 
+     * so it can't be removed from here just yet. however, there's really no 
+     * need for the method to be used anywhere in the app - since we don't have 
+     * a DSB server that may call the app back anymore... -- L.A. 
+     */
     public static boolean isDSBRequest(HttpServletRequest req) {
         boolean dsbRequest = false;
         

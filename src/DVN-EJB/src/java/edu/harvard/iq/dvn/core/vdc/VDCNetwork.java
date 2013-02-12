@@ -198,24 +198,24 @@ public class VDCNetwork implements java.io.Serializable  {
     }
 
     /**
-     * Holds value of property contactEmail.
+     * Holds value of property systemEmail.
      */
-    private String contactEmail;
+    private String systemEmail;
 
     /**
-     * Getter for property contactEmail.
-     * @return Value of property contactEmail.
+     * Getter for property systemEmail.
+     * @return Value of property systemEmail.
      */
-    public String getContactEmail() {
-        return this.contactEmail;
+    public String getSystemEmail() {
+        return this.systemEmail;
     }
 
     /**
-     * Setter for property contactEmail.
-     * @param contactEmail New value of property contactEmail.
+     * Setter for property systemEmail.
+     * @param systemEmail New value of property systemEmail.
      */
-    public void setContactEmail(String contactEmail) {
-        this.contactEmail = contactEmail;
+    public void setSystemEmail(String systemEmail) {
+        this.systemEmail = systemEmail;
     }
     
     @OneToMany(mappedBy="vdcNetwork", cascade={CascadeType.REMOVE, CascadeType.MERGE, CascadeType.PERSIST})
@@ -783,6 +783,25 @@ public class VDCNetwork implements java.io.Serializable  {
         this.statusNotice = statusNotice;
     }
     
-    //add new column to vdcnetwork table - xyang
+    /**
+     * Holds value of property contactEmail. 
+     */
+    private String contactEmail;
+
+    /**
+     * Getter for property contactEmail.
+     * @return Value of property contactEmail.
+     */
+    public String getContactEmail() {
+        return this.contactEmail;
+    }
+
+    /**
+     * Setter for property contactEmail.
+     * @param contactEmail New value of property contactEmail.
+     */
+    public void setContactEmail(String contactEmail) {
+        this.contactEmail = contactEmail;
+    }
     
 }

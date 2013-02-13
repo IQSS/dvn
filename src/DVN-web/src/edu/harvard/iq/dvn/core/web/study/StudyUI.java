@@ -1021,6 +1021,26 @@ public class StudyUI  implements java.io.Serializable {
         return filteredStudies;
     }
     
+    public static List filterVisibleStudyUIs(List originalStudies, VDC vdc, VDCUser user, UserGroup ipUserGroup, int numResults) {
+        List filteredStudies = new ArrayList();
+        
+        if (numResults != 0) {
+            int count = 0;
+            Iterator iter = originalStudies.iterator();
+            while (iter.hasNext()) {
+                Study study = (Study) iter.next();
+                if (StudyUI.isStudyVisibleToUser(study, vdc, user) || isStudyVisibleToGroup(study, vdc, ipUserGroup)) {
+                    StudyUI studyUIToAdd = new StudyUI(study);
+                    filteredStudies.add(studyUIToAdd);
+                    if (numResults > 0 && ++count >= numResults) {
+                        break;
+                    }
+                }
+            }
+        }        
+        return filteredStudies;
+    }
+    
     public static boolean isStudyVisibleToUser(Study study, VDC vdc, VDCUser user) {
         // if restricted vdc, only visible in that VDC
         if (study.getOwner().isRestricted() &&

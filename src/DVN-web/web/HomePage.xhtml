@@ -228,6 +228,9 @@
                                 <p><ice:outputText value="There are no dataverses to display for the selected filter. Please select again."/></p>
                             </div>
                             <div jsfc="ice:panelGroup" rendered="#{!empty(homePage.vdcUIList.vdcUIList)}">
+                        <ice:outputLink value="/dvn/faces/site/BrowseDataversesPage.xhtml" id="hyperlinkBrowseDV">
+                          <ice:outputText id="hyperlinkBrowseDVText" value="View All Dataverses"/>
+                        </ice:outputLink>
                                 <ice:dataTable headerClass="groupRow" id="dataverseList"
                                                rendered="#{!empty(homePage.vdcUIList.vdcUIList)}"
                                                rowClasses="evenRow oddRow" rows="10" width="100%" columnWidths="35%,35%,10%,10%,10%"
@@ -299,6 +302,37 @@
                                 </ice:dataTable>
                             </div>
                         </div>
+                        
+                        Recently Released Studies
+                        <ice:outputText  value="#{homePage.studyCount}"/><ice:outputText  value=" Studies; "/><ice:outputText  value="#{homePage.fileCount}"/><ice:outputText  value=" Files "/>
+                        <ice:dataTable rows="10" headerClass="list-header" id="studyListTable1" width="100%"
+                               styleClass="dvnStudyListTable" rowClasses="list-row-odd, list-row-even" columnClasses="dvnStudyListTableColInfo, dvnStudyListTableColID" value="#{homePage.recentStudies}" var="studyUI">
+                  <ice:column id="column1">
+                    <div class="dvnStudyListStudyInfo">
+                      <div jsfc="ice:panelGroup" styleClass="#{!studyUI.study.restricted ? 'dvn_nostyle' : (studyUI.studyRestricted ? 'dvnStudyRestricted' : 'dvnStudyPublic')}" id="groupPanel1">
+                        <ice:outputLink value="/dvn#{VDCRequest.currentVDCURL}/faces/study/StudyPage.xhtml?globalId=#{studyUI.study.globalId}" id="hyperlink3">
+                          <ice:outputText id="hyperlink3Text" value="#{studyUI.metadata.title}"/>
+                        </ice:outputLink>
+                        <ice:outputText id="outputText13" styleClass="dvnStudyListStudyAuthor" value="by #{studyUI.authors}" rendered="#{studyUI.authors != null and studyUI.authors != ''}"/>
+                      </div>
+                       </div>  
+                      </ice:column>
+                 </ice:dataTable> 
+                        
+                 Most Downloaded
+                 <ice:dataTable rows="10" headerClass="list-header" id="studyListTable2" width="100%"
+                               styleClass="dvnStudyListTable" rowClasses="list-row-odd, list-row-even" columnClasses="dvnStudyListTableColInfo, dvnStudyListTableColID" value="#{homePage.mostDownloadedStudies}" var="studyUI">
+                  <ice:column id="column1">
+                    <div class="dvnStudyListStudyInfo">
+                      <div jsfc="ice:panelGroup" styleClass="#{!studyUI.study.restricted ? 'dvn_nostyle' : (studyUI.studyRestricted ? 'dvnStudyRestricted' : 'dvnStudyPublic')}" id="groupPanel1">                 
+                        <ice:outputLink value="/dvn#{VDCRequest.currentVDCURL}/faces/study/StudyPage.xhtml?globalId=#{studyUI.study.globalId}" id="hyperlink3">
+                          <ice:outputText id="hyperlink3Text" value="#{studyUI.metadata.title}"/>
+                        </ice:outputLink>
+                        <ice:outputText id="outputText13" styleClass="dvnStudyListStudyAuthor" value="by #{studyUI.authors}" rendered="#{studyUI.authors != null and studyUI.authors != ''}"/>
+                      </div>
+                       </div>  
+                      </ice:column>
+                 </ice:dataTable>        
                         <!-- START THE MENU -->
                         <div jsfc="ice:panelGroup" styleClass="dvn_sectionPanels" rendered="#{!empty(homePage.accordionItemBeans)}">
                             <div jsfc="ice:panelGroup" styleClass="dvn_theMenuContainer">

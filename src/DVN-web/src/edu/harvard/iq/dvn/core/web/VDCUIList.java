@@ -52,7 +52,6 @@ public class VDCUIList extends SortableList {
     private List<VDCUI> vdcUIList;
     private Long   vdcGroupId;
     private String alphaCharacter;
-    private VDCUI vdcui;
     private DataPaginator paginator;
 
    
@@ -239,9 +238,7 @@ public class VDCUIList extends SortableList {
         return vdcGroupId;
     }
 
-   public VDCUI getVdcui() {
-        return vdcui;
-    }
+
 
     public List<VDCUI> getVdcUIList() {
         if (!oldSort.equals(sortColumnName) ) {
@@ -314,10 +311,6 @@ public class VDCUIList extends SortableList {
 
     public void setVdcGroupId(Long vdcGroupId) {
         this.vdcGroupId = vdcGroupId;
-    }
-
-    public void setVdcui(VDCUI vdcUI) {
-        this.vdcui = vdcUI;
     }
 
     public void setAlphaCharacter(String alphaCharacter) {

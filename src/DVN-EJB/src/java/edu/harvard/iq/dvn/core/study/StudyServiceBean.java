@@ -705,12 +705,83 @@ public class StudyServiceBean implements edu.harvard.iq.dvn.core.study.StudyServ
     }
 
     public List getRecentStudies(Long vdcId, int numResults) {
-        String query = "SELECT s FROM Study s WHERE s.owner.id = " + vdcId + " ORDER BY s.createTime desc";
+        String query = "SELECT s FROM Study s " +
+                "ORDER BY s.createTime desc";
+        if (vdcId != null){
+            query = "SELECT s FROM Study s WHERE s.owner.id = " + vdcId + " ORDER BY s.createTime desc";
+        }
         if (numResults == -1) {
             return (List) em.createQuery(query).getResultList();
         } else {
             return (List) em.createQuery(query).setMaxResults(numResults).getResultList();
         }
+    }
+    public List getRecentlyReleasedStudyIds(Long vdcId, int numResults) {
+        String queryStr = "SELECT s.id FROM Study s, StudyVersion sv where s.id = sv.study_id "
+                + " and sv.versionstate = '" + StudyVersion.VersionState.RELEASED + "'"
+                + " ORDER BY sv.releaseTime desc";
+        if (vdcId != null) {
+            queryStr = "SELECT s.id FROM Study s, StudyVersion sv where s.id = sv.study_id "
+                    + " and sv.versionstate = '" + StudyVersion.VersionState.RELEASED + "'" + " and s.owner.id = " + vdcId
+                    + " ORDER BY sv.releaseTime desc";
+        }
+        Query query = em.createNativeQuery(queryStr);
+        List<Long> returnList = new ArrayList<Long>();
+        if (numResults == -1) {
+            for (Object currentResult : query.getResultList()) {
+                // convert results into Longs
+                returnList.add(new Long(((Integer) currentResult).longValue()));
+            }
+        } else {
+            int i = 0;
+            for (Object currentResult : query.getResultList()) {
+                i++;
+                if (i > numResults) {
+                    break;
+                } else {
+                    returnList.add(new Long(((Integer) currentResult).longValue()));
+                }
+            }
+        }
+        return returnList;
+    }
+
+    public List getMostDownloadedStudyIds(Long vdcId, int numResults) {
+
+        String dataverseClause = "";
+        if (vdcId != null) {
+            dataverseClause = " and s.owner.id = " + vdcId + " ";
+        }
+        String queryStr = "select s.id "
+                + "from  StudyVersion sv, Study s "
+                + "JOIN StudyFileActivity sfa on  s.id = sfa.study_id "
+                + "where  "
+                + " s.id = sv.study_id "
+                + "and sv.versionstate = '" + StudyVersion.VersionState.RELEASED + "'"
+                + dataverseClause
+                + "group by s.id "
+                + "order by "
+                + "sum(downloadcount) desc ";
+
+        Query query = em.createNativeQuery(queryStr);
+        List<Long> returnList = new ArrayList<Long>();
+        if (numResults == -1) {
+            for (Object currentResult : query.getResultList()) {
+                // convert results into Longs
+                returnList.add(new Long(((Integer) currentResult).longValue()));
+            }
+        } else {
+            int i = 0;
+            for (Object currentResult : query.getResultList()) {
+                i++;
+                if (i > numResults) {
+                    break;
+                } else {
+                    returnList.add(new Long(((Integer) currentResult).longValue()));
+                }
+            }
+        }
+        return returnList;
     }
 
     public List<Long> getStudyIdsForExport() {

@@ -31,11 +31,9 @@ package edu.harvard.iq.dvn.core.web;
 import com.icesoft.faces.component.ext.HtmlDataTable;
 import com.icesoft.faces.component.ext.HtmlInputHidden;
 import com.icesoft.faces.component.datapaginator.DataPaginator;
-import edu.harvard.iq.dvn.core.admin.NetworkRoleServiceLocal;
-import edu.harvard.iq.dvn.core.admin.RoleRequestServiceLocal;
-import edu.harvard.iq.dvn.core.admin.UserServiceLocal;
-import edu.harvard.iq.dvn.core.admin.VDCUser;
+import edu.harvard.iq.dvn.core.admin.*;
 import edu.harvard.iq.dvn.core.index.IndexServiceLocal;
+import edu.harvard.iq.dvn.core.study.Study;
 import edu.harvard.iq.dvn.core.study.StudyServiceLocal;
 import edu.harvard.iq.dvn.core.study.VariableServiceLocal;
 import edu.harvard.iq.dvn.core.util.StringUtil;
@@ -85,6 +83,7 @@ public class HomePage extends VDCBaseBean implements Serializable {
     private HtmlInputHidden hiddenAlphaCharacter = new HtmlInputHidden();
     List descendants                = new ArrayList();
     private List recentStudies;
+    private List mostDownloadedStudies;
     private Long groupId;
     private String defaultVdcPath;
     private String groupName;
@@ -477,10 +476,48 @@ public class HomePage extends VDCBaseBean implements Serializable {
             VDC vdc = getVDCRequestBean().getCurrentVDC();
             if (vdc != null) {
                 VDCUser user = getVDCSessionBean().getUser();
-                recentStudies = StudyUI.filterVisibleStudies( studyService.getRecentStudies(vdc.getId(), -1), vdc, user, getVDCSessionBean().getIpUserGroup(), 3 );
+                recentStudies = filterVisibleStudyUIsFromIds( studyService.getRecentlyReleasedStudyIds(vdc.getId(), -1), vdc, user, getVDCSessionBean().getIpUserGroup(), 5 );
+            } else {
+                VDCUser user = getVDCSessionBean().getUser();
+                recentStudies = filterVisibleStudyUIsFromIds( studyService.getRecentlyReleasedStudyIds(null, -1), vdc, user, getVDCSessionBean().getIpUserGroup(), 5 ); 
             }
         }
         return recentStudies;
+    }
+     
+    public List getMostDownloadedStudies() {
+        if (mostDownloadedStudies == null) {
+            mostDownloadedStudies = new ArrayList();
+            VDC vdc = getVDCRequestBean().getCurrentVDC();
+            if (vdc != null) {
+                VDCUser user = getVDCSessionBean().getUser();
+                mostDownloadedStudies = filterVisibleStudyUIsFromIds( studyService.getMostDownloadedStudyIds(vdc.getId(), -1), vdc, user, getVDCSessionBean().getIpUserGroup(), 5 );
+            } else {
+                VDCUser user = getVDCSessionBean().getUser();
+                mostDownloadedStudies = filterVisibleStudyUIsFromIds( studyService.getMostDownloadedStudyIds(null, -1), vdc, user, getVDCSessionBean().getIpUserGroup(), 5 ); 
+            }
+        }
+        return mostDownloadedStudies;
+    }
+
+    private List filterVisibleStudyUIsFromIds(List originalStudies, VDC vdc, VDCUser user, UserGroup ipUserGroup, int numResults) {
+        List filteredStudies = new ArrayList();
+        if (numResults != 0) {
+            int count = 0;
+            Iterator iter = originalStudies.iterator();
+            while (iter.hasNext()) {
+                Long studyId = (Long) iter.next();
+                Study study = studyService.getStudy(studyId);
+
+                StudyUI studyUIToAdd = new StudyUI(study, getVDCSessionBean().getUser(), getVDCSessionBean().getIpUserGroup(), false);
+
+                filteredStudies.add(studyUIToAdd);
+                if (numResults > 0 && ++count >= numResults) {
+                    break;
+                }
+            }
+        }
+        return filteredStudies;
     }
 
      public String getSearchField() {

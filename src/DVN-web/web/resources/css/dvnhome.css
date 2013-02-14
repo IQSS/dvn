@@ -9,6 +9,10 @@ a.dvn_more:link,a.dvn_more:visited,a.dvn_more:hover,a.dvn_more:active{color:#6D0
 .dvhmpgactionbox{width:300px; overflow:hidden; border:1px solid #d0d0d0; padding:4px; color:#526F76}
 .dvhmpgactionbox a:link,.dvhmpgactionbox a:visited,.dvhmpgactionbox a:hover,.dvhmpgactionbox a:active{color:#C55B28}
 .dvhmpgactionbox div div span{font-weight:bold; text-transform:uppercase}
+/* NEW SEARCH */
+#dvnHomePgSearch {text-align:center;}
+#dvnHomePgSearch fieldset fieldset {width:400px; margin:0 auto; background:#EEEEEE;}
+#dvnHomePgSearch fieldset fieldset label input {font-size:1.25em !important;}
 /* SEARCH */
 div.dvn_searchblock{margin-bottom:12px;padding:4px 12px;background:#F2F2F2;border:1px solid #ddd;text-align:left;overflow:hidden;}
 .dvnSearchBoxCheckbox{display:block;text-align:left;}
@@ -63,6 +67,10 @@ h3.noSubNode,h3.noSubNode a,h3.noSubNode a:hover,h4.noSubNode,h4.noSubNode a,h4.
 .xtraMenu ul li a:link,.xtraMenu ul li a:visited,.xtraMenu ul li a:hover,.xtraMenu ul li a:active{padding-left:1.25em;display:block}
 .xtraMenu ul li a:hover{background:#c55b28;color:white}
 a.lastNodeActive:link{font-weight:700}
+
+.dvnHmpgDataverseWidgetTable, .dvnHmpgDataverseWidgetTable tr, .dvnHmpgDataverseWidgetTable td, .dvnHmpgStudyWidgetTable, .dvnHmpgStudyWidgetTable tr, .dvnHmpgStudyWidgetTable td {border:0;}
+.dvnHmpgDataverseWidgetTable td, .dvnHmpgStudyWidgetTable td {border-bottom:1px dotted #D9D9D9;}
+
 /* DATAVERSE LIST TABLE + ALPHA SORT */
 .dvnHmpgGroupHeaderBlock{width:100%;margin-bottom:.25em;overflow:hidden}
 span.dvnHmpgGroupHeader{float:left;font-size:150% !important;font-weight:700}

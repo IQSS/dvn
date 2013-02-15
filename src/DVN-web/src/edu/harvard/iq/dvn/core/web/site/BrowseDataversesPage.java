@@ -70,14 +70,18 @@ public class BrowseDataversesPage  extends VDCBaseBean implements Serializable {
     }
 
     public void init() {
-                System.out.print("vdcUIListSize " + vdcUIListSize);
+        System.out.print("vdcUIListSize " + vdcUIListSize);
         super.init();
+        hideRestricted = true;
         initAlphabeticFilter();
+        
         populateVDCUIList(false);
     }
 
     private void populateVDCUIList(boolean isAlphaSort) {
         // new logic for alpha sort
+        System.out.print("group id " + groupId );
+        
         if (!isAlphaSort) {
             if (vdcUIList == null || (vdcUIList.getAlphaCharacter() != null && ("All".equals((String)hiddenAlphaCharacter.getValue()))) ) {
                 vdcUIList = new VDCUIList(groupId, hideRestricted);
@@ -106,8 +110,17 @@ public class BrowseDataversesPage  extends VDCBaseBean implements Serializable {
     public void setHiddenAlphaCharacter(HtmlInputHidden hiddenAlphaCharacter) {
         this.hiddenAlphaCharacter = hiddenAlphaCharacter;
     }
-
+    
+    public void setGroupId(Long groupId){
+        this.groupId = groupId;       
+    }
+    
+    public Long getGroupId(){
+        return groupId;       
+    }
+    
     public void changeAlphaCharacter(ValueChangeEvent event) {
+       System.out.print("in val change event...");
         String newValue = (String)event.getNewValue();
         String oldValue = (String)event.getOldValue();
         if (!newValue.isEmpty()) {
@@ -120,6 +133,7 @@ public class BrowseDataversesPage  extends VDCBaseBean implements Serializable {
             }
         }
     }
+
 
     private ArrayList alphaCharacterList;
     private void initAlphabeticFilter() {

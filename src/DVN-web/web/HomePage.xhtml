@@ -136,7 +136,7 @@
                                                             </ice:outputLink>
                                                         </div>
                                                         <div jsfc="ice:panelGroup" styleClass="nothingYet" id="groupPanel1a" rendered="#{!empty(item.xtraItems)}">                 
-                                                            <ice:outputLink value="/dvn/faces/site/BrowseDataversesPage.xhtml" id="hyperlink3a">
+                                                            <ice:outputLink value="/dvn/faces/site/BrowseDataversesPage.xhtml?groupId=#{item.id}" id="hyperlink3a">
                                                                 <ice:outputText style="display:inline; font-size:90% !important;" value="#{item.name}"/>
                                                             </ice:outputLink>
                                                             <ui:fragment rendered="#{item.xtraItems != null and !empty(item.xtraItems)}">
@@ -145,7 +145,7 @@
                                                                             value="#{item.xtraItems}"
                                                                             var="xtraItems">
                                                                         <li>
-                                                                            <ice:outputLink value="/dvn/faces/site/BrowseDataversesPage.xhtml" id="hyperlink3aa">
+                                                                            <ice:outputLink value="/dvn/faces/site/BrowseDataversesPage.xhtml?groupId=#{xtraItems.id}" id="hyperlink3aa">
                                                                                 <ice:outputText style="display:inline; font-size:90% !important;" value="#{xtraItems.name}"/>
                                                                             </ice:outputLink>
                                                                         </li>

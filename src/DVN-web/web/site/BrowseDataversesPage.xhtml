@@ -14,6 +14,7 @@
             <ui:define name="metadata">
                 <f:metadata>
                     <f:viewParam name="classificationList" value="#{ClassificationList}"/>
+                    <f:viewParam name="groupId" value="#{BrowseDataversesPage.groupId}"/>
                     <f:event type="preRenderView"
                              listener="#{BrowseDataversesPage.init}"/>
                 </f:metadata>
@@ -23,14 +24,18 @@
          <script type="text/javascript">
           // <![CDATA[
             function setHiddenValues(alphaKey) {
-                document.getElementById('form1:alphaCharacter').value = arguments[0];
+                document.getElementById('browsedataversespage:alphaCharacter').value = arguments[0];
               }
            // ]]>
          </script>
+              
+           <ice:inputHidden binding="#{BrowseDataversesPage.hiddenAlphaCharacter}"
+                      id="alphaCharacter"
+                valueChangeListener="#{BrowseDataversesPage.changeAlphaCharacter}"/>     
           <div jsfc="ice:panelGroup" styleClass="dvnManageTableTop">
               <div jsfc="ice:panelGroup" styleClass="dvn_margin12 dvnInformationMessage">
                 <div class="dvnMsgBlockContainer">
-                    <ice:outputText value="#{bundlePageInfo.manageDvsHelp}" escape="false"/>
+                    <ice:outputText value="#{bundlePageInfo.browseDvsHelp}" escape="false"/>
                 </div>
               </div>
               <div jsfc="ice:panelGroup" styleClass="dvnManageTableControls" rendered="#{VDCRequest.currentVDC == null}">
@@ -53,7 +58,7 @@
                                     var="item">
                             <ui:fragment rendered="#{(BrowseDataversesPage.vdcUIList.alphaCharacter == item)}">
                                 <li class="dvnAlphaBrowseSelected" onmouseover="this.className='dvnAlphaBrowseHover'" onmouseout="this.className='dvnAlphaBrowseSelected'">
-                                    <ice:commandLink onclick="setHiddenValues(document.getElementById('#{item}');">
+                                    <ice:commandLink onclick="setHiddenValues(document.getElementById('#{item}'));">
                                         <ice:outputText value="#{item}"/>
                                         <f:attribute name="groupId" value="#{item.id}"/>
                                         <f:attribute name="alphaCharacter" value="#{item}"/>
@@ -80,10 +85,6 @@
                 <ice:panelGrid cellpadding="0" cellspacing="0" border="0" columns="2" id="gridPanel2"
                                styleClass="dvnManageTableControls2"
                                columnClasses="dvnManageTableControlPad, dvnPaginatorCol">
-                    <div jsfc="ice:panelGroup">
-                        <img class="dvn_icon" src="/dvn/resources/images/icon_warning.18.png" alt=""/>
-                        <ice:outputText value=" Indicates a dataverse is not released."/>
-                    </div>
                     <div jsfc="ice:panelGroup" styleClass="dvnPaginatorWrap">
                         <ice:dataPaginator for="dataverseListManage"
                                            binding="#{BrowseDataversesPage.paginator}"

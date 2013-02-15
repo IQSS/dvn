@@ -51,6 +51,9 @@ import edu.harvard.iq.dvn.core.study.StudySoftware;
 import edu.harvard.iq.dvn.core.study.StudyTopicClass;
 import edu.harvard.iq.dvn.core.study.StudyVersion;
 import edu.harvard.iq.dvn.core.study.TabularDataFile;
+import edu.harvard.iq.dvn.core.study.SpecialOtherFile; 
+import edu.harvard.iq.dvn.core.study.FileMetadataField; 
+import edu.harvard.iq.dvn.core.study.FileMetadataFieldValue;
 import java.io.File;
 import java.io.IOException;
 import java.io.StringReader;
@@ -98,6 +101,7 @@ public class Indexer implements java.io.Serializable  {
     private static IndexWriter writer;
     private static IndexWriter writerVar;
     private static IndexWriter writerVersions;
+    private static IndexWriter writerFileMeta; 
     private static IndexReader r;
     private static IndexSearcher searcher;
     private static Indexer indexer;
@@ -429,6 +433,8 @@ public class Indexer implements java.io.Serializable  {
             writer.addDocument(doc);
             writer.close();
             writerVar = new IndexWriter(dir, getAnalyzer(), isIndexEmpty(), IndexWriter.MaxFieldLength.UNLIMITED);
+            writerFileMeta = new IndexWriter(dir, getAnalyzer(), isIndexEmpty(), IndexWriter.MaxFieldLength.UNLIMITED);
+            
 
             for (FileMetadata fileMetadata : sv.getFileMetadatas()) {
                 //TODO: networkDataFile
@@ -448,10 +454,29 @@ public class Indexer implements java.io.Serializable  {
                             writerVar.addDocument(docVariables);
                         }
                     }
+                } else if (elem instanceof SpecialOtherFile) {
+                    List<FileMetadataFieldValue> fileMetadataFieldValues = null; 
+                    for (int j = 0; j < fileMetadataFieldValues.size(); j++) {
+                        Document docFileMetadata = new Document(); 
+                        
+                        String fieldValue = fileMetadataFieldValues.get(j).getStrValue();
+                        
+                        FileMetadataField fmf = fileMetadataFieldValues.get(j).getFileMetadataField();
+                        String fileMetadataFieldName = fmf.getName(); 
+                        String fileMetadataFieldFormatName = fmf.getFileFormatName(); 
+                        String indexFileName = fileMetadataFieldName + "-" + fileMetadataFieldFormatName;
+                        
+                        addText(1.0f, docFileMetadata, "varStudyId", study.getId().toString());
+                        addText(1.0f, docFileMetadata, "varStudyFileId", elem.getId().toString());
+                        addText(1.0f, docFileMetadata, indexFileName, fieldValue); 
+                        
+                        writerFileMeta.addDocument(docFileMetadata);
+                    }
                 }
 
             }
             writerVar.close();
+            writerFileMeta.close(); 
             writerVersions = new IndexWriter(dir, new WhitespaceAnalyzer(), isIndexEmpty(), IndexWriter.MaxFieldLength.UNLIMITED);
             for (StudyVersion version : study.getStudyVersions()) {
                 // The current(released) version UNF is indexed in the main document

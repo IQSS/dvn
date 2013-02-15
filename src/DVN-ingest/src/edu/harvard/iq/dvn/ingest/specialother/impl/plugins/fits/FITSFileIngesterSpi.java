@@ -22,12 +22,12 @@ import org.apache.commons.codec.binary.Hex;
  */
 public class FITSFileIngesterSpi extends FileIngesterSpi{
     private static Logger dbgLog = Logger.getLogger(FITSFileIngesterSpi.class.getPackage().getName());
-    private static int FITS_HEADER_SIZE = 4;
-    private static String FITS_FILE_SIGNATURE = "FITS";
+    private static int FITS_HEADER_SIZE = 10;
+    private static String FITS_FILE_SIGNATURE = "SIMPLE  = ";
 
     private static String[] formatNames = {"fits", "fits"};
     private static String[] extensions = {"fits"};
-    private static String[] mimeType = {"application/fits"};
+    private static String[] mimeType = {"application/fits", "image/fits"};
 
     
     
@@ -47,6 +47,9 @@ public class FITSFileIngesterSpi extends FileIngesterSpi{
         return "HU-IQSS-DVN-project FITS File Ingester";
     }
 
+    // (of the canDecodeInput methods below, the BufferedInputStream-based
+    // one should be used);
+    
     @Override
     public boolean canDecodeInput(Object source) throws IOException {
         out.println("this method is actually called: object");
@@ -60,6 +63,7 @@ public class FITSFileIngesterSpi extends FileIngesterSpi{
         if (source  == null){
             throw new IllegalArgumentException("source == null!");
         }
+        
         BufferedInputStream stream = (BufferedInputStream)source;
 
         //
@@ -85,7 +89,7 @@ public class FITSFileIngesterSpi extends FileIngesterSpi{
             throw new IOException();
         }
         //printHexDump(b, "hex dump of the byte-array");
-        dbgLog.info("hex dump of the 1st 4 bytes:"+
+        dbgLog.info("hex dump of the 1st "+FITS_HEADER_SIZE+" bytes:"+
                 (new String (Hex.encodeHex(b))).toUpperCase());
 
 
@@ -95,10 +99,10 @@ public class FITSFileIngesterSpi extends FileIngesterSpi{
 
         boolean DEBUG = false;
 
-        String hdr4sav = new String(b);
+        String hdr4fits = new String(b);
 
 
-        if (hdr4sav.equals(FITS_FILE_SIGNATURE)) {
+        if (hdr4fits.equals(FITS_FILE_SIGNATURE)) {
             dbgLog.fine("this is a fits file");
             return true;
         } else {

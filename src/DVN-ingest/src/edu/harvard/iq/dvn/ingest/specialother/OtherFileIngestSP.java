@@ -46,6 +46,18 @@ public class OtherFileIngestSP {
         SDIORegistry.getDefaultInstance();
 
     
+    private static enum SpiInfo {
+        
+        MIME_TYPES {
+            @Override
+            String[] info(FileIngesterSpi spi) {
+                return spi.getMIMETypes();
+            }
+        };
+
+        abstract String[] info(FileIngesterSpi spi);
+    }
+    
     public static Iterator<FileIngester>
         getFileIngestersByMIMEType(String MIMEType){
         if (MIMEType == null) {

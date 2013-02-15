@@ -6,6 +6,8 @@ package edu.harvard.iq.dvn.ingest.specialother;
 
 import edu.harvard.iq.dvn.ingest.specialother.spi.*;
 import java.io.*;
+import java.util.Map; 
+import java.util.Set; 
 
 /**
  *
@@ -71,17 +73,18 @@ public abstract class FileIngester {
     
     /**
      * Reads the supplied <code>BufferedInputStream</code> and 
-     * returns its contents as a <code>SpecialOtherFile</code>.
+     * returns the <code>Map</code> containing the extracted 
+     * metadata.
      *
      * 
      * @param stream  a <code>BufferedInputStream</code>
      * where a statistical data file is connected.
      *
-     * @return reading results as a <code>SpecialOtherFile</code>
+     * @return <code>Map</code>
      *
      * @throws java.io.IOException if a reading error occurs.
      */
-    public abstract void ingest(BufferedInputStream stream)
+    public abstract Map<String, Set<String>> ingest(BufferedInputStream stream)
         throws IOException;
 
     

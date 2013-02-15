@@ -28,35 +28,26 @@
 package edu.harvard.iq.dvn.ingest.dsb;
 
 import edu.harvard.iq.dvn.unf.UNF5Util;
-import edu.harvard.iq.dvn.core.study.DataVariable;
 import edu.harvard.iq.dvn.core.study.FileMetadata;
 import edu.harvard.iq.dvn.core.study.StudyFile;
 import edu.harvard.iq.dvn.core.study.StudyFileEditBean;
 import edu.harvard.iq.dvn.core.study.StudyVersion;
-import edu.harvard.iq.dvn.core.study.TabularDataFile;
-import edu.harvard.iq.dvn.core.util.WebStatisticsSupport;
+import edu.harvard.iq.dvn.core.study.FileMetadataField;
+import edu.harvard.iq.dvn.core.study.FileMetadataFieldValue; 
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.io.OutputStream;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
 import java.util.Map;
-import java.util.StringTokenizer;
-import javax.faces.context.FacesContext;
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.httpclient.HttpClient;
-import org.apache.commons.httpclient.MultiThreadedHttpConnectionManager;
-import org.apache.commons.httpclient.methods.PostMethod;
 
 
 import edu.harvard.iq.dvn.ingest.org.thedata.statdataio.*;
@@ -318,22 +309,32 @@ public class DSBWrapper implements java.io.Serializable  {
         }
 
         // get available FileIngesters for this MIME-type
-        Iterator<FileIngester> itr = null; 
-        // OtherFileIngestSP.getIngestersByMIMEType(mime_type);
+        FileIngester fileIngester = null; 
+        Iterator<FileIngester> itr = OtherFileIngestSP.getFileIngestersByMIMEType(mime_type);
+        Map<String, Set<String>> fileLevelMetadata = null;
 
         if (itr.hasNext()) {
             // use the first Subsettable data reader
-            FileIngester fileIngester = itr.next();
+            fileIngester = itr.next();
 
             dbgLog.info("reader class name=" + fileIngester.getClass().getName());
+            dbgLog.info("format name=" + fileIngester.getFormatName()); 
 
 
-            fileIngester.ingest(infile);
+            fileLevelMetadata = fileIngester.ingest(infile);
 
         } else {
 
             throw new IllegalArgumentException("No FileReader Class found"
                     + " for this mime type=" + mime_type);
+        }
+        
+        // attempt to ingest the extracted metadata into the database; 
+        // TODO: this should throw an exception if anything goes wrong.
+        FileMetadata fm = file.getFileMetadata();
+        
+        if (fileLevelMetadata != null) {
+            ingestFileLevelMetadata(fileLevelMetadata, file.getFileMetadata(), fileIngester.getFormatName());
         }
     }
     
@@ -456,6 +457,44 @@ public class DSBWrapper implements java.io.Serializable  {
             //return calculateUNF(unfs);
           
             return fileUNF;
+        }
+    }
+    
+    private void ingestFileLevelMetadata (Map<String, Set<String>> fileLevelMetadata, FileMetadata fileMetadata, String fileFormatName) {
+        for (String mKey : fileLevelMetadata.keySet()) {
+            
+            Set<String> mValues = fileLevelMetadata.get(mKey); 
+            System.out.println("key: " + mKey);
+            
+            // Check if the field doesn't exist yet:
+            
+            FileMetadataField fileMetaField = null; // look up
+            
+            if (fileMetaField == null) {
+                fileMetaField = new FileMetadataField();
+                fileMetaField.setName(mKey);
+                // TODO: provide descriptions and labels:
+                fileMetaField.setDescription(mKey);
+                fileMetaField.setTitle(mKey); 
+                fileMetaField.setFileFormatName(fileFormatName);
+            }
+            
+            String fieldValueText = "";
+            
+            if (mValues != null) {
+                for (String mValue : mValues) {
+                    if (mValue != null) {
+                        fieldValueText = fieldValueText.concat(mValue);               
+                    } 
+                }   
+            }
+            
+            if (!"".equals(fieldValueText)) {
+                if (fileMetadata != null) {
+                    FileMetadataFieldValue fileMetaFieldValue =
+                            new FileMetadataFieldValue(fileMetaField, fileMetadata, fieldValueText);
+                }
+            }
         }
     }
     

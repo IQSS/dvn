@@ -89,7 +89,7 @@ public class StudyFileEditBean implements Serializable {
         } else if (!asOtherMaterial && fileType.equals("text/xml-graphml")) {
             dbgLog.fine("isGraphMLFile = true");
             this.studyFile = new NetworkDataFile();
-        } else if (!asOtherMaterial && fileType.equals("")) {
+        } else if (!asOtherMaterial && fileType.equals("application/fits")) {
             this.studyFile = new SpecialOtherFile();
             dbgLog.fine("FITS file");
         } else    {

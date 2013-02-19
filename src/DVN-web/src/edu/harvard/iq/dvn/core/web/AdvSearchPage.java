@@ -27,6 +27,7 @@ package edu.harvard.iq.dvn.core.web;
 import edu.harvard.iq.dvn.core.index.IndexServiceLocal;
 import edu.harvard.iq.dvn.core.index.SearchTerm;
 import edu.harvard.iq.dvn.core.study.StudyField;
+import edu.harvard.iq.dvn.core.study.FileMetadataField; 
 import edu.harvard.iq.dvn.core.study.StudyFieldServiceLocal;
 import edu.harvard.iq.dvn.core.study.StudyServiceLocal;
 import edu.harvard.iq.dvn.core.vdc.VDC;
@@ -94,9 +95,12 @@ public class AdvSearchPage extends VDCBaseBean implements java.io.Serializable {
     private Locale currentLocale = getExternalContext().getRequestLocale();
     private ResourceBundle messages = ResourceBundle.getBundle("Bundle");
     private HashMap advSearchFieldMap = new HashMap();
+    private HashMap fileMetadataFieldMap = new HashMap(); 
     private HashMap operatorMap = new HashMap();
     private boolean collectionsIncluded;
+    private boolean searchableFileLevelMetadata; 
     private boolean variableSearch;
+    private boolean fileLevelMetadataSearch;
     private List <SearchTerm>  variableInfoList = new ArrayList();
     
     // 3.3: 
@@ -130,10 +134,22 @@ public class AdvSearchPage extends VDCBaseBean implements java.io.Serializable {
     public void setVariableSearch(boolean variableSearch) {
         this.variableSearch = variableSearch;
     }
+    
+    public boolean isFileLevelMetadataSearch() {
+        return fileLevelMetadataSearch;
+    }
+
+    public void setFileLevelMetadataSearch(boolean flms) {
+        this.fileLevelMetadataSearch = flms;
+    }
 
     public boolean isCollectionsIncluded() {
         return collectionsIncluded;
     }
+
+    public boolean isSearchableFileLevelMetadata() {
+        return searchableFileLevelMetadata;
+    } 
 
     public List getVariableInfoList() {
         return variableInfoList;
@@ -142,6 +158,7 @@ public class AdvSearchPage extends VDCBaseBean implements java.io.Serializable {
     public void setVariableInfoList(List variableInfo) {
         this.variableInfoList = variableInfo;
     }
+            
 
     // <editor-fold defaultstate="collapsed" desc="Creator-managed Component Definition">
     private int __placeholder;
@@ -181,6 +198,10 @@ public class AdvSearchPage extends VDCBaseBean implements java.io.Serializable {
         
 
         collectionModelList = getCollectionsDisplay();
+        
+        // Finally, check if we have searchable file-level metadata fields (keys);
+        // and if available,  initiate the select item dropdown:
+        fileLevelMetaKeysDropdown = initSelectItemList(getFileLevelMetaKeys()); 
     }
     
     private List<SelectItem> initSelectItemList(String[] itemsArray ) {
@@ -235,6 +256,21 @@ public class AdvSearchPage extends VDCBaseBean implements java.io.Serializable {
         this.inputVariableInfo = inputVariableInfo;
     }
     
+    
+    /**
+     * fileMetaSearchValue - field for the file-level metadata search
+     * query, plus its getter and setter: 
+     */
+    private HtmlInputText fileMetaSearchValue;
+
+    public HtmlInputText getFileMetaSearchValue() {
+        return this.fileMetaSearchValue;
+    }
+
+    public void setFileMetaSearchValue(HtmlInputText input) {
+        this.fileMetaSearchValue = input;
+    }
+    
     public void setDropdown1(HtmlSelectOneMenu hsom) {
         this.dropdown1 = hsom;
     }
@@ -271,6 +307,7 @@ public class AdvSearchPage extends VDCBaseBean implements java.io.Serializable {
     public void setDropdown3(HtmlSelectOneMenu hsom) {
         this.dropdown3 = hsom;
     }
+    
     private List<SelectItem> dropdown3DefaultItems = new ArrayList();
 
     public List<SelectItem> getDropdown3DefaultItems() {
@@ -281,6 +318,18 @@ public class AdvSearchPage extends VDCBaseBean implements java.io.Serializable {
         this.dropdown3DefaultItems = dropdown3DefaultItems;
     }
 
+    // Dropdown for the searchable studyfile-level metadata keys, 
+    // if available: 
+    
+    private List<SelectItem> fileLevelMetaKeysDropdown = new ArrayList();
+
+    public List<SelectItem> getFileLevelMetaKeysDropdown() {
+        return fileLevelMetaKeysDropdown;
+    }
+
+    public void setFileLevelMetaKeysDropdown(List<SelectItem> dropDownItems) {
+        this.fileLevelMetaKeysDropdown = dropDownItems;
+    }
 
     private UISelectItems dropdown3SelectItems = new UISelectItems();
 
@@ -291,6 +340,34 @@ public class AdvSearchPage extends VDCBaseBean implements java.io.Serializable {
     public void setDropdown3SelectItems(UISelectItems uisi) {
         this.dropdown3SelectItems = uisi;
     }
+    
+    
+    /**
+     * Bindings for the file metadata keyword search dropdown 
+     * and its select items: 
+     */
+    
+    private HtmlSelectOneMenu dropdownFileMeta = new HtmlSelectOneMenu();
+
+    public HtmlSelectOneMenu getDropdownFileMeta() {
+        return dropdownFileMeta;
+    }
+    
+    public void setDropdownFileMeta(HtmlSelectOneMenu dd) {
+        this.dropdownFileMeta = dd; 
+    }
+    
+    private UISelectItems dropdownFileMetaSelectItems = new UISelectItems();
+
+    public UISelectItems getDropdownFileMetaSelectItem() {
+        return dropdownFileMetaSelectItems;
+    }
+
+    public void setDropdownFileMetaSelectItem(UISelectItems uisi) {
+        this.dropdownFileMetaSelectItems = uisi;
+    }
+    
+    
     private HtmlSelectOneMenu dropdown4 = new HtmlSelectOneMenu();
 
     public HtmlSelectOneMenu getDropdown4() {
@@ -489,6 +566,7 @@ public class AdvSearchPage extends VDCBaseBean implements java.io.Serializable {
     public void setDataTable1(HtmlDataTable hdt) {
         this.dataTable1 = hdt;
     }
+    
     private List<CollectionModel> collectionModelList = new ArrayList();
 
     public List<CollectionModel> getCollectionModelList() {
@@ -498,7 +576,6 @@ public class AdvSearchPage extends VDCBaseBean implements java.io.Serializable {
     public void setCollectionModelList(List<CollectionModel> collectionModelList) {
         this.collectionModelList = collectionModelList;
     }
-
 
     private UIColumn column1 = new UIColumn();
 
@@ -590,6 +667,15 @@ public class AdvSearchPage extends VDCBaseBean implements java.io.Serializable {
         return advS;
     }
 
+    public String[] getFileLevelMetaKeys() {
+        List<FileMetadataField> availableFileMetadataFields = studyFieldService.findAvailableFileMetadataFields(); 
+        String[] fields = getFileMetadataFieldList(availableFileMetadataFields); 
+        
+        if (fields.length > 0) {
+            searchableFileLevelMetadata = true; 
+        }
+        return fields; 
+    }
     public String[] getSearchScopeList(long vdcId) {
 //        ArrayList displayNames = new ArrayList();
         VDC vdc = vdcService.find(new Long(vdcId));
@@ -637,6 +723,29 @@ public class AdvSearchPage extends VDCBaseBean implements java.io.Serializable {
         return advS;
     }
 
+    
+    private String[] getFileMetadataFieldList(final Collection fileMetaFields) {
+        String[] fields = new String[fileMetaFields.size()];
+//        DefaultSelectItemsArray dsia = new DefaultSelectItemsArray();
+        int i = 0;
+        for (Iterator it = fileMetaFields.iterator(); it.hasNext();) {
+            FileMetadataField elem = (FileMetadataField) it.next();
+            elem.getId();
+            
+            // This implements a scheme similar to what we use with the 
+            // advanced study fields; with a mechanism for providing
+            // "user-friendly" names for the search fields - but for now we are 
+            // not using it. 
+            
+            fields[i] = elem.getFileFormatName()+"-"+elem.getName();
+            
+            
+            
+            fileMetadataFieldMap.put(fields[i++], elem.getName());
+
+        }
+        return fields;
+    }
     
     private String getUserFriendlySearchField(String searchField) {
         try {
@@ -764,7 +873,22 @@ public class AdvSearchPage extends VDCBaseBean implements java.io.Serializable {
                 sl.setStudyIds(studies);
                 sl.setVariableMap(variableMap);
 
-            } else {
+            } /**
+                * The (commented-out) code below is for treating
+                * file-level metadata searches similarly to how we treat
+                * variable searches, i.e., to be able to point to the 
+                * actual files that matched the query. 
+                * For now, however, I am treating these searches the exact 
+                * same way as the "regular" ones - by simply pointing to the 
+                * study for which there's a match. 
+              else if (isFileLevelMetadataSearch()) {
+                Map fileMap = new HashMap(); 
+                List studies = new ArrayList();
+                studyService.determineStudiesFromFiles(viewableIds, studies, fileMap);
+                sl.setStudyIds(studies);
+                sl.setFileMap(fileMap);
+            } */
+            else {
                 sl.setStudyIds(viewableIds);
             }
 
@@ -810,6 +934,8 @@ public class AdvSearchPage extends VDCBaseBean implements java.io.Serializable {
         return "success";
     }
 
+    // 
+    // What is this for? -- L.A. 
     protected String buildQuery() {
         StringBuffer query = new StringBuffer();
         if (((String) textField1.getValue()).length() > 0) {
@@ -866,6 +992,18 @@ public class AdvSearchPage extends VDCBaseBean implements java.io.Serializable {
                 }
             }
         }
+        if (fileMetaSearchValue.getValue() != null &&
+                !(fileMetaSearchValue.getValue().equals(""))) {
+            if (dropdownFileMeta.getValue() != null ) {
+                SearchTerm fileLevelMetaSearchTerm = new SearchTerm();
+                fileLevelMetaSearchTerm.setFieldName(fileMetadataFieldIndexName((String)dropdownFileMeta.getValue()));
+                fileLevelMetaSearchTerm.setOperator("="); 
+                fileLevelMetaSearchTerm.setValue((String)fileMetaSearchValue.getValue());
+                searchTerms.add(fileLevelMetaSearchTerm);
+                setFileLevelMetadataSearch(true);
+            }
+            
+        }
         return searchTerms;
     }
 
@@ -877,6 +1015,10 @@ public class AdvSearchPage extends VDCBaseBean implements java.io.Serializable {
         return (String) advSearchFieldMap.get(displayName);
     }
 
+    protected String fileMetadataFieldIndexName(String field) {
+        return (String) fileMetadataFieldMap.get(field);
+    }
+    
     private boolean isValid(String dateString, String pattern) {
         boolean valid;
         SimpleDateFormat sdf = new SimpleDateFormat(pattern);
@@ -899,7 +1041,9 @@ public class AdvSearchPage extends VDCBaseBean implements java.io.Serializable {
                 return false;
             }
 
-            if (!hasVariableSearchCriteria() &&  !hasCatalogSearchCriteria() ) {
+            if (!hasVariableSearchCriteria() 
+                    && !hasFileLevelMetadataSearchCriteria() 
+                    && !hasCatalogSearchCriteria()) {
                 //((UIInput)gridPanel1).setValid(false);
                 FacesMessage message = new FacesMessage("Must enter some Search Criteria.");
                 FacesContext fc = FacesContext.getCurrentInstance();
@@ -965,8 +1109,17 @@ public class AdvSearchPage extends VDCBaseBean implements java.io.Serializable {
 
         return false;
     }
+    
+    protected boolean hasFileLevelMetadataSearchCriteria (){
+         if (dropdownFileMeta.getValue() != null &&
+                 fileMetaSearchValue.getValue() != null &&
+                !(fileMetaSearchValue.getValue().equals(""))) {
+             return true; 
+         }
+        
 
- 
+        return false;
+    }    
 
 
     public void validateDate(FacesContext context,

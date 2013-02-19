@@ -2400,6 +2400,34 @@ public class StudyServiceBean implements edu.harvard.iq.dvn.core.study.StudyServ
         }
     }
 
+    public void determineStudiesFromFiles(List studyFiles, List studies, Map fileMap) {
+        Iterator iter = studyFiles.iterator();
+        while (iter.hasNext()) {
+            Long sfId = (Long) iter.next();
+            StudyFile studyFile = null;
+            
+            try {                    
+                studyFile = studyFileService.getStudyFile(sfId);
+            } catch (IllegalArgumentException ex) {
+                System.out.println("Study File (ID=" + sfId + ") was found in index, but is not in DB!");
+            }
+            
+            if (studyFile != null) {
+                Long studyId = studyFile.getStudy().getId();
+                if ( studies.contains(studyId) ) {
+                    List fileList = (List) fileMap.get(studyId);
+                    fileList.add(studyFile);
+                    fileMap.put(studyId, fileList);
 
+                } else {
+                    studies.add( studyId );
+                    List fileList = new ArrayList();
+                    fileList.add(studyFile);
+                    fileMap.put(studyId, fileList);
+                }
+            }
+            
+        }
+    }
 
 }

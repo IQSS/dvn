@@ -67,6 +67,7 @@ public class StudyListing  implements java.io.Serializable {
     private Long vdcId;
     private List searchTerms;
     private Map variableMap;
+    private Map fileMap;
     private Map versionMap;
     private List displayStudyVersionsList;
 
@@ -124,6 +125,14 @@ public class StudyListing  implements java.io.Serializable {
 
     public void setVariableMap(Map variableMap) {
         this.variableMap = variableMap;
+    }
+    
+    public Map getFileMap() {
+        return fileMap;
+    }
+
+    public void setFileMap(Map fileMap) {
+        this.fileMap = fileMap;
     }
 
     /**

@@ -331,10 +331,12 @@ public class DSBWrapper implements java.io.Serializable  {
         
         // attempt to ingest the extracted metadata into the database; 
         // TODO: this should throw an exception if anything goes wrong.
-        FileMetadata fm = file.getFileMetadata();
+        //FileMetadata fm = file.getFileMetadata();
+        StudyFile studyFile = file.getStudyFile();
         
         if (fileLevelMetadata != null) {
-            ingestFileLevelMetadata(fileLevelMetadata, file.getFileMetadata(), fileIngester.getFormatName());
+            //ingestFileLevelMetadata(fileLevelMetadata, file.getFileMetadata(), fileIngester.getFormatName());
+            ingestFileLevelMetadata(fileLevelMetadata, studyFile, fileIngester.getFormatName());
         }
     }
     
@@ -460,11 +462,10 @@ public class DSBWrapper implements java.io.Serializable  {
         }
     }
     
-    private void ingestFileLevelMetadata (Map<String, Set<String>> fileLevelMetadata, FileMetadata fileMetadata, String fileFormatName) {
+    private void ingestFileLevelMetadata (Map<String, Set<String>> fileLevelMetadata, StudyFile studyFile, String fileFormatName) {
         for (String mKey : fileLevelMetadata.keySet()) {
             
             Set<String> mValues = fileLevelMetadata.get(mKey); 
-            System.out.println("key: " + mKey);
             
             // Check if the field doesn't exist yet:
             
@@ -490,9 +491,9 @@ public class DSBWrapper implements java.io.Serializable  {
             }
             
             if (!"".equals(fieldValueText)) {
-                if (fileMetadata != null) {
+                if (studyFile != null) {
                     FileMetadataFieldValue fileMetaFieldValue =
-                            new FileMetadataFieldValue(fileMetaField, fileMetadata, fieldValueText);
+                            new FileMetadataFieldValue(fileMetaField, studyFile, fieldValueText);
                 }
             }
         }

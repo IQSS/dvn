@@ -35,9 +35,9 @@ public class FileMetadataFieldValue implements Serializable, MetadataFieldGroup 
     public FileMetadataFieldValue () {
     }
     
-    public FileMetadataFieldValue(FileMetadataField sf, FileMetadata m, String val) {
-        setFileMetadataField(sf);
-        setFileMetadata(m);
+    public FileMetadataFieldValue(FileMetadataField fmf, StudyFile sf, String val) {
+        setFileMetadataField(fmf);
+        setStudyFile(sf);
         setStrValue(val);    
     }    
     
@@ -55,18 +55,18 @@ public class FileMetadataFieldValue implements Serializable, MetadataFieldGroup 
     }
     
      /**
-     * Holds value of property fileMetadataField.
+     * fileMetadataField, corresponding FileMetadataField
      */
     @ManyToOne
     @JoinColumn(nullable=false)
     private FileMetadataField fileMetadataField;
 
     /**
-     * Holds value of property FileMetadata.
+     * studyFile, corresponding StudyFile
      */
     @ManyToOne
     @JoinColumn(nullable=false)
-    private FileMetadata fileMetadata;
+    private StudyFile studyFile;
 
     
     @Column(columnDefinition="TEXT") 
@@ -74,42 +74,26 @@ public class FileMetadataFieldValue implements Serializable, MetadataFieldGroup 
 
     private int displayOrder;
     
+    
     /**
      * Getter and Setter methods: 
      */
     
-    /**
-     * Getter for property template.
-     * @return Value of property template.
-     */
+    
     public FileMetadataField getFileMetadataField() {
         return fileMetadataField;
     }
 
-    /**
-     * Setter for property template.
-     * @param template New value of property template.
-     */
     public void setFileMetadataField(FileMetadataField fileMetadataField) {
         this.fileMetadataField=fileMetadataField;
     }
-
-    
-    
-    /**
-     * Getter for property template.
-     * @return Value of property template.
-     */
-    public FileMetadata getFileMetadata() {
-        return fileMetadata;
+  
+    public StudyFile getStudyFile() {
+        return studyFile;
     }
 
-    /**
-     * Setter for property template.
-     * @param template New value of property template.
-     */
-    public void setFileMetadata(FileMetadata fileMetadata) {
-        this.fileMetadata=fileMetadata;
+    public void setStudyFile(StudyFile studyFile) {
+        this.studyFile=studyFile;
     }
     
     

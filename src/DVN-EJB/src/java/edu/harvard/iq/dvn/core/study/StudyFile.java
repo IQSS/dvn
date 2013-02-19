@@ -59,7 +59,9 @@ public abstract class StudyFile implements Serializable {
 
     @OneToMany(mappedBy="studyFile", cascade={CascadeType.REMOVE, CascadeType.MERGE, CascadeType.PERSIST})
     private List<FileMetadata> fileMetadatas;
-
+    
+    @OneToMany(mappedBy="studyFile", cascade={CascadeType.REMOVE, CascadeType.MERGE, CascadeType.PERSIST})
+    private List<FileMetadataFieldValue> fileMetadataFieldValues;
 
     /**
      * Creates a new instance of StudyFile
@@ -79,6 +81,7 @@ public abstract class StudyFile implements Serializable {
         //TODO: add both sides of relationship here
         //this.getStudy().getStudyFileActivity().add(sfActivity);
         fileMetadatas = new ArrayList<FileMetadata>();
+        fileMetadataFieldValues = new ArrayList<FileMetadataFieldValue>(); 
     }
 
 
@@ -92,6 +95,14 @@ public abstract class StudyFile implements Serializable {
 
     public void setFileMetadatas(List<FileMetadata> fileMetadatas) {
         this.fileMetadatas = fileMetadatas;
+    }
+    
+    public List<FileMetadataFieldValue> getFileMetadataFieldValues() {
+        return fileMetadataFieldValues;
+    }
+
+    public void setFileMetadataFieldValues(List<FileMetadataFieldValue> fileMetadataFieldValues) {
+        this.fileMetadataFieldValues = fileMetadataFieldValues;
     }
 
     public String getFileType() {

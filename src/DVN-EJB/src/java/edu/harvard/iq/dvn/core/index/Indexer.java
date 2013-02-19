@@ -455,7 +455,7 @@ public class Indexer implements java.io.Serializable  {
                         }
                     }
                 } else if (elem instanceof SpecialOtherFile) {
-                    List<FileMetadataFieldValue> fileMetadataFieldValues = null; 
+                    List<FileMetadataFieldValue> fileMetadataFieldValues = fileMetadata.getStudyFile().getFileMetadataFieldValues(); 
                     for (int j = 0; j < fileMetadataFieldValues.size(); j++) {
                         Document docFileMetadata = new Document(); 
                         
@@ -464,10 +464,12 @@ public class Indexer implements java.io.Serializable  {
                         FileMetadataField fmf = fileMetadataFieldValues.get(j).getFileMetadataField();
                         String fileMetadataFieldName = fmf.getName(); 
                         String fileMetadataFieldFormatName = fmf.getFileFormatName(); 
-                        String indexFileName = fileMetadataFieldName + "-" + fileMetadataFieldFormatName;
+                        String indexFileName = fileMetadataFieldFormatName + "-" + fileMetadataFieldName;
                         
-                        addText(1.0f, docFileMetadata, "varStudyId", study.getId().toString());
-                        addText(1.0f, docFileMetadata, "varStudyFileId", elem.getId().toString());
+                        addText(1.0f, docFileMetadata, "studyId", study.getId().toString());
+                        addKeyword(doc, "studyId", study.getId().toString());
+                        addKeyword(doc, "id", study.getId().toString());
+                        addText(1.0f, docFileMetadata, "studyFileId", elem.getId().toString());
                         addText(1.0f, docFileMetadata, indexFileName, fieldValue); 
                         
                         writerFileMeta.addDocument(docFileMetadata);

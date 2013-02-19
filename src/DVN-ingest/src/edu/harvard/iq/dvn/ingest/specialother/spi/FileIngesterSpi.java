@@ -9,6 +9,7 @@ import java.util.logging.*;
 import java.io.*;
 
 import edu.harvard.iq.dvn.ingest.org.thedata.statdataio.spi.RegisterableService;
+import edu.harvard.iq.dvn.ingest.org.thedata.statdataio.spi.SDIOServiceProvider;
 import edu.harvard.iq.dvn.ingest.org.thedata.statdataio.spi.ServiceRegistry;
 import java.nio.MappedByteBuffer;
 import java.util.Locale;
@@ -18,7 +19,8 @@ import java.util.Locale;
  * @author leonidandreev
  * - a simplified version of Akio Sone's StatDataFileReader SPI.
  */
-public abstract class FileIngesterSpi implements RegisterableService {
+//public abstract class FileIngesterSpi implements RegisterableService {
+public abstract class FileIngesterSpi extends SDIOServiceProvider {
     private static Logger dbgLog = 
     Logger.getLogger(FileIngesterSpi.class.getPackage().getName());
 

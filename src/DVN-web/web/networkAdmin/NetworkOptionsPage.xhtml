@@ -101,21 +101,20 @@
                                      <table class="dvnOptionsTable" cellspacing="0" cellpadding="0" border="0">
                                         <tr>
                                             <td class="dvnOptionsTableOption">
-                                                <ice:outputText rendered="#{MainLayoutBean.googleAnalyticsKey == null }"
-                                                                value="Google Analytics"/>
-                                                <ice:outputLink rendered="#{MainLayoutBean.googleAnalyticsKey != null }"
-                                                                id="siteStatslink"
-                                                                value="http://www.google.com/analytics/"
-                                                                target="_blank">
-                                                    <ice:outputText value="#{bundlePageInfo.webStatsTitle}"/>
-                                                </ice:outputLink>
+                                                <ice:outputText rendered="#{MainLayoutBean.googleAnalyticsKey != null}" value="#{bundlePageInfo.webStatsTitle}"/>
+                                                <ice:outputText rendered="#{MainLayoutBean.googleAnalyticsKey == null }" value="#{bundlePageInfo.webStatsTitle}"/>
                                             </td>
                                             <td>
-                                                <ice:outputText rendered="#{MainLayoutBean.googleAnalyticsKey != null}" value="#{bundlePageInfo.webStatsText}"/>
                                                 <ice:graphicImage rendered="#{MainLayoutBean.googleAnalyticsKey == null}" value="/resources/images/icon_warning.18.png" styleClass="dvn_icon"/>
                                                 <ice:outputText rendered="#{MainLayoutBean.googleAnalyticsKey == null}"
                                                                 id="siteStatsText"
                                                                 value=" Google Analytics is not configured for this Dataverse Network"/>
+                                                <ice:outputLink rendered="#{MainLayoutBean.googleAnalyticsKey != null }"
+                                                                id="siteStatslink"
+                                                                value="http://www.google.com/analytics/"
+                                                                target="_blank">
+                                                    <ice:outputText value="#{bundlePageInfo.webStatsText}"/>
+                                                </ice:outputLink>
                                             </td>
                                         </tr>
                                         <tr>

@@ -34,6 +34,7 @@ import edu.harvard.iq.dvn.core.study.StudyFileEditBean;
 import edu.harvard.iq.dvn.core.study.StudyVersion;
 import edu.harvard.iq.dvn.core.study.FileMetadataField;
 import edu.harvard.iq.dvn.core.study.FileMetadataFieldValue; 
+import edu.harvard.iq.dvn.core.study.StudyFieldServiceLocal; 
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
@@ -58,6 +59,9 @@ import edu.harvard.iq.dvn.ingest.specialother.*;
 import java.io.BufferedInputStream;
 import java.io.FileOutputStream;
 import java.nio.channels.FileChannel;
+import javax.ejb.EJB;
+import javax.ejb.EJBException;
+import javax.ejb.Stateless;
 
 import java.util.logging.Logger;
 
@@ -65,7 +69,9 @@ import java.util.logging.Logger;
  *
  * @author gdurand
  */
+@Stateless
 public class DSBWrapper implements java.io.Serializable  {
+    @EJB StudyFieldServiceLocal fieldService;
     
     private static Logger dbgLog = Logger.getLogger(DSBWrapper.class.getPackage().getName());
     private HttpClient client = null;

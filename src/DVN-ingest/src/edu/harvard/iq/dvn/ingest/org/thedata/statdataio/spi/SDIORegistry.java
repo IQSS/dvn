@@ -59,7 +59,7 @@ public final class SDIORegistry extends ServiceRegistry{
         super(initialCategories.iterator());
         
         registerStandardSpis();
-        //registerApplicationClasspathSpis();
+        registerApplicationClasspathSpis();
     }
 
     /**

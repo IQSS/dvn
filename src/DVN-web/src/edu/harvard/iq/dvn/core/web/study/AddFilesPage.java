@@ -73,6 +73,7 @@ import edu.harvard.iq.dvn.core.util.StringUtil;
 //import edu.harvard.iq.dvn.ingest.org.thedata.statdataio.metadata.*;
 import edu.harvard.iq.dvn.ingest.dsb.DSBWrapper;
 import edu.harvard.iq.dvn.core.study.TabularDataFile;
+import edu.harvard.iq.dvn.core.study.SpecialOtherFile; 
 import javax.faces.bean.ViewScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -822,7 +823,7 @@ public class AddFilesPage extends VDCBaseBean implements java.io.Serializable {
     
     public boolean isEmailRequested() {
         for (StudyFileEditBean fileBean : fileList) {
-            if (fileBean.getStudyFile().isSubsettable()) {
+            if (fileBean.getStudyFile().isSubsettable() || (fileBean.getStudyFile() instanceof SpecialOtherFile) ) {
                 return true;
             }
         }

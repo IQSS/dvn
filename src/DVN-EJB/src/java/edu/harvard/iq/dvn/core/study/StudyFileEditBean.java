@@ -75,7 +75,7 @@ public class StudyFileEditBean implements Serializable {
         dbgLog.fine("reached before studyFile constructor");
 
         String fileType = FileUtil.determineFileType(file);
-        dbgLog.fine("return from FileUtil.determineFileType(file), fileType="+fileType);
+        dbgLog.info("return from FileUtil.determineFileType(file), fileType="+fileType);
 
         // boolean asOtherMaterial flag is to force uploading a potentially
         // subsettable file as a non-subsettable ("Other Material") data file. 

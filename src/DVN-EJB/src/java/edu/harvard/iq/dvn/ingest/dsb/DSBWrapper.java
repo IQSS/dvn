@@ -62,6 +62,8 @@ import java.nio.channels.FileChannel;
 import javax.ejb.EJB;
 import javax.ejb.EJBException;
 import javax.ejb.Stateless;
+import javax.naming.Context;
+import javax.naming.InitialContext;
 
 import java.util.logging.Logger;
 
@@ -69,9 +71,11 @@ import java.util.logging.Logger;
  *
  * @author gdurand
  */
-@Stateless
+//@Stateless
+@EJB(name="studyField", beanInterface=edu.harvard.iq.dvn.core.study.StudyFieldServiceLocal.class)
 public class DSBWrapper implements java.io.Serializable  {
-    @EJB StudyFieldServiceLocal fieldService;
+    //@EJB 
+    StudyFieldServiceLocal studyFieldService;
     
     private static Logger dbgLog = Logger.getLogger(DSBWrapper.class.getPackage().getName());
     private HttpClient client = null;
@@ -475,32 +479,65 @@ public class DSBWrapper implements java.io.Serializable  {
             
             // Check if the field doesn't exist yet:
             
-            FileMetadataField fileMetaField = null; // look up
+            try {
+                Context ctx = new InitialContext();
+                studyFieldService = (StudyFieldServiceLocal) ctx.lookup("java:comp/env/studyField"); 
+            } catch (Exception ex) {
+                dbgLog.info("Caught an exception looking up StudyField Service; "+ex.getMessage());
+            }
+            if (studyFieldService == null) {
+                dbgLog.warning("No StudyField Service; exiting file-level metadata ingest.");
+                return; 
+            }
+            
+            dbgLog.fine("Looking up file meta field "+mKey+", file format "+fileFormatName);
+            FileMetadataField fileMetaField = studyFieldService.findFileMetadataFieldByNameAndFormat(mKey, fileFormatName);
             
             if (fileMetaField == null) {
-                fileMetaField = new FileMetadataField();
-                fileMetaField.setName(mKey);
+                fileMetaField = studyFieldService.createFileMetadataField(mKey, fileFormatName); 
+                
+                if (fileMetaField == null) {
+                    dbgLog.warning("Failed to create a new File Metadata Field; skipping.");
+                    continue; 
+                }
                 // TODO: provide descriptions and labels:
                 fileMetaField.setDescription(mKey);
                 fileMetaField.setTitle(mKey); 
-                fileMetaField.setFileFormatName(fileFormatName);
+                
+                dbgLog.fine("Created file meta field "+mKey); 
             }
             
-            String fieldValueText = "";
+            String fieldValueText = null;
             
             if (mValues != null) {
                 for (String mValue : mValues) {
                     if (mValue != null) {
-                        fieldValueText = fieldValueText.concat(mValue);               
+                        if (fieldValueText == null) {
+                            fieldValueText = mValue;
+                        } else {
+                            fieldValueText = fieldValueText.concat("".concat(mValue)); 
+                        }
                     } 
                 }   
             }
             
+            FileMetadataFieldValue fileMetaFieldValue = null; 
+            
             if (!"".equals(fieldValueText)) {
+                dbgLog.fine("Attempting to create a file meta value for study file "+studyFile.getId()+", value "+fieldValueText);
                 if (studyFile != null) {
-                    FileMetadataFieldValue fileMetaFieldValue =
+                    fileMetaFieldValue =
                             new FileMetadataFieldValue(fileMetaField, studyFile, fieldValueText);
                 }
+            }
+            if (fileMetaFieldValue == null) {
+                dbgLog.warning ("Failed to create a new File Metadata Field value; skipping");
+                continue;
+            } else {
+                if (studyFile.getFileMetadataFieldValues() == null) {
+                    studyFile.setFileMetadataFieldValues(new ArrayList<FileMetadataFieldValue>());
+                }
+                studyFile.getFileMetadataFieldValues().add(fileMetaFieldValue);
             }
         }
     }

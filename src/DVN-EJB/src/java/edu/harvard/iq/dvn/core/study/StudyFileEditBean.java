@@ -83,7 +83,9 @@ public class StudyFileEditBean implements Serializable {
         if (!asOtherMaterial && (
                 fileType.equals("application/x-stata") ||
                 fileType.equals("application/x-spss-por") ||
-                fileType.equals("application/x-spss-sav") ) ) {
+                fileType.equals("application/x-spss-sav") ||
+                fileType.equals("application/x-rlang-transport")
+                ) ) {
             dbgLog.fine("tablularFile");
             this.studyFile = new TabularDataFile(); // do not yet attach to study, as it has to be ingested
         } else if (!asOtherMaterial && fileType.equals("text/xml-graphml")) {

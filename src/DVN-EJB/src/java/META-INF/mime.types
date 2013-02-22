@@ -37,3 +37,5 @@ image/x-xwindowdump xwd XWD
 application/zip zip ZIP
 application/x-gzip gz GZ
 application/x-tar tar TAR
+# Rdata
+application/octet-stream

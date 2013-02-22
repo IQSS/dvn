@@ -1,5 +1,5 @@
 /*
-   Copyright (C) 2005-2012, by the President and Fellows of Harvard College.
+   Copyright (C) 2005-2013, by the President and Fellows of Harvard College.
 
    Licensed under the Apache License, Version 2.0 (the "License");
    you may not use this file except in compliance with the License.
@@ -20,13 +20,10 @@
 
 package edu.harvard.iq.dvn.ingest.statdataio.impl.plugins.rdata;
 
-/* DOCUMENTATION
- * 
- * 
- * 
+/*
+ * @author Matt Owen
+ * @date 02-20-2013
  */
-
-// The usual java stuff
 import java.io.*;
 import java.text.*;
 import java.util.logging.*;
@@ -46,18 +43,19 @@ import edu.harvard.iq.dvn.ingest.org.thedata.statdataio.*;
 import edu.harvard.iq.dvn.ingest.org.thedata.statdataio.spi.*;
 import edu.harvard.iq.dvn.ingest.org.thedata.statdataio.metadata.*;
 import edu.harvard.iq.dvn.ingest.org.thedata.statdataio.data.*;
-import edu.harvard.iq.dvn.ingest.statdataio.impl.plugins.util.CSVFileReader;
-import edu.harvard.iq.dvn.unf.*;
+import edu.harvard.iq.dvn.ingest.statdataio.impl.plugins.util.*;
 import edu.harvard.iq.dvn.rserve.*;
-import org.apache.commons.io.FileUtils;
-import org.apache.commons.lang.RandomStringUtils;
+import edu.harvard.iq.dvn.unf.*;
+import edu.harvard.iq.dvn.unf.UNF5Util;
 
+import org.apache.commons.lang.RandomStringUtils;
+import org.apache.commons.lang.ArrayUtils;
 /**
  * A DVN-Project-implementation of <code>StatDataFileReader</code> for the 
  * RData Binary Format.
  * 
  * @author Matthew Owen
- * @date 11-24-2012
+ * @date 02-11-2012
  *
  * This implementation uses R-Scripts to do the bulk of the processing.
  * @note The code is primarily based on the SAV and CSV file readers.
@@ -81,19 +79,13 @@ public class RDATAFileReader extends StatDataFileReader {
   static private String RSCRIPT_GET_LABELS = "";
   static private String RSCRIPT_DATASET_INFO_SCRIPT = "";
   static private String RSCRIPT_GET_DATASET = "";
+  static private String RSCRIPT_GET_DATAYPES = "";
   
   // RServe static variables
   private static String RSERVE_HOST = System.getProperty("vdc.dsb.host");
   private static String RSERVE_USER = System.getProperty("vdc.dsb.rserve.user");
   private static String RSERVE_PASSWORD = System.getProperty("vdc.dsb.rserve.pwrd");
   private static int RSERVE_PORT;
-  
-  // DSB
-  public static int DSB_PORT;
-
-  
-  //</editor-fold>
-  // Temporary directory
   
   public static String TEMP_DIR = System.getProperty("java.io.tmpdir");
   public static String DSB_TEMP_DIR = System.getProperty("vdc.dsb.temp.dir");
@@ -107,7 +99,7 @@ public class RDATAFileReader extends StatDataFileReader {
   private SimpleDateFormat sdf_hms    = new SimpleDateFormat("HH:mm:ss");
 
   // Logger
-  private static Logger LOG = Logger.getLogger(RDATAFileReader.class.getPackage().getName());
+  private static final Logger LOG = Logger.getLogger(RDATAFileReader.class.getPackage().getName());
   
   // Directories
   private File mTempDir, mTempWebDir, mTempDvnDir, mTempDsbDir;
@@ -127,6 +119,7 @@ public class RDATAFileReader extends StatDataFileReader {
   private int mCaseQuantity = 0;
   private int mVarQuantity = 0;
   private char mDelimiterChar;
+  private String [] mDataTypes;
   
   private String mPID;
   private RWorkspace mRWorkspace;
@@ -138,342 +131,14 @@ public class RDATAFileReader extends StatDataFileReader {
 
   SDIOMetadata smd = new RDATAMetadata();
   
-  DataTable csvData = null;
+  DataTable mCsvDataTable = null;
   SDIOData sdiodata = null;
 
   NumberFormat doubleNumberFormatter = new DecimalFormat();
 
   private RRequestBuilder mRequestBuilder;
 
-  /*
-   * Initialize Static Variables
-   * This is primarily to construct the R-Script
-   */
-  static {
     
-    /*
-     * Set defaults fallbacks for class properties
-     */
-    
-    // RSERVE
-    if (RSERVE_HOST == null)
-      RSERVE_HOST = "vdc-build.hmdc.harvard.edu";
-
-    if (RSERVE_USER == null)
-      RSERVE_USER = "rserve";
-
-    if (RSERVE_PASSWORD == null)
-      RSERVE_PASSWORD = "rserve";
-
-    if (System.getProperty("vdc.dsb.rserve.port") == null)
-      RSERVE_PORT = 6311;
-    else
-      RSERVE_PORT = Integer.parseInt(System.getProperty("vdc.dsb.rserve.port"));
-
-    // DSB
-    if (System.getProperty("vdc.dsb.port") == null)
-      DSB_PORT = 80;
-    else
-      DSB_PORT = Integer.parseInt(System.getProperty("vdc.dsb.port"));
-    
-    /*
-     * Build the Rscripts to execute.
-     * Potentially this can be improved by keeping the script file as a separate
-     * entity in the source code.
-     */
-    StringBuilder scriptBuilder = new StringBuilder();
-
-    /*
-     * Create Rscript to compute UNF
-     */
-    
-    // R Script to create temporary directories
-    RSCRIPT_CREATE_WORKSPACE = new StringBuilder("")
-            .append("directories <- list()\n")
-            .append("directories$parent <- tempfile('DvnRWorkspace')\n")
-            .append("directories$web <- file.path(directories$parent, 'web')\n")
-            .append("directories$dvn <- file.path(directories$parent, 'dvn')\n")
-            .append("directories$dsb <- file.path(directories$parent, 'dsb')\n")
-            .append("created <- list()\n")
-            .append("for (key in names(directories)) {\n")
-            .append("  dir.name <- directories[[key]]\n")
-            .append("  if (dir.create(dir.name))\n")
-            .append("    created[[key]] <- dir.name\n")
-            .append("}\n")
-            .append("created")
-            .toString();
-    
-    RSCRIPT_GET_DATASET =
-      "available.data.frames <- ls()\n" +
-      "available.data.frames <- Filter(function (y) is.data.frame(get(y)), available.data.frames)\n" +
-      "data.set <- available.data.frames[[1]]\n" +
-      "data.set <- get(data.set)\n";
-    
-    RSCRIPT_GET_LABELS =
-      "available.data.frames <- ls()\n" +
-      "available.data.frames <- Filter(function (y) is.data.frame(get(y)), available.data.frames)\n" +
-      "data.set <- available.data.frames[[1]]\n" +
-      "data.set <- get(data.set)\n" +
-      "colnames(data.set)\n";
-    
-    RSCRIPT_DATASET_INFO_SCRIPT = 
-      "list(varNames = colnames(data.set), caseQnty = nrow(data.set))";
-   }
-  /**
-   * Constructs a <code>RDATAFileReader</code> instance from its "Spi" Class
-   * @param originator a <code>StatDataFileReaderSpi</code> object.
-   */
-  public RDATAFileReader(StatDataFileReaderSpi originator) {
-
-    super(originator);
-
-    LOG.info("RDATAFileReader: INSIDE RDATAFileReader");
-
-    init();
-
-    // Create request builder.
-    // This object is used throughout as an RRequest factory
-    mRequestBuilder = new RRequestBuilder()
-            .host(RSERVE_HOST)
-            .port(RSERVE_PORT)
-            .user(RSERVE_USER)
-            .password(RSERVE_PASSWORD);
-    
-    // Create R Workspace
-    mRWorkspace = new RWorkspace();
-    
-    // 
-    mPID = RandomStringUtils.randomNumeric(6);
-  }
-
-  private void init(){
-    doubleNumberFormatter.setGroupingUsed(false);
-    doubleNumberFormatter.setMaximumFractionDigits(340);
-  }
-  /**
-   * Read the Given RData File
-   * @param stream a <code>BufferedInputStream</code>.
-   * @param ignored
-   * @return an <code>SDIOData</code> object
-   * @throws java.io.IOException if a reading error occurs.
-   */
-  @Override
-  public SDIOData read (BufferedInputStream stream, File dataFile) throws IOException {
-    
-    // Create Request object
-    LOG.info("RDATAFileReader: Creating RRequest object from RRequestBuilder object");
-    
-    // Create R Workspace
-    mRWorkspace.stream(stream);
-    mRWorkspace.create();
-    mRWorkspace.saveRdataFile();
-    mRWorkspace.saveCsvFile();
-    
-    // Copy CSV file to a local, temporary directory
-    File localCsvFile = copyBackCsvFile(mRWorkspace.mCsvDataFile);
-    
-    CSVFileReader csvFileReader = new CSVFileReader('\t');
-    BufferedReader localBufferedReader = new BufferedReader(new InputStreamReader(new FileInputStream(localCsvFile)));
-    
-    // int lineCount = csvFileReader.read(localBufferedReader, smd, null);
-    File tabFiledestination = File.createTempFile("data-", ".tab");
-    PrintWriter tabFileWriter = new PrintWriter(tabFiledestination.getAbsolutePath());
-
-        
-    // Get basic information about data set
-    putFileInformation();
-    
-    // Use CSVFileReader
-    int lineCount = csvFileReader.read(localBufferedReader, smd, tabFileWriter);
-
-    // Create a data table in local memory
-    // createDataTable();
-    
-    // Destroy R workspace
-    mRWorkspace.destroy();
-    
-    return null;
-  }
-  /**
-   * Copy Remote File on R-server to a Local Target
-   * @param target
-   * @return 
-   */
-  private File copyBackCsvFile (File target) {
-    File destination;
-    FileOutputStream csvDestinationStream;
-    
-    try {
-      destination = File.createTempFile("data", ".csv");
-      LOG.info(String.format("RDATAFileReader: Writing local CSV File to `%s`", destination.getAbsolutePath()));
-      csvDestinationStream = new FileOutputStream(destination);
-    }
-    catch (IOException ex) {
-      LOG.warning("RDATAFileReader: Could not create temporary file!");
-      return null;
-    }
-    
-    try {
-      // Open connection to R-serve
-      RConnection rServeConnection = new RConnection(RSERVE_HOST, RSERVE_PORT);
-      rServeConnection.login(RSERVE_USER, RSERVE_PASSWORD);
-      
-      // Open file for reading from R-serve
-      RFileInputStream rServeInputStream = rServeConnection.openFile(target.getAbsolutePath());
-      
-      // Buffer char
-      int b;
-      
-      LOG.info("RDATAFileReader: Beginning to write to local destination file");
-      
-      // Read from stream one character at a time
-      while ((b = rServeInputStream.read()) != -1) {
-        csvDestinationStream.write(b);
-      }
-      
-      LOG.info(String.format("RDATAFileReader: Finished writing to destination at `%s`", target.getAbsolutePath()));
-      
-      LOG.info("RDATAFileReader: Closing CSVFileReader R Connection");
-      rServeConnection.close();
-    }
-    /*
-     * TO DO: Make this error catching more intelligent
-     */
-    catch (Exception ex) {
-    }
-    
-    return destination;
-  }
-  /**
-   * Create Data Table
-   */
-  private void createDataTable () {
-    mDataTable2 = new Object[mVarQuantity][mCaseQuantity];
-    mMetaTable = new String[mVarQuantity];
-    
-    
-    REXP r;
-
-    String fileInfoScript = new StringBuilder("")
-        .append(String.format("load(\"%s\")\n", mRWorkspace.getRdataAbsolutePath()))
-        .append(RSCRIPT_GET_DATASET)
-        .append("\n")
-        .append("data.set")
-        .toString();
-    
-    try {
-      RRequest request = mRequestBuilder.build();
-      request.script(fileInfoScript);
-      
-      RList result = request.eval().asList();
-      
-      int colNumber = 0;
-      for (String key : result.keys()) {
-        REXP col = result.at(key);
-                
-        if (col.isInteger()) {
-          int [] column = col.asIntegers();
-          for (int k = 0; k < column.length; k++) {
-            mDataTable2[colNumber][k] = Integer.valueOf(column[k]);
-          }
-        }
-        
-      }
-    }
-    catch (Exception ex) {
-      ex.printStackTrace();
-    }
-  }
-  /**
-   * Set Information About the Data Set
-   */
-  private void setDataInformation () {
-    String script = new StringBuilder("")
-            .append(String.format("load(\"%s\")\n", mRWorkspace.getRdataAbsolutePath()))
-            .append(RSCRIPT_GET_LABELS)
-            .toString();
-    
-    RRequest req = mRequestBuilder.build();
-    REXP result = req.script(script).eval();
-    
-    Map <String, String> variableLabels;
-    
-    try {
-      for (String key : result.asStrings())
-        LOG.info("1");
-    }
-    catch (REXPMismatchException ex) {
-    }
-    
-    smd.setVariableLabel(commandStrings);
-  }
-  /**
-   * Create an Output Writer
-   * @returnthe output writer
-   * @throws IOException if something bad happens?
-   */
-  private void putFileInformation () {
-    String parentDirectory = mRWorkspace.getRdataFile().getParent();
-    File tabFile = new File(parentDirectory, "data.tab");
-    File unfFile = new File(parentDirectory, "data.unf"); 
-    
-    String fileInfoScript = new StringBuilder("")
-            .append(String.format("load(\"%s\")\n", mRWorkspace.getRdataAbsolutePath()))
-            .append(String.format("setwd(\"%s\")\n", parentDirectory))
-            .append(RSCRIPT_GET_DATASET)
-            .append(String.format("write.table(data.set, \"%s\", row.names=F, col.names=F, na=\"\", sep=\"\t\", eol=\"\r\n\")\n", tabFile.getAbsolutePath()))
-            .append(RSCRIPT_DATASET_INFO_SCRIPT)
-            .toString();
-    
-    try {
-      RRequest request = mRequestBuilder.build();
-      request.script(fileInfoScript);
-      RList fileInformation = request.eval().asList();
-      
-      int varQnty = 0;
-      String [] variableNames = fileInformation.at("varNames").asStrings();
-      
-      for (String varName : variableNames) {
-        varQnty++;
-      }
-      
-      smd.getFileInformation().put("varQnty", varQnty);
-      smd.getFileInformation().put("caseQnty", fileInformation.at("caseQnty").asInteger());
-      smd.getFileInformation().put("tabDelimitedDataFileLocation", tabFile.getAbsolutePath());
-      
-      mCaseQuantity = fileInformation.at("caseQnty").asInteger();
-      mVarQuantity = varQnty;
-    }
-    catch (REXPMismatchException ex) {
-      LOG.warning("RDATAFileReader: Could not put information correctly");
-    }
-    catch (Exception ex) {
-      ex.printStackTrace();
-      LOG.warning(ex.getMessage());
-    }
-    
-    // smd.getFileInformation().put("compressedData", true);
-    smd.getFileInformation().put("charset", "UTF-8");
-    smd.getFileInformation().put("mimeType", MIME_TYPE[0]);
-    smd.getFileInformation().put("fileFormat", FORMAT_NAMES[0]);
-    smd.getFileInformation().put("varFormat_schema", "RDATA");
-    smd.getFileInformation().put("fileUNF", "");
-  }
-  /**
-   * Return the UNF for a particular column
-   * @noet This should be moved to the script itself.
-   * @param varData ...
-   * @param dateFormats ...
-   * @param variableType
-   * @param Version Number
-   * @param variablePosition index of the variable
-   */
-  private String getUNF(Object[] varData, String[] dateFormats, int variableType, String unfVersionNumber, int variablePosition)
-          throws NumberFormatException, UnfException, IOException, NoSuchAlgorithmException
-  {
-    return "";
-  }
-  
   /**
    * Helper Object to Handle Creation and Destruction of R Workspace
    */
@@ -509,11 +174,8 @@ public class RDATAFileReader extends StatDataFileReader {
         
         LOG.info(String.format("RDATAFileReader: Parent directory of R Workspace is %s", mParent));
         
-        // mWeb = directoryNames.at("web").asString();
-        // mDvn = directoryNames.at("dvn").asString();
-        // mDsb = directoryNames.at("dsb").asString();
-        
         LOG.info("RDATAFileReader: Creating file handle");
+        
         mDataFile = new File(mParent, "data.Rdata");
       }
       catch (Exception E) {
@@ -526,7 +188,7 @@ public class RDATAFileReader extends StatDataFileReader {
      */
     public void destroy () {
       String destroyerScript = new StringBuilder("")
-              .append(String.format("unlink(%s, TRUE, TRUE)", mParent))
+              .append(String.format("unlink(\"%s\", TRUE, TRUE)", mParent))
               .toString();
       
       try {
@@ -542,6 +204,7 @@ public class RDATAFileReader extends StatDataFileReader {
       }
       catch (Exception ex) {
         LOG.warning("RDATAFileReader: R Workspace was not destroyed");
+        LOG.info(ex.getMessage());
       }
     }
     /**
@@ -678,7 +341,7 @@ public class RDATAFileReader extends StatDataFileReader {
         .append(String.format("load(\"%s\")\n", mRWorkspace.getRdataAbsolutePath()))
         .append(RSCRIPT_GET_DATASET)
         .append("\n")
-        .append(String.format("write.table(data.set, file=\"%s\", na=\"\", sep=\",\", eol=\"\r\n\", quote=TRUE, row.names=FALSE, col.names=FALSE)", mCsvDataFile.getAbsolutePath()))
+        .append(String.format("write.table(data.set, file=\"%s\", na=\"\", sep=\"\t\", eol=\"\r\n\", quote=TRUE, row.names=FALSE, col.names=FALSE)", mCsvDataFile.getAbsolutePath()))
         .toString();
     
       RRequest csvRequest = mRequestBuilder.build();
@@ -702,5 +365,639 @@ public class RDATAFileReader extends StatDataFileReader {
     public String getRdataAbsolutePath () {
       return mDataFile.getAbsolutePath();
     }
+  }
+  
+  /*
+   * Initialize Static Variables
+   * This is primarily to construct the R-Script
+   */
+  static {
+    
+    /*
+     * Set defaults fallbacks for class properties
+     */
+    
+    // RSERVE
+    if (RSERVE_HOST == null)
+      RSERVE_HOST = "vdc-build.hmdc.harvard.edu";
+
+    if (RSERVE_USER == null)
+      RSERVE_USER = "rserve";
+
+    if (RSERVE_PASSWORD == null)
+      RSERVE_PASSWORD = "rserve";
+
+    if (System.getProperty("vdc.dsb.rserve.port") == null)
+      RSERVE_PORT = 6311;
+    else
+      RSERVE_PORT = Integer.parseInt(System.getProperty("vdc.dsb.rserve.port"));
+    /*
+     * Build the Rscripts to execute.
+     * Potentially this can be improved by keeping the script file as a separate
+     * entity in the source code.
+     */
+    StringBuilder scriptBuilder = new StringBuilder();
+
+    /*
+     * Create Rscript to compute UNF
+     */
+    
+    // R Script to create temporary directories
+    RSCRIPT_CREATE_WORKSPACE = new StringBuilder("")
+            .append("directories <- list()\n")
+            .append("directories$parent <- tempfile('DvnRWorkspace')\n")
+            .append("directories$web <- file.path(directories$parent, 'web')\n")
+            .append("directories$dvn <- file.path(directories$parent, 'dvn')\n")
+            .append("directories$dsb <- file.path(directories$parent, 'dsb')\n")
+            .append("created <- list()\n")
+            .append("for (key in names(directories)) {\n")
+            .append("  dir.name <- directories[[key]]\n")
+            .append("  if (dir.create(dir.name))\n")
+            .append("    created[[key]] <- dir.name\n")
+            .append("}\n")
+            .append("created")
+            .toString();
+    
+    RSCRIPT_GET_DATASET =
+      "available.data.frames <- ls()\n" +
+      "available.data.frames <- Filter(function (y) is.data.frame(get(y)), available.data.frames)\n" +
+      "data.set <- available.data.frames[[1]]\n" +
+      "data.set <- get(data.set)\n";
+    
+    RSCRIPT_GET_LABELS =
+      "available.data.frames <- ls()\n" +
+      "available.data.frames <- Filter(function (y) is.data.frame(get(y)), available.data.frames)\n" +
+      "data.set <- available.data.frames[[1]]\n" +
+      "data.set <- get(data.set)\n" +
+      "colnames(data.set)\n";
+    
+    RSCRIPT_DATASET_INFO_SCRIPT = 
+      "types <- c();" +
+      "for (col in colnames(data.set)) { " +
+      "  types <- c(types, class(data.set[, col]));" +
+      "};" +
+      "list(varNames = colnames(data.set), caseQnty = nrow(data.set), dataTypes = types)";
+   }
+  /**
+   * Constructs a <code>RDATAFileReader</code> instance from its "Spi" Class
+   * @param originator a <code>StatDataFileReaderSpi</code> object.
+   */
+  public RDATAFileReader(StatDataFileReaderSpi originator) {
+
+    super(originator);
+
+    LOG.info("RDATAFileReader: INSIDE RDATAFileReader");
+
+    init();
+
+    // Create request builder.
+    // This object is used throughout as an RRequest factory
+    mRequestBuilder = new RRequestBuilder()
+            .host(RSERVE_HOST)
+            .port(RSERVE_PORT)
+            .user(RSERVE_USER)
+            .password(RSERVE_PASSWORD);
+    
+    // Create R Workspace
+    mRWorkspace = new RWorkspace();
+    
+    // 
+    mCsvDataTable = new DataTable();
+    
+    // 
+    mPID = RandomStringUtils.randomNumeric(6);
+  }
+
+  private void init(){
+    doubleNumberFormatter.setGroupingUsed(false);
+    doubleNumberFormatter.setMaximumFractionDigits(340);
+  }
+  /**
+   * Read the Given RData File
+   * @param stream a <code>BufferedInputStream</code>.
+   * @param ignored
+   * @return an <code>SDIOData</code> object
+   * @throws java.io.IOException if a reading error occurs.
+   */
+  @Override
+  public SDIOData read (BufferedInputStream stream, File dataFile) throws IOException {
+    
+    // Create Request object
+    LOG.info("RDATAFileReader: Creating RRequest object from RRequestBuilder object");
+    
+    // Create R Workspace
+    mRWorkspace.stream(stream);
+    mRWorkspace.create();
+    mRWorkspace.saveRdataFile();
+    mRWorkspace.saveCsvFile();
+    
+    // Copy CSV file to a local, temporary directory
+    // Additionally, this sets the "tabDelimitedDataFile" property of the FileInformation
+    File localCsvFile = copyBackCsvFile(mRWorkspace.mCsvDataFile);
+    
+    // Save basic information about data set
+    putFileInformation();
+    
+    CSVFileReader csvFileReader = new CSVFileReader('\t');
+    BufferedReader localBufferedReader = new BufferedReader(new InputStreamReader(new FileInputStream(localCsvFile)));
+    
+    // int lineCount = csvFileReader.read(localBufferedReader, smd, null);
+    File tabFileDestination = File.createTempFile("data-", ".tab");
+    PrintWriter tabFileWriter = new PrintWriter(tabFileDestination.getAbsolutePath());
+    
+    // Additionally, this outputs to the tab-delimited file
+    int lineCount = csvFileReader.read(localBufferedReader, smd, tabFileWriter);
+    
+    // File Data Table
+    mCsvDataTable = readTabDataFile(tabFileDestination);
+
+    // Create UNF for each column
+    createUNF(mCsvDataTable);
+    
+    // Initialize vartiable type list
+    
+    
+
+    
+    //
+    LOG.info("RDATAFileReader: varQnty = " + mVarQuantity);
+    LOG.info("RDATAFileReader: Leaving \"read\" function");
+
+    // Destroy R workspace
+    mRWorkspace.destroy();
+    
+    // Return data properly stored
+    return new SDIOData(smd, mCsvDataTable);
+  }
+  /**
+   * Copy Remote File on R-server to a Local Target
+   * @param target a target on the remote r-server
+   * @return 
+   */
+  private File copyBackCsvFile (File target) {
+    File destination;
+    FileOutputStream csvDestinationStream;
+    
+    try {
+      destination = File.createTempFile("data", ".csv");
+      LOG.info(String.format("RDATAFileReader: Writing local CSV File to `%s`", destination.getAbsolutePath()));
+      csvDestinationStream = new FileOutputStream(destination);
+    }
+    catch (IOException ex) {
+      LOG.warning("RDATAFileReader: Could not create temporary file!");
+      return null;
+    }
+    
+    try {
+      // Open connection to R-serve
+      RConnection rServeConnection = new RConnection(RSERVE_HOST, RSERVE_PORT);
+      rServeConnection.login(RSERVE_USER, RSERVE_PASSWORD);
+      
+      // Open file for reading from R-serve
+      RFileInputStream rServeInputStream = rServeConnection.openFile(target.getAbsolutePath());
+      
+      int b;
+      
+      LOG.info("RDATAFileReader: Beginning to write to local destination file");
+      
+      // Read from stream one character at a time
+      while ((b = rServeInputStream.read()) != -1) {
+        // Write to the *local* destination file
+        csvDestinationStream.write(b);
+      }
+      
+      LOG.info(String.format("RDATAFileReader: Finished writing from destination `%s`", target.getAbsolutePath()));
+      LOG.info(String.format("RDATAFileReader: Finished copying to source `%s`", destination.getAbsolutePath()));
+      
+      smd.getFileInformation().put("tabDelimitedDataFileLocation", destination.getAbsolutePath());
+      
+      LOG.info("RDATAFileReader: Closing CSVFileReader R Connection");
+      rServeConnection.close();
+    }
+    /*
+     * TO DO: Make this error catching more intelligent
+     */
+    catch (Exception ex) {
+    }
+    
+    return destination;
+  }
+  /**
+   * Create an Output Writer
+   * @returnthe output writer
+   * @throws IOException if something bad happens?
+   */
+  private void putFileInformation () {
+    LOG.info("RDATAFileReader: Entering `putFileInformation` function");
+    
+    // Store variable names
+    String [] variableNames = { };
+    
+    String parentDirectory = mRWorkspace.getRdataFile().getParent();
+    
+    String fileInfoScript = new StringBuilder("")
+            .append(String.format("load(\"%s\")\n", mRWorkspace.getRdataAbsolutePath()))
+            .append(String.format("setwd(\"%s\")\n", parentDirectory))
+            .append(RSCRIPT_GET_DATASET)
+            .append("\n")
+            .append(RSCRIPT_DATASET_INFO_SCRIPT)
+            .toString();
+    
+    Map <String, String> variableLabels = new LinkedHashMap <String, String> ();
+    
+    try {
+      RRequest request = mRequestBuilder.build();
+      request.script(fileInfoScript);
+      LOG.warning("<<<");
+      RList fileInformation = request.eval().asList();
+      
+      int varQnty = 0;
+      variableNames = fileInformation.at("varNames").asStrings();
+      
+      mDataTypes = fileInformation.at("dataTypes").asStrings();
+      
+      for (String varName : variableNames) {
+        variableLabels.put(varName, varName);
+        variableNameList.add(varName);
+        
+        varQnty++;
+      }
+      
+      mCaseQuantity = fileInformation.at("caseQnty").asInteger();
+      mVarQuantity = varQnty;
+
+      smd.getFileInformation().put("varQnty", mVarQuantity);
+      smd.getFileInformation().put("caseQnty", mCaseQuantity);
+    }
+    catch (REXPMismatchException ex) {
+      LOG.warning("RDATAFileReader: Could not put information correctly");
+    }
+    catch (Exception ex) {
+      ex.printStackTrace();
+      LOG.warning(ex.getMessage());
+    }
+    
+    // smd.getFileInformation().put("compressedData", true);
+    smd.getFileInformation().put("charset", "UTF-8");
+    smd.getFileInformation().put("mimeType", MIME_TYPE[0]);
+    smd.getFileInformation().put("fileFormat", FORMAT_NAMES[0]);
+    smd.getFileInformation().put("varFormat_schema", "RDATA");
+    smd.getFileInformation().put("fileUNF", "");
+    
+    // Variable names
+    smd.setVariableLabel(variableLabels);
+    smd.setVariableName(variableNames);
+  }
+  /**
+   * Get a DataTable from a Tabular Data File
+   * @note This method is taken from SPSSFileReader "readTabDataFile"
+   * @param tabDataFile a File object representing the location of the tab data file
+   * @return 
+   * @throws IOException 
+   */
+  private DataTable getDataTableFromTabFile (File tabDataFile) throws IOException {
+    DataTable tabData = new DataTable();
+    Object[][] dataTable = null;
+    dataTable = new Object[mVarQuantity][mCaseQuantity];
+
+    String tabFileName = tabDataFile.getAbsolutePath();
+    BufferedReader tabFileReader = new BufferedReader(new InputStreamReader(new FileInputStream(tabFileName)));
+
+    // !!!!
+    boolean[] isCharacterVariable = smd.isStringVariable();
+
+    // VALUE TOKENS
+    String[] valueTokens = new String[mVarQuantity];
+
+    // Go through each case
+    for (int j=0; j < mCaseQuantity; j++ ) {
+      // Read a new line
+      String line = tabFileReader.readLine();
+
+      // If something is wrong, we throw an error.
+      if (line == null)
+        throw new IOException(String.format("Failed to read %d lines from tabular data file `%s`", mCaseQuantity, tabFileName));
+
+      // Split the line into an array
+      valueTokens = line.split("\t", mVarQuantity);
+      
+      if (valueTokens.length != mVarQuantity)
+        throw new IOException(String.format("Failed to read %d columns from the tabular data file `%s`", mVarQuantity, tabFileName));
+
+      // Iterate through columns
+      for (int i=0; i < valueTokens.length; i++ ) {
+        if (isCharacterVariable[i]) {
+          valueTokens[i] = valueTokens[i].replaceFirst("^\"", "");
+          valueTokens[i] = valueTokens[i].replaceFirst("\"$", "");
+          dataTable[i][j] = valueTokens[i];
+        }
+        else
+          dataTable[i][j] = valueTokens[i];
+      }
+    }
+
+    tabFileReader.close();
+    tabData.setData(dataTable);
+
+    return tabData;
+  }
+  /**
+   * Parse an array of objects into a UNF
+   * @param varData
+   * @return a string representing the UNF of the column of data
+   */
+  private String parseUnfAsString (Object [] varData, String [] dateFormats, int variablePosition) {
+    LOG.info("UnfHelper: Parsing column of data as string");
+
+    // Copy over string
+    // String [] stringData = Arrays.copyOf(varData, varData.length, String[].class);
+    String [] stringData = Arrays.asList(varData).toArray(new String[varData.length]);
+
+    // Result String for UNF
+    String unfValue = "";
+
+    // Categ
+    Map <String, Integer> categoryStatistics;
+//
+    try {
+      unfValue =
+              dateFormats == null
+              ? UNF5Util.calculateUNF(stringData)
+              : UNF5Util.calculateUNF(stringData, dateFormats);
+    }
+    catch (IOException ex) {
+      LOG.warning(String.format("RDATAFileReader: Could not calculate UNF of column ", variablePosition));
+    }
+    
+    // Add
+    smd.getSummaryStatisticsTable().put(variablePosition, StatHelper.calculateSummaryStatistics(stringData));
+
+    // Category Statistics
+    categoryStatistics = StatHelper.calculateCategoryStatistics(stringData);
+    smd.getCategoryStatisticsTable().put(variableNameList.get(variablePosition), categoryStatistics);
+    
+    LOG.info(String.format("UNF[%d] = %s", variablePosition, unfValue));
+
+    return unfValue;
+  }
+  /**
+   * Parse an Array of Objects into an Integer UNF
+   * @param varData
+   * @return 
+   */
+  static private String parseUnfAsInteger (Object [] varData, int variablePosition) {
+    return "";
+  }
+  /**
+   * Parse an Array of Objects into a Double UNF
+   * @param varData
+   * @return 
+   */
+  static private String parseUnfAsDouble (Object [] varData, int variablePosition) {
+    return "";
+  }
+  
+  
+  /**
+   * Read a Tabular Data File and create a "DataTable" Object
+   * @param tabFile a File object specifying the location of tabular data
+   * @return a "DataTable" object representing the 
+   * @throws IOException 
+   */
+  private DataTable readTabDataFile (File tabFile) throws IOException {
+    DataTable tabData = new DataTable();
+    Object[][] dataTable = null;
+    
+    dataTable = new Object[mVarQuantity][mCaseQuantity];
+
+    String tabFileName = (String) smd.getFileInformation().get("tabDelimitedDataFileLocation");
+    
+    LOG.info("{{{");
+    LOG.info("tabFileName = " + tabFileName);
+    LOG.info("tabFile.getAbsolute()" + tabFile.getAbsolutePath());
+    LOG.info("}}}");
+    
+    BufferedReader tabFileReader = new BufferedReader(new InputStreamReader(new FileInputStream(tabFileName)));
+
+    boolean[] isCharacterVariable = smd.isStringVariable();
+
+    String[] valueTokens = new String[mVarQuantity];
+
+    for (int j = 0; j < mCaseQuantity; j++) {
+      String line = tabFileReader.readLine();
+      
+      if (line == null) {
+        String msg = String.format("Failed to read %d lines from tabular data file \"%s\"", mCaseQuantity, tabFileName);
+        throw new IOException(msg);
+      }
+      
+      valueTokens = line.split("\t", mVarQuantity);
+
+      for ( int i = 0; i < mVarQuantity; i++ ) {
+        if (isCharacterVariable[i]) {
+          valueTokens[i] = valueTokens[i].replaceFirst("^\"", "");
+          valueTokens[i] = valueTokens[i].replaceFirst("\"$", "");
+          dataTable[i][j] = valueTokens[i];
+        }
+        else {
+          dataTable[i][j] = valueTokens[i];
+        }
+       
+        // LOG.info("(" + i + ", " + j + ") = " + dataTable[i][j]);
+      }
+    }
+
+    tabFileReader.close();
+    tabData.setData(dataTable);
+    
+    return tabData;
+  }
+  
+  private boolean isDateValue (String value) {
+    
+    if (!isStringValue(value))
+      return false;
+    
+    return false;
+  }
+  
+  private boolean isStringValue (String value) {
+    return value.startsWith("\"") && value.endsWith("\"");
+  }
+  
+  /**
+   * Get Variable Type List
+   * 
+   * Categorize the columns of a data-set according to data-type. Returns a list
+   * of integers corresponding to: (-1) String (0) Integer (1) Double-precision.
+   * The numbers do not directly correspond with anything used by UNF5Util,
+   * however this convention is seen throughout the DVN data-file readers.
+   * 
+   * This function essentially matches R data-types with those understood by
+   * DVN:
+   * * integer => "Integer"
+   * * numeric (non-integer), double => "Double"
+   * * Date => "Date"
+   * * Other => "String"
+   * 
+   * @param dataTypes an array of strings where index corresponds to data-set
+   * column and string corresponds to the class of the R-object.
+   * @return 
+   */
+  private List<Integer> getVariableTypeList (String[] dataTypes) {
+    List<Integer> variableTypeList = new ArrayList<Integer>();
+    
+    for (String type : dataTypes) {
+      // Convention is that integer is zero, right?
+      if (type.equals("integer"))
+        variableTypeList.add(0);
+
+      // Double-precision data-types
+      else if (type.equals("numeric") || type.equals("double"))
+        variableTypeList.add(1);
+
+      // Everything else is a string
+      else
+        variableTypeList.add(-1);
+    }
+    
+    // Return the variable type list
+    return variableTypeList;
+  }
+  
+  /**
+   * Create the
+   * @return 
+   */
+  private String[] getDateFormats (String [] values) {
+    String [] dateFormats = new String[mCaseQuantity];
+    
+    for (int k = 0; k < mCaseQuantity; k++) {
+      
+    }
+    
+    return null;
+  }
+ 
+  /**
+   * Create UNF from Tabular File
+   * This methods iterates through each column of the supplied data table and
+   * invoked the 
+   * @param DataTable table a rectangular data table
+   * @return void
+   */
+  private void createUNF (DataTable table) {
+    List<Integer> variableTypeList = getVariableTypeList(mDataTypes);
+    String[] dateFormats = new String[mCaseQuantity];
+    String[] unfValues = new String[mVarQuantity];
+    String fileUNFvalue = null;
+    
+    // Set variable types
+    smd.setVariableTypeMinimal(ArrayUtils.toPrimitive(variableTypeList.toArray(new Integer[variableTypeList.size()])));
+    
+    for (int k = 0; k < mVarQuantity; k++) {
+      String unfValue, name = variableNameList.get(k);
+      int varType = variableTypeList.get(k);
+      
+      Object [] varData = table.getData()[k];
+      
+      try {
+        switch (varType) {
+          case 0:
+            // Convert array of Strings to array of Longs
+            Long[] integerEntries = new Long[varData.length];
+
+            for (int i = 0; i < varData.length; i++) {
+              try {
+                integerEntries[i] = new Long((String) varData[i]);
+              }
+              catch (Exception ex) {
+                integerEntries[i] = null;
+              }
+            }
+
+            unfValue = UNF5Util.calculateUNF(integerEntries);
+
+            // Summary/category statistics
+            smd.getSummaryStatisticsTable().put(k, ArrayUtils.toObject(StatHelper.calculateSummaryStatistics(integerEntries)));
+            Map <String, Integer> catStat = StatHelper.calculateCategoryStatistics(integerEntries);
+            smd.getCategoryStatisticsTable().put(variableNameList.get(k), catStat);
+
+            break;
+
+          // If double
+          case 1:
+            LOG.info(k + ": " + name + " is double");
+            // Convert array of Strings to array of Doubles
+            Double[]  doubleEntries = new Double[varData.length];
+            
+            for (int i = 0; i < varData.length; i++) {
+              try {
+                doubleEntries[i] = new Double((String) varData[i]);
+              }
+              catch (Exception ex) {
+                doubleEntries[i] = null;
+              }
+            }
+            
+            unfValue = UNF5Util.calculateUNF(doubleEntries);
+            
+            smd.getSummaryStatisticsTable().put(k, ArrayUtils.toObject(StatHelper.calculateSummaryStatisticsContDistSample(doubleEntries)));
+            break;
+            
+          case -1:
+            LOG.info(k + ": " + name + " is string");
+
+            String[] stringEntries = Arrays.asList(varData).toArray(new String[varData.length]);
+            
+            LOG.info("string array passed to calculateUNF: " + Arrays.deepToString(stringEntries));
+            
+            dateFormats = getDateFormats(stringEntries);
+
+            if (dateFormats != null) {
+              for (int i = 0; i < varData.length; i++) {
+                if (dateFormats[i] != null && (stringEntries[i].equals("") || stringEntries[i].equals(" "))) {
+                  stringEntries[i] = null;
+                  dateFormats[i] = null;
+                }
+              }
+              
+              unfValue = UNF5Util.calculateUNF(stringEntries, dateFormats);
+            }
+            else {
+              unfValue = UNF5Util.calculateUNF(stringEntries);
+            }
+
+            LOG.finer("string:unfValue="+unfValue);
+
+            
+            smd.getSummaryStatisticsTable().put(k, StatHelper.calculateSummaryStatistics(stringEntries));
+            Map<String, Integer> StrCatStat = StatHelper.calculateCategoryStatistics(stringEntries);
+            smd.getCategoryStatisticsTable().put(variableNameList.get(k), StrCatStat);
+
+            break;
+            
+          default:
+            unfValue = null;
+        }
+        
+        unfValues[k] = unfValue;
+      }
+      catch (Exception ex) { }
+    }
+    
+    try {
+      fileUNFvalue = UNF5Util.calculateUNF(unfValues);
+    } catch (NumberFormatException ex) {
+      ex.printStackTrace();
+    } catch (IOException ex) {
+      ex.printStackTrace();
+    }
+    
+    mCsvDataTable.setUnf(unfValues);
+    mCsvDataTable.setFileUnf(fileUNFvalue);
+
+    smd.setVariableUNF(unfValues);
+    smd.getFileInformation().put("fileUNF", fileUNFvalue);
   }
 }

@@ -68,6 +68,7 @@ public class FileUtil implements java.io.Serializable  {
         STATISTICAL_SYNTAX_FILE_EXTENSION.put("do",  "x-stata-syntax");
         STATISTICAL_SYNTAX_FILE_EXTENSION.put("sas", "x-sas-syntax");
         STATISTICAL_SYNTAX_FILE_EXTENSION.put("sps", "x-spss-syntax");
+        STATISTICAL_SYNTAX_FILE_EXTENSION.put("rdat", "x-rdata-syntax");
     }
     
     private static MimetypesFileTypeMap MIME_TYPE_MAP = new MimetypesFileTypeMap();

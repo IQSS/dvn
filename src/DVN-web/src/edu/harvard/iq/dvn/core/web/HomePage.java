@@ -40,6 +40,7 @@ import edu.harvard.iq.dvn.core.util.StringUtil;
 import edu.harvard.iq.dvn.core.vdc.*;
 import edu.harvard.iq.dvn.core.web.common.StatusMessage;
 import edu.harvard.iq.dvn.core.web.common.VDCBaseBean;
+import edu.harvard.iq.dvn.core.web.site.VDCUI;
 import edu.harvard.iq.dvn.core.web.study.StudyUI;
 import java.io.Serializable;
 import java.lang.String;
@@ -173,6 +174,8 @@ public class HomePage extends VDCBaseBean implements Serializable {
     //DEBUG -- new way to get at VDCS
     private ArrayList vdcUI;
     private VDCUIList vdcUIList;
+    private VDCUIList vdcUIListDownloaded;
+    private VDCUIList vdcUIListReleased;
 
     public VDCUIList getVdcUIList() {
         return this.vdcUIList;
@@ -321,7 +324,7 @@ public class HomePage extends VDCBaseBean implements Serializable {
         vdcUIList.getVdcUIList();
         vdcUIListSize = new Long(String.valueOf(vdcUIList.getVdcUIList().size()));
     }
-
+    
     
     private ArrayList alphaCharacterList;
     private void initAlphabeticFilter() {
@@ -377,7 +380,7 @@ public class HomePage extends VDCBaseBean implements Serializable {
         //itemBeansSize = list.size();
         Iterator outeriterator = list.iterator();
         while(outeriterator.hasNext()) {
-            classificationsSize++;
+            classificationsSize++;           
             VDCGroup vdcgroup = (VDCGroup)outeriterator.next();
                 String indentStyle = (vdcgroup.getParent() == null) ? "groupRowIndentStyle" : "childRowIndentStyle";
                 if (vdcgroup.getParent() == null) {
@@ -412,7 +415,7 @@ public class HomePage extends VDCBaseBean implements Serializable {
             parentItem.addItem(childItem);
             parentItem.setIsAccordion(true);
             if (vdcGroupService.findByParentId(group.getId()) != null) {
-                List innerlist       = vdcGroupService.findByParentId(group.getId());
+                List innerlist       = vdcGroupService.findByParentId(group.getId());                
                 Iterator inneriterator  = innerlist.iterator();
                 DataverseGrouping xtraItem;
                 childItem.setXtraItems(new ArrayList());
@@ -422,7 +425,7 @@ public class HomePage extends VDCBaseBean implements Serializable {
                     childItem.addXtraItem(xtraItem);
                 }
             }
-         }
+         }        
       }
       
 
@@ -499,6 +502,47 @@ public class HomePage extends VDCBaseBean implements Serializable {
         }
         return mostDownloadedStudies;
     }
+    
+    public List getMostDownloadedDVs(){
+        List mostDownloaded = new ArrayList();
+        if (vdcUIListDownloaded == null){
+           vdcUIListDownloaded = new VDCUIList(groupId, (String)hiddenAlphaCharacter.getValue(), true, "Activity");
+        }
+        if (!vdcUIListDownloaded.getVdcUIList().isEmpty()){
+            int count = 0;
+            Iterator iter = vdcUIListDownloaded.getVdcUIList().iterator();
+            while (iter.hasNext()) {
+                VDCUI vdcUI = (VDCUI) iter.next();
+
+                mostDownloaded.add(vdcUI);
+                if (++count >= 5) {
+                    break;
+                }
+            }           
+        }
+        return mostDownloaded;
+    }
+    
+    public List getMostRecentlyReleasedDVs(){
+        List mostRecentlyReleased = new ArrayList();
+        if (vdcUIListReleased == null){
+           vdcUIListReleased = new VDCUIList(groupId, (String)hiddenAlphaCharacter.getValue(), true, "Activity");
+        }
+        if (!vdcUIListReleased.getVdcUIList().isEmpty()){
+            int count = 0;
+            Iterator iter = vdcUIListReleased.getVdcUIList().iterator();
+            while (iter.hasNext()) {
+                VDCUI vdcUI = (VDCUI) iter.next();
+
+                mostRecentlyReleased.add(vdcUI);
+                if (++count >= 5) {
+                    break;
+                }
+            }           
+        }
+        return mostRecentlyReleased;
+    }
+
 
     private List filterVisibleStudyUIsFromIds(List originalStudies, VDC vdc, VDCUser user, UserGroup ipUserGroup, int numResults) {
         List filteredStudies = new ArrayList();

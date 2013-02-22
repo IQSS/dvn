@@ -424,6 +424,23 @@ public class Indexer implements java.io.Serializable  {
             
             for (FileMetadata fileMetadata : sv.getFileMetadatas()) {
                 addText(1.0f, doc, "fileDescription", fileMetadata.getDescription());
+                
+                StudyFile elem = fileMetadata.getStudyFile();
+                
+                if (elem instanceof SpecialOtherFile) {
+                    List<FileMetadataFieldValue> fileMetadataFieldValues = fileMetadata.getStudyFile().getFileMetadataFieldValues(); 
+                    for (int j = 0; j < fileMetadataFieldValues.size(); j++) {                        
+                        String fieldValue = fileMetadataFieldValues.get(j).getStrValue();
+                        
+                        FileMetadataField fmf = fileMetadataFieldValues.get(j).getFileMetadataField();
+                        String fileMetadataFieldName = fmf.getName(); 
+                        String fileMetadataFieldFormatName = fmf.getFileFormatName(); 
+                        String indexFileName = fileMetadataFieldFormatName + fileMetadataFieldName;
+                        
+                        addText(1.0f, doc, indexFileName, fieldValue); 
+                        
+                    }
+                }
             }
 
             addText(1.0f, doc, "unf", metadata.getUNF());
@@ -432,8 +449,9 @@ public class Indexer implements java.io.Serializable  {
             writer.setUseCompoundFile(true);
             writer.addDocument(doc);
             writer.close();
+            
             writerVar = new IndexWriter(dir, getAnalyzer(), isIndexEmpty(), IndexWriter.MaxFieldLength.UNLIMITED);
-            writerFileMeta = new IndexWriter(dir, getAnalyzer(), isIndexEmpty(), IndexWriter.MaxFieldLength.UNLIMITED);
+            
             
 
             for (FileMetadata fileMetadata : sv.getFileMetadatas()) {
@@ -454,7 +472,20 @@ public class Indexer implements java.io.Serializable  {
                             writerVar.addDocument(docVariables);
                         }
                     }
-                } else if (elem instanceof SpecialOtherFile) {
+                } 
+            }
+            
+            writerVar.close();
+
+            /*
+             * 
+             
+            writerFileMeta = new IndexWriter(dir, getAnalyzer(), isIndexEmpty(), IndexWriter.MaxFieldLength.UNLIMITED);
+            
+            for (FileMetadata fileMetadata : sv.getFileMetadatas()) {
+                //TODO: networkDataFile
+                StudyFile elem = fileMetadata.getStudyFile();
+                if (elem instanceof SpecialOtherFile) {
                     List<FileMetadataFieldValue> fileMetadataFieldValues = fileMetadata.getStudyFile().getFileMetadataFieldValues(); 
                     for (int j = 0; j < fileMetadataFieldValues.size(); j++) {
                         Document docFileMetadata = new Document(); 
@@ -464,21 +495,22 @@ public class Indexer implements java.io.Serializable  {
                         FileMetadataField fmf = fileMetadataFieldValues.get(j).getFileMetadataField();
                         String fileMetadataFieldName = fmf.getName(); 
                         String fileMetadataFieldFormatName = fmf.getFileFormatName(); 
-                        String indexFileName = fileMetadataFieldFormatName + "-" + fileMetadataFieldName;
+                        String indexFileName = fileMetadataFieldFormatName + fileMetadataFieldName;
                         
                         addText(1.0f, docFileMetadata, "studyId", study.getId().toString());
-                        addKeyword(doc, "studyId", study.getId().toString());
-                        addKeyword(doc, "id", study.getId().toString());
+                        addKeyword(docFileMetadata, "studyId", study.getId().toString());
+                        addKeyword(docFileMetadata, "id", study.getId().toString());
                         addText(1.0f, docFileMetadata, "studyFileId", elem.getId().toString());
                         addText(1.0f, docFileMetadata, indexFileName, fieldValue); 
                         
                         writerFileMeta.addDocument(docFileMetadata);
                     }
                 }
-
             }
-            writerVar.close();
+            
             writerFileMeta.close(); 
+            */
+            
             writerVersions = new IndexWriter(dir, new WhitespaceAnalyzer(), isIndexEmpty(), IndexWriter.MaxFieldLength.UNLIMITED);
             for (StudyVersion version : study.getStudyVersions()) {
                 // The current(released) version UNF is indexed in the main document

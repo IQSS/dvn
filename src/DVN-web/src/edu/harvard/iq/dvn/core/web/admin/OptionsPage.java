@@ -1904,7 +1904,7 @@ public class OptionsPage extends VDCBaseBean  implements java.io.Serializable {
             if (vdc != null) {
                 nameFound=true;
             }            
-            if (nameFound & (vdc.getId() != thisVDC.getId())) {
+            if (nameFound & (!vdc.getId().equals(thisVDC.getId()))) {
                 ((UIInput)toValidate).setValid(false);  
                 generalDVSettingsValid = false;
                 FacesMessage message = new FacesMessage("This name is already taken.");
@@ -1931,7 +1931,7 @@ public class OptionsPage extends VDCBaseBean  implements java.io.Serializable {
                 aliasFound = true;
             }
 
-            if (aliasFound && (vdc.getId() != thisVDC.getId())) {
+            if (aliasFound && (!vdc.getId().equals(thisVDC.getId()))) {
                 ((UIInput) toValidate).setValid(false);
                 generalDVSettingsValid = false;
                 FacesMessage message = new FacesMessage("This alias is already taken.");

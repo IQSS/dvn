@@ -359,11 +359,11 @@ public class AdvSearchPage extends VDCBaseBean implements java.io.Serializable {
     
     private UISelectItems dropdownFileMetaSelectItems = new UISelectItems();
 
-    public UISelectItems getDropdownFileMetaSelectItem() {
+    public UISelectItems getDropdownFileMetaSelectItems() {
         return dropdownFileMetaSelectItems;
     }
 
-    public void setDropdownFileMetaSelectItem(UISelectItems uisi) {
+    public void setDropdownFileMetaSelectItems(UISelectItems uisi) {
         this.dropdownFileMetaSelectItems = uisi;
     }
     
@@ -738,10 +738,12 @@ public class AdvSearchPage extends VDCBaseBean implements java.io.Serializable {
             // not using it. 
             
             fields[i] = elem.getFileFormatName()+"-"+elem.getName();
+            String indexName = elem.getFileFormatName()+elem.getName();
             
             
             
-            fileMetadataFieldMap.put(fields[i++], elem.getName());
+            fileMetadataFieldMap.put(fields[i], indexName);
+            i++; 
 
         }
         return fields;

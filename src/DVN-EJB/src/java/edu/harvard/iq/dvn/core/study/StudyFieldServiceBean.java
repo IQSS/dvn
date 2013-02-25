@@ -33,10 +33,12 @@ import java.util.ResourceBundle;
 import java.util.MissingResourceException;
 import java.util.Map; 
 import java.util.HashMap; 
+import java.util.logging.Logger;
 
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import javax.persistence.Query;
 
 /**
  *
@@ -48,7 +50,11 @@ public class StudyFieldServiceBean implements StudyFieldServiceLocal, java.io.Se
     @PersistenceContext(unitName="VDCNet-ejbPU")
     private EntityManager em;
     private static final String NAME_QUERY = "SELECT sf from StudyField sf where sf.name= :fieldName ";
+    private static final String FILEMETA_NAME_QUERY = "SELECT fmf from FileMetadataField fmf where fmf.name= :fieldName ";
+    private static final String FILEMETA_NAME_FORMAT_QUERY = "SELECT fmf from FileMetadataField fmf where fmf.name= :fieldName and fmf.fileFormatName= :fileFormatName ";
     private static final String ID_QUERY = "SELECT sf from StudyField sf where id = :fieldId";
+    
+    private static Logger dbgLog = Logger.getLogger(StudyFieldServiceBean.class.getPackage().getName());
     
     private static String[] advancedSearchFields = {"title", "authorName", "globalId", "otherId", "abstractText", "keywordValue", "keywordVocabulary", "topicClassValue", "topicClassVocabulary", "producerName", "distributorName", "fundingAgency", "productionDate", "distributionDate", "dateOfDeposit", "timePeriodCoveredStart", "timePeriodCoveredEnd", "country", "geographicCoverage", "geographicUnit", "universe", "kindOfData", "extnFld4"};
     
@@ -94,9 +100,51 @@ public class StudyFieldServiceBean implements StudyFieldServiceLocal, java.io.Se
     }
     
     public List findAvailableFileMetadataFields() {
-        List <FileMetadataField> fileMetadataFields = (List <FileMetadataField>) em.createQuery("SELECT fmf from FileMetadataField fmf ORDER by sf.id").getResultList();
+        List <FileMetadataField> fileMetadataFields = null; 
+        fileMetadataFields = (List <FileMetadataField>) em.createQuery("SELECT fmf from FileMetadataField fmf ORDER by fmf.id").getResultList();
         
         return fileMetadataFields;
+    }
+    
+    public List<FileMetadataField> findFileMetadataFieldByName (String name) {
+        List<FileMetadataField> fmfs = null; 
+        try {
+            fmfs = (List<FileMetadataField>) em.createQuery(FILEMETA_NAME_QUERY).setParameter("fieldName",name).getResultList();
+        } catch (Exception ex) {
+            // getResultList() can throw an IllegalStateException.
+            // - we just return null.
+            return null; 
+        }
+        // If there are no results, getResultList returns an empty list. 
+        return fmfs; 
+    }
+    
+    public FileMetadataField findFileMetadataFieldByNameAndFormat (String fieldName, String formatName) {
+        FileMetadataField fmf = null; 
+        try {
+            Query query = em.createQuery(FILEMETA_NAME_FORMAT_QUERY); 
+            query.setParameter("fieldName", fieldName);
+            query.setParameter("fileFormatName", formatName);
+            fmf = (FileMetadataField) query.getSingleResult();
+        } catch (Exception ex) {
+            // getSingleResult() can throw several different exceptions:
+            // NoResultException, NonUniqueResultException, IllegalStateException...
+            // - we just return null.
+            dbgLog.fine("Exception caught while looking up filemetadatafield, by name "+fieldName+" and format "+formatName);
+            dbgLog.fine(ex.getMessage());
+            return null; 
+        }
+        return fmf; 
+    }
+    
+    public FileMetadataField createFileMetadataField (String fieldName, String formatName) {
+        FileMetadataField fmf = new FileMetadataField(); 
+        fmf.setName(fieldName);
+        fmf.setFileFormatName(formatName);
+        em.persist(fmf);
+        em.flush(); 
+        
+        return fmf; 
     }
 
     private String getUserFriendlySearchField(String searchField) {

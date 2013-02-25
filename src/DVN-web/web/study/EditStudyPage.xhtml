@@ -93,8 +93,8 @@
         <div class="dvnstudytitleblock dvn_padBot">
             <div class="dvnstudyadminboxfloat">
                 <div jsfc="ice:panelGroup" id="groupPanel10" styleClass="vdcTextRight dvnFormMargin">
-                    <ice:commandButton binding="#{EditStudyPage.saveCommand1}" id="saveCommand1" value="Save" actionListener="#{EditStudyPage.openPopup}"/>
-                    <ice:commandButton id="button2" value="Cancel" immediate="true" action="#{EditStudyPage.cancel}"/>
+                    <ice:commandButton binding="#{EditStudyPage.saveCommand1}" id="saveCommand1" value="Save" tabindex="999996" actionListener="#{EditStudyPage.openPopup}"/>
+                    <ice:commandButton id="button2" value="Cancel" tabindex="999997" immediate="true" action="#{EditStudyPage.cancel}"/>
                 </div>
             </div>
             <div class="dvnstudytitlefloat">
@@ -142,16 +142,172 @@
                         <input checked="checked" type="radio" id="hideRadio" name="hideShowRadio" value="hide" onclick="updateHideShow(this);"/> Show Required and Recommended Fields
                         <input type="radio" id="showRadio" name="hideShowRadio" value="show" onclick="updateHideShow(this);"/> Show All Fields
                         -->
-                        <ice:selectOneRadio partialSubmit="true" immediate="true" value ="#{EditStudyPage.showAll}">
+                        <ice:selectOneRadio partialSubmit="true" immediate="true" tabindex="999998" value="#{EditStudyPage.showAll}">
                           <f:selectItem itemLabel="Show Required and Recommended Fields" itemValue="false"/>
                           <f:selectItem itemLabel="Show All Fields" itemValue="true"/>
                         </ice:selectOneRadio>
                       </div>
                     </ice:panelGrid>
-<style type="text/css">
-#dvnDataCitationWidgetAuthorInputBlock, #dvnDataCitationWidgetDateInputBlock, #dvnDataCitationWidgetTitleInputBlock, #dvnDataCitationWidgetStudyIDInputBlock, #dvnDataCitationWidgetDistributorInputBlock {display:none;}
-span[id$=input_studyIdPrfxSync], span[id$=input_studyIdPrfx], input[id$=input_studyIdSync], input[id$=input_studyId] {display:inline !important;}
-</style>
+
+                  <!-- Data Citation -->
+                  <ice:panelGrid cellpadding="0" cellspacing="0" width="100%"
+                                 styleClass="vdcEditStudyTable">
+                    <ice:column>
+                      <ice:panelGrid cellpadding="0" cellspacing="0" width="100%" columns="2"
+                                     styleClass="vdcEditStudyInnerTable" columnClasses="vdcEditStudyCol1b, vdcEditStudyCol2">
+                        <ice:column>
+                          <div jsfc="ice:panelGroup" styleClass="vdcEditStudyField">
+                            <ice:outputText styleClass="dvnInlineHelpLabel dvnInlineHelpTip" value="#{editstudybundle.dataCitationLabel}" title="#{editstudybundle.dataCitationHelpHeading} - #{editstudybundle.dataCitationHelp}"/>
+                          </div>
+                        </ice:column>
+                        <ice:column>
+                          <p>
+                            <ice:graphicImage value="/resources/images/icon_information.18.png" styleClass="dvn_icon"/>
+                            <ice:outputText styleClass="vdcHelpText" value=" Use the Data Citation Widget below to enter all the metadata needed for your citation."/>
+                          </p>
+                          <div jsfc="ice:panelGroup" id="dvnDataCitationWidget" styleClass="dvnDataCitationWidget vdcEditStudyFieldFloatWrap">
+                            <div>
+                                Data Citation Widget
+                            </div>
+                            
+                            <div>
+                                
+                                <div id="dvnDataCitationWidgetInputBlock">
+                                  <!-- None -->
+                                  <div class="dvnDataCitationWidgetInput">Click the links below to enter the data citation value metadata.</div>
+                                  <!-- Author -->
+                                  <div id="dvnDataCitationWidgetAuthorInputBlock" class="dvnDataCitationWidgetInput">
+                                      <div class="dvnDataCitationWidgetAuthorInputBoba">
+                                        <ice:outputText styleClass="dvnInlineHelpLabel dvnInlineHelpTip" value="Author #{editstudybundle.authorNameLabel}" title="#{editstudybundle.authorNameHelpHeading} - #{editstudybundle.authorNameHelp}"/>
+                                        <ice:inputText styleClass="input_authorNameSync"
+                                                       size="45"
+                                                       maxlength="255" />
+                                        <ice:outputText styleClass="vdcEditStudyFormatExample" value="(LastName, FirstName)"/>
+                                      </div>
+                                      <div class="dvnDataCitationWidgetAuthorSelectBoba">
+                                        <ice:outputText styleClass="dvnInlineHelpLabel dvnInlineHelpTip" value="Author #{editstudybundle.authorNameLabel}" title="#{editstudybundle.authorNameHelpHeading} - #{editstudybundle.authorNameHelp}"/>
+                                        <ice:selectOneMenu immediate="false"  
+                                               styleClass="select_authorNameSync">
+                                            <f:selectItem itemLabel="No Value" itemValue=""/>
+                                            <f:selectItems value="#{EditStudyPage.studyMap[sfc.authorName].templateField.controlledVocabulary.selectItems}"/>
+                                        </ice:selectOneMenu>
+                                        <ice:outputText styleClass="vdcEditStudyFormatExample" value="(LastName, FirstName)"/>
+                                      </div>
+                                  </div>
+                                  <!-- Date -->
+                                  <div id="dvnDataCitationWidgetDateInputBlock" class="dvnDataCitationWidgetInput">
+                                      <p>
+                                        <ice:graphicImage value="/resources/images/icon_information.18.png" styleClass="dvn_icon"/>
+                                        <ice:outputText styleClass="vdcHelpText" value=" In the data citation, the Distribution Date supersedes the Production Date."/>
+                                      </p>
+                                      <div>
+                                        <ice:outputText styleClass="dvnInlineHelpLabel dvnInlineHelpTip" value="#{editstudybundle.distributionDateLabel}" title="#{editstudybundle.distributionDateHelpHeading} - #{editstudybundle.distributionDateHelp}"/>
+                                        <ice:inputText id="input_distributionDateSync" styleClass="formDateFormat"/>
+                                        <ice:outputText styleClass="vdcEditStudyFormatExample" value="#{editstudybundle.dateFormatDescription}"/>
+                                      </div>
+                                      <div>
+                                        <ice:outputText styleClass="dvnInlineHelpLabel dvnInlineHelpTip" value="#{editstudybundle.productionDateLabel}" title="#{editstudybundle.productionDateHelpHeading} - #{editstudybundle.productionDateHelp}"/>
+                                        <ice:inputText id="input_productionDateSync" styleClass="formDateFormat"/>
+                                        <ice:outputText styleClass="vdcEditStudyFormatExample" value="#{editstudybundle.dateFormatDescription}"/>
+                                      </div>
+                                  </div>
+                                  <!-- Title -->
+                                  <div id="dvnDataCitationWidgetTitleInputBlock" class="dvnDataCitationWidgetInput">
+                                      <ice:outputText styleClass="dvnInlineHelpLabel dvnInlineHelpTip" value="#{editstudybundle.titleLabel}" title="#{editstudybundle.titleHelpHeading} - #{editstudybundle.titleHelp}"/>
+                                      <ice:inputText id="input_titleSync" size="90"/>
+                                  </div>
+                                  <!-- Study ID -->
+                                  <div id="dvnDataCitationWidgetStudyIDInputBlock" class="dvnDataCitationWidgetInput">
+                                      <ice:outputText styleClass="dvnInlineHelpLabel dvnInlineHelpTip" value="#{editstudybundle.studyidLabel}" title="#{editstudybundle.studyidHelpHeading} - #{editstudybundle.studyidHelp}"/><br/>
+                                        <ice:outputText id="input_studyIdPrfxSync" value="#{EditStudyPage.study.protocol}:#{EditStudyPage.study.authority}/"/>
+                                        <ice:inputText maxlength="255" id="input_studyIdSync"/>
+                                  </div>
+                                  <!-- Distributor -->
+                                  <div id="dvnDataCitationWidgetDistributorInputBlock" class="dvnDataCitationWidgetInput">
+                                      <div class="dvnDataCitationWidgetDistributorInputBoba">
+                                        <ice:outputText styleClass="dvnInlineHelpLabel dvnInlineHelpTip" value="#{editstudybundle.distributorLabel}" title="#{editstudybundle.distributorHelpHeading} - #{editstudybundle.distributorHelp}"/>
+                                        <ice:inputText styleClass="input_distributorNameSync"
+                                                       size="45"
+                                                       maxlength="255" />
+                                      </div>
+                                      <div class="dvnDataCitationWidgetDistributorSelectBoba">
+                                        <ice:outputText styleClass="dvnInlineHelpLabel dvnInlineHelpTip" value="#{editstudybundle.distributorLabel}" title="#{editstudybundle.distributorHelpHeading} - #{editstudybundle.distributorHelp}"/>
+                                        <ice:selectOneMenu immediate="false"  
+                                               styleClass="select_distributorNameSync">
+                                            <f:selectItem itemLabel="No Value" itemValue=""/>
+                                            <f:selectItems value="#{EditStudyPage.studyMap[sfc.distributorName].templateField.controlledVocabulary.selectItems}"/>
+                                        </ice:selectOneMenu>
+                                      </div>
+                                  </div>
+                                </div>
+                                
+                            </div>
+                            
+                            <div>
+                                
+                                <div jsfc="ice:panelGroup" styleClass="dvnDataCitationWidgetBlock vdcEditStudyFieldFloat1">
+                                  <!-- Author -->
+                                    <div id="dvnDataCitationWidgetBlockAuthor">
+                                        &lt;&nbsp;
+                                        <a href="#" class="dvnDataCitationWidgetLabel"></a>
+                                        &nbsp;&gt;,
+                                    </div>
+                                  <!-- End Author -->
+                                </div>
+                                <div jsfc="ice:panelGroup" styleClass="dvnDataCitationWidgetBlock vdcEditStudyFieldFloat2">
+                                  <!-- Date -->
+                                    <div id="dvnDataCitationWidgetBlockDate">
+                                        &lt;&nbsp;
+                                        <a href="#" class="dvnDataCitationWidgetLabel">Date</a>
+                                        &nbsp;&gt;,
+                                    </div>
+                                  <!-- End Date -->
+                                </div>
+                                <div jsfc="ice:panelGroup" styleClass="dvnDataCitationWidgetBlock vdcEditStudyFieldFloat2">
+                                  <!-- Title -->
+                                    <div id="dvnDataCitationWidgetBlockTitle">
+                                        &lt;&nbsp;
+                                        <a href="#" class="dvnDataCitationWidgetLabel">Title</a>
+                                        &nbsp;&gt;,
+                                    </div>
+                                  <!-- End Title -->
+                                </div>
+                                <div jsfc="ice:panelGroup" styleClass="dvnDataCitationWidgetBlock vdcEditStudyFieldFloat2">
+                                  <!-- Study ID -->
+                                    <div id="dvnDataCitationWidgetBlockStudyID">
+                                        &lt;&nbsp;
+                                        <div jsfc="ice:panelGroup" styleClass="dvnDataCitationWidgetLabelBlock" rendered="#{EditStudyPage.study.id==null}">
+                                            <span class="dvnStudyIDPrfx"></span>
+                                            <a href="#" class="dvnDataCitationWidgetLabel dvnDataCitationWidgetNewStudyIdLink">Study ID</a>
+                                        </div>
+                                        <div jsfc="ice:panelGroup" styleClass="dvnDataCitationWidgetTextBlock" rendered="#{EditStudyPage.study.id!=null}">
+                                            <span class="dvnStudyIDPrfx"></span>
+                                            <ice:outputText id="input_studyIdTextSync" value="#{EditStudyPage.study.globalId}"/>
+                                        </div>
+                                        &nbsp;&gt;,
+                                    </div>
+                                  <!-- End Study ID -->
+                                </div>
+                                <div jsfc="ice:panelGroup" styleClass="dvnDataCitationWidgetBlock vdcEditStudyFieldFloat2">
+                                  <!-- Distributor -->
+                                    <div id="dvnDataCitationWidgetBlockDistributor">
+                                        &lt;&nbsp;
+                                        <a href="#" class="dvnDataCitationWidgetLabel">Distributor</a>
+                                        <span id="dvnDataCitationWidgetDistributorLabel"> [Distributor]</span>
+                                        &nbsp;&gt;,
+                                    </div>
+                                  <!-- End Distributor -->
+                                </div>
+                                <div jsfc="ice:panelGroup" styleClass="dvnDataCitationWidgetBlock vdcEditStudyFieldFloat2">
+                                  <!-- Version -->
+                                    <div id="dvnDataCitationWidgetBlockVersion">
+                                        <ice:outputText value="V#{EditStudyPage.metadata.studyVersion.versionNumber} [Version]"/>
+                                    </div>
+                                  <!-- End Version -->
+                                </div>
+                                
+                            </div>
+                          </div>
 <script type="text/javascript">
 // <![CDATA[
 jQuery(document).ready(function(){
@@ -232,8 +388,8 @@ function dataCitationWidgetSync(){
 
             var span_authorName = 'span#authorNameSync' + i;
 
-            jQuery(input_authorNameSync).bind("change input cut keyup paste", widgetBind(input_authorName, span_authorName, 'Author') );
-            jQuery(input_authorName).bind("change input cut keyup paste", widgetBind(input_authorNameSync, span_authorName, 'Author') );
+            jQuery(input_authorNameSync).bind("change input keyup cut paste", widgetBind(input_authorName, span_authorName, 'Author') );
+            jQuery(input_authorName).bind("change input keyup cut paste", widgetBind(input_authorNameSync, span_authorName, 'Author') );
 
         };
 
@@ -282,8 +438,8 @@ function dataCitationWidgetSync(){
 
             var span_authorName = 'span#authorNameSync' + i;
 
-            jQuery(select_authorNameSync).bind("change input cut keyup paste", widgetBind(select_authorName, span_authorName, 'Author') );
-            jQuery(select_authorName).bind("change input cut keyup paste", widgetBind(select_authorNameSync, span_authorName, 'Author') );
+            jQuery(select_authorNameSync).bind("change input keyup cut paste", widgetBind(select_authorName, span_authorName, 'Author') );
+            jQuery(select_authorName).bind("change input keyup cut paste", widgetBind(select_authorNameSync, span_authorName, 'Author') );
 
         };
 
@@ -340,8 +496,8 @@ function dataCitationWidgetSync(){
 
             var span_distributorName = 'span#distributorNameSync' + i;
 
-            jQuery(input_distributorNameSync).bind("change input cut keyup paste", widgetBind(input_distributorName, span_distributorName, 'Distributor') );
-            jQuery(input_distributorName).bind("change input cut keyup paste", widgetBind(input_distributorNameSync, span_distributorName, 'Distributor') );
+            jQuery(input_distributorNameSync).bind("change input keyup cut paste", widgetBind(input_distributorName, span_distributorName, 'Distributor') );
+            jQuery(input_distributorName).bind("change input keyup cut paste", widgetBind(input_distributorNameSync, span_distributorName, 'Distributor') );
 
         };
 
@@ -390,8 +546,8 @@ function dataCitationWidgetSync(){
 
             var span_distributorName = 'span#distributorNameSync' + i;
 
-            jQuery(select_distributorNameSync).bind("change input cut keyup paste", widgetBind(select_distributorName, span_distributorName, 'Distributor') );
-            jQuery(select_distributorName).bind("change input cut keyup paste", widgetBind(select_distributorNameSync, span_distributorName, 'Distributor') );
+            jQuery(select_distributorNameSync).bind("change input keyup cut paste", widgetBind(select_distributorName, span_distributorName, 'Distributor') );
+            jQuery(select_distributorName).bind("change input keyup cut paste", widgetBind(select_distributorNameSync, span_distributorName, 'Distributor') );
 
         };
 
@@ -443,6 +599,56 @@ function dataCitationWidgetSync(){
         // jQuery('#dvnDataCitationWidgetBlockDistributor a.dvnDataCitationWidgetLabel').text(inputDistributorVal).after(' Distributor');
     // };
     
+    // Sync DATE
+    jQuery("input[id$=input_distributionDateSync]").bind("change input cut paste", function() {
+        jQuery("input[id$=input_distributionDate]").val(jQuery(this).val());
+        jQuery('#dvnDataCitationWidgetBlockDate a.dvnDataCitationWidgetLabel').text(jQuery(this).val());
+    });
+    jQuery("input[id$=input_distributionDate]").bind("change input cut paste", function() {
+        jQuery("input[id$=input_distributionDateSync]").val(jQuery(this).val());
+        jQuery('#dvnDataCitationWidgetBlockDate a.dvnDataCitationWidgetLabel').text(jQuery(this).val());
+    });
+    jQuery("input[id$=input_productionDateSync]").bind("change input cut paste", function() {
+        jQuery("input[id$=input_productionDate]").val(jQuery(this).val());
+        if (inputDistDateVal !== '') {
+            jQuery('#dvnDataCitationWidgetBlockDate a.dvnDataCitationWidgetLabel').text(jQuery(this).val());
+        }
+    });
+    jQuery("input[id$=input_productionDate]").bind("change input cut paste", function() {
+        jQuery("input[id$=input_productionDateSync]").val(jQuery(this).val());
+        if (inputDistDateVal !== '') {
+            jQuery('#dvnDataCitationWidgetBlockDate a.dvnDataCitationWidgetLabel').text(jQuery(this).val());
+        }
+    });
+    // Sync TITLE
+    jQuery("input[id$=input_titleSync]").bind("change input cut paste", function() {
+        jQuery("input[id$=input_title]").val(jQuery(this).val());
+        jQuery('#dvnDataCitationWidgetBlockTitle a.dvnDataCitationWidgetLabel').text(jQuery(this).val());
+    });
+    jQuery("input[id$=input_title]").bind("change input cut paste", function() {
+        jQuery("input[id$=input_titleSync]").val(jQuery(this).val());
+        jQuery('#dvnDataCitationWidgetBlockTitle a.dvnDataCitationWidgetLabel').text(jQuery(this).val());
+    });
+    // Sync STUDY ID
+    jQuery("input[id$=input_studyIdSync]").bind("change input cut paste", function() {
+        jQuery("input[id$=input_studyId]").val(jQuery(this).val());
+        jQuery('#dvnDataCitationWidgetBlockStudyID a.dvnDataCitationWidgetLabel').text(jQuery(this).val());
+    });
+    jQuery("input[id$=input_studyId]").bind("change input cut paste", function() {
+        jQuery("input[id$=input_studyIdSync]").val(jQuery(this).val());
+        jQuery('#dvnDataCitationWidgetBlockStudyID a.dvnDataCitationWidgetLabel').text(jQuery(this).val());
+    });
+    
+    // Set input focus on tab
+    function setFocus() {
+        if ( jQuery('a.dvnDataCitationWidgetLabel').is(':focus') ) {
+            jQuery(this).find('input:visible:first, select:visible:first').focus()
+        }
+        else {
+            jQuery(this).find('input:visible:first, select:visible:first').triggerHandler('focus')
+        }
+    };
+    
     // Open+Close Author
     jQuery('#dvnDataCitationWidgetBlockAuthor a.dvnDataCitationWidgetLabel').bind("click", function() {
         
@@ -454,9 +660,9 @@ function dataCitationWidgetSync(){
         
         var authorInput = jQuery('#dvnDataCitationWidgetAuthorInputBlock');
         
-        jQuery(authorInput).css({'display':'block'});
         jQuery(this).parents('div.dvnDataCitationWidget').find('div.dvnDataCitationWidgetBlock div').css({'background-color':'transparent'});
         jQuery('#dvnDataCitationWidgetBlockAuthor').css({'background':'gold'});
+        jQuery(authorInput).show(0, setFocus);
         
         return false;
     });
@@ -471,9 +677,9 @@ function dataCitationWidgetSync(){
         
         var dateInput = jQuery('#dvnDataCitationWidgetDateInputBlock');
         
-        jQuery(dateInput).css({'display':'block'});
         jQuery(this).parents('div.dvnDataCitationWidget').find('div.dvnDataCitationWidgetBlock div').css({'background-color':'transparent'});
         jQuery('#dvnDataCitationWidgetBlockDate').css({'background':'gold'});
+        jQuery(dateInput).show(0, setFocus);
         
         return false;
     });
@@ -488,9 +694,9 @@ function dataCitationWidgetSync(){
         
         var titleInput = jQuery('#dvnDataCitationWidgetTitleInputBlock');
         
-        jQuery(titleInput).css({'display':'block'});
         jQuery(this).parents('div.dvnDataCitationWidget').find('div.dvnDataCitationWidgetBlock div').css({'background-color':'transparent'});
         jQuery('#dvnDataCitationWidgetBlockTitle').css({'background':'gold'});
+        jQuery(titleInput).show(0, setFocus);
         
         return false;
     });
@@ -505,9 +711,9 @@ function dataCitationWidgetSync(){
         
         var studyIDInput = jQuery('#dvnDataCitationWidgetStudyIDInputBlock');
         
-        jQuery(studyIDInput).css({'display':'block'});
         jQuery(this).parents('div.dvnDataCitationWidget').find('div.dvnDataCitationWidgetBlock div').css({'background-color':'transparent'});
         jQuery('#dvnDataCitationWidgetBlockStudyID').css({'background':'gold'});
+        jQuery(studyIDInput).show(0, setFocus);
         
         return false;
     });
@@ -522,70 +728,61 @@ function dataCitationWidgetSync(){
         
         var distributorInput = jQuery('#dvnDataCitationWidgetDistributorInputBlock');
         
-        jQuery(distributorInput).css({'display':'block'});
         jQuery(this).parents('div.dvnDataCitationWidget').find('div.dvnDataCitationWidgetBlock div').css({'background-color':'transparent'});
         jQuery('#dvnDataCitationWidgetBlockDistributor').css({'background':'gold'});
+        jQuery(distributorInput).show(0, setFocus);
         
         return false;
     });
     
-    // Sync AUTHOR
-    // jQuery("input[id$=input_authorNameSync]").bind("change input cut keyup paste", function() {
-        // jQuery("input[id$=0\\:input_authorName]").val(jQuery(this).val());
-        // jQuery('#dvnDataCitationWidgetBlockAuthor a.dvnDataCitationWidgetLabel').text(jQuery(this).val());
-    // });
-    // jQuery("input[id$=0\\:input_authorName]").bind("change input cut keyup paste", function() {
-        // jQuery("input[id$=input_authorNameSync]").val(jQuery(this).val());
-        // jQuery('#dvnDataCitationWidgetBlockAuthor a.dvnDataCitationWidgetLabel').text(jQuery(this).val());
-    // });
-    // Sync DATE
-    jQuery("input[id$=input_distributionDateSync]").bind("change input cut keyup paste", function() {
-        jQuery("input[id$=input_distributionDate]").val(jQuery(this).val());
-        jQuery('#dvnDataCitationWidgetBlockDate a.dvnDataCitationWidgetLabel').text(jQuery(this).val());
-    });
-    jQuery("input[id$=input_distributionDate]").bind("change input cut keyup paste", function() {
-        jQuery("input[id$=input_distributionDateSync]").val(jQuery(this).val());
-        jQuery('#dvnDataCitationWidgetBlockDate a.dvnDataCitationWidgetLabel').text(jQuery(this).val());
-    });
-    jQuery("input[id$=input_productionDateSync]").bind("change input cut keyup paste", function() {
-        jQuery("input[id$=input_productionDate]").val(jQuery(this).val());
-        if (inputDistDateVal !== '') {
-            jQuery('#dvnDataCitationWidgetBlockDate a.dvnDataCitationWidgetLabel').text(jQuery(this).val());
+    // TAB FUNCTIONALITY
+    jQuery("input.input_authorNameSync:last, select.select_authorNameSync:last").bind("keydown", function(e) {
+        var widget = jQuery(this).parents('div.dvnDataCitationWidget');
+        var code = e.keyCode || e.which ;
+        if (code == '9') {
+            jQuery(widget).find('#dvnDataCitationWidgetAuthorInputBlock').css({'display':'none'});
+            jQuery('#dvnDataCitationWidgetBlockDate a.dvnDataCitationWidgetLabel').triggerHandler('click');
         }
     });
-    jQuery("input[id$=input_productionDate]").bind("change input cut keyup paste", function() {
-        jQuery("input[id$=input_productionDateSync]").val(jQuery(this).val());
-        if (inputDistDateVal !== '') {
-            jQuery('#dvnDataCitationWidgetBlockDate a.dvnDataCitationWidgetLabel').text(jQuery(this).val());
+    jQuery("input[id$=input_productionDateSync]").bind("keydown", function(e) {
+        var widget = jQuery(this).parents('div.dvnDataCitationWidget');
+        var code = e.keyCode || e.which ;
+        if (code == '9') {
+            jQuery(widget).find('#dvnDataCitationWidgetDateInputBlock').css({'display':'none'});
+            jQuery('#dvnDataCitationWidgetBlockTitle a.dvnDataCitationWidgetLabel').triggerHandler('click');
         }
     });
-    // Sync TITLE
-    jQuery("input[id$=input_titleSync]").bind("change input cut keyup paste", function() {
-        jQuery("input[id$=input_title]").val(jQuery(this).val());
-        jQuery('#dvnDataCitationWidgetBlockTitle a.dvnDataCitationWidgetLabel').text(jQuery(this).val());
+    jQuery("input[id$=input_titleSync]").bind("keydown", function(e) {
+        var widget = jQuery(this).parents('div.dvnDataCitationWidget');
+        var code = e.keyCode || e.which ;
+        if (code == '9') {
+            if (jQuery('a.dvnDataCitationWidgetNewStudyIdLink').is(':visible')) {
+                jQuery(widget).find('#dvnDataCitationWidgetTitleInputBlock').css({'display':'none'});
+                jQuery('#dvnDataCitationWidgetBlockStudyID a.dvnDataCitationWidgetLabel').triggerHandler('click');
+            }
+            else {
+                jQuery(widget).find('#dvnDataCitationWidgetstudyIDInputBlock').css({'display':'none'});
+                jQuery('#dvnDataCitationWidgetBlockDistributor a.dvnDataCitationWidgetLabel').triggerHandler('click');
+            }
+        }
     });
-    jQuery("input[id$=input_title]").bind("change input cut keyup paste", function() {
-        jQuery("input[id$=input_titleSync]").val(jQuery(this).val());
-        jQuery('#dvnDataCitationWidgetBlockTitle a.dvnDataCitationWidgetLabel').text(jQuery(this).val());
+    jQuery("input[id$=input_studyIdSync]").bind("keydown", function(e) {
+        var widget = jQuery(this).parents('div.dvnDataCitationWidget');
+        var code = e.keyCode || e.which ;
+        if (code == '9') {
+            jQuery(widget).find('#dvnDataCitationWidgetstudyIDInputBlock').css({'display':'none'});
+            jQuery('#dvnDataCitationWidgetBlockDistributor a.dvnDataCitationWidgetLabel').triggerHandler('click');
+        }
     });
-    // Sync STUDY ID
-    jQuery("input[id$=input_studyIdSync]").bind("change input cut keyup paste", function() {
-        jQuery("input[id$=input_studyId]").val(jQuery(this).val());
-        jQuery('#dvnDataCitationWidgetBlockStudyID a.dvnDataCitationWidgetLabel').text(jQuery(this).val());
+    jQuery("input.input_distributorNameSync:last, select.select_authorNameSync:last").bind("keydown", function(e) {
+        var widget = jQuery(this).parents('div.dvnDataCitationWidget');
+        var code = e.keyCode || e.which ;
+        if (code == '9') {
+            jQuery(widget).find('#dvnDataCitationWidgetDistributorInputBlock').css({'display':'none'});
+            jQuery(widget).find('div.dvnDataCitationWidgetBlock div').css({'background-color':'transparent'});
+            jQuery(widget).find('.dvnDataCitationWidgetInput:first').css({'display':'block'});
+        }
     });
-    jQuery("input[id$=input_studyId]").bind("change input cut keyup paste", function() {
-        jQuery("input[id$=input_studyIdSync]").val(jQuery(this).val());
-        jQuery('#dvnDataCitationWidgetBlockStudyID a.dvnDataCitationWidgetLabel').text(jQuery(this).val());
-    });
-    // Sync DISTRIBUTOR
-    // jQuery("input[id$=input_distributorNameSync]").bind("change input cut keyup paste", function() {
-        // jQuery("input[id$=input_distributorName]").val(jQuery(this).val());
-        // jQuery('#dvnDataCitationWidgetBlockDistributor a.dvnDataCitationWidgetLabel').text(jQuery(this).val());
-    // });
-    // jQuery("input[id$=input_distributorName]").bind("change input cut keyup paste", function() {
-        // jQuery("input[id$=input_distributorNameSync]").val(jQuery(this).val());
-        // jQuery('#dvnDataCitationWidgetBlockDistributor a.dvnDataCitationWidgetLabel').text(jQuery(this).val());
-    // });
 };
 
 function initAddAuthorSync(){
@@ -600,171 +797,8 @@ function initAddDistributorSync(){
     jQuery('#dvnDataCitationWidgetDistributorInputBlock div.dvnDataCitationWidgetDistributorInputClone').remove();
 };
 
-
 // ]]>
 </script>
-                  <!-- Data Citation -->
-                  <ice:panelGrid cellpadding="0" cellspacing="0" width="100%"
-                                 styleClass="vdcEditStudyTable">
-                    <ice:column>
-                      <ice:panelGrid cellpadding="0" cellspacing="0" width="100%" columns="2"
-                                     styleClass="vdcEditStudyInnerTable" columnClasses="vdcEditStudyCol1b, vdcEditStudyCol2">
-                        <ice:column>
-                          <div jsfc="ice:panelGroup" styleClass="vdcEditStudyField">
-                            <ice:outputText styleClass="dvnInlineHelpLabel dvnInlineHelpTip" value="#{editstudybundle.dataCitationLabel}" title="#{editstudybundle.dataCitationHelpHeading} - #{editstudybundle.dataCitationHelp}"/>
-                          </div>
-                        </ice:column>
-                        <ice:column>
-                          <p>
-                            <ice:graphicImage value="/resources/images/icon_information.18.png" styleClass="dvn_icon"/>
-                            <ice:outputText styleClass="vdcHelpText" value=" Use the Data Citation Widget below to enter all the metadata needed for your citation."/>
-                          </p>
-                          <div jsfc="ice:panelGroup" id="dvnDataCitationWidget" styleClass="dvnDataCitationWidget vdcEditStudyFieldFloatWrap">
-                            <div>
-                                Data Citation Widget
-                            </div>
-                            
-                            <div>
-                                
-                                <div id="dvnDataCitationWidgetInputBlock">
-                                  <!-- None -->
-                                  <div class="dvnDataCitationWidgetInput">Click the links below to enter the data citation value metadata.</div>
-                                  <!-- Author -->
-                                  <div id="dvnDataCitationWidgetAuthorInputBlock" class="dvnDataCitationWidgetInput">
-                                      <div class="dvnDataCitationWidgetAuthorInputBoba">
-                                        <ice:outputText styleClass="dvnInlineHelpLabel dvnInlineHelpTip" value="Author #{editstudybundle.authorNameLabel}" title="#{editstudybundle.authorNameHelpHeading} - #{editstudybundle.authorNameHelp}"/>
-                                        <ice:inputText 
-                                                       styleClass="input_authorNameSync"
-                                                       size="45"
-                                                       maxlength="255" />
-                                        <ice:outputText styleClass="vdcEditStudyFormatExample" value="(LastName, FirstName)"/>
-                                      </div>
-                                      <div class="dvnDataCitationWidgetAuthorSelectBoba">
-                                        <ice:outputText styleClass="dvnInlineHelpLabel dvnInlineHelpTip" value="Author #{editstudybundle.authorNameLabel}" title="#{editstudybundle.authorNameHelpHeading} - #{editstudybundle.authorNameHelp}"/>
-                                        <ice:selectOneMenu immediate="false"  
-                                               styleClass="select_authorNameSync">
-                                            <f:selectItem itemLabel="No Value" itemValue=""/>
-                                            <f:selectItems value="#{EditStudyPage.studyMap[sfc.authorName].templateField.controlledVocabulary.selectItems}"/>
-                                        </ice:selectOneMenu>
-                                        <ice:outputText styleClass="vdcEditStudyFormatExample" value="(LastName, FirstName)"/>
-                                      </div>
-                                  </div>
-                                  <!-- Date -->
-                                  <div id="dvnDataCitationWidgetDateInputBlock" class="dvnDataCitationWidgetInput">
-                                      <p>
-                                        <ice:graphicImage value="/resources/images/icon_information.18.png" styleClass="dvn_icon"/>
-                                        <ice:outputText styleClass="vdcHelpText" value=" In the data citation, the Distribution Date supersedes the Production Date."/>
-                                      </p>
-                                      <div>
-                                        <ice:outputText styleClass="dvnInlineHelpLabel dvnInlineHelpTip" value="#{editstudybundle.distributionDateLabel}" title="#{editstudybundle.distributionDateHelpHeading} - #{editstudybundle.distributionDateHelp}"/>
-                                        <ice:inputText id="input_distributionDateSync" styleClass="formDateFormat"/>
-                                        <ice:outputText styleClass="vdcEditStudyFormatExample" value="#{editstudybundle.dateFormatDescription}"/>
-                                      </div>
-                                      <div>
-                                        <ice:outputText styleClass="dvnInlineHelpLabel dvnInlineHelpTip" value="#{editstudybundle.productionDateLabel}" title="#{editstudybundle.productionDateHelpHeading} - #{editstudybundle.productionDateHelp}"/>
-                                        <ice:inputText id="input_productionDateSync" styleClass="formDateFormat"/>
-                                        <ice:outputText styleClass="vdcEditStudyFormatExample" value="#{editstudybundle.dateFormatDescription}"/>
-                                      </div>
-                                  </div>
-                                  <!-- Title -->
-                                  <div id="dvnDataCitationWidgetTitleInputBlock" class="dvnDataCitationWidgetInput">
-                                      <ice:outputText styleClass="dvnInlineHelpLabel dvnInlineHelpTip" value="#{editstudybundle.titleLabel}" title="#{editstudybundle.titleHelpHeading} - #{editstudybundle.titleHelp}"/>
-                                      <ice:inputText id="input_titleSync" size="90"/>
-                                  </div>
-                                  <!-- Study ID -->
-                                  <div id="dvnDataCitationWidgetStudyIDInputBlock" class="dvnDataCitationWidgetInput">
-                                      <ice:outputText styleClass="dvnInlineHelpLabel dvnInlineHelpTip" value="#{editstudybundle.studyidLabel}" title="#{editstudybundle.studyidHelpHeading} - #{editstudybundle.studyidHelp}"/><br/>
-                                        <ice:outputText id="input_studyIdPrfxSync" value="#{EditStudyPage.study.protocol}:#{EditStudyPage.study.authority}/"/>
-                                        <ice:inputText maxlength="255" id="input_studyIdSync"/>
-                                  </div>
-                                  <!-- Distributor -->
-                                  <div id="dvnDataCitationWidgetDistributorInputBlock" class="dvnDataCitationWidgetInput">
-                                      <div class="dvnDataCitationWidgetDistributorInputBoba">
-                                        <ice:outputText styleClass="dvnInlineHelpLabel dvnInlineHelpTip" value="#{editstudybundle.distributorLabel}" title="#{editstudybundle.distributorHelpHeading} - #{editstudybundle.distributorHelp}"/>
-                                        <ice:inputText 
-                                                       styleClass="input_distributorNameSync"
-                                                       size="45"
-                                                       maxlength="255" />
-                                      </div>
-                                      <div class="dvnDataCitationWidgetDistributorSelectBoba">
-                                        <ice:outputText styleClass="dvnInlineHelpLabel dvnInlineHelpTip" value="#{editstudybundle.distributorLabel}" title="#{editstudybundle.distributorHelpHeading} - #{editstudybundle.distributorHelp}"/>
-                                        <ice:selectOneMenu immediate="false"  
-                                               styleClass="select_distributorNameSync">
-                                            <f:selectItem itemLabel="No Value" itemValue=""/>
-                                            <f:selectItems value="#{EditStudyPage.studyMap[sfc.distributorName].templateField.controlledVocabulary.selectItems}"/>
-                                        </ice:selectOneMenu>
-                                      </div>
-                                  </div>
-                                </div>
-                                
-                            </div>
-                            
-                            <div>
-                                
-                                <div jsfc="ice:panelGroup" styleClass="dvnDataCitationWidgetBlock vdcEditStudyFieldFloat1">
-                                  <!-- Author -->
-                                    <div id="dvnDataCitationWidgetBlockAuthor">
-                                        &lt;&nbsp;
-                                        <a href="#" class="dvnDataCitationWidgetLabel"></a>
-                                        &nbsp;&gt;,
-                                    </div>
-                                  <!-- End Author -->
-                                </div>
-                                <div jsfc="ice:panelGroup" styleClass="dvnDataCitationWidgetBlock vdcEditStudyFieldFloat2">
-                                  <!-- Date -->
-                                    <div id="dvnDataCitationWidgetBlockDate">
-                                        &lt;&nbsp;
-                                        <a href="#" class="dvnDataCitationWidgetLabel">Date</a>
-                                        &nbsp;&gt;,
-                                    </div>
-                                  <!-- End Date -->
-                                </div>
-                                <div jsfc="ice:panelGroup" styleClass="dvnDataCitationWidgetBlock vdcEditStudyFieldFloat2">
-                                  <!-- Title -->
-                                    <div id="dvnDataCitationWidgetBlockTitle">
-                                        &lt;&nbsp;
-                                        <a href="#" class="dvnDataCitationWidgetLabel">Title</a>
-                                        &nbsp;&gt;,
-                                    </div>
-                                  <!-- End Title -->
-                                </div>
-                                <div jsfc="ice:panelGroup" styleClass="dvnDataCitationWidgetBlock vdcEditStudyFieldFloat2">
-                                  <!-- Study ID -->
-                                    <div id="dvnDataCitationWidgetBlockStudyID">
-                                        &lt;&nbsp;
-                                        <div jsfc="ice:panelGroup" styleClass="dvnDataCitationWidgetLabelBlock" rendered="#{EditStudyPage.study.id==null}">
-                                            <span class="dvnStudyIDPrfx"></span>
-                                            <a href="#" class="dvnDataCitationWidgetLabel">Study ID</a>
-                                        </div>
-                                        <div jsfc="ice:panelGroup" styleClass="dvnDataCitationWidgetTextBlock" rendered="#{EditStudyPage.study.id!=null}">
-                                            <span class="dvnStudyIDPrfx"></span>
-                                            <ice:outputText id="input_studyIdTextSync" value="#{EditStudyPage.study.globalId}"/>
-                                        </div>
-                                        &nbsp;&gt;,
-                                    </div>
-                                  <!-- End Study ID -->
-                                </div>
-                                <div jsfc="ice:panelGroup" styleClass="dvnDataCitationWidgetBlock vdcEditStudyFieldFloat2">
-                                  <!-- Distributor -->
-                                    <div id="dvnDataCitationWidgetBlockDistributor">
-                                        &lt;&nbsp;
-                                        <a href="#" class="dvnDataCitationWidgetLabel">Distributor</a>
-                                        <span id="dvnDataCitationWidgetDistributorLabel"> [Distributor]</span>
-                                        &nbsp;&gt;,
-                                    </div>
-                                  <!-- End Distributor -->
-                                </div>
-                                <div jsfc="ice:panelGroup" styleClass="dvnDataCitationWidgetBlock vdcEditStudyFieldFloat2">
-                                  <!-- Version -->
-                                    <div id="dvnDataCitationWidgetBlockVersion">
-                                        <ice:outputText value="V#{EditStudyPage.metadata.studyVersion.versionNumber} [Version]"/>
-                                    </div>
-                                  <!-- End Version -->
-                                </div>
-                                
-                            </div>
-                            
-                          </div>
                         </ice:column>
                       </ice:panelGrid>
                     </ice:column>

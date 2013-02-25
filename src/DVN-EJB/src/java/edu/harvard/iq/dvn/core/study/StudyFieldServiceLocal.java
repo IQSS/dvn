@@ -33,4 +33,8 @@ public interface StudyFieldServiceLocal extends java.io.Serializable {
     public StudyField findById(Long id);    
     public List findAdvSearchDefault();
     public List findAvailableFileMetadataFields();
+    public List findFileMetadataFieldByName (String name);
+    public FileMetadataField findFileMetadataFieldByNameAndFormat (String fieldName, String formatName);
+    public FileMetadataField createFileMetadataField (String fieldName, String formatName);
+
 }

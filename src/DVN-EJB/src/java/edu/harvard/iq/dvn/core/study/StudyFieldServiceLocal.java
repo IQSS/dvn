@@ -36,5 +36,6 @@ public interface StudyFieldServiceLocal extends java.io.Serializable {
     public List findFileMetadataFieldByName (String name);
     public FileMetadataField findFileMetadataFieldByNameAndFormat (String fieldName, String formatName);
     public FileMetadataField createFileMetadataField (String fieldName, String formatName);
+    public void saveFileMetadataField (FileMetadataField fmf);
 
 }

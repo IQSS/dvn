@@ -141,10 +141,16 @@ public class StudyFieldServiceBean implements StudyFieldServiceLocal, java.io.Se
         FileMetadataField fmf = new FileMetadataField(); 
         fmf.setName(fieldName);
         fmf.setFileFormatName(formatName);
-        em.persist(fmf);
-        em.flush(); 
+        //em.persist(fmf);
+        //em.flush(); 
         
         return fmf; 
+    }
+    
+    public void saveFileMetadataField (FileMetadataField fmf) {
+        em.persist(fmf);
+        em.flush();
+        
     }
 
     private String getUserFriendlySearchField(String searchField) {

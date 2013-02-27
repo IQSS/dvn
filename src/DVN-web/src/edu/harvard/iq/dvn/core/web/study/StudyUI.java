@@ -1149,9 +1149,26 @@ public class StudyUI  implements java.io.Serializable {
         this.foundInVersions = foundInVersions;
     }
 
-
     private boolean displayVersions;
 
+    /*
+     * The "foundInStudyFiles" list and the getter and setter methods below
+     * are the equivalents of the corresponding mechanisms above for the 
+     * variable and version searches. These are being added as we are
+     * adding searching on file-level metadata to the application. 
+     *  -- L.A. 
+     */
+    
+    private List foundInStudyFiles;
+    
+    public List getFoundInStudyFiles() {
+        return foundInStudyFiles;
+    }
+    
+    public void setFoundInStudyFiles(List foundInStudyFiles) {
+        this.foundInStudyFiles = foundInStudyFiles;
+    }
+    
     public static boolean isStudyInList(Study study, List list) {
         Iterator iter = list.iterator();
         while (iter.hasNext()) {

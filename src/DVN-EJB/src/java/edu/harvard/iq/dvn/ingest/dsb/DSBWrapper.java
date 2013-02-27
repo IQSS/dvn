@@ -494,15 +494,26 @@ public class DSBWrapper implements java.io.Serializable  {
             FileMetadataField fileMetaField = studyFieldService.findFileMetadataFieldByNameAndFormat(mKey, fileFormatName);
             
             if (fileMetaField == null) {
-                fileMetaField = studyFieldService.createFileMetadataField(mKey, fileFormatName); 
+                //fileMetaField = studyFieldService.createFileMetadataField(mKey, fileFormatName); 
+                fileMetaField = new FileMetadataField(); 
                 
                 if (fileMetaField == null) {
                     dbgLog.warning("Failed to create a new File Metadata Field; skipping.");
                     continue; 
                 }
-                // TODO: provide descriptions and labels:
+                
+                fileMetaField.setName(mKey);
+                fileMetaField.setFileFormatName(fileFormatName);               
+                // TODO: provide meaningful descriptions and labels:
                 fileMetaField.setDescription(mKey);
                 fileMetaField.setTitle(mKey); 
+                
+                try {
+                    studyFieldService.saveFileMetadataField(fileMetaField);
+                } catch (Exception ex) {
+                    dbgLog.warning("Failed to save new file metadata field ("+mKey+"); skipping values.");
+                    continue; 
+                }
                 
                 dbgLog.fine("Created file meta field "+mKey); 
             }

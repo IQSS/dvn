@@ -313,6 +313,22 @@
                                     </ice:column>
                                 </ice:dataTable>
                             </div>
+                            <div jsfc="ice:panelGroup" styleClass="dvnStudyListTableOptionalField" rendered="#{ !empty studyUI.foundInStudyFiles}">
+                                <ice:outputText value="Found In Study File(s):" styleClass="dvnStudyListTableOptionalFieldLabel"/>
+                                <ice:dataTable cellspacing="0" cellpadding="0" width="100%" id="foundInFilesDataTable" value="#{studyUI.foundInStudyFiles}" var="sf">
+                                    <ice:column>
+                                        <ice:outputLink value="/dvn#{VDCRequest.currentVDCURL}/faces/study/StudyPage.xhtml?tab=files&amp;studyListingIndex=#{StudyListingPage.studyListingIndex}">
+                                            <f:param name="globalId" value="#{studyUI.study.globalId}"/>
+                                            <f:param name="studyListingIndex" value="#{StudyListingPage.studyListingIndex}"/>
+                                            <ice:outputText value="#{sf.fileName}"/>
+                                        </ice:outputLink>
+                                    </ice:column>
+                                    <ice:column>
+                                        <ice:outputText value="#{sf.releasedFileMetadata.description}"/>
+                                    </ice:column>
+                                    
+                                </ice:dataTable>
+                            </div>
                             <div jsfc="ice:panelGroup" styleClass="dvnStudyListTableOptionalField" rendered="#{ studyUI.displayVersions and !empty studyUI.foundInVersions}">
                                 <ice:outputText value="The UNF was not found in the current version of this study; however it was found in the following archived versions:"/>
                                 <ice:dataTable cellspacing="0" cellpadding="0" width="100%" id="versionDataTable" value="#{studyUI.foundInVersions}" var="version">

@@ -154,6 +154,10 @@ public class StudyListingPage extends VDCBaseBean implements java.io.Serializabl
                     List dvList = (List) studyListing.getVariableMap().get(sid);
                     sui.setFoundInVariables(dvList);
                 }
+                if (studyListing.getFileMap() != null) {
+                    List fileList = (List) studyListing.getFileMap().get(sid);
+                    sui.setFoundInStudyFiles(fileList);
+                }
                 if (studyListing.getVersionMap() != null){
                     List versionList = (List) studyListing.getVersionMap().get(sid);
                     sui.setFoundInVersions(versionList);
@@ -256,6 +260,12 @@ public class StudyListingPage extends VDCBaseBean implements java.io.Serializabl
         return renderDVPermissionsBox;
     }
 
+    /*
+     * This method runs a search initiated *on* the StudyListingPage itself 
+     * (query entered in the search box in the top right corner of the page, 
+     * "Go" button clicked). 
+     * Searching on file-level metadata is not yet implemented here. 
+     */
     public String search_action() {
         searchField = (searchField == null) ? "any" : searchField; // default searchField, in case no dropdown
 
@@ -267,6 +277,7 @@ public class StudyListingPage extends VDCBaseBean implements java.io.Serializabl
 
         List studyIDList = new ArrayList();
         Map variableMap = new HashMap();
+        Map fileMap = new HashMap(); 
         Map versionMap = new HashMap();
         List displayVersionList = new ArrayList();
 
@@ -815,6 +826,10 @@ public class StudyListingPage extends VDCBaseBean implements java.io.Serializabl
     private StudyListing search(String searchField, String searchValue) {
         // TODO: combine the search logic from the search_action (which has more
         // flexibility) with this one for one unified search code section
+        
+        // (what does this method do? is this the same search that search_action
+        // implements, but run by hitting return, as opposed to clicking on 
+        // "go"? -- L.A.)
         List searchTerms = new ArrayList();
         SearchTerm st = new SearchTerm();
         st.setFieldName(searchField);

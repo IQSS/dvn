@@ -737,8 +737,8 @@ public class AdvSearchPage extends VDCBaseBean implements java.io.Serializable {
             // "user-friendly" names for the search fields - but for now we are 
             // not using it. 
             
-            fields[i] = elem.getFileFormatName()+"-"+elem.getName();
-            String indexName = elem.getFileFormatName()+elem.getName();
+            fields[i] = elem.getFileFormatName() + "-" + elem.getName();
+            String indexName = elem.getFileFormatName() + "-" + elem.getName();
             
             
             
@@ -875,22 +875,21 @@ public class AdvSearchPage extends VDCBaseBean implements java.io.Serializable {
                 sl.setStudyIds(studies);
                 sl.setVariableMap(variableMap);
 
-            } /**
-                * The (commented-out) code below is for treating
-                * file-level metadata searches similarly to how we treat
-                * variable searches, i.e., to be able to point to the 
-                * actual files that matched the query. 
-                * For now, however, I am treating these searches the exact 
-                * same way as the "regular" ones - by simply pointing to the 
-                * study for which there's a match. 
-              else if (isFileLevelMetadataSearch()) {
+            } else if (isFileLevelMetadataSearch()) {
+                /**
+                * This (experimental) code is for treating
+                * file-level metadata searches in the same way that we treat
+                * variable searches; meaning that the actual files that matched 
+                * the query will be shown on the StudyListingPage; just like 
+                * the individual variables are shown there for variable searches.
+                */
+              
                 Map fileMap = new HashMap(); 
                 List studies = new ArrayList();
                 studyService.determineStudiesFromFiles(viewableIds, studies, fileMap);
                 sl.setStudyIds(studies);
                 sl.setFileMap(fileMap);
-            } */
-            else {
+            } else {
                 sl.setStudyIds(viewableIds);
             }
 

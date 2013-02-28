@@ -11,7 +11,9 @@ import java.io.FileInputStream;
 import java.io.IOException; 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Set; 
+import java.util.Set;
+import java.util.List;
+import java.util.LinkedList; 
 import java.util.HashSet;
 import java.util.logging.Logger;
 import nom.tam.fits.BasicHDU;
@@ -87,6 +89,7 @@ public class FITSFileIngester extends FileIngester {
         indexableFitsMetaKeys.put("TUCD", "Column-UCD");
     }
     
+    private static final String METADATA_SUMMARY = "FILE_METADATA_SUMMARY_INFO";
     /**
      * Constructs a <code>FITSFileIngester</code> instance with a 
      * <code>FITSFileIngesterSpi</code> object.
@@ -124,6 +127,15 @@ public class FITSFileIngester extends FileIngester {
         BasicHDU hdu = null;
         int i = 0; 
         
+        String primaryType = ""; 
+        
+        int nTableHDUs = 0; 
+        int nImageHDUs = 0; 
+        int nUndefHDUs = 0; 
+        
+        Set<String> metadataKeys = new HashSet<String>(); 
+        Set<String> columnKeys = new HashSet<String>(); 
+        
         try {
 
             while ((hdu = fitsFile.readHDU()) != null) {
@@ -131,10 +143,25 @@ public class FITSFileIngester extends FileIngester {
                 
                 if (hdu instanceof TableHDU) {
                     dbgLog.fine("this is a table HDU");
+                    if (i > 0) {
+                        nTableHDUs++;
+                    } else {
+                        primaryType = "Table";
+                    }
                 } else if (hdu instanceof ImageHDU) {
                     dbgLog.fine("this is an image HDU");
+                    if (i > 0) {
+                        nImageHDUs++;
+                    } else {
+                        primaryType = "Image";
+                    }
                 } else if (hdu instanceof UndefinedHDU) {
                     dbgLog.fine("this is an undefined HDU");
+                    if (i > 0) {
+                        nUndefHDUs++; 
+                    } else {
+                        primaryType = "Undefined"; 
+                    }
                 } else {
                     dbgLog.fine("this is an UKNOWN HDU");
                 }
@@ -157,9 +184,11 @@ public class FITSFileIngester extends FileIngester {
                         if (isRecognizedKey(headerKey)) {
                             dbgLog.fine("recognized key: " + headerKey);
                             recognized = true; 
+                            metadataKeys.add(headerKey);
                         } else if (isRecognizedColumnKey(headerKey)) {
                             dbgLog.fine("recognized column key: " + headerKey);
                             recognized = true;
+                            columnKeys.add(getTrimmedColumnKey(headerKey));
                         }
                     } 
                     
@@ -219,6 +248,11 @@ public class FITSFileIngester extends FileIngester {
         
         dbgLog.fine("Total (current) number of HDUs: "+n);
         
+        String metadataSummary = createMetadataSummary (n, nTableHDUs, primaryType, nImageHDUs, nUndefHDUs, metadataKeys, columnKeys);
+        
+        fitsMetaMap.put(METADATA_SUMMARY, new HashSet<String>());
+        fitsMetaMap.get(METADATA_SUMMARY).add(metadataSummary); 
+        
         return fitsMetaMap; 
     }
     
@@ -239,6 +273,13 @@ public class FITSFileIngester extends FileIngester {
         return false; 
     }
     
+    private String getTrimmedColumnKey (String key) {
+        if (key != null) {
+            return key.replaceFirst("[0-9][0-9]*$", "");
+        }
+        return null;
+    }    
+    
     private String getIndexableMetaKey (String key) {
         String indexableKey = null; 
         
@@ -251,6 +292,51 @@ public class FITSFileIngester extends FileIngester {
         return indexableKey; 
     }
     
+    private String createMetadataSummary (int nHDU, int nTableHDUs, String primaryType, int nImageHDUs, int nUndefHDUs, Set<String> metadataKeys, Set<String> columnKeys) {
+        String summary = ""; 
+        
+        if (nHDU > 1) {
+            summary = "This is a FITS file with "+nHDU+" HDUs total.\n";
+
+            summary = summary.concat("In addition to the primary HDU of type "+
+                    primaryType + " , it contains ");
+            if (nTableHDUs > 0) {
+                summary = summary.concat(nTableHDUs + " Table HDU(s); ");
+            }
+            if (nImageHDUs > 0) {
+                summary = summary.concat(nImageHDUs + " Image HDU(s); ");
+            }
+            if (nUndefHDUs > 0) {
+                summary = summary.concat(nUndefHDUs + " undefined HDU(s); ");
+            }
+            summary = summary.concat("\n");
+        } else {
+            summary = "This is a FITS file with 1 HDU of type "+primaryType+"\n"; 
+        }
+                
+        if (metadataKeys != null && metadataKeys.size() > 0) {
+            summary = summary.concat ("The following recognized metadata keys " + 
+                    "have been found in the FITs file, and their values " +
+                    "will be made searchable in the DVN, once " +
+                    "the study has been indexed: \n");
+            for (String key : metadataKeys) {
+                summary = summary.concat(key+"; ");
+            }
+            summary=summary.concat("\n");
+        }
+        
+        if (columnKeys != null && columnKeys.size() > 0) {
+            summary = summary.concat ("In addition, the following recognized " + 
+                    "and searchable column keys have been found in the table " +
+                    "HDUs: \n");
+            for (String key : columnKeys) {
+                summary = summary.concat(key+"; ");
+            }
+            summary=summary.concat("\n");
+        }
+            
+        return summary; 
+    }
     
     /**
      * main() method, for testing

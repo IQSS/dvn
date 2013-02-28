@@ -108,10 +108,11 @@ public class RDATAFileReader extends StatDataFileReader {
   private static final String unfVersionNumber = "5";
   
   // DataTable
-  private static DataTable mDataTable = new DataTable();
-  private Object [][] mDataTable2;
-  private String [] mMetaTable;
-  private String [][] mDataFormats;
+  private DataTable mDataTable = new DataTable();
+  
+  private Map <String, String> mPrintFormatTable = new LinkedHashMap<String, String>(); 
+  private Map <String, String> mPrintFormatNameTable = new LinkedHashMap<String, String>(); 
+  private List <Integer> mPrintFormatList = new ArrayList<Integer>();
   /*
    * Object Variables
    */
@@ -130,6 +131,11 @@ public class RDATAFileReader extends StatDataFileReader {
   private List <String> variableNameList = new ArrayList <String> ();
 
   SDIOMetadata smd = new RDATAMetadata();
+  
+  // sdioMetadata.variableFormatName
+  
+  
+  
   
   DataTable mCsvDataTable = null;
   SDIOData sdiodata = null;
@@ -517,7 +523,8 @@ public class RDATAFileReader extends StatDataFileReader {
     // Initialize vartiable type list
     
     
-
+    // Set meta information about format names, I guess.
+    setMetaInfo();
     
     //
     LOG.info("RDATAFileReader: varQnty = " + mVarQuantity);
@@ -999,5 +1006,19 @@ public class RDATAFileReader extends StatDataFileReader {
 
     smd.setVariableUNF(unfValues);
     smd.getFileInformation().put("fileUNF", fileUNFvalue);
+  }
+  
+  /**
+   * Set meta information
+   * 
+   */
+  private void setMetaInfo () {
+    smd.setVariableFormat(mPrintFormatList);
+    smd.setVariableFormatName(mPrintFormatNameTable);
+  }
+  
+  private void setMissingValueTable () {
+    smd.setMissingValueTable(null);
+    // smd.getFileInformation().put("caseWeightVariableName", caseWeightVariableName);
   }
 }

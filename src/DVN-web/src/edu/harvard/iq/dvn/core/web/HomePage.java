@@ -526,7 +526,7 @@ public class HomePage extends VDCBaseBean implements Serializable {
     public List getMostRecentlyReleasedDVs(){
         List mostRecentlyReleased = new ArrayList();
         if (vdcUIListReleased == null){
-           vdcUIListReleased = new VDCUIList(groupId, (String)hiddenAlphaCharacter.getValue(), true, "Activity");
+           vdcUIListReleased = new VDCUIList(groupId, (String)hiddenAlphaCharacter.getValue(), true, "Released");
         }
         if (!vdcUIListReleased.getVdcUIList().isEmpty()){
             int count = 0;

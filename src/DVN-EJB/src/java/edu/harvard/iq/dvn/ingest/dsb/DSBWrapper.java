@@ -485,11 +485,26 @@ public class DSBWrapper implements java.io.Serializable  {
                 metadataSummary = metadataSummary.concat(s);
             }
             if (!metadataSummary.equals("")) {
+                // The AddFiles page allows a user to enter file description 
+                // on ingest. We don't want to overwrite whatever they may 
+                // have entered. Rather, we'll append our metadata summary 
+                // to the existing value. 
+                String userEnteredFileDescription = fileMetadata.getDescription();
+                if (userEnteredFileDescription != null 
+                        && !(userEnteredFileDescription.equals(""))) {
+                    
+                    metadataSummary = 
+                            userEnteredFileDescription.concat("\n"+metadataSummary);
+                }
                 fileMetadata.setDescription(metadataSummary);
             }
             
             fileLevelMetadata.remove(METADATA_SUMMARY);
         }
+        
+        // And now we can go through the reamining key/value pairs in the 
+        // metadata maps and process the metadata elements found in the 
+        // file: 
         
         for (String mKey : fileLevelMetadata.keySet()) {
             

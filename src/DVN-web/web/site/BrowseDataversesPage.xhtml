@@ -9,6 +9,7 @@
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
     </h:head>
     <h:body>
+        
     <ui:composition template="/template.xhtml">
             <ui:param name="pageTitle" value="#{bundlePageInfo.createDvTitle} - #{VDCRequest.dataversePageTitle}"/>
             <ui:define name="metadata">
@@ -22,8 +23,20 @@
             </ui:define>
             <ui:define name="body">
           <ice:form id="browsedataversespage">
+              <ice:commandButton type="submit" visible="false" id="updateDVList" value="update" action="#{BrowseDataversesPage.updateDVList}"/>
          <script type="text/javascript">
           // <![CDATA[
+            var timeout= 400; //milliseconds to wait for no activity
+            var countEvents= 0;
+            function delayedRequestDV(form,field,event){
+                countEvents++;
+                setTimeout(function() {
+                countEvents--;
+                    if(countEvents==0){               
+                        document.getElementById('browsedataversespage:updateDVList').click();
+                    }
+                },timeout);
+            }
             function setHiddenValues(alphaKey) {
                 document.getElementById('browsedataversespage:alphaCharacter').value = arguments[0];
               }
@@ -92,7 +105,12 @@
                           </ice:selectOneMenu>
                      </div>
                 </td>
-                <ice:outputText value="Filter:  "/><ice:inputText  id="filterText" value="#{BrowseDataversesPage.filterTerm}" action="#{BrowseDataversesPage.filterAction}"/>
+                <ice:outputText value="Filter:  "/>
+                <ice:inputText
+                                  size="25"
+                                  maxlength="255"
+                                  onkeyup="delayedRequestDV(form,this,event);"
+                                  binding="#{BrowseDataversesPage.inputFilterTerm}"/>
                 <ice:dataTable id="dataverseListManage" width="100%"
                                columnWidths="20%,20%,10%,10%,10%,10%,10%,10%,10%"
                                headerClass="groupRow"

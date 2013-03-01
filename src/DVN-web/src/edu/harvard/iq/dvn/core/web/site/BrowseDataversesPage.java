@@ -26,6 +26,7 @@ package edu.harvard.iq.dvn.core.web.site;
 import com.icesoft.faces.component.ext.HtmlCommandLink;
 import com.icesoft.faces.component.ext.HtmlInputHidden;
 import com.icesoft.faces.component.datapaginator.DataPaginator;
+import com.icesoft.faces.component.ext.HtmlInputText;
 import edu.harvard.iq.dvn.core.vdc.VDC;
 import edu.harvard.iq.dvn.core.vdc.VDCServiceLocal;
 import edu.harvard.iq.dvn.core.web.VDCUIList;
@@ -60,7 +61,7 @@ public class BrowseDataversesPage  extends VDCBaseBean implements Serializable {
     private HtmlCommandLink linkDelete = new HtmlCommandLink();
     private StatusMessage msg;
     private String defaultVdcPath;
-    private String filterTerm;
+    private String filterTerm ="";
     private String initialSort = "";
     private String savedSort = "";
     private VDCUIList vdcUIList;
@@ -85,6 +86,14 @@ public class BrowseDataversesPage  extends VDCBaseBean implements Serializable {
         }
     }
     
+    public String updateDVList(){
+        System.out.print("Local update filter");
+        String checkString = (String) getInputFilterTerm().getValue();        
+        filterTerm = checkString;
+        System.out.print("filterTerm " + filterTerm);
+        return "";
+    }
+    
     protected void innerSort(String sortBy){       
         if (sortBy == null || sortBy.equals("")) {
             return;
@@ -105,9 +114,10 @@ public class BrowseDataversesPage  extends VDCBaseBean implements Serializable {
             this.vdcUIList.getPaginator().gotoFirstPage();
         }
     }
-
+    
     private void populateVDCUIList() {
-        vdcUIList = new VDCUIList(groupId, hideRestricted);
+        System.out.print("populate " + filterTerm);
+        vdcUIList = new VDCUIList(groupId, "", filterTerm, hideRestricted);
         vdcUIList.setAlphaCharacter(new String(""));
         if((initialSort.isEmpty() || !firstRun)  && savedSort.isEmpty()){
             vdcUIList.setSortColumnName(vdcUIList.getDateCreatedColumnName()); 
@@ -153,6 +163,15 @@ public class BrowseDataversesPage  extends VDCBaseBean implements Serializable {
     
     public String filterAction() {
         return "";
+    }
+    private HtmlInputText inputFilterTerm;
+
+    public HtmlInputText getInputFilterTerm() {
+        return this.inputFilterTerm;
+    }
+
+    public void setInputFilterTerm(HtmlInputText inputFilterTerm) {
+        this.inputFilterTerm = inputFilterTerm;
     }
 
     //getters

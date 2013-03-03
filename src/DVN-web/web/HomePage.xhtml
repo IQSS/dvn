@@ -139,7 +139,11 @@
                                                                     <!-- HAS SUBNODE DESCENDANTS -->
                                                                     <ui:fragment rendered="#{!empty(item.xtraItems)}">
                                                                         <li id="xtraMenu#{item.id}">
+                                                                                <ice:outputLink value="/dvn/faces/site/BrowseDataversesPage.xhtml?groupId=#{item.id}"                                                                                                                                                                                                                    >
+                                                                                                <ice:outputText value="#{item.name}"/>
+                                                                                </ice:outputLink>
                                                                             <h4 class="head">
+
                                                                                 <ice:commandLink onclick="deselect_active_children(this);setHiddenValues(#{item.id});"
                                                                                                 partialSubmit="true"
                                                                                                 styleClass="head">
@@ -153,12 +157,10 @@
                                                                                             value="#{item.xtraItems}"
                                                                                             var="xtraItems">
                                                                                         <li>
-                                                                                            <ice:commandLink onclick="highlight_active_sidebar_links(this);setHiddenValues(#{xtraItems.id});"
-                                                                                                            partialSubmit="true"
+                                                                                            <ice:outputLink value="/dvn/faces/site/BrowseDataversesPage.xhtml?groupId=#{xtraItems.id}"                                                                                                        
                                                                                                             styleClass="lastNode">
                                                                                                 <ice:outputText value="#{xtraItems.name}"/>
-                                                                                                <f:attribute name="groupId" value="#{xtraItems.id}"/>
-                                                                                            </ice:commandLink>
+                                                                                            </ice:outputLink>
                                                                                         </li>
                                                                                     </ui:repeat>
                                                                                 </ul>
@@ -169,13 +171,11 @@
                                                                     <!-- HAS NO SUBNODE DESCENDANTS -->
                                                                     <ui:fragment rendered="#{empty(item.xtraItems)}">
                                                                         <li>
-                                                                            <h4 class="head noSubNode">
-                                                                                <ice:commandLink onclick="setHiddenValues(#{item.id});"
-                                                                                                partialSubmit="true">
+                                                                            
+                                                                                <ice:outputLink value="/dvn/faces/site/BrowseDataversesPage.xhtml?groupId=#{item.id}">
                                                                                     <ice:outputText value="#{item.name}"/>
-                                                                                    <f:attribute name="groupId" value="#{item.id}"/>
-                                                                                </ice:commandLink>
-                                                                            </h4>
+                                                                                </ice:outputLink>
+                                                                            
                                                                         </li>
                                                                     </ui:fragment>
                                                                     <!-- END HAS NO SUBNODE DESCENDANTS -->
@@ -227,7 +227,11 @@
                                                 </ice:outputLink>
                                             </ice:column>
                                         </ice:dataTable>
-                                        <div style="text-align:center;"><ice:outputText style="text-align:center; font-size:90% !important;" value="View More &gt;"/></div>
+                                        <div style="text-align:center;"><ice:outputLink  
+                                                                                        value="/dvn/faces/site/BrowseDataversesPage.xhtml?initialSort=Released" >
+                                                              <ice:outputText style="text-align:center; font-size:90% !important;" value="View More &gt;"/>                          
+                                            </ice:outputLink>
+                                        </div>
                                     </div>
 
                                     <div jsfc="ice:panelGroup" style="margin-top:1em; border-bottom: 1px solid #C55B28;" rendered="#{!empty homePage.mostDownloadedDVs}">
@@ -243,7 +247,12 @@
                                                 </ice:outputLink>
                                             </ice:column>
                                         </ice:dataTable>
-                                        <div style="text-align:center;"><ice:outputText style="text-align:center; font-size:90% !important;" value="View More &gt;"/></div>
+                                        <div style="text-align:center;">
+                                            <ice:outputLink  
+                                                               value="/dvn/faces/site/BrowseDataversesPage.xhtml?initialSort=Activity" >
+                                                              <ice:outputText style="text-align:center; font-size:90% !important;" value="View More &gt;"/>                          
+                                            </ice:outputLink>
+                                        </div>
                                     </div>
                                     
                                 </div>

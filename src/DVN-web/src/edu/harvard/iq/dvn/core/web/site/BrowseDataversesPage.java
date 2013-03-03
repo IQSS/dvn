@@ -26,6 +26,7 @@ package edu.harvard.iq.dvn.core.web.site;
 import com.icesoft.faces.component.ext.HtmlCommandLink;
 import com.icesoft.faces.component.ext.HtmlInputHidden;
 import com.icesoft.faces.component.datapaginator.DataPaginator;
+import com.icesoft.faces.component.ext.HtmlInputText;
 import edu.harvard.iq.dvn.core.vdc.VDC;
 import edu.harvard.iq.dvn.core.vdc.VDCServiceLocal;
 import edu.harvard.iq.dvn.core.web.VDCUIList;
@@ -60,57 +61,82 @@ public class BrowseDataversesPage  extends VDCBaseBean implements Serializable {
     private HtmlCommandLink linkDelete = new HtmlCommandLink();
     private StatusMessage msg;
     private String defaultVdcPath;
-    private String statusMessage;
-    private String SUCCESS_MESSAGE = new String("Success. The classifications and dataverses operation completed successfully.");
-    private String FAIL_MESSAGE = new String("Problems occurred during the form submission. Please see error messages below.");
+    private String filterTerm ="";
+    private String initialSort = "";
+    private String savedSort = "";
     private VDCUIList vdcUIList;
+    private boolean firstRun = true;
 
     
     public BrowseDataversesPage() {
     }
 
     public void init() {
-        System.out.print("vdcUIListSize " + vdcUIListSize);
         super.init();
-        hideRestricted = true;
-        initAlphabeticFilter();
-        
-        populateVDCUIList(false);
-    }
-
-    private void populateVDCUIList(boolean isAlphaSort) {
-        // new logic for alpha sort
-        System.out.print("group id " + groupId );
-        
-        if (!isAlphaSort) {
-            if (vdcUIList == null || (vdcUIList.getAlphaCharacter() != null && ("All".equals((String)hiddenAlphaCharacter.getValue()))) ) {
-                vdcUIList = new VDCUIList(groupId, hideRestricted);
-                vdcUIList.setAlphaCharacter(new String(""));
-                vdcUIList.setSortColumnName(vdcUIList.getDateCreatedColumnName());
-           }
-        } else {
-            if (!((String)hiddenAlphaCharacter.getValue()).equals(vdcUIList.getAlphaCharacter())) {
-                vdcUIList = new VDCUIList(groupId, (String)hiddenAlphaCharacter.getValue(), hideRestricted);
-                vdcUIList.setAlphaCharacter((String)hiddenAlphaCharacter.getValue());
-                vdcUIList.setOldSort(new String(""));
-                vdcUIList.setSortColumnName(vdcUIList.getNameColumnName());
-            }
-        }
-        vdcUIList.getVdcUIList();
-        vdcUIListSize = new Long(String.valueOf(vdcUIList.getVdcUIList().size()));
-        System.out.print("vdcUIListSize " + vdcUIListSize);
-    }
-
-   
-    private HtmlInputHidden hiddenAlphaCharacter = new HtmlInputHidden();
-    public HtmlInputHidden getHiddenAlphaCharacter() {
-        return hiddenAlphaCharacter;
-    }
-
-    public void setHiddenAlphaCharacter(HtmlInputHidden hiddenAlphaCharacter) {
-        this.hiddenAlphaCharacter = hiddenAlphaCharacter;
+        hideRestricted = true;   
+        populateVDCUIList();  
+        firstRun = false;
     }
     
+    public void sort_action(ValueChangeEvent event) {
+        String sortBy = (String) event.getNewValue();
+        if (!sortBy.isEmpty()){
+            savedSort = sortBy;
+            innerSort(sortBy); 
+        }
+    }
+    
+    public String updateDVList(){
+        System.out.print("Local update filter");
+        String checkString = (String) getInputFilterTerm().getValue();        
+        filterTerm = checkString;
+        System.out.print("filterTerm " + filterTerm);
+        return "";
+    }
+    
+    protected void innerSort(String sortBy){       
+        if (sortBy == null || sortBy.equals("")) {
+            return;
+        }
+        if (this.vdcUIList != null && this.vdcUIList.getVdcUIList().size() > 0) {           
+            vdcUIList = new VDCUIList(groupId, "", hideRestricted);
+            vdcUIList.setAlphaCharacter("");
+            vdcUIList.setOldSort(new String(""));
+            vdcUIList.setSortColumnName(sortBy);
+            resetScroller();
+        }
+       vdcUIList.setSortColumnName(sortBy);
+       vdcUIList.setOldSort(new String(""));   
+    }
+
+    private void resetScroller() {
+        if (this.vdcUIList != null  && this.vdcUIList.getPaginator() != null) {
+            this.vdcUIList.getPaginator().gotoFirstPage();
+        }
+    }
+    
+    private void populateVDCUIList() {
+        System.out.print("populate " + filterTerm);
+        vdcUIList = new VDCUIList(groupId, "", filterTerm, hideRestricted);
+        vdcUIList.setAlphaCharacter(new String(""));
+        if((initialSort.isEmpty() || !firstRun)  && savedSort.isEmpty()){
+            vdcUIList.setSortColumnName(vdcUIList.getDateCreatedColumnName()); 
+        } else {
+            if (!initialSort.isEmpty() && firstRun){
+                vdcUIList.setSortColumnName(initialSort); 
+            } else if (!savedSort.isEmpty()){
+                vdcUIList.setSortColumnName(savedSort); 
+            }                
+        } 
+        vdcUIList.setOldSort(new String(""));
+        vdcUIList.getVdcUIList();
+        if(vdcUIList.getVdcUIList() != null){
+            vdcUIListSize = new Long(String.valueOf(vdcUIList.getVdcUIList().size()));
+        } else {
+            vdcUIListSize = new Long(String.valueOf(0));
+        }      
+    }
+
     public void setGroupId(Long groupId){
         this.groupId = groupId;       
     }
@@ -118,62 +144,34 @@ public class BrowseDataversesPage  extends VDCBaseBean implements Serializable {
     public Long getGroupId(){
         return groupId;       
     }
+       
+    public String getInitialSort() {
+        return initialSort;
+    }
+
+    public void setInitialSort(String initialSort) {
+        this.initialSort = initialSort;
+    }
     
-    public void changeAlphaCharacter(ValueChangeEvent event) {
-       System.out.print("in val change event...");
-        String newValue = (String)event.getNewValue();
-        String oldValue = (String)event.getOldValue();
-        if (!newValue.isEmpty()) {
-            if (newValue.equals("All")) {
-                populateVDCUIList(false);
-            } else {
-                this.vdcUIList.getPaginator().gotoFirstPage();
-                hiddenAlphaCharacter.setValue(newValue);
-                populateVDCUIList(true);
-            }
-        }
+    public String getFilterTerm() {
+        return filterTerm;
     }
 
+    public void setFilterTerm(String filterTerm) {
+        this.filterTerm = filterTerm;
+    }    
+    
+    public String filterAction() {
+        return "";
+    }
+    private HtmlInputText inputFilterTerm;
 
-    private ArrayList alphaCharacterList;
-    private void initAlphabeticFilter() {
-        if (alphaCharacterList == null) {
-            alphaCharacterList = new ArrayList();
-            alphaCharacterList.add(String.valueOf('#')); 
-            for ( char ch = 'A';  ch <= 'Z';  ch++ ) {
-              alphaCharacterList.add(String.valueOf(ch));
-            }
-        }
+    public HtmlInputText getInputFilterTerm() {
+        return this.inputFilterTerm;
     }
 
-    public ArrayList getAlphaCharacterList() {
-        return this.alphaCharacterList;
-    }
-
-    public void setAlphaCharacterList(ArrayList list) {
-        this.alphaCharacterList = list;
-    }
-    /* END TODO: add alpha sort */
-
-    //action methods
-    public String delete_action() {
-        statusMessage = SUCCESS_MESSAGE;
-        result = true;
-        setCid(new Long((String) linkDelete.getAttributes().get("cid")));
-        try {
-            VDC vdc = vdcService.findById(cid);
-            vdcService.delete(cid);
-        } catch (Exception e) {
-            statusMessage = FAIL_MESSAGE + " " + e.getCause().toString();
-            result = false;
-        } finally {
-            Iterator iterator = FacesContext.getCurrentInstance().getMessages("ManageDataversesPageForm");
-            while (iterator.hasNext()) {
-                iterator.remove();
-            }
-            FacesContext.getCurrentInstance().addMessage("ManageDataversesPageForm", new FacesMessage(statusMessage));
-            return "result";
-        }
+    public void setInputFilterTerm(HtmlInputText inputFilterTerm) {
+        this.inputFilterTerm = inputFilterTerm;
     }
 
     //getters

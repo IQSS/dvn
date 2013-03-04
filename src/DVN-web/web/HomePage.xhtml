@@ -21,35 +21,6 @@
             <ui:define name="body">
                 <f:loadBundle basename="Bundle" var="bundle"/>
                 <f:loadBundle basename="BundleAnalysis" var="bundleAnalysis"/>
-                <script type="text/javascript">
-                    // <![CDATA[
-                    function setHiddenValues(groupid) {
-                      if (arguments[0] == "All") {
-                          document.getElementById('form1:filterType').value = 'all';
-                      } else if (arguments.length > 1) {
-                          document.getElementById('form1:filterType').value = 'alphabetic';
-                          document.getElementById('form1:alphaCharacter').value = arguments[1];
-                      } else {
-                          document.getElementById('form1:filterType').value = 'numeric';
-                          document.getElementById('form1:groupId').value = arguments[0];
-                          oldGroupId = arguments[0];
-                      }
-                    }
-                    function toggleMoreInfo(moreInfo) {
-                      jQuery(moreInfo).next().slideToggle(500);
-                      var toggleLabelText = (jQuery(moreInfo).children('span.iceOutTxt').text() == 'View Info [+]') ? 'Collapse Info [-]' : 'View Info [+]';
-                      jQuery(moreInfo).children('span.iceOutTxt').text(toggleLabelText);
-                      return false;
-                    };
-
-
-                    // javascript for the accordion
-                    jQuery(document).ready(function(){
-                        jQuery('.xtraMenu').accordion({active: 'h4.selected', header: 'h4.head', autoheight: false});
-                    });
-
-                // ]]>
-                </script>
                 <ice:form id="form1">
                     <ice:inputHidden id="vdcId" value="#{VDCRequest.currentVDCId}"/>
                     <!-- Success Message -->
@@ -82,11 +53,9 @@
                     <!-- Search End -->
                     <!-- Main Section starts here -->
                     <div id="dvn_mainSection">
-                        
-                                <div jsfc="ice:panelGroup" styleClass="dvn_hmpgMainMessage" rendered="#{(VDCRequest.vdcNetwork.displayAnnouncements == true) and (VDCRequest.currentVDC == null) }" id="networkAnnouncementsHeaderPanel" >
-                                    <ice:outputText id="networkAnnouncementsMessages" escape="false" value="#{homePage.parsedNetworkAnnouncements}"/>
-                                </div>
-                        
+                        <div jsfc="ice:panelGroup" styleClass="dvn_hmpgMainMessage" rendered="#{(VDCRequest.vdcNetwork.displayAnnouncements == true) and (VDCRequest.currentVDC == null) }" id="networkAnnouncementsHeaderPanel" >
+                            <ice:outputText id="networkAnnouncementsMessages" escape="false" value="#{homePage.parsedNetworkAnnouncements}"/>
+                        </div>
                     </div>
                     <!-- Main Section ends here -->
                     <div id="hiddenDiv">
@@ -124,95 +93,59 @@
                                     
                                     <div id="dvClassificationMenu" class="xtraMenu basic">
                                                         
-                                                        <ui:repeat rendered="#{homePage.accordionItemBeans != null}"
-                                                                value="#{homePage.accordionItemBeans}"
-                                                                var="menuItems">
-                                                            <ui:fragment rendered="#{!empty(menuItems.childItems)}">
-                                                                
-                                                                    <h3 class="head">
-                                                                        <ice:outputText value="Browse Dataverses By #{menuItems.name}"/>
-                                                                    </h3>
-                                                                <ul class="head-top">
-                                                                <ui:repeat rendered="#{menuItems != null}"
-                                                                        value="#{menuItems.childItems}"
-                                                                        var="item">
-                                                                    <!-- HAS SUBNODE DESCENDANTS -->
-                                                                    <ui:fragment rendered="#{!empty(item.xtraItems)}">
-                                                                        <li id="xtraMenu#{item.id}">
-                                                                                <ice:outputLink value="/dvn/faces/site/BrowseDataversesPage.xhtml?groupId=#{item.id}"                                                                                                                                                                                                                    >
-                                                                                                <ice:outputText value="#{item.name}"/>
-                                                                                </ice:outputLink>
-                                                                            <h4 class="head">
-
-                                                                                <ice:commandLink onclick="deselect_active_children(this);setHiddenValues(#{item.id});"
-                                                                                                partialSubmit="true"
-                                                                                                styleClass="head">
-                                                                                    <ice:outputText value="#{item.name}"/>
-                                                                                    <f:attribute name="groupId" value="#{item.id}"/>
-                                                                                </ice:commandLink>
-                                                                            </h4>
-                                                                            <ui:fragment rendered="#{item.xtraItems != null and !empty(item.xtraItems)}">
-                                                                                <ul>
-                                                                                    <ui:repeat rendered="#{item.xtraItems != null}"
-                                                                                            value="#{item.xtraItems}"
-                                                                                            var="xtraItems">
-                                                                                        <li>
-                                                                                            <ice:outputLink value="/dvn/faces/site/BrowseDataversesPage.xhtml?groupId=#{xtraItems.id}"                                                                                                        
-                                                                                                            styleClass="lastNode">
-                                                                                                <ice:outputText value="#{xtraItems.name}"/>
-                                                                                            </ice:outputLink>
-                                                                                        </li>
-                                                                                    </ui:repeat>
-                                                                                </ul>
-                                                                            </ui:fragment>
-                                                                        </li>
-                                                                    </ui:fragment>
-                                                                    <!-- END HAS SUBNODE DESCENDANTS -->
-                                                                    <!-- HAS NO SUBNODE DESCENDANTS -->
-                                                                    <ui:fragment rendered="#{empty(item.xtraItems)}">
+                                        <ui:repeat rendered="#{homePage.accordionItemBeans != null}"
+                                                value="#{homePage.accordionItemBeans}"
+                                                var="menuItems">
+                                            <ui:fragment rendered="#{!empty(menuItems.childItems)}">
+                                                <h3 class="head">
+                                                    <ice:outputText value="Browse Dataverses By #{menuItems.name}"/>
+                                                </h3>
+                                                <ul class="head-top">
+                                                <ui:repeat rendered="#{menuItems != null}"
+                                                        value="#{menuItems.childItems}"
+                                                        var="item">
+                                                    <!-- HAS SUBNODE DESCENDANTS -->
+                                                    <ui:fragment rendered="#{!empty(item.xtraItems)}">
+                                                        <li id="xtraMenu#{item.id}">
+                                                            <h4 class="head">
+                                                                <ice:outputLink styleClass="head" value="/dvn/faces/site/BrowseDataversesPage.xhtml?groupId=#{item.id}"                                                                                                                                                                                                                    >
+                                                                    <ice:outputText value="#{item.name}"/>
+                                                                </ice:outputLink>
+                                                                <ice:outputText value=" (##)" styleClass="dvnHmpgClassificationCount"/>
+                                                            </h4>
+                                                            <ui:fragment rendered="#{item.xtraItems != null and !empty(item.xtraItems)}">
+                                                                <ul>
+                                                                    <ui:repeat rendered="#{item.xtraItems != null}"
+                                                                            value="#{item.xtraItems}"
+                                                                            var="xtraItems">
                                                                         <li>
-                                                                            
-                                                                                <ice:outputLink value="/dvn/faces/site/BrowseDataversesPage.xhtml?groupId=#{item.id}">
-                                                                                    <ice:outputText value="#{item.name}"/>
-                                                                                </ice:outputLink>
-                                                                            
+                                                                            <ice:outputLink styleClass="lastNode" value="/dvn/faces/site/BrowseDataversesPage.xhtml?groupId=#{xtraItems.id}">
+                                                                                <ice:outputText value="#{xtraItems.name}"/>
+                                                                            </ice:outputLink>
+                                                                            <ice:outputText value=" (##)" styleClass="dvnHmpgClassificationCount"/>
                                                                         </li>
-                                                                    </ui:fragment>
-                                                                    <!-- END HAS NO SUBNODE DESCENDANTS -->
-                                                                </ui:repeat>
+                                                                    </ui:repeat>
                                                                 </ul>
                                                             </ui:fragment>
-                                                        </ui:repeat>
-                                                    
-                                            </div>
-                                
-                                            <script type="text/javascript">
-                                            // <![CDATA[
-                                            function highlight_active_sidebar_links(obj) {
-                                                jQuery("a.lastNodeActive").each(function(){
-                                                    jQuery(this).removeClass("lastNodeActive");
-                                                });
-                                                obj.className = "lastNodeActive";
-                                            }
-                                            function deselect_active_children(obj) {
-                                                if (arguments.length > 1) {
-                                                    var parentNode = obj.parentNode.parentNode.parentNode;
-                                                    var nodes = parentNode.getElementsByTagName("H4");
-                                                    for (var i = 0; i < nodes.length; i++) {
-                                                        var nodeObj = nodes.item(i);
-                                                        if (nodeObj.className.indexOf('selected') != -1) {
-                                                            jQuery(nodeObj).removeClass("selected");
-                                                        }
-                                                    }
-                                                }
-                                                jQuery("a.lastNodeActive").each(function(){
-                                                    jQuery(this).removeClass("lastNodeActive");
-                                                });
-                                            }
-                                            // ]]>
-                                            </script>
-                                    
-                                    
+                                                        </li>
+                                                    </ui:fragment>
+                                                    <!-- END HAS SUBNODE DESCENDANTS -->
+                                                    <!-- HAS NO SUBNODE DESCENDANTS -->
+                                                    <ui:fragment rendered="#{empty(item.xtraItems)}">
+                                                        <li>
+                                                            <ice:outputLink value="/dvn/faces/site/BrowseDataversesPage.xhtml?groupId=#{item.id}">
+                                                                <ice:outputText value="#{item.name}"/>
+                                                            </ice:outputLink>
+                                                            <ice:outputText value=" (##)" styleClass="dvnHmpgClassificationCount"/>
+                                                        </li>
+                                                    </ui:fragment>
+                                                    <!-- END HAS NO SUBNODE DESCENDANTS -->
+                                                </ui:repeat>
+                                                </ul>
+                                            </ui:fragment>
+                                        </ui:repeat>
+                                        
+                                    </div>
                                     
                                     <div jsfc="ice:panelGroup" style="margin-top:1em; border-bottom: 1px solid #C55B28;" rendered="#{!empty homePage.mostRecentlyReleasedDVs}">
                                         <div style="color:#C55B28; text-transform:uppercase;">Recently Released Dataverses</div>
@@ -222,35 +155,17 @@
                                                     styleClass="dvnHmpgDataverseWidgetTable"
                                                     value="#{homePage.mostRecentlyReleasedDVs}" var="vdcUI">
                                             <ice:column>
-                                                <ice:outputLink styleClass="dvnHmpgDvNameLink" id="dataverse_link" value="/dvn/dv/#{vdcUI.vdc.alias}">
+                                                <ice:outputLink styleClass="dvnHmpgDvNameLink dvnInlineHelpTip" id="dataverse_link" value="/dvn/dv/#{vdcUI.vdc.alias}"
+                                                                title="#{vdcUI.name} Dataverse - Released: #{vdcUI.releaseDate}
+                                                                        #{!empty(vdcUI.vdc.affiliation) ? '&lt;br/&gt;Affilitation:  ' : ''} #{vdcUI.vdc.affiliation}
+                                                                        #{!empty(vdcUI.vdc.dvnDescription) ? '&lt;br/&gt;Description: ' : ''} #{vdcUI.vdc.dvnDescription}">
                                                     <ice:outputText style="font-size:90% !important;" value="#{vdcUI.name}"/>
                                                 </ice:outputLink>
                                             </ice:column>
                                         </ice:dataTable>
-                                        <div style="text-align:center;"><ice:outputLink  
-                                                                                        value="/dvn/faces/site/BrowseDataversesPage.xhtml?initialSort=Released" >
-                                                              <ice:outputText style="text-align:center; font-size:90% !important;" value="View More &gt;"/>                          
-                                            </ice:outputLink>
-                                        </div>
-                                    </div>
-
-                                    <div jsfc="ice:panelGroup" style="margin-top:1em; border-bottom: 1px solid #C55B28;" rendered="#{!empty homePage.mostDownloadedDVs}">
-                                        <div style="color:#C55B28; text-transform:uppercase;">Most Downloaded Dataverses</div>
-                                        <ice:dataTable headerClass="groupRow" id="downloadedDataverseList"
-                                                    rendered="#{!empty(homePage.mostDownloadedDVs)}"
-                                                    rows="10" width="100%"
-                                                    styleClass="dvnHmpgDataverseWidgetTable"
-                                                    value="#{homePage.mostDownloadedDVs}" var="vdcUI">
-                                            <ice:column>
-                                                <ice:outputLink styleClass="dvnHmpgDvNameLink" id="dataverse_link" value="/dvn/dv/#{vdcUI.vdc.alias}">
-                                                    <ice:outputText style="font-size:90% !important;" value="#{vdcUI.name}"/>
-                                                </ice:outputLink>
-                                            </ice:column>
-                                        </ice:dataTable>
-                                        <div style="text-align:center;">
-                                            <ice:outputLink  
-                                                               value="/dvn/faces/site/BrowseDataversesPage.xhtml?initialSort=Activity" >
-                                                              <ice:outputText style="text-align:center; font-size:90% !important;" value="View More &gt;"/>                          
+                                        <div style="text-align:center; padding:3px 5px">
+                                            <ice:outputLink value="/dvn/faces/site/BrowseDataversesPage.xhtml?initialSort=Released" >
+                                                <ice:outputText style="text-align:center; font-size:90% !important;" value="View More &gt;"/>                          
                                             </ice:outputLink>
                                         </div>
                                     </div>
@@ -267,22 +182,28 @@
                                         <h1 style="float:left; margin:0; padding:6px 0; color:#526F76;">Studies</h1>
                                         <div jsfc="ice:panelGroup" style="float:left; padding:6px 0; margin-left:2em;"
                                              rendered="#{!empty(homePage.vdcUIList.vdcUIList) and VDCRequest.currentVDC == null}">
-                                            <ice:outputText rendered="#{homePage.groupName == 'Released Dataverses' and homePage.isAlphaSort == false}"
-                                                            styleClass="dvn_totalsValue"
-                                                            value="#{homePage.studyCount}"/>
-                                            <ice:outputText rendered="#{homePage.groupName == 'Released Dataverses' and homePage.isAlphaSort == false}"
-                                                            styleClass="dvn_totalsLabel"
-                                                            value=" Studies"/>
-                                            <ice:outputText escape="false"
-                                                            rendered="#{homePage.groupName == 'Released Dataverses' and homePage.isAlphaSort == false}"
-                                                            styleClass="dvn_totalsLabel"
-                                                            value=", "/>
-                                            <ice:outputText rendered="#{homePage.groupName == 'Released Dataverses' and homePage.isAlphaSort == false }"
-                                                            styleClass="dvn_totalsValue"
-                                                            value="#{homePage.fileCount}"/>
-                                            <ice:outputText rendered="#{homePage.groupName == 'Released Dataverses' and homePage.isAlphaSort == false }"
-                                                            styleClass="dvn_totalsLabel"
-                                                            value=" Files" />
+                                            <ice:outputLink style="" value="/dvn/faces/StudyListingPage.xhtml" id="hyperlinkBrowseStudies">
+                                                <ice:outputText value="View All "/>
+                                                <ice:outputText rendered="#{homePage.groupName == 'Released Dataverses' and homePage.isAlphaSort == false}"
+                                                                styleClass="dvn_totalsValue"
+                                                                value="#{homePage.studyCount}"/>
+                                                <ice:outputText rendered="#{homePage.groupName == 'Released Dataverses' and homePage.isAlphaSort == false}"
+                                                                value=" Studies"/>
+                                                <ice:outputText escape="false"
+                                                                rendered="#{homePage.groupName == 'Released Dataverses' and homePage.isAlphaSort == false}"
+                                                                value=", "/>
+                                                <ice:outputText rendered="#{homePage.groupName == 'Released Dataverses' and homePage.isAlphaSort == false }"
+                                                                styleClass="dvn_totalsValue"
+                                                                value="#{homePage.fileCount}"/>
+                                                <ice:outputText rendered="#{homePage.groupName == 'Released Dataverses' and homePage.isAlphaSort == false }"
+                                                                value=" Files" />
+                                            </ice:outputLink>
+                                        </div>
+                                        
+                                        <div jsfc="ice:panelGroup" style="float:right; background:#526F76;" id="createStudy" styleClass="dvhmpgactionbox">
+                                            <ice:outputLink value="#">
+                                                <ice:outputText value="Create a Study"/>
+                                            </ice:outputLink>
                                         </div>
                                     </div>
                                         
@@ -294,15 +215,16 @@
                                                 styleClass="dvnHmpgStudyWidgetTable" value="#{homePage.recentStudies}" var="studyUI">
                                         <ice:column id="column1">
                                             <div jsfc="ice:panelGroup" styleClass="#{!studyUI.study.restricted ? 'dvn_nostyle' : (studyUI.studyRestricted ? 'dvnStudyRestricted' : 'dvnStudyPublic')}" id="groupPanel1">
-                                                <ice:outputLink value="/dvn#{VDCRequest.currentVDCURL}/faces/study/StudyPage.xhtml?globalId=#{studyUI.study.globalId}" id="hyperlink3">
-                                                    <ice:graphicImage url="/resources/images/icon_analyze.gif" title="View and Analyze study files" rendered="#{studyUI.files and studyUI.subsettable}"/>
-                                                    <ice:graphicImage url="/resources/images/icon_files.gif" title="View study files" rendered="#{studyUI.files and !studyUI.subsettable}"/>
+                                                <ice:outputLink styleClass="dvnInlineHelpTip" id="hyperlink3" value="/dvn#{VDCRequest.currentVDCURL}/faces/study/StudyPage.xhtml?globalId=#{studyUI.study.globalId}"
+                                                                title="#{studyUI.metadata.title} - Dataverse Title &lt;br/&gt; Release Date">
+                                                    <ice:graphicImage styleClass="dvnHmpgStudyFileIcon" url="/resources/images/icon_analyze.gif" title="View and Analyze study files" rendered="#{studyUI.files and studyUI.subsettable}"/>
+                                                    <ice:graphicImage styleClass="dvnHmpgStudyFileIcon" url="/resources/images/icon_files.gif" title="View study files" rendered="#{studyUI.files and !studyUI.subsettable}"/>
                                                     <ice:outputText style="display:inline; font-size:90% !important;" id="hyperlink3aText" value="#{studyUI.metadata.title}"/><ice:outputText style="display:inline;" id="hyperlink3bText" styleClass="dvnStudyListStudyAuthor" value=" by #{studyUI.authors}" rendered="#{studyUI.authors != null and studyUI.authors != ''}"/>
                                                 </ice:outputLink>
                                             </div>
                                         </ice:column>
                                     </ice:dataTable>
-                                    <div style="text-align:center;"><ice:outputText style="text-align:center; font-size:90% !important;" value="View More &gt;"/></div>
+                                    <div style="text-align:center; padding:3px 5px"><ice:outputText style="text-align:center; font-size:90% !important;" value="View More &gt;"/></div>
                                 </div>
                                 <div style="margin-top:1em; border-bottom: 1px solid #526F76;">
                                     <div style="color:#526F76; text-transform:uppercase;">Most Downloaded Studies</div>
@@ -310,15 +232,16 @@
                                                 styleClass="dvnHmpgStudyWidgetTable" value="#{homePage.mostDownloadedStudies}" var="studyUI">
                                         <ice:column id="column1">
                                             <div jsfc="ice:panelGroup" styleClass="#{!studyUI.study.restricted ? 'dvn_nostyle' : (studyUI.studyRestricted ? 'dvnStudyRestricted' : 'dvnStudyPublic')}" id="groupPanel1">                 
-                                                <ice:outputLink value="/dvn#{VDCRequest.currentVDCURL}/faces/study/StudyPage.xhtml?globalId=#{studyUI.study.globalId}" id="hyperlink3">
-                                                    <ice:graphicImage url="/resources/images/icon_analyze.gif" title="View and Analyze study files" rendered="#{studyUI.files and studyUI.subsettable}"/>
-                                                    <ice:graphicImage url="/resources/images/icon_files.gif" title="View study files" rendered="#{studyUI.files and !studyUI.subsettable}"/>
+                                                <ice:outputLink styleClass="dvnInlineHelpTip" id="hyperlink3" value="/dvn#{VDCRequest.currentVDCURL}/faces/study/StudyPage.xhtml?globalId=#{studyUI.study.globalId}"
+                                                                title="#{studyUI.metadata.title} - Dataverse Title &lt;br/&gt; Download Count">
+                                                    <ice:graphicImage styleClass="dvnHmpgStudyFileIcon" url="/resources/images/icon_analyze.gif" title="View and Analyze study files" rendered="#{studyUI.files and studyUI.subsettable}"/>
+                                                    <ice:graphicImage styleClass="dvnHmpgStudyFileIcon" url="/resources/images/icon_files.gif" title="View study files" rendered="#{studyUI.files and !studyUI.subsettable}"/>
                                                     <ice:outputText style="display:inline; font-size:90% !important;" id="hyperlink3aText" value="#{studyUI.metadata.title}"/><ice:outputText style="display:inline;" id="hyperlink3bText" styleClass="dvnStudyListStudyAuthor" value=" by #{studyUI.authors}" rendered="#{studyUI.authors != null and studyUI.authors != ''}"/>
                                                 </ice:outputLink>
                                             </div>
                                         </ice:column>
                                     </ice:dataTable>
-                                    <div style="text-align:center;"><ice:outputText style="text-align:center; font-size:90% !important;" value="View More &gt;"/></div>
+                                    <div style="text-align:center; padding:3px 5px"><ice:outputText style="text-align:center; font-size:90% !important;" value="View More &gt;"/></div>
                                 </div>
                             </div>
                             <!-- Studies End -->
@@ -327,27 +250,30 @@
                     
                     <script type="text/javascript">
                         // <![CDATA[
-                        function highlight_active_sidebar_links(obj) {
-                            jQuery("a.lastNodeActive").each(function(){
-                                jQuery(this).removeClass("lastNodeActive");
-                            });
-                            obj.className = "lastNodeActive";
-                        }
-                        function deselect_active_children(obj) {
-                            if (arguments.length > 1) {
-                                var parentNode = obj.parentNode.parentNode.parentNode;
-                                var nodes = parentNode.getElementsByTagName("H4");
-                                for (var i = 0; i < nodes.length; i++) {
-                                    var nodeObj = nodes.item(i);
-                                    if (nodeObj.className.indexOf('selected') != -1) {
-                                        jQuery(nodeObj).removeClass("selected");
-                                    }
-                                }
-                            }
-                            jQuery("a.lastNodeActive").each(function(){
-                                jQuery(this).removeClass("lastNodeActive");
-                            });
-                        }
+                        // javascript for the accordion
+                        jQuery(document).ready(function(){
+                            jQuery('.xtraMenu ul ul').hide();
+                            
+                            classificationsMenu();
+                        });
+                        
+                        function classificationsMenu() {
+                            jQuery('.xtraMenu h4.head').bind('click', function(){
+                                jQuery(this).toggleClass('selected');
+                                jQuery(this).next().toggle();
+                            })
+                        };
+                        
+                        // Removed accordion code
+                        
+                        // Move toggleMoreInfo to BrowseDataversesPage
+                        
+                        function toggleMoreInfo(moreInfo) {
+                            jQuery(moreInfo).next().slideToggle(500);
+                            var toggleLabelText = (jQuery(moreInfo).children('span.iceOutTxt').text() == 'View Info [+]') ? 'Collapse Info [-]' : 'View Info [+]';
+                            jQuery(moreInfo).children('span.iceOutTxt').text(toggleLabelText);
+                            return false;
+                        };
                         // ]]>
                     </script>
                     

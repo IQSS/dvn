@@ -92,11 +92,19 @@ public class RDATAFileReader extends StatDataFileReader {
   public static String DVN_TEMP_DIR = null;
   public static String WEB_TEMP_DIR = null;
 
-  // Date-time formats
-  private SimpleDateFormat sdf_ymd    = new SimpleDateFormat("yyyy-MM-dd");
-  private SimpleDateFormat sdf_ymdhms = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-  private SimpleDateFormat sdf_dhms   = new SimpleDateFormat("DDD HH:mm:ss");
-  private SimpleDateFormat sdf_hms    = new SimpleDateFormat("HH:mm:ss");
+  // DATE FORMATS
+  private static SimpleDateFormat[] DATE_FORMATS = new SimpleDateFormat[] {
+    new SimpleDateFormat("yyyy-MM-dd"),
+    new SimpleDateFormat("yyyy-MM-dd z")
+  };
+  
+  // TIME FORMATS
+  private static SimpleDateFormat[] TIME_FORMATS = new SimpleDateFormat[] {
+    new SimpleDateFormat("yyyy-mm-dd HH-mm-ss"),
+    new SimpleDateFormat("yyyy-mm-dd HH-mm-ss z"),
+    new SimpleDateFormat("yyyy-mm-dd hh-mm-ss a"),
+    new SimpleDateFormat("yyyy-mm-dd hh-mm-ss a z")
+  };
 
   // Logger
   private static final Logger LOG = Logger.getLogger(RDATAFileReader.class.getPackage().getName());
@@ -347,7 +355,7 @@ public class RDATAFileReader extends StatDataFileReader {
         .append(String.format("load(\"%s\")\n", mRWorkspace.getRdataAbsolutePath()))
         .append(RSCRIPT_GET_DATASET)
         .append("\n")
-        .append(String.format("write.table(data.set, file=\"%s\", na=\"\", sep=\"\t\", eol=\"\r\n\", quote=TRUE, row.names=FALSE, col.names=FALSE)", mCsvDataFile.getAbsolutePath()))
+        .append(String.format("write.table(data.set, file=\"%s\", na=\"\", sep=\"\t\", eol=\"\r\n\", quote=FALSE, row.names=FALSE, col.names=FALSE)", mCsvDataFile.getAbsolutePath()))
         .toString();
     
       RRequest csvRequest = mRequestBuilder.build();
@@ -378,6 +386,18 @@ public class RDATAFileReader extends StatDataFileReader {
    * This is primarily to construct the R-Script
    */
   static {
+    
+    /*
+     * Set date-time formats
+     * 
+     */
+    TIME_FORMATS = new SimpleDateFormat[] {
+      new SimpleDateFormat("yyy")
+    };
+    
+    DATE_FORMATS = new SimpleDateFormat[] {
+      new SimpleDateFormat("yyyy-mm-dd")
+    };
     
     /*
      * Set defaults fallbacks for class properties
@@ -656,116 +676,6 @@ public class RDATAFileReader extends StatDataFileReader {
     smd.setVariableName(variableNames);
   }
   /**
-   * Get a DataTable from a Tabular Data File
-   * @note This method is taken from SPSSFileReader "readTabDataFile"
-   * @param tabDataFile a File object representing the location of the tab data file
-   * @return 
-   * @throws IOException 
-   */
-  private DataTable getDataTableFromTabFile (File tabDataFile) throws IOException {
-    DataTable tabData = new DataTable();
-    Object[][] dataTable = null;
-    dataTable = new Object[mVarQuantity][mCaseQuantity];
-
-    String tabFileName = tabDataFile.getAbsolutePath();
-    BufferedReader tabFileReader = new BufferedReader(new InputStreamReader(new FileInputStream(tabFileName)));
-
-    // !!!!
-    boolean[] isCharacterVariable = smd.isStringVariable();
-
-    // VALUE TOKENS
-    String[] valueTokens = new String[mVarQuantity];
-
-    // Go through each case
-    for (int j=0; j < mCaseQuantity; j++ ) {
-      // Read a new line
-      String line = tabFileReader.readLine();
-
-      // If something is wrong, we throw an error.
-      if (line == null)
-        throw new IOException(String.format("Failed to read %d lines from tabular data file `%s`", mCaseQuantity, tabFileName));
-
-      // Split the line into an array
-      valueTokens = line.split("\t", mVarQuantity);
-      
-      if (valueTokens.length != mVarQuantity)
-        throw new IOException(String.format("Failed to read %d columns from the tabular data file `%s`", mVarQuantity, tabFileName));
-
-      // Iterate through columns
-      for (int i=0; i < valueTokens.length; i++ ) {
-        if (isCharacterVariable[i]) {
-          valueTokens[i] = valueTokens[i].replaceFirst("^\"", "");
-          valueTokens[i] = valueTokens[i].replaceFirst("\"$", "");
-          dataTable[i][j] = valueTokens[i];
-        }
-        else
-          dataTable[i][j] = valueTokens[i];
-      }
-    }
-
-    tabFileReader.close();
-    tabData.setData(dataTable);
-
-    return tabData;
-  }
-  /**
-   * Parse an array of objects into a UNF
-   * @param varData
-   * @return a string representing the UNF of the column of data
-   */
-  private String parseUnfAsString (Object [] varData, String [] dateFormats, int variablePosition) {
-    LOG.info("UnfHelper: Parsing column of data as string");
-
-    // Copy over string
-    // String [] stringData = Arrays.copyOf(varData, varData.length, String[].class);
-    String [] stringData = Arrays.asList(varData).toArray(new String[varData.length]);
-
-    // Result String for UNF
-    String unfValue = "";
-
-    // Categ
-    Map <String, Integer> categoryStatistics;
-//
-    try {
-      unfValue =
-              dateFormats == null
-              ? UNF5Util.calculateUNF(stringData)
-              : UNF5Util.calculateUNF(stringData, dateFormats);
-    }
-    catch (IOException ex) {
-      LOG.warning(String.format("RDATAFileReader: Could not calculate UNF of column ", variablePosition));
-    }
-    
-    // Add
-    smd.getSummaryStatisticsTable().put(variablePosition, StatHelper.calculateSummaryStatistics(stringData));
-
-    // Category Statistics
-    categoryStatistics = StatHelper.calculateCategoryStatistics(stringData);
-    smd.getCategoryStatisticsTable().put(variableNameList.get(variablePosition), categoryStatistics);
-    
-    LOG.info(String.format("UNF[%d] = %s", variablePosition, unfValue));
-
-    return unfValue;
-  }
-  /**
-   * Parse an Array of Objects into an Integer UNF
-   * @param varData
-   * @return 
-   */
-  static private String parseUnfAsInteger (Object [] varData, int variablePosition) {
-    return "";
-  }
-  /**
-   * Parse an Array of Objects into a Double UNF
-   * @param varData
-   * @return 
-   */
-  static private String parseUnfAsDouble (Object [] varData, int variablePosition) {
-    return "";
-  }
-  
-  
-  /**
    * Read a Tabular Data File and create a "DataTable" Object
    * @param tabFile a File object specifying the location of tabular data
    * @return a "DataTable" object representing the 
@@ -821,7 +731,6 @@ public class RDATAFileReader extends StatDataFileReader {
   }
   
   private boolean isDateValue (String value) {
-    
     if (!isStringValue(value))
       return false;
     
@@ -975,7 +884,7 @@ public class RDATAFileReader extends StatDataFileReader {
               unfValue = UNF5Util.calculateUNF(stringEntries);
             }
 
-            LOG.finer("string:unfValue="+unfValue);
+            LOG.info(name + " (UNF) = "+unfValue);
 
             
             smd.getSummaryStatisticsTable().put(k, StatHelper.calculateSummaryStatistics(stringEntries));
@@ -988,6 +897,7 @@ public class RDATAFileReader extends StatDataFileReader {
             unfValue = null;
         }
         
+        LOG.info(name + " (UNF) = " + unfValue);
         unfValues[k] = unfValue;
       }
       catch (Exception ex) { }
@@ -1020,5 +930,26 @@ public class RDATAFileReader extends StatDataFileReader {
   private void setMissingValueTable () {
     smd.setMissingValueTable(null);
     // smd.getFileInformation().put("caseWeightVariableName", caseWeightVariableName);
+  }
+  
+  private boolean isDate (String value) {
+    for (SimpleDateFormat format : DATE_FORMATS) {
+      try {
+        format.parse(value);
+        return true;
+      }
+      catch (ParseException ex) {}
+    }
+    return false;
+  }
+  
+  private boolean isTime (String value) {
+     
+   for (SimpleDateFormat format : TIME_FORMATS) {
+      format.format(value);
+      return true;
+    }
+    
+    return false;
   }
 }

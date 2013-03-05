@@ -87,8 +87,22 @@ import org.apache.lucene.search.TermQuery;
 import org.apache.lucene.store.Directory;
 import org.apache.lucene.store.FSDirectory;
 import org.apache.lucene.document.Field;
+import org.apache.lucene.facet.index.CategoryDocumentBuilder;
+import org.apache.lucene.facet.search.FacetsCollector;
+import org.apache.lucene.facet.search.params.CountFacetRequest;
+import org.apache.lucene.facet.search.params.FacetSearchParams;
+import org.apache.lucene.facet.search.results.FacetResult;
+import org.apache.lucene.facet.search.results.FacetResultNode;
+import org.apache.lucene.facet.taxonomy.CategoryPath;
+import org.apache.lucene.facet.taxonomy.TaxonomyReader;
+import org.apache.lucene.facet.taxonomy.TaxonomyWriter;
+import org.apache.lucene.facet.taxonomy.directory.DirectoryTaxonomyReader;
+import org.apache.lucene.facet.taxonomy.directory.DirectoryTaxonomyWriter;
+import org.apache.lucene.index.IndexWriterConfig.OpenMode;
+import org.apache.lucene.search.MultiCollector;
 import org.apache.lucene.search.ScoreDoc;
 import org.apache.lucene.search.TermRangeQuery;
+import org.apache.lucene.search.TopScoreDocCollector;
 import org.apache.lucene.util.Version;
 
 /**
@@ -108,7 +122,9 @@ public class Indexer implements java.io.Serializable  {
     Directory dir;
     String indexDir = "index-dir";
     int dvnMaxClauseCount = Integer.MAX_VALUE;
-    
+    String taxoDirName = "taxo-dir";
+    Directory taxoDir;
+    private static DirectoryTaxonomyReader taxoReader;
 
     /** Creates a new instance of Indexer */
     public Indexer() {
@@ -134,6 +150,14 @@ public class Indexer implements java.io.Serializable  {
             dir = FSDirectory.open(new File(indexDir));
             r = IndexReader.open(dir, true);
             searcher = new IndexSearcher(r);
+        } catch (IOException ex) {
+            ex.printStackTrace();
+        }
+        // should we use System.getProperty("dvn.taxonomyindex.location") instead?
+        taxoDirName = dvnIndexLocation + "/" + taxoDirName;
+        try {
+            assureTaxoDirExists();
+            taxoDir = FSDirectory.open(new File(taxoDirName));
         } catch (IOException ex) {
             ex.printStackTrace();
         }
@@ -454,7 +478,31 @@ public class Indexer implements java.io.Serializable  {
 //        writer = new IndexWriter(dir, true, getAnalyzer(), isIndexEmpty());
             writer = new IndexWriter(dir, getAnalyzer(), isIndexEmpty(), IndexWriter.MaxFieldLength.UNLIMITED);
             writer.setUseCompoundFile(true);
+            TaxonomyWriter taxo = new DirectoryTaxonomyWriter(taxoDir, OpenMode.CREATE);
+            List<CategoryPath> categories = new ArrayList<CategoryPath>();
+            categories.add(new CategoryPath("dvName", study.getOwner().getName()));
+            categories.add(new CategoryPath("productionDate", metadata.getProductionDate()));
+            /**
+             * @todo add facets for authorName and authorAffiliation
+             */
+//            for (Iterator it = studyAuthors.iterator(); it.hasNext();) {
+//                StudyAuthor elem = (StudyAuthor) it.next();
+//                categories.add(new CategoryPath("authorName", elem.getName()));
+//                categories.add(new CategoryPath("authorAffiliation", elem.getAffiliation()));
+//            }
+            CategoryDocumentBuilder categoryDocBuilder = new CategoryDocumentBuilder(taxo);
+            categoryDocBuilder.setCategoryPaths(categories);
+            categoryDocBuilder.build(doc);
             writer.addDocument(doc);
+            // warnings from https://svn.apache.org/repos/asf/lucene/dev/tags/lucene_solr_3_5_0/lucene/contrib/facet/src/examples/org/apache/lucene/facet/example/simple/SimpleIndexer.java
+            // we commit changes to the taxonomy index prior to committing them to the search index.
+            // this is important, so that all facets referred to by documents in the search index 
+            // will indeed exist in the taxonomy index.
+            taxo.commit();
+            writer.commit();
+            // close the taxonomy index and the index - all modifications are 
+            // now safely in the provided directories: indexDir and taxoDir.
+            taxo.close();
             writer.close();
             
             writerVar = new IndexWriter(dir, getAnalyzer(), isIndexEmpty(), IndexWriter.MaxFieldLength.UNLIMITED);
@@ -1056,7 +1104,21 @@ public class Indexer implements java.io.Serializable  {
             initIndexSearcher();
             logger.fine("Start searcher: " + DateTools.dateToString(new Date(), Resolution.MILLISECOND));
             DocumentCollector s = new DocumentCollector(searcher);
-            searcher.search(query, s);
+            TopScoreDocCollector topScoreDocCollector = TopScoreDocCollector.create(10, true);
+            TaxonomyReader taxo = new DirectoryTaxonomyReader(taxoDir);
+            FacetSearchParams facetSearchParams = new FacetSearchParams();
+            facetSearchParams.addFacetRequest(new CountFacetRequest(new CategoryPath("dvName"), 10));
+            facetSearchParams.addFacetRequest(new CountFacetRequest(new CategoryPath("productionDate"), 10));
+            FacetsCollector facetsCollector = new FacetsCollector(facetSearchParams, r, taxo);
+            searcher.search(query, MultiCollector.wrap(s, facetsCollector));
+            List<FacetResult> resultList = facetsCollector.getFacetResults();
+            logger.info("facet results = = " + resultList.toString());
+            for (FacetResult result : resultList) {
+                logger.info("facet label = " + result.getFacetResultNode().getLabel() + " facet value = " + result.getFacetResultNode().getValue());
+                for (FacetResultNode node : result.getFacetResultNode().getSubResults()) {
+                    logger.info("--" + node.getLabel().lastComponent() + " (" + node.getValue() + ") [node.getLabel().lastComponent()]");
+                }
+            }
 //            searcher.close();
             logger.fine("done searcher: " + DateTools.dateToString(new Date(), Resolution.MILLISECOND));
             logger.fine("Start iterate: " + DateTools.dateToString(new Date(), Resolution.MILLISECOND));
@@ -1521,4 +1583,13 @@ public class Indexer implements java.io.Serializable  {
             logger.fine(indexDir + " created");
         }
     }
+    private void assureTaxoDirExists() {
+        File taxoDirFile = new File(taxoDirName);
+        if (!taxoDirFile.exists()) {
+            logger.info("Taxonomy directory does not exist - creating " + taxoDir);
+            taxoDirFile.mkdir();
+            logger.info(taxoDir + " created");
+        }
+    }
+
 }

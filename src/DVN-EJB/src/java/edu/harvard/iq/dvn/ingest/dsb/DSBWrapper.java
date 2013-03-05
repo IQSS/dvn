@@ -28,44 +28,42 @@
 package edu.harvard.iq.dvn.ingest.dsb;
 
 import edu.harvard.iq.dvn.unf.UNF5Util;
-import edu.harvard.iq.dvn.core.study.DataVariable;
 import edu.harvard.iq.dvn.core.study.FileMetadata;
 import edu.harvard.iq.dvn.core.study.StudyFile;
 import edu.harvard.iq.dvn.core.study.StudyFileEditBean;
 import edu.harvard.iq.dvn.core.study.StudyVersion;
-import edu.harvard.iq.dvn.core.study.TabularDataFile;
-import edu.harvard.iq.dvn.core.util.WebStatisticsSupport;
+import edu.harvard.iq.dvn.core.study.FileMetadataField;
+import edu.harvard.iq.dvn.core.study.FileMetadataFieldValue; 
+import edu.harvard.iq.dvn.core.study.StudyFieldServiceLocal; 
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.io.OutputStream;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
 import java.util.Map;
-import java.util.StringTokenizer;
-import javax.faces.context.FacesContext;
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.httpclient.HttpClient;
-import org.apache.commons.httpclient.MultiThreadedHttpConnectionManager;
-import org.apache.commons.httpclient.methods.PostMethod;
 
 
 import edu.harvard.iq.dvn.ingest.org.thedata.statdataio.*;
 import edu.harvard.iq.dvn.ingest.org.thedata.statdataio.metadata.*;
+import edu.harvard.iq.dvn.ingest.specialother.*;
 
 
 import java.io.BufferedInputStream;
 import java.io.FileOutputStream;
 import java.nio.channels.FileChannel;
+import javax.ejb.EJB;
+import javax.ejb.EJBException;
+import javax.ejb.Stateless;
+import javax.naming.Context;
+import javax.naming.InitialContext;
 
 import java.util.logging.Logger;
 
@@ -73,28 +71,22 @@ import java.util.logging.Logger;
  *
  * @author gdurand
  */
+//@Stateless
+@EJB(name="studyField", beanInterface=edu.harvard.iq.dvn.core.study.StudyFieldServiceLocal.class)
 public class DSBWrapper implements java.io.Serializable  {
+    //@EJB 
+    StudyFieldServiceLocal studyFieldService;
     
     private static Logger dbgLog = Logger.getLogger(DSBWrapper.class.getPackage().getName());
     private HttpClient client = null;
     
-    public static final String DSB_ANALYZE = "Analyze";
-    public static final String DSB_INGEST = "Ingest";
-    public static final String DSB_CALCULATE_UNF = "CalculateUNF";
-    public static final String DSB_GET_ZELIG_CONFIG = "GetZeligConfig";
-    public static final String DSB_DISSEMINATE = "Disseminate";
-    public static final String DSB_FILE_CONVERSION = "FileConversion";
-
-    private static final String FORMAT_TYPE_TAB = "D01";
-    private static final String FORMAT_TYPE_SPLUS = "D02";
-    private static final String FORMAT_TYPE_STATA = "D03";
-    private static final String FORMAT_TYPE_R = "D04";
-    
+    private static final String METADATA_SUMMARY = "FILE_METADATA_SUMMARY_INFO";
     
     /** Creates a new instance of DSBWrapper */
     public DSBWrapper() {
     }
 
+    /*
     public static boolean useNew(String verb) {
         String useNewProperty = System.getProperty("vdc.dsb.useNew");
         if (useNewProperty != null && verb != null) {
@@ -108,7 +100,8 @@ public class DSBWrapper implements java.io.Serializable  {
 
         return false;    
     }
-    
+    */
+    /*
     private String generateUrl(String verb) throws IOException{
         String dsbHost = System.getProperty("vdc.dsb.host");
         String dsbPort = System.getProperty("vdc.dsb.port");
@@ -131,14 +124,16 @@ public class DSBWrapper implements java.io.Serializable  {
         }
         
     }
-    
+    */
+    /*
     private HttpClient getClient() {
         if (client == null) {
             client = new HttpClient( new MultiThreadedHttpConnectionManager() );
         }
         return client;
     }
-    
+    */
+    /*
     private void executeMethod(PostMethod method) throws IOException {
         int state = getClient().executeMethod(method);
         
@@ -149,72 +144,9 @@ public class DSBWrapper implements java.io.Serializable  {
                     : "DSB Error");
         }
     }
+    * */
     
     
-    public String analyze(File f) throws IOException{
-        BufferedReader rd = null;
-        PostMethod method = null;
-        
-        try {
-            String fileType = null;
-            
-            // create method
-            method = new PostMethod(generateUrl(DSB_ANALYZE));
-            method.addParameter("file_name", f.getName());
-            method.addParameter("file_header", new String(Base64.encodeBase64(getHeaderFromFile(f))) );
-            
-            // execute
-            executeMethod(method);
-            
-            // parse the response
-            rd = new BufferedReader(new InputStreamReader(method.getResponseBodyAsStream()  ));
-            String line;
-            while ((line = rd.readLine()) != null) {
-                System.out.println(line);
-                int startIndex = line.indexOf("<mime>");
-                if (startIndex != -1) {
-                    int endIndex = line.indexOf("</mime>");
-                    fileType = line.substring( startIndex+6,endIndex );
-                    //break;
-                }
-            }
-            
-            return fileType;
-            
-        } finally {
-            if (method != null) { method.releaseConnection(); }
-            try {
-                if (rd != null) { rd.close(); }
-            } catch (IOException ex) {
-            }
-        }
-    }
-    
-    private static byte[] getHeaderFromFile(File f) throws IOException{
-        FileInputStream fin = null;
-        try {
-            byte[] header = new byte[1024];
-            fin = new FileInputStream(f);
-            
-            // Get the first 'headerLength' bytes from the file
-            if (f.length() > 1024) {
-                fin.read(header, 0, 1024);
-            } else {
-                //byte[] b = new byte[(int) f.length()];
-                header = new byte[(int) f.length()];
-                //fin.read(b);
-                fin.read(header);
-            }
-            
-            return header;
-            
-        } finally {
-            try {
-                if (fin != null) { fin.close(); }
-            } catch (IOException ex) {
-            }
-        }
-    }
     
     public String ingest(StudyFileEditBean file)throws IOException{
         dbgLog.fine("***** DSBWrapper: ingest(): start *****\n");
@@ -224,7 +156,7 @@ public class DSBWrapper implements java.io.Serializable  {
         BufferedInputStream infile = null;
    
         // ingest-source file
-        File tempFile = new File(file.getTempSystemFileLocation()); //
+        File tempFile = new File(file.getTempSystemFileLocation()); 
         SDIOData sd = null;
 
         if (file.getControlCardSystemFileLocation() == null) {
@@ -240,22 +172,24 @@ public class DSBWrapper implements java.io.Serializable  {
            Iterator<StatDataFileReader> itr =
                 StatDataIO.getStatDataFileReadersByMIMEType(mime_type);
 
-            if (!itr.hasNext()){ 
+            if (itr.hasNext()){                 
+                // use the first Subsettable data reader
+                StatDataFileReader sdioReader = itr.next();
+
+                dbgLog.info("reader class name="+sdioReader.getClass().getName());
+
+                if (mime_type != null){
+                    sd = sdioReader.read(infile, null);
+                } else {
+                    // fail-safe block if mime_type is null
+                    // check the format type again and then read the file
+                    dbgLog.info("mime-type was null: use the back-up method");
+                    sd = StatDataIO.read(infile, null);
+                }
+            } else {
+                
                 throw new IllegalArgumentException("No FileReader Class found" +
                     " for this mime type="+ mime_type);
-            }
-            // use the first reader
-            StatDataFileReader sdioReader = itr.next();
-
-            dbgLog.info("reader class name="+sdioReader.getClass().getName());
-
-            if (mime_type != null){
-                sd = sdioReader.read(infile, null);
-            } else {
-                // fail-safe block if mime_type is null
-                // check the format type again and then read the file
-                dbgLog.info("mime-type was null: use the back-up method");
-                sd = StatDataIO.read(infile, null);
             }
         } else {
             // This is a 2-file ingest.
@@ -297,7 +231,8 @@ public class DSBWrapper implements java.io.Serializable  {
             sd = sdioReader.read(infile, rawDataFile);
             
         }
-            
+        
+        if (sd != null) {
         SDIOMetadata smd = sd.getMetadata();
 
         // tab-file: source file
@@ -362,8 +297,61 @@ public class DSBWrapper implements java.io.Serializable  {
 
 
         return ddi;
+        }
+        return null; 
     }
 
+    
+    public void ingestSpecialOther(StudyFileEditBean file) throws IOException {
+        dbgLog.fine("***** DSBWrapper: ingestSpecialOther(): start *****\n");
+
+        File tempFile = new File(file.getTempSystemFileLocation());
+
+        BufferedInputStream infile = null;
+
+        String mime_type = file.getStudyFile().getFileType();
+
+        infile = new BufferedInputStream(new FileInputStream(tempFile));
+
+        dbgLog.info("\nfile mimeType=" + mime_type + "\n\n");
+
+        if (mime_type == null || mime_type.equals("")) {
+            throw new IllegalArgumentException("No mime type provided!");
+        }
+
+        // get available FileIngesters for this MIME-type
+        FileIngester fileIngester = null; 
+        Iterator<FileIngester> itr = OtherFileIngestSP.getFileIngestersByMIMEType(mime_type);
+        Map<String, Set<String>> fileLevelMetadata = null;
+
+        if (itr.hasNext()) {
+            // use the first Subsettable data reader
+            fileIngester = itr.next();
+
+            dbgLog.info("reader class name=" + fileIngester.getClass().getName());
+            dbgLog.info("format name=" + fileIngester.getFormatName()); 
+
+
+            fileLevelMetadata = fileIngester.ingest(infile);
+
+        } else {
+
+            throw new IllegalArgumentException("No FileReader Class found"
+                    + " for this mime type=" + mime_type);
+        }
+        
+        // attempt to ingest the extracted metadata into the database; 
+        // TODO: this should throw an exception if anything goes wrong.
+        StudyFile studyFile = file.getStudyFile();
+        FileMetadata fileMetadata = file.getFileMetadata();
+
+        
+        if (fileLevelMetadata != null) {
+            //ingestFileLevelMetadata(fileLevelMetadata, file.getFileMetadata(), fileIngester.getFormatName());
+            ingestFileLevelMetadata(fileLevelMetadata, studyFile, fileMetadata, fileIngester.getFormatName());
+        }
+    }
+    
     public static void validateControlCard(File controlCardFile, String controlCardType)throws IOException{
         dbgLog.fine("***** DSBWrapper: validateControlCard(): start *****\n");
 
@@ -486,6 +474,119 @@ public class DSBWrapper implements java.io.Serializable  {
         }
     }
     
+    private void ingestFileLevelMetadata (Map<String, Set<String>> fileLevelMetadata, StudyFile studyFile, FileMetadata fileMetadata, String fileFormatName) {
+        // First, add the "metadata summary" generated by the file reader/ingester
+        // to the fileMetadata object, as the "description":
+        
+        Set<String> metadataSummarySet = fileLevelMetadata.get(METADATA_SUMMARY); 
+        if (metadataSummarySet != null && metadataSummarySet.size() > 0) {
+            String metadataSummary = ""; 
+            for (String s : metadataSummarySet) {
+                metadataSummary = metadataSummary.concat(s);
+            }
+            if (!metadataSummary.equals("")) {
+                // The AddFiles page allows a user to enter file description 
+                // on ingest. We don't want to overwrite whatever they may 
+                // have entered. Rather, we'll append our metadata summary 
+                // to the existing value. 
+                String userEnteredFileDescription = fileMetadata.getDescription();
+                if (userEnteredFileDescription != null 
+                        && !(userEnteredFileDescription.equals(""))) {
+                    
+                    metadataSummary = 
+                            userEnteredFileDescription.concat("\n"+metadataSummary);
+                }
+                fileMetadata.setDescription(metadataSummary);
+            }
+            
+            fileLevelMetadata.remove(METADATA_SUMMARY);
+        }
+        
+        // And now we can go through the reamining key/value pairs in the 
+        // metadata maps and process the metadata elements found in the 
+        // file: 
+        
+        for (String mKey : fileLevelMetadata.keySet()) {
+            
+            Set<String> mValues = fileLevelMetadata.get(mKey); 
+            
+            // Check if the field doesn't exist yet:
+            
+            try {
+                Context ctx = new InitialContext();
+                studyFieldService = (StudyFieldServiceLocal) ctx.lookup("java:comp/env/studyField"); 
+            } catch (Exception ex) {
+                dbgLog.info("Caught an exception looking up StudyField Service; "+ex.getMessage());
+            }
+            if (studyFieldService == null) {
+                dbgLog.warning("No StudyField Service; exiting file-level metadata ingest.");
+                return; 
+            }
+            
+            dbgLog.fine("Looking up file meta field "+mKey+", file format "+fileFormatName);
+            FileMetadataField fileMetaField = studyFieldService.findFileMetadataFieldByNameAndFormat(mKey, fileFormatName);
+            
+            if (fileMetaField == null) {
+                //fileMetaField = studyFieldService.createFileMetadataField(mKey, fileFormatName); 
+                fileMetaField = new FileMetadataField(); 
+                
+                if (fileMetaField == null) {
+                    dbgLog.warning("Failed to create a new File Metadata Field; skipping.");
+                    continue; 
+                }
+                
+                fileMetaField.setName(mKey);
+                fileMetaField.setFileFormatName(fileFormatName);               
+                // TODO: provide meaningful descriptions and labels:
+                fileMetaField.setDescription(mKey);
+                fileMetaField.setTitle(mKey); 
+                
+                try {
+                    studyFieldService.saveFileMetadataField(fileMetaField);
+                } catch (Exception ex) {
+                    dbgLog.warning("Failed to save new file metadata field ("+mKey+"); skipping values.");
+                    continue; 
+                }
+                
+                dbgLog.fine("Created file meta field "+mKey); 
+            }
+            
+            String fieldValueText = null;
+            
+            if (mValues != null) {
+                for (String mValue : mValues) {
+                    if (mValue != null) {
+                        if (fieldValueText == null) {
+                            fieldValueText = mValue;
+                        } else {
+                            fieldValueText = fieldValueText.concat(" ".concat(mValue)); 
+                        }
+                    } 
+                }   
+            }
+            
+            FileMetadataFieldValue fileMetaFieldValue = null; 
+            
+            if (!"".equals(fieldValueText)) {
+                dbgLog.fine("Attempting to create a file meta value for study file "+studyFile.getId()+", value "+fieldValueText);
+                if (studyFile != null) {
+                    fileMetaFieldValue =
+                            new FileMetadataFieldValue(fileMetaField, studyFile, fieldValueText);
+                }
+            }
+            if (fileMetaFieldValue == null) {
+                dbgLog.warning ("Failed to create a new File Metadata Field value; skipping");
+                continue;
+            } else {
+                if (studyFile.getFileMetadataFieldValues() == null) {
+                    studyFile.setFileMetadataFieldValues(new ArrayList<FileMetadataFieldValue>());
+                }
+                studyFile.getFileMetadataFieldValues().add(fileMetaFieldValue);
+            }
+        }
+    }
+    
+    /*
     public String calculateUNF(List unfs) throws IOException{
         PostMethod method = null;
         
@@ -512,26 +613,10 @@ public class DSBWrapper implements java.io.Serializable  {
             if (method != null) { method.releaseConnection(); }
         }
     }
+    * */
     
-    public String getZeligConfig() throws IOException{
-        PostMethod method = null;
-        
-        try {
-            // create method
-            method = new PostMethod(generateUrl(DSB_GET_ZELIG_CONFIG));
-            
-            // execute
-            executeMethod(method);
-            
-            // parse the response
-            String zeligConfig = method.getResponseBodyAsString();
-            return zeligConfig;
-            
-        } finally {
-            if (method != null) { method.releaseConnection(); }
-        }
-    }
     
+    /*
     public void disseminate(HttpServletResponse res, TabularDataFile tdf, String serverPrefix, String formatType) throws IOException{
         Map parameters = new HashMap();
         List variables = tdf.getDataTable().getDataVariables();
@@ -633,7 +718,8 @@ public class DSBWrapper implements java.io.Serializable  {
             if (out != null) { out.close(); }
         }
     }
-    
+    */
+    /*
     public List generateVariableListForDisseminate(List dvs) {
         List variableList = new ArrayList();
         if (dvs != null) {
@@ -645,7 +731,9 @@ public class DSBWrapper implements java.io.Serializable  {
         }
         return variableList;
     }
+    * */
     
+    /*
     private String generateUrlForDDI(String serverPrefix, Long fileId) {
         String studyDDI = serverPrefix + "/ddi/?fileId=" + fileId;
         System.out.println(studyDDI);
@@ -661,7 +749,14 @@ public class DSBWrapper implements java.io.Serializable  {
         System.out.println(file);
         return file;
     }
+    * */
 
+    
+    /* the method below, isDSBRequest() is still being used by some servlets, 
+     * so it can't be removed from here just yet. however, there's really no 
+     * need for the method to be used anywhere in the app - since we don't have 
+     * a DSB server that may call the app back anymore... -- L.A. 
+     */
     public static boolean isDSBRequest(HttpServletRequest req) {
         boolean dsbRequest = false;
         

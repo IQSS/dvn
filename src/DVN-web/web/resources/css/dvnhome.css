@@ -6,9 +6,13 @@ a.dvn_more:link,a.dvn_more:visited,a.dvn_more:hover,a.dvn_more:active{color:#6D0
 /* ACTION BOX */
 .dvhmpgdescactionboxblock{overflow:hidden}
 .dvhmpgactionboxfloat{float:right; width:310px; text-align:left}
-.dvhmpgactionbox{width:300px; overflow:hidden; border:1px solid #d0d0d0; padding:4px; color:#526F76}
-.dvhmpgactionbox a:link,.dvhmpgactionbox a:visited,.dvhmpgactionbox a:hover,.dvhmpgactionbox a:active{color:#C55B28}
+.dvhmpgactionbox{padding:4px; color:#FFF; background:#C55B28}
+.dvhmpgactionbox a:link,.dvhmpgactionbox a:visited,.dvhmpgactionbox a:hover,.dvhmpgactionbox a:active{color:#FFF}
 .dvhmpgactionbox div div span{font-weight:bold; text-transform:uppercase}
+/* NEW SEARCH */
+#dvnHomePgSearch {text-align:center;}
+#dvnHomePgSearch fieldset fieldset {width:400px; margin:0 auto; background:#EEEEEE;}
+#dvnHomePgSearch fieldset fieldset label input {font-size:1.25em !important;}
 /* SEARCH */
 div.dvn_searchblock{margin-bottom:12px;padding:4px 12px;background:#F2F2F2;border:1px solid #ddd;text-align:left;overflow:hidden;}
 .dvnSearchBoxCheckbox{display:block;text-align:left;}
@@ -39,30 +43,43 @@ div.iceTree div.iceTreeRow div.iceTreeRow div.iceTreeRow {border-bottom:1px dott
 div.iceTree div.iceTreeRow div.iceTreeRow div.iceTreeRow:first-child {border-top:1px dotted #DCDDDF}
 div.iceTree div.iceTreeRow div.iceTreeRow div.iceTreeRow div.icePnlGrp {}
 div.iceTree div.iceTreeRow div.iceTreeRow div.iceTreeRow div.iceTreeRow div.icePnlGrp a {}
-.theMenuContainer{text-align:left}
-.theMenuContainer ul,.theMenuContainer li{margin:0;padding:0;list-style-type:none;list-style-image:none}
-.theMenuContainer h3,.theMenuContainer h4{margin:0;padding:0}
-#navigation{margin:0;padding:0;text-indent:0;width:100%}
-#navigation ul,#navigation li{margin:0;padding:0;border-top:1px solid white}
-#navigation li ul li ul li ul li{margin:0;padding:0;border-bottom:1px solid white}
-.theMenuContainer a{outline:0}
-.xtraMenu{background-color:white}
-h3.head a{display:block;background:#dadee0 url(/dvn/resources/images/menudown.gif) no-repeat;background-position:98% 50%;padding:.5em 26px .5em .5em}
-h3.head a:hover{background:#c55b28 url(/dvn/resources/images/menudown.gif) no-repeat;background-position:98% 50%;padding:.5em 26px .5em .5em;color:white}
-h3.selected a{background:silver url(/dvn/resources/images/menuup.gif) no-repeat;background-position:98% 50%;padding:.5em 26px .5em .5em}
-h3.selected a:hover{background:#c55b28 url(/dvn/resources/images/menuup.gif) no-repeat;background-position:98% 50%;padding:.5em 26px .5em .5em;color:white}
-h3.head span{background:#DADEE0;display:block;padding:.5em 26px .5em .5em;font-weight:normal;}
+
+#dvClassificationMenu{margin:0;padding:0;text-indent:0;width:100%;text-align:left}
+#dvClassificationMenu h3,#dvClassificationMenu h4{margin:0;padding:0}
+#dvClassificationMenu ul,#dvClassificationMenu li{margin:0;padding:0;list-style-type:none;list-style-image:none;border-bottom:1px dotted #D9D9D9}
+#dvClassificationMenu ul {overflow:hidden; width:100%}
+#dvClassificationMenu li {float:left; width:50%}
+#dvClassificationMenu li li {float:none; width:100%}
+#dvClassificationMenu li a {padding:3px 5px; display:inline}
+#dvClassificationMenu li span.dvnHmpgClassificationCount {display:inline; margin-right:.5em; color:grey !important; font-weight:normal !important}
+#dvClassificationMenu ul li ul, #dvClassificationMenu ul li ul li{margin:0;padding:0;border:0;}
+#dvClassificationMenu a{outline:0}
+
+#dvClassificationMenu h3.head {margin-top:1em; margin-bottom:10px;}
+h3.head a{display:block;background:transparent url(/dvn/resources/images/menudown.gif) no-repeat;background-position:98% 50%}
+h3.head a:hover{background:transparent url(/dvn/resources/images/menudown.gif) no-repeat;background-position:98% 50%}
+h3.selected a{background:transparent url(/dvn/resources/images/menuup.gif) no-repeat;background-position:98% 50%}
+h3.selected a:hover{background:transparent url(/dvn/resources/images/menuup.gif) no-repeat;background-position:98% 50%}
+h3.head span{display:block;font-weight:normal;color:#C55B28;text-transform:uppercase;}
 h3.head a span {background:none;padding:0;}
-h4.head a{display:block;background:transparent url(/dvn/resources/images/menudown.gif) no-repeat;padding:0 26px 0 .5em;background-position:98% 50%}
-h4.head a:hover{background:#c55b28 url(/dvn/resources/images/menudown.gif) no-repeat;background-position:98% 50%;padding:0 26px 0 .5em;color:white}
-h4.selected a{background:transparent url(/dvn/resources/images/menuup.gif) no-repeat;background-position:98% 50%;padding:0 26px 0 .5em;font-weight:700}
-h4.selected a:hover{background:#c55b28 url(/dvn/resources/images/menuup.gif) no-repeat;background-position:98% 50%;padding:0 26px 0 .5em;color:white}
-h4.dvnHmpgAllDataverses a{background:silver;display:block;padding:.5em 26px .5em .5em;font-weight:normal !important;}
-h4.dvnHmpgAllDataverses a:hover{background:#c55b28;display:block;padding:.5em 26px .5em .5em;color:white;}
+
+#dvClassificationMenu ul.head-top {padding-bottom:18px;border-bottom:1px solid #C55B28;}
+
+h4.head {margin-right:1em !important;padding:0 26px 0 0 !important;background:transparent url(/dvn/resources/images/menudown.gif) no-repeat;background-position:98% 50%}
+h4.head a{display:block}
+h4.selected {background:transparent url(/dvn/resources/images/menuup.gif) no-repeat;background-position:98% 50%}
+h4.selected a{font-weight:700}
+
 h3.noSubNode,h3.noSubNode a,h3.noSubNode a:hover,h4.noSubNode,h4.noSubNode a,h4.noSubNode a:hover{background-image:none}
-.xtraMenu ul li a:link,.xtraMenu ul li a:visited,.xtraMenu ul li a:hover,.xtraMenu ul li a:active{padding-left:1.25em;display:block}
-.xtraMenu ul li a:hover{background:#c55b28;color:white}
+.xtraMenu ul li a:link,.xtraMenu ul li a:visited,.xtraMenu ul li a:hover,.xtraMenu ul li a:active{display:block;}
+.xtraMenu ul li a span{font-size:90% !important;}
+.xtraMenu ul li ul li a {margin-left:1.25em;}
 a.lastNodeActive:link{font-weight:700}
+
+.dvnHmpgDataverseWidgetTable, .dvnHmpgDataverseWidgetTable tr, .dvnHmpgDataverseWidgetTable td, .dvnHmpgStudyWidgetTable, .dvnHmpgStudyWidgetTable tr, .dvnHmpgStudyWidgetTable td {border:0;}
+.dvnHmpgDataverseWidgetTable td, .dvnHmpgStudyWidgetTable td {border-bottom:1px dotted #D9D9D9;}
+img.dvnHmpgStudyFileIcon {margin-right:.5em !important; vertical-align:middle}
+
 /* DATAVERSE LIST TABLE + ALPHA SORT */
 .dvnHmpgGroupHeaderBlock{width:100%;margin-bottom:.25em;overflow:hidden}
 span.dvnHmpgGroupHeader{float:left;font-size:150% !important;font-weight:700}
@@ -114,8 +131,8 @@ td.dvn_StudyListTotals{text-align:right;width:100%;padding:.5em}
 td.dvn_StudyListSort{padding:.25em}
 .dvnStudyListStudyInfo{background:inherit}
 span.dvnStudyListStudyAuthor{font-size:90% !important}
-.dvnStudyRestricted{background-image:url(/dvn/resources/images/icon_restricted.18.png);background-repeat:no-repeat;background-position:left .25em;padding-left:22px}
-.dvnStudyPublic{background-image:url(/dvn/resources/images/icon_public.18.png);background-repeat:no-repeat;background-position:left .25em;padding-left:22px}
+.dvnStudyRestricted{background-image:url(/dvn/resources/images/icon_restricted.18.png);background-repeat:no-repeat;background-position:left .1em;padding-left:22px}
+.dvnStudyPublic{background-image:url(/dvn/resources/images/icon_public.18.png);background-repeat:no-repeat;background-position:left .1em;padding-left:22px}
 .dvnStudyListIDDownloads{padding:0 10px;border-left:1px solid #dcdddf !important}
 .dvnStudyListIDDownloads span{font-size:90% !important;color:gray}
 .dvnStudyListIDDownloads .dvnStudyListDownloadCount{white-space:nowrap}

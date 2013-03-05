@@ -505,6 +505,10 @@ public class DataverseGrouping extends SortableList {
           checkSort();
        return childItems;
    }
+  
+  public Integer getDvCount(){
+      return this.childItems.size();
+  }
 
    @SuppressWarnings("unchecked")
   public ArrayList<DataverseGrouping> getXtraItems() {

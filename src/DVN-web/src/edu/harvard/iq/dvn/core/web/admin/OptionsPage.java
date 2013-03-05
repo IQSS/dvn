@@ -1904,13 +1904,14 @@ public class OptionsPage extends VDCBaseBean  implements java.io.Serializable {
             if (vdc != null) {
                 nameFound=true;
             }            
-            if (nameFound) {
+            if (nameFound && (!vdc.getId().equals(thisVDC.getId()))) {
                 ((UIInput)toValidate).setValid(false);  
                 generalDVSettingsValid = false;
                 FacesMessage message = new FacesMessage("This name is already taken.");
                 context.addMessage(toValidate.getClientId(context), message);
             }
         }
+        System.out.print("end of validate...");
     }
 
     public void validateAlias(FacesContext context, UIComponent toValidate, Object value) {
@@ -1931,7 +1932,7 @@ public class OptionsPage extends VDCBaseBean  implements java.io.Serializable {
                 aliasFound = true;
             }
 
-            if (aliasFound) {
+            if (aliasFound && (!vdc.getId().equals(thisVDC.getId()))) {
                 ((UIInput) toValidate).setValid(false);
                 generalDVSettingsValid = false;
                 FacesMessage message = new FacesMessage("This alias is already taken.");

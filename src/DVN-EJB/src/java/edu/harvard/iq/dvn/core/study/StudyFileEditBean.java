@@ -75,7 +75,7 @@ public class StudyFileEditBean implements Serializable {
         dbgLog.fine("reached before studyFile constructor");
 
         String fileType = FileUtil.determineFileType(file);
-        dbgLog.fine("return from FileUtil.determineFileType(file), fileType="+fileType);
+        dbgLog.info("return from FileUtil.determineFileType(file), fileType="+fileType);
 
         // boolean asOtherMaterial flag is to force uploading a potentially
         // subsettable file as a non-subsettable ("Other Material") data file. 
@@ -83,12 +83,17 @@ public class StudyFileEditBean implements Serializable {
         if (!asOtherMaterial && (
                 fileType.equals("application/x-stata") ||
                 fileType.equals("application/x-spss-por") ||
-                fileType.equals("application/x-spss-sav") ) ) {
+                fileType.equals("application/x-spss-sav") ||
+                fileType.equals("application/x-rlang-transport")
+                ) ) {
             dbgLog.fine("tablularFile");
             this.studyFile = new TabularDataFile(); // do not yet attach to study, as it has to be ingested
         } else if (!asOtherMaterial && fileType.equals("text/xml-graphml")) {
             dbgLog.fine("isGraphMLFile = true");
             this.studyFile = new NetworkDataFile();
+        } else if (!asOtherMaterial && fileType.equals("application/fits")) {
+            this.studyFile = new SpecialOtherFile();
+            dbgLog.fine("FITS file");
         } else    {
             this.studyFile = new OtherFile(study);
         }

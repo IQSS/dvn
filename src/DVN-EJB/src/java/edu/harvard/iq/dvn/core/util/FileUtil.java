@@ -35,6 +35,7 @@ import edu.harvard.iq.dvn.core.study.StudyFile;
 import edu.harvard.iq.dvn.core.study.TabularDataFile;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.BufferedInputStream; 
 import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.IOException;
@@ -67,6 +68,7 @@ public class FileUtil implements java.io.Serializable  {
         STATISTICAL_SYNTAX_FILE_EXTENSION.put("do",  "x-stata-syntax");
         STATISTICAL_SYNTAX_FILE_EXTENSION.put("sas", "x-sas-syntax");
         STATISTICAL_SYNTAX_FILE_EXTENSION.put("sps", "x-spss-syntax");
+        STATISTICAL_SYNTAX_FILE_EXTENSION.put("rdat", "x-rdata-syntax");
     }
     
     private static MimetypesFileTypeMap MIME_TYPE_MAP = new MimetypesFileTypeMap();
@@ -154,12 +156,26 @@ public class FileUtil implements java.io.Serializable  {
         fileType = sfchk.detectSubsettableFormat(f);
         
         dbgLog.info("determineFileType: subs. checker found "+fileType);
-        // step 2: If not found, check if graphml
+        
+        String fileExtension = getFileExtension(fileName);
+        dbgLog.fine("fileExtension="+fileExtension);
+        
+        // step 2: If not found, check if graphml or FITS
         if (fileType==null) {
             if (isGraphMLFile(f))  {
                 fileType = "text/xml-graphml";
+            } else // Check for FITS:
+            // our check is fairly weak (it appears to be hard to really
+            // really recognize a FITS file without reading the entire 
+            // stream...), so we insist on *both* the ".fits" extension and 
+            // the header check: 
+            if (fileExtension != null
+                    && fileExtension.equalsIgnoreCase("fits")
+                    && isFITSFile(f)) {
+                fileType = "application/fits";
             }
         }
+       
         dbgLog.fine("before jhove");
         // step 3: check the mime type of this file with Jhove
         if (fileType == null){
@@ -170,8 +186,6 @@ public class FileUtil implements java.io.Serializable  {
         // step 3: handle Jhove fileType (if we have an extension)
         // if text/plain and syntax file, replace the "plain" part
         // if application/octet-stream, check for mime type by extension
-        String fileExtension = getFileExtension(fileName);
-        dbgLog.fine("fileExtension="+fileExtension);
         
         if ( fileExtension != null) {
             if (fileType.startsWith("text/plain")){
@@ -391,7 +405,40 @@ public class FileUtil implements java.io.Serializable  {
         dbgLog.fine("end isGraphML()");
         return isGraphML;
     }
-    
+       
+       private static boolean isFITSFile (File file) {
+           boolean isFITS = false; 
+           
+           // number of header bytes read for identification: 
+           int magicWordLength = 6; 
+           String magicWord = "SIMPLE";
+           
+           BufferedInputStream ins = null; 
+           
+           try {
+                ins = new BufferedInputStream (new FileInputStream(file)); 
+                
+                byte[] b = new byte[magicWordLength];
+
+                if (ins.read(b, 0, magicWordLength) != magicWordLength) {
+                    throw new IOException(); 
+                }
+
+                if (magicWord.equals(new String(b))) {
+                    isFITS = true;
+                } 
+           } catch (IOException ex) {
+               isFITS = false;  
+           } finally {
+               if (ins != null) {
+                   try {
+                       ins.close();
+                   } catch (Exception e) {}
+               }
+           }
+           
+           return isFITS;
+       }  
     //-----------------------------------------------------------------------
     /**
      * This borrows from Apache commons io FileUtils, with a slightly finer

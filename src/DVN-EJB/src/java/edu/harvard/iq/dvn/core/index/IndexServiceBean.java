@@ -461,6 +461,10 @@ public class IndexServiceBean implements edu.harvard.iq.dvn.core.index.IndexServ
         return matchingStudyIds == null ? new ArrayList() : matchingStudyIds;
     }
 
+    /*
+     * This version of searchVariables method doesn't seem to be needed any 
+     * more; plus it doesn't seem to be implemented properly anyway. 
+     * Removing (?). 
     public List searchVariables(SearchTerm searchTerm) {
         Indexer indexer = Indexer.getInstance();
         List matchingStudyIds = new ArrayList();
@@ -473,6 +477,7 @@ public class IndexServiceBean implements edu.harvard.iq.dvn.core.index.IndexServ
         Map variableMap = new HashMap();
         return matchingStudyIds;
     }
+    * */
 
     public List searchVariables(VDC vdc, SearchTerm searchTerm) {
         List studyIds = vdc != null ? listVdcStudyIds(vdc) : null;

@@ -141,6 +141,10 @@ public class VDCGroup implements Serializable {
         return this.vdcs;
     }
 
+    public Integer getVdcCount() {
+        return this.vdcs.size();
+    }
+    
     /**
      * Setter for property memberVdcs.
      * @param memberVdcs New value of property memberVdcs.

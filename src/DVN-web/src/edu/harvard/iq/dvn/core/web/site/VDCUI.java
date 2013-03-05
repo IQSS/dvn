@@ -146,6 +146,11 @@ public class VDCUI  implements java.io.Serializable {
                 (.5 * vda.getLocalStudyForeignDownloadCount()) + (.5 * vda.getForeignStudyLocalDownloadCount()) );
     }
 
+    public int getDownloadCountInteger() {
+        VDCActivity vda = getVdc().getVDCActivity();
+        return ( vda.getLocalStudyLocalDownloadCount() + vda.getLocalStudyNetworkDownloadCount());
+    }
+    
     public String getLastUpdateTime() {
         if (lastUpdateTimeString == null) {
         // use date of most recently updated owned study

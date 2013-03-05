@@ -4,5 +4,4 @@ edu.harvard.iq.dvn.ingest.statdataio.impl.plugins.por.PORFileReaderSpi
 edu.harvard.iq.dvn.ingest.statdataio.impl.plugins.sav.SAVFileReaderSpi
 edu.harvard.iq.dvn.ingest.statdataio.impl.plugins.spss.SPSSFileReaderSpi
 edu.harvard.iq.dvn.ingest.statdataio.impl.plugins.ddi.DDIFileReaderSpi
-
-
+edu.harvard.iq.dvn.ingest.statdataio.impl.plugins.rdata.RDATAFileReaderSpi

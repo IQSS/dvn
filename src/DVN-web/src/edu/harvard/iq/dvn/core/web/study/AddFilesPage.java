@@ -73,6 +73,7 @@ import edu.harvard.iq.dvn.core.util.StringUtil;
 //import edu.harvard.iq.dvn.ingest.org.thedata.statdataio.metadata.*;
 import edu.harvard.iq.dvn.ingest.dsb.DSBWrapper;
 import edu.harvard.iq.dvn.core.study.TabularDataFile;
+import edu.harvard.iq.dvn.core.study.SpecialOtherFile; 
 import javax.faces.bean.ViewScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -813,9 +814,16 @@ public class AddFilesPage extends VDCBaseBean implements java.io.Serializable {
         return false;
     }
     
+    public boolean isFITSIngestRequested() {
+        if ("fits".equals(selectFileType.getValue())) {
+            return true;
+        }
+        return false; 
+    }
+    
     public boolean isEmailRequested() {
         for (StudyFileEditBean fileBean : fileList) {
-            if (fileBean.getStudyFile().isSubsettable()) {
+            if (fileBean.getStudyFile().isSubsettable() || (fileBean.getStudyFile() instanceof SpecialOtherFile) ) {
                 return true;
             }
         }
@@ -922,7 +930,7 @@ public class AddFilesPage extends VDCBaseBean implements java.io.Serializable {
         if (fileTypes == null) {
             fileTypes = new ArrayList();
 
-            fileTypesSubsettable = new SelectItem[6];
+            fileTypesSubsettable = new SelectItem[7];
             fileTypesNetwork = new SelectItem[1];
             //fileTypesOther = new SelectItem[1];
 
@@ -933,6 +941,7 @@ public class AddFilesPage extends VDCBaseBean implements java.io.Serializable {
             fileTypesSubsettable[3] = new SelectItem("spss", "CSV (w/SPSS card)");
             fileTypesSubsettable[4] = new SelectItem("ddi", "TAB (w/DDI)");
             fileTypesSubsettable[5] = new SelectItem("porextra", "SPSS/POR,(w/labels)");
+            fileTypesSubsettable[6] = new SelectItem("rdata", "RData");
 
             fileTypes.add( new SelectItemGroup("Tabular Data", "", false, fileTypesSubsettable) );
 
@@ -941,6 +950,7 @@ public class AddFilesPage extends VDCBaseBean implements java.io.Serializable {
             fileTypes.add( new SelectItemGroup("Network Data", "", false, fileTypesNetwork) );
             
             fileTypes.add( new SelectItem("multizip", "Zip Archive (Multiple Files)"));
+            fileTypes.add( new SelectItem("fits", "FITS file"));
             fileTypes.add( new SelectItem("other", "Other") );
         }
 

@@ -51,6 +51,9 @@ import edu.harvard.iq.dvn.core.study.StudySoftware;
 import edu.harvard.iq.dvn.core.study.StudyTopicClass;
 import edu.harvard.iq.dvn.core.study.StudyVersion;
 import edu.harvard.iq.dvn.core.study.TabularDataFile;
+import edu.harvard.iq.dvn.core.study.SpecialOtherFile; 
+import edu.harvard.iq.dvn.core.study.FileMetadataField; 
+import edu.harvard.iq.dvn.core.study.FileMetadataFieldValue;
 import java.io.File;
 import java.io.IOException;
 import java.io.StringReader;
@@ -84,8 +87,22 @@ import org.apache.lucene.search.TermQuery;
 import org.apache.lucene.store.Directory;
 import org.apache.lucene.store.FSDirectory;
 import org.apache.lucene.document.Field;
+import org.apache.lucene.facet.index.CategoryDocumentBuilder;
+import org.apache.lucene.facet.search.FacetsCollector;
+import org.apache.lucene.facet.search.params.CountFacetRequest;
+import org.apache.lucene.facet.search.params.FacetSearchParams;
+import org.apache.lucene.facet.search.results.FacetResult;
+import org.apache.lucene.facet.search.results.FacetResultNode;
+import org.apache.lucene.facet.taxonomy.CategoryPath;
+import org.apache.lucene.facet.taxonomy.TaxonomyReader;
+import org.apache.lucene.facet.taxonomy.TaxonomyWriter;
+import org.apache.lucene.facet.taxonomy.directory.DirectoryTaxonomyReader;
+import org.apache.lucene.facet.taxonomy.directory.DirectoryTaxonomyWriter;
+import org.apache.lucene.index.IndexWriterConfig.OpenMode;
+import org.apache.lucene.search.MultiCollector;
 import org.apache.lucene.search.ScoreDoc;
 import org.apache.lucene.search.TermRangeQuery;
+import org.apache.lucene.search.TopScoreDocCollector;
 import org.apache.lucene.util.Version;
 
 /**
@@ -98,13 +115,16 @@ public class Indexer implements java.io.Serializable  {
     private static IndexWriter writer;
     private static IndexWriter writerVar;
     private static IndexWriter writerVersions;
+    private static IndexWriter writerFileMeta; 
     private static IndexReader r;
     private static IndexSearcher searcher;
     private static Indexer indexer;
     Directory dir;
     String indexDir = "index-dir";
     int dvnMaxClauseCount = Integer.MAX_VALUE;
-    
+    String taxoDirName = "taxo-dir";
+    Directory taxoDir;
+    private static DirectoryTaxonomyReader taxoReader;
 
     /** Creates a new instance of Indexer */
     public Indexer() {
@@ -130,6 +150,14 @@ public class Indexer implements java.io.Serializable  {
             dir = FSDirectory.open(new File(indexDir));
             r = IndexReader.open(dir, true);
             searcher = new IndexSearcher(r);
+        } catch (IOException ex) {
+            ex.printStackTrace();
+        }
+        // should we use System.getProperty("dvn.taxonomyindex.location") instead?
+        taxoDirName = dvnIndexLocation + "/" + taxoDirName;
+        try {
+            assureTaxoDirExists();
+            taxoDir = FSDirectory.open(new File(taxoDirName));
         } catch (IOException ex) {
             ex.printStackTrace();
         }
@@ -420,15 +448,66 @@ public class Indexer implements java.io.Serializable  {
             
             for (FileMetadata fileMetadata : sv.getFileMetadatas()) {
                 addText(1.0f, doc, "fileDescription", fileMetadata.getDescription());
+                
+                /*
+                 * The commented-out code below simply indexes file-level 
+                 * metadata field values as if they were study-level fields.
+                 * -- L.A.
+                 **/
+                /*
+                StudyFile elem = fileMetadata.getStudyFile();
+                
+                if (elem instanceof SpecialOtherFile) {
+                    List<FileMetadataFieldValue> fileMetadataFieldValues = fileMetadata.getStudyFile().getFileMetadataFieldValues(); 
+                    for (int j = 0; j < fileMetadataFieldValues.size(); j++) {                        
+                        String fieldValue = fileMetadataFieldValues.get(j).getStrValue();
+                        
+                        FileMetadataField fmf = fileMetadataFieldValues.get(j).getFileMetadataField();
+                        String fileMetadataFieldName = fmf.getName(); 
+                        String fileMetadataFieldFormatName = fmf.getFileFormatName(); 
+                        String indexFileName = fileMetadataFieldFormatName + "-" + fileMetadataFieldName;
+                        
+                        addText(1.0f, doc, indexFileName, fieldValue); 
+                        
+                    }
+                }
+                * */
             }
 
             addText(1.0f, doc, "unf", metadata.getUNF());
 //        writer = new IndexWriter(dir, true, getAnalyzer(), isIndexEmpty());
             writer = new IndexWriter(dir, getAnalyzer(), isIndexEmpty(), IndexWriter.MaxFieldLength.UNLIMITED);
             writer.setUseCompoundFile(true);
+            TaxonomyWriter taxo = new DirectoryTaxonomyWriter(taxoDir, OpenMode.CREATE);
+            List<CategoryPath> categories = new ArrayList<CategoryPath>();
+            categories.add(new CategoryPath("dvName", study.getOwner().getName()));
+            categories.add(new CategoryPath("productionDate", metadata.getProductionDate()));
+            /**
+             * @todo add facets for authorName and authorAffiliation
+             */
+//            for (Iterator it = studyAuthors.iterator(); it.hasNext();) {
+//                StudyAuthor elem = (StudyAuthor) it.next();
+//                categories.add(new CategoryPath("authorName", elem.getName()));
+//                categories.add(new CategoryPath("authorAffiliation", elem.getAffiliation()));
+//            }
+            CategoryDocumentBuilder categoryDocBuilder = new CategoryDocumentBuilder(taxo);
+            categoryDocBuilder.setCategoryPaths(categories);
+            categoryDocBuilder.build(doc);
             writer.addDocument(doc);
+            // warnings from https://svn.apache.org/repos/asf/lucene/dev/tags/lucene_solr_3_5_0/lucene/contrib/facet/src/examples/org/apache/lucene/facet/example/simple/SimpleIndexer.java
+            // we commit changes to the taxonomy index prior to committing them to the search index.
+            // this is important, so that all facets referred to by documents in the search index 
+            // will indeed exist in the taxonomy index.
+            taxo.commit();
+            writer.commit();
+            // close the taxonomy index and the index - all modifications are 
+            // now safely in the provided directories: indexDir and taxoDir.
+            taxo.close();
             writer.close();
+            
             writerVar = new IndexWriter(dir, getAnalyzer(), isIndexEmpty(), IndexWriter.MaxFieldLength.UNLIMITED);
+            
+            
 
             for (FileMetadata fileMetadata : sv.getFileMetadatas()) {
                 //TODO: networkDataFile
@@ -448,10 +527,42 @@ public class Indexer implements java.io.Serializable  {
                             writerVar.addDocument(docVariables);
                         }
                     }
-                }
-
+                } 
             }
+            
             writerVar.close();
+
+            writerFileMeta = new IndexWriter(dir, getAnalyzer(), isIndexEmpty(), IndexWriter.MaxFieldLength.UNLIMITED);
+            
+            for (FileMetadata fileMetadata : sv.getFileMetadatas()) {
+                StudyFile elem = fileMetadata.getStudyFile();
+                if (elem instanceof SpecialOtherFile) {
+                    Document docFileMetadata = new Document();
+                    // the "id" is the database id of the *study*; - for 
+                    // compatibility with the study-level index files. 
+                    addKeyword(docFileMetadata, "id", study.getId().toString());
+                    addText(1.0f, docFileMetadata, "studyFileId", elem.getId().toString());
+                    
+                    List<FileMetadataFieldValue> fileMetadataFieldValues = fileMetadata.getStudyFile().getFileMetadataFieldValues(); 
+                    for (int j = 0; j < fileMetadataFieldValues.size(); j++) {
+                                               
+                        String fieldValue = fileMetadataFieldValues.get(j).getStrValue();
+                        
+                        FileMetadataField fmf = fileMetadataFieldValues.get(j).getFileMetadataField();
+                        String fileMetadataFieldName = fmf.getName(); 
+                        String fileMetadataFieldFormatName = fmf.getFileFormatName(); 
+                        String indexFileName = fileMetadataFieldFormatName + "-" + fileMetadataFieldName;
+                        
+                        addText(1.0f, docFileMetadata, indexFileName, fieldValue); 
+                        
+                    }                   
+                    writerFileMeta.addDocument(docFileMetadata);
+                }
+            }
+            
+            writerFileMeta.close(); 
+           
+            
             writerVersions = new IndexWriter(dir, new WhitespaceAnalyzer(), isIndexEmpty(), IndexWriter.MaxFieldLength.UNLIMITED);
             for (StudyVersion version : study.getStudyVersions()) {
                 // The current(released) version UNF is indexed in the main document
@@ -510,36 +621,74 @@ public class Indexer implements java.io.Serializable  {
         }
         List <Long> results = null;
         List <BooleanQuery> searchParts = new ArrayList();
+       
+        // "study-level search" is our "normal", default search, that is 
+        // performed on the study metadata keywords.
+        boolean studyLevelSearch = false; 
+        boolean containsStudyLevelAndTerms = false; 
+ 
+        // We also support searches on variables and file-level metadata:
+        // We do have to handle these 2 separately, because of the 2 different
+        // levels of granularity: one searches on variables, the other on files.
         boolean variableSearch = false;
-        boolean variableSearchContains = false;
-        boolean nonVariableSearch = false;
-        boolean nonVariableSearchContains = false;
+        boolean fileMetadataSearch = false; 
+        
+        // And the boolean below indicates any file-level searche - i.e., 
+        // either a variable, or file metadata search.  
+        // -- L.A. 
+        boolean fileLevelSearch = false; 
+
+        
+        List <SearchTerm> studyLevelSearchTerms = new ArrayList();
         List <SearchTerm> variableSearchTerms = new ArrayList();
-        List <SearchTerm> nonVariableSearchTerms = new ArrayList();
+        List <SearchTerm> fileMetadataSearchTerms = new ArrayList();
+        
         for (Iterator it = searchTerms.iterator(); it.hasNext();){
             SearchTerm elem = (SearchTerm) it.next();
             if (elem.getFieldName().equals("variable")){
 //                SearchTerm st = dvnTokenizeSearchTerm(elem);
 //                variableSearchTerms.add(st);
-                if (elem.getOperator().equals("=")){
-                    variableSearchContains = true;
-                }
                 variableSearchTerms.add(elem);
                 variableSearch = true;
+                
+            } else if (isFileMetadataField(elem.getFieldName())) {
+                fileMetadataSearch = true; 
+                fileMetadataSearchTerms.add(elem);
+                
             } else {
 //                SearchTerm nvst = dvnTokenizeSearchTerm(elem);
 //                nonVariableSearchTerms.add(nvst);
                 if (elem.getOperator().equals("=")){
-                    nonVariableSearchContains = true;
+                    containsStudyLevelAndTerms = true;
                 }
-                nonVariableSearchTerms.add(elem);
-                nonVariableSearch = true;
+                studyLevelSearchTerms.add(elem);
+                studyLevelSearch = true;
+                
             }
         }
+        
+        // For now we are not supporting searches on variables and file-level
+        // metadata *at the same time*. 
+        // -- L.A. 
+        
+        if (variableSearch && fileMetadataSearch) {
+            throw new IOException ("Unsupported search term combination! "+
+                    "Searches on both variables and file-level metadata "+
+                    "at the same time are not supported.");
+        }
+        
+        if (variableSearch || fileMetadataSearch) {
+            fileLevelSearch = true; 
+        } 
+        
         List <Long> nvResults = null;
         List<Long> filteredResults = null;
-        if ( nonVariableSearchContains) {
-            BooleanQuery searchTermsQuery = andSearchTermClause(nonVariableSearchTerms);
+        
+        // If there are "AND"-type Study-level search terms in the search, 
+        // let's run it now:
+        
+        if ( containsStudyLevelAndTerms ) {
+            BooleanQuery searchTermsQuery = andSearchTermClause(studyLevelSearchTerms);
             searchParts.add(searchTermsQuery);
             BooleanQuery searchQuery = andQueryClause(searchParts);
             logger.fine("Start hits: " + DateTools.dateToString(new Date(), Resolution.MILLISECOND));
@@ -550,15 +699,36 @@ public class Indexer implements java.io.Serializable  {
             filteredResults = studyIds != null ? intersectionResults(nvResults, studyIdsArray) : nvResults;
             logger.fine("Done filter: " + DateTools.dateToString(new Date(), Resolution.MILLISECOND));
         }
-        if (variableSearch){
-            if (nonVariableSearchContains && (filteredResults.size() > 0 )) {
-                logger.fine("Start nonvar search variables: " + DateTools.dateToString(new Date(), Resolution.MILLISECOND));
-                results = searchVariables(filteredResults, variableSearchTerms, true); // get var ids
-                logger.fine("Done nonvar search variables: " + DateTools.dateToString(new Date(), Resolution.MILLISECOND));
+        
+        // If there is a file-level portion of the search, we'll run it now, 
+        // combining the results with (or, rather filtering them against) the
+        // hit list produced by the study-level search above, or supplied to this
+        // method as an argument (if any). 
+        // IMPORTANT: 
+        // do note that this logic assumes that the file-level search can be 
+        // EITHER on variables, or on file-level metadata; but never on both. 
+        // -- L.A. 
+        
+        if (fileLevelSearch){
+            if (containsStudyLevelAndTerms && (filteredResults.size() > 0 )) {
+                if (variableSearch) {
+                    logger.fine("Start nonvar search variables: " + DateTools.dateToString(new Date(), Resolution.MILLISECOND));
+                    results = searchVariables(filteredResults, variableSearchTerms, true); // get var ids
+                    logger.fine("Done nonvar search variables: " + DateTools.dateToString(new Date(), Resolution.MILLISECOND));
+                } else if (fileMetadataSearch) {
+                    logger.fine("Start file-level metadata search; searching for file ids." + DateTools.dateToString(new Date(), Resolution.MILLISECOND));
+                    results = searchFileMetadata(filteredResults, fileMetadataSearchTerms, true); // get var ids
+                    logger.fine("Done searching for file ids, on file-level metadata: " + DateTools.dateToString(new Date(), Resolution.MILLISECOND));
+                }
             } else {
-                logger.fine("Start search variables: " + DateTools.dateToString(new Date(), Resolution.MILLISECOND));
-                if (nonVariableSearch && !nonVariableSearchContains) {
-                    results = searchVariables(studyIds, variableSearchTerms, false);
+                logger.fine("Start file-level metadata search: " + DateTools.dateToString(new Date(), Resolution.MILLISECOND));
+                
+                if (studyLevelSearch && !containsStudyLevelAndTerms) {
+                    if (variableSearch) {
+                        results = searchVariables(studyIds, variableSearchTerms, false);
+                    } else if (fileMetadataSearch) {
+                        results = searchFileMetadata(studyIds, fileMetadataSearchTerms, false);
+                    }
                     if (results != null) {
                         studyIdsArray = results.toArray(new Long[results.size()]);
                         Arrays.sort(studyIdsArray);
@@ -572,7 +742,10 @@ public class Indexer implements java.io.Serializable  {
                     
                     for (Iterator it = searchTerms.iterator(); it.hasNext();) {
                         SearchTerm elem = (SearchTerm) it.next();
-                        if (!elem.getFieldName().equalsIgnoreCase("variable")) {
+                        if (!elem.getFieldName().equalsIgnoreCase("variable") 
+                                &&
+                                !isFileMetadataField(elem.getFieldName())) {
+                            
                             Term term = new Term(elem.getFieldName(), elem.getValue());
                             TermQuery termQuery = new TermQuery(term);
                             if (elem.getOperator().equals("=")) {
@@ -583,11 +756,20 @@ public class Indexer implements java.io.Serializable  {
                         }
                     }
                     List <Long> studyIdResults = getHitIds(searchQuery);
-                    results = searchVariables(studyIdResults, variableSearchTerms, true); // get var ids
+                    
+                    if (variableSearch) {
+                        results = searchVariables(studyIdResults, variableSearchTerms, true); // get var ids
+                    } else if (fileMetadataSearch) {
+                        results = searchFileMetadata(studyIdResults, fileMetadataSearchTerms, true); // get file ids
+                    }
                 } else {
-                    results = searchVariables(studyIds, variableSearchTerms, true); // get var ids
+                    if (variableSearch) {
+                        results = searchVariables(studyIds, variableSearchTerms, true); // get var ids
+                    } else if (fileMetadataSearch) {
+                        results = searchFileMetadata(studyIds, fileMetadataSearchTerms, true); // get file ids
+                    }
                 }
-                logger.fine("Done search variables: " + DateTools.dateToString(new Date(), Resolution.MILLISECOND));
+                logger.fine("Done searching on file-level metadata: " + DateTools.dateToString(new Date(), Resolution.MILLISECOND));
             }
         } else {
             results = filteredResults;
@@ -734,6 +916,16 @@ public class Indexer implements java.io.Serializable  {
         return getHitIds(indexQuery);
     }
 
+    // It appears that this method (searchVariables(SearchTerm) is not being
+    // used anymore; it also appears that it would *not* work if used - 
+    // because getHitIds(Query) relies on the field "id" in the returned 
+    // Documents, but the field is not present in documents created for variable 
+    // info. 
+    // Should it just be removed, to avoid confusion? 
+    // -- L.A. 
+    /*
+     * 
+     *
     public List searchVariables(SearchTerm searchTerm) throws IOException {
         Query indexQuery = null;
         if (searchTerm.getFieldName().equalsIgnoreCase("variable")){
@@ -742,6 +934,7 @@ public class Indexer implements java.io.Serializable  {
         }
         return getHitIds(indexQuery);
     }
+    */
 
     public List searchVariables(List <Long> studyIds,SearchTerm searchTerm) throws IOException {
         BooleanQuery indexQuery = null;
@@ -788,12 +981,84 @@ public class Indexer implements java.io.Serializable  {
             List<Long> variableIdResults = getVariableHitIds(variableResults);
             finalResults = studyIds != null ? intersectionDocResults(variableResults, studyIds) : variableIdResults;
         } else {
-            List<Long> studyIdResults = getVarHitIds(searchQuery); // gets the study ids
+            List<Long> studyIdResults = getVariableHitStudyIds(searchQuery); // gets the study ids
+            finalResults = studyIds != null ? intersectionResults(studyIdResults, studyIds) : studyIdResults;
+        }
+        return finalResults;
+    }
+    
+    /* 
+     * Similar method for running a search on file-level metadata keywords.
+     * -- L.A. 
+     **/ 
+    
+    public List searchFileMetadata(List<Long> studyIds, List<SearchTerm> searchTerms, boolean fileIdReturnValues) throws IOException {
+        BooleanQuery searchQuery = new BooleanQuery();
+        BooleanQuery.setMaxClauseCount(dvnMaxClauseCount);
+        if (studyIds != null) {
+            searchQuery.add(orIdSearchTermClause(studyIds), BooleanClause.Occur.MUST);
+        }
+        for (Iterator it = searchTerms.iterator(); it.hasNext();) {
+            SearchTerm elem = (SearchTerm) it.next();
+            BooleanQuery indexQuery = null;
+            // Determine if this is a file-level metadata search term:
+            if (isFileMetadataField(elem.getFieldName())) {
+                indexQuery = buildFileMetadataQuery(elem);
+                if (elem.getOperator().equals("=")) {
+                    // We only support "=" on file metadata, for now, anyway. 
+                    // -- L.A. 
+                    searchQuery.add(indexQuery, BooleanClause.Occur.MUST);
+                } else {
+                    searchQuery.add(indexQuery, BooleanClause.Occur.MUST_NOT);
+                }
+            }
+        }
+        List<Long> finalResults = null;
+        if (fileIdReturnValues) {
+            List<Document> fileMetadataResults = getHits(searchQuery);
+            List<Long> fileMetadataIdResults = getFileMetadataHitIds(fileMetadataResults);
+            finalResults = studyIds != null ? intersectionDocResults(fileMetadataResults, studyIds) : fileMetadataIdResults;
+        } else {
+            List<Long> studyIdResults = getFileMetadataHitStudyIds(searchQuery); // gets the study ids
             finalResults = studyIds != null ? intersectionResults(studyIdResults, studyIds) : studyIdResults;
         }
         return finalResults;
     }
 
+    /* 
+     * Method for determining if this is a file-level metadata field. 
+     * The way this is currently implemented, we make a studyFieldService lookup
+     * on the field and the file format names (that are encoded in the index
+     * name). 
+     * TODO: 
+     * We may need a better, non-potentially ambigous way of storing and 
+     * accessing this information. Perhaps this should be a flag in our 
+     * SearchTerm object. (?) 
+     *  -- L.A. 
+     */
+    
+    boolean isFileMetadataField (String fieldName) {
+        int i = fieldName.indexOf('-'); 
+        
+        if (i <= 0) {
+            return false; 
+        }
+        
+        String prefix = fieldName.substring(0, i);
+        String suffix = fieldName.substring(i+1); 
+
+        FileMetadataField fmf = null; 
+        
+        /*
+         * 
+         *
+        fmf = studyFieldService.findFileMetadataFieldByNameAndFormat(suffix, prefix); 
+        if (fmf != null) {
+            return true; 
+        }
+        **/
+        return true; 
+    }
     private List<Document> getHits( Query query ) throws IOException {
         List <Document> documents = new ArrayList();
         if (query != null){
@@ -839,7 +1104,21 @@ public class Indexer implements java.io.Serializable  {
             initIndexSearcher();
             logger.fine("Start searcher: " + DateTools.dateToString(new Date(), Resolution.MILLISECOND));
             DocumentCollector s = new DocumentCollector(searcher);
-            searcher.search(query, s);
+            TopScoreDocCollector topScoreDocCollector = TopScoreDocCollector.create(10, true);
+            TaxonomyReader taxo = new DirectoryTaxonomyReader(taxoDir);
+            FacetSearchParams facetSearchParams = new FacetSearchParams();
+            facetSearchParams.addFacetRequest(new CountFacetRequest(new CategoryPath("dvName"), 10));
+            facetSearchParams.addFacetRequest(new CountFacetRequest(new CategoryPath("productionDate"), 10));
+            FacetsCollector facetsCollector = new FacetsCollector(facetSearchParams, r, taxo);
+            searcher.search(query, MultiCollector.wrap(s, facetsCollector));
+            List<FacetResult> resultList = facetsCollector.getFacetResults();
+            logger.info("facet results = = " + resultList.toString());
+            for (FacetResult result : resultList) {
+                logger.info("facet label = " + result.getFacetResultNode().getLabel() + " facet value = " + result.getFacetResultNode().getValue());
+                for (FacetResultNode node : result.getFacetResultNode().getSubResults()) {
+                    logger.info("--" + node.getLabel().lastComponent() + " (" + node.getValue() + ") [node.getLabel().lastComponent()]");
+                }
+            }
 //            searcher.close();
             logger.fine("done searcher: " + DateTools.dateToString(new Date(), Resolution.MILLISECOND));
             logger.fine("Start iterate: " + DateTools.dateToString(new Date(), Resolution.MILLISECOND));
@@ -874,6 +1153,11 @@ public class Indexer implements java.io.Serializable  {
         return matchIds;
     }
 
+    // Note that there are 2 methods for getting IDs out of variable search
+    // hit lists - getVariableHitIds and getVariableHitStudyIds. One returns
+    // the ids of the variables, the other - of the corresponding studies. 
+    // -- L.A. 
+    
     private List getVariableHitIds(List <Document> hits) throws IOException {
         ArrayList matchIds = new ArrayList();
         LinkedHashSet matchIdsSet = new LinkedHashSet();
@@ -888,6 +1172,76 @@ public class Indexer implements java.io.Serializable  {
         return matchIds;
     }
 
+    /* returns studyIds for variable query
+     */
+    private List getVariableHitStudyIds( Query query) throws IOException {
+        ArrayList matchIds = new ArrayList();
+        LinkedHashSet matchIdsSet = new LinkedHashSet();
+        if (query != null){
+            initIndexSearcher();
+            DocumentCollector s = new DocumentCollector(searcher);
+            searcher.search(query, s);
+            searcher.close();
+            List hits = s.getStudies();
+//            Hits hits = searcher.search(query);
+            for (int i = 0; i < hits.size(); i++) {
+                Document d = searcher.doc(((ScoreDoc) hits.get(i)).doc);
+                Field studyId = d.getField("varStudyId");
+                String studyIdStr = studyId.stringValue();
+                Long studyIdLong = Long.valueOf(studyIdStr);
+                matchIdsSet.add(studyIdLong);
+            }
+            searcher.close();
+        }
+        matchIds.addAll(matchIdsSet);
+        return matchIds;
+    }
+
+    /* 
+     * Similarly to the 2 methods above for extracting the IDs out of variable
+     * search hit lists, the 2 methods below are for getting the ids of the 
+     * study files and the corresponding studies, respectively, from the 
+     * file metadata sarch hit lists. 
+     */
+    
+    private List getFileMetadataHitIds(List <Document> hits) throws IOException {
+        ArrayList matchIds = new ArrayList();
+        LinkedHashSet matchIdsSet = new LinkedHashSet();
+        for (Iterator it = hits.iterator(); it.hasNext();){
+            Document d = (Document) it.next();
+            Field studyId = d.getField("studyFileId");
+            String studyIdStr = studyId.stringValue();
+            Long studyIdLong = Long.valueOf(studyIdStr);
+            matchIdsSet.add(studyIdLong);
+        }
+        matchIds.addAll(matchIdsSet);
+        return matchIds;
+    }
+    
+    
+    private List getFileMetadataHitStudyIds( Query query) throws IOException {
+        ArrayList matchIds = new ArrayList();
+        LinkedHashSet matchIdsSet = new LinkedHashSet();
+        if (query != null){
+            initIndexSearcher();
+            DocumentCollector s = new DocumentCollector(searcher);
+            searcher.search(query, s);
+            searcher.close();
+            List hits = s.getStudies();
+//            Hits hits = searcher.search(query);
+            for (int i = 0; i < hits.size(); i++) {
+                Document d = searcher.doc(((ScoreDoc) hits.get(i)).doc);
+                Field studyId = d.getField("id");
+                String studyIdStr = studyId.stringValue();
+                Long studyIdLong = Long.valueOf(studyIdStr);
+                matchIdsSet.add(studyIdLong);
+            }
+            searcher.close();
+        }
+        matchIds.addAll(matchIdsSet);
+        return matchIds;
+    }
+    
     private List getVersionHitIds(List <Document> hits) throws IOException {
         ArrayList matchIds = new ArrayList();
         LinkedHashSet matchIdsSet = new LinkedHashSet();
@@ -918,31 +1272,7 @@ public class Indexer implements java.io.Serializable  {
         return matchDocuments;
     }
 
-    /* returns studyIds for variable query
-     */
-    private List getVarHitIds( Query query) throws IOException {
-        ArrayList matchIds = new ArrayList();
-        LinkedHashSet matchIdsSet = new LinkedHashSet();
-        if (query != null){
-            initIndexSearcher();
-            DocumentCollector s = new DocumentCollector(searcher);
-            searcher.search(query, s);
-            searcher.close();
-            List hits = s.getStudies();
-//            Hits hits = searcher.search(query);
-            for (int i = 0; i < hits.size(); i++) {
-                Document d = searcher.doc(((ScoreDoc) hits.get(i)).doc);
-                Field studyId = d.getField("varStudyId");
-                String studyIdStr = studyId.stringValue();
-                Long studyIdLong = Long.valueOf(studyIdStr);
-                matchIdsSet.add(studyIdLong);
-            }
-            searcher.close();
-        }
-        matchIds.addAll(matchIdsSet);
-        return matchIds;
-    }
-
+    
     private void initIndexSearcher() throws IOException {
         if (r != null) {
             if (!r.isCurrent()) {
@@ -1210,6 +1540,14 @@ public class Indexer implements java.io.Serializable  {
         return orPhraseQuery(variableTerms);
     }
 
+    // Similar method for creating a File-level metadata search query. 
+    // Note that we default to "=" for the term operator. 
+    // -- L.A. 
+    private BooleanQuery buildFileMetadataQuery(SearchTerm term) {
+        List <SearchTerm> fileMetadataTerms = new ArrayList();
+        fileMetadataTerms.add(buildAnyTerm(term.getFieldName(), term.getValue().toLowerCase().trim())); 
+        return orPhraseQuery(fileMetadataTerms);
+    }
     SearchTerm buildAnyTerm(String fieldName,String value){
         SearchTerm term = new SearchTerm();
         term.setOperator("=");
@@ -1245,4 +1583,13 @@ public class Indexer implements java.io.Serializable  {
             logger.fine(indexDir + " created");
         }
     }
+    private void assureTaxoDirExists() {
+        File taxoDirFile = new File(taxoDirName);
+        if (!taxoDirFile.exists()) {
+            logger.info("Taxonomy directory does not exist - creating " + taxoDir);
+            taxoDirFile.mkdir();
+            logger.info(taxoDir + " created");
+        }
+    }
+
 }

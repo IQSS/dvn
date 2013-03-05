@@ -83,7 +83,10 @@ public class DTAFileReader extends StatDataFileReader{
                                         
     private static Map<String, Integer> release114constant =
                                         new LinkedHashMap<String, Integer>();
-                                        
+      
+    private static Map<String, Integer> release115constant =
+                                        new LinkedHashMap<String, Integer>();
+    
     private static Map<Byte, Integer> byteLengthTable105 = 
                                         new HashMap<Byte, Integer>();
     private static Map<Byte, Integer> byteLengthTable111 = 
@@ -112,7 +115,10 @@ public class DTAFileReader extends StatDataFileReader{
         STATA_RELEASE_NUMBER.put(110, "rel_7first");
         STATA_RELEASE_NUMBER.put(111, "rel_7scnd");
         STATA_RELEASE_NUMBER.put(113, "rel_8_or_9");
-        STATA_RELEASE_NUMBER.put(114, "rel_10");
+        STATA_RELEASE_NUMBER.put(114, "rel_10");    // reading stata docs suggests
+                                                    // 114 means release 11 - ?
+                                                    // confused. -- L.A.
+        STATA_RELEASE_NUMBER.put(115, "rel_12");
         
         release105type.put("STRING",  127);
         release105type.put("BYTE",     98);
@@ -185,6 +191,14 @@ public class DTAFileReader extends StatDataFileReader{
         release114constant.put("EXPANSION", LENGTH_EXPANSION_FIELD[2]);
         release114constant.put("DBL_MV_PWR",DBL_MV_PWR[1]);
         CONSTATNT_TABLE.put(114, release114constant);
+        
+        release115constant.put("HEADER",     LENGTH_HEADER[1]);
+        release115constant.put("LABEL",     LENGTH_LABEL[1]);
+        release115constant.put("NAME",      LENGTH_NAME[1]);
+        release115constant.put("FORMAT",    LENGTH_FORMAT_FIELD[2]);
+        release115constant.put("EXPANSION", LENGTH_EXPANSION_FIELD[2]);
+        release115constant.put("DBL_MV_PWR",DBL_MV_PWR[1]);
+        CONSTATNT_TABLE.put(115, release115constant);
         
         byteLengthTable105.put((byte) 98,1);
         byteLengthTable105.put((byte)105,2);
@@ -289,11 +303,13 @@ public class DTAFileReader extends StatDataFileReader{
     private static Calendar GCO_STATA = new GregorianCalendar(TimeZone.getTimeZone("GMT"));
 
     private static String[] DATE_TIME_FORMAT= {
-        "%tc", "%td", "%tw", "%tq","%tm", "%th", "%ty",
-                "%d",  "%w",  "%q", "%m",  "h"};
+        "%tc", "%td", "%tw", "%tq","%tm", "%th", "%ty", 
+        "%d",  "%w",  "%q", "%m",  "h", "%tb"
+    };
+    // New "business calendar format" has been added in Stata 12. -- L.A. 
     private static String[] DATE_TIME_CATEGORY={
         "time", "date", "date", "date", "date", "date", "date",
-                        "date", "date", "date", "date", "date"
+        "date", "date", "date", "date", "date", "date"
     };
     private static Map<String, String> DATE_TIME_FORMAT_TABLE=  new LinkedHashMap<String, String>();
 
@@ -325,8 +341,6 @@ public class DTAFileReader extends StatDataFileReader{
         for (int i=0; i<DATE_TIME_FORMAT.length; i++){
             DATE_TIME_FORMAT_TABLE.put(DATE_TIME_FORMAT[i],DATE_TIME_CATEGORY[i]);
         }
-
-
 
     }
     
@@ -549,7 +563,7 @@ public class DTAFileReader extends StatDataFileReader{
         } else if (!STATA_RELEASE_NUMBER.containsKey((int)magic_number[0])) {
             dbgLog.fine("1st byte (" + magic_number[0]+
                     ") is not within the ingestable range [rel. 3-10]:"+
-                    "this file is NOT stata-dta type");
+                    "we cannot ingest this Stata file.");
             throw new IllegalArgumentException("given file is not stata-dta type");
         } else {
             releaseNumber = (int)magic_number[0];
@@ -1245,7 +1259,7 @@ public class DTAFileReader extends StatDataFileReader{
                                     dataTable2[columnCounter][i] = dataRow[columnCounter];
                                 } else {
                                     dataTable2[columnCounter][i] = float_datum;
-                    			    dataRow[columnCounter] = float_datum;
+                    		    				       dataRow[columnCounter] = float_datum;
                                 }
 
                             }
@@ -1302,7 +1316,20 @@ public class DTAFileReader extends StatDataFileReader{
                                 dataTable2[columnCounter][i] = null;  //use null reference to indicate missing value in data that is passed to UNF
                             } else {
                                 String escapedString = string_datum.replaceAll("\"",Matcher.quoteReplacement("\\\"")) ;
+                                /*
+                                 * Fixing the bug we've had in the Stata reader for 
+                                 * a longest time: new lines and tabs need to 
+                                 * be escaped too - otherwise it breaks our 
+                                 * TAB file structure! -- L.A. 
+                                 */
+                                escapedString = escapedString.replaceAll("\t", Matcher.quoteReplacement("\\t"));
+                                escapedString = escapedString.replaceAll("\n", Matcher.quoteReplacement("\\n")); 
+                                escapedString = escapedString.replaceAll("\r", Matcher.quoteReplacement("\\r"));
+                                // the escaped version of the string will be 
+                                // stored in the tab file: 
                                 dataRow[columnCounter] = "\""+escapedString+"\"";
+                                // but note that the "raw" version of it is 
+                                // used for the UNF:
                                 dataTable2[columnCounter][i] = string_datum;
                             }
                             byte_offset +=strVarLength;

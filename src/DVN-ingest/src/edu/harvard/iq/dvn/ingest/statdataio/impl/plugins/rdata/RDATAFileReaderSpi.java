@@ -28,6 +28,7 @@ import edu.harvard.iq.dvn.ingest.org.thedata.statdataio.spi.*;
 
 /*
  * @author Matt Owen
+ * @date 02-20-2013
  */
 public class RDATAFileReaderSpi extends StatDataFileReaderSpi{
 

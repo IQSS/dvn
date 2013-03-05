@@ -23,7 +23,7 @@ import java.util.*;
 import java.security.*;
 import java.util.logging.*;
 
-
+import edu.harvard.iq.dvn.ingest.specialother.spi.FileIngesterSpi;
 /**
  * A registry class for StatData I/O service provider instances.
  * This class is coded after javax.imageio.spi.IIORegistry of OpenJDK 6.0.
@@ -46,6 +46,7 @@ public final class SDIORegistry extends ServiceRegistry{
     static {
         initialCategories.add(StatDataFileReaderSpi.class);
         initialCategories.add(StatDataFileWriterSpi.class);
+        initialCategories.add(FileIngesterSpi.class);
     }
 
     /**
@@ -111,6 +112,7 @@ public final class SDIORegistry extends ServiceRegistry{
      * This method is usually invoked by the 
      * <code>StatDataIO.scanForPlugins</code> method.
      */
+    
     public void registerApplicationClasspathSpis() {
         dbgLog.fine("+++++ SDIORegistry.registerApplicationClassthSpis: start");
         ClassLoader loader = Thread.currentThread().getContextClassLoader();

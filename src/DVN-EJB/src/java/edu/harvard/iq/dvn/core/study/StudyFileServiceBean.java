@@ -287,7 +287,11 @@ public class StudyFileServiceBean implements StudyFileServiceLocal {
         Iterator iter = newFiles.iterator();
         while (iter.hasNext()) {
             StudyFileEditBean fileBean = (StudyFileEditBean) iter.next();
-            if (fileBean.getStudyFile().isSubsettable()) {
+            // Note that for the "special" OtherFiles we want to utilize the 
+            // same ingest scheme as for subsettables: they will be queued and 
+            // processed asynchronously, and the user will be notified by email.
+            // - L.A.
+            if (fileBean.getStudyFile().isSubsettable() || fileBean.getStudyFile() instanceof SpecialOtherFile) {
                 subsettableFiles.add(fileBean);
             } else {
                 otherFiles.add(fileBean);
@@ -444,25 +448,30 @@ public class StudyFileServiceBean implements StudyFileServiceLocal {
             // that uses takes a control card file to add a dataTable to a prexisting
             // file; this will have to change if we do this two files method at the
             // time of the original upload
+            // (TODO: figure out what this comment means - ? - L.A.)
+            // (is this some legacy thing? - it's talking about "ingest servlet"...)
+            // (did we ever have a mechanism for adding a data table to an existing
+            //  tab file?? - that's actually kinda cool)
+            
+            StudyFile f = fileBean.getStudyFile();
+            
+            // So, if there is a file: let's move it to its final destination
+            // in the study directory. 
+            //
+            // First, if it's a subsettable or network, or any other
+            // kind potentially, that gets transformed on ingest: 
+            
+            File newIngestedLocationFile = null; 
+            
             if (fileBean.getIngestedSystemFileLocation() != null) {
 
-                StudyFile f = fileBean.getStudyFile();
                 String originalFileType = f.getFileType();
-                // attach file to study version and study
-                fileBean.getFileMetadata().setStudyVersion( studyVersion );
-                studyVersion.getFileMetadatas().add(fileBean.getFileMetadata());
-                fileBean.getStudyFile().setStudy(study );
-                // don't need to set study side, since we're no longer using persistence cache
-                //study.getStudyFiles().add(fileBean.getStudyFile());
-
-                em.persist(fileBean.getStudyFile());
-                em.persist(fileBean.getFileMetadata());
                 
-                //fileBean.addFiletoStudy(study);
 
-                // move ingest-created file
+                // 1. move ingest-created file:
+                
                 File tempIngestedFile = new File(fileBean.getIngestedSystemFileLocation());
-                File newIngestedLocationFile = new File(newDir, f.getFileSystemName());
+                newIngestedLocationFile = new File(newDir, f.getFileSystemName());
                 try {
                     FileUtil.copyFile(tempIngestedFile, newIngestedLocationFile);
                     tempIngestedFile.delete();
@@ -474,7 +483,7 @@ public class StudyFileServiceBean implements StudyFileServiceLocal {
                 } catch (IOException ex) {
                     throw new EJBException(ex);
                 }
-                // If this is a NetworkDataFile,  move the SQLite file from the temp Ingested location to the system location
+                // 1b. If this is a NetworkDataFile,  move the SQLite file from the temp Ingested location to the system location
                 if (f instanceof NetworkDataFile) {
                     File tempSQLDataFile = new File(tempIngestedFile.getParent(), FileUtil.replaceExtension(tempIngestedFile.getName(),NetworkDataServiceBean.SQLITE_EXTENSION));
                     File newSQLDataFile = new File(newDir, f.getFileSystemName()+"."+NetworkDataServiceBean.SQLITE_EXTENSION);
@@ -493,12 +502,12 @@ public class StudyFileServiceBean implements StudyFileServiceLocal {
                     }
                 }
 
-                // also move original file for archiving
+                // 2. also move original file for archiving
                 File tempOriginalFile = new File(fileBean.getTempSystemFileLocation());
                 File newOriginalLocationFile = new File(newDir, "_" + f.getFileSystemName());
                 try {
                     if (fileBean.getControlCardSystemFileLocation() != null && fileBean.getControlCardType() != null) {
-                        // For the control card-based ingests (SPSS and DDI), we save
+                        // 2a. For the control card-based ingests (SPSS and DDI), we save
                         // a zipped bundle of both the card and the raw data file
                         // (TAB-delimited or CSV):
                                            
@@ -555,7 +564,7 @@ public class StudyFileServiceBean implements StudyFileServiceLocal {
                         }
                         
                     } else {
-                        // Otherwise, simply store the data that was used for
+                        // 2b. Otherwise, simply store the data that was used for
                         // ingest as the original:
 
                         FileUtil.copyFile(tempOriginalFile, newOriginalLocationFile);
@@ -565,6 +574,37 @@ public class StudyFileServiceBean implements StudyFileServiceLocal {
                 } catch (IOException ex) {
                     throw new EJBException(ex);
                 }
+            } else if (f instanceof SpecialOtherFile) {
+            // "Special" OtherFiles are still OtherFiles; we just add the file
+            // uploaded by the user to the study as is:
+                
+                File tempIngestedFile = new File(fileBean.getTempSystemFileLocation());
+                newIngestedLocationFile = new File(newDir, f.getFileSystemName());
+                try {
+                    FileUtil.copyFile(tempIngestedFile, newIngestedLocationFile);
+                    tempIngestedFile.delete();
+                    f.setFileSystemLocation(newIngestedLocationFile.getAbsolutePath());
+
+                } catch (IOException ex) {
+                    throw new EJBException(ex);
+                }
+            }
+               
+            // Finally, if the file was copies sucessfully, 
+            // attach file to study version and study
+            
+            if (newIngestedLocationFile != null && newIngestedLocationFile.exists()) {
+                
+                fileBean.getFileMetadata().setStudyVersion( studyVersion );
+                studyVersion.getFileMetadatas().add(fileBean.getFileMetadata());
+                fileBean.getStudyFile().setStudy(study );
+                // don't need to set study side, since we're no longer using persistence cache
+                //study.getStudyFiles().add(fileBean.getStudyFile());
+                //fileBean.addFiletoStudy(study);
+
+                em.persist(fileBean.getStudyFile());
+                em.persist(fileBean.getFileMetadata());
+                
             } else {
                 //fileBean.getStudyFile().setSubsettable(true);
                 em.merge(fileBean.getStudyFile());

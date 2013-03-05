@@ -137,6 +137,28 @@
                       </ice:dataTable>
                   </div>
 
+                  <div jsfc="ice:panelGroup" styleClass="dvnFormPadding" rendered="#{AdvSearchPage.searchableFileLevelMetadata}">
+                    <ice:outputText id="outputTextFileLevelKeys1" styleClass="vdcSubHeaderColor" value="(New!) File-Level Metadata Keys"/>
+                    <ice:outputText id="outputTextFileLevelKeys2" styleClass="dvnInformationMessage" value="Note: Work in progress!"/>                  
+                    
+                    <ice:panelGrid cellpadding="0" cellspacing="0" columns="3" width="90%"
+                                 id="fileLevelSearchGridPanel1" styleClass="dvnAdvSearchScopeTable"
+                                 columnClasses="vdcAdvSearchCol1, vdcAdvSearchCol2, vdcAdvSearchCol3" rowClasses="list-row-odd, list-row-even">
+                      <ice:column>
+                        <ice:selectOneMenu binding="#{AdvSearchPage.dropdownFileMeta}" id="fileMetaDropdown" onchange="submit()" valueChangeListener="#{AdvSearchPage.searchFieldListener}" immediate="true">
+                            <f:selectItems binding="#{AdvSearchPage.dropdownFileMetaSelectItems}" id="dropdownFileMetaFields" value="#{AdvSearchPage.fileLevelMetaKeysDropdown}"/>
+                        </ice:selectOneMenu>    
+                      </ice:column>
+                      <ice:column>
+                          <ice:outputText value="Contains"/>
+                      </ice:column>
+                      <ice:column>
+                          <ice:inputText id="input_fileMetaValue" size="40" binding="#{AdvSearchPage.fileMetaSearchValue}"/>
+                      </ice:column>
+                        
+                    </ice:panelGrid>
+                  </div>
+                    
                   <div jsfc="ice:panelGroup" styleClass="dvnFormPadding" rendered="#{AdvSearchPage.collectionsIncluded}">
                     <ice:outputText id="outputText5" styleClass="vdcSubHeaderColor" value="Collections"/>
                     <ice:selectOneRadio binding="#{AdvSearchPage.radioButtonList1}" id="radioButtonList1" layout="pageDirection" value="Search All Collections">

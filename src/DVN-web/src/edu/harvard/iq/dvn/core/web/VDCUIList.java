@@ -52,8 +52,8 @@ public class VDCUIList extends SortableList {
     private List<VDCUI> vdcUIList;
     private Long   vdcGroupId;
     private String alphaCharacter;
-    private VDCUI vdcui;
     private DataPaginator paginator;
+    private String filterTerm;
 
    
  
@@ -136,6 +136,14 @@ public class VDCUIList extends SortableList {
         this.alphaCharacter = alphaCharacter;        
     }
 
+   public VDCUIList(Long vdcGroupId, String alphaCharacter, String filterTerm, boolean hideRestricted) {
+        this.vdcGroupId = vdcGroupId;
+        this.hideRestricted    = hideRestricted;
+        this.filterTerm = filterTerm;
+        init();
+        this.alphaCharacter = alphaCharacter;        
+    }
+    
     private void initVdcService() {
         if (vdcService == null) {
             try {
@@ -191,13 +199,17 @@ public class VDCUIList extends SortableList {
                 throw new RuntimeException("Unknown sortColumnName: " + sortColumnName);
             }
             List<Long> vdcIds = null;
-
+            
+            System.out.print("filter Term " + filterTerm);
             if (alphaCharacter != null && vdcGroupId != null && !vdcGroupId.equals(new Long("-1"))) {
-                vdcIds = vdcService.getOrderedVDCIds(vdcGroupId, alphaCharacter, orderBy, hideRestricted);
+                vdcIds = vdcService.getOrderedVDCIds(vdcGroupId, alphaCharacter, orderBy, hideRestricted, filterTerm);
             } else if (alphaCharacter != null && !alphaCharacter.equals("") && (vdcGroupId == null || vdcGroupId.equals(new Long("-1")))) {
-                vdcIds = vdcService.getOrderedVDCIds(null, alphaCharacter, orderBy, hideRestricted);
+                vdcIds = vdcService.getOrderedVDCIds(null, alphaCharacter, orderBy, hideRestricted, filterTerm);
             } else if (vdcGroupId == null || vdcGroupId.equals(new Long("-1"))) {
-                vdcIds = vdcService.getOrderedVDCIds(null, null, orderBy, hideRestricted);
+                vdcIds = vdcService.getOrderedVDCIds(null, null, orderBy, hideRestricted, filterTerm);
+            } else if (filterTerm != null) {
+                System.out.print("correct get...");
+                vdcIds = vdcService.getOrderedVDCIds(vdcGroupId, null, orderBy, hideRestricted, filterTerm);
             } else {
                 vdcIds = vdcService.getOrderedVDCIds(vdcGroupId, null, orderBy, hideRestricted);
             }
@@ -239,11 +251,9 @@ public class VDCUIList extends SortableList {
         return vdcGroupId;
     }
 
-   public VDCUI getVdcui() {
-        return vdcui;
-    }
 
-    public List<VDCUI> getVdcUIList() {
+
+    public List<VDCUI> getVdcUIList() {  
         if (!oldSort.equals(sortColumnName) ) {
             // Check for null paginator because this method first
             // gets called from Hompage.init(), before paginator is initialized
@@ -314,10 +324,6 @@ public class VDCUIList extends SortableList {
 
     public void setVdcGroupId(Long vdcGroupId) {
         this.vdcGroupId = vdcGroupId;
-    }
-
-    public void setVdcui(VDCUI vdcUI) {
-        this.vdcui = vdcUI;
     }
 
     public void setAlphaCharacter(String alphaCharacter) {

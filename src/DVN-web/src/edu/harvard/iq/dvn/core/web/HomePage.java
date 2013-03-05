@@ -31,17 +31,16 @@ package edu.harvard.iq.dvn.core.web;
 import com.icesoft.faces.component.ext.HtmlDataTable;
 import com.icesoft.faces.component.ext.HtmlInputHidden;
 import com.icesoft.faces.component.datapaginator.DataPaginator;
-import edu.harvard.iq.dvn.core.admin.NetworkRoleServiceLocal;
-import edu.harvard.iq.dvn.core.admin.RoleRequestServiceLocal;
-import edu.harvard.iq.dvn.core.admin.UserServiceLocal;
-import edu.harvard.iq.dvn.core.admin.VDCUser;
+import edu.harvard.iq.dvn.core.admin.*;
 import edu.harvard.iq.dvn.core.index.IndexServiceLocal;
+import edu.harvard.iq.dvn.core.study.Study;
 import edu.harvard.iq.dvn.core.study.StudyServiceLocal;
 import edu.harvard.iq.dvn.core.study.VariableServiceLocal;
 import edu.harvard.iq.dvn.core.util.StringUtil;
 import edu.harvard.iq.dvn.core.vdc.*;
 import edu.harvard.iq.dvn.core.web.common.StatusMessage;
 import edu.harvard.iq.dvn.core.web.common.VDCBaseBean;
+import edu.harvard.iq.dvn.core.web.site.VDCUI;
 import edu.harvard.iq.dvn.core.web.study.StudyUI;
 import java.io.Serializable;
 import java.lang.String;
@@ -85,6 +84,7 @@ public class HomePage extends VDCBaseBean implements Serializable {
     private HtmlInputHidden hiddenAlphaCharacter = new HtmlInputHidden();
     List descendants                = new ArrayList();
     private List recentStudies;
+    private List mostDownloadedStudies;
     private Long groupId;
     private String defaultVdcPath;
     private String groupName;
@@ -174,6 +174,8 @@ public class HomePage extends VDCBaseBean implements Serializable {
     //DEBUG -- new way to get at VDCS
     private ArrayList vdcUI;
     private VDCUIList vdcUIList;
+    private VDCUIList vdcUIListDownloaded;
+    private VDCUIList vdcUIListReleased;
 
     public VDCUIList getVdcUIList() {
         return this.vdcUIList;
@@ -322,7 +324,7 @@ public class HomePage extends VDCBaseBean implements Serializable {
         vdcUIList.getVdcUIList();
         vdcUIListSize = new Long(String.valueOf(vdcUIList.getVdcUIList().size()));
     }
-
+    
     
     private ArrayList alphaCharacterList;
     private void initAlphabeticFilter() {
@@ -378,7 +380,7 @@ public class HomePage extends VDCBaseBean implements Serializable {
         //itemBeansSize = list.size();
         Iterator outeriterator = list.iterator();
         while(outeriterator.hasNext()) {
-            classificationsSize++;
+            classificationsSize++;           
             VDCGroup vdcgroup = (VDCGroup)outeriterator.next();
                 String indentStyle = (vdcgroup.getParent() == null) ? "groupRowIndentStyle" : "childRowIndentStyle";
                 if (vdcgroup.getParent() == null) {
@@ -413,7 +415,7 @@ public class HomePage extends VDCBaseBean implements Serializable {
             parentItem.addItem(childItem);
             parentItem.setIsAccordion(true);
             if (vdcGroupService.findByParentId(group.getId()) != null) {
-                List innerlist       = vdcGroupService.findByParentId(group.getId());
+                List innerlist       = vdcGroupService.findByParentId(group.getId());                
                 Iterator inneriterator  = innerlist.iterator();
                 DataverseGrouping xtraItem;
                 childItem.setXtraItems(new ArrayList());
@@ -423,7 +425,7 @@ public class HomePage extends VDCBaseBean implements Serializable {
                     childItem.addXtraItem(xtraItem);
                 }
             }
-         }
+         }        
       }
       
 
@@ -477,10 +479,89 @@ public class HomePage extends VDCBaseBean implements Serializable {
             VDC vdc = getVDCRequestBean().getCurrentVDC();
             if (vdc != null) {
                 VDCUser user = getVDCSessionBean().getUser();
-                recentStudies = StudyUI.filterVisibleStudies( studyService.getRecentStudies(vdc.getId(), -1), vdc, user, getVDCSessionBean().getIpUserGroup(), 3 );
+                recentStudies = filterVisibleStudyUIsFromIds( studyService.getRecentlyReleasedStudyIds(vdc.getId(), -1), vdc, user, getVDCSessionBean().getIpUserGroup(), 5 );
+            } else {
+                VDCUser user = getVDCSessionBean().getUser();
+                recentStudies = filterVisibleStudyUIsFromIds( studyService.getRecentlyReleasedStudyIds(null, -1), vdc, user, getVDCSessionBean().getIpUserGroup(), 5 ); 
             }
         }
         return recentStudies;
+    }
+     
+    public List getMostDownloadedStudies() {
+        if (mostDownloadedStudies == null) {
+            mostDownloadedStudies = new ArrayList();
+            VDC vdc = getVDCRequestBean().getCurrentVDC();
+            if (vdc != null) {
+                VDCUser user = getVDCSessionBean().getUser();
+                mostDownloadedStudies = filterVisibleStudyUIsFromIds( studyService.getMostDownloadedStudyIds(vdc.getId(), -1), vdc, user, getVDCSessionBean().getIpUserGroup(), 5 );
+            } else {
+                VDCUser user = getVDCSessionBean().getUser();
+                mostDownloadedStudies = filterVisibleStudyUIsFromIds( studyService.getMostDownloadedStudyIds(null, -1), vdc, user, getVDCSessionBean().getIpUserGroup(), 5 ); 
+            }
+        }
+        return mostDownloadedStudies;
+    }
+    
+    public List getMostDownloadedDVs(){
+        List mostDownloaded = new ArrayList();
+        if (vdcUIListDownloaded == null){
+           vdcUIListDownloaded = new VDCUIList(groupId, (String)hiddenAlphaCharacter.getValue(), true, "Activity");
+        }
+        if (!vdcUIListDownloaded.getVdcUIList().isEmpty()){
+            int count = 0;
+            Iterator iter = vdcUIListDownloaded.getVdcUIList().iterator();
+            while (iter.hasNext()) {
+                VDCUI vdcUI = (VDCUI) iter.next();
+
+                mostDownloaded.add(vdcUI);
+                if (++count >= 5) {
+                    break;
+                }
+            }           
+        }
+        return mostDownloaded;
+    }
+    
+    public List getMostRecentlyReleasedDVs(){
+        List mostRecentlyReleased = new ArrayList();
+        if (vdcUIListReleased == null){
+           vdcUIListReleased = new VDCUIList(groupId, (String)hiddenAlphaCharacter.getValue(), true, "Released");
+        }
+        if (!vdcUIListReleased.getVdcUIList().isEmpty()){
+            int count = 0;
+            Iterator iter = vdcUIListReleased.getVdcUIList().iterator();
+            while (iter.hasNext()) {
+                VDCUI vdcUI = (VDCUI) iter.next();
+
+                mostRecentlyReleased.add(vdcUI);
+                if (++count >= 5) {
+                    break;
+                }
+            }           
+        }
+        return mostRecentlyReleased;
+    }
+
+
+    private List filterVisibleStudyUIsFromIds(List originalStudies, VDC vdc, VDCUser user, UserGroup ipUserGroup, int numResults) {
+        List filteredStudies = new ArrayList();
+        if (numResults != 0) {
+            int count = 0;
+            Iterator iter = originalStudies.iterator();
+            while (iter.hasNext()) {
+                Long studyId = (Long) iter.next();
+                Study study = studyService.getStudy(studyId);
+
+                StudyUI studyUIToAdd = new StudyUI(study, getVDCSessionBean().getUser(), getVDCSessionBean().getIpUserGroup(), false);
+
+                filteredStudies.add(studyUIToAdd);
+                if (numResults > 0 && ++count >= numResults) {
+                    break;
+                }
+            }
+        }
+        return filteredStudies;
     }
 
      public String getSearchField() {

@@ -33,12 +33,13 @@ import edu.harvard.iq.dvn.core.index.IndexServiceLocal;
 import edu.harvard.iq.dvn.core.mail.MailServiceLocal;
 import edu.harvard.iq.dvn.core.study.DataTable;
 import edu.harvard.iq.dvn.core.study.FileMetadata;
+import edu.harvard.iq.dvn.core.study.TabularDataFile;
 import edu.harvard.iq.dvn.core.study.NetworkDataFile;
+import edu.harvard.iq.dvn.core.study.SpecialOtherFile; 
 import edu.harvard.iq.dvn.core.study.Study;
 import edu.harvard.iq.dvn.core.study.StudyFileEditBean;
 import edu.harvard.iq.dvn.core.study.StudyFileServiceLocal;
 import edu.harvard.iq.dvn.core.study.StudyServiceLocal;
-import edu.harvard.iq.dvn.core.study.TabularDataFile;
 import edu.harvard.iq.dvn.core.study.DataVariable;
 import edu.harvard.iq.dvn.core.study.StudyVersion;
 import java.util.ArrayList;
@@ -102,6 +103,9 @@ public class DSBIngestMessageBean implements MessageListener {
                         Context ctx = new InitialContext();
                         networkDataService = (NetworkDataServiceLocal) ctx.lookup("java:comp/env/networkData");
                         networkDataService.ingest(fileBean);
+                        successfulFiles.add(fileBean);
+                    } else if (fileBean.getStudyFile() instanceof SpecialOtherFile) {
+                        new DSBWrapper().ingestSpecialOther(fileBean);
                         successfulFiles.add(fileBean);
                     } else {
                         parseXML( new DSBWrapper().ingest(fileBean) , fileBean.getFileMetadata() );

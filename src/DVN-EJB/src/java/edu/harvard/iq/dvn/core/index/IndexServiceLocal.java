@@ -58,7 +58,13 @@ public interface IndexServiceLocal extends java.io.Serializable {
     
     public List query(String adhocQuery);
 
+    /*
+     * This version of searchVariables method doesn't seem to be needed any 
+     * more; plus it doesn't seem to be implemented properly anyway. 
+     * Removing (?). 
     public List searchVariables(SearchTerm searchTerm);
+     * -- L.A.
+     */
 
     public List searchVariables(VDC vdc, SearchTerm searchTerm);
 

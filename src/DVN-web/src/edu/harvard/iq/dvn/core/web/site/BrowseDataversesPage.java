@@ -63,6 +63,7 @@ public class BrowseDataversesPage  extends VDCBaseBean implements Serializable {
     private String defaultVdcPath;
     private String filterTerm ="";
     private String initialSort = "";
+    private String initialFilter = "";
     private String savedSort = "";
     private VDCUIList vdcUIList;
     private boolean firstRun = true;
@@ -116,7 +117,9 @@ public class BrowseDataversesPage  extends VDCBaseBean implements Serializable {
     }
     
     private void populateVDCUIList() {
-        System.out.print("populate " + filterTerm);
+        if (firstRun){
+           filterTerm = initialFilter; 
+        }
         vdcUIList = new VDCUIList(groupId, "", filterTerm, hideRestricted);
         vdcUIList.setAlphaCharacter(new String(""));
         if((initialSort.isEmpty() || !firstRun)  && savedSort.isEmpty()){
@@ -151,6 +154,14 @@ public class BrowseDataversesPage  extends VDCBaseBean implements Serializable {
 
     public void setInitialSort(String initialSort) {
         this.initialSort = initialSort;
+    }
+    
+    public String getInitialFilter() {
+        return initialFilter;
+    }
+
+    public void setInitialFilter(String initialFilter) {
+        this.initialFilter = initialFilter;
     }
     
     public String getFilterTerm() {

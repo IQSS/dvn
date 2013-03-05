@@ -47,9 +47,13 @@ div.iceTree div.iceTreeRow div.iceTreeRow div.iceTreeRow div.iceTreeRow div.iceP
 #dvClassificationMenu{margin:0;padding:0;text-indent:0;width:100%;text-align:left}
 #dvClassificationMenu h3,#dvClassificationMenu h4{margin:0;padding:0}
 #dvClassificationMenu ul,#dvClassificationMenu li{margin:0;padding:0;list-style-type:none;list-style-image:none;border-bottom:1px dotted #D9D9D9}
+#dvClassificationMenu ul {overflow:hidden; width:100%}
+#dvClassificationMenu li {float:left; width:50%}
+#dvClassificationMenu li li {float:none; width:100%}
+#dvClassificationMenu li a {padding:3px 5px; display:inline}
+#dvClassificationMenu li span.dvnHmpgClassificationCount {display:inline; margin-right:.5em; color:grey !important; font-weight:normal !important}
 #dvClassificationMenu ul li ul, #dvClassificationMenu ul li ul li{margin:0;padding:0;border:0;}
 #dvClassificationMenu a{outline:0}
-.xtraMenu{}
 
 #dvClassificationMenu h3.head {margin-top:1em; margin-bottom:10px;}
 h3.head a{display:block;background:transparent url(/dvn/resources/images/menudown.gif) no-repeat;background-position:98% 50%}
@@ -61,10 +65,10 @@ h3.head a span {background:none;padding:0;}
 
 #dvClassificationMenu ul.head-top {padding-bottom:18px;border-bottom:1px solid #C55B28;}
 
-h4.head a{display:block;background:transparent url(/dvn/resources/images/menudown.gif) no-repeat;padding:0 26px 0 0;background-position:98% 50%}
-h4.head a:hover{background:transparent url(/dvn/resources/images/menudown.gif) no-repeat;background-position:98% 50%;padding:0 26px 0 0}
-h4.selected a{background:transparent url(/dvn/resources/images/menuup.gif) no-repeat;background-position:98% 50%;padding:0 26px 0 0;font-weight:700}
-h4.selected a:hover{background:transparent url(/dvn/resources/images/menuup.gif) no-repeat;background-position:98% 50%;padding:0 26px 0 0}
+h4.head {margin-right:1em !important;padding:0 26px 0 0 !important;background:transparent url(/dvn/resources/images/menudown.gif) no-repeat;background-position:98% 50%}
+h4.head a{display:block}
+h4.selected {background:transparent url(/dvn/resources/images/menuup.gif) no-repeat;background-position:98% 50%}
+h4.selected a{font-weight:700}
 
 h3.noSubNode,h3.noSubNode a,h3.noSubNode a:hover,h4.noSubNode,h4.noSubNode a,h4.noSubNode a:hover{background-image:none}
 .xtraMenu ul li a:link,.xtraMenu ul li a:visited,.xtraMenu ul li a:hover,.xtraMenu ul li a:active{display:block;}
@@ -72,10 +76,9 @@ h3.noSubNode,h3.noSubNode a,h3.noSubNode a:hover,h4.noSubNode,h4.noSubNode a,h4.
 .xtraMenu ul li ul li a {margin-left:1.25em;}
 a.lastNodeActive:link{font-weight:700}
 
-
-
 .dvnHmpgDataverseWidgetTable, .dvnHmpgDataverseWidgetTable tr, .dvnHmpgDataverseWidgetTable td, .dvnHmpgStudyWidgetTable, .dvnHmpgStudyWidgetTable tr, .dvnHmpgStudyWidgetTable td {border:0;}
 .dvnHmpgDataverseWidgetTable td, .dvnHmpgStudyWidgetTable td {border-bottom:1px dotted #D9D9D9;}
+img.dvnHmpgStudyFileIcon {margin-right:.5em !important; vertical-align:middle}
 
 /* DATAVERSE LIST TABLE + ALPHA SORT */
 .dvnHmpgGroupHeaderBlock{width:100%;margin-bottom:.25em;overflow:hidden}
@@ -128,8 +131,8 @@ td.dvn_StudyListTotals{text-align:right;width:100%;padding:.5em}
 td.dvn_StudyListSort{padding:.25em}
 .dvnStudyListStudyInfo{background:inherit}
 span.dvnStudyListStudyAuthor{font-size:90% !important}
-.dvnStudyRestricted{background-image:url(/dvn/resources/images/icon_restricted.18.png);background-repeat:no-repeat;background-position:left .25em;padding-left:22px}
-.dvnStudyPublic{background-image:url(/dvn/resources/images/icon_public.18.png);background-repeat:no-repeat;background-position:left .25em;padding-left:22px}
+.dvnStudyRestricted{background-image:url(/dvn/resources/images/icon_restricted.18.png);background-repeat:no-repeat;background-position:left .1em;padding-left:22px}
+.dvnStudyPublic{background-image:url(/dvn/resources/images/icon_public.18.png);background-repeat:no-repeat;background-position:left .1em;padding-left:22px}
 .dvnStudyListIDDownloads{padding:0 10px;border-left:1px solid #dcdddf !important}
 .dvnStudyListIDDownloads span{font-size:90% !important;color:gray}
 .dvnStudyListIDDownloads .dvnStudyListDownloadCount{white-space:nowrap}

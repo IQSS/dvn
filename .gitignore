@@ -5,10 +5,9 @@
 /src/DVN-web/build/
 /src/DVN-web/dist/
 
-src/DVN-ingest/nbproject/build-impl.xml
-src/DVN-ingest/nbproject/genfiles.properties
-src/DVN-ingest/nbproject/project.properties
-
-src/DVN-web/nbproject/build-impl.xml
-src/DVN-web/nbproject/genfiles.properties
-src/DVN-web/nbproject/project.properties
+/src/DVN-ingest/nbproject/build-impl.xml
+/src/DVN-ingest/nbproject/genfiles.properties
+/src/DVN-ingest/nbproject/project.properties
+/src/DVN-web/nbproject/build-impl.xml
+/src/DVN-web/nbproject/genfiles.properties
+/src/DVN-web/nbproject/project.properties

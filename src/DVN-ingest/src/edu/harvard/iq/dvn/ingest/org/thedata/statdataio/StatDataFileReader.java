@@ -94,6 +94,15 @@ public abstract class StatDataFileReader {
     
     }
     
+    protected String dataLanguageEncoding; 
+    
+    public String getDataLanguageEncoding() {
+        return dataLanguageEncoding;
+    }
+
+    public void setDataLanguageEncoding(String dataLanguageEncoding) {
+        this.dataLanguageEncoding = dataLanguageEncoding;
+    }
     
     /**
      * Reads the statistical data file from a supplied

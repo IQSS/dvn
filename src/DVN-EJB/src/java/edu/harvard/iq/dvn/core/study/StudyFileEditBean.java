@@ -173,6 +173,7 @@ public class StudyFileEditBean implements Serializable {
     private String ingestedSystemFileLocation;
     private boolean deleteFlag;
     private Long sizeFormatted = null;
+    private String dataLanguageEncoding; 
     
     private java.util.Map<String, String> extendedVariableLabelMap = null; 
     
@@ -270,6 +271,14 @@ public class StudyFileEditBean implements Serializable {
         this.deleteFlag = deleteFlag;
     }
 
+    public String getDataLanguageEncoding() {
+        return dataLanguageEncoding;
+    }
+
+    public void setDataLanguageEncoding(String dataLanguageEncoding) {
+        this.dataLanguageEncoding = dataLanguageEncoding;
+    }
+    
     public void addFiletoStudy(Study s) {
         StudyFile file = this.getStudyFile();
         file.setStudy(s);

@@ -122,7 +122,8 @@ public class AddFilesPage extends VDCBaseBean implements java.io.Serializable {
     private int fileProgress; // TODO: file upload completed percent (Progress), currently not used!!!
     private HtmlDataTable filesDataTable = new HtmlDataTable();
     //private VersionNotesPopupBean versionNotesPopup;
-
+    
+    private String dataLanguageEncoding = null; 
 
 
     public Long getStudyId() {
@@ -458,6 +459,10 @@ public class AddFilesPage extends VDCBaseBean implements java.io.Serializable {
             }
 
             f.setSizeFormatted(file.length());
+            
+            if (dataLanguageEncoding != null && !(dataLanguageEncoding.equals(""))) {
+                f.setDataLanguageEncoding(dataLanguageEncoding);
+            }
 
         } catch (Exception ex) {
             String m = "Failed to create the study file. ";

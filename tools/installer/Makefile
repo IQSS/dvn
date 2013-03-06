@@ -37,7 +37,7 @@ dvninstall.zip: ${DVN_CONFIG_TEMPLATES} ${DVN_INSTALLER_SCRIPT} ${DVN_POSTGRES_D
 	@echo "Done!"
 
 ${DVN_SQL_FILE_TEMPLATE}:	${DVN_SQL_FILE_SOURCE}
-	@/bin/sed 's/dvnApp/%POSTGRES_USER%/g' < ${DVN_SQL_FILE_SOURCE} > ${DVN_SQL_FILE_TEMPLATE}
+	@sed 's/dvnApp/%POSTGRES_USER%/g' < ${DVN_SQL_FILE_SOURCE} > ${DVN_SQL_FILE_TEMPLATE}
 
 ${DVN_CONFIG_FILES}: 	../../working_directory/error.xsl ../../working_directory/fgdc2ddi.xsl ../../working_directory/graphml.props ../../working_directory/header.xsl ../../working_directory/jhove.conf ../../working_directory/logging.properties ../../working_directory/metadata.xsl ../../working_directory/mif2ddi.xsl ../../working_directory/neodb.props ../../working_directory/oai_dc2ddi.xsl ../../working_directory/oaicat.properties
 		@/bin/cp ../../working_directory/error.xsl ../../working_directory/fgdc2ddi.xsl ../../working_directory/graphml.props ../../working_directory/header.xsl ../../working_directory/jhove.conf ../../working_directory/logging.properties ../../working_directory/metadata.xsl ../../working_directory/mif2ddi.xsl ../../working_directory/neodb.props ../../working_directory/oai_dc2ddi.xsl ../../working_directory/oaicat.properties dvninstall/config

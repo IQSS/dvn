@@ -66,6 +66,7 @@ import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import javax.faces.event.ActionEvent;
 import javax.naming.InitialContext;
 
 /**
@@ -922,7 +923,7 @@ public class StudyUI  implements java.io.Serializable {
         this.termsOfUsePanelIsRendered = termsOfUsePanelIsRendered;
     }
     
-
+    /* replace this method with a new one in order to improve performance. -xyang
     public void initFileCategoryUIList(VDC vdc, VDCUser user, UserGroup ipUserGroup) {
         categoryUIList = new ArrayList<FileCategoryUI>();
         StudyServiceLocal studyService = null;
@@ -952,12 +953,70 @@ public class StudyUI  implements java.io.Serializable {
     while (iter.hasNext()) {
     FileCategory fc = (FileCategory) iter.next();
     FileCategoryUI catUI = new FileCategoryUI(fc,vdc,user, ipUserGroup);
-    categoryUIList.add(catUI);
-    }
-     */
+    categoryUIList.add(catUI); 
+    } */
+    
+    //add new method to replace the old one with the same name to improve performance. -xyang
+    public void initFileCategoryUIList(VDC vdc, VDCUser user, UserGroup ipUserGroup) {
+        categoryUIList = new ArrayList<FileCategoryUI>();
+        try {
+            studyFileService = (StudyFileServiceLocal) new InitialContext().lookup("java:comp/env/studyFileService");
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        
+        this.vdc = vdc;
 
+	if (fileIdList == null) {  
+            fileIdList = studyFileService.getOrderedFileIdsByStudyVersion (getStudyVersion().getId());
+        }
+        
+        getFileCategoryUIList(getStudyVersion().getId(), getSubFileIdList(fileIdList), vdc, user, ipUserGroup);
+    }
+    
+    public List <FileCategoryUI> getFileCategoryUIList(ActionEvent ae)
+    {
+        return getFileCategoryUIList(getStudyVersion().getId(), getSubFileIdList(fileIdList), vdc, user, ipUserGroup );
     }
 
+    private List <FileCategoryUI> getFileCategoryUIList(Long studyVersionId, List fIdList, VDC vdc, VDCUser user, UserGroup ipUserGroup) {
+	StudyServiceLocal studyService = null;
+        //set catUI to the last element of categoryUIList if categoryUIList is not empty. -gdurand
+        FileCategoryUI catUI = categoryUIList.size() == 0 ? null : categoryUIList.get( categoryUIList.size() -1 );
+        for (FileMetadata fmd : studyFileService.getSomeOrderedFilesByStudyVersion(getStudyVersion().getId(), fIdList)) {
+            if ((catUI == null || !fmd.getCategory().equals(catUI.getCategory()))) {
+                catUI = new FileCategoryUI(fmd.getCategory());
+                categoryUIList.add(catUI);
+            }
+            StudyFileUI sfui = new StudyFileUI(fmd, vdc, user, ipUserGroup);
+            catUI.getStudyFileUIs().add(sfui);
+        }
+        
+        Collections.sort(categoryUIList);
+        return categoryUIList;
+    }
+        
+    private List getSubFileIdList(List studyFileIdList) {
+        
+        List subFileIdList = null;
+        if (studyFileIdList.size() <= FILE_NUMBERS) {
+            subFileIdList = studyFileIdList;
+            fileIdList = null;
+        } else {
+            subFileIdList = studyFileIdList.subList(0, FILE_NUMBERS); 
+            fileIdList = studyFileIdList.subList(FILE_NUMBERS, studyFileIdList.size());
+        }
+        return subFileIdList;
+    }
+    
+    public int getFileIdListSize() {
+        int iRet=0;
+        if (fileIdList != null) {
+            iRet = fileIdList.size();
+        }
+        return iRet;
+    }
+    
     public void initFileMetadataList(StudyVersion sv) {
         fileMetadataList = new ArrayList<FileMetadata>();
         StudyServiceLocal studyService = null;
@@ -1080,6 +1139,37 @@ public class StudyUI  implements java.io.Serializable {
         return !study.isStudyRestrictedForGroup(usergroup);
         
     }
+    
+    //property to hold the number of files to display each time. -xyang
+    private static final int FILE_NUMBERS = 3;
+    
+    public int getFILE_NUMBERS() {
+        return FILE_NUMBERS;
+    }
+    
+    private VDC vdc;
+    
+    /**
+     * Holds value of property fileIdList.
+     */
+    private List fileIdList = null;
+    
+    /**
+     * Getter for property fileIdList.
+     * @return Value of property fileIdList.
+     */
+    public List getFileIdList() {
+        return this.fileIdList; 
+    }
+    
+    /**
+     * Setter for property fileIdList.
+     * @param fileIdList New value of property fileIdList.
+     */
+    public void setFileIdList(List fileIdList) {
+        this.fileIdList = fileIdList;
+    }
+    
     /**
      * Holds value of property categoryUIList.
      */

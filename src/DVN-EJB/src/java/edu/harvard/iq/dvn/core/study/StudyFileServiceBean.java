@@ -183,7 +183,47 @@ public class StudyFileServiceBean implements StudyFileServiceLocal {
 
         return studyFiles;
     }
+    
+    @TransactionAttribute(TransactionAttributeType.NOT_SUPPORTED)
+    public List getOrderedFileIdsByStudyVersion (Long svId) {
+	List<Long> fileIdList = new ArrayList<Long>();
 
+        String queryStr = "SELECT f.id FROM FileMetadata f WHERE f.studyVersion_id = " + svId + " ORDER BY f.category, f.label";
+        Query query = em.createNativeQuery(queryStr);
+        for (Object currentResult : query.getResultList()) {
+            fileIdList.add(new Long(((Integer)currentResult)).longValue());
+        }
+  
+        return fileIdList;
+    }
+    
+    public List getSomeOrderedFilesByStudyVersion(Long svId, List fileIdList) {
+        if (fileIdList == null || fileIdList.size() == 0) {
+            return fileIdList;
+        }
+        
+        String fileIds = idListString(fileIdList);
+        String queryStr = "SELECT f FROM FileMetadata f WHERE f.studyVersion.id = " + svId + " and f.id IN  (" + fileIds + ") ORDER BY f.category, f.label";
+        Query query = em.createQuery(queryStr);
+        List<FileMetadata> studyFiles = query.getResultList();
+        
+        return studyFiles;
+    }
+    
+    private String idListString(List idList) {
+        StringBuffer sb = new StringBuffer();
+        Iterator iter = idList.iterator();
+        while (iter.hasNext()) {
+            Long id = (Long) iter.next();
+            sb.append(id);
+            if (iter.hasNext()) {
+                sb.append(",");
+            }
+        }
+
+        return sb.toString();
+    }
+    
     public Boolean doesStudyHaveSubsettableFiles(Long studyVersionId) {
         List<String> subsettableList = new ArrayList();
         Query query = em.createNativeQuery("select fileclass from studyfile sf, filemetadata fmd where fmd.studyfile_id = sf.id and studyversion_id = " + studyVersionId);

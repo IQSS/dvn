@@ -118,6 +118,9 @@ public class RDATAFileReader extends StatDataFileReader {
   // DataTable
   private DataTable mDataTable = new DataTable();
   
+  // Specify which are decimal values
+  Set <Integer> mDecimalVariableSet = new HashSet <Integer>(); 
+  
   private Map <String, String> mPrintFormatTable = new LinkedHashMap<String, String>(); 
   private Map <String, String> mPrintFormatNameTable = new LinkedHashMap<String, String>(); 
   private List <Integer> mPrintFormatList = new ArrayList<Integer>();
@@ -355,7 +358,7 @@ public class RDATAFileReader extends StatDataFileReader {
         .append(String.format("load(\"%s\")\n", mRWorkspace.getRdataAbsolutePath()))
         .append(RSCRIPT_GET_DATASET)
         .append("\n")
-        .append(String.format("write.table(data.set, file=\"%s\", na=\"\", sep=\"\t\", eol=\"\r\n\", quote=FALSE, row.names=FALSE, col.names=FALSE)", mCsvDataFile.getAbsolutePath()))
+        .append(String.format("write.table(data.set, file=\"%s\", na=\"\", sep=\"\t\", eol=\"\n\", quote=TRUE, row.names=FALSE, col.names=FALSE)", mCsvDataFile.getAbsolutePath()))
         .toString();
     
       RRequest csvRequest = mRequestBuilder.build();
@@ -766,11 +769,11 @@ public class RDATAFileReader extends StatDataFileReader {
     for (String type : dataTypes) {
       // Convention is that integer is zero, right?
       if (type.equals("integer"))
-        variableTypeList.add(0);
+        variableTypeList.add(-1);
 
       // Double-precision data-types
       else if (type.equals("numeric") || type.equals("double"))
-        variableTypeList.add(1);
+        variableTypeList.add(-1);
 
       // Everything else is a string
       else
@@ -810,6 +813,14 @@ public class RDATAFileReader extends StatDataFileReader {
     
     // Set variable types
     smd.setVariableTypeMinimal(ArrayUtils.toPrimitive(variableTypeList.toArray(new Integer[variableTypeList.size()])));
+    
+    int [] x = ArrayUtils.toPrimitive(variableTypeList.toArray(new Integer[variableTypeList.size()]));
+    
+    int count = 0;
+    for (int y : x) {
+      LOG.info("[variableType] " + count + " = " + y + "");
+      count++;
+    }
     
     for (int k = 0; k < mVarQuantity; k++) {
       String unfValue, name = variableNameList.get(k);
@@ -856,9 +867,17 @@ public class RDATAFileReader extends StatDataFileReader {
               }
             }
             
+            LOG.info("sumstat:long case=" + Arrays.deepToString(
+                        ArrayUtils.toObject(StatHelper.calculateSummaryStatisticsContDistSample(doubleEntries))));
             unfValue = UNF5Util.calculateUNF(doubleEntries);
             
+            // SPECIFY DECIMAL VARIABLE SET FOR SPECIAL ANALYSIS
+            mDecimalVariableSet.add(k);
+            smd.setDecimalVariables(mDecimalVariableSet);
+            
+            // Update summary statistics
             smd.getSummaryStatisticsTable().put(k, ArrayUtils.toObject(StatHelper.calculateSummaryStatisticsContDistSample(doubleEntries)));
+
             break;
             
           case -1:
@@ -885,7 +904,6 @@ public class RDATAFileReader extends StatDataFileReader {
             }
 
             LOG.info(name + " (UNF) = "+unfValue);
-
             
             smd.getSummaryStatisticsTable().put(k, StatHelper.calculateSummaryStatistics(stringEntries));
             Map<String, Integer> StrCatStat = StatHelper.calculateCategoryStatistics(stringEntries);
@@ -914,6 +932,8 @@ public class RDATAFileReader extends StatDataFileReader {
     mCsvDataTable.setUnf(unfValues);
     mCsvDataTable.setFileUnf(fileUNFvalue);
 
+    
+    //
     smd.setVariableUNF(unfValues);
     smd.getFileInformation().put("fileUNF", fileUNFvalue);
   }

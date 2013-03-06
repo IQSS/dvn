@@ -48,7 +48,9 @@ public class DvnRDataAnalysisServiceImpl{
     
     private static Logger dbgLog = Logger.getLogger(DvnRDataAnalysisServiceImpl.class.getPackage().getName());
 
+    public static String DVN_TMP_DIR=null;
     public static String DSB_TMP_DIR=null;
+    public static String WEB_TMP_DIR=null;
     private static String TMP_DATA_FILE_NAME = "susetfile4Rjob";
     public static String TMP_DATA_FILE_EXT =".tab";
     private static String RSERVE_HOST = null;
@@ -80,11 +82,17 @@ public class DvnRDataAnalysisServiceImpl{
     
         DSB_TMP_DIR = System.getProperty("vdc.dsb.temp.dir");
         
-        // fallout case, if the JVM option is not set:
-        if (DSB_TMP_DIR == null){ 
-            DSB_TMP_DIR = "/tmp/VDC/DSB";
+        // fallout case: last resort
+        if (DSB_TMP_DIR == null){
+//            DSB_TMP_DIR="/tmp/VDC/DSB";
+//            WEB_TMP_DIR="/tmp/VDC/webtemp";
+            
+            DVN_TMP_DIR ="/tmp/VDC";
+            DSB_TMP_DIR = DVN_TMP_DIR + "/DSB";
+            WEB_TMP_DIR = DVN_TMP_DIR + "/webtemp";
+            
         }
-                    
+        
         RSERVE_HOST = System.getProperty("vdc.dsb.host");
         if (RSERVE_HOST == null){
             //RSERVE_HOST= "dsb-2.hmdc.harvard.edu";
@@ -157,6 +165,7 @@ public class DvnRDataAnalysisServiceImpl{
     public String tempFileName = null;
     public String tempFileNameNew = null;
     public String wrkdir = null;
+    public String webwrkdir = null;
     public String requestdir = null;
     public List<String> historyEntry = new ArrayList<String>();
     public List<String> replicationFile = new LinkedList<String>();
@@ -171,6 +180,8 @@ public class DvnRDataAnalysisServiceImpl{
         
         wrkdir = DSB_TMP_DIR + "/" + requestdir;
         
+        webwrkdir = WEB_TMP_DIR + "/" + requestdir;
+        
         tempFileName = DSB_TMP_DIR + "/" + TMP_DATA_FILE_NAME
                  +"." + PID + TMP_DATA_FILE_EXT;
         
@@ -182,21 +193,24 @@ public class DvnRDataAnalysisServiceImpl{
     public void setupWorkingDirectories(RConnection c){
         try{
             // set up the working directory
-            // (we only need one; there used to be a separate temp directory, 
-            // webtempdir, for files that we served over a direct http 
-            // connection - but that has been eliminated many releases ago).
-            
-            // The chmod lines are almost certainly not needed anymore. Again,
-            // this is a legacy leftover from the times when the results were
-            // served by httpd; which was running as a separate process, and 
-            // usually under a different PID - hence it was necessary to ensure
-            // that it had read (and write?) access to the directory. 
-            
+            // parent dir
+            String checkWrkDir = "if (file_test('-d', '"+DSB_TMP_DIR+"')) {Sys.chmod('"+
+            DVN_TMP_DIR+"', mode = '0777'); Sys.chmod('"+DSB_TMP_DIR+"', mode = '0777');} else {dir.create('"+DSB_TMP_DIR+"', showWarnings = FALSE, recursive = TRUE);Sys.chmod('"+DVN_TMP_DIR+"', mode = '0777');Sys.chmod('"+
+            DSB_TMP_DIR+"', mode = '0777');}";
+            dbgLog.fine("w permission="+checkWrkDir);
+            c.voidEval(checkWrkDir);
+
             // wrkdir
             String checkWrkDr = "if (file_test('-d', '"+wrkdir+"')) {Sys.chmod('"+
             wrkdir+"', mode = '0777'); } else {dir.create('"+wrkdir+"', showWarnings = FALSE, recursive = TRUE);Sys.chmod('"+wrkdir+"', mode = '0777');}";
             dbgLog.fine("w permission:wrkdir="+checkWrkDr);
             c.voidEval(checkWrkDr);
+
+            // webtemp dir
+            String checkWbWrkDr = "if (file_test('-d', '"+webwrkdir+"')) {Sys.chmod('"+
+            webwrkdir+"', mode = '0777'); } else {dir.create('"+webwrkdir+"', showWarnings = FALSE, recursive = TRUE);Sys.chmod('"+webwrkdir+"', mode = '0777');}";
+            dbgLog.fine("w permission:webtemp="+checkWbWrkDr);
+            c.voidEval(checkWbWrkDr);
 
         
         } catch (RserveException rse) {
@@ -245,14 +259,11 @@ public class DvnRDataAnalysisServiceImpl{
     }
     
     public void setupWorkingDirectory(RConnection c){
-        // This method is used when a request for the Zelig model definition 
-        // file comes in; so only the top-level temp directory is needed, and
-        // no request-specific child directories; and no temp directory for 
-        // unpacking of the request results on the application side. 
         try{
-            // set up the working directory:
+            // set up the working directory
+            // parent dir
             String checkWrkDir = "if (file_test('-d', '"+DSB_TMP_DIR+"')) {Sys.chmod('"+
-            DSB_TMP_DIR+"', mode = '0777');} else {dir.create('"+DSB_TMP_DIR+"', showWarnings = FALSE, recursive = TRUE);Sys.chmod('"+
+            DVN_TMP_DIR+"', mode = '0777'); Sys.chmod('"+DSB_TMP_DIR+"', mode = '0777');} else {dir.create('"+DSB_TMP_DIR+"', showWarnings = FALSE, recursive = TRUE);Sys.chmod('"+DVN_TMP_DIR+"', mode = '0777');Sys.chmod('"+
             DSB_TMP_DIR+"', mode = '0777');}";
             dbgLog.fine("w permission="+checkWrkDir);
             c.voidEval(checkWrkDir);
@@ -293,11 +304,6 @@ public class DvnRDataAnalysisServiceImpl{
 
             c.login(RSERVE_USER, RSERVE_PWD);
             dbgLog.fine(">" + c.eval("R.version$version.string").asString() + "<");
-            
-            // check working directories
-            // This needs to be done *before* we try to create any files 
-            // there!
-            setupWorkingDirectories(c);
 
 
             // save the data file at the Rserve side
@@ -322,6 +328,8 @@ public class DvnRDataAnalysisServiceImpl{
             historyEntry.add(librarySetup);
             c.voidEval(librarySetup);
             
+            // check working directories
+            setupWorkingDirectories(c);
             
             // variable type
             /* 
@@ -1701,9 +1709,6 @@ if (tmpv.length > 0){
             // set-up R command lines
             // temp file
             String R_TMP_DIR = "/tmp/VDC/";
-            // Why is this directory hard-coded here? Wasn't the point of 
-            // running setupWorkingDirectory, in the previous step, to set 
-            // up the configured directories? -- L.A. 
             //String cnfgfl = R_TMP_DIR +"configZeligGUI."+RandomStringUtils.randomNumeric(6)+ ".xml"; 
             String cnfgfl = R_TMP_DIR +"configZeligGUI.xml"; 
             dbgLog.fine("cnfgfl="+cnfgfl);

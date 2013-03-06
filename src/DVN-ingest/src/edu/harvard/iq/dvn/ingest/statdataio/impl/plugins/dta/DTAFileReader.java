@@ -1259,7 +1259,7 @@ public class DTAFileReader extends StatDataFileReader{
                                     dataTable2[columnCounter][i] = dataRow[columnCounter];
                                 } else {
                                     dataTable2[columnCounter][i] = float_datum;
-                    			    dataRow[columnCounter] = float_datum;
+                    		    				       dataRow[columnCounter] = float_datum;
                                 }
 
                             }

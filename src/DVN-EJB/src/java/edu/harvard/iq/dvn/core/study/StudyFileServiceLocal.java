@@ -43,7 +43,9 @@ public interface StudyFileServiceLocal {
 
     java.util.List<Long> getOrderedFilesByStudy(Long studyId);
     java.util.List<FileMetadata> getOrderedFilesByStudyVersion(Long svId);
-        java.util.List<FileMetadata> getFilesByStudyVersionOrderedById(Long svId);
+    java.util.List<FileMetadata> getFilesByStudyVersionOrderedById(Long svId);
+    java.util.List<Long> getOrderedFileIdsByStudyVersion (Long svId);
+    java.util.List<FileMetadata> getSomeOrderedFilesByStudyVersion(Long svId, List fileIdList);
 
     public Boolean doesStudyHaveSubsettableFiles(Long studyVersionId);
     public Boolean doesStudyHaveTabularFiles(Long studyVersionId);

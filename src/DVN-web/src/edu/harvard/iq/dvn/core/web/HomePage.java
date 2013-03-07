@@ -411,7 +411,7 @@ public class HomePage extends VDCBaseBean implements Serializable {
          DataverseGrouping childItem;
          while (iterator.hasNext()) {
             VDCGroup group = (VDCGroup)iterator.next();
-            childItem = new DataverseGrouping(group.getId(), group.getName(), "subgroup", isExpanded, "", "", parentId);
+            childItem = new DataverseGrouping(group.getId(), group.getName(), "subgroup", isExpanded, "", "", parentId, group.getVdcCount());
             parentItem.addItem(childItem);
             parentItem.setIsAccordion(true);
             if (vdcGroupService.findByParentId(group.getId()) != null) {
@@ -421,7 +421,7 @@ public class HomePage extends VDCBaseBean implements Serializable {
                 childItem.setXtraItems(new ArrayList());
                 while (inneriterator.hasNext()) {
                     VDCGroup innergroup = (VDCGroup)inneriterator.next();
-                    xtraItem = new DataverseGrouping(innergroup.getId(), innergroup.getName(), "subgroup", isExpanded, "", "", parentId);
+                    xtraItem = new DataverseGrouping(innergroup.getId(), innergroup.getName(), "subgroup", isExpanded, "", "", parentId, innergroup.getVdcCount());
                     childItem.addXtraItem(xtraItem);
                 }
             }

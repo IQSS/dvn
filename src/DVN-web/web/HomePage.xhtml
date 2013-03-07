@@ -29,25 +29,17 @@
                     </div>
                     <!-- Search -->
                     <div id="dvnHomePgSearch">
-                        <script type="text/javascript">
-                            // <![CDATA[
-                            function clickclear(thisfield, defaulttext) {
-                                if (thisfield.value == defaulttext) {
-                                    thisfield.value = "";
-                                }
-                            };
-                            // ]]>
-                        </script>
-                        <fieldset>
+                        <div class="dvnSearchBlock">
                             <ui:include src="BasicSearchFragment.xhtml"></ui:include>
-                        </fieldset>
-                        <div class="dvn_searchlinks">
-                            <ice:outputLink value="/dvn#{VDCRequest.currentVDCURL}/faces/AdvSearchPage.xhtml">
-                                <ice:outputText value="Advanced Search"/>
-                            </ice:outputLink>
-                            <ice:outputLink value="http://guides.thedata.org/book/search" target="_blank">
-                                <ice:outputText value="Tips"/>
-                            </ice:outputLink>
+
+                            <div class="dvn_searchlinks">
+                                <ice:outputLink value="/dvn#{VDCRequest.currentVDCURL}/faces/AdvSearchPage.xhtml">
+                                    <ice:outputText value="Advanced Search"/>
+                                </ice:outputLink>
+                                <ice:outputLink value="http://guides.thedata.org/book/search" target="_blank">
+                                    <ice:outputText value="Tips"/>
+                                </ice:outputLink>
+                            </div>
                         </div>
                     </div>
                     <!-- Search End -->
@@ -182,7 +174,7 @@
                                         <h1 style="float:left; margin:0; padding:6px 0; color:#526F76;">Studies</h1>
                                         <div jsfc="ice:panelGroup" style="float:left; padding:6px 0; margin-left:2em;"
                                              rendered="#{!empty(homePage.vdcUIList.vdcUIList) and VDCRequest.currentVDC == null}">
-                                            <ice:outputLink style="" value="/dvn/faces/StudyListingPage.xhtml" id="hyperlinkBrowseStudies">
+                                            <ice:outputLink value="/dvn/faces/StudyListingPage.xhtml" id="hyperlinkBrowseStudies">
                                                 <ice:outputText value="View All "/>
                                                 <ice:outputText rendered="#{homePage.groupName == 'Released Dataverses' and homePage.isAlphaSort == false}"
                                                                 styleClass="dvn_totalsValue"

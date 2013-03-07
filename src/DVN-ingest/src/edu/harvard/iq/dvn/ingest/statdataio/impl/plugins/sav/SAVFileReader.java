@@ -359,6 +359,10 @@ public class SAVFileReader extends StatDataFileReader{
         
         doubleNumberFormatter.setGroupingUsed(false);
         doubleNumberFormatter.setMaximumFractionDigits(340);
+        
+        if (getDataLanguageEncoding() != null) {
+            defaultCharSet = getDataLanguageEncoding(); 
+        }
     }
     
     // Accessor Methods  ----------------------------------------------------//
@@ -589,9 +593,14 @@ public class SAVFileReader extends StatDataFileReader{
                 /*
                  *  Starting with SPSS version 16, the default encoding is 
                  *  UTF-8. 
+                 *  But we are only going to use it if the user did not explicitly
+                 *  specify the encoding on the addfiles page. Then we'd want 
+                 *  to stick with whatever they entered. 
                  */
                 if (spssVersionNumber > 15) {
-                    defaultCharSet = "UTF-8";
+                    if (getDataLanguageEncoding() == null) {
+                        defaultCharSet = "UTF-8";
+                    }
                 }
             }
                       

@@ -46,6 +46,8 @@ public interface IndexServiceLocal extends java.io.Serializable {
     
     public List search(VDC vdc, List<SearchTerm> searchTerms);
 
+    public ResultsWithFacets searchwithFacets(VDC vdc, List<SearchTerm> searchTerms);
+
     public void updateStudy(long studyId);
 
     public void deleteIndexList(List<Long> studyIds);

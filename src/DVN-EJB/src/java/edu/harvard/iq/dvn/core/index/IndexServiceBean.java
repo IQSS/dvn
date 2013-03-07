@@ -426,6 +426,19 @@ public class IndexServiceBean implements edu.harvard.iq.dvn.core.index.IndexServ
         }
         return matchingStudyIds == null ? new ArrayList() : matchingStudyIds;
     }
+    
+    public ResultsWithFacets searchwithFacets(VDC vdc, List<SearchTerm> searchTerms) {
+        List studyIds = vdc != null ? listVdcStudyIds(vdc) : null;
+        logger.info("called searchWithFacets in IndexServiceBean");
+        ResultsWithFacets resultsWithFacets = null;
+        Indexer indexer = Indexer.getInstance();
+        try {
+            resultsWithFacets = indexer.searchWithFacets(studyIds, searchTerms);
+        } catch (IOException ex) {
+            ex.printStackTrace();
+        }        
+        return resultsWithFacets;
+    }
 
     private List listVdcStudyIds(final VDC vdc) {
         List studyIds = new ArrayList();

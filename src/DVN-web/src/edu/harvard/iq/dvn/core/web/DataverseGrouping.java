@@ -148,6 +148,29 @@ public class DataverseGrouping extends SortableList {
         }
         this.classificationSelect = false;
     }
+    
+    public DataverseGrouping(Long id, String name, String recordType, ArrayList parentItems, boolean isExpanded, String expandImage, String contractImage,
+            Long parentClassification, Integer numberOfDataverses) {
+
+        
+        super(nameColumnName);
+        this.groupKey    = name.replaceAll(" ", "").toLowerCase();
+        this.name        = name;
+        this.recordType  = recordType;
+        this.parentItems = parentItems;
+        this.parentItems.add(this);
+        this.isExpanded  = isExpanded;
+        this.expandImage = expandImage;
+        this.contractImage = contractImage;
+        this.id          = id;
+        this.parentClassification         = parentClassification;
+        // update the default state of the node.
+        if (this.isExpanded) {
+            expandNodeAction();
+        }
+        this.classificationSelect = false;
+        this.numberOfDataverses = numberOfDataverses;
+    }
 
     //subgroups
     public DataverseGrouping(Long id, String name, String recordType, boolean isExpanded, String expandImage, String contractImage, Long parentClassification) {
@@ -168,7 +191,25 @@ public class DataverseGrouping extends SortableList {
         this.classificationSelect = false;
     }
 
-   
+    public DataverseGrouping(Long id, String name, String recordType, boolean isExpanded, String expandImage, String contractImage, 
+            Long parentClassification, Integer numberOfDataverses) {
+        super(nameColumnName);
+        this.groupKey    = name.replaceAll(" ", "").toLowerCase();
+        this.name        = name;
+        this.recordType  = recordType;
+        this.isExpanded  = isExpanded;
+        this.expandImage = expandImage;
+        this.contractImage = contractImage;
+        this.id          = id;
+        this.parentClassification         = parentClassification;
+        this.indentStyleClass = "childRowIndentStyle";
+        // update the default state of the node.
+        if (this.isExpanded) {
+            expandNodeAction();
+        }
+        this.classificationSelect = false;
+        this.numberOfDataverses = numberOfDataverses;
+    }
     public void addChildItem(DataverseGrouping dvGroupRecord) {
         if (this.childItems != null && dvGroupRecord != null) {
             this.childItems.add(dvGroupRecord);
@@ -591,10 +632,18 @@ public class DataverseGrouping extends SortableList {
     private Long subclassification;
     private boolean classificationSelect = false;
     private Integer numberOwnedStudies;
+    private Integer numberOfDataverses;
     private String type;
     private boolean restricted;
 
 
+    public Integer getNumberOfDataverses() {
+        return numberOfDataverses;
+    }
+
+    public void setNumberOfDataverses(Integer numberOfDataverses) {
+        this.numberOfDataverses = numberOfDataverses;
+    }
 
      public void changeClassificationSelect(ValueChangeEvent event) {
         boolean newValue = (Boolean) event.getNewValue();

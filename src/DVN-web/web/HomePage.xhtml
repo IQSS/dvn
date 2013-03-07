@@ -103,7 +103,7 @@
                                                                 <ice:outputLink styleClass="head" value="/dvn/faces/site/BrowseDataversesPage.xhtml?groupId=#{item.id}"                                                                                                                                                                                                                    >
                                                                     <ice:outputText value="#{item.name}"/>
                                                                 </ice:outputLink>
-                                                                <ice:outputText value=" (##)" styleClass="dvnHmpgClassificationCount"/>
+                                                                <ice:outputText value=" (#{item.numberOfDataverses})" styleClass="dvnHmpgClassificationCount"/>
                                                             </h4>
                                                             <ui:fragment rendered="#{item.xtraItems != null and !empty(item.xtraItems)}">
                                                                 <ul>
@@ -114,7 +114,7 @@
                                                                             <ice:outputLink styleClass="lastNode" value="/dvn/faces/site/BrowseDataversesPage.xhtml?groupId=#{xtraItems.id}">
                                                                                 <ice:outputText value="#{xtraItems.name}"/>
                                                                             </ice:outputLink>
-                                                                            <ice:outputText value=" (##)" styleClass="dvnHmpgClassificationCount"/>
+                                                                            <ice:outputText value=" (#{xtraItems.numberOfDataverses})" styleClass="dvnHmpgClassificationCount"/>
                                                                         </li>
                                                                     </ui:repeat>
                                                                 </ul>
@@ -128,7 +128,7 @@
                                                             <ice:outputLink value="/dvn/faces/site/BrowseDataversesPage.xhtml?groupId=#{item.id}">
                                                                 <ice:outputText value="#{item.name}"/>
                                                             </ice:outputLink>
-                                                            <ice:outputText value=" (##)" styleClass="dvnHmpgClassificationCount"/>
+                                                            <ice:outputText value=" (#{item.numberOfDataverses})" styleClass="dvnHmpgClassificationCount"/>
                                                         </li>
                                                     </ui:fragment>
                                                     <!-- END HAS NO SUBNODE DESCENDANTS -->
@@ -192,8 +192,9 @@
                                             </ice:outputLink>
                                         </div>
                                         
-                                        <div jsfc="ice:panelGroup" style="float:right; background:#526F76;" id="createStudy" styleClass="dvhmpgactionbox">
-                                            <ice:outputLink value="#">
+                                        <div jsfc="ice:panelGroup" style="float:right; background:#526F76;" id="createStudy" 
+                                             styleClass="dvhmpgactionbox" rendered="#{VDCSession.loginBean.user!=null and !VDCRequest.readOnlyDatabase}" >
+                                            <ice:outputLink value="/dvn/faces/admin/ChooseDataverseForCreateStudy.xhtml" rendered="#{VDCSession.loginBean.user!=null and !VDCRequest.readOnlyDatabase}">
                                                 <ice:outputText value="Create a Study"/>
                                             </ice:outputLink>
                                         </div>
@@ -207,8 +208,8 @@
                                                 styleClass="dvnHmpgStudyWidgetTable" value="#{homePage.recentStudies}" var="studyUI">
                                         <ice:column id="column1">
                                             <div jsfc="ice:panelGroup" styleClass="#{!studyUI.study.restricted ? 'dvn_nostyle' : (studyUI.studyRestricted ? 'dvnStudyRestricted' : 'dvnStudyPublic')}" id="groupPanel1">
-                                                <ice:outputLink styleClass="dvnInlineHelpTip" id="hyperlink3" value="/dvn#{VDCRequest.currentVDCURL}/faces/study/StudyPage.xhtml?globalId=#{studyUI.study.globalId}"
-                                                                title="#{studyUI.metadata.title} - Dataverse Title &lt;br/&gt; Release Date">
+                                                <ice:outputLink styleClass="dvnInlineHelpTip" id="hyperlink3" value="/dvn/dv/#{studyUI.study.owner.alias}/faces/study/StudyPage.xhtml?globalId=#{studyUI.study.globalId}"
+                                                                title="#{studyUI.metadata.title} - Dataverse Title: #{studyUI.study.owner.name} &lt;br/&gt; Release Date: #{studyUI.releaseTime}">
                                                     <ice:graphicImage styleClass="dvnHmpgStudyFileIcon" url="/resources/images/icon_analyze.gif" title="View and Analyze study files" rendered="#{studyUI.files and studyUI.subsettable}"/>
                                                     <ice:graphicImage styleClass="dvnHmpgStudyFileIcon" url="/resources/images/icon_files.gif" title="View study files" rendered="#{studyUI.files and !studyUI.subsettable}"/>
                                                     <ice:outputText style="display:inline; font-size:90% !important;" id="hyperlink3aText" value="#{studyUI.metadata.title}"/><ice:outputText style="display:inline;" id="hyperlink3bText" styleClass="dvnStudyListStudyAuthor" value=" by #{studyUI.authors}" rendered="#{studyUI.authors != null and studyUI.authors != ''}"/>
@@ -224,8 +225,8 @@
                                                 styleClass="dvnHmpgStudyWidgetTable" value="#{homePage.mostDownloadedStudies}" var="studyUI">
                                         <ice:column id="column1">
                                             <div jsfc="ice:panelGroup" styleClass="#{!studyUI.study.restricted ? 'dvn_nostyle' : (studyUI.studyRestricted ? 'dvnStudyRestricted' : 'dvnStudyPublic')}" id="groupPanel1">                 
-                                                <ice:outputLink styleClass="dvnInlineHelpTip" id="hyperlink3" value="/dvn#{VDCRequest.currentVDCURL}/faces/study/StudyPage.xhtml?globalId=#{studyUI.study.globalId}"
-                                                                title="#{studyUI.metadata.title} - Dataverse Title &lt;br/&gt; Download Count">
+                                                <ice:outputLink styleClass="dvnInlineHelpTip" id="hyperlink3" value="/dvn/dv/#{studyUI.study.owner.alias}/faces/study/StudyPage.xhtml?globalId=#{studyUI.study.globalId}"
+                                                                title="#{studyUI.metadata.title} - Dataverse Title: #{studyUI.study.owner.name}  &lt;br/&gt; Download Count: #{studyUI.downloadCount}">
                                                     <ice:graphicImage styleClass="dvnHmpgStudyFileIcon" url="/resources/images/icon_analyze.gif" title="View and Analyze study files" rendered="#{studyUI.files and studyUI.subsettable}"/>
                                                     <ice:graphicImage styleClass="dvnHmpgStudyFileIcon" url="/resources/images/icon_files.gif" title="View study files" rendered="#{studyUI.files and !studyUI.subsettable}"/>
                                                     <ice:outputText style="display:inline; font-size:90% !important;" id="hyperlink3aText" value="#{studyUI.metadata.title}"/><ice:outputText style="display:inline;" id="hyperlink3bText" styleClass="dvnStudyListStudyAuthor" value=" by #{studyUI.authors}" rendered="#{studyUI.authors != null and studyUI.authors != ''}"/>

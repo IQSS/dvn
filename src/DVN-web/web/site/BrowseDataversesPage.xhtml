@@ -140,8 +140,8 @@
                                                             </ice:commandLink>
                                                         </h4>
                                                     </li>
-                                                    <ui:repeat rendered="#{homePage.accordionItemBeans != null}"
-                                                            value="#{homePage.accordionItemBeans}"
+                                                    <ui:repeat rendered="#{BrowseDataversesPage.accordionItemBeans != null}"
+                                                            value="#{BrowseDataversesPage.accordionItemBeans}"
                                                             var="menuItems">
                                                         <ui:fragment rendered="#{!empty(menuItems.childItems)}">
                                                             <li>
@@ -235,7 +235,7 @@
                             <div jsfc="ice:panelGroup" styleClass="dvnStudyListBlockSearch">
                                 <ice:dataTable id="dataverseListManage" width="100%"
                                                 rendered="#{!empty(BrowseDataversesPage.vdcUIList.vdcUIList)}"
-                                                rows="2"
+                                                rows="10"
                                                 styleClass="dvnStudyListTable"
                                                 rowClasses="list-row-odd, list-row-even" columnClasses="dvnStudyListTableColInfo, dvnStudyListTableColID"
                                                 sortColumn="#{BrowseDataversesPage.vdcUIList.sortColumnName}"
@@ -275,7 +275,7 @@
         <!-- Main Section ends here -->
         <script type="text/javascript">
         // <![CDATA[
-            var timeout= 400; //milliseconds to wait for no activity
+            var timeout= 800; //milliseconds to wait for no activity
             var countEvents= 0;
             function delayedRequestDV(form,field,event){
                 countEvents++;

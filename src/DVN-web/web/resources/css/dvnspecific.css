@@ -114,6 +114,11 @@ div[id$='dvnDataCitationWidget'] div {white-space: normal;}
 #dvnDataCitationWidgetBlockVersion span.iceOutTxt {padding:0;}
 #dvnDataCitationWidgetAuthorInputBlock, #dvnDataCitationWidgetDateInputBlock, #dvnDataCitationWidgetTitleInputBlock, #dvnDataCitationWidgetStudyIDInputBlock, #dvnDataCitationWidgetDistributorInputBlock {display:none;}
 span[id$=input_studyIdPrfxSync], span[id$=input_studyIdPrfx], input[id$=input_studyIdSync], input[id$=input_studyId] {display:inline !important;}
+.authorFormBlock, .distributorFormBlock {float:left;}
+.authorbuttonBlock, .distributorbuttonBlock {float:right;}
+.authorbuttonBlock img, .distributorbuttonBlock img {display:inline;}
+.authorbuttonBlock img:hover, .distributorbuttonBlock img:hover {cursor: pointer}
+.authorbuttonBlock img:last-child, .distributorbuttonBlock img:last-child {margin-left:1em !important;}
 .dvnManageStudiesTableTop{width:100%}
 .dvnManageStudiesTableTop .dvnPaginatorWrap{padding:.5em 0}
 .dvn_ManageStudiesTotals {padding:.5em; text-align:right;}

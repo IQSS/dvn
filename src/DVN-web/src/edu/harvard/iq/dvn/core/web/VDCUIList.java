@@ -200,7 +200,6 @@ public class VDCUIList extends SortableList {
             }
             List<Long> vdcIds = null;
             
-            System.out.print("filter Term " + filterTerm);
             if (alphaCharacter != null && vdcGroupId != null && !vdcGroupId.equals(new Long("-1"))) {
                 vdcIds = vdcService.getOrderedVDCIds(vdcGroupId, alphaCharacter, orderBy, hideRestricted, filterTerm);
             } else if (alphaCharacter != null && !alphaCharacter.equals("") && (vdcGroupId == null || vdcGroupId.equals(new Long("-1")))) {
@@ -208,7 +207,6 @@ public class VDCUIList extends SortableList {
             } else if (vdcGroupId == null || vdcGroupId.equals(new Long("-1"))) {
                 vdcIds = vdcService.getOrderedVDCIds(null, null, orderBy, hideRestricted, filterTerm);
             } else if (filterTerm != null) {
-                System.out.print("correct get...");
                 vdcIds = vdcService.getOrderedVDCIds(vdcGroupId, null, orderBy, hideRestricted, filterTerm);
             } else {
                 vdcIds = vdcService.getOrderedVDCIds(vdcGroupId, null, orderBy, hideRestricted);

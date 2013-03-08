@@ -359,6 +359,10 @@ public class SAVFileReader extends StatDataFileReader{
         
         doubleNumberFormatter.setGroupingUsed(false);
         doubleNumberFormatter.setMaximumFractionDigits(340);
+        
+        if (getDataLanguageEncoding() != null) {
+            defaultCharSet = getDataLanguageEncoding(); 
+        }
     }
     
     // Accessor Methods  ----------------------------------------------------//
@@ -589,9 +593,14 @@ public class SAVFileReader extends StatDataFileReader{
                 /*
                  *  Starting with SPSS version 16, the default encoding is 
                  *  UTF-8. 
+                 *  But we are only going to use it if the user did not explicitly
+                 *  specify the encoding on the addfiles page. Then we'd want 
+                 *  to stick with whatever they entered. 
                  */
                 if (spssVersionNumber > 15) {
-                    defaultCharSet = "UTF-8";
+                    if (getDataLanguageEncoding() == null) {
+                        defaultCharSet = "UTF-8";
+                    }
                 }
             }
                       
@@ -1087,16 +1096,28 @@ public class SAVFileReader extends StatDataFileReader{
                     int variableLabelLength = getSAVintAdjustedBlockLength(rawVariableLabelLength);
                     dbgLog.fine("RT2: variableLabelLength="+variableLabelLength);
 
-
                     // 2.5 [optional]variable label whose length is found at 2.4
 
+                    String variableLabel = "";
+
+                    if (rawVariableLabelLength > 0) {
                     byte[] variable_label = new byte[variableLabelLength];
                     int nbytes_2_5 = stream.read(variable_label);
                     if (nbytes_2_5 == 0){
-                        throw new IOException("RT 2: error reading recordType2.5: no bytes read!");
+                            throw new IOException("RT 2: error reading recordType2.5: "
+                                    +variableLabelLength+" bytes requested, no bytes read!");
                     } else {
                         dbgLog.fine("nbytes_2_5="+nbytes_2_5);
                     }
+                        variableLabel = new String(Arrays.copyOfRange(variable_label,
+                                0, rawVariableLabelLength),defaultCharSet);
+                        dbgLog.fine("RT2: variableLabel="+variableLabel+"<-");
+
+                        dbgLog.info(variableName + " => " + variableLabel);
+                    } else {
+                        dbgLog.fine("RT2: defaulting to empty variable label.");
+                    }
+                    
                     if (!extendedVariableMode) {
                     // We only have any use for this label if it's a "real" variable.
                     // Thinking about it, it doesn't make much sense for the "fake"
@@ -1107,14 +1128,7 @@ public class SAVFileReader extends StatDataFileReader{
                     // the real variable entries.
                         /*String variableLabel = new String(Arrays.copyOfRange(variable_label,
                                 0, rawVariableLabelLength),"US-ASCII");*/
-                        String variableLabel = new String(Arrays.copyOfRange(variable_label,
-                                0, rawVariableLabelLength),defaultCharSet);
-                        dbgLog.fine("RT2: variableLabel="+variableLabel+"<-");
 
-                        dbgLog.info(variableName + " => " + variableLabel);
-                        dbgLog.info(variableName + " => " + variableLabel);
-                        dbgLog.info(variableName + " => " + variableLabel);
-                        
                         variableLabelMap.put(variableName, variableLabel);
                     }
                 }
@@ -2335,7 +2349,7 @@ public class SAVFileReader extends StatDataFileReader{
                     int byteCode = octate_i;//octate_i & 0xF;
                     //out.println("byeCode="+byteCode);
 
-                    // processCompressedOBS()
+                    // processCompressedOBS
 
                     switch (byteCode) {
                         case 252:

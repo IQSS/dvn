@@ -9,11 +9,22 @@ a.dvn_more:link,a.dvn_more:visited,a.dvn_more:hover,a.dvn_more:active{color:#6D0
 .dvhmpgactionbox{padding:4px; color:#FFF; background:#C55B28}
 .dvhmpgactionbox a:link,.dvhmpgactionbox a:visited,.dvhmpgactionbox a:hover,.dvhmpgactionbox a:active{color:#FFF}
 .dvhmpgactionbox div div span{font-weight:bold; text-transform:uppercase}
-/* NEW SEARCH */
-#dvnHomePgSearch {text-align:center;}
-#dvnHomePgSearch fieldset fieldset {width:400px; margin:0 auto; background:#EEEEEE;}
-#dvnHomePgSearch fieldset fieldset label input {font-size:1.25em !important;}
-/* SEARCH */
+/* HMPG + ADV SEARCH */
+#dvnHomePgSearch, #dvnAdvSearch {margin:1em 0; text-align:center;}
+.dvnSearchBlock {width:500px; padding:8px 40px 0 40px; margin:0 auto; background:#EEEEEE; border-bottom:2px solid grey;}
+.dvnSearchBlock fieldset {margin:0; padding:0;}
+.dvnSearchBlock fieldset label input {font-size:1.1em !important;}
+.dvnSearchBlock fieldset label input.iceInpTxt {width:368px; margin-right:1em; padding:5px 3px;}
+.dvnSearchBlock input.iceCmdBtn[value=Search], .dvnFormMargin input.iceCmdBtn[value=Search]{background:#EEF3FB; border:1px solid #B7CDFF; padding:4px 16px; font-size:1em;}
+.dvnSearchBlock input.iceCmdBtn[value=Search]:hover, .dvnFormMargin input.iceCmdBtn[value=Search]:hover{border:1px solid #0C54B3;}
+.dvnSearchBlock input.iceCmdBtn[value=Search]:active, .dvnFormMargin input.iceCmdBtn[value=Search]:active{background:#0C54B3;}
+.dvnSearchSuggestions {padding:0 10px; text-align:left;}
+.dvnSearchBlock .dvn_searchlinks {padding:0 10px; text-align:right;}
+.dvnSearchBlock .dvn_searchlinks span.iceOutTxt {font-size:.9em !important;}
+.dvnSearchBlock .dvn_searchlinks a.iceOutLnk:first-child {margin-right:1em;}
+.dvnAdvSearchScopeHeadPad{padding:.5em 1em 0 1em;}
+.dvnPermissionsTable .dvnAdvSearchScopePnlGrdTable span {color: #000000; font-size: 90% !important;}
+/* DV STUDYLISTING SEARCH */
 div.dvn_searchblock{margin-bottom:12px;padding:4px 12px;background:#F2F2F2;border:1px solid #ddd;text-align:left;overflow:hidden;}
 .dvnSearchBoxCheckbox{display:block;text-align:left;}
 .dvnSearchBoxCheckbox,.dvnSearchBoxCheckbox select{margin-top:0;margin-bottom:0}

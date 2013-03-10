@@ -69,10 +69,10 @@
                                     </p>
                                 </div>
                                 
-                                <div jsfc="ice:panelGroup" rendered="#{studyPage.studyUI.studyVersion.numberOfFiles > studyPage.studyUI.FILE_NUMBERS}">
+                                <div jsfc="ice:panelGroup" styleClass="warnMessage" rendered="#{studyPage.studyUI.studyVersion.numberOfFiles > studyPage.studyUI.FILE_NUMBERS}">
                                     <p>
                                         <ice:graphicImage value="/resources/images/icon_warning.18.png" styleClass="dvn_icon"/>
-                                        <ice:outputText value=" Due to the large number of files associated with this study, only #{studyPage.studyUI.FILE_NUMBERS} files are loaded each time to help speed up the page load time."/>
+                                        <ice:outputText value=" Due to the large number of files associated with this study, only #{studyPage.studyUI.FILE_NUMBERS} files are loaded at a time."/>
                                     </p>
                                 </div>
 
@@ -225,7 +225,7 @@
                                     </ice:column>
                                 </ice:dataTable>
                                 <div jsfc="ice:panelGroup" rendered="#{studyPage.studyUI.fileIdListSize > 0}">
-                                    <div class="dvnFormPadding dvnFormMargin">
+                                    <div class="dvnFormPadding dvnFormMargin dvnFormCenter">
                                         <ice:commandButton  styleClass="dvnListenSave" value="Load More Files" actionListener="#{studyPage.studyUI.getFileCategoryUIList}"/>
                                     </div>
                                 </div>

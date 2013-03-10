@@ -376,7 +376,7 @@ public class StudyUI  implements java.io.Serializable {
             if (str != "") {
                 str += ", ";
             }
-            str += getMetadata().getDistributorContactEmail();
+            str += "<a href='mailto:" + getMetadata().getDistributorContactEmail() + "'>" + getMetadata().getDistributorContactEmail() + "</a>";
         }
         /*"Distributor Contact (affiliation), e-mail"*/
         return str;

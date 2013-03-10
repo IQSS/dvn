@@ -46,10 +46,12 @@ import javax.faces.component.UIInput;
 import javax.faces.event.ValueChangeEvent;
 import com.icesoft.faces.component.ext.HtmlDataTable;
 import com.icesoft.faces.component.ext.HtmlSelectOneMenu;
+import com.icesoft.faces.component.menubar.MenuItem;
 
 import com.icesoft.faces.context.effects.JavascriptContext;
 import javax.faces.model.SelectItem;
 import javax.faces.model.SelectItemGroup;
+
 import java.util.*;
 import java.util.logging.*;
 import java.util.zip.ZipInputStream;
@@ -114,6 +116,9 @@ public class AddFilesPage extends VDCBaseBean implements java.io.Serializable {
     // The selectItems (and groups) below are for the drop-down menu
     // of the supported file types:
     private Collection<SelectItem> fileTypes = null;
+    // The [new!] list for the character encoding dropdown:
+    private List<MenuItem> characterEncodings = null; 
+        
     private SelectItem[] fileTypesSubsettable;
     private SelectItem[] fileTypesNetwork;
 
@@ -122,7 +127,8 @@ public class AddFilesPage extends VDCBaseBean implements java.io.Serializable {
     private int fileProgress; // TODO: file upload completed percent (Progress), currently not used!!!
     private HtmlDataTable filesDataTable = new HtmlDataTable();
     //private VersionNotesPopupBean versionNotesPopup;
-
+    
+    private String dataLanguageEncoding = null; 
 
 
     public Long getStudyId() {
@@ -216,6 +222,14 @@ public class AddFilesPage extends VDCBaseBean implements java.io.Serializable {
     public void setSelectFileType(HtmlSelectOneMenu selectFileType) {
         this.selectFileType = selectFileType;
     }
+    
+    public String getDataLanguageEncoding() {
+        return dataLanguageEncoding;
+    }
+
+    public void setDataLanguageEncoding(String dataLanguageEncoding) {
+        this.dataLanguageEncoding = dataLanguageEncoding;
+    }
 
     public void preRenderView() {
         super.preRenderView();
@@ -248,6 +262,19 @@ public class AddFilesPage extends VDCBaseBean implements java.io.Serializable {
             // WE SHOULD HAVE A STUDY ID, throw an error
             System.out.println("ERROR: in addStudyPage, without a serviceBean or a studyId");
         }
+    }
+
+    public void encodingListener(ActionEvent e) {
+        dbgLog.fine("entering encoding listener");
+        FacesContext facesContext = FacesContext.getCurrentInstance();
+        dbgLog.fine("encoding listener: got faces context");
+        Map params = facesContext.getExternalContext().getRequestParameterMap();
+        dbgLog.fine("encoding listener: got request parameter map");
+        String encoding = (String) params.get("characterEncoding");
+        if (encoding != null && encoding.length() > 0) {
+            dbgLog.fine("setting character encoding to "+encoding);
+            setDataLanguageEncoding(encoding);
+        } 
     }
 
     public void uploadFileListener(FileEntryEvent fileEvent) {
@@ -458,6 +485,10 @@ public class AddFilesPage extends VDCBaseBean implements java.io.Serializable {
             }
 
             f.setSizeFormatted(file.length());
+            
+            if (dataLanguageEncoding != null && !(dataLanguageEncoding.equals(""))) {
+                f.setDataLanguageEncoding(dataLanguageEncoding);
+            }
 
         } catch (Exception ex) {
             String m = "Failed to create the study file. ";
@@ -796,7 +827,27 @@ public class AddFilesPage extends VDCBaseBean implements java.io.Serializable {
 
         return false; 
     }
+    
+    public boolean isSAVIngestRequested() {
+        dbgLog.fine("AddFiles: is SAV ingest requested? selectFileType value="+selectFileType.getValue());
 
+        if ( "sav".equals(selectFileType.getValue()) ) {
+            return true;
+        }
+
+        return false; 
+    }
+    
+    private boolean showCharEncodingMenu = false; 
+    
+    public boolean isShowCharEncodingMenu() {
+        return showCharEncodingMenu; 
+    }
+    
+    public void setShowCharEncodingMenu(boolean show) {
+        showCharEncodingMenu = show; 
+    }
+    
     public boolean isNetworkDataIngestRequested() {
         dbgLog.fine("AddFiles: is network data ingest requested? selectFileType value="+selectFileType.getValue());
 
@@ -957,6 +1008,45 @@ public class AddFilesPage extends VDCBaseBean implements java.io.Serializable {
         return fileTypes;
     }
 
+    // this is how a menubar can be created inside the backing bean:
+    // (as opposed to creating one statically in the xhtml)
+    // 
+    // TODO: make a final decision, whether this menu should be static
+    // (as currently implemented) or defined dynamically, in the backing bean.
+    //  -- L.A. 
+    
+    public List getCharacterEncodings() {
+        if (characterEncodings == null) {
+            characterEncodings = new ArrayList<MenuItem>(); 
+            
+            MenuItem topLevel1 = new MenuItem();
+                topLevel1.setValue("West European");
+
+                MenuItem topLevel2 = new MenuItem();
+                topLevel2.setValue("East European");
+
+                MenuItem topLevel3 = new MenuItem();
+                topLevel3.setValue("East Asian");
+
+                characterEncodings.add(topLevel1);
+                characterEncodings.add(topLevel2);
+                characterEncodings.add(topLevel3);
+
+                MenuItem eastAsian_1 = new MenuItem();
+                eastAsian_1.setValue("Chinese Simplified (GB2312)");
+                MenuItem eastAsian_2 = new MenuItem();
+                eastAsian_2.setValue("Chinese Simplified (HZ)");
+                MenuItem eastAsian_3 = new MenuItem();
+                eastAsian_3.setValue("Chinese Simplified (GBK)");
+
+                topLevel3.getChildren().add(eastAsian_1);
+                topLevel3.getChildren().add(eastAsian_2);
+                topLevel3.getChildren().add(eastAsian_3);
+
+        }
+      
+        return characterEncodings; 
+    }
    
 
 }

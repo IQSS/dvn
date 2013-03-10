@@ -905,8 +905,9 @@ public class VDCServiceBean implements VDCServiceLocal {
             }
         }
         if (filterString != null) {
-            whereClause += "and ((dtype != 'Scholar' and upper(v.name) like '" + filterString.toUpperCase() + "%') ";
-            whereClause += "or (dtype = 'Scholar' and upper(v.lastname) like '" + filterString.toUpperCase() + "%')) ";
+            whereClause += "and ((upper(v.name) like '%" + filterString.toUpperCase() + "%') ";
+            whereClause += " or (upper(affiliation) like '%" + filterString.toUpperCase() + "%') ";
+            whereClause += "or (dtype = 'Scholar' and upper(v.lastname) like '%" + filterString.toUpperCase() + "%')) ";
         }
         String queryString = selectClause + fromClause + whereClause + orderingClause;
 

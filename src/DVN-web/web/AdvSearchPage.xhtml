@@ -21,38 +21,37 @@
     <ui:define name="body">
       <ice:form id="form1">
         <ice:inputHidden id="vdcId" value="#{VDCRequest.currentVDCId}"/>
-        <div jsfc="ice:panelGroup" styleClass="dvnInformationMessage">
-            <div class="dvnMsgBlockContainer">
-              <ice:outputText value="#{bundlePageInfo.combinedSearchHelpWithLinks}" escape="false"/>
-            </div>
-        </div>
         <div class="dvn_section">
 
-          <div jsfc="ice:panelGroup">
-            <table class="dvnAdvSearchTable dvnPermissionsTable" cellspacing="0" cellpadding="0" border="0">
-              <tr><td class="dvnPermissionsTableHeader"><ice:outputText value="#{bundlePageInfo.advancedSearchPageBasicTitle}"/></td></tr>
-              <tr>
-                <td class="dvnFormPadding">
+            <div id="dvnAdvSearch">
+                <div class="dvnSearchBlock">
                     <ui:include src="BasicSearchFragment.xhtml"></ui:include>
-                </td>
-              </tr>
-            </table>
-          </div>
+
+                    <div class="dvn_searchlinks">
+                        <ice:outputLink value="/dvn#{VDCRequest.currentVDCURL}/faces/AdvSearchPage.xhtml">
+                            <ice:outputText value="Advanced Search"/>
+                        </ice:outputLink>
+                        <ice:outputLink value="http://guides.thedata.org/book/search" target="_blank">
+                            <ice:outputText value="Tips"/>
+                        </ice:outputLink>
+                    </div>
+                </div>
+            </div>
 
           <div jsfc="ice:panelGroup">
             <table class="dvnPermissionsTable" cellspacing="0" cellpadding="0" border="0">
               <tr><td class="dvnPermissionsTableHeader"><ice:outputText value="#{bundlePageInfo.advancedSearchTitle}"/></td></tr>
               <tr>
                 <td>
-
-                  <div class="dvnFormPadding dvnFormMargin">
-                    <ice:commandButton id="button4" value="Search" action="#{AdvSearchPage.search}"/>
-                    <ice:commandButton id="button5" value="Cancel" immediate="true" action="#{VDCRequest.home}"/>
+                  <div jsfc="ice:panelGroup" styleClass="dvnInformationMessage">
+                    <div class="dvnMsgBlockContainer">
+                      <ice:outputText value="#{bundlePageInfo.combinedSearchHelpWithLinks}" escape="false"/>
+                    </div>
                   </div>
                   <ice:panelGrid cellpadding="0" cellspacing="0" columns="3" width="90%"
                                  id="gridPanel1" styleClass="dvnAdvSearchScopeTable"
                                  columnClasses="vdcAdvSearchCol1, vdcAdvSearchCol2, vdcAdvSearchCol3" rowClasses="list-row-odd, list-row-even">
-                    <ice:outputText id="outputText1" styleClass="vdcSubHeaderColor" value="Search Scope"/>
+                    <ice:outputText id="outputText1" styleClass="vdcSubHeaderColor" value="Cataloging Information Search Scope"/>
                     <ice:outputText id="outputText2" styleClass="vdcSubHeaderColor" value="Operator"/>
                     <ice:outputText id="outputText3" styleClass="vdcSubHeaderColor" value="Search Term"/>
                     <ice:column>
@@ -120,7 +119,14 @@
                     </ice:column>
                   </ice:panelGrid>
 
-                  <div>
+                  <div class="dvnFormPaddingTop">
+                      <ice:panelGrid cellpadding="0" cellspacing="0" columns="3" width="90%"
+                                 id="gridPanel1b" styleClass="dvnAdvSearchScopeTable"
+                                 columnClasses="vdcAdvSearchCol1, vdcAdvSearchCol2, vdcAdvSearchCol3" rowClasses="list-row-odd, list-row-even">
+                            <ice:outputText id="outputText1b" styleClass="vdcSubHeaderColor" value="File Metadata Search Scope"/>
+                            <ice:outputText id="outputText2b" styleClass="vdcSubHeaderColor" value="Operator"/>
+                            <ice:outputText id="outputText3b" styleClass="vdcSubHeaderColor" value="Search Term"/>
+                      </ice:panelGrid>
                       <ice:dataTable cellpadding="0" cellspacing="0" columns="3" width="90%"
                                      binding="#{AdvSearchPage.dataTableVariableInfo}" value="#{AdvSearchPage.variableInfoList}" var="currentRow"
                                      styleClass="dvnAdvSearchScopeTable" columnClasses="vdcAdvSearchCol1, vdcAdvSearchCol2, vdcAdvSearchCol3" rowClasses="list-row-odd, list-row-even">
@@ -137,12 +143,9 @@
                       </ice:dataTable>
                   </div>
 
-                  <div jsfc="ice:panelGroup" styleClass="dvnFormPadding" rendered="#{AdvSearchPage.searchableFileLevelMetadata}">
-                    <ice:outputText id="outputTextFileLevelKeys1" styleClass="vdcSubHeaderColor" value="(New!) File-Level Metadata Keys"/>
-                    <ice:outputText id="outputTextFileLevelKeys2" styleClass="dvnInformationMessage" value="Note: Work in progress!"/>                  
-                    
+                  <div jsfc="ice:panelGroup" rendered="#{AdvSearchPage.searchableFileLevelMetadata}">     
                     <ice:panelGrid cellpadding="0" cellspacing="0" columns="3" width="90%"
-                                 id="fileLevelSearchGridPanel1" styleClass="dvnAdvSearchScopeTable"
+                                 id="fileLevelSearchGridPanel1" styleClass="dvnAdvSearchScopeTable dvnAdvSearchScopePnlGrdTable"
                                  columnClasses="vdcAdvSearchCol1, vdcAdvSearchCol2, vdcAdvSearchCol3" rowClasses="list-row-odd, list-row-even">
                       <ice:column>
                         <ice:selectOneMenu binding="#{AdvSearchPage.dropdownFileMeta}" id="fileMetaDropdown" onchange="submit()" valueChangeListener="#{AdvSearchPage.searchFieldListener}" immediate="true">
@@ -155,15 +158,17 @@
                       <ice:column>
                           <ice:inputText id="input_fileMetaValue" size="40" binding="#{AdvSearchPage.fileMetaSearchValue}"/>
                       </ice:column>
-                        
                     </ice:panelGrid>
                   </div>
                     
                   <div jsfc="ice:panelGroup" styleClass="dvnFormPadding" rendered="#{AdvSearchPage.collectionsIncluded}">
-                    <ice:outputText id="outputText5" styleClass="vdcSubHeaderColor" value="Collections"/>
-                    <ice:selectOneRadio binding="#{AdvSearchPage.radioButtonList1}" id="radioButtonList1" layout="pageDirection" value="Search All Collections">
-                      <f:selectItems binding="#{AdvSearchPage.radioButtonList1SelectItems}" id="radioButtonList1SelectItems" value="#{AdvSearchPage.radioButtonList1DefaultItems}"/>
-                    </ice:selectOneRadio>
+                      <div class="dvnAdvSearchScopeHeadPad">
+                        <ice:outputText id="outputText5" styleClass="vdcSubHeaderColor" value="Collections Search Scope"/>
+                        <ice:selectOneRadio binding="#{AdvSearchPage.radioButtonList1}" id="radioButtonList1" layout="pageDirection" value="Search All Collections">
+                        <f:selectItems binding="#{AdvSearchPage.radioButtonList1SelectItems}" id="radioButtonList1SelectItems" value="#{AdvSearchPage.radioButtonList1DefaultItems}"/>
+                        </ice:selectOneRadio>
+                      </div>
+                        
                     <ice:dataTable binding="#{AdvSearchPage.dataTable1}" cellpadding="0" cellspacing="0" width="90%"
                                    value="#{AdvSearchPage.collectionModelList}" var="currentRow"
                                    styleClass="dvnAdvSearchCollectionsTable" columnClasses="vdcColPadded" id="dataTable1" >
@@ -177,8 +182,7 @@
                   </div>
 
                   <div class="dvnFormPadding dvnFormMargin">
-                    <ice:commandButton id="button2" value="Search"  type="submit" action="#{AdvSearchPage.search}" />
-                    <ice:commandButton id="button3" value="Cancel" immediate="true" action="#{VDCRequest.home}"/>
+                    <ice:commandButton id="button2" value="Search" type="submit" action="#{AdvSearchPage.search}"/>
                   </div>
                 </td>
               </tr>

@@ -22,7 +22,7 @@
             <ice:form id="form1" >
                 <ice:panelTabSet id="tabSet1" styleClass="dvnTabs" selectedIndex="0" binding="#{AccountPage.tabSet1}">
                     <!-- Account Tab  -->
-                    <ice:panelTab id="account" label="Account" url="/dvn#{VDCRequest.currentVDCURL}/faces/login/AccountPage.xhtml&amp;tab=account" >
+                    <ice:panelTab id="account" label="Account for #{AccountPage.user.userName}" url="/dvn#{VDCRequest.currentVDCURL}/faces/login/AccountPage.xhtml&amp;tab=account" >
                         <ui:include src="/login/AccountFragment.xhtml">
                             <ui:param name="returnPage" value="accountOptions"/>
                         </ui:include>

@@ -13,11 +13,14 @@
     </script>
     <fieldset>
         <label for="search">
-            <ice:inputText onkeypress="if (window.event) return processEvent('', 'form1:search'); else return processEvent(event, 'form1:search');" value="#{BasicSearchFragment.searchValue}" id="simpleSearch" onclick="clickclear(this, 'Search Studies')"/>
+            <ice:inputText onkeypress="if (window.event) return processEvent('', 'form1:search'); else return processEvent(event, 'form1:search');" value="#{BasicSearchFragment.searchValue}" id="simpleSearch" onclick="clickclear(this, 'Enter keywords to search the Dataverse Network')"/>
         </label>
         <label for="button">
              <!--<ice:commandButton id="search" value="Go"  action="#{BasicSearchFragment.search_action}"/>-->
              <ice:commandButton id="search" value="Go"  action="#{BasicSearchFragment.facet_search}"/>
         </label>
     </fieldset>
+    <div class="dvnSearchSuggestions">
+        Try searching for <ice:outputLink value="/dvn/faces/StudyListingPage.xhtml">[keyword]</ice:outputLink>, <ice:outputLink value="/dvn/faces/StudyListingPage.xhtml">[keyword]</ice:outputLink>, <ice:outputLink value="/dvn/faces/StudyListingPage.xhtml">[keyword]</ice:outputLink>
+    </div>
 </div>

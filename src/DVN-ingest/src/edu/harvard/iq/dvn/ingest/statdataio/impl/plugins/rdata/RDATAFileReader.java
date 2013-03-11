@@ -143,11 +143,6 @@ public class RDATAFileReader extends StatDataFileReader {
 
   SDIOMetadata smd = new RDATAMetadata();
   
-  // sdioMetadata.variableFormatName
-  
-  
-  
-  
   DataTable mCsvDataTable = null;
   SDIOData sdiodata = null;
 
@@ -537,17 +532,19 @@ public class RDATAFileReader extends StatDataFileReader {
     // Additionally, this outputs to the tab-delimited file
     int lineCount = csvFileReader.read(localBufferedReader, smd, tabFileWriter);
     
+    
+    List<Integer> variableTypeList = getVariableTypeList(mDataTypes);
+    // smd.setVariableTypeMinimal(ArrayUtils.toPrimitive(variableTypeList.toArray(new Integer[variableTypeList.size()])));
+    
+    
     // File Data Table
     mCsvDataTable = readTabDataFile(tabFileDestination);
-
-    // Create UNF for each column
-    createUNF(mCsvDataTable);
-    
-    // Initialize vartiable type list
-    
     
     // Set meta information about format names, I guess.
     setMetaInfo();
+
+    // Create UNF for each column
+    createUNF(mCsvDataTable);
     
     //
     LOG.info("RDATAFileReader: varQnty = " + mVarQuantity);
@@ -692,11 +689,6 @@ public class RDATAFileReader extends StatDataFileReader {
 
     String tabFileName = (String) smd.getFileInformation().get("tabDelimitedDataFileLocation");
     
-    LOG.info("{{{");
-    LOG.info("tabFileName = " + tabFileName);
-    LOG.info("tabFile.getAbsolute()" + tabFile.getAbsolutePath());
-    LOG.info("}}}");
-    
     BufferedReader tabFileReader = new BufferedReader(new InputStreamReader(new FileInputStream(tabFileName)));
 
     boolean[] isCharacterVariable = smd.isStringVariable();
@@ -714,16 +706,23 @@ public class RDATAFileReader extends StatDataFileReader {
       valueTokens = line.split("\t", mVarQuantity);
 
       for ( int i = 0; i < mVarQuantity; i++ ) {
+        
+        LOG.warning("xxxxxxxxxx");
         if (isCharacterVariable[i]) {
+          LOG.info((String) valueTokens[i]);
           valueTokens[i] = valueTokens[i].replaceFirst("^\"", "");
           valueTokens[i] = valueTokens[i].replaceFirst("\"$", "");
+          valueTokens[i] = valueTokens[i].replaceAll("\\\\\"", "\"");
+          
           dataTable[i][j] = valueTokens[i];
+          //dataTable[i][j] = StringEscapeUtils.unescapeCsv(valueTokens[i]);
+          
+          LOG.info((String) dataTable[i][j]);
         }
         else {
           dataTable[i][j] = valueTokens[i];
         }
        
-        // LOG.info("(" + i + ", " + j + ") = " + dataTable[i][j]);
       }
     }
 
@@ -732,14 +731,24 @@ public class RDATAFileReader extends StatDataFileReader {
     
     return tabData;
   }
-  
+  /**
+   * Whether a String is a Date
+   * Returns TRUE or FALSE depending on whether 
+   * @param value
+   * @return 
+   */
   private boolean isDateValue (String value) {
     if (!isStringValue(value))
       return false;
     
     return false;
   }
-  
+  /**
+   * 
+   * 
+   * @param value
+   * @return 
+   */
   private boolean isStringValue (String value) {
     return value.startsWith("\"") && value.endsWith("\"");
   }
@@ -764,24 +773,54 @@ public class RDATAFileReader extends StatDataFileReader {
    * @return 
    */
   private List<Integer> getVariableTypeList (String[] dataTypes) {
-    List<Integer> variableTypeList = new ArrayList<Integer>();
+    // Okay.
+    List <Integer>
+            minimalTypeList = new ArrayList<Integer>(),
+            normalTypeList = new ArrayList<Integer>();
+    
+    Set <Integer> decimalVariableSet = new HashSet <Integer>(); 
+    
+    List <Boolean> isContinuous = new ArrayList<Boolean>();
+    List <String> isString = new ArrayList<String>();
+    
+    
+    int k = 0;
     
     for (String type : dataTypes) {
       // Convention is that integer is zero, right?
-      if (type.equals("integer"))
-        variableTypeList.add(-1);
+      if (type.equals("integer")) {
+        minimalTypeList.add(0);
+        normalTypeList.add(0);
+      }
 
       // Double-precision data-types
-      else if (type.equals("numeric") || type.equals("double"))
-        variableTypeList.add(-1);
+      else if (type.equals("numeric") || type.equals("double")) {
+        minimalTypeList.add(1);
+        normalTypeList.add(0);
+        decimalVariableSet.add(k);
+      }
 
       // Everything else is a string
-      else
-        variableTypeList.add(-1);
+      else {
+        minimalTypeList.add(-1);
+        normalTypeList.add(1);
+      }
+      
+      k++;
     }
     
+    // Decimal Variables
+    
+    smd.setVariableTypeMinimal(ArrayUtils.toPrimitive(normalTypeList.toArray(new Integer[normalTypeList.size()])));
+    smd.setDecimalVariables(decimalVariableSet);
+    smd.setVariableStorageType(null);
+    
+    LOG.info("minimalTypeList = " + Arrays.deepToString(minimalTypeList.toArray()));
+    LOG.info("normalTypeList = " + Arrays.deepToString(normalTypeList.toArray()));
+    LOG.info("decimalVariableSet = " + Arrays.deepToString(decimalVariableSet.toArray()));
+
     // Return the variable type list
-    return variableTypeList;
+    return minimalTypeList;
   }
   
   /**
@@ -812,7 +851,7 @@ public class RDATAFileReader extends StatDataFileReader {
     String fileUNFvalue = null;
     
     // Set variable types
-    smd.setVariableTypeMinimal(ArrayUtils.toPrimitive(variableTypeList.toArray(new Integer[variableTypeList.size()])));
+    // smd.setVariableTypeMinimal(ArrayUtils.toPrimitive(variableTypeList.toArray(new Integer[variableTypeList.size()])));
     
     int [] x = ArrayUtils.toPrimitive(variableTypeList.toArray(new Integer[variableTypeList.size()]));
     
@@ -872,8 +911,8 @@ public class RDATAFileReader extends StatDataFileReader {
             unfValue = UNF5Util.calculateUNF(doubleEntries);
             
             // SPECIFY DECIMAL VARIABLE SET FOR SPECIAL ANALYSIS
-            mDecimalVariableSet.add(k);
-            smd.setDecimalVariables(mDecimalVariableSet);
+            
+            
             
             // Update summary statistics
             smd.getSummaryStatisticsTable().put(k, ArrayUtils.toObject(StatHelper.calculateSummaryStatisticsContDistSample(doubleEntries)));
@@ -906,7 +945,7 @@ public class RDATAFileReader extends StatDataFileReader {
             LOG.info(name + " (UNF) = "+unfValue);
             
             smd.getSummaryStatisticsTable().put(k, StatHelper.calculateSummaryStatistics(stringEntries));
-            Map<String, Integer> StrCatStat = StatHelper.calculateCategoryStatistics(stringEntries);
+            Map <String, Integer> StrCatStat = StatHelper.calculateCategoryStatistics(stringEntries);
             smd.getCategoryStatisticsTable().put(variableNameList.get(k), StrCatStat);
 
             break;
@@ -933,7 +972,17 @@ public class RDATAFileReader extends StatDataFileReader {
     mCsvDataTable.setFileUnf(fileUNFvalue);
 
     
-    //
+    // Set meta-data to make it look like a SAV file
+    // smd.setVariableStorageType(null);
+    // smd.setDecimalVariables(mDecimalVariableSet);
+    
+    boolean [] b = smd.isContinuousVariable();
+    
+    for (int k = 0; k < b.length; k++) {
+      String s = b[k] ? "True" : "False";
+      LOG.info(k + " = " + s);
+    }
+    
     smd.setVariableUNF(unfValues);
     smd.getFileInformation().put("fileUNF", fileUNFvalue);
   }

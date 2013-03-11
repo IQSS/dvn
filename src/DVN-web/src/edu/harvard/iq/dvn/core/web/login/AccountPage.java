@@ -24,12 +24,15 @@
  */
 package edu.harvard.iq.dvn.core.web.login;
 
+import com.icesoft.faces.component.paneltabset.PanelTabSet;
+import com.icesoft.faces.context.effects.JavascriptContext;
 import edu.harvard.iq.dvn.core.admin.UserServiceLocal;
 import edu.harvard.iq.dvn.core.admin.VDCUser;
 import edu.harvard.iq.dvn.core.web.common.StatusMessage;
 import edu.harvard.iq.dvn.core.web.common.VDCBaseBean;
 import javax.ejb.EJB;
 import javax.faces.bean.ViewScoped;
+import javax.faces.context.FacesContext;
 import javax.inject.Named;
 
 /**
@@ -51,7 +54,12 @@ public class AccountPage extends VDCBaseBean implements java.io.Serializable  {
     public AccountPage() {
     }
 
-    
+    public void preRenderView() {
+        super.preRenderView();
+        if (tabSet1.getSelectedIndex() == 1) {
+            JavascriptContext.addJavascriptCall(FacesContext.getCurrentInstance(), "initManageStudiesTableBlockHeight();");
+        }
+    }
 
 
 
@@ -158,5 +166,9 @@ public class AccountPage extends VDCBaseBean implements java.io.Serializable  {
     public void setStatusMessage(StatusMessage statusMessage) {
         this.statusMessage = statusMessage;
     }
+    
+    private PanelTabSet tabSet1 = new PanelTabSet();
+    public PanelTabSet getTabSet1() {return tabSet1;}
+    public void setTabSet1(PanelTabSet tabSet1) {this.tabSet1 = tabSet1;}
 }
 

@@ -20,7 +20,7 @@
         </ui:define>
         <ui:define name="body">
             <ice:form id="form1" >
-                <ice:panelTabSet id="tabSet1" styleClass="dvnTabs" selectedIndex="0">
+                <ice:panelTabSet id="tabSet1" styleClass="dvnTabs" selectedIndex="0" binding="#{AccountPage.tabSet1}">
                     <!-- Account Tab  -->
                     <ice:panelTab id="account" label="Account" url="/dvn#{VDCRequest.currentVDCURL}/faces/login/AccountPage.xhtml&amp;tab=account" >
                         <ui:include src="/login/AccountFragment.xhtml">

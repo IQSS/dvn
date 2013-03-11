@@ -21,9 +21,6 @@
                   };
                 });
 
-                jQuery(document).ready(function(){
-                      initManageStudiesTableBlockHeight();
-                });
                 
                 function initManageStudiesTableBlockHeight(){
                     var $div = jQuery(".dvnManageStudiesTable");
@@ -31,23 +28,6 @@
                     jQuery(".dvnManageStudiesTableBlock").css("height", y);
                 };
 
-               Ice.onAsynchronousReceive("document:body", function(){
-                   jQuery(function(jQuery){
-                      jQuery.fn.fixOverflow = function(){
-                        if (jQuery.browser.msie) {
-                          return this.each(function(){
-                            if (this.scrollWidth > this.offsetWidth){
-                              jQuery(this).css({"padding-bottom" : "20px", "overflow-y" : "hidden"});
-                            }
-                          })
-                        } else {
-                          return this;
-                        }
-                      };
-                    });
-
-                    initManageStudiesTableBlockHeight();
-               });
                //]]>
             </script>
             <div class="dvnManageTableTop">

@@ -528,7 +528,6 @@ public class ManageStudiesList extends VDCBaseBean {
         // make sure sortColumnName on first render
         oldAscending = !ascending;
         
-        JavascriptContext.addJavascriptCall(FacesContext.getCurrentInstance(), "initManageStudiesTableBlockHeight();");
         
     }
 

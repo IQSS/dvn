@@ -1740,6 +1740,8 @@ public class Indexer implements java.io.Serializable  {
                 if (!"varName".equals(indexedFieldName)
                         && !"varLabel".equals(indexedFieldName)
                         && !"varId".equals(indexedFieldName)
+                        && !"id".equals(indexedFieldName)
+                        && !"versionStudyId".equals(indexedFieldName)
                         && !"varStudyId".equals(indexedFieldName)
                         && !"varStudyFileId".equals(indexedFieldName)) {
                     anyTerms.add(buildAnyTerm(indexedFieldName, string));

@@ -124,6 +124,20 @@ public class OptionsPage extends VDCBaseBean  implements java.io.Serializable {
     @PersistenceContext(unitName = "VDCNet-ejbPU")
     EntityManager em;
     
+    public void preRenderView() {
+        super.preRenderView();
+        if (vdc != null) {
+            if (tabSet1.getSelectedIndex() == 0) {  // studies tab
+                JavascriptContext.addJavascriptCall(FacesContext.getCurrentInstance(), "initManageStudiesTableBlockHeight();");
+            } else if (tabSet1.getSelectedIndex() == 3 && dvPermissionsSubTab.getSelectedIndex() == 3) {
+                JavascriptContext.addJavascriptCall(getFacesContext(), "initDownloadDataTableBlockHeight();");
+            }
+        } else {
+            if (tabSet1.getSelectedIndex() == 6 && permissionsSubTab.getSelectedIndex() == 4) {
+                JavascriptContext.addJavascriptCall(getFacesContext(), "initDownloadDataTableBlockHeight();");
+            }
+        }
+    }
 
     
     public void init() {
@@ -636,8 +650,7 @@ public class OptionsPage extends VDCBaseBean  implements java.io.Serializable {
                 GuestBookResponseUI guestBookResponseDisplay = new GuestBookResponseUI(gbr,customQuestionIds );
                 guestBookResponsesDisplay.add(guestBookResponseDisplay);
         }
-        JavascriptContext.addJavascriptCall(getFacesContext(), "initDownloadDataTableBlockHeight();");
-        JavascriptContext.addJavascriptCall(getFacesContext(), "initAddBorder();");
+        //JavascriptContext.addJavascriptCall(getFacesContext(), "initDownloadDataTableBlockHeight();");
         return "";
     }
     
@@ -673,7 +686,7 @@ public class OptionsPage extends VDCBaseBean  implements java.io.Serializable {
                 GuestBookResponseUI guestBookResponseDisplay = new GuestBookResponseUI(gbr,customQuestionIds );
                 guestBookResponsesDisplay.add(guestBookResponseDisplay);
         }
-        // JavascriptContext.addJavascriptCall(getFacesContext(), "initDownloadDataTableBlockHeight();");
+         JavascriptContext.addJavascriptCall(getFacesContext(), "initDownloadDataTableBlockHeight();");
         return "";
     }
         

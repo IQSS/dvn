@@ -102,8 +102,7 @@
                                                             <h4 class="head">
                                                                 <ice:outputLink styleClass="head" value="/dvn/faces/site/BrowseDataversesPage.xhtml?groupId=#{item.id}"                                                                                                                                                                                                                    >
                                                                     <ice:outputText value="#{item.name}"/>
-                                                                </ice:outputLink>
-                                                                <ice:outputText value=" (#{item.numberOfDataverses})" styleClass="dvnHmpgClassificationCount"/>
+                                                                </ice:outputLink>                                              
                                                             </h4>
                                                             <ui:fragment rendered="#{item.xtraItems != null and !empty(item.xtraItems)}">
                                                                 <ul>
@@ -125,7 +124,7 @@
                                                     <!-- HAS NO SUBNODE DESCENDANTS -->
                                                     <ui:fragment rendered="#{empty(item.xtraItems)}">
                                                         <li>
-                                                            <ice:outputLink value="/dvn/faces/site/BrowseDataversesPage.xhtml?groupId=#{item.id}">
+                                                            <ice:outputLink styleClass="lastNode" value="/dvn/faces/site/BrowseDataversesPage.xhtml?groupId=#{item.id}">
                                                                 <ice:outputText value="#{item.name}"/>
                                                             </ice:outputLink>
                                                             <ice:outputText value=" (#{item.numberOfDataverses})" styleClass="dvnHmpgClassificationCount"/>

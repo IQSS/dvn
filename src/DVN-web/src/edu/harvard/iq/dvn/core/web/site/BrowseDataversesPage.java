@@ -102,6 +102,13 @@ public class BrowseDataversesPage  extends VDCBaseBean implements Serializable {
         return "";
     }
     
+    public String changeGroupId(){
+        if (!((String) getHiddenGroupId().getValue()).isEmpty()){
+             groupId  = new Long((String) getHiddenGroupId().getValue()); 
+        }               
+        return "";
+    }
+    
     protected void innerSort(String sortBy){       
         if (sortBy == null || sortBy.equals("")) {
             return;
@@ -126,6 +133,9 @@ public class BrowseDataversesPage  extends VDCBaseBean implements Serializable {
     private void populateVDCUIList() {
         if (firstRun){
            filterTerm = initialFilter; 
+        }
+        if (getHiddenGroupId().getValue() !=null && !((String) getHiddenGroupId().getValue()).isEmpty()){
+             groupId  = new Long((String) getHiddenGroupId().getValue()); 
         }
         vdcUIList = new VDCUIList(groupId, "", filterTerm, hideRestricted);
         vdcUIList.setAlphaCharacter(new String(""));
@@ -189,7 +199,7 @@ public class BrowseDataversesPage  extends VDCBaseBean implements Serializable {
          DataverseGrouping childItem;
          while (iterator.hasNext()) {
             VDCGroup group = (VDCGroup)iterator.next();
-            childItem = new DataverseGrouping(group.getId(), group.getName(), "subgroup", isExpanded, "", "", parentId, group.getVdcCount());
+            childItem = new DataverseGrouping(group.getId(), group.getName(), "subgroup", isExpanded, "", "", parentId, group.getReleasedVdcCount());
             parentItem.addItem(childItem);
             parentItem.setIsAccordion(true);
             if (vdcGroupService.findByParentId(group.getId()) != null) {
@@ -199,7 +209,7 @@ public class BrowseDataversesPage  extends VDCBaseBean implements Serializable {
                 childItem.setXtraItems(new ArrayList());
                 while (inneriterator.hasNext()) {
                     VDCGroup innergroup = (VDCGroup)inneriterator.next();
-                    xtraItem = new DataverseGrouping(innergroup.getId(), innergroup.getName(), "subgroup", isExpanded, "", "", parentId, innergroup.getVdcCount());
+                    xtraItem = new DataverseGrouping(innergroup.getId(), innergroup.getName(), "subgroup", isExpanded, "", "", parentId, innergroup.getReleasedVdcCount());
                     childItem.addXtraItem(xtraItem);
                 }
             }
@@ -259,6 +269,10 @@ public class BrowseDataversesPage  extends VDCBaseBean implements Serializable {
     public void setInputFilterTerm(HtmlInputText inputFilterTerm) {
         this.inputFilterTerm = inputFilterTerm;
     }
+    
+    private HtmlInputHidden hiddenGroupId = new HtmlInputHidden();
+    public HtmlInputHidden getHiddenGroupId() {return hiddenGroupId;}
+    public void setHiddenGroupId(HtmlInputHidden hiddenGroupId) {this.hiddenGroupId = hiddenGroupId;}
 
     //getters
     public Long getCid() {

@@ -25,7 +25,9 @@
         <ui:define name="body">
           <ice:form id="browsedataversespage">
               <ice:commandButton type="submit" visible="false" id="updateDVList" value="update" action="#{BrowseDataversesPage.updateDVList}"/>
-        
+               <ice:inputHidden binding="#{BrowseDataversesPage.hiddenGroupId}"
+                      id="groupId"
+                valueChangeListener="#{BrowseDataversesPage.changeGroupId}"/>
         <div id="dvn_mainSection">
             
             <!-- Start Search Results (with side panel, if available) -->
@@ -42,7 +44,7 @@
                                 <td>
                                     <div jsfc="ice:panelGroup" styleClass="dvnManageTableControls" rendered="#{VDCRequest.currentVDC == null}">
                                         <div jsfc="ice:panelGroup" styleClass="dvnManageTableCreateLink" rendered="#{VDCRequest.vdcNetwork.allowCreateRequest and !VDCRequest.readOnlyDatabase}">
-                                            <ice:outputLink value="/dvn/faces/site/AddSitePage.xhtml">
+                                            <ice:outputLink value="/dvn/faces/site/AddSitePage.xhtml" rendered="#{VDCRequest.vdcNetwork.allowCreateRequest and !VDCRequest.readOnlyDatabase}">
                                                 <ice:outputText value="Create Dataverse"/>
                                             </ice:outputLink>
                                         </div>
@@ -131,8 +133,8 @@
                                                 <ul class="xtraMenu basic">
                                                     <!-- All Dataverses -->
                                                     <li>
-                                                        <h4 class="head selected noSubNode dvnHmpgAllDataverses">
-                                                            <ice:commandLink onclick="deselect_active_children(this);setHiddenValues(-1);"
+                                                        <h4 class="dvnHmpgAllDataverses">
+                                                            <ice:commandLink onclick="setHiddenValuesGroupId(-1);"
                                                                             partialSubmit="true"
                                                                             styleClass="head">
                                                                 <ice:outputText value="Show Released Dataverses"/>
@@ -140,64 +142,65 @@
                                                             </ice:commandLink>
                                                         </h4>
                                                     </li>
-                                                    <ui:repeat rendered="#{BrowseDataversesPage.accordionItemBeans != null}"
-                                                            value="#{BrowseDataversesPage.accordionItemBeans}"
-                                                            var="menuItems">
-                                                        <ui:fragment rendered="#{!empty(menuItems.childItems)}">
-                                                            <li>
-                                                                <h3 class="head">
-                                                                    <ice:outputText value="#{menuItems.name}"/>
-                                                                </h3>
-                                                            </li>
-                                                            <ui:repeat rendered="#{menuItems != null}"
-                                                                    value="#{menuItems.childItems}"
-                                                                    var="item">
-                                                                <!-- HAS SUBNODE DESCENDANTS -->
-                                                                <ui:fragment rendered="#{!empty(item.xtraItems)}">
-                                                                    <li id="xtraMenu#{item.id}">
-                                                                        <h4 class="head">
-                                                                            <ice:commandLink onclick="deselect_active_children(this);setHiddenValues(#{item.id});"
+                                                    <div id="dvClassificationMenu" class="xtraMenu basic">
+                                                        
+                                        <ui:repeat rendered="#{BrowseDataversesPage.accordionItemBeans != null}"
+                                                value="#{BrowseDataversesPage.accordionItemBeans}"
+                                                var="menuItems">
+                                            <ui:fragment rendered="#{!empty(menuItems.childItems)}">
+                                                <h3 class="head">
+                                                    <ice:outputText value="Browse Dataverses By #{menuItems.name}"/>
+                                                </h3>
+                                                <ul class="head-top">
+                                                <ui:repeat rendered="#{menuItems != null}"
+                                                        value="#{menuItems.childItems}"
+                                                        var="item">
+                                                    <!-- HAS SUBNODE DESCENDANTS -->
+                                                    <ui:fragment rendered="#{!empty(item.xtraItems)}">
+                                                        <li id="xtraMenu#{item.id}">
+                                                            <h4 class="head">
+                                                               <ice:commandLink onclick="setHiddenValuesGroupId(#{item.id});"
                                                                                             partialSubmit="true"
                                                                                             styleClass="head">
                                                                                 <ice:outputText value="#{item.name}"/>
                                                                                 <f:attribute name="groupId" value="#{item.id}"/>
                                                                             </ice:commandLink>
-                                                                        </h4>
-                                                                        <ui:fragment rendered="#{item.xtraItems != null and !empty(item.xtraItems)}">
-                                                                            <ul>
-                                                                                <ui:repeat rendered="#{item.xtraItems != null}"
-                                                                                        value="#{item.xtraItems}"
-                                                                                        var="xtraItems">
-                                                                                    <li>
-                                                                                        <ice:commandLink onclick="highlight_active_sidebar_links(this);setHiddenValues(#{xtraItems.id});"
-                                                                                                        partialSubmit="true"
-                                                                                                        styleClass="lastNode">
-                                                                                            <ice:outputText value="#{xtraItems.name}"/>
-                                                                                            <f:attribute name="groupId" value="#{xtraItems.id}"/>
-                                                                                        </ice:commandLink>
-                                                                                    </li>
-                                                                                </ui:repeat>
-                                                                            </ul>
-                                                                        </ui:fragment>
-                                                                    </li>
-                                                                </ui:fragment>
-                                                                <!-- END HAS SUBNODE DESCENDANTS -->
-                                                                <!-- HAS NO SUBNODE DESCENDANTS -->
-                                                                <ui:fragment rendered="#{empty(item.xtraItems)}">
-                                                                    <li>
-                                                                        <h4 class="head noSubNode">
-                                                                            <ice:commandLink onclick="setHiddenValues(#{item.id});"
-                                                                                            partialSubmit="true">
-                                                                                <ice:outputText value="#{item.name}"/>
-                                                                                <f:attribute name="groupId" value="#{item.id}"/>
+                                                            </h4>
+                                                            <ui:fragment rendered="#{item.xtraItems != null and !empty(item.xtraItems)}">
+                                                                <ul>
+                                                                    <ui:repeat rendered="#{item.xtraItems != null}"
+                                                                            value="#{item.xtraItems}"
+                                                                            var="xtraItems">
+                                                                        <li>
+                                                                            <ice:commandLink styleClass="lastNode" onclick="setHiddenValuesGroupId(#{item.id});">
+                                                                                <ice:outputText value="#{xtraItems.name}"/>
                                                                             </ice:commandLink>
-                                                                        </h4>
-                                                                    </li>
-                                                                </ui:fragment>
-                                                                <!-- END HAS NO SUBNODE DESCENDANTS -->
-                                                            </ui:repeat>
-                                                        </ui:fragment>
-                                                    </ui:repeat>
+                                                                            <ice:outputText value=" (#{xtraItems.numberOfDataverses})" styleClass="dvnHmpgClassificationCount"/>
+                                                                        </li>
+                                                                    </ui:repeat>
+                                                                </ul>
+                                                            </ui:fragment>
+                                                        </li>
+                                                    </ui:fragment>
+                                                    <!-- END HAS SUBNODE DESCENDANTS -->
+                                                    <!-- HAS NO SUBNODE DESCENDANTS -->
+                                                    <ui:fragment rendered="#{empty(item.xtraItems)}">
+                                                        <li>
+                                                            <ice:commandLink styleClass="lastNode" onclick="setHiddenValuesGroupId(#{item.id});">
+                                                                <ice:outputText value="#{item.name}"/>
+                                                            </ice:commandLink>
+                                                            <ice:outputText value=" (#{item.numberOfDataverses})" styleClass="dvnHmpgClassificationCount"/>
+                                                        </li>
+                                                    </ui:fragment>
+                                                    <!-- END HAS NO SUBNODE DESCENDANTS -->
+                                                </ui:repeat>
+                                                </ul>
+                                            </ui:fragment>
+                                        </ui:repeat>
+                                        
+                                    </div>
+    
+
                                                 </ul>
                                             </li>
                                         </ul>
@@ -288,6 +291,9 @@
             }
             function setHiddenValues(alphaKey) {
                 document.getElementById('browsedataversespage:alphaCharacter').value = arguments[0];
+              }
+            function setHiddenValuesGroupId(groupId) {
+                document.getElementById('browsedataversespage:groupId').value = arguments[0];
               }
         // ]]>
         </script>

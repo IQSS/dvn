@@ -1148,7 +1148,7 @@ public class StudyUI  implements java.io.Serializable {
     }
     
     //property to hold the number of files to display each time. -xyang
-    private static final int FILE_NUMBERS = 3;
+    private static final int FILE_NUMBERS = 25;
     
     public int getFILE_NUMBERS() {
         return FILE_NUMBERS;

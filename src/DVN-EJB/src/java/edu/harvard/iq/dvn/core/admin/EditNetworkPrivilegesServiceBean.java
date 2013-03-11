@@ -84,7 +84,10 @@ public class EditNetworkPrivilegesServiceBean implements EditNetworkPrivilegesSe
     public List<NetworkPrivilegedUserBean> getPrivilegedUsersByName(String searchName) {
         setNetwork(em.find(VDCNetwork.class, new Long(1)));
         String lowerSearchString = searchName.toLowerCase();
-        String queryString = "SELECT u from VDCUser u where lower(u.lastName) like '" + lowerSearchString + "%' or lower(u.userName) like '" + lowerSearchString + "%';";
+        String queryString = "SELECT u from VDCUser u where lower(u.lastName) like '" + lowerSearchString.replaceAll("'", "''") 
+                + "%' or lower(u.email) like '" + lowerSearchString.replaceAll("'", "''") + "%'"
+                + " or lower(u.firstName) like '" + lowerSearchString.replaceAll("'", "''") + "%'"
+                + " or lower(u.userName) like '" + lowerSearchString.replaceAll("'", "''") + "%';";
         System.out.print (queryString);
         List<VDCUser> users = em.createQuery(queryString).getResultList();
         List<NetworkPrivilegedUserBean> returnList = new ArrayList<NetworkPrivilegedUserBean>();

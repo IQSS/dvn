@@ -351,7 +351,7 @@ public class LoginFilter implements Filter {
                 }
             }
             if (pageRoleName.equals(RoleServiceLocal.CURATOR)) {
-                if (userVDCRoleName.equals(RoleServiceLocal.CURATOR) || userVDCRoleName.equals(RoleServiceLocal.ADMIN) || isUserStudyCreator(user, request)) {
+                if (userVDCRoleName.equals(RoleServiceLocal.CURATOR) || userVDCRoleName.equals(RoleServiceLocal.ADMIN) ) {
                     return true;
                 } else {
                     return false;

@@ -830,6 +830,7 @@ public class OptionsPage extends VDCBaseBean  implements java.io.Serializable {
         this.displayInFrame = displayInFrame;
         // add javascript call on each partial submit to trigger jQuery
         // Removed in 3.4 still here apparently in error do to a code merge
+        //
         //JavascriptContext.addJavascriptCall(getFacesContext(), "initOpenScholarDataverse();");
     }
 

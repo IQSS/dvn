@@ -78,6 +78,16 @@ public class EmailValidator implements Validator, java.io.Serializable  {
               msg += "  A valid email address must contain \"@\".";
               return isValid;
           } 
+          if (input[i].indexOf('@') > 1) {
+              int firstAt = input[i].indexOf('@');
+              System.out.print("firstAt "+ firstAt);
+              System.out.print("input[i].indexOf(firstAt, '@') "+ input[i].indexOf( '@', firstAt +1));
+              if (input[i].indexOf( '@', firstAt + 1) != -1) {
+                  isValid = false;
+                  msg += "  A valid email address must contain only one \"@\".";
+                  return isValid;
+              }
+          }
           //Checks for email addresses starting with
           //inappropriate symbols like dots or @ signs.
           Pattern p = Pattern.compile("^\\.|^\\@");

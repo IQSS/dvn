@@ -50,8 +50,17 @@ public class BasicSearchFragment extends VDCBaseBean implements java.io.Serializ
     VDCServiceLocal vdcService;
     @EJB
     VDCCollectionServiceLocal vdcCollectionService;
-    private String searchValue = "";
+    private String searchValue;
     private String searchField;
+    
+    public void init () {
+        super.init();
+        if ( getVDCRequestBean().getCurrentVDC() == null ) {
+            searchValue = "Enter keywords to search this Dataverse Network";
+        } else {
+            searchValue = "Enter keywords to search this Dataverse";
+        }
+    }
 
     public String search_action() {
         searchField = (searchField == null) ? "any" : searchField; // default searchField, in case no dropdown

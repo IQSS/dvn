@@ -13,7 +13,7 @@
     </script>
     <fieldset>
         <label for="search">
-            <ice:inputText onkeypress="if (window.event) return processEvent('', 'form1:search'); else return processEvent(event, 'form1:search');" value="#{(VDCRequest.currentVDC == null) ? 'Enter keywords to search this Dataverse Network' : 'Enter keywords to search this Dataverse'}" id="simpleSearch" onclick="clickclear(this, '#{(VDCRequest.currentVDC == null) ? 'Enter keywords to search this Dataverse Network' : 'Enter keywords to search this Dataverse'}')"/>
+            <ice:inputText onkeypress="if (window.event) return processEvent('', 'form1:search'); else return processEvent(event, 'form1:search');" value="#{BasicSearchFragment.searchValue}" id="simpleSearch" onclick="clickclear(this, '#{(VDCRequest.currentVDC == null) ? 'Enter keywords to search this Dataverse Network' : 'Enter keywords to search this Dataverse'}')"/>
         </label>
         <label for="button">
              <ice:commandButton id="search" value="Search"  action="#{BasicSearchFragment.search_action}"/>

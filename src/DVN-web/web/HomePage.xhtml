@@ -14,8 +14,8 @@
             <ui:param name="pageTitle" value="#{VDCRequest.dataversePageTitle}"/>
             <ui:define name="metadata">
                 <f:metadata>
-                    <f:event type="preRenderView"
-                             listener="#{homePage.preRenderView}"/>
+                    <f:event type="preRenderView" listener="#{homePage.preRenderView}"/>
+                    <f:event type="preRenderView" listener="#{BasicSearchFragment.preRenderView}"/>
                 </f:metadata>
             </ui:define>
             <ui:define name="body">
@@ -82,6 +82,10 @@
                                     </div>
                                     
                                     <div>Dataverse is a virtual web archive that contains data studies and can be customized by and managed by its administrator or owner. Archiving with the dataverse could extend the useful life of data, preserving it against the failure of computer systems and the obsolescence of data formats.</div>
+                                    
+                                    <div style="margin-top:1em; padding:2px; border:1px solid #C55B28;">
+                                        You need a Dataverse, brah. You need a Dataverse, brah. You need a Dataverse, brah. You need a Dataverse, brah. You need a Dataverse, brah.
+                                    </div>
                                     
                                     <div id="dvClassificationMenu" class="xtraMenu basic">
                                                         
@@ -199,7 +203,12 @@
                                         </div>
                                     </div>
                                         
-                                    Study is a container for data files and cataloging information describing the data. It can also contain complementary files, such as documentation or code related to the data.
+                                    <div>Study is a container for data files and cataloging information describing the data. It can also contain complementary files, such as documentation or code related to the data.</div>
+                                    
+                                    <div style="margin-top:1em; padding:2px; border:1px solid #526F76;">
+                                        You want to download some data files, brah. You want to download some data files, brah. You want to download some data files, brah. You want to download some data files, brah.
+                                    </div>
+                                    
                                 </div>
                                 <div style="margin-top:1em; border-bottom: 1px solid #526F76;">
                                     <div style="color:#526F76; text-transform:uppercase;">Recently Released Studies</div>

@@ -398,7 +398,7 @@ function dataCitationWidgetSync(){
                   else {
                       return authorLinkText;
                   }
-            }).get().join(', ')
+            }).get().join('; ')
         );
         
         for ( i = 0; i < authorInputs; i++) {
@@ -454,7 +454,7 @@ function dataCitationWidgetSync(){
                   else {
                       return authorLinkText;
                   }
-            }).get().join(', ')
+            }).get().join('; ')
         );
         
         for ( i = 0; i < authorSelects; i++) {
@@ -524,7 +524,7 @@ function dataCitationWidgetSync(){
                   else {
                       return distributorLinkText;
                   }
-            }).get().join(', ')
+            }).get().join('; ')
         );
     
         for ( i = 0; i < distributorInputs; i++) {
@@ -843,14 +843,14 @@ function dataCitationWidgetSync(){
 
 function initAddAuthorSync(){
     // Let's do something about all these authors.
-    jQuery('#dvnDataCitationWidgetBlockAuthor a.dvnDataCitationWidgetLabel').append(', <span class="newAuthor"></span>');
+    jQuery('#dvnDataCitationWidgetBlockAuthor a.dvnDataCitationWidgetLabel').append('; <span class="newAuthor"></span>');
     jQuery('#dvnDataCitationWidgetAuthorInputBlock').show();
     dataCitationWidgetSync();
 };
 
 function initAddDistributorSync(){
     // Let's do something about all these authors.
-    jQuery('#dvnDataCitationWidgetBlockDistributor a.dvnDataCitationWidgetLabel').append(', <span class="newDistributor"></span>');
+    jQuery('#dvnDataCitationWidgetBlockDistributor a.dvnDataCitationWidgetLabel').append('; <span class="newDistributor"></span>');
     jQuery('#dvnDataCitationWidgetDistributorInputBlock').show();
     dataCitationWidgetSync();
 };

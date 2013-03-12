@@ -11,7 +11,7 @@ a.dvn_more:link,a.dvn_more:visited,a.dvn_more:hover,a.dvn_more:active{color:#6D0
 .dvhmpgactionbox div div span{font-weight:bold; text-transform:uppercase}
 /* HMPG + ADV SEARCH */
 #dvnHomePgSearch, #dvnAdvSearch {margin:1em 0; text-align:center;}
-.dvnSearchBlock {width:500px; padding:8px 40px 0 40px; margin:0 auto; background:#EEEEEE; border-bottom:2px solid grey;}
+.dvnSearchBlock {width:500px; padding:8px 40px 0 40px; margin:0 auto; background:#F2F2F2; border-bottom:2px solid grey;}
 .dvnSearchBlock fieldset {margin:0; padding:0;}
 .dvnSearchBlock fieldset label input {font-size:1.1em !important;}
 .dvnSearchBlock fieldset label input.iceInpTxt {width:368px; margin-right:1em; padding:5px 3px;}

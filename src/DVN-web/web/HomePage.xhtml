@@ -83,8 +83,12 @@
                                     
                                     <div>Dataverse is a virtual web archive that contains data studies and can be customized by and managed by its administrator or owner. Archiving with the dataverse could extend the useful life of data, preserving it against the failure of computer systems and the obsolescence of data formats.</div>
                                     
-                                    <div style="margin-top:1em; padding:2px; border:1px solid #C55B28;">
-                                        You need a Dataverse, brah. You need a Dataverse, brah. You need a Dataverse, brah. You need a Dataverse, brah. You need a Dataverse, brah.
+                                    <div style="margin-top:1em; padding:2px; border:1px solid #C55B28;" jsfc="ice:panelGroup" rendered="#{VDCSession.loginBean.user==null}">
+                                        Do you need to archive your data? You need a Dataverse!
+                                    </div>
+                                    
+                                    <div style="margin-top:1em; padding:2px; border:1px solid #C55B28;" jsfc="ice:panelGroup" rendered="#{VDCSession.loginBean.user!=null and (VDCRequest.vdcNetwork.allowCreateRequest or VDCSession.loginBean.hasDataverses or VDCSession.loginBean.networkCreator) and !VDCSession.loginBean.networkAdmin}">
+                                        This is a table of My Dataverses.
                                     </div>
                                     
                                     <div id="dvClassificationMenu" class="xtraMenu basic">
@@ -198,15 +202,19 @@
                                         <div jsfc="ice:panelGroup" style="float:right; background:#526F76;" id="createStudy" 
                                              styleClass="dvhmpgactionbox" rendered="#{VDCSession.loginBean.user!=null and !VDCRequest.readOnlyDatabase}" >
                                             <ice:outputLink value="/dvn/faces/admin/ChooseDataverseForCreateStudy.xhtml" rendered="#{VDCSession.loginBean.user!=null and !VDCRequest.readOnlyDatabase}">
-                                                <ice:outputText value="Create a Study"/>
+                                                <ice:outputText value="Create a Study + Upload Data"/>
                                             </ice:outputLink>
                                         </div>
                                     </div>
                                         
                                     <div>Study is a container for data files and cataloging information describing the data. It can also contain complementary files, such as documentation or code related to the data.</div>
                                     
-                                    <div style="margin-top:1em; padding:2px; border:1px solid #526F76;">
-                                        You want to download some data files, brah. You want to download some data files, brah. You want to download some data files, brah. You want to download some data files, brah.
+                                    <div style="margin-top:1em; padding:2px; border:1px solid #526F76;" jsfc="ice:panelGroup" rendered="#{VDCSession.loginBean.user==null}">
+                                        Do you want to download some data? You need to create an account!
+                                    </div>
+                                    
+                                    <div style="margin-top:1em; padding:2px; border:1px solid #526F76;" jsfc="ice:panelGroup" rendered="#{VDCSession.loginBean.user!=null and VDCSession.loginBean.hasContributed}">
+                                        This is a table of My Studies.
                                     </div>
                                     
                                 </div>

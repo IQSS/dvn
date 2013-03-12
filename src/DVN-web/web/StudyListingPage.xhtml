@@ -210,7 +210,7 @@
                   </table>
                 </div>
                 <div style="overflow:hidden;">
-                <div jsfc="ice:panelGroup" styleClass="dvnStudyFacetBlock" rendered="#{(StudyListingPage.renderSearchResultsFilter)}">
+                <!-- Comment out static facet link section <div jsfc="ice:panelGroup" styleClass="dvnStudyFacetBlock" rendered="#{(StudyListingPage.renderSearchResultsFilter)}">
                     <style type="text/css">
                     .dvnStudyFacetBlock {width:30%; float:right; text-align:left;}
                     .dvnStudyListBlockSearch {width:70%; border-right:1px solid #C55B28;}
@@ -234,7 +234,7 @@
                             <li><a href="#">Result Link 2</a> <span class="dvnStudyFacetResultNumber">(88)</span></li>
                         </ul>
                     </div>
-                </div>
+                </div> Comment out static facet link section -->
                 <div jsfc="ice:panelGroup" styleClass="#{(StudyListingPage.renderSearchResultsFilter) ? 'dvnStudyListBlockSearch' : 'dvnStudyListBlockHomePage'}">
                     <ice:dataTable rows="10" headerClass="list-header" id="studyListTable1" width="100%"
                                 binding="#{StudyListingPage.studyTable}"

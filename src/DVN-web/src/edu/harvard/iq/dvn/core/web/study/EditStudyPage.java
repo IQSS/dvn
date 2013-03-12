@@ -653,7 +653,6 @@ public class EditStudyPage extends VDCBaseBean implements java.io.Serializable  
             newElem.setMetadata(metadata);
             metadata.getStudyAuthors().add(dataTable.getRowIndex()+1,newElem);
             JavascriptContext.addJavascriptCall(getFacesContext(),"initAddAuthorSync();");
-            JavascriptContext.addJavascriptCall(getFacesContext(),"dataCitationWidgetSync();");
         } else  if (dataTable.equals(dataTableAbstracts)) {
             StudyAbstract newElem = new StudyAbstract();
             newElem.setMetadata(metadata);
@@ -663,7 +662,6 @@ public class EditStudyPage extends VDCBaseBean implements java.io.Serializable  
             newElem.setMetadata(metadata);
             metadata.getStudyDistributors().add(dataTable.getRowIndex()+1,newElem);
             JavascriptContext.addJavascriptCall(getFacesContext(),"initAddDistributorSync();");
-            JavascriptContext.addJavascriptCall(getFacesContext(),"dataCitationWidgetSync();");
         } else  if (dataTable.equals(dataTableGrants)) {
             StudyGrant newElem = new StudyGrant();
             newElem.setMetadata(metadata);
@@ -717,7 +715,12 @@ public class EditStudyPage extends VDCBaseBean implements java.io.Serializable  
         if (dataTable.getRowCount()>1) { 
             List data = (List)dataTable.getValue();
             editStudyService.removeCollectionElement(data,dataTable.getRowIndex());
-            JavascriptContext.addJavascriptCall(getFacesContext(),"dataCitationWidgetSync();");
+        }
+        if (dataTable.equals(dataTableAuthors)) {
+            JavascriptContext.addJavascriptCall(getFacesContext(),"initAddAuthorSync();");
+        }
+        if (dataTable.equals(dataTableDistributors)) {
+            JavascriptContext.addJavascriptCall(getFacesContext(),"initAddDistributorSync();");
         }
     }
     

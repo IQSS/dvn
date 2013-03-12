@@ -55,7 +55,7 @@ public class BasicSearchFragment extends VDCBaseBean implements java.io.Serializ
     VDCServiceLocal vdcService;
     @EJB
     VDCCollectionServiceLocal vdcCollectionService;
-    private String searchValue = "Enter keywords to search the Dataverse Network";
+    private String searchValue = "";
     private String searchField;
 
     public String search_action() {

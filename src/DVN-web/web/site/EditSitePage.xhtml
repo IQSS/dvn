@@ -124,7 +124,7 @@
                                  validator="#{OptionsPage.validateName}"
                                  value="#{VDCRequest.currentVDC.name}"/>
                   <br/>
-                  <ice:outputText styleClass="vdcHelpText" value="Name used to refer to this dataverse in Dataverse Network Homepage and other pages."/>
+                  <ice:outputText styleClass="vdcHelpText" value="Name used to refer to this dataverse in network homepage and other pages."/>
                   <ice:message for="dataverseName" showSummary="true" showDetail="false" styleClass="errorMessage"/>
                 </div>
                 <div jsfc="ice:panelGroup">
@@ -144,10 +144,37 @@
                   <ice:outputText styleClass="vdcHelpText" value="Short name used to build the URL for this dataverse, e.g., http://.../dv/'alias'. It is case sensitive."/>
                   <ice:message for="dataverseAlias" showSummary="true" showDetail="false" styleClass="errorMessage"/>
                 </div>
+                
+                <!-- Dataverse Homepage Description -->
+                
+                <div jsfc="ice:panelGroup">
+                  <ice:outputLabel for="localAnnouncements" id="homepageDescriptionLabel">
+                      <ice:outputText id="homepageDescriptionText" value="Dataverse Homepage Description"/>
+                    </ice:outputLabel>
+                </div>
+                <div jsfc="ice:panelGroup">
+                  <ice:selectBooleanCheckbox id="chkLocalAnnouncements" value="#{OptionsPage.chkLocalAnnouncements}"/>
+                    <ice:outputText id="outputText3" value="#{bundle.displayLocalAnnouncementsLabel}"/>
+                    <ice:message id="announcementsMsg"
+                               for="localAnnouncements"
+                               styleClass="errorMessage"/>
+                    <br/>
+                    <ice:inputTextarea cols="100" rows="5"
+                                       id="localAnnouncements" value="#{OptionsPage.localAnnouncements}"
+                                       binding="#{OptionsPage.localAnnouncementsInputText}"
+                                       styleClass="formHtmlEnabled">
+                      <f:validator validatorId="XhtmlValidator"/>
+                    </ice:inputTextarea>
+                    <br/>
+                    <ice:outputText styleClass="vdcHelpText" value="#{bundlePageInfo.editDvDescriptionHelp}" escape="false"/>
+                </div>
+                
+                <!-- Network Homepage Description -->
+                
                 <div jsfc="ice:panelGroup">
                   <ice:outputLabel  for="shortDescriptionInput" id="shortDescriptionLabel">
                     <ice:outputText id="shortDescriptionLabelText"
-                                    value="Network Home Page Description"/>
+                                    value="Network Homepage Description"/>
                     <ice:graphicImage value="#{bundle.iconRequired}" rendered="#{VDCRequest.vdcNetwork.requireDVdescription}" />
                   </ice:outputLabel>
                 </div>
@@ -158,9 +185,12 @@
                                      value="#{VDCRequest.currentVDC.dvnDescription}"
                                      />
                   <br/>
-                  <ice:outputText styleClass="vdcHelpText" value="Short description to appear on the network home page with your dataverse listing."/>
+                  <ice:outputText styleClass="vdcHelpText" value="Short description to appear on the network homepage with your dataverse listing."/>
                   <ice:message for="dataverseShortDescription" showSummary="true" showDetail="false" styleClass="errorMessage"/>
                 </div>
+                
+                <!-- Classification -->
+                
                   <div jsfc="ice:panelGroup">
                     <ice:outputLabel for="selectedGroup" id="selectedGroupLabel">
                       <ice:outputText id="selectedGroupText" value="Classification"/>
@@ -173,7 +203,7 @@
                   </div>
                   <div jsfc="ice:panelGroup" rendered="#{!empty OptionsPage.classificationList.classificationUIs}">
                     <ice:outputText styleClass="vdcHelpText" for="selectedGroup" value="#{bundle.groupSelect}"/>
-                     <ice:message for="classificationCheckBox" id ="boxErrorMsg3"  styleClass="errorMessage"   />
+                    <ice:message for="classificationCheckBox" id ="boxErrorMsg3"  styleClass="errorMessage"   />
                     <ice:dataTable id="dataverseList" styleClass="dvnCreateDvClassificationTable" cellspacing="0" cellpadding="0" columns="2" width="100%"
                                    headerClass="groupRow" rowClasses="evenRow,oddRow" columnWidths="2%,98%"
                                    scrollable="true"

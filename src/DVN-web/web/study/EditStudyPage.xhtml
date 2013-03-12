@@ -178,20 +178,32 @@
                                   <!-- Author -->
                                   <div id="dvnDataCitationWidgetAuthorInputBlock" class="dvnDataCitationWidgetInput">
                                       <div class="dvnDataCitationWidgetAuthorInputBoba">
-                                        <ice:outputText styleClass="dvnInlineHelpLabel dvnInlineHelpTip" value="Author #{editstudybundle.authorNameLabel}" title="#{editstudybundle.authorNameHelpHeading} - #{editstudybundle.authorNameHelp}"/>
-                                        <ice:inputText styleClass="input_authorNameSync"
-                                                       size="45"
-                                                       maxlength="255" />
-                                        <ice:outputText styleClass="vdcEditStudyFormatExample" value="(LastName, FirstName)"/>
+                                        <div class="authorFormBlock">
+                                            <ice:outputText styleClass="dvnInlineHelpLabel dvnInlineHelpTip" value="Author #{editstudybundle.authorNameLabel}" title="#{editstudybundle.authorNameHelpHeading} - #{editstudybundle.authorNameHelp}"/>
+                                            <ice:inputText styleClass="input_authorNameSync"
+                                                        size="45"
+                                                        maxlength="255" />
+                                            <ice:outputText styleClass="vdcEditStudyFormatExample" value="(LastName, FirstName)"/>
+                                        </div>
+                                        <div class="authorbuttonBlock">
+                                            <ice:graphicImage id="add_authorbuttonInputSync" value="/resources/images/icon_add.gif" />
+                                            <ice:graphicImage id="remove_authorbuttonInputSync" rendered="#{EditStudyPage.dataTableAuthors.rowCount gt 1}" value="/resources/images/icon_remove.gif" />
+                                        </div>
                                       </div>
                                       <div class="dvnDataCitationWidgetAuthorSelectBoba">
-                                        <ice:outputText styleClass="dvnInlineHelpLabel dvnInlineHelpTip" value="Author #{editstudybundle.authorNameLabel}" title="#{editstudybundle.authorNameHelpHeading} - #{editstudybundle.authorNameHelp}"/>
-                                        <ice:selectOneMenu immediate="false"  
-                                               styleClass="select_authorNameSync">
-                                            <f:selectItem itemLabel="No Value" itemValue=""/>
-                                            <f:selectItems value="#{EditStudyPage.studyMap[sfc.authorName].templateField.controlledVocabulary.selectItems}"/>
-                                        </ice:selectOneMenu>
-                                        <ice:outputText styleClass="vdcEditStudyFormatExample" value="(LastName, FirstName)"/>
+                                        <div class="authorFormBlock">
+                                            <ice:outputText styleClass="dvnInlineHelpLabel dvnInlineHelpTip" value="Author #{editstudybundle.authorNameLabel}" title="#{editstudybundle.authorNameHelpHeading} - #{editstudybundle.authorNameHelp}"/>
+                                            <ice:selectOneMenu immediate="false" 
+                                                styleClass="select_authorNameSync">
+                                                <f:selectItem itemLabel="No Value" itemValue=""/>
+                                                <f:selectItems value="#{EditStudyPage.studyMap[sfc.authorName].templateField.controlledVocabulary.selectItems}"/>
+                                            </ice:selectOneMenu>
+                                            <ice:outputText styleClass="vdcEditStudyFormatExample" value="(LastName, FirstName)"/>
+                                        </div>
+                                        <div class="authorbuttonBlock">
+                                            <ice:graphicImage id="add_authorbuttonSelectSync" value="/resources/images/icon_add.gif" />
+                                            <ice:graphicImage id="remove_authorbuttonSelectSync" rendered="#{EditStudyPage.dataTableAuthors.rowCount gt 1}" value="/resources/images/icon_remove.gif" />
+                                        </div>
                                       </div>
                                   </div>
                                   <!-- Date -->
@@ -225,18 +237,30 @@
                                   <!-- Distributor -->
                                   <div id="dvnDataCitationWidgetDistributorInputBlock" class="dvnDataCitationWidgetInput">
                                       <div class="dvnDataCitationWidgetDistributorInputBoba">
-                                        <ice:outputText styleClass="dvnInlineHelpLabel dvnInlineHelpTip" value="#{editstudybundle.distributorLabel}" title="#{editstudybundle.distributorHelpHeading} - #{editstudybundle.distributorHelp}"/>
-                                        <ice:inputText styleClass="input_distributorNameSync"
-                                                       size="45"
-                                                       maxlength="255" />
+                                        <div class="distributorFormBlock">
+                                            <ice:outputText styleClass="dvnInlineHelpLabel dvnInlineHelpTip" value="#{editstudybundle.distributorLabel}" title="#{editstudybundle.distributorHelpHeading} - #{editstudybundle.distributorHelp}"/>
+                                            <ice:inputText styleClass="input_distributorNameSync"
+                                                        size="45"
+                                                        maxlength="255" />
+                                        </div>
+                                        <div class="distributorbuttonBlock">
+                                            <ice:graphicImage id="add_distributorbuttonInputSync" value="/resources/images/icon_add.gif" />
+                                            <ice:graphicImage id="remove_distributorbuttonInputSync" rendered="#{EditStudyPage.dataTableDistributors.rowCount gt 1}" value="/resources/images/icon_remove.gif" />
+                                        </div>
                                       </div>
                                       <div class="dvnDataCitationWidgetDistributorSelectBoba">
-                                        <ice:outputText styleClass="dvnInlineHelpLabel dvnInlineHelpTip" value="#{editstudybundle.distributorLabel}" title="#{editstudybundle.distributorHelpHeading} - #{editstudybundle.distributorHelp}"/>
-                                        <ice:selectOneMenu immediate="false"  
-                                               styleClass="select_distributorNameSync">
-                                            <f:selectItem itemLabel="No Value" itemValue=""/>
-                                            <f:selectItems value="#{EditStudyPage.studyMap[sfc.distributorName].templateField.controlledVocabulary.selectItems}"/>
-                                        </ice:selectOneMenu>
+                                        <div class="distributorFormBlock">
+                                            <ice:outputText styleClass="dvnInlineHelpLabel dvnInlineHelpTip" value="#{editstudybundle.distributorLabel}" title="#{editstudybundle.distributorHelpHeading} - #{editstudybundle.distributorHelp}"/>
+                                            <ice:selectOneMenu immediate="false" 
+                                                styleClass="select_distributorNameSync">
+                                                <f:selectItem itemLabel="No Value" itemValue=""/>
+                                                <f:selectItems value="#{EditStudyPage.studyMap[sfc.distributorName].templateField.controlledVocabulary.selectItems}"/>
+                                            </ice:selectOneMenu>
+                                        </div>
+                                        <div class="distributorbuttonBlock">
+                                            <ice:graphicImage id="add_distributorbuttonSelectSync" value="/resources/images/icon_add.gif" />
+                                            <ice:graphicImage id="remove_distributorbuttonSelectSync" rendered="#{EditStudyPage.dataTableDistributors.rowCount gt 1}" value="/resources/images/icon_remove.gif" />
+                                        </div>
                                       </div>
                                   </div>
                                 </div>
@@ -323,11 +347,7 @@ function dataCitationWidgetSync(){
     jQuery('div[id$=dvnDataCitationWidget] div.dvnDataCitationWidgetDistributorInputClone').remove();
     jQuery('div[id$=dvnDataCitationWidget] div.dvnDataCitationWidgetDistributorSelectClone').remove();
     
-    
-    // Multiple author widget fields
-    
-    var authorInputs = jQuery('input.input_authorName').length;
-    var authorSelects = jQuery('select.select_authorName').length;
+    // Widget binding functions
     
     var widgetBind = function( inputField, spanField, spanDefault ) { 
             return function() { 
@@ -346,9 +366,22 @@ function dataCitationWidgetSync(){
             }; 
     }
     
+    var buttonBind = function( syncButton ) {
+	 return function() {
+		 jQuery(syncButton).click();
+	 };
+    }
+    
+    // Multiple author widget fields
+    
+    var authorInputs = jQuery('input.input_authorName').length;
+    var authorSelects = jQuery('select.select_authorName').length;
+        
+    jQuery('#dvnDataCitationWidgetAuthorInputBlock div.dvnDataCitationWidgetAuthorInputBoba').hide();
+    jQuery('#dvnDataCitationWidgetAuthorInputBlock div.dvnDataCitationWidgetAuthorSelectBoba').hide();
+    
     if (authorInputs != 0) {
         
-        jQuery('#dvnDataCitationWidgetAuthorInputBlock div.dvnDataCitationWidgetAuthorSelectBoba').hide();
         
         // Sync author widget label/links
 
@@ -380,7 +413,7 @@ function dataCitationWidgetSync(){
 
             // sync cloned author fields
 
-            jQuery('div[id=input_authorNameSync' + i + ']').children('input.input_authorNameSync').val(jQuery('input[id$=' + i + '\\:input_authorName]').val());
+            jQuery('div[id=input_authorNameSync' + i + '] div').children('input.input_authorNameSync').val(jQuery('input[id$=' + i + '\\:input_authorName]').val());
 
             var input_authorName = 'input[id$=' + i + '\\:input_authorName]';
 
@@ -390,15 +423,23 @@ function dataCitationWidgetSync(){
 
             jQuery(input_authorNameSync).bind("change input keyup cut paste", widgetBind(input_authorName, span_authorName, 'Author') );
             jQuery(input_authorName).bind("change input keyup cut paste", widgetBind(input_authorNameSync, span_authorName, 'Author') );
+            
+            // Sync add/remove buttons
+            
+            var input_addAuthorSync = jQuery('div#input_authorNameSync' + i).children('div.authorbuttonBlock').children('img[id$=add_authorbuttonInputSync]');
+            var input_addAuthor = 'input[id$=' + i + '\\:add_authorbutton]';
+            
+            var input_removeAuthorSync = jQuery('div#input_authorNameSync' + i).children('div.authorbuttonBlock').children('img[id$=remove_authorbuttonInputSync]');
+            var input_removeAuthor = 'input[id$=' + i + '\\:remove_authorbutton]';
+            
+            jQuery(input_addAuthorSync).bind('click', buttonBind(input_addAuthor) );
+            jQuery(input_removeAuthorSync).bind('click', buttonBind(input_removeAuthor) );
 
         };
-
-        jQuery('#dvnDataCitationWidgetAuthorInputBlock div.dvnDataCitationWidgetAuthorInputBoba').hide();
         
     }
     
     else {
-        jQuery('#dvnDataCitationWidgetAuthorInputBlock div.dvnDataCitationWidgetAuthorInputBoba').hide();
         
         jQuery('#dvnDataCitationWidgetBlockAuthor a.dvnDataCitationWidgetLabel').html(
             jQuery('select.select_authorName').map(function(){
@@ -421,7 +462,7 @@ function dataCitationWidgetSync(){
             // clone widget author select
 
             var bobaSelectA = jQuery('#dvnDataCitationWidgetAuthorInputBlock div.dvnDataCitationWidgetAuthorSelectBoba');
-
+            
             var trooperSelectA = jQuery(bobaSelectA).clone(true);
             
             jQuery('#dvnDataCitationWidgetAuthorInputBlock').append(jQuery(trooperSelectA).attr({ id: 'select_authorNameSync' + i, 'class': 'dvnDataCitationWidgetAuthorSelectClone' }).show());
@@ -430,7 +471,7 @@ function dataCitationWidgetSync(){
             
             // changed this to clone the children option elements
 
-            jQuery('div[id=select_authorNameSync' + i + ']').children('select.select_authorNameSync').html(jQuery('select[id$=' + i + '\\:selectOneAuthorName] option').clone(true));
+            jQuery('div[id=select_authorNameSync' + i + '] div').children('select.select_authorNameSync').html(jQuery('select[id$=' + i + '\\:selectOneAuthorName] option').clone(true));
 
             var select_authorName = 'select[id$=' + i + '\\:selectOneAuthorName]';
 
@@ -440,10 +481,19 @@ function dataCitationWidgetSync(){
 
             jQuery(select_authorNameSync).bind("change input keyup cut paste", widgetBind(select_authorName, span_authorName, 'Author') );
             jQuery(select_authorName).bind("change input keyup cut paste", widgetBind(select_authorNameSync, span_authorName, 'Author') );
+            
+            // Sync add/remove buttons
+            
+            var select_addAuthorSync = jQuery('div#select_authorNameSync' + i).children('div.authorbuttonBlock').children('img[id$=add_authorbuttonSelectSync]');
+            var select_addAuthor = 'input[id$=' + i + '\\:add_authorbutton]';
+            
+            var select_removeAuthorSync = jQuery('div#select_authorNameSync' + i).children('div.authorbuttonBlock').children('img[id$=remove_authorbuttonSelectSync]');
+            var select_removeAuthor = 'input[id$=' + i + '\\:remove_authorbutton]';
+            
+            jQuery(select_addAuthorSync).bind('click', buttonBind(select_addAuthor) );
+            jQuery(select_removeAuthorSync).bind('click', buttonBind(select_removeAuthor) );
 
         };
-
-        jQuery('#dvnDataCitationWidgetAuthorInputBlock div.dvnDataCitationWidgetAuthorSelectBoba').hide();
         
     }
     
@@ -456,9 +506,10 @@ function dataCitationWidgetSync(){
     var distributorInputs = jQuery('input.input_distributorName').length;
     var distributorSelects = jQuery('select.select_distributorName').length;
     
-    if (distributorInputs != 0) {
+    jQuery('#dvnDataCitationWidgetDistributorInputBlock div.dvnDataCitationWidgetDistributorInputBoba').hide();
+    jQuery('#dvnDataCitationWidgetDistributorInputBlock div.dvnDataCitationWidgetDistributorSelectBoba').hide();
     
-        jQuery('#dvnDataCitationWidgetDistributorInputBlock div.dvnDataCitationWidgetDistributorSelectBoba').hide();
+    if (distributorInputs != 0) {
     
         jQuery('#dvnDataCitationWidgetBlockDistributor a.dvnDataCitationWidgetLabel').html(
             jQuery('input.input_distributorName').map(function(){
@@ -488,7 +539,7 @@ function dataCitationWidgetSync(){
 
             // sync cloned distributor fields
 
-            jQuery('div[id=input_distributorNameSync' + i + ']').children('input.input_distributorNameSync').val(jQuery('input[id$=' + i + '\\:input_distributorName]').val());
+            jQuery('div[id=input_distributorNameSync' + i + '] div').children('input.input_distributorNameSync').val(jQuery('input[id$=' + i + '\\:input_distributorName]').val());
 
             var input_distributorName = 'input[id$=' + i + '\\:input_distributorName]';
 
@@ -498,15 +549,23 @@ function dataCitationWidgetSync(){
 
             jQuery(input_distributorNameSync).bind("change input keyup cut paste", widgetBind(input_distributorName, span_distributorName, 'Distributor') );
             jQuery(input_distributorName).bind("change input keyup cut paste", widgetBind(input_distributorNameSync, span_distributorName, 'Distributor') );
+            
+            // Sync add/remove buttons
+            
+            var input_addDistributorSync = jQuery('div#input_distributorNameSync' + i).children('div.distributorbuttonBlock').children('img[id$=add_distributorbuttonInputSync]');
+            var input_addDistributor = 'input[id$=' + i + '\\:add_distributorbutton]';
+            
+            var input_removeDistributorSync = jQuery('div#input_distributorNameSync' + i).children('div.distributorbuttonBlock').children('img[id$=remove_distributorbuttonInputSync]');
+            var input_removeDistributor = 'input[id$=' + i + '\\:remove_distributorbutton]';
+            
+            jQuery(input_addDistributorSync).bind('click', buttonBind(input_addDistributor) );
+            jQuery(input_removeDistributorSync).bind('click', buttonBind(input_removeDistributor) );
 
         };
-
-        jQuery('#dvnDataCitationWidgetDistributorInputBlock div.dvnDataCitationWidgetDistributorInputBoba').hide();
         
     }
     
     else {
-        jQuery('#dvnDataCitationWidgetDistributorInputBlock div.dvnDataCitationWidgetDistributorInputBoba').hide();
         
         jQuery('#dvnDataCitationWidgetBlockDistributor a.dvnDataCitationWidgetLabel').html(
             jQuery('select.select_distributorName').map(function(){
@@ -538,7 +597,7 @@ function dataCitationWidgetSync(){
             
             // changed this to clone the children option elements
 
-            jQuery('div[id=select_distributorNameSync' + i + ']').children('select.select_distributorNameSync').html(jQuery('select[id$=' + i + '\\:selectOneDistributorName] option').clone(true));
+            jQuery('div[id=select_distributorNameSync' + i + '] div').children('select.select_distributorNameSync').html(jQuery('select[id$=' + i + '\\:selectOneDistributorName] option').clone(true));
 
             var select_distributorName = 'select[id$=' + i + '\\:selectOneDistributorName]';
 
@@ -548,10 +607,19 @@ function dataCitationWidgetSync(){
 
             jQuery(select_distributorNameSync).bind("change input keyup cut paste", widgetBind(select_distributorName, span_distributorName, 'Distributor') );
             jQuery(select_distributorName).bind("change input keyup cut paste", widgetBind(select_distributorNameSync, span_distributorName, 'Distributor') );
+            
+            // Sync add/remove buttons
+            
+            var select_addDistributorSync = jQuery('div#select_distributorNameSync' + i).children('div.distributorbuttonBlock').children('img[id$=add_distributorbuttonSelectSync]');
+            var select_addDistributor = 'input[id$=' + i + '\\:add_distributorbutton]';
+            
+            var select_removeDistributorSync = jQuery('div#select_distributorNameSync' + i).children('div.distributorbuttonBlock').children('img[id$=remove_distributorbuttonSelectSync]');
+            var select_removeDistributor = 'input[id$=' + i + '\\:remove_distributorbutton]';
+            
+            jQuery(select_addDistributorSync).bind('click', buttonBind(select_addDistributor) );
+            jQuery(select_removeDistributorSync).bind('click', buttonBind(select_removeDistributor) );
 
         };
-
-        jQuery('#dvnDataCitationWidgetDistributorInputBlock div.dvnDataCitationWidgetDistributorSelectBoba').hide();
         
     }
     
@@ -560,19 +628,12 @@ function dataCitationWidgetSync(){
     // vvvvvvv EVERYTHING ELSE vvvvvv
     
     // Fill in widget fields
-    // jQuery("input[id$=input_authorNameSync]").val(jQuery("input[id$=0\\:input_authorName]").val());
     jQuery("input[id$=input_distributionDateSync]").val(jQuery("input[id$=input_distributionDate]").val());
     jQuery("input[id$=input_productionDateSync]").val(jQuery("input[id$=input_productionDate]").val());
     jQuery("input[id$=input_titleSync]").val(jQuery("input[id$=input_title]").val());
     jQuery("input[id$=input_studyIdSync]").val(jQuery("input[id$=input_studyId]").val());
-    // jQuery("input[id$=input_distributorNameSync]").val(jQuery("input[id$=input_distributorName]").val());
     
     // Sync widget label/links
-    //var inputAuthorVal = jQuery('input[id$=0\\:input_authorName]').val();
-    //if (inputAuthorVal !== '' ){
-        // jQuery('#dvnDataCitationWidgetBlockAuthor a.dvnDataCitationWidgetLabel').text(inputAuthorVal);
-    //};
-    
     var inputDistDateVal = jQuery('input[id$=input_distributionDate]').val();
     var inputProdDateVal = jQuery('input[id$=input_productionDate]').val();
     if (inputDistDateVal !== '' ){
@@ -593,11 +654,6 @@ function dataCitationWidgetSync(){
         jQuery('#dvnDataCitationWidgetBlockStudyID div.dvnDataCitationWidgetLabelBlock span.dvnStudyIDPrfx').text(inputStudyIDPrfx)
         jQuery('#dvnDataCitationWidgetBlockStudyID a.dvnDataCitationWidgetLabel').text(inputStudyIDVal);
     };
-    
-    // var inputDistributorVal = jQuery('input[id$=input_distributorName]').val();
-    // if (inputDistributorVal !== '' ){
-        // jQuery('#dvnDataCitationWidgetBlockDistributor a.dvnDataCitationWidgetLabel').text(inputDistributorVal).after(' Distributor');
-    // };
     
     // Sync DATE
     jQuery("input[id$=input_distributionDateSync]").bind("change input cut paste", function() {
@@ -788,13 +844,15 @@ function dataCitationWidgetSync(){
 function initAddAuthorSync(){
     // Let's do something about all these authors.
     jQuery('#dvnDataCitationWidgetBlockAuthor a.dvnDataCitationWidgetLabel').append(', <span class="newAuthor"></span>');
-    jQuery('#dvnDataCitationWidgetAuthorInputBlock div.dvnDataCitationWidgetAuthorInputClone').remove();
+    jQuery('#dvnDataCitationWidgetAuthorInputBlock').show();
+    dataCitationWidgetSync();
 };
 
 function initAddDistributorSync(){
     // Let's do something about all these authors.
     jQuery('#dvnDataCitationWidgetBlockDistributor a.dvnDataCitationWidgetLabel').append(', <span class="newDistributor"></span>');
-    jQuery('#dvnDataCitationWidgetDistributorInputBlock div.dvnDataCitationWidgetDistributorInputClone').remove();
+    jQuery('#dvnDataCitationWidgetDistributorInputBlock').show();
+    dataCitationWidgetSync();
 };
 
 // ]]>

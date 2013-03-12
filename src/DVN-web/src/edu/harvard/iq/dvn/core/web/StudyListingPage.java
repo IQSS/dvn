@@ -606,9 +606,12 @@ public class StudyListingPage extends VDCBaseBean implements java.io.Serializabl
         try {
             mode = Integer.parseInt(getRequestParam("mode"));
         } catch (Exception e) {
-        }    // mode is -1
+        }         // mode is -1
 
-
+        String sort;
+        
+        sort = getRequestParam("sort");
+        
         if (mode == StudyListing.COLLECTION_STUDIES) {
             String collectionId = getRequestParam("collectionId");
             if (collectionId != null) {
@@ -708,6 +711,18 @@ public class StudyListingPage extends VDCBaseBean implements java.io.Serializabl
                 CollectionUI collUI = new CollectionUI(vdcCollectionService.find(new Long(sl.getCollectionId())));
                 sl.setStudyIds(collUI.getStudyIds());
                 setStudyListingIndex(addToStudyListingMap(sl));
+
+            }
+            else if (mode == StudyListing.GENERIC_LIST && sort != null  && sort.equals("downloaded")) {
+                // subsearch
+                sl = new StudyListing(StudyListing.GENERIC_LIST);
+                // TODO: change filter method to only return studyIds
+                sl.setStudyIds(studyService.getMostDownloadedStudyIds(null, -1));
+            } else if (mode == StudyListing.GENERIC_LIST) {
+                // subsearch
+                sl = new StudyListing(StudyListing.GENERIC_LIST);
+                // TODO: change filter method to only return studyIds
+                sl.setStudyIds(studyService.getRecentlyReleasedStudyIds(null, -1));
             } else {
                 sl = new StudyListing(StudyListing.GENERIC_ERROR);
             }

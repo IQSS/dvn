@@ -173,7 +173,7 @@
                                         <h1 style="float:left; margin:0; padding:6px 0; color:#526F76;">Studies</h1>
                                         <div jsfc="ice:panelGroup" style="float:left; padding:6px 0; margin-left:2em;"
                                              rendered="#{!empty(homePage.vdcUIList.vdcUIList) and VDCRequest.currentVDC == null}">
-                                            <ice:outputLink value="/dvn/faces/StudyListingPage.xhtml" id="hyperlinkBrowseStudies">
+                                            <ice:outputLink value="/dvn/faces/StudyListingPage.xhtml?mode=100" id="hyperlinkBrowseStudies">
                                                 <ice:outputText value="View All "/>
                                                 <ice:outputText rendered="#{homePage.groupName == 'Released Dataverses' and homePage.isAlphaSort == false}"
                                                                 styleClass="dvn_totalsValue"
@@ -216,7 +216,11 @@
                                             </div>
                                         </ice:column>
                                     </ice:dataTable>
-                                    <div style="text-align:center; padding:3px 5px"><ice:outputText style="text-align:center; font-size:90% !important;" value="View More &gt;"/></div>
+                                    <div style="text-align:center; padding:3px 5px">
+                                        <ice:outputLink value="/dvn/faces/StudyListingPage.xhtml?mode=100" id="hyperlinkBrowseStudiesReleased">
+                                        <ice:outputText style="text-align:center; font-size:90% !important;" value="View More &gt;"/>
+                                        </ice:outputLink>
+                                        </div>
                                 </div>
                                 <div style="margin-top:1em; border-bottom: 1px solid #526F76;">
                                     <div style="color:#526F76; text-transform:uppercase;">Most Downloaded Studies</div>
@@ -233,7 +237,11 @@
                                             </div>
                                         </ice:column>
                                     </ice:dataTable>
-                                    <div style="text-align:center; padding:3px 5px"><ice:outputText style="text-align:center; font-size:90% !important;" value="View More &gt;"/></div>
+                                    <div style="text-align:center; padding:3px 5px">
+                                        <ice:outputLink value="/dvn/faces/StudyListingPage.xhtml?mode=100&amp;sort=downloaded" id="hyperlinkBrowseStudiesDownloaded">
+                                        <ice:outputText style="text-align:center; font-size:90% !important;" value="View More &gt;"/>
+                                        </ice:outputLink>
+                                        </div>
                                 </div>
                             </div>
                             <!-- Studies End -->

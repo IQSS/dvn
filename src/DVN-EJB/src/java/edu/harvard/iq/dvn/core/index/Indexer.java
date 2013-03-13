@@ -479,9 +479,9 @@ public class Indexer implements java.io.Serializable  {
             writer = new IndexWriter(dir, getAnalyzer(), isIndexEmpty(), IndexWriter.MaxFieldLength.UNLIMITED);
             writer.setUseCompoundFile(true);
             TaxonomyWriter taxo = new DirectoryTaxonomyWriter(taxoDir, OpenMode.CREATE);
-            List<CategoryPath> categories = new ArrayList<CategoryPath>();
-            categories.add(new CategoryPath("dvName", study.getOwner().getName()));
-            categories.add(new CategoryPath("productionDate", metadata.getProductionDate()));
+            List<CategoryPath> categoryPaths = new ArrayList<CategoryPath>();
+            addFacet(categoryPaths, "dvName", study.getOwner().getName());
+            addFacet(categoryPaths, "productionDate", metadata.getProductionDate());
             /**
              * @todo add facets for authorName and authorAffiliation
              */
@@ -491,7 +491,7 @@ public class Indexer implements java.io.Serializable  {
 //                categories.add(new CategoryPath("authorAffiliation", elem.getAffiliation()));
 //            }
             CategoryDocumentBuilder categoryDocBuilder = new CategoryDocumentBuilder(taxo);
-            categoryDocBuilder.setCategoryPaths(categories);
+            categoryDocBuilder.setCategoryPaths(categoryPaths);
             categoryDocBuilder.build(doc);
             writer.addDocument(doc);
             // warnings from https://svn.apache.org/repos/asf/lucene/dev/tags/lucene_solr_3_5_0/lucene/contrib/facet/src/examples/org/apache/lucene/facet/example/simple/SimpleIndexer.java
@@ -611,6 +611,11 @@ public class Indexer implements java.io.Serializable  {
         }
     }
 
+    private void addFacet(List<CategoryPath> categoryPaths, String key, String value) {
+        if (value != null && value.length() > 0) {
+            categoryPaths.add(new CategoryPath(key, value));
+        }
+    }
 
     public List search(List <Long> studyIds, List <SearchTerm> searchTerms) throws IOException{
         logger.fine("Start search: "+DateTools.dateToString(new Date(), Resolution.MILLISECOND));

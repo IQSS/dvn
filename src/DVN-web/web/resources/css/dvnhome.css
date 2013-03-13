@@ -3,12 +3,17 @@
 .dvn_hmpgMainMessagePadding {padding-right:340px;}
 .dvn_more{font-style:italic;color:#6D0609}
 a.dvn_more:link,a.dvn_more:visited,a.dvn_more:hover,a.dvn_more:active{color:#6D0609}
-/* ACTION BOX */
+/* ACTION BOX + CREATE BUTTONS */
 .dvhmpgdescactionboxblock{overflow:hidden}
 .dvhmpgactionboxfloat{float:right; width:310px; text-align:left}
 .dvhmpgactionbox{padding:4px; color:#FFF; background:#C55B28}
 .dvhmpgactionbox a:link,.dvhmpgactionbox a:visited,.dvhmpgactionbox a:hover,.dvhmpgactionbox a:active{color:#FFF}
 .dvhmpgactionbox div div span{font-weight:bold; text-transform:uppercase}
+.dvnCreateActionBoxBlock.dvnStudyListingCreate {overflow:hidden; margin-top:1em;}
+.dvnCreateActionBox {float:right; padding:4px; color:#FFF;}
+.dvnCreateActionBox.dvnCreateDataverse {background:#C55B28;}
+.dvnCreateActionBox.dvnCreateStudy {background:#526F76;}
+.dvnCreateActionBox a:link,.dvnCreateActionBox a:visited,.dvnCreateActionBox a:hover,.dvnCreateActionBox a:active{color:#FFF;font-weight:normal;}
 /* HMPG + ADV SEARCH */
 #dvnHomePgSearch, #dvnAdvSearch {margin:1em 0; text-align:center;}
 .dvnSearchBlock {width:500px; padding:8px 40px 0 40px; margin:0 auto; background:#F2F2F2; border-bottom:2px solid grey;}
@@ -26,17 +31,41 @@ a.dvn_more:link,a.dvn_more:visited,a.dvn_more:hover,a.dvn_more:active{color:#6D0
 .dvnPermissionsTable .dvnAdvSearchScopePnlGrdTable span {color: #000000; font-size: 90% !important;}
 /* DV STUDYLISTING SEARCH */
 div.dvn_searchblock{margin-bottom:12px;padding:4px 12px;background:#F2F2F2;border:1px solid #ddd;text-align:left;overflow:hidden;}
-.dvnSearchBoxCheckbox{display:block;text-align:left;}
-.dvnSearchBoxCheckbox,.dvnSearchBoxCheckbox select{margin-top:0;margin-bottom:0}
-.dvnSearchBoxCheckbox span.iceOutTxt{font-size:90% !important}
-.dvn_searchboxblock {overflow:hidden; width:308px;}
+.dvnSearchBoxCheckbox{display:block;padding:0;text-align:left;}
+.dvnSearchBoxCheckbox,.dvnSearchBoxCheckbox select{margin:0}
+.dvnSearchBoxCheckbox span.iceOutTxt{padding:0;font-size:90% !important}
+.dvn_searchboxblock {overflow:hidden; width:388px;}
 .dvn_searchboxblock fieldset {float: left; padding:0; line-height: 36px !important;}
-.dvn_searchboxblock fieldset .iceCmdBtn {vertical-align: middle;}
-.dvn_searchboxblock .dvn_searchlinks {float: left; margin-left: 1em; text-align: left;}
-.dvn_searchboxblock .dvn_searchlinks a.iceOutLnk {display: block;}
+.dvn_searchboxblock fieldset input.iceInpTxt {margin-right:1em; padding:5px 3px; width:268px; font-size:1.1em !important; margin:0 1em 0 0;}
+.dvn_searchboxblock fieldset input.iceCmdBtn {background:#EEF3FB; border:1px solid #B7CDFF; font-size:1.1em !important; padding:4px 16px; margin:0;}
+.dvn_searchboxblock .dvn_searchlinks {margin-left: 1em; text-align:right;}
+.dvn_searchboxblock .dvn_searchlinks a.iceOutLnk {display:inline; margin-right:1em;}
+.dvn_searchboxblock .dvn_searchlinks a.iceOutLnk:first-child {margin-right:1em;}
 .dvn_searchboxblock .dvn_searchlinks span.iceOutTxt {font-size:90% !important;}
 /* SECTION PANELS + ACCORDION + TREE */
 #dvn_mainSection{position:relative;overflow:hidden;width:100%;text-align:center}
+
+.dvnHmpgColumnBlock {overflow:hidden;}
+.dvnHmpgColumnDataverses {float:left; width:48%; padding-right:2%; margin-top:0;}
+.dvnHmpgColumnStudies {float:left; width:48%; padding-left:2%;}
+.dvnHmpgColumnHeaderBlock {overflow:hidden; margin-bottom:.5em;}
+.dvnHmpgColumnDataverses .dvnHmpgColumnHeaderBlock {border-bottom:1px solid #C55B28;}
+.dvnHmpgColumnStudies .dvnHmpgColumnHeaderBlock {border-bottom:1px solid #526F76;}
+.dvnHmpgColumnHeader {float:left; margin:0; padding:6px 0; color:#526F76;}
+.dvnHmpgColumnDataverses .dvnHmpgColumnHeader {color:#C55B28;}
+.dvnHmpgColumnStudies .dvnHmpgColumnHeader {color:#526F76;}
+.dvnHmpgColumnHeaderViewAll {float:left; margin-left:2em; padding:6px 0;}
+
+.dvnHmpgColumnWidget {margin-top:1em;}
+.dvnHmpgColumnDataverses .dvnHmpgColumnWidget {border-bottom: 1px solid #C55B28;}
+.dvnHmpgColumnStudies .dvnHmpgColumnWidget {border-bottom: 1px solid #526F76;}
+.dvnHmpgColumnWidgetHeader {text-transform:uppercase;}
+.dvnHmpgColumnDataverses .dvnHmpgColumnWidgetHeader {color:#C55B28;}
+.dvnHmpgColumnStudies .dvnHmpgColumnWidgetHeader {color:#526F76;}
+.dvnHmpgColumnWidgetViewMoreBlock {text-align:center; padding:3px 5px}
+.dvnHmpgColumnWidgetViewMoreBlock a.iceOutLnk span.iceOutTxt {font-size:90% !important;}
+
+
 .dvn_sectionContent{display:inline;width:75%;float:right;text-align:left}
 .dvn_sectionPanels{display:inline;position:relative;float:left;width:24%}
 .dvn_sectionPanelTitle{padding:.25em 0;border-bottom:2px solid #91a5a9;color:#555;font-weight:700}
@@ -87,9 +116,11 @@ h3.noSubNode,h3.noSubNode a,h3.noSubNode a:hover,h4.noSubNode,h4.noSubNode a,h4.
 .xtraMenu ul li ul li a {margin-left:1.25em;}
 a.lastNodeActive:link{font-weight:700}
 
+
 .dvnHmpgDataverseWidgetTable, .dvnHmpgDataverseWidgetTable tr, .dvnHmpgDataverseWidgetTable td, .dvnHmpgStudyWidgetTable, .dvnHmpgStudyWidgetTable tr, .dvnHmpgStudyWidgetTable td {border:0;}
 .dvnHmpgDataverseWidgetTable td, .dvnHmpgStudyWidgetTable td {border-bottom:1px dotted #D9D9D9;}
 img.dvnHmpgStudyFileIcon {margin-right:.5em !important; vertical-align:middle}
+
 
 /* DATAVERSE LIST TABLE + ALPHA SORT */
 .dvnHmpgGroupHeaderBlock{width:100%;margin-bottom:.25em;overflow:hidden}

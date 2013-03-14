@@ -1038,6 +1038,49 @@ public class Indexer implements java.io.Serializable  {
         return false; 
     }
     
+    /*
+     * Method for determining if prefix-wildcard seraches are supported on this
+     * file metadata field. 
+     * TODO: Merge this method with the one above somehow; or add some caching
+     * for the known filemetadata fields, in such a way that we don't have to
+     * be doing these lookups constantly. 
+     */
+    boolean isPrefixSearchableFileMetadataField (String fieldName) {
+        int i = fieldName.indexOf('-'); 
+        
+        if (i <= 0) {
+            return false; 
+        }
+        
+        String prefix = fieldName.substring(0, i);
+        String suffix = fieldName.substring(i+1); 
+
+        FileMetadataField fmf = null; 
+        
+        try {
+            if (studyFieldService == null) {
+                Context ctx = new InitialContext();
+                studyFieldService = (StudyFieldServiceLocal) ctx.lookup("java:comp/env/studyField");
+            }
+        } catch (Exception ex) {
+            logger.info("Caught an exception looking up StudyField Service; " + ex.getMessage());
+        }
+        
+        if (studyFieldService == null) {
+            logger.warning("No StudyField Service; exiting file-level metadata ingest.");
+            return false;
+        }
+        
+        fmf = studyFieldService.findFileMetadataFieldByNameAndFormat(suffix, prefix); 
+        
+        if (fmf != null) {
+            logger.fine("Checked the field "+fieldName+" with the StudyFieldService; ok.");
+            return fmf.isPrefixSearchable(); 
+        }
+        
+        return false; 
+    }
+    
     private List<Document> getHits( Query query ) throws IOException {
         List <Document> documents = new ArrayList();
         if (query != null){
@@ -1325,11 +1368,21 @@ public class Indexer implements java.io.Serializable  {
             } else if (phrase.length == 1){
 //                Term t = new Term(elem.getFieldName(), elem.getValue().toLowerCase().trim());
                 logger.fine("INDEXER: wildcardQuery: search element value: "+phrase[0].toLowerCase().trim());
-                Term t = new Term(elem.getFieldName(), phrase[0].toLowerCase().trim()+"*");
-                logger.fine("INDEXER: wildcardQuery: term value="+t.text());
-                WildcardQuery wcQuery = new WildcardQuery(t);
-                logger.fine("INDEXER: Term wildcardQuery (native): "+wcQuery.toString());
-                orTerms.add(wcQuery, BooleanClause.Occur.SHOULD);
+                if (isPrefixSearchableFileMetadataField(elem.getFieldName())) { 
+                    Term t = new Term(elem.getFieldName(), phrase[0].toLowerCase().trim()+"*");
+                    logger.fine("INDEXER: wildcardQuery: term value="+t.text());
+                    WildcardQuery wcQuery = new WildcardQuery(t);
+                    logger.fine("INDEXER: Term wildcardQuery (native): "+wcQuery.toString());
+                    orTerms.add(wcQuery, BooleanClause.Occur.SHOULD);
+                } else {
+                    logger.fine("INDEXER: building PhraseQuery: search element value: "+phrase[0].toLowerCase().trim());
+                    Term t = new Term(elem.getFieldName(), phrase[0].toLowerCase().trim());
+                    logger.fine("INDEXER: building PhraseQuery: term value="+t.text());
+                    TermQuery orQuery = new TermQuery(t);
+                    logger.fine("INDEXER: TermQuery orQuery (native): "+orQuery.toString());
+                    orTerms.add(orQuery, BooleanClause.Occur.SHOULD);
+                }
+            
             }
         }
         return orTerms;

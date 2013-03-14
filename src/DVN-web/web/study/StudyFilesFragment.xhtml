@@ -110,7 +110,8 @@
                                                                            columnClasses="vdcStudyFileCheckBox,vdcStudyFileInfo,vdcStudyFileDownload,vdcStudyFileDesc,
                                                                            vdcStudyFileSpacer,vdcStudyFileSubsetting,vdcStudyFileAnalysis,vdcStudyFileCitation">
                                                                 <ice:column id="column10">
-                                                                    <!-- note: the hiden file id needs to be tag immediately before the checkbox for above JS to work properly-->
+                                                                    <!-- note: the hidden file id and file size need to be tagged immediately before the checkbox for above JS to work properly-->
+                                                                    <ice:inputHidden id="fileSize" value="#{studyFileUI.fileSizeByByte}"/>
                                                                     <ice:inputHidden id="fileId" value="#{studyFileUI.studyFile.id}"/>
                                                                     <ice:selectBooleanCheckbox id="fileCheckBox" styleClass="fileCheckBox" onclick="toggleCheckBoxes(this)" disabled="#{studyFileUI.restrictedForUser}"/>
                                                                 </ice:column>

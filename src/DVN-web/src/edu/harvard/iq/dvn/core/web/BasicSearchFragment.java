@@ -39,6 +39,7 @@ import javax.faces.bean.ViewScoped;
 import javax.inject.Named;
 import org.apache.lucene.facet.search.results.FacetResult;
 import org.apache.lucene.facet.search.results.FacetResultNode;
+import org.apache.lucene.facet.taxonomy.CategoryPath;
 
 
 @Named ("BasicSearchFragment")
@@ -156,14 +157,18 @@ public class BasicSearchFragment extends VDCBaseBean implements java.io.Serializ
 //                logger.info("found a matchID: " + matchIDs.get(i));
 //            }
             studies = resultsWithFacets.getMatchIds();
-            List<FacetResult> resultList = resultsWithFacets.getResultList();
-            logger.info("facet results = " + resultList.toString());
-//            for (FacetResult result : resultList) {
-//                logger.info("facet label = " + result.getFacetResultNode().getLabel() + " facet value = " + result.getFacetResultNode().getValue());
-//                for (FacetResultNode node : result.getFacetResultNode().getSubResults()) {
-//                    logger.info("--" + node.getLabel().lastComponent() + " (" + node.getValue() + ") [node.getLabel().lastComponent()]");
-//                }
-//            }
+            List<FacetResult> facetResults = resultsWithFacets.getResultList();
+//            logger.info("facet results = " + facetResults.toString());
+            for (int i = 0; i < facetResults.size(); i++) {
+                FacetResult facetResult = facetResults.get(i);
+                logger.info("- category " + i + ": " + facetResult.getFacetResultNode().getLabel());
+                for (FacetResultNode n : facetResult.getFacetResultNode().getSubResults()) {
+                    CategoryPath label = n.getLabel();
+                    String last = n.getLabel().lastComponent().toString();
+                    double hits = n.getValue();
+                    logger.info("  - expect " + hits + " hits from a faceted search for \"" + label + "\"");
+                }
+            }
         }
         
         if (searchField.equals("any")) {

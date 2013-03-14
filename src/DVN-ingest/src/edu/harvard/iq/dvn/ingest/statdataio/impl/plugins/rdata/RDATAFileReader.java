@@ -610,7 +610,10 @@ public class RDATAFileReader extends StatDataFileReader {
     return destination;
   }
   /**
-   * Create an Output Writer
+   * Put File Information into the Meta-data object
+   * 
+   * Runs an R-script that extracts meta-data from the *original* Rdata object, then 
+   * 
    * @returnthe output writer
    * @throws IOException if something bad happens?
    */
@@ -635,7 +638,6 @@ public class RDATAFileReader extends StatDataFileReader {
     try {
       RRequest request = mRequestBuilder.build();
       request.script(fileInfoScript);
-      LOG.warning("<<<");
       RList fileInformation = request.eval().asList();
       
       int varQnty = 0;
@@ -646,7 +648,6 @@ public class RDATAFileReader extends StatDataFileReader {
       for (String varName : variableNames) {
         variableLabels.put(varName, varName);
         variableNameList.add(varName);
-        
         varQnty++;
       }
       
@@ -677,6 +678,9 @@ public class RDATAFileReader extends StatDataFileReader {
   }
   /**
    * Read a Tabular Data File and create a "DataTable" Object
+   * 
+   * Returns a "DataTable" object that is a representation of the tabular data file. So sick.
+   * 
    * @param tabFile a File object specifying the location of tabular data
    * @return a "DataTable" object representing the 
    * @throws IOException 
@@ -706,19 +710,16 @@ public class RDATAFileReader extends StatDataFileReader {
       valueTokens = line.split("\t", mVarQuantity);
 
       for ( int i = 0; i < mVarQuantity; i++ ) {
-        
-        LOG.warning("xxxxxxxxxx");
+ 
+        // If it's a character variable but not a date
         if (isCharacterVariable[i]) {
-          LOG.info((String) valueTokens[i]);
           valueTokens[i] = valueTokens[i].replaceFirst("^\"", "");
           valueTokens[i] = valueTokens[i].replaceFirst("\"$", "");
           valueTokens[i] = valueTokens[i].replaceAll("\\\\\"", "\"");
           
           dataTable[i][j] = valueTokens[i];
-          //dataTable[i][j] = StringEscapeUtils.unescapeCsv(valueTokens[i]);
-          
-          LOG.info((String) dataTable[i][j]);
         }
+        // Otherwise, we don't care
         else {
           dataTable[i][j] = valueTokens[i];
         }
@@ -726,7 +727,10 @@ public class RDATAFileReader extends StatDataFileReader {
       }
     }
 
+    // Close the file reader
     tabFileReader.close();
+    
+    // Convert dataTable to an actual "DataTable" object
     tabData.setData(dataTable);
     
     return tabData;

@@ -148,13 +148,14 @@ public class BasicSearchFragment extends VDCBaseBean implements java.io.Serializ
             varService.determineStudiesFromVariables(variables, studies, variableMap);
 
         } else {
-            logger.info("calling search() [returns List]...");
-            studies = indexService.search(getVDCRequestBean().getCurrentVDC(), searchTerms);
+//            logger.info("calling search() [returns List]...");
+//            studies = indexService.search(getVDCRequestBean().getCurrentVDC(), searchTerms);
             resultsWithFacets = indexService.searchwithFacets(getVDCRequestBean().getCurrentVDC(), searchTerms);
-            ArrayList matchIDs =  resultsWithFacets.getMatchIds();
-            for (int i = 0; i < matchIDs.size(); i++) {
-                logger.info("found a matchID: " + matchIDs.get(i));
-            }
+//            ArrayList matchIDs = resultsWithFacets.getMatchIds();
+//            for (int i = 0; i < matchIDs.size(); i++) {
+//                logger.info("found a matchID: " + matchIDs.get(i));
+//            }
+            studies = resultsWithFacets.getMatchIds();
             List<FacetResult> resultList = resultsWithFacets.getResultList();
             logger.info("facet results = " + resultList.toString());
 //            for (FacetResult result : resultList) {

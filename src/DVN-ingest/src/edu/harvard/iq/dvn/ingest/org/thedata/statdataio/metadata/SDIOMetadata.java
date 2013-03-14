@@ -242,33 +242,33 @@ public class SDIOMetadata {
      * @return a <code>boolean</code> array, true if a variable is continuous.
      */
     public boolean[] isContinuousVariable(){
-        boolean[] continuousYes = new boolean[variableName.length];
-        if ((variableStorageType != null) && (variableStorageType.length >0)){
-            // Stata DTA case
+      boolean[] continuousYes = new boolean[variableName.length];
+      if ((variableStorageType != null) && (variableStorageType.length >0)){
+        // Stata DTA case
             for (int i =0; i< variableName.length;i++){
                 if ( variableTypeNumber.get(variableStorageType[i]) == 2  ){
                     if (valueLabelTable.containsKey(valueLabelMappingTable.get(variableName[i]))){
                         
-                        continuousYes[i] = false;
+              continuousYes[i] = false;
                     } else {
-                        continuousYes[i] = true;
-                    }
+              continuousYes[i] = true;
+          }
                     
                 } else {
-                    continuousYes[i] = false;
-                }
-            }
+            continuousYes[i] = false;
+          }
+        }
         } else if (decimalVariables != null){
-            // SPSS POR/SAV cases
+        // SPSS POR/SAV cases
             if ( decimalVariables.size()>0){
                 for (int i=0;i<variableName.length;i++){
-                    continuousYes[i] = decimalVariables.contains(i) ? true : false;
-                }
+            continuousYes[i] = decimalVariables.contains(i) ? true : false;
+          }
             } else {
-                Arrays.fill(continuousYes, false);
-            }
+          Arrays.fill(continuousYes, false);
         }
-        return continuousYes;
+      }
+      return continuousYes;
     }
 
     /**

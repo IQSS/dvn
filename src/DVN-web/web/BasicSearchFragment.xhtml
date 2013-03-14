@@ -13,13 +13,25 @@
     </script>
     <fieldset>
         <label for="search">
-            <ice:inputText onkeypress="if (window.event) return processEvent('', 'form1:search'); else return processEvent(event, 'form1:search');" value="#{BasicSearchFragment.searchValue}" id="simpleSearch" onclick="clickclear(this, 'Enter keywords to search the Dataverse Network')"/>
+            <ice:inputText onkeypress="if (window.event) return processEvent('', 'form1:search'); else return processEvent(event, 'form1:search');" value="#{BasicSearchFragment.searchValue}" id="simpleSearch" onclick="clickclear(this, '#{(VDCRequest.currentVDC == null) ? 'Enter keywords to search this Dataverse Network' : 'Enter keywords to search this Dataverse'}')"/>
         </label>
         <label for="button">
              <ice:commandButton id="search" value="Search"  action="#{BasicSearchFragment.search_action}"/>
         </label>
     </fieldset>
-    <div class="dvnSearchSuggestions">
-        Try searching for <ice:outputLink value="/dvn/faces/StudyListingPage.xhtml">[keyword]</ice:outputLink>, <ice:outputLink value="/dvn/faces/StudyListingPage.xhtml">[keyword]</ice:outputLink>, <ice:outputLink value="/dvn/faces/StudyListingPage.xhtml">[keyword]</ice:outputLink>
-    </div>
+    <div class="dvnSearchSuggestions" rendered="#{!empty BasicSearchFragment.searchTerms}">
+       <ice:outputText value ="Try searching for  " rendered="#{!empty BasicSearchFragment.searchTerms}"/>
+            <ui:repeat rendered="#{!empty BasicSearchFragment.searchTerms}"
+               value="#{BasicSearchFragment.searchTerms}"
+               var="term">
+        <ui:fragment rendered="#{empty(item.xtraItems)}">
+                <ice:commandLink id="deleteColLink" action="#{BasicSearchFragment.keywordSearch_action(term)}" >
+                    <ice:outputText value="[#{term}] "/>
+                </ice:commandLink> 
+        </ui:fragment>
+    </ui:repeat>
+    </div>                                                     
+
+    
+
 </div>

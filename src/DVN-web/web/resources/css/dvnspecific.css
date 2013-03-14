@@ -114,6 +114,11 @@ div[id$='dvnDataCitationWidget'] div {white-space: normal;}
 #dvnDataCitationWidgetBlockVersion span.iceOutTxt {padding:0;}
 #dvnDataCitationWidgetAuthorInputBlock, #dvnDataCitationWidgetDateInputBlock, #dvnDataCitationWidgetTitleInputBlock, #dvnDataCitationWidgetStudyIDInputBlock, #dvnDataCitationWidgetDistributorInputBlock {display:none;}
 span[id$=input_studyIdPrfxSync], span[id$=input_studyIdPrfx], input[id$=input_studyIdSync], input[id$=input_studyId] {display:inline !important;}
+.authorFormBlock, .distributorFormBlock {float:left;}
+.authorbuttonBlock, .distributorbuttonBlock {float:right;}
+.authorbuttonBlock img, .distributorbuttonBlock img {display:inline;}
+.authorbuttonBlock img:hover, .distributorbuttonBlock img:hover {cursor: pointer}
+.authorbuttonBlock img:last-child, .distributorbuttonBlock img:last-child {margin-left:1em !important;}
 .dvnManageStudiesTableTop{width:100%}
 .dvnManageStudiesTableTop .dvnPaginatorWrap{padding:.5em 0}
 .dvn_ManageStudiesTotals {padding:.5em; text-align:right;}
@@ -297,7 +302,7 @@ td.dvnPermissionsTableOption{width:240px;padding-top:.75em;padding-bottom:.75em;
 .dvn_createDvRequest{text-align:center}
 .dvn_createDvRequest .requestHeader{margin-left:auto;margin-right:auto;width:676px;color:#c55b28;font-size:160% !important;text-transform:uppercase;text-align:left}
 .dvn_createDvRequest .requestHeader .requestContentTitle{float:left;width:330px;padding:0 0 6px;color:#c55b28;font-size:100% !important;font-weight:400;text-transform:uppercase;line-height:22px !important}
-.dvn_createDvRequest .requestHeader span{color:#ccc;font-size:100% !important;line-height:22px !important}
+.dvn_createDvRequest .requestHeader span{color:gray;font-size:100% !important;line-height:22px !important}
 .dvn_createDvRequest .requestContentDescRight{float:left;width:324px;padding:0 10px 6px;border-left:1px solid #ccc;color:#555;text-transform:none;text-align:left}
 .dvn_createDvRequest .requestIntroSteps{margin-top:30px;margin-left:auto;margin-right:auto;width:676px}
 .dvn_createDvRequest .requestIntroStepsContributor{margin-top:30px;margin-left:auto;margin-right:auto;width:521px}
@@ -344,17 +349,24 @@ strong.requestWorkflowCompleted{color:#035899 !important;font-weight:bold !impor
 .dvn_createDvRequest .requestContent{margin:30px auto;width:676px;border-top:1px solid #ccc}
 .dvn_createDvRequest .requestContentDescLeft{float:left;width:228px;padding:12px 12px 12px 0;text-align:left}
 .requestContentDescLeft .dvnInformationMessage,.requestContentDescLeft .dvnSuccessMessage{width:100%}
-.dvn_createDvRequest .requestContentFormRight{float:left;width:411px;padding:0 0 20px;border-left:1px solid #ccc;text-align:left}
+.dvn_createDvRequest .requestContentFormRight{float:left;width:432px;padding:0;border-left:1px solid #ccc;text-align:left}
+.dvn_createDvRequest .requestContentFormRight.requestContentSucess{width:auto;}
 .dvn_createDvRequest .requestContentFormRight span.reqContentActionTitle{color:#555;font-weight:700}
 .dvn_createDvRequest .requestContentFormRight span.agreeCheckbox{padding:0}
 .dvn_createDvRequest .requestContentFormRight td.vdcAddSiteCol1{width:34%;white-space:normal}
 .dvn_createDvRequest .requestContentFormRight textarea{width:22.5em}
 .dvn_createDvRequest .requestContinueLink{padding:2em 0 0;text-align:center}
+.dvn_createDvRequest .requestContentSucess li {margin-bottom:1em;}
+.dvn_createDvRequest .requestContentSucess li:last-child {margin-bottom:0;}
+.dvn_createDvRequest .requestContentSucess li img, .dvn_createDvRequest .requestContentSucess p img {vertical-align:bottom !important;}
 span.termsAgreementMessageTitle{display:block;padding-top:1em;color:#526f76;font-size:120% !important;font-weight:bold;text-transform:uppercase}
 .termsAgreementBox{margin-bottom:20px;padding:4px;width:590px;height:300px;border:1px solid #035899;background:#FFF;overflow:scroll;overflow-x:auto}
 .termsAgreementBox.dvnCreateDvWorkflow{width:380px;}
 .requestContentSucess a{font-weight:700}
 .requestContentSucess ul{margin-left:1.5em;list-style:disc}
+table.iceDatTbl.dvnCreateDvClassificationTable, table.iceDatTbl.dvnCreateDvClassificationTable tr {border:0;}
+table.iceDatTbl.dvnCreateDvClassificationTable > tbody > tr:first-child > td:first-child {padding:0; border:0;}
+table.dvnCreateDvClassificationTableScrlBdyTbl {border-left:1px solid #D7D7D7;}
 .dvnCreateDvClassificationTable td span.iceOutTxt{font-size:90% !important}
 .dvnCreateDvClassificationTable td.dvnCreateDvClassificationSelectColumn{border-right:0px}
 .dvnCreateDvClassificationTableChild2{margin-left:0;padding-left:0}

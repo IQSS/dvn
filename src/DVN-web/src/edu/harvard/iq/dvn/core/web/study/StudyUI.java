@@ -58,6 +58,7 @@ import edu.harvard.iq.dvn.core.study.StudyVersion;
 import edu.harvard.iq.dvn.core.web.util.DvnDate;
 import edu.harvard.iq.dvn.core.util.StringUtil;
 import edu.harvard.iq.dvn.core.vdc.VDC;
+import edu.harvard.iq.dvn.core.web.util.EmailValidator;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -92,6 +93,7 @@ public class StudyUI  implements java.io.Serializable {
     private StudyFileServiceLocal studyFileService = null;
 
     private static DateFormat dateFormatter = DateFormat.getDateInstance(DateFormat.MEDIUM);
+    EmailValidator emailValidator = new EmailValidator();
     
     /** Creates a new instance of StudyUI
      *
@@ -376,7 +378,27 @@ public class StudyUI  implements java.io.Serializable {
             if (str != "") {
                 str += ", ";
             }
-            str += "<a href='mailto:" + getMetadata().getDistributorContactEmail() + "'>" + getMetadata().getDistributorContactEmail() + "</a>";
+            if (!getMetadata().getDistributorContactEmail().contains(",")) {
+                if (emailValidator.validateEmail(getMetadata().getDistributorContactEmail())) {
+                    str += "<a href='mailto:" + getMetadata().getDistributorContactEmail() + "'>" + getMetadata().getDistributorContactEmail() + "</a>";
+                } else {
+                    str += getMetadata().getDistributorContactEmail();
+                }
+            } else {
+                String[] input = getMetadata().getDistributorContactEmail().split(",");
+                int i = 0;
+                while (i < input.length) {
+                    if (i>0){
+                       str += ", "; 
+                    }
+                    if (emailValidator.validateEmail(input[i])) {
+                        str += "<a href='mailto:" + input[i] + "'>" + input[i] + "</a>";
+                    } else {
+                        str += input[i];
+                    }
+                    i++;
+                }                
+            }
         }
         /*"Distributor Contact (affiliation), e-mail"*/
         return str;

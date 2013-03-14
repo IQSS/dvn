@@ -46,9 +46,12 @@
                         </div>
                     </div>
                     <div jsfc="ice:panelGroup" styleClass="dvnManageTableCreateLink"  rendered="#{!VDCRequest.readOnlyDatabase and VDCRequest.currentVDC != null}">
-                        <ice:outputLink value="/dvn#{VDCRequest.currentVDCURL}/faces/study/EditStudyPage.xhtml">
-                            <ice:outputText value="#{bundlePageInfo.createStudyTitle}"/>
-                        </ice:outputLink>
+                        
+                        <div jsfc="ice:panelGroup" id="createStudy" styleClass="dvnCreateActionBox dvnCreateStudy">
+                            <ice:outputLink value="/dvn#{VDCRequest.currentVDCURL}/faces/study/EditStudyPage.xhtml">
+                                <ice:outputText value="#{bundlePageInfo.createStudyButton}"/>
+                            </ice:outputLink>
+                        </div>
                     </div>
                     <div jsfc="ice:panelGroup" id="groupPanel3" styleClass="dvnManageTableControlPad">
                         <div jsfc="ice:panelGroup" styleClass="dvnManageStudiesTableFilter" rendered="#{ManageStudiesList.contributorFilterRendered}">

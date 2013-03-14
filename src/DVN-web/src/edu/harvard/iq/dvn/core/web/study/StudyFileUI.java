@@ -415,11 +415,17 @@ public class StudyFileUI implements java.io.Serializable {
         return FileUtil.byteCountToDisplaySize( pFile.length() );
         //return String.valueOf( pFile.length() );
     }
-    /*
+    
+    private String fileSizeByByte;
+    
     public String getFileSizeByByte() {
         File pFile = new File (getStudyFile().getFileSystemLocation());
         return String.valueOf( pFile.length() );
-    } */
+    }
+    
+    public void setFileSizeByByte(String fileSizeByByte) {
+        this.fileSizeByByte = fileSizeByByte;
+    }
     
     public int getDownloadCount() {
         return getStudyFile().getStudyFileActivity() != null ? getStudyFile().getStudyFileActivity().getDownloadCount() : 0;

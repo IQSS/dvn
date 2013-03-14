@@ -109,7 +109,7 @@
                             <ice:outputLink rendered="#{currentRow.user != null}" value="/dvn#{VDCRequest.currentVDCURL}/faces/login/AccountPage.xhtml?userId=#{currentRow.user.id}&amp;vdcId=#{VDCRequest.currentVDCId}">
                               <ice:outputText value="#{currentRow.user.userName}"/>
                             </ice:outputLink>
-                            <ice:outputLink rendered="#{currentRow.group != null}" value="/dvn/faces/login/AccountPage.xhtml?userId=#{currentRow.group.id}&amp;vdcId=#{VDCRequest.currentVDCId}">
+                            <ice:outputLink rendered="#{currentRow.group != null}" value="/dvn/faces/networkAdmin/ViewUserGroupPage.xhtml?userGroupId=#{currentRow.group.id}">  
                               <ice:outputText value="#{currentRow.group.name}"/>
                             </ice:outputLink>
                           </ice:column>

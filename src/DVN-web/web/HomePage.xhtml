@@ -146,19 +146,22 @@
                                 </div>
 
                                 <div jsfc="ice:panelGroup" styleClass="dvnHmpgColumnWidget" rendered="#{!empty homePage.mostRecentlyReleasedDVs}">
-                                    <div style="color:#C55B28; text-transform:uppercase;">Recently Released Dataverses</div>
+                                    <div class="dvnHmpgColumnWidgetHeader">Recently Released Dataverses</div>
                                     <ice:dataTable headerClass="groupRow" id="recentDataverseList"
                                                 rendered="#{!empty(homePage.mostRecentlyReleasedDVs)}"
                                                 rows="10" width="100%" 
                                                 styleClass="dvnHmpgDataverseWidgetTable"
                                                 value="#{homePage.mostRecentlyReleasedDVs}" var="vdcUI">
                                         <ice:column>
-                                            <ice:outputLink styleClass="dvnHmpgDvNameLink dvnInlineHelpTip" id="dataverse_link" value="/dvn/dv/#{vdcUI.vdc.alias}"
-                                                            title="#{vdcUI.name} Dataverse - Released: #{vdcUI.releaseDate}
-                                                                    #{!empty(vdcUI.vdc.affiliation) ? '&lt;br/&gt;Affilitation:  ' : ''} #{vdcUI.vdc.affiliation}
-                                                                    #{!empty(vdcUI.vdc.dvnDescription) ? '&lt;br/&gt;Description: ' : ''} #{vdcUI.vdc.dvnDescription}">
-                                                <ice:outputText style="font-size:90% !important;" value="#{vdcUI.name}"/>
-                                            </ice:outputLink>
+                                            <div>
+                                                <ice:outputLink styleClass="dvnHmpgDvNameLink dvnInlineHelpTip" id="dataverse_link" value="/dvn/dv/#{vdcUI.vdc.alias}"
+                                                                title="#{vdcUI.name} Dataverse - Released: #{vdcUI.releaseDate}
+                                                                        #{!empty(vdcUI.vdc.affiliation) ? '&lt;br/&gt;Affilitation:  ' : ''} #{vdcUI.vdc.affiliation}
+                                                                        #{!empty(vdcUI.vdc.dvnDescription) ? '&lt;br/&gt;Description: ' : ''} #{vdcUI.vdc.dvnDescription}">
+                                                    <ice:outputText value="#{vdcUI.name}"/>
+                                                </ice:outputLink>
+                                                <ice:outputText value="#{vdcUI.releaseDate}" styleClass="dvnHmpgWidgetFloat"/>
+                                            </div>
                                         </ice:column>
                                     </ice:dataTable>
                                     <div class="dvnHmpgColumnWidgetViewMoreBlock">
@@ -222,8 +225,9 @@
                                                                 title="#{studyUI.metadata.title} - Dataverse Title: #{studyUI.study.owner.name} &lt;br/&gt; Release Date: #{studyUI.releaseTime}">
                                                     <ice:graphicImage styleClass="dvnHmpgStudyFileIcon" url="/resources/images/icon_analyze.gif" title="View and Analyze study files" rendered="#{studyUI.files and studyUI.subsettable}"/>
                                                     <ice:graphicImage styleClass="dvnHmpgStudyFileIcon" url="/resources/images/icon_files.gif" title="View study files" rendered="#{studyUI.files and !studyUI.subsettable}"/>
-                                                    <ice:outputText style="display:inline; font-size:90% !important;" id="hyperlink3aText" value="#{studyUI.metadata.title}"/><ice:outputText style="display:inline;" id="hyperlink3bText" styleClass="dvnStudyListStudyAuthor" value=" by #{studyUI.authors}" rendered="#{studyUI.authors != null and studyUI.authors != ''}"/>
+                                                    <ice:outputText id="hyperlink3aText" value="#{studyUI.metadata.title}"/><ice:outputText id="hyperlink3bText" styleClass="dvnStudyListStudyAuthor" value=" by #{studyUI.authors}" rendered="#{studyUI.authors != null and studyUI.authors != ''}"/>
                                                 </ice:outputLink>
+                                                <ice:outputText value="#{studyUI.releaseTime}" styleClass="dvnHmpgWidgetFloat"/>
                                             </div>
                                         </ice:column>
                                     </ice:dataTable>
@@ -243,8 +247,9 @@
                                                                 title="#{studyUI.metadata.title} - Dataverse Title: #{studyUI.study.owner.name}  &lt;br/&gt; Download Count: #{studyUI.downloadCount}">
                                                     <ice:graphicImage styleClass="dvnHmpgStudyFileIcon" url="/resources/images/icon_analyze.gif" title="View and Analyze study files" rendered="#{studyUI.files and studyUI.subsettable}"/>
                                                     <ice:graphicImage styleClass="dvnHmpgStudyFileIcon" url="/resources/images/icon_files.gif" title="View study files" rendered="#{studyUI.files and !studyUI.subsettable}"/>
-                                                    <ice:outputText style="display:inline; font-size:90% !important;" id="hyperlink3aText" value="#{studyUI.metadata.title}"/><ice:outputText style="display:inline;" id="hyperlink3bText" styleClass="dvnStudyListStudyAuthor" value=" by #{studyUI.authors}" rendered="#{studyUI.authors != null and studyUI.authors != ''}"/>
+                                                    <ice:outputText id="hyperlink3aText" value="#{studyUI.metadata.title}"/><ice:outputText id="hyperlink3bText" styleClass="dvnStudyListStudyAuthor" value=" by #{studyUI.authors}" rendered="#{studyUI.authors != null and studyUI.authors != ''}"/>
                                                 </ice:outputLink>
+                                                <ice:outputText value="#{studyUI.downloadCount}" styleClass="dvnHmpgWidgetFloat"/>
                                             </div>
                                         </ice:column>
                                     </ice:dataTable>

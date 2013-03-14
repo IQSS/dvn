@@ -166,7 +166,7 @@
                                                            validator="#{AddSitePage.validateName}" size="45"/>
                                             <ice:message for="dataverseName" showSummary="true" showDetail="false" errorClass="errorMessage" styleClass="errorMessage"/>
                                             <br/>
-                                            <ice:outputText styleClass="vdcHelpText" value="Name used to refer to this dataverse in Dataverse Network Homepage and other pages."/>
+                                            <ice:outputText styleClass="vdcHelpText" value="Name used to refer to this dataverse in network homepage and other pages."/>
                                         </ice:column>
                                         <!-- Dataverse Alias -->
                                         <ice:column>
@@ -189,7 +189,7 @@
                                             <ice:outputLabel  for="shortDescriptionInput" id="shortDescriptionLabel">
                                                 <ice:outputText
                                                     id="shortDescriptionLabelText"
-                                                    value="Network Home Page Description"/>
+                                                    value="Network Homepage Description"/>
                                                 <ice:graphicImage value="#{bundle.iconRequired}" rendered="#{VDCRequest.vdcNetwork.requireDVdescription}"/>
                                             </ice:outputLabel>
                                         </ice:column>
@@ -200,7 +200,7 @@
                                                                requiredMessage="This field is required."
                                                                binding="#{AddSitePage.shortDescription}"/>
                                             <br/>
-                                            <ice:outputText styleClass="vdcHelpText" value="Short description to appear on the network home page with your dataverse listing."/>
+                                            <ice:outputText styleClass="vdcHelpText" value="Short description to appear on the network homepage with your dataverse listing."/>
                                             <ice:message for="dataverseShortDescription" showSummary="true" showDetail="false" errorClass="errorMessage" styleClass="errorMessage"/>
                                         </ice:column>
                                         <!-- Group Assignment -->

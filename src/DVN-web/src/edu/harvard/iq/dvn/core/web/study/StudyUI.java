@@ -378,12 +378,27 @@ public class StudyUI  implements java.io.Serializable {
             if (str != "") {
                 str += ", ";
             }
-            if (emailValidator.validateEmail(getMetadata().getDistributorContactEmail())){
-                str += "<a href='mailto:" + getMetadata().getDistributorContactEmail() + "'>" + getMetadata().getDistributorContactEmail() + "</a>";
+            if (!getMetadata().getDistributorContactEmail().contains(",")) {
+                if (emailValidator.validateEmail(getMetadata().getDistributorContactEmail())) {
+                    str += "<a href='mailto:" + getMetadata().getDistributorContactEmail() + "'>" + getMetadata().getDistributorContactEmail() + "</a>";
+                } else {
+                    str += getMetadata().getDistributorContactEmail();
+                }
             } else {
-                str += getMetadata().getDistributorContactEmail();
+                String[] input = getMetadata().getDistributorContactEmail().split(",");
+                int i = 0;
+                while (i < input.length) {
+                    if (i>0){
+                       str += ", "; 
+                    }
+                    if (emailValidator.validateEmail(input[i])) {
+                        str += "<a href='mailto:" + input[i] + "'>" + input[i] + "</a>";
+                    } else {
+                        str += input[i];
+                    }
+                    i++;
+                }                
             }
-            
         }
         /*"Distributor Contact (affiliation), e-mail"*/
         return str;

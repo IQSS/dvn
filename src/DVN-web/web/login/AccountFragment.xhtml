@@ -7,11 +7,7 @@
      jsfc="ice:panelGroup">
     <!-- Begin code from account page -->
     <ice:inputHidden id="vdcId" value="#{VDCRequest.currentVDCId}"/>
-    <div class="dvn_section">
-        <div class="dvn_sectionTitle">
-            <ice:outputText value="Account for #{AccountPage.user.userName}"/>
-        </div>
-        <div class="dvn_sectionBox">
+    <div class="dvn_sectionBox">
             <div class="dvn_margin12">
                 <div class="vdcTextRight">
                     <ice:outputLink id="linkAction1" rendered="#{VDCSession.loginBean.networkAdmin or VDCSession.loginBean.user.id == AccountPage.user.id}"  value="/dvn/faces/login/EditAccountPage.xhtml?userId=#{AccountPage.user.id}&amp;returnPage=#{returnPage}&amp;vdcId=#{VDCRequest.currentVDCId}">
@@ -66,6 +62,5 @@
                     </div>
                 </ice:panelGrid>
             </div>
-        </div>
     </div>
 </div>

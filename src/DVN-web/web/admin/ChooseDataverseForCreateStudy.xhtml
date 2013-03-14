@@ -23,36 +23,32 @@
           <div class="dvn_sectionTitle">
             <ice:outputText value="#{bundlePageInfo.chooseDVForCreateStudyTitle}"/>
           </div>
-          <div class="dvnManageTableTop" rendered="#{not empty(ChooseDataverseForCreateStudy.dataverses)}">
+          <div jsfc="ice:panelGroup" styleClass="dvnManageTableTop" rendered="#{not empty(ChooseDataverseForCreateStudy.dataverses)}">
               <div jsfc="ice:panelGroup" styleClass="dvn_margin12 dvnInformationMessage">
                 <div class="dvnMsgBlockContainer">
-                  <ice:outputText value="#{bundlePageInfo.chooseDVForCreateStudyHelp}" escape="false" rendered="#{not empty(ChooseDataverseForCreateStudy.dataverses)}"/>
+                  <ice:outputText value="#{bundlePageInfo.chooseDVForCreateStudyHelp}" escape="false"/>
                 </div>
               </div>
           </div>
-          <div>
+          <div jsfc="ice:panelGroup" rendered="#{not empty(ChooseDataverseForCreateStudy.dataverses)}">
               <ice:dataTable cellpadding="0" cellspacing="0" columns="2" width="100%"
                              styleClass="dvnManageTable" id="gridPanel2"
                              columnClasses="dvnMyDataverseTableName, dvnMyDataverseTableRole"
-                             rendered="#{not empty(ChooseDataverseForCreateStudy.dataverses)}"
                              rowClasses="evenRow oddRow"
                              value="#{ChooseDataverseForCreateStudy.dataverses}"
                              var="dataverseInfo">
                 <ice:column>
-                  <f:facet name="header">
-                    <ice:outputText value="Dataverse Name"/>
-                  </f:facet>
-                        <ice:outputLink styleClass="dvnManageStudiesTableEditLink" value="/dvn/dv/#{dataverseInfo[0].alias}/faces/study/EditStudyPage.xhtml" >
-                            <ice:outputText value="#{dataverseInfo[0].name}"/>
-                        </ice:outputLink>
+                    <f:facet name="header">
+                        <ice:outputText value="Dataverse Name"/>
+                    </f:facet>
+                    <ice:outputLink value="/dvn/dv/#{dataverseInfo[0].alias}/faces/study/EditStudyPage.xhtml" >
+                        <ice:outputText value="#{dataverseInfo[0].name}"/>
+                    </ice:outputLink>
                 </ice:column>
               </ice:dataTable>
-              
           </div>
-           <div>
-               
-               <ice:outputText value="You are not a contributor to any dataverse." rendered="#{empty(ChooseDataverseForCreateStudy.dataverses)}"/>
-            
+          <div jsfc="ice:panelGroup" rendered="#{empty(ChooseDataverseForCreateStudy.dataverses)}">
+               <ice:outputText value="You are not a contributor to any dataverse."/>
           </div>  
         </div>
       </ice:form>

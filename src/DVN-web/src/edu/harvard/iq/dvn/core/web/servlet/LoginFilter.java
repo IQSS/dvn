@@ -294,9 +294,17 @@ public class LoginFilter implements Filter {
 
         VDCRole userRole = null;
         String userVDCRoleName = null;
-        if (currentVDC != null) {
+
+        if (isCurateStudyPage(pageDef)) {
+            // we should check the role the user has in the studies owning dataverse
+            // If we are editing an existing study, then the authorization depends on the study
+            Long studyId = Long.parseLong(getStudyIdFromRequest(request));
+            Study study = studyService.getStudy(studyId);
+            userRole = loginBean.getVDCRole(study.getOwner());
+        } else if (currentVDC != null) {
             userRole = loginBean.getVDCRole(currentVDC);
         }
+        
         if (userRole != null) {
             userVDCRoleName = userRole.getRole().getName();
         }
@@ -351,7 +359,7 @@ public class LoginFilter implements Filter {
                 }
             }
             if (pageRoleName.equals(RoleServiceLocal.CURATOR)) {
-                if (userVDCRoleName.equals(RoleServiceLocal.CURATOR) || userVDCRoleName.equals(RoleServiceLocal.ADMIN) || isUserStudyCreator(user, request)) {
+                if (userVDCRoleName.equals(RoleServiceLocal.CURATOR) || userVDCRoleName.equals(RoleServiceLocal.ADMIN) ) {
                     return true;
                 } else {
                     return false;
@@ -577,12 +585,21 @@ public class LoginFilter implements Filter {
                 || pageDef.getName().equals(PageDefServiceLocal.ADD_FILES_PAGE)
                 || pageDef.getName().equals(PageDefServiceLocal.DELETE_STUDY_PAGE)
                 || pageDef.getName().equals(PageDefServiceLocal.EDIT_FILES_PAGE)
-                || pageDef.getName().equals(PageDefServiceLocal.SETUP_DATA_EXPLORATION_PAGE)
                )) {
             return true;
         }
         return false;
     }
+    
+   private boolean isCurateStudyPage(PageDef pageDef) {
+
+       if (pageDef != null &&
+               (pageDef.getName().equals(PageDefServiceLocal.SETUP_DATA_EXPLORATION_PAGE)
+               || pageDef.getName().equals(PageDefServiceLocal.STUDY_PERMISSIONS_PAGE))) {
+           return true;
+       }
+       return false;
+   }
 
     private boolean isCheckLockPage(PageDef pageDef) {
          if (pageDef != null &&

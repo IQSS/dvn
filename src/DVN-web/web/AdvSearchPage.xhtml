@@ -16,6 +16,7 @@
     <ui:define name="metadata">    
         <!--f:metadata - COMMENTED OUT SINCE THERE ARE NO VIEW PARAMS - WORKAROUND-->  
             <f:event type="preRenderView" listener="#{AdvSearchPage.preRenderView}" />
+            <f:event type="preRenderView" listener="#{BasicSearchFragment.preRenderView}"/>
         <!--f:metadata-->  
     </ui:define>         
     <ui:define name="body">

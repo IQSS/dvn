@@ -831,7 +831,6 @@ public class VDCServiceBean implements VDCServiceLocal {
 
 
     public List<Long> getOrderedVDCIds(Long classificationId, String letter, String orderBy, boolean hideRestrictedVDCs, String filterString) {
-        System.out.print("Service bean " + filterString);
         List<Long> returnList = new ArrayList();
 
         // this query will get all vdcids for the dvn or for a classification (and one level of children, per design)
@@ -905,8 +904,9 @@ public class VDCServiceBean implements VDCServiceLocal {
             }
         }
         if (filterString != null) {
-            whereClause += "and ((dtype != 'Scholar' and upper(v.name) like '" + filterString.toUpperCase() + "%') ";
-            whereClause += "or (dtype = 'Scholar' and upper(v.lastname) like '" + filterString.toUpperCase() + "%')) ";
+            whereClause += "and ((upper(v.name) like '%" + filterString.replaceAll("'", "''").toUpperCase() + "%') ";
+            whereClause += " or (upper(affiliation) like '%" + filterString.replaceAll("'", "''").toUpperCase() + "%') ";
+            whereClause += "or (dtype = 'Scholar' and upper(v.lastname) like '%" + filterString.replaceAll("'", "''").toUpperCase() + "%')) ";
         }
         String queryString = selectClause + fromClause + whereClause + orderingClause;
 

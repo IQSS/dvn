@@ -28,13 +28,17 @@ import com.icesoft.faces.component.ext.HtmlInputHidden;
 import com.icesoft.faces.component.datapaginator.DataPaginator;
 import com.icesoft.faces.component.ext.HtmlInputText;
 import edu.harvard.iq.dvn.core.vdc.VDC;
+import edu.harvard.iq.dvn.core.vdc.VDCGroup;
+import edu.harvard.iq.dvn.core.vdc.VDCGroupServiceLocal;
 import edu.harvard.iq.dvn.core.vdc.VDCServiceLocal;
+import edu.harvard.iq.dvn.core.web.DataverseGrouping;
 import edu.harvard.iq.dvn.core.web.VDCUIList;
 import edu.harvard.iq.dvn.core.web.common.StatusMessage;
 import edu.harvard.iq.dvn.core.web.common.VDCBaseBean;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
 import javax.ejb.EJB;
 import javax.faces.application.FacesMessage;
 import javax.faces.bean.ViewScoped;
@@ -52,6 +56,7 @@ public class BrowseDataversesPage  extends VDCBaseBean implements Serializable {
     
     @EJB
     VDCServiceLocal vdcService;
+    @EJB VDCGroupServiceLocal   vdcGroupService;
     private ArrayList vdcUI;
     private boolean result;
     private boolean hideRestricted = false;
@@ -67,7 +72,10 @@ public class BrowseDataversesPage  extends VDCBaseBean implements Serializable {
     private String savedSort = "";
     private VDCUIList vdcUIList;
     private boolean firstRun = true;
-
+    private ArrayList accordionItemBeans;
+    DataverseGrouping parentItem    = null;
+    DataverseGrouping childItem     = null;
+    private int classificationsSize  = 0;
     
     public BrowseDataversesPage() {
     }
@@ -75,6 +83,7 @@ public class BrowseDataversesPage  extends VDCBaseBean implements Serializable {
     public void init() {
         super.init();
         hideRestricted = true;   
+        initAccordionMenu();
         populateVDCUIList();  
         firstRun = false;
     }
@@ -88,10 +97,15 @@ public class BrowseDataversesPage  extends VDCBaseBean implements Serializable {
     }
     
     public String updateDVList(){
-        System.out.print("Local update filter");
         String checkString = (String) getInputFilterTerm().getValue();        
         filterTerm = checkString;
-        System.out.print("filterTerm " + filterTerm);
+        return "";
+    }
+    
+    public String changeGroupId(){
+        if (!((String) getHiddenGroupId().getValue()).isEmpty()){
+             groupId  = new Long((String) getHiddenGroupId().getValue()); 
+        }               
         return "";
     }
     
@@ -120,6 +134,9 @@ public class BrowseDataversesPage  extends VDCBaseBean implements Serializable {
         if (firstRun){
            filterTerm = initialFilter; 
         }
+        if (getHiddenGroupId().getValue() !=null && !((String) getHiddenGroupId().getValue()).isEmpty()){
+             groupId  = new Long((String) getHiddenGroupId().getValue()); 
+        }
         vdcUIList = new VDCUIList(groupId, "", filterTerm, hideRestricted);
         vdcUIList.setAlphaCharacter(new String(""));
         if((initialSort.isEmpty() || !firstRun)  && savedSort.isEmpty()){
@@ -138,6 +155,74 @@ public class BrowseDataversesPage  extends VDCBaseBean implements Serializable {
         } else {
             vdcUIListSize = new Long(String.valueOf(0));
         }      
+    }
+    
+       protected void initAccordionMenu() {
+        if (accordionItemBeans != null) {
+            accordionItemBeans.clear();
+        } else {
+            accordionItemBeans = new ArrayList();
+        }
+
+        List list = (List)vdcGroupService.findAll();
+        //itemBeansSize = list.size();
+        Iterator outeriterator = list.iterator();
+        while(outeriterator.hasNext()) {
+            classificationsSize++;           
+            VDCGroup vdcgroup = (VDCGroup)outeriterator.next();
+                String indentStyle = (vdcgroup.getParent() == null) ? "groupRowIndentStyle" : "childRowIndentStyle";
+                if (vdcgroup.getParent() == null) {
+                    populateTopNode(vdcgroup, indentStyle);
+                    // get all of the vdcs that belong to this group and add them to the parent
+                    populateDescendants(vdcgroup, true);
+                }
+        }
+    }
+
+      //Manage classification
+     protected void populateTopNode(VDCGroup vdcgroup, String indentStyle) {
+         boolean isExpanded     = false;
+         synchronized(accordionItemBeans) {
+            parentItem  = new DataverseGrouping(vdcgroup.getId(), vdcgroup.getName(), "group", accordionItemBeans, isExpanded, "", "", new Long("-1"));
+         }
+         parentItem.setShortDescription(vdcgroup.getDescription());
+         parentItem.setTextIndent(0);
+
+         if (!indentStyle.equals(""))
+             parentItem.setIndentStyleClass(indentStyle);
+     }
+
+      protected void populateDescendants(VDCGroup vdcgroup, boolean isExpanded) {
+         Long parentId        = vdcgroup.getId();
+         List list          = vdcGroupService.findByParentId(parentId);
+         Iterator iterator  = list.iterator();
+         DataverseGrouping childItem;
+         while (iterator.hasNext()) {
+            VDCGroup group = (VDCGroup)iterator.next();
+            childItem = new DataverseGrouping(group.getId(), group.getName(), "subgroup", isExpanded, "", "", parentId, group.getReleasedVdcCount());
+            parentItem.addItem(childItem);
+            parentItem.setIsAccordion(true);
+            if (vdcGroupService.findByParentId(group.getId()) != null) {
+                List innerlist       = vdcGroupService.findByParentId(group.getId());                
+                Iterator inneriterator  = innerlist.iterator();
+                DataverseGrouping xtraItem;
+                childItem.setXtraItems(new ArrayList());
+                while (inneriterator.hasNext()) {
+                    VDCGroup innergroup = (VDCGroup)inneriterator.next();
+                    xtraItem = new DataverseGrouping(innergroup.getId(), innergroup.getName(), "subgroup", isExpanded, "", "", parentId, innergroup.getReleasedVdcCount());
+                    childItem.addXtraItem(xtraItem);
+                }
+            }
+         }        
+      }
+      
+
+
+     
+  //getters
+
+    public ArrayList getAccordionItemBeans() {
+        return accordionItemBeans;
     }
 
     public void setGroupId(Long groupId){
@@ -184,6 +269,10 @@ public class BrowseDataversesPage  extends VDCBaseBean implements Serializable {
     public void setInputFilterTerm(HtmlInputText inputFilterTerm) {
         this.inputFilterTerm = inputFilterTerm;
     }
+    
+    private HtmlInputHidden hiddenGroupId = new HtmlInputHidden();
+    public HtmlInputHidden getHiddenGroupId() {return hiddenGroupId;}
+    public void setHiddenGroupId(HtmlInputHidden hiddenGroupId) {this.hiddenGroupId = hiddenGroupId;}
 
     //getters
     public Long getCid() {

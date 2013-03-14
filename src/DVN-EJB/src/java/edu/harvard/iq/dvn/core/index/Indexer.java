@@ -98,7 +98,6 @@ import org.apache.lucene.facet.taxonomy.TaxonomyReader;
 import org.apache.lucene.facet.taxonomy.TaxonomyWriter;
 import org.apache.lucene.facet.taxonomy.directory.DirectoryTaxonomyReader;
 import org.apache.lucene.facet.taxonomy.directory.DirectoryTaxonomyWriter;
-import org.apache.lucene.index.IndexWriterConfig.OpenMode;
 import org.apache.lucene.search.MultiCollector;
 import org.apache.lucene.search.ScoreDoc;
 import org.apache.lucene.search.TermRangeQuery;
@@ -478,7 +477,7 @@ public class Indexer implements java.io.Serializable  {
 //        writer = new IndexWriter(dir, true, getAnalyzer(), isIndexEmpty());
             writer = new IndexWriter(dir, getAnalyzer(), isIndexEmpty(), IndexWriter.MaxFieldLength.UNLIMITED);
             writer.setUseCompoundFile(true);
-            TaxonomyWriter taxo = new DirectoryTaxonomyWriter(taxoDir, OpenMode.CREATE);
+            TaxonomyWriter taxo = new DirectoryTaxonomyWriter(taxoDir);
             List<CategoryPath> categoryPaths = new ArrayList<CategoryPath>();
             addFacet(categoryPaths, "dvName", study.getOwner().getName());
             addFacet(categoryPaths, "productionDate", metadata.getProductionDate());

@@ -19,6 +19,7 @@
 */
 package edu.harvard.iq.dvn.core.web;
 
+import edu.harvard.iq.dvn.core.admin.KeywordSearchServiceBean;
 import edu.harvard.iq.dvn.core.index.IndexServiceLocal;
 import edu.harvard.iq.dvn.core.index.ResultsWithFacets;
 import edu.harvard.iq.dvn.core.index.SearchTerm;
@@ -56,12 +57,16 @@ public class BasicSearchFragment extends VDCBaseBean implements java.io.Serializ
     VDCServiceLocal vdcService;
     @EJB
     VDCCollectionServiceLocal vdcCollectionService;
+    @EJB
+    KeywordSearchServiceBean keywordSearchServiceBean;
     private String searchValue;
     private String searchField;
+    private List <String> keywordSearchTerms;
     
     public void init () {
         super.init();
         if ( getVDCRequestBean().getCurrentVDC() == null ) {
+            keywordSearchTerms = keywordSearchServiceBean.findAll();
             searchValue = "Enter keywords to search this Dataverse Network";
         } else {
             searchValue = "Enter keywords to search this Dataverse";
@@ -75,6 +80,26 @@ public class BasicSearchFragment extends VDCBaseBean implements java.io.Serializ
         SearchTerm st       = new SearchTerm();
         st.setFieldName( searchField );
         st.setValue( searchValue );
+        StudyListing sl = getSearchResult(st);
+        String studyListingIndex = StudyListing.addToStudyListingMap(sl, getSessionMap());
+        return "/StudyListingPage.xhtml?faces-redirect=true&studyListingIndex=" + studyListingIndex + "&vdcId=" + getVDCRequestBean().getCurrentVDCId();
+    }
+
+    public String keywordSearch_action(String searchIn){
+        System.out.print("searchIn: "+ searchIn);
+        searchField = (searchField == null) ? "any" : searchField; // default searchField, in case no dropdown       
+        SearchTerm st  = new SearchTerm();
+        st.setFieldName( searchField );
+        st.setValue( searchIn );
+        StudyListing sl = getSearchResult(st);
+        String studyListingIndex = StudyListing.addToStudyListingMap(sl, getSessionMap());
+        return "/StudyListingPage.xhtml?faces-redirect=true&studyListingIndex=" + studyListingIndex + "&vdcId=" + getVDCRequestBean().getCurrentVDCId();
+    }
+ 
+    
+    private StudyListing getSearchResult(SearchTerm st){
+        
+        List searchTerms    = new ArrayList();
         searchTerms.add(st);
         List studies        = new ArrayList();
         Map variableMap     = new HashMap();
@@ -86,10 +111,10 @@ public class BasicSearchFragment extends VDCBaseBean implements java.io.Serializ
             varService.determineStudiesFromVariables(variables, studies, variableMap);
 
         } else {
-            studies         = indexService.search(getVDCRequestBean().getCurrentVDC(), searchTerms);
+            studies = indexService.search(getVDCRequestBean().getCurrentVDC(), searchTerms);
         }
         if (searchField.equals("any")) {
-            List<Long> versionIds = indexService.searchVersionUnf(getVDCRequestBean().getCurrentVDC(), searchValue);
+            List<Long> versionIds = indexService.searchVersionUnf(getVDCRequestBean().getCurrentVDC(), st.getValue());
             Iterator iter = versionIds.iterator();
             Long studyId = null;
             while (iter.hasNext()) {
@@ -123,10 +148,10 @@ public class BasicSearchFragment extends VDCBaseBean implements java.io.Serializ
         sl.setVariableMap(variableMap);
         sl.setVersionMap(versionMap);
         sl.setDisplayStudyVersionsList(displayVersionList);
+
         
-        //getVDCRequestBean().setStudyListing(sl);
-        String studyListingIndex = StudyListing.addToStudyListingMap(sl, getSessionMap());
-        return "/StudyListingPage.xhtml?faces-redirect=true&studyListingIndex=" + studyListingIndex + "&vdcId=" + getVDCRequestBean().getCurrentVDCId();
+        return sl;
+        
     }
 
     public String facet_search() {
@@ -229,5 +254,12 @@ public class BasicSearchFragment extends VDCBaseBean implements java.io.Serializ
     public String getSearchValue() {
         return searchValue;
     }
+    
+    public List<String> getSearchTerms() {
+        return keywordSearchTerms;
+    }
 
+    public void setSearchTerms(List<String> searchTerms) {
+        this.keywordSearchTerms = searchTerms;
+    }
 }

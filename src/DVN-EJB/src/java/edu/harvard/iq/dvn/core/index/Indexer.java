@@ -54,6 +54,7 @@ import edu.harvard.iq.dvn.core.study.TabularDataFile;
 import edu.harvard.iq.dvn.core.study.SpecialOtherFile; 
 import edu.harvard.iq.dvn.core.study.FileMetadataField; 
 import edu.harvard.iq.dvn.core.study.FileMetadataFieldValue;
+import edu.harvard.iq.dvn.core.study.StudyFieldServiceLocal;
 import java.io.File;
 import java.io.IOException;
 import java.io.StringReader;
@@ -66,6 +67,9 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.StringTokenizer;
 import java.util.logging.Logger;
+import javax.ejb.EJB;
+import javax.naming.Context;
+import javax.naming.InitialContext;
 import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.analysis.PorterStemFilter;
 import org.apache.lucene.analysis.WhitespaceAnalyzer;
@@ -82,6 +86,7 @@ import org.apache.lucene.search.BooleanClause;
 import org.apache.lucene.search.BooleanQuery;
 import org.apache.lucene.search.IndexSearcher;
 import org.apache.lucene.search.PhraseQuery;
+import org.apache.lucene.search.WildcardQuery;
 import org.apache.lucene.search.Query;
 import org.apache.lucene.search.TermQuery;
 import org.apache.lucene.store.Directory;
@@ -108,6 +113,7 @@ import org.apache.lucene.util.Version;
  *
  * @author roberttreacy
  */
+@EJB(name="studyField", beanInterface=edu.harvard.iq.dvn.core.study.StudyFieldServiceLocal.class)
 public class Indexer implements java.io.Serializable  {
 
     private static final Logger logger = Logger.getLogger("edu.harvard.iq.dvn.core.index.Indexer");
@@ -118,6 +124,9 @@ public class Indexer implements java.io.Serializable  {
     private static IndexReader r;
     private static IndexSearcher searcher;
     private static Indexer indexer;
+    
+    StudyFieldServiceLocal studyFieldService;
+    
     Directory dir;
     String indexDir = "index-dir";
     int dvnMaxClauseCount = Integer.MAX_VALUE;
@@ -658,6 +667,7 @@ public class Indexer implements java.io.Serializable  {
         
         for (Iterator it = searchTerms.iterator(); it.hasNext();){
             SearchTerm elem = (SearchTerm) it.next();
+            logger.info("INDEXER: processing term; name="+elem.getFieldName()+"; value="+elem.getValue());
             if (elem.getFieldName().equals("variable")){
 //                SearchTerm st = dvnTokenizeSearchTerm(elem);
 //                variableSearchTerms.add(st);
@@ -702,6 +712,7 @@ public class Indexer implements java.io.Serializable  {
         
         if ( containsStudyLevelAndTerms ) {
             BooleanQuery searchTermsQuery = andSearchTermClause(studyLevelSearchTerms);
+            logger.info("INDEXER: search terms query (native): "+searchTermsQuery.toString());
             searchParts.add(searchTermsQuery);
             BooleanQuery searchQuery = andQueryClause(searchParts);
             logger.fine("Start hits: " + DateTools.dateToString(new Date(), Resolution.MILLISECOND));
@@ -1191,6 +1202,7 @@ public class Indexer implements java.io.Serializable  {
             // Determine if this is a file-level metadata search term:
             if (isFileMetadataField(elem.getFieldName())) {
                 indexQuery = buildFileMetadataQuery(elem);
+                logger.info("INDEXER: filemetadata element query (native): "+indexQuery.toString());
                 if (elem.getOperator().equals("=")) {
                     // We only support "=" on file metadata, for now, anyway. 
                     // -- L.A. 
@@ -1200,6 +1212,9 @@ public class Indexer implements java.io.Serializable  {
                 }
             }
         }
+        
+        logger.info("INDEXER: filemetadata combined query (native): "+searchQuery.toString());
+
         List<Long> finalResults = null;
         if (fileIdReturnValues) {
             List<Document> fileMetadataResults = getHits(searchQuery);
@@ -1236,16 +1251,28 @@ public class Indexer implements java.io.Serializable  {
 
         FileMetadataField fmf = null; 
         
-        /*
-         * 
-         *
+        try {
+            Context ctx = new InitialContext();
+            studyFieldService = (StudyFieldServiceLocal) ctx.lookup("java:comp/env/studyField");
+        } catch (Exception ex) {
+            logger.info("Caught an exception looking up StudyField Service; " + ex.getMessage());
+        }
+        
+        if (studyFieldService == null) {
+            logger.warning("No StudyField Service; exiting file-level metadata ingest.");
+            return false;
+        }
+        
         fmf = studyFieldService.findFileMetadataFieldByNameAndFormat(suffix, prefix); 
+        
         if (fmf != null) {
+            logger.fine("Checked the field "+fieldName+" with the StudyFieldService; ok.");
             return true; 
         }
-        **/
-        return true; 
+        
+        return false; 
     }
+    
     private List<Document> getHits( Query query ) throws IOException {
         List <Document> documents = new ArrayList();
         if (query != null){
@@ -1568,9 +1595,39 @@ public class Indexer implements java.io.Serializable  {
                 orTerms.add(phraseQuery, BooleanClause.Occur.SHOULD);
             } else if (phrase.length == 1){
 //                Term t = new Term(elem.getFieldName(), elem.getValue().toLowerCase().trim());
+                logger.fine("INDEXER: orPhraseQuery: search element value: "+phrase[0].toLowerCase().trim());
                 Term t = new Term(elem.getFieldName(), phrase[0].toLowerCase().trim());
+                logger.fine("INDEXER: orPhraseQuery: term value="+t.text());
                 TermQuery orQuery = new TermQuery(t);
+                logger.fine("INDEXER: TermQuery orQuery (native): "+orQuery.toString());
                 orTerms.add(orQuery, BooleanClause.Occur.SHOULD);
+            }
+        }
+        return orTerms;
+    }
+    
+    BooleanQuery orPhraseOrWildcardQuery(List <SearchTerm> orSearchTerms){
+        BooleanQuery orTerms = new BooleanQuery();
+        orTerms.setMaxClauseCount(dvnMaxClauseCount);
+        for (Iterator it = orSearchTerms.iterator(); it.hasNext();) {
+            SearchTerm elem = (SearchTerm) it.next();
+            String[] phrase = getPhrase(elem.getValue().toLowerCase().trim());
+            if (phrase.length > 1) {
+                PhraseQuery phraseQuery = new PhraseQuery();
+                phraseQuery.setSlop(10);
+
+                for (int i = 0; i < phrase.length; i++) {
+                    phraseQuery.add(new Term(elem.getFieldName(), phrase[i].toLowerCase().trim()));
+                }
+                orTerms.add(phraseQuery, BooleanClause.Occur.SHOULD);
+            } else if (phrase.length == 1){
+//                Term t = new Term(elem.getFieldName(), elem.getValue().toLowerCase().trim());
+                logger.fine("INDEXER: wildcardQuery: search element value: "+phrase[0].toLowerCase().trim());
+                Term t = new Term(elem.getFieldName(), phrase[0].toLowerCase().trim()+"*");
+                logger.fine("INDEXER: wildcardQuery: term value="+t.text());
+                WildcardQuery wcQuery = new WildcardQuery(t);
+                logger.fine("INDEXER: Term wildcardQuery (native): "+wcQuery.toString());
+                orTerms.add(wcQuery, BooleanClause.Occur.SHOULD);
             }
         }
         return orTerms;
@@ -1784,7 +1841,11 @@ public class Indexer implements java.io.Serializable  {
     private BooleanQuery buildFileMetadataQuery(SearchTerm term) {
         List <SearchTerm> fileMetadataTerms = new ArrayList();
         fileMetadataTerms.add(buildAnyTerm(term.getFieldName(), term.getValue().toLowerCase().trim())); 
-        return orPhraseQuery(fileMetadataTerms);
+        
+        // insert the code for custom wildcard searching here - ?
+        
+        
+        return orPhraseOrWildcardQuery(fileMetadataTerms);
     }
     SearchTerm buildAnyTerm(String fieldName,String value){
         SearchTerm term = new SearchTerm();

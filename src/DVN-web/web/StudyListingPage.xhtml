@@ -107,8 +107,8 @@
                             <ice:outputText styleClass="dvnStudyListSearchResultsMessage" value=" #{StudyListingPage.listMessage}" rendered="#{StudyListingPage.studyCount != 0}"/>
                          </div>
                      </td>
-                     <td width="280" align="right" valign="bottom">
-                         <div class="dvn_searchboxblock" style="float:right;">
+                     <td width="388" align="right" valign="bottom">
+                         <div class="dvn_searchboxblock">
                               <script type="text/javascript">
                                     function clickclear(thisfield, defaulttext) {
                                         if (thisfield.value == defaulttext) {
@@ -117,29 +117,40 @@
                                     }
                               </script>
                               <fieldset>
-                                <label for="search">
-                                  <ice:inputText onkeypress="if (window.event) return processEvent('', 'form1:search'); else return processEvent(event, 'form1:search');" id="textField2" value="#{StudyListingPage.searchValue}" onclick="clickclear(this, 'Search Studies')"/>
-                                </label>
-                                <label for="button">
-                                  <ice:commandButton id="search" value="Go" action="#{StudyListingPage.search_action}"/>
-                                </label>
-                                <ice:outputLabel for="filter" styleClass="dvnSearchBoxCheckbox" rendered="#{StudyListingPage.renderSearchResultsFilter}">
-                                  <ice:selectBooleanCheckbox value="#{StudyListingPage.searchResultsFilter}"/>
-                                  <ice:outputText value="within these results"/>
-                                </ice:outputLabel>
-                                <ice:outputLabel for="filter" styleClass="dvnSearchBoxCheckbox" rendered="#{StudyListingPage.renderSearchCollectionFilter}">
-                                  <ice:selectBooleanCheckbox value="#{StudyListingPage.searchCollectionFilter}"/>
-                                  <ice:outputText value="within this collection"/>
-                                </ice:outputLabel>
+                                  <div>
+                                    <label for="search">
+                                        <ice:inputText onkeypress="if (window.event) return processEvent('', 'form1:search'); else return processEvent(event, 'form1:search');" id="textField2" value="#{StudyListingPage.searchValue}" onclick="clickclear(this, 'Search Studies')"/>
+                                    </label>
+                                    <label for="button">
+                                        <ice:commandButton id="search" value="Search" action="#{StudyListingPage.search_action}"/>
+                                    </label>
+                                  </div>
+                                  <div style="">
+                                    <ice:outputLabel for="filter" styleClass="dvnSearchBoxCheckbox" rendered="#{StudyListingPage.renderSearchResultsFilter}">
+                                        <ice:selectBooleanCheckbox value="#{StudyListingPage.searchResultsFilter}"/>
+                                        <ice:outputText value="within these results"/>
+                                    </ice:outputLabel>
+                                    <ice:outputLabel for="filter" styleClass="dvnSearchBoxCheckbox" rendered="#{StudyListingPage.renderSearchCollectionFilter}">
+                                        <ice:selectBooleanCheckbox value="#{StudyListingPage.searchCollectionFilter}"/>
+                                        <ice:outputText value="within this collection"/>
+                                    </ice:outputLabel>
+                                  </div>
+                                  <div class="dvn_searchlinks">
+                                    <ice:outputLink value="/dvn#{VDCRequest.currentVDCURL}/faces/AdvSearchPage.xhtml">
+                                        <ice:outputText value="Advanced Search"/>
+                                    </ice:outputLink>
+                                    <ice:outputLink value="http://guides.thedata.org/book/search" target="_blank">
+                                        <ice:outputText value="Tips"/>
+                                    </ice:outputLink>
+                                  </div>
                               </fieldset>
-                              <div class="dvn_searchlinks">
-                                <ice:outputLink value="/dvn#{VDCRequest.currentVDCURL}/faces/AdvSearchPage.xhtml">
-                                  <ice:outputText value="Advanced Search"/>
-                                </ice:outputLink>
-                                <ice:outputLink value="http://guides.thedata.org/book/search" target="_blank">
-                                  <ice:outputText value="Tips"/>
-                                </ice:outputLink>
-                              </div>
+                            </div>
+                            <div jsfc="ice:panelGroup" styleClass="dvnCreateActionBoxBlock dvnStudyListingCreate" rendered="#{!StudyListingPage.renderSearchResultsFilter and !VDCRequest.readOnlyDatabase and (VDCSession.loginBean.admin or VDCSession.loginBean.curator or VDCSession.loginBean.contributor or VDCSession.loginBean.networkAdmin or VDCRequest.currentVDC.allowRegisteredUsersToContribute)}">
+                                <div jsfc="ice:panelGroup" id="createStudy" styleClass="dvnCreateActionBox dvnCreateStudy">
+                                    <ice:outputLink value="/dvn/dv/first/faces/study/EditStudyPage.xhtml">
+                                        <ice:outputText value="#{bundlePageInfo.createStudyButton}"/>
+                                    </ice:outputLink>
+                                </div>
                             </div>
                      </td>
                   </tr>
@@ -155,8 +166,8 @@
                 <div jsfc="ice:panelGroup" styleClass="dvnStudyListResultsTop" rendered="#{StudyListingPage.studyCount != 0}">
                   <table cellpadding="0" cellspacing="0" border="0" width="100%">
                       <tr>
-                          <td>                            
-                            <div jsfc="ice:panelGroup" id="groupPanel5" rendered="#{StudyListingPage.renderSort}" style="text-align:left;">
+                          <td valign="bottom">                            
+                            <div jsfc="ice:panelGroup" id="groupPanel5" rendered="#{StudyListingPage.renderSort}">
                                 <ice:selectOneMenu id="dropdown2" valueChangeListener="#{StudyListingPage.sort_action}" onchange="submit();">
                                   <f:selectItem itemLabel="Sort By:" itemValue=""/>
                                   <f:selectItem itemLabel="- Global ID" itemValue="globalId"/>

@@ -20,7 +20,7 @@
         </label>
     </fieldset>
     <div class="dvnSearchSuggestions" rendered="#{!empty BasicSearchFragment.searchTerms}">
-        Try searching for 
+       <ice:outputText value ="Try searching for  " rendered="#{!empty BasicSearchFragment.searchTerms}"/>
             <ui:repeat rendered="#{!empty BasicSearchFragment.searchTerms}"
                value="#{BasicSearchFragment.searchTerms}"
                var="term">

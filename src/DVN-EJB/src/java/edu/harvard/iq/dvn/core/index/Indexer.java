@@ -475,21 +475,29 @@ public class Indexer implements java.io.Serializable  {
 
             addText(1.0f, doc, "unf", metadata.getUNF());
 //        writer = new IndexWriter(dir, true, getAnalyzer(), isIndexEmpty());
-//            logger.info("Indexing study id " + study.getStudyId() + " (" + metadata.getTitle() + ") from dataverse id " + study.getOwner().getId() + " (" + study.getOwner().getAlias() + ")");
+            logger.info("Indexing study db id " + study.getId() + " (" + study.getStudyId() + ": " + metadata.getTitle() + ") from dataverse id " + study.getOwner().getId() + " (" + study.getOwner().getAlias() + ")");
             writer = new IndexWriter(dir, getAnalyzer(), isIndexEmpty(), IndexWriter.MaxFieldLength.UNLIMITED);
             writer.setUseCompoundFile(true);
             TaxonomyWriter taxo = new DirectoryTaxonomyWriter(taxoDir);
             List<CategoryPath> categoryPaths = new ArrayList<CategoryPath>();
             addFacet(categoryPaths, "dvName", study.getOwner().getName());
             addFacet(categoryPaths, "productionDate", metadata.getProductionDate());
-            /**
-             * @todo add facets for authorName and authorAffiliation
-             */
-//            for (Iterator it = studyAuthors.iterator(); it.hasNext();) {
-//                StudyAuthor elem = (StudyAuthor) it.next();
-//                categories.add(new CategoryPath("authorName", elem.getName()));
-//                categories.add(new CategoryPath("authorAffiliation", elem.getAffiliation()));
-//            }
+            for (Iterator it = studyAuthors.iterator(); it.hasNext();) {
+                StudyAuthor elem = (StudyAuthor) it.next();
+                addFacet(categoryPaths, "authorName", elem.getName());
+                addFacet(categoryPaths, "authorAffiliation", elem.getAffiliation());
+            }
+            for (Iterator it = keywords.iterator(); it.hasNext();) {
+                StudyKeyword elem = (StudyKeyword) it.next();
+                addFacet(categoryPaths, "keywordValue", elem.getValue());
+            }
+            for (Iterator it = topicClassifications.iterator(); it.hasNext();) {
+                StudyTopicClass elem = (StudyTopicClass) it.next();
+                addFacet(categoryPaths, "topicClassValue", elem.getValue());
+                addFacet(categoryPaths, "topicVocabClassURI", elem.getVocabURI());
+                addFacet(categoryPaths, "topicClassVocabulary", elem.getVocab());
+            }
+
             CategoryDocumentBuilder categoryDocBuilder = new CategoryDocumentBuilder(taxo);
             categoryDocBuilder.setCategoryPaths(categoryPaths);
             categoryDocBuilder.build(doc);
@@ -1330,6 +1338,12 @@ public class Indexer implements java.io.Serializable  {
             FacetSearchParams facetSearchParams = new FacetSearchParams();
             facetSearchParams.addFacetRequest(new CountFacetRequest(new CategoryPath("dvName"), 10));
             facetSearchParams.addFacetRequest(new CountFacetRequest(new CategoryPath("productionDate"), 10));
+            facetSearchParams.addFacetRequest(new CountFacetRequest(new CategoryPath("authorName"), 10));
+            facetSearchParams.addFacetRequest(new CountFacetRequest(new CategoryPath("authorAffiliation"), 10));
+            facetSearchParams.addFacetRequest(new CountFacetRequest(new CategoryPath("keywordValue"), 10));
+            facetSearchParams.addFacetRequest(new CountFacetRequest(new CategoryPath("topicClassValue"), 10));
+            facetSearchParams.addFacetRequest(new CountFacetRequest(new CategoryPath("topicVocabClassURI"), 10));
+            facetSearchParams.addFacetRequest(new CountFacetRequest(new CategoryPath("topicClassVocabulary"), 10));
             FacetsCollector facetsCollector = new FacetsCollector(facetSearchParams, r, taxo);
             searcher.search(query, MultiCollector.wrap(s, facetsCollector));
             List<FacetResult> resultList = facetsCollector.getFacetResults();

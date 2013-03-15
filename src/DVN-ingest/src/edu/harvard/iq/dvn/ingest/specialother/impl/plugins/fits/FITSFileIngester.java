@@ -171,7 +171,7 @@ public class FITSFileIngester extends FileIngester {
                                     dbgLog.fine("FITS plugin: found metadata key config entry for " +
                                             configTokens[1]);
                                     recognizedFitsMetadataKeys.put(configTokens[1], 0);
-                                    if (configTokens[2] != null
+                                    if (configTokens.length > 2 && configTokens[2] != null
                                             && !(configTokens[2].equals(""))) {
                                         indexableFitsMetaKeys.put(configTokens[1], configTokens[2]);
                                     } else {
@@ -181,7 +181,7 @@ public class FITSFileIngester extends FileIngester {
                                     // Extra field options:
                                     // (the only option currently supported is prefix-steam searching
                                     // on the field)
-                                    if (configTokens[3] != null) {
+                                    if (configTokens.length > 3 && configTokens[3] != null) {
                                         if (configTokens[3].equalsIgnoreCase(OPTION_PREFIX_SEARCHABLE)) {
                                             recognizedFitsMetadataKeys.put(configTokens[1], 1);
                                         }
@@ -196,7 +196,7 @@ public class FITSFileIngester extends FileIngester {
                                     dbgLog.fine("FITS plugin: found column key config entry for " +
                                             configTokens[1]);
                                     recognizedFitsColumnKeys.put(configTokens[1], 0);
-                                    if (configTokens[2] != null
+                                    if (configTokens.length > 2 && configTokens[2] != null
                                             && !(configTokens[2].equals(""))) {
                                         indexableFitsMetaKeys.put(configTokens[1], configTokens[2]);
                                     } else {
@@ -204,7 +204,7 @@ public class FITSFileIngester extends FileIngester {
                                         indexableFitsMetaKeys.put(configTokens[1], configTokens[1]);
                                     }
                                     // Extra field options:
-                                    if (configTokens[3] != null) {
+                                    if (configTokens.length > 3 && configTokens[3] != null) {
                                         if (configTokens[3].equalsIgnoreCase(OPTION_PREFIX_SEARCHABLE)) {
                                             recognizedFitsColumnKeys.put(configTokens[1], 1);
                                         }

@@ -10,7 +10,7 @@ a.dvn_more:link,a.dvn_more:visited,a.dvn_more:hover,a.dvn_more:active{color:#6D0
 .dvhmpgactionbox a:link,.dvhmpgactionbox a:visited,.dvhmpgactionbox a:hover,.dvhmpgactionbox a:active{color:#FFF}
 .dvhmpgactionbox div div span{font-weight:bold; text-transform:uppercase}
 .dvnCreateActionBoxBlock.dvnStudyListingCreate {overflow:hidden; margin-top:1em;}
-.dvnCreateActionBox {float:right; padding:4px; color:#FFF;}
+.dvnCreateActionBox {float:right; padding:4px; margin-bottom:4px; color:#FFF;}
 .dvnCreateActionBox.dvnCreateDataverse {background:#C55B28;}
 .dvnCreateActionBox.dvnCreateStudy {background:#526F76;}
 .dvnCreateActionBox a:link,.dvnCreateActionBox a:visited,.dvnCreateActionBox a:hover,.dvnCreateActionBox a:active{color:#FFF;font-weight:normal;}
@@ -51,10 +51,12 @@ div.dvn_searchblock{margin-bottom:12px;padding:4px 12px;background:#F2F2F2;borde
 .dvnHmpgColumnHeaderBlock {overflow:hidden; margin-bottom:.5em;}
 .dvnHmpgColumnDataverses .dvnHmpgColumnHeaderBlock {border-bottom:1px solid #C55B28;}
 .dvnHmpgColumnStudies .dvnHmpgColumnHeaderBlock {border-bottom:1px solid #526F76;}
+.dvnHmpgColumnDataverses .dvnHmpgColumnHeaderBlock .dvn_totalsValue {padding:0 4px; background:#C55B28; color:#FFF; font-size:1em !important;}
+.dvnHmpgColumnStudies .dvnHmpgColumnHeaderBlock .dvn_totalsValue {padding:0 4px; background:#526F76; color:#FFF; font-size:1em !important;}
 .dvnHmpgColumnHeader {float:left; margin:0; padding:6px 0; color:#526F76;}
 .dvnHmpgColumnDataverses .dvnHmpgColumnHeader {color:#C55B28;}
 .dvnHmpgColumnStudies .dvnHmpgColumnHeader {color:#526F76;}
-.dvnHmpgColumnHeaderViewAll {float:left; margin-left:2em; padding:6px 0;}
+.dvnHmpgColumnHeaderViewAll {margin:0 2em; padding:6px 0;}
 
 .dvnHmpgColumnWidget {margin-top:1em;}
 .dvnHmpgColumnDataverses .dvnHmpgColumnWidget {border-bottom: 1px solid #C55B28;}

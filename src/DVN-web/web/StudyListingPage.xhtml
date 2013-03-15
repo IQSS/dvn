@@ -221,7 +221,7 @@
                   </table>
                 </div>
                 <div style="overflow:hidden;">
-                <!-- Comment out static facet link section <div jsfc="ice:panelGroup" styleClass="dvnStudyFacetBlock" rendered="#{(StudyListingPage.renderSearchResultsFilter)}">
+                <div jsfc="ice:panelGroup" styleClass="dvnStudyFacetBlock" rendered="#{(StudyListingPage.renderSearchResultsFilter)}">
                     <style type="text/css">
                     .dvnStudyFacetBlock {width:30%; float:right; text-align:left;}
                     .dvnStudyListBlockSearch {width:70%; border-right:1px solid #C55B28;}
@@ -234,18 +234,30 @@
                     </style>
                     <div class="dvnStudyFacetBlockTitle">Refine Results</div>
                     <div class="dvnStudyFacetCategoryBlock">
-                        <div class="dvnStudyFacetCategoryTitle">Result Category 1</div>
                         <ul>
-                            <li><a href="#">Result Link 1</a> <span class="dvnStudyFacetResultNumber">(88)</span></li>
+                            <ice:dataTable value="#{StudyListingPage.facets}" var="facetUI">
+                                <ice:column>
+                                    <div class="dvnStudyFacetCategoryTitle"><ice:outputText value="#{facetUI.name}"/></div>
+                                    <ul>
+                                        <li><a href="#">Result Link 1</a> <span class="dvnStudyFacetResultNumber">(8)</span></li>
+                                        <li><a href="#">Result Link 2</a> <span class="dvnStudyFacetResultNumber">(4)</span></li>
+                                        <li><a href="#">Result Link 3</a> <span class="dvnStudyFacetResultNumber">(2)</span></li>
+                                        <!--
+                                        <ui:repeat value="#{item.xtraItems}" var="xtraItems">
+                                            <li><ice:outputText value="#{xtraItems.name}"/></li>
+                                        </ui:repeat>
+                                        -->
+                                        <!--
+                                        <ui:repeat value="#{facetUI.results}" var="results">
+                                            <li><ice:outputText value="#{facetUI.result}"/></li>
+                                        </ui:repeat>
+                                        -->
+                                    </ul>
+                                </ice:column>
+                            </ice:dataTable>
                         </ul>
                     </div>
-                    <div class="dvnStudyFacetCategoryBlock">
-                        <div class="dvnStudyFacetCategoryTitle">Result Category 2</div>
-                        <ul>
-                            <li><a href="#">Result Link 2</a> <span class="dvnStudyFacetResultNumber">(88)</span></li>
-                        </ul>
-                    </div>
-                </div> Comment out static facet link section -->
+                </div>
                 <div jsfc="ice:panelGroup" styleClass="#{(StudyListingPage.renderSearchResultsFilter) ? 'dvnStudyListBlockSearch' : 'dvnStudyListBlockHomePage'}">
                     <ice:dataTable rows="10" headerClass="list-header" id="studyListTable1" width="100%"
                                 binding="#{StudyListingPage.studyTable}"

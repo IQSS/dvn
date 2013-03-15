@@ -167,7 +167,7 @@ public class BasicSearchFragment extends VDCBaseBean implements java.io.Serializ
         Map variableMap = new HashMap();
         Map versionMap = new HashMap();
         List displayVersionList = new ArrayList();
-        ResultsWithFacets resultsWithFacets;
+        ResultsWithFacets resultsWithFacets = null;
 
         if (searchField.equals("variable")) {
             List variables = indexService.searchVariables(getVDCRequestBean().getCurrentVDC(), st);
@@ -229,6 +229,7 @@ public class BasicSearchFragment extends VDCBaseBean implements java.io.Serializ
         sl.setVdcId(getVDCRequestBean().getCurrentVDCId());
         sl.setStudyIds(studies);
         sl.setSearchTerms(searchTerms);
+        sl.setResultsWithFacets(resultsWithFacets);
         sl.setVariableMap(variableMap);
         sl.setVersionMap(versionMap);
         sl.setDisplayStudyVersionsList(displayVersionList);

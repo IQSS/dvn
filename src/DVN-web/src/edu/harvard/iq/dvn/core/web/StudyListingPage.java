@@ -48,6 +48,7 @@ import edu.harvard.iq.dvn.core.web.common.LoginBean;
 import edu.harvard.iq.dvn.core.web.common.VDCBaseBean;
 import edu.harvard.iq.dvn.core.web.component.VDCCollectionTree;
 import edu.harvard.iq.dvn.core.web.site.VDCUI;
+import edu.harvard.iq.dvn.core.web.study.FacetUI;
 import edu.harvard.iq.dvn.core.web.study.StudyUI;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -58,6 +59,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.MissingResourceException;
 import java.util.ResourceBundle;
+import java.util.logging.Logger;
 import javax.ejb.EJB;
 import javax.faces.bean.ViewScoped;
 import javax.faces.component.UIData;
@@ -65,6 +67,9 @@ import javax.faces.event.ValueChangeEvent;
 import javax.inject.Named;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
+import org.apache.lucene.facet.search.results.FacetResult;
+import org.apache.lucene.facet.search.results.FacetResultNode;
+import org.apache.lucene.facet.taxonomy.CategoryPath;
 
 /**
  *
@@ -84,6 +89,8 @@ public class StudyListingPage extends VDCBaseBean implements java.io.Serializabl
     IndexServiceLocal indexService;
     @EJB
     VariableServiceLocal varService;
+
+    private static final Logger logger = Logger.getLogger("edu.harvard.iq.dvn.core.web.StudyListingPage");
 
     /** Creates a new instance of StudyListingPageBean */
     public StudyListingPage() {
@@ -141,6 +148,7 @@ public class StudyListingPage extends VDCBaseBean implements java.io.Serializabl
     }
 
     public Collection getStudies() {
+//        logger.info(("In getStudies() in StudyListingPage"));
         List studyUIList = new ArrayList();
         VDCUser user = getVDCSessionBean().getUser();
         UserGroup usergroup = getVDCSessionBean().getIpUserGroup();
@@ -170,6 +178,30 @@ public class StudyListingPage extends VDCBaseBean implements java.io.Serializabl
         }
 
         return studyUIList;
+    }
+
+    public Collection getFacets() {
+        List facetUIList = new ArrayList();
+        List<FacetResult> facetResults = studyListing.getResultsWithFacets().getResultList();
+        for (int i = 0; i < facetResults.size(); i++) {
+            FacetResult facetResult = facetResults.get(i);
+            FacetUI facetUI = new FacetUI();
+            String category = facetResult.getFacetResultNode().getLabel().toString();
+//            logger.info("Added facetUi with category: " + category);
+            facetUI.setName(category);
+            for (FacetResultNode n : facetResult.getFacetResultNode().getSubResults()) {
+                CategoryPath label = n.getLabel();
+                String last = n.getLabel().lastComponent().toString();
+                double hits = n.getValue();
+//                logger.info("  - expect " + hits + " hits from a faceted search for \"" + label + "\"");
+                if (last != null) {
+                    /** @todo do something with this */
+                    facetUI.addResults(label.toString());
+                }
+            }
+            facetUIList.add(facetUI);
+        }
+        return facetUIList;
     }
 
     /**
@@ -267,6 +299,7 @@ public class StudyListingPage extends VDCBaseBean implements java.io.Serializabl
      * Searching on file-level metadata is not yet implemented here. 
      */
     public String search_action() {
+//        logger.info("Entered seach_action() on StudyListingPage.java");
         searchField = (searchField == null) ? "any" : searchField; // default searchField, in case no dropdown
 
         List searchTerms = new ArrayList();
@@ -423,6 +456,7 @@ public class StudyListingPage extends VDCBaseBean implements java.io.Serializabl
     }
 
     private void initStudies() {
+//        logger.info("In initStudies() in StudyListingPage");
         if (studyListing.getStudyIds() != null) {
             VDC vdc = getVDCRequestBean().getCurrentVDC();
             
@@ -601,6 +635,7 @@ public class StudyListingPage extends VDCBaseBean implements java.io.Serializabl
     }
 
     private void initNewStudyListing() {
+//        logger.info("In initNewStudyListing in StudyListingPage");
         StudyListing sl = null;
         int mode = -1;
         try {

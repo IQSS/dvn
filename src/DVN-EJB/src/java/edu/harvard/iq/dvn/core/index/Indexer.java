@@ -997,11 +997,6 @@ public class Indexer implements java.io.Serializable  {
      * The way this is currently implemented, we make a studyFieldService lookup
      * on the field and the file format names (that are encoded in the index
      * name). 
-     * TODO: 
-     * We may need a better, non-potentially ambigous way of storing and 
-     * accessing this information. Perhaps this should be a flag in our 
-     * SearchTerm object. (?) 
-     *  -- L.A. 
      */
     
     boolean isFileMetadataField (String fieldName) {

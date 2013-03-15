@@ -35,29 +35,98 @@ import nom.tam.fits.UndefinedHDU;
 public class FITSFileIngester extends FileIngester {
     private static Logger dbgLog = Logger.getLogger(FITSFileIngester.class.getPackage().getName());
     
-    private static final Map<String, Integer> recognizedFitsMetadataKeys = new HashMap<String, Integer>();
+    private Map<String, Integer> recognizedFitsMetadataKeys = null;
     // the integer value in the map is reserved for the type of the metadata 
-    // keyword; it's not being used as of now. 
+    // keyword and configuration options.  
     
-    private static final Map<String, Integer> recognizedFitsColumnKeys = new HashMap<String, Integer>();
+    private Map<String, Integer> recognizedFitsColumnKeys = null;
     // these are the column-level metadata keys; these are defined as XXXXn in 
     // the "FITS Standard, Appendix C" document; for example, "TTYPEn", meaning 
     // that the Header section of the table HDU will contain the keys TTYPE1, 
     // TTYPE2, ... TTYPEN - where N is the number of columns. 
     
-    private static final Map<String, String> indexableFitsMetaKeys = new HashMap<String, String>(); 
+    private Map<String, String> indexableFitsMetaKeys = null; 
     // This map defines the names of the keys under which they will be indexed
     // and made searchable in the application
     
+    private static final Map<String, Integer> defaultRecognizedFitsMetadataKeys = new HashMap<String, Integer>();
+    // the integer value in the map is reserved for the type of the metadata 
+    // keyword; it's not being used as of now. 
     
-    // Initialize the field configuration. 
-    // We'll attempt to read the configuration file in the domain config 
-    // directory. If not available, we'll use some hard-coded default values. 
+    private static final Map<String, Integer> defaultRecognizedFitsColumnKeys = new HashMap<String, Integer>();
+    // these are the column-level metadata keys; these are defined as XXXXn in 
+    // the "FITS Standard, Appendix C" document; for example, "TTYPEn", meaning 
+    // that the Header section of the table HDU will contain the keys TTYPE1, 
+    // TTYPE2, ... TTYPEN - where N is the number of columns. 
+    
+    private static final Map<String, String> defaultIndexableFitsMetaKeys = new HashMap<String, String>(); 
+    // This map defines the names of the keys under which they will be indexed
+    // and made searchable in the application
+    
     
     private static final String CONFIG_TOKEN_META_KEY = "RECOGNIZED_META_KEY";
     private static final String CONFIG_TOKEN_COLUMN_KEY = "RECOGNIZED_COLUMN_KEY"; 
     
     static {
+        
+            dbgLog.fine("FITS plugin: loading the default configuration values;");
+            
+            defaultRecognizedFitsMetadataKeys.put("DATE", 0);
+            defaultRecognizedFitsMetadataKeys.put("DATE-OBS", 0);
+            defaultRecognizedFitsMetadataKeys.put("ORIGIN", 0);
+            defaultRecognizedFitsMetadataKeys.put("AUTHOR", 0);
+            defaultRecognizedFitsMetadataKeys.put("REFERENC", 0);
+            defaultRecognizedFitsMetadataKeys.put("COMMENT", 0);
+            defaultRecognizedFitsMetadataKeys.put("HISTORY", 0);
+            defaultRecognizedFitsMetadataKeys.put("OBSERVER", 0);
+            defaultRecognizedFitsMetadataKeys.put("TELESCOP", 0);
+            defaultRecognizedFitsMetadataKeys.put("INSTRUME", 0);
+            defaultRecognizedFitsMetadataKeys.put("EQUINOX", 0);
+            defaultRecognizedFitsMetadataKeys.put("EXTNAME", 0);
+
+            defaultRecognizedFitsColumnKeys.put("TTYPE", 1);
+            defaultRecognizedFitsColumnKeys.put("TCOMM", 0);
+            defaultRecognizedFitsColumnKeys.put("TUCD", 0);
+
+            defaultIndexableFitsMetaKeys.put("DATE", "Date");
+            defaultIndexableFitsMetaKeys.put("DATE-OBS", "Observation-Date");
+            defaultIndexableFitsMetaKeys.put("ORIGIN", "Origin");
+            defaultIndexableFitsMetaKeys.put("AUTHOR", "Author");
+            defaultIndexableFitsMetaKeys.put("REFERENC", "Reference");
+            defaultIndexableFitsMetaKeys.put("COMMENT", "Comment");
+            defaultIndexableFitsMetaKeys.put("HISTORY", "History");
+            defaultIndexableFitsMetaKeys.put("OBSERVER", "Observer");
+            defaultIndexableFitsMetaKeys.put("TELESCOP", "Telescope");
+            defaultIndexableFitsMetaKeys.put("INSTRUME", "Instrument");
+            defaultIndexableFitsMetaKeys.put("EQUINOX", "Equinox");
+            defaultIndexableFitsMetaKeys.put("EXTNAME", "Extension-Name");
+            defaultIndexableFitsMetaKeys.put("TTYPE", "Column-Label");
+            defaultIndexableFitsMetaKeys.put("TCOMM", "Column-Comment");
+            defaultIndexableFitsMetaKeys.put("TUCD", "Column-UCD");
+      
+    }
+    
+    private static final String METADATA_SUMMARY = "FILE_METADATA_SUMMARY_INFO";
+    private static final String OPTION_PREFIX_SEARCHABLE = "PREFIXSEARCH";
+    /**
+     * Constructs a <code>FITSFileIngester</code> instance with a 
+     * <code>FITSFileIngesterSpi</code> object.
+     * 
+     * @param originator a <code>FITSFileIngesterSpi</code> object.
+     */
+    public FITSFileIngester(FileIngesterSpi originator) {
+        super(originator);
+    }
+    
+    public FITSFileIngester() {
+        super(null); 
+    }
+    
+    private void readConfig () {
+        // Initialize the field configuration. 
+        // We'll attempt to read the configuration file in the domain config 
+        // directory. If not available, we'll use some hard-coded default values. 
+        
         Properties p = System.getProperties();
         String domainRoot = p.getProperty("com.sun.aas.instanceRoot");
         dbgLog.fine("PROPERTY: com.sun.aas.instanceRoot="+domainRoot);
@@ -73,6 +142,11 @@ public class FITSFileIngester extends FileIngester {
             dbgLog.fine("FITS plugin: checking for the config file: "+configFileName);
             
             if (configFile.exists()) {
+                recognizedFitsMetadataKeys = new HashMap<String, Integer>();
+                recognizedFitsColumnKeys = new HashMap<String, Integer>();
+                indexableFitsMetaKeys = new HashMap<String, String>();
+                
+                
 
                 String line;
 
@@ -96,7 +170,7 @@ public class FITSFileIngester extends FileIngester {
                                         && !(configTokens[1].equals(""))) {
                                     dbgLog.fine("FITS plugin: found metadata key config entry for " +
                                             configTokens[1]);
-                                    recognizedFitsMetadataKeys.put(configTokens[1], 1);
+                                    recognizedFitsMetadataKeys.put(configTokens[1], 0);
                                     if (configTokens[2] != null
                                             && !(configTokens[2].equals(""))) {
                                         indexableFitsMetaKeys.put(configTokens[1], configTokens[2]);
@@ -104,6 +178,14 @@ public class FITSFileIngester extends FileIngester {
                                         dbgLog.fine("FITS plugin: (warning) no index name specified for "+configTokens[1]);
                                         indexableFitsMetaKeys.put(configTokens[1], configTokens[1]);
                                     }
+                                    // Extra field options:
+                                    // (the only option currently supported is prefix-steam searching
+                                    // on the field)
+                                    if (configTokens[3] != null) {
+                                        if (configTokens[3].equalsIgnoreCase(OPTION_PREFIX_SEARCHABLE)) {
+                                            recognizedFitsMetadataKeys.put(configTokens[1], 1);
+                                        }
+                                    } 
                                     nConfiguredKeys++;
                                 } else {
                                     dbgLog.warning("FITS plugin: empty (or malformed) meta key entry in the config file.");
@@ -113,7 +195,7 @@ public class FITSFileIngester extends FileIngester {
                                         && !(configTokens[1].equals(""))) {
                                     dbgLog.fine("FITS plugin: found column key config entry for " +
                                             configTokens[1]);
-                                    recognizedFitsColumnKeys.put(configTokens[1], 1);
+                                    recognizedFitsColumnKeys.put(configTokens[1], 0);
                                     if (configTokens[2] != null
                                             && !(configTokens[2].equals(""))) {
                                         indexableFitsMetaKeys.put(configTokens[1], configTokens[2]);
@@ -121,6 +203,12 @@ public class FITSFileIngester extends FileIngester {
                                         dbgLog.fine("FITS plugin: (warning) no index name specified for "+configTokens[1]);
                                         indexableFitsMetaKeys.put(configTokens[1], configTokens[1]);
                                     }
+                                    // Extra field options:
+                                    if (configTokens[3] != null) {
+                                        if (configTokens[3].equalsIgnoreCase(OPTION_PREFIX_SEARCHABLE)) {
+                                            recognizedFitsColumnKeys.put(configTokens[1], 1);
+                                        }
+                                    } 
                                     nConfiguredKeys++;
                                 } else {
                                     dbgLog.warning("FITS plugin: empty (or malformed) column key entry in the config file.");
@@ -147,10 +235,6 @@ public class FITSFileIngester extends FileIngester {
                     // with a mix of that hard-coded config, and whatever
                     // partial configuration we may have read. So we 
                     // need to clear the configuration maps now:
- 
-                    recognizedFitsMetadataKeys.clear();
-                    recognizedFitsColumnKeys.clear();
-                    indexableFitsMetaKeys.clear();
                     
                     nConfiguredKeys=0;
                 } finally {
@@ -172,58 +256,13 @@ public class FITSFileIngester extends FileIngester {
         // configuration we'll be using: 
         
         if (nConfiguredKeys == 0) {
-            dbgLog.fine("FITS plugin: loading the default configuration values;");
+            recognizedFitsMetadataKeys = defaultRecognizedFitsMetadataKeys;
+            recognizedFitsColumnKeys = defaultRecognizedFitsColumnKeys;
+            indexableFitsMetaKeys = defaultIndexableFitsMetaKeys;
             
-            recognizedFitsMetadataKeys.put("DATE", 1);
-            recognizedFitsMetadataKeys.put("DATE-OBS", 1);
-            recognizedFitsMetadataKeys.put("ORIGIN", 1);
-            recognizedFitsMetadataKeys.put("AUTHOR", 1);
-            recognizedFitsMetadataKeys.put("REFERENC", 1);
-            recognizedFitsMetadataKeys.put("COMMENT", 1);
-            recognizedFitsMetadataKeys.put("HISTORY", 1);
-            recognizedFitsMetadataKeys.put("OBSERVER", 1);
-            recognizedFitsMetadataKeys.put("TELESCOP", 1);
-            recognizedFitsMetadataKeys.put("INSTRUME", 1);
-            recognizedFitsMetadataKeys.put("EQUINOX", 1);
-            recognizedFitsMetadataKeys.put("EXTNAME", 1);
-
-            recognizedFitsColumnKeys.put("TTYPE", 1);
-            recognizedFitsColumnKeys.put("TCOMM", 1);
-            recognizedFitsColumnKeys.put("TUCD", 1);
-
-            indexableFitsMetaKeys.put("DATE", "Date");
-            indexableFitsMetaKeys.put("DATE-OBS", "Observation-Date");
-            indexableFitsMetaKeys.put("ORIGIN", "Origin");
-            indexableFitsMetaKeys.put("AUTHOR", "Author");
-            indexableFitsMetaKeys.put("REFERENC", "Reference");
-            indexableFitsMetaKeys.put("COMMENT", "Comment");
-            indexableFitsMetaKeys.put("HISTORY", "History");
-            indexableFitsMetaKeys.put("OBSERVER", "Observer");
-            indexableFitsMetaKeys.put("TELESCOP", "Telescope");
-            indexableFitsMetaKeys.put("INSTRUME", "Instrument");
-            indexableFitsMetaKeys.put("EQUINOX", "Equinox");
-            indexableFitsMetaKeys.put("EXTNAME", "Extension-Name");
-            indexableFitsMetaKeys.put("TTYPE", "Column-Label");
-            indexableFitsMetaKeys.put("TCOMM", "Column-Comment");
-            indexableFitsMetaKeys.put("TUCD", "Column-UCD");
         }
     }
     
-    private static final String METADATA_SUMMARY = "FILE_METADATA_SUMMARY_INFO";
-    /**
-     * Constructs a <code>FITSFileIngester</code> instance with a 
-     * <code>FITSFileIngesterSpi</code> object.
-     * 
-     * @param originator a <code>FITSFileIngesterSpi</code> object.
-     */
-    public FITSFileIngester(FileIngesterSpi originator) {
-        super(originator);
-    }
-    
-    public FITSFileIngester() {
-        super(null); 
-    }
-           
     public Map<String, Set<String>> ingest (BufferedInputStream stream) throws IOException{
         dbgLog.fine("Attempting to read FITS file;");
         
@@ -239,7 +278,9 @@ public class FITSFileIngester extends FileIngester {
         if (fitsFile == null) {
             throw new IOException ("Failed to open FITS stream; null Fits object");
         }
-              
+        
+        readConfig(); 
+        
         int n = fitsFile.getNumberOfHDUs(); 
         
         dbgLog.fine("Total number of HDUs: "+n);

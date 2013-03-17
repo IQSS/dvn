@@ -39,12 +39,15 @@
                                 <td valign="bottom">
                                     <div jsfc="ice:panelGroup" styleClass="dvnStudyListCollectionName">
                                         <ice:outputText value="#{bundlePageInfo.browseDvsTitle}"/>
+                                        
+                                        <ice:outputText value=" #{BrowseDataversesPage.groupName}"/>
+                                        
                                     </div>
                                 </td>
                                 <td>
                                     <div jsfc="ice:panelGroup" styleClass="dvnManageTableControls" rendered="#{VDCRequest.currentVDC == null}">
-                                        <div jsfc="ice:panelGroup" styleClass="dvnManageTableCreateLink" rendered="#{VDCRequest.vdcNetwork.allowCreateRequest and !VDCRequest.readOnlyDatabase}">
-                                            <ice:outputLink value="/dvn/faces/site/AddSitePage.xhtml" rendered="#{VDCRequest.vdcNetwork.allowCreateRequest and !VDCRequest.readOnlyDatabase}">
+                                        <div jsfc="ice:panelGroup" styleClass="dvnCreateActionBox dvnCreateDataverse" rendered="#{VDCRequest.vdcNetwork.allowCreateRequest and !VDCRequest.readOnlyDatabase}">
+                                            <ice:outputLink value="/dvn/faces/site/AddSitePage.xhtml">
                                                 <ice:outputText value="Create Dataverse"/>
                                             </ice:outputLink>
                                         </div>
@@ -121,23 +124,55 @@
                                 .dvnStudyFacetBlock {width:30%; float:right; text-align:left;}
                                 .dvnStudyListBlockSearch {width:70%; border-right:1px solid #C55B28;}
                                 
+                                .dvn_theMenuContainer ul, .dvn_theMenuContainer li {list-style:none;}
+                                
                                 </style>
                                 
-                                
+                                <script type="text/javascript">
+                                      // <![CDATA[
+                                      
+                                      // javascript for the accordion
+                                        jQuery(document).ready(function(){
+                                            jQuery('.xtraMenu').accordion({active: 'h4.selected', header: 'h4.head', autoheight: false});
+                                        });
+                                      
+                                      function highlight_active_sidebar_links(obj) {
+                                          jQuery("a.lastNodeActive").each(function(){
+                                            jQuery(this).removeClass("lastNodeActive");
+                                          });
+                                          obj.className = "lastNodeActive";
+                                       }
+                                       function deselect_active_children(obj) {
+                                           if (arguments.length > 1) {
+                                               var parentNode = obj.parentNode.parentNode.parentNode;
+                                               var nodes = parentNode.getElementsByTagName("H4");
+                                               for (var i = 0; i < nodes.length; i++) {
+                                                   var nodeObj = nodes.item(i);
+                                                   if (nodeObj.className.indexOf('selected') != -1) {
+                                                       jQuery(nodeObj).removeClass("selected");
+                                                   }
+                                               }
+                                           }
+                                           jQuery("a.lastNodeActive").each(function(){
+                                               jQuery(this).removeClass("lastNodeActive");
+                                           });
+                                       }
+                                      // ]]>
+                                    </script>
                                 
                                 <div jsfc="ice:panelGroup" styleClass="dvn_theMenuContainer">
-                                    <div class="theMenuContainer">
+                                    <div class="theMenuContainer" style="padding:0 8px;">
                                         <!-- START ACCORDION -->
-                                        <ul id="navigation" class="basic">
+                                        <ul style="padding:0;" id="navigation" class="basic">
                                             <li>
-                                                <ul class="xtraMenu basic">
+                                                <ul style="padding:0;" class="xtraMenu basic">
                                                     <!-- All Dataverses -->
                                                     <li>
                                                         <h4 class="dvnHmpgAllDataverses">
                                                             <ice:commandLink onclick="setHiddenValuesGroupId(-1);"
                                                                             partialSubmit="true"
                                                                             styleClass="head">
-                                                                <ice:outputText value="Show Released Dataverses"/>
+                                                                <ice:outputText value="Show All Released Dataverses"/>
                                                                 <f:attribute name="groupId" value="-1"/>
                                                             </ice:commandLink>
                                                         </h4>
@@ -149,15 +184,15 @@
                                                 var="menuItems">
                                             <ui:fragment rendered="#{!empty(menuItems.childItems)}">
                                                 <h3 class="head">
-                                                    <ice:outputText value="Browse Dataverses By #{menuItems.name}"/>
+                                                    <ice:outputText value="#{menuItems.name}"/>
                                                 </h3>
-                                                <ul class="head-top">
+                                                <ul class="head-top" style="border:0;">
                                                 <ui:repeat rendered="#{menuItems != null}"
                                                         value="#{menuItems.childItems}"
                                                         var="item">
                                                     <!-- HAS SUBNODE DESCENDANTS -->
                                                     <ui:fragment rendered="#{!empty(item.xtraItems)}">
-                                                        <li id="xtraMenu#{item.id}">
+                                                        <li style="width:100%;" id="xtraMenu#{item.id}">
                                                             <h4 class="head">
                                                                <ice:commandLink onclick="setHiddenValuesGroupId(#{item.id});"
                                                                                             partialSubmit="true"
@@ -165,6 +200,7 @@
                                                                                 <ice:outputText value="#{item.name}"/>
                                                                                 <f:attribute name="groupId" value="#{item.id}"/>
                                                                             </ice:commandLink>
+                                                                            <ice:outputText value=" (#{item.numberOfDataverses})" styleClass="dvnHmpgClassificationCount"/>
                                                             </h4>
                                                             <ui:fragment rendered="#{item.xtraItems != null and !empty(item.xtraItems)}">
                                                                 <ul>
@@ -185,7 +221,7 @@
                                                     <!-- END HAS SUBNODE DESCENDANTS -->
                                                     <!-- HAS NO SUBNODE DESCENDANTS -->
                                                     <ui:fragment rendered="#{empty(item.xtraItems)}">
-                                                        <li>
+                                                        <li style="width:100%;">
                                                             <ice:commandLink styleClass="lastNode" onclick="setHiddenValuesGroupId(#{item.id});">
                                                                 <ice:outputText value="#{item.name}"/>
                                                             </ice:commandLink>
@@ -207,31 +243,7 @@
                                     </div>
                                 </div>
 
-                                <script type="text/javascript">
-                                // <![CDATA[
-                                    function highlight_active_sidebar_links(obj) {
-                                        jQuery("a.lastNodeActive").each(function(){
-                                            jQuery(this).removeClass("lastNodeActive");
-                                        });
-                                        obj.className = "lastNodeActive";
-                                    }
-                                    function deselect_active_children(obj) {
-                                        if (arguments.length > 1) {
-                                            var parentNode = obj.parentNode.parentNode.parentNode;
-                                            var nodes = parentNode.getElementsByTagName("H4");
-                                            for (var i = 0; i < nodes.length; i++) {
-                                                var nodeObj = nodes.item(i);
-                                                if (nodeObj.className.indexOf('selected') != -1) {
-                                                    jQuery(nodeObj).removeClass("selected");
-                                                }
-                                            }
-                                        }
-                                        jQuery("a.lastNodeActive").each(function(){
-                                            jQuery(this).removeClass("lastNodeActive");
-                                        });
-                                    }
-                                // ]]>
-                                </script>
+                                
                                 <!-- END THE MENU -->
                                 
                             </div>

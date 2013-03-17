@@ -27,7 +27,6 @@ import com.icesoft.faces.component.ext.HtmlCommandLink;
 import com.icesoft.faces.component.ext.HtmlInputHidden;
 import com.icesoft.faces.component.datapaginator.DataPaginator;
 import com.icesoft.faces.component.ext.HtmlInputText;
-import edu.harvard.iq.dvn.core.vdc.VDC;
 import edu.harvard.iq.dvn.core.vdc.VDCGroup;
 import edu.harvard.iq.dvn.core.vdc.VDCGroupServiceLocal;
 import edu.harvard.iq.dvn.core.vdc.VDCServiceLocal;
@@ -40,9 +39,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import javax.ejb.EJB;
-import javax.faces.application.FacesMessage;
 import javax.faces.bean.ViewScoped;
-import javax.faces.context.FacesContext;
 import javax.faces.event.ValueChangeEvent;
 import javax.inject.Named;
 
@@ -63,6 +60,7 @@ public class BrowseDataversesPage  extends VDCBaseBean implements Serializable {
     private Long vdcUIListSize;
     private Long cid;
     private Long groupId = new Long("-1");
+    private String groupName;
     private HtmlCommandLink linkDelete = new HtmlCommandLink();
     private StatusMessage msg;
     private String defaultVdcPath;
@@ -130,6 +128,8 @@ public class BrowseDataversesPage  extends VDCBaseBean implements Serializable {
         }
     }
     
+    private VDCGroup group;
+    
     private void populateVDCUIList() {
         if (firstRun){
            filterTerm = initialFilter; 
@@ -154,7 +154,17 @@ public class BrowseDataversesPage  extends VDCBaseBean implements Serializable {
             vdcUIListSize = new Long(String.valueOf(vdcUIList.getVdcUIList().size()));
         } else {
             vdcUIListSize = new Long(String.valueOf(0));
-        }      
+        }     
+        
+        if (groupId == null || groupId.equals(new Long("-1")) ) {
+            group = null;
+            setGroupName("Released Dataverses");
+        } else {
+            group = vdcGroupService.findById(groupId);
+            setGroupName(group.getName());
+        }
+        vdcUIList.getVdcUIList();
+        vdcUIListSize = new Long(String.valueOf(vdcUIList.getVdcUIList().size()));
     }
     
        protected void initAccordionMenu() {
@@ -231,6 +241,14 @@ public class BrowseDataversesPage  extends VDCBaseBean implements Serializable {
     
     public Long getGroupId(){
         return groupId;       
+    }
+    
+    public String getGroupName() {
+        return groupName;
+    }
+
+    public void setGroupName(String groupName) {
+        this.groupName = groupName;
     }
        
     public String getInitialSort() {

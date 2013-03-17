@@ -79,7 +79,9 @@
                                 <ice:panelGrid columns="2" columnClasses="vdcStudyFilesDownloadAllSelect,vdcStudyFilesDownloadCount" width="100%" styleClass="vdcStudyFilesDownloadAll">
                                     <ice:column rendered="#{!VDCRequest.readOnlyDatabase}">
                                         <ice:selectBooleanCheckbox id="studyCheckBox" styleClass="studyCheckBox" onclick="toggleCheckBoxes(this)" disabled="#{!studyPage.studyUI.anyFileUnrestricted}"/> <ice:outputText value=" Select all files"/>
-                                        <input type="button" id="downloadAllButton" class="studyDownloadAllButton" onclick="downloadSelectedFiles();" rendered="#{!VDCRequest.readOnlyDatabase}" value="Download Selected Files" disabled="disabled"/>
+                                        <h:commandButton  id="downloadAllButton" class="studyDownloadAllButton"  rendered="#{!VDCRequest.readOnlyDatabase}" value="Download Selected Files" disabled="true">
+                                            <f:param name="isDownload" value="true" />
+                                        </h:commandButton>                                    
                                     </ice:column>
                                     <ice:column>
                                         <ice:outputText styleClass="dvn_totalsLabel" value="Number of Files: "/> 

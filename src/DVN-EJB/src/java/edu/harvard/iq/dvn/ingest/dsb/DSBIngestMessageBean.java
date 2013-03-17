@@ -121,11 +121,7 @@ public class DSBIngestMessageBean implements MessageListener {
             if (!successfulFiles.isEmpty()) {
                 studyFileService.addIngestedFiles(ingestMessage.getStudyId(), ingestMessage.getVersionNote(), successfulFiles, ingestMessage.getIngestUserId());
             }
-            
-            
-            if ( ingestMessage.sendInfoMessage() || ( problemFiles.size() >= 0 && ingestMessage.sendErrorMessage() ) ) {
-                mailService.sendIngestCompletedNotification(ingestMessage, successfulFiles, problemFiles);
-            }
+                    
             
         } catch (JMSException ex) {
             ex.printStackTrace(); // error in getting object from message; can't send e-mail
@@ -144,6 +140,10 @@ public class DSBIngestMessageBean implements MessageListener {
             } catch (Exception ex) {
                 ex.printStackTrace(); // application was unable to remove the studyLock
             }
+            
+            if ( ingestMessage.sendInfoMessage() || ( problemFiles.size() >= 0 && ingestMessage.sendErrorMessage() ) ) {
+                    mailService.sendIngestCompletedNotification(ingestMessage, successfulFiles, problemFiles);
+            } 
         }
     }
     

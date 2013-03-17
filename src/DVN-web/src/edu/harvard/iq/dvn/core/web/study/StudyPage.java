@@ -47,7 +47,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.logging.Logger;
 import javax.ejb.EJB;
-import javax.faces.bean.ViewScoped;
 import javax.faces.component.html.HtmlPanelGrid;
 import javax.faces.context.FacesContext;
 import javax.faces.event.AbortProcessingException;
@@ -62,7 +61,8 @@ import  com.sun.enterprise.util.SystemPropertyConstants;
 import  com.sun.grizzly.config.dom.NetworkListener;
 import edu.harvard.iq.dvn.core.study.StudyComment;
 import edu.harvard.iq.dvn.core.study.StudyCommentService;
-import javax.print.attribute.Size2DSyntax;
+import javax.enterprise.context.Conversation;
+import javax.enterprise.context.ConversationScoped;
 import  org.glassfish.internal.api.Globals;
 import  org.glassfish.internal.api.ServerContext;
 import org.jvnet.hk2.component.Habitat;
@@ -71,7 +71,7 @@ import org.jvnet.hk2.component.Habitat;
  * @author Ellen Kraffmiller
  */
 @Named
-@ViewScoped
+@ConversationScoped
 public class StudyPage extends VDCBaseBean implements java.io.Serializable  {
     private static Logger dbgLog = Logger.getLogger(StudyPage.class.getCanonicalName());
     @EJB private StudyServiceLocal studyService;
@@ -79,6 +79,8 @@ public class StudyPage extends VDCBaseBean implements java.io.Serializable  {
     @EJB private StudyCommentService studyCommentService;
 
     @Inject private VersionNotesPopupBean versionNotesPopup;
+    
+    @Inject Conversation conversation;
     
     public StudyPage() {
     }
@@ -147,10 +149,23 @@ public class StudyPage extends VDCBaseBean implements java.io.Serializable  {
        super.preRenderView();
        // add javascript call on each partial submit to initialize the help tips for added fields
        JavascriptContext.addJavascriptCall(getFacesContext(),"initInlineHelpTip();");
+
+       HttpServletRequest request = (HttpServletRequest) FacesContext.getCurrentInstance().getExternalContext().getRequest();      
+       Map<String,String> params = FacesContext.getCurrentInstance().getExternalContext().getRequestParameterMap();
+
+       if (params.get("isDownload") != null) {
+          JavascriptContext.addJavascriptCall(getFacesContext(),"checkTermsOfUse();");
+       }
+       
+       if (request.getParameter("checkTermsOfUse") != null) {
+          JavascriptContext.addJavascriptCall(getFacesContext(),"doDownload();");
+       }
    }     
 
     public void init() {
         super.init();
+        
+        conversation.begin();
         //TODO: see if this can be removed and handled through regular tab handling
         HttpServletRequest request = (HttpServletRequest) FacesContext.getCurrentInstance().getExternalContext().getRequest();
         if (request.getHeader("referer") != null && ((String) request.getHeader("referer")).indexOf("CommentReview") != -1) {

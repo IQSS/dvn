@@ -590,7 +590,7 @@ public class StudyFileServiceBean implements StudyFileServiceLocal {
                 }
             }
                
-            // Finally, if the file was copies sucessfully, 
+            // Finally, if the file was copied sucessfully, 
             // attach file to study version and study
             
             if (newIngestedLocationFile != null && newIngestedLocationFile.exists()) {

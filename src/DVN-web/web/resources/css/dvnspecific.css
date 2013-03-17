@@ -51,6 +51,7 @@ div.dvnStudyTemplateTitleBlock div.dvnstudytitlefloat table.icePnlGrd td.icePnlG
 .dvnStudyTemplateTitleBlock .dvnstudyadminboxfloat{text-align:right}
 .dvnStudyTemplateDCMBlock{border-bottom:1px solid #DADEE0; padding-bottom:1em;}
 .dvnStudyTemplateDCMBlock table.icePnlGrd{padding:4px;background:#FAF4E0;}
+.dvnEditStudyShowAllFieldsBlock fieldset {margin-left:0; padding-left:0; padding-top:0;}
 div.icePnlPop#templateForm\:controlledVocabularyPopup{width:500px}
 .dvnControlledVocabularyValuesBlock span.iceOutTxt{display:block}
 .vdcEditStudyTable{border:0;margin:0}

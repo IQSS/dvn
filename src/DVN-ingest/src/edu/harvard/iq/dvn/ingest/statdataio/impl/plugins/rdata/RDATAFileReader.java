@@ -47,6 +47,7 @@ import edu.harvard.iq.dvn.ingest.statdataio.impl.plugins.util.*;
 import edu.harvard.iq.dvn.rserve.*;
 import edu.harvard.iq.dvn.unf.*;
 import edu.harvard.iq.dvn.unf.UNF5Util;
+import edu.harvard.iq.dvn.ingest.thedata.helpers.*;
 
 import org.apache.commons.lang.RandomStringUtils;
 import org.apache.commons.lang.ArrayUtils;
@@ -62,9 +63,17 @@ import org.apache.commons.lang.ArrayUtils;
  */
 public class RDATAFileReader extends StatDataFileReader {
   
-  /*
-   * Class Variables
-   */
+  public static final int FORMAT_INTEGER = 0;
+  public static final int FORMAT_NUMERIC = 1;
+  public static final int FORMAT_STRING = -1;
+  public static final int FORMAT_DATE = -2;
+  public static final int FORMAT_DATETIME = -3;
+  
+  private int [] mFormatTable = null;
+  
+  // Date-time things
+  public static final String[] TIME_ZONES;
+  public static final String[] FORMATS = { "other", "date", "date-time", "date-time-timezone" };
 
   // R-ingest recognition files
   private static final String[] FORMAT_NAMES = { "RDATA", "Rdata", "rdata" };
@@ -87,25 +96,27 @@ public class RDATAFileReader extends StatDataFileReader {
   private static String RSERVE_PASSWORD = System.getProperty("vdc.dsb.rserve.pwrd");
   private static int RSERVE_PORT;
   
-  public static String TEMP_DIR = System.getProperty("java.io.tmpdir");
-  public static String DSB_TEMP_DIR = System.getProperty("vdc.dsb.temp.dir");
-  public static String DVN_TEMP_DIR = null;
-  public static String WEB_TEMP_DIR = null;
+  public static final String TEMP_DIR = System.getProperty("java.io.tmpdir");
+  public static final String DSB_TEMP_DIR = System.getProperty("vdc.dsb.temp.dir");
+  public static final String DVN_TEMP_DIR = null;
+  public static final String WEB_TEMP_DIR = null;
 
   // DATE FORMATS
   private static SimpleDateFormat[] DATE_FORMATS = new SimpleDateFormat[] {
-    new SimpleDateFormat("yyyy-MM-dd"),
-    new SimpleDateFormat("yyyy-MM-dd z")
+    new SimpleDateFormat("yyyy-MM-dd")
   };
   
   // TIME FORMATS
   private static SimpleDateFormat[] TIME_FORMATS = new SimpleDateFormat[] {
-    new SimpleDateFormat("yyyy-mm-dd HH-mm-ss"),
-    new SimpleDateFormat("yyyy-mm-dd HH-mm-ss z"),
-    new SimpleDateFormat("yyyy-mm-dd hh-mm-ss a"),
-    new SimpleDateFormat("yyyy-mm-dd hh-mm-ss a z")
+    new SimpleDateFormat("yyyy-MM-dd HH:mm:ss"),
+    new SimpleDateFormat("yyyy-MM-dd HH:mm:ss z"),
+    new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS"),
+    new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS z")
   };
-
+  
+  private static final SimpleDateFormat R_DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd");
+  private static final SimpleDateFormat R_POSIX_FORMAT = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
+  
   // Logger
   private static final Logger LOG = Logger.getLogger(RDATAFileReader.class.getPackage().getName());
   
@@ -149,8 +160,88 @@ public class RDATAFileReader extends StatDataFileReader {
   NumberFormat doubleNumberFormatter = new DecimalFormat();
 
   private RRequestBuilder mRequestBuilder;
+  /*
+   * Initialize Static Variables
+   * This is primarily to construct the R-Script
+   */
+  static {
+    /* 
+     * Set date-time formats
+     */
+    TIME_FORMATS = new SimpleDateFormat[] {
+      new SimpleDateFormat("yyy")
+    };
+    DATE_FORMATS = new SimpleDateFormat[] {
+      new SimpleDateFormat("yyyy-mm-dd")
+    };
+    /*
+     * Copy timezones over
+     */
+    TIME_ZONES = TimeZone.getAvailableIDs();
+    /*
+     * Set defaults fallbacks for class properties
+     */
+    if (RSERVE_HOST == null)
+      RSERVE_HOST = "vdc-build.hmdc.harvard.edu";
 
+    if (RSERVE_USER == null)
+      RSERVE_USER = "rserve";
+
+    if (RSERVE_PASSWORD == null)
+      RSERVE_PASSWORD = "rserve";
+
+    if (System.getProperty("vdc.dsb.rserve.port") == null)
+      RSERVE_PORT = 6311;
+    else
+      RSERVE_PORT = Integer.parseInt(System.getProperty("vdc.dsb.rserve.port"));
+    /*
+     * Build the Rscripts to execute.
+     * Potentially this can be improved by keeping the script file as a separate
+     * entity in the source code.
+     */
+    StringBuilder scriptBuilder = new StringBuilder();
+
+    /*
+     * Create Rscript to compute UNF
+     */
     
+    // R Script to create temporary directories
+    RSCRIPT_CREATE_WORKSPACE = new StringBuilder("")
+            .append("options(digits.secs=3)\n")
+            .append("directories <- list()\n")
+            .append("directories$parent <- tempfile('DvnRWorkspace')\n")
+            .append("directories$web <- file.path(directories$parent, 'web')\n")
+            .append("directories$dvn <- file.path(directories$parent, 'dvn')\n")
+            .append("directories$dsb <- file.path(directories$parent, 'dsb')\n")
+            .append("created <- list()\n")
+            .append("for (key in names(directories)) {\n")
+            .append("  dir.name <- directories[[key]]\n")
+            .append("  if (dir.create(dir.name))\n")
+            .append("    created[[key]] <- dir.name\n")
+            .append("}\n")
+            .append("created")
+            .toString();
+    
+    RSCRIPT_GET_DATASET =
+      "available.data.frames <- ls()\n" +
+      "available.data.frames <- Filter(function (y) is.data.frame(get(y)), available.data.frames)\n" +
+      "data.set <- available.data.frames[[1]]\n" +
+      "data.set <- get(data.set)\n";
+    
+    RSCRIPT_GET_LABELS =
+      "available.data.frames <- ls()\n" +
+      "available.data.frames <- Filter(function (y) is.data.frame(get(y)), available.data.frames)\n" +
+      "data.set <- available.data.frames[[1]]\n" +
+      "data.set <- get(data.set)\n" +
+      "colnames(data.set)\n";
+    
+    RSCRIPT_DATASET_INFO_SCRIPT = 
+      "types <- c();" +
+      "for (col in colnames(data.set)) { " +
+      "  types <- c(types, class(data.set[, col])[1]);" +
+      "};" +
+      "list(varNames = colnames(data.set), caseQnty = nrow(data.set), dataTypes = types)";
+   }
   /**
    * Helper Object to Handle Creation and Destruction of R Workspace
    */
@@ -378,90 +469,6 @@ public class RDATAFileReader extends StatDataFileReader {
       return mDataFile.getAbsolutePath();
     }
   }
-  
-  /*
-   * Initialize Static Variables
-   * This is primarily to construct the R-Script
-   */
-  static {
-    
-    /*
-     * Set date-time formats
-     * 
-     */
-    TIME_FORMATS = new SimpleDateFormat[] {
-      new SimpleDateFormat("yyy")
-    };
-    
-    DATE_FORMATS = new SimpleDateFormat[] {
-      new SimpleDateFormat("yyyy-mm-dd")
-    };
-    
-    /*
-     * Set defaults fallbacks for class properties
-     */
-    
-    // RSERVE
-    if (RSERVE_HOST == null)
-      RSERVE_HOST = "vdc-build.hmdc.harvard.edu";
-
-    if (RSERVE_USER == null)
-      RSERVE_USER = "rserve";
-
-    if (RSERVE_PASSWORD == null)
-      RSERVE_PASSWORD = "rserve";
-
-    if (System.getProperty("vdc.dsb.rserve.port") == null)
-      RSERVE_PORT = 6311;
-    else
-      RSERVE_PORT = Integer.parseInt(System.getProperty("vdc.dsb.rserve.port"));
-    /*
-     * Build the Rscripts to execute.
-     * Potentially this can be improved by keeping the script file as a separate
-     * entity in the source code.
-     */
-    StringBuilder scriptBuilder = new StringBuilder();
-
-    /*
-     * Create Rscript to compute UNF
-     */
-    
-    // R Script to create temporary directories
-    RSCRIPT_CREATE_WORKSPACE = new StringBuilder("")
-            .append("directories <- list()\n")
-            .append("directories$parent <- tempfile('DvnRWorkspace')\n")
-            .append("directories$web <- file.path(directories$parent, 'web')\n")
-            .append("directories$dvn <- file.path(directories$parent, 'dvn')\n")
-            .append("directories$dsb <- file.path(directories$parent, 'dsb')\n")
-            .append("created <- list()\n")
-            .append("for (key in names(directories)) {\n")
-            .append("  dir.name <- directories[[key]]\n")
-            .append("  if (dir.create(dir.name))\n")
-            .append("    created[[key]] <- dir.name\n")
-            .append("}\n")
-            .append("created")
-            .toString();
-    
-    RSCRIPT_GET_DATASET =
-      "available.data.frames <- ls()\n" +
-      "available.data.frames <- Filter(function (y) is.data.frame(get(y)), available.data.frames)\n" +
-      "data.set <- available.data.frames[[1]]\n" +
-      "data.set <- get(data.set)\n";
-    
-    RSCRIPT_GET_LABELS =
-      "available.data.frames <- ls()\n" +
-      "available.data.frames <- Filter(function (y) is.data.frame(get(y)), available.data.frames)\n" +
-      "data.set <- available.data.frames[[1]]\n" +
-      "data.set <- get(data.set)\n" +
-      "colnames(data.set)\n";
-    
-    RSCRIPT_DATASET_INFO_SCRIPT = 
-      "types <- c();" +
-      "for (col in colnames(data.set)) { " +
-      "  types <- c(types, class(data.set[, col]));" +
-      "};" +
-      "list(varNames = colnames(data.set), caseQnty = nrow(data.set), dataTypes = types)";
-   }
   /**
    * Constructs a <code>RDATAFileReader</code> instance from its "Spi" Class
    * @param originator a <code>StatDataFileReaderSpi</code> object.
@@ -533,10 +540,8 @@ public class RDATAFileReader extends StatDataFileReader {
     int lineCount = csvFileReader.read(localBufferedReader, smd, tabFileWriter);
     
     
-    List<Integer> variableTypeList = getVariableTypeList(mDataTypes);
-    // smd.setVariableTypeMinimal(ArrayUtils.toPrimitive(variableTypeList.toArray(new Integer[variableTypeList.size()])));
-    
-    
+    // List<Integer> variableTypeList = getVariableTypeList(mDataTypes);
+        
     // File Data Table
     mCsvDataTable = readTabDataFile(tabFileDestination);
     
@@ -736,28 +741,6 @@ public class RDATAFileReader extends StatDataFileReader {
     return tabData;
   }
   /**
-   * Whether a String is a Date
-   * Returns TRUE or FALSE depending on whether 
-   * @param value
-   * @return 
-   */
-  private boolean isDateValue (String value) {
-    if (!isStringValue(value))
-      return false;
-    
-    return false;
-  }
-  /**
-   * 
-   * 
-   * @param value
-   * @return 
-   */
-  private boolean isStringValue (String value) {
-    return value.startsWith("\"") && value.endsWith("\"");
-  }
-  
-  /**
    * Get Variable Type List
    * 
    * Categorize the columns of a data-set according to data-type. Returns a list
@@ -777,6 +760,8 @@ public class RDATAFileReader extends StatDataFileReader {
    * @return 
    */
   private List<Integer> getVariableTypeList (String[] dataTypes) {
+    //
+    mFormatTable = new int [mVarQuantity];
     // Okay.
     List <Integer>
             minimalTypeList = new ArrayList<Integer>(),
@@ -791,10 +776,14 @@ public class RDATAFileReader extends StatDataFileReader {
     int k = 0;
     
     for (String type : dataTypes) {
+      // Log
+      LOG.info("type[" + k + "] = " + type);
+      
       // Convention is that integer is zero, right?
       if (type.equals("integer")) {
         minimalTypeList.add(0);
         normalTypeList.add(0);
+        mFormatTable[k] = FORMAT_INTEGER;
       }
 
       // Double-precision data-types
@@ -802,13 +791,31 @@ public class RDATAFileReader extends StatDataFileReader {
         minimalTypeList.add(1);
         normalTypeList.add(0);
         decimalVariableSet.add(k);
+        mFormatTable[k] = FORMAT_NUMERIC;
+      }
+      
+      // If date
+      else if (type.equals("Date")) {
+        // 
+        minimalTypeList.add(-1);
+        normalTypeList.add(1);
+        mFormatTable[k] = FORMAT_DATE;
+      }
+      
+      else if (type.equals("POSIXct") || type.equals("POSIXlt") || type.equals("POSIXt")) {
+        minimalTypeList.add(-1);
+        normalTypeList.add(1);
+        mFormatTable[k] = FORMAT_DATETIME;
       }
 
       // Everything else is a string
       else {
         minimalTypeList.add(-1);
         normalTypeList.add(1);
+        mFormatTable[k] = FORMAT_STRING;
       }
+      
+      LOG.info(String.format("formatTable[%d] = %d", k, mFormatTable[k]));
       
       k++;
     }
@@ -835,10 +842,10 @@ public class RDATAFileReader extends StatDataFileReader {
     String [] dateFormats = new String[mCaseQuantity];
     
     for (int k = 0; k < mCaseQuantity; k++) {
-      
+      dateFormats[k] = "";
     }
     
-    return null;
+    return dateFormats;
   }
  
   /**
@@ -922,7 +929,7 @@ public class RDATAFileReader extends StatDataFileReader {
             smd.getSummaryStatisticsTable().put(k, ArrayUtils.toObject(StatHelper.calculateSummaryStatisticsContDistSample(doubleEntries)));
 
             break;
-            
+       
           case -1:
             LOG.info(k + ": " + name + " is string");
 
@@ -931,22 +938,54 @@ public class RDATAFileReader extends StatDataFileReader {
             LOG.info("string array passed to calculateUNF: " + Arrays.deepToString(stringEntries));
             
             dateFormats = getDateFormats(stringEntries);
-
-            if (dateFormats != null) {
+            
+            //
+            if (mFormatTable[k] == FORMAT_DATE || mFormatTable[k] == FORMAT_DATETIME) {
+              SimpleDateFormat dateFormat;
+              
+              if (mFormatTable[k] == FORMAT_DATE) {
+                LOG.info("FORMAT = DATE");
+                dateFormat = R_DATE_FORMAT;
+              }
+              else if (mFormatTable[k] == FORMAT_DATETIME) {
+                LOG.info("FORMAT = DATETIME");
+                dateFormat = R_POSIX_FORMAT;
+              }
+              else
+                dateFormat = null;
+              
+              DateFormatter dateFormatter = new DateFormatter();
+              
+              dateFormatter.setDateFormats(DATE_FORMATS);
+              dateFormatter.setTimeFormats(TIME_FORMATS);
+              
               for (int i = 0; i < varData.length; i++) {
+                SimpleDateFormat format;
+                DateWithFormatter entryDateWithFormat;
+                
+                // Place a null entry if data is missing
                 if (dateFormats[i] != null && (stringEntries[i].equals("") || stringEntries[i].equals(" "))) {
-                  stringEntries[i] = null;
-                  dateFormats[i] = null;
+                  stringEntries[i] = dateFormats[i] = null;
                 }
+                
+                // Otherwise get the pattern
+                // entryDateWithFormat = dateFormatter.getDateWithFormat(stringEntries[i]);
+                dateFormats[i] = dateFormat.toPattern();
               }
               
-              unfValue = UNF5Util.calculateUNF(stringEntries, dateFormats);
+              // Compute UNF
+              try {
+                unfValue = UNF5Util.calculateUNF(stringEntries, dateFormats);
+              }
+              catch (Exception ex) {
+                unfValue = UNF5Util.calculateUNF(stringEntries);
+              }
             }
-            else {
+            else
               unfValue = UNF5Util.calculateUNF(stringEntries);
-            }
 
-            LOG.info(name + " (UNF) = "+unfValue);
+
+            LOG.info(name + " (UNF) = " + unfValue);
             
             smd.getSummaryStatisticsTable().put(k, StatHelper.calculateSummaryStatistics(stringEntries));
             Map <String, Integer> StrCatStat = StatHelper.calculateCategoryStatistics(stringEntries);

@@ -100,7 +100,7 @@
                             }
                         }
                         if (elem.checked) {
-                             document.getElementById('downloadAllButton').disabled=false;
+                             jQuery('input[id$=downloadAllButton]').prop("disabled", false);
                         } else {
                             checkDownloadAllButton();
                         }
@@ -118,9 +118,9 @@
                         }
 
                         if (anySelected) {
-                            document.getElementById('downloadAllButton').disabled=false;
+                            jQuery('input[id$=downloadAllButton]').prop("disabled", false);
                         } else {
-                            document.getElementById('downloadAllButton').disabled=true;
+                            jQuery('input[id$=downloadAllButton]').prop("disabled", true);
                         }
                     }
 
@@ -163,29 +163,105 @@
                     }
 
                     function downloadSelectedFiles() {
-                        fileIdStr = "";
+                        jQuery('input[id$=hiddenDownloadButton]').click();
+                    }
+                    
+                    function checkTermsOfUse() {
+                        window.location.href = "/dvn#{VDCRequest.currentVDCURL}/faces/study/StudyPage.xhtml?studyId=#{studyPage.studyUI.study.id}&versionNumber=#{studyPage.studyUI.studyVersion.versionNumber}" + "&checkTermsOfUse=true&cid=#{javax.enterprise.context.conversation.id}";
+                      
+                    }
+                        
+                    function doDownload() {                  
+                        var fileNumber = 5;
+                        var zipFileSize = 10485760;
+                        var fileSize =0;
+                        var j = 0;
+                        var numb = 0;
+                        var fileIdStr = ""
+                        var bSingleZipfile= true;
                         var fileCBs = getElementsByClassName("fileCheckBox", document.body);
+                        var popBodyContent="<div style='float: right'><input type='button' value='close' onclick='window.close();'/></div>";
+                        popBodyContent+= "<h2>Click each link to download files:</h2>";
+                        
+                        var lastCheckedIndex = 0;
+                        for (var i = 0; i < fileCBs.length; i++) {
+                            if ( fileCBs[i].checked ) lastCheckedIndex = i;
+                        }
+                        
                         for (var i = 0; i < fileCBs.length; i++) {
                             if ( fileCBs[i].checked ) {
-                                if (fileIdStr != "") {
-                                    fileIdStr = fileIdStr + ",";
+                                if (j < fileNumber) {
+                                    if (fileIdStr != "") {
+                                        fileIdStr = fileIdStr + ",";
+                                    }
+                                    j++;
+                                    fileSize+= parseInt(fileCBs[i].previousSibling.previousSibling.value);
+                                    if (fileSize >= zipFileSize) {
+                                        bSingleZipfile = false;
+                                        numb++;
+                                        popBodyContent+= attachToPopBodyContent(fileIdStr, numb);
+                                        j = 1;
+                                        fileSize = parseInt(fileCBs[i].previousSibling.previousSibling.value);
+                                        fileIdStr = fileCBs[i].previousSibling.value;
+                                        if (i == lastCheckedIndex) {
+                                            numb++;
+                                            popBodyContent+= attachToPopBodyContent(fileIdStr, numb);
+                                            break;
+                                        }
+                                    }
+                                    else
+                                        fileIdStr = fileIdStr + fileCBs[i].previousSibling.value;
+                                    if (i == lastCheckedIndex) {
+                                        numb++;
+                                        popBodyContent+= attachToPopBodyContent(fileIdStr, numb);
+                                        break;
+                                    }
                                 }
-                                fileIdStr = fileIdStr + fileCBs[i].previousSibling.value;
+                                else {
+                                    bSingleZipfile = false;
+                                    numb++;
+                                    popBodyContent+= attachToPopBodyContent(fileIdStr, numb);
+                                    j = 1;
+                                    fileSize= 0;
+                                    fileIdStr = fileCBs[i].previousSibling.value;
+                                    if (i == lastCheckedIndex) {
+                                        numb++;
+                                        popBodyContent+= attachToPopBodyContent(fileIdStr, numb);
+                                        break;
+                                    }
+                                }
                             }
                         }
                         if (fileIdStr == "") {
                             alert ("No files selected");
                             return false;
+                        
                         }
-                        downloadFile("#{VDCRequest.currentVDCURL}/FileDownload/study_#{studyPage.studyUI.study.studyId}.zip?fileId=" + fileIdStr + "&versionNumber=#{studyPage.studyUI.studyVersion.versionNumber}" + "#{studyPage.xff}");
+                        
+                        if (bSingleZipfile)
+                            downloadFile("#{VDCRequest.currentVDCURL}/FileDownload/study_#{studyPage.studyUI.study.studyId}.zip?fileId=" + fileIdStr + "&versionNumber=#{studyPage.studyUI.studyVersion.versionNumber}" + "#{studyPage.xff}");
+                        else                        
+                            openDownloadWin(popBodyContent);
                         return false;
                     }
+                    
+                    function attachToPopBodyContent(fileIdStrIn, zipNumber) {
+                        if (fileIdStrIn == "") return "";
+                        if (fileIdStrIn.endsWith(",")) fileIdStrIn= fileIdStrIn.substring(0,fileIdStrIn.length-1);
+                        return "<a href='/dvn#{VDCRequest.currentVDCURL}/FileDownload/study_#{studyPage.studyUI.study.studyId}.zip?fileId=" + fileIdStrIn + "&versionNumber=#{studyPage.studyUI.studyVersion.versionNumber}" + "#{studyPage.xff}'>Download zip file "+zipNumber+ "</a><br/>";
 
-
+                    }
+                    
                     function downloadFile(fileUrl) {
                             self.location.href = "/dvn" + fileUrl;
+                    } 
+                    
+                    function openDownloadWin(bodyContent) {
+                        var myWindow=window.open('','','width=600,height=300,scrollbars=yes');
+                        myWindow.document.write(bodyContent);
+                        myWindow.focus();
                     }
-
+                    
                     // ]]>
                 </script>
       <f:loadBundle basename="StudyBundle" var="studybundle"/>

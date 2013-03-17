@@ -24,7 +24,6 @@
  */
 package edu.harvard.iq.dvn.core.web.servlet;
 
-import edu.harvard.iq.dvn.core.admin.VDCUser;
 import edu.harvard.iq.dvn.core.study.DataTable;
 import edu.harvard.iq.dvn.core.study.Study;
 import edu.harvard.iq.dvn.core.study.StudyFile;
@@ -34,12 +33,12 @@ import edu.harvard.iq.dvn.core.study.VariableServiceLocal;
 import edu.harvard.iq.dvn.core.vdc.*;
 import edu.harvard.iq.dvn.core.web.common.VDCSessionBean;
 import java.io.*;
-import java.util.HashMap;
 import java.util.Map;
 
 import java.net.InetAddress;
 import java.net.URLEncoder;
 import java.net.UnknownHostException;
+import java.util.Iterator;
 
 import java.util.StringTokenizer;
 import javax.ejb.EJB;
@@ -54,7 +53,6 @@ import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
 
 /** 
  *
@@ -174,6 +172,11 @@ public class TermsOfUseFilter implements Filter {
                 || (req.getServletPath().equals("/faces") && req.getPathInfo().startsWith("/subsetting/NetworkDataAnalysisPage"))
                 || req.getServletPath().equals("/faces") && (req.getPathInfo().startsWith("/viz/ExploreDataPage"))) {
             redirected = checkDownloadTermsOfUse(req, res);
+        } else if (req.getServletPath().equals("/faces") && req.getPathInfo().startsWith("/study/StudyPage")) { //req.getParameter("checkTermsOfUse") != null ) {       
+            Map<String,String[]> params = request.getParameterMap();
+            if (req.getParameter("checkTermsOfUse") != null || params.get("checkTermsOfUse") != null) {
+                redirected = checkDownloadTermsOfUse(req, res);
+            }
         } else if (req.getServletPath().equals("/faces") && (req.getPathInfo().startsWith("/study/EditStudyPage") || req.getPathInfo().startsWith("/study/AddFilesPage") ) ) {
             redirected = checkDepositTermsOfUse(req, res);
         }
@@ -364,7 +367,28 @@ public class TermsOfUseFilter implements Filter {
                     study = file.getStudy();
                 }
             }
+            // Add for Study Page
+            if (requestPath.startsWith("/study/StudyPage")) {
+                studyId = req.getParameter(studyId);
+                if (studyId == null) {
+                    Map<String,String[]> params = req.getParameterMap();
+                    studyId = params.get("studyId")[0];
+                }
+                try {
+                    study = studyService.getStudy(new Long(studyId));
+                } catch (Exception ex) {
+                    if (ex.getCause() instanceof IllegalArgumentException) {
+                        // do nothing.
+                        // if the study does not exist, there sure 
+                        // isn't a license/terms of use for it!
+                    } else {
+                        ex.printStackTrace();
+                        return false;
+                    }
+                }
+            }
         }
+
 
         // if we've populate the study, then check the TermsOfUse'
         // We only need to display the terms if the study is Released.
@@ -492,5 +516,5 @@ public class TermsOfUseFilter implements Filter {
     public void log(String msg) {
         filterConfig.getServletContext().log(msg);
     }
-    private static final boolean debug = true;
+    private static final boolean debug = true;  
 }

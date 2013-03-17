@@ -79,6 +79,7 @@ public class FileMetadataField implements Serializable {
     private boolean basicSearchField;
     private boolean advancedSearchField;
     private boolean searchResultField;
+    private boolean prefixSearchable;
    
     private String fileFormatName;
     
@@ -179,7 +180,13 @@ public class FileMetadataField implements Serializable {
     }
 
 
+    public boolean isPrefixSearchable() {
+        return this.prefixSearchable;
+    }
 
+    public void setPrefixSearchable(boolean prefixSearchale) {
+        this.prefixSearchable = prefixSearchable;
+    }
     /* 
      * TODO: 
      * decide if we need nested fields; 

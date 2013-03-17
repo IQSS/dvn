@@ -131,21 +131,23 @@
                   <ice:panelGroup panelLayout="flow">
                     <ice:panelGrid cellpadding="0" cellspacing="0" columns="2" width="100%">
                       <div jsfc="ice:panelGroup" id="groupPanel9b">
-                        <ice:outputText value="Select Study Template: " rendered="#{EditStudyPage.showTemplateList}"/>
-                        <ice:selectOneMenu  value="#{EditStudyPage.selectTemplateId}" binding="#{EditStudyPage.selectTemplate}" rendered="#{EditStudyPage.showTemplateList}" onchange="getElementById('studyForm:templateButton').click();">
-                          <f:selectItems value="#{EditStudyPage.templatesMap}"/>
-                        </ice:selectOneMenu>
-                        <!-- hidden button that is clicked by select menu's onchange action -->
-                        <ice:commandButton id="templateButton"  visible="false" value="Change" action="#{EditStudyPage.changeTemplateAction}"/>
-                        <br/>
-                        <!--
-                        <input checked="checked" type="radio" id="hideRadio" name="hideShowRadio" value="hide" onclick="updateHideShow(this);"/> Show Required and Recommended Fields
-                        <input type="radio" id="showRadio" name="hideShowRadio" value="show" onclick="updateHideShow(this);"/> Show All Fields
-                        -->
-                        <ice:selectOneRadio partialSubmit="true" immediate="true" tabindex="999998" value="#{EditStudyPage.showAll}">
-                          <f:selectItem itemLabel="Show Required and Recommended Fields" itemValue="false"/>
-                          <f:selectItem itemLabel="Show All Fields" itemValue="true"/>
-                        </ice:selectOneRadio>
+                        <div jsfc="ice:panelGroup" styleClass="dvn_padBot" rendered="#{EditStudyPage.showTemplateList}">
+                            <ice:outputText value="Select Study Template: "/>
+                            <ice:selectOneMenu value="#{EditStudyPage.selectTemplateId}" binding="#{EditStudyPage.selectTemplate}" onchange="getElementById('studyForm:templateButton').click();">
+                                <f:selectItems value="#{EditStudyPage.templatesMap}"/>
+                            </ice:selectOneMenu>
+                            <!-- hidden button that is clicked by select menu's onchange action -->
+                            <ice:commandButton id="templateButton"  visible="false" value="Change" action="#{EditStudyPage.changeTemplateAction}"/>
+                        </div>
+                        <div jsfc="ice:panelGroup" styleClass="dvn_padBot" rendered="#{!EditStudyPage.showTemplateList}">
+                            <ice:outputText value="Study Template: #{EditStudyPage.study.template.name}"/>
+                        </div>
+                        <div class="dvnEditStudyShowAllFieldsBlock">
+                            <ice:selectOneRadio partialSubmit="true" immediate="true" tabindex="999998" value="#{EditStudyPage.showAll}">
+                                <f:selectItem itemLabel="Show Required and Recommended Fields" itemValue="false"/>
+                                <f:selectItem itemLabel="Show All Fields" itemValue="true"/>
+                            </ice:selectOneRadio>
+                        </div>
                       </div>
                     </ice:panelGrid>
 

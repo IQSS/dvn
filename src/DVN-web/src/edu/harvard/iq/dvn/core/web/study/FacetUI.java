@@ -28,7 +28,8 @@ public class FacetUI {
     private static final Logger logger = Logger.getLogger("edu.harvard.iq.dvn.core.web.study.FacetUI");
 
     String name;
-    List<String> results = new ArrayList<String>();
+    List<String> resultNames = new ArrayList<String>();
+    List<String> resultHitCounts = new ArrayList<String>();
 
     public String getName() {
         return name;
@@ -38,11 +39,20 @@ public class FacetUI {
         this.name = name;
     }
 
-    public List<String> getResults() {
-        return results;
+    public List<String> getResultNames() {
+        return resultNames;
     }
 
-    public void addResults(String result) {
-        results.add(result);
+    public void addResultNames(String resultName) {
+        resultNames.add(resultName);
     }
+
+    public List<String> getResultHits() {
+        return resultHitCounts;
+    }
+
+    public void addResultHits(String resultHits) {
+        resultHitCounts.add(resultHits);
+    }
+
 }

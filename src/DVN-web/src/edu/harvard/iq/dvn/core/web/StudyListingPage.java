@@ -192,11 +192,15 @@ public class StudyListingPage extends VDCBaseBean implements java.io.Serializabl
             for (FacetResultNode n : facetResult.getFacetResultNode().getSubResults()) {
                 CategoryPath label = n.getLabel();
                 String last = n.getLabel().lastComponent().toString();
-                double hits = n.getValue();
+                Double hits = n.getValue();
 //                logger.info("  - expect " + hits + " hits from a faceted search for \"" + label + "\"");
                 if (last != null) {
-                    /** @todo do something with this */
-                    facetUI.addResults(label.toString());
+                    facetUI.addResultNames(last);
+                }
+                if (hits.toString() != null) {
+                    /** @todo display hits on results page */
+                    logger.info("Adding hit count of " + hits + " to " + label);
+                    facetUI.addResultHits(hits.toString());
                 }
             }
             facetUIList.add(facetUI);

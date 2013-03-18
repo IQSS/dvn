@@ -296,11 +296,13 @@ public class UserServiceBean implements UserServiceLocal {
             return false;
         }
      }
-         public List findAllIdsSearch(String searchTerm) {
-        String queryString = "select o.id from VDCUser as o "
-                + " where lower(lastname) like lower('" + searchTerm +"%')"
-                + " or lower(username) like lower('" + searchTerm +"%')"
-                + " order by o.userName";
+     
+     public List findAllIdsSearch(String searchTerm) {
+        String lowerSearchString = searchTerm.toLowerCase();
+        String queryString = "SELECT u from VDCUser u where lower(u.lastName) like '" + lowerSearchString.replaceAll("'", "''")
+                + "%' or lower(u.email) like '" + lowerSearchString.replaceAll("'", "''") + "%'"
+                + " or lower(u.firstName) like '" + lowerSearchString.replaceAll("'", "''") + "%'"
+                + " or lower(u.userName) like '" + lowerSearchString.replaceAll("'", "''") + "%';";
         List userList = new ArrayList();
         
             Query query = em.createNativeQuery(queryString);

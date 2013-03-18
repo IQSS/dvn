@@ -240,8 +240,8 @@
                                 <ice:column>
                                     <div class="dvnStudyFacetCategoryTitle"><ice:outputText value="#{facetUI.name}"/></div>
                                     <ul>
-                                        <ui:repeat value="#{facetUI.resultNames}" var="resultnames">
-                                            <li><a href="FIXME... faceted search #{StudyListingPage.listMessage} and facet = #{facetUI.name}"><ice:outputText value="#{resultnames}"/></a> <span class="dvnStudyFacetResultNumber">(FIXME [count])</span></li>
+                                        <ui:repeat value="#{facetUI.facetResultUIs}" var="facetresultuis">
+                                            <li><a href="FIXME... faceted search #{StudyListingPage.listMessage} and facet = #{facetUI.name}"><ice:outputText value="#{facetresultuis.name}"/></a> <span class="dvnStudyFacetResultNumber">(#{facetresultuis.hits})</span></li>
                                         </ui:repeat>                                        
                                     </ul>
                                 </ice:column>

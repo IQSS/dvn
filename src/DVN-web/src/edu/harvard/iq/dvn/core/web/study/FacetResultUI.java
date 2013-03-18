@@ -19,16 +19,10 @@
  */
 package edu.harvard.iq.dvn.core.web.study;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.logging.Logger;
-
-public class FacetUI {
-
-    private static final Logger logger = Logger.getLogger("edu.harvard.iq.dvn.core.web.study.FacetUI");
+public class FacetResultUI {
 
     String name;
-    List<FacetResultUI> facetResultUIs = new ArrayList<FacetResultUI>();
+    Double hits;
 
     public String getName() {
         return name;
@@ -38,16 +32,11 @@ public class FacetUI {
         this.name = name;
     }
 
-    public List<FacetResultUI> getFacetResultUIs() {
-        return facetResultUIs;
+    public Double getHits() {
+        return hits;
     }
 
-    public void setFacetResultUIs(List<FacetResultUI> facetResultUIs) {
-        this.facetResultUIs = facetResultUIs;
+    public void setHits(Double hits) {
+        this.hits = hits;
     }
-
-    public void add(FacetResultUI facetResultUI) {
-        facetResultUIs.add(facetResultUI);
-    }
-
 }

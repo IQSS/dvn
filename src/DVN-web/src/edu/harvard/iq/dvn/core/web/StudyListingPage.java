@@ -48,6 +48,7 @@ import edu.harvard.iq.dvn.core.web.common.LoginBean;
 import edu.harvard.iq.dvn.core.web.common.VDCBaseBean;
 import edu.harvard.iq.dvn.core.web.component.VDCCollectionTree;
 import edu.harvard.iq.dvn.core.web.site.VDCUI;
+import edu.harvard.iq.dvn.core.web.study.FacetResultUI;
 import edu.harvard.iq.dvn.core.web.study.FacetUI;
 import edu.harvard.iq.dvn.core.web.study.StudyUI;
 import java.util.ArrayList;
@@ -194,13 +195,12 @@ public class StudyListingPage extends VDCBaseBean implements java.io.Serializabl
                 String last = n.getLabel().lastComponent().toString();
                 Double hits = n.getValue();
 //                logger.info("  - expect " + hits + " hits from a faceted search for \"" + label + "\"");
-                if (last != null) {
-                    facetUI.addResultNames(last);
-                }
-                if (hits.toString() != null) {
-                    /** @todo display hits on results page */
-                    logger.info("Adding hit count of " + hits + " to " + label);
-                    facetUI.addResultHits(hits.toString());
+                if (last != null && hits.toString() != null) {
+                    logger.info("making a facetresult ui...");
+                    FacetResultUI facetResultUI = new FacetResultUI();
+                    facetResultUI.setName(last);
+                    facetResultUI.setHits(hits);
+                    facetUI.add(facetResultUI);
                 }
             }
             facetUIList.add(facetUI);

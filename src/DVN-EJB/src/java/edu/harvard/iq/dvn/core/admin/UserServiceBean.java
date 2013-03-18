@@ -299,7 +299,7 @@ public class UserServiceBean implements UserServiceLocal {
      
      public List findAllIdsSearch(String searchTerm) {
         String lowerSearchString = searchTerm.toLowerCase();
-        String queryString = "SELECT u from VDCUser u where lower(u.lastName) like '" + lowerSearchString.replaceAll("'", "''")
+        String queryString = "SELECT u.id from VDCUser u where lower(u.lastName) like '" + lowerSearchString.replaceAll("'", "''")
                 + "%' or lower(u.email) like '" + lowerSearchString.replaceAll("'", "''") + "%'"
                 + " or lower(u.firstName) like '" + lowerSearchString.replaceAll("'", "''") + "%'"
                 + " or lower(u.userName) like '" + lowerSearchString.replaceAll("'", "''") + "%';";

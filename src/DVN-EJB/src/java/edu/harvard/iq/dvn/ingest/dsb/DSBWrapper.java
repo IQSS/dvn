@@ -179,6 +179,12 @@ public class DSBWrapper implements java.io.Serializable  {
                 dbgLog.info("reader class name="+sdioReader.getClass().getName());
 
                 if (mime_type != null){
+                    String requestedCharacterEncoding = file.getDataLanguageEncoding();
+                    if (requestedCharacterEncoding != null) {
+                        dbgLog.fine("Will try to process the file assuming that the character strings are "
+                                + "encoded in "+requestedCharacterEncoding);
+                        sdioReader.setDataLanguageEncoding(requestedCharacterEncoding);
+                    }
                     sd = sdioReader.read(infile, null);
                 } else {
                     // fail-safe block if mime_type is null
@@ -502,7 +508,7 @@ public class DSBWrapper implements java.io.Serializable  {
             fileLevelMetadata.remove(METADATA_SUMMARY);
         }
         
-        // And now we can go through the reamining key/value pairs in the 
+        // And now we can go through the remaining key/value pairs in the 
         // metadata maps and process the metadata elements found in the 
         // file: 
         

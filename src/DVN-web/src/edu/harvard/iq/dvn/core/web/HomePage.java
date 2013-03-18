@@ -45,10 +45,7 @@ import edu.harvard.iq.dvn.core.web.study.StudyUI;
 import java.io.Serializable;
 import java.lang.String;
 import java.text.NumberFormat;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-import java.util.ResourceBundle;
+import java.util.*;
 import javax.ejb.EJB;
 import javax.faces.bean.ViewScoped;
 import javax.faces.event.ValueChangeEvent;
@@ -106,9 +103,8 @@ public class HomePage extends VDCBaseBean implements Serializable {
 
      @SuppressWarnings("unchecked")
     public void init() {
+
         super.init();
-        String defaultDVSortColumn =  vdcNetworkService.find().getDefaultDVSortColumn();
-        System.out.println("defaultDVSortColumn in HP init "+ defaultDVSortColumn);
         initChrome();
         initAccordionMenu();
         initAlphabeticFilter();
@@ -287,7 +283,6 @@ public class HomePage extends VDCBaseBean implements Serializable {
     private void populateVDCUIList(boolean isAlphaSort) {
                 
         String defaultDVSortColumn =  vdcNetworkService.find().getDefaultDVSortColumn();
-        System.out.println("defaultDVSortColumn "+ defaultDVSortColumn);
         boolean isNewGroup = false;
         if ( hiddenGroupId.getValue() == null || (vdcUIList != null &&
                 ( (vdcUIList.getVdcGroupId() != null &&
@@ -380,7 +375,7 @@ public class HomePage extends VDCBaseBean implements Serializable {
         //itemBeansSize = list.size();
         Iterator outeriterator = list.iterator();
         while(outeriterator.hasNext()) {
-            classificationsSize++;           
+            classificationsSize++;  
             VDCGroup vdcgroup = (VDCGroup)outeriterator.next();
                 String indentStyle = (vdcgroup.getParent() == null) ? "groupRowIndentStyle" : "childRowIndentStyle";
                 if (vdcgroup.getParent() == null) {
@@ -411,7 +406,7 @@ public class HomePage extends VDCBaseBean implements Serializable {
          DataverseGrouping childItem;
          while (iterator.hasNext()) {                       
             VDCGroup group = (VDCGroup)iterator.next();
-            childItem = new DataverseGrouping(group.getId(), group.getName(), "subgroup", isExpanded, "", "", parentId, group.getReleasedVdcCount());
+            childItem = new DataverseGrouping(group.getId(), group.getName(), "subgroup", isExpanded, "", "", parentId, vdcGroupService.findCountVDCsByVDCGroupId(group.getId()));
             parentItem.addItem(childItem);
             parentItem.setIsAccordion(true);
             if (vdcGroupService.findByParentId(group.getId()) != null) {
@@ -421,7 +416,7 @@ public class HomePage extends VDCBaseBean implements Serializable {
                 childItem.setXtraItems(new ArrayList());
                 while (inneriterator.hasNext()) {
                     VDCGroup innergroup = (VDCGroup)inneriterator.next();
-                    xtraItem = new DataverseGrouping(innergroup.getId(), innergroup.getName(), "subgroup", isExpanded, "", "", parentId, innergroup.getReleasedVdcCount());
+                    xtraItem = new DataverseGrouping(innergroup.getId(), innergroup.getName(), "subgroup", isExpanded, "", "", parentId,  vdcGroupService.findCountVDCsByVDCGroupId(innergroup.getId()));
                     childItem.addXtraItem(xtraItem);
                 }
             }
@@ -479,10 +474,10 @@ public class HomePage extends VDCBaseBean implements Serializable {
             VDC vdc = getVDCRequestBean().getCurrentVDC();
             if (vdc != null) {
                 VDCUser user = getVDCSessionBean().getUser();
-                recentStudies = filterVisibleStudyUIsFromIds( studyService.getRecentlyReleasedStudyIds(vdc.getId(), -1), vdc, user, getVDCSessionBean().getIpUserGroup(), 5 );
+                recentStudies = filterVisibleStudyUIsFromIds( studyService.getRecentlyReleasedStudyIds(vdc.getId(), 10), vdc, user, getVDCSessionBean().getIpUserGroup(), 5 );
             } else {
                 VDCUser user = getVDCSessionBean().getUser();
-                recentStudies = filterVisibleStudyUIsFromIds( studyService.getRecentlyReleasedStudyIds(null, -1), vdc, user, getVDCSessionBean().getIpUserGroup(), 5 ); 
+                recentStudies = filterVisibleStudyUIsFromIds( studyService.getRecentlyReleasedStudyIds(null, 10), vdc, user, getVDCSessionBean().getIpUserGroup(), 5 ); 
             }
         }
         return recentStudies;
@@ -494,10 +489,10 @@ public class HomePage extends VDCBaseBean implements Serializable {
             VDC vdc = getVDCRequestBean().getCurrentVDC();
             if (vdc != null) {
                 VDCUser user = getVDCSessionBean().getUser();
-                mostDownloadedStudies = filterVisibleStudyUIsFromIds( studyService.getMostDownloadedStudyIds(vdc.getId(), -1), vdc, user, getVDCSessionBean().getIpUserGroup(), 5 );
+                mostDownloadedStudies = filterVisibleStudyUIsFromIds( studyService.getMostDownloadedStudyIds(vdc.getId(), 10), vdc, user, getVDCSessionBean().getIpUserGroup(), 5 );
             } else {
                 VDCUser user = getVDCSessionBean().getUser();
-                mostDownloadedStudies = filterVisibleStudyUIsFromIds( studyService.getMostDownloadedStudyIds(null, -1), vdc, user, getVDCSessionBean().getIpUserGroup(), 5 ); 
+                mostDownloadedStudies = filterVisibleStudyUIsFromIds( studyService.getMostDownloadedStudyIds(null, 10), vdc, user, getVDCSessionBean().getIpUserGroup(), 5 ); 
             }
         }
         return mostDownloadedStudies;
@@ -513,7 +508,6 @@ public class HomePage extends VDCBaseBean implements Serializable {
             Iterator iter = vdcUIListDownloaded.getVdcUIList().iterator();
             while (iter.hasNext()) {
                 VDCUI vdcUI = (VDCUI) iter.next();
-
                 mostDownloaded.add(vdcUI);
                 if (++count >= 5) {
                     break;

@@ -717,14 +717,17 @@ public class StudyServiceBean implements edu.harvard.iq.dvn.core.study.StudyServ
         }
     }
     public List getRecentlyReleasedStudyIds(Long vdcId, int numResults) {
-        String queryStr = "SELECT s.id FROM Study s, StudyVersion sv where s.id = sv.study_id "
+        String queryStr = "SELECT s.id FROM VDC v, Study s, StudyVersion sv where s.id = sv.study_id "
                 + " and sv.versionstate = '" + StudyVersion.VersionState.RELEASED + "'"
+                + " and s.owner_id = v.id "
+                + " and v.restricted = false "
                 + " ORDER BY sv.releaseTime desc";
         if (vdcId != null) {
             queryStr = "SELECT s.id FROM Study s, StudyVersion sv where s.id = sv.study_id "
-                    + " and sv.versionstate = '" + StudyVersion.VersionState.RELEASED + "'" + " and s.owner.id = " + vdcId
+                    + " and sv.versionstate = '" + StudyVersion.VersionState.RELEASED + "'" + " and s.owner_id = " + vdcId
                     + " ORDER BY sv.releaseTime desc";
         }
+
         Query query = em.createNativeQuery(queryStr);
         List<Long> returnList = new ArrayList<Long>();
         if (numResults == -1) {
@@ -750,18 +753,20 @@ public class StudyServiceBean implements edu.harvard.iq.dvn.core.study.StudyServ
 
         String dataverseClause = "";
         if (vdcId != null) {
-            dataverseClause = " and s.owner.id = " + vdcId + " ";
+            dataverseClause = " and s.owner_id = " + vdcId + " ";
         }
         String queryStr = "select s.id "
-                + "from  StudyVersion sv, Study s "
+                + "from VDC v,  StudyVersion sv, Study s "
                 + "JOIN StudyFileActivity sfa on  s.id = sfa.study_id "
                 + "where  "
                 + " s.id = sv.study_id "
-                + "and sv.versionstate = '" + StudyVersion.VersionState.RELEASED + "'"
+                + " and s.owner_id = v.id "
+                + " and v.restricted = false "
+                + " and sv.versionstate = '" + StudyVersion.VersionState.RELEASED + "'"
                 + dataverseClause
-                + "group by s.id "
-                + "order by "
-                + "sum(downloadcount) desc ";
+                + " group by s.id "
+                + " order by "
+                + " sum(downloadcount) desc ";
 
         Query query = em.createNativeQuery(queryStr);
         List<Long> returnList = new ArrayList<Long>();

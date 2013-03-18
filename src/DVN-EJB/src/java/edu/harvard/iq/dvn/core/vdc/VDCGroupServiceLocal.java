@@ -58,5 +58,7 @@ public interface VDCGroupServiceLocal extends java.io.Serializable  {
     public int getNextInOrder();
 
     public java.util.List<java.lang.Long> findVDCIdsByVDCGroupId(java.lang.Long id);
+
+    public java.lang.Long findCountVDCsByVDCGroupId(java.lang.Long id);
     
 }

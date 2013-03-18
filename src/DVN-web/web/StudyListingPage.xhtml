@@ -235,6 +235,7 @@
                     <div class="dvnStudyFacetBlockTitle">Refine Results</div>
                     <div class="dvnStudyFacetCategoryBlock">
                         <ul>
+                            <!--FIXME: javax.faces.el.EvaluationException: java.lang.NullPointerException if StudyListingPage.facets is null-->
                             <ice:dataTable value="#{StudyListingPage.facets}" var="facetUI">
                                 <ice:column>
                                     <div class="dvnStudyFacetCategoryTitle"><ice:outputText value="#{facetUI.name}"/></div>

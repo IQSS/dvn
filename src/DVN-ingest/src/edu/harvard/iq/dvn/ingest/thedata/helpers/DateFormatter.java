@@ -148,10 +148,13 @@ public class DateFormatter {
     // Iterate through all available date formats
     for (SimpleDateFormat format : mDateFormats) {
       try {
+        // Strict parsing
+        format.setLenient(false);
         // Parse the date from the format
         dateResult = format.parse(value);
         // String result
         stringResult = utcSimpleDateFormatter.format(dateResult);
+        
         LOG.info("RESULT (date) = " + stringResult);
         // If parse and format were successful, return the formatted result
         return new DateWithFormatter(dateResult, format);

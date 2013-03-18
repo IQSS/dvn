@@ -108,10 +108,10 @@ public class RDATAFileReader extends StatDataFileReader {
   
   // TIME FORMATS
   private static SimpleDateFormat[] TIME_FORMATS = new SimpleDateFormat[] {
-    new SimpleDateFormat("yyyy-MM-dd HH:mm:ss"),
-    new SimpleDateFormat("yyyy-MM-dd HH:mm:ss z"),
+    new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS z"),
     new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS"),
-    new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS z")
+    new SimpleDateFormat("yyyy-MM-dd HH:mm:ss z"),
+    new SimpleDateFormat("yyyy-MM-dd HH:mm:ss"),
   };
   
   private static final SimpleDateFormat R_DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd");
@@ -441,6 +441,7 @@ public class RDATAFileReader extends StatDataFileReader {
       mCsvDataFile = new File(mRWorkspace.getRdataFile().getParent(), "data.csv");
       
       String csvScript = new StringBuilder("")
+        .append("options(digits.secs=3)\n")
         .append(String.format("load(\"%s\")\n", mRWorkspace.getRdataAbsolutePath()))
         .append(RSCRIPT_GET_DATASET)
         .append("\n")
@@ -960,17 +961,18 @@ public class RDATAFileReader extends StatDataFileReader {
               dateFormatter.setTimeFormats(TIME_FORMATS);
               
               for (int i = 0; i < varData.length; i++) {
-                SimpleDateFormat format;
                 DateWithFormatter entryDateWithFormat;
                 
                 // Place a null entry if data is missing
                 if (dateFormats[i] != null && (stringEntries[i].equals("") || stringEntries[i].equals(" "))) {
                   stringEntries[i] = dateFormats[i] = null;
                 }
-                
-                // Otherwise get the pattern
-                // entryDateWithFormat = dateFormatter.getDateWithFormat(stringEntries[i]);
-                dateFormats[i] = dateFormat.toPattern();
+                else {
+                  entryDateWithFormat = dateFormatter.getDateWithFormat(stringEntries[i]);
+                  // Otherwise get the pattern
+                  // entryDateWithFormat = dateFormatter.getDateWithFormat(stringEntries[i]);
+                  dateFormats[i] = entryDateWithFormat.getFormatter().toPattern();
+                }
               }
               
               // Compute UNF

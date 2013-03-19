@@ -119,8 +119,10 @@
 
                         if (anySelected) {
                             jQuery('input[id$=downloadAllButton]').prop("disabled", false);
+                            return false;
                         } else {
                             jQuery('input[id$=downloadAllButton]').prop("disabled", true);
+                            return true;
                         }
                     }
 
@@ -167,13 +169,16 @@
                     }
                     
                     function checkTermsOfUse() {
-                        window.location.href = "/dvn#{VDCRequest.currentVDCURL}/faces/study/StudyPage.xhtml?studyId=#{studyPage.studyUI.study.id}&versionNumber=#{studyPage.studyUI.studyVersion.versionNumber}" + "&checkTermsOfUse=true&cid=#{javax.enterprise.context.conversation.id}";
-                      
+                        if (doDownload()) {
+                            window.location.href = "/dvn#{VDCRequest.currentVDCURL}/faces/study/StudyPage.xhtml?studyId=#{studyPage.studyUI.study.id}&versionNumber=#{studyPage.studyUI.studyVersion.versionNumber}" + "&checkTermsOfUse=true&cid=#{javax.enterprise.context.conversation.id}";
+                        } 
                     }
-                        
+                    
+                    // this method will either download a single zip or create links for multiple zip files in the popup
+                    // if multiple links are created, it returns true, to signify to calling methods that the popup needs to be displayed
                     function doDownload() {                  
                         var fileNumber = 5;
-                        var zipFileSize = 10485760;
+                        var zipFileSize = 1048576;
                         var fileSize =0;
                         var j = 0;
                         var numb = 0;
@@ -237,11 +242,13 @@
                         
                         }
                         
-                        if (bSingleZipfile)
+                        if (bSingleZipfile) {
                             downloadFile("#{VDCRequest.currentVDCURL}/FileDownload/study_#{studyPage.studyUI.study.studyId}.zip?fileId=" + fileIdStr + "&versionNumber=#{studyPage.studyUI.studyVersion.versionNumber}" + "#{studyPage.xff}");
-                        else                        
-                            openDownloadWin(popBodyContent);
-                        return false;
+                            return false;
+                        } else {                       
+                            jQuery('table[id$=autoCentZipContent] tr.popupModalBodyRow1 td.popupModalBodyCol1').append(popBodyContent);
+                            return true;
+                        }
                     }
                     
                     function attachToPopBodyContent(fileIdStrIn, zipNumber) {
@@ -255,12 +262,6 @@
                             self.location.href = "/dvn" + fileUrl;
                     } 
                     
-                    function openDownloadWin(bodyContent) {
-                        // var myWindow = jQuery('div[id$=multipleZipPopup]').show();
-                        // myWindow.document.write(bodyContent);
-                        jQuery('table[id$=autoCentZipContent] tr.popupModalBodyRow1 td.popupModalBodyCol1').append(bodyContent);
-                        // myWindow.focus();
-                    }
                     
                     // ]]>
                 </script>

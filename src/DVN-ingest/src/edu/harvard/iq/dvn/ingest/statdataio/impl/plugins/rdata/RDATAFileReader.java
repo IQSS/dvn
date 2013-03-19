@@ -532,7 +532,7 @@ public class RDATAFileReader extends StatDataFileReader {
     int lineCount = csvFileReader.read(localBufferedReader, smd, tabFileWriter);
     
     
-    // List<Integer> variableTypeList = getVariableTypeList(mDataTypes);
+    List<Integer> variableTypeList = getVariableTypeList(mDataTypes);
         
     // File Data Table
     mCsvDataTable = readTabDataFile(tabFileDestination);
@@ -705,14 +705,21 @@ public class RDATAFileReader extends StatDataFileReader {
       }
       
       valueTokens = line.split("\t", mVarQuantity);
-
+      
       for ( int i = 0; i < mVarQuantity; i++ ) {
  
         // If it's a character variable but not a date
         if (isCharacterVariable[i]) {
-          valueTokens[i] = valueTokens[i].replaceFirst("^\"", "");
-          valueTokens[i] = valueTokens[i].replaceFirst("\"$", "");
-          valueTokens[i] = valueTokens[i].replaceAll("\\\\\"", "\"");
+          
+          if (valueTokens[i].length() == 0)
+            // If it is a missing value
+            valueTokens[i] = null;
+          else {
+            // Otherwise parse it out
+            valueTokens[i] = valueTokens[i].replaceFirst("^\"", "");
+            valueTokens[i] = valueTokens[i].replaceFirst("\"$", "");
+            valueTokens[i] = valueTokens[i].replaceAll("\\\\\"", "\"");
+          }
           
           dataTable[i][j] = valueTokens[i];
         }
@@ -870,6 +877,10 @@ public class RDATAFileReader extends StatDataFileReader {
       
       Object [] varData = table.getData()[k];
       
+      LOG.info("// // // // //");
+      LOG.info("varData = " + Arrays.deepToString(varData));
+      LOG.info("varData = " + Arrays.deepToString(varData));
+      LOG.info("varData = " + Arrays.deepToString(varData));
       try {
         switch (varType) {
           case 0:

@@ -45,8 +45,7 @@
                             <ice:outputText id="outputText3" value="#{bundle.showArchivedStudiesLabel}"/>
                         </div>
                     </div>
-                    <div jsfc="ice:panelGroup" styleClass="dvnManageTableCreateLink"  rendered="#{!VDCRequest.readOnlyDatabase and VDCRequest.currentVDC != null}">
-                        
+                    <div jsfc="ice:panelGroup" styleClass="dvnManageTableCreateLink" rendered="#{!VDCRequest.readOnlyDatabase and VDCRequest.currentVDC != null}">
                         <div jsfc="ice:panelGroup" id="createStudy" styleClass="dvnCreateActionBox dvnCreateStudy">
                             <ice:outputLink value="/dvn#{VDCRequest.currentVDCURL}/faces/study/EditStudyPage.xhtml">
                                 <ice:outputText value="#{bundlePageInfo.createStudyButton}"/>

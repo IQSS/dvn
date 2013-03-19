@@ -7,7 +7,7 @@ a.dvn_more:link,a.dvn_more:visited,a.dvn_more:hover,a.dvn_more:active{color:#6D0
 .dvhmpgdescactionboxblock{overflow:hidden}
 .dvhmpgactionboxfloat{float:right; width:310px; text-align:left}
 .dvhmpgactionbox{padding:4px; color:#FFF; background:#C55B28}
-.dvhmpgactionbox a:link,.dvhmpgactionbox a:visited,.dvhmpgactionbox a:hover,.dvhmpgactionbox a:active{color:#FFF}
+.dvhmpgactionbox a:link,.dvhmpgactionbox a:visited,.dvhmpgactionbox a:hover,.dvhmpgactionbox a:active{color:#FFF;font-weight:normal}
 .dvhmpgactionbox div div span{font-weight:bold; text-transform:uppercase}
 .dvnCreateActionBoxBlock.dvnStudyListingCreate {overflow:hidden; margin-top:1em;}
 .dvnCreateActionBox {float:right; padding:4px; margin-bottom:4px; color:#FFF;}
@@ -173,6 +173,7 @@ li.hmpgDvGroupSelected a:link,li.hmpgDvGroupSelected a:visited,li.hmpgDvGroupSel
 .dvnStudyListContributorBlock{padding-bottom:.25em}
 a.dvnStudyListContributorLink:link,a.dvnStudyListContributorLink:visited,a.dvnStudyListContributorLink:hover,a.dvnStudyListContributorLink:active{padding-right:28px;color:#c55b28;background:url(/dvn/resources/images/start-arrows.gif) 100% 52% no-repeat;font-size:95%;text-decoration:none}
 .dvnStudyListResultsTop{padding:5px; border-bottom:1px solid #dcdddf}
+.dvnStudyListResultsTop .dvnStudyListResultsSort{float:left; margin-right:1em}
 .dvnStudyListResultsBottom{padding:5px; border-top:1px solid #dcdddf}
 .dvnStudyListResultsBottom .dvnPaginatorWrap{padding:.25em 0}
 td.dvn_StudyListTotals{text-align:right;width:100%;padding:.5em}

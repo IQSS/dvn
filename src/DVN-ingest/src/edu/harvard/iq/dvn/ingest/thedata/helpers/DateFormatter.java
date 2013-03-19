@@ -145,6 +145,22 @@ public class DateFormatter {
     utcFormatter.setTimeZone(TimeZone.getTimeZone("UTC"));
     
     
+    // Iterate through all available date-time formats
+    for (SimpleDateFormat format : mTimeFormats) {
+      try {
+        // Parse the date from the format
+        dateResult = format.parse(value);
+        // Format in 
+        stringResult = utcSimpleTimeFormatter.format(dateResult);
+        LOG.info("RESULT (time) = " + stringResult);
+        // If parse and format were successful, return the formatted result
+        //return stringResult;
+        return new DateWithFormatter(dateResult, format);
+      }
+      catch (ParseException ex) {
+        // Do nothing
+      }
+    }
     // Iterate through all available date formats
     for (SimpleDateFormat format : mDateFormats) {
       try {
@@ -163,23 +179,6 @@ public class DateFormatter {
         // Do nothing
       }
     }
-    
-    // Iterate through all available date-time formats
-    for (SimpleDateFormat format : mTimeFormats) {
-      try {
-        // Parse the date from the format
-        dateResult = format.parse(value);
-        // Format in 
-        stringResult = utcSimpleTimeFormatter.format(dateResult);
-        LOG.info("RESULT (time) = " + stringResult);
-        // If parse and format were successful, return the formatted result
-        //return stringResult;
-        return new DateWithFormatter(dateResult, format);
-      }
-      catch (ParseException ex) {
-        // Do nothing
-      }
-    } 
     // On failure, return NULL
     return null;
   }

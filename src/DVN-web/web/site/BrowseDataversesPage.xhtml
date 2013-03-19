@@ -11,7 +11,7 @@
 
 <h:body>
   <ui:composition template="/template.xhtml">
-    <ui:param name="pageTitle" value="#{bundlePageInfo.browseDvsTitle} - #{VDCRequest.dataversePageTitle}"/>
+    <ui:param name="pageTitle" value="#{VDCRequest.dataversePageTitle}"/>
         <ui:define name="metadata">
             <f:metadata>
                 <f:viewParam name="classificationList" value="#{ClassificationList}"/>
@@ -38,10 +38,7 @@
                             <tr>
                                 <td valign="bottom">
                                     <div jsfc="ice:panelGroup" styleClass="dvnStudyListCollectionName">
-                                        <ice:outputText value="#{bundlePageInfo.browseDvsTitle}"/>
-                                        
-                                        <ice:outputText value=" #{BrowseDataversesPage.groupName}"/>
-                                        
+                                        <ice:outputText value=" #{BrowseDataversesPage.groupName}"/>                                       
                                     </div>
                                 </td>
                                 <td>
@@ -208,7 +205,7 @@
                                                                             value="#{item.xtraItems}"
                                                                             var="xtraItems">
                                                                         <li>
-                                                                            <ice:commandLink styleClass="lastNode" onclick="setHiddenValuesGroupId(#{item.id});">
+                                                                            <ice:commandLink styleClass="lastNode" onclick="setHiddenValuesGroupId(#{xtraItems.id});">
                                                                                 <ice:outputText value="#{xtraItems.name}"/>
                                                                             </ice:commandLink>
                                                                             <ice:outputText value=" (#{xtraItems.numberOfDataverses})" styleClass="dvnHmpgClassificationCount"/>

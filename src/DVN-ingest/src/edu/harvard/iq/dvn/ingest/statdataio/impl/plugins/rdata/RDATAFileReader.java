@@ -165,15 +165,6 @@ public class RDATAFileReader extends StatDataFileReader {
    * This is primarily to construct the R-Script
    */
   static {
-    /* 
-     * Set date-time formats
-     */
-    TIME_FORMATS = new SimpleDateFormat[] {
-      new SimpleDateFormat("yyy")
-    };
-    DATE_FORMATS = new SimpleDateFormat[] {
-      new SimpleDateFormat("yyyy-mm-dd")
-    };
     /*
      * Copy timezones over
      */
@@ -977,10 +968,15 @@ public class RDATAFileReader extends StatDataFileReader {
               
               // Compute UNF
               try {
+                LOG.info("strdata: " + Arrays.deepToString(stringEntries));
+                LOG.info("dateFormats: " + Arrays.deepToString(dateFormats));
+                
                 unfValue = UNF5Util.calculateUNF(stringEntries, dateFormats);
               }
               catch (Exception ex) {
+                LOG.warning("UNF FOR DATE COULD NOT BE COMPUTED");
                 unfValue = UNF5Util.calculateUNF(stringEntries);
+                ex.printStackTrace();
               }
             }
             else

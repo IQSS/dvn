@@ -409,8 +409,9 @@ public class HomePage extends VDCBaseBean implements Serializable {
             childItem = new DataverseGrouping(group.getId(), group.getName(), "subgroup", isExpanded, "", "", parentId, vdcGroupService.findCountVDCsByVDCGroupId(group.getId()));
             parentItem.addItem(childItem);
             parentItem.setIsAccordion(true);
-            if (vdcGroupService.findByParentId(group.getId()) != null) {
-                List innerlist       = vdcGroupService.findByParentId(group.getId());                
+            if (!vdcGroupService.findByParentId(group.getId()).isEmpty()) {
+                childItem.setNumberOfDataverses(vdcGroupService.findCountChildVDCsByVDCGroupId(group.getId()));
+                List innerlist       = vdcGroupService.findByParentId(group.getId());                          
                 Iterator inneriterator  = innerlist.iterator();
                 DataverseGrouping xtraItem;
                 childItem.setXtraItems(new ArrayList());
@@ -419,7 +420,7 @@ public class HomePage extends VDCBaseBean implements Serializable {
                     xtraItem = new DataverseGrouping(innergroup.getId(), innergroup.getName(), "subgroup", isExpanded, "", "", parentId,  vdcGroupService.findCountVDCsByVDCGroupId(innergroup.getId()));
                     childItem.addXtraItem(xtraItem);
                 }
-            }
+            }            
          }        
       }
       

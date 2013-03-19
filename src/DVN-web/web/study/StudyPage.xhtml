@@ -180,8 +180,7 @@
                         var fileIdStr = ""
                         var bSingleZipfile= true;
                         var fileCBs = getElementsByClassName("fileCheckBox", document.body);
-                        var popBodyContent="<div style='float: right'><input type='button' value='close' onclick='window.close();'/></div>";
-                        popBodyContent+= "<h2>Click each link to download files:</h2>";
+                        var popBodyContent="";
                         
                         var lastCheckedIndex = 0;
                         for (var i = 0; i < fileCBs.length; i++) {
@@ -248,7 +247,7 @@
                     function attachToPopBodyContent(fileIdStrIn, zipNumber) {
                         if (fileIdStrIn == "") return "";
                         if (fileIdStrIn.endsWith(",")) fileIdStrIn= fileIdStrIn.substring(0,fileIdStrIn.length-1);
-                        return "<a href='/dvn#{VDCRequest.currentVDCURL}/FileDownload/study_#{studyPage.studyUI.study.studyId}.zip?fileId=" + fileIdStrIn + "&versionNumber=#{studyPage.studyUI.studyVersion.versionNumber}" + "#{studyPage.xff}'>Download zip file "+zipNumber+ "</a><br/>";
+                        return "<p><a href='/dvn#{VDCRequest.currentVDCURL}/FileDownload/study_#{studyPage.studyUI.study.studyId}.zip?fileId=" + fileIdStrIn + "&versionNumber=#{studyPage.studyUI.studyVersion.versionNumber}" + "#{studyPage.xff}'><span class='iceOutTxt'>Download ZIP Archive "+zipNumber+ "</span></a></p>";
 
                     }
                     
@@ -257,9 +256,10 @@
                     } 
                     
                     function openDownloadWin(bodyContent) {
-                        var myWindow=window.open('','','width=600,height=300,scrollbars=yes');
-                        myWindow.document.write(bodyContent);
-                        myWindow.focus();
+                        // var myWindow = jQuery('div[id$=multipleZipPopup]').show();
+                        // myWindow.document.write(bodyContent);
+                        jQuery('table[id$=autoCentZipContent] tr.popupModalBodyRow1 td.popupModalBodyCol1').append(bodyContent);
+                        // myWindow.focus();
                     }
                     
                     // ]]>

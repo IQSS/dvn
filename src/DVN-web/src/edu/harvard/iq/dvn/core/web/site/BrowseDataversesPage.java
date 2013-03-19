@@ -212,7 +212,8 @@ public class BrowseDataversesPage  extends VDCBaseBean implements Serializable {
             childItem = new DataverseGrouping(group.getId(), group.getName(), "subgroup", isExpanded, "", "", parentId, vdcGroupService.findCountVDCsByVDCGroupId(group.getId()));
             parentItem.addItem(childItem);
             parentItem.setIsAccordion(true);
-            if (vdcGroupService.findByParentId(group.getId()) != null) {
+            if (!vdcGroupService.findByParentId(group.getId()).isEmpty()) {
+                childItem.setNumberOfDataverses(vdcGroupService.findCountChildVDCsByVDCGroupId(group.getId()));
                 List innerlist       = vdcGroupService.findByParentId(group.getId());                
                 Iterator inneriterator  = innerlist.iterator();
                 DataverseGrouping xtraItem;

@@ -2174,7 +2174,7 @@ public class SAVFileReader extends StatDataFileReader{
             try {
                 dbgLog.finer("j = "+j);
                 dbgLog.finer("dataTable2[j] = " + Arrays.deepToString(dataTable2[j]));
-                dbgLog.finer("dateFormats[j] = " + Arrays.deepToString(dateFormats[j]));
+                dbgLog.warning("dateFormats[j] = " + Arrays.deepToString(dateFormats[j]));
                 unfValues[j] = getUNF(dataTable2[j], dateFormats[j], variableTypeNumer,
                     unfVersionNumber, j);
                 dbgLog.fine(j+"th unf value"+unfValues[j]);
@@ -3664,6 +3664,7 @@ public class SAVFileReader extends StatDataFileReader{
                 break;
             case  -1:
                 // String case
+              
                 dbgLog.finer("string case");
               
            

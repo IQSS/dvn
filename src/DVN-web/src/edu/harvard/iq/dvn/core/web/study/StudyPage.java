@@ -149,6 +149,8 @@ public class StudyPage extends VDCBaseBean implements java.io.Serializable  {
        super.preRenderView();
        // add javascript call on each partial submit to initialize the help tips for added fields
        JavascriptContext.addJavascriptCall(getFacesContext(),"initInlineHelpTip();");
+       
+       JavascriptContext.addJavascriptCall(getFacesContext(),"checkDownloadAllButton();");
 
        HttpServletRequest request = (HttpServletRequest) FacesContext.getCurrentInstance().getExternalContext().getRequest();      
        Map<String,String> params = FacesContext.getCurrentInstance().getExternalContext().getRequestParameterMap();

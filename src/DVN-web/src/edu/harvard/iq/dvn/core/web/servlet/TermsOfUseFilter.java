@@ -172,11 +172,8 @@ public class TermsOfUseFilter implements Filter {
                 || (req.getServletPath().equals("/faces") && req.getPathInfo().startsWith("/subsetting/NetworkDataAnalysisPage"))
                 || req.getServletPath().equals("/faces") && (req.getPathInfo().startsWith("/viz/ExploreDataPage"))) {
             redirected = checkDownloadTermsOfUse(req, res);
-        } else if (req.getServletPath().equals("/faces") && req.getPathInfo().startsWith("/study/StudyPage")) { //req.getParameter("checkTermsOfUse") != null ) {       
-            Map<String,String[]> params = request.getParameterMap();
-            if (req.getParameter("checkTermsOfUse") != null || params.get("checkTermsOfUse") != null) {
+        } else if (req.getServletPath().equals("/faces") && req.getPathInfo().startsWith("/study/StudyPage") && req.getParameter("checkTermsOfUse") != null ) {
                 redirected = checkDownloadTermsOfUse(req, res);
-            }
         } else if (req.getServletPath().equals("/faces") && (req.getPathInfo().startsWith("/study/EditStudyPage") || req.getPathInfo().startsWith("/study/AddFilesPage") ) ) {
             redirected = checkDepositTermsOfUse(req, res);
         }

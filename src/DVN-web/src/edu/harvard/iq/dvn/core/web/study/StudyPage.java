@@ -158,6 +158,7 @@ public class StudyPage extends VDCBaseBean implements java.io.Serializable  {
        }
        
        if (request.getParameter("checkTermsOfUse") != null) {
+          this.showMultipleZipPopup = true;
           JavascriptContext.addJavascriptCall(getFacesContext(),"doDownload();");
        }
    }     
@@ -737,6 +738,24 @@ public class StudyPage extends VDCBaseBean implements java.io.Serializable  {
     private StudyDeleteRequestType deleteRequested = null;
 
 
+    private boolean showMultipleZipPopup = false;
+    
+    public void toggleMultipleZipPopup(javax.faces.event.ActionEvent event) {
+        showMultipleZipPopup = !showMultipleZipPopup;
+    }
+
+    public boolean isShowMultipleZipPopup() {
+        return showMultipleZipPopup;
+    }
+
+    public void setShowMultipleZipPopup(boolean showMultipleZipPopup) {
+        this.showMultipleZipPopup = showMultipleZipPopup;
+    }
+    
+    /** popup for downloading multiple zip files
+    *
+    * 
+    */
     private boolean showStudyDeletePopup = false;
     
     public void toggleStudyDeletePopup(javax.faces.event.ActionEvent event) {
@@ -753,7 +772,7 @@ public class StudyPage extends VDCBaseBean implements java.io.Serializable  {
     public void setShowStudyDeletePopup(boolean showPopup) {
         this.showStudyDeletePopup = showPopup;
     }
-
+    
     public String confirmStudyDelete () {
     //public String confirmStudyDelete () {
         VDC dataverse = null;

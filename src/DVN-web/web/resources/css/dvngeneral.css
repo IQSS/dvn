@@ -152,6 +152,7 @@ span.iceOutTxt.vdcHelpText{display:inline !important;}
 .dvnPopupMessageContainer{display:table-cell;vertical-align:middle;}
 .dvnPopupWarningMessage p{margin:.25em 0 1.5em 58px;}
 .dvnPopupWarningMessage strong{color:#820024;text-transform:uppercase;}
+.popupModalBody .dvnPopupInfoMessage p:first-child {margin-top:0;}
 /* PAGINATOR + ALPHA BROWSE */
 td.dvnPaginatorWrap,div.dvnPaginatorWrap{padding:0}
 .dvnPaginatorRight img{border:0}

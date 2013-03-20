@@ -162,20 +162,17 @@
                                width="100%" cellpadding="0"
                                cellspacing="0" columns="1"
                                styleClass="popupModalBody">
-                    <div jsfc="ice:panelGroup">
-                        <ice:outputText value="You are about to download ZIP Archives of the files you selected. Because of their size, they were split in multiple files. You must click each link below to download the ZIP Archives."/>
+                    <div jsfc="ice:panelGroup" styleClass="dvnPopupInfoMessage">
                         <p>
                             <ice:graphicImage styleClass="dvn_icon" value="/dvn/resources/images/icon_info.gif"/>
-                            <ice:outputText value=" Click each ZIP Archives link to download your selected files."/>
+                            <ice:outputText value=" You are about to download ZIP Archives of the files you selected. Because of their size, they were split in multiple files. Click each ZIP Archives link to download your selected files."/>
                         </p>
                     </div>
+                    <div id="dvnMultipleZipPopupScrollBox"></div>
                     <div jsfc="ice:panelGroup" styleClass="dvnFormPadding dvnFormMargin">
                         <ice:commandButton id="autoCentZipPopupDone"
                                            actionListener="#{studyPage.toggleMultipleZipPopup}"
                                            value="Done"/>
-                        <ice:commandButton id="autoCentZipPopupCancel"
-                                           actionListener="#{studyPage.toggleMultipleZipPopup}"
-                                           value="Cancel"/>
                     </div>
                 </ice:panelGrid>
             </f:facet>

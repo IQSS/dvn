@@ -245,8 +245,8 @@
                         if (bSingleZipfile) {
                             downloadFile("#{VDCRequest.currentVDCURL}/FileDownload/study_#{studyPage.studyUI.study.studyId}.zip?fileId=" + fileIdStr + "&versionNumber=#{studyPage.studyUI.studyVersion.versionNumber}" + "#{studyPage.xff}");
                             return false;
-                        } else {                       
-                            jQuery('table[id$=autoCentZipContent] tr.popupModalBodyRow1 td.popupModalBodyCol1').append(popBodyContent);
+                        } else {
+                            jQuery('table[id$=autoCentZipContent] #dvnMultipleZipPopupScrollBox').append(popBodyContent).after("<br/><span class='iceOutTxt'>Total Number of ZIP Archives: " + numb + "</span>");
                             return true;
                         }
                     }
@@ -254,15 +254,12 @@
                     function attachToPopBodyContent(fileIdStrIn, zipNumber) {
                         if (fileIdStrIn == "") return "";
                         if (fileIdStrIn.endsWith(",")) fileIdStrIn= fileIdStrIn.substring(0,fileIdStrIn.length-1);
-                        return "<p><a href='/dvn#{VDCRequest.currentVDCURL}/FileDownload/study_#{studyPage.studyUI.study.studyId}.zip?fileId=" + fileIdStrIn + "&versionNumber=#{studyPage.studyUI.studyVersion.versionNumber}" + "#{studyPage.xff}'><span class='iceOutTxt'>Download ZIP Archive "+zipNumber+ "</span></a></p>";
-
+                        return "<a href='/dvn#{VDCRequest.currentVDCURL}/FileDownload/study_#{studyPage.studyUI.study.studyId}.zip?fileId=" + fileIdStrIn + "&versionNumber=#{studyPage.studyUI.studyVersion.versionNumber}" + "#{studyPage.xff}'><span class='iceOutTxt'>Download ZIP Archive "+zipNumber+ "</span></a><br/>";
                     }
                     
                     function downloadFile(fileUrl) {
                             self.location.href = "/dvn" + fileUrl;
-                    } 
-                    
-                    
+                    }
                     // ]]>
                 </script>
       <f:loadBundle basename="StudyBundle" var="studybundle"/>

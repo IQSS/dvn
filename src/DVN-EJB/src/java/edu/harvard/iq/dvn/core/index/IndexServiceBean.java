@@ -37,6 +37,8 @@ import edu.harvard.iq.dvn.core.vdc.VDCCollection;
 import edu.harvard.iq.dvn.core.vdc.VDCCollectionServiceLocal;
 import edu.harvard.iq.dvn.core.vdc.VDCNetworkServiceLocal;
 import edu.harvard.iq.dvn.core.vdc.VDCServiceLocal;
+/** @todo: a little weird to pass this core.web object in? */
+import edu.harvard.iq.dvn.core.web.StudyListing;
 import java.io.File;
 import java.io.IOException;
 import java.net.InetAddress;
@@ -438,6 +440,18 @@ public class IndexServiceBean implements edu.harvard.iq.dvn.core.index.IndexServ
             ex.printStackTrace();
         }        
         return resultsWithFacets;
+    }
+
+    public List getHitIdsWithFacetDrillDown(StudyListing studyListing, String facetKey, String facetValue) {
+        List<Long> studyIds = new ArrayList<Long>();
+        Indexer indexer = Indexer.getInstance();
+        try {
+            studyIds = indexer.getHitIdsWithFacetDrillDown(studyListing, facetKey, facetValue);
+        } catch (IOException ex) {
+            ex.printStackTrace();
+        }
+        return studyIds;
+
     }
 
     private List listVdcStudyIds(final VDC vdc) {

@@ -196,7 +196,7 @@ public class StudyListingPage extends VDCBaseBean implements java.io.Serializabl
                 Double hits = n.getValue();
 //                logger.info("  - expect " + hits + " hits from a faceted search for \"" + label + "\"");
                 if (last != null && hits.toString() != null) {
-                    logger.info("making a facetresult ui...");
+//                    logger.info("making a facetresult ui...");
                     FacetResultUI facetResultUI = new FacetResultUI();
                     facetResultUI.setName(last);
                     facetResultUI.setHits(hits);
@@ -943,6 +943,15 @@ public class StudyListingPage extends VDCBaseBean implements java.io.Serializabl
         }
 
         return count;
+    }
+
+    public void setStudyListingByFacet(String facetKey, String facetValue) {
+        studyListing.setStudyIds(facetDrillDown(facetKey, facetValue));
+    }
+
+    private List facetDrillDown(String facetKey, String facetValue) {
+        /** @todo: does it make sense to pass studyListing to indexService? */
+        return indexService.getHitIdsWithFacetDrillDown(studyListing, facetKey, facetValue);
     }
 
 }

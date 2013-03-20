@@ -241,7 +241,11 @@
                                     <div class="dvnStudyFacetCategoryTitle"><ice:outputText value="#{facetUI.name}"/></div>
                                     <ul>
                                         <ui:repeat value="#{facetUI.facetResultUIs}" var="facetresultuis">
-                                            <li><a href="FIXME... faceted search #{StudyListingPage.listMessage} and facet = #{facetUI.name}"><ice:outputText value="#{facetresultuis.name}"/></a> <span class="dvnStudyFacetResultNumber">(#{facetresultuis.hits})</span></li>
+                                            <li>
+                                                <ice:commandLink action="#{StudyListingPage.setStudyListingByFacet(facetUI.name, facetresultuis.name)}" title="Refine by facet">
+                                                    <ice:outputText value="#{facetresultuis.name}"/> <span class="dvnStudyFacetResultNumber">(#{facetresultuis.hits})</span>
+                                                </ice:commandLink>
+                                            </li>
                                         </ui:repeat>                                        
                                     </ul>
                                 </ice:column>

@@ -55,6 +55,8 @@ import edu.harvard.iq.dvn.core.study.SpecialOtherFile;
 import edu.harvard.iq.dvn.core.study.FileMetadataField; 
 import edu.harvard.iq.dvn.core.study.FileMetadataFieldValue;
 import edu.harvard.iq.dvn.core.study.StudyFieldServiceLocal;
+/** @todo: a little weird to pass this core.web object in? */
+import edu.harvard.iq.dvn.core.web.StudyListing;
 import java.io.File;
 import java.io.IOException;
 import java.io.StringReader;
@@ -93,6 +95,7 @@ import org.apache.lucene.store.Directory;
 import org.apache.lucene.store.FSDirectory;
 import org.apache.lucene.document.Field;
 import org.apache.lucene.facet.index.CategoryDocumentBuilder;
+import org.apache.lucene.facet.search.DrillDown;
 import org.apache.lucene.facet.search.FacetsCollector;
 import org.apache.lucene.facet.search.params.CountFacetRequest;
 import org.apache.lucene.facet.search.params.FacetSearchParams;
@@ -1387,6 +1390,49 @@ public class Indexer implements java.io.Serializable  {
             searcher.close();
         }
         matchIds.addAll(matchIdsSet);
+        return matchIds;
+    }
+
+    public List getHitIdsWithFacetDrillDown(StudyListing studyListing, String facetKey, String facetValue) throws IOException {
+        List<BooleanQuery> searchParts = new ArrayList();
+        List<SearchTerm> studyLevelSearchTerms = new ArrayList();
+
+        /**
+         * @todo: should we be re-implementing the logic in
+         * containsStudyLevelAndTerms from search() or searchWithFacets()?
+         */
+        for (Iterator it = studyListing.getSearchTerms().iterator(); it.hasNext();) {
+            SearchTerm elem = (SearchTerm) it.next();
+            studyLevelSearchTerms.add(elem);
+
+        }
+        BooleanQuery searchTermsQuery = andSearchTermClause(studyLevelSearchTerms);
+        searchParts.add(searchTermsQuery);
+        BooleanQuery baseQuery = andQueryClause(searchParts);
+        DocumentCollector s = new DocumentCollector(searcher);
+        TaxonomyReader taxo = new DirectoryTaxonomyReader(taxoDir);
+        FacetSearchParams facetSearchParams = new FacetSearchParams();
+        CategoryPath categoryPathOfInterest = new CategoryPath(facetKey, facetValue);
+        Query q2 = DrillDown.query(baseQuery, categoryPathOfInterest);
+        FacetsCollector facetsCollector = new FacetsCollector(facetSearchParams, r, taxo);
+        logger.info("drilldown dump...\n" + q2);
+        searcher.search(q2, MultiCollector.wrap(s, facetsCollector));
+        ArrayList matchIds = new ArrayList();
+        LinkedHashSet matchIdsSet = new LinkedHashSet();
+
+        List hits = s.getStudies();
+        logger.info("num hits = " + hits.size());
+        logger.info("hits = " + hits.toString());
+        for (int i = 0; i < hits.size(); i++) {
+            ScoreDoc sd = (ScoreDoc) hits.get(i);
+            Document d = searcher.doc(sd.doc);
+            Field studyId = d.getField("id");
+            String studyIdStr = studyId.stringValue();
+            Long studyIdLong = Long.valueOf(studyIdStr);
+            matchIdsSet.add(studyIdLong);
+        }
+        matchIds.addAll(matchIdsSet);
+
         return matchIds;
     }
 

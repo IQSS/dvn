@@ -1128,11 +1128,16 @@ public class Indexer implements java.io.Serializable  {
             List hits = s.getStudies();
             for (int i = 0; i < hits.size(); i++) {
                 ScoreDoc sd = (ScoreDoc) hits.get(i);
-                Document d = searcher.doc(sd.doc);
-                Field studyId = d.getField("id");
-                String studyIdStr = studyId.stringValue();
-                Long studyIdLong = Long.valueOf(studyIdStr);
-                matchIdsSet.add(studyIdLong);
+                Document d = searcher.doc(sd.doc);                
+                try {
+                    Field studyId = d.getField("id");
+                    String studyIdStr = studyId.stringValue();
+                    Long studyIdLong = Long.valueOf(studyIdStr);
+                    matchIdsSet.add(studyIdLong);
+                } catch (Exception ex) {
+                    logger.info("Query for " + query + "matched but id was null, dumping Lucene doc...\n" + d);
+                    ex.printStackTrace();
+                }
             }
             logger.fine("done iterate: " + DateTools.dateToString(new Date(), Resolution.MILLISECOND));
             searcher.close();
@@ -1567,6 +1572,7 @@ public class Indexer implements java.io.Serializable  {
                         && !"varLabel".equals(indexedFieldName)
                         && !"varId".equals(indexedFieldName)
                         && !"id".equals(indexedFieldName)
+                        && !"versionNumber".equals(indexedFieldName)
                         && !"versionStudyId".equals(indexedFieldName)
                         && !"varStudyId".equals(indexedFieldName)
                         && !"varStudyFileId".equals(indexedFieldName)) {

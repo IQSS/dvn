@@ -107,6 +107,7 @@ public class StudyListingPage extends VDCBaseBean implements java.io.Serializabl
     private String searchValue = "Search Studies";
     private Map studyFields;
     private String studyListingIndex;
+    List studyIdsPreFacet = new ArrayList();
 
     // display items
     boolean renderTree;
@@ -951,7 +952,8 @@ public class StudyListingPage extends VDCBaseBean implements java.io.Serializabl
     }
 
     public void setStudyListingByFacet(String facetKey, String facetValue) {
-        listMessageFacet = " with results refined to \"" + facetKey + "\" = \"" + facetValue + "\"";
+        listMessageFacet = " with results refined to \"" + facetKey + "\" = \"" + facetValue + "\" (click to remove)";
+        studyIdsPreFacet = studyListing.getStudyIds();
         studyListing.setStudyIds(facetDrillDown(facetKey, facetValue));
     }
 
@@ -960,4 +962,8 @@ public class StudyListingPage extends VDCBaseBean implements java.io.Serializabl
         return indexService.getHitIdsWithFacetDrillDown(studyListing, facetKey, facetValue);
     }
 
+    public void removeFacet() {
+        listMessageFacet = "";
+        studyListing.setStudyIds(studyIdsPreFacet);
+    }
 }

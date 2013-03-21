@@ -103,8 +103,11 @@
                   <tr>
                      <td valign="bottom">
                          <div jsfc="ice:panelGroup" styleClass="dvnStudyListCollectionName">
-                            <ice:outputText value="#{StudyListingPage.listHeader}"/>
-                            <ice:outputText styleClass="dvnStudyListSearchResultsMessage" value=" #{StudyListingPage.listMessage} #{StudyListingPage.listMessageFacet}" rendered="#{StudyListingPage.studyCount != 0}"/>
+                             <ice:outputText value="#{StudyListingPage.listHeader}"/>
+                             <ice:outputText styleClass="dvnStudyListSearchResultsMessage" value=" #{StudyListingPage.listMessage}" rendered="#{StudyListingPage.studyCount != 0}"/>
+                             <ice:commandLink action="#{StudyListingPage.removeFacet()}" title="Remove">
+                                 <ice:outputText styleClass="dvnStudyListSearchResultsMessage" value=" #{StudyListingPage.listMessageFacet}" rendered="#{StudyListingPage.studyCount != 0}"/>
+                             </ice:commandLink>
                          </div>
                      </td>
                      <td width="388" align="right" valign="bottom">

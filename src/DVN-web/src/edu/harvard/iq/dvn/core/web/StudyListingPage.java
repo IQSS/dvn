@@ -128,6 +128,7 @@ public class StudyListingPage extends VDCBaseBean implements java.io.Serializabl
 
     String listHeader;
     String listMessage;
+    String listMessageFacet;
     String listDescription;
     
     Long downloadCount;
@@ -266,6 +267,10 @@ public class StudyListingPage extends VDCBaseBean implements java.io.Serializabl
     }
     public String getListMessage() {
         return listMessage;
+    }
+
+    public String getListMessageFacet() {
+        return listMessageFacet;
     }
 
     public boolean isRenderTree() {
@@ -946,6 +951,7 @@ public class StudyListingPage extends VDCBaseBean implements java.io.Serializabl
     }
 
     public void setStudyListingByFacet(String facetKey, String facetValue) {
+        listMessageFacet = " with results refined to \"" + facetKey + "\" = \"" + facetValue + "\"";
         studyListing.setStudyIds(facetDrillDown(facetKey, facetValue));
     }
 

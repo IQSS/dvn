@@ -63,7 +63,7 @@ import edu.harvard.iq.dvn.core.web.common.*;
  * or method binding expression that references a managed bean using
  * this class.</p>
  */
-public class AnalysisApplicationBean extends VDCApplicationBean 
+public class AnalysisApplicationBean extends VDCBaseBean 
     implements java.io.Serializable {
     // <editor-fold defaultstate="collapsed" desc="field Definition">
     /** Sets the logger (use the package name) */

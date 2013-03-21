@@ -45,6 +45,8 @@ import com.icesoft.faces.component.ext.HtmlInputText;
 import com.icesoft.faces.component.ext.HtmlCommandButton;
 import com.icesoft.faces.component.ext.HtmlInputTextarea;
 import edu.harvard.iq.dvn.core.admin.VDCUser;
+import edu.harvard.iq.dvn.core.study.Template;
+import edu.harvard.iq.dvn.core.study.TemplateServiceLocal;
 import edu.harvard.iq.dvn.core.web.util.CharacterValidator;
 import edu.harvard.iq.dvn.core.util.PropertyUtil;
 import edu.harvard.iq.dvn.core.vdc.*;
@@ -93,6 +95,7 @@ public class AddSitePage extends VDCBaseBean implements java.io.Serializable  {
     RoleServiceLocal roleService;
     @EJB
     MailServiceLocal mailService;
+    @EJB TemplateServiceLocal templateService;
     StatusMessage msg;
     
     //private BundleReader messagebundle = new BundleReader("Bundle");
@@ -125,11 +128,18 @@ public class AddSitePage extends VDCBaseBean implements java.io.Serializable  {
                 this.setDataverseType(request.getParameter((String) key));
             }
         }
-      
+        
+        defaultTemplateId = getVDCRequestBean().getVdcNetwork().getDefaultTemplate().getId();
+        Template defaultTemplate = templateService.getTemplate(defaultTemplateId);
+        if(defaultTemplate.isDisplayOnCreateDataverse()){
+            selectTemplateId = defaultTemplate.getId();
+        }     
     }
 
     //copied from manageclassificationsPage.java
     private boolean result;
+    
+    private Long defaultTemplateId;
  
      //fields from dvrecordsmanager
     private ArrayList itemBeans = new ArrayList();
@@ -325,6 +335,8 @@ public class AddSitePage extends VDCBaseBean implements java.io.Serializable  {
             createdVDC.setAffiliation(strAffiliation);
             createdVDC.setDvnDescription(strShortDescription);
             createdVDC.setAnnouncements(strShortDescription); // also set default dv home page description from the the DVN home page short description
+            Template template = templateService.getTemplate(selectTemplateId);
+            createdVDC.setDefaultTemplate(template);
             //on create if description is blank uncheck display flag
             if(strShortDescription.isEmpty()){
                 createdVDC.setDisplayAnnouncements(false);
@@ -661,7 +673,20 @@ public class AddSitePage extends VDCBaseBean implements java.io.Serializable  {
      *
      *
      */
+    public Map getTemplatesMap() {
+        // getVdcTemplatesMap is called with currentVDCId, since for a new study the current VDC IS the owner   
+        return templateService.getVdcTemplatesMap(getVDCRequestBean().getCurrentVDCId());
+    }
+    
+    private Long selectTemplateId;
 
+    public Long getSelectTemplateId() {
+        return selectTemplateId;
+    }
+
+    public void setSelectTemplateId(Long selectTemplateId) {
+        this.selectTemplateId = selectTemplateId;
+    }
 
     public void changeDataverseOption(ValueChangeEvent event) {
         String newValue = (String) event.getNewValue();

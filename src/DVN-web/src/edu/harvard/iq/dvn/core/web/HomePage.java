@@ -39,6 +39,7 @@ import edu.harvard.iq.dvn.core.study.VariableServiceLocal;
 import edu.harvard.iq.dvn.core.util.StringUtil;
 import edu.harvard.iq.dvn.core.vdc.*;
 import edu.harvard.iq.dvn.core.web.common.StatusMessage;
+import edu.harvard.iq.dvn.core.web.common.VDCApplicationBean;
 import edu.harvard.iq.dvn.core.web.common.VDCBaseBean;
 import edu.harvard.iq.dvn.core.web.site.VDCUI;
 import edu.harvard.iq.dvn.core.web.study.StudyUI;
@@ -49,6 +50,7 @@ import java.util.*;
 import javax.ejb.EJB;
 import javax.faces.bean.ViewScoped;
 import javax.faces.event.ValueChangeEvent;
+import javax.inject.Inject;
 import javax.inject.Named;
 
 @ViewScoped
@@ -469,16 +471,18 @@ public class HomePage extends VDCBaseBean implements Serializable {
         return this.parsedNetworkAnnouncements;
     }
 
+     @Inject VDCApplicationBean vdcApplicationBean;
+     
      public List getRecentStudies() {
         if (recentStudies == null) {
             recentStudies = new ArrayList();
             VDC vdc = getVDCRequestBean().getCurrentVDC();
             if (vdc != null) {
                 VDCUser user = getVDCSessionBean().getUser();
-                recentStudies = filterVisibleStudyUIsFromIds( studyService.getRecentlyReleasedStudyIds(vdc.getId(), 10), vdc, user, getVDCSessionBean().getIpUserGroup(), 5 );
+                recentStudies = filterVisibleStudyUIsFromIds( vdcApplicationBean.getAllStudyIdsByReleaseDate(), vdc, user, getVDCSessionBean().getIpUserGroup(), 5 );
             } else {
                 VDCUser user = getVDCSessionBean().getUser();
-                recentStudies = filterVisibleStudyUIsFromIds( studyService.getRecentlyReleasedStudyIds(null, 10), vdc, user, getVDCSessionBean().getIpUserGroup(), 5 ); 
+                recentStudies = filterVisibleStudyUIsFromIds( vdcApplicationBean.getAllStudyIdsByReleaseDate(), vdc, user, getVDCSessionBean().getIpUserGroup(), 5 ); 
             }
         }
         return recentStudies;
@@ -490,10 +494,10 @@ public class HomePage extends VDCBaseBean implements Serializable {
             VDC vdc = getVDCRequestBean().getCurrentVDC();
             if (vdc != null) {
                 VDCUser user = getVDCSessionBean().getUser();
-                mostDownloadedStudies = filterVisibleStudyUIsFromIds( studyService.getMostDownloadedStudyIds(vdc.getId(), 10), vdc, user, getVDCSessionBean().getIpUserGroup(), 5 );
+                mostDownloadedStudies = filterVisibleStudyUIsFromIds( vdcApplicationBean.getAllStudyIdsByDownloadCount(), vdc, user, getVDCSessionBean().getIpUserGroup(), 5 );
             } else {
                 VDCUser user = getVDCSessionBean().getUser();
-                mostDownloadedStudies = filterVisibleStudyUIsFromIds( studyService.getMostDownloadedStudyIds(null, 10), vdc, user, getVDCSessionBean().getIpUserGroup(), 5 ); 
+                mostDownloadedStudies = filterVisibleStudyUIsFromIds( vdcApplicationBean.getAllStudyIdsByDownloadCount(), vdc, user, getVDCSessionBean().getIpUserGroup(), 5 ); 
             }
         }
         return mostDownloadedStudies;
@@ -546,7 +550,7 @@ public class HomePage extends VDCBaseBean implements Serializable {
             Iterator iter = originalStudies.iterator();
             while (iter.hasNext()) {
                 Long studyId = (Long) iter.next();
-                Study study = studyService.getStudy(studyId);
+                Study study = studyService.getStudyForSearch(studyId, null);
 
                 StudyUI studyUIToAdd = new StudyUI(study, getVDCSessionBean().getUser(), getVDCSessionBean().getIpUserGroup(), false);
 
@@ -568,11 +572,15 @@ public class HomePage extends VDCBaseBean implements Serializable {
         return NumberFormat.getIntegerInstance().format(count);
     }
 
-      public String getFileCount() {
+    public String getFileCount() {
         Long count = vdcNetworkStatsService.getVDCNetworkStats().getFileCount();
         return NumberFormat.getIntegerInstance().format(count);
     }
-
+    
+    public String getDownloadCount() {
+        Long count = vdcNetworkStatsService.getVDCNetworkStats().getDownloadCount();
+        return NumberFormat.getIntegerInstance().format(count);
+    }
 
    //setters
  

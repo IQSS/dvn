@@ -19,6 +19,8 @@
 */
 package edu.harvard.iq.dvn.core.vdc;
 
+import edu.harvard.iq.dvn.core.study.StudyServiceLocal;
+import edu.harvard.iq.dvn.core.web.common.VDCApplicationBean;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Iterator;
@@ -29,6 +31,7 @@ import javax.ejb.EJB;
 import javax.ejb.Stateless;
 import javax.ejb.Timeout;
 import javax.ejb.Timer;
+import javax.inject.Inject;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 
@@ -41,6 +44,9 @@ public class VDCNetworkStatsServiceBean implements VDCNetworkStatsServiceLocal {
     javax.ejb.TimerService timerService;
 
     @EJB VDCNetworkServiceLocal vdcNetworkService;
+    @EJB StudyServiceLocal studyService;
+    
+    @Inject VDCApplicationBean vdcApplicationBean;
 
     private static final String STATS_TIMER = "StatsTimer";
     private static final Logger logger = Logger.getLogger("edu.harvard.iq.dvn.core.index.VDCNetworkStatsServiceBean");
@@ -94,11 +100,15 @@ public class VDCNetworkStatsServiceBean implements VDCNetworkStatsServiceLocal {
   
     public void updateStats() {
         VDCNetworkStats vdcNetworkStats = (VDCNetworkStats) em.find(VDCNetworkStats.class, new Long(1));
-        logger.log(Level.FINE, "found vdcNetworkStats" +vdcNetworkStats );
         Long releasedStudies = vdcNetworkService.getTotalStudies(true);
         Long releasedFiles = vdcNetworkService.getTotalFiles(true);
+        Long downloadCount = vdcNetworkService.getTotalDownloads(true);
         logger.log(Level.FINE, "releasedStudies ="+releasedStudies+"releasedFiles="+releasedFiles);
         vdcNetworkStats.setStudyCount(releasedStudies);
         vdcNetworkStats.setFileCount(releasedFiles);
+        vdcNetworkStats.setDownloadCount(downloadCount);
+        
+        vdcApplicationBean.setAllStudyIdsByDownloadCount(studyService.getMostDownloadedStudyIds(null, -1));
+        vdcApplicationBean.setAllStudyIdsByReleaseDate(studyService.getRecentlyReleasedStudyIds(null, -1));
     }
 }

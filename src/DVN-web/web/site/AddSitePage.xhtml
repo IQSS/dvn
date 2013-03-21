@@ -203,6 +203,20 @@
                                             <ice:outputText styleClass="vdcHelpText" value="Short description to appear on the network homepage with your dataverse listing."/>
                                             <ice:message for="dataverseShortDescription" showSummary="true" showDetail="false" errorClass="errorMessage" styleClass="errorMessage"/>
                                         </ice:column>
+                                        <ice:column>
+                                            <div jsfc="ice:panelGroup" styleClass="dvn_padBot" rendered="#{!empty(AddSitePage.templatesMap)}">
+                                            <ice:outputLabel for="selectedTemplate" id="selectedTemplateLabel" rendered="#{!empty(AddSitePage.templatesMap)}">
+                                                <ice:outputText id="selectedTemplateText" value="Select Default Template " rendered="#{!empty(AddSitePage.templatesMap)}"/>
+                                            </ice:outputLabel>
+                                            </div>
+                                        </ice:column>
+                                        <ice:column>
+                                            <div jsfc="ice:panelGroup" styleClass="dvn_padBot" rendered="#{!empty(AddSitePage.templatesMap)}">
+                                                    <ice:selectOneMenu value="#{AddSitePage.selectTemplateId}" rendered="#{!empty(AddSitePage.templatesMap)}" >
+                                                    <f:selectItems value="#{AddSitePage.templatesMap}"/>
+                                                 </ice:selectOneMenu>
+                                            </div>
+                                        </ice:column>
                                         <!-- Group Assignment -->
                                         <ice:column>
                                             <ice:outputLabel for="selectedGroup" id="selectedGroupLabel">

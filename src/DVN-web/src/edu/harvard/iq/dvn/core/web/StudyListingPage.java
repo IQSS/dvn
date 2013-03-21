@@ -45,6 +45,7 @@ import edu.harvard.iq.dvn.core.vdc.VDCCollectionServiceLocal;
 import edu.harvard.iq.dvn.core.vdc.VDCServiceLocal;
 import edu.harvard.iq.dvn.core.web.collection.CollectionUI;
 import edu.harvard.iq.dvn.core.web.common.LoginBean;
+import edu.harvard.iq.dvn.core.web.common.VDCApplicationBean;
 import edu.harvard.iq.dvn.core.web.common.VDCBaseBean;
 import edu.harvard.iq.dvn.core.web.component.VDCCollectionTree;
 import edu.harvard.iq.dvn.core.web.site.VDCUI;
@@ -62,6 +63,7 @@ import javax.ejb.EJB;
 import javax.faces.bean.ViewScoped;
 import javax.faces.component.UIData;
 import javax.faces.event.ValueChangeEvent;
+import javax.inject.Inject;
 import javax.inject.Named;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
@@ -600,6 +602,8 @@ public class StudyListingPage extends VDCBaseBean implements java.io.Serializabl
 
     }
 
+   @Inject VDCApplicationBean vdcApplicationBean;
+         
     private void initNewStudyListing() {
         StudyListing sl = null;
         int mode = -1;
@@ -717,12 +721,12 @@ public class StudyListingPage extends VDCBaseBean implements java.io.Serializabl
                 // subsearch
                 sl = new StudyListing(StudyListing.GENERIC_LIST);
                 // TODO: change filter method to only return studyIds
-                sl.setStudyIds(studyService.getMostDownloadedStudyIds(null, -1));
+                sl.setStudyIds(vdcApplicationBean.getAllStudyIdsByDownloadCount());
             } else if (mode == StudyListing.GENERIC_LIST) {
                 // subsearch
                 sl = new StudyListing(StudyListing.GENERIC_LIST);
                 // TODO: change filter method to only return studyIds
-                sl.setStudyIds(studyService.getRecentlyReleasedStudyIds(null, -1));
+                sl.setStudyIds(vdcApplicationBean.getAllStudyIdsByReleaseDate());
             } else {
                 sl = new StudyListing(StudyListing.GENERIC_ERROR);
             }

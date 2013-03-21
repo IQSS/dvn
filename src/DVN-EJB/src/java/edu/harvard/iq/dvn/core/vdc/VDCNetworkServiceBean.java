@@ -276,6 +276,12 @@ public class VDCNetworkServiceBean implements VDCNetworkServiceLocal {
         return total;
     }
     
+    public Long getTotalDownloads(boolean released) {
+        Long total = new Long("0");
+        total = ((Long)em.createNativeQuery("select sum(studyfileactivity.downloadcount) from vdc, studyversion, study, studyfileactivity where study.owner_id = vdc.id AND study.id = studyversion.study_id  AND studyversion.versionstate= '" + StudyVersion.VersionState.RELEASED + "' AND studyfileactivity.study_id = study.id AND vdc.restricted = " + !released).getSingleResult());
+        return total;
+    }
+    
     public void updateDefaultDisplayNumber(VDCNetwork vdcnetwork) {
         if (em.find(VDCNetwork.class, new Long(1)) != null)
             em.merge(vdcnetwork);

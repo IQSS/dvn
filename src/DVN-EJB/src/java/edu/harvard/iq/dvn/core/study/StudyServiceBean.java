@@ -633,7 +633,7 @@ public class StudyServiceBean implements edu.harvard.iq.dvn.core.study.StudyServ
 
     /**
      *   Gets Study and dependent objects based on Map parameter;
-     *   Should only be sued for studies with Released versions
+     *   Should only be used for studies with Released versions
      *   used by studyListingPage
      *
      */

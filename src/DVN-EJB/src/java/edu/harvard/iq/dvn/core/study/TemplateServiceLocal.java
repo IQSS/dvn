@@ -47,6 +47,7 @@ public interface TemplateServiceLocal extends java.io.Serializable {
     public List<Template> getEnabledVDCTemplates(Long vdcId);
     public List<Template> getNetworkTemplates();
     public List<Template> getEnabledNetworkTemplates();
+    public List<Template> getPreferredNetworkTemplates();
     
     public List<ControlledVocabulary> getNetworkControlledVocabulary();
     public ControlledVocabulary getControlledVocabulary(Long cvId);

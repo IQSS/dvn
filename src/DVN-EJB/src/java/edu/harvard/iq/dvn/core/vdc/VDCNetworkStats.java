@@ -25,11 +25,7 @@
  */
 package edu.harvard.iq.dvn.core.vdc;
 
-import edu.harvard.iq.dvn.core.admin.VDCUser;
-import edu.harvard.iq.dvn.core.study.Study;
-import edu.harvard.iq.dvn.core.study.Template;
-import java.util.Collection;
-import java.util.Date;
+import java.util.List;
 import javax.persistence.Id;
 import javax.persistence.Entity;
 import javax.persistence.*;
@@ -93,6 +89,14 @@ public class VDCNetworkStats implements java.io.Serializable  {
         this.fileCount = fileCount;
     }
     
+    private Long downloadCount;
 
- 
+    public Long getDownloadCount() {
+        return downloadCount;
+    }
+
+    public void setDownloadCount(Long downloadCount) {
+        this.downloadCount = downloadCount;
+    }
+        
 }

@@ -281,16 +281,16 @@ public class StudyUI  implements java.io.Serializable {
      * @return
      */
     private void initVersionForStudy(Study study) {
-
+        
         if (study.isReleased()) {
-            studyVersion = study.getReleasedVersion();
+        studyVersion = study.getReleasedVersion();
         }
         else if (study.isDeaccessioned()) {
-            studyVersion =study.getDeaccessionedVersion();
-        }
-        else { 
-            studyVersion = study.getLatestVersion();
-        }
+                studyVersion =study.getDeaccessionedVersion();
+            }
+            else { 
+                studyVersion = study.getLatestVersion();
+            }
         
         studyVersionId = studyVersion.getId();
     }

@@ -185,27 +185,29 @@ public class StudyListingPage extends VDCBaseBean implements java.io.Serializabl
 
     public Collection getFacets() {
         List facetUIList = new ArrayList();
-        List<FacetResult> facetResults = studyListing.getResultsWithFacets().getResultList();
-        for (int i = 0; i < facetResults.size(); i++) {
-            FacetResult facetResult = facetResults.get(i);
-            FacetUI facetUI = new FacetUI();
-            String category = facetResult.getFacetResultNode().getLabel().toString();
+        if (studyListing.getResultsWithFacets() != null) {
+            List<FacetResult> facetResults = studyListing.getResultsWithFacets().getResultList();
+            for (int i = 0; i < facetResults.size(); i++) {
+                FacetResult facetResult = facetResults.get(i);
+                FacetUI facetUI = new FacetUI();
+                String category = facetResult.getFacetResultNode().getLabel().toString();
 //            logger.info("Added facetUi with category: " + category);
-            facetUI.setName(category);
-            for (FacetResultNode n : facetResult.getFacetResultNode().getSubResults()) {
-                CategoryPath label = n.getLabel();
-                String last = n.getLabel().lastComponent().toString();
-                Double hits = n.getValue();
+                facetUI.setName(category);
+                for (FacetResultNode n : facetResult.getFacetResultNode().getSubResults()) {
+                    CategoryPath label = n.getLabel();
+                    String last = n.getLabel().lastComponent().toString();
+                    Double hits = n.getValue();
 //                logger.info("  - expect " + hits + " hits from a faceted search for \"" + label + "\"");
-                if (last != null && hits.toString() != null) {
+                    if (last != null && hits.toString() != null) {
 //                    logger.info("making a facetresult ui...");
-                    FacetResultUI facetResultUI = new FacetResultUI();
-                    facetResultUI.setName(last);
-                    facetResultUI.setHits(hits);
-                    facetUI.add(facetResultUI);
+                        FacetResultUI facetResultUI = new FacetResultUI();
+                        facetResultUI.setName(last);
+                        facetResultUI.setHits(hits);
+                        facetUI.add(facetResultUI);
+                    }
                 }
+                facetUIList.add(facetUI);
             }
-            facetUIList.add(facetUI);
         }
         return facetUIList;
     }

@@ -209,17 +209,18 @@ public class BrowseDataversesPage  extends VDCBaseBean implements Serializable {
          DataverseGrouping childItem;
          while (iterator.hasNext()) {
             VDCGroup group = (VDCGroup)iterator.next();
-            childItem = new DataverseGrouping(group.getId(), group.getName(), "subgroup", isExpanded, "", "", parentId, group.getReleasedVdcCount());
+            childItem = new DataverseGrouping(group.getId(), group.getName(), "subgroup", isExpanded, "", "", parentId, vdcGroupService.findCountVDCsByVDCGroupId(group.getId()));
             parentItem.addItem(childItem);
             parentItem.setIsAccordion(true);
-            if (vdcGroupService.findByParentId(group.getId()) != null) {
+            if (!vdcGroupService.findByParentId(group.getId()).isEmpty()) {
+                childItem.setNumberOfDataverses(vdcGroupService.findCountChildVDCsByVDCGroupId(group.getId()));
                 List innerlist       = vdcGroupService.findByParentId(group.getId());                
                 Iterator inneriterator  = innerlist.iterator();
                 DataverseGrouping xtraItem;
                 childItem.setXtraItems(new ArrayList());
                 while (inneriterator.hasNext()) {
                     VDCGroup innergroup = (VDCGroup)inneriterator.next();
-                    xtraItem = new DataverseGrouping(innergroup.getId(), innergroup.getName(), "subgroup", isExpanded, "", "", parentId, innergroup.getReleasedVdcCount());
+                    xtraItem = new DataverseGrouping(innergroup.getId(), innergroup.getName(), "subgroup", isExpanded, "", "", parentId, vdcGroupService.findCountVDCsByVDCGroupId(innergroup.getId()));
                     childItem.addXtraItem(xtraItem);
                 }
             }

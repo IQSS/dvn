@@ -180,6 +180,11 @@ public class TemplateServiceBean implements edu.harvard.iq.dvn.core.study.Templa
         String query = "select object(o) FROM Template as o WHERE o.vdc is null and o.enabled = true ORDER BY o.name";
         return (List) em.createQuery(query).getResultList();
     }
+    
+    public List<Template> getPreferredNetworkTemplates() {
+        String query = "select object(o) FROM Template as o WHERE o.vdc is null and o.enabled = true and displayOnCreateDataverse = true ORDER BY o.name";
+        return (List) em.createQuery(query).getResultList();
+    }
 
     public List<ControlledVocabulary> getNetworkControlledVocabulary() {
         String query = "select object(o) FROM ControlledVocabulary as o ORDER BY o.name";

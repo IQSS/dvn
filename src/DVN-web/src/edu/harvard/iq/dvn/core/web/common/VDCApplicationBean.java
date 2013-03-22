@@ -55,10 +55,12 @@
  */
 package edu.harvard.iq.dvn.core.web.common;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
+import edu.harvard.iq.dvn.core.study.StudyServiceLocal;
 import java.util.Date;
-import javax.faces.FacesException;
+import java.util.List;
+import javax.ejb.EJB;
+import javax.faces.bean.ApplicationScoped;
+import javax.inject.Named;
 
 /**
  * <p>Application scope data bean for your application.  Create properties
@@ -70,6 +72,9 @@ import javax.faces.FacesException;
  * or method binding expression that references a managed bean using
  * this class.</p>
  */
+
+@Named("VDCApplication")
+@ApplicationScoped
 public class VDCApplicationBean extends VDCBaseBean implements java.io.Serializable  {
  
 
@@ -128,6 +133,38 @@ public class VDCApplicationBean extends VDCBaseBean implements java.io.Serializa
 
         this.minimumDate = minimumDate;
     }
+    
+    @EJB StudyServiceLocal studyService;
+
+    private List allStudyIdsByDownloadCount;
+    private List allStudyIdsByReleaseDate;
+
+    
+        
+    public List getAllStudyIdsByDownloadCount() {
+        if (allStudyIdsByDownloadCount == null) {
+            allStudyIdsByDownloadCount = studyService.getMostDownloadedStudyIds(null, -1);
+ ;
+        }
+        return allStudyIdsByDownloadCount;
+    }
+
+    public void setAllStudyIdsByDownloadCount(List allStudyIdsByDownloadCount) {
+        this.allStudyIdsByDownloadCount = allStudyIdsByDownloadCount;
+    }
+
+    public List getAllStudyIdsByReleaseDate() {
+        if (allStudyIdsByReleaseDate == null) {
+            allStudyIdsByReleaseDate = studyService.getRecentlyReleasedStudyIds(null, -1);
+        }
+        return allStudyIdsByReleaseDate;
+    }
+
+    public void setAllStudyIdsByReleaseDate(List allStudyIdsByReleaseDate) {
+        this.allStudyIdsByReleaseDate = allStudyIdsByReleaseDate;
+    }
+    
+    
     
     
 }

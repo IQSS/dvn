@@ -11,7 +11,7 @@
 
 <h:body>
   <ui:composition template="/template.xhtml">
-    <ui:param name="pageTitle" value="#{bundlePageInfo.browseDvsTitle} - #{VDCRequest.dataversePageTitle}"/>
+    <ui:param name="pageTitle" value="#{VDCRequest.dataversePageTitle}"/>
         <ui:define name="metadata">
             <f:metadata>
                 <f:viewParam name="classificationList" value="#{ClassificationList}"/>
@@ -38,10 +38,7 @@
                             <tr>
                                 <td valign="bottom">
                                     <div jsfc="ice:panelGroup" styleClass="dvnStudyListCollectionName">
-                                        <ice:outputText value="#{bundlePageInfo.browseDvsTitle}"/>
-                                        
-                                        <ice:outputText value=" #{BrowseDataversesPage.groupName}"/>
-                                        
+                                        <ice:outputText value=" #{BrowseDataversesPage.groupName}"/>                                       
                                     </div>
                                 </td>
                                 <td>
@@ -60,8 +57,8 @@
                         <div jsfc="ice:panelGroup" styleClass="dvnStudyListResultsTop">
                             <table cellpadding="0" cellspacing="0" border="0" width="100%">
                                 <tr>
-                                    <td align="left">
-                                        <div jsfc="ice:panelGroup" id="groupPanel5" rendered="#{!empty(BrowseDataversesPage.vdcUIList.vdcUIList)}">
+                                    <td align="left" valign="bottom">
+                                        <div jsfc="ice:panelGroup" styleClass="dvnStudyListResultsSort" id="groupPanel5" rendered="#{!empty(BrowseDataversesPage.vdcUIList.vdcUIList)}">
                                             <ice:selectOneMenu id="dropdown2" valueChangeListener="#{BrowseDataversesPage.sort_action}" onchange="submit();">
                                                 <f:selectItem itemLabel="Sort By:" itemValue=""/>
                                                 <f:selectItem itemLabel="- Name" itemValue="Name"/>
@@ -70,8 +67,7 @@
                                                 <f:selectItem itemLabel="- Download Count" itemValue="Activity"/>
                                             </ice:selectOneMenu>
                                         </div>
-                                    </td>
-                                    <td align="left">
+                                    
                                         <ice:outputText value="Filter: "/>
                                         <ice:inputText binding="#{BrowseDataversesPage.inputFilterTerm}"
                                                         size="25" maxlength="255"
@@ -79,9 +75,12 @@
                                     </td>
                                     <td align="right">
                                         <ice:panelGrid cellpadding="0" cellspacing="0" border="0" columns="2" id="gridPanel2"
-                                                styleClass="dvnManageTableControls2"
-                                                columnClasses="dvnManageTableControlPad, dvnPaginatorCol">
-                                            <div jsfc="ice:panelGroup" styleClass="dvnPaginatorWrap">
+                                                columnClasses="dvn_StudyListTotals, dvnPaginatorWrap">
+                                            <div jsfc="ice:panelGroup">
+                                                    <ice:outputText styleClass="dvn_totalsLabel" value="Dataverses: "/>
+                                                    <ice:outputText styleClass="dvn_totalsValue" value="#{BrowseDataversesPage.vdcUIListSize}"/>
+                                            </div>
+                                            <div jsfc="ice:panelGroup">
                                                 <ice:dataPaginator for="dataverseListManage"
                                                                     binding="#{BrowseDataversesPage.paginator}"
                                                                     id="dataScroller"
@@ -108,10 +107,6 @@
                                                         <ice:graphicImage url="/resources/icefaces/dvn_rime/css-images/arrow-last.gif" title="Previous"/>
                                                     </f:facet>
                                                 </ice:dataPaginator>
-                                                <div class="dvnManageTableTotals">
-                                                        <ice:outputText value="Dataverses: "/>
-                                                        <ice:outputText value="#{BrowseDataversesPage.vdcUIListSize}" styleClass="dvn_totalsValue"/>
-                                                </div>
                                             </div>
                                         </ice:panelGrid>
                                     </td>
@@ -123,49 +118,29 @@
                                 <style type="text/css">
                                 .dvnStudyFacetBlock {width:30%; float:right; text-align:left;}
                                 .dvnStudyListBlockSearch {width:70%; border-right:1px solid #C55B28;}
-                                
-                                .dvn_theMenuContainer ul, .dvn_theMenuContainer li {list-style:none;}
-                                
                                 </style>
                                 
                                 <script type="text/javascript">
                                       // <![CDATA[
-                                      
                                       // javascript for the accordion
-                                        jQuery(document).ready(function(){
-                                            jQuery('.xtraMenu').accordion({active: 'h4.selected', header: 'h4.head', autoheight: false});
-                                        });
-                                      
-                                      function highlight_active_sidebar_links(obj) {
-                                          jQuery("a.lastNodeActive").each(function(){
-                                            jQuery(this).removeClass("lastNodeActive");
-                                          });
-                                          obj.className = "lastNodeActive";
-                                       }
-                                       function deselect_active_children(obj) {
-                                           if (arguments.length > 1) {
-                                               var parentNode = obj.parentNode.parentNode.parentNode;
-                                               var nodes = parentNode.getElementsByTagName("H4");
-                                               for (var i = 0; i < nodes.length; i++) {
-                                                   var nodeObj = nodes.item(i);
-                                                   if (nodeObj.className.indexOf('selected') != -1) {
-                                                       jQuery(nodeObj).removeClass("selected");
-                                                   }
-                                               }
-                                           }
-                                           jQuery("a.lastNodeActive").each(function(){
-                                               jQuery(this).removeClass("lastNodeActive");
-                                           });
-                                       }
+                                      jQuery(document).ready(function(){
+                                            classificationsMenu();
+                                      });
+                                      function classificationsMenu() {
+                                            jQuery('.dvnBrowseDvClassifications a.head, .dvnBrowseDvClassifications a.lastNode').bind('click', function(){
+                                                jQuery(this).parents('ul.xtraMenu').find('a.selected').removeClass('selected');
+                                                jQuery(this).toggleClass('selected');
+                                            })
+                                      }
                                       // ]]>
                                     </script>
                                 
-                                <div jsfc="ice:panelGroup" styleClass="dvn_theMenuContainer">
-                                    <div class="theMenuContainer" style="padding:0 8px;">
+                                <div jsfc="ice:panelGroup" styleClass="dvn_theMenuContainer dvnBrowseDvClassifications">
+                                    <div class="theMenuContainer">
                                         <!-- START ACCORDION -->
-                                        <ul style="padding:0;" id="navigation" class="basic">
+                                        <ul id="navigation" class="basic">
                                             <li>
-                                                <ul style="padding:0;" class="xtraMenu basic">
+                                                <ul class="xtraMenu basic">
                                                     <!-- All Dataverses -->
                                                     <li>
                                                         <h4 class="dvnHmpgAllDataverses">
@@ -177,73 +152,69 @@
                                                             </ice:commandLink>
                                                         </h4>
                                                     </li>
-                                                    <div id="dvClassificationMenu" class="xtraMenu basic">
+                                                    <li id="dvClassificationMenu" class="xtraMenu basic">
                                                         
-                                        <ui:repeat rendered="#{BrowseDataversesPage.accordionItemBeans != null}"
-                                                value="#{BrowseDataversesPage.accordionItemBeans}"
-                                                var="menuItems">
-                                            <ui:fragment rendered="#{!empty(menuItems.childItems)}">
-                                                <h3 class="head">
-                                                    <ice:outputText value="#{menuItems.name}"/>
-                                                </h3>
-                                                <ul class="head-top" style="border:0;">
-                                                <ui:repeat rendered="#{menuItems != null}"
-                                                        value="#{menuItems.childItems}"
-                                                        var="item">
-                                                    <!-- HAS SUBNODE DESCENDANTS -->
-                                                    <ui:fragment rendered="#{!empty(item.xtraItems)}">
-                                                        <li style="width:100%;" id="xtraMenu#{item.id}">
-                                                            <h4 class="head">
-                                                               <ice:commandLink onclick="setHiddenValuesGroupId(#{item.id});"
-                                                                                            partialSubmit="true"
-                                                                                            styleClass="head">
-                                                                                <ice:outputText value="#{item.name}"/>
-                                                                                <f:attribute name="groupId" value="#{item.id}"/>
-                                                                            </ice:commandLink>
-                                                                            <ice:outputText value=" (#{item.numberOfDataverses})" styleClass="dvnHmpgClassificationCount"/>
-                                                            </h4>
-                                                            <ui:fragment rendered="#{item.xtraItems != null and !empty(item.xtraItems)}">
-                                                                <ul>
-                                                                    <ui:repeat rendered="#{item.xtraItems != null}"
-                                                                            value="#{item.xtraItems}"
-                                                                            var="xtraItems">
+                                                        <ui:repeat rendered="#{BrowseDataversesPage.accordionItemBeans != null}"
+                                                                value="#{BrowseDataversesPage.accordionItemBeans}"
+                                                                var="menuItems">
+                                                            <ui:fragment rendered="#{!empty(menuItems.childItems)}">
+                                                                <h3 class="head">
+                                                                    <ice:outputText value="#{menuItems.name}"/>
+                                                                </h3>
+                                                                <ul class="head-top">
+                                                                <ui:repeat rendered="#{menuItems != null}"
+                                                                        value="#{menuItems.childItems}"
+                                                                        var="item">
+                                                                    <!-- HAS SUBNODE DESCENDANTS -->
+                                                                    <ui:fragment rendered="#{!empty(item.xtraItems)}">
+                                                                        <li id="xtraMenu#{item.id}">
+                                                                            <h4 class="head">
+                                                                            <ice:commandLink onclick="setHiddenValuesGroupId(#{item.id});"
+                                                                                                            partialSubmit="true"
+                                                                                                            styleClass="head">
+                                                                                                <ice:outputText value="#{item.name}"/>
+                                                                                                <f:attribute name="groupId" value="#{item.id}"/>
+                                                                                            </ice:commandLink>
+                                                                                            <ice:outputText value=" (#{item.numberOfDataverses})" styleClass="dvnHmpgClassificationCount"/>
+                                                                            </h4>
+                                                                            <ui:fragment rendered="#{item.xtraItems != null and !empty(item.xtraItems)}">
+                                                                                <ul>
+                                                                                    <ui:repeat rendered="#{item.xtraItems != null}"
+                                                                                            value="#{item.xtraItems}"
+                                                                                            var="xtraItems">
+                                                                                        <li>
+                                                                                            <ice:commandLink styleClass="lastNode" onclick="setHiddenValuesGroupId(#{xtraItems.id});">
+                                                                                                <ice:outputText value="#{xtraItems.name}"/>
+                                                                                            </ice:commandLink>
+                                                                                            <ice:outputText value=" (#{xtraItems.numberOfDataverses})" styleClass="dvnHmpgClassificationCount"/>
+                                                                                        </li>
+                                                                                    </ui:repeat>
+                                                                                </ul>
+                                                                            </ui:fragment>
+                                                                        </li>
+                                                                    </ui:fragment>
+                                                                    <!-- END HAS SUBNODE DESCENDANTS -->
+                                                                    <!-- HAS NO SUBNODE DESCENDANTS -->
+                                                                    <ui:fragment rendered="#{empty(item.xtraItems)}">
                                                                         <li>
                                                                             <ice:commandLink styleClass="lastNode" onclick="setHiddenValuesGroupId(#{item.id});">
-                                                                                <ice:outputText value="#{xtraItems.name}"/>
+                                                                                <ice:outputText value="#{item.name}"/>
                                                                             </ice:commandLink>
-                                                                            <ice:outputText value=" (#{xtraItems.numberOfDataverses})" styleClass="dvnHmpgClassificationCount"/>
+                                                                            <ice:outputText value=" (#{item.numberOfDataverses})" styleClass="dvnHmpgClassificationCount"/>
                                                                         </li>
-                                                                    </ui:repeat>
+                                                                    </ui:fragment>
+                                                                    <!-- END HAS NO SUBNODE DESCENDANTS -->
+                                                                </ui:repeat>
                                                                 </ul>
                                                             </ui:fragment>
-                                                        </li>
-                                                    </ui:fragment>
-                                                    <!-- END HAS SUBNODE DESCENDANTS -->
-                                                    <!-- HAS NO SUBNODE DESCENDANTS -->
-                                                    <ui:fragment rendered="#{empty(item.xtraItems)}">
-                                                        <li style="width:100%;">
-                                                            <ice:commandLink styleClass="lastNode" onclick="setHiddenValuesGroupId(#{item.id});">
-                                                                <ice:outputText value="#{item.name}"/>
-                                                            </ice:commandLink>
-                                                            <ice:outputText value=" (#{item.numberOfDataverses})" styleClass="dvnHmpgClassificationCount"/>
-                                                        </li>
-                                                    </ui:fragment>
-                                                    <!-- END HAS NO SUBNODE DESCENDANTS -->
-                                                </ui:repeat>
-                                                </ul>
-                                            </ui:fragment>
-                                        </ui:repeat>
-                                        
-                                    </div>
-    
+                                                        </ui:repeat>
 
+                                                    </li>
                                                 </ul>
                                             </li>
                                         </ul>
                                     </div>
                                 </div>
-
-                                
                                 <!-- END THE MENU -->
                                 
                             </div>
@@ -260,21 +231,21 @@
                                     <!-- name number -->
                                     <ice:column>
                                         <div class="dvnStudyListStudyInfo">
-                                        <ice:outputLink id="dataverse_link" value="/dvn/dv/#{item.vdc.alias}">
-                                            <ice:outputText value="#{item.name}"
-                                                styleClass="#{(item.vdc.restricted) ? 'dvnAddClassificationDvNotReleased' : 'dvnAddClassificationDvReleased'}" />
-                                        </ice:outputLink>
-                                        <ice:outputText value="#{item.vdc.affiliation}" rendered="#{!empty(item.vdc.affiliation)}"/>
-                                        <ice:outputText value="Description: #{item.vdc.announcements}" rendered="#{!empty(item.vdc.announcements)}"/>
+                                            <ice:outputLink id="dataverse_link" value="/dvn/dv/#{item.vdc.alias}">
+                                                <ice:outputText value="#{item.name}"
+                                                    styleClass="#{(item.vdc.restricted) ? 'dvnAddClassificationDvNotReleased' : 'dvnAddClassificationDvReleased'}" />
+                                            </ice:outputLink>
+                                            <ice:outputText value="Affiliation: #{item.vdc.affiliation}" rendered="#{!empty(item.vdc.affiliation)}"/>
+                                            <ice:outputText value="Description: #{item.vdc.dvnDescription}" rendered="#{!empty(item.vdc.dvnDescription)}"/>
                                         </div>
                                     </ice:column>
                                     <!-- Released -->
                                     <ice:column>
                                         <div class="dvnStudyListIDDownloads">
-                                        <div class="dvnStudyListDownloadCount">
-                                        <ice:outputText value="#{item.downloadCountInteger} downloads and analyses"/>
-                                        </div>
-                                        <ice:outputText value="Released: #{item.releaseDate}"/>
+                                            <div class="dvnStudyListDownloadCount">
+                                                <ice:outputText value="#{item.downloadCountInteger} downloads and analyses"/>
+                                            </div>
+                                            <ice:outputText value="Released: #{item.releaseDate}"/>
                                         </div>
                                     </ice:column>
                                 </ice:dataTable>
@@ -282,8 +253,6 @@
                         </div>
                         
                     </div>
-
-                
                 
             </div>
         </div>
@@ -303,10 +272,10 @@
             }
             function setHiddenValues(alphaKey) {
                 document.getElementById('browsedataversespage:alphaCharacter').value = arguments[0];
-              }
+            }
             function setHiddenValuesGroupId(groupId) {
                 document.getElementById('browsedataversespage:groupId').value = arguments[0];
-              }
+            }
         // ]]>
         </script>
       </ice:form>

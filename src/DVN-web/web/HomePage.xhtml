@@ -193,7 +193,7 @@
                                         <ice:outputText value=" Studies , "/>
                                         <ice:outputText styleClass="dvn_totalsValue" value="#{homePage.fileCount}"/>
                                         <ice:outputText value=" Files , "/>
-                                        <ice:outputText styleClass="dvn_totalsValue" value="###,###,###"/>
+                                        <ice:outputText styleClass="dvn_totalsValue" value="#{homePage.downloadCount}"/>
                                         <ice:outputText value=" Downloads" />
                                         
                                     </div>
@@ -264,26 +264,14 @@
                         // javascript for the accordion
                         jQuery(document).ready(function(){
                             jQuery('.xtraMenu ul ul').hide();
-                            
                             classificationsMenu();
                         });
                         
                         function classificationsMenu() {
-                            jQuery('.xtraMenu h4.head').bind('click', function(){
-                                jQuery(this).toggleClass('selected');
+                            jQuery('.xtraMenu h4.head').bind('click', function(e){
+                                if(e.target != this) return;
                                 jQuery(this).next().toggle();
                             })
-                        };
-                        
-                        // Removed accordion code
-                        
-                        // Move toggleMoreInfo to BrowseDataversesPage
-                        
-                        function toggleMoreInfo(moreInfo) {
-                            jQuery(moreInfo).next().slideToggle(500);
-                            var toggleLabelText = (jQuery(moreInfo).children('span.iceOutTxt').text() == 'View Info [+]') ? 'Collapse Info [-]' : 'View Info [+]';
-                            jQuery(moreInfo).children('span.iceOutTxt').text(toggleLabelText);
-                            return false;
                         };
                         // ]]>
                     </script>

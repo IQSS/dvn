@@ -144,17 +144,7 @@ public class VDCGroup implements Serializable {
     public Integer getVdcCount() {
         return this.vdcs.size();
     }
-    
-    public Integer getReleasedVdcCount() {
-        int count = 0;
-        for (VDC vdc : this.vdcs) {
-            if (!vdc.isRestricted()) {
-                count++;
-            }
-        }
-        return new Integer(count);
-    }
-    
+        
     /**
      * Setter for property memberVdcs.
      * @param memberVdcs New value of property memberVdcs.

@@ -108,10 +108,10 @@ public class RDATAFileReader extends StatDataFileReader {
   
   // TIME FORMATS
   private static SimpleDateFormat[] TIME_FORMATS = new SimpleDateFormat[] {
-    new SimpleDateFormat("yyyy-MM-dd HH:mm:ss"),
-    new SimpleDateFormat("yyyy-MM-dd HH:mm:ss z"),
+    new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS z"),
     new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS"),
-    new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS z")
+    new SimpleDateFormat("yyyy-MM-dd HH:mm:ss z"),
+    new SimpleDateFormat("yyyy-MM-dd HH:mm:ss"),
   };
   
   private static final SimpleDateFormat R_DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd");
@@ -165,15 +165,6 @@ public class RDATAFileReader extends StatDataFileReader {
    * This is primarily to construct the R-Script
    */
   static {
-    /* 
-     * Set date-time formats
-     */
-    TIME_FORMATS = new SimpleDateFormat[] {
-      new SimpleDateFormat("yyy")
-    };
-    DATE_FORMATS = new SimpleDateFormat[] {
-      new SimpleDateFormat("yyyy-mm-dd")
-    };
     /*
      * Copy timezones over
      */
@@ -441,6 +432,7 @@ public class RDATAFileReader extends StatDataFileReader {
       mCsvDataFile = new File(mRWorkspace.getRdataFile().getParent(), "data.csv");
       
       String csvScript = new StringBuilder("")
+        .append("options(digits.secs=3)\n")
         .append(String.format("load(\"%s\")\n", mRWorkspace.getRdataAbsolutePath()))
         .append(RSCRIPT_GET_DATASET)
         .append("\n")
@@ -540,7 +532,7 @@ public class RDATAFileReader extends StatDataFileReader {
     int lineCount = csvFileReader.read(localBufferedReader, smd, tabFileWriter);
     
     
-    // List<Integer> variableTypeList = getVariableTypeList(mDataTypes);
+    List<Integer> variableTypeList = getVariableTypeList(mDataTypes);
         
     // File Data Table
     mCsvDataTable = readTabDataFile(tabFileDestination);
@@ -713,14 +705,21 @@ public class RDATAFileReader extends StatDataFileReader {
       }
       
       valueTokens = line.split("\t", mVarQuantity);
-
+      
       for ( int i = 0; i < mVarQuantity; i++ ) {
  
         // If it's a character variable but not a date
         if (isCharacterVariable[i]) {
-          valueTokens[i] = valueTokens[i].replaceFirst("^\"", "");
-          valueTokens[i] = valueTokens[i].replaceFirst("\"$", "");
-          valueTokens[i] = valueTokens[i].replaceAll("\\\\\"", "\"");
+          
+          if (valueTokens[i].length() == 0)
+            // If it is a missing value
+            valueTokens[i] = null;
+          else {
+            // Otherwise parse it out
+            valueTokens[i] = valueTokens[i].replaceFirst("^\"", "");
+            valueTokens[i] = valueTokens[i].replaceFirst("\"$", "");
+            valueTokens[i] = valueTokens[i].replaceAll("\\\\\"", "\"");
+          }
           
           dataTable[i][j] = valueTokens[i];
         }
@@ -878,6 +877,10 @@ public class RDATAFileReader extends StatDataFileReader {
       
       Object [] varData = table.getData()[k];
       
+      LOG.info("// // // // //");
+      LOG.info("varData = " + Arrays.deepToString(varData));
+      LOG.info("varData = " + Arrays.deepToString(varData));
+      LOG.info("varData = " + Arrays.deepToString(varData));
       try {
         switch (varType) {
           case 0:
@@ -960,25 +963,31 @@ public class RDATAFileReader extends StatDataFileReader {
               dateFormatter.setTimeFormats(TIME_FORMATS);
               
               for (int i = 0; i < varData.length; i++) {
-                SimpleDateFormat format;
                 DateWithFormatter entryDateWithFormat;
                 
                 // Place a null entry if data is missing
                 if (dateFormats[i] != null && (stringEntries[i].equals("") || stringEntries[i].equals(" "))) {
                   stringEntries[i] = dateFormats[i] = null;
                 }
-                
-                // Otherwise get the pattern
-                // entryDateWithFormat = dateFormatter.getDateWithFormat(stringEntries[i]);
-                dateFormats[i] = dateFormat.toPattern();
+                else {
+                  entryDateWithFormat = dateFormatter.getDateWithFormat(stringEntries[i]);
+                  // Otherwise get the pattern
+                  // entryDateWithFormat = dateFormatter.getDateWithFormat(stringEntries[i]);
+                  dateFormats[i] = entryDateWithFormat.getFormatter().toPattern();
+                }
               }
               
               // Compute UNF
               try {
+                LOG.info("strdata: " + Arrays.deepToString(stringEntries));
+                LOG.info("dateFormats: " + Arrays.deepToString(dateFormats));
+                
                 unfValue = UNF5Util.calculateUNF(stringEntries, dateFormats);
               }
               catch (Exception ex) {
+                LOG.warning("UNF FOR DATE COULD NOT BE COMPUTED");
                 unfValue = UNF5Util.calculateUNF(stringEntries);
+                ex.printStackTrace();
               }
             }
             else

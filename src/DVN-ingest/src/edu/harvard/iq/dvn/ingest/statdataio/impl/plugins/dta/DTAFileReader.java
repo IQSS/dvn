@@ -1955,7 +1955,10 @@ public class DTAFileReader extends StatDataFileReader{
                     strdata[i] = (String)varData[i];
                 }
                     dbgLog.fine("strdata="+Arrays.deepToString(strdata));
+                    dbgLog.info("strdata: " + Arrays.deepToString(strdata));
+                    dbgLog.info("dateFormats: " + Arrays.deepToString(dateFormat));
                     unfValue = UNF5Util.calculateUNF(strdata, dateFormat);
+                    dbgLog.info("UNF = " + unfValue);
                 
                 if (dbgLog.isLoggable(Level.FINE)) dbgLog.fine("string:unfValue"+unfValue);
                 // Shoud summary statistics be calculated on dates?

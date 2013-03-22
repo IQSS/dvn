@@ -150,7 +150,7 @@ public class DataverseGrouping extends SortableList {
     }
     
     public DataverseGrouping(Long id, String name, String recordType, ArrayList parentItems, boolean isExpanded, String expandImage, String contractImage,
-            Long parentClassification, Integer numberOfDataverses) {
+            Long parentClassification, Long numberOfDataverses) {
 
         
         super(nameColumnName);
@@ -192,7 +192,7 @@ public class DataverseGrouping extends SortableList {
     }
 
     public DataverseGrouping(Long id, String name, String recordType, boolean isExpanded, String expandImage, String contractImage, 
-            Long parentClassification, Integer numberOfDataverses) {
+            Long parentClassification, Long numberOfDataverses) {
         super(nameColumnName);
         this.groupKey    = name.replaceAll(" ", "").toLowerCase();
         this.name        = name;
@@ -632,16 +632,16 @@ public class DataverseGrouping extends SortableList {
     private Long subclassification;
     private boolean classificationSelect = false;
     private Integer numberOwnedStudies;
-    private Integer numberOfDataverses;
+    private Long numberOfDataverses;
     private String type;
     private boolean restricted;
 
 
-    public Integer getNumberOfDataverses() {
+    public Long getNumberOfDataverses() {
         return numberOfDataverses;
     }
 
-    public void setNumberOfDataverses(Integer numberOfDataverses) {
+    public void setNumberOfDataverses(Long numberOfDataverses) {
         this.numberOfDataverses = numberOfDataverses;
     }
 

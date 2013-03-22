@@ -10,7 +10,8 @@
         <ice:outputText value="#{studyUI.study.globalId}"/> <ice:outputText value="#{studyUI.metadata.UNF}" rendered="#{!empty studyUI.metadata.UNF}"/>
     </div>
     <div jsfc="ice:panelGroup" styleClass="dvnstudyversioninfo" rendered="#{displayVersionInfo and studyUI.studyVersion.released}">
-        <ice:outputText value="Version: #{studyUI.studyVersion.versionNumber}"/> <ice:outputText value="&#8211; Released: #{studyUI.studyVersion.releaseTime}"/>
+        <ice:outputText value="Version: #{studyUI.studyVersion.versionNumber}"/>
+        <ice:outputText value=" &#8211; Released: #{studyUI.studyVersion.releaseTime}"/>
     </div>
     <div jsfc="ice:panelGroup" styleClass="dvnstudystatusbox #{studyUI.studyVersion.retiredCopy ? 'dvnstudystatusarchived' : '' or studyUI.studyVersion.inReview ? 'dvnstudystatusreview' : '' or studyUI.studyVersion.draft ? 'dvnstudystatusdraft' : ''}" rendered="#{displayStatusBox and !studyUI.studyVersion.released}">
         <ice:outputText styleClass="dvnstudystatuslabel" value="In Review " rendered="#{studyUI.studyVersion.inReview}"/>

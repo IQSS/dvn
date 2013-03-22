@@ -955,7 +955,9 @@ public class StudyListingPage extends VDCBaseBean implements java.io.Serializabl
 
     public void setStudyListingByFacet(String facetKey, String facetValue) {
         listMessageFacet = " with results refined to \"" + facetKey + "\" = \"" + facetValue + "\" (click to remove)";
-        studyIdsPreFacet = studyListing.getStudyIds();
+        if (studyIdsPreFacet.isEmpty()) {
+            studyIdsPreFacet = studyListing.getStudyIds();
+        }
         studyListing.setStudyIds(facetDrillDown(facetKey, facetValue));
     }
 

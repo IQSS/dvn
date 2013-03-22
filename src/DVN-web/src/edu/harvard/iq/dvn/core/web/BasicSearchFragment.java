@@ -85,6 +85,18 @@ public class BasicSearchFragment extends VDCBaseBean implements java.io.Serializ
         return "/StudyListingPage.xhtml?faces-redirect=true&studyListingIndex=" + studyListingIndex + "&vdcId=" + getVDCRequestBean().getCurrentVDCId();
     }
 
+    public String facet_search() {
+        searchField = (searchField == null) ? "any" : searchField; // default searchField, in case no dropdown
+
+        List searchTerms    = new ArrayList();
+        SearchTerm st       = new SearchTerm();
+        st.setFieldName( searchField );
+        st.setValue( searchValue );
+        StudyListing sl = getSearchResultsWithFacets(st);
+        String studyListingIndex = StudyListing.addToStudyListingMap(sl, getSessionMap());
+        return "/StudyListingPage.xhtml?faces-redirect=true&studyListingIndex=" + studyListingIndex + "&vdcId=" + getVDCRequestBean().getCurrentVDCId();
+    }
+
     public String keywordSearch_action(String searchIn){
         System.out.print("searchIn: "+ searchIn);
         searchField = (searchField == null) ? "any" : searchField; // default searchField, in case no dropdown       
@@ -154,14 +166,9 @@ public class BasicSearchFragment extends VDCBaseBean implements java.io.Serializ
         
     }
 
-    public String facet_search() {
-        logger.info("called facet_search");
-        searchField = (searchField == null) ? "any" : searchField; // default searchField, in case no dropdown
+    public StudyListing getSearchResultsWithFacets(SearchTerm st) {
 
         List searchTerms = new ArrayList();
-        SearchTerm st = new SearchTerm();
-        st.setFieldName(searchField);
-        st.setValue(searchValue);
         searchTerms.add(st);
         List studies = new ArrayList();
         Map variableMap = new HashMap();
@@ -169,35 +176,19 @@ public class BasicSearchFragment extends VDCBaseBean implements java.io.Serializ
         List displayVersionList = new ArrayList();
         ResultsWithFacets resultsWithFacets = null;
 
+        // when is this true?
         if (searchField.equals("variable")) {
             List variables = indexService.searchVariables(getVDCRequestBean().getCurrentVDC(), st);
+            // how will facetResults get set?
             varService.determineStudiesFromVariables(variables, studies, variableMap);
 
         } else {
-//            logger.info("calling search() [returns List]...");
-//            studies = indexService.search(getVDCRequestBean().getCurrentVDC(), searchTerms);
             resultsWithFacets = indexService.searchwithFacets(getVDCRequestBean().getCurrentVDC(), searchTerms);
-//            ArrayList matchIDs = resultsWithFacets.getMatchIds();
-//            for (int i = 0; i < matchIDs.size(); i++) {
-//                logger.info("found a matchID: " + matchIDs.get(i));
-//            }
             studies = resultsWithFacets.getMatchIds();
             List<FacetResult> facetResults = resultsWithFacets.getResultList();
-//            logger.info("facet results = " + facetResults.toString());
-            for (int i = 0; i < facetResults.size(); i++) {
-                FacetResult facetResult = facetResults.get(i);
-                logger.info("- category " + i + ": " + facetResult.getFacetResultNode().getLabel());
-                for (FacetResultNode n : facetResult.getFacetResultNode().getSubResults()) {
-                    CategoryPath label = n.getLabel();
-                    String last = n.getLabel().lastComponent().toString();
-                    double hits = n.getValue();
-                    logger.info("  - expect " + hits + " hits from a faceted search for \"" + label + "\"");
-                }
-            }
         }
-        
+
         if (searchField.equals("any")) {
-            logger.info("any search...");
             List<Long> versionIds = indexService.searchVersionUnf(getVDCRequestBean().getCurrentVDC(), searchValue);
             Iterator iter = versionIds.iterator();
             Long studyId = null;
@@ -234,9 +225,7 @@ public class BasicSearchFragment extends VDCBaseBean implements java.io.Serializ
         sl.setVersionMap(versionMap);
         sl.setDisplayStudyVersionsList(displayVersionList);
 
-        //getVDCRequestBean().setStudyListing(sl);
-        String studyListingIndex = StudyListing.addToStudyListingMap(sl, getSessionMap());
-        return "/StudyListingPage.xhtml?faces-redirect=true&studyListingIndex=" + studyListingIndex + "&vdcId=" + getVDCRequestBean().getCurrentVDCId();
+        return sl;
     }
  
 

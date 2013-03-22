@@ -131,7 +131,7 @@ public class AddSitePage extends VDCBaseBean implements java.io.Serializable  {
         
         defaultTemplateId = getVDCRequestBean().getVdcNetwork().getDefaultTemplate().getId();
         Template defaultTemplate = templateService.getTemplate(defaultTemplateId);
-        if(defaultTemplate.isDisplayOnCreateDataverse()){
+        if(defaultTemplate.isDisplayOnCreateDataverse() && selectTemplateId == null){
             selectTemplateId = defaultTemplate.getId();
         }     
     }

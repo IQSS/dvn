@@ -23,8 +23,10 @@
                             </ice:outputLink>
                     </div>
                     <div jsfc="ice:panelGroup">
-                            <ice:inputText value="#{OptionsPage.allUsersSearchTerm}"/>
-                            <ice:commandButton value="Search" action="#{OptionsPage.allUsersSearchAction}"/>
+                            <ice:outputText value="Filter: "/>
+                            <ice:inputText binding="#{OptionsPage.inputFilterTerm}"
+                                                        size="25" maxlength="255"
+                                                        onkeyup="delayedRequest(form,this,event);"/>
                     </div>
                     <div jsfc="ice:panelGroup">
                             <!-- EMPTY -->

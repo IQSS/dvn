@@ -1359,21 +1359,7 @@ public class Indexer implements java.io.Serializable  {
             initIndexSearcher();
             logger.fine("Start searcher: " + DateTools.dateToString(new Date(), Resolution.MILLISECOND));
             DocumentCollector s = new DocumentCollector(searcher);
-            TopScoreDocCollector topScoreDocCollector = TopScoreDocCollector.create(10, true);
-            TaxonomyReader taxo = new DirectoryTaxonomyReader(taxoDir);
-            FacetSearchParams facetSearchParams = new FacetSearchParams();
-            facetSearchParams.addFacetRequest(new CountFacetRequest(new CategoryPath("dvName"), 10));
-            facetSearchParams.addFacetRequest(new CountFacetRequest(new CategoryPath("productionDate"), 10));
-            FacetsCollector facetsCollector = new FacetsCollector(facetSearchParams, r, taxo);
-            searcher.search(query, MultiCollector.wrap(s, facetsCollector));
-            List<FacetResult> resultList = facetsCollector.getFacetResults();
-            logger.info("facet results = = " + resultList.toString());
-            for (FacetResult result : resultList) {
-                logger.info("facet label = " + result.getFacetResultNode().getLabel() + " facet value = " + result.getFacetResultNode().getValue());
-                for (FacetResultNode node : result.getFacetResultNode().getSubResults()) {
-                    logger.info("--" + node.getLabel().lastComponent() + " (" + node.getValue() + ") [node.getLabel().lastComponent()]");
-                }
-            }
+            searcher.search(query, s);
 //            searcher.close();
             logger.fine("done searcher: " + DateTools.dateToString(new Date(), Resolution.MILLISECOND));
             logger.fine("Start iterate: " + DateTools.dateToString(new Date(), Resolution.MILLISECOND));

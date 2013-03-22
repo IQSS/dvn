@@ -4779,6 +4779,42 @@ public class OptionsPage extends VDCBaseBean  implements java.io.Serializable {
         }        
     }
     
+    public String updateAllUsersList(){
+        String checkString = (String) getInputFilterTerm().getValue();        
+        filterTerm = checkString;
+        tab2="users";
+        userData = new ArrayList();
+        List users = userService.findAllIdsSearch(filterTerm);
+        System.out.print("filterTerm "+ filterTerm);
+        Long defaultNetworkAdminId = vdcNetworkService.find().getDefaultNetworkAdmin().getId();
+        for (Iterator it = users.iterator(); it.hasNext();) {
+            Long elem = (Long) it.next();
+            userData.add(new AllUsersDataBean(elem, defaultNetworkAdminId));
+        }
+        userDataCount = new Long(userData.size());
+        return "";
+    }
+    
+    private HtmlInputText inputFilterTerm;
+
+    public HtmlInputText getInputFilterTerm() {
+        return this.inputFilterTerm;
+    }
+
+    public void setInputFilterTerm(HtmlInputText inputFilterTerm) {
+        this.inputFilterTerm = inputFilterTerm;
+    }
+    
+    private String filterTerm;
+    
+    public String getFilterTerm() {
+        return filterTerm;
+    }
+
+    public void setFilterTerm(String filterTerm) {
+        this.filterTerm = filterTerm;
+    }
+    
     private String allUsersSearchTerm;
     public String getAllUsersSearchTerm() {return allUsersSearchTerm;}
     public void setAllUsersSearchTerm(String allUsersSearchTerm) {this.allUsersSearchTerm = allUsersSearchTerm;}

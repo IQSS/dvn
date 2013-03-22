@@ -64,9 +64,9 @@ div.dvn_searchblock{margin-bottom:12px;padding:4px 12px;background:#F2F2F2;borde
 .dvnHmpgColumnWidgetHeader {text-transform:uppercase;}
 .dvnHmpgColumnDataverses .dvnHmpgColumnWidgetHeader {color:#C55B28;}
 .dvnHmpgColumnStudies .dvnHmpgColumnWidgetHeader {color:#526F76;}
+.dvnHmpgColumnTotals {float:left; clear:left; margin-bottom: 4px; padding: 6px 4px;}
 .dvnHmpgColumnWidgetViewMoreBlock {text-align:center; padding:3px 5px}
 .dvnHmpgColumnWidgetViewMoreBlock a.iceOutLnk span.iceOutTxt {font-size:90% !important;}
-
 
 .dvn_sectionContent{display:inline;width:75%;float:right;text-align:left}
 .dvn_sectionPanels{display:inline;position:relative;float:left;width:24%}
@@ -85,6 +85,12 @@ div.iceTree div.iceTreeRow div.iceTreeRow div.iceTreeRow {border-bottom:1px dott
 div.iceTree div.iceTreeRow div.iceTreeRow div.iceTreeRow:first-child {border-top:1px dotted #DCDDDF}
 div.iceTree div.iceTreeRow div.iceTreeRow div.iceTreeRow div.icePnlGrp {}
 div.iceTree div.iceTreeRow div.iceTreeRow div.iceTreeRow div.iceTreeRow div.icePnlGrp a {}
+
+.dvnListingPageWrap {overflow:hidden;}
+.dvnListingPagePanel {width:30%; float:right; text-align:left;}
+.dvnListingPageContent {width:70%; border-right:1px solid #DCDDDF;}
+
+table.dvnBrowseDataversesTable {margin-bottom:18px; border-bottom:1px solid #DCDDDF;}
 
 #dvClassificationMenu{margin:0;padding:0;text-indent:0;width:100%;text-align:left}
 #dvClassificationMenu h3,#dvClassificationMenu h4{margin:0;padding:0}

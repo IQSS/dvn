@@ -550,10 +550,8 @@ public class HomePage extends VDCBaseBean implements Serializable {
             Iterator iter = originalStudies.iterator();
             while (iter.hasNext()) {
                 Long studyId = (Long) iter.next();
-                Study study = studyService.getStudyForSearch(studyId, null);
-
-                StudyUI studyUIToAdd = new StudyUI(study, getVDCSessionBean().getUser(), getVDCSessionBean().getIpUserGroup(), false);
-
+                //create studyUI with study id instead of getting study here.
+                StudyUI studyUIToAdd = new StudyUI(studyId, getVDCSessionBean().getUser(), getVDCSessionBean().getIpUserGroup(), false);
                 filteredStudies.add(studyUIToAdd);
                 if (numResults > 0 && ++count >= numResults) {
                     break;

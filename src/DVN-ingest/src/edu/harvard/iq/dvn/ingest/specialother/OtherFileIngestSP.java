@@ -20,7 +20,7 @@ import edu.harvard.iq.dvn.ingest.specialother.spi.*;
  *
  * @author leonidandreev
  */
-public class OtherFileIngestSP {
+public final class OtherFileIngestSP {
     
     
     private static Method ingesterMIMETypesMethod;
@@ -42,9 +42,14 @@ public class OtherFileIngestSP {
      * <code>edu.harvard.iq.dvn.ingest.org.thedata.statdataio.spi.Regsitry</code> class.
      * 
      */
-    private static final SDIORegistry theRegistry =
+    private final static SDIORegistry theRegistry =
         SDIORegistry.getDefaultInstance();
 
+    /**
+     * Constructor is private to avoid instantiation.
+     */
+    private OtherFileIngestSP() {
+    }
     
     private static enum SpiInfo {
         
@@ -63,7 +68,7 @@ public class OtherFileIngestSP {
         if (MIMEType == null) {
             throw new IllegalArgumentException("MIMEType == null!");
         }
-        // Ensure category is present
+        
         Iterator iter;
         try {
             iter = theRegistry.getServiceProviders(FileIngesterSpi.class,

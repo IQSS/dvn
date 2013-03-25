@@ -346,6 +346,32 @@ public class HomePage extends VDCBaseBean implements Serializable {
         return vdcUIListSize;
     }
 
+    public Long getUserVDCCount(){
+        VDCUser user = getVDCSessionBean().getUser();
+        
+        if (user!=null) {
+            user = userService.find(user.getId());
+            List<VDC> vdcs= vdcService.getUserVDCs(user.getId());
+            return new Long (vdcs.size());
+        }
+        return new Long(0);
+    }
+    
+    public String getSoleVDCAlias(){
+        VDCUser user = getVDCSessionBean().getUser();
+        
+        if (user!=null) {
+            user = userService.find(user.getId());
+            List<VDC> vdcs= vdcService.getUserVDCs(user.getId());
+            if (vdcs.size() == 1){
+                VDC soleVDC = (VDC) vdcs.get(0);
+               return soleVDC.getAlias();
+            }
+            return "";
+        }
+        return "";
+    }
+    
     public void setVdcUIListSize(Long vdcUIListSize) {
         this.vdcUIListSize = vdcUIListSize;
     }

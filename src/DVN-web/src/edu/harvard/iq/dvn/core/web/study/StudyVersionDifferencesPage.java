@@ -345,6 +345,9 @@ public class StudyVersionDifferencesPage extends VDCBaseBean implements java.io.
         // every time a study is released.
 
         versionNotesPopup.setShowPopup(false);
+        
+        // Success message
+        getVDCRenderBean().getFlash().put("successMessage","Your study, " + studyUI2.getStudy().getGlobalId() + ", has been released!");
        
         // And now we are redirecting back to the StudyPage;
         // no need to specify the version really, since the latest version is now released.

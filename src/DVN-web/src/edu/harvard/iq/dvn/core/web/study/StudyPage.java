@@ -930,6 +930,9 @@ public class StudyPage extends VDCBaseBean implements java.io.Serializable  {
                     studyService.setReleased(studyUI.getStudy().getId(), studyUI.getStudyVersion().getVersionNote());
                     // Get updated studyVersion to display on the page (we need this to get the releaseTime & state)
                     StudyVersion updatedVersion = studyService.getStudyVersion(studyUI.getStudyVersion().getStudy().getId(), studyUI.getStudyVersion().getVersionNumber());
+                    
+                    // Success message
+                    getVDCRenderBean().getFlash().put("successMessage","Your study, " + studyUI.getStudy().getGlobalId() + ", has been released!");
 
                     // and reset page components
                     studyUIContainsFileDetails=false; // TODO: could we move this to be a member variable of StudyUI?

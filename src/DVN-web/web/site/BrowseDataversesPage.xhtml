@@ -113,27 +113,27 @@
                                 </tr>
                             </table>
                         </div>
-                        <div style="overflow:hidden;">
-                            <div jsfc="ice:panelGroup" styleClass="dvnStudyFacetBlock" >
-                                <style type="text/css">
-                                .dvnStudyFacetBlock {width:30%; float:right; text-align:left;}
-                                .dvnStudyListBlockSearch {width:70%; border-right:1px solid #C55B28;}
-                                </style>
+                        <div class="dvnListingPageWrap">
+                            <div jsfc="ice:panelGroup" styleClass="dvnListingPagePanel">
                                 
                                 <script type="text/javascript">
-                                      // <![CDATA[
-                                      // javascript for the accordion
-                                      jQuery(document).ready(function(){
-                                            classificationsMenu();
-                                      });
-                                      function classificationsMenu() {
-                                            jQuery('.dvnBrowseDvClassifications a.head, .dvnBrowseDvClassifications a.lastNode').bind('click', function(){
-                                                jQuery(this).parents('ul.xtraMenu').find('a.selected').removeClass('selected');
-                                                jQuery(this).toggleClass('selected');
-                                            })
-                                      }
-                                      // ]]>
-                                    </script>
+                                    // <![CDATA[
+                                    // javascript for the accordion
+                                    jQuery(document).ready(function(){
+                                        initListingPanelHeights();
+                                        classificationsMenu();
+                                        
+                                        var groupId = #{BrowseDataversesPage.groupId};
+                                        jQuery('a.groupId' + groupId).addClass('selected');
+                                    });
+                                    function classificationsMenu() {
+                                        jQuery('.dvnBrowseDvClassifications a.head, .dvnBrowseDvClassifications a.lastNode').bind('click', function(){
+                                            jQuery(this).parents('ul.xtraMenu').find('a.selected').removeClass('selected');
+                                            jQuery(this).toggleClass('selected');
+                                        })
+                                    }
+                                    // ]]>
+                                </script>
                                 
                                 <div jsfc="ice:panelGroup" styleClass="dvn_theMenuContainer dvnBrowseDvClassifications">
                                     <div class="theMenuContainer">
@@ -171,7 +171,7 @@
                                                                             <h4 class="head">
                                                                             <ice:commandLink onclick="setHiddenValuesGroupId(#{item.id});"
                                                                                                             partialSubmit="true"
-                                                                                                            styleClass="head">
+                                                                                                            styleClass="head groupId#{item.id}">
                                                                                                 <ice:outputText value="#{item.name}"/>
                                                                                                 <f:attribute name="groupId" value="#{item.id}"/>
                                                                                             </ice:commandLink>
@@ -183,7 +183,7 @@
                                                                                             value="#{item.xtraItems}"
                                                                                             var="xtraItems">
                                                                                         <li>
-                                                                                            <ice:commandLink styleClass="lastNode" onclick="setHiddenValuesGroupId(#{xtraItems.id});">
+                                                                                            <ice:commandLink styleClass="lastNode groupId#{xtraItems.id}" onclick="setHiddenValuesGroupId(#{xtraItems.id});">
                                                                                                 <ice:outputText value="#{xtraItems.name}"/>
                                                                                             </ice:commandLink>
                                                                                             <ice:outputText value=" (#{xtraItems.numberOfDataverses})" styleClass="dvnHmpgClassificationCount"/>
@@ -197,7 +197,7 @@
                                                                     <!-- HAS NO SUBNODE DESCENDANTS -->
                                                                     <ui:fragment rendered="#{empty(item.xtraItems)}">
                                                                         <li>
-                                                                            <ice:commandLink styleClass="lastNode" onclick="setHiddenValuesGroupId(#{item.id});">
+                                                                            <ice:commandLink styleClass="lastNode groupId#{item.id}" onclick="setHiddenValuesGroupId(#{item.id});">
                                                                                 <ice:outputText value="#{item.name}"/>
                                                                             </ice:commandLink>
                                                                             <ice:outputText value=" (#{item.numberOfDataverses})" styleClass="dvnHmpgClassificationCount"/>
@@ -218,11 +218,11 @@
                                 <!-- END THE MENU -->
                                 
                             </div>
-                            <div jsfc="ice:panelGroup" styleClass="dvnStudyListBlockSearch">
+                            <div jsfc="ice:panelGroup" styleClass="dvnListingPageContent">
                                 <ice:dataTable id="dataverseListManage" width="100%"
                                                 rendered="#{!empty(BrowseDataversesPage.vdcUIList.vdcUIList)}"
                                                 rows="10"
-                                                styleClass="dvnStudyListTable"
+                                                styleClass="dvnStudyListTable dvnBrowseDataversesTable"
                                                 rowClasses="list-row-odd, list-row-even" columnClasses="dvnStudyListTableColInfo, dvnStudyListTableColID"
                                                 sortColumn="#{BrowseDataversesPage.vdcUIList.sortColumnName}"
                                                 sortAscending="#{BrowseDataversesPage.vdcUIList.ascending}"
@@ -270,11 +270,21 @@
                     }
                 },timeout);
             }
-            function setHiddenValues(alphaKey) {
-                document.getElementById('browsedataversespage:alphaCharacter').value = arguments[0];
-            }
             function setHiddenValuesGroupId(groupId) {
                 document.getElementById('browsedataversespage:groupId').value = arguments[0];
+            }
+            function initListingPanelHeights() {
+                var listingPanel = jQuery('.dvnListingPagePanel');
+                var listingContent = jQuery('.dvnListingPageContent');
+                var listingPanelHeight = listingPanel.height();
+                var listingContentHeight = listingContent.height();
+                
+                if (listingPanelHeight > listingContentHeight) {
+                    jQuery(listingContent).height(listingPanelHeight);
+                }
+                else {
+                    jQuery(listingPanel).height(listingContentHeight);
+                }
             }
         // ]]>
         </script>

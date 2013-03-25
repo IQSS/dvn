@@ -67,28 +67,18 @@
                                 
                                 <div class="dvnHmpgColumnHeaderBlock">
                                     <h1 class="dvnHmpgColumnHeader">Dataverses</h1>
-
                                     <div jsfc="ice:panelGroup" id="createDataverse" styleClass="dvnCreateActionBox dvnCreateDataverse" rendered="#{VDCRequest.vdcNetwork.allowCreateRequest and !VDCRequest.readOnlyDatabase}">
                                         <ice:outputLink value="/dvn/faces/login/CreatorRequestInfoPage.xhtml">
                                             <ice:outputText value="Create Dataverse"/>
                                         </ice:outputLink>
                                     </div>
-                                    
-                                    <div style="float:left; clear:left; margin-bottom: 4px; padding: 6px 4px;">
+                                    <div class="dvnHmpgColumnTotals">
                                         <ice:outputText styleClass="dvn_totalsValue" value="#{homePage.vdcUIListSize}"/>
                                         <ice:outputText value=" Dataverses"/>
-                                        
                                     </div>
                                 </div>
-
-                                <div>Dataverse is a virtual web archive that contains data studies and can be customized by and managed by its administrator or owner. Archiving with the dataverse could extend the useful life of data, preserving it against the failure of computer systems and the obsolescence of data formats.</div>
-
-                                <div style="margin-top:1em; padding:2px; border:1px solid #C55B28;" jsfc="ice:panelGroup" rendered="#{VDCSession.loginBean.user==null}">
-                                    Do you need to archive your data? You need a Dataverse!
-                                </div>
-
-                                <div style="margin-top:1em; padding:2px; border:1px solid #C55B28;" jsfc="ice:panelGroup" rendered="#{VDCSession.loginBean.user!=null and (VDCRequest.vdcNetwork.allowCreateRequest or VDCSession.loginBean.hasDataverses or VDCSession.loginBean.networkCreator) and !VDCSession.loginBean.networkAdmin}">
-                                    This is a table of My Dataverses.
+                                <div class="dvnHmpgColumnDefinition">
+                                    <ice:outputText value="#{bundlePageInfo.networkHmpgDVDefinition}"/>
                                 </div>
 
                                 <div id="dvClassificationMenu" class="xtraMenu basic">
@@ -181,34 +171,24 @@
                                 
                                 <div class="dvnHmpgColumnHeaderBlock">
                                     <h1 class="dvnHmpgColumnHeader">Studies</h1>
-
                                     <div jsfc="ice:panelGroup" id="createStudy" styleClass="dvnCreateActionBox dvnCreateStudy" rendered="#{VDCSession.loginBean.user!=null and !VDCRequest.readOnlyDatabase}" >
                                         <ice:outputLink value="/dvn/faces/admin/ChooseDataverseForCreateStudy.xhtml" rendered="#{VDCSession.loginBean.user!=null and !VDCRequest.readOnlyDatabase}">
                                             <ice:outputText value="#{bundlePageInfo.createStudyButton}"/>
                                         </ice:outputLink>
                                     </div>
-                                    
-                                    <div style="float:left; clear:left; margin-bottom: 4px; padding: 6px 4px;">
+                                    <div class="dvnHmpgColumnTotals">
                                         <ice:outputText styleClass="dvn_totalsValue" value="#{homePage.studyCount}"/>
                                         <ice:outputText value=" Studies , "/>
                                         <ice:outputText styleClass="dvn_totalsValue" value="#{homePage.fileCount}"/>
                                         <ice:outputText value=" Files , "/>
                                         <ice:outputText styleClass="dvn_totalsValue" value="#{homePage.downloadCount}"/>
                                         <ice:outputText value=" Downloads" />
-                                        
                                     </div>
                                 </div>
-
-                                <div>Study is a container for data files and cataloging information describing the data. It can also contain complementary files, such as documentation or code related to the data.</div>
-
-                                <div style="margin-top:1em; padding:2px; border:1px solid #526F76;" jsfc="ice:panelGroup" rendered="#{VDCSession.loginBean.user==null}">
-                                    Do you want to download some data? You need to create an account!
+                                <div class="dvnHmpgColumnDefinition">
+                                    <ice:outputText value="#{bundlePageInfo.networkHmpgStudyDefinition}"/>
                                 </div>
 
-                                <div style="margin-top:1em; padding:2px; border:1px solid #526F76;" jsfc="ice:panelGroup" rendered="#{VDCSession.loginBean.user!=null and VDCSession.loginBean.hasContributed}">
-                                    This is a table of My Studies.
-                                </div>
-                                
                                 <div class="dvnHmpgColumnWidget">
                                     <div class="dvnHmpgColumnWidgetHeader">Recently Released Studies</div>
                                     <ice:dataTable rows="10" headerClass="list-header" id="studyListTable1" width="100%"
@@ -266,7 +246,6 @@
                             jQuery('.xtraMenu ul ul').hide();
                             classificationsMenu();
                         });
-                        
                         function classificationsMenu() {
                             jQuery('.xtraMenu h4.head').bind('click', function(e){
                                 if(e.target != this) return;

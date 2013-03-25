@@ -298,10 +298,11 @@
                             <ul class="dvnstudyadminlinksL">
                                 <span jsfc="ice:panelGroup" rendered="#{studyPage.studyUI.studyVersion != studyPage.studyUI.study.latestVersion and (studyPage.studyUI.studyVersion.released or studyPage.studyUI.studyVersion.deaccessioned)}">
                                     <li class="dvnStudyEditDisableMsg">
-                                        Editing is disabled because a draft study version was created. Go to the
+                                        <ice:outputText nospan="true" value="Editing is disabled because a draft study version was created. Go to the "/>
                                         <ice:outputLink styleClass="dvnStudyEditDisableLink" value="/dvn#{VDCRequest.currentVDCURL}/faces/study/StudyPage.xhtml?studyId=#{studyPage.studyUI.study.id}&amp;versionNumber=#{studyPage.studyUI.study.latestVersion.versionNumber}">
-                                            draft study version
-                                        </ice:outputLink> to edit this study.
+                                            <ice:outputText nospan="true" value="draft study version"/>
+                                        </ice:outputLink>
+                                        <ice:outputText nospan="true" value=" to edit this study."/>
                                     </li>
                                 </span>
                                 <span jsfc="ice:panelGroup" rendered="#{studyPage.studyUI.studyVersion == studyPage.studyUI.study.latestVersion}">

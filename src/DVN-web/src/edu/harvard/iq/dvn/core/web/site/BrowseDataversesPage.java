@@ -27,6 +27,7 @@ import com.icesoft.faces.component.ext.HtmlCommandLink;
 import com.icesoft.faces.component.ext.HtmlInputHidden;
 import com.icesoft.faces.component.datapaginator.DataPaginator;
 import com.icesoft.faces.component.ext.HtmlInputText;
+import com.icesoft.faces.context.effects.JavascriptContext;
 import edu.harvard.iq.dvn.core.vdc.VDCGroup;
 import edu.harvard.iq.dvn.core.vdc.VDCGroupServiceLocal;
 import edu.harvard.iq.dvn.core.vdc.VDCServiceLocal;
@@ -84,6 +85,12 @@ public class BrowseDataversesPage  extends VDCBaseBean implements Serializable {
         initAccordionMenu();
         populateVDCUIList();  
         firstRun = false;
+    }
+    
+    public void preRenderView() {
+        super.preRenderView();
+        // add javascript call on each partial submit to initialize the help tips for added fields
+        JavascriptContext.addJavascriptCall(getFacesContext(),"initListingPanelHeights();");
     }
     
     public void sort_action(ValueChangeEvent event) {

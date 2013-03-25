@@ -41,7 +41,8 @@ public final class SDIORegistry extends ServiceRegistry{
      * A <code>Vector</code> that contains the valid SDIO registry
      * categories (reader and writer only) to be used in the constructor. 
      */    
-    private static final Vector initialCategories = new Vector(2);
+    private static final int numberOfSupportedCategories = 3; 
+    private static final Vector initialCategories = new Vector(numberOfSupportedCategories);
 
     static {
         initialCategories.add(StatDataFileReaderSpi.class);
@@ -67,15 +68,29 @@ public final class SDIORegistry extends ServiceRegistry{
      * the StatData I/O API.  The instance is created only if it is not 
      * registered in Registry REGISTRY.
      * 
-     * @return the default resistry
+     * @return the default registry
      */
     public static SDIORegistry getDefaultInstance() {
 
         SDIORegistry registry = null;
-        if (!Registry.isThisClassRegistered(SDIORegistry.class.getName())) {
-            registry = (SDIORegistry)Registry.REGISTRY.getInstance(
-                    SDIORegistry.class.getName());
-        }
+        //if (!Registry.isThisClassRegistered(SDIORegistry.class.getName())) {
+        registry = (SDIORegistry) Registry.REGISTRY.getInstance(
+                SDIORegistry.class.getName());
+        //}
+
+        // Hmm. So, let me get this straight, if the object is not registered, 
+        // we request it from the Registry; which creates a new instance of the
+        // object, gives it to us, and registers it in the process. If however
+        // the instance IS already registered - we say, or sweet, already 
+        // registered!... and return null. (WTF??)
+        // (commenting out the "isThisClassRegistered" check to fix this)
+        // - L.A. 
+        // P.S. This was working all these years simply because we were only 
+        // using one registerable class of plugins - subsettable readers; 
+        // (writers were not used). But once the extractable metadata plugins
+        // were added, this stopped working - only the service that asked 
+        // first was getting the registry instance. The other one was getting 
+        // null. :)
         return registry;
     }
 

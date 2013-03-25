@@ -171,8 +171,13 @@
                                 
                                 <div class="dvnHmpgColumnHeaderBlock">
                                     <h1 class="dvnHmpgColumnHeader">Studies</h1>
-                                    <div jsfc="ice:panelGroup" id="createStudy" styleClass="dvnCreateActionBox dvnCreateStudy" rendered="#{VDCSession.loginBean.user!=null and !VDCRequest.readOnlyDatabase}" >
-                                        <ice:outputLink value="/dvn/faces/admin/ChooseDataverseForCreateStudy.xhtml" rendered="#{VDCSession.loginBean.user!=null and !VDCRequest.readOnlyDatabase}">
+                                    <div jsfc="ice:panelGroup" id="createStudy" styleClass="dvnCreateActionBox dvnCreateStudy" rendered="#{VDCSession.loginBean.user!=null and homePage.userVDCCount > 1 and !VDCRequest.readOnlyDatabase}" >
+                                        <ice:outputLink value="/dvn/faces/admin/ChooseDataverseForCreateStudy.xhtml" rendered="#{VDCSession.loginBean.user!=null and homePage.userVDCCount > 1 and !VDCRequest.readOnlyDatabase}">
+                                            <ice:outputText value="#{bundlePageInfo.createStudyButton}"/>
+                                        </ice:outputLink>
+                                    </div>
+                                    <div jsfc="ice:panelGroup" id="createStudyOne" styleClass="dvnCreateActionBox dvnCreateStudy" rendered="#{VDCSession.loginBean.user!=null and homePage.userVDCCount == 1 and !VDCRequest.readOnlyDatabase}" >
+                                        <ice:outputLink value="/dvn/dv/#{homePage.soleVDCAlias}/faces/study/EditStudyPage.xhtml" rendered="#{VDCSession.loginBean.user!=null and homePage.userVDCCount == 1 and !VDCRequest.readOnlyDatabase}">
                                             <ice:outputText value="#{bundlePageInfo.createStudyButton}"/>
                                         </ice:outputLink>
                                     </div>

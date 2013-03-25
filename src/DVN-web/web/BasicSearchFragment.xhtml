@@ -26,7 +26,8 @@
                value="#{BasicSearchFragment.searchTerms}"
                var="term">
         <ui:fragment rendered="#{empty(item.xtraItems)}">
-                <ice:commandLink id="deleteColLink" action="#{BasicSearchFragment.keywordSearch_action(term)}" >
+                <!--<ice:commandLink id="deleteColLink" action="#{BasicSearchFragment.keywordSearch_action(term)}" >-->
+                <ice:commandLink id="deleteColLink" action="#{BasicSearchFragment.keywordSearchWithFacets_action(term)}" >
                     <ice:outputText value="[#{term}] "/>
                 </ice:commandLink> 
         </ui:fragment>

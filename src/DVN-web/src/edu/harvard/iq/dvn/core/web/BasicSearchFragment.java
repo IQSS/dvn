@@ -107,8 +107,19 @@ public class BasicSearchFragment extends VDCBaseBean implements java.io.Serializ
         String studyListingIndex = StudyListing.addToStudyListingMap(sl, getSessionMap());
         return "/StudyListingPage.xhtml?faces-redirect=true&studyListingIndex=" + studyListingIndex + "&vdcId=" + getVDCRequestBean().getCurrentVDCId();
     }
- 
-    
+
+    public String keywordSearchWithFacets_action(String searchIn) {
+        System.out.print("searchIn: " + searchIn);
+        searchField = (searchField == null) ? "any" : searchField; // default searchField, in case no dropdown       
+        SearchTerm st = new SearchTerm();
+        st.setFieldName(searchField);
+        st.setValue(searchIn);
+        StudyListing sl = getSearchResultsWithFacets(st);
+        String studyListingIndex = StudyListing.addToStudyListingMap(sl, getSessionMap());
+        return "/StudyListingPage.xhtml?faces-redirect=true&studyListingIndex=" + studyListingIndex + "&vdcId=" + getVDCRequestBean().getCurrentVDCId();
+    }
+
+
     private StudyListing getSearchResult(SearchTerm st){
         
         List searchTerms    = new ArrayList();

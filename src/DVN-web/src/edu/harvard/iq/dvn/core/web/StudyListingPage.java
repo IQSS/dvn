@@ -94,6 +94,7 @@ public class StudyListingPage extends VDCBaseBean implements java.io.Serializabl
     VariableServiceLocal varService;
 
     private static final Logger logger = Logger.getLogger("edu.harvard.iq.dvn.core.web.StudyListingPage");
+    private List<CategoryPath> facetsOfInterest = new ArrayList<CategoryPath>();
 
     /** Creates a new instance of StudyListingPageBean */
     public StudyListingPage() {
@@ -120,6 +121,7 @@ public class StudyListingPage extends VDCBaseBean implements java.io.Serializabl
     private boolean renderContributorLink;
     private boolean renderDVPermissionsBox;
     private boolean renderDownloadCount;
+//    private List<CategoryPath>
 
     public boolean isRenderDownloadCount() {
         return renderDownloadCount;
@@ -964,12 +966,31 @@ public class StudyListingPage extends VDCBaseBean implements java.io.Serializabl
         if (studyIdsPreFacet.isEmpty()) {
             studyIdsPreFacet = studyListing.getStudyIds();
         }
+        studyListing.setStudyIds(facetDrillDownSingle(facetKey, facetValue));
+    }
+
+    public void setStudyListingByFacets(String facetKey, String facetValue) {
+        logger.info("called setStudyListingByFacets()");
+        listMessageFacet = " with results refined to \"" + facetKey + "\" = \"" + facetValue + "\" (click to remove)";
+        if (studyIdsPreFacet.isEmpty()) {
+            studyIdsPreFacet = studyListing.getStudyIds();
+        }
         studyListing.setStudyIds(facetDrillDown(facetKey, facetValue));
+    }
+
+    private List facetDrillDownSingle(String facetKey, String facetValue) {
+        /** @todo: does it make sense to pass studyListing to indexService? */
+        return indexService.getHitIdsWithFacetDrillDownSingle(studyListing, facetKey, facetValue);
     }
 
     private List facetDrillDown(String facetKey, String facetValue) {
         /** @todo: does it make sense to pass studyListing to indexService? */
-        return indexService.getHitIdsWithFacetDrillDown(studyListing, facetKey, facetValue);
+        logger.info("called facetDrillDown()");
+        CategoryPath facetToAdd = new CategoryPath(facetKey, facetValue);
+        facetsOfInterest.add(facetToAdd);
+//        CategoryPath fooPath = new CategoryPath("authorName", "Cotter, Patrick");
+//        facetsOfInterest.add(fooPath);
+        return indexService.getHitIdsWithFacetDrillDown(studyListing, facetsOfInterest);
     }
 
     public void removeFacet() {

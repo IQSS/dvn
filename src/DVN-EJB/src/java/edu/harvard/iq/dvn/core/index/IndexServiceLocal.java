@@ -25,6 +25,7 @@ import edu.harvard.iq.dvn.core.vdc.VDCCollection;
 import edu.harvard.iq.dvn.core.web.StudyListing;
 import java.util.List;
 import javax.ejb.Local;
+import org.apache.lucene.facet.taxonomy.CategoryPath;
 
 
 /**
@@ -50,7 +51,9 @@ public interface IndexServiceLocal extends java.io.Serializable {
 
     public ResultsWithFacets searchwithFacets(VDC vdc, List<SearchTerm> searchTerms);
 
-    public List getHitIdsWithFacetDrillDown(StudyListing studyListing, String facetKey, String facetValue);
+    public List getHitIdsWithFacetDrillDownSingle(StudyListing studyListing, String facetKey, String facetValue);
+
+//    public List getHitIdsWithFacetDrillDown(StudyListing studyListing, List<CategoryPath> facetsOfInterest);
 
     public void updateStudy(long studyId);
 
@@ -83,5 +86,7 @@ public interface IndexServiceLocal extends java.io.Serializable {
     public void createIndexTimer();
     
     public void createIndexNotificationTimer();
-    
+
+    public List getHitIdsWithFacetDrillDown(StudyListing studyListing, List<CategoryPath> facetsOfInterest);
+
 }

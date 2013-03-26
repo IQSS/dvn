@@ -73,6 +73,7 @@ import javax.jms.QueueSession;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import org.apache.lucene.facet.taxonomy.CategoryPath;
 
 /**
  *
@@ -442,11 +443,24 @@ public class IndexServiceBean implements edu.harvard.iq.dvn.core.index.IndexServ
         return resultsWithFacets;
     }
 
-    public List getHitIdsWithFacetDrillDown(StudyListing studyListing, String facetKey, String facetValue) {
+    public List getHitIdsWithFacetDrillDownSingle(StudyListing studyListing, String facetKey, String facetValue) {
         List<Long> studyIds = new ArrayList<Long>();
         Indexer indexer = Indexer.getInstance();
         try {
-            studyIds = indexer.getHitIdsWithFacetDrillDown(studyListing, facetKey, facetValue);
+            studyIds = indexer.getHitIdsWithFacetDrillDownSingle(studyListing, facetKey, facetValue);
+        } catch (IOException ex) {
+            ex.printStackTrace();
+        }
+        return studyIds;
+
+    }
+
+    public List getHitIdsWithFacetDrillDown(StudyListing studyListing, List<CategoryPath> facetsOfInterest) {
+        logger.info("called getHitIdsWithFacetDrillDown in IndexServiceBean");
+        List<Long> studyIds = new ArrayList<Long>();
+        Indexer indexer = Indexer.getInstance();
+        try {
+            studyIds = indexer.getHitIdsWithFacetDrillDown(studyListing, facetsOfInterest);
         } catch (IOException ex) {
             ex.printStackTrace();
         }

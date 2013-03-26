@@ -238,7 +238,7 @@
                     <div class="dvnStudyFacetBlockTitle">Refine Results</div>
                     <div class="dvnStudyFacetCategoryBlock">
                         <ul>
-                            <ice:dataTable value="#{StudyListingPage.facets}" var="facetUI">
+                            <ice:dataTable value="#{StudyListingPage.getFacets(3)}" var="facetUI">
                                 <ice:column>
                                     <div class="dvnStudyFacetCategoryTitle"><ice:outputText value="#{facetUI.name}"/></div>
                                     <ul>

@@ -185,7 +185,7 @@ public class StudyListingPage extends VDCBaseBean implements java.io.Serializabl
         return studyUIList;
     }
 
-    public Collection getFacets() {
+    public Collection getFacets(Integer limit) {
         List facetUIList = new ArrayList();
         if (studyListing.getResultsWithFacets() != null) {
             List<FacetResult> facetResults = studyListing.getResultsWithFacets().getResultList();
@@ -195,17 +195,19 @@ public class StudyListingPage extends VDCBaseBean implements java.io.Serializabl
                 String category = facetResult.getFacetResultNode().getLabel().toString();
 //            logger.info("Added facetUi with category: " + category);
                 facetUI.setName(category);
+                Integer count = 0;
                 for (FacetResultNode n : facetResult.getFacetResultNode().getSubResults()) {
                     CategoryPath label = n.getLabel();
                     String last = n.getLabel().lastComponent().toString();
                     Double hits = n.getValue();
 //                logger.info("  - expect " + hits + " hits from a faceted search for \"" + label + "\"");
-                    if (last != null && hits.toString() != null) {
+                    if (last != null && hits.toString() != null && count < limit ) {
 //                    logger.info("making a facetresult ui...");
                         FacetResultUI facetResultUI = new FacetResultUI();
                         facetResultUI.setName(last);
                         facetResultUI.setHits(hits);
                         facetUI.add(facetResultUI);
+                        count++;
                     }
                 }
                 facetUIList.add(facetUI);

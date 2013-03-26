@@ -22,7 +22,7 @@ package edu.harvard.iq.dvn.core.web.study;
 public class FacetResultUI {
 
     String name;
-    Double hits;
+    Integer hits;
 
     public String getName() {
         return name;
@@ -32,11 +32,11 @@ public class FacetResultUI {
         this.name = name;
     }
 
-    public Double getHits() {
+    public Integer getHits() {
         return hits;
     }
 
-    public void setHits(Double hits) {
+    public void setHits(Integer hits) {
         this.hits = hits;
     }
 }

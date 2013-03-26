@@ -205,7 +205,7 @@ public class StudyListingPage extends VDCBaseBean implements java.io.Serializabl
 //                    logger.info("making a facetresult ui...");
                         FacetResultUI facetResultUI = new FacetResultUI();
                         facetResultUI.setName(last);
-                        facetResultUI.setHits(hits);
+                        facetResultUI.setHits(hits.intValue());
                         facetUI.add(facetResultUI);
                         count++;
                     }

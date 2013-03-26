@@ -1693,11 +1693,12 @@ public class FileDownloadServlet extends HttpServlet {
         if (formatRequested.equals("D00")) {
             altFormat = "text/tab-separated-values";
         } else if ( formatRequested.equals("D02") ) {
-            altFormat = "application/x-rlang-transport";
+            altFormat = "text/plain";
         } else if ( formatRequested.equals("D03") ) {
             altFormat = "application/x-stata-6";
         } else {
-            altFormat = "application/x-R-2";
+            altFormat = "application/x-rlang-transport";
+#            altFormat = "application/x-R-2";
         }
         return altFormat;
     }
@@ -1714,7 +1715,10 @@ public class FileDownloadServlet extends HttpServlet {
             return ".zip";
         } else if (fileType.equalsIgnoreCase("application/x-dvn-tabddi-zip")) {
             return ".zip";
+        } else if (fileType.equalsIgnoreCase("application/x-rlang-transport")) {
+            return ".RData";
         }
+
 
         return "";
     }

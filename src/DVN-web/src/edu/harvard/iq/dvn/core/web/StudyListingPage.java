@@ -33,6 +33,7 @@ import com.icesoft.faces.context.effects.JavascriptContext;
 import edu.harvard.iq.dvn.core.admin.UserGroup;
 import edu.harvard.iq.dvn.core.admin.VDCUser;
 import edu.harvard.iq.dvn.core.index.IndexServiceLocal;
+import edu.harvard.iq.dvn.core.index.ResultsWithFacets;
 import edu.harvard.iq.dvn.core.index.SearchTerm;
 import edu.harvard.iq.dvn.core.study.Study;
 import edu.harvard.iq.dvn.core.study.StudyField;
@@ -111,6 +112,7 @@ public class StudyListingPage extends VDCBaseBean implements java.io.Serializabl
     private Map studyFields;
     private String studyListingIndex;
     List studyIdsPreFacet = new ArrayList();
+    ResultsWithFacets resultsWithFacetsPreDrillDown;
 
     // display items
     boolean renderTree;
@@ -965,6 +967,7 @@ public class StudyListingPage extends VDCBaseBean implements java.io.Serializabl
         logger.info("called setStudyListingByFacets()");
         if (studyIdsPreFacet.isEmpty()) {
             studyIdsPreFacet = studyListing.getStudyIds();
+            resultsWithFacetsPreDrillDown = studyListing.getResultsWithFacets();
         }
         studyListing.setStudyIds(facetDrillDown(facetKey, facetValue));
     }
@@ -985,5 +988,6 @@ public class StudyListingPage extends VDCBaseBean implements java.io.Serializabl
     public void removeFacet() {
         listMessageFacet = "";
         studyListing.setStudyIds(studyIdsPreFacet);
+        studyListing.setResultsWithFacets(resultsWithFacetsPreDrillDown);
     }
 }

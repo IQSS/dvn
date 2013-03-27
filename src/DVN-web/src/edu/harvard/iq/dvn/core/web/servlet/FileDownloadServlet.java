@@ -1698,7 +1698,7 @@ public class FileDownloadServlet extends HttpServlet {
             altFormat = "application/x-stata-6";
         } else {
             altFormat = "application/x-rlang-transport";
-#            altFormat = "application/x-R-2";
+            //altFormat = "application/x-R-2";
         }
         return altFormat;
     }

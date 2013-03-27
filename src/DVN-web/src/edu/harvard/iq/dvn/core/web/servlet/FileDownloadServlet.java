@@ -1368,8 +1368,9 @@ public class FileDownloadServlet extends HttpServlet {
                 if (originalMimeType != null && !originalMimeType.equals("")) {
                     if (originalMimeType.matches("application/x-dvn-.*-zip")) {
                         fileDownload.setMimeType("application/zip");
+                    } else {
+                        fileDownload.setMimeType(originalMimeType);
                     }
-                    fileDownload.setMimeType(originalMimeType);
                 } else {
                     fileDownload.setMimeType("application/x-unknown");
                 }

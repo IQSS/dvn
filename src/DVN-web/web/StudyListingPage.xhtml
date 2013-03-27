@@ -105,9 +105,11 @@
                          <div jsfc="ice:panelGroup" styleClass="dvnStudyListCollectionName">
                              <ice:outputText value="#{StudyListingPage.listHeader}"/>
                              <ice:outputText styleClass="dvnStudyListSearchResultsMessage" value=" #{StudyListingPage.listMessage}" rendered="#{StudyListingPage.studyCount != 0}"/>
-                             <ice:commandLink action="#{StudyListingPage.removeFacet()}" title="Remove">
-                                 <ice:outputText styleClass="dvnStudyListSearchResultsMessage" value=" #{StudyListingPage.listMessageFacet}" rendered="#{StudyListingPage.studyCount != 0}"/>
-                             </ice:commandLink>
+                             <ui:repeat value="#{StudyListingPage.facetsOfInterest}" var="facetToRemove">
+                                 <ice:commandLink action="#{StudyListingPage.removeFacet(facetToRemove)}" title="Remove">
+                                     <ice:outputText styleClass="dvnStudyListSearchResultsMessage" value=" #{facetToRemove} (click to remove FIXME: facet listing at right may be inaccurate after click)" rendered="#{StudyListingPage.studyCount != 0}"/>
+                                 </ice:commandLink>
+                             </ui:repeat>
                          </div>
                      </td>
                      <td width="388" align="right" valign="bottom">

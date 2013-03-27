@@ -97,6 +97,10 @@ public class StudyListingPage extends VDCBaseBean implements java.io.Serializabl
     private static final Logger logger = Logger.getLogger("edu.harvard.iq.dvn.core.web.StudyListingPage");
     private List<CategoryPath> facetsOfInterest = new ArrayList<CategoryPath>();
 
+    public List<CategoryPath> getFacetsOfInterest() {
+        return facetsOfInterest;
+    }
+
     /** Creates a new instance of StudyListingPageBean */
     public StudyListingPage() {
     }
@@ -135,7 +139,6 @@ public class StudyListingPage extends VDCBaseBean implements java.io.Serializabl
 
     String listHeader;
     String listMessage;
-    String listMessageFacet;
     String listDescription;
     
     Long downloadCount;
@@ -278,10 +281,6 @@ public class StudyListingPage extends VDCBaseBean implements java.io.Serializabl
     }
     public String getListMessage() {
         return listMessage;
-    }
-
-    public String getListMessageFacet() {
-        return listMessageFacet;
     }
 
     public boolean isRenderTree() {
@@ -977,7 +976,6 @@ public class StudyListingPage extends VDCBaseBean implements java.io.Serializabl
         logger.info("called facetDrillDown()");
         CategoryPath facetToAdd = new CategoryPath(facetKey, facetValue);
         facetsOfInterest.add(facetToAdd);
-        listMessageFacet = " with results refined to " + facetsOfInterest.toString() + " (click to remove)";
         return indexService.getHitIdsWithFacetDrillDown(studyListing, facetsOfInterest);
     }
 
@@ -985,9 +983,20 @@ public class StudyListingPage extends VDCBaseBean implements java.io.Serializabl
      * @todo: allow removal of particular facets. right now you are returned to
      * your original search
      */
-    public void removeFacet() {
-        listMessageFacet = "";
-        studyListing.setStudyIds(studyIdsPreFacet);
+    public void removeFacet(CategoryPath facetToRemove) {
+        for (Iterator<CategoryPath> it = facetsOfInterest.iterator(); it.hasNext();) {
+            CategoryPath facet = it.next();
+            if (facet.equals(facetToRemove)) {
+                it.remove();
+            }
+        }
+        if (facetsOfInterest.isEmpty()) {
+            /** @todo: implement this... show original search with no facets */
+            throw new UnsupportedOperationException();
+        } else {
+            studyListing.setStudyIds(indexService.getHitIdsWithFacetDrillDown(studyListing, facetsOfInterest));
+        }
+        /** @todo: broken, shows original facets */
         studyListing.setResultsWithFacets(resultsWithFacetsPreDrillDown);
     }
 }

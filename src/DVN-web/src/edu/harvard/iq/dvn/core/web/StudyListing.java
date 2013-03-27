@@ -230,7 +230,7 @@ public class StudyListing  implements java.io.Serializable {
     }
 
 
-    void setResultsWithFacets(ResultsWithFacets resultsWithFacets) {
+    public void setResultsWithFacets(ResultsWithFacets resultsWithFacets) {
         this.resultsWithFacets = resultsWithFacets;
     }
 

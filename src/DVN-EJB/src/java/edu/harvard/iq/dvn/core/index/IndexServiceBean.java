@@ -443,18 +443,6 @@ public class IndexServiceBean implements edu.harvard.iq.dvn.core.index.IndexServ
         return resultsWithFacets;
     }
 
-    public List getHitIdsWithFacetDrillDownSingle(StudyListing studyListing, String facetKey, String facetValue) {
-        List<Long> studyIds = new ArrayList<Long>();
-        Indexer indexer = Indexer.getInstance();
-        try {
-            studyIds = indexer.getHitIdsWithFacetDrillDownSingle(studyListing, facetKey, facetValue);
-        } catch (IOException ex) {
-            ex.printStackTrace();
-        }
-        return studyIds;
-
-    }
-
     public List getHitIdsWithFacetDrillDown(StudyListing studyListing, List<CategoryPath> facetsOfInterest) {
         logger.info("called getHitIdsWithFacetDrillDown in IndexServiceBean");
         List<Long> studyIds = new ArrayList<Long>();

@@ -1384,59 +1384,6 @@ public class Indexer implements java.io.Serializable  {
         return matchIds;
     }
 
-    public List getHitIdsWithFacetDrillDownSingle(StudyListing studyListing, String facetKey, String facetValue) throws IOException {
-        List<BooleanQuery> searchParts = new ArrayList();
-        List<SearchTerm> studyLevelSearchTerms = new ArrayList();
-
-        /**
-         * @todo: should we be re-implementing the logic in
-         * containsStudyLevelAndTerms from search() or searchWithFacets()?
-         */
-        for (Iterator it = studyListing.getSearchTerms().iterator(); it.hasNext();) {
-            SearchTerm elem = (SearchTerm) it.next();
-            studyLevelSearchTerms.add(elem);
-
-        }
-        BooleanQuery searchTermsQuery = andSearchTermClause(studyLevelSearchTerms);
-        searchParts.add(searchTermsQuery);
-        BooleanQuery baseQuery = andQueryClause(searchParts);
-        DocumentCollector s = new DocumentCollector(searcher);
-        TaxonomyReader taxo = new DirectoryTaxonomyReader(taxoDir);
-        FacetSearchParams facetSearchParams = new FacetSearchParams();
-        CategoryPath categoryPathOfInterest = new CategoryPath(facetKey, facetValue);
-
-//        CategoryPath fooPath = new CategoryPath("authorName", "Cotter, Patrick");
-        List<CategoryPath> categoryPathsList = new ArrayList<CategoryPath>();
-        categoryPathsList.add(categoryPathOfInterest);
-//        categoryPathsList.add(fooPath);
-        CategoryPath[] categoryPaths = new CategoryPath[categoryPathsList.size()];
-        for (int i = 0; i < categoryPathsList.size(); i++) {
-            categoryPaths[i] = categoryPathsList.get(i);
-        }
-        Query q2 = DrillDown.query(baseQuery, categoryPaths);
-        
-        FacetsCollector facetsCollector = new FacetsCollector(facetSearchParams, r, taxo);
-        logger.info("drilldown dump...\n" + q2);
-        searcher.search(q2, MultiCollector.wrap(s, facetsCollector));
-        ArrayList matchIds = new ArrayList();
-        LinkedHashSet matchIdsSet = new LinkedHashSet();
-
-        List hits = s.getStudies();
-        logger.info("num hits = " + hits.size());
-        logger.info("hits = " + hits.toString());
-        for (int i = 0; i < hits.size(); i++) {
-            ScoreDoc sd = (ScoreDoc) hits.get(i);
-            Document d = searcher.doc(sd.doc);
-            Field studyId = d.getField("id");
-            String studyIdStr = studyId.stringValue();
-            Long studyIdLong = Long.valueOf(studyIdStr);
-            matchIdsSet.add(studyIdLong);
-        }
-        matchIds.addAll(matchIdsSet);
-
-        return matchIds;
-    }
-
     public List getHitIdsWithFacetDrillDown(StudyListing studyListing, List<CategoryPath> facetsOfInterest) throws IOException {
         logger.info("called getHitIdsWithFacetDrillDown in Indexer.java");
         List<BooleanQuery> searchParts = new ArrayList();
@@ -1457,6 +1404,17 @@ public class Indexer implements java.io.Serializable  {
         DocumentCollector s = new DocumentCollector(searcher);
         TaxonomyReader taxo = new DirectoryTaxonomyReader(taxoDir);
         FacetSearchParams facetSearchParams = new FacetSearchParams();
+        /**
+         * @todo: do not repeat yourself... this list of facets copied from elsewhere
+         */
+        facetSearchParams.addFacetRequest(new CountFacetRequest(new CategoryPath("dvName"), 10));
+        facetSearchParams.addFacetRequest(new CountFacetRequest(new CategoryPath("productionDate"), 10));
+        facetSearchParams.addFacetRequest(new CountFacetRequest(new CategoryPath("authorName"), 10));
+        facetSearchParams.addFacetRequest(new CountFacetRequest(new CategoryPath("authorAffiliation"), 10));
+        facetSearchParams.addFacetRequest(new CountFacetRequest(new CategoryPath("keywordValue"), 10));
+        facetSearchParams.addFacetRequest(new CountFacetRequest(new CategoryPath("topicClassValue"), 10));
+        facetSearchParams.addFacetRequest(new CountFacetRequest(new CategoryPath("topicVocabClassURI"), 10));
+        facetSearchParams.addFacetRequest(new CountFacetRequest(new CategoryPath("topicClassVocabulary"), 10));
 //        CategoryPath categoryPathOfInterest = new CategoryPath(facetKey, facetValue);
 
 //        CategoryPath fooPath = new CategoryPath("authorName", "Cotter, Patrick");
@@ -1479,6 +1437,10 @@ public class Indexer implements java.io.Serializable  {
         FacetsCollector facetsCollector = new FacetsCollector(facetSearchParams, r, taxo);
         logger.info("drilldown dump...\n" + q2);
         searcher.search(q2, MultiCollector.wrap(s, facetsCollector));
+        List<FacetResult> facetResults = facetsCollector.getFacetResults();
+        ResultsWithFacets resultsWithFacets = new ResultsWithFacets();
+        resultsWithFacets.setResultList(facetResults);
+        studyListing.setResultsWithFacets(resultsWithFacets);
         ArrayList matchIds = new ArrayList();
         LinkedHashSet matchIdsSet = new LinkedHashSet();
 

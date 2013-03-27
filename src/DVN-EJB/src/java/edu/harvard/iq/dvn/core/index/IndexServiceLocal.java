@@ -51,9 +51,7 @@ public interface IndexServiceLocal extends java.io.Serializable {
 
     public ResultsWithFacets searchwithFacets(VDC vdc, List<SearchTerm> searchTerms);
 
-    public List getHitIdsWithFacetDrillDownSingle(StudyListing studyListing, String facetKey, String facetValue);
-
-//    public List getHitIdsWithFacetDrillDown(StudyListing studyListing, List<CategoryPath> facetsOfInterest);
+    public List getHitIdsWithFacetDrillDown(StudyListing studyListing, List<CategoryPath> facetsOfInterest);
 
     public void updateStudy(long studyId);
 
@@ -86,7 +84,5 @@ public interface IndexServiceLocal extends java.io.Serializable {
     public void createIndexTimer();
     
     public void createIndexNotificationTimer();
-
-    public List getHitIdsWithFacetDrillDown(StudyListing studyListing, List<CategoryPath> facetsOfInterest);
 
 }

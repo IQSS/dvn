@@ -961,26 +961,12 @@ public class StudyListingPage extends VDCBaseBean implements java.io.Serializabl
         return count;
     }
 
-    public void setStudyListingByFacet(String facetKey, String facetValue) {
-        listMessageFacet = " with results refined to \"" + facetKey + "\" = \"" + facetValue + "\" (click to remove)";
-        if (studyIdsPreFacet.isEmpty()) {
-            studyIdsPreFacet = studyListing.getStudyIds();
-        }
-        studyListing.setStudyIds(facetDrillDownSingle(facetKey, facetValue));
-    }
-
     public void setStudyListingByFacets(String facetKey, String facetValue) {
         logger.info("called setStudyListingByFacets()");
-        listMessageFacet = " with results refined to \"" + facetKey + "\" = \"" + facetValue + "\" (click to remove)";
         if (studyIdsPreFacet.isEmpty()) {
             studyIdsPreFacet = studyListing.getStudyIds();
         }
         studyListing.setStudyIds(facetDrillDown(facetKey, facetValue));
-    }
-
-    private List facetDrillDownSingle(String facetKey, String facetValue) {
-        /** @todo: does it make sense to pass studyListing to indexService? */
-        return indexService.getHitIdsWithFacetDrillDownSingle(studyListing, facetKey, facetValue);
     }
 
     private List facetDrillDown(String facetKey, String facetValue) {
@@ -988,11 +974,14 @@ public class StudyListingPage extends VDCBaseBean implements java.io.Serializabl
         logger.info("called facetDrillDown()");
         CategoryPath facetToAdd = new CategoryPath(facetKey, facetValue);
         facetsOfInterest.add(facetToAdd);
-//        CategoryPath fooPath = new CategoryPath("authorName", "Cotter, Patrick");
-//        facetsOfInterest.add(fooPath);
+        listMessageFacet = " with results refined to " + facetsOfInterest.toString() + " (click to remove)";
         return indexService.getHitIdsWithFacetDrillDown(studyListing, facetsOfInterest);
     }
 
+    /**
+     * @todo: allow removal of particular facets. right now you are returned to
+     * your original search
+     */
     public void removeFacet() {
         listMessageFacet = "";
         studyListing.setStudyIds(studyIdsPreFacet);

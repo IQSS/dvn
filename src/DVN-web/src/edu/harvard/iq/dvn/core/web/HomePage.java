@@ -66,6 +66,7 @@ public class HomePage extends VDCBaseBean implements Serializable {
     @EJB UserServiceLocal        userService;
     @EJB VDCNetworkStatsServiceLocal vdcNetworkStatsService;
     @EJB VDCNetworkServiceLocal vdcNetworkService;
+    @EJB RoleServiceLocal roleService;
     
     
 
@@ -348,24 +349,40 @@ public class HomePage extends VDCBaseBean implements Serializable {
 
     public Long getUserVDCCount(){
         VDCUser user = getVDCSessionBean().getUser();
-        
+        int count = 0;
         if (user!=null) {
             user = userService.find(user.getId());
             List<VDC> vdcs= vdcService.getUserVDCs(user.getId());
-            return new Long (vdcs.size());
+            for (VDC dv: vdcs){
+            VDCRole vdcRole = roleService.findByUserVDC(user.getId(), dv.getId());
+            if ( !vdcRole.getRole().getName().equals(RoleServiceLocal.PRIVILEGED_VIEWER) ) {
+                count++;
+            }                
+                if (count > 1) return new Long (count);
+            }
+            return new Long (count);
         }
         return new Long(0);
     }
     
     public String getSoleVDCAlias(){
         VDCUser user = getVDCSessionBean().getUser();
-        
+        String retAlias = "";
+        int count = 0;
         if (user!=null) {
             user = userService.find(user.getId());
             List<VDC> vdcs= vdcService.getUserVDCs(user.getId());
-            if (vdcs.size() == 1){
-                VDC soleVDC = (VDC) vdcs.get(0);
-               return soleVDC.getAlias();
+            for (VDC dv: vdcs){
+            VDCRole vdcRole = roleService.findByUserVDC(user.getId(), dv.getId());
+            if ( !vdcRole.getRole().getName().equals(RoleServiceLocal.PRIVILEGED_VIEWER) ) {
+                count++;
+                retAlias = dv.getAlias();
+            }                
+                if (count > 1) return "";
+            }
+
+            if (count == 1){
+               return retAlias;
             }
             return "";
         }
@@ -438,7 +455,7 @@ public class HomePage extends VDCBaseBean implements Serializable {
             parentItem.addItem(childItem);
             parentItem.setIsAccordion(true);
             if (!vdcGroupService.findByParentId(group.getId()).isEmpty()) {
-                childItem.setNumberOfDataverses(vdcGroupService.findCountChildVDCsByVDCGroupId(group.getId()));
+                childItem.setNumberOfDataverses(vdcGroupService.findCountParentChildVDCsByVDCGroupId(group.getId()));
                 List innerlist       = vdcGroupService.findByParentId(group.getId());                          
                 Iterator inneriterator  = innerlist.iterator();
                 DataverseGrouping xtraItem;
@@ -590,19 +607,30 @@ public class HomePage extends VDCBaseBean implements Serializable {
      public String getSearchField() {
         return searchField;
     }
-
+     
+// checking for null only seemed to be a problem for download count, but it couldn't hurt to 
+// make it on all displays
     public String getStudyCount() {
         Long count = vdcNetworkStatsService.getVDCNetworkStats().getStudyCount();
+        if (count == null){
+            return NumberFormat.getIntegerInstance().format(0);
+        }
         return NumberFormat.getIntegerInstance().format(count);
     }
 
     public String getFileCount() {
         Long count = vdcNetworkStatsService.getVDCNetworkStats().getFileCount();
+        if (count == null){
+            return NumberFormat.getIntegerInstance().format(0);
+        }
         return NumberFormat.getIntegerInstance().format(count);
     }
     
     public String getDownloadCount() {
         Long count = vdcNetworkStatsService.getVDCNetworkStats().getDownloadCount();
+        if (count == null){
+            return NumberFormat.getIntegerInstance().format(0);
+        }
         return NumberFormat.getIntegerInstance().format(count);
     }
 

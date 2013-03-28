@@ -59,6 +59,7 @@ import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.ListIterator;
 import java.util.Map;
 import java.util.MissingResourceException;
 import java.util.ResourceBundle;
@@ -975,14 +976,19 @@ public class StudyListingPage extends VDCBaseBean implements java.io.Serializabl
         /** @todo: does it make sense to pass studyListing to indexService? */
         logger.info("called facetDrillDown()");
         CategoryPath facetToAdd = new CategoryPath(facetKey, facetValue);
-        facetsOfInterest.add(facetToAdd);
+        if (facetsOfInterest.isEmpty()) {
+            facetsOfInterest.add(facetToAdd);
+        } else {
+            ListIterator<CategoryPath> it = facetsOfInterest.listIterator();
+            while (it.hasNext()) {
+                if (!it.next().equals(facetToAdd)) {
+                    it.add(facetToAdd);
+                }
+            }
+        }
         return indexService.getHitIdsWithFacetDrillDown(studyListing, facetsOfInterest);
     }
 
-    /**
-     * @todo: allow removal of particular facets. right now you are returned to
-     * your original search
-     */
     public void removeFacet(CategoryPath facetToRemove) {
         for (Iterator<CategoryPath> it = facetsOfInterest.iterator(); it.hasNext();) {
             CategoryPath facet = it.next();
@@ -991,12 +997,10 @@ public class StudyListingPage extends VDCBaseBean implements java.io.Serializabl
             }
         }
         if (facetsOfInterest.isEmpty()) {
-            /** @todo: implement this... show original search with no facets */
-            throw new UnsupportedOperationException();
+            studyListing.setStudyIds(studyIdsPreFacet);
+            studyListing.setResultsWithFacets(resultsWithFacetsPreDrillDown);
         } else {
             studyListing.setStudyIds(indexService.getHitIdsWithFacetDrillDown(studyListing, facetsOfInterest));
         }
-        /** @todo: broken, shows original facets */
-        studyListing.setResultsWithFacets(resultsWithFacetsPreDrillDown);
     }
 }

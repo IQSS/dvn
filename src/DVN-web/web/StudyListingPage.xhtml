@@ -107,7 +107,7 @@
                              <ice:outputText styleClass="dvnStudyListSearchResultsMessage" value=" #{StudyListingPage.listMessage}" rendered="#{StudyListingPage.studyCount != 0}"/>
                              <ui:repeat value="#{StudyListingPage.facetsOfInterest}" var="facetToRemove">
                                  <ice:commandLink action="#{StudyListingPage.removeFacet(facetToRemove)}" title="Remove">
-                                     <ice:outputText styleClass="dvnStudyListSearchResultsMessage" value=" #{facetToRemove} (click to remove FIXME: facet listing at right may be inaccurate after click)" rendered="#{StudyListingPage.studyCount != 0}"/>
+                                     <ice:outputText styleClass="dvnStudyListSearchResultsMessage" value=" #{facetToRemove} (click to remove)" rendered="#{StudyListingPage.studyCount != 0}"/>
                                  </ice:commandLink>
                              </ui:repeat>
                          </div>

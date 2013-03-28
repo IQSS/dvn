@@ -976,15 +976,8 @@ public class StudyListingPage extends VDCBaseBean implements java.io.Serializabl
         /** @todo: does it make sense to pass studyListing to indexService? */
         logger.info("called facetDrillDown()");
         CategoryPath facetToAdd = new CategoryPath(facetKey, facetValue);
-        if (facetsOfInterest.isEmpty()) {
+        if (!facetsOfInterest.contains(facetToAdd)) {
             facetsOfInterest.add(facetToAdd);
-        } else {
-            ListIterator<CategoryPath> it = facetsOfInterest.listIterator();
-            while (it.hasNext()) {
-                if (!it.next().equals(facetToAdd)) {
-                    it.add(facetToAdd);
-                }
-            }
         }
         return indexService.getHitIdsWithFacetDrillDown(studyListing, facetsOfInterest);
     }

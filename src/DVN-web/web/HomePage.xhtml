@@ -200,7 +200,7 @@
                                                 styleClass="dvnHmpgStudyWidgetTable" value="#{homePage.recentStudies}" var="studyUI">
                                         <ice:column id="column1">
                                             <div jsfc="ice:panelGroup" styleClass="#{!studyUI.study.restricted ? 'dvn_nostyle' : (studyUI.studyRestricted ? 'dvnStudyRestricted' : 'dvnStudyPublic')}" id="groupPanel1">
-                                                <ice:outputLink styleClass="dvnInlineHelpTip" id="hyperlink3" value="/dvn/dv/#{studyUI.study.owner.alias}/faces/study/StudyPage.xhtml?globalId=#{studyUI.study.globalId}"
+                                                <ice:outputLink styleClass="dvnInlineHelpTip" id="hyperlink3" value="/dvn/faces/study/StudyPage.xhtml?globalId=#{studyUI.study.globalId}"
                                                                 title="#{studyUI.metadata.title} - Dataverse Title: #{studyUI.study.owner.name} &lt;br/&gt; Release Date: #{studyUI.releaseTime}">
                                                     <ice:graphicImage styleClass="dvnHmpgStudyFileIcon" url="/resources/images/icon_analyze.gif" title="View and Analyze study files" rendered="#{studyUI.files and studyUI.subsettable}"/>
                                                     <ice:graphicImage styleClass="dvnHmpgStudyFileIcon" url="/resources/images/icon_files.gif" title="View study files" rendered="#{studyUI.files and !studyUI.subsettable}"/>
@@ -211,7 +211,7 @@
                                         </ice:column>
                                     </ice:dataTable>
                                     <div class="dvnHmpgColumnWidgetViewMoreBlock">
-                                        <ice:outputLink value="/dvn/faces/StudyListingPage.xhtml?mode=100" id="hyperlinkBrowseStudiesReleased">
+                                        <ice:outputLink value="/dvn/faces/StudyListingPage.xhtml?mode=100&amp;sort=releaseTime" id="hyperlinkBrowseStudiesReleased">
                                             <ice:outputText value="View More &gt;"/>
                                         </ice:outputLink>
                                     </div>
@@ -222,7 +222,7 @@
                                                 styleClass="dvnHmpgStudyWidgetTable" value="#{homePage.mostDownloadedStudies}" var="studyUI">
                                         <ice:column id="column1">
                                             <div jsfc="ice:panelGroup" styleClass="#{!studyUI.study.restricted ? 'dvn_nostyle' : (studyUI.studyRestricted ? 'dvnStudyRestricted' : 'dvnStudyPublic')}" id="groupPanel1">                 
-                                                <ice:outputLink styleClass="dvnInlineHelpTip" id="hyperlink3" value="/dvn/dv/#{studyUI.study.owner.alias}/faces/study/StudyPage.xhtml?globalId=#{studyUI.study.globalId}"
+                                                <ice:outputLink styleClass="dvnInlineHelpTip" id="hyperlink3" value="/dvn/faces/study/StudyPage.xhtml?globalId=#{studyUI.study.globalId}"
                                                                 title="#{studyUI.metadata.title} - Dataverse Title: #{studyUI.study.owner.name}  &lt;br/&gt; Download Count: #{studyUI.downloadCount}">
                                                     <ice:graphicImage styleClass="dvnHmpgStudyFileIcon" url="/resources/images/icon_analyze.gif" title="View and Analyze study files" rendered="#{studyUI.files and studyUI.subsettable}"/>
                                                     <ice:graphicImage styleClass="dvnHmpgStudyFileIcon" url="/resources/images/icon_files.gif" title="View study files" rendered="#{studyUI.files and !studyUI.subsettable}"/>
@@ -233,7 +233,7 @@
                                         </ice:column>
                                     </ice:dataTable>
                                     <div class="dvnHmpgColumnWidgetViewMoreBlock">
-                                        <ice:outputLink value="/dvn/faces/StudyListingPage.xhtml?mode=100&amp;sort=downloaded" id="hyperlinkBrowseStudiesDownloaded">
+                                        <ice:outputLink value="/dvn/faces/StudyListingPage.xhtml?mode=100&amp;sort=downloadCount" id="hyperlinkBrowseStudiesDownloaded">
                                             <ice:outputText value="View More &gt;"/>
                                         </ice:outputLink>
                                     </div>

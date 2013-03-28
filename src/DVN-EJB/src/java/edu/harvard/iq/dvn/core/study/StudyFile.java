@@ -74,12 +74,7 @@ public abstract class StudyFile implements Serializable {
         this.setStudy( study );
         study.getStudyFiles().add(this);
         
-        StudyFileActivity sfActivity = new StudyFileActivity();
-        this.setStudyFileActivity(sfActivity);
-        sfActivity.setStudyFile(this);
-        sfActivity.setStudy(this.getStudy());
-        //TODO: add both sides of relationship here
-        //this.getStudy().getStudyFileActivity().add(sfActivity);
+
         fileMetadatas = new ArrayList<FileMetadata>();
         fileMetadataFieldValues = new ArrayList<FileMetadataFieldValue>(); 
     }
@@ -143,6 +138,14 @@ public abstract class StudyFile implements Serializable {
 
     public void setStudy(Study study) {
         this.study = study;
+        if (this.getStudyFileActivity() == null) {
+            StudyFileActivity sfActivity = new StudyFileActivity();
+            this.setStudyFileActivity(sfActivity);
+            sfActivity.setStudyFile(this);
+            sfActivity.setStudy(this.getStudy());
+        }
+        //TODO: add both sides of relationship here
+        //this.getStudy().getStudyFileActivity().add(sfActivity);
     }
 
 

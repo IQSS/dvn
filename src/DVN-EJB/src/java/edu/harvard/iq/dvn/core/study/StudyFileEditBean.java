@@ -279,19 +279,6 @@ public class StudyFileEditBean implements Serializable {
         this.dataLanguageEncoding = dataLanguageEncoding;
     }
     
-    public void addFiletoStudy(Study s) {
-        StudyFile file = this.getStudyFile();
-        file.setStudy(s);
-        s.getStudyFiles().add(file);
-        
-        //addFileToCategory(s);
-
-        // also create study file activity object
-        StudyFileActivity sfActivity = new StudyFileActivity();
-        file.setStudyFileActivity(sfActivity);
-        sfActivity.setStudyFile(file);
-        sfActivity.setStudy(s);
-    }
 
 
     public String getUserFriendlyFileType() {

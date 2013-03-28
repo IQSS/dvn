@@ -223,6 +223,8 @@ public class ManageStudiesList extends VDCBaseBean {
             studyService.setReadyForReview(studyUI.getStudyId(), versionNotesPopupBean.getVersionNote());
         } else
               studyService.setReleased(studyUI.getStudyId(), versionNotesPopupBean.getVersionNote());
+        // Success message
+        getVDCRenderBean().getFlash().put("successMessage","Your study, " + studyUI.getStudy().getGlobalId() + ", has been released!");
         // set list to null, to force a fresh retrieval of data
         studyUIList=null;
     }

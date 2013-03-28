@@ -374,6 +374,8 @@ function dataCitationWidgetSync(){
 	 };
     }
     
+    // vvvvvvv AUTHOR vvvvvv
+    
     // Multiple author widget fields
     
     var authorInputs = jQuery('input.input_authorName').length;
@@ -383,8 +385,6 @@ function dataCitationWidgetSync(){
     jQuery('#dvnDataCitationWidgetAuthorInputBlock div.dvnDataCitationWidgetAuthorSelectBoba').hide();
     
     if (authorInputs != 0) {
-        
-        
         // Sync author widget label/links
 
         jQuery('#dvnDataCitationWidgetBlockAuthor a.dvnDataCitationWidgetLabel').html(
@@ -404,7 +404,6 @@ function dataCitationWidgetSync(){
         );
         
         for ( i = 0; i < authorInputs; i++) {
-
             // clone widget author field
 
             var bobaA = jQuery('#dvnDataCitationWidgetAuthorInputBlock div.dvnDataCitationWidgetAuthorInputBoba');
@@ -436,9 +435,7 @@ function dataCitationWidgetSync(){
             
             jQuery(input_addAuthorSync).bind('click', buttonBind(input_addAuthor) );
             jQuery(input_removeAuthorSync).bind('click', buttonBind(input_removeAuthor) );
-
         };
-        
     }
     
     else {
@@ -460,7 +457,6 @@ function dataCitationWidgetSync(){
         );
         
         for ( i = 0; i < authorSelects; i++) {
-            
             // clone widget author select
 
             var bobaSelectA = jQuery('#dvnDataCitationWidgetAuthorInputBlock div.dvnDataCitationWidgetAuthorSelectBoba');
@@ -494,9 +490,7 @@ function dataCitationWidgetSync(){
             
             jQuery(select_addAuthorSync).bind('click', buttonBind(select_addAuthor) );
             jQuery(select_removeAuthorSync).bind('click', buttonBind(select_removeAuthor) );
-
         };
-        
     }
     
     // ^^^^^^^ AUTHOR ^^^^^^^
@@ -530,7 +524,6 @@ function dataCitationWidgetSync(){
         );
     
         for ( i = 0; i < distributorInputs; i++) {
-
             // clone widget distributor field
 
             var bobaD = jQuery('#dvnDataCitationWidgetDistributorInputBlock div.dvnDataCitationWidgetDistributorInputBoba');
@@ -562,9 +555,7 @@ function dataCitationWidgetSync(){
             
             jQuery(input_addDistributorSync).bind('click', buttonBind(input_addDistributor) );
             jQuery(input_removeDistributorSync).bind('click', buttonBind(input_removeDistributor) );
-
         };
-        
     }
     
     else {
@@ -586,7 +577,6 @@ function dataCitationWidgetSync(){
         );
         
         for ( i = 0; i < distributorSelects; i++) {
-            
             // clone widget distributor select
 
             var bobaSelectD = jQuery('#dvnDataCitationWidgetDistributorInputBlock div.dvnDataCitationWidgetDistributorSelectBoba');
@@ -620,82 +610,104 @@ function dataCitationWidgetSync(){
             
             jQuery(select_addDistributorSync).bind('click', buttonBind(select_addDistributor) );
             jQuery(select_removeDistributorSync).bind('click', buttonBind(select_removeDistributor) );
-
         };
-        
     }
     
     // ^^^^^^^ DISTRIBUTOR ^^^^^^^
     
-    // vvvvvvv EVERYTHING ELSE vvvvvv
+    // Sync DATE
+    var input_distributionDate = 'input[id$=input_distributionDate]';
+    var input_distributionDateSync = 'input[id$=input_distributionDateSync]';
+    var input_productionDate = 'input[id$=input_productionDate]';
+    var input_productionDateSync = 'input[id$=input_productionDateSync]';
+    var span_date = '#dvnDataCitationWidgetBlockDate a.dvnDataCitationWidgetLabel';
     
-    // Fill in widget fields
-    jQuery("input[id$=input_distributionDateSync]").val(jQuery("input[id$=input_distributionDate]").val());
-    jQuery("input[id$=input_productionDateSync]").val(jQuery("input[id$=input_productionDate]").val());
-    jQuery("input[id$=input_titleSync]").val(jQuery("input[id$=input_title]").val());
-    jQuery("input[id$=input_studyIdSync]").val(jQuery("input[id$=input_studyId]").val());
+    var inputDistDateVal = jQuery(input_distributionDate).val();
+    var inputProdDateVal = jQuery(input_productionDate).val();
     
-    // Sync widget label/links
-    var inputDistDateVal = jQuery('input[id$=input_distributionDate]').val();
-    var inputProdDateVal = jQuery('input[id$=input_productionDate]').val();
+    // Fill in DATE
+    jQuery(input_distributionDateSync).val(inputDistDateVal);
+    jQuery(input_productionDateSync).val(inputProdDateVal);
+    
+    // Sync DATE label/links
     if (inputDistDateVal !== '' ){
-        jQuery('#dvnDataCitationWidgetBlockDate a.dvnDataCitationWidgetLabel').text(inputDistDateVal);
+        jQuery(span_date).text(inputDistDateVal);
     }
     else if (inputProdDateVal !== '' ){
-        jQuery('#dvnDataCitationWidgetBlockDate a.dvnDataCitationWidgetLabel').text(inputProdDateVal);
+        jQuery(span_date).text(inputProdDateVal);
     };
     
-    var inputTitleVal = jQuery('input[id$=input_title]').val();
+    // Display one or the other date
+    
+    var widgetTwoFieldBind = function( inputField, primaryField, secondaryField, spanField, spanDefault ) { 
+            return function() { 
+                jQuery(inputField).val(jQuery(this).val()); 
+                
+                var primaryValue = jQuery(primaryField).val();
+                var secondaryValue = jQuery(secondaryField).val();
+                var addText = '';
+
+                if (primaryValue != '') {
+                    addText = primaryValue;
+                } else if (secondaryValue != '') {
+                    addText = secondaryValue;
+                } else {
+                    addText = spanDefault;
+                }
+
+                jQuery(spanField).text(addText);
+            };
+    }
+    
+    // Bind DATE fields
+    jQuery(input_distributionDateSync).bind("change input keyup cut paste", widgetTwoFieldBind(input_distributionDate, input_distributionDate, input_productionDate, span_date, 'Date') );
+    jQuery(input_distributionDate).bind("change input keyup cut paste", widgetTwoFieldBind(input_distributionDateSync, input_distributionDate, input_productionDate, span_date, 'Date') );
+    
+    jQuery(input_productionDateSync).bind("change input keyup cut paste", widgetTwoFieldBind(input_productionDate, input_distributionDate, input_productionDate, span_date, 'Date') );
+    jQuery(input_productionDate).bind("change input keyup cut paste", widgetTwoFieldBind(input_productionDateSync, input_distributionDate, input_productionDate, span_date, 'Date') );
+    
+    
+    // Sync TITLE
+    var input_title = 'input[id$=input_title]';
+    var input_titleSync = 'input[id$=input_titleSync]';
+    var span_title = '#dvnDataCitationWidgetBlockTitle a.dvnDataCitationWidgetLabel';
+    
+    var inputTitleVal = jQuery(input_title).val();
+    
+    // Fill in TITLE
+    jQuery(input_titleSync).val(inputTitleVal);
+    
+    // Sync TITLE field+label/link
     if (inputTitleVal !== '' ){
-        jQuery('#dvnDataCitationWidgetBlockTitle a.dvnDataCitationWidgetLabel').text(inputTitleVal);
+        jQuery(span_title).text(inputTitleVal);
     };
     
-    var inputStudyIDVal = jQuery('input[id$=input_studyId]').val();
+    // Bind TITLE fields
+    jQuery(input_titleSync).bind("change input keyup cut paste", widgetBind(input_title, span_title, 'Title') );
+    jQuery(input_title).bind("change input keyup cut paste", widgetBind(input_titleSync, span_title, 'Title') );
+    
+    
+    // Sync STUDYID
+    var input_studyId = 'input[id$=input_studyId]';
+    var input_studyIdSync = 'input[id$=input_studyIdSync]';
+    var span_studyId = '#dvnDataCitationWidgetBlockStudyID a.dvnDataCitationWidgetLabel';
+    
+    var inputStudyIDVal = jQuery(input_studyId).val();
     var inputStudyIDPrfx = jQuery('span[id$=input_studyIdPrfx]').text();
+    
+    // Fill in STUDYID
+    jQuery(input_studyIdSync).val(inputStudyIDVal);
+    
+    // Sync STUDYID field+label/link
     if (inputStudyIDVal !== '' ){
         jQuery('#dvnDataCitationWidgetBlockStudyID div.dvnDataCitationWidgetLabelBlock span.dvnStudyIDPrfx').text(inputStudyIDPrfx)
-        jQuery('#dvnDataCitationWidgetBlockStudyID a.dvnDataCitationWidgetLabel').text(inputStudyIDVal);
+        jQuery(span_studyId).text(inputStudyIDVal);
     };
     
-    // Sync DATE
-    jQuery("input[id$=input_distributionDateSync]").bind("change input cut paste", function() {
-        jQuery("input[id$=input_distributionDate]").val(jQuery(this).val());
-        jQuery('#dvnDataCitationWidgetBlockDate a.dvnDataCitationWidgetLabel').text(jQuery(this).val());
-    });
-    jQuery("input[id$=input_distributionDate]").bind("change input cut paste", function() {
-        jQuery("input[id$=input_distributionDateSync]").val(jQuery(this).val());
-        jQuery('#dvnDataCitationWidgetBlockDate a.dvnDataCitationWidgetLabel').text(jQuery(this).val());
-    });
-    jQuery("input[id$=input_productionDateSync]").bind("change input cut paste", function() {
-        jQuery("input[id$=input_productionDate]").val(jQuery(this).val());
-        if (inputDistDateVal !== '') {
-            jQuery('#dvnDataCitationWidgetBlockDate a.dvnDataCitationWidgetLabel').text(jQuery(this).val());
-        }
-    });
-    jQuery("input[id$=input_productionDate]").bind("change input cut paste", function() {
-        jQuery("input[id$=input_productionDateSync]").val(jQuery(this).val());
-        if (inputDistDateVal !== '') {
-            jQuery('#dvnDataCitationWidgetBlockDate a.dvnDataCitationWidgetLabel').text(jQuery(this).val());
-        }
-    });
-    // Sync TITLE
-    jQuery("input[id$=input_titleSync]").bind("change input cut paste", function() {
-        jQuery("input[id$=input_title]").val(jQuery(this).val());
-        jQuery('#dvnDataCitationWidgetBlockTitle a.dvnDataCitationWidgetLabel').text(jQuery(this).val());
-    });
-    jQuery("input[id$=input_title]").bind("change input cut paste", function() {
-        jQuery("input[id$=input_titleSync]").val(jQuery(this).val());
-        jQuery('#dvnDataCitationWidgetBlockTitle a.dvnDataCitationWidgetLabel').text(jQuery(this).val());
-    });
-    // Sync STUDY ID
-    jQuery("input[id$=input_studyIdSync]").bind("change input cut paste", function() {
-        jQuery("input[id$=input_studyId]").val(jQuery(this).val());
-        jQuery('#dvnDataCitationWidgetBlockStudyID a.dvnDataCitationWidgetLabel').text(jQuery(this).val());
-    });
-    jQuery("input[id$=input_studyId]").bind("change input cut paste", function() {
-        jQuery("input[id$=input_studyIdSync]").val(jQuery(this).val());
-        jQuery('#dvnDataCitationWidgetBlockStudyID a.dvnDataCitationWidgetLabel').text(jQuery(this).val());
-    });
+    // Bind STUDYID fields
+    jQuery(input_studyIdSync).bind("change input keyup cut paste", widgetBind(input_studyId, span_studyId, 'Study ID') );
+    jQuery(input_studyId).bind("change input keyup cut paste", widgetBind(input_studyIdSync, span_studyId, 'Study ID') );
+    
     
     // Set input focus on tab
     function setFocus() {
@@ -742,7 +754,7 @@ function dataCitationWidgetSync(){
         return false;
     });
     // Open+Close Title
-    jQuery('#dvnDataCitationWidgetBlockTitle a.dvnDataCitationWidgetLabel').bind("click", function() {
+    jQuery(span_title).bind("click", function() {
         
         var otherInput = jQuery('#dvnDataCitationWidgetInputBlock').find('div.dvnDataCitationWidgetInput');
         
@@ -759,7 +771,7 @@ function dataCitationWidgetSync(){
         return false;
     });
     // Open+Close Study ID
-    jQuery('#dvnDataCitationWidgetBlockStudyID a.dvnDataCitationWidgetLabel').bind("click", function() {
+    jQuery(span_studyId).bind("click", function() {
         
         var otherInput = jQuery('#dvnDataCitationWidgetInputBlock').find('div.dvnDataCitationWidgetInput');
         
@@ -799,18 +811,18 @@ function dataCitationWidgetSync(){
         var code = e.keyCode || e.which ;
         if (code == '9') {
             jQuery(widget).find('#dvnDataCitationWidgetAuthorInputBlock').css({'display':'none'});
-            jQuery('#dvnDataCitationWidgetBlockDate a.dvnDataCitationWidgetLabel').triggerHandler('click');
+            jQuery(span_date).triggerHandler('click');
         }
     });
-    jQuery("input[id$=input_productionDateSync]").bind("keydown", function(e) {
+    jQuery(input_productionDateSync).bind("keydown", function(e) {
         var widget = jQuery(this).parents('div.dvnDataCitationWidget');
         var code = e.keyCode || e.which ;
         if (code == '9') {
             jQuery(widget).find('#dvnDataCitationWidgetDateInputBlock').css({'display':'none'});
-            jQuery('#dvnDataCitationWidgetBlockTitle a.dvnDataCitationWidgetLabel').triggerHandler('click');
+            jQuery(span_title).triggerHandler('click');
         }
     });
-    jQuery("input[id$=input_titleSync]").bind("keydown", function(e) {
+    jQuery(input_titleSync).bind("keydown", function(e) {
         var widget = jQuery(this).parents('div.dvnDataCitationWidget');
         var code = e.keyCode || e.which ;
         if (code == '9') {
@@ -824,7 +836,7 @@ function dataCitationWidgetSync(){
             }
         }
     });
-    jQuery("input[id$=input_studyIdSync]").bind("keydown", function(e) {
+    jQuery(input_studyIdSync).bind("keydown", function(e) {
         var widget = jQuery(this).parents('div.dvnDataCitationWidget');
         var code = e.keyCode || e.which ;
         if (code == '9') {

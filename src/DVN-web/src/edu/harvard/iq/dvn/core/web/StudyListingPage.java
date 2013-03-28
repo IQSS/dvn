@@ -34,11 +34,7 @@ import edu.harvard.iq.dvn.core.admin.UserGroup;
 import edu.harvard.iq.dvn.core.admin.VDCUser;
 import edu.harvard.iq.dvn.core.index.IndexServiceLocal;
 import edu.harvard.iq.dvn.core.index.SearchTerm;
-import edu.harvard.iq.dvn.core.study.Study;
-import edu.harvard.iq.dvn.core.study.StudyField;
-import edu.harvard.iq.dvn.core.study.StudyServiceLocal;
-import edu.harvard.iq.dvn.core.study.StudyVersion;
-import edu.harvard.iq.dvn.core.study.VariableServiceLocal;
+import edu.harvard.iq.dvn.core.study.*;
 import edu.harvard.iq.dvn.core.vdc.VDC;
 import edu.harvard.iq.dvn.core.vdc.VDCCollection;
 import edu.harvard.iq.dvn.core.vdc.VDCCollectionServiceLocal;
@@ -63,6 +59,7 @@ import javax.ejb.EJB;
 import javax.faces.bean.ViewScoped;
 import javax.faces.component.UIData;
 import javax.faces.event.ValueChangeEvent;
+import javax.faces.model.SelectItem;
 import javax.inject.Inject;
 import javax.inject.Named;
 import javax.swing.tree.DefaultMutableTreeNode;
@@ -111,6 +108,10 @@ public class StudyListingPage extends VDCBaseBean implements java.io.Serializabl
     private boolean renderContributorLink;
     private boolean renderDVPermissionsBox;
     private boolean renderDownloadCount;
+    private List sortOrderItems;
+    private String sortOrderString;
+
+
 
     public boolean isRenderDownloadCount() {
         return renderDownloadCount;
@@ -472,6 +473,17 @@ public class StudyListingPage extends VDCBaseBean implements java.io.Serializabl
     }
 
     private void initPageComponents(int mode) {
+
+        sortOrderItems = loadSortSelectItems();
+        
+        String sort;
+        
+        sort = getRequestParam("sort");
+        
+        sortOrderString = sort;
+        
+        System.out.print("sortOrderString " + sortOrderString);
+ 
         int matches = studyListing.getStudyIds() != null ? studyListing.getStudyIds().size() : 0;
         renderSort = matches == 0 ? false : true;
         renderScroller = matches < 10 ? false : true;
@@ -616,6 +628,10 @@ public class StudyListingPage extends VDCBaseBean implements java.io.Serializabl
         
         sort = getRequestParam("sort");
         
+        sortOrderString = sort;
+        
+        System.out.print("sortOrderString " + sortOrderString);
+        
         if (mode == StudyListing.COLLECTION_STUDIES) {
             String collectionId = getRequestParam("collectionId");
             if (collectionId != null) {
@@ -717,15 +733,17 @@ public class StudyListingPage extends VDCBaseBean implements java.io.Serializabl
                 setStudyListingIndex(addToStudyListingMap(sl));
 
             }
-            else if (mode == StudyListing.GENERIC_LIST && sort != null  && sort.equals("downloaded")) {
+            else if (mode == StudyListing.GENERIC_LIST && sort != null  && sort.equals("downloadCount")) {
                 // subsearch
                 sl = new StudyListing(StudyListing.GENERIC_LIST);
                 // TODO: change filter method to only return studyIds
+                sortOrderString = "downloadCount";
                 sl.setStudyIds(vdcApplicationBean.getAllStudyIdsByDownloadCount());
             } else if (mode == StudyListing.GENERIC_LIST) {
                 // subsearch
                 sl = new StudyListing(StudyListing.GENERIC_LIST);
                 // TODO: change filter method to only return studyIds
+                sortOrderString = "releaseTime";
                 sl.setStudyIds(vdcApplicationBean.getAllStudyIdsByReleaseDate());
             } else {
                 sl = new StudyListing(StudyListing.GENERIC_ERROR);
@@ -788,6 +806,34 @@ public class StudyListingPage extends VDCBaseBean implements java.io.Serializabl
         this.paginator2 = paginator2;
     }
 
+    private List<SelectItem> loadSortSelectItems(){
+        List selectItems = new ArrayList<SelectItem>();
+        selectItems.add(new SelectItem("", "Sort By"));
+
+        selectItems.add(new SelectItem("globalId", "- Global ID"));
+        selectItems.add(new SelectItem("title", "- Title"));
+        selectItems.add(new SelectItem("releaseTime", "- Most Recently Released"));
+        selectItems.add(new SelectItem("productionDate", "- Production Date"));
+        selectItems.add(new SelectItem("downloadCount", "- Most Downloaded"));
+        return selectItems;
+    }
+    
+    public List getSortOrderItems() {
+        return sortOrderItems;
+    }
+
+    public void setSortOrderItems(List sortOrderItems) {
+        this.sortOrderItems = sortOrderItems;
+    }
+    
+    public String getSortOrderString() {
+        return sortOrderString;
+    }
+
+    public void setSortOrderString(String sortOrderString) {
+        this.sortOrderString = sortOrderString;
+    }
+
     public Map getStudyFields() {
         if (studyFields == null) {
             studyFields = new HashMap();
@@ -803,6 +849,8 @@ public class StudyListingPage extends VDCBaseBean implements java.io.Serializabl
 
         return studyFields;
     }
+    
+    
 
     // booleans for search filters
     boolean searchResultsFilter;

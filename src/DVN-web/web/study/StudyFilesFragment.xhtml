@@ -84,19 +84,25 @@
                                         </h:commandButton>
                                     </ice:column>
                                     <ice:column>
-                                        <ice:outputText styleClass="dvn_totalsLabel" value="Total Number of Files: "/> 
-                                        <ice:outputText styleClass="dvn_totalsValue" value="#{studyPage.studyUI.studyVersion.numberOfFiles}"/> 
+                                        
+                                        <div jsfc="ice:panelGroup" styleClass="dvnStudyFilesShowAll" rendered="#{studyPage.studyUI.studyVersion.numberOfFiles > studyPage.studyUI.FILE_NUMBERS}">
+                                            <ice:commandButton rendered="#{studyPage.studyUI.fileIdListSize > 0}" value="Show All Files" actionListener="#{studyPage.studyUI.getAllFileCategoryUIList}"/>
+                                            <ice:outputText styleClass="dvn_totalsLabel" value="Showing "/>
+                                            <ice:outputText styleClass="dvn_totalsValue" value="#{studyPage.studyUI.studyVersion.numberOfFiles-studyPage.studyUI.fileIdListSize}"/>
+                                            <ice:outputText styleClass="dvn_totalsLabel" value=" of "/>
+                                            <ice:outputText styleClass="dvn_totalsValue" value="#{studyPage.studyUI.studyVersion.numberOfFiles}"/>
+                                            <ice:outputText styleClass="dvn_totalsLabel" value=" Total Files"/>
+                                        </div>
+                                        
+                                        <ice:outputText styleClass="dvn_totalsLabel" value="Total Number of Files: " rendered="#{studyPage.studyUI.FILE_NUMBERS > studyPage.studyUI.studyVersion.numberOfFiles}"/> 
+                                        <ice:outputText styleClass="dvn_totalsValue" value="#{studyPage.studyUI.studyVersion.numberOfFiles}" rendered="#{studyPage.studyUI.FILE_NUMBERS > studyPage.studyUI.studyVersion.numberOfFiles}"/> 
+                                        
                                         <ice:outputText styleClass="dvn_totalsLabel dvn_indent" value="Total Downloads: "/> 
                                         <ice:outputText styleClass="dvn_totalsValue" value="#{studyPage.studyUI.downloadCount}"/>
                                         <ice:outputText styleClass="dvn_totalsLabel dvn_indent" value="Downloads of Files in This Version: " rendered="#{studyPage.studyUI.downloadCount != studyPage.studyUI.versionDownloadCount}"/>
                                         <ice:outputText styleClass="dvn_totalsValue" value="#{studyPage.studyUI.versionDownloadCount}" rendered ="#{studyPage.studyUI.downloadCount != studyPage.studyUI.versionDownloadCount}"/>
                                     </ice:column>
                                 </ice:panelGrid>
-                                
-                                <div jsfc="ice:panelGroup" styleClass="dvnStudyFilesShowAll" rendered="#{studyPage.studyUI.studyVersion.numberOfFiles > studyPage.studyUI.FILE_NUMBERS}">
-                                    <ice:outputText value="Showing #{studyPage.studyUI.studyVersion.numberOfFiles-studyPage.studyUI.fileIdListSize} of #{studyPage.studyUI.studyVersion.numberOfFiles} Files "/>
-                                    <ice:commandButton  styleClass="dvnStudyFilesShowAll" rendered="#{studyPage.studyUI.fileIdListSize > 0}" value="Show All" actionListener="#{studyPage.studyUI.getAllFileCategoryUIList}"/>
-                                </div>
                                 
                                 <ice:dataTable cellpadding="0" cellspacing="0" value="#{studyPage.studyUI.categoryUIList}" id="catDataTable" var="catUI" width="100%">
                                     <ice:column id="catColumn">
@@ -231,10 +237,18 @@
                                         </div>
                                     </ice:column>
                                 </ice:dataTable>
-                                <div jsfc="ice:panelGroup" styleClass="dvnStudyFilesShowAll" rendered="#{studyPage.studyUI.studyVersion.numberOfFiles > studyPage.studyUI.FILE_NUMBERS}">
-                                    <ice:outputText value="Showing #{studyPage.studyUI.studyVersion.numberOfFiles-studyPage.studyUI.fileIdListSize} of #{studyPage.studyUI.studyVersion.numberOfFiles} Files "/>
-                                    <ice:commandButton  styleClass="dvnStudyFilesShowAll" rendered="#{studyPage.studyUI.fileIdListSize > 0}" value="Show All" actionListener="#{studyPage.studyUI.getAllFileCategoryUIList}"/>
-                                </div>
+                                <ice:panelGrid columns="1" columnClasses="vdcStudyFilesDownloadCount" width="100%" styleClass="vdcStudyFilesDownloadAll" rendered="#{studyPage.studyUI.studyVersion.numberOfFiles > studyPage.studyUI.FILE_NUMBERS}">
+                                    <ice:column>
+                                        <div jsfc="ice:panelGroup" styleClass="dvnStudyFilesShowAll">
+                                            <ice:commandButton rendered="#{studyPage.studyUI.fileIdListSize > 0}" value="Show All Files" actionListener="#{studyPage.studyUI.getAllFileCategoryUIList}"/>
+                                            <ice:outputText styleClass="dvn_totalsLabel" value="Showing "/>
+                                            <ice:outputText styleClass="dvn_totalsValue" value="#{studyPage.studyUI.studyVersion.numberOfFiles-studyPage.studyUI.fileIdListSize}"/>
+                                            <ice:outputText styleClass="dvn_totalsLabel" value=" of "/>
+                                            <ice:outputText styleClass="dvn_totalsValue" value="#{studyPage.studyUI.studyVersion.numberOfFiles}"/>
+                                            <ice:outputText styleClass="dvn_totalsLabel" value=" Total Files"/>
+                                        </div>
+                                    </ice:column>
+                                </ice:panelGrid>
                                 <div jsfc="ice:panelGroup" rendered="#{studyPage.studyUI.fileIdListSize > 0}">
                                     <div class="dvnFormPadding dvnFormMargin dvnFormCenter">
                                         <ice:commandButton  styleClass="dvnListenSave" value="Load Next #{studyPage.studyUI.FILE_NUMBERS} Files" actionListener="#{studyPage.studyUI.getFileCategoryUIList}"/>

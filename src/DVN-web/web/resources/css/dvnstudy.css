@@ -135,7 +135,8 @@ a.vdcStudyFileSubsetAnalysisLink.dvnStudyFileVisualizationLink{display:block; ma
 .downloadas ul a{width:80px;white-space:nowrap}
 .downloadas ul a:hover{background:khaki;color:#c55b28}
 div[id$=multipleZipPopup] #dvnMultipleZipPopupScrollBox {max-height:160px; overflow-y:auto;}
-.dvnStudyFilesShowAll{margin:.5em 0;}
+.dvnStudyFilesShowAll{display:inline;}
+.dvnStudyFilesShowAll input {margin-right:2em;}
 /* STUDY COMMENTS */
 .vdcStudyCommentsBlock{width:100%;text-align:left}
 .vdcStudyCommentsDataTable{margin:0}

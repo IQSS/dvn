@@ -885,18 +885,17 @@ public class RDATAFileReader extends StatDataFileReader {
         switch (varType) {
           case 0:
             // Convert array of Strings to array of Longs
-            Long[] integerEntries = new Long[varData.length];
+              Long[] integerEntries = new Long[varData.length];
 
-            for (int i = 0; i < varData.length; i++) {
-              try {
-                integerEntries[i] = new Long((String) varData[i]);
+              for (int i = 0; i < varData.length; i++) {
+                  try {
+                      integerEntries[i] = new Long((String) varData[i]);
+                  } catch (Exception ex) {
+                      integerEntries[i] = null;
+                  }
               }
-              catch (Exception ex) {
-                integerEntries[i] = null;
-              }
-            }
 
-            unfValue = UNF5Util.calculateUNF(integerEntries);
+              unfValue = UNF5Util.calculateUNF(integerEntries);
 
             // Summary/category statistics
             smd.getSummaryStatisticsTable().put(k, ArrayUtils.toObject(StatHelper.calculateSummaryStatistics(integerEntries)));
@@ -911,14 +910,25 @@ public class RDATAFileReader extends StatDataFileReader {
             // Convert array of Strings to array of Doubles
             Double[]  doubleEntries = new Double[varData.length];
             
-            for (int i = 0; i < varData.length; i++) {
-              try {
-                doubleEntries[i] = new Double((String) varData[i]);
+              for (int i = 0; i < varData.length; i++) {
+                  try {
+                      // Check for the special case of "NaN" - this is the R and DVN
+                      // notation for the "Not A Number" value:
+                      if (varData[i] != null && ((String) varData[i]).equals("NaN")) {
+                          doubleEntries[i] = Double.NaN;
+                      } else {
+                          // Missing Values don't need to be treated separately; these 
+                          // are represented as empty spaces in the TAB file; so 
+                          // attempting to create a Double object from one will 
+                          // throw an exception - which we are going to intercept 
+                          // below. For the UNF and Summary Stats purposes, missing
+                          // values are represented as NULLs. 
+                          doubleEntries[i] = new Double((String) varData[i]);
+                      }
+                  } catch (Exception ex) {
+                      doubleEntries[i] = null;
+                  }
               }
-              catch (Exception ex) {
-                doubleEntries[i] = null;
-              }
-            }
             
             LOG.info("sumstat:long case=" + Arrays.deepToString(
                         ArrayUtils.toObject(StatHelper.calculateSummaryStatisticsContDistSample(doubleEntries))));

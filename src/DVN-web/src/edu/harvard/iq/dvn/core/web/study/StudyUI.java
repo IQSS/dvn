@@ -32,6 +32,7 @@ import edu.harvard.iq.dvn.core.admin.UserGroup;
 import edu.harvard.iq.dvn.core.admin.VDCRole;
 import edu.harvard.iq.dvn.core.admin.VDCUser;
 import edu.harvard.iq.dvn.core.ddi.DDIServiceBean;
+import edu.harvard.iq.dvn.core.study.FileIdCategory;
 import edu.harvard.iq.dvn.core.study.FileMetadata;
 import edu.harvard.iq.dvn.core.study.Metadata;
 import edu.harvard.iq.dvn.core.study.Study;
@@ -991,7 +992,7 @@ public class StudyUI  implements java.io.Serializable {
 
 	if (fileIdList == null) {  
             fileIdList = studyFileService.getOrderedFileIdsByStudyVersion (getStudyVersion().getId());
-        }
+        } 
         
         getFileCategoryUIList(getStudyVersion().getId(), getSubFileIdList(fileIdList), vdc, user, ipUserGroup);
     }
@@ -1001,11 +1002,14 @@ public class StudyUI  implements java.io.Serializable {
         return getFileCategoryUIList(getStudyVersion().getId(), getSubFileIdList(fileIdList), vdc, user, ipUserGroup );
     }
 
-    private List <FileCategoryUI> getFileCategoryUIList(Long studyVersionId, List fIdList, VDC vdc, VDCUser user, UserGroup ipUserGroup) {
-	StudyServiceLocal studyService = null;
+    private List <FileCategoryUI> getFileCategoryUIList(Long studyVersionId, List<Long> fIdList, VDC vdc, VDCUser user, UserGroup ipUserGroup) {
         //set catUI to the last element of categoryUIList if categoryUIList is not empty. -gdurand
         FileCategoryUI catUI = categoryUIList.size() == 0 ? null : categoryUIList.get( categoryUIList.size() -1 );
-        for (FileMetadata fmd : studyFileService.getSomeOrderedFilesByStudyVersion(getStudyVersion().getId(), fIdList)) {
+                
+        Map<Long,FileMetadata> filesMap = studyFileService.getFilesByStudyVersionAndIds(getStudyVersion().getId(), fIdList);
+
+        for (Long fileId : fIdList) {
+            FileMetadata fmd = filesMap.get(fileId);
             if ((catUI == null || !fmd.getCategory().equals(catUI.getCategory()))) {
                 catUI = new FileCategoryUI(fmd.getCategory());
                 categoryUIList.add(catUI);
@@ -1014,7 +1018,6 @@ public class StudyUI  implements java.io.Serializable {
             catUI.getStudyFileUIs().add(sfui);
         }
         
-        Collections.sort(categoryUIList);
         return categoryUIList;
     }
     

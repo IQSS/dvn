@@ -59,12 +59,9 @@
                                 <tr>
                                     <td align="left" valign="bottom">
                                         <div jsfc="ice:panelGroup" styleClass="dvnStudyListResultsSort" id="groupPanel5" rendered="#{!empty(BrowseDataversesPage.vdcUIList.vdcUIList)}">
-                                            <ice:selectOneMenu id="dropdown2" valueChangeListener="#{BrowseDataversesPage.sort_action}" onchange="submit();">
-                                                <f:selectItem itemLabel="Sort By:" itemValue=""/>
-                                                <f:selectItem itemLabel="- Name" itemValue="Name"/>
-                                                <f:selectItem itemLabel="- Affiliation" itemValue="Affiliation"/>
-                                                <f:selectItem itemLabel="- Release Date" itemValue="Released"/>
-                                                <f:selectItem itemLabel="- Download Count" itemValue="Activity"/>
+                                            <ice:selectOneMenu id="dropdown2" valueChangeListener="#{BrowseDataversesPage.sort_action}" onchange="submit();"
+                                                               value="#{BrowseDataversesPage.sortOrderString}">
+                                                <f:selectItems value="#{BrowseDataversesPage.sortOrderItems}"/>
                                             </ice:selectOneMenu>
                                         </div>
                                     

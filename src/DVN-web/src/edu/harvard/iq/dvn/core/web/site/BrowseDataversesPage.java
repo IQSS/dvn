@@ -42,6 +42,7 @@ import java.util.List;
 import javax.ejb.EJB;
 import javax.faces.bean.ViewScoped;
 import javax.faces.event.ValueChangeEvent;
+import javax.faces.model.SelectItem;
 import javax.inject.Named;
 
 /**
@@ -75,19 +76,24 @@ public class BrowseDataversesPage  extends VDCBaseBean implements Serializable {
     DataverseGrouping parentItem    = null;
     DataverseGrouping childItem     = null;
     private int classificationsSize  = 0;
+    private List sortOrderItems;
+    private String sortOrderString;
+    
     
     public BrowseDataversesPage() {
     }
 
     public void init() {
         super.init();
-        hideRestricted = true;   
+        hideRestricted = true;  
+       sortOrderItems = loadSortSelectItems();
         initAccordionMenu();
         populateVDCUIList();  
         firstRun = false;
     }
     
     public void preRenderView() {
+        
         super.preRenderView();
         // add javascript call on each partial submit to initialize the help tips for added fields
         JavascriptContext.addJavascriptCall(getFacesContext(),"initListingPanelHeights();");
@@ -151,6 +157,7 @@ public class BrowseDataversesPage  extends VDCBaseBean implements Serializable {
         } else {
             if (!initialSort.isEmpty() && firstRun){
                 vdcUIList.setSortColumnName(initialSort); 
+                sortOrderString = initialSort;
             } else if (!savedSort.isEmpty()){
                 vdcUIList.setSortColumnName(savedSort); 
             }                
@@ -234,7 +241,31 @@ public class BrowseDataversesPage  extends VDCBaseBean implements Serializable {
          }        
       }
       
+    private List<SelectItem> loadSortSelectItems(){
+        List selectItems = new ArrayList<SelectItem>();
+        selectItems.add(new SelectItem("", "Sort By"));
+        selectItems.add(new SelectItem("Name", "- Name"));
+        selectItems.add(new SelectItem("Affiliation", "- Affiliation"));
+        selectItems.add(new SelectItem("Released", "- Release Date"));
+        selectItems.add(new SelectItem("Activity", "- Download Count"));
+        return selectItems;
+    }
+    
+    public List getSortOrderItems() {
+        return sortOrderItems;
+    }
 
+    public void setSortOrderItems(List sortOrderItems) {
+        this.sortOrderItems = sortOrderItems;
+    }
+    
+    public String getSortOrderString() {
+        return sortOrderString;
+    }
+
+    public void setSortOrderString(String sortOrderString) {
+        this.sortOrderString = sortOrderString;
+    }
 
      
   //getters

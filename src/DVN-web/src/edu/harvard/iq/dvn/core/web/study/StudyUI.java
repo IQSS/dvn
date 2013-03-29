@@ -1017,7 +1017,14 @@ public class StudyUI  implements java.io.Serializable {
         Collections.sort(categoryUIList);
         return categoryUIList;
     }
-        
+    
+    public List <FileCategoryUI> getAllFileCategoryUIList(ActionEvent ae) {
+        List<FileCategoryUI> allCategoryUIList = new ArrayList<FileCategoryUI>(); 
+        allCategoryUIList = getFileCategoryUIList(getStudyVersion().getId(), fileIdList, vdc, user, ipUserGroup );
+        fileIdList = null;
+        return allCategoryUIList;
+    }
+    
     private List getSubFileIdList(List studyFileIdList) {
         
         List subFileIdList = null;

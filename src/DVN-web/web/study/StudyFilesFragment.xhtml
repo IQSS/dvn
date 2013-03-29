@@ -110,7 +110,7 @@
                                             <div>
                                                 <div jsfc="ice:panelGroup" id="groupPanel4" styleClass="TogglePaneFancyHeader vdcStudyFilesCat">
                                                     <div jsfc="ice:panelGroup" styleClass="vdcStudyFilesCatLabel">
-                                                        <ice:selectBooleanCheckbox id="catCheckBox" styleClass="catCheckBox" onclick="toggleCheckBoxes(this)" disabled="#{!catUI.anyFileUnrestricted}"/>
+                                                        <ice:selectBooleanCheckbox id="catCheckBox" styleClass="catCheckBox" onclick="toggleCheckBoxes(this);" disabled="#{!catUI.anyFileUnrestricted}"/>
                                                         <ice:outputText id="outputText16" value="#{catUI.category}"/>
                                                     </div>
                                                 </div>
@@ -254,6 +254,23 @@
                                         <ice:commandButton  styleClass="dvnListenSave" value="Load Next #{studyPage.studyUI.FILE_NUMBERS} Files" actionListener="#{studyPage.studyUI.getFileCategoryUIList}"/>
                                     </div>
                                 </div>
+                                
+                                <script type="text/javascript">
+                                    // <![CDATA[
+                                    jQuery(document).ready(function(){
+                                        jQuery(".vdcStudyDesc").truncate({max_length: 198});
+                                        
+                                        jQuery(".TogglePaneFancyHeader input.catCheckBox").bind("click", function(e){
+                                            e.stopPropagation();
+                                        })
+
+                                        jQuery(".TogglePaneFancyHeader").bind("click", function(){
+                                            jQuery(this).next('.TogglePaneContent').css('height', jQuery(this).next('.TogglePaneContent').height() + 'px');
+                                            jQuery(this).toggleClass("TogglePaneFancyHeaderClosed").next(".TogglePaneContent").slideToggle();
+                                        })
+                                    });
+                                    // ]]>
+                                </script>
                             </div>
                         </div>
                   </div>

@@ -84,6 +84,9 @@ public class RRequest {
       // Attempt login
       mRC.login(mUser, mPassword);
       
+      // SERVER VERSION
+      LOG.info("SERVER VERSION = " + mRC.getServerVersion());
+      
       // Output everything is cool message
       LOG.info(String.format("RRequest: Successful Connection to RSERVE on %s %d", mHost, mPort));
     }

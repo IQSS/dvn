@@ -63,7 +63,6 @@
         <script type="text/javascript" src="/dvn/resources/javascript/EventCapture.js?v=#{VersionPage.versionNumber}"/>
         <script type="text/javascript" src="/dvn/resources/javascript/jquery.js?v=#{VersionPage.versionNumber}"/>
         <script type="text/javascript" src="/dvn/resources/javascript/jquery.truncator.js?v=#{VersionPage.versionNumber}"/>
-        <script type="text/javascript" src="/dvn/resources/javascript/sgbeal-togglepane.jquery.js?v=#{VersionPage.versionNumber}"/>
         <script type="text/javascript" src="/dvn/resources/javascript/jquery.dimensions.js?v=#{VersionPage.versionNumber}"/>
         <script type="text/javascript" src="/dvn/resources/javascript/jquery.tooltip.min.js?v=#{VersionPage.versionNumber}"/>
         <script type="text/javascript" src="/dvn/resources/javascript/jquery.cookie.js?v=#{VersionPage.versionNumber}"/>
@@ -80,6 +79,10 @@
                 jQuery('.dvnInlineHelpTip').tooltip({
                     showURL: false,
                     showBody: " - "
+                });
+                jQuery('.dvnInlineHmpgWidgetInfo').tooltip({
+                    showURL: false,
+                    showBody: " *!* "
                 });
                 
                 // Now remove the class, so when this method gets called again we don't include them

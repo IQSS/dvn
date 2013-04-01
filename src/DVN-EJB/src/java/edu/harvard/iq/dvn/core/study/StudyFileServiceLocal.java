@@ -25,6 +25,7 @@ package edu.harvard.iq.dvn.core.study;
 
 import edu.harvard.iq.dvn.core.admin.VDCUser;
 import java.util.List;
+import java.util.Map;
 import javax.ejb.Local;
 
 /**
@@ -45,7 +46,7 @@ public interface StudyFileServiceLocal {
     java.util.List<FileMetadata> getOrderedFilesByStudyVersion(Long svId);
     java.util.List<FileMetadata> getFilesByStudyVersionOrderedById(Long svId);
     java.util.List<Long> getOrderedFileIdsByStudyVersion (Long svId);
-    java.util.List<FileMetadata> getSomeOrderedFilesByStudyVersion(Long svId, List fileIdList);
+    Map<Long,FileMetadata> getFilesByStudyVersionAndIds(Long svId, List<Long> fileIdList);
 
     public Boolean doesStudyHaveSubsettableFiles(Long studyVersionId);
     public Boolean doesStudyHaveTabularFiles(Long studyVersionId);

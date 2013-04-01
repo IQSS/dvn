@@ -373,7 +373,10 @@ public class StudyListingPage extends VDCBaseBean implements java.io.Serializabl
         if (sortBy == null || sortBy.equals("")) {
             return;
         }
-
+        if (sortBy.equals("relevence")){
+            search_action();
+            return;
+        }
         if (studyListing.getStudyIds() != null && studyListing.getStudyIds().size() > 0) {
             List sortedStudies = studyService.getOrderedStudies(studyListing.getStudyIds(), sortBy);
             studyListing.setStudyIds(sortedStudies);
@@ -520,7 +523,7 @@ public class StudyListingPage extends VDCBaseBean implements java.io.Serializabl
             } else {
                 listMessage = "for " + listMessage;
             }
-
+            sortOrderItems.add(new SelectItem("relevence", "- Relevence"));
             renderSearchResultsFilter = matches == 0 ? false : true;
             renderDVPermissionsBox = false;
 
@@ -808,13 +811,12 @@ public class StudyListingPage extends VDCBaseBean implements java.io.Serializabl
 
     private List<SelectItem> loadSortSelectItems(){
         List selectItems = new ArrayList<SelectItem>();
-        selectItems.add(new SelectItem("", "Sort By"));
-
         selectItems.add(new SelectItem("globalId", "- Global ID"));
         selectItems.add(new SelectItem("title", "- Title"));
         selectItems.add(new SelectItem("releaseTime", "- Most Recently Released"));
         selectItems.add(new SelectItem("productionDate", "- Production Date"));
         selectItems.add(new SelectItem("downloadCount", "- Most Downloaded"));
+
         return selectItems;
     }
     

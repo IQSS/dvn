@@ -68,6 +68,7 @@ public abstract class StudyFile implements Serializable {
      */
     public StudyFile() {
         fileMetadatas = new ArrayList<FileMetadata>();
+        fileMetadataFieldValues = new ArrayList<FileMetadataFieldValue>();
     }
 
     public StudyFile(Study study) {

@@ -153,7 +153,8 @@ public class BrowseDataversesPage  extends VDCBaseBean implements Serializable {
         vdcUIList = new VDCUIList(groupId, "", filterTerm, hideRestricted);
         vdcUIList.setAlphaCharacter(new String(""));
         if((initialSort.isEmpty() || !firstRun)  && savedSort.isEmpty()){
-            vdcUIList.setSortColumnName(vdcUIList.getDateCreatedColumnName()); 
+            vdcUIList.setSortColumnName(vdcUIList.getDateReleasedColumnName()); 
+            sortOrderString = vdcUIList.getDateReleasedColumnName();
         } else {
             if (!initialSort.isEmpty() && firstRun){
                 vdcUIList.setSortColumnName(initialSort); 
@@ -247,7 +248,7 @@ public class BrowseDataversesPage  extends VDCBaseBean implements Serializable {
         selectItems.add(new SelectItem("Name", "- Name"));
         selectItems.add(new SelectItem("Affiliation", "- Affiliation"));
         selectItems.add(new SelectItem("Released", "- Release Date"));
-        selectItems.add(new SelectItem("Activity", "- Download Count"));
+        selectItems.add(new SelectItem("Activity", "- Download Count"));    
         return selectItems;
     }
     

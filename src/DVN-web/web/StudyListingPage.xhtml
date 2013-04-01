@@ -247,7 +247,7 @@
                                         <ui:repeat value="#{facetUI.facetResultUIs}" var="facetresultuis">
                                             <li>
                                                 <ice:commandLink action="#{StudyListingPage.setStudyListingByFacets(facetUI.name, facetresultuis.name)}" title="Refine by facet">
-                                                    <ice:outputText value="#{facetresultuis.name}"/> <span class="dvnStudyFacetResultNumber">(#{facetresultuis.hits})</span>
+                                                    <ice:outputText value="#{facetresultuis.name}" style="display:inline"/> <span class="dvnStudyFacetResultNumber">(#{facetresultuis.hits})</span>
                                                 </ice:commandLink>
                                             </li>
                                         </ui:repeat>                                        

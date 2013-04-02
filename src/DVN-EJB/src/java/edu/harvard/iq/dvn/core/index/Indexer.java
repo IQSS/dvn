@@ -1424,10 +1424,15 @@ public class Indexer implements java.io.Serializable  {
         for (int i = 0; i < hits.size(); i++) {
             ScoreDoc sd = (ScoreDoc) hits.get(i);
             Document d = searcher.doc(sd.doc);
-            Field studyId = d.getField("id");
-            String studyIdStr = studyId.stringValue();
-            Long studyIdLong = Long.valueOf(studyIdStr);
-            matchIdsSet.add(studyIdLong);
+            try {
+                Field studyId = d.getField("id");
+                String studyIdStr = studyId.stringValue();
+                Long studyIdLong = Long.valueOf(studyIdStr);
+                matchIdsSet.add(studyIdLong);
+            } catch (Exception ex) {
+                logger.info("Query for " + baseQuery + "matched but field \"id\" was null");
+//                ex.printStackTrace();
+            }
         }
         matchIds.addAll(matchIdsSet);
         resultsWithFacets.setMatchIds(matchIds);

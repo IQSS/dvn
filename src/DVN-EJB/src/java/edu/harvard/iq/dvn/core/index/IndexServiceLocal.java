@@ -25,6 +25,7 @@ import java.util.List;
 import javax.ejb.Local;
 import org.apache.lucene.facet.taxonomy.CategoryPath;
 import org.apache.lucene.search.BooleanQuery;
+import org.apache.lucene.search.Query;
 
 
 /**
@@ -82,7 +83,7 @@ public interface IndexServiceLocal extends java.io.Serializable {
     
     public void createIndexNotificationTimer();
 
-    public ResultsWithFacets getResultsWithFacets(BooleanQuery query, List<CategoryPath> facetsOfInterest);
+    public ResultsWithFacets getResultsWithFacets(Query query, List<CategoryPath> facetsOfInterest);
 
     public BooleanQuery andSearchTermClause(List<SearchTerm> studyLevelSearchTerms);
 

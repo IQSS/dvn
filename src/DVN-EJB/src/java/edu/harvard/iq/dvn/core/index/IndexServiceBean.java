@@ -73,6 +73,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import org.apache.lucene.facet.taxonomy.CategoryPath;
 import org.apache.lucene.search.BooleanQuery;
+import org.apache.lucene.search.Query;
 
 /**
  *
@@ -442,7 +443,7 @@ public class IndexServiceBean implements edu.harvard.iq.dvn.core.index.IndexServ
         return resultsWithFacets;
     }
 
-    public ResultsWithFacets getResultsWithFacets(BooleanQuery baseQuery, List<CategoryPath> facetsOfInterest) {
+    public ResultsWithFacets getResultsWithFacets(Query baseQuery, List<CategoryPath> facetsOfInterest) {
         logger.info("called getResultsWithFacets() in IndexServiceBean");
         ResultsWithFacets resultsWithFacets = null;
         Indexer indexer = Indexer.getInstance();

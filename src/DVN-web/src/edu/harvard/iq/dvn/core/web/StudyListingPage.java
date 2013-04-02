@@ -77,6 +77,8 @@ import org.apache.lucene.facet.search.results.FacetResult;
 import org.apache.lucene.facet.search.results.FacetResultNode;
 import org.apache.lucene.facet.taxonomy.CategoryPath;
 import org.apache.lucene.search.BooleanQuery;
+import org.apache.lucene.search.MatchAllDocsQuery;
+import org.apache.lucene.search.Query;
 
 /**
  *
@@ -118,6 +120,7 @@ public class StudyListingPage extends VDCBaseBean implements java.io.Serializabl
     private String searchValue = "Search Studies";
     private Map studyFields;
     private String studyListingIndex;
+    private Query baseQuery;
 
     // display items
     boolean renderTree;
@@ -598,6 +601,10 @@ public class StudyListingPage extends VDCBaseBean implements java.io.Serializabl
         } else if (mode == StudyListing.GENERIC_LIST) {
             // this needs to be fleshed out if it's ever used
             listHeader = "Studies";
+            /**
+             * @todo show facets when browsing studies?
+             */
+//            renderSearchResultsFilter = true;
             
         } else {
             // in this case we have an invalid list
@@ -779,6 +786,14 @@ public class StudyListingPage extends VDCBaseBean implements java.io.Serializabl
                 // subsearch
                 sl = new StudyListing(StudyListing.GENERIC_LIST);
                 // TODO: change filter method to only return studyIds
+                /**
+                 * @todo show facets when browsing studies?
+                 */
+//                MatchAllDocsQuery query = new MatchAllDocsQuery();
+//                baseQuery = query;
+//                ResultsWithFacets resultsWithFacets = indexService.getResultsWithFacets(query, null);
+//                sl.setStudyIds(resultsWithFacets.getMatchIds());
+//                sl.setResultsWithFacets(resultsWithFacets);
                 sl.setStudyIds(vdcApplicationBean.getAllStudyIdsByReleaseDate());
             } else {
                 sl = new StudyListing(StudyListing.GENERIC_ERROR);
@@ -971,17 +986,23 @@ public class StudyListingPage extends VDCBaseBean implements java.io.Serializabl
             facetsOfInterest.add(facetToAdd);
         }
 
-        List<BooleanQuery> searchParts = new ArrayList();
-        List<SearchTerm> studyLevelSearchTerms = new ArrayList();
-        for (Iterator it = studyListing.getSearchTerms().iterator(); it.hasNext();) {
-            SearchTerm elem = (SearchTerm) it.next();
-            studyLevelSearchTerms.add(elem);
+        Query query = null;
+        if (baseQuery != null) {
+            query = baseQuery;
+        } else {
+            List<BooleanQuery> searchParts = new ArrayList();
+            List<SearchTerm> studyLevelSearchTerms = new ArrayList();
+            for (Iterator it = studyListing.getSearchTerms().iterator(); it.hasNext();) {
+                SearchTerm elem = (SearchTerm) it.next();
+                studyLevelSearchTerms.add(elem);
+            }
+            BooleanQuery searchTermsQuery = indexService.andSearchTermClause(studyLevelSearchTerms);
+            searchParts.add(searchTermsQuery);
+            BooleanQuery booleanQuery = indexService.andQueryClause(searchParts);
+            query = booleanQuery;
         }
-        BooleanQuery searchTermsQuery = indexService.andSearchTermClause(studyLevelSearchTerms);
-        searchParts.add(searchTermsQuery);
-        BooleanQuery baseQuery = indexService.andQueryClause(searchParts);
 
-        ResultsWithFacets resultsWithFacets = indexService.getResultsWithFacets(baseQuery, facetsOfInterest);
+        ResultsWithFacets resultsWithFacets = indexService.getResultsWithFacets(query, facetsOfInterest);
         studyListing.setStudyIds(resultsWithFacets.getMatchIds());
         studyListing.setResultsWithFacets(resultsWithFacets);
     }
@@ -994,17 +1015,26 @@ public class StudyListingPage extends VDCBaseBean implements java.io.Serializabl
             }
         }
 
-        List<BooleanQuery> searchParts = new ArrayList();
-        List<SearchTerm> studyLevelSearchTerms = new ArrayList();
-        for (Iterator it = studyListing.getSearchTerms().iterator(); it.hasNext();) {
-            SearchTerm elem = (SearchTerm) it.next();
-            studyLevelSearchTerms.add(elem);
+        /**
+         * @todo: refactor this copy/paste from elsewhere
+         */
+        Query query = null;
+        if (baseQuery != null) {
+            query = baseQuery;
+        } else {
+            List<BooleanQuery> searchParts = new ArrayList();
+            List<SearchTerm> studyLevelSearchTerms = new ArrayList();
+            for (Iterator it = studyListing.getSearchTerms().iterator(); it.hasNext();) {
+                SearchTerm elem = (SearchTerm) it.next();
+                studyLevelSearchTerms.add(elem);
+            }
+            BooleanQuery searchTermsQuery = indexService.andSearchTermClause(studyLevelSearchTerms);
+            searchParts.add(searchTermsQuery);
+            BooleanQuery booleanQuery = indexService.andQueryClause(searchParts);
+            query = booleanQuery;
         }
-        BooleanQuery searchTermsQuery = indexService.andSearchTermClause(studyLevelSearchTerms);
-        searchParts.add(searchTermsQuery);
-        BooleanQuery baseQuery = indexService.andQueryClause(searchParts);
 
-        ResultsWithFacets resultsWithFacets = indexService.getResultsWithFacets(baseQuery, facetsOfInterest);
+        ResultsWithFacets resultsWithFacets = indexService.getResultsWithFacets(query, facetsOfInterest);
         studyListing.setStudyIds(resultsWithFacets.getMatchIds());
         studyListing.setResultsWithFacets(resultsWithFacets);
     }

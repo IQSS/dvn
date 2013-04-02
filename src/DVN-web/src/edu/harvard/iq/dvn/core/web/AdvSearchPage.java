@@ -261,7 +261,7 @@ public class AdvSearchPage extends VDCBaseBean implements java.io.Serializable {
      * fileMetaSearchValue - field for the file-level metadata search
      * query, plus its getter and setter: 
      */
-    private HtmlInputText fileMetaSearchValue;
+    private HtmlInputText fileMetaSearchValue = new HtmlInputText();
 
     public HtmlInputText getFileMetaSearchValue() {
         return this.fileMetaSearchValue;

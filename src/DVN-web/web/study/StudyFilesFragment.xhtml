@@ -259,16 +259,28 @@
                                     // <![CDATA[
                                     jQuery(document).ready(function(){
                                         jQuery(".vdcStudyDesc").truncate({max_length: 198});
-                                        
+                                        initFileCatToggle();
+                                        initFileCatHeight();
+                                    });
+                                    
+                                    function initFileCatHeight(){
+                                        setTimeout(function(){
+                                            jQuery('.TogglePaneContent').each(function(){
+                                                var pane = jQuery(this);
+                                                var paneHeight = jQuery(pane).height();
+                                                jQuery(pane).css('height', paneHeight + 'px');
+                                            })
+                                        },300);
+                                    }
+                                    
+                                    function initFileCatToggle(){
                                         jQuery(".TogglePaneFancyHeader input.catCheckBox").bind("click", function(e){
                                             e.stopPropagation();
                                         })
-
                                         jQuery(".TogglePaneFancyHeader").bind("click", function(){
-                                            jQuery(this).next('.TogglePaneContent').css('height', jQuery(this).next('.TogglePaneContent').height() + 'px');
                                             jQuery(this).toggleClass("TogglePaneFancyHeaderClosed").next(".TogglePaneContent").slideToggle();
                                         })
-                                    });
+                                    }
                                     // ]]>
                                 </script>
                             </div>

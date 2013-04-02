@@ -59,6 +59,7 @@
                                 <tr>
                                     <td align="left" valign="bottom">
                                         <div jsfc="ice:panelGroup" styleClass="dvnStudyListResultsSort" id="groupPanel5" rendered="#{!empty(BrowseDataversesPage.vdcUIList.vdcUIList)}">
+                                         <ice:outputText value="Sort By: "/>
                                             <ice:selectOneMenu id="dropdown2" valueChangeListener="#{BrowseDataversesPage.sort_action}" onchange="submit();"
                                                                value="#{BrowseDataversesPage.sortOrderString}">
                                                 <f:selectItems value="#{BrowseDataversesPage.sortOrderItems}"/>
@@ -273,14 +274,19 @@
             function initListingPanelHeights() {
                 var listingPanel = jQuery('.dvnListingPagePanel');
                 var listingContent = jQuery('.dvnListingPageContent');
+                
+                if (jQuery(listingPanel, listingContent).attr('style').indexOf('height') !== -1) {
+                    jQuery(this).css('height', '');
+                }
+                
                 var listingPanelHeight = listingPanel.height();
                 var listingContentHeight = listingContent.height();
                 
                 if (listingPanelHeight > listingContentHeight) {
-                    jQuery(listingContent).height(listingPanelHeight);
+                    jQuery(listingContent).css('height', listingPanelHeight + 'px');
                 }
                 else {
-                    jQuery(listingPanel).height(listingContentHeight);
+                    jQuery(listingPanel).css('height', listingContentHeight + 'px');
                 }
             }
         // ]]>

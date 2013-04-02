@@ -399,19 +399,23 @@ public class RDATAFileReader extends StatDataFileReader {
       return mDataFile;
     }
     private File saveCsvFile () {
+      // Specify CSV File Location on Server
       mCsvDataFile = new File(mRWorkspace.getRdataFile().getParent(), "data.csv");
-      
+
+      // 
       String csvScript = new StringBuilder("")
-        .append("options(digits.secs=3)\n")
+        .append("options(digits.secs=3)")
         .append("\n")
         .append(RSCRIPT_WRITE_DVN_TABLE)
         .append("\n")
-        .append(String.format("load(\"%s\")\n", mRWorkspace.getRdataAbsolutePath()))
+        .append(String.format("load(\"%s\")", mRWorkspace.getRdataAbsolutePath()))
+        .append("\n")
         .append(RSCRIPT_GET_DATASET)
         .append("\n")
         .append(String.format("write.dvn.table(data.set, file=\"%s\")", mCsvDataFile.getAbsolutePath()))
         .toString();
       
+      // 
       RRequest csvRequest = mRequestBuilder.build();
       
       LOG.info(String.format("RDATAFileReader: Attempting to write table to `%s`", mCsvDataFile.getAbsolutePath()));
@@ -421,7 +425,7 @@ public class RDATAFileReader extends StatDataFileReader {
     }
     /**
      * Return Rdata File Handle on R Server
-     * @return 
+     * @return File asdasd 
      */
     public File getRdataFile () {
       return mDataFile;

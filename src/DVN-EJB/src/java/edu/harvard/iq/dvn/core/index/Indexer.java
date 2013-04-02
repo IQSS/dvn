@@ -890,7 +890,7 @@ public class Indexer implements java.io.Serializable  {
             logger.fine("Start hits: " + DateTools.dateToString(new Date(), Resolution.MILLISECOND));
             logger.info("INDEXER: search query (native): " + searchQuery.toString());
 //            nvResults = getHitIds(searchQuery); // returns List<Long>
-            resultsWithFacets = getHitIdsWithFacets(searchQuery);
+            resultsWithFacets = getResultsWithFacets(searchQuery, null);
             nvResults = resultsWithFacets.getMatchIds();
             logger.fine("Done hits: " + DateTools.dateToString(new Date(), Resolution.MILLISECOND));
             logger.fine("Start filter: " + DateTools.dateToString(new Date(), Resolution.MILLISECOND));
@@ -1382,64 +1382,11 @@ public class Indexer implements java.io.Serializable  {
         return matchIds;
     }
 
-    private ResultsWithFacets getHitIdsWithFacets( Query query) throws IOException {
-        ArrayList matchIds = new ArrayList();
-        LinkedHashSet matchIdsSet = new LinkedHashSet();
-        ResultsWithFacets resultsWithFacets = new ResultsWithFacets();
-        if (query != null){
-            initIndexSearcher();
-            logger.fine("Start searcher: " + DateTools.dateToString(new Date(), Resolution.MILLISECOND));
-            DocumentCollector s = new DocumentCollector(searcher);
-            TopScoreDocCollector topScoreDocCollector = TopScoreDocCollector.create(10, true);
-            TaxonomyReader taxo = new DirectoryTaxonomyReader(taxoDir);
-            FacetSearchParams facetSearchParams = new FacetSearchParams();
-            facetSearchParams.addFacetRequest(new CountFacetRequest(new CategoryPath("dvName"), 10));
-            facetSearchParams.addFacetRequest(new CountFacetRequest(new CategoryPath("productionDate"), 10));
-            facetSearchParams.addFacetRequest(new CountFacetRequest(new CategoryPath("authorName"), 10));
-            facetSearchParams.addFacetRequest(new CountFacetRequest(new CategoryPath("authorAffiliation"), 10));
-            facetSearchParams.addFacetRequest(new CountFacetRequest(new CategoryPath("keywordValue"), 10));
-            facetSearchParams.addFacetRequest(new CountFacetRequest(new CategoryPath("topicClassValue"), 10));
-            facetSearchParams.addFacetRequest(new CountFacetRequest(new CategoryPath("topicVocabClassURI"), 10));
-            facetSearchParams.addFacetRequest(new CountFacetRequest(new CategoryPath("topicClassVocabulary"), 10));
-            FacetsCollector facetsCollector = new FacetsCollector(facetSearchParams, r, taxo);
-            searcher.search(query, MultiCollector.wrap(s, facetsCollector));
-            List<FacetResult> resultList = facetsCollector.getFacetResults();
-            resultsWithFacets.setResultList(resultList);
-//            logger.info("facet results = " + resultList.toString());
-//            for (FacetResult result : resultList) {
-//                logger.info("facet label = " + result.getFacetResultNode().getLabel() + " facet value = " + result.getFacetResultNode().getValue());
-//                for (FacetResultNode node : result.getFacetResultNode().getSubResults()) {
-//                    logger.info("--" + node.getLabel().lastComponent() + " (" + node.getValue() + ") [node.getLabel().lastComponent()]");
-//                }
-//            }
-            logger.fine("done searcher: " + DateTools.dateToString(new Date(), Resolution.MILLISECOND));
-            logger.fine("Start iterate: " + DateTools.dateToString(new Date(), Resolution.MILLISECOND));
-            List hits = s.getStudies();
-            for (int i = 0; i < hits.size(); i++) {
-                ScoreDoc sd = (ScoreDoc) hits.get(i);
-                Document d = searcher.doc(sd.doc);
-                Field studyId = d.getField("id");
-                String studyIdStr = studyId.stringValue();
-                Long studyIdLong = Long.valueOf(studyIdStr);
-                matchIdsSet.add(studyIdLong);
-            }
-            logger.fine("done iterate: " + DateTools.dateToString(new Date(), Resolution.MILLISECOND));
-            searcher.close();
-        }
-        matchIds.addAll(matchIdsSet);
-        resultsWithFacets.setMatchIds(matchIds);
-        return resultsWithFacets;
-    }
-
     ResultsWithFacets getResultsWithFacets(Query baseQuery, List<CategoryPath> facetsOfInterest) throws IOException {
         logger.info("called getResultsWithFacets() in Indexer.java");
         DocumentCollector s = new DocumentCollector(searcher);
         TaxonomyReader taxo = new DirectoryTaxonomyReader(taxoDir);
         FacetSearchParams facetSearchParams = new FacetSearchParams();
-        /**
-         * @todo: do not repeat yourself... this list of facets copied from
-         * elsewhere
-         */
         facetSearchParams.addFacetRequest(new CountFacetRequest(new CategoryPath("dvName"), 10));
         facetSearchParams.addFacetRequest(new CountFacetRequest(new CategoryPath("productionDate"), 10));
         facetSearchParams.addFacetRequest(new CountFacetRequest(new CategoryPath("authorName"), 10));
@@ -1449,8 +1396,9 @@ public class Indexer implements java.io.Serializable  {
         facetSearchParams.addFacetRequest(new CountFacetRequest(new CategoryPath("topicVocabClassURI"), 10));
         facetSearchParams.addFacetRequest(new CountFacetRequest(new CategoryPath("topicClassVocabulary"), 10));
 
-        CategoryPath[] facetsArray = new CategoryPath[facetsOfInterest.size()];
-        for (int i = 0; i < facetsOfInterest.size(); i++) {
+        int numFacetsOfInterest = facetsOfInterest != null ? facetsOfInterest.size() : 0;
+        CategoryPath[] facetsArray = new CategoryPath[numFacetsOfInterest];
+        for (int i = 0; i < numFacetsOfInterest; i++) {
             facetsArray[i] = facetsOfInterest.get(i);
         }
 

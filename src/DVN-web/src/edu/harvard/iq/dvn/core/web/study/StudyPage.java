@@ -151,8 +151,6 @@ public class StudyPage extends VDCBaseBean implements java.io.Serializable  {
        JavascriptContext.addJavascriptCall(getFacesContext(),"initInlineHelpTip();");
        
        JavascriptContext.addJavascriptCall(getFacesContext(),"checkDownloadAllButton();");
-       
-       JavascriptContext.addJavascriptCall(getFacesContext(),"initFileCatHeight();");
 
        HttpServletRequest request = (HttpServletRequest) FacesContext.getCurrentInstance().getExternalContext().getRequest();      
        Map<String,String> params = FacesContext.getCurrentInstance().getExternalContext().getRequestParameterMap();

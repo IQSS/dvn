@@ -55,8 +55,6 @@ import edu.harvard.iq.dvn.core.study.SpecialOtherFile;
 import edu.harvard.iq.dvn.core.study.FileMetadataField; 
 import edu.harvard.iq.dvn.core.study.FileMetadataFieldValue;
 import edu.harvard.iq.dvn.core.study.StudyFieldServiceLocal;
-/** @todo: a little weird to pass this core.web object in? */
-import edu.harvard.iq.dvn.core.web.StudyListing;
 import java.io.File;
 import java.io.IOException;
 import java.io.StringReader;
@@ -1384,82 +1382,6 @@ public class Indexer implements java.io.Serializable  {
         return matchIds;
     }
 
-    public List getHitIdsWithFacetDrillDown(StudyListing studyListing, List<CategoryPath> facetsOfInterest) throws IOException {
-        logger.info("called getHitIdsWithFacetDrillDown in Indexer.java");
-        List<BooleanQuery> searchParts = new ArrayList();
-        List<SearchTerm> studyLevelSearchTerms = new ArrayList();
-
-        /**
-         * @todo: should we be re-implementing the logic in
-         * containsStudyLevelAndTerms from search() or searchWithFacets()?
-         */
-        for (Iterator it = studyListing.getSearchTerms().iterator(); it.hasNext();) {
-            SearchTerm elem = (SearchTerm) it.next();
-            studyLevelSearchTerms.add(elem);
-
-        }
-        BooleanQuery searchTermsQuery = andSearchTermClause(studyLevelSearchTerms);
-        searchParts.add(searchTermsQuery);
-        BooleanQuery baseQuery = andQueryClause(searchParts);
-        DocumentCollector s = new DocumentCollector(searcher);
-        TaxonomyReader taxo = new DirectoryTaxonomyReader(taxoDir);
-        FacetSearchParams facetSearchParams = new FacetSearchParams();
-        /**
-         * @todo: do not repeat yourself... this list of facets copied from elsewhere
-         */
-        facetSearchParams.addFacetRequest(new CountFacetRequest(new CategoryPath("dvName"), 10));
-        facetSearchParams.addFacetRequest(new CountFacetRequest(new CategoryPath("productionDate"), 10));
-        facetSearchParams.addFacetRequest(new CountFacetRequest(new CategoryPath("authorName"), 10));
-        facetSearchParams.addFacetRequest(new CountFacetRequest(new CategoryPath("authorAffiliation"), 10));
-        facetSearchParams.addFacetRequest(new CountFacetRequest(new CategoryPath("keywordValue"), 10));
-        facetSearchParams.addFacetRequest(new CountFacetRequest(new CategoryPath("topicClassValue"), 10));
-        facetSearchParams.addFacetRequest(new CountFacetRequest(new CategoryPath("topicVocabClassURI"), 10));
-        facetSearchParams.addFacetRequest(new CountFacetRequest(new CategoryPath("topicClassVocabulary"), 10));
-//        CategoryPath categoryPathOfInterest = new CategoryPath(facetKey, facetValue);
-
-//        CategoryPath fooPath = new CategoryPath("authorName", "Cotter, Patrick");
-//        List<CategoryPath> categoryPathsList = new ArrayList<CategoryPath>();
-//        categoryPathsList.add(categoryPathOfInterest);
-//        categoryPathsList.add(fooPath);
-//        CategoryPath[] categoryPaths = new CategoryPath[categoryPathsList.size()];
-//        for (int i = 0; i < categoryPathsList.size(); i++) {
-//            categoryPaths[i] = categoryPathsList.get(i);
-//        }
-//        Query q2 = DrillDown.query(baseQuery, categoryPaths);
-        CategoryPath[] facetsArray = new CategoryPath[facetsOfInterest.size()];
-        logger.info("size is " + facetsOfInterest.size());
-        for (int i = 0; i < facetsOfInterest.size(); i++) {
-//            SearchTerm searchTerm = studyLevelSearchTerms.get(i);
-            facetsArray[i] = facetsOfInterest.get(i);            
-        }
-        Query q2 = DrillDown.query(baseQuery, facetsArray);
-        
-        FacetsCollector facetsCollector = new FacetsCollector(facetSearchParams, r, taxo);
-        logger.info("drilldown dump...\n" + q2);
-        searcher.search(q2, MultiCollector.wrap(s, facetsCollector));
-        List<FacetResult> facetResults = facetsCollector.getFacetResults();
-        ResultsWithFacets resultsWithFacets = new ResultsWithFacets();
-        resultsWithFacets.setResultList(facetResults);
-        studyListing.setResultsWithFacets(resultsWithFacets);
-        ArrayList matchIds = new ArrayList();
-        LinkedHashSet matchIdsSet = new LinkedHashSet();
-
-        List hits = s.getStudies();
-        logger.info("num hits = " + hits.size());
-        logger.info("hits = " + hits.toString());
-        for (int i = 0; i < hits.size(); i++) {
-            ScoreDoc sd = (ScoreDoc) hits.get(i);
-            Document d = searcher.doc(sd.doc);
-            Field studyId = d.getField("id");
-            String studyIdStr = studyId.stringValue();
-            Long studyIdLong = Long.valueOf(studyIdStr);
-            matchIdsSet.add(studyIdLong);
-        }
-        matchIds.addAll(matchIdsSet);
-
-        return matchIds;
-    }
-
     private ResultsWithFacets getHitIdsWithFacets( Query query) throws IOException {
         ArrayList matchIds = new ArrayList();
         LinkedHashSet matchIdsSet = new LinkedHashSet();
@@ -1508,7 +1430,62 @@ public class Indexer implements java.io.Serializable  {
         resultsWithFacets.setMatchIds(matchIds);
         return resultsWithFacets;
     }
-    
+
+    ResultsWithFacets getResultsWithFacets(Query baseQuery, List<CategoryPath> facetsOfInterest) throws IOException {
+        logger.info("called getResultsWithFacets() in Indexer.java");
+        DocumentCollector s = new DocumentCollector(searcher);
+        TaxonomyReader taxo = new DirectoryTaxonomyReader(taxoDir);
+        FacetSearchParams facetSearchParams = new FacetSearchParams();
+        /**
+         * @todo: do not repeat yourself... this list of facets copied from
+         * elsewhere
+         */
+        facetSearchParams.addFacetRequest(new CountFacetRequest(new CategoryPath("dvName"), 10));
+        facetSearchParams.addFacetRequest(new CountFacetRequest(new CategoryPath("productionDate"), 10));
+        facetSearchParams.addFacetRequest(new CountFacetRequest(new CategoryPath("authorName"), 10));
+        facetSearchParams.addFacetRequest(new CountFacetRequest(new CategoryPath("authorAffiliation"), 10));
+        facetSearchParams.addFacetRequest(new CountFacetRequest(new CategoryPath("keywordValue"), 10));
+        facetSearchParams.addFacetRequest(new CountFacetRequest(new CategoryPath("topicClassValue"), 10));
+        facetSearchParams.addFacetRequest(new CountFacetRequest(new CategoryPath("topicVocabClassURI"), 10));
+        facetSearchParams.addFacetRequest(new CountFacetRequest(new CategoryPath("topicClassVocabulary"), 10));
+
+        CategoryPath[] facetsArray = new CategoryPath[facetsOfInterest.size()];
+        for (int i = 0; i < facetsOfInterest.size(); i++) {
+            facetsArray[i] = facetsOfInterest.get(i);
+        }
+
+        Query q2;
+        logger.info("facetsArray length is " + facetsArray.length);
+        if (facetsArray.length > 0) {
+            q2 = DrillDown.query(baseQuery, facetsArray);
+        } else {
+            q2 = baseQuery;
+        }
+
+        FacetsCollector facetsCollector = new FacetsCollector(facetSearchParams, r, taxo);
+
+        logger.info("Running query: \n" + q2);
+        searcher.search(q2, MultiCollector.wrap(s, facetsCollector));
+        List<FacetResult> facetResults = facetsCollector.getFacetResults();
+        ResultsWithFacets resultsWithFacets = new ResultsWithFacets();
+        resultsWithFacets.setResultList(facetResults);
+        ArrayList matchIds = new ArrayList();
+        LinkedHashSet matchIdsSet = new LinkedHashSet();
+
+        List hits = s.getStudies();
+        for (int i = 0; i < hits.size(); i++) {
+            ScoreDoc sd = (ScoreDoc) hits.get(i);
+            Document d = searcher.doc(sd.doc);
+            Field studyId = d.getField("id");
+            String studyIdStr = studyId.stringValue();
+            Long studyIdLong = Long.valueOf(studyIdStr);
+            matchIdsSet.add(studyIdLong);
+        }
+        matchIds.addAll(matchIdsSet);
+        resultsWithFacets.setMatchIds(matchIds);
+        return resultsWithFacets;
+    }
+
     private List<Long> getHitIds(List<Document> hits) throws IOException {
         ArrayList matchIds = new ArrayList();
         LinkedHashSet matchIdsSet = new LinkedHashSet();
@@ -1773,7 +1750,7 @@ public class Indexer implements java.io.Serializable  {
         return termQuery;
     }
 
-    BooleanQuery andSearchTermClause(List <SearchTerm> andSearchTerms){
+    public BooleanQuery andSearchTermClause(List <SearchTerm> andSearchTerms){
         BooleanQuery andTerms = new BooleanQuery();
         andTerms.setMaxClauseCount(dvnMaxClauseCount);
         Query rQuery=null;

@@ -21,11 +21,10 @@ package edu.harvard.iq.dvn.core.index;
 
 import edu.harvard.iq.dvn.core.vdc.VDC;
 import edu.harvard.iq.dvn.core.vdc.VDCCollection;
-/** @todo: a little weird to pass this core.web object in? */
-import edu.harvard.iq.dvn.core.web.StudyListing;
 import java.util.List;
 import javax.ejb.Local;
 import org.apache.lucene.facet.taxonomy.CategoryPath;
+import org.apache.lucene.search.BooleanQuery;
 
 
 /**
@@ -50,8 +49,6 @@ public interface IndexServiceLocal extends java.io.Serializable {
     public List search(VDC vdc, List<SearchTerm> searchTerms);
 
     public ResultsWithFacets searchwithFacets(VDC vdc, List<SearchTerm> searchTerms);
-
-    public List getHitIdsWithFacetDrillDown(StudyListing studyListing, List<CategoryPath> facetsOfInterest);
 
     public void updateStudy(long studyId);
 
@@ -84,5 +81,11 @@ public interface IndexServiceLocal extends java.io.Serializable {
     public void createIndexTimer();
     
     public void createIndexNotificationTimer();
+
+    public ResultsWithFacets getResultsWithFacets(BooleanQuery query, List<CategoryPath> facetsOfInterest);
+
+    public BooleanQuery andSearchTermClause(List<SearchTerm> studyLevelSearchTerms);
+
+    public BooleanQuery andQueryClause(List<BooleanQuery> searchParts);
 
 }

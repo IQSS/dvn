@@ -33,6 +33,7 @@ import com.icesoft.faces.context.effects.JavascriptContext;
 import edu.harvard.iq.dvn.core.admin.UserGroup;
 import edu.harvard.iq.dvn.core.admin.VDCUser;
 import edu.harvard.iq.dvn.core.index.IndexServiceLocal;
+import edu.harvard.iq.dvn.core.index.Indexer;
 import edu.harvard.iq.dvn.core.index.ResultsWithFacets;
 import edu.harvard.iq.dvn.core.index.SearchTerm;
 import edu.harvard.iq.dvn.core.study.Study;
@@ -75,6 +76,7 @@ import javax.swing.tree.DefaultTreeModel;
 import org.apache.lucene.facet.search.results.FacetResult;
 import org.apache.lucene.facet.search.results.FacetResultNode;
 import org.apache.lucene.facet.taxonomy.CategoryPath;
+import org.apache.lucene.search.BooleanQuery;
 
 /**
  *
@@ -116,8 +118,6 @@ public class StudyListingPage extends VDCBaseBean implements java.io.Serializabl
     private String searchValue = "Search Studies";
     private Map studyFields;
     private String studyListingIndex;
-    List studyIdsPreFacet = new ArrayList();
-    ResultsWithFacets resultsWithFacetsPreDrillDown;
 
     // display items
     boolean renderTree;
@@ -965,21 +965,25 @@ public class StudyListingPage extends VDCBaseBean implements java.io.Serializabl
 
     public void setStudyListingByFacets(String facetKey, String facetValue) {
         logger.info("called setStudyListingByFacets()");
-        if (studyIdsPreFacet.isEmpty()) {
-            studyIdsPreFacet = studyListing.getStudyIds();
-            resultsWithFacetsPreDrillDown = studyListing.getResultsWithFacets();
-        }
-        studyListing.setStudyIds(facetDrillDown(facetKey, facetValue));
-    }
 
-    private List facetDrillDown(String facetKey, String facetValue) {
-        /** @todo: does it make sense to pass studyListing to indexService? */
-        logger.info("called facetDrillDown()");
         CategoryPath facetToAdd = new CategoryPath(facetKey, facetValue);
         if (!facetsOfInterest.contains(facetToAdd)) {
             facetsOfInterest.add(facetToAdd);
         }
-        return indexService.getHitIdsWithFacetDrillDown(studyListing, facetsOfInterest);
+
+        List<BooleanQuery> searchParts = new ArrayList();
+        List<SearchTerm> studyLevelSearchTerms = new ArrayList();
+        for (Iterator it = studyListing.getSearchTerms().iterator(); it.hasNext();) {
+            SearchTerm elem = (SearchTerm) it.next();
+            studyLevelSearchTerms.add(elem);
+        }
+        BooleanQuery searchTermsQuery = indexService.andSearchTermClause(studyLevelSearchTerms);
+        searchParts.add(searchTermsQuery);
+        BooleanQuery baseQuery = indexService.andQueryClause(searchParts);
+
+        ResultsWithFacets resultsWithFacets = indexService.getResultsWithFacets(baseQuery, facetsOfInterest);
+        studyListing.setStudyIds(resultsWithFacets.getMatchIds());
+        studyListing.setResultsWithFacets(resultsWithFacets);
     }
 
     public void removeFacet(CategoryPath facetToRemove) {
@@ -989,11 +993,20 @@ public class StudyListingPage extends VDCBaseBean implements java.io.Serializabl
                 it.remove();
             }
         }
-        if (facetsOfInterest.isEmpty()) {
-            studyListing.setStudyIds(studyIdsPreFacet);
-            studyListing.setResultsWithFacets(resultsWithFacetsPreDrillDown);
-        } else {
-            studyListing.setStudyIds(indexService.getHitIdsWithFacetDrillDown(studyListing, facetsOfInterest));
+
+        List<BooleanQuery> searchParts = new ArrayList();
+        List<SearchTerm> studyLevelSearchTerms = new ArrayList();
+        for (Iterator it = studyListing.getSearchTerms().iterator(); it.hasNext();) {
+            SearchTerm elem = (SearchTerm) it.next();
+            studyLevelSearchTerms.add(elem);
         }
+        BooleanQuery searchTermsQuery = indexService.andSearchTermClause(studyLevelSearchTerms);
+        searchParts.add(searchTermsQuery);
+        BooleanQuery baseQuery = indexService.andQueryClause(searchParts);
+
+        ResultsWithFacets resultsWithFacets = indexService.getResultsWithFacets(baseQuery, facetsOfInterest);
+        studyListing.setStudyIds(resultsWithFacets.getMatchIds());
+        studyListing.setResultsWithFacets(resultsWithFacets);
     }
+
 }

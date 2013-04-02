@@ -37,8 +37,6 @@ import edu.harvard.iq.dvn.core.vdc.VDCCollection;
 import edu.harvard.iq.dvn.core.vdc.VDCCollectionServiceLocal;
 import edu.harvard.iq.dvn.core.vdc.VDCNetworkServiceLocal;
 import edu.harvard.iq.dvn.core.vdc.VDCServiceLocal;
-/** @todo: a little weird to pass this core.web object in? */
-import edu.harvard.iq.dvn.core.web.StudyListing;
 import java.io.File;
 import java.io.IOException;
 import java.net.InetAddress;
@@ -74,6 +72,7 @@ import javax.jms.QueueSession;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import org.apache.lucene.facet.taxonomy.CategoryPath;
+import org.apache.lucene.search.BooleanQuery;
 
 /**
  *
@@ -443,17 +442,28 @@ public class IndexServiceBean implements edu.harvard.iq.dvn.core.index.IndexServ
         return resultsWithFacets;
     }
 
-    public List getHitIdsWithFacetDrillDown(StudyListing studyListing, List<CategoryPath> facetsOfInterest) {
-        logger.info("called getHitIdsWithFacetDrillDown in IndexServiceBean");
-        List<Long> studyIds = new ArrayList<Long>();
+    public ResultsWithFacets getResultsWithFacets(BooleanQuery baseQuery, List<CategoryPath> facetsOfInterest) {
+        logger.info("called getResultsWithFacets() in IndexServiceBean");
+        ResultsWithFacets resultsWithFacets = null;
         Indexer indexer = Indexer.getInstance();
         try {
-            studyIds = indexer.getHitIdsWithFacetDrillDown(studyListing, facetsOfInterest);
+            resultsWithFacets = indexer.getResultsWithFacets(baseQuery, facetsOfInterest);
         } catch (IOException ex) {
             ex.printStackTrace();
         }
-        return studyIds;
+        return resultsWithFacets;
 
+    }
+
+    public BooleanQuery andSearchTermClause(List<SearchTerm> studyLevelSearchTerms) {
+        Indexer indexer = Indexer.getInstance();
+        return indexer.andSearchTermClause(studyLevelSearchTerms);
+
+    }
+
+    public BooleanQuery andQueryClause(List<BooleanQuery> searchParts) {
+        Indexer indexer = Indexer.getInstance();
+        return indexer.andQueryClause(searchParts);
     }
 
     private List listVdcStudyIds(final VDC vdc) {

@@ -57,7 +57,31 @@
                     
                     <!-- EMPTY DVN -->
                     <div jsfc="ice:panelGroup" styleClass="dvnHmpgGroupNoDVs" rendered="#{homePage.vdcUIListSize == 0}">
-                        <p><ice:outputText value="There are no dataverses to display for the selected filter. Please select again."/></p>
+                        <p><ice:outputText value="#{bundlePageInfo.emptyDVNMessage}"/></p>
+                        <div jsfc="ice:panelGroup" styleClass="dvnHmpgEmptyDVNActions" rendered="#{VDCSession.loginBean.networkAdmin and !VDCRequest.readOnlyDatabase}">
+                            <ul>
+                                <li>
+                                    <ice:outputText value="Click the "/>
+                                    <ice:outputLink value="/dvn/faces/networkAdmin/NetworkOptionsPage.xhtml">
+                                        <ice:outputText value="Options icon"/>
+                                    </ice:outputLink>
+                                    <ice:outputLink value="/dvn/faces/networkAdmin/NetworkOptionsPage.xhtml"><img src="/dvn/resources/images/navicon_options.jpg" alt="Options"/></ice:outputLink>
+                                    <ice:outputText value=" in the menu bar, to administer your Dataverse Network."/>
+                                </li>
+                                <li>
+                                    <ice:outputLink value="/dvn/faces/networkAdmin/NetworkOptionsPage.xhtml">
+                                        <ice:outputText value="Create a Dataverse"/>
+                                    </ice:outputLink>
+                                    <ice:outputText value=" in order to create studies and upload data."/>
+                                </li>
+                                <li>
+                                    <ice:outputLink value="/dvn/faces/networkAdmin/NetworkOptionsPage.xhtml?tab=settings&amp;tab2=customization">
+                                        <ice:outputText value="Customize the layout"/>
+                                    </ice:outputLink>
+                                    <ice:outputText value=" to match the branding of your site."/>
+                                </li>
+                            </ul>
+                        </div>
                     </div>
                     
                     <!-- Dataverses + Studies Container -->

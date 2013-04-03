@@ -52,7 +52,7 @@
                   <ice:panelGrid cellpadding="0" cellspacing="0" columns="3" width="90%"
                                  id="gridPanel1" styleClass="dvnAdvSearchScopeTable"
                                  columnClasses="vdcAdvSearchCol1, vdcAdvSearchCol2, vdcAdvSearchCol3" rowClasses="list-row-odd, list-row-even">
-                    <ice:outputText id="outputText1" styleClass="vdcSubHeaderColor" value="Cataloging Information Search Scope"/>
+                    <ice:outputText id="outputText1" styleClass="vdcSubHeaderColor" value="Study Cataloging Information"/>
                     <ice:outputText id="outputText2" styleClass="vdcSubHeaderColor" value="Operator"/>
                     <ice:outputText id="outputText3" styleClass="vdcSubHeaderColor" value="Search Term"/>
                     <ice:column>
@@ -124,7 +124,7 @@
                       <ice:panelGrid cellpadding="0" cellspacing="0" columns="3" width="90%"
                                  id="gridPanel1b" styleClass="dvnAdvSearchScopeTable"
                                  columnClasses="vdcAdvSearchCol1, vdcAdvSearchCol2, vdcAdvSearchCol3" rowClasses="list-row-odd, list-row-even">
-                            <ice:outputText id="outputText1b" styleClass="vdcSubHeaderColor" value="File Metadata Search Scope"/>
+                            <ice:outputText id="outputText1b" styleClass="vdcSubHeaderColor" value="Tabular Data Variable Information"/>
                             <ice:outputText id="outputText2b" styleClass="vdcSubHeaderColor" value="Operator"/>
                             <ice:outputText id="outputText3b" styleClass="vdcSubHeaderColor" value="Search Term"/>
                       </ice:panelGrid>
@@ -144,7 +144,14 @@
                       </ice:dataTable>
                   </div>
 
-                  <div jsfc="ice:panelGroup" rendered="#{AdvSearchPage.searchableFileLevelMetadata}">     
+                  <div jsfc="ice:panelGroup" styleClass="dvnFormPaddingTop" rendered="#{AdvSearchPage.searchableFileLevelMetadata}"> 
+                    <ice:panelGrid cellpadding="0" cellspacing="0" columns="3" width="90%"
+                                 id="gridPanel1c" styleClass="dvnAdvSearchScopeTable"
+                                 columnClasses="vdcAdvSearchCol1, vdcAdvSearchCol2, vdcAdvSearchCol3" rowClasses="list-row-odd, list-row-even">
+                            <ice:outputText id="outputText1c" styleClass="vdcSubHeaderColor" value="FITS File Information"/>
+                            <ice:outputText id="outputText2c" styleClass="vdcSubHeaderColor" value="Operator"/>
+                            <ice:outputText id="outputText3c" styleClass="vdcSubHeaderColor" value="Search Term"/>
+                    </ice:panelGrid>
                     <ice:panelGrid cellpadding="0" cellspacing="0" columns="3" width="90%"
                                  id="fileLevelSearchGridPanel1" styleClass="dvnAdvSearchScopeTable dvnAdvSearchScopePnlGrdTable"
                                  columnClasses="vdcAdvSearchCol1, vdcAdvSearchCol2, vdcAdvSearchCol3" rowClasses="list-row-odd, list-row-even">
@@ -164,7 +171,7 @@
                     
                   <div jsfc="ice:panelGroup" styleClass="dvnFormPadding" rendered="#{AdvSearchPage.collectionsIncluded}">
                       <div class="dvnAdvSearchScopeHeadPad">
-                        <ice:outputText id="outputText5" styleClass="vdcSubHeaderColor" value="Collections Search Scope"/>
+                        <ice:outputText id="outputText5" styleClass="vdcSubHeaderColor" value="Collections Scope"/>
                         <ice:selectOneRadio binding="#{AdvSearchPage.radioButtonList1}" id="radioButtonList1" layout="pageDirection" value="Search All Collections">
                         <f:selectItems binding="#{AdvSearchPage.radioButtonList1SelectItems}" id="radioButtonList1SelectItems" value="#{AdvSearchPage.radioButtonList1DefaultItems}"/>
                         </ice:selectOneRadio>

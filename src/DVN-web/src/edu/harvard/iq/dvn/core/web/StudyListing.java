@@ -88,6 +88,10 @@ public class StudyListing  implements java.io.Serializable {
     public void setMode(int mode) {
         this.mode = mode;
     }
+    
+    public static int getCollectionStudiesMode() {
+        return COLLECTION_STUDIES;
+    }
 
     public List getStudyIds() {
         return studyIds;

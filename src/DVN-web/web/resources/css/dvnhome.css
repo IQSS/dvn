@@ -146,6 +146,9 @@ span.dvnHmpgGroupHeader{float:left;font-size:150% !important;font-weight:700}
 a.dvnHmpgGroupCreateLink:link,a.dvnHmpgGroupCreateLink:visited,a.dvnHmpgGroupCreateLink:hover,a.dvnHmpgGroupCreateLink:active{padding-right:28px;color:#c55b28;background:url(/dvn/resources/images/start-arrows.gif) 100% 52% no-repeat;font-size:95%;text-decoration:none}
 .dvnHmpgClassificationDesc{margin-bottom:.25em;width:100%}
 .dvnHmpgGroupNoDVs{padding:0 1em;border:1px solid #dcdddf;text-align:center}
+.dvnHmpgEmptyDVNActions{width:540px; margin:0 auto; text-align:left;}
+.dvnHmpgEmptyDVNActions li{margin-bottom:1em;}
+.dvnHmpgEmptyDVNActions a:link,.dvnHmpgEmptyDVNActions a:visited,.dvnHmpgEmptyDVNActions a:hover,.dvnHmpgEmptyDVNActions a:active{font-weight:bold;}
 .dvnHmpgGroupTableWrap{border:1px solid #dcdddf;border-bottom:0}
 .dvnHmpgGroupTableTop{width:100%}
 .dvnHmpgGroupTableTop td.dvnHmpgGroupTableTopCol{padding-bottom:.5em}

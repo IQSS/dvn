@@ -94,9 +94,6 @@ public class StudyListing  implements java.io.Serializable {
     }
 
     public void setStudyIds(List studyIds) {
-        if(this.mode == SEARCH && this.getSortMap().isEmpty()){
-            this.sortMap.put("relevance", studyIds);
-        }
         this.studyIds = studyIds;
     }
 

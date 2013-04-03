@@ -925,11 +925,6 @@ public class AdvSearchPage extends VDCBaseBean implements java.io.Serializable {
         return isDateItem(dropdown7.getValue().toString());
     }
 
-
-    public void searchFieldListener(ValueChangeEvent vce) {
-        FacesContext.getCurrentInstance().renderResponse();
-    }
-
     public String indexAll() {
         indexServiceBean.indexAll();
         return "success";

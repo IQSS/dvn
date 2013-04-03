@@ -56,7 +56,7 @@
                     <ice:outputText id="outputText2" styleClass="vdcSubHeaderColor" value="Operator"/>
                     <ice:outputText id="outputText3" styleClass="vdcSubHeaderColor" value="Search Term"/>
                     <ice:column>
-                        <ice:selectOneMenu binding="#{AdvSearchPage.dropdown1}" id="dropdown1" value="Title" onchange="submit()" valueChangeListener="#{AdvSearchPage.searchFieldListener}" immediate="true">
+                        <ice:selectOneMenu binding="#{AdvSearchPage.dropdown1}" id="dropdown1" value="Title"  immediate="true">
                           <f:selectItems binding="#{AdvSearchPage.dropdown1SelectItems}" id="dropdown1SelectItems" value="#{AdvSearchPage.dropdown3DefaultItems}"/>
                         </ice:selectOneMenu>
                     </ice:column>
@@ -73,7 +73,7 @@
                     
                     <ice:column>
                       <ice:outputText id="outputText7" value="and "/>
-                      <ice:selectOneMenu binding="#{AdvSearchPage.dropdown3}" id="dropdown3" value="Producer" onchange="submit()" valueChangeListener="#{AdvSearchPage.searchFieldListener}" immediate="true">
+                      <ice:selectOneMenu binding="#{AdvSearchPage.dropdown3}" id="dropdown3" value="Producer" immediate="true">
                         <f:selectItems binding="#{AdvSearchPage.dropdown3SelectItems}" id="dropdown3SelectItems" value="#{AdvSearchPage.dropdown3DefaultItems}"/>
                       </ice:selectOneMenu>
                     </ice:column>
@@ -89,7 +89,7 @@
                     
                     <ice:column>
                       <ice:outputText id="outputText6" value="and "/>
-                      <ice:selectOneMenu binding="#{AdvSearchPage.dropdown5}" id="dropdown5" value="Production Date" onchange="submit()" valueChangeListener="#{AdvSearchPage.searchFieldListener}" immediate="true">
+                      <ice:selectOneMenu binding="#{AdvSearchPage.dropdown5}" id="dropdown5" value="Production Date"  immediate="true">
                         <f:selectItems binding="#{AdvSearchPage.dropdown3SelectItems1}" id="dropdown3SelectItems1" value="#{AdvSearchPage.dropdown3DefaultItems}"/>
                       </ice:selectOneMenu>
                     </ice:column>
@@ -105,7 +105,7 @@
                     
                     <ice:column>
                       <ice:outputText id="outputText8" value="and "/>
-                      <ice:selectOneMenu binding="#{AdvSearchPage.dropdown7}" id="dropdown7" value="Time Period Covered Start" onchange="submit()" valueChangeListener="#{AdvSearchPage.searchFieldListener}" immediate="true">
+                      <ice:selectOneMenu binding="#{AdvSearchPage.dropdown7}" id="dropdown7" value="Time Period Covered Start" immediate="true">
                         <f:selectItems binding="#{AdvSearchPage.dropdown3SelectItems2}" id="dropdown3SelectItems2" value="#{AdvSearchPage.dropdown3DefaultItems}"/>
                       </ice:selectOneMenu>
                     </ice:column>
@@ -156,7 +156,7 @@
                                  id="fileLevelSearchGridPanel1" styleClass="dvnAdvSearchScopeTable dvnAdvSearchScopePnlGrdTable"
                                  columnClasses="vdcAdvSearchCol1, vdcAdvSearchCol2, vdcAdvSearchCol3" rowClasses="list-row-odd, list-row-even">
                       <ice:column>
-                        <ice:selectOneMenu binding="#{AdvSearchPage.dropdownFileMeta}" id="fileMetaDropdown" onchange="submit()" valueChangeListener="#{AdvSearchPage.searchFieldListener}" immediate="true">
+                        <ice:selectOneMenu binding="#{AdvSearchPage.dropdownFileMeta}" id="fileMetaDropdown"  immediate="true">
                             <f:selectItems binding="#{AdvSearchPage.dropdownFileMetaSelectItems}" id="dropdownFileMetaFields" value="#{AdvSearchPage.fileLevelMetaKeysDropdown}"/>
                         </ice:selectOneMenu>    
                       </ice:column>

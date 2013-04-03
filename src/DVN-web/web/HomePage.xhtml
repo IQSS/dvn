@@ -196,21 +196,21 @@
                                 
                                 <div class="dvnHmpgColumnHeaderBlock">
                                     <h1 class="dvnHmpgColumnHeader">Studies</h1>
-                                    <div jsfc="ice:panelGroup" id="createStudy" styleClass="dvnCreateActionBox dvnCreateStudy" rendered="#{VDCSession.loginBean.user!=null and homePage.userVDCCount > 1 and !VDCRequest.readOnlyDatabase}" >
+                                    <div jsfc="ice:panelGroup" id="createStudy" styleClass="dvnCreateActionBox dvnCreateStudy" rendered="#{VDCSession.loginBean.user!=null and homePage.userVDCCount > 1 and !VDCRequest.readOnlyDatabase}">
                                         <ice:outputLink value="/dvn/faces/admin/ChooseDataverseForCreateStudy.xhtml" rendered="#{VDCSession.loginBean.user!=null and homePage.userVDCCount > 1 and !VDCRequest.readOnlyDatabase}">
                                             <ice:outputText value="#{bundlePageInfo.createStudyButton}"/>
                                         </ice:outputLink>
                                     </div>
-                                    <div jsfc="ice:panelGroup" id="createStudyOne" styleClass="dvnCreateActionBox dvnCreateStudy" rendered="#{VDCSession.loginBean.user!=null and homePage.userVDCCount == 1 and !VDCRequest.readOnlyDatabase}" >
+                                    <div jsfc="ice:panelGroup" id="createStudyOne" styleClass="dvnCreateActionBox dvnCreateStudy" rendered="#{VDCSession.loginBean.user!=null and homePage.userVDCCount == 1 and !VDCRequest.readOnlyDatabase}">
                                         <ice:outputLink value="/dvn/dv/#{homePage.soleVDCAlias}/faces/study/EditStudyPage.xhtml" rendered="#{VDCSession.loginBean.user!=null and homePage.userVDCCount == 1 and !VDCRequest.readOnlyDatabase}">
                                             <ice:outputText value="#{bundlePageInfo.createStudyButton}"/>
                                         </ice:outputLink>
                                     </div>
                                     <div class="dvnHmpgColumnTotals">
                                         <ice:outputText styleClass="dvn_totalsValue" value="#{homePage.studyCount}"/>
-                                        <ice:outputText value=" Studies , "/>
+                                        <ice:outputText value=" Studies, "/>
                                         <ice:outputText styleClass="dvn_totalsValue" value="#{homePage.fileCount}"/>
-                                        <ice:outputText value=" Files , "/>
+                                        <ice:outputText value=" Files, "/>
                                         <ice:outputText styleClass="dvn_totalsValue" value="#{homePage.downloadCount}"/>
                                         <ice:outputText value=" Downloads" />
                                     </div>

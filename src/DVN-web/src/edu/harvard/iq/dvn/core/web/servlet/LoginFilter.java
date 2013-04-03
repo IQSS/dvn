@@ -162,7 +162,7 @@ public class LoginFilter implements Filter {
         // check for invalid study Id or study versionNumber
         // for right now, do this with a sendRedirect, though we should try to figure out a solution
         // with a forward isntead; that way the user can fix the issue in the URL and easily try again
-        if ( (isViewStudyPage(pageDef) || isEditStudyPage(pageDef) || isVersionDiffPage(pageDef)) && !isPopup(httpRequest) ) {
+        if ( (isViewStudyPage(pageDef) || isEditStudyPage(pageDef) || isCurateStudyPage(pageDef) || isVersionDiffPage(pageDef)) && !isPopup(httpRequest) ) {
             Long studyId = determineStudyId(pageDef, httpRequest);
             
             if (isVersionDiffPage(pageDef)) {
@@ -289,7 +289,9 @@ public class LoginFilter implements Filter {
         if (loginBean == null) {
             return false;
         }
+        // relevantVDC is the VDC for which we will check permissions; by default it is the current VDC 
         VDC currentVDC = vdcService.getVDCFromRequest(request);
+        VDC relevantVDC = currentVDC;
         VDCUser user = loginBean.getUser();
 
         VDCRole userRole = null;
@@ -297,12 +299,14 @@ public class LoginFilter implements Filter {
 
         if (isCurateStudyPage(pageDef)) {
             // we should check the role the user has in the studies owning dataverse
-            // If we are editing an existing study, then the authorization depends on the study
+            // If we are editing an existing study, then the authorization depends on the study and the study's owning VDC
             Long studyId = Long.parseLong(getStudyIdFromRequest(request));
             Study study = studyService.getStudy(studyId);
-            userRole = loginBean.getVDCRole(study.getOwner());
-        } else if (currentVDC != null) {
-            userRole = loginBean.getVDCRole(currentVDC);
+            relevantVDC = study.getOwner();            
+        }
+        
+        if (relevantVDC != null) {
+            userRole = loginBean.getVDCRole(relevantVDC);
         }
         
         if (userRole != null) {
@@ -343,7 +347,9 @@ public class LoginFilter implements Filter {
         // do authorization based on VDC role.
       if (pageDef != null && (pageDef.getRole() != null && pageDef.getNetworkRole()==null)
              || (pageDef.getNetworkRole() != null && pageDef.getRole()!=null && currentVDC!=null)){
-            if (currentVDC==null) {
+            
+          // we check relevant VDC because we might be on a study page at the network level
+          if (relevantVDC==null) {
                 return false;
             }
             String pageRoleName = pageDef.getRole().getName();
@@ -595,6 +601,7 @@ public class LoginFilter implements Filter {
 
        if (pageDef != null &&
                (pageDef.getName().equals(PageDefServiceLocal.SETUP_DATA_EXPLORATION_PAGE)
+               || pageDef.getName().equals(PageDefServiceLocal.DEACCESSION_STUDY_PAGE)
                || pageDef.getName().equals(PageDefServiceLocal.STUDY_PERMISSIONS_PAGE))) {
            return true;
        }

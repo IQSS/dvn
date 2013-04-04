@@ -815,6 +815,14 @@ public class StudyListingPage extends VDCBaseBean implements java.io.Serializabl
                 sortOrderString = "releaseTime";
                 sl.setStudyIds(vdcApplicationBean.getAllStudyIdsByReleaseDate());
                 sl.getSortMap().put("releaseTime", sl.getStudyIds());
+                /**
+                 * @todo show facets when browsing studies?
+                 */
+//                MatchAllDocsQuery query = new MatchAllDocsQuery();
+//                baseQuery = query;
+//                ResultsWithFacets resultsWithFacets = indexService.getResultsWithFacets(query, null);
+//                sl.setStudyIds(resultsWithFacets.getMatchIds());
+//                sl.setResultsWithFacets(resultsWithFacets);
             } else {
                 sl = new StudyListing(StudyListing.GENERIC_ERROR);
             }

@@ -24,13 +24,15 @@
         <ice:outputText value ="Try searching for  " rendered="#{!empty BasicSearchFragment.searchTerms}"/>
         <ui:repeat value="#{BasicSearchFragment.searchTerms}" var="term" varStatus="status">
             <ui:fragment rendered="#{status.first}">
-                <ice:commandLink action="#{BasicSearchFragment.keywordSearch_action(term)}">
+                <!--<ice:commandLink action="#{BasicSearchFragment.keywordSearch_action(term)}">-->
+                <ice:commandLink action="#{BasicSearchFragment.keywordSearchWithFacets_action(term)}">
                     <ice:outputText value="#{term}"/>
                 </ice:commandLink>
             </ui:fragment>
             <ui:fragment rendered="#{! status.first}">
                 <ice:outputText value=", "/>
-                <ice:commandLink action="#{BasicSearchFragment.keywordSearch_action(term)}">
+                <!--<ice:commandLink action="#{BasicSearchFragment.keywordSearch_action(term)}">-->
+                <ice:commandLink action="#{BasicSearchFragment.keywordSearchWithFacets_action(term)}">
                     <ice:outputText value="#{term}"/>
                 </ice:commandLink>
             </ui:fragment>

@@ -36,6 +36,7 @@ import javax.ejb.EJB;
 import edu.harvard.iq.dvn.core.vdc.VDCCollectionServiceLocal;
 import edu.harvard.iq.dvn.core.vdc.VDCServiceLocal;
 import java.util.*;
+import java.util.logging.Logger;
 import javax.faces.bean.ViewScoped;
 import javax.inject.Named;
 import org.apache.lucene.facet.search.results.FacetResult;

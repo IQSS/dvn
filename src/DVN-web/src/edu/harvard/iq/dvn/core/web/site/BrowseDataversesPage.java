@@ -86,17 +86,22 @@ public class BrowseDataversesPage  extends VDCBaseBean implements Serializable {
     public void init() {
         super.init();
         hideRestricted = true;  
-       sortOrderItems = loadSortSelectItems();
+        sortOrderItems = loadSortSelectItems();
         initAccordionMenu();
         populateVDCUIList();  
         firstRun = false;
+
+        // add javascript call on each partial submit to initialize the help tips for added fields
+        JavascriptContext.addJavascriptCall(getFacesContext(),"initListingPanelRemoveHeights();");
+        
+        JavascriptContext.addJavascriptCall(getFacesContext(),"initListingPanelHeights();");
     }
     
     public void preRenderView() {
         
         super.preRenderView();
         // add javascript call on each partial submit to initialize the help tips for added fields
-        JavascriptContext.addJavascriptCall(getFacesContext(),"initListingPanelHeights();");
+        // JavascriptContext.addJavascriptCall(getFacesContext(),"alert('Beans!');");
     }
     
     public void sort_action(ValueChangeEvent event) {

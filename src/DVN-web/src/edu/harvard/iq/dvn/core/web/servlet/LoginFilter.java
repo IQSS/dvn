@@ -300,9 +300,16 @@ public class LoginFilter implements Filter {
         if (isCurateStudyPage(pageDef)) {
             // we should check the role the user has in the studies owning dataverse
             // If we are editing an existing study, then the authorization depends on the study and the study's owning VDC
-            Long studyId = Long.parseLong(getStudyIdFromRequest(request));
-            Study study = studyService.getStudy(studyId);
-            relevantVDC = study.getOwner();            
+            if (getStudyIdFromRequest(request) != null) {
+                Long studyId = Long.parseLong(getStudyIdFromRequest(request));
+                Study study = studyService.getStudy(studyId);
+                relevantVDC = study.getOwner();
+                //second pass of set exploration page loses the study Id from the request so I hid it in the page -SEK 4/4/13
+            } else if (pageDef.getName().equals(PageDefServiceLocal.SETUP_DATA_EXPLORATION_PAGE) && getIdFromRequest("form1:studyId", request) !=null ) {
+                Long studyId = Long.parseLong(getIdFromRequest("form1:studyId", request));
+                Study study = studyService.getStudy(studyId);
+                relevantVDC = study.getOwner();
+            }                      
         }
         
         if (relevantVDC != null) {

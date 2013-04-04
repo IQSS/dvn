@@ -96,7 +96,7 @@ public class StudyListingPage extends VDCBaseBean implements java.io.Serializabl
     @EJB
     VariableServiceLocal varService;
 
-    private static final Logger logger = Logger.getLogger("edu.harvard.iq.dvn.core.web.StudyListingPage");
+    private static final Logger logger = Logger.getLogger(StudyListingPage.class.getCanonicalName());
     private List<CategoryPath> facetsOfInterest = new ArrayList<CategoryPath>();
 
     public List<CategoryPath> getFacetsOfInterest() {

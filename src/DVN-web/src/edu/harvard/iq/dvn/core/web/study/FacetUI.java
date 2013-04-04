@@ -25,7 +25,7 @@ import java.util.logging.Logger;
 
 public class FacetUI {
 
-    private static final Logger logger = Logger.getLogger("edu.harvard.iq.dvn.core.web.study.FacetUI");
+    private static final Logger logger = Logger.getLogger(FacetUI.class.getCanonicalName());
 
     String name;
     List<FacetResultUI> facetResultUIs = new ArrayList<FacetResultUI>();

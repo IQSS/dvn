@@ -117,7 +117,7 @@ import org.apache.lucene.util.Version;
 @EJB(name="studyField", beanInterface=edu.harvard.iq.dvn.core.study.StudyFieldServiceLocal.class)
 public class Indexer implements java.io.Serializable  {
 
-    private static final Logger logger = Logger.getLogger("edu.harvard.iq.dvn.core.index.Indexer");
+    private static final Logger logger = Logger.getLogger(Indexer.class.getCanonicalName());
     private static IndexWriter writer;
     private static IndexWriter writerVar;
     private static IndexWriter writerVersions;

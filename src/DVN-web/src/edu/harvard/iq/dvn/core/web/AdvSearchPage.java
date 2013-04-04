@@ -83,7 +83,7 @@ import org.apache.lucene.facet.search.results.FacetResult;
 @ViewScoped
 public class AdvSearchPage extends VDCBaseBean implements java.io.Serializable {
 
-    private static final Logger logger = Logger.getLogger("edu.harvard.iq.dvn.core.web.AdvSearchPage");
+    private static final Logger logger = Logger.getLogger(AdvSearchPage.class.getCanonicalName());
 
     @EJB
     VDCServiceLocal vdcService;

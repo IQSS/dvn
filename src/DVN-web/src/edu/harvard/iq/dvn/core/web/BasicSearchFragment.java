@@ -47,7 +47,7 @@ import org.apache.lucene.facet.taxonomy.CategoryPath;
 @Named ("BasicSearchFragment")
 @ViewScoped
 public class BasicSearchFragment extends VDCBaseBean implements java.io.Serializable {
-    private static final Logger logger = Logger.getLogger("edu.harvard.iq.dvn.core.web.BasicSearchFragment");
+    private static final Logger logger = Logger.getLogger(BasicSearchFragment.class.getCanonicalName());
     @EJB
     IndexServiceLocal      indexService;
     @EJB

@@ -35,7 +35,7 @@ import java.util.Map;
 import javax.ejb.EJB;
 import edu.harvard.iq.dvn.core.vdc.VDCCollectionServiceLocal;
 import edu.harvard.iq.dvn.core.vdc.VDCServiceLocal;
-import java.util.logging.Logger;
+import java.util.*;
 import javax.faces.bean.ViewScoped;
 import javax.inject.Named;
 import org.apache.lucene.facet.search.results.FacetResult;
@@ -67,9 +67,9 @@ public class BasicSearchFragment extends VDCBaseBean implements java.io.Serializ
         super.init();
         if ( getVDCRequestBean().getCurrentVDC() == null ) {
             keywordSearchTerms = keywordSearchServiceBean.findAll();
-            searchValue = "Enter keywords to search this Dataverse Network";
+            searchValue = ResourceBundle.getBundle("BundlePageInfo").getString("searchBoxTextNetwork");
         } else {
-            searchValue = "Enter keywords to search this Dataverse";
+            searchValue = ResourceBundle.getBundle("BundlePageInfo").getString("searchBoxTextDataverse");
         }
     }
 

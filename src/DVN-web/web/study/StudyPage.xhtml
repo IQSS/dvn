@@ -177,8 +177,8 @@
                     // this method will either download a single zip or create links for multiple zip files in the popup
                     // if multiple links are created, it returns true, to signify to calling methods that the popup needs to be displayed
                     function doDownload() {                  
-                        var fileNumber = 5;
-                        var zipFileSize = 1048576;
+                        var fileNumber = 100; // set file number to 100 files 
+                        var zipFileSize = 524288000; // set zip file size to 500MB
                         var fileSize =0;
                         var j = 0;
                         var numb = 0;
@@ -862,15 +862,7 @@
                         </div>
                     </ice:panelTab>
                     <!-- FILES -->
-                    <ice:panelTab id="files" label="Data &amp; Analysis" >
-                        <script type="text/javascript">
-                            // <![CDATA[
-                            jQuery(document).ready(function(){
-                                 jQuery(".vdcStudyDesc").truncate({max_length: 198});
-                                jQuery(".TogglePaneFancy").initTogglePane({headerClassClosed:"TogglePaneFancyHeaderClosed"});
-                            });
-                            // ]]>
-                        </script>
+                    <ice:panelTab id="files" label="Data &amp; Analysis">
                         <f:param name="tab" value="files"/>
                         <ui:include src="StudyFilesFragment.xhtml">
                         </ui:include>

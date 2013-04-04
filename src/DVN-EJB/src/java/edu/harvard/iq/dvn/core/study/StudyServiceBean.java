@@ -757,7 +757,7 @@ public class StudyServiceBean implements edu.harvard.iq.dvn.core.study.StudyServ
         }
         String queryStr = "select s.id "
                 + "from VDC v,  StudyVersion sv, Study s "
-                + "JOIN StudyFileActivity sfa on  s.id = sfa.study_id "
+                + "left outer JOIN StudyFileActivity sfa on  s.id = sfa.study_id "
                 + "where  "
                 + " s.id = sv.study_id "
                 + " and s.owner_id = v.id "
@@ -766,9 +766,11 @@ public class StudyServiceBean implements edu.harvard.iq.dvn.core.study.StudyServ
                 + dataverseClause
                 + " group by s.id "
                 + " order by "
-                + " sum(downloadcount) desc ";
+                + "(CASE WHEN sum(downloadcount) is null THEN -1 ELSE sum(downloadcount) END) desc";
+
 
         Query query = em.createNativeQuery(queryStr);
+                    System.out.print("sort " + queryStr);
         List<Long> returnList = new ArrayList<Long>();
         if (numResults == -1) {
             for (Object currentResult : query.getResultList()) {
@@ -889,6 +891,7 @@ public class StudyServiceBean implements edu.harvard.iq.dvn.core.study.StudyServ
 
         if (queryStr != null) {
             Query query = em.createNativeQuery(queryStr);
+            System.out.print("sort " + queryStr);
             List<Long> returnList = new ArrayList<Long>();
             for (Object currentResult : query.getResultList()) {
                 // convert results into Longs

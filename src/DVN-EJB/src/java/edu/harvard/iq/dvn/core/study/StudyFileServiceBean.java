@@ -35,9 +35,11 @@ import java.io.FileOutputStream;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Vector;
+import java.util.Map;
 import java.util.logging.Logger;
 import javax.annotation.Resource;
 import javax.ejb.EJB;
@@ -184,7 +186,7 @@ public class StudyFileServiceBean implements StudyFileServiceLocal {
         return studyFiles;
     }
     
-    @TransactionAttribute(TransactionAttributeType.NOT_SUPPORTED)
+    /*@TransactionAttribute(TransactionAttributeType.NOT_SUPPORTED)
     public List getOrderedFileIdsByStudyVersion (Long svId) {
 	List<Long> fileIdList = new ArrayList<Long>();
 
@@ -195,19 +197,49 @@ public class StudyFileServiceBean implements StudyFileServiceLocal {
         }
   
         return fileIdList;
+    }*/
+
+    @TransactionAttribute(TransactionAttributeType.NOT_SUPPORTED)    
+    public List<Long> getOrderedFileIdsByStudyVersion(Long svId) {
+        List<FileIdCategory> fileIdCatList = new ArrayList();
+        String queryString = "SELECT f.id, f.category FROM FileMetadata f WHERE f.studyVersion_id = " + svId + " ORDER BY f.category, f.label"; 
+        Query query = em.createNativeQuery(queryString);
+        
+        for ( Object result : query.getResultList()) {
+            Object[] resultArray = (Object[]) result;
+            FileIdCategory idCat = new FileIdCategory();
+            idCat.setId( new Long( (Integer) resultArray[0] ) );
+            idCat.setCategory( (String) resultArray[1] );
+            fileIdCatList.add(idCat);      
+        }
+        
+        Collections.sort(fileIdCatList);
+        
+        List<Long> fileIdList = new ArrayList<Long>();
+        for (FileIdCategory idCat : fileIdCatList) {
+            fileIdList.add(idCat.getId());
+        } 
+            
+        return fileIdList; 
     }
-    
-    public List getSomeOrderedFilesByStudyVersion(Long svId, List fileIdList) {
+           
+    public Map<Long,FileMetadata> getFilesByStudyVersionAndIds(Long svId, List<Long> fileIdList) {
+        Map fileMap = new HashMap();
+                
         if (fileIdList == null || fileIdList.size() == 0) {
-            return fileIdList;
+            return fileMap;
         }
         
         String fileIds = idListString(fileIdList);
-        String queryStr = "SELECT f FROM FileMetadata f WHERE f.studyVersion.id = " + svId + " and f.id IN  (" + fileIds + ") ORDER BY f.category, f.label";
+        String queryStr = "SELECT f FROM FileMetadata f WHERE f.studyVersion.id = " + svId + " and f.id IN  (" + fileIds + ")";
         Query query = em.createQuery(queryStr);
         List<FileMetadata> studyFiles = query.getResultList();
         
-        return studyFiles;
+        for (FileMetadata fmd : studyFiles) {
+            fileMap.put(fmd.getId(), fmd);
+        }
+        
+        return fileMap;
     }
     
     private String idListString(List idList) {

@@ -49,14 +49,18 @@ div.dvn_searchblock{margin-bottom:12px;padding:4px 12px;background:#F2F2F2;borde
 .dvnHmpgColumnDataverses {float:left; width:48%; padding-right:2%; margin-top:0;}
 .dvnHmpgColumnStudies {float:left; width:48%; padding-left:2%;}
 .dvnHmpgColumnHeaderBlock {overflow:hidden; margin-bottom:.5em;}
-.dvnHmpgColumnDataverses .dvnHmpgColumnHeaderBlock {border-bottom:1px solid #C55B28;}
-.dvnHmpgColumnStudies .dvnHmpgColumnHeaderBlock {border-bottom:1px solid #526F76;}
+.dvnHmpgColumnDataverses .dvnHmpgColumnHeaderBlock {padding-top: 1em; border-top:1px solid #C55B28;}
+.dvnHmpgColumnStudies .dvnHmpgColumnHeaderBlock {padding-top: 1em; border-top:1px solid #526F76;}
 .dvnHmpgColumnDataverses .dvnHmpgColumnHeaderBlock .dvn_totalsValue {padding:0 4px; background:#C55B28; color:#FFF; font-size:1em !important;}
 .dvnHmpgColumnStudies .dvnHmpgColumnHeaderBlock .dvn_totalsValue {padding:0 4px; background:#526F76; color:#FFF; font-size:1em !important;}
 .dvnHmpgColumnHeader {float:left; margin:0; padding:6px 0; color:#526F76;}
 .dvnHmpgColumnDataverses .dvnHmpgColumnHeader {color:#C55B28;}
 .dvnHmpgColumnStudies .dvnHmpgColumnHeader {color:#526F76;}
-.dvnHmpgColumnHeaderViewAll {margin:0 2em; padding:6px 0;}
+.dvnHmpgColumnDefinition {margin-top: 1em; padding-bottom: 1em;}
+.dvnHmpgColumnDataverses .dvnHmpgColumnDefinition {border-bottom:1px solid #C55B28;}
+.dvnHmpgColumnStudies .dvnHmpgColumnDefinition {border-bottom:1px solid #526F76;}
+.dvnHmpgColumnDefinition img.dvn_icon {margin:0 8px 0 0 !important;}
+.dvnHmpgColumnDefinition .vdcHelpText a {font-style:italic; font-weight:bold;}
 
 .dvnHmpgColumnWidget {margin-top:1em;}
 .dvnHmpgColumnDataverses .dvnHmpgColumnWidget {border-bottom: 1px solid #C55B28;}
@@ -64,7 +68,7 @@ div.dvn_searchblock{margin-bottom:12px;padding:4px 12px;background:#F2F2F2;borde
 .dvnHmpgColumnWidgetHeader {text-transform:uppercase;}
 .dvnHmpgColumnDataverses .dvnHmpgColumnWidgetHeader {color:#C55B28;}
 .dvnHmpgColumnStudies .dvnHmpgColumnWidgetHeader {color:#526F76;}
-.dvnHmpgColumnTotals {float:left; clear:left; margin-bottom: 4px; padding: 6px 4px;}
+.dvnHmpgColumnTotals {float:left; clear:left; padding: 6px 4px;}
 .dvnHmpgColumnWidgetViewMoreBlock {text-align:center; padding:3px 5px}
 .dvnHmpgColumnWidgetViewMoreBlock a.iceOutLnk span.iceOutTxt {font-size:90% !important;}
 
@@ -130,8 +134,8 @@ a.lastNodeActive:link{font-weight:700}
 .dvnHmpgDataverseWidgetTable, .dvnHmpgDataverseWidgetTable tr, .dvnHmpgDataverseWidgetTable td, .dvnHmpgStudyWidgetTable, .dvnHmpgStudyWidgetTable tr, .dvnHmpgStudyWidgetTable td {border:0;}
 .dvnHmpgDataverseWidgetTable td, .dvnHmpgStudyWidgetTable td {border-bottom:1px dotted #D9D9D9;}
 .dvnHmpgDataverseWidgetTable td div, .dvnHmpgStudyWidgetTable td div {overflow:hidden;}
-.dvnHmpgStudyWidgetTable a.iceOutLnk span.iceOutTxt {display:inline;}
-.dvnHmpgDataverseWidgetTable span.iceOutTxt, .dvnHmpgStudyWidgetTable span.iceOutTxt {font-size:90% !important;}
+.dvnHmpgStudyWidgetTable a.iceOutLnk span.iceOutTxt { display:inline !important;}
+.dvnHmpgDataverseWidgetTable span.iceOutTxt, .dvnHmpgStudyWidgetTable span.iceOutTxt {font-size:90% !important; display:inline !important;}
 img.dvnHmpgStudyFileIcon {margin-right:.5em !important; vertical-align:middle}
 .dvnHmpgWidgetFloat {float:right; color: grey !important;}
 
@@ -142,6 +146,9 @@ span.dvnHmpgGroupHeader{float:left;font-size:150% !important;font-weight:700}
 a.dvnHmpgGroupCreateLink:link,a.dvnHmpgGroupCreateLink:visited,a.dvnHmpgGroupCreateLink:hover,a.dvnHmpgGroupCreateLink:active{padding-right:28px;color:#c55b28;background:url(/dvn/resources/images/start-arrows.gif) 100% 52% no-repeat;font-size:95%;text-decoration:none}
 .dvnHmpgClassificationDesc{margin-bottom:.25em;width:100%}
 .dvnHmpgGroupNoDVs{padding:0 1em;border:1px solid #dcdddf;text-align:center}
+.dvnHmpgEmptyDVNActions{width:540px; margin:0 auto; text-align:left;}
+.dvnHmpgEmptyDVNActions li{margin-bottom:1em;}
+.dvnHmpgEmptyDVNActions a:link,.dvnHmpgEmptyDVNActions a:visited,.dvnHmpgEmptyDVNActions a:hover,.dvnHmpgEmptyDVNActions a:active{font-weight:bold;}
 .dvnHmpgGroupTableWrap{border:1px solid #dcdddf;border-bottom:0}
 .dvnHmpgGroupTableTop{width:100%}
 .dvnHmpgGroupTableTop td.dvnHmpgGroupTableTopCol{padding-bottom:.5em}

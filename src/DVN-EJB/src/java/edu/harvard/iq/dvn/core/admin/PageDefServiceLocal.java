@@ -73,6 +73,7 @@ public interface PageDefServiceLocal extends java.io.Serializable  {
     public static final String STUDY_VERSION_DIFFERENCES_PAGE = "StudyVersionDifferencesPage";
     public static final String MANIFEST_PAGE = "ManifestPage";
     public static final String SETUP_DATA_EXPLORATION_PAGE = "SetUpDataExplorationPage";
+    public static final String DEACCESSION_STUDY_PAGE = "DeaccessionStudyPage";
     
     Role findById(Long id);
 

@@ -144,10 +144,16 @@ public class DateFormatter {
     // Format strings as UTC
     utcFormatter.setTimeZone(TimeZone.getTimeZone("UTC"));
     
+    int k = 0;
     
     // Iterate through all available date-time formats
     for (SimpleDateFormat format : mTimeFormats) {
       try {
+        LOG.info("format[" + k + "] = " + format.toPattern());
+        LOG.info("value[" + k + "] = " + value);
+        
+        k++;
+        
         // Parse the date from the format
         dateResult = format.parse(value);
         // Format in 

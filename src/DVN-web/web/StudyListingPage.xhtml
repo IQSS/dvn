@@ -150,7 +150,7 @@
                                   </div>
                               </fieldset>
                             </div>
-                            <div jsfc="ice:panelGroup" styleClass="dvnCreateActionBoxBlock dvnStudyListingCreate" rendered="#{!StudyListingPage.renderSearchResultsFilter and !VDCRequest.readOnlyDatabase and (VDCSession.loginBean.admin or VDCSession.loginBean.curator or VDCSession.loginBean.contributor or VDCSession.loginBean.networkAdmin or VDCRequest.currentVDC.allowRegisteredUsersToContribute)}">
+                            <div jsfc="ice:panelGroup" styleClass="dvnCreateActionBoxBlock dvnStudyListingCreate" rendered="#{StudyListing.collectionStudiesMode and !VDCRequest.readOnlyDatabase and (VDCSession.loginBean.admin or VDCSession.loginBean.curator or VDCSession.loginBean.contributor or VDCSession.loginBean.networkAdmin or VDCRequest.currentVDC.allowRegisteredUsersToContribute)}">
                                 <div jsfc="ice:panelGroup" id="createStudy" styleClass="dvnCreateActionBox dvnCreateStudy">
                                     <ice:outputLink value="/dvn#{VDCRequest.currentVDCURL}/faces/study/EditStudyPage.xhtml">
                                         <ice:outputText value="#{bundlePageInfo.createStudyButton}"/>
@@ -173,13 +173,10 @@
                       <tr>
                           <td align="left" valign="bottom">                            
                             <div jsfc="ice:panelGroup" id="groupPanel5" rendered="#{StudyListingPage.renderSort}">
-                                <ice:selectOneMenu id="dropdown2" valueChangeListener="#{StudyListingPage.sort_action}" onchange="submit();">
-                                  <f:selectItem itemLabel="Sort By:" itemValue=""/>
-                                  <f:selectItem itemLabel="- Global ID" itemValue="globalId"/>
-                                  <f:selectItem itemLabel="- Title" itemValue="title"/>
-                                  <f:selectItem itemLabel="- Last Released" itemValue="releaseTime"/>
-                                  <f:selectItem itemLabel="- Production Date" itemValue="productionDate"/>
-                                  <f:selectItem itemLabel="- Download Count" itemValue="downloadCount"/>
+                                <ice:outputText  value="Sort By: "/>
+                                <ice:selectOneMenu id="dropdown2" valueChangeListener="#{StudyListingPage.sort_action}"
+                                                   value="#{StudyListingPage.sortOrderString}" onchange="submit();">
+                                  <f:selectItems value="#{StudyListingPage.sortOrderItems}"/>
                                 </ice:selectOneMenu>
                               </div>
                           </td>

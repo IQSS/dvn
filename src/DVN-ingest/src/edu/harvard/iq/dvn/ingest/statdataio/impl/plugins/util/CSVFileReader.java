@@ -141,25 +141,43 @@ public class CSVFileReader implements java.io.Serializable {
 
                 } else if (isContinuousVariable[i]) {
                     // Numeric, Double:
-                    try {
-                        Double testDoubleValue = new Double(valueTokens[i]);
-                        caseRow[i] = testDoubleValue.toString();//valueTokens[i];
-                    } catch (Exception ex) {
-                        dbgLog.fine("caught exception reading numeric value; variable: "+i+", case: "+lineCounter+"; value: "+valueTokens[i]);
-
-                        //dataTable[i][lineCounter] = (new Double(0)).toString();
+                    // special cases first: R NA (missing value) and NaN
+                    // (Not A Number value):
+                    if (valueTokens[i] != null && valueTokens[i].equals("NA")) {
                         caseRow[i] = "";
+                    } else if (valueTokens[i] != null && valueTokens[i].equals("NaN")) {
+                        caseRow[i] = "NaN";
+                    } else {
+                        try {
+                            Double testDoubleValue = new Double(valueTokens[i]);
+                            caseRow[i] = testDoubleValue.toString();//valueTokens[i];
+                        } catch (Exception ex) {
+                            dbgLog.fine("caught exception reading numeric value; variable: " + i + ", case: " + lineCounter + "; value: " + valueTokens[i]);
+
+                            //dataTable[i][lineCounter] = (new Double(0)).toString();
+                            caseRow[i] = "";
+                        }
                     }
                 } else {
                     // Numeric, Integer:
-                    try {
-                        Integer testIntegerValue = new Integer(valueTokens[i]);
-                        caseRow[i] = testIntegerValue.toString();
-                    } catch (Exception ex) {
-                        dbgLog.fine("caught exception reading numeric value; variable: "+i+", case: "+lineCounter+"; value: "+valueTokens[i]);
-
-                        //dataTable[i][lineCounter] = "0";
+                    // One special case first: R NA (missing value) needs to be 
+                    // converted into the DVN's missing value - an empty String;
+                    // (strictly speaking, this isn't necessary - an attempt to 
+                    // create an Integer object from the String "NA" would
+                    // result in an exception, that would be intercepted below,
+                    // with the same end result)
+                    if (valueTokens[i] != null && valueTokens[i].equals("NA")) {
                         caseRow[i] = "";
+                    } else {
+                        try {
+                            Integer testIntegerValue = new Integer(valueTokens[i]);
+                            caseRow[i] = testIntegerValue.toString();
+                        } catch (Exception ex) {
+                            dbgLog.fine("caught exception reading numeric value; variable: " + i + ", case: " + lineCounter + "; value: " + valueTokens[i]);
+
+                            //dataTable[i][lineCounter] = "0";
+                            caseRow[i] = "";
+                        }
                     }
                 }
             }

@@ -130,6 +130,16 @@ public class VDCGroupServiceBean implements VDCGroupServiceLocal {
         return countReleased;
     }
     
+    private static final String COUNT_ALL_VDCs_UNRESTRICTED = " select count(distinct d.id) from vdcgroup_vdcs vd, VDC d where d.ID = vd.vdc_id and d.restricted = false and (vd.vdcgroup_id in (select id from vdcgroup where parent = ?) or vd.vdcgroup_id = ?);";
+    
+    public Long findCountParentChildVDCsByVDCGroupId(Long id) {
+        Query query = null;      
+        query = em.createNativeQuery(COUNT_ALL_VDCs_UNRESTRICTED).setParameter(1, id);
+        query.setParameter(2, id);
+        Long countReleased = (Long) query.getSingleResult();
+        return countReleased;
+    }
+    
     List<VDCGroup> allDescendants = new ArrayList();
             
     @Remove

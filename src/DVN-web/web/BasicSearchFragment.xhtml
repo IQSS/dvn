@@ -13,27 +13,27 @@
     </script>
     <fieldset>
         <label for="search">
-            <ice:inputText onkeypress="if (window.event) return processEvent('', 'form1:search'); else return processEvent(event, 'form1:search');" value="#{BasicSearchFragment.searchValue}" id="simpleSearch" onclick="clickclear(this, '#{(VDCRequest.currentVDC == null) ? 'Enter keywords to search this Dataverse Network' : 'Enter keywords to search this Dataverse'}')"/>
+            <ice:inputText onkeypress="if (window.event) return processEvent('', 'form1:search'); else return processEvent(event, 'form1:search');" value="#{BasicSearchFragment.searchValue}" id="simpleSearch" onclick="clickclear(this, '#{(VDCRequest.currentVDC == null) ? bundlePageInfo.searchBoxTextNetwork : bundlePageInfo.searchBoxTextDataverse}')"/>
         </label>
         <label for="button">
              <!--<ice:commandButton id="search" value="Go"  action="#{BasicSearchFragment.search_action}"/>-->
              <ice:commandButton id="search" value="Go"  action="#{BasicSearchFragment.facet_search}"/>
         </label>
     </fieldset>
-    <div class="dvnSearchSuggestions" rendered="#{!empty BasicSearchFragment.searchTerms}">
-       <ice:outputText value ="Try searching for  " rendered="#{!empty BasicSearchFragment.searchTerms}"/>
-            <ui:repeat rendered="#{!empty BasicSearchFragment.searchTerms}"
-               value="#{BasicSearchFragment.searchTerms}"
-               var="term">
-        <ui:fragment rendered="#{empty(item.xtraItems)}">
-                <!--<ice:commandLink id="deleteColLink" action="#{BasicSearchFragment.keywordSearch_action(term)}" >-->
-                <ice:commandLink id="deleteColLink" action="#{BasicSearchFragment.keywordSearchWithFacets_action(term)}" >
-                    <ice:outputText value="[#{term}] "/>
-                </ice:commandLink> 
-        </ui:fragment>
-    </ui:repeat>
-    </div>                                                     
-
-    
-
+    <div jsfc="ice:panelGroup" styleClass="dvnSearchSuggestions" rendered="#{!empty BasicSearchFragment.searchTerms}">
+        <ice:outputText value ="Try searching for  " rendered="#{!empty BasicSearchFragment.searchTerms}"/>
+        <ui:repeat value="#{BasicSearchFragment.searchTerms}" var="term" varStatus="status">
+            <ui:fragment rendered="#{status.first}">
+                <ice:commandLink action="#{BasicSearchFragment.keywordSearch_action(term)}">
+                    <ice:outputText value="#{term}"/>
+                </ice:commandLink>
+            </ui:fragment>
+            <ui:fragment rendered="#{! status.first}">
+                <ice:outputText value=", "/>
+                <ice:commandLink action="#{BasicSearchFragment.keywordSearch_action(term)}">
+                    <ice:outputText value="#{term}"/>
+                </ice:commandLink>
+            </ui:fragment>
+        </ui:repeat>
+    </div>
 </div>

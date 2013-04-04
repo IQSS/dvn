@@ -250,6 +250,16 @@ public class StudyFileUI implements java.io.Serializable {
             // currently support both for ingest and for online conversions;
             // but it may change in the future. 
             //      -- L.A. 
+            // As of Mar. 2013: we now have another case - with the addition 
+            // of R Data ingest. No code change was required to accommodate this;
+            // there was however a mismatch/confusion with the mime types used 
+            // on the download and ingest sides of the app: the ingest was 
+            // (correctly) saving the orginal as "application/x-rlang-transport;
+            // but for the downloads, for some strange reason this mime type 
+            // was used for Splus exports (and for R, "application/X-R-2" was 
+            // used -??). With that cleaned up, and as long as we keep our use of
+            // MIME types consistent, this existing framework should be working
+            // just fine. 
 
             String tmpOrigName = userFriendlyOriginalFormatName; 
             

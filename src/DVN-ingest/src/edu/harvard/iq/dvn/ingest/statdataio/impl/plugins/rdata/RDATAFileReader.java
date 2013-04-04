@@ -48,6 +48,7 @@ import edu.harvard.iq.dvn.rserve.*;
 import edu.harvard.iq.dvn.unf.*;
 import edu.harvard.iq.dvn.unf.UNF5Util;
 import edu.harvard.iq.dvn.ingest.thedata.helpers.*;
+import nesstar.util.FileUtils;
 
 import org.apache.commons.lang.RandomStringUtils;
 import org.apache.commons.lang.ArrayUtils;
@@ -63,6 +64,7 @@ import org.apache.commons.lang.ArrayUtils;
  */
 public class RDATAFileReader extends StatDataFileReader {
   
+  // Formats for R
   public static final int FORMAT_INTEGER = 0;
   public static final int FORMAT_NUMERIC = 1;
   public static final int FORMAT_STRING = -1;
@@ -72,7 +74,6 @@ public class RDATAFileReader extends StatDataFileReader {
   private int [] mFormatTable = null;
   
   // Date-time things
-  public static final String[] TIME_ZONES;
   public static final String[] FORMATS = { "other", "date", "date-time", "date-time-timezone" };
 
   // R-ingest recognition files
@@ -81,14 +82,11 @@ public class RDATAFileReader extends StatDataFileReader {
   private static final String[] MIME_TYPE = { "application/x-rlang-transport" };
   
   // R Scripts
-  static private String RSCRIPT_UNF = "";
-  static private String RSCRIPT_META = "";
-  static private String RSCRIPT_READ = "";
   static private String RSCRIPT_CREATE_WORKSPACE;
-  static private String RSCRIPT_GET_LABELS = "";
   static private String RSCRIPT_DATASET_INFO_SCRIPT = "";
   static private String RSCRIPT_GET_DATASET = "";
-  static private String RSCRIPT_GET_DATAYPES = "";
+  static private String RSCRIPT_GET_LABELS = "";
+  static private String RSCRIPT_WRITE_DVN_TABLE = "";
   
   // RServe static variables
   private static String RSERVE_HOST = System.getProperty("vdc.dsb.host");
@@ -111,17 +109,11 @@ public class RDATAFileReader extends StatDataFileReader {
     new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS z"),
     new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS"),
     new SimpleDateFormat("yyyy-MM-dd HH:mm:ss z"),
-    new SimpleDateFormat("yyyy-MM-dd HH:mm:ss"),
+    new SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
   };
-  
-  private static final SimpleDateFormat R_DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd");
-  private static final SimpleDateFormat R_POSIX_FORMAT = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
   
   // Logger
   private static final Logger LOG = Logger.getLogger(RDATAFileReader.class.getPackage().getName());
-  
-  // Directories
-  private File mTempDir, mTempWebDir, mTempDvnDir, mTempDsbDir;
 
   // UNF Version
   private static final String unfVersionNumber = "5";
@@ -139,36 +131,42 @@ public class RDATAFileReader extends StatDataFileReader {
    * Object Variables
    */
   
+  // Number of observations
   private int mCaseQuantity = 0;
+  
+  // Number of variables
   private int mVarQuantity = 0;
-  private char mDelimiterChar;
+  
+  // Array specifying column-wise data-types
   private String [] mDataTypes;
   
+  // Process ID, used partially in the generation of temporary directories
   private String mPID;
+  
+  // Object containing all the informatin for an R-workspace (including
+  // temporary directories on and off server)
   private RWorkspace mRWorkspace;
 
-
-  private Map <String, String> commandStrings = new HashMap <String, String>();
-  private Map <String, Integer> unfVariableTypes = new HashMap <String, Integer>();
+  // Names of variables
   private List <String> variableNameList = new ArrayList <String> ();
 
+  // The meta-data object
   SDIOMetadata smd = new RDATAMetadata();
   
+  // Entries from TAB Data File
   DataTable mCsvDataTable = null;
   SDIOData sdiodata = null;
 
+  // Number formatter
   NumberFormat doubleNumberFormatter = new DecimalFormat();
 
+  // Builds R Requests for an R-server
   private RRequestBuilder mRequestBuilder;
   /*
    * Initialize Static Variables
    * This is primarily to construct the R-Script
    */
   static {
-    /*
-     * Copy timezones over
-     */
-    TIME_ZONES = TimeZone.getAvailableIDs();
     /*
      * Set defaults fallbacks for class properties
      */
@@ -185,53 +183,26 @@ public class RDATAFileReader extends StatDataFileReader {
       RSERVE_PORT = 6311;
     else
       RSERVE_PORT = Integer.parseInt(System.getProperty("vdc.dsb.rserve.port"));
-    /*
-     * Build the Rscripts to execute.
-     * Potentially this can be improved by keeping the script file as a separate
-     * entity in the source code.
-     */
-    StringBuilder scriptBuilder = new StringBuilder();
 
     /*
      * Create Rscript to compute UNF
      */
     
-    // R Script to create temporary directories
-    RSCRIPT_CREATE_WORKSPACE = new StringBuilder("")
-            .append("options(digits.secs=3)\n")
-            .append("directories <- list()\n")
-            .append("directories$parent <- tempfile('DvnRWorkspace')\n")
-            .append("directories$web <- file.path(directories$parent, 'web')\n")
-            .append("directories$dvn <- file.path(directories$parent, 'dvn')\n")
-            .append("directories$dsb <- file.path(directories$parent, 'dsb')\n")
-            .append("created <- list()\n")
-            .append("for (key in names(directories)) {\n")
-            .append("  dir.name <- directories[[key]]\n")
-            .append("  if (dir.create(dir.name))\n")
-            .append("    created[[key]] <- dir.name\n")
-            .append("}\n")
-            .append("created")
-            .toString();
+    // Load R Scripts into memory, so that we can run them via R-serve
+    RSCRIPT_WRITE_DVN_TABLE = readLocalResource("scripts/write.dvn.table.R");
+    RSCRIPT_GET_DATASET = readLocalResource("scripts/get.dataset.R");
+    RSCRIPT_CREATE_WORKSPACE = readLocalResource("scripts/create.workspace.R");
+    RSCRIPT_GET_LABELS = readLocalResource("scripts/get.labels.R");
+    RSCRIPT_DATASET_INFO_SCRIPT = readLocalResource("scripts/dataset.info.script.R");
     
-    RSCRIPT_GET_DATASET =
-      "available.data.frames <- ls()\n" +
-      "available.data.frames <- Filter(function (y) is.data.frame(get(y)), available.data.frames)\n" +
-      "data.set <- available.data.frames[[1]]\n" +
-      "data.set <- get(data.set)\n";
     
-    RSCRIPT_GET_LABELS =
-      "available.data.frames <- ls()\n" +
-      "available.data.frames <- Filter(function (y) is.data.frame(get(y)), available.data.frames)\n" +
-      "data.set <- available.data.frames[[1]]\n" +
-      "data.set <- get(data.set)\n" +
-      "colnames(data.set)\n";
-    
-    RSCRIPT_DATASET_INFO_SCRIPT = 
-      "types <- c();" +
-      "for (col in colnames(data.set)) { " +
-      "  types <- c(types, class(data.set[, col])[1]);" +
-      "};" +
-      "list(varNames = colnames(data.set), caseQnty = nrow(data.set), dataTypes = types)";
+    LOG.finer("R SCRIPTS AS STRINGS --------------");
+    LOG.finer(RSCRIPT_WRITE_DVN_TABLE);
+    LOG.finer(RSCRIPT_GET_DATASET);
+    LOG.finer(RSCRIPT_CREATE_WORKSPACE);
+    LOG.finer(RSCRIPT_GET_LABELS);
+    LOG.finer(RSCRIPT_DATASET_INFO_SCRIPT);
+    LOG.finer("END OF R SCRIPTS AS STRINGS -------");
    }
   /**
    * Helper Object to Handle Creation and Destruction of R Workspace
@@ -433,12 +404,15 @@ public class RDATAFileReader extends StatDataFileReader {
       
       String csvScript = new StringBuilder("")
         .append("options(digits.secs=3)\n")
+        .append("\n")
+        .append(RSCRIPT_WRITE_DVN_TABLE)
+        .append("\n")
         .append(String.format("load(\"%s\")\n", mRWorkspace.getRdataAbsolutePath()))
         .append(RSCRIPT_GET_DATASET)
         .append("\n")
-        .append(String.format("write.table(data.set, file=\"%s\", na=\"\", sep=\"\t\", eol=\"\n\", quote=TRUE, row.names=FALSE, col.names=FALSE)", mCsvDataFile.getAbsolutePath()))
+        .append(String.format("write.dvn.table(data.set, file=\"%s\")", mCsvDataFile.getAbsolutePath()))
         .toString();
-    
+      
       RRequest csvRequest = mRequestBuilder.build();
       
       LOG.info(String.format("RDATAFileReader: Attempting to write table to `%s`", mCsvDataFile.getAbsolutePath()));
@@ -468,6 +442,8 @@ public class RDATAFileReader extends StatDataFileReader {
   public RDATAFileReader(StatDataFileReaderSpi originator) {
 
     super(originator);
+    
+    
 
     LOG.info("RDATAFileReader: INSIDE RDATAFileReader");
 
@@ -531,8 +507,8 @@ public class RDATAFileReader extends StatDataFileReader {
     // Additionally, this outputs to the tab-delimited file
     int lineCount = csvFileReader.read(localBufferedReader, smd, tabFileWriter);
     
-    
-    List<Integer> variableTypeList = getVariableTypeList(mDataTypes);
+    // This actually *sets* type lists more than it *gets* them
+    getVariableTypeList(mDataTypes);
         
     // File Data Table
     mCsvDataTable = readTabDataFile(tabFileDestination);
@@ -832,22 +808,7 @@ public class RDATAFileReader extends StatDataFileReader {
     // Return the variable type list
     return minimalTypeList;
   }
-  
-  /**
-   * Create the
-   * @return 
-   */
-  private String[] getDateFormats (String [] values) {
-    String [] dateFormats = new String[mCaseQuantity];
-    
-    for (int k = 0; k < mCaseQuantity; k++) {
-      dateFormats[k] = "";
-    }
-    
-    return dateFormats;
-  }
- 
-  /**
+ /**
    * Create UNF from Tabular File
    * This methods iterates through each column of the supplied data table and
    * invoked the 
@@ -885,18 +846,19 @@ public class RDATAFileReader extends StatDataFileReader {
         switch (varType) {
           case 0:
             // Convert array of Strings to array of Longs
-            Long[] integerEntries = new Long[varData.length];
+              Long[] integerEntries = new Long[varData.length];
 
-            for (int i = 0; i < varData.length; i++) {
-              try {
-                integerEntries[i] = new Long((String) varData[i]);
+              for (int i = 0; i < varData.length; i++) {
+                  try {
+                      integerEntries[i] = new Long((String) varData[i]);
+                  } catch (Exception ex) {
+                      integerEntries[i] = null;
+                  }
               }
-              catch (Exception ex) {
-                integerEntries[i] = null;
-              }
-            }
 
             unfValue = UNF5Util.calculateUNF(integerEntries);
+            
+            // UNF5Util.cal
 
             // Summary/category statistics
             smd.getSummaryStatisticsTable().put(k, ArrayUtils.toObject(StatHelper.calculateSummaryStatistics(integerEntries)));
@@ -911,14 +873,25 @@ public class RDATAFileReader extends StatDataFileReader {
             // Convert array of Strings to array of Doubles
             Double[]  doubleEntries = new Double[varData.length];
             
-            for (int i = 0; i < varData.length; i++) {
-              try {
-                doubleEntries[i] = new Double((String) varData[i]);
+              for (int i = 0; i < varData.length; i++) {
+                  try {
+                      // Check for the special case of "NaN" - this is the R and DVN
+                      // notation for the "Not A Number" value:
+                      if (varData[i] != null && ((String) varData[i]).equals("NaN")) {
+                          doubleEntries[i] = Double.NaN;
+                      } else {
+                          // Missing Values don't need to be treated separately; these 
+                          // are represented as empty spaces in the TAB file; so 
+                          // attempting to create a Double object from one will 
+                          // throw an exception - which we are going to intercept 
+                          // below. For the UNF and Summary Stats purposes, missing
+                          // values are represented as NULLs. 
+                          doubleEntries[i] = new Double((String) varData[i]);
+                      }
+                  } catch (Exception ex) {
+                      doubleEntries[i] = null;
+                  }
               }
-              catch (Exception ex) {
-                doubleEntries[i] = null;
-              }
-            }
             
             LOG.info("sumstat:long case=" + Arrays.deepToString(
                         ArrayUtils.toObject(StatHelper.calculateSummaryStatisticsContDistSample(doubleEntries))));
@@ -940,23 +913,8 @@ public class RDATAFileReader extends StatDataFileReader {
             
             LOG.info("string array passed to calculateUNF: " + Arrays.deepToString(stringEntries));
             
-            dateFormats = getDateFormats(stringEntries);
-            
             //
             if (mFormatTable[k] == FORMAT_DATE || mFormatTable[k] == FORMAT_DATETIME) {
-              SimpleDateFormat dateFormat;
-              
-              if (mFormatTable[k] == FORMAT_DATE) {
-                LOG.info("FORMAT = DATE");
-                dateFormat = R_DATE_FORMAT;
-              }
-              else if (mFormatTable[k] == FORMAT_DATETIME) {
-                LOG.info("FORMAT = DATETIME");
-                dateFormat = R_POSIX_FORMAT;
-              }
-              else
-                dateFormat = null;
-              
               DateFormatter dateFormatter = new DateFormatter();
               
               dateFormatter.setDateFormats(DATE_FORMATS);
@@ -1038,7 +996,6 @@ public class RDATAFileReader extends StatDataFileReader {
     smd.setVariableUNF(unfValues);
     smd.getFileInformation().put("fileUNF", fileUNFvalue);
   }
-  
   /**
    * Set meta information
    * 
@@ -1047,30 +1004,41 @@ public class RDATAFileReader extends StatDataFileReader {
     smd.setVariableFormat(mPrintFormatList);
     smd.setVariableFormatName(mPrintFormatNameTable);
   }
-  
+  /**
+   * Set Missing Values from CSV File
+   * Sets missing value table from CSV file.
+   */
   private void setMissingValueTable () {
     smd.setMissingValueTable(null);
     // smd.getFileInformation().put("caseWeightVariableName", caseWeightVariableName);
   }
-  
-  private boolean isDate (String value) {
-    for (SimpleDateFormat format : DATE_FORMATS) {
-      try {
-        format.parse(value);
-        return true;
-      }
-      catch (ParseException ex) {}
+  /**
+   * Read a Local Resource and Return Its Contents as a String
+   * <code>readLocalResource</code> searches the local path around the class
+   * <code>RDATAFileReader</code> for a file and returns its contents as a
+   * string.
+   * @param path String specifying the name of the local file to be converted
+   * into a UTF-8 string.
+   * @return a UTF-8 <code>String</code>
+   */
+  private static String readLocalResource (String path) {
+    // Debug
+    LOG.info(String.format("RDATAFileReader: readLocalResource: reading local path \"%s\"", path));
+    
+    // Get stream
+    InputStream resourceStream = RDATAFileReader.class.getResourceAsStream(path);
+    String resourceAsString = "";
+    
+    // Try opening a buffered reader stream
+    try {
+      resourceAsString = FileUtils.readAll(resourceStream, "UTF-8");
+      resourceStream.close();
     }
-    return false;
-  }
-  
-  private boolean isTime (String value) {
-     
-   for (SimpleDateFormat format : TIME_FORMATS) {
-      format.format(value);
-      return true;
+    catch (IOException ex) {
+      LOG.warning(String.format("RDATAFileReader: (readLocalResource) resource stream from path \"%s\" was invalid", path));
     }
     
-    return false;
+    // Return string
+    return resourceAsString;
   }
 }

@@ -69,7 +69,7 @@
                                     <ice:outputText value=" in the menu bar, to administer your Dataverse Network."/>
                                 </li>
                                 <li>
-                                    <ice:outputLink value="/dvn/faces/networkAdmin/NetworkOptionsPage.xhtml">
+                                    <ice:outputLink value="/dvn/faces/site/AddSitePage.xhtml">
                                         <ice:outputText value="Create a Dataverse"/>
                                     </ice:outputLink>
                                     <ice:outputText value=" in order to create studies and upload data."/>
@@ -106,60 +106,60 @@
                                     <ice:outputText styleClass="vdcHelpText" value="#{bundlePageInfo.networkHmpgDVDefinition}" escape="false"/>
                                 </div>
 
-                                <div id="dvClassificationMenu" class="xtraMenu basic">
+                                <div jsfc="ice:panelGroup" rendered="#{!empty homePage.accordionItemBeans}">
+                                    <div id="dvClassificationMenu" class="xtraMenu basic">
 
-                                    <ui:repeat rendered="#{homePage.accordionItemBeans != null}"
-                                            value="#{homePage.accordionItemBeans}"
-                                            var="menuItems">
-                                        <ui:fragment rendered="#{!empty(menuItems.childItems)}">
-                                            <h3 class="head">
-                                                <ice:outputText value="Browse Dataverses By #{menuItems.name}"/>
-                                            </h3>
-                                            <ul class="head-top">
-                                            <ui:repeat rendered="#{menuItems != null}"
-                                                    value="#{menuItems.childItems}"
-                                                    var="item">
-                                                <!-- HAS SUBNODE DESCENDANTS -->
-                                                <ui:fragment rendered="#{!empty(item.xtraItems)}">
-                                                    <li id="xtraMenu#{item.id}">
-                                                        <h4 class="head">
-                                                            <ice:outputLink styleClass="head" value="/dvn/faces/site/BrowseDataversesPage.xhtml?groupId=#{item.id}"                                                                                                                                                                                                                    >
+                                        <ui:repeat value="#{homePage.accordionItemBeans}" var="menuItems">
+                                            <ui:fragment rendered="#{!empty(menuItems.childItems)}">
+                                                <h3 class="head">
+                                                    <ice:outputText value="Browse Dataverses By #{menuItems.name}"/>
+                                                </h3>
+                                                <ul class="head-top">
+                                                <ui:repeat rendered="#{menuItems != null}"
+                                                        value="#{menuItems.childItems}"
+                                                        var="item">
+                                                    <!-- HAS SUBNODE DESCENDANTS -->
+                                                    <ui:fragment rendered="#{!empty(item.xtraItems)}">
+                                                        <li id="xtraMenu#{item.id}">
+                                                            <h4 class="head">
+                                                                <ice:outputLink styleClass="head" value="/dvn/faces/site/BrowseDataversesPage.xhtml?groupId=#{item.id}"                                                                                                                                                                                                                    >
+                                                                    <ice:outputText value="#{item.name}"/>
+                                                                </ice:outputLink>
+                                                                <ice:outputText value=" (#{item.numberOfDataverses})" styleClass="dvnHmpgClassificationCount"/>
+                                                            </h4>
+                                                            <ui:fragment rendered="#{item.xtraItems != null and !empty(item.xtraItems)}">
+                                                                <ul>
+                                                                    <ui:repeat rendered="#{item.xtraItems != null}"
+                                                                            value="#{item.xtraItems}"
+                                                                            var="xtraItems">
+                                                                        <li>
+                                                                            <ice:outputLink styleClass="lastNode" value="/dvn/faces/site/BrowseDataversesPage.xhtml?groupId=#{xtraItems.id}">
+                                                                                <ice:outputText value="#{xtraItems.name}"/>
+                                                                            </ice:outputLink>
+                                                                            <ice:outputText value=" (#{xtraItems.numberOfDataverses})" styleClass="dvnHmpgClassificationCount"/>
+                                                                        </li>
+                                                                    </ui:repeat>
+                                                                </ul>
+                                                            </ui:fragment>
+                                                        </li>
+                                                    </ui:fragment>
+                                                    <!-- END HAS SUBNODE DESCENDANTS -->
+                                                    <!-- HAS NO SUBNODE DESCENDANTS -->
+                                                    <ui:fragment rendered="#{empty(item.xtraItems)}">
+                                                        <li>
+                                                            <ice:outputLink styleClass="lastNode" value="/dvn/faces/site/BrowseDataversesPage.xhtml?groupId=#{item.id}">
                                                                 <ice:outputText value="#{item.name}"/>
                                                             </ice:outputLink>
                                                             <ice:outputText value=" (#{item.numberOfDataverses})" styleClass="dvnHmpgClassificationCount"/>
-                                                        </h4>
-                                                        <ui:fragment rendered="#{item.xtraItems != null and !empty(item.xtraItems)}">
-                                                            <ul>
-                                                                <ui:repeat rendered="#{item.xtraItems != null}"
-                                                                        value="#{item.xtraItems}"
-                                                                        var="xtraItems">
-                                                                    <li>
-                                                                        <ice:outputLink styleClass="lastNode" value="/dvn/faces/site/BrowseDataversesPage.xhtml?groupId=#{xtraItems.id}">
-                                                                            <ice:outputText value="#{xtraItems.name}"/>
-                                                                        </ice:outputLink>
-                                                                        <ice:outputText value=" (#{xtraItems.numberOfDataverses})" styleClass="dvnHmpgClassificationCount"/>
-                                                                    </li>
-                                                                </ui:repeat>
-                                                            </ul>
-                                                        </ui:fragment>
-                                                    </li>
-                                                </ui:fragment>
-                                                <!-- END HAS SUBNODE DESCENDANTS -->
-                                                <!-- HAS NO SUBNODE DESCENDANTS -->
-                                                <ui:fragment rendered="#{empty(item.xtraItems)}">
-                                                    <li>
-                                                        <ice:outputLink styleClass="lastNode" value="/dvn/faces/site/BrowseDataversesPage.xhtml?groupId=#{item.id}">
-                                                            <ice:outputText value="#{item.name}"/>
-                                                        </ice:outputLink>
-                                                        <ice:outputText value=" (#{item.numberOfDataverses})" styleClass="dvnHmpgClassificationCount"/>
-                                                    </li>
-                                                </ui:fragment>
-                                                <!-- END HAS NO SUBNODE DESCENDANTS -->
-                                            </ui:repeat>
-                                            </ul>
-                                        </ui:fragment>
-                                    </ui:repeat>
+                                                        </li>
+                                                    </ui:fragment>
+                                                    <!-- END HAS NO SUBNODE DESCENDANTS -->
+                                                </ui:repeat>
+                                                </ul>
+                                            </ui:fragment>
+                                        </ui:repeat>
 
+                                    </div>
                                 </div>
 
                                 <div jsfc="ice:panelGroup" styleClass="dvnHmpgColumnWidget" rendered="#{!empty homePage.mostRecentlyReleasedDVs}">

@@ -18,8 +18,7 @@
                 <f:viewParam name="groupId" value="#{BrowseDataversesPage.groupId}"/>
                 <f:viewParam name="initialSort" value="#{BrowseDataversesPage.initialSort}"/>
                 <f:viewParam name="initialFilter" value="#{BrowseDataversesPage.initialFilter}"/>
-                <f:event type="preRenderView"
-                         listener="#{BrowseDataversesPage.init}"/>
+                <f:event type="preRenderView" listener="#{BrowseDataversesPage.init}"/>
             </f:metadata>
         </ui:define>
         <ui:define name="body">
@@ -38,7 +37,7 @@
                             <tr>
                                 <td valign="bottom">
                                     <div jsfc="ice:panelGroup" styleClass="dvnStudyListCollectionName">
-                                        <ice:outputText value=" #{BrowseDataversesPage.groupName}"/>                                       
+                                        <ice:outputText value="#{BrowseDataversesPage.groupName}"/>                                       
                                     </div>
                                 </td>
                                 <td>
@@ -112,13 +111,13 @@
                             </table>
                         </div>
                         <div class="dvnListingPageWrap">
-                            <div jsfc="ice:panelGroup" styleClass="dvnListingPagePanel">
+                            <div jsfc="ice:panelGroup" styleClass="dvnListingPagePanel" rendered="#{!empty BrowseDataversesPage.accordionItemBeans}">
                                 
                                 <script type="text/javascript">
                                     // <![CDATA[
                                     // javascript for the accordion
                                     jQuery(document).ready(function(){
-                                        initListingPanelHeights();
+                                        // initListingPanelHeights();
                                         classificationsMenu();
                                         
                                         var groupId = #{BrowseDataversesPage.groupId};
@@ -152,9 +151,7 @@
                                                     </li>
                                                     <li id="dvClassificationMenu" class="xtraMenu basic">
                                                         
-                                                        <ui:repeat rendered="#{BrowseDataversesPage.accordionItemBeans != null}"
-                                                                value="#{BrowseDataversesPage.accordionItemBeans}"
-                                                                var="menuItems">
+                                                        <ui:repeat value="#{BrowseDataversesPage.accordionItemBeans}" var="menuItems">
                                                             <ui:fragment rendered="#{!empty(menuItems.childItems)}">
                                                                 <h3 class="head">
                                                                     <ice:outputText value="#{menuItems.name}"/>
@@ -216,7 +213,7 @@
                                 <!-- END THE MENU -->
                                 
                             </div>
-                            <div jsfc="ice:panelGroup" styleClass="dvnListingPageContent">
+                            <div jsfc="ice:panelGroup" styleClass="#{(!empty BrowseDataversesPage.accordionItemBeans) ? 'dvnListingPageContent' : ''}">
                                 <ice:dataTable id="dataverseListManage" width="100%"
                                                 rendered="#{!empty(BrowseDataversesPage.vdcUIList.vdcUIList)}"
                                                 rows="10"
@@ -271,22 +268,47 @@
             function setHiddenValuesGroupId(groupId) {
                 document.getElementById('browsedataversespage:groupId').value = arguments[0];
             }
-            function initListingPanelHeights() {
-                var listingPanel = jQuery('.dvnListingPagePanel');
-                var listingContent = jQuery('.dvnListingPageContent');
+            
+            (function ($) {
+                $.fn.inlineStyle = function (prop) {
+                    var styles = this.attr("style"),
+                        value;
+                    styles && styles.split(";").forEach(function (e) {
+                        var style = e.split(":");
+                        if ($.trim(style[0]) === prop) {
+                            value = style[1];           
+                        }                    
+                    });   
+                    return value;
+                };
+            }(jQuery));
+            
+            function initListingPanelRemoveHeights() {
+                var listingPanel = jQuery('#dvn_mainSection div.dvnListingPagePanel');
+                var listingContent = jQuery('#dvn_mainSection div.dvnListingPageContent');
                 
-                if (jQuery(listingPanel, listingContent).attr('style').indexOf('height') !== -1) {
-                    jQuery(this).css('height', '');
+                var heightPanel = listingPanel.inlineStyle("height");
+                var heightContent = listingContent.inlineStyle("height");
+                
+                if (heightPanel || heightContent) {
+                    listingPanel.css('height', '');
+                    listingContent.css('height', '');
                 }
+            }
+            
+            function initListingPanelHeights() {
+                
+                var listingPanel = jQuery('#dvn_mainSection div.dvnListingPagePanel');
+                var listingContent = jQuery('#dvn_mainSection div.dvnListingPageContent');
                 
                 var listingPanelHeight = listingPanel.height();
                 var listingContentHeight = listingContent.height();
                 
                 if (listingPanelHeight > listingContentHeight) {
-                    jQuery(listingContent).css('height', listingPanelHeight + 'px');
+                    listingContent.css('height', listingPanelHeight + 'px');
                 }
                 else {
-                    jQuery(listingPanel).css('height', listingContentHeight + 'px');
+                    listingPanel.css('height', listingContentHeight + 'px');
                 }
             }
         // ]]>

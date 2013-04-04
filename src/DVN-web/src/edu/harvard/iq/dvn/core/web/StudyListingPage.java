@@ -99,6 +99,7 @@ public class StudyListingPage extends VDCBaseBean implements java.io.Serializabl
     private Map studyFields;
     private String studyListingIndex;
 
+
     // display items
     boolean renderTree;
     boolean renderSearch;
@@ -363,7 +364,7 @@ public class StudyListingPage extends VDCBaseBean implements java.io.Serializabl
         studyListing.setVersionMap(versionMap);
         studyListing.setCollectionTree(collectionTree);
         studyListing.setDisplayStudyVersionsList(displayVersionList);
-        
+
         String studyListingIndex = StudyListing.addToStudyListingMap(studyListing, getSessionMap());
         return "/StudyListingPage.xhtml?faces-redirect=true&studyListingIndex=" + studyListingIndex + "&vdcId=" + getVDCRequestBean().getCurrentVDCId();
     }
@@ -373,11 +374,26 @@ public class StudyListingPage extends VDCBaseBean implements java.io.Serializabl
         if (sortBy == null || sortBy.equals("")) {
             return;
         }
-
+        
+        /*
+         * We're storing sorted lists in a map to eliminate multiple calls
+         * and have a way to save the relevence sort from the search
+         */
         if (studyListing.getStudyIds() != null && studyListing.getStudyIds().size() > 0) {
-            List sortedStudies = studyService.getOrderedStudies(studyListing.getStudyIds(), sortBy);
-            studyListing.setStudyIds(sortedStudies);
-            resetScroller();
+            if (studyListing.getSortMap().get(sortBy) != null) {
+                studyListing.setStudyIds(studyListing.getSortMap().get(sortBy));
+                resetScroller();
+            } else {
+                //Add the relevance sort to map if available
+                if (studyListing.getMode() == StudyListing.SEARCH && studyListing.getSortMap().isEmpty()) {
+                    studyListing.getSortMap().put("relevance", studyListing.getStudyIds());
+                }
+                //Do the actual sort, if necessary
+                List sortedStudies = studyService.getOrderedStudies(studyListing.getStudyIds(), sortBy);
+                studyListing.setStudyIds(sortedStudies);
+                studyListing.getSortMap().put(sortBy, sortedStudies);
+                resetScroller();
+            }
         }
     }
 
@@ -474,16 +490,14 @@ public class StudyListingPage extends VDCBaseBean implements java.io.Serializabl
 
     private void initPageComponents(int mode) {
 
-        sortOrderItems = loadSortSelectItems();
+        sortOrderItems = loadSortSelectItems(mode);
         
         String sort;
         
         sort = getRequestParam("sort");
         
         sortOrderString = sort;
-        
-        System.out.print("sortOrderString " + sortOrderString);
- 
+         
         int matches = studyListing.getStudyIds() != null ? studyListing.getStudyIds().size() : 0;
         renderSort = matches == 0 ? false : true;
         renderScroller = matches < 10 ? false : true;
@@ -520,7 +534,8 @@ public class StudyListingPage extends VDCBaseBean implements java.io.Serializabl
             } else {
                 listMessage = "for " + listMessage;
             }
-
+           
+            sortOrderString = "relevance";
             renderSearchResultsFilter = matches == 0 ? false : true;
             renderDVPermissionsBox = false;
 
@@ -630,8 +645,6 @@ public class StudyListingPage extends VDCBaseBean implements java.io.Serializabl
         
         sortOrderString = sort;
         
-        System.out.print("sortOrderString " + sortOrderString);
-        
         if (mode == StudyListing.COLLECTION_STUDIES) {
             String collectionId = getRequestParam("collectionId");
             if (collectionId != null) {
@@ -734,17 +747,15 @@ public class StudyListingPage extends VDCBaseBean implements java.io.Serializabl
 
             }
             else if (mode == StudyListing.GENERIC_LIST && sort != null  && sort.equals("downloadCount")) {
-                // subsearch
                 sl = new StudyListing(StudyListing.GENERIC_LIST);
-                // TODO: change filter method to only return studyIds
                 sortOrderString = "downloadCount";
                 sl.setStudyIds(vdcApplicationBean.getAllStudyIdsByDownloadCount());
+                sl.getSortMap().put("downloadCount", sl.getStudyIds());
             } else if (mode == StudyListing.GENERIC_LIST) {
-                // subsearch
                 sl = new StudyListing(StudyListing.GENERIC_LIST);
-                // TODO: change filter method to only return studyIds
                 sortOrderString = "releaseTime";
                 sl.setStudyIds(vdcApplicationBean.getAllStudyIdsByReleaseDate());
+                sl.getSortMap().put("releaseTime", sl.getStudyIds());
             } else {
                 sl = new StudyListing(StudyListing.GENERIC_ERROR);
             }
@@ -806,15 +817,17 @@ public class StudyListingPage extends VDCBaseBean implements java.io.Serializabl
         this.paginator2 = paginator2;
     }
 
-    private List<SelectItem> loadSortSelectItems(){
+    private List<SelectItem> loadSortSelectItems(int mode){
         List selectItems = new ArrayList<SelectItem>();
-        selectItems.add(new SelectItem("", "Sort By"));
-
+        if (mode== StudyListing.SEARCH){ 
+             selectItems.add(new SelectItem("relevance", "- Relevance"));
+        }
         selectItems.add(new SelectItem("globalId", "- Global ID"));
         selectItems.add(new SelectItem("title", "- Title"));
         selectItems.add(new SelectItem("releaseTime", "- Most Recently Released"));
         selectItems.add(new SelectItem("productionDate", "- Production Date"));
         selectItems.add(new SelectItem("downloadCount", "- Most Downloaded"));
+
         return selectItems;
     }
     

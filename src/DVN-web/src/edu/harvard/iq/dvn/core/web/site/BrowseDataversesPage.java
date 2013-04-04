@@ -153,7 +153,8 @@ public class BrowseDataversesPage  extends VDCBaseBean implements Serializable {
         vdcUIList = new VDCUIList(groupId, "", filterTerm, hideRestricted);
         vdcUIList.setAlphaCharacter(new String(""));
         if((initialSort.isEmpty() || !firstRun)  && savedSort.isEmpty()){
-            vdcUIList.setSortColumnName(vdcUIList.getDateCreatedColumnName()); 
+            vdcUIList.setSortColumnName(vdcUIList.getDateReleasedColumnName()); 
+            sortOrderString = vdcUIList.getDateReleasedColumnName();
         } else {
             if (!initialSort.isEmpty() && firstRun){
                 vdcUIList.setSortColumnName(initialSort); 
@@ -227,7 +228,7 @@ public class BrowseDataversesPage  extends VDCBaseBean implements Serializable {
             parentItem.addItem(childItem);
             parentItem.setIsAccordion(true);
             if (!vdcGroupService.findByParentId(group.getId()).isEmpty()) {
-                childItem.setNumberOfDataverses(vdcGroupService.findCountChildVDCsByVDCGroupId(group.getId()));
+                childItem.setNumberOfDataverses(vdcGroupService.findCountParentChildVDCsByVDCGroupId(group.getId()));
                 List innerlist       = vdcGroupService.findByParentId(group.getId());                
                 Iterator inneriterator  = innerlist.iterator();
                 DataverseGrouping xtraItem;
@@ -243,11 +244,10 @@ public class BrowseDataversesPage  extends VDCBaseBean implements Serializable {
       
     private List<SelectItem> loadSortSelectItems(){
         List selectItems = new ArrayList<SelectItem>();
-        selectItems.add(new SelectItem("", "Sort By"));
         selectItems.add(new SelectItem("Name", "- Name"));
         selectItems.add(new SelectItem("Affiliation", "- Affiliation"));
         selectItems.add(new SelectItem("Released", "- Release Date"));
-        selectItems.add(new SelectItem("Activity", "- Download Count"));
+        selectItems.add(new SelectItem("Activity", "- Download Count"));    
         return selectItems;
     }
     

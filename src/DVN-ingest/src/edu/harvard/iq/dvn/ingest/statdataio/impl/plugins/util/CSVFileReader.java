@@ -143,9 +143,10 @@ public class CSVFileReader implements java.io.Serializable {
                     // Numeric, Double:
                     // special cases first: R NA (missing value) and NaN
                     // (Not A Number value):
-                    if (valueTokens[i] != null && valueTokens[i].equals("NA")) {
+                    dbgLog.fine("CSV reader; double value: "+valueTokens[i]); 
+                    if (valueTokens[i] != null && valueTokens[i].equalsIgnoreCase("NA")) {
                         caseRow[i] = "";
-                    } else if (valueTokens[i] != null && valueTokens[i].equals("NaN")) {
+                    } else if (valueTokens[i] != null && valueTokens[i].equalsIgnoreCase("NaN")) {
                         caseRow[i] = "NaN";
                     } else {
                         try {
@@ -166,7 +167,7 @@ public class CSVFileReader implements java.io.Serializable {
                     // create an Integer object from the String "NA" would
                     // result in an exception, that would be intercepted below,
                     // with the same end result)
-                    if (valueTokens[i] != null && valueTokens[i].equals("NA")) {
+                    if (valueTokens[i] != null && valueTokens[i].equalsIgnoreCase("NA")) {
                         caseRow[i] = "";
                     } else {
                         try {

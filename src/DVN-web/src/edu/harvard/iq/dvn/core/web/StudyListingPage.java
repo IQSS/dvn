@@ -199,7 +199,7 @@ public class StudyListingPage extends VDCBaseBean implements java.io.Serializabl
 
     public Collection getFacets(Integer limit) {
         List facetUIList = new ArrayList();
-        if (studyListing.getResultsWithFacets() != null) {
+        if (studyListing.getResultsWithFacets().getResultList() != null) {
             List<FacetResult> facetResults = studyListing.getResultsWithFacets().getResultList();
             for (int i = 0; i < facetResults.size(); i++) {
                 FacetResult facetResult = facetResults.get(i);

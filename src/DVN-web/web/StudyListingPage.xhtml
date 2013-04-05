@@ -223,7 +223,8 @@
                   </table>
                 </div>
                 <div style="overflow:hidden;">
-                <div jsfc="ice:panelGroup" styleClass="dvnStudyFacetBlock" rendered="#{(StudyListingPage.renderSearchResultsFilter)}">
+                <!--<div jsfc="ice:panelGroup" styleClass="dvnStudyFacetBlock" rendered="#{(StudyListingPage.renderSearchResultsFilter)}">-->
+                    <div jsfc="ice:panelGroup" styleClass="dvnStudyFacetBlock" rendered="#{(StudyListingPage.renderSearchResultsFilter) and StudyListingPage.renderFacets}">
                     <style type="text/css">
                     .dvnStudyFacetBlock {width:30%; float:right; text-align:left;}
                     .dvnStudyListBlockSearch {width:70%; border-right:1px solid #C55B28;}

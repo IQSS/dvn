@@ -124,6 +124,7 @@ public class StudyListingPage extends VDCBaseBean implements java.io.Serializabl
     boolean renderTree;
     boolean renderSearch;
     boolean renderSort;
+    boolean renderFacets = false;
     private boolean renderScroller;
     private boolean renderDescription;
     private boolean renderContributorLink;
@@ -132,6 +133,13 @@ public class StudyListingPage extends VDCBaseBean implements java.io.Serializabl
     private List sortOrderItems;
     private String sortOrderString;
 
+    public void setRenderFacets(boolean renderFacets) {
+        this.renderFacets = renderFacets;
+    }
+
+    public boolean isRenderFacets() {
+        return renderFacets;
+    }
 
 
     public boolean isRenderDownloadCount() {
@@ -591,6 +599,7 @@ public class StudyListingPage extends VDCBaseBean implements java.io.Serializabl
            
             sortOrderString = "relevance";
             renderSearchResultsFilter = matches == 0 ? false : true;
+            renderFacets = studyListing.getResultsWithFacets() != null && studyListing.getResultsWithFacets().getResultList() != null && studyListing.getResultsWithFacets().getResultList().size() > 0 ? true : false;
             renderDVPermissionsBox = false;
 
         } else if (mode == StudyListing.COLLECTION_STUDIES) {

@@ -27,6 +27,7 @@ import edu.harvard.iq.dvn.core.admin.UserServiceLocal;
 import edu.harvard.iq.dvn.core.admin.VDCUser;
 import edu.harvard.iq.dvn.core.vdc.VDC;
 import edu.harvard.iq.dvn.core.vdc.VDCServiceLocal;
+import edu.harvard.iq.dvn.core.web.common.LoginBean;
 import edu.harvard.iq.dvn.core.web.common.VDCBaseBean;
 import java.util.ArrayList;
 import java.util.List;
@@ -73,8 +74,13 @@ public class MyDataversePage extends VDCBaseBean {
     }
 
     public String createDataverse() {
-        VDCUser user = getVDCSessionBean().getUser();
-        userService.makeCreator(user.getId());
+        LoginBean loginBean = this.getVDCSessionBean().getLoginBean();
+        
+        if ( getVDCRequestBean().getVdcNetwork().isAllowCreateRequest() && loginBean != null && loginBean.getUser() != null) {
+            userService.makeCreator(loginBean.getUser().getId());
+            loginBean.setUser( userService.find( loginBean.getUser().getId() ) ); // refresh session user with possibly modified user from db
+        }
+               
         return "/site/AddSitePage?faces-redirect=true";
     }
 

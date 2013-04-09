@@ -1412,7 +1412,7 @@ public class Indexer implements java.io.Serializable  {
 
         FacetsCollector facetsCollector = new FacetsCollector(facetSearchParams, r, taxo);
 
-        logger.info("Running query: \n" + q2);
+        logger.info("\n--BEGIN query dump--\n" + q2 + "\n--END query dump--");
         searcher.search(q2, MultiCollector.wrap(s, facetsCollector));
         List<FacetResult> facetResults = facetsCollector.getFacetResults();
         ResultsWithFacets resultsWithFacets = new ResultsWithFacets();

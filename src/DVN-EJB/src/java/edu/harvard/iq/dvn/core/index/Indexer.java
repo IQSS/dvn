@@ -889,12 +889,18 @@ public class Indexer implements java.io.Serializable  {
             BooleanQuery searchQuery = andQueryClause(searchParts);
             logger.fine("Start hits: " + DateTools.dateToString(new Date(), Resolution.MILLISECOND));
             logger.info("INDEXER: search query (native): " + searchQuery.toString());
-//            nvResults = getHitIds(searchQuery); // returns List<Long>
-            resultsWithFacets = getResultsWithFacets(searchQuery, null);
-            nvResults = resultsWithFacets.getMatchIds();
-            logger.fine("Done hits: " + DateTools.dateToString(new Date(), Resolution.MILLISECOND));
-            logger.fine("Start filter: " + DateTools.dateToString(new Date(), Resolution.MILLISECOND));
-            filteredResults = studyIds != null ? intersectionResults(nvResults, studyIdsArray) : nvResults;
+            if (studyIds != null) {
+                nvResults = getHitIds(searchQuery);
+                logger.fine("Done hits: " + DateTools.dateToString(new Date(), Resolution.MILLISECOND));
+                logger.fine("Start filter: " + DateTools.dateToString(new Date(), Resolution.MILLISECOND));
+                filteredResults = intersectionResults(nvResults, studyIdsArray);
+            } else {
+                resultsWithFacets = getResultsWithFacets(searchQuery, null);
+                nvResults = resultsWithFacets.getMatchIds();
+                logger.fine("Done hits: " + DateTools.dateToString(new Date(), Resolution.MILLISECOND));
+                logger.fine("Start filter: " + DateTools.dateToString(new Date(), Resolution.MILLISECOND));
+                filteredResults = nvResults;
+            }
             logger.fine("Done filter: " + DateTools.dateToString(new Date(), Resolution.MILLISECOND));
         }
 

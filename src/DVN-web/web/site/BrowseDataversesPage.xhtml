@@ -18,15 +18,12 @@
                 <f:viewParam name="groupId" value="#{BrowseDataversesPage.groupId}"/>
                 <f:viewParam name="initialSort" value="#{BrowseDataversesPage.initialSort}"/>
                 <f:viewParam name="initialFilter" value="#{BrowseDataversesPage.initialFilter}"/>
-                <f:event type="preRenderView" listener="#{BrowseDataversesPage.init}"/>
+                <f:event type="preRenderView" listener="#{BrowseDataversesPage.preRenderView}"/>
             </f:metadata>
         </ui:define>
         <ui:define name="body">
           <ice:form id="browsedataversespage">
               <ice:commandButton type="submit" visible="false" id="updateDVList" value="update" action="#{BrowseDataversesPage.updateDVList}"/>
-               <ice:inputHidden binding="#{BrowseDataversesPage.hiddenGroupId}"
-                      id="groupId"
-                valueChangeListener="#{BrowseDataversesPage.changeGroupId}"/>
         <div id="dvn_mainSection">
             
             <!-- Start Search Results (with side panel, if available) -->
@@ -111,7 +108,7 @@
                             </table>
                         </div>
                         <div class="dvnListingPageWrap">
-                            <div jsfc="ice:panelGroup" styleClass="dvnListingPagePanel" rendered="#{!empty BrowseDataversesPage.accordionItemBeans}">
+                            <div jsfc="ice:panelGroup" styleClass="dvnListingPagePanel" rendered="#{!empty BrowseDataversesPage.groupItemBeans}">
                                 
                                 <script type="text/javascript">
                                     // <![CDATA[
@@ -151,7 +148,7 @@
                                                     </li>
                                                     <li id="dvClassificationMenu" class="xtraMenu basic">
                                                         
-                                                        <ui:repeat value="#{BrowseDataversesPage.accordionItemBeans}" var="menuItems">
+                                                        <ui:repeat value="#{BrowseDataversesPage.groupItemBeans}" var="menuItems">
                                                             <ui:fragment rendered="#{!empty(menuItems.childItems)}">
                                                                 <h3 class="head">
                                                                     <ice:outputText value="#{menuItems.name}"/>
@@ -164,13 +161,11 @@
                                                                     <ui:fragment rendered="#{!empty(item.xtraItems)}">
                                                                         <li id="xtraMenu#{item.id}">
                                                                             <h4 class="head">
-                                                                            <ice:commandLink onclick="setHiddenValuesGroupId(#{item.id});"
-                                                                                                            partialSubmit="true"
-                                                                                                            styleClass="head groupId#{item.id}">
-                                                                                                <ice:outputText value="#{item.name}"/>
-                                                                                                <f:attribute name="groupId" value="#{item.id}"/>
-                                                                                            </ice:commandLink>
-                                                                                            <ice:outputText value=" (#{item.numberOfDataverses})" styleClass="dvnHmpgClassificationCount"/>
+                                                                            <ice:outputLink styleClass="head" value="/dvn/faces/site/BrowseDataversesPage.xhtml?groupId=#{item.id}"                                                                                                                                                                                                                    >
+                                                                                <ice:outputText value="#{item.name}"/>
+                                                                            </ice:outputLink>
+                               
+                                                                             <ice:outputText value=" (#{item.numberOfDataverses})" styleClass="dvnHmpgClassificationCount"/>
                                                                             </h4>
                                                                             <ui:fragment rendered="#{item.xtraItems != null and !empty(item.xtraItems)}">
                                                                                 <ul>
@@ -178,9 +173,9 @@
                                                                                             value="#{item.xtraItems}"
                                                                                             var="xtraItems">
                                                                                         <li>
-                                                                                            <ice:commandLink styleClass="lastNode groupId#{xtraItems.id}" onclick="setHiddenValuesGroupId(#{xtraItems.id});">
+                                                                                              <ice:outputLink styleClass="lastNode" value="/dvn/faces/site/BrowseDataversesPage.xhtml?groupId=#{xtraItems.id}">
                                                                                                 <ice:outputText value="#{xtraItems.name}"/>
-                                                                                            </ice:commandLink>
+                                                                                             </ice:outputLink>
                                                                                             <ice:outputText value=" (#{xtraItems.numberOfDataverses})" styleClass="dvnHmpgClassificationCount"/>
                                                                                         </li>
                                                                                     </ui:repeat>
@@ -192,9 +187,9 @@
                                                                     <!-- HAS NO SUBNODE DESCENDANTS -->
                                                                     <ui:fragment rendered="#{empty(item.xtraItems)}">
                                                                         <li>
-                                                                            <ice:commandLink styleClass="lastNode groupId#{item.id}" onclick="setHiddenValuesGroupId(#{item.id});">
+                                                                            <ice:outputLink styleClass="lastNode" value="/dvn/faces/site/BrowseDataversesPage.xhtml?groupId=#{item.id}">
                                                                                 <ice:outputText value="#{item.name}"/>
-                                                                            </ice:commandLink>
+                                                                            </ice:outputLink>
                                                                             <ice:outputText value=" (#{item.numberOfDataverses})" styleClass="dvnHmpgClassificationCount"/>
                                                                         </li>
                                                                     </ui:fragment>
@@ -213,7 +208,7 @@
                                 <!-- END THE MENU -->
                                 
                             </div>
-                            <div jsfc="ice:panelGroup" styleClass="#{(!empty BrowseDataversesPage.accordionItemBeans) ? 'dvnListingPageContent' : ''}">
+                            <div jsfc="ice:panelGroup" styleClass="#{(!empty BrowseDataversesPage.groupItemBeans) ? 'dvnListingPageContent' : ''}">
                                 <ice:dataTable id="dataverseListManage" width="100%"
                                                 rendered="#{!empty(BrowseDataversesPage.vdcUIList.vdcUIList)}"
                                                 rows="10"

@@ -380,7 +380,7 @@
                                         </ice:outputLink>
                                     </li>
                                 </span>
-                                <span jsfc="ice:panelGroup" rendered="#{(studyPage.studyUI.userCuratorOrAdmin or VDCSession.loginBean.networkAdmin) and studyPage.studyUI.subsettable}">
+                                <span jsfc="ice:panelGroup" rendered="#{(studyPage.studyUI.userCuratorOrAdmin or VDCSession.loginBean.networkAdmin) and studyPage.studyUI.visualization}">
                                     <li>
                                         <ice:outputLink styleClass="dvnInlineHelpLabel dvnInlineHelpTip" title="#{studybundle.editSetUpVizText} - #{studybundle.editSetUpVizTip}" value="/dvn#{VDCRequest.currentVDCURL}/faces/study/SetUpDataExplorationPage.xhtml?studyId=#{studyPage.studyUI.study.id}">
                                             <ice:outputText nospan="true" value="#{studybundle.editSetUpVizText}"/>

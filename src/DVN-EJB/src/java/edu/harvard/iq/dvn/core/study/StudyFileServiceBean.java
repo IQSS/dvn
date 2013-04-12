@@ -186,6 +186,14 @@ public class StudyFileServiceBean implements StudyFileServiceLocal {
         return studyFiles;
     }
     
+    @TransactionAttribute(TransactionAttributeType.NOT_SUPPORTED)    
+    public Long getCountFilesByStudyVersion(Long svId) {
+        String queryString = "SELECT count(f.*) FROM FileMetadata f WHERE f.studyVersion_id = " + svId +" "; 
+        Query query = em.createNativeQuery(queryString);        
+        Long retVal = (Long) query.getSingleResult();
+        return retVal; 
+    }
+    
     /*@TransactionAttribute(TransactionAttributeType.NOT_SUPPORTED)
     public List getOrderedFileIdsByStudyVersion (Long svId) {
 	List<Long> fileIdList = new ArrayList<Long>();
@@ -292,6 +300,27 @@ public class StudyFileServiceBean implements StudyFileServiceLocal {
                     return Boolean.TRUE;
             }
 
+        }
+
+        return Boolean.FALSE;
+
+    }
+    
+    public Boolean doesStudyHaveSingleTabularFiles(Long studyVersionId) {
+
+        List<Long> subsettableList = new ArrayList();
+        Query query = em.createNativeQuery("SELECT count(d.*) FROM  DataTable d, studyfile sf,  studyversion sv where d.studyfile_id = sf.id and sf.study_id = sv.study_id and sv.id = " + studyVersionId + " group by studyfile_id");
+        for (Object currentResult : query.getResultList()) {
+            subsettableList.add( (Long)currentResult );
+        }
+
+
+        if ( !subsettableList.isEmpty() ) {
+            for (Long fclass : subsettableList) {
+                if (fclass.intValue() == 1){
+                    return Boolean.TRUE;
+                }
+            }
         }
 
         return Boolean.FALSE;

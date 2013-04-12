@@ -37,6 +37,7 @@ import edu.harvard.iq.dvn.core.vdc.VDCCollection;
 import edu.harvard.iq.dvn.core.vdc.VDCCollectionServiceLocal;
 import edu.harvard.iq.dvn.core.vdc.VDCNetworkServiceLocal;
 import edu.harvard.iq.dvn.core.vdc.VDCServiceLocal;
+import edu.harvard.iq.dvn.core.index.DvnQuery;
 import java.io.File;
 import java.io.IOException;
 import java.net.InetAddress;
@@ -440,6 +441,24 @@ public class IndexServiceBean implements edu.harvard.iq.dvn.core.index.IndexServ
         } catch (IOException ex) {
             ex.printStackTrace();
         }        
+        return resultsWithFacets;
+    }
+
+//    public ResultsWithFacets searchwithFacets(VDC vdc, List<SearchTerm> searchTerms) {
+    public ResultsWithFacets searchNew(DvnQuery dvnQuery) {
+        logger.info("in searchNew in IndexServiceBean");
+        VDC vdc = dvnQuery.getVdc();
+        List<SearchTerm> searchTerms = dvnQuery.getSearchTerms();
+        List studyIds = vdc != null ? listVdcStudyIds(vdc) : null;
+        logger.info("called searchWithFacets in IndexServiceBean");
+        ResultsWithFacets resultsWithFacets = null;
+        Indexer indexer = Indexer.getInstance();
+        try {
+            resultsWithFacets = indexer.searchWithFacets(studyIds, searchTerms);
+            resultsWithFacets = indexer.searchNew(dvnQuery);
+        } catch (IOException ex) {
+            ex.printStackTrace();
+        }
         return resultsWithFacets;
     }
 

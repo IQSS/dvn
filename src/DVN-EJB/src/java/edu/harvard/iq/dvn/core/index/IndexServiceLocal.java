@@ -21,6 +21,7 @@ package edu.harvard.iq.dvn.core.index;
 
 import edu.harvard.iq.dvn.core.vdc.VDC;
 import edu.harvard.iq.dvn.core.vdc.VDCCollection;
+import edu.harvard.iq.dvn.core.index.DvnQuery;
 import java.util.List;
 import javax.ejb.Local;
 import org.apache.lucene.facet.taxonomy.CategoryPath;
@@ -88,5 +89,7 @@ public interface IndexServiceLocal extends java.io.Serializable {
     public BooleanQuery andSearchTermClause(List<SearchTerm> studyLevelSearchTerms);
 
     public BooleanQuery andQueryClause(List<BooleanQuery> searchParts);
+
+    public ResultsWithFacets searchNew(DvnQuery dvnQuery);
 
 }

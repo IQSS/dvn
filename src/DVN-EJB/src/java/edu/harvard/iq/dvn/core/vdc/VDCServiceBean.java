@@ -499,6 +499,12 @@ public class VDCServiceBean implements VDCServiceLocal {
         String query = "select v from VDC  v where v.id in (select vr.vdc.id from VDCRole vr where vr.vdcUser.id=" + userId + ")";
         return em.createQuery(query).getResultList();
     }
+    
+     public Long getUserContributorOrBetterVDCCount(Long userId) {
+        String queryString = "select count(*) from VDC  v where v.id in (select vr.vdc_id from VDCRole vr where vr.role_id < 4 and vr.vdcUser_id=" + userId + ")";
+        Query query = em.createNativeQuery(queryString);
+        return (Long) query.getSingleResult();
+    }   
 
     public void updateDefaultTemplate(Long vdcId, Long templateId) {
         VDC vdc = em.find(VDC.class, vdcId);

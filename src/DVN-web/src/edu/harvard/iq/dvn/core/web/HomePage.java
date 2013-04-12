@@ -348,28 +348,16 @@ public class HomePage extends VDCBaseBean implements Serializable {
     }
 
     public Long getUserVDCCount() {
-        if (pageUser == null){
+        if (pageUser == null) {
             pageUser = getVDCSessionBean().getUser();
         }
         VDCUser user = getVDCSessionBean().getUser();
-        if(!pageUser.equals(user) || userVDCCount == null ){
-                    int count = 0;
-        if (user != null) {
-            user = userService.find(user.getId());
-            List<VDC> vdcs = vdcService.getUserVDCs(user.getId());
-            for (VDC dv : vdcs) {
-                VDCRole vdcRole = roleService.findByUserVDC(user.getId(), dv.getId());
-                if (!vdcRole.getRole().getName().equals(RoleServiceLocal.PRIVILEGED_VIEWER)) {
-                    count++;
-                }
-                if (count > 1) {
-                    userVDCCount = new Long(count);
-                    return new Long(count);
-                }
+        if (!pageUser.equals(user) || userVDCCount == null) {
+            if (user != null) {
+                user = userService.find(user.getId());
+                userVDCCount = vdcService.getUserContributorOrBetterVDCCount(user.getId());
+                return userVDCCount;
             }
-            userVDCCount = new Long(count);
-            return new Long(count);
-        }
             userVDCCount = new Long(0);
             return new Long(0);
         } else {
@@ -386,8 +374,14 @@ public class HomePage extends VDCBaseBean implements Serializable {
         if (!pageUser.equals(user) || soleVDCAlias == null) {
             String retAlias = "";
             int count = 0;
+
             if (user != null) {
                 user = userService.find(user.getId());
+                Long initialTest = vdcService.getUserContributorOrBetterVDCCount(user.getId());
+                if (initialTest.intValue() != 1){
+                    soleVDCAlias = "";
+                    return soleVDCAlias;
+                }
                 List<VDC> vdcs = vdcService.getUserVDCs(user.getId());
                 for (VDC dv : vdcs) {
                     VDCRole vdcRole = roleService.findByUserVDC(user.getId(), dv.getId());

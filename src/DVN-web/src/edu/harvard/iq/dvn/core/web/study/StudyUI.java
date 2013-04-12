@@ -558,6 +558,8 @@ public class StudyUI  implements java.io.Serializable {
         }
         if(isSubsettable){
             isVisualization = studyFileService.doesStudyHaveSingleTabularFiles(studyVersionId);
+        } else {
+            isVisualization = Boolean.FALSE;
         }
         return isVisualization.booleanValue();
     }

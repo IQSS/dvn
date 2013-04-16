@@ -99,6 +99,7 @@ public class StudyListingPage extends VDCBaseBean implements java.io.Serializabl
 
     private static final Logger logger = Logger.getLogger(StudyListingPage.class.getCanonicalName());
     private List<CategoryPath> facetsOfInterest = new ArrayList<CategoryPath>();
+    private static ResultsWithFacets resultsWithFacets;
 
     public List<CategoryPath> getFacetsOfInterest() {
         return facetsOfInterest;
@@ -550,7 +551,6 @@ public class StudyListingPage extends VDCBaseBean implements java.io.Serializabl
         searchTerms.add(st);
         dvnQuery.setSearchTerms(searchTerms);
 
-        ResultsWithFacets resultsWithFacets = null;
         List studyIDList = new ArrayList();
         Map variableMap = new HashMap();
         Map fileMap = new HashMap();
@@ -1274,6 +1274,16 @@ public class StudyListingPage extends VDCBaseBean implements java.io.Serializabl
         CategoryPath facetToAdd = new CategoryPath(facetKey, facetValue);
         if (!facetsOfInterest.contains(facetToAdd)) {
             facetsOfInterest.add(facetToAdd);
+        }
+
+        if (resultsWithFacets != null) {
+            for (int i = 0; i < resultsWithFacets.getFacetsQueried().size(); i++) {
+                CategoryPath queriedFacet = resultsWithFacets.getFacetsQueried().get(i);
+                logger.info("facet " + i + ": " + queriedFacet);
+                if (!facetsOfInterest.contains(queriedFacet)) {
+                    facetsOfInterest.add(queriedFacet);
+                }
+            }
         }
 
         Query query = null;

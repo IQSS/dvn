@@ -26,11 +26,13 @@ package edu.harvard.iq.dvn.core.index;
 import java.util.ArrayList;
 import java.util.List;
 import org.apache.lucene.facet.search.results.FacetResult;
+import org.apache.lucene.facet.taxonomy.CategoryPath;
 
 public class ResultsWithFacets {
 
     private ArrayList matchIds;
     List<FacetResult> facetResultList;
+    private List<CategoryPath> facetsQueried = new ArrayList<CategoryPath>();
 
     public void setResultList(List<FacetResult> resultList) {
         this.facetResultList = resultList;
@@ -48,4 +50,12 @@ public class ResultsWithFacets {
         this.matchIds = (ArrayList) matchIds;
     }
     
+    public List<CategoryPath> getFacetsQueried() {
+        return facetsQueried;
+    }
+
+    public void setFacetsQueried(List<CategoryPath> facetsQueried) {
+        this.facetsQueried = facetsQueried;
+    }
+
 }

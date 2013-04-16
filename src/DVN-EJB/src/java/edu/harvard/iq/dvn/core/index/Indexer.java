@@ -1508,6 +1508,7 @@ public class Indexer implements java.io.Serializable  {
         }
         matchIds.addAll(matchIdsSet);
         resultsWithFacets.setMatchIds(matchIds);
+        resultsWithFacets.setFacetsQueried(facetsOfInterest);
         return resultsWithFacets;
     }
 

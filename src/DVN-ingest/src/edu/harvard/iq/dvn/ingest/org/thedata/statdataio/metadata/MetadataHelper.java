@@ -54,6 +54,8 @@ public class MetadataHelper {
         Map<String, String> valueLabeli,
         Map<String, Integer> catStati,
         List<String> missingValuei){
+      
+      dbgLog.info("valueLabeli = " + valueLabeli);
 
         // protection block
         if (missingValuei == null){
@@ -315,6 +317,16 @@ public class MetadataHelper {
                 merged.add(csmv);
             }
         }
+        
+        dbgLog.warning("Xxxxxxxxxxxx");
+        
+        for (CategoricalStatistic c : merged) {
+          dbgLog.info("CategoricalStatistic value = " + c.getValue());
+          dbgLog.info("CategoricalStatistic label = " + c.getLabel());
+          dbgLog.info("CategoricalStatistic freq. = " + c.getFrequency());
+        }
+        
+        
 
         dbgLog.finer("merged"+merged);
         return merged;

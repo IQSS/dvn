@@ -170,6 +170,9 @@ public class DDIWriter {
         String[] sumStatLabels3 = {"vald", "invd", "mode"};
         
         
+        sdioMetadata.getValueLabelMappingTable();
+        
+        
 
         
         
@@ -197,6 +200,8 @@ public class DDIWriter {
             
             
             String valueLabelTableName = sdioMetadata.valueLabelMappingTable.get(variableNamei);
+            
+            
             
             
             // valuLabeli, catStati, missingValuei
@@ -368,7 +373,7 @@ public class DDIWriter {
                     sb.append("\t\t</catgry>\n");
                 }
             }
-
+            
             //System.out.println(StringUtils.join(sumStat,","));
             // format
             String formatTye = sdioMetadata.isStringVariable()[i] ? "character" : "numeric";

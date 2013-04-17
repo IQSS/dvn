@@ -1398,6 +1398,7 @@ public class DTAFileReader extends StatDataFileReader{
         
         stataDataSection.setData(dataTable2);
         
+        
         // close the stream
 
         dbgLog.fine("***** decodeData(): end *****\n\n");

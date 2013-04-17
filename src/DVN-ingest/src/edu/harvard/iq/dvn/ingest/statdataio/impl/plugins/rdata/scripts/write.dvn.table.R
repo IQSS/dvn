@@ -37,8 +37,8 @@ write.dvn.table <- function (data.set, ...) {
 
   # Convert POSIXt date-times to the good format
   reformat.POSIXt <- function (x) {
-    x <- as.POSIXct(x)
-    format(x, format = "%Y-%m-%d %H:%M:%OS %Z")
+    attr(x, "tzone") <- "UTC"
+    paste(format(x, format = "%F %H:%M:%OS"), "+0000", sep = " ")
   }
 
   # Convert date

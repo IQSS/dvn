@@ -662,8 +662,12 @@ public class DDIFileReader extends StatDataFileReader{
                     // Value Labels:
 
                     if ( !valueLabelPairs.isEmpty() ) {
-                        valueLabelTable.put(variableName,valueLabelPairs);
-                        valueVariableMappingTable.put(variableName, variableName);
+                        
+                      valueLabelTable.put(variableName,valueLabelPairs);
+                      dbgLog.warning("valueLabelTable = " + valueLabelTable.toString());
+                      dbgLog.warning("valueLabelTable = " + valueLabelTable);
+                      
+                      valueVariableMappingTable.put(variableName, variableName);
                     }
 
                     // Missing Values:

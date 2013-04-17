@@ -106,6 +106,8 @@ import javax.faces.bean.ViewScoped;
 import javax.inject.Named;
 import javax.inject.Inject;
 
+import edu.harvard.iq.dvn.core.visualization.DataVariableMapping;
+
 @ViewScoped
 @Named("AnalysisPage")
 public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
@@ -445,7 +447,6 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
      * @return    the citation information of the requested data file
      */
     private String getCitation() {
-        
         return studyUI.getMetadata().getCitation(false);
     }
     
@@ -457,7 +458,6 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
      * @return    the title of the requested study
      */
     private String getStudyTitle() {
-        
         return studyUI.getMetadata().getTitle();
     }
     
@@ -1073,14 +1073,13 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
 
 
             StudyFile sf = dataTable.getStudyFile();
+            
             Long noRecords = dataTable.getRecordsPerCase();
 
             String dsbUrl = getDsbUrl();
             dbgLog.fine("dsbUrl=" + dsbUrl);
 
-            String serverPrefix = req.getScheme() + "://"
-                + req.getServerName() + ":" + req.getServerPort()
-                + req.getContextPath();
+            String serverPrefix = req.getScheme() + "://" + req.getServerName() + ":" + req.getServerPort() + req.getContextPath();
 
             dbgLog.fine("serverPrefix"+serverPrefix);
 
@@ -1162,6 +1161,7 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
                     daReq.setParameter("noVarHeader", "1");
 
                     DataAccessObject accessObject = DataAccess.createDataAccessObject(sf, daReq);
+                    
 
                     if (accessObject.isSubsetSupported()) {
                         dbgLog.fine("Using NATIVE subset functionality of the repository.");
@@ -1369,9 +1369,9 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
                     }
                     
                     if (recodeSchema.size()> 0){
-                        resultInfo.put("subsettingCriteria",sro.getSubsetConditionsForCitation());
+                        resultInfo.put("subsettingCriteria", sro.getSubsetConditionsForCitation());
                     } else {
-                        resultInfo.put("subsettingCriteria","variables: "+getVariableNamesForSubset());
+                        resultInfo.put("subsettingCriteria", "variables: "+getVariableNamesForSubset());
                     }
 
                 } catch (MalformedURLException e) {
@@ -6146,6 +6146,7 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
 
                     sro = new DvnRJobRequest(getDataVariableForRequest(), mpl, vls, recodeSchema, modelSpec);
                     
+                    
                     //dbgLog.fine("Prepared sro dump:\n"+ToStringBuilder.reflectionToString(sro, ToStringStyle.MULTI_LINE_STYLE));
                     
                     // Step 4. Creates an instance of the the implemented
@@ -7562,9 +7563,8 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
             Map<String, Object> sessionMap = exCntxt.getSessionMap();
             
 
-            dbgLog.finer("\ncontents of RequestParameterMap:\n"
-                + exCntxt.getRequestParameterMap());
-            dbgLog.finer("\ncontents of SessionMap:\n"+sessionMap);
+            dbgLog.finer("\ncontents of RequestParameterMap:\n" + exCntxt.getRequestParameterMap());
+            dbgLog.finer("\ncontents of SessionMap:\n" +sessionMap);
 
             
             // gets the request header data
@@ -7665,7 +7665,7 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
                 + dtId);
             // Gets the requested data table by its Id
             dataTable = variableService.getDataTable(dtId);
-                                
+            
             if (versionNumber == null) {
                 versionNumber = getVDCRequestBean().getStudyVersionNumber();
             }
@@ -8248,10 +8248,28 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
      * @return    List of DataVariable objects that stores metadata
      */
     public List<DataVariable> getDataVariableForRequest() {
+      
         List<DataVariable> dvs = new ArrayList<DataVariable>();
         for (Iterator el = dataVariables.iterator(); el.hasNext();) {
             DataVariable dv = (DataVariable) el.next();
+            
+            // dv.;
+            dv.getCategories();
+
+            // dv.getD
+            
+            // dv.get
+            
+            for (DataVariableMapping dvm : dv.getDataVariableMappings()) {
+              
+            }
+            
+            for (VariableCategory v : dv.getCategories()) {
+              
+            }
+            
             String keyS = dv.getId().toString();
+            
             if (varCart.containsKey(keyS)) {
                 dvs.add(dv);
             }

@@ -1566,11 +1566,16 @@ public class FileDownloadServlet extends HttpServlet {
 
         dbgLog.fine("local: paramListToR="+paramListToR);
 
+        dbgLog.info("DvnRJobRequest <<<<");
         sro = new DvnRJobRequest(getDataVariableForRequest(), paramListToR, vls);
+        dbgLog.info("<<<");
 
         // create the service instance
+        
+        dbgLog.info("DvnRFileConversion <<<<");
         DvnRforeignFileConversionServiceImpl dfcs = new DvnRforeignFileConversionServiceImpl();
-
+        dbgLog.info("<<<");
+        
         // execute the service
         resultInfo = dfcs.execute(sro);
 

@@ -302,7 +302,6 @@ public class DvnRforeignFileConversionServiceImpl{
             
             // variable names
             // String [] jvnames = {"race","age","vote"};
-            
             String [] jvnamesRaw = sro.getVariableNames();
             String [] jvnames = null;
             
@@ -316,7 +315,6 @@ public class DvnRforeignFileConversionServiceImpl{
                 jvnames = jvnamesRaw;
             }
             String vnQList = DvnDSButil.joinNelementsPerLine(jvnames,true);
-            
             
             c.assign("vnames", new REXPString(jvnames));
             
@@ -333,6 +331,19 @@ public class DvnRforeignFileConversionServiceImpl{
             //String datafilename = "/nfs/home/A/asone/java/rcode/t.28948.1.tab";
             
             // tab-delimited file name = tempFileName
+            
+            // Parameters:
+            // file -> tempFileName
+            // col.names -> Arrays.deepToString(new REXPString(jvnames)).asStrings())
+            // colClassesx -> Arrays.deepToString((new REXPInteger(sro.getVariableTypes())).asStrings())
+            // varFormat -> Arrays.deepToString((new REXPString(getValueSet(tmpFmt, tmpFmt.keySet().toArray(new String[tmpFmt.keySet().size()])))).asStrings())
+
+            dbgLog.info("<<<<<<<<<<<<<<<<<<<<<<<<<");
+            dbgLog.info("col.names = " + Arrays.deepToString((new REXPString(jvnames)).asStrings()));
+            dbgLog.info("colClassesx = " + Arrays.deepToString((new REXPInteger(sro.getVariableTypes())).asStrings()));
+            dbgLog.info("varFormat = " + Arrays.deepToString((new REXPString(getValueSet(tmpFmt, tmpFmt.keySet().toArray(new String[tmpFmt.keySet().size()])))).asStrings()));
+            dbgLog.info(">>>>>>>>>>>>>>>>>>>>>>>>>");
+            
             String readtableline = "x<-read.table141vdc(file='"+tempFileName+
                 "', col.names=vnames, colClassesx=vartyp, varFormat=varFmt )";
             dbgLog.fine("readtable="+readtableline);

@@ -981,7 +981,7 @@ public class AddFilesPage extends VDCBaseBean implements java.io.Serializable {
         if (fileTypes == null) {
             fileTypes = new ArrayList();
 
-            fileTypesSubsettable = new SelectItem[6];
+            fileTypesSubsettable = new SelectItem[7];
             fileTypesNetwork = new SelectItem[1];
             //fileTypesOther = new SelectItem[1];
 
@@ -992,6 +992,7 @@ public class AddFilesPage extends VDCBaseBean implements java.io.Serializable {
             fileTypesSubsettable[3] = new SelectItem("spss", "CSV (w/SPSS card)");
             fileTypesSubsettable[4] = new SelectItem("ddi", "TAB (w/DDI)");
             fileTypesSubsettable[5] = new SelectItem("porextra", "SPSS/POR,(w/labels)");
+            fileTypesSubsettable[6] = new SelectItem("rdata", "RData");
             /* 
              * Commenting out RData, for the 3.4 release: 
              *

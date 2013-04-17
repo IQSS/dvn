@@ -374,19 +374,26 @@ public class StudyListingPage extends VDCBaseBean implements java.io.Serializabl
         if (sortBy == null || sortBy.equals("")) {
             return;
         }
-
-        for(String key : studyListing.getSortMap().keySet()) {
-            if (key.equals(sortBy)){
-               studyListing.setStudyIds(studyListing.getSortMap().get(key)); 
-               resetScroller();
-               return;
-            }
-        }
+        
+        /*
+         * We're storing sorted lists in a map to eliminate multiple calls
+         * and have a way to save the relevence sort from the search
+         */
         if (studyListing.getStudyIds() != null && studyListing.getStudyIds().size() > 0) {
-            List sortedStudies = studyService.getOrderedStudies(studyListing.getStudyIds(), sortBy);
-            studyListing.setStudyIds(sortedStudies);
-            studyListing.getSortMap().put(sortBy, sortedStudies);
-            resetScroller();
+            if (studyListing.getSortMap().get(sortBy) != null) {
+                studyListing.setStudyIds(studyListing.getSortMap().get(sortBy));
+                resetScroller();
+            } else {
+                //Add the relevance sort to map if available
+                if (studyListing.getMode() == StudyListing.SEARCH && studyListing.getSortMap().isEmpty()) {
+                    studyListing.getSortMap().put("relevance", studyListing.getStudyIds());
+                }
+                //Do the actual sort, if necessary
+                List sortedStudies = studyService.getOrderedStudies(studyListing.getStudyIds(), sortBy);
+                studyListing.setStudyIds(sortedStudies);
+                studyListing.getSortMap().put(sortBy, sortedStudies);
+                resetScroller();
+            }
         }
     }
 

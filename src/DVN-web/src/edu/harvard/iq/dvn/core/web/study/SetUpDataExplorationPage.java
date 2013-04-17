@@ -198,7 +198,7 @@ public class SetUpDataExplorationPage extends VDCBaseBean implements java.io.Ser
 
 
 
-    public void resetStudyFileId(){
+    public void updateStudyFileId(){
 
         Object value= this.selectStudyFile.getValue();
         studyFileName = this.selectStudyFile.getLabel();
@@ -2388,7 +2388,7 @@ public class SetUpDataExplorationPage extends VDCBaseBean implements java.io.Ser
         List selectItems = new ArrayList<SelectItem>();
         selectItems.add(new SelectItem(0, "Select a File"));
         for (FileMetadata fileMetaData: studyVersion.getFileMetadatas()){
-            if (fileMetaData.getStudyFile().isSubsettable()){
+            if (fileMetaData.getStudyFile().isSubsettable()  && !(fileMetaData.getStudyFile().getDataTables().size() > 1)){
                     selectItems.add(new SelectItem(fileMetaData.getStudyFile().getId(), fileMetaData.getStudyFile().getFileName()));
             }
         }
@@ -2398,9 +2398,9 @@ public class SetUpDataExplorationPage extends VDCBaseBean implements java.io.Ser
     public List<SelectItem> loadStudyFileMigrationSelectItems(){
         List selectItems = new ArrayList<SelectItem>();
         selectItems.add(new SelectItem(0, "Select a File"));
-        for (FileMetadata fileMetaData: studyVersion.getFileMetadatas()){
-            if (fileMetaData.getStudyFile().isSubsettable() && !fileMetaData.getStudyFile().getDataTables().get(0).getVarGroupings().isEmpty() ){
-                    selectItems.add(new SelectItem(fileMetaData.getStudyFile().getId(), fileMetaData.getStudyFile().getFileName()));
+        for (FileMetadata fileMetaData: studyVersion.getFileMetadatas()){           
+            if (fileMetaData.getStudyFile().isSubsettable() && !fileMetaData.getStudyFile().getDataTables().get(0).getVarGroupings().isEmpty() ){  
+                selectItems.add(new SelectItem(fileMetaData.getStudyFile().getId(), fileMetaData.getStudyFile().getFileName()));
             }
         }
         return selectItems;

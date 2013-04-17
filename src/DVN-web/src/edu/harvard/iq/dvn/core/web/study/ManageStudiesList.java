@@ -27,19 +27,20 @@ import com.icesoft.faces.component.datapaginator.DataPaginator;
 import com.icesoft.faces.component.ext.HtmlDataTable;
 import com.icesoft.faces.component.ext.HtmlSelectBooleanCheckbox;
 import com.icesoft.faces.component.ext.HtmlSelectOneMenu;
-import com.icesoft.faces.context.effects.JavascriptContext;
+import edu.harvard.iq.dvn.core.admin.RoleServiceLocal;
+import edu.harvard.iq.dvn.core.admin.UserServiceLocal;
+import edu.harvard.iq.dvn.core.admin.VDCRole;
 import edu.harvard.iq.dvn.core.admin.VDCUser;
 import edu.harvard.iq.dvn.core.study.StudyServiceLocal;
 import edu.harvard.iq.dvn.core.study.StudyVersion;
 import edu.harvard.iq.dvn.core.vdc.VDC;
-import edu.harvard.iq.dvn.core.web.common.LoginBean;
+import edu.harvard.iq.dvn.core.vdc.VDCServiceLocal;
 import edu.harvard.iq.dvn.core.web.common.VDCBaseBean;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
 import javax.ejb.EJB;
 import javax.faces.bean.ViewScoped;
-import javax.faces.context.FacesContext;
 import javax.faces.event.ActionEvent;
 import javax.faces.event.ValueChangeEvent;
 import javax.faces.model.SelectItem;
@@ -56,6 +57,9 @@ import javax.inject.Named;
 @Named("ManageStudiesList")
 public class ManageStudiesList extends VDCBaseBean {
     private @EJB StudyServiceLocal studyService;
+    @EJB VDCServiceLocal        vdcService;
+    @EJB RoleServiceLocal       roleService;
+    @EJB UserServiceLocal       userService;
     private List<StudyUI> studyUIList;
     
     // dataTable Columns to sort by:
@@ -213,7 +217,47 @@ public class ManageStudiesList extends VDCBaseBean {
         this.currentStudyUI = csui;
     }
 
+    public Long getUserVDCCount(){
+        VDCUser user = getVDCSessionBean().getUser();
+        int count = 0;
+        if (user!=null) {
+            user = userService.find(user.getId());
+            List<VDC> vdcs= vdcService.getUserVDCs(user.getId());
+            for (VDC dv: vdcs){
+            VDCRole vdcRole = roleService.findByUserVDC(user.getId(), dv.getId());
+            if ( !vdcRole.getRole().getName().equals(RoleServiceLocal.PRIVILEGED_VIEWER) ) {
+                count++;
+            }                
+                if (count > 1) return new Long (count);
+            }
+            return new Long (count);
+        }
+        return new Long(0);
+    }
+    
+    public String getSoleVDCAlias(){
+        VDCUser user = getVDCSessionBean().getUser();
+        String retAlias = "";
+        int count = 0;
+        if (user!=null) {
+            user = userService.find(user.getId());
+            List<VDC> vdcs= vdcService.getUserVDCs(user.getId());
+            for (VDC dv: vdcs){
+            VDCRole vdcRole = roleService.findByUserVDC(user.getId(), dv.getId());
+            if ( !vdcRole.getRole().getName().equals(RoleServiceLocal.PRIVILEGED_VIEWER) ) {
+                count++;
+                retAlias = dv.getAlias();
+            }                
+                if (count > 1) return "";
+            }
 
+            if (count == 1){
+               return retAlias;
+            }
+            return "";
+        }
+        return "";
+    }
   
     public void doConfirmVersionNotesPopup(ActionEvent ae) {
       StudyUI studyUI = studyUIList.get(selectedIndex);

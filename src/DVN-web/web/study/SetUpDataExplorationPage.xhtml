@@ -22,6 +22,7 @@
             <ui:define name="body">
                 <ice:form id="form1">
                     <ice:inputHidden id="vdcId" value="#{VDCRequest.currentVDCId}"/>
+                    <ice:inputHidden id="studyId" value="#{SetUpDataExplorationPage.studyId}"/>
                     <script type="text/javascript">
                         // <![CDATA[
                         var timeout= 400; //milliseconds to wait for no activity
@@ -116,7 +117,7 @@
                             <div class="dvnstudyadminboxfloat dvn_right">
                                 <div class="dvnFormMargin">
                                     <!-- hidden button that is clicked by select menu's onchange action -->
-                                    <ice:commandButton id="studyFileIdButton" visible="false" value="Change" action="#{SetUpDataExplorationPage.resetStudyFileId}"/>
+                                    <ice:commandButton id="studyFileIdButton" visible="false" value="Change" action="#{SetUpDataExplorationPage.updateStudyFileId}"/>
                                     <ice:commandButton id="validateButton" type="submit" value="Validate" rendered="#{SetUpDataExplorationPage.showCommands}"
                                                        binding="#{SetUpDataExplorationPage.validateButton}" action="#{SetUpDataExplorationPage.validate}" />
                                     <ice:commandButton id="releaseButton" type="submit" value="Release" rendered="#{!SetUpDataExplorationPage.dataTable.visualizationEnabled and SetUpDataExplorationPage.showCommands}"

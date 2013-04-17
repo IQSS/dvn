@@ -770,7 +770,6 @@ public class StudyServiceBean implements edu.harvard.iq.dvn.core.study.StudyServ
 
 
         Query query = em.createNativeQuery(queryStr);
-                    System.out.print("sort " + queryStr);
         List<Long> returnList = new ArrayList<Long>();
         if (numResults == -1) {
             for (Object currentResult : query.getResultList()) {

@@ -129,5 +129,7 @@ public interface VDCServiceLocal extends java.io.Serializable  {
 
     
     public void setTwitterCredentials(String accessToken, String accessTokenSecret, Long vdcId);
-    public void removeTwitterCredentials(Long vdcId);     
+    public void removeTwitterCredentials(Long vdcId);
+
+    public Long getUserContributorOrBetterVDCCount(java.lang.Long userId);
 }

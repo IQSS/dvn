@@ -260,25 +260,28 @@
                                     jQuery(document).ready(function(){
                                         jQuery(".vdcStudyDesc").truncate({max_length: 198});
                                         initFileCatToggle();
-                                        initFileCatHeight();
                                     });
                                     
-                                    function initFileCatHeight(){
-                                        setTimeout(function(){
-                                            jQuery('.TogglePaneContent').each(function(){
-                                                var pane = jQuery(this);
-                                                var paneHeight = jQuery(pane).height();
-                                                jQuery(pane).css('height', paneHeight + 'px');
-                                            })
-                                        },300);
-                                    }
+                                    
                                     
                                     function initFileCatToggle(){
-                                        jQuery(".TogglePaneFancyHeader input.catCheckBox").bind("click", function(e){
+                                        jQuery('.TogglePaneFancyHeader input.catCheckBox').bind('click', function(e){
                                             e.stopPropagation();
                                         })
-                                        jQuery(".TogglePaneFancyHeader").bind("click", function(){
-                                            jQuery(this).toggleClass("TogglePaneFancyHeaderClosed").next(".TogglePaneContent").slideToggle();
+                                        jQuery('.TogglePaneFancyHeader').bind('click', function(){
+                                            var toggleHeader = jQuery(this);
+                                            var toggleContent = toggleHeader.next('.TogglePaneContent');
+                                            var paneHeight = toggleHeader.next('.TogglePaneContent').height();
+                                            if (toggleHeader.hasClass('TogglePaneFancyHeaderClosed')) {
+                                                toggleHeader.toggleClass('TogglePaneFancyHeaderClosed');
+                                                toggleContent.slideToggle('400', function(){
+                                                  toggleContent.css('height', '');
+                                                });
+                                            }
+                                            else {
+                                                toggleHeader.toggleClass('TogglePaneFancyHeaderClosed');
+                                                toggleContent.css('height', paneHeight + 'px').slideToggle('400');
+                                            }
                                         })
                                     }
                                     // ]]>

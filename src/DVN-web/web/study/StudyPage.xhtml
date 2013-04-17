@@ -177,8 +177,11 @@
                     // this method will either download a single zip or create links for multiple zip files in the popup
                     // if multiple links are created, it returns true, to signify to calling methods that the popup needs to be displayed
                     function doDownload() {                  
-                        var fileNumber = 5;
-                        var zipFileSize = 1048576;
+                        var fileNumber = 100; // set file number to 100 files
+                        var zipFileSize = 524288000; // set zip file size to 500MB
+                        //var fileNumber = 5; 
+                        //var zipFileSize = 1048576;
+
                         var fileSize =0;
                         var j = 0;
                         var numb = 0;
@@ -202,7 +205,7 @@
                                     fileSize+= parseInt(fileCBs[i].previousSibling.previousSibling.value);
                                     if (fileSize >= zipFileSize) {
                                         bSingleZipfile = false;
-                                        numb++;
+                                        if (fileIdStr != "") numb++;
                                         popBodyContent+= attachToPopBodyContent(fileIdStr, numb);
                                         j = 1;
                                         fileSize = parseInt(fileCBs[i].previousSibling.previousSibling.value);
@@ -377,7 +380,7 @@
                                         </ice:outputLink>
                                     </li>
                                 </span>
-                                <span jsfc="ice:panelGroup" rendered="#{(studyPage.studyUI.userCuratorOrAdmin or VDCSession.loginBean.networkAdmin) and studyPage.studyUI.subsettable}">
+                                <span jsfc="ice:panelGroup" rendered="#{(studyPage.studyUI.userCuratorOrAdmin or VDCSession.loginBean.networkAdmin) and studyPage.studyUI.visualization}">
                                     <li>
                                         <ice:outputLink styleClass="dvnInlineHelpLabel dvnInlineHelpTip" title="#{studybundle.editSetUpVizText} - #{studybundle.editSetUpVizTip}" value="/dvn#{VDCRequest.currentVDCURL}/faces/study/SetUpDataExplorationPage.xhtml?studyId=#{studyPage.studyUI.study.id}">
                                             <ice:outputText nospan="true" value="#{studybundle.editSetUpVizText}"/>

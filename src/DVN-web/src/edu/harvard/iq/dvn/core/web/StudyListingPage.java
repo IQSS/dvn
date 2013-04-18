@@ -1293,9 +1293,6 @@ public class StudyListingPage extends VDCBaseBean implements java.io.Serializabl
         }
 
         if (studyListing.getResultsWithFacets() != null && studyListing.getResultsWithFacets().isClearPreviousFacetRequests() == false) {
-            /**
-             * @todo: make sure old facetsQueried doesn't appear ("click to remove")
-             */
             for (int i = 0; i < studyListing.getResultsWithFacets().getFacetsQueried().size(); i++) {
                 CategoryPath queriedFacet = studyListing.getResultsWithFacets().getFacetsQueried().get(i);
                 logger.info("in setStudyListingBy Facet, adding facet " + i + ": " + queriedFacet);

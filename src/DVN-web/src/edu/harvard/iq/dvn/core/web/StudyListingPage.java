@@ -99,6 +99,7 @@ public class StudyListingPage extends VDCBaseBean implements java.io.Serializabl
 
     private static final Logger logger = Logger.getLogger(StudyListingPage.class.getCanonicalName());
     private List<CategoryPath> facetsOfInterest = new ArrayList<CategoryPath>();
+    /** @todo: should this exist here? it's already a data member of studyListing */
     private static ResultsWithFacets resultsWithFacets;
 
     public List<CategoryPath> getFacetsOfInterest() {
@@ -135,6 +136,7 @@ public class StudyListingPage extends VDCBaseBean implements java.io.Serializabl
     private boolean renderDownloadCount;
     private List sortOrderItems;
     private String sortOrderString;
+    private boolean recentVisitToDvPage = false;
 
     public void setRenderFacets(boolean renderFacets) {
         this.renderFacets = renderFacets;
@@ -1271,15 +1273,32 @@ public class StudyListingPage extends VDCBaseBean implements java.io.Serializabl
     public void setStudyListingByFacets(String facetKey, String facetValue) {
         logger.info("called setStudyListingByFacets()");
 
+        boolean skipAdd = false;
+        if (getVDCRequestBean().getCurrentVDC() != null) {
+            recentVisitToDvPage = true;
+            skipAdd = facetKey.equals("dvName") ? true : false;
+            logger.info("skipAdd = " + skipAdd);
+        } else {
+            if (recentVisitToDvPage == true) {
+                // clear all facets??
+                logger.info("Clearing facets");
+                facetsOfInterest = null;
+                // reset flag for next time
+                recentVisitToDvPage = false;
+            }
+        }
         CategoryPath facetToAdd = new CategoryPath(facetKey, facetValue);
-        if (!facetsOfInterest.contains(facetToAdd)) {
+        if (!facetsOfInterest.contains(facetToAdd) && skipAdd != true) {
             facetsOfInterest.add(facetToAdd);
         }
 
-        if (resultsWithFacets != null) {
+        if (resultsWithFacets != null && resultsWithFacets.isClearPreviousFacetRequests() == false) {
+            /**
+             * @todo: make sure old facetsQueried doesn't appear ("click to remove")
+             */
             for (int i = 0; i < resultsWithFacets.getFacetsQueried().size(); i++) {
                 CategoryPath queriedFacet = resultsWithFacets.getFacetsQueried().get(i);
-                logger.info("facet " + i + ": " + queriedFacet);
+                logger.info("in setStudyListingBy Facet, adding facet " + i + ": " + queriedFacet);
                 if (!facetsOfInterest.contains(queriedFacet)) {
                     facetsOfInterest.add(queriedFacet);
                 }
@@ -1302,7 +1321,18 @@ public class StudyListingPage extends VDCBaseBean implements java.io.Serializabl
             query = booleanQuery;
         }
 
-        ResultsWithFacets resultsWithFacets = indexService.getResultsWithFacets(query, facetsOfInterest);
+        DvnQuery dvnQuery = new DvnQuery();
+        logger.info("current vcd: " + getVDCRequestBean().getCurrentVDC());
+        dvnQuery.setVdc(getVDCRequestBean().getCurrentVDC());
+        /**
+         * @todo: pass in search terms instead?
+         */
+        dvnQuery.setQuery(query);
+        logger.info("in setStudyListingByFacets, going to query these facets: " + facetsOfInterest.toString());
+        dvnQuery.setFacetsToQuery(facetsOfInterest);
+//        ResultsWithFacets resultsWithFacets = indexService.getResultsWithFacets(query, facetsOfInterest);
+        resultsWithFacets = indexService.searchNew(dvnQuery);
+
         studyListing.setStudyIds(resultsWithFacets.getMatchIds());
         studyListing.setResultsWithFacets(resultsWithFacets);
     }
@@ -1334,9 +1364,23 @@ public class StudyListingPage extends VDCBaseBean implements java.io.Serializabl
             query = booleanQuery;
         }
 
-        ResultsWithFacets resultsWithFacets = indexService.getResultsWithFacets(query, facetsOfInterest);
+//        ResultsWithFacets resultsWithFacets = indexService.getResultsWithFacets(query, facetsOfInterest);
+        DvnQuery dvnQuery = new DvnQuery();
+        dvnQuery.setQuery(query);
+        dvnQuery.setVdc(getVDCRequestBean().getCurrentVDC());
+        // should I have to set this every time? make it static, part of dvnQuery?
+        dvnQuery.setFacetsToQuery(facetsOfInterest);
+        resultsWithFacets = indexService.searchNew(dvnQuery);
         studyListing.setStudyIds(resultsWithFacets.getMatchIds());
         studyListing.setResultsWithFacets(resultsWithFacets);
     }
 
+    public List<CategoryPath> getFacetsQueried() {
+        logger.info("called getFacetsQueried...");
+        logger.info("facetsOfInterest = " + facetsOfInterest);
+        if (studyListing.getResultsWithFacets() != null) {
+            logger.info("facetsQueried = " + studyListing.getResultsWithFacets().getFacetsQueried());
+        }
+        return studyListing.getResultsWithFacets() != null ? studyListing.getResultsWithFacets().getFacetsQueried() : null;
+    }
 }

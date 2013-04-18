@@ -20,6 +20,7 @@
 package edu.harvard.iq.dvn.core.web;
 
 import edu.harvard.iq.dvn.core.admin.KeywordSearchServiceBean;
+import edu.harvard.iq.dvn.core.index.DvnQuery;
 import edu.harvard.iq.dvn.core.index.IndexServiceLocal;
 import edu.harvard.iq.dvn.core.index.ResultsWithFacets;
 import edu.harvard.iq.dvn.core.index.SearchTerm;
@@ -195,9 +196,13 @@ public class BasicSearchFragment extends VDCBaseBean implements java.io.Serializ
             varService.determineStudiesFromVariables(variables, studies, variableMap);
 
         } else {
-            resultsWithFacets = indexService.searchwithFacets(getVDCRequestBean().getCurrentVDC(), searchTerms);
+//            resultsWithFacets = indexService.searchwithFacets(getVDCRequestBean().getCurrentVDC(), searchTerms);
+            DvnQuery dvnQuery = new DvnQuery();
+            dvnQuery.setSearchTerms(searchTerms);
+            dvnQuery.constructQuery();
+            dvnQuery.setClearPreviousFacetRequests(true);
+            resultsWithFacets = indexService.searchNew(dvnQuery);
             studies = resultsWithFacets.getMatchIds();
-            List<FacetResult> facetResults = resultsWithFacets.getResultList();
         }
 
         if (searchField.equals("any")) {
@@ -232,6 +237,7 @@ public class BasicSearchFragment extends VDCBaseBean implements java.io.Serializ
         sl.setVdcId(getVDCRequestBean().getCurrentVDCId());
         sl.setStudyIds(studies);
         sl.setSearchTerms(searchTerms);
+        logger.info("in BasicSearchFrag. queriedFacets is: " + resultsWithFacets.getFacetsQueried());
         sl.setResultsWithFacets(resultsWithFacets);
         sl.setVariableMap(variableMap);
         sl.setVersionMap(versionMap);

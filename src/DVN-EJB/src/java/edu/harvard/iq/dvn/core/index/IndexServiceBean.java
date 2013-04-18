@@ -444,17 +444,14 @@ public class IndexServiceBean implements edu.harvard.iq.dvn.core.index.IndexServ
         return resultsWithFacets;
     }
 
-//    public ResultsWithFacets searchwithFacets(VDC vdc, List<SearchTerm> searchTerms) {
     public ResultsWithFacets searchNew(DvnQuery dvnQuery) {
         logger.info("in searchNew in IndexServiceBean");
         VDC vdc = dvnQuery.getVdc();
         List<SearchTerm> searchTerms = dvnQuery.getSearchTerms();
         List studyIds = vdc != null ? listVdcStudyIds(vdc) : null;
-        logger.info("called searchWithFacets in IndexServiceBean");
         ResultsWithFacets resultsWithFacets = null;
         Indexer indexer = Indexer.getInstance();
         try {
-            resultsWithFacets = indexer.searchWithFacets(studyIds, searchTerms);
             resultsWithFacets = indexer.searchNew(dvnQuery);
         } catch (IOException ex) {
             ex.printStackTrace();

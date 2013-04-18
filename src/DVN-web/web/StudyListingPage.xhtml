@@ -105,7 +105,8 @@
                          <div jsfc="ice:panelGroup" styleClass="dvnStudyListCollectionName">
                              <ice:outputText value="#{StudyListingPage.listHeader}"/>
                              <ice:outputText styleClass="dvnStudyListSearchResultsMessage" value=" #{StudyListingPage.listMessage}" rendered="#{StudyListingPage.studyCount != 0}"/>
-                             <ui:repeat value="#{StudyListingPage.facetsOfInterest}" var="facetToRemove">
+                             <!--<ui:repeat value="#{StudyListingPage.facetsOfInterest}" var="facetToRemove">-->
+                             <ui:repeat value="#{StudyListingPage.facetsQueried}" var="facetToRemove">
                                  <ice:commandLink action="#{StudyListingPage.removeFacet(facetToRemove)}" title="Remove">
                                      <ice:outputText styleClass="dvnStudyListSearchResultsMessage" value=" #{facetToRemove} (click to remove)" rendered="#{StudyListingPage.studyCount != 0}"/>
                                  </ice:commandLink>

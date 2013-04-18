@@ -33,6 +33,8 @@ public class ResultsWithFacets {
     private ArrayList matchIds;
     List<FacetResult> facetResultList;
     private List<CategoryPath> facetsQueried = new ArrayList<CategoryPath>();
+    /** @todo: should this be static? */
+    private static boolean clearPreviousFacetRequests = false;
 
     public void setResultList(List<FacetResult> resultList) {
         this.facetResultList = resultList;
@@ -56,6 +58,14 @@ public class ResultsWithFacets {
 
     public void setFacetsQueried(List<CategoryPath> facetsQueried) {
         this.facetsQueried = facetsQueried;
+    }
+
+    public boolean isClearPreviousFacetRequests() {
+        return clearPreviousFacetRequests;
+    }
+
+    public void setClearPreviousFacetRequests(boolean clearPreviousFacetRequests) {
+        this.clearPreviousFacetRequests = clearPreviousFacetRequests;
     }
 
 }

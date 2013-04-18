@@ -27,6 +27,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.logging.Logger;
 import javax.ejb.EJB;
+import org.apache.lucene.facet.taxonomy.CategoryPath;
 import org.apache.lucene.search.BooleanQuery;
 import org.apache.lucene.search.Query;
 
@@ -39,6 +40,9 @@ public class DvnQuery {
     List<SearchTerm> searchTerms;
     VDC vdc;
     Query query = null;
+    List<CategoryPath> facetsToQuery = new ArrayList<CategoryPath>();
+    private boolean clearPreviousFacetRequests = false;
+//    private static boolean clearPreviousFacetRequests = false;
 
     public Query getQuery() {
         return query;
@@ -62,6 +66,22 @@ public class DvnQuery {
 
     public void setSearchTerms(List<SearchTerm> searchTerms) {
         this.searchTerms = searchTerms;
+    }
+
+    public List<CategoryPath> getFacetsToQuery() {
+        return facetsToQuery;
+    }
+
+    public void setFacetsToQuery(List<CategoryPath> facetsToQuery) {
+        this.facetsToQuery = facetsToQuery;
+    }
+
+    public boolean isClearPreviousFacetRequests() {
+        return clearPreviousFacetRequests;
+    }
+
+    public void setClearPreviousFacetRequests(boolean clearPreviousFacetRequests) {
+        this.clearPreviousFacetRequests = clearPreviousFacetRequests;
     }
 
     public void constructQuery() {
@@ -124,8 +144,8 @@ public class DvnQuery {
         searchQuery = indexer.andQueryClause(searchParts);
 
 
+//        logger.info("DvnQuery dump of query: " + query);
         query = searchQuery;
-        logger.info("query: " + query);
     }
 
 }

@@ -1418,7 +1418,7 @@ public class Indexer implements java.io.Serializable  {
 
         FacetsCollector facetsCollector = new FacetsCollector(facetSearchParams, r, taxo);
 
-        logger.info("\n--BEGIN query dump--\n" + q2 + "\n--END query dump--");
+        logger.info("\n--BEGIN query dump (from getResultsWithFacets)--\n" + q2 + "\n--END query dump (from getResultsWithFacets)--");
         searcher.search(q2, MultiCollector.wrap(s, facetsCollector));
         List<FacetResult> facetResults = facetsCollector.getFacetResults();
         ResultsWithFacets resultsWithFacets = new ResultsWithFacets();
@@ -1447,13 +1447,32 @@ public class Indexer implements java.io.Serializable  {
 
 //    ResultsWithFacets getResultsWithFacets(Query baseQuery, List<CategoryPath> facetsOfInterest) throws IOException {
     ResultsWithFacets searchNew(DvnQuery dvnQuery) throws IOException {
-        logger.info("called getResultsWithFacets() in Indexer.java");
-        String dvName = dvnQuery.vdc.getName();
+        logger.info("called searchNew() in Indexer.java");
+
         List<CategoryPath> facetsOfInterest = new ArrayList<CategoryPath>();
-        // FIXME: put this in an if block... if dvName exists
-        if (dvName != null) {
-            CategoryPath facetToAdd = new CategoryPath("dvName", dvName);
-            facetsOfInterest.add(facetToAdd);
+        logger.info("facetsOfInterest just new'd: " + facetsOfInterest);
+        if (dvnQuery.vdc != null) {
+            CategoryPath facetToAdd = new CategoryPath("dvName", dvnQuery.vdc.getName());
+            if (!facetsOfInterest.contains(facetToAdd)) {
+                facetsOfInterest.add(facetToAdd);
+            }
+        }
+
+        if (dvnQuery.isClearPreviousFacetRequests() == true) {
+            logger.info("in searchNew in Indexer.java. dvnQuery wants to clear previous facet requests");
+        } else {
+            logger.info("in searchNew in Indexer.java. dvnQuery doesn't want to clear previous facet requests");
+        }
+        logger.info("dvnQuery.facetsToQuery = " + dvnQuery.facetsToQuery);
+        if (dvnQuery.facetsToQuery != null) {
+//        if (dvnQuery.facetsToQuery != null && dvnQuery.isClearPreviousFacetRequests() == false) {
+            for (int i = 0; i < dvnQuery.facetsToQuery.size(); i++) {
+                CategoryPath facetToAdd = dvnQuery.facetsToQuery.get(i);
+                if (!facetsOfInterest.contains(facetToAdd)) {
+                    logger.info("in searchNew in Indexer, adding to facetsOfInterest: facet " + facetToAdd);
+                    facetsOfInterest.add(facetToAdd);
+                }
+            }
         }
         Query baseQuery = dvnQuery.getQuery();
         DocumentCollector s = new DocumentCollector(searcher);
@@ -1484,7 +1503,7 @@ public class Indexer implements java.io.Serializable  {
 
         FacetsCollector facetsCollector = new FacetsCollector(facetSearchParams, r, taxo);
 
-        logger.info("\n--BEGIN query dump--\n" + q2 + "\n--END query dump--");
+        logger.info("\n--BEGIN query dump (from searchNew)--\n" + q2 + "\n--END query dump (from searchNew)--");
         searcher.search(q2, MultiCollector.wrap(s, facetsCollector));
         List<FacetResult> facetResults = facetsCollector.getFacetResults();
         ResultsWithFacets resultsWithFacets = new ResultsWithFacets();
@@ -1508,7 +1527,19 @@ public class Indexer implements java.io.Serializable  {
         }
         matchIds.addAll(matchIdsSet);
         resultsWithFacets.setMatchIds(matchIds);
+        // don't let user remove dvName facet if on DV page
+        if (dvnQuery.vdc != null) {
+            CategoryPath facetToRemove = new CategoryPath("dvName", dvnQuery.vdc.getName());
+            for (Iterator<CategoryPath> it = facetsOfInterest.iterator(); it.hasNext();) {
+                CategoryPath facet = it.next();
+                if (facet.equals(facetToRemove)) {
+                    it.remove();
+                }
+            }
+        }
+        logger.info("facetsOfInterest about to setFacetsQueried: " + facetsOfInterest);
         resultsWithFacets.setFacetsQueried(facetsOfInterest);
+        resultsWithFacets.setClearPreviousFacetRequests(dvnQuery.isClearPreviousFacetRequests());
         return resultsWithFacets;
     }
 

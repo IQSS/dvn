@@ -99,8 +99,6 @@ public class StudyListingPage extends VDCBaseBean implements java.io.Serializabl
 
     private static final Logger logger = Logger.getLogger(StudyListingPage.class.getCanonicalName());
     private List<CategoryPath> facetsOfInterest = new ArrayList<CategoryPath>();
-    /** @todo: should this exist here? it's already a data member of studyListing */
-    private static ResultsWithFacets resultsWithFacets;
 
     public List<CategoryPath> getFacetsOfInterest() {
         return facetsOfInterest;
@@ -117,6 +115,7 @@ public class StudyListingPage extends VDCBaseBean implements java.io.Serializabl
     private DataPaginator paginator;
     private DataPaginator paginator2;
     private String searchField;
+    /** @todo: change this back to Search Studies */
 //    private String searchValue = "Search Studies";
     private String searchValue = "data";
     private Map studyFields;
@@ -553,6 +552,7 @@ public class StudyListingPage extends VDCBaseBean implements java.io.Serializabl
         searchTerms.add(st);
         dvnQuery.setSearchTerms(searchTerms);
 
+        ResultsWithFacets resultsWithFacets = new ResultsWithFacets();
         List studyIDList = new ArrayList();
         Map variableMap = new HashMap();
         Map fileMap = new HashMap();
@@ -1292,12 +1292,12 @@ public class StudyListingPage extends VDCBaseBean implements java.io.Serializabl
             facetsOfInterest.add(facetToAdd);
         }
 
-        if (resultsWithFacets != null && resultsWithFacets.isClearPreviousFacetRequests() == false) {
+        if (studyListing.getResultsWithFacets() != null && studyListing.getResultsWithFacets().isClearPreviousFacetRequests() == false) {
             /**
              * @todo: make sure old facetsQueried doesn't appear ("click to remove")
              */
-            for (int i = 0; i < resultsWithFacets.getFacetsQueried().size(); i++) {
-                CategoryPath queriedFacet = resultsWithFacets.getFacetsQueried().get(i);
+            for (int i = 0; i < studyListing.getResultsWithFacets().getFacetsQueried().size(); i++) {
+                CategoryPath queriedFacet = studyListing.getResultsWithFacets().getFacetsQueried().get(i);
                 logger.info("in setStudyListingBy Facet, adding facet " + i + ": " + queriedFacet);
                 if (!facetsOfInterest.contains(queriedFacet)) {
                     facetsOfInterest.add(queriedFacet);
@@ -1331,7 +1331,7 @@ public class StudyListingPage extends VDCBaseBean implements java.io.Serializabl
         logger.info("in setStudyListingByFacets, going to query these facets: " + facetsOfInterest.toString());
         dvnQuery.setFacetsToQuery(facetsOfInterest);
 //        ResultsWithFacets resultsWithFacets = indexService.getResultsWithFacets(query, facetsOfInterest);
-        resultsWithFacets = indexService.searchNew(dvnQuery);
+        ResultsWithFacets resultsWithFacets = indexService.searchNew(dvnQuery);
 
         studyListing.setStudyIds(resultsWithFacets.getMatchIds());
         studyListing.setResultsWithFacets(resultsWithFacets);
@@ -1370,7 +1370,7 @@ public class StudyListingPage extends VDCBaseBean implements java.io.Serializabl
         dvnQuery.setVdc(getVDCRequestBean().getCurrentVDC());
         // should I have to set this every time? make it static, part of dvnQuery?
         dvnQuery.setFacetsToQuery(facetsOfInterest);
-        resultsWithFacets = indexService.searchNew(dvnQuery);
+        ResultsWithFacets resultsWithFacets = indexService.searchNew(dvnQuery);
         studyListing.setStudyIds(resultsWithFacets.getMatchIds());
         studyListing.setResultsWithFacets(resultsWithFacets);
     }

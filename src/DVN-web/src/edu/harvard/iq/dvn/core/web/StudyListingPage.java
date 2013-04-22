@@ -592,7 +592,13 @@ public class StudyListingPage extends VDCBaseBean implements java.io.Serializabl
                 studyIDList = indexService.search(getVDCRequestBean().getCurrentVDC(), collections, searchTerms);
             } else if (searchFilter == 2) {
                 // subsearch
-                studyIDList = indexService.search(studyListing.getStudyIds(), searchTerms);
+                logger.info("in search_actionNew, about to run subsearch");
+//                studyIDList = indexService.search(studyListing.getStudyIds(), searchTerms); // old method
+                dvnQuery.setLimitToStudyIds(studyListing.getStudyIds());
+                dvnQuery.setSearchTerms(searchTerms);
+                dvnQuery.constructQuery();
+                resultsWithFacets = indexService.searchNew(dvnQuery);
+                studyIDList = resultsWithFacets.getMatchIds();
             } else {
 //                studyIDList = indexService.search(getVDCRequestBean().getCurrentVDC(), searchTerms);
 //                resultsWithFacets = indexService.searchwithFacets(getVDCRequestBean().getCurrentVDC(), searchTerms);

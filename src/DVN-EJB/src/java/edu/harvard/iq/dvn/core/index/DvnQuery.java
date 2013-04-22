@@ -43,6 +43,7 @@ public class DvnQuery {
     List<CategoryPath> facetsToQuery = new ArrayList<CategoryPath>();
     private boolean clearPreviousFacetRequests = false;
 //    private static boolean clearPreviousFacetRequests = false;
+    List<Long> limitToStudyIds;
 
     public Query getQuery() {
         return query;
@@ -82,6 +83,14 @@ public class DvnQuery {
 
     public void setClearPreviousFacetRequests(boolean clearPreviousFacetRequests) {
         this.clearPreviousFacetRequests = clearPreviousFacetRequests;
+    }
+
+    public List<Long> getLimitToStudyIds() {
+        return limitToStudyIds;
+    }
+
+    public void setLimitToStudyIds(List<Long> limitToStudyIds) {
+        this.limitToStudyIds = limitToStudyIds;
     }
 
     public void constructQuery() {

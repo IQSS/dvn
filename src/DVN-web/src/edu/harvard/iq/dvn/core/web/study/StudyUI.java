@@ -520,10 +520,22 @@ public class StudyUI  implements java.io.Serializable {
         return !truncatedAbstracts.equals(abstracts);
     }
 
+    private Long numberOfFiles;
+    
+    public Long getNumberOfFiles(){
+        if (numberOfFiles == null){
+            initFileFlags();
+        }
+        return numberOfFiles;
+    }
+    
+    
     private Boolean isFiles;
     private Boolean isSubsettable;
-
+    private Boolean isVisualization;
   
+    
+    
     public boolean isFiles() {
         if (isFiles == null) {
             initFileFlags();
@@ -539,6 +551,18 @@ public class StudyUI  implements java.io.Serializable {
 
         return isSubsettable.booleanValue();
     }
+    
+    public boolean isVisualization() {
+        if (isVisualization == null) {
+            initFileFlags();
+        }
+        if(isSubsettable){
+            isVisualization = studyFileService.doesStudyHaveSingleTabularFiles(studyVersionId);
+        } else {
+            isVisualization = Boolean.FALSE;
+        }
+        return isVisualization.booleanValue();
+    }
 
     public boolean getHasMultipleVersions() {
         return getViewableStudyVersions().size() > 1;
@@ -546,6 +570,7 @@ public class StudyUI  implements java.io.Serializable {
    
     private void initFileFlags() {
         initStudyFileService();
+        numberOfFiles = studyFileService.getCountFilesByStudyVersion(getStudyVersion().getId());
         Boolean doesStudyHaveSubsettableFiles = studyFileService.doesStudyHaveSubsettableFiles(getStudyVersion().getId());
         isFiles = (doesStudyHaveSubsettableFiles != null);
         isSubsettable = (doesStudyHaveSubsettableFiles != null && doesStudyHaveSubsettableFiles);

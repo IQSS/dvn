@@ -50,11 +50,16 @@ public interface StudyFileServiceLocal {
 
     public Boolean doesStudyHaveSubsettableFiles(Long studyVersionId);
     public Boolean doesStudyHaveTabularFiles(Long studyVersionId);
-
+    public Boolean doesStudyHaveSingleTabularFiles(Long studyVersionId);
 
 
     public void addFiles(StudyVersion studyVersion, List<StudyFileEditBean> newFiles, VDCUser user);
     public void addFiles(StudyVersion studyVersion, List<StudyFileEditBean> newFiles, VDCUser user, String ingestEmail);
     public void addIngestedFiles(Long studyId, String versionNote, List fileBeans, Long userId);
+
+    @javax.ejb.TransactionAttribute(value = javax.ejb.TransactionAttributeType.NOT_SUPPORTED)
+    public java.lang.Long getCountFilesByStudyVersion(java.lang.Long svId);
+
+
     
 }

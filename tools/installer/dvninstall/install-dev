@@ -850,6 +850,10 @@ my $glassfish_password = $CONFIG_DEFAULTS{'GLASSFISH_ADMIN_PASSWORD'};
 
 # Copy the .war file: 
 
+unless ( -d "appdeploy/dist" )
+{
+    system ("mkdir appdeploy/dist"); 
+}
 system ("cp -f ../../../src/DVN-web/dist/DVN-web.war appdeploy/dist"); 
 
 # TODO: 

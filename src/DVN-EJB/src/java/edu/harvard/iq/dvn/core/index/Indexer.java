@@ -805,186 +805,186 @@ public class Indexer implements java.io.Serializable  {
 
     }
 
-    public ResultsWithFacets searchWithFacets(List<Long> studyIds, List<SearchTerm> searchTerms) throws IOException {
-        logger.info("called searchWithFacets in Indexer.java");
-        logger.fine("Start search: " + DateTools.dateToString(new Date(), Resolution.MILLISECOND));
-        Long[] studyIdsArray = null;
-        if (studyIds != null) {
-            studyIdsArray = studyIds.toArray(new Long[studyIds.size()]);
-            Arrays.sort(studyIdsArray);
-        }
-        List<Long> results = null;
-        List<BooleanQuery> searchParts = new ArrayList();
-
-        // "study-level search" is our "normal", default search, that is 
-        // performed on the study metadata keywords.
-        boolean studyLevelSearch = false;
-        boolean containsStudyLevelAndTerms = false;
-
-        // We also support searches on variables and file-level metadata:
-        // We do have to handle these 2 separately, because of the 2 different
-        // levels of granularity: one searches on variables, the other on files.
-        boolean variableSearch = false;
-        boolean fileMetadataSearch = false;
-
-        // And the boolean below indicates any file-level searche - i.e., 
-        // either a variable, or file metadata search.  
-        // -- L.A. 
-        boolean fileLevelSearch = false;
-
-
-        List<SearchTerm> studyLevelSearchTerms = new ArrayList();
-        List<SearchTerm> variableSearchTerms = new ArrayList();
-        List<SearchTerm> fileMetadataSearchTerms = new ArrayList();
-
-        for (Iterator it = searchTerms.iterator(); it.hasNext();) {
-            SearchTerm elem = (SearchTerm) it.next();
-            if (elem.getFieldName().equals("variable")) {
-//                SearchTerm st = dvnTokenizeSearchTerm(elem);
-//                variableSearchTerms.add(st);
-                variableSearchTerms.add(elem);
-                variableSearch = true;
-
-            } else if (isFileMetadataField(elem.getFieldName())) {
-                fileMetadataSearch = true;
-                fileMetadataSearchTerms.add(elem);
-
-            } else {
-//                SearchTerm nvst = dvnTokenizeSearchTerm(elem);
-//                nonVariableSearchTerms.add(nvst);
-                if (elem.getOperator().equals("=")) {
-                    containsStudyLevelAndTerms = true;
-                }
-                studyLevelSearchTerms.add(elem);
-                studyLevelSearch = true;
-
-            }
-        }
-
-        // For now we are not supporting searches on variables and file-level
-        // metadata *at the same time*. 
-        // -- L.A. 
-
-        if (variableSearch && fileMetadataSearch) {
-            throw new IOException("Unsupported search term combination! "
-                    + "Searches on both variables and file-level metadata "
-                    + "at the same time are not supported.");
-        }
-
-        if (variableSearch || fileMetadataSearch) {
-            fileLevelSearch = true;
-        }
-
-        List<Long> nvResults = null;
-        List<Long> filteredResults = null;
-        ResultsWithFacets resultsWithFacets = null;
-        resultsWithFacets = new ResultsWithFacets();
-
-        // If there are "AND"-type Study-level search terms in the search, 
-        // let's run it now:
-
-        if (containsStudyLevelAndTerms) {
-            BooleanQuery searchTermsQuery = andSearchTermClause(studyLevelSearchTerms);
-            searchParts.add(searchTermsQuery);
-            BooleanQuery searchQuery = andQueryClause(searchParts);
-            logger.fine("Start hits: " + DateTools.dateToString(new Date(), Resolution.MILLISECOND));
-            logger.info("INDEXER: search query (native): " + searchQuery.toString());
-            if (studyIds != null) {
-                nvResults = getHitIds(searchQuery);
-                logger.fine("Done hits: " + DateTools.dateToString(new Date(), Resolution.MILLISECOND));
-                logger.fine("Start filter: " + DateTools.dateToString(new Date(), Resolution.MILLISECOND));
-                filteredResults = intersectionResults(nvResults, studyIdsArray);
-            } else {
-                resultsWithFacets = getResultsWithFacets(searchQuery, null);
-                nvResults = resultsWithFacets.getMatchIds();
-                logger.fine("Done hits: " + DateTools.dateToString(new Date(), Resolution.MILLISECOND));
-                logger.fine("Start filter: " + DateTools.dateToString(new Date(), Resolution.MILLISECOND));
-                filteredResults = nvResults;
-            }
-            logger.fine("Done filter: " + DateTools.dateToString(new Date(), Resolution.MILLISECOND));
-        }
-
-        // If there is a file-level portion of the search, we'll run it now, 
-        // combining the results with (or, rather filtering them against) the
-        // hit list produced by the study-level search above, or supplied to this
-        // method as an argument (if any). 
-        // IMPORTANT: 
-        // do note that this logic assumes that the file-level search can be 
-        // EITHER on variables, or on file-level metadata; but never on both. 
-        // -- L.A. 
-
-        if (fileLevelSearch) {
-            if (containsStudyLevelAndTerms && (filteredResults.size() > 0)) {
-                if (variableSearch) {
-                    logger.fine("Start nonvar search variables: " + DateTools.dateToString(new Date(), Resolution.MILLISECOND));
-                    results = searchVariables(filteredResults, variableSearchTerms, true); // get var ids
-                    logger.fine("Done nonvar search variables: " + DateTools.dateToString(new Date(), Resolution.MILLISECOND));
-                } else if (fileMetadataSearch) {
-                    logger.fine("Start file-level metadata search; searching for file ids." + DateTools.dateToString(new Date(), Resolution.MILLISECOND));
-                    results = searchFileMetadata(filteredResults, fileMetadataSearchTerms, true); // get var ids
-                    logger.fine("Done searching for file ids, on file-level metadata: " + DateTools.dateToString(new Date(), Resolution.MILLISECOND));
-                }
-            } else {
-                logger.fine("Start file-level metadata search: " + DateTools.dateToString(new Date(), Resolution.MILLISECOND));
-
-                if (studyLevelSearch && !containsStudyLevelAndTerms) {
-                    if (variableSearch) {
-                        results = searchVariables(studyIds, variableSearchTerms, false);
-                    } else if (fileMetadataSearch) {
-                        results = searchFileMetadata(studyIds, fileMetadataSearchTerms, false);
-                    }
-                    if (results != null) {
-                        studyIdsArray = results.toArray(new Long[results.size()]);
-                        Arrays.sort(studyIdsArray);
-                    }
-                    BooleanQuery searchQuery = new BooleanQuery();
-                    List<TermQuery> termQueries = orLongEqSearchTermQueries(results, "id");
-                    for (Iterator clausesIter = termQueries.iterator(); clausesIter.hasNext();) {
-                        TermQuery termQuery = (TermQuery) clausesIter.next();
-                        searchQuery.add(termQuery, BooleanClause.Occur.SHOULD);
-                    }
-
-                    for (Iterator it = searchTerms.iterator(); it.hasNext();) {
-                        SearchTerm elem = (SearchTerm) it.next();
-                        if (!elem.getFieldName().equalsIgnoreCase("variable")
-                                && !isFileMetadataField(elem.getFieldName())) {
-
-                            Term term = new Term(elem.getFieldName(), elem.getValue());
-                            TermQuery termQuery = new TermQuery(term);
-                            if (elem.getOperator().equals("=")) {
-                                searchQuery.add(termQuery, BooleanClause.Occur.MUST);
-                            } else {
-                                searchQuery.add(termQuery, BooleanClause.Occur.MUST_NOT);
-                            }
-                        }
-                    }
-                    List<Long> studyIdResults = getHitIds(searchQuery);
-
-                    if (variableSearch) {
-                        results = searchVariables(studyIdResults, variableSearchTerms, true); // get var ids
-                    } else if (fileMetadataSearch) {
-                        results = searchFileMetadata(studyIdResults, fileMetadataSearchTerms, true); // get file ids
-                    }
-                } else {
-                    if (variableSearch) {
-                        results = searchVariables(studyIds, variableSearchTerms, true); // get var ids
-                    } else if (fileMetadataSearch) {
-                        results = searchFileMetadata(studyIds, fileMetadataSearchTerms, true); // get file ids
-                    }
-                }
-                logger.fine("Done searching on file-level metadata: " + DateTools.dateToString(new Date(), Resolution.MILLISECOND));
-            }
-        } else {
-            results = filteredResults;
-        }
-        logger.fine("Done search: " + DateTools.dateToString(new Date(), Resolution.MILLISECOND));
-
-//        return results;
-        resultsWithFacets.setMatchIds(results);
-        return resultsWithFacets;
-
-    }
-
+//    public ResultsWithFacets searchWithFacets(List<Long> studyIds, List<SearchTerm> searchTerms) throws IOException {
+//        logger.info("called searchWithFacets in Indexer.java");
+//        logger.fine("Start search: " + DateTools.dateToString(new Date(), Resolution.MILLISECOND));
+//        Long[] studyIdsArray = null;
+//        if (studyIds != null) {
+//            studyIdsArray = studyIds.toArray(new Long[studyIds.size()]);
+//            Arrays.sort(studyIdsArray);
+//        }
+//        List<Long> results = null;
+//        List<BooleanQuery> searchParts = new ArrayList();
+//
+//        // "study-level search" is our "normal", default search, that is 
+//        // performed on the study metadata keywords.
+//        boolean studyLevelSearch = false;
+//        boolean containsStudyLevelAndTerms = false;
+//
+//        // We also support searches on variables and file-level metadata:
+//        // We do have to handle these 2 separately, because of the 2 different
+//        // levels of granularity: one searches on variables, the other on files.
+//        boolean variableSearch = false;
+//        boolean fileMetadataSearch = false;
+//
+//        // And the boolean below indicates any file-level searche - i.e., 
+//        // either a variable, or file metadata search.  
+//        // -- L.A. 
+//        boolean fileLevelSearch = false;
+//
+//
+//        List<SearchTerm> studyLevelSearchTerms = new ArrayList();
+//        List<SearchTerm> variableSearchTerms = new ArrayList();
+//        List<SearchTerm> fileMetadataSearchTerms = new ArrayList();
+//
+//        for (Iterator it = searchTerms.iterator(); it.hasNext();) {
+//            SearchTerm elem = (SearchTerm) it.next();
+//            if (elem.getFieldName().equals("variable")) {
+////                SearchTerm st = dvnTokenizeSearchTerm(elem);
+////                variableSearchTerms.add(st);
+//                variableSearchTerms.add(elem);
+//                variableSearch = true;
+//
+//            } else if (isFileMetadataField(elem.getFieldName())) {
+//                fileMetadataSearch = true;
+//                fileMetadataSearchTerms.add(elem);
+//
+//            } else {
+////                SearchTerm nvst = dvnTokenizeSearchTerm(elem);
+////                nonVariableSearchTerms.add(nvst);
+//                if (elem.getOperator().equals("=")) {
+//                    containsStudyLevelAndTerms = true;
+//                }
+//                studyLevelSearchTerms.add(elem);
+//                studyLevelSearch = true;
+//
+//            }
+//        }
+//
+//        // For now we are not supporting searches on variables and file-level
+//        // metadata *at the same time*. 
+//        // -- L.A. 
+//
+//        if (variableSearch && fileMetadataSearch) {
+//            throw new IOException("Unsupported search term combination! "
+//                    + "Searches on both variables and file-level metadata "
+//                    + "at the same time are not supported.");
+//        }
+//
+//        if (variableSearch || fileMetadataSearch) {
+//            fileLevelSearch = true;
+//        }
+//
+//        List<Long> nvResults = null;
+//        List<Long> filteredResults = null;
+//        ResultsWithFacets resultsWithFacets = null;
+//        resultsWithFacets = new ResultsWithFacets();
+//
+//        // If there are "AND"-type Study-level search terms in the search, 
+//        // let's run it now:
+//
+//        if (containsStudyLevelAndTerms) {
+//            BooleanQuery searchTermsQuery = andSearchTermClause(studyLevelSearchTerms);
+//            searchParts.add(searchTermsQuery);
+//            BooleanQuery searchQuery = andQueryClause(searchParts);
+//            logger.fine("Start hits: " + DateTools.dateToString(new Date(), Resolution.MILLISECOND));
+//            logger.info("INDEXER: search query (native): " + searchQuery.toString());
+//            if (studyIds != null) {
+//                nvResults = getHitIds(searchQuery);
+//                logger.fine("Done hits: " + DateTools.dateToString(new Date(), Resolution.MILLISECOND));
+//                logger.fine("Start filter: " + DateTools.dateToString(new Date(), Resolution.MILLISECOND));
+//                filteredResults = intersectionResults(nvResults, studyIdsArray);
+//            } else {
+//                resultsWithFacets = getResultsWithFacets(searchQuery, null);
+//                nvResults = resultsWithFacets.getMatchIds();
+//                logger.fine("Done hits: " + DateTools.dateToString(new Date(), Resolution.MILLISECOND));
+//                logger.fine("Start filter: " + DateTools.dateToString(new Date(), Resolution.MILLISECOND));
+//                filteredResults = nvResults;
+//            }
+//            logger.fine("Done filter: " + DateTools.dateToString(new Date(), Resolution.MILLISECOND));
+//        }
+//
+//        // If there is a file-level portion of the search, we'll run it now, 
+//        // combining the results with (or, rather filtering them against) the
+//        // hit list produced by the study-level search above, or supplied to this
+//        // method as an argument (if any). 
+//        // IMPORTANT: 
+//        // do note that this logic assumes that the file-level search can be 
+//        // EITHER on variables, or on file-level metadata; but never on both. 
+//        // -- L.A. 
+//
+//        if (fileLevelSearch) {
+//            if (containsStudyLevelAndTerms && (filteredResults.size() > 0)) {
+//                if (variableSearch) {
+//                    logger.fine("Start nonvar search variables: " + DateTools.dateToString(new Date(), Resolution.MILLISECOND));
+//                    results = searchVariables(filteredResults, variableSearchTerms, true); // get var ids
+//                    logger.fine("Done nonvar search variables: " + DateTools.dateToString(new Date(), Resolution.MILLISECOND));
+//                } else if (fileMetadataSearch) {
+//                    logger.fine("Start file-level metadata search; searching for file ids." + DateTools.dateToString(new Date(), Resolution.MILLISECOND));
+//                    results = searchFileMetadata(filteredResults, fileMetadataSearchTerms, true); // get var ids
+//                    logger.fine("Done searching for file ids, on file-level metadata: " + DateTools.dateToString(new Date(), Resolution.MILLISECOND));
+//                }
+//            } else {
+//                logger.fine("Start file-level metadata search: " + DateTools.dateToString(new Date(), Resolution.MILLISECOND));
+//
+//                if (studyLevelSearch && !containsStudyLevelAndTerms) {
+//                    if (variableSearch) {
+//                        results = searchVariables(studyIds, variableSearchTerms, false);
+//                    } else if (fileMetadataSearch) {
+//                        results = searchFileMetadata(studyIds, fileMetadataSearchTerms, false);
+//                    }
+//                    if (results != null) {
+//                        studyIdsArray = results.toArray(new Long[results.size()]);
+//                        Arrays.sort(studyIdsArray);
+//                    }
+//                    BooleanQuery searchQuery = new BooleanQuery();
+//                    List<TermQuery> termQueries = orLongEqSearchTermQueries(results, "id");
+//                    for (Iterator clausesIter = termQueries.iterator(); clausesIter.hasNext();) {
+//                        TermQuery termQuery = (TermQuery) clausesIter.next();
+//                        searchQuery.add(termQuery, BooleanClause.Occur.SHOULD);
+//                    }
+//
+//                    for (Iterator it = searchTerms.iterator(); it.hasNext();) {
+//                        SearchTerm elem = (SearchTerm) it.next();
+//                        if (!elem.getFieldName().equalsIgnoreCase("variable")
+//                                && !isFileMetadataField(elem.getFieldName())) {
+//
+//                            Term term = new Term(elem.getFieldName(), elem.getValue());
+//                            TermQuery termQuery = new TermQuery(term);
+//                            if (elem.getOperator().equals("=")) {
+//                                searchQuery.add(termQuery, BooleanClause.Occur.MUST);
+//                            } else {
+//                                searchQuery.add(termQuery, BooleanClause.Occur.MUST_NOT);
+//                            }
+//                        }
+//                    }
+//                    List<Long> studyIdResults = getHitIds(searchQuery);
+//
+//                    if (variableSearch) {
+//                        results = searchVariables(studyIdResults, variableSearchTerms, true); // get var ids
+//                    } else if (fileMetadataSearch) {
+//                        results = searchFileMetadata(studyIdResults, fileMetadataSearchTerms, true); // get file ids
+//                    }
+//                } else {
+//                    if (variableSearch) {
+//                        results = searchVariables(studyIds, variableSearchTerms, true); // get var ids
+//                    } else if (fileMetadataSearch) {
+//                        results = searchFileMetadata(studyIds, fileMetadataSearchTerms, true); // get file ids
+//                    }
+//                }
+//                logger.fine("Done searching on file-level metadata: " + DateTools.dateToString(new Date(), Resolution.MILLISECOND));
+//            }
+//        } else {
+//            results = filteredResults;
+//        }
+//        logger.fine("Done search: " + DateTools.dateToString(new Date(), Resolution.MILLISECOND));
+//
+////        return results;
+//        resultsWithFacets.setMatchIds(results);
+//        return resultsWithFacets;
+//
+//    }
+//
     // returns a list of study version ids for a given unf
     public List<Long> searchVersionUnf(List <Long> studyIds, String unf) throws IOException {
         List <Long> results = null;

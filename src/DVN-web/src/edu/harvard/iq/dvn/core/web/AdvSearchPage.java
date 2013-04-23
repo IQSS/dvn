@@ -58,6 +58,7 @@ import com.icesoft.faces.component.ext.HtmlSelectOneRadio;
 import com.icesoft.faces.component.ext.HtmlDataTable;
 import com.icesoft.faces.component.ext.HtmlCommandButton;
 import com.icesoft.faces.component.ext.HtmlPanelGrid;
+import edu.harvard.iq.dvn.core.index.DvnQuery;
 import edu.harvard.iq.dvn.core.index.ResultsWithFacets;
 import edu.harvard.iq.dvn.core.study.VariableServiceLocal;
 import javax.faces.component.UIColumn;
@@ -941,7 +942,12 @@ public class AdvSearchPage extends VDCBaseBean implements java.io.Serializable {
             } else {
                 logger.info("in searchWithFacets in AdvSearchPage");
                 //                viewableIds = indexServiceBean.search(thisVDC, searchTerms);
-                resultsWithFacets = indexServiceBean.searchwithFacets(thisVDC, searchTerms);
+//                resultsWithFacets = indexServiceBean.searchwithFacets(thisVDC, searchTerms);
+                DvnQuery dvnQuery = new DvnQuery();
+                dvnQuery.setVdc(thisVDC);
+                dvnQuery.setSearchTerms(searchTerms);
+                dvnQuery.constructQuery();
+                resultsWithFacets = indexServiceBean.searchNew(dvnQuery);
                 viewableIds = resultsWithFacets.getMatchIds();
                 List<FacetResult> facetResults = resultsWithFacets.getResultList();
             }

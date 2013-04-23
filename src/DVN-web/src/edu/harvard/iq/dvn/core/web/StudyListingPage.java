@@ -434,112 +434,112 @@ public class StudyListingPage extends VDCBaseBean implements java.io.Serializabl
         return "/StudyListingPage.xhtml?faces-redirect=true&studyListingIndex=" + studyListingIndex + "&vdcId=" + getVDCRequestBean().getCurrentVDCId();
     }
 
-    public String search_actionWithFacets() {
-        logger.info("Entered seach_actionWithFacets() on StudyListingPage.java");
-        searchField = (searchField == null) ? "any" : searchField; // default searchField, in case no dropdown
-
-        List searchTerms = new ArrayList();
-        SearchTerm st = new SearchTerm();
-        st.setFieldName(searchField);
-        st.setValue(searchValue);
-        searchTerms.add(st);
-
-        ResultsWithFacets resultsWithFacets = null;
-        List studyIDList = new ArrayList();
-        Map variableMap = new HashMap();
-        Map fileMap = new HashMap(); 
-        Map versionMap = new HashMap();
-        List displayVersionList = new ArrayList();
-
-        // currently search filter is determined from a set of boolean checkboxes
-        int searchFilter = 0;
-        if (renderSearchResultsFilter && searchResultsFilter) {
-            searchFilter = 2;
-        }
-        if (renderSearchCollectionFilter && searchCollectionFilter) {
-            searchFilter = 1;
-        }
-
-        if (searchField.equals("variable")) {
-            List variables = null;
-            if (searchFilter == 1) {
-                // just this collection
-                List collections = new ArrayList();
-                collections.add(vdcCollectionService.find(studyListing.getCollectionId()));
-                variables = indexService.searchVariables(getVDCRequestBean().getCurrentVDC(), collections, st);
-            } else if (searchFilter == 2) {
-                // subsearch
-                variables = indexService.searchVariables(studyListing.getStudyIds(), st);
-            } else {
-                variables = indexService.searchVariables(getVDCRequestBean().getCurrentVDC(), st);
-            }
-
-            varService.determineStudiesFromVariables(variables, studyIDList, variableMap);
-        } else {
-            logger.info("searchFilter = " + searchFilter);
-            if (searchFilter == 1) {
-                // just this collection
-                List collections = new ArrayList();
-                collections.add(vdcCollectionService.find(studyListing.getCollectionId()));
-                studyIDList = indexService.search(getVDCRequestBean().getCurrentVDC(), collections, searchTerms);
-            } else if (searchFilter == 2) {
-                // subsearch
-                studyIDList = indexService.search(studyListing.getStudyIds(), searchTerms);
-            } else {
-//                studyIDList = indexService.search(getVDCRequestBean().getCurrentVDC(), searchTerms);
-                resultsWithFacets = indexService.searchwithFacets(getVDCRequestBean().getCurrentVDC(), searchTerms);
-                studyIDList = resultsWithFacets.getMatchIds();
-            }
-            if (searchField.equals("any")) {
-                List<Long> versionIds = indexService.searchVersionUnf(getVDCRequestBean().getCurrentVDC(),searchValue);
-                Iterator iter = versionIds.iterator();
-                Long studyId = null;
-                while (iter.hasNext()) {
-//                    List<StudyVersion> svList = new ArrayList<StudyVersion>();
-                    Long vId = (Long) iter.next();
-                    StudyVersion sv = null;
-                    try {
-                        sv = studyService.getStudyVersionById(vId);
-                        studyId = sv.getStudy().getId();
-                        List<StudyVersion> svList = (List<StudyVersion>) versionMap.get(studyId);
-                        if (svList == null) {
-                            svList = new ArrayList<StudyVersion>();
-                        }
-                        svList.add(sv);
-                        if (!studyIDList.contains(studyId)) {
-                            displayVersionList.add(studyId);
-                            studyIDList.add(studyId);
-                        }
-                        versionMap.put(studyId, svList);
-                    } catch (IllegalArgumentException e) {
-                        e.printStackTrace();
-                    }
-                }
-
-            }
-        }
-
-
-        // now we handle the display of the page
-        // first get the bound collection tree
-        collectionTree = studyListing.getCollectionTree();
-
-        // now create the new StudyListing
-        studyListing = new StudyListing(StudyListing.SEARCH);
-        studyListing.setVdcId(getVDCRequestBean().getCurrentVDCId());
-        studyListing.setStudyIds(studyIDList);
-        studyListing.setResultsWithFacets(resultsWithFacets);
-        studyListing.setSearchTerms(searchTerms);
-        studyListing.setVariableMap(variableMap);
-        studyListing.setVersionMap(versionMap);
-        studyListing.setCollectionTree(collectionTree);
-        studyListing.setDisplayStudyVersionsList(displayVersionList);
-        renderFacets = true;
-
-        String studyListingIndex = StudyListing.addToStudyListingMap(studyListing, getSessionMap());
-        return "/StudyListingPage.xhtml?faces-redirect=true&studyListingIndex=" + studyListingIndex + "&vdcId=" + getVDCRequestBean().getCurrentVDCId();
-    }
-
+//    public String search_actionWithFacets() {
+//        logger.info("Entered seach_actionWithFacets() on StudyListingPage.java");
+//        searchField = (searchField == null) ? "any" : searchField; // default searchField, in case no dropdown
+//
+//        List searchTerms = new ArrayList();
+//        SearchTerm st = new SearchTerm();
+//        st.setFieldName(searchField);
+//        st.setValue(searchValue);
+//        searchTerms.add(st);
+//
+//        ResultsWithFacets resultsWithFacets = null;
+//        List studyIDList = new ArrayList();
+//        Map variableMap = new HashMap();
+//        Map fileMap = new HashMap(); 
+//        Map versionMap = new HashMap();
+//        List displayVersionList = new ArrayList();
+//
+//        // currently search filter is determined from a set of boolean checkboxes
+//        int searchFilter = 0;
+//        if (renderSearchResultsFilter && searchResultsFilter) {
+//            searchFilter = 2;
+//        }
+//        if (renderSearchCollectionFilter && searchCollectionFilter) {
+//            searchFilter = 1;
+//        }
+//
+//        if (searchField.equals("variable")) {
+//            List variables = null;
+//            if (searchFilter == 1) {
+//                // just this collection
+//                List collections = new ArrayList();
+//                collections.add(vdcCollectionService.find(studyListing.getCollectionId()));
+//                variables = indexService.searchVariables(getVDCRequestBean().getCurrentVDC(), collections, st);
+//            } else if (searchFilter == 2) {
+//                // subsearch
+//                variables = indexService.searchVariables(studyListing.getStudyIds(), st);
+//            } else {
+//                variables = indexService.searchVariables(getVDCRequestBean().getCurrentVDC(), st);
+//            }
+//
+//            varService.determineStudiesFromVariables(variables, studyIDList, variableMap);
+//        } else {
+//            logger.info("searchFilter = " + searchFilter);
+//            if (searchFilter == 1) {
+//                // just this collection
+//                List collections = new ArrayList();
+//                collections.add(vdcCollectionService.find(studyListing.getCollectionId()));
+//                studyIDList = indexService.search(getVDCRequestBean().getCurrentVDC(), collections, searchTerms);
+//            } else if (searchFilter == 2) {
+//                // subsearch
+//                studyIDList = indexService.search(studyListing.getStudyIds(), searchTerms);
+//            } else {
+////                studyIDList = indexService.search(getVDCRequestBean().getCurrentVDC(), searchTerms);
+//                resultsWithFacets = indexService.searchwithFacets(getVDCRequestBean().getCurrentVDC(), searchTerms);
+//                studyIDList = resultsWithFacets.getMatchIds();
+//            }
+//            if (searchField.equals("any")) {
+//                List<Long> versionIds = indexService.searchVersionUnf(getVDCRequestBean().getCurrentVDC(),searchValue);
+//                Iterator iter = versionIds.iterator();
+//                Long studyId = null;
+//                while (iter.hasNext()) {
+////                    List<StudyVersion> svList = new ArrayList<StudyVersion>();
+//                    Long vId = (Long) iter.next();
+//                    StudyVersion sv = null;
+//                    try {
+//                        sv = studyService.getStudyVersionById(vId);
+//                        studyId = sv.getStudy().getId();
+//                        List<StudyVersion> svList = (List<StudyVersion>) versionMap.get(studyId);
+//                        if (svList == null) {
+//                            svList = new ArrayList<StudyVersion>();
+//                        }
+//                        svList.add(sv);
+//                        if (!studyIDList.contains(studyId)) {
+//                            displayVersionList.add(studyId);
+//                            studyIDList.add(studyId);
+//                        }
+//                        versionMap.put(studyId, svList);
+//                    } catch (IllegalArgumentException e) {
+//                        e.printStackTrace();
+//                    }
+//                }
+//
+//            }
+//        }
+//
+//
+//        // now we handle the display of the page
+//        // first get the bound collection tree
+//        collectionTree = studyListing.getCollectionTree();
+//
+//        // now create the new StudyListing
+//        studyListing = new StudyListing(StudyListing.SEARCH);
+//        studyListing.setVdcId(getVDCRequestBean().getCurrentVDCId());
+//        studyListing.setStudyIds(studyIDList);
+//        studyListing.setResultsWithFacets(resultsWithFacets);
+//        studyListing.setSearchTerms(searchTerms);
+//        studyListing.setVariableMap(variableMap);
+//        studyListing.setVersionMap(versionMap);
+//        studyListing.setCollectionTree(collectionTree);
+//        studyListing.setDisplayStudyVersionsList(displayVersionList);
+//        renderFacets = true;
+//
+//        String studyListingIndex = StudyListing.addToStudyListingMap(studyListing, getSessionMap());
+//        return "/StudyListingPage.xhtml?faces-redirect=true&studyListingIndex=" + studyListingIndex + "&vdcId=" + getVDCRequestBean().getCurrentVDCId();
+//    }
+//
     public String search_actionNew() {
         logger.info("Entered search_actionNew on StudyListingPage.java");
 

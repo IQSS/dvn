@@ -199,8 +199,8 @@ public class DvnRJobRequest {
      * @return     
      */
      
-    public Map<String, List<String>> getListParametersForRequest(){
-        return this.listParametersForRequest;
+    public Map<String, List<String>> getListParametersForRequest (){
+      return this.listParametersForRequest;
     }
 
     /**

@@ -211,6 +211,7 @@ public class StudyFileUI implements java.io.Serializable {
             // and original file
             
             String originalFormatName = getStudyFile().getOriginalFileType();
+            
             String userFriendlyOriginalFormatName = null; 
             
             if ( !StringUtil.isEmpty( originalFormatName ) ) {

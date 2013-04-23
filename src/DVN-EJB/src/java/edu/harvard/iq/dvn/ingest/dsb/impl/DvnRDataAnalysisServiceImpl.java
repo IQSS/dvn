@@ -42,7 +42,7 @@ import org.apache.commons.lang.builder.*;
  * @author asone
  */
 
-public class DvnRDataAnalysisServiceImpl{
+public class DvnRDataAnalysisServiceImpl {
 
     // ----------------------------------------------------- static filelds
     
@@ -156,6 +156,8 @@ public class DvnRDataAnalysisServiceImpl{
     public String PID = null;
     public String tempFileName = null;
     public String tempFileNameNew = null;
+    private String tempOriginalFileName;
+    
     public String wrkdir = null;
     public String requestdir = null;
     public List<String> historyEntry = new ArrayList<String>();
@@ -163,7 +165,7 @@ public class DvnRDataAnalysisServiceImpl{
     
     // ----------------------------------------------------- constructor
     public DvnRDataAnalysisServiceImpl(){
-        
+        String sep = File.separator;
         // initialization
         PID = RandomStringUtils.randomNumeric(6);
                  
@@ -171,11 +173,9 @@ public class DvnRDataAnalysisServiceImpl{
         
         wrkdir = DSB_TMP_DIR + "/" + requestdir;
         
-        tempFileName = DSB_TMP_DIR + "/" + TMP_DATA_FILE_NAME
-                 +"." + PID + TMP_DATA_FILE_EXT;
-        
-        tempFileNameNew = wrkdir + "/" + TMP_DATA_FILE_NAME
-                 +"." + PID + TMP_DATA_FILE_EXT;
+        tempFileName = DSB_TMP_DIR + sep + TMP_DATA_FILE_NAME + "." + PID + TMP_DATA_FILE_EXT;
+        tempFileNameNew = wrkdir + sep + TMP_DATA_FILE_NAME + "." + PID + TMP_DATA_FILE_EXT;
+        tempOriginalFileName = DSB_TMP_DIR + sep + TMP_DATA_FILE_NAME + "." + PID + "RData";
     }
 
 
@@ -273,7 +273,12 @@ public class DvnRDataAnalysisServiceImpl{
      * @return    a Map that contains various information about results
      */    
     
-    public Map<String, String> execute(DvnRJobRequest sro) {
+    public Map <String, String> execute (DvnRJobRequest sro) {
+      
+      // Step 1. Copy of Rdata file
+      // Step 2. Subset Rdata file
+      // Step 3. Return the subsetted Rdata file instead of the original
+      
     
         // set the return object
         Map<String, String> result = new HashMap<String, String>();
@@ -315,6 +320,11 @@ public class DvnRDataAnalysisServiceImpl{
             }
             os.close();
             inb.close();
+            
+            // save the original data file on the server-side
+            
+            // WORKS STARTS HERE
+            // os = c.createFile(tempOriginalFileName);
             
             // Rserve code starts here
             dbgLog.fine("DvnRserveComm: "+"wrkdir="+wrkdir);

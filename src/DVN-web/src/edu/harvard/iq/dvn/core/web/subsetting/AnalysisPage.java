@@ -1084,7 +1084,10 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
 
             dbgLog.fine("serverPrefix"+serverPrefix);
 
-            Map<String, List<String>> mpl = new HashMap<String, List<String>>();
+            Map <String, List<String>> mpl = new HashMap<String, List<String>>();
+            
+            // File inFile = new File(sf.getFileSystemLocation());
+            // File origFile = new File(inFile.getParent(), "_" + sf.getFileSystemName());
 
             String formatType = (String) dwnldFileTypeSet.getValue();
             dbgLog.fine("file type from the binding=" + formatType);
@@ -1100,6 +1103,8 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
             dbgLog.fine("studyId="+getStudyId().toString());
             mpl.put("studyno", Arrays.asList(getStudyId().toString()));
             mpl.put("studyURL", Arrays.asList(studyURL));
+            
+            mpl.put("", Arrays.asList(""));
             mpl.put("browserType", Arrays.asList(browserType));
 
             mpl.put("recodedVarIdSet", getRecodedVarIdSet());
@@ -1113,6 +1118,9 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
             mpl.put("baseVarNameSet",getBaseVarNameSetFromRecodedVarIdSet());
                         
             mpl.put("requestType", Arrays.asList("Download"));
+            
+            // Added by Matt Owen to find a way to sneak in Metadata that is lost between Rdata -> Tab 
+            mpl.put("originalFile", Arrays.asList(getOriginalFileSystemLocation().getAbsolutePath()));
 
             // -----------------------------------------------------
             // Processing route, step by step:
@@ -1126,11 +1134,15 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
             boolean sbstOK = sf.isSubsettable();
             String flct = sf.getFileType();
             
-            dbgLog.fine("location="+fileloc);
-            dbgLog.fine("filename="+tabflnm);
-            dbgLog.fine("subsettable="+sbstOK);
-            dbgLog.fine("filetype="+flct);
-
+            // Output debug statements
+            dbgLog.info("location="+fileloc);
+            dbgLog.info("filename="+tabflnm);
+            dbgLog.info("subsettable="+sbstOK);
+            dbgLog.info("filetype="+flct);
+            dbgLog.info("studyUrl = " + studyURL);
+            dbgLog.info("original file asbolute path = " + getOriginalFileSystemLocation().getAbsolutePath());
+            
+            // D
             DvnRJobRequest sro = null;
              
             List<File> zipFileList = new ArrayList();
@@ -8818,4 +8830,16 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
     // </editor-fold>
 
     // end of this class
+    
+    private File getOriginalFileSystemLocation () {
+      
+      // Get the Study File from the dataTable private variable
+      // This points
+      StudyFile sf = dataTable.getStudyFile();
+      
+      // 
+      File inFile = new File(dataTable.getStudyFile().getFileSystemLocation());
+      
+      return new File(inFile.getParent(), "_" + sf.getFileSystemName());
+    }
 }

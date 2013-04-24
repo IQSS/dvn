@@ -492,6 +492,11 @@ public class Indexer implements java.io.Serializable  {
             List<CategoryPath> categoryPaths = new ArrayList<CategoryPath>();
             addFacet(categoryPaths, "dvName", study.getOwner().getName());
             addFacet(categoryPaths, "productionDate", metadata.getProductionDate());
+            addFacet(categoryPaths, "distributionDate", metadata.getDistributionDate());
+            for (Iterator it = studyDistributors.iterator(); it.hasNext();) {
+                StudyDistributor studyDistributor = (StudyDistributor) it.next();
+                addFacet(categoryPaths, "distributorName", studyDistributor.getName());
+            }
             for (Iterator it = studyAuthors.iterator(); it.hasNext();) {
                 StudyAuthor elem = (StudyAuthor) it.next();
                 addFacet(categoryPaths, "authorName", elem.getName());
@@ -1481,6 +1486,8 @@ public class Indexer implements java.io.Serializable  {
         FacetSearchParams facetSearchParams = new FacetSearchParams();
         facetSearchParams.addFacetRequest(new CountFacetRequest(new CategoryPath("dvName"), 10));
         facetSearchParams.addFacetRequest(new CountFacetRequest(new CategoryPath("productionDate"), 10));
+        facetSearchParams.addFacetRequest(new CountFacetRequest(new CategoryPath("distributionDate"), 10));
+        facetSearchParams.addFacetRequest(new CountFacetRequest(new CategoryPath("distributorName"), 10));
         facetSearchParams.addFacetRequest(new CountFacetRequest(new CategoryPath("authorName"), 10));
         facetSearchParams.addFacetRequest(new CountFacetRequest(new CategoryPath("authorAffiliation"), 10));
         facetSearchParams.addFacetRequest(new CountFacetRequest(new CategoryPath("keywordValue"), 10));

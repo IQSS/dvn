@@ -1386,4 +1386,15 @@ public class StudyListingPage extends VDCBaseBean implements java.io.Serializabl
         }
         return studyListing.getResultsWithFacets() != null ? studyListing.getResultsWithFacets().getFacetsQueried() : null;
     }
+
+    public String showFacetPath(String categoryPath) {
+        String[] parts = categoryPath.split("/", 2);
+        String field = parts[0];
+        String value = parts[1];
+        try {
+            return ResourceBundle.getBundle("SearchFieldBundle").getString(field) + " = " + value;
+        } catch (MissingResourceException e) {
+            return categoryPath;
+        }
+    }
 }

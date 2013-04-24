@@ -108,7 +108,7 @@
                              <!--<ui:repeat value="#{StudyListingPage.facetsOfInterest}" var="facetToRemove">-->
                              <ui:repeat value="#{StudyListingPage.facetsQueried}" var="facetToRemove">
                                  <ice:commandLink action="#{StudyListingPage.removeFacet(facetToRemove)}" title="Remove">
-                                     <ice:outputText styleClass="dvnStudyListSearchResultsMessage" value=" #{facetToRemove} (click to remove)" rendered="#{StudyListingPage.studyCount != 0}"/>
+                                     <ice:outputText styleClass="dvnStudyListSearchResultsMessage" value=" #{StudyListingPage.showFacetPath(facetToRemove)} (click to remove)" rendered="#{StudyListingPage.studyCount != 0}"/>
                                  </ice:commandLink>
                              </ui:repeat>
                          </div>
@@ -243,7 +243,9 @@
                         <ul>
                             <ice:dataTable value="#{StudyListingPage.getFacets(5)}" var="facetUI">
                                 <ice:column>
-                                    <div class="dvnStudyFacetCategoryTitle"><ice:outputText value="#{facetUI.name}"/></div>
+                                    <!--<div class="dvnStudyFacetCategoryTitle"><ice:outputText value="#{facetUI.name}"/></div>-->
+                                    <!--<div class="dvnStudyFacetCategoryTitle"><ice:outputText value="#{facetUI.friendlyName}"/></div>-->
+                                    <div class="dvnStudyFacetCategoryTitle"><ice:outputText value="#{facetUI.showFriendlyName(facetUI.name)}"/></div>
                                     <ul>
                                         <ui:repeat value="#{facetUI.facetResultUIs}" var="facetresultuis">
                                             <li>

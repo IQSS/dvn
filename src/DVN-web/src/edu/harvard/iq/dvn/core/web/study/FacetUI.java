@@ -21,6 +21,8 @@ package edu.harvard.iq.dvn.core.web.study;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.MissingResourceException;
+import java.util.ResourceBundle;
 import java.util.logging.Logger;
 
 public class FacetUI {
@@ -50,4 +52,11 @@ public class FacetUI {
         facetResultUIs.add(facetResultUI);
     }
 
+    public String showFriendlyName(String searchField) {
+        try {
+            return ResourceBundle.getBundle("SearchFieldBundle").getString(searchField);
+        } catch (MissingResourceException e) {
+            return searchField;
+        }
+    }
 }

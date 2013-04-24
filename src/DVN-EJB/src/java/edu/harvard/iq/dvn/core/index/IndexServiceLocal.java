@@ -84,7 +84,7 @@ public interface IndexServiceLocal extends java.io.Serializable {
     
     public void createIndexNotificationTimer();
 
-    public ResultsWithFacets getResultsWithFacets(Query query, List<CategoryPath> facetsOfInterest);
+//    public ResultsWithFacets getResultsWithFacets(Query query, List<CategoryPath> facetsOfInterest);
 
     public BooleanQuery andSearchTermClause(List<SearchTerm> studyLevelSearchTerms);
 

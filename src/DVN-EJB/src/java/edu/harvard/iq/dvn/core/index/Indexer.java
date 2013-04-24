@@ -1388,63 +1388,64 @@ public class Indexer implements java.io.Serializable  {
         return matchIds;
     }
 
-    ResultsWithFacets getResultsWithFacets(Query baseQuery, List<CategoryPath> facetsOfInterest) throws IOException {
-        logger.info("called getResultsWithFacets() in Indexer.java");
-        DocumentCollector s = new DocumentCollector(searcher);
-        TaxonomyReader taxo = new DirectoryTaxonomyReader(taxoDir);
-        FacetSearchParams facetSearchParams = new FacetSearchParams();
-        facetSearchParams.addFacetRequest(new CountFacetRequest(new CategoryPath("dvName"), 10));
-        facetSearchParams.addFacetRequest(new CountFacetRequest(new CategoryPath("productionDate"), 10));
-        facetSearchParams.addFacetRequest(new CountFacetRequest(new CategoryPath("authorName"), 10));
-        facetSearchParams.addFacetRequest(new CountFacetRequest(new CategoryPath("authorAffiliation"), 10));
-        facetSearchParams.addFacetRequest(new CountFacetRequest(new CategoryPath("keywordValue"), 10));
-        facetSearchParams.addFacetRequest(new CountFacetRequest(new CategoryPath("topicClassValue"), 10));
-        facetSearchParams.addFacetRequest(new CountFacetRequest(new CategoryPath("topicVocabClassURI"), 10));
-        facetSearchParams.addFacetRequest(new CountFacetRequest(new CategoryPath("topicClassVocabulary"), 10));
-
-        int numFacetsOfInterest = facetsOfInterest != null ? facetsOfInterest.size() : 0;
-        CategoryPath[] facetsArray = new CategoryPath[numFacetsOfInterest];
-        for (int i = 0; i < numFacetsOfInterest; i++) {
-            facetsArray[i] = facetsOfInterest.get(i);
-        }
-
-        Query q2;
-        logger.info("facetsArray length is " + facetsArray.length);
-        if (facetsArray.length > 0) {
-            q2 = DrillDown.query(baseQuery, facetsArray);
-        } else {
-            q2 = baseQuery;
-        }
-
-        FacetsCollector facetsCollector = new FacetsCollector(facetSearchParams, r, taxo);
-
-        logger.info("\n--BEGIN query dump (from getResultsWithFacets)--\n" + q2 + "\n--END query dump (from getResultsWithFacets)--");
-        searcher.search(q2, MultiCollector.wrap(s, facetsCollector));
-        List<FacetResult> facetResults = facetsCollector.getFacetResults();
-        ResultsWithFacets resultsWithFacets = new ResultsWithFacets();
-        resultsWithFacets.setResultList(facetResults);
-        ArrayList matchIds = new ArrayList();
-        LinkedHashSet matchIdsSet = new LinkedHashSet();
-
-        List hits = s.getStudies();
-        for (int i = 0; i < hits.size(); i++) {
-            ScoreDoc sd = (ScoreDoc) hits.get(i);
-            Document d = searcher.doc(sd.doc);
-            try {
-                Field studyId = d.getField("id");
-                String studyIdStr = studyId.stringValue();
-                Long studyIdLong = Long.valueOf(studyIdStr);
-                matchIdsSet.add(studyIdLong);
-            } catch (Exception ex) {
-                logger.info("Query for " + baseQuery + "matched but field \"id\" was null");
-//                ex.printStackTrace();
-            }
-        }
-        matchIds.addAll(matchIdsSet);
-        resultsWithFacets.setMatchIds(matchIds);
-        return resultsWithFacets;
-    }
-
+//    ResultsWithFacets getResultsWithFacets(Query baseQuery, List<CategoryPath> facetsOfInterest) throws IOException {
+//        logger.info("called getResultsWithFacets() in Indexer.java");
+//        DocumentCollector s = new DocumentCollector(searcher);
+//        TaxonomyReader taxo = new DirectoryTaxonomyReader(taxoDir);
+//        FacetSearchParams facetSearchParams = new FacetSearchParams();
+//        facetSearchParams.addFacetRequest(new CountFacetRequest(new CategoryPath("dvName"), 10));
+//        facetSearchParams.addFacetRequest(new CountFacetRequest(new CategoryPath("productionDate"), 10));
+//        facetSearchParams.addFacetRequest(new CountFacetRequest(new CategoryPath("distributionDate"), 10));
+//        facetSearchParams.addFacetRequest(new CountFacetRequest(new CategoryPath("authorName"), 10));
+//        facetSearchParams.addFacetRequest(new CountFacetRequest(new CategoryPath("authorAffiliation"), 10));
+//        facetSearchParams.addFacetRequest(new CountFacetRequest(new CategoryPath("keywordValue"), 10));
+//        facetSearchParams.addFacetRequest(new CountFacetRequest(new CategoryPath("topicClassValue"), 10));
+//        facetSearchParams.addFacetRequest(new CountFacetRequest(new CategoryPath("topicVocabClassURI"), 10));
+//        facetSearchParams.addFacetRequest(new CountFacetRequest(new CategoryPath("topicClassVocabulary"), 10));
+//
+//        int numFacetsOfInterest = facetsOfInterest != null ? facetsOfInterest.size() : 0;
+//        CategoryPath[] facetsArray = new CategoryPath[numFacetsOfInterest];
+//        for (int i = 0; i < numFacetsOfInterest; i++) {
+//            facetsArray[i] = facetsOfInterest.get(i);
+//        }
+//
+//        Query q2;
+//        logger.info("facetsArray length is " + facetsArray.length);
+//        if (facetsArray.length > 0) {
+//            q2 = DrillDown.query(baseQuery, facetsArray);
+//        } else {
+//            q2 = baseQuery;
+//        }
+//
+//        FacetsCollector facetsCollector = new FacetsCollector(facetSearchParams, r, taxo);
+//
+//        logger.info("\n--BEGIN query dump (from getResultsWithFacets)--\n" + q2 + "\n--END query dump (from getResultsWithFacets)--");
+//        searcher.search(q2, MultiCollector.wrap(s, facetsCollector));
+//        List<FacetResult> facetResults = facetsCollector.getFacetResults();
+//        ResultsWithFacets resultsWithFacets = new ResultsWithFacets();
+//        resultsWithFacets.setResultList(facetResults);
+//        ArrayList matchIds = new ArrayList();
+//        LinkedHashSet matchIdsSet = new LinkedHashSet();
+//
+//        List hits = s.getStudies();
+//        for (int i = 0; i < hits.size(); i++) {
+//            ScoreDoc sd = (ScoreDoc) hits.get(i);
+//            Document d = searcher.doc(sd.doc);
+//            try {
+//                Field studyId = d.getField("id");
+//                String studyIdStr = studyId.stringValue();
+//                Long studyIdLong = Long.valueOf(studyIdStr);
+//                matchIdsSet.add(studyIdLong);
+//            } catch (Exception ex) {
+//                logger.info("Query for " + baseQuery + "matched but field \"id\" was null");
+////                ex.printStackTrace();
+//            }
+//        }
+//        matchIds.addAll(matchIdsSet);
+//        resultsWithFacets.setMatchIds(matchIds);
+//        return resultsWithFacets;
+//    }
+//
 //    ResultsWithFacets getResultsWithFacets(Query baseQuery, List<CategoryPath> facetsOfInterest) throws IOException {
     ResultsWithFacets searchNew(DvnQuery dvnQuery) throws IOException {
         logger.info("called searchNew() in Indexer.java");

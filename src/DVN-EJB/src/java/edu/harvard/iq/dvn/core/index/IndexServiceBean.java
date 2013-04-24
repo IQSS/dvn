@@ -459,19 +459,19 @@ public class IndexServiceBean implements edu.harvard.iq.dvn.core.index.IndexServ
         return resultsWithFacets;
     }
 
-    public ResultsWithFacets getResultsWithFacets(Query baseQuery, List<CategoryPath> facetsOfInterest) {
-        logger.info("called getResultsWithFacets() in IndexServiceBean");
-        ResultsWithFacets resultsWithFacets = null;
-        Indexer indexer = Indexer.getInstance();
-        try {
-            resultsWithFacets = indexer.getResultsWithFacets(baseQuery, facetsOfInterest);
-        } catch (IOException ex) {
-            ex.printStackTrace();
-        }
-        return resultsWithFacets;
-
-    }
-
+//    public ResultsWithFacets getResultsWithFacets(Query baseQuery, List<CategoryPath> facetsOfInterest) {
+//        logger.info("called getResultsWithFacets() in IndexServiceBean");
+//        ResultsWithFacets resultsWithFacets = null;
+//        Indexer indexer = Indexer.getInstance();
+//        try {
+//            resultsWithFacets = indexer.getResultsWithFacets(baseQuery, facetsOfInterest);
+//        } catch (IOException ex) {
+//            ex.printStackTrace();
+//        }
+//        return resultsWithFacets;
+//
+//    }
+//
     public BooleanQuery andSearchTermClause(List<SearchTerm> studyLevelSearchTerms) {
         Indexer indexer = Indexer.getInstance();
         return indexer.andSearchTermClause(studyLevelSearchTerms);

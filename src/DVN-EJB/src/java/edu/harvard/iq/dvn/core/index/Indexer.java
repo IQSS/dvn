@@ -502,6 +502,7 @@ public class Indexer implements java.io.Serializable  {
                 addFacet(categoryPaths, "authorName", elem.getName());
                 addFacet(categoryPaths, "authorAffiliation", elem.getAffiliation());
             }
+            addFacet(categoryPaths, "country", metadata.getCountry());
             for (Iterator it = keywords.iterator(); it.hasNext();) {
                 StudyKeyword elem = (StudyKeyword) it.next();
                 addFacet(categoryPaths, "keywordValue", elem.getValue());
@@ -509,8 +510,6 @@ public class Indexer implements java.io.Serializable  {
             for (Iterator it = topicClassifications.iterator(); it.hasNext();) {
                 StudyTopicClass elem = (StudyTopicClass) it.next();
                 addFacet(categoryPaths, "topicClassValue", elem.getValue());
-                addFacet(categoryPaths, "topicVocabClassURI", elem.getVocabURI());
-                addFacet(categoryPaths, "topicClassVocabulary", elem.getVocab());
             }
 
             CategoryDocumentBuilder categoryDocBuilder = new CategoryDocumentBuilder(taxo);
@@ -1485,15 +1484,14 @@ public class Indexer implements java.io.Serializable  {
         TaxonomyReader taxo = new DirectoryTaxonomyReader(taxoDir);
         FacetSearchParams facetSearchParams = new FacetSearchParams();
         facetSearchParams.addFacetRequest(new CountFacetRequest(new CategoryPath("dvName"), 10));
-        facetSearchParams.addFacetRequest(new CountFacetRequest(new CategoryPath("productionDate"), 10));
-        facetSearchParams.addFacetRequest(new CountFacetRequest(new CategoryPath("distributionDate"), 10));
-        facetSearchParams.addFacetRequest(new CountFacetRequest(new CategoryPath("distributorName"), 10));
         facetSearchParams.addFacetRequest(new CountFacetRequest(new CategoryPath("authorName"), 10));
         facetSearchParams.addFacetRequest(new CountFacetRequest(new CategoryPath("authorAffiliation"), 10));
+        facetSearchParams.addFacetRequest(new CountFacetRequest(new CategoryPath("country"), 10));
+        facetSearchParams.addFacetRequest(new CountFacetRequest(new CategoryPath("distributorName"), 10));
+        facetSearchParams.addFacetRequest(new CountFacetRequest(new CategoryPath("productionDate"), 10));
+        facetSearchParams.addFacetRequest(new CountFacetRequest(new CategoryPath("distributionDate"), 10));
         facetSearchParams.addFacetRequest(new CountFacetRequest(new CategoryPath("keywordValue"), 10));
         facetSearchParams.addFacetRequest(new CountFacetRequest(new CategoryPath("topicClassValue"), 10));
-        facetSearchParams.addFacetRequest(new CountFacetRequest(new CategoryPath("topicVocabClassURI"), 10));
-        facetSearchParams.addFacetRequest(new CountFacetRequest(new CategoryPath("topicClassVocabulary"), 10));
 
         int numFacetsOfInterest = facetsOfInterest != null ? facetsOfInterest.size() : 0;
         CategoryPath[] facetsArray = new CategoryPath[numFacetsOfInterest];

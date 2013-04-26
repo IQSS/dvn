@@ -71,6 +71,9 @@ public class RDATAFileReader extends StatDataFileReader {
   public static final int FORMAT_DATE = -2;
   public static final int FORMAT_DATETIME = -3;
   
+  // FORMAT CATEGORY TABLE
+  public static Map <String, String> R_FORMAT_CATEGORY_TABLE;
+  
   private int [] mFormatTable = null;
   
   // Date-time things
@@ -106,9 +109,13 @@ public class RDATAFileReader extends StatDataFileReader {
   
   // TIME FORMATS
   private static SimpleDateFormat[] TIME_FORMATS = new SimpleDateFormat[] {
-    new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS z"),
+    // Date-time up to milliseconds with timezone, e.g. 2013-04-08 13:14:23.102 -0500
+    new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS Z"),
+    // Date-time up to milliseconds, e.g. 2013-04-08 13:14:23.102
     new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS"),
-    new SimpleDateFormat("yyyy-MM-dd HH:mm:ss z"),
+    // Date-time up to seconds with timezone, e.g. 2013-04-08 13:14:23 -0500
+    new SimpleDateFormat("yyyy-MM-dd HH:mm:ss Z"),
+    // Date-time up to seconds and no timezone, e.g. 2013-04-08 13:14:23
     new SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
   };
   
@@ -126,6 +133,7 @@ public class RDATAFileReader extends StatDataFileReader {
   
   private Map <String, String> mPrintFormatTable = new LinkedHashMap<String, String>(); 
   private Map <String, String> mPrintFormatNameTable = new LinkedHashMap<String, String>(); 
+  private Map <String, String> mFormatCategoryTable = new LinkedHashMap<String, String>();
   private List <Integer> mPrintFormatList = new ArrayList<Integer>();
   /*
    * Object Variables
@@ -140,6 +148,8 @@ public class RDATAFileReader extends StatDataFileReader {
   // Array specifying column-wise data-types
   private String [] mDataTypes;
   
+  
+  
   // Process ID, used partially in the generation of temporary directories
   private String mPID;
   
@@ -152,6 +162,8 @@ public class RDATAFileReader extends StatDataFileReader {
 
   // The meta-data object
   SDIOMetadata smd = new RDATAMetadata();
+  
+  private Map <Integer, VariableMetaData> mVariableMetaDataTable;
   
   // Entries from TAB Data File
   DataTable mCsvDataTable = null;
@@ -523,6 +535,8 @@ public class RDATAFileReader extends StatDataFileReader {
     // Create UNF for each column
     createUNF(mCsvDataTable);
     
+    setFormatData();
+    
     //
     LOG.info("RDATAFileReader: varQnty = " + mVarQuantity);
     LOG.info("RDATAFileReader: Leaving \"read\" function");
@@ -617,6 +631,10 @@ public class RDATAFileReader extends StatDataFileReader {
       request.script(fileInfoScript);
       RList fileInformation = request.eval().asList();
       
+      RList metaInfo = fileInformation.at("meta.info").asList();
+      
+      mVariableMetaDataTable = getVariableMetaDataTable(metaInfo);
+      
       int varQnty = 0;
       variableNames = fileInformation.at("varNames").asStrings();
       
@@ -635,9 +653,11 @@ public class RDATAFileReader extends StatDataFileReader {
       smd.getFileInformation().put("caseQnty", mCaseQuantity);
     }
     catch (REXPMismatchException ex) {
+      mVariableMetaDataTable = null;
       LOG.warning("RDATAFileReader: Could not put information correctly");
     }
     catch (Exception ex) {
+      mVariableMetaDataTable = null;
       ex.printStackTrace();
       LOG.warning(ex.getMessage());
     }
@@ -648,6 +668,7 @@ public class RDATAFileReader extends StatDataFileReader {
     smd.getFileInformation().put("fileFormat", FORMAT_NAMES[0]);
     smd.getFileInformation().put("varFormat_schema", "RDATA");
     smd.getFileInformation().put("fileUNF", "");
+    smd.getFileInformation().put("mVariableMetaDataTable", mVariableMetaDataTable);
     
     // Variable names
     smd.setVariableLabel(variableLabels);
@@ -739,6 +760,10 @@ public class RDATAFileReader extends StatDataFileReader {
    * @return 
    */
   private List<Integer> getVariableTypeList (String[] dataTypes) {
+    
+    //
+    Map <String, HashMap <String, String>> valueLabelTable = new HashMap <String, HashMap <String, String>> ();
+    
     //
     mFormatTable = new int [mVarQuantity];
     // Okay.
@@ -748,21 +773,24 @@ public class RDATAFileReader extends StatDataFileReader {
     
     Set <Integer> decimalVariableSet = new HashSet <Integer>(); 
     
-    List <Boolean> isContinuous = new ArrayList<Boolean>();
-    List <String> isString = new ArrayList<String>();
-    
-    
     int k = 0;
     
     for (String type : dataTypes) {
+      VariableMetaData columnMetaData;
+
       // Log
-      LOG.info("type[" + k + "] = " + type);
+      
+      String variableName = variableNameList.get(k);
       
       // Convention is that integer is zero, right?
       if (type.equals("integer")) {
         minimalTypeList.add(0);
         normalTypeList.add(0);
         mFormatTable[k] = FORMAT_INTEGER;
+        mPrintFormatList.add(1);
+        // mPrintFormatNameTable.put(variableName, "N");
+        
+        columnMetaData = new VariableMetaData(1);
       }
 
       // Double-precision data-types
@@ -771,20 +799,47 @@ public class RDATAFileReader extends StatDataFileReader {
         normalTypeList.add(0);
         decimalVariableSet.add(k);
         mFormatTable[k] = FORMAT_NUMERIC;
+        mPrintFormatList.add(1);
+        
+        columnMetaData = new VariableMetaData(1);
       }
       
       // If date
       else if (type.equals("Date")) {
-        // 
         minimalTypeList.add(-1);
         normalTypeList.add(1);
+        
         mFormatTable[k] = FORMAT_DATE;
+        
+        mPrintFormatList.add(0);
+        mPrintFormatNameTable.put(variableName, "DATE10");
+        mFormatCategoryTable.put(variableName, "date");
+        
+        columnMetaData = new VariableMetaData(0);
       }
       
       else if (type.equals("POSIXct") || type.equals("POSIXlt") || type.equals("POSIXt")) {
         minimalTypeList.add(-1);
         normalTypeList.add(1);
+        
         mFormatTable[k] = FORMAT_DATETIME;
+        
+        mPrintFormatList.add(0);
+        mPrintFormatNameTable.put(variableName, "DATETIME23.3");
+        mFormatCategoryTable.put(variableName, "time");
+        
+        columnMetaData = new VariableMetaData(0);
+      }
+      
+      else if (type.equals("factor")) {
+        minimalTypeList.add(-1);
+        normalTypeList.add(1);
+        mFormatTable[k] = FORMAT_STRING;
+        mPrintFormatList.add(0);
+        mPrintFormatNameTable.put(variableName, "other");
+        mFormatCategoryTable.put(variableName, "other");
+        
+        columnMetaData = new VariableMetaData(0);
       }
 
       // Everything else is a string
@@ -792,9 +847,12 @@ public class RDATAFileReader extends StatDataFileReader {
         minimalTypeList.add(-1);
         normalTypeList.add(1);
         mFormatTable[k] = FORMAT_STRING;
+        mPrintFormatList.add(0);
+        mPrintFormatNameTable.put(variableName, "other");
+        mFormatCategoryTable.put(variableName, "other");
+        
+        columnMetaData = new VariableMetaData(0);
       }
-      
-      LOG.info(String.format("formatTable[%d] = %d", k, mFormatTable[k]));
       
       k++;
     }
@@ -804,10 +862,21 @@ public class RDATAFileReader extends StatDataFileReader {
     smd.setVariableTypeMinimal(ArrayUtils.toPrimitive(normalTypeList.toArray(new Integer[normalTypeList.size()])));
     smd.setDecimalVariables(decimalVariableSet);
     smd.setVariableStorageType(null);
+
+    smd.setVariableFormat(mPrintFormatList);
+    smd.setVariableFormatName(mPrintFormatNameTable);
+    smd.setVariableFormatCategory(mFormatCategoryTable);
+    // smd.set
     
-    LOG.info("minimalTypeList = " + Arrays.deepToString(minimalTypeList.toArray()));
-    LOG.info("normalTypeList = " + Arrays.deepToString(normalTypeList.toArray()));
+    LOG.info("minimalTypeList =    " + Arrays.deepToString(minimalTypeList.toArray()));
+    LOG.info("normalTypeList =     " + Arrays.deepToString(normalTypeList.toArray()));
     LOG.info("decimalVariableSet = " + Arrays.deepToString(decimalVariableSet.toArray()));
+    
+    LOG.info("mPrintFormatList =      " + mPrintFormatList);
+    LOG.info("mPrintFormatNameTable = " + mPrintFormatNameTable);
+    LOG.info("mFormatCategoryTable =  " + mFormatCategoryTable);
+    
+    LOG.info("mFormatTable = " + mFormatTable);
 
     // Return the variable type list
     return minimalTypeList;
@@ -830,22 +899,14 @@ public class RDATAFileReader extends StatDataFileReader {
     
     int [] x = ArrayUtils.toPrimitive(variableTypeList.toArray(new Integer[variableTypeList.size()]));
     
-    int count = 0;
-    for (int y : x) {
-      LOG.info("[variableType] " + count + " = " + y + "");
-      count++;
-    }
-    
     for (int k = 0; k < mVarQuantity; k++) {
       String unfValue, name = variableNameList.get(k);
       int varType = variableTypeList.get(k);
       
       Object [] varData = table.getData()[k];
       
-      LOG.info("// // // // //");
-      LOG.info("varData = " + Arrays.deepToString(varData));
-      LOG.info("varData = " + Arrays.deepToString(varData));
-      LOG.info("varData = " + Arrays.deepToString(varData));
+      LOG.info(String.format("RDATAFileReader: Column \"%s\" = %s", name, Arrays.deepToString(varData)));
+      
       try {
         switch (varType) {
           case 0:
@@ -873,7 +934,6 @@ public class RDATAFileReader extends StatDataFileReader {
 
           // If double
           case 1:
-            LOG.info(k + ": " + name + " is double");
             // Convert array of Strings to array of Doubles
             Double[]  doubleEntries = new Double[varData.length];
             
@@ -900,10 +960,6 @@ public class RDATAFileReader extends StatDataFileReader {
             LOG.info("sumstat:long case=" + Arrays.deepToString(
                         ArrayUtils.toObject(StatHelper.calculateSummaryStatisticsContDistSample(doubleEntries))));
             unfValue = UNF5Util.calculateUNF(doubleEntries);
-            
-            // SPECIFY DECIMAL VARIABLE SET FOR SPECIAL ANALYSIS
-            
-            
             
             // Update summary statistics
             smd.getSummaryStatisticsTable().put(k, ArrayUtils.toObject(StatHelper.calculateSummaryStatisticsContDistSample(doubleEntries)));
@@ -941,13 +997,13 @@ public class RDATAFileReader extends StatDataFileReader {
               
               // Compute UNF
               try {
-                LOG.info("strdata: " + Arrays.deepToString(stringEntries));
-                LOG.info("dateFormats: " + Arrays.deepToString(dateFormats));
+                LOG.info("RDATAFileReader: strdata = " + Arrays.deepToString(stringEntries));
+                LOG.info("RDATAFileReader: dateFormats = " + Arrays.deepToString(dateFormats));
                 
                 unfValue = UNF5Util.calculateUNF(stringEntries, dateFormats);
               }
               catch (Exception ex) {
-                LOG.warning("UNF FOR DATE COULD NOT BE COMPUTED");
+                LOG.warning("RDATAFileReader: UNF for \"%s\" could not be computed; calculating UNF as a string.");
                 unfValue = UNF5Util.calculateUNF(stringEntries);
                 ex.printStackTrace();
               }
@@ -955,9 +1011,6 @@ public class RDATAFileReader extends StatDataFileReader {
             else
               unfValue = UNF5Util.calculateUNF(stringEntries);
 
-
-            LOG.info(name + " (UNF) = " + unfValue);
-            
             smd.getSummaryStatisticsTable().put(k, StatHelper.calculateSummaryStatistics(stringEntries));
             Map <String, Integer> StrCatStat = StatHelper.calculateCategoryStatistics(stringEntries);
             smd.getCategoryStatisticsTable().put(variableNameList.get(k), StrCatStat);
@@ -968,7 +1021,9 @@ public class RDATAFileReader extends StatDataFileReader {
             unfValue = null;
         }
         
-        LOG.info(name + " (UNF) = " + unfValue);
+        LOG.info(String.format("RDATAFileReader: Column \"%s\" (UNF) = %s", name, unfValue));
+        
+        // Store UNF value
         unfValues[k] = unfValue;
       }
       catch (Exception ex) { }
@@ -985,7 +1040,6 @@ public class RDATAFileReader extends StatDataFileReader {
     mCsvDataTable.setUnf(unfValues);
     mCsvDataTable.setFileUnf(fileUNFvalue);
 
-    
     // Set meta-data to make it look like a SAV file
     // smd.setVariableStorageType(null);
     // smd.setDecimalVariables(mDecimalVariableSet);
@@ -1005,8 +1059,6 @@ public class RDATAFileReader extends StatDataFileReader {
    * 
    */
   private void setMetaInfo () {
-    smd.setVariableFormat(mPrintFormatList);
-    smd.setVariableFormatName(mPrintFormatNameTable);
   }
   /**
    * Set Missing Values from CSV File
@@ -1044,5 +1096,64 @@ public class RDATAFileReader extends StatDataFileReader {
     
     // Return string
     return resourceAsString;
+  }
+  
+  private void setFormatData () {
+
+  }
+  
+  /**
+   * Get a 
+   * @param metaInfo
+   * @return 
+   */
+  private HashMap <Integer, VariableMetaData> getVariableMetaDataTable (RList metaInfo) {
+    // list(type = 1, type.string = "integer", class = class(values), levels = NULL, format = NULL)
+    Integer variableType = -1;
+    String variableTypeString = "", variableFormat = "";
+    String [] variableClass = null, variableLevels = null;
+    
+    // The result objet that pairs column numbers with VariableMetaData objects
+    HashMap <Integer, VariableMetaData> result = new HashMap <Integer, VariableMetaData> ();
+    
+    // While we are here, we should also fill the valueLabelTable for the meta-data object
+    Map <String, Map<String, String>> valueLabelTable = new LinkedHashMap <String, Map<String, String>> ();
+    Map <String, String> okay = new HashMap <String, String> ();
+    
+    okay.put("xxx", "xxx");
+    valueLabelTable.put("xxx", okay);
+    
+    smd.setValueLabelTable(valueLabelTable);
+    
+    for (int k = 0; k < metaInfo.size(); k++) {
+     
+      try {
+        // Meta-data for a column in the data-set
+        RList columnMeta = metaInfo.at(k).asList();
+        
+        // Extract information
+        variableType = columnMeta.at("type").asInteger();
+        variableTypeString = columnMeta.at("type.string").asString();
+        variableClass = columnMeta.at("class").asStrings();
+        variableLevels = columnMeta.at("levels").asStrings();
+        variableFormat = columnMeta.at("format").asString();
+        
+        // Create a variable meta-data object
+        VariableMetaData columnMetaData = new VariableMetaData(variableType);
+        columnMetaData.setDateTimeFormat(variableFormat);
+        columnMetaData.setFactorLevels(variableLevels);
+        
+        // Store the meta-data in a hashmap (to return later)
+        result.put(k, columnMetaData);
+      }
+      catch (REXPMismatchException ex) {
+        // If something went wrong, then it wasn't meant to be for that column.
+        // And you know what? That's okay.
+        LOG.info(String.format("Column %d of Data Set could not create a VariableMetaData object", k));
+      }
+    }
+    
+    // Return the array or null
+    return result.size() > 0 ? result : null;
   }
 }

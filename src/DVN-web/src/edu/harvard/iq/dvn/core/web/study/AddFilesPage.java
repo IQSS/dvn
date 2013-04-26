@@ -993,6 +993,7 @@ public class AddFilesPage extends VDCBaseBean implements java.io.Serializable {
             fileTypesSubsettable[4] = new SelectItem("spss", "CSV (w/SPSS card)");
             fileTypesSubsettable[5] = new SelectItem("ddi", "TAB (w/DDI)");
             fileTypesSubsettable[6] = new SelectItem("porextra", "SPSS/POR,(w/labels)");
+
             /* 
              * Commenting out RData, for the 3.4 release: 
              *

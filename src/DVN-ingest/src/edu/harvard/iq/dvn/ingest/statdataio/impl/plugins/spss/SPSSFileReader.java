@@ -758,6 +758,12 @@ public class SPSSFileReader extends StatDataFileReader{
 
         //TODO: smd.getFileInformation().put("caseWeightVariableName", caseWeightVariableName);
 
+        dbgLog.info("<<<<<<");
+        dbgLog.info("printFormatList = " + printFormatList);
+        dbgLog.info("printFormatNameTable = " + printFormatNameTable);
+        dbgLog.info("formatCategoryTable = " + formatCategoryTable);
+        dbgLog.info(">>>>>>");
+        
         smd.setVariableFormat(printFormatList);
         smd.setVariableFormatName(printFormatNameTable);
         smd.setVariableFormatCategory(formatCategoryTable); //TODO: verify

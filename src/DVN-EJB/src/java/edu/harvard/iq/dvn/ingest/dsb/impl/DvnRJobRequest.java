@@ -34,6 +34,8 @@ import java.util.*;
 import java.util.logging.*;
 import org.apache.commons.lang.*;
 
+// Meta Data is needed
+import edu.harvard.iq.dvn.ingest.thedata.helpers.VariableMetaData;
 
 public class DvnRJobRequest {
 
@@ -49,6 +51,7 @@ public class DvnRJobRequest {
         new HashMap<String, Integer>();
 
     public static Map<String, String> rangeOpMap = new HashMap<String, String>();
+    private Map <Integer, VariableMetaData> mVariableMetaDataTable;
 
 
     static {
@@ -77,13 +80,14 @@ public class DvnRJobRequest {
      * 
      */
 
-    public DvnRJobRequest(List<DataVariable> dv, 
-        Map<String, List<String>> listParams,
-        Map<String, Map<String, String>> vts,
-        Map<String, List<Object>> rs,
-        AdvancedStatGUIdata.Model zp){
-        
-
+    public DvnRJobRequest(
+            List <DataVariable> dv, 
+            Map <String, List<String>> listParams,
+            Map <String, Map<String, String>> vts,
+            Map <String, List<Object>> rs,
+            AdvancedStatGUIdata.Model zp
+            )
+    {
         dataVariablesForRequest = dv;
         
         listParametersForRequest = listParams;
@@ -97,7 +101,17 @@ public class DvnRJobRequest {
         dbgLog.fine("DvnRJobRequest: value table="+valueTables);
         dbgLog.fine("DvnRJobRequest: recodeSchema"+recodeSchema);
         dbgLog.fine("DvnRJobRequest: model spec="+zeligModelSpec);
+        
+        dbgLog.info("***** DvnRJobRequest: within the default constructor : initial *****");
+        dbgLog.info("DvnRJobRequest: variables="+dataVariablesForRequest);
+        dbgLog.info("DvnRJobRequest: map="+listParametersForRequest);
+        dbgLog.info("DvnRJobRequest: value table="+valueTables);
+        dbgLog.info("DvnRJobRequest: recodeSchema"+recodeSchema);
+        dbgLog.info("DvnRJobRequest: model spec="+zeligModelSpec);
+        
+        
         checkVariableNames();
+        mVariableMetaDataTable = null;
         
         if (rs != null){
             if (rs.size() > 0){
@@ -115,13 +129,15 @@ public class DvnRJobRequest {
      * 3-arg Constructor for non-zelig cases
      *
      */
-    public DvnRJobRequest(List<DataVariable> dv, 
-        Map<String, List<String>> listParams, 
-        Map<String, Map<String, String>> vts,
-        Map<String, List<Object>> rs){
-        this(dv,listParams,vts,rs, null);
+    public DvnRJobRequest(
+            List<DataVariable> dv, 
+            Map <String, List<String>> listParams, 
+            Map <String, Map <String, String>> vts,
+            Map <String, List<Object>> rs
+            ) {
+      
         dbgLog.fine("***** DvnRJobRequest: within the 3-option constructor ends here *****");
-
+        this(dv,listParams,vts,rs, null);
 
     }
 
@@ -132,7 +148,6 @@ public class DvnRJobRequest {
     public DvnRJobRequest(List<DataVariable> dv, 
         Map<String, List<String>> listParams, 
         Map<String, Map<String, String>> vts){
-
         this(dv,listParams, vts, null, null);
         dbgLog.fine("***** DvnRJobRequest: within the 2-option constructor ends here *****");
 
@@ -201,6 +216,7 @@ public class DvnRJobRequest {
      
     public Map<String, List<String>> getListParametersForRequest (){
       return this.listParametersForRequest;
+        return this.listParametersForRequest;
     }
 
     /**
@@ -393,8 +409,13 @@ public class DvnRJobRequest {
         Map<String, String> variableFormats=new LinkedHashMap<String, String>();
         for(int i=0;i < dataVariablesForRequest.size(); i++){
             DataVariable dv = (DataVariable) dataVariablesForRequest.get(i);
+
+            dbgLog.info(String.format("DvnRJobRequest: column[%d] schema = %s", i, dv.getFormatSchema()));
+            dbgLog.info(String.format("DvnRJobRequest: column[%d] category = %s", i, dv.getFormatCategory()));
+            
             dbgLog.fine(i+"-th \tformatschema="+dv.getFormatSchema());
             dbgLog.fine(i+"-th \tformatcategory="+dv.getFormatCategory());
+            
             if (!StringUtils.isEmpty(dv.getFormatCategory())) {
                 if (dv.getFormatSchema().toLowerCase().equals("spss")){
                     if (dv.getFormatCategory().toLowerCase().equals("date")){
@@ -414,11 +435,37 @@ public class DvnRJobRequest {
                             variableFormats.put(getSafeVariableName(dv.getName()), "T");
                         }
                     }
-                } else if (dv.getFormatSchema().toLowerCase().equals("other")) {
-                    if (dv.getFormatCategory().toLowerCase().equals("date")){
-                        // value = D
-                        variableFormats.put(getSafeVariableName(dv.getName()), "D");
+                }
+                
+                else if (dv.getFormatSchema().toLowerCase().equals("rdata")) {
+                  if (dv.getFormatCategory().toLowerCase().equals("date")) {
+                    variableFormats.put(getSafeVariableName(dv.getName()), "D");
+                  }
+                  else if (dv.getFormatCategory().toLowerCase().equals("time")) {
+                    // add this var to this map
+                    if ( dv.getFormatSchemaName().toLowerCase().startsWith("dtime")){
+                      // value JT
+                      variableFormats.put(getSafeVariableName(dv.getName()), "JT");
                     }
+                    else if (dv.getFormatSchemaName().toLowerCase().startsWith("datetime")) {
+                      // Set as date-time-timezone, DT
+                      variableFormats.put(getSafeVariableName(dv.getName()), "DT");
+                    }
+                    else if (dv.getFormatSchemaName().toLowerCase().startsWith("time")) {
+                      // Set as date-time-timezone, DT
+                      variableFormats.put(getSafeVariableName(dv.getName()), "DT");
+                    }
+                    else {
+                      // value T
+                      variableFormats.put(getSafeVariableName(dv.getName()), "T");
+                    }
+                  }
+                }
+                else if (dv.getFormatSchema().toLowerCase().equals("other")) {
+                  if (dv.getFormatCategory().toLowerCase().equals("date")) {
+                    // value = D
+                    variableFormats.put(getSafeVariableName(dv.getName()), "D");
+                  }
                 }
             } else {
                 dbgLog.fine(i+"\t var: not date or time variable");
@@ -1088,7 +1135,8 @@ public class DvnRJobRequest {
      *
      * @return 
      */
-    public Map<String, List<String>> generateSubsetRecodeConditions (){
+    public Map<String, List<String>> generateSubsetRecodeConditions () {
+      
         List<String> subsetConditions = new ArrayList<String>();
         List<String> subsetConditionsForCitation = new ArrayList<String>();
         List<String> recodeConditions = new ArrayList<String>();
@@ -1591,4 +1639,7 @@ public class DvnRJobRequest {
     }
 
 
+  public void setVariableMetaData (HashMap <Integer, VariableMetaData> metaDataTable) {
+    mVariableMetaDataTable = metaDataTable;
+  }
 }

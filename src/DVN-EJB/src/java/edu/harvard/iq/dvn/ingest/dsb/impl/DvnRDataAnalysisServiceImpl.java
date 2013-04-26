@@ -141,20 +141,21 @@ public class DvnRDataAnalysisServiceImpl {
             Matcher mtr = p.matcher(m.getName());
             
             if (mtr.matches()){
-                runMethods.put(mtr.group(1), m);
+              runMethods.put(mtr.group(1), m);
             }
         }
 
     }
     // This is how to initialize the source library, without hardcoding 
     // the path:    
-    static String VDC_R_STARTUP_FILE="vdc_startup.R";
+    static String VDC_R_STARTUP_FILE = "vdc_startup.R";
     static String librarySetup = "source(paste(.libPaths()[1], '/../share/dvn/" + VDC_R_STARTUP_FILE + "', sep = ''));";
     boolean DEBUG = true;
     
     // ----------------------------------------------------- instance filelds
     public String PID = null;
     public String tempFileName = null;
+    public String tempRdataFileName = null;
     public String tempFileNameNew = null;
     private String tempOriginalFileName;
     
@@ -165,17 +166,18 @@ public class DvnRDataAnalysisServiceImpl {
     
     // ----------------------------------------------------- constructor
     public DvnRDataAnalysisServiceImpl(){
-        String sep = File.separator;
+        String sep = File.pathSeparator;
         // initialization
         PID = RandomStringUtils.randomNumeric(6);
                  
         requestdir = "Zlg_" + PID;
         
-        wrkdir = DSB_TMP_DIR + "/" + requestdir;
+        wrkdir = DSB_TMP_DIR + sep + requestdir;
         
         tempFileName = DSB_TMP_DIR + sep + TMP_DATA_FILE_NAME + "." + PID + TMP_DATA_FILE_EXT;
-        tempFileNameNew = wrkdir + sep + TMP_DATA_FILE_NAME + "." + PID + TMP_DATA_FILE_EXT;
-        tempOriginalFileName = DSB_TMP_DIR + sep + TMP_DATA_FILE_NAME + "." + PID + "RData";
+        tempRdataFileName = DSB_TMP_DIR + sep + TMP_DATA_FILE_NAME + "_" + PID + ".Rdata";
+        
+        tempFileNameNew = wrkdir + sep + TMP_DATA_FILE_NAME +"." + PID + TMP_DATA_FILE_EXT;
     }
 
 
@@ -297,7 +299,7 @@ public class DvnRDataAnalysisServiceImpl {
             dbgLog.fine("hostname="+RSERVE_HOST);
 
             c.login(RSERVE_USER, RSERVE_PWD);
-            dbgLog.fine(">" + c.eval("R.version$version.string").asString() + "<");
+            dbgLog.info("R Version = " + c.eval("R.version$version.string").asString() + "<");
             
             // check working directories
             // This needs to be done *before* we try to create any files 
@@ -307,8 +309,8 @@ public class DvnRDataAnalysisServiceImpl {
 
             // save the data file at the Rserve side
             String infile = sro.getSubsetFileName();
-            InputStream inb = new BufferedInputStream(
-                    new FileInputStream(infile));
+            
+            InputStream inb = new BufferedInputStream(new FileInputStream(infile));
 
             int bufsize;
             byte[] bffr = new byte[1024];
@@ -439,8 +441,17 @@ public class DvnRDataAnalysisServiceImpl {
             //String datafilename = "/nfs/home/A/asone/java/rcode/t.28948.1.tab";
             
             // tab-delimited file name = tempFileName
+            
+            // vnames = Arrays.deepToString(new REXPString(jvnames).asStrings())
+            // vartyp = Arrays.deepToString(new REXPInteger(sro.getUpdatedVariableTypes()).asStrings())
+            // varFmt = 
+            dbgLog.info("col names ..... " + Arrays.deepToString(jvnames));
+            dbgLog.info("colClassesX ... " + Arrays.toString(sro.getUpdatedVariableTypes()));
+            dbgLog.info("varFormat ..... " + tmpFmt);
+            
             String readtableline = "x<-read.table141vdc(file='"+tempFileName+
                 "', col.names=vnames, colClassesx=vartyp, varFormat=varFmt )";
+            
             historyEntry.add(readtableline);
             dbgLog.fine("DvnRserveComm: "+"readtable="+readtableline);
 
@@ -766,6 +777,8 @@ if (tmpv.length > 0){
             String RversionLine = "R.Version()$version.string";
             String Rversion = c.eval(RversionLine).asString();
             
+            dbgLog.info(String.format("R-version String = %s", Rversion));
+            
             // replication: R version
             String repDVN_Rversion = "attr(dvnData, 'R.version') <- R.Version()$version.string";
             c.voidEval(repDVN_Rversion);
@@ -855,7 +868,7 @@ if (tmpv.length > 0){
             result.put("dsbContextRootDir",  DSB_CTXT_DIR );
             result.put("PID", PID);
             result.put("Rversion", Rversion);
-            result.put("zeligVersion", zeligVersion);
+            result.put("zeligR-version String", zeligVersion);
             result.put("RexecDate", RexecDate);
             result.put("RCommandHistory", StringUtils.join(historyEntry,"\n"));
             
@@ -1032,13 +1045,17 @@ if (tmpv.length > 0){
     }
     
     
-    /** *************************************************************
+    /** 
      * Handles a downloading request 
+     * Prepares a ZIP archive for download
      *
-     * @param     
-     * @return    
+     * @param sro a DVNRJobREquest object used to store information about the
+     * R-request to be processed
+     * @param c an RConnectionto the R Server
+     * @return a String-String map containing information about the result
      */
-    public Map<String, String> runDownloadRequest(DvnRJobRequest sro, RConnection c){
+    public Map<String, String> runDownloadRequest (DvnRJobRequest sro, RConnection c) {
+
     
         String optionBanner = "########### downloading option ###########\n";
         dbgLog.fine(optionBanner);

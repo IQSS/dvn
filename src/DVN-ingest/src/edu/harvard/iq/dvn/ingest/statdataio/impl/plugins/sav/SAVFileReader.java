@@ -1344,6 +1344,12 @@ public class SAVFileReader extends StatDataFileReader{
 
             smd.setVariableFormat(printFormatList);
             smd.setVariableFormatName(printFormatNameTable);
+            
+            dbgLog.info("<<<<<<");
+            dbgLog.info("printFormatList = " + printFormatList);
+            dbgLog.info("printFormatNameTable = " + printFormatNameTable);
+            // dbgLog.info("formatCategoryTable = " + formatCategoryTable);
+            dbgLog.info(">>>>>>");
 
 
             dbgLog.fine("RT2: OBSwiseTypelList="+OBSwiseTypelList);
@@ -2865,6 +2871,11 @@ public class SAVFileReader extends StatDataFileReader{
         smd.setDecimalVariables(decimalVariableSet);
         smd.getFileInformation().put("caseQnty", caseQnty);
         smd.setVariableFormatCategory(formatCategoryTable);
+        dbgLog.info("<<<<<<");
+        //dbgLog.info("printFormatList = " + printFormatList);
+        //dbgLog.info("printFormatNameTable = " + printFormatNameTable);
+        dbgLog.info("formatCategoryTable = " + formatCategoryTable);
+        dbgLog.info(">>>>>>");
 
 
         // contents check

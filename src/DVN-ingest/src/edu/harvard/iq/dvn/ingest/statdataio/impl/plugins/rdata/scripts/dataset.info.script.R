@@ -17,7 +17,7 @@ VariableMetaData.default <- function (values) {
 }
 #' Create a variable.meta.data Object from a Factor
 #' @param values a vector of factors, potentially with levels
-VariableMetaDatafactor <- function (values) {
+VariableMetaData.factor <- function (values) {
   list(type = 0, type.string = "factor", class = class(values), levels = levels(values), format = NULL)
 }
 #' @param values a vector of logical values

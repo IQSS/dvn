@@ -135,10 +135,8 @@ public class DvnRJobRequest {
             Map <String, Map <String, String>> vts,
             Map <String, List<Object>> rs
             ) {
-      
-        dbgLog.fine("***** DvnRJobRequest: within the 3-option constructor ends here *****");
-        this(dv,listParams,vts,rs, null);
-
+      this(dv,listParams,vts,rs, null);
+      dbgLog.fine("***** DvnRJobRequest: within the 3-option constructor ends here *****");
     }
 
     /**
@@ -216,7 +214,6 @@ public class DvnRJobRequest {
      
     public Map<String, List<String>> getListParametersForRequest (){
       return this.listParametersForRequest;
-        return this.listParametersForRequest;
     }
 
     /**

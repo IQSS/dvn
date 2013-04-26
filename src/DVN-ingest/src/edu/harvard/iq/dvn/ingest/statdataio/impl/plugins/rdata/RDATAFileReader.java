@@ -633,18 +633,20 @@ public class RDATAFileReader extends StatDataFileReader {
       
       RList metaInfo = fileInformation.at("meta.info").asList();
       
-      mVariableMetaDataTable = getVariableMetaDataTable(metaInfo);
-      
       int varQnty = 0;
       variableNames = fileInformation.at("varNames").asStrings();
       
       mDataTypes = fileInformation.at("dataTypes").asStrings();
       
+      // 
       for (String varName : variableNames) {
         variableLabels.put(varName, varName);
         variableNameList.add(varName);
         varQnty++;
       }
+      
+      // Get the Variable Meta Data Table while Populating 
+      mVariableMetaDataTable = getVariableMetaDataTable(metaInfo);
       
       mCaseQuantity = fileInformation.at("caseQnty").asInteger();
       mVarQuantity = varQnty;
@@ -1117,31 +1119,44 @@ public class RDATAFileReader extends StatDataFileReader {
     HashMap <Integer, VariableMetaData> result = new HashMap <Integer, VariableMetaData> ();
     
     // While we are here, we should also fill the valueLabelTable for the meta-data object
-    Map <String, Map<String, String>> valueLabelTable = new LinkedHashMap <String, Map<String, String>> ();
-    Map <String, String> okay = new HashMap <String, String> ();
+    Map <String, Map <String, String>> valueLabelTable = new LinkedHashMap <String, Map <String, String>> ();
     
-    okay.put("xxx", "xxx");
-    valueLabelTable.put("xxx", okay);
-    
-    smd.setValueLabelTable(valueLabelTable);
+    // smd.setValueLabelTable(valueLabelTable);
     
     for (int k = 0; k < metaInfo.size(); k++) {
-     
+      
       try {
+        // Map for factors
+        Map <String, String> factorLabelMap = new HashMap <String, String> ();
+        
         // Meta-data for a column in the data-set
         RList columnMeta = metaInfo.at(k).asList();
         
         // Extract information
-        variableType = columnMeta.at("type").asInteger();
-        variableTypeString = columnMeta.at("type.string").asString();
-        variableClass = columnMeta.at("class").asStrings();
-        variableLevels = columnMeta.at("levels").asStrings();
-        variableFormat = columnMeta.at("format").asString();
+        variableType = !columnMeta.at("type").isNull() ? columnMeta.at("type").asInteger() : null;
+        variableTypeString = !columnMeta.at("type.string").isNull() ? columnMeta.at("type.string").asString() : null;
+        variableClass = !columnMeta.at("class").isNull() ? columnMeta.at("class").asStrings() : null;
+        variableLevels = !columnMeta.at("levels").isNull() ? columnMeta.at("levels").asStrings() : new String [0];
+        variableFormat = !columnMeta.at("format").isNull() ? columnMeta.at("format").asString() : null;
         
         // Create a variable meta-data object
         VariableMetaData columnMetaData = new VariableMetaData(variableType);
         columnMetaData.setDateTimeFormat(variableFormat);
         columnMetaData.setFactorLevels(variableLevels);
+        
+        // Create a map between a label to itsel. This should include values
+        // that are missing from the dataset but present in the levels of the
+        // factor.
+        for (String label : variableLevels) {
+          factorLabelMap.put(label, label);
+        }
+        
+        // 
+        LOG.info("variableNameList.get(" + k + ") = " + variableNameList.get(k));
+        LOG.info("variableTypeString = " + variableTypeString);
+        LOG.info("variableClass = " + variableClass);
+        
+        valueLabelTable.put(variableNameList.get(k), factorLabelMap);
         
         // Store the meta-data in a hashmap (to return later)
         result.put(k, columnMetaData);
@@ -1149,11 +1164,16 @@ public class RDATAFileReader extends StatDataFileReader {
       catch (REXPMismatchException ex) {
         // If something went wrong, then it wasn't meant to be for that column.
         // And you know what? That's okay.
+        ex.printStackTrace();
         LOG.info(String.format("Column %d of Data Set could not create a VariableMetaData object", k));
       }
     }
     
+    LOG.info("valueLabelTable = " + valueLabelTable);
+    LOG.info("valueLabelTable = " + valueLabelTable);
+    LOG.info("valueLabelTable = " + valueLabelTable);
+    
     // Return the array or null
-    return result.size() > 0 ? result : null;
+    return result;
   }
 }

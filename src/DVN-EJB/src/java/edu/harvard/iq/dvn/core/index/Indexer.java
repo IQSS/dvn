@@ -92,8 +92,22 @@ import org.apache.lucene.search.TermQuery;
 import org.apache.lucene.store.Directory;
 import org.apache.lucene.store.FSDirectory;
 import org.apache.lucene.document.Field;
+import org.apache.lucene.facet.index.CategoryDocumentBuilder;
+import org.apache.lucene.facet.search.DrillDown;
+import org.apache.lucene.facet.search.FacetsCollector;
+import org.apache.lucene.facet.search.params.CountFacetRequest;
+import org.apache.lucene.facet.search.params.FacetSearchParams;
+import org.apache.lucene.facet.search.results.FacetResult;
+import org.apache.lucene.facet.search.results.FacetResultNode;
+import org.apache.lucene.facet.taxonomy.CategoryPath;
+import org.apache.lucene.facet.taxonomy.TaxonomyReader;
+import org.apache.lucene.facet.taxonomy.TaxonomyWriter;
+import org.apache.lucene.facet.taxonomy.directory.DirectoryTaxonomyReader;
+import org.apache.lucene.facet.taxonomy.directory.DirectoryTaxonomyWriter;
+import org.apache.lucene.search.MultiCollector;
 import org.apache.lucene.search.ScoreDoc;
 import org.apache.lucene.search.TermRangeQuery;
+import org.apache.lucene.search.TopScoreDocCollector;
 import org.apache.lucene.util.Version;
 
 /**
@@ -103,7 +117,7 @@ import org.apache.lucene.util.Version;
 @EJB(name="studyField", beanInterface=edu.harvard.iq.dvn.core.study.StudyFieldServiceLocal.class)
 public class Indexer implements java.io.Serializable  {
 
-    private static final Logger logger = Logger.getLogger("edu.harvard.iq.dvn.core.index.Indexer");
+    private static final Logger logger = Logger.getLogger(Indexer.class.getCanonicalName());
     private static IndexWriter writer;
     private static IndexWriter writerVar;
     private static IndexWriter writerVersions;
@@ -117,7 +131,9 @@ public class Indexer implements java.io.Serializable  {
     Directory dir;
     String indexDir = "index-dir";
     int dvnMaxClauseCount = Integer.MAX_VALUE;
-    
+    String taxoDirName = "taxo-dir";
+    Directory taxoDir;
+    private static DirectoryTaxonomyReader taxoReader;
 
     /** Creates a new instance of Indexer */
     public Indexer() {
@@ -143,6 +159,14 @@ public class Indexer implements java.io.Serializable  {
             dir = FSDirectory.open(new File(indexDir));
             r = IndexReader.open(dir, true);
             searcher = new IndexSearcher(r);
+        } catch (IOException ex) {
+            ex.printStackTrace();
+        }
+        // should we use System.getProperty("dvn.taxonomyindex.location") instead?
+        taxoDirName = dvnIndexLocation + "/" + taxoDirName;
+        try {
+            assureTaxoDirExists();
+            taxoDir = FSDirectory.open(new File(taxoDirName));
         } catch (IOException ex) {
             ex.printStackTrace();
         }
@@ -461,9 +485,46 @@ public class Indexer implements java.io.Serializable  {
 
             addText(1.0f, doc, "unf", metadata.getUNF());
 //        writer = new IndexWriter(dir, true, getAnalyzer(), isIndexEmpty());
+            logger.info("Indexing study db id " + study.getId() + " (" + study.getStudyId() + ": " + metadata.getTitle() + ") from dataverse id " + study.getOwner().getId() + " (" + study.getOwner().getAlias() + ")");
             writer = new IndexWriter(dir, getAnalyzer(), isIndexEmpty(), IndexWriter.MaxFieldLength.UNLIMITED);
             writer.setUseCompoundFile(true);
+            TaxonomyWriter taxo = new DirectoryTaxonomyWriter(taxoDir);
+            List<CategoryPath> categoryPaths = new ArrayList<CategoryPath>();
+            addFacet(categoryPaths, "dvName", study.getOwner().getName());
+            addFacet(categoryPaths, "productionDate", metadata.getProductionDate());
+            addFacet(categoryPaths, "distributionDate", metadata.getDistributionDate());
+            for (Iterator it = studyDistributors.iterator(); it.hasNext();) {
+                StudyDistributor studyDistributor = (StudyDistributor) it.next();
+                addFacet(categoryPaths, "distributorName", studyDistributor.getName());
+            }
+            for (Iterator it = studyAuthors.iterator(); it.hasNext();) {
+                StudyAuthor elem = (StudyAuthor) it.next();
+                addFacet(categoryPaths, "authorName", elem.getName());
+                addFacet(categoryPaths, "authorAffiliation", elem.getAffiliation());
+            }
+            addFacet(categoryPaths, "country", metadata.getCountry());
+            for (Iterator it = keywords.iterator(); it.hasNext();) {
+                StudyKeyword elem = (StudyKeyword) it.next();
+                addFacet(categoryPaths, "keywordValue", elem.getValue());
+            }
+            for (Iterator it = topicClassifications.iterator(); it.hasNext();) {
+                StudyTopicClass elem = (StudyTopicClass) it.next();
+                addFacet(categoryPaths, "topicClassValue", elem.getValue());
+            }
+
+            CategoryDocumentBuilder categoryDocBuilder = new CategoryDocumentBuilder(taxo);
+            categoryDocBuilder.setCategoryPaths(categoryPaths);
+            categoryDocBuilder.build(doc);
             writer.addDocument(doc);
+            // warnings from https://svn.apache.org/repos/asf/lucene/dev/tags/lucene_solr_3_5_0/lucene/contrib/facet/src/examples/org/apache/lucene/facet/example/simple/SimpleIndexer.java
+            // we commit changes to the taxonomy index prior to committing them to the search index.
+            // this is important, so that all facets referred to by documents in the search index 
+            // will indeed exist in the taxonomy index.
+            taxo.commit();
+            writer.commit();
+            // close the taxonomy index and the index - all modifications are 
+            // now safely in the provided directories: indexDir and taxoDir.
+            taxo.close();
             writer.close();
             
             writerVar = new IndexWriter(dir, getAnalyzer(), isIndexEmpty(), IndexWriter.MaxFieldLength.UNLIMITED);
@@ -572,6 +633,11 @@ public class Indexer implements java.io.Serializable  {
         }
     }
 
+    private void addFacet(List<CategoryPath> categoryPaths, String key, String value) {
+        if (value != null && value.length() > 0) {
+            categoryPaths.add(new CategoryPath(key, value));
+        }
+    }
 
     public List search(List <Long> studyIds, List <SearchTerm> searchTerms) throws IOException{
         logger.fine("Start search: "+DateTools.dateToString(new Date(), Resolution.MILLISECOND));
@@ -743,6 +809,186 @@ public class Indexer implements java.io.Serializable  {
 
     }
 
+//    public ResultsWithFacets searchWithFacets(List<Long> studyIds, List<SearchTerm> searchTerms) throws IOException {
+//        logger.info("called searchWithFacets in Indexer.java");
+//        logger.fine("Start search: " + DateTools.dateToString(new Date(), Resolution.MILLISECOND));
+//        Long[] studyIdsArray = null;
+//        if (studyIds != null) {
+//            studyIdsArray = studyIds.toArray(new Long[studyIds.size()]);
+//            Arrays.sort(studyIdsArray);
+//        }
+//        List<Long> results = null;
+//        List<BooleanQuery> searchParts = new ArrayList();
+//
+//        // "study-level search" is our "normal", default search, that is 
+//        // performed on the study metadata keywords.
+//        boolean studyLevelSearch = false;
+//        boolean containsStudyLevelAndTerms = false;
+//
+//        // We also support searches on variables and file-level metadata:
+//        // We do have to handle these 2 separately, because of the 2 different
+//        // levels of granularity: one searches on variables, the other on files.
+//        boolean variableSearch = false;
+//        boolean fileMetadataSearch = false;
+//
+//        // And the boolean below indicates any file-level searche - i.e., 
+//        // either a variable, or file metadata search.  
+//        // -- L.A. 
+//        boolean fileLevelSearch = false;
+//
+//
+//        List<SearchTerm> studyLevelSearchTerms = new ArrayList();
+//        List<SearchTerm> variableSearchTerms = new ArrayList();
+//        List<SearchTerm> fileMetadataSearchTerms = new ArrayList();
+//
+//        for (Iterator it = searchTerms.iterator(); it.hasNext();) {
+//            SearchTerm elem = (SearchTerm) it.next();
+//            if (elem.getFieldName().equals("variable")) {
+////                SearchTerm st = dvnTokenizeSearchTerm(elem);
+////                variableSearchTerms.add(st);
+//                variableSearchTerms.add(elem);
+//                variableSearch = true;
+//
+//            } else if (isFileMetadataField(elem.getFieldName())) {
+//                fileMetadataSearch = true;
+//                fileMetadataSearchTerms.add(elem);
+//
+//            } else {
+////                SearchTerm nvst = dvnTokenizeSearchTerm(elem);
+////                nonVariableSearchTerms.add(nvst);
+//                if (elem.getOperator().equals("=")) {
+//                    containsStudyLevelAndTerms = true;
+//                }
+//                studyLevelSearchTerms.add(elem);
+//                studyLevelSearch = true;
+//
+//            }
+//        }
+//
+//        // For now we are not supporting searches on variables and file-level
+//        // metadata *at the same time*. 
+//        // -- L.A. 
+//
+//        if (variableSearch && fileMetadataSearch) {
+//            throw new IOException("Unsupported search term combination! "
+//                    + "Searches on both variables and file-level metadata "
+//                    + "at the same time are not supported.");
+//        }
+//
+//        if (variableSearch || fileMetadataSearch) {
+//            fileLevelSearch = true;
+//        }
+//
+//        List<Long> nvResults = null;
+//        List<Long> filteredResults = null;
+//        ResultsWithFacets resultsWithFacets = null;
+//        resultsWithFacets = new ResultsWithFacets();
+//
+//        // If there are "AND"-type Study-level search terms in the search, 
+//        // let's run it now:
+//
+//        if (containsStudyLevelAndTerms) {
+//            BooleanQuery searchTermsQuery = andSearchTermClause(studyLevelSearchTerms);
+//            searchParts.add(searchTermsQuery);
+//            BooleanQuery searchQuery = andQueryClause(searchParts);
+//            logger.fine("Start hits: " + DateTools.dateToString(new Date(), Resolution.MILLISECOND));
+//            logger.info("INDEXER: search query (native): " + searchQuery.toString());
+//            if (studyIds != null) {
+//                nvResults = getHitIds(searchQuery);
+//                logger.fine("Done hits: " + DateTools.dateToString(new Date(), Resolution.MILLISECOND));
+//                logger.fine("Start filter: " + DateTools.dateToString(new Date(), Resolution.MILLISECOND));
+//                filteredResults = intersectionResults(nvResults, studyIdsArray);
+//            } else {
+//                resultsWithFacets = getResultsWithFacets(searchQuery, null);
+//                nvResults = resultsWithFacets.getMatchIds();
+//                logger.fine("Done hits: " + DateTools.dateToString(new Date(), Resolution.MILLISECOND));
+//                logger.fine("Start filter: " + DateTools.dateToString(new Date(), Resolution.MILLISECOND));
+//                filteredResults = nvResults;
+//            }
+//            logger.fine("Done filter: " + DateTools.dateToString(new Date(), Resolution.MILLISECOND));
+//        }
+//
+//        // If there is a file-level portion of the search, we'll run it now, 
+//        // combining the results with (or, rather filtering them against) the
+//        // hit list produced by the study-level search above, or supplied to this
+//        // method as an argument (if any). 
+//        // IMPORTANT: 
+//        // do note that this logic assumes that the file-level search can be 
+//        // EITHER on variables, or on file-level metadata; but never on both. 
+//        // -- L.A. 
+//
+//        if (fileLevelSearch) {
+//            if (containsStudyLevelAndTerms && (filteredResults.size() > 0)) {
+//                if (variableSearch) {
+//                    logger.fine("Start nonvar search variables: " + DateTools.dateToString(new Date(), Resolution.MILLISECOND));
+//                    results = searchVariables(filteredResults, variableSearchTerms, true); // get var ids
+//                    logger.fine("Done nonvar search variables: " + DateTools.dateToString(new Date(), Resolution.MILLISECOND));
+//                } else if (fileMetadataSearch) {
+//                    logger.fine("Start file-level metadata search; searching for file ids." + DateTools.dateToString(new Date(), Resolution.MILLISECOND));
+//                    results = searchFileMetadata(filteredResults, fileMetadataSearchTerms, true); // get var ids
+//                    logger.fine("Done searching for file ids, on file-level metadata: " + DateTools.dateToString(new Date(), Resolution.MILLISECOND));
+//                }
+//            } else {
+//                logger.fine("Start file-level metadata search: " + DateTools.dateToString(new Date(), Resolution.MILLISECOND));
+//
+//                if (studyLevelSearch && !containsStudyLevelAndTerms) {
+//                    if (variableSearch) {
+//                        results = searchVariables(studyIds, variableSearchTerms, false);
+//                    } else if (fileMetadataSearch) {
+//                        results = searchFileMetadata(studyIds, fileMetadataSearchTerms, false);
+//                    }
+//                    if (results != null) {
+//                        studyIdsArray = results.toArray(new Long[results.size()]);
+//                        Arrays.sort(studyIdsArray);
+//                    }
+//                    BooleanQuery searchQuery = new BooleanQuery();
+//                    List<TermQuery> termQueries = orLongEqSearchTermQueries(results, "id");
+//                    for (Iterator clausesIter = termQueries.iterator(); clausesIter.hasNext();) {
+//                        TermQuery termQuery = (TermQuery) clausesIter.next();
+//                        searchQuery.add(termQuery, BooleanClause.Occur.SHOULD);
+//                    }
+//
+//                    for (Iterator it = searchTerms.iterator(); it.hasNext();) {
+//                        SearchTerm elem = (SearchTerm) it.next();
+//                        if (!elem.getFieldName().equalsIgnoreCase("variable")
+//                                && !isFileMetadataField(elem.getFieldName())) {
+//
+//                            Term term = new Term(elem.getFieldName(), elem.getValue());
+//                            TermQuery termQuery = new TermQuery(term);
+//                            if (elem.getOperator().equals("=")) {
+//                                searchQuery.add(termQuery, BooleanClause.Occur.MUST);
+//                            } else {
+//                                searchQuery.add(termQuery, BooleanClause.Occur.MUST_NOT);
+//                            }
+//                        }
+//                    }
+//                    List<Long> studyIdResults = getHitIds(searchQuery);
+//
+//                    if (variableSearch) {
+//                        results = searchVariables(studyIdResults, variableSearchTerms, true); // get var ids
+//                    } else if (fileMetadataSearch) {
+//                        results = searchFileMetadata(studyIdResults, fileMetadataSearchTerms, true); // get file ids
+//                    }
+//                } else {
+//                    if (variableSearch) {
+//                        results = searchVariables(studyIds, variableSearchTerms, true); // get var ids
+//                    } else if (fileMetadataSearch) {
+//                        results = searchFileMetadata(studyIds, fileMetadataSearchTerms, true); // get file ids
+//                    }
+//                }
+//                logger.fine("Done searching on file-level metadata: " + DateTools.dateToString(new Date(), Resolution.MILLISECOND));
+//            }
+//        } else {
+//            results = filteredResults;
+//        }
+//        logger.fine("Done search: " + DateTools.dateToString(new Date(), Resolution.MILLISECOND));
+//
+////        return results;
+//        resultsWithFacets.setMatchIds(results);
+//        return resultsWithFacets;
+//
+//    }
+//
     // returns a list of study version ids for a given unf
     public List<Long> searchVersionUnf(List <Long> studyIds, String unf) throws IOException {
         List <Long> results = null;
@@ -1146,6 +1392,177 @@ public class Indexer implements java.io.Serializable  {
         return matchIds;
     }
 
+//    ResultsWithFacets getResultsWithFacets(Query baseQuery, List<CategoryPath> facetsOfInterest) throws IOException {
+//        logger.info("called getResultsWithFacets() in Indexer.java");
+//        DocumentCollector s = new DocumentCollector(searcher);
+//        TaxonomyReader taxo = new DirectoryTaxonomyReader(taxoDir);
+//        FacetSearchParams facetSearchParams = new FacetSearchParams();
+//        facetSearchParams.addFacetRequest(new CountFacetRequest(new CategoryPath("dvName"), 10));
+//        facetSearchParams.addFacetRequest(new CountFacetRequest(new CategoryPath("productionDate"), 10));
+//        facetSearchParams.addFacetRequest(new CountFacetRequest(new CategoryPath("distributionDate"), 10));
+//        facetSearchParams.addFacetRequest(new CountFacetRequest(new CategoryPath("authorName"), 10));
+//        facetSearchParams.addFacetRequest(new CountFacetRequest(new CategoryPath("authorAffiliation"), 10));
+//        facetSearchParams.addFacetRequest(new CountFacetRequest(new CategoryPath("keywordValue"), 10));
+//        facetSearchParams.addFacetRequest(new CountFacetRequest(new CategoryPath("topicClassValue"), 10));
+//        facetSearchParams.addFacetRequest(new CountFacetRequest(new CategoryPath("topicVocabClassURI"), 10));
+//        facetSearchParams.addFacetRequest(new CountFacetRequest(new CategoryPath("topicClassVocabulary"), 10));
+//
+//        int numFacetsOfInterest = facetsOfInterest != null ? facetsOfInterest.size() : 0;
+//        CategoryPath[] facetsArray = new CategoryPath[numFacetsOfInterest];
+//        for (int i = 0; i < numFacetsOfInterest; i++) {
+//            facetsArray[i] = facetsOfInterest.get(i);
+//        }
+//
+//        Query q2;
+//        logger.info("facetsArray length is " + facetsArray.length);
+//        if (facetsArray.length > 0) {
+//            q2 = DrillDown.query(baseQuery, facetsArray);
+//        } else {
+//            q2 = baseQuery;
+//        }
+//
+//        FacetsCollector facetsCollector = new FacetsCollector(facetSearchParams, r, taxo);
+//
+//        logger.info("\n--BEGIN query dump (from getResultsWithFacets)--\n" + q2 + "\n--END query dump (from getResultsWithFacets)--");
+//        searcher.search(q2, MultiCollector.wrap(s, facetsCollector));
+//        List<FacetResult> facetResults = facetsCollector.getFacetResults();
+//        ResultsWithFacets resultsWithFacets = new ResultsWithFacets();
+//        resultsWithFacets.setResultList(facetResults);
+//        ArrayList matchIds = new ArrayList();
+//        LinkedHashSet matchIdsSet = new LinkedHashSet();
+//
+//        List hits = s.getStudies();
+//        for (int i = 0; i < hits.size(); i++) {
+//            ScoreDoc sd = (ScoreDoc) hits.get(i);
+//            Document d = searcher.doc(sd.doc);
+//            try {
+//                Field studyId = d.getField("id");
+//                String studyIdStr = studyId.stringValue();
+//                Long studyIdLong = Long.valueOf(studyIdStr);
+//                matchIdsSet.add(studyIdLong);
+//            } catch (Exception ex) {
+//                logger.info("Query for " + baseQuery + "matched but field \"id\" was null");
+////                ex.printStackTrace();
+//            }
+//        }
+//        matchIds.addAll(matchIdsSet);
+//        resultsWithFacets.setMatchIds(matchIds);
+//        return resultsWithFacets;
+//    }
+//
+//    ResultsWithFacets getResultsWithFacets(Query baseQuery, List<CategoryPath> facetsOfInterest) throws IOException {
+    ResultsWithFacets searchNew(DvnQuery dvnQuery) throws IOException {
+        logger.info("called searchNew() in Indexer.java");
+
+        List<CategoryPath> facetsOfInterest = new ArrayList<CategoryPath>();
+        logger.info("facetsOfInterest just new'd: " + facetsOfInterest);
+        if (dvnQuery.vdc != null) {
+            CategoryPath facetToAdd = new CategoryPath("dvName", dvnQuery.vdc.getName());
+            if (!facetsOfInterest.contains(facetToAdd)) {
+                facetsOfInterest.add(facetToAdd);
+            }
+        }
+
+        if (dvnQuery.isClearPreviousFacetRequests() == true) {
+            logger.info("in searchNew in Indexer.java. dvnQuery wants to clear previous facet requests");
+        } else {
+            logger.info("in searchNew in Indexer.java. dvnQuery doesn't want to clear previous facet requests");
+        }
+        logger.info("dvnQuery.facetsToQuery = " + dvnQuery.facetsToQuery);
+        if (dvnQuery.facetsToQuery != null) {
+//        if (dvnQuery.facetsToQuery != null && dvnQuery.isClearPreviousFacetRequests() == false) {
+            for (int i = 0; i < dvnQuery.facetsToQuery.size(); i++) {
+                CategoryPath facetToAdd = dvnQuery.facetsToQuery.get(i);
+                if (!facetsOfInterest.contains(facetToAdd)) {
+                    logger.info("in searchNew in Indexer, adding to facetsOfInterest: facet " + facetToAdd);
+                    facetsOfInterest.add(facetToAdd);
+                }
+            }
+        }
+        Query baseQuery = dvnQuery.getQuery();
+        DocumentCollector s = new DocumentCollector(searcher);
+        TaxonomyReader taxo = new DirectoryTaxonomyReader(taxoDir);
+        FacetSearchParams facetSearchParams = new FacetSearchParams();
+        facetSearchParams.addFacetRequest(new CountFacetRequest(new CategoryPath("dvName"), 10));
+        facetSearchParams.addFacetRequest(new CountFacetRequest(new CategoryPath("authorName"), 10));
+        facetSearchParams.addFacetRequest(new CountFacetRequest(new CategoryPath("authorAffiliation"), 10));
+        facetSearchParams.addFacetRequest(new CountFacetRequest(new CategoryPath("country"), 10));
+        facetSearchParams.addFacetRequest(new CountFacetRequest(new CategoryPath("distributorName"), 10));
+        facetSearchParams.addFacetRequest(new CountFacetRequest(new CategoryPath("productionDate"), 10));
+        facetSearchParams.addFacetRequest(new CountFacetRequest(new CategoryPath("distributionDate"), 10));
+        facetSearchParams.addFacetRequest(new CountFacetRequest(new CategoryPath("keywordValue"), 10));
+        facetSearchParams.addFacetRequest(new CountFacetRequest(new CategoryPath("topicClassValue"), 10));
+
+        int numFacetsOfInterest = facetsOfInterest != null ? facetsOfInterest.size() : 0;
+        CategoryPath[] facetsArray = new CategoryPath[numFacetsOfInterest];
+        for (int i = 0; i < numFacetsOfInterest; i++) {
+            facetsArray[i] = facetsOfInterest.get(i);
+        }
+
+        Query q2;
+        logger.info("facetsArray length is " + facetsArray.length);
+        if (facetsArray.length > 0) {
+            q2 = DrillDown.query(baseQuery, facetsArray);
+        } else {
+            q2 = baseQuery;
+        }
+
+        FacetsCollector facetsCollector = new FacetsCollector(facetSearchParams, r, taxo);
+
+        logger.info("\n--BEGIN query dump (from searchNew)--\n" + q2 + "\n--END query dump (from searchNew)--");
+        searcher.search(q2, MultiCollector.wrap(s, facetsCollector));
+        List<FacetResult> facetResults = facetsCollector.getFacetResults();
+        ResultsWithFacets resultsWithFacets = new ResultsWithFacets();
+        resultsWithFacets.setResultList(facetResults);
+        ArrayList matchIds = new ArrayList();
+        LinkedHashSet matchIdsSet = new LinkedHashSet();
+
+        List hits = s.getStudies();
+        for (int i = 0; i < hits.size(); i++) {
+            ScoreDoc sd = (ScoreDoc) hits.get(i);
+            Document d = searcher.doc(sd.doc);
+            try {
+                Field studyId = d.getField("id");
+                String studyIdStr = studyId.stringValue();
+                Long studyIdLong = Long.valueOf(studyIdStr);
+                matchIdsSet.add(studyIdLong);
+            } catch (Exception ex) {
+                logger.info("Query for " + baseQuery + "matched but field \"id\" was null");
+//                ex.printStackTrace();
+            }
+        }
+        matchIds.addAll(matchIdsSet);
+        resultsWithFacets.setMatchIds(matchIds);
+        // don't let user remove dvName facet if on DV page
+        if (dvnQuery.vdc != null) {
+            CategoryPath facetToRemove = new CategoryPath("dvName", dvnQuery.vdc.getName());
+            for (Iterator<CategoryPath> it = facetsOfInterest.iterator(); it.hasNext();) {
+                CategoryPath facet = it.next();
+                if (facet.equals(facetToRemove)) {
+                    it.remove();
+                }
+            }
+        }
+        /**
+         * When uses search "within these results" we can no longer return
+         * faceted results. A "within these results" search takes the list of
+         * studyIDs from the previous search and further narrows the
+         * results based on a new search.
+         */
+        logger.info("limiting to certain study IDs (maybe)");
+        if (dvnQuery.limitToStudyIds != null) {
+            List<Long> studyIdsOrig = resultsWithFacets.getMatchIds();
+            logger.info("running limiting method...");
+            List<Long> filteredResults = intersectionResults(studyIdsOrig, dvnQuery.limitToStudyIds);
+            resultsWithFacets.setMatchIds(filteredResults);
+            resultsWithFacets.setResultList(null);
+        }
+        logger.info("facetsOfInterest about to setFacetsQueried: " + facetsOfInterest);
+        resultsWithFacets.setFacetsQueried(facetsOfInterest);
+        resultsWithFacets.setClearPreviousFacetRequests(dvnQuery.isClearPreviousFacetRequests());
+        return resultsWithFacets;
+    }
+
     private List<Long> getHitIds(List<Document> hits) throws IOException {
         ArrayList matchIds = new ArrayList();
         LinkedHashSet matchIdsSet = new LinkedHashSet();
@@ -1410,7 +1827,7 @@ public class Indexer implements java.io.Serializable  {
         return termQuery;
     }
 
-    BooleanQuery andSearchTermClause(List <SearchTerm> andSearchTerms){
+    public BooleanQuery andSearchTermClause(List <SearchTerm> andSearchTerms){
         BooleanQuery andTerms = new BooleanQuery();
         andTerms.setMaxClauseCount(dvnMaxClauseCount);
         Query rQuery=null;
@@ -1638,4 +2055,13 @@ public class Indexer implements java.io.Serializable  {
             logger.fine(indexDir + " created");
         }
     }
+    private void assureTaxoDirExists() {
+        File taxoDirFile = new File(taxoDirName);
+        if (!taxoDirFile.exists()) {
+            logger.info("Taxonomy directory does not exist - creating " + taxoDir);
+            taxoDirFile.mkdir();
+            logger.info(taxoDir + " created");
+        }
+    }
+
 }

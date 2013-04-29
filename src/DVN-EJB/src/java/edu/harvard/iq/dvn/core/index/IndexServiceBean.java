@@ -37,6 +37,7 @@ import edu.harvard.iq.dvn.core.vdc.VDCCollection;
 import edu.harvard.iq.dvn.core.vdc.VDCCollectionServiceLocal;
 import edu.harvard.iq.dvn.core.vdc.VDCNetworkServiceLocal;
 import edu.harvard.iq.dvn.core.vdc.VDCServiceLocal;
+import edu.harvard.iq.dvn.core.index.DvnQuery;
 import java.io.File;
 import java.io.IOException;
 import java.net.InetAddress;
@@ -71,6 +72,9 @@ import javax.jms.QueueSession;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import org.apache.lucene.facet.taxonomy.CategoryPath;
+import org.apache.lucene.search.BooleanQuery;
+import org.apache.lucene.search.Query;
 
 /**
  *
@@ -425,6 +429,58 @@ public class IndexServiceBean implements edu.harvard.iq.dvn.core.index.IndexServ
             ex.printStackTrace();
         }
         return matchingStudyIds == null ? new ArrayList() : matchingStudyIds;
+    }
+    
+//    public ResultsWithFacets searchwithFacets(VDC vdc, List<SearchTerm> searchTerms) {
+//        List studyIds = vdc != null ? listVdcStudyIds(vdc) : null;
+//        logger.info("called searchWithFacets in IndexServiceBean");
+//        ResultsWithFacets resultsWithFacets = null;
+//        Indexer indexer = Indexer.getInstance();
+//        try {
+//            resultsWithFacets = indexer.searchWithFacets(studyIds, searchTerms);
+//        } catch (IOException ex) {
+//            ex.printStackTrace();
+//        }        
+//        return resultsWithFacets;
+//    }
+//
+    public ResultsWithFacets searchNew(DvnQuery dvnQuery) {
+        logger.info("in searchNew in IndexServiceBean");
+        VDC vdc = dvnQuery.getVdc();
+        List<SearchTerm> searchTerms = dvnQuery.getSearchTerms();
+        List studyIds = vdc != null ? listVdcStudyIds(vdc) : null;
+        ResultsWithFacets resultsWithFacets = null;
+        Indexer indexer = Indexer.getInstance();
+        try {
+            resultsWithFacets = indexer.searchNew(dvnQuery);
+        } catch (IOException ex) {
+            ex.printStackTrace();
+        }
+        return resultsWithFacets;
+    }
+
+//    public ResultsWithFacets getResultsWithFacets(Query baseQuery, List<CategoryPath> facetsOfInterest) {
+//        logger.info("called getResultsWithFacets() in IndexServiceBean");
+//        ResultsWithFacets resultsWithFacets = null;
+//        Indexer indexer = Indexer.getInstance();
+//        try {
+//            resultsWithFacets = indexer.getResultsWithFacets(baseQuery, facetsOfInterest);
+//        } catch (IOException ex) {
+//            ex.printStackTrace();
+//        }
+//        return resultsWithFacets;
+//
+//    }
+//
+    public BooleanQuery andSearchTermClause(List<SearchTerm> studyLevelSearchTerms) {
+        Indexer indexer = Indexer.getInstance();
+        return indexer.andSearchTermClause(studyLevelSearchTerms);
+
+    }
+
+    public BooleanQuery andQueryClause(List<BooleanQuery> searchParts) {
+        Indexer indexer = Indexer.getInstance();
+        return indexer.andQueryClause(searchParts);
     }
 
     private List listVdcStudyIds(final VDC vdc) {

@@ -103,8 +103,14 @@
                   <tr>
                      <td valign="bottom">
                          <div jsfc="ice:panelGroup" styleClass="dvnStudyListCollectionName">
-                            <ice:outputText value="#{StudyListingPage.listHeader}"/>
-                            <ice:outputText styleClass="dvnStudyListSearchResultsMessage" value=" #{StudyListingPage.listMessage}" rendered="#{StudyListingPage.studyCount != 0}"/>
+                             <ice:outputText value="#{StudyListingPage.listHeader}"/>
+                             <ice:outputText styleClass="dvnStudyListSearchResultsMessage" value=" #{StudyListingPage.listMessage}" rendered="#{StudyListingPage.studyCount != 0}"/>
+                             <!--<ui:repeat value="#{StudyListingPage.facetsOfInterest}" var="facetToRemove">-->
+                             <ui:repeat value="#{StudyListingPage.facetsQueried}" var="facetToRemove">
+                                 <ice:commandLink action="#{StudyListingPage.removeFacet(facetToRemove)}" title="Remove">
+                                     <ice:outputText styleClass="dvnStudyListSearchResultsMessage" value=" #{StudyListingPage.showFacetPath(facetToRemove)} (click to remove)" rendered="#{StudyListingPage.studyCount != 0}"/>
+                                 </ice:commandLink>
+                             </ui:repeat>
                          </div>
                      </td>
                      <td width="388" align="right" valign="bottom">
@@ -122,7 +128,9 @@
                                         <ice:inputText onkeypress="if (window.event) return processEvent('', 'form1:search'); else return processEvent(event, 'form1:search');" id="textField2" value="#{StudyListingPage.searchValue}" onclick="clickclear(this, 'Search Studies')"/>
                                     </label>
                                     <label for="button">
-                                        <ice:commandButton id="search" value="Search" action="#{StudyListingPage.search_action}"/>
+                                        <!--<ice:commandButton id="search" value="Search" action="#{StudyListingPage.search_action}"/>-->
+                                        <!--<ice:commandButton id="search" value="Search" action="#{StudyListingPage.search_actionWithFacets}"/>-->
+                                        <ice:commandButton id="search" value="Search" action="#{StudyListingPage.search_actionNew}"/>
                                     </label>
                                   </div>
                                   <div style="">
@@ -218,7 +226,8 @@
                   </table>
                 </div>
                 <div style="overflow:hidden;">
-                <!-- Comment out static facet link section <div jsfc="ice:panelGroup" styleClass="dvnStudyFacetBlock" rendered="#{(StudyListingPage.renderSearchResultsFilter)}">
+                <!--<div jsfc="ice:panelGroup" styleClass="dvnStudyFacetBlock" rendered="#{(StudyListingPage.renderSearchResultsFilter)}">-->
+                    <div jsfc="ice:panelGroup" styleClass="dvnStudyFacetBlock" rendered="#{(StudyListingPage.renderSearchResultsFilter) and StudyListingPage.renderFacets}">
                     <style type="text/css">
                     .dvnStudyFacetBlock {width:30%; float:right; text-align:left;}
                     .dvnStudyListBlockSearch {width:70%; border-right:1px solid #C55B28;}
@@ -231,18 +240,26 @@
                     </style>
                     <div class="dvnStudyFacetBlockTitle">Refine Results</div>
                     <div class="dvnStudyFacetCategoryBlock">
-                        <div class="dvnStudyFacetCategoryTitle">Result Category 1</div>
                         <ul>
-                            <li><a href="#">Result Link 1</a> <span class="dvnStudyFacetResultNumber">(88)</span></li>
+                            <ice:dataTable value="#{StudyListingPage.getFacets(5)}" var="facetUI">
+                                <ice:column>
+                                    <!--<div class="dvnStudyFacetCategoryTitle"><ice:outputText value="#{facetUI.name}"/></div>-->
+                                    <!--<div class="dvnStudyFacetCategoryTitle"><ice:outputText value="#{facetUI.friendlyName}"/></div>-->
+                                    <div class="dvnStudyFacetCategoryTitle"><ice:outputText value="#{facetUI.showFriendlyName(facetUI.name)}"/></div>
+                                    <ul>
+                                        <ui:repeat value="#{facetUI.facetResultUIs}" var="facetresultuis">
+                                            <li>
+                                                <ice:commandLink action="#{StudyListingPage.setStudyListingByFacets(facetUI.name, facetresultuis.name)}" title="Refine by facet">
+                                                    <ice:outputText value="#{facetresultuis.name}" style="display:inline"/> <span class="dvnStudyFacetResultNumber">(#{facetresultuis.hits})</span>
+                                                </ice:commandLink>
+                                            </li>
+                                        </ui:repeat>                                        
+                                    </ul>
+                                </ice:column>
+                            </ice:dataTable>
                         </ul>
                     </div>
-                    <div class="dvnStudyFacetCategoryBlock">
-                        <div class="dvnStudyFacetCategoryTitle">Result Category 2</div>
-                        <ul>
-                            <li><a href="#">Result Link 2</a> <span class="dvnStudyFacetResultNumber">(88)</span></li>
-                        </ul>
-                    </div>
-                </div> Comment out static facet link section -->
+                </div>
                 <div jsfc="ice:panelGroup" styleClass="#{(StudyListingPage.renderSearchResultsFilter) ? 'dvnStudyListBlockSearch' : 'dvnStudyListBlockHomePage'}">
                     <ice:dataTable rows="10" headerClass="list-header" id="studyListTable1" width="100%"
                                 binding="#{StudyListingPage.studyTable}"

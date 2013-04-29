@@ -58,6 +58,8 @@ import com.icesoft.faces.component.ext.HtmlSelectOneRadio;
 import com.icesoft.faces.component.ext.HtmlDataTable;
 import com.icesoft.faces.component.ext.HtmlCommandButton;
 import com.icesoft.faces.component.ext.HtmlPanelGrid;
+import edu.harvard.iq.dvn.core.index.DvnQuery;
+import edu.harvard.iq.dvn.core.index.ResultsWithFacets;
 import edu.harvard.iq.dvn.core.study.VariableServiceLocal;
 import javax.faces.component.UIColumn;
 import java.util.Locale;
@@ -65,9 +67,11 @@ import java.util.ResourceBundle;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.MissingResourceException;
+import java.util.logging.Logger;
 import javax.faces.bean.ViewScoped;
 import javax.faces.model.SelectItem;
 import javax.inject.Named;
+import org.apache.lucene.facet.search.results.FacetResult;
 
 /**
  * <p>Page bean that corresponds to a similarly named JSP page.  This
@@ -79,6 +83,8 @@ import javax.inject.Named;
 @Named("AdvSearchPage")
 @ViewScoped
 public class AdvSearchPage extends VDCBaseBean implements java.io.Serializable {
+
+    private static final Logger logger = Logger.getLogger(AdvSearchPage.class.getCanonicalName());
 
     @EJB
     VDCServiceLocal vdcService;
@@ -900,6 +906,86 @@ public class AdvSearchPage extends VDCBaseBean implements java.io.Serializable {
             return "";
         }        
         
+    }
+
+    public String searchWithFacets() {
+//        String query = buildQuery();
+        List searchCollections = null;
+        boolean searchOnlySelectedCollections = false;
+
+        if (validateAllSearchCriteria()) {
+            if (radioButtonList1.getValue() != null) {
+                String radioButtonStr = (String) radioButtonList1.getValue();
+                if (radioButtonStr.indexOf("Only") > 1) {
+                    searchOnlySelectedCollections = true;
+
+                    searchCollections = new ArrayList();
+                    for (Iterator it = collectionModelList.iterator(); it.hasNext();) {
+                        CollectionModel elem = (CollectionModel) it.next();
+                        if (elem.isSelected()) {
+                            VDCCollection selectedCollection = vdcCollectionService.find(elem.getId());
+                            searchCollections.add(selectedCollection);
+                        }
+                    }
+                    if (searchCollections.isEmpty()) {
+                        searchOnlySelectedCollections = false;
+                    }
+                }
+            }
+
+            List<SearchTerm> searchTerms = buildSearchTermList();
+            VDC thisVDC = getVDCRequestBean().getCurrentVDC();
+            List<Long> viewableIds = null;
+            ResultsWithFacets resultsWithFacets = null;
+            if (searchOnlySelectedCollections) {
+                viewableIds = indexServiceBean.search(thisVDC, searchCollections, searchTerms);
+            } else {
+                logger.info("in searchWithFacets in AdvSearchPage");
+                //                viewableIds = indexServiceBean.search(thisVDC, searchTerms);
+//                resultsWithFacets = indexServiceBean.searchwithFacets(thisVDC, searchTerms);
+                DvnQuery dvnQuery = new DvnQuery();
+                dvnQuery.setVdc(thisVDC);
+                dvnQuery.setSearchTerms(searchTerms);
+                dvnQuery.constructQuery();
+                resultsWithFacets = indexServiceBean.searchNew(dvnQuery);
+                viewableIds = resultsWithFacets.getMatchIds();
+                List<FacetResult> facetResults = resultsWithFacets.getResultList();
+            }
+
+            StudyListing sl = new StudyListing(StudyListing.SEARCH);
+            sl.setVdcId(getVDCRequestBean().getCurrentVDCId());
+            sl.setSearchTerms(searchTerms);
+            sl.setResultsWithFacets(resultsWithFacets);
+            if (isVariableSearch()) {
+                Map variableMap = new HashMap();
+                List studies = new ArrayList();
+                varService.determineStudiesFromVariables(viewableIds, studies, variableMap);
+                sl.setStudyIds(studies);
+                sl.setVariableMap(variableMap);
+
+            } else if (isFileLevelMetadataSearch()) {
+                /**
+                 * This (experimental) code is for treating file-level metadata
+                 * searches in the same way that we treat variable searches;
+                 * meaning that the actual files that matched the query will be
+                 * shown on the StudyListingPage; just like the individual
+                 * variables are shown there for variable searches.
+                 */
+                Map fileMap = new HashMap();
+                List studies = new ArrayList();
+                studyService.determineStudiesFromFiles(viewableIds, studies, fileMap);
+                sl.setStudyIds(studies);
+                sl.setFileMap(fileMap);
+            } else {
+                sl.setStudyIds(viewableIds);
+            }
+
+            String studyListingIndex = StudyListing.addToStudyListingMap(sl, getSessionMap());
+            return "/StudyListingPage.xhtml?faces-redirect=true&studyListingIndex=" + studyListingIndex + "&vdcId=" + getVDCRequestBean().getCurrentVDCId();
+        } else {
+            return "";
+        }
+
     }
 
     public boolean isDateItem(String s) {

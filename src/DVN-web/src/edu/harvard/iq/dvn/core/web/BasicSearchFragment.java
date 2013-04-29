@@ -20,7 +20,9 @@
 package edu.harvard.iq.dvn.core.web;
 
 import edu.harvard.iq.dvn.core.admin.KeywordSearchServiceBean;
+import edu.harvard.iq.dvn.core.index.DvnQuery;
 import edu.harvard.iq.dvn.core.index.IndexServiceLocal;
+import edu.harvard.iq.dvn.core.index.ResultsWithFacets;
 import edu.harvard.iq.dvn.core.index.SearchTerm;
 import edu.harvard.iq.dvn.core.study.StudyServiceLocal;
 import edu.harvard.iq.dvn.core.study.StudyVersion;
@@ -35,13 +37,18 @@ import javax.ejb.EJB;
 import edu.harvard.iq.dvn.core.vdc.VDCCollectionServiceLocal;
 import edu.harvard.iq.dvn.core.vdc.VDCServiceLocal;
 import java.util.*;
+import java.util.logging.Logger;
 import javax.faces.bean.ViewScoped;
 import javax.inject.Named;
+import org.apache.lucene.facet.search.results.FacetResult;
+import org.apache.lucene.facet.search.results.FacetResultNode;
+import org.apache.lucene.facet.taxonomy.CategoryPath;
 
 
 @Named ("BasicSearchFragment")
 @ViewScoped
 public class BasicSearchFragment extends VDCBaseBean implements java.io.Serializable {
+    private static final Logger logger = Logger.getLogger(BasicSearchFragment.class.getCanonicalName());
     @EJB
     IndexServiceLocal      indexService;
     @EJB
@@ -80,6 +87,18 @@ public class BasicSearchFragment extends VDCBaseBean implements java.io.Serializ
         return "/StudyListingPage.xhtml?faces-redirect=true&studyListingIndex=" + studyListingIndex + "&vdcId=" + getVDCRequestBean().getCurrentVDCId();
     }
 
+    public String facet_search() {
+        searchField = (searchField == null) ? "any" : searchField; // default searchField, in case no dropdown
+
+        List searchTerms    = new ArrayList();
+        SearchTerm st       = new SearchTerm();
+        st.setFieldName( searchField );
+        st.setValue( searchValue );
+        StudyListing sl = getSearchResultsWithFacets(st);
+        String studyListingIndex = StudyListing.addToStudyListingMap(sl, getSessionMap());
+        return "/StudyListingPage.xhtml?faces-redirect=true&studyListingIndex=" + studyListingIndex + "&vdcId=" + getVDCRequestBean().getCurrentVDCId();
+    }
+
     public String keywordSearch_action(String searchIn){
         System.out.print("searchIn: "+ searchIn);
         searchField = (searchField == null) ? "any" : searchField; // default searchField, in case no dropdown       
@@ -90,8 +109,19 @@ public class BasicSearchFragment extends VDCBaseBean implements java.io.Serializ
         String studyListingIndex = StudyListing.addToStudyListingMap(sl, getSessionMap());
         return "/StudyListingPage.xhtml?faces-redirect=true&studyListingIndex=" + studyListingIndex + "&vdcId=" + getVDCRequestBean().getCurrentVDCId();
     }
- 
-    
+
+    public String keywordSearchWithFacets_action(String searchIn) {
+        System.out.print("searchIn: " + searchIn);
+        searchField = (searchField == null) ? "any" : searchField; // default searchField, in case no dropdown       
+        SearchTerm st = new SearchTerm();
+        st.setFieldName(searchField);
+        st.setValue(searchIn);
+        StudyListing sl = getSearchResultsWithFacets(st);
+        String studyListingIndex = StudyListing.addToStudyListingMap(sl, getSessionMap());
+        return "/StudyListingPage.xhtml?faces-redirect=true&studyListingIndex=" + studyListingIndex + "&vdcId=" + getVDCRequestBean().getCurrentVDCId();
+    }
+
+
     private StudyListing getSearchResult(SearchTerm st){
         
         List searchTerms    = new ArrayList();
@@ -148,6 +178,74 @@ public class BasicSearchFragment extends VDCBaseBean implements java.io.Serializ
         return sl;
         
     }
+
+    public StudyListing getSearchResultsWithFacets(SearchTerm st) {
+
+        List searchTerms = new ArrayList();
+        searchTerms.add(st);
+        List studies = new ArrayList();
+        Map variableMap = new HashMap();
+        Map versionMap = new HashMap();
+        List displayVersionList = new ArrayList();
+        ResultsWithFacets resultsWithFacets = null;
+
+        // when is this true?
+        if (searchField.equals("variable")) {
+            List variables = indexService.searchVariables(getVDCRequestBean().getCurrentVDC(), st);
+            // how will facetResults get set?
+            varService.determineStudiesFromVariables(variables, studies, variableMap);
+
+        } else {
+//            resultsWithFacets = indexService.searchwithFacets(getVDCRequestBean().getCurrentVDC(), searchTerms);
+            DvnQuery dvnQuery = new DvnQuery();
+            dvnQuery.setSearchTerms(searchTerms);
+            dvnQuery.constructQuery();
+            dvnQuery.setClearPreviousFacetRequests(true);
+            resultsWithFacets = indexService.searchNew(dvnQuery);
+            studies = resultsWithFacets.getMatchIds();
+        }
+
+        if (searchField.equals("any")) {
+            List<Long> versionIds = indexService.searchVersionUnf(getVDCRequestBean().getCurrentVDC(), searchValue);
+            Iterator iter = versionIds.iterator();
+            Long studyId = null;
+            while (iter.hasNext()) {
+                Long vId = (Long) iter.next();
+                StudyVersion sv = null;
+                try {
+                    sv = studyService.getStudyVersionById(vId);
+                    studyId = sv.getStudy().getId();
+                    List<StudyVersion> svList = (List<StudyVersion>) versionMap.get(studyId);
+                    if (svList == null) {
+                        svList = new ArrayList<StudyVersion>();
+                    }
+                    svList.add(sv);
+                    if (!studies.contains(studyId)) {
+                        displayVersionList.add(studyId);
+                        studies.add(studyId);
+                    }
+                    versionMap.put(studyId, svList);
+                } catch (IllegalArgumentException e) {
+                    e.printStackTrace();
+                }
+            }
+
+        }
+
+
+        StudyListing sl = new StudyListing(StudyListing.SEARCH);
+        sl.setVdcId(getVDCRequestBean().getCurrentVDCId());
+        sl.setStudyIds(studies);
+        sl.setSearchTerms(searchTerms);
+        logger.info("in BasicSearchFrag. queriedFacets is: " + resultsWithFacets.getFacetsQueried());
+        sl.setResultsWithFacets(resultsWithFacets);
+        sl.setVariableMap(variableMap);
+        sl.setVersionMap(versionMap);
+        sl.setDisplayStudyVersionsList(displayVersionList);
+
+        return sl;
+    }
+ 
 
  public void setSearchField(String searchField) {
         this.searchField = searchField;

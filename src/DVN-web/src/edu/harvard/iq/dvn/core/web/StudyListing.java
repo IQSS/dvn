@@ -27,6 +27,7 @@
  */
 package edu.harvard.iq.dvn.core.web;
 
+import edu.harvard.iq.dvn.core.index.ResultsWithFacets;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -80,6 +81,7 @@ public class StudyListing  implements java.io.Serializable {
         this.sortMap = sortMap;
     }
     private List displayStudyVersionsList;
+    private ResultsWithFacets resultsWithFacets;
 
     public int getMode() {
         return mode;
@@ -235,6 +237,15 @@ public class StudyListing  implements java.io.Serializable {
      */
     public void setDisplayStudyVersionsList(List displayStudyVersionsList) {
         this.displayStudyVersionsList = displayStudyVersionsList;
+    }
+
+    public ResultsWithFacets getResultsWithFacets() {
+        return resultsWithFacets;
+    }
+
+
+    public void setResultsWithFacets(ResultsWithFacets resultsWithFacets) {
+        this.resultsWithFacets = resultsWithFacets;
     }
 
 }

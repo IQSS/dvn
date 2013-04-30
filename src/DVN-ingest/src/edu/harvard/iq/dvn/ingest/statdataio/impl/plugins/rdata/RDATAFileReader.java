@@ -1120,6 +1120,7 @@ public class RDATAFileReader extends StatDataFileReader {
     
     // While we are here, we should also fill the valueLabelTable for the meta-data object
     Map <String, Map <String, String>> valueLabelTable = new LinkedHashMap <String, Map <String, String>> ();
+    Map <String, String> valueLabelMappingTable = new LinkedHashMap <String, String> ();
     
     // smd.setValueLabelTable(valueLabelTable);
     
@@ -1144,7 +1145,7 @@ public class RDATAFileReader extends StatDataFileReader {
         columnMetaData.setDateTimeFormat(variableFormat);
         columnMetaData.setFactorLevels(variableLevels);
         
-        // Create a map between a label to itsel. This should include values
+        // Create a map between a label to itself. This should include values
         // that are missing from the dataset but present in the levels of the
         // factor.
         for (String label : variableLevels) {
@@ -1157,6 +1158,7 @@ public class RDATAFileReader extends StatDataFileReader {
         LOG.info("variableClass = " + variableClass);
         
         valueLabelTable.put(variableNameList.get(k), factorLabelMap);
+        valueLabelMappingTable.put(variableNameList.get(k), variableNameList.get(k));
         
         // Store the meta-data in a hashmap (to return later)
         result.put(k, columnMetaData);
@@ -1172,6 +1174,9 @@ public class RDATAFileReader extends StatDataFileReader {
     LOG.info("valueLabelTable = " + valueLabelTable);
     LOG.info("valueLabelTable = " + valueLabelTable);
     LOG.info("valueLabelTable = " + valueLabelTable);
+    
+    smd.setValueLabelTable(valueLabelTable);
+    smd.setValueLabelMappingTable(valueLabelMappingTable);
     
     // Return the array or null
     return result;

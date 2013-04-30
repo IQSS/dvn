@@ -51,11 +51,14 @@ public class MetadataHelper {
      * <code>CategoricalStatistic</code> objects.
      */
     public static List<CategoricalStatistic> getMergedResult(
-        Map<String, String> valueLabeli,
-        Map<String, Integer> catStati,
-        List<String> missingValuei){
+            Map<String, String> valueLabeli,
+            Map<String, Integer> catStati,
+            List<String> missingValuei
+            ) {
       
       dbgLog.info("valueLabeli = " + valueLabeli);
+      dbgLog.warning("MetadataHelper: Inside getMergedResult");
+      dbgLog.warning("--------------------------------------");
 
         // protection block
         if (missingValuei == null){
@@ -66,36 +69,41 @@ public class MetadataHelper {
 //        }
         //
         int caseTypeNumber = 0;
-        Set<String> catStatiKeys = null;
-        Set<String>valueLabeliKeys = null;
-        Set<String> mvs = new TreeSet(missingValuei);
+        Set <String> catStatiKeys = null;
+        Set <String> valueLabeliKeys = null;
+        Set <String> mvs = new TreeSet(missingValuei);
+        
         dbgLog.finer("mvs="+mvs);
-        if ((valueLabeli == null)&& (catStati ==null)){
-            return null;
-        } else if ((valueLabeli != null)&& (catStati !=null)){
+        
+        if ((valueLabeli == null) && (catStati ==null)) {
+          return null;
+        }
+        else if ((valueLabeli != null)&& (catStati !=null)) {
             // create duplicates
-            catStatiKeys= new TreeSet(catStati.keySet());
-            valueLabeliKeys= new TreeSet(valueLabeli.keySet());
+          catStatiKeys= new TreeSet(catStati.keySet());
+          valueLabeliKeys= new TreeSet(valueLabeli.keySet());
 
 
-            dbgLog.finer("catStatiKeys="+catStatiKeys);
-            dbgLog.finer("valueLabeliKeys="+valueLabeliKeys);
-            // get the set-operation case number
-            caseTypeNumber = getRelationsBetweenTwoSets(catStatiKeys, valueLabeliKeys);
-            dbgLog.finer("caseTypeNumber="+caseTypeNumber +"\n\n");
-        } else if (valueLabeli == null){
-            catStatiKeys= new TreeSet(catStati.keySet());
-            caseTypeNumber = 6;
-
-        } else if (catStati == null){
-            valueLabeliKeys= new TreeSet(valueLabeli.keySet());
-             caseTypeNumber = 7;
+          dbgLog.finer("valueLabeliKeys="+valueLabeliKeys);
+          
+          // get the set-operation case number
+          caseTypeNumber = getRelationsBetweenTwoSets(catStatiKeys, valueLabeliKeys);
+          dbgLog.finer("caseTypeNumber="+caseTypeNumber +"\n\n");
+        }
+        else if (valueLabeli == null) {
+          catStatiKeys= new TreeSet(catStati.keySet());
+          caseTypeNumber = 6;
+        }
+        else if (catStati == null) {
+          valueLabeliKeys= new TreeSet(valueLabeli.keySet());
+          caseTypeNumber = 7;
         }
 
         // merged result
         List<CategoricalStatistic> merged = new ArrayList<CategoricalStatistic>();
         Set<String> included = new TreeSet<String>();
 
+        dbgLog.info("key values = " + valueLabeliKeys);
 
         switch (caseTypeNumber){
             case 1:
@@ -103,6 +111,8 @@ public class MetadataHelper {
                 // V side
                 for (String kv: valueLabeliKeys){
 
+                  
+                  
                     CategoricalStatistic cs = new CategoricalStatistic();
                     cs.setValue(kv);
                     cs.setLabel(valueLabeli.get(kv));

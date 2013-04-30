@@ -56,10 +56,9 @@ public class MetadataHelper {
             List<String> missingValuei
             ) {
       
+      dbgLog.info("MetadataHelper: Inside getMergedResult");
       dbgLog.info("valueLabeli = " + valueLabeli);
-      dbgLog.warning("MetadataHelper: Inside getMergedResult");
-      dbgLog.warning("--------------------------------------");
-
+      
         // protection block
         if (missingValuei == null){
             missingValuei = new ArrayList<String>();
@@ -328,16 +327,6 @@ public class MetadataHelper {
             }
         }
         
-        dbgLog.warning("Xxxxxxxxxxxx");
-        
-        for (CategoricalStatistic c : merged) {
-          dbgLog.info("CategoricalStatistic value = " + c.getValue());
-          dbgLog.info("CategoricalStatistic label = " + c.getLabel());
-          dbgLog.info("CategoricalStatistic freq. = " + c.getFrequency());
-        }
-        
-        
-
         dbgLog.finer("merged"+merged);
         return merged;
     }

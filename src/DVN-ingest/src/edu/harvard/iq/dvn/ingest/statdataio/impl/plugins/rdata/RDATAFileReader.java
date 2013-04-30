@@ -1105,9 +1105,10 @@ public class RDATAFileReader extends StatDataFileReader {
   }
   
   /**
-   * Get a 
-   * @param metaInfo
-   * @return 
+   * Get a HashMap matching column number to meta-data used in re-creating R Objects
+   * @param metaInfo an "RList" Object containing indices - type, type.string,
+   * class, levels, and format.
+   * @return a HashMap mapping column index to associated metadata
    */
   private HashMap <Integer, VariableMetaData> getVariableMetaDataTable (RList metaInfo) {
     // list(type = 1, type.string = "integer", class = class(values), levels = NULL, format = NULL)
@@ -1133,7 +1134,7 @@ public class RDATAFileReader extends StatDataFileReader {
         // Meta-data for a column in the data-set
         RList columnMeta = metaInfo.at(k).asList();
         
-        // Extract information
+        // Extract information from the returned list
         variableType = !columnMeta.at("type").isNull() ? columnMeta.at("type").asInteger() : null;
         variableTypeString = !columnMeta.at("type.string").isNull() ? columnMeta.at("type.string").asString() : null;
         variableClass = !columnMeta.at("class").isNull() ? columnMeta.at("class").asStrings() : null;
@@ -1152,12 +1153,10 @@ public class RDATAFileReader extends StatDataFileReader {
           factorLabelMap.put(label, label);
         }
         
-        // 
-        LOG.info("variableNameList.get(" + k + ") = " + variableNameList.get(k));
-        LOG.info("variableTypeString = " + variableTypeString);
-        LOG.info("variableClass = " + variableClass);
-        
+        // Value label table matches column-name to list of possible categories
         valueLabelTable.put(variableNameList.get(k), factorLabelMap);
+        
+        // Value label mapping table specifies which variables produce categorical-type data
         valueLabelMappingTable.put(variableNameList.get(k), variableNameList.get(k));
         
         // Store the meta-data in a hashmap (to return later)
@@ -1171,9 +1170,6 @@ public class RDATAFileReader extends StatDataFileReader {
       }
     }
     
-    LOG.info("valueLabelTable = " + valueLabelTable);
-    LOG.info("valueLabelTable = " + valueLabelTable);
-    LOG.info("valueLabelTable = " + valueLabelTable);
     
     smd.setValueLabelTable(valueLabelTable);
     smd.setValueLabelMappingTable(valueLabelMappingTable);

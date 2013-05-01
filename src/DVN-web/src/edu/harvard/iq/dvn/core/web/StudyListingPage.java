@@ -603,10 +603,12 @@ public class StudyListingPage extends VDCBaseBean implements java.io.Serializabl
                 dvnQuery.setVdc(getVDCRequestBean().getCurrentVDC());
 
                 boolean hasCollections = false;
-                Collection<VDCCollection> collections = dvnQuery.getVdc().getOwnedCollections();
-                for (VDCCollection col : collections) {
-                    if (col != dvnQuery.getVdc().getRootCollection()) {
-                        hasCollections = true;
+                if (dvnQuery.getVdc() != null) {
+                    Collection<VDCCollection> collections = dvnQuery.getVdc().getOwnedCollections();
+                    for (VDCCollection col : collections) {
+                        if (col != dvnQuery.getVdc().getRootCollection()) {
+                            hasCollections = true;
+                        }
                     }
                 }
 

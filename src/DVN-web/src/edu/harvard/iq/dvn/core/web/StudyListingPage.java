@@ -600,14 +600,29 @@ public class StudyListingPage extends VDCBaseBean implements java.io.Serializabl
                 resultsWithFacets = indexService.searchNew(dvnQuery);
                 studyIDList = resultsWithFacets.getMatchIds();
             } else {
-//                studyIDList = indexService.search(getVDCRequestBean().getCurrentVDC(), searchTerms);
-//                resultsWithFacets = indexService.searchwithFacets(getVDCRequestBean().getCurrentVDC(), searchTerms);
-//                resultsWithFacets = indexService.searchwithFacets(getVDCRequestBean().getCurrentVDC(), searchTerms); // old version
                 dvnQuery.setVdc(getVDCRequestBean().getCurrentVDC());
-                dvnQuery.setSearchTerms(searchTerms);
-                dvnQuery.constructQuery();
-                resultsWithFacets = indexService.searchNew(dvnQuery);
-                studyIDList = resultsWithFacets.getMatchIds();
+
+                boolean hasCollections = false;
+                if (dvnQuery.getVdc() != null) {
+                    Collection<VDCCollection> collections = dvnQuery.getVdc().getOwnedCollections();
+                    for (VDCCollection col : collections) {
+                        if (col != dvnQuery.getVdc().getRootCollection()) {
+                            hasCollections = true;
+                        }
+                    }
+                }
+
+                if (hasCollections) {
+                    /**
+                     * @todo: implement faceted search
+                     */
+                    studyIDList = indexService.search(getVDCRequestBean().getCurrentVDC(), searchTerms);
+                } else {
+                    dvnQuery.setSearchTerms(searchTerms);
+                    dvnQuery.constructQuery();
+                    resultsWithFacets = indexService.searchNew(dvnQuery);
+                    studyIDList = resultsWithFacets.getMatchIds();
+                }
             }
             if (searchField.equals("any")) {
                 List<Long> versionIds = indexService.searchVersionUnf(getVDCRequestBean().getCurrentVDC(), searchValue);

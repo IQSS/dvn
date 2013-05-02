@@ -723,6 +723,14 @@ public class AdvSearchPage extends VDCBaseBean implements java.io.Serializable {
             
         
             
+            /**
+             * @todo: explore this hack from
+             * https://redmine.hmdc.harvard.edu/issues/2931
+             */
+//            if (sfname.equals("author")) {
+//                logger.info("detected author, not authorName, fixing");
+//                sfname = "authorName";
+//            }
             advSearchFieldMap.put(advS[i++], sfname);
 
         }
@@ -941,15 +949,31 @@ public class AdvSearchPage extends VDCBaseBean implements java.io.Serializable {
                 viewableIds = indexServiceBean.search(thisVDC, searchCollections, searchTerms);
             } else {
                 logger.info("in searchWithFacets in AdvSearchPage");
-                //                viewableIds = indexServiceBean.search(thisVDC, searchTerms);
-//                resultsWithFacets = indexServiceBean.searchwithFacets(thisVDC, searchTerms);
                 DvnQuery dvnQuery = new DvnQuery();
                 dvnQuery.setVdc(thisVDC);
-                dvnQuery.setSearchTerms(searchTerms);
-                dvnQuery.constructQuery();
-                resultsWithFacets = indexServiceBean.searchNew(dvnQuery);
-                viewableIds = resultsWithFacets.getMatchIds();
-                List<FacetResult> facetResults = resultsWithFacets.getResultList();
+
+                boolean hasCollections = false;
+                if (dvnQuery.getVdc() != null) {
+                    Collection<VDCCollection> collections = dvnQuery.getVdc().getOwnedCollections();
+                    for (VDCCollection col : collections) {
+                        if (col != dvnQuery.getVdc().getRootCollection()) {
+                            hasCollections = true;
+                        }
+                    }
+                }
+
+                if (hasCollections) {
+                    /**
+                     * @todo: implement faceted search
+                     */
+                    viewableIds = indexServiceBean.search(thisVDC, searchTerms);
+                } else {
+                    dvnQuery.setSearchTerms(searchTerms);
+                    dvnQuery.constructQuery();
+                    resultsWithFacets = indexServiceBean.searchNew(dvnQuery);
+                    viewableIds = resultsWithFacets.getMatchIds();
+                    List<FacetResult> facetResults = resultsWithFacets.getResultList();
+                }
             }
 
             StudyListing sl = new StudyListing(StudyListing.SEARCH);

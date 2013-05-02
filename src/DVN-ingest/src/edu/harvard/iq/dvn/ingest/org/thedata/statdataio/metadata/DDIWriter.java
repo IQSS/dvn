@@ -201,9 +201,6 @@ public class DDIWriter {
             
             String valueLabelTableName = sdioMetadata.valueLabelMappingTable.get(variableNamei);
             
-            
-            
-            
             // valuLabeli, catStati, missingValuei
              List<CategoricalStatistic> mergedCatStatTable =
                 MetadataHelper.getMergedResult(

@@ -723,6 +723,14 @@ public class AdvSearchPage extends VDCBaseBean implements java.io.Serializable {
             
         
             
+            /**
+             * @todo: explore this hack from
+             * https://redmine.hmdc.harvard.edu/issues/2931
+             */
+//            if (sfname.equals("author")) {
+//                logger.info("detected author, not authorName, fixing");
+//                sfname = "authorName";
+//            }
             advSearchFieldMap.put(advS[i++], sfname);
 
         }

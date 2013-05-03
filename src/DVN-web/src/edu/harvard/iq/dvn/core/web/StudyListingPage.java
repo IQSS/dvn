@@ -1345,7 +1345,22 @@ public class StudyListingPage extends VDCBaseBean implements java.io.Serializabl
         /**
          * @todo: pass in search terms instead?
          */
-        dvnQuery.setQuery(query);
+
+        /**
+         * BEGIN "within these results" facet experiment"
+         * warning: buggy... can't remove facets...
+         * see http://irclog.iq.harvard.edu/dvn/2013-05-03#i_1971
+         */
+        logger.info("previous query was " + studyListing.getResultsWithFacets().getQuery());
+        if (studyListing.getResultsWithFacets().getQuery() != null) {
+            dvnQuery.setQuery(studyListing.getResultsWithFacets().getQuery());
+        } else {
+            dvnQuery.setQuery(query);
+        }
+        /**
+         * END "within these results" facet experiment"
+         */
+        
         logger.info("in setStudyListingByFacets, going to query these facets: " + facetsOfInterest.toString());
         dvnQuery.setFacetsToQuery(facetsOfInterest);
 //        ResultsWithFacets resultsWithFacets = indexService.getResultsWithFacets(query, facetsOfInterest);

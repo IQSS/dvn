@@ -45,6 +45,11 @@ public class VariableMetaData {
   String mTypeString, mDateTimeFormat;
   String [] mClass, mFactorLevels;
   
+  private int [] intFactorValues; 
+  
+  private boolean isFactor = false; 
+  private boolean isBoolean = false; 
+  
   /**
    * Construct a Meta-data-less Object
    * @since 2013-04-10
@@ -72,6 +77,14 @@ public class VariableMetaData {
     mType = VARIABLE_TYPES.contains(type) ? type : -1;
     mTypeString = (String) VARIABLE_TYPE_STRINGS.get(mType);
     mFactorLevels = mType == 0 ? factorLevels : new String[0];
+    intFactorValues = new int[0];
+  }
+  
+  public VariableMetaData (int type, String [] factorLevels, int [] factorValues) {
+    mType = VARIABLE_TYPES.contains(type) ? type : -1;
+    mTypeString = (String) VARIABLE_TYPE_STRINGS.get(mType);
+    mFactorLevels = mType == 0 ? factorLevels : new String[0];
+    intFactorValues = mType == 0 ? factorValues : new int[0];
   }
   /**
    * Whether Column is a Character
@@ -123,8 +136,21 @@ public class VariableMetaData {
    * data-type is only in the Rdata format
    */
   public boolean isFactor () {
-    return false;
+    return isFactor;
   }
+  
+  public void setFactor (boolean isf) {
+    isFactor = isf; 
+  }
+  
+  public boolean isBoolean () {
+    return isBoolean;
+  }
+  
+  public void setBoolean (boolean isb) {
+    isBoolean = isb; 
+  }
+  
   /**
    * 
    */
@@ -151,7 +177,21 @@ public class VariableMetaData {
   public void setDateTimeFormat (String format) {
     mDateTimeFormat = format;
   }
+  
   public void setFactorLevels (String [] levels) {
     mFactorLevels = levels;
   }
+  
+  public String [] getFactorLevels () {
+      return mFactorLevels;
+  }
+  
+  public void setIntFactorValues (int [] values) {
+    intFactorValues = values;
+  }
+  
+  public int [] getIntFactorValues () {
+      return intFactorValues;
+  }
+
 }

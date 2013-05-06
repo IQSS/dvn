@@ -513,7 +513,20 @@ public class RDATAFileReader extends StatDataFileReader {
     // Save basic information about data set
     putFileInformation();
     
-    CSVFileReader csvFileReader = new CSVFileReader('\t');
+    // This actually *sets* type lists more than it *gets* them
+    getVariableTypeList(mDataTypes);
+    
+    // Read and parse the TAB-delimited file saved by R, above; do the 
+    // necessary post-processinga and filtering, and save the resulting 
+    // TAB file as tabFileDestination, below. This is the file we'll be 
+    // using to calculate the UNF, and for the storage/preservation of the
+    // dataset. 
+    
+    // IMPORTANT: this must be done *after* the variable metadata has been 
+    // created!
+    // - L.A. 
+    
+    RTabFileParser csvFileReader = new RTabFileParser('\t');
     BufferedReader localBufferedReader = new BufferedReader(new InputStreamReader(new FileInputStream(localCsvFile)));
     
     // int lineCount = csvFileReader.read(localBufferedReader, smd, null);
@@ -523,10 +536,14 @@ public class RDATAFileReader extends StatDataFileReader {
     // Additionally, this outputs to the tab-delimited file
     int lineCount = csvFileReader.read(localBufferedReader, smd, tabFileWriter);
     
-    // This actually *sets* type lists more than it *gets* them
-    getVariableTypeList(mDataTypes);
+    smd.getFileInformation().put("tabDelimitedDataFileLocation", tabFileDestination.getAbsolutePath());
+    
+    
         
-    // File Data Table
+    // File Data Table:
+    // Read the (processed) tab file one more time, load the entire data set
+    // matrix in memory, for calculation of the UNF and summary stats: 
+    // - L.A.
     mCsvDataTable = readTabDataFile(tabFileDestination);
     
     // Set meta information about format names, I guess.
@@ -587,7 +604,6 @@ public class RDATAFileReader extends StatDataFileReader {
       LOG.info(String.format("RDATAFileReader: Finished writing from destination `%s`", target.getAbsolutePath()));
       LOG.info(String.format("RDATAFileReader: Finished copying to source `%s`", destination.getAbsolutePath()));
       
-      smd.getFileInformation().put("tabDelimitedDataFileLocation", destination.getAbsolutePath());
       
       LOG.info("RDATAFileReader: Closing CSVFileReader R Connection");
       rServeConnection.close();
@@ -691,8 +707,9 @@ public class RDATAFileReader extends StatDataFileReader {
     
     dataTable = new Object[mVarQuantity][mCaseQuantity];
 
-    String tabFileName = (String) smd.getFileInformation().get("tabDelimitedDataFileLocation");
-    
+    //String tabFileName = (String) smd.getFileInformation().get("tabDelimitedDataFileLocation");
+    String tabFileName = tabFile.getAbsolutePath();
+            
     BufferedReader tabFileReader = new BufferedReader(new InputStreamReader(new FileInputStream(tabFileName)));
 
     boolean[] isCharacterVariable = smd.isStringVariable();
@@ -714,10 +731,10 @@ public class RDATAFileReader extends StatDataFileReader {
         // If it's a character variable but not a date
         if (isCharacterVariable[i]) {
           
-          if (valueTokens[i].length() == 0)
+          if (valueTokens[i].length() == 0) {
             // If it is a missing value
             valueTokens[i] = null;
-          else {
+          } else {
             // Otherwise parse it out
             valueTokens[i] = valueTokens[i].replaceFirst("^\"", "");
             valueTokens[i] = valueTokens[i].replaceFirst("\"$", "");
@@ -762,7 +779,26 @@ public class RDATAFileReader extends StatDataFileReader {
    * @return 
    */
   private List<Integer> getVariableTypeList (String[] dataTypes) {
-    
+    /* 
+     * TODO: 
+     * 
+     * Clean up this code; for example, the VariableMetaData variable "columnData"
+     * is created below, but never saved or used. A vector of VariableMetaData 
+     * values actually gets created somewhere else in the code of the reader, and those 
+     * are the values that will be used elsewhere. Need to pick the one we want 
+     * to use and remove the other one - for clarity. 
+     * 
+     * The whole setup with the "minimalTypeList" and "normalTypeList" is 
+     * kinda confusing. One is used for the UNF and stats, the other one for 
+     * metadata processing; which is ok. But then it is actually the "normal" 
+     * one that is used for the "minimal" inside the SDIOMetadata object... 
+     * Just renaming these to something that's more intuitive - types_for_UNF vs. 
+     * types_for_METADATA - should be enough. 
+     * 
+     * --L.A.
+     */
+      
+      
     //
     Map <String, HashMap <String, String>> valueLabelTable = new HashMap <String, HashMap <String, String>> ();
     
@@ -834,6 +870,28 @@ public class RDATAFileReader extends StatDataFileReader {
       }
       
       else if (type.equals("factor")) {
+        /* 
+         * This is the counter-intuitive part: in R, factors always have 
+         * internal integer values and character labels. However, we will 
+         * always treat them as character/string variables, i.e. on the DVN
+         * side they will be ingested as string-type categorical variables 
+         * (with both the "value" and the "label" being the same string - the 
+         * R factor label). Yes, this means we are dropping the numeric value
+         * completely. Why not do what we do in SPSS, i.e. use the numeric for 
+         * the value (and the TAB file entry)? - well, this is in fact a very 
+         * different case: in SPSS, a researcher creating a categorical variable 
+         * with numeric values would be hand-picking these numeric variables; 
+         * so we assume that the chosen values are in fact meaningful. If they 
+         * had some sort of a reason to assign 0 = "Male" and 7 = "Female", we 
+         * assume that they wanted to do this. So we use the numeric codes for 
+         * storage in the TAB file and for calculation of the UNF. In R however, 
+         * the user has no control over the internal numeric codes; they are 
+         * always created automatically and are in fact considered meaningless. 
+         * So we are going to assume that it is the actual values of the labels 
+         * that are meaningful. 
+         *  -- L.A. 
+         * 
+         */
         minimalTypeList.add(-1);
         normalTypeList.add(1);
         mFormatTable[k] = FORMAT_STRING;
@@ -1110,11 +1168,14 @@ public class RDATAFileReader extends StatDataFileReader {
    * class, levels, and format.
    * @return a HashMap mapping column index to associated metadata
    */
-  private HashMap <Integer, VariableMetaData> getVariableMetaDataTable (RList metaInfo) {
+  private HashMap <Integer, VariableMetaData> getVariableMetaDataTable (RList metaInfo) throws IOException {
     // list(type = 1, type.string = "integer", class = class(values), levels = NULL, format = NULL)
     Integer variableType = -1;
     String variableTypeString = "", variableFormat = "";
     String [] variableClass = null, variableLevels = null;
+    
+    String [] variableFactorValuesAsStrings = null; 
+    int [] variableFactorValues = null; 
     
     // The result objet that pairs column numbers with VariableMetaData objects
     HashMap <Integer, VariableMetaData> result = new HashMap <Integer, VariableMetaData> ();
@@ -1139,16 +1200,58 @@ public class RDATAFileReader extends StatDataFileReader {
         variableTypeString = !columnMeta.at("type.string").isNull() ? columnMeta.at("type.string").asString() : null;
         variableClass = !columnMeta.at("class").isNull() ? columnMeta.at("class").asStrings() : null;
         variableLevels = !columnMeta.at("levels").isNull() ? columnMeta.at("levels").asStrings() : new String [0];
+        //variableFactorValuesAsStrings = !columnMeta.at("factorvalues").isNull() ? columnMeta.at("factorvalues").asStrings() : new String [0];
         variableFormat = !columnMeta.at("format").isNull() ? columnMeta.at("format").asString() : null;
+        
+        LOG.info("variable type: "+variableType);
+        LOG.info("variable type string: "+variableTypeString);
+        for (int i = 0; i < variableClass.length; i++) {
+            LOG.info("variable class: "+variableClass[i]);
+        }
+        LOG.info("variable format: "+variableFormat);
+        
+        for (int i = 0; i < variableLevels.length; i++) {
+            LOG.info("variable level: "+variableLevels[i]);
+        }
         
         // Create a variable meta-data object
         VariableMetaData columnMetaData = new VariableMetaData(variableType);
         columnMetaData.setDateTimeFormat(variableFormat);
-        columnMetaData.setFactorLevels(variableLevels);
+        
+        if (variableLevels != null && variableLevels.length > 0) {
+            // this is a factor.
+            columnMetaData.setFactor(true);
+            columnMetaData.setFactorLevels(variableLevels);
+            
+            variableFactorValues = new int[variableLevels.length];
+            
+            /*
+            for ( int i = 0; i < variableFactorValuesAsStrings.length; i++) {
+                try {
+                    variableFactorValues[i] = new Integer(variableFactorValuesAsStrings[i]);
+                } catch (Exception ex) {
+                    // This should never happen really... All R factor levels 
+                    // must have numeric values! - L.A.
+                    throw new IOException ("Invalid numeric factor level");
+                }
+            }
+            
+            
+            columnMetaData.setIntFactorValues(variableFactorValues);
+            */
+        }
         
         // Create a map between a label to itself. This should include values
         // that are missing from the dataset but present in the levels of the
         // factor.
+        
+        // So, this "mapping of label to itself" just means that the same 
+        // string will be used for both the "value" and the "label"; and the
+        // variable will be treated on the DVN side as a categorical variable
+        // of type "string". See my comment somewhere in the code above, "this 
+        // is the counter-intuitive part..." that explains why we are treating 
+        // R factors this way. 
+        
         for (String label : variableLevels) {
           factorLabelMap.put(label, label);
         }
@@ -1157,6 +1260,21 @@ public class RDATAFileReader extends StatDataFileReader {
         valueLabelTable.put(variableNameList.get(k), factorLabelMap);
         
         // Value label mapping table specifies which variables produce categorical-type data
+        
+        // (well, to determine "which variables produce categorical-type data" 
+        // we could simply if a variable has a non-empty entry i the valueLabelTable. 
+        // This is how this information is looked up elsewhere in the ingest 
+        // framework: Akio first looks up the key in the valueLabelMappingTable, 
+        // by the variable name, then uses this key to check the valueLabelTable map...
+        // Why this double mapping? - it really doesn't seem to serve any function...
+        // i.e. - why not look up just by the variable name? - this is essentially
+        // what Matt is doing here too)
+        // so, TODO: figure out why this is necessary!  -- L.A. 
+        // (I would assume there could be a legit case with some formats where 
+        // you could have more than one variable with the same name... but this 
+        // isn't solving this problem - since we are still using the variable 
+        // name in the lvalueLabelMappingTable!)
+        
         valueLabelMappingTable.put(variableNameList.get(k), variableNameList.get(k));
         
         // Store the meta-data in a hashmap (to return later)

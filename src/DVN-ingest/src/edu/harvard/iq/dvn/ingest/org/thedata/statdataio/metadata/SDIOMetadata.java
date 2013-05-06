@@ -235,6 +235,25 @@ public class SDIOMetadata {
         }
         return stringYes;
     }
+    
+    /**
+     * Tells whether a variable is Categorical ("Factor", in R speak)
+     *
+     * @return a <code>boolean</code> array, true if a variable is string.
+     */
+    public boolean[] isCategoricalVariable() {
+        boolean[] stringYes = new boolean[variableName.length];
+
+        for (int i = 0; i < variableName.length; i++) {
+            if (valueLabelTable.containsKey(valueLabelMappingTable.get(variableName[i]))) {
+                stringYes[i] = true;
+            } else {
+                stringYes[i] = false;
+            }
+
+        }
+        return stringYes;
+    }
 
     /**
      * Tells whether or not each of the variables is continuous.
@@ -461,8 +480,23 @@ public class SDIOMetadata {
     }
 
 
+    public Map<String, String> getVariableCategoryValues (String variableName) {
+        String valueTableId = valueLabelMappingTable.get(variableName); 
+        
+        if (valueTableId == null) {
+            return null; 
+        }
+        
+        if (valueLabelTable.containsKey(valueTableId)) {
+            return valueLabelTable.get(valueTableId);
+        }
+        
+        return null;
+        
+    }
+    
     /**
-     * A mapping table from a variable name to its <code>List</code> of missig values.
+     * A mapping table from a variable name to its <code>List</code> of missing values.
      */
     protected Map<String, List<String>> missingValueTable =
         new LinkedHashMap<String, List<String>>();
@@ -588,6 +622,10 @@ public class SDIOMetadata {
 
     /**
      * A mapping table from variable name to its value-label-table id.
+     * 
+     * (TODO: Why is this necessary? - Why not use the variable name itself as 
+     * the id for the value label table?? -- L.A.)
+     * 
      */
     public Map<String, String> valueLabelMappingTable = new LinkedHashMap<String, String>();
 

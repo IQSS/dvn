@@ -17,6 +17,39 @@ write.dvn.table <- function (data.set, ...) {
     if (is.null(subset))
       subset <- 1:ncol(data.set)
 
+    for (k in subset) {
+      # What's below is a rather god-awful hack:
+      # We confirmed that write.table CANNOT save both NA and NaN,
+      # if both are present, unambiguously (i.e., as different string
+      # tokens) in the text file. So we are going to convert all the 
+      # numeric (double) vectors in the dataset to string vectors, 
+      # and replace the special values - NA, NaN and Inf with the 
+      # correct string tokens - "NA", "NaN" and "Inf", respectively. 
+      # Note that the RData file will be reopened when the R ingest
+      # reader creates the metadata describing the variables. So 
+      # the numerics will still be registered as such. So when
+      # the R ingest reader reads the tab file produced below, it 
+      # will know to do post-processing on the numeric columns -
+      # namely, to remove the double quotes around the values. 
+      # As I said, this is an awful hack. But it appears to be
+      # the most practical way to resolve this. -- L.A.
+      if (is.numeric(data.set[, k])) {
+      	strvec <- c()
+	for (nc in 1:length(data.set[, k])) {
+	  if (is.infinite(data.set[nc,k])) {
+	    strvec <- c(strvec, "Inf")
+          } else if (is.na(data.set[nc,k])) {
+            strvec <- c(strvec, "NA")
+          } else if (is.nan(data.set[nc,k])) {
+	    strvec <- c(strvec, "NaN")
+          } else {
+	    strvec <- c(strvec, data.set[nc,k])
+	  }
+	}
+	data.set[, k] <- strvec
+      }
+    } 
+
     quotes <- c()
 
     for (k in subset) {

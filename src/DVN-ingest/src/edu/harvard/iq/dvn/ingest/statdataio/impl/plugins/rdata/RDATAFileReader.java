@@ -532,8 +532,6 @@ public class RDATAFileReader extends StatDataFileReader {
     // int lineCount = csvFileReader.read(localBufferedReader, smd, null);
     File tabFileDestination = File.createTempFile("data-", ".tab");
     PrintWriter tabFileWriter = new PrintWriter(tabFileDestination.getAbsolutePath());
-    
-    // Additionally, this outputs to the tab-delimited file
     int lineCount = csvFileReader.read(localBufferedReader, smd, tabFileWriter);
     
     smd.getFileInformation().put("tabDelimitedDataFileLocation", tabFileDestination.getAbsolutePath());
@@ -744,6 +742,9 @@ public class RDATAFileReader extends StatDataFileReader {
           dataTable[i][j] = valueTokens[i];
         }
         // Otherwise, we don't care
+        // (don't care for now that is - we'll later look for the special 
+        // tokens, like "NaN" and "Inf" and convert them to the appropriate
+        // Double values.
         else {
           dataTable[i][j] = valueTokens[i];
         }
@@ -994,6 +995,7 @@ public class RDATAFileReader extends StatDataFileReader {
 
           // If double
           case 1:
+            LOG.info(k + ": " + name + " is numeric (double)");
             // Convert array of Strings to array of Doubles
             Double[]  doubleEntries = new Double[varData.length];
             
@@ -1003,9 +1005,13 @@ public class RDATAFileReader extends StatDataFileReader {
                       // notation for the "Not A Number" value:
                       if (varData[i] != null && ((String) varData[i]).equals("NaN")) {
                           doubleEntries[i] = Double.NaN;
+                      } else if (varData[i] != null && ((String) varData[i]).equals("Inf")) {
+                          // "Inf" is another special case, notation for (positive) 
+                          // infinity:
+                          doubleEntries[i] = Double.POSITIVE_INFINITY;
                       } else {
                           // Missing Values don't need to be treated separately; these 
-                          // are represented as empty spaces in the TAB file; so 
+                          // are represented as empty strings in the TAB file; so 
                           // attempting to create a Double object from one will 
                           // throw an exception - which we are going to intercept 
                           // below. For the UNF and Summary Stats purposes, missing
@@ -1013,17 +1019,19 @@ public class RDATAFileReader extends StatDataFileReader {
                           doubleEntries[i] = new Double((String) varData[i]);
                       }
                   } catch (Exception ex) {
+                      LOG.info(k + ": " + name + " dropping value " + (String)varData[i] + " (" + i + "); replacing with null");
                       doubleEntries[i] = null;
                   }
               }
             
             LOG.info("sumstat:long case=" + Arrays.deepToString(
                         ArrayUtils.toObject(StatHelper.calculateSummaryStatisticsContDistSample(doubleEntries))));
-            unfValue = UNF5Util.calculateUNF(doubleEntries);
             
-            // Update summary statistics
+            // Save summary statistics:
             smd.getSummaryStatisticsTable().put(k, ArrayUtils.toObject(StatHelper.calculateSummaryStatisticsContDistSample(doubleEntries)));
 
+            unfValue = UNF5Util.calculateUNF(doubleEntries);
+            
             break;
        
           case -1:
@@ -1079,14 +1087,19 @@ public class RDATAFileReader extends StatDataFileReader {
             
           default:
             unfValue = null;
+                
         }
         
-        LOG.info(String.format("RDATAFileReader: Column \"%s\" (UNF) = %s", name, unfValue));
-        
+        //LOG.info(String.format("RDATAFileReader: Column \"%s\" (UNF) = %s", name, unfValue));
+
         // Store UNF value
         unfValues[k] = unfValue;
+      } catch (Exception ex) { 
+          LOG.info("Exception caught while calculating UNF! " + ex.getMessage());
+          ex.printStackTrace();
       }
-      catch (Exception ex) { }
+      LOG.info(String.format("RDATAFileReader: Column \"%s\" (UNF) = %s", name, unfValues[k]));
+
     }
     
     try {

@@ -161,27 +161,34 @@ public class RTabFileParser implements java.io.Serializable {
 
                 } else if (isContinuousVariable[i]) {
                     // Numeric, Double:
-                    // This is the major case if special/custom processing,
+                    // This is the major case of special/custom processing,
                     // specific for R ingest. It was found to be impossible
                     // to write a numeric/continuous column into the tab file
                     // while unambiguously preserving both NA and NaNs, if both
                     // are present. At least, not if using the standard 
                     // write.table function. So it seemed easier to treat this
                     // as a special case, rather than write our own write.table
-                    // equivalent in R. On the R side, the values will be 
+                    // equivalent in R. On the R side, if any special values 
+                    // are present in the columns, the values will be 
                     // converted into a character vector. The NAs and NaNs will 
                     // be replaced with the character tokens "NA" and "NaN" 
                     // respectively. Of course R will add double quotes around 
-                    // the tokens, hence the post-processing - just need 
+                    // the tokens, hence the post-processing - we'll just need 
                     // to remove all these quotes, and then we'll be fine. 
                     
-                    // special cases first: R NA (missing value) and NaN
-                    // (Not A Number value):
                     dbgLog.fine("CSV reader; double value: "+valueTokens[i]); 
+                    // Dealing with quotes: 
+                    // remove the leading and trailing quotes, if present:
+                    valueTokens[i] = valueTokens[i].replaceFirst("^\"", "");
+                    valueTokens[i] = valueTokens[i].replaceFirst("\"$", "");
                     if (valueTokens[i] != null && valueTokens[i].equalsIgnoreCase("NA")) {
                         caseRow[i] = "";
                     } else if (valueTokens[i] != null && valueTokens[i].equalsIgnoreCase("NaN")) {
                         caseRow[i] = "NaN";
+                    } else if (valueTokens[i] != null && valueTokens[i].equalsIgnoreCase("Inf")) {
+                        caseRow[i] = "Inf";
+                        // TODO: 
+                        // negative infinity? -- L.A.
                     } else {
                         try {
                             Double testDoubleValue = new Double(valueTokens[i]);
@@ -191,6 +198,11 @@ public class RTabFileParser implements java.io.Serializable {
 
                             //dataTable[i][lineCounter] = (new Double(0)).toString();
                             caseRow[i] = "";
+                            
+                            // TODO:
+                            // decide if we should rather throw an exception and exit here; 
+                            // all the values in this file at this point must be 
+                            // legit numeric values (?)
                         }
                     }
                 } /* 

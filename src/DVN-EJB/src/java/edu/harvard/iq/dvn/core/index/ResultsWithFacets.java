@@ -27,7 +27,6 @@ import java.util.ArrayList;
 import java.util.List;
 import org.apache.lucene.facet.search.results.FacetResult;
 import org.apache.lucene.facet.taxonomy.CategoryPath;
-import org.apache.lucene.search.Query;
 
 public class ResultsWithFacets {
 
@@ -36,7 +35,6 @@ public class ResultsWithFacets {
     private List<CategoryPath> facetsQueried = new ArrayList<CategoryPath>();
     /** @todo: should this be static? */
     private static boolean clearPreviousFacetRequests = false;
-    private Query query;
 
     public void setResultList(List<FacetResult> resultList) {
         this.facetResultList = resultList;
@@ -70,11 +68,4 @@ public class ResultsWithFacets {
         this.clearPreviousFacetRequests = clearPreviousFacetRequests;
     }
 
-    public Query getQuery() {
-        return query;
-    }
-
-    public void setQuery(Query query) {
-        this.query = query;
-    }
 }

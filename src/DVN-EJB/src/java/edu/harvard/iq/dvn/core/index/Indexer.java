@@ -1479,42 +1479,7 @@ public class Indexer implements java.io.Serializable  {
                 }
             }
         }
-
         Query baseQuery = dvnQuery.getQuery();
-
-        if (dvnQuery.limitToStudyIds != null) {
-            logger.info("query passed in: " + dvnQuery.query);
-            logger.info("limiting to these studyIds:" + dvnQuery.limitToStudyIds);
-            // doing a `join` here
-            Iterator<Long> iter = dvnQuery.limitToStudyIds.iterator();
-            StringBuilder studyIdsWithOrs = new StringBuilder();
-            if (iter.hasNext()) {
-                Long idAsLong = iter.next();
-                String idColonId = "id:" + idAsLong.toString();
-                studyIdsWithOrs.append(idColonId);
-                while (iter.hasNext()) {
-                    Long idAsLong2 = iter.next();
-                    String idColonId2 = "id:" + idAsLong2.toString();
-                    studyIdsWithOrs.append(" OR ").append(idColonId2);
-                }
-            }
-
-            QueryParser parser = new QueryParser(Version.LUCENE_30, "abstract", new DVNAnalyzer());
-            parser.setDefaultOperator(QueryParser.AND_OPERATOR);
-            Query query = null;
-            try {
-                String studyIdOrQuery = "(" + studyIdsWithOrs.toString() + ")";
-                logger.info("studyIdOrQuery" + studyIdOrQuery);
-                query = parser.parse(studyIdOrQuery);
-                BooleanQuery booleanQuery = new BooleanQuery();
-                booleanQuery.add(baseQuery, BooleanClause.Occur.MUST);
-                booleanQuery.add(query, BooleanClause.Occur.MUST);
-                baseQuery = booleanQuery;
-            } catch (ParseException ex) {
-                ex.printStackTrace();
-            }
-        }
-
         DocumentCollector s = new DocumentCollector(searcher);
         TaxonomyReader taxo = new DirectoryTaxonomyReader(taxoDir);
         FacetSearchParams facetSearchParams = new FacetSearchParams();
@@ -1584,18 +1549,17 @@ public class Indexer implements java.io.Serializable  {
          * studyIDs from the previous search and further narrows the
          * results based on a new search.
          */
-//        logger.info("limiting to certain study IDs (maybe)");
-//        if (dvnQuery.limitToStudyIds != null) {
-//            List<Long> studyIdsOrig = resultsWithFacets.getMatchIds();
-//            logger.info("running limiting method...");
-//            List<Long> filteredResults = intersectionResults(studyIdsOrig, dvnQuery.limitToStudyIds);
-//            resultsWithFacets.setMatchIds(filteredResults);
-//            resultsWithFacets.setResultList(null);
-//        }
+        logger.info("limiting to certain study IDs (maybe)");
+        if (dvnQuery.limitToStudyIds != null) {
+            List<Long> studyIdsOrig = resultsWithFacets.getMatchIds();
+            logger.info("running limiting method...");
+            List<Long> filteredResults = intersectionResults(studyIdsOrig, dvnQuery.limitToStudyIds);
+            resultsWithFacets.setMatchIds(filteredResults);
+            resultsWithFacets.setResultList(null);
+        }
         logger.info("facetsOfInterest about to setFacetsQueried: " + facetsOfInterest);
         resultsWithFacets.setFacetsQueried(facetsOfInterest);
         resultsWithFacets.setClearPreviousFacetRequests(dvnQuery.isClearPreviousFacetRequests());
-        resultsWithFacets.setQuery(q2);
         return resultsWithFacets;
     }
 

@@ -73,7 +73,7 @@ public class RTabFileParser implements java.io.Serializable {
 
 
   public int read(BufferedReader csvReader, SDIOMetadata smd, PrintWriter pwout) throws IOException {
-    dbgLog.warning("CSVFileReader: Inside CSV File Reader");
+    dbgLog.warning("RTabFileParser: Inside R Tab file parser");
       
         //DataTable csvData = new DataTable();
         int varQnty = 0;
@@ -82,12 +82,12 @@ public class RTabFileParser implements java.io.Serializable {
             varQnty = new Integer(smd.getFileInformation().get("varQnty").toString());
         } catch (Exception ex) {
             //return -1;
-            throw new IOException ("CSV File Reader: Could not obtain varQnty from the dataset metadata.");
+            throw new IOException ("R Tab File Parser: Could not obtain varQnty from the dataset metadata.");
         }
 
         if (varQnty == 0) {
             //return -1;
-            throw new IOException ("CSV File Reader: varQnty=0 in the dataset metadata!");
+            throw new IOException ("R Tab File Parser: varQnty=0 in the dataset metadata!");
         }
 
         String[] caseRow = new String[varQnty];
@@ -176,7 +176,7 @@ public class RTabFileParser implements java.io.Serializable {
                     // the tokens, hence the post-processing - we'll just need 
                     // to remove all these quotes, and then we'll be fine. 
                     
-                    dbgLog.fine("CSV reader; double value: "+valueTokens[i]); 
+                    dbgLog.fine("R Tab File Parser; double value: "+valueTokens[i]); 
                     // Dealing with quotes: 
                     // remove the leading and trailing quotes, if present:
                     valueTokens[i] = valueTokens[i].replaceFirst("^\"", "");
@@ -187,8 +187,8 @@ public class RTabFileParser implements java.io.Serializable {
                         caseRow[i] = "NaN";
                     } else if (valueTokens[i] != null && valueTokens[i].equalsIgnoreCase("Inf")) {
                         caseRow[i] = "Inf";
-                        // TODO: 
-                        // negative infinity? -- L.A.
+                    } else if (valueTokens[i] != null && valueTokens[i].equalsIgnoreCase("-Inf")) {
+                        caseRow[i] = "-Inf";
                     } else {
                         try {
                             Double testDoubleValue = new Double(valueTokens[i]);

@@ -1005,10 +1005,16 @@ public class RDATAFileReader extends StatDataFileReader {
                       // notation for the "Not A Number" value:
                       if (varData[i] != null && ((String) varData[i]).equals("NaN")) {
                           doubleEntries[i] = Double.NaN;
-                      } else if (varData[i] != null && ((String) varData[i]).equals("Inf")) {
-                          // "Inf" is another special case, notation for (positive) 
-                          // infinity:
+                      // "Inf" is another special case, notation for infinity, 
+                      // positive and negative:
+                      } else if (varData[i] != null && (
+                                 ((String) varData[i]).equals("Inf") 
+                              || ((String) varData[i]).equals("+Inf") )) {
+                          
                           doubleEntries[i] = Double.POSITIVE_INFINITY;
+                      } else if (varData[i] != null && ((String) varData[i]).equals("-Inf")) {
+                          
+                          doubleEntries[i] = Double.NEGATIVE_INFINITY;
                       } else {
                           // Missing Values don't need to be treated separately; these 
                           // are represented as empty strings in the TAB file; so 

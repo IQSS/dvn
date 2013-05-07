@@ -66,7 +66,11 @@ write.dvn.table <- function (data.set, ...) {
       strvec <- c()
       for (nc in 1:length(data.set[, k])) {
 	if (is.infinite(data.set[nc,k])) {
-	  strvec <- c(strvec, "Inf")
+	  if (data.set[nc,k] > 0) {
+	    strvec <- c(strvec, "Inf") 
+	  } else {
+	    strvec <- c(strvec, "-Inf")
+	  }
         } else if (is.nan(data.set[nc,k])) {
 	  # the test for NaN must come *before* the test for NA!
 	  # this is because is.na(NaN) actually returns true. 
@@ -90,7 +94,13 @@ write.dvn.table <- function (data.set, ...) {
   }
 
   # Write the table in the DVN's TAB file format
-  write.table(data.set, quote = quotes, sep = "\t", eol = "\n", na = "", dec = ".", row.names = FALSE, col.names = FALSE, qmethod = "double", ...)
+
+  if (length(quotes) > 0) {
+    write.table(data.set, quote = quotes, sep = "\t", eol = "\n", na = "", dec = ".", row.names = FALSE, col.names = FALSE, qmethod = "double", ...)
+  } else {
+    # write.table bombs if given an empty vector as the quotes parameter! -- L.A. 
+    write.table(data.set, sep = "\t", eol = "\n", na = "", dec = ".", row.names = FALSE, col.names = FALSE, qmethod = "double", ...)
+  }
 
   # Restore options to previous
   options(saved.options)

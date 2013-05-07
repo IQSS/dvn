@@ -185,7 +185,9 @@ public class RTabFileParser implements java.io.Serializable {
                         caseRow[i] = "";
                     } else if (valueTokens[i] != null && valueTokens[i].equalsIgnoreCase("NaN")) {
                         caseRow[i] = "NaN";
-                    } else if (valueTokens[i] != null && valueTokens[i].equalsIgnoreCase("Inf")) {
+                    } else if (valueTokens[i] != null && 
+                            ( valueTokens[i].equalsIgnoreCase("Inf")
+                            || valueTokens[i].equalsIgnoreCase("+Inf"))) {
                         caseRow[i] = "Inf";
                     } else if (valueTokens[i] != null && valueTokens[i].equalsIgnoreCase("-Inf")) {
                         caseRow[i] = "-Inf";

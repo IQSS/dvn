@@ -3197,8 +3197,28 @@ public class DDIServiceBean implements DDIServiceLocal {
         
         dv.setFormatSchema(schema);
         dv.setFormatSchemaName( xmlr.getAttributeValue(null, "formatname") );
-        dv.setFormatCategory( xmlr.getAttributeValue(null, "category") );
+        
+        String varFormatText = parseText(xmlr); 
 
+        /* 
+         * A somewhat hackish way of recognizing "boolean" variables; 
+         * This is not a universally accepted convention - we (the DVN team)
+         * simply decided to handle it this way. Booleans are treated simply 
+         * as categorical variables with integers 0 and 1 for the values, and 
+         * "FALSE" and "TRUE" for the labels. On top of that, we make a note
+         * of the variable's "booleanness", in the DDI, like this:
+         *      <varFormat ...>Boolean</varFormat>
+         * and in the database, by setting the value of dv.formatCategory to 
+         * "Boolean". 
+         * This information isn't used much in the application (as of May, 2013), 
+         * except in the subsetting: when the column is subset and re-imported
+         * into an R data frame, we'll convert it into a logical vector.
+         */
+        if ("Boolean".equalsIgnoreCase(varFormatText)) {
+            dv.setFormatCategory( "Boolean" );
+        } else {
+            dv.setFormatCategory( xmlr.getAttributeValue(null, "category") );
+        }
     }
 
     private void processSumStat(XMLStreamReader xmlr, DataVariable dv) throws XMLStreamException {

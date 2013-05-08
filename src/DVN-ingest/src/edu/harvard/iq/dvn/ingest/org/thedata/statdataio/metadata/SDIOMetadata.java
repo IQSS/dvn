@@ -242,17 +242,17 @@ public class SDIOMetadata {
      * @return a <code>boolean</code> array, true if a variable is string.
      */
     public boolean[] isCategoricalVariable() {
-        boolean[] stringYes = new boolean[variableName.length];
+        boolean[] categoricalYes = new boolean[variableName.length];
 
         for (int i = 0; i < variableName.length; i++) {
             if (valueLabelTable.containsKey(valueLabelMappingTable.get(variableName[i]))) {
-                stringYes[i] = true;
+                categoricalYes[i] = true;
             } else {
-                stringYes[i] = false;
+                categoricalYes[i] = false;
             }
 
         }
-        return stringYes;
+        return categoricalYes;
     }
 
     /**
@@ -289,11 +289,30 @@ public class SDIOMetadata {
       }
       return continuousYes;
     }
+    
+    /**
+     * Returns a boolean vector specifying which variables are Boolean.
+     * 
+     */
+    public boolean[] isBooleanVariable(){
+      boolean[] booleanYes = new boolean[variableName.length];
+      
+      if (booleanVariables != null && booleanVariables.size() > 0){
+        for (int i=0;i<variableName.length;i++) {
+            booleanYes[i] = booleanVariables.contains(i);
+        }
+      } else {
+          Arrays.fill(booleanYes, false);
+      }
+      return booleanYes;
+    }
 
     /**
      * A set that contains the position number of a decimal variable.
      */
     protected Set<Integer> decimalVariables;
+    
+    
 
     /**
      * Gets the value of the decimalVariables field.
@@ -314,7 +333,21 @@ public class SDIOMetadata {
     }
 
 
+    /**
+     * A set that contains the position number of boolean variables.
+     */
+    protected Set<Integer> booleanVariables;
+    
+   
+    public Set<Integer> getBooleanVariables() {
+        return booleanVariables;
+    }
 
+    
+    public void setBooleanVariables(Set<Integer> booleanVariables) {
+        this.booleanVariables = booleanVariables;
+    }
+    
     /**
      * Sets the value of variableType
      *

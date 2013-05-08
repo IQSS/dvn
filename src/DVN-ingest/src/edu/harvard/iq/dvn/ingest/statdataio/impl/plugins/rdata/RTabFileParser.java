@@ -101,6 +101,7 @@ public class RTabFileParser implements java.io.Serializable {
         boolean[] isContinuousVariable = smd.isContinuousVariable();
         boolean[] isDateVariable = smd.isDateVariable();
         boolean[] isCategoricalVariable = smd.isCategoricalVariable();
+        boolean[] isBooleanVariable = smd.isBooleanVariable();
         
         //Map<Integer, Map<String, String>> ReverseValueLabelTable = createReverseCatValueTable(smd); 
         
@@ -204,10 +205,32 @@ public class RTabFileParser implements java.io.Serializable {
                             // TODO:
                             // decide if we should rather throw an exception and exit here; 
                             // all the values in this file at this point must be 
-                            // legit numeric values (?)
+                            // legit numeric values (?) -- L.A.
                         }
                     }
-                } /* 
+                } else if (isBooleanVariable[i]) {
+                    if (valueTokens[i] != null && (!valueTokens[i].equals(""))) {
+                        String charToken = valueTokens[i];
+                        // remove the leading and trailing quotes, if present:
+                        charToken = charToken.replaceFirst("^\"", "");
+                        charToken = charToken.replaceFirst("\"$", "");
+                        
+                        if (charToken.equals("FALSE")) {
+                            caseRow[i] = "0";
+                        } else if (charToken.equals("TRUE")) {
+                            caseRow[i] = "1";
+                        } else if (charToken.equals("")) {
+                            // Legit case - Missing Value!
+                            caseRow[i] = charToken;
+                        } else {
+                            throw new IOException("Unexpected value for the Boolean variable ("+i+"): "+charToken);
+                        }
+                    } else {
+                        throw new IOException("NULL value for the Boolean variable ("+i+")!");
+                    }
+
+                    
+                }/* 
                  * [experimental] special case for categorical variables. 
                  * See the comment for the [commented-out] createReverseCatValueTable
                  * method below for more info. -- L.A.

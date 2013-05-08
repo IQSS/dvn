@@ -289,7 +289,7 @@ public class DvnRDataAnalysisServiceImpl {
         
         try {
             // Set up an Rserve connection
-            dbgLog.fine("sro dump:\n"+ToStringBuilder.reflectionToString(sro, ToStringStyle.MULTI_LINE_STYLE));
+            dbgLog.info("sro dump:\n"+ToStringBuilder.reflectionToString(sro, ToStringStyle.MULTI_LINE_STYLE));
             
             dbgLog.fine("RSERVE_USER="+RSERVE_USER+"[default=rserve]");
             dbgLog.fine("RSERVE_PWD="+RSERVE_PWD+"[default=rserve]");
@@ -300,6 +300,7 @@ public class DvnRDataAnalysisServiceImpl {
 
             c.login(RSERVE_USER, RSERVE_PWD);
             dbgLog.info("R Version = " + c.eval("R.version$version.string").asString() + "<");
+            dbgLog.info("SRO request type: "+sro.getRequestType());
             
             // check working directories
             // This needs to be done *before* we try to create any files 
@@ -355,14 +356,41 @@ public class DvnRDataAnalysisServiceImpl {
             // R side
             historyEntry.add("vartyp<-c(" + sb.toString()+")");
 */
-            historyEntry.add("vartyp<-c(" + StringUtils.join(sro.getVariableTypesAsString(),",") + ")");
-            dbgLog.fine("DvnRserveComm: "+"vartyp<-c(" + StringUtils.join(sro.getVariableTypesAsString(),",") + ")");
+            
             //c.assign("vartyp", new REXPInteger(jvartyp));
-            dbgLog.fine("raw variable type="+sro.getVariableTypes());
-            c.assign("vartyp", new REXPInteger(sro.getVariableTypes()));
-            String [] tmpt = c.eval("vartyp").asStrings();
-            dbgLog.fine("DvnRserveComm: "+"vartyp length="+ tmpt.length + "\t " +
-                StringUtils.join(tmpt,","));
+            if ("Download".equals(sro.getRequestType())) {
+                /*
+                 * Note that we want to use the "getVariableTypesWithBoolean method 
+                 * when the subset is being created for download/conversion; when 
+                 * we create a SRO object for analysis, in we'll still be using 
+                 * the old getVariableTypes
+                 * method, that don't recognize Booleans as a distinct class. 
+                 * So they will be treated simply as numeric categoricals 
+                 * (factors) with the "TRUE" and "FALSE" labels. But for the purposes
+                 * of saving the subset in R format, we want to convert these into
+                 * R "logical" vectors.
+                 * 
+                 * TODO: verify what's going to happen to these "logical"
+                 * variables when we call R package Foreign to convert the 
+                 * dataset into STATA format. -- L.A. 
+                 */
+
+                dbgLog.info("raw variable type=" + sro.getVariableTypesWithBoolean());
+                c.assign("vartyp", new REXPInteger(sro.getVariableTypesWithBoolean()));
+                String[] tmpt = c.eval("vartyp").asStrings();
+                dbgLog.info("vartyp length=" + tmpt.length + "\t "
+                        + StringUtils.join(tmpt, ","));
+
+            } else {
+                historyEntry.add("vartyp<-c(" + StringUtils.join(sro.getVariableTypesAsString(), ",") + ")");
+                dbgLog.fine("DvnRserveComm: " + "vartyp<-c(" + StringUtils.join(sro.getVariableTypesAsString(), ",") + ")");
+
+                dbgLog.fine("raw variable type=" + sro.getVariableTypes());
+                c.assign("vartyp", new REXPInteger(sro.getVariableTypes()));
+                String[] tmpt = c.eval("vartyp").asStrings();
+                dbgLog.fine("DvnRserveComm: " + "vartyp length=" + tmpt.length + "\t "
+                        + StringUtils.join(tmpt, ","));
+            }
         
             // variable format (date/time)
             /* 
@@ -446,7 +474,7 @@ public class DvnRDataAnalysisServiceImpl {
             // vartyp = Arrays.deepToString(new REXPInteger(sro.getUpdatedVariableTypes()).asStrings())
             // varFmt = 
             dbgLog.info("col names ..... " + Arrays.deepToString(jvnames));
-            dbgLog.info("colClassesX ... " + Arrays.toString(sro.getUpdatedVariableTypes()));
+            dbgLog.info("colClassesX ... " + Arrays.toString(sro.getVariableTypesWithBoolean()));
             dbgLog.info("varFormat ..... " + tmpFmt);
             
             String readtableline = "x<-read.table141vdc(file='"+tempFileName+
@@ -535,17 +563,24 @@ if (sro.hasRecodedVariables()){
             // 
             // variable type must be re-attached
 
-            String varTypeNew = "vartyp<-c(" + StringUtils.join( sro.getUpdatedVariableTypesAsString(),",")+")";
-            historyEntry.add(varTypeNew);
-            // c.voidEval(varTypeNew);
-            dbgLog.fine("updated var Type ="+ sro.getUpdatedVariableTypes());
-            c.assign("vartyp", new REXPInteger(sro.getUpdatedVariableTypes()));
+
+            if (!"Download".equals(sro.getRequestType())) {
+                String varTypeNew = "vartyp<-c(" + StringUtils.join( sro.getUpdatedVariableTypesAsString(),",")+")";
+                historyEntry.add(varTypeNew);
+                // c.voidEval(varTypeNew);
+                dbgLog.fine("updated var Type ="+ sro.getUpdatedVariableTypes());
+                c.assign("vartyp", new REXPInteger(sro.getUpdatedVariableTypes()));
             
-            String reattachVarTypeLine = "attr(x, 'var.type') <- vartyp";
-            historyEntry.add(reattachVarTypeLine);
+                String reattachVarTypeLine = "attr(x, 'var.type') <- vartyp";
+                historyEntry.add(reattachVarTypeLine);
  
-	    dbgLog.fine("DvnRserveComm: "+reattachVarTypeLine);
-	    c.voidEval(reattachVarTypeLine);
+                dbgLog.fine("DvnRserveComm: "+reattachVarTypeLine);
+                c.voidEval(reattachVarTypeLine);
+            } else {
+                    // TODO: 
+                    // create a "WithBoolean" version of getUpdatedVariableTypesAsString ? 
+                    // -- L.A.
+            }
             
             // replication: variable type
             String repDVN_vt = "attr(dvnData, 'var.type') <- vartyp";

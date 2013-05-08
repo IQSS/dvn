@@ -351,6 +351,61 @@ public class DvnRJobRequest {
         return variableTypes;
     }
 
+    /* 
+     * A version of getVariableTypes that specifically identifies Boolean 
+     * variables. -- L.A. 
+     */
+    public int[] getVariableTypesWithBoolean() {
+        
+        List<Integer> rw = new ArrayList<Integer>();
+        for(int i=0;i < dataVariablesForRequest.size(); i++){
+            DataVariable dv = (DataVariable) dataVariablesForRequest.get(i);
+            if (!StringUtils.isEmpty(dv.getFormatCategory())){
+                if (dv.getFormatCategory().toLowerCase().equals("date") ||
+                    (dv.getFormatCategory().toLowerCase().equals("time"))){
+                    rw.add(0);
+                } else if (dv.getFormatCategory().equals("Boolean")) {
+                    rw.add(3); 
+                } else {
+                    if (dv.getVariableFormatType().getId() == 1L) {
+                        if (dv.getVariableIntervalType().getId() == null) {
+                            rw.add(2);
+                        } else {
+                            if (dv.getVariableIntervalType().getId() == 2L) {
+                                rw.add(2);
+                            } else {
+                                rw.add(1);
+                            }
+                        }
+                    } else if (dv.getVariableFormatType().getId() == 2L) {
+                        rw.add(0);
+                    }
+                }
+            } else {
+                if (dv.getVariableFormatType().getId() == 1L) {
+                    if (dv.getVariableIntervalType().getId() == null) {
+                        rw.add(2);
+                    } else {
+                        if (dv.getVariableIntervalType().getId() == 2L) {
+                            rw.add(2);
+                        } else {
+                            rw.add(1);
+                        }
+                    }
+                } else if (dv.getVariableFormatType().getId() == 2L) {
+                    rw.add(0);
+                }
+            }
+        }
+        Integer[]tmp = (Integer[])rw.toArray(new Integer[rw.size()]);
+        dbgLog.fine("vartype="+ StringUtils.join(tmp, ", "));
+        int[] variableTypes=new int[tmp.length];
+        for (int j=0;j<tmp.length;j++){
+            variableTypes[j]= tmp[j];
+        }
+        return variableTypes;
+    }
+    
     public List<String> getVariableTypesAsString() {
         
         List<String> rw = new ArrayList<String>();

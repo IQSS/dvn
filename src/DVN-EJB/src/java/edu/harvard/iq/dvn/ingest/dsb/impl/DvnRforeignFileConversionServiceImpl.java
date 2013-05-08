@@ -267,10 +267,22 @@ public class DvnRforeignFileConversionServiceImpl{
             
             // R side
 */
-            dbgLog.fine("raw variable type="+sro.getVariableTypes());
-            c.assign("vartyp", new REXPInteger(sro.getVariableTypes()));
+            
+            /*
+             * Note that we want to use the "getVariableTypesWithBoolean method 
+             * below; when we create a SRO object for analysis, in 
+             * DvnRDataAnalysisServiceImpl, we'll still be using getVariableTypes
+             * method, that don't recognize Booleans as a distinct class of 
+             * variables. So those would be treated simply as numeric categoricals 
+             * (factors) with the "TRUE" and "FALSE" labels. But for the purposes
+             * of saving the subset in R format, we want to convert these into
+             * R "logical" vectors.
+             */
+            
+            dbgLog.info("raw variable type="+sro.getVariableTypesWithBoolean());
+            c.assign("vartyp", new REXPInteger(sro.getVariableTypesWithBoolean()));
             String [] tmpt = c.eval("vartyp").asStrings();
-            dbgLog.fine("vartyp length="+ tmpt.length + "\t " +
+            dbgLog.info("vartyp length="+ tmpt.length + "\t " +
                 StringUtils.join(tmpt,","));
         
             // variable format (date/time)
@@ -340,7 +352,7 @@ public class DvnRforeignFileConversionServiceImpl{
 
             dbgLog.info("<<<<<<<<<<<<<<<<<<<<<<<<<");
             dbgLog.info("col.names = " + Arrays.deepToString((new REXPString(jvnames)).asStrings()));
-            dbgLog.info("colClassesx = " + Arrays.deepToString((new REXPInteger(sro.getVariableTypes())).asStrings()));
+            dbgLog.info("colClassesx = " + Arrays.deepToString((new REXPInteger(sro.getVariableTypesWithBoolean())).asStrings()));
             dbgLog.info("varFormat = " + Arrays.deepToString((new REXPString(getValueSet(tmpFmt, tmpFmt.keySet().toArray(new String[tmpFmt.keySet().size()])))).asStrings()));
             dbgLog.info(">>>>>>>>>>>>>>>>>>>>>>>>>");
             
@@ -396,13 +408,16 @@ public class DvnRforeignFileConversionServiceImpl{
             // 
             // variable type must be re-attached
 
-            String varTypeNew = "vartyp<-c(" + StringUtils.join( sro.getUpdatedVariableTypesAsString(),",")+")";
+            //String varTypeNew = "vartyp<-c(" + StringUtils.join( sro.getUpdatedVariableTypesAsString(),",")+")";
             // c.voidEval(varTypeNew);
             dbgLog.fine("updated var Type ="+ sro.getUpdatedVariableTypes());
             c.assign("vartyp", new REXPInteger(sro.getUpdatedVariableTypes()));
             
             String reattachVarTypeLine = "attr(x, 'var.type') <- vartyp";
             c.voidEval(reattachVarTypeLine);
+            
+            // TODO: 
+            // "getUpdatedVariableTypesWithBooleans" ?? -- L.A.
             
             // replication: variable type
             String repDVN_vt = "attr(dvnData, 'var.type') <- vartyp";

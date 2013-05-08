@@ -21,7 +21,7 @@ VariableMetaData.factor <- function (values) {
   list(type = 0, type.string = "factor", class = class(values), levels = levels(values), format = NULL)
 }
 #' @param values a vector of logical values
-VariableMetaData.integer <- function (values) {
+VariableMetaData.logical <- function (values) {
   list(type = 1, type.string = "logical", class = class(values), levels = NULL, format = NULL)
 }
 #' @param values a vector of integers

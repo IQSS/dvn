@@ -130,6 +130,7 @@ public class RDATAFileReader extends StatDataFileReader {
   
   // Specify which are decimal values
   Set <Integer> mDecimalVariableSet = new HashSet <Integer>(); 
+  Set <Integer> booleanVariableSet = new HashSet <Integer>();
   
   private Map <String, String> mPrintFormatTable = new LinkedHashMap<String, String>(); 
   private Map <String, String> mPrintFormatNameTable = new LinkedHashMap<String, String>(); 
@@ -786,7 +787,7 @@ public class RDATAFileReader extends StatDataFileReader {
      * Clean up this code; for example, the VariableMetaData variable "columnData"
      * is created below, but never saved or used. A vector of VariableMetaData 
      * values actually gets created somewhere else in the code of the reader, and those 
-     * are the values that will be used elsewhere. Need to pick the one we want 
+     * are the values that could be used elsewhere. Need to pick the one we want 
      * to use and remove the other one - for clarity. 
      * 
      * The whole setup with the "minimalTypeList" and "normalTypeList" is 
@@ -901,10 +902,17 @@ public class RDATAFileReader extends StatDataFileReader {
         mFormatCategoryTable.put(variableName, "other");
         
         columnMetaData = new VariableMetaData(0);
-      }
-
+      } else if (type.equals("logical")) {
+        minimalTypeList.add(0);
+        normalTypeList.add(0);
+        mFormatTable[k] = FORMAT_INTEGER;
+        mPrintFormatList.add(1);
+        // mPrintFormatNameTable.put(variableName, "N");
+        
+        columnMetaData = new VariableMetaData(1);
+        columnMetaData.setBoolean(true);
       // Everything else is a string
-      else {
+      } else {
         minimalTypeList.add(-1);
         normalTypeList.add(1);
         mFormatTable[k] = FORMAT_STRING;
@@ -971,20 +979,56 @@ public class RDATAFileReader extends StatDataFileReader {
       try {
         switch (varType) {
           case 0:
-            // Convert array of Strings to array of Longs
-              Long[] integerEntries = new Long[varData.length];
+            Long[] integerEntries = new Long[varData.length];
 
-              for (int i = 0; i < varData.length; i++) {
-                  try {
-                      integerEntries[i] = new Long((String) varData[i]);
-                  } catch (Exception ex) {
-                      integerEntries[i] = null;
-                  }
-              }
+            if (smd.isBooleanVariable()[k]) {
+            // This is not a regular integer - but a boolean!
+                Boolean[] booleanEntries = new Boolean[varData.length];
+                for (int i = 0; i < varData.length; i++) {
+                    if (varData[i] == null || varData[i].equals("")) {
+                        // Missing Value: 
+                        booleanEntries[i] = null; 
+                    } else if (((String)varData[i]).equals("0")) {
+                        booleanEntries[i] = false; 
+                    } else if (((String)varData[i]).equals("1")) {
+                        booleanEntries[i] = true; 
+                    } else {
+                        // Treat it as a missing value? 
+                        booleanEntries[i] = null;
+                        // TODO: 
+                        // Should we throw an exception here instead? 
+                    }
+                    
+                    try {
+                        integerEntries[i] = new Long((String) varData[i]);
+                    } catch (Exception ex) {
+                        integerEntries[i] = null;
+                    }
+                }
 
-            unfValue = UNF5Util.calculateUNF(integerEntries);
+                //unfValue = UNF5Util.calculateUNF(booleanEntries);
+                // TODO: 
+                // need to create the UNF method for booleans. -- L.A.
+                unfValue = UNF5Util.calculateUNF(integerEntries);
+            
+                // UNF5Util.cal
+
+            } else {
+            // Regular integer;
+            // Simply convert array of Strings to array of Longs:
+
+                for (int i = 0; i < varData.length; i++) {
+                    try {
+                        integerEntries[i] = new Long((String) varData[i]);
+                    } catch (Exception ex) {
+                        integerEntries[i] = null;
+                    }
+                }
+
+                unfValue = UNF5Util.calculateUNF(integerEntries);
             
             // UNF5Util.cal
+            }
 
             // Summary/category statistics
             smd.getSummaryStatisticsTable().put(k, ArrayUtils.toObject(StatHelper.calculateSummaryStatistics(integerEntries)));
@@ -1192,10 +1236,7 @@ public class RDATAFileReader extends StatDataFileReader {
     Integer variableType = -1;
     String variableTypeString = "", variableFormat = "";
     String [] variableClass = null, variableLevels = null;
-    
-    String [] variableFactorValuesAsStrings = null; 
-    int [] variableFactorValues = null; 
-    
+        
     // The result objet that pairs column numbers with VariableMetaData objects
     HashMap <Integer, VariableMetaData> result = new HashMap <Integer, VariableMetaData> ();
     
@@ -1219,7 +1260,6 @@ public class RDATAFileReader extends StatDataFileReader {
         variableTypeString = !columnMeta.at("type.string").isNull() ? columnMeta.at("type.string").asString() : null;
         variableClass = !columnMeta.at("class").isNull() ? columnMeta.at("class").asStrings() : null;
         variableLevels = !columnMeta.at("levels").isNull() ? columnMeta.at("levels").asStrings() : new String [0];
-        //variableFactorValuesAsStrings = !columnMeta.at("factorvalues").isNull() ? columnMeta.at("factorvalues").asStrings() : new String [0];
         variableFormat = !columnMeta.at("format").isNull() ? columnMeta.at("format").asString() : null;
         
         LOG.info("variable type: "+variableType);
@@ -1241,39 +1281,50 @@ public class RDATAFileReader extends StatDataFileReader {
             // this is a factor.
             columnMetaData.setFactor(true);
             columnMetaData.setFactorLevels(variableLevels);
-            
-            variableFactorValues = new int[variableLevels.length];
-            
-            /*
-            for ( int i = 0; i < variableFactorValuesAsStrings.length; i++) {
-                try {
-                    variableFactorValues[i] = new Integer(variableFactorValuesAsStrings[i]);
-                } catch (Exception ex) {
-                    // This should never happen really... All R factor levels 
-                    // must have numeric values! - L.A.
-                    throw new IOException ("Invalid numeric factor level");
-                }
+
+
+            // Create a map between a label to itself. This should include values
+            // that are missing from the dataset but present in the levels of the
+            // factor.
+
+            // So, this "mapping of label to itself" just means that the same 
+            // string will be used for both the "value" and the "label"; and the
+            // variable will be treated on the DVN side as a categorical variable
+            // of type "string". See my comment somewhere in the code above, "this 
+            // is the counter-intuitive part..." that explains why we are treating 
+            // R factors this way. 
+
+            for (String label : variableLevels) {
+                factorLabelMap.put(label, label);
             }
+        }
+        // A special case for logical variables: 
+        // For all practical purposes, they are handled as numeric factors
+        // with 0 and 1 for the values and "FALSE" and "TRUE" for the labels.
+        // (so this can also be used as an example of ingesting a *numeric* 
+        // categorical variable - as opposed to *string* categoricals, that
+        // we turn R factors into - above.
+        else if ("logical".equals(variableTypeString)) {
+            columnMetaData.setFactor(true);
+            booleanVariableSet.add(k);
             
+            String booleanFactorLabels[] = new String [2]; 
+            booleanFactorLabels[0] = "FALSE";
+            booleanFactorLabels[1] = "TRUE";
             
-            columnMetaData.setIntFactorValues(variableFactorValues);
-            */
+            columnMetaData.setFactorLevels(booleanFactorLabels); 
+            
+            int booleanFactorValues[] = new int[2];
+            booleanFactorValues[0] = 0;
+            booleanFactorValues[1] = 1; 
+            
+            columnMetaData.setIntFactorValues(booleanFactorValues);
+            
+            factorLabelMap.put("0", "FALSE");
+            factorLabelMap.put("1", "TRUE");
         }
         
-        // Create a map between a label to itself. This should include values
-        // that are missing from the dataset but present in the levels of the
-        // factor.
         
-        // So, this "mapping of label to itself" just means that the same 
-        // string will be used for both the "value" and the "label"; and the
-        // variable will be treated on the DVN side as a categorical variable
-        // of type "string". See my comment somewhere in the code above, "this 
-        // is the counter-intuitive part..." that explains why we are treating 
-        // R factors this way. 
-        
-        for (String label : variableLevels) {
-          factorLabelMap.put(label, label);
-        }
         
         // Value label table matches column-name to list of possible categories
         valueLabelTable.put(variableNameList.get(k), factorLabelMap);
@@ -1310,6 +1361,7 @@ public class RDATAFileReader extends StatDataFileReader {
     
     smd.setValueLabelTable(valueLabelTable);
     smd.setValueLabelMappingTable(valueLabelMappingTable);
+    smd.setBooleanVariables(booleanVariableSet);
     
     // Return the array or null
     return result;

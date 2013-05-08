@@ -388,7 +388,11 @@ public class DDIWriter {
                 formatName="";
                 formatCategory ="";
             }
-            sb.append("\t\t<varFormat type=\""+formatTye+"\" "+formatSchema+ formatName+formatCategory+"/>\n");
+            if (sdioMetadata.isBooleanVariable()[i]) {
+                sb.append("\t\t<varFormat type=\""+formatTye+"\" "+formatSchema+ formatName+formatCategory+">Boolean</varFormat>\n");
+            } else {
+                sb.append("\t\t<varFormat type=\""+formatTye+"\" "+formatSchema+ formatName+formatCategory+"/>\n");
+            }
             // note: UNF
             sb.append("\t\t<notes subject=\"Universal Numeric Fingerprint\" "+
                 "level=\"variable\" source=\"archive\" type=\"VDC:UNF\">"+

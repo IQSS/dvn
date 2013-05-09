@@ -459,6 +459,19 @@ public class IndexServiceBean implements edu.harvard.iq.dvn.core.index.IndexServ
         return resultsWithFacets;
     }
 
+    public List<Query> getCollectionQueries(VDC vdc) {
+        Indexer indexer = Indexer.getInstance();
+        List<Query> collectionQueries = indexer.getCollectionQueries(vdc);
+        return collectionQueries;
+    }
+
+    public Query constructDvOwnerIdQuery(VDC vdc) {
+        Indexer indexer = Indexer.getInstance();
+        Query dvOwnerIdQuery = indexer.constructDvOwnerIdQuery(vdc);
+        return dvOwnerIdQuery;
+
+    }
+
 //    public ResultsWithFacets getResultsWithFacets(Query baseQuery, List<CategoryPath> facetsOfInterest) {
 //        logger.info("called getResultsWithFacets() in IndexServiceBean");
 //        ResultsWithFacets resultsWithFacets = null;

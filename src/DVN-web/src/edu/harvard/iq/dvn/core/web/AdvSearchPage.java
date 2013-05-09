@@ -960,71 +960,8 @@ public class AdvSearchPage extends VDCBaseBean implements java.io.Serializable {
 
                 List<Query> collectionQueries = new ArrayList<Query>();
                 if (dvnQuery.getVdc() != null) {
-                    QueryParser parser = new QueryParser(Version.LUCENE_30, "abstract", new DVNAnalyzer());
-                    parser.setDefaultOperator(QueryParser.AND_OPERATOR);
-
-                    Collection<VDCCollection> collections = dvnQuery.getVdc().getOwnedCollections();
-                    Collection<VDCCollection> linkedCollections = dvnQuery.getVdc().getLinkedCollections();
-                    collections.addAll(linkedCollections);
-                    StringBuilder sbOuter = new StringBuilder();
-                    for (VDCCollection col : collections) {
-                        String type = col.getType();
-                        String queryString = col.getQuery();
-                        boolean isDynamic = col.isDynamic();
-                        boolean isLocalScope = col.isLocalScope();
-                        boolean isRootCollection = col.isRootCollection();
-                        if (queryString != null && !queryString.isEmpty()) {
-                            try {
-                                logger.fine("For " + col.getName() + " (isRootCollection=" + isRootCollection + "|type=" + type + "|isDynamic=" + isDynamic + "|isLocalScope=" + isLocalScope + ") adding query: <<<" + queryString + ">>>");
-                                Query query = parser.parse(queryString);
-                                collectionQueries.add(query);
-                            } catch (org.apache.lucene.queryParser.ParseException ex) {
-                                Logger.getLogger(StudyListingPage.class.getName()).log(Level.SEVERE, null, ex);
-                            }
-                        } else {
-                            logger.fine("For " + col.getName() + " (isRootCollection=" + isRootCollection + "|type=" + type + "|isDynamic=" + isDynamic + "|isLocalScope=" + isLocalScope + ") skipping add of query: <<<" + queryString + ">>>");
-                            List<Study> studies = col.getStudies();
-                            StringBuilder sbInner = new StringBuilder();
-                            for (Study study : studies) {
-                                logger.fine("- has StudyId: " + study.getId());
-                                String idColonId = "id:" + study.getId().toString() + " ";
-                                sbInner.append(idColonId);
-                            }
-                            logger.fine("sbInner: " + sbInner.toString());
-                            sbOuter.append(sbInner);
-
-                        }
-                    }
-                    logger.fine("sbOuter: " + sbOuter);
-                    if (!sbOuter.toString().isEmpty()) {
-                        try {
-                            parser.setDefaultOperator(QueryParser.OR_OPERATOR);
-                            /**
-                             * @todo: stop parsing a string... "If you are
-                             * programmatically generating a query string and
-                             * then parsing it with the query parser then you
-                             * should seriously consider building your queries
-                             * directly with the query API. In other words, the
-                             * query parser is designed for human-entered text,
-                             * not for program-generated text." --
-                             * http://lucene.apache.org/core/old_versioned_docs/versions/3_5_0/queryparsersyntax.html
-                             */
-                            Query staticColQuery = parser.parse(sbOuter.toString());
-                            parser.setDefaultOperator(QueryParser.AND_OPERATOR);
-                            logger.info("staticCollectionQuery: " + staticColQuery);
-                            collectionQueries.add(staticColQuery);
-                        } catch (org.apache.lucene.queryParser.ParseException ex) {
-                            Logger.getLogger(AdvSearchPage.class.getName()).log(Level.SEVERE, null, ex);
-                        }
-                    }
-
-                    Query dvnOwnerIdQuery = null;
-                    try {
-                        dvnOwnerIdQuery = parser.parse("dvOwnerId:" + dvnQuery.getVdc().getId().toString());
-                    } catch (org.apache.lucene.queryParser.ParseException ex) {
-                        Logger.getLogger(AdvSearchPage.class.getName()).log(Level.SEVERE, null, ex);
-                    }
-                    dvnQuery.setDvOwnerIdQuery(dvnOwnerIdQuery);
+                    dvnQuery.setDvOwnerIdQuery(indexServiceBean.constructDvOwnerIdQuery(dvnQuery.getVdc()));
+                    collectionQueries = indexServiceBean.getCollectionQueries(dvnQuery.getVdc());
                 }
 
 //                viewableIds = indexServiceBean.search(thisVDC, searchTerms); // old, non-facet method

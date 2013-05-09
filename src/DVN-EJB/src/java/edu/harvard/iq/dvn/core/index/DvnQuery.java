@@ -182,7 +182,7 @@ public class DvnQuery {
 
 
 //        logger.info("DvnQuery dump of searchQuery (before collections modifications): " + searchQuery);
-        if (!collectionQueries.isEmpty()) {
+        if (!collectionQueries.isEmpty() || dvOwnerIdQuery != null) {
             BooleanQuery queryAcrossAllCollections = new BooleanQuery();
             for (Query collectionQuery : collectionQueries) {
                 BooleanQuery submittedAndInCollection = new BooleanQuery();

@@ -55,6 +55,10 @@ import edu.harvard.iq.dvn.core.study.SpecialOtherFile;
 import edu.harvard.iq.dvn.core.study.FileMetadataField; 
 import edu.harvard.iq.dvn.core.study.FileMetadataFieldValue;
 import edu.harvard.iq.dvn.core.study.StudyFieldServiceLocal;
+import edu.harvard.iq.dvn.core.vdc.VDC;
+import edu.harvard.iq.dvn.core.vdc.VDCCollection;
+import edu.harvard.iq.dvn.core.web.AdvSearchPage;
+import edu.harvard.iq.dvn.core.web.StudyListingPage;
 import java.io.File;
 import java.io.IOException;
 import java.io.StringReader;
@@ -66,6 +70,7 @@ import java.util.Iterator;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.StringTokenizer;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.ejb.EJB;
 import javax.naming.Context;
@@ -2064,4 +2069,80 @@ public class Indexer implements java.io.Serializable  {
         }
     }
 
+    List<Query> getCollectionQueries(VDC vdc) {
+        List<Query> collectionQueries = new ArrayList<Query>();
+
+        QueryParser parser = new QueryParser(Version.LUCENE_30, "abstract", new DVNAnalyzer());
+        parser.setDefaultOperator(QueryParser.AND_OPERATOR);
+
+        Collection<VDCCollection> collections = vdc.getOwnedCollections();
+        Collection<VDCCollection> linkedCollections = vdc.getLinkedCollections();
+        collections.addAll(linkedCollections);
+        StringBuilder sbOuter = new StringBuilder();
+        for (VDCCollection col : collections) {
+            String type = col.getType();
+            String queryString = col.getQuery();
+            boolean isDynamic = col.isDynamic();
+            boolean isLocalScope = col.isLocalScope();
+            boolean isRootCollection = col.isRootCollection();
+            if (queryString != null && !queryString.isEmpty()) {
+                try {
+                    logger.fine("For " + col.getName() + " (isRootCollection=" + isRootCollection + "|type=" + type + "|isDynamic=" + isDynamic + "|isLocalScope=" + isLocalScope + ") adding query: <<<" + queryString + ">>>");
+                    Query query = parser.parse(queryString);
+                    collectionQueries.add(query);
+                } catch (org.apache.lucene.queryParser.ParseException ex) {
+                    Logger.getLogger(StudyListingPage.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            } else {
+                logger.fine("For " + col.getName() + " (isRootCollection=" + isRootCollection + "|type=" + type + "|isDynamic=" + isDynamic + "|isLocalScope=" + isLocalScope + ") skipping add of query: <<<" + queryString + ">>>");
+                List<Study> studies = col.getStudies();
+                StringBuilder sbInner = new StringBuilder();
+                for (Study study : studies) {
+                    logger.fine("- has StudyId: " + study.getId());
+                    String idColonId = "id:" + study.getId().toString() + " ";
+                    sbInner.append(idColonId);
+                }
+                logger.fine("sbInner: " + sbInner.toString());
+                sbOuter.append(sbInner);
+
+            }
+        }
+        logger.fine("sbOuter: " + sbOuter);
+        if (!sbOuter.toString().isEmpty()) {
+            try {
+                parser.setDefaultOperator(QueryParser.OR_OPERATOR);
+                /**
+                 * @todo: stop parsing a string... "If you are programmatically
+                 * generating a query string and then parsing it with the query
+                 * parser then you should seriously consider building your
+                 * queries directly with the query API. In other words, the
+                 * query parser is designed for human-entered text, not for
+                 * program-generated text." --
+                 * http://lucene.apache.org/core/old_versioned_docs/versions/3_5_0/queryparsersyntax.html
+                 */
+                Query staticColQuery = parser.parse(sbOuter.toString());
+                parser.setDefaultOperator(QueryParser.AND_OPERATOR);
+                logger.info("staticCollectionQuery: " + staticColQuery);
+                collectionQueries.add(staticColQuery);
+            } catch (org.apache.lucene.queryParser.ParseException ex) {
+                Logger.getLogger(AdvSearchPage.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+
+        return collectionQueries;
+
+
+    }
+
+    Query constructDvOwnerIdQuery(VDC vdc) {
+        QueryParser parser = new QueryParser(Version.LUCENE_30, "abstract", new DVNAnalyzer());
+        parser.setDefaultOperator(QueryParser.AND_OPERATOR);
+        Query dvnOwnerIdQuery = null;
+        try {
+            dvnOwnerIdQuery = parser.parse("dvOwnerId:" + vdc.getId().toString());
+        } catch (org.apache.lucene.queryParser.ParseException ex) {
+            Logger.getLogger(AdvSearchPage.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return dvnOwnerIdQuery;
+    }
 }

@@ -92,4 +92,8 @@ public interface IndexServiceLocal extends java.io.Serializable {
 
     public ResultsWithFacets searchNew(DvnQuery dvnQuery);
 
+    public List<Query> getCollectionQueries(VDC vdc);
+
+    public Query constructDvOwnerIdQuery(VDC vdc);
+
 }

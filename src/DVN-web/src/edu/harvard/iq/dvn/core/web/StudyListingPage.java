@@ -607,25 +607,16 @@ public class StudyListingPage extends VDCBaseBean implements java.io.Serializabl
             } else {
                 dvnQuery.setVdc(getVDCRequestBean().getCurrentVDC());
 
-                boolean hasCollections = false;
                 if (dvnQuery.getVdc() != null) {
-                    Collection<VDCCollection> collections = dvnQuery.getVdc().getOwnedCollections();
-                    for (VDCCollection col : collections) {
-                            hasCollections = true;
-                    }
+                    dvnQuery.setDvOwnerIdQuery(indexService.constructDvOwnerIdQuery(dvnQuery.getVdc()));
+                    dvnQuery.setCollectionQueries(indexService.getCollectionQueries(dvnQuery.getVdc()));
                 }
 
-                if (hasCollections) {
-                    /**
-                     * @todo: implement faceted search from AdvSearchPage
-                     */
-                    studyIDList = indexService.search(getVDCRequestBean().getCurrentVDC(), searchTerms);
-                } else {
-                    dvnQuery.setSearchTerms(searchTerms);
-                    dvnQuery.constructQuery();
-                    resultsWithFacets = indexService.searchNew(dvnQuery);
-                    studyIDList = resultsWithFacets.getMatchIds();
-                }
+                dvnQuery.setDisableLimitByDataverseFacet(true);
+                dvnQuery.setSearchTerms(searchTerms);
+                dvnQuery.constructQuery();
+                resultsWithFacets = indexService.searchNew(dvnQuery);
+                studyIDList = resultsWithFacets.getMatchIds();
             }
             if (searchField.equals("any")) {
                 List<Long> versionIds = indexService.searchVersionUnf(getVDCRequestBean().getCurrentVDC(), searchValue);

@@ -1455,7 +1455,6 @@ public class Indexer implements java.io.Serializable  {
         logger.info("called searchNew() in Indexer.java");
 
         List<CategoryPath> facetsOfInterest = new ArrayList<CategoryPath>();
-        logger.info("facetsOfInterest just new'd: " + facetsOfInterest);
         if (dvnQuery.vdc != null && !dvnQuery.isDisableLimitByDataverseFacet()) {
             CategoryPath facetToAdd = new CategoryPath("dvName", dvnQuery.vdc.getName());
             if (!facetsOfInterest.contains(facetToAdd)) {
@@ -1463,18 +1462,18 @@ public class Indexer implements java.io.Serializable  {
             }
         }
 
-        if (dvnQuery.isClearPreviousFacetRequests() == true) {
-            logger.info("in searchNew in Indexer.java. dvnQuery wants to clear previous facet requests");
-        } else {
-            logger.info("in searchNew in Indexer.java. dvnQuery doesn't want to clear previous facet requests");
-        }
-        logger.info("dvnQuery.facetsToQuery = " + dvnQuery.facetsToQuery);
+//        if (dvnQuery.isClearPreviousFacetRequests() == true) {
+//            logger.info("in searchNew in Indexer.java. dvnQuery wants to clear previous facet requests");
+//        } else {
+//            logger.info("in searchNew in Indexer.java. dvnQuery doesn't want to clear previous facet requests");
+//        }
+//        logger.info("dvnQuery.facetsToQuery = " + dvnQuery.facetsToQuery);
         if (dvnQuery.facetsToQuery != null) {
 //        if (dvnQuery.facetsToQuery != null && dvnQuery.isClearPreviousFacetRequests() == false) {
             for (int i = 0; i < dvnQuery.facetsToQuery.size(); i++) {
                 CategoryPath facetToAdd = dvnQuery.facetsToQuery.get(i);
                 if (!facetsOfInterest.contains(facetToAdd)) {
-                    logger.info("in searchNew in Indexer, adding to facetsOfInterest: facet " + facetToAdd);
+                    logger.fine("in searchNew in Indexer, adding to facetsOfInterest: facet " + facetToAdd);
                     facetsOfInterest.add(facetToAdd);
                 }
             }
@@ -1500,7 +1499,7 @@ public class Indexer implements java.io.Serializable  {
         }
 
         Query q2;
-        logger.info("facetsArray length is " + facetsArray.length);
+//        logger.info("facetsArray length is " + facetsArray.length);
         if (facetsArray.length > 0) {
             q2 = DrillDown.query(baseQuery, facetsArray);
         } else {
@@ -1549,7 +1548,7 @@ public class Indexer implements java.io.Serializable  {
          * studyIDs from the previous search and further narrows the
          * results based on a new search.
          */
-        logger.info("limiting to certain study IDs (maybe)");
+//        logger.info("limiting to certain study IDs (maybe)");
         if (dvnQuery.limitToStudyIds != null) {
             List<Long> studyIdsOrig = resultsWithFacets.getMatchIds();
             logger.info("running limiting method...");
@@ -1557,7 +1556,7 @@ public class Indexer implements java.io.Serializable  {
             resultsWithFacets.setMatchIds(filteredResults);
             resultsWithFacets.setResultList(null);
         }
-        logger.info("facetsOfInterest about to setFacetsQueried: " + facetsOfInterest);
+        logger.fine("facetsOfInterest about to setFacetsQueried: " + facetsOfInterest);
         resultsWithFacets.setFacetsQueried(facetsOfInterest);
         resultsWithFacets.setClearPreviousFacetRequests(dvnQuery.isClearPreviousFacetRequests());
         resultsWithFacets.setBaseQuery(baseQuery);

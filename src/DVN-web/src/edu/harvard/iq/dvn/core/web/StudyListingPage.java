@@ -1412,8 +1412,8 @@ public class StudyListingPage extends VDCBaseBean implements java.io.Serializabl
         logger.fine("called getFacetsQueried...");
         logger.fine("facetsOfInterest = " + facetsOfInterest);
         if (studyListing.getResultsWithFacets() != null) {
-            logger.info("from ResultsWithFacets: " + studyListing.getResultsWithFacets().getBaseQuery());
-            logger.info("from ResultsWithFacets: " + studyListing.getResultsWithFacets().getFacetsQueried());
+            logger.fine("from ResultsWithFacets: " + studyListing.getResultsWithFacets().getBaseQuery());
+            logger.fine("from ResultsWithFacets: " + studyListing.getResultsWithFacets().getFacetsQueried());
         }
         return studyListing.getResultsWithFacets() != null ? studyListing.getResultsWithFacets().getFacetsQueried() : null;
     }

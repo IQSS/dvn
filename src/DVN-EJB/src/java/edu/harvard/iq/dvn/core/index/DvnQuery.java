@@ -122,7 +122,7 @@ public class DvnQuery {
     }
 
     public void constructQuery() {
-        logger.info("in constructQuery...");
+        logger.fine("in constructQuery...");
         BooleanQuery searchQuery = null;
 
         // FIXME: how much of this logic do we need? from indexService.searchwithFacets()...
@@ -153,7 +153,7 @@ public class DvnQuery {
 
         for (Iterator it = searchTerms.iterator(); it.hasNext();) {
             SearchTerm elem = (SearchTerm) it.next();
-            logger.info("elem field name = " + elem.getFieldName().toString());
+            logger.fine("elem field name = " + elem.getFieldName().toString());
             if (elem.getFieldName().equals("variable")) {
 //                SearchTerm st = dvnTokenizeSearchTerm(elem);
 //                variableSearchTerms.add(st);

@@ -959,10 +959,6 @@ public class AdvSearchPage extends VDCBaseBean implements java.io.Serializable {
                 dvnQuery.setVdc(thisVDC);
 
                 List<Query> collectionQueries = new ArrayList<Query>();
-                /**
-                 * @todo: still need this? probably not...
-                 */
-                boolean hasCollections = false;
                 if (dvnQuery.getVdc() != null) {
                     QueryParser parser = new QueryParser(Version.LUCENE_30, "abstract", new DVNAnalyzer());
                     parser.setDefaultOperator(QueryParser.AND_OPERATOR);
@@ -979,40 +975,42 @@ public class AdvSearchPage extends VDCBaseBean implements java.io.Serializable {
                         boolean isRootCollection = col.isRootCollection();
                         if (queryString != null && !queryString.isEmpty()) {
                             try {
-                                logger.info("For " + col.getName() + " (isRootCollection=" + isRootCollection + "|type=" + type + "|isDynamic=" + isDynamic + "|isLocalScope=" + isLocalScope + ") adding query: <<<" + queryString + ">>>");
+                                logger.fine("For " + col.getName() + " (isRootCollection=" + isRootCollection + "|type=" + type + "|isDynamic=" + isDynamic + "|isLocalScope=" + isLocalScope + ") adding query: <<<" + queryString + ">>>");
                                 Query query = parser.parse(queryString);
                                 collectionQueries.add(query);
                             } catch (org.apache.lucene.queryParser.ParseException ex) {
                                 Logger.getLogger(StudyListingPage.class.getName()).log(Level.SEVERE, null, ex);
                             }
                         } else {
-                            logger.info("For " + col.getName() + " (isRootCollection=" + isRootCollection + "|type=" + type + "|isDynamic=" + isDynamic + "|isLocalScope=" + isLocalScope + ") skipping add of query: <<<" + queryString + ">>>");
+                            logger.fine("For " + col.getName() + " (isRootCollection=" + isRootCollection + "|type=" + type + "|isDynamic=" + isDynamic + "|isLocalScope=" + isLocalScope + ") skipping add of query: <<<" + queryString + ">>>");
                             List<Study> studies = col.getStudies();
                             StringBuilder sbInner = new StringBuilder();
                             for (Study study : studies) {
-                                logger.info("- has StudyId: " + study.getId());
+                                logger.fine("- has StudyId: " + study.getId());
                                 String idColonId = "id:" + study.getId().toString() + " ";
                                 sbInner.append(idColonId);
-//                                sb.append(" OR ");
-
                             }
-                            logger.info("sbInner: " + sbInner.toString());
+                            logger.fine("sbInner: " + sbInner.toString());
                             sbOuter.append(sbInner);
 
                         }
-
-                        if (col != dvnQuery.getVdc().getRootCollection()) {
-                            hasCollections = true;
-                        }
                     }
-                    logger.info("sbOuter: " + sbOuter);
+                    logger.fine("sbOuter: " + sbOuter);
                     if (!sbOuter.toString().isEmpty()) {
                         try {
                             parser.setDefaultOperator(QueryParser.OR_OPERATOR);
-
+                            /**
+                             * @todo: stop parsing a string... "If you are
+                             * programmatically generating a query string and
+                             * then parsing it with the query parser then you
+                             * should seriously consider building your queries
+                             * directly with the query API. In other words, the
+                             * query parser is designed for human-entered text,
+                             * not for program-generated text." --
+                             * http://lucene.apache.org/core/old_versioned_docs/versions/3_5_0/queryparsersyntax.html
+                             */
                             Query staticColQuery = parser.parse(sbOuter.toString());
                             parser.setDefaultOperator(QueryParser.AND_OPERATOR);
-
                             logger.info("staticCollectionQuery: " + staticColQuery);
                             collectionQueries.add(staticColQuery);
                         } catch (org.apache.lucene.queryParser.ParseException ex) {
@@ -1029,26 +1027,18 @@ public class AdvSearchPage extends VDCBaseBean implements java.io.Serializable {
                     dvnQuery.setDvOwnerIdQuery(dvnOwnerIdQuery);
                 }
 
-                hasCollections = false; // take this out... forcing searchNew
-                if (hasCollections) {
-                    /**
-                     * @todo: implement faceted search
-                     */
-                    viewableIds = indexServiceBean.search(thisVDC, searchTerms);
+//                viewableIds = indexServiceBean.search(thisVDC, searchTerms); // old, non-facet method
+                dvnQuery.setSearchTerms(searchTerms);
+                if (!collectionQueries.isEmpty()) {
+                    logger.fine("collectionQueries: " + collectionQueries);
+                    dvnQuery.setDisableLimitByDataverseFacet(true);
+                    dvnQuery.setCollectionQueries(collectionQueries);
                 } else {
-                    dvnQuery.setSearchTerms(searchTerms);
-                    if (!collectionQueries.isEmpty()) {
-                        logger.info("collectionQueries: " + collectionQueries);
-                        dvnQuery.setDisableLimitByDataverseFacet(true);
-                        dvnQuery.setCollectionQueries(collectionQueries);
-                    } else {
-                        logger.info("empty collectionQueries");
-                    }
-                    dvnQuery.constructQuery();
-                    resultsWithFacets = indexServiceBean.searchNew(dvnQuery);
-                    viewableIds = resultsWithFacets.getMatchIds();
-                    List<FacetResult> facetResults = resultsWithFacets.getResultList();
+                    logger.info("empty collectionQueries");
                 }
+                dvnQuery.constructQuery();
+                resultsWithFacets = indexServiceBean.searchNew(dvnQuery);
+                viewableIds = resultsWithFacets.getMatchIds();
             }
 
             StudyListing sl = new StudyListing(StudyListing.SEARCH);

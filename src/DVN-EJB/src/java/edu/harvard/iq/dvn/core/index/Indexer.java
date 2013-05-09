@@ -1460,12 +1460,6 @@ public class Indexer implements java.io.Serializable  {
         logger.info("called searchNew() in Indexer.java");
 
         List<CategoryPath> facetsOfInterest = new ArrayList<CategoryPath>();
-        if (dvnQuery.vdc != null && !dvnQuery.isDisableLimitByDataverseFacet()) {
-            CategoryPath facetToAdd = new CategoryPath("dvName", dvnQuery.vdc.getName());
-            if (!facetsOfInterest.contains(facetToAdd)) {
-                facetsOfInterest.add(facetToAdd);
-            }
-        }
 
 //        if (dvnQuery.isClearPreviousFacetRequests() == true) {
 //            logger.info("in searchNew in Indexer.java. dvnQuery wants to clear previous facet requests");

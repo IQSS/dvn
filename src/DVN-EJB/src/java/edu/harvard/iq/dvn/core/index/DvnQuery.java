@@ -46,7 +46,6 @@ public class DvnQuery {
 //    private static boolean clearPreviousFacetRequests = false;
     List<Long> limitToStudyIds;
     List<Query> collectionQueries = new ArrayList<Query>();
-    boolean disableLimitByDataverseFacet;
     private Query dvOwnerIdQuery;
 
     public Query getDvOwnerIdQuery() {
@@ -111,14 +110,6 @@ public class DvnQuery {
 
     public void setCollectionQueries(List<Query> collectionQueries) {
         this.collectionQueries = collectionQueries;
-    }
-
-    public boolean isDisableLimitByDataverseFacet() {
-        return disableLimitByDataverseFacet;
-    }
-
-    public void setDisableLimitByDataverseFacet(boolean disableLimitByDataverseFacet) {
-        this.disableLimitByDataverseFacet = disableLimitByDataverseFacet;
     }
 
     public void constructQuery() {

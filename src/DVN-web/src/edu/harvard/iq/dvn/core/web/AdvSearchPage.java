@@ -968,7 +968,6 @@ public class AdvSearchPage extends VDCBaseBean implements java.io.Serializable {
                 dvnQuery.setSearchTerms(searchTerms);
                 if (!collectionQueries.isEmpty()) {
                     logger.fine("collectionQueries: " + collectionQueries);
-                    dvnQuery.setDisableLimitByDataverseFacet(true);
                     dvnQuery.setCollectionQueries(collectionQueries);
                 } else {
                     logger.info("empty collectionQueries");

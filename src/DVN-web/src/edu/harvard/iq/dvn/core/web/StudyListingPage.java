@@ -612,7 +612,6 @@ public class StudyListingPage extends VDCBaseBean implements java.io.Serializabl
                     dvnQuery.setCollectionQueries(indexService.getCollectionQueries(dvnQuery.getVdc()));
                 }
 
-                dvnQuery.setDisableLimitByDataverseFacet(true);
                 dvnQuery.setSearchTerms(searchTerms);
                 dvnQuery.constructQuery();
                 resultsWithFacets = indexService.searchNew(dvnQuery);
@@ -1288,11 +1287,8 @@ public class StudyListingPage extends VDCBaseBean implements java.io.Serializabl
     public void setStudyListingByFacets(String facetKey, String facetValue) {
         logger.info("called setStudyListingByFacets()");
 
-        boolean skipAdd = false;
         if (getVDCRequestBean().getCurrentVDC() != null) {
             recentVisitToDvPage = true;
-            skipAdd = facetKey.equals("dvName") ? true : false;
-            logger.info("skipAdd = " + skipAdd);
         } else {
             if (recentVisitToDvPage == true) {
                 // clear all facets??
@@ -1303,7 +1299,7 @@ public class StudyListingPage extends VDCBaseBean implements java.io.Serializabl
             }
         }
         CategoryPath facetToAdd = new CategoryPath(facetKey, facetValue);
-        if (!facetsOfInterest.contains(facetToAdd) && skipAdd != true) {
+        if (!facetsOfInterest.contains(facetToAdd)) {
             facetsOfInterest.add(facetToAdd);
         }
 
@@ -1340,7 +1336,6 @@ public class StudyListingPage extends VDCBaseBean implements java.io.Serializabl
          * @todo: pass in search terms instead?
          */
         if (studyListing.getResultsWithFacets().getBaseQuery() != null) {
-            dvnQuery.setDisableLimitByDataverseFacet(true);
             dvnQuery.setQuery(studyListing.getResultsWithFacets().getBaseQuery());
         } else {
             dvnQuery.setQuery(query);
@@ -1385,7 +1380,6 @@ public class StudyListingPage extends VDCBaseBean implements java.io.Serializabl
         DvnQuery dvnQuery = new DvnQuery();
 //        dvnQuery.setQuery(query);
         if (studyListing.getResultsWithFacets().getBaseQuery() != null) {
-            dvnQuery.setDisableLimitByDataverseFacet(true);
             dvnQuery.setQuery(studyListing.getResultsWithFacets().getBaseQuery());
         } else {
             dvnQuery.setQuery(query);

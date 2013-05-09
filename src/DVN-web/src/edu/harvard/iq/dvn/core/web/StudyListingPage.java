@@ -32,6 +32,7 @@ import com.icesoft.faces.component.tree.IceUserObject;
 import com.icesoft.faces.context.effects.JavascriptContext;
 import edu.harvard.iq.dvn.core.admin.UserGroup;
 import edu.harvard.iq.dvn.core.admin.VDCUser;
+import edu.harvard.iq.dvn.core.index.DVNAnalyzer;
 import edu.harvard.iq.dvn.core.index.DvnQuery;
 import edu.harvard.iq.dvn.core.index.IndexServiceLocal;
 import edu.harvard.iq.dvn.core.index.Indexer;
@@ -61,6 +62,7 @@ import java.util.ListIterator;
 import java.util.Map;
 import java.util.MissingResourceException;
 import java.util.ResourceBundle;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.ejb.EJB;
 import javax.faces.bean.ViewScoped;
@@ -74,9 +76,12 @@ import javax.swing.tree.DefaultTreeModel;
 import org.apache.lucene.facet.search.results.FacetResult;
 import org.apache.lucene.facet.search.results.FacetResultNode;
 import org.apache.lucene.facet.taxonomy.CategoryPath;
+import org.apache.lucene.queryParser.ParseException;
+import org.apache.lucene.queryParser.QueryParser;
 import org.apache.lucene.search.BooleanQuery;
 import org.apache.lucene.search.MatchAllDocsQuery;
 import org.apache.lucene.search.Query;
+import org.apache.lucene.util.Version;
 
 /**
  *
@@ -606,15 +611,13 @@ public class StudyListingPage extends VDCBaseBean implements java.io.Serializabl
                 if (dvnQuery.getVdc() != null) {
                     Collection<VDCCollection> collections = dvnQuery.getVdc().getOwnedCollections();
                     for (VDCCollection col : collections) {
-                        if (col != dvnQuery.getVdc().getRootCollection()) {
                             hasCollections = true;
-                        }
                     }
                 }
 
                 if (hasCollections) {
                     /**
-                     * @todo: implement faceted search
+                     * @todo: implement faceted search from AdvSearchPage
                      */
                     studyIDList = indexService.search(getVDCRequestBean().getCurrentVDC(), searchTerms);
                 } else {
@@ -1345,7 +1348,12 @@ public class StudyListingPage extends VDCBaseBean implements java.io.Serializabl
         /**
          * @todo: pass in search terms instead?
          */
-        dvnQuery.setQuery(query);
+        if (studyListing.getResultsWithFacets().getBaseQuery() != null) {
+            dvnQuery.setDisableLimitByDataverseFacet(true);
+            dvnQuery.setQuery(studyListing.getResultsWithFacets().getBaseQuery());
+        } else {
+            dvnQuery.setQuery(query);
+        }
         logger.info("in setStudyListingByFacets, going to query these facets: " + facetsOfInterest.toString());
         dvnQuery.setFacetsToQuery(facetsOfInterest);
 //        ResultsWithFacets resultsWithFacets = indexService.getResultsWithFacets(query, facetsOfInterest);
@@ -1384,7 +1392,14 @@ public class StudyListingPage extends VDCBaseBean implements java.io.Serializabl
 
 //        ResultsWithFacets resultsWithFacets = indexService.getResultsWithFacets(query, facetsOfInterest);
         DvnQuery dvnQuery = new DvnQuery();
-        dvnQuery.setQuery(query);
+//        dvnQuery.setQuery(query);
+        if (studyListing.getResultsWithFacets().getBaseQuery() != null) {
+            dvnQuery.setDisableLimitByDataverseFacet(true);
+            dvnQuery.setQuery(studyListing.getResultsWithFacets().getBaseQuery());
+        } else {
+            dvnQuery.setQuery(query);
+        }
+
         dvnQuery.setVdc(getVDCRequestBean().getCurrentVDC());
         // should I have to set this every time? make it static, part of dvnQuery?
         dvnQuery.setFacetsToQuery(facetsOfInterest);
@@ -1394,10 +1409,11 @@ public class StudyListingPage extends VDCBaseBean implements java.io.Serializabl
     }
 
     public List<CategoryPath> getFacetsQueried() {
-        logger.info("called getFacetsQueried...");
-        logger.info("facetsOfInterest = " + facetsOfInterest);
+        logger.fine("called getFacetsQueried...");
+        logger.fine("facetsOfInterest = " + facetsOfInterest);
         if (studyListing.getResultsWithFacets() != null) {
-            logger.info("facetsQueried = " + studyListing.getResultsWithFacets().getFacetsQueried());
+            logger.info("from ResultsWithFacets: " + studyListing.getResultsWithFacets().getBaseQuery());
+            logger.info("from ResultsWithFacets: " + studyListing.getResultsWithFacets().getFacetsQueried());
         }
         return studyListing.getResultsWithFacets() != null ? studyListing.getResultsWithFacets().getFacetsQueried() : null;
     }

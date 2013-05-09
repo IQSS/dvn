@@ -58,8 +58,10 @@ import com.icesoft.faces.component.ext.HtmlSelectOneRadio;
 import com.icesoft.faces.component.ext.HtmlDataTable;
 import com.icesoft.faces.component.ext.HtmlCommandButton;
 import com.icesoft.faces.component.ext.HtmlPanelGrid;
+import edu.harvard.iq.dvn.core.index.DVNAnalyzer;
 import edu.harvard.iq.dvn.core.index.DvnQuery;
 import edu.harvard.iq.dvn.core.index.ResultsWithFacets;
+import edu.harvard.iq.dvn.core.study.Study;
 import edu.harvard.iq.dvn.core.study.VariableServiceLocal;
 import javax.faces.component.UIColumn;
 import java.util.Locale;
@@ -67,11 +69,15 @@ import java.util.ResourceBundle;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.MissingResourceException;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.faces.bean.ViewScoped;
 import javax.faces.model.SelectItem;
 import javax.inject.Named;
 import org.apache.lucene.facet.search.results.FacetResult;
+import org.apache.lucene.queryParser.QueryParser;
+import org.apache.lucene.search.Query;
+import org.apache.lucene.util.Version;
 
 /**
  * <p>Page bean that corresponds to a similarly named JSP page.  This
@@ -952,16 +958,78 @@ public class AdvSearchPage extends VDCBaseBean implements java.io.Serializable {
                 DvnQuery dvnQuery = new DvnQuery();
                 dvnQuery.setVdc(thisVDC);
 
+                List<Query> collectionQueries = new ArrayList<Query>();
+                /**
+                 * @todo: still need this? probably not...
+                 */
                 boolean hasCollections = false;
                 if (dvnQuery.getVdc() != null) {
+                    QueryParser parser = new QueryParser(Version.LUCENE_30, "abstract", new DVNAnalyzer());
+                    parser.setDefaultOperator(QueryParser.AND_OPERATOR);
+
                     Collection<VDCCollection> collections = dvnQuery.getVdc().getOwnedCollections();
+                    Collection<VDCCollection> linkedCollections = dvnQuery.getVdc().getLinkedCollections();
+                    collections.addAll(linkedCollections);
+                    StringBuilder sbOuter = new StringBuilder();
                     for (VDCCollection col : collections) {
+                        String type = col.getType();
+                        String queryString = col.getQuery();
+                        boolean isDynamic = col.isDynamic();
+                        boolean isLocalScope = col.isLocalScope();
+                        boolean isRootCollection = col.isRootCollection();
+                        if (queryString != null && !queryString.isEmpty()) {
+                            try {
+                                logger.info("For " + col.getName() + " (isRootCollection=" + isRootCollection + "|type=" + type + "|isDynamic=" + isDynamic + "|isLocalScope=" + isLocalScope + ") adding query: <<<" + queryString + ">>>");
+                                Query query = parser.parse(queryString);
+                                collectionQueries.add(query);
+                            } catch (org.apache.lucene.queryParser.ParseException ex) {
+                                Logger.getLogger(StudyListingPage.class.getName()).log(Level.SEVERE, null, ex);
+                            }
+                        } else {
+                            logger.info("For " + col.getName() + " (isRootCollection=" + isRootCollection + "|type=" + type + "|isDynamic=" + isDynamic + "|isLocalScope=" + isLocalScope + ") skipping add of query: <<<" + queryString + ">>>");
+                            List<Study> studies = col.getStudies();
+                            StringBuilder sbInner = new StringBuilder();
+                            for (Study study : studies) {
+                                logger.info("- has StudyId: " + study.getId());
+                                String idColonId = "id:" + study.getId().toString() + " ";
+                                sbInner.append(idColonId);
+//                                sb.append(" OR ");
+
+                            }
+                            logger.info("sbInner: " + sbInner.toString());
+                            sbOuter.append(sbInner);
+
+                        }
+
                         if (col != dvnQuery.getVdc().getRootCollection()) {
                             hasCollections = true;
                         }
                     }
+                    logger.info("sbOuter: " + sbOuter);
+                    if (!sbOuter.toString().isEmpty()) {
+                        try {
+                            parser.setDefaultOperator(QueryParser.OR_OPERATOR);
+
+                            Query staticColQuery = parser.parse(sbOuter.toString());
+                            parser.setDefaultOperator(QueryParser.AND_OPERATOR);
+
+                            logger.info("staticCollectionQuery: " + staticColQuery);
+                            collectionQueries.add(staticColQuery);
+                        } catch (org.apache.lucene.queryParser.ParseException ex) {
+                            Logger.getLogger(AdvSearchPage.class.getName()).log(Level.SEVERE, null, ex);
+                        }
+                    }
+
+                    Query dvnOwnerIdQuery = null;
+                    try {
+                        dvnOwnerIdQuery = parser.parse("dvOwnerId:" + dvnQuery.getVdc().getId().toString());
+                    } catch (org.apache.lucene.queryParser.ParseException ex) {
+                        Logger.getLogger(AdvSearchPage.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+                    dvnQuery.setDvOwnerIdQuery(dvnOwnerIdQuery);
                 }
 
+                hasCollections = false; // take this out... forcing searchNew
                 if (hasCollections) {
                     /**
                      * @todo: implement faceted search
@@ -969,6 +1037,13 @@ public class AdvSearchPage extends VDCBaseBean implements java.io.Serializable {
                     viewableIds = indexServiceBean.search(thisVDC, searchTerms);
                 } else {
                     dvnQuery.setSearchTerms(searchTerms);
+                    if (!collectionQueries.isEmpty()) {
+                        logger.info("collectionQueries: " + collectionQueries);
+                        dvnQuery.setDisableLimitByDataverseFacet(true);
+                        dvnQuery.setCollectionQueries(collectionQueries);
+                    } else {
+                        logger.info("empty collectionQueries");
+                    }
                     dvnQuery.constructQuery();
                     resultsWithFacets = indexServiceBean.searchNew(dvnQuery);
                     viewableIds = resultsWithFacets.getMatchIds();

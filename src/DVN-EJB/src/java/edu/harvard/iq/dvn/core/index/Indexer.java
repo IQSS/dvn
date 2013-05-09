@@ -1456,7 +1456,7 @@ public class Indexer implements java.io.Serializable  {
 
         List<CategoryPath> facetsOfInterest = new ArrayList<CategoryPath>();
         logger.info("facetsOfInterest just new'd: " + facetsOfInterest);
-        if (dvnQuery.vdc != null) {
+        if (dvnQuery.vdc != null && !dvnQuery.isDisableLimitByDataverseFacet()) {
             CategoryPath facetToAdd = new CategoryPath("dvName", dvnQuery.vdc.getName());
             if (!facetsOfInterest.contains(facetToAdd)) {
                 facetsOfInterest.add(facetToAdd);
@@ -1560,6 +1560,7 @@ public class Indexer implements java.io.Serializable  {
         logger.info("facetsOfInterest about to setFacetsQueried: " + facetsOfInterest);
         resultsWithFacets.setFacetsQueried(facetsOfInterest);
         resultsWithFacets.setClearPreviousFacetRequests(dvnQuery.isClearPreviousFacetRequests());
+        resultsWithFacets.setBaseQuery(baseQuery);
         return resultsWithFacets;
     }
 

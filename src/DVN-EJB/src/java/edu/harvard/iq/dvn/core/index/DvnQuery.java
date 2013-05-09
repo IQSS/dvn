@@ -28,6 +28,7 @@ import java.util.List;
 import java.util.logging.Logger;
 import javax.ejb.EJB;
 import org.apache.lucene.facet.taxonomy.CategoryPath;
+import org.apache.lucene.search.BooleanClause;
 import org.apache.lucene.search.BooleanQuery;
 import org.apache.lucene.search.Query;
 
@@ -44,6 +45,17 @@ public class DvnQuery {
     private boolean clearPreviousFacetRequests = false;
 //    private static boolean clearPreviousFacetRequests = false;
     List<Long> limitToStudyIds;
+    List<Query> collectionQueries = new ArrayList<Query>();
+    boolean disableLimitByDataverseFacet;
+    private Query dvOwnerIdQuery;
+
+    public Query getDvOwnerIdQuery() {
+        return dvOwnerIdQuery;
+    }
+
+    public void setDvOwnerIdQuery(Query dvOwnerIdQuery) {
+        this.dvOwnerIdQuery = dvOwnerIdQuery;
+    }
 
     public Query getQuery() {
         return query;
@@ -91,6 +103,22 @@ public class DvnQuery {
 
     public void setLimitToStudyIds(List<Long> limitToStudyIds) {
         this.limitToStudyIds = limitToStudyIds;
+    }
+
+    public List<Query> getCollectionQueries() {
+        return collectionQueries;
+    }
+
+    public void setCollectionQueries(List<Query> collectionQueries) {
+        this.collectionQueries = collectionQueries;
+    }
+
+    public boolean isDisableLimitByDataverseFacet() {
+        return disableLimitByDataverseFacet;
+    }
+
+    public void setDisableLimitByDataverseFacet(boolean disableLimitByDataverseFacet) {
+        this.disableLimitByDataverseFacet = disableLimitByDataverseFacet;
     }
 
     public void constructQuery() {
@@ -153,8 +181,22 @@ public class DvnQuery {
         searchQuery = indexer.andQueryClause(searchParts);
 
 
-//        logger.info("DvnQuery dump of query: " + query);
+//        logger.info("DvnQuery dump of searchQuery (before collections modifications): " + searchQuery);
+        if (!collectionQueries.isEmpty()) {
+            BooleanQuery queryAcrossAllCollections = new BooleanQuery();
+            for (Query collectionQuery : collectionQueries) {
+                BooleanQuery submittedAndInCollection = new BooleanQuery();
+                submittedAndInCollection.add(searchQuery, BooleanClause.Occur.MUST);
+                submittedAndInCollection.add(collectionQuery, BooleanClause.Occur.MUST);
+                queryAcrossAllCollections.add(submittedAndInCollection, BooleanClause.Occur.SHOULD);
+            }
+            BooleanQuery dvSpecific = new BooleanQuery();
+            dvSpecific.add(searchQuery, BooleanClause.Occur.MUST);
+            dvSpecific.add(dvOwnerIdQuery, BooleanClause.Occur.MUST);
+            queryAcrossAllCollections.add(dvSpecific, BooleanClause.Occur.SHOULD);
+            searchQuery = queryAcrossAllCollections;
+        }
+//        logger.info("searchQuery before return: " + searchQuery);
         query = searchQuery;
     }
-
 }

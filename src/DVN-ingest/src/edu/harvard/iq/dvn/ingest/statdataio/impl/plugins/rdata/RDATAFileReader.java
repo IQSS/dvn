@@ -999,6 +999,8 @@ public class RDATAFileReader extends StatDataFileReader {
                         // Should we throw an exception here instead? 
                     }
                     
+                    // We'll also need the integer values, to calculate
+                    // the summary statistics: 
                     try {
                         integerEntries[i] = new Long((String) varData[i]);
                     } catch (Exception ex) {
@@ -1008,7 +1010,8 @@ public class RDATAFileReader extends StatDataFileReader {
 
                 //unfValue = UNF5Util.calculateUNF(booleanEntries);
                 // TODO: 
-                // need to create the UNF method for booleans. -- L.A.
+                // need to create the UNF method for booleans, 
+                // in the UNF5Util -- L.A.
                 unfValue = UNF5Util.calculateUNF(integerEntries);
             
                 // UNF5Util.cal

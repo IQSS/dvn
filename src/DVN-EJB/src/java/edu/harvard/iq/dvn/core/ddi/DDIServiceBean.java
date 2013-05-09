@@ -3198,8 +3198,12 @@ public class DDIServiceBean implements DDIServiceLocal {
         dv.setFormatSchema(schema);
         dv.setFormatSchemaName( xmlr.getAttributeValue(null, "formatname") );
         
+        String varFormatCategoryAtt = xmlr.getAttributeValue(null, "category");
+        
         String varFormatText = parseText(xmlr); 
 
+        
+        
         /* 
          * A somewhat hackish way of recognizing "boolean" variables; 
          * This is not a universally accepted convention - we (the DVN team)
@@ -3213,11 +3217,13 @@ public class DDIServiceBean implements DDIServiceLocal {
          * This information isn't used much in the application (as of May, 2013), 
          * except in the subsetting: when the column is subset and re-imported
          * into an R data frame, we'll convert it into a logical vector.
+         * TODO: 
+         * Add this to the export end! --L.A. 
          */
         if ("Boolean".equalsIgnoreCase(varFormatText)) {
             dv.setFormatCategory( "Boolean" );
         } else {
-            dv.setFormatCategory( xmlr.getAttributeValue(null, "category") );
+            dv.setFormatCategory( varFormatCategoryAtt );
         }
     }
 

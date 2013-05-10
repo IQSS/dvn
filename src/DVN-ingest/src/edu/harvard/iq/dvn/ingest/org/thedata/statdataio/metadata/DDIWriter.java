@@ -206,7 +206,8 @@ public class DDIWriter {
                 MetadataHelper.getMergedResult(
                 sdioMetadata.valueLabelTable.get(valueLabelTableName),
                 sdioMetadata.categoryStatisticsTable.get(variableNamei),
-                sdioMetadata.missingValueTable.get(variableNamei)
+                sdioMetadata.missingValueTable.get(variableNamei),
+                sdioMetadata.nullValueCounts.get(variableNamei)
                 );
                 
             // <var tag
@@ -342,8 +343,10 @@ public class DDIWriter {
                     // first line
                     if (cs.isMissingValue() ||
                         cs.getValue().equals(MISSING_VALUE_DISCRETE) ||
-                        cs.getValue().equals(MISSING_VALUE_TOKEN) ||
-                        cs.getValue().equals("")){
+                        cs.getValue().equals(MISSING_VALUE_TOKEN) /*||
+                         * Commented out the empty string, "", as a 
+                         * missing value -- L.A., May 10 '13
+                        cs.getValue().equals("")*/){
                         sb.append("\t\t<catgry missing=\"Y\">\n");
                     } else {
                         sb.append("\t\t<catgry>\n");
@@ -352,7 +355,10 @@ public class DDIWriter {
                     String catStatValueString = null;
                     if (cs.getValue().equals(MISSING_VALUE_DISCRETE)
                         || cs.getValue().equals(MISSING_VALUE_TOKEN)
-                        || cs.getValue().equals("")
+                        /*|| cs.getValue().equals("")
+                         * * Commented out the empty string, "", as a 
+                         * missing value -- L.A., May 10 '13
+                         */
                         ){
                         catStatValueString=MISSING_VALUE_TOKEN;
                     } else {

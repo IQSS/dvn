@@ -281,6 +281,10 @@ public class VDCSummaryStatisticsServlet extends HttpServlet {
                     continue;
                 }                
                 // key:statistic-type, value: its freq
+                
+                // TODO: 
+                // Add code for missing values, see the else if section below, 
+                // for reference. -- L.A. 
 
                 StringBuilder sb = new StringBuilder();
                 sb.append(dvcat.getValue());
@@ -330,13 +334,24 @@ public class VDCSummaryStatisticsServlet extends HttpServlet {
                 }
                 // key:statistic-type, value: its freq
                 StringBuilder sb = new StringBuilder();
-                sb.append( dvcat.getValue().replaceAll(" ", "&nbsp;") );
-
-                if ((dvcat.getLabel() == null) || (dvcat.getLabel().equals(""))) {
+                
+                if ((dvcat.isMissing() || dvcat.getValue().equals(".")) &&
+                        ((dvcat.getLabel() == null) || (dvcat.getLabel().equals("")))) {
+                    sb.append(". (missing value)");
+                } else if (dvcat.getValue().equals("") && 
+                        ((dvcat.getLabel() == null) || (dvcat.getLabel().equals("")))) {
+                    sb.append("(empty string)");
+                } else if (dvcat.getValue().equals(" ") && 
+                        ((dvcat.getLabel() == null) || (dvcat.getLabel().equals("")))) {
+                    sb.append("&nbsp; (white space)");
                 } else {
-                    sb.append(" (");
-                    sb.append(dvcat.getLabel());
-                    sb.append(")");
+                    sb.append(dvcat.getValue().replaceAll(" ", "&nbsp;"));
+
+                    if ((dvcat.getLabel() != null) && !(dvcat.getLabel().equals(""))) {
+                        sb.append(" (");
+                        sb.append(dvcat.getLabel());
+                        sb.append(")");
+                    }
                 }
                 // getFrequency() might be null
                 String freq;

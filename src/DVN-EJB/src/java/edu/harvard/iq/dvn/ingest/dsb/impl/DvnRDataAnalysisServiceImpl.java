@@ -522,11 +522,18 @@ public class DvnRDataAnalysisServiceImpl {
                 for (i in 1:dim(x)[2]){if (attr(x,"var.type")[i] == 0) {
                 x[[i]]<-I(x[[i]]);  x[[i]][ x[[i]] == '' ]<-NA  }}
             */
+            
+            /* 
+             * Commenting out the fragment below: 
+             * - this is now being done early on in the read.table141vdc
+             *   R function:
+             
             String asIsline  = "for (i in 1:dim(x)[2]){ "+
                 "if (attr(x,'var.type')[i] == 0) {" +
                 "x[[i]]<-I(x[[i]]);  x[[i]][ x[[i]] == '' ]<-NA  }}";
             historyEntry.add(asIsline);
             c.voidEval(asIsline);
+            */
             
             // replication: copy the data.frame
             String repDVN_Xdupline = "dvnData<-x";

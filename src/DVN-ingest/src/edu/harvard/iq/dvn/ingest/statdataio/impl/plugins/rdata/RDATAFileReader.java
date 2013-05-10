@@ -136,6 +136,8 @@ public class RDATAFileReader extends StatDataFileReader {
   private Map <String, String> mPrintFormatNameTable = new LinkedHashMap<String, String>(); 
   private Map <String, String> mFormatCategoryTable = new LinkedHashMap<String, String>();
   private List <Integer> mPrintFormatList = new ArrayList<Integer>();
+  
+  Map<String, List<String>> missingValueTable = new LinkedHashMap<String, List<String>>();
   /*
    * Object Variables
    */
@@ -1037,6 +1039,8 @@ public class RDATAFileReader extends StatDataFileReader {
             smd.getSummaryStatisticsTable().put(k, ArrayUtils.toObject(StatHelper.calculateSummaryStatistics(integerEntries)));
             Map <String, Integer> catStat = StatHelper.calculateCategoryStatistics(integerEntries);
             smd.getCategoryStatisticsTable().put(variableNameList.get(k), catStat);
+            smd.getNullValueCounts().put(variableNameList.get(k), StatHelper.countNullValues(integerEntries));
+
 
             break;
 
@@ -1090,7 +1094,7 @@ public class RDATAFileReader extends StatDataFileReader {
           case -1:
             LOG.info(k + ": " + name + " is string");
 
-            String[] stringEntries = Arrays.asList(varData).toArray(new String[varData.length]);
+            String[] stringEntries = new String[varData.length];//Arrays.asList(varData).toArray(new String[varData.length]);
             
             LOG.info("string array passed to calculateUNF: " + Arrays.deepToString(stringEntries));
             
@@ -1114,7 +1118,7 @@ public class RDATAFileReader extends StatDataFileReader {
                   // entryDateWithFormat = dateFormatter.getDateWithFormat(stringEntries[i]);
                   dateFormats[i] = entryDateWithFormat.getFormatter().toPattern();
                 }
-              }
+              } 
               
               // Compute UNF
               try {
@@ -1128,13 +1132,23 @@ public class RDATAFileReader extends StatDataFileReader {
                 unfValue = UNF5Util.calculateUNF(stringEntries);
                 ex.printStackTrace();
               }
+            } else {
+                for (int i = 0; i < varData.length; i++) {
+                    if (varData[i] == null) {
+                        // Missing Value
+                        stringEntries[i] = null;
+                    } else {
+                        stringEntries[i] = (String)varData[i];
+                    }
+                }       
+                
+                unfValue = UNF5Util.calculateUNF(stringEntries);
             }
-            else
-              unfValue = UNF5Util.calculateUNF(stringEntries);
 
             smd.getSummaryStatisticsTable().put(k, StatHelper.calculateSummaryStatistics(stringEntries));
             Map <String, Integer> StrCatStat = StatHelper.calculateCategoryStatistics(stringEntries);
             smd.getCategoryStatisticsTable().put(variableNameList.get(k), StrCatStat);
+            smd.getNullValueCounts().put(variableNameList.get(k), StatHelper.countNullValues(stringEntries));
 
             break;
             

@@ -53,7 +53,8 @@ public class MetadataHelper {
     public static List<CategoricalStatistic> getMergedResult(
             Map<String, String> valueLabeli,
             Map<String, Integer> catStati,
-            List<String> missingValuei
+            List<String> missingValuei,
+            Integer nullValueCount
             ) {
       
       dbgLog.info("MetadataHelper: Inside getMergedResult");
@@ -325,6 +326,16 @@ public class MetadataHelper {
                 csmv.setMissingValue(true);
                 merged.add(csmv);
             }
+        }
+        
+        if (nullValueCount != null && nullValueCount.intValue() > 0) {
+            CategoricalStatistic nullValueAsMissing = new CategoricalStatistic();
+            nullValueAsMissing.setValue(".");
+            nullValueAsMissing.setLabel(null);
+            nullValueAsMissing.setFrequency(nullValueCount.intValue());
+            nullValueAsMissing.setMissingValue(true);
+            
+            merged.add(nullValueAsMissing);
         }
         
         dbgLog.finer("merged"+merged);

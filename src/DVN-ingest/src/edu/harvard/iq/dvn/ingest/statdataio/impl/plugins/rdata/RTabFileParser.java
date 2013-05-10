@@ -153,11 +153,24 @@ public class RTabFileParser implements java.io.Serializable {
                         }
                         caseRow[i] = charToken;
                     } else {
+                        /*
+                         * Note the commented-out code below; it was converting
+                         * missing values into " " (a double-quoted space - ?)
+                         * I'm pretty positive that was a result of a misreading 
+                         * of some spec many years ago. I'm also fairly positive
+                         * that the only way to store an NA unambiguously is as 
+                         * an *empty* string, no quotes, no nothing!
+                         * TODO: 
+                         * Not sure about the above anymore; need to figure it out. 
+                         * -- L.A.
+                         */
+                        /*
                         if (isDateVariable==null || (!isDateVariable[i])) {
-                           caseRow[i] = "\" \"";
+                           caseRow[i] = " ";
                         } else {
+                        */
                            caseRow[i] = ""; 
-                        }
+                        /*}*/
                     }
 
                 } else if (isContinuousVariable[i]) {
@@ -209,7 +222,7 @@ public class RTabFileParser implements java.io.Serializable {
                         }
                     }
                 } else if (isBooleanVariable[i]) {
-                    if (valueTokens[i] != null && (!valueTokens[i].equals(""))) {
+                    if (valueTokens[i] != null) {
                         String charToken = valueTokens[i];
                         // remove the leading and trailing quotes, if present:
                         charToken = charToken.replaceFirst("^\"", "");
@@ -226,7 +239,7 @@ public class RTabFileParser implements java.io.Serializable {
                             throw new IOException("Unexpected value for the Boolean variable ("+i+"): "+charToken);
                         }
                     } else {
-                        throw new IOException("NULL value for the Boolean variable ("+i+")!");
+                        throw new IOException("Couldn't read Boolean variable ("+i+")!");
                     }
 
                     

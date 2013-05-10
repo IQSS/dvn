@@ -62,7 +62,7 @@ write.dvn.table <- function (data.set, ...) {
     # namely, to remove the double quotes around the values. 
     # As I said, this is an awful hack. But it appears to be
     # the most practical way to resolve this. -- L.A.
-    if (is.numeric(data.set[, k])) {
+    if (is.double(data.set[, k])) {
       strvec <- c()
       for (nc in 1:length(data.set[, k])) {
 	if (is.infinite(data.set[nc,k])) {
@@ -85,7 +85,7 @@ write.dvn.table <- function (data.set, ...) {
     }
   } 
 
-  # Determine which
+  # Determine which columns need quotes:
   quotes <- needs.quotes(data.set)
 
   # Reformat each column

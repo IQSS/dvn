@@ -551,6 +551,19 @@ public class SDIOMetadata {
         this.missingValueTable = missingValueTable;
     }
 
+    protected Map<String, Integer> nullValueCounts =
+        new LinkedHashMap<String, Integer>();
+
+    
+    public Map<String, Integer> getNullValueCounts() {
+        return nullValueCounts;
+    }
+
+    
+    public void setNullValueCounts(Map<String, Integer> nullValueCounts) {
+        this.nullValueCounts = nullValueCounts;
+    }
+    
     /**
      * A mapping table from a variable name to its InvalidData object.
      */

@@ -119,6 +119,10 @@ public class StatHelper {
         Map<String, Integer> tbl = new TreeMap<String, Integer>();
         for (Number entry : x) {
             if (entry == null || entry.toString().equals("NaN")) {
+                // TODO: - ?
+                // Add cases for +-Inf? (or are they valid values?) 
+                // --L.A.
+                // (and how come we are not counting them anyway??)
                 continue;
             }
 
@@ -287,7 +291,26 @@ public class StatHelper {
         }
         return counter;
     }
+    
+    public static int countNullValues(Number[] x){
+        int counter=0;
+        for (int i=0; i<x.length;i++){
+            if ( x[i] == null) {
+                counter++;
+            }
+        }
+        return counter;
+    }
 
+    public static int countNullValues(String[] x){
+        int counter=0;
+        for (int i=0; i<x.length;i++){
+            if ( x[i] == null) {
+                counter++;
+            }
+        }
+        return counter;
+    }
     /**
      * Returns the number of Double.NaNs in a double-type array
      *

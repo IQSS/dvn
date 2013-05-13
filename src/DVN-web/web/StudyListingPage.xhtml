@@ -107,9 +107,11 @@
                              <ice:outputText styleClass="dvnStudyListSearchResultsMessage" value=" #{StudyListingPage.listMessage}" rendered="#{StudyListingPage.studyCount != 0}"/>
                              <!--<ui:repeat value="#{StudyListingPage.facetsOfInterest}" var="facetToRemove">-->
                              <ui:repeat value="#{StudyListingPage.facetsQueried}" var="facetToRemove">
-                                 <ice:commandLink action="#{StudyListingPage.removeFacet(facetToRemove)}" title="Remove">
-                                     <ice:outputText styleClass="dvnStudyListSearchResultsMessage" value=" #{StudyListingPage.showFacetPath(facetToRemove)} (click to remove)" rendered="#{StudyListingPage.studyCount != 0}"/>
-                                 </ice:commandLink>
+                                 <ice:outputText styleClass="dvnStudyListSearchResultsMessage" value=", " rendered="#{StudyListingPage.studyCount != 0}"/>
+                                 <span class="dvnStudyListSearchRefineTermRemove">
+                                 <ice:commandLink action="#{StudyListingPage.removeFacet(facetToRemove)}" styleClass="dvnStudyListSearchRefineTerm" title="Click to Remove">
+                                     <ice:outputText styleClass="dvnStudyListSearchResultsMessage" value="#{StudyListingPage.showFacetPath(facetToRemove)}" rendered="#{StudyListingPage.studyCount != 0}"/><div class="dvnStudyListSearchRefineTermRemoveIcon"/>
+                                 </ice:commandLink></span>
                              </ui:repeat>
                          </div>
                      </td>
@@ -232,16 +234,26 @@
                     .dvnStudyFacetBlock {width:30%; float:right; text-align:left;}
                     .dvnStudyListBlockSearch {width:70%; border-right:1px solid #C55B28;}
                     .dvnStudyFacetBlockTitle {padding:3px 5px; margin-bottom:.5em; color:#464646; font-weight:bold;}
-                    .dvnStudyFacetCategoryBlock {padding:3px 5px; margin-bottom:1em;}
+                    .dvnStudyFacetCategoryBlock {margin-left:1px; margin-bottom:1em;}
                     .dvnStudyFacetCategoryTitle {color:#C55B28; font-weight:bold;}
                     .dvnStudyFacetCategoryBlock ul, .dvnStudyFacetCategoryBlock li {margin:0; padding:0; list-style:none;}
                     .dvnStudyFacetCategoryBlock li {border-bottom:1px dotted #D9D9D9;}
+                    .dvnStudyFacetCategoryBlock table.iceDatTbl {margin-top:0; border-left:0;}
+                    .dvnStudyFacetCategoryBlock table.iceDatTbl tr {border-left:0;}
+                    .dvnStudyFacetCategoryBlock table.iceDatTbl td.iceDatTblCol:last-child, .dvnStudyFacetCategoryBlock table.iceDatTbl td.iceDatTblCol1:last-child, .dvnStudyFacetCategoryBlock table.iceDatTbl td.iceDatTblCol2:last-child {border-right:0;}
+                    .dvnStudyFacetCategoryBlock table.iceDatTbl td ul {margin-bottom:12px;}
                     .dvnStudyFacetResultNumber {color:grey;}
+                    
+                    span.dvnStudyListSearchRefineTermRemove {position:relative;}
+                    a.dvnStudyListSearchRefineTerm:hover {background: red; color: white;}
+                    div.dvnStudyListSearchRefineTermRemoveIcon {background: url("/dvn/resources/images/icon_close.png") no-repeat right top red; height: 12px; position: absolute; right: 0; top: -10px; width: 12px;}
+                    div.dvnStudyListSearchRefineTermRemoveIcon {display: none;}
+                    a.dvnStudyListSearchRefineTerm:hover div.dvnStudyListSearchRefineTermRemoveIcon {display: block;}
                     </style>
                     <div class="dvnStudyFacetBlockTitle">Refine Results</div>
                     <div class="dvnStudyFacetCategoryBlock">
                         <ul>
-                            <ice:dataTable value="#{StudyListingPage.getFacets(5)}" var="facetUI">
+                            <ice:dataTable width="100%" value="#{StudyListingPage.getFacets(5)}" var="facetUI">
                                 <ice:column>
                                     <!--<div class="dvnStudyFacetCategoryTitle"><ice:outputText value="#{facetUI.name}"/></div>-->
                                     <!--<div class="dvnStudyFacetCategoryTitle"><ice:outputText value="#{facetUI.friendlyName}"/></div>-->

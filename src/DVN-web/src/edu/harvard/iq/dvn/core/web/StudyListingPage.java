@@ -1133,13 +1133,13 @@ public class StudyListingPage extends VDCBaseBean implements java.io.Serializabl
     private List<SelectItem> loadSortSelectItems(int mode){
         List selectItems = new ArrayList<SelectItem>();
         if (mode== StudyListing.SEARCH){ 
-             selectItems.add(new SelectItem("relevance", "- Relevance"));
+             selectItems.add(new SelectItem("relevance", "Relevance"));
         }
-        selectItems.add(new SelectItem("globalId", "- Global ID"));
-        selectItems.add(new SelectItem("title", "- Title"));
-        selectItems.add(new SelectItem("releaseTime", "- Most Recently Released"));
-        selectItems.add(new SelectItem("productionDate", "- Production Date"));
-        selectItems.add(new SelectItem("downloadCount", "- Most Downloaded"));
+        selectItems.add(new SelectItem("globalId", "Global ID"));
+        selectItems.add(new SelectItem("title", "Title"));
+        selectItems.add(new SelectItem("releaseTime", "Most Recently Released"));
+        selectItems.add(new SelectItem("productionDate", "Production Date"));
+        selectItems.add(new SelectItem("downloadCount", "Most Downloaded"));
 
         return selectItems;
     }
@@ -1408,7 +1408,7 @@ public class StudyListingPage extends VDCBaseBean implements java.io.Serializabl
         String field = parts[0];
         String value = parts[1];
         try {
-            return ResourceBundle.getBundle("SearchFieldBundle").getString(field) + " = " + value;
+            return ResourceBundle.getBundle("SearchFieldBundle").getString(field) + " = \"" + value + "\"";
         } catch (MissingResourceException e) {
             return categoryPath;
         }

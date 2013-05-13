@@ -444,6 +444,16 @@
                                                         <ice:commandButton value="Delete Lock" action="#{OptionsPage.indexLocks_action}" disabled="#{OptionsPage.deleteLockDisabled}"/>
                                                     </div>
                                                 </ice:column>
+                                                <ice:column>
+                                                    <ice:outputText value="Reindex All Collection-linked Studies"/>
+                                                </ice:column>
+                                                <ice:column>
+                                                    <img class="dvn_icon" src="/dvn/resources/images/icon_information.18.png" alt=""/>
+                                                    <ice:outputText value=" Reindex all studies linked to dataverses via collections"/>
+                                                    <div>
+                                                        <ice:commandButton value="Index Collections" action="#{OptionsPage.indexCollectionStudies_action}"/>
+                                                    </div>
+                                                </ice:column>
                                             </ice:panelGrid>
                                         </ice:panelTab>
                                         <ice:panelTab id="exportOptions" label="Export">

@@ -69,6 +69,8 @@ import java.util.Date;
 import java.util.Iterator;
 import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Map; 
+import java.util.HashMap;
 import java.util.StringTokenizer;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -85,6 +87,7 @@ import org.apache.lucene.document.Document;
 import org.apache.lucene.index.IndexReader;
 import org.apache.lucene.index.IndexWriter;
 import org.apache.lucene.index.Term;
+import org.apache.lucene.index.TermDocs;
 import org.apache.lucene.queryParser.ParseException;
 import org.apache.lucene.queryParser.QueryParser;
 import org.apache.lucene.search.BooleanClause;
@@ -217,6 +220,10 @@ public class Indexer implements java.io.Serializable  {
     }
 
     protected void addDocument(Study study) throws IOException{
+        addDocument(study, null);
+    }
+    
+    protected void addDocument(Study study, List<Long> VdcIdList) throws IOException{
 
         StudyVersion sv = null;
         if (study.getReleasedVersion() != null) {
@@ -232,6 +239,11 @@ public class Indexer implements java.io.Serializable  {
             addKeyword(doc, "studyId", study.getStudyId());
 //        addText(1.0f,  doc,"owner",study.getOwner().getName());
             addText(1.0f, doc, "dvOwnerId", Long.toString(study.getOwner().getId()));
+            if (VdcIdList != null && VdcIdList.size() > 0) {
+                for (Long vdcid:VdcIdList) {
+                    addText(1.0f, doc, "dvOwnerId", vdcid.toString());
+                }
+            }
             addDate(1.0f, doc, "productionDate", metadata.getProductionDate());
             addDate(1.0f, doc, "distributionDate", metadata.getDistributionDate());
 
@@ -607,6 +619,125 @@ public class Indexer implements java.io.Serializable  {
             logger.fine("End indexing study " + study.getStudyId());
         }
     }
+    
+    /* 
+     * Experimental method; disregard. --L.A.
+     */
+    protected void updateDocument(Document doc, long studyId) throws IOException{
+        try {
+            IndexWriter writer = new IndexWriter(dir, getAnalyzer(), isIndexEmpty(), IndexWriter.MaxFieldLength.UNLIMITED);
+            writer.updateDocument(new Term("id", Long.toString(studyId)), doc);
+            // TODO: 
+            // Figure out, eventually, what to do with the variable and file 
+            // metadata searches here. 
+            // -- L.A. 
+            /*
+             * our deleteDocument() method contains these 2 lines, below, 
+             * in addition to the deleteDocument() method for the term based on 
+             * "id", as above. 
+                reader.deleteDocuments(new Term("varStudyId",Long.toString(studyId)));
+                reader.deleteDocuments(new Term("versionStudyId",Long.toString(studyId)));
+             */
+            writer.commit();
+            writer.close();
+        } catch (IOException ex) {
+            ex.printStackTrace();
+        }  
+    }
+    
+    /* 
+     * Experimental method; disregard. --L.A.
+     */
+    protected void updateStudyDocument(long studyId, String field, String value) throws IOException {
+        IndexReader reader = IndexReader.open(dir, false);  
+        
+        try {
+            if (reader != null) {
+                TermDocs matchingDocuments = reader.termDocs();
+
+                if (matchingDocuments != null) {
+                    int c = 1;
+                    if (matchingDocuments.next()) {
+                        // We only expect 1 document when searching by study id.
+                        Document studyDocument = reader.document(matchingDocuments.doc());
+
+                        logger.info("processing matching document number " + c++);
+                        if (studyDocument != null) {
+                            logger.info("got a non-zero doc;");
+
+                            reader.close(); 
+                            reader = null;
+
+                            logger.info("deleted the document;");
+
+                            //updateDocument(studyDocument, studyId);
+                            IndexWriter localWriter = new IndexWriter(dir, getAnalyzer(), isIndexEmpty(), IndexWriter.MaxFieldLength.UNLIMITED);
+                            localWriter.updateDocument(new Term("id", Long.toString(studyId)), studyDocument);
+                            
+                            localWriter.commit();
+                            localWriter.close();
+                            logger.info("wrote the updated version of the document;");
+
+                        }
+                    }
+                }
+            }
+
+        } catch (IOException ex) {
+            ex.printStackTrace();
+        } finally {
+            if (reader != null) {
+                reader.close();
+            }
+        }
+    }
+    
+    /*
+     * Experimental method: If the VDC has collections defined, the Indexer runs
+     * the queries defining them, thus finding all the study ids that are 
+     * "attached" to the dataverse via these collections. 
+     * This way we can periodically update the index for all such studies; and then 
+     * we can rely on a query "dvnOwnerId = foo" to find *all* the studies in 
+     * the dataverse - both directly in the VDC by "owner_id" and linked through 
+     * collections (at least per the last time the index was rebuilt). 
+     */  
+    protected void findStudiesInCollections (VDC vdc, Map<Long, LinkedHashSet> vdcCollectionStudyMap) {
+        List <Query> collectionQueries = getCollectionQueries(vdc);
+        
+        if (collectionQueries != null && collectionQueries.size() > 0) {
+            logger.info("running combined collections query for the vdc id "+vdc.getId()+", "+vdc.getName());
+            BooleanQuery queryAcrossAllCollections = new BooleanQuery();
+            for (Query collectionQuery : collectionQueries) {
+                queryAcrossAllCollections.add(collectionQuery, BooleanClause.Occur.SHOULD);
+            }
+         
+            List <Long> studyIdResults = null;
+            try {
+                studyIdResults = getHitIds(queryAcrossAllCollections);
+            } catch (Exception ex) {
+                logger.warning("Caught exception while executing combined colleciton query on VDC "+vdc.getId());
+                ex.printStackTrace();
+            }
+            
+            if (studyIdResults != null) {
+                logger.info("Combined collections search returned "+studyIdResults.size()+" hits.");
+                for (Long studyId:studyIdResults) {
+                    try {
+                        if (vdcCollectionStudyMap.get(studyId) == null) {
+                            vdcCollectionStudyMap.put(studyId, new LinkedHashSet());
+                        }
+                        vdcCollectionStudyMap.get(studyId).add(vdc.getId());
+                    } catch (Exception ex) {
+                        logger.warning("Caught exception while trying to add VDC id "+vdc.getId()+ " for study "+studyId+" to the collection study map.");
+                        ex.printStackTrace();
+                    }
+                } 
+            }
+            
+        }
+    }
+    
+    
 
     protected Analyzer getAnalyzer(){
 //        return new StandardAnalyzer();

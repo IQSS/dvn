@@ -3772,6 +3772,19 @@ public class OptionsPage extends VDCBaseBean  implements java.io.Serializable {
         }
         return null;
     }
+    
+    public String indexCollectionStudies_action() {
+        try {
+            indexService.updateStudiesInCollections();
+            addMessage( "indexMessage", "Reindexing of collection-linked studies completed." );
+            
+        } catch (Exception e) {
+            e.printStackTrace();
+            addMessage( "indexMessage", "Reindexing failed: An error occurred trying to reindex the collection-linked studies." );
+        } 
+       
+        return null;
+    }
     // </editor-fold>
     
     

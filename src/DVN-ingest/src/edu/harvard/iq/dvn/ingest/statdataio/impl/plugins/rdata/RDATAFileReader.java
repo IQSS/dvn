@@ -1010,17 +1010,15 @@ public class RDATAFileReader extends StatDataFileReader {
                     }
                 }
 
-                //unfValue = UNF5Util.calculateUNF(booleanEntries);
+                unfValue = UNF5Util.calculateUNF(booleanEntries);
                 // TODO: 
-                // need to create the UNF method for booleans, 
-                // in the UNF5Util -- L.A.
-                unfValue = UNF5Util.calculateUNF(integerEntries);
+                // we've never calculated UNFs for Booleans before - 
+                // need to QA and verify that the values produced are correct.
+                // -- L.A.
             
-                // UNF5Util.cal
-
             } else {
             // Regular integer;
-            // Simply convert array of Strings to array of Longs:
+            // Treat it as an array of Longs:
 
                 for (int i = 0; i < varData.length; i++) {
                     try {

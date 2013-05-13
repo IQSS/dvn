@@ -49,6 +49,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.FileHandler;
@@ -364,6 +365,65 @@ public class IndexServiceBean implements edu.harvard.iq.dvn.core.index.IndexServ
         handleIOProblems(ioProblem,ioProblemCount);
 
     }
+    
+    
+    public void updateStudiesInCollections () {
+        long ioProblemCount = 0;
+        boolean ioProblem = false;
+        Indexer indexer = Indexer.getInstance();
+        
+        try {
+            List<VDC> vdcList = vdcService.findAll();
+
+            Map<Long, LinkedHashSet> vdcCollectionStudyMap = new HashMap<Long, LinkedHashSet>();
+
+            for (Iterator it = vdcList.iterator(); it.hasNext();) {
+                VDC vdc = (VDC) it.next();
+
+                if (vdc != null) {
+                    indexer.findStudiesInCollections(vdc, vdcCollectionStudyMap);
+                }
+            }
+
+            // Re-index all the studies that were found in 1 or more collections; 
+            // If this works, the next logical step is to optimize the process - 
+            // by storing the map in the database, and only reindex the studies 
+            // for which the mapping has changed between this indexing and the last.
+
+            for (Long studyId : vdcCollectionStudyMap.keySet()) {
+                if (vdcCollectionStudyMap.get(studyId).size() > 0) {
+                    Study study = studyService.getStudy(studyId);
+                    
+                    // Only released studies gets indexed!
+                    if (study.isReleased()) {
+                        try { 
+                            // To update an index document, first the old document
+                            // needs to be deleted ...
+                            indexer.deleteDocument(studyId);
+                            List<Long> vdcIdList = new ArrayList<Long>(); 
+                            for (Iterator itv = vdcCollectionStudyMap.get(studyId).iterator(); itv.hasNext();) {
+                                Long vdcId = (Long)itv.next();
+                                vdcIdList.add(vdcId);
+                            }
+                            // ... and then the new document added again; 
+                            // i.e., the study gets re-indexed from scratch. 
+                            indexer.addDocument(study, vdcIdList);
+                        } catch (Exception ex) {
+                            ioProblem = true;
+                            ioProblemCount++; 
+                            Logger.getLogger(IndexServiceBean.class.getName()).severe("Caught exception attempting to re-index study "+studyId);
+                        }
+                    }
+                } 
+            }
+        } catch (Exception ex) {
+            ioProblem = true;
+            ioProblemCount++; 
+            Logger.getLogger(IndexServiceBean.class.getName()).severe("Caught exception while trying to pupdate studies in collections.");
+        }
+        handleIOProblems(ioProblem, ioProblemCount);
+    }
+
 
     public void deleteIndexList(List<Long> studyIds) {
         Indexer indexer = Indexer.getInstance();

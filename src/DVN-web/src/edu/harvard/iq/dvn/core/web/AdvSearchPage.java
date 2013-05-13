@@ -955,26 +955,29 @@ public class AdvSearchPage extends VDCBaseBean implements java.io.Serializable {
                 viewableIds = indexServiceBean.search(thisVDC, searchCollections, searchTerms);
             } else {
                 logger.info("in searchWithFacets in AdvSearchPage");
-                DvnQuery dvnQuery = new DvnQuery();
-                dvnQuery.setVdc(thisVDC);
-
-                List<Query> collectionQueries = new ArrayList<Query>();
-                if (dvnQuery.getVdc() != null) {
-                    dvnQuery.setDvOwnerIdQuery(indexServiceBean.constructDvOwnerIdQuery(dvnQuery.getVdc()));
-                    collectionQueries = indexServiceBean.getCollectionQueries(dvnQuery.getVdc());
-                }
-
-//                viewableIds = indexServiceBean.search(thisVDC, searchTerms); // old, non-facet method
-                dvnQuery.setSearchTerms(searchTerms);
-                if (!collectionQueries.isEmpty()) {
-                    logger.fine("collectionQueries: " + collectionQueries);
-                    dvnQuery.setCollectionQueries(collectionQueries);
+                if (isVariableSearch()) {
+                    viewableIds = indexServiceBean.search(thisVDC, searchTerms); // older, non-facet method
                 } else {
-                    logger.info("empty collectionQueries");
+                    DvnQuery dvnQuery = new DvnQuery();
+                    dvnQuery.setVdc(thisVDC);
+
+                    List<Query> collectionQueries = new ArrayList<Query>();
+                    if (dvnQuery.getVdc() != null) {
+                        dvnQuery.setDvOwnerIdQuery(indexServiceBean.constructDvOwnerIdQuery(dvnQuery.getVdc()));
+                        collectionQueries = indexServiceBean.getCollectionQueries(dvnQuery.getVdc());
+                    }
+
+                    dvnQuery.setSearchTerms(searchTerms);
+                    if (!collectionQueries.isEmpty()) {
+                        logger.fine("collectionQueries: " + collectionQueries);
+                        dvnQuery.setCollectionQueries(collectionQueries);
+                    } else {
+                        logger.info("empty collectionQueries");
+                    }
+                    dvnQuery.constructQuery();
+                    resultsWithFacets = indexServiceBean.searchNew(dvnQuery);
+                    viewableIds = resultsWithFacets.getMatchIds();
                 }
-                dvnQuery.constructQuery();
-                resultsWithFacets = indexServiceBean.searchNew(dvnQuery);
-                viewableIds = resultsWithFacets.getMatchIds();
             }
 
             StudyListing sl = new StudyListing(StudyListing.SEARCH);

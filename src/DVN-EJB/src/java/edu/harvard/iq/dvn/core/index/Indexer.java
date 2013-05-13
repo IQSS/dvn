@@ -241,7 +241,7 @@ public class Indexer implements java.io.Serializable  {
             addText(1.0f, doc, "dvOwnerId", Long.toString(study.getOwner().getId()));
             if (VdcIdList != null && VdcIdList.size() > 0) {
                 for (Long vdcid:VdcIdList) {
-                    addText(1.0f, doc, "dvOwnerId", vdcid.toString());
+                    addText(1.0f, doc, "linkedDvId", vdcid.toString());
                 }
             }
             addDate(1.0f, doc, "productionDate", metadata.getProductionDate());
@@ -705,7 +705,8 @@ public class Indexer implements java.io.Serializable  {
         List <Query> collectionQueries = getCollectionQueries(vdc);
         
         if (collectionQueries != null && collectionQueries.size() > 0) {
-            logger.info("running combined collections query for the vdc id "+vdc.getId()+", "+vdc.getName());
+            logger.info("running combined collections query for the vdc id "+vdc.getId()+", "+vdc.getName()+"; "+collectionQueries.size()+" queries total.");
+            
             BooleanQuery queryAcrossAllCollections = new BooleanQuery();
             for (Query collectionQuery : collectionQueries) {
                 queryAcrossAllCollections.add(collectionQuery, BooleanClause.Occur.SHOULD);

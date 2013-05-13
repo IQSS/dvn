@@ -73,6 +73,7 @@ import javax.jms.QueueSession;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import org.apache.commons.lang.StringUtils;
 import org.apache.lucene.facet.taxonomy.CategoryPath;
 import org.apache.lucene.search.BooleanQuery;
 import org.apache.lucene.search.Query;
@@ -399,7 +400,9 @@ public class IndexServiceBean implements edu.harvard.iq.dvn.core.index.IndexServ
                         try { 
                             // To update an index document, first the old document
                             // needs to be deleted ...
+                            /*
                             indexer.deleteDocument(studyId);
+                            * */
                             List<Long> vdcIdList = new ArrayList<Long>(); 
                             for (Iterator itv = vdcCollectionStudyMap.get(studyId).iterator(); itv.hasNext();) {
                                 Long vdcId = (Long)itv.next();
@@ -407,7 +410,11 @@ public class IndexServiceBean implements edu.harvard.iq.dvn.core.index.IndexServ
                             }
                             // ... and then the new document added again; 
                             // i.e., the study gets re-indexed from scratch. 
+                            String vdcids = StringUtils.join(vdcIdList.toArray(), ",");
+                            String dbgMessage = "Reindexing study "+studyId+", with the dv ids "+vdcids;
+                            /*
                             indexer.addDocument(study, vdcIdList);
+                            * */
                         } catch (Exception ex) {
                             ioProblem = true;
                             ioProblemCount++; 

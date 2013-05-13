@@ -955,7 +955,7 @@ public class AdvSearchPage extends VDCBaseBean implements java.io.Serializable {
                 viewableIds = indexServiceBean.search(thisVDC, searchCollections, searchTerms);
             } else {
                 logger.info("in searchWithFacets in AdvSearchPage");
-                if (isVariableSearch()) {
+                if (isVariableSearch() || isFileLevelMetadataSearch()) {
                     viewableIds = indexServiceBean.search(thisVDC, searchTerms); // older, non-facet method
                 } else {
                     DvnQuery dvnQuery = new DvnQuery();

@@ -135,7 +135,7 @@
                                         <ice:commandButton id="search" value="Search" action="#{StudyListingPage.search_actionNew}"/>
                                     </label>
                                   </div>
-                                  <div style="">
+                                  <div>
                                     <ice:outputLabel for="filter" styleClass="dvnSearchBoxCheckbox" rendered="#{StudyListingPage.renderSearchResultsFilter}">
                                         <ice:selectBooleanCheckbox value="#{StudyListingPage.searchResultsFilter}"/>
                                         <ice:outputText value="within these results"/>
@@ -227,29 +227,9 @@
                       </tr>
                   </table>
                 </div>
-                <div style="overflow:hidden;">
+                <div id="dvnStudyFacetWrapper">
                 <!--<div jsfc="ice:panelGroup" styleClass="dvnStudyFacetBlock" rendered="#{(StudyListingPage.renderSearchResultsFilter)}">-->
                     <div jsfc="ice:panelGroup" styleClass="dvnStudyFacetBlock" rendered="#{(StudyListingPage.renderSearchResultsFilter) and StudyListingPage.renderFacets}">
-                    <style type="text/css">
-                    .dvnStudyFacetBlock {width:30%; float:right; text-align:left;}
-                    .dvnStudyListBlockSearch {width:70%; border-right:1px solid #C55B28;}
-                    .dvnStudyFacetBlockTitle {padding:3px 5px; margin-bottom:.5em; color:#464646; font-weight:bold;}
-                    .dvnStudyFacetCategoryBlock {margin-left:1px; margin-bottom:1em;}
-                    .dvnStudyFacetCategoryTitle {color:#C55B28; font-weight:bold;}
-                    .dvnStudyFacetCategoryBlock ul, .dvnStudyFacetCategoryBlock li {margin:0; padding:0; list-style:none;}
-                    .dvnStudyFacetCategoryBlock li {border-bottom:1px dotted #D9D9D9;}
-                    .dvnStudyFacetCategoryBlock table.iceDatTbl {margin-top:0; border-left:0;}
-                    .dvnStudyFacetCategoryBlock table.iceDatTbl tr {border-left:0;}
-                    .dvnStudyFacetCategoryBlock table.iceDatTbl td.iceDatTblCol:last-child, .dvnStudyFacetCategoryBlock table.iceDatTbl td.iceDatTblCol1:last-child, .dvnStudyFacetCategoryBlock table.iceDatTbl td.iceDatTblCol2:last-child {border-right:0;}
-                    .dvnStudyFacetCategoryBlock table.iceDatTbl td ul {margin-bottom:12px;}
-                    .dvnStudyFacetResultNumber {color:grey;}
-                    
-                    span.dvnStudyListSearchRefineTermRemove {position:relative;}
-                    a.dvnStudyListSearchRefineTerm:hover {background: red; color: white;}
-                    div.dvnStudyListSearchRefineTermRemoveIcon {background: url("/dvn/resources/images/icon_close.png") no-repeat right top red; height: 12px; position: absolute; right: 0; top: -10px; width: 12px;}
-                    div.dvnStudyListSearchRefineTermRemoveIcon {display: none;}
-                    a.dvnStudyListSearchRefineTerm:hover div.dvnStudyListSearchRefineTermRemoveIcon {display: block;}
-                    </style>
                     <div class="dvnStudyFacetBlockTitle">Refine Results</div>
                     <div class="dvnStudyFacetCategoryBlock">
                         <ul>
@@ -258,12 +238,13 @@
                                     <!--<div class="dvnStudyFacetCategoryTitle"><ice:outputText value="#{facetUI.name}"/></div>-->
                                     <!--<div class="dvnStudyFacetCategoryTitle"><ice:outputText value="#{facetUI.friendlyName}"/></div>-->
                                     <div class="dvnStudyFacetCategoryTitle"><ice:outputText value="#{facetUI.showFriendlyName(facetUI.name)}"/></div>
-                                    <ul>
+                                    <ul class="dvnStudyFacetResultsBlock">
                                         <ui:repeat value="#{facetUI.facetResultUIs}" var="facetresultuis">
                                             <li>
                                                 <ice:commandLink action="#{StudyListingPage.setStudyListingByFacets(facetUI.name, facetresultuis.name)}" title="Refine by facet">
-                                                    <ice:outputText value="#{facetresultuis.name}" style="display:inline"/> <span class="dvnStudyFacetResultNumber">(#{facetresultuis.hits})</span>
+                                                    <ice:outputText value="#{facetresultuis.name}"/>
                                                 </ice:commandLink>
+                                                <span class="dvnStudyFacetResultNumber">(#{facetresultuis.hits})</span>
                                             </li>
                                         </ui:repeat>                                        
                                     </ul>

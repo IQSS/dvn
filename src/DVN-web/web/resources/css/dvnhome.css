@@ -220,6 +220,26 @@ span.dvnStudyListTableOptionalFieldLabel{color:gray}
 span.dvnStudyListSearchResultsMessage{font-size:100% !important;font-weight:400}
 .dvnCollectionDescription{padding:5px; border-bottom:1px solid #d9d9d9;}
 .dvnStudyListNoStudies{padding:0 1em;text-align:center}
+/* FACETED SEARCH */
+#dvnStudyFacetWrapper {overflow:hidden;}
+.dvnStudyFacetBlock {width:30%; float:right; text-align:left;}
+.dvnStudyListBlockSearch {width:70%; border-right:1px solid #C55B28;}
+.dvnStudyFacetBlockTitle {padding:3px 5px; margin-bottom:.5em; color:#464646; font-weight:bold;}
+.dvnStudyFacetCategoryBlock {margin-left:1px; margin-bottom:1em;}
+.dvnStudyFacetCategoryTitle {color:#C55B28; font-weight:bold;}
+.dvnStudyFacetCategoryBlock ul, .dvnStudyFacetCategoryBlock li {margin:0; padding:0; list-style:none;}
+.dvnStudyFacetCategoryBlock li {border-bottom:1px dotted #D9D9D9;}
+.dvnStudyFacetCategoryBlock table.iceDatTbl {margin-top:0; border-left:0;}
+.dvnStudyFacetCategoryBlock table.iceDatTbl tr {border-left:0;}
+.dvnStudyFacetCategoryBlock table.iceDatTbl td.iceDatTblCol:last-child, .dvnStudyFacetCategoryBlock table.iceDatTbl td.iceDatTblCol1:last-child, .dvnStudyFacetCategoryBlock table.iceDatTbl td.iceDatTblCol2:last-child {border-right:0;}
+.dvnStudyFacetCategoryBlock table.iceDatTbl td ul {margin-bottom:12px;}
+.dvnStudyFacetResultsBlock a span.iceOutTxt {display:inline;}
+.dvnStudyFacetResultNumber {color:grey;}
+span.dvnStudyListSearchRefineTermRemove {position:relative;}
+a.dvnStudyListSearchRefineTerm:hover {background: red; color: white;}
+div.dvnStudyListSearchRefineTermRemoveIcon {background: url(/dvn/resources/images/icon_close.png) no-repeat right top red; height: 12px; position: absolute; right: 0; top: -10px; width: 12px;}
+div.dvnStudyListSearchRefineTermRemoveIcon {display: none;}
+a.dvnStudyListSearchRefineTerm:hover div.dvnStudyListSearchRefineTermRemoveIcon {display: block;}
 /* ADVANCED SEARCH */
 .dvnAdvSearchTable fieldset{margin:0.5em 0 1em 0;padding:0;}
 .dvnAdvSearchScopeTable{border:0;margin:0;}

@@ -120,9 +120,7 @@ public class StudyListingPage extends VDCBaseBean implements java.io.Serializabl
     private DataPaginator paginator;
     private DataPaginator paginator2;
     private String searchField;
-    /** @todo: change this back to Search Studies */
-//    private String searchValue = "Search Studies";
-    private String searchValue = "data";
+    private String searchValue = "Search Studies";
     private Map studyFields;
     private String studyListingIndex;
     private Query baseQuery;

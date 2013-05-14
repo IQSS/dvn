@@ -954,7 +954,7 @@ public class AdvSearchPage extends VDCBaseBean implements java.io.Serializable {
             if (searchOnlySelectedCollections) {
                 viewableIds = indexServiceBean.search(thisVDC, searchCollections, searchTerms);
             } else {
-                logger.info("in searchWithFacets in AdvSearchPage");
+                logger.fine("in searchWithFacets in AdvSearchPage");
                 if (isVariableSearch() || isFileLevelMetadataSearch()) {
                     viewableIds = indexServiceBean.search(thisVDC, searchTerms); // older, non-facet method
                 } else {
@@ -972,7 +972,7 @@ public class AdvSearchPage extends VDCBaseBean implements java.io.Serializable {
                         logger.fine("collectionQueries: " + collectionQueries);
                         dvnQuery.setCollectionQueries(collectionQueries);
                     } else {
-                        logger.info("empty collectionQueries");
+                        logger.fine("empty collectionQueries");
                     }
                     dvnQuery.constructQuery();
                     resultsWithFacets = indexServiceBean.searchNew(dvnQuery);

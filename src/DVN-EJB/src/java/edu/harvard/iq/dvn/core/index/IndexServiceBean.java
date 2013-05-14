@@ -512,7 +512,7 @@ public class IndexServiceBean implements edu.harvard.iq.dvn.core.index.IndexServ
 //    }
 //
     public ResultsWithFacets searchNew(DvnQuery dvnQuery) {
-        logger.info("in searchNew in IndexServiceBean");
+        logger.fine("in searchNew in IndexServiceBean");
         VDC vdc = dvnQuery.getVdc();
         List<SearchTerm> searchTerms = dvnQuery.getSearchTerms();
         List studyIds = vdc != null ? listVdcStudyIds(vdc) : null;

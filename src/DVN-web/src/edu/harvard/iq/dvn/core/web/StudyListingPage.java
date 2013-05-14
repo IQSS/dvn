@@ -544,7 +544,7 @@ public class StudyListingPage extends VDCBaseBean implements java.io.Serializabl
 //    }
 //
     public String search_actionNew() {
-        logger.info("Entered search_actionNew on StudyListingPage.java");
+        logger.fine("Entered search_actionNew on StudyListingPage.java");
 
         DvnQuery dvnQuery = new DvnQuery();
         searchField = (searchField == null) ? "any" : searchField; // default searchField, in case no dropdown
@@ -587,7 +587,7 @@ public class StudyListingPage extends VDCBaseBean implements java.io.Serializabl
 
             varService.determineStudiesFromVariables(variables, studyIDList, variableMap);
         } else {
-            logger.info("searchFilter = " + searchFilter);
+            logger.fine("searchFilter = " + searchFilter);
             if (searchFilter == 1) {
                 // just this collection
                 List collections = new ArrayList();
@@ -595,7 +595,7 @@ public class StudyListingPage extends VDCBaseBean implements java.io.Serializabl
                 studyIDList = indexService.search(getVDCRequestBean().getCurrentVDC(), collections, searchTerms);
             } else if (searchFilter == 2) {
                 // subsearch
-                logger.info("in search_actionNew, about to run subsearch");
+                logger.fine("in search_actionNew, about to run subsearch");
 //                studyIDList = indexService.search(studyListing.getStudyIds(), searchTerms); // old method
                 dvnQuery.setLimitToStudyIds(studyListing.getStudyIds());
                 dvnQuery.setSearchTerms(searchTerms);
@@ -1283,14 +1283,14 @@ public class StudyListingPage extends VDCBaseBean implements java.io.Serializabl
     }
 
     public void setStudyListingByFacets(String facetKey, String facetValue) {
-        logger.info("called setStudyListingByFacets()");
+        logger.fine("called setStudyListingByFacets()");
 
         if (getVDCRequestBean().getCurrentVDC() != null) {
             recentVisitToDvPage = true;
         } else {
             if (recentVisitToDvPage == true) {
                 // clear all facets??
-                logger.info("Clearing facets");
+                logger.fine("Clearing facets");
                 facetsOfInterest = null;
                 // reset flag for next time
                 recentVisitToDvPage = false;
@@ -1304,7 +1304,7 @@ public class StudyListingPage extends VDCBaseBean implements java.io.Serializabl
         if (studyListing.getResultsWithFacets() != null && studyListing.getResultsWithFacets().isClearPreviousFacetRequests() == false) {
             for (int i = 0; i < studyListing.getResultsWithFacets().getFacetsQueried().size(); i++) {
                 CategoryPath queriedFacet = studyListing.getResultsWithFacets().getFacetsQueried().get(i);
-                logger.info("in setStudyListingBy Facet, adding facet " + i + ": " + queriedFacet);
+                logger.fine("in setStudyListingBy Facet, adding facet " + i + ": " + queriedFacet);
                 if (!facetsOfInterest.contains(queriedFacet)) {
                     facetsOfInterest.add(queriedFacet);
                 }
@@ -1328,7 +1328,6 @@ public class StudyListingPage extends VDCBaseBean implements java.io.Serializabl
         }
 
         DvnQuery dvnQuery = new DvnQuery();
-        logger.info("current vcd: " + getVDCRequestBean().getCurrentVDC());
         dvnQuery.setVdc(getVDCRequestBean().getCurrentVDC());
         /**
          * @todo: pass in search terms instead?
@@ -1338,7 +1337,7 @@ public class StudyListingPage extends VDCBaseBean implements java.io.Serializabl
         } else {
             dvnQuery.setQuery(query);
         }
-        logger.info("in setStudyListingByFacets, going to query these facets: " + facetsOfInterest.toString());
+        logger.fine("in setStudyListingByFacets, going to query these facets: " + facetsOfInterest.toString());
         dvnQuery.setFacetsToQuery(facetsOfInterest);
 //        ResultsWithFacets resultsWithFacets = indexService.getResultsWithFacets(query, facetsOfInterest);
         ResultsWithFacets resultsWithFacets = indexService.searchNew(dvnQuery);

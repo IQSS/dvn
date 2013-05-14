@@ -237,7 +237,7 @@ public class BasicSearchFragment extends VDCBaseBean implements java.io.Serializ
         sl.setVdcId(getVDCRequestBean().getCurrentVDCId());
         sl.setStudyIds(studies);
         sl.setSearchTerms(searchTerms);
-        logger.info("in BasicSearchFrag. queriedFacets is: " + resultsWithFacets.getFacetsQueried());
+        logger.fine("in BasicSearchFrag. queriedFacets is: " + resultsWithFacets.getFacetsQueried());
         sl.setResultsWithFacets(resultsWithFacets);
         sl.setVariableMap(variableMap);
         sl.setVersionMap(versionMap);

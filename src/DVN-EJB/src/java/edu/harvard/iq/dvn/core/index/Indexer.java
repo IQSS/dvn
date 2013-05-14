@@ -502,7 +502,7 @@ public class Indexer implements java.io.Serializable  {
 
             addText(1.0f, doc, "unf", metadata.getUNF());
 //        writer = new IndexWriter(dir, true, getAnalyzer(), isIndexEmpty());
-            logger.info("Indexing study db id " + study.getId() + " (" + study.getStudyId() + ": " + metadata.getTitle() + ") from dataverse id " + study.getOwner().getId() + " (" + study.getOwner().getAlias() + ")");
+            logger.fine("Indexing study db id " + study.getId() + " (" + study.getStudyId() + ": " + metadata.getTitle() + ") from dataverse id " + study.getOwner().getId() + " (" + study.getOwner().getAlias() + ")");
             writer = new IndexWriter(dir, getAnalyzer(), isIndexEmpty(), IndexWriter.MaxFieldLength.UNLIMITED);
             writer.setUseCompoundFile(true);
             TaxonomyWriter taxo = new DirectoryTaxonomyWriter(taxoDir);
@@ -1518,7 +1518,7 @@ public class Indexer implements java.io.Serializable  {
                     Long studyIdLong = Long.valueOf(studyIdStr);
                     matchIdsSet.add(studyIdLong);
                 } catch (Exception ex) {
-                    logger.info("Query for " + query + "matched but id was null, dumping Lucene doc...\n" + d);
+                    logger.fine("Query for " + query + "matched but id was null, dumping Lucene doc...\n" + d);
                     ex.printStackTrace();
                 }
             }
@@ -1657,7 +1657,7 @@ public class Indexer implements java.io.Serializable  {
                 Long studyIdLong = Long.valueOf(studyIdStr);
                 matchIdsSet.add(studyIdLong);
             } catch (Exception ex) {
-                logger.info("Query for " + baseQuery + "matched but field \"id\" was null");
+                logger.fine("Query for " + baseQuery + "matched but field \"id\" was null");
 //                ex.printStackTrace();
             }
         }
@@ -1682,7 +1682,7 @@ public class Indexer implements java.io.Serializable  {
 //        logger.info("limiting to certain study IDs (maybe)");
         if (dvnQuery.limitToStudyIds != null) {
             List<Long> studyIdsOrig = resultsWithFacets.getMatchIds();
-            logger.info("running limiting method...");
+            logger.fine("running limiting method...");
             List<Long> filteredResults = intersectionResults(studyIdsOrig, dvnQuery.limitToStudyIds);
             resultsWithFacets.setMatchIds(filteredResults);
             resultsWithFacets.setResultList(null);
@@ -2248,7 +2248,7 @@ public class Indexer implements java.io.Serializable  {
                  */
                 Query staticColQuery = parser.parse(sbOuter.toString());
                 parser.setDefaultOperator(QueryParser.AND_OPERATOR);
-                logger.info("staticCollectionQuery: " + staticColQuery);
+                logger.fine("staticCollectionQuery: " + staticColQuery);
                 collectionQueries.add(staticColQuery);
             } catch (org.apache.lucene.queryParser.ParseException ex) {
                 Logger.getLogger(AdvSearchPage.class.getName()).log(Level.SEVERE, null, ex);

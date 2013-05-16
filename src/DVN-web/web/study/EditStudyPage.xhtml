@@ -341,43 +341,35 @@ jQuery(document).ready(function(){
 });
 
 function dataCitationWidgetSync(){
-    
     // Remove clones incase it is being rerun by an add row button
-    
-    jQuery('div[id$=dvnDataCitationWidget] div.dvnDataCitationWidgetAuthorInputClone').remove();
-    jQuery('div[id$=dvnDataCitationWidget] div.dvnDataCitationWidgetAuthorSelectClone').remove();
-    jQuery('div[id$=dvnDataCitationWidget] div.dvnDataCitationWidgetDistributorInputClone').remove();
-    jQuery('div[id$=dvnDataCitationWidget] div.dvnDataCitationWidgetDistributorSelectClone').remove();
+    jQuery('div[id$=dvnDataCitationWidget] div.dvnDataCitationWidgetAuthorInputClone, div[id$=dvnDataCitationWidget] div.dvnDataCitationWidgetAuthorSelectClone, div[id$=dvnDataCitationWidget] div.dvnDataCitationWidgetDistributorInputClone, div[id$=dvnDataCitationWidget] div.dvnDataCitationWidgetDistributorSelectClone').remove();
     
     // Widget binding functions
-    
     var widgetBind = function( inputField, spanField, spanDefault ) { 
-            return function() { 
-                    var inputValue = jQuery(this).val();
-                    var addText = '';
-                    
-                    if (inputValue == '') {
-                        var addText = spanDefault;
-                    }
-                    else {
-                        var addText = inputValue;
-                    }
-                    
-                    jQuery(inputField).val(jQuery(this).val()); 
-                    jQuery(spanField).text(addText);
-            }; 
+        return function() { 
+            var inputValue = jQuery(this).val();
+            var addText = '';
+
+            if (inputValue == '') {
+                var addText = spanDefault;
+            }
+            else {
+                var addText = inputValue;
+            }
+
+            jQuery(inputField).val(jQuery(this).val());
+            jQuery(spanField).text(addText);
+        };
     }
-    
+    // Add-Remove button binding functions
     var buttonBind = function( syncButton ) {
-	 return function() {
-		 jQuery(syncButton).click();
-	 };
+	return function() {
+            jQuery(syncButton).click();
+	};
     }
     
     // vvvvvvv AUTHOR vvvvvv
-    
     // Multiple author widget fields
-    
     var authorInputs = jQuery('input.input_authorName').length;
     var authorSelects = jQuery('select.select_authorName').length;
         
@@ -386,26 +378,24 @@ function dataCitationWidgetSync(){
     
     if (authorInputs != 0) {
         // Sync author widget label/links
-
         jQuery('#dvnDataCitationWidgetBlockAuthor a.dvnDataCitationWidgetLabel').html(
             jQuery('input.input_authorName').map(function(){
-                  var authorLinkVal = jQuery(this).val();
-                  var allidsA = /\d+(?=\D*$)/.exec( jQuery(this).map(function() { return this.id; }).get() );
-                  var authorLinkText = '<span id="authorNameSync' + allidsA + '">' + authorLinkVal + '</span>';
-                  var authorLinkDefaultText = '<span id="authorNameSync' + allidsA + '">Author</span>';
+                var authorLinkVal = jQuery(this).val();
+                var allidsA = /\d+(?=\D*$)/.exec( jQuery(this).map(function() { return this.id; }).get() );
+                var authorLinkText = '<span id="authorNameSync' + allidsA + '">' + authorLinkVal + '</span>';
+                var authorLinkDefaultText = '<span id="authorNameSync' + allidsA + '">Author</span>';
 
-                  if (! authorLinkVal) {
-                      return authorLinkDefaultText;
-                  } 
-                  else {
-                      return authorLinkText;
-                  }
+                if (! authorLinkVal) {
+                    return authorLinkDefaultText;
+                } 
+                else {
+                    return authorLinkText;
+                }
             }).get().join('; ')
         );
         
         for ( i = 0; i < authorInputs; i++) {
             // clone widget author field
-
             var bobaA = jQuery('#dvnDataCitationWidgetAuthorInputBlock div.dvnDataCitationWidgetAuthorInputBoba');
 
             var trooperA = jQuery(bobaA).clone(true);
@@ -413,20 +403,16 @@ function dataCitationWidgetSync(){
             jQuery('#dvnDataCitationWidgetAuthorInputBlock').append(jQuery(trooperA).attr({ id: 'input_authorNameSync' + i, 'class': 'dvnDataCitationWidgetAuthorInputClone' }).show());
 
             // sync cloned author fields
-
             jQuery('div[id=input_authorNameSync' + i + '] div').children('input.input_authorNameSync').val(jQuery('input[id$=' + i + '\\:input_authorName]').val());
 
             var input_authorName = 'input[id$=' + i + '\\:input_authorName]';
-
             var input_authorNameSync = 'div#input_authorNameSync' + i + ' input.input_authorNameSync';
-
             var span_authorName = 'span#authorNameSync' + i;
 
             jQuery(input_authorNameSync).bind("change input keyup cut paste", widgetBind(input_authorName, span_authorName, 'Author') );
             jQuery(input_authorName).bind("change input keyup cut paste", widgetBind(input_authorNameSync, span_authorName, 'Author') );
             
             // Sync add/remove buttons
-            
             var input_addAuthorSync = jQuery('div#input_authorNameSync' + i).children('div.authorbuttonBlock').children('img[id$=add_authorbuttonInputSync]');
             var input_addAuthor = 'input[id$=' + i + '\\:add_authorbutton]';
             
@@ -436,29 +422,30 @@ function dataCitationWidgetSync(){
             jQuery(input_addAuthorSync).bind('click', buttonBind(input_addAuthor) );
             jQuery(input_removeAuthorSync).bind('click', buttonBind(input_removeAuthor) );
         };
+        
+        // Apply focus to new widget fields
+        jQuery('#dvnDataCitationWidgetAuthorInputBlock').find(':input[value=""]:visible:enabled:first').focus();
     }
     
     else {
-        
         jQuery('#dvnDataCitationWidgetBlockAuthor a.dvnDataCitationWidgetLabel').html(
             jQuery('select.select_authorName').map(function(){
-                  var authorLinkVal = jQuery(this).val();
-                  var allidsA = /\d+(?=\D*$)/.exec( jQuery(this).map(function() { return this.id; }).get() );
-                  var authorLinkText = '<span id="authorNameSync' + allidsA + '">' + authorLinkVal + '</span>';
-                  var authorLinkDefaultText = '<span id="authorNameSync' + allidsA + '">Author</span>';
+                var authorLinkVal = jQuery(this).val();
+                var allidsA = /\d+(?=\D*$)/.exec( jQuery(this).map(function() { return this.id; }).get() );
+                var authorLinkText = '<span id="authorNameSync' + allidsA + '">' + authorLinkVal + '</span>';
+                var authorLinkDefaultText = '<span id="authorNameSync' + allidsA + '">Author</span>';
 
-                  if (! authorLinkVal) {
-                      return authorLinkDefaultText;
-                  } 
-                  else {
-                      return authorLinkText;
-                  }
+                if (! authorLinkVal) {
+                    return authorLinkDefaultText;
+                } 
+                else {
+                    return authorLinkText;
+                }
             }).get().join('; ')
         );
         
         for ( i = 0; i < authorSelects; i++) {
             // clone widget author select
-
             var bobaSelectA = jQuery('#dvnDataCitationWidgetAuthorInputBlock div.dvnDataCitationWidgetAuthorSelectBoba');
             
             var trooperSelectA = jQuery(bobaSelectA).clone(true);
@@ -466,22 +453,17 @@ function dataCitationWidgetSync(){
             jQuery('#dvnDataCitationWidgetAuthorInputBlock').append(jQuery(trooperSelectA).attr({ id: 'select_authorNameSync' + i, 'class': 'dvnDataCitationWidgetAuthorSelectClone' }).show());
 
             // sync cloned author select
-            
             // changed this to clone the children option elements
-
             jQuery('div[id=select_authorNameSync' + i + '] div').children('select.select_authorNameSync').html(jQuery('select[id$=' + i + '\\:selectOneAuthorName] option').clone(true));
 
             var select_authorName = 'select[id$=' + i + '\\:selectOneAuthorName]';
-
             var select_authorNameSync = 'div#select_authorNameSync' + i + ' select.select_authorNameSync';
-
             var span_authorName = 'span#authorNameSync' + i;
 
             jQuery(select_authorNameSync).bind("change input keyup cut paste", widgetBind(select_authorName, span_authorName, 'Author') );
             jQuery(select_authorName).bind("change input keyup cut paste", widgetBind(select_authorNameSync, span_authorName, 'Author') );
             
             // Sync add/remove buttons
-            
             var select_addAuthorSync = jQuery('div#select_authorNameSync' + i).children('div.authorbuttonBlock').children('img[id$=add_authorbuttonSelectSync]');
             var select_addAuthor = 'input[id$=' + i + '\\:add_authorbutton]';
             
@@ -491,14 +473,14 @@ function dataCitationWidgetSync(){
             jQuery(select_addAuthorSync).bind('click', buttonBind(select_addAuthor) );
             jQuery(select_removeAuthorSync).bind('click', buttonBind(select_removeAuthor) );
         };
+        
+        // Apply focus to new widget fields
+        jQuery('#dvnDataCitationWidgetAuthorInputBlock').find(':input[value=""]:visible:enabled:first').focus();
     }
-    
     // ^^^^^^^ AUTHOR ^^^^^^^
     
     // vvvvvvv DISTRIBUTOR vvvvvv
-    
     // Multiple distributor widget fields
-    
     var distributorInputs = jQuery('input.input_distributorName').length;
     var distributorSelects = jQuery('select.select_distributorName').length;
     
@@ -506,26 +488,24 @@ function dataCitationWidgetSync(){
     jQuery('#dvnDataCitationWidgetDistributorInputBlock div.dvnDataCitationWidgetDistributorSelectBoba').hide();
     
     if (distributorInputs != 0) {
-    
         jQuery('#dvnDataCitationWidgetBlockDistributor a.dvnDataCitationWidgetLabel').html(
             jQuery('input.input_distributorName').map(function(){
-                  var distributorLinkVal = jQuery(this).val();
-                  var allidsD = /\d+(?=\D*$)/.exec( jQuery(this).map(function() { return this.id; }).get() );
-                  var distributorLinkText = '<span id="distributorNameSync' + allidsD + '">' + distributorLinkVal + '</span>';
-                  var distributorLinkDefaultText = '<span id="distributorNameSync' + allidsD + '">Distributor</span>';
+                var distributorLinkVal = jQuery(this).val();
+                var allidsD = /\d+(?=\D*$)/.exec( jQuery(this).map(function() { return this.id; }).get() );
+                var distributorLinkText = '<span id="distributorNameSync' + allidsD + '">' + distributorLinkVal + '</span>';
+                var distributorLinkDefaultText = '<span id="distributorNameSync' + allidsD + '">Distributor</span>';
 
-                  if (! distributorLinkVal) {
-                      return distributorLinkDefaultText;
-                  } 
-                  else {
-                      return distributorLinkText;
-                  }
+                if (! distributorLinkVal) {
+                    return distributorLinkDefaultText;
+                } 
+                else {
+                    return distributorLinkText;
+                }
             }).get().join('; ')
         );
     
         for ( i = 0; i < distributorInputs; i++) {
             // clone widget distributor field
-
             var bobaD = jQuery('#dvnDataCitationWidgetDistributorInputBlock div.dvnDataCitationWidgetDistributorInputBoba');
 
             var trooperD = jQuery(bobaD).clone(true);
@@ -533,20 +513,16 @@ function dataCitationWidgetSync(){
             jQuery('#dvnDataCitationWidgetDistributorInputBlock').append(jQuery(trooperD).attr({ id: 'input_distributorNameSync' + i, 'class': 'dvnDataCitationWidgetDistributorInputClone' }).show());
 
             // sync cloned distributor fields
-
             jQuery('div[id=input_distributorNameSync' + i + '] div').children('input.input_distributorNameSync').val(jQuery('input[id$=' + i + '\\:input_distributorName]').val());
 
             var input_distributorName = 'input[id$=' + i + '\\:input_distributorName]';
-
             var input_distributorNameSync = 'div#input_distributorNameSync' + i + ' input.input_distributorNameSync';
-
             var span_distributorName = 'span#distributorNameSync' + i;
 
             jQuery(input_distributorNameSync).bind("change input keyup cut paste", widgetBind(input_distributorName, span_distributorName, 'Distributor') );
             jQuery(input_distributorName).bind("change input keyup cut paste", widgetBind(input_distributorNameSync, span_distributorName, 'Distributor') );
             
             // Sync add/remove buttons
-            
             var input_addDistributorSync = jQuery('div#input_distributorNameSync' + i).children('div.distributorbuttonBlock').children('img[id$=add_distributorbuttonInputSync]');
             var input_addDistributor = 'input[id$=' + i + '\\:add_distributorbutton]';
             
@@ -556,29 +532,30 @@ function dataCitationWidgetSync(){
             jQuery(input_addDistributorSync).bind('click', buttonBind(input_addDistributor) );
             jQuery(input_removeDistributorSync).bind('click', buttonBind(input_removeDistributor) );
         };
+        
+        // Apply focus to new widget fields
+        jQuery('#dvnDataCitationWidgetDistributorInputBlock').find(':input[value=""]:visible:enabled:first').focus();
     }
     
     else {
-        
         jQuery('#dvnDataCitationWidgetBlockDistributor a.dvnDataCitationWidgetLabel').html(
             jQuery('select.select_distributorName').map(function(){
-                  var distributorLinkVal = jQuery(this).val();
-                  var allidsD = /\d+(?=\D*$)/.exec( jQuery(this).map(function() { return this.id; }).get() );
-                  var distributorLinkText = '<span id="distributorNameSync' + allidsD + '">' + distributorLinkVal + '</span>';
-                  var distributorLinkDefaultText = '<span id="distributorNameSync' + allidsD + '">Distributor</span>';
+                var distributorLinkVal = jQuery(this).val();
+                var allidsD = /\d+(?=\D*$)/.exec( jQuery(this).map(function() { return this.id; }).get() );
+                var distributorLinkText = '<span id="distributorNameSync' + allidsD + '">' + distributorLinkVal + '</span>';
+                var distributorLinkDefaultText = '<span id="distributorNameSync' + allidsD + '">Distributor</span>';
 
-                  if (! distributorLinkVal) {
-                      return distributorLinkDefaultText;
-                  } 
-                  else {
-                      return distributorLinkText;
-                  }
+                if (! distributorLinkVal) {
+                    return distributorLinkDefaultText;
+                } 
+                else {
+                    return distributorLinkText;
+                }
             }).get().join(', ')
         );
         
         for ( i = 0; i < distributorSelects; i++) {
             // clone widget distributor select
-
             var bobaSelectD = jQuery('#dvnDataCitationWidgetDistributorInputBlock div.dvnDataCitationWidgetDistributorSelectBoba');
 
             var trooperSelectD = jQuery(bobaSelectD).clone(true);
@@ -586,22 +563,17 @@ function dataCitationWidgetSync(){
             jQuery('#dvnDataCitationWidgetDistributorInputBlock').append(jQuery(trooperSelectD).attr({ id: 'select_distributorNameSync' + i, 'class': 'dvnDataCitationWidgetDistributorSelectClone' }).show());
 
             // sync cloned author select
-            
             // changed this to clone the children option elements
-
             jQuery('div[id=select_distributorNameSync' + i + '] div').children('select.select_distributorNameSync').html(jQuery('select[id$=' + i + '\\:selectOneDistributorName] option').clone(true));
 
             var select_distributorName = 'select[id$=' + i + '\\:selectOneDistributorName]';
-
             var select_distributorNameSync = 'div#select_distributorNameSync' + i + ' select.select_distributorNameSync';
-
             var span_distributorName = 'span#distributorNameSync' + i;
 
             jQuery(select_distributorNameSync).bind("change input keyup cut paste", widgetBind(select_distributorName, span_distributorName, 'Distributor') );
             jQuery(select_distributorName).bind("change input keyup cut paste", widgetBind(select_distributorNameSync, span_distributorName, 'Distributor') );
             
             // Sync add/remove buttons
-            
             var select_addDistributorSync = jQuery('div#select_distributorNameSync' + i).children('div.distributorbuttonBlock').children('img[id$=add_distributorbuttonSelectSync]');
             var select_addDistributor = 'input[id$=' + i + '\\:add_distributorbutton]';
             
@@ -611,8 +583,10 @@ function dataCitationWidgetSync(){
             jQuery(select_addDistributorSync).bind('click', buttonBind(select_addDistributor) );
             jQuery(select_removeDistributorSync).bind('click', buttonBind(select_removeDistributor) );
         };
+        
+        // Apply focus to new widget fields
+        jQuery('#dvnDataCitationWidgetDistributorInputBlock').find(':input[value=""]:visible:enabled:first').focus();
     }
-    
     // ^^^^^^^ DISTRIBUTOR ^^^^^^^
     
     // Sync DATE
@@ -638,25 +612,24 @@ function dataCitationWidgetSync(){
     };
     
     // Display one or the other date
-    
     var widgetTwoFieldBind = function( inputField, primaryField, secondaryField, spanField, spanDefault ) { 
-            return function() { 
-                jQuery(inputField).val(jQuery(this).val()); 
-                
-                var primaryValue = jQuery(primaryField).val();
-                var secondaryValue = jQuery(secondaryField).val();
-                var addText = '';
+        return function() { 
+            jQuery(inputField).val(jQuery(this).val()); 
 
-                if (primaryValue != '') {
-                    addText = primaryValue;
-                } else if (secondaryValue != '') {
-                    addText = secondaryValue;
-                } else {
-                    addText = spanDefault;
-                }
+            var primaryValue = jQuery(primaryField).val();
+            var secondaryValue = jQuery(secondaryField).val();
+            var addText = '';
 
-                jQuery(spanField).text(addText);
-            };
+            if (primaryValue != '') {
+                addText = primaryValue;
+            } else if (secondaryValue != '') {
+                addText = secondaryValue;
+            } else {
+                addText = spanDefault;
+            }
+
+            jQuery(spanField).text(addText);
+        };
     }
     
     // Bind DATE fields
@@ -711,12 +684,11 @@ function dataCitationWidgetSync(){
     
     // Set input focus on tab
     function setFocus() {
-        if ( jQuery('a.dvnDataCitationWidgetLabel').is(':focus') ) {
-            jQuery(this).find('input:visible:first, select:visible:first').focus()
-        }
-        else {
-            jQuery(this).find('input:visible:first, select:visible:first').triggerHandler('focus')
-        }
+        var widgetSyncInputSelect = jQuery(this).find('input:visible:first, select:visible:first');
+        
+        setTimeout(function() {
+            widgetSyncInputSelect.focus();
+        }, 100);
     };
     
     // Open+Close Author
@@ -856,19 +828,22 @@ function dataCitationWidgetSync(){
 };
 
 function initAddAuthorSync(){
-    // Let's do something about all these authors.
+    // Add new author
     jQuery('#dvnDataCitationWidgetBlockAuthor a.dvnDataCitationWidgetLabel').append('; <span class="newAuthor"></span>');
-    jQuery('#dvnDataCitationWidgetAuthorInputBlock').show();
+    // If the new field is added from the form, and not the widget, close other input-blocks, and show author
+    jQuery('#dvnDataCitationWidgetAuthorInputBlock').show().siblings().hide();
+    // Rerun entire widget function
     dataCitationWidgetSync();
 };
 
 function initAddDistributorSync(){
-    // Let's do something about all these authors.
+    // Add new distributor
     jQuery('#dvnDataCitationWidgetBlockDistributor a.dvnDataCitationWidgetLabel').append('; <span class="newDistributor"></span>');
-    jQuery('#dvnDataCitationWidgetDistributorInputBlock').show();
+    // If the new field is added from the form, and not the widget, close other input-blocks, and show distributor
+    jQuery('#dvnDataCitationWidgetDistributorInputBlock').show().siblings().hide();
+    // Rerun entire widget function
     dataCitationWidgetSync();
 };
-
 // ]]>
 </script>
                         </ice:column>

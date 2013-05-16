@@ -307,6 +307,10 @@ public class IndexServiceBean implements edu.harvard.iq.dvn.core.index.IndexServ
          */
         
         Long maxStudyTableId = studyService.getMaxStudyTableId();
+        
+        logger.info("MAX database id in the study table: "+maxStudyTableId);
+       
+        
         int  indexingBatchSize = 100; // needs to be made configurable. 
         
         for (long i = 0; i < maxStudyTableId.longValue() + 1L; i += indexingBatchSize) {

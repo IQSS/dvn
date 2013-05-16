@@ -175,12 +175,16 @@ public class DvnQuery {
 //        logger.info("DvnQuery dump of searchQuery (before collections modifications): " + searchQuery);
         if (!collectionQueries.isEmpty() || dvOwnerIdQuery != null) {
             BooleanQuery queryAcrossAllCollections = new BooleanQuery();
+
+            BooleanQuery allCollections = new BooleanQuery();
+            BooleanQuery submittedAndInCollection = new BooleanQuery();
             for (Query collectionQuery : collectionQueries) {
-                BooleanQuery submittedAndInCollection = new BooleanQuery();
-                submittedAndInCollection.add(searchQuery, BooleanClause.Occur.MUST);
-                submittedAndInCollection.add(collectionQuery, BooleanClause.Occur.MUST);
-                queryAcrossAllCollections.add(submittedAndInCollection, BooleanClause.Occur.SHOULD);
+                allCollections.add(collectionQuery, BooleanClause.Occur.SHOULD);
             }
+            submittedAndInCollection.add(searchQuery, BooleanClause.Occur.MUST);
+            submittedAndInCollection.add(allCollections, BooleanClause.Occur.MUST);
+            queryAcrossAllCollections.add(submittedAndInCollection, BooleanClause.Occur.SHOULD);
+
             BooleanQuery dvSpecific = new BooleanQuery();
             dvSpecific.add(searchQuery, BooleanClause.Occur.MUST);
             dvSpecific.add(dvOwnerIdQuery, BooleanClause.Occur.MUST);

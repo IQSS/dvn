@@ -225,4 +225,6 @@ public interface StudyServiceLocal extends java.io.Serializable {
     public List getRecentlyReleasedStudyIds(Long vdcId, int numResults);
     
     public void determineStudiesFromFiles(List studyFiles, List studies, Map fileMap); 
+    
+    public Long getMaxStudyTableId ();
 }

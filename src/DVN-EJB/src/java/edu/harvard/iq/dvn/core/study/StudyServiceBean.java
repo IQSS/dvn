@@ -2437,4 +2437,17 @@ public class StudyServiceBean implements edu.harvard.iq.dvn.core.study.StudyServ
         }
     }
 
+    public Long getMaxStudyTableId () {
+        Long lastId = null; 
+        
+        String queryStr = "SELECT * FROM study ORDER by id DESC LIMIT";
+        Query query = em.createNativeQuery(queryStr);
+        try {
+            lastId = (Long)query.getSingleResult();
+        } catch (Exception ex) {
+            lastId = null; 
+        }
+        
+        return lastId; 
+    }
 }

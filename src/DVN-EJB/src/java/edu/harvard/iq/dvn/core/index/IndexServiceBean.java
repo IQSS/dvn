@@ -297,7 +297,7 @@ public class IndexServiceBean implements edu.harvard.iq.dvn.core.index.IndexServ
     public void indexAll() {
         boolean ioProblem = false;
         long ioProblemCount = 0;
-        //Indexer indexer = Indexer.getInstance();
+        Indexer indexer = Indexer.getInstance();
         /*
         try {
         indexer.setup();

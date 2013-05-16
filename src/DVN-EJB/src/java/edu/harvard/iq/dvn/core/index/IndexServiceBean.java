@@ -276,6 +276,17 @@ public class IndexServiceBean implements edu.harvard.iq.dvn.core.index.IndexServ
             e.printStackTrace(); // print stacktrace, but continue processing
         }
     }
+    
+    private void addDocument(Study study) throws IOException {
+        Date indexTime = new Date();
+        Indexer indexer = Indexer.getInstance();
+        indexer.addDocument(study);
+        try {
+            studyService.setIndexTime(study.getId(), indexTime);
+        } catch (Exception e) {
+            e.printStackTrace(); // print stacktrace, but continue processing
+        }
+    }
 
     private void deleteDocument(final long studyId) {
         Study study = studyService.getStudy(studyId);
@@ -286,7 +297,7 @@ public class IndexServiceBean implements edu.harvard.iq.dvn.core.index.IndexServ
     public void indexAll() {
         boolean ioProblem = false;
         long ioProblemCount = 0;
-        Indexer indexer = Indexer.getInstance();
+        //Indexer indexer = Indexer.getInstance();
         /*
         try {
         indexer.setup();
@@ -294,17 +305,51 @@ public class IndexServiceBean implements edu.harvard.iq.dvn.core.index.IndexServ
         ex.printStackTrace();
         }
          */
-        List<Study> studies = studyService.getStudies();
-        for (Iterator it = studies.iterator(); it.hasNext();) {
-            Study elem = (Study) it.next();
-            try {
-                addDocument(elem.getId().longValue());
-            } catch (IOException ex) {
-                ioProblem = true;
-                ioProblemCount++;
-                Logger.getLogger(IndexServiceBean.class.getName()).log(Level.SEVERE, null, ex);
+        
+        Long maxStudyTableId = studyService.getMaxStudyTableId();
+        int  indexingBatchSize = 100; // needs to be made configurable. 
+        
+        for (long i = 0; i < maxStudyTableId.longValue() + 1L; i += indexingBatchSize) {
+            logger.info("Processing batch " + i + ", " + i + indexingBatchSize);
+
+            long rangeEnd = i + indexingBatchSize > maxStudyTableId.longValue() ? i + indexingBatchSize : maxStudyTableId.longValue() + 1;
+            
+            List<Study> studies = studyService.getStudiesByIdRange(i, rangeEnd);
+
+            int batchDocCount = 0;
+            int batchProblemCount = 0;
+            int batchSkipCount = 0; 
+
+            if (studies != null) {
+                for (Iterator it = studies.iterator(); it.hasNext();) {
+                    Study study = (Study) it.next();
+                    
+                    /*
+                    try {
+                        if (study.getLastExportTime() != null) {
+                            deleteDocument(study.getId());
+                        }
+                    } catch (Exception ex) {
+                        // skip this study, just to be safe.
+                        batchSkipCount++; 
+                        continue;
+                    }
+                    * */
+                    try {
+                        addDocument(study);
+                        batchDocCount++;
+                    } catch (Exception ex) {
+                        ioProblem = true;
+                        ioProblemCount++;
+                        batchProblemCount++;
+                        Logger.getLogger(IndexServiceBean.class.getName()).log(Level.SEVERE, null, ex);
+                        logger.severe("Caught exception trying to reindex study " + study.getId());
+                    }
+                }
+                logger.info("Processed batch; " + batchDocCount + " documents, " + batchProblemCount + " exceptions, "+batchSkipCount+" skipped.");
             }
         }
+        logger.info("Finished index-all.");
         handleIOProblems(ioProblem,ioProblemCount);
     }
 

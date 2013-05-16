@@ -703,6 +703,15 @@ public class StudyServiceBean implements edu.harvard.iq.dvn.core.study.StudyServ
         String query = "SELECT s FROM Study s ORDER BY s.id";
         return (List) em.createQuery(query).getResultList();
     }
+    
+    public List getStudiesByIdRange(long begin, long end) {
+        String query = "SELECT s FROM Study s WHERE s.id > " + begin + " AND s.id < " + end + " ORDER BY s.id";
+        try {
+            return (List) em.createNativeQuery(query).getResultList();
+        } catch (Exception ex) {
+            return null; 
+        }
+    }
 
     public List getRecentStudies(Long vdcId, int numResults) {
         String query = "SELECT s FROM Study s " +

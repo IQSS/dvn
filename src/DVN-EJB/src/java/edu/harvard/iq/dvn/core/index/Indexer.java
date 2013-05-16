@@ -198,14 +198,22 @@ public class Indexer implements java.io.Serializable  {
     }
 
     public void deleteDocument(long studyId) {
+        IndexReader reader = null;
         try {
-            IndexReader reader = IndexReader.open(dir, false);
+            reader = IndexReader.open(dir, false);
             reader.deleteDocuments(new Term("id", Long.toString(studyId)));
             reader.deleteDocuments(new Term("varStudyId",Long.toString(studyId)));
             reader.deleteDocuments(new Term("versionStudyId",Long.toString(studyId)));
-            reader.close();
         } catch (IOException ex) {
             ex.printStackTrace();
+        } finally {
+            if (reader != null) {
+                try {
+                    reader.close();
+                } catch (Exception ex) {
+                    
+                }
+            }
         }
     }
 

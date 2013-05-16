@@ -375,6 +375,26 @@ public class IndexServiceBean implements edu.harvard.iq.dvn.core.index.IndexServ
         
         try {
             List<VDC> vdcList = vdcService.findAll();
+            
+            Long maxStudyId = studyService.getMaxStudyTableId(); 
+            
+            if (maxStudyId == null) {
+                throw new IOException("Could not determine the last database id in the study table.");
+            }
+            
+            if (maxStudyId.intValue() != maxStudyId.longValue()) {
+                logger.severe("");
+                throw new IOException("There appears to be more than 2^^31 objects in the study table; the subnetwork cross-indexing hack isn't going to work.");
+            }
+            
+            Long numberOfNetworks = 1L; // vdcNetworkService.findAll().size() - something like that...
+            
+            if (numberOfNetworks.longValue() > 31L) {
+                logger.severe("");
+                throw new IOException("There is more than 31 VDC (sub)networks. The subnetwork cross-indexing hack isn't going to work.");
+            }
+            
+            int linkedVdcNetworkMap[] = new int[maxStudyId.intValue()+1];
 
             Map<Long, LinkedHashSet> vdcCollectionStudyMap = new HashMap<Long, LinkedHashSet>();
 
@@ -382,55 +402,91 @@ public class IndexServiceBean implements edu.harvard.iq.dvn.core.index.IndexServ
                 VDC vdc = (VDC) it.next();
 
                 if (vdc != null) {
-                    indexer.findStudiesInCollections(vdc, vdcCollectionStudyMap);
+                    List<Long> linkedStudyIds = null;
+                    linkedStudyIds = indexer.findStudiesInCollections(vdc);
+                    
+                    if (linkedStudyIds != null) {
+                        for (Long studyId : linkedStudyIds) {
+                            if (studyId.longValue() <= maxStudyId.longValue()) {
+                                // otherwise this is a new study created since we 
+                                // have started this process; we'll be skipping it this time. 
+                                Long networkId = 1L; //vdc.getVdcNetworkId(); 
+                                Long studyNetworkId = 1L;
+                                Study linkedStudy = studyService.getStudy(studyId);
+                                if (linkedStudy != null) {
+                                    //studyNetworkId = linkedStudy.getOwner().getVdcNetworkId();
+                                }
+                                if (networkId.compareTo(studyNetworkId) != 0) {
+                                    // this study is cross-linked from another VDC network!
+                                    linkedVdcNetworkMap[linkedStudy.getId().intValue()] |= studyNetworkId.intValue();
+                                }
+                            }
+                        }
+                    }
                 }
             }
 
-            // Re-index all the studies that were found in 1 or more collections; 
-            // If this works, the next logical step is to optimize the process - 
-            // by storing the map in the database, and only reindex the studies 
-            // for which the mapping has changed between this indexing and the last.
-
-            for (Long studyId : vdcCollectionStudyMap.keySet()) {
-                if (vdcCollectionStudyMap.get(studyId).size() > 0) {
-                    Study study = studyService.getStudy(studyId);
-                    
+            // Now go through the list of studies and reindex those for which 
+            // the cross-linked status has changed:
+            
+            for (int i = 0; i < maxStudyId.intValue() + 1; i++) {
+                if (linkedVdcNetworkMap[i] > 0) {
+                    Study linkedStudy = studyService.getStudy(new Long(i));
                     // Only released studies gets indexed!
-                    if (study.isReleased()) {
-                        try { 
-                            // To update an index document, first the old document
-                            // needs to be deleted ...
-                            /*
-                            indexer.deleteDocument(studyId);
-                            * */
-                            List<Long> vdcIdList = new ArrayList<Long>(); 
-                            for (Iterator itv = vdcCollectionStudyMap.get(studyId).iterator(); itv.hasNext();) {
-                                Long vdcId = (Long)itv.next();
-                                vdcIdList.add(vdcId);
+                    if (linkedStudy.isReleased()) {
+                        List<Long> linkedToNetworks = null; // linkedStudy.getLinkedToVdcNetworks();
+                        boolean indexUpdateRequired = false;
+
+                        for (int network = 0; network < numberOfNetworks.intValue(); i++) {
+                            if ((linkedVdcNetworkMap[i] & 1 >> network) > 0) {
+                                if (!alreadyLinkedToThisVdcNetwork(linkedToNetworks, network)) {
+                                    //linkedStudy.setLinkedToVdcNetwork(new Long(network));
+                                    indexUpdateRequired = true;
+                                }
                             }
-                            // ... and then the new document added again; 
-                            // i.e., the study gets re-indexed from scratch. 
-                            String vdcids = StringUtils.join(vdcIdList.toArray(), ",");
-                            String dbgMessage = "Reindexing study "+studyId+", with the dv ids "+vdcids;
-                            /*
-                            indexer.addDocument(study, vdcIdList);
-                            * */
-                        } catch (Exception ex) {
-                            ioProblem = true;
-                            ioProblemCount++; 
-                            Logger.getLogger(IndexServiceBean.class.getName()).severe("Caught exception attempting to re-index study "+studyId);
+                        }
+
+                        if (indexUpdateRequired) {
+                            // Can reindex it now... or put it on some list for a later 
+                            // batch reindex...
+                            try {
+                                indexer.deleteDocument(linkedStudy.getId());
+                                indexer.addDocument(linkedStudy);
+                            } catch (Exception ex) {
+                                ioProblem = true;
+                                ioProblemCount++;
+                                logger.severe("Caught exception attempting to re-index study " + linkedStudy.getId());
+                            }
                         }
                     }
-                } 
+                }                
             }
+
         } catch (Exception ex) {
             ioProblem = true;
             ioProblemCount++; 
-            Logger.getLogger(IndexServiceBean.class.getName()).severe("Caught exception while trying to pupdate studies in collections.");
+            logger.severe("Caught exception while trying to pupdate studies in collections.");
         }
         handleIOProblems(ioProblem, ioProblemCount);
     }
 
+    
+    boolean alreadyLinkedToThisVdcNetwork(List<Long> linkedToNetworks, int network) {
+        if (linkedToNetworks == null) {
+            return false;
+        }
+        
+        for (Long linkedNetwork:linkedToNetworks) {
+            if (linkedNetwork.intValue() == network) {
+                return true;
+            } else if (linkedNetwork.intValue() > network) {
+                // the list is sorted.
+                return false; 
+            }
+        }
+        
+        return false; 
+    }
 
     public void deleteIndexList(List<Long> studyIds) {
         Indexer indexer = Indexer.getInstance();

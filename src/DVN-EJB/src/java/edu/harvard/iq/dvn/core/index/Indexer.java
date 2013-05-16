@@ -220,11 +220,7 @@ public class Indexer implements java.io.Serializable  {
     }
 
     protected void addDocument(Study study) throws IOException{
-        addDocument(study, null);
-    }
-    
-    protected void addDocument(Study study, List<Long> VdcIdList) throws IOException{
-
+        
         StudyVersion sv = null;
         if (study.getReleasedVersion() != null) {
             sv = study.getReleasedVersion();
@@ -239,10 +235,18 @@ public class Indexer implements java.io.Serializable  {
             addKeyword(doc, "studyId", study.getStudyId());
 //        addText(1.0f,  doc,"owner",study.getOwner().getName());
             addText(1.0f, doc, "dvOwnerId", Long.toString(study.getOwner().getId()));
-            if (VdcIdList != null && VdcIdList.size() > 0) {
-                for (Long vdcid:VdcIdList) {
-                    addText(1.0f, doc, "linkedDvId", vdcid.toString());
-                }
+            String dvNetworkId = "1"; /* method will be added shortly: study.getOwner().getVdcNetworkId().toString();*/
+            /* This is the ID of the DV Network to which the study belongs 
+             * directly, through its owner DV:
+             */
+            addText(1.0f, doc, "ownerDvNetworkId", dvNetworkId);
+            /* Plus it may belong to these extra Networks, through linking into
+             * collections in DVs that belong to other Networks:
+             */
+            addText(1.0f, doc, "dvNetworkId", dvNetworkId);
+            List<Long> linkedToNetworks = null; //linkedStudy.getLinkedToVdcNetworks();
+            for (Long vdcnetworkid:linkedToNetworks) {
+                addText(1.0f, doc, "dvNetworkId", vdcnetworkid.toString());
             }
             addDate(1.0f, doc, "productionDate", metadata.getProductionDate());
             addDate(1.0f, doc, "distributionDate", metadata.getDistributionDate());
@@ -701,7 +705,7 @@ public class Indexer implements java.io.Serializable  {
      * the dataverse - both directly in the VDC by "owner_id" and linked through 
      * collections (at least per the last time the index was rebuilt). 
      */  
-    protected void findStudiesInCollections (VDC vdc, Map<Long, LinkedHashSet> vdcCollectionStudyMap) {
+    /*protected void findStudiesInCollections (VDC vdc, Map<Long, LinkedHashSet> vdcCollectionStudyMap) {
         List <Query> collectionQueries = getCollectionQueries(vdc);
         
         if (collectionQueries != null && collectionQueries.size() > 0) {
@@ -736,9 +740,32 @@ public class Indexer implements java.io.Serializable  {
             }
             
         }
+    }*/
+    
+    List<Long> findStudiesInCollections (VDC vdc) {
+        List <Long> linkedStudyIds = null;
+        List <Query> collectionQueries = getCollectionQueries(vdc);
+        
+        if (collectionQueries != null && collectionQueries.size() > 0) {
+            logger.info("running combined collections query for the vdc id "+vdc.getId()+", "+vdc.getName()+"; "+collectionQueries.size()+" queries total.");
+            
+            BooleanQuery queryAcrossAllCollections = new BooleanQuery();
+            for (Query collectionQuery : collectionQueries) {
+                queryAcrossAllCollections.add(collectionQuery, BooleanClause.Occur.SHOULD);
+            }
+         
+            try {
+                linkedStudyIds = getHitIds(queryAcrossAllCollections);
+            } catch (Exception ex) {
+                logger.warning("Caught exception while executing combined colleciton query on VDC "+vdc.getId());
+                ex.printStackTrace();
+            }
+            
+            
+        }
+        
+        return linkedStudyIds;
     }
-    
-    
 
     protected Analyzer getAnalyzer(){
 //        return new StandardAnalyzer();
@@ -2211,26 +2238,35 @@ public class Indexer implements java.io.Serializable  {
             boolean isDynamic = col.isDynamic();
             boolean isLocalScope = col.isLocalScope();
             boolean isRootCollection = col.isRootCollection();
-            if (queryString != null && !queryString.isEmpty()) {
-                try {
-                    logger.fine("For " + col.getName() + " (isRootCollection=" + isRootCollection + "|type=" + type + "|isDynamic=" + isDynamic + "|isLocalScope=" + isLocalScope + ") adding query: <<<" + queryString + ">>>");
-                    Query query = parser.parse(queryString);
-                    collectionQueries.add(query);
-                } catch (org.apache.lucene.queryParser.ParseException ex) {
-                    Logger.getLogger(StudyListingPage.class.getName()).log(Level.SEVERE, null, ex);
-                }
-            } else {
-                logger.fine("For " + col.getName() + " (isRootCollection=" + isRootCollection + "|type=" + type + "|isDynamic=" + isDynamic + "|isLocalScope=" + isLocalScope + ") skipping add of query: <<<" + queryString + ">>>");
-                List<Study> studies = col.getStudies();
-                StringBuilder sbInner = new StringBuilder();
-                for (Study study : studies) {
-                    logger.fine("- has StudyId: " + study.getId());
-                    String idColonId = "id:" + study.getId().toString() + " ";
-                    sbInner.append(idColonId);
-                }
-                logger.fine("sbInner: " + sbInner.toString());
-                sbOuter.append(sbInner);
+            if (!isLocalScope) {
+                // We are creating this list of queries for the purposes of finding 
+                // all the linked studies that belong to the dataverse, in addition 
+                // to the ones that are directly "owned" by it (assigned to it by
+                // the "owner field). So all the "Local Scope" queries can be 
+                // dropped - as they are assumed to be applied only to the subsets
+                // of studies owned by the DV. (i.e., they are combined with 
+                // "AND dvOwnerId = ..." when the collections are looked up).
+                if (queryString != null && !queryString.isEmpty()) {
+                    try {
+                        logger.fine("For " + col.getName() + " (isRootCollection=" + isRootCollection + "|type=" + type + "|isDynamic=" + isDynamic + "|isLocalScope=" + isLocalScope + ") adding query: <<<" + queryString + ">>>");
+                        Query query = parser.parse(queryString);
+                        collectionQueries.add(query);
+                    } catch (org.apache.lucene.queryParser.ParseException ex) {
+                        Logger.getLogger(StudyListingPage.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+                } else {
+                    logger.fine("For " + col.getName() + " (isRootCollection=" + isRootCollection + "|type=" + type + "|isDynamic=" + isDynamic + "|isLocalScope=" + isLocalScope + ") skipping add of query: <<<" + queryString + ">>>");
+                    List<Study> studies = col.getStudies();
+                    StringBuilder sbInner = new StringBuilder();
+                    for (Study study : studies) {
+                        logger.fine("- has StudyId: " + study.getId());
+                        String idColonId = "id:" + study.getId().toString() + " ";
+                        sbInner.append(idColonId);
+                    }
+                    logger.fine("sbInner: " + sbInner.toString());
+                    sbOuter.append(sbInner);
 
+                }
             }
         }
         logger.fine("sbOuter: " + sbOuter);

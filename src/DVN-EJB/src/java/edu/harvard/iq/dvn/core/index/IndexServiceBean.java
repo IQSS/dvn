@@ -311,47 +311,58 @@ public class IndexServiceBean implements edu.harvard.iq.dvn.core.index.IndexServ
         logger.info("MAX database id in the study table: "+maxStudyTableId);
        
         
-        int  indexingBatchSize = 100; // needs to be made configurable. 
+        long  indexingBatchSize = 100; // needs to be made configurable.
+        List<Study> studies = null;
         
-        for (long i = 0; i < maxStudyTableId.longValue() + 1L; i += indexingBatchSize) {
-            logger.info("Processing batch " + i + ", " + i + indexingBatchSize);
+        for (long i = 0; i < (maxStudyTableId.longValue()) + 1L; i += indexingBatchSize) {
+            logger.info("Processing batch " + i +";");
 
-            long rangeEnd = i + indexingBatchSize > maxStudyTableId.longValue() ? maxStudyTableId.longValue() + 1 : i + indexingBatchSize + 1;
+            long rangeEnd = (i + indexingBatchSize) > maxStudyTableId.longValue() ? maxStudyTableId.longValue() + 1 : i + indexingBatchSize + 1;
             
-            List<Study> studies = studyService.getStudiesByIdRange(i, rangeEnd);
+            logger.info("Range end: "+rangeEnd);
+            
+            studies = studyService.getStudiesByIdRange(i, rangeEnd);
 
             int batchDocCount = 0;
             int batchProblemCount = 0;
             int batchSkipCount = 0; 
 
             if (studies != null) {
-                for (Iterator it = studies.iterator(); it.hasNext();) {
-                    Study study = (Study) it.next();
-                    
-                    /*
-                    try {
-                        if (study.getLastExportTime() != null) {
-                            deleteDocument(study.getId());
+                if (studies.size() == 0) {
+                    logger.info("Batch " + i + ": zero studies found.");
+                } else {
+                    for (Iterator it = studies.iterator(); it.hasNext();) {
+                        Study study = (Study) it.next();
+
+                        /*
+                         try {
+                         if (study.getLastExportTime() != null) {
+                         deleteDocument(study.getId());
+                         }
+                         } catch (Exception ex) {
+                         // skip this study, just to be safe.
+                         batchSkipCount++; 
+                         continue;
+                         }
+                         * */
+                        try {
+                            addDocument(study);
+                            batchDocCount++;
+                        } catch (Exception ex) {
+                            ioProblem = true;
+                            ioProblemCount++;
+                            batchProblemCount++;
+                            Logger.getLogger(IndexServiceBean.class.getName()).log(Level.SEVERE, null, ex);
+                            logger.severe("Caught exception trying to reindex study " + study.getId());
                         }
-                    } catch (Exception ex) {
-                        // skip this study, just to be safe.
-                        batchSkipCount++; 
-                        continue;
-                    }
-                    * */
-                    try {
-                        addDocument(study);
-                        batchDocCount++;
-                    } catch (Exception ex) {
-                        ioProblem = true;
-                        ioProblemCount++;
-                        batchProblemCount++;
-                        Logger.getLogger(IndexServiceBean.class.getName()).log(Level.SEVERE, null, ex);
-                        logger.severe("Caught exception trying to reindex study " + study.getId());
                     }
                 }
                 logger.info("Processed batch; " + batchDocCount + " documents, " + batchProblemCount + " exceptions, "+batchSkipCount+" skipped.");
+            } else {
+                logger.info("Batch "+i+": no studies found.");
             }
+            
+            studies = null; 
         }
         logger.info("Finished index-all.");
         handleIOProblems(ioProblem,ioProblemCount);

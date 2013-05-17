@@ -253,8 +253,10 @@ public class Indexer implements java.io.Serializable  {
              */
             addText(1.0f, doc, "dvNetworkId", dvNetworkId);
             List<Long> linkedToNetworks = null; //linkedStudy.getLinkedToVdcNetworks();
-            for (Long vdcnetworkid:linkedToNetworks) {
-                addText(1.0f, doc, "dvNetworkId", vdcnetworkid.toString());
+            if (linkedToNetworks != null) {
+                for (Long vdcnetworkid : linkedToNetworks) {
+                    addText(1.0f, doc, "dvNetworkId", vdcnetworkid.toString());
+                }
             }
             addDate(1.0f, doc, "productionDate", metadata.getProductionDate());
             addDate(1.0f, doc, "distributionDate", metadata.getDistributionDate());

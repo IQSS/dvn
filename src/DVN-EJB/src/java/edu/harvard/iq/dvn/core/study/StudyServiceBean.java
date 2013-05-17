@@ -706,8 +706,9 @@ public class StudyServiceBean implements edu.harvard.iq.dvn.core.study.StudyServ
     
     public List getStudiesByIdRange(long begin, long end) {
         String query = "SELECT s FROM Study s WHERE s.id > " + begin + " AND s.id < " + end + " ORDER BY s.id";
+        logger.info("query: "+query);
         try {
-            return (List) em.createNativeQuery(query).getResultList();
+            return (List) em.createQuery(query).getResultList();
         } catch (Exception ex) {
             return null; 
         }
@@ -2449,11 +2450,12 @@ public class StudyServiceBean implements edu.harvard.iq.dvn.core.study.StudyServ
     public Long getMaxStudyTableId () {
         Long lastId = null; 
         
-        String queryStr = "SELECT id FROM study ORDER by id DESC LIMIT 1";
-        Query query = em.createNativeQuery(queryStr);
+        String queryStr = "SELECT s.id FROM Study s ORDER BY s.id DESC";
+        Query query = em.createQuery(queryStr).setMaxResults(1);
         try {
             lastId = (Long)query.getSingleResult();
         } catch (Exception ex) {
+            logger.info("caught exception while trying to determine the last id in the study table.");
             lastId = null; 
         }
         

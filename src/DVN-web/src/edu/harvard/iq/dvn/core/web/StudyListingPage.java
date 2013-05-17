@@ -164,9 +164,7 @@ public class StudyListingPage extends VDCBaseBean implements java.io.Serializabl
     Long downloadCount;
     
     public Long getDownloadCount() {
-        if (downloadCount == null) {
-            downloadCount = studyService.getStudyDownloadCount(studyListing.getStudyIds());         
-        }
+        downloadCount = studyService.getStudyDownloadCount(studyListing.getStudyIds());
         return downloadCount;
     }
       

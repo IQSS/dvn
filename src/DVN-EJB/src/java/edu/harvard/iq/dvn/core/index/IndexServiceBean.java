@@ -314,12 +314,12 @@ public class IndexServiceBean implements edu.harvard.iq.dvn.core.index.IndexServ
         long  indexingBatchSize = 100; // needs to be made configurable.
         List<Study> studies = null;
         
-        for (long i = 0; i < (maxStudyTableId.longValue()) + 1L; i += indexingBatchSize) {
-            logger.info("Processing batch " + i +";");
+        for (long i = 0L; i < (maxStudyTableId.longValue() + 1L); i += indexingBatchSize) {
+            //logger.info("Processing batch " + i +";");
 
             long rangeEnd = (i + indexingBatchSize) > maxStudyTableId.longValue() ? maxStudyTableId.longValue() + 1 : i + indexingBatchSize + 1;
             
-            logger.info("Range end: "+rangeEnd);
+            logger.info("Processing batch " + i + "; Range end: "+rangeEnd);
             
             studies = studyService.getStudiesByIdRange(i, rangeEnd);
 

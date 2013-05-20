@@ -241,9 +241,10 @@
                                     <ul class="dvnStudyFacetResultsBlock">
                                         <ui:repeat value="#{facetUI.facetResultUIs}" var="facetresultuis">
                                             <li>
-                                                <ice:commandLink action="#{StudyListingPage.setStudyListingByFacets(facetUI.name, facetresultuis.name)}" title="Refine by facet">
+                                                <ice:commandLink rendered="#{!facetresultuis.selected}" action="#{StudyListingPage.setStudyListingByFacets(facetUI.name, facetresultuis.name)}" title="Refine by facet">
                                                     <ice:outputText value="#{facetresultuis.name}"/>
                                                 </ice:commandLink>
+                                                <ice:outputText value="#{facetresultuis.name}" rendered="#{facetresultuis.selected}"/>
                                                 <span class="dvnStudyFacetResultNumber">(#{facetresultuis.hits})</span>
                                             </li>
                                         </ui:repeat>                                        

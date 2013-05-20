@@ -231,6 +231,20 @@ public class StudyListingPage extends VDCBaseBean implements java.io.Serializabl
                         FacetResultUI facetResultUI = new FacetResultUI();
                         facetResultUI.setName(last);
                         facetResultUI.setHits(hits.intValue());
+
+                        boolean selected = false;
+                        List<CategoryPath> categoryPathList = studyListing.getResultsWithFacets().getFacetsQueried();
+                        for (CategoryPath categoryPath : categoryPathList) {
+                            String queriedLabel = categoryPath.getComponent(0).toString();
+                            if (queriedLabel.equals(category)) {
+                                String queriedValue = categoryPath.getComponent(1).toString();
+                                if (last.equals(queriedValue)) {
+                                    selected = true;
+                                }
+                            }
+                        }
+                        facetResultUI.setSelected(selected);
+
                         facetUI.add(facetResultUI);
                         count++;
                     }

@@ -23,6 +23,7 @@ public class FacetResultUI {
 
     String name;
     Integer hits;
+    boolean selected;
 
     public String getName() {
         return name;
@@ -38,5 +39,13 @@ public class FacetResultUI {
 
     public void setHits(Integer hits) {
         this.hits = hits;
+    }
+
+    public boolean isSelected() {
+        return selected;
+    }
+
+    public void setSelected(boolean selected) {
+        this.selected = selected;
     }
 }

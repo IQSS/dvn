@@ -298,6 +298,52 @@ public class IndexServiceBean implements edu.harvard.iq.dvn.core.index.IndexServ
         boolean ioProblem = false;
         long ioProblemCount = 0;
         Indexer indexer = Indexer.getInstance();
+        
+        List<Long> studyIds = studyService.getAllStudyIds(); 
+        
+        Long studyId = null; 
+        Study study = null; 
+        int count = 0;
+        
+        if (studyIds != null) {
+            logger.info("Re-indexing "+(studyIds.size())+" studies.");
+
+            for (Iterator it = studyIds.iterator(); it.hasNext();) {
+                studyId = (Long) it.next();
+                
+                if (studyId != null) {
+                    study = studyService.getStudy(studyId);
+                    if (study != null) {
+                        try {
+                            addDocument(study);
+                            count++;
+                        } catch (Exception ex) {
+                            ioProblem = true;
+                            ioProblemCount++;
+                            Logger.getLogger(IndexServiceBean.class.getName()).log(Level.SEVERE, null, ex);
+                            logger.severe("Caught exception trying to reindex study " + study.getId());
+                        }
+                    }
+                
+                    if ((count % 100) == 0) {
+                        logger.info("Processed "+count+" studies; last processed id: "+studyId.toString());
+                    }
+                }
+
+                study = null;
+                studyId = null; 
+             
+            }
+            
+        }
+        logger.info("Finished index-all.");
+        handleIOProblems(ioProblem,ioProblemCount);
+    }
+    
+    public void indexAllpreserved() {
+        boolean ioProblem = false;
+        long ioProblemCount = 0;
+        Indexer indexer = Indexer.getInstance();
         /*
         try {
         indexer.setup();
@@ -305,13 +351,15 @@ public class IndexServiceBean implements edu.harvard.iq.dvn.core.index.IndexServ
         ex.printStackTrace();
         }
          */
+       
+        
         
         Long maxStudyTableId = studyService.getMaxStudyTableId();
         
         logger.info("MAX database id in the study table: "+maxStudyTableId);
        
         
-        long  indexingBatchSize = 100; // needs to be made configurable.
+        long  indexingBatchSize = 1L; //00; // needs to be made configurable.
         List<Study> studies = null;
         
         for (long i = 0L; i < (maxStudyTableId.longValue() + 1L); i += indexingBatchSize) {

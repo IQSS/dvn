@@ -814,7 +814,7 @@ public class StudyServiceBean implements edu.harvard.iq.dvn.core.study.StudyServ
     }
 
     public List<Long> getAllStudyIds() {
-        String queryStr = "select id from study";
+        String queryStr = "select id from study order by id";
         Query query = em.createNativeQuery(queryStr);
         List<Long> returnList = new ArrayList<Long>();
         for (Object currentResult : query.getResultList()) {

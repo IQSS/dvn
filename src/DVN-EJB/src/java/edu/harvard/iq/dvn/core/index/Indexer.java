@@ -561,26 +561,32 @@ public class Indexer implements java.io.Serializable  {
             writerVar = new IndexWriter(dir, getAnalyzer(), isIndexEmpty(), IndexWriter.MaxFieldLength.UNLIMITED);
             
             
+            StudyFile studyFile = null;
+            DataTable dataTable = null; 
+            List<DataVariable> dataVariables = null; 
 
             for (FileMetadata fileMetadata : sv.getFileMetadatas()) {
                 //TODO: networkDataFile
-                StudyFile elem = fileMetadata.getStudyFile();
-                if (elem instanceof TabularDataFile) {
-                    DataTable dataTable = ((TabularDataFile) elem).getDataTable();
+                studyFile = fileMetadata.getStudyFile();
+                if (studyFile instanceof TabularDataFile) {
+                    dataTable = ((TabularDataFile) studyFile).getDataTable();
                     if (dataTable != null) {
-                        List<DataVariable> dataVariables = dataTable.getDataVariables();
+                        dataVariables = dataTable.getDataVariables();
                         for (int j = 0; j < dataVariables.size(); j++) {
                             Document docVariables = new Document();
                             addText(1.0f, docVariables, "varStudyId", study.getId().toString());
-                            addText(1.0f, docVariables, "varStudyFileId", elem.getId().toString());
+                            addText(1.0f, docVariables, "varStudyFileId", studyFile.getId().toString());
                             DataVariable dataVariable = dataVariables.get(j);
                             addText(1.0f, docVariables, "varId", dataVariable.getId().toString());
                             addText(1.0f, docVariables, "varName", dataVariable.getName());
                             addText(1.0f, docVariables, "varLabel", dataVariable.getLabel());
                             writerVar.addDocument(docVariables);
                         }
+                        dataVariables = null; 
+                        dataTable = null; 
                     }
-                } 
+                }
+                studyFile = null; 
             }
             
             writerVar.close();
@@ -588,13 +594,13 @@ public class Indexer implements java.io.Serializable  {
             writerFileMeta = new IndexWriter(dir, getAnalyzer(), isIndexEmpty(), IndexWriter.MaxFieldLength.UNLIMITED);
             
             for (FileMetadata fileMetadata : sv.getFileMetadatas()) {
-                StudyFile elem = fileMetadata.getStudyFile();
-                if (elem instanceof SpecialOtherFile) {
+                studyFile = fileMetadata.getStudyFile();
+                if (studyFile instanceof SpecialOtherFile) {
                     Document docFileMetadata = new Document();
                     // the "id" is the database id of the *study*; - for 
                     // compatibility with the study-level index files. 
                     addKeyword(docFileMetadata, "id", study.getId().toString());
-                    addText(1.0f, docFileMetadata, "studyFileId", elem.getId().toString());
+                    addText(1.0f, docFileMetadata, "studyFileId", studyFile.getId().toString());
                     
                     List<FileMetadataFieldValue> fileMetadataFieldValues = fileMetadata.getStudyFile().getFileMetadataFieldValues(); 
                     for (int j = 0; j < fileMetadataFieldValues.size(); j++) {
@@ -611,6 +617,7 @@ public class Indexer implements java.io.Serializable  {
                     }                   
                     writerFileMeta.addDocument(docFileMetadata);
                 }
+                studyFile = null; 
             }
             
             writerFileMeta.close(); 

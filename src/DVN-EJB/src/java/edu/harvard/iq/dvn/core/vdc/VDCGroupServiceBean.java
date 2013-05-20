@@ -115,8 +115,21 @@ public class VDCGroupServiceBean implements VDCGroupServiceLocal {
     private static final String COUNT_VDCs_UNRESTRICTED = "select count(*) from vdcgroup_vdcs vd, VDC d where d.ID = vd.vdc_id and d.restricted = false and vd.vdcgroup_id = ?;";
     
     public Long findCountVDCsByVDCGroupId(Long id) {
-        Query query = null;      
-        query = em.createNativeQuery(COUNT_VDCs_UNRESTRICTED).setParameter(1, id);
+        Query query = em.createNativeQuery(COUNT_VDCs_UNRESTRICTED).setParameter(1, id);        
+        Long countReleased = (Long) query.getSingleResult();
+        return countReleased;
+    }
+    private static final String COUNT_VDCs_UNRESTRICTED_W_SUBNETWORKS = "select count(*) from vdcgroup_vdcs vd, VDC d where d.ID = vd.vdc_id and d.restricted = false and vd.vdcgroup_id = ? and d.vdcnetwork_id = ?;";
+    
+    public Long findCountVDCsByVDCGroupIdSubnetworkId(Long id, Long netId) {
+        Query query = null;
+        if (netId !=null && netId > 0){
+            query = em.createNativeQuery(COUNT_VDCs_UNRESTRICTED_W_SUBNETWORKS).setParameter(1, id);     
+            query.setParameter(2, netId); 
+        } else {
+            query = em.createNativeQuery(COUNT_VDCs_UNRESTRICTED).setParameter(1, id); 
+        }
+
         Long countReleased = (Long) query.getSingleResult();
         return countReleased;
     }
@@ -124,8 +137,21 @@ public class VDCGroupServiceBean implements VDCGroupServiceLocal {
     private static final String COUNT_CHILD_VDCs_UNRESTRICTED = " select count(*) from vdcgroup_vdcs vd, VDC d where d.ID = vd.vdc_id and d.restricted = false and vd.vdcgroup_id in (select id from vdcgroup where parent = ?);";
     
     public Long findCountChildVDCsByVDCGroupId(Long id) {
-        Query query = null;      
-        query = em.createNativeQuery(COUNT_CHILD_VDCs_UNRESTRICTED).setParameter(1, id);
+        Query query = em.createNativeQuery(COUNT_CHILD_VDCs_UNRESTRICTED).setParameter(1, id);    
+        Long countReleased = (Long) query.getSingleResult();
+        return countReleased;
+    }
+    
+    private static final String COUNT_CHILD_VDCs_UNRESTRICTED_W_SUBNETWORKS = " select count(*) from vdcgroup_vdcs vd, VDC d where d.ID = vd.vdc_id and d.restricted = false and vd.vdcgroup_id in (select id from vdcgroup where parent = ?) and d.vdcnetwork_id = ?;";
+    
+    public Long findCountChildVDCsByVDCGroupIdSubnetworkId(Long id, Long netId) {
+        Query query = null;
+        if (netId != null && netId > 0) {
+            query = em.createNativeQuery(COUNT_CHILD_VDCs_UNRESTRICTED_W_SUBNETWORKS).setParameter(1, id);
+            query.setParameter(2, netId);
+        } else {
+            query = em.createNativeQuery(COUNT_CHILD_VDCs_UNRESTRICTED).setParameter(1, id);
+        }
         Long countReleased = (Long) query.getSingleResult();
         return countReleased;
     }
@@ -133,9 +159,23 @@ public class VDCGroupServiceBean implements VDCGroupServiceLocal {
     private static final String COUNT_ALL_VDCs_UNRESTRICTED = " select count(distinct d.id) from vdcgroup_vdcs vd, VDC d where d.ID = vd.vdc_id and d.restricted = false and (vd.vdcgroup_id in (select id from vdcgroup where parent = ?) or vd.vdcgroup_id = ?);";
     
     public Long findCountParentChildVDCsByVDCGroupId(Long id) {
-        Query query = null;      
-        query = em.createNativeQuery(COUNT_ALL_VDCs_UNRESTRICTED).setParameter(1, id);
+        Query query = em.createNativeQuery(COUNT_ALL_VDCs_UNRESTRICTED).setParameter(1, id);
         query.setParameter(2, id);
+        Long countReleased = (Long) query.getSingleResult();
+        return countReleased;
+    }
+    private static final String COUNT_ALL_VDCs_UNRESTRICTEDW_SUBNETWORKS = " select count(distinct d.id) from vdcgroup_vdcs vd, VDC d where d.ID = vd.vdc_id and d.restricted = false and (vd.vdcgroup_id in (select id from vdcgroup where parent = ?) or vd.vdcgroup_id = ?) and d.vdcnetwork_id = ?;";
+    
+    public Long findCountParentChildVDCsByVDCGroupIdSubnetworkId(Long id, Long netId) {
+        Query query = null;
+        if (netId != null && netId > 0) {
+            query = em.createNativeQuery(COUNT_ALL_VDCs_UNRESTRICTEDW_SUBNETWORKS).setParameter(1, id);
+            query.setParameter(2, id);
+            query.setParameter(3, netId);
+        } else {
+            query = em.createNativeQuery(COUNT_ALL_VDCs_UNRESTRICTED).setParameter(1, id);
+            query.setParameter(2, id);
+        }
         Long countReleased = (Long) query.getSingleResult();
         return countReleased;
     }

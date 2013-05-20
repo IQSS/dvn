@@ -74,6 +74,8 @@ import edu.harvard.iq.dvn.core.study.StudyField;
 import edu.harvard.iq.dvn.core.study.StudyFieldValue;
 import edu.harvard.iq.dvn.core.study.TemplateServiceLocal;
 import edu.harvard.iq.dvn.core.vdc.VDC;
+import edu.harvard.iq.dvn.core.vdc.VDCNetwork;
+import edu.harvard.iq.dvn.core.vdc.VDCNetworkServiceLocal;
 import java.util.*;
 import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
@@ -98,6 +100,7 @@ public class TemplateFormPage extends VDCBaseBean implements java.io.Serializabl
     @Inject EditTemplateService editTemplateService;
     @EJB StudyServiceLocal studyService;
     @EJB TemplateServiceLocal templateService;
+    @EJB VDCNetworkServiceLocal vdcNetworkService;
     private ResourceBundle studybundle = ResourceBundle.getBundle("StudyBundle");
     
     /**
@@ -142,6 +145,7 @@ public class TemplateFormPage extends VDCBaseBean implements java.io.Serializabl
 
         fieldTypeSelectItems = loadFieldTypeSelectItems();
         fieldInputLevelSelectItems = loadFieldInputLevelSelectItems();
+        networkSelectItems = loadNetworkSelectItems();
         displayAlwaysFieldInputLevelSelectItems = loadFieldInputLevelSelectItems(true);
     }
     
@@ -435,6 +439,28 @@ public class TemplateFormPage extends VDCBaseBean implements java.io.Serializabl
         return this.fieldTypeSelectItems;
     }
 
+    
+    private List<SelectItem> loadNetworkSelectItems() {
+        List selectItems = new ArrayList<SelectItem>();
+        List <VDCNetwork> networkList = vdcNetworkService.getVDCNetworksOrderedById();
+        if (networkList.size() > 1){
+            for (VDCNetwork vdcNetwork : networkList){
+                selectItems.add(new SelectItem(vdcNetwork.getId(), vdcNetwork.getName()));
+            }
+        }
+        return selectItems;
+    }
+
+    private List <SelectItem> networkSelectItems = new ArrayList();
+
+    public List<SelectItem> getNetworkSelectItems() {
+        return this.networkSelectItems;
+    }
+    
+    private HtmlSelectOneMenu selectSubnetwork;   
+    public HtmlSelectOneMenu getSelectSubnetwork() {return selectSubnetwork;}
+    public void setSelectSubnetwork(HtmlSelectOneMenu selectSubnetwork) {this.selectSubnetwork = selectSubnetwork;}
+    
        
     public void addRow(ActionEvent ae) {
         
@@ -1057,6 +1083,13 @@ public class TemplateFormPage extends VDCBaseBean implements java.io.Serializabl
     public String save() {    
         boolean isNewTemplate = template.getId() == null;        
         boolean stringValidation = true;
+        String networkId = (String) this.selectSubnetwork.getValue();
+             VDCNetwork vdcNetwork = vdcNetworkService.findRootNetwork();
+        if (networkId != null){
+              vdcNetwork = vdcNetworkService.findById(new Long(networkId));              
+        }
+        template.setVdcNetwork(vdcNetwork);      
+        
         if(StringUtil.isEmpty(template.getName())){
             FacesMessage message = new FacesMessage("Template name is required.");
             FacesContext.getCurrentInstance().addMessage("templateForm:template_name", message);

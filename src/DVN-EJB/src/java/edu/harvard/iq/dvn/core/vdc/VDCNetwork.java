@@ -196,6 +196,18 @@ public class VDCNetwork implements java.io.Serializable  {
     public void setName(String name) {
         this.name = name;
     }
+    
+    private String urlAlias;
+
+    public String getUrlAlias() {
+        return urlAlias;
+    }
+
+    public void setUrlAlias(String urlAlias) {
+        this.urlAlias = urlAlias;
+    }
+    
+   
 
     /**
      * Holds value of property systemEmail.
@@ -228,7 +240,39 @@ public class VDCNetwork implements java.io.Serializable  {
     public void setNetworkdContactSubjects(java.util.Collection<NetworkContactSubject> networkContactSubjects) {
         this.networkContactSubjects = networkContactSubjects;
     }
+    
+    @OneToMany(mappedBy="vdcNetwork", cascade={CascadeType.REMOVE, CascadeType.MERGE, CascadeType.PERSIST})
+    private Collection<VDC> networkVDCs;
+    
+    public Collection<VDC> getNetworkVDCs(){
+        return networkVDCs;
+    }
+    
+    public void setNetworkVDCs(Collection<VDC> networkVDCs) {
+        this.networkVDCs = networkVDCs;
+    }
 
+    @OneToMany(mappedBy="vdcNetwork", cascade={CascadeType.REMOVE, CascadeType.MERGE, CascadeType.PERSIST})
+    private Collection<Template> networkTemplates;
+    
+    public Collection<Template> getNetworkTemplates(){
+        return networkTemplates;
+    }
+    
+    public void setNetworkTemplates(Collection<Template> networkTemplates) {
+        this.networkTemplates = networkTemplates;
+    }
+    
+    private boolean released;
+
+    public boolean isReleased() {
+        return released;
+    }
+
+    public void setReleased(boolean released) {
+        this.released = released;
+    }
+    
     /**
      * Holds value of property allowCreateRequest.
      */
@@ -514,6 +558,28 @@ public class VDCNetwork implements java.io.Serializable  {
     public void setDefaultNetworkAdmin(VDCUser defaultNetworkAdmin) {
         this.defaultNetworkAdmin = defaultNetworkAdmin;
     }
+    
+    /**
+     * Holds value of property creator.
+     */
+    @OneToOne
+    private VDCUser creator;
+
+    /**
+     * Getter for property creator.
+     * @return Value of property defaultNetworkAdmin.
+     */
+    public VDCUser getCreator() {
+        return this.creator;
+    }
+
+    /**
+     * Setter for property creator.
+     * @param creator New value of property creator.
+     */
+    public void setCreator(VDCUser creator) {      
+        this.creator = creator;
+    }
 
     /**
      * Holds value of property protocol.
@@ -535,7 +601,18 @@ public class VDCNetwork implements java.io.Serializable  {
     public void setProtocol(String protocol) {
         this.protocol = protocol;
     }
-
+    
+    /**
+     * Holds value of property curator.
+     */
+    private String curator;
+    public String getCurator() {
+        return this.curator;
+    }
+    public void setCurator(String curator) {
+        this.curator = curator;
+    }
+    
     /**
      * Holds value of property authority.
      */
@@ -675,6 +752,17 @@ public class VDCNetwork implements java.io.Serializable  {
 
     public void setTermsOfUseUpdated(Date termsOfUseUpdated) {
         this.termsOfUseUpdated = termsOfUseUpdated;
+    }
+    
+    @Temporal(value = TemporalType.TIMESTAMP)
+    private Date networkCreated;
+
+    public Date getNetworkCreated() {
+        return networkCreated;
+    }
+
+    public void setNetworkCreated(Date networkCreated) {
+        this.networkCreated = networkCreated;
     }
 
 

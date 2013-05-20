@@ -1,0 +1,120 @@
+<div xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:jsp="http://java.sun.com/JSP/Page"
+      xmlns:ice="http://www.icesoft.com/icefaces/component"
+      xmlns:dvn="/WEB-INF/tlds/dvn-components"
+      jsfc="ice:panelGroup">
+         <script type="text/javascript">
+          // <![CDATA[
+            function setHiddenValues(alphaKey) {
+                document.getElementById('form1:alphaCharacter').value = arguments[0];
+              }
+           // ]]>
+         </script>
+        <ui:define name="metadata">
+            <f:metadata>
+                <f:event type="preRenderView" listener="#{ManageSubnetworksPage.init}"/>  
+            </f:metadata>
+        </ui:define> 
+          <div jsfc="ice:panelGroup" styleClass="dvnManageTableTop">
+              <div jsfc="ice:panelGroup" styleClass="dvn_margin12 dvnInformationMessage">
+                <div class="dvnMsgBlockContainer">
+                    <ice:outputText value="#{bundlePageInfo.manageSubnetworksHelp}" escape="false"/>
+                </div>
+              </div>
+              <div jsfc="ice:panelGroup" styleClass="dvnManageTableControls" rendered="#{VDCRequest.currentVDC == null}">
+                    <div jsfc="ice:panelGroup" styleClass="dvnManageTableCreateLink" rendered="#{!VDCRequest.readOnlyDatabase}">
+                        <div jsfc="ice:panelGroup" id="createSubnetwork" styleClass="dvnCreateActionBox dvnCreateDataverse">
+                            <ice:outputLink value="/dvn/faces/networkAdmin/EditSubnetworkPage.xhtml?edit=false">
+                                <ice:outputText value="Create Subnetwork"/>
+                            </ice:outputLink>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div jsfc="ice:panelGroup">
+                <div jsfc="ice:panelGroup" styleClass="dvnManageTableEmpty" rendered="#{empty(ManageSubnetworksPage.vdcSubnetworks)}">
+                    <ice:outputText styleClass="dvnManageTableEmptyMessage" value="There are no results to display. "/>
+                </div>
+                <ice:dataTable id="subnetworkListManage" width="100%"
+                               columnWidths="20%,20%,10%,10%,10%,10%,10%,10%,10%"
+                               headerClass="groupRow"
+                               rendered="#{!empty(ManageSubnetworksPage.vdcSubnetworks)}"
+                               rowClasses="evenRow oddRow" rows="6"
+                               styleClass="dvnManageTable"
+                               value="#{ManageSubnetworksPage.vdcSubnetworks}"
+                               var="item">
+                <!-- name number -->
+                <f:facet name="header">
+                </f:facet>
+                <ice:column>
+                <f:facet name="header">
+                    <ice:commandSortHeader
+                        columnName="Name"
+                        arrow="true">
+                    <ice:outputText value="Name"/>
+                    </ice:commandSortHeader>
+                </f:facet>
+                    <ice:outputLink id="dataverse_link" value="/dvn/faces/networkAdmin/EditSubnetworkPage.xhtml?edit=true&amp;alias=#{item.vdcNetwork.urlAlias}">
+                    <ice:outputText value="#{item.vdcNetwork.name}" />
+                </ice:outputLink>
+                </ice:column>
+                <!-- Affiliation -->
+                <ice:column>
+                <f:facet name="header">
+                    <ice:commandSortHeader
+                        columnName="Affiliation"
+                        arrow="true">
+                    <ice:outputText value="Affiliation"/>
+                    </ice:commandSortHeader>
+                </f:facet>
+                <ice:outputText value="#{item.vdcNetwork.curator} "/>
+                </ice:column>
+                <!-- Created -->
+                <ice:column>
+                <f:facet name="header">
+                    <ice:commandSortHeader
+                        columnName="Created"
+                        arrow="true">
+                    <ice:outputText value="Created"/>
+                    </ice:commandSortHeader>
+                </f:facet>
+                    <ice:outputText value="#{item.vdcNetwork.networkCreated}" />
+                </ice:column>
+                <!-- Creator -->
+                <ice:column>
+                <f:facet name="header">
+                    <ice:commandSortHeader
+                        columnName="Created By"
+                        arrow="true">
+                    <ice:outputText value="Created By"/>
+                    </ice:commandSortHeader>
+                </f:facet>
+                    <ice:outputText value="#{item.vdcNetwork.creator.firstName}  #{item.vdcNetwork.creator.lastName}"/>
+                </ice:column>
+                <!-- Released -->
+                <ice:column>
+                <f:facet name="header">
+                    <ice:commandSortHeader
+                        columnName="Dataverses"
+                        arrow="true">
+                    <ice:outputText value="Dataverses"/>
+                    </ice:commandSortHeader>
+                </f:facet>
+                    <ice:outputText value="#{item.vdcCount}"/>
+                </ice:column>
+                <!-- Delete -->
+                <ice:column>
+                    <f:facet name="header">
+                        <ice:outputText value="Delete"/>
+                    </f:facet>
+                    <ice:outputLink value="">
+                        <f:param name="deleteId" value="#{item.vdcNetwork.id}" />
+                        <f:param name="from" value="manageDataverses"/>
+                        <ice:outputText value="Delete"/>
+                    </ice:outputLink>
+                </ice:column>
+                </ice:dataTable>
+            </div>           
+</div>

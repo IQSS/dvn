@@ -154,6 +154,7 @@ public class Template implements java.io.Serializable {
     public void setDisplayOnCreateDataverse(boolean displayOnCreateDataverse) {
         this.displayOnCreateDataverse = displayOnCreateDataverse;
     }
+ 
     
 
     /**

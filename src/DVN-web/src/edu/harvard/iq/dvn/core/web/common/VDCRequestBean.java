@@ -265,10 +265,12 @@ public class VDCRequestBean extends VDCBaseBean implements java.io.Serializable 
      */
     public VDCNetwork getVdcNetwork() {
         if (vdcNetwork == null) {
-            VDCNetwork network = vdcNetworkService.find(new Long(1));  // There is only one network, which will always have Id=1
+            VDCNetwork network = getVDCSessionBean().getVdcNetwork();
+            if (network == null){
+                network = vdcNetworkService.findRootNetwork();  // There is only one network, which will always have Id=1 
+            } 
             setVdcNetwork(network);              
         }
-
         return this.vdcNetwork;
     }
 
@@ -348,7 +350,13 @@ public class VDCRequestBean extends VDCBaseBean implements java.io.Serializable 
     }
 
     public String getDataversePageTitle() {
-        String title = this.getVdcNetwork().getName()+ " Dataverse Network";
+        String title = null;
+        if (vdcNetwork == null) {
+            title = this.getVdcNetwork().getName() + " Dataverse Network";
+        } else {
+            title = vdcNetwork.getName() +  " Dataverse Network";
+        }
+         
         if (this.getCurrentVDC()!=null) {
             title = getCurrentVDC().getName() + " Dataverse - " + title;
         }

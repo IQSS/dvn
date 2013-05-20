@@ -27,10 +27,7 @@ import edu.harvard.iq.dvn.core.web.collection.CollectionUI;
 import edu.harvard.iq.dvn.core.web.common.StatusMessage;
 import edu.harvard.iq.dvn.core.web.common.VDCBaseBean;
 import edu.harvard.iq.dvn.core.web.login.LoginWorkflowBean;
-import edu.harvard.iq.dvn.core.web.networkAdmin.AllUsersDataBean;
-import edu.harvard.iq.dvn.core.web.networkAdmin.IndexLockFileNameFilter;
-import edu.harvard.iq.dvn.core.web.networkAdmin.UserGroupsInfoBean;
-import edu.harvard.iq.dvn.core.web.networkAdmin.UtilitiesPage;
+import edu.harvard.iq.dvn.core.web.networkAdmin.*;
 import edu.harvard.iq.dvn.core.web.push.beans.NetworkStatsBean;
 import edu.harvard.iq.dvn.core.web.site.ClassificationList;
 import edu.harvard.iq.dvn.core.web.site.ClassificationUI;
@@ -61,6 +58,7 @@ import javax.faces.event.ActionEvent;
 import javax.faces.event.ValueChangeEvent;
 import javax.faces.model.SelectItem;
 import javax.faces.context.ExternalContext;
+import javax.inject.Inject;
 import javax.inject.Named;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -120,6 +118,9 @@ public class OptionsPage extends VDCBaseBean  implements java.io.Serializable {
     @EJB StudyFileServiceLocal studyFileService;
     @EJB HarvestStudyServiceLocal harvestStudyService;
     @EJB GNRSServiceLocal gnrsService;
+    @Inject EditNetworkNamePage editNetworkNamePage;
+    @Inject EditNetworkAnnouncementsPage editNetworkAnnouncementsPage;
+    @Inject EditBannerFooterPage editBannerFooterPage;
     
     @PersistenceContext(unitName = "VDCNet-ejbPU")
     EntityManager em;
@@ -308,12 +309,9 @@ public class OptionsPage extends VDCBaseBean  implements java.io.Serializable {
             setSelectExportPeriod(loadSelectExportPeriod());       
             //OAI Sets 
             initSetData();
-
+ 
             //Network Settings
-            VDCNetwork thisVdcNetwork = vdcNetworkService.find(new Long(1));
-            networkName=thisVdcNetwork.getName();
-            this.setChkEnableNetworkAnnouncements(thisVdcNetwork.isDisplayAnnouncements()) ;
-            this.setNetworkAnnouncements( thisVdcNetwork.getAnnouncements());  
+            VDCNetwork thisVdcNetwork = vdcNetworkService.findRootNetwork();
 
             //DV requirements page
             setRequireDvaffiliation(thisVdcNetwork.isRequireDVaffiliation());
@@ -571,16 +569,18 @@ public class OptionsPage extends VDCBaseBean  implements java.io.Serializable {
                 if (tab2 != null && tab2.equals("customization")){
                    networkGeneralSettingsSubTab.setSelectedIndex(2); 
                 }
-            } else if (tab.equals("classifications")) {
+            } else if (tab.equals("subnetworks")) {
                 selectedIndex=2;
+            } else if (tab.equals("classifications")) {
+                selectedIndex=3;
             } else if (tab.equals("templates")) {
                 initTemplates();
-                selectedIndex=3;
+                selectedIndex=4;
             } else if (tab.equals("vocabulary")){
                 initControlledVocabulary();
-                selectedIndex=4;
-            } else if (tab.equals("harvesting")) {
                 selectedIndex=5;
+            } else if (tab.equals("harvesting")) {
+                selectedIndex=6;
                 if (tab2 != null && tab2.equals("oaisets")){
                    initUserData();
                    harvestingSubTab.setSelectedIndex(1); 
@@ -606,9 +606,9 @@ public class OptionsPage extends VDCBaseBean  implements java.io.Serializable {
                     System.err.print("in init selected tab index vdc == null (network)");
                    permissionsSubTab.setSelectedIndex(4); 
                 }
-                selectedIndex=6;
-            } else if (tab.equals("utilities")) {
                 selectedIndex=7;
+            } else if (tab.equals("utilities")) {
+                selectedIndex=8;
             } 
             tabSet1.setSelectedIndex(selectedIndex);
         }
@@ -3292,42 +3292,31 @@ public class OptionsPage extends VDCBaseBean  implements java.io.Serializable {
         getVDCRenderBean().getFlash().put("successMessage", "Successfully deleted OAI set.");
     }
     
-   public String saveNetworkGeneralSettings_action() {
-        VDCNetwork thisVdcNetwork = vdcNetworkService.find(new Long(1));
-        thisVdcNetwork.setName((String)textFieldNetworkName.getValue());
+   public String saveNetworkGeneralSettings_action() {       
+        VDCNetwork thisVdcNetwork = vdcNetworkService.find(new Long(0));
         thisVdcNetwork.setContactEmail(this.getContactUsEmail());
         thisVdcNetwork.setSystemEmail(this.getEditSystemEmail()); 
-        thisVdcNetwork.setDisplayAnnouncements(this.isChkEnableNetworkAnnouncements());
-        thisVdcNetwork.setAnnouncements(this.getNetworkAnnouncements());
+        thisVdcNetwork.setName(editNetworkNamePage.getNetworkName());
+        thisVdcNetwork.setDisplayAnnouncements(editNetworkAnnouncementsPage.isChkEnableNetworkAnnouncements());
+        thisVdcNetwork.setAnnouncements(editNetworkAnnouncementsPage.getNetworkAnnouncements());
         vdcNetworkService.edit(thisVdcNetwork);
         getVDCRequestBean().setVdcNetwork(thisVdcNetwork);        
         getVDCRenderBean().getFlash().put("successMessage", "Successfully updated general network settings.");
         return "/networkAdmin/NetworkOptionsPage.xhtml?faces-redirect=true&tab=settings&tab2=general";
     }
-   
-   
-   
-    String networkName;
-    public void setNetworkName(String name){networkName=name;}
-    public String getNetworkName(){return networkName;}
-    private HtmlInputText textFieldNetworkName = new HtmlInputText();
-    public HtmlInputText getTextFieldNetworkName() {return textFieldNetworkName;}
-    public void setTextFieldNetworkName(HtmlInputText hit) {this.textFieldNetworkName = hit;}
-    private String networkAnnouncements;   
-    public String getNetworkAnnouncements() {return networkAnnouncements;}    
-    public void setNetworkAnnouncements(String networkAnnouncements) {this.networkAnnouncements = networkAnnouncements;}   
-    private boolean chkEnableNetworkAnnouncements;   
-    public boolean isChkEnableNetworkAnnouncements() {return chkEnableNetworkAnnouncements;}    
-    public void setChkEnableNetworkAnnouncements(boolean chkEnableNetworkAnnouncements) {this.chkEnableNetworkAnnouncements = chkEnableNetworkAnnouncements;}
+    
+
+    
     
     //Network Customization
     public String saveNetworkCustomization() throws java.io.IOException, ParserConfigurationException, SAXException, TransformerException, JAXBException{
+        banner = editBannerFooterPage.getBanner();
+        footer = editBannerFooterPage.getFooter();
         combinedTextField.setValue(banner + footer);
-        boolean validXML = true;
         String retString = "/networkAdmin/NetworkOptionsPage?faces-redirect=true&tab=settings&tab2=customization";
         ArrayList <String> errorMessage = new ArrayList();
         XhtmlValidator validator = new XhtmlValidator();
-        validXML = validator.validateXhtmlMessage(banner + footer, errorMessage);
+        boolean validXML = validator.validateXhtmlMessage(banner + footer, errorMessage);
         if (!validXML){
             if (errorMessage.size() > 0){
                 getVDCRenderBean().getFlash().put("warningMessage",errorMessage.get(0)); 
@@ -3336,7 +3325,7 @@ public class OptionsPage extends VDCBaseBean  implements java.io.Serializable {
             }
             return "";
         }
-        VDCNetwork thisVdcNetwork = vdcNetworkService.find(new Long(1));
+        VDCNetwork thisVdcNetwork = vdcNetworkService.findRootNetwork();
         thisVdcNetwork.setNetworkPageHeader(banner);
         thisVdcNetwork.setNetworkPageFooter(footer);     
         vdcNetworkService.edit(thisVdcNetwork);
@@ -3359,7 +3348,7 @@ public class OptionsPage extends VDCBaseBean  implements java.io.Serializable {
     public void setRequireDvstudiesforrelease(boolean requireDvstudiesforrelease) {this.requireDvstudiesforrelease = requireDvstudiesforrelease;}
 
     public String saveNetworkAdvancedSettings_action() {
-            VDCNetwork vdcnetwork = vdcNetworkService.find(new Long(1));
+            VDCNetwork vdcnetwork = vdcNetworkService.findRootNetwork();
             vdcnetwork.setRequireDVaffiliation(requireDvaffiliation);
             vdcnetwork.setRequireDVclassification(requireDvclassification);
             vdcnetwork.setRequireDVdescription(requireDvdescription);

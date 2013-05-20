@@ -78,7 +78,7 @@ public class BrowseDataversesPage  extends VDCBaseBean implements Serializable {
         super.init();
     }
     
-    public void preRenderView() {        
+    public void preRenderView() {  
         super.preRenderView();
         hideRestricted = true;  
         sortOrderItems = loadSortSelectItems();
@@ -125,10 +125,16 @@ public class BrowseDataversesPage  extends VDCBaseBean implements Serializable {
     }
 
     private void populateVDCUIList() {
+        Long networkId = getVDCRequestBean().getVdcNetwork().getId();
         if (firstRun){
            filterTerm = initialFilter; 
         }
         vdcUIList = new VDCUIList(groupId, "", filterTerm, hideRestricted);
+        if (networkId !=null && networkId.intValue() > 0){
+           vdcUIList.setNetworkId(networkId); 
+        } else{
+           vdcUIList.setNetworkId(new Long (0));  
+        }
         if((initialSort.isEmpty() || !firstRun)  && savedSort.isEmpty()){
             vdcUIList.setSortColumnName(vdcUIList.getDateReleasedColumnName()); 
             sortOrderString = vdcUIList.getDateReleasedColumnName();
@@ -190,19 +196,21 @@ public class BrowseDataversesPage  extends VDCBaseBean implements Serializable {
 
     protected void populateDescendants(VDCGroup vdcgroup, boolean isExpanded) {
         Long parentId = vdcgroup.getId();
+        Long networkId = getVDCRequestBean().getVdcNetwork().getId();
+
         List<VDCGroup> list = vdcGroupService.findByParentId(parentId);
         DataverseGrouping childItem;
         for (VDCGroup groupFromList : list) {
-            childItem = new DataverseGrouping(groupFromList.getId(), groupFromList.getName(), "subgroup", isExpanded, "", "", parentId, vdcGroupService.findCountVDCsByVDCGroupId(groupFromList.getId()));
+            childItem = new DataverseGrouping(groupFromList.getId(), groupFromList.getName(), "subgroup", isExpanded, "", "", parentId, vdcGroupService.findCountVDCsByVDCGroupIdSubnetworkId(groupFromList.getId(), networkId));
             parentItem.addItem(childItem);
             parentItem.setIsAccordion(true);
             if (!vdcGroupService.findByParentId(groupFromList.getId()).isEmpty()) {
-                childItem.setNumberOfDataverses(vdcGroupService.findCountParentChildVDCsByVDCGroupId(groupFromList.getId()));
+                childItem.setNumberOfDataverses(vdcGroupService.findCountParentChildVDCsByVDCGroupIdSubnetworkId(groupFromList.getId(), networkId));
                 List <VDCGroup> innerlist = vdcGroupService.findByParentId(groupFromList.getId());
                 DataverseGrouping xtraItem;
                 childItem.setXtraItems(new ArrayList());
                 for (VDCGroup innerGroup : innerlist){
-                    xtraItem = new DataverseGrouping(innerGroup.getId(), innerGroup.getName(), "subgroup", isExpanded, "", "", parentId, vdcGroupService.findCountVDCsByVDCGroupId(innerGroup.getId()));
+                    xtraItem = new DataverseGrouping(innerGroup.getId(), innerGroup.getName(), "subgroup", isExpanded, "", "", parentId, vdcGroupService.findCountVDCsByVDCGroupIdSubnetworkId(innerGroup.getId(), networkId));
                     childItem.addXtraItem(xtraItem);
                 }
             }

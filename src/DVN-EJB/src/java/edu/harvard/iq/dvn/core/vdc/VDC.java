@@ -149,6 +149,28 @@ public class VDC implements java.io.Serializable  {
     
     @ManyToOne
     private VDCUser reviewer;
+    
+        /**
+     * Holds value of property vdcNetwork.
+     */
+    @ManyToOne
+    private VDCNetwork vdcNetwork;
+
+    /**
+     * Getter for property vdcNetwork.
+     * @return Value of property vdcNetwork.
+     */
+    public VDCNetwork getVdcNetwork() {
+        return this.vdcNetwork;
+    }
+
+    /**
+     * Setter for property vdcNetwork.
+     * @param vdcNetwork New value of property vdcNetwork.
+     */
+    public void setVdcNetwork(VDCNetwork vdcNetwork) {
+        this.vdcNetwork = vdcNetwork;
+    }
 
     private boolean allowStudyComments = true;
 

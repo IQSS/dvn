@@ -26,6 +26,8 @@ package edu.harvard.iq.dvn.core.web.common;
 import edu.harvard.iq.dvn.core.admin.GroupServiceLocal;
 import edu.harvard.iq.dvn.core.admin.UserGroup;
 import edu.harvard.iq.dvn.core.admin.VDCUser;
+import edu.harvard.iq.dvn.core.vdc.VDCNetwork;
+import edu.harvard.iq.dvn.core.vdc.VDCNetworkServiceLocal;
 import java.util.HashMap;
 import java.util.Map;
 import javax.ejb.EJB;
@@ -49,11 +51,12 @@ import javax.servlet.http.HttpSession;
 @SessionScoped
 public class VDCSessionBean  implements java.io.Serializable  {
     @EJB GroupServiceLocal groupServiceLocal; 
- 
+    @EJB VDCNetworkServiceLocal vdcNetworkService; 
 
     /**
      * Holds value of property loginBean.
      */
+    
     private LoginBean loginBean;
     
     /**
@@ -117,7 +120,33 @@ public class VDCSessionBean  implements java.io.Serializable  {
         }
     }
 
- 
+     /**
+     * Holds value of property vdcNetwork.
+     */
+    private VDCNetwork vdcNetwork;
+
+    /**
+     * Getter for property vdcNetwork.
+     * @return Value of property vdcNetwork.
+     */
+    public VDCNetwork getVdcNetwork() {
+        if (vdcNetwork == null) {
+            System.out.print("vdcnetwork is null");
+            VDCNetwork network = vdcNetworkService.findRootNetwork();  // There is only one network, which will always have Id=1
+            setVdcNetwork(network);              
+        }
+
+        return this.vdcNetwork;
+    }
+
+    /**
+     * Setter for property vdcNetwork.
+     * @param vdcNetwork New value of property vdcNetwork.
+     */
+    public void setVdcNetwork(VDCNetwork vdcNetwork) {
+        System.out.print("setting vdcnetwork");
+        this.vdcNetwork = vdcNetwork;
+    }
     
     
 }

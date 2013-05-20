@@ -75,8 +75,12 @@ public class ManageStudiesList extends VDCBaseBean {
     private static final String ACTION_COLUMN = "actionReleased";
     private DataPaginator paginator;
     private static Logger dbgLog = Logger.getLogger(ManageStudiesList.class.getCanonicalName());
-    @Inject private VersionNotesPopupBean versionNotesPopupBean = new VersionNotesPopupBean();
-
+    @Inject private VersionNotesPopupBean versionNotesPopupBean;
+    
+    private VDCUser pageUser = null;
+    private Long userVDCCount = null;
+    private String soleVDCAlias = null;
+    
     // the StudyUI object for the currently selected study:
     // (for example, selected for deletion)
 
@@ -218,45 +222,63 @@ public class ManageStudiesList extends VDCBaseBean {
     }
 
     public Long getUserVDCCount(){
-        VDCUser user = getVDCSessionBean().getUser();
-        int count = 0;
-        if (user!=null) {
-            user = userService.find(user.getId());
-            List<VDC> vdcs= vdcService.getUserVDCs(user.getId());
-            for (VDC dv: vdcs){
-            VDCRole vdcRole = roleService.findByUserVDC(user.getId(), dv.getId());
-            if ( !vdcRole.getRole().getName().equals(RoleServiceLocal.PRIVILEGED_VIEWER) ) {
-                count++;
-            }                
-                if (count > 1) return new Long (count);
-            }
-            return new Long (count);
+        
+        if (pageUser == null) {
+            pageUser = getVDCSessionBean().getUser();
         }
-        return new Long(0);
+        VDCUser user = getVDCSessionBean().getUser();
+        if (!pageUser.equals(user) || userVDCCount == null) {
+            if (user != null) {
+                user = userService.find(user.getId());
+                userVDCCount = vdcService.getUserContributorOrBetterVDCCount(user.getId());
+                return userVDCCount;
+            }
+            userVDCCount = new Long(0);
+            return new Long(0);
+        } else {
+            return userVDCCount;
+        }
     }
     
     public String getSoleVDCAlias(){
-        VDCUser user = getVDCSessionBean().getUser();
-        String retAlias = "";
-        int count = 0;
-        if (user!=null) {
-            user = userService.find(user.getId());
-            List<VDC> vdcs= vdcService.getUserVDCs(user.getId());
-            for (VDC dv: vdcs){
-            VDCRole vdcRole = roleService.findByUserVDC(user.getId(), dv.getId());
-            if ( !vdcRole.getRole().getName().equals(RoleServiceLocal.PRIVILEGED_VIEWER) ) {
-                count++;
-                retAlias = dv.getAlias();
-            }                
-                if (count > 1) return "";
-            }
-
-            if (count == 1){
-               return retAlias;
-            }
-            return "";
+        if (pageUser == null) {
+            pageUser = getVDCSessionBean().getUser();
         }
-        return "";
+                VDCUser user = getVDCSessionBean().getUser();
+        if (!pageUser.equals(user) || soleVDCAlias == null) {
+            String retAlias = "";
+            int count = 0;
+
+            if (user != null) {
+                user = userService.find(user.getId());
+                Long initialTest = vdcService.getUserContributorOrBetterVDCCount(user.getId());
+                if (initialTest.intValue() != 1){
+                    soleVDCAlias = "";
+                    return soleVDCAlias;
+                }
+                List<VDC> vdcs = vdcService.getUserVDCs(user.getId());
+                for (VDC dv : vdcs) {
+                    VDCRole vdcRole = roleService.findByUserVDC(user.getId(), dv.getId());
+                    if (!vdcRole.getRole().getName().equals(RoleServiceLocal.PRIVILEGED_VIEWER)) {
+                        count++;
+                        retAlias = dv.getAlias();
+                    }
+                    if (count > 1) {
+                        return "";
+                    }
+                }
+                if (count == 1) {
+                    soleVDCAlias = retAlias;
+                    return retAlias;
+                }
+                soleVDCAlias = "";
+                return "";
+            }
+            soleVDCAlias = "";
+            return "";
+        } else {
+            return soleVDCAlias;
+        }
     }
   
     public void doConfirmVersionNotesPopup(ActionEvent ae) {

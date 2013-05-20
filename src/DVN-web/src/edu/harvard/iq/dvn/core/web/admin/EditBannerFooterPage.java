@@ -49,13 +49,21 @@ import javax.inject.Named;
 public class EditBannerFooterPage extends VDCBaseBean  implements java.io.Serializable {
     @EJB VDCServiceLocal vdcService;
     @EJB VDCNetworkServiceLocal vdcNetworkService;
+    private String alias = "";
     
     public void init() {
         super.init();
+        VDCNetwork vdcNetwork = getVDCRequestBean().getVdcNetwork();
+        alias = getVDCRequestBean().getRequestParam("alias");
+        if(alias != null && !alias.isEmpty()){
+             vdcNetwork = vdcNetworkService.findByAlias(alias);
+        } 
+        if (vdcNetwork == null){
+            vdcNetwork = getVDCRequestBean().getVdcNetwork();
+        }
         if (this.getBanner() == null){
-            setBanner( (getVDCRequestBean().getCurrentVDCId() == null) ? getVDCRequestBean().getVdcNetwork().getNetworkPageHeader(): getVDCRequestBean().getCurrentVDC().getHeader());
-            setFooter( (getVDCRequestBean().getCurrentVDCId() == null) ? getVDCRequestBean().getVdcNetwork().getNetworkPageFooter(): getVDCRequestBean().getCurrentVDC().getFooter());
-            
+            setBanner( (getVDCRequestBean().getCurrentVDCId() == null) ? vdcNetwork.getNetworkPageHeader(): getVDCRequestBean().getCurrentVDC().getHeader());
+            setFooter( (getVDCRequestBean().getCurrentVDCId() == null) ? vdcNetwork.getNetworkPageFooter(): getVDCRequestBean().getCurrentVDC().getFooter());         
             if (getVDCRequestBean().getCurrentVDCId() != null) {
                 setDisplayInFrame(getVDCRequestBean().getCurrentVDC().isDisplayInFrame());
                 setParentSite(getVDCRequestBean().getCurrentVDC().getParentSite());
@@ -100,6 +108,7 @@ public class EditBannerFooterPage extends VDCBaseBean  implements java.io.Serial
     public String save_action() {
         String forwardPage=null;
         if (getVDCRequestBean().getCurrentVDCId() == null) {
+            String retString = "/networkAdmin/NetworkOptionsPage?faces-redirect=true&tab=settings&tab2=customization";
             // this is a save against the network
             VDCNetwork vdcnetwork = getVDCRequestBean().getVdcNetwork();
             vdcnetwork.setNetworkPageHeader(banner);
@@ -107,7 +116,7 @@ public class EditBannerFooterPage extends VDCBaseBean  implements java.io.Serial
             vdcNetworkService.edit(vdcnetwork);
             getVDCRequestBean().getVdcNetwork().setNetworkPageHeader(banner);
             getVDCRequestBean().getVdcNetwork().setNetworkPageFooter(footer);
-            forwardPage="/networkAdmin/NetworkOptionsPage?faces-redirect=true";
+            forwardPage=retString;
         } else {
             VDC vdc = vdcService.find(new Long(getVDCRequestBean().getCurrentVDC().getId()));
             vdc.setHeader(banner);

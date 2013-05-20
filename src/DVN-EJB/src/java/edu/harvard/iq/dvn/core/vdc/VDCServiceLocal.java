@@ -114,12 +114,13 @@ public interface VDCServiceLocal extends java.io.Serializable  {
     public Long getVdcCount(List <Long> vdcIds, Boolean resticted);
     
    public List<Long> getOrderedVDCIds (String orderBy);
-   public List<Long> getOrderedVDCIds(String orderBy, boolean hideRestrictedVDCs);
+   public List<Long> getOrderedVDCIds (String orderBy, boolean hideRestrictedVDCs);
    public List<Long> getOrderedVDCIds (String letter, String orderBy);
    public List<Long> getOrderedVDCIds (Long classificationId, String orderBy);
    public List<Long> getOrderedVDCIds (Long classificationId, String letter, String orderBy);
    public List<Long> getOrderedVDCIds (Long classificationId, String letter, String orderBy, boolean hideRestrictedVDCs);
    public List<Long> getOrderedVDCIds (Long classificationId, String letter, String orderBy, boolean hideRestrictedVDCs, String filterTerm);
+   public List<Long> getOrderedVDCIds (Long classificationId, String letter, String orderBy, boolean hideRestrictedVDCs, String filterString, Long subNetworkId);
    
    public double getMaxDownloadCount();
 

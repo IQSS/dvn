@@ -33,7 +33,7 @@
                             </ice:outputLabel>
                         </div>
                         <div jsfc="ice:panelGroup">
-                            <ice:selectBooleanCheckbox id="chkOpenScholarDataverse" value="#{OptionsPage.displayInFrame}" partialSubmit="true"/>
+                            <ice:selectBooleanCheckbox id="chkOpenScholarDataverse" value="#{EditBannerFooterPage.displayInFrame}" partialSubmit="true"/>
                             <ice:outputText value="Disable customization to link Dataverse to an OpenScholar or personal site."/>
                             <script type="text/javascript">
                                 // <![CDATA[
@@ -87,7 +87,7 @@
                                columnClasses="dvnOptionsTableOption, vdcColPadded" 
                                rowClasses="dvnCustomizationSelectSiteBlockRow1, dvnCustomizationSelectSiteBlockRow2, dvnCustomizationSelectSiteBlockRow3" 
                                styleClass="dvnOptionsTable dvnCustomizationSelectSiteTable"
-                                rendered="#{OptionsPage.displayInFrame}">
+                                rendered="#{EditBannerFooterPage.displayInFrame}">
                     <div jsfc="ice:panelGroup">
                         <ice:outputLabel for="iframesite" id="hostSiteTypeLabel">
                             <ice:outputText id="hostSiteTypeText" value="Host Site Type"/>
@@ -113,8 +113,8 @@
                         <div id="dvnUrlOpenScholar">
                             <ice:outputText nospan="true" escape="false" value="&#60;div style=&#34;margin-bottom:1em;&#34; class=&#34;warnMessage&#34;&#62;&#60;img src=&#34;/dvn/resources/images/icon_warning.18.png&#34; class=&#34;dvn_icon&#34; /&#62; &#60;span class=&#34;iceOutTxt&#34;&#62;Before disabling the customization for your Dataverse, make sure you first have your OpenScholar or personal site properly set up.&#60;/span&#62;&#60;/div&#62;"/>
 
-                            <ice:inputText id="urlOpenScholarDataverse" size="60" value="#{OptionsPage.parentSite}"
-                             required="#{OptionsPage.displayInFrame}"
+                            <ice:inputText id="urlOpenScholarDataverse" size="60" value="#{EditBannerFooterPage.parentSite}"
+                             required="#{EditBannerFooterPage.displayInFrame}"
                              requiredMessage="This field is required."/>
                             <ice:message for="urlOpenScholarDataverse" showSummary="true" showDetail="false" errorClass="errorMessage" styleClass="errorMessage"/>
                             <br/>
@@ -144,7 +144,7 @@
               </div>
               <ice:panelGrid cellpadding="0" cellspacing="0" columns="2"
                              columnClasses="dvnOptionsTableOption, vdcColPadded" styleClass="dvnOptionsTable dvnCustomBannerFooterFieldsBlock"
-                              rendered="#{! OptionsPage.displayInFrame}">
+                              rendered="#{!EditBannerFooterPage.displayInFrame}">
                   <div jsfc="ice:panelGroup">
                     <ice:outputLabel for="banner" id="bannerLabel">
                         <ice:outputText id="bannerText" value="#{bundle.editCustomBannerLabel}"/>
@@ -158,7 +158,7 @@
                     <br/>
                     <ice:inputTextarea id="banner"
                                        rows="15"
-                                       value="#{OptionsPage.banner}"
+                                       value="#{EditBannerFooterPage.banner}"
                                        styleClass="formHtmlEnabled">
                     </ice:inputTextarea>
                   </div>
@@ -174,13 +174,11 @@
                     <br/>
                     <ice:inputTextarea id="footer"
                                        rows="7"
-                                       value="#{OptionsPage.footer}"
+                                       value="#{EditBannerFooterPage.footer}"
                                        styleClass="formHtmlEnabled">
                     </ice:inputTextarea>
-                    <ice:inputHidden id="combined" binding="#{OptionsPage.combinedTextField}">                       
+                    <ice:inputHidden id="combined" binding="#{EditBannerFooterPage.combinedTextField}">                       
                     </ice:inputHidden>
                   </div>
               </ice:panelGrid>
-
-      <!--</ice:form>-->
 </div>

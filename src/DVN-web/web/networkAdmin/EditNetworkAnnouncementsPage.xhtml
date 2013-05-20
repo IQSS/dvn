@@ -18,14 +18,14 @@
                         </div>
                     </div>
                     <div jsfc="ice:panelGroup">
-                        <ice:selectBooleanCheckbox id="chkEnableNetworkAnnouncements" value="#{OptionsPage.chkEnableNetworkAnnouncements}"/>
+                        <ice:selectBooleanCheckbox id="chkEnableNetworkAnnouncements" value="#{EditNetworkAnnouncementsPage.chkEnableNetworkAnnouncements}"/>
                         <ice:outputText value=" #{bundle.enableNetworkAnnouncementsLabel}"/>
                     </div>
                     <ice:message id="networkAnnouncementsMsg" for="networkAnnouncements" styleClass="errorMessage"/>
                     <br/>
                     <div jsfc="ice:panelGroup">
                         <ice:inputTextarea cols="100" rows="15" styleClass="formHtmlEnabled"
-                                           id="networkAnnouncements" value="#{OptionsPage.networkAnnouncements}">
+                                           id="networkAnnouncements" value="#{EditNetworkAnnouncementsPage.networkAnnouncements}">
                           <f:validator validatorId="XhtmlValidator"/>
                         </ice:inputTextarea>
                     </div>

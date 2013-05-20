@@ -33,8 +33,10 @@ import javax.ejb.EJB;
 import com.icesoft.faces.component.ext.HtmlInputText;
 import edu.harvard.iq.dvn.core.web.common.VDCRequestBean;
 import javax.faces.bean.ViewScoped;
+import javax.faces.event.ActionEvent;
 import javax.inject.Inject;
 import javax.inject.Named;
+import javax.persistence.OptimisticLockException;
 
 /**
  * <p>Page bean that corresponds to a similarly named JSP page.  This
@@ -48,6 +50,8 @@ import javax.inject.Named;
 public class EditNetworkNamePage extends VDCBaseBean  implements java.io.Serializable {
     @EJB VDCNetworkServiceLocal vdcNetworkService;
     StatusMessage msg;
+    private Boolean addMode = false;
+    private String alias = "";
     
     public StatusMessage getMsg(){
         return msg;
@@ -64,20 +68,37 @@ public class EditNetworkNamePage extends VDCBaseBean  implements java.io.Seriali
     public String getNetworkName(){
         return networkName;
     }
-
+    
+    public void preRenderView(){
+        alias = getVDCRequestBean().getRequestParam("alias");
+        String edit = getVDCRequestBean().getRequestParam("edit");
+        if (edit !=null && edit.equals("false")){
+            addMode = true;
+            networkName = "";
+        } else if(alias != null && !alias.isEmpty()){
+            VDCNetwork vdcNetwork = vdcNetworkService.findByAlias(alias);
+            if (vdcNetwork != null){
+                networkName = vdcNetwork.getName();
+            } else {
+                networkName = getVDCRequestBean().getVdcNetwork().getName();
+            }
+        }
+            else {
+            networkName = getVDCRequestBean().getVdcNetwork().getName();
+        }
+    }
     
     public void init() {
-        VDCNetwork thisVdcNetwork = vdcNetworkService.find(new Long(1));
-        networkName=thisVdcNetwork.getName();
+        super.init();
     }
 
     private HtmlInputText textFieldNetworkName = new HtmlInputText();
 
-    public HtmlInputText getTextField1() {
+    public HtmlInputText getTextFieldNetworkName() {
         return textFieldNetworkName;
     }
 
-    public void setTextField1(HtmlInputText hit) {
+    public void setTextFieldNetworkName(HtmlInputText hit) {
         this.textFieldNetworkName = hit;
     }
     
@@ -90,15 +111,22 @@ public class EditNetworkNamePage extends VDCBaseBean  implements java.io.Seriali
     }
 
 
-    public String saveNetworkName(){
-        VDCNetwork thisVdcNetwork = vdcNetworkService.find(new Long(1));
-        thisVdcNetwork.setName((String)textFieldNetworkName.getValue());
-        vdcNetworkService.edit(thisVdcNetwork);
-        getVDCRequestBean().setVdcNetwork(thisVdcNetwork);        
-        getVDCRenderBean().getFlash().put("successMessage", "Successfully updated network name.");
-        return "/networkAdmin/NetworkOptionsPage.xhtml?faces-redirect=true";
-    }
+    public String saveNetworkName() {
+        VDCNetwork vdcNewNetwork = null;
+        VDCNetwork thisVdcNetwork = getVDCRequestBean().getVdcNetwork();
+        if (addMode){
 
+            thisVdcNetwork = vdcNewNetwork;
+        }
+        thisVdcNetwork.setName((String) textFieldNetworkName.getValue());
+        try {
+            vdcNetworkService.edit(thisVdcNetwork);
+        } catch (OptimisticLockException ole) {
+            String retVal = saveNetworkName();
+        }
+        return "";
+    }
+    
     public String cancel(){
         return "/networkAdmin/NetworkOptionsPage.xhtml?faces-redirect=true";
     }

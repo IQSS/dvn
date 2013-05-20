@@ -128,8 +128,11 @@ public class AddSitePage extends VDCBaseBean implements java.io.Serializable  {
                 this.setDataverseType(request.getParameter((String) key));
             }
         }
-        
-        defaultTemplateId = getVDCRequestBean().getVdcNetwork().getDefaultTemplate().getId();
+        if (getVDCRequestBean().getVdcNetwork().getDefaultTemplate() == null){
+            defaultTemplateId =  vdcNetworkService.findRootNetwork().getDefaultTemplate().getId();
+        } else {
+            defaultTemplateId = getVDCRequestBean().getVdcNetwork().getDefaultTemplate().getId();
+        }       
         Template defaultTemplate = templateService.getTemplate(defaultTemplateId);
         if(defaultTemplate.isDisplayOnCreateDataverse() && selectTemplateId == null){
             selectTemplateId = defaultTemplate.getId();
@@ -335,6 +338,7 @@ public class AddSitePage extends VDCBaseBean implements java.io.Serializable  {
             createdVDC.setAffiliation(strAffiliation);
             createdVDC.setDvnDescription(strShortDescription);
             createdVDC.setAnnouncements(strShortDescription); // also set default dv home page description from the the DVN home page short description
+            createdVDC.setVdcNetwork(getVDCRequestBean().getVdcNetwork());
             Template template = templateService.getTemplate(selectTemplateId);
             createdVDC.setDefaultTemplate(template);
             //on create if description is blank uncheck display flag
@@ -399,6 +403,7 @@ public class AddSitePage extends VDCBaseBean implements java.io.Serializable  {
             createdScholarDataverse.setContactEmail(getVDCSessionBean().getLoginBean().getUser().getEmail());
             createdScholarDataverse.setDvnDescription(strShortDescription);
             createdScholarDataverse.setAnnouncements(strShortDescription); // also set default dv home page description from the the DVN home page short description
+            createdScholarDataverse.setVdcNetwork(getVDCRequestBean().getVdcNetwork());
             vdcService.edit(createdScholarDataverse);
     
             String hostUrl = PropertyUtil.getHostUrl();           

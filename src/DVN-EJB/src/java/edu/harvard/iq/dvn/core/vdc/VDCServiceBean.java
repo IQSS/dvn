@@ -298,7 +298,7 @@ public class VDCServiceBean implements VDCServiceLocal {
         VDC addedSite = new VDC();
         addedSite.setCreator(user);
 
-        VDCNetwork vdcNetwork = vdcNetworkService.find(new Long(1));
+        VDCNetwork vdcNetwork = vdcNetworkService.findRootNetwork();
         addedSite.setDefaultTemplate(vdcNetwork.getDefaultTemplate());
 
         em.persist(addedSite);
@@ -811,7 +811,7 @@ public class VDCServiceBean implements VDCServiceLocal {
 
     public List<Long> getOrderedVDCIds(String orderBy, boolean hideRestrictedVDCs) {
         System.out.print("String orderBy, boolean hideRestrictedVDC " );
-        return getOrderedVDCIds(null, null, orderBy, hideRestrictedVDCs, null);
+        return getOrderedVDCIds(null, null, orderBy, hideRestrictedVDCs, null, null);
     }
 
     public List<Long> getOrderedVDCIds(String letter, String orderBy) {
@@ -826,17 +826,21 @@ public class VDCServiceBean implements VDCServiceLocal {
 
     public List<Long> getOrderedVDCIds(Long classificationId, String letter, String orderBy) {
          System.out.print("Long classificationId, String letter, String orderBy " );
-        return getOrderedVDCIds(classificationId, letter, orderBy, true, null);
+        return getOrderedVDCIds(classificationId, letter, orderBy, true, null, null);
     }
     
         @Override
     public List<Long> getOrderedVDCIds(Long classificationId, String letter, String orderBy, boolean hideRestrictedVDCs) {
         System.out.print("original call " );
-        return getOrderedVDCIds(classificationId, letter, orderBy, true, null);
+        return getOrderedVDCIds(classificationId, letter, orderBy, hideRestrictedVDCs, null, null);
     }
 
-
     public List<Long> getOrderedVDCIds(Long classificationId, String letter, String orderBy, boolean hideRestrictedVDCs, String filterString) {
+        System.out.print("original call " );
+        return getOrderedVDCIds(classificationId, letter, orderBy, hideRestrictedVDCs, filterString, null);
+    }
+
+    public List<Long> getOrderedVDCIds(Long classificationId, String letter, String orderBy, boolean hideRestrictedVDCs, String filterString, Long subNetworkId) {
         List<Long> returnList = new ArrayList();
 
         // this query will get all vdcids for the dvn or for a classification (and one level of children, per design)
@@ -914,6 +918,11 @@ public class VDCServiceBean implements VDCServiceLocal {
             whereClause += " or (upper(affiliation) like '%" + filterString.replaceAll("'", "''").toUpperCase() + "%') ";
             whereClause += "or (dtype = 'Scholar' and upper(v.lastname) like '%" + filterString.replaceAll("'", "''").toUpperCase() + "%')) ";
         }
+
+        if (subNetworkId != null) {
+            whereClause += "and v.vdcnetwork_id = " + subNetworkId + " ";
+        }
+        System.out.print("whereClause " + whereClause);
         String queryString = selectClause + fromClause + whereClause + orderingClause;
 
         logger.info ("query: "+queryString);

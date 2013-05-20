@@ -64,5 +64,11 @@ public interface VDCGroupServiceLocal extends java.io.Serializable  {
     public java.lang.Long findCountChildVDCsByVDCGroupId(java.lang.Long id);
 
     public java.lang.Long findCountParentChildVDCsByVDCGroupId(java.lang.Long id);
+
+    public java.lang.Long findCountParentChildVDCsByVDCGroupIdSubnetworkId(java.lang.Long id, java.lang.Long netId);
+
+    public java.lang.Long findCountChildVDCsByVDCGroupIdSubnetworkId(java.lang.Long id, java.lang.Long netId);
+
+    public java.lang.Long findCountVDCsByVDCGroupIdSubnetworkId(java.lang.Long id, java.lang.Long netId);
     
 }

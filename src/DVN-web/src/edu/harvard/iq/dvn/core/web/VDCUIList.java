@@ -54,8 +54,7 @@ public class VDCUIList extends SortableList {
     private String alphaCharacter;
     private DataPaginator paginator;
     private String filterTerm;
-
-   
+    private Long networkId;
  
     // dataTable Columns to sort by:
     private static final String NAME_COLUMN_NAME            = "Name";
@@ -201,15 +200,35 @@ public class VDCUIList extends SortableList {
             List<Long> vdcIds = null;
             
             if (alphaCharacter != null && vdcGroupId != null && !vdcGroupId.equals(new Long("-1"))) {
-                vdcIds = vdcService.getOrderedVDCIds(vdcGroupId, alphaCharacter, orderBy, hideRestricted, filterTerm);
-            } else if (alphaCharacter != null && !alphaCharacter.equals("") && (vdcGroupId == null || vdcGroupId.equals(new Long("-1")))) {
-                vdcIds = vdcService.getOrderedVDCIds(null, alphaCharacter, orderBy, hideRestricted, filterTerm);
-            } else if (vdcGroupId == null || vdcGroupId.equals(new Long("-1"))) {
-                vdcIds = vdcService.getOrderedVDCIds(null, null, orderBy, hideRestricted, filterTerm);
-            } else if (filterTerm != null) {
-                vdcIds = vdcService.getOrderedVDCIds(vdcGroupId, null, orderBy, hideRestricted, filterTerm);
-            } else {
-                vdcIds = vdcService.getOrderedVDCIds(vdcGroupId, null, orderBy, hideRestricted);
+                if (networkId != null && networkId.intValue() > 0){
+                   vdcIds = vdcService.getOrderedVDCIds(vdcGroupId, alphaCharacter, orderBy, hideRestricted, filterTerm, networkId); 
+                } else {
+                   vdcIds = vdcService.getOrderedVDCIds(vdcGroupId, alphaCharacter, orderBy, hideRestricted, filterTerm); 
+                }                
+            } else if (alphaCharacter != null && !alphaCharacter.equals("") && (vdcGroupId == null || vdcGroupId.equals(new Long("-1")))) {                
+                if (networkId != null && networkId.intValue() > 0){
+                   vdcIds = vdcService.getOrderedVDCIds(null, alphaCharacter, orderBy, hideRestricted, filterTerm, networkId);
+                } else {
+                   vdcIds = vdcService.getOrderedVDCIds(null, alphaCharacter, orderBy, hideRestricted, filterTerm); 
+                } 
+            } else if (vdcGroupId == null || vdcGroupId.equals(new Long("-1"))) {               
+                if (networkId != null && networkId.intValue() > 0){
+                   vdcIds = vdcService.getOrderedVDCIds(null, null, orderBy, hideRestricted, filterTerm, networkId);
+                } else {
+                   vdcIds = vdcService.getOrderedVDCIds(null, null, orderBy, hideRestricted, filterTerm);
+                }
+            } else if (filterTerm != null) {               
+                if (networkId != null && networkId.intValue() > 0){
+                   vdcIds = vdcService.getOrderedVDCIds(vdcGroupId, null, orderBy, hideRestricted, filterTerm, networkId);
+                } else {
+                   vdcIds = vdcService.getOrderedVDCIds(vdcGroupId, null, orderBy, hideRestricted, filterTerm);
+                }
+            } else {               
+                if (networkId != null && networkId.intValue() > 0){
+                   vdcIds = vdcService.getOrderedVDCIds(vdcGroupId, null, orderBy, hideRestricted, null, networkId);
+                } else {
+                   vdcIds = vdcService.getOrderedVDCIds(vdcGroupId, null, orderBy, hideRestricted);
+                }
             }
 
 
@@ -249,7 +268,9 @@ public class VDCUIList extends SortableList {
         return vdcGroupId;
     }
 
-
+    public Long getNetworkId() {
+        return networkId;
+    }
 
     public List<VDCUI> getVdcUIList() {  
         if (!oldSort.equals(sortColumnName) ) {
@@ -322,6 +343,10 @@ public class VDCUIList extends SortableList {
 
     public void setVdcGroupId(Long vdcGroupId) {
         this.vdcGroupId = vdcGroupId;
+    }
+    
+    public void setNetworkId(Long networkId) {
+        this.networkId = networkId;
     }
 
     public void setAlphaCharacter(String alphaCharacter) {

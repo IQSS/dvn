@@ -24,6 +24,7 @@ import edu.harvard.iq.dvn.core.web.common.VDCApplicationBean;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Iterator;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.annotation.Resource;
@@ -80,7 +81,6 @@ public class VDCNetworkStatsServiceBean implements VDCNetworkStatsServiceLocal {
     public void handleTimeout(javax.ejb.Timer timer) {
         logger.log(Level.FINE,"in handleTimeout, timer = "+timer.getInfo());
         
-
         try {
             boolean readOnly = vdcNetworkService.defaultTransactionReadOnly();
             
@@ -99,15 +99,20 @@ public class VDCNetworkStatsServiceBean implements VDCNetworkStatsServiceLocal {
 
   
     public void updateStats() {
-        VDCNetworkStats vdcNetworkStats = (VDCNetworkStats) em.find(VDCNetworkStats.class, new Long(1));
-        Long releasedStudies = vdcNetworkService.getTotalStudies(true);
-        Long releasedFiles = vdcNetworkService.getTotalFiles(true);
-        Long downloadCount = vdcNetworkService.getTotalDownloads(true);
-        logger.log(Level.FINE, "releasedStudies ="+releasedStudies+"releasedFiles="+releasedFiles);
-        vdcNetworkStats.setStudyCount(releasedStudies);
-        vdcNetworkStats.setFileCount(releasedFiles);
-        vdcNetworkStats.setDownloadCount(downloadCount);
-        
+        List<VDCNetwork> vdcNetworks = vdcNetworkService.getVDCNetworks();
+        for (VDCNetwork vdcNetwork : vdcNetworks) {
+            Long vdcNetwork_id = vdcNetwork.getId();
+            VDCNetworkStats vdcNetworkStats = (VDCNetworkStats) em.find(VDCNetworkStats.class, vdcNetwork_id);
+            if (vdcNetworkStats != null) {
+                Long releasedStudies = vdcNetworkService.getTotalStudies(true);
+                Long releasedFiles = vdcNetworkService.getTotalFiles(true);
+                Long downloadCount = vdcNetworkService.getTotalDownloads(true);
+                logger.log(Level.FINE, "releasedStudies =" + releasedStudies + "releasedFiles=" + releasedFiles);
+                vdcNetworkStats.setStudyCount(releasedStudies);
+                vdcNetworkStats.setFileCount(releasedFiles);
+                vdcNetworkStats.setDownloadCount(downloadCount);
+            }
+        }
         vdcApplicationBean.setAllStudyIdsByDownloadCount(studyService.getMostDownloadedStudyIds(null, -1));
         vdcApplicationBean.setAllStudyIdsByReleaseDate(studyService.getRecentlyReleasedStudyIds(null, -1));
     }

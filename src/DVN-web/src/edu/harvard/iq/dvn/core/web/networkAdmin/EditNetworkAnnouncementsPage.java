@@ -59,7 +59,8 @@ public class EditNetworkAnnouncementsPage extends VDCBaseBean implements java.io
     }
     
     // </editor-fold>
-
+    private Boolean addMode = false;
+    private String alias = "";
 
     /** 
      * <p>Construct a new Page bean instance.</p>
@@ -74,10 +75,30 @@ public class EditNetworkAnnouncementsPage extends VDCBaseBean implements java.io
      * here is subject to being replaced.</p>
      */
     public void init() {
-        super.init();
-            VDCNetwork vdcnetwork = getVDCRequestBean().getVdcNetwork();
-            this.setChkEnableNetworkAnnouncements(vdcnetwork.isDisplayAnnouncements()) ;
-            this.setNetworkAnnouncements( vdcnetwork.getAnnouncements());        
+        super.init();    
+    }
+    
+    public void preRenderView(){
+        alias = getVDCRequestBean().getRequestParam("alias");
+        String edit = getVDCRequestBean().getRequestParam("edit");
+        if (edit !=null && edit.equals("false")){
+            addMode = true;
+            this.setNetworkAnnouncements("");
+            this.setChkEnableNetworkAnnouncements(false) ;
+        } else if(alias != null && !alias.isEmpty()){
+            VDCNetwork vdcNetwork = vdcNetworkService.findByAlias(alias);
+            if (vdcNetwork != null){
+                this.setNetworkAnnouncements(vdcNetwork.getAnnouncements());
+                this.setChkEnableNetworkAnnouncements(vdcNetwork.isDisplayAnnouncements());
+            } else {
+                this.setNetworkAnnouncements(getVDCRequestBean().getVdcNetwork().getAnnouncements());
+                this.setChkEnableNetworkAnnouncements(getVDCRequestBean().getVdcNetwork().isDisplayAnnouncements());
+            }
+        }
+            else {
+            this.setNetworkAnnouncements(getVDCRequestBean().getVdcNetwork().getAnnouncements());
+            this.setChkEnableNetworkAnnouncements(getVDCRequestBean().getVdcNetwork().isDisplayAnnouncements());
+        }
     }
 
     
@@ -105,13 +126,11 @@ public class EditNetworkAnnouncementsPage extends VDCBaseBean implements java.io
         if (validateAnnouncementsText()) {
             setChkEnableNetworkAnnouncements(chkEnableNetworkAnnouncements);
             setNetworkAnnouncements(networkAnnouncements);
-            // Get the Network
             VDCNetwork vdcnetwork = getVDCRequestBean().getVdcNetwork();
             vdcnetwork.setDisplayAnnouncements(this.isChkEnableNetworkAnnouncements());
             vdcnetwork.setAnnouncements(this.getNetworkAnnouncements());
             vdcNetworkService.edit(vdcnetwork);
-            getVDCRenderBean().getFlash().put("successMessage", "Successfully updated the network description.  Go to the Homepage to see your changes.");
-            return "/networkAdmin/NetworkOptionsPage.xhtml?faces-redirect=true";
+            return "";
         }
         
         return "";
@@ -137,4 +156,3 @@ public class EditNetworkAnnouncementsPage extends VDCBaseBean implements java.io
         return isAnnouncements;
     }
 }
-

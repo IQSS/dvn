@@ -90,13 +90,14 @@ public class HomePage extends VDCBaseBean implements Serializable {
     private String groupName;
     private String parsedLocalAnnouncements     = null;
     private String parsedNetworkAnnouncements   = null;
+    private List<VDCNetwork> vdcSubnetworks = null;
     
     private String searchField;
     StatusMessage msg;
-    private boolean isAlphaSort;
     private VDCUser pageUser = null;
     private Long userVDCCount = null;
     private String soleVDCAlias = null;
+    private String subnetworkAlias = null;
 
     private boolean hideRestricted = true; //show only restricted if set to false wjb
 
@@ -108,22 +109,12 @@ public class HomePage extends VDCBaseBean implements Serializable {
     public void init() {
 
         super.init();
+        initVDCNetwork();
         initChrome();
         initAccordionMenu();
-        //initAlphabeticFilter();
+        initSubnetworks();
         populateVDCUIList(false);
-        isAlphaSort = false;
      }
-
-    public boolean isIsAlphaSort() {
-        return isAlphaSort;
-    }
-
-    public void setIsAlphaSort(boolean isAlphaSort) {
-        this.isAlphaSort = isAlphaSort;
-    }
-
-     
 
          /**
      * <p>Callback method that is called after the component tree has been
@@ -164,10 +155,22 @@ public class HomePage extends VDCBaseBean implements Serializable {
      */
     private void _init() {
     }
+    
+    private void initVDCNetwork(){
+        if (subnetworkAlias != null && !subnetworkAlias.isEmpty() ){
+            getVDCRequestBean().setVdcNetwork(vdcNetworkService.findByAlias(subnetworkAlias));
+            getVDCSessionBean().setVdcNetwork(vdcNetworkService.findByAlias(subnetworkAlias));
+        } else {
+            getVDCRequestBean().setVdcNetwork(vdcNetworkService.findRootNetwork());
+            getVDCSessionBean().setVdcNetwork(vdcNetworkService.findRootNetwork());
+        }  
+    }
+    
+    private void initSubnetworks(){
+        vdcSubnetworks = vdcNetworkService.getVisibleVDCSubnetworks();
+    }
 
-     
-
-     private void initChrome() {
+    private void initChrome() {
         msg = (StatusMessage) getRequestMap().get("statusMessage");
     }
     //DEBUG -- new way to get at VDCS
@@ -201,90 +204,11 @@ public class HomePage extends VDCBaseBean implements Serializable {
         this.hiddenGroupId = hiddenGroupId;
     }
 
-    public HtmlInputHidden getHiddenAlphaCharacter() {
-        return hiddenAlphaCharacter;
-    }
-
-    public void setHiddenAlphaCharacter(HtmlInputHidden hiddenAlphaCharacter) {
-        this.hiddenAlphaCharacter = hiddenAlphaCharacter;
-    }
-
-    private HtmlInputHidden hiddenFilterType = new HtmlInputHidden();
-
-    public HtmlInputHidden getHiddenFilterType() {
-        return hiddenFilterType;
-    }
-
-    public void setHiddenFilterType(HtmlInputHidden hiddenFilterType) {
-        this.hiddenFilterType = hiddenFilterType;
-        if (hiddenFilterType.getValue() != null && hiddenFilterType.getValue().toString().equals("alphabetic")) {
-            isAlphaSort = true;
-        } else {
-            isAlphaSort = false;
-        }
-    }
-
-    public void changeGroupId(ValueChangeEvent event) {
-        String changedValue = event.getNewValue().toString();
-        if (!changedValue.equals("")) {
-            Long newValue = new Long(changedValue);
-            Long oldValue = null;
-            if (event.getOldValue() != null && !event.getOldValue().equals("")) {
-                oldValue = new Long(((Object)event.getOldValue()).toString());
-            }
-            if ( !newValue.toString().isEmpty()) {
-                hiddenGroupId.setValue(newValue);
-                groupId = newValue;
-                if (oldValue != null && oldValue.equals(newValue) && hiddenFilterType.getValue().equals("alphabetic") && !hiddenAlphaCharacter.getValue().equals("All"))
-                    populateVDCUIList(true);
-                else
-                    populateVDCUIList(false);
-            }
-        }
-    }
-
-    public void changeAlphaCharacter(ValueChangeEvent event) {
-        String newValue = (String)event.getNewValue();
-        String oldValue = (String)event.getOldValue();
-        if (!newValue.isEmpty()) {
-            if (newValue.equals("All")) {
-                populateVDCUIList(false);
-            } else {
-                if (!(this.vdcUIList.getPaginator() == null)){
-                    this.vdcUIList.getPaginator().gotoFirstPage();
-                }
-                
-                hiddenAlphaCharacter.setValue(newValue);
-                populateVDCUIList(true);
-
-            }
-        }
-    }
-
-    public void changeFilterType(ValueChangeEvent event) {
-        String newValue = (String)event.getNewValue();
-        if (newValue != null && newValue.equals("alphabetic")) {
-            if (!(this.vdcUIList.getPaginator() == null)){
-                this.vdcUIList.getPaginator().gotoFirstPage();
-            }
-            isAlphaSort = true;           
-            populateVDCUIList(true);
-        } else if (newValue != null && newValue.equals("all")) {
-            if (!(this.vdcUIList.getPaginator() == null)){
-                this.vdcUIList.getPaginator().gotoFirstPage();
-            }
-            isAlphaSort = false;
-            populateVDCUIList(false);
-        } else {
-            isAlphaSort = false;
-        }
-    }
-
     private Long vdcUIListSize;
     private VDCGroup group;
 
     private void populateVDCUIList(boolean isAlphaSort) {
-                
+        Long networkId = getVDCRequestBean().getVdcNetwork().getId();      
         String defaultDVSortColumn =  vdcNetworkService.find().getDefaultDVSortColumn();
         boolean isNewGroup = false;
         if ( hiddenGroupId.getValue() == null || (vdcUIList != null &&
@@ -319,29 +243,19 @@ public class HomePage extends VDCBaseBean implements Serializable {
             group = vdcGroupService.findById(groupId);
             setGroupName(group.getName());
         }
+        if(networkId != null && networkId.intValue() >0){
+            vdcUIList.setNetworkId(networkId);
+        }
         vdcUIList.getVdcUIList();
         vdcUIListSize = new Long(String.valueOf(vdcUIList.getVdcUIList().size()));
-    }
-    
-    
-    private ArrayList alphaCharacterList;
-    private void initAlphabeticFilter() {
-        if (alphaCharacterList == null) {
-            alphaCharacterList = new ArrayList();
-            alphaCharacterList.add(String.valueOf('#'));            
-            for ( char ch = 'A';  ch <= 'Z';  ch++ ) {
-              alphaCharacterList.add(String.valueOf(ch));
-            }
+        if (vdcUIListReleased == null){
+           vdcUIListReleased = new VDCUIList(groupId, (String)hiddenAlphaCharacter.getValue(), true, "Released" );
+        }
+        if(networkId != null && networkId.intValue() >0){
+            vdcUIListReleased.setNetworkId(networkId);
         }
     }
-
-    public ArrayList getAlphaCharacterList() {
-        return this.alphaCharacterList;
-    }
-
-    public void setAlphaCharacterList(ArrayList list) {
-        this.alphaCharacterList = list;
-    }
+    
 
     public Long getVdcUIListSize() {
         return vdcUIListSize;
@@ -363,7 +277,6 @@ public class HomePage extends VDCBaseBean implements Serializable {
         } else {
             return userVDCCount;
         }
-
     }
     
     public String getSoleVDCAlias() {
@@ -374,7 +287,6 @@ public class HomePage extends VDCBaseBean implements Serializable {
         if (!pageUser.equals(user) || soleVDCAlias == null) {
             String retAlias = "";
             int count = 0;
-
             if (user != null) {
                 user = userService.find(user.getId());
                 Long initialTest = vdcService.getUserContributorOrBetterVDCCount(user.getId());
@@ -426,6 +338,11 @@ public class HomePage extends VDCBaseBean implements Serializable {
     public void setGroup(VDCGroup group) {
         this.group = group;
     }
+    
+    public List<VDCNetwork> getVdcSubnetworks() {return vdcSubnetworks;}
+    public void setVdcSubnetworks(List<VDCNetwork> vdcSubnetworks) {this.vdcSubnetworks = vdcSubnetworks;}
+    public String getSubnetworkAlias() {return subnetworkAlias;}
+    public void setSubnetworkAlias(String subnetworkAlias) {this.subnetworkAlias = subnetworkAlias;}
 
     protected void initAccordionMenu() {
         if (accordionItemBeans != null) {
@@ -463,24 +380,25 @@ public class HomePage extends VDCBaseBean implements Serializable {
      }
 
       protected void populateDescendants(VDCGroup vdcgroup, boolean isExpanded) {
+         Long networkId = getVDCRequestBean().getVdcNetwork().getId();
          Long parentId        = vdcgroup.getId();
          List list          = vdcGroupService.findByParentId(parentId);
          Iterator iterator  = list.iterator();
          DataverseGrouping childItem;
          while (iterator.hasNext()) {                       
             VDCGroup group = (VDCGroup)iterator.next();
-            childItem = new DataverseGrouping(group.getId(), group.getName(), "subgroup", isExpanded, "", "", parentId, vdcGroupService.findCountVDCsByVDCGroupId(group.getId()));
+            childItem = new DataverseGrouping(group.getId(), group.getName(), "subgroup", isExpanded, "", "", parentId, vdcGroupService.findCountVDCsByVDCGroupIdSubnetworkId(group.getId(), networkId));
             parentItem.addItem(childItem);
             parentItem.setIsAccordion(true);
             if (!vdcGroupService.findByParentId(group.getId()).isEmpty()) {
-                childItem.setNumberOfDataverses(vdcGroupService.findCountParentChildVDCsByVDCGroupId(group.getId()));
-                List innerlist       = vdcGroupService.findByParentId(group.getId());                          
+                childItem.setNumberOfDataverses(vdcGroupService.findCountParentChildVDCsByVDCGroupIdSubnetworkId(group.getId(), networkId));
+                List innerlist  = vdcGroupService.findByParentId(group.getId());                          
                 Iterator inneriterator  = innerlist.iterator();
                 DataverseGrouping xtraItem;
                 childItem.setXtraItems(new ArrayList());
                 while (inneriterator.hasNext()) {
                     VDCGroup innergroup = (VDCGroup)inneriterator.next();
-                    xtraItem = new DataverseGrouping(innergroup.getId(), innergroup.getName(), "subgroup", isExpanded, "", "", parentId,  vdcGroupService.findCountVDCsByVDCGroupId(innergroup.getId()));
+                    xtraItem = new DataverseGrouping(innergroup.getId(), innergroup.getName(), "subgroup", isExpanded, "", "", parentId,  vdcGroupService.findCountVDCsByVDCGroupIdSubnetworkId(innergroup.getId(), networkId));
                     childItem.addXtraItem(xtraItem);
                 }
             }            
@@ -586,9 +504,7 @@ public class HomePage extends VDCBaseBean implements Serializable {
     
     public List getMostRecentlyReleasedDVs(){
         List mostRecentlyReleased = new ArrayList();
-        if (vdcUIListReleased == null){
-           vdcUIListReleased = new VDCUIList(groupId, (String)hiddenAlphaCharacter.getValue(), true, "Released");
-        }
+
         if (!vdcUIListReleased.getVdcUIList().isEmpty()){
             int count = 0;
             Iterator iter = vdcUIListReleased.getVdcUIList().iterator();

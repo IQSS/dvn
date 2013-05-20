@@ -71,5 +71,20 @@ public interface VDCNetworkServiceLocal extends java.io.Serializable  {
     public Boolean defaultTransactionReadOnly ();
 
     public java.lang.Long getTotalDownloads(boolean released);
+
+
+    public VDCNetwork findRootNetwork();
+
+    public List<VDCNetwork> getVDCSubNetworks();
     
+    public List<VDCNetwork> getVisibleVDCSubnetworks();
+    
+    public List<VDCNetwork> getVDCNetworks();
+    
+    public List <VDCNetwork> getVDCNetworksOrderedById();
+
+    public VDCNetwork findByAlias(String alias);
+
+    public VDCNetwork findById(Long networkId);
 }
+

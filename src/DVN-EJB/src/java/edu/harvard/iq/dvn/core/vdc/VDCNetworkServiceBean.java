@@ -33,6 +33,7 @@ import edu.harvard.iq.dvn.core.study.StudyServiceLocal;
 import edu.harvard.iq.dvn.core.study.StudyVersion;
 import edu.harvard.iq.dvn.core.study.Template;
 import edu.harvard.iq.dvn.core.util.StringUtil;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
@@ -91,13 +92,75 @@ public class VDCNetworkServiceBean implements VDCNetworkServiceLocal {
         return (VDCNetwork) em.find(VDCNetwork.class, pk);
     }
 
-  
+    public List <VDCNetwork> getVDCSubNetworks(){
+        String queryStr = "SELECT n FROM VDCNetwork n where n.id > 0";
+        Query query= em.createQuery(queryStr);
+        return  query.getResultList();
+    }
+    
+    @Override
+    public List<VDCNetwork> getVisibleVDCSubnetworks() {
+        String queryStr = "SELECT n FROM VDCNetwork n where n.id > 0 and n.released = true";
+        Query query= em.createQuery(queryStr);
+        List<VDCNetwork> releasedNetworks = query.getResultList();
+        List <VDCNetwork> vdcNetworkRetList = new ArrayList();
+        for (VDCNetwork vdcNetwork : releasedNetworks){
+            if( !vdcNetwork.getNetworkVDCs().isEmpty()){
+                vdcNetworkRetList.add(vdcNetwork);
+            }
+            
+        }
+        return  vdcNetworkRetList;
+    }
+
+    
+    public List <VDCNetwork> getVDCNetworks(){
+        String queryStr = "SELECT n FROM VDCNetwork n";
+        Query query= em.createQuery(queryStr);
+        return  query.getResultList();
+    }
+    
+    public List <VDCNetwork> getVDCNetworksOrderedById(){
+        String queryStr = "SELECT n FROM VDCNetwork n ORDER BY n.id";
+        Query query= em.createQuery(queryStr);
+        return  query.getResultList();
+    }
     
     public VDCNetwork find() {
         VDCNetwork vdcNetwork= (VDCNetwork) em.find(VDCNetwork.class, new Long(1));
         logger.log(Level.FINE, "found vdcNetwork" +vdcNetwork );
+        return vdcNetwork;        
+    }
+    
+    public VDCNetwork findById(Long networkId) {
+        String query = "SELECT n from VDCNetwork n where n.id = :id";
+        VDCNetwork vdcNetwork = null;
+        try {
+            vdcNetwork = (VDCNetwork) em.createQuery(query).setParameter("id", networkId).getSingleResult();
+            em.refresh(vdcNetwork); // Refresh because the cached object doesn't include harvestingDataverse object - need to review why this is happening
+        } catch (javax.persistence.NoResultException e) {
+            // Do nothing, just return null.
+        }
+
         return vdcNetwork;
-        
+    }
+    
+    public VDCNetwork findByAlias(String alias) {
+        String query = "SELECT n from VDCNetwork n where lower(n.urlAlias) = lower(:fieldName)";
+        VDCNetwork vdcNetwork = null;
+        try {
+            vdcNetwork = (VDCNetwork) em.createQuery(query).setParameter("fieldName", alias).getSingleResult();
+            em.refresh(vdcNetwork); // Refresh because the cached object doesn't include harvestingDataverse object - need to review why this is happening
+        } catch (javax.persistence.NoResultException e) {
+            // Do nothing, just return null.
+        }
+
+        return vdcNetwork;
+    }
+    
+    public VDCNetwork findRootNetwork(){
+        VDCNetwork vdcNetwork= (VDCNetwork) em.find(VDCNetwork.class, new Long(0));
+        return vdcNetwork;         
     }
 
     public LockssConfig getLockssConfig() {
@@ -261,7 +324,6 @@ public class VDCNetworkServiceBean implements VDCNetworkServiceLocal {
         Object object = ((List)em.createNativeQuery("select COUNT(id) from vdc where vdc.restricted = " + bool).getSingleResult()).get(0);
         total = (Long)object;
         return total;
-
     }
     
     public Long getTotalStudies(boolean released) {
@@ -290,6 +352,6 @@ public class VDCNetworkServiceBean implements VDCNetworkServiceLocal {
     public void updateDefaultTemplate(Long templateId) {
         Template template = em.find(Template.class, templateId);
         find().setDefaultTemplate(template);
-    }    
+    }
 
 }

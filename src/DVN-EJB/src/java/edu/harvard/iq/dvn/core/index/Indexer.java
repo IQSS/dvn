@@ -1681,6 +1681,7 @@ public class Indexer implements java.io.Serializable  {
             q2 = baseQuery;
         }
 
+        initIndexSearcher();
         FacetsCollector facetsCollector = new FacetsCollector(facetSearchParams, r, taxo);
 
         logger.info("\n--BEGIN query dump (from searchNew)--\n" + q2 + "\n--END query dump (from searchNew)--");

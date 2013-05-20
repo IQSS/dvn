@@ -208,7 +208,11 @@ public class HomePage extends VDCBaseBean implements Serializable {
     private VDCGroup group;
 
     private void populateVDCUIList(boolean isAlphaSort) {
-        Long networkId = getVDCRequestBean().getVdcNetwork().getId();      
+        Long networkId = new Long (0);
+        if (getVDCRequestBean().getVdcNetwork() != null){
+            networkId = getVDCRequestBean().getVdcNetwork().getId();
+        }
+                  
         String defaultDVSortColumn =  vdcNetworkService.find().getDefaultDVSortColumn();
         boolean isNewGroup = false;
         if ( hiddenGroupId.getValue() == null || (vdcUIList != null &&

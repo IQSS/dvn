@@ -233,7 +233,8 @@ span.dvnStudyListSearchResultsMessage{font-size:100% !important;font-weight:400}
 .dvnStudyFacetCategoryBlock table.iceDatTbl tr {border-left:0;}
 .dvnStudyFacetCategoryBlock table.iceDatTbl td.iceDatTblCol:last-child, .dvnStudyFacetCategoryBlock table.iceDatTbl td.iceDatTblCol1:last-child, .dvnStudyFacetCategoryBlock table.iceDatTbl td.iceDatTblCol2:last-child {border-right:0;}
 .dvnStudyFacetCategoryBlock table.iceDatTbl td ul {margin-bottom:12px;}
-.dvnStudyFacetResultsBlock a span.iceOutTxt {display:inline;}
+.dvnStudyFacetResultsBlock span.iceOutTxt.dvnStudyFacetResultText {display:inline;}
+.dvnSelectedFacet {font-weight:bold;}
 .dvnStudyFacetResultNumber {color:grey;}
 span.dvnStudyListSearchRefineTermRemove {position:relative;}
 a.dvnStudyListSearchRefineTerm:hover {background: red; color: white;}

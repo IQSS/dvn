@@ -27,6 +27,7 @@ import edu.harvard.iq.dvn.core.index.SearchTerm;
 import edu.harvard.iq.dvn.core.study.StudyServiceLocal;
 import edu.harvard.iq.dvn.core.study.StudyVersion;
 import edu.harvard.iq.dvn.core.study.VariableServiceLocal;
+import edu.harvard.iq.dvn.core.vdc.VDC;
 import edu.harvard.iq.dvn.core.web.common.VDCBaseBean;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -35,6 +36,7 @@ import java.util.List;
 import java.util.Map;
 import javax.ejb.EJB;
 import edu.harvard.iq.dvn.core.vdc.VDCCollectionServiceLocal;
+import edu.harvard.iq.dvn.core.vdc.VDCNetwork;
 import edu.harvard.iq.dvn.core.vdc.VDCServiceLocal;
 import java.util.*;
 import java.util.logging.Logger;
@@ -43,6 +45,7 @@ import javax.inject.Named;
 import org.apache.lucene.facet.search.results.FacetResult;
 import org.apache.lucene.facet.search.results.FacetResultNode;
 import org.apache.lucene.facet.taxonomy.CategoryPath;
+import org.apache.lucene.search.Query;
 
 
 @Named ("BasicSearchFragment")
@@ -197,12 +200,47 @@ public class BasicSearchFragment extends VDCBaseBean implements java.io.Serializ
 
         } else {
 //            resultsWithFacets = indexService.searchwithFacets(getVDCRequestBean().getCurrentVDC(), searchTerms);
-            DvnQuery dvnQuery = new DvnQuery();
-            dvnQuery.setSearchTerms(searchTerms);
-            dvnQuery.constructQuery();
-            dvnQuery.setClearPreviousFacetRequests(true);
-            resultsWithFacets = indexService.searchNew(dvnQuery);
-            studies = resultsWithFacets.getMatchIds();
+            logger.fine("non-variable query...");
+
+            Long rootSubnetworkId = new Long(0);
+            if (getVDCRequestBean().getVdcNetwork().getId().equals(rootSubnetworkId)) {
+                logger.info("Running DVN-wide search");
+                DvnQuery dvnQuery = new DvnQuery();
+                dvnQuery.setSearchTerms(searchTerms);
+                dvnQuery.constructQuery();
+                dvnQuery.setClearPreviousFacetRequests(true);
+                resultsWithFacets = indexService.searchNew(dvnQuery);
+                studies = resultsWithFacets.getMatchIds();
+            } else {
+                logger.info("Searching only a subnetwork");
+                VDCNetwork vdcNetwork = getVDCRequestBean().getVdcNetwork();
+                String vdcNetworkName = vdcNetwork.getName();
+                logger.info("vdcNetwork name: " + vdcNetworkName);
+                Collection<VDC> vdcs = vdcNetwork.getNetworkVDCs();
+                List<Query> subNetworkCollectionQueries = new ArrayList<Query>();
+                List<Query> subNetworkDvMemberQueries = new ArrayList<Query>();
+                for (VDC vdc : vdcs) {
+                    String name = vdc.getName();
+                    logger.info("adding queries for: " + name);
+                    Query dvnSpecificQuery = indexService.constructDvOwnerIdQuery(vdc);
+                    logger.info("adding dvnSpecific query:" + dvnSpecificQuery);
+                    subNetworkDvMemberQueries.add(dvnSpecificQuery);
+                    List<Query> vdcCollectionQueries = indexService.getCollectionQueries(vdc);
+                    for (Query collectionQuery : vdcCollectionQueries) {
+                        logger.info("adding collection query: " + collectionQuery);
+                    }
+                    subNetworkCollectionQueries.addAll(vdcCollectionQueries);
+                }
+
+                DvnQuery dvnQuery = new DvnQuery();
+                dvnQuery.setSubNetworkDvMemberQueries(subNetworkDvMemberQueries);
+                dvnQuery.setSubNetworkCollectionQueries(subNetworkCollectionQueries);
+                dvnQuery.setSearchTerms(searchTerms);
+                dvnQuery.constructQuery();
+                dvnQuery.setClearPreviousFacetRequests(true);
+                resultsWithFacets = indexService.searchNew(dvnQuery);
+                studies = resultsWithFacets.getMatchIds();
+            }
         }
 
         if (searchField.equals("any")) {

@@ -47,6 +47,8 @@ public class DvnQuery {
     List<Long> limitToStudyIds;
     List<Query> collectionQueries = new ArrayList<Query>();
     private Query dvOwnerIdQuery;
+    List<Query> subNetworkDvMemberQueries = new ArrayList<Query>();
+    List<Query> subNetworkCollectionQueries = new ArrayList<Query>();
 
     public Query getDvOwnerIdQuery() {
         return dvOwnerIdQuery;
@@ -110,6 +112,22 @@ public class DvnQuery {
 
     public void setCollectionQueries(List<Query> collectionQueries) {
         this.collectionQueries = collectionQueries;
+    }
+
+    public List<Query> getSubNetworkCollectionQueries() {
+        return subNetworkCollectionQueries;
+    }
+
+    public void setSubNetworkCollectionQueries(List<Query> subNetworkCollectionQueries) {
+        this.subNetworkCollectionQueries = subNetworkCollectionQueries;
+    }
+
+    public List<Query> getSubNetworkDvMemberQueries() {
+        return subNetworkDvMemberQueries;
+    }
+
+    public void setSubNetworkDvMemberQueries(List<Query> subNetworkDvMemberQueries) {
+        this.subNetworkDvMemberQueries = subNetworkDvMemberQueries;
     }
 
     public void constructQuery() {
@@ -190,6 +208,32 @@ public class DvnQuery {
             dvSpecific.add(dvOwnerIdQuery, BooleanClause.Occur.MUST);
             queryAcrossAllCollections.add(dvSpecific, BooleanClause.Occur.SHOULD);
             searchQuery = queryAcrossAllCollections;
+        } else if (!subNetworkDvMemberQueries.isEmpty() || !subNetworkCollectionQueries.isEmpty()) {
+            logger.fine("When a user is in the context of a subnetwork any search that is performed will return studies that are owned by dataverses in that subnetwork along with any studies from outside dataverses that are included in collections.");
+
+            BooleanQuery queryAcrossSubNetworkMembers = new BooleanQuery();
+            for (Query collectionQuery : subNetworkDvMemberQueries) {
+                BooleanQuery submittedAndInCollection = new BooleanQuery();
+                submittedAndInCollection.add(searchQuery, BooleanClause.Occur.MUST);
+                submittedAndInCollection.add(collectionQuery, BooleanClause.Occur.MUST);
+                queryAcrossSubNetworkMembers.add(submittedAndInCollection, BooleanClause.Occur.SHOULD);
+            }
+
+            BooleanQuery queryAcrossAllSubNetworkCollections = new BooleanQuery();
+            for (Query collectionQuery : subNetworkCollectionQueries) {
+                BooleanQuery submittedAndInCollection = new BooleanQuery();
+                submittedAndInCollection.add(searchQuery, BooleanClause.Occur.MUST);
+                submittedAndInCollection.add(collectionQuery, BooleanClause.Occur.MUST);
+                queryAcrossAllSubNetworkCollections.add(submittedAndInCollection, BooleanClause.Occur.SHOULD);
+            }
+
+            BooleanQuery queryForEntireSubnetwork = new BooleanQuery();
+            queryForEntireSubnetwork.add(queryAcrossSubNetworkMembers, BooleanClause.Occur.SHOULD);
+            queryForEntireSubnetwork.add(queryAcrossAllSubNetworkCollections, BooleanClause.Occur.SHOULD);
+
+            searchQuery = queryForEntireSubnetwork;
+        } else {
+            logger.fine("DVN-wide search will be made");
         }
 //        logger.info("searchQuery before return: " + searchQuery);
         query = searchQuery;

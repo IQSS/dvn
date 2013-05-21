@@ -1760,20 +1760,20 @@ public class Indexer implements java.io.Serializable  {
                 }
             }
         }
-        /**
-         * When uses search "within these results" we can no longer return
-         * faceted results. A "within these results" search takes the list of
-         * studyIDs from the previous search and further narrows the
-         * results based on a new search.
-         */
+//        /**
+//         * When uses search "within these results" we can no longer return
+//         * faceted results. A "within these results" search takes the list of
+//         * studyIDs from the previous search and further narrows the
+//         * results based on a new search.
+//         */
 //        logger.info("limiting to certain study IDs (maybe)");
-        if (dvnQuery.limitToStudyIds != null) {
-            List<Long> studyIdsOrig = resultsWithFacets.getMatchIds();
-            logger.fine("running limiting method...");
-            List<Long> filteredResults = intersectionResults(studyIdsOrig, dvnQuery.limitToStudyIds);
-            resultsWithFacets.setMatchIds(filteredResults);
-            resultsWithFacets.setResultList(null);
-        }
+//        if (dvnQuery.limitToStudyIds != null) {
+//            List<Long> studyIdsOrig = resultsWithFacets.getMatchIds();
+//            logger.fine("running limiting method...");
+//            List<Long> filteredResults = intersectionResults(studyIdsOrig, dvnQuery.limitToStudyIds);
+//            resultsWithFacets.setMatchIds(filteredResults);
+//            resultsWithFacets.setResultList(null);
+//        }
         logger.fine("facetsOfInterest about to setFacetsQueried: " + facetsOfInterest);
         resultsWithFacets.setFacetsQueried(facetsOfInterest);
         resultsWithFacets.setClearPreviousFacetRequests(dvnQuery.isClearPreviousFacetRequests());

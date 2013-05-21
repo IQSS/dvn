@@ -137,6 +137,7 @@
                                   </div>
                                   <div>
                                     <ice:outputLabel for="filter" styleClass="dvnSearchBoxCheckbox" rendered="#{StudyListingPage.renderSearchResultsFilter}">
+                                    <!--<ice:outputLabel for="filter" styleClass="dvnSearchBoxCheckbox" rendered="#{StudyListingPage.renderSearchResultsFilter and false}">-->
                                         <ice:selectBooleanCheckbox value="#{StudyListingPage.searchResultsFilter}"/>
                                         <ice:outputText value="within these results"/>
                                     </ice:outputLabel>

@@ -607,13 +607,13 @@ public class StudyListingPage extends VDCBaseBean implements java.io.Serializabl
                 studyIDList = indexService.search(getVDCRequestBean().getCurrentVDC(), collections, searchTerms);
             } else if (searchFilter == 2) {
                 // subsearch
-                logger.fine("in search_actionNew, about to run subsearch");
+                logger.fine("with these results searches disabled per https://redmine.hmdc.harvard.edu/issues/2969 ");
 //                studyIDList = indexService.search(studyListing.getStudyIds(), searchTerms); // old method
-                dvnQuery.setLimitToStudyIds(studyListing.getStudyIds());
-                dvnQuery.setSearchTerms(searchTerms);
-                dvnQuery.constructQuery();
-                resultsWithFacets = indexService.searchNew(dvnQuery);
-                studyIDList = resultsWithFacets.getMatchIds();
+//                dvnQuery.setLimitToStudyIds(studyListing.getStudyIds());
+//                dvnQuery.setSearchTerms(searchTerms);
+//                dvnQuery.constructQuery();
+//                resultsWithFacets = indexService.searchNew(dvnQuery);
+//                studyIDList = resultsWithFacets.getMatchIds();
             } else {
                 dvnQuery.setVdc(getVDCRequestBean().getCurrentVDC());
 

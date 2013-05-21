@@ -1199,7 +1199,15 @@ public class Indexer implements java.io.Serializable  {
         return dvnValue;
     }
 
-    private List <Long> intersectionDocResults(final List<Document> results1, final List<Long> results2) throws IOException {
+    /*
+     * The 2 methods below are for filtering lists of variable and file metadata
+     * search results, respectively, against a list of study ids. 
+     * Again, we maintain 2 distinct methods here, since variable and file metadata
+     * searching is different in its granularity (study->studyfile->variable vs. 
+     * study->studyfile, respectively).
+     */
+    
+    private List <Long> intersectionVarDocResults(final List<Document> results1, final List<Long> results2) throws IOException {
         List <Long>  mergeResults = new ArrayList();
         for (Iterator it = results1.iterator(); it.hasNext();){
             Document d = (Document) it.next();
@@ -1218,6 +1226,25 @@ public class Indexer implements java.io.Serializable  {
         return mergeResults;
     }
 
+    private List <Long> intersectionFileDocResults(final List<Document> results1, final List<Long> results2) throws IOException {
+        List <Long>  mergeResults = new ArrayList();
+        for (Iterator it = results1.iterator(); it.hasNext();){
+            Document d = (Document) it.next();
+            Field studyId = d.getField("id");
+            String studyIdStr = studyId.stringValue();
+            Long studyIdLong = Long.valueOf(studyIdStr);
+            if (results2.contains(studyIdLong)) {
+                Field varId = d.getField("studyFileId");
+                String varIdStr = varId.stringValue();
+                Long varIdLong = Long.valueOf(varIdStr);
+                if (!mergeResults.contains(varIdLong)) {
+                    mergeResults.add(varIdLong);
+                }
+            }
+        }
+        return mergeResults;
+    }
+    
     private List<Long> intersectionResults(final List<Long> results1, final List<Long> results2) {
         List <Long> mergeResults = new ArrayList();
         for (Iterator it = results1.iterator(); it.hasNext();){
@@ -1331,7 +1358,7 @@ public class Indexer implements java.io.Serializable  {
         BooleanQuery searchQuery = new BooleanQuery();
         BooleanQuery.setMaxClauseCount(dvnMaxClauseCount);
         if (studyIds != null) {
-            searchQuery.add(orIdSearchTermClause(studyIds), BooleanClause.Occur.MUST);
+            searchQuery.add(orIdSearchTermClause(studyIds, "varStudyId"), BooleanClause.Occur.MUST);
         }
         if (searchTerm.getFieldName().equalsIgnoreCase("variable")){
             indexQuery = buildVariableQuery(searchTerm);
@@ -1343,7 +1370,12 @@ public class Indexer implements java.io.Serializable  {
         }
         List <Document> variableResults = getHits(searchQuery);
         List <Long> variableIdResults = getVariableHitIds(variableResults);
-        List<Long> finalResults = studyIds != null ? intersectionDocResults(variableResults, studyIds) : variableIdResults;
+        // TODO: 
+        // Double-check if the intersectionVarDocResults() below - i.e., filtering
+        // the hit list against the list of supplied study ids - is necessary at all. 
+        // I would think not - because the study IDs were already added to the
+        // search query, above. -- L.A.
+        List<Long> finalResults = studyIds != null ? intersectionVarDocResults(variableResults, studyIds) : variableIdResults;
         return finalResults;
     }
 
@@ -1351,7 +1383,7 @@ public class Indexer implements java.io.Serializable  {
         BooleanQuery searchQuery = new BooleanQuery();
         BooleanQuery.setMaxClauseCount(dvnMaxClauseCount);
         if (studyIds != null) {
-            searchQuery.add(orIdSearchTermClause(studyIds), BooleanClause.Occur.MUST);
+            searchQuery.add(orIdSearchTermClause(studyIds, "varStudyId"), BooleanClause.Occur.MUST);
         }
         for (Iterator it = searchTerms.iterator(); it.hasNext();) {
             SearchTerm elem = (SearchTerm) it.next();
@@ -1366,10 +1398,15 @@ public class Indexer implements java.io.Serializable  {
             }
         }
         List<Long> finalResults = null;
+        // TODO: 
+        // Double-check if the intersection(Var)DocResults() below - i.e., filtering
+        // the hit list against the list of supplied study ids - is necessary at all. 
+        // I would think not - because the study IDs were already added to the
+        // search query, above. -- L.A.
         if (varIdReturnValues) {
             List<Document> variableResults = getHits(searchQuery);
             List<Long> variableIdResults = getVariableHitIds(variableResults);
-            finalResults = studyIds != null ? intersectionDocResults(variableResults, studyIds) : variableIdResults;
+            finalResults = studyIds != null ? intersectionVarDocResults(variableResults, studyIds) : variableIdResults;
         } else {
             List<Long> studyIdResults = getVariableHitStudyIds(searchQuery); // gets the study ids
             finalResults = studyIds != null ? intersectionResults(studyIdResults, studyIds) : studyIdResults;
@@ -1386,7 +1423,7 @@ public class Indexer implements java.io.Serializable  {
         BooleanQuery searchQuery = new BooleanQuery();
         BooleanQuery.setMaxClauseCount(dvnMaxClauseCount);
         if (studyIds != null) {
-            searchQuery.add(orIdSearchTermClause(studyIds), BooleanClause.Occur.MUST);
+            searchQuery.add(orIdSearchTermClause(studyIds, "id"), BooleanClause.Occur.MUST);
         }
         for (Iterator it = searchTerms.iterator(); it.hasNext();) {
             SearchTerm elem = (SearchTerm) it.next();
@@ -1408,10 +1445,15 @@ public class Indexer implements java.io.Serializable  {
         logger.info("INDEXER: filemetadata combined query (native): "+searchQuery.toString());
 
         List<Long> finalResults = null;
+        // TODO: 
+        // Double-check if the intersection(File)DocResults() below - i.e., filtering
+        // the hit list against the list of supplied study ids - is necessary at all. 
+        // I would think not - because the study IDs were already added to the
+        // search query, above. -- L.A.
         if (fileIdReturnValues) {
             List<Document> fileMetadataResults = getHits(searchQuery);
             List<Long> fileMetadataIdResults = getFileMetadataHitIds(fileMetadataResults);
-            finalResults = studyIds != null ? intersectionDocResults(fileMetadataResults, studyIds) : fileMetadataIdResults;
+            finalResults = studyIds != null ? intersectionFileDocResults(fileMetadataResults, studyIds) : fileMetadataIdResults;
         } else {
             List<Long> studyIdResults = getFileMetadataHitStudyIds(searchQuery); // gets the study ids
             finalResults = studyIds != null ? intersectionResults(studyIdResults, studyIds) : studyIdResults;
@@ -1981,11 +2023,12 @@ public class Indexer implements java.io.Serializable  {
         return orTerms;
     }
 
-    BooleanQuery orIdSearchTermClause(List <Long> id){
+    BooleanQuery orIdSearchTermClause(List <Long> id, String fieldName){
         BooleanQuery idTerms = new BooleanQuery();
         for (Iterator it = id.iterator(); it.hasNext();){
             Long lId= (Long) it.next();
-            Term varStudyId = new Term ("varStudyId",lId.toString());
+            //Term varStudyId = new Term ("varStudyId",lId.toString());
+            Term varStudyId = new Term (fieldName,lId.toString());
             TermQuery varStudyIdQuery = new TermQuery(varStudyId);
             idTerms.add(varStudyIdQuery, BooleanClause.Occur.SHOULD);
         }

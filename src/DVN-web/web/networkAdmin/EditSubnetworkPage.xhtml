@@ -5,68 +5,93 @@
       xmlns:h="http://java.sun.com/jsf/html"
       xmlns:f="http://java.sun.com/jsf/core"
       xmlns:jsp="http://java.sun.com/JSP/Page"
-      xmlns:ace="http://www.icefaces.org/icefaces/components"
-      xmlns:ice="http://www.icesoft.com/icefaces/component">
-    <head>
-    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+      xmlns:ice="http://www.icesoft.com/icefaces/component"
+      xmlns:dvn="/WEB-INF/tlds/dvn-components">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
 </head>
 <body>
-    <ui:composition template="/template.xhtml">
-                    <script type="text/javascript">
-                        // <![CDATA[
- 
-
-                        function selectOneSourceVariableClick(){
-                            document.getElementById('form1:selectOneSourceVariableClick').click();
-                        }
-                        // ]]>
-                    </script>
-        <ui:define name="metadata">
-            <f:metadata>
-                <f:viewParam name="edit" value="#{EditSubnetworkPage.edit}"/>
-                <f:viewParam name="alias" value="#{EditSubnetworkPage.alias}"/>
-                <f:event type="preRenderView" listener="#{EditSubnetworkPage.preRenderView}"/>  
-                <f:event type="preRenderView" listener="#{EditNetworkNamePage.preRenderView}"/>
-                <f:event type="preRenderView" listener="#{EditNetworkAnnouncementsPage.preRenderView}"/>
-                <f:event type="preRenderView" listener="#{EditBannerFooterPage.preRenderView}"/>
-            </f:metadata>
+  <ui:composition template="/template.xhtml">
+    <script type="text/javascript">
+        // <![CDATA[
+        function selectOneSourceVariableClick(){
+            document.getElementById('form1:selectOneSourceVariableClick').click();
+        }
+        // ]]>
+    </script>
+    <ui:param name="pageTitle" value="#{bundlePageInfo.createSubnetworksTitle} - #{VDCRequest.dataversePageTitle}"/>
+            <ui:define name="metadata">
+                <f:metadata>
+                    <f:viewParam name="edit" value="#{EditSubnetworkPage.edit}"/>
+                    <f:viewParam name="alias" value="#{EditSubnetworkPage.alias}"/>
+                    <f:event type="preRenderView" listener="#{EditSubnetworkPage.preRenderView}"/>  
+                    <f:event type="preRenderView" listener="#{EditNetworkNamePage.preRenderView}"/>
+                    <f:event type="preRenderView" listener="#{EditNetworkAnnouncementsPage.preRenderView}"/>
+                    <f:event type="preRenderView" listener="#{EditBannerFooterPage.preRenderView}"/>
+                </f:metadata>
         </ui:define>
-                <ui:define name="body">
-            <ice:form id="form1" >
-         <div jsfc="ice:panelGroup">
-                 <ui:include src="/networkAdmin/EditNetworkNamePage.xhtml"></ui:include>
-                 <div jsfc="ice:panelGroup">
-                     <ice:outputText value="Subnetwork Alias "/>     
-                  <ice:inputText binding="#{EditSubnetworkPage.textFieldSubnetworkAlias}"
-                                 id="subnetworkAlias"
-                                 validator="#{EditSubnetworkPage.validateAlias}"
-                                 value="#{EditSubnetworkPage.subnetworkAlias}"/>
-                  <br/>
-                  <ice:outputText styleClass="vdcHelpText" value="Short name used to build the URL for this network, e.g., http://.../dv/'alias'. It is case sensitive."/>
-                  <ice:message for="subnetworkAlias" showSummary="true" showDetail="false" styleClass="errorMessage"/>
-                 </div>
-                  <div jsfc="ice:panelGroup">
-                      <ice:selectBooleanCheckbox id="chkEnableSubnetwork" value="#{EditSubnetworkPage.chkSubnetworkEnabled}"/>
-                        <ice:outputText value=" #{bundle.enableSubnetworkLabel}"/>
-                    </div>
-                 <div jsfc="ice:panelGroup">
-                     <ice:outputText value="Curator"/>     
-                  <ice:inputText 
-                                 id="subnetworkCurator"
-                                 value="#{EditSubnetworkPage.subnetworkCurator}"/>
-                  <br/>
-                 </div>
-                 <ui:include src="/networkAdmin/EditNetworkAnnouncementsPage.xhtml"></ui:include>
-                 <ui:include src="/admin/EditBannerFooterPage.xhtml"></ui:include>
-         </div> 
-        <div id="groupPanel6" class="dvnFormPadding dvnFormMargin" >
-            <ice:commandButton id="btnSaveSettings" value="Save Changes"
-                            rendered="#{!VDCRequest.readOnlyDatabase}"
-                            action="#{EditSubnetworkPage.saveSubNetworkGeneralSettings_action}"                           
-                            />
-        </div>
-        </ice:form>
-        </ui:define>
-    </ui:composition>
+    <ui:define name="body">
+      <ice:form id="AddClassificationsPageForm">
+          <div class="dvn_section">
+            <div class="dvn_sectionTitle">
+              <ice:outputText value="#{bundlePageInfo.createSubnetworksTitle}"/>
+              <!-- <ice:outputText value="#{bundlePageInfo.editSubnetworksTitle}" rendered="#{addClassificationsPage.classId!=null}"/> -->
+            </div>
+            <div class="dvn_sectionBox">
+              <div class="dvn_margin12">
+                <div jsfc="ice:panelGroup" styleClass="dvnInformationMessage">
+                  <div class="dvnMsgBlockContainer">
+                    <ice:outputText value="#{bundlePageInfo.createSubnetworksHelp}" escape="false"/>
+                  </div>
+                </div>
+                <!-- ***************************** add content here ************************************ -->
+                <div jsfc="ice:panelGroup">
+                    <ui:include src="/networkAdmin/EditNetworkNamePage.xhtml"></ui:include>
+                    <table class="dvnOptionsTable" cellspacing="0" cellpadding="0" border="0">
+                        <tr>
+                            <td class="dvnOptionsTableOption">
+                                <ice:outputText value="Subnetwork Alias "/>
+                            </td>
+                            <td>
+                                <ice:inputText binding="#{EditSubnetworkPage.textFieldSubnetworkAlias}"
+                                                id="subnetworkAlias"
+                                                validator="#{EditSubnetworkPage.validateAlias}"
+                                                value="#{EditSubnetworkPage.subnetworkAlias}"/>
+                                <br/>
+                                <ice:outputText styleClass="vdcHelpText" value="Short name used to build the URL for this network, e.g., http://.../dv/'alias'. It is case sensitive."/>
+                                <ice:message for="subnetworkAlias" showSummary="true" showDetail="false" styleClass="errorMessage"/>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="dvnOptionsTableOption">
+                                <ice:outputText value="#{bundle.enableSubnetworkLabel}"/>
+                            </td>
+                            <td>
+                                <ice:selectBooleanCheckbox id="chkEnableSubnetwork" value="#{EditSubnetworkPage.chkSubnetworkEnabled}"/>
+                                <ice:outputText styleClass="vdcHelpText" value="Enable this subnetwork."/>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="dvnOptionsTableOption">
+                                <ice:outputText value="Curator"/>
+                            </td>
+                            <td>
+                                <ice:inputText id="subnetworkCurator" value="#{EditSubnetworkPage.subnetworkCurator}"/>
+                            </td>
+                        </tr>
+                    </table>
+                    <ui:include src="/networkAdmin/EditNetworkAnnouncementsPage.xhtml"></ui:include>
+                    <ui:include src="/admin/EditBannerFooterPage.xhtml"></ui:include>
+                </div>
+                <div id="groupPanel6" class="dvnFormPadding dvnFormMargin">
+                    <ice:commandButton id="btnSaveSettings" value="Save Changes" rendered="#{!VDCRequest.readOnlyDatabase}" action="#{EditSubnetworkPage.saveSubNetworkGeneralSettings_action}"/>
+                    <ice:commandButton id="btnCancel" value="Cancel" immediate="true" action="#{EditSubnetworkPage.cancel}"/>
+                </div>
+              </div>
+            </div>
+          </div>
+      </ice:form>
+    </ui:define>
+  </ui:composition>
 </body>
 </html>

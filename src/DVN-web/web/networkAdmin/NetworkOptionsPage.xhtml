@@ -200,19 +200,15 @@
                         </ice:panelTabSet>
 
                       </ice:panelTab>
-                      <ice:panelTab id="subnetworkOptions" 
-                                    onclick="initSubnetworks();" label="Subnetworks" url="/dvn#{VDCRequest.currentVDCURL}/faces/networkAdmin/NetworkOptionsPage.xhtml?tab=subnetworks" rendered="#{VDCSession.loginBean.networkAdmin}">
-                            <div jsfc="ice:panelGroup" id="layoutPanelsub1" label="Dataverses" panelLayout="flow">
-                                <ice:panelTabSet id="tabSetSubnetworks" styleClass="dvnTabs dvnSubTabs">
-                                    <ice:panelTab id="manageSubnetworksSub" label="Subnetworks">
-                                        <div jsfc="ice:panelGroup">
-                                            <div jsfc="ice:panelGroup" panelLayout="flow">
-                                                <ui:include src="/networkAdmin/ManageSubnetworksPage.xhtml"></ui:include>
-                                            </div> 
-                                        </div>
-                                    </ice:panelTab>
-                                </ice:panelTabSet>
-                            </div>
+                      <ice:panelTab id="subnetworkOptions" onclick="initSubnetworks();" label="Subnetworks" url="/dvn#{VDCRequest.currentVDCURL}/faces/networkAdmin/NetworkOptionsPage.xhtml?tab=subnetworks" rendered="#{VDCSession.loginBean.networkAdmin}">
+                            
+                          <ice:panelTab id="manageSubnetworksSub" label="Subnetworks">
+                                <div jsfc="ice:panelGroup">
+                                    <div jsfc="ice:panelGroup" panelLayout="flow">
+                                        <ui:include src="/networkAdmin/ManageSubnetworksPage.xhtml"></ui:include>
+                                    </div> 
+                                </div>
+                            </ice:panelTab>
           
                       </ice:panelTab>
                       <ice:panelTab id="collections" label="Classifications" url="/dvn#{VDCRequest.currentVDCURL}/faces/networkAdmin/NetworkOptionsPage.xhtml?tab=classifications" rendered="#{VDCSession.loginBean.networkAdmin}">

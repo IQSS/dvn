@@ -23,6 +23,7 @@
  * Created on September 19, 2006, 9:57 AM
  */
 package edu.harvard.iq.dvn.core.web.site;
+import com.icesoft.faces.component.ext.*;
 import edu.harvard.iq.dvn.core.admin.RoleServiceLocal;
 import edu.harvard.iq.dvn.core.admin.UserServiceLocal;
 import edu.harvard.iq.dvn.core.mail.MailServiceLocal;
@@ -39,11 +40,6 @@ import javax.ejb.EJB;
 import javax.faces.application.FacesMessage;
 import javax.faces.component.UIComponent;
 import javax.faces.component.UIInput;
-import com.icesoft.faces.component.ext.HtmlOutputText;
-import com.icesoft.faces.component.ext.HtmlOutputLabel;
-import com.icesoft.faces.component.ext.HtmlInputText;
-import com.icesoft.faces.component.ext.HtmlCommandButton;
-import com.icesoft.faces.component.ext.HtmlInputTextarea;
 import edu.harvard.iq.dvn.core.admin.VDCUser;
 import edu.harvard.iq.dvn.core.study.Template;
 import edu.harvard.iq.dvn.core.study.TemplateServiceLocal;
@@ -136,7 +132,8 @@ public class AddSitePage extends VDCBaseBean implements java.io.Serializable  {
         Template defaultTemplate = templateService.getTemplate(defaultTemplateId);
         if(defaultTemplate.isDisplayOnCreateDataverse() && selectTemplateId == null){
             selectTemplateId = defaultTemplate.getId();
-        }     
+        }   
+        networkSelectItems = loadNetworkSelectItems();
     }
 
     //copied from manageclassificationsPage.java
@@ -338,7 +335,13 @@ public class AddSitePage extends VDCBaseBean implements java.io.Serializable  {
             createdVDC.setAffiliation(strAffiliation);
             createdVDC.setDvnDescription(strShortDescription);
             createdVDC.setAnnouncements(strShortDescription); // also set default dv home page description from the the DVN home page short description
-            createdVDC.setVdcNetwork(getVDCRequestBean().getVdcNetwork());
+            if (selectSubNetworkId > 0){
+                VDCNetwork vdcNetwork = vdcNetworkService.findById(selectSubNetworkId);
+                createdVDC.setVdcNetwork(vdcNetwork);
+            } else {
+                 createdVDC.setVdcNetwork(vdcNetworkService.findRootNetwork());
+            }
+
             Template template = templateService.getTemplate(selectTemplateId);
             createdVDC.setDefaultTemplate(template);
             //on create if description is blank uncheck display flag
@@ -403,7 +406,12 @@ public class AddSitePage extends VDCBaseBean implements java.io.Serializable  {
             createdScholarDataverse.setContactEmail(getVDCSessionBean().getLoginBean().getUser().getEmail());
             createdScholarDataverse.setDvnDescription(strShortDescription);
             createdScholarDataverse.setAnnouncements(strShortDescription); // also set default dv home page description from the the DVN home page short description
-            createdScholarDataverse.setVdcNetwork(getVDCRequestBean().getVdcNetwork());
+            if (selectSubNetworkId > 0){
+                VDCNetwork vdcNetwork = vdcNetworkService.findById(selectSubNetworkId);
+                createdScholarDataverse.setVdcNetwork(vdcNetwork);
+            } else {
+                createdScholarDataverse.setVdcNetwork(vdcNetworkService.findRootNetwork());
+            }
             vdcService.edit(createdScholarDataverse);
     
             String hostUrl = PropertyUtil.getHostUrl();           
@@ -534,6 +542,27 @@ public class AddSitePage extends VDCBaseBean implements java.io.Serializable  {
      *
      * @author wbossons
      */
+    
+     private List<SelectItem> loadNetworkSelectItems() {
+        List selectItems = new ArrayList<SelectItem>();
+        List <VDCNetwork> networkList = vdcNetworkService.getVDCSubNetworks();
+        if (networkList.size() > 0){
+            for (VDCNetwork vdcNetwork : networkList){
+                selectItems.add(new SelectItem(vdcNetwork.getId(), vdcNetwork.getName()));
+            }
+        }
+        return selectItems;
+    }
+
+    private List <SelectItem> networkSelectItems = new ArrayList();
+
+    public List<SelectItem> getNetworkSelectItems() {
+        return this.networkSelectItems;
+    }
+    
+    private HtmlSelectOneMenu selectSubnetwork;   
+    public HtmlSelectOneMenu getSelectSubnetwork() {return selectSubnetwork;}
+    public void setSelectSubnetwork(HtmlSelectOneMenu selectSubnetwork) {this.selectSubnetwork = selectSubnetwork;}
     /**
      * Used to set the discriminator value
      * in the entity
@@ -681,6 +710,15 @@ public class AddSitePage extends VDCBaseBean implements java.io.Serializable  {
     public Map getTemplatesMap() {
         // getVdcTemplatesMap is called with currentVDCId, since for a new study the current VDC IS the owner   
         return templateService.getVdcTemplatesMap(getVDCRequestBean().getCurrentVDCId());
+    }
+    private Long selectSubNetworkId;
+
+    public Long getSelectSubNetworkId() {
+        return selectSubNetworkId;
+    }
+
+    public void setSelectSubNetworkId(Long selectSubNetworkId) {
+        this.selectSubNetworkId = selectSubNetworkId;
     }
     
     private Long selectTemplateId;

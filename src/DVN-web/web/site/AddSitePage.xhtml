@@ -84,7 +84,24 @@
                                     
                                     <ice:panelGrid cellpadding="0" cellspacing="0"
                                                    columnClasses="vdcAddSiteCol1, vdcAddSiteCol2" columns="2" id="gridPanel1">
+
+                                            <ice:column>
+                                                <ice:outputText value="Dataverse Domain " rendered="#{!empty(AddSitePage.networkSelectItems) and VDCRequest.currentVDCId == null}" />
+                                            </ice:column>
+                                            <ice:column>
+                                                <ice:selectOneMenu immediate="false"   id="SelOneMenuNetwork"                                          
+                                                                            binding="#{AddSitePage.selectSubnetwork}"
+                                                                            rendered="#{!empty(AddSitePage.networkSelectItems) }" 
+                                                                            value="#{AddSitePage.selectSubNetworkId}"
+                                                                            >
+                                                        <f:selectItems value="#{AddSitePage.networkSelectItems}"/>
+                                                </ice:selectOneMenu> 
+                                            </ice:column>
+
+
+                                        
                                         <!-- dataverse type -->
+                                        
                                         <ice:column>
                                             <ice:outputLabel for="dataverseType" id="dataverseLabel">
                                                 <ice:outputText value="Type of Dataverse"/>

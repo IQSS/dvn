@@ -480,9 +480,10 @@ public class IndexServiceBean implements edu.harvard.iq.dvn.core.index.IndexServ
         long ioProblemCount = 0;
         boolean ioProblem = false;
         Indexer indexer = Indexer.getInstance();
+        logger.info("Starting batch reindex of collection-linked studies.");
         
         try {
-            List<VDC> vdcList = vdcService.findAll();
+            List<Long> vdcIdList = vdcService.findAllIds();
             
             Long maxStudyId = studyService.getMaxStudyTableId(); 
             
@@ -491,72 +492,120 @@ public class IndexServiceBean implements edu.harvard.iq.dvn.core.index.IndexServ
             }
             
             if (maxStudyId.intValue() != maxStudyId.longValue()) {
-                logger.severe("");
+                logger.severe("There appears to be more than 2^^31 objects in the study table; the subnetwork cross-indexing hack isn't going to work.");
                 throw new IOException("There appears to be more than 2^^31 objects in the study table; the subnetwork cross-indexing hack isn't going to work.");
+                /* This is quite unlikely to happen, but still... */
             }
             
-            Long numberOfNetworks = 1L; // vdcNetworkService.findAll().size() - something like that...
+            int numberOfNetworks = findNumberOfSubnetworks(); 
             
-            if (numberOfNetworks.longValue() > 31L) {
-                logger.severe("");
-                throw new IOException("There is more than 31 VDC (sub)networks. The subnetwork cross-indexing hack isn't going to work.");
+            if (numberOfNetworks < 1) {
+                // No subnetworks in this DV Network; nothing to do. 
+                logger.info("There's only one network in the DVN; exiting");
+                return; 
             }
             
-            int linkedVdcNetworkMap[] = new int[maxStudyId.intValue()+1];
+            if (numberOfNetworks > 63) {
+                logger.severe("There is more than 63 VDC (sub)networks. The subnetwork cross-indexing hack isn't going to work.");
+                throw new IOException("There is more than 63 VDC (sub)networks. The subnetwork cross-indexing hack isn't going to work.");
+                /* Not very likely to happen either... */
+            }
+            
+            long linkedVdcNetworkMap[] = new long[maxStudyId.intValue()+1];
+            Long vdcId = null; 
+            VDC vdc = null; 
+            List<Long> linkedStudyIds = null;
+            Long vdcNetworkId = null; 
+            Long studyNetworkId = null;
+            Study linkedStudy = null; 
+            
+            for (Iterator it = vdcIdList.iterator(); it.hasNext();) {
+                vdcId = (Long) it.next();
+                vdc = vdcService.findById(vdcId);
 
-            Map<Long, LinkedHashSet> vdcCollectionStudyMap = new HashMap<Long, LinkedHashSet>();
+                if (vdc != null && vdc.getVdcNetwork() != null) {
+                    vdcNetworkId = vdc.getVdcNetwork().getId();
 
-            for (Iterator it = vdcList.iterator(); it.hasNext();) {
-                VDC vdc = (VDC) it.next();
+                    if (vdcNetworkId.longValue() > 0) {
+                        // We are not interested in the VDCs in the top-level
+                        // network (network id 0); because the top-level network
+                        // already contains all the studies in it. 
+                        linkedStudyIds = indexer.findStudiesInCollections(vdc);
 
-                if (vdc != null) {
-                    List<Long> linkedStudyIds = null;
-                    linkedStudyIds = indexer.findStudiesInCollections(vdc);
-                    
-                    if (linkedStudyIds != null) {
-                        for (Long studyId : linkedStudyIds) {
-                            if (studyId.longValue() <= maxStudyId.longValue()) {
-                                // otherwise this is a new study created since we 
-                                // have started this process; we'll be skipping it this time. 
-                                Long networkId = 1L; //vdc.getVdcNetworkId(); 
-                                Long studyNetworkId = 1L;
-                                Study linkedStudy = studyService.getStudy(studyId);
-                                if (linkedStudy != null) {
-                                    //studyNetworkId = linkedStudy.getOwner().getVdcNetworkId();
-                                }
-                                if (networkId.compareTo(studyNetworkId) != 0) {
-                                    // this study is cross-linked from another VDC network!
-                                    linkedVdcNetworkMap[linkedStudy.getId().intValue()] |= studyNetworkId.intValue();
+                        if (linkedStudyIds != null) {
+                            logger.info("Found "+linkedStudyIds.size()+" linked studies in VDC "+vdcNetworkId.toString());
+
+                            for (Long studyId : linkedStudyIds) {
+                                if (studyId.longValue() <= maxStudyId.longValue()) {
+                                    // otherwise this is a new study, created since we 
+                                    // have started this process; we'll be skipping it,
+                                    // this time around.  
+                                    linkedStudy = studyService.getStudy(studyId);
+                                    if (linkedStudy != null) {
+                                        studyNetworkId = linkedStudy.getOwner().getVdcNetwork().getId();
+                                        if (studyNetworkId != null && vdcNetworkId.compareTo(studyNetworkId) != 0) {
+                                            // this study is cross-linked from another VDC network!
+                                            linkedVdcNetworkMap[linkedStudy.getId().intValue()] |= studyNetworkId.longValue();
+                                        }
+                                    }
+                                    linkedStudy = null;
+                                    studyNetworkId = null;
                                 }
                             }
                         }
+                        linkedStudyIds = null;
+                        vdcNetworkId = null;
                     }
                 }
+                vdcId = null;
+                vdc = null; 
             }
 
             // Now go through the list of studies and reindex those for which 
             // the cross-linked status has changed:
             
+            logger.info("Checking the cross-linking status and reindexing the studies for which it has changed:");
+            
+            List<Long> linkedToNetworkIds = null; 
+            
             for (int i = 0; i < maxStudyId.intValue() + 1; i++) {
                 if (linkedVdcNetworkMap[i] > 0) {
-                    Study linkedStudy = studyService.getStudy(new Long(i));
-                    // Only released studies gets indexed!
-                    if (linkedStudy.isReleased()) {
-                        List<Long> linkedToNetworks = null; // linkedStudy.getLinkedToVdcNetworks();
+                    linkedStudy = studyService.getStudy(new Long(i));
+                    // Only released studies get indexed!
+                    if (linkedStudy != null && linkedStudy.isReleased()) {
+                        linkedToNetworkIds = linkedStudy.getLinkedToNetworkIds();
                         boolean indexUpdateRequired = false;
+                        int linkedNetworkCounter = 0; 
 
-                        for (int network = 0; network < numberOfNetworks.intValue(); i++) {
-                            if ((linkedVdcNetworkMap[i] & 1 >> network) > 0) {
-                                if (!alreadyLinkedToThisVdcNetwork(linkedToNetworks, network)) {
-                                    //linkedStudy.setLinkedToVdcNetwork(new Long(network));
+                        for (int network = 0; network < numberOfNetworks; i++) {
+                            if ((linkedVdcNetworkMap[i] & (1 >> network)) > 0) {
+                                logger.info("study "+i+" linked to Network "+network);
+                                linkedNetworkCounter++; 
+                                if (!alreadyLinkedToThisVdcNetwork(linkedToNetworkIds, network)) {
+                                    linkedStudy.setLinkedToNetwork(vdcNetworkService.findById(new Long(network)));
+                                    // TODO: 
+                                    // instead of doing "findById()" each time, create
+                                    // an array of vdcNetworks and cache them. -- L.A.
                                     indexUpdateRequired = true;
+                                }
+                                // TODO: 
+                                
+                            } else {
+                                // And if the study is still listed in the DB as 
+                                // linked to a network, even it is no longer 
+                                // in the search results for any of the collections
+                                // in that network - the linking needs to be removed:
+                                // -- L.A. 
+                                if (alreadyLinkedToThisVdcNetwork(linkedToNetworkIds, network)) {
+                                    linkedStudy.unsetLinkedToNetwork(vdcNetworkService.findById(new Long(network)));
+                                    indexUpdateRequired = true; 
                                 }
                             }
                         }
-
+                        
                         if (indexUpdateRequired) {
                             // Can reindex it now... or put it on some list for a later 
-                            // batch reindex...
+                            // batch reindex - ?
                             try {
                                 indexer.deleteDocument(linkedStudy.getId());
                                 indexer.addDocument(linkedStudy);
@@ -569,30 +618,36 @@ public class IndexServiceBean implements edu.harvard.iq.dvn.core.index.IndexServ
                     }
                 }                
             }
+            logger.info("Done reindexing collection-linked studies.");
 
         } catch (Exception ex) {
             ioProblem = true;
             ioProblemCount++; 
-            logger.severe("Caught exception while trying to pupdate studies in collections.");
+            logger.severe("Caught exception while trying to update studies in collections.");
         }
         handleIOProblems(ioProblem, ioProblemCount);
     }
 
+    private int findNumberOfSubnetworks () {
+        Long ret = null;
+        
+        List<VDCNetwork> subNetworks = vdcNetworkService.getVDCSubNetworks();
+        
+        if (subNetworks == null) {
+            return 0;
+        }
+        
+        return subNetworks.size();
+    }
     
     boolean alreadyLinkedToThisVdcNetwork(List<Long> linkedToNetworks, int network) {
         if (linkedToNetworks == null) {
             return false;
         }
         
-        for (Long linkedNetwork:linkedToNetworks) {
-            if (linkedNetwork.intValue() == network) {
-                return true;
-            } else if (linkedNetwork.intValue() > network) {
-                // the list is sorted.
-                return false; 
-            }
-        }
-        
+        if (linkedToNetworks.contains(new Long(network))) {
+            return true; 
+        }   
         return false; 
     }
 

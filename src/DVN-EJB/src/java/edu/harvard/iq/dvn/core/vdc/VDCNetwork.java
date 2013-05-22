@@ -892,4 +892,17 @@ public class VDCNetwork implements java.io.Serializable  {
         this.contactEmail = contactEmail;
     }
     
+    @ManyToMany(mappedBy="linkedToNetworks")
+    private Collection<Study> linkedStudies;
+    
+    
+    
+    public Collection<Study> getLinkedStudies() {
+        return linkedStudies;
+    }
+    
+    public void setLinkedStudies(Collection<Study> studies) {
+        this.linkedStudies = studies;
+    }
+    
 }

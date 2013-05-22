@@ -252,7 +252,7 @@ public class Indexer implements java.io.Serializable  {
              * collections in DVs that belong to other Networks:
              */
             addText(1.0f, doc, "dvNetworkId", dvNetworkId);
-            List<Long> linkedToNetworks = null; //linkedStudy.getLinkedToVdcNetworks();
+            List<Long> linkedToNetworks = study.getLinkedToNetworkIds();
             if (linkedToNetworks != null) {
                 for (Long vdcnetworkid : linkedToNetworks) {
                     addText(1.0f, doc, "dvNetworkId", vdcnetworkid.toString());
@@ -722,42 +722,6 @@ public class Indexer implements java.io.Serializable  {
      * the dataverse - both directly in the VDC by "owner_id" and linked through 
      * collections (at least per the last time the index was rebuilt). 
      */  
-    /*protected void findStudiesInCollections (VDC vdc, Map<Long, LinkedHashSet> vdcCollectionStudyMap) {
-        List <Query> collectionQueries = getCollectionQueries(vdc);
-        
-        if (collectionQueries != null && collectionQueries.size() > 0) {
-            logger.info("running combined collections query for the vdc id "+vdc.getId()+", "+vdc.getName()+"; "+collectionQueries.size()+" queries total.");
-            
-            BooleanQuery queryAcrossAllCollections = new BooleanQuery();
-            for (Query collectionQuery : collectionQueries) {
-                queryAcrossAllCollections.add(collectionQuery, BooleanClause.Occur.SHOULD);
-            }
-         
-            List <Long> studyIdResults = null;
-            try {
-                studyIdResults = getHitIds(queryAcrossAllCollections);
-            } catch (Exception ex) {
-                logger.warning("Caught exception while executing combined colleciton query on VDC "+vdc.getId());
-                ex.printStackTrace();
-            }
-            
-            if (studyIdResults != null) {
-                logger.info("Combined collections search returned "+studyIdResults.size()+" hits.");
-                for (Long studyId:studyIdResults) {
-                    try {
-                        if (vdcCollectionStudyMap.get(studyId) == null) {
-                            vdcCollectionStudyMap.put(studyId, new LinkedHashSet());
-                        }
-                        vdcCollectionStudyMap.get(studyId).add(vdc.getId());
-                    } catch (Exception ex) {
-                        logger.warning("Caught exception while trying to add VDC id "+vdc.getId()+ " for study "+studyId+" to the collection study map.");
-                        ex.printStackTrace();
-                    }
-                } 
-            }
-            
-        }
-    }*/
     
     List<Long> findStudiesInCollections (VDC vdc) {
         List <Long> linkedStudyIds = null;

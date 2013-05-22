@@ -58,6 +58,8 @@ public interface VDCServiceLocal extends java.io.Serializable  {
     public VDC findById(Long id);
 
     public List findAll();
+    public List<Long> findAllIds();
+    
     public List<Object[]> findInfoAll(); // returns id, name, afilliation, and restricted
 
     public List<VDC> findAllPublic();

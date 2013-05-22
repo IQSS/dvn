@@ -267,6 +267,13 @@ public class VDCServiceBean implements VDCServiceLocal {
     public List findAll() {
         return em.createQuery("select object(o) from VDC as o order by o.name").getResultList();
     }
+    
+    public List<Long> findAllIds() {
+        
+        String queryStr = "select id from VDC order by id";
+        Query query = em.createNativeQuery(queryStr);
+        return (List<Long>) query.getResultList();
+    }
 
     public List<Object[]> findInfoAll() {  
         String queryString = "SELECT vdc.id, vdc.name, vdc.affiliation, vdc.restricted from vdc order by name";

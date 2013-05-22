@@ -168,8 +168,13 @@ public class EditSubnetworkPage extends VDCBaseBean implements Serializable  {
             getVDCSessionBean().setVdcNetwork(createdNetwork);
             getVDCRenderBean().getFlash().put("successMessage", "Successfully added subnetwork.");
         }
-        return "/networkAdmin/NetworkOptionsPage.xhtml?faces-redirect=true";
-    }   
+        return "/networkAdmin/NetworkOptionsPage.xhtml?faces-redirect=true&tab=subnetworks";
+    } 
+    
+    public String cancel(){
+        return "/networkAdmin/NetworkOptionsPage.xhtml?faces-redirect=true&tab=subnetworks";
+    }
+    
     public void validateAlias(FacesContext context,
             UIComponent toValidate,
             Object value) {

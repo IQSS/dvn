@@ -112,6 +112,7 @@ import org.apache.lucene.facet.taxonomy.TaxonomyReader;
 import org.apache.lucene.facet.taxonomy.TaxonomyWriter;
 import org.apache.lucene.facet.taxonomy.directory.DirectoryTaxonomyReader;
 import org.apache.lucene.facet.taxonomy.directory.DirectoryTaxonomyWriter;
+import org.apache.lucene.search.Collector;
 import org.apache.lucene.search.MultiCollector;
 import org.apache.lucene.search.ScoreDoc;
 import org.apache.lucene.search.TermRangeQuery;
@@ -1691,7 +1692,16 @@ public class Indexer implements java.io.Serializable  {
         FacetsCollector facetsCollector = new FacetsCollector(facetSearchParams, r, taxo);
 
         logger.info("\n--BEGIN query dump (from searchNew)--\n" + q2 + "\n--END query dump (from searchNew)--");
-        searcher.search(q2, MultiCollector.wrap(s, facetsCollector));
+        Collector collector = MultiCollector.wrap(s, facetsCollector);
+        try {
+            searcher.search(q2, collector);
+        } catch (NullPointerException npe) {
+            logger.info("Query contains null, returning no results: " + q2);
+            return new ResultsWithFacets();
+        } catch (Exception e) {
+            logger.info("Query may contain null, returning no results: " + q2);
+            return new ResultsWithFacets();
+        }
         List<FacetResult> facetResults = facetsCollector.getFacetResults();
         ResultsWithFacets resultsWithFacets = new ResultsWithFacets();
         resultsWithFacets.setResultList(facetResults);

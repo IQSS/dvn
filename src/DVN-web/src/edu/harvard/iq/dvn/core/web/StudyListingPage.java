@@ -1226,7 +1226,7 @@ public class StudyListingPage extends VDCBaseBean implements java.io.Serializabl
     }
 
     public int getStudyCount() {
-        if (studyListing != null){
+        if (studyListing != null && studyListing.getStudyIds() != null){
             return studyListing.getStudyIds().size();
         }
         

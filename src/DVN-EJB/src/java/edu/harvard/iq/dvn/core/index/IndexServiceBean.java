@@ -717,19 +717,6 @@ public class IndexServiceBean implements edu.harvard.iq.dvn.core.index.IndexServ
         return matchingStudyIds == null ? new ArrayList() : matchingStudyIds;
     }
     
-//    public ResultsWithFacets searchwithFacets(VDC vdc, List<SearchTerm> searchTerms) {
-//        List studyIds = vdc != null ? listVdcStudyIds(vdc) : null;
-//        logger.info("called searchWithFacets in IndexServiceBean");
-//        ResultsWithFacets resultsWithFacets = null;
-//        Indexer indexer = Indexer.getInstance();
-//        try {
-//            resultsWithFacets = indexer.searchWithFacets(studyIds, searchTerms);
-//        } catch (IOException ex) {
-//            ex.printStackTrace();
-//        }        
-//        return resultsWithFacets;
-//    }
-//
     public ResultsWithFacets searchNew(DvnQuery dvnQuery) {
         logger.fine("in searchNew in IndexServiceBean");
         VDC vdc = dvnQuery.getVdc();
@@ -758,19 +745,6 @@ public class IndexServiceBean implements edu.harvard.iq.dvn.core.index.IndexServ
 
     }
 
-//    public ResultsWithFacets getResultsWithFacets(Query baseQuery, List<CategoryPath> facetsOfInterest) {
-//        logger.info("called getResultsWithFacets() in IndexServiceBean");
-//        ResultsWithFacets resultsWithFacets = null;
-//        Indexer indexer = Indexer.getInstance();
-//        try {
-//            resultsWithFacets = indexer.getResultsWithFacets(baseQuery, facetsOfInterest);
-//        } catch (IOException ex) {
-//            ex.printStackTrace();
-//        }
-//        return resultsWithFacets;
-//
-//    }
-//
     public BooleanQuery andSearchTermClause(List<SearchTerm> studyLevelSearchTerms) {
         Indexer indexer = Indexer.getInstance();
         return indexer.andSearchTermClause(studyLevelSearchTerms);

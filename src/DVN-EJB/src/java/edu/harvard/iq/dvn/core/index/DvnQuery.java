@@ -49,6 +49,7 @@ public class DvnQuery {
     private Query dvOwnerIdQuery;
     List<Query> subNetworkDvMemberQueries = new ArrayList<Query>();
     List<Query> subNetworkCollectionQueries = new ArrayList<Query>();
+    Query singleCollectionQuery;
 
     public Query getDvOwnerIdQuery() {
         return dvOwnerIdQuery;
@@ -130,6 +131,14 @@ public class DvnQuery {
         this.subNetworkDvMemberQueries = subNetworkDvMemberQueries;
     }
 
+    public Query getSingleCollectionQuery() {
+        return singleCollectionQuery;
+    }
+
+    public void setSingleCollectionQuery(Query singleCollectionQuery) {
+        this.singleCollectionQuery = singleCollectionQuery;
+    }
+
     public void constructQuery() {
         logger.fine("in constructQuery...");
         BooleanQuery searchQuery = null;
@@ -208,6 +217,12 @@ public class DvnQuery {
             dvSpecific.add(dvOwnerIdQuery, BooleanClause.Occur.MUST);
             queryAcrossAllCollections.add(dvSpecific, BooleanClause.Occur.SHOULD);
             searchQuery = queryAcrossAllCollections;
+        } else if (singleCollectionQuery != null) {
+            logger.fine("single collection will be queried");
+            BooleanQuery submittedAndInCollection = new BooleanQuery();
+            submittedAndInCollection.add(searchQuery, BooleanClause.Occur.MUST);
+            submittedAndInCollection.add(singleCollectionQuery, BooleanClause.Occur.MUST);
+            searchQuery = submittedAndInCollection;
         } else if (!subNetworkDvMemberQueries.isEmpty() || !subNetworkCollectionQueries.isEmpty()) {
             logger.fine("When a user is in the context of a subnetwork any search that is performed will return studies that are owned by dataverses in that subnetwork along with any studies from outside dataverses that are included in collections.");
 

@@ -78,6 +78,7 @@ import org.apache.lucene.facet.search.results.FacetResultNode;
 import org.apache.lucene.facet.taxonomy.CategoryPath;
 import org.apache.lucene.queryParser.ParseException;
 import org.apache.lucene.queryParser.QueryParser;
+import org.apache.lucene.search.BooleanClause;
 import org.apache.lucene.search.BooleanQuery;
 import org.apache.lucene.search.MatchAllDocsQuery;
 import org.apache.lucene.search.Query;
@@ -602,9 +603,77 @@ public class StudyListingPage extends VDCBaseBean implements java.io.Serializabl
             logger.fine("searchFilter = " + searchFilter);
             if (searchFilter == 1) {
                 // just this collection
-                List collections = new ArrayList();
-                collections.add(vdcCollectionService.find(studyListing.getCollectionId()));
-                studyIDList = indexService.search(getVDCRequestBean().getCurrentVDC(), collections, searchTerms);
+//                List collections = new ArrayList();
+//                collections.add(vdcCollectionService.find(studyListing.getCollectionId()));
+//                studyIDList = indexService.search(getVDCRequestBean().getCurrentVDC(), collections, searchTerms);
+                // old non-faceted method above
+
+                /**
+                 * @todo: refactor? code is similar to getCollectionQueries in
+                 * Indexer.java?
+                 */
+                Query finalQuery = null;
+                QueryParser parser = new QueryParser(Version.LUCENE_30, "abstract", new DVNAnalyzer());
+                parser.setDefaultOperator(QueryParser.AND_OPERATOR);
+
+                StringBuilder sbOuter = new StringBuilder();
+                logger.fine("finding collection for id: " + studyListing.getCollectionId());
+                VDCCollection col = vdcCollectionService.find(studyListing.getCollectionId());
+                String type = col.getType();
+                String queryString = col.getQuery();
+                boolean isDynamic = col.isDynamic();
+                boolean isLocalScope = col.isLocalScope();
+                boolean isRootCollection = col.isRootCollection();
+                logger.fine("Single collection query... For " + col.getName() + " (isRootCollection=" + isRootCollection + "|type=" + type + "|isDynamic=" + isDynamic + "|isLocalScope=" + isLocalScope + ")  query: <<<" + queryString + ">>>");
+
+                if (queryString != null && !queryString.isEmpty()) {
+                    try {
+                        logger.fine("For " + col.getName() + " (isRootCollection=" + isRootCollection + "|type=" + type + "|isDynamic=" + isDynamic + "|isLocalScope=" + isLocalScope + ") adding query: <<<" + queryString + ">>>");
+                        Query dynamicQuery = parser.parse(queryString);
+                        if (isLocalScope) {
+                            BooleanQuery dynamicLocal = new BooleanQuery();
+                            Query dvOwnerIdQuery = indexService.constructDvOwnerIdQuery(getVDCRequestBean().getCurrentVDC());
+                            dynamicLocal.add(dynamicQuery, BooleanClause.Occur.MUST);
+                            dynamicLocal.add(dvOwnerIdQuery, BooleanClause.Occur.MUST);
+                            finalQuery = dynamicLocal;
+                        } else {
+                            finalQuery = dynamicQuery;
+                        }
+                    } catch (org.apache.lucene.queryParser.ParseException ex) {
+                        Logger.getLogger(StudyListingPage.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+                } else {
+                    logger.fine("For " + col.getName() + " (isRootCollection=" + isRootCollection + "|type=" + type + "|isDynamic=" + isDynamic + "|isLocalScope=" + isLocalScope + ") skipping add of query: <<<" + queryString + ">>>");
+                    List<Study> studies = col.getStudies();
+                    StringBuilder sbInner = new StringBuilder();
+                    for (Study study : studies) {
+                        logger.fine("- has StudyId: " + study.getId());
+                        String idColonId = "id:" + study.getId().toString() + " ";
+                        sbInner.append(idColonId);
+                    }
+                    logger.fine("sbInner: " + sbInner.toString());
+                    sbOuter.append(sbInner);
+                }
+
+                logger.fine("sbOuter: " + sbOuter);
+                if (!sbOuter.toString().isEmpty()) {
+                    try {
+                        parser.setDefaultOperator(QueryParser.OR_OPERATOR);
+                        Query staticColQuery = parser.parse(sbOuter.toString());
+                        parser.setDefaultOperator(QueryParser.AND_OPERATOR);
+                        logger.info("staticCollectionQuery: " + staticColQuery);
+                        finalQuery = staticColQuery;
+                    } catch (org.apache.lucene.queryParser.ParseException ex) {
+                        Logger.getLogger(AdvSearchPage.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+                }
+
+                dvnQuery.setSingleCollectionQuery(finalQuery);
+                dvnQuery.setVdc(getVDCRequestBean().getCurrentVDC());
+                dvnQuery.constructQuery();
+                resultsWithFacets = indexService.searchNew(dvnQuery);
+                studyIDList = resultsWithFacets.getMatchIds();
+
             } else if (searchFilter == 2) {
                 // subsearch
                 logger.fine("with these results searches disabled per https://redmine.hmdc.harvard.edu/issues/2969 ");

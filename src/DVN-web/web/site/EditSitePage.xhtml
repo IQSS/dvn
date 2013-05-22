@@ -50,6 +50,18 @@
               </div>
               <ice:panelGrid cellpadding="0" cellspacing="0" columns="2"
                              columnClasses="dvnOptionsTableOption, vdcColPadded" id="gridPanelEditSite" styleClass="dvnOptionsTable">
+                  
+                     <ice:column>
+                         <ice:outputText value="Dataverse Domain " rendered="#{!empty(EditSitePage.networkSelectItems) }" />
+                  </ice:column>
+                 <ice:column>
+                        <ice:selectOneMenu immediate="false"   id="SelOneMenuNetwork"                                          
+                                     binding="#{EditSitePage.selectSubnetwork}"
+                                     rendered="#{!empty(EditSitePage.networkSelectItems) }" 
+                                     value="#{EditSitePage.selectSubNetworkId}">
+                               <f:selectItems value="#{EditSitePage.networkSelectItems}"/>
+                        </ice:selectOneMenu> 
+                 </ice:column>
                 <div jsfc="ice:panelGroup" rendered="{not VDCRequest.currentVDC.harvestingDv}">
                   <ice:outputLabel for="dataverseOption" id="dataverseLabel">
                     <ice:outputText value="Type of Dataverse"/>
@@ -62,37 +74,37 @@
                                       layout="pageDirection"
                                       immediate="true"
                                       onclick="changeValue(this);"
-                                      valueChangeListener="#{OptionsPage.changeDataverseOption}"
-                                      value="#{OptionsPage.dataverseType}">
-                    <f:selectItems value="#{OptionsPage.dataverseOptions}"/>
+                                      valueChangeListener="#{EditSitePage.changeDataverseOption}"
+                                      value="#{EditSitePage.dataverseType}">
+                    <f:selectItems value="#{EditSitePage.dataverseOptions}"/>
                   </ice:selectOneRadio>
                 </div>
                 <!-- first name -->
-                <div jsfc="ice:panelGroup" rendered="#{OptionsPage.dataverseType == 'Scholar'}">
+                <div jsfc="ice:panelGroup" rendered="#{EditSitePage.dataverseType == 'Scholar'}">
                   <ice:outputLabel for="firstName" id="firstnameLabel">
                     <ice:outputText value="First Name"/>
                     <ice:graphicImage value="#{bundle.iconRequired}"/>
                   </ice:outputLabel>
                 </div>
-                <div jsfc="ice:panelGroup" rendered="#{OptionsPage.dataverseType == 'Scholar'}">
+                <div jsfc="ice:panelGroup" rendered="#{EditSitePage.dataverseType == 'Scholar'}">
                   <ice:inputText id="firstName"
-                                 binding="#{OptionsPage.dataverseFirstName}"
-                                 value="#{OptionsPage.firstName}"
-                                 validator="#{OptionsPage.validateIsEmpty}"/>
+                                 binding="#{EditSitePage.dataverseFirstName}"
+                                 value="#{EditSitePage.firstName}"
+                                 validator="#{EditSitePage.validateIsEmpty}"/>
                   <ice:message for="firstName" showSummary="true" showDetail="false" errorClass="errorMessage" styleClass="errorMessage"/>
                 </div>
                 <!-- last name -->
-                <div jsfc="ice:panelGroup" rendered="#{OptionsPage.dataverseType == 'Scholar'}">
+                <div jsfc="ice:panelGroup" rendered="#{EditSitePage.dataverseType == 'Scholar'}">
                   <ice:outputLabel for="lastName" id="lastnameLabel">
                     <ice:outputText value="Last Name"/>
                     <ice:graphicImage value="#{bundle.iconRequired}"/>
                   </ice:outputLabel>
                 </div>
-                <div jsfc="ice:panelGroup" rendered="#{OptionsPage.dataverseType == 'Scholar'}">
+                <div jsfc="ice:panelGroup" rendered="#{EditSitePage.dataverseType == 'Scholar'}">
                   <ice:inputText id="lastName"
-                                 binding="#{OptionsPage.dataverseLastName}"
-                                 value="#{OptionsPage.lastName}"
-                                 validator="#{OptionsPage.validateIsEmpty}"/>
+                                 binding="#{EditSitePage.dataverseLastName}"
+                                 value="#{EditSitePage.lastName}"
+                                 validator="#{EditSitePage.validateIsEmpty}"/>
                   <ice:message for="lastName" showSummary="true" showDetail="false" errorClass="errorMessage" styleClass="errorMessage"/>
                 </div>
                 <!-- affiliation -->
@@ -104,41 +116,40 @@
                 </div>
                 <div jsfc="ice:panelGroup">
                   <ice:inputText id="affiliation"
-                                 binding="#{OptionsPage.affiliation}"
-                                 value="#{OptionsPage.vdc.affiliation}"                                 
-                                 validator="#{OptionsPage.validateIsEmptyRequiredAffiliation}"
+                                 binding="#{EditSitePage.affiliation}"                                
+                                 validator="#{EditSitePage.validateIsEmptyRequiredAffiliation}"
                                  />
                    <ice:message for="affiliation" showSummary="true" showDetail="false" errorClass="errorMessage" styleClass="errorMessage"/>
                 </div>
                 <!-- dataverse name -->
                 <div jsfc="ice:panelGroup">
-                  <ice:outputLabel binding="#{OptionsPage.componentLabel1}" for="componentLabel1" id="componentLabel1">
-                    <ice:outputText binding="#{OptionsPage.componentLabel1Text}" id="componentLabel1Text" value="Dataverse Name"/>
+                  <ice:outputLabel binding="#{EditSitePage.componentLabel1}" for="componentLabel1" id="componentLabel1">
+                    <ice:outputText binding="#{EditSitePage.componentLabel1Text}" id="componentLabel1Text" value="Dataverse Name"/>
                     <ice:graphicImage value="#{bundle.iconRequired}"/>
                   </ice:outputLabel>
                 </div>
                 <div jsfc="ice:panelGroup">
-                  <ice:inputText binding="#{OptionsPage.dataverseName}"
+                  <ice:inputText binding="#{EditSitePage.dataverseName}"
                                  id="dataverseName"
                                  size="60"
-                                 validator="#{OptionsPage.validateName}"
+                                 validator="#{EditSitePage.validateName}"
                                  value="#{VDCRequest.currentVDC.name}"/>
                   <br/>
                   <ice:outputText styleClass="vdcHelpText" value="Name used to refer to this dataverse in network homepage and other pages."/>
                   <ice:message for="dataverseName" showSummary="true" showDetail="false" styleClass="errorMessage"/>
                 </div>
                 <div jsfc="ice:panelGroup">
-                  <ice:outputLabel binding="#{OptionsPage.componentLabel2}" for="componentLabel2" id="componentLabel2">
-                    <ice:outputText binding="#{OptionsPage.componentLabel2Text}"
+                  <ice:outputLabel binding="#{EditSitePage.componentLabel2}" for="componentLabel2" id="componentLabel2">
+                    <ice:outputText binding="#{EditSitePage.componentLabel2Text}"
                                     id="componentLabel2Text"
                                     value="Dataverse Alias"/>
                     <ice:graphicImage value="#{bundle.iconRequired}"/>
                   </ice:outputLabel>
                 </div>
                 <div jsfc="ice:panelGroup">
-                  <ice:inputText binding="#{OptionsPage.dataverseAlias}"
+                  <ice:inputText binding="#{EditSitePage.dataverseAlias}"
                                  id="dataverseAlias"
-                                 validator="#{OptionsPage.validateAlias}"
+                                 validator="#{EditSitePage.validateAlias}"
                                  value="#{VDCRequest.currentVDC.alias}"/>
                   <br/>
                   <ice:outputText styleClass="vdcHelpText" value="Short name used to build the URL for this dataverse, e.g., http://.../dv/'alias'. It is case sensitive."/>
@@ -153,15 +164,15 @@
                     </ice:outputLabel>
                 </div>
                 <div jsfc="ice:panelGroup">
-                  <ice:selectBooleanCheckbox id="chkLocalAnnouncements" value="#{OptionsPage.chkLocalAnnouncements}"/>
+                  <ice:selectBooleanCheckbox id="chkLocalAnnouncements" value="#{EditSitePage.chkLocalAnnouncements}"/>
                     <ice:outputText id="outputText3" value="#{bundle.displayLocalAnnouncementsLabel}"/>
                     <ice:message id="announcementsMsg"
                                for="localAnnouncements"
                                styleClass="errorMessage"/>
                     <br/>
                     <ice:inputTextarea cols="100" rows="5"
-                                       id="localAnnouncements" value="#{OptionsPage.localAnnouncements}"
-                                       binding="#{OptionsPage.localAnnouncementsInputText}"
+                                       id="localAnnouncements" value="#{EditSitePage.localAnnouncements}"
+                                       binding="#{EditSitePage.localAnnouncementsInputText}"
                                        styleClass="formHtmlEnabled">
                       <f:validator validatorId="XhtmlValidator"/>
                     </ice:inputTextarea>
@@ -179,9 +190,9 @@
                   </ice:outputLabel>
                 </div>
                 <div jsfc="ice:panelGroup">
-                  <ice:inputTextarea binding="#{OptionsPage.shortDescription}"
+                  <ice:inputTextarea binding="#{EditSitePage.shortDescription}"
                                      id="dataverseShortDescription"                                     
-                                     validator="#{OptionsPage.validateShortDescription}"
+                                     validator="#{EditSitePage.validateShortDescription}"
                                      value="#{VDCRequest.currentVDC.dvnDescription}"
                                      />
                   <br/>
@@ -198,16 +209,16 @@
                     </ice:outputLabel>
                       <ice:message for="classificationCheckBox" id ="boxErrorMsg2"  styleClass="errorMessage"   />
                   </div>
-                  <div jsfc="ice:panelGroup" rendered="#{empty OptionsPage.classificationList.classificationUIs}">
+                  <div jsfc="ice:panelGroup" rendered="#{empty EditSitePage.classificationList.classificationUIs}">
                       <ice:outputText styleClass="vdcHelpText" value="There are no classifications set up for this dataverse network."/>
                   </div>
-                  <div jsfc="ice:panelGroup" rendered="#{!empty OptionsPage.classificationList.classificationUIs}">
+                  <div jsfc="ice:panelGroup" rendered="#{!empty EditSitePage.classificationList.classificationUIs}">
                     <ice:outputText styleClass="vdcHelpText" for="selectedGroup" value="#{bundle.groupSelect}"/>
                     <ice:message for="classificationCheckBox" id ="boxErrorMsg3"  styleClass="errorMessage"   />
                     <ice:dataTable id="dataverseList" styleClass="dvnCreateDvClassificationTable" cellspacing="0" cellpadding="0" columns="2" width="100%"
                                    headerClass="groupRow" rowClasses="evenRow,oddRow" columnWidths="2%,98%"
                                    scrollable="true"
-                                   value="#{OptionsPage.classificationList.classificationUIs}" var="classUI">
+                                   value="#{EditSitePage.classificationList.classificationUIs}" var="classUI">
                       <!-- controls -->
                       <ice:column styleClass="dvnCreateDvClassificationSelectColumn">
                         <ice:selectBooleanCheckbox id="classificationCheckBox" styleClass="classificationCheckBox" partialSubmit="true"

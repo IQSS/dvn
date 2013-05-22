@@ -167,7 +167,11 @@ public class HomePage extends VDCBaseBean implements Serializable {
     }
     
     private void initSubnetworks(){
-        vdcSubnetworks = vdcNetworkService.getVisibleVDCSubnetworks();
+        if (getVDCRequestBean().getVdcNetwork().equals(vdcNetworkService.findRootNetwork())){
+            vdcSubnetworks = vdcNetworkService.getVisibleVDCSubnetworks();
+        } else {
+            vdcSubnetworks = new ArrayList();
+        }        
     }
 
     private void initChrome() {

@@ -106,9 +106,16 @@ public class VDCNetworkServiceBean implements VDCNetworkServiceLocal {
         List <VDCNetwork> vdcNetworkRetList = new ArrayList();
         for (VDCNetwork vdcNetwork : releasedNetworks){
             if( !vdcNetwork.getNetworkVDCs().isEmpty()){
-                vdcNetworkRetList.add(vdcNetwork);
-            }
-            
+                boolean addNet = false;
+                for(VDC vdc :vdcNetwork.getNetworkVDCs()){
+                   if(!vdc.isRestricted()) 
+                   addNet = true;
+                   break;
+                }
+                if(addNet){
+                    vdcNetworkRetList.add(vdcNetwork); 
+                }
+            }           
         }
         return  vdcNetworkRetList;
     }

@@ -24,7 +24,7 @@
  */
 package edu.harvard.iq.dvn.core.web.site;
 
-import com.icesoft.faces.component.ext.HtmlCommandButton;
+import com.icesoft.faces.component.ext.*;
 import edu.harvard.iq.dvn.core.admin.RoleServiceLocal;
 import edu.harvard.iq.dvn.core.admin.UserServiceLocal;
 import edu.harvard.iq.dvn.core.study.StudyFieldServiceLocal;
@@ -38,10 +38,6 @@ import javax.ejb.EJB;
 import javax.faces.application.FacesMessage;
 import javax.faces.component.UIComponent;
 import javax.faces.component.UIInput;
-import com.icesoft.faces.component.ext.HtmlInputText;
-import com.icesoft.faces.component.ext.HtmlInputTextarea;
-import com.icesoft.faces.component.ext.HtmlOutputLabel;
-import com.icesoft.faces.component.ext.HtmlOutputText;
 import edu.harvard.iq.dvn.core.web.util.CharacterValidator;
 import edu.harvard.iq.dvn.core.vdc.VDC;
 import edu.harvard.iq.dvn.core.vdc.VDCGroup;
@@ -81,6 +77,8 @@ public class EditSitePage extends VDCBaseBean implements java.io.Serializable  {
     private HtmlInputText          affiliation;
     private HtmlInputText   dataverseAlias;
     private HtmlInputText   dataverseName;
+    private HtmlInputText   dataverseFirstName;
+    private HtmlInputText   dataverseLastName;
     private HtmlInputTextarea shortDescriptionInput = new HtmlInputTextarea();
     private HtmlOutputText  shortDescriptionLabelText;
     private HtmlOutputLabel shortDescriptionLabel;
@@ -103,7 +101,15 @@ public class EditSitePage extends VDCBaseBean implements java.io.Serializable  {
      */
     public void init() {
         super.init();
+
+
+
+    }
+
+    public void initDVGeneralSettings(){
         VDC thisVDC = getVDCRequestBean().getCurrentVDC();
+        networkSelectItems = loadNetworkSelectItems();
+        selectSubNetworkId = thisVDC.getVdcNetwork().getId();
         //DEBUG
         //check to see if a dataverse type is in request
 
@@ -135,6 +141,8 @@ public class EditSitePage extends VDCBaseBean implements java.io.Serializable  {
                 HtmlInputTextarea descriptionText = new HtmlInputTextarea();
                 descriptionText.setValue(scholardataverse.getDescription());
                 setShortDescription(descriptionText);
+                setLocalAnnouncements(scholardataverse.getAnnouncements());
+                setChkLocalAnnouncements(scholardataverse.isDisplayAnnouncements());
             } else if (!this.dataverseType.equals("Scholar")) {
                 setDataverseType("Basic");
                 HtmlInputText nameText = new HtmlInputText();
@@ -148,6 +156,8 @@ public class EditSitePage extends VDCBaseBean implements java.io.Serializable  {
                 HtmlInputTextarea descriptionText = new HtmlInputTextarea();
                 descriptionText.setValue(thisVDC.getDvnDescription());
                 setShortDescription(descriptionText);
+                setLocalAnnouncements(thisVDC.getAnnouncements());
+                setChkLocalAnnouncements(thisVDC.isDisplayAnnouncements());
 
             }
             // initialize the select
@@ -156,9 +166,9 @@ public class EditSitePage extends VDCBaseBean implements java.io.Serializable  {
                     classUI.setSelected(true);
                 }
            }
-
+        
     }
-
+    
     private HtmlOutputLabel componentLabel1 = new HtmlOutputLabel();
 
     public HtmlOutputLabel getComponentLabel1() {
@@ -185,6 +195,22 @@ public class EditSitePage extends VDCBaseBean implements java.io.Serializable  {
 
     public void setDataverseName(HtmlInputText hit) {
         this.dataverseName = hit;
+    }
+    
+    public HtmlInputText getDataverseFirstName() {
+        return dataverseFirstName;
+    }
+
+    public void setDataverseFirstName(HtmlInputText hit) {
+        this.dataverseFirstName = hit;
+    }
+    
+    public HtmlInputText getDataverseLastName() {
+        return dataverseLastName;
+    }
+
+    public void setDataverseLastName(HtmlInputText hit) {
+        this.dataverseLastName = hit;
     }
 
     private HtmlOutputLabel componentLabel2 = new HtmlOutputLabel();
@@ -293,7 +319,16 @@ public class EditSitePage extends VDCBaseBean implements java.io.Serializable  {
             }
         }
     }
-   
+    
+     private Long selectSubNetworkId;
+
+    public Long getSelectSubNetworkId() {
+        return selectSubNetworkId;
+    }
+
+    public void setSelectSubNetworkId(Long selectSubNetworkId) {
+        this.selectSubNetworkId = selectSubNetworkId;
+    }
     public String edit(){
         VDC thisVDC = getVDCRequestBean().getCurrentVDC();
         boolean success = true;
@@ -304,6 +339,12 @@ public class EditSitePage extends VDCBaseBean implements java.io.Serializable  {
             thisVDC.setAlias((String)dataverseAlias.getValue());
             thisVDC.setAffiliation((String)affiliation.getValue());           
             thisVDC.setDvnDescription((String)shortDescription.getValue());
+            if (selectSubNetworkId > 0){
+                VDCNetwork vdcNetwork = vdcNetworkService.findById(selectSubNetworkId);
+                thisVDC.setVdcNetwork(vdcNetwork);
+            } else {
+                 thisVDC.setVdcNetwork(vdcNetworkService.findRootNetwork());
+            }
             if (dataverseType.equals("Scholar")) {
                 thisVDC.setFirstName(this.firstName);
                 thisVDC.setLastName(this.lastName);
@@ -588,7 +629,42 @@ public class EditSitePage extends VDCBaseBean implements java.io.Serializable  {
         String newValue = (String) event.getNewValue();
         this.setLastName(newValue);        
     }
+    
+        
+     private List<SelectItem> loadNetworkSelectItems() {
+        List selectItems = new ArrayList<SelectItem>();
+        List <VDCNetwork> networkList = vdcNetworkService.getVDCSubNetworks();
+        if (networkList.size() > 0){
+            for (VDCNetwork vdcNetwork : networkList){
+                selectItems.add(new SelectItem(vdcNetwork.getId(), vdcNetwork.getName()));
+            }
+        }
+        return selectItems;
+    }
 
+    private List <SelectItem> networkSelectItems = new ArrayList();
+
+    public List<SelectItem> getNetworkSelectItems() {
+        return this.networkSelectItems;
+    }
+    
+    private HtmlSelectOneMenu selectSubnetwork;   
+    public HtmlSelectOneMenu getSelectSubnetwork() {return selectSubnetwork;}
+    public void setSelectSubnetwork(HtmlSelectOneMenu selectSubnetwork) {this.selectSubnetwork = selectSubnetwork;}
+
+    private boolean chkLocalAnnouncements;    
+    public boolean isChkLocalAnnouncements() {return chkLocalAnnouncements;}    
+    public void setChkLocalAnnouncements(boolean chkLocalAnnouncements) {this.chkLocalAnnouncements = chkLocalAnnouncements;}
+    
+    private String localAnnouncements;    
+    public String getLocalAnnouncements() {return localAnnouncements;}   
+    public void setLocalAnnouncements(String localAnnouncements) {this.localAnnouncements = localAnnouncements;}
+    
+    private HtmlInputTextarea localAnnouncementsInputText;
+    public HtmlInputTextarea getLocalAnnouncementsInputText() {return this.localAnnouncementsInputText;}
+    public void setLocalAnnouncementsInputText(HtmlInputTextarea localAnnouncementsInputText) {this.localAnnouncementsInputText = localAnnouncementsInputText;}
+
+    
     /**
      * Validation so that a required field is not left empty
      *

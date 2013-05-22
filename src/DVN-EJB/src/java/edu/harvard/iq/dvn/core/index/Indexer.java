@@ -816,7 +816,7 @@ public class Indexer implements java.io.Serializable  {
 
     private void addFacet(List<CategoryPath> categoryPaths, String key, String value) {
         if (value != null && value.length() > 0) {
-            categoryPaths.add(new CategoryPath(key, value));
+            categoryPaths.add(new CategoryPath(key.trim(), value.trim()));
         }
     }
 

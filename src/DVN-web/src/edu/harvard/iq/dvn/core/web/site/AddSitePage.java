@@ -546,7 +546,12 @@ public class AddSitePage extends VDCBaseBean implements java.io.Serializable  {
      private List<SelectItem> loadNetworkSelectItems() {
         List selectItems = new ArrayList<SelectItem>();
         List <VDCNetwork> networkList = vdcNetworkService.getVDCSubNetworks();
-        if (networkList.size() > 0){
+        VDCNetwork checkForSubnetwork = getVDCRequestBean().getVdcNetwork();
+        if (!checkForSubnetwork.equals(vdcNetworkService.findRootNetwork())){
+            selectSubNetworkId = checkForSubnetwork.getId();
+            return selectItems;
+        }
+        if (networkList.size() > 0 ){
             for (VDCNetwork vdcNetwork : networkList){
                 selectItems.add(new SelectItem(vdcNetwork.getId(), vdcNetwork.getName()));
             }

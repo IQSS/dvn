@@ -78,6 +78,7 @@ import org.apache.lucene.facet.search.results.FacetResultNode;
 import org.apache.lucene.facet.taxonomy.CategoryPath;
 import org.apache.lucene.queryParser.ParseException;
 import org.apache.lucene.queryParser.QueryParser;
+import org.apache.lucene.search.BooleanClause;
 import org.apache.lucene.search.BooleanQuery;
 import org.apache.lucene.search.MatchAllDocsQuery;
 import org.apache.lucene.search.Query;
@@ -449,112 +450,6 @@ public class StudyListingPage extends VDCBaseBean implements java.io.Serializabl
         return "/StudyListingPage.xhtml?faces-redirect=true&studyListingIndex=" + studyListingIndex + "&vdcId=" + getVDCRequestBean().getCurrentVDCId();
     }
 
-//    public String search_actionWithFacets() {
-//        logger.info("Entered seach_actionWithFacets() on StudyListingPage.java");
-//        searchField = (searchField == null) ? "any" : searchField; // default searchField, in case no dropdown
-//
-//        List searchTerms = new ArrayList();
-//        SearchTerm st = new SearchTerm();
-//        st.setFieldName(searchField);
-//        st.setValue(searchValue);
-//        searchTerms.add(st);
-//
-//        ResultsWithFacets resultsWithFacets = null;
-//        List studyIDList = new ArrayList();
-//        Map variableMap = new HashMap();
-//        Map fileMap = new HashMap(); 
-//        Map versionMap = new HashMap();
-//        List displayVersionList = new ArrayList();
-//
-//        // currently search filter is determined from a set of boolean checkboxes
-//        int searchFilter = 0;
-//        if (renderSearchResultsFilter && searchResultsFilter) {
-//            searchFilter = 2;
-//        }
-//        if (renderSearchCollectionFilter && searchCollectionFilter) {
-//            searchFilter = 1;
-//        }
-//
-//        if (searchField.equals("variable")) {
-//            List variables = null;
-//            if (searchFilter == 1) {
-//                // just this collection
-//                List collections = new ArrayList();
-//                collections.add(vdcCollectionService.find(studyListing.getCollectionId()));
-//                variables = indexService.searchVariables(getVDCRequestBean().getCurrentVDC(), collections, st);
-//            } else if (searchFilter == 2) {
-//                // subsearch
-//                variables = indexService.searchVariables(studyListing.getStudyIds(), st);
-//            } else {
-//                variables = indexService.searchVariables(getVDCRequestBean().getCurrentVDC(), st);
-//            }
-//
-//            varService.determineStudiesFromVariables(variables, studyIDList, variableMap);
-//        } else {
-//            logger.info("searchFilter = " + searchFilter);
-//            if (searchFilter == 1) {
-//                // just this collection
-//                List collections = new ArrayList();
-//                collections.add(vdcCollectionService.find(studyListing.getCollectionId()));
-//                studyIDList = indexService.search(getVDCRequestBean().getCurrentVDC(), collections, searchTerms);
-//            } else if (searchFilter == 2) {
-//                // subsearch
-//                studyIDList = indexService.search(studyListing.getStudyIds(), searchTerms);
-//            } else {
-////                studyIDList = indexService.search(getVDCRequestBean().getCurrentVDC(), searchTerms);
-//                resultsWithFacets = indexService.searchwithFacets(getVDCRequestBean().getCurrentVDC(), searchTerms);
-//                studyIDList = resultsWithFacets.getMatchIds();
-//            }
-//            if (searchField.equals("any")) {
-//                List<Long> versionIds = indexService.searchVersionUnf(getVDCRequestBean().getCurrentVDC(),searchValue);
-//                Iterator iter = versionIds.iterator();
-//                Long studyId = null;
-//                while (iter.hasNext()) {
-////                    List<StudyVersion> svList = new ArrayList<StudyVersion>();
-//                    Long vId = (Long) iter.next();
-//                    StudyVersion sv = null;
-//                    try {
-//                        sv = studyService.getStudyVersionById(vId);
-//                        studyId = sv.getStudy().getId();
-//                        List<StudyVersion> svList = (List<StudyVersion>) versionMap.get(studyId);
-//                        if (svList == null) {
-//                            svList = new ArrayList<StudyVersion>();
-//                        }
-//                        svList.add(sv);
-//                        if (!studyIDList.contains(studyId)) {
-//                            displayVersionList.add(studyId);
-//                            studyIDList.add(studyId);
-//                        }
-//                        versionMap.put(studyId, svList);
-//                    } catch (IllegalArgumentException e) {
-//                        e.printStackTrace();
-//                    }
-//                }
-//
-//            }
-//        }
-//
-//
-//        // now we handle the display of the page
-//        // first get the bound collection tree
-//        collectionTree = studyListing.getCollectionTree();
-//
-//        // now create the new StudyListing
-//        studyListing = new StudyListing(StudyListing.SEARCH);
-//        studyListing.setVdcId(getVDCRequestBean().getCurrentVDCId());
-//        studyListing.setStudyIds(studyIDList);
-//        studyListing.setResultsWithFacets(resultsWithFacets);
-//        studyListing.setSearchTerms(searchTerms);
-//        studyListing.setVariableMap(variableMap);
-//        studyListing.setVersionMap(versionMap);
-//        studyListing.setCollectionTree(collectionTree);
-//        studyListing.setDisplayStudyVersionsList(displayVersionList);
-//        renderFacets = true;
-//
-//        String studyListingIndex = StudyListing.addToStudyListingMap(studyListing, getSessionMap());
-//        return "/StudyListingPage.xhtml?faces-redirect=true&studyListingIndex=" + studyListingIndex + "&vdcId=" + getVDCRequestBean().getCurrentVDCId();
-//    }
-//
     public String search_actionNew() {
         logger.fine("Entered search_actionNew on StudyListingPage.java");
 
@@ -602,9 +497,77 @@ public class StudyListingPage extends VDCBaseBean implements java.io.Serializabl
             logger.fine("searchFilter = " + searchFilter);
             if (searchFilter == 1) {
                 // just this collection
-                List collections = new ArrayList();
-                collections.add(vdcCollectionService.find(studyListing.getCollectionId()));
-                studyIDList = indexService.search(getVDCRequestBean().getCurrentVDC(), collections, searchTerms);
+//                List collections = new ArrayList();
+//                collections.add(vdcCollectionService.find(studyListing.getCollectionId()));
+//                studyIDList = indexService.search(getVDCRequestBean().getCurrentVDC(), collections, searchTerms);
+                // old non-faceted method above
+
+                /**
+                 * @todo: refactor? code is similar to getCollectionQueries in
+                 * Indexer.java?
+                 */
+                Query finalQuery = null;
+                QueryParser parser = new QueryParser(Version.LUCENE_30, "abstract", new DVNAnalyzer());
+                parser.setDefaultOperator(QueryParser.AND_OPERATOR);
+
+                StringBuilder sbOuter = new StringBuilder();
+                logger.fine("finding collection for id: " + studyListing.getCollectionId());
+                VDCCollection col = vdcCollectionService.find(studyListing.getCollectionId());
+                String type = col.getType();
+                String queryString = col.getQuery();
+                boolean isDynamic = col.isDynamic();
+                boolean isLocalScope = col.isLocalScope();
+                boolean isRootCollection = col.isRootCollection();
+                logger.fine("Single collection query... For " + col.getName() + " (isRootCollection=" + isRootCollection + "|type=" + type + "|isDynamic=" + isDynamic + "|isLocalScope=" + isLocalScope + ")  query: <<<" + queryString + ">>>");
+
+                if (queryString != null && !queryString.isEmpty()) {
+                    try {
+                        logger.fine("For " + col.getName() + " (isRootCollection=" + isRootCollection + "|type=" + type + "|isDynamic=" + isDynamic + "|isLocalScope=" + isLocalScope + ") adding query: <<<" + queryString + ">>>");
+                        Query dynamicQuery = parser.parse(queryString);
+                        if (isLocalScope) {
+                            BooleanQuery dynamicLocal = new BooleanQuery();
+                            Query dvOwnerIdQuery = indexService.constructDvOwnerIdQuery(getVDCRequestBean().getCurrentVDC());
+                            dynamicLocal.add(dynamicQuery, BooleanClause.Occur.MUST);
+                            dynamicLocal.add(dvOwnerIdQuery, BooleanClause.Occur.MUST);
+                            finalQuery = dynamicLocal;
+                        } else {
+                            finalQuery = dynamicQuery;
+                        }
+                    } catch (org.apache.lucene.queryParser.ParseException ex) {
+                        Logger.getLogger(StudyListingPage.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+                } else {
+                    logger.fine("For " + col.getName() + " (isRootCollection=" + isRootCollection + "|type=" + type + "|isDynamic=" + isDynamic + "|isLocalScope=" + isLocalScope + ") skipping add of query: <<<" + queryString + ">>>");
+                    List<Study> studies = col.getStudies();
+                    StringBuilder sbInner = new StringBuilder();
+                    for (Study study : studies) {
+                        logger.fine("- has StudyId: " + study.getId());
+                        String idColonId = "id:" + study.getId().toString() + " ";
+                        sbInner.append(idColonId);
+                    }
+                    logger.fine("sbInner: " + sbInner.toString());
+                    sbOuter.append(sbInner);
+                }
+
+                logger.fine("sbOuter: " + sbOuter);
+                if (!sbOuter.toString().isEmpty()) {
+                    try {
+                        parser.setDefaultOperator(QueryParser.OR_OPERATOR);
+                        Query staticColQuery = parser.parse(sbOuter.toString());
+                        parser.setDefaultOperator(QueryParser.AND_OPERATOR);
+                        logger.info("staticCollectionQuery: " + staticColQuery);
+                        finalQuery = staticColQuery;
+                    } catch (org.apache.lucene.queryParser.ParseException ex) {
+                        Logger.getLogger(AdvSearchPage.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+                }
+
+                dvnQuery.setSingleCollectionQuery(finalQuery);
+                dvnQuery.setVdc(getVDCRequestBean().getCurrentVDC());
+                dvnQuery.constructQuery();
+                resultsWithFacets = indexService.searchNew(dvnQuery);
+                studyIDList = resultsWithFacets.getMatchIds();
+
             } else if (searchFilter == 2) {
                 // subsearch
                 logger.fine("with these results searches disabled per https://redmine.hmdc.harvard.edu/issues/2969 ");
@@ -1263,7 +1226,7 @@ public class StudyListingPage extends VDCBaseBean implements java.io.Serializabl
     }
 
     public int getStudyCount() {
-        if (studyListing != null){
+        if (studyListing != null && studyListing.getStudyIds() != null){
             return studyListing.getStudyIds().size();
         }
         

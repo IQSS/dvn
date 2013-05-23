@@ -109,6 +109,7 @@ td.vdcEditFilesColB .errorMessage{display:block;}
 .vdcEditStudyIconLegend{float:left;margin-left:2em}
 div[id$='dvnDataCitationWidget'] {padding:4px !important; background:#f5f5dc;}
 div[id$='dvnDataCitationWidget'] div {white-space: normal;}
+#dvnDataCitationWidgetAuthorInputBlock > div, #dvnDataCitationWidgetDistributorInputBlock > div {overflow:hidden;}
 #dvnDataCitationWidgetInputBlock {display:inline-block; background:gold; margin-bottom:.5em; padding:4px; margin:2px;}
 .dvnDataCitationWidgetInput p:first-child {margin-top:0;}
 #dvnDataCitationWidgetBlockStudyID .dvnDataCitationWidgetLabelBlock, #dvnDataCitationWidgetBlockStudyID .dvnDataCitationWidgetTextBlock, span[id$='input_studyIdTextSync'] {display:inline !important;}

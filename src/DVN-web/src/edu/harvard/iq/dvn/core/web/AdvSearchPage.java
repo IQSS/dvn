@@ -63,6 +63,7 @@ import edu.harvard.iq.dvn.core.index.DvnQuery;
 import edu.harvard.iq.dvn.core.index.ResultsWithFacets;
 import edu.harvard.iq.dvn.core.study.Study;
 import edu.harvard.iq.dvn.core.study.VariableServiceLocal;
+import edu.harvard.iq.dvn.core.vdc.VDCNetwork;
 import javax.faces.component.UIColumn;
 import java.util.Locale;
 import java.util.ResourceBundle;
@@ -958,25 +959,62 @@ public class AdvSearchPage extends VDCBaseBean implements java.io.Serializable {
                 if (isVariableSearch() || isFileLevelMetadataSearch()) {
                     viewableIds = indexServiceBean.search(thisVDC, searchTerms); // older, non-facet method
                 } else {
-                    DvnQuery dvnQuery = new DvnQuery();
-                    dvnQuery.setVdc(thisVDC);
+                    Long rootSubnetworkId = new Long(0);
+                    if (getVDCRequestBean().getVdcNetwork().getId().equals(rootSubnetworkId)) {
+                        logger.info("Running DVN-wide search from AdvSearchPage");
+                        DvnQuery dvnQuery = new DvnQuery();
+                        dvnQuery.setVdc(thisVDC);
 
-                    List<Query> collectionQueries = new ArrayList<Query>();
-                    if (dvnQuery.getVdc() != null) {
-                        dvnQuery.setDvOwnerIdQuery(indexServiceBean.constructDvOwnerIdQuery(dvnQuery.getVdc()));
-                        collectionQueries = indexServiceBean.getCollectionQueries(dvnQuery.getVdc());
-                    }
+                        List<Query> collectionQueries = new ArrayList<Query>();
+                        if (dvnQuery.getVdc() != null) {
+                            dvnQuery.setDvOwnerIdQuery(indexServiceBean.constructDvOwnerIdQuery(dvnQuery.getVdc()));
+                            collectionQueries = indexServiceBean.getCollectionQueries(dvnQuery.getVdc());
+                        }
 
-                    dvnQuery.setSearchTerms(searchTerms);
-                    if (!collectionQueries.isEmpty()) {
-                        logger.fine("collectionQueries: " + collectionQueries);
-                        dvnQuery.setCollectionQueries(collectionQueries);
+                        dvnQuery.setSearchTerms(searchTerms);
+                        if (!collectionQueries.isEmpty()) {
+                            logger.fine("collectionQueries: " + collectionQueries);
+                            dvnQuery.setCollectionQueries(collectionQueries);
+                        } else {
+                            logger.fine("empty collectionQueries");
+                        }
+                        dvnQuery.constructQuery();
+                        resultsWithFacets = indexServiceBean.searchNew(dvnQuery);
+                        viewableIds = resultsWithFacets.getMatchIds();
                     } else {
-                        logger.fine("empty collectionQueries");
+                        /**
+                         * @todo: refactor this. copied and pasted from
+                         * BasicSearchFragment
+                         */
+                        logger.info("Searching only a subnetwork");
+                        VDCNetwork vdcNetwork = getVDCRequestBean().getVdcNetwork();
+                        String vdcNetworkName = vdcNetwork.getName();
+                        logger.info("vdcNetwork name: " + vdcNetworkName);
+                        Collection<VDC> vdcs = vdcNetwork.getNetworkVDCs();
+                        List<Query> subNetworkCollectionQueries = new ArrayList<Query>();
+                        List<Query> subNetworkDvMemberQueries = new ArrayList<Query>();
+                        for (VDC vdc : vdcs) {
+                            String name = vdc.getName();
+                            logger.info("adding queries for: " + name);
+                            Query dvnSpecificQuery = indexServiceBean.constructDvOwnerIdQuery(vdc);
+                            logger.info("adding dvnSpecific query:" + dvnSpecificQuery);
+                            subNetworkDvMemberQueries.add(dvnSpecificQuery);
+                            List<Query> vdcCollectionQueries = indexServiceBean.getCollectionQueries(vdc);
+                            for (Query collectionQuery : vdcCollectionQueries) {
+                                logger.info("adding collection query: " + collectionQuery);
+                            }
+                            subNetworkCollectionQueries.addAll(vdcCollectionQueries);
+                        }
+
+                        DvnQuery dvnQuery = new DvnQuery();
+                        dvnQuery.setSubNetworkDvMemberQueries(subNetworkDvMemberQueries);
+                        dvnQuery.setSubNetworkCollectionQueries(subNetworkCollectionQueries);
+                        dvnQuery.setSearchTerms(searchTerms);
+                        dvnQuery.constructQuery();
+                        dvnQuery.setClearPreviousFacetRequests(true); // is this still needed?
+                        resultsWithFacets = indexServiceBean.searchNew(dvnQuery);
+                        viewableIds = resultsWithFacets.getMatchIds();
                     }
-                    dvnQuery.constructQuery();
-                    resultsWithFacets = indexServiceBean.searchNew(dvnQuery);
-                    viewableIds = resultsWithFacets.getMatchIds();
                 }
             }
 

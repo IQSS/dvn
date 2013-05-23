@@ -30,6 +30,7 @@ import edu.harvard.iq.dvn.core.admin.RoleServiceLocal;
 import edu.harvard.iq.dvn.core.admin.UserGroup;
 import edu.harvard.iq.dvn.core.admin.VDCRole;
 import edu.harvard.iq.dvn.core.admin.VDCUser;
+import edu.harvard.iq.dvn.core.vdc.VDCNetwork;
 import edu.harvard.iq.dvn.core.vdc.VDC;
 import edu.harvard.iq.dvn.core.vdc.VDCCollection;
 import java.util.ArrayList;
@@ -343,6 +344,65 @@ public class Study implements java.io.Serializable {
     }
     
     
+    /*
+     * Similar mechanism for keeping a list of (sub)Networks, to which the 
+     * study may be attached via a "linked" collection; i.e., in additon to 
+     * the network to which it belongs directly, through the DV owner id and 
+     * parent network of the DV. 
+     * [experimental]
+     */
+    
+    @ManyToMany
+    @JoinTable(name = "LINKED_NETWORK_STUDIES",
+    joinColumns = @JoinColumn(name = "study_id"),
+    inverseJoinColumns = @JoinColumn(name = "vdcnetwork_id"))
+    private Collection<VDCNetwork> linkedToNetworks; 
+    
+    public Collection<VDCNetwork> getLinkedToNetworks() {
+        return this.linkedToNetworks; 
+    }
+    
+    public void setLinkedToNetworks(Collection<VDCNetwork> linkedNetworks) {
+        this.linkedToNetworks = linkedNetworks; 
+    }
+    
+    public List<Long> getLinkedToNetworkIds() {
+        if (this.linkedToNetworks == null || this.linkedToNetworks.size() == 0) {
+            return null; 
+        }
+        
+        ArrayList<Long> retlist = new ArrayList<Long>(); 
+        
+        Iterator iter = this.linkedToNetworks.iterator();
+        VDCNetwork linkedToNetwork = null; 
+        while (iter.hasNext()) {
+            linkedToNetwork = (VDCNetwork) iter.next();
+            if (linkedToNetwork != null) {
+                retlist.add(linkedToNetwork.getId());
+            }
+        }
+        
+        if (retlist.size() == 0) {
+            retlist = null; 
+        }
+        
+        return retlist;
+    }
+    
+    public void setLinkedToNetwork (VDCNetwork network) {
+        if (this.linkedToNetworks == null) {
+            this.linkedToNetworks = new ArrayList<VDCNetwork>(); 
+        }
+        if (!linkedToNetworks.contains(network)) {
+            linkedToNetworks.add(network);
+        }
+    }
+    
+    public void unsetLinkedToNetwork (VDCNetwork network) {
+        if (linkedToNetworks.contains(network)) {
+            linkedToNetworks.remove(network);
+        }
+    }
     /**
      * Holds value of property template.
      */

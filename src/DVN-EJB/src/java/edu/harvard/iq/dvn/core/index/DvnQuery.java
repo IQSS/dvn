@@ -50,6 +50,7 @@ public class DvnQuery {
     List<Query> subNetworkDvMemberQueries = new ArrayList<Query>();
     List<Query> subNetworkCollectionQueries = new ArrayList<Query>();
     Query singleCollectionQuery;
+    List<Query> multipleCollectionQueries = new ArrayList<Query>();
 
     public Query getDvOwnerIdQuery() {
         return dvOwnerIdQuery;
@@ -139,6 +140,14 @@ public class DvnQuery {
         this.singleCollectionQuery = singleCollectionQuery;
     }
 
+    public List<Query> getMultipleCollectionQueries() {
+        return multipleCollectionQueries;
+    }
+
+    public void setMultipleCollectionQueries(List<Query> multipleCollectionQueries) {
+        this.multipleCollectionQueries = multipleCollectionQueries;
+    }
+
     public void constructQuery() {
         logger.fine("in constructQuery...");
         BooleanQuery searchQuery = null;
@@ -223,6 +232,16 @@ public class DvnQuery {
             submittedAndInCollection.add(searchQuery, BooleanClause.Occur.MUST);
             submittedAndInCollection.add(singleCollectionQuery, BooleanClause.Occur.MUST);
             searchQuery = submittedAndInCollection;
+        } else if (!multipleCollectionQueries.isEmpty()) {
+            logger.fine("adding multipleCollection queries...");
+            BooleanQuery queryMultipleCollections = new BooleanQuery();
+            for (Query collectionQuery : multipleCollectionQueries) {
+                BooleanQuery submittedAndInCollection = new BooleanQuery();
+                submittedAndInCollection.add(searchQuery, BooleanClause.Occur.MUST);
+                submittedAndInCollection.add(collectionQuery, BooleanClause.Occur.MUST);
+                queryMultipleCollections.add(submittedAndInCollection, BooleanClause.Occur.SHOULD);
+            }            
+            searchQuery = queryMultipleCollections;
         } else if (!subNetworkDvMemberQueries.isEmpty() || !subNetworkCollectionQueries.isEmpty()) {
             logger.fine("When a user is in the context of a subnetwork any search that is performed will return studies that are owned by dataverses in that subnetwork along with any studies from outside dataverses that are included in collections.");
 

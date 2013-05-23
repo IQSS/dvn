@@ -925,7 +925,8 @@ public class AdvSearchPage extends VDCBaseBean implements java.io.Serializable {
 
     public String searchWithFacets() {
 //        String query = buildQuery();
-        List searchCollections = null;
+//        List searchCollections = null;
+        ArrayList<VDCCollection> searchCols = new ArrayList<VDCCollection>();
         boolean searchOnlySelectedCollections = false;
 
         if (validateAllSearchCriteria()) {
@@ -934,15 +935,18 @@ public class AdvSearchPage extends VDCBaseBean implements java.io.Serializable {
                 if (radioButtonStr.indexOf("Only") > 1) {
                     searchOnlySelectedCollections = true;
 
-                    searchCollections = new ArrayList();
+//                    searchCollections = new ArrayList();
                     for (Iterator it = collectionModelList.iterator(); it.hasNext();) {
                         CollectionModel elem = (CollectionModel) it.next();
                         if (elem.isSelected()) {
                             VDCCollection selectedCollection = vdcCollectionService.find(elem.getId());
-                            searchCollections.add(selectedCollection);
+//                            logger.info("adding " + selectedCollection.getName());
+//                            searchCollections.add(selectedCollection);
+                            searchCols.add(selectedCollection);
                         }
                     }
-                    if (searchCollections.isEmpty()) {
+                    if (searchCols.isEmpty()) {
+//                    if (searchCollections.isEmpty()) {
                         searchOnlySelectedCollections = false;
                     }
                 }
@@ -953,7 +957,63 @@ public class AdvSearchPage extends VDCBaseBean implements java.io.Serializable {
             List<Long> viewableIds = null;
             ResultsWithFacets resultsWithFacets = null;
             if (searchOnlySelectedCollections) {
-                viewableIds = indexServiceBean.search(thisVDC, searchCollections, searchTerms);
+//                viewableIds = indexServiceBean.search(thisVDC, searchCollections, searchTerms);
+                // older, non-faceted method above
+                logger.info("searching selected collections...");
+                Query finalQuery = null;
+                List<Query> collectionQueries = new ArrayList<Query>();
+                QueryParser parser = new QueryParser(Version.LUCENE_30, "abstract", new DVNAnalyzer());
+                parser.setDefaultOperator(QueryParser.AND_OPERATOR);
+                for (VDCCollection col : searchCols) {
+                    String type = col.getType();
+                    String queryString = col.getQuery();
+                    boolean isDynamic = col.isDynamic();
+                    boolean isLocalScope = col.isLocalScope();
+                    boolean isRootCollection = col.isRootCollection();
+                    StringBuilder sbOuter = new StringBuilder();
+                    if (queryString != null && !queryString.isEmpty()) {
+                        try {
+                            logger.info("For " + col.getName() + " (isRootCollection=" + isRootCollection + "|type=" + type + "|isDynamic=" + isDynamic + "|isLocalScope=" + isLocalScope + ") adding query: <<<" + queryString + ">>>");
+                            Query query = parser.parse(queryString);
+                            finalQuery = query;
+                            collectionQueries.add(query);
+                        } catch (org.apache.lucene.queryParser.ParseException ex) {
+                            Logger.getLogger(StudyListingPage.class.getName()).log(Level.SEVERE, null, ex);
+                        }
+                    } else {
+                        logger.info("For " + col.getName() + " (isRootCollection=" + isRootCollection + "|type=" + type + "|isDynamic=" + isDynamic + "|isLocalScope=" + isLocalScope + ") skipping add of query: <<<" + queryString + ">>>");
+                        List<Study> studies = col.getStudies();
+                        StringBuilder sbInner = new StringBuilder();
+                        for (Study study : studies) {
+                            logger.fine("- has StudyId: " + study.getId());
+                            String idColonId = "id:" + study.getId().toString() + " ";
+                            sbInner.append(idColonId);
+                        }
+                        logger.fine("sbInner: " + sbInner.toString());
+                        sbOuter.append(sbInner);
+
+                    }
+                    logger.info("sbOuter: " + sbOuter);
+                    if (!sbOuter.toString().isEmpty()) {
+                        try {
+                            parser.setDefaultOperator(QueryParser.OR_OPERATOR);
+                            Query staticColQuery = parser.parse(sbOuter.toString());
+                            finalQuery = staticColQuery;
+                            parser.setDefaultOperator(QueryParser.AND_OPERATOR);
+                            logger.fine("staticCollectionQuery: " + staticColQuery);
+                            collectionQueries.add(staticColQuery);
+                        } catch (org.apache.lucene.queryParser.ParseException ex) {
+                            Logger.getLogger(AdvSearchPage.class.getName()).log(Level.SEVERE, null, ex);
+                        }
+                    }
+                }
+
+                DvnQuery dvnQuery = new DvnQuery();
+                dvnQuery.setSearchTerms(searchTerms);
+                dvnQuery.setMultipleCollectionQueries(collectionQueries);
+                dvnQuery.constructQuery();
+                resultsWithFacets = indexServiceBean.searchNew(dvnQuery);
+                viewableIds = resultsWithFacets.getMatchIds();
             } else {
                 logger.fine("in searchWithFacets in AdvSearchPage");
                 if (isVariableSearch() || isFileLevelMetadataSearch()) {

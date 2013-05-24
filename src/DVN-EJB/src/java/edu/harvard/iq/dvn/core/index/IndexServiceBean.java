@@ -623,7 +623,8 @@ public class IndexServiceBean implements edu.harvard.iq.dvn.core.index.IndexServ
         } catch (Exception ex) {
             ioProblem = true;
             ioProblemCount++; 
-            logger.severe("Caught exception while trying to update studies in collections.");
+            logger.severe("Caught exception while trying to update studies in collections: "+ex.getMessage());
+            ex.printStackTrace();
         }
         handleIOProblems(ioProblem, ioProblemCount);
     }

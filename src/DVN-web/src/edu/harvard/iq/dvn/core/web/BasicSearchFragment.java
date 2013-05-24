@@ -216,6 +216,9 @@ public class BasicSearchFragment extends VDCBaseBean implements java.io.Serializ
                 VDCNetwork vdcNetwork = getVDCRequestBean().getVdcNetwork();
                 String vdcNetworkName = vdcNetwork.getName();
                 logger.info("vdcNetwork name: " + vdcNetworkName);
+                /*
+                 * Brute force way of resolving collection queries to match 
+                 * all the studies in a subnetwork: 
                 Collection<VDC> vdcs = vdcNetwork.getNetworkVDCs();
                 List<Query> subNetworkCollectionQueries = new ArrayList<Query>();
                 List<Query> subNetworkDvMemberQueries = new ArrayList<Query>();
@@ -231,10 +234,15 @@ public class BasicSearchFragment extends VDCBaseBean implements java.io.Serializ
                     }
                     subNetworkCollectionQueries.addAll(vdcCollectionQueries);
                 }
+                */
 
                 DvnQuery dvnQuery = new DvnQuery();
+                /*
                 dvnQuery.setSubNetworkDvMemberQueries(subNetworkDvMemberQueries);
                 dvnQuery.setSubNetworkCollectionQueries(subNetworkCollectionQueries);
+                * */
+                Query subNetworkQuery = indexService.constructNetworkIdQuery(getVDCRequestBean().getVdcNetwork().getId());
+                dvnQuery.setSubNetworkQuery(null);
                 dvnQuery.setSearchTerms(searchTerms);
                 dvnQuery.constructQuery();
                 dvnQuery.setClearPreviousFacetRequests(true);

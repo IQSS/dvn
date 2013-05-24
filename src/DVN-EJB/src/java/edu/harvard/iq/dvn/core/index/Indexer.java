@@ -244,7 +244,7 @@ public class Indexer implements java.io.Serializable  {
             addKeyword(doc, "studyId", study.getStudyId());
 //        addText(1.0f,  doc,"owner",study.getOwner().getName());
             addText(1.0f, doc, "dvOwnerId", Long.toString(study.getOwner().getId()));
-            String dvNetworkId = "1"; /* method will be added shortly: study.getOwner().getVdcNetworkId().toString();*/
+            String dvNetworkId = study.getOwner().getVdcNetwork().getId().toString();
             /* This is the ID of the DV Network to which the study belongs 
              * directly, through its owner DV:
              */
@@ -252,7 +252,7 @@ public class Indexer implements java.io.Serializable  {
             /* Plus it may belong to these extra Networks, through linking into
              * collections in DVs that belong to other Networks:
              */
-            addText(1.0f, doc, "dvNetworkId", dvNetworkId);
+            addText(1.0f, doc, "dvNetworkId", dvNetworkId); 
             List<Long> linkedToNetworks = study.getLinkedToNetworkIds();
             if (linkedToNetworks != null) {
                 for (Long vdcnetworkid : linkedToNetworks) {
@@ -490,29 +490,6 @@ public class Indexer implements java.io.Serializable  {
             for (FileMetadata fileMetadata : sv.getFileMetadatas()) {
                 addText(1.0f, doc, "fileDescription", fileMetadata.getDescription());
                 
-                /*
-                 * The commented-out code below simply indexes file-level 
-                 * metadata field values as if they were study-level fields.
-                 * -- L.A.
-                 **/
-                /*
-                StudyFile elem = fileMetadata.getStudyFile();
-                
-                if (elem instanceof SpecialOtherFile) {
-                    List<FileMetadataFieldValue> fileMetadataFieldValues = fileMetadata.getStudyFile().getFileMetadataFieldValues(); 
-                    for (int j = 0; j < fileMetadataFieldValues.size(); j++) {                        
-                        String fieldValue = fileMetadataFieldValues.get(j).getStrValue();
-                        
-                        FileMetadataField fmf = fileMetadataFieldValues.get(j).getFileMetadataField();
-                        String fileMetadataFieldName = fmf.getName(); 
-                        String fileMetadataFieldFormatName = fmf.getFileFormatName(); 
-                        String indexFileName = fileMetadataFieldFormatName + "-" + fileMetadataFieldName;
-                        
-                        addText(1.0f, doc, indexFileName, fieldValue); 
-                        
-                    }
-                }
-                * */
             }
 
             addText(1.0f, doc, "unf", metadata.getUNF());
@@ -2341,5 +2318,18 @@ public class Indexer implements java.io.Serializable  {
             Logger.getLogger(AdvSearchPage.class.getName()).log(Level.SEVERE, null, ex);
         }
         return dvnOwnerIdQuery;
+    }
+    
+    Query constructDvNetworkIdQuery(Long dvNetworkId) {
+        QueryParser parser = new QueryParser(Version.LUCENE_30, "abstract", new DVNAnalyzer());
+        parser.setDefaultOperator(QueryParser.AND_OPERATOR);
+        Query dvNetworkIdQuery = null;
+        try {
+            dvNetworkIdQuery = parser.parse("dvNetworkId:" + dvNetworkId.toString());
+        } catch (org.apache.lucene.queryParser.ParseException ex) {
+            Logger.getLogger(AdvSearchPage.class.getName()).log(Level.SEVERE, null, ex);
+            dvNetworkIdQuery = null; 
+        }
+        return dvNetworkIdQuery;
     }
 }

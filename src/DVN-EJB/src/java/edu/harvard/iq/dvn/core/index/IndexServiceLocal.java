@@ -92,5 +92,7 @@ public interface IndexServiceLocal extends java.io.Serializable {
     public List<Query> getCollectionQueries(VDC vdc);
 
     public Query constructDvOwnerIdQuery(VDC vdc);
+    
+    public Query constructNetworkIdQuery(Long dvNetworkId);
 
 }

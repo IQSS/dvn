@@ -47,8 +47,7 @@ public class DvnQuery {
 //    List<Long> limitToStudyIds;
     List<Query> collectionQueries = new ArrayList<Query>();
     private Query dvOwnerIdQuery;
-    List<Query> subNetworkDvMemberQueries = new ArrayList<Query>();
-    List<Query> subNetworkCollectionQueries = new ArrayList<Query>();
+    Query subNetworkQuery = null; 
     Query singleCollectionQuery;
     List<Query> multipleCollectionQueries = new ArrayList<Query>();
 
@@ -116,6 +115,15 @@ public class DvnQuery {
         this.collectionQueries = collectionQueries;
     }
 
+    
+    /*
+     * Commented-out parts used in Phil's (also commented-out) brute force
+     * implementation of a subnetwork search; see my comment in the 
+     * constructQuery() method. -- L.A. 
+     * 
+    List<Query> subNetworkDvMemberQueries = new ArrayList<Query>();
+    List<Query> subNetworkCollectionQueries = new ArrayList<Query>();
+     
     public List<Query> getSubNetworkCollectionQueries() {
         return subNetworkCollectionQueries;
     }
@@ -130,8 +138,16 @@ public class DvnQuery {
 
     public void setSubNetworkDvMemberQueries(List<Query> subNetworkDvMemberQueries) {
         this.subNetworkDvMemberQueries = subNetworkDvMemberQueries;
+    }*/
+
+    public Query getSubNetworkQuery() {
+        return subNetworkQuery;
     }
 
+    public void setSubNetworkQuery(Query subNetworkQuery) {
+        this.subNetworkQuery = subNetworkQuery;
+    }
+    
     public Query getSingleCollectionQuery() {
         return singleCollectionQuery;
     }
@@ -242,7 +258,22 @@ public class DvnQuery {
                 queryMultipleCollections.add(submittedAndInCollection, BooleanClause.Occur.SHOULD);
             }            
             searchQuery = queryMultipleCollections;
-        } else if (!subNetworkDvMemberQueries.isEmpty() || !subNetworkCollectionQueries.isEmpty()) {
+        } else if (subNetworkQuery != null) {
+            logger.fine("When a user is in the context of a subnetwork any search that is performed will return studies that are owned by dataverses in that subnetwork along with any studies from outside dataverses that are included in collections.");
+
+            BooleanQuery subNetworkQuery = new BooleanQuery();
+            subNetworkQuery.add(searchQuery, BooleanClause.Occur.MUST);
+            subNetworkQuery.add(subNetworkQuery, BooleanClause.Occur.MUST);
+
+            searchQuery = subNetworkQuery;
+        }/* This commented-out code is Phil's implementation of subnetwork searching,
+          * that does it by logically AND-ing and running all the queries that 
+          * define the dataverses in the subnetwork, and all the collections inside. 
+          * The performance should be atrocious, on a subnetwork the size of IQSS; 
+          * but it's good to have this implementation (it's supposed to be working)
+          * for reference and comparison. --L.A. 
+          * 
+          else if (!subNetworkDvMemberQueries.isEmpty() || !subNetworkCollectionQueries.isEmpty()) {
             logger.fine("When a user is in the context of a subnetwork any search that is performed will return studies that are owned by dataverses in that subnetwork along with any studies from outside dataverses that are included in collections.");
 
             BooleanQuery queryAcrossSubNetworkMembers = new BooleanQuery();
@@ -266,7 +297,7 @@ public class DvnQuery {
             queryForEntireSubnetwork.add(queryAcrossAllSubNetworkCollections, BooleanClause.Occur.SHOULD);
 
             searchQuery = queryForEntireSubnetwork;
-        } else {
+        }*/ else {
             logger.fine("DVN-wide search will be made");
         }
 //        logger.info("searchQuery before return: " + searchQuery);

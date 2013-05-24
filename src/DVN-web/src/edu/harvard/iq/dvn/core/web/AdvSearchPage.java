@@ -1018,38 +1018,47 @@ public class AdvSearchPage extends VDCBaseBean implements java.io.Serializable {
                 logger.fine("in searchWithFacets in AdvSearchPage");
                 if (isVariableSearch() || isFileLevelMetadataSearch()) {
                     viewableIds = indexServiceBean.search(thisVDC, searchTerms); // older, non-facet method
+                    // TODO: 
+                    // Make sure the variable and file metadata searches are 
+                    // properly scoped for subnetworks as well. -- L.A.
                 } else {
+                    /* 
+                     * This is the logical order here: 
+                     * We first check if we are inside a DV; then we run a 
+                     * DV-scoped search; 
+                     * If not, we check if we are inside a subnetwork; 
+                     * And if that is not the case either, we'll run a 
+                     * full DVN-wide search. 
+                     */
+                    DvnQuery dvnQuery = new DvnQuery();
                     Long rootSubnetworkId = new Long(0);
-                    if (getVDCRequestBean().getVdcNetwork().getId().equals(rootSubnetworkId)) {
+                    
+                    if (thisVDC != null) {
                         logger.info("Running DVN-wide search from AdvSearchPage");
-                        DvnQuery dvnQuery = new DvnQuery();
+                        
                         dvnQuery.setVdc(thisVDC);
 
                         List<Query> collectionQueries = new ArrayList<Query>();
-                        if (dvnQuery.getVdc() != null) {
-                            dvnQuery.setDvOwnerIdQuery(indexServiceBean.constructDvOwnerIdQuery(dvnQuery.getVdc()));
-                            collectionQueries = indexServiceBean.getCollectionQueries(dvnQuery.getVdc());
-                        }
-
-                        dvnQuery.setSearchTerms(searchTerms);
+                        dvnQuery.setDvOwnerIdQuery(indexServiceBean.constructDvOwnerIdQuery(dvnQuery.getVdc()));
+                        collectionQueries = indexServiceBean.getCollectionQueries(dvnQuery.getVdc());
                         if (!collectionQueries.isEmpty()) {
                             logger.fine("collectionQueries: " + collectionQueries);
                             dvnQuery.setCollectionQueries(collectionQueries);
                         } else {
                             logger.fine("empty collectionQueries");
                         }
-                        dvnQuery.constructQuery();
-                        resultsWithFacets = indexServiceBean.searchNew(dvnQuery);
-                        viewableIds = resultsWithFacets.getMatchIds();
-                    } else {
-                        /**
-                         * @todo: refactor this. copied and pasted from
-                         * BasicSearchFragment
-                         */
+                    } else if (!getVDCRequestBean().getVdcNetwork().getId().equals(rootSubnetworkId)) {
                         logger.info("Searching only a subnetwork");
                         VDCNetwork vdcNetwork = getVDCRequestBean().getVdcNetwork();
                         String vdcNetworkName = vdcNetwork.getName();
                         logger.info("vdcNetwork name: " + vdcNetworkName);
+                        
+                        /*
+                         * Brute force implementation: 
+                         * going through every DV in the subnetwork, and adding 
+                         * all the owner id and collection queries to the search
+                         * term query:
+                         * -- L.A.
                         Collection<VDC> vdcs = vdcNetwork.getNetworkVDCs();
                         List<Query> subNetworkCollectionQueries = new ArrayList<Query>();
                         List<Query> subNetworkDvMemberQueries = new ArrayList<Query>();
@@ -1064,17 +1073,22 @@ public class AdvSearchPage extends VDCBaseBean implements java.io.Serializable {
                                 logger.info("adding collection query: " + collectionQuery);
                             }
                             subNetworkCollectionQueries.addAll(vdcCollectionQueries);
-                        }
-
-                        DvnQuery dvnQuery = new DvnQuery();
-                        dvnQuery.setSubNetworkDvMemberQueries(subNetworkDvMemberQueries);
-                        dvnQuery.setSubNetworkCollectionQueries(subNetworkCollectionQueries);
-                        dvnQuery.setSearchTerms(searchTerms);
-                        dvnQuery.constructQuery();
-                        dvnQuery.setClearPreviousFacetRequests(true); // is this still needed?
-                        resultsWithFacets = indexServiceBean.searchNew(dvnQuery);
-                        viewableIds = resultsWithFacets.getMatchIds();
+                        }*/
+                        
+                        Query subNetworkQuery = indexServiceBean.constructNetworkIdQuery(getVDCRequestBean().getVdcNetwork().getId());
+                        dvnQuery.setSubNetworkQuery(subNetworkQuery); 
+                    } else {
+                        logger.info("Running DVN-wide search from AdvSearchPage");
                     }
+                    
+                    // Now, run the final search: 
+                    
+                    dvnQuery.setSearchTerms(searchTerms);
+                    dvnQuery.constructQuery();
+                    dvnQuery.setClearPreviousFacetRequests(true); // is this still needed?
+                    resultsWithFacets = indexServiceBean.searchNew(dvnQuery);
+                    viewableIds = resultsWithFacets.getMatchIds();
+                    
                 }
             }
 
@@ -1090,13 +1104,7 @@ public class AdvSearchPage extends VDCBaseBean implements java.io.Serializable {
                 sl.setVariableMap(variableMap);
 
             } else if (isFileLevelMetadataSearch()) {
-                /**
-                 * This (experimental) code is for treating file-level metadata
-                 * searches in the same way that we treat variable searches;
-                 * meaning that the actual files that matched the query will be
-                 * shown on the StudyListingPage; just like the individual
-                 * variables are shown there for variable searches.
-                 */
+              
                 Map fileMap = new HashMap();
                 List studies = new ArrayList();
                 studyService.determineStudiesFromFiles(viewableIds, studies, fileMap);

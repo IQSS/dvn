@@ -259,13 +259,13 @@ public class DvnQuery {
             }            
             searchQuery = queryMultipleCollections;
         } else if (subNetworkQuery != null) {
-            logger.fine("When a user is in the context of a subnetwork any search that is performed will return studies that are owned by dataverses in that subnetwork along with any studies from outside dataverses that are included in collections.");
+            logger.info("When a user is in the context of a subnetwork any search that is performed will return studies that are owned by dataverses in that subnetwork along with any studies from outside dataverses that are included in collections.");
 
-            BooleanQuery subNetworkQuery = new BooleanQuery();
-            subNetworkQuery.add(searchQuery, BooleanClause.Occur.MUST);
-            subNetworkQuery.add(subNetworkQuery, BooleanClause.Occur.MUST);
+            BooleanQuery combinedSubNetworkQuery = new BooleanQuery();
+            combinedSubNetworkQuery.add(searchQuery, BooleanClause.Occur.MUST);
+            combinedSubNetworkQuery.add(subNetworkQuery, BooleanClause.Occur.MUST);
 
-            searchQuery = subNetworkQuery;
+            searchQuery = combinedSubNetworkQuery;
         }/* This commented-out code is Phil's implementation of subnetwork searching,
           * that does it by logically AND-ing and running all the queries that 
           * define the dataverses in the subnetwork, and all the collections inside. 

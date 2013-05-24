@@ -518,7 +518,9 @@ public class Indexer implements java.io.Serializable  {
             }
             for (Iterator it = topicClassifications.iterator(); it.hasNext();) {
                 StudyTopicClass elem = (StudyTopicClass) it.next();
-                addFacet(categoryPaths, "topicClassValue", elem.getValue());
+                if (elem.getValue() != null && (!elem.getValue().equals("")) && elem.getVocab() != null && (!elem.getVocab().equals(""))) {
+                    addFacet(categoryPaths, "topicClassValueParensVocab", elem.getValue().trim() + " (" + elem.getVocab().trim() + ")");
+                }
             }
 
             CategoryDocumentBuilder categoryDocBuilder = new CategoryDocumentBuilder(taxo);
@@ -1649,7 +1651,7 @@ public class Indexer implements java.io.Serializable  {
         facetSearchParams.addFacetRequest(new CountFacetRequest(new CategoryPath("productionDate"), 10));
         facetSearchParams.addFacetRequest(new CountFacetRequest(new CategoryPath("distributionDate"), 10));
         facetSearchParams.addFacetRequest(new CountFacetRequest(new CategoryPath("keywordValue"), 10));
-        facetSearchParams.addFacetRequest(new CountFacetRequest(new CategoryPath("topicClassValue"), 10));
+        facetSearchParams.addFacetRequest(new CountFacetRequest(new CategoryPath("topicClassValueParensVocab"), 10));
 
         int numFacetsOfInterest = facetsOfInterest != null ? facetsOfInterest.size() : 0;
         CategoryPath[] facetsArray = new CategoryPath[numFacetsOfInterest];

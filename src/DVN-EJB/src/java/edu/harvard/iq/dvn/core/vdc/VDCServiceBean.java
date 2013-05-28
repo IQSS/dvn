@@ -272,7 +272,14 @@ public class VDCServiceBean implements VDCServiceLocal {
         
         String queryStr = "select id from VDC order by id";
         Query query = em.createNativeQuery(queryStr);
-        return (List<Long>) query.getResultList();
+        
+        List<Long> returnList = new ArrayList<Long>();
+        for (Object currentResult : query.getResultList()) {
+            // convert results into Longs
+            returnList.add(new Long(((Integer)currentResult).longValue()));
+        }
+
+        return returnList;
     }
 
     public List<Object[]> findInfoAll() {  

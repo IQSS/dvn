@@ -61,6 +61,7 @@ a.dvn_headerTitleLrgNetwork:link,a.dvn_headerTitleLrgNetwork:visited,a.dvn_heade
 .dvn_headerTitleR div.dvn_headerVersion span.iceOutTxt {color:gray;font-size:90% !important;line-height:12px !important;}
 .dvnUnreleasedDVIcon{display:inline !important;margin-left:.5em}
 .dvnUnreleasedDVIcon img{display:inline !important;vertical-align: middle}
+.dvnHeaderDVSubnetworkLink {color:#0c54b3 !important;}
 /* NAV */
 div.dvn_navblock{margin-bottom:12px;border-bottom:1px solid #dfdfdf}
 div.dvn_navblockNetwork{}

@@ -72,6 +72,13 @@ div.dvn_searchblock{margin-bottom:12px;padding:4px 12px;background:#F2F2F2;borde
 .dvnHmpgColumnWidgetViewMoreBlock {text-align:center; padding:3px 5px}
 .dvnHmpgColumnWidgetViewMoreBlock a.iceOutLnk span.iceOutTxt {font-size:90% !important;}
 
+.dvnHmpgWidgetSlider .dvnHmpgColumnWidgetHeader {margin-bottom:10px;}
+#dvnHmpgSubnetworkWidget .content {overflow:hidden;}
+#dvnHmpgSubnetworkWidget img {width:160px; float:left;}
+#dvnHmpgSubnetworkWidget .dvnHmpgSubnetworkInfo {float:left; padding:0 12px;}
+#dvnHmpgSubnetworkWidget .dvnHmpgSubnetworkInfo a.iceOutLnk {float:none; display:block;}
+#dvnHmpgSubnetworkWidget .dvnHmpgSubnetworkInfo .dvnHmpgSubnetworkDVCount {color:orange; display:block;}
+
 .dvn_sectionContent{display:inline;width:75%;float:right;text-align:left}
 .dvn_sectionPanels{display:inline;position:relative;float:left;width:24%}
 .dvn_sectionPanelTitle{padding:.25em 0;border-bottom:2px solid #91a5a9;color:#555;font-weight:700}

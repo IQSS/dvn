@@ -77,6 +77,8 @@ import javax.faces.model.SelectItem;
 import javax.inject.Named;
 import org.apache.lucene.facet.search.results.FacetResult;
 import org.apache.lucene.queryParser.QueryParser;
+import org.apache.lucene.search.BooleanClause;
+import org.apache.lucene.search.BooleanQuery;
 import org.apache.lucene.search.Query;
 import org.apache.lucene.util.Version;
 
@@ -960,7 +962,6 @@ public class AdvSearchPage extends VDCBaseBean implements java.io.Serializable {
 //                viewableIds = indexServiceBean.search(thisVDC, searchCollections, searchTerms);
                 // older, non-faceted method above
                 logger.info("searching selected collections...");
-                Query finalQuery = null;
                 List<Query> collectionQueries = new ArrayList<Query>();
                 QueryParser parser = new QueryParser(Version.LUCENE_30, "abstract", new DVNAnalyzer());
                 parser.setDefaultOperator(QueryParser.AND_OPERATOR);
@@ -974,9 +975,16 @@ public class AdvSearchPage extends VDCBaseBean implements java.io.Serializable {
                     if (queryString != null && !queryString.isEmpty()) {
                         try {
                             logger.info("For " + col.getName() + " (isRootCollection=" + isRootCollection + "|type=" + type + "|isDynamic=" + isDynamic + "|isLocalScope=" + isLocalScope + ") adding query: <<<" + queryString + ">>>");
-                            Query query = parser.parse(queryString);
-                            finalQuery = query;
-                            collectionQueries.add(query);
+                            Query dynamicQuery = parser.parse(queryString);
+                            if (isLocalScope) {
+                                BooleanQuery dynamicLocal = new BooleanQuery();
+                                Query dvOwnerIdQuery = indexServiceBean.constructDvOwnerIdQuery(getVDCRequestBean().getCurrentVDC());
+                                dynamicLocal.add(dynamicQuery, BooleanClause.Occur.MUST);
+                                dynamicLocal.add(dvOwnerIdQuery, BooleanClause.Occur.MUST);
+                                collectionQueries.add(dynamicLocal);
+                            } else {
+                                collectionQueries.add(dynamicQuery);
+                            }
                         } catch (org.apache.lucene.queryParser.ParseException ex) {
                             Logger.getLogger(StudyListingPage.class.getName()).log(Level.SEVERE, null, ex);
                         }
@@ -998,7 +1006,6 @@ public class AdvSearchPage extends VDCBaseBean implements java.io.Serializable {
                         try {
                             parser.setDefaultOperator(QueryParser.OR_OPERATOR);
                             Query staticColQuery = parser.parse(sbOuter.toString());
-                            finalQuery = staticColQuery;
                             parser.setDefaultOperator(QueryParser.AND_OPERATOR);
                             logger.fine("staticCollectionQuery: " + staticColQuery);
                             collectionQueries.add(staticColQuery);

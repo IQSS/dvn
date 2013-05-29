@@ -113,7 +113,7 @@
                     <ice:outputText styleClass="dvnManageTableEmptyMessage" value="There are no results to display. Select &#34;All&#34; or another letter to continue."/>
                 </div>
                 <ice:dataTable id="dataverseListManage" width="100%"
-                               columnWidths="20%,20%,10%,10%,10%,10%,10%,10%,10%"
+                               columnWidths="15%,15%,12%,5%,10%,8%,10%,10%,10%,5%"
                                headerClass="groupRow"
                                rendered="#{!empty(OptionsPage.vdcUIList.vdcUIList)}"
                                rowClasses="evenRow oddRow" rows="6"
@@ -148,6 +148,17 @@
                     </ice:commandSortHeader>
                 </f:facet>
                 <ice:outputText value="#{item.vdc.affiliation}"/>
+                </ice:column>
+                <!-- Subnetwork -->
+                <ice:column>
+                <f:facet name="header">
+                    <ice:commandSortHeader
+                        columnName="#{OptionsPage.vdcUIList.subnetworkColumnName}"
+                        arrow="true">
+                    <ice:outputText value="#{OptionsPage.vdcUIList.subnetworkColumnName}"/>
+                    </ice:commandSortHeader>
+                </f:facet>
+                <ice:outputText value="#{item.vdc.vdcNetwork.name}"/>
                 </ice:column>
                 <!-- Type -->
                 <ice:column>

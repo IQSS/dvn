@@ -59,6 +59,7 @@ public class VDC implements java.io.Serializable  {
     public static final String ORDER_BY_CREATE_DATE = "createddate";
     public static final String ORDER_BY_RELEASE_DATE = "releasedate";
     public static final String ORDER_BY_AFFILIATION = "affiliation";
+    public static final String ORDER_BY_SUBNETWORK = "subnetwork";
     public static final String ORDER_BY_TYPE = "dtype";
 
     private String name;

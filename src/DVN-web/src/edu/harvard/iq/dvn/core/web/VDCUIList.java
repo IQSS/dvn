@@ -59,6 +59,7 @@ public class VDCUIList extends SortableList {
     // dataTable Columns to sort by:
     private static final String NAME_COLUMN_NAME            = "Name";
     private static final String AFFILIATION_COLUMN_NAME     = "Affiliation";
+    private static final String SUBNETWORK_COLUMN_NAME     = "Subnetwork";
     private static final String DATERELEASED_COLUMN_NAME    = "Released";
     private static final String LASTUPDATED_COLUMN_NAME     = "Last Updated";
     private static final String ACTIVITY_COLUMN_NAME        = "Activity";
@@ -182,6 +183,8 @@ public class VDCUIList extends SortableList {
                 orderBy = VDC.ORDER_BY_ACTIVITY;
             } else if (sortColumnName.equals(AFFILIATION_COLUMN_NAME)) {
                 orderBy = VDC.ORDER_BY_AFFILIATION;
+            } else if (sortColumnName.equals(SUBNETWORK_COLUMN_NAME)) {
+                orderBy = VDC.ORDER_BY_SUBNETWORK;
             } else if (sortColumnName.equals(DATECREATED_COLUMN_NAME)){
                 orderBy = VDC.ORDER_BY_CREATE_DATE;
             } else if (sortColumnName.equals(TYPE_COLUMN_NAME)) {
@@ -254,6 +257,7 @@ public class VDCUIList extends SortableList {
 
     public String getNameColumnName()         { return NAME_COLUMN_NAME; }
     public String getAffiliationColumnName()  { return AFFILIATION_COLUMN_NAME; }
+    public String getSubnetworkColumnName()   { return SUBNETWORK_COLUMN_NAME; }
     public String getDateReleasedColumnName() { return DATERELEASED_COLUMN_NAME; }
     public String getLastUpdatedColumnName()  { return LASTUPDATED_COLUMN_NAME; }
     public String getActivityColumnName()     { return ACTIVITY_COLUMN_NAME; }

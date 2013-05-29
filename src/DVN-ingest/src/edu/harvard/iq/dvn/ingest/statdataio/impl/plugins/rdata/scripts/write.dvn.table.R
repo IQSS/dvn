@@ -38,8 +38,12 @@ write.dvn.table <- function (data.set, ...) {
 
   # Convert POSIXt date-times to the good format
   reformat.POSIXt <- function (x) {
-    attr(x, "tzone") <- "UTC"
-    paste(format(x, format = "%F %H:%M:%OS"), "+0000", sep = " ")
+    if (attr(x,"tzone") == "" || is.null(attr(x,"tzone"))) {
+       format(x, format = "%F %H:%M:%OS")
+    } else {
+       attr(x, "tzone") <- "UTC"
+       paste(format(x, format = "%F %H:%M:%OS"), "+0000", sep = " ")
+    }
   }
 
   # Convert date
@@ -62,7 +66,7 @@ write.dvn.table <- function (data.set, ...) {
     # namely, to remove the double quotes around the values. 
     # As I said, this is an awful hack. But it appears to be
     # the most practical way to resolve this. -- L.A.
-    if (is.double(data.set[, k])) {
+    if (!(is(data.set[, k], "POSIXt")) && !(is(data.set[, k], "Date")) && is.double(data.set[, k])) {
       strvec <- c()
       for (nc in 1:length(data.set[, k])) {
 	if (is.infinite(data.set[nc,k])) {

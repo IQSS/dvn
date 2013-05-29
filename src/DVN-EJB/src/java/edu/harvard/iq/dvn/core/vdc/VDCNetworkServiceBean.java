@@ -93,7 +93,7 @@ public class VDCNetworkServiceBean implements VDCNetworkServiceLocal {
     }
 
     public List <VDCNetwork> getVDCSubNetworks(){
-        String queryStr = "SELECT n FROM VDCNetwork n where n.id > 0";
+        String queryStr = "SELECT n FROM VDCNetwork n where n.id > 0 ORDER by n.id";
         Query query= em.createQuery(queryStr);
         return  query.getResultList();
     }

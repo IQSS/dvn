@@ -858,6 +858,8 @@ public class RDATAFileReader extends StatDataFileReader {
         mFormatCategoryTable.put(variableName, "date");
         
         columnMetaData = new VariableMetaData(0);
+        
+        LOG.info("date variable detected. format: "+FORMAT_DATE);
       }
       
       else if (type.equals("POSIXct") || type.equals("POSIXlt") || type.equals("POSIXt")) {
@@ -871,6 +873,8 @@ public class RDATAFileReader extends StatDataFileReader {
         mFormatCategoryTable.put(variableName, "time");
         
         columnMetaData = new VariableMetaData(0);
+        
+        LOG.info("POSIXt variable detected. format: "+FORMAT_DATETIME);
       }
       
       else if (type.equals("factor")) {
@@ -1107,13 +1111,14 @@ public class RDATAFileReader extends StatDataFileReader {
                 DateWithFormatter entryDateWithFormat;
                 
                 // Place a null entry if data is missing
-                if (dateFormats[i] != null && (stringEntries[i].equals("") || stringEntries[i].equals(" "))) {
+                if (dateFormats[i] != null && (varData[i].equals("") || varData[i].equals(" "))) {
                   stringEntries[i] = dateFormats[i] = null;
                 }
                 else {
-                  entryDateWithFormat = dateFormatter.getDateWithFormat(stringEntries[i]);
+                  entryDateWithFormat = dateFormatter.getDateWithFormat((String)varData[i]);
                   // Otherwise get the pattern
                   // entryDateWithFormat = dateFormatter.getDateWithFormat(stringEntries[i]);
+                  stringEntries[i] = (String)varData[i];
                   dateFormats[i] = entryDateWithFormat.getFormatter().toPattern();
                 }
               } 

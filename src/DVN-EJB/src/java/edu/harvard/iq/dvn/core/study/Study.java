@@ -388,7 +388,7 @@ public class Study implements java.io.Serializable {
         
         return retlist;
     }
-    
+    /*
     public void setLinkedToNetwork (VDCNetwork network) {
         if (this.linkedToNetworks == null) {
             this.linkedToNetworks = new ArrayList<VDCNetwork>(); 
@@ -402,7 +402,7 @@ public class Study implements java.io.Serializable {
         if (linkedToNetworks.contains(network)) {
             linkedToNetworks.remove(network);
         }
-    }
+    }*/
     /**
      * Holds value of property template.
      */

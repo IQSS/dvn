@@ -484,6 +484,7 @@ public class IndexServiceBean implements edu.harvard.iq.dvn.core.index.IndexServ
         
         try {
             List<Long> vdcIdList = vdcService.findAllIds();
+            logger.info("Found "+vdcIdList.size()+" dataverses."); 
             
             Long maxStudyId = studyService.getMaxStudyTableId(); 
             
@@ -497,19 +498,28 @@ public class IndexServiceBean implements edu.harvard.iq.dvn.core.index.IndexServ
                 /* This is quite unlikely to happen, but still... */
             }
             
-            int numberOfNetworks = findNumberOfSubnetworks(); 
-            
-            if (numberOfNetworks < 1) {
+            ArrayList<VDCNetwork> subNetworks = getSubNetworksAsArray(); //vdcNetworkService.getVDCSubNetworks();
+            // This is an array of subnetworks organized by *network id*; 
+            // i.e., if there are subnetworks with the ids 1, 2 and 5 the array 
+            // will contain {NULL, network_1, network_2, NULL, NULL, network_5}
+                        
+            if (subNetworks == null || (subNetworks.size() < 1)) {
                 // No subnetworks in this DV Network; nothing to do. 
-                logger.info("There's only one network in the DVN; exiting");
+                logger.info("There's only one network in the DVN; nothing to do. Exiting");
                 return; 
             }
             
-            if (numberOfNetworks > 63) {
-                logger.severe("There is more than 63 VDC (sub)networks. The subnetwork cross-indexing hack isn't going to work.");
-                throw new IOException("There is more than 63 VDC (sub)networks. The subnetwork cross-indexing hack isn't going to work.");
+            int maxSubnetworkId = subNetworks.size() - 1; 
+
+            if (maxSubnetworkId > 63) {
+                logger.severe("There are more than 63 VDC (sub)networks. The subnetwork cross-indexing hack isn't going to work."+
+                        "(we are using longs as bitstrings to store network cross-linked status of a study)");
+                throw new IOException("There are more than 63 VDC (sub)networks. The subnetwork cross-indexing hack isn't going to work."+
+                        "(we are using longs as bitstrings to store network cross-linked status of a study)");
                 /* Not very likely to happen either... */
             }
+            
+            
             
             long linkedVdcNetworkMap[] = new long[maxStudyId.intValue()+1];
             Long vdcId = null; 
@@ -529,7 +539,9 @@ public class IndexServiceBean implements edu.harvard.iq.dvn.core.index.IndexServ
                     if (vdcNetworkId.longValue() > 0) {
                         // We are not interested in the VDCs in the top-level
                         // network (network id 0); because the top-level network
-                        // already contains all the studies in it. 
+                        // already contains all the studies in it. Whatever 
+                        // studies the dynamic collections may be linking, they 
+                        // are still in the same DVN. 
                         linkedStudyIds = indexer.findStudiesInCollections(vdc);
 
                         if (linkedStudyIds != null) {
@@ -539,13 +551,20 @@ public class IndexServiceBean implements edu.harvard.iq.dvn.core.index.IndexServ
                                 if (studyId.longValue() <= maxStudyId.longValue()) {
                                     // otherwise this is a new study, created since we 
                                     // have started this process; we'll be skipping it,
-                                    // this time around.  
-                                    linkedStudy = studyService.getStudy(studyId);
+                                    // this time around. 
+                                    try {
+                                        linkedStudy = studyService.getStudy(studyId);
+                                    } catch (Exception ex) {
+                                        linkedStudy = null; 
+                                    }
+                                    
                                     if (linkedStudy != null) {
                                         studyNetworkId = linkedStudy.getOwner().getVdcNetwork().getId();
                                         if (studyNetworkId != null && vdcNetworkId.compareTo(studyNetworkId) != 0) {
                                             // this study is cross-linked from another VDC network!
-                                            linkedVdcNetworkMap[linkedStudy.getId().intValue()] |= studyNetworkId.longValue();
+                                            linkedVdcNetworkMap[linkedStudy.getId().intValue()] |= (1 >> (studyNetworkId.intValue()-1));
+                                            // note the (1 >> (studyNetworkId.intValue()-1)) above. this is safe, because studyNetworkId 
+                                            // cannot be 0 at this point - this network has to be another subnetwork
                                         }
                                     }
                                     linkedStudy = null;
@@ -566,53 +585,42 @@ public class IndexServiceBean implements edu.harvard.iq.dvn.core.index.IndexServ
             
             logger.info("Checking the cross-linking status and reindexing the studies for which it has changed:");
             
-            List<Long> linkedToNetworkIds = null; 
+            List<Long> linkedToNetworkIds = null;
             
             for (int i = 0; i < maxStudyId.intValue() + 1; i++) {
                 if (linkedVdcNetworkMap[i] > 0) {
-                    linkedStudy = studyService.getStudy(new Long(i));
+                    try {
+                        linkedStudy = studyService.getStudy(new Long(i));
+                    } catch (Exception ex) {
+                        linkedStudy = null; 
+                    }
                     // Only released studies get indexed!
                     if (linkedStudy != null && linkedStudy.isReleased()) {
-                        linkedToNetworkIds = linkedStudy.getLinkedToNetworkIds();
-                        boolean indexUpdateRequired = false;
-                        int linkedNetworkCounter = 0; 
-
-                        for (int network = 0; network < numberOfNetworks; i++) {
-                            if ((linkedVdcNetworkMap[i] & (1 >> network)) > 0) {
-                                logger.info("study "+i+" linked to Network "+network);
-                                linkedNetworkCounter++; 
-                                if (!alreadyLinkedToThisVdcNetwork(linkedToNetworkIds, network)) {
-                                    linkedStudy.setLinkedToNetwork(vdcNetworkService.findById(new Long(network)));
-                                    // TODO: 
-                                    // instead of doing "findById()" each time, create
-                                    // an array of vdcNetworks and cache them. -- L.A.
-                                    indexUpdateRequired = true;
-                                }
-                                // TODO: 
-                                
-                            } else {
-                                // And if the study is still listed in the DB as 
-                                // linked to a network, even it is no longer 
-                                // in the search results for any of the collections
-                                // in that network - the linking needs to be removed:
-                                // -- L.A. 
-                                if (alreadyLinkedToThisVdcNetwork(linkedToNetworkIds, network)) {
-                                    linkedStudy.unsetLinkedToNetwork(vdcNetworkService.findById(new Long(network)));
-                                    indexUpdateRequired = true; 
-                                }
-                            }
-                        }
                         
-                        if (indexUpdateRequired) {
-                            // Can reindex it now... or put it on some list for a later 
-                            // batch reindex - ?
+                        // Find what subnetworks this study is already linked 
+                        // to in the database: 
+                        
+                        linkedToNetworkIds = linkedStudy.getLinkedToNetworkIds();
+                        
+                        long linkedNetworkBitString = produceLinkedNetworksBitstring(linkedToNetworkIds);
+                        
+                        if (linkedNetworkBitString != linkedVdcNetworkMap[i]) {
+                            // This means the cross-linking status of the study has changed!
+                            
+                            // 1. Update it in the database: 
+                            
+                            linkedStudy.setLinkedToNetworks(newLinkedToNetworks(subNetworks, linkedVdcNetworkMap[i]));
+                            
+                            // 2. Re-index the study: 
+                            
                             try {
                                 indexer.deleteDocument(linkedStudy.getId());
                                 indexer.addDocument(linkedStudy);
                             } catch (Exception ex) {
                                 ioProblem = true;
                                 ioProblemCount++;
-                                logger.severe("Caught exception attempting to re-index study " + linkedStudy.getId());
+                                logger.severe("Caught exception attempting to re-index re-linked study " + linkedStudy.getId());
+                                ex.printStackTrace();
                             }
                         }
                     }
@@ -629,27 +637,63 @@ public class IndexServiceBean implements edu.harvard.iq.dvn.core.index.IndexServ
         handleIOProblems(ioProblem, ioProblemCount);
     }
 
-    private int findNumberOfSubnetworks () {
-        Long ret = null;
+    private ArrayList<VDCNetwork> getSubNetworksAsArray () {
         
         List<VDCNetwork> subNetworks = vdcNetworkService.getVDCSubNetworks();
         
-        if (subNetworks == null) {
-            return 0;
+        if (subNetworks != null) {
+            ArrayList subNetworksArray = new ArrayList <VDCNetwork>(); 
+
+            
+            for (int i = 0; i < subNetworks.size(); i++) {
+                if (subNetworks.get(i) != null) {
+                    subNetworksArray.add(subNetworks.get(i).getId().intValue(), subNetworks.get(i));
+                }
+            }
+            
+            return subNetworksArray; 
         }
         
-        return subNetworks.size();
+        return null; 
     }
     
-    boolean alreadyLinkedToThisVdcNetwork(List<Long> linkedToNetworks, int network) {
-        if (linkedToNetworks == null) {
-            return false;
+    
+    private List<VDCNetwork> newLinkedToNetworks(List<VDCNetwork> subNetworks, long bitString) {
+        List<VDCNetwork> newList = null; 
+        
+        if (bitString > 0 && subNetworks != null) {
+            newList = new ArrayList<VDCNetwork>(); 
+            
+            for (int i=1; i < subNetworks.size(); i++) {
+                if ((bitString & (1 >> (i - 1))) > 0) {
+                    if (subNetworks.get(i) != null) {
+                        // it should never be null at this point - but won't 
+                        // hurt to check anyway. 
+                        newList.add(subNetworks.get(i));
+                    }
+                }
+            }
         }
         
-        if (linkedToNetworks.contains(new Long(network))) {
-            return true; 
-        }   
-        return false; 
+        return newList; 
+    }
+    
+    private long produceLinkedNetworksBitstring(List<Long> linkedToNetworkIds) {
+        long bitString = 0; 
+        
+        if (linkedToNetworkIds != null) {
+            for (int i = 0; i < linkedToNetworkIds.size(); i++) {
+                int networkId = 0; 
+                
+                if (linkedToNetworkIds.get(i) != null) {
+                    networkId = linkedToNetworkIds.get(i).intValue();
+                    if (networkId > 0) {
+                    }
+                }
+            }
+        }
+        
+        return bitString; 
     }
 
     public void deleteIndexList(List<Long> studyIds) {

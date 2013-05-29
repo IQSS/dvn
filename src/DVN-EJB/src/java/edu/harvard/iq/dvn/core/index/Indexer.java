@@ -252,6 +252,7 @@ public class Indexer implements java.io.Serializable  {
             /* Plus it may belong to these extra Networks, through linking into
              * collections in DVs that belong to other Networks:
              */
+            logger.info("Using network id "+dvNetworkId);
             addText(1.0f, doc, "dvNetworkId", dvNetworkId); 
             List<Long> linkedToNetworks = study.getLinkedToNetworkIds();
             if (linkedToNetworks != null) {

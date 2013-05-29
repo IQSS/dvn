@@ -21,6 +21,7 @@ package edu.harvard.iq.dvn.ingest.thedata.helpers;
 
 import java.text.SimpleDateFormat;
 import java.text.ParseException;
+import java.text.ParsePosition;
 import java.text.DateFormat;
 import java.util.*;
 import java.util.logging.Logger;
@@ -148,24 +149,33 @@ public class DateFormatter {
     
     // Iterate through all available date-time formats
     for (SimpleDateFormat format : mTimeFormats) {
-      try {
+      //try {
         LOG.info("format[" + k + "] = " + format.toPattern());
         LOG.info("value[" + k + "] = " + value);
         
         k++;
         
         // Parse the date from the format
-        dateResult = format.parse(value);
+        ParsePosition pos = new ParsePosition(0); 
+        dateResult = format.parse(value, pos);
+        if (dateResult == null) {
+            LOG.info("NOPE, didn't work.");
+            continue; 
+        }
+        if (pos.getIndex() != value.length()) {
+            LOG.info("ATTENTION: did not parse the entire supplied value (likely because of a bad time zone!); exiting");
+              return null; 
+        }
         // Format in 
         stringResult = utcSimpleTimeFormatter.format(dateResult);
         LOG.info("RESULT (time) = " + stringResult);
         // If parse and format were successful, return the formatted result
         //return stringResult;
         return new DateWithFormatter(dateResult, format);
-      }
-      catch (ParseException ex) {
+      //}
+      //catch (ParseException ex) {
         // Do nothing
-      }
+      //}
     }
     // Iterate through all available date formats
     for (SimpleDateFormat format : mDateFormats) {
@@ -174,6 +184,7 @@ public class DateFormatter {
         format.setLenient(false);
         // Parse the date from the format
         dateResult = format.parse(value);
+        
         // String result
         stringResult = utcSimpleDateFormatter.format(dateResult);
         
@@ -182,7 +193,7 @@ public class DateFormatter {
         return new DateWithFormatter(dateResult, format);
       }
       catch (ParseException ex) {
-        // Do nothing
+        //Do nothing
       }
     }
     // On failure, return NULL

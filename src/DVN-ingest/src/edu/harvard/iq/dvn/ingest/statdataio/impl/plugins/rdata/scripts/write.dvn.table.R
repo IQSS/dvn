@@ -39,10 +39,17 @@ write.dvn.table <- function (data.set, ...) {
   # Convert POSIXt date-times to the good format
   reformat.POSIXt <- function (x) {
     if (attr(x,"tzone") == "" || is.null(attr(x,"tzone"))) {
-       format(x, format = "%F %H:%M:%OS")
-    } else {
+       # If no timezone is explicitly defined, we'll
+       # display the actual UTC/GMT time value stored:
        attr(x, "tzone") <- "UTC"
-       paste(format(x, format = "%F %H:%M:%OS"), "+0000", sep = " ")
+       # Strip the milliseconds, if all zeros: 
+       sub("\\.000", "", format(x, format = "%F %H:%M:%OS"))
+    } else {
+       # If there is a time zone, we will preserve it as is, 
+       # without making any effort to validate it. We'll 
+       # leave it to the app to try to interpret it.
+       # Also, strip the milliseconds, if all zeros: 
+       sub("\\.000", "", paste(format(x, format = "%F %H:%M:%OS"), attr(x,"tzone"), sep = " "))
     }
   }
 

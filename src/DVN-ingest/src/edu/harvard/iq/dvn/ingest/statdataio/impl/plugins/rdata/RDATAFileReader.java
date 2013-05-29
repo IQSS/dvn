@@ -110,11 +110,11 @@ public class RDATAFileReader extends StatDataFileReader {
   // TIME FORMATS
   private static SimpleDateFormat[] TIME_FORMATS = new SimpleDateFormat[] {
     // Date-time up to milliseconds with timezone, e.g. 2013-04-08 13:14:23.102 -0500
-    new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS Z"),
+    new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS z"),
     // Date-time up to milliseconds, e.g. 2013-04-08 13:14:23.102
     new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS"),
     // Date-time up to seconds with timezone, e.g. 2013-04-08 13:14:23 -0500
-    new SimpleDateFormat("yyyy-MM-dd HH:mm:ss Z"),
+    new SimpleDateFormat("yyyy-MM-dd HH:mm:ss z"),
     // Date-time up to seconds and no timezone, e.g. 2013-04-08 13:14:23
     new SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
   };
@@ -963,7 +963,7 @@ public class RDATAFileReader extends StatDataFileReader {
    * @param DataTable table a rectangular data table
    * @return void
    */
-  private void createUNF (DataTable table) {
+  private void createUNF (DataTable table) throws IOException {
     List<Integer> variableTypeList = getVariableTypeList(mDataTypes);
     String[] dateFormats = new String[mCaseQuantity];
     String[] unfValues = new String[mVarQuantity];
@@ -1110,16 +1110,24 @@ public class RDATAFileReader extends StatDataFileReader {
               for (int i = 0; i < varData.length; i++) {
                 DateWithFormatter entryDateWithFormat;
                 
-                // Place a null entry if data is missing
+                // If data is missing, treat this entry as just that - 
+                // a missing value. Just like for all the other data types, 
+                // this is represented by a null:
                 if (dateFormats[i] != null && (varData[i].equals("") || varData[i].equals(" "))) {
                   stringEntries[i] = dateFormats[i] = null;
                 }
                 else {
                   entryDateWithFormat = dateFormatter.getDateWithFormat((String)varData[i]);
+                  if (entryDateWithFormat == null) {
+                      LOG.info("ATTENTION: the supplied date/time string could not be parsed (" +
+                              (String)varData[i]); 
+                      throw new IOException("Could not parse supplied date/time string: "+(String)varData[i]);
+                  }
                   // Otherwise get the pattern
                   // entryDateWithFormat = dateFormatter.getDateWithFormat(stringEntries[i]);
                   stringEntries[i] = (String)varData[i];
                   dateFormats[i] = entryDateWithFormat.getFormatter().toPattern();
+                
                 }
               } 
               
@@ -1131,9 +1139,10 @@ public class RDATAFileReader extends StatDataFileReader {
                 unfValue = UNF5Util.calculateUNF(stringEntries, dateFormats);
               }
               catch (Exception ex) {
-                LOG.warning("RDATAFileReader: UNF for \"%s\" could not be computed; calculating UNF as a string.");
-                unfValue = UNF5Util.calculateUNF(stringEntries);
-                ex.printStackTrace();
+                LOG.warning("RDATAFileReader: UNF for variable "+name+" could not be computed!");
+                //unfValue = UNF5Util.calculateUNF(stringEntries);
+                //ex.printStackTrace();
+                throw ex; 
               }
             } else {
                 for (int i = 0; i < varData.length; i++) {
@@ -1167,6 +1176,7 @@ public class RDATAFileReader extends StatDataFileReader {
       } catch (Exception ex) { 
           LOG.info("Exception caught while calculating UNF! " + ex.getMessage());
           ex.printStackTrace();
+          throw new IOException ("Exception caught while calculating UNF! "+ex.getMessage());
       }
       LOG.info(String.format("RDATAFileReader: Column \"%s\" (UNF) = %s", name, unfValues[k]));
 
@@ -1174,12 +1184,11 @@ public class RDATAFileReader extends StatDataFileReader {
     
     try {
       fileUNFvalue = UNF5Util.calculateUNF(unfValues);
-    } catch (NumberFormatException ex) {
+    } catch (Exception ex) {
       ex.printStackTrace();
-    } catch (IOException ex) {
-      ex.printStackTrace();
-    }
-    
+      LOG.info("Exception caught while calculating the combined UNF for the data set! " + ex.getMessage());
+      throw new IOException ("Exception caught while calculating the combined UNF for the data set! "+ex.getMessage());
+    } 
     mCsvDataTable.setUnf(unfValues);
     mCsvDataTable.setFileUnf(fileUNFvalue);
 

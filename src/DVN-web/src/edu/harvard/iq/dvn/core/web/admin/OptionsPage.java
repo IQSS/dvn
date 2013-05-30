@@ -512,6 +512,7 @@ public class OptionsPage extends VDCBaseBean  implements java.io.Serializable {
             } else if (tab.equals("settings")) {
                 selectedIndex=1;
                 networkGeneralSettingsSubTab.setSelectedIndex(0);
+                    editNetworkNamePage.init();
                 if (tab2 != null && tab2.equals("advanced")){
                    networkGeneralSettingsSubTab.setSelectedIndex(1); 
                 }
@@ -3161,7 +3162,7 @@ public class OptionsPage extends VDCBaseBean  implements java.io.Serializable {
         VDCNetwork thisVdcNetwork = vdcNetworkService.find(new Long(0));
         thisVdcNetwork.setContactEmail(this.getContactUsEmail());
         thisVdcNetwork.setSystemEmail(this.getEditSystemEmail()); 
-        thisVdcNetwork.setName(editNetworkNamePage.getNetworkName());
+        thisVdcNetwork.setName((String) editNetworkNamePage.getTextFieldNetworkName().getValue());
         thisVdcNetwork.setDisplayAnnouncements(editNetworkAnnouncementsPage.isChkEnableNetworkAnnouncements());
         thisVdcNetwork.setAnnouncements(editNetworkAnnouncementsPage.getNetworkAnnouncements());
         vdcNetworkService.edit(thisVdcNetwork);

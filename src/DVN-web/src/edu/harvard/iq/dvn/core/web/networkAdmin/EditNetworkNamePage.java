@@ -70,21 +70,13 @@ public class EditNetworkNamePage extends VDCBaseBean  implements java.io.Seriali
     }
     
     public void preRenderView(){
-        alias = getVDCRequestBean().getRequestParam("alias");
         String edit = getVDCRequestBean().getRequestParam("edit");
         if (edit !=null && edit.equals("false")){
             addMode = true;
             networkName = "";
-        } else if(alias != null && !alias.isEmpty()){
-            VDCNetwork vdcNetwork = vdcNetworkService.findByAlias(alias);
-            if (vdcNetwork != null){
-                networkName = vdcNetwork.getName();
-            } else {
-                networkName = getVDCRequestBean().getVdcNetwork().getName();
-            }
-        }
+        } 
             else {
-            networkName = getVDCRequestBean().getVdcNetwork().getName();
+            networkName = getVDCRequestBean().getCurrentVdcNetwork().getName();
         }
     }
     
@@ -112,18 +104,9 @@ public class EditNetworkNamePage extends VDCBaseBean  implements java.io.Seriali
 
 
     public String saveNetworkName() {
-        VDCNetwork vdcNewNetwork = null;
-        VDCNetwork thisVdcNetwork = getVDCRequestBean().getVdcNetwork();
-        if (addMode){
-
-            thisVdcNetwork = vdcNewNetwork;
-        }
-        thisVdcNetwork.setName((String) textFieldNetworkName.getValue());
-        try {
-            vdcNetworkService.edit(thisVdcNetwork);
-        } catch (OptimisticLockException ole) {
-            String retVal = saveNetworkName();
-        }
+        /* Save done in options page or edit subnetwork page
+         * 
+         */
         return "";
     }
     

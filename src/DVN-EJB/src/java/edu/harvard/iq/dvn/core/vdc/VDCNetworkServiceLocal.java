@@ -30,6 +30,7 @@ package edu.harvard.iq.dvn.core.vdc;
 import edu.harvard.iq.dvn.core.study.Template;
 import java.util.List;
 import javax.ejb.Local;
+import javax.servlet.http.HttpServletRequest;
 
 /**
  *
@@ -86,5 +87,7 @@ public interface VDCNetworkServiceLocal extends java.io.Serializable  {
     public VDCNetwork findByAlias(String alias);
 
     public VDCNetwork findById(Long networkId);
+    
+    public VDCNetwork getVDCNetworkFromRequest(HttpServletRequest request);
 }
 

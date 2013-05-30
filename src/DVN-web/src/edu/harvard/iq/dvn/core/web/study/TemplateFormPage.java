@@ -142,7 +142,12 @@ public class TemplateFormPage extends VDCBaseBean implements java.io.Serializabl
         template.getMetadata().initCollections();
         
         initStudyFields();
-
+        VDCNetwork vdcSubnetwork = template.getVdcSubnetwork();       
+        if (vdcSubnetwork != null){
+             selectSubnetwork.setValue(vdcSubnetwork.getId());
+        } else {
+             selectSubnetwork.setValue(0);
+        }
         fieldTypeSelectItems = loadFieldTypeSelectItems();
         fieldInputLevelSelectItems = loadFieldInputLevelSelectItems();
         networkSelectItems = loadNetworkSelectItems();
@@ -442,8 +447,9 @@ public class TemplateFormPage extends VDCBaseBean implements java.io.Serializabl
     
     private List<SelectItem> loadNetworkSelectItems() {
         List selectItems = new ArrayList<SelectItem>();
-        List <VDCNetwork> networkList = vdcNetworkService.getVDCNetworksOrderedById();
-        if (networkList.size() > 1){
+        List <VDCNetwork> networkList = vdcNetworkService.getVDCSubNetworks();
+        if (networkList.size() > 0){
+            selectItems.add(new SelectItem(0, "All subnetworks"));
             for (VDCNetwork vdcNetwork : networkList){
                 selectItems.add(new SelectItem(vdcNetwork.getId(), vdcNetwork.getName()));
             }
@@ -1084,12 +1090,15 @@ public class TemplateFormPage extends VDCBaseBean implements java.io.Serializabl
         boolean isNewTemplate = template.getId() == null;        
         boolean stringValidation = true;
         String networkId = (String) this.selectSubnetwork.getValue();
-             VDCNetwork vdcNetwork = vdcNetworkService.findRootNetwork();
-        if (networkId != null){
-              vdcNetwork = vdcNetworkService.findById(new Long(networkId));              
+        if (networkId == null){
+           networkId = "0"; 
         }
-        template.setVdcNetwork(vdcNetwork);      
-        
+        VDCNetwork vdcNetwork;
+        vdcNetwork = vdcNetworkService.findById(new Long(networkId)); 
+        System.out.print("networkId " + networkId);
+        template.setVdcSubnetwork(vdcNetwork);    
+        System.out.print("getvdcsubnetwork " + template.getVdcSubnetwork().getId());
+
         if(StringUtil.isEmpty(template.getName())){
             FacesMessage message = new FacesMessage("Template name is required.");
             FacesContext.getCurrentInstance().addMessage("templateForm:template_name", message);
@@ -1125,7 +1134,9 @@ public class TemplateFormPage extends VDCBaseBean implements java.io.Serializabl
         }
         
         
-        editTemplateService.save();
+        editTemplateService.saveWSubnetwork(template);
+        
+                System.out.print("getvdcsubnetwork after save " + template.getVdcSubnetwork().getId());
 
         if (isNewTemplate) {
         getVDCRenderBean().getFlash().put("successMessage", "Successfully added new template.");

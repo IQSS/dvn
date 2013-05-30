@@ -33,10 +33,7 @@ import edu.harvard.iq.dvn.core.study.StudyServiceLocal;
 import edu.harvard.iq.dvn.core.study.StudyVersion;
 import edu.harvard.iq.dvn.core.study.Template;
 import edu.harvard.iq.dvn.core.util.StringUtil;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.annotation.Resource;
@@ -50,6 +47,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
+import javax.servlet.http.HttpServletRequest;
 
 /**
  *
@@ -93,7 +91,7 @@ public class VDCNetworkServiceBean implements VDCNetworkServiceLocal {
     }
 
     public List <VDCNetwork> getVDCSubNetworks(){
-        String queryStr = "SELECT n FROM VDCNetwork n where n.id > 0 ORDER by n.id";
+        String queryStr = "SELECT n FROM VDCNetwork n where n.id > 0";
         Query query= em.createQuery(queryStr);
         return  query.getResultList();
     }
@@ -164,6 +162,28 @@ public class VDCNetworkServiceBean implements VDCNetworkServiceLocal {
 
         return vdcNetwork;
     }
+    
+    public VDCNetwork getVDCNetworkFromRequest(HttpServletRequest request) {
+        VDCNetwork vdcNetwork = (VDCNetwork) request.getAttribute("vdcNetwork");
+        if (vdcNetwork == null) {
+            Iterator iter = request.getParameterMap().keySet().iterator();
+            while (iter.hasNext()) {
+                Object key = (Object) iter.next();
+                if (key instanceof String && ((String) key).indexOf("vdcSubnetworkId") != -1) {
+                    try {
+                        Long vdcSubnetworkId = new Long((String) request.getParameter((String) key));
+                        vdcNetwork = find(vdcSubnetworkId);
+                        request.setAttribute("vdcNetwork", vdcNetwork);
+                    } catch (NumberFormatException e) {
+                    } // param is not a Long, ignore it
+
+                    break;
+                }
+            }
+        }
+        return vdcNetwork;
+    }
+
     
     public VDCNetwork findRootNetwork(){
         VDCNetwork vdcNetwork= (VDCNetwork) em.find(VDCNetwork.class, new Long(0));
@@ -352,7 +372,7 @@ public class VDCNetworkServiceBean implements VDCNetworkServiceLocal {
     }
     
     public void updateDefaultDisplayNumber(VDCNetwork vdcnetwork) {
-        if (em.find(VDCNetwork.class, new Long(1)) != null)
+        if (em.find(VDCNetwork.class, new Long(0)) != null)
             em.merge(vdcnetwork);
     }
     

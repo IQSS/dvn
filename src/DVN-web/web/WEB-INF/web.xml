@@ -221,6 +221,10 @@
         <servlet-class>edu.harvard.iq.dvn.core.web.servlet.VDCServlet</servlet-class>
     </servlet>
     <servlet>
+        <servlet-name>VDCNetworkServlet</servlet-name>
+        <servlet-class>edu.harvard.iq.dvn.core.web.servlet.VDCNetworkServlet</servlet-class>
+    </servlet>
+    <servlet>
         <servlet-name>DDIExportServlet</servlet-name>
         <servlet-class>edu.harvard.iq.dvn.core.web.servlet.DDIExportServlet</servlet-class>
     </servlet>
@@ -327,6 +331,10 @@
     <servlet-mapping>
         <servlet-name>VDCServlet</servlet-name>
         <url-pattern>/dv/*</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>VDCNetworkServlet</servlet-name>
+        <url-pattern>/dataverses/*</url-pattern>
     </servlet-mapping>
     <servlet-mapping>
         <servlet-name>DDIExportServlet</servlet-name>

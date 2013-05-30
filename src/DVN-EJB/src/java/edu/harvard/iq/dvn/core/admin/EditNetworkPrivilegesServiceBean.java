@@ -62,7 +62,7 @@ public class EditNetworkPrivilegesServiceBean implements EditNetworkPrivilegesSe
      *  Initialize the bean with a Study for editing
      */
     public void init( ) {
-        setNetwork(em.find(VDCNetwork.class, new Long(1)));
+        setNetwork(em.find(VDCNetwork.class, new Long(0)));
         
         initPrivilegedUsers();
         initTOUPrivilegedUsers();
@@ -82,7 +82,7 @@ public class EditNetworkPrivilegesServiceBean implements EditNetworkPrivilegesSe
    }
    
     public List<NetworkPrivilegedUserBean> getPrivilegedUsersByName(String searchName) {
-        setNetwork(em.find(VDCNetwork.class, new Long(1)));
+        setNetwork(em.find(VDCNetwork.class, new Long(0)));
         String lowerSearchString = searchName.toLowerCase();
         String queryString = "SELECT u from VDCUser u where lower(u.lastName) like '" + lowerSearchString.replaceAll("'", "''") 
                 + "%' or lower(u.email) like '" + lowerSearchString.replaceAll("'", "''") + "%'"
@@ -108,7 +108,7 @@ public class EditNetworkPrivilegesServiceBean implements EditNetworkPrivilegesSe
     }
    
    public void initTOUPrivilegedUsers() {
-     setNetwork(em.find(VDCNetwork.class, new Long(1)));
+     setNetwork(em.find(VDCNetwork.class, new Long(0)));
      TOUprivilegedUsers = em.createQuery("SELECT u from VDCUser u where u.bypassTermsOfUse = true").getResultList();
    }
     

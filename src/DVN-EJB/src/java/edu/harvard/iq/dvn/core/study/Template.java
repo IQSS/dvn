@@ -213,10 +213,19 @@ public class Template implements java.io.Serializable {
    private VDCNetwork vdcNetwork;
 
 
-     public VDCNetwork getVdcNetwork() {
+   public VDCNetwork getVdcNetwork() {
         return this.vdcNetwork;
+   }
+
+    @ManyToOne
+    private VDCNetwork vdcSubnetwork;
+    public VDCNetwork getVdcSubnetwork() {
+        return vdcSubnetwork;
     }
-     
+    public void setVdcSubnetwork(VDCNetwork vdcSubnetwork) {
+        this.vdcSubnetwork = vdcSubnetwork;
+    }
+
     @ManyToOne
     private VDC vdc;
 

@@ -53,11 +53,7 @@ public class EditBannerFooterPage extends VDCBaseBean  implements java.io.Serial
     
     public void init() {
         super.init();
-        VDCNetwork vdcNetwork = getVDCRequestBean().getVdcNetwork();
-        alias = getVDCRequestBean().getRequestParam("alias");
-        if(alias != null && !alias.isEmpty()){
-             vdcNetwork = vdcNetworkService.findByAlias(alias);
-        } 
+        VDCNetwork vdcNetwork = getVDCRequestBean().getCurrentVdcNetwork();
         if (vdcNetwork == null){
             vdcNetwork = getVDCRequestBean().getVdcNetwork();
         }

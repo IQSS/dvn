@@ -79,25 +79,15 @@ public class EditNetworkAnnouncementsPage extends VDCBaseBean implements java.io
     }
     
     public void preRenderView(){
-        alias = getVDCRequestBean().getRequestParam("alias");
         String edit = getVDCRequestBean().getRequestParam("edit");
         if (edit !=null && edit.equals("false")){
             addMode = true;
             this.setNetworkAnnouncements("");
             this.setChkEnableNetworkAnnouncements(false) ;
-        } else if(alias != null && !alias.isEmpty()){
-            VDCNetwork vdcNetwork = vdcNetworkService.findByAlias(alias);
-            if (vdcNetwork != null){
-                this.setNetworkAnnouncements(vdcNetwork.getAnnouncements());
-                this.setChkEnableNetworkAnnouncements(vdcNetwork.isDisplayAnnouncements());
-            } else {
-                this.setNetworkAnnouncements(getVDCRequestBean().getVdcNetwork().getAnnouncements());
-                this.setChkEnableNetworkAnnouncements(getVDCRequestBean().getVdcNetwork().isDisplayAnnouncements());
-            }
-        }
+        } 
             else {
-            this.setNetworkAnnouncements(getVDCRequestBean().getVdcNetwork().getAnnouncements());
-            this.setChkEnableNetworkAnnouncements(getVDCRequestBean().getVdcNetwork().isDisplayAnnouncements());
+            this.setNetworkAnnouncements(getVDCRequestBean().getCurrentVdcNetwork().getAnnouncements());
+            this.setChkEnableNetworkAnnouncements(getVDCRequestBean().getCurrentVdcNetwork().isDisplayAnnouncements());
         }
     }
 
@@ -126,7 +116,7 @@ public class EditNetworkAnnouncementsPage extends VDCBaseBean implements java.io
         if (validateAnnouncementsText()) {
             setChkEnableNetworkAnnouncements(chkEnableNetworkAnnouncements);
             setNetworkAnnouncements(networkAnnouncements);
-            VDCNetwork vdcnetwork = getVDCRequestBean().getVdcNetwork();
+            VDCNetwork vdcnetwork = getVDCRequestBean().getCurrentVdcNetwork();
             vdcnetwork.setDisplayAnnouncements(this.isChkEnableNetworkAnnouncements());
             vdcnetwork.setAnnouncements(this.getNetworkAnnouncements());
             vdcNetworkService.edit(vdcnetwork);

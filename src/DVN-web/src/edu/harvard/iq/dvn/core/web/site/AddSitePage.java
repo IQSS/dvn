@@ -124,10 +124,10 @@ public class AddSitePage extends VDCBaseBean implements java.io.Serializable  {
                 this.setDataverseType(request.getParameter((String) key));
             }
         }
-        if (getVDCRequestBean().getVdcNetwork().getDefaultTemplate() == null){
+        if (getVDCRequestBean().getCurrentVdcNetwork().getDefaultTemplate() == null){
             defaultTemplateId =  vdcNetworkService.findRootNetwork().getDefaultTemplate().getId();
         } else {
-            defaultTemplateId = getVDCRequestBean().getVdcNetwork().getDefaultTemplate().getId();
+            defaultTemplateId = getVDCRequestBean().getCurrentVdcNetwork().getDefaultTemplate().getId();
         }       
         Template defaultTemplate = templateService.getTemplate(defaultTemplateId);
         if(defaultTemplate.isDisplayOnCreateDataverse() && selectTemplateId == null){
@@ -327,10 +327,10 @@ public class AddSitePage extends VDCBaseBean implements java.io.Serializable  {
             VDC createdVDC = vdcService.findByAlias(alias);
             saveClassifications(createdVDC);
             createdVDC.setDtype(dataverseType);
-            createdVDC.setDisplayNetworkAnnouncements(getVDCRequestBean().getVdcNetwork().isDisplayAnnouncements());
-            createdVDC.setDisplayAnnouncements(getVDCRequestBean().getVdcNetwork().isDisplayVDCAnnouncements());
-            createdVDC.setDisplayNewStudies(getVDCRequestBean().getVdcNetwork().isDisplayVDCRecentStudies());
-            createdVDC.setAboutThisDataverse(getVDCRequestBean().getVdcNetwork().getDefaultVDCAboutText());
+            createdVDC.setDisplayNetworkAnnouncements(getVDCRequestBean().getCurrentVdcNetwork().isDisplayAnnouncements());
+            createdVDC.setDisplayAnnouncements(getVDCRequestBean().getCurrentVdcNetwork().isDisplayVDCAnnouncements());
+            createdVDC.setDisplayNewStudies(getVDCRequestBean().getCurrentVdcNetwork().isDisplayVDCRecentStudies());
+            createdVDC.setAboutThisDataverse(getVDCRequestBean().getCurrentVdcNetwork().getDefaultVDCAboutText());
             createdVDC.setContactEmail(getVDCSessionBean().getLoginBean().getUser().getEmail());
             createdVDC.setAffiliation(strAffiliation);
             createdVDC.setDvnDescription(strShortDescription);
@@ -394,15 +394,15 @@ public class AddSitePage extends VDCBaseBean implements java.io.Serializable  {
             saveClassifications(createdScholarDataverse);
   
             //  add default values to the VDC table and commit/set the vdc bean props
-            createdScholarDataverse.setDisplayNetworkAnnouncements(getVDCRequestBean().getVdcNetwork().isDisplayAnnouncements());           
-            createdScholarDataverse.setDisplayAnnouncements(getVDCRequestBean().getVdcNetwork().isDisplayVDCAnnouncements());
+            createdScholarDataverse.setDisplayNetworkAnnouncements(getVDCRequestBean().getCurrentVdcNetwork().isDisplayAnnouncements());           
+            createdScholarDataverse.setDisplayAnnouncements(getVDCRequestBean().getCurrentVdcNetwork().isDisplayVDCAnnouncements());
              //on create if description is blank uncheck display flag
             if(strShortDescription.isEmpty()){
                 createdScholarDataverse.setDisplayAnnouncements(false);
             }
-            createdScholarDataverse.setAnnouncements(getVDCRequestBean().getVdcNetwork().getDefaultVDCAnnouncements());
-            createdScholarDataverse.setDisplayNewStudies(getVDCRequestBean().getVdcNetwork().isDisplayVDCRecentStudies());
-            createdScholarDataverse.setAboutThisDataverse(getVDCRequestBean().getVdcNetwork().getDefaultVDCAboutText());
+            createdScholarDataverse.setAnnouncements(getVDCRequestBean().getCurrentVdcNetwork().getDefaultVDCAnnouncements());
+            createdScholarDataverse.setDisplayNewStudies(getVDCRequestBean().getCurrentVdcNetwork().isDisplayVDCRecentStudies());
+            createdScholarDataverse.setAboutThisDataverse(getVDCRequestBean().getCurrentVdcNetwork().getDefaultVDCAboutText());
             createdScholarDataverse.setContactEmail(getVDCSessionBean().getLoginBean().getUser().getEmail());
             createdScholarDataverse.setDvnDescription(strShortDescription);
             createdScholarDataverse.setAnnouncements(strShortDescription); // also set default dv home page description from the the DVN home page short description
@@ -445,7 +445,7 @@ public class AddSitePage extends VDCBaseBean implements java.io.Serializable  {
 
     public boolean validateClassificationCheckBoxes() {
 
-        if (!getVDCRequestBean().getVdcNetwork().isRequireDVclassification()){
+        if (!getVDCRequestBean().getCurrentVdcNetwork().isRequireDVclassification()){
             return true;
         }
         else {
@@ -475,7 +475,7 @@ public class AddSitePage extends VDCBaseBean implements java.io.Serializable  {
                     context.addMessage(toValidate.getClientId(context), message);
                 }
             }
-            if ((newValue == null || newValue.trim().length() == 0) && getVDCRequestBean().getVdcNetwork().isRequireDVdescription()) {
+            if ((newValue == null || newValue.trim().length() == 0) && getVDCRequestBean().getCurrentVdcNetwork().isRequireDVdescription()) {
                 FacesMessage message = new FacesMessage("The field must have a value.");
                 context.addMessage(toValidate.getClientId(context), message);
                 ((UIInput) toValidate).setValid(false);
@@ -546,7 +546,7 @@ public class AddSitePage extends VDCBaseBean implements java.io.Serializable  {
      private List<SelectItem> loadNetworkSelectItems() {
         List selectItems = new ArrayList<SelectItem>();
         List <VDCNetwork> networkList = vdcNetworkService.getVDCSubNetworks();
-        VDCNetwork checkForSubnetwork = getVDCRequestBean().getVdcNetwork();
+        VDCNetwork checkForSubnetwork = getVDCRequestBean().getCurrentVdcNetwork();
         if (!checkForSubnetwork.equals(vdcNetworkService.findRootNetwork())){
             selectSubNetworkId = checkForSubnetwork.getId();
             return selectItems;
@@ -769,7 +769,7 @@ public class AddSitePage extends VDCBaseBean implements java.io.Serializable  {
             UIComponent toValidate,
             Object value) {
         String newValue = (String) value;
-        if ((newValue == null || newValue.trim().length() == 0) && getVDCRequestBean().getVdcNetwork().isRequireDVaffiliation()) {
+        if ((newValue == null || newValue.trim().length() == 0) && getVDCRequestBean().getCurrentVdcNetwork().isRequireDVaffiliation()) {
                 FacesMessage message = new FacesMessage("The field must have a value.");
                 context.addMessage(toValidate.getClientId(context), message);
                 context.renderResponse();

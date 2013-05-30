@@ -150,7 +150,7 @@ public class DvnTimer implements DvnTimerRemote, DvnTimerLocal {
     }
 
     public void createExportTimer() {
-            VDCNetwork vdcNetwork= (VDCNetwork) em.find(VDCNetwork.class, new Long(1));
+            VDCNetwork vdcNetwork= (VDCNetwork) em.find(VDCNetwork.class, new Long(0));
             long intervalDuration=0;
             Calendar initExpiration = Calendar.getInstance();
             initExpiration.set(Calendar.MINUTE, 0);

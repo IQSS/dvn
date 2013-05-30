@@ -74,7 +74,7 @@ public class VDCNetworkStatsServiceBean implements VDCNetworkStatsServiceLocal {
         timerService.createTimer(initialExpiration, intervalDuration, STATS_TIMER);    }
 
     public VDCNetworkStats getVDCNetworkStats() {
-        return (VDCNetworkStats) em.find(VDCNetworkStats.class, new Long(1));
+        return (VDCNetworkStats) em.find(VDCNetworkStats.class, new Long(0));
     }
     
     @Timeout

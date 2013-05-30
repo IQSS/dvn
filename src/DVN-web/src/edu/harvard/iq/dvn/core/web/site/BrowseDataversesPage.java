@@ -125,7 +125,7 @@ public class BrowseDataversesPage  extends VDCBaseBean implements Serializable {
     }
 
     private void populateVDCUIList() {
-        Long networkId = getVDCRequestBean().getVdcNetwork().getId();
+        Long networkId = getVDCRequestBean().getCurrentVdcNetwork().getId();
         if (firstRun){
            filterTerm = initialFilter; 
         }
@@ -196,7 +196,7 @@ public class BrowseDataversesPage  extends VDCBaseBean implements Serializable {
 
     protected void populateDescendants(VDCGroup vdcgroup, boolean isExpanded) {
         Long parentId = vdcgroup.getId();
-        Long networkId = getVDCRequestBean().getVdcNetwork().getId();
+        Long networkId = getVDCRequestBean().getCurrentVdcNetwork().getId();
 
         List<VDCGroup> list = vdcGroupService.findByParentId(parentId);
         DataverseGrouping childItem;

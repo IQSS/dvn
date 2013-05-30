@@ -75,7 +75,7 @@ public class EditTemplateServiceBean implements edu.harvard.iq.dvn.core.study.Ed
     
     // used to create a new Network template from the default Network templates (exact clone)
     public void newNetworkTemplate() {
-        VDCNetwork network = vdcNetworkService.find(new Long(1));  
+        VDCNetwork network = vdcNetworkService.find(new Long(0));  
         newTemplate(network.getDefaultTemplate(), null, true, true);        
     }    
     
@@ -186,6 +186,27 @@ public class EditTemplateServiceBean implements edu.harvard.iq.dvn.core.study.Ed
         }     
     }
     
+    @Remove
+    @TransactionAttribute(TransactionAttributeType.REQUIRED)
+    public void saveWSubnetwork(Template templateIn) {
+        //Need to save any newly created study fields
+        em.merge(templateIn.getVdcSubnetwork());
+        if(templateIn.getId() == null){
+           em.persist(templateIn); 
+        } else {
+           em.merge(templateIn);
+        }
+        Collection<TemplateField> templateFields = templateIn.getTemplateFields();
+        for (TemplateField tf : templateFields ){
+            if(tf.getId()== null){
+                em.persist(tf);
+            }
+            StudyField sf = tf.getStudyField();            
+            if (sf.getId() == null){
+                em.persist(sf);
+            }
+        }     
+    }
     
     /**
      * Remove this Stateful Session bean from the EJB Container without

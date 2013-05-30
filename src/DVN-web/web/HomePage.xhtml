@@ -176,7 +176,15 @@
                                                 value="#{homePage.mostRecentlyReleasedDVs}" var="vdcUI">
                                         <ice:column>
                                             <div>
+                                                <ice:outputLink styleClass="dvnHmpgDvNameLink dvnInlineHelpTip" id="dataverse_linkSub" value="/dvn/dataverses/#{VDCRequest.vdcNetwork.urlAlias}/dv/#{vdcUI.vdc.alias}"
+                                                                rendered="#{!empty(VDCRequest.vdcNetwork.urlAlias)}"
+                                                                title="#{vdcUI.name} Dataverse - Released: #{vdcUI.releaseDate}
+                                                                        #{!empty(vdcUI.vdc.affiliation) ? '&lt;br/&gt;Affilitation:  ' : ''} #{vdcUI.vdc.affiliation}
+                                                                        #{!empty(vdcUI.vdc.dvnDescription) ? '&lt;br/&gt;Description: ' : ''} #{vdcUI.vdc.dvnDescription}">
+                                                    <ice:outputText value="#{vdcUI.name}"/>
+                                                </ice:outputLink>
                                                 <ice:outputLink styleClass="dvnHmpgDvNameLink dvnInlineHelpTip" id="dataverse_link" value="/dvn/dv/#{vdcUI.vdc.alias}"
+                                                                rendered="#{empty(VDCRequest.vdcNetwork.urlAlias)}"
                                                                 title="#{vdcUI.name} Dataverse - Released: #{vdcUI.releaseDate}
                                                                         #{!empty(vdcUI.vdc.affiliation) ? '&lt;br/&gt;Affilitation:  ' : ''} #{vdcUI.vdc.affiliation}
                                                                         #{!empty(vdcUI.vdc.dvnDescription) ? '&lt;br/&gt;Description: ' : ''} #{vdcUI.vdc.dvnDescription}">
@@ -206,7 +214,7 @@
                                         <div class="content">
                                             <div class="dvnHmpgSubnetworkLogo"><ice:graphicImage value="/resources/images/icon_information.18.png"/></div>
                                             <div class="dvnHmpgSubnetworkInfo">
-                                                <ice:outputLink styleClass="dvnHmpgDvNameLink dvnInlineHelpTip" id="subnetwork_link" value="/dvn/?subnetworkAlias=#{vdcSubnetwork.urlAlias}"                  
+                                                <ice:outputLink styleClass="dvnHmpgDvNameLink dvnInlineHelpTip" id="subnetwork_link" value="/dvn/dataverses/#{vdcSubnetwork.urlAlias}"                 
                                                     title="#{vdcSubnetwork.name} Dataverses">
                                                     <ice:outputText value="#{vdcSubnetwork.name} Dataverses"/>
                                                 </ice:outputLink>

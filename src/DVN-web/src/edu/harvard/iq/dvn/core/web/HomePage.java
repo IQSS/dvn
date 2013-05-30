@@ -109,11 +109,15 @@ public class HomePage extends VDCBaseBean implements Serializable {
     public void init() {
 
         super.init();
-        initVDCNetwork();
+
+     }
+     
+     public void preRenderView(){
         initChrome();
         initAccordionMenu();
         initSubnetworks();
         populateVDCUIList(false);
+         
      }
 
          /**
@@ -156,18 +160,9 @@ public class HomePage extends VDCBaseBean implements Serializable {
     private void _init() {
     }
     
-    private void initVDCNetwork(){
-        if (subnetworkAlias != null && !subnetworkAlias.isEmpty() ){
-            getVDCRequestBean().setVdcNetwork(vdcNetworkService.findByAlias(subnetworkAlias));
-            getVDCSessionBean().setVdcNetwork(vdcNetworkService.findByAlias(subnetworkAlias));
-        } else {
-            getVDCRequestBean().setVdcNetwork(vdcNetworkService.findRootNetwork());
-            getVDCSessionBean().setVdcNetwork(vdcNetworkService.findRootNetwork());
-        }  
-    }
     
     private void initSubnetworks(){
-        if (getVDCRequestBean().getVdcNetwork().equals(vdcNetworkService.findRootNetwork())){
+        if (getVDCRequestBean().getCurrentVdcNetwork().equals(vdcNetworkService.findRootNetwork())){
             vdcSubnetworks = vdcNetworkService.getVisibleVDCSubnetworks();
         } else {
             vdcSubnetworks = new ArrayList();
@@ -213,10 +208,11 @@ public class HomePage extends VDCBaseBean implements Serializable {
 
     private void populateVDCUIList(boolean isAlphaSort) {
         Long networkId = new Long (0);
-        if (getVDCRequestBean().getVdcNetwork() != null){
-            networkId = getVDCRequestBean().getVdcNetwork().getId();
+        System.out.print("getVDCRequestBean().getCurrentVdcNetwork() " + getVDCRequestBean().getCurrentVdcNetwork());
+        if (getVDCRequestBean().getCurrentVdcNetwork() != null){
+            networkId = getVDCRequestBean().getCurrentVdcNetwork().getId();
         }
-                  
+                    System.out.print("Network id begin " + networkId );          
         String defaultDVSortColumn =  vdcNetworkService.find().getDefaultDVSortColumn();
         boolean isNewGroup = false;
         if ( hiddenGroupId.getValue() == null || (vdcUIList != null &&
@@ -260,6 +256,7 @@ public class HomePage extends VDCBaseBean implements Serializable {
            vdcUIListReleased = new VDCUIList(groupId, (String)hiddenAlphaCharacter.getValue(), true, "Released" );
         }
         if(networkId != null && networkId.intValue() >0){
+            System.out.print("Network id " + networkId );
             vdcUIListReleased.setNetworkId(networkId);
         }
     }

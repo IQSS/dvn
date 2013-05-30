@@ -219,10 +219,10 @@ public class BrowseDataversesPage  extends VDCBaseBean implements Serializable {
    
     private List<SelectItem> loadSortSelectItems(){
         List selectItems = new ArrayList<SelectItem>();
-        selectItems.add(new SelectItem("Name", "- Name"));
-        selectItems.add(new SelectItem("Affiliation", "- Affiliation"));
-        selectItems.add(new SelectItem("Released", "- Release Date"));
-        selectItems.add(new SelectItem("Activity", "- Download Count"));    
+        selectItems.add(new SelectItem("Name", "Name"));
+        selectItems.add(new SelectItem("Affiliation", "Affiliation"));
+        selectItems.add(new SelectItem("Released", "Release Date"));
+        selectItems.add(new SelectItem("Activity", "Download Count"));    
         return selectItems;
     }
     

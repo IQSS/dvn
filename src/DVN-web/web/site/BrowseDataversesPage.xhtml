@@ -34,7 +34,7 @@
                             <tr>
                                 <td valign="bottom">
                                     <div jsfc="ice:panelGroup" styleClass="dvnStudyListCollectionName">
-                                        <ice:outputText value="#{BrowseDataversesPage.groupName}"/>                                       
+                                        <ice:outputText styleClass="dvnStudyListHeader" value="#{BrowseDataversesPage.groupName}"/>                                       
                                     </div>
                                 </td>
                                 <td>
@@ -54,18 +54,21 @@
                             <table cellpadding="0" cellspacing="0" border="0" width="100%">
                                 <tr>
                                     <td align="left" valign="bottom">
-                                        <div jsfc="ice:panelGroup" styleClass="dvnStudyListResultsSort" id="groupPanel5" rendered="#{!empty(BrowseDataversesPage.vdcUIList.vdcUIList)}">
-                                         <ice:outputText value="Sort By: "/>
-                                            <ice:selectOneMenu id="dropdown2" valueChangeListener="#{BrowseDataversesPage.sort_action}" onchange="submit();"
-                                                               value="#{BrowseDataversesPage.sortOrderString}">
-                                                <f:selectItems value="#{BrowseDataversesPage.sortOrderItems}"/>
-                                            </ice:selectOneMenu>
+                                        <div class="dvnStudyListResultsSortFilterBlock">
+                                            <div jsfc="ice:panelGroup" styleClass="dvnStudyListResultsSort" id="groupPanel5" rendered="#{!empty(BrowseDataversesPage.vdcUIList.vdcUIList)}">
+                                                <ice:outputText value="Sort By: "/>
+                                                <ice:selectOneMenu id="dropdown2" valueChangeListener="#{BrowseDataversesPage.sort_action}" onchange="submit();"
+                                                                value="#{BrowseDataversesPage.sortOrderString}">
+                                                    <f:selectItems value="#{BrowseDataversesPage.sortOrderItems}"/>
+                                                </ice:selectOneMenu>
+                                            </div>
+                                            <div jsfc="ice:panelGroup" styleClass="dvnStudyListResultsFilter">
+                                                <ice:outputText value="Filter: "/>
+                                                <ice:inputText binding="#{BrowseDataversesPage.inputFilterTerm}"
+                                                                size="25" maxlength="255"
+                                                                onkeyup="delayedRequestDV(form,this,event);"/>
+                                            </div>
                                         </div>
-                                    
-                                        <ice:outputText value="Filter: "/>
-                                        <ice:inputText binding="#{BrowseDataversesPage.inputFilterTerm}"
-                                                        size="25" maxlength="255"
-                                                        onkeyup="delayedRequestDV(form,this,event);"/>
                                     </td>
                                     <td align="right">
                                         <ice:panelGrid cellpadding="0" cellspacing="0" border="0" columns="2" id="gridPanel2"

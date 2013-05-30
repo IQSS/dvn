@@ -74,8 +74,9 @@ div.dvn_searchblock{margin-bottom:12px;padding:4px 12px;background:#F2F2F2;borde
 
 .dvnHmpgWidgetSlider .dvnHmpgColumnWidgetHeader {margin-bottom:10px;}
 #dvnHmpgSubnetworkWidget .content {overflow:hidden;}
-#dvnHmpgSubnetworkWidget img {width:160px; float:left;}
-#dvnHmpgSubnetworkWidget .dvnHmpgSubnetworkInfo {float:left; padding:0 12px;}
+#dvnHmpgSubnetworkWidget .dvnHmpgSubnetworkLogo {width:160px; float:left; margin-right:12px;}
+#dvnHmpgSubnetworkWidget .dvnHmpgSubnetworkLogo img {width:160px;}
+#dvnHmpgSubnetworkWidget .dvnHmpgSubnetworkInfo {}
 #dvnHmpgSubnetworkWidget .dvnHmpgSubnetworkInfo a.iceOutLnk {float:none; display:block;}
 #dvnHmpgSubnetworkWidget .dvnHmpgSubnetworkInfo .dvnHmpgSubnetworkDVCount {color:orange; display:block;}
 
@@ -195,10 +196,12 @@ li.hmpgDvGroupSelected a:link,li.hmpgDvGroupSelected a:visited,li.hmpgDvGroupSel
 .dvnStudyListContributorBlock{padding-bottom:.25em}
 a.dvnStudyListContributorLink:link,a.dvnStudyListContributorLink:visited,a.dvnStudyListContributorLink:hover,a.dvnStudyListContributorLink:active{padding-right:28px;color:#c55b28;background:url(/dvn/resources/images/start-arrows.gif) 100% 52% no-repeat;font-size:95%;text-decoration:none}
 .dvnStudyListResultsTop{padding:5px; border-bottom:1px solid #dcdddf}
+.dvnStudyListResultsTop .dvnStudyListResultsSortFilterBlock{overflow:hidden;}
 .dvnStudyListResultsTop .dvnStudyListResultsSort{float:left; margin-right:1em}
+.dvnStudyListResultsTop .dvnStudyListResultsFilter{float:left; margin-right:1em}
 .dvnStudyListResultsBottom{padding:5px; border-top:1px solid #dcdddf}
 .dvnStudyListResultsBottom .dvnPaginatorWrap{padding:.25em 0}
-td.dvn_StudyListTotals{text-align:right;width:100%;padding:.5em}
+td.dvn_StudyListTotals{text-align:right;padding:.5em}
 td.dvn_StudyListSort{padding:.25em}
 .dvnStudyListStudyInfo{background:inherit}
 span.dvnStudyListStudyAuthor{font-size:90% !important}

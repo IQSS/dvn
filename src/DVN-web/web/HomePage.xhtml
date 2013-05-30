@@ -196,7 +196,7 @@
                                 <!-- SUBNETWORK WIDGET -->
                     
                                 <div jsfc="ice:panelGroup" styleClass="dvnHmpgColumnWidget dvnHmpgWidgetSlider" rendered="#{!empty homePage.vdcSubnetworks}">
-                                    <div class="dvnHmpgColumnWidgetHeader">Dataverse Subnetworks</div>
+                                    <!-- <div class="dvnHmpgColumnWidgetHeader">Dataverse Subnetworks</div> -->
                                     
                                     <div id="dvnHmpgSubnetworkWidget">
                                         
@@ -204,7 +204,7 @@
                                                         value="#{homePage.vdcSubnetworks}"
                                                         var="vdcSubnetwork">
                                         <div class="content">
-                                            <ice:graphicImage value="/resources/images/icon_information.18.png"/>
+                                            <div class="dvnHmpgSubnetworkLogo"><ice:graphicImage value="/resources/images/icon_information.18.png"/></div>
                                             <div class="dvnHmpgSubnetworkInfo">
                                                 <ice:outputLink styleClass="dvnHmpgDvNameLink dvnInlineHelpTip" id="subnetwork_link" value="/dvn/?subnetworkAlias=#{vdcSubnetwork.urlAlias}"                  
                                                     title="#{vdcSubnetwork.name} Dataverses">

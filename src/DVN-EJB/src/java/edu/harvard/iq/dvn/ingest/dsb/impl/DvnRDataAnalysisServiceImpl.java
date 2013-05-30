@@ -166,7 +166,16 @@ public class DvnRDataAnalysisServiceImpl {
     
     // ----------------------------------------------------- constructor
     public DvnRDataAnalysisServiceImpl(){
+        /* This:
         String sep = File.pathSeparator;
+        results in the ":" being used as a separator. This in turn results in 
+        all files being piled in the same directory, instead of subdirectories:
+        directory:subdirectory:file.txt instead of directory/subdirectory/file.txt.
+        Worse still, it confuses the Analysis/Crosstab/Descriptive Stats components
+        below - since they expect to find certain files in the slash-separated
+        subdirectories below... Hence commented it out and went back to slash. 
+        (But, for the millionth time, this code is quite a mess... :( -- L.A. */
+        String sep = "/";
         // initialization
         PID = RandomStringUtils.randomNumeric(6);
                  
@@ -910,7 +919,7 @@ if (tmpv.length > 0){
             result.put("dsbContextRootDir",  DSB_CTXT_DIR );
             result.put("PID", PID);
             result.put("Rversion", Rversion);
-            result.put("zeligR-version String", zeligVersion);
+            result.put("zeligVersion", zeligVersion);
             result.put("RexecDate", RexecDate);
             result.put("RCommandHistory", StringUtils.join(historyEntry,"\n"));
             
@@ -934,6 +943,7 @@ if (tmpv.length > 0){
             //int zipSize = getFileSize(c,"/tmp/"+requestdir+".zip");
 
 	    String listAnalysisFiles = "list.files('"+DSB_TMP_DIR+"/"+requestdir+"', recursive=TRUE)"; 
+            dbgLog.fine("looking up the analysis result files on the DSB/Rserve side: "+listAnalysisFiles);
 	    String[] analysisReportFiles = c.eval(listAnalysisFiles).asStrings(); 
 	    RFileInputStream ris = null;
 	    OutputStream outbr   = null;

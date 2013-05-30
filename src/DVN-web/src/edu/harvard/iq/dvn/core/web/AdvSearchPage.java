@@ -966,21 +966,32 @@ public class AdvSearchPage extends VDCBaseBean implements java.io.Serializable {
                 QueryParser parser = new QueryParser(Version.LUCENE_30, "abstract", new DVNAnalyzer());
                 parser.setDefaultOperator(QueryParser.AND_OPERATOR);
                 for (VDCCollection col : searchCols) {
+                    Long colId = col.getId();
                     String type = col.getType();
                     String queryString = col.getQuery();
                     boolean isDynamic = col.isDynamic();
                     boolean isLocalScope = col.isLocalScope();
                     boolean isRootCollection = col.isRootCollection();
+                    VDC colOwner = col.getOwner();
                     StringBuilder sbOuter = new StringBuilder();
+                    logger.info("For " + col.getName() + " (id=" + colId + "|isRootCollection=" + isRootCollection + "|type=" + type + "|isDynamic=" + isDynamic + "|isLocalScope=" + isLocalScope + ") adding query: <<<" + queryString + ">>>");
                     if (queryString != null && !queryString.isEmpty()) {
                         try {
-                            logger.info("For " + col.getName() + " (isRootCollection=" + isRootCollection + "|type=" + type + "|isDynamic=" + isDynamic + "|isLocalScope=" + isLocalScope + ") adding query: <<<" + queryString + ">>>");
                             Query dynamicQuery = parser.parse(queryString);
                             if (isLocalScope) {
                                 BooleanQuery dynamicLocal = new BooleanQuery();
-                                Query dvOwnerIdQuery = indexServiceBean.constructDvOwnerIdQuery(getVDCRequestBean().getCurrentVDC());
-                                dynamicLocal.add(dynamicQuery, BooleanClause.Occur.MUST);
-                                dynamicLocal.add(dvOwnerIdQuery, BooleanClause.Occur.MUST);
+                                VDC currentVdc = getVDCRequestBean().getCurrentVDC();
+                                if (currentVdc == colOwner) {
+                                    logger.fine("collection is owned by this dataverse");
+                                    Query dvOwnerIdQuery = indexServiceBean.constructDvOwnerIdQuery(currentVdc);
+                                    dynamicLocal.add(dynamicQuery, BooleanClause.Occur.MUST);
+                                    dynamicLocal.add(dvOwnerIdQuery, BooleanClause.Occur.MUST);
+                                } else {
+                                    logger.fine("collection is linked, owned by a different dataverse");
+                                    Query dvOwnerIdQuery = indexServiceBean.constructDvOwnerIdQuery(colOwner);
+                                    dynamicLocal.add(dynamicQuery, BooleanClause.Occur.MUST);
+                                    dynamicLocal.add(dvOwnerIdQuery, BooleanClause.Occur.MUST);
+                                }
                                 collectionQueries.add(dynamicLocal);
                             } else {
                                 collectionQueries.add(dynamicQuery);
@@ -989,13 +1000,21 @@ public class AdvSearchPage extends VDCBaseBean implements java.io.Serializable {
                             Logger.getLogger(StudyListingPage.class.getName()).log(Level.SEVERE, null, ex);
                         }
                     } else {
-                        logger.info("For " + col.getName() + " (isRootCollection=" + isRootCollection + "|type=" + type + "|isDynamic=" + isDynamic + "|isLocalScope=" + isLocalScope + ") skipping add of query: <<<" + queryString + ">>>");
                         List<Study> studies = col.getStudies();
                         StringBuilder sbInner = new StringBuilder();
                         for (Study study : studies) {
                             logger.fine("- has StudyId: " + study.getId());
                             String idColonId = "id:" + study.getId().toString() + " ";
                             sbInner.append(idColonId);
+                        }
+                        if (isRootCollection) {
+                            List<Long> rootCollectionStudies = vdcService.getOwnedStudyIds(col.getOwner().getId());
+                            for (Long id : rootCollectionStudies) {
+                                logger.fine("- has StudyId: " + id);
+                                String idColonId = "id:" + id.toString() + " ";
+                                sbInner.append(idColonId);
+
+                            }
                         }
                         logger.fine("sbInner: " + sbInner.toString());
                         sbOuter.append(sbInner);

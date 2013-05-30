@@ -14,7 +14,6 @@
             <ui:param name="pageTitle" value="#{VDCRequest.dataversePageTitle}"/>
             <ui:define name="metadata">
                 <f:metadata>
-                    <f:viewParam name="subnetworkAlias" value="#{homePage.subnetworkAlias}"/>
                     <f:event type="preRenderView" listener="#{homePage.preRenderView}"/>
                     <f:event type="preRenderView" listener="#{BasicSearchFragment.preRenderView}"/>
                 </f:metadata>
@@ -176,15 +175,15 @@
                                                 value="#{homePage.mostRecentlyReleasedDVs}" var="vdcUI">
                                         <ice:column>
                                             <div>
-                                                <ice:outputLink styleClass="dvnHmpgDvNameLink dvnInlineHelpTip" id="dataverse_linkSub" value="/dvn/dataverses/#{VDCRequest.vdcNetwork.urlAlias}/dv/#{vdcUI.vdc.alias}"
-                                                                rendered="#{!empty(VDCRequest.vdcNetwork.urlAlias)}"
+                                                <ice:outputLink styleClass="dvnHmpgDvNameLink dvnInlineHelpTip" id="dataverse_linkSub" value="/dvn/dataverses/#{VDCRequest.currentVdcNetwork.urlAlias}/dv/#{vdcUI.vdc.alias}"
+                                                                rendered="#{!empty(VDCRequest.currentVdcNetwork.urlAlias)}"
                                                                 title="#{vdcUI.name} Dataverse - Released: #{vdcUI.releaseDate}
                                                                         #{!empty(vdcUI.vdc.affiliation) ? '&lt;br/&gt;Affilitation:  ' : ''} #{vdcUI.vdc.affiliation}
                                                                         #{!empty(vdcUI.vdc.dvnDescription) ? '&lt;br/&gt;Description: ' : ''} #{vdcUI.vdc.dvnDescription}">
                                                     <ice:outputText value="#{vdcUI.name}"/>
                                                 </ice:outputLink>
                                                 <ice:outputLink styleClass="dvnHmpgDvNameLink dvnInlineHelpTip" id="dataverse_link" value="/dvn/dv/#{vdcUI.vdc.alias}"
-                                                                rendered="#{empty(VDCRequest.vdcNetwork.urlAlias)}"
+                                                                rendered="#{empty(VDCRequest.currentVdcNetwork.urlAlias)}"
                                                                 title="#{vdcUI.name} Dataverse - Released: #{vdcUI.releaseDate}
                                                                         #{!empty(vdcUI.vdc.affiliation) ? '&lt;br/&gt;Affilitation:  ' : ''} #{vdcUI.vdc.affiliation}
                                                                         #{!empty(vdcUI.vdc.dvnDescription) ? '&lt;br/&gt;Description: ' : ''} #{vdcUI.vdc.dvnDescription}">

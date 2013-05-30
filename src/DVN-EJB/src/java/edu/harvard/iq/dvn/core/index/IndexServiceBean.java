@@ -545,7 +545,7 @@ public class IndexServiceBean implements edu.harvard.iq.dvn.core.index.IndexServ
                         linkedStudyIds = indexer.findStudiesInCollections(vdc);
 
                         if (linkedStudyIds != null) {
-                            logger.info("Found "+linkedStudyIds.size()+" linked studies in VDC "+vdcNetworkId.toString());
+                            logger.info("Found "+linkedStudyIds.size()+" linked studies in VDC "+vdc.getId()+", subnetwork "+vdcNetworkId.toString());
 
                             for (Long studyId : linkedStudyIds) {
                                 if (studyId.longValue() <= maxStudyId.longValue()) {
@@ -560,7 +560,11 @@ public class IndexServiceBean implements edu.harvard.iq.dvn.core.index.IndexServ
                                     
                                     if (linkedStudy != null) {
                                         studyNetworkId = linkedStudy.getOwner().getVdcNetwork().getId();
-                                        if (studyNetworkId != null && vdcNetworkId.compareTo(studyNetworkId) != 0) {
+                                        if ((studyNetworkId != null) && 
+                                                (studyNetworkId.intValue() != 0) && 
+                                                (vdcNetworkId.compareTo(studyNetworkId) != 0)) {
+                                            logger.info("Study "+linkedStudy.getId()+" from subnetwork "+studyNetworkId+" is linked to this VDC.");
+
                                             // this study is cross-linked from another VDC network!
                                             linkedVdcNetworkMap[linkedStudy.getId().intValue()] |= (1 >> (studyNetworkId.intValue()-1));
                                             // note the (1 >> (studyNetworkId.intValue()-1)) above. this is safe, because studyNetworkId 
@@ -589,6 +593,7 @@ public class IndexServiceBean implements edu.harvard.iq.dvn.core.index.IndexServ
             
             for (int i = 0; i < maxStudyId.intValue() + 1; i++) {
                 if (linkedVdcNetworkMap[i] > 0) {
+                    logger.info("study "+i+": cross-linked outside of its network;");
                     try {
                         linkedStudy = studyService.getStudy(new Long(i));
                     } catch (Exception ex) {
@@ -605,6 +610,8 @@ public class IndexServiceBean implements edu.harvard.iq.dvn.core.index.IndexServ
                         long linkedNetworkBitString = produceLinkedNetworksBitstring(linkedToNetworkIds);
                         
                         if (linkedNetworkBitString != linkedVdcNetworkMap[i]) {
+                            logger.info("study "+i+": cross-linked status has changed; updating");
+
                             // This means the cross-linking status of the study has changed!
                             
                             // 1. Update it in the database: 
@@ -647,6 +654,12 @@ public class IndexServiceBean implements edu.harvard.iq.dvn.core.index.IndexServ
             
             for (int i = 0; i < subNetworks.size(); i++) {
                 if (subNetworks.get(i) != null) {
+                    int insertIndex = subNetworks.get(i).getId().intValue();
+                    for (int j = subNetworksArray.size(); j < insertIndex; j++) {
+                        logger.info("padding arraylist with null, "+j);
+                        // padding the ArrayList with nulls:
+                        subNetworksArray.add(null);
+                    }
                     subNetworksArray.add(subNetworks.get(i).getId().intValue(), subNetworks.get(i));
                 }
             }
@@ -669,6 +682,7 @@ public class IndexServiceBean implements edu.harvard.iq.dvn.core.index.IndexServ
                     if (subNetworks.get(i) != null) {
                         // it should never be null at this point - but won't 
                         // hurt to check anyway. 
+                        logger.info("New linked to network: "+i);
                         newList.add(subNetworks.get(i));
                     }
                 }

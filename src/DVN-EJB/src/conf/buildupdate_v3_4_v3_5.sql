@@ -17,9 +17,9 @@ ALTER TABLE vdcnetwork ALTER COLUMN creator_id SET STORAGE PLAIN;
 
 ALTER TABLE vdcnetwork ADD COLUMN released boolean;
 
-Alter TABLE template add vdcnetwork_id bigint;
+Alter TABLE template add vdcsubnetwork_id bigint;
 
-Update template set vdcnetwork_id = 0;
+Update template set vdcsubnetwork_id = 0;
 
 INSERT INTO pagedef ( name, path, role_id, networkrole_id ) VALUES ( 'EditSubnetworkPage', '/networkAdmin/EditSubnetworkPage.xhtml', null, 2 );
 

@@ -333,7 +333,10 @@
                             jQuery('#dvnHmpgSubnetworkWidget, #dvnHmpgSubnetworkWidget > div').css('width', dvColumnWidgetWidth);
                             
                             jQuery('#dvnHmpgSubnetworkWidget').orbit({
-                                bullets: true
+                                bullets: true,
+                                pauseOnHover: true,
+                                startClockOnMouseOut: true,
+                                advanceSpeed: 5000
                             });
                             
                             var dvnSubnetworksCount = jQuery('#dvnHmpgSubnetworkWidget div.content').length;

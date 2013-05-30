@@ -15,8 +15,8 @@
                                     <ice:outputText value="#{VDCRequest.vdcNetwork.name} Dataverse Network &#160;&gt;"/>
                                 </ice:outputLink>
                                 <ice:outputText value="&#160;&#160;" nospan="true"/>
-                                <ice:outputLink value="#" styleClass="dvnHeaderDVSubnetworkLink" title="(Subnetwork Name) Dataverses">
-                                    <ice:outputText value="(Subnetwork Name) Dataverses &#160;&gt;"/>
+                                <ice:outputLink value="/dvn/dataverses/#{VDCRequest.currentVdcNetwork.urlAlias}" styleClass="dvnHeaderDVSubnetworkLink" title="#{VDCRequest.currentVdcNetwork.name} Dataverses" target="_top">
+                                    <ice:outputText value="#{VDCRequest.currentVdcNetwork.name} Dataverses &#160;&gt;"/>
                                 </ice:outputLink>
                             </div>
                         </td>
@@ -119,8 +119,8 @@
                                                 rendered="#{VDCRequest.currentVDC != null and VDCRequest.currentVDC.restricted}" title="Unreleased Dataverse - Your dataverse is currently set to Not Released, and will not be featured on the network homepage until it is released. To release the dataverse, click this icon, to go to the Dataverse Settings page."
                                                 ><img src="/dvn/resources/images/icon_warning.18.png" alt="Unreleased Dataverse"/>                                    
                                 </ice:outputLink>
-                                <ice:outputLink value="#" title="(Subnetwork Name) Dataverses" rendered="#{VDCRequest.currentVDC == null}">
-                                    <ice:outputText value="&#160;&#62; (Subnetwork Name) Dataverses" nospan="true"/>
+                                <ice:outputLink value="/dvn/dataverses/#{VDCRequest.currentVdcNetwork.urlAlias}" title="#{VDCRequest.currentVdcNetwork.name} Dataverses" >
+                                    <ice:outputText value="&#160;&#62; #{VDCRequest.currentVdcNetwork.name} Dataverses" nospan="true"/>
                                 </ice:outputLink>
                             </div>
                         </td>

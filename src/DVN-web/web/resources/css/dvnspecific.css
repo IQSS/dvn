@@ -162,6 +162,9 @@ span.dvnStudyTemplateNotEnabled{background:url(/dvn/resources/images/icon_warnin
 .dvnManageStudyTemplatesActionTable td {width:20%;text-align:center;}
 .dvnManageStudyTemplatesActionTable span.iceOutTxt {color:grey;font-style:italic;}
 span.iceOutTxt.dvnManageStudyTemplatesDefault {color:black;font-style:normal;font-weight:bold;}
+/* MANAGE SUBNETWORKS */
+.dvnManageSubnetworkTemplatesTable td.dvnMngSubnetworkTempCol6 a.iceCmdLnk, .dvnManageSubnetworkTemplatesTable td.dvnMngSubnetworkTempCol6 a.iceOutLnk, .dvnManageSubnetworkTemplatesTable td.dvnMngSubnetworkTempCol6 span.iceOutTxt {display:inline;margin-right:2em;}
+.dvnManageSubnetworkTemplatesTable td.dvnMngSubnetworkTempCol6 a.iceCmdLnk:last-child, .dvnManageSubnetworkTemplatesTable td.dvnMngSubnetworkTempCol6 a.iceOutLnk:last-child, .dvnManageSubnetworkTemplatesTable td.dvnMngSubnetworkTempCol6 span.iceOutTxt:last-child {margin-right:0;}
 /* CONTROLLED VOCAB */
 .dvnControlledVocabInput input[type=text] {width:200px;}
 .dvnControlledVocabInput select {min-width:208px;max-height:8em;}

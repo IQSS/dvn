@@ -38,27 +38,28 @@
                     <ice:outputText styleClass="dvnManageTableEmptyMessage" value="There are no results to display. "/>
                 </div>
                 <ice:dataTable id="subnetworkListManage" width="100%"
-                               columnWidths="20%,20%,10%,10%,10%,10%,10%,10%,10%"
+                               columnWidths="25%,20%,20%,15%,10%,10%"
                                headerClass="groupRow"
+                               columnClasses="dvnMngSubnetworkTempCol1,dvnMngSubnetworkTempCol2,dvnMngSubnetworkTempCol3,dvnMngSubnetworkTempCol4,dvnMngSubnetworkTempCol5,dvnMngSubnetworkTempCol6"
                                rendered="#{!empty(ManageSubnetworksPage.vdcSubnetworks)}"
                                rowClasses="evenRow oddRow" rows="6"
-                               styleClass="dvnManageTable"
+                               styleClass="dvnManageTable dvnManageSubnetworkTemplatesTable"
                                value="#{ManageSubnetworksPage.vdcSubnetworks}"
                                var="item">
                 <!-- name number -->
                 <f:facet name="header">
                 </f:facet>
                 <ice:column>
-                <f:facet name="header">
-                    <ice:commandSortHeader
-                        columnName="Name"
-                        arrow="true">
-                    <ice:outputText value="Name"/>
-                    </ice:commandSortHeader>
-                </f:facet>
-                    <ice:outputLink id="dataverse_link" value="/dvn/faces/networkAdmin/EditSubnetworkPage.xhtml?edit=true&amp;alias=#{item.vdcNetwork.urlAlias}">
-                    <ice:outputText value="#{item.vdcNetwork.name}" />
-                </ice:outputLink>
+                    <f:facet name="header">
+                        <ice:commandSortHeader
+                            columnName="Name"
+                            arrow="true">
+                        <ice:outputText value="Name"/>
+                        </ice:commandSortHeader>
+                    </f:facet>
+                    <ice:outputLink value="/dvn/dataverses/#{item.vdcNetwork.urlAlias}">
+                        <ice:outputText value="#{item.vdcNetwork.name}" />
+                    </ice:outputLink>
                 </ice:column>
                 <!-- Affiliation -->
                 <ice:column>
@@ -107,8 +108,11 @@
                 <!-- Delete -->
                 <ice:column>
                     <f:facet name="header">
-                        <ice:outputText value="Delete"/>
+                        <ice:outputText value="Action"/>
                     </f:facet>
+                    <ice:outputLink value="/dvn/faces/networkAdmin/EditSubnetworkPage.xhtml?edit=true&amp;alias=#{item.vdcNetwork.urlAlias}">
+                        <ice:outputText value="Edit"/>
+                    </ice:outputLink>
                     <ice:outputLink value="">
                         <f:param name="deleteId" value="#{item.vdcNetwork.id}" />
                         <f:param name="from" value="manageDataverses"/>

@@ -499,9 +499,9 @@ public class IndexServiceBean implements edu.harvard.iq.dvn.core.index.IndexServ
             }
             
             ArrayList<VDCNetwork> subNetworks = getSubNetworksAsArray(); //vdcNetworkService.getVDCSubNetworks();
-            // This is an array of subnetworks organized by *network id*; 
-            // i.e., if there are subnetworks with the ids 1, 2 and 5 the array 
-            // will contain {NULL, network_1, network_2, NULL, NULL, network_5}
+            // This is an array of [sub]networks organized by *network id*; 
+            // i.e., if there are subnetworks with the ids 0, 2 and 5 the array 
+            // will contain {0, NULL, network_2, NULL, NULL, network_5}
                         
             if (subNetworks == null || (subNetworks.size() < 1)) {
                 // No subnetworks in this DV Network; nothing to do. 
@@ -561,14 +561,11 @@ public class IndexServiceBean implements edu.harvard.iq.dvn.core.index.IndexServ
                                     if (linkedStudy != null) {
                                         studyNetworkId = linkedStudy.getOwner().getVdcNetwork().getId();
                                         if ((studyNetworkId != null) && 
-                                                (studyNetworkId.intValue() != 0) && 
                                                 (vdcNetworkId.compareTo(studyNetworkId) != 0)) {
-                                            logger.info("Study "+linkedStudy.getId()+" from subnetwork "+studyNetworkId+" is linked to this VDC.");
-
                                             // this study is cross-linked from another VDC network!
-                                            linkedVdcNetworkMap[linkedStudy.getId().intValue()] |= (1 >> (studyNetworkId.intValue()-1));
-                                            // note the (1 >> (studyNetworkId.intValue()-1)) above. this is safe, because studyNetworkId 
-                                            // cannot be 0 at this point - this network has to be another subnetwork
+                                            logger.info("Study "+linkedStudy.getId()+" from subnetwork "+studyNetworkId+" is linked to this VDC ("+vdc.getId()+").");
+
+                                            linkedVdcNetworkMap[linkedStudy.getId().intValue()] |= (1 >> studyNetworkId.intValue());
                                         }
                                     }
                                     linkedStudy = null;
@@ -592,7 +589,7 @@ public class IndexServiceBean implements edu.harvard.iq.dvn.core.index.IndexServ
             List<Long> linkedToNetworkIds = null;
             
             for (int i = 0; i < maxStudyId.intValue() + 1; i++) {
-                if (linkedVdcNetworkMap[i] > 0) {
+                if (linkedVdcNetworkMap[i] != 0) {
                     logger.info("study "+i+": cross-linked outside of its network;");
                     try {
                         linkedStudy = studyService.getStudy(new Long(i));
@@ -646,7 +643,7 @@ public class IndexServiceBean implements edu.harvard.iq.dvn.core.index.IndexServ
 
     private ArrayList<VDCNetwork> getSubNetworksAsArray () {
         
-        List<VDCNetwork> subNetworks = vdcNetworkService.getVDCSubNetworks();
+        List<VDCNetwork> subNetworks = vdcNetworkService.getVDCNetworksOrderedById(); 
         
         if (subNetworks != null) {
             ArrayList subNetworksArray = new ArrayList <VDCNetwork>(); 
@@ -674,11 +671,11 @@ public class IndexServiceBean implements edu.harvard.iq.dvn.core.index.IndexServ
     private List<VDCNetwork> newLinkedToNetworks(List<VDCNetwork> subNetworks, long bitString) {
         List<VDCNetwork> newList = null; 
         
-        if (bitString > 0 && subNetworks != null) {
+        if (bitString != 0 && subNetworks != null) {
             newList = new ArrayList<VDCNetwork>(); 
             
-            for (int i=1; i < subNetworks.size(); i++) {
-                if ((bitString & (1 >> (i - 1))) > 0) {
+            for (int i=0; i < subNetworks.size(); i++) {
+                if ((bitString & (1 >> i)) != 0) {
                     if (subNetworks.get(i) != null) {
                         // it should never be null at this point - but won't 
                         // hurt to check anyway. 
@@ -701,8 +698,7 @@ public class IndexServiceBean implements edu.harvard.iq.dvn.core.index.IndexServ
                 
                 if (linkedToNetworkIds.get(i) != null) {
                     networkId = linkedToNetworkIds.get(i).intValue();
-                    if (networkId > 0) {
-                    }
+                    bitString |= (1 >> networkId);    
                 }
             }
         }

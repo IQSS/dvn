@@ -52,4 +52,8 @@ public interface TemplateServiceLocal extends java.io.Serializable {
     public List<ControlledVocabulary> getNetworkControlledVocabulary();
     public ControlledVocabulary getControlledVocabulary(Long cvId);
     public void saveControlledVocabulary(ControlledVocabulary controlledVocabulary);
+
+    public Map getVdcNetworkTemplatesMap(Long vdcNetworkId);
+
+    public Map getVdcNetworkTemplatesMapForAddSitePage(Long vdcNetworkId);
 }

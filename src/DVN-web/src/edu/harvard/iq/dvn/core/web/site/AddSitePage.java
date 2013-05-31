@@ -124,6 +124,7 @@ public class AddSitePage extends VDCBaseBean implements java.io.Serializable  {
                 this.setDataverseType(request.getParameter((String) key));
             }
         }
+        networkSelectItems = loadNetworkSelectItems();
         if (getVDCRequestBean().getCurrentVdcNetwork().getDefaultTemplate() == null){
             defaultTemplateId =  vdcNetworkService.findRootNetwork().getDefaultTemplate().getId();
         } else {
@@ -133,7 +134,7 @@ public class AddSitePage extends VDCBaseBean implements java.io.Serializable  {
         if(defaultTemplate.isDisplayOnCreateDataverse() && selectTemplateId == null){
             selectTemplateId = defaultTemplate.getId();
         }   
-        networkSelectItems = loadNetworkSelectItems();
+
     }
 
     //copied from manageclassificationsPage.java
@@ -553,6 +554,9 @@ public class AddSitePage extends VDCBaseBean implements java.io.Serializable  {
         }
         if (networkList.size() > 0 ){
             for (VDCNetwork vdcNetwork : networkList){
+                if(selectSubNetworkId == null){
+                   setSelectSubNetworkId(vdcNetwork.getId());
+                }
                 selectItems.add(new SelectItem(vdcNetwork.getId(), vdcNetwork.getName()));
             }
         }
@@ -712,9 +716,8 @@ public class AddSitePage extends VDCBaseBean implements java.io.Serializable  {
      *
      *
      */
-    public Map getTemplatesMap() {
-        // getVdcTemplatesMap is called with currentVDCId, since for a new study the current VDC IS the owner   
-        return templateService.getVdcTemplatesMap(getVDCRequestBean().getCurrentVDCId());
+    public Map getTemplatesMap() {        
+        return templateService.getVdcNetworkTemplatesMapForAddSitePage(selectSubNetworkId);
     }
     private Long selectSubNetworkId;
 
@@ -735,8 +738,17 @@ public class AddSitePage extends VDCBaseBean implements java.io.Serializable  {
     public void setSelectTemplateId(Long selectTemplateId) {
         this.selectTemplateId = selectTemplateId;
     }
+    
+    public void changeSubnetworkOption(ValueChangeEvent event) {
+        Long newValue = (Long) event.getNewValue();
+        this.setSelectSubNetworkId(newValue);
+        HttpServletRequest request = (HttpServletRequest) FacesContext.getCurrentInstance().getExternalContext().getRequest();
+        System.out.print("getTemplatesMap " + selectSubNetworkId);
+        FacesContext.getCurrentInstance().renderResponse();
+    }
 
     public void changeDataverseOption(ValueChangeEvent event) {
+        System.out.print("changedataverse option " + selectSubNetworkId);
         String newValue = (String) event.getNewValue();
         this.setDataverseType(newValue);
         HttpServletRequest request = (HttpServletRequest) FacesContext.getCurrentInstance().getExternalContext().getRequest();

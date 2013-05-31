@@ -203,7 +203,7 @@ public class BasicSearchFragment extends VDCBaseBean implements java.io.Serializ
             logger.fine("non-variable query...");
 
             Long rootSubnetworkId = new Long(0);
-            if (getVDCRequestBean().getVdcNetwork().getId().equals(rootSubnetworkId)) {
+            if (getVDCRequestBean().getCurrentVdcNetwork().getId().equals(rootSubnetworkId)) {
                 logger.info("Running DVN-wide search");
                 DvnQuery dvnQuery = new DvnQuery();
                 dvnQuery.setSearchTerms(searchTerms);
@@ -213,7 +213,7 @@ public class BasicSearchFragment extends VDCBaseBean implements java.io.Serializ
                 studies = resultsWithFacets.getMatchIds();
             } else {
                 logger.info("Searching only a subnetwork");
-                VDCNetwork vdcNetwork = getVDCRequestBean().getVdcNetwork();
+                VDCNetwork vdcNetwork = getVDCRequestBean().getCurrentVdcNetwork();
                 String vdcNetworkName = vdcNetwork.getName();
                 logger.info("vdcNetwork name: " + vdcNetworkName);
                 /*
@@ -241,8 +241,13 @@ public class BasicSearchFragment extends VDCBaseBean implements java.io.Serializ
                 dvnQuery.setSubNetworkDvMemberQueries(subNetworkDvMemberQueries);
                 dvnQuery.setSubNetworkCollectionQueries(subNetworkCollectionQueries);
                 * */
-                Query subNetworkQuery = indexService.constructNetworkIdQuery(getVDCRequestBean().getVdcNetwork().getId());
-                dvnQuery.setSubNetworkQuery(null);
+                /**
+                 * @todo: make sure studies are found that are defined by a
+                 * network-wide dynamic collection per
+                 * https://redmine.hmdc.harvard.edu/issues/2964#note-5
+                 */
+                Query subNetworkQuery = indexService.constructNetworkIdQuery(getVDCRequestBean().getCurrentVdcNetwork().getId());
+                dvnQuery.setSubNetworkQuery(subNetworkQuery);
                 dvnQuery.setSearchTerms(searchTerms);
                 dvnQuery.constructQuery();
                 dvnQuery.setClearPreviousFacetRequests(true);

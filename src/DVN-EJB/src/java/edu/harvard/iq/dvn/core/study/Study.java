@@ -356,13 +356,13 @@ public class Study implements java.io.Serializable {
     @JoinTable(name = "LINKED_NETWORK_STUDIES",
     joinColumns = @JoinColumn(name = "study_id"),
     inverseJoinColumns = @JoinColumn(name = "vdcnetwork_id"))
-    private Collection<VDCNetwork> linkedToNetworks; 
+    private List<VDCNetwork> linkedToNetworks; 
     
-    public Collection<VDCNetwork> getLinkedToNetworks() {
+    public List<VDCNetwork> getLinkedToNetworks() {
         return this.linkedToNetworks; 
     }
     
-    public void setLinkedToNetworks(Collection<VDCNetwork> linkedNetworks) {
+    public void setLinkedToNetworks(List<VDCNetwork> linkedNetworks) {
         this.linkedToNetworks = linkedNetworks; 
     }
     

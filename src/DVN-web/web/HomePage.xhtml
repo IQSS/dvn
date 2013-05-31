@@ -33,7 +33,7 @@
                             <ui:include src="BasicSearchFragment.xhtml"></ui:include>
 
                             <div class="dvn_searchlinks">
-                                <ice:outputLink value="/dvn#{VDCRequest.currentVDCURL}/faces/AdvSearchPage.xhtml">
+                                <ice:outputLink value="/dvn#{VDCRequest.currentVDCURL}#{VDCRequest.currentVdcNetworkURL}/faces/AdvSearchPage.xhtml">
                                     <ice:outputText value="Advanced Search"/>
                                 </ice:outputLink>
                                 <ice:outputLink value="http://guides.thedata.org/book/search" target="_blank">
@@ -69,7 +69,7 @@
                                     <ice:outputText value=" in the menu bar, to administer your Dataverse Network."/>
                                 </li>
                                 <li>
-                                    <ice:outputLink value="/dvn/faces/site/AddSitePage.xhtml">
+                                    <ice:outputLink value="/dvn#{VDCRequest.currentVdcNetworkURL}/faces/site/AddSitePage.xhtml">
                                         <ice:outputText value="Create a Dataverse"/>
                                     </ice:outputLink>
                                     <ice:outputText value=" in order to create studies and upload data."/>
@@ -92,7 +92,7 @@
                                 <div class="dvnHmpgColumnHeaderBlock">
                                     <h1 class="dvnHmpgColumnHeader">Dataverses</h1>
                                     <div jsfc="ice:panelGroup" id="createDataverse" styleClass="dvnCreateActionBox dvnCreateDataverse" rendered="#{VDCRequest.vdcNetwork.allowCreateRequest and !VDCRequest.readOnlyDatabase}">
-                                        <ice:outputLink value="/dvn/faces/login/CreatorRequestInfoPage.xhtml">
+                                        <ice:outputLink value="/dvn#{VDCRequest.currentVdcNetworkURL}/faces/login/CreatorRequestInfoPage.xhtml">
                                             <ice:outputText value="Create Dataverse"/>
                                         </ice:outputLink>
                                     </div>
@@ -124,7 +124,7 @@
                                                     <ui:fragment rendered="#{!empty(item.xtraItems)}">
                                                         <li id="xtraMenu#{item.id}">
                                                             <h4 class="head">
-                                                                <ice:outputLink styleClass="head" value="/dvn/faces/site/BrowseDataversesPage.xhtml?groupId=#{item.id}"                                                                                                                                                                                                                    >
+                                                                <ice:outputLink styleClass="head" value="/dvn#{VDCRequest.currentVdcNetworkURL}/faces/site/BrowseDataversesPage.xhtml?groupId=#{item.id}"                                                                                                                                                                                                                    >
                                                                     <ice:outputText value="#{item.name}"/>
                                                                 </ice:outputLink>
                                                                 <ice:outputText value=" (#{item.numberOfDataverses})" styleClass="dvnHmpgClassificationCount"/>
@@ -135,7 +135,7 @@
                                                                             value="#{item.xtraItems}"
                                                                             var="xtraItems">
                                                                         <li>
-                                                                            <ice:outputLink styleClass="lastNode" value="/dvn/faces/site/BrowseDataversesPage.xhtml?groupId=#{xtraItems.id}">
+                                                                            <ice:outputLink styleClass="lastNode" value="/dvn#{VDCRequest.currentVdcNetworkURL}/faces/site/BrowseDataversesPage.xhtml?groupId=#{xtraItems.id}">
                                                                                 <ice:outputText value="#{xtraItems.name}"/>
                                                                             </ice:outputLink>
                                                                             <ice:outputText value=" (#{xtraItems.numberOfDataverses})" styleClass="dvnHmpgClassificationCount"/>
@@ -149,7 +149,7 @@
                                                     <!-- HAS NO SUBNODE DESCENDANTS -->
                                                     <ui:fragment rendered="#{empty(item.xtraItems)}">
                                                         <li>
-                                                            <ice:outputLink styleClass="lastNode" value="/dvn/faces/site/BrowseDataversesPage.xhtml?groupId=#{item.id}">
+                                                            <ice:outputLink styleClass="lastNode" value="/dvn#{VDCRequest.currentVdcNetworkURL}/faces/site/BrowseDataversesPage.xhtml?groupId=#{item.id}">
                                                                 <ice:outputText value="#{item.name}"/>
                                                             </ice:outputLink>
                                                             <ice:outputText value=" (#{item.numberOfDataverses})" styleClass="dvnHmpgClassificationCount"/>
@@ -175,15 +175,7 @@
                                                 value="#{homePage.mostRecentlyReleasedDVs}" var="vdcUI">
                                         <ice:column>
                                             <div>
-                                                <ice:outputLink styleClass="dvnHmpgDvNameLink dvnInlineHelpTip" id="dataverse_linkSub" value="/dvn/dataverses/#{VDCRequest.currentVdcNetwork.urlAlias}/dv/#{vdcUI.vdc.alias}"
-                                                                rendered="#{!empty(VDCRequest.currentVdcNetwork.urlAlias)}"
-                                                                title="#{vdcUI.name} Dataverse - Released: #{vdcUI.releaseDate}
-                                                                        #{!empty(vdcUI.vdc.affiliation) ? '&lt;br/&gt;Affilitation:  ' : ''} #{vdcUI.vdc.affiliation}
-                                                                        #{!empty(vdcUI.vdc.dvnDescription) ? '&lt;br/&gt;Description: ' : ''} #{vdcUI.vdc.dvnDescription}">
-                                                    <ice:outputText value="#{vdcUI.name}"/>
-                                                </ice:outputLink>
-                                                <ice:outputLink styleClass="dvnHmpgDvNameLink dvnInlineHelpTip" id="dataverse_link" value="/dvn/dv/#{vdcUI.vdc.alias}"
-                                                                rendered="#{empty(VDCRequest.currentVdcNetwork.urlAlias)}"
+                                                <ice:outputLink styleClass="dvnHmpgDvNameLink dvnInlineHelpTip" id="dataverse_linkSub" value="/dvn#{VDCRequest.currentVdcNetworkURL}/dv/#{vdcUI.vdc.alias}"
                                                                 title="#{vdcUI.name} Dataverse - Released: #{vdcUI.releaseDate}
                                                                         #{!empty(vdcUI.vdc.affiliation) ? '&lt;br/&gt;Affilitation:  ' : ''} #{vdcUI.vdc.affiliation}
                                                                         #{!empty(vdcUI.vdc.dvnDescription) ? '&lt;br/&gt;Description: ' : ''} #{vdcUI.vdc.dvnDescription}">

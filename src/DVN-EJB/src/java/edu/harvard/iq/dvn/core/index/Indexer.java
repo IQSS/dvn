@@ -2159,6 +2159,11 @@ public class Indexer implements java.io.Serializable  {
             for (String indexedFieldName : allfields) {
                 //logger.fine("INDEXREADER: "+indexedFieldName);
                 if (!"varName".equals(indexedFieldName)
+                        && !"fits-Column-Comment".equals(indexedFieldName)
+                        && !"fits-Column-Label".equals(indexedFieldName)
+                        && !"fits-Column-UCD".equals(indexedFieldName)
+                        && !"fits-Comment".equals(indexedFieldName)
+                        && !"fits-Extension-Name".equals(indexedFieldName)
                         && !"varLabel".equals(indexedFieldName)
                         && !"varId".equals(indexedFieldName)
                         && !"id".equals(indexedFieldName)

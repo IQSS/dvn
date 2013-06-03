@@ -2261,8 +2261,8 @@ public class Indexer implements java.io.Serializable  {
         Collection<VDCCollection> collections = vdc.getOwnedCollections();
         Collection<VDCCollection> linkedCollections = vdc.getLinkedCollections();
         collections.addAll(linkedCollections);
-        StringBuilder sbOuter = new StringBuilder();
         for (VDCCollection col : collections) {
+            StringBuilder sbOuter = new StringBuilder();
             String type = col.getType();
             String queryString = col.getQuery();
             boolean isDynamic = col.isDynamic();
@@ -2315,26 +2315,27 @@ public class Indexer implements java.io.Serializable  {
                 sbOuter.append(sbInner);
 
             }
-        }
-        logger.fine("sbOuter: " + sbOuter);
-        if (!sbOuter.toString().isEmpty()) {
-            try {
-                parser.setDefaultOperator(QueryParser.OR_OPERATOR);
-                /**
-                 * @todo: stop parsing a string... "If you are programmatically
-                 * generating a query string and then parsing it with the query
-                 * parser then you should seriously consider building your
-                 * queries directly with the query API. In other words, the
-                 * query parser is designed for human-entered text, not for
-                 * program-generated text." --
-                 * http://lucene.apache.org/core/old_versioned_docs/versions/3_5_0/queryparsersyntax.html
-                 */
-                Query staticColQuery = parser.parse(sbOuter.toString());
-                parser.setDefaultOperator(QueryParser.AND_OPERATOR);
-                logger.fine("staticCollectionQuery: " + staticColQuery);
-                collectionQueries.add(staticColQuery);
-            } catch (org.apache.lucene.queryParser.ParseException ex) {
-                Logger.getLogger(AdvSearchPage.class.getName()).log(Level.SEVERE, null, ex);
+            logger.fine("sbOuter: " + sbOuter);
+            if (!sbOuter.toString().isEmpty()) {
+                try {
+                    parser.setDefaultOperator(QueryParser.OR_OPERATOR);
+                    /**
+                     * @todo: stop parsing a string... "If you are
+                     * programmatically generating a query string and then
+                     * parsing it with the query parser then you should
+                     * seriously consider building your queries directly with
+                     * the query API. In other words, the query parser is
+                     * designed for human-entered text, not for
+                     * program-generated text." --
+                     * http://lucene.apache.org/core/old_versioned_docs/versions/3_5_0/queryparsersyntax.html
+                     */
+                    Query staticColQuery = parser.parse(sbOuter.toString());
+                    parser.setDefaultOperator(QueryParser.AND_OPERATOR);
+                    logger.fine("staticCollectionQuery: " + staticColQuery);
+                    collectionQueries.add(staticColQuery);
+                } catch (org.apache.lucene.queryParser.ParseException ex) {
+                    Logger.getLogger(AdvSearchPage.class.getName()).log(Level.SEVERE, null, ex);
+                }
             }
         }
 

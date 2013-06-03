@@ -58,6 +58,7 @@ import edu.harvard.iq.dvn.core.study.StudyFieldServiceLocal;
 import edu.harvard.iq.dvn.core.util.DateUtil;
 import edu.harvard.iq.dvn.core.vdc.VDC;
 import edu.harvard.iq.dvn.core.vdc.VDCCollection;
+import edu.harvard.iq.dvn.core.vdc.VDCServiceLocal;
 import edu.harvard.iq.dvn.core.web.AdvSearchPage;
 import edu.harvard.iq.dvn.core.web.StudyListingPage;
 import java.io.File;
@@ -76,6 +77,7 @@ import java.util.StringTokenizer;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.ejb.EJB;
+import javax.ejb.EJBs;
 import javax.naming.Context;
 import javax.naming.InitialContext;
 import org.apache.lucene.analysis.Analyzer;
@@ -124,7 +126,10 @@ import org.apache.lucene.util.Version;
  *
  * @author roberttreacy
  */
-@EJB(name="studyField", beanInterface=edu.harvard.iq.dvn.core.study.StudyFieldServiceLocal.class)
+@EJBs({
+@EJB(name="studyField", beanInterface=edu.harvard.iq.dvn.core.study.StudyFieldServiceLocal.class),
+@EJB(name = "vdcService", beanInterface = edu.harvard.iq.dvn.core.vdc.VDCServiceLocal.class),
+})
 public class Indexer implements java.io.Serializable  {
 
     private static final Logger logger = Logger.getLogger(Indexer.class.getCanonicalName());
@@ -137,6 +142,7 @@ public class Indexer implements java.io.Serializable  {
     private static Indexer indexer;
     
     StudyFieldServiceLocal studyFieldService;
+    VDCServiceLocal vdcService;
     
     Directory dir;
     String indexDir = "index-dir";
@@ -2286,6 +2292,23 @@ public class Indexer implements java.io.Serializable  {
                         logger.fine("- has StudyId: " + study.getId());
                         String idColonId = "id:" + study.getId().toString() + " ";
                         sbInner.append(idColonId);
+                    }
+                    if (isRootCollection) {
+                        try {
+                            Context ctx = new InitialContext();
+                            vdcService = (VDCServiceLocal) ctx.lookup("java:comp/env/vdcService");
+                        } catch (Exception ex) {
+                            logger.info("Caught an exception looking up VDC Service; " + ex.getMessage());
+                        }
+
+                        if (vdcService != null) {
+                            List<Long> rootCollectionStudies = vdcService.getOwnedStudyIds(col.getOwner().getId());
+                            for (Long id : rootCollectionStudies) {
+                                logger.fine("- has StudyId: " + id);
+                                String idColonId = "id:" + id.toString() + " ";
+                                sbInner.append(idColonId);
+                            }
+                        }
                     }
                     logger.fine("sbInner: " + sbInner.toString());
                     sbOuter.append(sbInner);

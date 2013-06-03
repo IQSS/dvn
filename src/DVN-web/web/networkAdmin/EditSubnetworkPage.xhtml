@@ -55,6 +55,8 @@
                             <td>
                                 <ice:inputText binding="#{EditSubnetworkPage.textFieldSubnetworkAlias}"
                                                 id="subnetworkAlias"
+                                                required="true"
+                                                requiredMessage="This is required"
                                                 validator="#{EditSubnetworkPage.validateAlias}"
                                                 value="#{EditSubnetworkPage.subnetworkAlias}"/>
                                 <br/>

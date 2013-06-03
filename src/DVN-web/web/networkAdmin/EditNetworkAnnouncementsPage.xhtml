@@ -9,7 +9,8 @@
           <table class="dvnOptionsTable" cellspacing="0" cellpadding="0" border="0">
             <tr>
                 <td class="dvnOptionsTableOption">
-                    <ice:outputText value="Network Description"/>
+                    <ice:outputText value="Network Description" rendered="#{empty(VDCRequest.currentVdcNetworkURL)}"/>
+                    <ice:outputText value="Subnetwork Description" rendered="#{!empty(VDCRequest.currentVdcNetworkURL)}"/>
                 </td>
                 <td>
                     <div jsfc="ice:panelGroup" styleClass="dvnInformationMessage">

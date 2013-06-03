@@ -1066,7 +1066,8 @@ public class AdvSearchPage extends VDCBaseBean implements java.io.Serializable {
                  *  -- L.A.
                  */
                 
-                Long rootSubnetworkId = new Long(0);
+                Long rootSubnetworkId = getVDCRequestBean().getVdcNetwork().getId();
+                Long currentSubnetworkId = getVDCRequestBean().getCurrentVdcNetwork().getId(); 
 
                 if (isVariableSearch() || isFileLevelMetadataSearch()) {
                     // older, non-facet method
@@ -1074,10 +1075,12 @@ public class AdvSearchPage extends VDCBaseBean implements java.io.Serializable {
                     if (thisVDC != null) {
                         viewableIds = indexServiceBean.search(thisVDC, searchTerms); 
                     } else {
-                        if (!getVDCRequestBean().getVdcNetwork().getId().equals(rootSubnetworkId)) {
-                            SearchTerm subnetworkSearchTerm = makeSubnetworkSearchTerm(getVDCRequestBean().getVdcNetwork().getId());
-                            if (subnetworkSearchTerm != null)
-                            searchTerms.add(subnetworkSearchTerm);
+                        logger.info("Checking if in subnetwork... [id="+currentSubnetworkId+"]");
+                        if (!currentSubnetworkId.equals(rootSubnetworkId)) {
+                            SearchTerm subnetworkSearchTerm = makeSubnetworkSearchTerm(currentSubnetworkId);
+                            if (subnetworkSearchTerm != null) {
+                                searchTerms.add(subnetworkSearchTerm);
+                            }
                         }
                         
                         viewableIds = indexServiceBean.search((VDC)null, searchTerms);
@@ -1104,7 +1107,7 @@ public class AdvSearchPage extends VDCBaseBean implements java.io.Serializable {
                         } else {
                             logger.fine("empty collectionQueries");
                         }
-                    } else if (!getVDCRequestBean().getVdcNetwork().getId().equals(rootSubnetworkId)) {
+                    } else if (!currentSubnetworkId.equals(rootSubnetworkId)) {
                         logger.info("Searching only a subnetwork");
                         VDCNetwork vdcNetwork = getVDCRequestBean().getVdcNetwork();
                         String vdcNetworkName = vdcNetwork.getName();

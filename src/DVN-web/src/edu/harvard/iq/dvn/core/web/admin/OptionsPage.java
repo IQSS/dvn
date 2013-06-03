@@ -148,6 +148,8 @@ public class OptionsPage extends VDCBaseBean  implements java.io.Serializable {
             vdcId = getVDCRequestBean().getCurrentVDC().getId();
             editVDCPrivileges.setVdc(vdcId);
             vdc = editVDCPrivileges.getVdc();
+        } else {
+            
         }
         
         if (getVDCRequestBean().getCurrentVDC() == null) {
@@ -1859,7 +1861,6 @@ public class OptionsPage extends VDCBaseBean  implements java.io.Serializable {
     private Boolean generalDVSettingsValid = true;
     
     public String saveGeneralSettings_action() {
-        System.out.print("in save general settings");
         
         generalDVSettingsValid = true;
         editSitePage.validateAlias(FacesContext.getCurrentInstance(), editSitePage.getDataverseAlias(), editSitePage.getDataverseAlias().getValue());
@@ -3158,7 +3159,12 @@ public class OptionsPage extends VDCBaseBean  implements java.io.Serializable {
         getVDCRenderBean().getFlash().put("successMessage", "Successfully deleted OAI set.");
     }
     
-   public String saveNetworkGeneralSettings_action() {       
+   public String saveNetworkGeneralSettings_action() {  
+        String networkName = (String) editNetworkNamePage.getTextFieldNetworkName().getValue();
+        if (networkName.isEmpty()){
+            getVDCRenderBean().getFlash().put("warningMessage", "Network name is rerquired.");
+            return "/networkAdmin/NetworkOptionsPage.xhtml?faces-redirect=true&tab=settings&tab2=general";
+        }
         VDCNetwork thisVdcNetwork = vdcNetworkService.find(new Long(0));
         thisVdcNetwork.setContactEmail(this.getContactUsEmail());
         thisVdcNetwork.setSystemEmail(this.getEditSystemEmail()); 

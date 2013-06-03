@@ -90,7 +90,7 @@ public class HomePage extends VDCBaseBean implements Serializable {
     private String groupName;
     private String parsedLocalAnnouncements     = null;
     private String parsedNetworkAnnouncements   = null;
-    private List<VDCNetwork> vdcSubnetworks = null;
+    private List<VDCNetworkUI> vdcSubnetworks = null;
     
     private String searchField;
     StatusMessage msg;
@@ -162,11 +162,28 @@ public class HomePage extends VDCBaseBean implements Serializable {
     
     
     private void initSubnetworks(){
-        if (getVDCRequestBean().getCurrentVdcNetwork().equals(vdcNetworkService.findRootNetwork())){
-            vdcSubnetworks = vdcNetworkService.getVisibleVDCSubnetworks();
-        } else {
-            vdcSubnetworks = new ArrayList();
-        }        
+        
+        vdcSubnetworks = new ArrayList();
+  
+        
+        vdcSubnetworks.clear();
+        List <VDCNetwork> vdcSubnetworkList = vdcNetworkService.getVDCSubNetworks();
+        for (VDCNetwork vdcNetwork: vdcSubnetworkList){
+            VDCNetworkUI vdcNetworkUI = new VDCNetworkUI();
+            vdcNetworkUI.setVdcNetwork(vdcNetwork);
+            Collection <VDC> vdcList = vdcNetwork.getNetworkVDCs();
+            int countRel = 0;
+            for (VDC vdc : vdcList){
+                if (!vdc.isRestricted()){
+                    countRel++;
+                }
+                
+            }           
+            vdcNetworkUI.setVdcCount(new Long(countRel));
+            if (countRel > 0)  {
+                vdcSubnetworks.add(vdcNetworkUI);
+            }       
+        }
     }
 
     private void initChrome() {
@@ -344,8 +361,8 @@ public class HomePage extends VDCBaseBean implements Serializable {
         this.group = group;
     }
     
-    public List<VDCNetwork> getVdcSubnetworks() {return vdcSubnetworks;}
-    public void setVdcSubnetworks(List<VDCNetwork> vdcSubnetworks) {this.vdcSubnetworks = vdcSubnetworks;}
+    public List<VDCNetworkUI> getVdcSubnetworks() {return vdcSubnetworks;}
+    public void setVdcSubnetworks(List<VDCNetworkUI> vdcSubnetworks) {this.vdcSubnetworks = vdcSubnetworks;}
     public String getSubnetworkAlias() {return subnetworkAlias;}
     public void setSubnetworkAlias(String subnetworkAlias) {this.subnetworkAlias = subnetworkAlias;}
 

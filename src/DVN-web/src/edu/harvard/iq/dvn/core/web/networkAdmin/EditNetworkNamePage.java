@@ -52,6 +52,15 @@ public class EditNetworkNamePage extends VDCBaseBean  implements java.io.Seriali
     StatusMessage msg;
     private Boolean addMode = false;
     private String alias = "";
+    private Boolean subnetworkMode = false;
+
+    public Boolean getSubnetworkMode() {
+        return subnetworkMode;
+    }
+
+    public void setSubnetworkMode(Boolean subnetworkMode) {
+        this.subnetworkMode = subnetworkMode;
+    }
     
     public StatusMessage getMsg(){
         return msg;
@@ -70,13 +79,18 @@ public class EditNetworkNamePage extends VDCBaseBean  implements java.io.Seriali
     }
     
     public void preRenderView(){
+        subnetworkMode = false;
         String edit = getVDCRequestBean().getRequestParam("edit");
         if (edit !=null && edit.equals("false")){
             addMode = true;
+            subnetworkMode = true;
             networkName = "";
         } 
-            else {
+        else {
             networkName = getVDCRequestBean().getCurrentVdcNetwork().getName();
+        }
+        if(!getVDCRequestBean().getCurrentVdcNetworkURL().isEmpty()){
+            subnetworkMode = true;
         }
     }
     

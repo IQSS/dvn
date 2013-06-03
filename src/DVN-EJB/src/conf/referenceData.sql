@@ -119,7 +119,7 @@ SELECT pg_catalog.setval(pg_catalog.pg_get_serial_sequence('vdcgroup', 'id'), 1,
 -- Name: vdcnetwork_id_seq; Type: SEQUENCE SET; Schema: public; Owner: dvnApp
 --
 
-SELECT pg_catalog.setval(pg_catalog.pg_get_serial_sequence('vdcnetwork', 'id'), 1, true);
+SELECT pg_catalog.setval(pg_catalog.pg_get_serial_sequence('vdcnetwork', 'id'), 1, false);
 
 
 --
@@ -323,6 +323,8 @@ INSERT INTO pagedef ( name, path, role_id, networkrole_id ) VALUES ( 'EditUserGr
 INSERT INTO pagedef ( name, path, role_id, networkrole_id ) VALUES ( 'UserGroupsPage', '/networkAdmin/UserGroupsPage.xhtml', null,2 );
 INSERT INTO pagedef ( name, path, role_id, networkrole_id ) VALUES ( 'ImportStudyPage', '/networkAdmin/ImportStudyPage.xhtml', null,2 );
 INSERT INTO pagedef ( name, path, role_id, networkrole_id ) VALUES ( 'UtilitiesPage', '/networkAdmin/UtilitiesPage.xhtml', null, 2 );
+INSERT INTO pagedef ( name, path, role_id, networkrole_id ) VALUES ( 'EditSubnetworkPage', '/networkAdmin/EditSubnetworkPage.xhtml', null, 2 );
+INSERT INTO pagedef ( name, path, role_id, networkrole_id ) VALUES ( 'ManageSubnetworksPage', '/networkAdmin/ManageSubnetworksPage.xhtml', null, 2 );
 
 ALTER TABLE pagedef ENABLE TRIGGER ALL;
 
@@ -941,7 +943,7 @@ ALTER TABLE "template" ENABLE TRIGGER ALL;
 
 ALTER TABLE vdcnetwork DISABLE TRIGGER ALL;
 
-INSERT INTO vdcnetwork (id, version, name, networkpageheader, networkpagefooter, announcements, displayannouncements, aboutthisdataversenetwork, contactemail, defaultvdcheader, defaultvdcfooter, defaultvdcabouttext, defaultvdcannouncements, displayvdcannouncements, displayvdcrecentstudies, defaulttemplate_id, allowcreaterequest, defaultnetworkadmin_id,protocol,authority,handleregistration,termsofuseenabled, deposittermsofuseenabled, downloadtermsofuseenabled, defaultdisplaynumber, exportperiod, exporthourofday) VALUES (1, 1, '[Your]', ' ', ' ', 'A description of your Dataverse Network or announcements may be added here. Use Network Options to edit or remove this text.', TRUE, 'This About page is not used anymore in the DVN application.', 'dataverse@lists.hmdc.harvard.edu', ' ', ' ', 'This About page is not used anymore in the DVN application.', '', TRUE, TRUE, 1, FALSE,1,'hdl','TEST',false,false,false,false,16,'daily',3);
+INSERT INTO vdcnetwork (id, version, name, networkpageheader, networkpagefooter, announcements, displayannouncements, aboutthisdataversenetwork, contactemail, defaultvdcheader, defaultvdcfooter, defaultvdcabouttext, defaultvdcannouncements, displayvdcannouncements, displayvdcrecentstudies, defaulttemplate_id, allowcreaterequest, defaultnetworkadmin_id,protocol,authority,handleregistration,termsofuseenabled, deposittermsofuseenabled, downloadtermsofuseenabled, defaultdisplaynumber, exportperiod, exporthourofday) VALUES (0, 1, '[Your]', ' ', ' ', 'A description of your Dataverse Network or announcements may be added here. Use Network Options to edit or remove this text.', TRUE, 'This About page is not used anymore in the DVN application.', 'dataverse@lists.hmdc.harvard.edu', ' ', ' ', 'This About page is not used anymore in the DVN application.', '', TRUE, TRUE, 1, FALSE,1,'hdl','TEST',false,false,false,false,16,'daily',3);
 
 update vdcnetwork set defaultvdcheader='<style type="text/css">
 body {margin:0; padding:0;}

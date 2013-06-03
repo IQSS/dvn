@@ -55,6 +55,7 @@ import edu.harvard.iq.dvn.core.study.SpecialOtherFile;
 import edu.harvard.iq.dvn.core.study.FileMetadataField; 
 import edu.harvard.iq.dvn.core.study.FileMetadataFieldValue;
 import edu.harvard.iq.dvn.core.study.StudyFieldServiceLocal;
+import edu.harvard.iq.dvn.core.util.DateUtil;
 import edu.harvard.iq.dvn.core.vdc.VDC;
 import edu.harvard.iq.dvn.core.vdc.VDCCollection;
 import edu.harvard.iq.dvn.core.web.AdvSearchPage;
@@ -501,8 +502,8 @@ public class Indexer implements java.io.Serializable  {
             TaxonomyWriter taxo = new DirectoryTaxonomyWriter(taxoDir);
             List<CategoryPath> categoryPaths = new ArrayList<CategoryPath>();
             addFacet(categoryPaths, "dvName", study.getOwner().getName());
-            addFacet(categoryPaths, "productionDate", metadata.getProductionDate());
-            addFacet(categoryPaths, "distributionDate", metadata.getDistributionDate());
+            addFacetDate(categoryPaths, "productionDate", metadata.getProductionDate());
+            addFacetDate(categoryPaths, "distributionDate", metadata.getDistributionDate());
             for (Iterator it = studyDistributors.iterator(); it.hasNext();) {
                 StudyDistributor studyDistributor = (StudyDistributor) it.next();
                 addFacet(categoryPaths, "distributorName", studyDistributor.getName());
@@ -762,6 +763,13 @@ public class Indexer implements java.io.Serializable  {
     private void addFacet(List<CategoryPath> categoryPaths, String key, String value) {
         if (value != null && value.length() > 0) {
             categoryPaths.add(new CategoryPath(key.trim(), value.trim()));
+        }
+    }
+
+    private void addFacetDate(List<CategoryPath> categoryPaths, String key, String value) {
+        boolean isValid = DateUtil.validateDate(value);
+        if (isValid) {
+            addFacet(categoryPaths, key, value);
         }
     }
 
@@ -2165,7 +2173,8 @@ public class Indexer implements java.io.Serializable  {
                         && !"versionNumber".equals(indexedFieldName)
                         && !"versionStudyId".equals(indexedFieldName)
                         && !"varStudyId".equals(indexedFieldName)
-                        && !"varStudyFileId".equals(indexedFieldName)) {
+                        && !"varStudyFileId".equals(indexedFieldName)
+                        && !isFileMetadataField(indexedFieldName)) {
                     anyTerms.add(buildAnyTerm(indexedFieldName, string));
                 }
             }

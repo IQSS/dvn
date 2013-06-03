@@ -202,7 +202,7 @@ public class BasicSearchFragment extends VDCBaseBean implements java.io.Serializ
 //            resultsWithFacets = indexService.searchwithFacets(getVDCRequestBean().getCurrentVDC(), searchTerms);
             logger.fine("non-variable query...");
 
-            Long rootSubnetworkId = new Long(0);
+            Long rootSubnetworkId = getVDCRequestBean().getVdcNetwork().getId();
             if (getVDCRequestBean().getCurrentVdcNetwork().getId().equals(rootSubnetworkId)) {
                 logger.info("Running DVN-wide search");
                 DvnQuery dvnQuery = new DvnQuery();

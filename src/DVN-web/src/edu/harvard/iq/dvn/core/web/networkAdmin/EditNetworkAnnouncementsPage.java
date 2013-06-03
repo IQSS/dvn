@@ -60,6 +60,14 @@ public class EditNetworkAnnouncementsPage extends VDCBaseBean implements java.io
     
     // </editor-fold>
     private Boolean addMode = false;
+
+    public Boolean getAddMode() {
+        return addMode;
+    }
+
+    public void setAddMode(Boolean addMode) {
+        this.addMode = addMode;
+    }
     private String alias = "";
 
     /** 

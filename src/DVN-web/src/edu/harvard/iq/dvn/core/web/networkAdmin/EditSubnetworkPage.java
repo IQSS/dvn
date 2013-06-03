@@ -74,10 +74,10 @@ public class EditSubnetworkPage extends VDCBaseBean implements Serializable  {
     
     
     public void preRenderView(){
-        if (getVDCRequestBean().getRequestParam("edit") != null && getVDCRequestBean().getRequestParam("edit").equals("true")){            
-            subnetworkAlias = getVDCRequestBean().getRequestParam("alias");
+        if (!getVDCRequestBean().getCurrentVdcNetworkURL().isEmpty()){   
+            originalVDCNetwork = getVDCRequestBean().getCurrentVdcNetwork();
+            subnetworkAlias = originalVDCNetwork.getUrlAlias();
             originalAlias = subnetworkAlias;
-            originalVDCNetwork = vdcNetworkService.findByAlias(alias);
             subnetworkCurator = originalVDCNetwork.getCurator();
             chkSubnetworkEnabled = originalVDCNetwork.isReleased();
         } else {
@@ -131,6 +131,11 @@ public class EditSubnetworkPage extends VDCBaseBean implements Serializable  {
     }
     
     public String saveSubNetworkGeneralSettings_action() {
+        String networkName = (String) editNetworkNamePage.getTextFieldNetworkName().getValue();
+        if (networkName.isEmpty()){
+            getVDCRenderBean().getFlash().put("warningMessage", "Subnetwork name is required.");
+            return "/dvn" + getVDCRequestBean().getCurrentVdcNetworkURL() +  "/faces/networkAdmin/EditSubnetworkPage.xhtml?edit=true";
+        }
         if (!addMode && originalVDCNetwork != null) {
             originalVDCNetwork.setName(editNetworkNamePage.getNetworkName());
             originalVDCNetwork.setDisplayAnnouncements(editNetworkAnnouncementsPage.isChkEnableNetworkAnnouncements());
@@ -142,7 +147,8 @@ public class EditSubnetworkPage extends VDCBaseBean implements Serializable  {
             originalVDCNetwork.setReleased(chkSubnetworkEnabled);
             vdcNetworkService.edit(originalVDCNetwork);
             getVDCRenderBean().getFlash().put("successMessage", "Successfully updated subnetwork.");
-        } else {           
+        } else {   
+            System.out.print("why - when here??");
             VDCNetwork newVdcNetwork = new VDCNetwork();
             newVdcNetwork.setUrlAlias(subnetworkAlias);
             vdcNetworkService.create(newVdcNetwork);

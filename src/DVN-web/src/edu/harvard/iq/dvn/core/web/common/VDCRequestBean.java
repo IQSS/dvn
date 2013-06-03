@@ -247,6 +247,16 @@ public class VDCRequestBean extends VDCBaseBean implements java.io.Serializable 
         return dataverseURL;
     }
     
+    public String getCurrentVdcNetworkURL() {
+        String networkURL="";
+        if (getCurrentVdcNetwork().getId().intValue() > 0) { 
+            networkURL +="/dataverses/"+getCurrentVdcNetwork().getUrlAlias();
+        } 
+        HttpServletRequest request = (HttpServletRequest)FacesContext.getCurrentInstance().getExternalContext().getRequest();
+        request.setAttribute("dataverseURL", networkURL); 
+        return networkURL;
+    }
+    
     public void setCurrentVDCURL(String dataverseURL) {}  // dummy method since the get is just a wrapper 
 
     public String getRequestedPage() {
@@ -265,19 +275,18 @@ public class VDCRequestBean extends VDCBaseBean implements java.io.Serializable 
      */
     public VDCNetwork getCurrentVdcNetwork() {
         if (vdcNetwork == null) {
-
             HttpServletRequest req = (HttpServletRequest) FacesContext.getCurrentInstance().getExternalContext().getRequest();
-            VDCNetwork vdcNetwork = vdcNetworkService.getVDCNetworkFromRequest(req);
-            if (vdcNetwork == null){
-                vdcNetwork = vdcNetworkService.findRootNetwork();  // There is only one network, which will always have Id=1 
-            } 
-            setVdcNetwork(vdcNetwork);              
+            VDCNetwork vdcNetworkReq = vdcNetworkService.getVDCNetworkFromRequest(req);
+            if (vdcNetworkReq == null){
+                setVdcNetwork(vdcNetworkService.findRootNetwork()); 
+            } else {
+                setVdcNetwork(vdcNetworkReq);
+            }
         }
         return this.vdcNetwork;
     }
     
     public VDCNetwork getVdcNetwork() {
-
         return vdcNetworkService.findRootNetwork();
     }
 

@@ -112,7 +112,13 @@
                         <td valign="bottom">
                             <div class="dvn_headerTitleLarge">
                                 <ice:outputLink value="/dvn" styleClass="dvn_headerTitleLrgNetwork" title="#{VDCRequest.vdcNetwork.name} Dataverse Network Homepage" rendered="#{VDCRequest.currentVDC == null}">
-                                    <ice:outputText value="#{VDCRequest.vdcNetwork.name} Dataverse Network" nospan="true"/>
+                                    <ice:outputText value="#{VDCRequest.vdcNetwork.name} Dataverse Network" rendered="#{VDCRequest.currentVdcNetwork.id == VDCRequest.vdcNetwork.id}" nospan="true"/>
+                                    <ice:outputText value="#{VDCRequest.vdcNetwork.name} Dataverse Network &#62;" rendered="#{VDCRequest.currentVdcNetwork.id != VDCRequest.vdcNetwork.id}" nospan="true"/>
+                                </ice:outputLink>
+                                <ice:outputText value="&#160;&#160;" rendered="#{VDCRequest.currentVdcNetwork.id != VDCRequest.vdcNetwork.id and VDCRequest.currentVDC == null}" nospan="true"/>
+                                <ice:outputLink value="/dvn/dataverses/#{VDCRequest.currentVdcNetwork.urlAlias}" title="#{VDCRequest.currentVdcNetwork.name} Dataverses" 
+                                                rendered="#{VDCRequest.currentVdcNetwork.id != VDCRequest.vdcNetwork.id and VDCRequest.currentVDC == null}">
+                                    <ice:outputText value="#{VDCRequest.currentVdcNetwork.name} Dataverses" nospan="true"/>
                                 </ice:outputLink>
                                 <ice:outputLink value="/dvn/dv/#{VDCRequest.currentVDC.alias}" title="#{VDCRequest.currentVDC.name} Dataverse Homepage" rendered="#{VDCRequest.currentVDC != null}">
                                     <ice:outputText value="#{VDCRequest.currentVDC.name} Dataverse" nospan="true"/>
@@ -120,11 +126,6 @@
                                 <ice:outputLink value="/dvn#{VDCRequest.currentVDCURL}/faces/admin/OptionsPage.xhtml?tab=settings" styleClass="dvnUnreleasedDVIcon dvnInlineHelpTip" 
                                                 rendered="#{VDCRequest.currentVDC != null and VDCRequest.currentVDC.restricted}" title="Unreleased Dataverse - Your dataverse is currently set to Not Released, and will not be featured on the network homepage until it is released. To release the dataverse, click this icon, to go to the Dataverse Settings page."
                                                 ><img src="/dvn/resources/images/icon_warning.18.png" alt="Unreleased Dataverse"/>                                    
-                                </ice:outputLink>
-                                <ice:outputLink value="/dvn/dataverses/#{VDCRequest.currentVdcNetwork.urlAlias}" title="#{VDCRequest.currentVdcNetwork.name} Dataverses" 
-                                                rendered="#{VDCRequest.currentVdcNetwork.id != VDCRequest.vdcNetwork.id}"
-                                                >
-                                    <ice:outputText value="&#160;&#62; #{VDCRequest.currentVdcNetwork.name} Dataverses" nospan="true"/>
                                 </ice:outputLink>
                             </div>
                         </td>

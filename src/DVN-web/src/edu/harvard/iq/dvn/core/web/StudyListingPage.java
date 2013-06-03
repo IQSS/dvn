@@ -545,6 +545,14 @@ public class StudyListingPage extends VDCBaseBean implements java.io.Serializabl
                         String idColonId = "id:" + study.getId().toString() + " ";
                         sbInner.append(idColonId);
                     }
+                    if (isRootCollection) {
+                        List<Long> rootCollectionStudies = vdcService.getOwnedStudyIds(col.getOwner().getId());
+                        for (Long id : rootCollectionStudies) {
+                            logger.fine("- has StudyId: " + id);
+                            String idColonId = "id:" + id.toString() + " ";
+                            sbInner.append(idColonId);
+                        }
+                    }
                     logger.fine("sbInner: " + sbInner.toString());
                     sbOuter.append(sbInner);
                 }

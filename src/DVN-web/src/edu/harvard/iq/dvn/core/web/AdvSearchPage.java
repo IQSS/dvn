@@ -958,106 +958,140 @@ public class AdvSearchPage extends VDCBaseBean implements java.io.Serializable {
             VDC thisVDC = getVDCRequestBean().getCurrentVDC();
             List<Long> viewableIds = null;
             ResultsWithFacets resultsWithFacets = null;
+            
             if (searchOnlySelectedCollections) {
 //                viewableIds = indexServiceBean.search(thisVDC, searchCollections, searchTerms);
                 // older, non-faceted method above
-                logger.info("searching selected collections...");
-                List<Query> collectionQueries = new ArrayList<Query>();
-                QueryParser parser = new QueryParser(Version.LUCENE_30, "abstract", new DVNAnalyzer());
-                parser.setDefaultOperator(QueryParser.AND_OPERATOR);
-                for (VDCCollection col : searchCols) {
-                    Long colId = col.getId();
-                    String type = col.getType();
-                    String queryString = col.getQuery();
-                    boolean isDynamic = col.isDynamic();
-                    boolean isLocalScope = col.isLocalScope();
-                    boolean isRootCollection = col.isRootCollection();
-                    VDC colOwner = col.getOwner();
-                    StringBuilder sbOuter = new StringBuilder();
-                    logger.info("For " + col.getName() + " (id=" + colId + "|isRootCollection=" + isRootCollection + "|type=" + type + "|isDynamic=" + isDynamic + "|isLocalScope=" + isLocalScope + ") adding query: <<<" + queryString + ">>>");
-                    if (queryString != null && !queryString.isEmpty()) {
-                        try {
-                            Query dynamicQuery = parser.parse(queryString);
-                            if (isLocalScope) {
-                                BooleanQuery dynamicLocal = new BooleanQuery();
-                                VDC currentVdc = getVDCRequestBean().getCurrentVDC();
-                                if (currentVdc == colOwner) {
-                                    logger.fine("collection is owned by this dataverse");
-                                    Query dvOwnerIdQuery = indexServiceBean.constructDvOwnerIdQuery(currentVdc);
-                                    dynamicLocal.add(dynamicQuery, BooleanClause.Occur.MUST);
-                                    dynamicLocal.add(dvOwnerIdQuery, BooleanClause.Occur.MUST);
+                if (isVariableSearch() || isFileLevelMetadataSearch()) {
+                    viewableIds = indexServiceBean.search(thisVDC, searchCols, searchTerms);
+                    logger.info("searching selected collections [old, facet-less method...]");
+                } else {
+                    logger.info("searching selected collections [new, facet-enabled method...]");
+                    List<Query> collectionQueries = new ArrayList<Query>();
+                    QueryParser parser = new QueryParser(Version.LUCENE_30, "abstract", new DVNAnalyzer());
+                    parser.setDefaultOperator(QueryParser.AND_OPERATOR);
+                    for (VDCCollection col : searchCols) {
+                        Long colId = col.getId();
+                        String type = col.getType();
+                        String queryString = col.getQuery();
+                        boolean isDynamic = col.isDynamic();
+                        boolean isLocalScope = col.isLocalScope();
+                        boolean isRootCollection = col.isRootCollection();
+                        VDC colOwner = col.getOwner();
+                        StringBuilder sbOuter = new StringBuilder();
+                        logger.info("For " + col.getName() + " (id=" + colId + "|isRootCollection=" + isRootCollection + "|type=" + type + "|isDynamic=" + isDynamic + "|isLocalScope=" + isLocalScope + ") adding query: <<<" + queryString + ">>>");
+                        if (queryString != null && !queryString.isEmpty()) {
+                            try {
+                                Query dynamicQuery = parser.parse(queryString);
+                                if (isLocalScope) {
+                                    BooleanQuery dynamicLocal = new BooleanQuery();
+                                    VDC currentVdc = getVDCRequestBean().getCurrentVDC();
+                                    if (currentVdc == colOwner) {
+                                        logger.fine("collection is owned by this dataverse");
+                                        Query dvOwnerIdQuery = indexServiceBean.constructDvOwnerIdQuery(currentVdc);
+                                        dynamicLocal.add(dynamicQuery, BooleanClause.Occur.MUST);
+                                        dynamicLocal.add(dvOwnerIdQuery, BooleanClause.Occur.MUST);
+                                    } else {
+                                        logger.fine("collection is linked, owned by a different dataverse");
+                                        Query dvOwnerIdQuery = indexServiceBean.constructDvOwnerIdQuery(colOwner);
+                                        dynamicLocal.add(dynamicQuery, BooleanClause.Occur.MUST);
+                                        dynamicLocal.add(dvOwnerIdQuery, BooleanClause.Occur.MUST);
+                                    }
+                                    collectionQueries.add(dynamicLocal);
                                 } else {
-                                    logger.fine("collection is linked, owned by a different dataverse");
-                                    Query dvOwnerIdQuery = indexServiceBean.constructDvOwnerIdQuery(colOwner);
-                                    dynamicLocal.add(dynamicQuery, BooleanClause.Occur.MUST);
-                                    dynamicLocal.add(dvOwnerIdQuery, BooleanClause.Occur.MUST);
+                                    collectionQueries.add(dynamicQuery);
                                 }
-                                collectionQueries.add(dynamicLocal);
-                            } else {
-                                collectionQueries.add(dynamicQuery);
+                            } catch (org.apache.lucene.queryParser.ParseException ex) {
+                                Logger.getLogger(StudyListingPage.class.getName()).log(Level.SEVERE, null, ex);
                             }
-                        } catch (org.apache.lucene.queryParser.ParseException ex) {
-                            Logger.getLogger(StudyListingPage.class.getName()).log(Level.SEVERE, null, ex);
-                        }
-                    } else {
-                        List<Study> studies = col.getStudies();
-                        StringBuilder sbInner = new StringBuilder();
-                        for (Study study : studies) {
-                            logger.fine("- has StudyId: " + study.getId());
-                            String idColonId = "id:" + study.getId().toString() + " ";
-                            sbInner.append(idColonId);
-                        }
-                        if (isRootCollection) {
-                            List<Long> rootCollectionStudies = vdcService.getOwnedStudyIds(col.getOwner().getId());
-                            for (Long id : rootCollectionStudies) {
-                                logger.fine("- has StudyId: " + id);
-                                String idColonId = "id:" + id.toString() + " ";
+                        } else {
+                            List<Study> studies = col.getStudies();
+                            StringBuilder sbInner = new StringBuilder();
+                            for (Study study : studies) {
+                                logger.fine("- has StudyId: " + study.getId());
+                                String idColonId = "id:" + study.getId().toString() + " ";
                                 sbInner.append(idColonId);
+                            }
+                            if (isRootCollection) {
+                                List<Long> rootCollectionStudies = vdcService.getOwnedStudyIds(col.getOwner().getId());
+                                for (Long id : rootCollectionStudies) {
+                                    logger.fine("- has StudyId: " + id);
+                                    String idColonId = "id:" + id.toString() + " ";
+                                    sbInner.append(idColonId);
 
+                                }
+                            }
+                            logger.fine("sbInner: " + sbInner.toString());
+                            sbOuter.append(sbInner);
+
+                        }
+                        logger.info("sbOuter: " + sbOuter);
+                        if (!sbOuter.toString().isEmpty()) {
+                            try {
+                                parser.setDefaultOperator(QueryParser.OR_OPERATOR);
+                                Query staticColQuery = parser.parse(sbOuter.toString());
+                                parser.setDefaultOperator(QueryParser.AND_OPERATOR);
+                                logger.fine("staticCollectionQuery: " + staticColQuery);
+                                collectionQueries.add(staticColQuery);
+                            } catch (org.apache.lucene.queryParser.ParseException ex) {
+                                Logger.getLogger(AdvSearchPage.class.getName()).log(Level.SEVERE, null, ex);
                             }
                         }
-                        logger.fine("sbInner: " + sbInner.toString());
-                        sbOuter.append(sbInner);
+                    }
 
-                    }
-                    logger.info("sbOuter: " + sbOuter);
-                    if (!sbOuter.toString().isEmpty()) {
-                        try {
-                            parser.setDefaultOperator(QueryParser.OR_OPERATOR);
-                            Query staticColQuery = parser.parse(sbOuter.toString());
-                            parser.setDefaultOperator(QueryParser.AND_OPERATOR);
-                            logger.fine("staticCollectionQuery: " + staticColQuery);
-                            collectionQueries.add(staticColQuery);
-                        } catch (org.apache.lucene.queryParser.ParseException ex) {
-                            Logger.getLogger(AdvSearchPage.class.getName()).log(Level.SEVERE, null, ex);
-                        }
-                    }
+                    DvnQuery dvnQuery = new DvnQuery();
+                    dvnQuery.setSearchTerms(searchTerms);
+                    dvnQuery.setMultipleCollectionQueries(collectionQueries);
+                    dvnQuery.constructQuery();
+                    resultsWithFacets = indexServiceBean.searchNew(dvnQuery);
+                    viewableIds = resultsWithFacets.getMatchIds();
                 }
-
-                DvnQuery dvnQuery = new DvnQuery();
-                dvnQuery.setSearchTerms(searchTerms);
-                dvnQuery.setMultipleCollectionQueries(collectionQueries);
-                dvnQuery.constructQuery();
-                resultsWithFacets = indexServiceBean.searchNew(dvnQuery);
-                viewableIds = resultsWithFacets.getMatchIds();
+                
             } else {
                 logger.fine("in searchWithFacets in AdvSearchPage");
+                /* 
+                 * This is the logical order here (for both the new,
+                 * facets-enabled methods, and the older methods still 
+                 * used for the variables and file-level metadata (FITS)
+                 * searches: 
+                 * We first check if we are inside a DV; then we run a 
+                 * DV-scoped search; 
+                 * If not, we check if we are inside a subnetwork; 
+                 * And if that is not the case either, we'll run a 
+                 * full DVN-wide search. 
+                 * 
+                 * TODO: it should probably be "Collection, DV, Subnetwork, DVN 
+                 * instead; i.e., no need to be treating the collection case 
+                 * separately, above. [?]
+                 *  -- L.A.
+                 */
+                
+                Long rootSubnetworkId = getVDCRequestBean().getVdcNetwork().getId();
+                Long currentSubnetworkId = getVDCRequestBean().getCurrentVdcNetwork().getId(); 
+
                 if (isVariableSearch() || isFileLevelMetadataSearch()) {
-                    viewableIds = indexServiceBean.search(thisVDC, searchTerms); // older, non-facet method
+                    // older, non-facet method
+
+                    if (thisVDC != null) {
+                        viewableIds = indexServiceBean.search(thisVDC, searchTerms); 
+                    } else {
+                        logger.info("Checking if in subnetwork... [id="+currentSubnetworkId+"]");
+                        if (!currentSubnetworkId.equals(rootSubnetworkId)) {
+                            SearchTerm subnetworkSearchTerm = makeSubnetworkSearchTerm(currentSubnetworkId);
+                            if (subnetworkSearchTerm != null) {
+                                searchTerms.add(subnetworkSearchTerm);
+                            }
+                        }
+                        
+                        viewableIds = indexServiceBean.search((VDC)null, searchTerms);
+                        
+                    }
                     // TODO: 
                     // Make sure the variable and file metadata searches are 
                     // properly scoped for subnetworks as well. -- L.A.
                 } else {
-                    /* 
-                     * This is the logical order here: 
-                     * We first check if we are inside a DV; then we run a 
-                     * DV-scoped search; 
-                     * If not, we check if we are inside a subnetwork; 
-                     * And if that is not the case either, we'll run a 
-                     * full DVN-wide search. 
-                     */
+                    
                     DvnQuery dvnQuery = new DvnQuery();
-                    Long rootSubnetworkId = new Long(0);
                     
                     if (thisVDC != null) {
                         logger.info("Running DVN-wide search from AdvSearchPage");
@@ -1073,7 +1107,7 @@ public class AdvSearchPage extends VDCBaseBean implements java.io.Serializable {
                         } else {
                             logger.fine("empty collectionQueries");
                         }
-                    } else if (!getVDCRequestBean().getVdcNetwork().getId().equals(rootSubnetworkId)) {
+                    } else if (!currentSubnetworkId.equals(rootSubnetworkId)) {
                         logger.info("Searching only a subnetwork");
                         VDCNetwork vdcNetwork = getVDCRequestBean().getVdcNetwork();
                         String vdcNetworkName = vdcNetwork.getName();
@@ -1101,7 +1135,7 @@ public class AdvSearchPage extends VDCBaseBean implements java.io.Serializable {
                             subNetworkCollectionQueries.addAll(vdcCollectionQueries);
                         }*/
                         
-                        Query subNetworkQuery = indexServiceBean.constructNetworkIdQuery(getVDCRequestBean().getVdcNetwork().getId());
+                        Query subNetworkQuery = indexServiceBean.constructNetworkIdQuery(currentSubnetworkId);
                         dvnQuery.setSubNetworkQuery(subNetworkQuery); 
                     } else {
                         logger.info("Running DVN-wide search from AdvSearchPage");
@@ -1247,6 +1281,17 @@ public class AdvSearchPage extends VDCBaseBean implements java.io.Serializable {
             
         }
         return searchTerms;
+    }
+    
+    SearchTerm makeSubnetworkSearchTerm(Long subNetworkId) {
+        SearchTerm subNetworkTerm = new SearchTerm();
+        
+        subNetworkTerm.setFieldName("dvNetworkId");
+        subNetworkTerm.setOperator("="); 
+        subNetworkTerm.setValue(subNetworkId.toString());
+        
+        return subNetworkTerm;
+        
     }
 
     protected String operatorToken(String operator) {

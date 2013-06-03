@@ -162,7 +162,7 @@ public class HomePage extends VDCBaseBean implements Serializable {
     
     
     private void initSubnetworks(){
-        if (getVDCRequestBean().getCurrentVdcNetwork().equals(vdcNetworkService.findRootNetwork())){
+        if (getVDCRequestBean().getCurrentVdcNetwork() == null || getVDCRequestBean().getCurrentVdcNetwork().equals(vdcNetworkService.findRootNetwork())){
             vdcSubnetworks = vdcNetworkService.getVisibleVDCSubnetworks();
         } else {
             vdcSubnetworks = new ArrayList();

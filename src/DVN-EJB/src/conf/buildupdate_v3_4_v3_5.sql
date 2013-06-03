@@ -1,4 +1,6 @@
 update vdcnetwork set id = 0 where id = 1;
+select setval('vdcnetwork_id_seq',1,false);
+
 Alter TABLE vdc add vdcnetwork_id bigint;
 
 Update vdc set vdcnetwork_id = 0;

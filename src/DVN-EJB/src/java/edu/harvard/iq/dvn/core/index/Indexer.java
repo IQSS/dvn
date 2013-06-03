@@ -2165,7 +2165,8 @@ public class Indexer implements java.io.Serializable  {
                         && !"versionNumber".equals(indexedFieldName)
                         && !"versionStudyId".equals(indexedFieldName)
                         && !"varStudyId".equals(indexedFieldName)
-                        && !"varStudyFileId".equals(indexedFieldName)) {
+                        && !"varStudyFileId".equals(indexedFieldName)
+                        && !isFileMetadataField(indexedFieldName)) {
                     anyTerms.add(buildAnyTerm(indexedFieldName, string));
                 }
             }

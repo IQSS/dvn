@@ -83,6 +83,7 @@ public class EditNetworkNamePage extends VDCBaseBean  implements java.io.Seriali
         String edit = getVDCRequestBean().getRequestParam("edit");
         if (edit !=null && edit.equals("false")){
             addMode = true;
+            subnetworkMode = true;
             networkName = "";
         } 
         else {

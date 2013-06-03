@@ -58,6 +58,7 @@ import edu.harvard.iq.dvn.core.study.StudyFieldServiceLocal;
 import edu.harvard.iq.dvn.core.util.DateUtil;
 import edu.harvard.iq.dvn.core.vdc.VDC;
 import edu.harvard.iq.dvn.core.vdc.VDCCollection;
+import edu.harvard.iq.dvn.core.vdc.VDCServiceLocal;
 import edu.harvard.iq.dvn.core.web.AdvSearchPage;
 import edu.harvard.iq.dvn.core.web.StudyListingPage;
 import java.io.File;
@@ -76,6 +77,7 @@ import java.util.StringTokenizer;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.ejb.EJB;
+import javax.ejb.EJBs;
 import javax.naming.Context;
 import javax.naming.InitialContext;
 import org.apache.lucene.analysis.Analyzer;
@@ -124,7 +126,10 @@ import org.apache.lucene.util.Version;
  *
  * @author roberttreacy
  */
-@EJB(name="studyField", beanInterface=edu.harvard.iq.dvn.core.study.StudyFieldServiceLocal.class)
+@EJBs({
+@EJB(name="studyField", beanInterface=edu.harvard.iq.dvn.core.study.StudyFieldServiceLocal.class),
+@EJB(name = "vdcService", beanInterface = edu.harvard.iq.dvn.core.vdc.VDCServiceLocal.class),
+})
 public class Indexer implements java.io.Serializable  {
 
     private static final Logger logger = Logger.getLogger(Indexer.class.getCanonicalName());
@@ -137,6 +142,7 @@ public class Indexer implements java.io.Serializable  {
     private static Indexer indexer;
     
     StudyFieldServiceLocal studyFieldService;
+    VDCServiceLocal vdcService;
     
     Directory dir;
     String indexDir = "index-dir";
@@ -2255,22 +2261,22 @@ public class Indexer implements java.io.Serializable  {
         Collection<VDCCollection> collections = vdc.getOwnedCollections();
         Collection<VDCCollection> linkedCollections = vdc.getLinkedCollections();
         collections.addAll(linkedCollections);
-        StringBuilder sbOuter = new StringBuilder();
         for (VDCCollection col : collections) {
+            StringBuilder sbOuter = new StringBuilder();
             String type = col.getType();
             String queryString = col.getQuery();
             boolean isDynamic = col.isDynamic();
             boolean isLocalScope = col.isLocalScope();
             boolean isRootCollection = col.isRootCollection();
-            if (!isLocalScope) {
-                // We are creating this list of queries for the purposes of finding 
-                // all the linked studies that belong to the dataverse, in addition 
-                // to the ones that are directly "owned" by it (assigned to it by
-                // the "owner field). So all the "Local Scope" queries can be 
-                // dropped - as they are assumed to be applied only to the subsets
-                // of studies owned by the DV. (i.e., they are combined with 
-                // "AND dvOwnerId = ..." when the collections are looked up).
-                if (queryString != null && !queryString.isEmpty()) {
+            if (queryString != null && !queryString.isEmpty()) {
+                if (!isLocalScope) {
+                    // We are creating this list of queries for the purposes of finding 
+                    // all the linked studies that belong to the dataverse, in addition 
+                    // to the ones that are directly "owned" by it (assigned to it by
+                    // the "owner field). So all the "Local Scope" queries can be 
+                    // dropped - as they are assumed to be applied only to the subsets
+                    // of studies owned by the DV. (i.e., they are combined with 
+                    // "AND dvOwnerId = ..." when the collections are looked up).
                     try {
                         logger.fine("For " + col.getName() + " (isRootCollection=" + isRootCollection + "|type=" + type + "|isDynamic=" + isDynamic + "|isLocalScope=" + isLocalScope + ") adding query: <<<" + queryString + ">>>");
                         Query query = parser.parse(queryString);
@@ -2278,40 +2284,58 @@ public class Indexer implements java.io.Serializable  {
                     } catch (org.apache.lucene.queryParser.ParseException ex) {
                         Logger.getLogger(StudyListingPage.class.getName()).log(Level.SEVERE, null, ex);
                     }
-                } else {
-                    logger.fine("For " + col.getName() + " (isRootCollection=" + isRootCollection + "|type=" + type + "|isDynamic=" + isDynamic + "|isLocalScope=" + isLocalScope + ") skipping add of query: <<<" + queryString + ">>>");
-                    List<Study> studies = col.getStudies();
-                    StringBuilder sbInner = new StringBuilder();
-                    for (Study study : studies) {
-                        logger.fine("- has StudyId: " + study.getId());
-                        String idColonId = "id:" + study.getId().toString() + " ";
-                        sbInner.append(idColonId);
-                    }
-                    logger.fine("sbInner: " + sbInner.toString());
-                    sbOuter.append(sbInner);
-
                 }
+            } else {
+                logger.fine("For " + col.getName() + " (isRootCollection=" + isRootCollection + "|type=" + type + "|isDynamic=" + isDynamic + "|isLocalScope=" + isLocalScope + ") skipping add of query: <<<" + queryString + ">>>");
+                List<Study> studies = col.getStudies();
+                StringBuilder sbInner = new StringBuilder();
+                for (Study study : studies) {
+                    logger.fine("- has StudyId: " + study.getId());
+                    String idColonId = "id:" + study.getId().toString() + " ";
+                    sbInner.append(idColonId);
+                }
+                if (isRootCollection) {
+                    try {
+                        Context ctx = new InitialContext();
+                        vdcService = (VDCServiceLocal) ctx.lookup("java:comp/env/vdcService");
+                    } catch (Exception ex) {
+                        logger.info("Caught an exception looking up VDC Service; " + ex.getMessage());
+                    }
+
+                    if (vdcService != null) {
+                        List<Long> rootCollectionStudies = vdcService.getOwnedStudyIds(col.getOwner().getId());
+                        for (Long id : rootCollectionStudies) {
+                            logger.fine("- has StudyId: " + id);
+                            String idColonId = "id:" + id.toString() + " ";
+                            sbInner.append(idColonId);
+                        }
+                    }
+                }
+                logger.fine("sbInner: " + sbInner.toString());
+                sbOuter.append(sbInner);
+
             }
-        }
-        logger.fine("sbOuter: " + sbOuter);
-        if (!sbOuter.toString().isEmpty()) {
-            try {
-                parser.setDefaultOperator(QueryParser.OR_OPERATOR);
-                /**
-                 * @todo: stop parsing a string... "If you are programmatically
-                 * generating a query string and then parsing it with the query
-                 * parser then you should seriously consider building your
-                 * queries directly with the query API. In other words, the
-                 * query parser is designed for human-entered text, not for
-                 * program-generated text." --
-                 * http://lucene.apache.org/core/old_versioned_docs/versions/3_5_0/queryparsersyntax.html
-                 */
-                Query staticColQuery = parser.parse(sbOuter.toString());
-                parser.setDefaultOperator(QueryParser.AND_OPERATOR);
-                logger.fine("staticCollectionQuery: " + staticColQuery);
-                collectionQueries.add(staticColQuery);
-            } catch (org.apache.lucene.queryParser.ParseException ex) {
-                Logger.getLogger(AdvSearchPage.class.getName()).log(Level.SEVERE, null, ex);
+            logger.fine("sbOuter: " + sbOuter);
+            if (!sbOuter.toString().isEmpty()) {
+                try {
+                    parser.setDefaultOperator(QueryParser.OR_OPERATOR);
+                    /**
+                     * @todo: stop parsing a string... "If you are
+                     * programmatically generating a query string and then
+                     * parsing it with the query parser then you should
+                     * seriously consider building your queries directly with
+                     * the query API. In other words, the query parser is
+                     * designed for human-entered text, not for
+                     * program-generated text." --
+                     * http://lucene.apache.org/core/old_versioned_docs/versions/3_5_0/queryparsersyntax.html
+                     */
+                    Query staticColQuery = parser.parse(sbOuter.toString());
+                    parser.setDefaultOperator(QueryParser.AND_OPERATOR);
+                    logger.fine("staticCollectionQuery: " + staticColQuery);
+                    collectionQueries.add(staticColQuery);
+                } catch (org.apache.lucene.queryParser.ParseException ex) {
+                    Logger.getLogger(AdvSearchPage.class.getName()).log(Level.SEVERE, null, ex);
+                }
             }
         }
 

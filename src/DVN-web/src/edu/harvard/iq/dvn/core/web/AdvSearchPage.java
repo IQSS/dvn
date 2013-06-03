@@ -1135,7 +1135,7 @@ public class AdvSearchPage extends VDCBaseBean implements java.io.Serializable {
                             subNetworkCollectionQueries.addAll(vdcCollectionQueries);
                         }*/
                         
-                        Query subNetworkQuery = indexServiceBean.constructNetworkIdQuery(getVDCRequestBean().getVdcNetwork().getId());
+                        Query subNetworkQuery = indexServiceBean.constructNetworkIdQuery(currentSubnetworkId);
                         dvnQuery.setSubNetworkQuery(subNetworkQuery); 
                     } else {
                         logger.info("Running DVN-wide search from AdvSearchPage");

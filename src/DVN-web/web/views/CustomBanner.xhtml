@@ -5,6 +5,6 @@
      xmlns:ice="http://www.icesoft.com/icefaces/component">
     <ui:composition>
         <ice:outputText nospan="true" escape="false" rendered="#{VDCRequest.currentVDCId != null and VDCRequest.displayDVNCustomization}" value="#{VDCRequest.currentVDC.header}"/>
-        <ice:outputText nospan="true" escape="false" rendered="#{VDCRequest.currentVDCId == null and VDCRequest.displayDVNCustomization}" value="#{VDCRequest.vdcNetwork.networkPageHeader}"/>
+        <ice:outputText nospan="true" escape="false" rendered="#{VDCRequest.currentVDCId == null and VDCRequest.displayDVNCustomization}" value="#{VDCRequest.currentVdcNetwork.networkPageHeader}"/>
     </ui:composition>
 </div>

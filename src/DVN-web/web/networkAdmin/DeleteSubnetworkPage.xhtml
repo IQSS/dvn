@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:jsp="http://java.sun.com/JSP/Page"
+      xmlns:ice="http://www.icesoft.com/icefaces/component"
+      xmlns:dvn="/WEB-INF/tlds/dvn-components">
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+    </head>
+    <body>
+        <ui:composition template="/template.xhtml">
+            <script type="text/javascript">
+                // <![CDATA[
+                function selectOneSourceVariableClick(){
+                    document.getElementById('form1:selectOneSourceVariableClick').click();
+                }
+                // ]]>
+            </script>
+            <ui:param name="pageTitle" value="#{bundlePageInfo.deleteSubnetworkTitle} - #{EditNetworkNamePage.networkName}"/>
+            <ui:define name="metadata">
+                <f:metadata>
+                    <f:viewParam name="deleteId" value="#{DeleteSubnetworkPage.deleteId}"/>
+                </f:metadata>
+            </ui:define>
+            <ui:define name="body">
+                <ice:form id="AddClassificationsPageForm">
+                    <div class="dvn_section">
+                        <div class="dvn_sectionTitle">
+                            <ice:outputText value="#{bundlePageInfo.deleteSubnetworkTitle}"/>
+                            <!-- <ice:outputText value="#{bundlePageInfo.editSubnetworksTitle}" rendered="#{addClassificationsPage.classId!=null}"/> -->
+                        </div>
+                        <div class="dvn_sectionBox">
+                            <div class="dvn_margin12">
+                                <div id="groupPanel6" class="dvnFormPadding dvnFormMargin">
+                                    <ice:graphicImage value="/resources/images/icon_warning.18.png" styleClass="dvn_icon"/>
+                                    <ice:outputText styleClass="warnMessage" value=" Are you sure?"/>
+                                    <p></p>
+                                    <ice:commandButton id="btnSaveSettings" value="#{bundlePageInfo.deleteSubnetworkTitle} #{EditNetworkNamePage.networkName}" rendered="#{!VDCRequest.readOnlyDatabase}" action="#{DeleteSubnetworkPage.delete_action}"/>
+                                    <ice:commandButton id="btnCancel" value="Cancel" immediate="true" action="#{DeleteSubnetworkPage.cancel}"/>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </ice:form>
+            </ui:define>
+        </ui:composition>
+    </body>
+</html>

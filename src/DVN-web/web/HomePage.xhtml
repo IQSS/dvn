@@ -205,11 +205,11 @@
                                         <div class="content">
                                             <div class="dvnHmpgSubnetworkLogo"><ice:graphicImage value="/resources/images/icon_information.18.png"/></div>
                                             <div class="dvnHmpgSubnetworkInfo">
-                                                <ice:outputLink styleClass="dvnHmpgDvNameLink dvnInlineHelpTip" id="subnetwork_link" value="/dvn/dataverses/#{vdcSubnetwork.vdcNetwork.urlAlias}"                 
+                                                <ice:outputLink styleClass="dvnHmpgSubnetworkNameLink dvnInlineHelpTip" id="subnetwork_link" value="/dvn/dataverses/#{vdcSubnetwork.vdcNetwork.urlAlias}"                 
                                                     title="#{vdcSubnetwork.vdcNetwork.name} Dataverses">
                                                     <ice:outputText value="#{vdcSubnetwork.vdcNetwork.name} Dataverses"/>
                                                 </ice:outputLink>
-                                                <ice:outputText styleClass="dvnHmpgSubnetworkDVCount" value="Number of released dataverses: #{vdcSubnetwork.vdcCount} "/>
+                                                <ice:outputText styleClass="dvnHmpgSubnetworkDVCount" value="Dataverses: #{vdcSubnetwork.vdcCount} "/>
                                                 <ice:outputText value="#{vdcSubnetwork.vdcNetwork.announcements}"/>
                                             </div>
                                         </div>

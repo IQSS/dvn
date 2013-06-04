@@ -565,7 +565,7 @@ public class IndexServiceBean implements edu.harvard.iq.dvn.core.index.IndexServ
                                             // this study is cross-linked from another VDC network!
                                             logger.info("Study "+linkedStudy.getId()+" from subnetwork "+studyNetworkId+" is linked to this VDC ("+vdc.getId()+").");
 
-                                            linkedVdcNetworkMap[linkedStudy.getId().intValue()] |= (1 >> studyNetworkId.intValue());
+                                            linkedVdcNetworkMap[linkedStudy.getId().intValue()] |= (1 << vdcNetworkId.intValue());
                                         }
                                     }
                                     linkedStudy = null;
@@ -675,7 +675,7 @@ public class IndexServiceBean implements edu.harvard.iq.dvn.core.index.IndexServ
             newList = new ArrayList<VDCNetwork>(); 
             
             for (int i=0; i < subNetworks.size(); i++) {
-                if ((bitString & (1 >> i)) != 0) {
+                if ((bitString & (1 << i)) != 0) {
                     if (subNetworks.get(i) != null) {
                         // it should never be null at this point - but won't 
                         // hurt to check anyway. 
@@ -698,7 +698,7 @@ public class IndexServiceBean implements edu.harvard.iq.dvn.core.index.IndexServ
                 
                 if (linkedToNetworkIds.get(i) != null) {
                     networkId = linkedToNetworkIds.get(i).intValue();
-                    bitString |= (1 >> networkId);    
+                    bitString |= (1 << networkId);    
                 }
             }
         }

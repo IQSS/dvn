@@ -3635,15 +3635,60 @@ public class OptionsPage extends VDCBaseBean  implements java.io.Serializable {
     }
     
     public String indexCollectionStudies_action() {
+        
+        // Check if the lucene top-level directory exists: 
+        
+        String dvnIndexLocation = System.getProperty("dvn.index.location");
+        boolean dvnIndexLocationExists = false; 
+        
+        if (dvnIndexLocation != null){
+            File locationDirectory = new File(dvnIndexLocation);
+            if (locationDirectory.exists() && locationDirectory.isDirectory()){
+                dvnIndexLocationExists = true; 
+            }
+        }
+        
+        if (!dvnIndexLocationExists) {
+            addMessage( "indexMessage", "Cannot reindex: The index directory ("+dvnIndexLocation+") does not exist." );
+            return null; 
+        }
+        
+        // Check for an existing lock file: 
+        
+        String lockFileName = dvnIndexLocation + "/collReindex.lock";
+
+
+        File collReindexLockFile = new File(lockFileName);
+        if (collReindexLockFile.exists()) {
+            String errorMessage = "Cannot reindex: collection reindexing already in progress;";
+            errorMessage += ("lock file " + lockFileName + ", created on " + (new Date(collReindexLockFile.lastModified())).toString() + ".");
+            addMessage("indexMessage", errorMessage);
+            return null;
+        } 
+        
+        // Create a lock file: 
         try {
+            collReindexLockFile.createNewFile();
+        } catch (IOException ex) {
+            String errorMessage = "Error: could not create lock file (";
+            errorMessage += (lockFileName + ")");
+            addMessage("indexMessage", errorMessage);
+        }
+        
+        try {
+            
             indexService.updateStudiesInCollections();
             addMessage( "indexMessage", "Reindexing of collection-linked studies completed." );
             
         } catch (Exception e) {
             e.printStackTrace();
-            addMessage( "indexMessage", "Reindexing failed: An error occurred trying to reindex the collection-linked studies." );
+            addMessage( "indexMessage", "Reindexing failed: An error occurred trying to reindex the collection-linked studies. ("+e.getMessage()+")");
         } 
        
+        // delete the lock file:
+        
+        collReindexLockFile.delete();
+        
         return null;
     }
     // </editor-fold>

@@ -86,6 +86,17 @@ public class VDCNetworkServiceBean implements VDCNetworkServiceLocal {
         em.remove(vDCNetwork);
     }
 
+    public void deleteSubnetwork(VDCNetwork subnetworkToDelete) {
+        /**
+         * @todo: revert VDCNetwork_id in VDC table to root network Id
+         * @todo: revert subnetworkId on template table to root network id
+         * @todo: delete row from vdcnetwork table
+         *
+         * https://redmine.hmdc.harvard.edu/issues/2981
+         */
+        throw new UnsupportedOperationException("Not yet implemented");
+    }
+
     public VDCNetwork find(Object pk) {
         return (VDCNetwork) em.find(VDCNetwork.class, pk);
     }

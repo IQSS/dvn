@@ -89,5 +89,7 @@ public interface VDCNetworkServiceLocal extends java.io.Serializable  {
     public VDCNetwork findById(Long networkId);
     
     public VDCNetwork getVDCNetworkFromRequest(HttpServletRequest request);
+
+    public void deleteSubnetwork(VDCNetwork subnetworkToDelete);
 }
 

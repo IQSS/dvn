@@ -60,7 +60,7 @@
                                                 validator="#{EditSubnetworkPage.validateAlias}"
                                                 value="#{EditSubnetworkPage.subnetworkAlias}"/>
                                 <br/>
-                                <ice:outputText styleClass="vdcHelpText" value="Short name used to build the URL for this network, e.g., http://.../dv/'alias'. It is case sensitive."/>
+                                <ice:outputText styleClass="vdcHelpText" value="Short name used to build the URL for this subnetwork, e.g., http://.../dvn/dataverses/'alias'. It is case sensitive."/>
                                 <ice:message for="subnetworkAlias" showSummary="true" showDetail="false" styleClass="errorMessage"/>
                             </td>
                         </tr>
@@ -75,10 +75,10 @@
                         </tr>
                         <tr>
                             <td class="dvnOptionsTableOption">
-                                <ice:outputText value="Curator"/>
+                                <ice:outputText value="Affiliation"/>
                             </td>
                             <td>
-                                <ice:inputText id="subnetworkCurator" value="#{EditSubnetworkPage.subnetworkCurator}"/>
+                                <ice:inputText id="subnetworkAffiliation" value="#{EditSubnetworkPage.subnetworkAffiliation}"/>
                             </td>
                         </tr>
                     </table>

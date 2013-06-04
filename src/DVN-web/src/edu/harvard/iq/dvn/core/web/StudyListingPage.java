@@ -586,6 +586,16 @@ public class StudyListingPage extends VDCBaseBean implements java.io.Serializabl
 //                resultsWithFacets = indexService.searchNew(dvnQuery);
 //                studyIDList = resultsWithFacets.getMatchIds();
             } else {
+                logger.fine("single collection not selected, searching entire dataverse");
+                /**
+                 * At the dataverse level, search should not be affected by the
+                 * value of getVDCRequestBean().getCurrentVdcNetwork() which
+                 * tells us which subnetwork we are currently in.
+                 *
+                 * That is to say, we don't need to bother to check that value
+                 * or make any decisions based on it.
+                 */
+                logger.fine("current subnetwork: " + getVDCRequestBean().getCurrentVdcNetwork().getId());
                 dvnQuery.setVdc(getVDCRequestBean().getCurrentVDC());
 
                 if (dvnQuery.getVdc() != null) {

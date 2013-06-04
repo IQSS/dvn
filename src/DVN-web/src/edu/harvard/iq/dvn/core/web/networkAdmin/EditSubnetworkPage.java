@@ -54,7 +54,7 @@ public class EditSubnetworkPage extends VDCBaseBean implements Serializable  {
     private String edit = null;
     private String alias = null;
     private String subnetworkAlias = "";
-    private String subnetworkCurator = ""; 
+    private String subnetworkAffiliation = ""; 
     private boolean chkSubnetworkEnabled = false;
 
     private String originalAlias = "";
@@ -78,7 +78,7 @@ public class EditSubnetworkPage extends VDCBaseBean implements Serializable  {
             originalVDCNetwork = getVDCRequestBean().getCurrentVdcNetwork();
             subnetworkAlias = originalVDCNetwork.getUrlAlias();
             originalAlias = subnetworkAlias;
-            subnetworkCurator = originalVDCNetwork.getCurator();
+            subnetworkAffiliation = originalVDCNetwork.getAffiliation();
             chkSubnetworkEnabled = originalVDCNetwork.isReleased();
         } else {
             addMode = true;
@@ -113,12 +113,12 @@ public class EditSubnetworkPage extends VDCBaseBean implements Serializable  {
         this.subnetworkAlias = subnetworkAlias;
     }
     
-    public String getSubnetworkCurator() {
-        return subnetworkCurator;
+    public String getSubnetworkAffiliation() {
+        return subnetworkAffiliation;
     }
 
-    public void setSubnetworkCurator(String subnetworkCurator) {
-        this.subnetworkCurator = subnetworkCurator;
+    public void setSubnetworkAffiliation(String subnetworkAffiliation) {
+        this.subnetworkAffiliation = subnetworkAffiliation;
     }
     
     
@@ -143,7 +143,7 @@ public class EditSubnetworkPage extends VDCBaseBean implements Serializable  {
             originalVDCNetwork.setNetworkPageHeader(editBannerFooterPage.getBanner());
             originalVDCNetwork.setNetworkPageFooter(editBannerFooterPage.getFooter());
             originalVDCNetwork.setUrlAlias(subnetworkAlias);
-            originalVDCNetwork.setCurator(subnetworkCurator);  
+            originalVDCNetwork.setAffiliation(subnetworkAffiliation);  
             originalVDCNetwork.setReleased(chkSubnetworkEnabled);
             vdcNetworkService.edit(originalVDCNetwork);
             getVDCRenderBean().getFlash().put("successMessage", "Successfully updated subnetwork.");
@@ -158,7 +158,7 @@ public class EditSubnetworkPage extends VDCBaseBean implements Serializable  {
             createdNetwork.setAnnouncements(editNetworkAnnouncementsPage.getNetworkAnnouncements());
             createdNetwork.setNetworkPageHeader(editBannerFooterPage.getBanner());
             createdNetwork.setNetworkPageFooter(editBannerFooterPage.getFooter());     
-            createdNetwork.setCurator(subnetworkCurator);
+            createdNetwork.setAffiliation(subnetworkAffiliation);
             createdNetwork.setNetworkCreated(new Date());
             VDCUser creator = getVDCSessionBean().getLoginBean().getUser();
             createdNetwork.setCreator(creator);

@@ -15,7 +15,8 @@
                 <td>
                     <div jsfc="ice:panelGroup" styleClass="dvnInformationMessage">
                         <div class="dvnMsgBlockContainer">
-                          <ice:outputText value="#{bundlePageInfo.editDvnDescriptionHelp}" escape="false"/>
+                          <ice:outputText value="#{bundlePageInfo.editDvnDescriptionHelp}" rendered="#{empty(VDCRequest.currentVdcNetworkURL) and !EditNetworkAnnouncementsPage.addMode}" escape="false"/>
+                          <ice:outputText value="#{bundlePageInfo.editSubnetworkDescriptionHelp}" rendered="#{!empty(VDCRequest.currentVdcNetworkURL) or EditNetworkAnnouncementsPage.addMode}" escape="false"/>
                         </div>
                     </div>
                     <div jsfc="ice:panelGroup">

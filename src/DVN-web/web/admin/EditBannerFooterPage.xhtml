@@ -19,8 +19,9 @@
         
               <div jsfc="ice:panelGroup" styleClass="dvnInformationMessage">
                 <div class="dvnMsgBlockContainer">
-                  <ice:outputText value="#{bundlePageInfo.editDvnBrandingHelp}" escape="false" rendered="#{VDCRequest.currentVDC == null}"/>
-                  <ice:outputText value="#{bundlePageInfo.editDvBrandingHelp}" escape="false" rendered="#{VDCRequest.currentVDC != null}"/>
+                  <ice:outputText value="#{bundlePageInfo.editDvnBrandingHelp}" escape="false" rendered="#{(VDCRequest.currentVDC == null) and (empty VDCRequest.currentVdcNetworkURL)}"/>
+                  <ice:outputText value="#{bundlePageInfo.editDvBrandingHelp}" escape="false" rendered="#{(VDCRequest.currentVDC != null) and (empty VDCRequest.currentVdcNetworkURL)}"/>
+                  <ice:outputText value="#{bundlePageInfo.editSubnetworkBrandingHelp}" escape="false" rendered="#{!empty VDCRequest.currentVdcNetworkURL}"/>
                 </div>
               </div>
               <div jsfc="ice:panelGroup" rendered="#{VDCRequest.currentVDC != null}">

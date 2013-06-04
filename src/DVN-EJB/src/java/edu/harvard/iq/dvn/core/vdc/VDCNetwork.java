@@ -603,14 +603,14 @@ public class VDCNetwork implements java.io.Serializable  {
     }
     
     /**
-     * Holds value of property curator.
+     * Holds value of property affiliation.
      */
-    private String curator;
-    public String getCurator() {
-        return this.curator;
+    private String affiliation;
+    public String getAffiliation() {
+        return this.affiliation;
     }
-    public void setCurator(String curator) {
-        this.curator = curator;
+    public void setAffiliation(String affiliation) {
+        this.affiliation = affiliation;
     }
     
     /**

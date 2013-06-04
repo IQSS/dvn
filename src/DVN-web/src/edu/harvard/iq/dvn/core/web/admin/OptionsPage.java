@@ -3682,7 +3682,7 @@ public class OptionsPage extends VDCBaseBean  implements java.io.Serializable {
             
         } catch (Exception e) {
             e.printStackTrace();
-            addMessage( "indexMessage", "Reindexing failed: An error occurred trying to reindex the collection-linked studies." );
+            addMessage( "indexMessage", "Reindexing failed: An error occurred trying to reindex the collection-linked studies. ("+e.getMessage()+")");
         } 
        
         // delete the lock file:

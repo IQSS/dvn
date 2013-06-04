@@ -40,8 +40,7 @@ import javax.inject.Named;
 public class ManageSubnetworksPage extends VDCBaseBean implements Serializable {
     @EJB VDCNetworkServiceLocal vdcNetworkService;
     private List <VDCNetworkUI> vdcSubnetworks = new ArrayList();
-
-    
+ 
     public void init() {
         super.init();
         initSubnetworks();
@@ -67,5 +66,11 @@ public class ManageSubnetworksPage extends VDCBaseBean implements Serializable {
     public void setVdcSubnetworks(List<VDCNetworkUI> subnetworks) {
         this.vdcSubnetworks = subnetworks;
     }
+    
+    public Long getSubnetworkCount() {
+        return new Long(vdcSubnetworks.size());
+    }
+
+
 }
 

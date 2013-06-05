@@ -19,12 +19,11 @@
 */
 package edu.harvard.iq.dvn.core.vdc;
 
+import edu.harvard.iq.dvn.core.study.Study;
 import edu.harvard.iq.dvn.core.study.StudyServiceLocal;
+import edu.harvard.iq.dvn.core.study.StudyVersion;
 import edu.harvard.iq.dvn.core.web.common.VDCApplicationBean;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.Iterator;
-import java.util.List;
+import java.util.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.annotation.Resource;
@@ -77,6 +76,18 @@ public class VDCNetworkStatsServiceBean implements VDCNetworkStatsServiceLocal {
         return (VDCNetworkStats) em.find(VDCNetworkStats.class, new Long(0));
     }
     
+
+    public VDCNetworkStats getVDCNetworkStatsByNetworkId(Long networkId) {
+        String query = "SELECT n from VDCNetworkStats n where n.vdcNetwork.id = :id";
+        VDCNetworkStats vdcNetworkStats = null;
+        try {
+            vdcNetworkStats = (VDCNetworkStats) em.createQuery(query).setParameter("id", networkId).getSingleResult();
+        } catch (javax.persistence.NoResultException e) {
+            vdcNetworkStats = new VDCNetworkStats();
+        }
+        return vdcNetworkStats;
+    }
+    
     @Timeout
     public void handleTimeout(javax.ejb.Timer timer) {
         logger.log(Level.FINE,"in handleTimeout, timer = "+timer.getInfo());
@@ -102,12 +113,30 @@ public class VDCNetworkStatsServiceBean implements VDCNetworkStatsServiceLocal {
         List<VDCNetwork> vdcNetworks = vdcNetworkService.getVDCNetworks();
         for (VDCNetwork vdcNetwork : vdcNetworks) {
             Long vdcNetwork_id = vdcNetwork.getId();
-            VDCNetworkStats vdcNetworkStats = (VDCNetworkStats) em.find(VDCNetworkStats.class, vdcNetwork_id);
-            if (vdcNetworkStats != null) {
+            VDCNetworkStats vdcNetworkStats = getVDCNetworkStatsByNetworkId(vdcNetwork_id);
+            if (vdcNetworkStats != null && vdcNetwork_id.intValue() == vdcNetworkService.findRootNetwork().getId().intValue()) {
                 Long releasedStudies = vdcNetworkService.getTotalStudies(true);
                 Long releasedFiles = vdcNetworkService.getTotalFiles(true);
                 Long downloadCount = vdcNetworkService.getTotalDownloads(true);
                 logger.log(Level.FINE, "releasedStudies =" + releasedStudies + "releasedFiles=" + releasedFiles);
+                vdcNetworkStats.setStudyCount(releasedStudies);
+                vdcNetworkStats.setFileCount(releasedFiles);
+                vdcNetworkStats.setDownloadCount(downloadCount);
+            } else if (vdcNetworkStats != null) {
+                Long releasedStudies = vdcNetworkService.getTotalStudiesBySubnetwork(vdcNetwork_id, true);
+                Long releasedFiles = vdcNetworkService.getTotalFilesBySubnetwork(vdcNetwork_id, true);
+                Long downloadCount = vdcNetworkService.getTotalDownloadsBySubnetwork(vdcNetwork_id, true);
+                List<Long> varList = new ArrayList();
+                List<Study> studyObjects = (List) vdcNetwork.getLinkedStudies();
+                        
+                for (Study currentResult : studyObjects) {
+                    varList.add(new Long(((Integer) currentResult.getId().intValue())));
+                }
+                if (!varList.isEmpty()){
+                    releasedStudies +=varList.size();
+                    downloadCount += studyService.getStudyDownloadCount(varList);
+                    releasedFiles += studyService.getStudyFileCount(varList);
+                }                   
                 vdcNetworkStats.setStudyCount(releasedStudies);
                 vdcNetworkStats.setFileCount(releasedFiles);
                 vdcNetworkStats.setDownloadCount(downloadCount);
@@ -116,4 +145,5 @@ public class VDCNetworkStatsServiceBean implements VDCNetworkStatsServiceLocal {
         vdcApplicationBean.setAllStudyIdsByDownloadCount(studyService.getMostDownloadedStudyIds(null, -1));
         vdcApplicationBean.setAllStudyIdsByReleaseDate(studyService.getRecentlyReleasedStudyIds(null, -1));
     }
+
 }

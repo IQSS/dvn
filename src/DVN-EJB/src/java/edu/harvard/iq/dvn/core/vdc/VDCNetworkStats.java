@@ -67,6 +67,18 @@ public class VDCNetworkStats implements java.io.Serializable  {
     public void setId(Long id) {
         this.id = id;
     }
+    
+    @OneToOne
+    @JoinColumn(nullable=true)
+    private VDCNetwork vdcNetwork;
+
+    public VDCNetwork getVdcNetwork() {
+        return vdcNetwork;
+    }
+
+    public void setVdcNetwork(VDCNetwork vdcNetwork) {
+        this.vdcNetwork = vdcNetwork;
+    }
 
     private Long studyCount;
 

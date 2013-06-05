@@ -162,21 +162,7 @@ public class VDCRequestBean extends VDCBaseBean implements java.io.Serializable 
         this.actionMode = am;
     }
 
-    private boolean currentVDCinitialized;
-    private VDC currentVDC;
 
-    /**
-     * Getter for property vdcId.
-     * @return Value of property vdcId.
-     */
-    public VDC getCurrentVDC() {
-        if (!currentVDCinitialized) {
-            HttpServletRequest req = (HttpServletRequest) FacesContext.getCurrentInstance().getExternalContext().getRequest();
-            setCurrentVDC( vdcService.getVDCFromRequest(req) );
-            // set method also sets initialization boolean to true
-        }        
-        return currentVDC;
-    }
 
     private Boolean logoutPage = null;
 
@@ -219,9 +205,50 @@ public class VDCRequestBean extends VDCBaseBean implements java.io.Serializable 
     }
 
 
+    private boolean currentVDCinitialized;
+    private VDC currentVDC;  
+    private VDCNetwork currentVdcNetwork;    
+    
+     /**
+     * Getter for property vdcId.
+     * @return Value of property vdcId.
+     */
+    public VDC getCurrentVDC() {
+        if (!currentVDCinitialized) {
+            HttpServletRequest req = (HttpServletRequest) FacesContext.getCurrentInstance().getExternalContext().getRequest();
+            setCurrentVDC( vdcService.getVDCFromRequest(req) );
+            // set method also sets initialization boolean to true
+        }        
+        return currentVDC;
+    }    
+
     public void setCurrentVDC(VDC currentVDC) {
         this.currentVDC = currentVDC;
         currentVDCinitialized = true;
+    }
+    
+
+    /**
+     * Getter for property vdcNetwork.
+     * @return Value of property vdcNetwork.
+     */
+    public VDCNetwork getCurrentVdcNetwork() {
+        if (currentVdcNetwork == null) {
+            HttpServletRequest req = (HttpServletRequest) FacesContext.getCurrentInstance().getExternalContext().getRequest();
+            VDCNetwork vdcNetworkReq = vdcNetworkService.getVDCNetworkFromRequest(req);
+            if (vdcNetworkReq == null){
+                currentVdcNetwork = vdcNetworkService.findRootNetwork(); 
+            } else {
+                currentVdcNetwork = vdcNetworkReq;
+            }
+        }
+        return this.currentVdcNetwork;
+    }    
+    
+    public VDCNetwork getCurrentSubnetwork() {
+            HttpServletRequest req = (HttpServletRequest) FacesContext.getCurrentInstance().getExternalContext().getRequest();
+            VDCNetwork vdcNetworkReq = vdcNetworkService.getVDCNetworkFromRequest(req);
+            return vdcNetworkReq;
     }
 
     
@@ -239,7 +266,9 @@ public class VDCRequestBean extends VDCBaseBean implements java.io.Serializable 
         String dataverseURL="";
         if (getCurrentVDC() != null) { 
             dataverseURL +="/dv/"+getCurrentVDC().getAlias();
-        } 
+        } else if (getCurrentVdcNetwork().getId().intValue() > 0) { 
+            dataverseURL +="/dataverses/"+getCurrentVdcNetwork().getUrlAlias();
+        }
         // needed for error page when service is passed, but still an exception thrown in the app. wjb Sept 2007
         HttpServletRequest request = (HttpServletRequest)FacesContext.getCurrentInstance().getExternalContext().getRequest();
         request.setAttribute("dataverseURL", dataverseURL); 
@@ -249,13 +278,15 @@ public class VDCRequestBean extends VDCBaseBean implements java.io.Serializable 
     
     public String getCurrentVdcNetworkURL() {
         String networkURL="";
-        if (getCurrentVdcNetwork().getId().intValue() > 0) { 
-            networkURL +="/dataverses/"+getCurrentVdcNetwork().getUrlAlias();
-        } 
+        if (getCurrentSubnetwork() != null) { 
+            networkURL +="/dataverses/"+getCurrentSubnetwork().getUrlAlias();
+        }  
         HttpServletRequest request = (HttpServletRequest)FacesContext.getCurrentInstance().getExternalContext().getRequest();
-        request.setAttribute("dataverseURL", networkURL); 
+        request.setAttribute("networkURL", networkURL); 
+        // TODO: networkURL is not beng used in any way; we need to refactor the error handling
         return networkURL;
     }
+    
     
     public void setCurrentVDCURL(String dataverseURL) {}  // dummy method since the get is just a wrapper 
 
@@ -264,38 +295,23 @@ public class VDCRequestBean extends VDCBaseBean implements java.io.Serializable 
             return "/faces/" + request.getPathInfo();
         }
     
-    /**
-     * Holds value of property vdcNetwork.
-     */
-    private VDCNetwork vdcNetwork;
 
-    /**
-     * Getter for property vdcNetwork.
-     * @return Value of property vdcNetwork.
-     */
-    public VDCNetwork getCurrentVdcNetwork() {
-        if (vdcNetwork == null) {
-            HttpServletRequest req = (HttpServletRequest) FacesContext.getCurrentInstance().getExternalContext().getRequest();
-            VDCNetwork vdcNetworkReq = vdcNetworkService.getVDCNetworkFromRequest(req);
-            if (vdcNetworkReq == null){
-                setVdcNetwork(vdcNetworkService.findRootNetwork()); 
-            } else {
-                setVdcNetwork(vdcNetworkReq);
-            }
-        }
-        return this.vdcNetwork;
-    }
+    
+    VDCNetwork rootNetwork;
     
     public VDCNetwork getVdcNetwork() {
-        return vdcNetworkService.findRootNetwork();
+        if (rootNetwork == null) {
+            rootNetwork = vdcNetworkService.findRootNetwork();
+        }
+        return rootNetwork;
     }
 
     /**
      * Setter for property vdcNetwork.
      * @param vdcNetwork New value of property vdcNetwork.
      */
-    public void setVdcNetwork(VDCNetwork vdcNetwork) {
-        this.vdcNetwork = vdcNetwork;
+    public void setVdcNetwork(VDCNetwork rootNetwork) {
+        this.rootNetwork = rootNetwork;
     }
     
     private StudyListing studyListing;
@@ -367,15 +383,13 @@ public class VDCRequestBean extends VDCBaseBean implements java.io.Serializable 
 
     public String getDataversePageTitle() {
         String title = null;
-        if (vdcNetwork == null) {
-            title = this.getCurrentVdcNetwork().getName() + " Dataverse Network";
-        } else {
-            title = vdcNetwork.getName() +  " Dataverse Network";
-        }
-         
-        if (this.getCurrentVDC()!=null) {
+        
+        if (getCurrentVDC()!=null) {
             title = getCurrentVDC().getName() + " Dataverse - " + title;
-        }
+        } else {
+            title = getCurrentVdcNetwork().getName() + " Dataverse Network";            
+        }   
+        
         return title;
     }
 

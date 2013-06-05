@@ -241,7 +241,7 @@ public class VDCNetwork implements java.io.Serializable  {
         this.networkContactSubjects = networkContactSubjects;
     }
     
-    @OneToMany(mappedBy="vdcNetwork", cascade={CascadeType.MERGE, CascadeType.PERSIST})
+    @OneToMany(mappedBy="vdcNetwork", cascade={CascadeType.MERGE})
     private Collection<VDC> networkVDCs;
     
     public Collection<VDC> getNetworkVDCs(){
@@ -252,7 +252,7 @@ public class VDCNetwork implements java.io.Serializable  {
         this.networkVDCs = networkVDCs;
     }
 
-    @OneToMany(mappedBy="vdcSubnetwork")
+    @OneToMany(mappedBy="vdcSubnetwork", cascade={CascadeType.MERGE})
     private Collection<Template> networkTemplates;
     
     public Collection<Template> getNetworkTemplates(){
@@ -903,6 +903,17 @@ public class VDCNetwork implements java.io.Serializable  {
     
     public void setLinkedStudies(Collection<Study> studies) {
         this.linkedStudies = studies;
+    }
+    
+    @OneToOne(mappedBy="vdcNetwork",cascade={CascadeType.REMOVE, CascadeType.MERGE, CascadeType.PERSIST })
+    private VDCNetworkStats vdcNetworkStats;
+
+    public VDCNetworkStats getVdcNetworkStats() {
+        return vdcNetworkStats;
+    }
+
+    public void setVdcNetworkStats(VDCNetworkStats vdcNetworkStats) {
+        this.vdcNetworkStats = vdcNetworkStats;
     }
     
 }

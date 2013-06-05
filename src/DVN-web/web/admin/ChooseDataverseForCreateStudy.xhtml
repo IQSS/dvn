@@ -41,7 +41,7 @@
                     <f:facet name="header">
                         <ice:outputText value="Dataverse Name"/>
                     </f:facet>
-                    <ice:outputLink value="/dvn/dv/#{dataverseInfo[0].alias}/faces/study/EditStudyPage.xhtml" >
+                    <ice:outputLink value="/dvn/dv/#{dataverseInfo[0].alias}#{VDCRequest.currentVdcNetworkURL}/faces/study/EditStudyPage.xhtml" >
                         <ice:outputText value="#{dataverseInfo[0].name}"/>
                     </ice:outputLink>
                 </ice:column>

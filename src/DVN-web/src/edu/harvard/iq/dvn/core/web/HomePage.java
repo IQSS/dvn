@@ -98,7 +98,7 @@ public class HomePage extends VDCBaseBean implements Serializable {
     private Long userVDCCount = null;
     private String soleVDCAlias = null;
     private String subnetworkAlias = null;
-
+    private Long vdcNetworkId = new Long(0);
     private boolean hideRestricted = true; //show only restricted if set to false wjb
 
     
@@ -113,11 +113,13 @@ public class HomePage extends VDCBaseBean implements Serializable {
      }
      
      public void preRenderView(){
+        if (getVDCRequestBean().getCurrentVdcNetwork() != null ){
+            vdcNetworkId = getVDCRequestBean().getCurrentVdcNetwork().getId();
+        }
         initChrome();
         initAccordionMenu();
         initSubnetworks();
-        populateVDCUIList(false);
-         
+        populateVDCUIList(false);        
      }
 
          /**
@@ -161,12 +163,8 @@ public class HomePage extends VDCBaseBean implements Serializable {
     }
     
     
-    private void initSubnetworks(){
-        
-        vdcSubnetworks = new ArrayList();
-  
-        
-        vdcSubnetworks.clear();
+    private void initSubnetworks(){        
+        vdcSubnetworks = new ArrayList();     
         List <VDCNetwork> vdcSubnetworkList = vdcNetworkService.getVDCSubNetworks();
         for (VDCNetwork vdcNetwork: vdcSubnetworkList){
             VDCNetworkUI vdcNetworkUI = new VDCNetworkUI();
@@ -577,7 +575,7 @@ public class HomePage extends VDCBaseBean implements Serializable {
 // checking for null only seemed to be a problem for download count, but it couldn't hurt to 
 // make it on all displays
     public String getStudyCount() {
-        Long count = vdcNetworkStatsService.getVDCNetworkStats().getStudyCount();
+        Long count = vdcNetworkStatsService.getVDCNetworkStatsByNetworkId(vdcNetworkId).getStudyCount();
         if (count == null){
             return NumberFormat.getIntegerInstance().format(0);
         }
@@ -585,7 +583,7 @@ public class HomePage extends VDCBaseBean implements Serializable {
     }
 
     public String getFileCount() {
-        Long count = vdcNetworkStatsService.getVDCNetworkStats().getFileCount();
+        Long count = vdcNetworkStatsService.getVDCNetworkStatsByNetworkId(vdcNetworkId).getFileCount();
         if (count == null){
             return NumberFormat.getIntegerInstance().format(0);
         }
@@ -593,7 +591,7 @@ public class HomePage extends VDCBaseBean implements Serializable {
     }
     
     public String getDownloadCount() {
-        Long count = vdcNetworkStatsService.getVDCNetworkStats().getDownloadCount();
+        Long count = vdcNetworkStatsService.getVDCNetworkStatsByNetworkId(vdcNetworkId).getDownloadCount();
         if (count == null){
             return NumberFormat.getIntegerInstance().format(0);
         }

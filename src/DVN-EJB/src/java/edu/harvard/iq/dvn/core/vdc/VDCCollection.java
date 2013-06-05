@@ -43,13 +43,17 @@ public class VDCCollection implements java.io.Serializable {
     public static final String STATIC = "static";
     public static final String DYNAMIC = "dynamic";
 
+    public static final int LOCALSCOPE = 0; 
+    public static final int SUBNETWORKSCOPE = 1; 
+    public static final int ENTIRENETWORKSCOPE = 2;
+    
 
     private String name;
     @Column(columnDefinition = "TEXT")
     private String description;
     @Column(columnDefinition = "TEXT")
     private String query;
-    private boolean localScope;
+    private int scope;
     private String type;
     @ManyToOne
     private VDC owner;
@@ -104,12 +108,36 @@ public class VDCCollection implements java.io.Serializable {
         this.query = query;
     }
 
-    public boolean isLocalScope() {
-        return localScope;
+    public int getScope() {
+        return scope;
     }
-
-    public void setLocalScope(boolean localScope) {
-        this.localScope = localScope;
+    
+    public void setScope(int newScope) {
+        this.scope = newScope; 
+    }
+    
+    public boolean isLocalScope() {
+        return (scope == LOCALSCOPE);
+    }
+    
+    public void setLocalScope() {
+        this.scope = LOCALSCOPE;
+    }
+    
+    public boolean isSubnetworkScope() {
+        return (scope == SUBNETWORKSCOPE);
+    }
+    
+    public void setSubnetworkScope() {
+        this.scope = SUBNETWORKSCOPE;
+    }
+    
+    public boolean isEntireNetworkScope() {
+        return (scope == ENTIRENETWORKSCOPE);
+    }
+    
+    public void setEntireNetworkScope() {
+        this.scope = ENTIRENETWORKSCOPE;
     }
 
     public String getType() {

@@ -22,7 +22,7 @@
           // <![CDATA[
           function initPage() {
               setRadioValue("collType", document.getElementById("form1:collectionType").value );
-              showHide(document.getElementById("form1:collectionType").value );
+              showHide(document.getElementById("form1:collectionType").value);
           }
           function getElementsByClassName( strClassName, obj ) {
               var ar = arguments[2] || new Array();
@@ -75,6 +75,7 @@
                       hideType = "search";
                       document.getElementById("form1:availableStudiesMethod").value = showType;
                       break;
+                  
                   default:
                       break;
               }
@@ -90,6 +91,9 @@
                   var div = hideDivs[i];
                   div.style.display='none';
               }
+                
+              
+              
           }
           // ]]>
       </script>
@@ -288,10 +292,22 @@
                           <div class="vdcFieldTitle dvnFormPaddingTop">Enter query:</div>
                           <ice:inputTextarea id="input_collectionQuery" cols="60" rows="6" value="#{EditCollectionPage.collection.query}"/>
                           <br/>
-                          <ice:selectBooleanCheckbox id="onlyYourDataverse2"
-                                                     value="#{EditCollectionPage.collection.localScope}"
-                                                     rendered="#{!EditCollectionPage.collection.rootCollection}"/>
-                          <ice:outputLabel for="multipleSelection" value="Only your dataverse" rendered="#{!EditCollectionPage.collection.rootCollection}"/>
+                          
+                          <div jsfc="ice:panelGroup" id="groupPanelScope" styleClass="vdcFieldTitle">
+                            Collection Scope
+                          </div>
+                          <div jsfc="ice:panelGroup">
+                            
+                            <ice:selectOneRadio id="collectionScope"
+                                                required="true"
+                                                partialSubmit="true"
+                                                value="#{EditCollectionPage.collection.scope}"
+                                                requiredMessage="This field is required.">
+                                <f:selectItem itemLabel="Only within your dataverse" itemValue="0" />
+                                <f:selectItem itemLabel="Only within this subnetwork" itemValue="1"  />
+                                <f:selectItem itemLabel="Within the entire network" itemValue="2"/>
+                            </ice:selectOneRadio>
+                          </div>
                       </ice:column>
                       <ice:column>
                           <div class="vdcFieldTitle dvnFormPaddingTop">Query Examples:</div>

@@ -82,7 +82,7 @@ public class VDCCollectionServiceBean implements VDCCollectionServiceLocal {
         managedCollection.setQuery(vDCCollection.getQuery());
         managedCollection.setDescription(vDCCollection.getDescription());
         managedCollection.setType(vDCCollection.getType());
-        managedCollection.setLocalScope(vDCCollection.isLocalScope());
+        managedCollection.setScope(vDCCollection.getScope());
         managedCollection.setDisplayOrder(vDCCollection.getDisplayOrder());
     }
 
@@ -152,7 +152,14 @@ public class VDCCollectionServiceBean implements VDCCollectionServiceLocal {
         }
 
         if (coll.isDynamic()) {
-            String query = coll.isLocalScope() ? "dvOwnerId:" + coll.getOwner().getId() + " AND (" + coll.getQuery() + ")": coll.getQuery();
+            String query = null;
+            if (coll.isLocalScope()) {
+                query = "dvOwnerId:" + coll.getOwner().getId() + " AND (" + coll.getQuery() + ")";
+            } else if (coll.isSubnetworkScope()) {
+                query = "dvNetworkId:" + coll.getOwner().getVdcNetwork().getId() + " AND (" + coll.getQuery() + ")";
+            } else {
+                query = coll.getQuery();
+            }
             studyIds.addAll(indexService.query( query ));
         } else {
             studyIds.addAll(getStudyIdsByCollection(coll.getId()));

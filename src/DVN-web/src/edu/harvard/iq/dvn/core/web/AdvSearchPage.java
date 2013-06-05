@@ -976,6 +976,8 @@ public class AdvSearchPage extends VDCBaseBean implements java.io.Serializable {
                         String queryString = col.getQuery();
                         boolean isDynamic = col.isDynamic();
                         boolean isLocalScope = col.isLocalScope();
+                        boolean isSubnetworkScope = col.isSubnetworkScope();
+                                
                         boolean isRootCollection = col.isRootCollection();
                         VDC colOwner = col.getOwner();
                         StringBuilder sbOuter = new StringBuilder();
@@ -983,24 +985,28 @@ public class AdvSearchPage extends VDCBaseBean implements java.io.Serializable {
                         if (queryString != null && !queryString.isEmpty()) {
                             try {
                                 Query dynamicQuery = parser.parse(queryString);
+                                BooleanQuery dynamicLocal = new BooleanQuery();
+
+                                // Check the scope:
                                 if (isLocalScope) {
-                                    BooleanQuery dynamicLocal = new BooleanQuery();
-                                    VDC currentVdc = getVDCRequestBean().getCurrentVDC();
-                                    if (currentVdc == colOwner) {
-                                        logger.fine("collection is owned by this dataverse");
-                                        Query dvOwnerIdQuery = indexServiceBean.constructDvOwnerIdQuery(currentVdc);
-                                        dynamicLocal.add(dynamicQuery, BooleanClause.Occur.MUST);
-                                        dynamicLocal.add(dvOwnerIdQuery, BooleanClause.Occur.MUST);
-                                    } else {
-                                        logger.fine("collection is linked, owned by a different dataverse");
-                                        Query dvOwnerIdQuery = indexServiceBean.constructDvOwnerIdQuery(colOwner);
-                                        dynamicLocal.add(dynamicQuery, BooleanClause.Occur.MUST);
-                                        dynamicLocal.add(dvOwnerIdQuery, BooleanClause.Occur.MUST);
-                                    }
+                                    logger.fine("local scope collection; owned by dataverse " + colOwner.getId());
+                                    Query dvOwnerIdQuery = indexServiceBean.constructDvOwnerIdQuery(colOwner);
+                                    dynamicLocal.add(dynamicQuery, BooleanClause.Occur.MUST);
+                                    dynamicLocal.add(dvOwnerIdQuery, BooleanClause.Occur.MUST);
                                     collectionQueries.add(dynamicLocal);
+
+                                } else if (isSubnetworkScope) {
+                                    logger.fine("subnetwork scope collection; owned by dataverse " + colOwner.getId() + ", in the subnetwork "+colOwner.getVdcNetwork().getId());
+                                    Query dvOwnerIdQuery = indexServiceBean.constructNetworkIdQuery(colOwner.getVdcNetwork().getId());
+                                    dynamicLocal.add(dynamicQuery, BooleanClause.Occur.MUST);
+                                    dynamicLocal.add(dvOwnerIdQuery, BooleanClause.Occur.MUST);
+                                    collectionQueries.add(dynamicLocal);
+
                                 } else {
                                     collectionQueries.add(dynamicQuery);
                                 }
+
+
                             } catch (org.apache.lucene.queryParser.ParseException ex) {
                                 Logger.getLogger(StudyListingPage.class.getName()).log(Level.SEVERE, null, ex);
                             }

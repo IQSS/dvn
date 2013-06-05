@@ -2267,16 +2267,53 @@ public class Indexer implements java.io.Serializable  {
             String queryString = col.getQuery();
             boolean isDynamic = col.isDynamic();
             boolean isLocalScope = col.isLocalScope();
+            boolean isSubnetworkScope = col.isSubnetworkScope();
+            
             boolean isRootCollection = col.isRootCollection();
+            
+            VDC collOwner = col.getOwner();
+            
             if (queryString != null && !queryString.isEmpty()) {
-                if (!isLocalScope) {
-                    // We are creating this list of queries for the purposes of finding 
-                    // all the linked studies that belong to the dataverse, in addition 
-                    // to the ones that are directly "owned" by it (assigned to it by
-                    // the "owner field). So all the "Local Scope" queries can be 
-                    // dropped - as they are assumed to be applied only to the subsets
-                    // of studies owned by the DV. (i.e., they are combined with 
-                    // "AND dvOwnerId = ..." when the collections are looked up).
+                // Must be a dynamic collection; 
+
+                // We are creating this list of queries for the purposes of finding 
+                // all the linked studies that belong to the dataverse, in addition 
+                // to the ones that are directly "owned" by it (assigned to it by
+                // the "owner field). So all the "Local Scope" queries can be 
+                // dropped - as they are assumed to be applied only to the subsets
+                // of studies owned by the DV. (i.e., they are combined with 
+                // "AND dvOwnerId = ..." when the collections are looked up).
+                
+                // However... This can be a *LINKED* collection, owned by another
+                // dataverse! In that case we still want to include the query, 
+                // regardless of the scope; AND make sure the scope is properly 
+                // reflected in the query. 
+                if ((vdc.getId().equals(collOwner.getId()) && isLocalScope)) {
+                    
+                    // It's our own (not linked) collection; and the scope is local.
+                    // skipping it: 
+                    queryString = null; 
+                    
+                } else if (!vdc.getId().equals(collOwner.getId())) {
+                    
+                    // This is a linked collection;
+                    // Let's check its scope, and modify the query string - 
+                    // if necessary: 
+                    
+                    if (isLocalScope) {
+                        queryString = "dvOwnerId:" + col.getOwner().getId() + " AND (" + queryString + ")";
+                    } else if (isSubnetworkScope)  {
+                        queryString = "dvNetworkId:" + col.getOwner().getVdcNetwork().getId() + " AND (" + queryString + ")";
+                    }
+                    
+                    // (and if it's a full DVN-scope collection - we leave 
+                    // queryString intact....
+                }
+                
+                // OK, if we still have the query, let's try to parse it and add
+                // it to the combined query: 
+                
+                if (queryString != null) {
                     try {
                         logger.fine("For " + col.getName() + " (isRootCollection=" + isRootCollection + "|type=" + type + "|isDynamic=" + isDynamic + "|isLocalScope=" + isLocalScope + ") adding query: <<<" + queryString + ">>>");
                         Query query = parser.parse(queryString);

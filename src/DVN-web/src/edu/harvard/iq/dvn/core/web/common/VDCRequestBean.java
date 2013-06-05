@@ -379,7 +379,7 @@ public class VDCRequestBean extends VDCBaseBean implements java.io.Serializable 
     }
     
     public String getDataversePageTitle() {
-        String title = rootNetwork.getName() + " Dataverse Network";
+        String title = getVdcNetwork().getName() + " Dataverse Network";
 
         //add vdc or subnetwork name (as prefix) if available
         if (this.getCurrentVDC()!=null) {

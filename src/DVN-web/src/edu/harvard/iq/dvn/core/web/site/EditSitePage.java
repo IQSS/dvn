@@ -357,7 +357,7 @@ public class EditSitePage extends VDCBaseBean implements java.io.Serializable  {
             vdcService.edit(thisVDC);
             getVDCRequestBean().setCurrentVDC(thisVDC);
             getVDCRenderBean().getFlash().put("successMessage", "Successfully updated general settings.");
-            return "/admin/OptionsPage?faces-redirect=true&vdcId="+thisVDC.getId();
+            return "/admin/OptionsPage?faces-redirect=true"+ getVDCRequestBean().getContextSuffix();
         } else {
             success = false;
             return null;
@@ -368,7 +368,7 @@ public class EditSitePage extends VDCBaseBean implements java.io.Serializable  {
     
     public String cancel(){
         VDC thisVDC = getVDCRequestBean().getCurrentVDC();
-        return "/admin/OptionsPage?faces-redirect=true&vdcId="+thisVDC.getId();
+        return "/admin/OptionsPage?faces-redirect=true"+getVDCRequestBean().getContextSuffix();
     }
     
     public void validateName(FacesContext context,

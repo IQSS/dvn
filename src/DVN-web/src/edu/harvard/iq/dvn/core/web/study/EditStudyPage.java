@@ -1206,7 +1206,7 @@ public class EditStudyPage extends VDCBaseBean implements java.io.Serializable  
 
         if (study.getId()==null) {
             // Cancelling the creation of a new study
-            return "/admin/OptionsPage?faces-redirect=true&vdcId=" + getVDCRequestBean().getCurrentVDCId();
+            return "/admin/OptionsPage?faces-redirect=true" + getContextSuffix();
         }
 
         Long versionNumber;
@@ -1225,7 +1225,7 @@ public class EditStudyPage extends VDCBaseBean implements java.io.Serializable  
         }
 
         
-        return "/study/StudyPage?faces-redirect=true&studyId=" + study.getId()+ "&versionNumber=" + versionNumber + "&vdcId=" + getVDCRequestBean().getCurrentVDCId();
+        return "/study/StudyPage?faces-redirect=true&studyId=" + study.getId()+ "&versionNumber=" + versionNumber + getContextSuffix();
 
     }
     
@@ -1805,7 +1805,7 @@ public class EditStudyPage extends VDCBaseBean implements java.io.Serializable  
 
         editStudyService.save(getVDCRequestBean().getCurrentVDCId(),getVDCSessionBean().getLoginBean().getUser().getId());
        
-        return "/study/StudyPage?faces-redirect=true&studyId=" + study.getId()+ "&versionNumber=" + metadata.getStudyVersion().getVersionNumber() + "&vdcId=" + getVDCRequestBean().getCurrentVDCId();
+        return "/study/StudyPage?faces-redirect=true&studyId=" + study.getId()+ "&versionNumber=" + metadata.getStudyVersion().getVersionNumber() + getContextSuffix();
 
     }
     

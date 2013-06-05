@@ -267,7 +267,7 @@ public class StudyPermissionsPage extends VDCBaseBean  implements java.io.Serial
         Long studyId = editStudyPermissions.getStudy().getId();
         this.editStudyPermissions.save();
            
-        return "/study/StudyPage?faces-redirect=true&studyId=" + studyId + "&versionNumber=" + getVDCRequestBean().getStudyVersionNumber() + "&vdcId=" + getVDCRequestBean().getCurrentVDCId();
+        return "/study/StudyPage?faces-redirect=true&studyId=" + studyId + "&versionNumber=" + getVDCRequestBean().getStudyVersionNumber() + getContextSuffix();
         
     }
     
@@ -495,7 +495,7 @@ public class StudyPermissionsPage extends VDCBaseBean  implements java.io.Serial
        
         editStudyPermissions.cancel();
         this.sessionRemove(editStudyPermissions.getClass().getName());     
-        return "/study/StudyPage?faces-redirect=true&studyId=" + studyId + "&versionNumber=" + getVDCRequestBean().getStudyVersionNumber() + "&vdcId=" + getVDCRequestBean().getCurrentVDCId();
+        return "/study/StudyPage?faces-redirect=true&studyId=" + studyId + "&versionNumber=" + getVDCRequestBean().getStudyVersionNumber() + getContextSuffix();
 
     }
 }

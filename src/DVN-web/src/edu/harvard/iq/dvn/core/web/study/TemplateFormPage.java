@@ -726,7 +726,7 @@ public class TemplateFormPage extends VDCBaseBean implements java.io.Serializabl
         editTemplateService.cancel();
 
         if (getVDCRequestBean().getCurrentVDC() != null) {
-            return "/admin/OptionsPage?faces-redirect=true&tab=templates" + getNavigationVDCSuffix();
+            return "/admin/OptionsPage?faces-redirect=true&tab=templates" + getContextSuffix();
         } else {
             return "/networkAdmin/NetworkOptionsPage.xhtml?faces-redirect=true&tab=templates";
         } 
@@ -1145,7 +1145,7 @@ public class TemplateFormPage extends VDCBaseBean implements java.io.Serializabl
         }   
         
         if (getVDCRequestBean().getCurrentVDC() != null) {
-            return "/admin/OptionsPage?faces-redirect=true&tab=templates" + getNavigationVDCSuffix();
+            return "/admin/OptionsPage?faces-redirect=true&tab=templates" + getContextSuffix();
         } else {
             return "/networkAdmin/NetworkOptionsPage.xhtml?faces-redirect=true&tab=templates";
         }

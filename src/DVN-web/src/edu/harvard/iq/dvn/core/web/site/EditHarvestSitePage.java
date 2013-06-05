@@ -283,7 +283,7 @@ public class EditHarvestSitePage extends VDCBaseBean implements java.io.Serializ
     
     private String generateReturnPage() {
         if (getVDCRequestBean().getCurrentVDCId() != null) {
-            return "/admin/OptionsPage?faces-redirect=true&vdcId=" + getVDCRequestBean().getCurrentVDCId();
+            return "/admin/OptionsPage?faces-redirect=true" + getVDCRequestBean().getContextSuffix();
         } else {
             return "/networkAdmin/NetworkOptionsPage?faces-redirect=true&tab=harvesting";
         }

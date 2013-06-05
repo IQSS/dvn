@@ -377,18 +377,25 @@ public class VDCRequestBean extends VDCBaseBean implements java.io.Serializable 
         //String studyListingIndex = getVDCRequestBean().getStudyListingIndex();
         return studyListingIndex != null ? "&studyListingIndex=" + studyListingIndex : "";
     }
-
+    
     public String getDataversePageTitle() {
         String title = null;
-        
-        if (getCurrentVDC()!=null) {
-            title = getCurrentVDC().getName() + " Dataverse - " + title;
+        if (currentVdcNetwork == null) {
+            title = this.getCurrentVdcNetwork().getName() + " Dataverse Network";
         } else {
-            title = getCurrentVdcNetwork().getName() + " Dataverse Network";            
-        }   
-        
+            title = currentVdcNetwork.getName() +  " Dataverse Network";
+        }
+        //append subn network name if available
+        if (getCurrentSubnetwork() != null) {
+            title = title + " " + getCurrentSubnetwork().getName() + " Dataverses ";
+        }
+         
+        if (this.getCurrentVDC()!=null) {
+            title = getCurrentVDC().getName() + " Dataverse - " + title;
+        }
         return title;
     }
+
 
     public boolean isAuthorizedLockssServer(){
         HttpServletRequest request = (HttpServletRequest)FacesContext.getCurrentInstance().getExternalContext().getRequest();

@@ -120,7 +120,7 @@ public class EditBannerFooterPage extends VDCBaseBean  implements java.io.Serial
             vdc.setDisplayInFrame(displayInFrame);
             vdc.setParentSite(parentSite);
             vdcService.edit(vdc);
-            forwardPage="/admin/OptionsPage?faces-redirect=true&vdcId="+getVDCRequestBean().getCurrentVDC().getId();
+            forwardPage="/admin/OptionsPage?faces-redirect=true" + getContextSuffix();
         }
         getVDCRenderBean().getFlash().put("successMessage","Successfully updated layout branding.");
         return forwardPage;
@@ -136,7 +136,7 @@ public class EditBannerFooterPage extends VDCBaseBean  implements java.io.Serial
                 setFooter(getVDCRequestBean().getCurrentVDC().getFooter());
                 setDisplayInFrame(getVDCRequestBean().getCurrentVDC().isDisplayInFrame());
                 setParentSite(getVDCRequestBean().getCurrentVDC().getParentSite());
-            return "/admin/OptionsPage?faces-redirect=true&vdcId="+getVDCRequestBean().getCurrentVDC().getId();
+            return "/admin/OptionsPage?faces-redirect=true" + getContextSuffix();
         }
     }
 

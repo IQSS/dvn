@@ -325,7 +325,7 @@ public class EditLockssConfigPage extends VDCBaseBean implements java.io.Seriali
         if (getVDCRequestBean().getCurrentVDC() == null) {
             return "/networkAdmin/NetworkOptionsPage?faces-redirect=true";
         } else {
-            return "/admin/OptionsPage?faces-redirect=true&vdcId="+getVDCRequestBean().getCurrentVDC().getId();
+            return "/admin/OptionsPage?faces-redirect=true" + getContextSuffix();
         }
     }
 

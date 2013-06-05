@@ -82,7 +82,7 @@ public class EditUseTermsPage extends VDCBaseBean implements java.io.Serializabl
             vdc.setDownloadTermsOfUseEnabled(termsOfUseEnabled);
             vdcService.edit(vdc);
 
-            String    forwardPage="/admin/OptionsPage?faces-redirect=true&vdcId="+getVDCRequestBean().getCurrentVDC().getId();
+            String    forwardPage="/admin/OptionsPage?faces-redirect=true" + getContextSuffix();
             getVDCRenderBean().getFlash().put("successMessage","Successfully updated file download terms of use.");
             return forwardPage;
         } else {
@@ -92,7 +92,7 @@ public class EditUseTermsPage extends VDCBaseBean implements java.io.Serializabl
     }
    
     public String cancel_action(){
-            return "/admin/OptionsPage?faces-redirect=true&vdcId="+getVDCRequestBean().getCurrentVDC().getId();
+            return "/admin/OptionsPage?faces-redirect=true" + getContextSuffix();
     }
 
 

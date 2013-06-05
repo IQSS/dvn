@@ -163,19 +163,18 @@ public class LoginWorkflowBean extends VDCBaseBean implements java.io.Serializab
         user = newUser;
         String nextPage = null;
         if (workflowType == null) {
-            nextPage = "/login/AccountPage?faces-redirect=true&userId=" + user.getId() + getNavigationVDCSuffix();
+            nextPage = "/login/AccountPage?faces-redirect=true&userId=" + user.getId() + getContextSuffix();
         } else if (vdcNetworkService.find().isTermsOfUseEnabled()) {
             nextPage = "/login/AccountTermsOfUsePage?faces-redirect=true";
         } else {
             if (workflowType.equals(WORKFLOW_TYPE_CONTRIBUTOR)) {
-                //nextPage = "contributorSuccess";
-                nextPage = "/login/ContributorRequestSuccessPage?faces-redirect=true" + getNavigationVDCSuffix();
+                nextPage = "/login/ContributorRequestSuccessPage?faces-redirect=true" + getContextSuffix();
             } else if (workflowType.equals(WORKFLOW_TYPE_CREATOR)) {
-                nextPage = "/site/AddSitePage?faces-redirect=true";
+                nextPage = "/site/AddSitePage?faces-redirect=true" + getContextSuffix();
             } else if (workflowType.equals(WORKFLOW_TYPE_FILE_ACCESS)) {
-               nextPage = "/login/FileRequestPage?faces-redirect=true&studyId="+studyId + getNavigationVDCSuffix();
+                nextPage = "/login/FileRequestPage?faces-redirect=true&studyId="+studyId + getContextSuffix();
             } else if (workflowType.equals(WORKFLOW_TYPE_COMMENTS)) {
-               nextPage = "/study/StudyPage?faces-redirect=true&studyId="+studyId + getNavigationVDCSuffix();
+                nextPage = "/study/StudyPage?faces-redirect=true&studyId="+studyId + getContextSuffix();
             }
             updateSessionForLogin();
         }
@@ -295,8 +294,7 @@ public class LoginWorkflowBean extends VDCBaseBean implements java.io.Serializab
         }
         
         boolean hasParams = redirectString.indexOf("?") != -1;
-        redirectString += (hasParams ? "&" : "?") + "faces-redirect=true";
-        redirectString += getVDCRequestBean().getCurrentVDC() != null ? "&vdcId=" + getVDCRequestBean().getCurrentVDCId() : "";
+        redirectString += (hasParams ? "&" : "?") + "faces-redirect=true" + getContextSuffix();
         return redirectString;
     }
 

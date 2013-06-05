@@ -347,9 +347,9 @@ public class VDCRequestBean extends VDCBaseBean implements java.io.Serializable 
     
     public String home() {
         if (getCurrentVDC() != null) {
-            return "/StudyListingPage.xhtml?faces-redirect=true" + getNavigationVDCSuffix();
+            return "/StudyListingPage.xhtml?faces-redirect=true" + getContextSuffix();
         } else {
-            return "/HomePage.xhtml?faces-redirect=true";
+            return "/HomePage.xhtml?faces-redirect=true" + getContextSuffix();
         }
     }
 
@@ -379,20 +379,15 @@ public class VDCRequestBean extends VDCBaseBean implements java.io.Serializable 
     }
     
     public String getDataversePageTitle() {
-        String title = null;
-        if (currentVdcNetwork == null) {
-            title = this.getCurrentVdcNetwork().getName() + " Dataverse Network";
-        } else {
-            title = currentVdcNetwork.getName() +  " Dataverse Network";
-        }
-        //append subn network name if available
-        if (getCurrentSubnetwork() != null) {
-            title = title + " " + getCurrentSubnetwork().getName() + " Dataverses ";
-        }
-         
+        String title = rootNetwork.getName() + " Dataverse Network";
+
+        //add vdc or subnetwork name (as prefix) if available
         if (this.getCurrentVDC()!=null) {
             title = getCurrentVDC().getName() + " Dataverse - " + title;
+        } else if (getCurrentSubnetwork() != null) {
+            title = getCurrentSubnetwork().getName() + " Dataverses " + title;
         }
+         
         return title;
     }
 

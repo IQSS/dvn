@@ -356,7 +356,7 @@ public class SearchFieldsPage extends VDCBaseBean implements java.io.Serializabl
         }
         
         getVDCRequestBean().setCurrentVDC(thisVDC);
-        String    forwardPage="/admin/OptionsPage?faces-redirect=true&vdcId="+getVDCRequestBean().getCurrentVDC().getId();
+        String forwardPage = "/admin/OptionsPage?faces-redirect=true" + getContextSuffix();
 
         getVDCRenderBean().getFlash().put("successMessage","Successfully updated search fields.");
         return forwardPage;
@@ -378,7 +378,7 @@ public class SearchFieldsPage extends VDCBaseBean implements java.io.Serializabl
     public String cancel(){
         VDC thisVDC = getVDCRequestBean().getCurrentVDC();
         getVDCRequestBean().setCurrentVDC(thisVDC);
-        String    forwardPage="/admin/OptionsPage?faces-redirect=true&vdcId="+getVDCRequestBean().getCurrentVDC().getId();
+        String forwardPage = "/admin/OptionsPage?faces-redirect=true" + getContextSuffix();
         return forwardPage;
     }
     

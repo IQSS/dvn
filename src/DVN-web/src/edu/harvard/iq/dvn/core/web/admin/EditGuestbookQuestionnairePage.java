@@ -94,7 +94,7 @@ public class EditGuestbookQuestionnairePage extends VDCBaseBean implements java.
     public String save_action() {
         if (validateTerms()) {
             vdcService.save(vdc);
-            String forwardPage = "/admin/OptionsPage?faces-redirect=true&vdcId=" + getVDCRequestBean().getCurrentVDC().getId();
+            String forwardPage = "/admin/OptionsPage?faces-redirect=true" + getContextSuffix();
             getVDCRenderBean().getFlash().put("successMessage", "Successfully updated guest book questionnaire.");
             return forwardPage;
         } else {
@@ -104,7 +104,7 @@ public class EditGuestbookQuestionnairePage extends VDCBaseBean implements java.
     }
 
     public String cancel_action() {
-        return "/admin/OptionsPage?faces-redirect=true&vdcId=" + getVDCRequestBean().getCurrentVDC().getId();
+        return "/admin/OptionsPage?faces-redirect=true" + getContextSuffix();
     }
 
     private boolean validateTerms() {

@@ -157,7 +157,7 @@ public class EditContactUsPage extends VDCBaseBean implements java.io.Serializab
             VDC vdc = vdcService.find(new Long(getVDCRequestBean().getCurrentVDC().getId()));
             vdc.setContactEmail(this.getContactUsEmail());
             vdcService.edit(vdc);
-            forwardPage="/admin/OptionsPage?faces-redirect=true&vdcId="+getVDCRequestBean().getCurrentVDC().getId();
+            forwardPage="/admin/OptionsPage?faces-redirect=true" + getContextSuffix();
         }
         getVDCRenderBean().getFlash().put("successMessage", "Successfully updated E-mail notifications.");
         return forwardPage;
@@ -167,7 +167,7 @@ public class EditContactUsPage extends VDCBaseBean implements java.io.Serializab
         if (getVDCRequestBean().getCurrentVDCId() == null)
             return "/networkAdmin/NetworkOptionsPage?faces-redirect=true";
         else
-            return "/admin/OptionsPage?faces-redirect=true&vdcId="+getVDCRequestBean().getCurrentVDC().getId();
+            return "/admin/OptionsPage?faces-redirect=true" + getContextSuffix();
     }
     
 }

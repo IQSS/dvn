@@ -179,7 +179,7 @@ public class EditHomePanelsPage extends VDCBaseBean implements java.io.Serializa
                 vdc.setDisplayNewStudies(chkNewStudies);
                 vdcService.edit(vdc);
                 getVDCRenderBean().getFlash().put("successMessage", "Successfully updated dataverse description.");
-                 return "/admin/OptionsPage?faces-redirect=true&vdcId="+getVDCRequestBean().getCurrentVDC().getId();
+                 return "/admin/OptionsPage?faces-redirect=true" + getContextSuffix();
             } else {
                 ExceptionMessageWriter.removeGlobalMessage(SUCCESS_MESSAGE);
                 success = false;
@@ -191,7 +191,7 @@ public class EditHomePanelsPage extends VDCBaseBean implements java.io.Serializa
         if (getVDCRequestBean().getCurrentVDCId() == null)
             return "cancelNetwork";
         else
-             return "/admin/OptionsPage?faces-redirect=true&vdcId="+getVDCRequestBean().getCurrentVDC().getId();
+             return "/admin/OptionsPage?faces-redirect=true" + getContextSuffix();
     }
     
     //UTILITY METHODS

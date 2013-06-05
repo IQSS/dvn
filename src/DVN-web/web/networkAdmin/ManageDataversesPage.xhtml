@@ -158,7 +158,7 @@
                     <ice:outputText value="#{OptionsPage.vdcUIList.subnetworkColumnName}"/>
                     </ice:commandSortHeader>
                 </f:facet>
-                <ice:outputText value="#{item.vdc.vdcNetwork.name}"/>
+                <ice:outputText value="#{item.vdc.vdcNetwork.id == 0 ? '--' : item.vdc.vdcNetwork.name}"/>
                 </ice:column>
                 <!-- Type -->
                 <ice:column>

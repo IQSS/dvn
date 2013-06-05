@@ -87,7 +87,7 @@ public class BasicSearchFragment extends VDCBaseBean implements java.io.Serializ
         st.setValue( searchValue );
         StudyListing sl = getSearchResult(st);
         String studyListingIndex = StudyListing.addToStudyListingMap(sl, getSessionMap());
-        return "/StudyListingPage.xhtml?faces-redirect=true&studyListingIndex=" + studyListingIndex + "&vdcId=" + getVDCRequestBean().getCurrentVDCId();
+        return "/StudyListingPage.xhtml?faces-redirect=true&studyListingIndex=" + studyListingIndex + getContextSuffix();
     }
 
     public String facet_search() {
@@ -99,7 +99,7 @@ public class BasicSearchFragment extends VDCBaseBean implements java.io.Serializ
         st.setValue( searchValue );
         StudyListing sl = getSearchResultsWithFacets(st);
         String studyListingIndex = StudyListing.addToStudyListingMap(sl, getSessionMap());
-        return "/StudyListingPage.xhtml?faces-redirect=true&studyListingIndex=" + studyListingIndex + "&vdcId=" + getVDCRequestBean().getCurrentVDCId();
+        return "/StudyListingPage.xhtml?faces-redirect=true&studyListingIndex=" + studyListingIndex + getContextSuffix();
     }
 
     public String keywordSearch_action(String searchIn){
@@ -110,7 +110,7 @@ public class BasicSearchFragment extends VDCBaseBean implements java.io.Serializ
         st.setValue( searchIn );
         StudyListing sl = getSearchResult(st);
         String studyListingIndex = StudyListing.addToStudyListingMap(sl, getSessionMap());
-        return "/StudyListingPage.xhtml?faces-redirect=true&studyListingIndex=" + studyListingIndex + "&vdcId=" + getVDCRequestBean().getCurrentVDCId();
+        return "/StudyListingPage.xhtml?faces-redirect=true&studyListingIndex=" + studyListingIndex + getContextSuffix();
     }
 
     public String keywordSearchWithFacets_action(String searchIn) {
@@ -121,7 +121,7 @@ public class BasicSearchFragment extends VDCBaseBean implements java.io.Serializ
         st.setValue(searchIn);
         StudyListing sl = getSearchResultsWithFacets(st);
         String studyListingIndex = StudyListing.addToStudyListingMap(sl, getSessionMap());
-        return "/StudyListingPage.xhtml?faces-redirect=true&studyListingIndex=" + studyListingIndex + "&vdcId=" + getVDCRequestBean().getCurrentVDCId();
+        return "/StudyListingPage.xhtml?faces-redirect=true&studyListingIndex=" + studyListingIndex + getContextSuffix();
     }
 
 

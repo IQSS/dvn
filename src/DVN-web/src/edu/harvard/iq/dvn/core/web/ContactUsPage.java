@@ -325,10 +325,9 @@ public class ContactUsPage extends VDCBaseBean implements java.io.Serializable {
             getVDCRenderBean().getFlash().put("selectedSubject",selectedSubject);
             getVDCRenderBean().getFlash().put("emailBody",emailBody);
             
-            if (getVDCRequestBean().getCurrentVDCId() == null ) {
-                return "/ContactUsConfirmPage.xhtml?faces-redirect=true";    
-            }
-            return "/ContactUsConfirmPage.xhtml?faces-redirect=true&vdcId="+getVDCRequestBean().getCurrentVDCId();
+
+            return "/ContactUsConfirmPage.xhtml?faces-redirect=true" + getContextSuffix();    
+
             
             
         } catch (Exception e) {

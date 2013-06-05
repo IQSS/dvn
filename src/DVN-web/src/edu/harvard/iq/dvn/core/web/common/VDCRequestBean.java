@@ -205,9 +205,11 @@ public class VDCRequestBean extends VDCBaseBean implements java.io.Serializable 
     }
 
 
-    private boolean currentVDCinitialized;
+    private VDCNetwork rootNetwork;
+    private VDCNetwork currentSubnetwork;    
     private VDC currentVDC;  
-    private VDCNetwork currentVdcNetwork;    
+    private boolean currentVDCinitialized;
+    private boolean currentVDCNetworkinitialized;
     
      /**
      * Getter for property vdcId.
@@ -233,22 +235,17 @@ public class VDCRequestBean extends VDCBaseBean implements java.io.Serializable 
      * @return Value of property vdcNetwork.
      */
     public VDCNetwork getCurrentVdcNetwork() {
-        if (currentVdcNetwork == null) {
-            HttpServletRequest req = (HttpServletRequest) FacesContext.getCurrentInstance().getExternalContext().getRequest();
-            VDCNetwork vdcNetworkReq = vdcNetworkService.getVDCNetworkFromRequest(req);
-            if (vdcNetworkReq == null){
-                currentVdcNetwork = vdcNetworkService.findRootNetwork(); 
-            } else {
-                currentVdcNetwork = vdcNetworkReq;
-            }
-        }
-        return this.currentVdcNetwork;
+        return (getCurrentSubnetwork() != null ? getCurrentSubnetwork() : getVdcNetwork());
     }    
     
     public VDCNetwork getCurrentSubnetwork() {
+        if (!currentVDCNetworkinitialized) {
             HttpServletRequest req = (HttpServletRequest) FacesContext.getCurrentInstance().getExternalContext().getRequest();
-            VDCNetwork vdcNetworkReq = vdcNetworkService.getVDCNetworkFromRequest(req);
-            return vdcNetworkReq;
+            currentSubnetwork = vdcNetworkService.getVDCNetworkFromRequest(req);
+            currentVDCNetworkinitialized = true;
+        }
+        
+        return currentSubnetwork;
     }
 
     
@@ -297,7 +294,7 @@ public class VDCRequestBean extends VDCBaseBean implements java.io.Serializable 
     
 
     
-    VDCNetwork rootNetwork;
+
     
     public VDCNetwork getVdcNetwork() {
         if (rootNetwork == null) {

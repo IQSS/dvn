@@ -25,6 +25,7 @@ import edu.harvard.iq.dvn.core.study.Template;
 import edu.harvard.iq.dvn.core.vdc.VDC;
 import edu.harvard.iq.dvn.core.vdc.VDCNetwork;
 import edu.harvard.iq.dvn.core.vdc.VDCNetworkServiceLocal;
+import edu.harvard.iq.dvn.core.vdc.VDCNetworkStats;
 import edu.harvard.iq.dvn.core.web.admin.EditBannerFooterPage;
 import edu.harvard.iq.dvn.core.web.common.VDCBaseBean;
 import edu.harvard.iq.dvn.core.web.util.CharacterValidator;
@@ -150,9 +151,13 @@ public class EditSubnetworkPage extends VDCBaseBean implements Serializable  {
         } else {   
             System.out.print("why - when here??");
             VDCNetwork newVdcNetwork = new VDCNetwork();
+
+            VDCNetworkStats newVDCNetworkStats = new VDCNetworkStats();
             newVdcNetwork.setUrlAlias(subnetworkAlias);
             vdcNetworkService.create(newVdcNetwork);
             VDCNetwork createdNetwork = vdcNetworkService.findByAlias(subnetworkAlias);
+            newVDCNetworkStats.setVdcNetwork(createdNetwork);
+            vdcNetworkService.create(newVDCNetworkStats);
             createdNetwork.setName(editNetworkNamePage.getNetworkName());
             createdNetwork.setDisplayAnnouncements(editNetworkAnnouncementsPage.isChkEnableNetworkAnnouncements());
             createdNetwork.setAnnouncements(editNetworkAnnouncementsPage.getNetworkAnnouncements());

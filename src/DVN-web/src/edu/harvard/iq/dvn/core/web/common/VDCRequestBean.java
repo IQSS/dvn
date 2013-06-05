@@ -251,10 +251,23 @@ public class VDCRequestBean extends VDCBaseBean implements java.io.Serializable 
         String networkURL="";
         if (getCurrentVdcNetwork().getId().intValue() > 0) { 
             networkURL +="/dataverses/"+getCurrentVdcNetwork().getUrlAlias();
-        } 
+        }  
         HttpServletRequest request = (HttpServletRequest)FacesContext.getCurrentInstance().getExternalContext().getRequest();
-        request.setAttribute("dataverseURL", networkURL); 
+        request.setAttribute("networkURL", networkURL); 
         return networkURL;
+    }
+    
+    public String getCurrentContextURL(){
+        String currentContextURL = "";        
+        if (getCurrentVdcNetwork().getId().intValue() > 0) { 
+            currentContextURL +="/dataverses/"+getCurrentVdcNetwork().getUrlAlias();
+        } 
+        if (getCurrentVDC() != null) { 
+            currentContextURL +="/dv/"+getCurrentVDC().getAlias();
+        }
+        HttpServletRequest request = (HttpServletRequest)FacesContext.getCurrentInstance().getExternalContext().getRequest();
+        request.setAttribute("currentContextURL", currentContextURL);        
+        return currentContextURL;
     }
     
     public void setCurrentVDCURL(String dataverseURL) {}  // dummy method since the get is just a wrapper 

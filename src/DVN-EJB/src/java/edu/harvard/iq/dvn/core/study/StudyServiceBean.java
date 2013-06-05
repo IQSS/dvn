@@ -2350,6 +2350,35 @@ public class StudyServiceBean implements edu.harvard.iq.dvn.core.study.StudyServ
 
         return studyDownloadCount != null ? studyDownloadCount.longValue() : 0;
     }
+           
+
+    public long getStudyFileCount(Long studyId) {
+        String queryString  = "SELECT count(f.*) FROM FileMetadata f, studyversion sv " +
+                "WHERE  f.studyVersion_id = sv.id" +
+                " and sv.versionstate = '" + StudyVersion.VersionState.RELEASED + "'"
+                + " AND SV.STUDY_ID =" + studyId;
+        Long studyDownloadCount = null;
+        Query query = em.createNativeQuery(queryString);
+        try {
+            studyDownloadCount = (Long) query.getSingleResult();
+        } catch (Exception nre) {} // empty catch; return 0
+
+        return studyDownloadCount != null ? studyDownloadCount.longValue() : 0;
+    }
+    
+    public long getStudyFileCount(List studyIds) {
+        String queryString  = "SELECT count(f.*) FROM FileMetadata f, studyversion sv " +
+                "WHERE  f.studyVersion_id = sv.id" +
+                " and sv.versionstate = '" + StudyVersion.VersionState.RELEASED + "'"
+                + " AND sv.study_id in (" + generateTempTableString(studyIds) + ")";
+        Long studyDownloadCount = null;
+        Query query = em.createNativeQuery(queryString);
+        try {
+            studyDownloadCount = (Long) query.getSingleResult();
+        } catch (Exception nre) {} // empty catch; return 0
+
+        return studyDownloadCount != null ? studyDownloadCount.longValue() : 0;
+    }
     
     // get the sum of downloads of files associated with a particular version
     public long getStudyVersionDownloadCount(Long studyVersionId) {

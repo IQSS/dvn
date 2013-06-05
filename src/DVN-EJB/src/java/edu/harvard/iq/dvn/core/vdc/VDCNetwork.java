@@ -905,4 +905,15 @@ public class VDCNetwork implements java.io.Serializable  {
         this.linkedStudies = studies;
     }
     
+    @OneToOne(mappedBy="vdcNetwork",cascade={CascadeType.REMOVE, CascadeType.MERGE, CascadeType.PERSIST })
+    private VDCNetworkStats vdcNetworkStats;
+
+    public VDCNetworkStats getVdcNetworkStats() {
+        return vdcNetworkStats;
+    }
+
+    public void setVdcNetworkStats(VDCNetworkStats vdcNetworkStats) {
+        this.vdcNetworkStats = vdcNetworkStats;
+    }
+    
 }

@@ -33,5 +33,7 @@ public interface VDCNetworkStatsServiceLocal {
     VDCNetworkStats getVDCNetworkStats();
     
     public void updateStats();
+
+    public VDCNetworkStats getVDCNetworkStatsByNetworkId(Long networkId);
     
 }

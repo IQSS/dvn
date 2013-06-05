@@ -229,4 +229,8 @@ public interface StudyServiceLocal extends java.io.Serializable {
     public Long getMaxStudyTableId ();
     
     public List getStudiesByIdRange(long begin, long end);
+
+    public long getStudyFileCount(java.lang.Long studyId);
+
+    public long getStudyFileCount(java.util.List studyIds);
 }

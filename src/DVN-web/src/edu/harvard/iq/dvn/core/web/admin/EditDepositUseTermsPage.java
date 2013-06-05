@@ -79,7 +79,7 @@ public class EditDepositUseTermsPage extends VDCBaseBean implements java.io.Seri
             vdc.setDepositTermsOfUse(termsOfUse);
             vdc.setDepositTermsOfUseEnabled(termsOfUseEnabled);
             vdcService.edit(vdc);
-            String    forwardPage="/admin/OptionsPage?faces-redirect=true&vdcId="+getVDCRequestBean().getCurrentVDC().getId();
+            String    forwardPage="/admin/OptionsPage?faces-redirect=true" + getContextSuffix();
             getVDCRenderBean().getFlash().put("successMessage","Successfully updated terms of use for study creation.");
             return forwardPage;
            
@@ -90,7 +90,7 @@ public class EditDepositUseTermsPage extends VDCBaseBean implements java.io.Seri
     }
     
     public String cancel_action(){
-            return    "/admin/OptionsPage?faces-redirect=true&vdcId="+getVDCRequestBean().getCurrentVDC().getId();
+            return    "/admin/OptionsPage?faces-redirect=true" + getContextSuffix();
     }
 
 

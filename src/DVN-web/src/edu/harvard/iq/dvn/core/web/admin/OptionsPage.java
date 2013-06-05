@@ -722,7 +722,7 @@ public class OptionsPage extends VDCBaseBean  implements java.io.Serializable {
             vdc.setDisplayInFrame(displayInFrame);
             vdc.setParentSite(parentSite);
             vdcService.edit(vdc);
-            forwardPage="/admin/OptionsPage?faces-redirect=true&vdcId="+getVDCRequestBean().getCurrentVDC().getId();
+            forwardPage="/admin/OptionsPage?faces-redirect=true" + getContextSuffix();
         }
         getVDCRenderBean().getFlash().put("successMessage","Successfully updated layout branding.");
         return forwardPage;
@@ -757,7 +757,6 @@ public class OptionsPage extends VDCBaseBean  implements java.io.Serializable {
         vdc = editVDCPrivileges.getVdc();
         getVDCRenderBean().getFlash().put("successMessage","Successfully updated dataverse permissions.");
         return "";
-        /*return "/admin/OptionsPage?faces-redirect=true&vdcId="+getVDCRequestBean().getCurrentVDC().getId()+ "&tab=permissions";*/
     } 
     
     public String cancel_action(){
@@ -770,7 +769,7 @@ public class OptionsPage extends VDCBaseBean  implements java.io.Serializable {
                 setFooter(getVDCRequestBean().getCurrentVDC().getFooter());
                 setDisplayInFrame(getVDCRequestBean().getCurrentVDC().isDisplayInFrame());
                 setParentSite(getVDCRequestBean().getCurrentVDC().getParentSite());
-            return "/admin/OptionsPage?faces-redirect=true&vdcId="+getVDCRequestBean().getCurrentVDC().getId();
+            return "/admin/OptionsPage?faces-redirect=true" + getContextSuffix();
         }
     }
     
@@ -1242,14 +1241,14 @@ public class OptionsPage extends VDCBaseBean  implements java.io.Serializable {
             vdc.setDownloadTermsOfUseEnabled(downloadTermsOfUseEnabled);
             vdcService.edit(vdc);
             getVDCRenderBean().getFlash().put("successMessage","Successfully updated terms of use for this dataverse.");
-            return "/admin/OptionsPage?faces-redirect=true&vdcId="+getVDCRequestBean().getCurrentVDC().getId()+"&tab=permissions&tab2=tou";                      
+            return "/admin/OptionsPage?faces-redirect=true" + getContextSuffix() +"&tab=permissions&tab2=tou";                      
         } else {
             return null;
         }
     }
     
     public String toucancel_action(){
-            return  "/admin/OptionsPage?faces-redirect=true&vdcId="+getVDCRequestBean().getCurrentVDC().getId();
+            return  "/admin/OptionsPage?faces-redirect=true" + getContextSuffix();
     }
     
     private boolean validateTerms() {
@@ -1314,13 +1313,13 @@ public class OptionsPage extends VDCBaseBean  implements java.io.Serializable {
     public String guestbooksave_action() {
             vdc.setGuestBookQuestionnaire(guestBookQuestionnaire);
             vdcService.edit(vdc);
-            String forwardPage = "/admin/OptionsPage?faces-redirect=true&vdcId=" + getVDCRequestBean().getCurrentVDC().getId() + "&tab=permissions&tab2=guestbook";
+            String forwardPage = "/admin/OptionsPage?faces-redirect=true" + getContextSuffix() + "&tab=permissions&tab2=guestbook";
             getVDCRenderBean().getFlash().put("successMessage", "Successfully updated guest book questionnaire.");
             return forwardPage;
     }
 
     public String guestbookcancel_action() {
-        return "/admin/OptionsPage?faces-redirect=true&vdcId=" + getVDCRequestBean().getCurrentVDC().getId();
+        return "/admin/OptionsPage?faces-redirect=true" + getContextSuffix();
     }
 
     public boolean isQuestionRemovable() {return true;}
@@ -1961,7 +1960,7 @@ public class OptionsPage extends VDCBaseBean  implements java.io.Serializable {
             vdcService.edit(vdc);
             getVDCRequestBean().setCurrentVDC(vdc);
             getVDCRenderBean().getFlash().put("successMessage", "Successfully updated general settings.");
-            return "/admin/OptionsPage?faces-redirect=true&vdcId=" + vdc.getId() + "&tab=settings&tab2=general";
+            return "/admin/OptionsPage?faces-redirect=true" + getContextSuffix() + "&tab=settings&tab2=general";
         } else {  
             getVDCRenderBean().getFlash().put("warningMessage", "Could not update general settings.");
             success = false;
@@ -2358,7 +2357,7 @@ public class OptionsPage extends VDCBaseBean  implements java.io.Serializable {
     
     private String generateReturnPage() {
         if (getVDCRequestBean().getCurrentVDCId() != null) {
-            return "/admin/OptionsPage?faces-redirect=true&vdcId=" + getVDCRequestBean().getCurrentVDCId();
+            return "/admin/OptionsPage?faces-redirect=true" + getContextSuffix();
         } else {
             return "/site/HarvestSitesPage.xhtml?faces-redirect=true";
         }
@@ -2743,7 +2742,7 @@ public class OptionsPage extends VDCBaseBean  implements java.io.Serializable {
     public String saveCustomization() throws java.io.IOException, ParserConfigurationException, SAXException, TransformerException, JAXBException {
         combinedTextField.setValue(banner + footer);
         boolean validXML = true;
-        String retString = "/admin/OptionsPage?faces-redirect=true&vdcId="+getVDCRequestBean().getCurrentVDC().getId()+ "&tab=settings&tab2=customization";
+        String retString = "/admin/OptionsPage?faces-redirect=true" + getContextSuffix() + "&tab=settings&tab2=customization";
         
         ArrayList <String> errorMessage = new ArrayList();
         XhtmlValidator validator = new XhtmlValidator();
@@ -2805,7 +2804,7 @@ public class OptionsPage extends VDCBaseBean  implements java.io.Serializable {
     }
 
     public String cancelCustomization() {
-        return "/admin/OptionsPage?faces-redirect=true&vdcId=" + getVDCRequestBean().getCurrentVDC().getId();
+        return "/admin/OptionsPage?faces-redirect=true" + getContextSuffix();
     }
 
     private ArrayList alphaCharacterList;

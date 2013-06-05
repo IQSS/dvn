@@ -64,11 +64,11 @@ public class EditStudyCommentsPage extends VDCBaseBean implements Serializable {
         vdcService.edit(vdc);
         getVDCRequestBean().setCurrentVDC(vdc);
         getVDCRenderBean().getFlash().put("successMessage", "Successfully updated study comments settings.");
-        return "/admin/OptionsPage?faces-redirect=true&vdcId="+getVDCRequestBean().getCurrentVDC().getId();
+        return "/admin/OptionsPage?faces-redirect=true" + getContextSuffix();
     }
 
     public String cancel() {
-        return "/admin/OptionsPage?faces-redirect=true&vdcId="+getVDCRequestBean().getCurrentVDC().getId();
+        return "/admin/OptionsPage?faces-redirect=true" + getContextSuffix();
     }
 
     /* getters and setters */

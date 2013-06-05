@@ -385,7 +385,7 @@ public class PrivilegedUsersPage extends VDCBaseBean implements java.io.Serializ
         editVDCPrivileges.setVdc(vdc.getId());
         vdc = editVDCPrivileges.getVdc();
         getVDCRenderBean().getFlash().put("successMessage","Successfully updated dataverse permissions.");
-        return "/admin/OptionsPage?faces-redirect=true&vdcId="+getVDCRequestBean().getCurrentVDC().getId();
+        return "/admin/OptionsPage?faces-redirect=true" + getContextSuffix();
     } 
 
     private void initContributorSetting() {
@@ -796,7 +796,7 @@ public class PrivilegedUsersPage extends VDCBaseBean implements java.io.Serializ
     }
     
     public String cancel() {
-        String forwardPage="/admin/OptionsPage?faces-redirect=true&vdcId="+getVDCRequestBean().getCurrentVDC().getId();
+        String forwardPage="/admin/OptionsPage?faces-redirect=true" + getContextSuffix();
         editVDCPrivileges.cancel();
         this.sessionRemove(editVDCPrivileges.getClass().getName());
         return  forwardPage;

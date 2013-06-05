@@ -251,17 +251,6 @@ public class VDCBaseBean  implements java.io.Serializable  {
         }
     }
     
-    public String getNavigationVDCSuffix() {
-        String navSuffix = "";
-        
-        if (getVDCRequestBean().getCurrentVDC() != null) {
-            navSuffix = "&vdcId=" + getVDCRequestBean().getCurrentVDCId();
-        } else if (getVDCRequestBean().getCurrentSubnetwork() != null) {
-            navSuffix = "&vdcSubnetworkId=" + getVDCRequestBean().getCurrentSubnetwork().getId();
-        }
-
-        return navSuffix;
-    }
     
     public String getContextSuffix() {
         String contextSuffix = "";

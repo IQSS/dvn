@@ -815,7 +815,7 @@ public class StudyPage extends VDCBaseBean implements java.io.Serializable  {
             dvId = dataverse.getId();
         }
         
-        return "/study/ManageStudiesPage?faces-redirect=true" + getContextSuffix();
+        return "/study/ManageStudiesPage?faces-redirect=true&vdcId=" + dvId;
     }
 
     private String buildSuccessMessage(String inString){

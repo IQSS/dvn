@@ -758,13 +758,19 @@ public class StudyServiceBean implements edu.harvard.iq.dvn.core.study.StudyServ
         }
         return returnList;
     }
-
-    public List getMostDownloadedStudyIds(Long vdcId, int numResults) {
+    
+    public List getMostDownloadedStudyIds(Long vdcId, Long vdcNetworkId, int numResults) {
 
         String dataverseClause = "";
         if (vdcId != null) {
             dataverseClause = " and s.owner_id = " + vdcId + " ";
         }
+        
+        String networkClause = "";
+        if (vdcNetworkId != null) {
+            networkClause = " and v.vdcnetwork_id = " + vdcNetworkId + " ";
+        }
+        
         String queryStr = "select s.id "
                 + "from VDC v,  StudyVersion sv, Study s "
                 + "left outer JOIN StudyFileActivity sfa on  s.id = sfa.study_id "
@@ -774,6 +780,7 @@ public class StudyServiceBean implements edu.harvard.iq.dvn.core.study.StudyServ
                 + " and v.restricted = false "
                 + " and sv.versionstate = '" + StudyVersion.VersionState.RELEASED + "'"
                 + dataverseClause
+                + networkClause
                 + " group by s.id "
                 + " order by "
                 + "(CASE WHEN sum(downloadcount) is null THEN -1 ELSE sum(downloadcount) END) desc";
@@ -798,6 +805,10 @@ public class StudyServiceBean implements edu.harvard.iq.dvn.core.study.StudyServ
             }
         }
         return returnList;
+    }
+
+    public List getMostDownloadedStudyIds(Long vdcId, int numResults) {
+        return getMostDownloadedStudyIds(vdcId, null, numResults);
     }
 
     public List<Long> getStudyIdsForExport() {

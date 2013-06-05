@@ -15,10 +15,10 @@
                                     <ice:outputText value="#{VDCRequest.vdcNetwork.name} Dataverse Network &#160;&gt;"/>
                                 </ice:outputLink>
                                 <ice:outputText value="&#160;&#160;" nospan="true"/>
-                                <ice:outputLink value="/dvn/dataverses/#{VDCRequest.currentVdcNetwork.urlAlias}" 
-                                                rendered="#{VDCRequest.currentVdcNetwork.id != VDCRequest.vdcNetwork.id}"
-                                                styleClass="dvnHeaderDVSubnetworkLink" title="#{VDCRequest.currentVdcNetwork.name} Dataverses" target="_top">
-                                    <ice:outputText value="#{VDCRequest.currentVdcNetwork.name} Dataverses &#160;&gt;"/>
+                                <ice:outputLink value="/dvn/dataverses/#{VDCRequest.currentVDC.vdcNetwork.urlAlias}" 
+                                                rendered="#{VDCRequest.currentVDC.vdcNetwork.id != VDCRequest.vdcNetwork.id}"
+                                                styleClass="dvnHeaderDVSubnetworkLink" title="#{VDCRequest.currentVDC.vdcNetwork.name} Dataverses" target="_top">
+                                    <ice:outputText value="#{VDCRequest.currentVDC.vdcNetwork.name} Dataverses &#160;&gt;"/>
                                 </ice:outputLink>
                             </div>
                         </td>

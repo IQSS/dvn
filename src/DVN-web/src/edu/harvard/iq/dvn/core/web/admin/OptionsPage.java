@@ -2912,7 +2912,7 @@ public class OptionsPage extends VDCBaseBean  implements java.io.Serializable {
         // if not logged in, to the appropriate home page
         if (getVDCSessionBean().getLoginBean() != null) {
             if (getVDCRequestBean().getCurrentVDC() != null) {
-                return "/admin/OptionsPage?faces-redirect=true" + getNavigationVDCSuffix();
+                return "/admin/OptionsPage?faces-redirect=true" + getContextSuffix();
             } else {
                 return "/networkAdmin/NetworkOptionsPage.xhtml?faces-redirect=true";
             }

@@ -52,7 +52,7 @@
                                         </ice:outputLink>
                                     </li>
                                     <li>
-                                        <ice:outputLink styleClass="navicon naviconcontact" value="/dvn/faces/ContactUsPage.xhtml" title="Contact #{VDCRequest.vdcNetwork.name} Dataverse Network Help" rendered="#{VDCRequest.currentVDC == null}">
+                                        <ice:outputLink styleClass="navicon naviconcontact" value="/dvn#{VDCRequest.currentVdcNetworkURL}/faces/ContactUsPage.xhtml" title="Contact #{VDCRequest.vdcNetwork.name} Dataverse Network Help" rendered="#{VDCRequest.currentVDC == null}">
                                             <ice:outputText value="#{bundle.contactUsLabel}"/>
                                         </ice:outputLink>
                                         <ice:outputLink styleClass="navicon naviconcontact" value="/dvn/dv/#{VDCRequest.currentVDC.alias}/faces/ContactUsPage.xhtml" title="Contact #{VDCRequest.currentVDC.name} dataverse Help" rendered="#{VDCRequest.currentVDC != null}">
@@ -61,7 +61,7 @@
                                     </li>
                                     <ice:outputText nospan="true" escape="false" rendered="#{VDCRequest.currentVDC == null and !VDCRequest.logoutPage and (VDCSession.loginBean.networkAdmin) and !VDCRequest.readOnlyDatabase}">
                                         <li>
-                                            <ice:outputLink styleClass="navicon naviconoptions" value="/dvn#{VDCRequest.currentVDCURL}/faces/networkAdmin/NetworkOptionsPage.xhtml" title="#{VDCRequest.vdcNetwork.name} Dataverse Network Admin Options">
+                                            <ice:outputLink styleClass="navicon naviconoptions" value="/dvn/faces/networkAdmin/NetworkOptionsPage.xhtml" title="#{VDCRequest.vdcNetwork.name} Dataverse Network Admin Options">
                                                 <ice:outputText value="Options"/>
                                             </ice:outputLink>
                                         </li>
@@ -113,11 +113,11 @@
                             <div class="dvn_headerTitleLarge">
                                 <ice:outputLink value="/dvn" styleClass="dvn_headerTitleLrgNetwork" title="#{VDCRequest.vdcNetwork.name} Dataverse Network Homepage" rendered="#{VDCRequest.currentVDC == null}">
                                     <ice:outputText value="#{VDCRequest.vdcNetwork.name} Dataverse Network" rendered="#{VDCRequest.currentVdcNetwork.id == VDCRequest.vdcNetwork.id}" nospan="true"/>
-                                    <ice:outputText value="#{VDCRequest.vdcNetwork.name} Dataverse Network &#62;" rendered="#{VDCRequest.currentVdcNetwork.id != VDCRequest.vdcNetwork.id}" nospan="true"/>
+                                    <ice:outputText value="#{VDCRequest.vdcNetwork.name} Dataverse Network &#62;" rendered="#{VDCRequest.currentSubnetwork != null}" nospan="true"/>
                                 </ice:outputLink>
-                                <ice:outputText value="&#160;&#160;" rendered="#{VDCRequest.currentVdcNetwork.id != VDCRequest.vdcNetwork.id and VDCRequest.currentVDC == null}" nospan="true"/>
+                                <ice:outputText value="&#160;&#160;" rendered="#{VDCRequest.currentSubnetwork != null and VDCRequest.currentVDC == null}" nospan="true"/>
                                 <ice:outputLink value="/dvn/dataverses/#{VDCRequest.currentVdcNetwork.urlAlias}" title="#{VDCRequest.currentVdcNetwork.name} Dataverses" 
-                                                rendered="#{VDCRequest.currentVdcNetwork.id != VDCRequest.vdcNetwork.id and VDCRequest.currentVDC == null}">
+                                                rendered="#{VDCRequest.currentSubnetwork != null  and VDCRequest.currentVDC == null}">
                                     <ice:outputText value="#{VDCRequest.currentVdcNetwork.name} Dataverses" nospan="true"/>
                                 </ice:outputLink>
                                 <ice:outputLink value="/dvn/dv/#{VDCRequest.currentVDC.alias}" title="#{VDCRequest.currentVDC.name} Dataverse Homepage" rendered="#{VDCRequest.currentVDC != null}">

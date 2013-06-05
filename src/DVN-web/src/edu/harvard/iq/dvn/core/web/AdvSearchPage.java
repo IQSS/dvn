@@ -917,7 +917,7 @@ public class AdvSearchPage extends VDCBaseBean implements java.io.Serializable {
             }
 
             String studyListingIndex = StudyListing.addToStudyListingMap(sl, getSessionMap());
-            return "/StudyListingPage.xhtml?faces-redirect=true&studyListingIndex=" + studyListingIndex + "&vdcId=" + getVDCRequestBean().getCurrentVDCId();
+            return "/StudyListingPage.xhtml?faces-redirect=true&studyListingIndex=" + studyListingIndex + getContextSuffix();
         }
         else{
             return "";
@@ -1175,7 +1175,7 @@ public class AdvSearchPage extends VDCBaseBean implements java.io.Serializable {
             }
 
             String studyListingIndex = StudyListing.addToStudyListingMap(sl, getSessionMap());
-            return "/StudyListingPage.xhtml?faces-redirect=true&studyListingIndex=" + studyListingIndex + "&vdcId=" + getVDCRequestBean().getCurrentVDCId();
+            return "/StudyListingPage.xhtml?faces-redirect=true&studyListingIndex=" + studyListingIndex + getContextSuffix();
         } else {
             return "";
         }

@@ -1656,7 +1656,7 @@ public class SetUpDataExplorationPage extends VDCBaseBean implements java.io.Ser
         } else {
             redirectVersionNumber = studyVersion.getVersionNumber();
         }
-        return "/study/StudyPage?faces-redirect=true&studyId=" + study.getId() + "&versionNumber=" + redirectVersionNumber + "&tab=files&vdcId=" + getVDCRequestBean().getCurrentVDCId();
+        return "/study/StudyPage?faces-redirect=true&studyId=" + study.getId() + "&versionNumber=" + redirectVersionNumber + "&tab=files" + getContextSuffix();
     }   
        
     boolean showInProgressPopup = false;

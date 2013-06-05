@@ -210,12 +210,12 @@ public class EditGuestBookResponsePage extends VDCBaseBean implements java.io.Se
         }
 
         guestBookResponseServiceBean.update(guestBookResponse);
-        String forwardPage = "/admin/OptionsPage?faces-redirect=true&vdcId=" + getVDCRequestBean().getCurrentVDC().getId();
+        String forwardPage = "/admin/OptionsPage?faces-redirect=true" + getContextSuffix();
         return forwardPage;
     }
 
     public String cancel_action() {
-        String forwardPage = "/admin/OptionsPage?faces-redirect=true&vdcId=" + getVDCRequestBean().getCurrentVDC().getId();
+        String forwardPage = "/admin/OptionsPage?faces-redirect=true" + getContextSuffix();
         return forwardPage;
     }
 }

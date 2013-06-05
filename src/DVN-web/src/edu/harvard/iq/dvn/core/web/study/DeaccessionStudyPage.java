@@ -191,11 +191,11 @@ public class DeaccessionStudyPage extends VDCBaseBean implements java.io.Seriali
         }
 
         // we don't provide a version number, so the user goes to the study deaccessioned page
-        return "/study/StudyPage?faces-redirect=true&studyId=" + studyVersion.getStudy().getId() + "&vdcId=" + getVDCRequestBean().getCurrentVDCId();
+        return "/study/StudyPage?faces-redirect=true&studyId=" + studyVersion.getStudy().getId() + getContextSuffix();
     }
 
     public String cancel_action() {       
-        return "/study/StudyPage?faces-redirect=true&studyId=" + studyVersion.getStudy().getId() + "&versionNumber=" + studyVersion.getVersionNumber() + "&vdcId=" + getVDCRequestBean().getCurrentVDCId();
+        return "/study/StudyPage?faces-redirect=true&studyId=" + studyVersion.getStudy().getId() + "&versionNumber=" + studyVersion.getVersionNumber() + getContextSuffix();
     }
 
 }

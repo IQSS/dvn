@@ -695,7 +695,7 @@ public class AddFilesPage extends VDCBaseBean implements java.io.Serializable {
         
         Long versionNumber = studyService.getStudy( this.studyId).getLatestVersion().getVersionNumber();
 
-        return "/study/StudyPage?faces-redirect=true&studyId=" + study.getId()+ "&versionNumber=" + versionNumber + "&tab=files&vdcId=" + getVDCRequestBean().getCurrentVDCId();
+        return "/study/StudyPage?faces-redirect=true&studyId=" + study.getId()+ "&versionNumber=" + versionNumber + "&tab=files" + getContextSuffix();
     }
 
     /**
@@ -715,7 +715,7 @@ public class AddFilesPage extends VDCBaseBean implements java.io.Serializable {
             versionNumber = studyVersion.getVersionNumber();
         }
 
-        return "/study/StudyPage?faces-redirect=true&studyId=" + study.getId()+ "&versionNumber=" + versionNumber + "&tab=files&vdcId=" + getVDCRequestBean().getCurrentVDCId();
+        return "/study/StudyPage?faces-redirect=true&studyId=" + study.getId()+ "&versionNumber=" + versionNumber + "&tab=files" + getContextSuffix();
     }
 
     public void removeFile_action(ActionEvent event) {

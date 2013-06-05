@@ -128,7 +128,7 @@ public class EditStudyFilesPage extends VDCBaseBean implements java.io.Serializa
 
         editStudyFilesService.save(getVDCRequestBean().getCurrentVDCId(),getVDCSessionBean().getLoginBean().getUser().getId());
 
-        return "/study/StudyPage?faces-redirect=true&studyId=" + study.getId()+ "&versionNumber=" + metadata.getStudyVersion().getVersionNumber() + "&tab=files&vdcId=" + getVDCRequestBean().getCurrentVDCId();
+        return "/study/StudyPage?faces-redirect=true&studyId=" + study.getId()+ "&versionNumber=" + metadata.getStudyVersion().getVersionNumber() + "&tab=files" + getContextSuffix();
 
     }
 
@@ -154,7 +154,7 @@ public class EditStudyFilesPage extends VDCBaseBean implements java.io.Serializa
         }
 
 
-        return "/study/StudyPage?faces-redirect=true&studyId=" + study.getId()+ "&versionNumber=" + getVDCRequestBean().getStudyVersionNumber() + "&tab=files&vdcId=" + getVDCRequestBean().getCurrentVDCId();
+        return "/study/StudyPage?faces-redirect=true&studyId=" + study.getId()+ "&versionNumber=" + getVDCRequestBean().getStudyVersionNumber() + "&tab=files" + getContextSuffix();
 
     }
 

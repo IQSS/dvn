@@ -36,6 +36,7 @@ public class DeleteSubnetworkPage extends VDCBaseBean implements Serializable {
     @EJB
     VDCNetworkServiceLocal vdcNetworkService;
     private Long deleteId;
+    private String subnetworkUrlAlias;
 
     public Long getDeleteId() {
         return deleteId;
@@ -43,6 +44,15 @@ public class DeleteSubnetworkPage extends VDCBaseBean implements Serializable {
 
     public void setDeleteId(Long deleteId) {
         this.deleteId = deleteId;
+    }
+
+    public String getSubnetworkUrlAlias() {
+        return subnetworkUrlAlias;
+    }
+
+    public void preRenderView() {
+        VDCNetwork subnetwork = vdcNetworkService.findById(deleteId);
+        subnetworkUrlAlias = subnetwork.getUrlAlias();
     }
 
     public String delete_action() {

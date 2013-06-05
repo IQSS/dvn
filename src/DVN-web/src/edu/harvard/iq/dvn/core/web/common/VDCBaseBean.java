@@ -251,9 +251,18 @@ public class VDCBaseBean  implements java.io.Serializable  {
         }
     }
     
-    public String getNavigationVDCSuffix() {
-        return (getVDCRequestBean().getCurrentVDCId() != null) ? "&vdcId=" + getVDCRequestBean().getCurrentVDCId() : "";
-    }
+    
+    public String getContextSuffix() {
+        String contextSuffix = "";
+        
+        if (getVDCRequestBean().getCurrentVDC() != null) {
+            contextSuffix = "&vdcId=" + getVDCRequestBean().getCurrentVDCId();
+        } else if (getVDCRequestBean().getCurrentSubnetwork() != null) {
+            contextSuffix = "&vdcSubnetworkId=" + getVDCRequestBean().getCurrentSubnetwork().getId();
+        }
+
+        return contextSuffix;
+    }    
     
 
     public List<SelectItem> createSelectItemList(List<Object[]> items) {

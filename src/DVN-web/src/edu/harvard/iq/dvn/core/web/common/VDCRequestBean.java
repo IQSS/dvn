@@ -162,21 +162,7 @@ public class VDCRequestBean extends VDCBaseBean implements java.io.Serializable 
         this.actionMode = am;
     }
 
-    private boolean currentVDCinitialized;
-    private VDC currentVDC;
 
-    /**
-     * Getter for property vdcId.
-     * @return Value of property vdcId.
-     */
-    public VDC getCurrentVDC() {
-        if (!currentVDCinitialized) {
-            HttpServletRequest req = (HttpServletRequest) FacesContext.getCurrentInstance().getExternalContext().getRequest();
-            setCurrentVDC( vdcService.getVDCFromRequest(req) );
-            // set method also sets initialization boolean to true
-        }        
-        return currentVDC;
-    }
 
     private Boolean logoutPage = null;
 
@@ -219,9 +205,47 @@ public class VDCRequestBean extends VDCBaseBean implements java.io.Serializable 
     }
 
 
+    private VDCNetwork rootNetwork;
+    private VDCNetwork currentSubnetwork;    
+    private VDC currentVDC;  
+    private boolean currentVDCinitialized;
+    private boolean currentVDCNetworkinitialized;
+    
+     /**
+     * Getter for property vdcId.
+     * @return Value of property vdcId.
+     */
+    public VDC getCurrentVDC() {
+        if (!currentVDCinitialized) {
+            HttpServletRequest req = (HttpServletRequest) FacesContext.getCurrentInstance().getExternalContext().getRequest();
+            setCurrentVDC( vdcService.getVDCFromRequest(req) );
+            // set method also sets initialization boolean to true
+        }        
+        return currentVDC;
+    }    
+
     public void setCurrentVDC(VDC currentVDC) {
         this.currentVDC = currentVDC;
         currentVDCinitialized = true;
+    }
+    
+
+    /**
+     * Getter for property vdcNetwork.
+     * @return Value of property vdcNetwork.
+     */
+    public VDCNetwork getCurrentVdcNetwork() {
+        return (getCurrentSubnetwork() != null ? getCurrentSubnetwork() : getVdcNetwork());
+    }    
+    
+    public VDCNetwork getCurrentSubnetwork() {
+        if (!currentVDCNetworkinitialized) {
+            HttpServletRequest req = (HttpServletRequest) FacesContext.getCurrentInstance().getExternalContext().getRequest();
+            currentSubnetwork = vdcNetworkService.getVDCNetworkFromRequest(req);
+            currentVDCNetworkinitialized = true;
+        }
+        
+        return currentSubnetwork;
     }
 
     
@@ -239,7 +263,9 @@ public class VDCRequestBean extends VDCBaseBean implements java.io.Serializable 
         String dataverseURL="";
         if (getCurrentVDC() != null) { 
             dataverseURL +="/dv/"+getCurrentVDC().getAlias();
-        } 
+        } else if (getCurrentVdcNetwork().getId().intValue() > 0) { 
+            dataverseURL +="/dataverses/"+getCurrentVdcNetwork().getUrlAlias();
+        }
         // needed for error page when service is passed, but still an exception thrown in the app. wjb Sept 2007
         HttpServletRequest request = (HttpServletRequest)FacesContext.getCurrentInstance().getExternalContext().getRequest();
         request.setAttribute("dataverseURL", dataverseURL); 
@@ -249,26 +275,15 @@ public class VDCRequestBean extends VDCBaseBean implements java.io.Serializable 
     
     public String getCurrentVdcNetworkURL() {
         String networkURL="";
-        if (getCurrentVdcNetwork().getId().intValue() > 0) { 
-            networkURL +="/dataverses/"+getCurrentVdcNetwork().getUrlAlias();
+        if (getCurrentSubnetwork() != null) { 
+            networkURL +="/dataverses/"+getCurrentSubnetwork().getUrlAlias();
         }  
         HttpServletRequest request = (HttpServletRequest)FacesContext.getCurrentInstance().getExternalContext().getRequest();
         request.setAttribute("networkURL", networkURL); 
+        // TODO: networkURL is not beng used in any way; we need to refactor the error handling
         return networkURL;
     }
     
-    public String getCurrentContextURL(){
-        String currentContextURL = "";        
-        if (getCurrentVdcNetwork().getId().intValue() > 0) { 
-            currentContextURL +="/dataverses/"+getCurrentVdcNetwork().getUrlAlias();
-        } 
-        if (getCurrentVDC() != null) { 
-            currentContextURL +="/dv/"+getCurrentVDC().getAlias();
-        }
-        HttpServletRequest request = (HttpServletRequest)FacesContext.getCurrentInstance().getExternalContext().getRequest();
-        request.setAttribute("currentContextURL", currentContextURL);        
-        return currentContextURL;
-    }
     
     public void setCurrentVDCURL(String dataverseURL) {}  // dummy method since the get is just a wrapper 
 
@@ -277,38 +292,23 @@ public class VDCRequestBean extends VDCBaseBean implements java.io.Serializable 
             return "/faces/" + request.getPathInfo();
         }
     
-    /**
-     * Holds value of property vdcNetwork.
-     */
-    private VDCNetwork vdcNetwork;
 
-    /**
-     * Getter for property vdcNetwork.
-     * @return Value of property vdcNetwork.
-     */
-    public VDCNetwork getCurrentVdcNetwork() {
-        if (vdcNetwork == null) {
-            HttpServletRequest req = (HttpServletRequest) FacesContext.getCurrentInstance().getExternalContext().getRequest();
-            VDCNetwork vdcNetworkReq = vdcNetworkService.getVDCNetworkFromRequest(req);
-            if (vdcNetworkReq == null){
-                setVdcNetwork(vdcNetworkService.findRootNetwork()); 
-            } else {
-                setVdcNetwork(vdcNetworkReq);
-            }
-        }
-        return this.vdcNetwork;
-    }
+    
+
     
     public VDCNetwork getVdcNetwork() {
-        return vdcNetworkService.findRootNetwork();
+        if (rootNetwork == null) {
+            rootNetwork = vdcNetworkService.findRootNetwork();
+        }
+        return rootNetwork;
     }
 
     /**
      * Setter for property vdcNetwork.
      * @param vdcNetwork New value of property vdcNetwork.
      */
-    public void setVdcNetwork(VDCNetwork vdcNetwork) {
-        this.vdcNetwork = vdcNetwork;
+    public void setVdcNetwork(VDCNetwork rootNetwork) {
+        this.rootNetwork = rootNetwork;
     }
     
     private StudyListing studyListing;
@@ -347,9 +347,9 @@ public class VDCRequestBean extends VDCBaseBean implements java.io.Serializable 
     
     public String home() {
         if (getCurrentVDC() != null) {
-            return "/StudyListingPage.xhtml?faces-redirect=true" + getNavigationVDCSuffix();
+            return "/StudyListingPage.xhtml?faces-redirect=true" + getContextSuffix();
         } else {
-            return "/HomePage.xhtml?faces-redirect=true";
+            return "/HomePage.xhtml?faces-redirect=true" + getContextSuffix();
         }
     }
 
@@ -377,20 +377,20 @@ public class VDCRequestBean extends VDCBaseBean implements java.io.Serializable 
         //String studyListingIndex = getVDCRequestBean().getStudyListingIndex();
         return studyListingIndex != null ? "&studyListingIndex=" + studyListingIndex : "";
     }
-
+    
     public String getDataversePageTitle() {
-        String title = null;
-        if (vdcNetwork == null) {
-            title = this.getCurrentVdcNetwork().getName() + " Dataverse Network";
-        } else {
-            title = vdcNetwork.getName() +  " Dataverse Network";
-        }
-         
+        String title = getVdcNetwork().getName() + " Dataverse Network";
+
+        //add vdc or subnetwork name (as prefix) if available
         if (this.getCurrentVDC()!=null) {
             title = getCurrentVDC().getName() + " Dataverse - " + title;
+        } else if (getCurrentSubnetwork() != null) {
+            title = getCurrentSubnetwork().getName() + " Dataverses " + title;
         }
+         
         return title;
     }
+
 
     public boolean isAuthorizedLockssServer(){
         HttpServletRequest request = (HttpServletRequest)FacesContext.getCurrentInstance().getExternalContext().getRequest();

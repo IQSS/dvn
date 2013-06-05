@@ -110,7 +110,7 @@ public class MigrateDataExplorationPage extends VDCBaseBean implements java.io.S
         } else {
             redirectVersionNumber = studyVersion.getVersionNumber();
         }
-        return "/study/StudyPage?faces-redirect=true&studyId=" + study.getId() + "&versionNumber=" + redirectVersionNumber + "&tab=files&vdcId=" + getVDCRequestBean().getCurrentVDCId();
+        return "/study/StudyPage?faces-redirect=true&studyId=" + study.getId() + "&versionNumber=" + redirectVersionNumber + "&tab=files" + getContextSuffix();
     } 
     
     public List<SelectItem> loadStudyFileSelectItems(boolean hasExploration) {

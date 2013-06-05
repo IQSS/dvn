@@ -33,7 +33,7 @@
                             <ui:include src="BasicSearchFragment.xhtml"></ui:include>
 
                             <div class="dvn_searchlinks">
-                                <ice:outputLink value="/dvn#{VDCRequest.currentVDCURL}#{VDCRequest.currentVdcNetworkURL}/faces/AdvSearchPage.xhtml">
+                                <ice:outputLink value="/dvn#{VDCRequest.currentVDCURL}/faces/AdvSearchPage.xhtml">
                                     <ice:outputText value="Advanced Search"/>
                                 </ice:outputLink>
                                 <ice:outputLink value="http://guides.thedata.org/book/search" target="_blank">
@@ -175,7 +175,7 @@
                                                 value="#{homePage.mostRecentlyReleasedDVs}" var="vdcUI">
                                         <ice:column>
                                             <div>
-                                                <ice:outputLink styleClass="dvnHmpgDvNameLink dvnInlineHelpTip" id="dataverse_linkSub" value="/dvn#{VDCRequest.currentVdcNetworkURL}/dv/#{vdcUI.vdc.alias}"
+                                                <ice:outputLink styleClass="dvnHmpgDvNameLink dvnInlineHelpTip" id="dataverse_linkSub" value="/dvn/dv/#{vdcUI.vdc.alias}"
                                                                 title="#{vdcUI.name} Dataverse - Released: #{vdcUI.releaseDate}
                                                                         #{!empty(vdcUI.vdc.affiliation) ? '&lt;br/&gt;Affilitation:  ' : ''} #{vdcUI.vdc.affiliation}
                                                                         #{!empty(vdcUI.vdc.dvnDescription) ? '&lt;br/&gt;Description: ' : ''} #{vdcUI.vdc.dvnDescription}">
@@ -186,7 +186,7 @@
                                         </ice:column>
                                     </ice:dataTable>
                                     <div class="dvnHmpgColumnWidgetViewMoreBlock">
-                                        <ice:outputLink value="/dvn/faces/site/BrowseDataversesPage.xhtml?initialSort=Released" >
+                                        <ice:outputLink value="/dvn#{VDCRequest.currentVdcNetworkURL}/faces/site/BrowseDataversesPage.xhtml?initialSort=Released" >
                                             <ice:outputText value="View More &gt;"/>                          
                                         </ice:outputLink>
                                     </div>
@@ -227,7 +227,7 @@
                                 <div class="dvnHmpgColumnHeaderBlock">
                                     <h1 class="dvnHmpgColumnHeader">Studies</h1>
                                     <div jsfc="ice:panelGroup" id="createStudy" styleClass="dvnCreateActionBox dvnCreateStudy" rendered="#{VDCSession.loginBean.user!=null and homePage.userVDCCount > 1 and !VDCRequest.readOnlyDatabase}">
-                                        <ice:outputLink value="/dvn/faces/admin/ChooseDataverseForCreateStudy.xhtml" rendered="#{VDCSession.loginBean.user!=null and homePage.userVDCCount > 1 and !VDCRequest.readOnlyDatabase}">
+                                        <ice:outputLink value="/dvn#{VDCRequest.currentVdcNetworkURL}/faces/admin/ChooseDataverseForCreateStudy.xhtml" rendered="#{VDCSession.loginBean.user!=null and homePage.userVDCCount > 1 and !VDCRequest.readOnlyDatabase}">
                                             <ice:outputText value="#{bundlePageInfo.createStudyButton}"/>
                                         </ice:outputLink>
                                     </div>
@@ -256,7 +256,7 @@
                                                 styleClass="dvnHmpgStudyWidgetTable" value="#{homePage.recentStudies}" var="studyUI">
                                         <ice:column id="column1">
                                             <div jsfc="ice:panelGroup" styleClass="#{!studyUI.study.restricted ? 'dvn_nostyle' : (studyUI.studyRestricted ? 'dvnStudyRestricted' : 'dvnStudyPublic')}" id="groupPanel1">
-                                                <ice:outputLink styleClass="dvnInlineHmpgWidgetInfo" id="hyperlink3" value="/dvn/faces/study/StudyPage.xhtml?globalId=#{studyUI.study.globalId}"
+                                                <ice:outputLink styleClass="dvnInlineHmpgWidgetInfo" id="hyperlink3" value="/dvn#{VDCRequest.currentVdcNetworkURL}/faces/study/StudyPage.xhtml?globalId=#{studyUI.study.globalId}"
                                                                 title="#{studyUI.metadata.title} *!* Release Date: #{studyUI.releaseTime} &lt;br/&gt; Number of Files: #{empty studyUI.numberOfFiles ? '0' : studyUI.numberOfFiles} &lt;br/&gt; Number of Downloads: #{studyUI.downloadCount} &lt;br/&gt; Original Dataverse: #{studyUI.study.owner.name} Dataverse">
                                                     <ice:graphicImage styleClass="dvnHmpgStudyFileIcon" url="/resources/images/icon_analyze.gif" title="View and Analyze study files" rendered="#{studyUI.files and studyUI.subsettable}"/>
                                                     <ice:graphicImage styleClass="dvnHmpgStudyFileIcon" url="/resources/images/icon_files.gif" title="View study files" rendered="#{studyUI.files and !studyUI.subsettable}"/>
@@ -268,7 +268,7 @@
                                         </ice:column>
                                     </ice:dataTable>
                                     <div class="dvnHmpgColumnWidgetViewMoreBlock">
-                                        <ice:outputLink value="/dvn/faces/StudyListingPage.xhtml?mode=100&amp;sort=releaseTime" id="hyperlinkBrowseStudiesReleased">
+                                        <ice:outputLink value="/dvn#{VDCRequest.currentVdcNetworkURL}/faces/StudyListingPage.xhtml?mode=100&amp;sort=releaseTime" id="hyperlinkBrowseStudiesReleased">
                                             <ice:outputText value="View More &gt;"/>
                                         </ice:outputLink>
                                     </div>
@@ -279,7 +279,7 @@
                                                 styleClass="dvnHmpgStudyWidgetTable" value="#{homePage.mostDownloadedStudies}" var="studyUI">
                                         <ice:column id="column1">
                                             <div jsfc="ice:panelGroup" styleClass="#{!studyUI.study.restricted ? 'dvn_nostyle' : (studyUI.studyRestricted ? 'dvnStudyRestricted' : 'dvnStudyPublic')}" id="groupPanel1">                 
-                                                <ice:outputLink styleClass="dvnInlineHmpgWidgetInfo" id="hyperlink3" value="/dvn/faces/study/StudyPage.xhtml?globalId=#{studyUI.study.globalId}"
+                                                <ice:outputLink styleClass="dvnInlineHmpgWidgetInfo" id="hyperlink3" value="/dvn#{VDCRequest.currentVdcNetworkURL}/faces/study/StudyPage.xhtml?globalId=#{studyUI.study.globalId}"
                                                                 title="#{studyUI.metadata.title} *!* Release Date: #{studyUI.releaseTime} &lt;br/&gt; Number of Files: #{empty studyUI.numberOfFiles ? '0' : studyUI.numberOfFiles} &lt;br/&gt; Number of Downloads: #{studyUI.downloadCount} &lt;br/&gt; Original Dataverse: #{studyUI.study.owner.name} Dataverse">
                                                     <ice:graphicImage styleClass="dvnHmpgStudyFileIcon" url="/resources/images/icon_analyze.gif" title="View and Analyze study files" rendered="#{studyUI.files and studyUI.subsettable}"/>
                                                     <ice:graphicImage styleClass="dvnHmpgStudyFileIcon" url="/resources/images/icon_files.gif" title="View study files" rendered="#{studyUI.files and !studyUI.subsettable}"/>
@@ -291,7 +291,7 @@
                                         </ice:column>
                                     </ice:dataTable>
                                     <div class="dvnHmpgColumnWidgetViewMoreBlock">
-                                        <ice:outputLink value="/dvn/faces/StudyListingPage.xhtml?mode=100&amp;sort=downloadCount" id="hyperlinkBrowseStudiesDownloaded">
+                                        <ice:outputLink value="/dvn#{VDCRequest.currentVdcNetworkURL}/faces/StudyListingPage.xhtml?mode=100&amp;sort=downloadCount" id="hyperlinkBrowseStudiesDownloaded">
                                             <ice:outputText value="View More &gt;"/>
                                         </ice:outputLink>
                                     </div>

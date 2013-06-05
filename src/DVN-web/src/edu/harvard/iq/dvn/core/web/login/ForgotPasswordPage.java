@@ -89,11 +89,7 @@ public class ForgotPasswordPage extends VDCBaseBean implements java.io.Serializa
 
         getVDCRenderBean().getFlash().put("successMessage","Your new password has been sent to the email address associated with this account.");
 
-        if (getVDCRequestBean().getCurrentVDC() != null) {
-            return "/StudyListingPage?faces-redirect=true" + getNavigationVDCSuffix();   
-        } else {
-            return "/HomePage?faces-redirect=true";
-        }
+        return getVDCRequestBean().home();
     }
     
   

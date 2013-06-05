@@ -46,6 +46,7 @@ public interface TemplateServiceLocal extends java.io.Serializable {
     public List<Template> getVDCTemplates(Long vdcId);
     public List<Template> getEnabledVDCTemplates(Long vdcId);
     public List<Template> getNetworkTemplates();
+    public List<Long> getSubnetworkTemplates(Long subnetworkId, boolean onlyEnabled);
     public List<Template> getEnabledNetworkTemplates();
     public List<Template> getPreferredNetworkTemplates();
     
@@ -53,7 +54,7 @@ public interface TemplateServiceLocal extends java.io.Serializable {
     public ControlledVocabulary getControlledVocabulary(Long cvId);
     public void saveControlledVocabulary(ControlledVocabulary controlledVocabulary);
 
-    public Map getVdcNetworkTemplatesMap(Long vdcNetworkId);
+    public Map getVdcNetworkTemplatesMap(Long vdcNetworkId); // unused?
 
     public Map getVdcNetworkTemplatesMapForAddSitePage(Long vdcNetworkId);
 }

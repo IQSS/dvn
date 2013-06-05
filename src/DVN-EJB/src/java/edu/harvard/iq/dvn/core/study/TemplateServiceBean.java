@@ -161,6 +161,7 @@ public class TemplateServiceBean implements edu.harvard.iq.dvn.core.study.Templa
 
     } 
     
+    // unused?
     public Map getVdcNetworkTemplatesMap(Long vdcNetworkId) {
 
         Map templatesMap = new LinkedHashMap();
@@ -219,12 +220,30 @@ public class TemplateServiceBean implements edu.harvard.iq.dvn.core.study.Templa
         return (List) em.createQuery(query).getResultList();
     }
     
-    public List<Template> getEnabledSubnetworkTemplates(Long id) {
+    public List<Long> getEnabledSubnetworkTemplates(Long id) {
         String queryStr = "SELECT o.id from template o where o.vdc_id is null and o.enabled = true and o.vdcsubnetwork_id="+id+ " ORDER BY o.name";
         Query query = em.createNativeQuery(queryStr);
-        return (List) query.getResultList();
+        return getSubnetworkTemplates(id, true);
     }
-    
+
+    public List<Long> getSubnetworkTemplates(Long subnetworkId, boolean onlyEnabled) {
+        String queryStr;
+        if (onlyEnabled) {
+            queryStr = "SELECT o.id from template o where o.vdc_id is null and o.enabled = true and o.vdcsubnetwork_id=" + subnetworkId + " ORDER BY o.name";
+        } else {
+            queryStr = "SELECT o.id from template o where o.vdc_id is null and o.vdcsubnetwork_id=" + subnetworkId + " ORDER BY o.name";
+        }
+        Query query = em.createNativeQuery(queryStr);
+//        List<Long> templateIdsLong = query.getResultList(); // java.lang.ClassCastException: java.lang.Integer cannot be cast to java.lang.Long
+        List<Integer> templateIdsInt = query.getResultList();
+        ArrayList<Long> templateIdsLong = new ArrayList<Long>();
+        for (Integer templateIdInt : templateIdsInt) {
+            Long templateIdLong = new Long(templateIdInt);
+            templateIdsLong.add(templateIdLong);
+        }
+        return templateIdsLong;
+    }
+
     public List<Template> getPreferredSubnetworkTemplates(Long id) {       
         String queryStr = "SELECT o.id from template o where o.vdc_id is null and o.displayOnCreateDataverse = true  and o.enabled = true and o.vdcsubnetwork_id="+id+ " ORDER BY o.name";
         Query query = em.createNativeQuery(queryStr);

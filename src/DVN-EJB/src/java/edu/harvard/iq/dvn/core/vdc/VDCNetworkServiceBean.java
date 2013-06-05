@@ -32,6 +32,7 @@ import edu.harvard.iq.dvn.core.mail.MailServiceLocal;
 import edu.harvard.iq.dvn.core.study.StudyServiceLocal;
 import edu.harvard.iq.dvn.core.study.StudyVersion;
 import edu.harvard.iq.dvn.core.study.Template;
+import edu.harvard.iq.dvn.core.study.TemplateServiceLocal;
 import edu.harvard.iq.dvn.core.util.StringUtil;
 import java.util.*;
 import java.util.logging.Level;
@@ -62,6 +63,8 @@ public class VDCNetworkServiceBean implements VDCNetworkServiceLocal {
     @EJB MailServiceLocal mailService;
     @EJB StudyServiceLocal studyService;
     @EJB VDCNetworkServiceLocal vdcNetworkService; 
+    @EJB TemplateServiceLocal templateService;
+    @EJB VDCServiceLocal vdcService;
 
     @EJB
     DvnTimerLocal dvnTimerService;
@@ -87,19 +90,34 @@ public class VDCNetworkServiceBean implements VDCNetworkServiceLocal {
     }
 
     public void destroy(VDCNetwork vDCNetwork) {
-        em.merge(vDCNetwork);
-        em.remove(vDCNetwork);
+        // vDCNetwork is detatched (can't be removed)
+        // merge returns the *managed* instance that the state was merged to
+        VDCNetwork networkToDelete = em.merge(vDCNetwork);
+        // entity must be managed (not detatched) to remove
+        em.remove(networkToDelete);
     }
 
     public void deleteSubnetwork(VDCNetwork subnetworkToDelete) {
-        /**
-         * @todo: revert VDCNetwork_id in VDC table to root network Id
-         * @todo: revert subnetworkId on template table to root network id
-         * @todo: delete row from vdcnetwork table
-         *
-         * https://redmine.hmdc.harvard.edu/issues/2981
-         */
-        throw new UnsupportedOperationException("Not yet implemented");
+
+        // revert VDCNetwork_id in VDC table to root network Id
+        VDCNetwork rootNetwork = vdcNetworkService.findRootNetwork();
+        Collection<VDC> vdcs = subnetworkToDelete.getNetworkVDCs();
+        for (VDC vdc : vdcs) {
+            logger.info("changing vdcNetworkId from " + subnetworkToDelete.getId() + " to root network id (" + rootNetwork.getId() + ") for dataverse alias " + vdc.getAlias() + " (vdc id " + vdc.getId() + ")");
+            vdc.setVdcNetwork(rootNetwork);
+        }
+
+        //revert subnetworkId on template table to root network id
+        List<Long> templateIds = templateService.getSubnetworkTemplates(subnetworkToDelete.getId(), false);
+        for (Long templateId : templateIds) {
+            Template template = templateService.getTemplate(templateId);
+            logger.info("changing vdcNetworkId from " + subnetworkToDelete.getId() + " to root network id (" + rootNetwork.getId() + ") for template " + template.getName() + " (id " + template.getId() + ")");
+            template.setVdcSubnetwork(rootNetwork);
+        }
+
+        // delete row from vdcnetwork table
+        logger.info("deleting subnetwork " + subnetworkToDelete.getUrlAlias() + " (id " + subnetworkToDelete.getId() + ")");
+        destroy(subnetworkToDelete);
     }
 
     public VDCNetwork find(Object pk) {

@@ -19,10 +19,11 @@
                 }
                 // ]]>
             </script>
-            <ui:param name="pageTitle" value="#{bundlePageInfo.deleteSubnetworkTitle} - #{EditNetworkNamePage.networkName}"/>
+            <ui:param name="pageTitle" value="#{bundlePageInfo.deleteSubnetworkTitle} - #{DeleteSubnetworkPage.subnetworkUrlAlias}"/>
             <ui:define name="metadata">
                 <f:metadata>
                     <f:viewParam name="deleteId" value="#{DeleteSubnetworkPage.deleteId}"/>
+                    <f:event type="preRenderView" listener="#{DeleteSubnetworkPage.preRenderView}" />
                 </f:metadata>
             </ui:define>
             <ui:define name="body">
@@ -38,7 +39,7 @@
                                     <ice:graphicImage value="/resources/images/icon_warning.18.png" styleClass="dvn_icon"/>
                                     <ice:outputText styleClass="warnMessage" value=" Are you sure?"/>
                                     <p></p>
-                                    <ice:commandButton id="btnSaveSettings" value="#{bundlePageInfo.deleteSubnetworkTitle} #{EditNetworkNamePage.networkName}" rendered="#{!VDCRequest.readOnlyDatabase}" action="#{DeleteSubnetworkPage.delete_action}"/>
+                                    <ice:commandButton id="btnSaveSettings" value="#{bundlePageInfo.deleteSubnetworkTitle} &quot;#{DeleteSubnetworkPage.subnetworkUrlAlias}&quot;" rendered="#{!VDCRequest.readOnlyDatabase}" action="#{DeleteSubnetworkPage.delete_action}"/>
                                     <ice:commandButton id="btnCancel" value="Cancel" immediate="true" action="#{DeleteSubnetworkPage.cancel}"/>
                                 </div>
                             </div>

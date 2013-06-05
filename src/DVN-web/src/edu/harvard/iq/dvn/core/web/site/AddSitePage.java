@@ -717,6 +717,7 @@ public class AddSitePage extends VDCBaseBean implements java.io.Serializable  {
      *
      */
     public Map getTemplatesMap() {        
+        logger.info("getTemplatesMap called");
         return templateService.getVdcNetworkTemplatesMapForAddSitePage(selectSubNetworkId);
     }
     private Long selectSubNetworkId;

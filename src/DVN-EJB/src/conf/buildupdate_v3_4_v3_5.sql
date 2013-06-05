@@ -11,8 +11,8 @@ ALTER TABLE vdcnetwork ALTER COLUMN urlalias SET STORAGE EXTENDED;
 ALTER TABLE vdcnetwork ADD COLUMN networkcreated timestamp;
 ALTER TABLE vdcnetwork ALTER COLUMN networkcreated SET STORAGE PLAIN;
 
-ALTER TABLE vdcnetwork ADD COLUMN curator character varying(255);
-ALTER TABLE vdcnetwork ALTER COLUMN curator SET STORAGE EXTENDED;
+ALTER TABLE vdcnetwork ADD COLUMN affiliation character varying(255);
+ALTER TABLE vdcnetwork ALTER COLUMN affiliation SET STORAGE EXTENDED;
 
 ALTER TABLE vdcnetwork ADD COLUMN creator_id bigint;
 ALTER TABLE vdcnetwork ALTER COLUMN creator_id SET STORAGE PLAIN;
@@ -22,6 +22,9 @@ ALTER TABLE vdcnetwork ADD COLUMN released boolean;
 Alter TABLE template add vdcsubnetwork_id bigint;
 
 Update template set vdcsubnetwork_id = 0;
+
+Alter TABLE vdcnetworkstats add vdcnetwork_id bigint;
+update vdcnetworkstats set vdcnetwork_id = 0;
 
 INSERT INTO pagedef ( name, path, role_id, networkrole_id ) VALUES ( 'EditSubnetworkPage', '/networkAdmin/EditSubnetworkPage.xhtml', null, 2 );
 

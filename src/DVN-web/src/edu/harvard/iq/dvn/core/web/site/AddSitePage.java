@@ -341,15 +341,20 @@ public class AddSitePage extends VDCBaseBean implements java.io.Serializable  {
             createdVDC.setAffiliation(strAffiliation);
             createdVDC.setDvnDescription(strShortDescription);
             createdVDC.setAnnouncements(strShortDescription); // also set default dv home page description from the the DVN home page short description
-            if (selectSubNetworkId > 0){
+            if (selectSubNetworkId != null && selectSubNetworkId > 0){
                 VDCNetwork vdcNetwork = vdcNetworkService.findById(selectSubNetworkId);
                 createdVDC.setVdcNetwork(vdcNetwork);
             } else {
                  createdVDC.setVdcNetwork(vdcNetworkService.findRootNetwork());
             }
+            Template template = new Template();
+            if (selectTemplateId != null){                
+                template = templateService.getTemplate(selectTemplateId);
 
-            Template template = templateService.getTemplate(selectTemplateId);
-            createdVDC.setDefaultTemplate(template);
+            } else {
+                template = vdcNetworkService.findRootNetwork().getDefaultTemplate();
+            }
+            createdVDC.setDefaultTemplate(template); 
             //on create if description is blank uncheck display flag
             if(strShortDescription.isEmpty()){
                 createdVDC.setDisplayAnnouncements(false);
@@ -412,7 +417,7 @@ public class AddSitePage extends VDCBaseBean implements java.io.Serializable  {
             createdScholarDataverse.setContactEmail(getVDCSessionBean().getLoginBean().getUser().getEmail());
             createdScholarDataverse.setDvnDescription(strShortDescription);
             createdScholarDataverse.setAnnouncements(strShortDescription); // also set default dv home page description from the the DVN home page short description
-            if (selectSubNetworkId > 0){
+            if (selectSubNetworkId != null && selectSubNetworkId > 0){
                 VDCNetwork vdcNetwork = vdcNetworkService.findById(selectSubNetworkId);
                 createdScholarDataverse.setVdcNetwork(vdcNetwork);
             } else {

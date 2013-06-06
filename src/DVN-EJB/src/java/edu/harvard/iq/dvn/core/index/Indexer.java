@@ -194,13 +194,20 @@ public class Indexer implements java.io.Serializable  {
     }
 
     public static Indexer getInstance(){
-        if (indexer == null){
-            indexer = new Indexer();
-            try {
-                indexer.setup();
-            } catch (IOException ex) {
-                ex.printStackTrace();
-            }
+        if (indexer != null && indexer.indexDirExists()) {
+            return indexer;
+        }
+        
+        // If the Indexer hasn't been initialized yet; or if the index
+        // directory disappeared (for example, if they wiped it clean
+        // in order to run IndexAll), we create and initialize a new
+        // Indexer: 
+        
+        indexer = new Indexer();
+        try {
+            indexer.setup();
+        } catch (IOException ex) {
+            ex.printStackTrace();
         }
         return indexer;
     }
@@ -2243,6 +2250,12 @@ public class Indexer implements java.io.Serializable  {
             logger.fine(indexDir + " created");
         }
     }
+    
+    private boolean indexDirExists() {
+        File indexDirFile = new File(indexDir);
+        return indexDirFile.exists();
+    }
+    
     private void assureTaxoDirExists() {
         File taxoDirFile = new File(taxoDirName);
         if (!taxoDirFile.exists()) {

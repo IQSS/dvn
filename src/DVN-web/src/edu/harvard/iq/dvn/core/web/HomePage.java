@@ -471,30 +471,14 @@ public class HomePage extends VDCBaseBean implements Serializable {
      
      public List getRecentStudies() {
         if (recentStudies == null) {            
-            recentStudies = new ArrayList();
-            VDC vdc = getVDCRequestBean().getCurrentVDC();
-            if (vdc != null) {
-                VDCUser user = getVDCSessionBean().getUser();
-                recentStudies = filterVisibleStudyUIsFromIds( vdcApplicationBean.getAllStudyIdsByReleaseDate(), vdc, user, getVDCSessionBean().getIpUserGroup(), 5 );
-            } else {
-                VDCUser user = getVDCSessionBean().getUser();
-                recentStudies = filterVisibleStudyUIsFromIds( vdcApplicationBean.getAllStudyIdsByReleaseDateMap().get(vdcNetworkId), vdc, user, getVDCSessionBean().getIpUserGroup(), 5 ); 
-            }
+            recentStudies = filterVisibleStudyUIsFromIds( vdcApplicationBean.getAllStudyIdsByReleaseDate(vdcNetworkId), 5 ); 
         }
         return recentStudies;
     }
      
     public List getMostDownloadedStudies() {
         if (mostDownloadedStudies == null) {
-            mostDownloadedStudies = new ArrayList();
-            VDC vdc = getVDCRequestBean().getCurrentVDC();
-            if (vdc != null) {
-                VDCUser user = getVDCSessionBean().getUser();                              
-                mostDownloadedStudies = filterVisibleStudyUIsFromIds( vdcApplicationBean.getAllStudyIdsByDownloadCount(), vdc, user, getVDCSessionBean().getIpUserGroup(), 5 );
-            } else {
-                VDCUser user = getVDCSessionBean().getUser();
-                mostDownloadedStudies = filterVisibleStudyUIsFromIds( vdcApplicationBean.getAllStudyIdsByDownloadCountMap().get(vdcNetworkId), vdc, user, getVDCSessionBean().getIpUserGroup(), 5 ); 
-            }
+            mostDownloadedStudies = filterVisibleStudyUIsFromIds( vdcApplicationBean.getAllStudyIdsByDownloadCount(vdcNetworkId), 5 ); 
         }
         return mostDownloadedStudies;
     }
@@ -537,25 +521,22 @@ public class HomePage extends VDCBaseBean implements Serializable {
     }
 
 
-    private List filterVisibleStudyUIsFromIds(List originalStudies, VDC vdc, VDCUser user, UserGroup ipUserGroup, int numResults) {
+    private List filterVisibleStudyUIsFromIds(List<Long> originalStudies, int numResults) {
         List filteredStudies = new ArrayList();
         if (numResults != 0) {
             int count = 0;
-            Iterator iter = originalStudies.iterator();
-            while (iter.hasNext()) {
-                Long studyId = (Long) iter.next();
-                //create studyUI with study id instead of getting study here.
+            for (Long studyId : originalStudies) //create studyUI with study id instead of getting study here.
+            {
                 try {
                     Study test = studyService.getStudyForSearch(studyId, null);
                     StudyUI studyUIToAdd = new StudyUI(test, getVDCSessionBean().getUser(), getVDCSessionBean().getIpUserGroup(), false);
                     filteredStudies.add(studyUIToAdd);
                     count++;
+                } catch (Exception e) {
+                    // this study id does not have a visible version, so we can skip it
+                    //e.printStackTrace();
                 }
-                catch (Exception e) {
-                        // this study id does not have a visible version, so we can skip it
-                        //e.printStackTrace();
-                    }
-
+                
                 if (numResults > 0 && count >= numResults) {
                     break;
                 }

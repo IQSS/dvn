@@ -46,6 +46,11 @@ public class VDCNetwork implements java.io.Serializable  {
    
     /** Creates a new instance of VDCNetwork */
     public VDCNetwork() {
+        vdcNetworkStats = new VDCNetworkStats();
+        vdcNetworkStats.setVdcNetwork(this);
+        vdcNetworkStats.setDownloadCount(new Long(0));
+        vdcNetworkStats.setStudyCount(new Long(0));
+        vdcNetworkStats.setFileCount(new Long(0));
     }
    
     public Collection<Study> search(String query) {

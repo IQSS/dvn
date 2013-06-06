@@ -171,13 +171,9 @@ public class EditSubnetworkPage extends VDCBaseBean implements Serializable  {
         } else {   
             System.out.print("why - when here??");
             VDCNetwork newVdcNetwork = new VDCNetwork();
-
-            VDCNetworkStats newVDCNetworkStats = new VDCNetworkStats();
             newVdcNetwork.setUrlAlias(subnetworkAlias);
             vdcNetworkService.create(newVdcNetwork);
             VDCNetwork createdNetwork = vdcNetworkService.findByAlias(subnetworkAlias);
-            newVDCNetworkStats.setVdcNetwork(createdNetwork);
-            vdcNetworkService.create(newVDCNetworkStats);
             createdNetwork.setName(editNetworkNamePage.getNetworkName());
             createdNetwork.setDisplayAnnouncements(editNetworkAnnouncementsPage.isChkEnableNetworkAnnouncements());
             createdNetwork.setAnnouncements(editNetworkAnnouncementsPage.getNetworkAnnouncements());

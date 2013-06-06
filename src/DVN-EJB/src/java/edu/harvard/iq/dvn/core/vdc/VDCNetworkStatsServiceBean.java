@@ -111,9 +111,12 @@ public class VDCNetworkStatsServiceBean implements VDCNetworkStatsServiceLocal {
   
     public void updateStats() {
         List<VDCNetwork> vdcNetworks = vdcNetworkService.getVDCNetworks();
+        
+        // update the stats in the db
         for (VDCNetwork vdcNetwork : vdcNetworks) {
             Long vdcNetwork_id = vdcNetwork.getId();
             VDCNetworkStats vdcNetworkStats = getVDCNetworkStatsByNetworkId(vdcNetwork_id);
+            // root network
             if (vdcNetworkStats != null && vdcNetwork_id.intValue() == vdcNetworkService.findRootNetwork().getId().intValue()) {
                 Long releasedStudies = vdcNetworkService.getTotalStudies(true);
                 Long releasedFiles = vdcNetworkService.getTotalFiles(true);
@@ -122,7 +125,7 @@ public class VDCNetworkStatsServiceBean implements VDCNetworkStatsServiceLocal {
                 vdcNetworkStats.setStudyCount(releasedStudies);
                 vdcNetworkStats.setFileCount(releasedFiles);
                 vdcNetworkStats.setDownloadCount(downloadCount);
-            } else if (vdcNetworkStats != null) {
+            } else if (vdcNetworkStats != null) { // subnetworks
                 Long releasedStudies = vdcNetworkService.getTotalStudiesBySubnetwork(vdcNetwork_id, true);
                 Long releasedFiles = vdcNetworkService.getTotalFilesBySubnetwork(vdcNetwork_id, true);
                 Long downloadCount = vdcNetworkService.getTotalDownloadsBySubnetwork(vdcNetwork_id, true);
@@ -142,8 +145,21 @@ public class VDCNetworkStatsServiceBean implements VDCNetworkStatsServiceLocal {
                 vdcNetworkStats.setDownloadCount(downloadCount);
             }
         }
-        vdcApplicationBean.setAllStudyIdsByDownloadCount(studyService.getMostDownloadedStudyIds(null, -1));
-        vdcApplicationBean.setAllStudyIdsByReleaseDate(studyService.getRecentlyReleasedStudyIds(null, -1));
+        
+        // update the Lists stored in application scope
+        Map<Long, List> downloadMap = new HashMap<Long, List>();
+        Map<Long, List> recentlyReleasedMap = new HashMap<Long, List>();
+        
+        for (VDCNetwork vdcNetwork : vdcNetworks){
+            downloadMap.put(vdcNetwork.getId(), studyService.getMostDownloadedStudyIds(null, vdcNetwork.getId(), -1)); 
+        }
+
+        for (VDCNetwork vdcNetwork : vdcNetworks){
+            recentlyReleasedMap.put(vdcNetwork.getId(), studyService.getRecentlyReleasedStudyIds(null, vdcNetwork.getId(), -1));           
+        }      
+        
+        vdcApplicationBean.setAllStudyIdsByDownloadCountMap(downloadMap);
+        vdcApplicationBean.setAllStudyIdsByReleaseDateMap(recentlyReleasedMap);
     }
 
 }

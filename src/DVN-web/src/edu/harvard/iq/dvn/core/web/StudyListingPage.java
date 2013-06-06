@@ -1058,12 +1058,12 @@ public class StudyListingPage extends VDCBaseBean implements java.io.Serializabl
             else if (mode == StudyListing.GENERIC_LIST && sort != null  && sort.equals("downloadCount")) {
                 sl = new StudyListing(StudyListing.GENERIC_LIST);
                 sortOrderString = "downloadCount";
-                sl.setStudyIds(vdcApplicationBean.getAllStudyIdsByDownloadCount());
+                sl.setStudyIds(vdcApplicationBean.getAllStudyIdsByDownloadCount(getVDCRequestBean().getCurrentVdcNetwork().getId()));
                 sl.getSortMap().put("downloadCount", sl.getStudyIds());
             } else if (mode == StudyListing.GENERIC_LIST) {
                 sl = new StudyListing(StudyListing.GENERIC_LIST);
                 sortOrderString = "releaseTime";
-                sl.setStudyIds(vdcApplicationBean.getAllStudyIdsByReleaseDate());
+                sl.setStudyIds(vdcApplicationBean.getAllStudyIdsByReleaseDate(getVDCRequestBean().getCurrentVdcNetwork().getId()));
                 sl.getSortMap().put("releaseTime", sl.getStudyIds());
                 /**
                  * @todo show facets when browsing studies?

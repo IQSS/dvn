@@ -116,6 +116,11 @@ public class AddSitePage extends VDCBaseBean implements java.io.Serializable  {
     public void init() {
         super.init();
         //check to see if a dataverse type is in request
+  
+
+    }
+    
+    public void preRenderView(){
         HttpServletRequest request = (HttpServletRequest) FacesContext.getCurrentInstance().getExternalContext().getRequest();
         Iterator iterator = request.getParameterMap().keySet().iterator();
         while (iterator.hasNext()) {
@@ -133,8 +138,8 @@ public class AddSitePage extends VDCBaseBean implements java.io.Serializable  {
         Template defaultTemplate = templateService.getTemplate(defaultTemplateId);
         if(defaultTemplate.isDisplayOnCreateDataverse() && selectTemplateId == null){
             selectTemplateId = defaultTemplate.getId();
-        }   
-
+        } 
+        
     }
 
     //copied from manageclassificationsPage.java
@@ -718,10 +723,10 @@ public class AddSitePage extends VDCBaseBean implements java.io.Serializable  {
      *
      *
      */
-    public Map getTemplatesMap() {        
+    public Map getTemplatesMap() { 
         return templateService.getVdcNetworkTemplatesMapForAddSitePage(selectSubNetworkId);
     }
-    private Long selectSubNetworkId;
+    private Long selectSubNetworkId = new Long(0);
 
     public Long getSelectSubNetworkId() {
         return selectSubNetworkId;
@@ -745,11 +750,11 @@ public class AddSitePage extends VDCBaseBean implements java.io.Serializable  {
         Long newValue = (Long) event.getNewValue();
         this.setSelectSubNetworkId(newValue);
         HttpServletRequest request = (HttpServletRequest) FacesContext.getCurrentInstance().getExternalContext().getRequest();
+        
         FacesContext.getCurrentInstance().renderResponse();
     }
 
     public void changeDataverseOption(ValueChangeEvent event) {
-        System.out.print("changedataverse option " + selectSubNetworkId);
         String newValue = (String) event.getNewValue();
         this.setDataverseType(newValue);
         HttpServletRequest request = (HttpServletRequest) FacesContext.getCurrentInstance().getExternalContext().getRequest();

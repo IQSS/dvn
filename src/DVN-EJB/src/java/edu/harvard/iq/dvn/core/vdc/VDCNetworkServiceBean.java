@@ -197,6 +197,19 @@ public class VDCNetworkServiceBean implements VDCNetworkServiceLocal {
         return vdcNetwork;
     }
     
+    public VDCNetwork findByName(String name) {
+        String query = "SELECT n from VDCNetwork n where lower(n.name) = lower(:fieldName)";
+        VDCNetwork vdcNetwork = null;
+        try {
+            vdcNetwork = (VDCNetwork) em.createQuery(query).setParameter("fieldName", name).getSingleResult();
+            em.refresh(vdcNetwork); // Refresh because the cached object doesn't include harvestingDataverse object - need to review why this is happening
+        } catch (javax.persistence.NoResultException e) {
+            // Do nothing, just return null.
+        }
+
+        return vdcNetwork;
+    }
+    
     public VDCNetwork getVDCNetworkFromRequest(HttpServletRequest request) {
         VDCNetwork vdcNetwork = (VDCNetwork) request.getAttribute("vdcNetwork");
         if (vdcNetwork == null) {

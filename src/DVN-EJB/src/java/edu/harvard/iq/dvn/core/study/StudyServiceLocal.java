@@ -220,13 +220,9 @@ public interface StudyServiceLocal extends java.io.Serializable {
 
     public List<MetadataFormatType> findAllMetadataExportFormatTypes();
 
-    public List getMostDownloadedStudyIds(Long vdcId, int numResults);
+    public List getMostDownloadedStudyIds(Long vdcId, Long vdcNetworkId, int numResults);
 
-    public List getRecentlyReleasedStudyIds(Long vdcId, int numResults);
-    
-    public Map getMostDownloadedStudyIdsMap();
-
-    public Map getRecentlyReleasedStudyIdsMap();
+    public List getRecentlyReleasedStudyIds(Long vdcId, Long vdcNetworkId, int numResults);
     
     public void determineStudiesFromFiles(List studyFiles, List studies, Map fileMap); 
     

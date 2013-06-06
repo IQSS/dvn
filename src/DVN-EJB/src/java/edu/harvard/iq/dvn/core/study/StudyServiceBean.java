@@ -726,10 +726,7 @@ public class StudyServiceBean implements edu.harvard.iq.dvn.core.study.StudyServ
             return (List) em.createQuery(query).setMaxResults(numResults).getResultList();
         }
     }
-    public List getRecentlyReleasedStudyIds(Long vdcId, int numResults) {
-        return getRecentlyReleasedStudyIds(vdcId, null, numResults);
-    }
-    
+
     public List getRecentlyReleasedStudyIds(Long vdcId, Long vdcNetworkId, int numResults) {
         String linkedStudyClause = "";
         String networkClause = "";
@@ -843,29 +840,10 @@ public class StudyServiceBean implements edu.harvard.iq.dvn.core.study.StudyServ
         return returnList;
     }
 
-    public List getMostDownloadedStudyIds(Long vdcId, int numResults) {
-        return getMostDownloadedStudyIds(vdcId, null, numResults);
-    }
-    
-    @Override
-    public Map getMostDownloadedStudyIdsMap() {  
-        Map<Long, List> downloadMap = new HashMap<Long, List>();
-        List <VDCNetwork> vdcNetworkList = vdcNetworkService.getVDCNetworks();
-        for (VDCNetwork vdcNetwork : vdcNetworkList){
-            downloadMap.put(vdcNetwork.getId(), getMostDownloadedStudyIds(null, vdcNetwork.getId(), -1)); 
-        }
-        return downloadMap;
-    }
 
-    @Override
-    public Map getRecentlyReleasedStudyIdsMap() {
-        Map<Long, List> recentlyReleasedMap = new HashMap<Long, List>();
-        List <VDCNetwork> vdcNetworkList = vdcNetworkService.getVDCNetworks();
-        for (VDCNetwork vdcNetwork : vdcNetworkList){
-            recentlyReleasedMap.put(vdcNetwork.getId(), getRecentlyReleasedStudyIds(null, vdcNetwork.getId(), -1));           
-        }
-        return recentlyReleasedMap;
-    }
+    
+
+
 
     public List<Long> getStudyIdsForExport() {
         String queryStr = "select s.id from study s, studyversion sv where s.id = sv.study_id and sv.versionstate = '"+ StudyVersion.VersionState.RELEASED +

@@ -32,7 +32,12 @@ import edu.harvard.iq.dvn.core.web.common.VDCBaseBean;
 import javax.ejb.EJB;
 import com.icesoft.faces.component.ext.HtmlInputText;
 import edu.harvard.iq.dvn.core.web.common.VDCRequestBean;
+import edu.harvard.iq.dvn.core.web.util.CharacterValidator;
+import javax.faces.application.FacesMessage;
 import javax.faces.bean.ViewScoped;
+import javax.faces.component.UIComponent;
+import javax.faces.component.UIInput;
+import javax.faces.context.FacesContext;
 import javax.faces.event.ActionEvent;
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -51,8 +56,8 @@ public class EditNetworkNamePage extends VDCBaseBean  implements java.io.Seriali
     @EJB VDCNetworkServiceLocal vdcNetworkService;
     StatusMessage msg;
     private Boolean addMode = false;
-    private String alias = "";
     private Boolean subnetworkMode = false;
+    private String originalName = "";
 
     public Boolean getSubnetworkMode() {
         return subnetworkMode;
@@ -85,9 +90,11 @@ public class EditNetworkNamePage extends VDCBaseBean  implements java.io.Seriali
             addMode = true;
             subnetworkMode = true;
             networkName = "";
+            originalName = "";
         } 
         else {
             networkName = getVDCRequestBean().getCurrentVdcNetwork().getName();
+            originalName = networkName;
         }
         if(!getVDCRequestBean().getCurrentVdcNetworkURL().isEmpty()){
             subnetworkMode = true;
@@ -122,6 +129,35 @@ public class EditNetworkNamePage extends VDCBaseBean  implements java.io.Seriali
          * 
          */
         return "";
+    }
+    
+    
+    public void validateName(FacesContext context,
+            UIComponent toValidate,
+            Object value) {
+
+        String name = (String) value;
+        boolean isValid = true;
+        if (!originalName.isEmpty() && originalName.equals(name) ){
+            return;
+        }
+        VDCNetwork vdc = vdcNetworkService.findByName(name);
+        if (name.equals("") || vdc != null) {
+            isValid = false;
+        }
+        
+        if (name.equals("")) {            
+            ((UIInput) toValidate).setValid(false);
+            FacesMessage message = new FacesMessage("Name may not be empty.");
+            context.addMessage(toValidate.getClientId(context), message);
+        }        
+        
+        
+        if (vdc != null) {            
+            ((UIInput) toValidate).setValid(false);
+            FacesMessage message = new FacesMessage("This name is already taken.");
+            context.addMessage(toValidate.getClientId(context), message);
+        }    
     }
     
     public String cancel(){

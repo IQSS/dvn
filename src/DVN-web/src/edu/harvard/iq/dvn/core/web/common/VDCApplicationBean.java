@@ -57,7 +57,9 @@ package edu.harvard.iq.dvn.core.web.common;
 
 import edu.harvard.iq.dvn.core.study.StudyServiceLocal;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import javax.ejb.EJB;
 import javax.faces.bean.ApplicationScoped;
 import javax.inject.Named;
@@ -139,16 +141,45 @@ public class VDCApplicationBean extends VDCBaseBean implements java.io.Serializa
     private List allStudyIdsByDownloadCount;
     private List allStudyIdsByReleaseDate;
 
-    
+    private Map<Long, List> allStudyIdsByDownloadCountMap;
+
+    public Map<Long, List> getAllStudyIdsByDownloadCountMap() {
+        if (allStudyIdsByDownloadCountMap == null){
+            allStudyIdsByDownloadCountMap = studyService.getMostDownloadedStudyIdsMap();
+        }  
+        return allStudyIdsByDownloadCountMap;
+    }
+
+    public void setAllStudyIdsByDownloadCountMap(Map<Long, List> allStudyIdsByDownloadCountMap) {
+        this.allStudyIdsByDownloadCountMap = allStudyIdsByDownloadCountMap;
+    }
+
+    public Map<Long, List> getAllStudyIdsByReleaseDateMap() {
+        if (allStudyIdsByReleaseDateMap == null){
+            allStudyIdsByReleaseDateMap = studyService.getRecentlyReleasedStudyIdsMap();
+        }  
+        return allStudyIdsByReleaseDateMap;
+    }
+
+    public void setAllStudyIdsByReleaseDateMap(Map<Long, List> allStudyIdsByReleaseDateMap) {
+        this.allStudyIdsByReleaseDateMap = allStudyIdsByReleaseDateMap;
+    }
+    private Map<Long, List> allStudyIdsByReleaseDateMap;   
         
     public List getAllStudyIdsByDownloadCount() {
         if (allStudyIdsByDownloadCount == null) {
             allStudyIdsByDownloadCount = studyService.getMostDownloadedStudyIds(null, -1);
- ;
         }
         return allStudyIdsByDownloadCount;
     }
 
+    public List getAllStudyIdsByDownloadCountForSubnetwork(Long subnetworkId) {
+        if (allStudyIdsByDownloadCount == null) {
+            allStudyIdsByDownloadCount = studyService.getMostDownloadedStudyIds(null, -1);
+        }
+        return allStudyIdsByDownloadCount;
+    }
+    
     public void setAllStudyIdsByDownloadCount(List allStudyIdsByDownloadCount) {
         this.allStudyIdsByDownloadCount = allStudyIdsByDownloadCount;
     }

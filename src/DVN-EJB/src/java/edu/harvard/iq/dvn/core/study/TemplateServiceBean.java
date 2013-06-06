@@ -147,18 +147,22 @@ public class TemplateServiceBean implements edu.harvard.iq.dvn.core.study.Templa
     
 
     
-    public Map getVdcTemplatesMap(Long vdcId) {
+    public Map getVdcTemplatesMap(Long vdcId, Long vdcNetworkId) {
         Map templatesMap = new LinkedHashMap();
-       
-        for (Template template : getEnabledNetworkTemplates()) {
-            templatesMap.put(template.getName(), template.getId());
-        }        
+        if (vdcNetworkId == null) {
+            for (Template template : getEnabledNetworkTemplates()) {
+                templatesMap.put(template.getName(), template.getId());
+            }
+        } else {
+            for (Long templateId : getEnabledSubnetworkTemplates(vdcNetworkId)) {
+                Template template = getTemplate(templateId);
+                templatesMap.put(template.getName(), template.getId());
+            }
+        }       
         for (Template template : getEnabledVDCTemplates(vdcId)) {
             templatesMap.put(template.getName(), template.getId());
         }
-
         return templatesMap;
-
     } 
     
     // unused?
@@ -181,19 +185,21 @@ public class TemplateServiceBean implements edu.harvard.iq.dvn.core.study.Templa
     public Map getVdcNetworkTemplatesMapForAddSitePage(Long vdcNetworkId) {
 
         Map templatesMap = new LinkedHashMap();
-        for (Object object : getPreferredSubnetworkTemplates(vdcNetworkId)) {
-            Long template_id = new Long((Integer)object);
-            Template template = getTemplate(template_id);
-            templatesMap.put(template.getName(), template.getId());
-        }
-        if (templatesMap.isEmpty()) {
+
+        if (vdcNetworkId.equals(new Long(0))) {
             for (Template template : getPreferredNetworkTemplates()) {
                 templatesMap.put(template.getName(), template.getId());
             }
-        }
+        } else {
+            for (Object object : getPreferredSubnetworkTemplates(vdcNetworkId)) {
+                Long template_id = new Long((Integer) object);
+                Template template = getTemplate(template_id);
+                templatesMap.put(template.getName(), template.getId());
+            }
 
+        }
         return templatesMap;
-    } 
+    }
     
     public List<Template> getVDCTemplates(Long vdcId) {
         String query = "select object(o) FROM Template as o WHERE o.vdc.id = :vdcId ORDER BY o.name";
@@ -221,17 +227,15 @@ public class TemplateServiceBean implements edu.harvard.iq.dvn.core.study.Templa
     }
     
     public List<Long> getEnabledSubnetworkTemplates(Long id) {
-        String queryStr = "SELECT o.id from template o where o.vdc_id is null and o.enabled = true and o.vdcsubnetwork_id="+id+ " ORDER BY o.name";
-        Query query = em.createNativeQuery(queryStr);
         return getSubnetworkTemplates(id, true);
     }
 
     public List<Long> getSubnetworkTemplates(Long subnetworkId, boolean onlyEnabled) {
         String queryStr;
         if (onlyEnabled) {
-            queryStr = "SELECT o.id from template o where o.vdc_id is null and o.enabled = true and o.vdcsubnetwork_id=" + subnetworkId + " ORDER BY o.name";
+            queryStr = "SELECT o.id from template o where o.vdc_id is null and o.enabled = true and (o.vdcsubnetwork_id=" + subnetworkId +  " or o.vdcsubnetwork_id=0) ORDER BY o.name";
         } else {
-            queryStr = "SELECT o.id from template o where o.vdc_id is null and o.vdcsubnetwork_id=" + subnetworkId + " ORDER BY o.name";
+            queryStr = "SELECT o.id from template o where o.vdc_id is null and ( o.vdcsubnetwork_id=" + subnetworkId + " or o.vdcsubnetwork_id=0) ORDER BY o.name";
         }
         Query query = em.createNativeQuery(queryStr);
 //        List<Long> templateIdsLong = query.getResultList(); // java.lang.ClassCastException: java.lang.Integer cannot be cast to java.lang.Long
@@ -245,7 +249,7 @@ public class TemplateServiceBean implements edu.harvard.iq.dvn.core.study.Templa
     }
 
     public List<Template> getPreferredSubnetworkTemplates(Long id) {       
-        String queryStr = "SELECT o.id from template o where o.vdc_id is null and o.displayOnCreateDataverse = true  and o.enabled = true and o.vdcsubnetwork_id="+id+ " ORDER BY o.name";
+        String queryStr = "SELECT o.id from template o where o.vdc_id is null and o.displayOnCreateDataverse = true  and o.enabled = true and (o.vdcsubnetwork_id="+id+ " or o.vdcsubnetwork_id = 0 ) ORDER BY o.name";
         Query query = em.createNativeQuery(queryStr);
         return (List) query.getResultList();
     }
@@ -266,6 +270,11 @@ public class TemplateServiceBean implements edu.harvard.iq.dvn.core.study.Templa
         } else {
             em.merge(controlledVocabulary);
         }
+    }
+
+    @Override
+    public Map getVdcTemplatesMap(Long vdcId) {
+        return getVdcTemplatesMap(vdcId, null);
     }
      
 }

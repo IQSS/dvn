@@ -26,6 +26,8 @@
                         <ice:inputText 
                                        binding="#{EditNetworkNamePage.textFieldNetworkName}" 
                                        id="textField1" size="20" value="#{EditNetworkNamePage.networkName}" 
+                                       required="true"
+                                       requiredMessage="This is required"
                                        onkeypress="if (window.event) return processEvent('', 'form1:button1'); else return processEvent(event, 'form1:button1');"/>
                     </div>
                 </td>

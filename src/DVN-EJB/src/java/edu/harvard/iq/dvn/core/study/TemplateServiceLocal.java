@@ -57,4 +57,6 @@ public interface TemplateServiceLocal extends java.io.Serializable {
     public Map getVdcNetworkTemplatesMap(Long vdcNetworkId); // unused?
 
     public Map getVdcNetworkTemplatesMapForAddSitePage(Long vdcNetworkId);
+
+    public Map getVdcTemplatesMap(Long vdcId, Long vdcNetworkId);
 }

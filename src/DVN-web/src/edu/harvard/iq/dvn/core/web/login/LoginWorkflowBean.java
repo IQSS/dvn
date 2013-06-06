@@ -101,7 +101,7 @@ public class LoginWorkflowBean extends VDCBaseBean implements java.io.Serializab
             user = loginBean.getUser();
             grantWorkflowPermission();
             loginBean.setUser(user); // user may have been modified by call to grantWorkflowPermission
-            nextPage = "/site/AddSitePage?faces-redirect=true";
+            nextPage = "/site/AddSitePage?faces-redirect=true&" + getContextSuffix();
         } else {
          
             nextPage = "/login/AddAccountPage?faces-redirect=true";

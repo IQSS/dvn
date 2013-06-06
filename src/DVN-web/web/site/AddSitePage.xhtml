@@ -189,12 +189,12 @@
                                             <ice:outputText styleClass="vdcHelpText" value="University, center, or research project."/>
                                         </ice:column>
                                         <!-- subnetwork -->
-                                        <ice:column rendered="#{!empty(AddSitePage.networkSelectItems) and VDCRequest.currentVDCId == null}">
+                                        <ice:column rendered="#{!empty(AddSitePage.networkSelectItems) }">
                                             <ice:outputLabel for="subnetwork" id="subnetworkLabel">
                                                 <ice:outputText value="Subnetwork"/>
                                             </ice:outputLabel>
                                         </ice:column>
-                                        <ice:column rendered="#{!empty(AddSitePage.networkSelectItems) and VDCRequest.currentVDCId == null}">
+                                        <ice:column rendered="#{!empty(AddSitePage.networkSelectItems) }">
                                             <ice:selectOneMenu immediate="true" id="subnetwork"  
                                                                 onclick="changeValue(this);"
                                                                 binding="#{AddSitePage.selectSubnetwork}" 

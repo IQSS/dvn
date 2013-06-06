@@ -635,6 +635,7 @@ public class EditSitePage extends VDCBaseBean implements java.io.Serializable  {
         List selectItems = new ArrayList<SelectItem>();
         List <VDCNetwork> networkList = vdcNetworkService.getVDCSubNetworks();
         if (networkList.size() > 0){
+            selectItems.add(new SelectItem(0, "<None>"));
             for (VDCNetwork vdcNetwork : networkList){
                 selectItems.add(new SelectItem(vdcNetwork.getId(), vdcNetwork.getName()));
             }

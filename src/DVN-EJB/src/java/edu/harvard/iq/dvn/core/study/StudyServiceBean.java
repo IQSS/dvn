@@ -727,10 +727,33 @@ public class StudyServiceBean implements edu.harvard.iq.dvn.core.study.StudyServ
         }
     }
     public List getRecentlyReleasedStudyIds(Long vdcId, int numResults) {
-        String queryStr = "SELECT s.id FROM VDC v, Study s, StudyVersion sv where s.id = sv.study_id "
+        return getRecentlyReleasedStudyIds(vdcId, null, numResults);
+    }
+    
+    public List getRecentlyReleasedStudyIds(Long vdcId, Long vdcNetworkId, int numResults) {
+        String linkedStudyClause = "";
+        String networkClause = "";
+        if (vdcNetworkId != null && !vdcNetworkId.equals(vdcNetworkService.findRootNetwork().getId())) {
+            networkClause = " and v.vdcnetwork_id = " + vdcNetworkId + " ";
+            VDCNetwork vdcNetwork = vdcNetworkService.findById(vdcNetworkId);
+
+            List<Study> linkedStudys = (List) vdcNetwork.getLinkedStudies();
+            List<Long> studyIdList = new ArrayList<Long>();
+            for (Study study : linkedStudys) {
+                studyIdList.add(study.getId());
+            }
+            if (studyIdList != null && studyIdList.size() > 0) {
+                String studyIds = generateTempTableString(studyIdList);
+                linkedStudyClause = " or s.id in (" + studyIds + ") ";
+            }
+        }
+        String queryStr = "SELECT s.id FROM VDC v, Study s, StudyVersion sv where (s.id = sv.study_id "
                 + " and sv.versionstate = '" + StudyVersion.VersionState.RELEASED + "'"
                 + " and s.owner_id = v.id "
                 + " and v.restricted = false "
+                + networkClause 
+                + ") "
+                + linkedStudyClause
                 + " ORDER BY sv.releaseTime desc";
         if (vdcId != null) {
             queryStr = "SELECT s.id FROM Study s, StudyVersion sv where s.id = sv.study_id "
@@ -755,7 +778,7 @@ public class StudyServiceBean implements edu.harvard.iq.dvn.core.study.StudyServ
                     returnList.add(new Long(((Integer) currentResult).longValue()));
                 }
             }
-        }
+        }        
         return returnList;
     }
     
@@ -765,22 +788,35 @@ public class StudyServiceBean implements edu.harvard.iq.dvn.core.study.StudyServ
         if (vdcId != null) {
             dataverseClause = " and s.owner_id = " + vdcId + " ";
         }
-        
+        String linkedStudyClause = "";
         String networkClause = "";
-        if (vdcNetworkId != null) {
+
+        if (vdcNetworkId != null && !vdcNetworkId.equals(vdcNetworkService.findRootNetwork().getId())) {
             networkClause = " and v.vdcnetwork_id = " + vdcNetworkId + " ";
+            VDCNetwork vdcNetwork = vdcNetworkService.findById(vdcNetworkId);
+
+            List<Study> linkedStudys = (List) vdcNetwork.getLinkedStudies();
+            List<Long> studyIdList = new ArrayList<Long>();
+            for (Study study : linkedStudys) {
+                studyIdList.add(study.getId());
+            }
+            if (studyIdList != null && studyIdList.size() > 0) {
+                String studyIds = generateTempTableString(studyIdList);
+                linkedStudyClause = " or s.id in (" + studyIds + ") ";
+            }
         }
-        
         String queryStr = "select s.id "
                 + "from VDC v,  StudyVersion sv, Study s "
                 + "left outer JOIN StudyFileActivity sfa on  s.id = sfa.study_id "
-                + "where  "
+                + "where  ("
                 + " s.id = sv.study_id "
                 + " and s.owner_id = v.id "
                 + " and v.restricted = false "
                 + " and sv.versionstate = '" + StudyVersion.VersionState.RELEASED + "'"
                 + dataverseClause
                 + networkClause
+                + ")"
+                + linkedStudyClause
                 + " group by s.id "
                 + " order by "
                 + "(CASE WHEN sum(downloadcount) is null THEN -1 ELSE sum(downloadcount) END) desc";
@@ -809,6 +845,26 @@ public class StudyServiceBean implements edu.harvard.iq.dvn.core.study.StudyServ
 
     public List getMostDownloadedStudyIds(Long vdcId, int numResults) {
         return getMostDownloadedStudyIds(vdcId, null, numResults);
+    }
+    
+    @Override
+    public Map getMostDownloadedStudyIdsMap() {  
+        Map<Long, List> downloadMap = new HashMap<Long, List>();
+        List <VDCNetwork> vdcNetworkList = vdcNetworkService.getVDCNetworks();
+        for (VDCNetwork vdcNetwork : vdcNetworkList){
+            downloadMap.put(vdcNetwork.getId(), getMostDownloadedStudyIds(null, vdcNetwork.getId(), -1)); 
+        }
+        return downloadMap;
+    }
+
+    @Override
+    public Map getRecentlyReleasedStudyIdsMap() {
+        Map<Long, List> recentlyReleasedMap = new HashMap<Long, List>();
+        List <VDCNetwork> vdcNetworkList = vdcNetworkService.getVDCNetworks();
+        for (VDCNetwork vdcNetwork : vdcNetworkList){
+            recentlyReleasedMap.put(vdcNetwork.getId(), getRecentlyReleasedStudyIds(null, vdcNetwork.getId(), -1));           
+        }
+        return recentlyReleasedMap;
     }
 
     public List<Long> getStudyIdsForExport() {
@@ -2439,6 +2495,8 @@ public class StudyServiceBean implements edu.harvard.iq.dvn.core.study.StudyServ
         Query query = em.createQuery(queryStr);
         return query.getResultList();
     }
+
+
 
 
 

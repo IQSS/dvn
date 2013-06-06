@@ -544,20 +544,20 @@ public class AddSitePage extends VDCBaseBean implements java.io.Serializable  {
      * @author wbossons
      */
     
-     private List<SelectItem> loadNetworkSelectItems() {
+    private List<SelectItem> loadNetworkSelectItems() {
         List selectItems = new ArrayList<SelectItem>();
-        List <VDCNetwork> networkList = vdcNetworkService.getVDCSubNetworks();
+        List<VDCNetwork> networkList = vdcNetworkService.getVDCSubNetworks();
         VDCNetwork checkForSubnetwork = getVDCRequestBean().getCurrentVdcNetwork();
-        if (!checkForSubnetwork.equals(vdcNetworkService.findRootNetwork())){
-            selectSubNetworkId = checkForSubnetwork.getId();
-            return selectItems;
-        }
-        if (networkList.size() > 0 ){
-            for (VDCNetwork vdcNetwork : networkList){
-                if(selectSubNetworkId == null){
-                   setSelectSubNetworkId(vdcNetwork.getId());
+        if (networkList.size() > 0) {
+            selectItems.add(new SelectItem(0, "<None>"));
+            for (VDCNetwork vdcNetwork : networkList) {
+                if (selectSubNetworkId == null) {
+                    setSelectSubNetworkId(vdcNetwork.getId());
                 }
                 selectItems.add(new SelectItem(vdcNetwork.getId(), vdcNetwork.getName()));
+            }
+            if (!checkForSubnetwork.equals(vdcNetworkService.findRootNetwork())) {
+                selectSubNetworkId = checkForSubnetwork.getId();
             }
         }
         return selectItems;
@@ -717,7 +717,6 @@ public class AddSitePage extends VDCBaseBean implements java.io.Serializable  {
      *
      */
     public Map getTemplatesMap() {        
-        logger.info("getTemplatesMap called");
         return templateService.getVdcNetworkTemplatesMapForAddSitePage(selectSubNetworkId);
     }
     private Long selectSubNetworkId;
@@ -744,7 +743,6 @@ public class AddSitePage extends VDCBaseBean implements java.io.Serializable  {
         Long newValue = (Long) event.getNewValue();
         this.setSelectSubNetworkId(newValue);
         HttpServletRequest request = (HttpServletRequest) FacesContext.getCurrentInstance().getExternalContext().getRequest();
-        System.out.print("getTemplatesMap " + selectSubNetworkId);
         FacesContext.getCurrentInstance().renderResponse();
     }
 

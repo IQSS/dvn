@@ -223,11 +223,9 @@ public class HomePage extends VDCBaseBean implements Serializable {
 
     private void populateVDCUIList(boolean isAlphaSort) {
         Long networkId = new Long (0);
-        System.out.print("getVDCRequestBean().getCurrentVdcNetwork() " + getVDCRequestBean().getCurrentVdcNetwork());
         if (getVDCRequestBean().getCurrentVdcNetwork() != null){
             networkId = getVDCRequestBean().getCurrentVdcNetwork().getId();
-        }
-                    System.out.print("Network id begin " + networkId );          
+        }       
         String defaultDVSortColumn =  vdcNetworkService.find().getDefaultDVSortColumn();
         boolean isNewGroup = false;
         if ( hiddenGroupId.getValue() == null || (vdcUIList != null &&
@@ -271,7 +269,6 @@ public class HomePage extends VDCBaseBean implements Serializable {
            vdcUIListReleased = new VDCUIList(groupId, (String)hiddenAlphaCharacter.getValue(), true, "Released" );
         }
         if(networkId != null && networkId.intValue() >0){
-            System.out.print("Network id " + networkId );
             vdcUIListReleased.setNetworkId(networkId);
         }
     }
@@ -473,7 +470,7 @@ public class HomePage extends VDCBaseBean implements Serializable {
      @Inject VDCApplicationBean vdcApplicationBean;
      
      public List getRecentStudies() {
-        if (recentStudies == null) {
+        if (recentStudies == null) {            
             recentStudies = new ArrayList();
             VDC vdc = getVDCRequestBean().getCurrentVDC();
             if (vdc != null) {
@@ -481,7 +478,7 @@ public class HomePage extends VDCBaseBean implements Serializable {
                 recentStudies = filterVisibleStudyUIsFromIds( vdcApplicationBean.getAllStudyIdsByReleaseDate(), vdc, user, getVDCSessionBean().getIpUserGroup(), 5 );
             } else {
                 VDCUser user = getVDCSessionBean().getUser();
-                recentStudies = filterVisibleStudyUIsFromIds( vdcApplicationBean.getAllStudyIdsByReleaseDate(), vdc, user, getVDCSessionBean().getIpUserGroup(), 5 ); 
+                recentStudies = filterVisibleStudyUIsFromIds( vdcApplicationBean.getAllStudyIdsByReleaseDateMap().get(vdcNetworkId), vdc, user, getVDCSessionBean().getIpUserGroup(), 5 ); 
             }
         }
         return recentStudies;
@@ -492,12 +489,11 @@ public class HomePage extends VDCBaseBean implements Serializable {
             mostDownloadedStudies = new ArrayList();
             VDC vdc = getVDCRequestBean().getCurrentVDC();
             if (vdc != null) {
-                VDCUser user = getVDCSessionBean().getUser();
-                
+                VDCUser user = getVDCSessionBean().getUser();                              
                 mostDownloadedStudies = filterVisibleStudyUIsFromIds( vdcApplicationBean.getAllStudyIdsByDownloadCount(), vdc, user, getVDCSessionBean().getIpUserGroup(), 5 );
             } else {
                 VDCUser user = getVDCSessionBean().getUser();
-                mostDownloadedStudies = filterVisibleStudyUIsFromIds( vdcApplicationBean.getAllStudyIdsByDownloadCount(), vdc, user, getVDCSessionBean().getIpUserGroup(), 5 ); 
+                mostDownloadedStudies = filterVisibleStudyUIsFromIds( vdcApplicationBean.getAllStudyIdsByDownloadCountMap().get(vdcNetworkId), vdc, user, getVDCSessionBean().getIpUserGroup(), 5 ); 
             }
         }
         return mostDownloadedStudies;

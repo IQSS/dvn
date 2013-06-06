@@ -185,7 +185,9 @@ public class TemplateServiceBean implements edu.harvard.iq.dvn.core.study.Templa
     public Map getVdcNetworkTemplatesMapForAddSitePage(Long vdcNetworkId) {
 
         Map templatesMap = new LinkedHashMap();
-
+        if(vdcNetworkId == null){
+           return templatesMap; 
+        }
         if (vdcNetworkId.equals(new Long(0))) {
             for (Template template : getPreferredNetworkTemplates()) {
                 templatesMap.put(template.getName(), template.getId());

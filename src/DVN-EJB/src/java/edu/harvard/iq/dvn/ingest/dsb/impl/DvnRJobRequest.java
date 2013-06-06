@@ -719,6 +719,14 @@ public class DvnRJobRequest {
         }
     }
     
+    public int[] getUpdatedVariableTypesWithBoolean(){
+        if (hasRecodedVariables()){
+            return ArrayUtils.addAll(getVariableTypesWithBoolean(),getRecodedVarTypeSet());
+        } else {
+            return getVariableTypes();
+        }
+    }
+    
     public List<String> getUpdatedVariableTypesAsString(){
         int[] vt;
         

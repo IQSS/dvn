@@ -371,7 +371,7 @@ public class DvnRDataAnalysisServiceImpl {
                 /*
                  * Note that we want to use the "getVariableTypesWithBoolean method 
                  * when the subset is being created for download/conversion; when 
-                 * we create a SRO object for analysis, in we'll still be using 
+                 * we create a SRO object for analysis, we'll still be using 
                  * the old getVariableTypes
                  * method, that don't recognize Booleans as a distinct class. 
                  * So they will be treated simply as numeric categoricals 
@@ -583,21 +583,19 @@ if (sro.hasRecodedVariables()){
             if (!"Download".equals(sro.getRequestType())) {
                 String varTypeNew = "vartyp<-c(" + StringUtils.join( sro.getUpdatedVariableTypesAsString(),",")+")";
                 historyEntry.add(varTypeNew);
-                // c.voidEval(varTypeNew);
                 dbgLog.fine("updated var Type ="+ sro.getUpdatedVariableTypes());
                 c.assign("vartyp", new REXPInteger(sro.getUpdatedVariableTypes()));
-            
-                String reattachVarTypeLine = "attr(x, 'var.type') <- vartyp";
-                historyEntry.add(reattachVarTypeLine);
- 
-                dbgLog.fine("DvnRserveComm: "+reattachVarTypeLine);
-                c.voidEval(reattachVarTypeLine);
             } else {
-                    // TODO: 
-                    // create a "WithBoolean" version of getUpdatedVariableTypesAsString ? 
-                    // -- L.A.
+                dbgLog.fine("updated var Type ="+ sro.getUpdatedVariableTypesWithBoolean());
+                c.assign("vartyp", new REXPInteger(sro.getUpdatedVariableTypesWithBoolean()));
             }
             
+            String reattachVarTypeLine = "attr(x, 'var.type') <- vartyp";
+            historyEntry.add(reattachVarTypeLine);
+ 
+            dbgLog.fine("DvnRserveComm: "+reattachVarTypeLine);
+            c.voidEval(reattachVarTypeLine);
+                
             // replication: variable type
             String repDVN_vt = "attr(dvnData, 'var.type') <- vartyp";
 

@@ -28,6 +28,7 @@ import edu.harvard.iq.dvn.core.study.StudyServiceLocal;
 import edu.harvard.iq.dvn.core.study.StudyVersion;
 import edu.harvard.iq.dvn.core.study.VariableServiceLocal;
 import edu.harvard.iq.dvn.core.vdc.VDC;
+import edu.harvard.iq.dvn.core.vdc.VDCNetworkServiceLocal;
 import edu.harvard.iq.dvn.core.web.common.VDCBaseBean;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -61,6 +62,8 @@ public class BasicSearchFragment extends VDCBaseBean implements java.io.Serializ
     @EJB
     VDCServiceLocal vdcService;
     @EJB
+    VDCNetworkServiceLocal vdcNetworkService;
+    @EJB
     VDCCollectionServiceLocal vdcCollectionService;
     @EJB
     KeywordSearchServiceBean keywordSearchServiceBean;
@@ -72,7 +75,13 @@ public class BasicSearchFragment extends VDCBaseBean implements java.io.Serializ
         super.init();
         if ( getVDCRequestBean().getCurrentVDC() == null ) {
             keywordSearchTerms = keywordSearchServiceBean.findAll();
-            searchValue = ResourceBundle.getBundle("BundlePageInfo").getString("searchBoxTextNetwork");
+            VDCNetwork checkForSubnetwork = getVDCRequestBean().getCurrentVdcNetwork();
+            if ( checkForSubnetwork.equals(vdcNetworkService.findRootNetwork()) ) {
+                searchValue = ResourceBundle.getBundle("BundlePageInfo").getString("searchBoxTextNetwork");
+            }
+            else {
+                searchValue = ResourceBundle.getBundle("BundlePageInfo").getString("searchBoxTextSubnetwork");
+            }
         } else {
             searchValue = ResourceBundle.getBundle("BundlePageInfo").getString("searchBoxTextDataverse");
         }

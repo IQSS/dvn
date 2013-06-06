@@ -56,7 +56,7 @@
                     <!-- ***************** NETWORK HOMEPAGE CONTENT *************************  -->
                     
                     <!-- EMPTY DVN -->
-                    <div jsfc="ice:panelGroup" styleClass="dvnHmpgGroupNoDVs" rendered="#{homePage.vdcUIListSize == 0}">
+                    <div jsfc="ice:panelGroup" styleClass="dvnHmpgGroupNoDVs" rendered="#{homePage.vdcUIListSize == 0 and (VDCRequest.currentVdcNetwork.id == VDCRequest.vdcNetwork.id)}">
                         <p><ice:outputText value="#{bundlePageInfo.emptyDVNMessage}"/></p>
                         <div jsfc="ice:panelGroup" styleClass="dvnHmpgEmptyDVNActions" rendered="#{VDCSession.loginBean.networkAdmin and !VDCRequest.readOnlyDatabase}">
                             <ul>
@@ -76,6 +76,35 @@
                                 </li>
                                 <li>
                                     <ice:outputLink value="/dvn/faces/networkAdmin/NetworkOptionsPage.xhtml?tab=settings&amp;tab2=customization">
+                                        <ice:outputText value="Customize the layout"/>
+                                    </ice:outputLink>
+                                    <ice:outputText value=" to match the branding of your site."/>
+                                </li>
+                            </ul>                   
+                        </div>
+                    </div>
+                    
+                    <!-- EMPTY Subnetwork -->
+                    <div jsfc="ice:panelGroup" styleClass="dvnHmpgGroupNoDVs" rendered="#{homePage.vdcUIListSize == 0 and (VDCRequest.currentVdcNetwork.id != VDCRequest.vdcNetwork.id)}">
+                        <p><ice:outputText value="#{bundlePageInfo.emptySubnetworkMessage}"/></p>
+                        <div jsfc="ice:panelGroup" styleClass="dvnHmpgEmptyDVNActions" rendered="#{VDCSession.loginBean.networkAdmin and !VDCRequest.readOnlyDatabase}">
+                            <ul>
+                                <li>
+                                    <ice:outputText value="Click the "/>
+                                    <ice:outputLink value="/dvn/faces/networkAdmin/NetworkOptionsPage.xhtml?tab=subnetworks">
+                                        <ice:outputText value="Options icon"/>
+                                    </ice:outputLink>
+                                    <ice:outputLink value="/dvn/faces/networkAdmin/NetworkOptionsPage.xhtml"><img src="/dvn/resources/images/navicon_options.jpg" alt="Options"/></ice:outputLink>
+                                    <ice:outputText value=" in the menu bar, to administer your Subnetwork."/>
+                                </li>
+                                <li>
+                                    <ice:outputLink value="/dvn#{VDCRequest.currentVdcNetworkURL}/faces/site/AddSitePage.xhtml">
+                                        <ice:outputText value="Create a Dataverse"/>
+                                    </ice:outputLink>
+                                    <ice:outputText value=" in order to create studies and upload data."/>
+                                </li>
+                                <li>
+                                    <ice:outputLink value="/dvn#{VDCRequest.currentVdcNetworkURL}/faces/networkAdmin/EditSubnetworkPage.xhtml?edit=true">
                                         <ice:outputText value="Customize the layout"/>
                                     </ice:outputLink>
                                     <ice:outputText value=" to match the branding of your site."/>
@@ -194,7 +223,7 @@
                                 
                                 <!-- SUBNETWORK WIDGET -->
                     
-                                <div jsfc="ice:panelGroup" styleClass="dvnHmpgColumnWidget dvnHmpgWidgetSlider" rendered="#{!empty homePage.vdcSubnetworks}">
+                                <div jsfc="ice:panelGroup" styleClass="dvnHmpgColumnWidget dvnHmpgWidgetSlider" rendered="#{VDCRequest.currentSubnetwork == null and !empty homePage.vdcSubnetworks}">
                                     <!-- <div class="dvnHmpgColumnWidgetHeader">Dataverse Subnetworks</div> -->
                                     
                                     <div id="dvnHmpgSubnetworkWidget">
@@ -203,9 +232,13 @@
                                                         value="#{homePage.vdcSubnetworks}"
                                                         var="vdcSubnetwork">
                                         <div class="content">
-                                            <div class="dvnHmpgSubnetworkLogo"><ice:graphicImage value="/resources/images/icon_information.18.png"/></div>
+                                            <div class="dvnHmpgSubnetworkLogo">
+                                                <ice:outputLink id="subnetwork_imglink" value="/dvn/dataverses/#{vdcSubnetwork.vdcNetwork.urlAlias}" title="#{vdcSubnetwork.vdcNetwork.name} Dataverses">
+                                                    <ice:graphicImage value="/resources/images/icon_information.18.png" alt="#{vdcSubnetwork.vdcNetwork.name} Dataverses"/>
+                                                </ice:outputLink>
+                                            </div>
                                             <div class="dvnHmpgSubnetworkInfo">
-                                                <ice:outputLink styleClass="dvnHmpgSubnetworkNameLink dvnInlineHelpTip" id="subnetwork_link" value="/dvn/dataverses/#{vdcSubnetwork.vdcNetwork.urlAlias}"                 
+                                                <ice:outputLink styleClass="dvnHmpgSubnetworkNameLink" id="subnetwork_textlink" value="/dvn/dataverses/#{vdcSubnetwork.vdcNetwork.urlAlias}"                 
                                                     title="#{vdcSubnetwork.vdcNetwork.name} Dataverses">
                                                     <ice:outputText value="#{vdcSubnetwork.vdcNetwork.name} Dataverses"/>
                                                 </ice:outputLink>

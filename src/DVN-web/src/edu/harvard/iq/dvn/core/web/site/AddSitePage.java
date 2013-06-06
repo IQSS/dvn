@@ -558,6 +558,8 @@ public class AddSitePage extends VDCBaseBean implements java.io.Serializable  {
             }
             if (!checkForSubnetwork.equals(vdcNetworkService.findRootNetwork())) {
                 selectSubNetworkId = checkForSubnetwork.getId();
+            } else {
+                selectSubNetworkId = new Long (0);
             }
         }
         return selectItems;

@@ -138,64 +138,32 @@ public class VDCApplicationBean extends VDCBaseBean implements java.io.Serializa
     
     @EJB StudyServiceLocal studyService;
 
-    private List allStudyIdsByDownloadCount;
-    private List allStudyIdsByReleaseDate;
 
-    private Map<Long, List> allStudyIdsByDownloadCountMap;
-
-    public Map<Long, List> getAllStudyIdsByDownloadCountMap() {
-        if (allStudyIdsByDownloadCountMap == null){
-            allStudyIdsByDownloadCountMap = studyService.getMostDownloadedStudyIdsMap();
-        }  
-        return allStudyIdsByDownloadCountMap;
-    }
+    private Map<Long, List> allStudyIdsByDownloadCountMap = new HashMap();
+    private Map<Long, List> allStudyIdsByReleaseDateMap = new HashMap(); 
 
     public void setAllStudyIdsByDownloadCountMap(Map<Long, List> allStudyIdsByDownloadCountMap) {
         this.allStudyIdsByDownloadCountMap = allStudyIdsByDownloadCountMap;
     }
 
-    public Map<Long, List> getAllStudyIdsByReleaseDateMap() {
-        if (allStudyIdsByReleaseDateMap == null){
-            allStudyIdsByReleaseDateMap = studyService.getRecentlyReleasedStudyIdsMap();
-        }  
-        return allStudyIdsByReleaseDateMap;
-    }
-
     public void setAllStudyIdsByReleaseDateMap(Map<Long, List> allStudyIdsByReleaseDateMap) {
         this.allStudyIdsByReleaseDateMap = allStudyIdsByReleaseDateMap;
     }
-    private Map<Long, List> allStudyIdsByReleaseDateMap;   
+  
         
-    public List getAllStudyIdsByDownloadCount() {
-        if (allStudyIdsByDownloadCount == null) {
-            allStudyIdsByDownloadCount = studyService.getMostDownloadedStudyIds(null, -1);
+    public List getAllStudyIdsByDownloadCount(Long vdcNetworkId) {
+        if (allStudyIdsByDownloadCountMap.get(vdcNetworkId) == null) {
+            allStudyIdsByDownloadCountMap.put(vdcNetworkId, studyService.getMostDownloadedStudyIds(null, vdcNetworkId, -1));
         }
-        return allStudyIdsByDownloadCount;
+        return allStudyIdsByDownloadCountMap.get(vdcNetworkId);
     }
 
-    public List getAllStudyIdsByDownloadCountForSubnetwork(Long subnetworkId) {
-        if (allStudyIdsByDownloadCount == null) {
-            allStudyIdsByDownloadCount = studyService.getMostDownloadedStudyIds(null, -1);
-        }
-        return allStudyIdsByDownloadCount;
-    }
     
-    public void setAllStudyIdsByDownloadCount(List allStudyIdsByDownloadCount) {
-        this.allStudyIdsByDownloadCount = allStudyIdsByDownloadCount;
-    }
 
-    public List getAllStudyIdsByReleaseDate() {
-        if (allStudyIdsByReleaseDate == null) {
-            allStudyIdsByReleaseDate = studyService.getRecentlyReleasedStudyIds(null, -1);
+    public List getAllStudyIdsByReleaseDate(Long vdcNetworkId) {
+        if (allStudyIdsByReleaseDateMap.get(vdcNetworkId) == null) {
+            allStudyIdsByReleaseDateMap.put(vdcNetworkId, studyService.getRecentlyReleasedStudyIds(null, vdcNetworkId, -1));
         }
-        return allStudyIdsByReleaseDate;
-    }
-
-    public void setAllStudyIdsByReleaseDate(List allStudyIdsByReleaseDate) {
-        this.allStudyIdsByReleaseDate = allStudyIdsByReleaseDate;
-    }
-    
-    
-    
-    
+        return allStudyIdsByReleaseDateMap.get(vdcNetworkId);
+    }    
 }

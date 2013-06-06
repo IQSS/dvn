@@ -96,8 +96,6 @@ public interface VDCNetworkServiceLocal extends java.io.Serializable  {
 
     public java.util.List<java.lang.Object> getStudyListBySubnetwork(java.lang.Long networkId, boolean released);
 
-    public void create(edu.harvard.iq.dvn.core.vdc.VDCNetworkStats vDCNetworkStats);
-
     public java.lang.Long getTotalFilesBySubnetwork(java.lang.Long networkId, boolean released);
 
     public java.lang.Long getTotalDownloadsBySubnetwork(java.lang.Long networkId, boolean released);

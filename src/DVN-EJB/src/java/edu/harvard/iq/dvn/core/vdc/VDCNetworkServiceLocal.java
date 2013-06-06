@@ -101,5 +101,7 @@ public interface VDCNetworkServiceLocal extends java.io.Serializable  {
     public java.lang.Long getTotalFilesBySubnetwork(java.lang.Long networkId, boolean released);
 
     public java.lang.Long getTotalDownloadsBySubnetwork(java.lang.Long networkId, boolean released);
+
+    public VDCNetwork findByName(String name);
 }
 

@@ -49,14 +49,29 @@ import javax.inject.Named;
 public class EditBannerFooterPage extends VDCBaseBean  implements java.io.Serializable {
     @EJB VDCServiceLocal vdcService;
     @EJB VDCNetworkServiceLocal vdcNetworkService;
-    private String alias = "";
-    
+    private Boolean subnetworkMode = false;
+    private Boolean addMode = false;
     public void init() {
         super.init();
+
+    }
+    
+    public void preRenderView(){
+        subnetworkMode = false;
+        String edit = getVDCRequestBean().getRequestParam("edit");
+        if (edit !=null && edit.equals("false")){
+                        addMode = true;
+            subnetworkMode = true;
+        } 
+        if(!getVDCRequestBean().getCurrentVdcNetworkURL().isEmpty()){
+            subnetworkMode = true;
+        }
+        
         VDCNetwork vdcNetwork = getVDCRequestBean().getCurrentVdcNetwork();
         if (vdcNetwork == null){
             vdcNetwork = getVDCRequestBean().getVdcNetwork();
         }
+        
         if (this.getBanner() == null){
             setBanner( (getVDCRequestBean().getCurrentVDCId() == null) ? vdcNetwork.getNetworkPageHeader(): getVDCRequestBean().getCurrentVDC().getHeader());
             setFooter( (getVDCRequestBean().getCurrentVDCId() == null) ? vdcNetwork.getNetworkPageFooter(): getVDCRequestBean().getCurrentVDC().getFooter());         
@@ -64,6 +79,10 @@ public class EditBannerFooterPage extends VDCBaseBean  implements java.io.Serial
                 setDisplayInFrame(getVDCRequestBean().getCurrentVDC().isDisplayInFrame());
                 setParentSite(getVDCRequestBean().getCurrentVDC().getParentSite());
             }
+        }
+        if(addMode){
+           setBanner("");
+           setFooter("");
         }
         combinedTextField.setValue(banner + footer);
     }

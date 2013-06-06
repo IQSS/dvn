@@ -26,9 +26,11 @@
                         <ice:inputText 
                                        binding="#{EditNetworkNamePage.textFieldNetworkName}" 
                                        id="textField1" size="20" value="#{EditNetworkNamePage.networkName}" 
+                                       validator="#{EditNetworkNamePage.validateName}"
                                        required="true"
                                        requiredMessage="This is required"
                                        onkeypress="if (window.event) return processEvent('', 'form1:button1'); else return processEvent(event, 'form1:button1');"/>
+                       <ice:message for="textField1" showSummary="true" showDetail="false" styleClass="errorMessage"/>
                     </div>
                 </td>
             </tr>

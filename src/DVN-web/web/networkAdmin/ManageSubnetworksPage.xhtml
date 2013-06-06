@@ -90,11 +90,13 @@
                 </f:facet>
                 <ice:column>
                     <f:facet name="header">
+                        <!-- Coomenting out the sort, as we don't yet support this
                         <ice:commandSortHeader
                             columnName="Name"
                             arrow="true">
+                        -->
                         <ice:outputText value="Name"/>
-                        </ice:commandSortHeader>
+                        <!--</ice:commandSortHeader>-->
                     </f:facet>
                     <ice:outputLink value="/dvn/dataverses/#{item.vdcNetwork.urlAlias}">
                         <ice:outputText value="#{item.vdcNetwork.name}" />
@@ -103,44 +105,44 @@
                 <!-- Affiliation -->
                 <ice:column>
                 <f:facet name="header">
-                    <ice:commandSortHeader
+                    <!--<ice:commandSortHeader
                         columnName="Affiliation"
-                        arrow="true">
+                        arrow="true">-->
                     <ice:outputText value="Affiliation"/>
-                    </ice:commandSortHeader>
+                    <!--</ice:commandSortHeader>-->
                 </f:facet>
                 <ice:outputText value="#{item.vdcNetwork.affiliation} "/>
                 </ice:column>
                 <!-- Created -->
                 <ice:column>
                 <f:facet name="header">
-                    <ice:commandSortHeader
+                    <!--<ice:commandSortHeader
                         columnName="Created"
-                        arrow="true">
+                        arrow="true">-->
                     <ice:outputText value="Created"/>
-                    </ice:commandSortHeader>
+                    <!--</ice:commandSortHeader>-->
                 </f:facet>
                     <ice:outputText value="#{item.vdcNetwork.networkCreated}" />
                 </ice:column>
                 <!-- Creator -->
                 <ice:column>
                 <f:facet name="header">
-                    <ice:commandSortHeader
+                    <!--<ice:commandSortHeader
                         columnName="Created By"
-                        arrow="true">
+                        arrow="true">-->
                     <ice:outputText value="Created By"/>
-                    </ice:commandSortHeader>
+                    <!--</ice:commandSortHeader>-->
                 </f:facet>
                     <ice:outputText value="#{item.vdcNetwork.creator.firstName}  #{item.vdcNetwork.creator.lastName}"/>
                 </ice:column>
                 <!-- Released -->
                 <ice:column>
                 <f:facet name="header">
-                    <ice:commandSortHeader
+                    <!--<ice:commandSortHeader
                         columnName="Dataverses"
-                        arrow="true">
+                        arrow="true">-->
                     <ice:outputText value="Dataverses"/>
-                    </ice:commandSortHeader>
+                    <!--</ice:commandSortHeader>-->
                 </f:facet>
                     <ice:outputText value="#{item.vdcCount}"/>
                 </ice:column>

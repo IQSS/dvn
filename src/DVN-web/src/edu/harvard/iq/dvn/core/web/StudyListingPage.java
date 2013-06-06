@@ -519,7 +519,7 @@ public class StudyListingPage extends VDCBaseBean implements java.io.Serializabl
                 VDCCollection col = vdcCollectionService.find(studyListing.getCollectionId());
                 String type = col.getType();
                 String queryString = col.getQuery();
-                boolean isDynamic = col.isDynamic();
+               boolean isDynamic = col.isDynamic();
                 boolean isLocalScope = col.isLocalScope();
                 boolean isSubnetworkScope = col.isSubnetworkScope();
                 boolean isRootCollection = col.isRootCollection();
@@ -537,7 +537,9 @@ public class StudyListingPage extends VDCBaseBean implements java.io.Serializabl
                             finalQuery = dynamicLocal;
                         } else if (isSubnetworkScope) {
                             BooleanQuery dynamicLocal = new BooleanQuery();
-                            Query dvnetIdQuery = indexService.constructNetworkIdQuery(getVDCRequestBean().getCurrentVdcNetwork().getId());
+                            Long subNetId = getVDCRequestBean().getCurrentVdcNetwork().getId();
+                            //Query dvnetIdQuery = indexService.constructNetworkIdQuery(getVDCRequestBean().getCurrentVdcNetwork().getId());
+                            Query dvnetIdQuery = indexService.constructNetworkIdQuery(col.getOwner().getVdcNetwork().getId());
                             dynamicLocal.add(dynamicQuery, BooleanClause.Occur.MUST);
                             dynamicLocal.add(dvnetIdQuery, BooleanClause.Occur.MUST);
                             finalQuery = dynamicLocal;

@@ -207,7 +207,19 @@ public class VDCNetwork implements java.io.Serializable  {
         this.urlAlias = urlAlias;
     }
     
-   
+
+    /**
+     * Path to logo in domain1/docroot/images
+     */
+    private String logo;
+
+    public String getLogo() {
+        return logo;
+    }
+
+    public void setLogo(String logo) {
+        this.logo = logo;
+    }
 
     /**
      * Holds value of property systemEmail.

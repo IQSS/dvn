@@ -65,6 +65,22 @@
                         </tr>
                         <tr>
                             <td class="dvnOptionsTableOption">
+                                <ice:outputText value="Subnetwork Logo "/>
+                            </td>
+                            <td>
+                                <ice:inputText binding="#{EditSubnetworkPage.textFieldLogo}"
+                                                id="subnetworkLogo"
+                                                value="#{EditSubnetworkPage.logo}"/>
+                                                <!--validator="#{EditSubnetworkPage.validateLogo}"-->
+                                                <!--required="true"-->
+                                                <!--requiredMessage="This is required"-->
+                                <br/>
+                                <ice:outputText styleClass="vdcHelpText" value="Filename of 160x160px image (i.e. png, gif, jpg) previously placed in domain1/docroot/images directory."/>
+                                <ice:message for="subnetworkLogo" showSummary="true" showDetail="false" styleClass="errorMessage"/>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="dvnOptionsTableOption">
                                 <ice:outputText value="#{bundle.enableSubnetworkLabel}"/>
                             </td>
                             <td>

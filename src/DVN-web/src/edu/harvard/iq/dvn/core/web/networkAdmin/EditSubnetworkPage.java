@@ -61,8 +61,16 @@ public class EditSubnetworkPage extends VDCBaseBean implements Serializable  {
     private String originalAlias = "";
     private VDCNetwork originalVDCNetwork = null;
     private boolean addMode = false;
+    private String logo;
 
-   
+    public String getLogo() {
+        return logo;
+    }
+
+    public void setLogo(String logo) {
+        this.logo = logo;
+    }
+
     public void init() {
         super.init();
 
@@ -81,6 +89,7 @@ public class EditSubnetworkPage extends VDCBaseBean implements Serializable  {
             originalAlias = subnetworkAlias;
             subnetworkAffiliation = originalVDCNetwork.getAffiliation();
             chkSubnetworkEnabled = originalVDCNetwork.isReleased();
+            logo = originalVDCNetwork.getLogo();
         } else {
             addMode = true;
         }       
@@ -113,7 +122,17 @@ public class EditSubnetworkPage extends VDCBaseBean implements Serializable  {
     public void setSubnetworkAlias(String subnetworkAlias) {
         this.subnetworkAlias = subnetworkAlias;
     }
-    
+
+    private HtmlInputText textFieldLogo = new HtmlInputText();
+
+    public HtmlInputText getTextFieldLogo() {
+        return textFieldLogo;
+    }
+
+    public void setTextFieldLogo(HtmlInputText textFieldLogo) {
+        this.textFieldLogo = textFieldLogo;
+    }
+
     public String getSubnetworkAffiliation() {
         return subnetworkAffiliation;
     }
@@ -146,6 +165,7 @@ public class EditSubnetworkPage extends VDCBaseBean implements Serializable  {
             originalVDCNetwork.setUrlAlias(subnetworkAlias);
             originalVDCNetwork.setAffiliation(subnetworkAffiliation);  
             originalVDCNetwork.setReleased(chkSubnetworkEnabled);
+            originalVDCNetwork.setLogo(logo);
             vdcNetworkService.edit(originalVDCNetwork);
             getVDCRenderBean().getFlash().put("successMessage", "Successfully updated subnetwork.");
         } else {   
@@ -175,6 +195,7 @@ public class EditSubnetworkPage extends VDCBaseBean implements Serializable  {
             createdNetwork.setRequireDVclassification(rootNetwork.isRequireDVclassification());
             createdNetwork.setRequireDVstudiesforrelease(rootNetwork.isRequireDVstudiesforrelease());
             createdNetwork.setReleased(chkSubnetworkEnabled);
+            createdNetwork.setLogo(logo);
             vdcNetworkService.edit(createdNetwork);
             getVDCSessionBean().setVdcNetwork(createdNetwork);
             getVDCRenderBean().getFlash().put("successMessage", "Successfully added subnetwork.");

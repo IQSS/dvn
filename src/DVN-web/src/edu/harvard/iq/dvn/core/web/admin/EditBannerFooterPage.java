@@ -50,7 +50,6 @@ public class EditBannerFooterPage extends VDCBaseBean  implements java.io.Serial
     @EJB VDCServiceLocal vdcService;
     @EJB VDCNetworkServiceLocal vdcNetworkService;
     private Boolean subnetworkMode = false;
-    private Boolean addMode = false;
     public void init() {
         super.init();
 
@@ -60,7 +59,6 @@ public class EditBannerFooterPage extends VDCBaseBean  implements java.io.Serial
         subnetworkMode = false;
         String edit = getVDCRequestBean().getRequestParam("edit");
         if (edit !=null && edit.equals("false")){
-                        addMode = true;
             subnetworkMode = true;
         } 
         if(!getVDCRequestBean().getCurrentVdcNetworkURL().isEmpty()){
@@ -79,10 +77,6 @@ public class EditBannerFooterPage extends VDCBaseBean  implements java.io.Serial
                 setDisplayInFrame(getVDCRequestBean().getCurrentVDC().isDisplayInFrame());
                 setParentSite(getVDCRequestBean().getCurrentVDC().getParentSite());
             }
-        }
-        if(addMode){
-           setBanner("");
-           setFooter("");
         }
         combinedTextField.setValue(banner + footer);
     }

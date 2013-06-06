@@ -57,8 +57,11 @@ public class DeleteSubnetworkPage extends VDCBaseBean implements Serializable {
 
     public String delete_action() {
         VDCNetwork subnetworkToDelete = vdcNetworkService.findById(deleteId);
-        logger.info("deleting subnetwork \"" + subnetworkToDelete.getName() + "\" (id " + subnetworkToDelete.getId() + ")");
+        String name = subnetworkToDelete.getName();
+        String id = subnetworkToDelete.getId().toString();
+        logger.info("deleting subnetwork \"" + name + "\" (id " + id + ")");
         vdcNetworkService.deleteSubnetwork(subnetworkToDelete);
+        getVDCRenderBean().getFlash().put("successMessage", "Successfully deleted subnetwork \"" + name + "\"");
         return "/networkAdmin/NetworkOptionsPage.xhtml?faces-redirect=true&tab=subnetworks";
     }
 

@@ -42,6 +42,8 @@ import edu.harvard.iq.dvn.core.study.*;
 import edu.harvard.iq.dvn.core.vdc.VDC;
 import edu.harvard.iq.dvn.core.vdc.VDCCollection;
 import edu.harvard.iq.dvn.core.vdc.VDCCollectionServiceLocal;
+import edu.harvard.iq.dvn.core.vdc.VDCNetwork;
+import edu.harvard.iq.dvn.core.vdc.VDCNetworkServiceLocal;
 import edu.harvard.iq.dvn.core.vdc.VDCServiceLocal;
 import edu.harvard.iq.dvn.core.web.collection.CollectionUI;
 import edu.harvard.iq.dvn.core.web.common.LoginBean;
@@ -102,6 +104,8 @@ public class StudyListingPage extends VDCBaseBean implements java.io.Serializabl
     IndexServiceLocal indexService;
     @EJB
     VariableServiceLocal varService;
+    @EJB
+    VDCNetworkServiceLocal vdcNetworkService;
 
     private static final Logger logger = Logger.getLogger(StudyListingPage.class.getCanonicalName());
     private List<CategoryPath> facetsOfInterest = new ArrayList<CategoryPath>();
@@ -819,7 +823,13 @@ public class StudyListingPage extends VDCBaseBean implements java.io.Serializabl
                 Iterator iter = studyListing.getSearchTerms().iterator();
                 while (iter.hasNext()) {
                     SearchTerm st = (SearchTerm) iter.next();
-                    listMessage += getUserFriendlySearchField(st.getFieldName()) + " " + st.getOperator() + " \"" + st.getValue() + "\"";
+                    if (st.getFieldName().equals("dvNetworkId")) {
+                        VDCNetwork subnetwork = vdcNetworkService.findById(new Long(st.getValue()));
+                        String subnetworkName = subnetwork.getName();
+                        listMessage += getUserFriendlySearchField(st.getFieldName()) + " " + st.getOperator() + " \"" + subnetworkName + "\"";
+                    } else {
+                        listMessage += getUserFriendlySearchField(st.getFieldName()) + " " + st.getOperator() + " \"" + st.getValue() + "\"";
+                    }
                     if (iter.hasNext()) {
                         listMessage += " AND ";
                     }

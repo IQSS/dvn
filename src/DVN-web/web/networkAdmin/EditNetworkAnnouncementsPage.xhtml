@@ -9,14 +9,14 @@
           <table class="dvnOptionsTable" cellspacing="0" cellpadding="0" border="0">
             <tr>
                 <td class="dvnOptionsTableOption">
-                    <ice:outputText value="Network Description" rendered="#{empty(VDCRequest.currentVdcNetworkURL) and !EditNetworkAnnouncementsPage.addMode}"/>
-                    <ice:outputText value="Subnetwork Description" rendered="#{!empty(VDCRequest.currentVdcNetworkURL) or EditNetworkAnnouncementsPage.addMode}"/>
+                    <ice:outputText value="Network Description" rendered="#{!isSubnetwork}"/>
+                    <ice:outputText value="Subnetwork Description" rendered="#{isSubnetwork}"/>
                 </td>
                 <td>
                     <div jsfc="ice:panelGroup" styleClass="dvnInformationMessage">
                         <div class="dvnMsgBlockContainer">
-                          <ice:outputText value="#{bundlePageInfo.editDvnDescriptionHelp}" rendered="#{empty(VDCRequest.currentVdcNetworkURL) and !EditNetworkAnnouncementsPage.addMode}" escape="false"/>
-                          <ice:outputText value="#{bundlePageInfo.editSubnetworkDescriptionHelp}" rendered="#{!empty(VDCRequest.currentVdcNetworkURL) or EditNetworkAnnouncementsPage.addMode}" escape="false"/>
+                          <ice:outputText value="#{bundlePageInfo.editDvnDescriptionHelp}" rendered="#{!isSubnetwork}" escape="false"/>
+                          <ice:outputText value="#{bundlePageInfo.editSubnetworkDescriptionHelp}" rendered="#{isSubnetwork}" escape="false"/>
                         </div>
                     </div>
                     <div jsfc="ice:panelGroup">

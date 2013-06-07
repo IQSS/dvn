@@ -49,30 +49,16 @@ import javax.inject.Named;
 public class EditBannerFooterPage extends VDCBaseBean  implements java.io.Serializable {
     @EJB VDCServiceLocal vdcService;
     @EJB VDCNetworkServiceLocal vdcNetworkService;
-    private Boolean subnetworkMode = false;
+    
     public void init() {
         super.init();
-
-    }
-    
-    public void preRenderView(){
-        subnetworkMode = false;
-        String edit = getVDCRequestBean().getRequestParam("edit");
-        if (edit !=null && edit.equals("false")){
-            subnetworkMode = true;
-        } 
-        if(!getVDCRequestBean().getCurrentVdcNetworkURL().isEmpty()){
-            subnetworkMode = true;
-        }
-        
+     
         VDCNetwork vdcNetwork = getVDCRequestBean().getCurrentVdcNetwork();
-        if (vdcNetwork == null){
-            vdcNetwork = getVDCRequestBean().getVdcNetwork();
-        }
         
         if (this.getBanner() == null){
             setBanner( (getVDCRequestBean().getCurrentVDCId() == null) ? vdcNetwork.getNetworkPageHeader(): getVDCRequestBean().getCurrentVDC().getHeader());
             setFooter( (getVDCRequestBean().getCurrentVDCId() == null) ? vdcNetwork.getNetworkPageFooter(): getVDCRequestBean().getCurrentVDC().getFooter());         
+            
             if (getVDCRequestBean().getCurrentVDCId() != null) {
                 setDisplayInFrame(getVDCRequestBean().getCurrentVDC().isDisplayInFrame());
                 setParentSite(getVDCRequestBean().getCurrentVDC().getParentSite());
@@ -80,9 +66,9 @@ public class EditBannerFooterPage extends VDCBaseBean  implements java.io.Serial
         }
         combinedTextField.setValue(banner + footer);
     }
-       
-    
-  
+
+
+            
     /** 
      * <p>Construct a new Page bean instance.</p>
      */

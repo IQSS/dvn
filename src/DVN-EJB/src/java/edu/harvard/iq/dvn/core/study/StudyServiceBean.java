@@ -870,7 +870,21 @@ public class StudyServiceBean implements edu.harvard.iq.dvn.core.study.StudyServ
         return returnList;
     }
 
-
+    // This method is used by the IndexServiceBean in order to find and
+    // reindex the studies that are no longer cross-linked by any foreign
+    // subnetworks. 
+    public List<Long> getAllLinkedStudyIds() {
+        List<Long> returnList = new ArrayList<Long>();
+        
+        String queryStr = "SELECT DISTINCT study_id FROM linked_network_studies ORDER BY study_id";
+        Query query = em.createNativeQuery(queryStr);
+        for (Object currentResult : query.getResultList()) {
+            // convert results into Longs
+            returnList.add((Long)currentResult);
+        }
+        
+        return returnList; 
+    }
 
     public List<Long> getAllNonHarvestedStudyIds() {
         String queryStr = "select id from study where isharvested='false'";

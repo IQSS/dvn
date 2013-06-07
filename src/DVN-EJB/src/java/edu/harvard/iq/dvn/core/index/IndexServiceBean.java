@@ -340,82 +340,6 @@ public class IndexServiceBean implements edu.harvard.iq.dvn.core.index.IndexServ
         handleIOProblems(ioProblem,ioProblemCount);
     }
     
-    public void indexAllpreserved() {
-        boolean ioProblem = false;
-        long ioProblemCount = 0;
-        Indexer indexer = Indexer.getInstance();
-        /*
-        try {
-        indexer.setup();
-        } catch (IOException ex) {
-        ex.printStackTrace();
-        }
-         */
-       
-        
-        
-        Long maxStudyTableId = studyService.getMaxStudyTableId();
-        
-        logger.info("MAX database id in the study table: "+maxStudyTableId);
-       
-        
-        long  indexingBatchSize = 1L; //00; // needs to be made configurable.
-        List<Study> studies = null;
-        
-        for (long i = 0L; i < (maxStudyTableId.longValue() + 1L); i += indexingBatchSize) {
-            //logger.info("Processing batch " + i +";");
-
-            long rangeEnd = (i + indexingBatchSize) > maxStudyTableId.longValue() ? maxStudyTableId.longValue() + 1 : i + indexingBatchSize + 1;
-            
-            logger.info("Processing batch " + i + "; Range end: "+rangeEnd);
-            
-            studies = studyService.getStudiesByIdRange(i, rangeEnd);
-
-            int batchDocCount = 0;
-            int batchProblemCount = 0;
-            int batchSkipCount = 0; 
-
-            if (studies != null) {
-                if (studies.size() == 0) {
-                    logger.info("Batch " + i + ": zero studies found.");
-                } else {
-                    for (Iterator it = studies.iterator(); it.hasNext();) {
-                        Study study = (Study) it.next();
-
-                        /*
-                         try {
-                         if (study.getLastExportTime() != null) {
-                         deleteDocument(study.getId());
-                         }
-                         } catch (Exception ex) {
-                         // skip this study, just to be safe.
-                         batchSkipCount++; 
-                         continue;
-                         }
-                         * */
-                        try {
-                            addDocument(study);
-                            batchDocCount++;
-                        } catch (Exception ex) {
-                            ioProblem = true;
-                            ioProblemCount++;
-                            batchProblemCount++;
-                            Logger.getLogger(IndexServiceBean.class.getName()).log(Level.SEVERE, null, ex);
-                            logger.severe("Caught exception trying to reindex study " + study.getId());
-                        }
-                    }
-                }
-                logger.info("Processed batch; " + batchDocCount + " documents, " + batchProblemCount + " exceptions, "+batchSkipCount+" skipped.");
-            } else {
-                logger.info("Batch "+i+": no studies found.");
-            }
-            
-            studies = null; 
-        }
-        logger.info("Finished index-all.");
-        handleIOProblems(ioProblem,ioProblemCount);
-    }
-
     public void indexList(List<Long> studyIds) {
         long ioProblemCount = 0;
         boolean ioProblem = false;
@@ -587,6 +511,25 @@ public class IndexServiceBean implements edu.harvard.iq.dvn.core.index.IndexServ
             logger.info("Checking the cross-linking status and reindexing the studies for which it has changed:");
             
             List<Long> linkedToNetworkIds = null;
+            boolean reindexNecessary = false; 
+            
+            // Check for the studies that are no longer linked to any foreign
+            // subnetworks: 
+            
+            List<Long> existingLinkedStudies = studyService.getAllLinkedStudyIds();
+            
+            Long sid = null;
+            for (Iterator it = existingLinkedStudies.iterator(); it.hasNext();) {
+                sid = (Long) it.next();
+                if (linkedVdcNetworkMap[sid.intValue()] == 0) {
+                    // study no longer linked to any subnetworks
+                    linkedVdcNetworkMap[sid.intValue()] = -1;
+                }
+            }
+            // TODO: would be faster still to retrieve the entire map of crosslinks
+            // from the db in a single query here, cook another array of bitstrings
+            // and then just go and compare the 2, without making any further 
+            // queries... --L.A.
             
             for (int i = 0; i < maxStudyId.intValue() + 1; i++) {
                 if (linkedVdcNetworkMap[i] != 0) {
@@ -596,26 +539,39 @@ public class IndexServiceBean implements edu.harvard.iq.dvn.core.index.IndexServ
                     } catch (Exception ex) {
                         linkedStudy = null; 
                     }
+                    reindexNecessary = false; 
                     // Only released studies get indexed!
                     if (linkedStudy != null && linkedStudy.isReleased()) {
                         
-                        // Find what subnetworks this study is already linked 
-                        // to in the database: 
+                        if (linkedVdcNetworkMap[i] == -1) {
+                            // If it's an "unlinked" study,
+                            // remove the existing links in the database: 
+                            logger.info("study "+i+" no longer cross-linked to any subnetworks.");
+                            linkedStudy.setLinkedToNetworks(null);
+                            
+                            reindexNecessary = true; 
+                        } else {
+                            // else find what subnetworks this study is already linked 
+                            // to in the database:
                         
-                        linkedToNetworkIds = linkedStudy.getLinkedToNetworkIds();
+                            linkedToNetworkIds = linkedStudy.getLinkedToNetworkIds();
                         
-                        long linkedNetworkBitString = produceLinkedNetworksBitstring(linkedToNetworkIds);
+                            long linkedNetworkBitString = produceLinkedNetworksBitstring(linkedToNetworkIds);
                         
-                        if (linkedNetworkBitString != linkedVdcNetworkMap[i]) {
-                            logger.info("study "+i+": cross-linked status has changed; updating");
+                            if (linkedNetworkBitString != linkedVdcNetworkMap[i]) {
+                                // This means the cross-linking status of the study has changed!
 
-                            // This means the cross-linking status of the study has changed!
-                            
-                            // 1. Update it in the database: 
-                            
-                            linkedStudy.setLinkedToNetworks(newLinkedToNetworks(subNetworks, linkedVdcNetworkMap[i]));
-                            
-                            // 2. Re-index the study: 
+                                logger.info("study "+i+": cross-linked status has changed; updating");
+                                
+                                // Update it in the database: 
+                                linkedStudy.setLinkedToNetworks(newLinkedToNetworks(subNetworks, linkedVdcNetworkMap[i]));
+                                
+                                reindexNecessary = true; 
+                            }
+                        }
+                        
+                        if (reindexNecessary) {
+                            // Re-index the study: 
                             
                             try {
                                 indexer.deleteDocument(linkedStudy.getId());

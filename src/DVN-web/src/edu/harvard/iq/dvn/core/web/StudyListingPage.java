@@ -144,6 +144,15 @@ public class StudyListingPage extends VDCBaseBean implements java.io.Serializabl
     private List sortOrderItems;
     private String sortOrderString;
     private boolean recentVisitToDvPage = false;
+    private String collectionIdInURL;
+
+    public String getCollectionIdInURL() {
+        return collectionIdInURL;
+    }
+
+    public void setCollectionIdInURL(String collectionIdInURL) {
+        this.collectionIdInURL = collectionIdInURL;
+    }
 
     public void setRenderFacets(boolean renderFacets) {
         this.renderFacets = renderFacets;
@@ -863,7 +872,7 @@ public class StudyListingPage extends VDCBaseBean implements java.io.Serializabl
                 
             renderDownloadCount = true;
 
-            if (getVDCRequestBean().getCurrentVDC().getRootCollection().getId().equals(studyListing.getCollectionId())) {
+            if (getVDCRequestBean().getCurrentVDC().getRootCollection().getId().equals(studyListing.getCollectionId()) && collectionIdInURL == null) {
                 renderSearchCollectionFilter = false;
             } else {
                 renderSearchCollectionFilter = true;

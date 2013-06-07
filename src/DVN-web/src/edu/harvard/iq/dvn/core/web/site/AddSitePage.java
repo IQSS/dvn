@@ -122,6 +122,7 @@ public class AddSitePage extends VDCBaseBean implements java.io.Serializable  {
             } else {
                 initSubnetworkId = new Long (0);
          }
+         selectSubNetworkId = new Long(initSubnetworkId);
          templatesMap = templateService.getVdcNetworkTemplatesMapForAddSitePage(selectSubNetworkId);
 
     }
@@ -578,12 +579,8 @@ public class AddSitePage extends VDCBaseBean implements java.io.Serializable  {
         if (networkList.size() > 0) {
             selectItems.add(new SelectItem(0, "<None>"));
             for (VDCNetwork vdcNetwork : networkList) {
-                if (selectSubNetworkId == null) {
-                    setSelectSubNetworkId(vdcNetwork.getId());
-                }
                 selectItems.add(new SelectItem(vdcNetwork.getId(), vdcNetwork.getName()));
             }
-
         }
         return selectItems;
     }

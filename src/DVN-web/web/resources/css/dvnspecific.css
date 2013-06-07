@@ -163,6 +163,8 @@ span.dvnStudyTemplateNotEnabled{background:url(/dvn/resources/images/icon_warnin
 .dvnManageStudyTemplatesActionTable td {width:20%;text-align:center;}
 .dvnManageStudyTemplatesActionTable span.iceOutTxt {color:grey;font-style:italic;}
 span.iceOutTxt.dvnManageStudyTemplatesDefault {color:black;font-style:normal;font-weight:bold;}
+.popupModalBody .dvnSelectTemplateDefaultNetwork {margin-top:0; border-left:0;}
+.popupModalBody .dvnSelectTemplateDefaultNetwork > tbody > tr > td {padding-top:0;}
 /* MANAGE SUBNETWORKS */
 .dvnManageSubnetworkTemplatesTable th {font-weight: bold;}
 .dvnManageSubnetworkTemplatesTable td.dvnMngSubnetworkTempCol6 a.iceCmdLnk, .dvnManageSubnetworkTemplatesTable td.dvnMngSubnetworkTempCol6 a.iceOutLnk, .dvnManageSubnetworkTemplatesTable td.dvnMngSubnetworkTempCol6 span.iceOutTxt {display:inline;margin-right:2em;}

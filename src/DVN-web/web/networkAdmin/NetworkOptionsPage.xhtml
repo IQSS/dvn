@@ -703,69 +703,56 @@
                     </ice:panelTabSet>
                 </div>
             
-                                <ice:panelPopup id="defaultPopup"
-                                    draggable="false"
-                                    visible="#{OptionsPage.showDefaultPopup}"
-                                    autoCentre="true"
-                                    modal="true">
-                        <f:facet name="header">
-                            <ice:panelGrid id="autoCentDefaultPanelGrid"
-                                           width="100%" cellpadding="0"
-                                           cellspacing="0" columns="2"
-                                           columnClasses="none,popupButton">
-                                <ice:outputText value="Select Networks for Default"/>
-                                <ice:commandLink id="autoCentMigrationPopupClose"
-                                                 action="#{OptionsPage.toggleDefaultPopup(0)}"
-                                                 styleClass="popupModalClose">
-                                    <ice:graphicImage value="/resources/images/icon_close.gif"/>
-                                </ice:commandLink>
-                            </ice:panelGrid>
-                        </f:facet>
-                        <f:facet name="body">
-                            <ice:panelGrid id="autoCentDefault"
-                                           width="100%" cellpadding="0"
-                                           cellspacing="0" columns="1"
-                                           styleClass="popupModalBody dvnExplorationMigrationPopup">
-                                <ice:outputText value="Update defaults.  You may not deselect prior defaults."/>
-                                <div jsfc="ice:panelGroup" styleClass="dvnFormPadding dvnFormMargin">
-                                    <ice:dataTable width="100%" cellspacing="0" cellpadding="0" id="vdcSubnetworks" var="vdcNetworkUI" value="#{OptionsPage.vdcNetworksForDefault}"
-                                                    scrollable="true" scrollHeight="200px" columnWidths="40,348">
-                                        <f:facet name="header">
-                                            <ice:columnGroup>
-
-                                                <ice:headerRow>
-
-                                                    <ice:column style="width:348px;">
-                                                        <ice:outputText value="Name"/>
-                                                    </ice:column>
-                                                </ice:headerRow>
-                                            </ice:columnGroup>
-                                        </f:facet>
-                                        <ice:column style="width:40px; text-align:center;">
-                                            <ice:selectBooleanCheckbox id="genericCheckBoxes" styleClass="templateCheckBoxes" rendered="#{!vdcNetworkUI.defaultTemplateSelected}"
-                                                                    partialSubmit="false" value="#{vdcNetworkUI.defaultTemplateSelected}"
-                                                                    />
-                                        </ice:column>
-                                        <ice:column style="width:348px;">
-                                            <ice:outputLabel value="#{vdcNetworkUI.vdcNetwork.name}"/>
-                                            <ice:outputLabel value="  Default" rendered="#{vdcNetworkUI.defaultTemplateSelected}"/>
-                                        </ice:column>
-                                    </ice:dataTable>
-                                    <ice:commandButton id="autoCentDefaultTemplatePopupCancel" 
-                                                       action="#{OptionsPage.saveDefaultTemplates}"
-                                                       value="Save Defaults"/>
-                                </div>
-                                
-                                <ice:outputText value="Cancel update."/>
-                                <div jsfc="ice:panelGroup" styleClass="dvnFormPadding dvnFormMargin">
+                <ice:panelPopup id="defaultPopup"
+                                draggable="false"
+                                visible="#{OptionsPage.showDefaultPopup}"
+                                autoCentre="true"
+                                modal="true">
+                    <f:facet name="header">
+                        <ice:panelGrid id="autoCentDefaultPanelGrid"
+                                        width="100%" cellpadding="0"
+                                        cellspacing="0" columns="2"
+                                        columnClasses="none,popupButton">
+                            <ice:outputText value="Select Network/Subnetwork"/>
+                            <ice:commandLink id="autoCentMigrationPopupClose"
+                                                action="#{OptionsPage.toggleDefaultPopup(0)}"
+                                                styleClass="popupModalClose">
+                                <ice:graphicImage value="/resources/images/icon_close.gif"/>
+                            </ice:commandLink>
+                        </ice:panelGrid>
+                    </f:facet>
+                    <f:facet name="body">
+                        <ice:panelGrid id="autoCentDefault"
+                                        width="100%" cellpadding="0"
+                                        cellspacing="0" columns="1"
+                                        styleClass="popupModalBody">
+                            <ice:outputText value="Select the Dataverse Network, or Subnetwork(s), that you wish to make this template the default study template."/>
+                            <div jsfc="ice:panelGroup">
+                                <ice:dataTable width="100%" cellspacing="0" cellpadding="0" styleClass="dvnSelectTemplateDefaultNetwork"
+                                                id="vdcSubnetworks" var="vdcNetworkUI" value="#{OptionsPage.vdcNetworksForDefault}"
+                                                scrollable="true" scrollHeight="200px" columnWidths="11%,89%">
                                     
-                                    <ice:commandButton id="autoCentDefaultTemplatePopupExit"
-                                                       action="#{OptionsPage.toggleDefaultPopup(0)}"
-                                                       value="Cancel"/>
-                                </div>
-                            </ice:panelGrid>
-                        </f:facet>
-                    </ice:panelPopup>
+                                    <ice:column>
+                                        <ice:selectBooleanCheckbox id="genericCheckBoxes" styleClass="templateCheckBoxes" rendered="#{!vdcNetworkUI.defaultTemplateSelected}"
+                                                                    partialSubmit="false" value="#{vdcNetworkUI.defaultTemplateSelected}"/>
+                                    </ice:column>
+                                    <ice:column>
+                                        <ice:outputText value="#{vdcNetworkUI.vdcNetwork.name} #{vdcNetworkUI.vdcNetwork.id == VDCRequest.vdcNetwork.id ? 'Dataverse Network' : 'Subnetwork'}"/>
+                                        <ice:outputText style="font-weight:bold;" value=" Default" rendered="#{vdcNetworkUI.defaultTemplateSelected}"/>
+                                    </ice:column>
+                                </ice:dataTable>
+                            </div>
+                            <div jsfc="ice:panelGroup" styleClass="dvnFormPadding dvnFormMargin">
+                                <ice:commandButton id="autoCentDefaultTemplatePopupCancel" 
+                                                    action="#{OptionsPage.saveDefaultTemplates}"
+                                                    value="Save"/>
+                                <ice:commandButton id="autoCentDefaultTemplatePopupExit"
+                                                    action="#{OptionsPage.toggleDefaultPopup(0)}"
+                                                    value="Cancel"/>
+                            </div>
+                        </ice:panelGrid>
+                    </f:facet>
+                </ice:panelPopup>
             </ice:form>
         </ui:define>
     </ui:composition>

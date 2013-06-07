@@ -121,9 +121,9 @@
               </ice:dataTable>
                 <ice:dataTable cellpadding="0" cellspacing="0" width="100%"
                              rendered="#{empty VDCRequest.currentVDC}"
-                             columnWidths="20%,12%,12%,56%"
+                             columnWidths="20%,12%,10%,16%,42%"
                              styleClass="dvnManageTable dvnManageStudyTemplatesTable" id="networkDataTable"
-                             headerClass="list-header-left vdcColPadded" columnClasses="dvnMngStudyTempCol1,dvnMngStudyTempCol2,dvnMngStudyTempCol3,dvnMngStudyTempCol4"
+                             headerClass="list-header-left vdcColPadded" columnClasses="dvnMngStudyTempCol1,dvnMngStudyTempCol2,dvnMngStudyTempCol3,dvnMngStudyTempCol4,dvnMngStudyTempCol5"
                              rowClasses="list-row-even vdcColPadded, list-row-odd vdcColPadded"
                              value="#{OptionsPage.templateList}" var="template">
                 <ice:column>
@@ -151,13 +151,26 @@
                   <f:facet name="header">
                     <ice:outputText value="#{OptionsPage.vdcUIList.subnetworkColumnName}"/>
                   </f:facet>
-                  <ice:outputText value="#{template.vdcSubnetwork.id == VDCRequest.vdcNetwork.id ? '--' : template.vdcSubnetwork.name}"/>
+                  <ice:outputText value="#{template.vdcSubnetwork.id == VDCRequest.vdcNetwork.id ? 'All' : template.vdcSubnetwork.name}"/>
+                </ice:column>
+                <ice:column>
+                  <f:facet name="header">
+                    <ice:outputText value="Default Template For"/>
+                  </f:facet>
+                  <ice:outputText value="#{vdcNetworkUI.defaultTemplateSelected.name}, Subnetwork1, Subnetwork2, Subnetwork3"/>
+                  
+                    <ice:outputText value="Cannot Make Default" style="color:grey;font-style:italic;" rendered="#{!OptionsPage.isDefault(template.id) and !template.enabled}"/>
+
+                    <ice:commandLink value="Make Default" rendered="#{!VDCRequest.readOnlyDatabase  and template.enabled and template.vdcSubnetwork.id != VDCRequest.vdcNetwork.id}" 
+                                    action="#{OptionsPage.updateDefaultAction(template.id, template.vdcSubnetwork.id)}"/>
+                    <ice:commandLink value="Make Default" rendered="#{!VDCRequest.readOnlyDatabase  and template.enabled and template.vdcSubnetwork.id == VDCRequest.vdcNetwork.id}" 
+                                    action="#{OptionsPage.toggleDefaultPopup(template.id)}"/>
                 </ice:column>
                 <ice:column>
                   <f:facet name="header">
                     <ice:outputText value="Action"/>
                   </f:facet>
-                    <ice:panelGrid cellpadding="0" cellspacing="0" border="0" columns="5" width="100%"
+                    <ice:panelGrid cellpadding="0" cellspacing="0" border="0" columns="4" width="100%"
                                    styleClass="dvnManageStudyTemplatesActionTable">
                         <ice:column>
                           <ice:outputText value="Cannot Disable" rendered="#{(template.enabled or !VDCRequest.readOnlyDatabase)  and (OptionsPage.isDefault(template.id) 
@@ -169,15 +182,6 @@
                                                        or (!empty(VDCRequest.currentVDC) and template.network))}" />
                           <ice:commandLink value="Enable" action="#{OptionsPage.updateEnabledAction(template.id)}"
                                            rendered="#{!template.enabled and !VDCRequest.readOnlyDatabase }" />
-                        </ice:column>
-                        <ice:column>
-                          
-                          <ice:outputText value="Cannot Make Default" rendered="#{!OptionsPage.isDefault(template.id) and !template.enabled}"/>
-
-                          <ice:commandLink value="Make Default" rendered="#{!VDCRequest.readOnlyDatabase  and template.enabled and template.vdcSubnetwork.id != VDCRequest.vdcNetwork.id}" 
-                                           action="#{OptionsPage.updateDefaultAction(template.id, template.vdcSubnetwork.id)}"/>
-                          <ice:commandLink value="Make Default" rendered="#{!VDCRequest.readOnlyDatabase  and template.enabled and template.vdcSubnetwork.id == VDCRequest.vdcNetwork.id}" 
-                                           action="#{OptionsPage.toggleDefaultPopup(template.id)}"/>
                         </ice:column>
                         <ice:column>
                           <ice:outputLink rendered="#{!VDCRequest.readOnlyDatabase and ((empty(VDCRequest.currentVDC) and template.network) or (!empty(VDCRequest.currentVDC) and !template.network))}" 

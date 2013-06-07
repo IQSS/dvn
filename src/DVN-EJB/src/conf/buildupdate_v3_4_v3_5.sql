@@ -1,9 +1,16 @@
 update vdcnetwork set id = 0 where id = 1;
 select setval('vdcnetwork_id_seq',1,false);
 
-Alter TABLE vdc add vdcnetwork_id bigint;
+Alter TABLE vdcnetworkstats add vdcnetwork_id bigint;
+update vdcnetworkstats set id = 0;
+update vdcnetworkstats set vdcnetwork_id = 0;
 
+Alter TABLE vdc add vdcnetwork_id bigint;
 Update vdc set vdcnetwork_id = 0;
+
+Alter TABLE template add vdcsubnetwork_id bigint;
+Update template set vdcsubnetwork_id = 0;
+
 
 ALTER TABLE vdcnetwork ADD COLUMN urlalias character varying(255);
 ALTER TABLE vdcnetwork ALTER COLUMN urlalias SET STORAGE EXTENDED;
@@ -22,12 +29,6 @@ ALTER TABLE vdcnetwork ADD COLUMN released boolean;
 ALTER TABLE vdcnetwork ADD COLUMN logo character varying(255);
 ALTER TABLE vdcnetwork ADD COLUMN shortdescription character varying(255);
 
-Alter TABLE template add vdcsubnetwork_id bigint;
-
-Update template set vdcsubnetwork_id = 0;
-
-Alter TABLE vdcnetworkstats add vdcnetwork_id bigint;
-update vdcnetworkstats set vdcnetwork_id = 0;
 
 update template set displayoncreatedataverse = true
 where vdc_id is null;

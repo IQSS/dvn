@@ -297,15 +297,14 @@
                             Collection Scope
                           </div>
                           <div jsfc="ice:panelGroup">
-                            
                             <ice:selectOneRadio id="collectionScope"
                                                 required="true"
                                                 partialSubmit="true"
                                                 value="#{EditCollectionPage.collection.scope}"
                                                 requiredMessage="This field is required.">
-                                <f:selectItem itemLabel="Only within your dataverse" itemValue="0" />
-                                <f:selectItem itemLabel="Only within this subnetwork" itemValue="1"  />
-                                <f:selectItem itemLabel="Within the entire network" itemValue="2"/>
+                                <f:selectItem itemLabel="Dataverse Only" itemValue="0"/>
+                                <f:selectItem itemLabel="Subnetwork Only" itemValue="1"/>
+                                <f:selectItem itemLabel="Entire Network" itemValue="2"/>
                             </ice:selectOneRadio>
                           </div>
                       </ice:column>

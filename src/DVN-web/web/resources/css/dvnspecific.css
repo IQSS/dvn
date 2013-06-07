@@ -165,6 +165,8 @@ span.dvnStudyTemplateNotEnabled{background:url(/dvn/resources/images/icon_warnin
 span.iceOutTxt.dvnManageStudyTemplatesDefault {color:black;font-style:normal;font-weight:bold;}
 .popupModalBody .dvnSelectTemplateDefaultNetwork {margin-top:0; border-left:0;}
 .popupModalBody .dvnSelectTemplateDefaultNetwork > tbody > tr > td {padding-top:0;}
+.popupModalBody .dvnSelectTemplateDefaultNetwork td span.iceOutTxt {display:inline;}
+.popupModalBody .dvnSelectTemplateDefaultNetwork td span.dvnSelectedTemplateDefault {font-weight:bold;}
 /* MANAGE SUBNETWORKS */
 .dvnManageSubnetworkTemplatesTable th {font-weight: bold;}
 .dvnManageSubnetworkTemplatesTable td.dvnMngSubnetworkTempCol6 a.iceCmdLnk, .dvnManageSubnetworkTemplatesTable td.dvnMngSubnetworkTempCol6 a.iceOutLnk, .dvnManageSubnetworkTemplatesTable td.dvnMngSubnetworkTempCol6 span.iceOutTxt {display:inline;margin-right:2em;}

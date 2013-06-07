@@ -738,7 +738,7 @@
                                     </ice:column>
                                     <ice:column>
                                         <ice:outputText value="#{vdcNetworkUI.vdcNetwork.name} #{vdcNetworkUI.vdcNetwork.id == VDCRequest.vdcNetwork.id ? 'Dataverse Network' : 'Subnetwork'}"/>
-                                        <ice:outputText style="font-weight:bold;" value=" Default" rendered="#{vdcNetworkUI.defaultTemplateSelected}"/>
+                                        <ice:outputText styleClass="dvnSelectedTemplateDefault" value=" Default" rendered="#{vdcNetworkUI.defaultTemplateSelected}"/>
                                     </ice:column>
                                 </ice:dataTable>
                             </div>

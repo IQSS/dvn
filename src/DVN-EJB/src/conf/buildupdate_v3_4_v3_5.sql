@@ -28,6 +28,9 @@ Update template set vdcsubnetwork_id = 0;
 Alter TABLE vdcnetworkstats add vdcnetwork_id bigint;
 update vdcnetworkstats set vdcnetwork_id = 0;
 
+update template set displayoncreatedataverse = true
+where vdc_id is null;
+
 INSERT INTO pagedef ( name, path, role_id, networkrole_id ) VALUES ( 'EditSubnetworkPage', '/networkAdmin/EditSubnetworkPage.xhtml', null, 2 );
 
 INSERT INTO pagedef ( name, path, role_id, networkrole_id ) VALUES ( 'ManageSubnetworksPage', '/networkAdmin/ManageSubnetworksPage.xhtml', null, 2 );

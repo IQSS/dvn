@@ -46,3 +46,8 @@ update vdc_adv_search_fields set study_field_id = 113 where study_field_id = 79;
 
 insert into vdc_adv_search_fields (vdc_id, study_field_id)  select distinct vdc_id, 89 from vdc_adv_search_fields where vdc_id not in 
 (select vdc_id from vdc_adv_search_fields where study_field_id=89) -- add publication ReplicationFor
+
+ALTER TABLE vdccollection ADD COLUMN scope int8;
+UPDATE vdccollection SET scope = 0 WHERE localscope = true;
+UPDATE vdccollection SET scope = 2 WHERE localscope = false;
+ALTER TABLE vdccollection DROP COLUMN localscope;

@@ -29,6 +29,7 @@ package edu.harvard.iq.dvn.core.web.admin;
 
 import edu.harvard.iq.dvn.core.study.Template;
 import edu.harvard.iq.dvn.core.study.TemplateServiceLocal;
+import edu.harvard.iq.dvn.core.vdc.VDCNetwork;
 import edu.harvard.iq.dvn.core.vdc.VDCNetworkServiceLocal;
 import edu.harvard.iq.dvn.core.vdc.VDCServiceLocal;
 import java.util.List;
@@ -85,6 +86,12 @@ public class ManageTemplatesPage extends VDCBaseBean implements java.io.Serializ
         // first, verify that the template has not been disabled
         if (templateService.getTemplate(templateId).isEnabled()) {
             if (getVDCRequestBean().getCurrentVDC() == null) {
+            //you're updating at network level
+            //    
+                Template template = templateService.getTemplate(templateId);
+                if (!template.getVdcSubnetwork().equals(vdcNetworkService.findRootNetwork())){
+
+                }
                 vdcNetworkService.updateDefaultTemplate(templateId);
             } else {
                 vdcService.updateDefaultTemplate(getVDCRequestBean().getCurrentVDCId(),templateId);

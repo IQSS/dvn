@@ -69,6 +69,8 @@ public interface VDCNetworkServiceLocal extends java.io.Serializable  {
 
     public void updateDefaultTemplate(Long templateId);  
     
+    public void updateDefaultTemplate(Long templateId, Long vdcNetworkId); 
+    
     public Boolean defaultTransactionReadOnly ();
 
     public java.lang.Long getTotalDownloads(boolean released);

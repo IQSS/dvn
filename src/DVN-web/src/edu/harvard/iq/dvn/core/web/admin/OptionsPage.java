@@ -22,6 +22,7 @@ import edu.harvard.iq.dvn.core.study.*;
 import edu.harvard.iq.dvn.core.util.*;
 import edu.harvard.iq.dvn.core.vdc.*;
 import edu.harvard.iq.dvn.core.web.DataverseGrouping;
+import edu.harvard.iq.dvn.core.web.VDCNetworkUI;
 import edu.harvard.iq.dvn.core.web.VDCUIList;
 import edu.harvard.iq.dvn.core.web.collection.CollectionUI;
 import edu.harvard.iq.dvn.core.web.common.StatusMessage;
@@ -367,6 +368,87 @@ public class OptionsPage extends VDCBaseBean  implements java.io.Serializable {
         }
     }
     
+    private boolean showDefaultPopup = false;
+    private Long defaultTemplatePopupId = new Long(0);
+    
+    public void toggleDefaultPopup(Long templateId) { 
+        vdcNetworksForDefault.clear();
+        defaultTemplatePopupId = new Long(templateId);
+        System.out.print("templateId.intValue() " + templateId.intValue());
+         if(templateId.intValue() > 0){
+             for (VDCNetwork vdcNetwork : vdcNetworkService.getVDCNetworks()){
+                 VDCNetworkUI vdcNetworkUI = new VDCNetworkUI();
+                 vdcNetworkUI.setVdcNetwork(vdcNetwork);
+                 if(vdcNetwork.getDefaultTemplate().getId().equals(templateId)){
+                    vdcNetworkUI.setDefaultTemplateSelected(true); 
+                 } else {
+                    vdcNetworkUI.setDefaultTemplateSelected(false); 
+                 }
+                 vdcNetworksForDefault.add(vdcNetworkUI);
+             }                                    
+         }
+         showDefaultPopup = !showDefaultPopup;
+    }
+    
+    public void saveDefaultTemplates(){
+        
+        for (VDCNetworkUI vdcNetworkUI: vdcNetworksForDefault ){
+            if (vdcNetworkUI.getDefaultTemplateSelected()){
+                VDCNetwork vdcNetwork = vdcNetworkUI.getVdcNetwork(); 
+                vdcNetworkService.updateDefaultTemplate(defaultTemplatePopupId, vdcNetwork.getId());
+            }
+        }
+        
+         showDefaultPopup = !showDefaultPopup;
+    }
+    
+   public String updateDefaultAction(Long templateId) {
+        // first, verify that the template has not been disabled
+        if (templateService.getTemplate(templateId).isEnabled()) {
+            if (getVDCRequestBean().getCurrentVDC() == null) {
+                vdcNetworkService.updateDefaultTemplate(templateId);
+            } else {
+                vdcService.updateDefaultTemplate(getVDCRequestBean().getCurrentVDCId(),templateId);
+            }
+            defaultTemplateId = templateId;
+        } else {
+            // add flash message
+            getVDCRenderBean().getFlash().put("warningMessage","The template you are trying to make Default was disabled by another user. Please reload this page to update.");            
+        }
+        return "";
+    }
+   
+    public String updateDefaultAction(Long templateId, Long vdcNetworkId) {
+        // first, verify that the template has not been disabled
+        if (templateService.getTemplate(templateId).isEnabled()) {
+
+                vdcNetworkService.updateDefaultTemplate(templateId, vdcNetworkId);
+
+        } else {
+            // add flash message
+            getVDCRenderBean().getFlash().put("warningMessage","The template you are trying to make Default was disabled by another user. Please reload this page to update.");            
+        }
+        return "";
+    }
+    
+    public boolean isShowDefaultPopup() {
+        return showDefaultPopup;
+    }
+
+    public void setShowDefaultPopup(boolean showDefaultPopup) {
+        this.showDefaultPopup = showDefaultPopup;
+    }
+    
+    private List<VDCNetworkUI> vdcNetworksForDefault = new ArrayList();
+
+    public List<VDCNetworkUI> getVdcNetworksForDefault() {
+        return vdcNetworksForDefault;
+    }
+
+    public void setVdcNetworksForDeafult(List<VDCNetworkUI> vdcNetworksForDefault) {
+        this.vdcNetworksForDefault = vdcNetworksForDefault;
+    }
+    
     public void initDVTerms(){       
             depositTermsOfUse = getVDCRequestBean().getCurrentVDC().getDepositTermsOfUse();
             depositTermsOfUseEnabled = getVDCRequestBean().getCurrentVDC().isDepositTermsOfUseEnabled();
@@ -689,21 +771,6 @@ public class OptionsPage extends VDCBaseBean  implements java.io.Serializable {
         templateList.set(templateIndex, templateService.getTemplate(template.getId()));
     }
     
-    public String updateDefaultAction(Long templateId) {
-        // first, verify that the template has not been disabled
-        if (templateService.getTemplate(templateId).isEnabled()) {
-            if (getVDCRequestBean().getCurrentVDC() == null) {
-                vdcNetworkService.updateDefaultTemplate(templateId);
-            } else {
-                vdcService.updateDefaultTemplate(getVDCRequestBean().getCurrentVDCId(),templateId);
-            }
-            defaultTemplateId = templateId;
-        } else {
-            // add flash message
-            getVDCRenderBean().getFlash().put("warningMessage","The template you are trying to make Default was disabled by another user. Please reload this page to update.");            
-        }
-        return "";
-    }
     
     public String save_action() {
         String forwardPage=null;

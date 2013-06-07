@@ -171,11 +171,13 @@
                                            rendered="#{!template.enabled and !VDCRequest.readOnlyDatabase }" />
                         </ice:column>
                         <ice:column>
-                          <ice:outputText styleClass="dvnManageStudyTemplatesDefault" value="Default" rendered="#{OptionsPage.isDefault(template.id)}"/>
+                          
                           <ice:outputText value="Cannot Make Default" rendered="#{!OptionsPage.isDefault(template.id) and !template.enabled}"/>
 
-                          <ice:commandLink value="Make Default" rendered="#{!OptionsPage.isDefault(template.id) and !VDCRequest.readOnlyDatabase  and template.enabled}" 
-                                           action="#{OptionsPage.updateDefaultAction(template.id)}"/>
+                          <ice:commandLink value="Make Default" rendered="#{!VDCRequest.readOnlyDatabase  and template.enabled and template.vdcSubnetwork.id != VDCRequest.vdcNetwork.id}" 
+                                           action="#{OptionsPage.updateDefaultAction(template.id, template.vdcSubnetwork.id)}"/>
+                          <ice:commandLink value="Make Default" rendered="#{!VDCRequest.readOnlyDatabase  and template.enabled and template.vdcSubnetwork.id == VDCRequest.vdcNetwork.id}" 
+                                           action="#{OptionsPage.toggleDefaultPopup(template.id)}"/>
                         </ice:column>
                         <ice:column>
                           <ice:outputLink rendered="#{!VDCRequest.readOnlyDatabase and ((empty(VDCRequest.currentVDC) and template.network) or (!empty(VDCRequest.currentVDC) and !template.network))}" 

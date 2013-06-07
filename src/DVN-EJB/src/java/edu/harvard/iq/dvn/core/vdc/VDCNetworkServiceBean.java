@@ -420,8 +420,12 @@ public class VDCNetworkServiceBean implements VDCNetworkServiceLocal {
     }
     
     public void updateDefaultTemplate(Long templateId) {
+          updateDefaultTemplate(templateId, new Long(0));
+    }
+    
+    public void updateDefaultTemplate(Long templateId, Long vdcNetworkId) {
         Template template = em.find(Template.class, templateId);
-        find().setDefaultTemplate(template);
+        find(vdcNetworkId).setDefaultTemplate(template);
     }
     
         

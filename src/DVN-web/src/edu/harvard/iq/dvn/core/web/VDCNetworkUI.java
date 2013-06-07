@@ -28,6 +28,7 @@ import edu.harvard.iq.dvn.core.vdc.VDCNetwork;
 public class VDCNetworkUI {
     private VDCNetwork vdcNetwork;
     private Long vdcCount;
+    private Boolean defaultTemplateSelected;
 
     public Long getVdcCount() {
         return vdcCount;
@@ -44,7 +45,13 @@ public class VDCNetworkUI {
     public void setVdcNetwork(VDCNetwork vdcNetwork) {
         this.vdcNetwork = vdcNetwork;
     }
-
     
+        public Boolean getDefaultTemplateSelected() {
+        return defaultTemplateSelected;
+    }
+
+    public void setDefaultTemplateSelected(Boolean defaultTemplateSelected) {
+        this.defaultTemplateSelected = defaultTemplateSelected;
+    }   
 }
 

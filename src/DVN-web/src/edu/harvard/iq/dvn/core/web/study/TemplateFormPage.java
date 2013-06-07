@@ -1078,26 +1078,27 @@ public class TemplateFormPage extends VDCBaseBean implements java.io.Serializabl
 
     public void setSourceTemplateId(Long sourceTemplateId) {
         this.sourceTemplateId = sourceTemplateId;
-    }
-    
-    
-        
+    }       
     
     public String addTemplateAction() {
         return "templateForm";
     }
-    public String save() {    
+    public String save() {  
         boolean isNewTemplate = template.getId() == null;        
         boolean stringValidation = true;
-        String networkId = (String) this.selectSubnetwork.getValue();
-        if (networkId == null){
-           networkId = "0"; 
+        String networkId = "";
+        if (networkSelectItems.isEmpty()) {
+            networkId = "0";
+        } else {
+            networkId = this.selectSubnetwork.getValue().toString();
+            if (networkId.isEmpty()) {
+                networkId = "0";
+            }
         }
+
         VDCNetwork vdcNetwork;
         vdcNetwork = vdcNetworkService.findById(new Long(networkId)); 
-        System.out.print("networkId " + networkId);
         template.setVdcSubnetwork(vdcNetwork);    
-        System.out.print("getvdcsubnetwork " + template.getVdcSubnetwork().getId());
 
         if(StringUtil.isEmpty(template.getName())){
             FacesMessage message = new FacesMessage("Template name is required.");
@@ -1135,8 +1136,6 @@ public class TemplateFormPage extends VDCBaseBean implements java.io.Serializabl
         
         
         editTemplateService.saveWSubnetwork(template);
-        
-                System.out.print("getvdcsubnetwork after save " + template.getVdcSubnetwork().getId());
 
         if (isNewTemplate) {
         getVDCRenderBean().getFlash().put("successMessage", "Successfully added new template.");

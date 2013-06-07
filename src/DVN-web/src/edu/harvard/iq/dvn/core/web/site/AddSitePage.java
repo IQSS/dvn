@@ -116,7 +116,13 @@ public class AddSitePage extends VDCBaseBean implements java.io.Serializable  {
     public void init() {
         super.init();
         //check to see if a dataverse type is in request
-  
+         VDCNetwork checkForSubnetwork = getVDCRequestBean().getCurrentVdcNetwork();
+         if (!checkForSubnetwork.equals(vdcNetworkService.findRootNetwork())) {
+                initSubnetworkId = checkForSubnetwork.getId();
+            } else {
+                initSubnetworkId = new Long (0);
+         }
+         templatesMap = templateService.getVdcNetworkTemplatesMapForAddSitePage(selectSubNetworkId);
 
     }
     
@@ -139,7 +145,17 @@ public class AddSitePage extends VDCBaseBean implements java.io.Serializable  {
         if(defaultTemplate.isDisplayOnCreateDataverse() && selectTemplateId == null){
             selectTemplateId = defaultTemplate.getId();
         } 
-        
+        VDCNetwork checkForSubnetwork = getVDCRequestBean().getCurrentVdcNetwork();
+         if (!checkForSubnetwork.equals(vdcNetworkService.findRootNetwork())) {
+                initSubnetworkId = checkForSubnetwork.getId();
+            } else {
+                initSubnetworkId = new Long (0);
+         }
+         if (selectSubNetworkId == null){
+             selectSubNetworkId = initSubnetworkId;
+         }
+         templatesMap = templateService.getVdcNetworkTemplatesMapForAddSitePage(selectSubNetworkId);
+
     }
 
     //copied from manageclassificationsPage.java
@@ -162,6 +178,7 @@ public class AddSitePage extends VDCBaseBean implements java.io.Serializable  {
     private static String   SCHOLAR_SHORT_DESCRIPTION   = new String("A short description for the research scholar group");
     private static Long   OTHER_ID                      = new Long("-2");
     private static String   OTHER_SHORT_DESCRIPTION     = new String("A short description for the unclassified dataverses group (other).");
+    private Map templatesMap = new HashMap<Object, Object>();
     
      //Manage classification
     
@@ -341,15 +358,20 @@ public class AddSitePage extends VDCBaseBean implements java.io.Serializable  {
             createdVDC.setAffiliation(strAffiliation);
             createdVDC.setDvnDescription(strShortDescription);
             createdVDC.setAnnouncements(strShortDescription); // also set default dv home page description from the the DVN home page short description
-            if (selectSubNetworkId > 0){
+            if (selectSubNetworkId != null && selectSubNetworkId > 0){
                 VDCNetwork vdcNetwork = vdcNetworkService.findById(selectSubNetworkId);
                 createdVDC.setVdcNetwork(vdcNetwork);
             } else {
                  createdVDC.setVdcNetwork(vdcNetworkService.findRootNetwork());
             }
+            Template template = new Template();
+            if (selectTemplateId != null){                
+                template = templateService.getTemplate(selectTemplateId);
 
-            Template template = templateService.getTemplate(selectTemplateId);
-            createdVDC.setDefaultTemplate(template);
+            } else {
+                template = vdcNetworkService.findRootNetwork().getDefaultTemplate();
+            }
+            createdVDC.setDefaultTemplate(template); 
             //on create if description is blank uncheck display flag
             if(strShortDescription.isEmpty()){
                 createdVDC.setDisplayAnnouncements(false);
@@ -412,7 +434,7 @@ public class AddSitePage extends VDCBaseBean implements java.io.Serializable  {
             createdScholarDataverse.setContactEmail(getVDCSessionBean().getLoginBean().getUser().getEmail());
             createdScholarDataverse.setDvnDescription(strShortDescription);
             createdScholarDataverse.setAnnouncements(strShortDescription); // also set default dv home page description from the the DVN home page short description
-            if (selectSubNetworkId > 0){
+            if (selectSubNetworkId != null && selectSubNetworkId > 0){
                 VDCNetwork vdcNetwork = vdcNetworkService.findById(selectSubNetworkId);
                 createdScholarDataverse.setVdcNetwork(vdcNetwork);
             } else {
@@ -552,7 +574,7 @@ public class AddSitePage extends VDCBaseBean implements java.io.Serializable  {
     private List<SelectItem> loadNetworkSelectItems() {
         List selectItems = new ArrayList<SelectItem>();
         List<VDCNetwork> networkList = vdcNetworkService.getVDCSubNetworks();
-        VDCNetwork checkForSubnetwork = getVDCRequestBean().getCurrentVdcNetwork();
+
         if (networkList.size() > 0) {
             selectItems.add(new SelectItem(0, "<None>"));
             for (VDCNetwork vdcNetwork : networkList) {
@@ -561,11 +583,7 @@ public class AddSitePage extends VDCBaseBean implements java.io.Serializable  {
                 }
                 selectItems.add(new SelectItem(vdcNetwork.getId(), vdcNetwork.getName()));
             }
-            if (!checkForSubnetwork.equals(vdcNetworkService.findRootNetwork())) {
-                selectSubNetworkId = checkForSubnetwork.getId();
-            } else {
-                selectSubNetworkId = new Long (0);
-            }
+
         }
         return selectItems;
     }
@@ -724,9 +742,13 @@ public class AddSitePage extends VDCBaseBean implements java.io.Serializable  {
      *
      */
     public Map getTemplatesMap() { 
-        return templateService.getVdcNetworkTemplatesMapForAddSitePage(selectSubNetworkId);
+        
+        return templatesMap; 
     }
-    private Long selectSubNetworkId = new Long(0);
+    
+    private Long initSubnetworkId = new Long(0);
+    
+    private Long selectSubNetworkId;
 
     public Long getSelectSubNetworkId() {
         return selectSubNetworkId;
@@ -747,10 +769,11 @@ public class AddSitePage extends VDCBaseBean implements java.io.Serializable  {
     }
     
     public void changeSubnetworkOption(ValueChangeEvent event) {
+        
         Long newValue = (Long) event.getNewValue();
         this.setSelectSubNetworkId(newValue);
         HttpServletRequest request = (HttpServletRequest) FacesContext.getCurrentInstance().getExternalContext().getRequest();
-        
+        templatesMap = templateService.getVdcNetworkTemplatesMapForAddSitePage(selectSubNetworkId);
         FacesContext.getCurrentInstance().renderResponse();
     }
 

@@ -45,7 +45,7 @@
                     <!-- Search End -->
                     <!-- Main Section starts here -->
                     <div id="dvn_mainSection">
-                        <div jsfc="ice:panelGroup" styleClass="dvn_hmpgMainMessage" rendered="#{(VDCRequest.vdcNetwork.displayAnnouncements == true) and (VDCRequest.currentVDC == null) }" id="networkAnnouncementsHeaderPanel" >
+                        <div jsfc="ice:panelGroup" styleClass="dvn_hmpgMainMessage" rendered="#{(VDCRequest.currentVdcNetwork.displayAnnouncements == true) and (VDCRequest.currentVDC == null) }" id="networkAnnouncementsHeaderPanel" >
                             <ice:outputText id="networkAnnouncementsMessages" escape="false" value="#{homePage.parsedNetworkAnnouncements}"/>
                         </div>
                     </div>

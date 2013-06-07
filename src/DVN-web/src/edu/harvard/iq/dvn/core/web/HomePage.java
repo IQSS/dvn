@@ -461,7 +461,7 @@ public class HomePage extends VDCBaseBean implements Serializable {
 
      public String getParsedNetworkAnnouncements() {
          if (parsedNetworkAnnouncements == null) {
-             parsedNetworkAnnouncements = parseAnnouncements((getVDCRequestBean().getVdcNetwork() != null) ? getVDCRequestBean().getVdcNetwork().getAnnouncements(): "", false);
+             parsedNetworkAnnouncements = parseAnnouncements((getVDCRequestBean().getCurrentVdcNetwork() != null) ? getVDCRequestBean().getCurrentVdcNetwork().getAnnouncements(): "", false);
          }         
          
         return this.parsedNetworkAnnouncements;

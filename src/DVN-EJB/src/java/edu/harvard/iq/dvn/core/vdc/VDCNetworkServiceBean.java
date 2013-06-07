@@ -80,10 +80,6 @@ public class VDCNetworkServiceBean implements VDCNetworkServiceLocal {
         em.persist(vDCNetwork);
     }
     
-    public void create(VDCNetworkStats vDCNetworkStats) {
-        em.persist(vDCNetworkStats);
-    }
-    
 
     public void edit(VDCNetwork vDCNetwork) {
         em.merge(vDCNetwork);

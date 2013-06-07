@@ -22,8 +22,6 @@
     <ui:param name="pageTitle" value="#{bundlePageInfo.createSubnetworksTitle} - #{VDCRequest.dataversePageTitle}"/>
             <ui:define name="metadata">
                 <f:metadata>
-                    <f:viewParam name="edit" value="#{EditSubnetworkPage.edit}"/>
-                    <f:viewParam name="alias" value="#{EditSubnetworkPage.alias}"/>
                     <f:event type="preRenderView" listener="#{EditSubnetworkPage.preRenderView}"/>  
                     <f:event type="preRenderView" listener="#{EditNetworkNamePage.preRenderView}"/>
                     <f:event type="preRenderView" listener="#{EditNetworkAnnouncementsPage.preRenderView}"/>
@@ -115,8 +113,12 @@
                             </td>
                         </tr>
                     </table>
-                    <ui:include src="/networkAdmin/EditNetworkAnnouncementsPage.xhtml"></ui:include>
-                    <ui:include src="/admin/EditBannerFooterPage.xhtml"></ui:include>
+                    <ui:include src="/networkAdmin/EditNetworkAnnouncementsPage.xhtml">
+                        <ui:param name="isSubnetwork" value="true"/>
+                    </ui:include>
+                    <ui:include src="/admin/EditBannerFooterPage.xhtml">
+                        <ui:param name="isSubnetwork" value="true"/>
+                    </ui:include>
                 </div>
                 <div id="groupPanel6" class="dvnFormPadding dvnFormMargin">
                     <ice:commandButton id="btnSaveSettings" value="Save Changes" rendered="#{!VDCRequest.readOnlyDatabase}" action="#{EditSubnetworkPage.saveSubNetworkGeneralSettings_action}"/>

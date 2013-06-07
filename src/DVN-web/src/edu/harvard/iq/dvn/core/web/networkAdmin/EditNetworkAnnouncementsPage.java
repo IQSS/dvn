@@ -84,9 +84,7 @@ public class EditNetworkAnnouncementsPage extends VDCBaseBean implements java.io
      */
     public void init() {
         super.init();    
-    }
-    
-    public void preRenderView(){
+
         String edit = getVDCRequestBean().getRequestParam("edit");
         if (edit !=null && edit.equals("false")){
             addMode = true;

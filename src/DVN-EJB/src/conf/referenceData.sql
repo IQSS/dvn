@@ -1202,7 +1202,7 @@ create index studyfileactivity_study_id_index on studyfileactivity(study_id);
 
 
 
-INSERT INTO vdcnetworkstats (id,downloadcount,studycount,filecount) values (0,0,0,0);
+INSERT INTO vdcnetworkstats (id,vdcnetwork_id,downloadcount,studycount,filecount) values (0,0,0,0,0);
 
  insert into licensetype (id, shortname, name, licenseurl, rdfurl, imageurl) values ( 1, 'cc by', 'CC Attribution (cc by)', 'http://creativecommons.org/licenses/by/3.0/', 'http://creativecommons.org/licenses/by/3.0/rdf', 'http://i.creativecommons.org/l/by/3.0/88x31.png' );
 -- removed until we support cc0

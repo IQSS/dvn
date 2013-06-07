@@ -65,6 +65,22 @@
                         </tr>
                         <tr>
                             <td class="dvnOptionsTableOption">
+                                <ice:outputText value="Subnetwork Short Description "/>
+                            </td>
+                            <td>
+                                <ice:inputTextarea binding="#{EditSubnetworkPage.textFieldShortDescription}"
+                                                   id="subnetworkShortDescription"
+                                                   required="true"
+                                                   requiredMessage="This is required"
+                                                   validator="#{EditSubnetworkPage.validateShortDescription}"
+                                                   value="#{EditSubnetworkPage.shortDescription}"/>
+                                <br/>
+                                <ice:outputText styleClass="vdcHelpText" value="A short description of the subnetwork to be displayed on the home page."/>
+                                <ice:message for="subnetworkShortDescription" showSummary="true" showDetail="false" styleClass="errorMessage"/>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="dvnOptionsTableOption">
                                 <ice:outputText value="Subnetwork Logo "/>
                             </td>
                             <td>

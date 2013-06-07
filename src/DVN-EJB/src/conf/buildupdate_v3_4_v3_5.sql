@@ -20,6 +20,7 @@ ALTER TABLE vdcnetwork ALTER COLUMN creator_id SET STORAGE PLAIN;
 ALTER TABLE vdcnetwork ADD COLUMN released boolean;
 
 ALTER TABLE vdcnetwork ADD COLUMN logo character varying(255);
+ALTER TABLE vdcnetwork ADD COLUMN shortdescription character varying(255);
 
 Alter TABLE template add vdcsubnetwork_id bigint;
 

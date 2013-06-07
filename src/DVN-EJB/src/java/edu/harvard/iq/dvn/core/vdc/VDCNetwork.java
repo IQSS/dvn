@@ -227,6 +227,19 @@ public class VDCNetwork implements java.io.Serializable  {
     }
 
     /**
+     * Short description, used on homepage widget
+     */
+    private String shortDescription;
+
+    public String getShortDescription() {
+        return shortDescription;
+    }
+
+    public void setShortDescription(String shortDescription) {
+        this.shortDescription = shortDescription;
+    }
+
+    /**
      * Holds value of property systemEmail.
      */
     private String systemEmail;

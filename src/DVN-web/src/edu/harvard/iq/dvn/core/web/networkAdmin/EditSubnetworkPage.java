@@ -20,6 +20,7 @@
 package edu.harvard.iq.dvn.core.web.networkAdmin;
 
 import com.icesoft.faces.component.ext.HtmlInputText;
+import com.icesoft.faces.component.ext.HtmlInputTextarea;
 import edu.harvard.iq.dvn.core.admin.VDCUser;
 import edu.harvard.iq.dvn.core.study.Template;
 import edu.harvard.iq.dvn.core.vdc.VDC;
@@ -61,7 +62,16 @@ public class EditSubnetworkPage extends VDCBaseBean implements Serializable  {
     private String originalAlias = "";
     private VDCNetwork originalVDCNetwork = null;
     private boolean addMode = false;
+    private String shortDescription;
     private String logo;
+
+    public String getShortDescription() {
+        return shortDescription;
+    }
+
+    public void setShortDescription(String shortDescription) {
+        this.shortDescription = shortDescription;
+    }
 
     public String getLogo() {
         return logo;
@@ -89,6 +99,7 @@ public class EditSubnetworkPage extends VDCBaseBean implements Serializable  {
             originalAlias = subnetworkAlias;
             subnetworkAffiliation = originalVDCNetwork.getAffiliation();
             chkSubnetworkEnabled = originalVDCNetwork.isReleased();
+            shortDescription = originalVDCNetwork.getShortDescription();
             logo = originalVDCNetwork.getLogo();
         } else {
             addMode = true;
@@ -133,6 +144,16 @@ public class EditSubnetworkPage extends VDCBaseBean implements Serializable  {
         this.textFieldLogo = textFieldLogo;
     }
 
+    private HtmlInputTextarea textFieldShortDescription = new HtmlInputTextarea();
+
+    public HtmlInputTextarea getTextFieldShortDescription() {
+        return textFieldShortDescription;
+    }
+
+    public void setTextFieldShortDescription(HtmlInputTextarea textFieldShortDescription) {
+        this.textFieldShortDescription = textFieldShortDescription;
+    }
+
     public String getSubnetworkAffiliation() {
         return subnetworkAffiliation;
     }
@@ -165,6 +186,7 @@ public class EditSubnetworkPage extends VDCBaseBean implements Serializable  {
             originalVDCNetwork.setUrlAlias(subnetworkAlias);
             originalVDCNetwork.setAffiliation(subnetworkAffiliation);  
             originalVDCNetwork.setReleased(chkSubnetworkEnabled);
+            originalVDCNetwork.setShortDescription(shortDescription);
             originalVDCNetwork.setLogo(logo);
             vdcNetworkService.edit(originalVDCNetwork);
             getVDCRenderBean().getFlash().put("successMessage", "Successfully updated subnetwork.");
@@ -191,6 +213,7 @@ public class EditSubnetworkPage extends VDCBaseBean implements Serializable  {
             createdNetwork.setRequireDVclassification(rootNetwork.isRequireDVclassification());
             createdNetwork.setRequireDVstudiesforrelease(rootNetwork.isRequireDVstudiesforrelease());
             createdNetwork.setReleased(chkSubnetworkEnabled);
+            createdNetwork.setShortDescription(shortDescription);
             createdNetwork.setLogo(logo);
             vdcNetworkService.edit(createdNetwork);
             getVDCSessionBean().setVdcNetwork(createdNetwork);
@@ -223,5 +246,27 @@ public class EditSubnetworkPage extends VDCBaseBean implements Serializable  {
             context.addMessage(toValidate.getClientId(context), message);
         }    
     }    
+
+    // copied from AddSitePage and modified
+    public void validateShortDescription(FacesContext context,
+            UIComponent toValidate,
+            Object value) {
+        String newValue = (String) value;
+        if (newValue != null && newValue.trim().length() > 0) {
+            if (newValue.length() > 255) {
+                ((UIInput) toValidate).setValid(false);
+                FacesMessage message = new FacesMessage("The field cannot be more than 255 characters in length.");
+                context.addMessage(toValidate.getClientId(context), message);
+            }
+        }
+        // does this work? relying on required="true" in ice:inputTextarea
+//        if ((newValue == null || newValue.trim().length() == 0)) {
+        if (newValue == null || newValue.trim().length() == 0 || newValue.isEmpty() ) {
+            FacesMessage message = new FacesMessage("The field must have a value.");
+            context.addMessage(toValidate.getClientId(context), message);
+            ((UIInput) toValidate).setValid(false);
+            context.renderResponse();
+        }
+    }
 }
 

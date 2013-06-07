@@ -49,9 +49,11 @@ import java.text.NumberFormat;
 import java.util.*;
 import javax.ejb.EJB;
 import javax.faces.bean.ViewScoped;
+import javax.faces.context.FacesContext;
 import javax.faces.event.ValueChangeEvent;
 import javax.inject.Inject;
 import javax.inject.Named;
+import javax.servlet.http.HttpServletRequest;
 
 @ViewScoped
 @Named
@@ -627,7 +629,19 @@ public class HomePage extends VDCBaseBean implements Serializable {
         return truncatedAnnouncements;
     }
 
+    public String getSubNetworkLogoUrl(String logo) {
+        HttpServletRequest request = (HttpServletRequest) FacesContext.getCurrentInstance().getExternalContext().getRequest();
+        StringBuffer requestURLbuffer = request.getRequestURL();
+        String[] requestURLparts = new String(requestURLbuffer).split(":");
+        String httpOrHttps = requestURLparts[0];
+        String hostName = request.getLocalName();
+        int port = request.getLocalPort();
+        String portStr = "";
+        if (port != 80) {
+            portStr = ":" + port;
+        }
+        String logoUrl = httpOrHttps + "://" + hostName + portStr + "/images/" + logo;
+        return logoUrl;
+    }
 
- 
-    
 }

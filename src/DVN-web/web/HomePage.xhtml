@@ -234,7 +234,7 @@
                                         <div class="content">
                                             <div jsfc="ice:panelGroup" styleClass="dvnHmpgSubnetworkLogo" rendered="#{!empty vdcSubnetwork.vdcNetwork.logo}">
                                                 <ice:outputLink id="subnetwork_imglink" value="/dvn/dataverses/#{vdcSubnetwork.vdcNetwork.urlAlias}" title="#{vdcSubnetwork.vdcNetwork.name} Dataverses">
-                                                    <ice:graphicImage value="#{vdcSubnetwork.vdcNetwork.logo}" alt="#{vdcSubnetwork.vdcNetwork.name} Dataverses"/>
+                                                    <ice:graphicImage value="#{homePage.getSubNetworkLogoUrl(vdcSubnetwork.vdcNetwork.logo)}" alt="#{vdcSubnetwork.vdcNetwork.name} Dataverses"/>
                                                 </ice:outputLink>
                                             </div>
                                             <div class="dvnHmpgSubnetworkInfo">

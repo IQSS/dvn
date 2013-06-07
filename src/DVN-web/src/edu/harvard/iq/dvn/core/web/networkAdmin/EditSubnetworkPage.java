@@ -53,8 +53,6 @@ public class EditSubnetworkPage extends VDCBaseBean implements Serializable  {
     @Inject EditNetworkNamePage editNetworkNamePage;
     @Inject EditBannerFooterPage editBannerFooterPage;
     @Inject EditNetworkAnnouncementsPage editNetworkAnnouncementsPage;
-    private String edit = null;
-    private String alias = null;
     private String subnetworkAlias = "";
     private String subnetworkAffiliation = ""; 
     private boolean chkSubnetworkEnabled = false;
@@ -83,16 +81,7 @@ public class EditSubnetworkPage extends VDCBaseBean implements Serializable  {
 
     public void init() {
         super.init();
-
-    }
-    
-    public String getAlias() {return alias;}
-    public void setAlias(String alias) {this.alias = alias;}
-    public String getEdit() {return edit;}
-    public void setEdit(String edit) {this.edit = edit;}
-    
-    
-    public void preRenderView(){
+        
         if (!getVDCRequestBean().getCurrentVdcNetworkURL().isEmpty()){   
             originalVDCNetwork = getVDCRequestBean().getCurrentVdcNetwork();
             subnetworkAlias = originalVDCNetwork.getUrlAlias();
@@ -103,9 +92,10 @@ public class EditSubnetworkPage extends VDCBaseBean implements Serializable  {
             logo = originalVDCNetwork.getLogo();
         } else {
             addMode = true;
-        }       
-    }    
+        }         
 
+    }
+    
     private HtmlInputText textFieldSubnetworkAlias = new HtmlInputText();
 
     public HtmlInputText getTextFieldSubnetworkAlias() {

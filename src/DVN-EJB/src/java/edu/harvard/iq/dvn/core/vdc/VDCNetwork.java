@@ -30,12 +30,9 @@ import edu.harvard.iq.dvn.core.study.Study;
 import edu.harvard.iq.dvn.core.study.Template;
 import java.util.Collection;
 import java.util.Date;
-import javax.faces.context.ExternalContext;
-import javax.faces.context.FacesContext;
 import javax.persistence.Id;
 import javax.persistence.Entity;
 import javax.persistence.*;
-import javax.servlet.http.HttpServletRequest;
 
 /**
  *
@@ -222,18 +219,7 @@ public class VDCNetwork implements java.io.Serializable  {
     private String logo;
 
     public String getLogo() {
-        HttpServletRequest request = (HttpServletRequest) FacesContext.getCurrentInstance().getExternalContext().getRequest();
-        StringBuffer requestURLbuffer = request.getRequestURL();
-        String[] requestURLparts = new String(requestURLbuffer).split(":");
-        String httpOrHttps = requestURLparts[0];
-        String hostName = request.getLocalName();
-        int port = request.getLocalPort();
-        String portStr = "";
-        if (port != 80) {
-            portStr = ":" + port;
-        }
-        String logoUrl = httpOrHttps + "://" + hostName + portStr + "/images/" + logo;
-        return logoUrl;
+        return logo;
     }
 
     public void setLogo(String logo) {

@@ -49,7 +49,8 @@
                     <table class="dvnOptionsTable" cellspacing="0" cellpadding="0" border="0">
                         <tr>
                             <td class="dvnOptionsTableOption">
-                                <ice:outputText value="Subnetwork Alias "/>
+                                <ice:outputText value="Subnetwork Alias"/>
+                                <ice:graphicImage value="#{bundle.iconRequired}"/>
                             </td>
                             <td>
                                 <ice:inputText binding="#{EditSubnetworkPage.textFieldSubnetworkAlias}"
@@ -59,13 +60,14 @@
                                                 validator="#{EditSubnetworkPage.validateAlias}"
                                                 value="#{EditSubnetworkPage.subnetworkAlias}"/>
                                 <br/>
-                                <ice:outputText styleClass="vdcHelpText" value="Short name used to build the URL for this subnetwork, e.g., http://.../dvn/dataverses/'alias'. It is case sensitive."/>
+                                <ice:outputText styleClass="vdcHelpText" value="Short name used to build the URL for this Subnetwork, e.g., http://.../dvn/dataverses/'alias'. It is case sensitive."/>
                                 <ice:message for="subnetworkAlias" showSummary="true" showDetail="false" styleClass="errorMessage"/>
                             </td>
                         </tr>
                         <tr>
                             <td class="dvnOptionsTableOption">
-                                <ice:outputText value="Subnetwork Short Description "/>
+                                <ice:outputText value="Subnetwork Short Description"/>
+                                <ice:graphicImage value="#{bundle.iconRequired}"/>
                             </td>
                             <td>
                                 <ice:inputTextarea binding="#{EditSubnetworkPage.textFieldShortDescription}"
@@ -75,13 +77,13 @@
                                                    validator="#{EditSubnetworkPage.validateShortDescription}"
                                                    value="#{EditSubnetworkPage.shortDescription}"/>
                                 <br/>
-                                <ice:outputText styleClass="vdcHelpText" value="A short description of the subnetwork to be displayed on the home page."/>
+                                <ice:outputText styleClass="vdcHelpText" value="A short description of the Subnetwork to be displayed on the Network Homepage."/>
                                 <ice:message for="subnetworkShortDescription" showSummary="true" showDetail="false" styleClass="errorMessage"/>
                             </td>
                         </tr>
                         <tr>
                             <td class="dvnOptionsTableOption">
-                                <ice:outputText value="Subnetwork Logo "/>
+                                <ice:outputText value="Subnetwork Logo"/>
                             </td>
                             <td>
                                 <ice:inputText binding="#{EditSubnetworkPage.textFieldLogo}"
@@ -91,7 +93,7 @@
                                                 <!--required="true"-->
                                                 <!--requiredMessage="This is required"-->
                                 <br/>
-                                <ice:outputText styleClass="vdcHelpText" value="Filename of 160x160px image (i.e. png, gif, jpg) previously placed in domain1/docroot/images directory."/>
+                                <ice:outputText styleClass="vdcHelpText" value="Subnetwork logo will be displayed in the Subnetwork widget on the Network Homepage. Enter the file name of the 160x160px image (i.e. png, gif, jpg), previously placed in the 'domain1/docroot/images' directory."/>
                                 <ice:message for="subnetworkLogo" showSummary="true" showDetail="false" styleClass="errorMessage"/>
                             </td>
                         </tr>
@@ -101,12 +103,12 @@
                             </td>
                             <td>
                                 <ice:selectBooleanCheckbox id="chkEnableSubnetwork" value="#{EditSubnetworkPage.chkSubnetworkEnabled}"/>
-                                <ice:outputText styleClass="vdcHelpText" value="Enable this subnetwork."/>
+                                <ice:outputText styleClass="vdcHelpText" value="Enable this Subnetwork."/>
                             </td>
                         </tr>
                         <tr>
                             <td class="dvnOptionsTableOption">
-                                <ice:outputText value="Affiliation"/>
+                                <ice:outputText value="Subnetwork Affiliation"/>
                             </td>
                             <td>
                                 <ice:inputText id="subnetworkAffiliation" value="#{EditSubnetworkPage.subnetworkAffiliation}"/>

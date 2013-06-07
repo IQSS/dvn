@@ -116,16 +116,19 @@ public class VDCNetworkStatsServiceBean implements VDCNetworkStatsServiceLocal {
         for (VDCNetwork vdcNetwork : vdcNetworks) {
             Long vdcNetwork_id = vdcNetwork.getId();
             VDCNetworkStats vdcNetworkStats = getVDCNetworkStatsByNetworkId(vdcNetwork_id);
+
             // root network
-            if (vdcNetworkStats != null && vdcNetwork_id.intValue() == vdcNetworkService.findRootNetwork().getId().intValue()) {
+            if (vdcNetwork_id.intValue() == vdcNetworkService.findRootNetwork().getId().intValue()) {
                 Long releasedStudies = vdcNetworkService.getTotalStudies(true);
                 Long releasedFiles = vdcNetworkService.getTotalFiles(true);
                 Long downloadCount = vdcNetworkService.getTotalDownloads(true);
                 logger.log(Level.FINE, "releasedStudies =" + releasedStudies + "releasedFiles=" + releasedFiles);
+                
                 vdcNetworkStats.setStudyCount(releasedStudies);
                 vdcNetworkStats.setFileCount(releasedFiles);
                 vdcNetworkStats.setDownloadCount(downloadCount);
-            } else if (vdcNetworkStats != null) { // subnetworks
+                
+            } else { // subnetworks
                 Long releasedStudies = vdcNetworkService.getTotalStudiesBySubnetwork(vdcNetwork_id, true);
                 Long releasedFiles = vdcNetworkService.getTotalFilesBySubnetwork(vdcNetwork_id, true);
                 Long downloadCount = vdcNetworkService.getTotalDownloadsBySubnetwork(vdcNetwork_id, true);
@@ -139,7 +142,8 @@ public class VDCNetworkStatsServiceBean implements VDCNetworkStatsServiceLocal {
                     releasedStudies +=varList.size();
                     downloadCount += studyService.getStudyDownloadCount(varList);
                     releasedFiles += studyService.getStudyFileCount(varList);
-                }                   
+                }         
+                
                 vdcNetworkStats.setStudyCount(releasedStudies);
                 vdcNetworkStats.setFileCount(releasedFiles);
                 vdcNetworkStats.setDownloadCount(downloadCount);

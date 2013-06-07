@@ -172,6 +172,7 @@ public interface StudyServiceLocal extends java.io.Serializable {
 
     //?
     public List<Long> getAllStudyIds();
+    public List<Long> getAllLinkedStudyIds();
 
     //3
     public void exportStudy(Long studyId);

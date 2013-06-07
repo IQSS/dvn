@@ -540,7 +540,8 @@ public class StudyListingPage extends VDCBaseBean implements java.io.Serializabl
                         Query dynamicQuery = parser.parse(queryString);
                         if (isLocalScope) {
                             BooleanQuery dynamicLocal = new BooleanQuery();
-                            Query dvOwnerIdQuery = indexService.constructDvOwnerIdQuery(getVDCRequestBean().getCurrentVDC());
+                            //Query dvOwnerIdQuery = indexService.constructDvOwnerIdQuery(getVDCRequestBean().getCurrentVDC());
+                            Query dvOwnerIdQuery = indexService.constructDvOwnerIdQuery(col.getOwner());
                             dynamicLocal.add(dynamicQuery, BooleanClause.Occur.MUST);
                             dynamicLocal.add(dvOwnerIdQuery, BooleanClause.Occur.MUST);
                             finalQuery = dynamicLocal;

@@ -24,13 +24,6 @@
                     <!-- what is this? --> <ice:outputText id="statusMessage" styleClass="#{AddSitePage.msg.styleClass}" value="#{AddSitePage.msg.messageText}"/>
                     <script type="text/javascript">
                         //<![CDATA[
-                        function changeValue(obj) {
-                            if (window.event)
-                                { 
-                                  obj.value = window.event.srcElement.value;
-                               }                                                           
-                            document.getElementById('addsiteform').submit();
-                        }
                         //init the hidden fields
                         function showAll(){
                             var theForm = document.getElementById('addsiteform');
@@ -97,7 +90,7 @@
                                             <ice:selectOneRadio id="dataverseType"
                                                                 layout="pageDirection"
                                                                 immediate="true"
-                                                                onclick="changeValue(this);"
+                                                                partialSubmit="true"
                                                                 value="#{AddSitePage.dataverseType}"
                                                                 valueChangeListener="#{AddSitePage.changeDataverseOption}"
                                                                 required="true"
@@ -196,7 +189,7 @@
                                         </ice:column>
                                         <ice:column rendered="#{!empty(AddSitePage.networkSelectItems) }">
                                             <ice:selectOneMenu immediate="true" id="subnetwork"  
-                                                                onclick="changeValue(this);"
+                                                                partialSubmit="true"
                                                                 binding="#{AddSitePage.selectSubnetwork}" 
                                                                 value="#{AddSitePage.selectSubNetworkId}"
                                                                 valueChangeListener="#{AddSitePage.changeSubnetworkOption}">

@@ -21,7 +21,6 @@ import edu.harvard.iq.dvn.core.mail.MailServiceLocal;
 import edu.harvard.iq.dvn.core.study.*;
 import edu.harvard.iq.dvn.core.util.*;
 import edu.harvard.iq.dvn.core.vdc.*;
-import edu.harvard.iq.dvn.core.web.DataverseGrouping;
 import edu.harvard.iq.dvn.core.web.VDCNetworkUI;
 import edu.harvard.iq.dvn.core.web.VDCUIList;
 import edu.harvard.iq.dvn.core.web.collection.CollectionUI;
@@ -36,7 +35,6 @@ import edu.harvard.iq.dvn.core.web.site.EditSitePage;
 import edu.harvard.iq.dvn.core.web.site.VDCUI;
 import edu.harvard.iq.dvn.core.web.study.StudyCommentUI;
 import edu.harvard.iq.dvn.core.web.util.CharacterValidator;
-import edu.harvard.iq.dvn.core.web.util.ExceptionMessageWriter;
 import edu.harvard.iq.dvn.core.web.util.XhtmlValidator;
 import java.io.*;
 import java.net.MalformedURLException;
@@ -59,7 +57,6 @@ import javax.faces.context.FacesContext;
 import javax.faces.event.ActionEvent;
 import javax.faces.event.ValueChangeEvent;
 import javax.faces.model.SelectItem;
-import javax.faces.context.ExternalContext;
 import javax.inject.Inject;
 import javax.inject.Named;
 import javax.persistence.EntityManager;
@@ -347,6 +344,15 @@ public class OptionsPage extends VDCBaseBean  implements java.io.Serializable {
         
     }
     
+    // variables for template management
+    private Map<VDCNetwork,Long> defaultNetworkTemplateMap = new HashMap(); // stores a Map of VDCNetworks to their default template id
+    
+    private boolean showDefaultPopup = false;
+    private List<VDCNetworkUI> vdcNetworksForDefault;  // used by the default template popup
+    private Long defaultTemplatePopupId = null; // used by the default template popup   
+
+
+    
     public void initTemplates() {
         if (getVDCRequestBean().getCurrentVDC() != null) {
             templateList = templateService.getEnabledNetworkTemplates();
@@ -356,7 +362,7 @@ public class OptionsPage extends VDCBaseBean  implements java.io.Serializable {
             templateList = templateService.getNetworkTemplates();
             defaultTemplateId = getVDCRequestBean().getVdcNetwork().getDefaultTemplate().getId();
         }
-
+       
         // whether a template is being used determines if it can be removed or not (initialized here, so the page doesn't call thew service bean multiple times)
         for (Template template : templateList) {
             if (templateService.isTemplateUsed(template.getId())) {
@@ -364,42 +370,52 @@ public class OptionsPage extends VDCBaseBean  implements java.io.Serializable {
             }
             if (templateService.isTemplateUsedAsVDCDefault(template.getId())) {
                 templateinsUseAsVDCDefaultList.add(template.getId());
-            }
+            }    
         }
+        
+        // initialize the defaultNetworkTemplateMap
+        for (VDCNetwork vdcNetwork : vdcNetworkService.getVDCNetworks()) {  
+            defaultNetworkTemplateMap.put(vdcNetwork, vdcNetwork.getDefaultTemplate().getId());
+        }      
     }
     
-    private boolean showDefaultPopup = false;
-    private Long defaultTemplatePopupId = new Long(0);
+    public boolean isNetworkDefault(Long templateId) {return defaultNetworkTemplateMap.containsValue(templateId);} 
     
-    public void toggleDefaultPopup(Long templateId) { 
-        vdcNetworksForDefault.clear();
-        defaultTemplatePopupId = new Long(templateId);
-        System.out.print("templateId.intValue() " + templateId.intValue());
-         if(templateId.intValue() > 0){
-             for (VDCNetwork vdcNetwork : vdcNetworkService.getVDCNetworks()){
-                 VDCNetworkUI vdcNetworkUI = new VDCNetworkUI();
-                 vdcNetworkUI.setVdcNetwork(vdcNetwork);
-                 if(vdcNetwork.getDefaultTemplate().getId().equals(templateId)){
-                    vdcNetworkUI.setDefaultTemplateSelected(true); 
-                 } else {
-                    vdcNetworkUI.setDefaultTemplateSelected(false); 
-                 }
-                 vdcNetworksForDefault.add(vdcNetworkUI);
-             }                                    
-         }
-         showDefaultPopup = !showDefaultPopup;
+    public List<VDCNetworkUI> getDefaultTemplateList(Long templateId) {
+        List<VDCNetworkUI> templateVDCNetworkUIs = new ArrayList();
+        
+        for (VDCNetwork vdcNetwork : defaultNetworkTemplateMap.keySet()) {
+            VDCNetworkUI vdcNetworkUI = new VDCNetworkUI();
+            vdcNetworkUI.setVdcNetwork(vdcNetwork);
+            if (defaultNetworkTemplateMap.get(vdcNetwork).equals(templateId)) {
+                vdcNetworkUI.setDefaultTemplateSelected(true);
+            } else {
+                vdcNetworkUI.setDefaultTemplateSelected(false);
+            }
+            templateVDCNetworkUIs.add(vdcNetworkUI);
+        }        
+        return templateVDCNetworkUIs;
     }
     
+    
+    public void toggleDefaultPopup(Long templateId) {
+        defaultTemplatePopupId = templateId;
+        vdcNetworksForDefault = getDefaultTemplateList(templateId);
+
+        showDefaultPopup = !showDefaultPopup;
+    }
+
     public void saveDefaultTemplates(){
         
         for (VDCNetworkUI vdcNetworkUI: vdcNetworksForDefault ){
             if (vdcNetworkUI.getDefaultTemplateSelected()){
-                VDCNetwork vdcNetwork = vdcNetworkUI.getVdcNetwork(); 
+                VDCNetwork vdcNetwork = vdcNetworkUI.getVdcNetwork();                               
                 vdcNetworkService.updateDefaultTemplate(defaultTemplatePopupId, vdcNetwork.getId());
+                defaultNetworkTemplateMap.put(vdcNetwork, defaultTemplatePopupId);
             }
         }
         
-         showDefaultPopup = !showDefaultPopup;
+        showDefaultPopup = !showDefaultPopup;
     }
     
    public String updateDefaultAction(Long templateId) {
@@ -418,11 +434,11 @@ public class OptionsPage extends VDCBaseBean  implements java.io.Serializable {
         return "";
     }
    
-    public String updateDefaultAction(Long templateId, Long vdcNetworkId) {
+    public String updateDefaultAction(Long templateId, VDCNetwork vdcNetwork) {
         // first, verify that the template has not been disabled
-        if (templateService.getTemplate(templateId).isEnabled()) {
-
-                vdcNetworkService.updateDefaultTemplate(templateId, vdcNetworkId);
+        if (templateService.getTemplate(templateId).isEnabled()) {                
+                vdcNetworkService.updateDefaultTemplate(templateId, vdcNetwork.getId());
+                defaultNetworkTemplateMap.put(vdcNetwork, templateId);
 
         } else {
             // add flash message
@@ -438,17 +454,12 @@ public class OptionsPage extends VDCBaseBean  implements java.io.Serializable {
     public void setShowDefaultPopup(boolean showDefaultPopup) {
         this.showDefaultPopup = showDefaultPopup;
     }
-    
-    private List<VDCNetworkUI> vdcNetworksForDefault = new ArrayList();
 
     public List<VDCNetworkUI> getVdcNetworksForDefault() {
         return vdcNetworksForDefault;
     }
 
-    public void setVdcNetworksForDeafult(List<VDCNetworkUI> vdcNetworksForDefault) {
-        this.vdcNetworksForDefault = vdcNetworksForDefault;
-    }
-    
+     
     public void initDVTerms(){       
             depositTermsOfUse = getVDCRequestBean().getCurrentVDC().getDepositTermsOfUse();
             depositTermsOfUseEnabled = getVDCRequestBean().getCurrentVDC().isDepositTermsOfUseEnabled();

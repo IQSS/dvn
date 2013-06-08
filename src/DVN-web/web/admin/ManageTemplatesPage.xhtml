@@ -157,12 +157,13 @@
                   <f:facet name="header">
                     <ice:outputText value="Default Template For"/>
                   </f:facet>
-                  <ice:outputText value="#{vdcNetworkUI.defaultTemplateSelected.name}, Subnetwork1, Subnetwork2, Subnetwork3"/>
-                  
-                    <ice:outputText value="Cannot Make Default" style="color:grey;font-style:italic;" rendered="#{!OptionsPage.isDefault(template.id) and !template.enabled}"/>
-
+                    <ui:repeat value="#{OptionsPage.getDefaultTemplateList(template.id)}" var="vdcNetworkUI">
+                        <ice:outputText value="#{vdcNetworkUI.vdcNetwork.name}" rendered="#{vdcNetworkUI.defaultTemplateSelected}"/>
+                    </ui:repeat>
+                    
+                    <ice:outputText value="Cannot Make Default" style="color:grey;font-style:italic;" rendered="#{!OptionsPage.isNetworkDefault(template.id) and !template.enabled}"/>
                     <ice:commandLink value="Make Default" rendered="#{!VDCRequest.readOnlyDatabase  and template.enabled and template.vdcSubnetwork.id != VDCRequest.vdcNetwork.id}" 
-                                    action="#{OptionsPage.updateDefaultAction(template.id, template.vdcSubnetwork.id)}"/>
+                                    action="#{OptionsPage.updateDefaultAction(template.id, template.vdcSubnetwork)}"/>
                     <ice:commandLink value="Make Default" rendered="#{!VDCRequest.readOnlyDatabase  and template.enabled and template.vdcSubnetwork.id == VDCRequest.vdcNetwork.id}" 
                                     action="#{OptionsPage.toggleDefaultPopup(template.id)}"/>
                 </ice:column>
@@ -173,11 +174,11 @@
                     <ice:panelGrid cellpadding="0" cellspacing="0" border="0" columns="4" width="100%"
                                    styleClass="dvnManageStudyTemplatesActionTable">
                         <ice:column>
-                          <ice:outputText value="Cannot Disable" rendered="#{(template.enabled or !VDCRequest.readOnlyDatabase)  and (OptionsPage.isDefault(template.id) 
+                          <ice:outputText value="Cannot Disable" rendered="#{(template.enabled or !VDCRequest.readOnlyDatabase)  and (OptionsPage.isNetworkDefault(template.id) 
                                                        or (empty(VDCRequest.currentVDC) and OptionsPage.isVDCDefault(template.id)) 
                                                        or (!empty(VDCRequest.currentVDC) and template.network))}" />
                           <ice:commandLink value="Disable" action="#{OptionsPage.updateEnabledAction(template.id)}"
-                                           rendered="#{template.enabled and !VDCRequest.readOnlyDatabase and !(OptionsPage.isDefault(template.id) 
+                                           rendered="#{template.enabled and !VDCRequest.readOnlyDatabase and !(OptionsPage.isNetworkDefault(template.id) 
                                                        or (empty(VDCRequest.currentVDC) and OptionsPage.isVDCDefault(template.id)) 
                                                        or (!empty(VDCRequest.currentVDC) and template.network))}" />
                           <ice:commandLink value="Enable" action="#{OptionsPage.updateEnabledAction(template.id)}"
@@ -201,9 +202,9 @@
                           </ice:outputLink>
                         </ice:column>
                         <ice:column>
-                          <ice:outputText rendered="#{VDCRequest.readOnlyDatabase or (!empty(VDCRequest.currentVDC) and template.network) or OptionsPage.isInUse(template.id) or  OptionsPage.isVDCDefault(template.id) or OptionsPage.isDefault(template.id)}"
+                          <ice:outputText rendered="#{VDCRequest.readOnlyDatabase or (!empty(VDCRequest.currentVDC) and template.network) or OptionsPage.isInUse(template.id) or  OptionsPage.isVDCDefault(template.id) or OptionsPage.isNetworkDefault(template.id)}"
                                           value="Cannot Delete"/>
-                          <ice:outputLink rendered="#{!( !empty(VDCRequest.currentVDC) and template.network) and !OptionsPage.isInUse(template.id) and !VDCRequest.readOnlyDatabase and !OptionsPage.isVDCDefault(template.id) and !OptionsPage.isDefault(template.id)}" 
+                          <ice:outputLink rendered="#{!( !empty(VDCRequest.currentVDC) and template.network) and !OptionsPage.isInUse(template.id) and !VDCRequest.readOnlyDatabase and !OptionsPage.isVDCDefault(template.id) and !OptionsPage.isNetworkDefault(template.id)}" 
                                           value="/dvn#{VDCRequest.currentVDCURL}/faces/study/DeleteTemplatePage.xhtml?templateId=#{template.id}">
                             <ice:outputText value="Delete" nospan="true"/>
                           </ice:outputLink>

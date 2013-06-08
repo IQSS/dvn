@@ -91,7 +91,6 @@ public class AddSitePage extends VDCBaseBean implements java.io.Serializable  {
     RoleServiceLocal roleService;
     @EJB
     MailServiceLocal mailService;
-    @EJB TemplateServiceLocal templateService;
     StatusMessage msg;
     
     //private BundleReader messagebundle = new BundleReader("Bundle");
@@ -118,13 +117,10 @@ public class AddSitePage extends VDCBaseBean implements java.io.Serializable  {
         //check to see if a dataverse type is in request
          VDCNetwork checkForSubnetwork = getVDCRequestBean().getCurrentVdcNetwork();
          if (!checkForSubnetwork.equals(vdcNetworkService.findRootNetwork())) {
-                initSubnetworkId = checkForSubnetwork.getId();
+                selectSubNetworkId = checkForSubnetwork.getId();
             } else {
-                initSubnetworkId = new Long (0);
-         }
-         selectSubNetworkId = new Long(initSubnetworkId);
-         templatesMap = templateService.getVdcNetworkTemplatesMapForAddSitePage(selectSubNetworkId);
-
+                selectSubNetworkId = new Long (0);
+         }    
     }
     
     public void preRenderView(){
@@ -136,33 +132,11 @@ public class AddSitePage extends VDCBaseBean implements java.io.Serializable  {
                 this.setDataverseType(request.getParameter((String) key));
             }
         }
-        networkSelectItems = loadNetworkSelectItems();
-        if (getVDCRequestBean().getCurrentVdcNetwork().getDefaultTemplate() == null){
-            defaultTemplateId =  vdcNetworkService.findRootNetwork().getDefaultTemplate().getId();
-        } else {
-            defaultTemplateId = getVDCRequestBean().getCurrentVdcNetwork().getDefaultTemplate().getId();
-        }       
-        Template defaultTemplate = templateService.getTemplate(defaultTemplateId);
-        if(defaultTemplate.isDisplayOnCreateDataverse() && selectTemplateId == null){
-            selectTemplateId = defaultTemplate.getId();
-        } 
-        VDCNetwork checkForSubnetwork = getVDCRequestBean().getCurrentVdcNetwork();
-         if (!checkForSubnetwork.equals(vdcNetworkService.findRootNetwork())) {
-                initSubnetworkId = checkForSubnetwork.getId();
-            } else {
-                initSubnetworkId = new Long (0);
-         }
-         if (selectSubNetworkId == null){
-             selectSubNetworkId = initSubnetworkId;
-         }
-         templatesMap = templateService.getVdcNetworkTemplatesMapForAddSitePage(selectSubNetworkId);
-
+        networkSelectItems = loadNetworkSelectItems();  
     }
 
     //copied from manageclassificationsPage.java
     private boolean result;
-    
-    private Long defaultTemplateId;
  
      //fields from dvrecordsmanager
     private ArrayList itemBeans = new ArrayList();
@@ -179,7 +153,6 @@ public class AddSitePage extends VDCBaseBean implements java.io.Serializable  {
     private static String   SCHOLAR_SHORT_DESCRIPTION   = new String("A short description for the research scholar group");
     private static Long   OTHER_ID                      = new Long("-2");
     private static String   OTHER_SHORT_DESCRIPTION     = new String("A short description for the unclassified dataverses group (other).");
-    private Map templatesMap = new HashMap<Object, Object>();
     
      //Manage classification
     
@@ -343,8 +316,6 @@ public class AddSitePage extends VDCBaseBean implements java.io.Serializable  {
         String strShortDescription = (String) shortDescription.getValue();
         Long userId = getVDCSessionBean().getLoginBean().getUser().getId();
 
-
-
         boolean success = true;
         if (validateClassificationCheckBoxes()) {
             vdcService.create(userId, name, alias, dtype);
@@ -359,20 +330,19 @@ public class AddSitePage extends VDCBaseBean implements java.io.Serializable  {
             createdVDC.setAffiliation(strAffiliation);
             createdVDC.setDvnDescription(strShortDescription);
             createdVDC.setAnnouncements(strShortDescription); // also set default dv home page description from the the DVN home page short description
+            VDCNetwork vdcNetwork;
+            
             if (selectSubNetworkId != null && selectSubNetworkId > 0){
-                VDCNetwork vdcNetwork = vdcNetworkService.findById(selectSubNetworkId);
+                vdcNetwork = vdcNetworkService.findById(selectSubNetworkId);
                 createdVDC.setVdcNetwork(vdcNetwork);
             } else {
-                 createdVDC.setVdcNetwork(vdcNetworkService.findRootNetwork());
-            }
-            Template template = new Template();
-            if (selectTemplateId != null){                
-                template = templateService.getTemplate(selectTemplateId);
-
-            } else {
-                template = vdcNetworkService.findRootNetwork().getDefaultTemplate();
-            }
+                vdcNetwork = vdcNetworkService.findRootNetwork();
+                createdVDC.setVdcNetwork(vdcNetwork);
+            } 
+            //Set template to the network's default template
+            Template template = vdcNetwork.getDefaultTemplate();
             createdVDC.setDefaultTemplate(template); 
+            
             //on create if description is blank uncheck display flag
             if(strShortDescription.isEmpty()){
                 createdVDC.setDisplayAnnouncements(false);
@@ -435,12 +405,18 @@ public class AddSitePage extends VDCBaseBean implements java.io.Serializable  {
             createdScholarDataverse.setContactEmail(getVDCSessionBean().getLoginBean().getUser().getEmail());
             createdScholarDataverse.setDvnDescription(strShortDescription);
             createdScholarDataverse.setAnnouncements(strShortDescription); // also set default dv home page description from the the DVN home page short description
+            VDCNetwork vdcNetwork;
             if (selectSubNetworkId != null && selectSubNetworkId > 0){
-                VDCNetwork vdcNetwork = vdcNetworkService.findById(selectSubNetworkId);
+                 vdcNetwork = vdcNetworkService.findById(selectSubNetworkId);
                 createdScholarDataverse.setVdcNetwork(vdcNetwork);
             } else {
-                createdScholarDataverse.setVdcNetwork(vdcNetworkService.findRootNetwork());
+                 vdcNetwork = vdcNetworkService.findRootNetwork();
+                createdScholarDataverse.setVdcNetwork(vdcNetwork);
             }
+            //Set default template to subnet's default template
+            Template template = vdcNetwork.getDefaultTemplate();
+            createdScholarDataverse.setDefaultTemplate(template); 
+            
             vdcService.edit(createdScholarDataverse);
     
             String hostUrl = PropertyUtil.getHostUrl();           
@@ -738,12 +714,6 @@ public class AddSitePage extends VDCBaseBean implements java.io.Serializable  {
      *
      *
      */
-    public Map getTemplatesMap() { 
-        
-        return templatesMap; 
-    }
-    
-    private Long initSubnetworkId = new Long(0);
     
     private Long selectSubNetworkId;
 
@@ -754,25 +724,7 @@ public class AddSitePage extends VDCBaseBean implements java.io.Serializable  {
     public void setSelectSubNetworkId(Long selectSubNetworkId) {
         this.selectSubNetworkId = selectSubNetworkId;
     }
-    
-    private Long selectTemplateId;
 
-    public Long getSelectTemplateId() {
-        return selectTemplateId;
-    }
-
-    public void setSelectTemplateId(Long selectTemplateId) {
-        this.selectTemplateId = selectTemplateId;
-    }
-    
-    public void changeSubnetworkOption(ValueChangeEvent event) {
-        
-        Long newValue = (Long) event.getNewValue();
-        this.setSelectSubNetworkId(newValue);
-        HttpServletRequest request = (HttpServletRequest) FacesContext.getCurrentInstance().getExternalContext().getRequest();
-        templatesMap = templateService.getVdcNetworkTemplatesMapForAddSitePage(selectSubNetworkId);
-        FacesContext.getCurrentInstance().renderResponse();
-    }
 
     public void changeDataverseOption(ValueChangeEvent event) {
         String newValue = (String) event.getNewValue();

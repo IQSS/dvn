@@ -292,16 +292,6 @@ public class VDCNetwork implements java.io.Serializable  {
     public void setNetworkTemplates(Collection<Template> networkTemplates) {
         this.networkTemplates = networkTemplates;
     }
- 
-    private boolean released;
-
-    public boolean isReleased() {
-        return released;
-    }
-
-    public void setReleased(boolean released) {
-        this.released = released;
-    }
     
     /**
      * Holds value of property allowCreateRequest.

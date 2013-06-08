@@ -126,29 +126,6 @@ public class VDCNetworkServiceBean implements VDCNetworkServiceLocal {
         return  query.getResultList();
     }
     
-    @Override
-    public List<VDCNetwork> getVisibleVDCSubnetworks() {
-        String queryStr = "SELECT n FROM VDCNetwork n where n.id > 0 and n.released = true";
-        Query query= em.createQuery(queryStr);
-        List<VDCNetwork> releasedNetworks = query.getResultList();
-        List <VDCNetwork> vdcNetworkRetList = new ArrayList();
-        for (VDCNetwork vdcNetwork : releasedNetworks){
-            if( !vdcNetwork.getNetworkVDCs().isEmpty()){
-                boolean addNet = false;
-                for(VDC vdc :vdcNetwork.getNetworkVDCs()){
-                   if(!vdc.isRestricted()) 
-                   addNet = true;
-                   break;
-                }
-                if(addNet){
-                    vdcNetworkRetList.add(vdcNetwork); 
-                }
-            }           
-        }
-        return  vdcNetworkRetList;
-    }
-
-    
     public List <VDCNetwork> getVDCNetworks(){
         String queryStr = "SELECT n FROM VDCNetwork n";
         Query query= em.createQuery(queryStr);

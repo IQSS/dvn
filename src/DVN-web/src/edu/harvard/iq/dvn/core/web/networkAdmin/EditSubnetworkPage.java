@@ -55,7 +55,6 @@ public class EditSubnetworkPage extends VDCBaseBean implements Serializable  {
     @Inject EditNetworkAnnouncementsPage editNetworkAnnouncementsPage;
     private String subnetworkAlias = "";
     private String subnetworkAffiliation = ""; 
-    private boolean chkSubnetworkEnabled = false;
 
     private String originalAlias = "";
     private VDCNetwork originalVDCNetwork = null;
@@ -87,7 +86,6 @@ public class EditSubnetworkPage extends VDCBaseBean implements Serializable  {
             subnetworkAlias = originalVDCNetwork.getUrlAlias();
             originalAlias = subnetworkAlias;
             subnetworkAffiliation = originalVDCNetwork.getAffiliation();
-            chkSubnetworkEnabled = originalVDCNetwork.isReleased();
             shortDescription = originalVDCNetwork.getShortDescription();
             logo = originalVDCNetwork.getLogo();
         } else {
@@ -151,16 +149,7 @@ public class EditSubnetworkPage extends VDCBaseBean implements Serializable  {
     public void setSubnetworkAffiliation(String subnetworkAffiliation) {
         this.subnetworkAffiliation = subnetworkAffiliation;
     }
-    
-    
-    public boolean isChkSubnetworkEnabled() {
-        return chkSubnetworkEnabled;
-    }
 
-    public void setChkSubnetworkEnabled(boolean chkSubnetworkEnabled) {
-        this.chkSubnetworkEnabled = chkSubnetworkEnabled;
-    }
-    
     public String saveSubNetworkGeneralSettings_action() {
         String networkName = (String) editNetworkNamePage.getTextFieldNetworkName().getValue();
         if (networkName.isEmpty()){
@@ -175,7 +164,6 @@ public class EditSubnetworkPage extends VDCBaseBean implements Serializable  {
             originalVDCNetwork.setNetworkPageFooter(editBannerFooterPage.getFooter());
             originalVDCNetwork.setUrlAlias(subnetworkAlias);
             originalVDCNetwork.setAffiliation(subnetworkAffiliation);  
-            originalVDCNetwork.setReleased(chkSubnetworkEnabled);
             originalVDCNetwork.setShortDescription(shortDescription);
             originalVDCNetwork.setLogo(logo);
             vdcNetworkService.edit(originalVDCNetwork);
@@ -202,7 +190,6 @@ public class EditSubnetworkPage extends VDCBaseBean implements Serializable  {
             createdNetwork.setRequireDVaffiliation(rootNetwork.isRequireDVaffiliation());
             createdNetwork.setRequireDVclassification(rootNetwork.isRequireDVclassification());
             createdNetwork.setRequireDVstudiesforrelease(rootNetwork.isRequireDVstudiesforrelease());
-            createdNetwork.setReleased(chkSubnetworkEnabled);
             createdNetwork.setShortDescription(shortDescription);
             createdNetwork.setLogo(logo);
             vdcNetworkService.edit(createdNetwork);

@@ -80,8 +80,6 @@ public interface VDCNetworkServiceLocal extends java.io.Serializable  {
 
     public List<VDCNetwork> getVDCSubNetworks();
     
-    public List<VDCNetwork> getVisibleVDCSubnetworks();
-    
     public List<VDCNetwork> getVDCNetworks();
     
     public List <VDCNetwork> getVDCNetworksOrderedById();

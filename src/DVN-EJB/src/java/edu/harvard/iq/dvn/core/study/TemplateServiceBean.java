@@ -183,29 +183,6 @@ public class TemplateServiceBean implements edu.harvard.iq.dvn.core.study.Templa
         }
         return templatesMap;
     } 
-
-    public Map getVdcNetworkTemplatesMapForAddSitePage(Long vdcNetworkId) {
-
-        Map templatesMap = new LinkedHashMap();
-        if(vdcNetworkId == null){
-           return templatesMap; 
-        }
-        if (vdcNetworkId.equals(new Long(0))) {
-            for (Template template : getPreferredNetworkTemplates()) {
-                if (template.getVdcSubnetwork().getId().equals(new Long(0))){
-                      templatesMap.put(template.getName(), template.getId());
-                }
-            }
-        } else {
-            for (Object object : getPreferredSubnetworkTemplates(vdcNetworkId)) {
-                Long template_id = new Long((Integer) object);
-                Template template = getTemplate(template_id);
-                templatesMap.put(template.getName(), template.getId());
-            }
-
-        }
-        return templatesMap;
-    }
     
     public List<Template> getVDCTemplates(Long vdcId) {
         String query = "select object(o) FROM Template as o WHERE o.vdc.id = :vdcId ORDER BY o.name";
@@ -224,11 +201,6 @@ public class TemplateServiceBean implements edu.harvard.iq.dvn.core.study.Templa
 
     public List<Template> getEnabledNetworkTemplates() {
         String query = "select object(o) FROM Template as o WHERE o.vdc is null and o.enabled = true ORDER BY o.name";
-        return (List) em.createQuery(query).getResultList();
-    }
-    
-    public List<Template> getPreferredNetworkTemplates() {
-        String query = "select object(o) FROM Template as o WHERE o.vdc is null and o.enabled = true  and o.displayOnCreateDataverse = true ORDER BY o.name";
         return (List) em.createQuery(query).getResultList();
     }
     
@@ -254,11 +226,6 @@ public class TemplateServiceBean implements edu.harvard.iq.dvn.core.study.Templa
         return templateIdsLong;
     }
 
-    public List<Template> getPreferredSubnetworkTemplates(Long id) {       
-        String queryStr = "SELECT o.id from template o where o.vdc_id is null and o.displayOnCreateDataverse = true  and o.enabled = true and (o.vdcsubnetwork_id="+id+ " or o.vdcsubnetwork_id = 0 ) ORDER BY o.name";
-        Query query = em.createNativeQuery(queryStr);
-        return (List) query.getResultList();
-    }
 
     public List<ControlledVocabulary> getNetworkControlledVocabulary() {
         String query = "select object(o) FROM ControlledVocabulary as o ORDER BY o.name";

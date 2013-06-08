@@ -40,23 +40,19 @@ public interface TemplateServiceLocal extends java.io.Serializable {
     
     public boolean isTemplateUsed(Long templateId);
     public boolean isTemplateUsedAsVDCDefault(Long templateId);
-    
-    
+       
     public Map getVdcTemplatesMap(Long vdcId);   
     public List<Template> getVDCTemplates(Long vdcId);
     public List<Template> getEnabledVDCTemplates(Long vdcId);
     public List<Template> getNetworkTemplates();
     public List<Long> getSubnetworkTemplates(Long subnetworkId, boolean onlyEnabled);
     public List<Template> getEnabledNetworkTemplates();
-    public List<Template> getPreferredNetworkTemplates();
     
     public List<ControlledVocabulary> getNetworkControlledVocabulary();
     public ControlledVocabulary getControlledVocabulary(Long cvId);
     public void saveControlledVocabulary(ControlledVocabulary controlledVocabulary);
 
     public Map getVdcNetworkTemplatesMap(Long vdcNetworkId); // unused?
-
-    public Map getVdcNetworkTemplatesMapForAddSitePage(Long vdcNetworkId);
 
     public Map getVdcTemplatesMap(Long vdcId, Long vdcNetworkId);
 }

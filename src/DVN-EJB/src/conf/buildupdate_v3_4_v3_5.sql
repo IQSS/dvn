@@ -15,6 +15,9 @@ Update template set vdcsubnetwork_id = 0;
 ALTER TABLE vdcnetwork ADD COLUMN urlalias character varying(255);
 ALTER TABLE vdcnetwork ALTER COLUMN urlalias SET STORAGE EXTENDED;
 
+ALTER TABLE vdcnetwork ADD COLUMN networkcreated timestamp;
+ALTER TABLE vdcnetwork ALTER COLUMN networkcreated SET STORAGE PLAIN;
+
 ALTER TABLE vdcnetwork ADD COLUMN affiliation character varying(255);
 ALTER TABLE vdcnetwork ALTER COLUMN affiliation SET STORAGE EXTENDED;
 

@@ -250,11 +250,6 @@ public class BasicSearchFragment extends VDCBaseBean implements java.io.Serializ
                 dvnQuery.setSubNetworkDvMemberQueries(subNetworkDvMemberQueries);
                 dvnQuery.setSubNetworkCollectionQueries(subNetworkCollectionQueries);
                 * */
-                /**
-                 * @todo: make sure studies are found that are defined by a
-                 * network-wide dynamic collection per
-                 * https://redmine.hmdc.harvard.edu/issues/2964#note-5
-                 */
                 Query subNetworkQuery = indexService.constructNetworkIdQuery(getVDCRequestBean().getCurrentVdcNetwork().getId());
                 dvnQuery.setSubNetworkQuery(subNetworkQuery);
                 dvnQuery.setSearchTerms(searchTerms);

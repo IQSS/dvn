@@ -608,12 +608,8 @@ public class EditStudyPage extends VDCBaseBean implements java.io.Serializable  
     }
     
     public Map getTemplatesMap() {
-        // getVdcTemplatesMap is called with currentVDCId, since for a new study the current VDC IS the owner   
-        Long currentVdcNetworkId = new Long(0);
-        if (getVDCRequestBean().getCurrentSubnetwork() != null) {
-            currentVdcNetworkId = getVDCRequestBean().getCurrentSubnetwork().getId();
-        }
-        return templateService.getVdcTemplatesMap(getVDCRequestBean().getCurrentVDCId(), currentVdcNetworkId);
+        // getVdcTemplatesMap is called with currentVDC, since for a new study the current VDC IS the owner   
+        return templateService.getVdcTemplatesMap(getVDCRequestBean().getCurrentVDC());
     }
     
     

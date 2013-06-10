@@ -192,7 +192,6 @@ public class StudyListingPage extends VDCBaseBean implements java.io.Serializabl
     }
 
     public Collection getStudies() {
-//        logger.info(("In getStudies() in StudyListingPage"));
         List studyUIList = new ArrayList();
         VDCUser user = getVDCSessionBean().getUser();
         UserGroup usergroup = getVDCSessionBean().getIpUserGroup();
@@ -232,16 +231,13 @@ public class StudyListingPage extends VDCBaseBean implements java.io.Serializabl
                 FacetResult facetResult = facetResults.get(i);
                 FacetUI facetUI = new FacetUI();
                 String category = facetResult.getFacetResultNode().getLabel().toString();
-//            logger.info("Added facetUi with category: " + category);
                 facetUI.setName(category);
                 Integer count = 0;
                 for (FacetResultNode n : facetResult.getFacetResultNode().getSubResults()) {
                     CategoryPath label = n.getLabel();
                     String last = n.getLabel().lastComponent().toString();
                     Double hits = n.getValue();
-//                logger.info("  - expect " + hits + " hits from a faceted search for \"" + label + "\"");
                     if (last != null && hits.toString() != null && count < limit ) {
-//                    logger.info("making a facetresult ui...");
                         FacetResultUI facetResultUI = new FacetResultUI();
                         facetResultUI.setName(last);
                         facetResultUI.setHits(hits.intValue());
@@ -364,7 +360,6 @@ public class StudyListingPage extends VDCBaseBean implements java.io.Serializabl
      * Searching on file-level metadata is not yet implemented here. 
      */
     public String search_action() {
-//        logger.info("Entered seach_action() on StudyListingPage.java");
         searchField = (searchField == null) ? "any" : searchField; // default searchField, in case no dropdown
 
         List searchTerms = new ArrayList();
@@ -586,7 +581,7 @@ public class StudyListingPage extends VDCBaseBean implements java.io.Serializabl
                         parser.setDefaultOperator(QueryParser.OR_OPERATOR);
                         Query staticColQuery = parser.parse(sbOuter.toString());
                         parser.setDefaultOperator(QueryParser.AND_OPERATOR);
-                        logger.info("staticCollectionQuery: " + staticColQuery);
+                        logger.fine("staticCollectionQuery: " + staticColQuery);
                         finalQuery = staticColQuery;
                     } catch (org.apache.lucene.queryParser.ParseException ex) {
                         Logger.getLogger(AdvSearchPage.class.getName()).log(Level.SEVERE, null, ex);
@@ -754,7 +749,6 @@ public class StudyListingPage extends VDCBaseBean implements java.io.Serializabl
     }
 
     private void initStudies() {
-//        logger.info("In initStudies() in StudyListingPage");
         if (studyListing.getStudyIds() != null) {
             VDC vdc = getVDCRequestBean().getCurrentVDC();
             
@@ -962,7 +956,6 @@ public class StudyListingPage extends VDCBaseBean implements java.io.Serializabl
    @Inject VDCApplicationBean vdcApplicationBean;
          
     private void initNewStudyListing() {
-//        logger.info("In initNewStudyListing in StudyListingPage");
         StudyListing sl = null;
         int mode = -1;
         try {

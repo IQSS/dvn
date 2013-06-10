@@ -224,7 +224,6 @@ public class DvnQuery {
         searchQuery = indexer.andQueryClause(searchParts);
 
 
-//        logger.info("DvnQuery dump of searchQuery (before collections modifications): " + searchQuery);
         if (!collectionQueries.isEmpty() || dvOwnerIdQuery != null) {
             BooleanQuery queryAcrossAllCollections = new BooleanQuery();
 
@@ -259,7 +258,12 @@ public class DvnQuery {
             }            
             searchQuery = queryMultipleCollections;
         } else if (subNetworkQuery != null) {
-            logger.info("When a user is in the context of a subnetwork any search that is performed will return studies that are owned by dataverses in that subnetwork along with any studies from outside dataverses that are included in collections.");
+            /**
+             * When a user is in the context of a subnetwork any search that is
+             * performed will return studies that are owned by dataverses in
+             * that subnetwork along with any studies from outside dataverses
+             * that are included in collections."
+             */
 
             BooleanQuery combinedSubNetworkQuery = new BooleanQuery();
             combinedSubNetworkQuery.add(searchQuery, BooleanClause.Occur.MUST);
@@ -300,7 +304,6 @@ public class DvnQuery {
         }*/ else {
             logger.fine("DVN-wide search will be made");
         }
-//        logger.info("searchQuery before return: " + searchQuery);
         query = searchQuery;
     }
 }

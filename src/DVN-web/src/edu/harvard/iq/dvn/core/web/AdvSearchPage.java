@@ -729,17 +729,7 @@ public class AdvSearchPage extends VDCBaseBean implements java.io.Serializable {
                     advS[i] = elem.getTitle();
                 }
             }
-            
-        
-            
-            /**
-             * @todo: explore this hack from
-             * https://redmine.hmdc.harvard.edu/issues/2931
-             */
-//            if (sfname.equals("author")) {
-//                logger.info("detected author, not authorName, fixing");
-//                sfname = "authorName";
-//            }
+
             advSearchFieldMap.put(advS[i++], sfname);
 
         }
@@ -942,8 +932,6 @@ public class AdvSearchPage extends VDCBaseBean implements java.io.Serializable {
                         CollectionModel elem = (CollectionModel) it.next();
                         if (elem.isSelected()) {
                             VDCCollection selectedCollection = vdcCollectionService.find(elem.getId());
-//                            logger.info("adding " + selectedCollection.getName());
-//                            searchCollections.add(selectedCollection);
                             searchCols.add(selectedCollection);
                         }
                     }
@@ -964,9 +952,9 @@ public class AdvSearchPage extends VDCBaseBean implements java.io.Serializable {
                 // older, non-faceted method above
                 if (isVariableSearch() || isFileLevelMetadataSearch()) {
                     viewableIds = indexServiceBean.search(thisVDC, searchCols, searchTerms);
-                    logger.info("searching selected collections [old, facet-less method...]");
+                    logger.fine("searching selected collections [old, facet-less method...]");
                 } else {
-                    logger.info("searching selected collections [new, facet-enabled method...]");
+                    logger.fine("searching selected collections [new, facet-enabled method...]");
                     List<Query> collectionQueries = new ArrayList<Query>();
                     QueryParser parser = new QueryParser(Version.LUCENE_30, "abstract", new DVNAnalyzer());
                     parser.setDefaultOperator(QueryParser.AND_OPERATOR);
@@ -981,7 +969,7 @@ public class AdvSearchPage extends VDCBaseBean implements java.io.Serializable {
                         boolean isRootCollection = col.isRootCollection();
                         VDC colOwner = col.getOwner();
                         StringBuilder sbOuter = new StringBuilder();
-                        logger.info("For " + col.getName() + " (id=" + colId + "|isRootCollection=" + isRootCollection + "|type=" + type + "|isDynamic=" + isDynamic + "|isLocalScope=" + isLocalScope + ") adding query: <<<" + queryString + ">>>");
+                        logger.fine("For " + col.getName() + " (id=" + colId + "|isRootCollection=" + isRootCollection + "|type=" + type + "|isDynamic=" + isDynamic + "|isLocalScope=" + isLocalScope + ") adding query: <<<" + queryString + ">>>");
                         if (queryString != null && !queryString.isEmpty()) {
                             try {
                                 Query dynamicQuery = parser.parse(queryString);
@@ -1031,7 +1019,7 @@ public class AdvSearchPage extends VDCBaseBean implements java.io.Serializable {
                             sbOuter.append(sbInner);
 
                         }
-                        logger.info("sbOuter: " + sbOuter);
+                        logger.fine("sbOuter: " + sbOuter);
                         if (!sbOuter.toString().isEmpty()) {
                             try {
                                 parser.setDefaultOperator(QueryParser.OR_OPERATOR);
@@ -1081,7 +1069,7 @@ public class AdvSearchPage extends VDCBaseBean implements java.io.Serializable {
                     if (thisVDC != null) {
                         viewableIds = indexServiceBean.search(thisVDC, searchTerms); 
                     } else {
-                        logger.info("Checking if in subnetwork... [id="+currentSubnetworkId+"]");
+                        logger.fine("Checking if in subnetwork... [id="+currentSubnetworkId+"]");
                         if (!currentSubnetworkId.equals(rootSubnetworkId)) {
                             SearchTerm subnetworkSearchTerm = makeSubnetworkSearchTerm(currentSubnetworkId);
                             if (subnetworkSearchTerm != null) {
@@ -1100,7 +1088,7 @@ public class AdvSearchPage extends VDCBaseBean implements java.io.Serializable {
                     DvnQuery dvnQuery = new DvnQuery();
                     
                     if (thisVDC != null) {
-                        logger.info("Running DVN-wide search from AdvSearchPage");
+                        logger.fine("Running DVN-wide search from AdvSearchPage");
                         
                         dvnQuery.setVdc(thisVDC);
 
@@ -1114,10 +1102,10 @@ public class AdvSearchPage extends VDCBaseBean implements java.io.Serializable {
                             logger.fine("empty collectionQueries");
                         }
                     } else if (!currentSubnetworkId.equals(rootSubnetworkId)) {
-                        logger.info("Searching only a subnetwork");
+                        logger.fine("Searching only a subnetwork");
                         VDCNetwork vdcNetwork = getVDCRequestBean().getVdcNetwork();
                         String vdcNetworkName = vdcNetwork.getName();
-                        logger.info("vdcNetwork name: " + vdcNetworkName);
+                        logger.fine("vdcNetwork name: " + vdcNetworkName);
                         
                         /*
                          * Brute force implementation: 
@@ -1130,13 +1118,13 @@ public class AdvSearchPage extends VDCBaseBean implements java.io.Serializable {
                         List<Query> subNetworkDvMemberQueries = new ArrayList<Query>();
                         for (VDC vdc : vdcs) {
                             String name = vdc.getName();
-                            logger.info("adding queries for: " + name);
+                            logger.fine("adding queries for: " + name);
                             Query dvnSpecificQuery = indexServiceBean.constructDvOwnerIdQuery(vdc);
-                            logger.info("adding dvnSpecific query:" + dvnSpecificQuery);
+                            logger.fine("adding dvnSpecific query:" + dvnSpecificQuery);
                             subNetworkDvMemberQueries.add(dvnSpecificQuery);
                             List<Query> vdcCollectionQueries = indexServiceBean.getCollectionQueries(vdc);
                             for (Query collectionQuery : vdcCollectionQueries) {
-                                logger.info("adding collection query: " + collectionQuery);
+                                logger.fine("adding collection query: " + collectionQuery);
                             }
                             subNetworkCollectionQueries.addAll(vdcCollectionQueries);
                         }*/
@@ -1144,7 +1132,7 @@ public class AdvSearchPage extends VDCBaseBean implements java.io.Serializable {
                         Query subNetworkQuery = indexServiceBean.constructNetworkIdQuery(currentSubnetworkId);
                         dvnQuery.setSubNetworkQuery(subNetworkQuery); 
                     } else {
-                        logger.info("Running DVN-wide search from AdvSearchPage");
+                        logger.fine("Running DVN-wide search from AdvSearchPage");
                     }
                     
                     // Now, run the final search: 

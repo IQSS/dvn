@@ -213,7 +213,7 @@ public class BasicSearchFragment extends VDCBaseBean implements java.io.Serializ
 
             Long rootSubnetworkId = getVDCRequestBean().getVdcNetwork().getId();
             if (getVDCRequestBean().getCurrentVdcNetwork().getId().equals(rootSubnetworkId)) {
-                logger.info("Running DVN-wide search");
+                logger.fine("Running DVN-wide search");
                 DvnQuery dvnQuery = new DvnQuery();
                 dvnQuery.setSearchTerms(searchTerms);
                 dvnQuery.constructQuery();
@@ -221,10 +221,10 @@ public class BasicSearchFragment extends VDCBaseBean implements java.io.Serializ
                 resultsWithFacets = indexService.searchNew(dvnQuery);
                 studies = resultsWithFacets.getMatchIds();
             } else {
-                logger.info("Searching only a subnetwork");
+                logger.fine("Searching only a subnetwork");
                 VDCNetwork vdcNetwork = getVDCRequestBean().getCurrentVdcNetwork();
                 String vdcNetworkName = vdcNetwork.getName();
-                logger.info("vdcNetwork name: " + vdcNetworkName);
+                logger.fine("vdcNetwork name: " + vdcNetworkName);
                 /*
                  * Brute force way of resolving collection queries to match 
                  * all the studies in a subnetwork: 
@@ -233,13 +233,13 @@ public class BasicSearchFragment extends VDCBaseBean implements java.io.Serializ
                 List<Query> subNetworkDvMemberQueries = new ArrayList<Query>();
                 for (VDC vdc : vdcs) {
                     String name = vdc.getName();
-                    logger.info("adding queries for: " + name);
+                    logger.fine("adding queries for: " + name);
                     Query dvnSpecificQuery = indexService.constructDvOwnerIdQuery(vdc);
-                    logger.info("adding dvnSpecific query:" + dvnSpecificQuery);
+                    logger.fine("adding dvnSpecific query:" + dvnSpecificQuery);
                     subNetworkDvMemberQueries.add(dvnSpecificQuery);
                     List<Query> vdcCollectionQueries = indexService.getCollectionQueries(vdc);
                     for (Query collectionQuery : vdcCollectionQueries) {
-                        logger.info("adding collection query: " + collectionQuery);
+                        logger.fine("adding collection query: " + collectionQuery);
                     }
                     subNetworkCollectionQueries.addAll(vdcCollectionQueries);
                 }

@@ -1133,9 +1133,6 @@ public class TemplateFormPage extends VDCBaseBean implements java.io.Serializabl
                 tf.setDisplayOrder(i++);
             }
         }
-        //no interface for this yet 3.6 SEK
-        //TODO add interface for set display on create dataverse
-        template.setDisplayOnCreateDataverse(true);
         editTemplateService.saveWSubnetwork(template);
 
         if (isNewTemplate) {

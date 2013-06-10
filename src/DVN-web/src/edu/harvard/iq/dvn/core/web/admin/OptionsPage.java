@@ -354,8 +354,16 @@ public class OptionsPage extends VDCBaseBean  implements java.io.Serializable {
 
     
     public void initTemplates() {
-        if (getVDCRequestBean().getCurrentVDC() != null) {
-            templateList = templateService.getEnabledNetworkTemplates();
+        if (getVDCRequestBean().getCurrentVDC() != null) {  
+            List <Long> templateIds = templateService.getSubnetworkTemplates(getVDCRequestBean().getCurrentVDC().getVdcNetwork().getId(), true);
+            List <Template> subnetTemplates = new ArrayList();
+            for (Long id : templateIds){
+                Template template = templateService.getTemplate(id);
+                if (template != null){
+                   subnetTemplates.add(template);
+                }
+            }
+            templateList = subnetTemplates;
             templateList.addAll(templateService.getVDCTemplates(getVDCRequestBean().getCurrentVDCId()));
             defaultTemplateId = getVDCRequestBean().getCurrentVDC().getDefaultTemplate().getId();
         } else {

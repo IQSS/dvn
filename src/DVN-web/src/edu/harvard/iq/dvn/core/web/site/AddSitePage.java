@@ -114,16 +114,6 @@ public class AddSitePage extends VDCBaseBean implements java.io.Serializable  {
      */
     public void init() {
         super.init();
-        //check to see if a dataverse type is in request
-         VDCNetwork checkForSubnetwork = getVDCRequestBean().getCurrentVdcNetwork();
-         if (!checkForSubnetwork.equals(vdcNetworkService.findRootNetwork())) {
-                selectSubNetworkId = checkForSubnetwork.getId();
-            } else {
-                selectSubNetworkId = new Long (0);
-         }    
-    }
-    
-    public void preRenderView(){
         HttpServletRequest request = (HttpServletRequest) FacesContext.getCurrentInstance().getExternalContext().getRequest();
         Iterator iterator = request.getParameterMap().keySet().iterator();
         while (iterator.hasNext()) {
@@ -132,7 +122,19 @@ public class AddSitePage extends VDCBaseBean implements java.io.Serializable  {
                 this.setDataverseType(request.getParameter((String) key));
             }
         }
-        networkSelectItems = loadNetworkSelectItems();  
+        //check to see if a dataverse type is in request
+         VDCNetwork checkForSubnetwork = getVDCRequestBean().getCurrentVdcNetwork();
+         if (!checkForSubnetwork.equals(vdcNetworkService.findRootNetwork())) {
+                selectSubNetworkId = checkForSubnetwork.getId();
+            } else {
+                networkSelectItems = loadNetworkSelectItems(); 
+                selectSubNetworkId = new Long (0);
+         }  
+    }
+    
+    public void preRenderView(){
+
+
     }
 
     //copied from manageclassificationsPage.java

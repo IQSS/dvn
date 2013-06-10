@@ -43,7 +43,9 @@
                 </div>
                 <!-- ***************************** add content here ************************************ -->
                 <div jsfc="ice:panelGroup">
-                    <ui:include src="/networkAdmin/EditNetworkNamePage.xhtml"></ui:include>
+                    <ui:include src="/networkAdmin/EditNetworkNamePage.xhtml">
+                        <ui:param name="isSubnetwork" value="true"/> 
+                    </ui:include>
                     <table class="dvnOptionsTable" cellspacing="0" cellpadding="0" border="0">
                         <tr>
                             <td class="dvnOptionsTableOption">

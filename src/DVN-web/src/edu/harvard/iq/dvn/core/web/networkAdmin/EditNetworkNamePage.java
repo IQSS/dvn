@@ -83,7 +83,8 @@ public class EditNetworkNamePage extends VDCBaseBean  implements java.io.Seriali
         return networkName;
     }
     
-    public void preRenderView(){
+    public void init() {
+        super.init();
         subnetworkMode = false;
         String edit = getVDCRequestBean().getRequestParam("edit");
         if (edit !=null && edit.equals("false")){
@@ -99,10 +100,6 @@ public class EditNetworkNamePage extends VDCBaseBean  implements java.io.Seriali
         if(!getVDCRequestBean().getCurrentVdcNetworkURL().isEmpty()){
             subnetworkMode = true;
         }
-    }
-    
-    public void init() {
-        super.init();
     }
 
     private HtmlInputText textFieldNetworkName = new HtmlInputText();

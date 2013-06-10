@@ -509,7 +509,7 @@ public class Indexer implements java.io.Serializable  {
 
             addText(1.0f, doc, "unf", metadata.getUNF());
 //        writer = new IndexWriter(dir, true, getAnalyzer(), isIndexEmpty());
-            logger.fine("Indexing study db id " + study.getId() + " (" + study.getStudyId() + ": " + metadata.getTitle() + ") from dataverse id " + study.getOwner().getId() + " (" + study.getOwner().getAlias() + ")");
+            logger.info("Indexing study db id " + study.getId() + " (" + study.getStudyId() + ": " + metadata.getTitle() + ") from dataverse id " + study.getOwner().getId() + " (" + study.getOwner().getAlias() + ")");
             writer = new IndexWriter(dir, getAnalyzer(), isIndexEmpty(), IndexWriter.MaxFieldLength.UNLIMITED);
             writer.setUseCompoundFile(true);
             TaxonomyWriter taxo = new DirectoryTaxonomyWriter(taxoDir);

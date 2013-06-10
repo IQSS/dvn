@@ -2040,13 +2040,24 @@ public class Indexer implements java.io.Serializable  {
                 // dataverse! In that case we still want to include the query, 
                 // regardless of the scope; AND make sure the scope is properly 
                 // reflected in the query. 
-                if ((vdc.getId().equals(collOwner.getId()) && isLocalScope)) {
+                if ((vdc.getId().equals(collOwner.getId()))) {
+                    if (isLocalScope) {
                     
-                    // It's our own (not linked) collection; and the scope is local.
-                    // skipping it: 
-                    queryString = null; 
+                        // It's our own (not linked) collection; and the scope is local.
+                        // skipping it: 
+                        queryString = null;
+                    } else if (isSubnetworkScope) {
+                        // TODO: 
+                        // See if we can skip subnetwork-scoped queries too, if 
+                        // we are running this for the purposes of looking for 
+                        // studies linked across subnetworks. -- L.A. 
+                        queryString = "dvNetworkId:" + col.getOwner().getVdcNetwork().getId() + " AND (" + queryString + ")";
+                    } else {
+                        // and if it's a network-scope collection, then we'll just add 
+                        // whatever is in queryString
+                    }
                     
-                } else if (!vdc.getId().equals(collOwner.getId())) {
+                } else {
                     
                     // This is a linked collection;
                     // Let's check its scope, and modify the query string - 

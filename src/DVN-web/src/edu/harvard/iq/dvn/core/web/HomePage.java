@@ -399,7 +399,7 @@ public class HomePage extends VDCBaseBean implements Serializable {
      }
 
       protected void populateDescendants(VDCGroup vdcgroup, boolean isExpanded) {
-         Long networkId = getVDCRequestBean().getVdcNetwork().getId();
+         Long networkId = getVDCRequestBean().getCurrentVdcNetwork().getId();
          Long parentId        = vdcgroup.getId();
          List list          = vdcGroupService.findByParentId(parentId);
          Iterator iterator  = list.iterator();

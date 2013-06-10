@@ -510,7 +510,7 @@ public class VDCServiceBean implements VDCServiceLocal {
 
 
     public List getUserVDCs(Long userId) {
-        String query = "select v from VDC  v where v.id in (select vr.vdc.id from VDCRole vr where vr.vdcUser.id=" + userId + ")";
+        String query = "select v from VDC  v where v.id in (select vr.vdc.id from VDCRole vr where vr.vdcUser.id=" + userId + ") order by upper(v.name)";
         return em.createQuery(query).getResultList();
     }
     

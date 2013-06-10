@@ -19,6 +19,7 @@
 */
 package edu.harvard.iq.dvn.core.study;
 
+import edu.harvard.iq.dvn.core.vdc.VDC;
 import java.util.List;
 import java.util.Map;
 import javax.ejb.Local;
@@ -41,7 +42,7 @@ public interface TemplateServiceLocal extends java.io.Serializable {
     public boolean isTemplateUsed(Long templateId);
     public boolean isTemplateUsedAsVDCDefault(Long templateId);
        
-    public Map getVdcTemplatesMap(Long vdcId);   
+    public Map getVdcTemplatesMap(VDC vdc);   
     public List<Template> getVDCTemplates(Long vdcId);
     public List<Template> getEnabledVDCTemplates(Long vdcId);
     public List<Template> getNetworkTemplates();
@@ -52,7 +53,5 @@ public interface TemplateServiceLocal extends java.io.Serializable {
     public ControlledVocabulary getControlledVocabulary(Long cvId);
     public void saveControlledVocabulary(ControlledVocabulary controlledVocabulary);
 
-    public Map getVdcNetworkTemplatesMap(Long vdcNetworkId); // unused?
 
-    public Map getVdcTemplatesMap(Long vdcId, Long vdcNetworkId);
 }

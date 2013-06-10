@@ -32,7 +32,6 @@ import edu.harvard.iq.dvn.core.vdc.VDC;
 import edu.harvard.iq.dvn.core.vdc.VDCNetworkServiceLocal;
 import java.lang.String;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Date;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -147,21 +146,21 @@ public class TemplateServiceBean implements edu.harvard.iq.dvn.core.study.Templa
     
 
     
-    public Map getVdcTemplatesMap(Long vdcId, Long vdcNetworkId) {
+    public Map getVdcTemplatesMap(VDC vdc) {
         Map templatesMap = new LinkedHashMap();
-        if (vdcNetworkId == null) {
-            for (Template template : getEnabledNetworkTemplates()) {
-                if (template.getVdcSubnetwork().getId().equals(new Long(0))){
-                      templatesMap.put(template.getName(), template.getId());
-                }
+        
+        for (Template template : getEnabledNetworkTemplates()) {
+            if (template.getVdcSubnetwork().getId().equals(new Long(0))){
+                  templatesMap.put(template.getName(), template.getId());
             }
-        } else {
-            for (Long templateId : getEnabledSubnetworkTemplates(vdcNetworkId)) {
+        }
+        if ( !vdc.getVdcNetwork().getId().equals(new Long(0)) ) {
+            for (Long templateId : getEnabledSubnetworkTemplates(vdc.getVdcNetwork().getId())) {
                 Template template = getTemplate(templateId);
                 templatesMap.put(template.getName(), template.getId());
             }
         }       
-        for (Template template : getEnabledVDCTemplates(vdcId)) {
+        for (Template template : getEnabledVDCTemplates(vdc.getId())) {
             templatesMap.put(template.getName(), template.getId());
         }
         return templatesMap;
@@ -245,9 +244,5 @@ public class TemplateServiceBean implements edu.harvard.iq.dvn.core.study.Templa
         }
     }
 
-    @Override
-    public Map getVdcTemplatesMap(Long vdcId) {
-        return getVdcTemplatesMap(vdcId, null);
-    }
      
 }

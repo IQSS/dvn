@@ -180,6 +180,7 @@ public class EditSubnetworkPage extends VDCBaseBean implements Serializable  {
             createdNetwork.setNetworkPageHeader(editBannerFooterPage.getBanner());
             createdNetwork.setNetworkPageFooter(editBannerFooterPage.getFooter());     
             createdNetwork.setAffiliation(subnetworkAffiliation);
+            createdNetwork.setNetworkCreated(new Date());
             VDCUser creator = getVDCSessionBean().getLoginBean().getUser();
             createdNetwork.setCreator(creator);
             Template defaultTemplate = vdcNetworkService.findRootNetwork().getDefaultTemplate();

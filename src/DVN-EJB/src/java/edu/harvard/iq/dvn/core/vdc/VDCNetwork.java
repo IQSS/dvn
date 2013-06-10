@@ -774,6 +774,18 @@ public class VDCNetwork implements java.io.Serializable  {
         this.termsOfUseUpdated = termsOfUseUpdated;
     }
     
+    @Temporal(value = TemporalType.TIMESTAMP)
+    private Date networkCreated;
+
+    public Date getNetworkCreated() {
+        return networkCreated;
+    }
+
+    public void setNetworkCreated(Date networkCreated) {
+        this.networkCreated = networkCreated;
+    }
+
+
     public String getDownloadTermsOfUse() {
         return downloadTermsOfUse;
     }

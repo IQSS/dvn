@@ -55,17 +55,7 @@ import javax.persistence.OptimisticLockException;
 public class EditNetworkNamePage extends VDCBaseBean  implements java.io.Serializable {
     @EJB VDCNetworkServiceLocal vdcNetworkService;
     StatusMessage msg;
-    private Boolean addMode = false;
-    private Boolean subnetworkMode = false;
     private String originalName = "";
-
-    public Boolean getSubnetworkMode() {
-        return subnetworkMode;
-    }
-
-    public void setSubnetworkMode(Boolean subnetworkMode) {
-        this.subnetworkMode = subnetworkMode;
-    }
     
     public StatusMessage getMsg(){
         return msg;
@@ -85,20 +75,14 @@ public class EditNetworkNamePage extends VDCBaseBean  implements java.io.Seriali
     
     public void init() {
         super.init();
-        subnetworkMode = false;
         String edit = getVDCRequestBean().getRequestParam("edit");
         if (edit !=null && edit.equals("false")){
-            addMode = true;
-            subnetworkMode = true;
             networkName = "";
             originalName = "";
         } 
         else {
             networkName = getVDCRequestBean().getCurrentVdcNetwork().getName();
             originalName = networkName;
-        }
-        if(!getVDCRequestBean().getCurrentVdcNetworkURL().isEmpty()){
-            subnetworkMode = true;
         }
     }
 

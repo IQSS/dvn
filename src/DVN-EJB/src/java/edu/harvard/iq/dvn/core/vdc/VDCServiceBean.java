@@ -897,10 +897,10 @@ public class VDCServiceBean implements VDCServiceLocal {
             orderingClause += " order by isempty, upper(affiliation) ";
             
         } else if (VDC.ORDER_BY_SUBNETWORK.equals(orderBy)) {
-           selectClause   += ", upper(vdcn.name) as subnetwork ";
+           selectClause   += ", upper(vdcn.name) as sortname, (CASE WHEN vdcn.id = 0 THEN 0 ELSE 1 END) as subnetwork ";
            fromClause     += ", vdcnetwork vdcn ";
            whereClause    += "AND v.vdcnetwork_id = vdcn.id ";            
-           orderingClause += " ORDER BY subnetwork";
+           orderingClause += " ORDER BY subnetwork desc, sortname";
 
         } else if (VDC.ORDER_BY_CREATE_DATE.equals(orderBy)) {
             selectClause += ", " + orderBy + " ";

@@ -45,6 +45,7 @@ import edu.harvard.iq.dvn.core.study.VariableServiceLocal;
 import edu.harvard.iq.dvn.core.vdc.LockssConfig;
 import edu.harvard.iq.dvn.core.vdc.LockssConfig.ServerAccess;
 import edu.harvard.iq.dvn.core.vdc.VDC;
+import edu.harvard.iq.dvn.core.vdc.VDCNetwork;
 import edu.harvard.iq.dvn.core.vdc.VDCNetworkServiceLocal;
 import edu.harvard.iq.dvn.core.vdc.VDCServiceLocal;
 import edu.harvard.iq.dvn.core.web.common.LoginBean;
@@ -148,12 +149,17 @@ public class LoginFilter implements Filter {
         HttpServletResponse httpResponse = (HttpServletResponse) response;
         String requestPath = httpRequest.getPathInfo();
         VDC currentVDC = vdcService.getVDCFromRequest(httpRequest);
-
+        VDCNetwork currentVDCNetwork = vdcNetworkService.getVDCNetworkFromRequest(httpRequest);  
+        String redirectURL = httpRequest.getContextPath();
+        if (currentVDC != null) {
+            redirectURL += "/dv/" + currentVDC.getAlias();
+        } else if (currentVDCNetwork != null) {
+            redirectURL += "/dataverses/" + currentVDCNetwork.getUrlAlias();
+        }
+        
+        
         if (requestPath!=null && requestPath.endsWith(".jsp")) {
-              String redirectURL = httpRequest.getContextPath();
-              if (currentVDC!=null) {
-                  redirectURL+="/dv/"+currentVDC.getAlias();
-              }
+              
               httpResponse.sendRedirect(redirectURL + "/faces/NotFoundPage.xhtml" );
               return;
         }
@@ -168,10 +174,6 @@ public class LoginFilter implements Filter {
             if (isVersionDiffPage(pageDef)) {
                 Long[] versionDiffNumbers = VDCRequestBean.parseVersionNumberList(httpRequest);
                 if (versionDiffNumbers == null || studyId==null) {
-                    String redirectURL = httpRequest.getContextPath();
-                    if (currentVDC != null) {
-                        redirectURL += "/dv/" + currentVDC.getAlias();
-                    }
                     httpResponse.sendRedirect(redirectURL + "/faces/NotFoundPage.xhtml");
                     return;
                      
@@ -183,10 +185,6 @@ public class LoginFilter implements Filter {
                         StudyVersion sv2 = studyService.getStudyVersion(studyId, versionDiffNumbers[1]);
                     } catch (EJBException e) {
                         if (e.getCause() instanceof IllegalArgumentException) {
-                            String redirectURL = httpRequest.getContextPath();
-                            if (currentVDC != null) {
-                                redirectURL += "/dv/" + currentVDC.getAlias();
-                            }
                             httpResponse.sendRedirect(redirectURL + "/faces/IdDoesNotExistPage.xhtml");
                             return;
                         } else {
@@ -212,27 +210,19 @@ public class LoginFilter implements Filter {
                     }
                 } catch (EJBException e) {
                     if (e.getCause() instanceof IllegalArgumentException) {
-                        String redirectURL = httpRequest.getContextPath();
-                        if (currentVDC!=null) {
-                            redirectURL+="/dv/"+currentVDC.getAlias();
-                        }
                         httpResponse.sendRedirect(redirectURL + "/faces/IdDoesNotExistPage.xhtml" );
                         return;
                     } else {
                         throw e;
                     }
                 } catch (NumberFormatException e) {
-                    String redirectURL = httpRequest.getContextPath();
-                        if (currentVDC!=null) {
-                            redirectURL+="/dv/"+currentVDC.getAlias();
-                        }
                     httpResponse.sendRedirect(redirectURL + "/faces/NotFoundPage.xhtml" );
                     return;
                 }
             } 
         }
 
-        setOriginalUrl(httpRequest, httpResponse, currentVDC);
+        setOriginalUrl(httpRequest, httpResponse);
 
         LoginBean loginBean =  vdcSession.getLoginBean();
         UserGroup ipUserGroup = null;
@@ -256,7 +246,7 @@ public class LoginFilter implements Filter {
 
         if (!authorized) {
             if (loginBean == null) {
-                redirectToLogin(httpRequest, httpResponse, currentVDC);
+                redirectToLogin(httpRequest, httpResponse);
             } else {
                 PageDef redirectPageDef = pageDefService.findByName(PageDefServiceLocal.UNAUTHORIZED_PAGE);
                 httpResponse.sendRedirect(httpRequest.getContextPath() + "/faces" + redirectPageDef.getPath());
@@ -741,13 +731,18 @@ public class LoginFilter implements Filter {
         return restricted;
     }
 
-    private void setOriginalUrl(HttpServletRequest request, HttpServletResponse response, VDC currentVDC) {
+    private void setOriginalUrl(HttpServletRequest request, HttpServletResponse response) {
+        VDC currentVDC = vdcService.getVDCFromRequest(request);
+        VDCNetwork currentVDCNetwork = vdcNetworkService.getVDCNetworkFromRequest(request); 
+        
         String requestURI = request.getRequestURI();
         String originalUrl = requestURI;
         String queryString = null;
 
         if (currentVDC != null) {
             queryString = "?vdcId=" + currentVDC.getId();
+        } else if (currentVDCNetwork != null) {
+            queryString = "?vdcSubnetworkId=" + currentVDCNetwork.getId();
         }
 
         if (request.getQueryString() != null) {
@@ -799,14 +794,17 @@ public class LoginFilter implements Filter {
 
     }
 
-    private void redirectToLogin(HttpServletRequest request, HttpServletResponse response, VDC currentVDC) throws IOException, ServletException {
-        String vdcParam = "?redirect=true";
+    private void redirectToLogin(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
+        VDC currentVDC = vdcService.getVDCFromRequest(request);
+        VDCNetwork currentVDCNetwork = vdcNetworkService.getVDCNetworkFromRequest(request); 
+        String params = "?redirect=true";
         PageDef loginPage = pageDefService.findByName(PageDefServiceLocal.LOGIN_PAGE);
         if (currentVDC != null) {
-            vdcParam += "&vdcId=" + currentVDC.getId();
-
+            params += "&vdcId=" + currentVDC.getId();
+        } else if (currentVDCNetwork != null) {
+            params += "&vdcSubnetworkId=" + currentVDCNetwork.getId();
         }
-        response.sendRedirect(request.getContextPath() + "/faces" + loginPage.getPath() + vdcParam);
+        response.sendRedirect(request.getContextPath() + "/faces" + loginPage.getPath() + params);
 
 
 

@@ -11,6 +11,8 @@ Update vdc set vdcnetwork_id = 0;
 Alter TABLE template add vdcsubnetwork_id bigint;
 Update template set vdcsubnetwork_id = 0;
 
+ALTER TABLE template DROP COLUMN displayoncreatedataverse;
+
 
 ALTER TABLE vdcnetwork ADD COLUMN urlalias character varying(255);
 ALTER TABLE vdcnetwork ALTER COLUMN urlalias SET STORAGE EXTENDED;
@@ -27,9 +29,6 @@ ALTER TABLE vdcnetwork ALTER COLUMN creator_id SET STORAGE PLAIN;
 ALTER TABLE vdcnetwork ADD COLUMN logo character varying(255);
 ALTER TABLE vdcnetwork ADD COLUMN shortdescription character varying(255);
 
-
-update template set displayoncreatedataverse = true
-where vdc_id is null;
 
 INSERT INTO pagedef ( name, path, role_id, networkrole_id ) VALUES ( 'EditSubnetworkPage', '/networkAdmin/EditSubnetworkPage.xhtml', null, 2 );
 

@@ -65,8 +65,6 @@ public class BrowseDataversesPage  extends VDCBaseBean implements Serializable {
     private VDCUIList vdcUIList;
     private boolean firstRun = true;
     private ArrayList groupItemBeans;
-    DataverseGrouping parentItem    = null;
-    DataverseGrouping childItem     = null;
     private List sortOrderItems;
     private String sortOrderString;
     
@@ -75,15 +73,15 @@ public class BrowseDataversesPage  extends VDCBaseBean implements Serializable {
     }
 
     public void init() {
-        super.init();
+        super.init();        
+        hideRestricted = true; 
+        sortOrderItems = loadSortSelectItems();
+        initGroupMenu();
+        populateVDCUIList(); 
     }
     
     public void preRenderView() {  
         super.preRenderView();
-        hideRestricted = true;  
-        sortOrderItems = loadSortSelectItems();
-        initGroupMenu();
-        populateVDCUIList();  
         // add javascript call on each partial submit to initialize the help tips for added fields
         JavascriptContext.addJavascriptCall(getFacesContext(),"initListingPanelRemoveHeights();");       
         JavascriptContext.addJavascriptCall(getFacesContext(),"initListingPanelHeights();");
@@ -100,6 +98,7 @@ public class BrowseDataversesPage  extends VDCBaseBean implements Serializable {
     public String updateDVList(){
         String checkString = (String) getInputFilterTerm().getValue();        
         filterTerm = checkString;
+        populateVDCUIList(); 
         return "";
     }
         
@@ -174,48 +173,61 @@ public class BrowseDataversesPage  extends VDCBaseBean implements Serializable {
         for (VDCGroup vdcgroup : list) {
             String indentStyle = (vdcgroup.getParent() == null) ? "groupRowIndentStyle" : "childRowIndentStyle";
             if (vdcgroup.getParent() == null) {
-                populateTopNode(vdcgroup, indentStyle);
+                DataverseGrouping parentItem = populateTopNode(vdcgroup, indentStyle);
                 // get all of the vdcs that belong to this group and add them to the parent
-                populateDescendants(vdcgroup, true);
+                populateDescendants(vdcgroup,parentItem, true);
+                if (!parentItem.getChildItems().isEmpty()) {
+                    groupItemBeans.add(parentItem);
+                }                
             }
         }
     }
-
+    
       //Manage classification
-    protected void populateTopNode(VDCGroup vdcgroup, String indentStyle) {
+    protected DataverseGrouping populateTopNode(VDCGroup vdcgroup, String indentStyle) {
         boolean isExpanded = false;
-        synchronized (groupItemBeans) {
-            parentItem = new DataverseGrouping(vdcgroup.getId(), vdcgroup.getName(), "group", groupItemBeans, isExpanded, "", "", new Long("-1"));
-        }
+        DataverseGrouping parentItem = new DataverseGrouping(vdcgroup.getId(), vdcgroup.getName(), "group", isExpanded, "", "", new Long("-1"));
+
         parentItem.setShortDescription(vdcgroup.getDescription());
         parentItem.setTextIndent(0);
         if (!indentStyle.equals("")) {
             parentItem.setIndentStyleClass(indentStyle);
         }
+        
+        return parentItem;
     }
 
-    protected void populateDescendants(VDCGroup vdcgroup, boolean isExpanded) {
+    protected void populateDescendants(VDCGroup vdcgroup, DataverseGrouping parentItem, boolean isExpanded) {
         Long parentId = vdcgroup.getId();
         Long networkId = getVDCRequestBean().getCurrentVdcNetwork().getId();
-
         List<VDCGroup> list = vdcGroupService.findByParentId(parentId);
+
         DataverseGrouping childItem;
-        for (VDCGroup groupFromList : list) {
-            childItem = new DataverseGrouping(groupFromList.getId(), groupFromList.getName(), "subgroup", isExpanded, "", "", parentId, vdcGroupService.findCountVDCsByVDCGroupIdSubnetworkId(groupFromList.getId(), networkId));
-            parentItem.addItem(childItem);
-            parentItem.setIsAccordion(true);
-            if (!vdcGroupService.findByParentId(groupFromList.getId()).isEmpty()) {
-                childItem.setNumberOfDataverses(vdcGroupService.findCountParentChildVDCsByVDCGroupIdSubnetworkId(groupFromList.getId(), networkId));
-                List <VDCGroup> innerlist = vdcGroupService.findByParentId(groupFromList.getId());
-                DataverseGrouping xtraItem;
-                childItem.setXtraItems(new ArrayList());
-                for (VDCGroup innerGroup : innerlist){
-                    xtraItem = new DataverseGrouping(innerGroup.getId(), innerGroup.getName(), "subgroup", isExpanded, "", "", parentId, vdcGroupService.findCountVDCsByVDCGroupIdSubnetworkId(innerGroup.getId(), networkId));
-                    childItem.addXtraItem(xtraItem);
+        for (VDCGroup group : list) {
+            // Check total number of DVs in this VDCGroup and its children            
+            Long numDVs = vdcGroupService.findCountParentChildVDCsByVDCGroupIdSubnetworkId(group.getId(), networkId);
+            if (numDVs > 0) {
+                childItem = new DataverseGrouping(group.getId(), group.getName(), "subgroup", isExpanded, "", "", parentId, numDVs);
+                parentItem.addItem(childItem);
+                parentItem.setIsAccordion(true);
+
+                // now iterate through next level
+                if (!vdcGroupService.findByParentId(group.getId()).isEmpty()) {
+                    List<VDCGroup> innerlist = vdcGroupService.findByParentId(group.getId());
+                    DataverseGrouping xtraItem;
+                    childItem.setXtraItems(new ArrayList());
+                    for (VDCGroup innerGroup : innerlist) {
+                        numDVs = vdcGroupService.findCountVDCsByVDCGroupIdSubnetworkId(innerGroup.getId(), networkId);
+                        if (numDVs > 0) {
+                            xtraItem = new DataverseGrouping(innerGroup.getId(), innerGroup.getName(), "subgroup", isExpanded, "", "", parentId, numDVs);
+                            childItem.addXtraItem(xtraItem);
+                        }
+                    }
                 }
             }
         }
     }
+
    
     private List<SelectItem> loadSortSelectItems(){
         List selectItems = new ArrayList<SelectItem>();

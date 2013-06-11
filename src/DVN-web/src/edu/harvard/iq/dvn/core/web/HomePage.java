@@ -79,8 +79,6 @@ public class HomePage extends VDCBaseBean implements Serializable {
 
     //Objects
     private ArrayList accordionItemBeans;
-    DataverseGrouping parentItem    = null;
-    DataverseGrouping childItem     = null;
     private HtmlDataTable dataverseList = new HtmlDataTable();
     private HtmlInputHidden hiddenGroupId = new HtmlInputHidden();
     private HtmlInputHidden hiddenAlphaCharacter = new HtmlInputHidden();
@@ -109,12 +107,8 @@ public class HomePage extends VDCBaseBean implements Serializable {
 
      @SuppressWarnings("unchecked")
     public void init() {
-
         super.init();
 
-     }
-     
-     public void preRenderView(){
         if (getVDCRequestBean().getCurrentVdcNetwork() != null ){
             vdcNetworkId = getVDCRequestBean().getCurrentVdcNetwork().getId();
         }
@@ -370,59 +364,67 @@ public class HomePage extends VDCBaseBean implements Serializable {
             accordionItemBeans = new ArrayList();
         }
 
-        List list = (List)vdcGroupService.findAll();
-        //itemBeansSize = list.size();
-        Iterator outeriterator = list.iterator();
-        while(outeriterator.hasNext()) {
-            classificationsSize++;  
-            VDCGroup vdcgroup = (VDCGroup)outeriterator.next();
-                String indentStyle = (vdcgroup.getParent() == null) ? "groupRowIndentStyle" : "childRowIndentStyle";
-                if (vdcgroup.getParent() == null) {
-                    populateTopNode(vdcgroup, indentStyle);
-                    // get all of the vdcs that belong to this group and add them to the parent
-                    populateDescendants(vdcgroup, true);
+        List<VDCGroup> list = (List<VDCGroup>) vdcGroupService.findAll();
+        for (VDCGroup vdcgroup : list) {
+            classificationsSize++;
+            String indentStyle = (vdcgroup.getParent() == null) ? "groupRowIndentStyle" : "childRowIndentStyle";
+            if (vdcgroup.getParent() == null) {
+                DataverseGrouping parentItem = populateTopNode(vdcgroup, indentStyle);
+                // get all of the vdcs that belong to this group and add them to the parent
+                populateDescendants(vdcgroup, parentItem, true);
+
+                if (!parentItem.getChildItems().isEmpty()) {
+                    accordionItemBeans.add(parentItem);
                 }
+            }
         }
     }
 
-      //Manage classification
-     protected void populateTopNode(VDCGroup vdcgroup, String indentStyle) {
-         boolean isExpanded     = false;
-         synchronized(accordionItemBeans) {
-            parentItem  = new DataverseGrouping(vdcgroup.getId(), vdcgroup.getName(), "group", accordionItemBeans, isExpanded, "", "", new Long("-1"));
-         }
-         parentItem.setShortDescription(vdcgroup.getDescription());
-         parentItem.setTextIndent(0);
+    //Manage classification
+    protected DataverseGrouping populateTopNode(VDCGroup vdcgroup, String indentStyle) {
+        boolean isExpanded = false;
+        DataverseGrouping parentItem = new DataverseGrouping(vdcgroup.getId(), vdcgroup.getName(), "group", isExpanded, "", "", new Long("-1"));
 
-         if (!indentStyle.equals(""))
-             parentItem.setIndentStyleClass(indentStyle);
-     }
+        parentItem.setShortDescription(vdcgroup.getDescription());
+        parentItem.setTextIndent(0);
 
-      protected void populateDescendants(VDCGroup vdcgroup, boolean isExpanded) {
-         Long networkId = getVDCRequestBean().getCurrentVdcNetwork().getId();
-         Long parentId        = vdcgroup.getId();
-         List list          = vdcGroupService.findByParentId(parentId);
-         Iterator iterator  = list.iterator();
-         DataverseGrouping childItem;
-         while (iterator.hasNext()) {                       
-            VDCGroup group = (VDCGroup)iterator.next();
-            childItem = new DataverseGrouping(group.getId(), group.getName(), "subgroup", isExpanded, "", "", parentId, vdcGroupService.findCountVDCsByVDCGroupIdSubnetworkId(group.getId(), networkId));
-            parentItem.addItem(childItem);
-            parentItem.setIsAccordion(true);
-            if (!vdcGroupService.findByParentId(group.getId()).isEmpty()) {
-                childItem.setNumberOfDataverses(vdcGroupService.findCountParentChildVDCsByVDCGroupIdSubnetworkId(group.getId(), networkId));
-                List innerlist  = vdcGroupService.findByParentId(group.getId());                          
-                Iterator inneriterator  = innerlist.iterator();
-                DataverseGrouping xtraItem;
-                childItem.setXtraItems(new ArrayList());
-                while (inneriterator.hasNext()) {
-                    VDCGroup innergroup = (VDCGroup)inneriterator.next();
-                    xtraItem = new DataverseGrouping(innergroup.getId(), innergroup.getName(), "subgroup", isExpanded, "", "", parentId,  vdcGroupService.findCountVDCsByVDCGroupIdSubnetworkId(innergroup.getId(), networkId));
-                    childItem.addXtraItem(xtraItem);
+        if (!indentStyle.equals("")) {
+            parentItem.setIndentStyleClass(indentStyle);
+        }
+
+        return parentItem;
+    }
+
+     protected void populateDescendants(VDCGroup vdcgroup, DataverseGrouping parentItem, boolean isExpanded) {
+        Long parentId = vdcgroup.getId();         
+        Long networkId = getVDCRequestBean().getCurrentVdcNetwork().getId();
+        List<VDCGroup> list = vdcGroupService.findByParentId(parentId);
+
+        DataverseGrouping childItem;
+        for (VDCGroup group : list) {
+            // Check total number of DVs in this VDCGroup and its children
+            Long numDVs = vdcGroupService.findCountParentChildVDCsByVDCGroupIdSubnetworkId(group.getId(), networkId);
+            if (numDVs > 0) {
+                childItem = new DataverseGrouping(group.getId(), group.getName(), "subgroup", isExpanded, "", "", parentId, numDVs);
+                parentItem.addItem(childItem);
+                parentItem.setIsAccordion(true);
+                
+                // now iterate through next level
+                if (!vdcGroupService.findByParentId(group.getId()).isEmpty()) {
+                    List<VDCGroup> innerlist = vdcGroupService.findByParentId(group.getId());
+                    DataverseGrouping xtraItem;
+                    childItem.setXtraItems(new ArrayList());
+                    for (VDCGroup innerGroup : innerlist){
+                        numDVs = vdcGroupService.findCountVDCsByVDCGroupIdSubnetworkId(innerGroup.getId(), networkId);
+                        if (numDVs > 0) {
+                            xtraItem = new DataverseGrouping(innerGroup.getId(), innerGroup.getName(), "subgroup", isExpanded, "", "", parentId, numDVs);
+                            childItem.addXtraItem(xtraItem);
+                        }
+                    }
                 }
-            }            
-         }        
-      }
+            }
+        }
+    }
       
 
 

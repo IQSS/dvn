@@ -141,12 +141,9 @@
                                                     <!-- All Dataverses -->
                                                     <li>
                                                         <h4 class="dvnHmpgAllDataverses">
-                                                            <ice:commandLink onclick="setHiddenValuesGroupId(-1);"
-                                                                            partialSubmit="true"
-                                                                            styleClass="head">
+                                                            <ice:outputLink styleClass="head groupId-1" value="/dvn#{VDCRequest.currentVdcNetworkURL}/faces/site/BrowseDataversesPage.xhtml">    
                                                                 <ice:outputText value="Show All Released Dataverses"/>
-                                                                <f:attribute name="groupId" value="-1"/>
-                                                            </ice:commandLink>
+                                                            </ice:outputLink>
                                                         </h4>
                                                     </li>
                                                     <li id="dvClassificationMenu" class="xtraMenu basic">
@@ -164,7 +161,7 @@
                                                                     <ui:fragment rendered="#{!empty(item.xtraItems)}">
                                                                         <li id="xtraMenu#{item.id}">
                                                                             <h4 class="head">
-                                                                            <ice:outputLink styleClass="head" value="/dvn#{VDCRequest.currentVdcNetworkURL}/faces/site/BrowseDataversesPage.xhtml?groupId=#{item.id}"                                                                                                                                                                                                                    >
+                                                                            <ice:outputLink styleClass="head groupId#{item.id}" value="/dvn#{VDCRequest.currentVdcNetworkURL}/faces/site/BrowseDataversesPage.xhtml?groupId=#{item.id}"                                                                                                                                                                                                                    >
                                                                                 <ice:outputText value="#{item.name}"/>
                                                                             </ice:outputLink>
                                
@@ -176,7 +173,7 @@
                                                                                             value="#{item.xtraItems}"
                                                                                             var="xtraItems">
                                                                                         <li>
-                                                                                              <ice:outputLink styleClass="lastNode" value="/dvn#{VDCRequest.currentVdcNetworkURL}/faces/site/BrowseDataversesPage.xhtml?groupId=#{xtraItems.id}">
+                                                                                              <ice:outputLink styleClass="lastNode groupId#{xtraItems.id}" value="/dvn#{VDCRequest.currentVdcNetworkURL}/faces/site/BrowseDataversesPage.xhtml?groupId=#{xtraItems.id}">
                                                                                                 <ice:outputText value="#{xtraItems.name}"/>
                                                                                              </ice:outputLink>
                                                                                             <ice:outputText value=" (#{xtraItems.numberOfDataverses})" styleClass="dvnHmpgClassificationCount"/>
@@ -190,7 +187,7 @@
                                                                     <!-- HAS NO SUBNODE DESCENDANTS -->
                                                                     <ui:fragment rendered="#{empty(item.xtraItems)}">
                                                                         <li>
-                                                                            <ice:outputLink styleClass="lastNode" value="/dvn#{VDCRequest.currentVdcNetworkURL}/faces/site/BrowseDataversesPage.xhtml?groupId=#{item.id}">
+                                                                            <ice:outputLink styleClass="lastNode groupId#{item.id}" value="/dvn#{VDCRequest.currentVdcNetworkURL}/faces/site/BrowseDataversesPage.xhtml?groupId=#{item.id}">
                                                                                 <ice:outputText value="#{item.name}"/>
                                                                             </ice:outputLink>
                                                                             <ice:outputText value=" (#{item.numberOfDataverses})" styleClass="dvnHmpgClassificationCount"/>

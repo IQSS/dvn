@@ -102,8 +102,8 @@ public class VDCContextListener implements ServletContextListener,ServletRequest
 
                 vdcNetworkService.updateExportTimer();
 
-                vdcNetworkStatsService.updateStats();
-                vdcNetworkStatsService.createStatsTimer();
+                //vdcNetworkStatsService.updateStats();
+                //vdcNetworkStatsService.createStatsTimer();
             }
 
         } catch (Exception e) {

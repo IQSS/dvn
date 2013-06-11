@@ -268,6 +268,7 @@ public class TermsOfUseFilter implements Filter {
         Map termsOfUseMap = getTermsOfUseMap();
         String studyId = req.getParameter("studyId");
         VDC currentVDC = vdcService.getVDCFromRequest(req);
+        VDCNetwork currentVDCNetwork = vdcNetworkService.getVDCNetworkFromRequest(req);        
         VDC depositVDC = null;
         if (studyId!=null) {
             depositVDC = studyService.getStudy(Long.parseLong(studyId)).getOwner();
@@ -280,6 +281,8 @@ public class TermsOfUseFilter implements Filter {
             params += "&redirectPage=" + URLEncoder.encode(req.getServletPath() + req.getPathInfo() + "?" + req.getQueryString(), "UTF-8");
             if (currentVDC != null) {
                 params += "&vdcId=" + currentVDC.getId();
+            } else if (currentVDCNetwork != null) {
+                params += "&vdcSubnetworkId=" + currentVDCNetwork.getId();
             }
             res.sendRedirect(req.getContextPath() + "/faces/study/TermsOfUsePage.xhtml" + params);
             return true; // don't continue with chain since we are redirecting'
@@ -438,7 +441,7 @@ public class TermsOfUseFilter implements Filter {
                         || isDownloadDataverseTermsRequired(study, termsOfUseMap) 
                         || isDownloadStudyTermsRequired(study, termsOfUseMap)
                         || isGuestbookRequired(study, termsOfUseMap)) {
-                    VDC currentVDC = vdcService.getVDCFromRequest(req);
+                  
                     String params = "?studyId=" + study.getId();
                     if ( versionNumber != null ) {
                         params += "&versionNumber=" + versionNumber;
@@ -448,8 +451,13 @@ public class TermsOfUseFilter implements Filter {
                     }
                     params += "&redirectPage=" + URLEncoder.encode(req.getServletPath() + req.getPathInfo() + "?" + req.getQueryString(), "UTF-8");
                     params += "&tou="+TOU_DOWNLOAD;
+                    
+                    VDC currentVDC = vdcService.getVDCFromRequest(req);
+                    VDCNetwork currentVDCNetwork = vdcNetworkService.getVDCNetworkFromRequest(req);                      
                     if (currentVDC != null) {
                         params += "&vdcId=" + currentVDC.getId();
+                    } else if (currentVDCNetwork != null) {
+                        params += "&vdcSubnetworkId=" + currentVDCNetwork.getId();
                     }
                     res.sendRedirect(req.getContextPath() + "/faces/study/TermsOfUsePage.xhtml" + params);
                     return true; // don't continue with chain since we are redirecting'

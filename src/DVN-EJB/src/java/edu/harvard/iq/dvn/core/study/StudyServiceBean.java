@@ -741,13 +741,15 @@ public class StudyServiceBean implements edu.harvard.iq.dvn.core.study.StudyServ
             }
             if (studyIdList != null && studyIdList.size() > 0) {
                 String studyIds = generateTempTableString(studyIdList);
-                linkedStudyClause = " or s.id in (" + studyIds + ") ";
+                linkedStudyClause = " or sv.study_id in (" + studyIds + ") ";
             }
         }
-        String queryStr = "SELECT s.id FROM VDC v, Study s, StudyVersion sv where (s.id = sv.study_id "
-                + " and sv.versionstate = '" + StudyVersion.VersionState.RELEASED + "'"
-                + " and s.owner_id = v.id "
-                + " and v.restricted = false "
+        String queryStr = "  SELECT sv.study_id FROM StudyVersion sv   where sv.versionstate = " 
+                + "'" + StudyVersion.VersionState.RELEASED + "'"
+                + " and sv.study_id in ( "
+                + " 	select s.id FROM VDC v, Study s, StudyVersion sv where s.id = sv.study_id  and sv.versionstate = "
+                + "'" + StudyVersion.VersionState.RELEASED + "'"
+                + " and s.owner_id = v.id  and v.restricted = false  "
                 + networkClause 
                 + ") "
                 + linkedStudyClause
@@ -757,13 +759,17 @@ public class StudyServiceBean implements edu.harvard.iq.dvn.core.study.StudyServ
                     + " and sv.versionstate = '" + StudyVersion.VersionState.RELEASED + "'" + " and s.owner_id = " + vdcId
                     + " ORDER BY sv.releaseTime desc";
         }
-
+        System.out.print("release data query " + queryStr);
         Query query = em.createNativeQuery(queryStr);
         List<Long> returnList = new ArrayList<Long>();
         if (numResults == -1) {
             for (Object currentResult : query.getResultList()) {
-                // convert results into Longs
-                returnList.add(new Long(((Integer) currentResult).longValue()));
+                if (currentResult instanceof Integer) {                                   // convert results into Longs
+                    returnList.add(new Long(((Integer) currentResult).longValue()));
+                } else {
+                    returnList.add(new Long(((Long) currentResult).longValue()));
+                }
+
             }
         } else {
             int i = 0;
@@ -772,7 +778,11 @@ public class StudyServiceBean implements edu.harvard.iq.dvn.core.study.StudyServ
                 if (i > numResults) {
                     break;
                 } else {
-                    returnList.add(new Long(((Integer) currentResult).longValue()));
+                    if (currentResult instanceof Integer) {                                   // convert results into Longs
+                        returnList.add(new Long(((Integer) currentResult).longValue()));
+                    } else {
+                        returnList.add(new Long(((Long) currentResult).longValue()));
+                    }
                 }
             }
         }        
@@ -803,10 +813,10 @@ public class StudyServiceBean implements edu.harvard.iq.dvn.core.study.StudyServ
             }
         }
         String queryStr = "select s.id "
-                + "from VDC v,  StudyVersion sv, Study s "
+                + "from Study s "
                 + "left outer JOIN StudyFileActivity sfa on  s.id = sfa.study_id "
-                + "where  ("
-                + " s.id = sv.study_id "
+                + "where  s.id in  ( select s.id from Study s,  VDC v,  StudyVersion sv "
+                + " where s.id = sv.study_id "
                 + " and s.owner_id = v.id "
                 + " and v.restricted = false "
                 + " and sv.versionstate = '" + StudyVersion.VersionState.RELEASED + "'"
@@ -818,7 +828,7 @@ public class StudyServiceBean implements edu.harvard.iq.dvn.core.study.StudyServ
                 + " order by "
                 + "(CASE WHEN sum(downloadcount) is null THEN -1 ELSE sum(downloadcount) END) desc";
 
-
+        System.out.print("Download count query " + queryStr);
         Query query = em.createNativeQuery(queryStr);
         List<Long> returnList = new ArrayList<Long>();
         if (numResults == -1) {

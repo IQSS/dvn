@@ -331,22 +331,19 @@ public abstract class StudyFile implements Serializable {
         this.dataTables = dataTables;
     }
 
-    public boolean isSubsetRestrictedForUser(VDCUser user, VDC vdc, UserGroup ipUserGroup) {
+    public boolean isSubsetRestrictedForUser(VDCUser user, UserGroup ipUserGroup) {
         // the restrictions should be checked on the owner of the study, not the currentVDC (needs cleanup)
         VDC owner = this.getStudy().getOwner();
         if (owner.isHarvestingDv()) {
             HarvestingDataverse hd = owner.getHarvestingDataverse();
             return hd.isSubsetRestrictedForUser(user, ipUserGroup);
         } else {
-            return isFileRestrictedForUser(user, owner, ipUserGroup);
+            return isFileRestrictedForUser(user, ipUserGroup);
         }
     }
 
-    public boolean isFileRestrictedForUser(VDCUser user, VDC vdc, UserGroup ipUserGroup) {
-
-        // the restrictions should be checked on the owner of the study, not the currentVDC (needs cleanup)
-        vdc = this.getStudy().getOwner();
-
+    public boolean isFileRestrictedForUser(VDCUser user, UserGroup ipUserGroup) {
+        VDC vdc = this.getStudy().getOwner();
 
         // first check if study is restricted, regardless of file permissions
         Study study = getStudy();

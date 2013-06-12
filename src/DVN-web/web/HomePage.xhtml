@@ -233,13 +233,13 @@
                                                         var="vdcSubnetwork">
                                         <div class="content">
                                             <div jsfc="ice:panelGroup" styleClass="dvnHmpgSubnetworkLogo" rendered="#{!empty vdcSubnetwork.vdcNetwork.logo}">
-                                                <ice:outputLink id="subnetwork_imglink" value="/dvn/dataverses/#{vdcSubnetwork.vdcNetwork.urlAlias}" title="#{vdcSubnetwork.vdcNetwork.name} Dataverses">
+                                                <ice:outputLink id="subnetwork_imglink" value="/dvn/dataverses/#{vdcSubnetwork.vdcNetwork.urlAlias}" title="View a subset of #{vdcSubnetwork.vdcNetwork.name} Dataverses within the #{VDCRequest.vdcNetwork.name} Dataverse Network">
                                                     <ice:graphicImage value="#{homePage.getSubNetworkLogoUrl(vdcSubnetwork.vdcNetwork.logo)}" alt="#{vdcSubnetwork.vdcNetwork.name} Dataverses"/>
                                                 </ice:outputLink>
                                             </div>
                                             <div class="dvnHmpgSubnetworkInfo">
                                                 <ice:outputLink styleClass="dvnHmpgSubnetworkNameLink" id="subnetwork_textlink" value="/dvn/dataverses/#{vdcSubnetwork.vdcNetwork.urlAlias}"                 
-                                                    title="#{vdcSubnetwork.vdcNetwork.name} Dataverses">
+                                                    title="View a subset of #{vdcSubnetwork.vdcNetwork.name} Dataverses within the #{VDCRequest.vdcNetwork.name} Dataverse Network">
                                                     <ice:outputText value="#{vdcSubnetwork.vdcNetwork.name} Dataverses"/>
                                                 </ice:outputLink>
                                                 <ice:outputText styleClass="dvnHmpgSubnetworkDVCount" value="Dataverses: #{vdcSubnetwork.vdcCount} "/>

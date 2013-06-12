@@ -266,7 +266,7 @@ public class Indexer implements java.io.Serializable  {
             /* Plus it may belong to these extra Networks, through linking into
              * collections in DVs that belong to other Networks:
              */
-            logger.info("Using network id "+dvNetworkId);
+            logger.fine("Using network id "+dvNetworkId);
             addText(1.0f, doc, "dvNetworkId", dvNetworkId); 
             List<Long> linkedToNetworks = study.getLinkedToNetworkIds();
             if (linkedToNetworks != null) {
@@ -509,7 +509,7 @@ public class Indexer implements java.io.Serializable  {
 
             addText(1.0f, doc, "unf", metadata.getUNF());
 //        writer = new IndexWriter(dir, true, getAnalyzer(), isIndexEmpty());
-            logger.info("Indexing study db id " + study.getId() + " (" + study.getStudyId() + ": " + metadata.getTitle() + ") from dataverse id " + study.getOwner().getId() + " (" + study.getOwner().getAlias() + ")");
+            logger.fine("Indexing study db id " + study.getId() + " (" + study.getStudyId() + ": " + metadata.getTitle() + ") from dataverse id " + study.getOwner().getId() + " (" + study.getOwner().getAlias() + ")");
             writer = new IndexWriter(dir, getAnalyzer(), isIndexEmpty(), IndexWriter.MaxFieldLength.UNLIMITED);
             writer.setUseCompoundFile(true);
             TaxonomyWriter taxo = new DirectoryTaxonomyWriter(taxoDir);
@@ -720,7 +720,7 @@ public class Indexer implements java.io.Serializable  {
     
     List<Long> findStudiesInCollections (VDC vdc) {
         List <Long> linkedStudyIds = null;
-        List <Query> collectionQueries = getCollectionQueries(vdc);
+        List <Query> collectionQueries = getCollectionQueriesForSubnetworkIndexing(vdc);
         
         if (collectionQueries != null && collectionQueries.size() > 0) {
             logger.info("running combined collections query for the vdc id "+vdc.getId()+", "+vdc.getName()+"; "+collectionQueries.size()+" queries total.");
@@ -2005,6 +2005,15 @@ public class Indexer implements java.io.Serializable  {
     }
 
     List<Query> getCollectionQueries(VDC vdc) {
+        return getCollectionQueries(vdc, false);
+        
+    }
+    
+    List<Query> getCollectionQueriesForSubnetworkIndexing(VDC vdc) {
+        return getCollectionQueries(vdc, true);
+    }
+    
+    List<Query> getCollectionQueries(VDC vdc, boolean noSubnetworkScope) {
         List<Query> collectionQueries = new ArrayList<Query>();
 
         QueryParser parser = new QueryParser(Version.LUCENE_30, "abstract", new DVNAnalyzer());
@@ -2047,11 +2056,22 @@ public class Indexer implements java.io.Serializable  {
                         // skipping it: 
                         queryString = null;
                     } else if (isSubnetworkScope) {
-                        // TODO: 
-                        // See if we can skip subnetwork-scoped queries too, if 
-                        // we are running this for the purposes of looking for 
-                        // studies linked across subnetworks. -- L.A. 
-                        queryString = "dvNetworkId:" + col.getOwner().getVdcNetwork().getId() + " AND (" + queryString + ")";
+                        if (noSubnetworkScope) {
+                            // We want to skip subnetwork-scoped queries too; if 
+                            // we are running this for the purposes of looking for 
+                            // studies linked across subnetworks. -- L.A. 
+                            // Why? - Because we are looking for studies linked 
+                            // from *other* subnetworks; and dvNetworkId=myNetwork
+                            // added to the query guarantees that this isn't going
+                            // to happen... But more importantly, it's not just 
+                            // about spending cycles running an unnecessary query: 
+                            // this may actually prevent properly reindexing 
+                            // a study that's no longer linked to this subnetwork... 
+                            
+                            queryString = null; 
+                        } else {
+                            queryString = "dvNetworkId:" + col.getOwner().getVdcNetwork().getId() + " AND (" + queryString + ")";
+                        }
                     } else {
                         // and if it's a network-scope collection, then we'll just add 
                         // whatever is in queryString

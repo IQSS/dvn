@@ -223,17 +223,7 @@ public class OptionsPage extends VDCBaseBean  implements java.io.Serializable {
         }
         
         initCollection();       
-        if (this.getBanner() == null){
-            setBanner( (getVDCRequestBean().getCurrentVDCId() == null) ? getVDCRequestBean().getVdcNetwork().getNetworkPageHeader(): getVDCRequestBean().getCurrentVDC().getHeader());
-            setFooter( (getVDCRequestBean().getCurrentVDCId() == null) ? getVDCRequestBean().getVdcNetwork().getNetworkPageFooter(): getVDCRequestBean().getCurrentVDC().getFooter());
-            
-            if (getVDCRequestBean().getCurrentVDCId() != null) {
-                setDisplayInFrame(getVDCRequestBean().getCurrentVDC().isDisplayInFrame());
-                setParentSite(getVDCRequestBean().getCurrentVDC().getParentSite());
-            }
-        }
-        
-        combinedTextField.setValue(banner + footer);
+
         
         // Search Fields
       if (getVDCRequestBean().getCurrentVDC() != null) {
@@ -790,30 +780,7 @@ public class OptionsPage extends VDCBaseBean  implements java.io.Serializable {
         templateList.set(templateIndex, templateService.getTemplate(template.getId()));
     }
     
-    
-    public String save_action() {
-        String forwardPage=null;
-        if (getVDCRequestBean().getCurrentVDCId() == null) {
-            // this is a save against the network
-            VDCNetwork vdcnetwork = getVDCRequestBean().getVdcNetwork();
-            vdcnetwork.setNetworkPageHeader(banner);
-            vdcnetwork.setNetworkPageFooter(footer);
-            vdcNetworkService.edit(vdcnetwork);
-            getVDCRequestBean().getVdcNetwork().setNetworkPageHeader(banner);
-            getVDCRequestBean().getVdcNetwork().setNetworkPageFooter(footer);
-            forwardPage="/networkAdmin/NetworkOptionsPage?faces-redirect=true";
-        } else {
-            vdc.setHeader(banner);
-            vdc.setFooter(footer);
-            vdc.setDisplayInFrame(displayInFrame);
-            vdc.setParentSite(parentSite);
-            vdcService.edit(vdc);
-            forwardPage="/admin/OptionsPage?faces-redirect=true" + getContextSuffix();
-        }
-        getVDCRenderBean().getFlash().put("successMessage","Successfully updated layout branding.");
-        return forwardPage;
-    }
-    
+
     public String savePermissionsChanges() {
 
         if (filesRestricted != vdc.isFilesRestricted()) {
@@ -844,47 +811,9 @@ public class OptionsPage extends VDCBaseBean  implements java.io.Serializable {
         getVDCRenderBean().getFlash().put("successMessage","Successfully updated dataverse permissions.");
         return "";
     } 
-    
-    public String cancel_action(){
-        if (getVDCRequestBean().getCurrentVDCId() == null) {
-            setBanner(getVDCRequestBean().getVdcNetwork().getNetworkPageHeader());
-            setFooter(getVDCRequestBean().getVdcNetwork().getNetworkPageFooter());
-            return "/networkAdmin/NetworkOptionsPage?faces-redirect=true";
-        } else {
-                setBanner(getVDCRequestBean().getCurrentVDC().getHeader());
-                setFooter(getVDCRequestBean().getCurrentVDC().getFooter());
-                setDisplayInFrame(getVDCRequestBean().getCurrentVDC().isDisplayInFrame());
-                setParentSite(getVDCRequestBean().getCurrentVDC().getParentSite());
-            return "/admin/OptionsPage?faces-redirect=true" + getContextSuffix();
-        }
-    }
-    
-    private boolean displayInFrame;
-    private String parentSite;
 
-    public boolean isDisplayInFrame() {return displayInFrame;}
-    public void setDisplayInFrame(boolean displayInFrame) {
-        this.displayInFrame = displayInFrame;
-        // add javascript call on each partial submit to trigger jQuery
-        // Removed in 3.4 still here apparently in error do to a code merge
-        //
-        //JavascriptContext.addJavascriptCall(getFacesContext(), "initOpenScholarDataverse();");
-    }
-
-    public String getParentSite() {return parentSite;}
-    public void setParentSite(String parentSite) {this.parentSite = parentSite;}
-    
-    private String banner;    
-    public String getBanner(){return banner;}    
-    public void setBanner(String banner) {this.banner = banner;}    
-    private String footer;
-    public String getFooter() {return footer;}    
-    public void setFooter(String footer) {this.footer = footer;}
-    
-    protected HtmlInputHidden combinedTextField = new HtmlInputHidden();
-    public HtmlInputHidden getCombinedTextField() {return combinedTextField;}
-    public void setCombinedTextField(HtmlInputHidden combinedTextField) {this.combinedTextField = combinedTextField;}  
-    
+     
+        
     public String authorizeTwitter() {
         String callbackURL = "http://" + PropertyUtil.getHostUrl() + "/dvn";
         callbackURL += getVDCRequestBean().getCurrentVDC() == null ? "/faces/networkAdmin/NetworkOptionsPage.xhtml" : 
@@ -2826,7 +2755,10 @@ public class OptionsPage extends VDCBaseBean  implements java.io.Serializable {
     }
 
     public String saveCustomization() throws java.io.IOException, ParserConfigurationException, SAXException, TransformerException, JAXBException {
-        combinedTextField.setValue(banner + footer);
+        String banner = editBannerFooterPage.getBanner();
+        String footer = editBannerFooterPage.getFooter();
+        editBannerFooterPage.getCombinedTextField().setValue(banner + footer);
+
         boolean validXML = true;
         String retString = "/admin/OptionsPage?faces-redirect=true" + getContextSuffix() + "&tab=settings&tab2=customization";
         
@@ -2843,8 +2775,8 @@ public class OptionsPage extends VDCBaseBean  implements java.io.Serializable {
         }
         vdc.setHeader(banner);
         vdc.setFooter(footer);
-        vdc.setDisplayInFrame(displayInFrame);
-        vdc.setParentSite(parentSite);
+        vdc.setDisplayInFrame(editBannerFooterPage.isDisplayInFrame());
+        vdc.setParentSite(editBannerFooterPage.getParentSite());
         List <StudyField> newSearchResultsFields = getDefaultSearchResultsFields();
         if (productionDateResults){
             StudyField productionDateResultsField = studyFieldService.findByName(StudyFieldConstant.productionDate);
@@ -3265,30 +3197,7 @@ public class OptionsPage extends VDCBaseBean  implements java.io.Serializable {
 
     
     
-    //Network Customization
-    public String saveNetworkCustomization() throws java.io.IOException, ParserConfigurationException, SAXException, TransformerException, JAXBException{
-        banner = editBannerFooterPage.getBanner();
-        footer = editBannerFooterPage.getFooter();
-        combinedTextField.setValue(banner + footer);
-        String retString = "/networkAdmin/NetworkOptionsPage?faces-redirect=true&tab=settings&tab2=customization";
-        ArrayList <String> errorMessage = new ArrayList();
-        XhtmlValidator validator = new XhtmlValidator();
-        boolean validXML = validator.validateXhtmlMessage(banner + footer, errorMessage);
-        if (!validXML){
-            if (errorMessage.size() > 0){
-                getVDCRenderBean().getFlash().put("warningMessage",errorMessage.get(0)); 
-            } else {
-                getVDCRenderBean().getFlash().put("warningMessage","HTML Error . . .It's possible an end tag is missing, or the markup is unbalanced."); 
-            }
-            return "";
-        }
-        VDCNetwork thisVdcNetwork = vdcNetworkService.findRootNetwork();
-        thisVdcNetwork.setNetworkPageHeader(banner);
-        thisVdcNetwork.setNetworkPageFooter(footer);     
-        vdcNetworkService.edit(thisVdcNetwork);
-        getVDCRenderBean().getFlash().put("successMessage", "Successfully updated network customization.");
-        return retString;
-    }
+
     
     //DV Requirements
     private boolean requireDvdescription;

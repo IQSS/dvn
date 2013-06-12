@@ -164,7 +164,8 @@
                           <ice:outputText value="Contains"/>
                       </ice:column>
                       <ice:column>
-                          <ice:inputText id="input_fileMetaValue" size="40" binding="#{AdvSearchPage.fileMetaSearchValue}"/>
+                          <ice:inputText onkeypress="if (window.event) return processEvent('', 'form1:button2'); else return processEvent(event, 'form1:button2');"
+                              id="input_fileMetaValue" size="40" binding="#{AdvSearchPage.fileMetaSearchValue}"/>
                       </ice:column>
                     </ice:panelGrid>
                   </div>

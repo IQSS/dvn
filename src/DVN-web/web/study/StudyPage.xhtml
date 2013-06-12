@@ -246,7 +246,7 @@
                         }
                         
                         if (bSingleZipfile) {
-                            downloadFile("#{VDCRequest.currentVDCURL}/FileDownload/study_#{studyPage.studyUI.study.studyId}.zip?fileId=" + fileIdStr + "&versionNumber=#{studyPage.studyUI.studyVersion.versionNumber}" + "#{studyPage.xff}");
+                            downloadFile("/FileDownload/study_#{studyPage.studyUI.study.studyId}.zip?fileId=" + fileIdStr + "&versionNumber=#{studyPage.studyUI.studyVersion.versionNumber}" + "#{studyPage.xff}");
                             return false;
                         } else {
                             jQuery('table[id$=autoCentZipContent] #dvnMultipleZipPopupScrollBox').append(popBodyContent).after("<br/><span class='iceOutTxt'>Total Number of ZIP Archives: " + numb + "</span>");
@@ -261,7 +261,7 @@
                     }
                     
                     function downloadFile(fileUrl) {
-                            self.location.href = "/dvn" + fileUrl;
+                            self.location.href = "/dvn#{VDCRequest.currentVDCURL}" + fileUrl;
                     }
                     // ]]>
                 </script>

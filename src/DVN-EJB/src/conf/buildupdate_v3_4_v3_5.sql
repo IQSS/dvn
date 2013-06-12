@@ -8,8 +8,8 @@ update vdcnetworkstats set vdcnetwork_id = 0;
 Alter TABLE vdc add vdcnetwork_id bigint;
 Update vdc set vdcnetwork_id = 0;
 
-Alter TABLE template add vdcsubnetwork_id bigint;
-Update template set vdcsubnetwork_id = 0;
+Alter TABLE template add vdcnetwork_id bigint;
+Update template set vdcnetwork_id = 0;
 
 ALTER TABLE template DROP COLUMN displayoncreatedataverse;
 

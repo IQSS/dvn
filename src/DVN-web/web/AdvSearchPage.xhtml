@@ -66,8 +66,7 @@
                         </ice:selectOneMenu>
                     </ice:column>
                     <ice:column>
-                      <ice:inputText onkeypress="if (window.event) return processEvent('', 'form1:button2'); else return processEvent(event, 'form1:button2');"
-                                     binding="#{AdvSearchPage.textField1}" id="textField1" size="40"  />
+                      <ice:inputText binding="#{AdvSearchPage.textField1}" id="textField1" size="40" action="#{AdvSearchPage.searchWithFacets}" />
                       <ice:message for="textField1" styleClass="errorMessage" showDetail="false" showSummary="true" />
                     </ice:column>
                     
@@ -83,8 +82,7 @@
                         </ice:selectOneMenu>
                     </ice:column>
                     <ice:column>
-                        <ice:inputText onkeypress="if (window.event) return processEvent('', 'form1:button2'); else return processEvent(event, 'form1:button2');"
-                                       binding="#{AdvSearchPage.textField2}" id="textField2" size="40" />
+                        <ice:inputText binding="#{AdvSearchPage.textField2}" id="textField2" size="40" action="#{AdvSearchPage.searchWithFacets}"/>
                     </ice:column>
                     
                     <ice:column>
@@ -99,8 +97,7 @@
                     </ice:selectOneMenu>
                     </ice:column>
                     <ice:column>
-                    <ice:inputText onkeypress="if (window.event) return processEvent('', 'form1:button2'); else return processEvent(event, 'form1:button2');"
-                                   binding="#{AdvSearchPage.textField3}" id="textField3" size="40"/>
+                    <ice:inputText binding="#{AdvSearchPage.textField3}" id="textField3" size="40" action="#{AdvSearchPage.searchWithFacets}"/>
                     </ice:column>
                     
                     <ice:column>
@@ -115,8 +112,7 @@
                     </ice:selectOneMenu>
                     </ice:column>
                     <ice:column>
-                    <ice:inputText onkeypress="if (window.event) return processEvent('', 'form1:button2'); else return processEvent(event, 'form1:button2');"
-                                   binding="#{AdvSearchPage.textField4}" id="textField4" size="40"/>
+                    <ice:inputText binding="#{AdvSearchPage.textField4}" id="textField4" size="40" action="#{AdvSearchPage.searchWithFacets}"/>
                     </ice:column>
                   </ice:panelGrid>
 
@@ -138,8 +134,7 @@
                                 <ice:outputText value="Contains"/>
                             </ice:column>
                             <ice:column>
-                                <ice:inputText onkeypress="if (window.event) return processEvent('', 'form1:button2'); else return processEvent(event, 'form1:button2');"
-                                               id="input_VariableInfo" size="40" value="#{currentRow.value}" binding="#{AdvSearchPage.inputVariableInfo}"/>
+                                <ice:inputText id="input_VariableInfo" size="40" value="#{currentRow.value}" binding="#{AdvSearchPage.inputVariableInfo}" action="#{AdvSearchPage.searchWithFacets}"/>
                             </ice:column>
                       </ice:dataTable>
                   </div>
@@ -164,8 +159,7 @@
                           <ice:outputText value="Contains"/>
                       </ice:column>
                       <ice:column>
-                          <ice:inputText onkeypress="if (window.event) return processEvent('', 'form1:button2'); else return processEvent(event, 'form1:button2');"
-                              id="input_fileMetaValue" size="40" binding="#{AdvSearchPage.fileMetaSearchValue}"/>
+                          <ice:inputText id="input_fileMetaValue" size="40" binding="#{AdvSearchPage.fileMetaSearchValue}"  action="#{AdvSearchPage.searchWithFacets}"/>
                       </ice:column>
                     </ice:panelGrid>
                   </div>

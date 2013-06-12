@@ -66,10 +66,9 @@ public class StudyFileUI implements java.io.Serializable {
     public StudyFileUI() {
     }
 
-    public StudyFileUI(FileMetadata fmd, VDC vdc, VDCUser user, UserGroup ipUserGroup) {
+    public StudyFileUI(FileMetadata fmd, VDCUser user, UserGroup ipUserGroup) {
         this.fileMetadata = fmd;
-        this.restrictedForUser = fileMetadata.getStudyFile().isFileRestrictedForUser(user, vdc, ipUserGroup);
-        this.vdcId = vdc != null ? vdc.getId() : null;
+        this.restrictedForUser = fileMetadata.getStudyFile().isFileRestrictedForUser(user, ipUserGroup);
     }
     /**
      * Holds value of property studyFile.
@@ -173,10 +172,7 @@ public class StudyFileUI implements java.io.Serializable {
     public String getFileDownloadURL() {
         
         String fileDownloadURL = "/FileDownload/" + "?fileId=" + this.getStudyFile().getId();
-        if (vdcId != null) {
-            fileDownloadURL += "&vdcId=" + this.vdcId;
-        }
-  
+
         //get the xff arg used for web stats text report
         WebStatisticsSupport webstatistics = new WebStatisticsSupport();
         int headerValue = webstatistics.getParameterFromHeader("X-Forwarded-For");

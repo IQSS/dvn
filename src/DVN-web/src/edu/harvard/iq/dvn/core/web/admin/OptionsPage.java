@@ -1958,6 +1958,10 @@ public class OptionsPage extends VDCBaseBean  implements java.io.Serializable {
                 vdc.setLastName(null);
             }
             saveClassifications(vdc);
+            //Update default template if you've changed the sub net and invalidatated the default template.
+            if(!editSitePage.getSelectSubNetworkId().equals(editSitePage.getOriginalSubNetworkId()) && !editSitePage.isValidTemplate(vdc.getDefaultTemplate())){
+                 vdc.setDefaultTemplate( vdcNetworkService.findById( editSitePage.getSelectSubNetworkId() ).getDefaultTemplate() );               
+            }
             if (editSitePage.getSelectSubNetworkId() > 0){
                 VDCNetwork vdcNetwork = vdcNetworkService.findById(editSitePage.getSelectSubNetworkId());
                 vdc.setVdcNetwork(vdcNetwork);

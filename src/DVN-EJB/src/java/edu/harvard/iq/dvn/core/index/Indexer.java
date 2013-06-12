@@ -872,7 +872,9 @@ public class Indexer implements java.io.Serializable  {
             nvResults = getHitIds(searchQuery);
             logger.fine("Done hits: " + DateTools.dateToString(new Date(), Resolution.MILLISECOND));
             logger.fine("Start filter: " + DateTools.dateToString(new Date(), Resolution.MILLISECOND));
+            logger.fine("before intersectionResults... studyIds: " + studyIds + " nvResults: " + nvResults);
             filteredResults = studyIds != null ? intersectionResults(nvResults, studyIdsArray) : nvResults;
+            logger.fine("after intersectionResults... filteredResults: " + filteredResults);
             logger.fine("Done filter: " + DateTools.dateToString(new Date(), Resolution.MILLISECOND));
         }
         
@@ -885,6 +887,12 @@ public class Indexer implements java.io.Serializable  {
         // EITHER on variables, or on file-level metadata; but never on both. 
         // -- L.A. 
         
+        logger.fine("fileLevelSearch: " + fileLevelSearch);
+        if (filteredResults != null) {
+            logger.fine("filteredResults.size: " + filteredResults.size());
+        }
+        logger.fine("containsStudyLevelAndTerms: " + containsStudyLevelAndTerms);
+        logger.fine("variableSearch: " + variableSearch);
         if (fileLevelSearch){
             if (containsStudyLevelAndTerms && (filteredResults.size() > 0 )) {
                 if (variableSearch) {
@@ -939,10 +947,12 @@ public class Indexer implements java.io.Serializable  {
                         results = searchFileMetadata(studyIdResults, fileMetadataSearchTerms, true); // get file ids
                     }
                 } else {
+                    List<Long> finalResults = filteredResults != null ? filteredResults : studyIds;
+                    logger.fine("in else... this was false: (studyLevelSearch && !containsStudyLevelAndTerms) ... finalResults: " + finalResults);
                     if (variableSearch) {
-                        results = searchVariables(studyIds, variableSearchTerms, true); // get var ids
+                        results = searchVariables(finalResults, variableSearchTerms, true); // get var ids
                     } else if (fileMetadataSearch) {
-                        results = searchFileMetadata(studyIds, fileMetadataSearchTerms, true); // get file ids
+                        results = searchFileMetadata(finalResults, fileMetadataSearchTerms, true); // get file ids
                     }
                 }
                 logger.fine("Done searching on file-level metadata: " + DateTools.dateToString(new Date(), Resolution.MILLISECOND));

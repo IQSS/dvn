@@ -105,7 +105,7 @@ div.iceTree div.iceTreeRow div.iceTreeRow div.iceTreeRow div.iceTreeRow div.iceP
 
 table.dvnBrowseDataversesTable {margin-bottom:18px; border-bottom:1px solid #DCDDDF;}
 
-#dvClassificationMenu{margin:0;padding:0;text-indent:0;width:100%;text-align:left}
+#dvClassificationMenu{margin:0;padding:0;text-indent:0;width:100%;text-align:left;border-bottom:1px solid #C55B28;}
 #dvClassificationMenu h3,#dvClassificationMenu h4{margin:0;padding:0}
 #dvClassificationMenu ul,#dvClassificationMenu li{margin:0;padding:0;list-style-type:none;list-style-image:none;border-bottom:1px dotted #D9D9D9}
 #dvClassificationMenu ul {overflow:hidden; width:100%}
@@ -115,11 +115,12 @@ table.dvnBrowseDataversesTable {margin-bottom:18px; border-bottom:1px solid #DCD
 #dvClassificationMenu li span.dvnHmpgClassificationCount {display:inline; margin-right:.5em; color:grey !important; font-weight:normal !important}
 #dvClassificationMenu ul li ul, #dvClassificationMenu ul li ul li{margin:0;padding:0;border:0;}
 #dvClassificationMenu a{outline:0}
+#dvClassificationMenu > ul {border-bottom:0;}
 
 #dvClassificationMenu h3.head {margin-top:1em; margin-bottom:10px;}
 h3.head span{display:block;font-weight:normal;color:#C55B28;text-transform:uppercase;}
 
-#dvClassificationMenu ul.head-top {padding-bottom:18px;border-bottom:1px solid #C55B28;}
+#dvClassificationMenu ul.head-top {padding-bottom:18px;}
 
 h4.head {margin-right:1em !important;padding:0 26px 0 0 !important;background:transparent url(/dvn/resources/images/menudown.gif) no-repeat;background-position:98% 50%}
 h4.head a{display:block}

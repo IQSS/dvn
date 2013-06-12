@@ -108,7 +108,7 @@ public class VDCNetworkServiceBean implements VDCNetworkServiceLocal {
         for (Long templateId : templateIds) {
             Template template = templateService.getTemplate(templateId);
             logger.info("changing vdcNetworkId from " + subnetworkToDelete.getId() + " to root network id (" + rootNetwork.getId() + ") for template " + template.getName() + " (id " + template.getId() + ")");
-            template.setVdcSubnetwork(rootNetwork);
+            template.setVdcNetwork(rootNetwork);
         }
 
         // delete row from vdcnetwork table

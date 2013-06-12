@@ -291,7 +291,6 @@ public class StudyPage extends VDCBaseBean implements java.io.Serializable  {
           if (!studyUIContainsFileDetails) {
              studyUI = new StudyUI(
                             studyVersion,
-                            getVDCRequestBean().getCurrentVDC(),
                             getVDCSessionBean().getLoginBean() != null ? this.getVDCSessionBean().getLoginBean().getUser() : null,
                             getVDCSessionBean().getIpUserGroup());
              studyUIContainsFileDetails=true;

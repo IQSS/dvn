@@ -23,10 +23,8 @@ import com.icesoft.faces.component.ext.HtmlInputText;
 import com.icesoft.faces.component.ext.HtmlInputTextarea;
 import edu.harvard.iq.dvn.core.admin.VDCUser;
 import edu.harvard.iq.dvn.core.study.Template;
-import edu.harvard.iq.dvn.core.vdc.VDC;
 import edu.harvard.iq.dvn.core.vdc.VDCNetwork;
 import edu.harvard.iq.dvn.core.vdc.VDCNetworkServiceLocal;
-import edu.harvard.iq.dvn.core.vdc.VDCNetworkStats;
 import edu.harvard.iq.dvn.core.web.admin.EditBannerFooterPage;
 import edu.harvard.iq.dvn.core.web.common.VDCBaseBean;
 import edu.harvard.iq.dvn.core.web.util.CharacterValidator;
@@ -169,7 +167,6 @@ public class EditSubnetworkPage extends VDCBaseBean implements Serializable  {
             vdcNetworkService.edit(originalVDCNetwork);
             getVDCRenderBean().getFlash().put("successMessage", "Successfully updated subnetwork.");
         } else {   
-            System.out.print("why - when here??");
             VDCNetwork newVdcNetwork = new VDCNetwork();
             newVdcNetwork.setUrlAlias(subnetworkAlias);
             vdcNetworkService.create(newVdcNetwork);

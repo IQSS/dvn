@@ -89,12 +89,12 @@ public class ManageTemplatesPage extends VDCBaseBean implements java.io.Serializ
             //you're updating at network level
             //    
                 Template template = templateService.getTemplate(templateId);
-                if (!template.getVdcSubnetwork().equals(vdcNetworkService.findRootNetwork())){
+                if (!template.getVdcNetwork().equals(vdcNetworkService.findRootNetwork())){
 
                 }
                 vdcNetworkService.updateDefaultTemplate(templateId);
             } else {
-                vdcService.updateDefaultTemplate(getVDCRequestBean().getCurrentVDCId(),templateId);
+                vdcService.updateDefaultTemplate(getVDCRequestBean().getCurrentVDCId(),templateId);                
             }
 
             defaultTemplateId = templateId;

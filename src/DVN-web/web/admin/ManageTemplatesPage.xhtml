@@ -151,7 +151,7 @@
                   <f:facet name="header">
                     <ice:outputText value="#{OptionsPage.vdcUIList.subnetworkColumnName}"/>
                   </f:facet>
-                  <ice:outputText value="#{template.vdcSubnetwork.id == VDCRequest.vdcNetwork.id ? 'All' : template.vdcSubnetwork.name}"/>
+                  <ice:outputText value="#{template.vdcNetwork.id == VDCRequest.vdcNetwork.id ? 'All' : template.vdcNetwork.name}"/>
                 </ice:column>
                 <ice:column>
                   <f:facet name="header">
@@ -162,9 +162,9 @@
                     </ui:repeat>
                     
                     <ice:outputText value="Cannot Make Default" style="color:grey;font-style:italic;" rendered="#{!OptionsPage.isNetworkDefault(template.id) and !template.enabled}"/>
-                    <ice:commandLink value="Make Default" rendered="#{!VDCRequest.readOnlyDatabase  and template.enabled and template.vdcSubnetwork.id != VDCRequest.vdcNetwork.id}" 
-                                    action="#{OptionsPage.updateDefaultAction(template.id, template.vdcSubnetwork)}"/>
-                    <ice:commandLink value="Make Default" rendered="#{!VDCRequest.readOnlyDatabase  and template.enabled and template.vdcSubnetwork.id == VDCRequest.vdcNetwork.id}" 
+                    <ice:commandLink value="Make Default" rendered="#{!VDCRequest.readOnlyDatabase  and template.enabled and template.vdcNetwork.id != VDCRequest.vdcNetwork.id}" 
+                                    action="#{OptionsPage.updateDefaultAction(template.id, template.vdcNetwork)}"/>
+                    <ice:commandLink value="Make Default" rendered="#{!VDCRequest.readOnlyDatabase  and template.enabled and template.vdcNetwork.id == VDCRequest.vdcNetwork.id}" 
                                     action="#{OptionsPage.toggleDefaultPopup(template.id)}"/>
                 </ice:column>
                 <ice:column>

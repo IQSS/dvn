@@ -46,7 +46,11 @@ tr.dvnCustomizationSelectSiteBlockRow3 {display:none;}
 .dvnMyDataverseTableRole{width:30%;padding-bottom:3px;padding-left:4px;padding-top:3px;text-align:center;vertical-align:top}
 /* MANAGE + EDIT STUDY + TEMPLATE */
 .vdcStudyTemplateFormTable{margin:12px 12px 0 12px}
-.dvnStudyTemplateTitleBlock{margin-top:1.5em; padding:4px 0; border-bottom:1px solid #DADEE0}
+.dvnStudyTemplateFormButtonsBlock {overflow:hidden;}
+.dvnStudyTemplateFormButtonsBlock  .dvnFormMargin {float:right; width:330px; text-align:right;}
+.dvnStudyTemplateTitleBlock{margin-top:1.5em; border-bottom:1px solid #DADEE0;}
+.dvnStudyTemplateTitleBlock div {padding: 4px 0; border-bottom: 1px solid #DADEE0;}
+.dvnStudyTemplateTitleBlock td.icePnlGrdCol1 {width: 220px; vertical-align: top; text-align:left}
 div.dvnStudyTemplateTitleBlock div.dvnstudytitlefloat table.icePnlGrd td.icePnlGrdCol1 {width:220px;}
 .dvnStudyTemplateTitleBlock .dvnstudyadminboxfloat{text-align:right}
 .dvnStudyTemplateDCMBlock{border-bottom:1px solid #DADEE0; padding-bottom:1em;}

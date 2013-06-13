@@ -193,14 +193,14 @@ public class TemplateFormPage extends VDCBaseBean implements java.io.Serializabl
     }
     
     public boolean isAllowUpdateVDCNetwork() {
-        return !(isInUseByStudy() || isNetworkDefault() || isVDCDefault());
+        return !(isInUseByStudy() || isNetworkDefault() || isVdcDefault());
     }
     
     public boolean isInUseByStudy(){
         return templateService.isTemplateUsed(template.getId());
     } 
     
-    public boolean isVDCDefault(){
+    public boolean isVdcDefault(){
         return templateService.isTemplateUsedAsVDCDefault(templateId);
     } 
     

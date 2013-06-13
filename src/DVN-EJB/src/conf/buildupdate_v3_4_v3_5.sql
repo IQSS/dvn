@@ -9,7 +9,7 @@ Alter TABLE vdc add vdcnetwork_id bigint;
 Update vdc set vdcnetwork_id = 0;
 
 Alter TABLE template add vdcnetwork_id bigint;
-Update template set vdcnetwork_id = 0;
+Update template set vdcnetwork_id = 0 where vdc_id is null;
 
 ALTER TABLE template DROP COLUMN displayoncreatedataverse;
 
@@ -43,7 +43,7 @@ update vdc_adv_search_fields set study_field_id = 105 where study_field_id = 30;
 update vdc_adv_search_fields set study_field_id = 113 where study_field_id = 79; -- publication to publicationCitation
 
 insert into vdc_adv_search_fields (vdc_id, study_field_id)  select distinct vdc_id, 89 from vdc_adv_search_fields where vdc_id not in 
-(select vdc_id from vdc_adv_search_fields where study_field_id=89) -- add publication ReplicationFor
+(select vdc_id from vdc_adv_search_fields where study_field_id=89); -- add publication ReplicationFor
 
 ALTER TABLE vdccollection ADD COLUMN scope int8;
 UPDATE vdccollection SET scope = 0 WHERE localscope = true;

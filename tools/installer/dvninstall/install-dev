@@ -82,6 +82,7 @@ my $POSTGRES_DRIVER_8_3 = "postgresql-8.3-603.jdbc4.jar";
 my $POSTGRES_DRIVER_8_4 = "postgresql-8.4-703.jdbc4.jar";
 my $POSTGRES_DRIVER_9_0 = "postgresql-9.0-802.jdbc4.jar";
 my $POSTGRES_DRIVER_9_1 = "postgresql-9.1-902.jdbc4.jar";
+my $POSTGRES_DRIVER_9_2 = "postgresql-9.1-902.jdbc4.jar";
 
 # A few preliminary checks: 
 
@@ -290,7 +291,7 @@ if ( $CONFIG_DEFAULTS{'POSTGRES_SERVER'} eq 'localhost' )
 
     if ( $psql_exec eq "" && $WORKING_OS eq "MacOSX" )
     {
-	for $pg_minor_version ( "1", "0" )
+	for $pg_minor_version ( "2", "1", "0" )
 	{
 	    if ( -x "/Library/PostgreSQL/9." . $pg_minor_version . "/bin/psql" ) 
 	    {
@@ -740,7 +741,7 @@ elsif ( $pg_major_version == 9 )
     {
         $install_driver_jar = $POSTGRES_DRIVER_9_0;
     }
-    elsif ( $pg_minor_version == 1 ) 
+    elsif ( $pg_minor_version == 1 || $pg_minor_version == 2 ) 
     {
         $install_driver_jar = $POSTGRES_DRIVER_9_1;
     }

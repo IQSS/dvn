@@ -110,13 +110,10 @@ public class VDCNetworkStatsServiceBean implements VDCNetworkStatsServiceLocal {
 
   
     public void updateStats() {
-        List<VDCNetwork> vdcNetworks = vdcNetworkService.getVDCNetworks();
-        System.out.print("************************** Start update stats: " + new Date());
-        System.out.print("count of networks " + vdcNetworks.size());        
+        
+        List<VDCNetwork> vdcNetworks = vdcNetworkService.getVDCNetworks();        
         // update the stats in the db
         for (VDCNetwork vdcNetwork : vdcNetworks) {
-            System.out.print("************************** Start Network stats for subnet " + new Date());
-            System.out.print("sub net name " + vdcNetwork.getName()); 
             Long vdcNetwork_id = vdcNetwork.getId();
             VDCNetworkStats vdcNetworkStats = getVDCNetworkStatsByNetworkId(vdcNetwork_id);
 
@@ -151,27 +148,19 @@ public class VDCNetworkStatsServiceBean implements VDCNetworkStatsServiceLocal {
                 vdcNetworkStats.setFileCount(releasedFiles);
                 vdcNetworkStats.setDownloadCount(downloadCount);
             }
-            System.out.print("************************** End Network stats for subnet " + new Date());
-            System.out.print("sub net name " + vdcNetwork.getName()); 
         }
         
         // update the Lists stored in application scope
         Map<Long, List> downloadMap = new HashMap<Long, List>();
         Map<Long, List> recentlyReleasedMap = new HashMap<Long, List>();
-        System.out.print("**************************START Update study list maps for sub nets " + new Date());
         
         for (VDCNetwork vdcNetwork : vdcNetworks){
-            System.out.print("**************************Update download study list maps for sub nets " + new Date());
-            System.out.print("sub net name " + vdcNetwork.getName());
             downloadMap.put(vdcNetwork.getId(), studyService.getMostDownloadedStudyIds(null, vdcNetwork.getId(), -1)); 
         }
 
         for (VDCNetwork vdcNetwork : vdcNetworks){
-            System.out.print("**************************Update released study list maps for sub nets " + new Date());
-            System.out.print("sub net name " + vdcNetwork.getName());
             recentlyReleasedMap.put(vdcNetwork.getId(), studyService.getRecentlyReleasedStudyIds(null, vdcNetwork.getId(), -1));           
         }      
-        System.out.print("**************************END Update study list maps for sub nets " + new Date());
         vdcApplicationBean.setAllStudyIdsByDownloadCountMap(downloadMap);
         vdcApplicationBean.setAllStudyIdsByReleaseDateMap(recentlyReleasedMap);
     }

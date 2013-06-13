@@ -9,7 +9,7 @@ Alter TABLE vdc add vdcnetwork_id bigint;
 Update vdc set vdcnetwork_id = 0;
 
 Alter TABLE template add vdcnetwork_id bigint;
-Update template set vdcnetwork_id = 0;
+Update template set vdcnetwork_id = 0 where vdc_id is null;
 
 ALTER TABLE template DROP COLUMN displayoncreatedataverse;
 

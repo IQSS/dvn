@@ -1109,11 +1109,13 @@ public class TemplateFormPage extends VDCBaseBean implements java.io.Serializabl
                 networkId = "0";
             }
         }
-
-        VDCNetwork vdcNetwork;
-        vdcNetwork = vdcNetworkService.findById(new Long(networkId)); 
-        template.setVdcNetwork(vdcNetwork);    
-
+        
+        if (template.getVdc() == null) {//only set network if vdc is null
+            VDCNetwork vdcNetwork;
+            vdcNetwork = vdcNetworkService.findById(new Long(networkId));
+            template.setVdcNetwork(vdcNetwork);
+        }
+        
         if(StringUtil.isEmpty(template.getName())){
             FacesMessage message = new FacesMessage("Template name is required.");
             FacesContext.getCurrentInstance().addMessage("templateForm:template_name", message);
@@ -1147,7 +1149,7 @@ public class TemplateFormPage extends VDCBaseBean implements java.io.Serializabl
                 tf.setDisplayOrder(i++);
             }
         }
-        editTemplateService.saveWSubnetwork(template);
+        editTemplateService.save();
 
         if (isNewTemplate) {
         getVDCRenderBean().getFlash().put("successMessage", "Successfully added new template.");

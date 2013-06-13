@@ -25,9 +25,9 @@
               </div>
               <div jsfc="ice:panelGroup" styleClass="dvnManageTableControls" rendered="#{VDCRequest.currentVDC == null}">
                     <div jsfc="ice:panelGroup" styleClass="dvnManageTableCreateLink" rendered="#{!VDCRequest.readOnlyDatabase}">
-                        <div jsfc="ice:panelGroup" id="createSubnetwork" styleClass="dvnCreateActionBox dvnCreateDataverse">
+                        <div jsfc="ice:panelGroup" id="createSubnetwork" styleClass="dvnCreateActionBox dvnCreateDataverse" rendered="#{ManageSubnetworksPage.subnetworkCount lt 63}">
                             <ice:outputLink value="/dvn/faces/networkAdmin/EditSubnetworkPage.xhtml?edit=false">
-                                <ice:outputText value="Create Subnetwork"/>
+                                <ice:outputText value="Create Subnetwork" rendered="#{ManageSubnetworksPage.subnetworkCount lt 63}"/>
                             </ice:outputLink>
                         </div>
                     </div>

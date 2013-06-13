@@ -89,7 +89,7 @@ public class CharacterValidator implements Validator, java.io.Serializable  {
     }
     
     private static boolean validateChars (String characterString) {        
-        if (characterString.matches("[a-zA-z0-9\\_\\-]*")) {
+        if (characterString.matches("[a-zA-Z0-9\\_\\-]*")) {
             return true;
         } else {
 

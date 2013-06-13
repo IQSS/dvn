@@ -141,7 +141,7 @@
                   <ice:inputText id="affiliation"
                                  binding="#{EditSitePage.affiliation}"                                
                                  validator="#{EditSitePage.validateIsEmptyRequiredAffiliation}"
-                                 />
+                                 value="#{VDCRequest.currentVDC.affiliation}"/>
                    <ice:message for="affiliation" showSummary="true" showDetail="false" errorClass="errorMessage" styleClass="errorMessage"/>
                 </div>
                 <!-- subnetwork -->

@@ -491,12 +491,6 @@ public class EditSitePage extends VDCBaseBean implements java.io.Serializable  {
      * @return Value of property affiliation.
      */
     public HtmlInputText getAffiliation() {      
-        if (affiliation == null)
-        {
-            HtmlInputText affiliationText = new HtmlInputText();
-            affiliationText.setValue(getVDCRequestBean().getCurrentVDC().getAffiliation());
-            this.setAffiliation(affiliationText);
-        }
         return this.affiliation;
     }
 

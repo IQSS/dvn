@@ -407,10 +407,12 @@ public class VDCNetworkServiceBean implements VDCNetworkServiceLocal {
     
         
     public Long getTotalStudiesBySubnetwork(Long networkId, boolean released) {
-        Long total = new Long("0");
-        total = (Long)em.createNativeQuery("select COUNT(study.id) from study, vdc, studyVersion where study.owner_id = vdc.id AND studyVersion.study_id = study.id AND studyVersion.versionState = '" 
+        Long total = (Long)em.createNativeQuery("select COUNT(study.id) from study, vdc, studyVersion where study.owner_id = vdc.id AND studyVersion.study_id = study.id AND studyVersion.versionState = '" 
                 + StudyVersion.VersionState.RELEASED + "' AND vdc.restricted = " 
                 + !released + " and vdc.vdcnetwork_id = " + networkId).getSingleResult();
+        if (total == null){
+           return  new Long("0");
+        }
         return total;
     }
     
@@ -423,19 +425,23 @@ public class VDCNetworkServiceBean implements VDCNetworkServiceLocal {
     }
     
     public Long getTotalFilesBySubnetwork(Long networkId, boolean released) {
-        Long total = new Long("0");
-        total = ((Long)em.createNativeQuery("select COUNT(studyfile.id) from studyfile, vdc, filemetadata, studyversion, study where study.owner_id = vdc.id AND study.id = studyversion.study_id AND studyversion.versionstate= '" 
+        Long total = ((Long)em.createNativeQuery("select COUNT(studyfile.id) from studyfile, vdc, filemetadata, studyversion, study where study.owner_id = vdc.id AND study.id = studyversion.study_id AND studyversion.versionstate= '" 
                 + StudyVersion.VersionState.RELEASED + "' AND filemetadata.studyversion_id = studyversion.id " + ""
                 + "AND studyfile.id = filemetadata.studyfile_id  AND vdc.restricted = " + !released +
                  " and vdc.vdcnetwork_id = " + networkId).getSingleResult());
+        if (total == null){
+           return  new Long("0");
+        }
         return total;
     }
     
     public Long getTotalDownloadsBySubnetwork(Long networkId, boolean released) {
-        Long total = new Long("0");
-        total = ((Long)em.createNativeQuery("select sum(studyfileactivity.downloadcount) from vdc, studyversion, study, studyfileactivity where study.owner_id = vdc.id AND study.id = studyversion.study_id " + ""
+        Long total = ((Long)em.createNativeQuery("select sum(studyfileactivity.downloadcount) from vdc, studyversion, study, studyfileactivity where study.owner_id = vdc.id AND study.id = studyversion.study_id " + ""
                 + " AND studyversion.versionstate= '" + StudyVersion.VersionState.RELEASED + "' AND studyfileactivity.study_id = study.id AND vdc.restricted = " 
                 + !released + " and vdc.vdcnetwork_id = " + networkId).getSingleResult());
+        if (total == null){
+           return  new Long("0");
+        }
         return total;
     }
 

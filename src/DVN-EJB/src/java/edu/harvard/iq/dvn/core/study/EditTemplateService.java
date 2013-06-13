@@ -49,10 +49,6 @@ public interface EditTemplateService extends java.io.Serializable {
     public void newClonedTemplate(Long sourceTemplateId, Long vdcId);
     
     public void setTemplateFieldControlledVocabulary(TemplateField tf, Long cvId);
-
-    @javax.ejb.Remove
-    @javax.ejb.TransactionAttribute(value = javax.ejb.TransactionAttributeType.REQUIRED)
-    public void saveWSubnetwork(edu.harvard.iq.dvn.core.study.Template templateIn);
    
  
 }

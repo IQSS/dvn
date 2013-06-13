@@ -102,6 +102,7 @@ public class EditBannerFooterPage extends VDCBaseBean  implements java.io.Serial
     // ACTION METHODS
     public String save_action() {
         String forwardPage=null;
+        String message = "";
         if (getVDCRequestBean().getCurrentVDCId() == null) {
             String retString = "/networkAdmin/NetworkOptionsPage?faces-redirect=true&tab=settings&tab2=customization";
             // this is a save against the network
@@ -112,6 +113,7 @@ public class EditBannerFooterPage extends VDCBaseBean  implements java.io.Serial
             getVDCRequestBean().getVdcNetwork().setNetworkPageHeader(banner);
             getVDCRequestBean().getVdcNetwork().setNetworkPageFooter(footer);
             forwardPage=retString;
+            message = "Successfully updated network customization.";
         } else {
             VDC vdc = vdcService.find(new Long(getVDCRequestBean().getCurrentVDC().getId()));
             vdc.setHeader(banner);
@@ -120,8 +122,9 @@ public class EditBannerFooterPage extends VDCBaseBean  implements java.io.Serial
             vdc.setParentSite(parentSite);
             vdcService.edit(vdc);
             forwardPage="/admin/OptionsPage?faces-redirect=true" + getContextSuffix();
+            message = "Successfully updated dataverse customization.";
         }
-        getVDCRenderBean().getFlash().put("successMessage","Successfully updated layout branding.");
+        getVDCRenderBean().getFlash().put("successMessage",message);
         return forwardPage;
     }
 

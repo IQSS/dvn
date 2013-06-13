@@ -466,6 +466,7 @@ public class OptionsPage extends VDCBaseBean  implements java.io.Serializable {
     }
     
     public void initDVGeneralSettings() {
+        vdc = vdcService.findById(vdcId);
         if (vdc.isRestricted()) {
             siteRestriction = "Restricted";
         } else {

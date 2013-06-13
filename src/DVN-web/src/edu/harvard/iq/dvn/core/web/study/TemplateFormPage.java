@@ -142,7 +142,7 @@ public class TemplateFormPage extends VDCBaseBean implements java.io.Serializabl
         template.getMetadata().initCollections();
         
         initStudyFields();
-        VDCNetwork vdcSubnetwork = template.getVdcSubnetwork();       
+        VDCNetwork vdcSubnetwork = template.getVdcNetwork();       
         if (vdcSubnetwork != null){
              selectSubnetwork.setValue(vdcSubnetwork.getId());
         } else {
@@ -192,7 +192,21 @@ public class TemplateFormPage extends VDCBaseBean implements java.io.Serializabl
         this.networkEdit = networkEdit;
     }
     
-        
+    public boolean isAllowUpdateVDCNetwork() {
+        return !(isInUseByStudy() || isNetworkDefault() || isVDCDefault());
+    }
+    
+    public boolean isInUseByStudy(){
+        return templateService.isTemplateUsed(template.getId());
+    } 
+    
+    public boolean isVDCDefault(){
+        return templateService.isTemplateUsedAsVDCDefault(templateId);
+    } 
+    
+    public boolean isNetworkDefault(){
+        return templateService.isTemplateUsedAsNetworkDefault(template.getId());
+    }
     
     private Map studyMap;
     
@@ -1098,7 +1112,7 @@ public class TemplateFormPage extends VDCBaseBean implements java.io.Serializabl
 
         VDCNetwork vdcNetwork;
         vdcNetwork = vdcNetworkService.findById(new Long(networkId)); 
-        template.setVdcSubnetwork(vdcNetwork);    
+        template.setVdcNetwork(vdcNetwork);    
 
         if(StringUtil.isEmpty(template.getName())){
             FacesMessage message = new FacesMessage("Template name is required.");

@@ -31,17 +31,12 @@ import edu.harvard.iq.dvn.core.web.common.StatusMessage;
 import edu.harvard.iq.dvn.core.web.common.VDCBaseBean;
 import javax.ejb.EJB;
 import com.icesoft.faces.component.ext.HtmlInputText;
-import edu.harvard.iq.dvn.core.web.common.VDCRequestBean;
-import edu.harvard.iq.dvn.core.web.util.CharacterValidator;
 import javax.faces.application.FacesMessage;
 import javax.faces.bean.ViewScoped;
 import javax.faces.component.UIComponent;
 import javax.faces.component.UIInput;
 import javax.faces.context.FacesContext;
-import javax.faces.event.ActionEvent;
-import javax.inject.Inject;
 import javax.inject.Named;
-import javax.persistence.OptimisticLockException;
 
 /**
  * <p>Page bean that corresponds to a similarly named JSP page.  This
@@ -118,14 +113,10 @@ public class EditNetworkNamePage extends VDCBaseBean  implements java.io.Seriali
             Object value) {
 
         String name = (String) value;
-        boolean isValid = true;
         if (!originalName.isEmpty() && originalName.equals(name) ){
             return;
         }
         VDCNetwork vdc = vdcNetworkService.findByName(name);
-        if (name.equals("") || vdc != null) {
-            isValid = false;
-        }
         
         if (name.equals("")) {            
             ((UIInput) toValidate).setValid(false);

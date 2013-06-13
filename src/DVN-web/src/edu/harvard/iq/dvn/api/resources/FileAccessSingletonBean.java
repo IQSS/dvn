@@ -288,7 +288,7 @@ public class FileAccessSingletonBean {
             return true; 
         }
         
-        if (studyFile.isFileRestrictedForUser(vdcUser, null, null)) {
+        if (studyFile.isFileRestrictedForUser(vdcUser, null)) {
             return false; 
         }
         

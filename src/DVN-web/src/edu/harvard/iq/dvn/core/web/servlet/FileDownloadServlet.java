@@ -507,7 +507,7 @@ public class FileDownloadServlet extends HttpServlet {
             }
 
             // Now, let's check if the file is authorized for this specific user:
-            if (!file.isFileRestrictedForUser(user, vdc, ipUserGroup)) {
+            if (!file.isFileRestrictedForUser(user, ipUserGroup)) {
                     return true;
             }
         } else {
@@ -1922,7 +1922,7 @@ public class FileDownloadServlet extends HttpServlet {
         Iterator iter = files.iterator();
         while (iter.hasNext()) {
             StudyFile file = (StudyFile) iter.next();
-            if (file.isFileRestrictedForUser(user, vdc, ipUserGroup)) {
+            if (file.isFileRestrictedForUser(user, ipUserGroup)) {
                 fileManifest = fileManifest + file.getFileName() + " IS RESTRICTED AND CANNOT BE DOWNLOADED\r\n";
                 iter.remove();
             }

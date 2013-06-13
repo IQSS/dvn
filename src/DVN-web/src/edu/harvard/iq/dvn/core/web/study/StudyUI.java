@@ -189,7 +189,7 @@ public class StudyUI  implements java.io.Serializable {
      * this constructor initializes the file category ui list
      * Use this constructor if you want to set the StudyFileUI.fileRestrictedFor user value
      */
-    public StudyUI(StudyVersion sv, VDC vdc, VDCUser user, UserGroup ipUserGroup) {
+    public StudyUI(StudyVersion sv, VDCUser user, UserGroup ipUserGroup) {
         this.studyVersion = sv;
         this.studyVersionId = studyVersion.getId();
         this.study = sv.getStudy();
@@ -197,7 +197,7 @@ public class StudyUI  implements java.io.Serializable {
 
         this.user = user;
         this.ipUserGroup = ipUserGroup;
-        initFileCategoryUIList(vdc, user, ipUserGroup);
+        initFileCategoryUIList(user, ipUserGroup);
     }
 
 
@@ -1005,7 +1005,7 @@ public class StudyUI  implements java.io.Serializable {
     } */
     
     //add new method to replace the old one with the same name to improve performance. -xyang
-    public void initFileCategoryUIList(VDC vdc, VDCUser user, UserGroup ipUserGroup) {
+    public void initFileCategoryUIList(VDCUser user, UserGroup ipUserGroup) {
         categoryUIList = new ArrayList<FileCategoryUI>();
         try {
             studyFileService = (StudyFileServiceLocal) new InitialContext().lookup("java:comp/env/studyFileService");
@@ -1013,21 +1013,19 @@ public class StudyUI  implements java.io.Serializable {
             e.printStackTrace();
         }
         
-        this.vdc = vdc;
-
 	if (fileIdList == null) {  
             fileIdList = studyFileService.getOrderedFileIdsByStudyVersion (getStudyVersion().getId());
         } 
         
-        getFileCategoryUIList(getStudyVersion().getId(), getSubFileIdList(fileIdList), vdc, user, ipUserGroup);
+        getFileCategoryUIList(getStudyVersion().getId(), getSubFileIdList(fileIdList), user, ipUserGroup);
     }
     
     public List <FileCategoryUI> getFileCategoryUIList(ActionEvent ae)
     {
-        return getFileCategoryUIList(getStudyVersion().getId(), getSubFileIdList(fileIdList), vdc, user, ipUserGroup );
+        return getFileCategoryUIList(getStudyVersion().getId(), getSubFileIdList(fileIdList), user, ipUserGroup );
     }
 
-    private List <FileCategoryUI> getFileCategoryUIList(Long studyVersionId, List<Long> fIdList, VDC vdc, VDCUser user, UserGroup ipUserGroup) {
+    private List <FileCategoryUI> getFileCategoryUIList(Long studyVersionId, List<Long> fIdList, VDCUser user, UserGroup ipUserGroup) {
         //set catUI to the last element of categoryUIList if categoryUIList is not empty. -gdurand
         FileCategoryUI catUI = categoryUIList.size() == 0 ? null : categoryUIList.get( categoryUIList.size() -1 );
                 
@@ -1039,7 +1037,7 @@ public class StudyUI  implements java.io.Serializable {
                 catUI = new FileCategoryUI(fmd.getCategory());
                 categoryUIList.add(catUI);
             }
-            StudyFileUI sfui = new StudyFileUI(fmd, vdc, user, ipUserGroup);
+            StudyFileUI sfui = new StudyFileUI(fmd, user, ipUserGroup);
             catUI.getStudyFileUIs().add(sfui);
         }
         
@@ -1048,7 +1046,7 @@ public class StudyUI  implements java.io.Serializable {
     
     public List <FileCategoryUI> getAllFileCategoryUIList(ActionEvent ae) {
         List<FileCategoryUI> allCategoryUIList = new ArrayList<FileCategoryUI>(); 
-        allCategoryUIList = getFileCategoryUIList(getStudyVersion().getId(), fileIdList, vdc, user, ipUserGroup );
+        allCategoryUIList = getFileCategoryUIList(getStudyVersion().getId(), fileIdList, user, ipUserGroup );
         fileIdList = null;
         return allCategoryUIList;
     }
@@ -1203,8 +1201,6 @@ public class StudyUI  implements java.io.Serializable {
     public int getFILE_NUMBERS() {
         return FILE_NUMBERS;
     }
-    
-    private VDC vdc;
     
     /**
      * Holds value of property fileIdList.

@@ -197,22 +197,16 @@ public class Template implements java.io.Serializable {
    
 
 
-   @OneToOne(mappedBy="defaultTemplate")
+   @ManyToOne
    private VDCNetwork vdcNetwork;
-
 
    public VDCNetwork getVdcNetwork() {
         return this.vdcNetwork;
    }
-
-    @ManyToOne
-    private VDCNetwork vdcSubnetwork;
-    public VDCNetwork getVdcSubnetwork() {
-        return vdcSubnetwork;
-    }
-    public void setVdcSubnetwork(VDCNetwork vdcSubnetwork) {
-        this.vdcSubnetwork = vdcSubnetwork;
-    }
+   
+   public void setVdcNetwork(VDCNetwork vdcNetwork) {
+        this.vdcNetwork = vdcNetwork;
+   }
 
     @ManyToOne
     private VDC vdc;
@@ -226,10 +220,6 @@ public class Template implements java.io.Serializable {
     }
 
 
-    public void setVdcNetwork(VDCNetwork vdcNetwork) {
-        this.vdcNetwork = vdcNetwork;
-    }
-    
     @OneToOne(cascade={CascadeType.REMOVE, CascadeType.MERGE, CascadeType.PERSIST})
     private Metadata metadata;
 

@@ -190,7 +190,7 @@ public class EditTemplateServiceBean implements edu.harvard.iq.dvn.core.study.Ed
     @TransactionAttribute(TransactionAttributeType.REQUIRED)
     public void saveWSubnetwork(Template templateIn) {
         //Need to save any newly created study fields
-        em.merge(templateIn.getVdcSubnetwork());
+        em.merge(templateIn.getVdcNetwork());
         if(templateIn.getId() == null){
            em.persist(templateIn); 
         } else {

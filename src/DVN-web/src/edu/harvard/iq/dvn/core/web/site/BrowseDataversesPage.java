@@ -23,8 +23,6 @@
  */
 package edu.harvard.iq.dvn.core.web.site;
 
-import com.icesoft.faces.component.ext.HtmlCommandLink;
-import com.icesoft.faces.component.ext.HtmlInputHidden;
 import com.icesoft.faces.component.datapaginator.DataPaginator;
 import com.icesoft.faces.component.ext.HtmlInputText;
 import com.icesoft.faces.context.effects.JavascriptContext;

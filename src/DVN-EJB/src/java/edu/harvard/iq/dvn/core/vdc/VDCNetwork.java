@@ -140,7 +140,7 @@ public class VDCNetwork implements java.io.Serializable  {
     /**
      * Holds value of property defaultTemplate.
      */
-    @OneToOne
+    @ManyToOne
     private Template defaultTemplate;
 
     /**
@@ -282,7 +282,7 @@ public class VDCNetwork implements java.io.Serializable  {
         this.networkVDCs = networkVDCs;
     }
 
-    @OneToMany(mappedBy="vdcSubnetwork", cascade={CascadeType.MERGE})
+    @OneToMany(mappedBy="vdcNetwork", cascade={CascadeType.MERGE})
     private Collection<Template> networkTemplates;
     
     public Collection<Template> getNetworkTemplates(){

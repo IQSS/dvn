@@ -144,13 +144,19 @@ public class TemplateServiceBean implements edu.harvard.iq.dvn.core.study.Templa
         return count.compareTo(new Long(0))>0;    
     }    
     
+    public boolean isTemplateUsedAsNetworkDefault(Long templateId) {
+        String queryStr = "SELECT count(id) from vdcNetwork v where v.defaulttemplate_id="+templateId;
+        Query query = em.createNativeQuery(queryStr);
+        Long count = (Long)query.getSingleResult();
+        return count.compareTo(new Long(0))>0;    
+    }   
 
     
     public Map getVdcTemplatesMap(VDC vdc) {
         Map templatesMap = new LinkedHashMap();
         
         for (Template template : getEnabledNetworkTemplates()) {
-            if (template.getVdcSubnetwork().getId().equals(new Long(0))){
+            if (template.getVdcNetwork().getId().equals(new Long(0))){
                   templatesMap.put(template.getName(), template.getId());
             }
         }
@@ -210,9 +216,9 @@ public class TemplateServiceBean implements edu.harvard.iq.dvn.core.study.Templa
     public List<Long> getSubnetworkTemplates(Long subnetworkId, boolean onlyEnabled) {
         String queryStr;
         if (onlyEnabled) {
-            queryStr = "SELECT o.id from template o where o.vdc_id is null and o.enabled = true and (o.vdcsubnetwork_id=" + subnetworkId +  " or o.vdcsubnetwork_id=0) ORDER BY o.name";
+            queryStr = "SELECT o.id from template o where o.vdc_id is null and o.enabled = true and (o.vdcnetwork_id=" + subnetworkId +  " or o.vdcnetwork_id=0) ORDER BY o.name";
         } else {
-            queryStr = "SELECT o.id from template o where o.vdc_id is null and ( o.vdcsubnetwork_id=" + subnetworkId + " or o.vdcsubnetwork_id=0) ORDER BY o.name";
+            queryStr = "SELECT o.id from template o where o.vdc_id is null and ( o.vdcnetwork_id=" + subnetworkId + " or o.vdcnetwork_id=0) ORDER BY o.name";
         }
         Query query = em.createNativeQuery(queryStr);
 //        List<Long> templateIdsLong = query.getResultList(); // java.lang.ClassCastException: java.lang.Integer cannot be cast to java.lang.Long

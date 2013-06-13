@@ -28,6 +28,7 @@ import com.icesoft.faces.component.ext.*;
 import edu.harvard.iq.dvn.core.admin.RoleServiceLocal;
 import edu.harvard.iq.dvn.core.admin.UserServiceLocal;
 import edu.harvard.iq.dvn.core.study.StudyFieldServiceLocal;
+import edu.harvard.iq.dvn.core.study.Template;
 import edu.harvard.iq.dvn.core.vdc.VDCCollectionServiceLocal;
 import edu.harvard.iq.dvn.core.vdc.VDCNetworkServiceLocal;
 import edu.harvard.iq.dvn.core.vdc.VDCServiceLocal;
@@ -40,10 +41,8 @@ import javax.faces.component.UIComponent;
 import javax.faces.component.UIInput;
 import edu.harvard.iq.dvn.core.web.util.CharacterValidator;
 import edu.harvard.iq.dvn.core.vdc.VDC;
-import edu.harvard.iq.dvn.core.vdc.VDCGroup;
 import edu.harvard.iq.dvn.core.vdc.VDCGroupServiceLocal;
 import edu.harvard.iq.dvn.core.vdc.VDCNetwork;
-import edu.harvard.iq.dvn.core.util.PropertyUtil;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -86,7 +85,7 @@ public class EditSitePage extends VDCBaseBean implements java.io.Serializable  {
     private String          firstName = new String("");
     private String          lastName;
     private HtmlInputTextarea          shortDescription = new HtmlInputTextarea();
-
+    
 
     private List<SelectItem> dataverseOptions = null;
 
@@ -101,15 +100,13 @@ public class EditSitePage extends VDCBaseBean implements java.io.Serializable  {
      */
     public void init() {
         super.init();
-
-
-
     }
 
     public void initDVGeneralSettings(){
         VDC thisVDC = getVDCRequestBean().getCurrentVDC();
         networkSelectItems = loadNetworkSelectItems();
         selectSubNetworkId = thisVDC.getVdcNetwork().getId();
+        originalSubNetworkId = new Long (thisVDC.getVdcNetwork().getId());
         //DEBUG
         //check to see if a dataverse type is in request
 
@@ -320,19 +317,29 @@ public class EditSitePage extends VDCBaseBean implements java.io.Serializable  {
         }
     }
     
-     private Long selectSubNetworkId;
-
-    public Long getSelectSubNetworkId() {
-        return selectSubNetworkId;
-    }
-
-    public void setSelectSubNetworkId(Long selectSubNetworkId) {
-        this.selectSubNetworkId = selectSubNetworkId;
-    }
+    private Long selectSubNetworkId;
+    public Long getSelectSubNetworkId() {return selectSubNetworkId;}
+    public void setSelectSubNetworkId(Long selectSubNetworkId) {this.selectSubNetworkId = selectSubNetworkId;}
+    
+    private Long originalSubNetworkId;
+    public Long getOriginalSubNetworkId() {return originalSubNetworkId;}
+    public void setOriginalSubNetworkId(Long originalSubNetworkId) {this.selectSubNetworkId = originalSubNetworkId;}
+    
     public String edit(){
+                    System.out.print("selectSubNetworkId "  + selectSubNetworkId);
+            System.out.print("originalSubNetworkId "  + originalSubNetworkId);
         VDC thisVDC = getVDCRequestBean().getCurrentVDC();
-        boolean success = true;
         if (validateClassificationCheckBoxes()) {
+            System.out.print("in if "  + selectSubNetworkId);
+            System.out.print("in if"  + originalSubNetworkId);
+            System.out.print(" before thisVDC.getDefaultTemplate() "  + thisVDC.getDefaultTemplate().getName());
+            /* needs to be fixed here see options page
+            if(!selectSubNetworkId.equals(originalSubNetworkId)){
+                 thisVDC.setDefaultTemplate(getValidTemplate(thisVDC.getDefaultTemplate()));               
+            }
+                        System.out.print(" after thisVDC.getDefaultTemplate() "  + thisVDC.getDefaultTemplate().getName());
+                        * 
+                        */
             String dataversetype = dataverseType;
             thisVDC.setDtype(dataversetype);
             thisVDC.setName((String)dataverseName.getValue());
@@ -359,15 +366,25 @@ public class EditSitePage extends VDCBaseBean implements java.io.Serializable  {
             getVDCRenderBean().getFlash().put("successMessage", "Successfully updated general settings.");
             return "/admin/OptionsPage?faces-redirect=true"+ getVDCRequestBean().getContextSuffix();
         } else {
-            success = false;
             return null;
         }
     }
     
-   
+    public boolean isValidTemplate(Template template){
+        if (!template.isNetwork()){ //vdc template so return it
+           return true; 
+        } //check for root network
+         else if(template.getVdcNetwork().equals(vdcNetworkService.findRootNetwork())){
+            return true;            
+        } //check for same network
+         else if(template.getVdcNetwork().getId().equals(selectSubNetworkId)){
+            return true;            
+        } else { //get default of new subnet
+            return false;            
+        }        
+    }
     
     public String cancel(){
-        VDC thisVDC = getVDCRequestBean().getCurrentVDC();
         return "/admin/OptionsPage?faces-redirect=true"+getVDCRequestBean().getContextSuffix();
     }
     

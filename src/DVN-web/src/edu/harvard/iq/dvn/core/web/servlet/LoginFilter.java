@@ -502,7 +502,7 @@ public class LoginFilter implements Filter {
         } else if (isExploreDataPage(pageDef) ) {
             String fileId = VDCBaseBean.getParamFromRequestOrComponent("fileId", request);
             StudyFile sf = studyFileService.getStudyFile(Long.parseLong(fileId));
-            if (sf.isFileRestrictedForUser(user, currentVDC, ipUserGroup)) {
+            if (sf.isFileRestrictedForUser(user, ipUserGroup)) {
                 return false;
             }
         } else if (isEditAccountPage(pageDef)) {

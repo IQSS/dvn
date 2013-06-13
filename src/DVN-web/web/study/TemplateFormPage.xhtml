@@ -78,11 +78,11 @@
                       </ice:column>
                       <ice:column>
                         <ice:selectOneMenu immediate="false"   id="SelOneMenuNetwork"                                          
-                                                     binding="#{TemplateFormPage.selectSubnetwork}"
-                                                     rendered="#{!empty(TemplateFormPage.networkSelectItems) and VDCRequest.currentVDCId == null}" 
-                                                     >
+                              binding="#{TemplateFormPage.selectSubnetwork}"
+                              rendered="#{!empty(TemplateFormPage.networkSelectItems) and VDCRequest.currentVDCId == null  and TemplateFormPage.allowUpdateVDCNetwork }" >
                                 <f:selectItems value="#{TemplateFormPage.networkSelectItems}"/>
                         </ice:selectOneMenu> 
+                        <ice:outputText value="#{TemplateFormPage.template.vdcNetwork.name} cannot be changed " rendered="#{!empty(TemplateFormPage.networkSelectItems) and VDCRequest.currentVDCId == null and !TemplateFormPage.allowUpdateVDCNetwork}" />
                      </ice:column>
                   </ice:panelGrid>
                 </div>

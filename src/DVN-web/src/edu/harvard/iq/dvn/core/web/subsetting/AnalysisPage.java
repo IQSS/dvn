@@ -3684,7 +3684,7 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
                     
                     dbgLog.info("***** within edaAction(): succcessfully ends here *****");
 
-                    return "/subsetting/AnalysisResultsPage?faces-redirect=true";  
+                    return "/subsetting/AnalysisResultsPage?faces-redirect=true" + getContextSuffix();  
                     //return "success";
                 
                 } catch (IOException e){
@@ -3696,7 +3696,7 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
                     dbgLog.warning("exiting edaAction() due to an zipping IO problem ");
                     //getVDCRequestBean().setSelectedTab("tabEda");
                     dvnDSBTimerService.createTimer(deleteTempFileList, TEMP_FILE_LIFETIME);
-                    return "/subsetting/AnalysisResultsPage?faces-redirect=true";
+                    return "/subsetting/AnalysisResultsPage?faces-redirect=true" + getContextSuffix();
                     //return "success";
                 }
                 // end of zipping step
@@ -6391,7 +6391,7 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
                         
                     dbgLog.fine("***** within advStatAction(): succcessfully ends here *****");
                         
-                    return "/subsetting/AnalysisResultsPage?faces-redirect=true"; //"success";
+                    return "/subsetting/AnalysisResultsPage?faces-redirect=true" + getContextSuffix(); //"success";
                 
                 } catch (IOException e){
                     // file-access problem, etc.
@@ -6402,7 +6402,7 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
                     dbgLog.warning("exiting edaAction() due to an zipping IO problem ");
                     //getVDCRequestBean().setSelectedTab("tabAdvStat");
                     dvnDSBTimerService.createTimer(deleteTempFileList, TEMP_FILE_LIFETIME);
-                    return "/subsetting/AnalysisResultsPage?faces-redirect=true"; //"success";
+                    return "/subsetting/AnalysisResultsPage?faces-redirect=true" + getContextSuffix(); //"success";
                 }
                 // end of zipping step
 

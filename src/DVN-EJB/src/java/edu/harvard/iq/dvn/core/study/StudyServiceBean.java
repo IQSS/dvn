@@ -759,7 +759,7 @@ public class StudyServiceBean implements edu.harvard.iq.dvn.core.study.StudyServ
                     + " and sv.versionstate = '" + StudyVersion.VersionState.RELEASED + "'" + " and s.owner_id = " + vdcId
                     + " ORDER BY sv.releaseTime desc";
         }
-        System.out.print("release data query " + queryStr);
+        //System.out.print("release data query " + queryStr);
         Query query = em.createNativeQuery(queryStr);
         List<Long> returnList = new ArrayList<Long>();
         if (numResults == -1) {
@@ -828,7 +828,7 @@ public class StudyServiceBean implements edu.harvard.iq.dvn.core.study.StudyServ
                 + " order by "
                 + "(CASE WHEN sum(downloadcount) is null THEN -1 ELSE sum(downloadcount) END) desc";
 
-        System.out.print("Download count query " + queryStr);
+        //System.out.print("Download count query " + queryStr);
         Query query = em.createNativeQuery(queryStr);
         List<Long> returnList = new ArrayList<Long>();
         if (numResults == -1) {

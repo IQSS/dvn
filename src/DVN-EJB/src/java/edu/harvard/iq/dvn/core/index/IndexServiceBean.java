@@ -566,7 +566,8 @@ public class IndexServiceBean implements edu.harvard.iq.dvn.core.index.IndexServ
                             // If it's an "unlinked" study,
                             // remove the existing links in the database: 
                             logger.info("study "+i+" no longer cross-linked to any subnetworks.");
-                            linkedStudy.setLinkedToNetworks(null);
+                            //linkedStudy.setLinkedToNetworks(null);
+                            studyService.setsetLinkedToNetworks(linkedStudy, null);
                            
                             reindexNecessary = true; 
                         } else if (linkedStudy.isReleased()) {
@@ -583,7 +584,8 @@ public class IndexServiceBean implements edu.harvard.iq.dvn.core.index.IndexServ
                                 logger.info("study "+i+": cross-linked status has changed; updating");
                                 
                                 // Update it in the database: 
-                                linkedStudy.setLinkedToNetworks(newLinkedToNetworks(subNetworks, linkedVdcNetworkMap[i]));
+                                //linkedStudy.setLinkedToNetworks(newLinkedToNetworks(subNetworks, linkedVdcNetworkMap[i]));
+                                studyService.setsetLinkedToNetworks(linkedStudy, newLinkedToNetworks(subNetworks, linkedVdcNetworkMap[i])); 
                                 //studyService.updateStudy(linkedStudy);
                                 
                                 reindexNecessary = true; 
@@ -621,9 +623,10 @@ public class IndexServiceBean implements edu.harvard.iq.dvn.core.index.IndexServ
                                 // in the same shape it was before the reindexing
                                 // attempt; so that it'll hopefully get caught
                                 // by the next reindexing now. 
-                                linkedStudy.setLinkedToNetworks(currentCrossLinks);
+                                //linkedStudy.setLinkedToNetworks(currentCrossLinks);
+                                studyService.setsetLinkedToNetworks(linkedStudy, currentCrossLinks); 
+
                             }
-                            studyService.setsetLinkedToNetworks(linkedStudy.getId(), linkedStudy.getLinkedToNetworks()); 
                         }
                     }
                 }                

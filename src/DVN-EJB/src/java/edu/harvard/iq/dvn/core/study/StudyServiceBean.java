@@ -829,6 +829,7 @@ public class StudyServiceBean implements edu.harvard.iq.dvn.core.study.StudyServ
                 + "(CASE WHEN sum(downloadcount) is null THEN -1 ELSE sum(downloadcount) END) desc";
 
         //System.out.print("Download count query " + queryStr);
+        
         Query query = em.createNativeQuery(queryStr);
         List<Long> returnList = new ArrayList<Long>();
         if (numResults == -1) {

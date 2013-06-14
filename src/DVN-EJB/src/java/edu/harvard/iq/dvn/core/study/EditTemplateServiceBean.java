@@ -179,11 +179,13 @@ public class EditTemplateServiceBean implements edu.harvard.iq.dvn.core.study.Ed
         //This code needed to prevent creating extra subnets
         //when changing subnet from root in edit template
         //???  clean-up?
+        
         if(template.getId() == null){
            em.persist(template); 
         } else {
            em.merge(template);
         }
+        //
         Collection<TemplateField> templateFields = template.getTemplateFields();
         for (TemplateField tf : templateFields ){
             if(tf.getId()== null){

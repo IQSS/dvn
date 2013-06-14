@@ -159,12 +159,11 @@
                   </f:facet>
                     <ui:repeat value="#{OptionsPage.getDefaultTemplateList(template.id)}" var="vdcNetworkUI">
                         <ice:outputText value="#{vdcNetworkUI.vdcNetwork.name}" rendered="#{vdcNetworkUI.defaultTemplateSelected}"/>
-                    </ui:repeat>
-                    
+                    </ui:repeat>                    
                     <ice:outputText value="Cannot Make Default" style="color:grey;font-style:italic;" rendered="#{!OptionsPage.isNetworkDefault(template.id) and !template.enabled}"/>
-                    <ice:commandLink value="Make Default" rendered="#{!VDCRequest.readOnlyDatabase  and template.enabled and template.vdcNetwork.id != VDCRequest.vdcNetwork.id}" 
+                    <ice:commandLink value="Make Default for #{template.vdcNetwork.name}" rendered="#{!VDCRequest.readOnlyDatabase and template.vdcNetwork.id != VDCRequest.vdcNetwork.id and !OptionsPage.isNetworkDefault(template.id) and template.enabled}" 
                                     action="#{OptionsPage.updateDefaultAction(template.id, template.vdcNetwork)}"/>
-                    <ice:commandLink value="Make Default" rendered="#{!VDCRequest.readOnlyDatabase  and template.enabled and template.vdcNetwork.id == VDCRequest.vdcNetwork.id}" 
+                    <ice:commandLink value="Make Default Selection" rendered="#{!VDCRequest.readOnlyDatabase  and template.vdcNetwork.id == VDCRequest.vdcNetwork.id and !OptionsPage.isNetworkDefaultForAll(template.id) and template.enabled }" 
                                     action="#{OptionsPage.toggleDefaultPopup(template.id)}"/>
                 </ice:column>
                 <ice:column>

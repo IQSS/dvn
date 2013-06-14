@@ -2389,16 +2389,10 @@ public class StudyServiceBean implements edu.harvard.iq.dvn.core.study.StudyServ
     }
     
     @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
-    public void setsetLinkedToNetworks(Study study, List<VDCNetwork> linkedToNetworks) {
-        study.setLinkedToNetworks(linkedToNetworks);
-        em.merge(study);
-    }
-    
-    @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
-    public void setsetLinkedToNetworks(Long studyId, List<VDCNetwork> linkedToNetworks) {
+    public Study setLinkedToNetworks(Long studyId, List<VDCNetwork> linkedToNetworks) {
         Study study = em.find(Study.class, studyId);
         study.setLinkedToNetworks(linkedToNetworks);
-        em.merge(study);
+        return em.merge(study);
     }
     
     public Timestamp getLastUpdatedTime(Long vdcId) {

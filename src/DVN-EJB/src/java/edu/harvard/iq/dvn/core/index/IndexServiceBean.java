@@ -273,7 +273,8 @@ public class IndexServiceBean implements edu.harvard.iq.dvn.core.index.IndexServ
         try {
             studyService.setIndexTime(studyId, indexTime);
         } catch (Exception e) {
-            e.printStackTrace(); // print stacktrace, but continue processing
+            logger.warning("caught an exception trying to update index time.");
+            //e.printStackTrace(); // print stacktrace, but continue processing
         }
     }
     
@@ -284,7 +285,8 @@ public class IndexServiceBean implements edu.harvard.iq.dvn.core.index.IndexServ
         try {
             studyService.setIndexTime(study.getId(), indexTime);
         } catch (Exception e) {
-            e.printStackTrace(); // print stacktrace, but continue processing
+            logger.warning("caught an exception trying to update index time.");
+            //e.printStackTrace(); // print stacktrace, but continue processing
         }
     }
 
@@ -368,6 +370,7 @@ public class IndexServiceBean implements edu.harvard.iq.dvn.core.index.IndexServ
         long ioProblemCount = 0;
         boolean ioProblem = false;
         Indexer indexer = Indexer.getInstance();
+        boolean deleteSuccess = true;
         /*
         try {
         indexer.setup();
@@ -378,13 +381,20 @@ public class IndexServiceBean implements edu.harvard.iq.dvn.core.index.IndexServ
         for (Iterator it = studyIds.iterator(); it.hasNext();) {
             Long elem = (Long) it.next();
             try {
-                deleteDocument(elem.longValue());
+                deleteSuccess = true; 
                 try {
-                    addDocument(elem.longValue());
-                } catch (IOException ex) {
-                    ioProblem = true;
-                    ioProblemCount++;
-                    Logger.getLogger(IndexServiceBean.class.getName()).log(Level.SEVERE, null, ex);
+                    indexer.deleteDocumentCarefully(elem.longValue());
+                } catch (IOException ioe) {
+                    deleteSuccess = false;
+                }
+                if (deleteSuccess) {
+                    try {
+                        addDocument(elem.longValue());
+                    } catch (IOException ex) {
+                        ioProblem = true;
+                        ioProblemCount++;
+                        Logger.getLogger(IndexServiceBean.class.getName()).log(Level.SEVERE, null, ex);
+                    }
                 }
             } catch (EJBException e) {
                 if (e.getCause() instanceof IllegalArgumentException) {
@@ -533,7 +543,7 @@ public class IndexServiceBean implements edu.harvard.iq.dvn.core.index.IndexServ
             
             for (int i = 0; i < maxStudyId.intValue() + 1; i++) {
                 if (linkedVdcNetworkMap[i] != 0) {
-                    logger.info("study "+i+": cross-linked outside of its network;");
+                    logger.info("study "+i+": cross-linked outside of its network; (still need to check if we need to reindex it)");
                     try {
                         linkedStudy = studyService.getStudy(new Long(i));
                     } catch (Exception ex) {
@@ -547,7 +557,10 @@ public class IndexServiceBean implements edu.harvard.iq.dvn.core.index.IndexServ
                             // If it's an "unlinked" study,
                             // remove the existing links in the database: 
                             logger.info("study "+i+" no longer cross-linked to any subnetworks.");
-                            linkedStudy.setLinkedToNetworks(null);
+                            //linkedStudy.setLinkedToNetworks(null);
+                            //studyService.updateStudy(linkedStudy);
+                            studyService.setsetLinkedToNetworks(linkedStudy.getId(), null);
+
                             
                             reindexNecessary = true; 
                         } else {
@@ -564,7 +577,10 @@ public class IndexServiceBean implements edu.harvard.iq.dvn.core.index.IndexServ
                                 logger.info("study "+i+": cross-linked status has changed; updating");
                                 
                                 // Update it in the database: 
-                                linkedStudy.setLinkedToNetworks(newLinkedToNetworks(subNetworks, linkedVdcNetworkMap[i]));
+                                //linkedStudy.setLinkedToNetworks(newLinkedToNetworks(subNetworks, linkedVdcNetworkMap[i]));
+                                //studyService.updateStudy(linkedStudy);
+                                studyService.setsetLinkedToNetworks(linkedStudy.getId(), newLinkedToNetworks(subNetworks, linkedVdcNetworkMap[i]));
+
                                 
                                 reindexNecessary = true; 
                             }
@@ -573,14 +589,26 @@ public class IndexServiceBean implements edu.harvard.iq.dvn.core.index.IndexServ
                         if (reindexNecessary) {
                             // Re-index the study: 
                             
-                            try {
-                                indexer.deleteDocument(linkedStudy.getId());
-                                indexer.addDocument(linkedStudy);
-                            } catch (Exception ex) {
-                                ioProblem = true;
-                                ioProblemCount++;
-                                logger.severe("Caught exception attempting to re-index re-linked study " + linkedStudy.getId());
-                                ex.printStackTrace();
+                            indexer = Indexer.getInstance();
+                            boolean deleteSuccess = true; 
+                            try { 
+                                indexer.deleteDocumentCarefully(linkedStudy.getId());
+                            } catch (IOException ioe) {
+                                deleteSuccess = false; 
+                            }
+                            
+                            if (deleteSuccess) {
+                                try {
+                                    //indexer.addDocument(linkedStudy);
+                                    addDocument(linkedStudy);
+                                } catch (Exception ex) {
+                                    ioProblem = true;
+                                    ioProblemCount++;
+                                    logger.severe("Caught exception attempting to re-index re-linked study " + linkedStudy.getId());
+                                    ex.printStackTrace();
+                                }
+                            } else {
+                                logger.info("Could not delete study "+linkedStudy.getId()+" from index; skipping reindexing.");
                             }
                         }
                     }

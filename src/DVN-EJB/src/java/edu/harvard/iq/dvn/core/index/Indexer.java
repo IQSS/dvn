@@ -213,18 +213,29 @@ public class Indexer implements java.io.Serializable  {
     }
 
     public void deleteDocument(long studyId) {
-        IndexReader reader = null;
+        IndexWriter deleteWriter = null; 
+
         try {
-            reader = IndexReader.open(dir, false);
-            reader.deleteDocuments(new Term("id", Long.toString(studyId)));
-            reader.deleteDocuments(new Term("varStudyId",Long.toString(studyId)));
-            reader.deleteDocuments(new Term("versionStudyId",Long.toString(studyId)));
+            while (IndexWriter.isLocked(dir));
+            
+            // TODO: 
+            // Figure out why we are using *IndexReader*, not Writer, for 
+            // this operation in the first place? -- L.A.
+            // (this will become a moot point if we upgrade to the next 
+            // version of Lucene; then we'll be forced to use IndexWriter 
+            // for all operations that modify the index)
+            
+            //reader = IndexReader.open(dir, false);
+            deleteWriter = new IndexWriter(dir, getAnalyzer(), isIndexEmpty(), IndexWriter.MaxFieldLength.UNLIMITED);
+            deleteWriter.deleteDocuments(new Term("id", Long.toString(studyId)));
+            deleteWriter.deleteDocuments(new Term("varStudyId",Long.toString(studyId)));
+            deleteWriter.deleteDocuments(new Term("versionStudyId",Long.toString(studyId)));
         } catch (IOException ex) {
             ex.printStackTrace();
         } finally {
-            if (reader != null) {
+            if (deleteWriter != null) {
                 try {
-                    reader.close();
+                    deleteWriter.close();
                 } catch (Exception ex) {
                     
                 }
@@ -232,6 +243,53 @@ public class Indexer implements java.io.Serializable  {
         }
     }
 
+    public void deleteDocumentCarefully(long studyId) throws IOException {
+        IndexWriter deleteWriter = null; 
+        boolean success = true; 
+        String errorMessage = "";
+        
+        try {
+            //while (IndexWriter.isLocked(dir));
+            
+            // TODO: 
+            // Figure out why we are using *IndexReader*, not Writer, for 
+            // this operation in the first place? -- L.A.
+            // (this will become a moot point if we upgrade to the next 
+            // version of Lucene; then we'll be forced to use IndexWriter 
+            // for all operations that modify the index)
+            
+            //reader = IndexReader.open(dir, false);
+            deleteWriter = new IndexWriter(dir, getAnalyzer(), isIndexEmpty(), IndexWriter.MaxFieldLength.UNLIMITED);
+            deleteWriter.deleteDocuments(new Term("id", Long.toString(studyId)));
+            deleteWriter.deleteDocuments(new Term("varStudyId",Long.toString(studyId)));
+            deleteWriter.deleteDocuments(new Term("versionStudyId",Long.toString(studyId)));
+        } catch (Exception ex) {
+            success = false;
+            errorMessage = "Caught an exception trying to delete index document for study " + studyId + "; " + ex.getMessage();
+            logger.info(errorMessage);
+            ex.printStackTrace();
+        } finally {
+            if (deleteWriter != null) {
+                try {
+                    deleteWriter.close();
+                    // Should I be checking for, and deleting a lock file 
+                    // left behind??
+                } catch (Exception ex) {
+                    logger.info("Caught an exception trying to close the index reader.");
+                    // I'm guessing this is not a super dangerous condition...
+                    // IndexReaders does try to put a lock on the 
+                    // index files... so in theory it could be dangerous -
+                    // as we may be leaving such a lock behind (?). -- L.A. 
+                    
+                }
+            }
+        }
+        
+        if (!success) {
+            throw new IOException(errorMessage);
+        }
+    }
+    
     public void deleteVersionDocuments(long studyId){
         try{
             IndexReader reader = IndexReader.open(dir, false);

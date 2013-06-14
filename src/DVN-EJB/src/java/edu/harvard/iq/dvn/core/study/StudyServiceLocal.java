@@ -22,6 +22,7 @@ package edu.harvard.iq.dvn.core.study;
 import edu.harvard.iq.dvn.core.admin.VDCUser;
 import edu.harvard.iq.dvn.core.vdc.GuestBookResponse;
 import edu.harvard.iq.dvn.core.vdc.VDC;
+import edu.harvard.iq.dvn.core.vdc.VDCNetwork;
 import java.io.File;
 import java.io.IOException;
 import java.sql.Timestamp;
@@ -186,6 +187,9 @@ public interface StudyServiceLocal extends java.io.Serializable {
     //2
     public boolean isValidStudyIdString(String studyId);
     public void setIndexTime(Long studyId, Date indexTime);
+    public void setsetLinkedToNetworks(Study study, List<VDCNetwork> linkedToNetworks);
+    public void setsetLinkedToNetworks(Long studyId, List<VDCNetwork> linkedToNetworks);
+    
     public Timestamp getLastUpdatedTime(Long vdcId);
    
     //1

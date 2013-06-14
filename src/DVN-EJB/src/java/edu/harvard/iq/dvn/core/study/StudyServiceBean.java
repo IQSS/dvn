@@ -2386,7 +2386,20 @@ public class StudyServiceBean implements edu.harvard.iq.dvn.core.study.StudyServ
         study.setLastIndexTime(indexTime);
         em.merge(study);
     }
-
+    
+    @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
+    public void setsetLinkedToNetworks(Study study, List<VDCNetwork> linkedToNetworks) {
+        study.setLinkedToNetworks(linkedToNetworks);
+        em.merge(study);
+    }
+    
+    @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
+    public void setsetLinkedToNetworks(Long studyId, List<VDCNetwork> linkedToNetworks) {
+        Study study = em.find(Study.class, studyId);
+        study.setLinkedToNetworks(linkedToNetworks);
+        em.merge(study);
+    }
+    
     public Timestamp getLastUpdatedTime(Long vdcId) {
         String queryString  = "SELECT max(lastupdatetime) from study where owner_id=" + vdcId;
         Query query         = em.createNativeQuery(queryString);

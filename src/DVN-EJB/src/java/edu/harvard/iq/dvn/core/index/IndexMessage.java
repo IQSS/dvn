@@ -97,8 +97,15 @@ public class IndexMessage implements MessageListener, java.io.Serializable {
     
     private void updateStudy(long studyId){
         Indexer indexer = Indexer.getInstance();
-        indexer.deleteDocument(studyId);
-        addDocument(studyId);
+        boolean deleteSuccess = true; 
+        try {
+            indexer.deleteDocumentCarefully(studyId);
+        } catch (Exception ex) {
+            deleteSuccess = false;
+        }
+        if (deleteSuccess) {
+            addDocument(studyId);
+        }
     }
     
     private void deleteStudy(long studyId){

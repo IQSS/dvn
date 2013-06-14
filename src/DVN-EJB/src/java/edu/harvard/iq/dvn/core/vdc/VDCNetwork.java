@@ -282,7 +282,7 @@ public class VDCNetwork implements java.io.Serializable  {
         this.networkVDCs = networkVDCs;
     }
 
-    @OneToMany(mappedBy="vdcNetwork", cascade={CascadeType.MERGE})
+    @OneToMany(mappedBy="vdcNetwork")
     private Collection<Template> networkTemplates;
     
     public Collection<Template> getNetworkTemplates(){

@@ -379,6 +379,15 @@ public class OptionsPage extends VDCBaseBean  implements java.io.Serializable {
     
     public boolean isNetworkDefault(Long templateId) {return defaultNetworkTemplateMap.containsValue(templateId);} 
     
+    public boolean isNetworkDefaultForAll(Long templateId) {
+        for (Long defaultTemplateId : defaultNetworkTemplateMap.values()) {
+            if (!defaultTemplateId.equals(templateId)) {
+                return false;
+            }
+        }
+        return true; 
+    }
+    
     public List<VDCNetworkUI> getDefaultTemplateList(Long templateId) {
         List<VDCNetworkUI> templateVDCNetworkUIs = new ArrayList();
         

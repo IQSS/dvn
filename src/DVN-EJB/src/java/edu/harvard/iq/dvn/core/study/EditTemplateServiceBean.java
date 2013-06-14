@@ -175,6 +175,17 @@ public class EditTemplateServiceBean implements edu.harvard.iq.dvn.core.study.Ed
     @TransactionAttribute(TransactionAttributeType.REQUIRED)
     public void save() {
         //Need to save any newly created study fields
+        em.merge(template.getVdcNetwork());
+        //This code needed to prevent creating extra subnets
+        //when changing subnet from root in edit template
+        //???  clean-up?
+        
+        if(template.getId() == null){
+           em.persist(template); 
+        } else {
+           em.merge(template);
+        }
+        //
         Collection<TemplateField> templateFields = template.getTemplateFields();
         for (TemplateField tf : templateFields ){
             if(tf.getId()== null){
@@ -186,7 +197,7 @@ public class EditTemplateServiceBean implements edu.harvard.iq.dvn.core.study.Ed
             }
         }     
     }
-    
+       
     
     /**
      * Remove this Stateful Session bean from the EJB Container without

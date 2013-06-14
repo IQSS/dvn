@@ -541,6 +541,9 @@ public class IndexServiceBean implements edu.harvard.iq.dvn.core.index.IndexServ
             // and then just go and compare the 2, without making any further 
             // queries... --L.A.
             
+            List<VDCNetwork> currentCrossLinks = null; 
+
+            
             for (int i = 0; i < maxStudyId.intValue() + 1; i++) {
                 if (linkedVdcNetworkMap[i] != 0) {
                     logger.info("study "+i+": cross-linked outside of its network; (still need to check if we need to reindex it)");
@@ -550,8 +553,14 @@ public class IndexServiceBean implements edu.harvard.iq.dvn.core.index.IndexServ
                         linkedStudy = null; 
                     }
                     reindexNecessary = false; 
-                    // Only released studies get indexed!
-                    if (linkedStudy != null && linkedStudy.isReleased()) {
+                    
+                    if (linkedStudy != null) {
+                        // Only released studies get indexed.
+                        // (but studies that are no longer released may 
+                        // need to be dropped from the crosslinking map, and
+                        // from the index)
+                        
+                        currentCrossLinks = linkedStudy.getLinkedToNetworks();
                         
                         if (linkedVdcNetworkMap[i] == -1) {
                             // If it's an "unlinked" study,
@@ -563,7 +572,7 @@ public class IndexServiceBean implements edu.harvard.iq.dvn.core.index.IndexServ
 
                             
                             reindexNecessary = true; 
-                        } else {
+                        } else if (linkedStudy.isReleased()) {
                             // else find what subnetworks this study is already linked 
                             // to in the database:
                         
@@ -590,25 +599,34 @@ public class IndexServiceBean implements edu.harvard.iq.dvn.core.index.IndexServ
                             // Re-index the study: 
                             
                             indexer = Indexer.getInstance();
-                            boolean deleteSuccess = true; 
+                            boolean indexSuccess = true; 
                             try { 
                                 indexer.deleteDocumentCarefully(linkedStudy.getId());
                             } catch (IOException ioe) {
-                                deleteSuccess = false; 
+                                indexSuccess = false; 
                             }
                             
-                            if (deleteSuccess) {
+                            if (indexSuccess) {
                                 try {
                                     //indexer.addDocument(linkedStudy);
                                     addDocument(linkedStudy);
                                 } catch (Exception ex) {
                                     ioProblem = true;
                                     ioProblemCount++;
-                                    logger.severe("Caught exception attempting to re-index re-linked study " + linkedStudy.getId());
+                                    logger.severe("Caught exception attempting to re-index re-linked study " + linkedStudy.getId() + "; " + ex.getMessage());
                                     ex.printStackTrace();
+                                    indexSuccess = false; 
                                 }
                             } else {
                                 logger.info("Could not delete study "+linkedStudy.getId()+" from index; skipping reindexing.");
+                            }
+                            
+                            if (!indexSuccess) {
+                                // Make sure we leave the db linking status entry
+                                // in the same shape it was before the reindexing
+                                // attempt; so that it'll hopefully get caught
+                                // by the next reindexing now. 
+                                studyService.setsetLinkedToNetworks(linkedStudy.getId(), currentCrossLinks); 
                             }
                         }
                     }

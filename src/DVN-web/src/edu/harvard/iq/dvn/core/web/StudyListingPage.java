@@ -604,27 +604,38 @@ public class StudyListingPage extends VDCBaseBean implements java.io.Serializabl
 //                resultsWithFacets = indexService.searchNew(dvnQuery);
 //                studyIDList = resultsWithFacets.getMatchIds();
             } else {
-                logger.fine("single collection not selected, searching entire dataverse");
-                /**
-                 * At the dataverse level, search should not be affected by the
-                 * value of getVDCRequestBean().getCurrentVdcNetwork() which
-                 * tells us which subnetwork we are currently in.
-                 *
-                 * That is to say, we don't need to bother to check that value
-                 * or make any decisions based on it.
-                 */
+                logger.fine("single collection not selected");
                 logger.fine("current subnetwork: " + getVDCRequestBean().getCurrentVdcNetwork().getId());
                 dvnQuery.setVdc(getVDCRequestBean().getCurrentVDC());
 
                 if (dvnQuery.getVdc() != null) {
+                    /**
+                     * At the dataverse level, search should not be affected by
+                     * the value of getVDCRequestBean().getCurrentVdcNetwork()
+                     * which tells us which subnetwork we are currently in.
+                     *
+                     * That is to say, we don't need to bother to check that
+                     * value or make any decisions based on it.
+                     */
+                    logger.info("dvnQuery.getVdc != null");
                     dvnQuery.setDvOwnerIdQuery(indexService.constructDvOwnerIdQuery(dvnQuery.getVdc()));
                     dvnQuery.setCollectionQueries(indexService.getCollectionQueries(dvnQuery.getVdc()));
+                    dvnQuery.setSearchTerms(searchTerms);
+                    dvnQuery.constructQuery();
+                    resultsWithFacets = indexService.searchNew(dvnQuery);
+                    studyIDList = resultsWithFacets.getMatchIds();
+                } else {
+                    Long rootSubnetworkId = getVDCRequestBean().getVdcNetwork().getId();
+                    Long currentSubnetworkId = getVDCRequestBean().getCurrentVdcNetwork().getId();
+                    if (!currentSubnetworkId.equals(rootSubnetworkId)) {
+                        Query subNetworkQuery = indexService.constructNetworkIdQuery(currentSubnetworkId);
+                        dvnQuery.setSubNetworkQuery(subNetworkQuery);
+                    }
+                    dvnQuery.setSearchTerms(searchTerms);
+                    dvnQuery.constructQuery();
+                    resultsWithFacets = indexService.searchNew(dvnQuery);
+                    studyIDList = resultsWithFacets.getMatchIds();
                 }
-
-                dvnQuery.setSearchTerms(searchTerms);
-                dvnQuery.constructQuery();
-                resultsWithFacets = indexService.searchNew(dvnQuery);
-                studyIDList = resultsWithFacets.getMatchIds();
             }
             if (searchField.equals("any")) {
                 List<Long> versionIds = indexService.searchVersionUnf(getVDCRequestBean().getCurrentVDC(), searchValue);

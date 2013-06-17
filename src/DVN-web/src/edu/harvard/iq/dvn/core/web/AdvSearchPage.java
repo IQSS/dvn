@@ -1199,11 +1199,12 @@ public class AdvSearchPage extends VDCBaseBean implements java.io.Serializable {
         return isDateItem(dropdown7.getValue().toString());
     }
 
+    /*
     public String indexAll() {
         indexServiceBean.indexAll();
         return "success";
     }
-
+*/
     // 
     // What is this for? -- L.A. 
     protected String buildQuery() {

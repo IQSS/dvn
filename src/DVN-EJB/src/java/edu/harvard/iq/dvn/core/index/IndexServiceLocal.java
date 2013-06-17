@@ -38,7 +38,7 @@ public interface IndexServiceLocal extends java.io.Serializable {
 
     public List search(String query);
 
-    public void indexAll();
+    public void indexAll() throws java.io.IOException;
 
     public void indexList(List <Long> studyIds);
     

@@ -3574,7 +3574,12 @@ public class OptionsPage extends VDCBaseBean  implements java.io.Serializable {
             }
         } catch (Exception e) {
             e.printStackTrace();
-            addMessage( "indexMessage", "Reindexing failed: An unknown error occurred trying to reindex the DVN." );
+            if (e.getMessage() != null) {
+                addMessage("indexMessage", "Reindexing failed: "+e.getMessage());
+            } else {
+                addMessage( "indexMessage", "Reindexing failed: An unknown error occurred trying to reindex the DVN." );
+        
+            }
         } 
        
         return null;

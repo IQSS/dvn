@@ -339,10 +339,34 @@ public class IndexServiceBean implements edu.harvard.iq.dvn.core.index.IndexServ
         indexer.deleteDocument(study.getId().longValue());
     }
 
-    public void indexAll() {
+    public void indexAll() throws IOException {
         boolean ioProblem = false;
         long ioProblemCount = 0;
         Indexer indexer = Indexer.getInstance();
+        
+        String dvnIndexLocation = System.getProperty("dvn.index.location");
+        String lockFileName = dvnIndexLocation + "/IndexAll.lock";
+        File indexAllLockFile = new File(lockFileName);
+
+        // Before we do anything else, 
+        // Check for an existing lock file: 
+
+
+        if (indexAllLockFile.exists()) {
+            String errorMessage = "Cannot reindex: collection reindexing already in progress;";
+            errorMessage += ("lock file " + lockFileName + ", created on " + (new Date(indexAllLockFile.lastModified())).toString() + ".");
+            logger.warning(errorMessage);
+            throw new IOException(errorMessage);
+        }
+
+        // Create a lock file: 
+        try {
+            indexAllLockFile.createNewFile();
+        } catch (IOException ex) {
+            String errorMessage = "Error: could not create lock file (";
+            errorMessage += (lockFileName + ")");
+            throw new IOException(errorMessage);
+        }
         
         List<Long> studyIds = studyService.getAllStudyIds(); 
         
@@ -382,7 +406,10 @@ public class IndexServiceBean implements edu.harvard.iq.dvn.core.index.IndexServ
             
         }
         logger.info("IndexAll: Finished.");
-        handleIOProblems(ioProblem,ioProblemCount);
+        if (indexAllLockFile.exists()) {
+            indexAllLockFile.delete();
+        }
+        handleIOProblems(ioProblem, ioProblemCount);
     }
     
     public void indexList(List<Long> studyIds) {
@@ -457,15 +484,27 @@ public class IndexServiceBean implements edu.harvard.iq.dvn.core.index.IndexServ
         long ioProblemCount = 0;
         boolean ioProblem = false;
         Indexer indexer = Indexer.getInstance();
-        logger.info("Starting batch reindex of collection-linked studies.");
         
         String dvnIndexLocation = System.getProperty("dvn.index.location");
-        String lockFileName = dvnIndexLocation + "/collReindex.lock";
+        
+        String lockFileName = dvnIndexLocation + "/IndexAll.lock";
+        File indexAllLockFile = new File(lockFileName);
+        
+        // Before we do anything else, check if the index directory is
+        // locked for IndexAll: 
+        
+        if (indexAllLockFile.exists()) {
+            logger.info("Detected IndexAll in progress; skipping reindexing ofn collection-linked studies.");
+            return; 
+        }
+
+        logger.info("Starting batch reindex of collection-linked studies.");
+
+        lockFileName = dvnIndexLocation + "/collReindex.lock";
         File collReindexLockFile = new File(lockFileName);
 
         
         try {
-            // Before we do anything else, 
             // Check for an existing lock file: 
 
             

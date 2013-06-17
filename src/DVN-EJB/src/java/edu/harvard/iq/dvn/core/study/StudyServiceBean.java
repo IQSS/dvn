@@ -746,14 +746,14 @@ public class StudyServiceBean implements edu.harvard.iq.dvn.core.study.StudyServ
         }
         String queryStr = "  SELECT sv.study_id FROM StudyVersion sv   where sv.versionstate = " 
                 + "'" + StudyVersion.VersionState.RELEASED + "'"
-                + " and sv.study_id in ( "
+                + " and (sv.study_id in ( "
                 + " 	select s.id FROM VDC v, Study s, StudyVersion sv where s.id = sv.study_id  and sv.versionstate = "
                 + "'" + StudyVersion.VersionState.RELEASED + "'"
                 + " and s.owner_id = v.id  and v.restricted = false  "
                 + networkClause 
                 + ") "
                 + linkedStudyClause
-                + " ORDER BY sv.releaseTime desc";
+                + ") ORDER BY sv.releaseTime desc";
         if (vdcId != null) {
             queryStr = "SELECT s.id FROM Study s, StudyVersion sv where s.id = sv.study_id "
                     + " and sv.versionstate = '" + StudyVersion.VersionState.RELEASED + "'" + " and s.owner_id = " + vdcId

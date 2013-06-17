@@ -617,7 +617,6 @@ public class StudyListingPage extends VDCBaseBean implements java.io.Serializabl
                      * That is to say, we don't need to bother to check that
                      * value or make any decisions based on it.
                      */
-                    logger.info("dvnQuery.getVdc != null");
                     dvnQuery.setDvOwnerIdQuery(indexService.constructDvOwnerIdQuery(dvnQuery.getVdc()));
                     dvnQuery.setCollectionQueries(indexService.getCollectionQueries(dvnQuery.getVdc()));
                     dvnQuery.setSearchTerms(searchTerms);

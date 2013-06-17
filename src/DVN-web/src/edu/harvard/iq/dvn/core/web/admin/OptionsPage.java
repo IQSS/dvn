@@ -3661,6 +3661,7 @@ public class OptionsPage extends VDCBaseBean  implements java.io.Serializable {
             return null; 
         }
         
+        /*
         // Check for an existing lock file: 
         
         String lockFileName = dvnIndexLocation + "/collReindex.lock";
@@ -3683,6 +3684,7 @@ public class OptionsPage extends VDCBaseBean  implements java.io.Serializable {
             addMessage("indexMessage", errorMessage);
         }
         
+        */
         try {
             
             indexService.updateStudiesInCollections();
@@ -3693,9 +3695,11 @@ public class OptionsPage extends VDCBaseBean  implements java.io.Serializable {
             addMessage( "indexMessage", "Reindexing failed: An error occurred trying to reindex the collection-linked studies. ("+e.getMessage()+")");
         } 
        
+        /*
         // delete the lock file:
         
         collReindexLockFile.delete();
+        * */
         
         return null;
     }

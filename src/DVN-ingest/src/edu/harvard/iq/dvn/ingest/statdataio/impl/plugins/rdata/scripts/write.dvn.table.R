@@ -43,7 +43,8 @@ write.dvn.table <- function (data.set, ...) {
        # display the actual UTC/GMT time value stored:
        attr(x, "tzone") <- "UTC"
        # Strip the milliseconds, if all zeros: 
-       sub("\\.000", "", format(x, format = "%F %H:%M:%OS"))
+       #sub("\\.000", "", format(x, format = "%F %H:%M:%OS"))
+       sub("\\.000", "", paste(format(x, format = "%F %H:%M:%OS"), attr(x,"tzone"), sep = " "))
     } else {
        # If there is a time zone, we will preserve it as is, 
        # without making any effort to validate it. We'll 

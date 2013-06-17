@@ -105,6 +105,7 @@ public class IndexServiceBean implements edu.harvard.iq.dvn.core.index.IndexServ
     EntityManager em;
     private static final Logger logger = Logger.getLogger("edu.harvard.iq.dvn.core.index.IndexServiceBean");
     private static final String INDEX_TIMER = "IndexTimer";
+    private static final String COLLECTION_INDEX_TIMER = "CollectionIndexTimer";
     private static final String INDEX_NOTIFICATION_TIMER = "IndexNotificationTimer";
 
 
@@ -144,6 +145,40 @@ public class IndexServiceBean implements edu.harvard.iq.dvn.core.index.IndexServ
 
     }
 
+    public void createCollectionIndexTimer() {
+        for (Iterator it = timerService.getTimers().iterator(); it.hasNext();) {
+            Timer timer = (Timer) it.next();
+            if (timer.getInfo().equals(COLLECTION_INDEX_TIMER)) {
+                logger.info("Cannot create COllectionIndexTimer, timer already exists.");
+                logger.info("IndexTimer next timeout is " + timer.getNextTimeout());
+                return;
+            }
+        }
+        
+        Calendar cal = Calendar.getInstance();
+        cal.add(Calendar.MINUTE, 5); // First run 5 minutes from now
+
+        Date initialRun = cal.getTime();
+        
+        long intervalInMinutes = 60; // default value
+      
+        String intervalJVMOption = System.getProperty("dvn.index.collection.reindex.interval"); 
+        
+        if (intervalJVMOption != null) {
+            Long intervalValue = null; 
+            try {
+                intervalValue = new Long (intervalJVMOption);
+            } catch (Exception ex) {}
+            if (intervalValue != null && (intervalValue.longValue() > 0L)) {
+                intervalInMinutes = intervalValue.longValue();
+            }
+        }    
+        
+        long intervalDuration = 1000 * 60 * intervalInMinutes; 
+        timerService.createTimer(initialRun, intervalDuration, COLLECTION_INDEX_TIMER);
+
+    }
+    
     public void createIndexNotificationTimer() {
         for (Iterator it = timerService.getTimers().iterator(); it.hasNext();) {
             Timer timer = (Timer) it.next();
@@ -186,6 +221,13 @@ public class IndexServiceBean implements edu.harvard.iq.dvn.core.index.IndexServ
                 } else {
                     logger.log(Level.INFO, "Index notify");
                     indexProblemNotify();
+                } 
+            } else if (timer.getInfo().equals(COLLECTION_INDEX_TIMER)) {
+                if (readOnly) {
+                    logger.log(Level.ALL, "Network is in read-only mode; skipping scheduled collection reindexing.");
+                } else {
+                    logger.log(Level.INFO, "Collection ReIndex");
+                    updateStudiesInCollections ();
                 } 
             }
         } catch (Throwable e) {
@@ -416,7 +458,31 @@ public class IndexServiceBean implements edu.harvard.iq.dvn.core.index.IndexServ
         Indexer indexer = Indexer.getInstance();
         logger.info("Starting batch reindex of collection-linked studies.");
         
+        String dvnIndexLocation = System.getProperty("dvn.index.location");
+        String lockFileName = dvnIndexLocation + "/collReindex.lock";
+        File collReindexLockFile = new File(lockFileName);
+
+        
         try {
+            // Before we do anything else, 
+            // Check for an existing lock file: 
+
+            
+            if (collReindexLockFile.exists()) {
+                String errorMessage = "Cannot reindex: collection reindexing already in progress;";
+                errorMessage += ("lock file " + lockFileName + ", created on " + (new Date(collReindexLockFile.lastModified())).toString() + ".");
+                throw new IOException(errorMessage);
+            }
+
+            // Create a lock file: 
+            try {
+                collReindexLockFile.createNewFile();
+            } catch (IOException ex) {
+                String errorMessage = "Error: could not create lock file (";
+                errorMessage += (lockFileName + ")");
+                throw new IOException(errorMessage);
+            }
+            
             List<Long> vdcIdList = vdcService.findAllIds();
             logger.info("Found "+vdcIdList.size()+" dataverses."); 
             
@@ -638,7 +704,13 @@ public class IndexServiceBean implements edu.harvard.iq.dvn.core.index.IndexServ
             ioProblemCount++; 
             logger.severe("Caught exception while trying to update studies in collections: "+ex.getMessage());
             ex.printStackTrace();
+        } finally {
+            // delete the lock file:
+            if (collReindexLockFile.exists()) {
+                collReindexLockFile.delete();
+            }
         }
+        
         handleIOProblems(ioProblem, ioProblemCount);
     }
 

@@ -81,6 +81,8 @@ public interface IndexServiceLocal extends java.io.Serializable {
     
     public void createIndexTimer();
     
+    public void createCollectionIndexTimer();
+    
     public void createIndexNotificationTimer();
 
     public BooleanQuery andSearchTermClause(List<SearchTerm> studyLevelSearchTerms);

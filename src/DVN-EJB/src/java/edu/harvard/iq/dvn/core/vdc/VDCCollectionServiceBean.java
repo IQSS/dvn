@@ -156,7 +156,7 @@ public class VDCCollectionServiceBean implements VDCCollectionServiceLocal {
             if (coll.isLocalScope()) {
                 query = "dvOwnerId:" + coll.getOwner().getId() + " AND (" + coll.getQuery() + ")";
             } else if (coll.isSubnetworkScope()) {
-                query = "dvNetworkId:" + coll.getOwner().getVdcNetwork().getId() + " AND (" + coll.getQuery() + ")";
+                query = "ownerDvNetworkId:" + coll.getOwner().getVdcNetwork().getId() + " AND (" + coll.getQuery() + ")";
             } else {
                 query = coll.getQuery();
             }

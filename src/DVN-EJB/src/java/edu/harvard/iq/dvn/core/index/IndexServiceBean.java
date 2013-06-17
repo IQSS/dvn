@@ -880,6 +880,12 @@ public class IndexServiceBean implements edu.harvard.iq.dvn.core.index.IndexServ
         return dvNetworkIdQuery;
     }
 
+    public Query constructNetworkOwnerIdQuery(Long dvNetworkId) {
+        Indexer indexer = Indexer.getInstance();
+        Query dvNetworkIdQuery = indexer.constructDvNetworkOwnerIdQuery(dvNetworkId);
+        return dvNetworkIdQuery;
+    }
+    
     public BooleanQuery andSearchTermClause(List<SearchTerm> studyLevelSearchTerms) {
         Indexer indexer = Indexer.getInstance();
         return indexer.andSearchTermClause(studyLevelSearchTerms);

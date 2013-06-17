@@ -985,7 +985,7 @@ public class AdvSearchPage extends VDCBaseBean implements java.io.Serializable {
 
                                 } else if (isSubnetworkScope) {
                                     logger.fine("subnetwork scope collection; owned by dataverse " + colOwner.getId() + ", in the subnetwork "+colOwner.getVdcNetwork().getId());
-                                    Query dvOwnerIdQuery = indexServiceBean.constructNetworkIdQuery(colOwner.getVdcNetwork().getId());
+                                    Query dvOwnerIdQuery = indexServiceBean.constructNetworkOwnerIdQuery(colOwner.getVdcNetwork().getId());
                                     dynamicLocal.add(dynamicQuery, BooleanClause.Occur.MUST);
                                     dynamicLocal.add(dvOwnerIdQuery, BooleanClause.Occur.MUST);
                                     collectionQueries.add(dynamicLocal);

@@ -2138,7 +2138,7 @@ public class Indexer implements java.io.Serializable  {
                             
                             queryString = null; 
                         } else {
-                            queryString = "dvNetworkId:" + col.getOwner().getVdcNetwork().getId() + " AND (" + queryString + ")";
+                            queryString = "ownerDvNetworkId:" + col.getOwner().getVdcNetwork().getId() + " AND (" + queryString + ")";
                         }
                     } else {
                         // and if it's a network-scope collection, then we'll just add 
@@ -2154,7 +2154,7 @@ public class Indexer implements java.io.Serializable  {
                     if (isLocalScope) {
                         queryString = "dvOwnerId:" + col.getOwner().getId() + " AND (" + queryString + ")";
                     } else if (isSubnetworkScope)  {
-                        queryString = "dvNetworkId:" + col.getOwner().getVdcNetwork().getId() + " AND (" + queryString + ")";
+                        queryString = "ownerDvNetworkId:" + col.getOwner().getVdcNetwork().getId() + " AND (" + queryString + ")";
                     }
                     
                     // (and if it's a full DVN-scope collection - we leave 
@@ -2250,6 +2250,19 @@ public class Indexer implements java.io.Serializable  {
         Query dvNetworkIdQuery = null;
         try {
             dvNetworkIdQuery = parser.parse("dvNetworkId:" + dvNetworkId.toString());
+        } catch (org.apache.lucene.queryParser.ParseException ex) {
+            Logger.getLogger(AdvSearchPage.class.getName()).log(Level.SEVERE, null, ex);
+            dvNetworkIdQuery = null; 
+        }
+        return dvNetworkIdQuery;
+    }
+    
+    Query constructDvNetworkOwnerIdQuery(Long dvNetworkId) {
+        QueryParser parser = new QueryParser(Version.LUCENE_30, "abstract", new DVNAnalyzer());
+        parser.setDefaultOperator(QueryParser.AND_OPERATOR);
+        Query dvNetworkIdQuery = null;
+        try {
+            dvNetworkIdQuery = parser.parse("ownerDvNetworkId:" + dvNetworkId.toString());
         } catch (org.apache.lucene.queryParser.ParseException ex) {
             Logger.getLogger(AdvSearchPage.class.getName()).log(Level.SEVERE, null, ex);
             dvNetworkIdQuery = null; 

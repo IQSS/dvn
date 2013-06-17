@@ -544,7 +544,7 @@ public class StudyListingPage extends VDCBaseBean implements java.io.Serializabl
                             BooleanQuery dynamicLocal = new BooleanQuery();
                             Long subNetId = getVDCRequestBean().getCurrentVdcNetwork().getId();
                             //Query dvnetIdQuery = indexService.constructNetworkIdQuery(getVDCRequestBean().getCurrentVdcNetwork().getId());
-                            Query dvnetIdQuery = indexService.constructNetworkIdQuery(col.getOwner().getVdcNetwork().getId());
+                            Query dvnetIdQuery = indexService.constructNetworkOwnerIdQuery(col.getOwner().getVdcNetwork().getId());
                             dynamicLocal.add(dynamicQuery, BooleanClause.Occur.MUST);
                             dynamicLocal.add(dvnetIdQuery, BooleanClause.Occur.MUST);
                             finalQuery = dynamicLocal;

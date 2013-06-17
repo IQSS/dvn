@@ -176,6 +176,7 @@ public class IndexServiceBean implements edu.harvard.iq.dvn.core.index.IndexServ
         
         long intervalDuration = 1000 * 60 * intervalInMinutes; 
         timerService.createTimer(initialRun, intervalDuration, COLLECTION_INDEX_TIMER);
+        logger.log(Level.INFO, "Collection index timer set for " + initialRun);
 
     }
     
@@ -350,7 +351,7 @@ public class IndexServiceBean implements edu.harvard.iq.dvn.core.index.IndexServ
         int count = 0;
         
         if (studyIds != null) {
-            logger.info("Re-indexing "+(studyIds.size())+" studies.");
+            logger.info("IndexAll: Re-indexing "+(studyIds.size())+" studies.");
 
             for (Iterator it = studyIds.iterator(); it.hasNext();) {
                 studyId = (Long) it.next();
@@ -370,7 +371,7 @@ public class IndexServiceBean implements edu.harvard.iq.dvn.core.index.IndexServ
                     }
                 
                     if ((count % 100) == 0) {
-                        logger.info("Processed "+count+" studies; last processed id: "+studyId.toString());
+                        logger.fine("Processed "+count+" studies; last processed id: "+studyId.toString());
                     }
                 }
 
@@ -380,7 +381,7 @@ public class IndexServiceBean implements edu.harvard.iq.dvn.core.index.IndexServ
             }
             
         }
-        logger.info("Finished index-all.");
+        logger.info("IndexAll: Finished.");
         handleIOProblems(ioProblem,ioProblemCount);
     }
     
@@ -484,7 +485,7 @@ public class IndexServiceBean implements edu.harvard.iq.dvn.core.index.IndexServ
             }
             
             List<Long> vdcIdList = vdcService.findAllIds();
-            logger.info("Found "+vdcIdList.size()+" dataverses."); 
+            logger.fine("Found "+vdcIdList.size()+" dataverses."); 
             
             Long maxStudyId = studyService.getMaxStudyTableId(); 
             
@@ -505,7 +506,7 @@ public class IndexServiceBean implements edu.harvard.iq.dvn.core.index.IndexServ
                         
             if (subNetworks == null || (subNetworks.size() < 1)) {
                 // No subnetworks in this DV Network; nothing to do. 
-                logger.info("There's only one network in the DVN; nothing to do. Exiting");
+                logger.fine("There's only one network in the DVN; nothing to do. Exiting");
                 return; 
             }
             
@@ -545,7 +546,7 @@ public class IndexServiceBean implements edu.harvard.iq.dvn.core.index.IndexServ
                         linkedStudyIds = indexer.findStudiesInCollections(vdc);
 
                         if (linkedStudyIds != null) {
-                            logger.info("Found "+linkedStudyIds.size()+" linked studies in VDC "+vdc.getId()+", subnetwork "+vdcNetworkId.toString());
+                            logger.fine("Found "+linkedStudyIds.size()+" linked studies in VDC "+vdc.getId()+", subnetwork "+vdcNetworkId.toString());
 
                             for (Long studyId : linkedStudyIds) {
                                 if (studyId.longValue() <= maxStudyId.longValue()) {
@@ -563,7 +564,7 @@ public class IndexServiceBean implements edu.harvard.iq.dvn.core.index.IndexServ
                                         if ((studyNetworkId != null) && 
                                                 (vdcNetworkId.compareTo(studyNetworkId) != 0)) {
                                             // this study is cross-linked from another VDC network!
-                                            logger.info("Study "+linkedStudy.getId()+" from subnetwork "+studyNetworkId+" is linked to this VDC ("+vdc.getId()+").");
+                                            logger.fine("Study "+linkedStudy.getId()+" from subnetwork "+studyNetworkId+" is linked to this VDC ("+vdc.getId()+").");
 
                                             linkedVdcNetworkMap[linkedStudy.getId().intValue()] |= (1 << vdcNetworkId.intValue());
                                         }
@@ -584,7 +585,7 @@ public class IndexServiceBean implements edu.harvard.iq.dvn.core.index.IndexServ
             // Now go through the list of studies and reindex those for which 
             // the cross-linked status has changed:
             
-            logger.info("Checking the cross-linking status and reindexing the studies for which it has changed:");
+            logger.fine("Checking the cross-linking status and reindexing the studies for which it has changed:");
             
             List<Long> linkedToNetworkIds = null;
             boolean reindexNecessary = false; 
@@ -612,7 +613,7 @@ public class IndexServiceBean implements edu.harvard.iq.dvn.core.index.IndexServ
             
             for (int i = 0; i < maxStudyId.intValue() + 1; i++) {
                 if (linkedVdcNetworkMap[i] != 0) {
-                    logger.info("study "+i+": cross-linked outside of its network; (still need to check if we need to reindex it)");
+                    logger.fine("study "+i+": cross-linked outside of its network; (still need to check if we need to reindex it)");
                     try {
                         linkedStudy = studyService.getStudy(new Long(i));
                     } catch (Exception ex) {
@@ -631,7 +632,7 @@ public class IndexServiceBean implements edu.harvard.iq.dvn.core.index.IndexServ
                         if (linkedVdcNetworkMap[i] == -1) {
                             // If it's an "unlinked" study,
                             // remove the existing links in the database: 
-                            logger.info("study "+i+" no longer cross-linked to any subnetworks.");
+                            logger.fine("study "+i+" no longer cross-linked to any subnetworks.");
                             //linkedStudy.setLinkedToNetworks(null);
                             linkedStudy = studyService.setLinkedToNetworks(linkedStudy.getId(), null);
                            
@@ -647,7 +648,7 @@ public class IndexServiceBean implements edu.harvard.iq.dvn.core.index.IndexServ
                             if (linkedNetworkBitString != linkedVdcNetworkMap[i]) {
                                 // This means the cross-linking status of the study has changed!
 
-                                logger.info("study "+i+": cross-linked status has changed; updating");
+                                logger.fine("study "+i+": cross-linked status has changed; updating");
                                 
                                 // Update it in the database: 
                                 //linkedStudy.setLinkedToNetworks(newLinkedToNetworks(subNetworks, linkedVdcNetworkMap[i]));
@@ -682,7 +683,7 @@ public class IndexServiceBean implements edu.harvard.iq.dvn.core.index.IndexServ
                                     indexSuccess = false; 
                                 }
                             } else {
-                                logger.info("Could not delete study "+linkedStudy.getId()+" from index; skipping reindexing.");
+                                logger.fine("Could not delete study "+linkedStudy.getId()+" from index; skipping reindexing.");
                             }
                             
                             if (!indexSuccess) {
@@ -713,7 +714,7 @@ public class IndexServiceBean implements edu.harvard.iq.dvn.core.index.IndexServ
         
         handleIOProblems(ioProblem, ioProblemCount);
     }
-
+    
     private ArrayList<VDCNetwork> getSubNetworksAsArray () {
         
         List<VDCNetwork> subNetworks = vdcNetworkService.getVDCNetworksOrderedById(); 
@@ -726,7 +727,7 @@ public class IndexServiceBean implements edu.harvard.iq.dvn.core.index.IndexServ
                 if (subNetworks.get(i) != null) {
                     int insertIndex = subNetworks.get(i).getId().intValue();
                     for (int j = subNetworksArray.size(); j < insertIndex; j++) {
-                        logger.info("padding arraylist with null, "+j);
+                        logger.fine("padding arraylist with null, "+j);
                         // padding the ArrayList with nulls:
                         subNetworksArray.add(null);
                     }
@@ -752,7 +753,7 @@ public class IndexServiceBean implements edu.harvard.iq.dvn.core.index.IndexServ
                     if (subNetworks.get(i) != null) {
                         // it should never be null at this point - but won't 
                         // hurt to check anyway. 
-                        logger.info("New linked to network: "+i);
+                        logger.fine("New linked to network: "+i);
                         newList.add(subNetworks.get(i));
                     }
                 }
@@ -1014,9 +1015,9 @@ public class IndexServiceBean implements edu.harvard.iq.dvn.core.index.IndexServ
     private HashSet<Study> getUnindexedStudies() {
         List<Study> studies = (List<Study>) em.createQuery("SELECT s from Study s where s.lastIndexTime < s.lastUpdateTime OR s.lastIndexTime is NULL").getResultList();
         if (studies!=null) {
-            logger.info("getUnindexedStudies(), found "+studies.size()+" studies.");
+            logger.fine("getUnindexedStudies(), found "+studies.size()+" studies.");
         } else {
-            logger.info("getUnindexedStudies(), no studies found.");
+            logger.fine("getUnindexedStudies(), no studies found.");
         }
         return new HashSet(studies);
     }

@@ -275,7 +275,7 @@ public class Indexer implements java.io.Serializable  {
                     // Should I be checking for, and deleting a lock file 
                     // left behind??
                 } catch (Exception ex) {
-                    logger.info("Caught an exception trying to close the index reader.");
+                    logger.fine("Caught an exception trying to close the index reader.");
                     // I'm guessing this is not a super dangerous condition...
                     // IndexReaders does try to put a lock on the 
                     // index files... so in theory it could be dangerous -
@@ -735,14 +735,14 @@ public class Indexer implements java.io.Serializable  {
                         // We only expect 1 document when searching by study id.
                         Document studyDocument = reader.document(matchingDocuments.doc());
 
-                        logger.info("processing matching document number " + c++);
+                        logger.fine("processing matching document number " + c++);
                         if (studyDocument != null) {
-                            logger.info("got a non-zero doc;");
+                            logger.fine("got a non-zero doc;");
 
                             reader.close(); 
                             reader = null;
 
-                            logger.info("deleted the document;");
+                            logger.fine("deleted the document;");
 
                             //updateDocument(studyDocument, studyId);
                             IndexWriter localWriter = new IndexWriter(dir, getAnalyzer(), isIndexEmpty(), IndexWriter.MaxFieldLength.UNLIMITED);
@@ -750,7 +750,7 @@ public class Indexer implements java.io.Serializable  {
                             
                             localWriter.commit();
                             localWriter.close();
-                            logger.info("wrote the updated version of the document;");
+                            logger.fine("wrote the updated version of the document;");
 
                         }
                     }
@@ -781,7 +781,7 @@ public class Indexer implements java.io.Serializable  {
         List <Query> collectionQueries = getCollectionQueriesForSubnetworkIndexing(vdc);
         
         if (collectionQueries != null && collectionQueries.size() > 0) {
-            logger.info("running combined collections query for the vdc id "+vdc.getId()+", "+vdc.getName()+"; "+collectionQueries.size()+" queries total.");
+            logger.fine("running combined collections query for the vdc id "+vdc.getId()+", "+vdc.getName()+"; "+collectionQueries.size()+" queries total.");
             
             BooleanQuery queryAcrossAllCollections = new BooleanQuery();
             for (Query collectionQuery : collectionQueries) {
@@ -877,7 +877,7 @@ public class Indexer implements java.io.Serializable  {
         
         for (Iterator it = searchTerms.iterator(); it.hasNext();){
             SearchTerm elem = (SearchTerm) it.next();
-            logger.info("INDEXER: processing term; name="+elem.getFieldName()+"; value="+elem.getValue());
+            logger.fine("INDEXER: processing term; name="+elem.getFieldName()+"; value="+elem.getValue());
             if (elem.getFieldName().equals("variable")){
 //                SearchTerm st = dvnTokenizeSearchTerm(elem);
 //                variableSearchTerms.add(st);
@@ -922,11 +922,11 @@ public class Indexer implements java.io.Serializable  {
         
         if ( containsStudyLevelAndTerms ) {
             BooleanQuery searchTermsQuery = andSearchTermClause(studyLevelSearchTerms);
-            logger.info("INDEXER: search terms query (native): "+searchTermsQuery.toString());
+            logger.fine("INDEXER: search terms query (native): "+searchTermsQuery.toString());
             searchParts.add(searchTermsQuery);
             BooleanQuery searchQuery = andQueryClause(searchParts);
             logger.fine("Start hits: " + DateTools.dateToString(new Date(), Resolution.MILLISECOND));
-            logger.info("INDEXER: search query (native): "+searchQuery.toString());
+            logger.fine("INDEXER: search query (native): "+searchQuery.toString());
             nvResults = getHitIds(searchQuery);
             logger.fine("Done hits: " + DateTools.dateToString(new Date(), Resolution.MILLISECOND));
             logger.fine("Start filter: " + DateTools.dateToString(new Date(), Resolution.MILLISECOND));
@@ -1285,7 +1285,7 @@ public class Indexer implements java.io.Serializable  {
             // Determine if this is a file-level metadata search term:
             if (isFileMetadataField(elem.getFieldName())) {
                 indexQuery = buildFileMetadataQuery(elem);
-                logger.info("INDEXER: filemetadata element query (native): "+indexQuery.toString());
+                logger.fine("INDEXER: filemetadata element query (native): "+indexQuery.toString());
                 if (elem.getOperator().equals("=")) {
                     // We only support "=" on file metadata, for now, anyway. 
                     // -- L.A. 
@@ -1296,7 +1296,7 @@ public class Indexer implements java.io.Serializable  {
             }
         }
         
-        logger.info("INDEXER: filemetadata combined query (native): "+searchQuery.toString());
+        logger.fine("INDEXER: filemetadata combined query (native): "+searchQuery.toString());
 
         List<Long> finalResults = null;
         // TODO: 
@@ -1338,7 +1338,7 @@ public class Indexer implements java.io.Serializable  {
             Context ctx = new InitialContext();
             studyFieldService = (StudyFieldServiceLocal) ctx.lookup("java:comp/env/studyField");
         } catch (Exception ex) {
-            logger.info("Caught an exception looking up StudyField Service; " + ex.getMessage());
+            logger.fine("Caught an exception looking up StudyField Service; " + ex.getMessage());
         }
         
         if (studyFieldService == null) {
@@ -1381,7 +1381,7 @@ public class Indexer implements java.io.Serializable  {
                 studyFieldService = (StudyFieldServiceLocal) ctx.lookup("java:comp/env/studyField");
             }
         } catch (Exception ex) {
-            logger.info("Caught an exception looking up StudyField Service; " + ex.getMessage());
+            logger.fine("Caught an exception looking up StudyField Service; " + ex.getMessage());
         }
         
         if (studyFieldService == null) {
@@ -1513,15 +1513,15 @@ public class Indexer implements java.io.Serializable  {
         initIndexSearcher();
         FacetsCollector facetsCollector = new FacetsCollector(facetSearchParams, r, taxo);
 
-        logger.info("\n--BEGIN query dump (from searchNew)--\n" + q2 + "\n--END query dump (from searchNew)--");
+        logger.fine("\n--BEGIN query dump (from searchNew)--\n" + q2 + "\n--END query dump (from searchNew)--");
         Collector collector = MultiCollector.wrap(s, facetsCollector);
         try {
             searcher.search(q2, collector);
         } catch (NullPointerException npe) {
-            logger.info("Query contains null, returning no results: " + q2);
+            logger.fine("Query contains null, returning no results: " + q2);
             return new ResultsWithFacets();
         } catch (Exception e) {
-            logger.info("Query may contain null, returning no results: " + q2);
+            logger.fine("Query may contain null, returning no results: " + q2);
             return new ResultsWithFacets();
         }
         List<FacetResult> facetResults = facetsCollector.getFacetResults();
@@ -2066,9 +2066,9 @@ public class Indexer implements java.io.Serializable  {
     private void assureTaxoDirExists() {
         File taxoDirFile = new File(taxoDirName);
         if (!taxoDirFile.exists()) {
-            logger.info("Taxonomy directory does not exist - creating " + taxoDir);
+            logger.fine("Taxonomy directory does not exist - creating " + taxoDir);
             taxoDirFile.mkdir();
-            logger.info(taxoDir + " created");
+            logger.fine(taxoDir + " created");
         }
     }
 
@@ -2187,7 +2187,7 @@ public class Indexer implements java.io.Serializable  {
                         Context ctx = new InitialContext();
                         vdcService = (VDCServiceLocal) ctx.lookup("java:comp/env/vdcService");
                     } catch (Exception ex) {
-                        logger.info("Caught an exception looking up VDC Service; " + ex.getMessage());
+                        logger.fine("Caught an exception looking up VDC Service; " + ex.getMessage());
                     }
 
                     if (vdcService != null) {

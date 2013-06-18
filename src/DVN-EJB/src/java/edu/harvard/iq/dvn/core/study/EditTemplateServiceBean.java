@@ -129,6 +129,8 @@ public class EditTemplateServiceBean implements edu.harvard.iq.dvn.core.study.Ed
         if (vdc != null) {
             template.setVdc(vdc);
             template.setVdcNetwork(null);
+        } else {
+            template.setVdcNetwork(sourceTemplate.getVdcNetwork());
         }
         
         em.persist(template);
@@ -174,18 +176,13 @@ public class EditTemplateServiceBean implements edu.harvard.iq.dvn.core.study.Ed
     @Remove
     @TransactionAttribute(TransactionAttributeType.REQUIRED)
     public void save() {
-        //Need to save any newly created study fields
-        em.merge(template.getVdcNetwork());
-        //This code needed to prevent creating extra subnets
-        //when changing subnet from root in edit template
-        //???  clean-up?
-        
-        if(template.getId() == null){
-           em.persist(template); 
-        } else {
+        // if template already exists, merge to attach child VDCNetwork object to persistence layer
+        // (without this, a duplicate of the VDCNetwork is created if the VDCNetwork had changed)
+        if(template.getId() != null){
            em.merge(template);
         }
-        //
+        
+        //Need to save any newly created study fields        
         Collection<TemplateField> templateFields = template.getTemplateFields();
         for (TemplateField tf : templateFields ){
             if(tf.getId()== null){

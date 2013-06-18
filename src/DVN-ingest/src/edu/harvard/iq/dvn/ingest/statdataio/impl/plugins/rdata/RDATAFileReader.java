@@ -241,7 +241,7 @@ public class RDATAFileReader extends StatDataFileReader {
      */
     public void create () {
       try {
-        LOG.info("RDATAFileReader: Creating R Workspace");
+        LOG.fine("RDATAFileReader: Creating R Workspace");
         
         REXP result = mRequestBuilder
                 .script(RSCRIPT_CREATE_WORKSPACE)
@@ -252,9 +252,9 @@ public class RDATAFileReader extends StatDataFileReader {
         
         mParent = directoryNames.at("parent").asString();
         
-        LOG.info(String.format("RDATAFileReader: Parent directory of R Workspace is %s", mParent));
+        LOG.fine(String.format("RDATAFileReader: Parent directory of R Workspace is %s", mParent));
         
-        LOG.info("RDATAFileReader: Creating file handle");
+        LOG.fine("RDATAFileReader: Creating file handle");
         
         mDataFile = new File(mParent, "data.Rdata");
       }
@@ -272,7 +272,7 @@ public class RDATAFileReader extends StatDataFileReader {
               .toString();
       
       try {
-        LOG.info("RDATAFileReader: Destroying R Workspace");
+        LOG.fine("RDATAFileReader: Destroying R Workspace");
 
         mRRequest = mRequestBuilder
                 .script(destroyerScript)
@@ -280,11 +280,11 @@ public class RDATAFileReader extends StatDataFileReader {
         
         mRRequest.eval();
         
-        LOG.info("RDATAFileReader: DESTROYED R Workspace");
+        LOG.fine("RDATAFileReader: DESTROYED R Workspace");
       }
       catch (Exception ex) {
         LOG.warning("RDATAFileReader: R Workspace was not destroyed");
-        LOG.info(ex.getMessage());
+        LOG.fine(ex.getMessage());
       }
     }
     /**
@@ -357,10 +357,10 @@ public class RDATAFileReader extends StatDataFileReader {
      * Save the Rdata File Temporarily
      */
     private File saveRdataFile () {
-      LOG.info("RDATAFileReader: Saving Rdata File from Input Stream");
+      LOG.fine("RDATAFileReader: Saving Rdata File from Input Stream");
       
       if (mInStream == null) {
-        LOG.info("RDATAFileReader: No input stream was specified. Not writing file and returning NULL");
+        LOG.fine("RDATAFileReader: No input stream was specified. Not writing file and returning NULL");
         return null;
       }
       
@@ -370,16 +370,16 @@ public class RDATAFileReader extends StatDataFileReader {
       RConnection rServerConnection = null;
       
       try {
-        LOG.info("RDATAFileReader: Opening R connection");
+        LOG.fine("RDATAFileReader: Opening R connection");
         rServerConnection = new RConnection(RSERVE_HOST, RSERVE_PORT);
         
-        LOG.info("RDATAFileReader: Logging into R connection");
+        LOG.fine("RDATAFileReader: Logging into R connection");
         rServerConnection.login(RSERVE_USER, RSERVE_PASSWORD);
         
-        LOG.info("RDATAFileReader: Attempting to create file");
+        LOG.fine("RDATAFileReader: Attempting to create file");
         outStream = rServerConnection.createFile(mDataFile.getAbsolutePath());
         
-        LOG.info(String.format("RDATAFileReader: File created on server at %s", mDataFile.getAbsolutePath()));
+        LOG.fine(String.format("RDATAFileReader: File created on server at %s", mDataFile.getAbsolutePath()));
       }
       catch (IOException ex) {
         LOG.warning("RDATAFileReader: Could not create file on R Server");
@@ -400,7 +400,7 @@ public class RDATAFileReader extends StatDataFileReader {
       }
       catch (IOException ex) {
         LOG.warning("RDATAFileReader: Could not write to file");
-        LOG.info(String.format("Error message: %s", ex.getMessage()));
+        LOG.fine(String.format("Error message: %s", ex.getMessage()));
       }
       catch (NullPointerException ex) {
         LOG.warning("RDATAFileReader: Data file has not been specified");
@@ -408,7 +408,7 @@ public class RDATAFileReader extends StatDataFileReader {
       
       // Closing R server connection
       if (rServerConnection != null) {
-        LOG.info("RDATAFileReader: Closing R server connection");
+        LOG.fine("RDATAFileReader: Closing R server connection");
         rServerConnection.close();
       }
       
@@ -434,7 +434,7 @@ public class RDATAFileReader extends StatDataFileReader {
       // 
       RRequest csvRequest = mRequestBuilder.build();
       
-      LOG.info(String.format("RDATAFileReader: Attempting to write table to `%s`", mCsvDataFile.getAbsolutePath()));
+      LOG.fine(String.format("RDATAFileReader: Attempting to write table to `%s`", mCsvDataFile.getAbsolutePath()));
       csvRequest.script(csvScript).eval();
 
       return mCsvDataFile;
@@ -464,7 +464,7 @@ public class RDATAFileReader extends StatDataFileReader {
     
     
 
-    LOG.info("RDATAFileReader: INSIDE RDATAFileReader");
+    LOG.fine("RDATAFileReader: INSIDE RDATAFileReader");
 
     init();
 
@@ -501,7 +501,7 @@ public class RDATAFileReader extends StatDataFileReader {
   public SDIOData read (BufferedInputStream stream, File dataFile) throws IOException {
     
     // Create Request object
-    LOG.info("RDATAFileReader: Creating RRequest object from RRequestBuilder object");
+    LOG.fine("RDATAFileReader: Creating RRequest object from RRequestBuilder object");
     
     // Create R Workspace
     mRWorkspace.stream(stream);
@@ -556,8 +556,8 @@ public class RDATAFileReader extends StatDataFileReader {
     setFormatData();
     
     //
-    LOG.info("RDATAFileReader: varQnty = " + mVarQuantity);
-    LOG.info("RDATAFileReader: Leaving \"read\" function");
+    LOG.fine("RDATAFileReader: varQnty = " + mVarQuantity);
+    LOG.fine("RDATAFileReader: Leaving \"read\" function");
 
     // Destroy R workspace
     mRWorkspace.destroy();
@@ -576,7 +576,7 @@ public class RDATAFileReader extends StatDataFileReader {
     
     try {
       destination = File.createTempFile("data", ".csv");
-      LOG.info(String.format("RDATAFileReader: Writing local CSV File to `%s`", destination.getAbsolutePath()));
+      LOG.fine(String.format("RDATAFileReader: Writing local CSV File to `%s`", destination.getAbsolutePath()));
       csvDestinationStream = new FileOutputStream(destination);
     }
     catch (IOException ex) {
@@ -594,7 +594,7 @@ public class RDATAFileReader extends StatDataFileReader {
       
       int b;
       
-      LOG.info("RDATAFileReader: Beginning to write to local destination file");
+      LOG.fine("RDATAFileReader: Beginning to write to local destination file");
       
       // Read from stream one character at a time
       while ((b = rServeInputStream.read()) != -1) {
@@ -602,11 +602,11 @@ public class RDATAFileReader extends StatDataFileReader {
         csvDestinationStream.write(b);
       }
       
-      LOG.info(String.format("RDATAFileReader: Finished writing from destination `%s`", target.getAbsolutePath()));
-      LOG.info(String.format("RDATAFileReader: Finished copying to source `%s`", destination.getAbsolutePath()));
+      LOG.fine(String.format("RDATAFileReader: Finished writing from destination `%s`", target.getAbsolutePath()));
+      LOG.fine(String.format("RDATAFileReader: Finished copying to source `%s`", destination.getAbsolutePath()));
       
       
-      LOG.info("RDATAFileReader: Closing CSVFileReader R Connection");
+      LOG.fine("RDATAFileReader: Closing CSVFileReader R Connection");
       rServeConnection.close();
     }
     /*
@@ -626,7 +626,7 @@ public class RDATAFileReader extends StatDataFileReader {
    * @throws IOException if something bad happens?
    */
   private void putFileInformation () {
-    LOG.info("RDATAFileReader: Entering `putFileInformation` function");
+    LOG.fine("RDATAFileReader: Entering `putFileInformation` function");
     
     // Store variable names
     String [] variableNames = { };
@@ -859,7 +859,7 @@ public class RDATAFileReader extends StatDataFileReader {
         
         columnMetaData = new VariableMetaData(0);
         
-        LOG.info("date variable detected. format: "+FORMAT_DATE);
+        LOG.fine("date variable detected. format: "+FORMAT_DATE);
       }
       
       else if (type.equals("POSIXct") || type.equals("POSIXlt") || type.equals("POSIXt")) {
@@ -874,7 +874,7 @@ public class RDATAFileReader extends StatDataFileReader {
         
         columnMetaData = new VariableMetaData(0);
         
-        LOG.info("POSIXt variable detected. format: "+FORMAT_DATETIME);
+        LOG.fine("POSIXt variable detected. format: "+FORMAT_DATETIME);
       }
       
       else if (type.equals("factor")) {
@@ -943,15 +943,15 @@ public class RDATAFileReader extends StatDataFileReader {
     smd.setVariableFormatCategory(mFormatCategoryTable);
     // smd.set
     
-    LOG.info("minimalTypeList =    " + Arrays.deepToString(minimalTypeList.toArray()));
-    LOG.info("normalTypeList =     " + Arrays.deepToString(normalTypeList.toArray()));
-    LOG.info("decimalVariableSet = " + Arrays.deepToString(decimalVariableSet.toArray()));
+    LOG.fine("minimalTypeList =    " + Arrays.deepToString(minimalTypeList.toArray()));
+    LOG.fine("normalTypeList =     " + Arrays.deepToString(normalTypeList.toArray()));
+    LOG.fine("decimalVariableSet = " + Arrays.deepToString(decimalVariableSet.toArray()));
     
-    LOG.info("mPrintFormatList =      " + mPrintFormatList);
-    LOG.info("mPrintFormatNameTable = " + mPrintFormatNameTable);
-    LOG.info("mFormatCategoryTable =  " + mFormatCategoryTable);
+    LOG.fine("mPrintFormatList =      " + mPrintFormatList);
+    LOG.fine("mPrintFormatNameTable = " + mPrintFormatNameTable);
+    LOG.fine("mFormatCategoryTable =  " + mFormatCategoryTable);
     
-    LOG.info("mFormatTable = " + mFormatTable);
+    LOG.fine("mFormatTable = " + mFormatTable);
 
     // Return the variable type list
     return minimalTypeList;
@@ -980,7 +980,7 @@ public class RDATAFileReader extends StatDataFileReader {
       
       Object [] varData = table.getData()[k];
       
-      LOG.info(String.format("RDATAFileReader: Column \"%s\" = %s", name, Arrays.deepToString(varData)));
+      LOG.fine(String.format("RDATAFileReader: Column \"%s\" = %s", name, Arrays.deepToString(varData)));
       
       try {
         switch (varType) {
@@ -1048,7 +1048,7 @@ public class RDATAFileReader extends StatDataFileReader {
 
           // If double
           case 1:
-            LOG.info(k + ": " + name + " is numeric (double)");
+            LOG.fine(k + ": " + name + " is numeric (double)");
             // Convert array of Strings to array of Doubles
             Double[]  doubleEntries = new Double[varData.length];
             
@@ -1078,12 +1078,12 @@ public class RDATAFileReader extends StatDataFileReader {
                           doubleEntries[i] = new Double((String) varData[i]);
                       }
                   } catch (Exception ex) {
-                      LOG.info(k + ": " + name + " dropping value " + (String)varData[i] + " (" + i + "); replacing with null");
+                      LOG.fine(k + ": " + name + " dropping value " + (String)varData[i] + " (" + i + "); replacing with null");
                       doubleEntries[i] = null;
                   }
               }
             
-            LOG.info("sumstat:long case=" + Arrays.deepToString(
+            LOG.fine("sumstat:long case=" + Arrays.deepToString(
                         ArrayUtils.toObject(StatHelper.calculateSummaryStatisticsContDistSample(doubleEntries))));
             
             // Save summary statistics:
@@ -1094,11 +1094,11 @@ public class RDATAFileReader extends StatDataFileReader {
             break;
        
           case -1:
-            LOG.info(k + ": " + name + " is string");
+            LOG.fine(k + ": " + name + " is string");
 
             String[] stringEntries = new String[varData.length];//Arrays.asList(varData).toArray(new String[varData.length]);
             
-            LOG.info("string array passed to calculateUNF: " + Arrays.deepToString(stringEntries));
+            LOG.fine("string array passed to calculateUNF: " + Arrays.deepToString(stringEntries));
             
             //
             if (mFormatTable[k] == FORMAT_DATE || mFormatTable[k] == FORMAT_DATETIME) {
@@ -1119,7 +1119,7 @@ public class RDATAFileReader extends StatDataFileReader {
                 else {
                   entryDateWithFormat = dateFormatter.getDateWithFormat((String)varData[i]);
                   if (entryDateWithFormat == null) {
-                      LOG.info("ATTENTION: the supplied date/time string could not be parsed (" +
+                      LOG.fine("ATTENTION: the supplied date/time string could not be parsed (" +
                               (String)varData[i]); 
                       throw new IOException("Could not parse supplied date/time string: "+(String)varData[i]);
                   }
@@ -1133,8 +1133,8 @@ public class RDATAFileReader extends StatDataFileReader {
               
               // Compute UNF
               try {
-                LOG.info("RDATAFileReader: strdata = " + Arrays.deepToString(stringEntries));
-                LOG.info("RDATAFileReader: dateFormats = " + Arrays.deepToString(dateFormats));
+                LOG.fine("RDATAFileReader: strdata = " + Arrays.deepToString(stringEntries));
+                LOG.fine("RDATAFileReader: dateFormats = " + Arrays.deepToString(dateFormats));
                 
                 unfValue = UNF5Util.calculateUNF(stringEntries, dateFormats);
               }
@@ -1169,16 +1169,16 @@ public class RDATAFileReader extends StatDataFileReader {
                 
         }
         
-        //LOG.info(String.format("RDATAFileReader: Column \"%s\" (UNF) = %s", name, unfValue));
+        //LOG.fine(String.format("RDATAFileReader: Column \"%s\" (UNF) = %s", name, unfValue));
 
         // Store UNF value
         unfValues[k] = unfValue;
       } catch (Exception ex) { 
-          LOG.info("Exception caught while calculating UNF! " + ex.getMessage());
+          LOG.fine("Exception caught while calculating UNF! " + ex.getMessage());
           ex.printStackTrace();
           throw new IOException ("Exception caught while calculating UNF! "+ex.getMessage());
       }
-      LOG.info(String.format("RDATAFileReader: Column \"%s\" (UNF) = %s", name, unfValues[k]));
+      LOG.fine(String.format("RDATAFileReader: Column \"%s\" (UNF) = %s", name, unfValues[k]));
 
     }
     
@@ -1186,7 +1186,7 @@ public class RDATAFileReader extends StatDataFileReader {
       fileUNFvalue = UNF5Util.calculateUNF(unfValues);
     } catch (Exception ex) {
       ex.printStackTrace();
-      LOG.info("Exception caught while calculating the combined UNF for the data set! " + ex.getMessage());
+      LOG.fine("Exception caught while calculating the combined UNF for the data set! " + ex.getMessage());
       throw new IOException ("Exception caught while calculating the combined UNF for the data set! "+ex.getMessage());
     } 
     mCsvDataTable.setUnf(unfValues);
@@ -1200,7 +1200,7 @@ public class RDATAFileReader extends StatDataFileReader {
     
     for (int k = 0; k < b.length; k++) {
       String s = b[k] ? "True" : "False";
-      LOG.info(k + " = " + s);
+      LOG.fine(k + " = " + s);
     }
     
     smd.setVariableUNF(unfValues);
@@ -1231,7 +1231,7 @@ public class RDATAFileReader extends StatDataFileReader {
    */
   private static String readLocalResource (String path) {
     // Debug
-    LOG.info(String.format("RDATAFileReader: readLocalResource: reading local path \"%s\"", path));
+    LOG.fine(String.format("RDATAFileReader: readLocalResource: reading local path \"%s\"", path));
     
     // Get stream
     InputStream resourceStream = RDATAFileReader.class.getResourceAsStream(path);
@@ -1291,15 +1291,15 @@ public class RDATAFileReader extends StatDataFileReader {
         variableLevels = !columnMeta.at("levels").isNull() ? columnMeta.at("levels").asStrings() : new String [0];
         variableFormat = !columnMeta.at("format").isNull() ? columnMeta.at("format").asString() : null;
         
-        LOG.info("variable type: "+variableType);
-        LOG.info("variable type string: "+variableTypeString);
+        LOG.fine("variable type: "+variableType);
+        LOG.fine("variable type string: "+variableTypeString);
         for (int i = 0; i < variableClass.length; i++) {
-            LOG.info("variable class: "+variableClass[i]);
+            LOG.fine("variable class: "+variableClass[i]);
         }
-        LOG.info("variable format: "+variableFormat);
+        LOG.fine("variable format: "+variableFormat);
         
         for (int i = 0; i < variableLevels.length; i++) {
-            LOG.info("variable level: "+variableLevels[i]);
+            LOG.fine("variable level: "+variableLevels[i]);
         }
         
         // Create a variable meta-data object
@@ -1383,7 +1383,7 @@ public class RDATAFileReader extends StatDataFileReader {
         // If something went wrong, then it wasn't meant to be for that column.
         // And you know what? That's okay.
         ex.printStackTrace();
-        LOG.info(String.format("Column %d of Data Set could not create a VariableMetaData object", k));
+        LOG.fine(String.format("Column %d of Data Set could not create a VariableMetaData object", k));
       }
     }
     

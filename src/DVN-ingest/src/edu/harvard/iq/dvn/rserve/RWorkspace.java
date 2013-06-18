@@ -74,7 +74,7 @@ public class RWorkspace {
     */
   public void create () {
     try {
-      LOG.info("RDATAFileReader: Creating R Workspace");
+      LOG.fine("RDATAFileReader: Creating R Workspace");
 
       REXP result = mRequestBuilder
               .script("REPLACE WITH: RSCRIPT_CREATE_WORKSPACE")
@@ -85,9 +85,9 @@ public class RWorkspace {
 
       mParent = directoryNames.at("parent").asString();
 
-      LOG.info(String.format("RDATAFileReader: Parent directory of R Workspace is %s", mParent));
+      LOG.fine(String.format("RDATAFileReader: Parent directory of R Workspace is %s", mParent));
 
-      LOG.info("RDATAFileReader: Creating file handle");
+      LOG.fine("RDATAFileReader: Creating file handle");
 
       mDataFile = new File(mParent, "data.Rdata");
     }
@@ -105,7 +105,7 @@ public class RWorkspace {
             .toString();
 
     try {
-      LOG.info("RDATAFileReader: Destroying R Workspace");
+      LOG.fine("RDATAFileReader: Destroying R Workspace");
 
       mRRequest = mRequestBuilder
               .script(destroyerScript)
@@ -113,11 +113,11 @@ public class RWorkspace {
 
       mRRequest.eval();
 
-      LOG.info("RDATAFileReader: DESTROYED R Workspace");
+      LOG.fine("RDATAFileReader: DESTROYED R Workspace");
     }
     catch (Exception ex) {
       LOG.warning("RDATAFileReader: R Workspace was not destroyed");
-      LOG.info(ex.getMessage());
+      LOG.fine(ex.getMessage());
     }
   }
   /**
@@ -190,10 +190,10 @@ public class RWorkspace {
     * Save the Rdata File Temporarily
     */
   private File saveRdataFile () {
-    LOG.info("RDATAFileReader: Saving Rdata File from Input Stream");
+    LOG.fine("RDATAFileReader: Saving Rdata File from Input Stream");
 
     if (mInStream == null) {
-      LOG.info("RDATAFileReader: No input stream was specified. Not writing file and returning NULL");
+      LOG.fine("RDATAFileReader: No input stream was specified. Not writing file and returning NULL");
       return null;
     }
 
@@ -203,16 +203,16 @@ public class RWorkspace {
     RConnection rServerConnection = null;
 
     try {
-      LOG.info("RDATAFileReader: Opening R connection");
+      LOG.fine("RDATAFileReader: Opening R connection");
       rServerConnection = new RConnection(mHost, mPort);
 
-      LOG.info("RDATAFileReader: Logging into R connection");
+      LOG.fine("RDATAFileReader: Logging into R connection");
       rServerConnection.login(mUser, mPassword);
 
-      LOG.info("RDATAFileReader: Attempting to create file");
+      LOG.fine("RDATAFileReader: Attempting to create file");
       outStream = rServerConnection.createFile(mDataFile.getAbsolutePath());
 
-      LOG.info(String.format("RDATAFileReader: File created on server at %s", mDataFile.getAbsolutePath()));
+      LOG.fine(String.format("RDATAFileReader: File created on server at %s", mDataFile.getAbsolutePath()));
     }
     catch (IOException ex) {
       LOG.warning("RDATAFileReader: Could not create file on R Server");
@@ -233,7 +233,7 @@ public class RWorkspace {
     }
     catch (IOException ex) {
       LOG.warning("RDATAFileReader: Could not write to file");
-      LOG.info(String.format("Error message: %s", ex.getMessage()));
+      LOG.fine(String.format("Error message: %s", ex.getMessage()));
     }
     catch (NullPointerException ex) {
       LOG.warning("RDATAFileReader: Data file has not been specified");
@@ -241,7 +241,7 @@ public class RWorkspace {
 
     // Closing R server connection
     if (rServerConnection != null) {
-      LOG.info("RDATAFileReader: Closing R server connection");
+      LOG.fine("RDATAFileReader: Closing R server connection");
       rServerConnection.close();
     }
 
@@ -267,7 +267,7 @@ public class RWorkspace {
     // 
     RRequest csvRequest = mRequestBuilder.build();
 
-    LOG.info(String.format("RDATAFileReader: Attempting to write table to `%s`", mCsvDataFile.getAbsolutePath()));
+    LOG.fine(String.format("RDATAFileReader: Attempting to write table to `%s`", mCsvDataFile.getAbsolutePath()));
     csvRequest.script(csvScript).eval();
 
     return mCsvDataFile;

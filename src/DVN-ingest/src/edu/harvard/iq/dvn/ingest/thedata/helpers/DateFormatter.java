@@ -150,8 +150,8 @@ public class DateFormatter {
     // Iterate through all available date-time formats
     for (SimpleDateFormat format : mTimeFormats) {
       //try {
-        LOG.info("format[" + k + "] = " + format.toPattern());
-        LOG.info("value[" + k + "] = " + value);
+        LOG.fine("format[" + k + "] = " + format.toPattern());
+        LOG.fine("value[" + k + "] = " + value);
         
         k++;
         
@@ -159,16 +159,16 @@ public class DateFormatter {
         ParsePosition pos = new ParsePosition(0); 
         dateResult = format.parse(value, pos);
         if (dateResult == null) {
-            LOG.info("NOPE, didn't work.");
+            LOG.fine("NOPE, didn't work.");
             continue; 
         }
         if (pos.getIndex() != value.length()) {
-            LOG.info("ATTENTION: did not parse the entire supplied value (likely because of a bad time zone!); exiting");
+            LOG.fine("ATTENTION: did not parse the entire supplied value (likely because of a bad time zone!); exiting");
               return null; 
         }
         // Format in 
         stringResult = utcSimpleTimeFormatter.format(dateResult);
-        LOG.info("RESULT (time) = " + stringResult);
+        LOG.fine("RESULT (time) = " + stringResult);
         // If parse and format were successful, return the formatted result
         //return stringResult;
         return new DateWithFormatter(dateResult, format);
@@ -188,7 +188,7 @@ public class DateFormatter {
         // String result
         stringResult = utcSimpleDateFormatter.format(dateResult);
         
-        LOG.info("RESULT (date) = " + stringResult);
+        LOG.fine("RESULT (date) = " + stringResult);
         // If parse and format were successful, return the formatted result
         return new DateWithFormatter(dateResult, format);
       }

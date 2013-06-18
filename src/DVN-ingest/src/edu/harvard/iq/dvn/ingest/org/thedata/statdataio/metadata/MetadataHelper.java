@@ -57,8 +57,8 @@ public class MetadataHelper {
             Integer nullValueCount
             ) {
       
-      dbgLog.info("MetadataHelper: Inside getMergedResult");
-      dbgLog.info("valueLabeli = " + valueLabeli);
+      dbgLog.fine("MetadataHelper: Inside getMergedResult");
+      dbgLog.fine("valueLabeli = " + valueLabeli);
       
         // protection block
         if (missingValuei == null){
@@ -103,7 +103,7 @@ public class MetadataHelper {
         List<CategoricalStatistic> merged = new ArrayList<CategoricalStatistic>();
         Set<String> included = new TreeSet<String>();
 
-        dbgLog.info("key values = " + valueLabeliKeys);
+        dbgLog.fine("key values = " + valueLabeliKeys);
 
         switch (caseTypeNumber){
             case 1:

@@ -75,7 +75,7 @@ public class RRequest {
    * Open the R Connection
    */
   private void open () {
-    LOG.info(String.format("RRequest: Attempting connection to RSERVE %s on port %d", mHost, mPort));
+    LOG.fine(String.format("RRequest: Attempting connection to RSERVE %s on port %d", mHost, mPort));
 
     try {
       // Attempt connection
@@ -85,10 +85,10 @@ public class RRequest {
       mRC.login(mUser, mPassword);
       
       // SERVER VERSION
-      LOG.info("SERVER VERSION = " + mRC.getServerVersion());
+      LOG.fine("SERVER VERSION = " + mRC.getServerVersion());
       
       // Output everything is cool message
-      LOG.info(String.format("RRequest: Successful Connection to RSERVE on %s %d", mHost, mPort));
+      LOG.fine(String.format("RRequest: Successful Connection to RSERVE on %s %d", mHost, mPort));
     }
     catch (RserveException exc) {
       mRC = null;
@@ -96,11 +96,11 @@ public class RRequest {
       
       // If bad hostname *OR* bad port
       if (code == -1)
-        LOG.info("RRequest: Connection refused because of bad HOSTNAME or PORT");
+        LOG.fine("RRequest: Connection refused because of bad HOSTNAME or PORT");
       
       // If bad username *OR* bad password
       if (code == 65)
-        LOG.info("RRequest: Connection refused because of bad USERNAME or PASSWORD");
+        LOG.fine("RRequest: Connection refused because of bad USERNAME or PASSWORD");
    
       // Output warning message
       LOG.warning(String.format("RRequest: Failed Connection to RSERVE on %s %d", mHost, mPort));

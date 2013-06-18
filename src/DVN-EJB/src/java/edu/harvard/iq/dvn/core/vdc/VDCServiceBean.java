@@ -819,38 +819,31 @@ public class VDCServiceBean implements VDCServiceLocal {
 
     // metho to get an ordered list of vdcIds
     public List<Long> getOrderedVDCIds(String orderBy) {
-        System.out.print("String orderBy " );
         return getOrderedVDCIds(null, null, orderBy);
     }
 
     public List<Long> getOrderedVDCIds(String orderBy, boolean hideRestrictedVDCs) {
-        System.out.print("String orderBy, boolean hideRestrictedVDC " );
         return getOrderedVDCIds(null, null, orderBy, hideRestrictedVDCs, null, null);
     }
 
     public List<Long> getOrderedVDCIds(String letter, String orderBy) {
-        System.out.print("String letter, String orderBy " );
         return getOrderedVDCIds(null, letter, orderBy);
     }
 
     public List<Long> getOrderedVDCIds(Long classificationId, String orderBy) {
-        System.out.print("Long classificationId, String orderBy " );
         return getOrderedVDCIds(classificationId, null, orderBy);
     }
 
     public List<Long> getOrderedVDCIds(Long classificationId, String letter, String orderBy) {
-         System.out.print("Long classificationId, String letter, String orderBy " );
         return getOrderedVDCIds(classificationId, letter, orderBy, true, null, null);
     }
     
         @Override
     public List<Long> getOrderedVDCIds(Long classificationId, String letter, String orderBy, boolean hideRestrictedVDCs) {
-        System.out.print("original call " );
         return getOrderedVDCIds(classificationId, letter, orderBy, hideRestrictedVDCs, null, null);
     }
 
     public List<Long> getOrderedVDCIds(Long classificationId, String letter, String orderBy, boolean hideRestrictedVDCs, String filterString) {
-        System.out.print("original call " );
         return getOrderedVDCIds(classificationId, letter, orderBy, hideRestrictedVDCs, filterString, null);
     }
 
@@ -942,10 +935,9 @@ public class VDCServiceBean implements VDCServiceLocal {
         if (subNetworkId != null) {
             whereClause += "and v.vdcnetwork_id = " + subNetworkId + " ";
         }
-        System.out.print("whereClause " + whereClause);
         String queryString = selectClause + fromClause + whereClause + orderingClause;
 
-        logger.info ("query: "+queryString);
+        //logger.info ("query: "+queryString);
                 
         // we are now ready to create the query
         Query query = em.createNativeQuery(queryString);

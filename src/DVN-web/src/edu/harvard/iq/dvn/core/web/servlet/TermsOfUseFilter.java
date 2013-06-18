@@ -159,7 +159,7 @@ public class TermsOfUseFilter implements Filter {
             FilterChain chain)
             throws IOException, ServletException {
 
-        log("TermsOfUseFilter:doFilter()");
+//        log("TermsOfUseFilter:doFilter()");
 
         HttpServletRequest req = (HttpServletRequest) request;
         HttpServletResponse res = (HttpServletResponse) response;

@@ -78,8 +78,7 @@
                 <div jsfc="ice:panelGroup" rendered="#{EditSitePage.dataverseType == 'Scholar'}">
                   <ice:inputText id="firstName"
                                  binding="#{EditSitePage.dataverseFirstName}"
-                                 value="#{EditSitePage.firstName}"
-                                 validator="#{EditSitePage.validateIsEmpty}"/>
+                                 value="#{EditSitePage.firstName}"/>
                   <ice:message for="firstName" showSummary="true" showDetail="false" errorClass="errorMessage" styleClass="errorMessage"/>
                 </div>
                 <!-- last name -->
@@ -92,8 +91,7 @@
                 <div jsfc="ice:panelGroup" rendered="#{EditSitePage.dataverseType == 'Scholar'}">
                   <ice:inputText id="lastName"
                                  binding="#{EditSitePage.dataverseLastName}"
-                                 value="#{EditSitePage.lastName}"
-                                 validator="#{EditSitePage.validateIsEmpty}"/>
+                                 value="#{EditSitePage.lastName}"/>
                   <ice:message for="lastName" showSummary="true" showDetail="false" errorClass="errorMessage" styleClass="errorMessage"/>
                 </div>
                 <!-- dataverse name -->
@@ -107,7 +105,6 @@
                   <ice:inputText binding="#{EditSitePage.dataverseName}"
                                  id="dataverseName"
                                  size="60"
-                                 validator="#{EditSitePage.validateName}"
                                  value="#{VDCRequest.currentVDC.name}"/>
                   <br/>
                   <ice:outputText styleClass="vdcHelpText" value="Name used to refer to this dataverse in network homepage and other pages."/>
@@ -124,7 +121,6 @@
                 <div jsfc="ice:panelGroup">
                   <ice:inputText binding="#{EditSitePage.dataverseAlias}"
                                  id="dataverseAlias"
-                                 validator="#{EditSitePage.validateAlias}"
                                  value="#{VDCRequest.currentVDC.alias}"/>
                   <br/>
                   <ice:outputText styleClass="vdcHelpText" value="Short name used to build the URL for this dataverse, e.g., http://.../dv/'alias'. It is case sensitive."/>
@@ -140,7 +136,6 @@
                 <div jsfc="ice:panelGroup">
                   <ice:inputText id="affiliation"
                                  binding="#{EditSitePage.affiliation}"                                
-                                 validator="#{EditSitePage.validateIsEmptyRequiredAffiliation}"
                                  value="#{VDCRequest.currentVDC.affiliation}"/>
                    <ice:message for="affiliation" showSummary="true" showDetail="false" errorClass="errorMessage" styleClass="errorMessage"/>
                 </div>
@@ -178,9 +173,7 @@
                     <ice:inputTextarea cols="100" rows="5"
                                        id="localAnnouncements" value="#{EditSitePage.localAnnouncements}"
                                        binding="#{EditSitePage.localAnnouncementsInputText}"
-                                       styleClass="formHtmlEnabled">
-                      <f:validator validatorId="XhtmlValidator"/>
-                    </ice:inputTextarea>
+                                       styleClass="formHtmlEnabled"/>
                     <br/>
                     <ice:outputText styleClass="vdcHelpText" value="#{bundlePageInfo.editDvDescriptionHelp}" escape="false"/>
                 </div>
@@ -197,9 +190,7 @@
                 <div jsfc="ice:panelGroup">
                   <ice:inputTextarea binding="#{EditSitePage.shortDescription}"
                                      id="dataverseShortDescription"                                     
-                                     validator="#{EditSitePage.validateShortDescription}"
-                                     value="#{VDCRequest.currentVDC.dvnDescription}"
-                                     />
+                                     value="#{VDCRequest.currentVDC.dvnDescription}"/>
                   <br/>
                   <ice:outputText styleClass="vdcHelpText" value="Short description to appear on the network homepage with your dataverse listing."/>
                   <ice:message for="dataverseShortDescription" showSummary="true" showDetail="false" styleClass="errorMessage"/>
@@ -212,14 +203,14 @@
                       <ice:outputText id="selectedGroupText" value="Classification"/>
                       <ice:graphicImage value="#{bundle.iconRequired}" rendered="#{VDCRequest.vdcNetwork.requireDVclassification}" />
                     </ice:outputLabel>
-                      <ice:message for="classificationCheckBox" id ="boxErrorMsg2"  styleClass="errorMessage"   />
                   </div>
                   <div jsfc="ice:panelGroup" rendered="#{empty EditSitePage.classificationList.classificationUIs}">
-                      <ice:outputText styleClass="vdcHelpText" value="There are no classifications set up for this dataverse network."/>
+                      <ice:outputText styleClass="vdcHelpText" value="There are no classifications set up for this dataverse network."/>                    
                   </div>
                   <div jsfc="ice:panelGroup" rendered="#{!empty EditSitePage.classificationList.classificationUIs}">
                     <ice:outputText styleClass="vdcHelpText" for="selectedGroup" value="#{bundle.groupSelect}"/>
-                    <ice:message for="classificationCheckBox" id ="boxErrorMsg3"  styleClass="errorMessage"   />
+                    <ice:inputHidden id="classificationHidden" binding="#{EditSitePage.classificationHidden}"  />                      
+                    <ice:message for="classificationHidden" id ="boxErrorMsg3"  styleClass="errorMessage"   />
                     <ice:dataTable id="dataverseList" styleClass="dvnCreateDvClassificationTable" cellspacing="0" cellpadding="0" columns="2" width="100%"
                                    headerClass="groupRow" rowClasses="evenRow,oddRow" columnWidths="2%,98%"
                                    scrollable="true"
@@ -229,7 +220,6 @@
                         <ice:selectBooleanCheckbox id="classificationCheckBox" styleClass="classificationCheckBox" partialSubmit="true"
                                                    value="#{classUI.selected}" rendered="#{classUI.level >1}"/>
                       </ice:column>
-                      <ice:message for="editsiteform" id ="boxErrorMsg4"  styleClass="errorMessage"   />
                       <!-- classification name -->
                       <ice:column styleClass="dvnCreateDvClassificationNameColumn" rendered="#{classUI.level == 1}">
                         <ice:outputText value="#{classUI.vdcGroup.name}"/>
@@ -238,7 +228,6 @@
                         <ice:outputText styleClass="dvnCreateDvClassificationTableChild#{classUI.level}" value="#{classUI.vdcGroup.name}"/>
                       </ice:column>
                     </ice:dataTable>
-                     <ice:message for="classificationCheckBox" id ="boxErrorMsg5"  styleClass="errorMessage"   />
                   </div>
                      
               </ice:panelGrid>

@@ -1757,8 +1757,7 @@ public class OptionsPage extends VDCBaseBean  implements java.io.Serializable {
     public String getEditSystemEmail() {return this.editSystemEmail;}   
     public void setEditSystemEmail(String editSystemEmail) {this.editSystemEmail = editSystemEmail;}
     
-    // Edit Study Comments
-    
+    // Edit Study Comments    
     protected boolean allowStudyComments = true;
     protected HtmlSelectBooleanCheckbox allowStudyCommentsCheckbox = new HtmlSelectBooleanCheckbox();    
     public HtmlSelectBooleanCheckbox getAllowStudyCommentsCheckbox() {return allowStudyCommentsCheckbox;}
@@ -1767,150 +1766,106 @@ public class OptionsPage extends VDCBaseBean  implements java.io.Serializable {
     public void setAllowStudyComments(boolean allowStudyComments) {this.allowStudyComments = allowStudyComments;}
     
     //Edit Site Page
-    private StatusMessage   msg;
-
-    ClassificationList classificationList =  new ClassificationList();
-    public ClassificationList getClassificationList() {return classificationList;}
-    public void setClassificationList(ClassificationList classificationList) {this.classificationList = classificationList;}     
+    private StatusMessage   msg; 
     public StatusMessage getMsg(){return msg;}
- //   public String getDataverseType() {return dataverseType;}
-    
-    public void validateIsEmpty(FacesContext context, UIComponent toValidate, Object value) {
-        String newValue = (String) value;
-        if (newValue == null || newValue.trim().length() == 0) {
-            FacesMessage message = new FacesMessage("The field must have a value.");
-            context.addMessage(toValidate.getClientId(context), message);
-            ((UIInput) toValidate).setValid(false);
-        }
-    }
-
-    public void validateShortDescription(FacesContext context, UIComponent toValidate, Object value) {
-        String newValue = (String) value;
-        if (newValue != null && newValue.trim().length() > 0) {
-            if (newValue.length() > 255) {
-                FacesMessage message = new FacesMessage("The field cannot be more than 255 characters in length.");
-                context.addMessage(toValidate.getClientId(context), message);
-            }
-        }
-        if ((newValue == null || newValue.trim().length() == 0) && getVDCRequestBean().getVdcNetwork().isRequireDVdescription()) {
-            FacesMessage message = new FacesMessage("The field must have a value.");
-            context.addMessage(toValidate.getClientId(context), message);
-            context.renderResponse();
-        } 
-    }
-    
-    public boolean validateShortDescriptionForSave() {
-        boolean retVal = true;
-        String newValue = (String) editSitePage.getShortDescription().getValue();
-        if (newValue != null && newValue.trim().length() > 0) {
-            if (newValue.length() > 255) {
-                ((UIInput) editSitePage.getShortDescription()).setValid(false);
-                retVal = false;
-                FacesMessage message = new FacesMessage("The field cannot be more than 255 characters in length.");
-                FacesContext.getCurrentInstance().addMessage(editSitePage.getShortDescription().getClientId(FacesContext.getCurrentInstance()), message);
-            }
-        }
-        if ((newValue == null || newValue.trim().length() == 0) && getVDCRequestBean().getVdcNetwork().isRequireDVdescription()) {
-            FacesMessage message = new FacesMessage("The field must have a value.");
-            retVal = false;
-            ((UIInput) editSitePage.getShortDescription()).setValid(false);
-            FacesContext.getCurrentInstance().addMessage(editSitePage.getShortDescription().getClientId(FacesContext.getCurrentInstance()), message);
-            FacesContext.getCurrentInstance().renderResponse();
-        }
-        return retVal;
-    }
-
-    public void validateIsEmptyRequiredAffiliation(FacesContext context, UIComponent toValidate, Object value) {
-        String newValue = (String) value;
-        if ((newValue == null || newValue.trim().length() == 0) && getVDCRequestBean().getVdcNetwork().isRequireDVaffiliation()) {
-            FacesMessage message = new FacesMessage("The field must have a value.");
-            generalDVSettingsValid = false;
-            context.addMessage(toValidate.getClientId(context), message);
-            ((UIInput) toValidate).setValid(false);
-            context.renderResponse();
-        }
-    }
-    
-    public void validateName(FacesContext context, UIComponent toValidate, Object value) {
-        String name = (String) value;
-        if (name != null && name.trim().length() == 0) {
-            generalDVSettingsValid = false;
-            FacesMessage message = new FacesMessage("The dataverse name field must have a value.");
-            context.addMessage(toValidate.getClientId(context), message);
-            ((UIInput)toValidate).setValid(false);
-        }
-        VDC thisVDC = getVDCRequestBean().getCurrentVDC();
-        if (!name.equals(thisVDC.getName())){
-            boolean nameFound = false;
-            VDC vdc = vdcService.findByName(name);
-            if (vdc != null) {
-                nameFound=true;
-            }            
-            if (nameFound && (!vdc.getId().equals(thisVDC.getId()))) {
-                ((UIInput)toValidate).setValid(false);  
-                generalDVSettingsValid = false;
-                FacesMessage message = new FacesMessage("This name is already taken.");
-                context.addMessage(toValidate.getClientId(context), message);
-            }
-        }
-        System.out.print("end of validate...");
-    }
-
-    public void validateAlias(FacesContext context, UIComponent toValidate, Object value) {
-        CharacterValidator charactervalidator = new CharacterValidator();
-        charactervalidator.validate(context, toValidate, value);
-        String alias = (String) value;
-        StringTokenizer strTok = new StringTokenizer(alias);
-        if (alias.isEmpty()){
-            generalDVSettingsValid = false;
-            FacesMessage message = new FacesMessage("This field must have a value.");
-            context.addMessage(toValidate.getClientId(context), message);
-        }
-        VDC thisVDC = getVDCRequestBean().getCurrentVDC();
-        if (!alias.equals(thisVDC.getAlias())) {
-            boolean aliasFound = false;
-            VDC vdc = vdcService.findByAlias(alias);
-            if (vdc != null) {
-                aliasFound = true;
-            }
-
-            if (aliasFound && (!vdc.getId().equals(thisVDC.getId()))) {
-                ((UIInput) toValidate).setValid(false);
-                generalDVSettingsValid = false;
-                FacesMessage message = new FacesMessage("This alias is already taken.");
-                context.addMessage(toValidate.getClientId(context), message);
-            }
-        }
-    }
-    private Boolean generalDVSettingsValid = true;
+   
     
     public String saveGeneralSettings_action() {
+        // Step 1: Validate all the page fields - call each validiate method separately, so that all error messages display!
+        boolean isValid = editSitePage.isValidName();
+        isValid = editSitePage.isValidAlias() && isValid;
+        isValid = editSitePage.isValidAffiliation() && isValid;
+        isValid = editSitePage.isValidShortDescription() && isValid;      
         
-        generalDVSettingsValid = true;
-        editSitePage.validateAlias(FacesContext.getCurrentInstance(), editSitePage.getDataverseAlias(), editSitePage.getDataverseAlias().getValue());
-        editSitePage.validateName(FacesContext.getCurrentInstance(),editSitePage.getDataverseName(), editSitePage.getDataverseName().getValue());
-        validateIsEmptyRequiredAffiliation(FacesContext.getCurrentInstance(), editSitePage.getAffiliation(),  editSitePage.getAffiliation().getValue());
         if (editSitePage.getDataverseType().equals("Scholar")) {
-            validateIsEmpty(FacesContext.getCurrentInstance(), editSitePage.getDataverseFirstName(), editSitePage.getDataverseFirstName().getValue());
-            validateIsEmpty(FacesContext.getCurrentInstance(), editSitePage.getDataverseLastName(), editSitePage.getDataverseLastName().getValue());
+            isValid = editSitePage.isValidScholarName() && isValid;
         }
-        if (!generalDVSettingsValid) {
-            getVDCRenderBean().getFlash().put("warningMessage", "Could not update general settings.");
-            success = false;
+        
+        isValid = editSitePage.isValidDescription() && isValid;
+        isValid = editSitePage.isValidClassificationCheckBoxes() && isValid;
+        
+       if (!isValid) {
+            getVDCRenderBean().getFlash().put("warningMessage", "Could not update general settings. See below for details.");
             return null;
+        }      
+       
+        
+        // Step 2: Set values and save to db
+        vdc.setName((String) editSitePage.getDataverseName().getValue());
+        vdc.setAlias((String) editSitePage.getDataverseAlias().getValue());
+        vdc.setAffiliation((String) editSitePage.getAffiliation().getValue());
+        vdc.setDvnDescription((String) editSitePage.getShortDescription().getValue());
+        
+        String dataverseType = editSitePage.getDataverseType();
+        vdc.setDtype(dataverseType);        
+        if (dataverseType.equals("Scholar")) {
+            vdc.setFirstName(editSitePage.getFirstName());
+            vdc.setLastName(editSitePage.getLastName());
+        } else {
+            vdc.setFirstName(null);
+            vdc.setLastName(null);
         }
-        NetworkStatsBean statsBean = (NetworkStatsBean) FacesContext.getCurrentInstance().getExternalContext().getRequestMap().get("NetworkStatsBean");
+        
+        vdc.setDisplayAnnouncements(editSitePage.isChkLocalAnnouncements());
+        vdc.setAnnouncements(editSitePage.getLocalAnnouncements());
+ 
+       // classifications
+        vdc.getVdcGroups().clear();
+        for (ClassificationUI classUI: editSitePage.getClassificationList().getClassificationUIs()) {
+            if (classUI.isSelected()) {
+                vdc.getVdcGroups().add(classUI.getVdcGroup());
+            }
+        }        
+        
+        // TODO: cleanup - these are working because the xhtml values are bound to the options page
+        vdc.setContactEmail(this.getContactUsEmail());
+ 
+        // TODO: cleanup - these are working because the xhtml values are bound to the options page        
+        allowStudyComments = (Boolean) allowStudyCommentsCheckbox.getValue();
+        vdc.setAllowStudyComments(allowStudyComments);        
+        
+       
+        if (editSitePage.getSelectSubNetworkId() > 0) {
+            VDCNetwork vdcNetwork = vdcNetworkService.findById(editSitePage.getSelectSubNetworkId());
+            vdc.setVdcNetwork(vdcNetwork);
+        } else {
+            vdc.setVdcNetwork(vdcNetworkService.findRootNetwork());
+        }        
+        
+        //Update default template if you've changed the sub net and invalidatated the default template.
+        if (!editSitePage.getSelectSubNetworkId().equals(editSitePage.getOriginalSubNetworkId()) && !editSitePage.isValidTemplate(vdc.getDefaultTemplate())) {
+            vdc.setDefaultTemplate(vdcNetworkService.findById(editSitePage.getSelectSubNetworkId()).getDefaultTemplate());
+        }
+        
+        // Check if user has changed released state
+        boolean releaseStateChanged = false;
         if (siteRestriction.equals("Public")) {
-            if (vdc.getReleaseDate() == null) {
-                 // update the network stats bean
-                if (statsBean != null)
-                    statsBean.releaseAndUpdateInlineDataverseValue(vdc.getId(), (List<VDCGroup>)vdc.getVdcGroups());
+            if (vdc.isRestricted()) { // user has switched from Not Released -> Released
+                releaseStateChanged = true;
+                vdc.setReleaseDate(DateUtil.getTimestamp());    
+                vdc.setRestricted(false);
+            }          
+        } else {
+            if (!vdc.isRestricted()) { // user has switched from Released -> Not Released
+                releaseStateChanged = true;
+                vdc.setReleaseDate(null);
+                vdc.setRestricted(true);                
+            }
+        }      
+        
+        vdcService.edit(vdc);        
+        
+        // Step 3: if newly released, send e-mail, tweets, etc...      
+        
+        // TODO: DO we need NetworkStatBean? We need to investigate if this is old code and can just be removed
+        NetworkStatsBean statsBean = (NetworkStatsBean) FacesContext.getCurrentInstance().getExternalContext().getRequestMap().get("NetworkStatsBean");
+        if (releaseStateChanged) {
+            if (!vdc.isRestricted()) {
+                sendReleaseEmails();
 
-                vdc.setReleaseDate(DateUtil.getTimestamp());
-                sendReleaseEmails();   
                 // tweet release of dataverse
                 TwitterCredentials tc = vdcNetworkService.getTwitterCredentials();
-                if (tc != null) {              
+                if (tc != null) {
                     try {
                         String message = "New dataverse released: " + vdc.getName() + " Dataverse";
                         URL url = new URL("http://" + PropertyUtil.getHostUrl() + "/dvn/dv/" + vdc.getAlias());
@@ -1918,123 +1873,25 @@ public class OptionsPage extends VDCBaseBean  implements java.io.Serializable {
                     } catch (MalformedURLException ex) {
                         Logger.getLogger(PrivilegedUsersPage.class.getName()).log(Level.SEVERE, null, ex);
                     }
-                }        
-            }
-            vdc.setRestricted(false);          
-        } else {
-            if (vdc.getReleaseDate() != null) {
-                //update the network stats bean
-                if (statsBean != null)
-                    statsBean.restrictAndUpdateInlineDataverseValue(vdc.getId(), (List<VDCGroup>)vdc.getVdcGroups());
-                vdc.setReleaseDate(null);
-            }
-            vdc.setRestricted(true);
-        }
 
-        if (filesRestricted != vdc.isFilesRestricted()) {
-            vdc.setFilesRestricted(filesRestricted);
-            if (vdc.getHarvestingDataverse() != null) {
-                vdc.getHarvestingDataverse().setSubsetRestricted(filesRestricted);
-            }
-        }
-        success = true;
-        if (!validateAnnouncementsText()) {
-            getVDCRenderBean().getFlash().put("warningMessage", "Could not update general settings.   Please see message(s) below.");   
-            FacesMessage message = new FacesMessage("To enable Homepage Description, you must also enter Homepage Description in the field below.  Please enter Homepage Description as either plain text or html.");
-            FacesContext context = FacesContext.getCurrentInstance();
-            FacesContext.getCurrentInstance().addMessage(localAnnouncementsInputText.getClientId(context), message);
-            success = false;
-            return "result";
-        }
-
-        if (!validateShortDescriptionForSave()){ 
-            success = false;
-            return "result";           
-        }
-        
-        if (validateClassificationCheckBoxes()) {
-            System.out.print("name " + vdc.getName());
-            String dataverseType = editSitePage.getDataverseType();
-            vdc.setDtype(dataverseType);
-            vdc.setName((String) editSitePage.getDataverseName().getValue());
-            vdc.setAlias((String) editSitePage.getDataverseAlias().getValue());
-            vdc.setDvnDescription((String) editSitePage.getShortDescription().getValue());
-            if (dataverseType.equals("Scholar")) {
-                vdc.setFirstName(editSitePage.getFirstName());
-                vdc.setLastName(editSitePage.getLastName());
-
-            } else {
-                vdc.setFirstName(null);
-                vdc.setLastName(null);
-            }
-            saveClassifications(vdc);
-            //Update default template if you've changed the sub net and invalidatated the default template.
-            if(!editSitePage.getSelectSubNetworkId().equals(editSitePage.getOriginalSubNetworkId()) && !editSitePage.isValidTemplate(vdc.getDefaultTemplate())){
-                 vdc.setDefaultTemplate( vdcNetworkService.findById( editSitePage.getSelectSubNetworkId() ).getDefaultTemplate() );               
-            }
-            if (editSitePage.getSelectSubNetworkId() > 0){
-                VDCNetwork vdcNetwork = vdcNetworkService.findById(editSitePage.getSelectSubNetworkId());
-                vdc.setVdcNetwork(vdcNetwork);
-            } else {
-                vdc.setVdcNetwork(vdcNetworkService.findRootNetwork());
-            }
-            vdc.setDisplayNetworkAnnouncements(chkNetworkAnnouncements);
-            vdc.setDisplayAnnouncements(editSitePage.isChkLocalAnnouncements());
-            vdc.setAnnouncements(editSitePage.getLocalAnnouncements());
-            vdc.setAffiliation((String)editSitePage.getAffiliation().getValue());
-            vdc.setDisplayNewStudies(chkNewStudies);
-            vdc.setContactEmail(this.getContactUsEmail());
-            allowStudyComments = (Boolean)allowStudyCommentsCheckbox.getValue();
-            vdc.setAllowStudyComments(allowStudyComments);
-            vdcService.edit(vdc);
-            getVDCRequestBean().setCurrentVDC(vdc);
-            getVDCRenderBean().getFlash().put("successMessage", "Successfully updated general settings.");
-            return "/admin/OptionsPage?faces-redirect=true" + getContextSuffix() + "&tab=settings&tab2=general";
-        } else {  
-            getVDCRenderBean().getFlash().put("warningMessage", "Could not update general settings.");
-            success = false;
-            return null;
-        }
-    }
-     private void saveClassifications(VDC vdc) {
-        vdc.getVdcGroups().clear();
-        for (ClassificationUI classUI: editSitePage.getClassificationList().getClassificationUIs()) {
-            if (classUI.isSelected()) {
-                vdc.getVdcGroups().add(classUI.getVdcGroup());
-            }
-        }
-    }
-     
-    public boolean validateClassificationCheckBoxes() {
-        if (!getVDCRequestBean().getVdcNetwork().isRequireDVclassification()){
-            return true;
-        }
-        else {
-            for (ClassificationUI classUI: classificationList.getClassificationUIs()) {
-                if (classUI.isSelected()) {
-                    return true;
+                    // TODO: DO we need NetworkStatBean? We need to investigate if this is old code and can just be removed
+                    if (statsBean != null) {
+                        statsBean.releaseAndUpdateInlineDataverseValue(vdc.getId(), (List<VDCGroup>) vdc.getVdcGroups());
+                    }
                 }
             }
-            FacesMessage message = new FacesMessage("You must select at least one classification for your dataverse.");
-            FacesContext.getCurrentInstance().addMessage("editsiteform", message);
-            return false;
+
+        } else {
+            // TODO: DO we need NetworkStatBean? We need to investigate if this is old code and can just be removed
+            if (statsBean != null) {
+                statsBean.restrictAndUpdateInlineDataverseValue(vdc.getId(), (List<VDCGroup>) vdc.getVdcGroups());
+            }
         }
+          
+        getVDCRenderBean().getFlash().put("successMessage", "Successfully updated general settings.");
+        return "/admin/OptionsPage?faces-redirect=true" + getContextSuffix() + "&tab=settings&tab2=general";
     }
-    
-    public boolean validateAnnouncementsText() {
-        boolean isAnnouncements = true;
-        String elementValue = localAnnouncements;
-        if ( (elementValue == null || elementValue.equals("")) && (chkLocalAnnouncements) ) {
-            isAnnouncements = false;
-            success = false;
-            FacesMessage message = new FacesMessage("To enable announcements, you must also enter announcements in the field below.  Please enter local announcements as either plain text or html.");
-            FacesContext context = FacesContext.getCurrentInstance();
-            context.addMessage("OptionsPage:localAnnouncements", message);
-            context.renderResponse();
-        }
-        return isAnnouncements;
-    }
-    
+        
     //Edit Lockss Config page
     private LockssConfig lockssConfig;
     private Long selectOAISetId;

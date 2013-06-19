@@ -43,6 +43,7 @@ import edu.harvard.iq.dvn.core.web.util.CharacterValidator;
 import edu.harvard.iq.dvn.core.vdc.VDC;
 import edu.harvard.iq.dvn.core.vdc.VDCGroupServiceLocal;
 import edu.harvard.iq.dvn.core.vdc.VDCNetwork;
+import edu.harvard.iq.dvn.core.web.util.XhtmlValidator;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -266,39 +267,6 @@ public class EditSitePage extends VDCBaseBean implements java.io.Serializable  {
     }
 
 
-
-    /** 
-     * <p>Callback method that is called after the component tree has been
-     * restored, but before any event processing takes place.  This method
-     * will <strong>only</strong> be called on a postback request that
-     * is processing a form submit.  Customize this method to allocate
-     * resources that will be required in your event handlers.</p>
-     */
-    public void preprocess() {
-    }
-
-    /** 
-     * <p>Callback method that is called just before rendering takes place.
-     * This method will <strong>only</strong> be called for the page that
-     * will actually be rendered (and not, for example, on a page that
-     * handled a postback and then navigated to a different page).  Customize
-     * this method to allocate resources that will be required for rendering
-     * this page.</p>
-     */
-    public void prerender() {
-    }
-    
-    /** 
-     * <p>Callback method that is called after rendering is completed for
-     * this request, if <code>init()</code> was called (regardless of whether
-     * or not this was the page that was actually rendered).  Customize this
-     * method to release resources acquired in the <code>init()</code>,
-     * <code>preprocess()</code>, or <code>prerender()</code> methods (or
-     * acquired during execution of an event handler).</p>
-     */
-    public void destroy() {
-    }
-    
     ClassificationList classificationList =  new ClassificationList();
 
     public ClassificationList getClassificationList() {
@@ -325,6 +293,7 @@ public class EditSitePage extends VDCBaseBean implements java.io.Serializable  {
     public Long getOriginalSubNetworkId() {return originalSubNetworkId;}
     public void setOriginalSubNetworkId(Long originalSubNetworkId) {this.selectSubNetworkId = originalSubNetworkId;}
     
+    /*
     public String edit(){
                     System.out.print("selectSubNetworkId "  + selectSubNetworkId);
             System.out.print("originalSubNetworkId "  + originalSubNetworkId);
@@ -333,13 +302,13 @@ public class EditSitePage extends VDCBaseBean implements java.io.Serializable  {
             System.out.print("in if "  + selectSubNetworkId);
             System.out.print("in if"  + originalSubNetworkId);
             System.out.print(" before thisVDC.getDefaultTemplate() "  + thisVDC.getDefaultTemplate().getName());
-            /* needs to be fixed here see options page
-            if(!selectSubNetworkId.equals(originalSubNetworkId)){
-                 thisVDC.setDefaultTemplate(getValidTemplate(thisVDC.getDefaultTemplate()));               
-            }
-                        System.out.print(" after thisVDC.getDefaultTemplate() "  + thisVDC.getDefaultTemplate().getName());
-                        * 
-                        */
+            //needs to be fixed here see options page
+            //if(!selectSubNetworkId.equals(originalSubNetworkId)){
+            //     thisVDC.setDefaultTemplate(getValidTemplate(thisVDC.getDefaultTemplate()));               
+            //}
+            //            System.out.print(" after thisVDC.getDefaultTemplate() "  + thisVDC.getDefaultTemplate().getName());
+                       
+                        
             String dataversetype = dataverseType;
             thisVDC.setDtype(dataversetype);
             thisVDC.setName((String)dataverseName.getValue());
@@ -368,7 +337,7 @@ public class EditSitePage extends VDCBaseBean implements java.io.Serializable  {
         } else {
             return null;
         }
-    }
+    }*/
     
     public boolean isValidTemplate(Template template){
         if (!template.isNetwork()){ //vdc template so return it
@@ -388,55 +357,7 @@ public class EditSitePage extends VDCBaseBean implements java.io.Serializable  {
         return "/admin/OptionsPage?faces-redirect=true"+getVDCRequestBean().getContextSuffix();
     }
     
-    public void validateName(FacesContext context,
-            UIComponent toValidate,
-            Object value) {
-        String name = (String) value;
-        if (name != null && name.trim().length() == 0) {
-            FacesMessage message = new FacesMessage("The dataverse name field must have a value.");
-            context.addMessage(toValidate.getClientId(context), message);
-            ((UIInput)toValidate).setValid(false);
-        }
-        VDC thisVDC = getVDCRequestBean().getCurrentVDC();
-        if (!name.equals(thisVDC.getName())){
-            boolean nameFound = false;
-            VDC vdc = vdcService.findByName(name);
-            if (vdc != null) {
-                nameFound=true;
-            }
-            
-            if (nameFound) {
-                ((UIInput)toValidate).setValid(false);
-                
-                FacesMessage message = new FacesMessage("This name is already taken.");
-                context.addMessage(toValidate.getClientId(context), message);
-            }
-        }
-    }
-
-    public void validateAlias(FacesContext context,
-            UIComponent toValidate,
-            Object value) {
-        CharacterValidator charactervalidator = new CharacterValidator();
-        charactervalidator.validate(context, toValidate, value);
-        String alias = (String) value;
-        StringTokenizer strTok = new StringTokenizer(alias);
-        VDC thisVDC = getVDCRequestBean().getCurrentVDC();
-            if (!alias.equals(thisVDC.getAlias())){
-                boolean aliasFound = false;
-                VDC vdc = vdcService.findByAlias(alias);
-                if (vdc != null) {
-                    aliasFound=true;
-                }
-                
-                if (aliasFound) {
-                    ((UIInput)toValidate).setValid(false);
-                    FacesMessage message = new FacesMessage("This alias is already taken.");
-                    context.addMessage(toValidate.getClientId(context), message);
-                }
-            }
-    }
-
+ 
 
     // ***************** GETTERS ********************
     public StatusMessage getMsg(){
@@ -676,6 +597,10 @@ public class EditSitePage extends VDCBaseBean implements java.io.Serializable  {
     public HtmlInputTextarea getLocalAnnouncementsInputText() {return this.localAnnouncementsInputText;}
     public void setLocalAnnouncementsInputText(HtmlInputTextarea localAnnouncementsInputText) {this.localAnnouncementsInputText = localAnnouncementsInputText;}
 
+    // this is a hidden field that is used as a proxy for setting the classification checkboxes error message
+    private HtmlInputHidden classificationHidden;
+    public HtmlInputHidden getClassificationHidden() {return classificationHidden;}
+    public void setClassificationHidden(HtmlInputHidden classificationHidden) {this.classificationHidden = classificationHidden;}
     
     /**
      * Validation so that a required field is not left empty
@@ -684,20 +609,85 @@ public class EditSitePage extends VDCBaseBean implements java.io.Serializable  {
      * @param toValidate
      * @param value
      */
-    public void validateIsEmpty(FacesContext context,
-            UIComponent toValidate,
-            Object value) {
+    public void validateIsEmpty(FacesContext context, UIComponent toValidate, Object value) {
         String newValue = (String)value;
          if (newValue == null || newValue.trim().length() == 0)  {
-            FacesMessage message = new FacesMessage("The field must have a value.");
+            FacesMessage message = new FacesMessage("This field is required.");
             context.addMessage(toValidate.getClientId(context), message);
             ((UIInput)toValidate).setValid(false);
         }
     }
 
-    public void validateShortDescription(FacesContext context,
-            UIComponent toValidate,
-            Object value) {
+    // wrapper method around validate that can be called from the save method
+    public boolean isValidName() {   
+        validateName(FacesContext.getCurrentInstance(),dataverseName,dataverseName.getValue());
+        return ((UIInput)dataverseName).isValid();
+    }
+  
+    
+    public void validateName(FacesContext context, UIComponent toValidate, Object value) {
+        validateIsEmpty(context, toValidate, value);
+        
+        String name = (String) value;
+        VDC thisVDC = getVDCRequestBean().getCurrentVDC();
+        if (!name.equals(thisVDC.getName())){
+            boolean nameFound = false;
+            VDC vdc = vdcService.findByName(name);
+            if (vdc != null) {
+                nameFound=true;
+            }
+            
+            if (nameFound) {
+                ((UIInput)toValidate).setValid(false);
+                
+                FacesMessage message = new FacesMessage("This name is already taken.");
+                context.addMessage(toValidate.getClientId(context), message);
+            }
+        }
+    }
+    
+    // wrapper method around validate that can be called from the save method
+    public boolean isValidAlias() {   
+        validateAlias(FacesContext.getCurrentInstance(),dataverseAlias,dataverseAlias.getValue());
+        return ((UIInput)dataverseAlias).isValid();
+    }
+      
+
+    public void validateAlias(FacesContext context, UIComponent toValidate, Object value) {
+        validateIsEmpty(context, toValidate, value);      
+        
+        String alias = (String) value;        
+        CharacterValidator charactervalidator = new CharacterValidator();
+        charactervalidator.validate(context, toValidate, value);
+        StringTokenizer strTok = new StringTokenizer(alias);
+        VDC thisVDC = getVDCRequestBean().getCurrentVDC();
+            if (!alias.equals(thisVDC.getAlias())){
+                boolean aliasFound = false;
+                VDC vdc = vdcService.findByAlias(alias);
+                if (vdc != null) {
+                    aliasFound=true;
+                }
+                
+                if (aliasFound) {
+                    ((UIInput)toValidate).setValid(false);
+                    FacesMessage message = new FacesMessage("This alias is already taken.");
+                    context.addMessage(toValidate.getClientId(context), message);
+                }
+            }
+    }
+
+        
+      // wrapper method around validate that can be called from the save method
+    public boolean isValidShortDescription() {   
+        validateShortDescription(FacesContext.getCurrentInstance(),shortDescription,shortDescription.getValue());
+        return ((UIInput)shortDescription).isValid();
+    }
+    
+    public void validateShortDescription(FacesContext context, UIComponent toValidate, Object value) {
+        if (getVDCRequestBean().getVdcNetwork().isRequireDVdescription() ) {
+            validateIsEmpty(context, toValidate, value);
+        }  
+                
         String newValue = (String)value;
         if (newValue != null && newValue.trim().length() > 0) {
             if (newValue.length() > 255) {
@@ -706,38 +696,58 @@ public class EditSitePage extends VDCBaseBean implements java.io.Serializable  {
                 context.addMessage(toValidate.getClientId(context), message);
             }
         }
-        if ((newValue == null || newValue.trim().length() == 0) && getVDCRequestBean().getVdcNetwork().isRequireDVdescription()) {
-                ((UIInput)toValidate).setValid(false);
-                FacesMessage message = new FacesMessage("The field must have a value.");
-                context.addMessage(toValidate.getClientId(context), message);
-                context.renderResponse();
-        }
     }
-    public void validateIsEmptyRequiredAffiliation(FacesContext context,
-            UIComponent toValidate,
-            Object value) {
-        String newValue = (String) value;
-        if ((newValue == null || newValue.trim().length() == 0) && getVDCRequestBean().getVdcNetwork().isRequireDVaffiliation()) {
-                FacesMessage message = new FacesMessage("The field must have a value.");
-                context.addMessage(toValidate.getClientId(context), message);
-                ((UIInput)toValidate).setValid(false);
-                context.renderResponse();
-            }
+    
+    // wrapper method around validate that can be called from the save method
+    public boolean isValidAffiliation() {   
+        validateAffiliation(FacesContext.getCurrentInstance(),affiliation,affiliation.getValue());
+        return ((UIInput)affiliation).isValid();
     }
-    public boolean validateClassificationCheckBoxes() {
+    
+    public void validateAffiliation(FacesContext context, UIComponent toValidate, Object value) {
+        if (getVDCRequestBean().getVdcNetwork().isRequireDVaffiliation() ) {
+            validateIsEmpty(context, toValidate, value);
+        }  
+    }
+    
+    public boolean isValidScholarName() {
+        validateIsEmpty(FacesContext.getCurrentInstance(), dataverseFirstName, dataverseFirstName.getValue());
+        validateIsEmpty(FacesContext.getCurrentInstance(), dataverseLastName, dataverseLastName.getValue());
+        
+        return  dataverseFirstName.isValid() && dataverseLastName.isValid();
+    } 
+    
+    
 
+   // If we need to use the JSF validator pattern, we should add a validate mehod for this and have this method call that  
+    public boolean isValidDescription() {
+        if (isChkLocalAnnouncements() && (localAnnouncements == null || localAnnouncements.equals(""))) {
+            localAnnouncementsInputText.setValid(false);
+            FacesMessage message = new FacesMessage("To enable announcements, you must also enter announcements in the field below.  Please enter local announcements as either plain text or html.");
+            FacesContext context = FacesContext.getCurrentInstance();
+            context.addMessage(localAnnouncementsInputText.getClientId(context), message);
+        } else {
+            XhtmlValidator xhtmlValidator = new XhtmlValidator();
+            xhtmlValidator.validate(FacesContext.getCurrentInstance(), localAnnouncementsInputText, localAnnouncements);
+        }     
+
+        return localAnnouncementsInputText.isValid();
+    }
+   
+    // If we need to use the JSF validator pattern, we should add a validate mehod for this and have this method call that    
+    public boolean isValidClassificationCheckBoxes() {
         if (!getVDCRequestBean().getVdcNetwork().isRequireDVclassification()){
             return true;
-        }
-        else {
+        } else {
             for (ClassificationUI classUI: classificationList.getClassificationUIs()) {
                 if (classUI.isSelected()) {
                     return true;
                 }
             }
-
+            classificationHidden.setValid(false);
             FacesMessage message = new FacesMessage("You must select at least one classification for your dataverse.");
-            FacesContext.getCurrentInstance().addMessage("editsiteform", message);
+            FacesContext context = FacesContext.getCurrentInstance();
+            context.addMessage(classificationHidden.getClientId(context), message);            
             return false;
         }
 

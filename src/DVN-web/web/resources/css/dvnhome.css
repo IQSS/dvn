@@ -20,9 +20,9 @@ a.dvn_more:link,a.dvn_more:visited,a.dvn_more:hover,a.dvn_more:active{color:#6D0
 .dvnSearchBlock fieldset {margin:0; padding:0;}
 .dvnSearchBlock fieldset label input {font-size:1.1em !important;}
 .dvnSearchBlock fieldset label input.iceInpTxt {width:368px; margin-right:1em; padding:5px 3px;}
-.dvnSearchBlock input.iceCmdBtn[value=Search], .dvnFormMargin input.iceCmdBtn[value=Search]{background:#EEF3FB; border:1px solid #B7CDFF; padding:4px 16px; font-size:1em;}
-.dvnSearchBlock input.iceCmdBtn[value=Search]:hover, .dvnFormMargin input.iceCmdBtn[value=Search]:hover{border:1px solid #0C54B3;}
-.dvnSearchBlock input.iceCmdBtn[value=Search]:active, .dvnFormMargin input.iceCmdBtn[value=Search]:active{background:#0C54B3;}
+.dvnSearchBlock input.iceCmdBtn.dvnSearchButton, .dvnFormMargin input.iceCmdBtn.dvnSearchButton{background:#EEF3FB; border:1px solid #B7CDFF; padding:4px 16px; font-size:1em;}
+.dvnSearchBlock input.iceCmdBtn.dvnSearchButton:hover, .dvnFormMargin input.iceCmdBtn.dvnSearchButton:hover{border:1px solid #0C54B3;}
+.dvnSearchBlock input.iceCmdBtn.dvnSearchButton:active, .dvnFormMargin input.iceCmdBtn.dvnSearchButton:active{background:#0C54B3;}
 .dvnSearchSuggestions {padding:0 10px; text-align:left;}
 .dvnSearchBlock .dvn_searchlinks {padding:0 10px; text-align:right;}
 .dvnSearchBlock .dvn_searchlinks span.iceOutTxt {font-size:.9em !important;}

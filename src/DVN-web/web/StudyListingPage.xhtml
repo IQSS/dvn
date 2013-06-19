@@ -131,9 +131,9 @@
                                         <ice:inputText onkeypress="if (window.event) return processEvent('', 'form1:search'); else return processEvent(event, 'form1:search');" id="textField2" value="#{StudyListingPage.searchValue}" onclick="clickclear(this, 'Search Studies')"/>
                                     </label>
                                     <label for="button">
-                                        <!--<ice:commandButton id="search" value="Search" action="#{StudyListingPage.search_action}"/>-->
-                                        <!--<ice:commandButton id="search" value="Search" action="#{StudyListingPage.search_actionWithFacets}"/>-->
-                                        <ice:commandButton id="search" value="Search" action="#{StudyListingPage.search_actionNew}"/>
+                                        <!--<ice:commandButton id="search" value="#{bundlePageInfo.searchButtonText}" styleClass="dvnSearchButton" action="#{StudyListingPage.search_action}"/>-->
+                                        <!--<ice:commandButton id="search" value="#{bundlePageInfo.searchButtonText}" styleClass="dvnSearchButton" action="#{StudyListingPage.search_actionWithFacets}"/>-->
+                                        <ice:commandButton id="search" value="#{bundlePageInfo.searchButtonText}" styleClass="dvnSearchButton" action="#{StudyListingPage.search_actionNew}"/>
                                     </label>
                                   </div>
                                   <div>

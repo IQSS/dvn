@@ -17,12 +17,12 @@
                            onclick="clickclear(this, '#{(VDCRequest.currentVDC != null) ? bundlePageInfo.searchBoxTextDataverse : ( (VDCRequest.currentSubnetwork != null) ? bundlePageInfo.searchBoxTextSubnetwork : bundlePageInfo.searchBoxTextNetwork ) }')"/>
         </label>
         <label for="button">
-             <!--<ice:commandButton id="search" value="Go"  action="#{BasicSearchFragment.search_action}"/>-->
-             <ice:commandButton id="search" value="Go"  action="#{BasicSearchFragment.facet_search}"/>
+             <!--<ice:commandButton id="search" value="#{bundlePageInfo.searchButtonText}" styleClass="dvnSearchButton" action="#{BasicSearchFragment.search_action}"/>-->
+             <ice:commandButton id="search" value="#{bundlePageInfo.searchButtonText}" styleClass="dvnSearchButton" action="#{BasicSearchFragment.facet_search}"/>
         </label>
     </fieldset>
     <div jsfc="ice:panelGroup" styleClass="dvnSearchSuggestions" rendered="#{!empty BasicSearchFragment.searchTerms}">
-        <ice:outputText value ="Try searching for  " rendered="#{!empty BasicSearchFragment.searchTerms}"/>
+        <ice:outputText value="Try searching for  " rendered="#{!empty BasicSearchFragment.searchTerms}"/>
         <ui:repeat value="#{BasicSearchFragment.searchTerms}" var="term" varStatus="status">
             <ui:fragment rendered="#{status.first}">
                 <!--<ice:commandLink action="#{BasicSearchFragment.keywordSearch_action(term)}">-->

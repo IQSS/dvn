@@ -151,6 +151,12 @@
                         <ice:panelGroup rendered="#{AddFilesPage.zipMultipleFilesSelected}">
                             <ice:outputText styleClass="vdcTextStandout" escape="false" value="You have selected to upload *multiple files* in a zipped archive. Click Browse to select the valid Zip file; it will be unpacked, and the individual items will be ingested as separate Study Files. &#60;strong&#62;If you would like to ingest a Zip archive as a single file, upload it as type &quot;other&quot;&#60;/strong&#62;."/>
                         </ice:panelGroup>
+                        <ice:panelGroup rendered="#{AddFilesPage.tarPlainMultipleFilesSelected}">
+                            <ice:outputText styleClass="vdcTextStandout" escape="false" value="You have selected to upload *multiple files* in a tar archive. Click Browse to select the valid tar file; it will be unpacked, and the individual items will be ingested as separate Study Files. &#60;strong&#62;If you would like to ingest a tar archive as a single file, upload it as type &quot;other&quot;&#60;/strong&#62;."/>
+                        </ice:panelGroup>
+                        <ice:panelGroup rendered="#{AddFilesPage.tarGzMultipleFilesSelected}">
+                            <ice:outputText styleClass="vdcTextStandout" escape="false" value="You have selected to upload *multiple files* in a tar.gz archive. Click Browse to select the valid tar.gz file; it will be unpacked, and the individual items will be ingested as separate Study Files. &#60;strong&#62;If you would like to ingest a tar.gz archive as a single file, upload it as type &quot;other&quot;&#60;/strong&#62;."/>
+                        </ice:panelGroup>
                         <ice:panelGroup rendered="#{AddFilesPage.FITSIngestRequested}">
                             <ice:outputText styleClass="vdcTextStandout" value="(NEW/Beta!) Basic metadata extracted from FITS files will be made searchable in the application."/>
                         </ice:panelGroup>

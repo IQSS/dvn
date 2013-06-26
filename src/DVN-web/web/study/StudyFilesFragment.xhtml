@@ -59,12 +59,12 @@
                                             <ice:outputText value="Terms of Use"/>
                                         </ice:outputLink>
                                         <ice:outputText value=" for more information. " rendered="#{!studyPage.termsOfUseIsEmpty}"/>
-                                        <ice:outputLink action="#{studyPage.beginRequestWorkflow}" rendered="#{studyPage.studyUI.study.requestAccess and VDCSession.loginBean!=null}" value="/dvn#{VDCRequest.currentVDCURL}/faces/login/FileRequestPage.xhtml?studyId=#{studyPage.studyId}">
-                                            <ice:outputText value="Send a Request"/>
-                                        </ice:outputLink>
+                                        <!--<ice:outputLink action="#{studyPage.beginRequestWorkflow}" rendered="#{studyPage.studyUI.study.requestAccess and VDCSession.loginBean!=null}" value="/dvn#{VDCRequest.currentVDCURL}/faces/login/FileRequestPage.xhtml?studyId=#{studyPage.studyId}"> disable the link because we will not allow user to request access to entire study. xyang-->
+                                            <ice:outputText value="Send a request"/>
+                                        <!--</ice:outputLink>
                                         <ice:commandLink action="#{studyPage.beginRequestWorkflow}" rendered="#{studyPage.studyUI.study.requestAccess and VDCSession.loginBean==null}">
                                             <ice:outputText value="Send a Request"/>
-                                        </ice:commandLink>
+                                        </ice:commandLink> -->
                                         <ice:outputText value=" if you would like to access the restricted files in this study." rendered="#{studyPage.studyUI.study.requestAccess}"/>
                                     </p>
                                 </div>
@@ -152,15 +152,14 @@
                                                                     <div jsfc="ice:panelGroup" styleClass="vdcStudyFileRowFileDownload">
                                                                         <ice:graphicImage styleClass="vdcNoBorders" value="/resources/images/icon_download_locked.gif" rendered="#{studyFileUI.restrictedForUser}" alt="You do not have permissions to access this file."/>
                                                                         <ice:outputText styleClass="vdcStudyFileRowFileDownloadRestricted" value=" Restricted" rendered="#{studyFileUI.restrictedForUser}"/>
-                                                                        
-                                                                        <ice:outputLink styleClass="vdcStudyFileRowFileDownloadRequestLink" action="#{studyPage.beginRequestWorkflow}" rendered="#{studyFileUI.restrictedForUser and studyPage.studyUI.study.requestAccess and VDCSession.loginBean!=null}" value="/dvn#{VDCRequest.currentVDCURL}/faces/login/FileRequestPage.xhtml?studyId=#{studyPage.studyId}">
+                                                                        <ice:outputLink styleClass="vdcStudyFileRowFileDownloadRequestLink" rendered="#{studyFileUI.restrictedForUser and studyPage.studyUI.study.requestAccess and VDCSession.loginBean!=null}" value="/dvn#{VDCRequest.currentVDCURL}/faces/login/FileRequestPage.xhtml?studyId=#{studyPage.studyId}&amp;fileId=#{studyFileUI.studyFile.id}">                                                 
                                                                             <ice:outputText value="(Request Access)"/>
                                                                         </ice:outputLink>
-                                                                        
-                                                                        <ice:commandLink styleClass="vdcStudyFileRowFileDownloadRequestLink" action="#{studyPage.beginRequestWorkflow}" rendered="#{studyFileUI.restrictedForUser and studyPage.studyUI.study.requestAccess and VDCSession.loginBean==null}">
-                                                                            <ice:outputText value="(Request Access)"/>
+                                                                        <ice:commandLink action="#{studyPage.beginRequestWorkflow}" rendered="#{studyFileUI.restrictedForUser and studyPage.studyUI.study.requestAccess and VDCSession.loginBean==null}">
+                                                                            <ice:outputText value="(Request Access)"/> 
+                                                                            <f:param name="studyID" value="#{studyPage.studyId}"/>
+                                                                            <f:param name="fileId" value="#{studyFileUI.studyFile.id}"/>
                                                                         </ice:commandLink>
-                                                                        
                                                                         <ice:outputLink styleClass="vdcStudyFileRowFileDownloadLink" value="javascript:downloadFile('#{studyFileUI.fileDownloadURL}&amp;versionNumber=#{studyPage.studyUI.studyVersion.versionNumber}')" rendered="#{!studyFileUI.restrictedForUser and !studyFileUI.studyFile.subsettable and !VDCRequest.readOnlyDatabase}">
                                                                             <ice:outputText value="Download" rendered="#{!studyFileUI.restrictedForUser and !studyFileUI.studyFile.subsettable and !VDCRequest.readOnlyDatabase}"/>
                                                                         </ice:outputLink>

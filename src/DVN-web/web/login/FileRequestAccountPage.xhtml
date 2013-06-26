@@ -29,11 +29,11 @@
                 </div>
               </div>
               <div jsfc="ice:panelGroup" rendered="#{VDCSession.loginBean==null}">
-                <ice:outputLink value="/dvn#{VDCRequest.currentVDCURL}/faces/login/LoginPage.xhtml">
+                <ice:outputLink value="/dvn#{VDCRequest.currentVDCURL}/faces/login/LoginPage.xhtml?studyId=#{param['studyId']}"> 
                   <ice:outputText value="Log in"/>
                 </ice:outputLink>
                 <ice:outputText value=" | " />
-                <ice:outputLink value="/dvn#{VDCRequest.currentVDCURL}/faces/login/AddAccountPage.xhtml">
+                <ice:outputLink value="/dvn#{VDCRequest.currentVDCURL}/faces/login/AddAccountPage.xhtml?studyId=#{param['studyId']}">               
                   <ice:outputText value="Create Account"/>
                 </ice:outputLink>
               </div>

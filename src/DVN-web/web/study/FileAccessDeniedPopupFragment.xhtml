@@ -1,0 +1,42 @@
+<div xmlns:h="http://java.sun.com/jsf/html"
+     xmlns:f="http://java.sun.com/jsf/core"
+     xmlns:jsp="http://java.sun.com/JSP/Page"
+     xmlns:ice="http://www.icesoft.com/icefaces/component"
+     xmlns:dvn="/WEB-INF/tlds/dvn-components">
+    <ice:form id="fileAccessDeniedForm">
+        <ice:inputHidden id="vdcId" value="#{VDCRequest.currentVDCId}"/>      
+        <ice:panelPopup id="fileAccessDeniedPopup"
+                        draggable="false"
+                        autoCentre="true"
+                        modal="true"
+                        style="#{VDCRequest.displayInFrame ? 'top:50px !important;' : ''}">
+            <f:facet name="header">
+                <ice:panelGrid id="autoCentPanelGrid"
+                               width="100%" cellpadding="0"
+                               cellspacing="0" columns="2"
+                               columnClasses="none,popupButton">
+                    <ice:outputText value="File Access Denied Notice"/>
+                </ice:panelGrid>
+            </f:facet>
+            <f:facet name="body">
+                <ice:panelGrid id="autoCentContent"
+                               width="100%" cellpadding="0"
+                               cellspacing="0" columns="1"
+                               styleClass="popupModalBody" rowClasses="popupModVerNotText,popupModVerNotLabel,popupModVerNotField,popupModVerNotForm">
+
+                    <ice:outputText value="Add a note to the file access request email notification, to provide a reason why their reqiest is being denied, or to give them further instruction on how to gain access."/>
+                    <ice:outputText value="File Access Denied Note" styleClass="studyVersionNotesLabel"/>
+                    <ice:inputTextarea maxlength="" id="fileAccessDeniedNote" rows="8" value=""></ice:inputTextarea>
+
+                    <div jsfc="ice:panelGroup" styleClass="dvnFormPadding dvnFormMargin">
+                        <ice:commandButton id="autoCentPopupOk"
+                                           value="Send"/>
+                        <ice:commandButton id="autoCentPopupCancel"
+                                           value="Cancel"/>
+                    </div>
+                </ice:panelGrid>
+            </f:facet>
+        </ice:panelPopup>
+        <!-- end FileAccessDenied note -->
+    </ice:form>
+</div>

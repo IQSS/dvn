@@ -134,7 +134,7 @@ public class OptionsPage extends VDCBaseBean  implements java.io.Serializable {
                 JavascriptContext.addJavascriptCall(getFacesContext(), "initDownloadDataTableBlockHeight();");
             }
         } else {
-            if (tabSet1.getSelectedIndex() == 6 && permissionsSubTab.getSelectedIndex() == 4) {
+            if (tabSet1.getSelectedIndex() == 7 && permissionsSubTab.getSelectedIndex() == 4) {
                 JavascriptContext.addJavascriptCall(getFacesContext(), "initDownloadDataTableBlockHeight();");
             }
         }

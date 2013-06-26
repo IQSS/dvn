@@ -42,9 +42,11 @@ import javax.faces.application.FacesMessage;
 import javax.faces.component.UIComponent;
 import javax.faces.component.UIInput;
 import com.icesoft.faces.component.ext.HtmlInputText;
+import com.icesoft.faces.component.ext.HtmlSelectBooleanCheckbox;
 import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
 import javax.faces.event.ActionEvent;
+import javax.faces.event.ValueChangeEvent;
 import javax.inject.Named;
 import javax.naming.Context;
 import javax.naming.InitialContext;
@@ -498,5 +500,63 @@ public class StudyPermissionsPage extends VDCBaseBean  implements java.io.Serial
         return "/study/StudyPage?faces-redirect=true&studyId=" + studyId + "&versionNumber=" + getVDCRequestBean().getStudyVersionNumber() + getContextSuffix();
 
     }
-}
+      
+    /**
+     * Holds value of property viewFileCheckBox.
+     */
+    private HtmlSelectBooleanCheckbox viewFileCheckBox;
 
+    /**
+     * @return the viewFileCheckBox
+     */
+    public HtmlSelectBooleanCheckbox getViewFileCheckBox() {
+        return viewFileCheckBox;
+    }
+
+    /**
+     * @param viewFileCheckBox the viewFileCheckBox to set
+     */
+    public void setViewFileCheckBox(HtmlSelectBooleanCheckbox viewFileCheckBox) {
+        this.viewFileCheckBox = viewFileCheckBox;
+    }
+    
+    /**
+     * Holds value of property viewAllFiles.
+     */
+    private boolean viewAllFiles;
+
+    /**
+     * @return the viewAllFiles
+     */
+    public boolean isViewAllFiles() {
+        return viewAllFiles;
+    }
+
+    /**
+     * @param viewAllFiles the viewAllFiles to set
+     */
+    public void setViewAllFiles(boolean viewAllFiles) {
+        this.viewAllFiles = viewAllFiles;
+    }
+    
+    public void changeViewFiles(ValueChangeEvent vce){
+        viewAllFiles = (Boolean)viewFileCheckBox.getValue();
+        setViewCurrentFiles(!viewAllFiles);
+        editStudyPermissions.setCurrentVersionFiles(!viewAllFiles);
+    }
+      
+    private HtmlInputText inputFilterTerm;
+
+    public HtmlInputText getInputFilterTerm() {
+        return this.inputFilterTerm;
+    }
+
+    public void setInputFilterTerm(HtmlInputText inputFilterTerm) {
+        this.inputFilterTerm = inputFilterTerm;
+    }
+    
+    public String updateAllFilesList(){
+        String checkString = (String) getInputFilterTerm().getValue(); 
+        return this.editStudyPermissions.updateAllFilesList(checkString);
+    }
+}

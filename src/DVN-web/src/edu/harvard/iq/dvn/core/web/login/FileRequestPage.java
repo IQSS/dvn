@@ -31,9 +31,17 @@ import edu.harvard.iq.dvn.core.admin.UserServiceLocal;
 import edu.harvard.iq.dvn.core.admin.VDCUser;
 import edu.harvard.iq.dvn.core.mail.MailServiceLocal;
 import edu.harvard.iq.dvn.core.study.Study;
+import edu.harvard.iq.dvn.core.study.StudyFile;
+import edu.harvard.iq.dvn.core.study.StudyFileServiceLocal;
 import edu.harvard.iq.dvn.core.study.StudyServiceLocal;
+import edu.harvard.iq.dvn.core.study.StudyVersion;
 import edu.harvard.iq.dvn.core.vdc.StudyAccessRequestServiceLocal;
 import edu.harvard.iq.dvn.core.web.common.VDCBaseBean;
+import edu.harvard.iq.dvn.core.web.study.StudyUI;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Iterator;
+import java.util.List;
 import javax.ejb.EJB;
 import javax.faces.bean.ViewScoped;
 import javax.faces.component.html.HtmlInputHidden;
@@ -62,6 +70,8 @@ public class FileRequestPage extends VDCBaseBean implements java.io.Serializable
     MailServiceLocal mailService;
     @EJB
     UserServiceLocal userService;
+    @EJB
+    StudyFileServiceLocal studyFileService;
     
     Long studyId;
 
@@ -85,50 +95,19 @@ public class FileRequestPage extends VDCBaseBean implements java.io.Serializable
      */
     public void init() {
         super.init();
+        if (versionNumber == null) {
+            versionNumber = getVDCRequestBean().getStudyVersionNumber();
+        }
+        
         if (studyId!=null) {
+            StudyVersion sv = null;
+            sv = studyService.getStudyVersion(studyId, versionNumber);
+            initStudyUIWithFiles(sv); 
             LoginWorkflowBean lwf = (LoginWorkflowBean) getBean("LoginWorkflowBean");       
             lwf.beginFileAccessWorkflow(studyId);
         }
    
    
-    }
-
-    /**
-     * <p>Callback method that is called after the component tree has been
-     * restored, but before any event processing takes place.  This method
-     * will <strong>only</strong> be called on a postback request that
-     * is processing a form submit.  Customize this method to allocate
-     * resources that will be required in your event handlers.</p>
-     */
-    public void preprocess() {
-    }
-
-    /**
-     * <p>Callback method that is called just before rendering takes place.
-     * This method will <strong>only</strong> be called for the page that
-     * will actually be rendered (and not, for example, on a page that
-     * handled a postback and then navigated to a different page).  Customize
-     * this method to allocate resources that will be required for rendering
-     * this page.</p>
-     */
-    public void prerender() {
-    }
-  
-    /**
-     * Getter for property alreadyRequested.
-     * @return Value of property alreadyRequested.
-     */
-    public boolean isAlreadyRequested() {
-        Long requestStudyId=null;
-        LoginWorkflowBean lwf = (LoginWorkflowBean) getBean("LoginWorkflowBean");
-      
-        boolean alreadyRequested=false;
-     
-        VDCUser user = this.getVDCSessionBean().getLoginBean().getUser();
-        if (studyRequestService.findByUserStudy(user.getId(), getRequestStudyId()) != null) {
-            alreadyRequested = true;
-        }
-        return alreadyRequested;
     }
 
     private Long getRequestStudyId() {
@@ -139,28 +118,62 @@ public class FileRequestPage extends VDCBaseBean implements java.io.Serializable
             return lwf.getStudyId();
         }
     }
+    
+    private List<Long> getRequestFileIdList() { 
+        LoginWorkflowBean lwf = (LoginWorkflowBean) getBean("LoginWorkflowBean");
+        if (fileIdList != null) {
+            return listofLong(fileIdList);
+        } else {
+            return lwf.getFileIdList();
+        }
+    } 
+    
+    private String fileListString(List idList) {
+        StringBuffer sb = new StringBuffer();
+        Iterator iter = idList.iterator();
+        while (iter.hasNext()) {
+            Long id = (Long) iter.next();
+            StudyFile studyFile = studyFileService.getStudyFile(id);
+            String fileLabel = studyFile.getFileName();
+            sb.append(fileLabel);
+            if (iter.hasNext()) {
+                sb.append(", ");
+            }
+        }
+        return sb.toString();
+    }
+    
     public String generateRequest() {
 
         LoginWorkflowBean lwf = (LoginWorkflowBean) getBean("LoginWorkflowBean");
         VDCUser user = this.getVDCSessionBean().getLoginBean().getUser();
-        Study study = studyService.getStudy(getRequestStudyId());
-       
-        studyRequestService.create(user.getId(), study.getId());
-        // Notify Admin of request
+        if (!studyRequestService.findByUserStudyFiles(user.getId(), getRequestStudyId(), getRequestFileIdList()).isEmpty()) {
+            getVDCRenderBean().getFlash().put("successMessage", "You have already requested access to this file in this study. Please wait for approval from the administrator.");
+        } else {
+            Study study = studyService.getStudy(getRequestStudyId());
         
-        mailService.sendFileAccessRequestNotification(study.getOwner().getContactEmail(), user.getUserName(), study.getReleasedVersion().getMetadata().getTitle(), study.getGlobalId());
+            Iterator iter = getRequestFileIdList().iterator();
+            while (iter.hasNext()) {
+                Long fId = (Long) iter.next();
+                //System.out.print(fId);
+                StudyFile studyFile = studyFileService.getStudyFile(fId);
+                studyRequestService.create(user.getId(), study.getId(), studyFile.getId());
+            }
+            // Notify Admin of request
+            mailService.sendFileAccessRequestNotification(study.getOwner().getContactEmail(), user.getUserName(), study.getReleasedVersion().getMetadata().getTitle(), study.getGlobalId(), fileListString(getRequestFileIdList())); 
 
         // Send confirmation to user
  
-        mailService.sendFileAccessRequestConfirmation(user.getEmail(), study.getReleasedVersion().getMetadata().getTitle(), study.getGlobalId());
+            mailService.sendFileAccessRequestConfirmation(user.getEmail(), study.getReleasedVersion().getMetadata().getTitle(), study.getGlobalId(), fileListString(getRequestFileIdList())); 
      
-        getVDCRenderBean().getFlash().put("successMessage", "Thanks for your interest in this study. You will be notified as soon as your request is approved.");
-        return "/study/StudyPage.xhtml?faces-redirect=true&studyId=" + getStudyId() + "&tab=files" + getContextSuffix();
+            getVDCRenderBean().getFlash().put("successMessage", "Thanks for your interest in these files. You will be notified as soon as your request is approved.");
+        } 
+        return "/study/StudyPage.xhtml?faces-redirect=true&studyId=" + getRequestStudyId() + "&tab=files" + getContextSuffix();
 
     }
     
     public String cancel() {
-        return "/study/StudyPage.xhtml?faces-redirect=true&studyId=" + getStudyId() + "&tab=files" + getContextSuffix();        
+        return "/study/StudyPage.xhtml?faces-redirect=true&studyId=" + getRequestStudyId() + "&tab=files" + getContextSuffix();        
     }
     
     
@@ -192,6 +205,79 @@ public class FileRequestPage extends VDCBaseBean implements java.io.Serializable
     public void setStudyId(Long studyId) {
         this.studyId = studyId;
     }
-    
-}
 
+    /**
+     * Holds value of property fileIdList.
+     */
+    private String fileIdList;
+
+    /**
+     * Getter for property fileIdList.
+     * @return Value of property fileIdList.
+     */
+     public String getFileIdList() {
+        return this.fileIdList;
+    } 
+
+    /**
+     * Setter for property fileIdList.
+     * @param fileIdList New value of property fileIdList.
+     */
+    public void setFileIdList(String fileIdList) {
+        this.fileIdList = fileIdList;
+    }
+    
+    private Long versionNumber;
+    
+    public Long getVersionNumber() {
+        return versionNumber;
+    }
+
+    public void setVersionNumber(Long versionNumber) {
+        this.versionNumber = versionNumber;
+    }
+        
+    /**
+     * Holds value of property studyUI.
+     */
+    private StudyUI studyUI;
+
+    /**
+     * Getter for property studyUI.
+     * @return Value of property studyUI.
+     */
+    public StudyUI getStudyUI() {
+        return this.studyUI;
+    }
+
+    /**
+     * Setter for property studyUI.
+     * @param studyUI New value of property studyUI.
+     */
+    public void setStudyUI(StudyUI studyUI) {
+        this.studyUI = studyUI;
+    }
+    
+    private boolean studyUIContainsFileDetails=false;
+
+    private void initStudyUIWithFiles(StudyVersion studyVersion) {
+        if (!studyUIContainsFileDetails) {
+            studyUI = new StudyUI(
+                            studyVersion,
+                            getVDCSessionBean().getLoginBean() != null ? this.getVDCSessionBean().getLoginBean().getUser() : null,
+                            getVDCSessionBean().getIpUserGroup());
+            studyUIContainsFileDetails=true;
+        }
+    }
+        
+    private List<Long> listofLong(String str) {
+        String [] items = str.split(",");
+        List<String> strList = Arrays.asList(items);
+        List<Long> longList = new ArrayList<Long>();
+
+        for(String s : strList) {
+            longList.add(Long.parseLong(s));   
+        }
+        return longList;
+    }    
+}

@@ -119,8 +119,17 @@ public class FileCategoryUI implements Comparable, java.io.Serializable   {
             }
         return false;   
     }
-    
- 
+
+    public boolean isAnyFileRestricted() {
+        for (Iterator it = getStudyFileUIs().iterator(); it.hasNext();) {
+            StudyFileUI studyFileUI = (StudyFileUI) it.next();
+            if (studyFileUI.isRestrictedForUser()) {
+                return true;
+            }
+        }
+        return false;   
+    }
+
     public int compareTo(Object obj) {
         FileCategoryUI catUI = (FileCategoryUI)obj;
         return alphaNumericComparator.compare(this.category, catUI.category);

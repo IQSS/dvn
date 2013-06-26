@@ -32,6 +32,7 @@ import edu.harvard.iq.dvn.core.web.StudyListing;
 import edu.harvard.iq.dvn.core.web.common.LoginBean;
 import edu.harvard.iq.dvn.core.web.common.VDCBaseBean;
 import edu.harvard.iq.dvn.core.web.common.VDCSessionBean;
+import java.util.List;
 import java.util.Map;
 import javax.ejb.EJB;
 import javax.enterprise.context.SessionScoped;
@@ -54,6 +55,7 @@ public class LoginWorkflowBean extends VDCBaseBean implements java.io.Serializab
     private String workflowType;
     private VDCUser user;
     private Long studyId;
+    private List<Long> fileIdList;
     public static String WORKFLOW_TYPE_CONTRIBUTOR = "contributor";
     public static String WORKFLOW_TYPE_CREATOR = "creator";
     public static String WORKFLOW_TYPE_FILE_ACCESS = "fileAccess";
@@ -273,11 +275,7 @@ public class LoginWorkflowBean extends VDCBaseBean implements java.io.Serializab
         } else if (WORKFLOW_TYPE_CREATOR.equals(workflowType)) {
             redirectString = "/site/AddSitePage.xhtml";
         } else if (WORKFLOW_TYPE_FILE_ACCESS.equals(workflowType)) {
-            if (currentVDC != null) {
-                redirectString = "/login/FileRequestPage.xhtml?studyId=" + studyId;
-            } else {
-                redirectString = "/login/FileRequestPage.xhtml";
-            }
+            redirectString = "/login/FileRequestPage.xhtml?studyId=" + studyId;
         } else {
             if (sessionMap.get("ORIGINAL_URL") != null) {
                 String originalURL = (String) sessionMap.get("ORIGINAL_URL");
@@ -298,6 +296,14 @@ public class LoginWorkflowBean extends VDCBaseBean implements java.io.Serializab
         return redirectString;
     }
 
+    public List<Long> getFileIdList() { 
+        return fileIdList;
+    }
+
+    public void setFileIdList(List<Long> fileIdList) { 
+        this.fileIdList = fileIdList;
+    }
+    
     public Long getStudyId() {
         return studyId;
     }

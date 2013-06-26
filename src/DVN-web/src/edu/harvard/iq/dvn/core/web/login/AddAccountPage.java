@@ -41,6 +41,7 @@ import javax.faces.component.UIComponent;
 import javax.faces.component.UIInput;
 import com.icesoft.faces.component.ext.HtmlInputHidden;
 import com.icesoft.faces.component.ext.HtmlInputSecret;
+import edu.harvard.iq.dvn.core.study.StudyFile;
 import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
 import javax.inject.Named;
@@ -105,12 +106,16 @@ public class AddAccountPage extends VDCBaseBean implements java.io.Serializable 
             //sessionPut( (studyService.getClass().getName() + "."  + studyId.toString()), studyService);
             user = editUserService.getUser();
             HttpServletRequest request = (HttpServletRequest)FacesContext.getCurrentInstance().getExternalContext().getRequest();
-            if (request.getAttribute("studyId") != null) {
+            if (request.getAttribute("studyId") != null && request.getAttribute("fileId") != null) {
                 studyId = new Long(request.getAttribute("studyId").toString());
+                fileId = new Long(request.getAttribute("fileId").toString());               
                 editUserService.setRequestStudyId(studyId);
-            } else if (this.getRequestParam("studyId") != null) {
+                editUserService.setRequestStudyFileId(fileId);
+            } else if (this.getRequestParam("studyId") != null && this.getRequestParam("fileId") != null) {
                 studyId = new Long(Long.parseLong(getRequestParam("studyId")));
+                fileId = new Long(Long.parseLong(getRequestParam("fileId")));
                 editUserService.setRequestStudyId(studyId);
+                editUserService.setRequestStudyFileId(fileId);
             }
             
         }
@@ -258,6 +263,27 @@ public class AddAccountPage extends VDCBaseBean implements java.io.Serializable 
     public void setStudyId(Long studyId) {
         this.studyId = studyId;
     }
+
+    /**
+     * Holds value of property fileId.
+     */
+    private Long fileId;
+    
+    /**
+     * Getter for property fileId.
+     * @return Value of property fileId.
+     */
+    public Long getFileId() {
+        return this.fileId;
+    }
+    
+    /**
+     * Setter for property fileId.
+     * @param fileId New value of property fileId.
+     */
+    public void setFileId(Long fileId) {
+        this.fileId = fileId;
+    }
     
     /**
      * Holds value of property accessStudy.
@@ -299,6 +325,90 @@ public class AddAccountPage extends VDCBaseBean implements java.io.Serializable 
      */
     public void setStudy(Study study) {
         this.study = study;
+    }
+    
+    /**
+     * Holds value of property studyFileRequest.
+     */
+    private boolean studyFileRequest;
+    
+    /**
+     * Getter for property studyFileRequest.
+     * @return Value of property studyFileRequest.
+     */
+    public boolean isStudyFileRequest() {
+        return this.studyFileRequest;
+    }
+    
+    /**
+     * Setter for property studyFileRequest.
+     * @param studyFileRequest New value of property studyFileRequest.
+     */
+    public void setStudyFileRequest(boolean studyFileRequest) {
+        this.studyFileRequest = studyFileRequest;
+    }
+    
+    /**
+     * Holds value of property studyFileId.
+     */
+    private Long studyFileId;
+    
+    /**
+     * Getter for property studyFileId.
+     * @return Value of property studyFileId.
+     */
+    public Long getStudyFileId() {
+        return this.studyFileId;
+    }
+    
+    /**
+     * Setter for property studyFileId.
+     * @param studyFileId New value of property studyFileId.
+     */
+    public void setStudyFileId(Long studyFileId) {
+        this.studyFileId = studyFileId;
+    }
+    
+    /**
+     * Holds value of property accessStudyFile.
+     */
+    private boolean accessStudyFile;
+    
+    /**
+     * Getter for property accessStudyFile.
+     * @return Value of property accessStudyFile.
+     */
+    public boolean isAccessStudyFile() {
+        return this.accessStudyFile;
+    }
+    
+    /**
+     * Setter for property accessStudyFile.
+     * @param accessStudyFile New value of property accessStudyFile.
+     */
+    public void setAccessStudyFile(boolean accessStudyFile) {
+        this.accessStudyFile = accessStudyFile;
+    }
+    
+    /**
+     * Holds value of property studyFile.
+     */
+    private StudyFile studyFile;
+    
+    /**
+     * Getter for property studyFile.
+     * @return Value of property studyFile.
+     */
+    public StudyFile getStudyFile() {
+        return this.studyFile;
+    }
+    
+    /**
+     * Setter for property studyFile.
+     * @param studyFile New value of property studyFile.
+     */
+    public void setStudyFile(StudyFile studyFile) {
+        this.studyFile = studyFile;
     }
     
     /**

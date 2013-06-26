@@ -727,8 +727,10 @@ public class StudyPage extends VDCBaseBean implements java.io.Serializable  {
     }
 
     public String beginRequestWorkflow() {
-            LoginWorkflowBean lwf = (LoginWorkflowBean) getBean("LoginWorkflowBean");       
-            return lwf.beginFileAccessWorkflow(studyId);
+        LoginWorkflowBean lwf = (LoginWorkflowBean) getBean("LoginWorkflowBean");       
+        String nextPage = lwf.beginFileAccessWorkflow(studyId);
+        nextPage += "&studyId=" + getRequestParam("studyID");
+        return nextPage + "&fileId=" + getRequestParam("fileId");
     }
 
    /** confirmation popup for deleting study versions in various states

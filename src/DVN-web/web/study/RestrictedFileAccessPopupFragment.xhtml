@@ -1,0 +1,55 @@
+<div xmlns:h="http://java.sun.com/jsf/html"
+     xmlns:f="http://java.sun.com/jsf/core"
+     xmlns:jsp="http://java.sun.com/JSP/Page"
+     xmlns:ice="http://www.icesoft.com/icefaces/component"
+     xmlns:dvn="/WEB-INF/tlds/dvn-components">
+    <ice:form id="restrictedFileAccessForm">
+        <ice:inputHidden id="vdcId" value="#{VDCRequest.currentVDCId}"/>      
+        <ice:panelPopup id="restrictedFileAccessPopup"
+                        draggable="false"
+                        autoCentre="true"
+                        modal="true"
+                        style="#{VDCRequest.displayInFrame ? 'top:50px !important;' : ''}">
+            <f:facet name="header">
+                <ice:panelGrid id="autoCentPanelGrid"
+                               width="100%" cellpadding="0"
+                               cellspacing="0" columns="2"
+                               columnClasses="none,popupButton">
+                    <ice:outputText value="Restricted File Access"/>
+                </ice:panelGrid>
+            </f:facet>
+            <f:facet name="body">
+                <ice:panelGrid id="autoCentContent"
+                               width="100%" cellpadding="0"
+                               cellspacing="0" columns="1"
+                               styleClass="popupModalBody" rowClasses="popupModVerNotText,popupModVerNotLabel,popupModVerNotField,popupModVerNotForm">
+
+                    <ice:outputText value="Select user(s)/group(s) to remove their access to restricted files."/>
+                    <div jsfc="ice:panelGroup">
+                        <ice:dataTable value="#{currentRow.filePermissions}" var="currPermission" rendered="#{!empty currentRow.filePermissions}">
+                            <ice:column>
+                              <ice:selectBooleanCheckbox value="#{currPermission.checked}"/>
+                            </ice:column>
+                            <ice:column>
+                              <ice:outputLink rendered="#{currPermission.user!=null}" value="/dvn#{VDCRequest.currentVDCURL}/faces/login/AccountPage.xhtml?userId=#{currPermission.user.id}">
+                                <ice:outputText value="#{currPermission.user.userName}"/>
+                              </ice:outputLink>
+                              <ice:outputText value="#{currPermission.group.name}" rendered="#{currPermission.group!=null}"/>
+                            </ice:column>
+                        </ice:dataTable>
+                    </div>
+                    <ice:selectBooleanCheckbox id="genericCheckBoxes" partialSubmit="false" value=""/>
+                    <ice:outputText value=" Remove selected user(s) from all study files."/>
+
+                    <div jsfc="ice:panelGroup" styleClass="dvnFormPadding dvnFormMargin">
+                        <ice:commandButton id="autoCentPopupOk"
+                                           value="Remove"/>
+                        <ice:commandButton id="autoCentPopupCancel"
+                                           value="Cancel"/>
+                    </div>
+                </ice:panelGrid>
+            </f:facet>
+        </ice:panelPopup>
+        <!-- end restrictedFileAccess -->
+    </ice:form>
+</div>

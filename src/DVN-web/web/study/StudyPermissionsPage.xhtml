@@ -268,7 +268,11 @@
                           <f:facet name="header">
                             <ice:outputText id="fileuser_tcol4" value="User/Group Restricted File Access"/>
                           </f:facet>
-                          <ice:dataTable value="#{currentRow.filePermissions}" var="currPermission" rendered="#{!empty currentRow.filePermissions}">
+                          <!--<ice:commandLink binding="#{studyPage.editStudyVersionNotesLink}" actionListener="#{studyPage.editStudyVersionNotes}">-->
+                            <ice:outputText nospan="true" value="Edit User/Group Access"/>
+                          <!--</ice:commandLink>-->
+                          
+                          <!--<ice:dataTable value="#{currentRow.filePermissions}" var="currPermission" rendered="#{!empty currentRow.filePermissions}">
                             <ice:column>
                               <ice:selectBooleanCheckbox value="#{currPermission.checked}"/>
                             </ice:column>
@@ -279,7 +283,7 @@
                               <ice:outputText value="#{currPermission.group.name}" rendered="#{currPermission.group!=null}" />
 
                             </ice:column>
-                          </ice:dataTable>
+                          </ice:dataTable>-->
                         </ice:column>
                         <!-- Commented ice:column - see version prior to 2/1/08 to find changes, MC-->
                       </ice:dataTable>

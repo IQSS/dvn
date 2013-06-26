@@ -177,6 +177,9 @@ public class EditUserServiceBean implements edu.harvard.iq.dvn.core.admin.EditUs
     public Long getRequestStudyId() {return requestStudyId;}
     public void setRequestStudyId(Long studyId) {this.requestStudyId = studyId;}
  
+    private Long requestStudyFileId;
+    public Long getRequestStudyFileId() {return requestStudyFileId;}
+    public void setRequestStudyFileId(Long fileId) {this.requestStudyFileId = fileId;}
     
     /**
      * Remove this Stateful Session bean from the EJB Container without 

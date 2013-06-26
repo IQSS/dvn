@@ -113,6 +113,29 @@ public class StudyAccessRequest implements Serializable {
     public void setVdcUser(VDCUser vdcUser) {
         this.vdcUser = vdcUser;
     }
+    
+    /**
+     * Holds value of property studyFile.
+     */
+    @ManyToOne
+    @JoinColumn(nullable=false)
+    private StudyFile studyFile;
+
+    /**
+     * Getter for property studyFile.
+     * @return Value of property studyFile.
+     */
+    public StudyFile getStudyFile() {
+        return this.studyFile;
+    }
+
+    /**
+     * Setter for property studyFile.
+     * @param studyFile New value of property studyFile.
+     */
+    public void setStudyFile(StudyFile studyFile) {
+        this.studyFile = studyFile;
+    }
   public int hashCode() {
         int hash = 0;
         hash += (this.id != null ? this.id.hashCode() : 0);

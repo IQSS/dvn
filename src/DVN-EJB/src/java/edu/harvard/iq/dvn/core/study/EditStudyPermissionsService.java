@@ -121,5 +121,6 @@ public interface EditStudyPermissionsService extends java.io.Serializable {
 
     public boolean isCurrentVersionFiles();
     
+    public String updateAllFilesList(String filterTerm);
     
 }

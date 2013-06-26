@@ -32,6 +32,8 @@ import javax.ejb.Local;
 public interface EditUserService extends java.io.Serializable  {
     public Long getRequestStudyId();
     public void setRequestStudyId(Long studyId);
+    public Long getRequestStudyFileId();
+    public void setRequestStudyFileId(Long fileId); 
     public String getNewPassword1();
     public void setNewPassword1(String password);
     public String getNewPassword2();

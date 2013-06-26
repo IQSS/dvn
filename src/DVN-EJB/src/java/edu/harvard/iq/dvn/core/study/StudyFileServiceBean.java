@@ -186,6 +186,19 @@ public class StudyFileServiceBean implements StudyFileServiceLocal {
         return studyFiles;
     }
     
+    /*@TransactionAttribute(TransactionAttributeType.NOT_SUPPORTED)
+    public List getOrderedFileIdsByStudyVersion (Long svId) {
+	List<Long> fileIdList = new ArrayList<Long>();
+
+        String queryStr = "SELECT f.id FROM FileMetadata f WHERE f.studyVersion_id = " + svId + " ORDER BY f.category, f.label";
+        Query query = em.createNativeQuery(queryStr);
+        for (Object currentResult : query.getResultList()) {
+            fileIdList.add(new Long(((Integer)currentResult)).longValue());
+        }
+  
+        return fileIdList;
+    }*/
+
     @TransactionAttribute(TransactionAttributeType.NOT_SUPPORTED)    
     public Long getCountFilesByStudyVersion(Long svId) {
         String queryString = "SELECT count(f.*) FROM FileMetadata f WHERE f.studyVersion_id = " + svId +" "; 
@@ -264,6 +277,28 @@ public class StudyFileServiceBean implements StudyFileServiceLocal {
         return sb.toString();
     }
     
+    public List findAllFileIdsSearch(Long studyId, String searchTerm) {
+        String lowerSearchString = searchTerm.toLowerCase();
+        List fileList = new ArrayList();
+        String nativeQuery = "select sf1.id from filemetadata fm1, studyfile sf1 " +
+            " where lower(fm1.label) like '%" + lowerSearchString.replaceAll("'", "''") +
+            "%' and fm1.studyfile_id = sf1.id " +
+            " and  fm1.id in " +
+            " (select max(fm.id) " +
+            " from studyfile sf, study s, filemetadata fm, studyversion sv " +
+            " where sf.study_id = s.id " +
+            " and fm.studyfile_id = sf.id " +
+            " and sv.study_id = s.id " +
+            " and s.id = "+ studyId +
+            " group by sf.id) " +
+            " order by  UPPER(fm1.category)"; 
+        Query query = em.createNativeQuery(nativeQuery);
+        for (Object currentResult : query.getResultList()) {
+            fileList.add(new Long(((Integer)currentResult).longValue()));
+        }
+        return fileList;
+    } 
+
     public Boolean doesStudyHaveSubsettableFiles(Long studyVersionId) {
         List<String> subsettableList = new ArrayList();
         Query query = em.createNativeQuery("select fileclass from studyfile sf, filemetadata fmd where fmd.studyfile_id = sf.id and studyversion_id = " + studyVersionId);

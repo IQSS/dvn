@@ -30,9 +30,13 @@ package edu.harvard.iq.dvn.core.vdc;
 import edu.harvard.iq.dvn.core.admin.VDCUser;
 import edu.harvard.iq.dvn.core.study.Study;
 import edu.harvard.iq.dvn.core.study.StudyAccessRequest;
+import edu.harvard.iq.dvn.core.study.StudyFile;
+import java.util.Iterator;
+import java.util.List;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import javax.persistence.Query;
 
 /**
  *
@@ -53,6 +57,28 @@ public class StudyAccessRequestServiceBean implements edu.harvard.iq.dvn.core.vd
         }
         return studyRequest;
     }
+
+    public List<StudyAccessRequest> findByUserStudyFiles(Long userId, Long studyId, List<Long> fileIdList) {
+        String fileIds = idListString(fileIdList);
+        String queryStr = "SELECT s FROM StudyAccessRequest s WHERE s.vdcUser.id = " + userId + " and s.study.id = "+studyId+" and s.studyFile.id IN  (" + fileIds + ")";
+        Query query = em.createQuery(queryStr);
+        List<StudyAccessRequest> studyRequests = query.getResultList();
+        
+        return studyRequests; 
+    }
+    
+    private String idListString(List idList) {
+        StringBuffer sb = new StringBuffer();
+        Iterator iter = idList.iterator();
+        while (iter.hasNext()) {
+            Long id = (Long) iter.next();
+            sb.append(id);
+            if (iter.hasNext()) {
+                sb.append(",");
+            }
+        }
+        return sb.toString();
+    }
     
      public void create(Long vdcUserId, Long studyId) {
         StudyAccessRequest studyRequest = new StudyAccessRequest();
@@ -65,6 +91,21 @@ public class StudyAccessRequestServiceBean implements edu.harvard.iq.dvn.core.vd
         study.getStudyRequests().add(studyRequest);
       
         em.persist(studyRequest);
+    } 
+    
+    public void create(Long vdcUserId, Long studyId, Long fileId) {
+        StudyAccessRequest studyRequest = new StudyAccessRequest();
+        
+        VDCUser user = (VDCUser)em.find(VDCUser.class,vdcUserId);
+        studyRequest.setVdcUser(user);
+        
+        Study study = (Study)em.find(Study.class,studyId);
+        studyRequest.setStudy(study);
+        
+        StudyFile studyFile = (StudyFile)em.find(StudyFile.class,fileId); 
+        studyRequest.setStudyFile(studyFile); 
+        study.getStudyRequests().add(studyRequest);
+      
+        em.persist(studyRequest);
     }
-   
 }

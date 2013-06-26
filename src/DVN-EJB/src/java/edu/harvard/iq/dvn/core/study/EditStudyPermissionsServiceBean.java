@@ -139,7 +139,7 @@ public class EditStudyPermissionsServiceBean implements EditStudyPermissionsServ
             }
             
         }
-        
+        fileDetailsCopy = new ArrayList<FileDetailBean>(fileDetails);
     }
     
     
@@ -166,18 +166,18 @@ public class EditStudyPermissionsServiceBean implements EditStudyPermissionsServ
             StudyRequestBean elem = it.next();
             
             if (Boolean.TRUE.equals(elem.getAccept()) ){
-                this.addFileUser(elem.getStudyRequest().getVdcUser().getId(),true);
+                this.addFileUser(elem.getStudyRequest().getVdcUser().getId(), elem.getStudyRequest().getStudyFile().getId(), true);
                 em.remove(elem.getStudyRequest());
                 study.getStudyRequests().remove(elem.getStudyRequest());
                 removeBeans.add(elem);
                 
-                mailService.sendFileAccessApprovalNotification(elem.getStudyRequest().getVdcUser().getEmail(),study.getReleasedVersion().getMetadata().getTitle(),study.getGlobalId(),studyUrl);
+                mailService.sendFileAccessApprovalNotification(elem.getStudyRequest().getVdcUser().getEmail(),study.getReleasedVersion().getMetadata().getTitle(),study.getGlobalId(),elem.getStudyRequest().getStudyFile().getFileName(), String.valueOf(elem.getStudyRequest().getStudyFile().getId()), studyUrl); 
  
             } else if (Boolean.FALSE.equals(elem.getAccept()) ){
                 em.remove(elem.getStudyRequest());
                 study.getStudyRequests().remove(elem.getStudyRequest());
                 
-                mailService.sendFileAccessRejectNotification(elem.getStudyRequest().getVdcUser().getEmail(),study.getReleasedVersion().getMetadata().getTitle(),study.getGlobalId(),study.getOwner().getContactEmail());
+                mailService.sendFileAccessRejectNotification(elem.getStudyRequest().getVdcUser().getEmail(), study.getReleasedVersion().getMetadata().getTitle(), study.getGlobalId(), elem.getStudyRequest().getStudyFile().getFileName(), String.valueOf(elem.getStudyRequest().getStudyFile().getId()), study.getOwner().getContactEmail());
                 removeBeans.add(elem);
             }
             
@@ -287,6 +287,26 @@ public class EditStudyPermissionsServiceBean implements EditStudyPermissionsServ
         this.fileDetails = fileDetails;
     }
     
+    private Collection<FileDetailBean> fileDetailsCopy;
+        
+    public String updateAllFilesList(String filterTerm){
+        List fileIds = studyFileService.findAllFileIdsSearch(study.getId(), filterTerm);
+        if (!fileIds.isEmpty()) {
+            fileDetails = new ArrayList();            
+            ArrayList<FileDetailBean> myFileDetails = new ArrayList<FileDetailBean>(fileDetailsCopy);
+            for (Iterator it = fileIds.iterator(); it.hasNext();) {
+                Long elem = (Long) it.next();
+                for (Iterator it2 = myFileDetails.iterator(); it2.hasNext();) {
+                    FileDetailBean fdb = (FileDetailBean) it2.next();
+                    if (((Long) fdb.getStudyFile().getId()).equals(elem)) {
+                        fileDetails.add(fdb);
+                        break;
+                    }
+                }
+            }
+        }
+        return "";
+    }
     /**
      * Holds value of property studyRestriction.
      */
@@ -347,6 +367,10 @@ public class EditStudyPermissionsServiceBean implements EditStudyPermissionsServ
         addFileUser(id, restrictedOnly);
     }
     
+    public void addFileUser(Long userId, Long fileId) {
+        boolean restrictedOnly=false;
+        addFileUser(userId, fileId, restrictedOnly);
+    }
     public void addFileUser(Long id, boolean restrictedOnly) {
         VDCUser user = (VDCUser)em.find(VDCUser.class, id);
         for (Iterator it = fileDetails.iterator(); it.hasNext();) {
@@ -361,6 +385,19 @@ public class EditStudyPermissionsServiceBean implements EditStudyPermissionsServ
         }
     }
     
+    public void addFileUser(Long userId, Long fileId, boolean restrictedOnly) {
+        VDCUser user = (VDCUser)em.find(VDCUser.class, userId);
+        StudyFile studyFile = (StudyFile)em.find(StudyFile.class, fileId);
+        for (Iterator it = fileDetails.iterator(); it.hasNext();) {
+            FileDetailBean elem = (FileDetailBean) it.next();
+            if ((!restrictedOnly && elem.isChecked()) || (restrictedOnly && elem.getStudyFile().isRestricted())) {
+                if (!studyFile.isUserInAllowedUsers(user.getId())) {
+                    studyFile.getAllowedUsers().add(user);
+                    elem.getFilePermissions().add(new PermissionBean(user));
+                }
+            }
+        }
+    }
     public void addFileGroup(Long id) {
         UserGroup group = (UserGroup)em.find(UserGroup.class, id);
         for (Iterator it = fileDetails.iterator(); it.hasNext();) {

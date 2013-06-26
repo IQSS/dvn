@@ -47,6 +47,7 @@ public interface StudyFileServiceLocal {
     java.util.List<FileMetadata> getFilesByStudyVersionOrderedById(Long svId);
     java.util.List<Long> getOrderedFileIdsByStudyVersion (Long svId);
     Map<Long,FileMetadata> getFilesByStudyVersionAndIds(Long svId, List<Long> fileIdList);
+    java.util.List<Long> findAllFileIdsSearch(Long studyId, String searchTerm);
 
     public Boolean doesStudyHaveSubsettableFiles(Long studyVersionId);
     public Boolean doesStudyHaveTabularFiles(Long studyVersionId);

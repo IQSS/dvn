@@ -28,6 +28,7 @@
 package edu.harvard.iq.dvn.core.vdc;
 
 import edu.harvard.iq.dvn.core.study.StudyAccessRequest;
+import java.util.List;
 import javax.ejb.Local;
 
 /**
@@ -39,7 +40,10 @@ import javax.ejb.Local;
 public interface StudyAccessRequestServiceLocal extends java.io.Serializable  {
   
     public StudyAccessRequest findByUserStudy(Long userId, Long studyId);
-
-  public void create(Long vdcUserId, Long studyId);  
     
+    public List<StudyAccessRequest> findByUserStudyFiles(Long userId, Long studyId, List<Long> fileIdList);
+
+    public void create(Long vdcUserId, Long studyId);
+    
+    public void create(Long vdcUserId, Long studyId, Long fileId);
 }

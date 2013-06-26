@@ -48,12 +48,19 @@ public interface MailServiceLocal  extends java.io.Serializable  {
     
     public void sendFileAccessRequestNotification(String sendToEmail, String userName,String studyTitle,String globalId);
     
+    public void sendFileAccessRequestNotification(String sendToEmail, String userName, String studyTitle, String globalId, String fileNameList);
+    
     public void sendFileAccessRequestConfirmation(String userEmail, String studyTitle,String globalId);
     
+    public void sendFileAccessRequestConfirmation(String userEmail, String studyTitle, String globalId, String fileNameList);
+
     public void sendFileAccessApprovalNotification(String userEmail, String studyTitle,String globalId,String studyUrl);
     
+    public void sendFileAccessApprovalNotification(String userEmail, String studyTitle, String globalId, String fileLabel, String fileId, String studyUrl);
+
     public void sendFileAccessRejectNotification(String userEmail, String studyTitle,String globalId,String adminEmail);
 
+    public void sendFileAccessRejectNotification(String userEmail, String studyTitle,String globalId, String fileLable, String fileId, String adminEmail);
     
     public void sendIngestRequestedNotification(DSBIngestMessage ingestMessage, List subsettableFiles);
 

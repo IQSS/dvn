@@ -82,6 +82,9 @@ import javax.inject.Inject;
 import javax.inject.Named;
 import org.apache.commons.compress.archivers.tar.TarArchiveEntry;
 import org.apache.commons.compress.archivers.tar.TarArchiveInputStream;
+import org.apache.commons.compress.compressors.bzip2.BZip2CompressorInputStream;
+import org.apache.commons.compress.compressors.bzip2.BZip2Utils;
+import org.apache.commons.compress.compressors.gzip.GzipUtils;
 import org.apache.commons.io.FileUtils;
 
 @ViewScoped
@@ -109,6 +112,7 @@ public class AddFilesPage extends VDCBaseBean implements java.io.Serializable {
     private String controlCardType = ""; // SPSS, DDI, etc.
     private String controlCardValidationErrorMessage = null;
 
+    private String tarValidationErrorMessage = null;
 
     private boolean controlCardIngestInProgress = false;
 
@@ -224,6 +228,7 @@ public class AddFilesPage extends VDCBaseBean implements java.io.Serializable {
     }
 
     public void setSelectFileType(HtmlSelectOneMenu selectFileType) {
+        setTarValidationErrorMessage(null);
         this.selectFileType = selectFileType;
     }
     
@@ -233,6 +238,14 @@ public class AddFilesPage extends VDCBaseBean implements java.io.Serializable {
 
     public void setDataLanguageEncoding(String dataLanguageEncoding) {
         this.dataLanguageEncoding = dataLanguageEncoding;
+    }
+
+    public String getTarValidationErrorMessage() {
+        return tarValidationErrorMessage;
+    }
+
+    public void setTarValidationErrorMessage(String tarValidationErrorMessage) {
+        this.tarValidationErrorMessage = tarValidationErrorMessage;
     }
 
     public void preRenderView() {
@@ -383,19 +396,10 @@ public class AddFilesPage extends VDCBaseBean implements java.io.Serializable {
                 fileList.add(fb);
             }
             
-        } else if ("multitarplain".equals(selectFileType.getValue())) {
+        } else if ("multitar".equals(selectFileType.getValue())) {
             List<StudyFileEditBean> fileBeanList = null;
 
-            fileBeanList = createStudyFilesFromTarPlain(uploadedFile);
-
-            for (StudyFileEditBean fb : fileBeanList) {
-                fileList.add(fb);
-            }
-
-        } else if ("multitargz".equals(selectFileType.getValue())) {
-            List<StudyFileEditBean> fileBeanList = null;
-
-            fileBeanList = createStudyFilesFromTarGz(uploadedFile);
+            fileBeanList = createStudyFilesFromTar(uploadedFile);
 
             for (StudyFileEditBean fb : fileBeanList) {
                 fileList.add(fb);
@@ -665,35 +669,73 @@ public class AddFilesPage extends VDCBaseBean implements java.io.Serializable {
     }
 
     // large portions copied from createStudyFilesFromZip
-    private List<StudyFileEditBean> createStudyFilesFromTarPlain(File uploadedInputFile) {
-//        System.out.println("creating study files from plain tarball (no .gz)");
+    private List<StudyFileEditBean> createStudyFilesFromTar(File uploadedInputFile) {
         List<StudyFileEditBean> fbList = new ArrayList<StudyFileEditBean>();
 
+        File dir = new File(uploadedInputFile.getParentFile(), study.getId().toString());
+        if (!dir.exists()) {
+            dir.mkdir();
+        }
 
-        TarArchiveInputStream tiStream = null;
-        TarArchiveEntry tEntry = null;
-        FileOutputStream tempOutStream = null;
         List<File> directoriesToDelete = new ArrayList<File>();
+        File unzippedFile = null;
+        TarArchiveInputStream tiStream = null;
+        FileOutputStream tempOutStream = null;
+        String unzipError = "";
+        if (GzipUtils.isCompressedFilename(uploadedInputFile.getName())) {
+            try {
+                GZIPInputStream zippedInput = new GZIPInputStream(new FileInputStream(uploadedInputFile));
+                unzippedFile = new File(dir, "unzipped-file-" + UUID.randomUUID());
+                FileOutputStream unzippedOutput = new FileOutputStream(unzippedFile);
+                byte[] dataBuffer = new byte[8192];
+                int i = 0;
+                while ((i = zippedInput.read(dataBuffer)) > 0) {
+                    unzippedOutput.write(dataBuffer, 0, i);
+                    unzippedOutput.flush();
+                }
+                tiStream = new TarArchiveInputStream(new FileInputStream(unzippedFile));
+            } catch (Exception ex) {
+                unzipError = " A common gzip extension was found but is the file corrupt?";
+            }
+        } else if (BZip2Utils.isCompressedFilename(uploadedInputFile.getName())) {
+            try {
+                BZip2CompressorInputStream zippedInput = new BZip2CompressorInputStream(new FileInputStream(uploadedInputFile));
+                unzippedFile = new File(dir, "unzipped-file-" + UUID.randomUUID());
+                FileOutputStream unzippedOutput = new FileOutputStream(unzippedFile);
+                byte[] dataBuffer = new byte[8192];
+                int i = 0;
+                while ((i = zippedInput.read(dataBuffer)) > 0) {
+                    unzippedOutput.write(dataBuffer, 0, i);
+                    unzippedOutput.flush();
+                }
+                tiStream = new TarArchiveInputStream(new FileInputStream(unzippedFile));
+            } catch (Exception ex) {
+                unzipError = " A common bzip2 extension was found but is the file corrupt?";
+            }
+        } else {
+            try {
+                // no need to decompress, carry on
+                tiStream = new TarArchiveInputStream(new FileInputStream(uploadedInputFile));
+            } catch (FileNotFoundException ex) {
+                unzipError = " Is the tar file corrupt?";
+            }
+        }
+
+        TarArchiveEntry tEntry = null;
+
+        if (tiStream == null) {
+            String msg = "Problem reading uploaded file." + unzipError;
+            setTarValidationErrorMessage(msg);
+            uploadedInputFile.delete();
+            fbList = new ArrayList<StudyFileEditBean>();
+            return fbList;
+        }
         try {
-            // Create ingest directory for the study:
-            File dir = new File(uploadedInputFile.getParentFile(), study.getId().toString());
-            if (!dir.exists()) {
-                dir.mkdir();
-            }
-
-            // open tar input stream
-            tiStream = new TarArchiveInputStream(new FileInputStream(uploadedInputFile));
-
-            if (tiStream == null) {
-                return null;
-            }
-
             while ((tEntry = tiStream.getNextTarEntry()) != null) {
 
                 String fileEntryName = tEntry.getName();
 
                 if (!tEntry.isDirectory()) {
-//                    System.out.println("file: " + fileEntryName);
 
                     if (fileEntryName != null && !fileEntryName.equals("")) {
 
@@ -712,7 +754,14 @@ public class AddFilesPage extends VDCBaseBean implements java.io.Serializable {
                             finalFileName = fileEntryName;
                         }
 
-                        File tempUploadedFile = FileUtil.createTempFile(dir, finalFileName);
+                        File tempUploadedFile = null;
+                        try {
+                            tempUploadedFile = FileUtil.createTempFile(dir, finalFileName);
+                        } catch (Exception ex) {
+                            Logger.getLogger(AddFilesPage.class.getName()).log(Level.SEVERE, null, ex);
+                            String msg = "Problem creating temporary file.";
+                            setTarValidationErrorMessage(msg);
+                        }
 
                         tempOutStream = new FileOutputStream(tempUploadedFile);
 
@@ -726,90 +775,67 @@ public class AddFilesPage extends VDCBaseBean implements java.io.Serializable {
 
                         tempOutStream.close();
 
-                        StudyFileEditBean tempFileBean = new StudyFileEditBean(tempUploadedFile, studyService.generateFileSystemNameSequence(), study);
-                        tempFileBean.setSizeFormatted(tempUploadedFile.length());
-
-                        if (dirName != null) {
-                            tempFileBean.getFileMetadata().setCategory(dirName);
+                        try {
+                            StudyFileEditBean tempFileBean = new StudyFileEditBean(tempUploadedFile, studyService.generateFileSystemNameSequence(), study);
+                            tempFileBean.setSizeFormatted(tempUploadedFile.length());
+                            if (dirName != null) {
+                                tempFileBean.getFileMetadata().setCategory(dirName);
+                            }
+                            fbList.add(tempFileBean);
+                            setTarValidationErrorMessage(null);
+                        } catch (Exception ex) {
+                            String msg = "Problem preparing files for ingest. Is the tar file corrupt?" ;
+                            setTarValidationErrorMessage(msg);
+                            uploadedInputFile.delete();
+                            tempUploadedFile.delete();
+                            fbList = new ArrayList<StudyFileEditBean>();
                         }
-
-                        fbList.add(tempFileBean);
                     }
                 } else {
-//                    System.out.println("directory: " + fileEntryName);
                     File directory = new File(dir, fileEntryName);
                     directory.mkdir();
                     directoriesToDelete.add(directory);
                 }
             }
-            tiStream.close();
-        } catch (Exception ex) {
-            String msg = "Failed to unpack tar file/create individual study files";
-            dbgLog.warning(msg);
-            dbgLog.warning(ex.getMessage());
-        } finally {
-            if (tiStream != null) {
-                try {
-                    tiStream.close();
-                } catch (IOException ex) {
-                    Logger.getLogger(AddFilesPage.class.getName()).log(Level.SEVERE, null, ex);
-                }
-            }
-            if (tempOutStream != null) {
-                try {
-                    tempOutStream.close();
-                } catch (IOException ex) {
-                    Logger.getLogger(AddFilesPage.class.getName()).log(Level.SEVERE, null, ex);
-                }
-            }
+        } catch (IOException ex) {
+            String msg = "Problem reading tar file. Is it corrupt?";
+            setTarValidationErrorMessage(msg);
         }
 
-        uploadedInputFile.delete();
-        for (File dir : directoriesToDelete) {
-            if (dir.exists()) {
-                try {
-                    FileUtils.forceDelete(dir);
-                } catch (IOException ex) {
-                    Logger.getLogger(AddFilesPage.class.getName()).log(Level.SEVERE, null, ex);
-                }
-            }
-        }
-
-        return fbList;
-    }
-
-    private List<StudyFileEditBean> createStudyFilesFromTarGz(File uploadedInputFile) {
-//        System.out.println("creating study files from plain tarball (no .gz)");
-        List<StudyFileEditBean> fbList = new ArrayList<StudyFileEditBean>();
-
-        File dir = new File(uploadedInputFile.getParentFile(), study.getId().toString());
-        if (!dir.exists()) {
-            dir.mkdir();
-        }
-
-        GZIPInputStream zippedInput = null;
+        // teardown and cleanup
         try {
-            zippedInput = new GZIPInputStream(new FileInputStream(uploadedInputFile));
-            File unzippedFile = new File(dir, "unzipped-file-" + UUID.randomUUID());
-            FileOutputStream unzippedOutput = new FileOutputStream(unzippedFile);
-            byte[] dataBuffer = new byte[8192];
-            int i = 0;
-            while ((i = zippedInput.read(dataBuffer)) > 0) {
-                unzippedOutput.write(dataBuffer, 0, i);
-                unzippedOutput.flush();
-            }
-            fbList = createStudyFilesFromTarPlain(unzippedFile);
-            unzippedFile.delete();
-            uploadedInputFile.delete();
+            tiStream.close();
         } catch (IOException ex) {
             Logger.getLogger(AddFilesPage.class.getName()).log(Level.SEVERE, null, ex);
-        } finally {
+        }
+        if (tiStream != null) {
             try {
-                zippedInput.close();
+                tiStream.close();
             } catch (IOException ex) {
                 Logger.getLogger(AddFilesPage.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
+        if (tempOutStream != null) {
+            try {
+                tempOutStream.close();
+            } catch (IOException ex) {
+                Logger.getLogger(AddFilesPage.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+        uploadedInputFile.delete();
+        if (unzippedFile != null) {
+            unzippedFile.delete();
+        }
+        for (File dirToDelete : directoriesToDelete) {
+            if (dirToDelete.exists()) {
+                try {
+                    FileUtils.forceDelete(dirToDelete);
+                } catch (IOException ex) {
+                    Logger.getLogger(AddFilesPage.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            }
+        }
+
         return fbList;
     }
 
@@ -1036,20 +1062,9 @@ public class AddFilesPage extends VDCBaseBean implements java.io.Serializable {
         }
         return false;
     }
-    
-    /**
-     * @todo: detect .tar vs .tag.gz at upload rather than forcing the user to
-     * think about it
-     */
-    public boolean isTarPlainMultipleFilesSelected() {
-        if ("multitarplain".equals(selectFileType.getValue())) {
-            return true;
-        }
-        return false;
-    }
 
-    public boolean isTarGzMultipleFilesSelected() {
-        if ("multitargz".equals(selectFileType.getValue())) {
+    public boolean isTarMultipleFilesSelected() {
+        if ("multitar".equals(selectFileType.getValue())) {
             return true;
         }
         return false;
@@ -1199,8 +1214,7 @@ public class AddFilesPage extends VDCBaseBean implements java.io.Serializable {
             fileTypes.add( new SelectItemGroup("Network Data", "", false, fileTypesNetwork) );
             
             fileTypes.add( new SelectItem("multizip", "Zip Archive (Multiple Files)"));
-            fileTypes.add( new SelectItem("multitarplain", ".tar Archive (Multiple Files)"));
-            fileTypes.add( new SelectItem("multitargz", ".tar.gz Archive (Multiple Files)"));
+            fileTypes.add( new SelectItem("multitar", "Tar Archive (Multiple Files)"));
             fileTypes.add( new SelectItem("fits", "FITS file"));
             fileTypes.add( new SelectItem("other", "Other") );
         }

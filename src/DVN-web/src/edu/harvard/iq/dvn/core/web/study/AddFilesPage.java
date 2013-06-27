@@ -757,9 +757,7 @@ public class AddFilesPage extends VDCBaseBean implements java.io.Serializable {
                         // only process normal tar entries, not the ones that start with "._" because they were created on a mac:
                         // http://superuser.com/questions/61185/why-do-i-get-files-like-foo-in-my-tarball-on-os-x
                         // http://superuser.com/questions/212896/is-there-any-way-to-prevent-a-mac-from-creating-dot-underscore-files
-                        if (!"._".equals(finalFileName.substring(0, 2))) {
-
-                            System.out.println("final name: " + finalFileName);
+                        if (!finalFileName.startsWith("._")) {
 
                             File tempUploadedFile = null;
                             try {

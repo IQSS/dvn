@@ -754,41 +754,49 @@ public class AddFilesPage extends VDCBaseBean implements java.io.Serializable {
                             finalFileName = fileEntryName;
                         }
 
-                        File tempUploadedFile = null;
-                        try {
-                            tempUploadedFile = FileUtil.createTempFile(dir, finalFileName);
-                        } catch (Exception ex) {
-                            Logger.getLogger(AddFilesPage.class.getName()).log(Level.SEVERE, null, ex);
-                            String msg = "Problem creating temporary file.";
-                            setTarValidationErrorMessage(msg);
-                        }
+                        // only process normal tar entries, not the ones that start with "._" because they were created on a mac:
+                        // http://superuser.com/questions/61185/why-do-i-get-files-like-foo-in-my-tarball-on-os-x
+                        // http://superuser.com/questions/212896/is-there-any-way-to-prevent-a-mac-from-creating-dot-underscore-files
+                        if (!"._".equals(finalFileName.substring(0, 2))) {
 
-                        tempOutStream = new FileOutputStream(tempUploadedFile);
+                            System.out.println("final name: " + finalFileName);
 
-                        byte[] dataBuffer = new byte[8192];
-                        int i = 0;
-
-                        while ((i = tiStream.read(dataBuffer)) > 0) {
-                            tempOutStream.write(dataBuffer, 0, i);
-                            tempOutStream.flush();
-                        }
-
-                        tempOutStream.close();
-
-                        try {
-                            StudyFileEditBean tempFileBean = new StudyFileEditBean(tempUploadedFile, studyService.generateFileSystemNameSequence(), study);
-                            tempFileBean.setSizeFormatted(tempUploadedFile.length());
-                            if (dirName != null) {
-                                tempFileBean.getFileMetadata().setCategory(dirName);
+                            File tempUploadedFile = null;
+                            try {
+                                tempUploadedFile = FileUtil.createTempFile(dir, finalFileName);
+                            } catch (Exception ex) {
+                                Logger.getLogger(AddFilesPage.class.getName()).log(Level.SEVERE, null, ex);
+                                String msg = "Problem creating temporary file.";
+                                setTarValidationErrorMessage(msg);
                             }
-                            fbList.add(tempFileBean);
-                            setTarValidationErrorMessage(null);
-                        } catch (Exception ex) {
-                            String msg = "Problem preparing files for ingest. Is the tar file corrupt?" ;
-                            setTarValidationErrorMessage(msg);
-                            uploadedInputFile.delete();
-                            tempUploadedFile.delete();
-                            fbList = new ArrayList<StudyFileEditBean>();
+
+                            tempOutStream = new FileOutputStream(tempUploadedFile);
+
+                            byte[] dataBuffer = new byte[8192];
+                            int i = 0;
+
+                            while ((i = tiStream.read(dataBuffer)) > 0) {
+                                tempOutStream.write(dataBuffer, 0, i);
+                                tempOutStream.flush();
+                            }
+
+                            tempOutStream.close();
+
+                            try {
+                                StudyFileEditBean tempFileBean = new StudyFileEditBean(tempUploadedFile, studyService.generateFileSystemNameSequence(), study);
+                                tempFileBean.setSizeFormatted(tempUploadedFile.length());
+                                if (dirName != null) {
+                                    tempFileBean.getFileMetadata().setCategory(dirName);
+                                }
+                                fbList.add(tempFileBean);
+                                setTarValidationErrorMessage(null);
+                            } catch (Exception ex) {
+                                String msg = "Problem preparing files for ingest. Is the tar file corrupt?";
+                                setTarValidationErrorMessage(msg);
+                                uploadedInputFile.delete();
+                                tempUploadedFile.delete();
+                                fbList = new ArrayList<StudyFileEditBean>();
+                            }
                         }
                     }
                 } else {

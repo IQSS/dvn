@@ -191,6 +191,36 @@
         <load-on-startup>1</load-on-startup>
     </servlet>
 
+   <!-- Data Deposit API (SWORD v2) servlet and context parameters -->
+   <context-param>
+       <param-name>config-impl</param-name>
+       <param-value>edu.harvard.iq.dvn.api.datadeposit.SwordConfigurationImpl</param-value>
+       <!--<description>The SwordConfiguration server implementation class name</description>-->
+   </context-param>
+   <context-param>
+       <param-name>statement-impl</param-name>
+       <param-value>edu.harvard.iq.dvn.api.datadeposit.StatementManagerImpl</param-value>
+       <!--<description>The StatementManager server implementation class name</description>-->
+   </context-param>
+   <context-param>
+       <param-name>service-document-impl</param-name>
+       <param-value>edu.harvard.iq.dvn.api.datadeposit.ServiceDocumentManagerImpl</param-value>
+       <!--<description>The ServiceDocumentManager server implementation class name</description>-->
+   </context-param>
+   <context-param>
+       <param-name>collection-deposit-impl</param-name>
+       <param-value>edu.harvard.iq.dvn.api.datadeposit.CollectionDepositManagerImpl</param-value>
+       <!--<description>The CollectionDepositManager server implementation class name</description>-->
+   </context-param>
+   <servlet>
+       <servlet-name>edu.harvard.iq.dvn.api.datadeposit.ServiceDocumentManagerImpl</servlet-name>
+       <servlet-class>org.swordapp.server.servlets.ServiceDocumentServletDefault</servlet-class>
+   </servlet>
+   <servlet>
+       <servlet-name>edu.harvard.iq.dvn.api.datadeposit.CollectionDepositManagerImpl</servlet-name>
+       <servlet-class>org.swordapp.server.servlets.CollectionServletDefault</servlet-class>
+   </servlet>
+
    <!-- DVN SPECIFIC SERVLETS -->
 
     <servlet>
@@ -314,6 +344,15 @@
       <url-pattern>/api/*</url-pattern>
     </servlet-mapping>
 
+    <!-- Data Deposit API (SWORD v2) servlet mapping (URLs are unstable for now!)-->
+    <servlet-mapping>
+        <servlet-name>edu.harvard.iq.dvn.api.datadeposit.ServiceDocumentManagerImpl</servlet-name>
+        <url-pattern>/api/data-deposit/swordv2/service-document/*</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>edu.harvard.iq.dvn.api.datadeposit.CollectionDepositManagerImpl</servlet-name>
+        <url-pattern>/api/data-deposit/swordv2/collection/*</url-pattern>
+    </servlet-mapping>
 
 <!-- DVN SPECIFIC SERVLET MAPPINGS START -->
     <servlet-mapping>

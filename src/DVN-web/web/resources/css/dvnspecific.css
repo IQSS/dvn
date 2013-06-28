@@ -299,10 +299,10 @@ td.dvnPermissionsTableOption{width:240px;padding-top:.75em;padding-bottom:.75em;
 .dvnPermissionsTable fieldset.iceSelOneRb{border:0;padding:0;background:none}
 .dvnPermissionsTable table.iceSelOneRb td{padding:0 .25em;border:0}
 .dvnPermissionsTable label.iceSelOneRb{font-size:90% !important}
-.dvnPermissionsTable .dvnManageTableTop {margin-top:1em; border-top:1px solid lightgray; background:#EEF3FB;}
+.dvnPermissionsTable .dvnManageTableTop {margin-top:1em; border-top:1px solid lightgray !important; background:#EEF3FB;}
 .dvnPermissionsTable .dvnManageTableTop .dvnFormPaddingNoTop {padding:0 1em 1em 1em;}
 .dvnPermissionsTable .dvnManageTableTop .dvnManageTableControls {padding:0; border-top:1px solid lightgray; overflow:hidden;}
-.dvnPermissionsTable .dvnManageTableTop .dvnManageTableControls div:first-child {float:left; width:7%; margin-right: -1px; padding:5px 0; text-align:center;}
+.dvnPermissionsTable .dvnManageTableTop .dvnManageTableControls div:first-child {float:left; width:7%; margin-right: -1px; padding:4px 0; text-align:center;}
 .dvnPermissionsTable .dvnManageTableTop .dvnManageTableControls div:last-child {float:left; padding:9px 5px; border-left:1px solid lightgray;}
 .dvnPermissionsTable .dvnStudyPermissionsFileDetails {margin-top:0;}
 .dvnPermissionsTable .iceDatTbl span{font-size:90% !important}

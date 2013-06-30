@@ -427,55 +427,79 @@ public class EditStudyPermissionsServiceBean implements EditStudyPermissionsServ
         }
     }
     
+    private Collection<PermissionBean> filePermissionsReturn; 
     
-    
-    public void removeFilePermissions() {
-        
+    public Collection<PermissionBean> getFilePermissions(Long fileId) {
         for (Iterator it = this.fileDetails.iterator(); it.hasNext();) {
-            FileDetailBean fileDetail = (FileDetailBean) it.next();
-            List checkedBeans = new ArrayList();
-            for (Iterator it2 = fileDetail.getFilePermissions().iterator(); it2.hasNext();) {
-                PermissionBean elem = (PermissionBean) it2.next();
-                if (elem.isChecked()) {
-                    if (elem.getUser()!=null) {
-                        VDCUser foundUser = null;
-                        // Note: need to do this extra step of finding the user by checking the ID,
-                        // because this does not work:
-                        // fileDetail.getStudyFile().getAllowedGroups().remove(elem.getUser());
-                        // (Some wierdness in EJB where it doesn't think elem.getUser() is equivalent to the user in the list.)
-                        for (Iterator userIt = fileDetail.getStudyFile().getAllowedUsers().iterator(); userIt.hasNext();) {
-                            VDCUser user = (VDCUser) userIt.next();
-                            if (user.getId().equals(elem.getUser().getId())) {
-                                foundUser= user;
-                            }
-                        }
-                        if (foundUser!=null) {
-                            fileDetail.getStudyFile().getAllowedUsers().remove(foundUser);
-                            foundUser.getStudyFiles().remove(fileDetail.getStudyFile());
-                        }
-                    } else if (elem.getGroup()!=null) {
-                        // See above note for removing elem.getUser()
-                        UserGroup foundGroup = null;
-                        for (Iterator groupIt = fileDetail.getStudyFile().getAllowedGroups().iterator(); groupIt.hasNext();) {
-                            UserGroup group = (UserGroup) groupIt.next();
-                            if (group.getId().equals(elem.getGroup().getId())) {
-                                foundGroup = group;
-                            }
-                        }
-                        if (foundGroup!=null) {
-                            fileDetail.getStudyFile().getAllowedGroups().remove(foundGroup);
-                            foundGroup.getStudyFiles().remove(fileDetail.getStudyFile());
+            FileDetailBean fdb = (FileDetailBean) it.next();
+            if (fdb.getStudyFile().getId().equals(fileId)) {
+                filePermissionsReturn = new ArrayList<PermissionBean>(fdb.getFilePermissions());
+                fileDetail = fdb;
+                break;
+            }
+        }
+        return filePermissionsReturn;
+    }
+    
+    private FileDetailBean fileDetail;
+        
+    public void removeFilePermissions(boolean removeChecked) {        
+        List checkedBeans = new ArrayList();
+        for (Iterator it2 = fileDetail.getFilePermissions().iterator(); it2.hasNext();) {
+            PermissionBean elem = (PermissionBean) it2.next();
+            if (elem.isChecked()) {
+                if (elem.getUser()!=null) {
+                    VDCUser foundUser = null;
+                    // Note: need to do this extra step of finding the user by checking the ID,
+                    // because this does not work:
+                    // fileDetail.getStudyFile().getAllowedGroups().remove(elem.getUser());
+                    // (Some wierdness in EJB where it doesn't think elem.getUser() is equivalent to the user in the list.)
+                    for (Iterator userIt = fileDetail.getStudyFile().getAllowedUsers().iterator(); userIt.hasNext();) {
+                        VDCUser user = (VDCUser) userIt.next();
+                        if (user.getId().equals(elem.getUser().getId())) {
+                            foundUser= user;
                         }
                     }
-                    checkedBeans.add(elem);
+                    if (foundUser!=null) {
+                        if (!removeChecked) {
+                            fileDetail.getStudyFile().getAllowedUsers().remove(foundUser);
+                            foundUser.getStudyFiles().remove(fileDetail.getStudyFile());
+                        } else {
+                            for (StudyFile sf : fileDetail.getStudyFile().getStudy().getStudyFiles()) {
+                                sf.getAllowedUsers().remove(foundUser);
+                                foundUser.getStudyFiles().remove(sf);                                   
+                            }
+                        }
+                    }
+                } else if (elem.getGroup()!=null) {
+                    // See above note for removing elem.getUser()
+                    UserGroup foundGroup = null;
+                    for (Iterator groupIt = fileDetail.getStudyFile().getAllowedGroups().iterator(); groupIt.hasNext();) {
+                        UserGroup group = (UserGroup) groupIt.next();
+                        if (group.getId().equals(elem.getGroup().getId())) {
+                            foundGroup = group;
+                        }
+                    }
+                    if (foundGroup!=null) {
+                        if (!removeChecked) {
+                            fileDetail.getStudyFile().getAllowedGroups().remove(foundGroup);
+                            foundGroup.getStudyFiles().remove(fileDetail.getStudyFile());
+                        } else {
+                            for (StudyFile sf : fileDetail.getStudyFile().getStudy().getStudyFiles()) {
+                                sf.getAllowedGroups().remove(foundGroup);
+                                foundGroup.getStudyFiles().remove(sf);
+                            }
+                        }
+                    }
                 }
+                checkedBeans.add(elem);
             }
-            
-            for (Iterator it3 = checkedBeans.iterator(); it3.hasNext();) {
-                PermissionBean elem = (PermissionBean)it3.next();
-                if (elem.isChecked()) {
-                    fileDetail.getFilePermissions().remove(elem);
-                }
+        }
+
+        for (Iterator it3 = checkedBeans.iterator(); it3.hasNext();) {
+            PermissionBean elem = (PermissionBean)it3.next();
+            if (elem.isChecked()) {
+                fileDetail.getFilePermissions().remove(elem);
             }
         }
     }

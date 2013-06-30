@@ -109,7 +109,9 @@ public interface EditStudyPermissionsService extends java.io.Serializable {
     void addFileUser(Long id);
     void addFileGroup(Long id);
    
-    void removeFilePermissions();
+    Collection<PermissionBean> getFilePermissions(Long fileId); 
+    
+    void removeFilePermissions(boolean removeChecked); 
     
     void updateRequests(String studyUrl);
     

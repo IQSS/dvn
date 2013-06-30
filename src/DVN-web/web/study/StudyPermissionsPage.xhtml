@@ -73,7 +73,7 @@
                 <ice:panelTab label="Study">
                 <div jsfc="ice:panelGroup" styleClass="dvnInformationMessage">
                     <div class="dvnMsgBlockContainer">
-                      <ice:outputText value="#{bundlePageInfo.manageStudyPermissionsHelp}" escape="false"/>
+                      <ice:outputText value="#{bundlePageInfo.manageStudyPermissionsStudyHelp}" escape="false"/>
                     </div>
                 </div>
                 <table class="dvnPermissionsTable" cellspacing="0" cellpadding="0" border="0">
@@ -83,20 +83,21 @@
                       <ice:outputText value="Cataloging Information and File Settings"/>
                     </td>
                     <td>
-                      <ice:selectOneMenu value="#{StudyPermissionsPage.editStudyPermissions.studyRestriction}">
+                      <ice:selectOneMenu partialSubmit="true" value="#{StudyPermissionsPage.editStudyPermissions.studyRestriction}">
                         <f:selectItem itemLabel="Restricted" itemValue="Restricted"/>
                         <f:selectItem itemLabel="Public" itemValue="Public"/>
                       </ice:selectOneMenu>
 
-                      <ice:outputText styleClass="vdcHelpText" value="If this setting is public, files can still be restricted below"/>
+                      <ice:outputText styleClass="vdcHelpText" value="If this setting is public, files can still be restricted on the Files tab of this page."/>
                     </td>
                   </tr>
+                  <ui:fragment rendered="#{StudyPermissionsPage.editStudyPermissions.studyRestriction == 'Restricted'}">
                   <tr>
                     <td class="dvnPermissionsTableOption dvnPermissionsStackedCells">
                       <ice:outputText value="User Restricted Study Settings"/>
                     </td>
                     <td class="dvnPermissionsStackedCells">
-                      <ice:outputText id="outputText7" value="Username/Group: "/>
+                      <ice:outputText id="outputText7" value="Username/Group Name: "/>
                       <ice:inputText id="newStudyUser" binding="#{StudyPermissionsPage.studyUserInputText}" value="#{StudyPermissionsPage.newStudyUser}"/>
                       <ice:commandButton value="Add" actionListener="#{StudyPermissionsPage.addStudyPermission}"/>
                       <ice:message styleClass="errorMessage" for="newStudyUser"/>
@@ -104,9 +105,10 @@
                       <ice:outputText styleClass="vdcHelpText" value="Enter username/group to allow restricted study access."/>
                     </td>
                   </tr>
+                  </ui:fragment>
+                  <ui:fragment rendered="#{!empty StudyPermissionsPage.editStudyPermissions.studyPermissions}">
                   <tr>
                     <td colspan="2">
-                      <div jsfc="ice:panelGroup" rendered="#{!empty StudyPermissionsPage.editStudyPermissions.studyPermissions}">
                         <ice:commandButton value="Remove" actionListener="#{StudyPermissionsPage.removeStudyUserGroup}"/>
 
                         <ice:outputText styleClass="vdcHelpText" value=" Select multiple users/groups by checking the boxes below."/>
@@ -128,15 +130,15 @@
                             </ice:outputLink>
                           </ice:column>
                         </ice:dataTable>
-                      </div>
                     </td>
                   </tr>
+                  </ui:fragment>
                 </table>
                 </ice:panelTab>
                 <ice:panelTab label="Files">
                 <div jsfc="ice:panelGroup" styleClass="dvnInformationMessage">
                     <div class="dvnMsgBlockContainer">
-                      <ice:outputText value="#{bundlePageInfo.manageStudyPermissionsHelp}" escape="false"/>
+                      <ice:outputText value="#{bundlePageInfo.manageStudyPermissionsFilesHelp}" escape="false"/>
                     </div>
                 </div>
                 <div jsfc="ice:panelGroup" rendered="#{!empty StudyPermissionsPage.editStudyPermissions.studyRequests}">
@@ -184,55 +186,62 @@
                 </table>
               </div>
                 <table class="dvnPermissionsTable" cellspacing="0" cellpadding="0" border="0">
-                  <tr><td colspan="2" class="dvnPermissionsTableHeader"><ice:outputText value="Individual File Permission Settings"/></td></tr>
-                  <tr>
-                    <td class="dvnPermissionsTableOption dvnPermissionsStackedCells">
-                      <ice:outputText value="Restricted File User Access"/>
-                    </td>
-                    <td class="dvnPermissionsStackedCells">
-                      <div>
-                        <p>
-                            <ice:graphicImage value="/resources/images/icon_info.gif" styleClass="dvn_icon"/>
-                            <ice:outputText styleClass="vdcHelpText" value=" Select file and enter username/group to allow restricted file access, or set the file permission. (The single update button works for either field.) Select multiple users/groups by checking the boxes under User/Group Restricted File Access."/>
-                        </p>
-                      </div>
-                      <div jsfc="ice:panelGroup" rendered="#{VDCRequest.currentVDC.filesRestricted}">
-                        <p>
-                            <ice:graphicImage value="/resources/images/icon_warning.18.png" styleClass="dvn_icon"/>
-                            <ice:outputText styleClass="vdcHelpText" value=" The files have been restricted at the dataverse level. Restrictions defined here will be overridden by the dataverse level restriction." escape="false"/>
-                        </p>
-                      </div>
-                      <ice:outputText value="Username: "/>
-                      <ice:inputText value="#{StudyPermissionsPage.newFileUser}" id="newFileUser" binding="#{StudyPermissionsPage.fileUserInputText}"/>
-                      <br/>
-                      <ice:outputText value="File Permission: "/>
-                      <ice:selectOneMenu value="#{StudyPermissionsPage.selectFilePermission}">
-                        <f:selectItem itemLabel="Choose permission..." itemValue=""/>
-                        <f:selectItem itemLabel="Restricted" itemValue="Restricted"/>
-                        <f:selectItem itemLabel="Public" itemValue="Public"/>
-                      </ice:selectOneMenu>
-                      <ice:commandButton value="Update" actionListener="#{StudyPermissionsPage.addFilePermission}"/>
-                      <ice:message styleClass="errorMessage" for="newFileUser"/>
-                    </td>
-                  </tr>
+                  <tr><td class="dvnPermissionsTableHeader"><ice:outputText value="Individual File Permission Settings"/></td></tr>
                   <tr>
                       <td>
-                          <ice:outputText value="Select Files"/>
-                      </td>
-                      <td> 
-                        <ice:outputText value="Filter: "/>
-                        <ice:inputText binding="#{StudyPermissionsPage.inputFilterTerm}"
-                                                    size="50" maxlength="255"
-                                                    onkeyup="delayedRequest(form,this,event);"/> 
-                         <ice:selectBooleanCheckbox id="showAllStudyFiles" binding="#{StudyPermissionsPage.viewFileCheckBox}" value="#{StudyPermissionsPage.viewAllFiles}" valueChangeListener="#{StudyPermissionsPage.changeViewFiles}" onclick="submit()"/>
-                         <ice:outputText id="outputText3" value="Show all files, from all study versions"/>
-                      </td>
-                  </tr>
-                  <tr>
-                      <td colspan="2">
-                        <ice:dataTable cellpadding="0" cellspacing="0" width="100%"
+                        <ice:graphicImage value="/resources/images/icon_info.gif" styleClass="dvn_icon"/>
+                        <ice:outputText value=" Choose to either: allow access by Username/Group Name or set restricted File Permission." escape="false"/>
+                        <div jsfc="ice:panelGroup" styleClass="dvnManageTableTop">
+                            <div jsfc="ice:panelGroup" rendered="#{VDCRequest.currentVDC.filesRestricted}">
+                                <p>
+                                    <ice:graphicImage value="/resources/images/icon_warning.18.png" styleClass="dvn_icon"/>
+                                    <ice:outputText styleClass="vdcHelpText" value=" The files have been restricted at the dataverse level. Restrictions defined here will be overridden by the dataverse level restriction." escape="false"/>
+                                </p>
+                            </div>
+                            <div jsfc="ice:panelGroup" styleClass="dvn_margin12 dvnInformationMessage">
+                                <div class="dvnMsgBlockContainer">
+                                    <p><ice:outputText value="Enter username or group name to grant restricted file access." escape="false"/></p>
+                                </div>
+                            </div>
+                            <div class="dvnFormPaddingNoTop">
+                                <ice:outputText value="Username/Group Name: "/>
+                                <ice:inputText value="#{StudyPermissionsPage.newFileUser}" id="newFileUser" binding="#{StudyPermissionsPage.fileUserInputText}"/>
+                                
+                                <ice:commandButton value="Grant Access" actionListener="#{StudyPermissionsPage.addFilePermission}"/>
+                                <ice:message styleClass="errorMessage" for="newFileUser"/>
+                            </div>
+                            <div jsfc="ice:panelGroup" styleClass="dvn_margin12 dvnInformationMessage">
+                                <div class="dvnMsgBlockContainer">
+                                    <p><ice:outputText value="Select file(s) using the checkboxes below, to update file access permissions." escape="false"/></p>
+                                </div>
+                            </div>
+                            <div class="dvnFormPaddingNoTop">
+                                <ice:outputText value="File Permission: "/>
+                                <ice:selectOneMenu value="#{StudyPermissionsPage.selectFilePermission}">
+                                    <f:selectItem itemLabel="Choose permission..." itemValue=""/>
+                                    <f:selectItem itemLabel="Restricted" itemValue="Restricted"/>
+                                    <f:selectItem itemLabel="Public" itemValue="Public"/>
+                                </ice:selectOneMenu>
+                                
+                                <ice:commandButton value="Update Permissions" actionListener="#{StudyPermissionsPage.addFilePermission}"/>
+                                <ice:message styleClass="errorMessage" for="newFileUser"/>
+                            </div>
+                            <div jsfc="ice:panelGroup" styleClass="dvnManageTableControls">
+                                <div>Select<br/>Files</div>
+                                <div>
+                                    <ice:outputText value="Filter: "/>
+                                    <ice:inputText binding="#{StudyPermissionsPage.inputFilterTerm}"
+                                                                size="50" maxlength="255"
+                                                                onkeyup="delayedRequest(form,this,event);"/> 
+                                    <ice:selectBooleanCheckbox style="margin-left:2em;" id="showAllStudyFiles" binding="#{StudyPermissionsPage.viewFileCheckBox}" value="#{StudyPermissionsPage.viewAllFiles}" valueChangeListener="#{StudyPermissionsPage.changeViewFiles}" onclick="submit()"/>
+                                    <ice:outputText id="outputText3" value="Show all files, from all study versions"/>
+                                </div>
+                            </div>
+                        </div>
+                        <ice:dataTable cellpadding="0" cellspacing="0" width="100%" 
                                      headerClass="list-header-left" columnClasses="dvnStudyFilePermTblChk, vdcColPadded, vdcColPadded, vdcColPadded, vdcColPadded"
-                                     styleClass="dvnStudyPermissionsFileDetails" rowClasses="list-row-even, list-row-odd"
+                                     styleClass="dvnStudyPermissionsFileDetails" rowClasses="list-row-even, list-row-odd" 
+                                     columnWidths="7%,20%,36%,12%,9%,16%"
                                      value="#{StudyPermissionsPage.editStudyPermissions.fileDetails}" var="currentRow">
                         <ice:column id="fileuser_col1">
                           <f:facet name="header">
@@ -255,7 +264,7 @@
                         <ice:column id="fileuser_col5">
                           <ice:outputText value="#{currentRow.fileVersions}"/>
                           <f:facet name="header">
-                            <ice:outputText id="fileuser_tcol5" value="Found in Version(s)"/>
+                            <ice:outputText id="fileuser_tcol5" value="Study Version(s)"/>
                           </f:facet>
                         </ice:column>
                           <ice:column id="fileuser_col3">
@@ -266,10 +275,10 @@
                         </ice:column>
                         <ice:column id="fileuser_col4">
                           <f:facet name="header">
-                            <ice:outputText id="fileuser_tcol4" value="User/Group Restricted File Access"/>
+                            <ice:outputText id="fileuser_tcol4" value="Restricted File Access"/>
                           </f:facet>
                           <!--<ice:commandLink binding="#{studyPage.editStudyVersionNotesLink}" actionListener="#{studyPage.editStudyVersionNotes}">-->
-                            <ice:outputText nospan="true" value="Edit User/Group Access"/>
+                            <ice:outputText value="Edit User/Group Access"/>
                           <!--</ice:commandLink>-->
                           
                           <!--<ice:dataTable value="#{currentRow.filePermissions}" var="currPermission" rendered="#{!empty currentRow.filePermissions}">

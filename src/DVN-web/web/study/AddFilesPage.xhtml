@@ -151,6 +151,9 @@
                         <ice:panelGroup rendered="#{AddFilesPage.zipMultipleFilesSelected}">
                             <ice:outputText styleClass="vdcTextStandout" escape="false" value="You have selected to upload *multiple files* in a zipped archive. Click Browse to select the valid Zip file; it will be unpacked, and the individual items will be ingested as separate Study Files. &#60;strong&#62;If you would like to ingest a Zip archive as a single file, upload it as type &quot;other&quot;&#60;/strong&#62;."/>
                         </ice:panelGroup>
+                        <ice:panelGroup rendered="#{AddFilesPage.tarMultipleFilesSelected}">
+                            <ice:outputText styleClass="vdcTextStandout" escape="false" value="You have selected to upload *multiple files* in a tar archive. Click Browse to select the valid .tar (or .tar.gz or .tgz or .tar.bz2) file; it will be unpacked, and the individual items will be ingested as separate Study Files. &#60;strong&#62;If you would like to ingest a tar archive as a single file, upload it as type &quot;other&quot;&#60;/strong&#62;."/>
+                        </ice:panelGroup>
                         <ice:panelGroup rendered="#{AddFilesPage.FITSIngestRequested}">
                             <ice:outputText styleClass="vdcTextStandout" value="(NEW/Beta!) Basic metadata extracted from FITS files will be made searchable in the application."/>
                         </ice:panelGroup>
@@ -159,6 +162,7 @@
                         </ice:panelGroup>
                     </div>
                   </div>
+                  <ice:outputText id="tarValidationError" nospan="true" escape="false" value="&#60;p style=&#34;margin-top:0;&#34; class=&#34;warnMessage&#34;&#62;&#60;img src=&#34;/dvn/resources/images/icon_warning.18.png&#34; class=&#34;dvn_icon&#34; /&#62; #{AddFilesPage.tarValidationErrorMessage} &#60;p&#62;" rendered="#{AddFilesPage.tarValidationErrorMessage != null}"/>
 
                   <!-- l.a. "inputfile" component commented out: 
                   <ice:inputFile id="inputFileComponent"

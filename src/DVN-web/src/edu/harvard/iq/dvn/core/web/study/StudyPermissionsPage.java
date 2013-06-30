@@ -25,6 +25,7 @@
  */
 package edu.harvard.iq.dvn.core.web.study;
 
+import com.icesoft.faces.component.ext.HtmlCommandLink;
 import edu.harvard.iq.dvn.core.admin.GroupServiceLocal;
 import edu.harvard.iq.dvn.core.admin.NetworkRoleServiceBean;
 import edu.harvard.iq.dvn.core.admin.RoleServiceBean;
@@ -43,6 +44,7 @@ import javax.faces.component.UIComponent;
 import javax.faces.component.UIInput;
 import com.icesoft.faces.component.ext.HtmlInputText;
 import com.icesoft.faces.component.ext.HtmlSelectBooleanCheckbox;
+import java.util.Collection;
 import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
 import javax.faces.event.ActionEvent;
@@ -226,10 +228,12 @@ public class StudyPermissionsPage extends VDCBaseBean  implements java.io.Serial
     public void removeStudyUserGroup(ActionEvent ae) {
         editStudyPermissions.removeStudyPermissions();
     }
-    public void removeFilePermissions(ActionEvent ae) {
-        editStudyPermissions.removeFilePermissions();
+    
+    public void removeFilePermissions() {
+        editStudyPermissions.removeFilePermissions(removeChecked);
+        showFileAccessPopup = !showFileAccessPopup; 
     }
- 
+
     public void  updateRequests(ActionEvent ae) {
         HttpServletRequest request = (HttpServletRequest)this.getExternalContext().getRequest();
         String hostName=request.getLocalName();
@@ -558,5 +562,64 @@ public class StudyPermissionsPage extends VDCBaseBean  implements java.io.Serial
     public String updateAllFilesList(){
         String checkString = (String) getInputFilterTerm().getValue(); 
         return this.editStudyPermissions.updateAllFilesList(checkString);
+    }
+    
+    /**
+     * Holds value of property showFileAccessPopup.
+     */
+    protected boolean showFileAccessPopup = false;
+
+    /**
+     * Get the value of showFileAccessPopup
+     *
+     * @return the value of showFileAccessPopup
+     */
+    public boolean isShowFileAccessPopup() {
+        return showFileAccessPopup;
+    }
+
+    /**
+     * Set the value of showFileAccessPopup
+     *
+     * @param showFileAccessPopup new value of showFileAccessPopup
+     */
+    public void setShowFileAccessPopup(boolean showFileAccessPopup) {
+        this.showFileAccessPopup = showFileAccessPopup;
+    }
+    
+    private Collection<PermissionBean> restrictedFilePermissions;
+    
+    public Collection<PermissionBean> getRestrictedFilePermissions() {
+        return restrictedFilePermissions;
+    }
+    
+    public void setRestrictedFilePermissions(Collection<PermissionBean> restrictedFilePermissions) {
+        this.restrictedFilePermissions = restrictedFilePermissions;
+    }
+    
+    public void toggleFileAccessPopup(Long fileId) {
+        setRestrictedFilePermissions(editStudyPermissions.getFilePermissions(fileId));         
+        showFileAccessPopup = !showFileAccessPopup;
+    }    
+    
+    /** 
+     * Holds value of property removeChecked.
+     */
+    private boolean removeChecked;
+
+    /**
+     * Getter for property removeChecked.
+     * @return Value of property removeChecked.
+     */
+    public boolean isRemoveChecked() {
+        return this.removeChecked;
+    }
+
+    /**
+     * Setter for property removeChecked.
+     * @param removeChecked New value of property removeChecked.
+     */
+    public void setRemoveChecked(boolean removeChecked) {
+        this.removeChecked = removeChecked;
     }
 }

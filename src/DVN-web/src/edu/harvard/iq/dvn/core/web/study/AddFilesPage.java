@@ -614,34 +614,37 @@ public class AddFilesPage extends VDCBaseBean implements java.io.Serializable {
                             finalFileName = fileEntryName; 
                         }
                     
-                        File tempUploadedFile = FileUtil.createTempFile(dir, finalFileName);
-            
-                        tempOutStream = new FileOutputStream (tempUploadedFile); 
-                    
-                        byte[] dataBuffer = new byte[8192];
-                        int i = 0;
-                
-                        while ((i = ziStream.read(dataBuffer)) > 0) {
-                            tempOutStream.write(dataBuffer, 0, i);
-                            tempOutStream.flush(); 
+                        // http://superuser.com/questions/212896/is-there-any-way-to-prevent-a-mac-from-creating-dot-underscore-files
+                        if (!finalFileName.startsWith("._")) {
+                            File tempUploadedFile = FileUtil.createTempFile(dir, finalFileName);
+
+                            tempOutStream = new FileOutputStream(tempUploadedFile);
+
+                            byte[] dataBuffer = new byte[8192];
+                            int i = 0;
+
+                            while ((i = ziStream.read(dataBuffer)) > 0) {
+                                tempOutStream.write(dataBuffer, 0, i);
+                                tempOutStream.flush();
+                            }
+
+                            tempOutStream.close();
+
+                            // We now have the unzipped file saved in the upload directory;
+
+
+                            StudyFileEditBean tempFileBean = new StudyFileEditBean(tempUploadedFile, studyService.generateFileSystemNameSequence(), study);
+                            tempFileBean.setSizeFormatted(tempUploadedFile.length());
+
+                            // And, if this file was in a legit (non-null) directory, 
+                            // we'll use its name as the file category: 
+
+                            if (dirName != null) {
+                                tempFileBean.getFileMetadata().setCategory(dirName);
+                            }
+
+                            fbList.add(tempFileBean);
                         }
-                
-                        tempOutStream.close(); 
-                
-                        // We now have the unzipped file saved in the upload directory;
-                
-                
-                        StudyFileEditBean tempFileBean = new StudyFileEditBean(tempUploadedFile, studyService.generateFileSystemNameSequence(), study);
-                        tempFileBean.setSizeFormatted(tempUploadedFile.length());
-                        
-                        // And, if this file was in a legit (non-null) directory, 
-                        // we'll use its name as the file category: 
-                        
-                        if (dirName != null) {
-                            tempFileBean.getFileMetadata().setCategory(dirName);
-                        }
-                
-                        fbList.add(tempFileBean);
                     }
                 }
                 ziStream.closeEntry(); 

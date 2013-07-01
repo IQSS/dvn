@@ -44,6 +44,7 @@ import javax.faces.component.UIComponent;
 import javax.faces.component.UIInput;
 import com.icesoft.faces.component.ext.HtmlInputText;
 import com.icesoft.faces.component.ext.HtmlSelectBooleanCheckbox;
+import edu.harvard.iq.dvn.core.util.PropertyUtil;
 import java.util.Collection;
 import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
@@ -234,18 +235,9 @@ public class StudyPermissionsPage extends VDCBaseBean  implements java.io.Serial
         showFileAccessPopup = !showFileAccessPopup; 
     }
 
-    public void  updateRequests(ActionEvent ae) {
-        HttpServletRequest request = (HttpServletRequest)this.getExternalContext().getRequest();
-        String hostName=request.getLocalName();
-        int port = request.getLocalPort();
-        String portStr="";
-        if (port!=80) {
-            portStr=":"+port;
-        }
-        String studyUrl = "http://"+hostName+portStr+request.getContextPath()+getVDCRequestBean().getCurrentVDCURL()+"/faces/study/StudyPage.xhtml?studyId="+studyId+"&tab=files";
-        
-        
-        editStudyPermissions.updateRequests(studyUrl);
+    public void  updateRequests(ActionEvent ae) {  
+        editStudyPermissions.updateRequests();
+        getVDCRenderBean().getFlash().put("warningMessage", "User request approvals and denials won't take effect until you click the 'Save' button.");    
     }
     
     /**

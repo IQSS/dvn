@@ -190,6 +190,13 @@ public class StudyUI  implements java.io.Serializable {
      * Use this constructor if you want to set the StudyFileUI.fileRestrictedFor user value
      */
     public StudyUI(StudyVersion sv, VDCUser user, UserGroup ipUserGroup) {
+        this(sv, user, ipUserGroup, false);
+    }
+    
+    /* used in FileRequest Page
+     * Loads all files for the study
+     */
+    public StudyUI(StudyVersion sv, VDCUser user, UserGroup ipUserGroup, boolean loadAllFiles) {
         this.studyVersion = sv;
         this.studyVersionId = studyVersion.getId();
         this.study = sv.getStudy();
@@ -197,8 +204,8 @@ public class StudyUI  implements java.io.Serializable {
 
         this.user = user;
         this.ipUserGroup = ipUserGroup;
-        initFileCategoryUIList(user, ipUserGroup);
-    }
+        initFileCategoryUIList(user, ipUserGroup, loadAllFiles);
+    }    
 
 
     /**
@@ -1005,7 +1012,7 @@ public class StudyUI  implements java.io.Serializable {
     } */
     
     //add new method to replace the old one with the same name to improve performance. -xyang
-    public void initFileCategoryUIList(VDCUser user, UserGroup ipUserGroup) {
+    public void initFileCategoryUIList(VDCUser user, UserGroup ipUserGroup, boolean loadAllFiles) {
         categoryUIList = new ArrayList<FileCategoryUI>();
         try {
             studyFileService = (StudyFileServiceLocal) new InitialContext().lookup("java:comp/env/studyFileService");
@@ -1017,7 +1024,12 @@ public class StudyUI  implements java.io.Serializable {
             fileIdList = studyFileService.getOrderedFileIdsByStudyVersion (getStudyVersion().getId());
         } 
         
-        getFileCategoryUIList(getStudyVersion().getId(), getSubFileIdList(fileIdList), user, ipUserGroup);
+        if (loadAllFiles) {
+            getFileCategoryUIList(getStudyVersion().getId(), fileIdList, user, ipUserGroup );
+            fileIdList = null;            
+        } else {
+            getFileCategoryUIList(getStudyVersion().getId(), getSubFileIdList(fileIdList), user, ipUserGroup);
+        }
     }
     
     public List <FileCategoryUI> getFileCategoryUIList(ActionEvent ae)

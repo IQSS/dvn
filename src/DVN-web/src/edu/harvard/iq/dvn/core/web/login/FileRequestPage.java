@@ -25,6 +25,7 @@
  */
 package edu.harvard.iq.dvn.core.web.login;
 
+import com.icesoft.faces.context.effects.JavascriptContext;
 import edu.harvard.iq.dvn.core.admin.EditUserService;
 import edu.harvard.iq.dvn.core.admin.RoleServiceLocal;
 import edu.harvard.iq.dvn.core.admin.UserServiceLocal;
@@ -107,7 +108,11 @@ public class FileRequestPage extends VDCBaseBean implements java.io.Serializable
             lwf.beginFileAccessWorkflow(studyId);
         }
    
-   
+    }
+    
+    public void preRenderView() {
+        super.preRenderView();
+        JavascriptContext.addJavascriptCall(getFacesContext(), "checkButton();");        
     }
 
     private Long getRequestStudyId() {
@@ -265,7 +270,7 @@ public class FileRequestPage extends VDCBaseBean implements java.io.Serializable
             studyUI = new StudyUI(
                             studyVersion,
                             getVDCSessionBean().getLoginBean() != null ? this.getVDCSessionBean().getLoginBean().getUser() : null,
-                            getVDCSessionBean().getIpUserGroup());
+                            getVDCSessionBean().getIpUserGroup(), true);
             studyUIContainsFileDetails=true;
         }
     }

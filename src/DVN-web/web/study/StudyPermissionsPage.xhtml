@@ -328,7 +328,7 @@
           </div>
         </div>
         
-        <!-- file popup. xyang-->
+        <!-- file popup.-->
         <ice:panelPopup id="restrictedFileAccessPopup" 
                         draggable="false"
                         visible="#{StudyPermissionsPage.showFileAccessPopup}"
@@ -378,7 +378,7 @@
                     </div>
                     <div jsfc="ice:panelGroup" styleClass="dvnFormPadding dvnFormMargin">
                         <ice:commandButton id="autoCentPopupOk"                                           
-                                           value="Remove" action="#{StudyPermissionsPage.removeFilePermissions()}" onclick="removeCheckBoxes('form1:autoCentContent-2-0');"/>
+                                           value="Remove" action="#{StudyPermissionsPage.removeFilePermissions()}"/>
                         <ice:commandButton id="autoCentPopupCancel"
                                            action="#{StudyPermissionsPage.toggleFileAccessPopup(0)}"
                                            value="Cancel" onclick="removeCheckBoxes('form1:restrictedFileAccessPopup-tr');"/>
@@ -386,7 +386,7 @@
                 </ice:panelGrid>
             </f:facet>
         </ice:panelPopup>
-        <!-- end of file popup. xyang-->
+        <!-- end of file popup.-->
       </ice:form>
     </ui:define>
   </ui:composition>

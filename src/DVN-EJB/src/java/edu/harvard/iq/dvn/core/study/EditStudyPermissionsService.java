@@ -113,7 +113,7 @@ public interface EditStudyPermissionsService extends java.io.Serializable {
     
     void removeFilePermissions(boolean removeChecked); 
     
-    void updateRequests(String studyUrl);
+    void updateRequests();
     
     void setFileRestriction( boolean restricted);
 

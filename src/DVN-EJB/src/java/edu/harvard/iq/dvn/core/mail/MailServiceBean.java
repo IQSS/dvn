@@ -328,7 +328,7 @@ public class MailServiceBean implements edu.harvard.iq.dvn.core.mail.MailService
     
     public void sendFileAccessRejectNotification(String userEmail, String studyTitle,String globalId, String fileLabel, String fileId, String adminEmail) {
         String subject = "Dataverse Network: Your Request to access restricted files was denied";
-        String messageText = "Your request to access to restricted file '"+fileLabel+"' ("+fileId+") in study '"+studyTitle+"' ("+globalId+") was denied.  \n"+
+        String messageText = "Your request to access the restricted file '"+fileLabel+"' ("+fileId+") in study '"+studyTitle+"' ("+globalId+") was denied.  \n"+
                 "Please contact the dataverse Administrator at "+adminEmail+
                 " for more information as to why your request did not go through. ";
         sendDoNotReplyMail(userEmail,subject,messageText);
@@ -336,7 +336,7 @@ public class MailServiceBean implements edu.harvard.iq.dvn.core.mail.MailService
 
     public void sendFileAccessRejectNotification(String userEmail, String studyTitle,String globalId,String adminEmail) {
         String subject = "Dataverse Network: Your Request to access restricted files was denied";
-        String messageText = "Your request to access to restricted files in study '"+studyTitle+"' ("+globalId+") was denied.  \n"+
+        String messageText = "Your request to access the restricted files in study '"+studyTitle+"' ("+globalId+") was denied.  \n"+
                 "Please contact the dataverse Administrator at "+adminEmail+
                 " for more information as to why your request did not go through. ";
         sendDoNotReplyMail(userEmail,subject,messageText);

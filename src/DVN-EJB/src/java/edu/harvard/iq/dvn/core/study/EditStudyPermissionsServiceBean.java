@@ -30,6 +30,7 @@ package edu.harvard.iq.dvn.core.study;
 import edu.harvard.iq.dvn.core.admin.UserGroup;
 import edu.harvard.iq.dvn.core.admin.VDCUser;
 import edu.harvard.iq.dvn.core.mail.MailServiceLocal;
+import edu.harvard.iq.dvn.core.util.PropertyUtil;
 import edu.harvard.iq.dvn.core.vdc.VDCCollection;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -158,9 +159,9 @@ public class EditStudyPermissionsServiceBean implements EditStudyPermissionsServ
     }
     
     
-   
+   List<StudyRequestBean> requestsToMail = new ArrayList();
     
-    public void updateRequests(String studyUrl) {
+    public void updateRequests() {
         List removeBeans = new ArrayList();
         for (Iterator<StudyRequestBean> it =  studyRequests.iterator(); it.hasNext();) {
             StudyRequestBean elem = it.next();
@@ -171,14 +172,16 @@ public class EditStudyPermissionsServiceBean implements EditStudyPermissionsServ
                 study.getStudyRequests().remove(elem.getStudyRequest());
                 removeBeans.add(elem);
                 
-                mailService.sendFileAccessApprovalNotification(elem.getStudyRequest().getVdcUser().getEmail(),study.getReleasedVersion().getMetadata().getTitle(),study.getGlobalId(),elem.getStudyRequest().getStudyFile().getFileName(), String.valueOf(elem.getStudyRequest().getStudyFile().getId()), studyUrl); 
+                // add to queue to mail on save
+                requestsToMail.add(elem);
  
             } else if (Boolean.FALSE.equals(elem.getAccept()) ){
                 em.remove(elem.getStudyRequest());
                 study.getStudyRequests().remove(elem.getStudyRequest());
-                
-                mailService.sendFileAccessRejectNotification(elem.getStudyRequest().getVdcUser().getEmail(), study.getReleasedVersion().getMetadata().getTitle(), study.getGlobalId(), elem.getStudyRequest().getStudyFile().getFileName(), String.valueOf(elem.getStudyRequest().getStudyFile().getId()), study.getOwner().getContactEmail());
                 removeBeans.add(elem);
+
+                // add to queue to mail on save              
+                requestsToMail.add(elem);            
             }
             
         }
@@ -213,6 +216,19 @@ public class EditStudyPermissionsServiceBean implements EditStudyPermissionsServ
         // requires a transaction will automatically trigger a flush to the database,
         // but include this just to show what's happening here
         em.flush();
+
+        String studyUrl = "http://"+ PropertyUtil.getHostUrl() + "/dvn/dv/" + study.getOwner().getAlias() +"/faces/study/StudyPage.xhtml?studyId=" + study.getId() + "&tab=files";
+        
+        // if save succeeds, send out all accept/reject mail messages
+        for (StudyRequestBean elem : requestsToMail) {
+           if (Boolean.TRUE.equals(elem.getAccept()) ){
+                mailService.sendFileAccessApprovalNotification(elem.getStudyRequest().getVdcUser().getEmail(),study.getReleasedVersion().getMetadata().getTitle(),study.getGlobalId(),elem.getStudyRequest().getStudyFile().getFileName(), String.valueOf(elem.getStudyRequest().getStudyFile().getId()), studyUrl); 
+            } else if (Boolean.FALSE.equals(elem.getAccept()) ){
+                mailService.sendFileAccessRejectNotification(elem.getStudyRequest().getVdcUser().getEmail(), study.getReleasedVersion().getMetadata().getTitle(), study.getGlobalId(), elem.getStudyRequest().getStudyFile().getFileName(), String.valueOf(elem.getStudyRequest().getStudyFile().getId()), study.getOwner().getContactEmail());
+            }
+            
+        }
+            
     }
     
     

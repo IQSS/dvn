@@ -318,6 +318,11 @@ td.dvnPermissionsTableOption{width:240px;padding-top:.75em;padding-bottom:.75em;
 .dvnUserPermissionsTable tr:first-child td {background:#EEF3FB;}
 .dvnStudyFilePermPopUp .dvnStudyFilePermTblChk {text-align:center;}
 .dvnStudyFilePermPopUp .dvnStudyFilePermRemoveChkBxLabel {display:inline;}
+.dvnStudyPermissionsUsersPopUp .iceDatTblScrlSpr {border-right:0;}
+.dvnStudyPermissionsUsersPopUp .list-header-left {background-color:transparent;}
+.dvnStudyPermissionsUsersPopUpColHdr1 span.iceOutTxt {margin:0 1px;}
+.dvnStudyPermissionsUsersPopUp tr.dvnStudyPermissionsUsersPopUpRow td.iceDatTblCol {padding-top:3px;}
+.dvnStudyPermissionsUsersPopUp > tbody > tr > td {padding-top:0;}
 /* VARIABLE PAGE */
 .dvnVariableStatisticsBlock{margin-bottom:30px;padding:20px 10px;border:1px solid #cccccc;background:#F2F2F2;}
 /* ADD SITE */

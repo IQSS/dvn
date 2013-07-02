@@ -181,7 +181,7 @@
                   <tr>
                     <td colspan="3">
                       <ice:graphicImage value="/resources/images/icon_info.gif" styleClass="dvn_icon"/>
-                      <ice:outputText styleClass="vdcHelpText" value=" Approve or reject user request for access to restricted files."/>
+                      <ice:outputText styleClass="vdcHelpText" value=" Approve or deny user request for access to restricted files."/>
                       <ice:dataTable cellpadding="0" cellspacing="0" width="100%"
                                      headerClass="list-header-left" rowClasses="list-row-even, list-row-odd"
                                      columnClasses="vdcColPadded, vdcColPadded" columnWidths="28%,15%,57%"
@@ -192,8 +192,8 @@
                             <ice:commandButton value="Update" actionListener="#{StudyPermissionsPage.updateRequests}"/>
                           </f:facet>
                           <ice:selectOneRadio value="#{currentRow.accept}">
-                            <f:selectItem itemLabel="Accept" itemValue="true"/>
-                            <f:selectItem itemLabel="Reject" itemValue="false"/>
+                            <f:selectItem itemLabel="Approve" itemValue="true"/>
+                            <f:selectItem itemLabel="Deny" itemValue="false"/>
                           </ice:selectOneRadio>
                         </ice:column>
                         <ice:column>
@@ -263,7 +263,7 @@
                                     <ice:inputText binding="#{StudyPermissionsPage.inputFilterTerm}"
                                                                 size="50" maxlength="255"
                                                                 onkeyup="delayedRequest(form,this,event);"/> 
-                                    <ice:selectBooleanCheckbox style="margin-left:2em;" id="showAllStudyFiles" binding="#{StudyPermissionsPage.viewFileCheckBox}" value="#{StudyPermissionsPage.viewAllFiles}" valueChangeListener="#{StudyPermissionsPage.changeViewFiles}" onclick="submit()"/>
+                                    <ice:selectBooleanCheckbox id="showAllStudyFiles" binding="#{StudyPermissionsPage.viewFileCheckBox}" value="#{StudyPermissionsPage.viewAllFiles}" valueChangeListener="#{StudyPermissionsPage.changeViewFiles}" onclick="submit()"/>
                                     <ice:outputText id="outputText3" value="Show all files, from all study versions"/>
                                 </div>
                             </div>
@@ -328,8 +328,8 @@
           </div>
         </div>
         
-        <!-- file popup.-->
-        <ice:panelPopup id="restrictedFileAccessPopup" 
+        <!-- file popup. -->
+        <ice:panelPopup id="restrictedFileAccessPopup" styleClass="dvnStudyFilePermPopUp"
                         draggable="false"
                         visible="#{StudyPermissionsPage.showFileAccessPopup}"
                         autoCentre="true"
@@ -352,10 +352,11 @@
                     <ice:outputText value="Select user(s)/group(s) to remove their access to restricted files."/>
                     <div jsfc="ice:panelGroup">
                         <ice:dataTable cellpadding="0" cellspacing="0" width="100%"
-                                     headerClass="list-header-left" columnClasses="dvnStudyFilePermTblChk, vdcColPadded" columnWidths="8%,92%"
-                                     styleClass="dvnStudyPermissionsFileDetails" rowClasses="list-row-even, list-row-odd"
+                                     scrollable="true" scrollHeight="140px"
+                                     headerClass="list-header-left" columnClasses="dvnStudyFilePermTblChk, vdcColPadded" columnWidths="80px,82%"
+                                     styleClass="dvnStudyPermissionsUsersPopUp" rowClasses="list-row-even, list-row-odd"
                                      value="#{StudyPermissionsPage.restrictedFilePermissions}" var="currPermission">
-                            <ice:column style="text-align:center;">
+                            <ice:column>
                               <f:facet name="header">
                                 <ice:outputText value="Select"/>
                               </f:facet>
@@ -374,7 +375,7 @@
                     </div>
                     <div jsfc="ice:panelGroup" styleClass="dvnFormPadding">
                         <ice:selectBooleanCheckbox id="genericCheckBoxes" value="#{StudyPermissionsPage.removeChecked}" partialSubmit="false"/>
-                        <ice:outputText style="display:inline;" value=" Remove selected user(s) from &lt;strong&gt;ALL&lt;/strong&gt; restricted files associated with this study." escape="false"/>
+                        <ice:outputText styleClass="dvnStudyFilePermRemoveChkBxLabel" value=" Remove selected user(s) from &lt;strong&gt;ALL&lt;/strong&gt; restricted files associated with this study." escape="false"/>
                     </div>
                     <div jsfc="ice:panelGroup" styleClass="dvnFormPadding dvnFormMargin">
                         <ice:commandButton id="autoCentPopupOk"                                           

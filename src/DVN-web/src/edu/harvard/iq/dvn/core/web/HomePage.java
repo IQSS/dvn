@@ -622,8 +622,11 @@ public class HomePage extends VDCBaseBean implements Serializable {
         String truncatedAnnouncements = StringUtil.truncateString(announcements, 1000);
         if ( truncatedAnnouncements != null && !truncatedAnnouncements.equals(announcements) ) {
             ResourceBundle resourceBundle = ResourceBundle.getBundle("Bundle");
+            Long networkId = getVDCRequestBean().getCurrentVdcNetwork() != null ? getVDCRequestBean().getCurrentVdcNetwork().getId() : new Long (0);             
             if (isLocal) {
                 truncatedAnnouncements += "<a href=\"/dvn/faces/AnnouncementsPage.xhtml?vdcId=" + getVDCRequestBean().getCurrentVDC().getId() + "\" title=\"" + resourceBundle.getString("moreLocalAnnouncementsTip") + "\" class=\"dvn_more\" >more >></a>";
+            } else if (!networkId.equals(new Long (0))) {
+                truncatedAnnouncements += "<a href=\"/dvn/dataverses/" + getVDCRequestBean().getCurrentVdcNetwork().getUrlAlias()  + "/faces/AnnouncementsPage.xhtml\" title=\"" + resourceBundle.getString("moreNetworkAnnouncementsTip") + "\" class=\"dvn_more\" >more >></a>";
             } else {
                 truncatedAnnouncements += "<a href=\"/dvn/faces/AnnouncementsPage.xhtml\" title=\"" + resourceBundle.getString("moreNetworkAnnouncementsTip") + "\" class=\"dvn_more\" >more >></a>";
             }

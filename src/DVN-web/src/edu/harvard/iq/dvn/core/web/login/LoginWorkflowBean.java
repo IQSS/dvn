@@ -77,9 +77,9 @@ public class LoginWorkflowBean extends VDCBaseBean implements java.io.Serializab
           String nextPage =  null;
           LoginBean loginBean = this.getVDCSessionBean().getLoginBean();
         if (loginBean == null) {
-            nextPage = "/login/FileRequestAccountPage?faces-redirect=true";
+            nextPage = "/login/FileRequestAccountPage?faces-redirect=true" + getContextSuffix();
         } else {
-            nextPage = "/login/FileRequestPage?faces-redirect=true&studyId="+studyId; 
+            nextPage = "/login/FileRequestPage?faces-redirect=true&studyId="+studyId + getContextSuffix(); 
         }
   
         return nextPage;

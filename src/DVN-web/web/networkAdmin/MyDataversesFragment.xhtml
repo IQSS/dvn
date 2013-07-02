@@ -1,4 +1,4 @@
-                <div xmlns:ui="http://java.sun.com/jsf/facelets"
+<div xmlns:ui="http://java.sun.com/jsf/facelets"
                      xmlns:h="http://java.sun.com/jsf/html"
                      xmlns:f="http://java.sun.com/jsf/core"
                      xmlns:jsp="http://java.sun.com/JSP/Page"
@@ -35,11 +35,11 @@
                             </div>
                         </ice:panelGrid>
                     </div>
-                    <ice:dataTable cellpadding="0" cellspacing="0" columns="2" width="100%"
+                    <ice:dataTable cellpadding="0" cellspacing="0" columns="3" width="100%"
                                     styleClass="dvnDataTable" id="gridPanel2"
-                                    columnClasses="dvnMyDataverseTableName, dvnMyDataverseTableRole"
+                                    columnClasses="dvnMyDataverseTableName, dvnMyDataverseTableRole, dvnMyDataverseTableActions"
                                     rendered="#{not empty(MyDataversePage.dataverses)}"
-                                    rowClasses="evenRow oddRow"
+                                    rowClasses="evenRow oddRow" columnWidths="40%,30%,30%"
                                     value="#{MyDataversePage.dataverses}"
                                     var="dataverseInfo">
                         <ice:column>
@@ -55,6 +55,23 @@
                                 <ice:outputText value="Role"/>
                             </f:facet>
                             <ice:outputText value="#{dataverseInfo[1]}"/>
+                        </ice:column>
+                        <ice:column>
+                            <f:facet name="header">
+                                <ice:outputText value="Actions"/>
+                            </f:facet>
+                            <ice:outputLink rendered="#{dataverseInfo[1] == 'admin'}" value="/dvn/dv/#{dataverseInfo[0].alias}/faces/admin/OptionsPage.xhtml?tab=settings" title="Edit Dataverse Settings">
+                                <img src="/dvn/resources/images/navicon_options.png" alt="Edit Dataverse Settings"/>
+                            </ice:outputLink>
+                            <ice:outputLink rendered="#{dataverseInfo[1] == 'admin'}" value="/dvn/dv/#{dataverseInfo[0].alias}/faces/admin/OptionsPage.xhtml?tab=settings" title="Edit Dataverse Settings">
+                                <ice:outputText value="Edit Settings"/>
+                            </ice:outputLink>
+                            <ice:outputLink rendered="#{dataverseInfo[1] == 'curator' or dataverseInfo[1] == 'admin' or  dataverseInfo[1] == 'contributor'}" value="/dvn/dv/#{dataverseInfo[0].alias}/faces/study/EditStudyPage.xhtml" title="Create a New Study">
+                                <img src="/dvn/resources/images/navicon_create.png" alt="Create a New Study"/>
+                            </ice:outputLink>
+                            <ice:outputLink rendered="#{dataverseInfo[1] == 'curator' or dataverseInfo[1] == 'admin' or  dataverseInfo[1] == 'contributor'}" value="/dvn/dv/#{dataverseInfo[0].alias}/faces/study/EditStudyPage.xhtml" title="Create a New Study">
+                                <ice:outputText value="Create Study"/>
+                            </ice:outputLink>
                         </ice:column>
                     </ice:dataTable>
                 </div>

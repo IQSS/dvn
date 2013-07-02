@@ -19,6 +19,7 @@
 */
 package edu.harvard.iq.dvn.core.mail;
 
+import edu.harvard.iq.dvn.core.study.StudyFile;
 import edu.harvard.iq.dvn.core.study.StudyVersion;
 import edu.harvard.iq.dvn.core.vdc.VDC;
 import edu.harvard.iq.dvn.ingest.dsb.DSBIngestMessage;
@@ -61,6 +62,8 @@ public interface MailServiceLocal  extends java.io.Serializable  {
     public void sendFileAccessRejectNotification(String userEmail, String studyTitle,String globalId,String adminEmail);
 
     public void sendFileAccessRejectNotification(String userEmail, String studyTitle,String globalId, String fileLable, String fileId, String adminEmail);
+
+    public void sendFileAccessResolvedNotification(String userEmail, String studyTitle,String globalId, List<StudyFile> acceptedFiles, List<StudyFile> rejectedFiles, String url, String adminEmail);
     
     public void sendIngestRequestedNotification(DSBIngestMessage ingestMessage, List subsettableFiles);
 

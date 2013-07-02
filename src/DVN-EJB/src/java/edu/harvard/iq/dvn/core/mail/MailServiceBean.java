@@ -27,9 +27,9 @@
  */
 package edu.harvard.iq.dvn.core.mail;
 
+import edu.harvard.iq.dvn.core.study.StudyFile;
 import edu.harvard.iq.dvn.core.study.StudyFileEditBean;
 import edu.harvard.iq.dvn.core.study.StudyServiceLocal;
-import edu.harvard.iq.dvn.core.study.StudyVersion;
 import edu.harvard.iq.dvn.core.vdc.VDC;
 import edu.harvard.iq.dvn.core.vdc.VDCNetworkServiceLocal;
 import edu.harvard.iq.dvn.ingest.dsb.DSBIngestMessage;
@@ -342,6 +342,34 @@ public class MailServiceBean implements edu.harvard.iq.dvn.core.mail.MailService
         sendDoNotReplyMail(userEmail,subject,messageText);
         
     }
+    
+     public void sendFileAccessResolvedNotification(String userEmail, String studyTitle,String globalId, List<StudyFile> acceptedFiles, List<StudyFile> rejectedFiles, String url, String adminEmail) {
+
+        String subject = "Dataverse Network: Your File Access Request";
+        
+        String messageText =  "Study File Access Requests for study '" + studyTitle + "' (" + globalId + ")\n";
+        
+        if (acceptedFiles != null && acceptedFiles.size() > 0) {
+            messageText += "\nYour request to access the following files have been accepted:\n";
+            for (StudyFile sf : acceptedFiles) {
+                messageText += "\t" + sf.getFileName() + "\n";;
+                
+                messageText += "\nPlease follow this link to view the study files: "+url;                
+            }
+        }
+        if (rejectedFiles != null && rejectedFiles.size() > 0) {
+            messageText += "\nYour request to access the following files have been denied:\n";
+            for (StudyFile sf : rejectedFiles) {
+                messageText += "\t" + sf.getFileName() + "\n";
+            }            
+            messageText += "\nPlease contact the dataverse Administrator at " + adminEmail + " for more information as to why your request did not go through. ";
+        }      
+
+        sendDoNotReplyMail(userEmail,subject,messageText);
+      
+     }
+
+    
     
       public void sendHarvestErrorNotification(String email,VDC vdc) {
           String subject = "Dataverse Network: Harvesting error notification";

@@ -354,7 +354,7 @@ public class MailServiceBean implements edu.harvard.iq.dvn.core.mail.MailService
             for (StudyFile sf : acceptedFiles) {
                 messageText += "\t" + sf.getFileName() + "\n";;
                 
-                messageText += "\nPlease follow this link to view the study files: "+url;                
+                messageText += "\nPlease follow this link to view the study files: "+url+"\n";                
             }
         }
         if (rejectedFiles != null && rejectedFiles.size() > 0) {

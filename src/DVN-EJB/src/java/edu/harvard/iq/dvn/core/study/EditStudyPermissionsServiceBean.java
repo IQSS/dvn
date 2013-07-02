@@ -31,11 +31,13 @@ import edu.harvard.iq.dvn.core.admin.UserGroup;
 import edu.harvard.iq.dvn.core.admin.VDCUser;
 import edu.harvard.iq.dvn.core.mail.MailServiceLocal;
 import edu.harvard.iq.dvn.core.util.PropertyUtil;
-import edu.harvard.iq.dvn.core.vdc.VDCCollection;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
 import javax.ejb.EJB;
 import javax.ejb.Remove;
 import javax.ejb.Stateful;
@@ -159,29 +161,39 @@ public class EditStudyPermissionsServiceBean implements EditStudyPermissionsServ
     }
     
     
-   List<StudyRequestBean> requestsToMail = new ArrayList();
+   Map<VDCUser,List<StudyRequestBean>> requestsToMail = new HashMap();
     
     public void updateRequests() {
         List removeBeans = new ArrayList();
-        for (Iterator<StudyRequestBean> it =  studyRequests.iterator(); it.hasNext();) {
-            StudyRequestBean elem = it.next();
+        for (StudyRequestBean elem : studyRequests) {
+            VDCUser requestUser = elem.getStudyRequest().getVdcUser();
             
             if (Boolean.TRUE.equals(elem.getAccept()) ){
-                this.addFileUser(elem.getStudyRequest().getVdcUser().getId(), elem.getStudyRequest().getStudyFile().getId(), true);
+                this.addFileUser(requestUser.getId(), elem.getStudyRequest().getStudyFile().getId(), true);
                 em.remove(elem.getStudyRequest());
                 study.getStudyRequests().remove(elem.getStudyRequest());
                 removeBeans.add(elem);
                 
                 // add to queue to mail on save
-                requestsToMail.add(elem);
+                List userRequests = requestsToMail.get(requestUser);
+                if (userRequests == null) {
+                    userRequests = new ArrayList();
+                }
+                userRequests.add(elem);
+                requestsToMail.put(requestUser, userRequests);
  
             } else if (Boolean.FALSE.equals(elem.getAccept()) ){
                 em.remove(elem.getStudyRequest());
                 study.getStudyRequests().remove(elem.getStudyRequest());
                 removeBeans.add(elem);
 
-                // add to queue to mail on save              
-                requestsToMail.add(elem);            
+                // add to queue to mail on save
+                List userRequests = requestsToMail.get(requestUser);
+                if (userRequests == null) {
+                    userRequests = new ArrayList();
+                }
+                userRequests.add(elem);
+                requestsToMail.put(requestUser, userRequests);            
             }
             
         }
@@ -220,13 +232,25 @@ public class EditStudyPermissionsServiceBean implements EditStudyPermissionsServ
         String studyUrl = "http://"+ PropertyUtil.getHostUrl() + "/dvn/dv/" + study.getOwner().getAlias() +"/faces/study/StudyPage.xhtml?studyId=" + study.getId() + "&tab=files";
         
         // if save succeeds, send out all accept/reject mail messages
-        for (StudyRequestBean elem : requestsToMail) {
-           if (Boolean.TRUE.equals(elem.getAccept()) ){
-                mailService.sendFileAccessApprovalNotification(elem.getStudyRequest().getVdcUser().getEmail(),study.getReleasedVersion().getMetadata().getTitle(),study.getGlobalId(),elem.getStudyRequest().getStudyFile().getFileName(), String.valueOf(elem.getStudyRequest().getStudyFile().getId()), studyUrl); 
-            } else if (Boolean.FALSE.equals(elem.getAccept()) ){
-                mailService.sendFileAccessRejectNotification(elem.getStudyRequest().getVdcUser().getEmail(), study.getReleasedVersion().getMetadata().getTitle(), study.getGlobalId(), elem.getStudyRequest().getStudyFile().getFileName(), String.valueOf(elem.getStudyRequest().getStudyFile().getId()), study.getOwner().getContactEmail());
-            }
+        for (Entry<VDCUser,List<StudyRequestBean>> requestEntry : requestsToMail.entrySet()) {
             
+            List<StudyFile> acceptedFiles = new ArrayList();
+            List<StudyFile> rejectedFiles = new ArrayList();
+            
+            for (StudyRequestBean elem : requestEntry.getValue()) {
+               if (Boolean.TRUE.equals(elem.getAccept()) ){
+                   acceptedFiles.add(elem.getStudyRequest().getStudyFile());
+                } else if (Boolean.FALSE.equals(elem.getAccept()) ){
+                    rejectedFiles.add(elem.getStudyRequest().getStudyFile());
+                }
+            }
+
+            mailService.sendFileAccessResolvedNotification(requestEntry.getKey().getEmail(), study.getReleasedVersion().getMetadata().getTitle(), study.getGlobalId(), acceptedFiles,rejectedFiles, studyUrl, study.getOwner().getContactEmail());
+               
+
+            
+            
+
         }
             
     }

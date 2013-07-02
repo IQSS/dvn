@@ -181,7 +181,7 @@
                   <tr>
                     <td colspan="3">
                       <ice:graphicImage value="/resources/images/icon_info.gif" styleClass="dvn_icon"/>
-                      <ice:outputText styleClass="vdcHelpText" value=" Approve or reject user request for access to restricted files."/>
+                      <ice:outputText styleClass="vdcHelpText" value=" Approve or deny user request for access to restricted files."/>
                       <ice:dataTable cellpadding="0" cellspacing="0" width="100%"
                                      headerClass="list-header-left" rowClasses="list-row-even, list-row-odd"
                                      columnClasses="vdcColPadded, vdcColPadded" columnWidths="28%,15%,57%"
@@ -192,8 +192,8 @@
                             <ice:commandButton value="Update" actionListener="#{StudyPermissionsPage.updateRequests}"/>
                           </f:facet>
                           <ice:selectOneRadio value="#{currentRow.accept}">
-                            <f:selectItem itemLabel="Accept" itemValue="true"/>
-                            <f:selectItem itemLabel="Reject" itemValue="false"/>
+                            <f:selectItem itemLabel="Approve" itemValue="true"/>
+                            <f:selectItem itemLabel="Deny" itemValue="false"/>
                           </ice:selectOneRadio>
                         </ice:column>
                         <ice:column>

@@ -38,6 +38,8 @@ import edu.harvard.iq.dvn.core.study.StudyServiceLocal;
 import edu.harvard.iq.dvn.core.study.StudyVersion;
 import edu.harvard.iq.dvn.core.vdc.StudyAccessRequestServiceLocal;
 import edu.harvard.iq.dvn.core.web.common.VDCBaseBean;
+import edu.harvard.iq.dvn.core.web.study.FileCategoryUI;
+import edu.harvard.iq.dvn.core.web.study.StudyFileUI;
 import edu.harvard.iq.dvn.core.web.study.StudyUI;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -45,7 +47,6 @@ import java.util.Iterator;
 import java.util.List;
 import javax.ejb.EJB;
 import javax.faces.bean.ViewScoped;
-import javax.faces.component.html.HtmlInputHidden;
 import javax.inject.Named;
 
 /**
@@ -210,7 +211,11 @@ public class FileRequestPage extends VDCBaseBean implements java.io.Serializable
     public void setStudyId(Long studyId) {
         this.studyId = studyId;
     }
-
+    
+    Long fileId;
+    public Long getFileId() {return fileId;}
+    public void setFileId(Long fileId) {this.fileId = fileId;}
+    
     /**
      * Holds value of property fileIdList.
      */
@@ -231,7 +236,7 @@ public class FileRequestPage extends VDCBaseBean implements java.io.Serializable
     public void setFileIdList(String fileIdList) {
         this.fileIdList = fileIdList;
     }
-    
+
     private Long versionNumber;
     
     public Long getVersionNumber() {
@@ -271,10 +276,20 @@ public class FileRequestPage extends VDCBaseBean implements java.io.Serializable
                             studyVersion,
                             getVDCSessionBean().getLoginBean() != null ? this.getVDCSessionBean().getLoginBean().getUser() : null,
                             getVDCSessionBean().getIpUserGroup(), true);
+            
+            //set study file UI to true if study file is choosed by user
+            for ( FileCategoryUI catUI : studyUI.getCategoryUIList()) {
+                for (StudyFileUI sfui : catUI.getStudyFileUIs()) {
+                    if (sfui.getStudyFile().getId().equals(fileId) ) {
+                        sfui.setSelected(true);
+                        break;
+                    }
+                }
+            }
             studyUIContainsFileDetails=true;
         }
     }
-        
+    
     private List<Long> listofLong(String str) {
         String [] items = str.split(",");
         List<String> strList = Arrays.asList(items);

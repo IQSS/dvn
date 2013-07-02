@@ -448,4 +448,9 @@ public class StudyFileUI implements java.io.Serializable {
     public boolean isVisualizationReleased() {
         return getStudyFile().getDataTables().get(0).isVisualizationEnabled();
     }
+    
+    boolean selected;
+    public boolean isSelected() {return selected;}
+    public void setSelected(boolean selected) {this.selected = selected;}
+    
 }

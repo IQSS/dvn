@@ -14,6 +14,7 @@
             <ui:define name="metadata">
                 <f:metadata>
                     <f:viewParam name="studyId" value ="#{FileRequestPage.studyId}"/>
+                    <f:viewParam name="fileId" value ="#{FileRequestPage.fileId}"/>                    
                     <f:event type="preRenderView" listener="#{FileRequestPage.preRenderView}" />
                 </f:metadata>
             </ui:define>
@@ -165,7 +166,7 @@
                                                                            vdcStudyFileSpacer,vdcStudyFileSubsetting,vdcStudyFileAnalysis,vdcStudyFileCitation">
                                                                 <ice:column id="column10">
                                                                     <ice:inputHidden id="fileId" value="#{studyFileUI.studyFile.id}"/> 
-                                                                    <ice:selectBooleanCheckbox id="fileCheckBox" styleClass="fileCheckBox" onclick="toggleCheckBoxes(this)" />
+                                                                    <ice:selectBooleanCheckbox id="fileCheckBox" styleClass="fileCheckBox" value="#{studyFileUI.selected}" onclick="toggleCheckBoxes(this)" />
                                                                 </ice:column>
                                                                 <ice:column id="column11">
                                                                     <div jsfc="ice:panelGroup" styleClass="vdcStudyFileRowFileInfo">

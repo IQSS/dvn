@@ -343,7 +343,7 @@ public class MailServiceBean implements edu.harvard.iq.dvn.core.mail.MailService
         
     }
     
-     public void sendFileAccessResolvedNotification(String userEmail, String studyTitle,String globalId, List<StudyFile> acceptedFiles, List<StudyFile> rejectedFiles, String url, String adminEmail) {
+     public void sendFileAccessResolvedNotification(String userEmail, String studyTitle,String globalId, List<String> acceptedFiles, List<String> rejectedFiles, String url, String adminEmail) {
 
         String subject = "Dataverse Network: Your File Access Request";
         
@@ -351,16 +351,16 @@ public class MailServiceBean implements edu.harvard.iq.dvn.core.mail.MailService
         
         if (acceptedFiles != null && acceptedFiles.size() > 0) {
             messageText += "\nYour request to access the following files have been accepted:\n";
-            for (StudyFile sf : acceptedFiles) {
-                messageText += "\t" + sf.getFileName() + "\n";;
+            for (String fileName : acceptedFiles) {
+                messageText += "\t" + fileName + "\n";;
                 
                 messageText += "\nPlease follow this link to view the study files: "+url+"\n";                
             }
         }
         if (rejectedFiles != null && rejectedFiles.size() > 0) {
             messageText += "\nYour request to access the following files have been denied:\n";
-            for (StudyFile sf : rejectedFiles) {
-                messageText += "\t" + sf.getFileName() + "\n";
+            for (String fileName : rejectedFiles) {
+                messageText += "\t" + fileName + "\n";
             }            
             messageText += "\nPlease contact the dataverse Administrator at " + adminEmail + " for more information as to why your request did not go through. ";
         }      

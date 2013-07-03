@@ -113,24 +113,36 @@ public class EditStudyPermissionsServiceBean implements EditStudyPermissionsServ
             studyPermissions.add(new PermissionBean(group));
         }
         
-        
-        for (Iterator<Long>fileIter = studyFileService.getOrderedFilesByStudy(study.getId()).iterator(); fileIter.hasNext();) {
-            StudyFile elem = em.find(StudyFile.class, fileIter.next());
-            FileDetailBean fd = new FileDetailBean();
-            fd.setStudyFile(elem);
-            fd.setCurrentVersion(versionNumber);
-            fd.setFilePermissions(new ArrayList<PermissionBean>());
-            for (Iterator it4 = elem.getAllowedUsers().iterator(); it4.hasNext();) {
-                VDCUser elem2 = (VDCUser) it4.next();
-                fd.getFilePermissions().add(new PermissionBean(elem2));
+        // to populatethe file details, we make one db call to get all filemetadata obejcts
+        // for each studyfile; we then loop through list, creating a new FileDetailBean when
+        // we encounter a new studyfile.id
+        Long loopStudyFileId = null;
+        FileDetailBean fd = null;
+        // elements of array are studyfile.id, filemetadata.id, studyversion.versionNumber
+        for ( Object[] sfArray : studyFileService.getOrderedFilesByStudy(study.getId()) ) {
+            if (sfArray[0].equals(loopStudyFileId)) { // another filemetadata for current studyfile
+                // all we modify is the String of file versions this file pertains to
+                fd.setFileVersions(  sfArray[2].toString() + ","  + fd.getFileVersions());
+            } else { // first time with this id
+                loopStudyFileId = (Long) sfArray[0]; // set the id of the loop var
+                StudyFile elem = em.find(StudyFile.class,loopStudyFileId);
+                
+                fd = new FileDetailBean(); // create a new File Detail Bean
+                fd.setStudyFile(elem);
+                fd.setFileMetadata( em.find(FileMetadata.class, sfArray[1]) );
+                fd.setCurrentVersion( versionNumber != null && versionNumber.equals((sfArray[2])) );
+                fd.setFilePermissions(new ArrayList<PermissionBean>());
+                for (Iterator it4 = elem.getAllowedUsers().iterator(); it4.hasNext();) {
+                    VDCUser elem2 = (VDCUser) it4.next();
+                    fd.getFilePermissions().add(new PermissionBean(elem2));
+                }
+                for (Iterator it5 = elem.getAllowedGroups().iterator(); it5.hasNext();) {
+                    UserGroup elem2 = (UserGroup) it5.next();
+                    fd.getFilePermissions().add(new PermissionBean(elem2));
+                }
+                fd.setFileVersions( sfArray[2].toString() );
+                fileDetails.add(fd);
             }
-            for (Iterator it5 = elem.getAllowedGroups().iterator(); it5.hasNext();) {
-                UserGroup elem2 = (UserGroup) it5.next();
-                fd.getFilePermissions().add(new PermissionBean(elem2));
-            }
-
-            fileDetails.add(fd);
-
         }
 
         for (Iterator detailIter = fileDetails.iterator(); detailIter.hasNext();) {

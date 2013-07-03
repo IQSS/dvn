@@ -283,19 +283,19 @@
                           <f:facet name="header">
                             <ice:outputText id="fileuser_tcol1" value="Category Name"/>
                           </f:facet>
-                          <ice:outputText value="#{currentRow.studyFile.latestCategory}"/>
+                          <ice:outputText value="#{currentRow.fileMetadata.category}"/>
                         </ice:column>
                         <ice:column id="fileuser_col2">
                           <f:facet name="header">
                             <ice:outputText id="fileuser_tcol2" value="File Name"/> 
                           </f:facet>
-                          <ice:outputText value="#{currentRow.studyFile.fileName}"/>
+                          <ice:outputText value="#{currentRow.fileMetadata.label}"/>
                         </ice:column>
                         <ice:column id="fileuser_col5">
                           <f:facet name="header">
                             <ice:outputText id="fileuser_tcol5" value="Study Version(s)"/>
                           </f:facet>
-                          <ice:outputText value="#{currentRow.fileVersions}"/>
+                            <ice:outputText value="#{currentRow.fileVersions}"/>
                         </ice:column>
                         <ice:column id="fileuser_col3">
                           <f:facet name="header">

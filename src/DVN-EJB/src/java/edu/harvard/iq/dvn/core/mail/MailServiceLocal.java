@@ -63,7 +63,7 @@ public interface MailServiceLocal  extends java.io.Serializable  {
 
     public void sendFileAccessRejectNotification(String userEmail, String studyTitle,String globalId, String fileLable, String fileId, String adminEmail);
 
-    public void sendFileAccessResolvedNotification(String userEmail, String studyTitle,String globalId, List<StudyFile> acceptedFiles, List<StudyFile> rejectedFiles, String url, String adminEmail);
+    public void sendFileAccessResolvedNotification(String userEmail, String studyTitle,String globalId, List<String> acceptedFiles, List<String> rejectedFiles, String url, String adminEmail);
     
     public void sendIngestRequestedNotification(DSBIngestMessage ingestMessage, List subsettableFiles);
 

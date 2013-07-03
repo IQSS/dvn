@@ -132,36 +132,25 @@ public class StudyFileServiceBean implements StudyFileServiceLocal {
 
 
     @TransactionAttribute(TransactionAttributeType.NOT_SUPPORTED)
-    public java.util.List<Long> getOrderedFilesByStudy(Long studyId) {
+    public java.util.List<Object[]> getOrderedFilesByStudy(Long studyId) {
   
         /*
-         * This query returns all the ids of all the studyfiles belonging to
-         * this study, ordered by the category in the latest filemetadata object associated with the studyfile.
+         * This query returns one row per filemetadata for each of the studyfiles belonging to
+         * this study, ordered by the category
          */
-       
-        List<Long> studyFileIds = new ArrayList();
-      
-        String nativeQuery = "select sf1.id from filemetadata fm1, studyfile sf1 " +
-            " where fm1.studyfile_id = sf1.id "+
-            " and  fm1.id in "+
-            " (select max(fm.id) "+
-            " from studyfile sf, study s, filemetadata fm, studyversion sv "+
-            " where sf.study_id = s.id "+
-            " and fm.studyfile_id = sf.id "+
-            " and sv.study_id = s.id "+
-            " and s.id = "+ studyId +
-            " group by sf.id) "+
-            " order by  UPPER(fm1.category)";
-     
+        
+        String nativeQuery = "select studyfile_id, fmd.id, sv.versionnumber " +
+             "from filemetadata fmd, studyversion sv " + 
+             "where fmd.studyversion_id = sv.id " +
+             "and sv.study_id = "+ studyId +
+             "order by  UPPER(fmd.category), studyfile_id, versionNumber desc";
         Query query = em.createNativeQuery(nativeQuery);
         
-        for (Object currentResult : query.getResultList()) {
-            studyFileIds.add(new Long(((Integer) currentResult)).longValue());
-        }
        
-
-        return studyFileIds;
+        return  convertIntegerToLong(query.getResultList(),1);
     }
+    
+    
 
     @TransactionAttribute(TransactionAttributeType.NOT_SUPPORTED)
     public java.util.List<FileMetadata> getOrderedFilesByStudyVersion (Long svId) {
@@ -717,5 +706,11 @@ public class StudyFileServiceBean implements StudyFileServiceLocal {
     }
 
 
- 
+        private List<Object[]> convertIntegerToLong(List<Object[]> list, int index) {
+        for (Object[] item : list) {
+            item[index] = new Long( (Integer) item[index]);
+        }
+           
+        return list;
+    } 
 }

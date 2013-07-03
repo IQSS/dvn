@@ -1618,7 +1618,7 @@ function initAddDistributorSync(){
                                              maxlength="255" binding="#{EditStudyPage.inputDistributorName}" 
                                              value="#{currentRow.name}" size="45" 
                                              rendered="#{empty(EditStudyPage.studyMap[sfc.distributorName].templateField.controlledVocabulary)}"
-                                             required="#{EditStudyPage.studyMap[sfc.distributor].required}" requiredMessage="This field is required." />
+                                             required="#{EditStudyPage.studyMap[sfc.distributor].required and EditStudyPage.validateRequired}" requiredMessage="This field is required." />
                              <ice:selectOneMenu immediate="false"   id="selectOneDistributorName"    
                                                 styleClass="select_distributorName"
                                            value="#{currentRow.name}" 
@@ -2152,7 +2152,7 @@ function initAddDistributorSync(){
                               <ice:outputText styleClass="dvnInlineHelpLabel dvnInlineHelpTip" value="#{editstudybundle.keywordLabel}" title="#{editstudybundle.keywordHelpHeading} - #{editstudybundle.keywordHelp}"/>
                               <ice:inputText binding="#{EditStudyPage.inputKeywordValue}" 
                                              id="input_keywordValue" value="#{currentRow.value}" 
-                                             required="#{EditStudyPage.studyMap[sfc.keyword].required}" 
+                                             required="#{EditStudyPage.studyMap[sfc.keyword].required and EditStudyPage.validateRequired}" 
                                              rendered="#{empty(EditStudyPage.studyMap[sfc.keywordValue].templateField.controlledVocabulary)}"
                                              requiredMessage="This field is required." />
                              <ice:selectOneMenu immediate="false"   id="selectOneKeywordValue" 

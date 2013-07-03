@@ -45,23 +45,24 @@ public class FileDetailBean implements java.io.Serializable {
      * Holds value of property studyFile.
      */
     private StudyFile studyFile;
-
-    /**
-     * Getter for property studyFile.
-     * @return Value of property studyFile.
-     */
+    private FileMetadata fileMetadata;
+    
     public StudyFile getStudyFile() {
         return this.studyFile;
     }
 
-    /**
-     * Setter for property studyFile.
-     * @param studyFile New value of property studyFile.
-     */
     public void setStudyFile(StudyFile studyFile) {
         this.studyFile = studyFile;
     }
 
+    public FileMetadata getFileMetadata() {
+        return fileMetadata;
+    }
+
+    public void setFileMetadata(FileMetadata fileMetadata) {
+        this.fileMetadata = fileMetadata;
+    }
+    
     /**
      * Holds value of property checked.
      */
@@ -89,15 +90,8 @@ public class FileDetailBean implements java.io.Serializable {
         return this.currentVersion;
     }
     
-    public void setCurrentVersion(long currentVersion){
-                 
-        this.currentVersion = false;        
-        for ( int i = 0; i < studyFile.getFileMetadatas().size(); i++) {         
-            if (currentVersion == studyFile.getFileMetadatas().get(i).getStudyVersion().getVersionNumber().longValue()){
-               this.currentVersion = true; 
-            }
-        }
-
+    public void setCurrentVersion(boolean currentVersion){
+        this.currentVersion = currentVersion;   
     }
 
     /**
@@ -147,7 +141,7 @@ public class FileDetailBean implements java.io.Serializable {
      * @return a String listing all the study versionNumbers that this file
      *  is associated with.
      */
-    public String getFileVersions() {
+   /* public String getFileVersions() {
         String versions = "";
 
         for ( int i = 0; i < studyFile.getFileMetadatas().size(); i++) {
@@ -157,7 +151,16 @@ public class FileDetailBean implements java.io.Serializable {
             }
         }
         return versions;
+    }*/
+    
+    private String fileVersions;
 
+    public String getFileVersions() {
+        return fileVersions;
     }
-       
+
+    public void setFileVersions(String fileVersions) {
+        this.fileVersions = fileVersions;
+    }
+         
 }

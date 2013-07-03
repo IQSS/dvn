@@ -91,19 +91,16 @@ public class EditStudyPermissionsServiceBean implements EditStudyPermissionsServ
         fileDetails = new ArrayList<FileDetailBean>();
         studyRequests = new ArrayList<StudyRequestBean>();
         currentVersionFiles = true;
-                
-        for (Iterator it = study.getStudyRequests().iterator(); it.hasNext();) {
-            StudyAccessRequest elem = (StudyAccessRequest) it.next();
-            studyRequests.add(new  StudyRequestBean(elem));
-            
-        }
+        Map<Long,String> studyFileNames = new HashMap();
         
+        // general study restriction
         if (study.isRestricted()) {
             setStudyRestriction("Restricted");
         } else {
             setStudyRestriction("Public");
         }
         
+        // and users/groups with access to study
         for (Iterator it = study.getAllowedUsers().iterator(); it.hasNext();) {
             VDCUser user = (VDCUser) it.next();
             studyPermissions.add(new PermissionBean(user));
@@ -113,9 +110,12 @@ public class EditStudyPermissionsServiceBean implements EditStudyPermissionsServ
             studyPermissions.add(new PermissionBean(group));
         }
         
-        // to populatethe file details, we make one db call to get all filemetadata obejcts
+        // to populate the file details, we make one db call to get all filemetadata obejcts
         // for each studyfile; we then loop through list, creating a new FileDetailBean when
         // we encounter a new studyfile.id
+        // 
+        // we also use this query call to create a Map of files and names that we can
+        //then use for the study requests
         Long loopStudyFileId = null;
         FileDetailBean fd = null;
         // elements of array are studyfile.id, filemetadata.id, studyversion.versionNumber
@@ -126,10 +126,11 @@ public class EditStudyPermissionsServiceBean implements EditStudyPermissionsServ
             } else { // first time with this id
                 loopStudyFileId = (Long) sfArray[0]; // set the id of the loop var
                 StudyFile elem = em.find(StudyFile.class,loopStudyFileId);
+                FileMetadata fmd = em.find(FileMetadata.class, sfArray[1]);
                 
                 fd = new FileDetailBean(); // create a new File Detail Bean
                 fd.setStudyFile(elem);
-                fd.setFileMetadata( em.find(FileMetadata.class, sfArray[1]) );
+                fd.setFileMetadata(fmd);
                 fd.setCurrentVersion( versionNumber != null && versionNumber.equals((sfArray[2])) );
                 fd.setFilePermissions(new ArrayList<PermissionBean>());
                 for (Iterator it4 = elem.getAllowedUsers().iterator(); it4.hasNext();) {
@@ -142,9 +143,13 @@ public class EditStudyPermissionsServiceBean implements EditStudyPermissionsServ
                 }
                 fd.setFileVersions( sfArray[2].toString() );
                 fileDetails.add(fd);
+                
+                // add file name to the studyFileNames map for use by study requests
+                studyFileNames.put(loopStudyFileId, fmd.getLabel());
             }
         }
 
+        // file level restrictions
         for (Iterator detailIter = fileDetails.iterator(); detailIter.hasNext();) {
             FileDetailBean elem = (FileDetailBean) detailIter.next();
             if (elem.getStudyFile().isRestricted()) {
@@ -155,6 +160,15 @@ public class EditStudyPermissionsServiceBean implements EditStudyPermissionsServ
             
         }
         fileDetailsCopy = new ArrayList<FileDetailBean>(fileDetails);
+        
+
+        // study requests        
+        for (StudyAccessRequest elem : study.getStudyRequests()) {
+            StudyRequestBean srb = new StudyRequestBean(elem);
+            srb.setFileName(studyFileNames.get(elem.getStudyFile().getId()));
+            studyRequests.add(srb);
+            
+        }        
     }
     
     
@@ -246,14 +260,14 @@ public class EditStudyPermissionsServiceBean implements EditStudyPermissionsServ
         // if save succeeds, send out all accept/reject mail messages
         for (Entry<VDCUser,List<StudyRequestBean>> requestEntry : requestsToMail.entrySet()) {
             
-            List<StudyFile> acceptedFiles = new ArrayList();
-            List<StudyFile> rejectedFiles = new ArrayList();
+            List<String> acceptedFiles = new ArrayList();
+            List<String> rejectedFiles = new ArrayList();
             
             for (StudyRequestBean elem : requestEntry.getValue()) {
                if (Boolean.TRUE.equals(elem.getAccept()) ){
-                   acceptedFiles.add(elem.getStudyRequest().getStudyFile());
+                   acceptedFiles.add(elem.getFileName());
                 } else if (Boolean.FALSE.equals(elem.getAccept()) ){
-                    rejectedFiles.add(elem.getStudyRequest().getStudyFile());
+                    rejectedFiles.add(elem.getFileName());
                 }
             }
 

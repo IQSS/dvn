@@ -55,7 +55,8 @@ public class SwordConfigurationImpl implements SwordConfiguration {
 
     @Override
     public String getAuthType() {
-        return "None";
+        // using "Basic" here to match what's in SwordAPIEndpoint
+        return "Basic";
     }
 
     @Override

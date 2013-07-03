@@ -639,7 +639,7 @@ public class HomePage extends VDCBaseBean implements Serializable {
         StringBuffer requestURLbuffer = request.getRequestURL();
         String[] requestURLparts = new String(requestURLbuffer).split(":");
         String httpOrHttps = requestURLparts[0];
-        String hostName = request.getLocalName();
+        String hostName = System.getProperty("dvn.inetAddress");
         int port = request.getLocalPort();
         String portStr = "";
         if (port != 80) {

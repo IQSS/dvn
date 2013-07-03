@@ -83,4 +83,15 @@ public class StudyRequestBean implements java.io.Serializable {
         this.studyRequest = studyRequest;
     }
     
+    private String fileName;
+
+    public String getFileName() {
+        return fileName;
+    }
+
+    public void setFileName(String fileName) {
+        this.fileName = fileName;
+    }
+    
+    
 }

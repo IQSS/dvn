@@ -66,9 +66,9 @@ public class ServiceDocumentManagerImpl implements ServiceDocumentManager {
             List<VDC> vdcList = vdcService.getUserVDCs(vdcUser.getId());
 
             if (vdcList.size() != 1) {
-                logger.info("accounts used to look up a Journal Dataverse should find a single dataverse");
-                // should throw different exception
-                throw new SwordAuthException();
+                String msg = "accounts used to look up a Journal Dataverse should find a single dataverse, not " + vdcList.size();
+                logger.info(msg);
+                throw new SwordError(msg);
             }
 
             if (vdcList.get(0) != null) {
@@ -88,19 +88,19 @@ public class ServiceDocumentManagerImpl implements ServiceDocumentManager {
                     service.setMaxUploadSize(config.getMaxUploadSize());
                     return service;
                 } catch (URISyntaxException ex) {
-                    logger.info("problem with URL ( " + sdUri + " ): " + ex.getMessage());
-                    // should throw a different exception
-                    throw new SwordAuthException();
+                    String msg = "problem with URL ( " + sdUri + " ): " + ex.getMessage();
+                    logger.info(msg);
+                    throw new SwordError(msg);
                 }
             } else {
-                logger.info("could not retrieve journal dataverse");
-                // should throw a different exception
-                throw new SwordAuthException();
+                String msg = "could not retrieve Journal Dataverse";
+                logger.info(msg);
+                throw new SwordError(msg);
             }
         } catch (NamingException ex) {
-            logger.info("exception looking up userService: " + ex.getMessage());
-            // would prefer to throw SwordError or SwordServerException here by they don't seem to be caught anywhere
-            throw new SwordAuthException();
+            String msg = "exception looking up userService: " + ex.getMessage();
+            logger.info(msg);
+            throw new SwordError(msg);
         }
     }
 }

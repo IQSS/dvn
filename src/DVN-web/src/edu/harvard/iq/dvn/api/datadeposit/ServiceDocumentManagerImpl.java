@@ -26,6 +26,7 @@ import edu.harvard.iq.dvn.core.vdc.VDCServiceLocal;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.List;
+import java.util.logging.Logger;
 import javax.naming.Context;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
@@ -41,75 +42,64 @@ import org.swordapp.server.SwordWorkspace;
 
 public class ServiceDocumentManagerImpl implements ServiceDocumentManager {
 
+    private static final Logger logger = Logger.getLogger(ServiceDocumentManagerImpl.class.getCanonicalName());
+
     @Override
     public ServiceDocument getServiceDocument(String sdUri, AuthCredentials authCredentials, SwordConfiguration config)
             throws SwordError, SwordServerException, SwordAuthException {
-        if (authCredentials != null) {
-            String username = authCredentials.getUsername();
-            String password = authCredentials.getPassword();
-            System.out.println("Checking username " + username + " ...");
 
-            try {
-                Context ctx = new InitialContext();
-                // "vdcUserService" comes from edu.harvard.iq.dvn.core.web.servlet.LoginFilter
-                UserServiceLocal userService = (UserServiceLocal) ctx.lookup("java:comp/env/vdcUserService");
+        SwordAuth swordAuth = new SwordAuth();
+        swordAuth.auth(authCredentials);
 
-                VDCUser vdcUser = userService.findByUserName(username);
-                if (vdcUser != null) {
-                    if (userService.validatePassword(vdcUser.getId(), password)) {
-                        ServiceDocument service = new ServiceDocument();
-                        SwordWorkspace swordWorkspace = new SwordWorkspace();
-                        VDCServiceLocal vdcService = (VDCServiceLocal) ctx.lookup("java:comp/env/vdcService");
-                        List<VDC> vdcList = vdcService.getUserVDCs(vdcUser.getId());
+        String username = authCredentials.getUsername();
+        logger.info("Checking username " + username + " ...");
 
-                        if (vdcList.size() != 1) {
-                            System.out.println("accounts used to look up up a Journal Dataverse should find a single dataverse");
-                            // should throw different exception
-                            throw new SwordAuthException();
-                        }
+        try {
+            Context ctx = new InitialContext();
+            // "vdcUserService" comes from edu.harvard.iq.dvn.core.web.servlet.LoginFilter
+            UserServiceLocal userService = (UserServiceLocal) ctx.lookup("java:comp/env/vdcUserService");
 
-                        if (vdcList.get(0) != null) {
-                            VDC journalDataverse = vdcList.get(0);
-                            String dvAlias = journalDataverse.getAlias();
-                            swordWorkspace.setTitle(journalDataverse.getVdcNetwork().getName());
-                            SwordCollection swordCollection = new SwordCollection();
-                            swordCollection.setTitle(journalDataverse.getName());
-                            try {
-                                URI u = new URI(sdUri);
-                                int port = u.getPort();
-                                String hostName = System.getProperty("dvn.inetAddress");
-                                // hard coding https on purpose
-                                swordCollection.setHref("https://" + hostName + ":" + port + "/dvn/api/data-deposit/swordv2/collection/dataverse/" + dvAlias);
-                                swordWorkspace.addCollection(swordCollection);
-                                service.addWorkspace(swordWorkspace);
-                                service.setMaxUploadSize(config.getMaxUploadSize());
-                                return service;
-                            } catch (URISyntaxException ex) {
-                                System.out.println("problem with URL: " + sdUri);
-                                // should throw a different exception
-                                throw new SwordAuthException();
-                            }
-                        } else {
-                            System.out.println("could not retrieve journal dataverse");
-                            // should throw a different exception
-                            throw new SwordAuthException();
-                        }
-                    } else {
-                        System.out.println("wrong password");
-                        throw new SwordAuthException();
-                    }
-                } else {
-                    System.out.println("could not find username: " + username);
-                    throw new SwordAuthException();
-                }
-            } catch (NamingException ex) {
-                System.out.println("exception looking up userService: " + ex.getMessage());
-                // would prefer to throw SwordError or SwordServerException here by they don't seem to be caught anywhere
+            VDCUser vdcUser = userService.findByUserName(username);
+            ServiceDocument service = new ServiceDocument();
+            SwordWorkspace swordWorkspace = new SwordWorkspace();
+            VDCServiceLocal vdcService = (VDCServiceLocal) ctx.lookup("java:comp/env/vdcService");
+            List<VDC> vdcList = vdcService.getUserVDCs(vdcUser.getId());
+
+            if (vdcList.size() != 1) {
+                logger.info("accounts used to look up a Journal Dataverse should find a single dataverse");
+                // should throw different exception
                 throw new SwordAuthException();
             }
-        } else {
-            // it seems this is never reached... eaten somewhere by way of ServiceDocumentServletDefault -> ServiceDocumentAPI -> SwordAPIEndpoint
-            System.out.println("no auth credentials...");
+
+            if (vdcList.get(0) != null) {
+                VDC journalDataverse = vdcList.get(0);
+                String dvAlias = journalDataverse.getAlias();
+                swordWorkspace.setTitle(journalDataverse.getVdcNetwork().getName());
+                SwordCollection swordCollection = new SwordCollection();
+                swordCollection.setTitle(journalDataverse.getName());
+                try {
+                    URI u = new URI(sdUri);
+                    int port = u.getPort();
+                    String hostName = System.getProperty("dvn.inetAddress");
+                    // hard coding https on purpose
+                    swordCollection.setHref("https://" + hostName + ":" + port + "/dvn/api/data-deposit/swordv2/collection/dataverse/" + dvAlias);
+                    swordWorkspace.addCollection(swordCollection);
+                    service.addWorkspace(swordWorkspace);
+                    service.setMaxUploadSize(config.getMaxUploadSize());
+                    return service;
+                } catch (URISyntaxException ex) {
+                    logger.info("problem with URL ( " + sdUri + " ): " + ex.getMessage());
+                    // should throw a different exception
+                    throw new SwordAuthException();
+                }
+            } else {
+                logger.info("could not retrieve journal dataverse");
+                // should throw a different exception
+                throw new SwordAuthException();
+            }
+        } catch (NamingException ex) {
+            logger.info("exception looking up userService: " + ex.getMessage());
+            // would prefer to throw SwordError or SwordServerException here by they don't seem to be caught anywhere
             throw new SwordAuthException();
         }
     }

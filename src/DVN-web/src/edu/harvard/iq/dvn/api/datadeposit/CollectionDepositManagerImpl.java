@@ -19,12 +19,22 @@
  */
 package edu.harvard.iq.dvn.api.datadeposit;
 
+import edu.harvard.iq.dvn.core.admin.UserServiceLocal;
+import edu.harvard.iq.dvn.core.admin.VDCUser;
+import edu.harvard.iq.dvn.core.vdc.VDC;
+import edu.harvard.iq.dvn.core.vdc.VDCServiceLocal;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.util.List;
 import java.util.logging.Logger;
+import javax.naming.Context;
+import javax.naming.InitialContext;
+import javax.naming.NamingException;
 import org.apache.abdera.i18n.iri.IRI;
 import org.swordapp.server.AuthCredentials;
 import org.swordapp.server.CollectionDepositManager;
@@ -43,11 +53,74 @@ public class CollectionDepositManagerImpl implements CollectionDepositManager {
     public DepositReceipt createNew(String collectionUri, Deposit deposit, AuthCredentials authCredentials, SwordConfiguration config)
             throws SwordError, SwordServerException, SwordAuthException {
 
-        String tempDirectory = config.getTempDirectory();
-        String uploadDirPath = tempDirectory + File.separator + "uploads";
-        File uploadDir = new File(uploadDirPath);
+        SwordAuth swordAuth = new SwordAuth();
+        VDCUser vdcUser = swordAuth.auth(authCredentials);
+
+        URI uriReference;
         try {
-            uploadDir.mkdir();
+            uriReference = new URI(collectionUri);
+        } catch (URISyntaxException ex) {
+            throw new SwordServerException("problem with collection URI: " + collectionUri);
+        }
+
+        logger.info("collection URI path: " + uriReference.getPath());
+        String[] parts = uriReference.getPath().split("/");
+        String dvAlias;
+        try {
+            //             0 1   2   3            4       5          6         7
+            // for example: /dvn/api/data-deposit/swordv2/collection/dataverse/sword
+            dvAlias = parts[7];
+        } catch (ArrayIndexOutOfBoundsException ex) {
+            throw new SwordServerException("could not extract dataverse alias from collection URI: " + collectionUri);
+        }
+
+        logger.info("attempting deposit into this dataverse alias: " + dvAlias);
+
+        Context ctx = null;
+        VDCServiceLocal vdcService = null;
+        try {
+            ctx = new InitialContext();
+            // "vdcService" comes from edu.harvard.iq.dvn.core.web.servlet.LoginFilter
+            vdcService = (VDCServiceLocal) ctx.lookup("java:comp/env/vdcService");
+        } catch (NamingException ex) {
+            throw new SwordServerException("could not look up vdcService");
+        }
+
+        VDC dv = vdcService.findByAlias(dvAlias);
+
+        if (dv != null) {
+
+            UserServiceLocal userService;
+            try {
+                userService = (UserServiceLocal) ctx.lookup("java:comp/env/vdcUserService");
+            } catch (NamingException ex) {
+                throw new SwordServerException("could not look up userService");
+            }
+
+            boolean authorized = false;
+            List<VDC> userVDCs = vdcService.getUserVDCs(vdcUser.getId());
+            for (VDC userVdc : userVDCs) {
+                if (userVdc.equals(dv)) {
+                    authorized = true;
+                    break;
+                }
+            }
+            if (!authorized) {
+                throw new SwordServerException("user " + vdcUser.getUserName() + " is not authorized to modify dataverse " + dv.getAlias());
+            }
+            if (userVDCs.size() != 1) {
+                throw new SwordServerException("the account used to modify a Journal Dataverse can only have access to 1 dataverse, not " + userVDCs.size());
+            }
+
+
+            String tempDirectory = config.getTempDirectory();
+            String uploadDirPath = tempDirectory + File.separator + "uploads";
+            File uploadDir = new File(uploadDirPath);
+            if (!uploadDir.exists()) {
+                if (!uploadDir.mkdir()) {
+                    throw new SwordServerException("couldn't create directory: " + uploadDir.getAbsolutePath());
+                }
+            }
             String filename = uploadDirPath + File.separator + deposit.getFilename();
             /**
              * @todo: fix known "first character is removed from filename" issue
@@ -79,15 +152,14 @@ public class CollectionDepositManagerImpl implements CollectionDepositManager {
             } catch (IOException e) {
                 throw new SwordServerException(e);
             }
-        } catch (Exception e) {
-            logger.info("unable to create directory: " + uploadDirPath);
-            throw new SwordAuthException(e);
-        }
 
-        DepositReceipt fakeDepositReceipt = new DepositReceipt();
-        IRI fakeIri = new IRI("fakeIri");
-        fakeDepositReceipt.setLocation(fakeIri);
-        fakeDepositReceipt.setEditIRI(fakeIri);
-        return fakeDepositReceipt;
+            DepositReceipt fakeDepositReceipt = new DepositReceipt();
+            IRI fakeIri = new IRI("fakeIri");
+            fakeDepositReceipt.setLocation(fakeIri);
+            fakeDepositReceipt.setEditIRI(fakeIri);
+            return fakeDepositReceipt;
+        } else {
+            throw new SwordServerException("Could not find dataverse: " + dvAlias);
+        }
     }
 }

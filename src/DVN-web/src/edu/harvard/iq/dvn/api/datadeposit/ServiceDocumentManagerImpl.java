@@ -49,56 +49,51 @@ public class ServiceDocumentManagerImpl implements ServiceDocumentManager {
             throws SwordError, SwordServerException, SwordAuthException {
 
         SwordAuth swordAuth = new SwordAuth();
-        swordAuth.auth(authCredentials);
+        VDCUser vdcUser = swordAuth.auth(authCredentials);
 
-        String username = authCredentials.getUsername();
-        logger.info("Checking username " + username + " ...");
-
+        VDCServiceLocal vdcService;
         try {
             Context ctx = new InitialContext();
-            // "vdcUserService" comes from edu.harvard.iq.dvn.core.web.servlet.LoginFilter
-            UserServiceLocal userService = (UserServiceLocal) ctx.lookup("java:comp/env/vdcUserService");
+            vdcService = (VDCServiceLocal) ctx.lookup("java:comp/env/vdcService");
+        } catch (NamingException ex) {
+            String msg = "exception looking up vdcService: " + ex.getMessage();
+            logger.info(msg);
+            throw new SwordError(msg);
+        }
 
-            VDCUser vdcUser = userService.findByUserName(username);
+        List<VDC> vdcList = vdcService.getUserVDCs(vdcUser.getId());
+
+        if (vdcList.size() != 1) {
+            String msg = "accounts used to look up a Journal Dataverse should find a single dataverse, not " + vdcList.size();
+            logger.info(msg);
+            throw new SwordError(msg);
+        }
+
+        if (vdcList.get(0) != null) {
+            VDC journalDataverse = vdcList.get(0);
+            String dvAlias = journalDataverse.getAlias();
             ServiceDocument service = new ServiceDocument();
             SwordWorkspace swordWorkspace = new SwordWorkspace();
-            VDCServiceLocal vdcService = (VDCServiceLocal) ctx.lookup("java:comp/env/vdcService");
-            List<VDC> vdcList = vdcService.getUserVDCs(vdcUser.getId());
-
-            if (vdcList.size() != 1) {
-                String msg = "accounts used to look up a Journal Dataverse should find a single dataverse, not " + vdcList.size();
+            swordWorkspace.setTitle(journalDataverse.getVdcNetwork().getName());
+            SwordCollection swordCollection = new SwordCollection();
+            swordCollection.setTitle(journalDataverse.getName());
+            try {
+                URI u = new URI(sdUri);
+                int port = u.getPort();
+                String hostName = System.getProperty("dvn.inetAddress");
+                // hard coding https on purpose
+                swordCollection.setHref("https://" + hostName + ":" + port + "/dvn/api/data-deposit/swordv2/collection/dataverse/" + dvAlias);
+                swordWorkspace.addCollection(swordCollection);
+                service.addWorkspace(swordWorkspace);
+                service.setMaxUploadSize(config.getMaxUploadSize());
+                return service;
+            } catch (URISyntaxException ex) {
+                String msg = "problem with URL ( " + sdUri + " ): " + ex.getMessage();
                 logger.info(msg);
                 throw new SwordError(msg);
             }
-
-            if (vdcList.get(0) != null) {
-                VDC journalDataverse = vdcList.get(0);
-                String dvAlias = journalDataverse.getAlias();
-                swordWorkspace.setTitle(journalDataverse.getVdcNetwork().getName());
-                SwordCollection swordCollection = new SwordCollection();
-                swordCollection.setTitle(journalDataverse.getName());
-                try {
-                    URI u = new URI(sdUri);
-                    int port = u.getPort();
-                    String hostName = System.getProperty("dvn.inetAddress");
-                    // hard coding https on purpose
-                    swordCollection.setHref("https://" + hostName + ":" + port + "/dvn/api/data-deposit/swordv2/collection/dataverse/" + dvAlias);
-                    swordWorkspace.addCollection(swordCollection);
-                    service.addWorkspace(swordWorkspace);
-                    service.setMaxUploadSize(config.getMaxUploadSize());
-                    return service;
-                } catch (URISyntaxException ex) {
-                    String msg = "problem with URL ( " + sdUri + " ): " + ex.getMessage();
-                    logger.info(msg);
-                    throw new SwordError(msg);
-                }
-            } else {
-                String msg = "could not retrieve Journal Dataverse";
-                logger.info(msg);
-                throw new SwordError(msg);
-            }
-        } catch (NamingException ex) {
-            String msg = "exception looking up userService: " + ex.getMessage();
+        } else {
+            String msg = "could not retrieve Journal Dataverse";
             logger.info(msg);
             throw new SwordError(msg);
         }

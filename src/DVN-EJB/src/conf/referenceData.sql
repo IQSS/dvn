@@ -943,7 +943,7 @@ ALTER TABLE "template" ENABLE TRIGGER ALL;
 
 ALTER TABLE vdcnetwork DISABLE TRIGGER ALL;
 
-INSERT INTO vdcnetwork (id, version, name, networkpageheader, networkpagefooter, announcements, displayannouncements, aboutthisdataversenetwork, contactemail, defaultvdcheader, defaultvdcfooter, defaultvdcabouttext, defaultvdcannouncements, displayvdcannouncements, displayvdcrecentstudies, defaulttemplate_id, allowcreaterequest, defaultnetworkadmin_id,protocol,authority,handleregistration,termsofuseenabled, deposittermsofuseenabled, downloadtermsofuseenabled, defaultdisplaynumber, exportperiod, exporthourofday) VALUES (0, 1, '[Your]', ' ', ' ', 'A description of your Dataverse Network or announcements may be added here. Use Network Options to edit or remove this text.', TRUE, 'This About page is not used anymore in the DVN application.', 'dataverse@lists.hmdc.harvard.edu', ' ', ' ', 'This About page is not used anymore in the DVN application.', '', TRUE, TRUE, 1, FALSE,1,'hdl','TEST',false,false,false,false,16,'daily',3);
+INSERT INTO vdcnetwork (id, version, name, networkpageheader, networkpagefooter, announcements, displayannouncements, aboutthisdataversenetwork, contactemail, systememail, defaultvdcheader, defaultvdcfooter, defaultvdcabouttext, defaultvdcannouncements, displayvdcannouncements, displayvdcrecentstudies, defaulttemplate_id, allowcreaterequest, defaultnetworkadmin_id,protocol,authority,handleregistration,termsofuseenabled, deposittermsofuseenabled, downloadtermsofuseenabled, defaultdisplaynumber, exportperiod, exporthourofday) VALUES (0, 1, '[Your]', ' ', ' ', 'A description of your Dataverse Network or announcements may be added here. Use Network Options to edit or remove this text.', TRUE, 'This About page is not used anymore in the DVN application.', 'dataverse@lists.hmdc.harvard.edu','dataverse@lists.hmdc.harvard.edu', ' ', ' ', 'This About page is not used anymore in the DVN application.', '', TRUE, TRUE, 1, FALSE,1,'hdl','TEST',false,false,false,false,16,'daily',3);
 
 update vdcnetwork set defaultvdcheader='<style type="text/css">
 body {margin:0; padding:0;}
@@ -1220,5 +1220,3 @@ INSERT INTO metadataformattype (id, name, mimetype, namespace, formatschema, par
 /*create network guest book*/
 
 INSERT INTO guestbookquestionnaire(enabled,firstnamerequired, lastnamerequired, emailrequired, institutionrequired,  positionrequired, vdc_id) VALUES (true, true, true, true, false, false, null);
-
-UPDATE vdcnetwork SET systememail = contactemail WHERE id = 1;

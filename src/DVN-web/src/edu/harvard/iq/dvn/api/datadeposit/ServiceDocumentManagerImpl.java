@@ -27,6 +27,7 @@ import java.net.URISyntaxException;
 import java.util.List;
 import java.util.logging.Logger;
 import javax.ejb.EJB;
+import javax.inject.Inject;
 import org.swordapp.server.AuthCredentials;
 import org.swordapp.server.ServiceDocument;
 import org.swordapp.server.ServiceDocumentManager;
@@ -42,12 +43,13 @@ public class ServiceDocumentManagerImpl implements ServiceDocumentManager {
     private static final Logger logger = Logger.getLogger(ServiceDocumentManagerImpl.class.getCanonicalName());
     @EJB
     VDCServiceLocal vdcService;
+    @Inject
+    SwordAuth swordAuth;
 
     @Override
     public ServiceDocument getServiceDocument(String sdUri, AuthCredentials authCredentials, SwordConfiguration config)
             throws SwordError, SwordServerException, SwordAuthException {
 
-        SwordAuth swordAuth = new SwordAuth();
         VDCUser vdcUser = swordAuth.auth(authCredentials);
 
         List<VDC> vdcList = vdcService.getUserVDCs(vdcUser.getId());

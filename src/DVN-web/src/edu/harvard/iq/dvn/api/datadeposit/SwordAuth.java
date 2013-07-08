@@ -22,9 +22,7 @@ package edu.harvard.iq.dvn.api.datadeposit;
 import edu.harvard.iq.dvn.core.admin.UserServiceLocal;
 import edu.harvard.iq.dvn.core.admin.VDCUser;
 import java.util.logging.Logger;
-import javax.naming.Context;
-import javax.naming.InitialContext;
-import javax.naming.NamingException;
+import javax.ejb.EJB;
 import org.swordapp.server.AuthCredentials;
 import org.swordapp.server.SwordAuthException;
 import org.swordapp.server.SwordServerException;
@@ -32,21 +30,14 @@ import org.swordapp.server.SwordServerException;
 public class SwordAuth {
 
     private static final Logger logger = Logger.getLogger(SwordAuth.class.getCanonicalName());
+    @EJB
+    UserServiceLocal userService;
 
-    VDCUser auth(AuthCredentials authCredentials) throws SwordAuthException, SwordServerException {
+    public VDCUser auth(AuthCredentials authCredentials) throws SwordAuthException, SwordServerException {
         if (authCredentials != null) {
             String username = authCredentials.getUsername();
             String password = authCredentials.getPassword();
             logger.fine("Checking username " + username + " ...");
-
-            UserServiceLocal userService;
-            try {
-                Context ctx = new InitialContext();
-                // "vdcUserService" comes from edu.harvard.iq.dvn.core.web.servlet.LoginFilter
-                userService = (UserServiceLocal) ctx.lookup("java:comp/env/vdcUserService");
-            } catch (NamingException ex) {
-                throw new SwordServerException("exception looking up userService: " + ex.getMessage());
-            }
 
             VDCUser vdcUser = userService.findByUserName(username);
             if (vdcUser != null) {

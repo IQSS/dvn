@@ -32,6 +32,7 @@ import java.net.URISyntaxException;
 import java.util.List;
 import java.util.logging.Logger;
 import javax.ejb.EJB;
+import javax.inject.Inject;
 import org.apache.abdera.i18n.iri.IRI;
 import org.swordapp.server.AuthCredentials;
 import org.swordapp.server.CollectionDepositManager;
@@ -47,12 +48,13 @@ public class CollectionDepositManagerImpl implements CollectionDepositManager {
     private static final Logger logger = Logger.getLogger(CollectionDepositManagerImpl.class.getCanonicalName());
     @EJB
     VDCServiceLocal vdcService;
+    @Inject
+    SwordAuth swordAuth;
 
     @Override
     public DepositReceipt createNew(String collectionUri, Deposit deposit, AuthCredentials authCredentials, SwordConfiguration config)
             throws SwordError, SwordServerException, SwordAuthException {
 
-        SwordAuth swordAuth = new SwordAuth();
         VDCUser vdcUser = swordAuth.auth(authCredentials);
 
         URI uriReference;

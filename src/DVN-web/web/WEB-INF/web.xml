@@ -214,11 +214,11 @@
    </context-param>
    <servlet>
        <servlet-name>edu.harvard.iq.dvn.api.datadeposit.ServiceDocumentManagerImpl</servlet-name>
-       <servlet-class>org.swordapp.server.servlets.ServiceDocumentServletDefault</servlet-class>
+       <servlet-class>edu.harvard.iq.dvn.core.web.servlet.SWORDv2ServiceDocumentServlet</servlet-class>
    </servlet>
    <servlet>
        <servlet-name>edu.harvard.iq.dvn.api.datadeposit.CollectionDepositManagerImpl</servlet-name>
-       <servlet-class>org.swordapp.server.servlets.CollectionServletDefault</servlet-class>
+       <servlet-class>edu.harvard.iq.dvn.core.web.servlet.SWORDv2CollectionServlet</servlet-class>
    </servlet>
 
    <!-- DVN SPECIFIC SERVLETS -->

@@ -19,7 +19,6 @@
  */
 package edu.harvard.iq.dvn.api.datadeposit;
 
-import edu.harvard.iq.dvn.core.admin.UserServiceLocal;
 import edu.harvard.iq.dvn.core.admin.VDCUser;
 import edu.harvard.iq.dvn.core.vdc.VDC;
 import edu.harvard.iq.dvn.core.vdc.VDCServiceLocal;
@@ -32,9 +31,7 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.List;
 import java.util.logging.Logger;
-import javax.naming.Context;
-import javax.naming.InitialContext;
-import javax.naming.NamingException;
+import javax.ejb.EJB;
 import org.apache.abdera.i18n.iri.IRI;
 import org.swordapp.server.AuthCredentials;
 import org.swordapp.server.CollectionDepositManager;
@@ -48,6 +45,8 @@ import org.swordapp.server.SwordServerException;
 public class CollectionDepositManagerImpl implements CollectionDepositManager {
 
     private static final Logger logger = Logger.getLogger(CollectionDepositManagerImpl.class.getCanonicalName());
+    @EJB
+    VDCServiceLocal vdcService;
 
     @Override
     public DepositReceipt createNew(String collectionUri, Deposit deposit, AuthCredentials authCredentials, SwordConfiguration config)
@@ -76,26 +75,9 @@ public class CollectionDepositManagerImpl implements CollectionDepositManager {
 
         logger.info("attempting deposit into this dataverse alias: " + dvAlias);
 
-        Context ctx = null;
-        VDCServiceLocal vdcService = null;
-        try {
-            ctx = new InitialContext();
-            // "vdcService" comes from edu.harvard.iq.dvn.core.web.servlet.LoginFilter
-            vdcService = (VDCServiceLocal) ctx.lookup("java:comp/env/vdcService");
-        } catch (NamingException ex) {
-            throw new SwordServerException("could not look up vdcService");
-        }
-
         VDC dv = vdcService.findByAlias(dvAlias);
 
         if (dv != null) {
-
-            UserServiceLocal userService;
-            try {
-                userService = (UserServiceLocal) ctx.lookup("java:comp/env/vdcUserService");
-            } catch (NamingException ex) {
-                throw new SwordServerException("could not look up userService");
-            }
 
             boolean authorized = false;
             List<VDC> userVDCs = vdcService.getUserVDCs(vdcUser.getId());

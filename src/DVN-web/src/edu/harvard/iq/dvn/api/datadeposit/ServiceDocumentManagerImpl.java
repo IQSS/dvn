@@ -19,7 +19,6 @@
  */
 package edu.harvard.iq.dvn.api.datadeposit;
 
-import edu.harvard.iq.dvn.core.admin.UserServiceLocal;
 import edu.harvard.iq.dvn.core.admin.VDCUser;
 import edu.harvard.iq.dvn.core.vdc.VDC;
 import edu.harvard.iq.dvn.core.vdc.VDCServiceLocal;
@@ -27,9 +26,7 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.List;
 import java.util.logging.Logger;
-import javax.naming.Context;
-import javax.naming.InitialContext;
-import javax.naming.NamingException;
+import javax.ejb.EJB;
 import org.swordapp.server.AuthCredentials;
 import org.swordapp.server.ServiceDocument;
 import org.swordapp.server.ServiceDocumentManager;
@@ -43,6 +40,8 @@ import org.swordapp.server.SwordWorkspace;
 public class ServiceDocumentManagerImpl implements ServiceDocumentManager {
 
     private static final Logger logger = Logger.getLogger(ServiceDocumentManagerImpl.class.getCanonicalName());
+    @EJB
+    VDCServiceLocal vdcService;
 
     @Override
     public ServiceDocument getServiceDocument(String sdUri, AuthCredentials authCredentials, SwordConfiguration config)
@@ -50,16 +49,6 @@ public class ServiceDocumentManagerImpl implements ServiceDocumentManager {
 
         SwordAuth swordAuth = new SwordAuth();
         VDCUser vdcUser = swordAuth.auth(authCredentials);
-
-        VDCServiceLocal vdcService;
-        try {
-            Context ctx = new InitialContext();
-            vdcService = (VDCServiceLocal) ctx.lookup("java:comp/env/vdcService");
-        } catch (NamingException ex) {
-            String msg = "exception looking up vdcService: " + ex.getMessage();
-            logger.info(msg);
-            throw new SwordError(msg);
-        }
 
         List<VDC> vdcList = vdcService.getUserVDCs(vdcUser.getId());
 

@@ -104,6 +104,7 @@ public class VDCServiceBean implements VDCServiceLocal {
     /** scholar dataverse */
     private void createScholarDataverse(Long userId, String firstName, String lastName, String name, String affiliation, String alias, String dataverseType, List studyFields) {
         VDC sDV = new VDC();
+        VDCNetwork vdcNetwork = vdcNetworkService.findRootNetwork();
         em.persist(sDV);
         sDV.setCreator(em.find(VDCUser.class, userId));
         sDV.setName(name);
@@ -115,8 +116,7 @@ public class VDCServiceBean implements VDCServiceLocal {
         sDV.setDtype(dataverseType);
         sDV.setCreatedDate(DateUtil.getTimestamp());
         sDV.getRootCollection().setName(name);
-
-        VDCNetwork vdcNetwork = vdcNetworkService.find(new Long(1));
+        sDV.setVdcNetwork(vdcNetwork);
         sDV.setDefaultTemplate(vdcNetwork.getDefaultTemplate());
         sDV.setHeader(vdcNetwork.getDefaultVDCHeader());
         sDV.setFooter(vdcNetwork.getDefaultVDCFooter());
@@ -323,7 +323,7 @@ public class VDCServiceBean implements VDCServiceLocal {
         addedSite.setCreatedDate(DateUtil.getTimestamp());
         addedSite.getRootCollection().setName(name);
 
-       
+        addedSite.setVdcNetwork(vdcNetwork);
         addedSite.setDefaultTemplate(vdcNetwork.getDefaultTemplate());
         addedSite.setHeader(vdcNetwork.getDefaultVDCHeader());
         addedSite.setFooter(vdcNetwork.getDefaultVDCFooter());

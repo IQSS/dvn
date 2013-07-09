@@ -52,6 +52,9 @@ public class ServiceDocumentManagerImpl implements ServiceDocumentManager {
 
         VDCUser vdcUser = swordAuth.auth(authCredentials);
 
+        /**
+         * @todo: check if this returns open or wiki dataverses
+         */
         List<VDC> vdcList = vdcService.getUserVDCs(vdcUser.getId());
 
         if (vdcList.size() != 1) {

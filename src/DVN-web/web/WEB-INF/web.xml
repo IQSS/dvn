@@ -212,6 +212,16 @@
        <param-value>edu.harvard.iq.dvn.api.datadeposit.CollectionDepositManagerImpl</param-value>
        <!--<description>The CollectionDepositManager server implementation class name</description>-->
    </context-param>
+   <context-param>
+       <param-name>container-impl</param-name>
+       <param-value>edu.harvard.iq.dvn.api.datadeposit.ContainerManagerImpl</param-value>
+       <!--<description>The ContainerManager server implementation class name</description>-->
+   </context-param>
+   <context-param>
+       <param-name>statement-impl</param-name>
+       <param-value>edu.harvard.iq.dvn.api.datadeposit.StatementManagerImpl</param-value>
+       <!--<description>The ContainerManager server implementation class name</description>-->
+   </context-param>
    <servlet>
        <servlet-name>edu.harvard.iq.dvn.api.datadeposit.ServiceDocumentManagerImpl</servlet-name>
        <servlet-class>edu.harvard.iq.dvn.core.web.servlet.SWORDv2ServiceDocumentServlet</servlet-class>
@@ -220,7 +230,10 @@
        <servlet-name>edu.harvard.iq.dvn.api.datadeposit.CollectionDepositManagerImpl</servlet-name>
        <servlet-class>edu.harvard.iq.dvn.core.web.servlet.SWORDv2CollectionServlet</servlet-class>
    </servlet>
-
+   <servlet>
+       <servlet-name>edu.harvard.iq.dvn.api.datadeposit.ContainerManagerImpl</servlet-name>
+       <servlet-class>edu.harvard.iq.dvn.core.web.servlet.SWORDv2ContainerServlet</servlet-class>
+   </servlet>
    <!-- DVN SPECIFIC SERVLETS -->
 
     <servlet>
@@ -352,6 +365,10 @@
     <servlet-mapping>
         <servlet-name>edu.harvard.iq.dvn.api.datadeposit.CollectionDepositManagerImpl</servlet-name>
         <url-pattern>/api/data-deposit/swordv2/collection/*</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>edu.harvard.iq.dvn.api.datadeposit.ContainerManagerImpl</servlet-name>
+        <url-pattern>/api/data-deposit/swordv2/edit/*</url-pattern>
     </servlet-mapping>
 
 <!-- DVN SPECIFIC SERVLET MAPPINGS START -->

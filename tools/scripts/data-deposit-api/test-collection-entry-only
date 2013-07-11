@@ -1,0 +1,3 @@
+#!/bin/sh
+curl --insecure --data-binary "@atom-entry-study.xml" -H "Content-Type: application/atom+xml" https://sword:sword@localhost:8181/dvn/api/data-deposit/swordv2/collection/dataverse/sword \
+#| xmllint --format -

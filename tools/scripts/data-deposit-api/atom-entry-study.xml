@@ -1,0 +1,30 @@
+<?xml version="1.0"?>
+<!-- modified from http://swordapp.github.io/SWORDv2-Profile/SWORDProfile.html#protocoloperations_editingcontent_metadata -->
+<entry xmlns="http://www.w3.org/2005/Atom"
+       xmlns:dcterms="http://purl.org/dc/terms/">
+   <title>The first study for the New England Journal of Coffee dataverse</title>
+   <id>urn:uuid:1225c695-cfb8-4ebb-aaaa-80da344efa6a</id>
+   <updated>2005-10-07T17:17:08Z</updated>
+   <author><name>Creator</name></author>
+   <summary type="text">The abstract</summary>
+   <!-- some embedded metadata -->
+   <dcterms:title>Roasting at Home</dcterms:title>
+   <dcterms:creator>Peets, John</dcterms:creator>
+   <dcterms:creator>Stumptown, Jane</dcterms:creator>
+   <!-- FIXME: is this productionDate or distributionDate? -->
+   <dcterms:date>2013-07-11</dcterms:date>
+   <dcterms:rights>Insert Terms of Use of Data here</dcterms:rights>
+   <!-- This field does not exist in our DVN DDI-DC crosswalk but would be useful if the data has an embargo -->
+   <dcterms:available>Date Available</dcterms:available>
+   <!-- This field does not exist in our DVN DDI-DC crosswalk but would be useful to make sure we have the OJS Journal article citation -->
+   <dcterms:bibliographicCitation>Insert Journal Article Citation from OJS</dcterms:bibliographicCitation>
+   <dcterms:description>Considerations before you start roasting your own coffee at home.</dcterms:description>
+   <!-- In DVN we use "description" to also include "Data Citation" but how would OJS get the study's Data Citation since Dataverse would need to pass this information over to OJS rather than the other way around. -->
+   <dcterms:description>Citation: "Insert Data Citation"?</dcterms:description>
+   <!-- In DVN we use identifier to place the Handle in but how would this work with OJS? What Identifier would go there? -->
+   <dcterms:identifier>Insert study handle? here</dcterms:identifier>
+   <dcterms:publisher>Insert ProducerName</dcterms:publisher>
+   <dcterms:subject></dcterms:subject>
+   <dcterms:source>Insert dataSources</dcterms:source>
+   <dcterms:type>Insert kindOfData</dcterms:type>
+</entry>

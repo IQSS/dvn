@@ -1,5 +1,9 @@
 <?xml version="1.0"?>
-<!-- modified from http://swordapp.github.io/SWORDv2-Profile/SWORDProfile.html#protocoloperations_editingcontent_metadata -->
+<!--
+modified from http://swordapp.github.io/SWORDv2-Profile/SWORDProfile.html#protocoloperations_editingcontent_metadata
+
+comments at https://docs.google.com/document/d/1Rn70XItfA6_mJ4JA3I7m4em0spfdXIIHhwkrgCl40uE/edit?usp=sharing
+-->
 <entry xmlns="http://www.w3.org/2005/Atom"
        xmlns:dcterms="http://purl.org/dc/terms/">
    <title>The first study for the New England Journal of Coffee dataverse</title>

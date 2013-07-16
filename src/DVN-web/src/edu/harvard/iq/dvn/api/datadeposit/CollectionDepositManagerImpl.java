@@ -46,7 +46,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.logging.Logger;
 import javax.ejb.EJB;
-import javax.ejb.EJBException;
 import javax.inject.Inject;
 import javax.naming.Context;
 import javax.naming.InitialContext;
@@ -188,6 +187,18 @@ public class CollectionDepositManagerImpl implements CollectionDepositManager {
                 fakeDepositReceipt.setVerboseDescription("Title: " + metadata.getTitle());
                 return fakeDepositReceipt;
             } else if (deposit.isBinaryOnly()) {
+                logger.info("attempting binary deposit");
+                String globalId;
+                try {
+                    //             0 1   2   3            4       5          6         7     8          9
+                    // for example: /dvn/api/data-deposit/swordv2/collection/dataverse/sword/hdl:1902.1/19189
+                    String namingAuthority = parts[8];
+                    String uniqueLocalName = parts[9];
+                    globalId = namingAuthority + "/" + uniqueLocalName;
+                } catch (ArrayIndexOutOfBoundsException ex) {
+                    throw new SwordServerException("could not extract global ID from collection URI: " + collectionUri);
+                }
+
                 String tempDirectory = config.getTempDirectory();
                 String uploadDirPath = tempDirectory + File.separator + "uploads";
                 File uploadDir = new File(uploadDirPath);
@@ -237,13 +248,18 @@ public class CollectionDepositManagerImpl implements CollectionDepositManager {
                 } catch (NamingException ex) {
                     throw new SwordServerException("problem looking up editStudyService");
                 }
-                editStudyService.newStudy(dv.getId(), vdcUser.getId(), dv.getDefaultTemplate().getId());
-                StudyVersion studyVersion = editStudyService.getStudyVersion();
-                Study study = studyVersion.getStudy();
-                String studyId = studyService.generateStudyIdSequence(study.getProtocol(), study.getAuthority());
-                study.setStudyId(studyId);
-                Metadata metadata = study.getLatestVersion().getMetadata();
-                metadata.setTitle(dvAlias + " study " + study.getStudyId());
+                logger.info("looking up study with globalId " + globalId);
+
+                Study study = editStudyService.getStudyByGlobalId(globalId);
+                Long studyId = study.getId();
+                editStudyService.setStudyVersion(studyId);
+//                Metadata metadata = editStudyService.getStudyVersion().getMetadata();
+//                String currentTitle = metadata.getTitle();
+//                logger.info("currentTitle: " + currentTitle);
+//                metadata.setTitle(currentTitle + "9");
+//                String newTitle = metadata.getTitle();
+//                logger.info("newTitle: " + newTitle);
+
                 List<StudyFileEditBean> fileList = new ArrayList();
                 try {
                     File file = new File(filename);
@@ -253,32 +269,37 @@ public class CollectionDepositManagerImpl implements CollectionDepositManager {
                 } catch (IOException ex) {
                     throw new SwordError("couldn't attach file");
                 }
+                StudyFileServiceLocal studyFileService;
                 try {
-                    StudyFileServiceLocal studyFileService;
-                    try {
-                        studyFileService = (StudyFileServiceLocal) ctx.lookup("java:comp/env/studyFileService");
-                    } catch (NamingException ex) {
-                        throw new SwordServerException("problem looking up studyFileService");
-                    }
-                    /**
-                     * @todo: fix IllegalStateException so we can uncomment this
-                     */
-//                    studyFileService.addFiles(studyVersion, fileList, vdcUser);
-                    editStudyService.save(dv.getId(), vdcUser.getId());
-                    DepositReceipt fakeDepositReceipt = new DepositReceipt();
-                    IRI fakeIri = new IRI("fakeIriFromBinaryDeposit");
-                    fakeDepositReceipt.setLocation(fakeIri);
-                    fakeDepositReceipt.setEditIRI(fakeIri);
-                    return fakeDepositReceipt;
-                } catch (EJBException ex) {
-                    /**
-                     * Caused by: java.lang.IllegalStateException: During
-                     * synchronization a new object was found through a
-                     * relationship that was not marked cascade PERSIST:
-                     * edu.harvard.iq.dvn.core.study.Study@0.
-                     */
-                    throw new SwordServerException();
+                    studyFileService = (StudyFileServiceLocal) ctx.lookup("java:comp/env/studyFileService");
+                } catch (NamingException ex) {
+                    throw new SwordServerException("problem looking up studyFileService");
                 }
+                try {
+                    /**
+                     * @todo: fix exception so we can uncomment this
+                     */
+//                    studyFileService.addFiles(study.getLatestVersion(), fileList, vdcUser);
+                    logger.info("running editStudyService.save()");
+                    editStudyService.save(dv.getId(), vdcUser.getId());
+                } catch (Exception ex) {
+                    /**
+                     * getting this error:
+                     *
+                     * org.eclipse.persistence.exceptions.OptimisticLockException
+                     * Exception Description: The object
+                     * [edu.harvard.iq.dvn.core.study.Study@151c1] cannot be
+                     * updated because it has changed or been deleted since it
+                     * was last read. Class> edu.harvard.iq.dvn.core.study.Study
+                     * Primary Key> 86,465
+                     */
+                    throw new SwordError("couldn't add file to study");
+                }
+                DepositReceipt fakeDepositReceipt = new DepositReceipt();
+                IRI fakeIri = new IRI("fakeIriFromBinaryDeposit");
+                fakeDepositReceipt.setLocation(fakeIri);
+                fakeDepositReceipt.setEditIRI(fakeIri);
+                return fakeDepositReceipt;
             } else if (deposit.isMultipart()) {
                 // get here with this:
                 // wget https://raw.github.com/swordapp/Simple-Sword-Server/master/tests/resources/multipart.dat

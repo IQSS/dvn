@@ -41,6 +41,7 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -116,12 +117,11 @@ public class CollectionDepositManagerImpl implements CollectionDepositManager {
                 throw new SwordServerException("the account used to modify a Journal Dataverse can only have access to 1 dataverse, not " + userVDCs.size());
             }
 
-
-            System.out.println("multipart: " + deposit.isMultipart());
-            System.out.println("binary only: " + deposit.isBinaryOnly());
-            System.out.println("entry only: " + deposit.isEntryOnly());
-            System.out.println("in progress: " + deposit.isInProgress());
-            System.out.println("metadata relevant: " + deposit.isMetadataRelevant());
+            logger.info("multipart: " + deposit.isMultipart());
+            logger.info("binary only: " + deposit.isBinaryOnly());
+            logger.info("entry only: " + deposit.isEntryOnly());
+            logger.info("in progress: " + deposit.isInProgress());
+            logger.info("metadata relevant: " + deposit.isMetadataRelevant());
 
             if (deposit.isEntryOnly()) {
                 SwordEntry swordEntry = deposit.getSwordEntry();
@@ -181,22 +181,48 @@ public class CollectionDepositManagerImpl implements CollectionDepositManager {
                 editStudyService.save(dv.getId(), vdcUser.getId());
 
                 DepositReceipt fakeDepositReceipt = new DepositReceipt();
-                IRI fakeIri = new IRI("fakeIriFromMetadataDeposit");
+                IRI fakeIri = new IRI("fakeIriFromMetadataDeposit/" + study.getGlobalId());
                 fakeDepositReceipt.setLocation(fakeIri);
                 fakeDepositReceipt.setEditIRI(fakeIri);
                 fakeDepositReceipt.setVerboseDescription("Title: " + metadata.getTitle());
                 return fakeDepositReceipt;
             } else if (deposit.isBinaryOnly()) {
+                /**
+                 * @todo: should binaries be handled by the
+                 * CollectionDepositManager or by the MediaResourceManager?
+                 *
+                 * The SWORDv2 spec lead says, "It is my plan and hope to back
+                 * all of the multipart OUT of the sword spec for a future
+                 * version (like a 2.1), so I strongly recommend not using
+                 * multipart deposit. Instead do a POST of an Atom Entry and a
+                 * PUT of the Media Resource in two distinct HTTP requests." --
+                 * http://www.mail-archive.com/sword-app-tech@lists.sourceforge.net/msg00327.html
+                 *
+                 * However, CollectionServletDefault only supports POST while
+                 * MediaResourceServletDefault supports both POST and PUT.
+                 */
                 logger.info("attempting binary deposit");
                 String globalId;
+                String namingAuthority;
                 try {
                     //             0 1   2   3            4       5          6         7     8          9
                     // for example: /dvn/api/data-deposit/swordv2/collection/dataverse/sword/hdl:1902.1/19189
-                    String namingAuthority = parts[8];
+                    namingAuthority = parts[8];
+//                    String uniqueLocalName = parts[9];
+//                    globalId = namingAuthority + "/" + uniqueLocalName;
+                } catch (ArrayIndexOutOfBoundsException ex) {
+                    throw new SwordError("could not extract global ID from collection URI: " + collectionUri);
+                }
+                try {
+                    //             0 1   2   3            4       5          6         7     8          9
+                    // for example: /dvn/api/data-deposit/swordv2/collection/dataverse/sword/hdl:1902.1/19189
                     String uniqueLocalName = parts[9];
+                    if ("new".equals(uniqueLocalName)) {
+                        throw new SwordError("Please create a study before attempting to deposit a file.");
+                    }
                     globalId = namingAuthority + "/" + uniqueLocalName;
                 } catch (ArrayIndexOutOfBoundsException ex) {
-                    throw new SwordServerException("could not extract global ID from collection URI: " + collectionUri);
+                    throw new SwordError("could not extract global ID from collection URI: " + collectionUri);
                 }
 
                 String tempDirectory = config.getTempDirectory();
@@ -249,16 +275,29 @@ public class CollectionDepositManagerImpl implements CollectionDepositManager {
                     throw new SwordServerException("problem looking up editStudyService");
                 }
                 logger.info("looking up study with globalId " + globalId);
-
                 Study study = editStudyService.getStudyByGlobalId(globalId);
-                Long studyId = study.getId();
+                Long studyId;
+                try {
+                    studyId = study.getId();
+                } catch (NullPointerException ex) {
+                    throw new SwordError("couldn't find study with global ID of " + globalId);
+                }
+                /**
+                 * @todo: is there a better way to check if user is authorized
+                 * to edit a study?
+                 */
+                boolean authorizedToEditStudy = false;
+                Collection<Study> ownedStudies = dv.getOwnedStudies();
+                for (Study ownedStudy : ownedStudies) {
+                    if (study.equals(ownedStudy)) {
+                        authorizedToEditStudy = true;
+                        break;
+                    }
+                }
+                if (!authorizedToEditStudy) {
+                    throw new SwordError("user " + vdcUser.getUserName() + " is not authorized to modify study with global ID " + globalId);
+                }
                 editStudyService.setStudyVersion(studyId);
-//                Metadata metadata = editStudyService.getStudyVersion().getMetadata();
-//                String currentTitle = metadata.getTitle();
-//                logger.info("currentTitle: " + currentTitle);
-//                metadata.setTitle(currentTitle + "9");
-//                String newTitle = metadata.getTitle();
-//                logger.info("newTitle: " + newTitle);
 
                 List<StudyFileEditBean> fileList = new ArrayList();
                 try {
@@ -275,13 +314,8 @@ public class CollectionDepositManagerImpl implements CollectionDepositManager {
                 } catch (NamingException ex) {
                     throw new SwordServerException("problem looking up studyFileService");
                 }
-                try {
-                    logger.info("running editStudyService.save()");
-                    editStudyService.save(dv.getId(), vdcUser.getId());
-                    studyFileService.addFiles(study.getLatestVersion(), fileList, vdcUser);
-                } catch (Exception ex) {
-                    throw new SwordError("couldn't add file to study");
-                }
+                editStudyService.save(dv.getId(), vdcUser.getId());
+                studyFileService.addFiles(study.getLatestVersion(), fileList, vdcUser);
                 DepositReceipt fakeDepositReceipt = new DepositReceipt();
                 IRI fakeIri = new IRI("fakeIriFromBinaryDeposit");
                 fakeDepositReceipt.setLocation(fakeIri);

@@ -222,6 +222,11 @@
        <param-value>edu.harvard.iq.dvn.api.datadeposit.StatementManagerImpl</param-value>
        <!--<description>The ContainerManager server implementation class name</description>-->
    </context-param>
+   <context-param>
+       <param-name>media-resource-impl</param-name>
+       <param-value>edu.harvard.iq.dvn.api.datadeposit.MediaResourceManagerImpl</param-value>
+       <!--<description>The MediaResourceManager server implementation class name</description>-->
+   </context-param>
    <servlet>
        <servlet-name>edu.harvard.iq.dvn.api.datadeposit.ServiceDocumentManagerImpl</servlet-name>
        <servlet-class>edu.harvard.iq.dvn.core.web.servlet.SWORDv2ServiceDocumentServlet</servlet-class>
@@ -233,6 +238,10 @@
    <servlet>
        <servlet-name>edu.harvard.iq.dvn.api.datadeposit.ContainerManagerImpl</servlet-name>
        <servlet-class>edu.harvard.iq.dvn.core.web.servlet.SWORDv2ContainerServlet</servlet-class>
+   </servlet>
+   <servlet>
+       <servlet-name>edu.harvard.iq.dvn.api.datadeposit.MediaResourceManagerImpl</servlet-name>
+       <servlet-class>edu.harvard.iq.dvn.core.web.servlet.SWORDv2MediaResourceServlet</servlet-class>
    </servlet>
    <!-- DVN SPECIFIC SERVLETS -->
 
@@ -369,6 +378,10 @@
     <servlet-mapping>
         <servlet-name>edu.harvard.iq.dvn.api.datadeposit.ContainerManagerImpl</servlet-name>
         <url-pattern>/api/data-deposit/swordv2/edit/*</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>edu.harvard.iq.dvn.api.datadeposit.MediaResourceManagerImpl</servlet-name>
+        <url-pattern>/api/data-deposit/swordv2/edit-media/*</url-pattern>
     </servlet-mapping>
 
 <!-- DVN SPECIFIC SERVLET MAPPINGS START -->

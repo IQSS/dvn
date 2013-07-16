@@ -1,0 +1,2 @@
+#!/bin/sh
+curl --insecure -s --upload-file example.zip -H "Content-Disposition: filename=example.zip" -H "Content-Type: application/zip" https://sword:sword@localhost:8181/dvn/api/data-deposit/swordv2/edit-media/FIXME

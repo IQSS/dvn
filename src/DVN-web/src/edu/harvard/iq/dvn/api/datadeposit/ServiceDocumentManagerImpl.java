@@ -69,27 +69,11 @@ public class ServiceDocumentManagerImpl implements ServiceDocumentManager {
             VDC journalDataverse = vdcList.get(0);
             String dvAlias = journalDataverse.getAlias();
             Collection<Study> studies = journalDataverse.getOwnedStudies();
-            /**
-             * @todo: don't simply select the last study... return each study as
-             * a collection?
-             */
             String globalId = null;
-            if (studies.isEmpty()) {
-                throw new SwordError("no studies found in dataverse " + dvAlias);
-            } else {
-                for (Study study : studies) {
-                    globalId = study.getGlobalId();
-                    /**
-                     * @todo: is it ok for the globalId to have a colon in it?
-                     */
-                    logger.info("found study with global ID " + globalId);
-                }
-            }
             ServiceDocument service = new ServiceDocument();
             SwordWorkspace swordWorkspace = new SwordWorkspace();
             swordWorkspace.setTitle(journalDataverse.getVdcNetwork().getName());
-            SwordCollection swordCollection = new SwordCollection();
-            swordCollection.setTitle(journalDataverse.getName());
+            String authority = journalDataverse.getVdcNetwork().getAuthority();
             try {
                 URI u = new URI(sdUri);
                 int port = u.getPort();
@@ -98,8 +82,21 @@ public class ServiceDocumentManagerImpl implements ServiceDocumentManager {
                  */
                 String httpOrHttps = u.getScheme();
                 String hostName = System.getProperty("dvn.inetAddress");
-                swordCollection.setHref(httpOrHttps + "://" + hostName + ":" + port + "/dvn/api/data-deposit/swordv2/collection/dataverse/" + dvAlias + "/" + globalId);
-                swordWorkspace.addCollection(swordCollection);
+                SwordCollection swordCollectionNew = new SwordCollection();
+                swordCollectionNew.setTitle(journalDataverse.getName());
+                swordCollectionNew.setHref(httpOrHttps + "://" + hostName + ":" + port + "/dvn/api/data-deposit/swordv2/collection/dataverse/" + dvAlias + "/" + authority + "/new");
+                swordWorkspace.addCollection(swordCollectionNew);
+                for (Study study : studies) {
+                    globalId = study.getGlobalId();
+                    /**
+                     * @todo: is it ok for the globalId to have a colon in it?
+                     */
+                    logger.info("found study with global ID " + globalId);
+                    SwordCollection swordCollectionStudy = new SwordCollection();
+                    swordCollectionStudy.setTitle(journalDataverse.getName());
+                    swordCollectionStudy.setHref(httpOrHttps + "://" + hostName + ":" + port + "/dvn/api/data-deposit/swordv2/collection/dataverse/" + dvAlias + "/" + globalId);
+                    swordWorkspace.addCollection(swordCollectionStudy);
+                }
                 service.addWorkspace(swordWorkspace);
                 service.setMaxUploadSize(config.getMaxUploadSize());
                 return service;

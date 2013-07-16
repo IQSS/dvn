@@ -276,23 +276,10 @@ public class CollectionDepositManagerImpl implements CollectionDepositManager {
                     throw new SwordServerException("problem looking up studyFileService");
                 }
                 try {
-                    /**
-                     * @todo: fix exception so we can uncomment this
-                     */
-//                    studyFileService.addFiles(study.getLatestVersion(), fileList, vdcUser);
                     logger.info("running editStudyService.save()");
                     editStudyService.save(dv.getId(), vdcUser.getId());
+                    studyFileService.addFiles(study.getLatestVersion(), fileList, vdcUser);
                 } catch (Exception ex) {
-                    /**
-                     * getting this error:
-                     *
-                     * org.eclipse.persistence.exceptions.OptimisticLockException
-                     * Exception Description: The object
-                     * [edu.harvard.iq.dvn.core.study.Study@151c1] cannot be
-                     * updated because it has changed or been deleted since it
-                     * was last read. Class> edu.harvard.iq.dvn.core.study.Study
-                     * Primary Key> 86,465
-                     */
                     throw new SwordError("couldn't add file to study");
                 }
                 DepositReceipt fakeDepositReceipt = new DepositReceipt();

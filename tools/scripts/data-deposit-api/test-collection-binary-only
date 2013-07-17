@@ -1,0 +1,9 @@
+#!/bin/sh
+if [ "" = "$1" ]; then
+  echo >&2 "Please supply a global ID of a study (i.e. hdl:1902.1/12345)"
+  exit 1
+else
+  GLOBAL_ID="/$1"
+fi
+curl --insecure -s --data-binary "@example.zip" -H "Content-Disposition: filename=example.zip" -H "Content-Type: application/zip" https://sword:sword@localhost:8181/dvn/api/data-deposit/swordv2/collection/dataverse/sword$GLOBAL_ID \
+| xmllint --format -

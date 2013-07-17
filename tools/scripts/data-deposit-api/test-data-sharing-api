@@ -1,0 +1,5 @@
+#!/bin/sh
+# The older Data Sharing API and the newer Data Deposit API
+# have similar URL mappings. Quick test of the older API:
+curl --insecure -s https://localhost:8181/dvn/api/metadataSearchFields
+#curl --insecure -s https://localhost:8181/dvn/api/metadataSearch/authorName:King

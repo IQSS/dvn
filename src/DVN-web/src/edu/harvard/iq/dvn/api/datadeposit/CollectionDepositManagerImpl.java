@@ -21,15 +21,10 @@ package edu.harvard.iq.dvn.api.datadeposit;
 
 import edu.harvard.iq.dvn.core.admin.VDCUser;
 import edu.harvard.iq.dvn.core.study.EditStudyService;
-import edu.harvard.iq.dvn.core.study.Metadata;
 import edu.harvard.iq.dvn.core.study.Study;
-import edu.harvard.iq.dvn.core.study.StudyAbstract;
-import edu.harvard.iq.dvn.core.study.StudyAuthor;
 import edu.harvard.iq.dvn.core.study.StudyFileEditBean;
 import edu.harvard.iq.dvn.core.study.StudyFileServiceLocal;
 import edu.harvard.iq.dvn.core.study.StudyServiceLocal;
-import edu.harvard.iq.dvn.core.study.StudyVersion;
-import edu.harvard.iq.dvn.core.util.DateUtil;
 import edu.harvard.iq.dvn.core.vdc.VDC;
 import edu.harvard.iq.dvn.core.vdc.VDCServiceLocal;
 import java.io.File;
@@ -39,10 +34,8 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Logger;
@@ -52,13 +45,13 @@ import javax.naming.Context;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
 import org.apache.abdera.i18n.iri.IRI;
+import org.apache.commons.io.FileUtils;
 import org.swordapp.server.AuthCredentials;
 import org.swordapp.server.CollectionDepositManager;
 import org.swordapp.server.Deposit;
 import org.swordapp.server.DepositReceipt;
 import org.swordapp.server.SwordAuthException;
 import org.swordapp.server.SwordConfiguration;
-import org.swordapp.server.SwordEntry;
 import org.swordapp.server.SwordError;
 import org.swordapp.server.SwordServerException;
 
@@ -124,67 +117,46 @@ public class CollectionDepositManagerImpl implements CollectionDepositManager {
             logger.info("metadata relevant: " + deposit.isMetadataRelevant());
 
             if (deposit.isEntryOnly()) {
-                SwordEntry swordEntry = deposit.getSwordEntry();
-                Map<String, List<String>> dublinCore = swordEntry.getDublinCore();
-                for (Map.Entry<String, List<String>> entry : dublinCore.entrySet()) {
-                    logger.info(entry.getKey() + "/" + entry.getValue());
-                }
-
-                EditStudyService editStudyService;
-                Context ctx;
-                try {
-                    ctx = new InitialContext();
-                    editStudyService = (EditStudyService) ctx.lookup("java:comp/env/editStudy");
-                } catch (NamingException ex) {
-                    throw new SwordServerException("problem looking up editStudyService");
-                }
-                editStudyService.newStudy(dv.getId(), vdcUser.getId(), dv.getDefaultTemplate().getId());
-                StudyVersion studyVersion = editStudyService.getStudyVersion();
-                Study study = studyVersion.getStudy();
-                String studyId = studyService.generateStudyIdSequence(study.getProtocol(), study.getAuthority());
-                study.setStudyId(studyId);
-                Metadata metadata = study.getLatestVersion().getMetadata();
-                if (dublinCore.get("title").get(0) != null) {
-                    metadata.setTitle(dublinCore.get("title").get(0));
-                } else {
+                // require title *and* exercise the SWORD jar a bit
+                Map<String, List<String>> dublinCore = deposit.getSwordEntry().getDublinCore();
+                if (dublinCore.get("title") == null || dublinCore.get("title").get(0) == null) {
                     throw new SwordError("title field is required");
                 }
-                List<StudyAbstract> studyAbstractList = new ArrayList<StudyAbstract>();
-                StudyAbstract studyAbstract = new StudyAbstract();
-                studyAbstract.setText(dublinCore.get("description").get(0));
-                studyAbstract.setMetadata(metadata);
-                studyAbstractList.add(studyAbstract);
-                metadata.setStudyAbstracts(studyAbstractList);
 
-                if (dublinCore.get("date") != null) {
-                    String dateProvided = dublinCore.get("date").get(0);
-                    if (DateUtil.validateDate(dateProvided)) {
-                        metadata.setProductionDate(dateProvided);
-                    } else {
-                        throw new SwordError("Invalid Date Format: (" + dateProvided + "). Valid formats are YYYY-MM-DD, YYYY-MM, or YYYY. Optionally, 'BC' can be appended to the year. (By default, AD is assumed.)");
+                // instead of writing a tmp file, maybe importStudy() could accept an InputStream?
+                String tmpDirectory = config.getTempDirectory();
+                String uploadDirPath = tmpDirectory + File.separator + "import" + File.separator + dv.getId();
+                File uploadDir = new File(uploadDirPath);
+                if (!uploadDir.exists()) {
+                    if (!uploadDir.mkdirs()) {
+                        throw new SwordServerException("couldn't create directory: " + uploadDir.getAbsolutePath());
                     }
                 }
-                // always set the depositDate
-                SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
-                Date now = new Date();
-                String depositDate = simpleDateFormat.format(now);
-                metadata.setDateOfDeposit(depositDate);
-
-                List<StudyAuthor> studyAuthors = new ArrayList<StudyAuthor>();
-                for (String creator : dublinCore.get("creator")) {
-                    StudyAuthor studyAuthor = new StudyAuthor();
-                    studyAuthor.setName(creator);
-                    studyAuthor.setMetadata(metadata);
-                    studyAuthors.add(studyAuthor);
+                String tmpFilePath = uploadDirPath + File.separator + "newStudyViaSwordv2.xml";
+                File tmpFile = new File(tmpFilePath);
+                try {
+                    FileUtils.writeStringToFile(tmpFile, deposit.getSwordEntry().getEntry().toString());
+                } catch (IOException ex) {
+                    throw new SwordServerException("Could write temporary file");
+                } finally {
+                    uploadDir.delete();
                 }
-                metadata.setStudyAuthors(studyAuthors);
-                editStudyService.save(dv.getId(), vdcUser.getId());
 
+                Long dcmiTermsFormatId = new Long(4);
+                Study study;
+                try {
+                    study = studyService.importStudy(tmpFile, dcmiTermsFormatId, dv.getId(), vdcUser.getId());
+                } catch (Exception ex) {
+                    throw new SwordError("Couldn't import study: " + ex.getMessage());
+                } finally {
+                    tmpFile.delete();
+                    uploadDir.delete();
+                }
                 DepositReceipt fakeDepositReceipt = new DepositReceipt();
                 IRI fakeIri = new IRI("fakeIriFromMetadataDeposit/" + study.getGlobalId());
                 fakeDepositReceipt.setLocation(fakeIri);
                 fakeDepositReceipt.setEditIRI(fakeIri);
-                fakeDepositReceipt.setVerboseDescription("Title: " + metadata.getTitle());
+                fakeDepositReceipt.setVerboseDescription("Title: " + study.getLatestVersion().getMetadata().getTitle());
                 return fakeDepositReceipt;
             } else if (deposit.isBinaryOnly()) {
                 /**

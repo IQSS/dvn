@@ -1164,6 +1164,7 @@ INSERT INTO harvestformattype (id, metadataprefix, name, stylesheetfilename) VAL
 INSERT INTO harvestformattype (id, metadataprefix, name, stylesheetfilename) VALUES (1, 'oai_etdms', 'MIF', 'mif2ddi.xsl');
 INSERT INTO harvestformattype (id, metadataprefix, name, stylesheetfilename) VALUES (2, 'oai_dc', 'DC', 'oai_dc2ddi.xsl');
 INSERT INTO harvestformattype (id, metadataprefix, name, stylesheetfilename) VALUES (3, 'oai_fgdc', 'FGDC', 'fgdc2ddi.xsl');
+INSERT INTO harvestformattype (id, metadataprefix, name, stylesheetfilename) VALUES (4, 'dcmi_terms', 'DCMI_terms', 'dcmi_terms2ddi.xsl');
 
 create index datavariable_id_index on  datavariable (id);
 create index summarystatistic_id_index on  summarystatistic (id);

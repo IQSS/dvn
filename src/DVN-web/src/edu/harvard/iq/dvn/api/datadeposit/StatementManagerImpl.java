@@ -20,11 +20,9 @@
 package edu.harvard.iq.dvn.api.datadeposit;
 
 import edu.harvard.iq.dvn.core.admin.VDCUser;
-import java.io.IOException;
-import java.io.Writer;
-import java.util.Date;
 import java.util.Map;
 import javax.inject.Inject;
+import org.swordapp.server.AtomStatement;
 import org.swordapp.server.AuthCredentials;
 import org.swordapp.server.Statement;
 import org.swordapp.server.StatementManager;
@@ -51,18 +49,15 @@ public class StatementManagerImpl implements StatementManager {
         }
 
         VDCUser vdcUser = swordAuth.auth(authCredentials);
-        System.out.println("user: " + vdcUser.getUserName());
+        System.out.println("request for sword statement by user " + vdcUser.getUserName());
+        System.out.println("String was: " + string);
 
-        Statement statement = new Statement() {
-            @Override
-            public void writeTo(Writer writer) throws IOException {
-                System.out.println("writing statement");
-            }
-        };
-        Date date = new Date();
-        Long epochSeconds = System.currentTimeMillis() / 1000L;
-        date.setTime(epochSeconds);
-        statement.setLastModified(date);
+        String feedUri = "fakeFeedUri";
+        String author = "fakeAuthor";
+        String title = "fakeTitle";
+        // null date become "now"
+        String datedUpdated = null;
+        Statement statement = new AtomStatement(feedUri, author, title, datedUpdated);
         return statement;
     }
 }

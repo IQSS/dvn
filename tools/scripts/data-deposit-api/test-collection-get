@@ -1,0 +1,3 @@
+#!/bin/sh
+curl --insecure -s https://sword:sword@localhost:8181/dvn/api/data-deposit/swordv2/collection/FIXME \
+| xmllint -format -

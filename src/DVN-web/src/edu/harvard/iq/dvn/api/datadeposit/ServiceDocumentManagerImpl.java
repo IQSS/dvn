@@ -69,7 +69,6 @@ public class ServiceDocumentManagerImpl implements ServiceDocumentManager {
             VDC journalDataverse = vdcList.get(0);
             String dvAlias = journalDataverse.getAlias();
             Collection<Study> studies = journalDataverse.getOwnedStudies();
-            String globalId = null;
             ServiceDocument service = new ServiceDocument();
             SwordWorkspace swordWorkspace = new SwordWorkspace();
             swordWorkspace.setTitle(journalDataverse.getVdcNetwork().getName());
@@ -87,13 +86,13 @@ public class ServiceDocumentManagerImpl implements ServiceDocumentManager {
                 swordCollectionNew.setHref(httpOrHttps + "://" + hostName + ":" + port + "/dvn/api/data-deposit/swordv2/collection/dataverse/" + dvAlias);
                 swordWorkspace.addCollection(swordCollectionNew);
                 for (Study study : studies) {
-                    globalId = study.getGlobalId();
+                    String globalId = study.getGlobalId();
                     /**
                      * @todo: is it ok for the globalId to have a colon in it?
                      */
                     logger.info("found study with global ID " + globalId);
                     SwordCollection swordCollectionStudy = new SwordCollection();
-                    swordCollectionStudy.setTitle(journalDataverse.getName());
+                    swordCollectionStudy.setTitle(study.getLatestVersion().getMetadata().getTitle());
                     swordCollectionStudy.setHref(httpOrHttps + "://" + hostName + ":" + port + "/dvn/api/data-deposit/swordv2/collection/dataverse/" + dvAlias + "/" + globalId);
                     swordWorkspace.addCollection(swordCollectionStudy);
                 }

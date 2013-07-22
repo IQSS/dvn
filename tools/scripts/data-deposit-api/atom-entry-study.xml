@@ -17,18 +17,14 @@ comments at https://docs.google.com/document/d/1Rn70XItfA6_mJ4JA3I7m4em0spfdXIIH
    <dcterms:creator>Stumptown, Jane</dcterms:creator>
    <!-- FIXME: is this productionDate or distributionDate? -->
    <dcterms:date>2013-07-11</dcterms:date>
-   <dcterms:rights>Insert Terms of Use of Data here</dcterms:rights>
-   <!-- This field does not exist in our DVN DDI-DC crosswalk but would be useful if the data has an embargo -->
-   <dcterms:available>Date Available</dcterms:available>
+   <dcterms:rights>Creative Commons CC-BY 3.0 (unported) http://creativecommons.org/licenses/by/3.0/</dcterms:rights>
    <!-- This field does not exist in our DVN DDI-DC crosswalk but would be useful to make sure we have the OJS Journal article citation -->
    <dcterms:bibliographicCitation>Insert Journal Article Citation from OJS</dcterms:bibliographicCitation>
    <dcterms:description>Considerations before you start roasting your own coffee at home.</dcterms:description>
-   <!-- In DVN we use "description" to also include "Data Citation" but how would OJS get the study's Data Citation since Dataverse would need to pass this information over to OJS rather than the other way around. -->
-   <dcterms:description>Citation: "Insert Data Citation"?</dcterms:description>
+   <!-- In DVN we also use "description" to include "Data Citation" but how would OJS get the study's Data Citation since Dataverse would need to pass this information over to OJS rather than the other way around. -->
    <!-- In DVN we use identifier to place the Handle in but how would this work with OJS? What Identifier would go there? -->
-   <dcterms:identifier>Insert study handle? here</dcterms:identifier>
-   <dcterms:publisher>Insert ProducerName</dcterms:publisher>
-   <dcterms:subject></dcterms:subject>
-   <dcterms:source>Insert dataSources</dcterms:source>
-   <dcterms:type>Insert kindOfData</dcterms:type>
+   <dcterms:identifier>doi:10.1000/182</dcterms:identifier>
+   <dcterms:subject>coffee</dcterms:subject>
+   <dcterms:subject>beverage</dcterms:subject>
+   <dcterms:subject>caffeine</dcterms:subject>
 </entry>

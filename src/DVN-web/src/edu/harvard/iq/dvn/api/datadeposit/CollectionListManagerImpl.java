@@ -19,7 +19,17 @@
  */
 package edu.harvard.iq.dvn.api.datadeposit;
 
+import edu.harvard.iq.dvn.core.admin.VDCUser;
+import edu.harvard.iq.dvn.core.study.Study;
+import edu.harvard.iq.dvn.core.vdc.VDC;
+import edu.harvard.iq.dvn.core.vdc.VDCServiceLocal;
+import java.util.Collection;
+import java.util.List;
+import javax.ejb.EJB;
+import javax.inject.Inject;
+import org.apache.abdera.Abdera;
 import org.apache.abdera.i18n.iri.IRI;
+import org.apache.abdera.model.Entry;
 import org.apache.abdera.model.Feed;
 import org.swordapp.server.AuthCredentials;
 import org.swordapp.server.CollectionListManager;
@@ -30,8 +40,52 @@ import org.swordapp.server.SwordServerException;
 
 public class CollectionListManagerImpl implements CollectionListManager {
 
+    @EJB
+    VDCServiceLocal vdcService;
+    @Inject
+    SwordAuth swordAuth;
+
     @Override
     public Feed listCollectionContents(IRI iri, AuthCredentials authCredentials, SwordConfiguration swordConfiguration) throws SwordServerException, SwordAuthException, SwordError {
-        throw new SwordError("HTTP GET of collection URL pattern is not supported yet.");
+        VDCUser vdcUser = swordAuth.auth(authCredentials);
+
+        String[] parts = iri.getPath().split("/");
+        String dvAlias;
+        try {
+            //             0 1   2   3            4       5          6         7
+            // for example: /dvn/api/data-deposit/swordv2/collection/dataverse/sword
+            dvAlias = parts[7];
+        } catch (ArrayIndexOutOfBoundsException ex) {
+            throw new SwordServerException("could not extract dataverse alias from collection URI: " + iri.toString());
+        }
+
+        VDC dv = vdcService.findByAlias(dvAlias);
+
+        if (dv != null) {
+            boolean authorized = false;
+            List<VDC> userVDCs = vdcService.getUserVDCs(vdcUser.getId());
+            for (VDC userVdc : userVDCs) {
+                if (userVdc.equals(dv)) {
+                    authorized = true;
+                    break;
+                }
+            }
+            if (!authorized) {
+                throw new SwordServerException("user " + vdcUser.getUserName() + " is not authorized to list studies in dataverse " + dv.getAlias());
+            }
+            Abdera abdera = new Abdera();
+            Feed feed = abdera.newFeed();
+            feed.setTitle(dv.getName());
+            Collection<Study> studies = dv.getOwnedStudies();
+            for (Study study : studies) {
+                Entry entry = feed.addEntry();
+                entry.setContent(study.getGlobalId());
+                feed.addEntry(entry);
+            }
+            return feed;
+        } else {
+            throw new SwordServerException("Could not find dataverse: " + dvAlias);
+
+        }
     }
 }

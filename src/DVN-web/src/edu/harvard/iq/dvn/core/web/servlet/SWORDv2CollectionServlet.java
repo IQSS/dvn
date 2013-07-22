@@ -1,6 +1,7 @@
 package edu.harvard.iq.dvn.core.web.servlet;
 
 import edu.harvard.iq.dvn.api.datadeposit.CollectionDepositManagerImpl;
+import edu.harvard.iq.dvn.api.datadeposit.CollectionListManagerImpl;
 import java.io.IOException;
 import javax.inject.Inject;
 import javax.servlet.ServletException;
@@ -14,17 +15,14 @@ public class SWORDv2CollectionServlet extends SwordServlet {
 
     @Inject
     CollectionDepositManagerImpl collectionDepositManagerImpl;
-    protected CollectionListManager clm = null;
+    @Inject
+    CollectionListManagerImpl collectionListManagerImpl;
     protected CollectionAPI api;
 
     public void init() throws ServletException {
         super.init();
 
-        // load the collection list manager implementation
-        Object possibleClm = this.loadImplClass("collection-list-impl", true); // allow null
-        this.clm = possibleClm == null ? null : (CollectionListManager) possibleClm;
-
-        this.api = new CollectionAPI(this.clm, collectionDepositManagerImpl, this.config);
+        this.api = new CollectionAPI(collectionListManagerImpl, collectionDepositManagerImpl, this.config);
     }
 
     @Override

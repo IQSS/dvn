@@ -20,27 +20,26 @@
  */
 package edu.harvard.iq.dvn.core.web.servlet;
 
+import edu.harvard.iq.dvn.api.datadeposit.MediaResourceManagerImpl;
 import java.io.IOException;
+import javax.inject.Inject;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import org.swordapp.server.MediaResourceAPI;
-import org.swordapp.server.MediaResourceManager;
 import org.swordapp.server.servlets.SwordServlet;
 
 public class SWORDv2MediaResourceServlet extends SwordServlet {
 
-    protected MediaResourceManager mrm;
+    @Inject
+    MediaResourceManagerImpl mediaResourceManagerImpl;
     protected MediaResourceAPI api;
 
     public void init() throws ServletException {
         super.init();
 
-        // load the Media Resource Manager
-        this.mrm = (MediaResourceManager) this.loadImplClass("media-resource-impl", false);
-
         // load the api
-        this.api = new MediaResourceAPI(this.mrm, this.config);
+        this.api = new MediaResourceAPI(mediaResourceManagerImpl, this.config);
     }
 
     @Override

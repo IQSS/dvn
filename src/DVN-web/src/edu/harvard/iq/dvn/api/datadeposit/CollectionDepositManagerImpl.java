@@ -30,6 +30,7 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.logging.Logger;
 import javax.ejb.EJB;
 import javax.inject.Inject;
@@ -141,12 +142,16 @@ public class CollectionDepositManagerImpl implements CollectionDepositManager {
                     tmpFile.delete();
                     uploadDir.delete();
                 }
-                DepositReceipt fakeDepositReceipt = new DepositReceipt();
-                IRI fakeIri = new IRI("fakeIriFromMetadataDeposit/" + study.getGlobalId());
-                fakeDepositReceipt.setLocation(fakeIri);
-                fakeDepositReceipt.setEditIRI(fakeIri);
-                fakeDepositReceipt.setVerboseDescription("Title: " + study.getLatestVersion().getMetadata().getTitle());
-                return fakeDepositReceipt;
+                DepositReceipt depositReceipt = new DepositReceipt();
+                String hostName = System.getProperty("dvn.inetAddress");
+                int port = uriReference.getPort();
+                String baseUrl = "https://" + hostName + ":" + port + "/dvn/api/data-deposit/swordv2/";
+                depositReceipt.setLocation(new IRI("location" + baseUrl + study.getGlobalId()));
+                depositReceipt.setEditIRI(new IRI(baseUrl + "edit/" + study.getGlobalId()));
+                depositReceipt.setEditMediaIRI(new IRI(baseUrl + "edit-media/" + study.getGlobalId()));
+                depositReceipt.setVerboseDescription("Title: " + study.getLatestVersion().getMetadata().getTitle());
+                depositReceipt.setStatementURI("application/atom+xml;type=feed", baseUrl + "statement/" + study.getGlobalId());
+                return depositReceipt;
             } else if (deposit.isBinaryOnly()) {
                 // get here with this:
                 // curl --insecure -s --data-binary "@example.zip" -H "Content-Disposition: filename=example.zip" -H "Content-Type: application/zip" https://sword:sword@localhost:8181/dvn/api/data-deposit/swordv2/collection/dataverse/sword/

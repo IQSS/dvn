@@ -77,9 +77,14 @@ public class CollectionListManagerImpl implements CollectionListManager {
             Feed feed = abdera.newFeed();
             feed.setTitle(dv.getName());
             Collection<Study> studies = dv.getOwnedStudies();
+            String hostName = System.getProperty("dvn.inetAddress");
+            int port = iri.getPort();
+            String baseUrl = "https://" + hostName + ":" + port + "/dvn/api/data-deposit/swordv2/edit/";
             for (Study study : studies) {
                 Entry entry = feed.addEntry();
-                entry.setContent(study.getGlobalId());
+                entry.setId(study.getGlobalId());
+                entry.setTitle(study.getLatestVersion().getMetadata().getTitle());
+                entry.setBaseUri(new IRI(baseUrl + study.getGlobalId()));
                 feed.addEntry(entry);
             }
             return feed;

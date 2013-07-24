@@ -1,3 +1,9 @@
 #!/bin/sh
-curl --insecure -s --data-binary "@atom-entry-study.xml" -H "Content-Type: application/atom+xml" https://sword:sword@localhost:8181/dvn/api/data-deposit/swordv2/collection/dataverse/sword \
+if [ "" = "$1" ]; then
+  echo >&2 "Please supply a collection URI"
+  exit 1
+else
+  COLLECTION_URI="$1"
+fi
+curl --insecure -s --data-binary "@atom-entry-study.xml" -H "Content-Type: application/atom+xml" -u sword:sword $1 \
 | xmllint --format -

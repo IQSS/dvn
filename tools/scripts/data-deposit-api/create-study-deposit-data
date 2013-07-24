@@ -1,0 +1,32 @@
+#!/usr/bin/env python
+import re
+from subprocess import Popen, PIPE
+from xml.etree import ElementTree as ET
+
+service_document = ET.fromstring(Popen("tools/scripts/data-deposit-api/test-service-document", stdout=PIPE).communicate()[0])
+
+deposit_target = service_document[0][1].attrib["href"]
+
+print "creating a study using", deposit_target
+deposit_receipt = ET.fromstring(Popen(["tools/scripts/data-deposit-api/test-collection-entry-only", deposit_target], stdout=PIPE).communicate()[0]);
+
+for link in deposit_receipt.findall("./{http://www.w3.org/2005/Atom}link"):
+    if "edit-media" == link.attrib["rel"]:
+        edit_media_uri = link.attrib["href"]
+
+feed_of_studies = ET.fromstring(Popen(["tools/scripts/data-deposit-api/test-collection-get", deposit_target], stdout=PIPE).communicate()[0]);
+
+print "listing studies..."
+for entry in feed_of_studies.findall("./{http://www.w3.org/2005/Atom}entry/"):
+    #print entry.tag, entry.attrib, entry.text
+    if not entry.attrib:
+        print "- globalId:", entry.text
+
+print "uploading a binary to", edit_media_uri
+out = Popen(["tools/scripts/data-deposit-api/test-edit-media-put-binary", edit_media_uri], stdout=PIPE).communicate()[0]
+match = re.search("HTTP/1.1 204 No Content", out)
+if match:
+    print "binary was successfully uploaded"
+else:
+    print "unable to upload binary to study, output was:"
+    print out

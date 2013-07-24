@@ -85,17 +85,6 @@ public class ServiceDocumentManagerImpl implements ServiceDocumentManager {
                 swordCollectionNew.setTitle(journalDataverse.getName());
                 swordCollectionNew.setHref(httpOrHttps + "://" + hostName + ":" + port + "/dvn/api/data-deposit/swordv2/collection/dataverse/" + dvAlias);
                 swordWorkspace.addCollection(swordCollectionNew);
-                for (Study study : studies) {
-                    String globalId = study.getGlobalId();
-                    /**
-                     * @todo: is it ok for the globalId to have a colon in it?
-                     */
-                    logger.info("found study with global ID " + globalId);
-                    SwordCollection swordCollectionStudy = new SwordCollection();
-                    swordCollectionStudy.setTitle(study.getLatestVersion().getMetadata().getTitle());
-                    swordCollectionStudy.setHref(httpOrHttps + "://" + hostName + ":" + port + "/dvn/api/data-deposit/swordv2/collection/dataverse/" + dvAlias + "/" + globalId);
-                    swordWorkspace.addCollection(swordCollectionStudy);
-                }
                 service.addWorkspace(swordWorkspace);
                 service.setMaxUploadSize(config.getMaxUploadSize());
                 return service;

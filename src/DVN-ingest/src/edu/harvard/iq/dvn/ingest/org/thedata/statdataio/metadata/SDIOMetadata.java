@@ -239,7 +239,8 @@ public class SDIOMetadata {
     /**
      * Tells whether a variable is Categorical ("Factor", in R speak)
      *
-     * @return a <code>boolean</code> array, true if a variable is string.
+     * @return a <code>boolean</code> array, true if a variable is categorical - 
+     * i.e., there's a fixed set of possible values defined for it. 
      */
     public boolean[] isCategoricalVariable() {
         boolean[] categoricalYes = new boolean[variableName.length];
@@ -261,33 +262,46 @@ public class SDIOMetadata {
      * @return a <code>boolean</code> array, true if a variable is continuous.
      */
     public boolean[] isContinuousVariable(){
-      boolean[] continuousYes = new boolean[variableName.length];
-      if ((variableStorageType != null) && (variableStorageType.length >0)){
-        // Stata DTA case
-            for (int i =0; i< variableName.length;i++){
-                if ( variableTypeNumber.get(variableStorageType[i]) == 2  ){
-                    if (valueLabelTable.containsKey(valueLabelMappingTable.get(variableName[i]))){
-                        
-              continuousYes[i] = false;
-                    } else {
-              continuousYes[i] = true;
-          }
+        boolean[] continuousYes = new boolean[variableName.length];
+            if ((variableStorageType != null) && (variableStorageType.length >0)){
+            // Stata DTA case
+                for (int i =0; i< variableName.length;i++){
+                    if ( variableTypeNumber.get(variableStorageType[i]) == 2  ){
+                        if (valueLabelTable.containsKey(valueLabelMappingTable.get(variableName[i]))){
+                            continuousYes[i] = false;
+                        } else {
+                            continuousYes[i] = true;
+                        }
                     
+                    } else {
+                        continuousYes[i] = false;
+                    }
+                }
+            } else if (decimalVariables != null) {
+                // SPSS POR/SAV/CC, R, etc. cases
+                if ( decimalVariables.size()>0) {
+                    for (int i=0;i<variableName.length;i++) {
+                        if (decimalVariables.contains(i)) { 
+                            
+                            // Do note that in SPSS and R, just like in STATA, 
+                            // above, there's a case where decimal/Double values
+                            // can still be categorical data!
+                            
+                            if (valueLabelTable.containsKey(valueLabelMappingTable.get(variableName[i]))){
+                                continuousYes[i] = false;
+                            } else {
+                                continuousYes[i] = true;
+                            }
+                            
+                        } else {
+                            Arrays.fill(continuousYes, false);
+                        }
+                    }
                 } else {
-            continuousYes[i] = false;
-          }
-        }
-        } else if (decimalVariables != null){
-        // SPSS POR/SAV cases
-            if ( decimalVariables.size()>0){
-                for (int i=0;i<variableName.length;i++){
-            continuousYes[i] = decimalVariables.contains(i) ? true : false;
-          }
-            } else {
-          Arrays.fill(continuousYes, false);
-        }
-      }
-      return continuousYes;
+                    Arrays.fill(continuousYes, false);
+                }
+            }
+        return continuousYes;
     }
     
     /**

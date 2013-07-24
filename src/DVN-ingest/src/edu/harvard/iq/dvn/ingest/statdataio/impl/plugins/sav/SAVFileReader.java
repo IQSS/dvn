@@ -3650,14 +3650,13 @@ public class SAVFileReader extends StatDataFileReader{
                 break;
 
             case 1:
-                // double case
-                // note: due to DecimalFormat class is used to
-                // remove an unnecessary decimal point and 0-padding
-                // numeric (double) data are now String objects
+                // type "double":
+                // The actual Double values have been converted to strings with
+                // DecimalFormat; so we'll need to convert them back to a 
+                // vector of Doubles for calculating the UNFs and the statistics:
 
                 dbgLog.finer("double case");
              
-                 // Convert array of Strings to array of Doubles
                 Double[]  ddata = new Double[varData.length];
                 for (int i=0;i<varData.length;i++) {
                     if (varData[i]!=null) {
@@ -3666,11 +3665,39 @@ public class SAVFileReader extends StatDataFileReader{
                 }
                 unfValue = UNF5Util.calculateUNF(ddata);
                 dbgLog.finer("double:unfValue="+unfValue);
-                smd.getSummaryStatisticsTable().put(variablePosition,
-                ArrayUtils.toObject(StatHelper.calculateSummaryStatisticsContDistSample(ddata)));
                 
-                dbgLog.info("sumstat:long case=" + Arrays.deepToString(
-                ArrayUtils.toObject(StatHelper.calculateSummaryStatisticsContDistSample(ddata))));
+                // Summary stats. 
+                
+                // IMPORTANT: up until version 3.6 we used to automatically 
+                // assume that values of type Double were necessarily continuous, 
+                // and calculate Distribution Sample statistics for them.
+                // However, it is entirely possible to have categorical data
+                // with Double values (use case reported by Odum; support ticket 
+                // RT #160712, redmine #3175). So, depending on which one it is, 
+                // we are now calling either ContDistSample or SummaryStatistics/CategoryStatistics 
+                // from StatHelper. 
+                
+                
+                boolean isCategoricalVariable = false; 
+                
+                if (smd.getValueLabelTable().containsKey(smd.getValueLabelMappingTable().get(variableNameList.get(variablePosition)))) {
+                    isCategoricalVariable = true; 
+                }
+                
+                if (isCategoricalVariable) {
+                    smd.getSummaryStatisticsTable().put(variablePosition,
+                        ArrayUtils.toObject(StatHelper.calculateSummaryStatistics(ddata)));
+                    Map<String, Integer> doubleCatStat = StatHelper.calculateCategoryStatistics(ddata);
+                    smd.getCategoryStatisticsTable().put(variableNameList.get(variablePosition), doubleCatStat);
+                    
+                    // TODO: add .info logging.
+                } else {
+                    smd.getSummaryStatisticsTable().put(variablePosition,
+                    ArrayUtils.toObject(StatHelper.calculateSummaryStatisticsContDistSample(ddata)));
+                
+                    dbgLog.info("sumstat:long case=" + Arrays.deepToString(
+                    ArrayUtils.toObject(StatHelper.calculateSummaryStatisticsContDistSample(ddata))));
+                } 
 
                 break;
             case  -1:
@@ -3688,10 +3715,10 @@ public class SAVFileReader extends StatDataFileReader{
                 smd.getSummaryStatisticsTable().put(variablePosition,
                     StatHelper.calculateSummaryStatistics(strdata));
 
-                Map<String, Integer> StrCatStat = StatHelper.calculateCategoryStatistics(strdata);
+                Map<String, Integer> strCatStat = StatHelper.calculateCategoryStatistics(strdata);
                 //out.println("catStat="+StrCatStat);
                 
-                smd.getCategoryStatisticsTable().put(variableNameList.get(variablePosition), StrCatStat);
+                smd.getCategoryStatisticsTable().put(variableNameList.get(variablePosition), strCatStat);
 
                 break;
             default:

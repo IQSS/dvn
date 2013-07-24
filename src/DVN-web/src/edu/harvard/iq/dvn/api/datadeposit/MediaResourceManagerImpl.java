@@ -172,7 +172,7 @@ public class MediaResourceManagerImpl implements MediaResourceManager {
         try {
             File file = new File(filename);
             logger.info("attaching file: " + filename);
-            StudyFileEditBean studyFileEditBean = new StudyFileEditBean(file, studyService.generateFileSystemNameSequence(), study, true);
+            StudyFileEditBean studyFileEditBean = new StudyFileEditBean(file, studyService.generateFileSystemNameSequence(), study);
             fileList.add(studyFileEditBean);
         } catch (IOException ex) {
             throw new SwordError("couldn't attach file");

@@ -3685,9 +3685,22 @@ public class SAVFileReader extends StatDataFileReader{
                 }
                 
                 if (isCategoricalVariable) {
+                    // We calculate summary statistics on the values, the same
+                    // way we calculate it for integers: 
+                    
                     smd.getSummaryStatisticsTable().put(variablePosition,
                         ArrayUtils.toObject(StatHelper.calculateSummaryStatistics(ddata)));
-                    Map<String, Integer> doubleCatStat = StatHelper.calculateCategoryStatistics(ddata);
+                    
+                    // However, in order to calculate category statistics, we'll 
+                    // use the values formatted as strings with DecimalFormat. 
+                    // This is important - because that's how the defined category 
+                    // values have been formatted. So we don't want a Double 1.0 
+                    // in the data vector to be counted as different from the 
+                    // category value defined as "1"!
+                    
+                    String[] strdata = Arrays.asList(varData).toArray(new String[varData.length]);
+                    
+                    Map<String, Integer> doubleCatStat = StatHelper.calculateCategoryStatistics(strdata);
                     smd.getCategoryStatisticsTable().put(variableNameList.get(variablePosition), doubleCatStat);
                     
                     // TODO: add .info logging.

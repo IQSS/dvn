@@ -78,8 +78,12 @@ public class CollectionListManagerImpl implements CollectionListManager {
             feed.setTitle(dv.getName());
             Collection<Study> studies = dv.getOwnedStudies();
             String hostName = System.getProperty("dvn.inetAddress");
+            String optionalPort = "";
             int port = iri.getPort();
-            String baseUrl = "https://" + hostName + ":" + port + "/dvn/api/data-deposit/swordv2/edit/";
+            if (port != -1) {
+                optionalPort = ":" + port;
+            }
+            String baseUrl = "https://" + hostName + optionalPort + "/dvn/api/data-deposit/swordv2/edit/";
             for (Study study : studies) {
                 Entry entry = feed.addEntry();
                 entry.setId(study.getGlobalId());

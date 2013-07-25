@@ -74,16 +74,20 @@ public class ServiceDocumentManagerImpl implements ServiceDocumentManager {
             swordWorkspace.setTitle(journalDataverse.getVdcNetwork().getName());
             String authority = journalDataverse.getVdcNetwork().getAuthority();
             try {
+                String optionalPort = "";
                 URI u = new URI(sdUri);
                 int port = u.getPort();
+                if (port != -1) {
+                    // https often runs on port 8181 in dev
+                    optionalPort = ":" + port;
+                }
                 /**
                  * @todo: force https
                  */
-                String httpOrHttps = u.getScheme();
                 String hostName = System.getProperty("dvn.inetAddress");
                 SwordCollection swordCollectionNew = new SwordCollection();
                 swordCollectionNew.setTitle(journalDataverse.getName());
-                swordCollectionNew.setHref(httpOrHttps + "://" + hostName + ":" + port + "/dvn/api/data-deposit/swordv2/collection/dataverse/" + dvAlias);
+                swordCollectionNew.setHref("https://" + hostName + optionalPort + "/dvn/api/data-deposit/swordv2/collection/dataverse/" + dvAlias);
                 swordWorkspace.addCollection(swordCollectionNew);
                 service.addWorkspace(swordWorkspace);
                 service.setMaxUploadSize(config.getMaxUploadSize());

@@ -144,8 +144,12 @@ public class CollectionDepositManagerImpl implements CollectionDepositManager {
                 }
                 DepositReceipt depositReceipt = new DepositReceipt();
                 String hostName = System.getProperty("dvn.inetAddress");
+                String optionalPort = "";
                 int port = uriReference.getPort();
-                String baseUrl = "https://" + hostName + ":" + port + "/dvn/api/data-deposit/swordv2/";
+                if (port != -1) {
+                    optionalPort = ":" + port;
+                }
+                String baseUrl = "https://" + hostName + optionalPort + "/dvn/api/data-deposit/swordv2/";
                 depositReceipt.setLocation(new IRI("location" + baseUrl + study.getGlobalId()));
                 depositReceipt.setEditIRI(new IRI(baseUrl + "edit/" + study.getGlobalId()));
                 depositReceipt.setEditMediaIRI(new IRI(baseUrl + "edit-media/" + study.getGlobalId()));

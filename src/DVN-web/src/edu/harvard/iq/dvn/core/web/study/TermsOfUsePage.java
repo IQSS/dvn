@@ -458,14 +458,7 @@ public class TermsOfUsePage extends VDCBaseBean {
             }
         }
     }
-    
-    public void validateEmail(FacesContext context, 
-                          UIComponent toValidate,
-                          Object value) {
-    CharacterValidator charactervalidator = new CharacterValidator();
-    charactervalidator.validateWEmail(context, toValidate, value);
-        }
-    
+
     private List <SelectItem> setResponseUISelectItems(CustomQuestion cq){
         List  <SelectItem> retList = new ArrayList();
         for (CustomQuestionValue cqv: cq.getCustomQuestionValues()){

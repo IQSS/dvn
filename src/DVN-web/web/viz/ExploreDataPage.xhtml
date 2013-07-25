@@ -129,7 +129,7 @@
                         <div class="dvnGraphFilterLabelBlock">
                             <ice:outputLabel value="#{item.varGrouping.name}"/>
 
-                            <ice:selectOneMenu id="filterGroup" styleClass="filterGroup" value="#{item.selectedGroupId}" partialSubmit="true"  valueChangeListener="#{ExploreDataPage.updateLineLabelForFilter}">
+                            <ice:selectOneMenu id="filterGroup" styleClass="filterGroup" value="#{item.selectedGroupId}" partialSubmit="true"  valueChangeListener="#{ExploreDataPage.valueChangeEventForFilter}">
                                 <f:selectItem itemLabel="Select..." itemValue="0"/>
                                 <f:selectItems value="#{ExploreDataPage.getSelectFilterGroups(item.varGrouping.id)}"/>
                             </ice:selectOneMenu>

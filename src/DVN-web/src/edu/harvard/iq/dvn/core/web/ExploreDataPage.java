@@ -56,12 +56,8 @@ import com.itextpdf.text.Image;
 import com.itextpdf.text.pdf.PdfWriter;
 import com.itextpdf.text.pdf.codec.PngImage;
 
-import edu.harvard.iq.dvn.core.study.DataVariable;
-import edu.harvard.iq.dvn.core.study.Study;
-import edu.harvard.iq.dvn.core.study.StudyFile;
-import edu.harvard.iq.dvn.core.study.VariableServiceLocal;
+import edu.harvard.iq.dvn.core.study.*;
 import edu.harvard.iq.dvn.core.visualization.DataVariableMapping;
-import edu.harvard.iq.dvn.core.study.StudyServiceLocal;
 import edu.harvard.iq.dvn.core.vdc.GuestBookResponse;
 import edu.harvard.iq.dvn.core.vdc.GuestBookResponseServiceBean;
 import edu.harvard.iq.dvn.core.vdc.VDC;
@@ -92,13 +88,7 @@ import java.nio.ByteBuffer;
 import java.nio.channels.FileChannel;
 import java.nio.channels.WritableByteChannel;
 import java.text.SimpleDateFormat;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Date;
-import java.util.HashSet;
-import java.util.LinkedHashSet;
-import java.util.Locale;
-import java.util.Set;
+import java.util.*;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 import javax.ejb.EJBException;
@@ -148,6 +138,7 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
     
     private List <VarGrouping> varGroupings = new ArrayList();
     private List <VarGroupingUI> filterGroupings = new ArrayList();
+    private Map filterGroupingsAndFilters = new LinkedHashMap();
 
     private List <String> filterStrings = new ArrayList();
     private List <SelectItem> selectMeasureItems = new ArrayList();
@@ -365,14 +356,10 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
 
 
     private String loadMeasureLabel() {
-        Iterator iterator = allVarGroupings.iterator();
-        while (iterator.hasNext() ){
-            VarGrouping varGrouping = (VarGrouping) iterator.next();
-
+        for (VarGrouping varGrouping : allVarGroupings ){
             if (varGrouping.getGroupingType().equals(GroupingType.MEASURE)){
                 return varGrouping.getName();
             }
-
         }
         return "Measure";
     }
@@ -386,12 +373,14 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
     }
 
     private void loadFilterGroupings() {
-
         filterStrings.clear();
         filterGroupings.clear();
+        filterGroupingsAndFilters = new HashMap();
         List<VarGrouping> localVGList = new ArrayList();
         Iterator i = filterGroupingMeasureAssociation.listIterator();
         int count = 0;
+        //need iterator here because we are dealing with objects of varying types and 
+        // we need to jump ahead wheh the id is eqaul to the selected measure id
         while (i.hasNext()) {
             Object test = i.next();
             if (count % 2 == 0) {
@@ -401,13 +390,10 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
                     count++;
                 }
             }
-            count++;
+            count++;            
         }
-
         for (VarGrouping varGrouping : localVGList) {
-
             if (varGrouping.getGroupingType().equals(GroupingType.FILTER)) {
-
                 List<VarGroup> filterGroups = new ArrayList();
                 List<VarGroupTypeUI> filterGroupTypes = new ArrayList();
                 VarGroupingUI vgUI = new VarGroupingUI();
@@ -419,16 +405,18 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
                 if (!filterGroupTypes.isEmpty()) {
                     selectedMeasureHasFilterTypes = true;
                 }
-
                 vgUI.setSelectedGroupId(new Long(0));
                 filterGroupings.add(vgUI);
             }
+        }       
+        for (VarGrouping varGrouping : localVGList) {
+            Map filterGroupingFilterMap = getFilterGroupsMap(varGrouping.getId());
+            filterGroupingsAndFilters.put(varGrouping.getId(), filterGroupingFilterMap);
         }
     }
 
     private void loadAllFilterGroupings(){
-        filterGroupingMeasureAssociation.clear();
-        
+        filterGroupingMeasureAssociation.clear();        
         for (VarGrouping varGroupingTest: allVarGroupings){
             if (varGroupingTest.getGroupingType().equals(GroupingType.MEASURE)){
                 for (VarGroup varGroup : varGroupingTest.getVarGroups() ){
@@ -444,12 +432,10 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
                      }
                 }
             }
-
         }
     }
     
     private void loadAllFilterGroups(){
-
         allFilterGroups.clear();
         for (VarGrouping varGroupingTest: allVarGroupings){
             if (varGroupingTest.getGroupingType().equals(GroupingType.FILTER)){
@@ -462,39 +448,31 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
     }
     
     private void loadAllMeasureGroups(){
-        allMeasureGroups.clear();
-        
+        allMeasureGroups.clear();       
         for (VarGrouping varGroupingTest: allVarGroupings){
             if (varGroupingTest.getGroupingType().equals(GroupingType.MEASURE)){
                 for (VarGroup varGroup : varGroupingTest.getVarGroups() ){
                     allMeasureGroups.add(varGroup);
                 }
             }
-
         }
     }
 
-    private void loadAllFilterGroupTypes(){
-
-        for (VarGrouping varGroupingTest: allVarGroupings){
-            if (varGroupingTest.getGroupingType().equals(GroupingType.FILTER)){
-                     List <VarGroupType> varGroupTypesBack = visualizationService.getGroupTypesFromGroupingId(varGroupingTest.getId());
-
-                     for(VarGroupType varGroupTypeBack: varGroupTypesBack){
-                         groupingTypeAssociation.add(varGroupingTest.getId());
-                         groupingTypeAssociation.add(varGroupTypeBack);
-                     }
-
+    private void loadAllFilterGroupTypes() {
+        for (VarGrouping varGroupingTest : allVarGroupings) {
+            if (varGroupingTest.getGroupingType().equals(GroupingType.FILTER)) {
+                List<VarGroupType> varGroupTypesBack = visualizationService.getGroupTypesFromGroupingId(varGroupingTest.getId());
+                for (VarGroupType varGroupTypeBack : varGroupTypesBack) {
+                    groupingTypeAssociation.add(varGroupingTest.getId());
+                    groupingTypeAssociation.add(varGroupTypeBack);
+                }
             }
-
         }
     }
-
 
     private void loadFilterGroups(List<VarGroup> inList) {
         inList.clear();
         List<VarGroup> localVGList = new ArrayList();
-
         Iterator i = filterGroupMeasureAssociation.listIterator();
         int count = 0;
         while (i.hasNext()) {
@@ -508,7 +486,6 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
             }
             count++;
         }
-
         for (VarGroup varGroup : localVGList) {
             inList.add(varGroup);
         }
@@ -518,7 +495,6 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
 
         List returnList = new ArrayList();
         List<VarGroup> localVGList = new ArrayList();
-
         Iterator i = filterGroupMeasureAssociation.listIterator();
         int count = 0;
         while (i.hasNext()) {
@@ -536,7 +512,6 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
         for (VarGroup varGroup : localVGList) {
             returnList.add(varGroup);
         }
-
         return returnList;
     }
 
@@ -544,7 +519,6 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
     private void loadFilterGroupTypes(List <VarGroupTypeUI> inList, Long groupingId){
         
         List <VarGroupType> localVGList = new ArrayList();
-
         Iterator i = groupingTypeAssociation.listIterator();
         int count = 0;
         while (i.hasNext()){
@@ -586,8 +560,7 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
     public String getMeasureLabel() {
         return measureLabel;
     }
-    
-    
+       
     public String getMeasureTypeCue() {
         return measureTypeCue;
     }
@@ -595,8 +568,7 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
     public void setMeasureTypeCue(String measureTypeCue) {
         this.measureTypeCue = measureTypeCue;
     }
-    
-    
+       
     public boolean isSelectedMeasureHasFilterTypes() {
         return selectedMeasureHasFilterTypes;
     }
@@ -633,8 +605,7 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
             selectedMeasureId = new Long(0);
         }
         if (selectedMeasureId != null) {
-            loadFilterGroupings();
-            
+            loadFilterGroupings();            
         }
         
         if (!selectedMeasureHasFilters && selectedMeasureId > 0) {
@@ -643,15 +614,38 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
         } else {
             inputLineLabel.setValue(""); 
         }
-       
-        // commented out because we don't need to reset the visualization when all we are doing is selecting the filter
-        //callDrawVisualization();
         
         // added the following to fix issue where you would change from one measure to anoter, but the filter values were being kept
         getFacesContext().renderResponse();
     }
+       
+    public void valueChangeEventForFilter(ValueChangeEvent ae) {
+        Long filterId = (Long) ae.getNewValue();
+        if (filterGroupings.size() > 1) {
+            VarGrouping updatedGrouping = new VarGrouping();
+            VarGroup filterGroup = getFilterGroupFromId(filterId);
+            if (filterGroup != null) {
+                updatedGrouping = filterGroup.getGroupAssociation();
+                for (VarGroupingUI varGroupingUI : filterGroupings) {
+                    if (updatedGrouping.equals(varGroupingUI.getVarGrouping())) {
+                        varGroupingUI.setSelectedGroupId(filterId);
+                    }
+                }
+                // get variable associated with this filter and and measure           
+                for (VarGroupingUI varGroupingUI : filterGroupings) {
+                    if (!updatedGrouping.equals(varGroupingUI.getVarGrouping())) {
+                        Map filterGroupingFilterMap = getFilterGroupsMap(varGroupingUI.getVarGrouping().getId(), filterId);
+                        filterGroupingsAndFilters.remove(varGroupingUI.getVarGrouping().getId());
+                        if (!filterGroupingFilterMap.isEmpty()) {
+                            filterGroupingsAndFilters.put(varGroupingUI.getVarGrouping().getId(), filterGroupingFilterMap);
+                        }
+                    }
+                }
+            }
+        }
+        updateLineLabelForFilter(ae);
+    }
     
-   
     public void updateLineLabelForFilter(ValueChangeEvent ae) {
         Long filterId = (Long) ae.getNewValue();
         VarGroup filterGroup = getFilterGroupFromId(filterId);
@@ -679,16 +673,11 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
     }
     
     private List<SelectItem> loadSelectMeasureItems(int grouptype_id) {
-        boolean resetSelected = true;
-
         List selectItems = new ArrayList<SelectItem>();
         List<VarGroup> varGroups = new ArrayList();
         varGroupings = dt.getVarGroupings();
-        Iterator iterator = varGroupings.iterator();
-        while (iterator.hasNext()) {
-            VarGrouping varGrouping = (VarGrouping) iterator.next();
+        for (VarGrouping varGrouping : varGroupings) {
             if (varGrouping.getGroupingType().equals(GroupingType.MEASURE)) {
-
                 if (grouptype_id == 0) {
                     varGroups = (List<VarGroup>) varGrouping.getVarGroups();
                 } else {
@@ -702,7 +691,6 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
                         }
                     }
                 }
-
                 for (VarGroup varGroup : varGroups) {
                     boolean added = false;
                     Long testId = varGroup.getId();
@@ -718,13 +706,10 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
                         }
                         added = true;
                     }
-
                 }
             }
         }
-        if (resetSelected) {
-            selectedMeasureId = new Long(0);
-        }
+        selectedMeasureId = new Long(0);
         return selectItems;
     }
 
@@ -787,8 +772,7 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
 
         if (!dt.getVisualizationDisplay().isShowDataTable()) {
             includeExcel = false;
-        }
-        
+        }        
         return selectItems;
     }
     
@@ -807,13 +791,12 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
         return selectItems;
     }
     
-    public List<SelectItem> getSelectFilterGroups(Long groupingId) {
+    public Map getSelectFilterGroups(Long groupingId) {
         if (!selectedMeasureId.equals(new Long(0))){         
-            return getFilterGroupsWithMeasure(groupingId);
+            return (Map) filterGroupingsAndFilters.get(groupingId);  //getFilterGroupsWithMeasureMap(groupingId);
         }
         return null;
     }
-
 
     public List<SelectItem> getSelectFilterGroupTypes(Long groupingId) {
         showFilterGroupTypes = false;
@@ -826,28 +809,26 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
                     varGroupTypesAll.add(vgt);
                 }
             }
-
             List<VarGroupType> varGroupTypes = (List<VarGroupType>) visualizationService.getGroupTypesFromGroupingId(new Long(groupingId));
             for (VarGroupType varGroupType : varGroupTypes) {
                 if (varGroupTypesAll.contains(varGroupType)) {
                     selectItems.add(new SelectItem(varGroupType.getId(), varGroupType.getName()));
                     showFilterGroupTypes = true;
                 }
-
             }
-
         }
         return selectItems;
     }
+    
+    public Map getFilterGroupsMap(Long groupingId) {    
+        return getFilterGroupsMap(groupingId, null);
+    }
 
-
-    private List<SelectItem> getFilterGroupsWithMeasure(Long groupingId) {
-
-        List selectItems = new ArrayList<SelectItem>();
-        List<VarGroup> multipleSelections = new ArrayList<VarGroup>();
+    public Map getFilterGroupsMap(Long groupingId, Long selectedFilterId) {
+        Map filterMap = new LinkedHashMap();
         List<VarGroup> varGroupsAll = (List<VarGroup>) getFilterGroupsFromMeasureId(selectedMeasureId);
         for (VarGroup varGroup : varGroupsAll) {
-            boolean added = false;
+            //Have to make sure that the filters are  congruent with selected types
             for (VarGroupingUI varGroupingUI : filterGroupings) {
                 if (varGroupingUI.getVarGrouping().getId().equals(groupingId)) {
                     List<VarGroupTypeUI> varGroupTypesUI = varGroupingUI.getVarGroupTypesUI();
@@ -857,96 +838,91 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
                             allFalse &= !varGroupTypeUI.isEnabled();
                         }
                         if (allFalse) {
+                            //if all false then all filters are OK
                             for (VarGroup varGroupTest : varGroupsAll) {
-                                if (!added && varGroupTest.getId().equals(varGroup.getId()) && varGroup.getGroupAssociation().equals(varGroupingUI.getVarGrouping())) {
-                                    selectItems.add(new SelectItem(varGroup.getId(), varGroup.getName()));
-                                    added = true;
+                                if (varGroupTest.getId().equals(varGroup.getId()) && varGroup.getGroupAssociation().equals(varGroupingUI.getVarGrouping())) {
+                                    filterMap.put(varGroup.getName(), varGroup.getId());
                                 }
                             }
                         }
                         if (!allFalse) {
+                            //if not all false then only if enabled
                             int countEnabled = 0;
                             for (VarGroupTypeUI varGroupTypeUI : varGroupTypesUI) {
                                 if (varGroupTypeUI.isEnabled()) {
                                     countEnabled++;
                                 }
                             }
-                            if (countEnabled == 1) {
-                                for (VarGroupTypeUI varGroupTypeUI : varGroupTypesUI) {
-                                    if (varGroupTypeUI.isEnabled()) {
-                                        List<VarGroup> varGroups = (List) varGroupTypeUI.getVarGroupType().getGroups();
-                                        for (VarGroup varGroupTest : varGroups) {
-                                            if (!added && varGroupTest.getId().equals(varGroup.getId())
-                                                    && varGroup.getGroupAssociation().equals(varGroupingUI.getVarGrouping())
-                                                    && varGroupsAll.contains(varGroupTest)) {
-                                                selectItems.add(new SelectItem(varGroup.getId(), varGroup.getName()));
-                                                added = true;
-                                            }
-                                        }
-
-                                    }
-                                }
-                            }
-                            if (countEnabled > 1) {
-                                int counter = countEnabled;
-                                List[] varGroupArrayList = new List[countEnabled];
-
-
-                                for (VarGroupTypeUI varGroupTypeUI : varGroupTypesUI) {
-                                    if (varGroupTypeUI.isEnabled()) {
-                                        List<VarGroup> varGroups = (List) varGroupTypeUI.getVarGroupType().getGroups();
-                                        varGroupArrayList[counter - 1] = varGroups;
-                                        counter--;
-                                    }
-                                }
-                                List<VarGroup> varGroupsSaveGet = new ArrayList((List) varGroupArrayList[0]);
-                                List<VarGroup> varGroupsTempGet = new ArrayList((List) varGroupArrayList[0]);
-                                List<VarGroup> varGroupsSave = new ArrayList(varGroupsSaveGet);
-                                List<VarGroup> varGroupsTemp = new ArrayList(varGroupsTempGet);
-                                List<VarGroup> vsrGroupRemove = new ArrayList();
-                                for (int i = 1; i <= countEnabled - 1; i++) {
-                                    List<VarGroup> varGroupsTest = (List) varGroupArrayList[i];
-                                    for (VarGroup vgs : varGroupsTemp) {
-                                        boolean save = false;
-                                        for (VarGroup vgt : varGroupsTest) {
-                                            if (vgt.getId().equals(vgs.getId()) && varGroupsAll.contains(vgs)) {
-                                                save = true;
-                                            }
-
-                                        }
-                                        if (!save) {
-                                            vsrGroupRemove.add(vgs);
+                            //if enabled == 1 then add if matches
+                            for (VarGroupTypeUI varGroupTypeUI : varGroupTypesUI) {
+                                if (varGroupTypeUI.isEnabled()) {
+                                    List<VarGroup> varGroups = (List) varGroupTypeUI.getVarGroupType().getGroups();
+                                    for (VarGroup varGroupTest : varGroups) {
+                                        if (varGroupTest.getId().equals(varGroup.getId())
+                                                && varGroup.getGroupAssociation().equals(varGroupingUI.getVarGrouping())
+                                                && varGroupsAll.contains(varGroupTest)) {
+                                            filterMap.put(varGroup.getName(), varGroup.getId());
                                         }
                                     }
                                 }
-
-                                for (VarGroup vgr : vsrGroupRemove) {
-                                    varGroupsSave.remove(vgr);
-                                }
-                                multipleSelections = varGroupsSave;
                             }
                         }
-
                     } else {
-                        if (!added && varGroup.getGroupAssociation().equals(varGroupingUI.getVarGrouping())) {
-                            selectItems.add(new SelectItem(varGroup.getId(), varGroup.getName()));
-                            added = true;
+                        if (varGroup.getGroupAssociation().equals(varGroupingUI.getVarGrouping())) {
+                            filterMap.put(varGroup.getName(), varGroup.getId());
                         }
                     }
                 }
             }
+        }  
+        // make sure that filters in the map are congruent with selected filter
+        if (selectedFilterId != null){
+            List<DataVariable> measureDvs = getDVMappingsFromGroup(selectedMeasureId);
+            List<DataVariable> filterDvs = getDVMappingsFromGroup(selectedFilterId);
+            List intersetection = getDVMappingsIntersection(measureDvs, filterDvs);           
+            List <Long> idsForFinalMap = new ArrayList();
+            for (Object value : filterMap.values()) {
+                List<DataVariable> testDvs = getDVMappingsFromGroup((Long) value);
+                if(!getDVMappingsIntersection(testDvs, intersetection).isEmpty()){
+                    idsForFinalMap.add((Long) value);
+                }
+            }
+            filterMap.clear();
+            if(!idsForFinalMap.isEmpty()){
+                for (Long id : idsForFinalMap){
+                    VarGroup varGroup = visualizationService.getGroupFromId(id);
+                    filterMap.put(varGroup.getName(), varGroup.getId());
+                }
+            }
+        }        
+        return filterMap;
+    }
+    
+    private List<DataVariable> getDVMappingsFromGroup(Long groupId){
+        List<DataVariable> resultList = new ArrayList();
+        for (DataVariable dv : dvList){
+            Collection<DataVariableMapping> dvMappings = dv.getDataVariableMappings();
+            for (DataVariableMapping dvMapping : dvMappings) {
+                if (!dvMapping.isX_axis() && dvMapping.getGroup().getId().equals(groupId)) {
+                    resultList.add(dv);
+                }
+            }            
         }
-        if (multipleSelections.size() > 0) {
-            for (VarGroup vgs : multipleSelections) {
-                if (varGroupsAll.contains(vgs)) {
-                    selectItems.add(new SelectItem(vgs.getId(), vgs.getName()));
+        return resultList;
+    }
+    
+    private List <DataVariable> getDVMappingsIntersection(List<DataVariable> list1, List<DataVariable> list2){
+        List <DataVariable> dataVariableList = new ArrayList();
+        for (DataVariable dv1 : list1){
+            for (DataVariable dv2 : list2){
+                if (dv1.getId().equals(dv2.getId())){
+                    dataVariableList.add(dv2);
                 }
             }
         }
-        return selectItems;
+        return dataVariableList;
     }
-
-
+    
     public List<SelectItem> getSelectMeasureGroupTypes() {
         return this.selectMeasureGroupTypes;
     }
@@ -1448,17 +1424,15 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
     
     private boolean validateSelections() {
         boolean valid = true;
-        int count = 0;
-
+        //if no selected measure then invalid
         if (selectedMeasureId == 0) {
             FacesMessage message = new FacesMessage("Please complete your selections.");
             FacesContext fc = FacesContext.getCurrentInstance();
             fc.addMessage(addLineButton.getClientId(fc), message);
             return false;
         }
-
+        //each filter grouping must have a selected value
         if (!filterGroupings.isEmpty()) {
-
             for (VarGroupingUI varGrouping : filterGroupings) {
                 if (varGrouping.getSelectedGroupId() == 0) {
                     FacesMessage message = new FacesMessage("Please complete your selections.");
@@ -1467,30 +1441,24 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
                     return false;
                 }
             }
-
         }
-
+        //get all dtavariables assigned to selected measure
         List<DataVariable> resultList = new ArrayList();
 
-        Iterator varIter = dvList.iterator();
-        while (varIter.hasNext()) {
-            DataVariable dv = (DataVariable) varIter.next();
+        for (DataVariable dv : dvList){
             Collection<DataVariableMapping> dvMappings = dv.getDataVariableMappings();
             for (DataVariableMapping dvMapping : dvMappings) {
-
                 if (!dvMapping.isX_axis() && dvMapping.getGroup().getId().equals(selectedMeasureId)) {
                     resultList.add(dv);
-                    count++;
                 }
-            }
-        }
+            }            
+        }  
+        
+        List<DataVariable> measureList = resultList;        
         List<ArrayList> filterGroupingList = new ArrayList();
-
         List<DataVariable> resultListFilter = new ArrayList();
-
-        List<DataVariable> measureList = resultList;
-
         List<ArrayList> filterGroupsList = new ArrayList();
+        
         int filterGroupListCount = 0;
         for (VarGroupingUI varGrouping : filterGroupings) {
             if (varGrouping.getSelectedGroupId() != 0) {
@@ -1500,10 +1468,10 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
                     for (DataVariableMapping dvMapping : dvMappings) {
                         if (!dvMapping.isX_axis() && dvMapping.getGroup().getId().equals(varGrouping.getSelectedGroupId())) {
                             tempList.add(dv);
-                            count++;
                         }
                     }
                 }
+                //temp list is a list of all dvs that match the selected group id for this filter group
                 filterGroupsList.add(tempList);
                 filterGroupListCount++;
             }
@@ -1514,7 +1482,6 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
                 fc.addMessage(addLineButton.getClientId(fc), message);
                 return false;
             }
-
         }
 
         if (filterGroupListCount == 1) {
@@ -1530,7 +1497,7 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
                 }
             }
         }
-
+        //for multiple groupings you need to get the actual variable
         for (VarGroupingUI varGrouping : filterGroupings) {
             ArrayList<DataVariable> tempList = new ArrayList();
             if (varGrouping.getSelectedGroupId().intValue() != 0) {
@@ -1542,13 +1509,15 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
                         if (!dvMapping.isX_axis() && dvMapping.getGroup().getId().equals(varGrouping.getSelectedGroupId())) {
                             resultListFilter.add(dv);
                             tempList.add(dv);
-                            count++;
+                            //count++;
                         }
                     }
                 }
                 filterGroupingList.add(tempList);
 
                 List<DataVariable> removeList = new ArrayList();
+                //scroll through measure list
+                //if it matches any filter list dv keep it - if not remove it
                 for (DataVariable dv : measureList) {
                     boolean remove = true;
                     for (Object dvO : tempList) {
@@ -1571,13 +1540,12 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
                 FacesContext fc = FacesContext.getCurrentInstance();
                 fc.addMessage(addLineButton.getClientId(fc), message);
                 return false;
-
             }
         }
 
         List<DataVariable> finalList = new ArrayList();
         finalList = measureList;
-
+        // once you go through you should have only one dv
         if (finalList.size() == 1) {
             dataVariableSelected = finalList.get(0);
         } else {
@@ -1591,7 +1559,6 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
             FacesMessage message = new FacesMessage("You must select a filter for each group.");
             FacesContext fc = FacesContext.getCurrentInstance();
             fc.addMessage(addLineButton.getClientId(fc), message);
-
         }
 
         return valid;
@@ -1764,19 +1731,16 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
             Set<Integer> fields = new LinkedHashSet<Integer>();
             List<DataVariable> dvs = dvsIn;
             sourceList.clear();
-            List<DataVariableMapping> variableMappings = new ArrayList();
-            for (Iterator el = dvs.iterator(); el.hasNext();) {
-                DataVariable dv = (DataVariable) el.next();
-                variableMappings = visualizationService.getSourceMappings((List) dv.getDataVariableMappings());
+            for (DataVariable dv : dvs){
+                List<DataVariableMapping> variableMappings = visualizationService.getSourceMappings((List) dv.getDataVariableMappings());
                 for (DataVariableMapping dvm : variableMappings) {
                     sourceList.add(dvm);
                 }
-                fields.add(dv.getFileOrder());
+                fields.add(dv.getFileOrder());               
             }
 
             // Execute the subsetting request:
             FieldCutter fc = new DvnJavaFieldCutter();
-
             fc.subsetFile(
                     sf.getFileSystemLocation(),
                     tmpSubsetFile.getAbsolutePath(),
@@ -2667,13 +2631,11 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
         for (VisualizationLineDefinition vld : vizLines) {
             countLines++;
             String checkUnit = vld.getMeasureGroup().getUnits();
-
             if (!set.isEmpty() && !set.contains(checkUnit) && countLines > 1) {
                 setDisplayIndexes(true);
                 yAxisLabel = "";
                 forcedIndexMessage = "Series have been displayed as indices because their measurement units are different.";
             } else {
-
                 set.add(checkUnit);
                 yAxisLabel = checkUnit;
             }
@@ -2681,7 +2643,6 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
     }
 
     private void updateImageFooters() {
-
 
         String displayFooterNotes;
         String displayFooterNotesNoY;
@@ -2726,11 +2687,6 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
 
     }
 
-
-    public String getTitleOut() {
-        return "";
-    }
-
     public void openVariableInfoPopup(ActionEvent ae){
 
         UIComponent uiComponent = ae.getComponent().getParent();
@@ -2748,7 +2704,7 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
     }
     
     private String convertVariableLabel(String variableLabelIn){
-                String s = variableLabelIn;
+        String s = variableLabelIn;
         // separate input by spaces ( URLs don't have spaces )
         String [] parts = s.split("\\s");
         String retString = "";
@@ -2793,191 +2749,79 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
 
 
 
-    public String getColumnString() {
-
-        return columnString;
-    }
-
-    public void setDataString(String dataString) {
-        this.dataString = dataString;
-    }
-
-    public String getDataString() {
-        return  this.dataString;
-    }
-
-    public String getDataColumns() {
-        return  this.numberOfColumns.toString();
-    }
+    public String getColumnString() {return columnString;}
+    public void setDataString(String dataString) {this.dataString = dataString;}
+    public String getDataString() {return  this.dataString;}
+    public String getDataColumns() {return  this.numberOfColumns.toString();}
 
     HtmlSelectOneMenu selectGraphType;
-
-    public HtmlSelectOneMenu getSelectGraphType() {
-        return selectGraphType;
-    }
-
-    public void setSelectGraphType(HtmlSelectOneMenu selectGraphType) {
-        this.selectGraphType = selectGraphType;
-    }
+    public HtmlSelectOneMenu getSelectGraphType() {return selectGraphType;}
+    public void setSelectGraphType(HtmlSelectOneMenu selectGraphType) {this.selectGraphType = selectGraphType;}
     
     HtmlSelectOneRadio selectLegendPosition;
-
-    public HtmlSelectOneRadio getSelectLegendPosition() {
-        return selectLegendPosition;
-    }
-
-    public void setSelectLegendPosition(HtmlSelectOneRadio selectLegendPosition) {
-        this.selectLegendPosition = selectLegendPosition;
-    }
+    public HtmlSelectOneRadio getSelectLegendPosition() {return selectLegendPosition;}
+    public void setSelectLegendPosition(HtmlSelectOneRadio selectLegendPosition) {this.selectLegendPosition = selectLegendPosition;}
     
     HtmlSelectOneRadio selectGraphHeight;
-
-    public HtmlSelectOneRadio getSelectGraphHeight() {
-        return selectGraphHeight;
-    }
-
-    public void setSelectGraphHeight(HtmlSelectOneRadio selectHeightPosition) {
-        this.selectGraphHeight = selectHeightPosition;
-    }
-
+    public HtmlSelectOneRadio getSelectGraphHeight() {return selectGraphHeight;}
+    public void setSelectGraphHeight(HtmlSelectOneRadio selectHeightPosition) {this.selectGraphHeight = selectHeightPosition;}
 
     HtmlSelectOneMenu selectStartYear;
-
-    public HtmlSelectOneMenu getSelectStartYear() {
-        return selectStartYear;
-    }
-
-    public void setSelectStartYear(HtmlSelectOneMenu selectStartYear) {
-        this.selectStartYear = selectStartYear;
-    }
+    public HtmlSelectOneMenu getSelectStartYear() {return selectStartYear;}
+    public void setSelectStartYear(HtmlSelectOneMenu selectStartYear) {this.selectStartYear = selectStartYear;}
 
     HtmlSelectOneMenu selectEndYear;
+    public HtmlSelectOneMenu getSelectEndYear() {return selectEndYear;}
+    public void setSelectEndYear(HtmlSelectOneMenu selectEndYear) {this.selectEndYear = selectEndYear;}
 
-    public HtmlSelectOneMenu getSelectEndYear() {
-        return selectEndYear;
-    }
-
-    public void setSelectEndYear(HtmlSelectOneMenu selectEndYear) {
-        this.selectEndYear = selectEndYear;
-    }
-
-    public String getImageAxisLabel() {
-        return imageAxisLabel;
-    }
-
-    public void setImageAxisLabel(String imageAxisLabel) {
-        this.imageAxisLabel = imageAxisLabel;
-    }
+    public String getImageAxisLabel() {return imageAxisLabel;}
+    public void setImageAxisLabel(String imageAxisLabel) {this.imageAxisLabel = imageAxisLabel;}
 
     HtmlSelectOneMenu selectIndexYear;
-
-    public HtmlSelectOneMenu getSelectIndexYear() {
-        return selectIndexYear;
-    }
-
-    public void setSelectIndexYear(HtmlSelectOneMenu selectIndexYear) {
-        this.selectIndexYear = selectIndexYear;
-    }
-    public Long getDisplayType() {
-        return displayType;
-    }
-
-    public void setDisplayType(Long displayType) {
-        this.displayType = displayType;
-    }
+    public HtmlSelectOneMenu getSelectIndexYear() {return selectIndexYear;}
+    public void setSelectIndexYear(HtmlSelectOneMenu selectIndexYear) {this.selectIndexYear = selectIndexYear;}
     
-    public Long getStudyId() {
-        return studyId;
-    }
+    public Long getDisplayType() {return displayType;}
+    public void setDisplayType(Long displayType) {this.displayType = displayType;}
+    
+    public Long getStudyId() {return studyId;}
+    public void setStudyId(Long studyId) {this.studyId = studyId;}
 
-    public void setStudyId(Long studyId) {
-        this.studyId = studyId;
-    }
+    public Long getVersionNumber() {return versionNumber;}
+    public void setVersionNumber(Long versionNumber) { this.versionNumber = versionNumber;}
 
-    public Long getVersionNumber() {
-        return versionNumber;
-    }
+    public StudyUI getStudyUI() {return studyUI;}
+    public void setStudyUI(StudyUI studyUI) {this.studyUI = studyUI;}
 
-    public void setVersionNumber(Long versionNumber) {
-        this.versionNumber = versionNumber;
-    }
-
-    public StudyUI getStudyUI() {
-        return studyUI;
-    }
-
-    public void setStudyUI(StudyUI studyUI) {
-        this.studyUI = studyUI;
-    }
-
-    public String getFileName() {
-        return fileName;
-    }
-
-    public void setFileName(String fileName) {
-        this.fileName = fileName;
-    }
+    public String getFileName() {return fileName;}
+    public void setFileName(String fileName) {this.fileName = fileName;}
     
     private HtmlInputText inputGraphTitle;
-
-    public HtmlInputText getInputGraphTitle() {
-        return this.inputGraphTitle;
-    }
-    public void setInputGraphTitle(HtmlInputText inputGraphTitle) {
-        this.inputGraphTitle = inputGraphTitle;
-    }
+    public HtmlInputText getInputGraphTitle() {return this.inputGraphTitle;}
+    public void setInputGraphTitle(HtmlInputText inputGraphTitle) {this.inputGraphTitle = inputGraphTitle;}
     
     private HtmlInputText inputSourceString;
-
-    public HtmlInputText getInputSourceString() {
-        return this.inputSourceString;
-    }
-    public void setInputSourceString(HtmlInputText inputSourceString) {
-        this.inputSourceString = inputSourceString;
-    }
+    public HtmlInputText getInputSourceString() {return this.inputSourceString;}
+    public void setInputSourceString(HtmlInputText inputSourceString) {this.inputSourceString = inputSourceString;}
     
     private HtmlInputText inputTextLineLabel;
-
-    public HtmlInputText getInputTextLineLabel() {
-        return this.inputTextLineLabel;
-    }
-    public void setInputTextLineLabel(HtmlInputText inputTextLineLabel) {
-        this.inputTextLineLabel = inputTextLineLabel;
-    }
+    public HtmlInputText getInputTextLineLabel() {return this.inputTextLineLabel;}
+    public void setInputTextLineLabel(HtmlInputText inputTextLineLabel) {this.inputTextLineLabel = inputTextLineLabel;}
     
     private HtmlInputText inputDownloadFileName;
-
-    public HtmlInputText getInputDownloadFileName() {
-        return this.inputDownloadFileName;
-    }
-    public void setInputDownloadFileName(HtmlInputText inputDownloadFileName) {
-        this.inputDownloadFileName = inputDownloadFileName;
-    }
+    public HtmlInputText getInputDownloadFileName() {return this.inputDownloadFileName;}
+    public void setInputDownloadFileName(HtmlInputText inputDownloadFileName) {this.inputDownloadFileName = inputDownloadFileName;}
+    
     private HtmlInputText inputImageURL;
-
-    public HtmlInputText getInputImageURL() {
-        return this.inputImageURL;
-    }
-    public void setInputImageURL(HtmlInputText inputImageURL) {
-        this.inputImageURL = inputImageURL;
-    }
+    public HtmlInputText getInputImageURL() {return this.inputImageURL;}
+    public void setInputImageURL(HtmlInputText inputImageURL) {this.inputImageURL = inputImageURL;}
     
     private HtmlInputText inputLineLabel;
+    public HtmlInputText getInputLineLabel() {return this.inputLineLabel;}
+    public void setInputLineLabel(HtmlInputText inputLineLabel) {this.inputLineLabel = inputLineLabel;}
 
-    public HtmlInputText getInputLineLabel() {
-        return this.inputLineLabel;
-    }
-    public void setInputLineLabel(HtmlInputText inputLineLabel) {
-        this.inputLineLabel = inputLineLabel;
-    }
-
-    public String getGraphTitle() {
-        return graphTitle;
-    }
-
-    public void setGraphTitle(String graphTitle) {
-        this.graphTitle = graphTitle;
-    }
+    public String getGraphTitle() {return graphTitle;}
+    public void setGraphTitle(String graphTitle) {this.graphTitle = graphTitle;}
 
     public String updateGraphTitle(){
         titleEdited = true;
@@ -3088,8 +2932,7 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
         if (!sourceEdited){
             getSourceList();
             return sources;
-        }
-        
+        }        
         return sourceString;
     }
 

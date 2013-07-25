@@ -185,6 +185,7 @@ public class MediaResourceManagerImpl implements MediaResourceManager {
         }
         editStudyService.save(dv.getId(), vdcUser.getId());
         studyFileService.addFiles(study.getLatestVersion(), fileList, vdcUser);
+        studyService.setReleased(studyId);
         DepositReceipt fakeDepositReceipt = new DepositReceipt();
         IRI fakeIri = new IRI("fakeIriFromBinaryDeposit");
         fakeDepositReceipt.setLocation(fakeIri);

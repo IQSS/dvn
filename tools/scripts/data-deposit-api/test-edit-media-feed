@@ -1,0 +1,10 @@
+#!/bin/sh
+if [ "" = "$1" ]; then
+  echo >&2 "Please supply a statement URI"
+  exit 1
+else
+  # https://localhost:8181/dvn/api/data-deposit/swordv2/edit-media/hdl:1902.1/12345
+  EDIT_MEDIA_FEED_URI="$1"
+fi
+# show headers with -i
+curl -i --insecure -s -u sword:sword $EDIT_MEDIA_FEED_URI \

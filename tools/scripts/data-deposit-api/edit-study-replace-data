@@ -1,0 +1,42 @@
+#!/usr/bin/env python
+import re
+from subprocess import Popen, PIPE
+from xml.etree import ElementTree as ET
+
+service_document = ET.fromstring(Popen("tools/scripts/data-deposit-api/test-service-document", stdout=PIPE).communicate()[0])
+
+deposit_target = service_document[0][1].attrib["href"]
+
+feed_of_studies = ET.fromstring(Popen(["tools/scripts/data-deposit-api/test-collection-get", deposit_target], stdout=PIPE).communicate()[0]);
+
+print "listing studies..."
+for entry in feed_of_studies.findall("./{http://www.w3.org/2005/Atom}entry/"):
+    #print entry.tag, entry.attrib, entry.text
+    if not entry.attrib:
+        print "- globalId:", entry.text
+        study_to_edit = entry.text
+
+try:
+    study_to_edit
+    print "editing", study_to_edit
+except NameError:
+    print "no studies found to edit"
+    exit(1)
+
+print "getting statement for", study_to_edit
+edit_uri = "https://sword:sword@localhost:8181/dvn/api/data-deposit/swordv2/statement/" + study_to_edit
+statement = ET.fromstring(Popen(["tools/scripts/data-deposit-api/test-statement", edit_uri], stdout=PIPE).communicate()[0]);
+for line in statement:
+    if "{http://www.w3.org/2005/Atom}title" == line.tag:
+        print "title of study created:", line.text
+
+replacement_data = "50by1000.dta.zip"
+edit_media_uri = "https://sword:sword@localhost:8181/dvn/api/data-deposit/swordv2/edit-media/" + study_to_edit
+print "replacing data at", edit_media_uri, "with", replacement_data
+out = Popen(["tools/scripts/data-deposit-api/test-edit-media-put-binary", replacement_data, edit_media_uri], stdout=PIPE).communicate()[0]
+match = re.search("HTTP/1.1 204 No Content", out)
+if match:
+    print "data replacement was successful"
+else:
+    print "unable to replace data, output was:"
+    print out

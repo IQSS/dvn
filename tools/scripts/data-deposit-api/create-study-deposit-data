@@ -24,8 +24,9 @@ for entry in feed_of_studies.findall("./{http://www.w3.org/2005/Atom}entry/"):
     if not entry.attrib:
         print "- globalId:", entry.text
 
-print "uploading a binary to", edit_media_uri
-out = Popen(["tools/scripts/data-deposit-api/test-edit-media-put-binary", edit_media_uri], stdout=PIPE).communicate()[0]
+zipfile="example.zip"
+print "uploading", zipfile, "to", edit_media_uri
+out = Popen(["tools/scripts/data-deposit-api/test-edit-media-put-binary", zipfile, edit_media_uri], stdout=PIPE).communicate()[0]
 match = re.search("HTTP/1.1 204 No Content", out)
 if match:
     print "binary was successfully uploaded"

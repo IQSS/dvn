@@ -39,6 +39,7 @@ import org.swordapp.server.SwordConfiguration;
 import org.swordapp.server.SwordError;
 import org.swordapp.server.SwordServerException;
 import org.swordapp.server.SwordWorkspace;
+import org.swordapp.server.UriRegistry;
 
 public class ServiceDocumentManagerImpl implements ServiceDocumentManager {
 
@@ -88,6 +89,7 @@ public class ServiceDocumentManagerImpl implements ServiceDocumentManager {
                 SwordCollection swordCollectionNew = new SwordCollection();
                 swordCollectionNew.setTitle(journalDataverse.getName());
                 swordCollectionNew.setHref("https://" + hostName + optionalPort + "/dvn/api/data-deposit/swordv2/collection/dataverse/" + dvAlias);
+                swordCollectionNew.addAcceptPackaging(UriRegistry.PACKAGE_SIMPLE_ZIP);
                 swordWorkspace.addCollection(swordCollectionNew);
                 service.addWorkspace(swordWorkspace);
                 service.setMaxUploadSize(config.getMaxUploadSize());

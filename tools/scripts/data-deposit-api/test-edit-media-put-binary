@@ -1,11 +1,16 @@
 #!/bin/sh
 if [ "" = "$1" ]; then
-  echo >&2 "Please supply the edit-media URI of a study"
+  echo >&2 "Please supply a filename of a zip file"
   exit 1
+  if [ "" = "$2" ]; then
+    echo >&2 "Please supply the edit-media URI of a study"
+    exit 2
+  fi
 else
-  EDIT_MEDIA_URI="$1"
+  FILENAME="$1"
+  EDIT_MEDIA_URI="$2"
 fi
 # --upload-file does a PUT
 # No deposit receipt is expected, so use --include to see the return code,
 # which can be compared with compare to http://swordapp.github.io/SWORDv2-Profile/SWORDProfile.html#protocoloperations_editingcontent
-curl --include --insecure -s --upload-file example.zip -H "Content-Disposition: filename=example.zip" -H "Content-Type: application/zip" -u sword:sword $EDIT_MEDIA_URI
+curl --include --insecure -s --upload-file $FILENAME -H "Content-Disposition: filename=$FILENAME" -H "Content-Type: application/zip" -H "Packaging: http://purl.org/net/sword/package/SimpleZip" -u sword:sword $EDIT_MEDIA_URI

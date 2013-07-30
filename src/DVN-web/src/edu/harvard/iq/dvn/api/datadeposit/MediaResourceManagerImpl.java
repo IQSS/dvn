@@ -20,24 +20,28 @@
 package edu.harvard.iq.dvn.api.datadeposit;
 
 import edu.harvard.iq.dvn.core.admin.VDCUser;
+import edu.harvard.iq.dvn.core.study.EditStudyFilesService;
 import edu.harvard.iq.dvn.core.study.EditStudyService;
 import edu.harvard.iq.dvn.core.study.Study;
 import edu.harvard.iq.dvn.core.study.StudyFileEditBean;
 import edu.harvard.iq.dvn.core.study.StudyFileServiceLocal;
 import edu.harvard.iq.dvn.core.study.StudyServiceLocal;
+import edu.harvard.iq.dvn.core.util.FileUtil;
 import edu.harvard.iq.dvn.core.vdc.VDC;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipInputStream;
 import javax.ejb.EJB;
 import javax.inject.Inject;
 import javax.naming.Context;
@@ -53,7 +57,9 @@ import org.swordapp.server.SwordAuthException;
 import org.swordapp.server.SwordConfiguration;
 import org.swordapp.server.SwordError;
 import org.swordapp.server.SwordServerException;
+import org.swordapp.server.UriRegistry;
 
+@EJB(name = "editStudyFiles", beanInterface = edu.harvard.iq.dvn.core.study.EditStudyFilesService.class)
 public class MediaResourceManagerImpl implements MediaResourceManager {
 
     @EJB
@@ -69,6 +75,10 @@ public class MediaResourceManagerImpl implements MediaResourceManager {
 
     @Override
     public DepositReceipt replaceMediaResource(String uri, Deposit deposit, AuthCredentials authCredentials, SwordConfiguration swordConfiguration) throws SwordError, SwordServerException, SwordAuthException {
+
+        if (!deposit.getPackaging().equals(UriRegistry.PACKAGE_SIMPLE_ZIP)) {
+            throw new SwordError(UriRegistry.ERROR_CONTENT, 415, "Package format " + UriRegistry.PACKAGE_SIMPLE_ZIP + " is required but format specified in 'Packaging' HTTP header was " + deposit.getPackaging());
+        }
 
         VDCUser vdcUser = swordAuth.auth(authCredentials);
 
@@ -127,12 +137,29 @@ public class MediaResourceManagerImpl implements MediaResourceManager {
             throw new SwordError("user " + vdcUser.getUserName() + " is not authorized to modify study with global ID " + globalId);
         }
         editStudyService.setStudyVersion(studyId);
+        editStudyService.save(dv.getId(), vdcUser.getId());
+
+        EditStudyFilesService editStudyFilesService;
+        try {
+            editStudyFilesService = (EditStudyFilesService) ctx.lookup("java:comp/env/editStudyFiles");
+        } catch (NamingException ex) {
+            throw new SwordServerException("problem looking up editStudyFilesService");
+        }
+        logger.info("deleting current files");
+        editStudyFilesService.setStudyVersionByGlobalId(globalId);
+        List studyFileEditBeans = editStudyFilesService.getCurrentFiles();
+        for (Iterator it = studyFileEditBeans.iterator(); it.hasNext();) {
+            StudyFileEditBean studyFileEditBean = (StudyFileEditBean) it.next();
+            studyFileEditBean.setDeleteFlag(true);
+            logger.info("marked for deletion: " + studyFileEditBean.getStudyFile().getFileName());
+        }
+        editStudyFilesService.save(dv.getId(), vdcUser.getId());
 
         String tempDirectory = swordConfiguration.getTempDirectory();
-        String uploadDirPath = tempDirectory + File.separator + "uploads";
+        String uploadDirPath = tempDirectory + File.separator + "uploads" + File.separator + study.getId().toString();
         File uploadDir = new File(uploadDirPath);
         if (!uploadDir.exists()) {
-            if (!uploadDir.mkdir()) {
+            if (!uploadDir.mkdirs()) {
                 throw new SwordServerException("couldn't create directory: " + uploadDir.getAbsolutePath());
             }
         }
@@ -150,32 +177,76 @@ public class MediaResourceManagerImpl implements MediaResourceManager {
          *
          */
         logger.info("attempting write to " + filename);
-        try {
-            InputStream inputstream = deposit.getInputStream();
-            OutputStream outputstream = new FileOutputStream(new File(filename));
-            try {
-                byte[] buf = new byte[1024];
-                int len;
-                while ((len = inputstream.read(buf)) > 0) {
-                    outputstream.write(buf, 0, len);
-                }
-            } finally {
-                inputstream.close();
-                outputstream.close();
-                logger.info("write to " + filename + " complete");
-            }
-        } catch (IOException e) {
-            throw new SwordServerException(e);
-        }
+        ZipInputStream ziStream = new ZipInputStream(deposit.getInputStream());
+        ZipEntry zEntry;
+        FileOutputStream tempOutStream = null;
+        List<StudyFileEditBean> fbList = new ArrayList<StudyFileEditBean>();
 
-        List<StudyFileEditBean> fileList = new ArrayList();
         try {
-            File file = new File(filename);
-            logger.info("attaching file: " + filename);
-            StudyFileEditBean studyFileEditBean = new StudyFileEditBean(file, studyService.generateFileSystemNameSequence(), study);
-            fileList.add(studyFileEditBean);
+            // copied from createStudyFilesFromZip in AddFilesPage
+            while ((zEntry = ziStream.getNextEntry()) != null) {
+                // Note that some zip entries may be directories - we 
+                // simply skip them:
+                if (!zEntry.isDirectory()) {
+
+                    String fileEntryName = zEntry.getName();
+                    logger.info("file found: " + fileEntryName);
+
+                    String dirName = null;
+                    String finalFileName = null;
+
+                    int ind = fileEntryName.lastIndexOf('/');
+
+                    if (ind > -1) {
+                        finalFileName = fileEntryName.substring(ind + 1);
+                        if (ind > 0) {
+                            dirName = fileEntryName.substring(0, ind);
+                            dirName = dirName.replace('/', '-');
+                        }
+                    } else {
+                        finalFileName = fileEntryName;
+                    }
+
+
+                    File tempUploadedFile = null;
+                    try {
+                        tempUploadedFile = FileUtil.createTempFile(tempDirectory, finalFileName);
+                    } catch (Exception ex) {
+                        Logger.getLogger(MediaResourceManagerImpl.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+
+                    tempOutStream = new FileOutputStream(tempUploadedFile);
+
+                    byte[] dataBuffer = new byte[8192];
+                    int i = 0;
+
+                    while ((i = ziStream.read(dataBuffer)) > 0) {
+                        tempOutStream.write(dataBuffer, 0, i);
+                        tempOutStream.flush();
+                    }
+
+                    tempOutStream.close();
+
+                    // We now have the unzipped file saved in the upload directory;
+
+                    StudyFileEditBean tempFileBean = new StudyFileEditBean(tempUploadedFile, studyService.generateFileSystemNameSequence(), study);
+                    tempFileBean.setSizeFormatted(tempUploadedFile.length());
+
+                    // And, if this file was in a legit (non-null) directory, 
+                    // we'll use its name as the file category: 
+
+                    if (dirName != null) {
+                        tempFileBean.getFileMetadata().setCategory(dirName);
+                    }
+
+                    fbList.add(tempFileBean);
+
+                } else {
+                    logger.info("directory found: " + zEntry.getName());
+                }
+            }
         } catch (IOException ex) {
-            throw new SwordError("couldn't attach file");
+            logger.info("Problem getting zip entry");
         }
         StudyFileServiceLocal studyFileService;
         try {
@@ -183,9 +254,14 @@ public class MediaResourceManagerImpl implements MediaResourceManager {
         } catch (NamingException ex) {
             throw new SwordServerException("problem looking up studyFileService");
         }
-        editStudyService.save(dv.getId(), vdcUser.getId());
-        studyFileService.addFiles(study.getLatestVersion(), fileList, vdcUser);
-        studyService.setReleased(studyId);
+        studyFileService.addFiles(study.getLatestVersion(), fbList, vdcUser);
+        if (!uploadDir.delete()) {
+            logger.info("Unable to delete " + uploadDir.getAbsolutePath());
+        }
+        /**
+         * @todo: when should we release the study?
+         */
+//        studyService.setReleased(studyId);
         DepositReceipt fakeDepositReceipt = new DepositReceipt();
         IRI fakeIri = new IRI("fakeIriFromBinaryDeposit");
         fakeDepositReceipt.setLocation(fakeIri);

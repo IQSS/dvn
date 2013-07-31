@@ -1,0 +1,30 @@
+#!/usr/bin/env python
+import re
+from subprocess import Popen, PIPE
+from xml.etree import ElementTree as ET
+
+service_document = ET.fromstring(Popen("tools/scripts/data-deposit-api/test-service-document", stdout=PIPE).communicate()[0])
+
+deposit_target = service_document[0][1].attrib["href"]
+
+xml = Popen(["tools/scripts/data-deposit-api/test-collection-get", deposit_target], stdout=PIPE).communicate()[0]
+#print xml
+#feed_of_studies = ET.fromstring(Popen(["tools/scripts/data-deposit-api/test-collection-get", deposit_target], stdout=PIPE).communicate()[0]);
+feed_of_studies = ET.fromstring(xml)
+
+for line in feed_of_studies:
+    if "{http://www.w3.org/2005/Atom}entry" == line.tag:
+        print "-", line.attrib["{http://www.w3.org/XML/1998/namespace}base"]
+    child = line.findall('{http://www.w3.org/2005/Atom}link')
+    if not None == child:
+        for link in child:
+            print "  -", link.attrib["href"]
+
+# another way...
+#print "---"
+#for entry in feed_of_studies.findall("./{http://www.w3.org/2005/Atom}entry/"):
+#    if not entry.attrib:
+#        print "- globalId:", entry.text
+#        study_to_edit = entry.text
+#    if "{http://www.w3.org/2005/Atom}link" == entry.tag:
+#        print "  - file:", entry.attrib["href"]

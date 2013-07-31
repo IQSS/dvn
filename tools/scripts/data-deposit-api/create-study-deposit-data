@@ -16,14 +16,6 @@ for link in deposit_receipt.findall("./{http://www.w3.org/2005/Atom}link"):
     if "edit" == link.attrib["rel"]:
         edit_uri = link.attrib["href"]
 
-feed_of_studies = ET.fromstring(Popen(["tools/scripts/data-deposit-api/test-collection-get", deposit_target], stdout=PIPE).communicate()[0]);
-
-print "listing studies..."
-for entry in feed_of_studies.findall("./{http://www.w3.org/2005/Atom}entry/"):
-    #print entry.tag, entry.attrib, entry.text
-    if not entry.attrib:
-        print "- globalId:", entry.text
-
 zipfile="example.zip"
 print "uploading", zipfile, "to", edit_media_uri
 out = Popen(["tools/scripts/data-deposit-api/test-edit-media-put-binary", zipfile, edit_media_uri], stdout=PIPE).communicate()[0]
@@ -33,6 +25,10 @@ if match:
 else:
     print "unable to upload binary to study, output was:"
     print out
+
+print "listing studies..."
+feed_of_studies = Popen(["tools/scripts/data-deposit-api/list-studies", deposit_target], stdout=PIPE).communicate()[0]
+print feed_of_studies,
 
 sword_error = ET.fromstring(Popen(["tools/scripts/data-deposit-api/test-error"], stdout=PIPE).communicate()[0]);
 for error in sword_error:

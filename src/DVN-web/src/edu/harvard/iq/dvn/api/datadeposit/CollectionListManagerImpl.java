@@ -21,10 +21,12 @@ package edu.harvard.iq.dvn.api.datadeposit;
 
 import edu.harvard.iq.dvn.core.admin.VDCUser;
 import edu.harvard.iq.dvn.core.study.Study;
+import edu.harvard.iq.dvn.core.study.StudyFile;
 import edu.harvard.iq.dvn.core.vdc.VDC;
 import edu.harvard.iq.dvn.core.vdc.VDCServiceLocal;
 import java.util.Collection;
 import java.util.List;
+import java.util.logging.Logger;
 import javax.ejb.EJB;
 import javax.inject.Inject;
 import org.apache.abdera.Abdera;
@@ -40,6 +42,7 @@ import org.swordapp.server.SwordServerException;
 
 public class CollectionListManagerImpl implements CollectionListManager {
 
+    private static final Logger logger = Logger.getLogger(CollectionListManagerImpl.class.getCanonicalName());
     @EJB
     VDCServiceLocal vdcService;
     @Inject
@@ -83,12 +86,18 @@ public class CollectionListManagerImpl implements CollectionListManager {
             if (port != -1) {
                 optionalPort = ":" + port;
             }
-            String baseUrl = "https://" + hostName + optionalPort + "/dvn/api/data-deposit/swordv2/edit/";
+            String baseUrl = "https://" + hostName + optionalPort + "/dvn/api/data-deposit/swordv2/";
             for (Study study : studies) {
                 Entry entry = feed.addEntry();
                 entry.setId(study.getGlobalId());
                 entry.setTitle(study.getLatestVersion().getMetadata().getTitle());
-                entry.setBaseUri(new IRI(baseUrl + study.getGlobalId()));
+                entry.setBaseUri(new IRI(baseUrl + "edit/" + study.getGlobalId()));
+                List<StudyFile> files = study.getStudyFiles();
+                for (StudyFile studyFile : files) {
+                    entry.addLink(baseUrl + "edit/file/" + studyFile.getId().toString(), "edit");
+//                    entry.addLink(baseUrl + "edit-media/file/" + studyFile.getId().toString(), "edit-media");
+                    logger.info(study.getGlobalId() + " file " + studyFile.getId().toString() + ": " + studyFile.getFileName());
+                }
                 feed.addEntry(entry);
             }
             return feed;

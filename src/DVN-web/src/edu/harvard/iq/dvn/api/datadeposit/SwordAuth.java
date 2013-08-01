@@ -21,10 +21,14 @@ package edu.harvard.iq.dvn.api.datadeposit;
 
 import edu.harvard.iq.dvn.core.admin.UserServiceLocal;
 import edu.harvard.iq.dvn.core.admin.VDCUser;
+import edu.harvard.iq.dvn.core.vdc.VDC;
+import edu.harvard.iq.dvn.core.vdc.VDCServiceLocal;
+import java.util.List;
 import java.util.logging.Logger;
 import javax.ejb.EJB;
 import org.swordapp.server.AuthCredentials;
 import org.swordapp.server.SwordAuthException;
+import org.swordapp.server.SwordError;
 import org.swordapp.server.SwordServerException;
 
 public class SwordAuth {
@@ -32,6 +36,8 @@ public class SwordAuth {
     private static final Logger logger = Logger.getLogger(SwordAuth.class.getCanonicalName());
     @EJB
     UserServiceLocal userService;
+    @EJB
+    VDCServiceLocal vdcService;
 
     public VDCUser auth(AuthCredentials authCredentials) throws SwordAuthException, SwordServerException {
         if (authCredentials != null) {
@@ -55,6 +61,22 @@ public class SwordAuth {
             // it seems this is never reached... eaten somewhere by way of ServiceDocumentServletDefault -> ServiceDocumentAPI -> SwordAPIEndpoint
             logger.info("no credentials provided");
             throw new SwordAuthException();
+        }
+    }
+
+    boolean hasAccessToModifyDataverse(VDCUser vdcUser, VDC dv) throws SwordError {
+        boolean authorized = false;
+        List<VDC> userVDCs = vdcService.getUserVDCs(vdcUser.getId());
+        for (VDC userVdc : userVDCs) {
+            if (userVdc.equals(dv)) {
+                authorized = true;
+                break;
+            }
+        }
+        if (!authorized) {
+            throw new SwordError("user " + vdcUser.getUserName() + " is not authorized to modify dataverse " + dv.getAlias());
+        } else {
+            return authorized;
         }
     }
 }

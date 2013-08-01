@@ -30,7 +30,6 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.logging.Logger;
 import javax.ejb.EJB;
 import javax.inject.Inject;
@@ -93,6 +92,9 @@ public class CollectionDepositManagerImpl implements CollectionDepositManager {
                     break;
                 }
             }
+            /**
+             * @todo: use new hasAccessToModifyDataverse method in swordAuth
+             */
             if (!authorized) {
                 throw new SwordServerException("user " + vdcUser.getUserName() + " is not authorized to modify dataverse " + dv.getAlias());
             }

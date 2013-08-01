@@ -29,6 +29,7 @@ import edu.harvard.iq.dvn.core.vdc.VDCServiceLocal;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Logger;
 import javax.ejb.EJB;
 import javax.inject.Inject;
 import org.swordapp.server.AuthCredentials;
@@ -42,6 +43,7 @@ import org.swordapp.server.SwordServerException;
 
 public class ContainerManagerImpl implements ContainerManager {
 
+    private static final Logger logger = Logger.getLogger(ContainerManagerImpl.class.getCanonicalName());
     @EJB
     VDCServiceLocal vdcService;
     @EJB
@@ -84,25 +86,53 @@ public class ContainerManagerImpl implements ContainerManager {
     }
 
     @Override
-    public void deleteContainer(String string, AuthCredentials authCredentials, SwordConfiguration sc) throws SwordError, SwordServerException, SwordAuthException {
-        System.out.println("deleteContainer called");
-        VDCUser vdcUser = swordAuth.auth(authCredentials);
-        List<VDC> userVDCs = vdcService.getUserVDCs(vdcUser.getId());
-
-        /**
-         * @todo: Remove this!! WARNING!!! Complete abuse of this method simply
-         * for the convenience of deleting all the studies in a dataverse with
-         * the `curl` command below.
-         */
-        // curl --insecure -s -X DELETE https://sword:sword@localhost:8181/dvn/api/data-deposit/v1/swordv2/edit/FIXME 
-        for (VDC userVdc : userVDCs) {
-            Collection<Study> studies = userVdc.getOwnedStudies();
-            for (Study study : studies) {
-                System.out.println("In dataverse " + userVdc.getAlias() + " about to delete study id " + study.getId());
-                studyService.deleteStudy(study.getId());
-            }
+    public void deleteContainer(String uri, AuthCredentials authCredentials, SwordConfiguration sc) throws SwordError, SwordServerException, SwordAuthException {
+        logger.info("deleteContainer called with url: " + uri);
+        UrlManager urlManager = new UrlManager(uri);
+        logger.info("original url: " + urlManager.getOriginalUrl());
+        if (!"edit".equals(urlManager.getServlet())) {
+            throw new SwordError("edit servlet expected, not " + urlManager.getServlet());
         }
+        List<String> target = urlManager.getTarget();
+        if (!target.isEmpty()) {
+            logger.info("operating on target: " + urlManager.getTarget());
+            if ("dataverse".equals(target.get(0))) {
+                logger.info("a dataverse has been targeted");
+                String dvAlias;
+                try {
+                    dvAlias = target.get(1);
+                } catch (IndexOutOfBoundsException ex) {
+                    throw new SwordError("No dataverse alias provided in url: " + uri);
+                }
 
+                VDCUser vdcUser = swordAuth.auth(authCredentials);
+                List<VDC> userVDCs = vdcService.getUserVDCs(vdcUser.getId());
+                VDC dataverseToEmpty = vdcService.findByAlias(dvAlias);
+                if (dataverseToEmpty != null) {
+                    if (swordAuth.hasAccessToModifyDataverse(vdcUser, dataverseToEmpty)) {
+
+                        /**
+                         * @todo: this is the deleteContainer method... should
+                         * move this to some sort of "emptyContainer" method
+                         */
+                        // curl --insecure -s -X DELETE https://sword:sword@localhost:8181/dvn/api/data-deposit/v1/swordv2/edit/dataverse/sword 
+                        Collection<Study> studies = dataverseToEmpty.getOwnedStudies();
+                        for (Study study : studies) {
+                            System.out.println("In dataverse " + dataverseToEmpty.getAlias() + " about to delete study id " + study.getId());
+                            studyService.deleteStudy(study.getId());
+                        }
+                    } else {
+                        throw new SwordError("User " + vdcUser.getUserName() + " is not authorized to modify " + dataverseToEmpty.getAlias());
+                    }
+                } else {
+                    throw new SwordError("Couldn't find dataverse to delete from url: " + uri);
+                }
+            } else {
+                throw new SwordError("A non-dataverse has been targeted");
+            }
+        } else {
+            throw new SwordError("No target for deletion specified");
+        }
     }
 
     @Override

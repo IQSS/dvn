@@ -23,6 +23,10 @@ import org.swordapp.server.SwordConfiguration;
 
 public class SwordConfigurationImpl implements SwordConfiguration {
 
+    String getBaseUrlPath() {
+        return "/dvn/api/data-deposit/v1/swordv2";
+    }
+
     @Override
     public boolean returnDepositReceipt() {
         return true;

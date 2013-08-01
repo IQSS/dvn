@@ -94,7 +94,7 @@ public class ContainerManagerImpl implements ContainerManager {
          * for the convenience of deleting all the studies in a dataverse with
          * the `curl` command below.
          */
-        // curl --insecure -s -X DELETE https://sword:sword@localhost:8181/dvn/api/data-deposit/swordv2/edit/FIXME 
+        // curl --insecure -s -X DELETE https://sword:sword@localhost:8181/dvn/api/data-deposit/v1/swordv2/edit/FIXME 
         for (VDC userVdc : userVDCs) {
             Collection<Study> studies = userVdc.getOwnedStudies();
             for (Study study : studies) {

@@ -73,10 +73,10 @@ public class StatementManagerImpl implements StatementManager {
         String globalId;
         String namingAuthority;
         try {
-            //             0 1   2   3            4       5    6          7
-            // for example: /dvn/api/data-deposit/swordv2/edit/hdl:1902.1/12345
-            namingAuthority = parts[6];
-            String uniqueLocalName = parts[7];
+            //             0 1   2   3            4  5       6    7          8
+            // for example: /dvn/api/data-deposit/v1/swordv2/edit/hdl:1902.1/12345
+            namingAuthority = parts[7];
+            String uniqueLocalName = parts[8];
             globalId = namingAuthority + "/" + uniqueLocalName;
         } catch (ArrayIndexOutOfBoundsException ex) {
             throw new SwordError("could not extract global ID from edit URI: " + editUri);

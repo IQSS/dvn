@@ -88,7 +88,7 @@ public class ServiceDocumentManagerImpl implements ServiceDocumentManager {
                 String hostName = System.getProperty("dvn.inetAddress");
                 SwordCollection swordCollectionNew = new SwordCollection();
                 swordCollectionNew.setTitle(journalDataverse.getName());
-                swordCollectionNew.setHref("https://" + hostName + optionalPort + "/dvn/api/data-deposit/swordv2/collection/dataverse/" + dvAlias);
+                swordCollectionNew.setHref("https://" + hostName + optionalPort + "/dvn/api/data-deposit/v1/swordv2/collection/dataverse/" + dvAlias);
                 swordCollectionNew.addAcceptPackaging(UriRegistry.PACKAGE_SIMPLE_ZIP);
                 swordWorkspace.addCollection(swordCollectionNew);
                 service.addWorkspace(swordWorkspace);

@@ -1,4 +1,4 @@
 #!/bin/sh
 # SWORDv2 entry point: where can I deposit data?
-curl --insecure -s -H "X-On-Behalf-Of: obo" https://sword:sword@localhost:8181/dvn/api/data-deposit/swordv2/service-document \
+curl --insecure -s -H "X-On-Behalf-Of: obo" https://sword:sword@localhost:8181/dvn/api/data-deposit/v1/swordv2/service-document \
 | xmllint --format -

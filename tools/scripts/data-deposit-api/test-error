@@ -1,4 +1,4 @@
 #!/bin/sh
 # should produce an error
-curl --insecure -s https://sword:sword@localhost:8181/dvn/api/data-deposit/swordv2/statement/doesnotexist \
+curl --insecure -s https://sword:sword@localhost:8181/dvn/api/data-deposit/v1/swordv2/statement/doesnotexist \
 | xmllint --format -

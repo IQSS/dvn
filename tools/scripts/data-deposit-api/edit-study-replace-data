@@ -18,9 +18,9 @@ for line in all_studies.splitlines():
         parts = line.split("- ")
         url_only = parts[1]
         pieces = url_only.split("/")
-        url_end = pieces[8:10]
+        url_end = pieces[9:11]
 
-url_start = "https://sword:sword@localhost:8181/dvn/api/data-deposit/swordv2/"
+url_start = "https://sword:sword@localhost:8181/dvn/api/data-deposit/v1/swordv2/"
 edit_uri =       url_start + "edit/"       + "/".join(url_end)
 edit_media_uri = url_start + "edit-media/" + "/".join(url_end)
 

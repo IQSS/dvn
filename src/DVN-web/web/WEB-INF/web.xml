@@ -378,23 +378,23 @@
     <!-- Data Deposit API (SWORD v2) servlet mapping (URLs are unstable for now!)-->
     <servlet-mapping>
         <servlet-name>edu.harvard.iq.dvn.core.web.servlet.SWORDv2ServiceDocumentServlet</servlet-name>
-        <url-pattern>/api/data-deposit/swordv2/service-document/*</url-pattern>
+        <url-pattern>/api/data-deposit/v1/swordv2/service-document/*</url-pattern>
     </servlet-mapping>
     <servlet-mapping>
         <servlet-name>edu.harvard.iq.dvn.core.web.servlet.SWORDv2CollectionServlet</servlet-name>
-        <url-pattern>/api/data-deposit/swordv2/collection/*</url-pattern>
+        <url-pattern>/api/data-deposit/v1/swordv2/collection/*</url-pattern>
     </servlet-mapping>
     <servlet-mapping>
         <servlet-name>edu.harvard.iq.dvn.core.web.servlet.SWORDv2ContainerServlet</servlet-name>
-        <url-pattern>/api/data-deposit/swordv2/edit/*</url-pattern>
+        <url-pattern>/api/data-deposit/v1/swordv2/edit/*</url-pattern>
     </servlet-mapping>
     <servlet-mapping>
         <servlet-name>edu.harvard.iq.dvn.core.web.servlet.SWORDv2MediaResourceServlet</servlet-name>
-        <url-pattern>/api/data-deposit/swordv2/edit-media/*</url-pattern>
+        <url-pattern>/api/data-deposit/v1/swordv2/edit-media/*</url-pattern>
     </servlet-mapping>
     <servlet-mapping>
         <servlet-name>edu.harvard.iq.dvn.core.web.servlet.SWORDv2StatementServlet</servlet-name>
-        <url-pattern>/api/data-deposit/swordv2/statement/*</url-pattern>
+        <url-pattern>/api/data-deposit/v1/swordv2/statement/*</url-pattern>
     </servlet-mapping>
 
 <!-- DVN SPECIFIC SERVLET MAPPINGS START -->

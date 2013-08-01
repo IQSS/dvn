@@ -3,7 +3,6 @@ if [ "" = "$1" ]; then
   echo >&2 "Please supply a statement URI"
   exit 1
 else
-  # https://sword:sword@localhost:8181/dvn/api/data-deposit/swordv2/statement/FIXME
   STATEMENT_URI="$1"
 fi
 curl --insecure -s -u sword:sword $STATEMENT_URI \

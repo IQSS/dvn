@@ -290,10 +290,10 @@ public class MediaResourceManagerImpl implements MediaResourceManager {
         String globalId;
         String namingAuthority;
         try {
-            //             0 1   2   3            4       5          6          7
-            // for example: /dvn/api/data-deposit/swordv2/edit-media/hdl:1902.1/19189
-            namingAuthority = parts[6];
-            String uniqueLocalName = parts[7];
+            //             0 1   2   3            4  5       6          7          8
+            // for example: /dvn/api/data-deposit/v1/swordv2/edit-media/hdl:1902.1/19189
+            namingAuthority = parts[7];
+            String uniqueLocalName = parts[8];
             globalId = namingAuthority + "/" + uniqueLocalName;
             return globalId;
         } catch (ArrayIndexOutOfBoundsException ex) {

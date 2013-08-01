@@ -72,9 +72,9 @@ public class CollectionDepositManagerImpl implements CollectionDepositManager {
         String[] parts = uriReference.getPath().split("/");
         String dvAlias;
         try {
-            //             0 1   2   3            4       5          6         7
-            // for example: /dvn/api/data-deposit/swordv2/collection/dataverse/sword
-            dvAlias = parts[7];
+            //             0 1   2   3            4  5       6          7         8
+            // for example: /dvn/api/data-deposit/v1/swordv2/collection/dataverse/sword
+            dvAlias = parts[8];
         } catch (ArrayIndexOutOfBoundsException ex) {
             throw new SwordServerException("could not extract dataverse alias from collection URI: " + collectionUri);
         }
@@ -149,7 +149,7 @@ public class CollectionDepositManagerImpl implements CollectionDepositManager {
                 if (port != -1) {
                     optionalPort = ":" + port;
                 }
-                String baseUrl = "https://" + hostName + optionalPort + "/dvn/api/data-deposit/swordv2/";
+                String baseUrl = "https://" + hostName + optionalPort + "/dvn/api/data-deposit/v1/swordv2/";
                 depositReceipt.setLocation(new IRI("location" + baseUrl + study.getGlobalId()));
                 depositReceipt.setEditIRI(new IRI(baseUrl + "edit/" + study.getGlobalId()));
                 depositReceipt.setEditMediaIRI(new IRI(baseUrl + "edit-media/" + study.getGlobalId()));
@@ -158,12 +158,12 @@ public class CollectionDepositManagerImpl implements CollectionDepositManager {
                 return depositReceipt;
             } else if (deposit.isBinaryOnly()) {
                 // get here with this:
-                // curl --insecure -s --data-binary "@example.zip" -H "Content-Disposition: filename=example.zip" -H "Content-Type: application/zip" https://sword:sword@localhost:8181/dvn/api/data-deposit/swordv2/collection/dataverse/sword/
+                // curl --insecure -s --data-binary "@example.zip" -H "Content-Disposition: filename=example.zip" -H "Content-Type: application/zip" https://sword:sword@localhost:8181/dvn/api/data-deposit/v1/swordv2/collection/dataverse/sword/
                 throw new SwordError("Binary deposit to the collection IRI via POST is not supported. Please POST an Atom entry instead.");
             } else if (deposit.isMultipart()) {
                 // get here with this:
                 // wget https://raw.github.com/swordapp/Simple-Sword-Server/master/tests/resources/multipart.dat
-                // curl --insecure --data-binary "@multipart.dat" -H 'Content-Type: multipart/related; boundary="===============0670350989=="' -H "MIME-Version: 1.0" https://sword:sword@localhost:8181/dvn/api/data-deposit/swordv2/collection/dataverse/sword/hdl:1902.1/12345
+                // curl --insecure --data-binary "@multipart.dat" -H 'Content-Type: multipart/related; boundary="===============0670350989=="' -H "MIME-Version: 1.0" https://sword:sword@localhost:8181/dvn/api/data-deposit/v1/swordv2/collection/dataverse/sword/hdl:1902.1/12345
                 // but...
                 // "Yeah, multipart is critically broken across all implementations" -- http://www.mail-archive.com/sword-app-tech@lists.sourceforge.net/msg00327.html
                 throw new UnsupportedOperationException("Not yet implemented");

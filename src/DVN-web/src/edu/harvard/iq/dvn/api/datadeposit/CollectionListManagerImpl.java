@@ -55,9 +55,9 @@ public class CollectionListManagerImpl implements CollectionListManager {
         String[] parts = iri.getPath().split("/");
         String dvAlias;
         try {
-            //             0 1   2   3            4       5          6         7
-            // for example: /dvn/api/data-deposit/swordv2/collection/dataverse/sword
-            dvAlias = parts[7];
+            //             0 1   2   3            4  5       6          7         8
+            // for example: /dvn/api/data-deposit/v1/swordv2/collection/dataverse/sword
+            dvAlias = parts[8];
         } catch (ArrayIndexOutOfBoundsException ex) {
             throw new SwordServerException("could not extract dataverse alias from collection URI: " + iri.toString());
         }
@@ -86,7 +86,7 @@ public class CollectionListManagerImpl implements CollectionListManager {
             if (port != -1) {
                 optionalPort = ":" + port;
             }
-            String baseUrl = "https://" + hostName + optionalPort + "/dvn/api/data-deposit/swordv2/";
+            String baseUrl = "https://" + hostName + optionalPort + "/dvn/api/data-deposit/v1/swordv2/";
             for (Study study : studies) {
                 Entry entry = feed.addEntry();
                 entry.setId(study.getGlobalId());

@@ -25,6 +25,7 @@ import java.util.*;
 import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.builder.*;
+import edu.harvard.iq.dvn.ingest.thedata.helpers.VariableMetaData;
 
 /**
  *  A class to represents the metadata component of a statistical data file.
@@ -704,7 +705,42 @@ public class SDIOMetadata {
     public void setValueLabelMappingTable(Map<String, String> valueLabelMappingTable) {
         this.valueLabelMappingTable = valueLabelMappingTable;
     }
-
+    
+    /*
+     * Adding handlers for VariableMetaData objects - the new and improved 
+     * class for storing variable information added by Matt in the 
+     * R reader. For now (as of 3.6) it will only be utilized when processing
+     * R files. Eventually, we may want to switch entirely to using it, 
+     * instead of the older mechanisms in this class. -- L.A. 
+     */
+    
+    
+    private VariableMetaData[] variableMetaData;
+    
+    public VariableMetaData[] getVariableMetaData() {
+        return variableMetaData; 
+    }
+    
+    public void setVariableMetaData(VariableMetaData[] vm) {
+        variableMetaData = vm; 
+    }
+    
+    public VariableMetaData getVariableMetaData(int i) {
+        if (variableMetaData != null && variableMetaData.length > i) {
+            return variableMetaData[i]; 
+        }
+        return null; 
+    }
+    
+    public VariableMetaData getVariableMetaData(String vName) {
+        for (int i = 0; i < variableName.length; i++) {
+            if (variableName[i].equals(vName)) {
+                return variableMetaData[i];
+            }
+        }
+        return null; 
+    }
+    
     /**
      * Returns a string representation of this instance.
      * 

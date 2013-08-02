@@ -665,6 +665,16 @@ public class RDATAFileReader extends StatDataFileReader {
       // Get the Variable Meta Data Table while Populating 
       mVariableMetaDataTable = getVariableMetaDataTable(metaInfo);
       
+      if (mVariableMetaDataTable != null) {
+        VariableMetaData[] variableMetaData = new VariableMetaData[metaInfo.size()];
+        VariableMetaData vm; 
+        for (int j = 0; j < metaInfo.size(); j++) {
+            vm = mVariableMetaDataTable.get(j);
+            variableMetaData[j] = vm; 
+        }
+        smd.setVariableMetaData(variableMetaData);
+      }
+      
       mCaseQuantity = fileInformation.at("caseQnty").asInteger();
       mVarQuantity = varQnty;
 
@@ -1304,11 +1314,19 @@ public class RDATAFileReader extends StatDataFileReader {
         
         // Create a variable meta-data object
         VariableMetaData columnMetaData = new VariableMetaData(variableType);
-        columnMetaData.setDateTimeFormat(variableFormat);
+        
+        if (variableTypeString != null && variableTypeString.startsWith("Date")) {
+            columnMetaData.setDateTimeFormat(variableFormat);
+        }
         
         if (variableLevels != null && variableLevels.length > 0) {
             // this is a factor.
             columnMetaData.setFactor(true);
+            
+            if (variableFormat != null && variableFormat.equals("ordered")) {
+                columnMetaData.setOrderedFactor(true);
+            }
+            
             columnMetaData.setFactorLevels(variableLevels);
 
 

@@ -3239,7 +3239,35 @@ public class DDIServiceBean implements DDIServiceLocal {
         VariableCategory cat = new VariableCategory();
         cat.setMissing( "Y".equals( xmlr.getAttributeValue(null, "missing") ) ); // default is N, so null sets missing to false
         cat.setDataVariable(dv);
-        // commented out: -- L.A.
+        
+        if (dv.getCategories() == null) {
+            // if this is the first category we encounter, we'll assume that this
+            // categorical data/"factor" variable is ordered. 
+            // But we'll switch it back to unordered later, if we encounter
+            // *any* categories with no order attribute defined. 
+            
+            dv.setOrderedCategorical(false);
+        }
+        
+        // Process extra level order values, if available; 
+        // Currently (as of 3.6) only available in R Data ingests.
+        String order = null; 
+        order = xmlr.getAttributeValue(null, "order");
+        
+        if (order != null) {
+            Long orderValue = new Long (order);
+            if (orderValue != null && orderValue.longValue() >= (long)0) {
+                cat.setOrder(orderValue);
+            } else {
+                // Everey category of an ordered categorical ("factor") variable
+                // must have the order rank defined. Which means that if we 
+                // encounter a single category with no ordered attribute, it
+                // will be processed as un-ordered. 
+                
+                dv.setOrderedCategorical(false);
+            }
+        }
+
         dv.getCategories().add(cat);
 
         for (int event = xmlr.next(); event != XMLStreamConstants.END_DOCUMENT; event = xmlr.next()) {

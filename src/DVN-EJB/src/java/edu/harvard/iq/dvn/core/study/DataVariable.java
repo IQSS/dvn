@@ -446,6 +446,21 @@ public class DataVariable implements java.io.Serializable{
         this.categories = categories;
     }
 
+    public boolean isCategorical () {
+        return (categories != null && categories.size() > 0);
+    }
+    
+    private boolean ordered = false; 
+    
+    
+    public boolean isOrderedCategorical () {
+        return isCategorical() && ordered; 
+    }
+    
+    public void setOrderedCategorical (boolean ordered) {
+        this.ordered = ordered; 
+    }
+    
     /**
      * Holds value of property weightedVariables.
      */

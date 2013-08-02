@@ -49,6 +49,7 @@ public class VariableMetaData {
   
   private boolean isFactor = false; 
   private boolean isBoolean = false; 
+  private boolean isOrderedFactor = false; 
   
   /**
    * Construct a Meta-data-less Object
@@ -151,6 +152,14 @@ public class VariableMetaData {
     isBoolean = isb; 
   }
   
+  public boolean isOrderedFactor() {
+      return isOrderedFactor; 
+  }
+  
+  public void setOrderedFactor (boolean iso) {
+      isOrderedFactor = iso;
+  }
+  
   /**
    * 
    */
@@ -194,4 +203,18 @@ public class VariableMetaData {
       return intFactorValues;
   }
 
+  public int getFactorLevelOrder (String level) {
+    // For ordered categorical values ("ordinals"), the order in which 
+    // the levels are listed corresponds to their ordered values:
+    if (isOrderedFactor) {
+        for (int i = 0; i < mFactorLevels.length; i++) {
+            if (mFactorLevels[i].equals(level)) {
+                return i; 
+            }
+        }
+    }
+      
+    return -1; 
+  }
+  
 }

@@ -338,8 +338,25 @@ public class DDIWriter {
                     <catStat type="freq">16</catStat>
                 </catgry>
             */
+            boolean orderedCategoricalValues = false; 
+            String fileFormat = (String)sdioMetadata.getFileInformation().get("fileFormat");
+            if (fileFormat != null && fileFormat.equals("RDATA")) {
+                if (sdioMetadata.getVariableMetaData(i).isOrderedFactor()) {
+                    orderedCategoricalValues = true; 
+                }
+            }
+            
             if ((mergedCatStatTable != null) && (!mergedCatStatTable.isEmpty())){
+
                 for (CategoricalStatistic cs: mergedCatStatTable){
+                    String categoryAttributes = "";
+                    if (orderedCategoricalValues) {
+                        int order = sdioMetadata.getVariableMetaData(i).getFactorLevelOrder(cs.getValue());
+                        if (order > -1) {
+                            categoryAttributes = " order=\""+order+"\"";
+                        }
+                    }
+                    
                     // first line
                     if (cs.isMissingValue() ||
                         cs.getValue().equals(MISSING_VALUE_DISCRETE) ||
@@ -347,9 +364,9 @@ public class DDIWriter {
                          * Commented out the empty string, "", as a 
                          * missing value -- L.A., May 10 '13
                         cs.getValue().equals("")*/){
-                        sb.append("\t\t<catgry missing=\"Y\">\n");
+                        sb.append("\t\t<catgry missing=\"Y\""+categoryAttributes+">\n");
                     } else {
-                        sb.append("\t\t<catgry>\n");
+                        sb.append("\t\t<catgry"+categoryAttributes+">\n");
                     }
                     // value
                     String catStatValueString = null;

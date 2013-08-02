@@ -148,6 +148,16 @@ public class VariableCategory implements Comparable, java.io.Serializable {
         this.missing = missing;
     }
 
+    private Long catOrder;
+    
+    public Long getOrder() {
+        return catOrder; 
+    }
+    
+    public void setOrder(Long order) {
+        this.catOrder = order; 
+    }
+    
     /**
      * Holds value of property dataVariable.
      */

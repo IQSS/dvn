@@ -450,15 +450,19 @@ public class DataVariable implements java.io.Serializable{
         return (categories != null && categories.size() > 0);
     }
     
-    private boolean ordered = false; 
+    
+    /*
+     * The boolean "ordered": identifies ordered categorical values ("ordinals"). 
+     */
+    private boolean orderedFactor = false; 
     
     
     public boolean isOrderedCategorical () {
-        return isCategorical() && ordered; 
+        return isCategorical() && orderedFactor; 
     }
     
     public void setOrderedCategorical (boolean ordered) {
-        this.ordered = ordered; 
+        orderedFactor = ordered; 
     }
     
     /**

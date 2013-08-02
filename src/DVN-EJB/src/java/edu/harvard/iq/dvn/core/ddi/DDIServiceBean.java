@@ -3255,9 +3255,14 @@ public class DDIServiceBean implements DDIServiceLocal {
         order = xmlr.getAttributeValue(null, "order");
         
         if (order != null) {
-            Long orderValue = new Long (order);
-            if (orderValue != null && orderValue.longValue() >= (long)0) {
-                cat.setOrder(orderValue);
+            Integer orderValue = null; 
+            try {
+                orderValue = new Integer (order);
+            } catch (NumberFormatException ex) {
+                orderValue = null; 
+            }
+            if (orderValue != null && orderValue.intValue() >= 0) {
+                cat.setOrder(orderValue.intValue());
             } else {
                 // Everey category of an ordered categorical ("factor") variable
                 // must have the order rank defined. Which means that if we 

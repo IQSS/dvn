@@ -30,12 +30,16 @@ print "listing studies..."
 feed_of_studies = Popen(["tools/scripts/data-deposit-api/list-studies", deposit_target], stdout=PIPE).communicate()[0]
 print feed_of_studies,
 
-sword_error = ET.fromstring(Popen(["tools/scripts/data-deposit-api/test-error"], stdout=PIPE).communicate()[0]);
-for error in sword_error:
-    if "{http://www.w3.org/2005/Atom}summary" == error.tag:
-        error_summary = error.text
+#sword_error = ET.fromstring(Popen(["tools/scripts/data-deposit-api/test-error"], stdout=PIPE).communicate()[0]);
+error_xml = Popen(["tools/scripts/data-deposit-api/test-error"], stdout=PIPE).communicate()[0]
+sword_error = ET.fromstring(error_xml)
+#for error in sword_error:
+#    print "error:", error
+#    if "{http://www.w3.org/2005/Atom}summary" == error.tag:
+#        error_summary = error.text
 
-match = re.search("could not extract global ID", error_summary)
+#match = re.search("could not extract global ID", error_summary)
+match = re.search("Unable to determine target type from url", error_xml)
 if match:
     print "global id test succeeded"
 else:

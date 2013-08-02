@@ -54,6 +54,8 @@ public class ContainerManagerImpl implements ContainerManager {
     IndexServiceLocal indexService;
     @Inject
     SwordAuth swordAuth;
+    @Inject
+    UrlManager urlManager;
 
     @Override
     public DepositReceipt getEntry(String string, Map<String, String> map, AuthCredentials ac, SwordConfiguration sc) throws SwordServerException, SwordError, SwordAuthException {
@@ -88,23 +90,16 @@ public class ContainerManagerImpl implements ContainerManager {
     @Override
     public void deleteContainer(String uri, AuthCredentials authCredentials, SwordConfiguration sc) throws SwordError, SwordServerException, SwordAuthException {
         logger.info("deleteContainer called with url: " + uri);
-        UrlManager urlManager = new UrlManager(uri);
+        urlManager.processUrl(uri);
         logger.info("original url: " + urlManager.getOriginalUrl());
         if (!"edit".equals(urlManager.getServlet())) {
             throw new SwordError("edit servlet expected, not " + urlManager.getServlet());
         }
-        List<String> target = urlManager.getTarget();
-        if (!target.isEmpty()) {
-            logger.info("operating on target: " + urlManager.getTarget());
-            if ("dataverse".equals(target.get(0))) {
-                logger.info("a dataverse has been targeted");
-                String dvAlias;
-                try {
-                    dvAlias = target.get(1);
-                } catch (IndexOutOfBoundsException ex) {
-                    throw new SwordError("No dataverse alias provided in url: " + uri);
-                }
-
+        String targetType = urlManager.getTargetType();
+        if (!targetType.isEmpty()) {
+            logger.info("operating on target type: " + urlManager.getTargetType());
+            if ("dataverse".equals(targetType)) {
+                String dvAlias = urlManager.getTargetIdentifier();
                 VDCUser vdcUser = swordAuth.auth(authCredentials);
                 List<VDC> userVDCs = vdcService.getUserVDCs(vdcUser.getId());
                 VDC dataverseToEmpty = vdcService.findByAlias(dvAlias);
@@ -127,8 +122,11 @@ public class ContainerManagerImpl implements ContainerManager {
                 } else {
                     throw new SwordError("Couldn't find dataverse to delete from url: " + uri);
                 }
+            } else if ("study".equals(targetType)) {
+                String globalId = urlManager.getTargetIdentifier();
+                throw new SwordError("Study " + globalId + " found but deletion is not yet supported.");
             } else {
-                throw new SwordError("A non-dataverse has been targeted");
+                throw new SwordError("Unsupported delete target in url:" + uri);
             }
         } else {
             throw new SwordError("No target for deletion specified");

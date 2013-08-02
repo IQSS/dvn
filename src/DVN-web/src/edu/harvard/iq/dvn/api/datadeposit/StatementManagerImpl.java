@@ -24,8 +24,6 @@ import edu.harvard.iq.dvn.core.study.Study;
 import edu.harvard.iq.dvn.core.study.StudyServiceLocal;
 import edu.harvard.iq.dvn.core.vdc.VDC;
 import edu.harvard.iq.dvn.core.vdc.VDCServiceLocal;
-import java.net.URI;
-import java.net.URISyntaxException;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
@@ -50,6 +48,8 @@ public class StatementManagerImpl implements StatementManager {
     VDCServiceLocal vdcService;
     @Inject
     SwordAuth swordAuth;
+    @Inject
+    UrlManager urlManager;
 
     @Override
     public Statement getStatement(String editUri, Map<String, String> map, AuthCredentials authCredentials, SwordConfiguration sc) throws SwordServerException, SwordError, SwordAuthException {
@@ -61,76 +61,63 @@ public class StatementManagerImpl implements StatementManager {
         }
 
         VDCUser vdcUser = swordAuth.auth(authCredentials);
-        URI uriReference;
-        try {
-            uriReference = new URI(editUri);
-        } catch (URISyntaxException ex) {
-            throw new SwordServerException("problem with collection URI: " + editUri);
-        }
-        logger.info("edit URI path: " + uriReference.getPath());
-        String[] parts = uriReference.getPath().split("/");
+        urlManager.processUrl(editUri);
+        String globalId = urlManager.getTargetIdentifier();
+        if (urlManager.getTargetType().equals("study") && globalId != null) {
 
-        String globalId;
-        String namingAuthority;
-        try {
-            //             0 1   2   3            4  5       6    7          8
-            // for example: /dvn/api/data-deposit/v1/swordv2/edit/hdl:1902.1/12345
-            namingAuthority = parts[7];
-            String uniqueLocalName = parts[8];
-            globalId = namingAuthority + "/" + uniqueLocalName;
-        } catch (ArrayIndexOutOfBoundsException ex) {
-            throw new SwordError("could not extract global ID from edit URI: " + editUri);
-        }
+            logger.info("request for sword statement by user " + vdcUser.getUserName());
 
-        logger.info("request for sword statement by user " + vdcUser.getUserName());
-
-        Study study = studyService.getStudyByGlobalId(globalId);
-        Long studyId;
-        try {
-            studyId = study.getId();
-        } catch (NullPointerException ex) {
-            throw new SwordError("couldn't find study with global ID of " + globalId);
-        }
-
-        List<VDC> vdcList = vdcService.getUserVDCs(vdcUser.getId());
-
-        if (vdcList.size() != 1) {
-            /**
-             * @todo: make this more generic, for non-OJS use cases for SWORD
-             */
-            String msg = "accounts used to look up a Journal Dataverse should find a single dataverse, not " + vdcList.size();
-            logger.info(msg);
-            throw new SwordError(msg);
-        }
-
-        VDC dv = null;
-        if (vdcList.get(0) != null) {
-            dv = vdcList.get(0);
-        }
-
-        boolean authorizedToViewStudy = false;
-        Collection<Study> ownedStudies = dv.getOwnedStudies();
-        for (Study ownedStudy : ownedStudies) {
-            if (study.equals(ownedStudy)) {
-                authorizedToViewStudy = true;
-                System.out.println("setting to true... ownedStudy: " + ownedStudy.getGlobalId());
-                break;
-            } else {
-                System.out.println("ownedStudy: " + ownedStudy.getGlobalId() + " ... moving on");
+            Study study = studyService.getStudyByGlobalId(globalId);
+            Long studyId;
+            try {
+                studyId = study.getId();
+            } catch (NullPointerException ex) {
+                throw new SwordError("couldn't find study with global ID of " + globalId);
             }
-        }
-        if (!authorizedToViewStudy) {
-            throw new SwordError("user " + vdcUser.getUserName() + " is not authorized to view study with global ID " + globalId);
-        }
 
-        String feedUri = "fakeFeedUri";
-        String author = study.getLatestVersion().getMetadata().getAuthorsStr();
-        String title = study.getLatestVersion().getMetadata().getTitle();
-        /**
-         * @todo: null date becomes "now" ... get actual date
-         */
-        String datedUpdated = null;
-        Statement statement = new AtomStatement(feedUri, author, title, datedUpdated);
-        return statement;
+            List<VDC> vdcList = vdcService.getUserVDCs(vdcUser.getId());
+
+            if (vdcList.size() != 1) {
+                /**
+                 * @todo: make this more generic, for non-OJS use cases for
+                 * SWORD
+                 */
+                String msg = "accounts used to look up a Journal Dataverse should find a single dataverse, not " + vdcList.size();
+                logger.info(msg);
+                throw new SwordError(msg);
+            }
+
+            VDC dv = null;
+            if (vdcList.get(0) != null) {
+                dv = vdcList.get(0);
+            }
+
+            boolean authorizedToViewStudy = false;
+            Collection<Study> ownedStudies = dv.getOwnedStudies();
+            for (Study ownedStudy : ownedStudies) {
+                if (study.equals(ownedStudy)) {
+                    authorizedToViewStudy = true;
+                    System.out.println("setting to true... ownedStudy: " + ownedStudy.getGlobalId());
+                    break;
+                } else {
+                    System.out.println("ownedStudy: " + ownedStudy.getGlobalId() + " ... moving on");
+                }
+            }
+            if (!authorizedToViewStudy) {
+                throw new SwordError("user " + vdcUser.getUserName() + " is not authorized to view study with global ID " + globalId);
+            }
+
+            String feedUri = "fakeFeedUri";
+            String author = study.getLatestVersion().getMetadata().getAuthorsStr();
+            String title = study.getLatestVersion().getMetadata().getTitle();
+            /**
+             * @todo: null date becomes "now" ... get actual date
+             */
+            String datedUpdated = null;
+            Statement statement = new AtomStatement(feedUri, author, title, datedUpdated);
+            return statement;
+        } else {
+            throw new SwordError("Could not determine target type or identifier from URL: " + editUri);
+        }
     }
 }

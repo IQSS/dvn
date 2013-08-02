@@ -19,24 +19,30 @@
  */
 package edu.harvard.iq.dvn.api.datadeposit;
 
+import edu.harvard.iq.dvn.core.study.Study;
+import edu.harvard.iq.dvn.core.study.StudyServiceLocal;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.Arrays;
 import java.util.List;
 import java.util.logging.Logger;
-import org.apache.commons.lang.ArrayUtils;
+import javax.ejb.EJB;
 import org.apache.commons.lang.StringUtils;
 import org.swordapp.server.SwordError;
 
 public class UrlManager {
 
     private static final Logger logger = Logger.getLogger(UrlManager.class.getCanonicalName());
+    @EJB
+    StudyServiceLocal studyService;
     String originalUrl;
     SwordConfigurationImpl swordConfiguration = new SwordConfigurationImpl();
     String servlet;
-    List<String> target;
+    String targetType;
+    String targetIdentifier;
+    int port;
 
-    UrlManager(String url) throws SwordError {
+    void processUrl(String url) throws SwordError {
         this.originalUrl = url;
         URI javaNetUri;
         try {
@@ -44,6 +50,7 @@ public class UrlManager {
         } catch (URISyntaxException ex) {
             throw new SwordError("Invalid URL syntax: " + url);
         }
+        this.port = javaNetUri.getPort();
         String[] urlPartsArray = javaNetUri.getPath().split("/");
         List<String> urlParts = Arrays.asList(urlPartsArray);
         String dataDepositApiBasePath;
@@ -64,14 +71,36 @@ public class UrlManager {
         } catch (ArrayIndexOutOfBoundsException ex) {
             throw new SwordError("Unable to determine servlet path from URL: " + url);
         }
+        List<String> targetTypeAndIdentifier;
         try {
-            //  6          7         8
-            // /collection/dataverse/sword
-            List<String> target = urlParts.subList(7, urlParts.size());
-            this.target = target;
+            //               6          7         8
+            // for example: /collection/dataverse/sword
+            targetTypeAndIdentifier = urlParts.subList(7, urlParts.size());
         } catch (IndexOutOfBoundsException ex) {
-            throw new SwordError("No target specified in URL: " + url);
+            throw new SwordError("No target components specified in URL: " + url);
         }
+        this.targetType = determineTargetType(targetTypeAndIdentifier);
+        if (targetType != null) {
+            if (targetType.equals("dataverse")) {
+                String dvAlias;
+                try {
+                    dvAlias = targetTypeAndIdentifier.get(1);
+                } catch (IndexOutOfBoundsException ex) {
+                    throw new SwordError("No dataverse alias provided in url: " + url);
+                }
+                this.targetIdentifier = dvAlias;
+            } else if (targetType.equals("study")) {
+                String globalId = getStudyGlobalId(targetTypeAndIdentifier);
+                logger.info("study found: " + globalId);
+                this.targetIdentifier = globalId;
+            } else {
+                throw new SwordError("unsupported target type: " + targetType);
+            }
+        } else {
+            throw new SwordError("Unable to determine target type from url: " + url);
+        }
+        System.out.println("target type: " + targetType);
+        System.out.println("target identifier: " + targetIdentifier);
     }
 
     public String getOriginalUrl() {
@@ -90,11 +119,65 @@ public class UrlManager {
         this.servlet = servlet;
     }
 
-    public List<String> getTarget() {
-        return target;
+    public String getTargetIdentifier() {
+        return targetIdentifier;
     }
 
-    public void setTarget(List<String> target) {
-        this.target = target;
+    public void setTargetIdentifier(String targetIdentifier) {
+        this.targetIdentifier = targetIdentifier;
+    }
+
+    public String getTargetType() {
+        return targetType;
+    }
+
+    public void setTargetType(String targetType) {
+        this.targetType = targetType;
+    }
+
+    public int getPort() {
+        return port;
+    }
+
+    public void setPort(int port) {
+        this.port = port;
+    }
+
+    private String determineTargetType(List<String> targetTypeAndIdentifier) {
+        if (!targetTypeAndIdentifier.isEmpty()) {
+            String index0 = targetTypeAndIdentifier.get(0);
+            System.out.println("index0: " + index0);
+            if (index0.equals("dataverse")) {
+                return "dataverse";
+            } else {
+                String globalId = getStudyGlobalId(targetTypeAndIdentifier);
+                if (globalId != null) {
+                    return "study";
+                } else {
+                    return null;
+                }
+            }
+        } else {
+            return null;
+        }
+    }
+
+    private String getStudyGlobalId(List<String> targetTypeAndIdentifier) {
+        String potentialGlobalId = StringUtils.join(targetTypeAndIdentifier, "/");
+        logger.info("potential globalId: " + potentialGlobalId);
+        Study study = null;
+        try {
+            logger.info("running studyService.getStudyByGlobalId");
+            study = studyService.getStudyByGlobalId(potentialGlobalId);
+        } catch (Exception ex) {
+            // shouldn't studyService.getStudyByGlobalId throw some sort of exception?
+            logger.info("problem running studyService.getStudyByGlobalId: " + ex.getMessage());
+            return null;
+        }
+        if (study != null) {
+            return study.getGlobalId();
+        } else {
+            return null;
+        }
     }
 }

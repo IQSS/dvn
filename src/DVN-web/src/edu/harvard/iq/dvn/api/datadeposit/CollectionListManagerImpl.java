@@ -47,63 +47,61 @@ public class CollectionListManagerImpl implements CollectionListManager {
     VDCServiceLocal vdcService;
     @Inject
     SwordAuth swordAuth;
+    @Inject
+    UrlManager urlManager;
 
     @Override
     public Feed listCollectionContents(IRI iri, AuthCredentials authCredentials, SwordConfiguration swordConfiguration) throws SwordServerException, SwordAuthException, SwordError {
         VDCUser vdcUser = swordAuth.auth(authCredentials);
 
-        String[] parts = iri.getPath().split("/");
-        String dvAlias;
-        try {
-            //             0 1   2   3            4  5       6          7         8
-            // for example: /dvn/api/data-deposit/v1/swordv2/collection/dataverse/sword
-            dvAlias = parts[8];
-        } catch (ArrayIndexOutOfBoundsException ex) {
-            throw new SwordServerException("could not extract dataverse alias from collection URI: " + iri.toString());
-        }
+        urlManager.processUrl(iri.toString());
+        String dvAlias = urlManager.getTargetIdentifier();
+        if (urlManager.getTargetType().equals("dataverse") && dvAlias != null) {
 
-        VDC dv = vdcService.findByAlias(dvAlias);
+            VDC dv = vdcService.findByAlias(dvAlias);
 
-        if (dv != null) {
-            boolean authorized = false;
-            List<VDC> userVDCs = vdcService.getUserVDCs(vdcUser.getId());
-            for (VDC userVdc : userVDCs) {
-                if (userVdc.equals(dv)) {
-                    authorized = true;
-                    break;
+            if (dv != null) {
+                boolean authorized = false;
+                List<VDC> userVDCs = vdcService.getUserVDCs(vdcUser.getId());
+                for (VDC userVdc : userVDCs) {
+                    if (userVdc.equals(dv)) {
+                        authorized = true;
+                        break;
+                    }
                 }
-            }
-            if (!authorized) {
-                throw new SwordServerException("user " + vdcUser.getUserName() + " is not authorized to list studies in dataverse " + dv.getAlias());
-            }
-            Abdera abdera = new Abdera();
-            Feed feed = abdera.newFeed();
-            feed.setTitle(dv.getName());
-            Collection<Study> studies = dv.getOwnedStudies();
-            String hostName = System.getProperty("dvn.inetAddress");
-            String optionalPort = "";
-            int port = iri.getPort();
-            if (port != -1) {
-                optionalPort = ":" + port;
-            }
-            String baseUrl = "https://" + hostName + optionalPort + "/dvn/api/data-deposit/v1/swordv2/";
-            for (Study study : studies) {
-                Entry entry = feed.addEntry();
-                entry.setId(study.getGlobalId());
-                entry.setTitle(study.getLatestVersion().getMetadata().getTitle());
-                entry.setBaseUri(new IRI(baseUrl + "edit/" + study.getGlobalId()));
-                List<StudyFile> files = study.getStudyFiles();
-                for (StudyFile studyFile : files) {
-                    entry.addLink(baseUrl + "edit/file/" + studyFile.getId().toString(), "edit");
+                if (!authorized) {
+                    throw new SwordServerException("user " + vdcUser.getUserName() + " is not authorized to list studies in dataverse " + dv.getAlias());
+                }
+                Abdera abdera = new Abdera();
+                Feed feed = abdera.newFeed();
+                feed.setTitle(dv.getName());
+                Collection<Study> studies = dv.getOwnedStudies();
+                String hostName = System.getProperty("dvn.inetAddress");
+                String optionalPort = "";
+                int port = iri.getPort();
+                if (port != -1) {
+                    optionalPort = ":" + port;
+                }
+                String baseUrl = "https://" + hostName + optionalPort + "/dvn/api/data-deposit/v1/swordv2/";
+                for (Study study : studies) {
+                    Entry entry = feed.addEntry();
+                    entry.setId(study.getGlobalId());
+                    entry.setTitle(study.getLatestVersion().getMetadata().getTitle());
+                    entry.setBaseUri(new IRI(baseUrl + "edit/" + study.getGlobalId()));
+                    List<StudyFile> files = study.getStudyFiles();
+                    for (StudyFile studyFile : files) {
+                        entry.addLink(baseUrl + "edit/file/" + studyFile.getId().toString(), "edit");
 //                    entry.addLink(baseUrl + "edit-media/file/" + studyFile.getId().toString(), "edit-media");
-                    logger.info(study.getGlobalId() + " file " + studyFile.getId().toString() + ": " + studyFile.getFileName());
+                        logger.info(study.getGlobalId() + " file " + studyFile.getId().toString() + ": " + studyFile.getFileName());
+                    }
+                    feed.addEntry(entry);
                 }
-                feed.addEntry(entry);
+                return feed;
+            } else {
+                throw new SwordServerException("Could not find dataverse: " + dvAlias);
             }
-            return feed;
         } else {
-            throw new SwordServerException("Could not find dataverse: " + dvAlias);
-
+            throw new SwordError("Couldn't determine target type or identifer from url: " + iri);
         }
     }
 }

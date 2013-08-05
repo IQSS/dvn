@@ -1,0 +1,40 @@
+#!/usr/bin/env python
+import re
+from subprocess import Popen, PIPE
+from xml.etree import ElementTree as ET
+
+service_document = ET.fromstring(Popen("tools/scripts/data-deposit-api/test-service-document", stdout=PIPE).communicate()[0])
+
+deposit_target = service_document[0][1].attrib["href"]
+
+feed_of_studies = ET.fromstring(Popen(["tools/scripts/data-deposit-api/test-collection-get", deposit_target], stdout=PIPE).communicate()[0]);
+
+print "listing all studies..."
+all_studies = Popen(["tools/scripts/data-deposit-api/list-studies", deposit_target], stdout=PIPE).communicate()[0]
+print all_studies,
+print "finding a study to delete..."
+for line in all_studies.splitlines():
+    if line.startswith("-"):
+        parts = line.split("- ")
+        url_only = parts[1]
+        pieces = url_only.split("/")
+        url_end = pieces[9:11]
+
+try:
+    url_end
+    print "deleting study:", url_end
+except NameError:
+    print "no studies found to delete"
+    exit(1)
+
+url_start = "https://sword:sword@localhost:8181/dvn/api/data-deposit/v1/swordv2/"
+edit_uri =       url_start + "edit/"       + "/".join(url_end)
+
+print "deleting study using", edit_uri
+out = Popen(["tools/scripts/data-deposit-api/test-edit-delete", edit_uri], stdout=PIPE).communicate()[0]
+match = re.search("HTTP/1.1 204 No Content", out)
+if match:
+    print "data replacement was successful"
+else:
+    print "unable to delete study, output was:"
+    print out

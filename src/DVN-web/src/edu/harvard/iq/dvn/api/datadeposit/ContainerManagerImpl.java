@@ -89,6 +89,7 @@ public class ContainerManagerImpl implements ContainerManager {
 
     @Override
     public void deleteContainer(String uri, AuthCredentials authCredentials, SwordConfiguration sc) throws SwordError, SwordServerException, SwordAuthException {
+        VDCUser vdcUser = swordAuth.auth(authCredentials);
         logger.info("deleteContainer called with url: " + uri);
         urlManager.processUrl(uri);
         logger.info("original url: " + urlManager.getOriginalUrl());
@@ -100,7 +101,6 @@ public class ContainerManagerImpl implements ContainerManager {
             logger.info("operating on target type: " + urlManager.getTargetType());
             if ("dataverse".equals(targetType)) {
                 String dvAlias = urlManager.getTargetIdentifier();
-                VDCUser vdcUser = swordAuth.auth(authCredentials);
                 List<VDC> userVDCs = vdcService.getUserVDCs(vdcUser.getId());
                 VDC dataverseToEmpty = vdcService.findByAlias(dvAlias);
                 if (dataverseToEmpty != null) {
@@ -124,7 +124,19 @@ public class ContainerManagerImpl implements ContainerManager {
                 }
             } else if ("study".equals(targetType)) {
                 String globalId = urlManager.getTargetIdentifier();
-                throw new SwordError("Study " + globalId + " found but deletion is not yet supported.");
+                if (globalId != null) {
+                    Study studyToDelete = studyService.getStudyByGlobalId(globalId);
+                    if (studyToDelete != null) {
+                        VDC dvThatOwnsStudy = studyToDelete.getOwner();
+                        if (swordAuth.hasAccessToModifyDataverse(vdcUser, dvThatOwnsStudy)) {
+                            studyService.deleteStudy(studyToDelete.getId());
+                        } else {
+                            throw new SwordError("User " + vdcUser.getUserName() + " is not authorized to modify " + dvThatOwnsStudy.getAlias());
+                        }
+                    }
+                } else {
+                    throw new SwordError("Could not find study to delete from url: " + uri);
+                }
             } else {
                 throw new SwordError("Unsupported delete target in url:" + uri);
             }

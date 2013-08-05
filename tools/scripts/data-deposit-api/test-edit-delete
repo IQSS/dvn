@@ -1,0 +1,8 @@
+#!/bin/sh
+if [ "" = "$1" ]; then
+    echo >&2 "Please supply the edit URI of a study or dataverse"
+    exit 1
+else
+  EDIT_URI="$1"
+fi
+curl -i --insecure -s -X DELETE $EDIT_URI

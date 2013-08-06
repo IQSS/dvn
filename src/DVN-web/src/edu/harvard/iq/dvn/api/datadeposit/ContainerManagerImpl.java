@@ -57,6 +57,8 @@ public class ContainerManagerImpl implements ContainerManager {
     VDCServiceLocal vdcService;
     @EJB
     IndexServiceLocal indexService;
+    @EJB
+    StudyServiceLocal studyService;
     @PersistenceContext(unitName = "VDCNet-ejbPU")
     EntityManager em;
     @EJB
@@ -230,8 +232,46 @@ public class ContainerManagerImpl implements ContainerManager {
     }
 
     @Override
-    public DepositReceipt useHeaders(String string, Deposit dpst, AuthCredentials ac, SwordConfiguration sc) throws SwordError, SwordServerException, SwordAuthException {
-        throw new UnsupportedOperationException("Not supported yet.");
+    public DepositReceipt useHeaders(String uri, Deposit deposit, AuthCredentials authCredentials, SwordConfiguration swordConfiguration) throws SwordError, SwordServerException, SwordAuthException {
+        logger.info("uri was " + uri);
+        logger.info("isInProgress:" + deposit.isInProgress());
+        VDCUser vdcUser = swordAuth.auth(authCredentials);
+        urlManager.processUrl(uri);
+        String targetType = urlManager.getTargetType();
+        if (!targetType.isEmpty()) {
+            logger.info("operating on target type: " + urlManager.getTargetType());
+            if ("study".equals(targetType)) {
+                String globalId = urlManager.getTargetIdentifier();
+                if (globalId != null) {
+                    Study studyToRelease = studyService.getStudyByGlobalId(globalId);
+                    if (studyToRelease != null) {
+                        VDC dvThatOwnsStudy = studyToRelease.getOwner();
+                        if (swordAuth.hasAccessToModifyDataverse(vdcUser, dvThatOwnsStudy)) {
+                            if (!deposit.isInProgress()) {
+                                studyService.setReleased(studyToRelease.getId());
+                                DepositReceipt fakeDepositReceipt = new DepositReceipt();
+                                IRI fakeIri = new IRI("fakeIri");
+                                fakeDepositReceipt.setEditIRI(fakeIri);
+                                fakeDepositReceipt.setVerboseDescription("Title: " + studyToRelease.getLatestVersion().getMetadata().getTitle());
+                                return fakeDepositReceipt;
+                            } else {
+                                throw new SwordError("Pass 'In-Progress: false' header to releas a study.");
+                            }
+                        } else {
+                            throw new SwordError("User " + vdcUser.getUserName() + " is not authorized to modify dataverse " + dvThatOwnsStudy.getAlias());
+                        }
+                    } else {
+                        throw new SwordError("Could not find study using globalId " + globalId);
+                    }
+                } else {
+                    throw new SwordError("Unable to find globalId for study in url:" + uri);
+                }
+            } else {
+                throw new SwordError("unsupported target type (" + targetType + ") in url:" + uri);
+            }
+        } else {
+            throw new SwordError("Target type missing from url: " + uri);
+        }
     }
 
     @Override

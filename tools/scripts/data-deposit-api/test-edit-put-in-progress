@@ -1,0 +1,13 @@
+#!/bin/sh
+if [ "" = "$1" ]; then
+  echo >&2 "Please supply a edit URI"
+  exit 1
+else
+  EDIT_URI="$1"
+fi
+# when contentLength is zero headersOnly is true, which is what we want: https://github.com/swordapp/JavaServer2.0/blob/31e625ac97be13f794e1b98512f8d1c48d751652/src/main/java/org/swordapp/server/ContainerAPI.java#L338
+TMPFILE="zero-length-file-`uuidgen`.txt"
+touch $TMPFILE
+curl --insecure -s -X POST -H "In-Progress: false" --upload-file $TMPFILE -u sword:sword $EDIT_URI \
+| xmllint --format -
+rm $TMPFILE

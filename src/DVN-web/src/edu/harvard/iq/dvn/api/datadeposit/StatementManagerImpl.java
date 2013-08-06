@@ -115,6 +115,8 @@ public class StatementManagerImpl implements StatementManager {
              */
             String datedUpdated = null;
             Statement statement = new AtomStatement(feedUri, author, title, datedUpdated);
+            Boolean isReleased = study.isReleased();
+            statement.setState("isReleased", isReleased.toString());
             return statement;
         } else {
             throw new SwordError("Could not determine target type or identifier from URL: " + editUri);

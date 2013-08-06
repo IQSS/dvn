@@ -108,6 +108,7 @@ public class DDIServiceBean implements DDIServiceLocal {
     @EJB VariableServiceLocal varService;
     @EJB VDCNetworkServiceLocal vdcNetworkService;
 
+    private static final Logger logger = Logger.getLogger("edu.harvard.iq.dvn.core.ddi.DDIServiceBean");
     // ddi constants
     public static final String SOURCE_DVN_3_0 = "DVN_3_0";
     
@@ -3246,7 +3247,7 @@ public class DDIServiceBean implements DDIServiceLocal {
             // But we'll switch it back to unordered later, if we encounter
             // *any* categories with no order attribute defined. 
             
-            dv.setOrderedCategorical(false);
+            dv.setOrderedCategorical(true);
         }
         
         // Process extra level order values, if available; 
@@ -3263,10 +3264,10 @@ public class DDIServiceBean implements DDIServiceLocal {
             }
             if (orderValue != null && orderValue.intValue() >= 0) {
                 cat.setOrder(orderValue.intValue());
-            } else {
+            } else if (!cat.isMissing()) {
                 // Everey category of an ordered categorical ("factor") variable
                 // must have the order rank defined. Which means that if we 
-                // encounter a single category with no ordered attribute, it
+                // encounter a single NON-MISSING category with no ordered attribute, it
                 // will be processed as un-ordered. 
                 
                 dv.setOrderedCategorical(false);

@@ -83,6 +83,7 @@ import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.stream.StreamResult;
 import javax.xml.transform.stream.StreamSource;
+import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang.RandomStringUtils;
 
 /**
@@ -1663,6 +1664,29 @@ public class StudyServiceBean implements edu.harvard.iq.dvn.core.study.StudyServ
 
         return ddiFile;
 
+    }
+
+    public File transformToDDI(String xml, String xslFileName, String tmpDirPath) {
+        File uploadDir = new File(tmpDirPath);
+        if (!uploadDir.exists()) {
+            if (!uploadDir.mkdirs()) {
+                throw new EJBException("Could not create directory: " + uploadDir.getAbsolutePath());
+            }
+        }
+        String tmpFilePath = tmpDirPath + File.separator + "study.xml";
+        File tmpFile = new File(tmpFilePath);
+        try {
+            FileUtils.writeStringToFile(tmpFile, xml);
+        } catch (IOException ex) {
+            throw new EJBException("Could not write temporary file");
+        } finally {
+            uploadDir.delete();
+        }
+
+        File ddiFile = transformToDDI(tmpFile, xslFileName);
+        tmpFile.delete();
+        uploadDir.delete();
+        return ddiFile;
     }
 
     private void copyXMLFile(Study study, File xmlFile, String xmlFileName) {

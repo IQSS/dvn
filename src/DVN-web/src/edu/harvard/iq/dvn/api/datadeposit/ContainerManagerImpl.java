@@ -20,18 +20,27 @@
 package edu.harvard.iq.dvn.api.datadeposit;
 
 import edu.harvard.iq.dvn.core.admin.VDCUser;
+import edu.harvard.iq.dvn.core.ddi.DDIServiceLocal;
+import edu.harvard.iq.dvn.core.harvest.HarvestFormatType;
 import edu.harvard.iq.dvn.core.index.IndexServiceLocal;
 import edu.harvard.iq.dvn.core.study.EditStudyService;
 import edu.harvard.iq.dvn.core.study.Study;
 import edu.harvard.iq.dvn.core.study.StudyServiceLocal;
 import edu.harvard.iq.dvn.core.vdc.VDC;
 import edu.harvard.iq.dvn.core.vdc.VDCServiceLocal;
+import java.io.File;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Logger;
 import javax.ejb.EJB;
 import javax.inject.Inject;
+import javax.naming.Context;
+import javax.naming.InitialContext;
+import javax.naming.NamingException;
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
+import org.apache.abdera.i18n.iri.IRI;
 import org.swordapp.server.AuthCredentials;
 import org.swordapp.server.ContainerManager;
 import org.swordapp.server.Deposit;
@@ -47,11 +56,11 @@ public class ContainerManagerImpl implements ContainerManager {
     @EJB
     VDCServiceLocal vdcService;
     @EJB
-    StudyServiceLocal studyService;
-    @EJB
-    EditStudyService editStudyService;
-    @EJB
     IndexServiceLocal indexService;
+    @PersistenceContext(unitName = "VDCNet-ejbPU")
+    EntityManager em;
+    @EJB
+    DDIServiceLocal ddiService;
     @Inject
     SwordAuth swordAuth;
     @Inject
@@ -63,8 +72,72 @@ public class ContainerManagerImpl implements ContainerManager {
     }
 
     @Override
-    public DepositReceipt replaceMetadata(String string, Deposit dpst, AuthCredentials ac, SwordConfiguration sc) throws SwordError, SwordServerException, SwordAuthException {
-        throw new UnsupportedOperationException("Not supported yet.");
+    public DepositReceipt replaceMetadata(String uri, Deposit deposit, AuthCredentials authCredentials, SwordConfiguration swordConfiguration) throws SwordError, SwordServerException, SwordAuthException {
+        VDCUser vdcUser = swordAuth.auth(authCredentials);
+        logger.info("replaceMetadata called with url: " + uri);
+        urlManager.processUrl(uri);
+        String targetType = urlManager.getTargetType();
+        if (!targetType.isEmpty()) {
+            logger.info("operating on target type: " + urlManager.getTargetType());
+            if ("dataverse".equals(targetType)) {
+                throw new SwordError("metadata replace of dataverse supported yet.");
+            } else if ("study".equals(targetType)) {
+                logger.info("replacing metadata for study");
+                logger.info("deposit XML received: " + deposit.getSwordEntry());
+
+                String globalId = urlManager.getTargetIdentifier();
+
+                EditStudyService editStudyService;
+                Context ctx;
+                try {
+                    ctx = new InitialContext();
+                    editStudyService = (EditStudyService) ctx.lookup("java:comp/env/editStudy");
+                } catch (NamingException ex) {
+                    throw new SwordServerException("problem looking up editStudyService");
+                }
+                StudyServiceLocal studyService;
+                try {
+                    ctx = new InitialContext();
+                    studyService = (StudyServiceLocal) ctx.lookup("java:comp/env/studyService");
+                } catch (NamingException ex) {
+                    throw new SwordServerException("problem looking up studyService");
+                }
+                /**
+                 * @todo: investigate OptimisticLockException
+                 */
+                editStudyService.setStudyVersion(studyService.getStudyByGlobalId(globalId).getId());
+                Study studyToEdit = editStudyService.getStudyVersion().getStudy();
+                VDC dvThatOwnsStudy = studyToEdit.getOwner();
+                if (swordAuth.hasAccessToModifyDataverse(vdcUser, dvThatOwnsStudy)) {
+
+                    String tmpDirectory = swordConfiguration.getTempDirectory();
+                    String uploadDirPath = tmpDirectory + File.separator + "import" + File.separator + studyToEdit.getId();
+                    Long dcmiTermsHarvetsFormatId = new Long(4);
+                    HarvestFormatType dcmiTermsHarvestFormatType = em.find(HarvestFormatType.class, dcmiTermsHarvetsFormatId);
+//                    File ddiFile = studyService.transformToDDI(tmpFile, dcmiTermsHarvestFormatType.getStylesheetFileName());
+                    String xmlAtomEntry = deposit.getSwordEntry().getEntry().toString();
+                    File ddiFile = studyService.transformToDDI(xmlAtomEntry, dcmiTermsHarvestFormatType.getStylesheetFileName(), uploadDirPath);
+                    /**
+                     * @todo: multivalued fields such as author are appended to
+                     * rather than replaced
+                     */
+                    ddiService.mapDDI(ddiFile, studyToEdit.getLatestVersion(), true);
+                    editStudyService.save(dvThatOwnsStudy.getId(), vdcUser.getId());
+
+                    DepositReceipt fakeDepositReceipt = new DepositReceipt();
+                    fakeDepositReceipt.setVerboseDescription("Title: " + studyToEdit.getLatestVersion().getMetadata().getTitle());
+                    IRI fakeIri = new IRI("fakeIri");
+                    fakeDepositReceipt.setEditIRI(fakeIri);
+                    return fakeDepositReceipt;
+                } else {
+                    throw new SwordError("User " + vdcUser.getUserName() + " is not authorized to modify dataverse " + dvThatOwnsStudy.getAlias());
+                }
+            } else {
+                throw new SwordError("Unknown target type specified on which to replace metadata: " + uri);
+            }
+        } else {
+            throw new SwordError("No target specified on which to replace metadata: " + uri);
+        }
     }
 
     @Override
@@ -99,6 +172,17 @@ public class ContainerManagerImpl implements ContainerManager {
         String targetType = urlManager.getTargetType();
         if (!targetType.isEmpty()) {
             logger.info("operating on target type: " + urlManager.getTargetType());
+
+            StudyServiceLocal studyService;
+            Context ctx;
+            try {
+                ctx = new InitialContext();
+                studyService = (StudyServiceLocal) ctx.lookup("java:comp/env/studyService");
+            } catch (NamingException ex) {
+                throw new SwordServerException("problem looking up studyService");
+            }
+
+
             if ("dataverse".equals(targetType)) {
                 String dvAlias = urlManager.getTargetIdentifier();
                 List<VDC> userVDCs = vdcService.getUserVDCs(vdcUser.getId());

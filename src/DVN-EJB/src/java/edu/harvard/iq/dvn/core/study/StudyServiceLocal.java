@@ -237,4 +237,7 @@ public interface StudyServiceLocal extends java.io.Serializable {
     public long getStudyFileCount(java.lang.Long studyId);
 
     public long getStudyFileCount(java.util.List studyIds);
+
+    public File transformToDDI(String toString, String stylesheetFileName, String tmpDirPath);
+
 }

@@ -24,6 +24,7 @@ import edu.harvard.iq.dvn.core.ddi.DDIServiceLocal;
 import edu.harvard.iq.dvn.core.harvest.HarvestFormatType;
 import edu.harvard.iq.dvn.core.index.IndexServiceLocal;
 import edu.harvard.iq.dvn.core.study.EditStudyService;
+import edu.harvard.iq.dvn.core.study.Metadata;
 import edu.harvard.iq.dvn.core.study.Study;
 import edu.harvard.iq.dvn.core.study.StudyServiceLocal;
 import edu.harvard.iq.dvn.core.vdc.VDC;
@@ -119,10 +120,10 @@ public class ContainerManagerImpl implements ContainerManager {
 //                    File ddiFile = studyService.transformToDDI(tmpFile, dcmiTermsHarvestFormatType.getStylesheetFileName());
                     String xmlAtomEntry = deposit.getSwordEntry().getEntry().toString();
                     File ddiFile = studyService.transformToDDI(xmlAtomEntry, dcmiTermsHarvestFormatType.getStylesheetFileName(), uploadDirPath);
-                    /**
-                     * @todo: multivalued fields such as author are appended to
-                     * rather than replaced
-                     */
+                    // erase all metadata before running ddiService.mapDDI() because
+                    // for multivalued fields (such as author) that function appends
+                    // values rather than replacing them
+                    studyToEdit.getLatestVersion().setMetadata(new Metadata());
                     ddiService.mapDDI(ddiFile, studyToEdit.getLatestVersion(), true);
                     editStudyService.save(dvThatOwnsStudy.getId(), vdcUser.getId());
 

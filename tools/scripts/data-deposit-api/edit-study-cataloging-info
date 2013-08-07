@@ -29,6 +29,9 @@ statement = ET.fromstring(Popen(["tools/scripts/data-deposit-api/test-statement"
 for line in statement:
     if "{http://www.w3.org/2005/Atom}title" == line.tag:
         old_title = line.text
+    if "{http://www.w3.org/2005/Atom}author" == line.tag:
+        for author_line in line:
+            old_author = author_line.text
 
 print "replacing title using", edit_uri
 deposit_receipt = ET.fromstring(Popen(["tools/scripts/data-deposit-api/test-edit-put-atom-entry", edit_uri], stdout=PIPE).communicate()[0])
@@ -38,3 +41,12 @@ for line in deposit_receipt:
         pieces = line.text.split(": ")
         new_title = pieces[1]
         print 'title changed from "', old_title, '" to "', new_title, '"'
+
+print "dumping XML statement from", edit_uri
+statement = ET.fromstring(Popen(["tools/scripts/data-deposit-api/test-statement", edit_uri], stdout=PIPE).communicate()[0])
+for line in statement:
+    if "{http://www.w3.org/2005/Atom}author" == line.tag:
+        for author_line in line:
+            new_author = author_line.text
+
+print 'author changed from "', old_author, '" to "', new_author, '"'

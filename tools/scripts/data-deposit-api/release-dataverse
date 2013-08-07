@@ -1,0 +1,73 @@
+#!/usr/bin/env python
+import re
+from subprocess import Popen, PIPE
+from xml.etree import ElementTree as ET
+
+service_document = ET.fromstring(Popen("tools/scripts/data-deposit-api/test-service-document", stdout=PIPE).communicate()[0])
+for line1 in service_document:
+    if "{http://www.w3.org/2007/app}workspace" == line1.tag:
+        for line2 in line1:
+            try:
+                href = line2.attrib["href"]
+                print "href was", href
+                parts = href.split("/")
+                target = "/".join(parts[9:11])
+            except:
+                pass
+
+url_start = "https://sword:sword@localhost:8181/dvn/api/data-deposit/v1/swordv2/edit/" + target
+
+deposit_target = url_start
+
+out = Popen(["tools/scripts/data-deposit-api/test-edit-put-in-progress", deposit_target], stdout=PIPE).communicate()[0]
+print out
+print "deposit target was", deposit_target
+
+#deposit_receipt = ET.fromstring(out)
+
+exit(42)
+print "listing all studies..."
+all_studies = Popen(["tools/scripts/data-deposit-api/list-studies", deposit_target], stdout=PIPE).communicate()[0]
+print all_studies,
+print "finding a study to release..."
+for line in all_studies.splitlines():
+    if line.startswith("-"):
+        parts = line.split("- ")
+        url_only = parts[1]
+        pieces = url_only.split("/")
+        url_end = pieces[9:11]
+
+try:
+    url_end
+    print "will be releasing study:", url_end
+except NameError:
+    print "no studies found to release"
+    exit(1)
+
+url_start = "https://sword:sword@localhost:8181/dvn/api/data-deposit/v1/swordv2/"
+edit_uri =       url_start + "edit/"       + "/".join(url_end)
+
+print "getting statement from", edit_uri
+statement_before = ET.fromstring(Popen(["tools/scripts/data-deposit-api/test-statement", edit_uri], stdout=PIPE).communicate()[0]);
+for line in statement_before:
+    if "{http://www.w3.org/2005/Atom}category" == line.tag:
+        if "isReleased" == line.attrib["term"]:
+            release_state_old = line.text
+
+if "false" == release_state_old:
+    print "releasing study using", edit_uri
+    out = Popen(["tools/scripts/data-deposit-api/test-edit-put-in-progress", edit_uri], stdout=PIPE).communicate()[0]
+    deposit_receipt = ET.fromstring(out)
+    for line in deposit_receipt:
+        if "{http://purl.org/net/sword/terms/}verboseDescription" == line.tag:
+            pieces = line.text.split(": ")
+            title = pieces[1]
+            print "released a study with the title:", title
+
+    print "getting statement from", edit_uri
+    statement_after = ET.fromstring(Popen(["tools/scripts/data-deposit-api/test-statement", edit_uri], stdout=PIPE).communicate()[0]);
+    for line in statement_after:
+        if "{http://www.w3.org/2005/Atom}category" == line.tag:
+            if "isReleased" == line.attrib["term"]:
+                release_state_new = line.text
+                print "isReleased changed from", release_state_old, "to", release_state_new

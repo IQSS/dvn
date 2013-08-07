@@ -27,6 +27,7 @@ import edu.harvard.iq.dvn.core.study.EditStudyService;
 import edu.harvard.iq.dvn.core.study.Metadata;
 import edu.harvard.iq.dvn.core.study.Study;
 import edu.harvard.iq.dvn.core.study.StudyServiceLocal;
+import edu.harvard.iq.dvn.core.util.DateUtil;
 import edu.harvard.iq.dvn.core.vdc.VDC;
 import edu.harvard.iq.dvn.core.vdc.VDCServiceLocal;
 import java.io.File;
@@ -256,7 +257,7 @@ public class ContainerManagerImpl implements ContainerManager {
                                 fakeDepositReceipt.setVerboseDescription("Title: " + studyToRelease.getLatestVersion().getMetadata().getTitle());
                                 return fakeDepositReceipt;
                             } else {
-                                throw new SwordError("Pass 'In-Progress: false' header to releas a study.");
+                                throw new SwordError("Pass 'In-Progress: false' header to release a study.");
                             }
                         } else {
                             throw new SwordError("User " + vdcUser.getUserName() + " is not authorized to modify dataverse " + dvThatOwnsStudy.getAlias());
@@ -266,6 +267,50 @@ public class ContainerManagerImpl implements ContainerManager {
                     }
                 } else {
                     throw new SwordError("Unable to find globalId for study in url:" + uri);
+                }
+            } else if ("dataverse".equals(targetType)) {
+                String dvAlias = urlManager.getTargetIdentifier();
+                if (dvAlias != null) {
+                    VDC dvToRelease = vdcService.findByAlias(dvAlias);
+                    if (swordAuth.hasAccessToModifyDataverse(vdcUser, dvToRelease)) {
+                        if (dvToRelease != null) {
+                            if (deposit.isInProgress()) {
+                                if (dvToRelease.isRestricted()) {
+                                    throw new SwordError("Dataverse is already set to 'not released': " + dvAlias);
+                                } else {
+                                    logger.info("restricting dataverse via SWORD: " + dvAlias);
+                                    dvToRelease.setRestricted(true);
+                                    vdcService.edit(dvToRelease);
+                                    DepositReceipt fakeDepositReceipt = new DepositReceipt();
+                                    IRI fakeIri = new IRI("fakeIriDvWasJustRestricted");
+                                    fakeDepositReceipt.setEditIRI(fakeIri);
+                                    fakeDepositReceipt.setVerboseDescription("Dataverse alias: " + dvAlias);
+                                    return fakeDepositReceipt;
+                                }
+                            } else {
+                                if (dvToRelease.isRestricted()) {
+                                    logger.info("releasing dataverse via SWORD: " + dvAlias);
+                                    /** @todo: tweet and send email about release */
+                                    dvToRelease.setReleaseDate(DateUtil.getTimestamp());
+                                    dvToRelease.setRestricted(false);
+                                    vdcService.edit(dvToRelease);
+                                    DepositReceipt fakeDepositReceipt = new DepositReceipt();
+                                    IRI fakeIri = new IRI("fakeIriDvWasJustReleased");
+                                    fakeDepositReceipt.setEditIRI(fakeIri);
+                                    fakeDepositReceipt.setVerboseDescription("Dataverse alias: " + dvAlias);
+                                    return fakeDepositReceipt;
+                                } else {
+                                    throw new SwordError("Dataverse has already been released: " + dvAlias);
+                                }
+                            }
+                        } else {
+                            throw new SwordError("Could not find dataverse based on alias in url: " + uri);
+                        }
+                    } else {
+                        throw new SwordError("User " + vdcUser.getUserName() + " is not authorized to modify dataverse " + dvAlias);
+                    }
+                } else {
+                    throw new SwordError("Unable to find dataverse alias in URL: " + uri);
                 }
             } else {
                 throw new SwordError("unsupported target type (" + targetType + ") in url:" + uri);

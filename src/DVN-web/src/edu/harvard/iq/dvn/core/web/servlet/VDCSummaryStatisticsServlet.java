@@ -189,7 +189,7 @@ public class VDCSummaryStatisticsServlet extends HttpServlet {
     public String quickSummaryContentsCreator(String varId) {
         StringBuilder colQS = new StringBuilder();
 //    colQS.append("QS requested for variableId="+varId);
-        String columnHeaderCat = "Value (Label)";
+        String columnHeaderCat; 
         Collection<SummaryStatistic> sumStat = null;
         // Collection<VariableCategory> catStat=  null;
         List<VariableCategory> catStat = null;
@@ -215,6 +215,13 @@ public class VDCSummaryStatisticsServlet extends HttpServlet {
                 break;
             }
         }
+        
+        if (dv != null && dv.isOrderedCategorical()) {
+            columnHeaderCat = "Value [Order]";
+        } else {
+            columnHeaderCat = "Value (Label)";
+        }
+        
         //out.println("how many items in this table=" + counter);
         if (sumStat == null) {
             //out.println("sumStat is still null");
@@ -338,21 +345,36 @@ public class VDCSummaryStatisticsServlet extends HttpServlet {
                 if ((dvcat.isMissing() || dvcat.getValue().equals(".")) &&
                         ((dvcat.getLabel() == null) || (dvcat.getLabel().equals("")))) {
                     sb.append(". (missing value)");
-                } else if (dvcat.getValue().equals("") && 
-                        ((dvcat.getLabel() == null) || (dvcat.getLabel().equals("")))) {
-                    sb.append("(empty string)");
-                } else if (dvcat.getValue().equals(" ") && 
-                        ((dvcat.getLabel() == null) || (dvcat.getLabel().equals("")))) {
-                    sb.append("&nbsp; (white space)");
                 } else {
-                    sb.append(dvcat.getValue().replaceAll(" ", "&nbsp;"));
+                    if (dvcat.getValue().equals("")
+                            && ((dvcat.getLabel() == null) || (dvcat.getLabel().equals("")))) {
+                        sb.append("(empty string)");
+                    } else if (dvcat.getValue().equals(" ")
+                            && ((dvcat.getLabel() == null) || (dvcat.getLabel().equals("")))) {
+                        sb.append("&nbsp; (space)");
+                    } else {
+                        sb.append(dvcat.getValue().replaceAll(" ", "&nbsp;"));
 
-                    if ((dvcat.getLabel() != null) && !(dvcat.getLabel().equals(""))) {
-                        sb.append(" (");
-                        sb.append(dvcat.getLabel());
-                        sb.append(")");
+                        if ((dvcat.getLabel() != null) 
+                                && !(dvcat.getLabel().equals(""))
+                                && !(dvcat.getValue().equals(dvcat.getLabel()))) {
+                            sb.append(" (");
+                            sb.append(dvcat.getLabel());
+                            sb.append(")");
+                        }
+                    }
+                    
+                    // And for "ordered categoricals", we also display 
+                    if (dv.isOrderedCategorical()) {
+                        sb.append(" [");
+                        sb.append(dvcat.getOrder());
+                        sb.append("]");
+
                     }
                 }
+                
+                
+                
                 // getFrequency() might be null
                 String freq;
                 if (dvcat.getFrequency() == null) {

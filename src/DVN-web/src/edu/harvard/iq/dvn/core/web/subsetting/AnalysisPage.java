@@ -1351,8 +1351,22 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
                     if (!formatType.equals("D01") || (recodeSchema.size() > 0)) {
 
                         Map<String, Map<String, String>> vls = getValueTablesForAllRequestedVariables();
-                    
-                        sro = new DvnRJobRequest(getDataVariableForRequest(), mpl, vls, recodeSchema);
+                        
+                        // New (as of 3.6): support for ordered categorical variables 
+                        // (ingested from R ordered factors). 
+                        // Note that this is only being added here, i.e., to the 
+                        // download-and-save part; if/when we make the analysis 
+                        // and statistics utilize/handle these ordered categories 
+                        // in some special way, we'll need to add the actual 
+                        // ordered values to the SRO objects there as well. -- L.A. 
+                        
+                        Map<String, List<String>> categoryOrders = getCategoryValueOrdersForAllRequestedVariables();
+                        
+                        if (categoryOrders != null) {
+                            sro = new DvnRJobRequest(getDataVariableForRequest(), mpl, vls, recodeSchema, categoryOrders, null);
+                        } else {
+                            sro = new DvnRJobRequest(getDataVariableForRequest(), mpl, vls, recodeSchema);
+                        }
 
                         // dbgLog.fine("sro dump:\n"+ToStringBuilder.reflectionToString(sro, ToStringStyle.MULTI_LINE_STYLE));
                     
@@ -8528,6 +8542,37 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
         return vl;
     }
     
+    public Map<String, List<String>> getCategoryValueOrdersForAllRequestedVariables(){
+        List<DataVariable> dvs = getDataVariableForRequest();
+        Map<String, List<String>> catOrderMap = null; 
+        
+        for (DataVariable dv : dvs){
+                
+                List<VariableCategory> varCat = new ArrayList<VariableCategory>();
+                varCat.addAll(dv.getCategories());
+            
+                List<String> orderedValuesList = new ArrayList<String>();
+                for (VariableCategory vc : varCat){
+                    if (!vc.isMissing()){
+                        dbgLog.info("adding category value \"" + vc.getValue() + "\" with the defined order "+vc.getOrder());
+                        orderedValuesList.add(vc.getOrder(),vc.getValue());
+                        
+                    } 
+                }
+                
+                if (orderedValuesList.size() > 0) {
+                    // initialize the map, if this hasn't been done yet:
+            if (dv.isOrderedCategorical()) {
+                if (catOrderMap == null) {
+                    catOrderMap = new LinkedHashMap<String, List<String>>();
+                }
+                catOrderMap.put("v"+dv.getId(), orderedValuesList);
+                }
+            }
+        }
+        
+        return catOrderMap;
+    }
     
     public Map<String, Map<String, String>> getValueTableForRequestedVariables(List<DataVariable> dvs){
         Map<String, Map<String, String>> vls = new LinkedHashMap<String, Map<String, String>>();

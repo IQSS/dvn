@@ -21,6 +21,7 @@ package edu.harvard.iq.dvn.ingest.org.thedata.statdataio.metadata;
 
 import java.util.*;
 import java.util.regex.*;
+import java.io.*;
 
 import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.commons.lang.StringUtils;
@@ -87,6 +88,19 @@ public class DDIWriter {
         //sb.append(generateDDISection2());
         sb.append(generateDDISection3());
         sb.append(generateDDISection4());
+        
+        File ddiTmpFile = new File ("/tmp/ddi.xml");
+        PrintWriter out = null; 
+        try {
+            out = new PrintWriter(new FileOutputStream(ddiTmpFile));
+        } catch (Exception ex) {
+            
+        }
+        
+        out.print(sb);
+        out.close();
+        
+        
         return sb.toString();
     }
 

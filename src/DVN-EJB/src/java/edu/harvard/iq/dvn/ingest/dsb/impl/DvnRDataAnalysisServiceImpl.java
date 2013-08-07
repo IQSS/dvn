@@ -682,8 +682,11 @@ if (sro.hasRecodedVariables()){
             dbgLog.fine("DvnRserveComm: "+vtFirstLine);
             c.voidEval(vtFirstLine);
             
+            c.voidEval("VALORDER<-list()");
+            
             // vltbl includes both base and recoded cases when it was generated
             Map<String, Map<String, String>> vltbl = sro.getValueTable();
+            Map<String, List<String>> orderedCategoryValues = sro.getCategoryValueOrders();
             Map<String, String> rnm2vi = sro.getRawVarNameToVarIdTable();
             String[] updatedVariableIds = sro.getUpdatedVariableIds();
             
@@ -732,6 +735,22 @@ if (tmpv.length > 0){
                     REXP jl = c.parseAndEval(sbvl);
                     dbgLog.fine("jl("+j+") = "+jl);
 }
+                }
+                
+                if (orderedCategoryValues != null && orderedCategoryValues.containsKey(varId)){
+                    int indx = j +1;
+                    List<String> orderList = orderedCategoryValues.get(varId);
+                    if (orderList != null) {
+                        String[] ordv = (String[]) orderList.toArray(new String[orderList.size()]);
+                        dbgLog.fine("ordv="+ StringUtils.join(ordv,","));
+                        c.assign("ordv", new REXPString(ordv));
+                        String sbvl = "VALORDER[['"+ Integer.toString(indx)+"']]" + "<- as.list(ordv)";
+                        dbgLog.fine("VALORDER[...]="+sbvl);
+                        historyEntry.add(sbvl);
+                        c.voidEval(sbvl);
+                    } else {
+                        dbgLog.fine("NULL orderedCategoryValues list.");
+                    }
                 }
             }
             

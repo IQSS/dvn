@@ -85,6 +85,7 @@ public class DvnRJobRequest {
             Map <String, List<String>> listParams,
             Map <String, Map<String, String>> vts,
             Map <String, List<Object>> rs,
+            Map <String, List<String>> categoryOrders,
             AdvancedStatGUIdata.Model zp
             )
     {
@@ -94,19 +95,15 @@ public class DvnRJobRequest {
         
         valueTables = vts;
         recodeSchema  = rs;
+        categoryValueOrders=categoryOrders;
         zeligModelSpec = zp;
-        dbgLog.fine("***** DvnRJobRequest: within the default constructor : initial *****");
-        dbgLog.fine("DvnRJobRequest: variables="+dataVariablesForRequest);
-        dbgLog.fine("DvnRJobRequest: map="+listParametersForRequest);
-        dbgLog.fine("DvnRJobRequest: value table="+valueTables);
-        dbgLog.fine("DvnRJobRequest: recodeSchema"+recodeSchema);
-        dbgLog.fine("DvnRJobRequest: model spec="+zeligModelSpec);
         
         dbgLog.info("***** DvnRJobRequest: within the default constructor : initial *****");
         dbgLog.info("DvnRJobRequest: variables="+dataVariablesForRequest);
         dbgLog.info("DvnRJobRequest: map="+listParametersForRequest);
         dbgLog.info("DvnRJobRequest: value table="+valueTables);
         dbgLog.info("DvnRJobRequest: recodeSchema"+recodeSchema);
+        dbgLog.info("DvnRJobRequest: category value orders="+categoryValueOrders);
         dbgLog.info("DvnRJobRequest: model spec="+zeligModelSpec);
         
         
@@ -124,6 +121,17 @@ public class DvnRJobRequest {
         dbgLog.fine("***** DvnRJobRequest: within the default constructor ends here *****");
     }
 
+    public DvnRJobRequest(
+            List <DataVariable> dv, 
+            Map <String, List<String>> listParams,
+            Map <String, Map<String, String>> vts,
+            Map <String, List<Object>> rs,
+            AdvancedStatGUIdata.Model zp
+            )
+    {
+        this(dv,listParams,vts,rs, null, zp);
+    }
+    
     
     /**
      * 3-arg Constructor for non-zelig cases
@@ -187,6 +195,9 @@ public class DvnRJobRequest {
     /**  */
     
     private Map<String, Map<String, String>> valueTables;
+    
+    /** list-type (one-to-many) parameter */
+    private Map<String, List<String>> categoryValueOrders;
     
     private Map<String, List<Object>> recodeSchema;
     /**  */
@@ -753,6 +764,9 @@ public class DvnRJobRequest {
         return valueTables;
     }
     
+    public Map<String, List<String>> getCategoryValueOrders (){
+      return this.categoryValueOrders;
+    }
 
     /**
      * Getter for property missing value table

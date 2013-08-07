@@ -1321,9 +1321,11 @@ public class RDATAFileReader extends StatDataFileReader {
         
         if (variableLevels != null && variableLevels.length > 0) {
             // this is a factor.
+            LOG.fine("this is a factor.");
             columnMetaData.setFactor(true);
             
             if (variableFormat != null && variableFormat.equals("ordered")) {
+                LOG.fine("this is an ordered factor.");
                 columnMetaData.setOrderedFactor(true);
             }
             

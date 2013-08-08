@@ -144,6 +144,7 @@ public class CollectionDepositManagerImpl implements CollectionDepositManager {
                     depositReceipt.setEditMediaIRI(new IRI(baseUrl + "edit-media/" + study.getGlobalId()));
                     depositReceipt.setVerboseDescription("Title: " + study.getLatestVersion().getMetadata().getTitle());
                     depositReceipt.setStatementURI("application/atom+xml;type=feed", baseUrl + "statement/" + study.getGlobalId());
+                    depositReceipt.addDublinCore("description", study.getLatestVersion().getMetadata().getCitation(false));
                     return depositReceipt;
                 } else if (deposit.isBinaryOnly()) {
                     // get here with this:

@@ -8,13 +8,19 @@ service_document = ET.fromstring(Popen("tools/scripts/data-deposit-api/test-serv
 deposit_target = service_document[0][1].attrib["href"]
 
 print "creating a study using", deposit_target
-deposit_receipt = ET.fromstring(Popen(["tools/scripts/data-deposit-api/test-collection-entry-only", deposit_target], stdout=PIPE).communicate()[0]);
+deposit_receipt_xml = Popen(["tools/scripts/data-deposit-api/test-collection-entry-only", deposit_target], stdout=PIPE).communicate()[0]
+deposit_receipt_parsed = ET.fromstring(deposit_receipt_xml)
 
-for link in deposit_receipt.findall("./{http://www.w3.org/2005/Atom}link"):
+for link in deposit_receipt_parsed.findall("./{http://www.w3.org/2005/Atom}link"):
     if "edit-media" == link.attrib["rel"]:
         edit_media_uri = link.attrib["href"]
     if "edit" == link.attrib["rel"]:
         edit_uri = link.attrib["href"]
+
+for description in deposit_receipt_parsed.findall("./{http://purl.org/dc/terms/}description"):
+    data_citation = description.text
+
+print "data citation of study created:", data_citation 
 
 zipfile="example.zip"
 print "uploading", zipfile, "to", edit_media_uri

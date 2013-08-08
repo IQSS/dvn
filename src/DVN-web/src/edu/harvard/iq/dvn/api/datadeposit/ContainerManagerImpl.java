@@ -30,12 +30,15 @@ import edu.harvard.iq.dvn.core.study.StudyServiceLocal;
 import edu.harvard.iq.dvn.core.util.DateUtil;
 import edu.harvard.iq.dvn.core.vdc.VDC;
 import edu.harvard.iq.dvn.core.vdc.VDCServiceLocal;
+import edu.harvard.iq.dvn.core.web.admin.OptionsPage;
+import edu.harvard.iq.dvn.core.web.common.VDCBaseBean;
 import java.io.File;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Logger;
 import javax.ejb.EJB;
+import javax.enterprise.context.ContextNotActiveException;
 import javax.inject.Inject;
 import javax.naming.Context;
 import javax.naming.InitialContext;
@@ -52,7 +55,7 @@ import org.swordapp.server.SwordConfiguration;
 import org.swordapp.server.SwordError;
 import org.swordapp.server.SwordServerException;
 
-public class ContainerManagerImpl implements ContainerManager {
+public class ContainerManagerImpl extends VDCBaseBean implements ContainerManager {
 
     private static final Logger logger = Logger.getLogger(ContainerManagerImpl.class.getCanonicalName());
     @EJB
@@ -275,32 +278,39 @@ public class ContainerManagerImpl implements ContainerManager {
                     if (swordAuth.hasAccessToModifyDataverse(vdcUser, dvToRelease)) {
                         if (dvToRelease != null) {
                             if (deposit.isInProgress()) {
-                                if (dvToRelease.isRestricted()) {
-                                    throw new SwordError("Dataverse is already set to 'not released': " + dvAlias);
-                                } else {
-                                    logger.info("restricting dataverse via SWORD: " + dvAlias);
-                                    dvToRelease.setRestricted(true);
-                                    vdcService.edit(dvToRelease);
-                                    DepositReceipt fakeDepositReceipt = new DepositReceipt();
-                                    IRI fakeIri = new IRI("fakeIriDvWasJustRestricted");
-                                    fakeDepositReceipt.setEditIRI(fakeIri);
-                                    fakeDepositReceipt.setVerboseDescription("Dataverse alias: " + dvAlias);
-                                    return fakeDepositReceipt;
-                                }
+                                throw new SwordError("Changing a dataverse to 'not released' is not supported");
                             } else {
-                                if (dvToRelease.isRestricted()) {
-                                    logger.info("releasing dataverse via SWORD: " + dvAlias);
-                                    /** @todo: tweet and send email about release */
-                                    dvToRelease.setReleaseDate(DateUtil.getTimestamp());
-                                    dvToRelease.setRestricted(false);
-                                    vdcService.edit(dvToRelease);
-                                    DepositReceipt fakeDepositReceipt = new DepositReceipt();
-                                    IRI fakeIri = new IRI("fakeIriDvWasJustReleased");
-                                    fakeDepositReceipt.setEditIRI(fakeIri);
-                                    fakeDepositReceipt.setVerboseDescription("Dataverse alias: " + dvAlias);
-                                    return fakeDepositReceipt;
+                                try {
+                                    getVDCRequestBean().setVdcNetwork(dvToRelease.getVdcNetwork());
+                                } catch (ContextNotActiveException ex) {
+                                    /**
+                                     * todo: observe same rules about dataverse
+                                     * release via web interface such as a study
+                                     * or a collection must be release
+                                     */
+                                    throw new SwordError("Releasing a dataverse is not yet supported");
+                                }
+                                OptionsPage optionsPage = new OptionsPage();
+                                if (optionsPage.isReleasable()) {
+                                    if (dvToRelease.isRestricted()) {
+                                        logger.info("releasing dataverse via SWORD: " + dvAlias);
+                                        /**
+                                         * @todo: tweet and send email about
+                                         * release
+                                         */
+                                        dvToRelease.setReleaseDate(DateUtil.getTimestamp());
+                                        dvToRelease.setRestricted(false);
+                                        vdcService.edit(dvToRelease);
+                                        DepositReceipt fakeDepositReceipt = new DepositReceipt();
+                                        IRI fakeIri = new IRI("fakeIriDvWasJustReleased");
+                                        fakeDepositReceipt.setEditIRI(fakeIri);
+                                        fakeDepositReceipt.setVerboseDescription("Dataverse alias: " + dvAlias);
+                                        return fakeDepositReceipt;
+                                    } else {
+                                        throw new SwordError("Dataverse has already been released: " + dvAlias);
+                                    }
                                 } else {
-                                    throw new SwordError("Dataverse has already been released: " + dvAlias);
+                                    throw new SwordError("dataverse is not releaseable");
                                 }
                             }
                         } else {

@@ -2549,9 +2549,9 @@ public class Metadata implements java.io.Serializable {
                 str += ", ";
             }
             if (isOnlineVersion) {
-                str += "<a href=\"" + study.getHandleURL() + "\">" + study.getGlobalId() + "</a>";
+                str += "<a href=\"" + study.getPersistentURL() + "\">" + study.getGlobalId() + "</a>";
             } else {
-                str += study.getHandleURL();
+                str += study.getPersistentURL();
             }
 
 

@@ -125,7 +125,7 @@ public class DCServiceBean implements DCServiceLocal {
 
         // Identifier
         xmlw.writeStartElement("dc:identifier");
-        xmlw.writeCharacters(study.getHandleURL());
+        xmlw.writeCharacters(study.getPersistentURL());
         xmlw.writeEndElement();
 
         //Creator

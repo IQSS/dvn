@@ -62,6 +62,15 @@ public class DeaccessionStudyPage extends VDCBaseBean implements java.io.Seriali
 
     private String deaccessionLinkAuthority;
     private String deaccessionLinkStudyId;
+    private String deaccessionLinkProtocol;
+
+    public String getDeaccessionLinkProtocol() {
+        return deaccessionLinkProtocol;
+    }
+
+    public void setDeacsessionLinkProtocol(String deaccessionLinkProtocol) {
+        this.deaccessionLinkProtocol = deaccessionLinkProtocol;
+    }
     private StudyUI studyUI;
 
     public void init() {
@@ -81,6 +90,7 @@ public class DeaccessionStudyPage extends VDCBaseBean implements java.io.Seriali
             if (studyVersion.getDeaccessionLink() != null) {
                 deaccessionLinkAuthority = studyVersion.getDeaccessionLinkAsGlobalId().getAuthority();
                 deaccessionLinkStudyId = studyVersion.getDeaccessionLinkAsGlobalId().getStudyId();
+                deaccessionLinkProtocol = studyVersion.getStudy().getProtocol();
             }
 
         } else {
@@ -179,7 +189,7 @@ public class DeaccessionStudyPage extends VDCBaseBean implements java.io.Seriali
         
     public String save_action() {
         if ( !StringUtil.isEmpty(deaccessionLinkAuthority) && !StringUtil.isEmpty(deaccessionLinkStudyId) ) {
-            studyVersion.setDeaccessionLink( new GlobalId("hdl", deaccessionLinkAuthority, deaccessionLinkStudyId).toString());
+            studyVersion.setDeaccessionLink( new GlobalId(deaccessionLinkProtocol, deaccessionLinkAuthority, deaccessionLinkStudyId).toString());
         } else {
             studyVersion.setDeaccessionLink(null);
         }

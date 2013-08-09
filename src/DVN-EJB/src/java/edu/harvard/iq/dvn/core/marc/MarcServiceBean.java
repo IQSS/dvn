@@ -108,6 +108,7 @@ public class MarcServiceBean implements MarcServiceLocal {
         }
 
         DataField handle = factory.newDataField("856", ' ', ' ');
+        //Does this need to be updated for DOI url?
         handle.addSubfield(factory.newSubfield('u', study.getHandleURL()));
         record.addVariableField(handle);
 

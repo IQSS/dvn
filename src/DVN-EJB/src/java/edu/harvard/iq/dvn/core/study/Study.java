@@ -25,21 +25,17 @@
  */
 package edu.harvard.iq.dvn.core.study;
 
-import edu.harvard.iq.dvn.core.admin.NetworkRoleServiceLocal;
-import edu.harvard.iq.dvn.core.admin.RoleServiceLocal;
-import edu.harvard.iq.dvn.core.admin.UserGroup;
-import edu.harvard.iq.dvn.core.admin.VDCRole;
-import edu.harvard.iq.dvn.core.admin.VDCUser;
-import edu.harvard.iq.dvn.core.vdc.VDCNetwork;
+import edu.harvard.iq.dvn.core.admin.*;
 import edu.harvard.iq.dvn.core.vdc.VDC;
 import edu.harvard.iq.dvn.core.vdc.VDCCollection;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Date;
-import java.util.Iterator;
-import java.util.List;
+import edu.harvard.iq.dvn.core.vdc.VDCNetwork;
+import java.net.URL;
+import java.net.URLConnection;
+//import edu.ucsb.nceas.ezid.EZIDService;
+import java.util.*;
 import javax.ejb.EJBException;
 import javax.persistence.*;
+import org.apache.commons.codec.binary.Base64;
 
 
 /**
@@ -137,10 +133,25 @@ public class Study implements java.io.Serializable {
     }
 
     
+    public String getPersistentURL() {       
+        if (this.getProtocol().equals("hdl")){
+            return getHandleURL();
+        } else if (this.getProtocol().equals("doi")){
+            return getEZIdURL();
+        } else {
+            return "";
+        }
+    }
+    
     public String getHandleURL() {
          return "http://hdl.handle.net/"+authority+"/"+getStudyId();
     }
-
+    
+    public String getEZIdURL() {
+        // need to implement wrt DOI
+        return "";
+    }
+    
     private String studyId;
     
     public String getStudyId() {

@@ -89,16 +89,7 @@ public class DDIWriter {
         sb.append(generateDDISection3());
         sb.append(generateDDISection4());
         
-        File ddiTmpFile = new File ("/tmp/ddi.xml");
-        PrintWriter out = null; 
-        try {
-            out = new PrintWriter(new FileOutputStream(ddiTmpFile));
-        } catch (Exception ex) {
-            
-        }
         
-        out.print(sb);
-        out.close();
         
         
         return sb.toString();

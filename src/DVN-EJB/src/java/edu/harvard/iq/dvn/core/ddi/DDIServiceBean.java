@@ -3258,28 +3258,28 @@ public class DDIServiceBean implements DDIServiceLocal {
         // Currently (as of 3.6) only available in R Data ingests.
         String order = null; 
         order = xmlr.getAttributeValue(null, "order");
-        
+        Integer orderValue = null; 
         if (order != null) {
-            Integer orderValue = null; 
             try {
                 orderValue = new Integer (order);
             } catch (NumberFormatException ex) {
                 orderValue = null; 
             }
-            if (orderValue != null && orderValue.intValue() >= 0) {
-                logger.fine("order value is "+orderValue);
-                cat.setOrder(orderValue.intValue());
-            } else if (!cat.isMissing()) {
-                // Everey category of an ordered categorical ("factor") variable
-                // must have the order rank defined. Which means that if we 
-                // encounter a single NON-MISSING category with no ordered attribute, it
-                // will be processed as un-ordered. 
-                
-                logger.fine("this category is marked as missing; (safe to assume it's not an ordered factor!)");
-                
-                dv.setOrderedCategorical(false);
-            }
         }
+
+        if (orderValue != null && orderValue.intValue() >= 0) {
+            logger.fine("order value is " + orderValue);
+            cat.setOrder(orderValue.intValue());
+        } else if (!cat.isMissing()) {
+            // Everey category of an ordered categorical ("factor") variable
+            // must have the order rank defined. Which means that if we 
+            // encounter a single NON-MISSING category with no ordered attribute, it
+            // will be processed as un-ordered. 
+
+            logger.fine("this category has no valid order attribute, and is not marked as missing; (safe to assume it's not an ordered factor!)");
+            dv.setOrderedCategorical(false);
+        }
+
 
         dv.getCategories().add(cat);
 

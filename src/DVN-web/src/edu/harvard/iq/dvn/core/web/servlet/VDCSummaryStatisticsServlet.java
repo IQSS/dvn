@@ -62,6 +62,35 @@ public class VDCSummaryStatisticsServlet extends HttpServlet {
         sumStatHeaderCntn.put("stdev","standard deviation");
     }
     
+    // Comparator for sorting variable categories for ORDERED categorical 
+    // variables. This will sort by the explicitly defined order rank, 
+    // not by values, alphabetically, as we do for "normal" categoricals. 
+    
+    static Comparator comparator = new Comparator() {
+        public int compare(Object o1, Object o2) {
+            VariableCategory varCat1 = (VariableCategory) o1;
+            VariableCategory varCat2 = (VariableCategory) o2;
+            
+            // Missing values should be sorted as "less than" any 
+            // ranked values; this way they will appear at the top 
+            // of the categorical values display, before any "real" 
+            // values:
+            
+            if (varCat1.isMissing()) {
+                return -1;
+            } else if (varCat2.isMissing()) {
+                return 1; 
+            }
+            
+            if (varCat1.getOrder() == varCat2.getOrder()) {
+                return 0;
+            } else if (varCat1.getOrder() < varCat2.getOrder()) {
+                return -1; 
+            }
+            return 1;
+        }
+    };
+    
     @EJB
     private VariableServiceLocal variableService;
     private DataTable dataTable;
@@ -211,7 +240,11 @@ public class VDCSummaryStatisticsServlet extends HttpServlet {
                 catStat = new ArrayList<VariableCategory>();
                 catStat.addAll(dv.getCategories());
                 //out.println("catStat:size="+catStat.size());
-                Collections.sort(catStat);
+                if (dv.isOrderedCategorical()) {
+                    Collections.sort(catStat, comparator);
+                } else {
+                    Collections.sort(catStat);
+                }
                 break;
             }
         }

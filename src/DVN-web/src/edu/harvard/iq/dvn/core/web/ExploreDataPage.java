@@ -252,6 +252,7 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
         super.init();        
         studyFileId = new Long( getVDCRequestBean().getRequestParam("fileId"));       
         setUp();
+        refreshSettings();
      }
     
     private void setUp(){
@@ -530,7 +531,6 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
                     count++;
                 }
             }
-
             count++;
         }
         
@@ -879,11 +879,11 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
         if (selectedFilterId != null){
             List<DataVariable> measureDvs = getDVMappingsFromGroup(selectedMeasureId);
             List<DataVariable> filterDvs = getDVMappingsFromGroup(selectedFilterId);
-            List intersetection = getDVMappingsIntersection(measureDvs, filterDvs);           
+            List intersection = getDVMappingsIntersection(measureDvs, filterDvs);           
             List <Long> idsForFinalMap = new ArrayList();
             for (Object value : filterMap.values()) {
                 List<DataVariable> testDvs = getDVMappingsFromGroup((Long) value);
-                if(!getDVMappingsIntersection(testDvs, intersetection).isEmpty()){
+                if(!getDVMappingsIntersection(testDvs, intersection).isEmpty()){
                     idsForFinalMap.add((Long) value);
                 }
             }
@@ -917,6 +917,7 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
             for (DataVariable dv2 : list2){
                 if (dv1.getId().equals(dv2.getId())){
                     dataVariableList.add(dv2);
+                    break;
                 }
             }
         }

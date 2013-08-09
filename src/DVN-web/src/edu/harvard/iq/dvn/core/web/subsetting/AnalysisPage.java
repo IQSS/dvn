@@ -8546,27 +8546,39 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
         List<DataVariable> dvs = getDataVariableForRequest();
         Map<String, List<String>> catOrderMap = null; 
         
-        for (DataVariable dv : dvs){
-                
-                List<VariableCategory> varCat = new ArrayList<VariableCategory>();
-                varCat.addAll(dv.getCategories());
+        for (DataVariable dv : dvs) {
+
+            List<VariableCategory> varCat = new ArrayList<VariableCategory>();
+            varCat.addAll(dv.getCategories());
+
+            List<String> orderedValuesList = new ArrayList<String>(varCat.size());
+            // Fill the orderedValuesList with NULLs to capacity: 
+            // (this way we can use .set on arbitrary index locations, before 
+            // the list gets fully populated). 
             
-                List<String> orderedValuesList = new ArrayList<String>(varCat.size());
-                for (VariableCategory vc : varCat){
-                    if (!vc.isMissing()){
-                        dbgLog.info("adding category value \"" + vc.getValue() + "\" with the defined order "+vc.getOrder());
-                        orderedValuesList.set(vc.getOrder(),vc.getValue());
-                        
-                    } 
+            for (int i = 0; i < varCat.size(); i++) {
+                orderedValuesList.add(null);
+            }
+            for (VariableCategory vc : varCat) {
+                if (!vc.isMissing()) {
+                    dbgLog.info("adding category value \"" + vc.getValue() + "\" with the defined order " + vc.getOrder());
+                    try {
+                        orderedValuesList.set(vc.getOrder(), vc.getValue());
+                    } catch (IndexOutOfBoundsException ex) {
+                        dbgLog.warning("Could not populate the ordered category values map; \"out of bounds\" exception");
+                        return null; 
+                    }
+
                 }
-                
-                if (orderedValuesList.size() > 0) {
-                    // initialize the map, if this hasn't been done yet:
-            if (dv.isOrderedCategorical()) {
-                if (catOrderMap == null) {
-                    catOrderMap = new LinkedHashMap<String, List<String>>();
-                }
-                catOrderMap.put("v"+dv.getId(), orderedValuesList);
+            }
+
+            if (orderedValuesList.size() > 0) {
+                // initialize the map, if this hasn't been done yet:
+                if (dv.isOrderedCategorical()) {
+                    if (catOrderMap == null) {
+                        catOrderMap = new LinkedHashMap<String, List<String>>();
+                    }
+                    catOrderMap.put("v" + dv.getId(), orderedValuesList);
                 }
             }
         }

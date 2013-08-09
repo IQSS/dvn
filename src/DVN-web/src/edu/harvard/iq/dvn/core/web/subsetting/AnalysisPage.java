@@ -8555,7 +8555,7 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
                 for (VariableCategory vc : varCat){
                     if (!vc.isMissing()){
                         dbgLog.info("adding category value \"" + vc.getValue() + "\" with the defined order "+vc.getOrder());
-                        orderedValuesList.add(vc.getOrder(),vc.getValue());
+                        orderedValuesList.set(vc.getOrder(),vc.getValue());
                         
                     } 
                 }

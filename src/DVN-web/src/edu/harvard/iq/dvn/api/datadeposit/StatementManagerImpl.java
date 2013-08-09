@@ -21,6 +21,7 @@ package edu.harvard.iq.dvn.api.datadeposit;
 
 import edu.harvard.iq.dvn.core.admin.VDCUser;
 import edu.harvard.iq.dvn.core.study.Study;
+import edu.harvard.iq.dvn.core.study.StudyFile;
 import edu.harvard.iq.dvn.core.study.StudyServiceLocal;
 import edu.harvard.iq.dvn.core.vdc.VDC;
 import edu.harvard.iq.dvn.core.vdc.VDCServiceLocal;
@@ -32,6 +33,7 @@ import javax.ejb.EJB;
 import javax.inject.Inject;
 import org.swordapp.server.AtomStatement;
 import org.swordapp.server.AuthCredentials;
+import org.swordapp.server.ResourcePart;
 import org.swordapp.server.Statement;
 import org.swordapp.server.StatementManager;
 import org.swordapp.server.SwordAuthException;
@@ -50,9 +52,12 @@ public class StatementManagerImpl implements StatementManager {
     SwordAuth swordAuth;
     @Inject
     UrlManager urlManager;
+    SwordConfigurationImpl swordConfiguration = new SwordConfigurationImpl();
 
     @Override
-    public Statement getStatement(String editUri, Map<String, String> map, AuthCredentials authCredentials, SwordConfiguration sc) throws SwordServerException, SwordError, SwordAuthException {
+    public Statement getStatement(String editUri, Map<String, String> map, AuthCredentials authCredentials, SwordConfiguration swordConfiguration) throws SwordServerException, SwordError, SwordAuthException {
+        this.swordConfiguration = (SwordConfigurationImpl) swordConfiguration;
+        swordConfiguration = (SwordConfigurationImpl) swordConfiguration;
         if (authCredentials == null) {
             throw new SwordError("auth credentials are null");
         }
@@ -117,6 +122,12 @@ public class StatementManagerImpl implements StatementManager {
             Statement statement = new AtomStatement(feedUri, author, title, datedUpdated);
             Boolean isReleased = study.isReleased();
             statement.setState("isReleased", isReleased.toString());
+            for (StudyFile studyFile : study.getStudyFiles()) {
+                String studyFileUrl = urlManager.getHostnamePlusBaseUrlPath(editUri) + "/edit/file/" + studyFile.getId();
+                ResourcePart resourcePart = new ResourcePart(studyFileUrl);
+                resourcePart.setMediaType(studyFile.getFileType());
+                statement.addResource(resourcePart);
+            }
             return statement;
         } else {
             throw new SwordError("Could not determine target type or identifier from URL: " + editUri);

@@ -21,7 +21,6 @@ package edu.harvard.iq.dvn.api.datadeposit;
 
 import edu.harvard.iq.dvn.core.admin.VDCUser;
 import edu.harvard.iq.dvn.core.study.Study;
-import edu.harvard.iq.dvn.core.study.StudyFile;
 import edu.harvard.iq.dvn.core.vdc.VDC;
 import edu.harvard.iq.dvn.core.vdc.VDCServiceLocal;
 import java.util.Collection;
@@ -88,12 +87,6 @@ public class CollectionListManagerImpl implements CollectionListManager {
                     entry.setId(study.getGlobalId());
                     entry.setTitle(study.getLatestVersion().getMetadata().getTitle());
                     entry.setBaseUri(new IRI(baseUrl + "edit/" + study.getGlobalId()));
-                    List<StudyFile> files = study.getStudyFiles();
-                    for (StudyFile studyFile : files) {
-                        entry.addLink(baseUrl + "edit/file/" + studyFile.getId().toString(), "edit");
-//                    entry.addLink(baseUrl + "edit-media/file/" + studyFile.getId().toString(), "edit-media");
-                        logger.info(study.getGlobalId() + " file " + studyFile.getId().toString() + ": " + studyFile.getFileName());
-                    }
                     feed.addEntry(entry);
                 }
                 return feed;

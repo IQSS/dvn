@@ -103,6 +103,23 @@ public class UrlManager {
         System.out.println("target identifier: " + targetIdentifier);
     }
 
+    String getHostnamePlusBaseUrlPath(String url) throws SwordError {
+        String optionalPort = "";
+        URI u;
+        try {
+            u = new URI(url);
+            int port = u.getPort();
+            if (port != -1) {
+                // https often runs on port 8181 in dev
+                optionalPort = ":" + port;
+            }
+        } catch (URISyntaxException ex) {
+            throw new SwordError("unable to part url");
+        }
+        String hostName = System.getProperty("dvn.inetAddress");
+        return "https://" + hostName + optionalPort + swordConfiguration.getBaseUrlPath();
+    }
+
     public String getOriginalUrl() {
         return originalUrl;
     }

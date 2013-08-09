@@ -15,10 +15,6 @@ feed_of_studies = ET.fromstring(xml)
 for line in feed_of_studies:
     if "{http://www.w3.org/2005/Atom}entry" == line.tag:
         print "-", line.attrib["{http://www.w3.org/XML/1998/namespace}base"]
-    child = line.findall('{http://www.w3.org/2005/Atom}link')
-    if not None == child:
-        for link in child:
-            print "  -", link.attrib["href"]
 
 # another way...
 #print "---"

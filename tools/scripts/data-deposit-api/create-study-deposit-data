@@ -17,7 +17,7 @@ for link in deposit_receipt_parsed.findall("./{http://www.w3.org/2005/Atom}link"
     if "edit" == link.attrib["rel"]:
         edit_uri = link.attrib["href"]
 
-for description in deposit_receipt_parsed.findall("./{http://purl.org/dc/terms/}description"):
+for description in deposit_receipt_parsed.findall("./{http://purl.org/dc/terms/}bibliographicCitation"):
     data_citation = description.text
 
 print "data citation of study created:", data_citation 

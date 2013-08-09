@@ -8551,7 +8551,7 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
                 List<VariableCategory> varCat = new ArrayList<VariableCategory>();
                 varCat.addAll(dv.getCategories());
             
-                List<String> orderedValuesList = new ArrayList<String>();
+                List<String> orderedValuesList = new ArrayList<String>(varCat.size());
                 for (VariableCategory vc : varCat){
                     if (!vc.isMissing()){
                         dbgLog.info("adding category value \"" + vc.getValue() + "\" with the defined order "+vc.getOrder());
@@ -8582,10 +8582,10 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
             Map<String, String> vl = new HashMap<String, String>();
             for (VariableCategory vc : varCat){
                 if (vc.getLabel() != null){
-                    dbgLog.info("adding label \"" + vc.getLabel() + "\" for variable v"+dv.getId());
+                    dbgLog.fine("adding label \"" + vc.getLabel() + "\" for variable v"+dv.getId());
                     vl.put(vc.getValue(), vc.getLabel());
                 } else {
-                    dbgLog.info("no label for variable v"+dv.getId());
+                    dbgLog.fine("no label for variable v"+dv.getId());
                 }
             }
             if (vl.size() > 0){

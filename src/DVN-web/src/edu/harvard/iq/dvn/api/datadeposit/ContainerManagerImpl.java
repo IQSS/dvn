@@ -254,6 +254,42 @@ public class ContainerManagerImpl extends VDCBaseBean implements ContainerManage
                 } else {
                     throw new SwordError("Could not find study to delete from url: " + uri);
                 }
+            } else if ("file".equals(targetType)) {
+                String fileIdString = urlManager.getTargetIdentifier();
+                if (fileIdString != null) {
+                    Long fileIdLong = Long.valueOf(fileIdString);
+                    if (fileIdLong != null) {
+                        logger.info("preparing to delete file id " + fileIdLong);
+                        throw new SwordError("Deletion of a file is not yet supported");
+
+//                        StudyFile fileToDelete = studyFileService.getStudyFile(fileIdLong);
+//                        String globalId = fileToDelete.getStudy().getGlobalId();
+//                        VDC dv = fileToDelete.getStudy().getOwner();
+//
+//                        EditStudyFilesService editStudyFilesService;
+//                        try {
+//                            editStudyFilesService = (EditStudyFilesService) ctx.lookup("java:comp/env/editStudyFiles");
+//                        } catch (NamingException ex) {
+//                            throw new SwordServerException("problem looking up editStudyFilesService");
+//                        }
+//                        editStudyFilesService.setStudyVersionByGlobalId(globalId);
+//                        List studyFileEditBeans = editStudyFilesService.getCurrentFiles();
+//                        for (Iterator it = studyFileEditBeans.iterator(); it.hasNext();) {
+//                            StudyFileEditBean studyFileEditBean = (StudyFileEditBean) it.next();
+//                            if (studyFileEditBean.getStudyFile().getId().equals(fileToDelete.getId())) {
+//                                logger.info("marked for deletion: " + studyFileEditBean.getStudyFile().getFileName());
+//                                studyFileEditBean.setDeleteFlag(true);
+//                            } else {
+//                                logger.info("not marked for deletion: " + studyFileEditBean.getStudyFile().getFileName());
+//                            }
+//                        }
+//                        editStudyFilesService.save(dv.getId(), vdcUser.getId());
+                    } else {
+                        throw new SwordError("Unable to find study id in url: " + uri);
+                    }
+                } else {
+                    throw new SwordError("Could not file file to delete in url: " + uri);
+                }
             } else {
                 throw new SwordError("Unsupported delete target in url:" + uri);
             }

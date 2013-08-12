@@ -93,6 +93,15 @@ public class UrlManager {
                 String globalId = getStudyGlobalId(targetTypeAndIdentifier);
                 logger.info("study found: " + globalId);
                 this.targetIdentifier = globalId;
+            } else if (targetType.equals("file")) {
+                String fileIdString;
+                try {
+                    //look up file here to validate it?
+                    fileIdString = targetTypeAndIdentifier.get(1);
+                } catch (IndexOutOfBoundsException ex) {
+                    throw new SwordError("No file id provided in url: " + url);
+                }
+                this.targetIdentifier = fileIdString;
             } else {
                 throw new SwordError("unsupported target type: " + targetType);
             }
@@ -166,6 +175,8 @@ public class UrlManager {
             System.out.println("index0: " + index0);
             if (index0.equals("dataverse")) {
                 return "dataverse";
+            } else if (index0.equals("file")) {
+                return "file";
             } else {
                 String globalId = getStudyGlobalId(targetTypeAndIdentifier);
                 if (globalId != null) {

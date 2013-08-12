@@ -1,0 +1,30 @@
+#!/usr/bin/env ruby
+require "rexml/document"
+include REXML
+service_document = Document.new `tools/scripts/data-deposit-api/test-service-document`
+collection = XPath.first(service_document, "//collection/@href")
+
+feed_of_studies = Document.new `tools/scripts/data-deposit-api/test-collection-get #{collection}`
+first_study = XPath.first(feed_of_studies, "//entry")
+id = first_study.elements["id"].text
+study_edit_uri = first_study.attributes["xml:base"]
+
+entry = Document.new `tools/scripts/data-deposit-api/test-edit-get #{study_edit_uri}`
+statement_uri = XPath.first(entry,"//link[@rel='http://purl.org/net/sword/terms/statement']").attributes["href"]
+
+statement = Document.new `tools/scripts/data-deposit-api/test-statement #{statement_uri}`
+title = statement.root.elements["title"].text
+release_state = XPath.first(statement, "//category[@term='isReleased']")
+puts "'#{title}' release state is #{release_state.text}. Files (if any):"
+file_to_delete = XPath.first( statement, "//entry" )
+type = file_to_delete.elements["content"].attributes["type"]
+url_of_file_to_delete = file_to_delete.elements["content"].attributes["src"]
+puts "deleting file of type '#{type}' from #{url_of_file_to_delete}"
+out = `tools/scripts/data-deposit-api/test-edit-delete #{url_of_file_to_delete}`
+
+if out.match(/204 No Content/)
+    puts "successful deletion"
+else
+    puts "deletion failed"
+    puts out
+end

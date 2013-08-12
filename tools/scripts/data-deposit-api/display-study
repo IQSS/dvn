@@ -10,7 +10,6 @@ id = first_study.elements["id"].text
 study_edit_uri = first_study.attributes["xml:base"]
 
 entry = Document.new `tools/scripts/data-deposit-api/test-edit-get #{study_edit_uri}`
-puts entry
 statement_uri = XPath.first(entry,"//link[@rel='http://purl.org/net/sword/terms/statement']").attributes["href"]
 
 statement = Document.new `tools/scripts/data-deposit-api/test-statement #{statement_uri}`
@@ -24,7 +23,7 @@ XPath.each( statement, "//entry" ) { |entry|
     puts "- #{url}"
     puts "  - #{updated.text} #{type}"
 }
-
+exit
 puts "TODO: GET swordv2/edit-media/#{id}.atom (list files)"
 puts "TODO: GET swordv2/statement/#{id}.atom (list files)"
 puts "TODO: GET swordv2/statement/#{id}.rdf (list files and show state)"

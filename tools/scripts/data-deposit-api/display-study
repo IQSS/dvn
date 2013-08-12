@@ -1,46 +1,31 @@
-#!/usr/bin/env python
-import re
-from subprocess import Popen, PIPE
-from xml.etree import ElementTree as ET
+#!/usr/bin/env ruby
+require "rexml/document"
+include REXML
+service_document = Document.new `tools/scripts/data-deposit-api/test-service-document`
+collection = XPath.first(service_document, "//collection/@href")
 
-service_document = ET.fromstring(Popen("tools/scripts/data-deposit-api/test-service-document", stdout=PIPE).communicate()[0])
+feed_of_studies = Document.new `tools/scripts/data-deposit-api/test-collection-get #{collection}`
+first_study = XPath.first(feed_of_studies, "//entry")
+id = first_study.elements["id"].text
+study_edit_uri = first_study.attributes["xml:base"]
 
-deposit_target = service_document[0][1].attrib["href"]
+entry = Document.new `tools/scripts/data-deposit-api/test-edit-get #{study_edit_uri}`
+puts entry
+statement_uri = XPath.first(entry,"//link[@rel='http://purl.org/net/sword/terms/statement']").attributes["href"]
 
-feed_of_studies = ET.fromstring(Popen(["tools/scripts/data-deposit-api/test-collection-get", deposit_target], stdout=PIPE).communicate()[0]);
+statement = Document.new `tools/scripts/data-deposit-api/test-statement #{statement_uri}`
+title = statement.root.elements["title"].text
+release_state = XPath.first(statement, "//category[@term='isReleased']")
+puts "'#{title}' release state is #{release_state.text}. Files (if any):"
+XPath.each( statement, "//entry" ) { |entry|
+    url     = entry.elements["content"].attributes["src"]
+    type    = entry.elements["content"].attributes["type"]
+    updated = entry.elements["updated"]
+    puts "- #{url}"
+    puts "  - #{updated.text} #{type}"
+}
 
-print "listing all studies..."
-all_studies = Popen(["tools/scripts/data-deposit-api/list-studies", deposit_target], stdout=PIPE).communicate()[0]
-print all_studies,
-print "finding a study to release..."
-for line in all_studies.splitlines():
-    if line.startswith("-"):
-        parts = line.split("- ")
-        url_only = parts[1]
-        pieces = url_only.split("/")
-        url_end = pieces[9:11]
-
-try:
-    url_end
-    print "will retrieve statement for:", url_end
-except NameError:
-    print "no studies found"
-    exit(1)
-
-url_start = "https://sword:sword@localhost:8181/dvn/api/data-deposit/v1/swordv2/"
-edit_uri =       url_start + "edit/"       + "/".join(url_end)
-
-print "getting statement from", edit_uri
-statement_xml = Popen(["tools/scripts/data-deposit-api/test-statement", edit_uri], stdout=PIPE).communicate()[0]
-statement_parsed = ET.fromstring(statement_xml)
-for line in statement_parsed:
-    if "{http://www.w3.org/2005/Atom}title" == line.tag:
-        print line.text,
-    if "{http://www.w3.org/2005/Atom}category" == line.tag:
-        if "isReleased" == line.attrib["term"]:
-            release_state = line.text
-            print "... released:", release_state, "... files:"
-    if "{http://www.w3.org/2005/Atom}entry" == line.tag:
-        for entry in line:
-            if "{http://www.w3.org/2005/Atom}id" == entry.tag:
-                print "- ", entry.text
+puts "TODO: GET swordv2/edit-media/#{id}.atom (list files)"
+puts "TODO: GET swordv2/statement/#{id}.atom (list files)"
+puts "TODO: GET swordv2/statement/#{id}.rdf (list files and show state)"
+puts "TODO: GET swordv2/edit-media/#{id} (download zip)"

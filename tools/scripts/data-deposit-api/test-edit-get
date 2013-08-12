@@ -1,9 +1,9 @@
 #!/bin/sh
 if [ "" = "$1" ]; then
-  echo >&2 "Please supply the statement URI of a study"
+  echo >&2 "Please supply the edit URI of a study"
   exit 1
 else
-  STATEMENT_URI="$1"
+  EDIT_URI="$1"
 fi
-curl --insecure -s -u sword:sword $STATEMENT_URI \
+curl --insecure -s -u sword:sword $EDIT_URI \
 | xmllint -format -

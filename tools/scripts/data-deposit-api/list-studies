@@ -5,7 +5,8 @@ from xml.etree import ElementTree as ET
 
 service_document = ET.fromstring(Popen("tools/scripts/data-deposit-api/test-service-document", stdout=PIPE).communicate()[0])
 
-deposit_target = service_document[0][1].attrib["href"]
+#deposit_target = service_document[0][1].attrib["href"] # shorter but brittle
+deposit_target = service_document.find(".//{http://www.w3.org/2007/app}workspace/{http://www.w3.org/2007/app}collection").attrib["href"]
 
 xml = Popen(["tools/scripts/data-deposit-api/test-collection-get", deposit_target], stdout=PIPE).communicate()[0]
 #print xml

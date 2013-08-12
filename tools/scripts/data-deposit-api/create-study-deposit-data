@@ -51,8 +51,17 @@ if match:
 else:
     print "error was not thrown"
 
-print "getting statement from", edit_uri
-statement = ET.fromstring(Popen(["tools/scripts/data-deposit-api/test-statement", edit_uri], stdout=PIPE).communicate()[0]);
+print "getting entry from", edit_uri
+statement = ET.fromstring(Popen(["tools/scripts/data-deposit-api/test-edit-get", edit_uri], stdout=PIPE).communicate()[0]);
+for line in statement:
+    if "{http://purl.org/dc/terms/}bibliographicCitation" == line.tag:
+        print "citation from edit-uri:", line.text
+    if "{http://www.w3.org/2005/Atom}link" == line.tag:
+        if "http://purl.org/net/sword/terms/statement" == line.attrib["rel"]:
+            statement_uri = line.attrib["href"]
+
+print "getting statement from", statement_uri
+statement = ET.fromstring(Popen(["tools/scripts/data-deposit-api/test-statement", statement_uri], stdout=PIPE).communicate()[0]);
 for line in statement:
     if "{http://www.w3.org/2005/Atom}title" == line.tag:
         print "title of study created:", line.text

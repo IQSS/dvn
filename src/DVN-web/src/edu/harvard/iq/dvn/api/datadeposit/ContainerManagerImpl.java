@@ -74,8 +74,34 @@ public class ContainerManagerImpl extends VDCBaseBean implements ContainerManage
     UrlManager urlManager;
 
     @Override
-    public DepositReceipt getEntry(String string, Map<String, String> map, AuthCredentials ac, SwordConfiguration sc) throws SwordServerException, SwordError, SwordAuthException {
-        throw new UnsupportedOperationException("Not supported yet.");
+    public DepositReceipt getEntry(String uri, Map<String, String> map, AuthCredentials authCredentials, SwordConfiguration swordConfiguration) throws SwordServerException, SwordError, SwordAuthException {
+        VDCUser vdcUser = swordAuth.auth(authCredentials);
+        logger.info("getEntry called with url: " + uri);
+        urlManager.processUrl(uri);
+        String targetType = urlManager.getTargetType();
+        if (!targetType.isEmpty()) {
+            logger.info("operating on target type: " + urlManager.getTargetType());
+            if ("study".equals(targetType)) {
+                String globalId = urlManager.getTargetIdentifier();
+                Study study = studyService.getStudyByGlobalId(globalId);
+                if (study != null) {
+                    ReceiptGenerator receiptGenerator = new ReceiptGenerator();
+                    String baseUrl = urlManager.getHostnamePlusBaseUrlPath(uri);
+                    DepositReceipt depositReceipt = receiptGenerator.createReceipt(baseUrl, study);
+                    if (depositReceipt != null) {
+                        return depositReceipt;
+                    } else {
+                        throw new SwordError("Could not generate deposit receipt.");
+                    }
+                } else {
+                    throw new SwordError("Could not find study based on URL: " + uri);
+                }
+            } else {
+                throw new SwordError("Unsupported target type (" + targetType + ") in URL: " + uri);
+            }
+        } else {
+            throw new SwordError("Unable to determine target type from URL: " + uri);
+        }
     }
 
     @Override
@@ -331,7 +357,19 @@ public class ContainerManagerImpl extends VDCBaseBean implements ContainerManage
     }
 
     @Override
-    public boolean isStatementRequest(String string, Map<String, String> map, AuthCredentials ac, SwordConfiguration sc) throws SwordError, SwordServerException, SwordAuthException {
-        return true;
+    public boolean isStatementRequest(String uri, Map<String, String> map, AuthCredentials authCredentials, SwordConfiguration swordConfiguration) throws SwordError, SwordServerException, SwordAuthException {
+        VDCUser vdcUser = swordAuth.auth(authCredentials);
+        urlManager.processUrl(uri);
+        String servlet = urlManager.getServlet();
+        if (servlet != null) {
+            if (servlet.equals("statement")) {
+                return true;
+            } else {
+                return false;
+            }
+        } else {
+            throw new SwordError("Unable to determine requested IRI from URL: " + uri);
+        }
+
     }
 }

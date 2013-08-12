@@ -28,18 +28,18 @@ except NameError:
     exit(1)
 
 url_start = "https://sword:sword@localhost:8181/dvn/api/data-deposit/v1/swordv2/"
-edit_uri =       url_start + "edit/"       + "/".join(url_end)
+statement_uri =       url_start + "statement/"       + "/".join(url_end)
 
-print "getting statement from", edit_uri
-statement_before = ET.fromstring(Popen(["tools/scripts/data-deposit-api/test-statement", edit_uri], stdout=PIPE).communicate()[0]);
+print "getting statement from", statement_uri
+statement_before = ET.fromstring(Popen(["tools/scripts/data-deposit-api/test-statement", statement_uri], stdout=PIPE).communicate()[0]);
 for line in statement_before:
     if "{http://www.w3.org/2005/Atom}category" == line.tag:
         if "isReleased" == line.attrib["term"]:
             release_state_old = line.text
 
 if "false" == release_state_old:
-    print "releasing study using", edit_uri
-    out = Popen(["tools/scripts/data-deposit-api/test-edit-put-in-progress", edit_uri], stdout=PIPE).communicate()[0]
+    print "releasing study using", statement_uri
+    out = Popen(["tools/scripts/data-deposit-api/test-edit-put-in-progress", statement_uri], stdout=PIPE).communicate()[0]
     deposit_receipt = ET.fromstring(out)
     for line in deposit_receipt:
         if "{http://purl.org/net/sword/terms/}verboseDescription" == line.tag:
@@ -47,8 +47,8 @@ if "false" == release_state_old:
             title = pieces[1]
             print "released a study with the title:", title
 
-    print "getting statement from", edit_uri
-    statement_after = ET.fromstring(Popen(["tools/scripts/data-deposit-api/test-statement", edit_uri], stdout=PIPE).communicate()[0]);
+    print "getting statement from", statement_uri
+    statement_after = ET.fromstring(Popen(["tools/scripts/data-deposit-api/test-statement", statement_uri], stdout=PIPE).communicate()[0]);
     for line in statement_after:
         if "{http://www.w3.org/2005/Atom}category" == line.tag:
             if "isReleased" == line.attrib["term"]:

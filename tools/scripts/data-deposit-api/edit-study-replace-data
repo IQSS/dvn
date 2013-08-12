@@ -24,11 +24,11 @@ url_start = "https://sword:sword@localhost:8181/dvn/api/data-deposit/v1/swordv2/
 edit_uri =       url_start + "edit/"       + "/".join(url_end)
 edit_media_uri = url_start + "edit-media/" + "/".join(url_end)
 
-print "getting statement for", edit_uri
-statement = ET.fromstring(Popen(["tools/scripts/data-deposit-api/test-statement", edit_uri], stdout=PIPE).communicate()[0]);
-for line in statement:
-    if "{http://www.w3.org/2005/Atom}title" == line.tag:
-        print "title of study to edit:", line.text
+print "getting entry from", edit_uri
+entry = ET.fromstring(Popen(["tools/scripts/data-deposit-api/test-edit-get", edit_uri], stdout=PIPE).communicate()[0]);
+for line in entry:
+    if "{http://purl.org/dc/terms/}bibliographicCitation" == line.tag:
+        print "data citation:", line.text
 
 replacement_data = "50by1000.dta.zip"
 print "replacing data at", edit_media_uri, "with", replacement_data

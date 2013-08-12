@@ -9,8 +9,11 @@ first_study = XPath.first(feed_of_studies, "//entry")
 id = first_study.elements["id"].text
 study_edit_uri = first_study.attributes["xml:base"]
 
-puts "GET #{study_edit_uri}"
-statement = Document.new `tools/scripts/data-deposit-api/test-statement #{study_edit_uri}`
+entry = Document.new `tools/scripts/data-deposit-api/test-edit-get #{study_edit_uri}`
+puts entry
+statement_uri = XPath.first(entry,"//link[@rel='http://purl.org/net/sword/terms/statement']").attributes["href"]
+
+statement = Document.new `tools/scripts/data-deposit-api/test-statement #{statement_uri}`
 title = statement.root.elements["title"].text
 release_state = XPath.first(statement, "//category[@term='isReleased']")
 puts "'#{title}' release state is #{release_state.text}. Files (if any):"

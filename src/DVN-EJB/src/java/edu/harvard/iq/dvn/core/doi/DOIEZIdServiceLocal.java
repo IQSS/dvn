@@ -26,13 +26,11 @@ package edu.harvard.iq.dvn.core.doi;
 public interface DOIEZIdServiceLocal {
     
     public void test();
-
-    public String createIdentifier(java.util.HashMap metadata);
     
-    public void modifyIdentifier(java.util.HashMap metadata);
+    public void modifyIdentifier(edu.harvard.iq.dvn.core.study.Study studyIn);
 
-    public java.util.HashMap getIdentifierMetadata(String identifierIn);
-
-    public String mintIdentifier(java.util.HashMap metadata);
+    public String createIdentifier(edu.harvard.iq.dvn.core.study.Study studyIn);    
+    
+    public java.util.HashMap getIdentifierMetadata(edu.harvard.iq.dvn.core.study.Study studyIn);
 
 }

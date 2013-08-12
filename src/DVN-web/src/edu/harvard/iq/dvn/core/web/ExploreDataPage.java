@@ -620,8 +620,11 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
     }
        
     public void valueChangeEventForFilter(ValueChangeEvent ae) {
+        System.out.print("in value change event ");
         Long filterId = (Long) ae.getNewValue();
+        
         if (filterGroupings.size() > 1) {
+            System.out.print("filterGroupings.size() > 1 ");
             VarGrouping updatedGrouping = new VarGrouping();
             VarGroup filterGroup = getFilterGroupFromId(filterId);
             if (filterGroup != null) {
@@ -631,18 +634,29 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
                         varGroupingUI.setSelectedGroupId(filterId);
                     }
                 }
-                // get variable associated with this filter and and measure           
+                // get variable associated with this filter and and measure  
+                // this code only works for the case of two groupings.
+                // treats the first as a parent and updates the second
+                // on when a filter in the first grouping is selected
+                // grouping order is not explicitly set 
+                boolean updateFilterList = false;
                 for (VarGroupingUI varGroupingUI : filterGroupings) {
-                    if (!updatedGrouping.equals(varGroupingUI.getVarGrouping())) {
+                    if (updateFilterList){
                         Map filterGroupingFilterMap = getFilterGroupsMap(varGroupingUI.getVarGrouping().getId(), filterId);
                         filterGroupingsAndFilters.remove(varGroupingUI.getVarGrouping().getId());
                         if (!filterGroupingFilterMap.isEmpty()) {
                             filterGroupingsAndFilters.put(varGroupingUI.getVarGrouping().getId(), filterGroupingFilterMap);
                         }
                     }
+                    else if (updatedGrouping.equals(varGroupingUI.getVarGrouping())) {
+                        // second and subsequent filter groupings are updated 
+                        // in loop above
+                        updateFilterList = true;
+                    }
                 }
             }
         }
+        //regarless of number of groupings update the label.
         updateLineLabelForFilter(ae);
     }
     
@@ -2754,10 +2768,14 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
     public void setDataString(String dataString) {this.dataString = dataString;}
     public String getDataString() {return  this.dataString;}
     public String getDataColumns() {return  this.numberOfColumns.toString();}
-
+    
     HtmlSelectOneMenu selectGraphType;
     public HtmlSelectOneMenu getSelectGraphType() {return selectGraphType;}
     public void setSelectGraphType(HtmlSelectOneMenu selectGraphType) {this.selectGraphType = selectGraphType;}
+
+    HtmlSelectOneMenu filterSelectOneMenu;
+    public HtmlSelectOneMenu getFilterSelectOneMenu() {return filterSelectOneMenu;}
+    public void setFilterSelectOneMenu(HtmlSelectOneMenu filterSelectOneMenu) {this.filterSelectOneMenu = filterSelectOneMenu;}
     
     HtmlSelectOneRadio selectLegendPosition;
     public HtmlSelectOneRadio getSelectLegendPosition() {return selectLegendPosition;}

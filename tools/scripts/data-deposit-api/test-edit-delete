@@ -5,4 +5,4 @@ if [ "" = "$1" ]; then
 else
   EDIT_URI="$1"
 fi
-curl -i --insecure -s -X DELETE $EDIT_URI
+curl -i --insecure -s -X DELETE -u sword:sword $EDIT_URI

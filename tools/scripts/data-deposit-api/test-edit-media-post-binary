@@ -1,0 +1,14 @@
+#!/bin/sh
+if [ "" = "$1" ]; then
+  echo >&2 "Please supply a filename of a zip file"
+  exit 1
+  if [ "" = "$2" ]; then
+    echo >&2 "Please supply the edit-media URI of a study"
+    exit 2
+  fi
+else
+  FILENAME="$1"
+  EDIT_MEDIA_URI="$2"
+fi
+#"The client can add more content to the Media Resource itself by performing an HTTP POST request on the EM-IRI. This has the effect of placing new files into the Media Resource." -- http://swordapp.github.io/SWORDv2-Profile/SWORDProfile.html#protocoloperations_addingcontent_mediaresource
+curl --insecure -s --data-binary "@$FILENAME" -H "Content-Disposition: filename=$FILENAME"  -H "Content-Type: application/zip" -H "Packaging: http://purl.org/net/sword/package/SimpleZip" -u sword:sword $EDIT_MEDIA_URI

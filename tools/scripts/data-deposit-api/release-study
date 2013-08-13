@@ -9,10 +9,8 @@ deposit_target = service_document[0][1].attrib["href"]
 
 feed_of_studies = ET.fromstring(Popen(["tools/scripts/data-deposit-api/test-collection-get", deposit_target], stdout=PIPE).communicate()[0]);
 
-print "listing all studies..."
 all_studies = Popen(["tools/scripts/data-deposit-api/list-studies", deposit_target], stdout=PIPE).communicate()[0]
-print all_studies,
-print "finding a study to release..."
+#print "finding a study to release..."
 for line in all_studies.splitlines():
     if line.startswith("-"):
         parts = line.split("- ")
@@ -22,23 +20,26 @@ for line in all_studies.splitlines():
 
 try:
     url_end
-    print "will be releasing study:", url_end
+#    print "will be releasing study:", url_end
 except NameError:
     print "no studies found to release"
     exit(1)
 
 url_start = "https://sword:sword@localhost:8181/dvn/api/data-deposit/v1/swordv2/"
-edit_uri =       url_start + "edit/"       + "/".join(url_end)
+edit_uri =      url_start + "edit/"       + "/".join(url_end)
+statement_uri = url_start + "statement/"  + "/".join(url_end)
 
-print "getting statement from", edit_uri
-statement_before = ET.fromstring(Popen(["tools/scripts/data-deposit-api/test-statement", edit_uri], stdout=PIPE).communicate()[0]);
+#print "getting statement from", statement_uri
+statement_before = ET.fromstring(Popen(["tools/scripts/data-deposit-api/test-statement", statement_uri], stdout=PIPE).communicate()[0]);
 for line in statement_before:
     if "{http://www.w3.org/2005/Atom}category" == line.tag:
         if "isReleased" == line.attrib["term"]:
             release_state_old = line.text
+        if "isInDraft" == line.attrib["term"]:
+            draft_state_old = line.text
 
 if "false" == release_state_old:
-    print "releasing study using", edit_uri
+    #print "releasing study using", edit_uri
     out = Popen(["tools/scripts/data-deposit-api/test-edit-put-in-progress", edit_uri], stdout=PIPE).communicate()[0]
     deposit_receipt = ET.fromstring(out)
     for line in deposit_receipt:
@@ -47,10 +48,32 @@ if "false" == release_state_old:
             title = pieces[1]
             print "released a study with the title:", title
 
-    print "getting statement from", edit_uri
-    statement_after = ET.fromstring(Popen(["tools/scripts/data-deposit-api/test-statement", edit_uri], stdout=PIPE).communicate()[0]);
+    #print "getting statement from", statement_uri
+    statement_after = ET.fromstring(Popen(["tools/scripts/data-deposit-api/test-statement", statement_uri], stdout=PIPE).communicate()[0]);
     for line in statement_after:
         if "{http://www.w3.org/2005/Atom}category" == line.tag:
             if "isReleased" == line.attrib["term"]:
                 release_state_new = line.text
                 print "isReleased changed from", release_state_old, "to", release_state_new
+else:
+    print "Nothing to do. isReleased =", release_state_old, "(isInDraft =", draft_state_old, "and will be processed next)"
+
+if "true" == draft_state_old:
+    #print "releasing study using", edit_uri
+    out = Popen(["tools/scripts/data-deposit-api/test-edit-put-in-progress", edit_uri], stdout=PIPE).communicate()[0]
+    deposit_receipt = ET.fromstring(out)
+    for line in deposit_receipt:
+        if "{http://purl.org/net/sword/terms/}verboseDescription" == line.tag:
+            pieces = line.text.split(": ")
+            title = pieces[1]
+            print "released a study with the title:", title
+
+    #print "getting statement from", statement_uri
+    statement_after = ET.fromstring(Popen(["tools/scripts/data-deposit-api/test-statement", statement_uri], stdout=PIPE).communicate()[0]);
+    for line in statement_after:
+        if "{http://www.w3.org/2005/Atom}category" == line.tag:
+            if "isInDraft" == line.attrib["term"]:
+                draft_state_new = line.text
+                print "isInDraft changed from", draft_state_old, "to", draft_state_new
+else:
+    print "Nothing to do. isInDraft =", draft_state_old

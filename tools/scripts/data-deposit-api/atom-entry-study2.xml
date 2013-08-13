@@ -1,0 +1,29 @@
+<?xml version="1.0"?>
+<!--
+modified from http://swordapp.github.io/SWORDv2-Profile/SWORDProfile.html#protocoloperations_editingcontent_metadata
+
+comments at https://docs.google.com/document/d/1Rn70XItfA6_mJ4JA3I7m4em0spfdXIIHhwkrgCl40uE/edit?usp=sharing
+-->
+<entry xmlns="http://www.w3.org/2005/Atom"
+       xmlns:dcterms="http://purl.org/dc/terms/">
+   <title>The Levels of Caffeine in Cold Brew Coffee</title>
+   <id>urn:uuid:1225c695-cfb8-4ebb-aaaa-80da344efa6a</id>
+   <updated>2013-08-11T17:17:08Z</updated>
+   <author><name>Peets, John L.</name></author>
+   <author><name>Stumptown Research Institute</name></author>
+   <summary type="text">The abstract</summary>
+   <!-- some embedded metadata -->
+   <dcterms:title>The Levels of Caffeine in Cold Brew Coffee</dcterms:title>
+   <dcterms:creator>Peets, John L.</dcterms:creator>
+   <dcterms:creator>Stumptown Research Institute</dcterms:creator>
+   <dcterms:date>2013-08-11</dcterms:date>
+   <dcterms:rights>Creative Commons CC-BY 3.0 (unported) http://creativecommons.org/licenses/by/3.0/</dcterms:rights>
+   <!-- This field does not exist in our DVN DDI-DC crosswalk but would be useful to make sure we have the OJS Journal article citation -->
+   <dcterms:bibliographicCitation> Still need to: Insert Journal Article Citation from OJS</dcterms:bibliographicCitation>
+   <dcterms:description>This study evaluates the caffeine levels of a cold brewed coffee.</dcterms:description>
+   <dcterms:identifier>doi:10.1000/XXX</dcterms:identifier>
+   <dcterms:subject>coffee bean</dcterms:subject>
+   <dcterms:subject>caffeine</dcterms:subject>
+   <dcterms:subject>cold brew process</dcterms:subject>
+   <dcterms:subject>Stumptown Coffee Company</dcterms:subject>
+</entry>

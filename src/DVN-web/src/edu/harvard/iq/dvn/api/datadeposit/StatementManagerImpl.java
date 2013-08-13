@@ -20,12 +20,14 @@
 package edu.harvard.iq.dvn.api.datadeposit;
 
 import edu.harvard.iq.dvn.core.admin.VDCUser;
+import edu.harvard.iq.dvn.core.study.FileMetadata;
 import edu.harvard.iq.dvn.core.study.Study;
 import edu.harvard.iq.dvn.core.study.StudyFile;
 import edu.harvard.iq.dvn.core.study.StudyServiceLocal;
 import edu.harvard.iq.dvn.core.vdc.VDC;
 import edu.harvard.iq.dvn.core.vdc.VDCServiceLocal;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Logger;
@@ -121,8 +123,14 @@ public class StatementManagerImpl implements StatementManager {
             String datedUpdated = null;
             Statement statement = new AtomStatement(feedUri, author, title, datedUpdated);
             Boolean isReleased = study.isReleased();
-            statement.setState("isReleased", isReleased.toString());
-            for (StudyFile studyFile : study.getStudyFiles()) {
+            Boolean isInDraft = study.getLatestVersion().isDraft();
+            Map<String, String> states = new HashMap<String, String>();
+            states.put("isReleased", isReleased.toString());
+            states.put("isInDraft", isInDraft.toString());
+            statement.setStates(states);
+            List<FileMetadata> fileMetadatas = study.getLatestVersion().getFileMetadatas();
+            for (FileMetadata fileMetadata : fileMetadatas) {
+                StudyFile studyFile = fileMetadata.getStudyFile();
                 String studyFileUrl = urlManager.getHostnamePlusBaseUrlPath(editUri) + "/edit/file/" + studyFile.getId();
                 ResourcePart resourcePart = new ResourcePart(studyFileUrl);
                 resourcePart.setMediaType(studyFile.getFileType());

@@ -1,0 +1,19 @@
+#!/usr/bin/env ruby
+require "rexml/document"
+include REXML
+service_document = Document.new `tools/scripts/data-deposit-api/test-service-document`
+collection = XPath.first(service_document, "//collection/@href")
+
+feed_of_studies = Document.new `tools/scripts/data-deposit-api/test-collection-get #{collection}`
+first_study = XPath.first(feed_of_studies, "//entry")
+id = first_study.elements["id"].text
+study_edit_uri = first_study.attributes["xml:base"]
+
+entry = Document.new `tools/scripts/data-deposit-api/test-edit-get #{study_edit_uri}`
+study_edit_media_uri = XPath.first(entry,"//link[@rel='edit-media']").attributes["href"]
+statement_uri        = XPath.first(entry,"//link[@rel='http://purl.org/net/sword/terms/statement']").attributes["href"]
+
+zip_of_files_to_add = "example.zip"
+puts "adding #{zip_of_files_to_add} to #{study_edit_media_uri}"
+deposit_receipt = Document.new `tools/scripts/data-deposit-api/test-edit-media-post-binary #{zip_of_files_to_add} #{study_edit_media_uri}`
+puts "id from deposit_receipt: " + deposit_receipt.root.elements["id"].text

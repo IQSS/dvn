@@ -109,7 +109,22 @@ public class MediaResourceManagerImpl implements MediaResourceManager {
 
     @Override
     public DepositReceipt replaceMediaResource(String uri, Deposit deposit, AuthCredentials authCredentials, SwordConfiguration swordConfiguration) throws SwordError, SwordServerException, SwordAuthException {
+        boolean shouldReplace = true;
+        return replaceOrAddFiles(uri, deposit, authCredentials, swordConfiguration, shouldReplace);
+    }
 
+    @Override
+    public void deleteMediaResource(String string, AuthCredentials ac, SwordConfiguration sc) throws SwordError, SwordServerException, SwordAuthException {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    @Override
+    public DepositReceipt addResource(String uri, Deposit deposit, AuthCredentials authCredentials, SwordConfiguration swordConfiguration) throws SwordError, SwordServerException, SwordAuthException {
+        boolean shouldReplace = false;
+        return replaceOrAddFiles(uri, deposit, authCredentials, swordConfiguration, shouldReplace);
+    }
+
+    DepositReceipt replaceOrAddFiles(String uri, Deposit deposit, AuthCredentials authCredentials, SwordConfiguration swordConfiguration, boolean shouldReplace) throws SwordError, SwordAuthException, SwordServerException {
         if (!deposit.getPackaging().equals(UriRegistry.PACKAGE_SIMPLE_ZIP)) {
             throw new SwordError(UriRegistry.ERROR_CONTENT, 415, "Package format " + UriRegistry.PACKAGE_SIMPLE_ZIP + " is required but format specified in 'Packaging' HTTP header was " + deposit.getPackaging());
         }
@@ -146,13 +161,14 @@ public class MediaResourceManagerImpl implements MediaResourceManager {
                 } catch (NamingException ex) {
                     throw new SwordServerException("problem looking up editStudyFilesService");
                 }
-                logger.info("deleting current files");
                 editStudyFilesService.setStudyVersionByGlobalId(globalId);
                 List studyFileEditBeans = editStudyFilesService.getCurrentFiles();
                 for (Iterator it = studyFileEditBeans.iterator(); it.hasNext();) {
                     StudyFileEditBean studyFileEditBean = (StudyFileEditBean) it.next();
-                    studyFileEditBean.setDeleteFlag(true);
-                    logger.info("marked for deletion: " + studyFileEditBean.getStudyFile().getFileName());
+                    if (shouldReplace) {
+                        studyFileEditBean.setDeleteFlag(true);
+                        logger.info("marked for deletion: " + studyFileEditBean.getStudyFile().getFileName());
+                    }
                 }
                 editStudyFilesService.save(dv.getId(), vdcUser.getId());
 
@@ -274,16 +290,6 @@ public class MediaResourceManagerImpl implements MediaResourceManager {
         } else {
             throw new SwordError("Unable to determine target type or identifier from url: " + uri);
         }
-    }
-
-    @Override
-    public void deleteMediaResource(String string, AuthCredentials ac, SwordConfiguration sc) throws SwordError, SwordServerException, SwordAuthException {
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
-
-    @Override
-    public DepositReceipt addResource(String string, Deposit dpst, AuthCredentials ac, SwordConfiguration sc) throws SwordError, SwordServerException, SwordAuthException {
-        throw new UnsupportedOperationException("Not supported yet.");
     }
 
     boolean isAuthorizedToEditStudy(VDCUser vdcUser, VDC dv, Study study) throws SwordError {

@@ -21,11 +21,11 @@ for line in all_studies.splitlines():
         url_end = pieces[9:11]
 
 url_start = "https://sword:sword@localhost:8181/dvn/api/data-deposit/v1/swordv2/"
-edit_uri =       url_start + "edit/"       + "/".join(url_end)
-edit_media_uri = url_start + "edit-media/" + "/".join(url_end)
+statement_uri = url_start + "statement/"       + "/".join(url_end)
+edit_uri      = url_start + "edit/" + "/".join(url_end)
 
-print "finding old title from", edit_uri
-statement = ET.fromstring(Popen(["tools/scripts/data-deposit-api/test-statement", edit_uri], stdout=PIPE).communicate()[0])
+print "finding old title from", statement_uri
+statement = ET.fromstring(Popen(["tools/scripts/data-deposit-api/test-statement", statement_uri], stdout=PIPE).communicate()[0])
 for line in statement:
     if "{http://www.w3.org/2005/Atom}title" == line.tag:
         old_title = line.text
@@ -42,8 +42,8 @@ for line in deposit_receipt:
         new_title = pieces[1]
         print 'title changed from "', old_title, '" to "', new_title, '"'
 
-print "dumping XML statement from", edit_uri
-statement = ET.fromstring(Popen(["tools/scripts/data-deposit-api/test-statement", edit_uri], stdout=PIPE).communicate()[0])
+print "dumping XML statement from", statement_uri
+statement = ET.fromstring(Popen(["tools/scripts/data-deposit-api/test-statement", statement_uri], stdout=PIPE).communicate()[0])
 for line in statement:
     if "{http://www.w3.org/2005/Atom}author" == line.tag:
         for author_line in line:

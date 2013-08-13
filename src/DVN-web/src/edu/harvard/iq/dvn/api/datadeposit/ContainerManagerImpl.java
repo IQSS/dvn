@@ -273,6 +273,9 @@ public class ContainerManagerImpl extends VDCBaseBean implements ContainerManage
                     }
                     if (fileIdLong != null) {
                         logger.info("preparing to delete file id " + fileIdLong);
+                        /**
+                         * @todo: recalculate UNF
+                         */
                         StudyFile fileToDelete;
                         try {
                             fileToDelete = studyFileService.getStudyFile(fileIdLong);

@@ -6,5 +6,5 @@ collection = XPath.first(service_document, "//collection")
 deposit_target = collection.attributes["href"]
 
 deposit_receipt = Document.new `tools/scripts/data-deposit-api/test-collection-entry-only #{deposit_target}`
-data_citation = XPath.first(deposit_receipt, "//bibliographicCitation")
-puts data_citation
+data_citation = XPath.first(deposit_receipt, "//bibliographicCitation").text
+puts "study created: #{data_citation}"

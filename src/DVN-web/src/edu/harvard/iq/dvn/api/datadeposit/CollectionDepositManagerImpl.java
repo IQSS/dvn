@@ -31,7 +31,6 @@ import java.util.Map;
 import java.util.logging.Logger;
 import javax.ejb.EJB;
 import javax.inject.Inject;
-import org.apache.abdera.i18n.iri.IRI;
 import org.apache.commons.io.FileUtils;
 import org.swordapp.server.AuthCredentials;
 import org.swordapp.server.CollectionDepositManager;
@@ -130,21 +129,8 @@ public class CollectionDepositManagerImpl implements CollectionDepositManager {
                         tmpFile.delete();
                         uploadDir.delete();
                     }
-                    DepositReceipt depositReceipt = new DepositReceipt();
-                    String hostName = System.getProperty("dvn.inetAddress");
-                    String optionalPort = "";
-//                int port = uriReference.getPort();
-                    int port = urlManager.getPort();
-                    if (port != -1) {
-                        optionalPort = ":" + port;
-                    }
-                    String baseUrl = "https://" + hostName + optionalPort + "/dvn/api/data-deposit/v1/swordv2/";
-                    depositReceipt.setLocation(new IRI("location" + baseUrl + study.getGlobalId()));
-                    depositReceipt.setEditIRI(new IRI(baseUrl + "edit/" + study.getGlobalId()));
-                    depositReceipt.setEditMediaIRI(new IRI(baseUrl + "edit-media/" + study.getGlobalId()));
-                    depositReceipt.setVerboseDescription("Title: " + study.getLatestVersion().getMetadata().getTitle());
-                    depositReceipt.setStatementURI("application/atom+xml;type=feed", baseUrl + "statement/" + study.getGlobalId());
-                    depositReceipt.addDublinCore("bibliographicCitation", study.getLatestVersion().getMetadata().getCitation(false));
+                    ReceiptGenerator receiptGenerator = new ReceiptGenerator();
+                    DepositReceipt depositReceipt = receiptGenerator.createReceipt(urlManager.getHostnamePlusBaseUrlPath(collectionUri), study);
                     return depositReceipt;
                 } else if (deposit.isBinaryOnly()) {
                     // get here with this:

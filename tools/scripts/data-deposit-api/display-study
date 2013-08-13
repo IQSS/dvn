@@ -11,11 +11,16 @@ study_edit_uri = first_study.attributes["xml:base"]
 
 entry = Document.new `tools/scripts/data-deposit-api/test-edit-get #{study_edit_uri}`
 statement_uri = XPath.first(entry,"//link[@rel='http://purl.org/net/sword/terms/statement']").attributes["href"]
+data_citation = XPath.first(entry, "//bibliographicCitation").text
 
 statement = Document.new `tools/scripts/data-deposit-api/test-statement #{statement_uri}`
 title = statement.root.elements["title"].text
-release_state = XPath.first(statement, "//category[@term='isReleased']")
-puts "'#{title}' release state is #{release_state.text}. Files (if any):"
+release_state_term = "isReleased"
+release_state = XPath.first(statement, "//category[@term='#{release_state_term}']")
+draft_state_term = "isInDraft"
+draft_state = XPath.first(statement, "//category[@term='#{draft_state_term}']").text
+puts "#{release_state_term}:#{release_state.text} #{draft_state_term}:#{draft_state} for #{data_citation}. Files (if any):"
+exit # FIXME: delete this line
 XPath.each( statement, "//entry" ) { |entry|
     url     = entry.elements["content"].attributes["src"]
     type    = entry.elements["content"].attributes["type"]

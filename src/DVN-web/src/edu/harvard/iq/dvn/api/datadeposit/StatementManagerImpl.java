@@ -20,6 +20,7 @@
 package edu.harvard.iq.dvn.api.datadeposit;
 
 import edu.harvard.iq.dvn.core.admin.VDCUser;
+import edu.harvard.iq.dvn.core.study.FileMetadata;
 import edu.harvard.iq.dvn.core.study.Study;
 import edu.harvard.iq.dvn.core.study.StudyFile;
 import edu.harvard.iq.dvn.core.study.StudyServiceLocal;
@@ -122,7 +123,9 @@ public class StatementManagerImpl implements StatementManager {
             Statement statement = new AtomStatement(feedUri, author, title, datedUpdated);
             Boolean isReleased = study.isReleased();
             statement.setState("isReleased", isReleased.toString());
-            for (StudyFile studyFile : study.getStudyFiles()) {
+            List<FileMetadata> fileMetadatas = study.getLatestVersion().getFileMetadatas();
+            for (FileMetadata fileMetadata : fileMetadatas) {
+                StudyFile studyFile = fileMetadata.getStudyFile();
                 String studyFileUrl = urlManager.getHostnamePlusBaseUrlPath(editUri) + "/edit/file/" + studyFile.getId();
                 ResourcePart resourcePart = new ResourcePart(studyFileUrl);
                 resourcePart.setMediaType(studyFile.getFileType());

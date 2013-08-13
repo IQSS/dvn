@@ -143,9 +143,6 @@ public class ContainerManagerImpl extends VDCBaseBean implements ContainerManage
                 } catch (NamingException ex) {
                     throw new SwordServerException("problem looking up studyService");
                 }
-                /**
-                 * @todo: investigate OptimisticLockException
-                 */
                 editStudyService.setStudyVersion(studyService.getStudyByGlobalId(globalId).getId());
                 Study studyToEdit = editStudyService.getStudyVersion().getStudy();
                 VDC dvThatOwnsStudy = studyToEdit.getOwner();
@@ -163,7 +160,12 @@ public class ContainerManagerImpl extends VDCBaseBean implements ContainerManage
                     // values rather than replacing them
                     studyToEdit.getLatestVersion().setMetadata(new Metadata());
                     ddiService.mapDDI(ddiFile, studyToEdit.getLatestVersion(), true);
-                    editStudyService.save(dvThatOwnsStudy.getId(), vdcUser.getId());
+                    try {
+                        editStudyService.save(dvThatOwnsStudy.getId(), vdcUser.getId());
+                    } catch (EJBException ex) {
+                        // perhaps the study is locked because a file is being ingested (OptimisticLockException)
+                        throw new SwordError("Unable to replace cataloging information for study " + studyToEdit.getGlobalId() + ". Please try again later.");
+                    }
 
                     DepositReceipt fakeDepositReceipt = new DepositReceipt();
                     fakeDepositReceipt.setVerboseDescription("Title: " + studyToEdit.getLatestVersion().getMetadata().getTitle());

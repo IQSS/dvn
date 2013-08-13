@@ -15,16 +15,20 @@ statement_uri = XPath.first(entry,"//link[@rel='http://purl.org/net/sword/terms/
 statement = Document.new `tools/scripts/data-deposit-api/test-statement #{statement_uri}`
 title = statement.root.elements["title"].text
 release_state = XPath.first(statement, "//category[@term='isReleased']")
-puts "'#{title}' release state is #{release_state.text}. Files (if any):"
+puts "'#{title}' release state is #{release_state.text}. looking for a file to delete..."
 file_to_delete = XPath.first( statement, "//entry" )
-type = file_to_delete.elements["content"].attributes["type"]
-url_of_file_to_delete = file_to_delete.elements["content"].attributes["src"]
-puts "deleting file of type '#{type}' from #{url_of_file_to_delete}"
-out = `tools/scripts/data-deposit-api/test-edit-delete #{url_of_file_to_delete}`
+if file_to_delete
+    type = file_to_delete.elements["content"].attributes["type"]
+    url_of_file_to_delete = file_to_delete.elements["content"].attributes["src"]
+    puts "attempting deletion of '#{type}' file from #{url_of_file_to_delete}"
+    out = `tools/scripts/data-deposit-api/test-edit-delete #{url_of_file_to_delete}`
 
-if out.match(/204 No Content/)
-    puts "successful deletion"
+    if out.match(/204 No Content/)
+        puts "successful deletion"
+    else
+        puts "deletion failed"
+        puts out
+    end
 else
-    puts "deletion failed"
-    puts out
+    puts "no files found to delete"
 end

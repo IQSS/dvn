@@ -529,7 +529,8 @@ public class IndexServiceBean implements edu.harvard.iq.dvn.core.index.IndexServ
             Long maxStudyId = studyService.getMaxStudyTableId(); 
             
             if (maxStudyId == null) {
-                throw new IOException("Could not determine the last database id in the study table.");
+                logger.fine("The database appears to be empty. Exiting.");
+                return;
             }
             
             if (maxStudyId.intValue() != maxStudyId.longValue()) {

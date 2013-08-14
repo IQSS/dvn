@@ -39,14 +39,19 @@ deposit_receipt = ET.fromstring(Popen(["tools/scripts/data-deposit-api/test-edit
 for line in deposit_receipt:
     if "{http://purl.org/net/sword/terms/}verboseDescription" == line.tag:
         pieces = line.text.split(": ")
-        new_title = pieces[1]
-        print 'title changed from "', old_title, '" to "', new_title, '"'
+        potential_error = pieces[0]
+        if "org.swordapp.server.SwordError" == potential_error:
+                for line2 in deposit_receipt:
+                    if "{http://www.w3.org/2005/Atom}summary" == line2.tag:
+                        print line2.text
+        else:
+            new_title = pieces[1]
+            print 'title changed from "', old_title, '" to "', new_title, '"'
+            print "dumping XML statement from", statement_uri
+            statement = ET.fromstring(Popen(["tools/scripts/data-deposit-api/test-statement", statement_uri], stdout=PIPE).communicate()[0])
+            for line in statement:
+                if "{http://www.w3.org/2005/Atom}author" == line.tag:
+                    for author_line in line:
+                        new_author = author_line.text
 
-print "dumping XML statement from", statement_uri
-statement = ET.fromstring(Popen(["tools/scripts/data-deposit-api/test-statement", statement_uri], stdout=PIPE).communicate()[0])
-for line in statement:
-    if "{http://www.w3.org/2005/Atom}author" == line.tag:
-        for author_line in line:
-            new_author = author_line.text
-
-print 'author changed from "', old_author, '" to "', new_author, '"'
+            print 'author changed from "', old_author, '" to "', new_author, '"'

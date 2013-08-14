@@ -172,11 +172,9 @@ public class ContainerManagerImpl extends VDCBaseBean implements ContainerManage
                         throw new SwordError("Unable to replace cataloging information for study " + studyToEdit.getGlobalId() + ". Please try again later.");
                     }
 
-                    DepositReceipt fakeDepositReceipt = new DepositReceipt();
-                    fakeDepositReceipt.setVerboseDescription("Title: " + studyToEdit.getLatestVersion().getMetadata().getTitle());
-                    IRI fakeIri = new IRI("fakeIri");
-                    fakeDepositReceipt.setEditIRI(fakeIri);
-                    return fakeDepositReceipt;
+                    ReceiptGenerator receiptGenerator = new ReceiptGenerator();
+                    DepositReceipt depositReceipt = receiptGenerator.createReceipt(uri, studyToEdit);
+                    return depositReceipt;
                 } else {
                     throw new SwordError("User " + vdcUser.getUserName() + " is not authorized to modify dataverse " + dvThatOwnsStudy.getAlias());
                 }
@@ -351,11 +349,9 @@ public class ContainerManagerImpl extends VDCBaseBean implements ContainerManage
                         if (swordAuth.hasAccessToModifyDataverse(vdcUser, dvThatOwnsStudy)) {
                             if (!deposit.isInProgress()) {
                                 studyService.setReleased(studyToRelease.getId());
-                                DepositReceipt fakeDepositReceipt = new DepositReceipt();
-                                IRI fakeIri = new IRI("fakeIri");
-                                fakeDepositReceipt.setEditIRI(fakeIri);
-                                fakeDepositReceipt.setVerboseDescription("Title: " + studyToRelease.getLatestVersion().getMetadata().getTitle());
-                                return fakeDepositReceipt;
+                                ReceiptGenerator receiptGenerator = new ReceiptGenerator();
+                                DepositReceipt depositReceipt = receiptGenerator.createReceipt(uri, studyToRelease);
+                                return depositReceipt;
                             } else {
                                 throw new SwordError("Pass 'In-Progress: false' header to release a study.");
                             }

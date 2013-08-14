@@ -279,11 +279,9 @@ public class MediaResourceManagerImpl implements MediaResourceManager {
                  * @todo: when should we release the study?
                  */
 //        studyService.setReleased(studyId);
-                DepositReceipt fakeDepositReceipt = new DepositReceipt();
-                IRI fakeIri = new IRI("fakeIriFromBinaryDeposit");
-                fakeDepositReceipt.setLocation(fakeIri);
-                fakeDepositReceipt.setEditIRI(fakeIri);
-                return fakeDepositReceipt;
+                ReceiptGenerator receiptGenerator = new ReceiptGenerator();
+                DepositReceipt depositReceipt = receiptGenerator.createReceipt(uri, study);
+                return depositReceipt;
             } else {
                 throw new SwordError("user " + vdcUser.getUserName() + " is not authorized to modify study with global ID " + study.getGlobalId());
             }

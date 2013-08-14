@@ -150,11 +150,13 @@ public class DvnRDataAnalysisServiceImpl {
     // the path:    
     static String VDC_R_STARTUP_FILE = "vdc_startup.R";
     static String librarySetup = "source(paste(.libPaths()[1], '/../share/dvn/" + VDC_R_STARTUP_FILE + "', sep = ''));";
+    static String DVN_R_DATA_FUNCTIONS = "dvn_data_functions.R";
     boolean DEBUG = true;
     
     // ----------------------------------------------------- instance filelds
     public String PID = null;
     public String tempFileName = null;
+    public String tempRCodeFileName = null; 
     public String tempRdataFileName = null;
     public String tempFileNameNew = null;
     private String tempOriginalFileName;
@@ -184,6 +186,7 @@ public class DvnRDataAnalysisServiceImpl {
         wrkdir = DSB_TMP_DIR + sep + requestdir;
         
         tempFileName = DSB_TMP_DIR + sep + TMP_DATA_FILE_NAME + "." + PID + TMP_DATA_FILE_EXT;
+        tempRCodeFileName = wrkdir + sep + DVN_R_DATA_FUNCTIONS;
         tempRdataFileName = DSB_TMP_DIR + sep + TMP_DATA_FILE_NAME + "_" + PID + ".Rdata";
         
         tempFileNameNew = wrkdir + sep + TMP_DATA_FILE_NAME +"." + PID + TMP_DATA_FILE_EXT;
@@ -340,10 +343,43 @@ public class DvnRDataAnalysisServiceImpl {
             
             // Rserve code starts here
             dbgLog.fine("DvnRserveComm: "+"wrkdir="+wrkdir);
-            dbgLog.fine("DvnRserveComm: "+librarySetup);
-            historyEntry.add(librarySetup);
-            c.voidEval(librarySetup);
+            //dbgLog.fine("DvnRserveComm: "+librarySetup);
+            //historyEntry.add(librarySetup);
+            //c.voidEval(librarySetup);
             
+            Properties p = System.getProperties();
+            String domainRoot = p.getProperty("com.sun.aas.instanceRoot");
+            String rFunctionsFileName = domainRoot+"/config/"+DVN_R_DATA_FUNCTIONS;
+
+            dbgLog.fine("Source code for the custom DVN R functions: "+rFunctionsFileName);
+
+            File rFunctionsFile = new File (rFunctionsFileName); 
+            if ( !rFunctionsFile.exists() ) {
+                throw new IOException("Could not find R source code file "+rFunctionsFileName);
+            }
+            
+            /* 
+             * Send the R code file across:
+             */
+            
+            inb = new BufferedInputStream(new FileInputStream(rFunctionsFile));
+
+            os = c.createFile(tempRCodeFileName);
+            while ((bufsize = inb.read(bffr)) != -1) {
+                    os.write(bffr, 0, bufsize);
+            }
+            os.close();
+            inb.close();
+            
+            /* 
+             * And read it in: 
+             */
+            
+            String newLibrarySetup = "source(\"" + tempRCodeFileName + "\");";
+            dbgLog.fine("DvnRserveComm: "+newLibrarySetup);
+            historyEntry.add(newLibrarySetup);
+            c.voidEval(newLibrarySetup);
+            dbgLog.fine("DVN R Code library has been read.");
             
             // variable type
             /* 

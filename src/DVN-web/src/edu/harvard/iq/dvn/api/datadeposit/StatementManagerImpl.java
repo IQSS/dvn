@@ -33,6 +33,7 @@ import java.util.Map;
 import java.util.logging.Logger;
 import javax.ejb.EJB;
 import javax.inject.Inject;
+import org.apache.abdera.model.AtomDate;
 import org.swordapp.server.AtomStatement;
 import org.swordapp.server.AuthCredentials;
 import org.swordapp.server.ResourcePart;
@@ -114,13 +115,11 @@ public class StatementManagerImpl implements StatementManager {
                 throw new SwordError("user " + vdcUser.getUserName() + " is not authorized to view study with global ID " + globalId);
             }
 
-            String feedUri = "fakeFeedUri";
+            String feedUri = urlManager.getHostnamePlusBaseUrlPath(editUri) + "/edit/study/" + study.getGlobalId();
             String author = study.getLatestVersion().getMetadata().getAuthorsStr();
             String title = study.getLatestVersion().getMetadata().getTitle();
-            /**
-             * @todo: null date becomes "now" ... get actual date
-             */
-            String datedUpdated = null;
+            AtomDate atomDate = new AtomDate(study.getLatestVersion().getLastUpdateTime());
+            String datedUpdated = atomDate.toString();
             Statement statement = new AtomStatement(feedUri, author, title, datedUpdated);
             Boolean isReleased = study.isReleased();
             Boolean isInDraft = study.getLatestVersion().isDraft();

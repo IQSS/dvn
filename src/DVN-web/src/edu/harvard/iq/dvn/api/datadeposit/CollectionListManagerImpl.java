@@ -28,6 +28,7 @@ import java.util.List;
 import java.util.logging.Logger;
 import javax.ejb.EJB;
 import javax.inject.Inject;
+import javax.xml.namespace.QName;
 import org.apache.abdera.Abdera;
 import org.apache.abdera.i18n.iri.IRI;
 import org.apache.abdera.model.Entry;
@@ -89,6 +90,8 @@ public class CollectionListManagerImpl implements CollectionListManager {
                     entry.setBaseUri(new IRI(baseUrl + "edit/" + study.getGlobalId()));
                     feed.addEntry(entry);
                 }
+                Boolean dvHasBeenReleased = dv.isRestricted() ? false : true;
+                feed.addSimpleExtension(new QName("dataverseHasBeenReleased"), dvHasBeenReleased.toString());
                 return feed;
             } else {
                 throw new SwordServerException("Could not find dataverse: " + dvAlias);

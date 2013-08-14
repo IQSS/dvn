@@ -48,12 +48,15 @@ public class ServiceDocumentManagerImpl implements ServiceDocumentManager {
     VDCServiceLocal vdcService;
     @Inject
     SwordAuth swordAuth;
+    @Inject
+    UrlManager urlManager;
 
     @Override
     public ServiceDocument getServiceDocument(String sdUri, AuthCredentials authCredentials, SwordConfiguration config)
             throws SwordError, SwordServerException, SwordAuthException {
 
         VDCUser vdcUser = swordAuth.auth(authCredentials);
+        urlManager.processUrl(sdUri);
 
         /**
          * @todo: check if this returns open or wiki dataverses
@@ -74,31 +77,14 @@ public class ServiceDocumentManagerImpl implements ServiceDocumentManager {
             SwordWorkspace swordWorkspace = new SwordWorkspace();
             swordWorkspace.setTitle(journalDataverse.getVdcNetwork().getName());
             String authority = journalDataverse.getVdcNetwork().getAuthority();
-            try {
-                String optionalPort = "";
-                URI u = new URI(sdUri);
-                if (!"https".equals(u.getScheme())) {
-                    throw new SwordError("https is required but protocol was " + u.getScheme());
-                }
-                int port = u.getPort();
-                if (port != -1) {
-                    // https often runs on port 8181 in dev
-                    optionalPort = ":" + port;
-                }
-                String hostName = System.getProperty("dvn.inetAddress");
-                SwordCollection swordCollectionNew = new SwordCollection();
-                swordCollectionNew.setTitle(journalDataverse.getName());
-                swordCollectionNew.setHref("https://" + hostName + optionalPort + "/dvn/api/data-deposit/v1/swordv2/collection/dataverse/" + dvAlias);
-                swordCollectionNew.addAcceptPackaging(UriRegistry.PACKAGE_SIMPLE_ZIP);
-                swordWorkspace.addCollection(swordCollectionNew);
-                service.addWorkspace(swordWorkspace);
-                service.setMaxUploadSize(config.getMaxUploadSize());
-                return service;
-            } catch (URISyntaxException ex) {
-                String msg = "problem with URL ( " + sdUri + " ): " + ex.getMessage();
-                logger.info(msg);
-                throw new SwordError(msg);
-            }
+            SwordCollection swordCollectionNew = new SwordCollection();
+            swordCollectionNew.setTitle(journalDataverse.getName());
+            swordCollectionNew.setHref(urlManager.getHostnamePlusBaseUrlPath(sdUri) + "/collection/dataverse/" + dvAlias);
+            swordCollectionNew.addAcceptPackaging(UriRegistry.PACKAGE_SIMPLE_ZIP);
+            swordWorkspace.addCollection(swordCollectionNew);
+            service.addWorkspace(swordWorkspace);
+            service.setMaxUploadSize(config.getMaxUploadSize());
+            return service;
         } else {
             String msg = "could not retrieve Journal Dataverse";
             logger.info(msg);

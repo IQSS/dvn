@@ -38,6 +38,7 @@ public class UrlManager {
     int port;
 
     void processUrl(String url) throws SwordError {
+        logger.info("url was: " + url);
         this.originalUrl = url;
         URI javaNetUri;
         try {
@@ -69,50 +70,52 @@ public class UrlManager {
         } catch (ArrayIndexOutOfBoundsException ex) {
             throw new SwordError("Unable to determine servlet path from URL: " + url);
         }
-        List<String> targetTypeAndIdentifier;
-        try {
-            //               6          7         8
-            // for example: /collection/dataverse/sword
-            targetTypeAndIdentifier = urlParts.subList(7, urlParts.size());
-        } catch (IndexOutOfBoundsException ex) {
-            throw new SwordError("No target components specified in URL: " + url);
-        }
-        this.targetType = targetTypeAndIdentifier.get(0);
-        if (targetType != null) {
-            if (targetType.equals("dataverse")) {
-                String dvAlias;
-                try {
-                    dvAlias = targetTypeAndIdentifier.get(1);
-                } catch (IndexOutOfBoundsException ex) {
-                    throw new SwordError("No dataverse alias provided in url: " + url);
-                }
-                this.targetIdentifier = dvAlias;
-            } else if (targetType.equals("study")) {
-                String globalId;
-                try {
-                    List<String> globalIdParts = targetTypeAndIdentifier.subList(1, 3);
-                    globalId = globalIdParts.get(0) + "/" + globalIdParts.get(1);
-                } catch (IndexOutOfBoundsException ex) {
-                    throw new SwordError("Invalid study global id provided in url: " + url);
-                }
-                this.targetIdentifier = globalId;
-            } else if (targetType.equals("file")) {
-                String fileIdString;
-                try {
-                    //look up file here to validate it?
-                    fileIdString = targetTypeAndIdentifier.get(1);
-                } catch (IndexOutOfBoundsException ex) {
-                    throw new SwordError("No file id provided in url: " + url);
-                }
-                this.targetIdentifier = fileIdString;
-            } else {
-                throw new SwordError("unsupported target type: " + targetType);
+        if (!servlet.equals("service-document")) {
+            List<String> targetTypeAndIdentifier;
+            try {
+                //               6          7         8
+                // for example: /collection/dataverse/sword
+                targetTypeAndIdentifier = urlParts.subList(7, urlParts.size());
+            } catch (IndexOutOfBoundsException ex) {
+                throw new SwordError("No target components specified in URL: " + url);
             }
-        } else {
-            throw new SwordError("Unable to determine target type from url: " + url);
+            this.targetType = targetTypeAndIdentifier.get(0);
+            if (targetType != null) {
+                if (targetType.equals("dataverse")) {
+                    String dvAlias;
+                    try {
+                        dvAlias = targetTypeAndIdentifier.get(1);
+                    } catch (IndexOutOfBoundsException ex) {
+                        throw new SwordError("No dataverse alias provided in url: " + url);
+                    }
+                    this.targetIdentifier = dvAlias;
+                } else if (targetType.equals("study")) {
+                    String globalId;
+                    try {
+                        List<String> globalIdParts = targetTypeAndIdentifier.subList(1, 3);
+                        globalId = globalIdParts.get(0) + "/" + globalIdParts.get(1);
+                    } catch (IndexOutOfBoundsException ex) {
+                        throw new SwordError("Invalid study global id provided in url: " + url);
+                    }
+                    this.targetIdentifier = globalId;
+                } else if (targetType.equals("file")) {
+                    String fileIdString;
+                    try {
+                        //look up file here to validate it?
+                        fileIdString = targetTypeAndIdentifier.get(1);
+                    } catch (IndexOutOfBoundsException ex) {
+                        throw new SwordError("No file id provided in url: " + url);
+                    }
+                    this.targetIdentifier = fileIdString;
+                } else {
+                    throw new SwordError("unsupported target type: " + targetType);
+                }
+            } else {
+                throw new SwordError("Unable to determine target type from url: " + url);
+            }
+            logger.fine("target type: " + targetType);
+            logger.fine("target identifier: " + targetIdentifier);
         }
-        System.out.println("target type: " + targetType);
-        System.out.println("target identifier: " + targetIdentifier);
     }
 
     String getHostnamePlusBaseUrlPath(String url) throws SwordError {

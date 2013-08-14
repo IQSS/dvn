@@ -76,18 +76,12 @@ public class CollectionListManagerImpl implements CollectionListManager {
                 Feed feed = abdera.newFeed();
                 feed.setTitle(dv.getName());
                 Collection<Study> studies = dv.getOwnedStudies();
-                String hostName = System.getProperty("dvn.inetAddress");
-                String optionalPort = "";
-                int port = iri.getPort();
-                if (port != -1) {
-                    optionalPort = ":" + port;
-                }
-                String baseUrl = "https://" + hostName + optionalPort + "/dvn/api/data-deposit/v1/swordv2/";
+                String baseUrl = urlManager.getHostnamePlusBaseUrlPath(iri.toString());
                 for (Study study : studies) {
                     Entry entry = feed.addEntry();
                     entry.setId(study.getGlobalId());
                     entry.setTitle(study.getLatestVersion().getMetadata().getTitle());
-                    entry.setBaseUri(new IRI(baseUrl + "edit/study/" + study.getGlobalId()));
+                    entry.setBaseUri(new IRI(baseUrl + "/edit/study/" + study.getGlobalId()));
                     feed.addEntry(entry);
                 }
                 Boolean dvHasBeenReleased = dv.isRestricted() ? false : true;

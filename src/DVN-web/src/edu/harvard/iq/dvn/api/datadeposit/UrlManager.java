@@ -45,6 +45,9 @@ public class UrlManager {
         } catch (URISyntaxException ex) {
             throw new SwordError("Invalid URL syntax: " + url);
         }
+        if (!"https".equals(javaNetUri.getScheme())) {
+            throw new SwordError("https is required but protocol was " + javaNetUri.getScheme());
+        }
         this.port = javaNetUri.getPort();
         String[] urlPartsArray = javaNetUri.getPath().split("/");
         List<String> urlParts = Arrays.asList(urlPartsArray);

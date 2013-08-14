@@ -77,14 +77,14 @@ public class ServiceDocumentManagerImpl implements ServiceDocumentManager {
             try {
                 String optionalPort = "";
                 URI u = new URI(sdUri);
+                if (!"https".equals(u.getScheme())) {
+                    throw new SwordError("https is required but protocol was " + u.getScheme());
+                }
                 int port = u.getPort();
                 if (port != -1) {
                     // https often runs on port 8181 in dev
                     optionalPort = ":" + port;
                 }
-                /**
-                 * @todo: force https
-                 */
                 String hostName = System.getProperty("dvn.inetAddress");
                 SwordCollection swordCollectionNew = new SwordCollection();
                 swordCollectionNew.setTitle(journalDataverse.getName());

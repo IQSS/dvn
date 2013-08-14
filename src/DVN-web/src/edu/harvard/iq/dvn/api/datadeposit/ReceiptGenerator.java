@@ -28,10 +28,10 @@ public class ReceiptGenerator {
     DepositReceipt createReceipt(String baseUrl, Study study) {
         DepositReceipt depositReceipt = new DepositReceipt();
         depositReceipt.setLocation(new IRI("location" + baseUrl + study.getGlobalId()));
-        depositReceipt.setEditIRI(new IRI(baseUrl + "/edit/" + study.getGlobalId()));
-        depositReceipt.setEditMediaIRI(new IRI(baseUrl + "/edit-media/" + study.getGlobalId()));
+        depositReceipt.setEditIRI(new IRI(baseUrl + "/edit/study/" + study.getGlobalId()));
+        depositReceipt.setEditMediaIRI(new IRI(baseUrl + "/edit-media/study/" + study.getGlobalId()));
         depositReceipt.setVerboseDescription("Title: " + study.getLatestVersion().getMetadata().getTitle());
-        depositReceipt.setStatementURI("application/atom+xml;type=feed", baseUrl + "/statement/" + study.getGlobalId());
+        depositReceipt.setStatementURI("application/atom+xml;type=feed", baseUrl + "/statement/study/" + study.getGlobalId());
         depositReceipt.addDublinCore("bibliographicCitation", study.getLatestVersion().getMetadata().getCitation(false));
         return depositReceipt;
     }

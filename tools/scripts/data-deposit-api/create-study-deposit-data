@@ -45,7 +45,7 @@ sword_error = ET.fromstring(error_xml)
 #        error_summary = error.text
 
 #match = re.search("could not extract global ID", error_summary)
-match = re.search("Unable to determine target type from url", error_xml)
+match = re.search("unsupported target type", error_xml)
 if match:
     print "global id test succeeded"
 else:

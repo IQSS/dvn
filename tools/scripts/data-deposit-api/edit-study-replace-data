@@ -1,41 +1,25 @@
-#!/usr/bin/env python
-import re
-from subprocess import Popen, PIPE
-from xml.etree import ElementTree as ET
+#!/usr/bin/env ruby
+require "rexml/document"
+include REXML
+service_document = Document.new `tools/scripts/data-deposit-api/test-service-document`
+collection = XPath.first(service_document, "//collection/@href")
 
-service_document = ET.fromstring(Popen("tools/scripts/data-deposit-api/test-service-document", stdout=PIPE).communicate()[0])
+feed_of_studies = Document.new `tools/scripts/data-deposit-api/test-collection-get #{collection}`
+first_study = XPath.first(feed_of_studies, "//entry")
+id = first_study.elements["id"].text
+study_edit_uri = first_study.attributes["xml:base"]
 
-deposit_target = service_document[0][1].attrib["href"]
-
-feed_of_studies = ET.fromstring(Popen(["tools/scripts/data-deposit-api/test-collection-get", deposit_target], stdout=PIPE).communicate()[0]);
-
-print "listing all studies..."
-all_studies = Popen(["tools/scripts/data-deposit-api/list-studies", deposit_target], stdout=PIPE).communicate()[0]
-print all_studies,
-print "finding a study to edit..."
-for line in all_studies.splitlines():
-    if line.startswith("-"):
-        parts = line.split("- ")
-        url_only = parts[1]
-        pieces = url_only.split("/")
-        url_end = pieces[9:11]
-
-url_start = "https://sword:sword@localhost:8181/dvn/api/data-deposit/v1/swordv2/"
-edit_uri =       url_start + "edit/"       + "/".join(url_end)
-edit_media_uri = url_start + "edit-media/" + "/".join(url_end)
-
-print "getting entry from", edit_uri
-entry = ET.fromstring(Popen(["tools/scripts/data-deposit-api/test-edit-get", edit_uri], stdout=PIPE).communicate()[0]);
-for line in entry:
-    if "{http://purl.org/dc/terms/}bibliographicCitation" == line.tag:
-        print "data citation:", line.text
+entry = Document.new `tools/scripts/data-deposit-api/test-edit-get #{study_edit_uri}`
+statement_uri = XPath.first(entry,"//link[@rel='http://purl.org/net/sword/terms/statement']").attributes["href"]
+edit_media_uri = XPath.first(entry,"//link[@rel='edit-media']").attributes["href"]
+data_citation = XPath.first(entry, "//bibliographicCitation").text
 
 replacement_data = "50by1000.dta.zip"
-print "replacing data at", edit_media_uri, "with", replacement_data
-out = Popen(["tools/scripts/data-deposit-api/test-edit-media-put-binary", replacement_data, edit_media_uri], stdout=PIPE).communicate()[0]
-match = re.search("HTTP/1.1 204 No Content", out)
-if match:
-    print "data replacement was successful"
-else:
-    print "unable to replace data, output was:"
-    print out
+puts "using #{replacement_data} to replace data at #{edit_media_uri}"
+out = `tools/scripts/data-deposit-api/test-edit-media-put-binary #{replacement_data} #{edit_media_uri}`
+if out.match(/204 No Content/)
+    puts "successful replace"
+else
+    puts "replace failed"
+    puts out
+end

@@ -87,7 +87,7 @@ public class CollectionListManagerImpl implements CollectionListManager {
                     Entry entry = feed.addEntry();
                     entry.setId(study.getGlobalId());
                     entry.setTitle(study.getLatestVersion().getMetadata().getTitle());
-                    entry.setBaseUri(new IRI(baseUrl + "edit/" + study.getGlobalId()));
+                    entry.setBaseUri(new IRI(baseUrl + "edit/study/" + study.getGlobalId()));
                     feed.addEntry(entry);
                 }
                 Boolean dvHasBeenReleased = dv.isRestricted() ? false : true;

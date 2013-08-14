@@ -1,57 +1,34 @@
-#!/usr/bin/env python
-import re
-from subprocess import Popen, PIPE
-from xml.etree import ElementTree as ET
+#!/usr/bin/env ruby
+require "rexml/document"
+include REXML
+service_document = Document.new `tools/scripts/data-deposit-api/test-service-document`
+collection = XPath.first(service_document, "//collection/@href")
 
-service_document = ET.fromstring(Popen("tools/scripts/data-deposit-api/test-service-document", stdout=PIPE).communicate()[0])
+feed_of_studies = Document.new `tools/scripts/data-deposit-api/test-collection-get #{collection}`
+first_study = XPath.first(feed_of_studies, "//entry")
+id = first_study.elements["id"].text
+study_edit_uri = first_study.attributes["xml:base"]
 
-deposit_target = service_document[0][1].attrib["href"]
+entry = Document.new `tools/scripts/data-deposit-api/test-edit-get #{study_edit_uri}`
+statement_uri = XPath.first(entry,"//link[@rel='http://purl.org/net/sword/terms/statement']").attributes["href"]
+edit_media_uri = XPath.first(entry,"//link[@rel='edit-media']").attributes["href"]
+data_citation = XPath.first(entry, "//bibliographicCitation").text
 
-feed_of_studies = ET.fromstring(Popen(["tools/scripts/data-deposit-api/test-collection-get", deposit_target], stdout=PIPE).communicate()[0])
+statement_old = Document.new `tools/scripts/data-deposit-api/test-statement #{statement_uri}`
+old_title = XPath.first(statement_old, "//title").text
+old_author = XPath.first(statement_old, "//author/name").text
 
-#print "listing all studies..."
-all_studies = Popen(["tools/scripts/data-deposit-api/list-studies", deposit_target], stdout=PIPE).communicate()[0]
-#print all_studies,
-print "finding a study to edit..."
-for line in all_studies.splitlines():
-    if line.startswith("-"):
-        parts = line.split("- ")
-        url_only = parts[1]
-        pieces = url_only.split("/")
-        url_end = pieces[9:11]
-
-url_start = "https://sword:sword@localhost:8181/dvn/api/data-deposit/v1/swordv2/"
-statement_uri = url_start + "statement/"       + "/".join(url_end)
-edit_uri      = url_start + "edit/" + "/".join(url_end)
-
-print "finding old title from", statement_uri
-statement = ET.fromstring(Popen(["tools/scripts/data-deposit-api/test-statement", statement_uri], stdout=PIPE).communicate()[0])
-for line in statement:
-    if "{http://www.w3.org/2005/Atom}title" == line.tag:
-        old_title = line.text
-    if "{http://www.w3.org/2005/Atom}author" == line.tag:
-        for author_line in line:
-            old_author = author_line.text
-
-print "replacing title using", edit_uri
-deposit_receipt = ET.fromstring(Popen(["tools/scripts/data-deposit-api/test-edit-put-atom-entry", edit_uri], stdout=PIPE).communicate()[0])
-
-for line in deposit_receipt:
-    if "{http://purl.org/net/sword/terms/}verboseDescription" == line.tag:
-        pieces = line.text.split(": ")
-        potential_error = pieces[0]
-        if "org.swordapp.server.SwordError" == potential_error:
-                for line2 in deposit_receipt:
-                    if "{http://www.w3.org/2005/Atom}summary" == line2.tag:
-                        print line2.text
-        else:
-            new_title = pieces[1]
-            print 'title changed from "', old_title, '" to "', new_title, '"'
-            print "dumping XML statement from", statement_uri
-            statement = ET.fromstring(Popen(["tools/scripts/data-deposit-api/test-statement", statement_uri], stdout=PIPE).communicate()[0])
-            for line in statement:
-                if "{http://www.w3.org/2005/Atom}author" == line.tag:
-                    for author_line in line:
-                        new_author = author_line.text
-
-            print 'author changed from "', old_author, '" to "', new_author, '"'
+out = `tools/scripts/data-deposit-api/test-edit-put-atom-entry #{study_edit_uri}`
+if out.match(/sword:error/)
+    #puts "sword error"
+    #puts out
+    xml = Document.new out
+    error_summary = XPath.first(xml, "//atom:summary").text
+    puts "Problem replacing cataloging info: #{error_summary}"
+else
+    statement_new = Document.new `tools/scripts/data-deposit-api/test-statement #{statement_uri}`
+    new_title = XPath.first(statement_new, "//title").text
+    new_author = XPath.first(statement_new, "//author/name").text
+    puts "title changed from '#{old_title}' to '#{new_title}'"
+    puts "author changed from '#{old_author}' to '#{new_author}'"
+end

@@ -12,24 +12,26 @@ feed_of_studies = ET.fromstring(Popen(["tools/scripts/data-deposit-api/test-coll
 all_studies = Popen(["tools/scripts/data-deposit-api/list-studies", deposit_target], stdout=PIPE).communicate()[0]
 #print "finding a study to release..."
 for line in all_studies.splitlines():
+    print line
     if line.startswith("-"):
         parts = line.split("- ")
         url_only = parts[1]
-        pieces = url_only.split("/")
-        url_end = pieces[9:11]
+        edit_uri = url_only
 
 try:
-    url_end
-#    print "will be releasing study:", url_end
+    edit_uri
 except NameError:
     print "no studies found to release"
     exit(1)
 
-url_start = "https://sword:sword@localhost:8181/dvn/api/data-deposit/v1/swordv2/"
-edit_uri =      url_start + "edit/"       + "/".join(url_end)
-statement_uri = url_start + "statement/"  + "/".join(url_end)
+entry_xml = Popen(["tools/scripts/data-deposit-api/test-edit-get", edit_uri], stdout=PIPE).communicate()[0]
+entry_parsed = ET.fromstring(entry_xml)
+for line in entry_parsed:
+    if "{http://www.w3.org/2005/Atom}link" == line.tag:
+        if 'http://purl.org/net/sword/terms/statement' == line.attrib["rel"]:
+            statement_uri = line.attrib["href"]
 
-#print "getting statement from", statement_uri
+print "getting statement from", statement_uri
 statement_before = ET.fromstring(Popen(["tools/scripts/data-deposit-api/test-statement", statement_uri], stdout=PIPE).communicate()[0]);
 for line in statement_before:
     if "{http://www.w3.org/2005/Atom}category" == line.tag:

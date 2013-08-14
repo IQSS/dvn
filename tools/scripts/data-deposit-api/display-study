@@ -20,7 +20,6 @@ release_state = XPath.first(statement, "//category[@term='#{release_state_term}'
 draft_state_term = "isInDraft"
 draft_state = XPath.first(statement, "//category[@term='#{draft_state_term}']").text
 puts "#{release_state_term}:#{release_state.text} #{draft_state_term}:#{draft_state} for #{data_citation}. Files (if any):"
-exit # FIXME: delete this line
 XPath.each( statement, "//entry" ) { |entry|
     url     = entry.elements["content"].attributes["src"]
     type    = entry.elements["content"].attributes["type"]

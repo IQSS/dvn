@@ -91,7 +91,12 @@ public class ContainerManagerImpl extends VDCBaseBean implements ContainerManage
             logger.info("operating on target type: " + urlManager.getTargetType());
             if ("study".equals(targetType)) {
                 String globalId = urlManager.getTargetIdentifier();
-                Study study = studyService.getStudyByGlobalId(globalId);
+                Study study;
+                try {
+                    study = studyService.getStudyByGlobalId(globalId);
+                } catch (EJBException ex) {
+                    throw new SwordError("Could not find study based on global id (" + globalId + ") in URL: " + uri);
+                }
                 if (study != null) {
                     ReceiptGenerator receiptGenerator = new ReceiptGenerator();
                     String baseUrl = urlManager.getHostnamePlusBaseUrlPath(uri);

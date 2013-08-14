@@ -19,22 +19,17 @@
  */
 package edu.harvard.iq.dvn.api.datadeposit;
 
-import edu.harvard.iq.dvn.core.study.Study;
-import edu.harvard.iq.dvn.core.study.StudyServiceLocal;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.Arrays;
 import java.util.List;
 import java.util.logging.Logger;
-import javax.ejb.EJB;
 import org.apache.commons.lang.StringUtils;
 import org.swordapp.server.SwordError;
 
 public class UrlManager {
 
     private static final Logger logger = Logger.getLogger(UrlManager.class.getCanonicalName());
-    @EJB
-    StudyServiceLocal studyService;
     String originalUrl;
     SwordConfigurationImpl swordConfiguration = new SwordConfigurationImpl();
     String servlet;
@@ -79,7 +74,7 @@ public class UrlManager {
         } catch (IndexOutOfBoundsException ex) {
             throw new SwordError("No target components specified in URL: " + url);
         }
-        this.targetType = determineTargetType(targetTypeAndIdentifier);
+        this.targetType = targetTypeAndIdentifier.get(0);
         if (targetType != null) {
             if (targetType.equals("dataverse")) {
                 String dvAlias;
@@ -90,8 +85,13 @@ public class UrlManager {
                 }
                 this.targetIdentifier = dvAlias;
             } else if (targetType.equals("study")) {
-                String globalId = getStudyGlobalId(targetTypeAndIdentifier);
-                logger.info("study found: " + globalId);
+                String globalId;
+                try {
+                    List<String> globalIdParts = targetTypeAndIdentifier.subList(1, 3);
+                    globalId = globalIdParts.get(0) + "/" + globalIdParts.get(1);
+                } catch (IndexOutOfBoundsException ex) {
+                    throw new SwordError("Invalid study global id provided in url: " + url);
+                }
                 this.targetIdentifier = globalId;
             } else if (targetType.equals("file")) {
                 String fileIdString;
@@ -167,45 +167,5 @@ public class UrlManager {
 
     public void setPort(int port) {
         this.port = port;
-    }
-
-    private String determineTargetType(List<String> targetTypeAndIdentifier) {
-        if (!targetTypeAndIdentifier.isEmpty()) {
-            String index0 = targetTypeAndIdentifier.get(0);
-            System.out.println("index0: " + index0);
-            if (index0.equals("dataverse")) {
-                return "dataverse";
-            } else if (index0.equals("file")) {
-                return "file";
-            } else {
-                String globalId = getStudyGlobalId(targetTypeAndIdentifier);
-                if (globalId != null) {
-                    return "study";
-                } else {
-                    return null;
-                }
-            }
-        } else {
-            return null;
-        }
-    }
-
-    private String getStudyGlobalId(List<String> targetTypeAndIdentifier) {
-        String potentialGlobalId = StringUtils.join(targetTypeAndIdentifier, "/");
-        logger.info("potential globalId: " + potentialGlobalId);
-        Study study = null;
-        try {
-            logger.info("running studyService.getStudyByGlobalId");
-            study = studyService.getStudyByGlobalId(potentialGlobalId);
-        } catch (Exception ex) {
-            // shouldn't studyService.getStudyByGlobalId throw some sort of exception?
-            logger.info("problem running studyService.getStudyByGlobalId: " + ex.getMessage());
-            return null;
-        }
-        if (study != null) {
-            return study.getGlobalId();
-        } else {
-            return null;
-        }
     }
 }

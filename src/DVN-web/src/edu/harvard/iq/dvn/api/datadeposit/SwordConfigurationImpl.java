@@ -19,6 +19,7 @@
  */
 package edu.harvard.iq.dvn.api.datadeposit;
 
+import java.io.File;
 import org.swordapp.server.SwordConfiguration;
 
 public class SwordConfigurationImpl implements SwordConfiguration {
@@ -71,9 +72,11 @@ public class SwordConfigurationImpl implements SwordConfiguration {
     @Override
     public String getTempDirectory() {
         /**
-         * @todo: change this to something more secure
+         * @todo: dvnIndexLocation is "domain1/config" but use different
+         * dedicated property
          */
-        return "/tmp";
+        String dvnIndexLocation = System.getProperty("dvn.index.location");
+        return dvnIndexLocation + File.separator + "sword";
     }
 
     @Override

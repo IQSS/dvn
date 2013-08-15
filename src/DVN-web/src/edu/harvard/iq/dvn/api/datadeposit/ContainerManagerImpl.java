@@ -37,6 +37,8 @@ import edu.harvard.iq.dvn.core.vdc.VDCServiceLocal;
 import edu.harvard.iq.dvn.core.web.admin.OptionsPage;
 import edu.harvard.iq.dvn.core.web.common.VDCBaseBean;
 import java.io.File;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
@@ -380,8 +382,22 @@ public class ContainerManagerImpl extends VDCBaseBean implements ContainerManage
                     VDC dvToRelease = vdcService.findByAlias(dvAlias);
                     if (swordAuth.hasAccessToModifyDataverse(vdcUser, dvToRelease)) {
                         if (dvToRelease != null) {
+                            String optionalPort = "";
+                            URI u;
+                            try {
+                                u = new URI(uri);
+                                int port = u.getPort();
+                                if (port != -1) {
+                                    // https often runs on port 8181 in dev
+                                    optionalPort = ":" + port;
+                                }
+                            } catch (URISyntaxException ex) {
+                                throw new SwordError("unable to part url");
+                            }
+                            String hostName = System.getProperty("dvn.inetAddress");
+                            String dvHomePage = "https://" + hostName + optionalPort + "/dvn/dv/" + dvToRelease.getAlias();
                             if (deposit.isInProgress()) {
-                                throw new SwordError("Changing a dataverse to 'not released' is not supported");
+                                throw new SwordError("Changing a dataverse to 'not released' is not supported. Please change to 'not released' from the web interface: " + dvHomePage);
                             } else {
                                 try {
                                     getVDCRequestBean().setVdcNetwork(dvToRelease.getVdcNetwork());
@@ -389,9 +405,10 @@ public class ContainerManagerImpl extends VDCBaseBean implements ContainerManage
                                     /**
                                      * todo: observe same rules about dataverse
                                      * release via web interface such as a study
-                                     * or a collection must be release
+                                     * or a collection must be release:
+                                     * https://redmine.hmdc.harvard.edu/issues/3225
                                      */
-                                    throw new SwordError("Releasing a dataverse is not yet supported");
+                                    throw new SwordError("Releasing a dataverse is not yet supported. Please release from the web interface: " + dvHomePage);
                                 }
                                 OptionsPage optionsPage = new OptionsPage();
                                 if (optionsPage.isReleasable()) {

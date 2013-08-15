@@ -26,7 +26,6 @@ import edu.harvard.iq.dvn.core.study.StudyFile;
 import edu.harvard.iq.dvn.core.study.StudyServiceLocal;
 import edu.harvard.iq.dvn.core.vdc.VDC;
 import edu.harvard.iq.dvn.core.vdc.VDCServiceLocal;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -95,47 +94,32 @@ public class StatementManagerImpl implements StatementManager {
                 throw new SwordError(msg);
             }
 
-            VDC dv = null;
-            if (vdcList.get(0) != null) {
-                dv = vdcList.get(0);
-            }
-
-            boolean authorizedToViewStudy = false;
-            Collection<Study> ownedStudies = dv.getOwnedStudies();
-            for (Study ownedStudy : ownedStudies) {
-                if (study.equals(ownedStudy)) {
-                    authorizedToViewStudy = true;
-                    System.out.println("setting to true... ownedStudy: " + ownedStudy.getGlobalId());
-                    break;
-                } else {
-                    System.out.println("ownedStudy: " + ownedStudy.getGlobalId() + " ... moving on");
+            VDC dvThatOwnsStudy = study.getOwner();
+            if (swordAuth.hasAccessToModifyDataverse(vdcUser, dvThatOwnsStudy)) {
+                String feedUri = urlManager.getHostnamePlusBaseUrlPath(editUri) + "/edit/study/" + study.getGlobalId();
+                String author = study.getLatestVersion().getMetadata().getAuthorsStr();
+                String title = study.getLatestVersion().getMetadata().getTitle();
+                AtomDate atomDate = new AtomDate(study.getLatestVersion().getLastUpdateTime());
+                String datedUpdated = atomDate.toString();
+                Statement statement = new AtomStatement(feedUri, author, title, datedUpdated);
+                Boolean isReleased = study.isReleased();
+                Boolean isInDraft = study.getLatestVersion().isDraft();
+                Map<String, String> states = new HashMap<String, String>();
+                states.put("isReleased", isReleased.toString());
+                states.put("isInDraft", isInDraft.toString());
+                statement.setStates(states);
+                List<FileMetadata> fileMetadatas = study.getLatestVersion().getFileMetadatas();
+                for (FileMetadata fileMetadata : fileMetadatas) {
+                    StudyFile studyFile = fileMetadata.getStudyFile();
+                    String studyFileUrl = urlManager.getHostnamePlusBaseUrlPath(editUri) + "/edit/file/" + studyFile.getId();
+                    ResourcePart resourcePart = new ResourcePart(studyFileUrl);
+                    resourcePart.setMediaType(studyFile.getFileType());
+                    statement.addResource(resourcePart);
                 }
-            }
-            if (!authorizedToViewStudy) {
+                return statement;
+            } else {
                 throw new SwordError("user " + vdcUser.getUserName() + " is not authorized to view study with global ID " + globalId);
             }
-
-            String feedUri = urlManager.getHostnamePlusBaseUrlPath(editUri) + "/edit/study/" + study.getGlobalId();
-            String author = study.getLatestVersion().getMetadata().getAuthorsStr();
-            String title = study.getLatestVersion().getMetadata().getTitle();
-            AtomDate atomDate = new AtomDate(study.getLatestVersion().getLastUpdateTime());
-            String datedUpdated = atomDate.toString();
-            Statement statement = new AtomStatement(feedUri, author, title, datedUpdated);
-            Boolean isReleased = study.isReleased();
-            Boolean isInDraft = study.getLatestVersion().isDraft();
-            Map<String, String> states = new HashMap<String, String>();
-            states.put("isReleased", isReleased.toString());
-            states.put("isInDraft", isInDraft.toString());
-            statement.setStates(states);
-            List<FileMetadata> fileMetadatas = study.getLatestVersion().getFileMetadatas();
-            for (FileMetadata fileMetadata : fileMetadatas) {
-                StudyFile studyFile = fileMetadata.getStudyFile();
-                String studyFileUrl = urlManager.getHostnamePlusBaseUrlPath(editUri) + "/edit/file/" + studyFile.getId();
-                ResourcePart resourcePart = new ResourcePart(studyFileUrl);
-                resourcePart.setMediaType(studyFile.getFileType());
-                statement.addResource(resourcePart);
-            }
-            return statement;
         } else {
             throw new SwordError("Could not determine target type or identifier from URL: " + editUri);
         }

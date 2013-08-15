@@ -24,7 +24,6 @@ import edu.harvard.iq.dvn.core.study.Study;
 import edu.harvard.iq.dvn.core.vdc.VDC;
 import edu.harvard.iq.dvn.core.vdc.VDCServiceLocal;
 import java.util.Collection;
-import java.util.List;
 import java.util.logging.Logger;
 import javax.ejb.EJB;
 import javax.inject.Inject;
@@ -61,32 +60,26 @@ public class CollectionListManagerImpl implements CollectionListManager {
             VDC dv = vdcService.findByAlias(dvAlias);
 
             if (dv != null) {
-                boolean authorized = false;
-                List<VDC> userVDCs = vdcService.getUserVDCs(vdcUser.getId());
-                for (VDC userVdc : userVDCs) {
-                    if (userVdc.equals(dv)) {
-                        authorized = true;
-                        break;
+                if (swordAuth.hasAccessToModifyDataverse(vdcUser, dv)) {
+                    Abdera abdera = new Abdera();
+                    Feed feed = abdera.newFeed();
+                    feed.setTitle(dv.getName());
+                    Collection<Study> studies = dv.getOwnedStudies();
+                    String baseUrl = urlManager.getHostnamePlusBaseUrlPath(iri.toString());
+                    for (Study study : studies) {
+                        Entry entry = feed.addEntry();
+                        entry.setId(study.getGlobalId());
+                        entry.setTitle(study.getLatestVersion().getMetadata().getTitle());
+                        entry.setBaseUri(new IRI(baseUrl + "/edit/study/" + study.getGlobalId()));
+                        feed.addEntry(entry);
                     }
-                }
-                if (!authorized) {
+                    Boolean dvHasBeenReleased = dv.isRestricted() ? false : true;
+                    feed.addSimpleExtension(new QName("dataverseHasBeenReleased"), dvHasBeenReleased.toString());
+                    return feed;
+                } else {
                     throw new SwordServerException("user " + vdcUser.getUserName() + " is not authorized to list studies in dataverse " + dv.getAlias());
                 }
-                Abdera abdera = new Abdera();
-                Feed feed = abdera.newFeed();
-                feed.setTitle(dv.getName());
-                Collection<Study> studies = dv.getOwnedStudies();
-                String baseUrl = urlManager.getHostnamePlusBaseUrlPath(iri.toString());
-                for (Study study : studies) {
-                    Entry entry = feed.addEntry();
-                    entry.setId(study.getGlobalId());
-                    entry.setTitle(study.getLatestVersion().getMetadata().getTitle());
-                    entry.setBaseUri(new IRI(baseUrl + "/edit/study/" + study.getGlobalId()));
-                    feed.addEntry(entry);
-                }
-                Boolean dvHasBeenReleased = dv.isRestricted() ? false : true;
-                feed.addSimpleExtension(new QName("dataverseHasBeenReleased"), dvHasBeenReleased.toString());
-                return feed;
+
             } else {
                 throw new SwordServerException("Could not find dataverse: " + dvAlias);
             }

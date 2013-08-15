@@ -34,7 +34,6 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -47,7 +46,6 @@ import javax.inject.Inject;
 import javax.naming.Context;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
-import org.apache.abdera.i18n.iri.IRI;
 import org.swordapp.server.AuthCredentials;
 import org.swordapp.server.Deposit;
 import org.swordapp.server.DepositReceipt;
@@ -88,8 +86,8 @@ public class MediaResourceManagerImpl implements MediaResourceManager {
             logger.info("looking up study with globalId " + globalId);
             Study study = editStudyService.getStudyByGlobalId(globalId);
             if (study != null) {
-                VDC dv = study.getOwner();
-                if (isAuthorizedToEditStudy(vdcUser, dv, study)) {
+                VDC dvThatOwnsStudy = study.getOwner();
+                if (swordAuth.hasAccessToModifyDataverse(vdcUser, dvThatOwnsStudy)) {
                     InputStream fixmeInputStream = new ByteArrayInputStream("FIXME: replace with zip of all study files".getBytes());
                     String contentType = "application/zip";
                     String packaging = UriRegistry.PACKAGE_SIMPLE_ZIP;
@@ -150,10 +148,10 @@ public class MediaResourceManagerImpl implements MediaResourceManager {
             } catch (NullPointerException ex) {
                 throw new SwordError("couldn't find study with global ID of " + globalId);
             }
-            VDC dv = study.getOwner();
-            if (isAuthorizedToEditStudy(vdcUser, dv, study)) {
+            VDC dvThatOwnsStudy = study.getOwner();
+            if (swordAuth.hasAccessToModifyDataverse(vdcUser, dvThatOwnsStudy)) {
                 editStudyService.setStudyVersion(studyId);
-                editStudyService.save(dv.getId(), vdcUser.getId());
+                editStudyService.save(dvThatOwnsStudy.getId(), vdcUser.getId());
 
                 EditStudyFilesService editStudyFilesService;
                 try {
@@ -170,7 +168,7 @@ public class MediaResourceManagerImpl implements MediaResourceManager {
                         logger.info("marked for deletion: " + studyFileEditBean.getStudyFile().getFileName());
                     }
                 }
-                editStudyFilesService.save(dv.getId(), vdcUser.getId());
+                editStudyFilesService.save(dvThatOwnsStudy.getId(), vdcUser.getId());
 
                 String tempDirectory = swordConfiguration.getTempDirectory();
                 String uploadDirPath = tempDirectory + File.separator + "uploads" + File.separator + study.getId().toString();
@@ -288,26 +286,5 @@ public class MediaResourceManagerImpl implements MediaResourceManager {
         } else {
             throw new SwordError("Unable to determine target type or identifier from url: " + uri);
         }
-    }
-
-    boolean isAuthorizedToEditStudy(VDCUser vdcUser, VDC dv, Study study) throws SwordError {
-        /**
-         * @todo: we are relying on the fact that the vdcUser has write access
-         * to only one "journal" dataverse. Need a better way
-         */
-        boolean authorizedToEditStudy = false;
-        Collection<Study> ownedStudies = dv.getOwnedStudies();
-        for (Study ownedStudy : ownedStudies) {
-            if (study.equals(ownedStudy)) {
-                authorizedToEditStudy = true;
-                break;
-            }
-        }
-        if (authorizedToEditStudy) {
-            return true;
-        } else {
-            throw new SwordError("user " + vdcUser.getUserName() + " is not authorized to modify study with global ID " + study.getGlobalId());
-        }
-
     }
 }

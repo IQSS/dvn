@@ -65,86 +65,78 @@ public class CollectionDepositManagerImpl implements CollectionDepositManager {
 
             logger.info("attempting deposit into this dataverse alias: " + dvAlias);
 
-            VDC dv = vdcService.findByAlias(dvAlias);
+            VDC dvThatWillOwnStudy = vdcService.findByAlias(dvAlias);
 
-            if (dv != null) {
+            if (dvThatWillOwnStudy != null) {
 
-                boolean authorized = false;
                 List<VDC> userVDCs = vdcService.getUserVDCs(vdcUser.getId());
-                for (VDC userVdc : userVDCs) {
-                    if (userVdc.equals(dv)) {
-                        authorized = true;
-                        break;
-                    }
-                }
-                /**
-                 * @todo: use new hasAccessToModifyDataverse method in swordAuth
-                 */
-                if (!authorized) {
-                    throw new SwordServerException("user " + vdcUser.getUserName() + " is not authorized to modify dataverse " + dv.getAlias());
-                }
-                if (userVDCs.size() != 1) {
-                    throw new SwordServerException("the account used to modify a Journal Dataverse can only have access to 1 dataverse, not " + userVDCs.size());
-                }
+                if (swordAuth.hasAccessToModifyDataverse(vdcUser, dvThatWillOwnStudy)) {
 
-                logger.info("multipart: " + deposit.isMultipart());
-                logger.info("binary only: " + deposit.isBinaryOnly());
-                logger.info("entry only: " + deposit.isEntryOnly());
-                logger.info("in progress: " + deposit.isInProgress());
-                logger.info("metadata relevant: " + deposit.isMetadataRelevant());
-
-                if (deposit.isEntryOnly()) {
-                    // require title *and* exercise the SWORD jar a bit
-                    Map<String, List<String>> dublinCore = deposit.getSwordEntry().getDublinCore();
-                    if (dublinCore.get("title") == null || dublinCore.get("title").get(0) == null) {
-                        throw new SwordError("title field is required");
+                    if (userVDCs.size() != 1) {
+                        throw new SwordServerException("the account used to modify a Journal Dataverse can only have access to 1 dataverse, not " + userVDCs.size());
                     }
 
-                    // instead of writing a tmp file, maybe importStudy() could accept an InputStream?
-                    String tmpDirectory = config.getTempDirectory();
-                    String uploadDirPath = tmpDirectory + File.separator + "import" + File.separator + dv.getId();
-                    File uploadDir = new File(uploadDirPath);
-                    if (!uploadDir.exists()) {
-                        if (!uploadDir.mkdirs()) {
-                            throw new SwordServerException("couldn't create directory: " + uploadDir.getAbsolutePath());
+                    logger.info("multipart: " + deposit.isMultipart());
+                    logger.info("binary only: " + deposit.isBinaryOnly());
+                    logger.info("entry only: " + deposit.isEntryOnly());
+                    logger.info("in progress: " + deposit.isInProgress());
+                    logger.info("metadata relevant: " + deposit.isMetadataRelevant());
+
+                    if (deposit.isEntryOnly()) {
+                        // require title *and* exercise the SWORD jar a bit
+                        Map<String, List<String>> dublinCore = deposit.getSwordEntry().getDublinCore();
+                        if (dublinCore.get("title") == null || dublinCore.get("title").get(0) == null) {
+                            throw new SwordError("title field is required");
                         }
-                    }
-                    String tmpFilePath = uploadDirPath + File.separator + "newStudyViaSwordv2.xml";
-                    File tmpFile = new File(tmpFilePath);
-                    try {
-                        FileUtils.writeStringToFile(tmpFile, deposit.getSwordEntry().getEntry().toString());
-                    } catch (IOException ex) {
-                        throw new SwordServerException("Could write temporary file");
-                    } finally {
-                        uploadDir.delete();
-                    }
 
-                    Long dcmiTermsFormatId = new Long(4);
-                    Study study;
-                    try {
-                        study = studyService.importStudy(tmpFile, dcmiTermsFormatId, dv.getId(), vdcUser.getId());
-                    } catch (Exception ex) {
-                        throw new SwordError("Couldn't import study: " + ex.getMessage());
-                    } finally {
-                        tmpFile.delete();
-                        uploadDir.delete();
+                        // instead of writing a tmp file, maybe importStudy() could accept an InputStream?
+                        String tmpDirectory = config.getTempDirectory();
+                        String uploadDirPath = tmpDirectory + File.separator + "import" + File.separator + dvThatWillOwnStudy.getId();
+                        File uploadDir = new File(uploadDirPath);
+                        if (!uploadDir.exists()) {
+                            if (!uploadDir.mkdirs()) {
+                                throw new SwordServerException("couldn't create directory: " + uploadDir.getAbsolutePath());
+                            }
+                        }
+                        String tmpFilePath = uploadDirPath + File.separator + "newStudyViaSwordv2.xml";
+                        File tmpFile = new File(tmpFilePath);
+                        try {
+                            FileUtils.writeStringToFile(tmpFile, deposit.getSwordEntry().getEntry().toString());
+                        } catch (IOException ex) {
+                            throw new SwordServerException("Could write temporary file");
+                        } finally {
+                            uploadDir.delete();
+                        }
+
+                        Long dcmiTermsFormatId = new Long(4);
+                        Study study;
+                        try {
+                            study = studyService.importStudy(tmpFile, dcmiTermsFormatId, dvThatWillOwnStudy.getId(), vdcUser.getId());
+                        } catch (Exception ex) {
+                            throw new SwordError("Couldn't import study: " + ex.getMessage());
+                        } finally {
+                            tmpFile.delete();
+                            uploadDir.delete();
+                        }
+                        ReceiptGenerator receiptGenerator = new ReceiptGenerator();
+                        DepositReceipt depositReceipt = receiptGenerator.createReceipt(urlManager.getHostnamePlusBaseUrlPath(collectionUri), study);
+                        return depositReceipt;
+                    } else if (deposit.isBinaryOnly()) {
+                        // get here with this:
+                        // curl --insecure -s --data-binary "@example.zip" -H "Content-Disposition: filename=example.zip" -H "Content-Type: application/zip" https://sword:sword@localhost:8181/dvn/api/data-deposit/v1/swordv2/collection/dataverse/sword/
+                        throw new SwordError("Binary deposit to the collection IRI via POST is not supported. Please POST an Atom entry instead.");
+                    } else if (deposit.isMultipart()) {
+                        // get here with this:
+                        // wget https://raw.github.com/swordapp/Simple-Sword-Server/master/tests/resources/multipart.dat
+                        // curl --insecure --data-binary "@multipart.dat" -H 'Content-Type: multipart/related; boundary="===============0670350989=="' -H "MIME-Version: 1.0" https://sword:sword@localhost:8181/dvn/api/data-deposit/v1/swordv2/collection/dataverse/sword/hdl:1902.1/12345
+                        // but...
+                        // "Yeah, multipart is critically broken across all implementations" -- http://www.mail-archive.com/sword-app-tech@lists.sourceforge.net/msg00327.html
+                        throw new UnsupportedOperationException("Not yet implemented");
+                    } else {
+                        throw new SwordError("expected deposit types are isEntryOnly, isBinaryOnly, and isMultiPart");
                     }
-                    ReceiptGenerator receiptGenerator = new ReceiptGenerator();
-                    DepositReceipt depositReceipt = receiptGenerator.createReceipt(urlManager.getHostnamePlusBaseUrlPath(collectionUri), study);
-                    return depositReceipt;
-                } else if (deposit.isBinaryOnly()) {
-                    // get here with this:
-                    // curl --insecure -s --data-binary "@example.zip" -H "Content-Disposition: filename=example.zip" -H "Content-Type: application/zip" https://sword:sword@localhost:8181/dvn/api/data-deposit/v1/swordv2/collection/dataverse/sword/
-                    throw new SwordError("Binary deposit to the collection IRI via POST is not supported. Please POST an Atom entry instead.");
-                } else if (deposit.isMultipart()) {
-                    // get here with this:
-                    // wget https://raw.github.com/swordapp/Simple-Sword-Server/master/tests/resources/multipart.dat
-                    // curl --insecure --data-binary "@multipart.dat" -H 'Content-Type: multipart/related; boundary="===============0670350989=="' -H "MIME-Version: 1.0" https://sword:sword@localhost:8181/dvn/api/data-deposit/v1/swordv2/collection/dataverse/sword/hdl:1902.1/12345
-                    // but...
-                    // "Yeah, multipart is critically broken across all implementations" -- http://www.mail-archive.com/sword-app-tech@lists.sourceforge.net/msg00327.html
-                    throw new UnsupportedOperationException("Not yet implemented");
                 } else {
-                    throw new SwordError("expected deposit types are isEntryOnly, isBinaryOnly, and isMultiPart");
+                    throw new SwordError("user " + vdcUser.getUserName() + " is not authorized to modify study");
                 }
             } else {
                 throw new SwordServerException("Could not find dataverse: " + dvAlias);

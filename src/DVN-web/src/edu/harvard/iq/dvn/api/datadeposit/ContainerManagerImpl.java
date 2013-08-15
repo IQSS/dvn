@@ -98,13 +98,18 @@ public class ContainerManagerImpl extends VDCBaseBean implements ContainerManage
                     throw new SwordError("Could not find study based on global id (" + globalId + ") in URL: " + uri);
                 }
                 if (study != null) {
-                    ReceiptGenerator receiptGenerator = new ReceiptGenerator();
-                    String baseUrl = urlManager.getHostnamePlusBaseUrlPath(uri);
-                    DepositReceipt depositReceipt = receiptGenerator.createReceipt(baseUrl, study);
-                    if (depositReceipt != null) {
-                        return depositReceipt;
+                    VDC dvThatOwnsStudy = study.getOwner();
+                    if (swordAuth.hasAccessToModifyDataverse(vdcUser, dvThatOwnsStudy)) {
+                        ReceiptGenerator receiptGenerator = new ReceiptGenerator();
+                        String baseUrl = urlManager.getHostnamePlusBaseUrlPath(uri);
+                        DepositReceipt depositReceipt = receiptGenerator.createReceipt(baseUrl, study);
+                        if (depositReceipt != null) {
+                            return depositReceipt;
+                        } else {
+                            throw new SwordError("Could not generate deposit receipt.");
+                        }
                     } else {
-                        throw new SwordError("Could not generate deposit receipt.");
+                        throw new SwordError("User " + vdcUser.getUserName() + " is not authorized to retrieve entry for " + study.getGlobalId());
                     }
                 } else {
                     throw new SwordError("Could not find study based on URL: " + uri);
@@ -278,9 +283,6 @@ public class ContainerManagerImpl extends VDCBaseBean implements ContainerManage
                     }
                     if (fileIdLong != null) {
                         logger.info("preparing to delete file id " + fileIdLong);
-                        /**
-                         * @todo: recalculate UNF
-                         */
                         StudyFile fileToDelete;
                         try {
                             fileToDelete = studyFileService.getStudyFile(fileIdLong);
@@ -346,8 +348,16 @@ public class ContainerManagerImpl extends VDCBaseBean implements ContainerManage
                     Study studyToRelease = studyService.getStudyByGlobalId(globalId);
                     if (studyToRelease != null) {
                         VDC dvThatOwnsStudy = studyToRelease.getOwner();
+                        /**
+                         * @todo: only admins can release studies?
+                         */
                         if (swordAuth.hasAccessToModifyDataverse(vdcUser, dvThatOwnsStudy)) {
                             if (!deposit.isInProgress()) {
+                                /**
+                                 * @todo: investigate EJBException: Cannot
+                                 * release latestVersion, incorrect state:
+                                 * RELEASED
+                                 */
                                 studyService.setReleased(studyToRelease.getId());
                                 ReceiptGenerator receiptGenerator = new ReceiptGenerator();
                                 DepositReceipt depositReceipt = receiptGenerator.createReceipt(uri, studyToRelease);

@@ -81,6 +81,7 @@ public class ServiceDocumentManagerImpl implements ServiceDocumentManager {
             swordCollectionNew.setTitle(journalDataverse.getName());
             swordCollectionNew.setHref(urlManager.getHostnamePlusBaseUrlPath(sdUri) + "/collection/dataverse/" + dvAlias);
             swordCollectionNew.addAcceptPackaging(UriRegistry.PACKAGE_SIMPLE_ZIP);
+            swordCollectionNew.setCollectionPolicy(journalDataverse.getDepositTermsOfUse());
             swordWorkspace.addCollection(swordCollectionNew);
             service.addWorkspace(swordWorkspace);
             service.setMaxUploadSize(config.getMaxUploadSize());

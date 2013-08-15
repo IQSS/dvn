@@ -286,7 +286,8 @@ public class MediaResourceManagerImpl implements MediaResourceManager {
                  */
 //        studyService.setReleased(studyId);
                 ReceiptGenerator receiptGenerator = new ReceiptGenerator();
-                DepositReceipt depositReceipt = receiptGenerator.createReceipt(uri, study);
+                String baseUrl = urlManager.getHostnamePlusBaseUrlPath(uri);
+                DepositReceipt depositReceipt = receiptGenerator.createReceipt(baseUrl, study);
                 return depositReceipt;
             } else {
                 throw new SwordError("user " + vdcUser.getUserName() + " is not authorized to modify study with global ID " + study.getGlobalId());

@@ -20,12 +20,16 @@
 package edu.harvard.iq.dvn.api.datadeposit;
 
 import edu.harvard.iq.dvn.core.study.Study;
+import java.util.logging.Logger;
 import org.apache.abdera.i18n.iri.IRI;
 import org.swordapp.server.DepositReceipt;
 
 public class ReceiptGenerator {
 
+    private static final Logger logger = Logger.getLogger(ReceiptGenerator.class.getCanonicalName());
+
     DepositReceipt createReceipt(String baseUrl, Study study) {
+        logger.info("baseUrl was: " + baseUrl);
         DepositReceipt depositReceipt = new DepositReceipt();
         depositReceipt.setLocation(new IRI("location" + baseUrl + study.getGlobalId()));
         depositReceipt.setEditIRI(new IRI(baseUrl + "/edit/study/" + study.getGlobalId()));

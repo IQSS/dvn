@@ -119,7 +119,8 @@ public class CollectionDepositManagerImpl implements CollectionDepositManager {
                             uploadDir.delete();
                         }
                         ReceiptGenerator receiptGenerator = new ReceiptGenerator();
-                        DepositReceipt depositReceipt = receiptGenerator.createReceipt(urlManager.getHostnamePlusBaseUrlPath(collectionUri), study);
+                        String baseUrl = urlManager.getHostnamePlusBaseUrlPath(collectionUri);
+                        DepositReceipt depositReceipt = receiptGenerator.createReceipt(baseUrl, study);
                         return depositReceipt;
                     } else if (deposit.isBinaryOnly()) {
                         // get here with this:

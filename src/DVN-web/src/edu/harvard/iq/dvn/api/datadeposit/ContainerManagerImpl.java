@@ -180,7 +180,8 @@ public class ContainerManagerImpl extends VDCBaseBean implements ContainerManage
                     }
 
                     ReceiptGenerator receiptGenerator = new ReceiptGenerator();
-                    DepositReceipt depositReceipt = receiptGenerator.createReceipt(uri, studyToEdit);
+                    String baseUrl = urlManager.getHostnamePlusBaseUrlPath(uri);
+                    DepositReceipt depositReceipt = receiptGenerator.createReceipt(baseUrl, studyToEdit);
                     return depositReceipt;
                 } else {
                     throw new SwordError("User " + vdcUser.getUserName() + " is not authorized to modify dataverse " + dvThatOwnsStudy.getAlias());
@@ -362,7 +363,8 @@ public class ContainerManagerImpl extends VDCBaseBean implements ContainerManage
                                  */
                                 studyService.setReleased(studyToRelease.getId());
                                 ReceiptGenerator receiptGenerator = new ReceiptGenerator();
-                                DepositReceipt depositReceipt = receiptGenerator.createReceipt(uri, studyToRelease);
+                                String baseUrl = urlManager.getHostnamePlusBaseUrlPath(uri);
+                                DepositReceipt depositReceipt = receiptGenerator.createReceipt(baseUrl, studyToRelease);
                                 return depositReceipt;
                             } else {
                                 throw new SwordError("Pass 'In-Progress: false' header to release a study.");

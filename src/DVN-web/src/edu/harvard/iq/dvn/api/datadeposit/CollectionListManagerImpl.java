@@ -67,10 +67,13 @@ public class CollectionListManagerImpl implements CollectionListManager {
                     Collection<Study> studies = dv.getOwnedStudies();
                     String baseUrl = urlManager.getHostnamePlusBaseUrlPath(iri.toString());
                     for (Study study : studies) {
+                        String editUri = baseUrl + "/edit/study/" + study.getGlobalId();
+                        String editMediaUri = baseUrl + "/edit-media/study/" + study.getGlobalId();
                         Entry entry = feed.addEntry();
-                        entry.setId(study.getGlobalId());
+                        entry.setId(editUri);
                         entry.setTitle(study.getLatestVersion().getMetadata().getTitle());
-                        entry.setBaseUri(new IRI(baseUrl + "/edit/study/" + study.getGlobalId()));
+                        entry.setBaseUri(new IRI(editUri));
+                        entry.addLink(editMediaUri, "edit-media");
                         feed.addEntry(entry);
                     }
                     Boolean dvHasBeenReleased = dv.isRestricted() ? false : true;

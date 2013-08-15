@@ -1,0 +1,20 @@
+#!/usr/bin/env ruby
+require "rexml/document"
+include REXML
+service_document = Document.new `tools/scripts/data-deposit-api/test-service-document`
+collection = XPath.first(service_document, "//collection/@href")
+
+feed_of_studies = Document.new `tools/scripts/data-deposit-api/test-collection-get #{collection}`
+first_study = XPath.first(feed_of_studies, "//entry")
+id = first_study.elements["id"].text
+study_edit_uri = first_study.attributes["xml:base"]
+
+entry = Document.new `tools/scripts/data-deposit-api/test-edit-get #{study_edit_uri}`
+edit_media_uri = XPath.first(entry,"//link[@rel='edit-media']").attributes["href"]
+out = `tools/scripts/data-deposit-api/test-edit-media-get #{edit_media_uri}`
+expected_message = "Please use the Datavers Network Data Sharing API instead"
+if out.match(/#{expected_message}/)
+    puts "Found expected message: #{expected_message}"
+else
+    puts "ERROR! Expected to find message: #{expected_message}"
+end

@@ -1,0 +1,8 @@
+#!/bin/sh
+if [ "" = "$1" ]; then
+  echo >&2 "Please supply the edit-media URI of a study"
+  exit 1
+else
+  EDIT_MEDIA_URI="$1"
+fi
+curl --insecure -s -H "Packaging: http://purl.org/net/sword/package/SimpleZip" -u sword:sword $EDIT_MEDIA_URI

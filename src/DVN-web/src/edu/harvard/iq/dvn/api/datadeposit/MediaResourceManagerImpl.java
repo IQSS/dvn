@@ -86,16 +86,24 @@ public class MediaResourceManagerImpl implements MediaResourceManager {
             logger.info("looking up study with globalId " + globalId);
             Study study = editStudyService.getStudyByGlobalId(globalId);
             if (study != null) {
-                VDC dvThatOwnsStudy = study.getOwner();
-                if (swordAuth.hasAccessToModifyDataverse(vdcUser, dvThatOwnsStudy)) {
-                    InputStream fixmeInputStream = new ByteArrayInputStream("FIXME: replace with zip of all study files".getBytes());
-                    String contentType = "application/zip";
-                    String packaging = UriRegistry.PACKAGE_SIMPLE_ZIP;
-                    boolean isPackaged = true;
-                    MediaResource mediaResource = new MediaResource(fixmeInputStream, contentType, packaging, isPackaged);
-                    return mediaResource;
+                /**
+                 * @todo: support this
+                 */
+                boolean getMediaResourceRepresentationSupported = false;
+                if (getMediaResourceRepresentationSupported) {
+                    VDC dvThatOwnsStudy = study.getOwner();
+                    if (swordAuth.hasAccessToModifyDataverse(vdcUser, dvThatOwnsStudy)) {
+                        InputStream fixmeInputStream = new ByteArrayInputStream("FIXME: replace with zip of all study files".getBytes());
+                        String contentType = "application/zip";
+                        String packaging = UriRegistry.PACKAGE_SIMPLE_ZIP;
+                        boolean isPackaged = true;
+                        MediaResource mediaResource = new MediaResource(fixmeInputStream, contentType, packaging, isPackaged);
+                        return mediaResource;
+                    } else {
+                        throw new SwordError("user " + vdcUser.getUserName() + " is not authorized to get a media resource representation of the study with global ID " + study.getGlobalId());
+                    }
                 } else {
-                    throw new SwordError("user " + vdcUser.getUserName() + " is not authorized to modify study with global ID " + study.getGlobalId());
+                    throw new SwordError("Please use the Datavers Network Data Sharing API instead");
                 }
             } else {
                 throw new SwordError("couldn't find study with global ID of " + globalId);

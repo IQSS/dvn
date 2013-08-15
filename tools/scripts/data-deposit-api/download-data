@@ -12,7 +12,7 @@ study_edit_uri = first_study.attributes["xml:base"]
 entry = Document.new `tools/scripts/data-deposit-api/test-edit-get #{study_edit_uri}`
 edit_media_uri = XPath.first(entry,"//link[@rel='edit-media']").attributes["href"]
 out = `tools/scripts/data-deposit-api/test-edit-media-get #{edit_media_uri}`
-expected_message = "Please use the Datavers Network Data Sharing API instead"
+expected_message = "Please use the Dataverse Network Data Sharing API instead"
 if out.match(/#{expected_message}/)
     puts "Found expected message: #{expected_message}"
 else

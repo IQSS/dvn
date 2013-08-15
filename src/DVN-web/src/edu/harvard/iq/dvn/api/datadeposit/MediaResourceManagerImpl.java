@@ -103,7 +103,7 @@ public class MediaResourceManagerImpl implements MediaResourceManager {
                         throw new SwordError("user " + vdcUser.getUserName() + " is not authorized to get a media resource representation of the study with global ID " + study.getGlobalId());
                     }
                 } else {
-                    throw new SwordError("Please use the Datavers Network Data Sharing API instead");
+                    throw new SwordError("Please use the Dataverse Network Data Sharing API instead");
                 }
             } else {
                 throw new SwordError("couldn't find study with global ID of " + globalId);

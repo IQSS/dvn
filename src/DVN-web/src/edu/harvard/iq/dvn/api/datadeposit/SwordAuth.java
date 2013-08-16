@@ -23,7 +23,6 @@ import edu.harvard.iq.dvn.core.admin.UserServiceLocal;
 import edu.harvard.iq.dvn.core.admin.VDCUser;
 import edu.harvard.iq.dvn.core.vdc.VDC;
 import edu.harvard.iq.dvn.core.vdc.VDCServiceLocal;
-import java.util.List;
 import java.util.logging.Logger;
 import javax.ejb.EJB;
 import org.swordapp.server.AuthCredentials;
@@ -66,15 +65,15 @@ public class SwordAuth {
 
     boolean hasAccessToModifyDataverse(VDCUser vdcUser, VDC dv) throws SwordError {
         boolean authorized = false;
-        List<VDC> userVDCs = vdcService.getUserVDCs(vdcUser.getId());
-        for (VDC userVdc : userVDCs) {
-            if (userVdc.equals(dv)) {
-                authorized = true;
-                break;
-            }
+        String role = vdcUser.getVDCRole(dv).getRole().getName();
+        if ("admin".equals(role)) {
+            authorized = true;
+        } else {
+            authorized = false;
         }
+
         if (!authorized) {
-            throw new SwordError("user " + vdcUser.getUserName() + " is not authorized to modify dataverse " + dv.getAlias());
+            throw new SwordError("User " + vdcUser.getUserName() + " with role of " + role + " is not authorized to modify dataverse " + dv.getAlias());
         } else {
             return authorized;
         }

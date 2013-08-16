@@ -72,10 +72,6 @@ public class CollectionDepositManagerImpl implements CollectionDepositManager {
                 List<VDC> userVDCs = vdcService.getUserVDCs(vdcUser.getId());
                 if (swordAuth.hasAccessToModifyDataverse(vdcUser, dvThatWillOwnStudy)) {
 
-                    if (userVDCs.size() != 1) {
-                        throw new SwordServerException("the account used to modify a Journal Dataverse can only have access to 1 dataverse, not " + userVDCs.size());
-                    }
-
                     logger.info("multipart: " + deposit.isMultipart());
                     logger.info("binary only: " + deposit.isBinaryOnly());
                     logger.info("entry only: " + deposit.isEntryOnly());

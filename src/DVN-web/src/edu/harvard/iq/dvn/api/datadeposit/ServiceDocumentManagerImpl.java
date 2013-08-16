@@ -22,6 +22,7 @@ package edu.harvard.iq.dvn.api.datadeposit;
 import edu.harvard.iq.dvn.core.admin.VDCUser;
 import edu.harvard.iq.dvn.core.study.Study;
 import edu.harvard.iq.dvn.core.vdc.VDC;
+import edu.harvard.iq.dvn.core.vdc.VDCNetworkServiceLocal;
 import edu.harvard.iq.dvn.core.vdc.VDCServiceLocal;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -46,6 +47,8 @@ public class ServiceDocumentManagerImpl implements ServiceDocumentManager {
     private static final Logger logger = Logger.getLogger(ServiceDocumentManagerImpl.class.getCanonicalName());
     @EJB
     VDCServiceLocal vdcService;
+    @EJB
+    VDCNetworkServiceLocal vdcNetworkService;
     @Inject
     SwordAuth swordAuth;
     @Inject
@@ -58,38 +61,24 @@ public class ServiceDocumentManagerImpl implements ServiceDocumentManager {
         VDCUser vdcUser = swordAuth.auth(authCredentials);
         urlManager.processUrl(sdUri);
 
-        /**
-         * @todo: check if this returns open or wiki dataverses
-         */
+        ServiceDocument service = new ServiceDocument();
+        SwordWorkspace swordWorkspace = new SwordWorkspace();
+        swordWorkspace.setTitle(vdcNetworkService.findRootNetwork().getName());
+        service.addWorkspace(swordWorkspace);
+        service.setMaxUploadSize(config.getMaxUploadSize());
+        String hostnamePlusBaseUrl = urlManager.getHostnamePlusBaseUrlPath(sdUri);
         List<VDC> vdcList = vdcService.getUserVDCs(vdcUser.getId());
-
-        if (vdcList.size() != 1) {
-            String msg = "accounts used to look up a Journal Dataverse should find a single dataverse, not " + vdcList.size();
-            logger.info(msg);
-            throw new SwordError(msg);
+        for (VDC dataverse : vdcList) {
+            if (swordAuth.hasAccessToModifyDataverse(vdcUser, dataverse)) {
+                String dvAlias = dataverse.getAlias();
+                SwordCollection swordCollection = new SwordCollection();
+                swordCollection.setTitle(dataverse.getName());
+                swordCollection.setHref(hostnamePlusBaseUrl + "/collection/dataverse/" + dvAlias);
+                swordCollection.addAcceptPackaging(UriRegistry.PACKAGE_SIMPLE_ZIP);
+                swordCollection.setCollectionPolicy(dataverse.getDepositTermsOfUse());
+                swordWorkspace.addCollection(swordCollection);
+            }
         }
-
-        if (vdcList.get(0) != null) {
-            VDC journalDataverse = vdcList.get(0);
-            String dvAlias = journalDataverse.getAlias();
-            Collection<Study> studies = journalDataverse.getOwnedStudies();
-            ServiceDocument service = new ServiceDocument();
-            SwordWorkspace swordWorkspace = new SwordWorkspace();
-            swordWorkspace.setTitle(journalDataverse.getVdcNetwork().getName());
-            String authority = journalDataverse.getVdcNetwork().getAuthority();
-            SwordCollection swordCollectionNew = new SwordCollection();
-            swordCollectionNew.setTitle(journalDataverse.getName());
-            swordCollectionNew.setHref(urlManager.getHostnamePlusBaseUrlPath(sdUri) + "/collection/dataverse/" + dvAlias);
-            swordCollectionNew.addAcceptPackaging(UriRegistry.PACKAGE_SIMPLE_ZIP);
-            swordCollectionNew.setCollectionPolicy(journalDataverse.getDepositTermsOfUse());
-            swordWorkspace.addCollection(swordCollectionNew);
-            service.addWorkspace(swordWorkspace);
-            service.setMaxUploadSize(config.getMaxUploadSize());
-            return service;
-        } else {
-            String msg = "could not retrieve Journal Dataverse";
-            logger.info(msg);
-            throw new SwordError(msg);
-        }
+        return service;
     }
 }

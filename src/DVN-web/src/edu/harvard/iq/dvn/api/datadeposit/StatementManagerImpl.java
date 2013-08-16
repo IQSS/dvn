@@ -84,16 +84,6 @@ public class StatementManagerImpl implements StatementManager {
 
             List<VDC> vdcList = vdcService.getUserVDCs(vdcUser.getId());
 
-            if (vdcList.size() != 1) {
-                /**
-                 * @todo: make this more generic, for non-OJS use cases for
-                 * SWORD
-                 */
-                String msg = "accounts used to look up a Journal Dataverse should find a single dataverse, not " + vdcList.size();
-                logger.info(msg);
-                throw new SwordError(msg);
-            }
-
             VDC dvThatOwnsStudy = study.getOwner();
             if (swordAuth.hasAccessToModifyDataverse(vdcUser, dvThatOwnsStudy)) {
                 String feedUri = urlManager.getHostnamePlusBaseUrlPath(editUri) + "/edit/study/" + study.getGlobalId();

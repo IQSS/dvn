@@ -23,6 +23,7 @@ import edu.harvard.iq.dvn.core.admin.VDCUser;
 import edu.harvard.iq.dvn.core.study.EditStudyFilesService;
 import edu.harvard.iq.dvn.core.study.EditStudyService;
 import edu.harvard.iq.dvn.core.study.Study;
+import edu.harvard.iq.dvn.core.study.StudyFile;
 import edu.harvard.iq.dvn.core.study.StudyFileEditBean;
 import edu.harvard.iq.dvn.core.study.StudyFileServiceLocal;
 import edu.harvard.iq.dvn.core.study.StudyServiceLocal;
@@ -42,6 +43,7 @@ import java.util.logging.Logger;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 import javax.ejb.EJB;
+import javax.ejb.EJBException;
 import javax.inject.Inject;
 import javax.naming.Context;
 import javax.naming.InitialContext;
@@ -62,6 +64,8 @@ public class MediaResourceManagerImpl implements MediaResourceManager {
 
     @EJB
     StudyServiceLocal studyService;
+    @EJB
+    StudyFileServiceLocal studyFileService;
     @Inject
     SwordAuth swordAuth;
     @Inject
@@ -120,8 +124,71 @@ public class MediaResourceManagerImpl implements MediaResourceManager {
     }
 
     @Override
-    public void deleteMediaResource(String string, AuthCredentials ac, SwordConfiguration sc) throws SwordError, SwordServerException, SwordAuthException {
-        throw new UnsupportedOperationException("Not supported yet.");
+    public void deleteMediaResource(String uri, AuthCredentials authCredentials, SwordConfiguration swordConfiguration) throws SwordError, SwordServerException, SwordAuthException {
+        VDCUser vdcUser = swordAuth.auth(authCredentials);
+        urlManager.processUrl(uri);
+        String targetType = urlManager.getTargetType();
+        String fileId = urlManager.getTargetIdentifier();
+        if (targetType != null && fileId != null) {
+            if ("file".equals(targetType)) {
+                String fileIdString = urlManager.getTargetIdentifier();
+                if (fileIdString != null) {
+                    Long fileIdLong;
+                    try {
+                        fileIdLong = Long.valueOf(fileIdString);
+                    } catch (NumberFormatException ex) {
+                        throw new SwordError("File id must be a number, not '" + fileIdString + "'. uri was: " + uri);
+                    }
+                    if (fileIdLong != null) {
+                        logger.info("preparing to delete file id " + fileIdLong);
+                        StudyFile fileToDelete;
+                        try {
+                            fileToDelete = studyFileService.getStudyFile(fileIdLong);
+                        } catch (EJBException ex) {
+                            throw new SwordError("Unable to find file id " + fileIdLong);
+                        }
+                        if (fileToDelete != null) {
+                            String globalId = fileToDelete.getStudy().getGlobalId();
+                            VDC dvThatOwnsFile = fileToDelete.getStudy().getOwner();
+                            if (swordAuth.hasAccessToModifyDataverse(vdcUser, dvThatOwnsFile)) {
+                                EditStudyFilesService editStudyFilesService;
+                                try {
+                                    Context ctx = new InitialContext();
+                                    editStudyFilesService = (EditStudyFilesService) ctx.lookup("java:comp/env/editStudyFiles");
+                                } catch (NamingException ex) {
+                                    throw new SwordServerException("problem looking up editStudyFilesService");
+                                }
+                                editStudyFilesService.setStudyVersionByGlobalId(globalId);
+                                // editStudyFilesService.findStudyFileEditBeanById() would be nice
+                                List studyFileEditBeans = editStudyFilesService.getCurrentFiles();
+                                for (Iterator it = studyFileEditBeans.iterator(); it.hasNext();) {
+                                    StudyFileEditBean studyFileEditBean = (StudyFileEditBean) it.next();
+                                    if (studyFileEditBean.getStudyFile().getId().equals(fileToDelete.getId())) {
+                                        logger.info("marked for deletion: " + studyFileEditBean.getStudyFile().getFileName());
+                                        studyFileEditBean.setDeleteFlag(true);
+                                    } else {
+                                        logger.info("not marked for deletion: " + studyFileEditBean.getStudyFile().getFileName());
+                                    }
+                                }
+                                editStudyFilesService.save(dvThatOwnsFile.getId(), vdcUser.getId());
+                            } else {
+                                throw new SwordError("User " + vdcUser.getUserName() + " is not authorized to modify " + dvThatOwnsFile.getAlias());
+                            }
+                        } else {
+                            throw new SwordError("Unable to find file id " + fileIdLong + " from url: " + uri);
+                        }
+                    } else {
+                        throw new SwordError("Unable to find file id in url: " + uri);
+                    }
+                } else {
+                    throw new SwordError("Could not file file to delete in url: " + uri);
+                }
+            } else {
+                throw new SwordError("Unsupported file type found in url: " + uri);
+            }
+        } else {
+            throw new SwordError("Target or identifer not specified in url: " + uri);
+        }
     }
 
     @Override

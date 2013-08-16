@@ -20,7 +20,9 @@ file_to_delete = XPath.first( statement, "//entry" )
 if file_to_delete
     type = file_to_delete.elements["content"].attributes["type"]
     url_of_file_to_delete = file_to_delete.elements["content"].attributes["src"]
-    puts "attempting deletion of '#{type}' file from #{url_of_file_to_delete}"
+    # last element in url shows file name
+    filename = url_of_file_to_delete.split("/")[-1]
+    puts "attempting deletion of #{filename} (#{type}) from #{url_of_file_to_delete}"
     out = `tools/scripts/data-deposit-api/test-edit-delete #{url_of_file_to_delete}`
 
     if out.match(/204 No Content/)

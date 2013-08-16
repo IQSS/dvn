@@ -111,9 +111,21 @@ public class StatementManagerImpl implements StatementManager {
                 List<FileMetadata> fileMetadatas = study.getLatestVersion().getFileMetadatas();
                 for (FileMetadata fileMetadata : fileMetadatas) {
                     StudyFile studyFile = fileMetadata.getStudyFile();
-                    String studyFileUrl = urlManager.getHostnamePlusBaseUrlPath(editUri) + "/edit/file/" + studyFile.getId();
+                    // we are exposing the filename for informational purposes. the id is what you can operate on
+                    String studyFileUrl = urlManager.getHostnamePlusBaseUrlPath(editUri) + "/edit-media/file/" + studyFile.getId() + "/" + studyFile.getFileName();
                     ResourcePart resourcePart = new ResourcePart(studyFileUrl);
                     resourcePart.setMediaType(studyFile.getFileType());
+                    /**
+                     * @todo: Why are properties set on a ResourcePart not
+                     * exposed when you GET a Statement?
+                     */
+//                    Map<String, String> properties = new HashMap<String, String>();
+//                    properties.put("filename", studyFile.getFileName());
+//                    properties.put("category", studyFile.getLatestCategory());
+//                    properties.put("originalFileType", studyFile.getOriginalFileType());
+//                    properties.put("id", studyFile.getId().toString());
+//                    properties.put("UNF", studyFile.getUnf());
+//                    resourcePart.setProperties(properties);
                     statement.addResource(resourcePart);
                 }
                 return statement;

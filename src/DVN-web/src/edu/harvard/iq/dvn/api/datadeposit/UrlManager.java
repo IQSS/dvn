@@ -101,7 +101,8 @@ public class UrlManager {
                 } else if (targetType.equals("file")) {
                     String fileIdString;
                     try {
-                        //look up file here to validate it?
+                        // a user might reasonably pass in a filename as well [.get(2)] since
+                        // we expose it in the statement of a study but we ignore it here
                         fileIdString = targetTypeAndIdentifier.get(1);
                     } catch (IndexOutOfBoundsException ex) {
                         throw new SwordError("No file id provided in url: " + url);

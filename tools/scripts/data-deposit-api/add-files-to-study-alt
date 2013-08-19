@@ -1,0 +1,35 @@
+#!/usr/bin/env ruby
+require "rexml/document"
+include REXML
+service_document = Document.new `tools/scripts/data-deposit-api/test-service-document`
+collection = XPath.first(service_document, "//collection/@href")
+
+feed_of_studies = Document.new `tools/scripts/data-deposit-api/test-collection-get #{collection}`
+first_study = XPath.first(feed_of_studies, "//entry")
+id = first_study.elements["id"].text
+study_edit_uri = first_study.attributes["xml:base"]
+
+entry = Document.new `tools/scripts/data-deposit-api/test-edit-get #{study_edit_uri}`
+statement_uri        = XPath.first(entry,"//link[@rel='http://purl.org/net/sword/terms/statement']").attributes["href"]
+
+zip_of_files_to_add = "example.zip"
+puts "adding #{zip_of_files_to_add} to #{study_edit_uri}"
+out = Document.new `tools/scripts/data-deposit-api/test-edit-post-binary #{zip_of_files_to_add} #{study_edit_uri}`
+error_summary = XPath.first(out, "//atom:summary").text
+if 'http://purl.org/net/sword/error/ErrorBadRequest' == error_summary
+    # error comes from https://github.com/swordapp/JavaServer2.0/blob/31e625ac97be13f794e1b98512f8d1c48d751652/src/main/java/org/swordapp/server/ContainerAPI.java#L364
+    # entryOnly or headersOnly expected (apparently)... not a binary
+    puts "As expected, error when POSTing binary to #{study_edit_uri}"
+    threshold = 6
+    puts "Printing first #{threshold} lines of the stacktrace:"
+    verbose_error = XPath.first(out, "//sword:verboseDescription").text
+    count = 0
+    verbose_error.each_line do |line|
+        puts line
+        count += 1
+        break if count >= threshold
+    end
+else
+    puts "Did not receive expected error when POSTing binary to #{study_edit_uri}"
+end
+#puts "id from out: " + out.root.elements["id"].text

@@ -225,7 +225,7 @@
         <jvm-options>-Dvdc.dsb.rserve.user=%RSERVE_USER%</jvm-options>
         <jvm-options>-Dvdc.import.log.dir=${com.sun.aas.instanceRoot}/logs/import</jvm-options>
         <jvm-options>-Dvdc.export.log.dir=${com.sun.aas.instanceRoot}/logs/export</jvm-options>
-        <jvm-options>-Dvdc.temp.file.dir=${com.sun.aas.instanceroot}/config/files/temp</jvm-options>
+        <jvm-options>-Dvdc.temp.file.dir=${com.sun.aas.instanceRoot}/config/files/temp</jvm-options>
         <jvm-options>-Dvdc.study.file.dir=${com.sun.aas.instanceRoot}/config/files/studies</jvm-options>
       </java-config>
       <network-config>

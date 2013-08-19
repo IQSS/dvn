@@ -257,6 +257,9 @@ public class MediaResourceManagerImpl implements MediaResourceManager {
                 editStudyFilesService.save(dvThatOwnsStudy.getId(), vdcUser.getId());
 
                 String tempDirectory = swordConfiguration.getTempDirectory();
+                if (tempDirectory == null) {
+                    throw new SwordError("Could not determine temp directory");
+                }
                 String uploadDirPath = tempDirectory + File.separator + "uploads" + File.separator + study.getId().toString();
                 File uploadDir = new File(uploadDirPath);
                 if (!uploadDir.exists()) {

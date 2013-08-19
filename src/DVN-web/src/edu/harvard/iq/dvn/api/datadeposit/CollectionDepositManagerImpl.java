@@ -87,6 +87,9 @@ public class CollectionDepositManagerImpl implements CollectionDepositManager {
 
                         // instead of writing a tmp file, maybe importStudy() could accept an InputStream?
                         String tmpDirectory = config.getTempDirectory();
+                        if (tmpDirectory == null) {
+                            throw new SwordError("Could not determine temp directory");
+                        }
                         String uploadDirPath = tmpDirectory + File.separator + "import" + File.separator + dvThatWillOwnStudy.getId();
                         File uploadDir = new File(uploadDirPath);
                         if (!uploadDir.exists()) {

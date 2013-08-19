@@ -71,12 +71,12 @@ public class SwordConfigurationImpl implements SwordConfiguration {
 
     @Override
     public String getTempDirectory() {
-        /**
-         * @todo: dvnIndexLocation is "domain1/config" but use different
-         * dedicated property
-         */
-        String dvnIndexLocation = System.getProperty("dvn.index.location");
-        return dvnIndexLocation + File.separator + "sword";
+        String tmpFileDir = System.getProperty("vdc.temp.file.dir");
+        if (tmpFileDir != null) {
+            return tmpFileDir + File.separator + "sword";
+        } else {
+            return null;
+        }
     }
 
     @Override

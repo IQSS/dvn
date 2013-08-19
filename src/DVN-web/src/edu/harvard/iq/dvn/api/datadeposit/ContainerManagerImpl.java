@@ -159,6 +159,9 @@ public class ContainerManagerImpl extends VDCBaseBean implements ContainerManage
                 if (swordAuth.hasAccessToModifyDataverse(vdcUser, dvThatOwnsStudy)) {
 
                     String tmpDirectory = swordConfiguration.getTempDirectory();
+                    if (tmpDirectory == null) {
+                        throw new SwordError("Could not determine temp directory");
+                    }
                     String uploadDirPath = tmpDirectory + File.separator + "import" + File.separator + studyToEdit.getId();
                     Long dcmiTermsHarvetsFormatId = new Long(4);
                     HarvestFormatType dcmiTermsHarvestFormatType = em.find(HarvestFormatType.class, dcmiTermsHarvetsFormatId);

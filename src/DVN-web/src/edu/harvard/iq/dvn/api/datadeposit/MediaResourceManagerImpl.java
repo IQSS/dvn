@@ -119,8 +119,15 @@ public class MediaResourceManagerImpl implements MediaResourceManager {
 
     @Override
     public DepositReceipt replaceMediaResource(String uri, Deposit deposit, AuthCredentials authCredentials, SwordConfiguration swordConfiguration) throws SwordError, SwordServerException, SwordAuthException {
-        boolean shouldReplace = true;
-        return replaceOrAddFiles(uri, deposit, authCredentials, swordConfiguration, shouldReplace);
+        /**
+         * @todo: Perhaps create a new version of a study here?
+         *
+         * "The server MUST effectively replace all the existing content in the
+         * item, although implementations may choose to provide versioning or
+         * some other mechanism for retaining the overwritten content." --
+         * http://swordapp.github.io/SWORDv2-Profile/SWORDProfile.html#protocoloperations_editingcontent_binary
+         */
+        throw new SwordError("Replacing the files of a study is not supported. Please delete and add files separately instead.");
     }
 
     @Override

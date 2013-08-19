@@ -17,9 +17,10 @@ data_citation = XPath.first(entry, "//bibliographicCitation").text
 replacement_data = "50by1000.dta.zip"
 puts "using #{replacement_data} to replace data at #{edit_media_uri}"
 out = `tools/scripts/data-deposit-api/test-edit-media-put-binary #{replacement_data} #{edit_media_uri}`
-if out.match(/204 No Content/)
-    puts "successful replace"
+expected_error = 'Replacing the files of a study is not supported'
+if out.match(/#{expected_error}/)
+    puts "Excepted error found: #{expected_error}"
 else
-    puts "replace failed"
+    puts "Did not find expected error (#{expected_error}). Instead output was:"
     puts out
 end

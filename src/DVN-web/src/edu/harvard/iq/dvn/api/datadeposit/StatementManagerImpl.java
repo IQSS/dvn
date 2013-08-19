@@ -94,9 +94,11 @@ public class StatementManagerImpl implements StatementManager {
                 Statement statement = new AtomStatement(feedUri, author, title, datedUpdated);
                 Boolean isReleased = study.isReleased();
                 Boolean isInDraft = study.getLatestVersion().isDraft();
+                Boolean isDeaccessioned = study.getLatestVersion().isDeaccessioned();
                 Map<String, String> states = new HashMap<String, String>();
                 states.put("isReleased", isReleased.toString());
                 states.put("isInDraft", isInDraft.toString());
+                states.put("isDeaccessioned", isDeaccessioned.toString());
                 statement.setStates(states);
                 List<FileMetadata> fileMetadatas = study.getLatestVersion().getFileMetadatas();
                 for (FileMetadata fileMetadata : fileMetadatas) {

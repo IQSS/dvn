@@ -260,14 +260,22 @@ public class ContainerManagerImpl extends VDCBaseBean implements ContainerManage
             } else if ("study".equals(targetType)) {
                 String globalId = urlManager.getTargetIdentifier();
                 if (globalId != null) {
-                    Study studyToDelete = studyService.getStudyByGlobalId(globalId);
-                    if (studyToDelete != null) {
-                        VDC dvThatOwnsStudy = studyToDelete.getOwner();
+                    Study study = studyService.getStudyByGlobalId(globalId);
+                    if (study != null) {
+                        VDC dvThatOwnsStudy = study.getOwner();
                         if (swordAuth.hasAccessToModifyDataverse(vdcUser, dvThatOwnsStudy)) {
-                            studyService.deleteStudy(studyToDelete.getId());
+                            if (study.isReleased()) {
+                                logger.info("deaccessioning study" + study.getGlobalId());
+                                studyService.deaccessionStudy(study.getLatestVersion());
+                            } else {
+                                logger.info("deleting study " + study.getGlobalId());
+                                studyService.deleteStudy(study.getId());
+                            }
                         } else {
                             throw new SwordError("User " + vdcUser.getUserName() + " is not authorized to modify " + dvThatOwnsStudy.getAlias());
                         }
+                    } else {
+                        throw new SwordError(404);
                     }
                 } else {
                     throw new SwordError("Could not find study to delete from url: " + uri);

@@ -6,27 +6,29 @@ collection = XPath.first(service_document, "//collection/@href")
 
 feed_of_studies = Document.new `tools/scripts/data-deposit-api/test-collection-get #{collection}`
 first_study = XPath.first(feed_of_studies, "//entry")
-if first_study == nil
-    puts "No studies found. Exiting"
-    exit 1
-end
 id = first_study.elements["id"].text
 study_edit_uri = first_study.attributes["xml:base"]
 
 entry = Document.new `tools/scripts/data-deposit-api/test-edit-get #{study_edit_uri}`
 statement_uri = XPath.first(entry,"//link[@rel='http://purl.org/net/sword/terms/statement']").attributes["href"]
+deaccession_state_term="isDeaccessioned"
+statement = Document.new `tools/scripts/data-deposit-api/test-edit-get #{statement_uri}`
+deaccession_state_old = XPath.first(statement, "//category[@term='#{deaccession_state_term}']").text
+
 edit_uri = XPath.first(entry,"//link[@rel='edit']").attributes["href"]
 out = `tools/scripts/data-deposit-api/test-edit-delete #{edit_uri}`
 if out.match(/204 No Content/)
+    #puts "successful deaccession of study"
 else
-    puts "unexpected error:"
+    puts "deaccession of study failed"
     puts out
 end
 
-out = `tools/scripts/data-deposit-api/test-edit-delete #{edit_uri}`
-if out.match(/404 Not Found/)
-    puts "successful deletion of study using #{edit_uri}"
+entry = Document.new `tools/scripts/data-deposit-api/test-edit-get #{study_edit_uri}`
+statement = Document.new `tools/scripts/data-deposit-api/test-edit-get #{statement_uri}`
+deaccession_state_new = XPath.first(statement, "//category[@term='#{deaccession_state_term}']").text
+if deaccession_state_old == "false" and deaccession_state_new == "true"
+    puts "#{deaccession_state_term} changed from #{deaccession_state_old} to #{deaccession_state_new} using #{edit_uri}"
 else
-    puts "deletion of study failed"
-    puts out
+    puts "Error: unable to deaccession study using #{edit_uri}"
 end

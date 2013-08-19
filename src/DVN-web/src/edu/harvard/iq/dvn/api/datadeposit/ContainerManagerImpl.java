@@ -19,6 +19,7 @@
  */
 package edu.harvard.iq.dvn.api.datadeposit;
 
+import edu.harvard.iq.dvn.core.admin.NetworkRole;
 import edu.harvard.iq.dvn.core.admin.VDCUser;
 import edu.harvard.iq.dvn.core.ddi.DDIServiceLocal;
 import edu.harvard.iq.dvn.core.harvest.HarvestFormatType;
@@ -30,6 +31,7 @@ import edu.harvard.iq.dvn.core.study.StudyFileServiceLocal;
 import edu.harvard.iq.dvn.core.study.StudyServiceLocal;
 import edu.harvard.iq.dvn.core.util.DateUtil;
 import edu.harvard.iq.dvn.core.vdc.VDC;
+import edu.harvard.iq.dvn.core.vdc.VDCNetworkServiceLocal;
 import edu.harvard.iq.dvn.core.vdc.VDCServiceLocal;
 import edu.harvard.iq.dvn.core.web.admin.OptionsPage;
 import edu.harvard.iq.dvn.core.web.common.VDCBaseBean;
@@ -62,6 +64,8 @@ import org.swordapp.server.SwordServerException;
 public class ContainerManagerImpl extends VDCBaseBean implements ContainerManager {
 
     private static final Logger logger = Logger.getLogger(ContainerManagerImpl.class.getCanonicalName());
+    @EJB
+    VDCNetworkServiceLocal vdcNetworkService;
     @EJB
     VDCServiceLocal vdcService;
     @EJB
@@ -236,8 +240,7 @@ public class ContainerManagerImpl extends VDCBaseBean implements ContainerManage
                 List<VDC> userVDCs = vdcService.getUserVDCs(vdcUser.getId());
                 VDC dataverseToEmpty = vdcService.findByAlias(dvAlias);
                 if (dataverseToEmpty != null) {
-                    if (swordAuth.hasAccessToModifyDataverse(vdcUser, dataverseToEmpty)) {
-
+                    if ("Admin".equals(vdcUser.getNetworkRole().getName())) {
                         /**
                          * @todo: this is the deleteContainer method... should
                          * move this to some sort of "emptyContainer" method
@@ -245,11 +248,11 @@ public class ContainerManagerImpl extends VDCBaseBean implements ContainerManage
                         // curl --insecure -s -X DELETE https://sword:sword@localhost:8181/dvn/api/data-deposit/v1/swordv2/edit/dataverse/sword 
                         Collection<Study> studies = dataverseToEmpty.getOwnedStudies();
                         for (Study study : studies) {
-                            System.out.println("In dataverse " + dataverseToEmpty.getAlias() + " about to delete study id " + study.getId());
+                            logger.info("In dataverse " + dataverseToEmpty.getAlias() + " about to delete study id " + study.getId());
                             studyService.deleteStudy(study.getId());
                         }
                     } else {
-                        throw new SwordError("User " + vdcUser.getUserName() + " is not authorized to modify " + dataverseToEmpty.getAlias());
+                        throw new SwordError("Role was " + vdcUser.getNetworkRole().getName() + " but admin required.");
                     }
                 } else {
                     throw new SwordError("Couldn't find dataverse to delete from url: " + uri);

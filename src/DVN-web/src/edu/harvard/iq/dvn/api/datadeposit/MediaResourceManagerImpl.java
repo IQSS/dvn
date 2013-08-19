@@ -236,11 +236,15 @@ public class MediaResourceManagerImpl implements MediaResourceManager {
                 }
                 editStudyFilesService.setStudyVersionByGlobalId(globalId);
                 List studyFileEditBeans = editStudyFilesService.getCurrentFiles();
+                List<String> exisitingFilenames = new ArrayList<String>();
                 for (Iterator it = studyFileEditBeans.iterator(); it.hasNext();) {
                     StudyFileEditBean studyFileEditBean = (StudyFileEditBean) it.next();
                     if (shouldReplace) {
                         studyFileEditBean.setDeleteFlag(true);
                         logger.info("marked for deletion: " + studyFileEditBean.getStudyFile().getFileName());
+                    } else {
+                        String filename = studyFileEditBean.getStudyFile().getFileName();
+                        exisitingFilenames.add(filename);
                     }
                 }
                 editStudyFilesService.save(dvThatOwnsStudy.getId(), vdcUser.getId());
@@ -297,6 +301,7 @@ public class MediaResourceManagerImpl implements MediaResourceManager {
                                 finalFileName = fileEntryName;
                             }
 
+                            validateFileName(exisitingFilenames, finalFileName, study);
 
                             File tempUploadedFile = null;
                             try {
@@ -337,6 +342,10 @@ public class MediaResourceManagerImpl implements MediaResourceManager {
                     }
                 } catch (IOException ex) {
                     logger.info("Problem getting zip entry");
+                } finally {
+                    if (!uploadDir.delete()) {
+                        logger.info("Unable to delete " + uploadDir.getAbsolutePath());
+                    }
                 }
                 StudyFileServiceLocal studyFileService;
                 try {
@@ -361,6 +370,26 @@ public class MediaResourceManagerImpl implements MediaResourceManager {
             }
         } else {
             throw new SwordError("Unable to determine target type or identifier from url: " + uri);
+        }
+    }
+
+    // copied from AddFilesPage
+    private void validateFileName(List<String> existingFilenames, String fileName, Study study) throws SwordError {
+        if (fileName.contains("\\")
+                || fileName.contains("/")
+                || fileName.contains(":")
+                || fileName.contains("*")
+                || fileName.contains("?")
+                || fileName.contains("\"")
+                || fileName.contains("<")
+                || fileName.contains(">")
+                || fileName.contains("|")
+                || fileName.contains(";")
+                || fileName.contains("#")) {
+            throw new SwordError("Invalid File Name - cannot contain any of the following characters: \\ / : * ? \" < > | ; . Filename was '" + fileName + "'");
+        }
+        if (existingFilenames.contains(fileName)) {
+            throw new SwordError("Filename " + fileName + " already exists in study " + study.getGlobalId());
         }
     }
 }

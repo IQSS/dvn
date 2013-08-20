@@ -118,7 +118,7 @@ public class DvnRJobRequest {
                 }
             }
         }
-        dbgLog.fine("***** DvnRJobRequest: within the default constructor ends here *****");
+        dbgLog.info("***** DvnRJobRequest: within the default constructor ends here *****");
     }
 
     public DvnRJobRequest(
@@ -755,6 +755,25 @@ public class DvnRJobRequest {
         }
         return vts;
     }
+    
+    public List<String> getUpdatedVariableTypesWithBooleanAsString(){
+        int[] vt;
+        
+        
+        if (hasRecodedVariables()){
+            vt =  ArrayUtils.addAll(getVariableTypesWithBoolean(),getRecodedVarTypeSet());
+        } else {
+            vt = getVariableTypesWithBoolean();
+        }
+        
+        List<String> vts = new ArrayList<String>();
+        
+        for (int i = 0; i< vt.length; i++){
+            vts.add(Integer.toString(vt[i]));
+        }
+        return vts;
+    }
+    
     /**
      * Getter for property value-label list
      *
@@ -1265,7 +1284,7 @@ public class DvnRJobRequest {
             int allrows = delRowCount + nonRecodeRowCount;
             if (allrows == rdtbl.size()) {
                 //hasRecodeRow = false;
-                dbgLog.fine("no meaningful recodeing request is stored");
+                dbgLog.info("no meaningful recodeing request is stored");
             }
             
             
@@ -1308,7 +1327,7 @@ public class DvnRJobRequest {
                     if (!recpool.containsKey(val)){
                         // for the first time
                         // x[["nv"]][ (x[["NATINT"]] == 4 ) | () | ...  ] <- 34
-                        String cnd = conditionDecoder(rawCnd, vo, "r", variableTypes[j]);
+                       String cnd = conditionDecoder(rawCnd, vo, "r", variableTypes[j]);
                         if ((cnd == null) || (cnd.equals(""))){
                             dbgLog.fine("this recode condition was invalid:["+rawCnd+"] ");
                         } else {
@@ -1386,7 +1405,16 @@ public class DvnRJobRequest {
     }
 
 
-
+    /*
+     * Akio's getValueRange() method below:
+     * Most of the parsing/processing of the user-entered recode conditions
+     * happens in this method. 
+     * As is, it bombs on date values - simply because it gets confused by 
+     * dashes (in values like "2009-13-05"), assuming they are ranges. 
+     * (should be easy to fix though - since "legit" ranges are supposed 
+     * to have square brackets around them; for example, [1-12]). 
+     *          -- L.A., v3.6
+     */
 
 
     public List<List<String>> getValueRange(String tkn){
@@ -1417,20 +1445,28 @@ public class DvnRJobRequest {
         
         // for each token, check the range operator
         
+        
         for (int i=0; i<step1.size(); i++){
             LinkedList<String> tmp = new LinkedList<String>(
                 Arrays.asList(  String2StringArray(String.valueOf(step1.get(i)))));
             
             Map<String, String> token = new HashMap<String, String>();
+            boolean rangeMode = false; 
+
             
-            if ((!tmp.get(i).equals("[")) && (!tmp.get(i).equals("("))){
+            // .get(i) below CAN'T possibly be right (??) -- replacing
+            // it with .get(0). -- L.A., v3.6
+            //if ((!tmp.get(i).equals("[")) && (!tmp.get(i).equals("("))){
+            if ((!tmp.get(0).equals("[")) && (!tmp.get(0).equals("("))){
                 // no LHS range operator
                 // assume [
                 token.put("start","3");
             } else if (tmp.get(0).equals( "[")) {
+                rangeMode = true; 
                 token.put("start", "3");
                 tmp.removeFirst();
             } else if (tmp.get(0).equals("(")) {
+                rangeMode = true; 
                 token.put("start", "5");
                 tmp.removeFirst();
             }
@@ -1440,83 +1476,107 @@ public class DvnRJobRequest {
                 // assume ]
                 token.put("end", "4");
             } else if (tmp.getLast().equals("]")){
+                rangeMode = true; 
                 tmp.removeLast();
                 token.put("end", "4");
             } else if (tmp.getLast().equals(")")){
+                rangeMode = true; 
                 tmp.removeLast();
                 token.put("end", "6"); 
             }
             
-          // after these steps, the string does not have range operators;
-          // i.e., '-9--3', '--9', '-9-','-9', '-1-1', '1', '3-4', '6-'
+            
+            // I'm now enforcing the following rules:
+            // the "rangeMode" above - a range must have at least one range
+            // operator, a square bracket or parenthesis, on one end, at
+            // least; i.e., either on the left, or on the right. 
+            // If there are no range operators, even if there are dashes
+            // inside the token, they are not going to be interpreted as 
+            // range definitions.  
+            // still TODO: (possibly?) add more validation; figure out how 
+            // to encode *date* ranges ("-" is not optimal, since dates already
+            // contain dashes... although, since dates are (supposed to be) 
+            // normalized it should still be possible to parse it unambiguously)
+            //          -- L.A., v3.6
+            
+            if (rangeMode) {
+                // after these steps, the string does not have range operators;
+                // i.e., '-9--3', '--9', '-9-','-9', '-1-1', '1', '3-4', '6-'
 
-            if ((tmp.get(0).equals("!")) && (tmp.get(1).equals("=")) ){
-                // != negation string is found
-                token.put("start", "2");
-                token.put("end", ""); 
-                token.put("v1", StringUtils.join( tmp.subList(2, tmp.size()),""));
-                token.put("v2", "");
-                dbgLog.fine( "value="+ StringUtils.join( tmp.subList(2, tmp.size()),"," ));
-                
-            } else if ((tmp.get(0).equals("-")) && (tmp.get(1).equals("-"))){
-                // type 2: --9
-                token.put("v1", "");
-                tmp.removeFirst();
-                token.put("v2", StringUtils.join(tmp, "")); 
-            } else if ((tmp.get(0).equals("-")) && (tmp.getLast().equals("-"))) {
-                // type 3: -9-
-                token.put("v2", "");
-                tmp.removeLast();
-                token.put("v1", StringUtils.join(tmp, ""));
-            } else if ((!tmp.get(0).equals("-")) && (tmp.getLast().equals("-"))) {
-                // type 8: 6-
-                token.put("v2", "");
-                tmp.removeLast();
-                token.put("v1", StringUtils.join(tmp,""));
-            } else {
-                int count=0;
-                List<Integer> index= new ArrayList<Integer>();
-                for (int j=0; j< tmp.size(); j++){
-                    if (tmp.get(j).equals("-")){
-                        count++;
-                        index.add(j);
-                    }
-                }
+                if ((tmp.get(0).equals("!")) && (tmp.get(1).equals("="))) {
+                    // != negation string is found
+                    token.put("start", "2");
+                    token.put("end", "");
+                    token.put("v1", StringUtils.join(tmp.subList(2, tmp.size()), ""));
+                    token.put("v2", "");
+                    dbgLog.fine( "value="+ StringUtils.join( tmp.subList(2, tmp.size()),"," ));
 
-                if (count >=2){
-                    // range type
-                    // divide the second hyphen
-                    // types 1 and 5: -9--3, -1-1
-                    // token.put("v1", StringUtils.join(tmp[0..($index[1]-1)],"" ));
-                    token.put("v2", StringUtils.join(tmp.subList((index.get(1)+1), tmp.size()), ""));
-
-                } else if (count == 1){
-                    if (tmp.get(0).equals("-")){
-                        // point negative type
-                        // type 4: -9 or -inf,9
-                        // do nothing
-                        if ( (token.get("start").equals("5")) &&
-                            ( (token.get("end").equals("6")) || (token.get("end").equals("4")) ) ) {
-                            token.put("v1", "");
-                            tmp.removeFirst();
-                            token.put("v2", StringUtils.join(tmp,""));
-                        } else {
-                            token.put("v1", StringUtils.join(tmp,""));
-                            token.put("v2", StringUtils.join(tmp,""));
-                        }
-                    } else {
-                        // type 7: 3-4
-                        // both positive value and range type
-                        String[] vset = (StringUtils.join(tmp,"")).split("-");
-                        token.put("v1", vset[0]);
-                        token.put("v2", vset[1]);
-                    }
-
+                } else if ((tmp.get(0).equals("-")) && (tmp.get(1).equals("-"))) {
+                    // type 2: --9
+                    token.put("v1", "");
+                    tmp.removeFirst();
+                    token.put("v2", StringUtils.join(tmp, ""));
+                } else if ((tmp.get(0).equals("-")) && (tmp.getLast().equals("-"))) {
+                    // type 3: -9-
+                    token.put("v2", "");
+                    tmp.removeLast();
+                    token.put("v1", StringUtils.join(tmp, ""));
+                } else if ((!tmp.get(0).equals("-")) && (tmp.getLast().equals("-"))) {
+                    // type 8: 6-
+                    token.put("v2", "");
+                    tmp.removeLast();
+                    token.put("v1", StringUtils.join(tmp, ""));
                 } else {
-                    // type 6: 1
-                    token.put("v1", StringUtils.join(tmp,""));
-                    token.put("v2", StringUtils.join(tmp,""));
+                    int count = 0;
+                    List<Integer> index = new ArrayList<Integer>();
+                    for (int j = 0; j < tmp.size(); j++) {
+                        if (tmp.get(j).equals("-")) {
+                            count++;
+                            index.add(j);
+                        }
+                    }
+
+                    if (count >= 2) {
+                        // range type
+                        // divide the second hyphen
+                        // types 1 and 5: -9--3, -1-1
+                        // token.put("v1", StringUtils.join(tmp[0..($index[1]-1)],"" ));
+                        token.put("v2", StringUtils.join(tmp.subList((index.get(1) + 1), tmp.size()), ""));
+
+                    } else if (count == 1) {
+                        if (tmp.get(0).equals("-")) {
+                            // point negative type
+                            // type 4: -9 or -inf,9
+                            // do nothing
+                            if ((token.get("start").equals("5"))
+                                    && ((token.get("end").equals("6")) || (token.get("end").equals("4")))) {
+                                token.put("v1", "");
+                                tmp.removeFirst();
+                                token.put("v2", StringUtils.join(tmp, ""));
+                            } else {
+                                token.put("v1", StringUtils.join(tmp, ""));
+                                token.put("v2", StringUtils.join(tmp, ""));
+                            }
+                        } else {
+                            // type 7: 3-4
+                            // both positive value and range type
+                            String[] vset = (StringUtils.join(tmp, "")).split("-");
+                            token.put("v1", vset[0]);
+                            token.put("v2", vset[1]);
+                        }
+
+                    } else {
+                        // type 6: 1
+                        token.put("v1", StringUtils.join(tmp, ""));
+                        token.put("v2", StringUtils.join(tmp, ""));
+                    }
                 }
+            } else {
+                // assume that this is NOT a range; treat the entire sequence 
+                // of symbols as a single token:
+                // type 6: 1
+                token.put("v1", StringUtils.join(tmp,""));
+                token.put("v2", StringUtils.join(tmp,""));
             }
             
             dbgLog.fine(i + "-th result=" + token.get("start")+ "|" +
@@ -1528,6 +1588,7 @@ public class DvnRJobRequest {
             rangeSet.add(token.get("end"));
             rangeSet.add(token.get("v2"));
             rangeData.add(rangeSet);
+            
            
         }
 
@@ -1703,7 +1764,7 @@ public class DvnRJobRequest {
         }
         
         
-        dbgLog.fine("final condition:\n" + finalCondition.toString());
+        dbgLog.info("final condition:\n" + finalCondition.toString());
         
         return finalCondition.toString();
         

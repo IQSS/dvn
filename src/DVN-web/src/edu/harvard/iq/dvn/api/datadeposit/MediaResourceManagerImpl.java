@@ -267,19 +267,10 @@ public class MediaResourceManagerImpl implements MediaResourceManager {
                         throw new SwordServerException("couldn't create directory: " + uploadDir.getAbsolutePath());
                     }
                 }
+                // the first character of the filename is truncated with the official jar
+                // so we use include the bug fix at https://github.com/IQSS/swordv2-java-server-library/commit/aeaef83
+                // and use this jar: https://build.hmdc.harvard.edu:8443/job/swordv2-java-server-library-iqss/2/
                 String filename = uploadDirPath + File.separator + deposit.getFilename();
-                /**
-                 * @todo: fix known "first character is removed from filename"
-                 * issue with sword2-server-1.0-classes.jar (SWORD v2 :: Common
-                 * Server Library) described at
-                 * https://github.com/swordapp/JavaServer2.0/pull/2
-                 *
-                 * The author of the jar has not published it (
-                 * http://www.mail-archive.com/sword-app-tech@lists.sourceforge.net/msg00318.html
-                 * ) so we build it ourselves from the "master" branch of the
-                 * official repo: https://github.com/swordapp/JavaServer2.0
-                 *
-                 */
                 logger.info("attempting write to " + filename);
                 ZipInputStream ziStream = new ZipInputStream(deposit.getInputStream());
                 ZipEntry zEntry;

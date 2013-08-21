@@ -129,11 +129,10 @@
                       <ice:outputText value="Cataloging Information and File Settings"/>
                     </td>
                     <td>
-                      <ice:selectOneMenu partialSubmit="true" value="#{StudyPermissionsPage.editStudyPermissions.studyRestriction}">
+                      <ice:selectOneMenu styleClass="dvnSetStudyPermissionsDropdown" partialSubmit="true" value="#{StudyPermissionsPage.editStudyPermissions.studyRestriction}">
                         <f:selectItem itemLabel="Restricted" itemValue="Restricted"/>
                         <f:selectItem itemLabel="Public" itemValue="Public"/>
                       </ice:selectOneMenu>
-
                       <ice:outputText styleClass="vdcHelpText" value="If this setting is public, files can still be restricted on the Files tab of this page."/>
                     </td>
                   </tr>
@@ -212,12 +211,12 @@
                       <ice:outputText styleClass="vdcHelpText" value=" Approve or deny user request for access to restricted files."/>
                       <ice:dataTable cellpadding="0" cellspacing="0" width="100%"
                                      headerClass="list-header-left" rowClasses="list-row-even, list-row-odd"
-                                     columnClasses="vdcColPadded, vdcColPadded" columnWidths="28%,15%,30%,27%" 
+                                     columnClasses="vdcColPadded, vdcColPadded" columnWidths="22%,12%,30%,36%" 
                                      value="#{StudyPermissionsPage.editStudyPermissions.studyRequests}" var="currentRow">
                         <ice:column>
                           <f:facet name="header">
-                            <ice:outputText id="processRequest_header" value="Process Selected Requests  "/>
-                            <ice:commandButton value="Update" actionListener="#{StudyPermissionsPage.updateRequests}"/>
+                            <ice:outputText id="processRequest_header" value="Process Requests"/>
+                            <ice:commandButton value="Update" styleClass="dvnProcessRequestsButton" actionListener="#{StudyPermissionsPage.updateRequests}"/>
                           </f:facet>
                             <ice:selectOneRadio id="processRequestOption" styleClass="id_#{currentRow.studyRequest.id}" onclick="showDenyText('#{currentRow.studyRequest.id}');" value="#{currentRow.accept}">
                             <f:selectItem itemLabel="Approve" itemValue="true"/>
@@ -242,7 +241,7 @@
                           <f:facet name="header">
                             <ice:outputText id="accessDeny_header" value="Restricted File Access Deny Message"/> 
                           </f:facet>
-                            <ice:inputText styleClass="requestDenyText id_#{currentRow.studyRequest.id}" value="#{currentRow.inputDenyMessage}" size="65" visible="false"/>
+                            <ice:inputTextarea styleClass="requestDenyText id_#{currentRow.studyRequest.id}" value="#{currentRow.inputDenyMessage}" cols="52" visible="false"/>
                         </ice:column>                          
                       </ice:dataTable>
                     </td>

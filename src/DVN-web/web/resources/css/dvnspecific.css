@@ -311,6 +311,9 @@ td.dvnPermissionsTableOption{width:240px;padding-top:.75em;padding-bottom:.75em;
 .dvnPermissionsTable .dvnManageTableTop .dvnManageTableControls .iceSelBoolChkbx {margin-left:2em;}
 .dvnPermissionsTable .dvnStudyPermissionsFileDetails {margin-top:0;}
 .dvnPermissionsTable .iceDatTbl span{font-size:90% !important}
+.dvnPermissionsTable .iceDatTbl .dvnProcessRequestsButton {margin-left:1em;}
+.dvnPermissionsTable .iceDatTbl .requestDenyText {width: auto;}
+.dvnPermissionsTable .dvnSetStudyPermissionsDropdown {margin-right:1em;}
 .dvnPermissionsTable div.dvnInformationMessage p:first-child {margin-top:0;}
 .dvnStudyPermissionsFileDetails th:first-child{padding:5px;border-right:0;text-align:center}
 .dvnStudyPermissionsFileDetails table.iceDatTbl{margin-top:0;border-top:1px solid #d9d9d9}

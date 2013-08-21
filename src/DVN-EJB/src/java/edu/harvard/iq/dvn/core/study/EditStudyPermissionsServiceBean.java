@@ -255,7 +255,7 @@ public class EditStudyPermissionsServiceBean implements EditStudyPermissionsServ
         // but include this just to show what's happening here
         em.flush();
         
-        String studyUrl = study.getHandleURL();
+        String studyUrl = study.getPersistentURL();
 
         // if save succeeds, send out all accept/reject mail messages
         for (Entry<VDCUser,List<StudyRequestBean>> requestEntry : requestsToMail.entrySet()) {

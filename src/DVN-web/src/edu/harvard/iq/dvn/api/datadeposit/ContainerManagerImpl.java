@@ -29,6 +29,7 @@ import edu.harvard.iq.dvn.core.study.Metadata;
 import edu.harvard.iq.dvn.core.study.Study;
 import edu.harvard.iq.dvn.core.study.StudyFileServiceLocal;
 import edu.harvard.iq.dvn.core.study.StudyServiceLocal;
+import edu.harvard.iq.dvn.core.study.StudyVersion;
 import edu.harvard.iq.dvn.core.util.DateUtil;
 import edu.harvard.iq.dvn.core.vdc.VDC;
 import edu.harvard.iq.dvn.core.vdc.VDCNetworkServiceLocal;
@@ -306,21 +307,36 @@ public class ContainerManagerImpl extends VDCBaseBean implements ContainerManage
                     Study studyToRelease = studyService.getStudyByGlobalId(globalId);
                     if (studyToRelease != null) {
                         VDC dvThatOwnsStudy = studyToRelease.getOwner();
-                        /**
-                         * @todo: only admins can release studies?
-                         */
                         if (swordAuth.hasAccessToModifyDataverse(vdcUser, dvThatOwnsStudy)) {
                             if (!deposit.isInProgress()) {
                                 /**
-                                 * @todo: investigate EJBException: Cannot
-                                 * release latestVersion, incorrect state:
-                                 * RELEASED
+                                 * We are considering a draft version of a study
+                                 * to be incomplete and are saying that sending
+                                 * isInProgress=false means the study version is
+                                 * complete and can be released.
+                                 *
+                                 * 9.2. Deposit Incomplete
+                                 *
+                                 * "If In-Progress is true, the server SHOULD
+                                 * expect the client to provide further updates
+                                 * to the item some undetermined time in the
+                                 * future. Details of how this is implemented is
+                                 * dependent on the server's purpose. For
+                                 * example, a repository system may hold items
+                                 * which are marked In-Progress in a workspace
+                                 * until such time as a client request indicates
+                                 * that the deposit is complete." --
+                                 * http://swordapp.github.io/SWORDv2-Profile/SWORDProfile.html#continueddeposit_incomplete
                                  */
-                                studyService.setReleased(studyToRelease.getId());
-                                ReceiptGenerator receiptGenerator = new ReceiptGenerator();
-                                String baseUrl = urlManager.getHostnamePlusBaseUrlPath(uri);
-                                DepositReceipt depositReceipt = receiptGenerator.createReceipt(baseUrl, studyToRelease);
-                                return depositReceipt;
+                                if (!studyToRelease.getLatestVersion().getVersionState().equals(StudyVersion.VersionState.RELEASED)) {
+                                    studyService.setReleased(studyToRelease.getId());
+                                    ReceiptGenerator receiptGenerator = new ReceiptGenerator();
+                                    String baseUrl = urlManager.getHostnamePlusBaseUrlPath(uri);
+                                    DepositReceipt depositReceipt = receiptGenerator.createReceipt(baseUrl, studyToRelease);
+                                    return depositReceipt;
+                                } else {
+                                    throw new SwordError("Latest version of study " + globalId + " has already been released.");
+                                }
                             } else {
                                 throw new SwordError("Pass 'In-Progress: false' header to release a study.");
                             }

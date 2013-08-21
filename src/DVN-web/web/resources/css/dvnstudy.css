@@ -3,7 +3,7 @@
 .dvnstudytitleblock {overflow: hidden;}
 .dvnstudytitlefloat {padding-right: 346px; text-align: left;}
 span.dvnstudytitle {line-height: 1.48; color:#526F76; text-transform:uppercase; font-size:1.35em !important;}
-.dvnstudyversioninfo span.iceOutTxt {color:#A9A9A9; line-height: 1.48; font-size:.95em !important;}
+.dvnstudyversioninfo span.iceOutTxt {color:#808080; line-height: 1.48; font-size:.95em !important;}
 .dvnstudystatusbox{display: table-cell; padding: 2px 8px; font-weight: bold; line-height:24px !important;}
 .dvnstudystatusbox div{margin-top:4px; line-height:18px !important;}
 .dvnstudystatusarchived{background: gold; color: #526F76;}
@@ -98,10 +98,10 @@ a.vdcTruncatorLinkMore:link,a.vdcTruncatorLinkMore:hover,a.vdcTruncatorLinkMore:
 .vdcStudyFileDesc,.vdcStudyFileCitation{vertical-align:top;width:32%}
 .vdcStudyFileRowFileInfo{overflow:hidden;padding:0 .25em}
 .vdcStudyFileRowFileThumb{float:left;padding:.25em}
-span.vdcStudyFileRowFileDetails{font-size:90% !important;color:darkgray;white-space:nowrap}
+span.vdcStudyFileRowFileDetails{font-size:90% !important;color:#808080;white-space:nowrap}
 .vdcStudyFileRowFileDownload{padding:.25em 0}
 a.vdcStudyFileRowFileDownloadLink:link,a.vdcStudyFileRowFileDownloadLink:hover,a.vdcStudyFileRowFileDownloadLink:active,a.vdcStudyFileRowFileDownloadLink:visited{padding:2px 0px 2px 24px;background:url(/dvn/resources/images/icon_download.gif) no-repeat;font-size:90% !important;vertical-align:top}
-span.vdcStudyFileRowFileDownloadRestricted{margin-left:3px;font-size:90% !important;color:darkgray;vertical-align:top}
+span.vdcStudyFileRowFileDownloadRestricted{margin-left:3px;font-size:90% !important;color:#808080;vertical-align:top}
 a.vdcStudyFileRowFileDownloadRequestLink {margin-left:.5em;vertical-align:top}
 a.vdcStudyFileRowFileDownloadRequestLink span.iceOutTxt {font-size:90% !important}
 img.vdcStudyFileRowFileDownloadAsIcon{border:0;vertical-align:middle}

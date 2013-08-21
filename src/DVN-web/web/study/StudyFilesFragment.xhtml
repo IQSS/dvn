@@ -157,7 +157,7 @@
                                                                         <ice:outputLink styleClass="vdcStudyFileRowFileDownloadRequestLink" rendered="#{studyFileUI.restrictedForUser and studyPage.studyUI.study.requestAccess and VDCSession.loginBean!=null}" value="/dvn#{VDCRequest.currentVDCURL}/faces/login/FileRequestPage.xhtml?studyId=#{studyPage.studyId}&amp;fileId=#{studyFileUI.studyFile.id}">                                                 
                                                                             <ice:outputText value="(Request Access)"/>
                                                                         </ice:outputLink>
-                                                                        <ice:commandLink action="#{studyPage.beginRequestWorkflow}" rendered="#{studyFileUI.restrictedForUser and studyPage.studyUI.study.requestAccess and VDCSession.loginBean==null}">
+                                                                        <ice:commandLink styleClass="vdcStudyFileRowFileDownloadRequestLink" action="#{studyPage.beginRequestWorkflow}" rendered="#{studyFileUI.restrictedForUser and studyPage.studyUI.study.requestAccess and VDCSession.loginBean==null}">
                                                                             <ice:outputText value="(Request Access)"/> 
                                                                             <f:param name="studyID" value="#{studyPage.studyId}"/>
                                                                             <f:param name="fileId" value="#{studyFileUI.studyFile.id}"/>

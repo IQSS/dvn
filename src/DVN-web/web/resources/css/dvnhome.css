@@ -143,11 +143,13 @@ a.lastNodeActive:link{font-weight:700}
 
 .dvnHmpgDataverseWidgetTable, .dvnHmpgDataverseWidgetTable tr, .dvnHmpgDataverseWidgetTable td, .dvnHmpgStudyWidgetTable, .dvnHmpgStudyWidgetTable tr, .dvnHmpgStudyWidgetTable td {border:0;}
 .dvnHmpgDataverseWidgetTable td, .dvnHmpgStudyWidgetTable td {border-bottom:1px dotted #D9D9D9;}
-.dvnHmpgDataverseWidgetTable td div, .dvnHmpgStudyWidgetTable td div {overflow:hidden;}
-.dvnHmpgStudyWidgetTable a.iceOutLnk span.iceOutTxt { display:inline !important;}
-.dvnHmpgDataverseWidgetTable span.iceOutTxt, .dvnHmpgStudyWidgetTable span.iceOutTxt {font-size:90% !important; display:inline !important;}
+.dvnHmpgDataverseWidgetTable td div, .dvnHmpgStudyWidgetTable td div {overflow:hidden; position:relative; padding-top:2px; padding-bottom:2px;}
+.dvnHmpgStudyWidgetTable td div {padding-right:100px;}
+.dvnHmpgStudyWidgetTable a.iceOutLnk span.iceOutTxt {display:inline !important;}
+.dvnHmpgDataverseWidgetTable span.iceOutTxt, .dvnHmpgStudyWidgetTable span.iceOutTxt {font-size:90% !important;}
 img.dvnHmpgStudyFileIcon {margin-right:.5em !important; vertical-align:middle}
-.dvnHmpgWidgetFloat {float:right; color: grey !important;}
+.dvnHmpgWidgetFloat {display:block; position:absolute; right:0; top:0; width:90px; color:grey !important; text-align:right;}
+span.iceOutTxt.dvnStudyListStudyAuthor {display:inline !important;}
 
 /* DATAVERSE LIST TABLE + ALPHA SORT */
 .dvnHmpgGroupHeaderBlock{width:100%;margin-bottom:.25em;overflow:hidden}
@@ -167,7 +169,8 @@ a.dvnHmpgGroupCreateLink:link,a.dvnHmpgGroupCreateLink:visited,a.dvnHmpgGroupCre
 .dvnHmpgGroupDataTable{margin:0;width:100%}
 .dvnHmpgGroupDataTable span{font-size:90% !important}
 .dvnHmpgGroupDataTable th span.iceOutTxt td{font-size:90% !important}
-.dvnHmpgDvNameLink{float:left}
+.dvnHmpgDvNameLink{float:left; padding-right:100px;}
+.dvnHmpgDvNameLink span.iceOutTxt {display:inline;}
 .dvnHmpgMoreInfoLink{float:right;display:inline;margin-left:2em}
 .dvnHmpgDvMoreInfoDesc{clear:both}
 .childRowIndentStyle{background:url(/dvn/resources/icefaces/dvn_rime/css-images/tree_line_last_node.gif) 0 0 no-repeat}

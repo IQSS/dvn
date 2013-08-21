@@ -63,6 +63,8 @@ else:
 if "true" == draft_state_old:
     #print "releasing study using", edit_uri
     out = Popen(["tools/scripts/data-deposit-api/test-edit-put-in-progress", edit_uri], stdout=PIPE).communicate()[0]
+    # FIXME process "out" and check Location header
+    print out
     deposit_receipt = ET.fromstring(out)
     for line in deposit_receipt:
         if "{http://purl.org/net/sword/terms/}verboseDescription" == line.tag:

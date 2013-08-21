@@ -149,6 +149,19 @@ public class FileRequestPage extends VDCBaseBean implements java.io.Serializable
         return sb.toString();
     }
     
+    private List<String> fileNameList(List idList) {
+        List<String> fileList = new ArrayList();
+        Iterator iter = idList.iterator();
+        while (iter.hasNext()) {
+            Long id = (Long) iter.next();
+            StudyFile studyFile = studyFileService.getStudyFile(id);
+            String fileLabel = studyFile.getFileName();
+            fileList.add(fileLabel);
+        }
+        
+        return fileList;
+    }
+    
     public String generateRequest() {
 
         LoginWorkflowBean lwf = (LoginWorkflowBean) getBean("LoginWorkflowBean");
@@ -166,11 +179,11 @@ public class FileRequestPage extends VDCBaseBean implements java.io.Serializable
                 studyRequestService.create(user.getId(), study.getId(), studyFile.getId());
             }
             // Notify Admin of request
-            mailService.sendFileAccessRequestNotification(study.getOwner().getContactEmail(), user.getUserName(), study.getReleasedVersion().getMetadata().getTitle(), study.getGlobalId(), fileListString(getRequestFileIdList())); 
+            mailService.sendFileAccessRequestNotification(study.getOwner().getContactEmail(), user.getUserName(), study.getReleasedVersion().getMetadata().getTitle(), study.getGlobalId(), fileNameList(getRequestFileIdList()));
 
-        // Send confirmation to user
+            // Send confirmation to user
  
-            mailService.sendFileAccessRequestConfirmation(user.getEmail(), study.getReleasedVersion().getMetadata().getTitle(), study.getGlobalId(), fileListString(getRequestFileIdList())); 
+            mailService.sendFileAccessRequestConfirmation(user.getEmail(), study.getReleasedVersion().getMetadata().getTitle(), study.getGlobalId(), fileNameList(getRequestFileIdList()));
      
             getVDCRenderBean().getFlash().put("successMessage", "Thanks for your interest in these files. You will be notified as soon as your request is approved.");
         } 

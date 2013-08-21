@@ -27,6 +27,8 @@
  */
 package edu.harvard.iq.dvn.core.study;
 
+import com.icesoft.faces.component.ext.HtmlInputText;
+
 /**
  *
  * @author Ellen Kraffmiller
@@ -93,5 +95,13 @@ public class StudyRequestBean implements java.io.Serializable {
         this.fileName = fileName;
     }
     
-    
+    private String inputDenyMessage;
+
+    public String getInputDenyMessage() {
+        return inputDenyMessage;
+    }
+
+    public void setInputDenyMessage(String inputDenyMessage) {
+        this.inputDenyMessage = inputDenyMessage;
+    }
 }

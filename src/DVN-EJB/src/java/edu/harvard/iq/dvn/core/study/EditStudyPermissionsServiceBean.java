@@ -254,31 +254,26 @@ public class EditStudyPermissionsServiceBean implements EditStudyPermissionsServ
         // requires a transaction will automatically trigger a flush to the database,
         // but include this just to show what's happening here
         em.flush();
-
-        String studyUrl = "http://"+ PropertyUtil.getHostUrl() + "/dvn/dv/" + study.getOwner().getAlias() +"/faces/study/StudyPage.xhtml?studyId=" + study.getId() + "&tab=files";
         
+        String studyUrl = study.getPersistentURL();
+
         // if save succeeds, send out all accept/reject mail messages
         for (Entry<VDCUser,List<StudyRequestBean>> requestEntry : requestsToMail.entrySet()) {
             
             List<String> acceptedFiles = new ArrayList();
             List<String> rejectedFiles = new ArrayList();
-            
+                        
             for (StudyRequestBean elem : requestEntry.getValue()) {
                if (Boolean.TRUE.equals(elem.getAccept()) ){
                    acceptedFiles.add(elem.getFileName());
                 } else if (Boolean.FALSE.equals(elem.getAccept()) ){
-                    rejectedFiles.add(elem.getFileName());
+                    rejectedFiles.add("File Name: " + elem.getFileName() + ",  Message: "+ elem.getInputDenyMessage());
                 }
             }
 
             mailService.sendFileAccessResolvedNotification(requestEntry.getKey().getEmail(), study.getReleasedVersion().getMetadata().getTitle(), study.getGlobalId(), acceptedFiles,rejectedFiles, studyUrl, study.getOwner().getContactEmail());
-               
-
-            
-            
 
         }
-            
     }
     
     

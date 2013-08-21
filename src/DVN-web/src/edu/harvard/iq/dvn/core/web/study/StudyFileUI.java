@@ -426,8 +426,10 @@ public class StudyFileUI implements java.io.Serializable {
     private String fileSizeByByte;
     
     public String getFileSizeByByte() {
-        File pFile = new File (getStudyFile().getFileSystemLocation());
-        return String.valueOf( pFile.length() );
+        try {
+            File pFile = new File (getStudyFile().getFileSystemLocation());
+            return String.valueOf( pFile.length() ); 
+        } catch (Exception exp) { return "0"; }
     }
     
     public void setFileSizeByByte(String fileSizeByByte) {

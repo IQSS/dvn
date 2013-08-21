@@ -29,10 +29,15 @@ public class ReceiptGenerator {
     private static final Logger logger = Logger.getLogger(ReceiptGenerator.class.getCanonicalName());
 
     DepositReceipt createReceipt(String baseUrl, Study study) {
-        logger.info("baseUrl was: " + baseUrl);
+        logger.fine("baseUrl was: " + baseUrl);
         DepositReceipt depositReceipt = new DepositReceipt();
-        depositReceipt.setLocation(new IRI("location" + baseUrl + study.getGlobalId()));
-        depositReceipt.setEditIRI(new IRI(baseUrl + "/edit/study/" + study.getGlobalId()));
+        String editIri = baseUrl + "/edit/study/" + study.getGlobalId();
+        depositReceipt.setEditIRI(new IRI(editIri));
+        /**
+         * @todo: should setLocation depend on if an atom entry or a zip file
+         * was deposited?
+         */
+        depositReceipt.setLocation(new IRI(editIri));
         depositReceipt.setEditMediaIRI(new IRI(baseUrl + "/edit-media/study/" + study.getGlobalId()));
         depositReceipt.setVerboseDescription("Title: " + study.getLatestVersion().getMetadata().getTitle());
         depositReceipt.setStatementURI("application/atom+xml;type=feed", baseUrl + "/statement/study/" + study.getGlobalId());

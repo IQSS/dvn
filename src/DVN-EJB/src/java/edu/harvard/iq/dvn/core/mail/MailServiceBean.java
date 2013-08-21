@@ -222,6 +222,16 @@ public class MailServiceBean implements edu.harvard.iq.dvn.core.mail.MailService
                 "User '"+userName+"' has requested access to restricted files '"+fileNameList+"' in study '"+studyTitle+"' ("+globalId+"). ");     
     }
     
+    public void sendFileAccessRequestNotification(String sendToEmail, String userName, String studyTitle, String globalId, List<String> fileNameList) {
+        String subject = "Dataverse Network: New request to access restricted file";
+        String messageText =  "\nUser '"+userName+"' has requested access to restricted files: \n";
+        for (String fileName : fileNameList) {
+            messageText += "\t" + fileName + "\n";;
+        }
+        messageText += "\nin study '"+studyTitle+"' ("+globalId+").\n";                
+        sendDoNotReplyMail(sendToEmail, subject, messageText);
+    }
+    
     public void sendFileAccessRequestConfirmation(String userEmail, String studyTitle, String globalId) {
         sendDoNotReplyMail(userEmail,"Dataverse Network: Your Request to access restricted files has been received",
                 "Thanks for your interest in the study '"+studyTitle+"' ("+globalId+"). You will be notified as soon as your request is approved.");
@@ -234,6 +244,16 @@ public class MailServiceBean implements edu.harvard.iq.dvn.core.mail.MailService
         sendDoNotReplyMail(userEmail,"Dataverse Network: Your Request to access restricted files has been received",
                 "Thanks for your interest in the files '"+fileNameList+"' in the study '"+studyTitle+"' ("+globalId+"). You will be notified as soon as your request is approved.");
     }
+    
+    public void sendFileAccessRequestConfirmation(String userEmail, String studyTitle, String globalId, List<String> fileNameList) {
+        String subject = "Dataverse Network: Your Request to access restricted files has been received";
+        String messageText =  "\nThanks for your interest in the files: \n";
+        for (String fileName : fileNameList) {
+            messageText += "\t" + fileName + "\n";;
+        }
+        messageText += "\nin study '"+studyTitle+"' ("+globalId+"). You will be notified as soon as your request is approved.\n";                
+        sendDoNotReplyMail(userEmail, subject, messageText);
+    }    
     
     public void sendFileAccessApprovalNotification(String userEmail, String studyTitle, String globalId, String url) {
         String msgText= "You now have access to restricted files in study '"+studyTitle+"' ("+globalId+"). \n"+

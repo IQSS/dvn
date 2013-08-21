@@ -358,10 +358,6 @@ public class MediaResourceManagerImpl implements MediaResourceManager {
                 if (!uploadDir.delete()) {
                     logger.info("Unable to delete " + uploadDir.getAbsolutePath());
                 }
-                /**
-                 * @todo: when should we release the study?
-                 */
-//        studyService.setReleased(studyId);
                 ReceiptGenerator receiptGenerator = new ReceiptGenerator();
                 String baseUrl = urlManager.getHostnamePlusBaseUrlPath(uri);
                 DepositReceipt depositReceipt = receiptGenerator.createReceipt(baseUrl, study);

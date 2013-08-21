@@ -11,9 +11,9 @@ study_edit_uri = first_study.attributes["xml:base"]
 
 entry = Document.new `tools/scripts/data-deposit-api/test-edit-get #{study_edit_uri}`
 statement_uri = XPath.first(entry,"//link[@rel='http://purl.org/net/sword/terms/statement']").attributes["href"]
-deaccession_state_term="isDeaccessioned"
+release_state_term="latestVersionState"
 statement = Document.new `tools/scripts/data-deposit-api/test-edit-get #{statement_uri}`
-deaccession_state_old = XPath.first(statement, "//category[@term='#{deaccession_state_term}']").text
+release_state_old = XPath.first(statement, "//category[@term='#{release_state_term}']").text
 
 edit_uri = XPath.first(entry,"//link[@rel='edit']").attributes["href"]
 out = `tools/scripts/data-deposit-api/test-edit-delete #{edit_uri}`
@@ -26,9 +26,9 @@ end
 
 entry = Document.new `tools/scripts/data-deposit-api/test-edit-get #{study_edit_uri}`
 statement = Document.new `tools/scripts/data-deposit-api/test-edit-get #{statement_uri}`
-deaccession_state_new = XPath.first(statement, "//category[@term='#{deaccession_state_term}']").text
-if deaccession_state_old == "false" and deaccession_state_new == "true"
-    puts "#{deaccession_state_term} changed from #{deaccession_state_old} to #{deaccession_state_new} using #{edit_uri}"
+release_state_new = XPath.first(statement, "//category[@term='#{release_state_term}']").text
+if release_state_old == "RELEASED" and release_state_new == "DEACCESSIONED"
+    puts "#{release_state_term} changed from #{release_state_old} to #{release_state_new} using #{edit_uri}"
 else
     puts "Error: unable to deaccession study using #{edit_uri}"
 end

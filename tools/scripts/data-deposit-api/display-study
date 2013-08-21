@@ -16,7 +16,7 @@ data_citation = XPath.first(entry, "//bibliographicCitation").text
 statement = Document.new `tools/scripts/data-deposit-api/test-statement #{statement_uri}`
 title = statement.root.elements["title"].text
 updated = statement.root.elements["updated"].text
-release_state_term = "isReleased"
+release_state_term = "latestVersionState"
 release_state = XPath.first(statement, "//category[@term='#{release_state_term}']")
 puts "#{release_state_term}:#{release_state.text} for #{data_citation}. Files (if any):"
 XPath.each( statement, "//entry" ) { |entry|

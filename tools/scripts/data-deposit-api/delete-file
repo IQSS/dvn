@@ -14,7 +14,7 @@ statement_uri = XPath.first(entry,"//link[@rel='http://purl.org/net/sword/terms/
 
 statement = Document.new `tools/scripts/data-deposit-api/test-statement #{statement_uri}`
 title = statement.root.elements["title"].text
-release_state = XPath.first(statement, "//category[@term='isReleased']")
+release_state = XPath.first(statement, "//category[@term='latestVersionState']")
 puts "'#{title}' release state is #{release_state.text}. looking for a file to delete..."
 file_to_delete = XPath.first( statement, "//entry" )
 if file_to_delete

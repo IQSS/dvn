@@ -93,11 +93,8 @@ public class StatementManagerImpl implements StatementManager {
                 AtomDate atomDate = new AtomDate(study.getLatestVersion().getLastUpdateTime());
                 String datedUpdated = atomDate.toString();
                 Statement statement = new AtomStatement(feedUri, author, title, datedUpdated);
-                Boolean isReleased = study.getLatestVersion().getVersionState().equals(StudyVersion.VersionState.RELEASED) ? true : false;
-                Boolean isDeaccessioned = study.getLatestVersion().isDeaccessioned();
                 Map<String, String> states = new HashMap<String, String>();
-                states.put("isReleased", isReleased.toString());
-                states.put("isDeaccessioned", isDeaccessioned.toString());
+                states.put("latestVersionState", study.getLatestVersion().getVersionState().toString());
                 statement.setStates(states);
                 List<FileMetadata> fileMetadatas = study.getLatestVersion().getFileMetadatas();
                 for (FileMetadata fileMetadata : fileMetadatas) {

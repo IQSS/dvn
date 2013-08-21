@@ -30,6 +30,7 @@ import edu.harvard.iq.dvn.core.study.Study;
 import edu.harvard.iq.dvn.core.study.StudyFileServiceLocal;
 import edu.harvard.iq.dvn.core.study.StudyServiceLocal;
 import edu.harvard.iq.dvn.core.study.StudyVersion;
+import edu.harvard.iq.dvn.core.study.StudyVersion.VersionState;
 import edu.harvard.iq.dvn.core.util.DateUtil;
 import edu.harvard.iq.dvn.core.vdc.VDC;
 import edu.harvard.iq.dvn.core.vdc.VDCNetworkServiceLocal;
@@ -268,12 +269,21 @@ public class ContainerManagerImpl extends VDCBaseBean implements ContainerManage
                     if (study != null) {
                         VDC dvThatOwnsStudy = study.getOwner();
                         if (swordAuth.hasAccessToModifyDataverse(vdcUser, dvThatOwnsStudy)) {
-                            if (study.isReleased()) {
-                                logger.info("deaccessioning study" + study.getGlobalId());
+                            VersionState studyState = study.getLatestVersion().getVersionState();
+                            if (studyState.equals(VersionState.DRAFT)) {
+                                logger.info("destroying working copy version of study " + study.getGlobalId());
+                                studyService.destroyWorkingCopyVersion(study.getLatestVersion().getId());
+                            } else if (studyState.equals(VersionState.RELEASED)) {
+                                logger.info("deaccessioning latest version of study " + study.getGlobalId());
                                 studyService.deaccessionStudy(study.getLatestVersion());
+                            } else if (studyState.equals(VersionState.DEACCESSIONED)) {
+                                throw new SwordError("Lastest version of study " + study.getGlobalId() + " has already been deaccessioned.");
+                            } else if (studyState.equals(VersionState.ARCHIVED)) {
+                                throw new SwordError("Lastest version of study " + study.getGlobalId() + " has been archived and can not be deleted or deaccessioned.");
+                            } else if (studyState.equals(VersionState.IN_REVIEW)) {
+                                throw new SwordError("Lastest version of study " + study.getGlobalId() + " is in review and can not be deleted or deaccessioned.");
                             } else {
-                                logger.info("deleting study " + study.getGlobalId());
-                                studyService.deleteStudy(study.getId());
+                                throw new SwordError("Operation not valid for study " + study.getGlobalId() + " in state " + studyState);
                             }
                         } else {
                             throw new SwordError("User " + vdcUser.getUserName() + " is not authorized to modify " + dvThatOwnsStudy.getAlias());

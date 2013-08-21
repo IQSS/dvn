@@ -35,10 +35,10 @@ print "getting statement from", statement_uri
 statement_before = ET.fromstring(Popen(["tools/scripts/data-deposit-api/test-statement", statement_uri], stdout=PIPE).communicate()[0]);
 for line in statement_before:
     if "{http://www.w3.org/2005/Atom}category" == line.tag:
-        if "isReleased" == line.attrib["term"]:
+        if "latestVersionState" == line.attrib["term"]:
             release_state_old = line.text
 
-if "false" == release_state_old:
+if "DRAFT" == release_state_old:
     #print "releasing study using", edit_uri
     out = Popen(["tools/scripts/data-deposit-api/test-edit-put-in-progress", edit_uri], stdout=PIPE).communicate()[0]
     deposit_receipt = ET.fromstring(out)
@@ -52,8 +52,8 @@ if "false" == release_state_old:
     statement_after = ET.fromstring(Popen(["tools/scripts/data-deposit-api/test-statement", statement_uri], stdout=PIPE).communicate()[0]);
     for line in statement_after:
         if "{http://www.w3.org/2005/Atom}category" == line.tag:
-            if "isReleased" == line.attrib["term"]:
+            if "latestVersionState" == line.attrib["term"]:
                 release_state_new = line.text
-                print "isReleased changed from", release_state_old, "to", release_state_new
+                print "latestVersionState changed from", release_state_old, "to", release_state_new
 else:
-    print "Nothing to do. isReleased =", release_state_old
+    print "Nothing to do. latestVersionState =", release_state_old

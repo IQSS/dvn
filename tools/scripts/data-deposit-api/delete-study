@@ -22,11 +22,3 @@ else
     puts "unexpected error:"
     puts out
 end
-
-out = `tools/scripts/data-deposit-api/test-edit-delete #{edit_uri}`
-if out.match(/404 Not Found/)
-    puts "successful deletion of study using #{edit_uri}"
-else
-    puts "deletion of study failed"
-    puts out
-end

@@ -505,6 +505,10 @@ public abstract class StudyFile implements Serializable {
     public abstract boolean isSubsettable();
 
     public abstract boolean isUNFable();
+    
+    private String md5;
+    public String getMd5() { return this.md5; }
+    public void setMd5(String md5) { this.md5 = md5; }
 
     public void clearData() {
          for (DataTable elem : this.getDataTables()) {

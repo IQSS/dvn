@@ -28,6 +28,7 @@ import edu.harvard.iq.dvn.core.admin.VDCUser;
 import edu.harvard.iq.dvn.core.analysis.NetworkDataServiceBean;
 import edu.harvard.iq.dvn.core.mail.MailServiceLocal;
 import edu.harvard.iq.dvn.core.util.FileUtil;
+import edu.harvard.iq.dvn.core.web.util.MD5Checksum;
 import edu.harvard.iq.dvn.ingest.dsb.DSBIngestMessage;
 import edu.harvard.iq.dvn.ingest.dsb.DSBWrapper;
 import java.io.File;
@@ -362,8 +363,7 @@ public class StudyFileServiceBean implements StudyFileServiceLocal {
     private void addFiles(StudyVersion studyVersion, List<StudyFileEditBean> newFiles, VDCUser user, String ingestEmail, int messageLevel) {
 
         Study study = studyVersion.getStudy();
-
-       
+        MD5Checksum md5Checksum = new MD5Checksum();
 
         // step 1: divide the files, based on subsettable or not
         List subsettableFiles = new ArrayList();
@@ -424,6 +424,7 @@ public class StudyFileServiceBean implements StudyFileServiceLocal {
             } catch (IOException ex) {
                 throw new EJBException(ex);
             }
+            f.setMd5(md5Checksum.CalculateMD5(f.getFileSystemLocation()));
         }
 
         // step 3: iterate through subsettable files, sending a message via JMS
@@ -505,7 +506,7 @@ public class StudyFileServiceBean implements StudyFileServiceLocal {
         // first some initialization
         StudyVersion studyVersion = null;
         Study study = null;
-
+        MD5Checksum md5Checksum = new MD5Checksum();
 
         study = em.find(Study.class, studyId);
         studyVersion = study.getEditVersion();
@@ -654,6 +655,7 @@ public class StudyFileServiceBean implements StudyFileServiceLocal {
 
                         FileUtil.copyFile(tempOriginalFile, newOriginalLocationFile);
                         f.setOriginalFileType(originalFileType);
+                        f.setMd5(md5Checksum.CalculateMD5(newOriginalLocationFile.getAbsolutePath()));
                     }
                     tempOriginalFile.delete();
                 } catch (IOException ex) {
@@ -674,7 +676,7 @@ public class StudyFileServiceBean implements StudyFileServiceLocal {
                     throw new EJBException(ex);
                 }
             }
-               
+            
             // Finally, if the file was copied sucessfully, 
             // attach file to study version and study
             

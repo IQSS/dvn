@@ -27,7 +27,6 @@ import edu.harvard.iq.dvn.core.study.StudyFile;
 import edu.harvard.iq.dvn.core.study.StudyFileEditBean;
 import edu.harvard.iq.dvn.core.study.StudyFileServiceLocal;
 import edu.harvard.iq.dvn.core.study.StudyServiceLocal;
-import edu.harvard.iq.dvn.core.util.FileUtil;
 import edu.harvard.iq.dvn.core.vdc.VDC;
 import java.io.ByteArrayInputStream;
 import java.io.File;
@@ -38,7 +37,6 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
@@ -256,21 +254,34 @@ public class MediaResourceManagerImpl implements MediaResourceManager {
                 }
                 editStudyFilesService.save(dvThatOwnsStudy.getId(), vdcUser.getId());
 
-                String tempDirectory = swordConfiguration.getTempDirectory();
-                if (tempDirectory == null) {
+                String uploadDirString;
+                File uploadDir;
+                String importDirString;
+                File importDir;
+                String swordTempDirString = swordConfiguration.getTempDirectory();
+                if (swordTempDirString == null) {
                     throw new SwordError("Could not determine temp directory");
-                }
-                String uploadDirPath = tempDirectory + File.separator + "uploads" + File.separator + study.getId().toString();
-                File uploadDir = new File(uploadDirPath);
-                if (!uploadDir.exists()) {
-                    if (!uploadDir.mkdirs()) {
-                        throw new SwordServerException("couldn't create directory: " + uploadDir.getAbsolutePath());
+                } else {
+                    uploadDirString = swordTempDirString + File.separator + "uploads" + File.separator + study.getId().toString();
+                    uploadDir = new File(uploadDirString);
+                    if (!uploadDir.exists()) {
+                        if (!uploadDir.mkdirs()) {
+                            throw new SwordServerException("couldn't create directory: " + uploadDir.getAbsolutePath());
+                        }
+                    }
+                    importDirString = swordTempDirString + File.separator + "import" + File.separator + study.getId().toString();
+                    importDir = new File(importDirString);
+                    if (!importDir.exists()) {
+                        if (!importDir.mkdirs()) {
+                            throw new SwordServerException("couldn't create directory: " + importDir.getAbsolutePath());
+                        }
                     }
                 }
+
                 // the first character of the filename is truncated with the official jar
                 // so we use include the bug fix at https://github.com/IQSS/swordv2-java-server-library/commit/aeaef83
                 // and use this jar: https://build.hmdc.harvard.edu:8443/job/swordv2-java-server-library-iqss/2/
-                String filename = uploadDirPath + File.separator + deposit.getFilename();
+                String filename = uploadDirString + File.separator + deposit.getFilename();
                 logger.info("attempting write to " + filename);
                 ZipInputStream ziStream = new ZipInputStream(deposit.getInputStream());
                 ZipEntry zEntry;
@@ -304,13 +315,7 @@ public class MediaResourceManagerImpl implements MediaResourceManager {
 
                             validateFileName(exisitingFilenames, finalFileName, study);
 
-                            File tempUploadedFile = null;
-                            try {
-                                tempUploadedFile = FileUtil.createTempFile(tempDirectory, finalFileName);
-                            } catch (Exception ex) {
-                                Logger.getLogger(MediaResourceManagerImpl.class.getName()).log(Level.SEVERE, null, ex);
-                            }
-
+                            File tempUploadedFile = new File(importDir, finalFileName);
                             tempOutStream = new FileOutputStream(tempUploadedFile);
 
                             byte[] dataBuffer = new byte[8192];
@@ -355,9 +360,6 @@ public class MediaResourceManagerImpl implements MediaResourceManager {
                     throw new SwordServerException("problem looking up studyFileService");
                 }
                 studyFileService.addFiles(study.getLatestVersion(), fbList, vdcUser);
-                if (!uploadDir.delete()) {
-                    logger.info("Unable to delete " + uploadDir.getAbsolutePath());
-                }
                 ReceiptGenerator receiptGenerator = new ReceiptGenerator();
                 String baseUrl = urlManager.getHostnamePlusBaseUrlPath(uri);
                 DepositReceipt depositReceipt = receiptGenerator.createReceipt(baseUrl, study);

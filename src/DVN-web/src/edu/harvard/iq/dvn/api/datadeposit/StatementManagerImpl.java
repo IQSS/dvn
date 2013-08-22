@@ -23,6 +23,7 @@ import edu.harvard.iq.dvn.core.admin.VDCUser;
 import edu.harvard.iq.dvn.core.study.FileMetadata;
 import edu.harvard.iq.dvn.core.study.Study;
 import edu.harvard.iq.dvn.core.study.StudyFile;
+import edu.harvard.iq.dvn.core.study.StudyLock;
 import edu.harvard.iq.dvn.core.study.StudyServiceLocal;
 import edu.harvard.iq.dvn.core.study.StudyVersion;
 import edu.harvard.iq.dvn.core.vdc.VDC;
@@ -95,6 +96,14 @@ public class StatementManagerImpl implements StatementManager {
                 Statement statement = new AtomStatement(feedUri, author, title, datedUpdated);
                 Map<String, String> states = new HashMap<String, String>();
                 states.put("latestVersionState", study.getLatestVersion().getVersionState().toString());
+                StudyLock lock = study.getStudyLock();
+                if (lock != null) {
+                    states.put("locked", "true");
+                    states.put("lockedDetail", lock.getDetail());
+                    states.put("lockedStartTime", lock.getStartTime().toString());
+                } else {
+                    states.put("locked", "false");
+                }
                 statement.setStates(states);
                 List<FileMetadata> fileMetadatas = study.getLatestVersion().getFileMetadatas();
                 for (FileMetadata fileMetadata : fileMetadatas) {

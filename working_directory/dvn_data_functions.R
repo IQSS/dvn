@@ -52,9 +52,19 @@ read.table141vdc<-function (file, header = FALSE, sep = "\t", quote = "", dec = 
         cols <- length(data)
     }
 
+    #cat("colClassesx:\n")
+    #cat(paste(class(colClassesx),"\n"))
+    #cat(paste(colClassesx,"\n",sep=" "))
+    #cat(paste(class(varFormat),"\n"))
+    #cat(paste(length(varFormat),"\n"))
+    #cat("varFormat:\n")
+    #cat(paste(varFormat,"\n",sep=" "))
+
     for (i in 1:cols) {
         #if (known[i]) next
         #data[[i]] <- as(data[[i]], colClasses[i])
+	#cat(paste(class(data[[i]]),"\n"))
+	#cat(paste(mode(data[[i]]),"\n"))
         if (colClassesx[i] == 0) {
 
 	     # Make sure the character values are handled as such:
@@ -127,8 +137,53 @@ read.table141vdc<-function (file, header = FALSE, sep = "\t", quote = "", dec = 
     class(data) <- "data.frame"
     row.names(data) <- as.character(seq(len = nlines))
     attr(data, "var.type")<-colClassesx
+    #cat("end of read.table141vdc\n")
     data
 } # end of read.table141vdc
+
+transformrecoded <-function(x, recodedvarsindx = 2, dec = ".", col.names = NULL, colClassesx = undef, varFormat = list()){
+
+    #cat("inside transformrecoded\n")
+    #cat(paste(col.names,"\n",sep=""))
+
+    for (i in recodedvarsindx:length(x)) {
+
+    	#i = recodedindx[j]
+	#cat("index: ")
+	#cat(i)
+	#cat("\n")
+
+	#cat(paste(class(x[[i]]),"\n"))
+	#cat(paste(mode(x[[i]]),"\n"))
+	
+	#cat(paste(varFormat[col.names[i]],"\n"))
+	#cat(paste(unlist(varFormat[col.names[i]]),"\n"))
+
+	testbool<-is.null(unlist(varFormat[col.names[i]]))
+	#cat(as.character(testbool))
+
+
+        if (!is.null(unlist(varFormat[col.names[i]]))){
+	     	#cat("inside the if loop.\n")
+                if (varFormat[col.names[i]] == 'D'){
+	       	    x[[i]]<-as.Date(x[[i]])
+		    #cat("x[[i]] is a Date;\n")
+		    colClassesx[i]<-1
+                } else if (varFormat[col.names[i]] == 'T'){
+                    x[[i]]<-as.POSIXct(strptime(x[[i]], "%T"))
+                    colClassesx[i]<-1
+                } else if (varFormat[col.names[i]] == 'DT'){
+                    x[[i]]<-as.POSIXct(strptime(x[[i]], "%F %T"))
+                    colClassesx[i]<-1
+                } else if (varFormat[col.names[i]] == 'JT'){
+                    x[[i]]<-as.POSIXct(strptime(x[[i]], "%j %T"))
+                    colClassesx[i]<-1
+                }
+        }
+    }
+    x
+}
+
 ###########################################################
 createvalindex <-function(dtfrm, attrname=NULL){
     # this version relies on the list-based approach
@@ -1031,6 +1086,10 @@ univarDataDwnld<-function(dtfrm, dwnldoptn, dsnprfx) {
 	
 
       for (i in 1:length(x)) {
+        cat("inside the for loop\n")
+	cat("class: ")
+	cat(class(x[[i]]))
+	cat("\n")
 	# Recoding discrete, categorical variables as R factors;
 	# But, (experimental...) only if there are value labels supplied. 
 	# This means, among other things, that an ingested R character, 
@@ -1055,6 +1114,9 @@ univarDataDwnld<-function(dtfrm, dwnldoptn, dsnprfx) {
 	    vti <- NULL
 	  } else {
             vti <- VALTABLE[[VALINDEX[[as.character(i)]]]]
+	    cat(paste(class(vti),"\n"))
+	    cat(paste(length(vti),"\n"))
+	    cat(paste("VTI", vti, "\n", sep=" : "))
 	  }
 
           if (dropfactorlevels) {
@@ -1093,10 +1155,20 @@ univarDataDwnld<-function(dtfrm, dwnldoptn, dsnprfx) {
 #   of assuming non-character vars are ordered
 
 	if ((dwnldoptn == 'D04') && !(is.null(VALORDER[[as.character(i)]]))) {
+	   cat("ordered value labels supplied")
 		x[[i]]  <-  factor(x[[i]],
 				levels=VALORDER[[as.character(i)]],
 				ordered=TRUE)
 	} else {
+	  cat("no ordered value labels supplied\n")
+	  cat(paste(VARTYPE[i],"\n",sep=""))
+	  cat(paste(length(vlevsi),"\n",sep=""))
+	  orderedfct<-(orderfactors &&
+                                      VARTYPE[i]>0 && ((length(vlevsi)-length(mti)>2)))
+          cat(paste(as.character(orderedfct),"\n", sep=""))
+	  paste("MTI", mti,"\n",sep=" : ")
+	  paste("VLEVSI", vlevsi,"\n",sep=" : ")
+	  
 		x[[i]]  <-  factor(x[[i]],
 	        		levels=vlevsi,
 			     	labels=names(vlevsi),

@@ -23,8 +23,8 @@ import edu.harvard.iq.dvn.core.admin.VDCUser;
 import edu.harvard.iq.dvn.core.study.FileMetadata;
 import edu.harvard.iq.dvn.core.study.Study;
 import edu.harvard.iq.dvn.core.study.StudyFile;
+import edu.harvard.iq.dvn.core.study.StudyLock;
 import edu.harvard.iq.dvn.core.study.StudyServiceLocal;
-import edu.harvard.iq.dvn.core.study.StudyVersion;
 import edu.harvard.iq.dvn.core.vdc.VDC;
 import edu.harvard.iq.dvn.core.vdc.VDCServiceLocal;
 import java.util.HashMap;
@@ -32,6 +32,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.logging.Logger;
 import javax.ejb.EJB;
+import javax.ejb.EJBException;
 import javax.inject.Inject;
 import org.apache.abdera.model.AtomDate;
 import org.swordapp.server.AtomStatement;
@@ -75,7 +76,12 @@ public class StatementManagerImpl implements StatementManager {
 
             logger.info("request for sword statement by user " + vdcUser.getUserName());
 
-            Study study = studyService.getStudyByGlobalId(globalId);
+            Study study = null;
+            try {
+                study = studyService.getStudyByGlobalId(globalId);
+            } catch (EJBException ex) {
+                throw new SwordError("Could not find study based on global id (" + globalId + ") in URL: " + editUri);
+            }
             Long studyId;
             try {
                 studyId = study.getId();
@@ -95,6 +101,14 @@ public class StatementManagerImpl implements StatementManager {
                 Statement statement = new AtomStatement(feedUri, author, title, datedUpdated);
                 Map<String, String> states = new HashMap<String, String>();
                 states.put("latestVersionState", study.getLatestVersion().getVersionState().toString());
+                StudyLock lock = study.getStudyLock();
+                if (lock != null) {
+                    states.put("locked", "true");
+                    states.put("lockedDetail", lock.getDetail());
+                    states.put("lockedStartTime", lock.getStartTime().toString());
+                } else {
+                    states.put("locked", "false");
+                }
                 statement.setStates(states);
                 List<FileMetadata> fileMetadatas = study.getLatestVersion().getFileMetadatas();
                 for (FileMetadata fileMetadata : fileMetadatas) {

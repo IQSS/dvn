@@ -420,10 +420,10 @@ public class DvnRDataAnalysisServiceImpl {
                  * dataset into STATA format. -- L.A. 
                  */
 
-                dbgLog.info("raw variable type=" + sro.getVariableTypesWithBoolean());
+                dbgLog.fine("raw variable type=" + sro.getVariableTypesWithBoolean());
                 c.assign("vartyp", new REXPInteger(sro.getVariableTypesWithBoolean()));
                 String[] tmpt = c.eval("vartyp").asStrings();
-                dbgLog.info("vartyp length=" + tmpt.length + "\t "
+                dbgLog.fine("vartyp length=" + tmpt.length + "\t "
                         + StringUtils.join(tmpt, ","));
 
             } else {
@@ -518,9 +518,9 @@ public class DvnRDataAnalysisServiceImpl {
             // vnames = Arrays.deepToString(new REXPString(jvnames).asStrings())
             // vartyp = Arrays.deepToString(new REXPInteger(sro.getUpdatedVariableTypes()).asStrings())
             // varFmt = 
-            dbgLog.info("col names ..... " + Arrays.deepToString(jvnames));
-            dbgLog.info("colClassesX ... " + Arrays.toString(sro.getVariableTypesWithBoolean()));
-            dbgLog.info("varFormat ..... " + tmpFmt);
+            dbgLog.fine("col names ..... " + Arrays.deepToString(jvnames));
+            dbgLog.fine("colClassesX ... " + Arrays.toString(sro.getVariableTypesWithBoolean()));
+            dbgLog.fine("varFormat ..... " + tmpFmt);
             
             String readtableline = "x<-read.table141vdc(file='"+tempFileName+
                 "', col.names=vnames, colClassesx=vartyp, varFormat=varFmt )";
@@ -584,59 +584,108 @@ public class DvnRDataAnalysisServiceImpl {
             String repDVN_Xdupline = "dvnData<-x";
             c.voidEval(repDVN_Xdupline);
             tmpResult.put("dvn_dataframe", "dvnData");
+            
             // recoding line
-if (sro.hasRecodedVariables()){
+            if (sro.hasRecodedVariables()) {
 
-            // subsetting 
-            
-            List<String> scLst = sro.getSubsetConditions();
-            if (scLst != null){
-                for (String sci : scLst){
-                    dbgLog.fine("sci:"+ sci);
-                    historyEntry.add(sci);
-                    c.voidEval(sci);
+                // subsetting 
+
+                List<String> scLst = sro.getSubsetConditions();
+                if (scLst != null) {
+                    for (String sci : scLst) {
+                        dbgLog.fine("sci:" + sci);
+                        historyEntry.add(sci);
+                        c.voidEval(sci);
+                    }
+                    tmpResult.put("subset", "T");
                 }
-                tmpResult.put("subset", "T");
-            }
-            // recoding
-            
-            List<String> rcLst = sro.getRecodeConditions();
-            if (rcLst != null){
-                for (String rci : rcLst){
-                    dbgLog.fine("rci:"+ rci);
+                // recoding
 
-                    historyEntry.add(rci);
-                    c.voidEval(rci);
+                List<String> rcLst = sro.getRecodeConditions();
+                if (rcLst != null) {
+                    for (String rci : rcLst) {
+                        dbgLog.fine("rci:" + rci);
+
+                        historyEntry.add(rci);
+                        c.voidEval(rci);
+                    }
+
+                    // subsetting (mutating the data.frame strips non-default attributes 
+                    // 
+                    // variable type must be re-attached
+
+
+                    if (!"Download".equals(sro.getRequestType())) {
+                        String varTypeNew = "vartyp<-c(" + StringUtils.join(sro.getUpdatedVariableTypesAsString(), ",") + ")";
+                        historyEntry.add(varTypeNew);
+                        dbgLog.fine("updated var Type =" + sro.getUpdatedVariableTypesAsString());
+                        c.assign("vartyp", new REXPInteger(sro.getUpdatedVariableTypes()));
+                    } else {
+                        dbgLog.fine("updated var Type =" + sro.getUpdatedVariableTypesWithBooleanAsString());
+                        c.assign("vartyp", new REXPInteger(sro.getUpdatedVariableTypesWithBoolean()));
+                    }
+
+                    String reattachVarTypeLine = "attr(x, 'var.type') <- vartyp";
+                    historyEntry.add(reattachVarTypeLine);
+
+                    dbgLog.fine("DvnRserveComm: " + reattachVarTypeLine);
+                    c.voidEval(reattachVarTypeLine);
+
+                    // replication: variable type
+                    String repDVN_vt = "attr(dvnData, 'var.type') <- vartyp";
+
+                    dbgLog.fine("DvnRserveComm: " + repDVN_vt);
+                    c.voidEval(repDVN_vt);
+
+                    // new (recoded) variable names: 
+                    String varNamesRecoded = "recodedvnames<-c(" + StringUtils.join(sro.getRecodedVarNameSet(), ",") + ")";
+                    historyEntry.add(varNamesRecoded);
+                    dbgLog.fine("recoded var names =" + StringUtils.join(sro.getRecodedVarNameSet(), ","));
+                    c.assign("recodedvnames", sro.getRecodedVarNameSet());
+                    
+                    tmpFmt = sro.getUpdatedVariableFormats();
+                    dbgLog.fine("DvnRserveComm: " + "(recoded)tmpFmt=" + tmpFmt);
+                    if (tmpFmt != null) {
+                        Set<String> vfkeys = tmpFmt.keySet();
+                        String[] tmpfk = (String[]) vfkeys.toArray(new String[vfkeys.size()]);
+                        String[] tmpfv = getValueSet(tmpFmt, tmpfk);
+                        historyEntry.add("tmpfk<-c(" + StringUtils.join(tmpfk, ", ") + ")");
+                        dbgLog.fine("DvnRserveComm: " + "(recoded)tmpfk<-c(" + StringUtils.join(tmpfk, ", ") + ")");
+
+                        c.assign("tmpfk", new REXPString(tmpfk));
+                        historyEntry.add("tmpfv<-c(" + StringUtils.join(tmpfv, ", ") + ")");
+                        dbgLog.fine("DvnRserveComm: " + "(recoded)tmpfv<-c(" + StringUtils.join(tmpfv, ", ") + ")");
+                        c.assign("tmpfv", new REXPString(tmpfv));
+                        String fmtNamesLine = "names(tmpfv)<- tmpfk";
+                        historyEntry.add(fmtNamesLine);
+
+                        dbgLog.fine("DvnRserveComm: (recoded)" + fmtNamesLine);
+                        c.voidEval(fmtNamesLine);
+
+                        String fmtValuesLine = "varFmt<- as.list(tmpfv)";
+                        historyEntry.add(fmtValuesLine);
+
+                        dbgLog.fine("DvnRserveComm: (recoded)" + fmtValuesLine);
+                        c.voidEval(fmtValuesLine);
+                    } else {
+                        String[] varFmtN = {};
+                        List<String> varFmtV = new ArrayList<String>();
+                        historyEntry.add("varFmt <- list()");
+
+                        dbgLog.fine("DvnRserveComm: (recoded)" + "varFmt <- list()");
+                        c.assign("varFmt", new REXPList(new RList(varFmtV, varFmtN)));
+                    }
+
+                    // run post-processing on the newly created recode variables:
+                    dbgLog.fine("running transformrecoded()");
+
+                    historyEntry.add("transformrecoded()");
+                    int recodedVarsStartIndex = sro.getVariableNames().length + 1; 
+                    dbgLog.fine("recoded variables start at "+recodedVarsStartIndex);
+                    c.voidEval("x<-transformrecoded(x, recodedvarsindx="+recodedVarsStartIndex+", col.names=c(vnames,recodedvnames), colClassesx=vartyp, varFormat=varFmt)");
                 }
-                tmpResult.put("recode", "T");
-            }
-}
-            // subsetting (mutating the data.frame strips non-default attributes 
-            // 
-            // variable type must be re-attached
-
-
-            if (!"Download".equals(sro.getRequestType())) {
-                String varTypeNew = "vartyp<-c(" + StringUtils.join( sro.getUpdatedVariableTypesAsString(),",")+")";
-                historyEntry.add(varTypeNew);
-                dbgLog.fine("updated var Type ="+ sro.getUpdatedVariableTypes());
-                c.assign("vartyp", new REXPInteger(sro.getUpdatedVariableTypes()));
-            } else {
-                dbgLog.fine("updated var Type ="+ sro.getUpdatedVariableTypesWithBoolean());
-                c.assign("vartyp", new REXPInteger(sro.getUpdatedVariableTypesWithBoolean()));
             }
             
-            String reattachVarTypeLine = "attr(x, 'var.type') <- vartyp";
-            historyEntry.add(reattachVarTypeLine);
- 
-            dbgLog.fine("DvnRserveComm: "+reattachVarTypeLine);
-            c.voidEval(reattachVarTypeLine);
-                
-            // replication: variable type
-            String repDVN_vt = "attr(dvnData, 'var.type') <- vartyp";
-
-            dbgLog.fine("DvnRserveComm: "+repDVN_vt);
-            c.voidEval(repDVN_vt);
             
             // variable Id
             /* 
@@ -655,7 +704,7 @@ if (sro.hasRecodedVariables()){
             String attrVarNmbrLine = "attr(x, 'var.nmbr')<-varnmbr";
             historyEntry.add(attrVarNmbrLine);
 
-            dbgLog.fine("DvnRserveComm: "+attrVarNmbrLine);
+            dbgLog.fine("DvnRserveComm: (varnmbr) "+attrVarNmbrLine);
             c.voidEval(attrVarNmbrLine);
             
             // confirmation
@@ -735,42 +784,42 @@ if (sro.hasRecodedVariables()){
                 //String varId = rnm2vi.get(jvnamesRaw[j]);
                 String varId = updatedVariableIds[j];
                 
-                if (vltbl.containsKey(varId)){
-                    
-                    Map<String, String> tmp = (HashMap<String, String>)vltbl.get(varId);
+                if (vltbl.containsKey(varId)) {
+
+                    Map<String, String> tmp = (HashMap<String, String>) vltbl.get(varId);
                     Set<String> vlkeys = tmp.keySet();
                     String[] tmpk = (String[]) vlkeys.toArray(new String[vlkeys.size()]);
                     String[] tmpv = getValueSet(tmp, tmpk);
                     // debug
-                    dbgLog.fine("tmp:k="+ StringUtils.join(tmpk,","));
-                    dbgLog.fine("tmp:v="+ StringUtils.join(tmpv,","));
-                    
+                    dbgLog.fine("tmp:k=" + StringUtils.join(tmpk, ","));
+                    dbgLog.fine("tmp:v=" + StringUtils.join(tmpv, ","));
+
                     // index number starts from 1(not 0)
-                    int indx = j +1;
-                    dbgLog.fine("index="+indx);
-                    
-if (tmpv.length > 0){
-                    
-                    historyEntry.add("tmpk<-c("+ DvnDSButil.joinNelementsPerLine(tmpk, true) +")");
-                    c.assign("tmpk", new REXPString(tmpk));
-                    
-                    historyEntry.add("tmpv<-c("+ DvnDSButil.joinNelementsPerLine(tmpv, true) +")");
-                    c.assign("tmpv", new REXPString(tmpv));
-                    
-                    String namesValueLine = "names(tmpv)<- tmpk";
-                    historyEntry.add(namesValueLine);
-                    c.voidEval(namesValueLine);
-                    
-                    
-                    String sbvl = "VALTABLE[['"+ Integer.toString(indx)+"']]" + "<- as.list(tmpv)";
-                    dbgLog.fine("frag="+sbvl);
-                    historyEntry.add(sbvl);
-                    c.voidEval(sbvl);
-                    
-                    // confirmation test for j-th variable name
-                    REXP jl = c.parseAndEval(sbvl);
-                    dbgLog.fine("jl("+j+") = "+jl);
-}
+                    int indx = j + 1;
+                    dbgLog.fine("index=" + indx);
+
+                    if (tmpv.length > 0) {
+
+                        historyEntry.add("tmpk<-c(" + DvnDSButil.joinNelementsPerLine(tmpk, true) + ")");
+                        c.assign("tmpk", new REXPString(tmpk));
+
+                        historyEntry.add("tmpv<-c(" + DvnDSButil.joinNelementsPerLine(tmpv, true) + ")");
+                        c.assign("tmpv", new REXPString(tmpv));
+
+                        String namesValueLine = "names(tmpv)<- tmpk";
+                        historyEntry.add(namesValueLine);
+                        c.voidEval(namesValueLine);
+
+
+                        String sbvl = "VALTABLE[['" + Integer.toString(indx) + "']]" + "<- as.list(tmpv)";
+                        dbgLog.fine("frag=" + sbvl);
+                        historyEntry.add(sbvl);
+                        c.voidEval(sbvl);
+
+                        // confirmation test for j-th variable name
+                        REXP jl = c.parseAndEval(sbvl);
+                        dbgLog.fine("jl(" + j + ") = " + jl);
+                    }
                 }
                 
                 if (orderedCategoryValues != null && orderedCategoryValues.containsKey(varId)){
@@ -881,7 +930,7 @@ if (tmpv.length > 0){
             String RversionLine = "R.Version()$version.string";
             String Rversion = c.eval(RversionLine).asString();
             
-            dbgLog.info(String.format("R-version String = %s", Rversion));
+            dbgLog.fine(String.format("R-version String = %s", Rversion));
             
             // replication: R version
             String repDVN_Rversion = "attr(dvnData, 'R.version') <- R.Version()$version.string";
@@ -1175,7 +1224,7 @@ if (tmpv.length > 0){
         try {
             // create a temp dir
             String createTmpDir = "dir.create('"+wrkdir +"')";
-            dbgLog.info("DvnRserveComm: "+"createTmpDir="+createTmpDir);
+            dbgLog.fine("DvnRserveComm: "+"createTmpDir="+createTmpDir);
             
             historyEntry.add(createTmpDir);
 
@@ -1197,16 +1246,16 @@ if (tmpv.length > 0){
                 "dwnldoptn='"+dwnldOpt+"'"+
                 ", dsnprfx='"+dsnprfx+"')";
             
-            dbgLog.info("univarDataDwnld="+univarDataDwnld);
+            dbgLog.fine("univarDataDwnld="+univarDataDwnld);
             
             historyEntry.add(univarDataDwnld);
 
-            dbgLog.info("DvnRserveComm: "+univarDataDwnld);
+            dbgLog.fine("DvnRserveComm: "+univarDataDwnld);
             c.voidEval(univarDataDwnld);
             
             int wbFileSize = getFileSize(c,dsnprfx);
             
-            dbgLog.info("wbFileSize="+wbFileSize);
+            dbgLog.fine("wbFileSize="+wbFileSize);
             
             // write back the data file to the dvn
             

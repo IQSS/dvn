@@ -38,6 +38,7 @@ import org.swordapp.server.SwordAuthException;
 import org.swordapp.server.SwordConfiguration;
 import org.swordapp.server.SwordError;
 import org.swordapp.server.SwordServerException;
+import org.swordapp.server.UriRegistry;
 
 public class CollectionListManagerImpl implements CollectionListManager {
 
@@ -77,7 +78,7 @@ public class CollectionListManagerImpl implements CollectionListManager {
                         feed.addEntry(entry);
                     }
                     Boolean dvHasBeenReleased = dv.isRestricted() ? false : true;
-                    feed.addSimpleExtension(new QName("dataverseHasBeenReleased"), dvHasBeenReleased.toString());
+                    feed.addSimpleExtension(new QName(UriRegistry.SWORD_STATE, "dataverseHasBeenReleased"), dvHasBeenReleased.toString());
                     return feed;
                 } else {
                     throw new SwordServerException("user " + vdcUser.getUserName() + " is not authorized to list studies in dataverse " + dv.getAlias());

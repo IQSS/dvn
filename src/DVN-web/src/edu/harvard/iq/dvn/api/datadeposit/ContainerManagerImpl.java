@@ -19,7 +19,6 @@
  */
 package edu.harvard.iq.dvn.api.datadeposit;
 
-import edu.harvard.iq.dvn.core.admin.NetworkRole;
 import edu.harvard.iq.dvn.core.admin.VDCUser;
 import edu.harvard.iq.dvn.core.ddi.DDIServiceLocal;
 import edu.harvard.iq.dvn.core.harvest.HarvestFormatType;
@@ -27,7 +26,7 @@ import edu.harvard.iq.dvn.core.index.IndexServiceLocal;
 import edu.harvard.iq.dvn.core.study.EditStudyService;
 import edu.harvard.iq.dvn.core.study.Metadata;
 import edu.harvard.iq.dvn.core.study.Study;
-import edu.harvard.iq.dvn.core.study.StudyFileServiceLocal;
+import edu.harvard.iq.dvn.core.study.StudyLock;
 import edu.harvard.iq.dvn.core.study.StudyServiceLocal;
 import edu.harvard.iq.dvn.core.study.StudyVersion;
 import edu.harvard.iq.dvn.core.study.StudyVersion.VersionState;
@@ -62,6 +61,7 @@ import org.swordapp.server.SwordAuthException;
 import org.swordapp.server.SwordConfiguration;
 import org.swordapp.server.SwordError;
 import org.swordapp.server.SwordServerException;
+import org.swordapp.server.UriRegistry;
 
 public class ContainerManagerImpl extends VDCBaseBean implements ContainerManager {
 
@@ -155,39 +155,56 @@ public class ContainerManagerImpl extends VDCBaseBean implements ContainerManage
                 } catch (NamingException ex) {
                     throw new SwordServerException("problem looking up studyService");
                 }
-                editStudyService.setStudyVersion(studyService.getStudyByGlobalId(globalId).getId());
-                Study studyToEdit = editStudyService.getStudyVersion().getStudy();
-                VDC dvThatOwnsStudy = studyToEdit.getOwner();
-                if (swordAuth.hasAccessToModifyDataverse(vdcUser, dvThatOwnsStudy)) {
-
-                    String tmpDirectory = swordConfiguration.getTempDirectory();
-                    if (tmpDirectory == null) {
-                        throw new SwordError("Could not determine temp directory");
+                Study studyToLookup;
+                try {
+                    /**
+                     * @todo: why doesn't
+                     * editStudyService.setStudyVersionByGlobalId(globalId)
+                     * work?
+                     */
+                    studyToLookup = studyService.getStudyByGlobalId(globalId);
+                } catch (EJBException ex) {
+                    throw new SwordError("Could not find study based on global id (" + globalId + ") in URL: " + uri);
+                }
+                if (studyToLookup != null) {
+                    StudyLock lockOnStudyLookedup = studyToLookup.getStudyLock();
+                    if (lockOnStudyLookedup != null) {
+                        String message = getStudyLockMessage(lockOnStudyLookedup, studyToLookup.getGlobalId());
+                        throw new SwordError(UriRegistry.ERROR_BAD_REQUEST, message);
                     }
-                    String uploadDirPath = tmpDirectory + File.separator + "import" + File.separator + studyToEdit.getId();
-                    Long dcmiTermsHarvetsFormatId = new Long(4);
-                    HarvestFormatType dcmiTermsHarvestFormatType = em.find(HarvestFormatType.class, dcmiTermsHarvetsFormatId);
-//                    File ddiFile = studyService.transformToDDI(tmpFile, dcmiTermsHarvestFormatType.getStylesheetFileName());
-                    String xmlAtomEntry = deposit.getSwordEntry().getEntry().toString();
-                    File ddiFile = studyService.transformToDDI(xmlAtomEntry, dcmiTermsHarvestFormatType.getStylesheetFileName(), uploadDirPath);
-                    // erase all metadata before running ddiService.mapDDI() because
-                    // for multivalued fields (such as author) that function appends
-                    // values rather than replacing them
-                    studyToEdit.getLatestVersion().setMetadata(new Metadata());
-                    ddiService.mapDDI(ddiFile, studyToEdit.getLatestVersion(), true);
-                    try {
-                        editStudyService.save(dvThatOwnsStudy.getId(), vdcUser.getId());
-                    } catch (EJBException ex) {
-                        // perhaps the study is locked because a file is being ingested (OptimisticLockException)
-                        throw new SwordError("Unable to replace cataloging information for study " + studyToEdit.getGlobalId() + ". Please try again later.");
+                    editStudyService.setStudyVersion(studyToLookup.getId());
+                    Study studyToEdit = editStudyService.getStudyVersion().getStudy();
+                    VDC dvThatOwnsStudy = studyToEdit.getOwner();
+                    if (swordAuth.hasAccessToModifyDataverse(vdcUser, dvThatOwnsStudy)) {
+                        String tmpDirectory = swordConfiguration.getTempDirectory();
+                        if (tmpDirectory == null) {
+                            throw new SwordError("Could not determine temp directory");
+                        }
+                        String uploadDirPath = tmpDirectory + File.separator + "import" + File.separator + studyToEdit.getId();
+                        Long dcmiTermsHarvetsFormatId = new Long(4);
+                        HarvestFormatType dcmiTermsHarvestFormatType = em.find(HarvestFormatType.class, dcmiTermsHarvetsFormatId);
+                        String xmlAtomEntry = deposit.getSwordEntry().getEntry().toString();
+                        File ddiFile = studyService.transformToDDI(xmlAtomEntry, dcmiTermsHarvestFormatType.getStylesheetFileName(), uploadDirPath);
+                        // erase all metadata before running ddiService.mapDDI() because
+                        // for multivalued fields (such as author) that function appends
+                        // values rather than replacing them
+                        studyToEdit.getLatestVersion().setMetadata(new Metadata());
+                        ddiService.mapDDI(ddiFile, studyToEdit.getLatestVersion(), true);
+                        try {
+                            editStudyService.save(dvThatOwnsStudy.getId(), vdcUser.getId());
+                        } catch (EJBException ex) {
+                            // OptimisticLockException
+                            throw new SwordError("Unable to replace cataloging information for study " + studyToEdit.getGlobalId() + " (may be locked). Please try again later.");
+                        }
+                        ReceiptGenerator receiptGenerator = new ReceiptGenerator();
+                        String baseUrl = urlManager.getHostnamePlusBaseUrlPath(uri);
+                        DepositReceipt depositReceipt = receiptGenerator.createReceipt(baseUrl, studyToEdit);
+                        return depositReceipt;
+                    } else {
+                        throw new SwordError("User " + vdcUser.getUserName() + " is not authorized to modify dataverse " + dvThatOwnsStudy.getAlias());
                     }
-
-                    ReceiptGenerator receiptGenerator = new ReceiptGenerator();
-                    String baseUrl = urlManager.getHostnamePlusBaseUrlPath(uri);
-                    DepositReceipt depositReceipt = receiptGenerator.createReceipt(baseUrl, studyToEdit);
-                    return depositReceipt;
                 } else {
-                    throw new SwordError("User " + vdcUser.getUserName() + " is not authorized to modify dataverse " + dvThatOwnsStudy.getAlias());
+                    throw new SwordError(UriRegistry.ERROR_BAD_REQUEST, "Could not find study based on global id (" + globalId + ") in URL: " + uri);
                 }
             } else {
                 throw new SwordError("Unknown target type specified on which to replace metadata: " + uri);
@@ -265,7 +282,12 @@ public class ContainerManagerImpl extends VDCBaseBean implements ContainerManage
             } else if ("study".equals(targetType)) {
                 String globalId = urlManager.getTargetIdentifier();
                 if (globalId != null) {
-                    Study study = studyService.getStudyByGlobalId(globalId);
+                    Study study = null;
+                    try {
+                        study = studyService.getStudyByGlobalId(globalId);
+                    } catch (EJBException ex) {
+                        throw new SwordError("Could not find study based on global id (" + globalId + ") in URL: " + uri);
+                    }
                     if (study != null) {
                         VDC dvThatOwnsStudy = study.getOwner();
                         if (swordAuth.hasAccessToModifyDataverse(vdcUser, dvThatOwnsStudy)) {
@@ -314,7 +336,12 @@ public class ContainerManagerImpl extends VDCBaseBean implements ContainerManage
             if ("study".equals(targetType)) {
                 String globalId = urlManager.getTargetIdentifier();
                 if (globalId != null) {
-                    Study studyToRelease = studyService.getStudyByGlobalId(globalId);
+                    Study studyToRelease = null;
+                    try {
+                        studyToRelease = studyService.getStudyByGlobalId(globalId);
+                    } catch (EJBException ex) {
+                        throw new SwordError("Could not find study based on global id (" + globalId + ") in URL: " + uri);
+                    }
                     if (studyToRelease != null) {
                         VDC dvThatOwnsStudy = studyToRelease.getOwner();
                         if (swordAuth.hasAccessToModifyDataverse(vdcUser, dvThatOwnsStudy)) {
@@ -448,5 +475,15 @@ public class ContainerManagerImpl extends VDCBaseBean implements ContainerManage
             throw new SwordError("Unable to determine requested IRI from URL: " + uri);
         }
 
+    }
+
+    private String getStudyLockMessage(StudyLock studyLock, String globalId) {
+        if (studyLock != null) {
+            String detail = studyLock.getDetail() != null ? studyLock.getDetail() : "";
+            String startTime = studyLock.getStartTime() != null ? studyLock.getStartTime().toString() : "";
+            return "Study lock for " + globalId + " detected with message '" + detail + "' and start time of '" + startTime + "'. Please try again.";
+        } else {
+            return "Study lock for " + globalId + " was present momentarily. Please try again.";
+        }
     }
 }

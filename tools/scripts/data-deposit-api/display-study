@@ -18,7 +18,9 @@ title = statement.root.elements["title"].text
 updated = statement.root.elements["updated"].text
 release_state_term = "latestVersionState"
 release_state = XPath.first(statement, "//category[@term='#{release_state_term}']")
-puts "#{release_state_term}:#{release_state.text} for #{data_citation}. Files (if any):"
+lock_state_term = "locked"
+lock_state = XPath.first(statement, "//category[@term='#{lock_state_term}']").text
+puts "#{release_state_term}:#{release_state.text} #{lock_state_term}:#{lock_state} for #{data_citation}. Files (if any):"
 XPath.each( statement, "//entry" ) { |entry|
     url     = entry.elements["content"].attributes["src"]
     type    = entry.elements["content"].attributes["type"]

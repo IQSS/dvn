@@ -1368,6 +1368,13 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
                             sro = new DvnRJobRequest(getDataVariableForRequest(), mpl, vls, recodeSchema);
                         }
 
+                        /*
+                         * Add the recoded -> base variable name map; (new as of v3.6;)
+                         * TODO: (?) do the same for the other action requests. 
+                         *          -- L.A.
+                         */
+                        sro.setRecodedToBaseVar(getRecodedVarToBaseVarName());
+                        
                         // dbgLog.fine("sro dump:\n"+ToStringBuilder.reflectionToString(sro, ToStringStyle.MULTI_LINE_STYLE));
                     
                         // Step 4. Creates an instance of the the implemented
@@ -8617,7 +8624,7 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
             // loop through inner lists
             for (int j=0; j< rdtbl.size();j++){
                 List<Object> rw = (List<Object>)rdtbl.get(j);
-                if (rw.get(2) !=null){
+                if (rw.get(2) !=null /* Experiment! -- L.A., v3.6 */ && !"".equals((String)rw.get(2))){
                     vl.put((String)rw.get(1), (String)rw.get(2));
                 }
             }
@@ -8680,7 +8687,21 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
         return vn;
     }
     
-    
+    private Map<String, String> getRecodedVarToBaseVarName() {
+        Map<String, String> recodedVarToBaseVarName = new HashMap<String,String>();
+        
+        for (int i = 0; i < recodedVarSet.size(); i++) {
+            List<Object> rvs = (List<Object>) recodedVarSet.get(i);
+            String recodedVarName = (String)rvs.get(0);
+            String recodedVarId = (String)rvs.get(2);
+            String baseVarId = derivedVarToBaseVar.get(recodedVarId); 
+            String baseVarName = getVariableNamefromId(baseVarId);
+            
+            recodedVarToBaseVarName.put(recodedVarName, baseVarName);
+        }
+        
+        return recodedVarToBaseVarName; 
+    }
     
     public List<String> getRecodedVarLabelSet() {
         List<String> vl = new ArrayList<String>();

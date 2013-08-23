@@ -124,6 +124,11 @@ public class MediaResourceManagerImpl implements MediaResourceManager {
          * item, although implementations may choose to provide versioning or
          * some other mechanism for retaining the overwritten content." --
          * http://swordapp.github.io/SWORDv2-Profile/SWORDProfile.html#protocoloperations_editingcontent_binary
+         *
+         * Also, if you enable this method, think about the SwordError currently
+         * being returned by replaceOrAddFiles with shouldReplace set to true
+         * and an empty zip uploaded. If no files are unzipped the user will see
+         * a error about this but the files will still be deleted!
          */
         throw new SwordError("Replacing the files of a study is not supported. Please delete and add files separately instead.");
     }
@@ -203,10 +208,6 @@ public class MediaResourceManagerImpl implements MediaResourceManager {
     }
 
     DepositReceipt replaceOrAddFiles(String uri, Deposit deposit, AuthCredentials authCredentials, SwordConfiguration swordConfiguration, boolean shouldReplace) throws SwordError, SwordAuthException, SwordServerException {
-        if (!deposit.getPackaging().equals(UriRegistry.PACKAGE_SIMPLE_ZIP)) {
-            throw new SwordError(UriRegistry.ERROR_CONTENT, 415, "Package format " + UriRegistry.PACKAGE_SIMPLE_ZIP + " is required but format specified in 'Packaging' HTTP header was " + deposit.getPackaging());
-        }
-
         VDCUser vdcUser = swordAuth.auth(authCredentials);
 
         urlManager.processUrl(uri);
@@ -254,21 +255,29 @@ public class MediaResourceManagerImpl implements MediaResourceManager {
                 }
                 editStudyFilesService.save(dvThatOwnsStudy.getId(), vdcUser.getId());
 
-                String uploadDirString;
-                File uploadDir;
+                if (!deposit.getPackaging().equals(UriRegistry.PACKAGE_SIMPLE_ZIP)) {
+                    throw new SwordError(UriRegistry.ERROR_CONTENT, 415, "Package format " + UriRegistry.PACKAGE_SIMPLE_ZIP + " is required but format specified in 'Packaging' HTTP header was " + deposit.getPackaging());
+                }
+
+                // Right now we are only supporting UriRegistry.PACKAGE_SIMPLE_ZIP but
+                // in the future maybe we'll support other formats? Rdata files? Stata files?
+                // That's what the uploadDir was going to be for, but for now it's commented out
+                //
+//                String uploadDirString;
+//                File uploadDir;
                 String importDirString;
                 File importDir;
                 String swordTempDirString = swordConfiguration.getTempDirectory();
                 if (swordTempDirString == null) {
                     throw new SwordError("Could not determine temp directory");
                 } else {
-                    uploadDirString = swordTempDirString + File.separator + "uploads" + File.separator + study.getId().toString();
-                    uploadDir = new File(uploadDirString);
-                    if (!uploadDir.exists()) {
-                        if (!uploadDir.mkdirs()) {
-                            throw new SwordServerException("couldn't create directory: " + uploadDir.getAbsolutePath());
-                        }
-                    }
+//                    uploadDirString = swordTempDirString + File.separator + "uploads" + File.separator + study.getId().toString();
+//                    uploadDir = new File(uploadDirString);
+//                    if (!uploadDir.exists()) {
+//                        if (!uploadDir.mkdirs()) {
+//                            throw new SwordServerException("couldn't create directory: " + uploadDir.getAbsolutePath());
+//                        }
+//                    }
                     importDirString = swordTempDirString + File.separator + "import" + File.separator + study.getId().toString();
                     importDir = new File(importDirString);
                     if (!importDir.exists()) {
@@ -281,8 +290,7 @@ public class MediaResourceManagerImpl implements MediaResourceManager {
                 // the first character of the filename is truncated with the official jar
                 // so we use include the bug fix at https://github.com/IQSS/swordv2-java-server-library/commit/aeaef83
                 // and use this jar: https://build.hmdc.harvard.edu:8443/job/swordv2-java-server-library-iqss/2/
-                String filename = uploadDirString + File.separator + deposit.getFilename();
-                logger.info("attempting write to " + filename);
+                String uploadedZipFilename = deposit.getFilename();
                 ZipInputStream ziStream = new ZipInputStream(deposit.getInputStream());
                 ZipEntry zEntry;
                 FileOutputStream tempOutStream = null;
@@ -349,21 +357,25 @@ public class MediaResourceManagerImpl implements MediaResourceManager {
                 } catch (IOException ex) {
                     logger.info("Problem getting zip entry");
                 } finally {
-                    if (!uploadDir.delete()) {
-                        logger.info("Unable to delete " + uploadDir.getAbsolutePath());
+//                    if (!uploadDir.delete()) {
+//                        logger.info("Unable to delete " + uploadDir.getAbsolutePath());
+//                    }
+                }
+                if (fbList.size() > 0) {
+                    StudyFileServiceLocal studyFileService;
+                    try {
+                        studyFileService = (StudyFileServiceLocal) ctx.lookup("java:comp/env/studyFileService");
+                    } catch (NamingException ex) {
+                        throw new SwordServerException("problem looking up studyFileService");
                     }
+                    studyFileService.addFiles(study.getLatestVersion(), fbList, vdcUser);
+                    ReceiptGenerator receiptGenerator = new ReceiptGenerator();
+                    String baseUrl = urlManager.getHostnamePlusBaseUrlPath(uri);
+                    DepositReceipt depositReceipt = receiptGenerator.createReceipt(baseUrl, study);
+                    return depositReceipt;
+                } else {
+                    throw new SwordError(UriRegistry.ERROR_BAD_REQUEST, "Problem with zip file '" + uploadedZipFilename + "'. Number of files unzipped: " + fbList.size());
                 }
-                StudyFileServiceLocal studyFileService;
-                try {
-                    studyFileService = (StudyFileServiceLocal) ctx.lookup("java:comp/env/studyFileService");
-                } catch (NamingException ex) {
-                    throw new SwordServerException("problem looking up studyFileService");
-                }
-                studyFileService.addFiles(study.getLatestVersion(), fbList, vdcUser);
-                ReceiptGenerator receiptGenerator = new ReceiptGenerator();
-                String baseUrl = urlManager.getHostnamePlusBaseUrlPath(uri);
-                DepositReceipt depositReceipt = receiptGenerator.createReceipt(baseUrl, study);
-                return depositReceipt;
             } else {
                 throw new SwordError("user " + vdcUser.getUserName() + " is not authorized to modify study with global ID " + study.getGlobalId());
             }

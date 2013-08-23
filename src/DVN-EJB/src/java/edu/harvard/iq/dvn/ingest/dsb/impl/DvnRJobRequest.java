@@ -52,6 +52,9 @@ public class DvnRJobRequest {
 
     public static Map<String, String> rangeOpMap = new HashMap<String, String>();
     private Map <Integer, VariableMetaData> mVariableMetaDataTable;
+    
+    private Map <String, String> recodedToBaseVar = null; 
+    private Map<String,String> variableFormats = new HashMap<String,String>(); 
 
 
     static {
@@ -174,6 +177,14 @@ public class DvnRJobRequest {
     }
 
 
+    public void setRecodedToBaseVar (Map <String, String> r2b) {
+        recodedToBaseVar = r2b;
+    }
+    
+    public Map<String,String> getRecodedToBaseVar () {
+        return recodedToBaseVar; 
+    }
+    
 
     // ----------------------------------------------------- fields
     
@@ -473,8 +484,8 @@ public class DvnRJobRequest {
         for(int i=0;i < dataVariablesForRequest.size(); i++){
             DataVariable dv = (DataVariable) dataVariablesForRequest.get(i);
 
-            dbgLog.info(String.format("DvnRJobRequest: column[%d] schema = %s", i, dv.getFormatSchema()));
-            dbgLog.info(String.format("DvnRJobRequest: column[%d] category = %s", i, dv.getFormatCategory()));
+            dbgLog.fine(String.format("DvnRJobRequest: column[%d] schema = %s", i, dv.getFormatSchema()));
+            dbgLog.fine(String.format("DvnRJobRequest: column[%d] category = %s", i, dv.getFormatCategory()));
             
             dbgLog.fine(i+"-th \tformatschema="+dv.getFormatSchema());
             dbgLog.fine(i+"-th \tformatcategory="+dv.getFormatCategory());
@@ -536,6 +547,50 @@ public class DvnRJobRequest {
         }
         dbgLog.fine("format="+variableFormats);
         return variableFormats;
+    }
+    
+    
+    /* 
+     * The "updated" version of getVariableFormats() - i.e., this method 
+     * returns a map of formats for both the original and recoded variables. 
+     * Added in v3.6; -- L.A. 
+     */
+    public Map<String, String> getUpdatedVariableFormats() {
+        Map<String, String> variableFormats = getVariableFormats(); 
+        
+        //Map<String, String> recodedVariableFormats = new HashMap<String,String>(); 
+        
+        if (hasRecodedVariables()) {
+            List<String> lvn = listParametersForRequest.get("recodedVarNameSet");
+            String[] vn = (String[]) lvn.toArray(new String[lvn.size()]);
+            
+            
+            for (int i = 0; i < lvn.size(); i++) {
+                String recodedVarName = lvn.get(i);
+                
+                dbgLog.fine("Recoded Var Name: "+recodedVarName);
+                
+                if (recodedToBaseVar != null) {
+                    String baseVarName = recodedToBaseVar.get(recodedVarName);
+                    
+                    if (baseVarName != null) {
+                        dbgLog.fine("Source base variable name: "+baseVarName);
+                        
+                        String baseVarFormat = variableFormats.get(baseVarName);
+                        if (baseVarFormat != null) {
+                            variableFormats.put(recodedVarName, baseVarFormat);
+                        } else {
+                            dbgLog.fine("No format available for variable "+baseVarName);
+                        }
+                    } else {
+                        dbgLog.warning("No base variable name found for variable "+recodedVarName);
+                    }
+                }
+            }
+        }
+        
+        return variableFormats; 
+        
     }
     
     private String getSafeVariableName(String raw){
@@ -1242,7 +1297,7 @@ public class DvnRJobRequest {
         List<String> baseVarNameSet = listParametersForRequest.get("baseVarNameSet");        
         int[] variableTypes = getRecodedVarBaseTypeSet();
         
-        
+        variableFormats = getUpdatedVariableFormats(); 
         
         for (int j=0; j< recodedVarIdSet.size(); j++) {
             // get each recode table
@@ -1284,7 +1339,7 @@ public class DvnRJobRequest {
             int allrows = delRowCount + nonRecodeRowCount;
             if (allrows == rdtbl.size()) {
                 //hasRecodeRow = false;
-                dbgLog.info("no meaningful recodeing request is stored");
+                dbgLog.fine("no meaningful recodeing request is stored");
             }
             
             
@@ -1642,129 +1697,166 @@ public class DvnRJobRequest {
         
         for (int i=0; i< rangeSet.size(); i++){
 
-            dbgLog.fine( i + "-th set=\n" + rangeSet.get(i));
+            dbgLog.fine(i + "-th set=\n" + rangeSet.get(i));
             dbgLog.fine("range: 1 and 3:" + rangeSet.get(i).get(1) + "\t" + rangeSet.get(i).get(3));
-            
-            StringBuilder condition= new StringBuilder();
 
-            if (   (rangeSet.get(i).get(1).equals(rangeSet.get(i).get(3))) 
-                && (rangeSet.get(i).get(0).equals("3"))
-                && (rangeSet.get(i).get(2).equals("4")) ) {
+            StringBuilder condition = new StringBuilder();
+
+            if ((rangeSet.get(i).get(1).equals(rangeSet.get(i).get(3)))
+                    && (rangeSet.get(i).get(0).equals("3"))
+                    && (rangeSet.get(i).get(2).equals("4"))) {
                 dbgLog.fine("point case");
                 // point type
-                if (vtype > 0){
-                    if (rangeSet.get(i).get(1).equals(".")){
-                        condition.append("(is.na(" +  variableName  + "))");
+                if (vtype > 0) {
+                    if (rangeSet.get(i).get(1).equals(".")) {
+                        condition.append("(is.na(" + variableName + "))");
                         dbgLog.fine("missing value case:numeric var");
                     } else {
-                        condition.append("(" +  variableName + " == " +  rangeSet.get(i).get(1) + ")");
+                        condition.append("(" + variableName + " == " + rangeSet.get(i).get(1) + ")");
                     }
                 } else {
-                    if (rangeSet.get(i).get(1).equals(".")){
+                    if (rangeSet.get(i).get(1).equals(".")) {
                         dbgLog.fine("missing value case: char var");
-                        condition.append("(is.na(" +  variableName  + "))");
+                        condition.append("(is.na(" + variableName + "))");
                     } else {
-                        condition.append("(" +  variableName + " == '" +  rangeSet.get(i).get(1) + "')") ;
+                        // Check for dates and times: 
+                        String rawVariableName = variableName; 
+                        dbgLog.fine("processing variable "+rawVariableName);
+                        rawVariableName = rawVariableName.replaceAll("\"\\]\\]$", "");
+                        dbgLog.fine("variable name after transformation 0: "+rawVariableName);
+                        rawVariableName = rawVariableName.replaceAll("^x\\[\\[\"", "");
+                        dbgLog.fine("variable name after transformation 1: "+rawVariableName);
+                        String vFormat = variableFormats.get(rawVariableName);
+                        dbgLog.fine("Variable " + rawVariableName + ", format: " + vFormat);
+                        if (vFormat != null) {
+                            // TODO: 
+                                // the "as.POSIXct" lines below will likely NOT work once we try 
+                                // to support ranges on dates and times.
+                                // -- L.A., v3.6
+                            // TODO: 
+                                // the "as.POSIXct" lines below may need to include different 
+                                // formats for the "T", "DT" and "JT" cases - similarly to 
+                                // what we are doing in the R code; ("%T", "%F %T", etc.)
+                                // Verify.
+                                // -- L.A., v3.6
+                            // TODO: 
+                                // similar case *may* be needed for dates; 
+                                // it appears, that on dates, it is legit to simply
+                                // say "datevar == '1984-02-01', without as.Date();
+                                // but it's probably not safe in the long run...
+                            if (vFormat.equals("DT")) {
+                                condition.append("(" + variableName + " == as.POSIXct('" + rangeSet.get(i).get(1) + "'))");
+                            } else if (vFormat.equals("JT")) {
+                                condition.append("(" + variableName + " == as.POSIXct('" + rangeSet.get(i).get(1) + "'))");
+                            } else if (vFormat.equals("T")) {
+                                condition.append("(" + variableName + " == as.POSIXct('" + rangeSet.get(i).get(1) + "'))");
+                            } else {
+                                condition.append("(" + variableName + " == '" + rangeSet.get(i).get(1) + "')");
+                            }
+
+                        } else {
+                            condition.append("(" + variableName + " == '" + rangeSet.get(i).get(1) + "')");
+                        }
                     }
                 }
 
-                    if (type.equals("d")){
-                        condition.insert(0, " !");
-                    } else {
-                        condition.insert(0, " ");
-                    }                    
+                if (type.equals("d")) {
+                    condition.insert(0, " !");
+                } else {
+                    condition.insert(0, " ");
+                }
                 dbgLog.fine(i + "-th condition point:" + condition.toString());
 
             } else if (rangeSet.get(i).get(0).equals("2")) {
                 dbgLog.fine("point-negation case");
                 // point negation
-                if (vtype > 0){
-                    
-                    if (rangeSet.get(i).get(1).equals(".")){
-                        condition.append("(! is.na(" +  variableName  + "))");
+                if (vtype > 0) {
+
+                    if (rangeSet.get(i).get(1).equals(".")) {
+                        condition.append("(! is.na(" + variableName + "))");
                         dbgLog.fine("missing value case:numeric var");
-                        
+
                     } else {
-                    condition.append( "("  +  variableName + " != " + rangeSet.get(i).get(1) + ")" );
+                        condition.append("(" + variableName + " != " + rangeSet.get(i).get(1) + ")");
                     }
                 } else {
-                    if (rangeSet.get(i).get(1).equals(".")){
+                    if (rangeSet.get(i).get(1).equals(".")) {
                         dbgLog.fine("missing value case: char var");
-                        condition.append("(! is.na(" +  variableName  + "))");
+                        condition.append("(! is.na(" + variableName + "))");
                     } else {
-                    condition.append( "("  +  variableName + " != '"+ rangeSet.get(i).get(1) + "')" );
+                        condition.append("(" + variableName + " != '" + rangeSet.get(i).get(1) + "')");
                     }
                 }
 
-                if (type.equals("d")){
+                if (type.equals("d")) {
                     condition.insert(0, " !");
                 } else {
-                    condition.insert(0, " ") ;
+                    condition.insert(0, " ");
                 }
 
                 dbgLog.fine(i + "-th condition point(negation):" + condition.toString());
 
             } else {
-                if (vtype > 0){
+                if (vtype > 0) {
                     // range type
-                    StringBuilder conditionL = new StringBuilder(); 
+                    StringBuilder conditionL = new StringBuilder();
                     StringBuilder conditionU = new StringBuilder();
 
-                    if ((rangeSet.get(i).get(0).equals("5")) && (rangeSet.get(i).get(1).equals(""))){
+                    if ((rangeSet.get(i).get(0).equals("5")) && (rangeSet.get(i).get(1).equals(""))) {
                         conditionL.append("");
 
                     } else {
-                        conditionL.append( "("  +  variableName + " " + 
-                            rangeOpMap.get(rangeSet.get(i).get(0)) + "" +
-                            rangeSet.get(i).get(1) + ")");
+                        conditionL.append("(" + variableName + " "
+                                + rangeOpMap.get(rangeSet.get(i).get(0)) + ""
+                                + rangeSet.get(i).get(1) + ")");
                     }
 
                     dbgLog.fine(i + "-th condition(Lower/upper bounds)=" + conditionL.toString());
 
-                    if ((rangeSet.get(i).get(2).equals("6")) && (rangeSet.get(i).get(3).equals(""))){
+                    if ((rangeSet.get(i).get(2).equals("6")) && (rangeSet.get(i).get(3).equals(""))) {
 
                         conditionU.append("");
 
                     } else {
                         String andop = null;
 
-                        if (!(conditionL.toString()).equals("")){
-                            andop =  " & " ;
+                        if (!(conditionL.toString()).equals("")) {
+                            andop = " & ";
                         } else {
-                             andop = "";
+                            andop = "";
                         }
 
-                        conditionU.append( andop +  "(" + variableName  
-                            + " " +  rangeOpMap.get(rangeSet.get(i).get(2)) 
-                            + " " +  rangeSet.get(i).get(3) + ")");
+                        conditionU.append(andop + "(" + variableName
+                                + " " + rangeOpMap.get(rangeSet.get(i).get(2))
+                                + " " + rangeSet.get(i).get(3) + ")");
                     }
 
-                    dbgLog.fine("conditionU="+conditionU.toString());
+                    dbgLog.fine("conditionU=" + conditionU.toString());
 
                     condition.append(conditionL.toString() + " " + conditionU.toString());
 
-                    if (type.equals("d")){
+                    if (type.equals("d")) {
                         condition.insert(0, " !");
                     } else {
-                        condition.insert(0, " ") ;
+                        condition.insert(0, " ");
                     }
                 } else {
                     removalList.add(i);
                 }// end: type check
             } // end: range type-loop
-            
-            
+
+
             dbgLog.fine(i + "-th " + condition.toString());
 
-            if (i < (rangeSet.size() -1) ) {
-                finalCondition.append(condition.toString() + sep) ;
+            if (i < (rangeSet.size() - 1)) {
+                finalCondition.append(condition.toString() + sep);
             } else {
                 finalCondition.append(condition.toString());
             }
         }
         
         
-        dbgLog.info("final condition:\n" + finalCondition.toString());
+        dbgLog.fine("final condition:\n" + finalCondition.toString());
         
         return finalCondition.toString();
         

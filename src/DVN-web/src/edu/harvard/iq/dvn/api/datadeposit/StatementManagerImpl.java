@@ -25,7 +25,6 @@ import edu.harvard.iq.dvn.core.study.Study;
 import edu.harvard.iq.dvn.core.study.StudyFile;
 import edu.harvard.iq.dvn.core.study.StudyLock;
 import edu.harvard.iq.dvn.core.study.StudyServiceLocal;
-import edu.harvard.iq.dvn.core.study.StudyVersion;
 import edu.harvard.iq.dvn.core.vdc.VDC;
 import edu.harvard.iq.dvn.core.vdc.VDCServiceLocal;
 import java.util.HashMap;
@@ -33,6 +32,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.logging.Logger;
 import javax.ejb.EJB;
+import javax.ejb.EJBException;
 import javax.inject.Inject;
 import org.apache.abdera.model.AtomDate;
 import org.swordapp.server.AtomStatement;
@@ -76,7 +76,12 @@ public class StatementManagerImpl implements StatementManager {
 
             logger.info("request for sword statement by user " + vdcUser.getUserName());
 
-            Study study = studyService.getStudyByGlobalId(globalId);
+            Study study = null;
+            try {
+                study = studyService.getStudyByGlobalId(globalId);
+            } catch (EJBException ex) {
+                throw new SwordError("Could not find study based on global id (" + globalId + ") in URL: " + editUri);
+            }
             Long studyId;
             try {
                 studyId = study.getId();

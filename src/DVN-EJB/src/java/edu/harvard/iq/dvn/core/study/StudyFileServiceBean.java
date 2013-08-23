@@ -648,6 +648,7 @@ public class StudyFileServiceBean implements StudyFileServiceLocal {
                             logger.info("WARNING: unknown control card-based Ingest type? -- "+fileBean.getControlCardType());
                             f.setOriginalFileType(originalFileType);
                         }
+                        f.setMd5(md5Checksum.CalculateMD5(tempOriginalFile.getAbsolutePath()));
                         
                     } else {
                         // 2b. Otherwise, simply store the data that was used for

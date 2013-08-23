@@ -473,7 +473,34 @@ public class SAVFileReader extends StatDataFileReader{
 	    e.printStackTrace();
 	    throw new IOException ( "in method "+methodCurrentlyExecuted+": "+e.getMessage() ); 
 	}
-	    
+	
+        /* Final correction of the "variable type list" values: 
+         * The date/time values are stored as character strings by the DVN, 
+         * so the type information needs to be adjusted accordingly:
+         *          -- L.A., v3.6 
+         */
+        int[] variableTypeMinimal = ArrayUtils.toPrimitive(variableTypelList.toArray(new Integer[variableTypelList.size()]));
+
+        for (int indx = 0; indx < variableTypelList.size(); indx++) {
+            int simpleType = 0;
+            if (variableTypelList.get(indx) != null) {
+                simpleType = variableTypelList.get(indx).intValue();
+            }
+
+            if (simpleType <= 0) {
+                // NOT marked as a numeric at this point;
+                // but is it a date/time/etc.?
+                String variableFormatType = variableFormatTypeList[indx];
+                if (variableFormatType != null
+                        && (variableFormatType.equals("time")
+                        || variableFormatType.equals("date"))) {
+                    variableTypeMinimal[indx] = 1;
+                }
+            }
+        }
+
+        smd.setVariableTypeMinimal(variableTypeMinimal);
+        
 	if (sdiodata == null){
 	    sdiodata = new SDIOData(smd, savDataSection);
 	}
@@ -1337,8 +1364,8 @@ public class SAVFileReader extends StatDataFileReader{
             smd.setVariableLabel(variableLabelMap);
             smd.setMissingValueTable(missingValueTable);
             smd.getFileInformation().put("caseWeightVariableName", caseWeightVariableName);
-            smd.setVariableTypeMinimal(ArrayUtils.toPrimitive(
-            variableTypelList.toArray(new Integer[variableTypelList.size()])));
+            
+            
             
             dbgLog.info("sumstat:long case=" + Arrays.deepToString(variableTypelList.toArray()));
 

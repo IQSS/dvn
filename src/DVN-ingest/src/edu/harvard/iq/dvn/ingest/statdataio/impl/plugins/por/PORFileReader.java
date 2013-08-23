@@ -129,6 +129,7 @@ public class PORFileReader extends StatDataFileReader{
     // may need more setXXXX() to handle scientific data
     private NumberFormat doubleNumberFormatter = new DecimalFormat();
 
+    private String[] variableFormatTypeList;
 
 
     // Constructor -----------------------------------------------------------//
@@ -225,10 +226,37 @@ public class PORFileReader extends StatDataFileReader{
             smd.setVariableName(variableNameList.toArray(new String[variableNameList.size()]));
             smd.setVariableLabel(variableLabelMap);
             smd.setMissingValueTable(missingValueTable);
-            dbgLog.finer("*************** missingValueCodeTable ***************:\n"+missingValueCodeTable);
+            dbgLog.finer("*************** missingValueCodeTable ***************:\n" + missingValueCodeTable);
             smd.setInvalidDataTable(invalidDataTable);
             smd.setValueLabelTable(valueLabelTable);
-            smd.setVariableTypeMinimal(ArrayUtils.toPrimitive(variableTypelList.toArray(new Integer[variableTypelList.size()])));
+            /* Final correction of the "variable type list" values: 
+             * The date/time values are stored as character strings by the DVN, 
+             * so the type information needs to be adjusted accordingly:
+             *          -- L.A., v3.6 
+             */
+            int[] variableTypeMinimal = ArrayUtils.toPrimitive(variableTypelList.toArray(new Integer[variableTypelList.size()]));
+
+            for (int indx = 0; indx < variableTypelList.size(); indx++) {
+                int simpleType = 0;
+                if (variableTypelList.get(indx) != null) {
+                    simpleType = variableTypelList.get(indx).intValue();
+                }
+
+                if (simpleType <= 0) {
+                    // NOT marked as a numeric at this point;
+                    // but is it a date/time/etc.?
+                    String variableFormatType = variableFormatTypeList[indx];
+                    if (variableFormatType != null
+                            && (variableFormatType.equals("time")
+                            || variableFormatType.equals("date"))) {
+                        variableTypeMinimal[indx] = 1;
+                    }
+                }
+            }
+
+            smd.setVariableTypeMinimal(variableTypeMinimal);
+
+            //smd.setVariableTypeMinimal(ArrayUtils.toPrimitive(variableTypelList.toArray(new Integer[variableTypelList.size()])));
             smd.setVariableFormat(printFormatList);
             smd.setVariableFormatName(printFormatNameTable);
             smd.setVariableFormatCategory(formatCategoryTable);
@@ -977,7 +1005,7 @@ public class PORFileReader extends StatDataFileReader{
             fileOutTab = new FileOutputStream(tabDelimitedDataFile);
             pwout = new PrintWriter(new OutputStreamWriter(fileOutTab, "utf8"), true);
 
-            String[] variableFormatTypeList = new String[varQnty];
+            variableFormatTypeList = new String[varQnty];
             for (int i = 0; i < varQnty; i++) {
                 variableFormatTypeList[i] = SPSSConstants.FORMAT_CATEGORY_TABLE.get(printFormatTable.get(variableNameList.get(i)));
                 formatCategoryTable.put(variableNameList.get(i), variableFormatTypeList[i]);

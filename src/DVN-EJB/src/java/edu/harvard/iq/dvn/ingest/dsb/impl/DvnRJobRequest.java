@@ -541,6 +541,8 @@ public class DvnRJobRequest {
                     variableFormats.put(getSafeVariableName(dv.getName()), "D");
                   }
                 }
+                // TODO: (?)
+                // What about STATA? -- L.A.
             } else {
                 dbgLog.fine(i+"\t var: not date or time variable");
             }

@@ -7516,7 +7516,21 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
                     }
                 }
             } else {
-                rw.add("Character");
+                // Special labels for character variables that represent dates 
+                // and times:
+                String formatCategory = dv.getFormatCategory();
+
+                if (formatCategory != null) {
+                    if (dv.getFormatCategory().toLowerCase().equals("date")) {
+                        rw.add("Character (Date Value)");
+                    } else if (dv.getFormatCategory().toLowerCase().equals("time")) {
+                        rw.add("Character (Time Value)");
+                    } else {
+                        rw.add("Character");
+                    }
+                } else {
+                    rw.add("Character");
+                }
             }
 
             // 2nd: ID

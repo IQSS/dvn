@@ -583,6 +583,7 @@ public class StudyFileServiceBean implements StudyFileServiceLocal {
                         tempSQLDataFile.delete();
                         FileUtils.deleteDirectory(tempNeo4jDir);
                         f.setOriginalFileType(originalFileType);
+                        
                     } catch (IOException ex) {
                         throw new EJBException(ex);
                     }
@@ -672,7 +673,7 @@ public class StudyFileServiceBean implements StudyFileServiceLocal {
                     FileUtil.copyFile(tempIngestedFile, newIngestedLocationFile);
                     tempIngestedFile.delete();
                     f.setFileSystemLocation(newIngestedLocationFile.getAbsolutePath());
-
+                    f.setMd5(md5Checksum.CalculateMD5(newIngestedLocationFile.getAbsolutePath()));
                 } catch (IOException ex) {
                     throw new EJBException(ex);
                 }

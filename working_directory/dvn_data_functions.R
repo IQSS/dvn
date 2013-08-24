@@ -60,6 +60,8 @@ read.table141vdc<-function (file, header = FALSE, sep = "\t", quote = "", dec = 
     #cat("varFormat:\n")
     #cat(paste(varFormat,"\n",sep=" "))
 
+    saved.options <- options(digits.secs = 3)
+
     for (i in 1:cols) {
         #if (known[i]) next
         #data[[i]] <- as(data[[i]], colClasses[i])
@@ -95,10 +97,10 @@ read.table141vdc<-function (file, header = FALSE, sep = "\t", quote = "", dec = 
                     #cat("after-t=", i,"\n")
                     colClassesx[i]<-1
                 } else if (varFormat[col.names[i]] == 'DT'){
-                    data[[i]]<-as.POSIXct(strptime(data[[i]], "%F %T"))
+                    data[[i]]<-as.POSIXct(strptime(data[[i]], "%F %H:%M:%OS"))
                     colClassesx[i]<-1
                 } else if (varFormat[col.names[i]] == 'JT'){
-                    data[[i]]<-as.POSIXct(strptime(data[[i]], "%j %T"))
+                    data[[i]]<-as.POSIXct(strptime(data[[i]], "%j %H:%M:%OS"))
                     colClassesx[i]<-1
                 }
              }
@@ -133,6 +135,8 @@ read.table141vdc<-function (file, header = FALSE, sep = "\t", quote = "", dec = 
             #}
         }
     }
+
+    options(saved.options)
 
     class(data) <- "data.frame"
     row.names(data) <- as.character(seq(len = nlines))
@@ -173,10 +177,10 @@ transformrecoded <-function(x, recodedvarsindx = 2, dec = ".", col.names = NULL,
                     x[[i]]<-as.POSIXct(strptime(x[[i]], "%T"))
                     colClassesx[i]<-1
                 } else if (varFormat[col.names[i]] == 'DT'){
-                    x[[i]]<-as.POSIXct(strptime(x[[i]], "%F %T"))
+                    x[[i]]<-as.POSIXct(strptime(x[[i]], "%F %H:%M:%OS"))
                     colClassesx[i]<-1
                 } else if (varFormat[col.names[i]] == 'JT'){
-                    x[[i]]<-as.POSIXct(strptime(x[[i]], "%j %T"))
+                    x[[i]]<-as.POSIXct(strptime(x[[i]], "%j %H:%M:%OS"))
                     colClassesx[i]<-1
                 }
         }

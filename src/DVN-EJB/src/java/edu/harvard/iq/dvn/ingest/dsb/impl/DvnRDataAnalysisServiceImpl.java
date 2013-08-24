@@ -590,6 +590,13 @@ public class DvnRDataAnalysisServiceImpl {
 
                 // subsetting 
 
+                // For operations on time values during recoding we need
+                // to set the following option (this is to enable millisecond
+                // precision time): 
+                //      -- L.A., v3.6
+                
+                c.voidEval("saved.options <- options(digits.secs = 3)"); 
+                
                 List<String> scLst = sro.getSubsetConditions();
                 if (scLst != null) {
                     for (String sci : scLst) {
@@ -684,6 +691,10 @@ public class DvnRDataAnalysisServiceImpl {
                     dbgLog.fine("recoded variables start at "+recodedVarsStartIndex);
                     c.voidEval("x<-transformrecoded(x, recodedvarsindx="+recodedVarsStartIndex+", col.names=c(vnames,recodedvnames), colClassesx=vartyp, varFormat=varFmt)");
                 }
+                
+                // reset the milliseconds option: 
+                
+                c.voidEval("options(saved.options)");
             }
             
             

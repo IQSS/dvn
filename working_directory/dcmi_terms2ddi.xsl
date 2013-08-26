@@ -116,13 +116,20 @@
             </dataAccs>
             </xsl:if>
 	    </xsl:for-each>
-	    <xsl:if test="normalize-space(//dc:relation)!=''">
+	    <xsl:if test="normalize-space(//dc:relation)!='' or normalize-space(//dc:bibliographicCitation)!=''">
 	    <othrStdyMat>
 	    <xsl:for-each select="//dc:relation">
 	    <xsl:if test="normalize-space(.)!=''">
 	       <relMat>
 	          <xsl:value-of select="normalize-space(.)"/>
 	       </relMat>
+	    </xsl:if>
+	    </xsl:for-each>
+	    <xsl:for-each select="//dc:bibliographicCitation">
+	    <xsl:if test="normalize-space(.)!=''">
+	       <relPubl>
+	          <xsl:value-of select="normalize-space(.)"/>
+	       </relPubl>
 	    </xsl:if>
 	    </xsl:for-each>
 	    </othrStdyMat>

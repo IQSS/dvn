@@ -20,8 +20,12 @@
 package edu.harvard.iq.dvn.api.datadeposit;
 
 import edu.harvard.iq.dvn.core.study.Study;
+import edu.harvard.iq.dvn.core.study.StudyRelPublication;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.logging.Logger;
 import org.apache.abdera.i18n.iri.IRI;
+import org.apache.commons.lang.StringUtils;
 import org.swordapp.server.DepositReceipt;
 
 public class ReceiptGenerator {
@@ -39,9 +43,17 @@ public class ReceiptGenerator {
          */
         depositReceipt.setLocation(new IRI(editIri));
         depositReceipt.setEditMediaIRI(new IRI(baseUrl + "/edit-media/study/" + study.getGlobalId()));
-        depositReceipt.setVerboseDescription("Title: " + study.getLatestVersion().getMetadata().getTitle());
         depositReceipt.setStatementURI("application/atom+xml;type=feed", baseUrl + "/statement/study/" + study.getGlobalId());
         depositReceipt.addDublinCore("bibliographicCitation", study.getLatestVersion().getMetadata().getCitation(false));
+        List<StudyRelPublication> studyRelPublications = study.getLatestVersion().getMetadata().getStudyRelPublications();
+        List<String> citationTexts = new ArrayList<String>();
+        for (StudyRelPublication studyRelPublication : studyRelPublications) {
+            citationTexts.add(studyRelPublication.getText());
+        }
+        if (!citationTexts.isEmpty()) {
+            String citations = StringUtils.join(citationTexts, ";");
+            depositReceipt.setVerboseDescription("Related publication citation(s): " + citations);
+        }
         return depositReceipt;
     }
 }

@@ -18,10 +18,8 @@ comments at https://docs.google.com/document/d/1Rn70XItfA6_mJ4JA3I7m4em0spfdXIIH
    <dcterms:creator>Stumptown Research Institute</dcterms:creator>
    <dcterms:date>2013-08-11</dcterms:date>
    <dcterms:rights>Creative Commons CC-BY 3.0 (unported) http://creativecommons.org/licenses/by/3.0/</dcterms:rights>
-   <!-- This field does not exist in our DVN DDI-DC crosswalk but would be useful to make sure we have the OJS Journal article citation -->
-   <dcterms:bibliographicCitation> Still need to: Insert Journal Article Citation from OJS</dcterms:bibliographicCitation>
+   <dcterms:bibliographicCitation>Insert Journal Article Citation from OJS</dcterms:bibliographicCitation>
    <dcterms:description>This study evaluates the caffeine levels of a cold brewed coffee.</dcterms:description>
-   <dcterms:identifier>doi:10.1000/XXX</dcterms:identifier>
    <dcterms:subject>coffee bean</dcterms:subject>
    <dcterms:subject>caffeine</dcterms:subject>
    <dcterms:subject>cold brew process</dcterms:subject>

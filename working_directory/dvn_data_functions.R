@@ -4,6 +4,9 @@ library(methods)
 library(UNF)
 library(R2HTML)
 
+options(digits.secs = 3)
+
+
 ############ parameters ########################
 univarstathdr<-c("Valid Cases", "Missing Cases(NAs)", "Total", "Mean", "Standard deviation", "Skewness", "Kurtosis", "Coefficient of variation", "Mode", "Minimum","1st Quartile","Median","3rd Quartile","Maximum","Range","Interquartile Range","Normality Test(Shapiro-Wilk Statistic)", "Normality Test(Shapiro-Wilk Statistic: p value)")
 

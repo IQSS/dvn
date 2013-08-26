@@ -212,7 +212,28 @@ public class BasicSearchFragment extends VDCBaseBean implements java.io.Serializ
             logger.fine("non-variable query...");
 
             Long rootSubnetworkId = getVDCRequestBean().getVdcNetwork().getId();
-            if (getVDCRequestBean().getCurrentVdcNetwork().getId().equals(rootSubnetworkId)) {
+            if (getVDCRequestBean().getCurrentVDC() != null) {
+                // check for current VDC first, just like on AdvSearchPage
+                logger.fine("Running dataverse-wide search");
+                DvnQuery dvnQuery = new DvnQuery();
+                VDC thisVDC = getVDCRequestBean().getCurrentVDC();
+                dvnQuery.setVdc(thisVDC);
+                List<Query> collectionQueries = new ArrayList<Query>();
+                dvnQuery.setDvOwnerIdQuery(indexService.constructDvOwnerIdQuery(dvnQuery.getVdc()));
+                collectionQueries = indexService.getCollectionQueries(dvnQuery.getVdc());
+                if (!collectionQueries.isEmpty()) {
+                    logger.fine("collectionQueries: " + collectionQueries);
+                    dvnQuery.setCollectionQueries(collectionQueries);
+                } else {
+                    logger.fine("empty collectionQueries");
+                }
+                dvnQuery.setSearchTerms(searchTerms);
+                dvnQuery.constructQuery();
+                dvnQuery.setClearPreviousFacetRequests(true);
+                resultsWithFacets = indexService.searchNew(dvnQuery);
+                studies = resultsWithFacets.getMatchIds();
+            }
+            else if (getVDCRequestBean().getCurrentVdcNetwork().getId().equals(rootSubnetworkId)) {
                 logger.fine("Running DVN-wide search");
                 DvnQuery dvnQuery = new DvnQuery();
                 dvnQuery.setSearchTerms(searchTerms);

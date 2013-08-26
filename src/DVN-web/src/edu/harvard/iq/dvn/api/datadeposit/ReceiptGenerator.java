@@ -47,12 +47,21 @@ public class ReceiptGenerator {
         depositReceipt.addDublinCore("bibliographicCitation", study.getLatestVersion().getMetadata().getCitation(false));
         List<StudyRelPublication> studyRelPublications = study.getLatestVersion().getMetadata().getStudyRelPublications();
         List<String> citationTexts = new ArrayList<String>();
+        List<String> citationIdTypes = new ArrayList<String>();
+        List<String> citationIdNumbers = new ArrayList<String>();
+        List<String> citationIdUrls = new ArrayList<String>();
         for (StudyRelPublication studyRelPublication : studyRelPublications) {
             citationTexts.add(studyRelPublication.getText());
+            citationIdTypes.add(studyRelPublication.getIdType());
+            citationIdNumbers.add(studyRelPublication.getIdNumber());
+            citationIdUrls.add(studyRelPublication.getUrl());
         }
         if (!citationTexts.isEmpty()) {
-            String citations = StringUtils.join(citationTexts, ";");
-            depositReceipt.setVerboseDescription("Related publication citation(s): " + citations);
+            String texts = StringUtils.join(citationTexts, ";");
+            String idTypes = StringUtils.join(citationIdTypes, ";");
+            String idNumbers = StringUtils.join(citationIdNumbers, ";");
+            String idUrls = StringUtils.join(citationIdUrls, ";");
+            depositReceipt.setVerboseDescription("Related publication citation text(s): " + texts + "|idType(s): " + idTypes + "|idNumber(s):" + idNumbers + "|idUrl(s): " + idUrls);
         }
         return depositReceipt;
     }

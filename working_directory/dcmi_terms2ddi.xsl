@@ -116,24 +116,37 @@
             </dataAccs>
             </xsl:if>
 	    </xsl:for-each>
-	    <xsl:if test="normalize-space(//dc:relation)!='' or normalize-space(//dc:bibliographicCitation)!=''">
-	    <othrStdyMat>
-	    <xsl:for-each select="//dc:relation">
-	    <xsl:if test="normalize-space(.)!=''">
-	       <relMat>
-	          <xsl:value-of select="normalize-space(.)"/>
-	       </relMat>
-	    </xsl:if>
-	    </xsl:for-each>
-	    <xsl:for-each select="//dc:bibliographicCitation">
-	    <xsl:if test="normalize-space(.)!=''">
-	       <relPubl>
-	          <xsl:value-of select="normalize-space(.)"/>
-	       </relPubl>
-	    </xsl:if>
-	    </xsl:for-each>
-	    </othrStdyMat>
-	    </xsl:if>
+            <xsl:if test="normalize-space(//dc:relation)!='' or normalize-space(//dc:isPartOf)!=''">
+            <othrStdyMat>
+                <xsl:for-each select="//dc:relation">
+                <xsl:if test="normalize-space(.)!=''">
+               <relMat>
+                  <xsl:value-of select="normalize-space(.)"/>
+               </relMat>
+                </xsl:if>
+            </xsl:for-each>
+               <relPubl>
+                <xsl:value-of select="normalize-space(//dc:isPartOf)"/>
+                    <citation source="DVN_3_0">
+                        <titlStmt>
+                            <IDNo>
+                            <xsl:attribute name="agency">
+                                <xsl:value-of select="normalize-space(//dc:FIXME1)"/>
+                            </xsl:attribute>
+                            <xsl:value-of select="normalize-space(//dc:FIXME2)"/>
+                            </IDNo>
+                        </titlStmt>
+                        <biblCit><xsl:value-of select="normalize-space(//dc:isPartOf)"/></biblCit>
+                        <holdings>
+                            <xsl:attribute name="URI">
+                                <xsl:value-of select="normalize-space(//dc:FIXME3)"/>
+                            </xsl:attribute>
+                            <xsl:value-of select="normalize-space(//dc:FIXME3)"/>
+                       </holdings>
+                  </citation>
+               </relPubl>
+            </othrStdyMat>
+            </xsl:if>
 	</stdyDscr>
 </codeBook>
 </xsl:template>

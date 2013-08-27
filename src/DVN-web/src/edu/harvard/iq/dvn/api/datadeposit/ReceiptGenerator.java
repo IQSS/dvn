@@ -45,6 +45,7 @@ public class ReceiptGenerator {
         depositReceipt.setEditMediaIRI(new IRI(baseUrl + "/edit-media/study/" + study.getGlobalId()));
         depositReceipt.setStatementURI("application/atom+xml;type=feed", baseUrl + "/statement/study/" + study.getGlobalId());
         depositReceipt.addDublinCore("bibliographicCitation", study.getLatestVersion().getMetadata().getCitation(false));
+        depositReceipt.setSplashUri(study.getPersistentURL());
         return depositReceipt;
     }
 }

@@ -12,6 +12,7 @@ study_edit_uri = first_study.attributes["xml:base"]
 entry = Document.new `tools/scripts/data-deposit-api/test-edit-get #{study_edit_uri}`
 statement_uri = XPath.first(entry,"//link[@rel='http://purl.org/net/sword/terms/statement']").attributes["href"]
 data_citation = XPath.first(entry, "//bibliographicCitation").text
+persistent_uri = XPath.first(entry,"//link[@rel='alternate']").attributes["href"]
 
 statement = Document.new `tools/scripts/data-deposit-api/test-statement #{statement_uri}`
 title = statement.root.elements["title"].text
@@ -20,7 +21,7 @@ release_state_term = "latestVersionState"
 release_state = XPath.first(statement, "//category[@term='#{release_state_term}']")
 lock_state_term = "locked"
 lock_state = XPath.first(statement, "//category[@term='#{lock_state_term}']").text
-puts "#{release_state_term}:#{release_state.text} #{lock_state_term}:#{lock_state} for #{data_citation}. Files (if any):"
+puts "#{release_state_term}:#{release_state.text} #{lock_state_term}:#{lock_state} for #{data_citation} ( #{persistent_uri} ). Files (if any):"
 XPath.each( statement, "//entry" ) { |entry|
     url     = entry.elements["content"].attributes["src"]
     type    = entry.elements["content"].attributes["type"]

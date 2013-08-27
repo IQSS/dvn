@@ -31,7 +31,7 @@ comments at https://docs.google.com/document/d/1Rn70XItfA6_mJ4JA3I7m4em0spfdXIIH
           3. ID number (i.e. DOI number)
           4. ID URL (i.e. http://dx.doi.org/10.1093/rfs/hhm055 )
    -->
-   <dcterms:isPartOf>Peets, J., & Stumptown, J. (2013). Roasting at Home. New England Journal of Coffee, 3(1), 22-34.</dcterms:isPartOf>
+   <dcterms:isPartOf>Peets, J., &amp; Stumptown, J. (2013). Roasting at Home. New England Journal of Coffee, 3(1), 22-34.</dcterms:isPartOf>
    <!-- studyRelPublication.getIdType() -->
    <dcterms:FIXME1>DOI</dcterms:FIXME1>
    <!-- studyRelPublication.getIdNumber() -->

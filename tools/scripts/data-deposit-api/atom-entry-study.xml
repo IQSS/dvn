@@ -31,13 +31,13 @@ comments at https://docs.google.com/document/d/1Rn70XItfA6_mJ4JA3I7m4em0spfdXIIH
           3. ID number (i.e. DOI number)
           4. ID URL (i.e. http://dx.doi.org/10.1093/rfs/hhm055 )
    -->
-   <dcterms:isPartOf>Insert Journal Article Citation from OJS</dcterms:isPartOf>
+   <dcterms:isPartOf>Peets, J., & Stumptown, J. (2013). Roasting at Home. New England Journal of Coffee, 3(1), 22-34.</dcterms:isPartOf>
    <!-- studyRelPublication.getIdType() -->
    <dcterms:FIXME1>DOI</dcterms:FIXME1>
    <!-- studyRelPublication.getIdNumber() -->
-   <dcterms:FIXME2>10.1234/ABCD</dcterms:FIXME2>
+   <dcterms:FIXME2>10.1038/dvn333</dcterms:FIXME2>
    <!-- studyRelPublication.getUrl() -->
-   <dcterms:FIXME3>http://dx.doi.org/10.1234/ABCD</dcterms:FIXME3>
+   <dcterms:FIXME3>http://dx.doi.org/10.1038/dvn333</dcterms:FIXME3>
    <dcterms:description>Considerations before you start roasting your own coffee at home.</dcterms:description>
    <!-- In DVN we also use "description" to include "Data Citation" but how would OJS get the study's 
    Data Citation since Dataverse would need to pass this information over to OJS rather than the other way around. 

@@ -18,7 +18,7 @@ comments at https://docs.google.com/document/d/1Rn70XItfA6_mJ4JA3I7m4em0spfdXIIH
    <dcterms:creator>Stumptown Research Institute</dcterms:creator>
    <dcterms:date>2013-08-11</dcterms:date>
    <dcterms:rights>Creative Commons CC-BY 3.0 (unported) http://creativecommons.org/licenses/by/3.0/</dcterms:rights>
-   <dcterms:isPartOf>Insert Journal Article Citation from OJS</dcterms:isPartOf>
+   <dcterms:isReferencedBy holdingsURI="http://dx.doi.org/10.1038/dvn333" agency="DOI" IDNo="10.1038/dvn333">Peets, J., &amp; Stumptown, J. (2013). Roasting at Home. New England Journal of Coffee, 3(1), 22-34.</dcterms:isReferencedBy>
    <dcterms:description>This study evaluates the caffeine levels of a cold brewed coffee.</dcterms:description>
    <dcterms:subject>coffee bean</dcterms:subject>
    <dcterms:subject>caffeine</dcterms:subject>

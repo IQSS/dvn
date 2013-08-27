@@ -43,10 +43,9 @@ if "DRAFT" == release_state_old:
     out = Popen(["tools/scripts/data-deposit-api/test-edit-put-in-progress", edit_uri], stdout=PIPE).communicate()[0]
     deposit_receipt = ET.fromstring(out)
     for line in deposit_receipt:
-        if "{http://purl.org/net/sword/terms/}verboseDescription" == line.tag:
-            pieces = line.text.split(": ")
-            title = pieces[1]
-            print "released a study with the title:", title
+        if "{http://purl.org/dc/terms/}bibliographicCitation" == line.tag:
+            citation = line.text
+            print "released study:", citation
 
     #print "getting statement from", statement_uri
     statement_after = ET.fromstring(Popen(["tools/scripts/data-deposit-api/test-statement", statement_uri], stdout=PIPE).communicate()[0]);

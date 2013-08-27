@@ -23,21 +23,7 @@ comments at https://docs.google.com/document/d/1Rn70XItfA6_mJ4JA3I7m4em0spfdXIIH
    <!-- FIXME: is this productionDate or distributionDate? -->
    <dcterms:date>2013-07-11</dcterms:date>
    <dcterms:rights>Creative Commons CC-BY 3.0 (unported) http://creativecommons.org/licenses/by/3.0/</dcterms:rights>
-   <!-- For now we are using isPartOf to represent the text
-        under (related) publications for a study but this may change.
-        Ideally we'll use four dcterms fields to represent:
-          1. The related publication text
-          2. ID type (i.e. DOI, arXiv)
-          3. ID number (i.e. DOI number)
-          4. ID URL (i.e. http://dx.doi.org/10.1093/rfs/hhm055 )
-   -->
-   <dcterms:isPartOf>Peets, J., &amp; Stumptown, J. (2013). Roasting at Home. New England Journal of Coffee, 3(1), 22-34.</dcterms:isPartOf>
-   <!-- studyRelPublication.getIdType() -->
-   <dcterms:FIXME1>DOI</dcterms:FIXME1>
-   <!-- studyRelPublication.getIdNumber() -->
-   <dcterms:FIXME2>10.1038/dvn333</dcterms:FIXME2>
-   <!-- studyRelPublication.getUrl() -->
-   <dcterms:FIXME3>http://dx.doi.org/10.1038/dvn333</dcterms:FIXME3>
+   <dcterms:isReferencedBy holdingsURI="http://dx.doi.org/10.1038/dvn333" agency="DOI" IDNo="10.1038/dvn333">Peets, J., &amp; Stumptown, J. (2013). Roasting at Home. New England Journal of Coffee, 3(1), 22-34.</dcterms:isReferencedBy>
    <dcterms:description>Considerations before you start roasting your own coffee at home.</dcterms:description>
    <!-- In DVN we also use "description" to include "Data Citation" but how would OJS get the study's 
    Data Citation since Dataverse would need to pass this information over to OJS rather than the other way around. 

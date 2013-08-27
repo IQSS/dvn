@@ -513,11 +513,18 @@ public class RDATAFileReader extends StatDataFileReader {
     // Additionally, this sets the "tabDelimitedDataFile" property of the FileInformation
     File localCsvFile = copyBackCsvFile(mRWorkspace.mCsvDataFile);
     
-    // Save basic information about data set
+    // Save basic information about data set; (generates maps of factor
+    // levels, among other things)
     putFileInformation();
     
     // This actually *sets* type lists more than it *gets* them
     getVariableTypeList(mDataTypes);
+    // TODO"
+    // At this point getVariableTypeList gets called twice; here, and then 
+    // one more time from calculateUNF; 
+    // in addition to being unnecessary, I'm wondering if it can actually 
+    // produce double entries somewhere in smd that could cause problems - ? 
+    // -- L.A., v3.6
     
     // Read and parse the TAB-delimited file saved by R, above; do the 
     // necessary post-processinga and filtering, and save the resulting 
@@ -847,6 +854,7 @@ public class RDATAFileReader extends StatDataFileReader {
 
       // Double-precision data-types
       else if (type.equals("numeric") || type.equals("double")) {
+        LOG.fine("RDATAfilereader: getVariableTypeList: double variable;");
         minimalTypeList.add(1);
         normalTypeList.add(0);
         decimalVariableSet.add(k);
@@ -996,9 +1004,12 @@ public class RDATAFileReader extends StatDataFileReader {
         switch (varType) {
           case 0:
             Long[] integerEntries = new Long[varData.length];
-
+            
+            LOG.fine(k + ": " + name + " is numeric (integer)");
+            
             if (smd.isBooleanVariable()[k]) {
             // This is not a regular integer - but a boolean!
+                LOG.fine(k + ": " + name + " is NOT a simple integer - it's a logical (boolean)!");
                 Boolean[] booleanEntries = new Boolean[varData.length];
                 for (int i = 0; i < varData.length; i++) {
                     if (varData[i] == null || varData[i].equals("")) {
@@ -1033,6 +1044,7 @@ public class RDATAFileReader extends StatDataFileReader {
             } else {
             // Regular integer;
             // Treat it as an array of Longs:
+                LOG.fine(k + ": " + name + " is a simple integer.");
 
                 for (int i = 0; i < varData.length; i++) {
                     try {
@@ -1093,7 +1105,7 @@ public class RDATAFileReader extends StatDataFileReader {
                   }
               }
             
-            LOG.fine("sumstat:long case=" + Arrays.deepToString(
+            LOG.fine("sumstat:double case=" + Arrays.deepToString(
                         ArrayUtils.toObject(StatHelper.calculateSummaryStatisticsContDistSample(doubleEntries))));
             
             // Save summary statistics:
@@ -1264,124 +1276,36 @@ public class RDATAFileReader extends StatDataFileReader {
 
   }
   
-  /**
-   * Get a HashMap matching column number to meta-data used in re-creating R Objects
-   * @param metaInfo an "RList" Object containing indices - type, type.string,
-   * class, levels, and format.
-   * @return a HashMap mapping column index to associated metadata
-   */
-  private HashMap <Integer, VariableMetaData> getVariableMetaDataTable (RList metaInfo) throws IOException {
-    // list(type = 1, type.string = "integer", class = class(values), levels = NULL, format = NULL)
-    Integer variableType = -1;
-    String variableTypeString = "", variableFormat = "";
-    String [] variableClass = null, variableLevels = null;
-        
-    // The result objet that pairs column numbers with VariableMetaData objects
-    HashMap <Integer, VariableMetaData> result = new HashMap <Integer, VariableMetaData> ();
-    
-    // While we are here, we should also fill the valueLabelTable for the meta-data object
-    Map <String, Map <String, String>> valueLabelTable = new LinkedHashMap <String, Map <String, String>> ();
-    Map <String, String> valueLabelMappingTable = new LinkedHashMap <String, String> ();
-    
-    // smd.setValueLabelTable(valueLabelTable);
-    
-    for (int k = 0; k < metaInfo.size(); k++) {
-      
-      try {
-        // Map for factors
-        Map <String, String> factorLabelMap = new HashMap <String, String> ();
-        
-        // Meta-data for a column in the data-set
-        RList columnMeta = metaInfo.at(k).asList();
-        
-        // Extract information from the returned list
-        variableType = !columnMeta.at("type").isNull() ? columnMeta.at("type").asInteger() : null;
-        variableTypeString = !columnMeta.at("type.string").isNull() ? columnMeta.at("type.string").asString() : null;
-        variableClass = !columnMeta.at("class").isNull() ? columnMeta.at("class").asStrings() : null;
-        variableLevels = !columnMeta.at("levels").isNull() ? columnMeta.at("levels").asStrings() : new String [0];
-        variableFormat = !columnMeta.at("format").isNull() ? columnMeta.at("format").asString() : null;
-        
-        LOG.fine("variable type: "+variableType);
-        LOG.fine("variable type string: "+variableTypeString);
-        for (int i = 0; i < variableClass.length; i++) {
-            LOG.fine("variable class: "+variableClass[i]);
-        }
-        LOG.fine("variable format: "+variableFormat);
-        
-        for (int i = 0; i < variableLevels.length; i++) {
-            LOG.fine("variable level: "+variableLevels[i]);
-        }
-        
-        // Create a variable meta-data object
-        VariableMetaData columnMetaData = new VariableMetaData(variableType);
-        
-        if (variableTypeString != null && variableTypeString.startsWith("Date")) {
-            columnMetaData.setDateTimeFormat(variableFormat);
-        }
-        
-        if (variableLevels != null && variableLevels.length > 0) {
-            // this is a factor.
-            LOG.fine("this is a factor.");
-            columnMetaData.setFactor(true);
-            
-            if (variableFormat != null && variableFormat.equals("ordered")) {
-                LOG.fine("this is an ordered factor.");
-                columnMetaData.setOrderedFactor(true);
-            }
-            
-            columnMetaData.setFactorLevels(variableLevels);
+    /**
+     * Get a HashMap matching column number to meta-data used in re-creating R
+     * Objects
+     *
+     * @param metaInfo an "RList" Object containing indices - type, type.string,
+     * class, levels, and format.
+     * @return a HashMap mapping column index to associated metadata
+     */
+    private HashMap<Integer, VariableMetaData> getVariableMetaDataTable(RList metaInfo) throws IOException {
+        // list(type = 1, type.string = "integer", class = class(values), levels = NULL, format = NULL)
+        Integer variableType = -1;
+        String variableTypeString = "", variableFormat = "";
+        String[] variableClass = null, variableLevels = null;
 
+        // The result objet that pairs column numbers with VariableMetaData objects
+        HashMap<Integer, VariableMetaData> result = new HashMap<Integer, VariableMetaData>();
 
-            // Create a map between a label to itself. This should include values
-            // that are missing from the dataset but present in the levels of the
-            // factor.
+        // We will also fill the valueLabelTable for the variables that are factors 
+        // (and booleans, which the DVN treats as categoricals/factors too); 
+        // Note that it is important that you place entries into the valueLabelTable
+        // ONLY for factor variables! Because SDIOMetadata will assume that any 
+        // variable with an entry is a categorical; so even an empty map entry will 
+        // confuse it. 
+        Map<String, Map<String, String>> valueLabelTable = new LinkedHashMap<String, Map<String, String>>();
 
-            // So, this "mapping of label to itself" just means that the same 
-            // string will be used for both the "value" and the "label"; and the
-            // variable will be treated on the DVN side as a categorical variable
-            // of type "string". See my comment somewhere in the code above, "this 
-            // is the counter-intuitive part..." that explains why we are treating 
-            // R factors this way. 
-
-            for (String label : variableLevels) {
-                factorLabelMap.put(label, label);
-            }
-        }
-        // A special case for logical variables: 
-        // For all practical purposes, they are handled as numeric factors
-        // with 0 and 1 for the values and "FALSE" and "TRUE" for the labels.
-        // (so this can also be used as an example of ingesting a *numeric* 
-        // categorical variable - as opposed to *string* categoricals, that
-        // we turn R factors into - above.
-        else if ("logical".equals(variableTypeString)) {
-            columnMetaData.setFactor(true);
-            booleanVariableSet.add(k);
-            
-            String booleanFactorLabels[] = new String [2]; 
-            booleanFactorLabels[0] = "FALSE";
-            booleanFactorLabels[1] = "TRUE";
-            
-            columnMetaData.setFactorLevels(booleanFactorLabels); 
-            
-            int booleanFactorValues[] = new int[2];
-            booleanFactorValues[0] = 0;
-            booleanFactorValues[1] = 1; 
-            
-            columnMetaData.setIntFactorValues(booleanFactorValues);
-            
-            factorLabelMap.put("0", "FALSE");
-            factorLabelMap.put("1", "TRUE");
-        }
-        
-        
-        
-        // Value label table matches column-name to list of possible categories
-        valueLabelTable.put(variableNameList.get(k), factorLabelMap);
-        
         // Value label mapping table specifies which variables produce categorical-type data
-        
+        // (Matt's comment)
+
         // (well, to determine "which variables produce categorical-type data" 
-        // we could simply if a variable has a non-empty entry i the valueLabelTable. 
+        // we could simply check if a variable has a non-empty entry in the valueLabelTable. 
         // This is how this information is looked up elsewhere in the ingest 
         // framework: Akio first looks up the key in the valueLabelMappingTable, 
         // by the variable name, then uses this key to check the valueLabelTable map...
@@ -1392,27 +1316,125 @@ public class RDATAFileReader extends StatDataFileReader {
         // (I would assume there could be a legit case with some formats where 
         // you could have more than one variable with the same name... but this 
         // isn't solving this problem - since we are still using the variable 
-        // name in the lvalueLabelMappingTable!)
+        // name in the lvalueLabelMappingTable!) 
         
-        valueLabelMappingTable.put(variableNameList.get(k), variableNameList.get(k));
-        
-        // Store the meta-data in a hashmap (to return later)
-        result.put(k, columnMetaData);
-      }
-      catch (REXPMismatchException ex) {
-        // If something went wrong, then it wasn't meant to be for that column.
-        // And you know what? That's okay.
-        ex.printStackTrace();
-        LOG.fine(String.format("Column %d of Data Set could not create a VariableMetaData object", k));
-      }
+        Map<String, String> valueLabelMappingTable = new LinkedHashMap<String, String>();
+
+        for (int k = 0; k < metaInfo.size(); k++) {
+
+            try {
+                // Map for factors
+                Map<String, String> factorLabelMap = new HashMap<String, String>();
+
+
+
+                valueLabelMappingTable.put(variableNameList.get(k), variableNameList.get(k));
+
+                // Meta-data for a column in the data-set
+                RList columnMeta = metaInfo.at(k).asList();
+
+                // Extract information from the returned list
+                variableType = !columnMeta.at("type").isNull() ? columnMeta.at("type").asInteger() : null;
+                variableTypeString = !columnMeta.at("type.string").isNull() ? columnMeta.at("type.string").asString() : null;
+                variableClass = !columnMeta.at("class").isNull() ? columnMeta.at("class").asStrings() : null;
+                variableLevels = !columnMeta.at("levels").isNull() ? columnMeta.at("levels").asStrings() : new String[0];
+                variableFormat = !columnMeta.at("format").isNull() ? columnMeta.at("format").asString() : null;
+
+                LOG.fine("variable type: " + variableType);
+                LOG.fine("variable type string: " + variableTypeString);
+                for (int i = 0; i < variableClass.length; i++) {
+                    LOG.fine("variable class: " + variableClass[i]);
+                }
+                LOG.fine("variable format: " + variableFormat);
+
+                for (int i = 0; i < variableLevels.length; i++) {
+                    LOG.fine("variable level: " + variableLevels[i]);
+                }
+
+                // Create a variable meta-data object
+                VariableMetaData columnMetaData = new VariableMetaData(variableType);
+
+                if (variableTypeString != null && variableTypeString.startsWith("Date")) {
+                    columnMetaData.setDateTimeFormat(variableFormat);
+                }
+
+                if (variableLevels != null && variableLevels.length > 0) {
+                    // this is a factor.
+                    LOG.fine("this is a factor.");
+                    columnMetaData.setFactor(true);
+
+                    if (variableFormat != null && variableFormat.equals("ordered")) {
+                        LOG.fine("this is an ordered factor.");
+                        columnMetaData.setOrderedFactor(true);
+                    }
+
+                    columnMetaData.setFactorLevels(variableLevels);
+
+
+                    // Create a map between a label to itself. This should include values
+                    // that are missing from the dataset but present in the levels of the
+                    // factor.
+
+                    // So, this "mapping of label to itself" just means that the same 
+                    // string will be used for both the "value" and the "label"; and the
+                    // variable will be treated on the DVN side as a categorical variable
+                    // of type "string". See my comment somewhere in the code above, "this 
+                    // is the counter-intuitive part..." that explains why we are treating 
+                    // R factors this way. 
+
+                    for (String label : variableLevels) {
+                        factorLabelMap.put(label, label);
+                    }
+
+                    // valueLabelTable entry: (see the extended comment above)
+                    valueLabelTable.put(variableNameList.get(k), factorLabelMap);
+                } // A special case for logical variables: 
+                // For all practical purposes, they are handled as numeric factors
+                // with 0 and 1 for the values and "FALSE" and "TRUE" for the labels.
+                // (so this can also be used as an example of ingesting a *numeric* 
+                // categorical variable - as opposed to *string* categoricals, that
+                // we turn R factors into - above.
+                else if ("logical".equals(variableTypeString)) {
+                    columnMetaData.setFactor(true);
+                    booleanVariableSet.add(k);
+
+                    String booleanFactorLabels[] = new String[2];
+                    booleanFactorLabels[0] = "FALSE";
+                    booleanFactorLabels[1] = "TRUE";
+
+                    columnMetaData.setFactorLevels(booleanFactorLabels);
+
+                    int booleanFactorValues[] = new int[2];
+                    booleanFactorValues[0] = 0;
+                    booleanFactorValues[1] = 1;
+
+                    columnMetaData.setIntFactorValues(booleanFactorValues);
+
+                    factorLabelMap.put("0", "FALSE");
+                    factorLabelMap.put("1", "TRUE");
+
+                    // Value label table matches column-name to list of possible categories
+                    // valueLabelTable entry: (see the extended comment above)
+                    valueLabelTable.put(variableNameList.get(k), factorLabelMap);
+                }
+
+
+                // Store the meta-data in a hashmap (to return later)
+                result.put(k, columnMetaData);
+            } catch (REXPMismatchException ex) {
+                // If something went wrong, then it wasn't meant to be for that column.
+                // And you know what? That's okay.
+                ex.printStackTrace();
+                LOG.fine(String.format("Column %d of Data Set could not create a VariableMetaData object", k));
+            }
+        }
+
+
+        smd.setValueLabelTable(valueLabelTable);
+        smd.setValueLabelMappingTable(valueLabelMappingTable);
+        smd.setBooleanVariables(booleanVariableSet);
+
+        // Return the array or null
+        return result;
     }
-    
-    
-    smd.setValueLabelTable(valueLabelTable);
-    smd.setValueLabelMappingTable(valueLabelMappingTable);
-    smd.setBooleanVariables(booleanVariableSet);
-    
-    // Return the array or null
-    return result;
-  }
 }

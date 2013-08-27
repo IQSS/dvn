@@ -283,6 +283,7 @@ public class RTabFileParser implements java.io.Serializable {
                     // create an Integer object from the String "NA" would
                     // result in an exception, that would be intercepted below,
                     // with the same end result)
+                    dbgLog.fine("R Tab File Parser; integer value: "+valueTokens[i]);
                     if (valueTokens[i] != null && valueTokens[i].equalsIgnoreCase("NA")) {
                         caseRow[i] = "";
                     } else {

@@ -89,9 +89,6 @@ public class DDIWriter {
         sb.append(generateDDISection3());
         sb.append(generateDDISection4());
         
-        
-        
-        
         return sb.toString();
     }
 

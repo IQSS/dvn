@@ -81,11 +81,11 @@ public class CollectionListManagerImpl implements CollectionListManager {
                     feed.addSimpleExtension(new QName(UriRegistry.SWORD_STATE, "dataverseHasBeenReleased"), dvHasBeenReleased.toString());
                     return feed;
                 } else {
-                    throw new SwordServerException("user " + vdcUser.getUserName() + " is not authorized to list studies in dataverse " + dv.getAlias());
+                    throw new SwordError(UriRegistry.ERROR_BAD_REQUEST, "user " + vdcUser.getUserName() + " is not authorized to list studies in dataverse " + dv.getAlias());
                 }
 
             } else {
-                throw new SwordServerException("Could not find dataverse: " + dvAlias);
+                throw new SwordError(UriRegistry.ERROR_BAD_REQUEST,"Could not find dataverse: " + dvAlias);
             }
         } else {
             throw new SwordError("Couldn't determine target type or identifer from url: " + iri);

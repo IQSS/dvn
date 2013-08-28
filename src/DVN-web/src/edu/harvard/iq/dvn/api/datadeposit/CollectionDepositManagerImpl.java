@@ -40,6 +40,7 @@ import org.swordapp.server.SwordAuthException;
 import org.swordapp.server.SwordConfiguration;
 import org.swordapp.server.SwordError;
 import org.swordapp.server.SwordServerException;
+import org.swordapp.server.UriRegistry;
 
 public class CollectionDepositManagerImpl implements CollectionDepositManager {
 
@@ -94,7 +95,8 @@ public class CollectionDepositManagerImpl implements CollectionDepositManager {
                         File uploadDir = new File(uploadDirPath);
                         if (!uploadDir.exists()) {
                             if (!uploadDir.mkdirs()) {
-                                throw new SwordServerException("couldn't create directory: " + uploadDir.getAbsolutePath());
+                                logger.info("couldn't create directory: " + uploadDir.getAbsolutePath());
+                                throw new SwordServerException("Couldn't create upload directory.");
                             }
                         }
                         String tmpFilePath = uploadDirPath + File.separator + "newStudyViaSwordv2.xml";
@@ -102,7 +104,8 @@ public class CollectionDepositManagerImpl implements CollectionDepositManager {
                         try {
                             FileUtils.writeStringToFile(tmpFile, deposit.getSwordEntry().getEntry().toString());
                         } catch (IOException ex) {
-                            throw new SwordServerException("Could write temporary file");
+                            logger.info("couldn't write temporary file: " + tmpFile.getAbsolutePath());
+                            throw new SwordServerException("Couldn't write temporary file");
                         } finally {
                             uploadDir.delete();
                         }
@@ -139,7 +142,7 @@ public class CollectionDepositManagerImpl implements CollectionDepositManager {
                     throw new SwordError("user " + vdcUser.getUserName() + " is not authorized to modify study");
                 }
             } else {
-                throw new SwordServerException("Could not find dataverse: " + dvAlias);
+                throw new SwordError(UriRegistry.ERROR_BAD_REQUEST, "Could not find dataverse: " + dvAlias);
             }
         } else {
             throw new SwordError("Could not determine target type or identifier from url: " + collectionUri);

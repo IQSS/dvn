@@ -83,6 +83,7 @@ public class MediaResourceManagerImpl implements MediaResourceManager {
                 ctx = new InitialContext();
                 editStudyService = (EditStudyService) ctx.lookup("java:comp/env/editStudy");
             } catch (NamingException ex) {
+                logger.info("problem looking up editStudyService");
                 throw new SwordServerException("problem looking up editStudyService");
             }
             logger.info("looking up study with globalId " + globalId);
@@ -166,6 +167,7 @@ public class MediaResourceManagerImpl implements MediaResourceManager {
                                     Context ctx = new InitialContext();
                                     editStudyFilesService = (EditStudyFilesService) ctx.lookup("java:comp/env/editStudyFiles");
                                 } catch (NamingException ex) {
+                                    logger.info("problem looking up editStudyFilesService");
                                     throw new SwordServerException("problem looking up editStudyFilesService");
                                 }
                                 editStudyFilesService.setStudyVersionByGlobalId(globalId);
@@ -219,6 +221,7 @@ public class MediaResourceManagerImpl implements MediaResourceManager {
                 ctx = new InitialContext();
                 editStudyService = (EditStudyService) ctx.lookup("java:comp/env/editStudy");
             } catch (NamingException ex) {
+                logger.info("problem looking up editStudyService");
                 throw new SwordServerException("problem looking up editStudyService");
             }
             logger.info("looking up study with globalId " + globalId);
@@ -238,6 +241,7 @@ public class MediaResourceManagerImpl implements MediaResourceManager {
                 try {
                     editStudyFilesService = (EditStudyFilesService) ctx.lookup("java:comp/env/editStudyFiles");
                 } catch (NamingException ex) {
+                    logger.info("problem looking up editStudyFilesService");
                     throw new SwordServerException("problem looking up editStudyFilesService");
                 }
                 editStudyFilesService.setStudyVersionByGlobalId(globalId);
@@ -275,14 +279,16 @@ public class MediaResourceManagerImpl implements MediaResourceManager {
 //                    uploadDir = new File(uploadDirString);
 //                    if (!uploadDir.exists()) {
 //                        if (!uploadDir.mkdirs()) {
-//                            throw new SwordServerException("couldn't create directory: " + uploadDir.getAbsolutePath());
+//                            logger.info("couldn't create directory: " + uploadDir.getAbsolutePath());
+//                            throw new SwordServerException("couldn't create upload directory");
 //                        }
 //                    }
                     importDirString = swordTempDirString + File.separator + "import" + File.separator + study.getId().toString();
                     importDir = new File(importDirString);
                     if (!importDir.exists()) {
                         if (!importDir.mkdirs()) {
-                            throw new SwordServerException("couldn't create directory: " + importDir.getAbsolutePath());
+                            logger.info("couldn't create directory: " + importDir.getAbsolutePath());
+                            throw new SwordServerException("couldn't create import directory");
                         }
                     }
                 }
@@ -366,6 +372,7 @@ public class MediaResourceManagerImpl implements MediaResourceManager {
                     try {
                         studyFileService = (StudyFileServiceLocal) ctx.lookup("java:comp/env/studyFileService");
                     } catch (NamingException ex) {
+                        logger.info("problem looking up studyFileService");
                         throw new SwordServerException("problem looking up studyFileService");
                     }
                     studyFileService.addFiles(study.getLatestVersion(), fbList, vdcUser);

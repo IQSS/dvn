@@ -146,6 +146,7 @@ public class ContainerManagerImpl extends VDCBaseBean implements ContainerManage
                     ctx = new InitialContext();
                     editStudyService = (EditStudyService) ctx.lookup("java:comp/env/editStudy");
                 } catch (NamingException ex) {
+                    logger.info("problem looking up editStudyService");
                     throw new SwordServerException("problem looking up editStudyService");
                 }
                 StudyServiceLocal studyService;
@@ -153,6 +154,7 @@ public class ContainerManagerImpl extends VDCBaseBean implements ContainerManage
                     ctx = new InitialContext();
                     studyService = (StudyServiceLocal) ctx.lookup("java:comp/env/studyService");
                 } catch (NamingException ex) {
+                    logger.info("problem looking up studyService");
                     throw new SwordServerException("problem looking up studyService");
                 }
                 Study studyToLookup;
@@ -253,6 +255,7 @@ public class ContainerManagerImpl extends VDCBaseBean implements ContainerManage
                 ctx = new InitialContext();
                 studyService = (StudyServiceLocal) ctx.lookup("java:comp/env/studyService");
             } catch (NamingException ex) {
+                logger.info("problem looking up studyService");
                 throw new SwordServerException("problem looking up studyService");
             }
 

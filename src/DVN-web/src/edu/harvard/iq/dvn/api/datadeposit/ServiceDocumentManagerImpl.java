@@ -71,12 +71,14 @@ public class ServiceDocumentManagerImpl implements ServiceDocumentManager {
         for (VDC dataverse : vdcList) {
             if (swordAuth.hasAccessToModifyDataverse(vdcUser, dataverse)) {
                 String dvAlias = dataverse.getAlias();
-                SwordCollection swordCollection = new SwordCollection();
-                swordCollection.setTitle(dataverse.getName());
-                swordCollection.setHref(hostnamePlusBaseUrl + "/collection/dataverse/" + dvAlias);
-                swordCollection.addAcceptPackaging(UriRegistry.PACKAGE_SIMPLE_ZIP);
-                swordCollection.setCollectionPolicy(dataverse.getDepositTermsOfUse());
-                swordWorkspace.addCollection(swordCollection);
+                if (dvAlias != null && !dvAlias.isEmpty()) {
+                    SwordCollection swordCollection = new SwordCollection();
+                    swordCollection.setTitle(dataverse.getName());
+                    swordCollection.setHref(hostnamePlusBaseUrl + "/collection/dataverse/" + dvAlias);
+                    swordCollection.addAcceptPackaging(UriRegistry.PACKAGE_SIMPLE_ZIP);
+                    swordCollection.setCollectionPolicy(dataverse.getDepositTermsOfUse());
+                    swordWorkspace.addCollection(swordCollection);
+                }
             }
         }
         return service;

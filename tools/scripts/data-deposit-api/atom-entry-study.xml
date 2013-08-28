@@ -3,32 +3,24 @@
 modified from http://swordapp.github.io/SWORDv2-Profile/SWORDProfile.html#protocoloperations_editingcontent_metadata
 
 comments at https://docs.google.com/document/d/1Rn70XItfA6_mJ4JA3I7m4em0spfdXIIHhwkrgCl40uE/edit?usp=sharing
+
+see also https://redmine.hmdc.harvard.edu/issues/3246 
 -->
 <entry xmlns="http://www.w3.org/2005/Atom"
        xmlns:dcterms="http://purl.org/dc/terms/">
-   <title>Roasting at Home</title>
-   <!-- FIXME: is this URL suppose to represent a unique way to identify what atom entry file is being sent over? 
-   Not currently aware of what this is used for or if it's ok to remove?  
-   -->
-   <id>urn:uuid:1225c695-cfb8-4ebb-aaaa-80da344efa6a</id>
-   <updated>2005-10-07T17:17:08Z</updated>
-   <!-- Can we add more than 1 author here? Or do we just need to add the first occuring author? -->
-   <author><name>Peets, John</name></author>
-   <author><name>Stumptown, Jane</name></author>
-   <summary type="text">Considerations before you start roasting your own coffee at home.</summary>
    <!-- some embedded metadata -->
    <dcterms:title>Roasting at Home</dcterms:title>
    <dcterms:creator>Peets, John</dcterms:creator>
    <dcterms:creator>Stumptown, Jane</dcterms:creator>
-   <!-- FIXME: is this productionDate or distributionDate? -->
-   <dcterms:date>2013-07-11</dcterms:date>
-   <dcterms:rights>Creative Commons CC-BY 3.0 (unported) http://creativecommons.org/licenses/by/3.0/</dcterms:rights>
+   <!-- related publications --> 
    <dcterms:isReferencedBy holdingsURI="http://dx.doi.org/10.1038/dvn333" agency="DOI" IDNo="10.1038/dvn333">Peets, J., &amp; Stumptown, J. (2013). Roasting at Home. New England Journal of Coffee, 3(1), 22-34.</dcterms:isReferencedBy>
+   <!-- production date -->
+   <dcterms:date>2013-07-11</dcterms:date>
    <dcterms:description>Considerations before you start roasting your own coffee at home.</dcterms:description>
-   <!-- In DVN we also use "description" to include "Data Citation" but how would OJS get the study's 
-   Data Citation since Dataverse would need to pass this information over to OJS rather than the other way around. 
-   -->
+   <!-- keywords -->
    <dcterms:subject>coffee</dcterms:subject>
    <dcterms:subject>beverage</dcterms:subject>
    <dcterms:subject>caffeine</dcterms:subject>
+   <!-- restrictions -->
+   <dcterms:rights>Creative Commons CC-BY 3.0 (unported) http://creativecommons.org/licenses/by/3.0/</dcterms:rights>
 </entry>

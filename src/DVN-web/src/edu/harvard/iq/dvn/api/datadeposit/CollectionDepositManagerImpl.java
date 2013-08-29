@@ -83,7 +83,7 @@ public class CollectionDepositManagerImpl implements CollectionDepositManager {
                         logger.fine("deposit XML received by createNew():\n" + deposit.getSwordEntry());
                         // require title *and* exercise the SWORD jar a bit
                         Map<String, List<String>> dublinCore = deposit.getSwordEntry().getDublinCore();
-                        if (dublinCore.get("title") == null || dublinCore.get("title").get(0) == null) {
+                        if (dublinCore.get("title") == null || dublinCore.get("title").get(0) == null || dublinCore.get("title").get(0).isEmpty()) {
                             throw new SwordError(UriRegistry.ERROR_BAD_REQUEST, "title field is required");
                         }
 

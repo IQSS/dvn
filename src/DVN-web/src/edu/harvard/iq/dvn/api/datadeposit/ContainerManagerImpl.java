@@ -178,6 +178,10 @@ public class ContainerManagerImpl extends VDCBaseBean implements ContainerManage
                     Study studyToEdit = editStudyService.getStudyVersion().getStudy();
                     VDC dvThatOwnsStudy = studyToEdit.getOwner();
                     if (swordAuth.hasAccessToModifyDataverse(vdcUser, dvThatOwnsStudy)) {
+                        Map<String, List<String>> dublinCore = deposit.getSwordEntry().getDublinCore();
+                        if (dublinCore.get("title") == null || dublinCore.get("title").get(0) == null || dublinCore.get("title").get(0).isEmpty()) {
+                            throw new SwordError(UriRegistry.ERROR_BAD_REQUEST, "title field is required");
+                        }
                         String tmpDirectory = swordConfiguration.getTempDirectory();
                         if (tmpDirectory == null) {
                             throw new SwordError(UriRegistry.ERROR_BAD_REQUEST, "Could not determine temp directory");

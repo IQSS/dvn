@@ -162,7 +162,13 @@ public class MediaResourceManagerImpl implements MediaResourceManager {
                             throw new SwordError(UriRegistry.ERROR_BAD_REQUEST, "Unable to find file id " + fileIdLong);
                         }
                         if (fileToDelete != null) {
-                            String globalId = fileToDelete.getStudy().getGlobalId();
+                            Study study = fileToDelete.getStudy();
+                            StudyLock studyLock = study.getStudyLock();
+                            if (studyLock != null) {
+                                String message = Util.getStudyLockMessage(studyLock, study.getGlobalId());
+                                throw new SwordError(UriRegistry.ERROR_BAD_REQUEST, message);
+                            }
+                            String globalId = study.getGlobalId();
                             VDC dvThatOwnsFile = fileToDelete.getStudy().getOwner();
                             if (swordAuth.hasAccessToModifyDataverse(vdcUser, dvThatOwnsFile)) {
                                 EditStudyFilesService editStudyFilesService;

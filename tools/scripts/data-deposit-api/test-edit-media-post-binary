@@ -11,4 +11,5 @@ else
   EDIT_MEDIA_URI="$2"
 fi
 #"The client can add more content to the Media Resource itself by performing an HTTP POST request on the EM-IRI. This has the effect of placing new files into the Media Resource." -- http://swordapp.github.io/SWORDv2-Profile/SWORDProfile.html#protocoloperations_addingcontent_mediaresource
-curl --insecure -s --data-binary "@$FILENAME" -H "Content-Disposition: filename=$FILENAME"  -H "Content-Type: application/zip" -H "Packaging: http://purl.org/net/sword/package/SimpleZip" -H "Content-MD5: e2d74cd5ed6c4a3f453b895da4d4e3ef" -u sword:sword $EDIT_MEDIA_URI
+# curl --insecure -s --data-binary "@$FILENAME" -H "Content-Disposition: filename=$FILENAME"  -H "Content-Type: application/zip" -H "Packaging: http://purl.org/net/sword/package/SimpleZip" -H "Content-MD5: e2d74cd5ed6c4a3f453b895da4d4e3ef" -u sword:sword $EDIT_MEDIA_URI
+cat $FILENAME | curl --insecure -s --upload-file - -X POST -H "Content-Disposition: filename=$FILENAME"  -H "Content-Type: application/zip" -H "Packaging: http://purl.org/net/sword/package/SimpleZip" -H "Content-MD5: e2d74cd5ed6c4a3f453b895da4d4e3ef" -u sword:sword $EDIT_MEDIA_URI

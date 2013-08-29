@@ -20,9 +20,12 @@
 package edu.harvard.iq.dvn.api.datadeposit;
 
 import java.io.File;
+import java.util.logging.Logger;
 import org.swordapp.server.SwordConfiguration;
 
 public class SwordConfigurationImpl implements SwordConfiguration {
+
+    private static final Logger logger = Logger.getLogger(SwordConfigurationImpl.class.getCanonicalName());
 
     String getBaseUrlPath() {
         return "/dvn/api/data-deposit/v1/swordv2";
@@ -81,7 +84,22 @@ public class SwordConfigurationImpl implements SwordConfiguration {
 
     @Override
     public int getMaxUploadSize() {
-        return -1;
+        int unlimited = -1;
+        String jvmOption = "dvn.dataDeposit.maxUploadInBytes";
+        String maxUploadInBytes = System.getProperty(jvmOption);
+        if (maxUploadInBytes != null) {
+            try {
+                int maxUploadSizeInBytes = Integer.parseInt(maxUploadInBytes);
+                return maxUploadSizeInBytes;
+            } catch (NumberFormatException ex) {
+                logger.fine("Could not convert " + maxUploadInBytes + " from JVM option " + jvmOption + " to int. Setting Data Deposit APU max upload size limit to unlimited.");
+                return unlimited;
+            }
+        } else {
+            logger.fine("JVM option " + jvmOption + " is undefined. Setting Data Deposit APU max upload size limit to unlimited.");
+            return unlimited;
+
+        }
     }
 
     @Override

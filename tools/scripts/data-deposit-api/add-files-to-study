@@ -14,8 +14,9 @@ study_edit_media_uri = XPath.first(entry,"//link[@rel='edit-media']").attributes
 statement_uri        = XPath.first(entry,"//link[@rel='http://purl.org/net/sword/terms/statement']").attributes["href"]
 
 zip_of_files_to_add = "example.zip"
+md5sum = `md5 -q #{zip_of_files_to_add}`
 puts "adding #{zip_of_files_to_add} to #{study_edit_media_uri}"
-out = Document.new `tools/scripts/data-deposit-api/test-edit-media-post-binary #{zip_of_files_to_add} #{study_edit_media_uri}`
+out = Document.new `tools/scripts/data-deposit-api/test-edit-media-post-binary #{zip_of_files_to_add} #{study_edit_media_uri} #{md5sum}`
 if "http://purl.org/net/sword/error/ErrorBadRequest" == out.root.attributes["href"]
     error_summary = XPath.first(out, "//atom:summary").text
     puts "ERROR: #{error_summary}"

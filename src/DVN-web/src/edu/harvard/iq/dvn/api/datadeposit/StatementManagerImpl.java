@@ -44,6 +44,7 @@ import org.swordapp.server.SwordAuthException;
 import org.swordapp.server.SwordConfiguration;
 import org.swordapp.server.SwordError;
 import org.swordapp.server.SwordServerException;
+import org.swordapp.server.UriRegistry;
 
 public class StatementManagerImpl implements StatementManager {
 
@@ -63,10 +64,10 @@ public class StatementManagerImpl implements StatementManager {
         this.swordConfiguration = (SwordConfigurationImpl) swordConfiguration;
         swordConfiguration = (SwordConfigurationImpl) swordConfiguration;
         if (authCredentials == null) {
-            throw new SwordError("auth credentials are null");
+            throw new SwordError(UriRegistry.ERROR_BAD_REQUEST, "auth credentials are null");
         }
         if (swordAuth == null) {
-            throw new SwordError("swordAuth is null");
+            throw new SwordError(UriRegistry.ERROR_BAD_REQUEST, "swordAuth is null");
         }
 
         VDCUser vdcUser = swordAuth.auth(authCredentials);
@@ -80,13 +81,13 @@ public class StatementManagerImpl implements StatementManager {
             try {
                 study = studyService.getStudyByGlobalId(globalId);
             } catch (EJBException ex) {
-                throw new SwordError("Could not find study based on global id (" + globalId + ") in URL: " + editUri);
+                throw new SwordError(UriRegistry.ERROR_BAD_REQUEST, "Could not find study based on global id (" + globalId + ") in URL: " + editUri);
             }
             Long studyId;
             try {
                 studyId = study.getId();
             } catch (NullPointerException ex) {
-                throw new SwordError("couldn't find study with global ID of " + globalId);
+                throw new SwordError(UriRegistry.ERROR_BAD_REQUEST, "couldn't find study with global ID of " + globalId);
             }
 
             List<VDC> vdcList = vdcService.getUserVDCs(vdcUser.getId());
@@ -132,10 +133,10 @@ public class StatementManagerImpl implements StatementManager {
                 }
                 return statement;
             } else {
-                throw new SwordError("user " + vdcUser.getUserName() + " is not authorized to view study with global ID " + globalId);
+                throw new SwordError(UriRegistry.ERROR_BAD_REQUEST, "user " + vdcUser.getUserName() + " is not authorized to view study with global ID " + globalId);
             }
         } else {
-            throw new SwordError("Could not determine target type or identifier from URL: " + editUri);
+            throw new SwordError(UriRegistry.ERROR_BAD_REQUEST, "Could not determine target type or identifier from URL: " + editUri);
         }
     }
 }

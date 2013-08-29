@@ -83,13 +83,13 @@ public class CollectionDepositManagerImpl implements CollectionDepositManager {
                         // require title *and* exercise the SWORD jar a bit
                         Map<String, List<String>> dublinCore = deposit.getSwordEntry().getDublinCore();
                         if (dublinCore.get("title") == null || dublinCore.get("title").get(0) == null) {
-                            throw new SwordError("title field is required");
+                            throw new SwordError(UriRegistry.ERROR_BAD_REQUEST, "title field is required");
                         }
 
                         // instead of writing a tmp file, maybe importStudy() could accept an InputStream?
                         String tmpDirectory = config.getTempDirectory();
                         if (tmpDirectory == null) {
-                            throw new SwordError("Could not determine temp directory");
+                            throw new SwordError(UriRegistry.ERROR_BAD_REQUEST, "Could not determine temp directory");
                         }
                         String uploadDirPath = tmpDirectory + File.separator + "import" + File.separator + dvThatWillOwnStudy.getId();
                         File uploadDir = new File(uploadDirPath);
@@ -115,7 +115,7 @@ public class CollectionDepositManagerImpl implements CollectionDepositManager {
                         try {
                             study = studyService.importStudy(tmpFile, dcmiTermsFormatId, dvThatWillOwnStudy.getId(), vdcUser.getId());
                         } catch (Exception ex) {
-                            throw new SwordError("Couldn't import study: " + ex.getMessage());
+                            throw new SwordError(UriRegistry.ERROR_BAD_REQUEST, "Couldn't import study: " + ex.getMessage());
                         } finally {
                             tmpFile.delete();
                             uploadDir.delete();
@@ -127,7 +127,7 @@ public class CollectionDepositManagerImpl implements CollectionDepositManager {
                     } else if (deposit.isBinaryOnly()) {
                         // get here with this:
                         // curl --insecure -s --data-binary "@example.zip" -H "Content-Disposition: filename=example.zip" -H "Content-Type: application/zip" https://sword:sword@localhost:8181/dvn/api/data-deposit/v1/swordv2/collection/dataverse/sword/
-                        throw new SwordError("Binary deposit to the collection IRI via POST is not supported. Please POST an Atom entry instead.");
+                        throw new SwordError(UriRegistry.ERROR_BAD_REQUEST, "Binary deposit to the collection IRI via POST is not supported. Please POST an Atom entry instead.");
                     } else if (deposit.isMultipart()) {
                         // get here with this:
                         // wget https://raw.github.com/swordapp/Simple-Sword-Server/master/tests/resources/multipart.dat
@@ -136,16 +136,16 @@ public class CollectionDepositManagerImpl implements CollectionDepositManager {
                         // "Yeah, multipart is critically broken across all implementations" -- http://www.mail-archive.com/sword-app-tech@lists.sourceforge.net/msg00327.html
                         throw new UnsupportedOperationException("Not yet implemented");
                     } else {
-                        throw new SwordError("expected deposit types are isEntryOnly, isBinaryOnly, and isMultiPart");
+                        throw new SwordError(UriRegistry.ERROR_BAD_REQUEST, "expected deposit types are isEntryOnly, isBinaryOnly, and isMultiPart");
                     }
                 } else {
-                    throw new SwordError("user " + vdcUser.getUserName() + " is not authorized to modify study");
+                    throw new SwordError(UriRegistry.ERROR_BAD_REQUEST, "user " + vdcUser.getUserName() + " is not authorized to modify study");
                 }
             } else {
                 throw new SwordError(UriRegistry.ERROR_BAD_REQUEST, "Could not find dataverse: " + dvAlias);
             }
         } else {
-            throw new SwordError("Could not determine target type or identifier from url: " + collectionUri);
+            throw new SwordError(UriRegistry.ERROR_BAD_REQUEST, "Could not determine target type or identifier from url: " + collectionUri);
         }
     }
 }

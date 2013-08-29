@@ -30,6 +30,7 @@ import org.swordapp.server.AuthCredentials;
 import org.swordapp.server.SwordAuthException;
 import org.swordapp.server.SwordError;
 import org.swordapp.server.SwordServerException;
+import org.swordapp.server.UriRegistry;
 
 public class SwordAuth {
 
@@ -77,7 +78,7 @@ public class SwordAuth {
         }
 
         if (!authorized) {
-            throw new SwordError("User " + vdcUser.getUserName() + " with role of " + roleString + " is not authorized to modify dataverse " + dv.getAlias());
+            throw new SwordError(UriRegistry.ERROR_BAD_REQUEST, "User " + vdcUser.getUserName() + " with role of " + roleString + " is not authorized to modify dataverse " + dv.getAlias());
         } else {
             return authorized;
         }

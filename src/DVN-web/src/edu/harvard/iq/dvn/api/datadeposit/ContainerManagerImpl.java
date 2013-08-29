@@ -97,7 +97,7 @@ public class ContainerManagerImpl extends VDCBaseBean implements ContainerManage
                 try {
                     study = studyService.getStudyByGlobalId(globalId);
                 } catch (EJBException ex) {
-                    throw new SwordError("Could not find study based on global id (" + globalId + ") in URL: " + uri);
+                    throw new SwordError(UriRegistry.ERROR_BAD_REQUEST, "Could not find study based on global id (" + globalId + ") in URL: " + uri);
                 }
                 if (study != null) {
                     VDC dvThatOwnsStudy = study.getOwner();
@@ -108,19 +108,19 @@ public class ContainerManagerImpl extends VDCBaseBean implements ContainerManage
                         if (depositReceipt != null) {
                             return depositReceipt;
                         } else {
-                            throw new SwordError("Could not generate deposit receipt.");
+                            throw new SwordError(UriRegistry.ERROR_BAD_REQUEST, "Could not generate deposit receipt.");
                         }
                     } else {
-                        throw new SwordError("User " + vdcUser.getUserName() + " is not authorized to retrieve entry for " + study.getGlobalId());
+                        throw new SwordError(UriRegistry.ERROR_BAD_REQUEST, "User " + vdcUser.getUserName() + " is not authorized to retrieve entry for " + study.getGlobalId());
                     }
                 } else {
-                    throw new SwordError("Could not find study based on URL: " + uri);
+                    throw new SwordError(UriRegistry.ERROR_BAD_REQUEST, "Could not find study based on URL: " + uri);
                 }
             } else {
-                throw new SwordError("Unsupported target type (" + targetType + ") in URL: " + uri);
+                throw new SwordError(UriRegistry.ERROR_BAD_REQUEST, "Unsupported target type (" + targetType + ") in URL: " + uri);
             }
         } else {
-            throw new SwordError("Unable to determine target type from URL: " + uri);
+            throw new SwordError(UriRegistry.ERROR_BAD_REQUEST, "Unable to determine target type from URL: " + uri);
         }
     }
 
@@ -133,7 +133,7 @@ public class ContainerManagerImpl extends VDCBaseBean implements ContainerManage
         if (!targetType.isEmpty()) {
             logger.info("operating on target type: " + urlManager.getTargetType());
             if ("dataverse".equals(targetType)) {
-                throw new SwordError("metadata replace of dataverse supported yet.");
+                throw new SwordError(UriRegistry.ERROR_BAD_REQUEST, "metadata replace of dataverse supported yet.");
             } else if ("study".equals(targetType)) {
                 logger.info("replacing metadata for study");
                 logger.info("deposit XML received: " + deposit.getSwordEntry());
@@ -166,7 +166,7 @@ public class ContainerManagerImpl extends VDCBaseBean implements ContainerManage
                      */
                     studyToLookup = studyService.getStudyByGlobalId(globalId);
                 } catch (EJBException ex) {
-                    throw new SwordError("Could not find study based on global id (" + globalId + ") in URL: " + uri);
+                    throw new SwordError(UriRegistry.ERROR_BAD_REQUEST, "Could not find study based on global id (" + globalId + ") in URL: " + uri);
                 }
                 if (studyToLookup != null) {
                     StudyLock lockOnStudyLookedup = studyToLookup.getStudyLock();
@@ -180,7 +180,7 @@ public class ContainerManagerImpl extends VDCBaseBean implements ContainerManage
                     if (swordAuth.hasAccessToModifyDataverse(vdcUser, dvThatOwnsStudy)) {
                         String tmpDirectory = swordConfiguration.getTempDirectory();
                         if (tmpDirectory == null) {
-                            throw new SwordError("Could not determine temp directory");
+                            throw new SwordError(UriRegistry.ERROR_BAD_REQUEST, "Could not determine temp directory");
                         }
                         String uploadDirPath = tmpDirectory + File.separator + "import" + File.separator + studyToEdit.getId();
                         Long dcmiTermsHarvetsFormatId = new Long(4);
@@ -196,23 +196,23 @@ public class ContainerManagerImpl extends VDCBaseBean implements ContainerManage
                             editStudyService.save(dvThatOwnsStudy.getId(), vdcUser.getId());
                         } catch (EJBException ex) {
                             // OptimisticLockException
-                            throw new SwordError("Unable to replace cataloging information for study " + studyToEdit.getGlobalId() + " (may be locked). Please try again later.");
+                            throw new SwordError(UriRegistry.ERROR_BAD_REQUEST, "Unable to replace cataloging information for study " + studyToEdit.getGlobalId() + " (may be locked). Please try again later.");
                         }
                         ReceiptGenerator receiptGenerator = new ReceiptGenerator();
                         String baseUrl = urlManager.getHostnamePlusBaseUrlPath(uri);
                         DepositReceipt depositReceipt = receiptGenerator.createReceipt(baseUrl, studyToEdit);
                         return depositReceipt;
                     } else {
-                        throw new SwordError("User " + vdcUser.getUserName() + " is not authorized to modify dataverse " + dvThatOwnsStudy.getAlias());
+                        throw new SwordError(UriRegistry.ERROR_BAD_REQUEST, "User " + vdcUser.getUserName() + " is not authorized to modify dataverse " + dvThatOwnsStudy.getAlias());
                     }
                 } else {
                     throw new SwordError(UriRegistry.ERROR_BAD_REQUEST, "Could not find study based on global id (" + globalId + ") in URL: " + uri);
                 }
             } else {
-                throw new SwordError("Unknown target type specified on which to replace metadata: " + uri);
+                throw new SwordError(UriRegistry.ERROR_BAD_REQUEST, "Unknown target type specified on which to replace metadata: " + uri);
             }
         } else {
-            throw new SwordError("No target specified on which to replace metadata: " + uri);
+            throw new SwordError(UriRegistry.ERROR_BAD_REQUEST, "No target specified on which to replace metadata: " + uri);
         }
     }
 
@@ -243,7 +243,7 @@ public class ContainerManagerImpl extends VDCBaseBean implements ContainerManage
         urlManager.processUrl(uri);
         logger.info("original url: " + urlManager.getOriginalUrl());
         if (!"edit".equals(urlManager.getServlet())) {
-            throw new SwordError("edit servlet expected, not " + urlManager.getServlet());
+            throw new SwordError(UriRegistry.ERROR_BAD_REQUEST, "edit servlet expected, not " + urlManager.getServlet());
         }
         String targetType = urlManager.getTargetType();
         if (!targetType.isEmpty()) {
@@ -277,10 +277,10 @@ public class ContainerManagerImpl extends VDCBaseBean implements ContainerManage
                             studyService.deleteStudy(study.getId());
                         }
                     } else {
-                        throw new SwordError("Role was " + vdcUser.getNetworkRole().getName() + " but admin required.");
+                        throw new SwordError(UriRegistry.ERROR_BAD_REQUEST, "Role was " + vdcUser.getNetworkRole().getName() + " but admin required.");
                     }
                 } else {
-                    throw new SwordError("Couldn't find dataverse to delete from url: " + uri);
+                    throw new SwordError(UriRegistry.ERROR_BAD_REQUEST, "Couldn't find dataverse to delete from url: " + uri);
                 }
             } else if ("study".equals(targetType)) {
                 String globalId = urlManager.getTargetIdentifier();
@@ -289,7 +289,7 @@ public class ContainerManagerImpl extends VDCBaseBean implements ContainerManage
                     try {
                         study = studyService.getStudyByGlobalId(globalId);
                     } catch (EJBException ex) {
-                        throw new SwordError("Could not find study based on global id (" + globalId + ") in URL: " + uri);
+                        throw new SwordError(UriRegistry.ERROR_BAD_REQUEST, "Could not find study based on global id (" + globalId + ") in URL: " + uri);
                     }
                     if (study != null) {
                         VDC dvThatOwnsStudy = study.getOwner();
@@ -302,28 +302,28 @@ public class ContainerManagerImpl extends VDCBaseBean implements ContainerManage
                                 logger.info("deaccessioning latest version of study " + study.getGlobalId());
                                 studyService.deaccessionStudy(study.getLatestVersion());
                             } else if (studyState.equals(VersionState.DEACCESSIONED)) {
-                                throw new SwordError("Lastest version of study " + study.getGlobalId() + " has already been deaccessioned.");
+                                throw new SwordError(UriRegistry.ERROR_BAD_REQUEST, "Lastest version of study " + study.getGlobalId() + " has already been deaccessioned.");
                             } else if (studyState.equals(VersionState.ARCHIVED)) {
-                                throw new SwordError("Lastest version of study " + study.getGlobalId() + " has been archived and can not be deleted or deaccessioned.");
+                                throw new SwordError(UriRegistry.ERROR_BAD_REQUEST, "Lastest version of study " + study.getGlobalId() + " has been archived and can not be deleted or deaccessioned.");
                             } else if (studyState.equals(VersionState.IN_REVIEW)) {
-                                throw new SwordError("Lastest version of study " + study.getGlobalId() + " is in review and can not be deleted or deaccessioned.");
+                                throw new SwordError(UriRegistry.ERROR_BAD_REQUEST, "Lastest version of study " + study.getGlobalId() + " is in review and can not be deleted or deaccessioned.");
                             } else {
-                                throw new SwordError("Operation not valid for study " + study.getGlobalId() + " in state " + studyState);
+                                throw new SwordError(UriRegistry.ERROR_BAD_REQUEST, "Operation not valid for study " + study.getGlobalId() + " in state " + studyState);
                             }
                         } else {
-                            throw new SwordError("User " + vdcUser.getUserName() + " is not authorized to modify " + dvThatOwnsStudy.getAlias());
+                            throw new SwordError(UriRegistry.ERROR_BAD_REQUEST, "User " + vdcUser.getUserName() + " is not authorized to modify " + dvThatOwnsStudy.getAlias());
                         }
                     } else {
                         throw new SwordError(404);
                     }
                 } else {
-                    throw new SwordError("Could not find study to delete from url: " + uri);
+                    throw new SwordError(UriRegistry.ERROR_BAD_REQUEST, "Could not find study to delete from url: " + uri);
                 }
             } else {
-                throw new SwordError("Unsupported delete target in url:" + uri);
+                throw new SwordError(UriRegistry.ERROR_BAD_REQUEST, "Unsupported delete target in url:" + uri);
             }
         } else {
-            throw new SwordError("No target for deletion specified");
+            throw new SwordError(UriRegistry.ERROR_BAD_REQUEST, "No target for deletion specified");
         }
     }
 
@@ -343,7 +343,7 @@ public class ContainerManagerImpl extends VDCBaseBean implements ContainerManage
                     try {
                         studyToRelease = studyService.getStudyByGlobalId(globalId);
                     } catch (EJBException ex) {
-                        throw new SwordError("Could not find study based on global id (" + globalId + ") in URL: " + uri);
+                        throw new SwordError(UriRegistry.ERROR_BAD_REQUEST, "Could not find study based on global id (" + globalId + ") in URL: " + uri);
                     }
                     if (studyToRelease != null) {
                         VDC dvThatOwnsStudy = studyToRelease.getOwner();
@@ -375,19 +375,19 @@ public class ContainerManagerImpl extends VDCBaseBean implements ContainerManage
                                     DepositReceipt depositReceipt = receiptGenerator.createReceipt(baseUrl, studyToRelease);
                                     return depositReceipt;
                                 } else {
-                                    throw new SwordError("Latest version of study " + globalId + " has already been released.");
+                                    throw new SwordError(UriRegistry.ERROR_BAD_REQUEST, "Latest version of study " + globalId + " has already been released.");
                                 }
                             } else {
-                                throw new SwordError("Pass 'In-Progress: false' header to release a study.");
+                                throw new SwordError(UriRegistry.ERROR_BAD_REQUEST, "Pass 'In-Progress: false' header to release a study.");
                             }
                         } else {
-                            throw new SwordError("User " + vdcUser.getUserName() + " is not authorized to modify dataverse " + dvThatOwnsStudy.getAlias());
+                            throw new SwordError(UriRegistry.ERROR_BAD_REQUEST, "User " + vdcUser.getUserName() + " is not authorized to modify dataverse " + dvThatOwnsStudy.getAlias());
                         }
                     } else {
-                        throw new SwordError("Could not find study using globalId " + globalId);
+                        throw new SwordError(UriRegistry.ERROR_BAD_REQUEST, "Could not find study using globalId " + globalId);
                     }
                 } else {
-                    throw new SwordError("Unable to find globalId for study in url:" + uri);
+                    throw new SwordError(UriRegistry.ERROR_BAD_REQUEST, "Unable to find globalId for study in url:" + uri);
                 }
             } else if ("dataverse".equals(targetType)) {
                 String dvAlias = urlManager.getTargetIdentifier();
@@ -405,12 +405,12 @@ public class ContainerManagerImpl extends VDCBaseBean implements ContainerManage
                                     optionalPort = ":" + port;
                                 }
                             } catch (URISyntaxException ex) {
-                                throw new SwordError("unable to part url");
+                                throw new SwordError(UriRegistry.ERROR_BAD_REQUEST, "unable to part url");
                             }
                             String hostName = System.getProperty("dvn.inetAddress");
                             String dvHomePage = "https://" + hostName + optionalPort + "/dvn/dv/" + dvToRelease.getAlias();
                             if (deposit.isInProgress()) {
-                                throw new SwordError("Changing a dataverse to 'not released' is not supported. Please change to 'not released' from the web interface: " + dvHomePage);
+                                throw new SwordError(UriRegistry.ERROR_BAD_REQUEST, "Changing a dataverse to 'not released' is not supported. Please change to 'not released' from the web interface: " + dvHomePage);
                             } else {
                                 try {
                                     getVDCRequestBean().setVdcNetwork(dvToRelease.getVdcNetwork());
@@ -421,7 +421,7 @@ public class ContainerManagerImpl extends VDCBaseBean implements ContainerManage
                                      * or a collection must be release:
                                      * https://redmine.hmdc.harvard.edu/issues/3225
                                      */
-                                    throw new SwordError("Releasing a dataverse is not yet supported. Please release from the web interface: " + dvHomePage);
+                                    throw new SwordError(UriRegistry.ERROR_BAD_REQUEST, "Releasing a dataverse is not yet supported. Please release from the web interface: " + dvHomePage);
                                 }
                                 OptionsPage optionsPage = new OptionsPage();
                                 if (optionsPage.isReleasable()) {
@@ -440,26 +440,26 @@ public class ContainerManagerImpl extends VDCBaseBean implements ContainerManage
                                         fakeDepositReceipt.setVerboseDescription("Dataverse alias: " + dvAlias);
                                         return fakeDepositReceipt;
                                     } else {
-                                        throw new SwordError("Dataverse has already been released: " + dvAlias);
+                                        throw new SwordError(UriRegistry.ERROR_BAD_REQUEST, "Dataverse has already been released: " + dvAlias);
                                     }
                                 } else {
-                                    throw new SwordError("dataverse is not releaseable");
+                                    throw new SwordError(UriRegistry.ERROR_BAD_REQUEST, "dataverse is not releaseable");
                                 }
                             }
                         } else {
-                            throw new SwordError("Could not find dataverse based on alias in url: " + uri);
+                            throw new SwordError(UriRegistry.ERROR_BAD_REQUEST, "Could not find dataverse based on alias in url: " + uri);
                         }
                     } else {
-                        throw new SwordError("User " + vdcUser.getUserName() + " is not authorized to modify dataverse " + dvAlias);
+                        throw new SwordError(UriRegistry.ERROR_BAD_REQUEST, "User " + vdcUser.getUserName() + " is not authorized to modify dataverse " + dvAlias);
                     }
                 } else {
-                    throw new SwordError("Unable to find dataverse alias in URL: " + uri);
+                    throw new SwordError(UriRegistry.ERROR_BAD_REQUEST, "Unable to find dataverse alias in URL: " + uri);
                 }
             } else {
-                throw new SwordError("unsupported target type (" + targetType + ") in url:" + uri);
+                throw new SwordError(UriRegistry.ERROR_BAD_REQUEST, "unsupported target type (" + targetType + ") in url:" + uri);
             }
         } else {
-            throw new SwordError("Target type missing from url: " + uri);
+            throw new SwordError(UriRegistry.ERROR_BAD_REQUEST, "Target type missing from url: " + uri);
         }
     }
 
@@ -475,7 +475,7 @@ public class ContainerManagerImpl extends VDCBaseBean implements ContainerManage
                 return false;
             }
         } else {
-            throw new SwordError("Unable to determine requested IRI from URL: " + uri);
+            throw new SwordError(UriRegistry.ERROR_BAD_REQUEST, "Unable to determine requested IRI from URL: " + uri);
         }
 
     }

@@ -103,16 +103,16 @@ public class MediaResourceManagerImpl implements MediaResourceManager {
                         MediaResource mediaResource = new MediaResource(fixmeInputStream, contentType, packaging, isPackaged);
                         return mediaResource;
                     } else {
-                        throw new SwordError("user " + vdcUser.getUserName() + " is not authorized to get a media resource representation of the study with global ID " + study.getGlobalId());
+                        throw new SwordError(UriRegistry.ERROR_BAD_REQUEST, "user " + vdcUser.getUserName() + " is not authorized to get a media resource representation of the study with global ID " + study.getGlobalId());
                     }
                 } else {
-                    throw new SwordError("Please use the Dataverse Network Data Sharing API instead");
+                    throw new SwordError(UriRegistry.ERROR_BAD_REQUEST, "Please use the Dataverse Network Data Sharing API instead");
                 }
             } else {
-                throw new SwordError("couldn't find study with global ID of " + globalId);
+                throw new SwordError(UriRegistry.ERROR_BAD_REQUEST, "couldn't find study with global ID of " + globalId);
             }
         } else {
-            throw new SwordError("Couldn't dermine target type or identifier from URL: " + uri);
+            throw new SwordError(UriRegistry.ERROR_BAD_REQUEST, "Couldn't dermine target type or identifier from URL: " + uri);
         }
     }
 
@@ -131,7 +131,7 @@ public class MediaResourceManagerImpl implements MediaResourceManager {
          * and an empty zip uploaded. If no files are unzipped the user will see
          * a error about this but the files will still be deleted!
          */
-        throw new SwordError("Replacing the files of a study is not supported. Please delete and add files separately instead.");
+        throw new SwordError(UriRegistry.ERROR_BAD_REQUEST, "Replacing the files of a study is not supported. Please delete and add files separately instead.");
     }
 
     @Override
@@ -148,7 +148,7 @@ public class MediaResourceManagerImpl implements MediaResourceManager {
                     try {
                         fileIdLong = Long.valueOf(fileIdString);
                     } catch (NumberFormatException ex) {
-                        throw new SwordError("File id must be a number, not '" + fileIdString + "'. uri was: " + uri);
+                        throw new SwordError(UriRegistry.ERROR_BAD_REQUEST, "File id must be a number, not '" + fileIdString + "'. uri was: " + uri);
                     }
                     if (fileIdLong != null) {
                         logger.info("preparing to delete file id " + fileIdLong);
@@ -156,7 +156,7 @@ public class MediaResourceManagerImpl implements MediaResourceManager {
                         try {
                             fileToDelete = studyFileService.getStudyFile(fileIdLong);
                         } catch (EJBException ex) {
-                            throw new SwordError("Unable to find file id " + fileIdLong);
+                            throw new SwordError(UriRegistry.ERROR_BAD_REQUEST, "Unable to find file id " + fileIdLong);
                         }
                         if (fileToDelete != null) {
                             String globalId = fileToDelete.getStudy().getGlobalId();
@@ -184,22 +184,22 @@ public class MediaResourceManagerImpl implements MediaResourceManager {
                                 }
                                 editStudyFilesService.save(dvThatOwnsFile.getId(), vdcUser.getId());
                             } else {
-                                throw new SwordError("User " + vdcUser.getUserName() + " is not authorized to modify " + dvThatOwnsFile.getAlias());
+                                throw new SwordError(UriRegistry.ERROR_BAD_REQUEST, "User " + vdcUser.getUserName() + " is not authorized to modify " + dvThatOwnsFile.getAlias());
                             }
                         } else {
-                            throw new SwordError("Unable to find file id " + fileIdLong + " from url: " + uri);
+                            throw new SwordError(UriRegistry.ERROR_BAD_REQUEST, "Unable to find file id " + fileIdLong + " from url: " + uri);
                         }
                     } else {
-                        throw new SwordError("Unable to find file id in url: " + uri);
+                        throw new SwordError(UriRegistry.ERROR_BAD_REQUEST, "Unable to find file id in url: " + uri);
                     }
                 } else {
-                    throw new SwordError("Could not file file to delete in url: " + uri);
+                    throw new SwordError(UriRegistry.ERROR_BAD_REQUEST, "Could not file file to delete in url: " + uri);
                 }
             } else {
-                throw new SwordError("Unsupported file type found in url: " + uri);
+                throw new SwordError(UriRegistry.ERROR_BAD_REQUEST, "Unsupported file type found in url: " + uri);
             }
         } else {
-            throw new SwordError("Target or identifer not specified in url: " + uri);
+            throw new SwordError(UriRegistry.ERROR_BAD_REQUEST, "Target or identifer not specified in url: " + uri);
         }
     }
 
@@ -230,7 +230,7 @@ public class MediaResourceManagerImpl implements MediaResourceManager {
             try {
                 studyId = study.getId();
             } catch (NullPointerException ex) {
-                throw new SwordError("couldn't find study with global ID of " + globalId);
+                throw new SwordError(UriRegistry.ERROR_BAD_REQUEST, "couldn't find study with global ID of " + globalId);
             }
             VDC dvThatOwnsStudy = study.getOwner();
             if (swordAuth.hasAccessToModifyDataverse(vdcUser, dvThatOwnsStudy)) {
@@ -273,7 +273,7 @@ public class MediaResourceManagerImpl implements MediaResourceManager {
                 File importDir;
                 String swordTempDirString = swordConfiguration.getTempDirectory();
                 if (swordTempDirString == null) {
-                    throw new SwordError("Could not determine temp directory");
+                    throw new SwordError(UriRegistry.ERROR_BAD_REQUEST, "Could not determine temp directory");
                 } else {
 //                    uploadDirString = swordTempDirString + File.separator + "uploads" + File.separator + study.getId().toString();
 //                    uploadDir = new File(uploadDirString);
@@ -384,10 +384,10 @@ public class MediaResourceManagerImpl implements MediaResourceManager {
                     throw new SwordError(UriRegistry.ERROR_BAD_REQUEST, "Problem with zip file '" + uploadedZipFilename + "'. Number of files unzipped: " + fbList.size());
                 }
             } else {
-                throw new SwordError("user " + vdcUser.getUserName() + " is not authorized to modify study with global ID " + study.getGlobalId());
+                throw new SwordError(UriRegistry.ERROR_BAD_REQUEST, "user " + vdcUser.getUserName() + " is not authorized to modify study with global ID " + study.getGlobalId());
             }
         } else {
-            throw new SwordError("Unable to determine target type or identifier from url: " + uri);
+            throw new SwordError(UriRegistry.ERROR_BAD_REQUEST, "Unable to determine target type or identifier from url: " + uri);
         }
     }
 
@@ -404,10 +404,10 @@ public class MediaResourceManagerImpl implements MediaResourceManager {
                 || fileName.contains("|")
                 || fileName.contains(";")
                 || fileName.contains("#")) {
-            throw new SwordError("Invalid File Name - cannot contain any of the following characters: \\ / : * ? \" < > | ; . Filename was '" + fileName + "'");
+            throw new SwordError(UriRegistry.ERROR_BAD_REQUEST, "Invalid File Name - cannot contain any of the following characters: \\ / : * ? \" < > | ; . Filename was '" + fileName + "'");
         }
         if (existingFilenames.contains(fileName)) {
-            throw new SwordError("Filename " + fileName + " already exists in study " + study.getGlobalId());
+            throw new SwordError(UriRegistry.ERROR_BAD_REQUEST, "Filename " + fileName + " already exists in study " + study.getGlobalId());
         }
     }
 }

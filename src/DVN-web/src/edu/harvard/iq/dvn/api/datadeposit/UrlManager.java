@@ -26,6 +26,7 @@ import java.util.List;
 import java.util.logging.Logger;
 import org.apache.commons.lang.StringUtils;
 import org.swordapp.server.SwordError;
+import org.swordapp.server.UriRegistry;
 
 public class UrlManager {
 
@@ -44,10 +45,10 @@ public class UrlManager {
         try {
             javaNetUri = new URI(url);
         } catch (URISyntaxException ex) {
-            throw new SwordError("Invalid URL syntax: " + url);
+            throw new SwordError(UriRegistry.ERROR_BAD_REQUEST, "Invalid URL syntax: " + url);
         }
         if (!"https".equals(javaNetUri.getScheme())) {
-            throw new SwordError("https is required but protocol was " + javaNetUri.getScheme());
+            throw new SwordError(UriRegistry.ERROR_BAD_REQUEST, "https is required but protocol was " + javaNetUri.getScheme());
         }
         this.port = javaNetUri.getPort();
         String[] urlPartsArray = javaNetUri.getPath().split("/");
@@ -60,7 +61,7 @@ public class UrlManager {
             dataDepositApiBasePathParts = urlParts.subList(0, 6);
             dataDepositApiBasePath = StringUtils.join(dataDepositApiBasePathParts, "/");
         } catch (IndexOutOfBoundsException ex) {
-            throw new SwordError("Error processing URL: " + url);
+            throw new SwordError(UriRegistry.ERROR_BAD_REQUEST, "Error processing URL: " + url);
         }
         if (!dataDepositApiBasePath.equals(swordConfiguration.getBaseUrlPath())) {
             throw new SwordError(dataDepositApiBasePath + " found but " + swordConfiguration.getBaseUrlPath() + " expected");
@@ -68,7 +69,7 @@ public class UrlManager {
         try {
             this.servlet = urlParts.get(6);
         } catch (ArrayIndexOutOfBoundsException ex) {
-            throw new SwordError("Unable to determine servlet path from URL: " + url);
+            throw new SwordError(UriRegistry.ERROR_BAD_REQUEST, "Unable to determine servlet path from URL: " + url);
         }
         if (!servlet.equals("service-document")) {
             List<String> targetTypeAndIdentifier;
@@ -77,7 +78,7 @@ public class UrlManager {
                 // for example: /collection/dataverse/sword
                 targetTypeAndIdentifier = urlParts.subList(7, urlParts.size());
             } catch (IndexOutOfBoundsException ex) {
-                throw new SwordError("No target components specified in URL: " + url);
+                throw new SwordError(UriRegistry.ERROR_BAD_REQUEST, "No target components specified in URL: " + url);
             }
             this.targetType = targetTypeAndIdentifier.get(0);
             if (targetType != null) {
@@ -86,7 +87,7 @@ public class UrlManager {
                     try {
                         dvAlias = targetTypeAndIdentifier.get(1);
                     } catch (IndexOutOfBoundsException ex) {
-                        throw new SwordError("No dataverse alias provided in url: " + url);
+                        throw new SwordError(UriRegistry.ERROR_BAD_REQUEST, "No dataverse alias provided in url: " + url);
                     }
                     this.targetIdentifier = dvAlias;
                 } else if (targetType.equals("study")) {
@@ -95,7 +96,7 @@ public class UrlManager {
                         List<String> globalIdParts = targetTypeAndIdentifier.subList(1, 3);
                         globalId = globalIdParts.get(0) + "/" + globalIdParts.get(1);
                     } catch (IndexOutOfBoundsException ex) {
-                        throw new SwordError("Invalid study global id provided in url: " + url);
+                        throw new SwordError(UriRegistry.ERROR_BAD_REQUEST, "Invalid study global id provided in url: " + url);
                     }
                     this.targetIdentifier = globalId;
                 } else if (targetType.equals("file")) {
@@ -105,14 +106,14 @@ public class UrlManager {
                         // we expose it in the statement of a study but we ignore it here
                         fileIdString = targetTypeAndIdentifier.get(1);
                     } catch (IndexOutOfBoundsException ex) {
-                        throw new SwordError("No file id provided in url: " + url);
+                        throw new SwordError(UriRegistry.ERROR_BAD_REQUEST, "No file id provided in url: " + url);
                     }
                     this.targetIdentifier = fileIdString;
                 } else {
-                    throw new SwordError("unsupported target type: " + targetType);
+                    throw new SwordError(UriRegistry.ERROR_BAD_REQUEST, "unsupported target type: " + targetType);
                 }
             } else {
-                throw new SwordError("Unable to determine target type from url: " + url);
+                throw new SwordError(UriRegistry.ERROR_BAD_REQUEST, "Unable to determine target type from url: " + url);
             }
             logger.fine("target type: " + targetType);
             logger.fine("target identifier: " + targetIdentifier);
@@ -130,7 +131,7 @@ public class UrlManager {
                 optionalPort = ":" + port;
             }
         } catch (URISyntaxException ex) {
-            throw new SwordError("unable to part url");
+            throw new SwordError(UriRegistry.ERROR_BAD_REQUEST, "unable to part url");
         }
         String hostName = System.getProperty("dvn.inetAddress");
         return "https://" + hostName + optionalPort + swordConfiguration.getBaseUrlPath();

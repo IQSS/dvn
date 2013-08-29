@@ -20,13 +20,9 @@
 package edu.harvard.iq.dvn.api.datadeposit;
 
 import edu.harvard.iq.dvn.core.admin.VDCUser;
-import edu.harvard.iq.dvn.core.study.Study;
 import edu.harvard.iq.dvn.core.vdc.VDC;
 import edu.harvard.iq.dvn.core.vdc.VDCNetworkServiceLocal;
 import edu.harvard.iq.dvn.core.vdc.VDCServiceLocal;
-import java.net.URI;
-import java.net.URISyntaxException;
-import java.util.Collection;
 import java.util.List;
 import java.util.logging.Logger;
 import javax.ejb.EJB;

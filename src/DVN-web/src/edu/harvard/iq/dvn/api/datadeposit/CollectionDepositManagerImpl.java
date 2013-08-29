@@ -64,7 +64,7 @@ public class CollectionDepositManagerImpl implements CollectionDepositManager {
         String dvAlias = urlManager.getTargetIdentifier();
         if (urlManager.getTargetType().equals("dataverse") && dvAlias != null) {
 
-            logger.info("attempting deposit into this dataverse alias: " + dvAlias);
+            logger.fine("attempting deposit into this dataverse alias: " + dvAlias);
 
             VDC dvThatWillOwnStudy = vdcService.findByAlias(dvAlias);
 
@@ -73,13 +73,14 @@ public class CollectionDepositManagerImpl implements CollectionDepositManager {
                 List<VDC> userVDCs = vdcService.getUserVDCs(vdcUser.getId());
                 if (swordAuth.hasAccessToModifyDataverse(vdcUser, dvThatWillOwnStudy)) {
 
-                    logger.info("multipart: " + deposit.isMultipart());
-                    logger.info("binary only: " + deposit.isBinaryOnly());
-                    logger.info("entry only: " + deposit.isEntryOnly());
-                    logger.info("in progress: " + deposit.isInProgress());
-                    logger.info("metadata relevant: " + deposit.isMetadataRelevant());
+                    logger.fine("multipart: " + deposit.isMultipart());
+                    logger.fine("binary only: " + deposit.isBinaryOnly());
+                    logger.fine("entry only: " + deposit.isEntryOnly());
+                    logger.fine("in progress: " + deposit.isInProgress());
+                    logger.fine("metadata relevant: " + deposit.isMetadataRelevant());
 
                     if (deposit.isEntryOnly()) {
+                        logger.fine("deposit XML received by createNew():\n" + deposit.getSwordEntry());
                         // require title *and* exercise the SWORD jar a bit
                         Map<String, List<String>> dublinCore = deposit.getSwordEntry().getDublinCore();
                         if (dublinCore.get("title") == null || dublinCore.get("title").get(0) == null) {
@@ -145,7 +146,7 @@ public class CollectionDepositManagerImpl implements CollectionDepositManager {
                 throw new SwordError(UriRegistry.ERROR_BAD_REQUEST, "Could not find dataverse: " + dvAlias);
             }
         } else {
-            throw new SwordError(UriRegistry.ERROR_BAD_REQUEST, "Could not determine target type or identifier from url: " + collectionUri);
+            throw new SwordError(UriRegistry.ERROR_BAD_REQUEST, "Could not determine target type or identifier from URL: " + collectionUri);
         }
     }
 }

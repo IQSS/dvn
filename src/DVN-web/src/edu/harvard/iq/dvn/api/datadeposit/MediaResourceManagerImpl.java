@@ -86,7 +86,7 @@ public class MediaResourceManagerImpl implements MediaResourceManager {
                 logger.info("problem looking up editStudyService");
                 throw new SwordServerException("problem looking up editStudyService");
             }
-            logger.info("looking up study with globalId " + globalId);
+            logger.fine("looking up study with globalId " + globalId);
             Study study = editStudyService.getStudyByGlobalId(globalId);
             if (study != null) {
                 /**
@@ -148,10 +148,10 @@ public class MediaResourceManagerImpl implements MediaResourceManager {
                     try {
                         fileIdLong = Long.valueOf(fileIdString);
                     } catch (NumberFormatException ex) {
-                        throw new SwordError(UriRegistry.ERROR_BAD_REQUEST, "File id must be a number, not '" + fileIdString + "'. uri was: " + uri);
+                        throw new SwordError(UriRegistry.ERROR_BAD_REQUEST, "File id must be a number, not '" + fileIdString + "'. URL was: " + uri);
                     }
                     if (fileIdLong != null) {
-                        logger.info("preparing to delete file id " + fileIdLong);
+                        logger.fine("preparing to delete file id " + fileIdLong);
                         StudyFile fileToDelete;
                         try {
                             fileToDelete = studyFileService.getStudyFile(fileIdLong);
@@ -176,10 +176,10 @@ public class MediaResourceManagerImpl implements MediaResourceManager {
                                 for (Iterator it = studyFileEditBeans.iterator(); it.hasNext();) {
                                     StudyFileEditBean studyFileEditBean = (StudyFileEditBean) it.next();
                                     if (studyFileEditBean.getStudyFile().getId().equals(fileToDelete.getId())) {
-                                        logger.info("marked for deletion: " + studyFileEditBean.getStudyFile().getFileName());
+                                        logger.fine("marked for deletion: " + studyFileEditBean.getStudyFile().getFileName());
                                         studyFileEditBean.setDeleteFlag(true);
                                     } else {
-                                        logger.info("not marked for deletion: " + studyFileEditBean.getStudyFile().getFileName());
+                                        logger.fine("not marked for deletion: " + studyFileEditBean.getStudyFile().getFileName());
                                     }
                                 }
                                 editStudyFilesService.save(dvThatOwnsFile.getId(), vdcUser.getId());
@@ -187,19 +187,19 @@ public class MediaResourceManagerImpl implements MediaResourceManager {
                                 throw new SwordError(UriRegistry.ERROR_BAD_REQUEST, "User " + vdcUser.getUserName() + " is not authorized to modify " + dvThatOwnsFile.getAlias());
                             }
                         } else {
-                            throw new SwordError(UriRegistry.ERROR_BAD_REQUEST, "Unable to find file id " + fileIdLong + " from url: " + uri);
+                            throw new SwordError(UriRegistry.ERROR_BAD_REQUEST, "Unable to find file id " + fileIdLong + " from URL: " + uri);
                         }
                     } else {
-                        throw new SwordError(UriRegistry.ERROR_BAD_REQUEST, "Unable to find file id in url: " + uri);
+                        throw new SwordError(UriRegistry.ERROR_BAD_REQUEST, "Unable to find file id in URL: " + uri);
                     }
                 } else {
-                    throw new SwordError(UriRegistry.ERROR_BAD_REQUEST, "Could not file file to delete in url: " + uri);
+                    throw new SwordError(UriRegistry.ERROR_BAD_REQUEST, "Could not file file to delete in URL: " + uri);
                 }
             } else {
-                throw new SwordError(UriRegistry.ERROR_BAD_REQUEST, "Unsupported file type found in url: " + uri);
+                throw new SwordError(UriRegistry.ERROR_BAD_REQUEST, "Unsupported file type found in URL: " + uri);
             }
         } else {
-            throw new SwordError(UriRegistry.ERROR_BAD_REQUEST, "Target or identifer not specified in url: " + uri);
+            throw new SwordError(UriRegistry.ERROR_BAD_REQUEST, "Target or identifer not specified in URL: " + uri);
         }
     }
 
@@ -224,7 +224,7 @@ public class MediaResourceManagerImpl implements MediaResourceManager {
                 logger.info("problem looking up editStudyService");
                 throw new SwordServerException("problem looking up editStudyService");
             }
-            logger.info("looking up study with globalId " + globalId);
+            logger.fine("looking up study with globalId " + globalId);
             Study study = editStudyService.getStudyByGlobalId(globalId);
             Long studyId;
             try {
@@ -251,7 +251,7 @@ public class MediaResourceManagerImpl implements MediaResourceManager {
                     StudyFileEditBean studyFileEditBean = (StudyFileEditBean) it.next();
                     if (shouldReplace) {
                         studyFileEditBean.setDeleteFlag(true);
-                        logger.info("marked for deletion: " + studyFileEditBean.getStudyFile().getFileName());
+                        logger.fine("marked for deletion: " + studyFileEditBean.getStudyFile().getFileName());
                     } else {
                         String filename = studyFileEditBean.getStudyFile().getFileName();
                         exisitingFilenames.add(filename);
@@ -310,7 +310,7 @@ public class MediaResourceManagerImpl implements MediaResourceManager {
                         if (!zEntry.isDirectory()) {
 
                             String fileEntryName = zEntry.getName();
-                            logger.info("file found: " + fileEntryName);
+                            logger.fine("file found: " + fileEntryName);
 
                             String dirName = null;
                             String finalFileName = null;
@@ -357,14 +357,14 @@ public class MediaResourceManagerImpl implements MediaResourceManager {
                             fbList.add(tempFileBean);
 
                         } else {
-                            logger.info("directory found: " + zEntry.getName());
+                            logger.fine("directory found: " + zEntry.getName());
                         }
                     }
                 } catch (IOException ex) {
-                    logger.info("Problem getting zip entry");
+                    throw new SwordError(UriRegistry.ERROR_BAD_REQUEST, "Problem with file: " + uploadedZipFilename);
                 } finally {
 //                    if (!uploadDir.delete()) {
-//                        logger.info("Unable to delete " + uploadDir.getAbsolutePath());
+//                        logger.fine("Unable to delete " + uploadDir.getAbsolutePath());
 //                    }
                 }
                 if (fbList.size() > 0) {
@@ -387,7 +387,7 @@ public class MediaResourceManagerImpl implements MediaResourceManager {
                 throw new SwordError(UriRegistry.ERROR_BAD_REQUEST, "user " + vdcUser.getUserName() + " is not authorized to modify study with global ID " + study.getGlobalId());
             }
         } else {
-            throw new SwordError(UriRegistry.ERROR_BAD_REQUEST, "Unable to determine target type or identifier from url: " + uri);
+            throw new SwordError(UriRegistry.ERROR_BAD_REQUEST, "Unable to determine target type or identifier from URL: " + uri);
         }
     }
 

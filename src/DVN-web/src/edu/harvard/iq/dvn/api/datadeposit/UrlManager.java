@@ -39,7 +39,7 @@ public class UrlManager {
     int port;
 
     void processUrl(String url) throws SwordError {
-        logger.info("url was: " + url);
+        logger.fine("URL was: " + url);
         this.originalUrl = url;
         URI javaNetUri;
         try {
@@ -87,7 +87,7 @@ public class UrlManager {
                     try {
                         dvAlias = targetTypeAndIdentifier.get(1);
                     } catch (IndexOutOfBoundsException ex) {
-                        throw new SwordError(UriRegistry.ERROR_BAD_REQUEST, "No dataverse alias provided in url: " + url);
+                        throw new SwordError(UriRegistry.ERROR_BAD_REQUEST, "No dataverse alias provided in URL: " + url);
                     }
                     this.targetIdentifier = dvAlias;
                 } else if (targetType.equals("study")) {
@@ -96,7 +96,7 @@ public class UrlManager {
                         List<String> globalIdParts = targetTypeAndIdentifier.subList(1, 3);
                         globalId = globalIdParts.get(0) + "/" + globalIdParts.get(1);
                     } catch (IndexOutOfBoundsException ex) {
-                        throw new SwordError(UriRegistry.ERROR_BAD_REQUEST, "Invalid study global id provided in url: " + url);
+                        throw new SwordError(UriRegistry.ERROR_BAD_REQUEST, "Invalid study global id provided in URL: " + url);
                     }
                     this.targetIdentifier = globalId;
                 } else if (targetType.equals("file")) {
@@ -106,14 +106,14 @@ public class UrlManager {
                         // we expose it in the statement of a study but we ignore it here
                         fileIdString = targetTypeAndIdentifier.get(1);
                     } catch (IndexOutOfBoundsException ex) {
-                        throw new SwordError(UriRegistry.ERROR_BAD_REQUEST, "No file id provided in url: " + url);
+                        throw new SwordError(UriRegistry.ERROR_BAD_REQUEST, "No file id provided in URL: " + url);
                     }
                     this.targetIdentifier = fileIdString;
                 } else {
                     throw new SwordError(UriRegistry.ERROR_BAD_REQUEST, "unsupported target type: " + targetType);
                 }
             } else {
-                throw new SwordError(UriRegistry.ERROR_BAD_REQUEST, "Unable to determine target type from url: " + url);
+                throw new SwordError(UriRegistry.ERROR_BAD_REQUEST, "Unable to determine target type from URL: " + url);
             }
             logger.fine("target type: " + targetType);
             logger.fine("target identifier: " + targetIdentifier);
@@ -131,7 +131,7 @@ public class UrlManager {
                 optionalPort = ":" + port;
             }
         } catch (URISyntaxException ex) {
-            throw new SwordError(UriRegistry.ERROR_BAD_REQUEST, "unable to part url");
+            throw new SwordError(UriRegistry.ERROR_BAD_REQUEST, "unable to part URL");
         }
         String hostName = System.getProperty("dvn.inetAddress");
         return "https://" + hostName + optionalPort + swordConfiguration.getBaseUrlPath();

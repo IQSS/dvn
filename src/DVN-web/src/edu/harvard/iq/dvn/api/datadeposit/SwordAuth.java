@@ -51,16 +51,16 @@ public class SwordAuth {
                 if (userService.validatePassword(vdcUser.getId(), password)) {
                     return vdcUser;
                 } else {
-                    logger.info("wrong password");
+                    logger.fine("wrong password");
                     throw new SwordAuthException();
                 }
             } else {
-                logger.info("could not find username: " + username);
+                logger.fine("could not find username: " + username);
                 throw new SwordAuthException();
             }
         } else {
             // it seems this is never reached... eaten somewhere by way of ServiceDocumentServletDefault -> ServiceDocumentAPI -> SwordAPIEndpoint
-            logger.info("no credentials provided");
+            logger.fine("no credentials provided");
             throw new SwordAuthException();
         }
     }

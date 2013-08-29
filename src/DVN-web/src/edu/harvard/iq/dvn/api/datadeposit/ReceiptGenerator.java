@@ -20,12 +20,8 @@
 package edu.harvard.iq.dvn.api.datadeposit;
 
 import edu.harvard.iq.dvn.core.study.Study;
-import edu.harvard.iq.dvn.core.study.StudyRelPublication;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.logging.Logger;
 import org.apache.abdera.i18n.iri.IRI;
-import org.apache.commons.lang.StringUtils;
 import org.swordapp.server.DepositReceipt;
 
 public class ReceiptGenerator {

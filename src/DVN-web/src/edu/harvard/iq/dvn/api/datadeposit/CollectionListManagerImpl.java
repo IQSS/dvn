@@ -85,10 +85,10 @@ public class CollectionListManagerImpl implements CollectionListManager {
                 }
 
             } else {
-                throw new SwordError(UriRegistry.ERROR_BAD_REQUEST,"Could not find dataverse: " + dvAlias);
+                throw new SwordError(UriRegistry.ERROR_BAD_REQUEST, "Could not find dataverse: " + dvAlias);
             }
         } else {
-            throw new SwordError(UriRegistry.ERROR_BAD_REQUEST, "Couldn't determine target type or identifer from url: " + iri);
+            throw new SwordError(UriRegistry.ERROR_BAD_REQUEST, "Couldn't determine target type or identifer from URL: " + iri);
         }
     }
 }

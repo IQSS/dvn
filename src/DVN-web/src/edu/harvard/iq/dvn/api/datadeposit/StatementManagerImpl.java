@@ -75,7 +75,7 @@ public class StatementManagerImpl implements StatementManager {
         String globalId = urlManager.getTargetIdentifier();
         if (urlManager.getTargetType().equals("study") && globalId != null) {
 
-            logger.info("request for sword statement by user " + vdcUser.getUserName());
+            logger.fine("request for sword statement by user " + vdcUser.getUserName());
 
             Study study = null;
             try {

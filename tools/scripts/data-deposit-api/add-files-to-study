@@ -20,8 +20,10 @@ out = Document.new `tools/scripts/data-deposit-api/test-edit-media-post-binary #
 if "http://purl.org/net/sword/error/ErrorBadRequest" == out.root.attributes["href"]
     error_summary = XPath.first(out, "//atom:summary").text
     puts "ERROR: #{error_summary}"
-else
+elsif "http://www.w3.org/2005/Atom" == out.root.attributes["xmlns"]
     deposit_receipt = out
     persistent_uri = XPath.first(deposit_receipt,"//link[@rel='alternate']").attributes["href"]
     puts "file(s) added to #{persistent_uri} . list them with #{statement_uri}"
+else
+    puts out
 end

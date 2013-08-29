@@ -341,6 +341,10 @@ public class MediaResourceManagerImpl implements MediaResourceManager {
                                 finalFileName = fileEntryName;
                             }
 
+                            if (".DS_Store".equals(finalFileName)) {
+                                continue;
+                            }
+
                             File tempUploadedFile = new File(importDir, finalFileName);
                             tempOutStream = new FileOutputStream(tempUploadedFile);
 

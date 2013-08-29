@@ -31,6 +31,16 @@ public class SwordConfigurationImpl implements SwordConfiguration {
         return "/dvn/api/data-deposit/v1/swordv2";
     }
 
+//    boolean allowNetworkAdminDeleteAllStudies() {
+//        String jvmOption = "dvn.dataDeposit.allowNetworkAdminDeleteAllStudies";
+//        String allowNetworkAdminDeleteAllStudies = System.getProperty(jvmOption);
+//        if (allowNetworkAdminDeleteAllStudies != null && allowNetworkAdminDeleteAllStudies.equals("true")) {
+//            return true;
+//        } else {
+//            return false;
+//        }
+//    }
+//
     @Override
     public boolean returnDepositReceipt() {
         return true;

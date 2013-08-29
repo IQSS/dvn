@@ -82,6 +82,7 @@ public class ContainerManagerImpl extends VDCBaseBean implements ContainerManage
     SwordAuth swordAuth;
     @Inject
     UrlManager urlManager;
+//    SwordConfigurationImpl swordConfiguration = new SwordConfigurationImpl();
 
     @Override
     public DepositReceipt getEntry(String uri, Map<String, String> map, AuthCredentials authCredentials, SwordConfiguration swordConfiguration) throws SwordServerException, SwordError, SwordAuthException {
@@ -242,6 +243,7 @@ public class ContainerManagerImpl extends VDCBaseBean implements ContainerManage
 
     @Override
     public void deleteContainer(String uri, AuthCredentials authCredentials, SwordConfiguration sc) throws SwordError, SwordServerException, SwordAuthException {
+//        swordConfiguration = (SwordConfigurationImpl) sc;
         VDCUser vdcUser = swordAuth.auth(authCredentials);
         logger.fine("deleteContainer called with url: " + uri);
         urlManager.processUrl(uri);
@@ -270,16 +272,23 @@ public class ContainerManagerImpl extends VDCBaseBean implements ContainerManage
                 VDC dataverseToEmpty = vdcService.findByAlias(dvAlias);
                 if (dataverseToEmpty != null) {
                     if ("Admin".equals(vdcUser.getNetworkRole().getName())) {
-                        /**
-                         * @todo: this is the deleteContainer method... should
-                         * move this to some sort of "emptyContainer" method
-                         */
-                        // curl --insecure -s -X DELETE https://sword:sword@localhost:8181/dvn/api/data-deposit/v1/swordv2/edit/dataverse/sword 
-                        Collection<Study> studies = dataverseToEmpty.getOwnedStudies();
-                        for (Study study : studies) {
-                            logger.fine("In dataverse " + dataverseToEmpty.getAlias() + " about to delete study id " + study.getId());
-                            studyService.deleteStudy(study.getId());
-                        }
+//                        if (swordConfiguration.allowNetworkAdminDeleteAllStudies()) {
+//
+//                            /**
+//                             * @todo: this is the deleteContainer method...
+//                             * should move this to some sort of "emptyContainer"
+//                             * method
+//                             */
+//                            // curl --insecure -s -X DELETE https://sword:sword@localhost:8181/dvn/api/data-deposit/v1/swordv2/edit/dataverse/sword 
+//                            Collection<Study> studies = dataverseToEmpty.getOwnedStudies();
+//                            for (Study study : studies) {
+//                                logger.info("In dataverse " + dataverseToEmpty.getAlias() + " about to delete study id " + study.getId());
+//                                studyService.deleteStudy(study.getId());
+//                            }
+//                        } else {
+                        throw new SwordError(UriRegistry.ERROR_BAD_REQUEST, "DELETE on a dataverse is not supported");
+//                        }
+
                     } else {
                         throw new SwordError(UriRegistry.ERROR_BAD_REQUEST, "Role was " + vdcUser.getNetworkRole().getName() + " but admin required.");
                     }
@@ -483,5 +492,4 @@ public class ContainerManagerImpl extends VDCBaseBean implements ContainerManage
         }
 
     }
-
 }

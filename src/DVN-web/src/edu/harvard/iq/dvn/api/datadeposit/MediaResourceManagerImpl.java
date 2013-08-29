@@ -27,6 +27,8 @@ import edu.harvard.iq.dvn.core.study.StudyFile;
 import edu.harvard.iq.dvn.core.study.StudyFileEditBean;
 import edu.harvard.iq.dvn.core.study.StudyFileServiceLocal;
 import edu.harvard.iq.dvn.core.study.StudyServiceLocal;
+import edu.harvard.iq.dvn.core.study.TabularDataFile;
+import edu.harvard.iq.dvn.core.util.FileUtil;
 import edu.harvard.iq.dvn.core.vdc.VDC;
 import java.io.ByteArrayInputStream;
 import java.io.File;
@@ -327,8 +329,6 @@ public class MediaResourceManagerImpl implements MediaResourceManager {
                                 finalFileName = fileEntryName;
                             }
 
-                            validateFileName(exisitingFilenames, finalFileName, study);
-
                             File tempUploadedFile = new File(importDir, finalFileName);
                             tempOutStream = new FileOutputStream(tempUploadedFile);
 
@@ -346,6 +346,14 @@ public class MediaResourceManagerImpl implements MediaResourceManager {
 
                             StudyFileEditBean tempFileBean = new StudyFileEditBean(tempUploadedFile, studyService.generateFileSystemNameSequence(), study);
                             tempFileBean.setSizeFormatted(tempUploadedFile.length());
+
+                            String finalFileNameAfterReplace = finalFileName;
+                            if (tempFileBean.getStudyFile() instanceof TabularDataFile) {
+                                // predict what the tabular file name will be
+                                finalFileNameAfterReplace = FileUtil.replaceExtension(finalFileName);
+                            }
+
+                            validateFileName(exisitingFilenames, finalFileNameAfterReplace, study);
 
                             // And, if this file was in a legit (non-null) directory, 
                             // we'll use its name as the file category: 

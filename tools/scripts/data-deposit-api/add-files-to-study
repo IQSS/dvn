@@ -15,5 +15,12 @@ statement_uri        = XPath.first(entry,"//link[@rel='http://purl.org/net/sword
 
 zip_of_files_to_add = "example.zip"
 puts "adding #{zip_of_files_to_add} to #{study_edit_media_uri}"
-deposit_receipt = Document.new `tools/scripts/data-deposit-api/test-edit-media-post-binary #{zip_of_files_to_add} #{study_edit_media_uri}`
-puts "id from deposit_receipt: " + deposit_receipt.root.elements["id"].text
+out = Document.new `tools/scripts/data-deposit-api/test-edit-media-post-binary #{zip_of_files_to_add} #{study_edit_media_uri}`
+if "http://purl.org/net/sword/error/ErrorBadRequest" == out.root.attributes["href"]
+    error_summary = XPath.first(out, "//atom:summary").text
+    puts "ERROR: #{error_summary}"
+else
+    deposit_receipt = out
+    persistent_uri = XPath.first(deposit_receipt,"//link[@rel='alternate']").attributes["href"]
+    puts "file(s) added to #{persistent_uri} . list them with #{statement_uri}"
+end

@@ -26,6 +26,7 @@ import edu.harvard.iq.dvn.core.study.Study;
 import edu.harvard.iq.dvn.core.study.StudyFile;
 import edu.harvard.iq.dvn.core.study.StudyFileEditBean;
 import edu.harvard.iq.dvn.core.study.StudyFileServiceLocal;
+import edu.harvard.iq.dvn.core.study.StudyLock;
 import edu.harvard.iq.dvn.core.study.StudyServiceLocal;
 import edu.harvard.iq.dvn.core.study.TabularDataFile;
 import edu.harvard.iq.dvn.core.util.FileUtil;
@@ -228,6 +229,11 @@ public class MediaResourceManagerImpl implements MediaResourceManager {
             }
             logger.fine("looking up study with globalId " + globalId);
             Study study = editStudyService.getStudyByGlobalId(globalId);
+            StudyLock studyLock = study.getStudyLock();
+            if (studyLock != null) {
+                String message = Util.getStudyLockMessage(studyLock, study.getGlobalId());
+                throw new SwordError(UriRegistry.ERROR_BAD_REQUEST, message);
+            }
             Long studyId;
             try {
                 studyId = study.getId();

@@ -171,7 +171,7 @@ public class ContainerManagerImpl extends VDCBaseBean implements ContainerManage
                 if (studyToLookup != null) {
                     StudyLock lockOnStudyLookedup = studyToLookup.getStudyLock();
                     if (lockOnStudyLookedup != null) {
-                        String message = getStudyLockMessage(lockOnStudyLookedup, studyToLookup.getGlobalId());
+                        String message = Util.getStudyLockMessage(lockOnStudyLookedup, studyToLookup.getGlobalId());
                         throw new SwordError(UriRegistry.ERROR_BAD_REQUEST, message);
                     }
                     editStudyService.setStudyVersion(studyToLookup.getId());
@@ -484,13 +484,4 @@ public class ContainerManagerImpl extends VDCBaseBean implements ContainerManage
 
     }
 
-    private String getStudyLockMessage(StudyLock studyLock, String globalId) {
-        if (studyLock != null) {
-            String detail = studyLock.getDetail() != null ? studyLock.getDetail() : "";
-            String startTime = studyLock.getStartTime() != null ? studyLock.getStartTime().toString() : "";
-            return "Study lock for " + globalId + " detected with message '" + detail + "' and start time of '" + startTime + "'. Please try again.";
-        } else {
-            return "Study lock for " + globalId + " was present momentarily. Please try again.";
-        }
-    }
 }

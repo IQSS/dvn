@@ -8,6 +8,12 @@
       xmlns:dvn="/WEB-INF/tlds/dvn-components"
       xmlns:ice="http://www.icesoft.com/icefaces/component">
     <h:head>
+        <!-- page title param passed in by param -->
+        <title><ice:outputText nospan="true" value="#{pageTitle}"/></title>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+        <meta http-equiv="Content-Language" content="en"/>
+        <meta http-equiv="imagetoolbar" content="no"/>
+        <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
         <script type="text/javascript">
             // <![CDATA[
             // check to see if page is loading in hidden grame; if so "pop" out to top level
@@ -41,8 +47,6 @@
                 // ]]>
             </script>
         </ice:outputText>
-        <!-- page title param passed in by param -->
-        <title><ice:outputText nospan="true" value="#{pageTitle}"/></title>
         <link rel="icon" type="image/png" href="/dvn/resources/images/favicondataverse.png"/>
         <link rel="stylesheet" type="text/css" href="/dvn/resources/icefaces/dvn_rime/dvn_rime.css?v=#{VersionPage.versionNumber}"/>
         <link rel="stylesheet" type="text/css" href="/dvn/resources/css/dvngeneral.css?v=#{VersionPage.versionNumber}"/>

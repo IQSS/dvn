@@ -143,13 +143,13 @@ public class Study implements java.io.Serializable {
         }
     }
     
-    public String getHandleURL() {
+    private String getHandleURL() {
          return "http://hdl.handle.net/"+authority+"/"+getStudyId();
     }
     
-    public String getEZIdURL() {
+    private String getEZIdURL() {
         // need to implement wrt DOI
-        return "";
+        return "http://dx.doi.org/"+authority+"/FK2/"+getStudyId();
     }
     
     private String studyId;

@@ -74,6 +74,12 @@ public class SwordAuth {
             roleString = role.getRole().getName();
             if ("admin".equals(roleString)) {
                 authorized = true;
+            } else if ("contributor".equals(roleString) || "curator".equals(roleString) || "privileged viewer".equals(roleString)) {
+                authorized = false;
+                // return early to avoid throwing exception when getting Service Document
+                return authorized;
+            } else {
+                authorized = false;
             }
         }
 

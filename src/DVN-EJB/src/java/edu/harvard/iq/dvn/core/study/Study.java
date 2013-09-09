@@ -143,7 +143,7 @@ public class Study implements java.io.Serializable {
         }
     }
     
-    private String getHandleURL() {
+    public String getHandleURL() {
          return "http://hdl.handle.net/"+authority+"/"+getStudyId();
     }
     

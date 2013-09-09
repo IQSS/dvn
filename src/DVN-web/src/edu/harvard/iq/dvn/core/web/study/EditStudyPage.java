@@ -70,6 +70,7 @@ import com.icesoft.faces.component.ext.HtmlSelectOneMenu;
 import com.icesoft.faces.component.ext.HtmlSelectOneRadio;
 import com.icesoft.faces.component.panelseries.PanelSeries;
 import com.icesoft.faces.context.effects.JavascriptContext;
+import edu.harvard.iq.dvn.core.doi.DOIEZIdServiceLocal;
 import edu.harvard.iq.dvn.core.study.ControlledVocabularyValue;
 import edu.harvard.iq.dvn.core.study.Metadata;
 import edu.harvard.iq.dvn.core.study.MetadataFieldGroup;
@@ -107,7 +108,7 @@ public class EditStudyPage extends VDCBaseBean implements java.io.Serializable  
     @EJB StudyServiceLocal studyService;
     @EJB TemplateServiceLocal templateService;
     @Inject private VersionNotesPopupBean versionNotesPopup;
-    
+    @EJB DOIEZIdServiceLocal doiEZIdService;
     /**
      * <p>Construct a new Page bean instance.</p>
      */
@@ -143,6 +144,7 @@ public class EditStudyPage extends VDCBaseBean implements java.io.Serializable  
             metadata = editStudyService.getStudyVersion().getMetadata();
             currentTitle = metadata.getTitle();
             setFiles(editStudyService.getCurrentFiles());
+
         } else {
             
             Long vdcId = getVDCRequestBean().getCurrentVDC().getId();
@@ -165,7 +167,8 @@ public class EditStudyPage extends VDCBaseBean implements java.io.Serializable  
         initStudyFields();
 
         //  initDvnDates();
-       
+        
+       // doiEZIdService.test();
     }
     
     private String getStudyIdFromRequest() {

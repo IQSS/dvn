@@ -22,6 +22,9 @@ package edu.harvard.iq.dvn.core.doi;
 import edu.harvard.iq.dvn.core.study.Study;
 import edu.harvard.iq.dvn.core.study.StudyAuthor;
 import edu.harvard.iq.dvn.core.study.StudyProducer;
+import edu.harvard.iq.dvn.core.util.PropertyUtil;
+import edu.harvard.iq.dvn.core.web.common.VDCSessionBean;
+import edu.harvard.iq.dvn.core.web.study.StudyUI;
 import edu.ucsb.nceas.ezid.EZIDClient;
 import edu.ucsb.nceas.ezid.EZIDException;
 import edu.ucsb.nceas.ezid.EZIDService;
@@ -31,6 +34,7 @@ import java.net.URLConnection;
 import java.util.*;
 import java.util.concurrent.ExecutorService;
 import javax.ejb.Stateless;
+import javax.inject.Inject;
 import org.apache.commons.codec.binary.Base64;
 
 /**
@@ -42,6 +46,10 @@ public class DOIEZIdServiceBean implements edu.harvard.iq.dvn.core.doi.DOIEZIdSe
     EZIDService ezidService;
     EZIDServiceRequest ezidServiceRequest;    
     String baseURLString = "https://n2t.net/ezid/";  
+    @Inject VDCSessionBean vdcSessionBean;
+    public VDCSessionBean getVDCSessionBean() {
+        return vdcSessionBean;
+    }
     //test environment shoulder identifier
     // identifiers created here last two weeks
     private static final String DOISHOULDER = "doi:10.5072/FK2";
@@ -76,7 +84,8 @@ public class DOIEZIdServiceBean implements edu.harvard.iq.dvn.core.doi.DOIEZIdSe
             System.out.print("cause " + e.getCause());
             System.out.print("message " + e.getMessage());   
             return "Identifier not created";
-        }    
+        } 
+       System.out.print("createIdentifier return string : " + retString);
        return retString;
     }
     
@@ -130,31 +139,41 @@ public class DOIEZIdServiceBean implements edu.harvard.iq.dvn.core.doi.DOIEZIdSe
         HashMap<String, String> metadata = new HashMap<String, String>();
         String authorString = "";
         for (StudyAuthor author: studyIn.getLatestVersion().getMetadata().getStudyAuthors()){
-            if(authorString.isEmpty()) { 
+        if(authorString.isEmpty()) {
                authorString = author.getName(); 
             } else{
                authorString = authorString + ", " + author.getName();
             }
         }
         if(authorString.isEmpty()) {
-            authorString = "N/A";
+            authorString = ":unav";
         }
         String producerString = "";
         for (StudyProducer producer: studyIn.getLatestVersion().getMetadata().getStudyProducers()){
-            if(producerString.isEmpty()) { 
+        if(producerString.isEmpty()) {
                producerString = producer.getName(); 
             } else{
                producerString = producerString + ", " + producer.getName();
             }
         }
         if(producerString.isEmpty()) {
-            producerString = "N/A";
+            producerString = ":unav";
         }
         metadata.put("datacite.creator", authorString);
 	metadata.put("datacite.title", studyIn.getLatestVersion().getMetadata().getTitle());
 	metadata.put("datacite.publisher", producerString);       
 	metadata.put("datacite.publicationyear", generateYear());
 	metadata.put("datacite.resourcetype", "Text");
+        String inetAddress = PropertyUtil.getHostUrl();
+        String targetUrl = "";                
+        if (inetAddress.equals("localhost")){                    
+           targetUrl ="http://localhost:8080" + "/dvn/study?globalId=" + DOISHOULDER + "/" + studyIn.getStudyId();
+           System.out.print("inetAddress.equals localhost" + targetUrl);
+        } else{
+           targetUrl = "http://" + inetAddress + "/dvn/study?globalId=" + DOISHOULDER + "/" + studyIn.getStudyId();
+        }              
+        System.out.print("targetUrl: " + targetUrl);
+        metadata.put("_target", targetUrl);
         return metadata;
     }
     
@@ -240,8 +259,4 @@ public class DOIEZIdServiceBean implements edu.harvard.iq.dvn.core.doi.DOIEZIdSe
 
         return guid.toString();
     }
-
-
-
-
 }

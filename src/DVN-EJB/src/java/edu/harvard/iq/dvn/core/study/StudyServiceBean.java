@@ -1491,12 +1491,12 @@ public class StudyServiceBean implements edu.harvard.iq.dvn.core.study.StudyServ
 
 
     public Study getStudyByGlobalId(String identifier) {
-
         String protocol = null;
         String authority = null;
         String studyId = null;
         int index1 = identifier.indexOf(':');
         int index2 = identifier.indexOf('/');
+        int index3 = 0;
         if (index1 == -1) {
             throw new EJBException("Error parsing identifier: " + identifier + ". ':' not found in string");
         } else {
@@ -1508,7 +1508,16 @@ public class StudyServiceBean implements edu.harvard.iq.dvn.core.study.StudyServ
         } else {
             authority = identifier.substring(index1 + 1, index2);
         }
-        studyId = identifier.substring(index2 + 1).toUpperCase();
+        if (protocol.equals("doi")){
+           index3 = identifier.indexOf('/', index2 + 1 );
+           if (index3== -1){
+              studyId = identifier.substring(index2 + 1).toUpperCase();  
+           } else {
+              studyId = identifier.substring(index3 + 1).toUpperCase();  
+           }
+        }  else {
+           studyId = identifier.substring(index2 + 1).toUpperCase(); 
+        }      
 
         String queryStr = "SELECT s from Study s where s.studyId = :studyId  and s.protocol= :protocol and s.authority= :authority";
 
@@ -2309,7 +2318,9 @@ public class StudyServiceBean implements edu.harvard.iq.dvn.core.study.StudyServ
         if (registerHandle && vdcNetworkService.find().isHandleRegistration()) {
             String handle = study.getAuthority() + "/" + study.getStudyId();
             gnrsService.createHandle(handle);
-        }
+        } else {
+            
+        }     
 
         logger.info("completed doImportStudy() returning study" + study.getGlobalId());
         return study;

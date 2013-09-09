@@ -373,6 +373,7 @@ public class GNRSServiceBean implements edu.harvard.iq.dvn.core.gnrs.GNRSService
         String vdcAuthority = network.getAuthority(); 
         String baseUrl = null;
         if (isAuthority(prefix)){
+            //DOI get authority
             baseUrl = "http://" + System.getProperty("dvn.inetAddress") + "/dvn/study?globalId=hdl:";
             if (baseUrl == null) {
                 baseUrl = "http://dvn.iq.harvard.edu/dvn/study?globalId=hdl:";

@@ -20,6 +20,7 @@
 package edu.harvard.iq.dvn.core.study;
 
 import edu.harvard.iq.dvn.core.admin.VDCUser;
+import edu.harvard.iq.dvn.core.doi.DOIEZIdServiceLocal;
 import edu.harvard.iq.dvn.ingest.dsb.DSBWrapper;
 import edu.harvard.iq.dvn.core.gnrs.GNRSServiceLocal;
 import edu.harvard.iq.dvn.core.vdc.VDCNetworkServiceLocal;
@@ -55,6 +56,7 @@ public class EditStudyFilesServiceBean implements edu.harvard.iq.dvn.core.study.
     @EJB StudyServiceLocal studyService;
     @EJB VDCNetworkServiceLocal vdcNetworkService;
     @EJB GNRSServiceLocal gnrsService;
+    @EJB DOIEZIdServiceLocal doiEZIdServiceLocal;
 
     @PersistenceContext(type = PersistenceContextType.EXTENDED,unitName="VDCNet-ejbPU")
     EntityManager em;
@@ -116,10 +118,12 @@ public class EditStudyFilesServiceBean implements edu.harvard.iq.dvn.core.study.
             studyService.saveStudyVersion(studyVersion, userId);
 
             // if new, register the handle
-            if ( isNewStudy() && vdcNetworkService.find().isHandleRegistration() ) {
+            if (isNewStudy() && vdcNetworkService.find().isHandleRegistration() && vdcNetworkService.findRootNetwork().getProtocol().equals("hdl")) {
                 String handle = studyVersion.getStudy().getAuthority() + "/" + studyVersion.getStudy().getStudyId();
                 gnrsService.createHandle(handle);
-
+            }
+            if (isNewStudy() && vdcNetworkService.findRootNetwork().getProtocol().equals("doi")) {
+                doiEZIdServiceLocal.createIdentifier(studyVersion.getStudy());
             }
 
 

@@ -28,6 +28,7 @@
 package edu.harvard.iq.dvn.core.study;
 
 import edu.harvard.iq.dvn.core.admin.VDCUser;
+import edu.harvard.iq.dvn.core.doi.DOIEZIdServiceLocal;
 import edu.harvard.iq.dvn.ingest.dsb.DSBWrapper;
 import edu.harvard.iq.dvn.core.gnrs.GNRSServiceLocal;
 import edu.harvard.iq.dvn.core.index.IndexServiceLocal;
@@ -38,12 +39,7 @@ import edu.harvard.iq.dvn.core.vdc.VDCNetworkServiceLocal;
 import java.io.File;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
+import java.util.*;
 import javax.annotation.Resource;
 import javax.ejb.EJB;
 import javax.ejb.EJBException;
@@ -70,6 +66,7 @@ public class EditStudyServiceBean implements edu.harvard.iq.dvn.core.study.EditS
     @EJB StudyServiceLocal studyService;
     @EJB StudyFileServiceLocal studyFileService;
     @EJB GNRSServiceLocal gnrsService;
+    @EJB DOIEZIdServiceLocal doiEZIdServiceLocal;
     
     @PersistenceContext(type = PersistenceContextType.EXTENDED,unitName="VDCNet-ejbPU")
     EntityManager em;
@@ -174,41 +171,32 @@ public class EditStudyServiceBean implements edu.harvard.iq.dvn.core.study.EditS
     @Remove
     @TransactionAttribute(TransactionAttributeType.REQUIRED)
     public void save(Long vdcId, Long userId) {
-        VDCUser user = em.find(VDCUser.class,userId);
+        VDCUser user = em.find(VDCUser.class, userId);
         try {
             Metadata m = studyVersion.getMetadata();
-            if (m.getStudyFieldValues()!=null){
-                for (StudyFieldValue sfv : m.getStudyFieldValues()){
-                        if (sfv.getId() == null){                                   
-                                em.persist(sfv);
-                        }
-                }                
+            if (m.getStudyFieldValues() != null) {
+                for (StudyFieldValue sfv : m.getStudyFieldValues()) {
+                    if (sfv.getId() == null) {
+                        em.persist(sfv);
+                    }
+                }
             }
-
-           
             editFiles();
-   
             studyService.saveStudyVersion(studyVersion, userId);
-
-            // if new, register the handle
-            if ( isNewStudy() && vdcNetworkService.find().isHandleRegistration() ) {
+            // if new, register the handle or doi identifier
+            if (isNewStudy() && vdcNetworkService.find().isHandleRegistration() && vdcNetworkService.findRootNetwork().getProtocol().equals("hdl")) {
                 String handle = studyVersion.getStudy().getAuthority() + "/" + studyVersion.getStudy().getStudyId();
                 gnrsService.createHandle(handle);
-               
             }
-
-            
+            if (isNewStudy() && vdcNetworkService.findRootNetwork().getProtocol().equals("doi")) {
+                doiEZIdServiceLocal.createIdentifier(studyVersion.getStudy());
+            }
             em.flush(); // Always call flush(), so that we can detect an OptimisticLockException
-           
-           
-        } catch(EJBException e) {
-            System.out.println("EJBException "+e.getMessage()+" saving studyVersion "+studyVersion.getId()+" edited by " + user.getUserName() + " at "+ new Date().toString());
+        } catch (EJBException e) {
+            System.out.println("EJBException " + e.getMessage() + " saving studyVersion " + studyVersion.getId() + " edited by " + user.getUserName() + " at " + new Date().toString());
             e.printStackTrace();
             throw e;
-        
         }
-            
-      
     }
     
     

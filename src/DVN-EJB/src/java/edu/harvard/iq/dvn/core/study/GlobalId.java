@@ -98,7 +98,12 @@ public class GlobalId implements java.io.Serializable {
         // TODO: add logic to support multiple protocols
         URL url = null;
         try {
-            url = new URL("http://hdl.handle.net/" + authority + "/" + studyId);
+            if (protocol.equals("doi")){
+               url = new URL("http://dx.doi.org/" + authority + "/" + studyId); 
+            } else {
+               url = new URL("http://hdl.handle.net/" + authority + "/" + studyId);  
+            }
+            
         } catch (MalformedURLException ex) {
             Logger.getLogger(GlobalId.class.getName()).log(Level.SEVERE, null, ex);
         }

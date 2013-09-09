@@ -59,7 +59,8 @@ public class ServiceDocumentManagerImpl implements ServiceDocumentManager {
 
         ServiceDocument service = new ServiceDocument();
         SwordWorkspace swordWorkspace = new SwordWorkspace();
-        swordWorkspace.setTitle(vdcNetworkService.findRootNetwork().getName());
+        String dvnNetworkName = vdcNetworkService.findRootNetwork().getName();
+        swordWorkspace.setTitle(dvnNetworkName);
         service.addWorkspace(swordWorkspace);
         service.setMaxUploadSize(config.getMaxUploadSize());
         String hostnamePlusBaseUrl = urlManager.getHostnamePlusBaseUrlPath(sdUri);
@@ -72,7 +73,8 @@ public class ServiceDocumentManagerImpl implements ServiceDocumentManager {
                     swordCollection.setTitle(dataverse.getName());
                     swordCollection.setHref(hostnamePlusBaseUrl + "/collection/dataverse/" + dvAlias);
                     swordCollection.addAcceptPackaging(UriRegistry.PACKAGE_SIMPLE_ZIP);
-                    swordCollection.setCollectionPolicy(dataverse.getDepositTermsOfUse());
+                    swordCollection.setCollectionPolicy(dvnNetworkName + " deposit terms of use: " + vdcNetworkService.findRootNetwork().getDepositTermsOfUse() + "\n---\n" + dataverse.getName() + " deposit terms of use: " + dataverse.getDepositTermsOfUse());
+//                    swordCollection.setCollectionPolicy(dataverse.getDepositTermsOfUse());
                     swordWorkspace.addCollection(swordCollection);
                 }
             }

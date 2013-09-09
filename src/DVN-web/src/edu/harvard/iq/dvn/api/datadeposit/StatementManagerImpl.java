@@ -34,6 +34,8 @@ import java.util.logging.Logger;
 import javax.ejb.EJB;
 import javax.ejb.EJBException;
 import javax.inject.Inject;
+import org.apache.abdera.i18n.iri.IRI;
+import org.apache.abdera.i18n.iri.IRISyntaxException;
 import org.apache.abdera.model.AtomDate;
 import org.swordapp.server.AtomStatement;
 import org.swordapp.server.AuthCredentials;
@@ -114,9 +116,19 @@ public class StatementManagerImpl implements StatementManager {
                 List<FileMetadata> fileMetadatas = study.getLatestVersion().getFileMetadatas();
                 for (FileMetadata fileMetadata : fileMetadatas) {
                     StudyFile studyFile = fileMetadata.getStudyFile();
-                    // we are exposing the filename for informational purposes. the id is what you can operate on
-                    String studyFileUrl = urlManager.getHostnamePlusBaseUrlPath(editUri) + "/edit-media/file/" + studyFile.getId() + "/" + studyFile.getFileName();
-                    ResourcePart resourcePart = new ResourcePart(studyFileUrl);
+                    // We are exposing the filename for informational purposes. The file id is what you
+                    // actually operate on to delete a file, etc.
+                    //
+                    // Replace spaces to avoid IRISyntaxException
+                    String fileNameFinal = studyFile.getFileName().replace(' ', '_');
+                    String studyFileUrlString = urlManager.getHostnamePlusBaseUrlPath(editUri) + "/edit-media/file/" + studyFile.getId() + "/" + fileNameFinal;
+                    IRI studyFileUrl;
+                    try {
+                        studyFileUrl = new IRI(studyFileUrlString);
+                    } catch (IRISyntaxException ex) {
+                        throw new SwordError(UriRegistry.ERROR_BAD_REQUEST, "Invalid URL for file ( " + studyFileUrlString + " ) resulted in " + ex.getMessage());
+                    }
+                    ResourcePart resourcePart = new ResourcePart(studyFileUrl.toString());
                     resourcePart.setMediaType(studyFile.getFileType());
                     /**
                      * @todo: Why are properties set on a ResourcePart not

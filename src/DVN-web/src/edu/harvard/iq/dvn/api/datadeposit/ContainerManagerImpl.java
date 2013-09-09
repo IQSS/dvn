@@ -183,6 +183,15 @@ public class ContainerManagerImpl extends VDCBaseBean implements ContainerManage
                         if (dublinCore.get("title") == null || dublinCore.get("title").get(0) == null || dublinCore.get("title").get(0).isEmpty()) {
                             throw new SwordError(UriRegistry.ERROR_BAD_REQUEST, "title field is required");
                         }
+                        if (dublinCore.get("date") != null) {
+                            String date = dublinCore.get("date").get(0);
+                            if (date != null) {
+                                boolean isValid = DateUtil.validateDate(date);
+                                if (!isValid) {
+                                    throw new SwordError(UriRegistry.ERROR_BAD_REQUEST, "Invalid date: '" + date + "'.  Valid formats are YYYY-MM-DD, YYYY-MM, or YYYY.");
+                                }
+                            }
+                        }
                         String tmpDirectory = swordConfiguration.getTempDirectory();
                         if (tmpDirectory == null) {
                             throw new SwordError(UriRegistry.ERROR_BAD_REQUEST, "Could not determine temp directory");

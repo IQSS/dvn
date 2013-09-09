@@ -22,6 +22,7 @@ package edu.harvard.iq.dvn.api.datadeposit;
 import edu.harvard.iq.dvn.core.admin.VDCUser;
 import edu.harvard.iq.dvn.core.study.Study;
 import edu.harvard.iq.dvn.core.study.StudyServiceLocal;
+import edu.harvard.iq.dvn.core.util.DateUtil;
 import edu.harvard.iq.dvn.core.vdc.VDC;
 import edu.harvard.iq.dvn.core.vdc.VDCServiceLocal;
 import java.io.File;
@@ -85,6 +86,16 @@ public class CollectionDepositManagerImpl implements CollectionDepositManager {
                         Map<String, List<String>> dublinCore = deposit.getSwordEntry().getDublinCore();
                         if (dublinCore.get("title") == null || dublinCore.get("title").get(0) == null || dublinCore.get("title").get(0).isEmpty()) {
                             throw new SwordError(UriRegistry.ERROR_BAD_REQUEST, "title field is required");
+                        }
+
+                        if (dublinCore.get("date") != null) {
+                            String date = dublinCore.get("date").get(0);
+                            if (date != null) {
+                                boolean isValid = DateUtil.validateDate(date);
+                                if (!isValid) {
+                                    throw new SwordError(UriRegistry.ERROR_BAD_REQUEST, "Invalid date: '" + date + "'.  Valid formats are YYYY-MM-DD, YYYY-MM, or YYYY.");
+                                }
+                            }
                         }
 
                         // instead of writing a tmp file, maybe importStudy() could accept an InputStream?

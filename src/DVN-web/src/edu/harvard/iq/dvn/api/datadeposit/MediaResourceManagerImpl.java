@@ -345,6 +345,11 @@ public class MediaResourceManagerImpl implements MediaResourceManager {
                                 continue;
                             }
 
+                            // http://superuser.com/questions/212896/is-there-any-way-to-prevent-a-mac-from-creating-dot-underscore-files
+                            if (finalFileName.startsWith("._")) {
+                                continue;
+                            }
+
                             File tempUploadedFile = new File(importDir, finalFileName);
                             tempOutStream = new FileOutputStream(tempUploadedFile);
 
@@ -399,7 +404,11 @@ public class MediaResourceManagerImpl implements MediaResourceManager {
                         logger.info("problem looking up studyFileService");
                         throw new SwordServerException("problem looking up studyFileService");
                     }
-                    studyFileService.addFiles(study.getLatestVersion(), fbList, vdcUser);
+                    try {
+                        studyFileService.addFiles(study.getLatestVersion(), fbList, vdcUser);
+                    } catch (EJBException ex) {
+                        throw new SwordError(UriRegistry.ERROR_BAD_REQUEST, "Unable to add file(s) to study: " + ex.getMessage());
+                    }
                     ReceiptGenerator receiptGenerator = new ReceiptGenerator();
                     String baseUrl = urlManager.getHostnamePlusBaseUrlPath(uri);
                     DepositReceipt depositReceipt = receiptGenerator.createReceipt(baseUrl, study);

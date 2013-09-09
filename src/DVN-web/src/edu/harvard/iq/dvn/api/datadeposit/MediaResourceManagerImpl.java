@@ -365,26 +365,30 @@ public class MediaResourceManagerImpl implements MediaResourceManager {
 
                             // We now have the unzipped file saved in the upload directory;
 
-                            StudyFileEditBean tempFileBean = new StudyFileEditBean(tempUploadedFile, studyService.generateFileSystemNameSequence(), study);
-                            tempFileBean.setSizeFormatted(tempUploadedFile.length());
+                            // zero-length dta files (for example) are skipped during zip
+                            // upload in the GUI, so we'll skip them here as well
+                            if (tempUploadedFile.length() != 0) {
 
-                            String finalFileNameAfterReplace = finalFileName;
-                            if (tempFileBean.getStudyFile() instanceof TabularDataFile) {
-                                // predict what the tabular file name will be
-                                finalFileNameAfterReplace = FileUtil.replaceExtension(finalFileName);
+                                StudyFileEditBean tempFileBean = new StudyFileEditBean(tempUploadedFile, studyService.generateFileSystemNameSequence(), study);
+                                tempFileBean.setSizeFormatted(tempUploadedFile.length());
+
+                                String finalFileNameAfterReplace = finalFileName;
+                                if (tempFileBean.getStudyFile() instanceof TabularDataFile) {
+                                    // predict what the tabular file name will be
+                                    finalFileNameAfterReplace = FileUtil.replaceExtension(finalFileName);
+                                }
+
+                                validateFileName(exisitingFilenames, finalFileNameAfterReplace, study);
+
+                                // And, if this file was in a legit (non-null) directory, 
+                                // we'll use its name as the file category: 
+
+                                if (dirName != null) {
+                                    tempFileBean.getFileMetadata().setCategory(dirName);
+                                }
+
+                                fbList.add(tempFileBean);
                             }
-
-                            validateFileName(exisitingFilenames, finalFileNameAfterReplace, study);
-
-                            // And, if this file was in a legit (non-null) directory, 
-                            // we'll use its name as the file category: 
-
-                            if (dirName != null) {
-                                tempFileBean.getFileMetadata().setCategory(dirName);
-                            }
-
-                            fbList.add(tempFileBean);
-
                         } else {
                             logger.fine("directory found: " + zEntry.getName());
                         }

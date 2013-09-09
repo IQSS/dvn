@@ -27,6 +27,8 @@ import edu.harvard.iq.dvn.core.vdc.VDC;
 import edu.harvard.iq.dvn.core.vdc.VDCServiceLocal;
 import java.io.File;
 import java.io.IOException;
+import java.io.PrintWriter;
+import java.io.StringWriter;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Logger;
@@ -127,7 +129,10 @@ public class CollectionDepositManagerImpl implements CollectionDepositManager {
                         try {
                             study = studyService.importStudy(tmpFile, dcmiTermsFormatId, dvThatWillOwnStudy.getId(), vdcUser.getId());
                         } catch (Exception ex) {
-                            throw new SwordError(UriRegistry.ERROR_BAD_REQUEST, "Couldn't import study: " + ex.getMessage());
+                            StringWriter stringWriter = new StringWriter();
+                            ex.printStackTrace(new PrintWriter(stringWriter));
+                            String stackTrace = stringWriter.toString();
+                            throw new SwordError(UriRegistry.ERROR_BAD_REQUEST, "Couldn't import study: " + stackTrace);
                         } finally {
                             tmpFile.delete();
                             uploadDir.delete();

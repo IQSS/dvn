@@ -4,7 +4,14 @@ include REXML
 service_document = Document.new `tools/scripts/data-deposit-api/test-service-document`
 collection = XPath.first(service_document, "//collection")
 deposit_target = collection.attributes["href"]
-
-deposit_receipt = Document.new `tools/scripts/data-deposit-api/test-collection-entry-only #{deposit_target}`
-study_data_citation = XPath.first(deposit_receipt, "//bibliographicCitation").text
-puts "study created: #{study_data_citation}"
+out = Document.new `tools/scripts/data-deposit-api/test-collection-entry-only #{deposit_target}`
+if "http://purl.org/net/sword/error/ErrorBadRequest" == out.root.attributes["href"]
+    error_summary = XPath.first(out, "//atom:summary").text
+    puts "ERROR: #{error_summary}"
+elsif "http://www.w3.org/2005/Atom" == out.root.attributes["xmlns"]
+    deposit_receipt = out
+    study_data_citation = XPath.first(deposit_receipt, "//bibliographicCitation").text
+    puts "study created: #{study_data_citation}"
+else
+    puts out
+end

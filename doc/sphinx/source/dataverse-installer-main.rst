@@ -42,7 +42,7 @@ an easy way to get a bare-bones configuration of the DVN up and running.
 
 If you encounter any problems during installation, please contact the
 development team
-Inat `support@thedata.org <mailto:support@thedata.org>`__
+at `support@thedata.org <mailto:support@thedata.org>`__
 or our `Dataverse Users
 Community <https://groups.google.com/forum/?fromgroups#!forum/dataverse-community>`__.
 

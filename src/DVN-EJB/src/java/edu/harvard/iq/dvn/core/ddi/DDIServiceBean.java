@@ -3410,16 +3410,17 @@ public class DDIServiceBean implements DDIServiceLocal {
         int index1 = _id.indexOf(':');
         int index2 = _id.indexOf('/');
         if (index1==-1) {
-            throw new EJBException("Error parsing IdNo: "+_id+". ':' not found in string");
+            throw new EJBException("Error parsing (Handle) IdNo: "+_id+". ':' not found in string");
         } else {
             s.setProtocol(_id.substring(0,index1));
         }
         if (index2 == -1) {
-            throw new EJBException("Error parsing IdNo: "+_id+". '/' not found in string");
+            throw new EJBException("Error parsing (Handle) IdNo: "+_id+". '/' not found in string");
 
         } else {
             s.setAuthority(_id.substring(index1+1, index2));
         }
+        s.setProtocol("hdl");
         s.setStudyId(_id.substring(index2+1));
     }
 
@@ -3433,18 +3434,24 @@ public class DDIServiceBean implements DDIServiceLocal {
         // -- L.A. - v3.6. 
         
         int index1 = _id.indexOf(':');
-        int index2 = _id.indexOf('/');
+        // Note the "lastIndexOf()" below - which is different to what we are 
+        // doing for handles (above); the idea is that DOIs may have "shoulders" - 
+        // sub-namespaces - but we are going to be treating all these combined
+        // levels of namespaces as the single "Authority". 
+        // TODO: still needs to be confirmed; -- L.A., v3.6 (still in dev.)
+        int index2 = _id.lastIndexOf('/');
         if (index1==-1) {
-            throw new EJBException("Error parsing IdNo: "+_id+". ':' not found in string");
+            throw new EJBException("Error parsing (DOI) IdNo: "+_id+". ':' not found in string");
         } else {
             s.setProtocol(_id.substring(0,index1));
         }
         if (index2 == -1) {
-            throw new EJBException("Error parsing IdNo: "+_id+". '/' not found in string");
+            throw new EJBException("Error parsing (DOI) IdNo: "+_id+". '/' not found in string");
 
         } else {
             s.setAuthority(_id.substring(index1+1, index2));
         }
+        s.setProtocol("doi");
         s.setStudyId(_id.substring(index2+1));
     }
     

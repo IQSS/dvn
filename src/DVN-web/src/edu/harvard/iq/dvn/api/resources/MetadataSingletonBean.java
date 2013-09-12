@@ -43,6 +43,8 @@ import edu.harvard.iq.dvn.core.study.StudyField;
 import edu.harvard.iq.dvn.core.study.StudyFieldServiceLocal;
 import edu.harvard.iq.dvn.core.admin.VDCUser;
 import edu.harvard.iq.dvn.core.admin.UserServiceLocal;
+import java.util.HashMap;
+import java.util.Map;
 
 
 /**
@@ -64,6 +66,15 @@ public class MetadataSingletonBean {
     
     //private List<String> searchableFields = null; 
     private List<StudyField> searchableFields = null; 
+    
+    private static Map<String, String> StudyFields2Indexes = new HashMap<String,String>(); 
+    static {
+        StudyFields2Indexes.put("description", "abstractText");
+        StudyFields2Indexes.put("studyId", "globalId");
+        StudyFields2Indexes.put("publicationCitation", "relatedPublications");
+        StudyFields2Indexes.put("publicationReplicationData", "replicationFor");
+
+    }
 
     public MetadataSingletonBean() {
     }
@@ -348,6 +359,24 @@ public class MetadataSingletonBean {
     
     public MetadataSearchResults getMetadataSearchResults(String queryString) {
         MetadataSearchResults msr = null; 
+        
+        // This is a hack really - before we pass the query to the index
+        // service, we need to modify some of the query fields; because 
+        // some advertised search fields need to be mapped to different lucene
+        // indexes; (example: for studyId, we should NOT run a search on the 
+        // Lucene index "studyId"; instead, we are searching on "globalId").
+        // see the discussion of this in the comments in AdvSearchPage (search for 
+        // StudyFields2Indexes there). -- L.A., v3.6
+        
+        for (Object sfKey : StudyFields2Indexes.keySet()) {
+            String sfName = (String)sfKey; 
+            String sfMapped = StudyFields2Indexes.get(sfName);
+            
+            sfName = sfName.concat(":");
+            sfMapped = sfMapped.concat(":");
+            
+            queryString = queryString.replaceAll(sfName, sfMapped);
+        }  
         
         // Run the search utilizing Index Service:
         

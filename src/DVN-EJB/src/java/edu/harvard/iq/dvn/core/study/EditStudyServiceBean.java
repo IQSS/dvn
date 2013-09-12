@@ -184,12 +184,14 @@ public class EditStudyServiceBean implements edu.harvard.iq.dvn.core.study.EditS
             editFiles();
             studyService.saveStudyVersion(studyVersion, userId);
             // if new, register the handle or doi identifier
-            if (isNewStudy() && vdcNetworkService.find().isHandleRegistration() && vdcNetworkService.findRootNetwork().getProtocol().equals("hdl")) {
-                String handle = studyVersion.getStudy().getAuthority() + "/" + studyVersion.getStudy().getStudyId();
-                gnrsService.createHandle(handle);
-            }
-            if (isNewStudy() && vdcNetworkService.findRootNetwork().getProtocol().equals("doi")) {
-                doiEZIdServiceLocal.createIdentifier(studyVersion.getStudy());
+            if (isNewStudy() && vdcNetworkService.find().isHandleRegistration()) {
+                if (vdcNetworkService.findRootNetwork().getProtocol().equals("hdl")) {
+                    String handle = studyVersion.getStudy().getAuthority() + "/" + studyVersion.getStudy().getStudyId();
+                    gnrsService.createHandle(handle);
+                }
+                if (vdcNetworkService.findRootNetwork().getProtocol().equals("doi")) {
+                    doiEZIdServiceLocal.createIdentifier(studyVersion.getStudy());
+                }
             }
             em.flush(); // Always call flush(), so that we can detect an OptimisticLockException
         } catch (EJBException e) {

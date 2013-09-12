@@ -32,6 +32,7 @@ import edu.harvard.iq.dvn.core.admin.UserServiceLocal;
 import edu.harvard.iq.dvn.core.admin.VDCRole;
 import edu.harvard.iq.dvn.core.admin.VDCUser;
 import edu.harvard.iq.dvn.core.ddi.DDIServiceLocal;
+import edu.harvard.iq.dvn.core.doi.DOIEZIdServiceLocal;
 import edu.harvard.iq.dvn.core.gnrs.GNRSServiceLocal;
 import edu.harvard.iq.dvn.core.harvest.HarvestFormatType;
 import edu.harvard.iq.dvn.core.harvest.HarvestStudyServiceLocal;
@@ -128,8 +129,10 @@ public class StudyServiceBean implements edu.harvard.iq.dvn.core.study.StudyServ
     StudyFileServiceLocal studyFileService;
     @EJB
     RoleServiceLocal roleService;
-        @EJB
+    @EJB
     GuestBookResponseServiceBean guestBookResponseServiceBean;
+    @EJB 
+    DOIEZIdServiceLocal doiEZIdServiceLocal;
 
     /**
      * Creates a new instance of StudyServiceBean
@@ -971,7 +974,7 @@ public class StudyServiceBean implements edu.harvard.iq.dvn.core.study.StudyServ
 
         if (queryStr != null) {
             Query query = em.createNativeQuery(queryStr);
-            System.out.print("sort " + queryStr);
+            System.out.print("sort Test global-Id-sort " + queryStr);
             List<Long> returnList = new ArrayList<Long>();
             for (Object currentResult : query.getResultList()) {
                 // convert results into Longs
@@ -986,6 +989,9 @@ public class StudyServiceBean implements edu.harvard.iq.dvn.core.study.StudyServ
 
     public List getDvOrderedStudyVersionIds(Long vdcId, String orderBy, boolean ascending) {
         List<Long> returnList = new ArrayList<Long>();
+        if (!ascending && orderBy.equals("s.protocol, s.authority, s.studyId") ) {
+            orderBy = "s.protocol desc, s.authority desc, s.studyId ";
+        }
         String queryStr = "SELECT v.id" +
                 " from studyversion v, study s, metadata m, vdcuser cr" +
                 " WHERE v.study_id = s.id" +
@@ -1008,6 +1014,9 @@ public class StudyServiceBean implements edu.harvard.iq.dvn.core.study.StudyServ
 
     public List getDvOrderedDeaccessionedStudyVersionIds(Long vdcId, String orderBy, boolean ascending) {
         List<Long> returnList = new ArrayList<Long>();
+        if (!ascending && orderBy.equals("s.protocol, s.authority, s.studyId") ) {
+            orderBy = "s.protocol desc, s.authority desc, s.studyId ";
+        }
         String queryStr = "SELECT v.id" +
                 " from studyversion v, study s, metadata m, vdcuser cr" +
                 " WHERE v.study_id = s.id" +
@@ -1033,6 +1042,9 @@ public class StudyServiceBean implements edu.harvard.iq.dvn.core.study.StudyServ
 
     public List getAllDeaccessionedStudyVersionIdsByContributor(Long contributorId, String orderBy, boolean ascending) {
         List<Long> returnList = new ArrayList<Long>();
+        if (!ascending && orderBy.equals("s.protocol, s.authority, s.studyId") ) {
+            orderBy = "s.protocol desc, s.authority desc, s.studyId ";
+        }
         String queryStr = "SELECT v.id" +
                 " from studyversion v, study s, metadata m, vdcuser cr " +
                 " WHERE v.study_id = s.id" +
@@ -1057,6 +1069,9 @@ public class StudyServiceBean implements edu.harvard.iq.dvn.core.study.StudyServ
 
         public List getAllStudyVersionIdsByContributor(Long contributorId, String orderBy, boolean ascending) {
         List<Long> returnList = new ArrayList<Long>();
+        if (!ascending && orderBy.equals("s.protocol, s.authority, s.studyId") ) {
+            orderBy = "s.protocol desc, s.authority desc, s.studyId ";
+        }
         String queryStr = "SELECT v.id" +
                 " from studyversion v, study s, metadata m, vdcuser cr " +
                 " WHERE v.study_id = s.id" +
@@ -1080,6 +1095,9 @@ public class StudyServiceBean implements edu.harvard.iq.dvn.core.study.StudyServ
 
     public List getDvOrderedStudyVersionIdsByContributor(Long vdcId, Long contributorId, String orderBy, boolean ascending) {
         List<Long> returnList = new ArrayList<Long>();
+        if (!ascending && orderBy.equals("s.protocol, s.authority, s.studyId") ) {
+            orderBy = "s.protocol desc, s.authority desc, s.studyId ";
+        }
         String queryStr = "SELECT v.id" +
                 " from studyversion v, study s, metadata m, vdcuser cr " +
                 " WHERE v.study_id=s.id" +
@@ -1094,6 +1112,7 @@ public class StudyServiceBean implements edu.harvard.iq.dvn.core.study.StudyServ
         if (!ascending) {
             queryStr += " desc";
         }
+        
         Query query = em.createNativeQuery(queryStr);
         for (Object currentResult : query.getResultList()) {
             // convert results into Longs
@@ -1105,6 +1124,9 @@ public class StudyServiceBean implements edu.harvard.iq.dvn.core.study.StudyServ
 
     public List getDvOrderedDeaccessionedStudyVersionIdsByContributor(Long vdcId, Long contributorId, String orderBy, boolean ascending) {
         List<Long> returnList = new ArrayList<Long>();
+        if (!ascending && orderBy.equals("s.protocol, s.authority, s.studyId") ) {
+            orderBy = "s.protocol desc, s.authority desc, s.studyId ";
+        }
         String queryStr = "SELECT v.id" +
                 " from studyversion v, study s, metadata m, vdcuser cr " +
                 " WHERE v.study_id=s.id" +
@@ -1130,6 +1152,9 @@ public class StudyServiceBean implements edu.harvard.iq.dvn.core.study.StudyServ
     }
 
        public List getDvOrderedStudyIds(Long vdcId, String orderBy, boolean ascending ) {
+        if (!ascending && orderBy.equals("s.protocol, s.authority, s.studyId") ) {
+            orderBy = "s.protocol desc, s.authority desc, s.studyId ";
+        }
           String query = "SELECT s.id FROM Study s WHERE s.owner.id = " + vdcId + " ORDER BY s."+orderBy;
           if (!ascending) {
               query+= " desc";
@@ -1137,6 +1162,9 @@ public class StudyServiceBean implements edu.harvard.iq.dvn.core.study.StudyServ
             return (List) em.createQuery(query).getResultList();
         }
         public List getDvOrderedStudyIdsByCreator(Long vdcId, Long creatorId, String orderBy, boolean ascending ) {
+         if (!ascending && orderBy.equals("s.protocol, s.authority, s.studyId") ) {
+            orderBy = "s.protocol desc, s.authority desc, s.studyId ";
+        }
           String query = "SELECT s.id FROM Study s WHERE s.owner.id = " + vdcId + " and s.creator.id = " +creatorId+" ORDER BY s."+orderBy;
           if (!ascending) {
               query+= " desc";
@@ -1513,6 +1541,7 @@ public class StudyServiceBean implements edu.harvard.iq.dvn.core.study.StudyServ
            if (index3== -1){
               studyId = identifier.substring(index2 + 1).toUpperCase();  
            } else {
+              authority = identifier.substring(index1 + 1, index3);
               studyId = identifier.substring(index3 + 1).toUpperCase();  
            }
         }  else {
@@ -2313,15 +2342,17 @@ public class StudyServiceBean implements edu.harvard.iq.dvn.core.study.StudyServ
             copyXMLFile(study, xmlFile, "original_imported_study_pretransform.xml");
         }
 
-
         // step 7: register if necessary
         if (registerHandle && vdcNetworkService.find().isHandleRegistration()) {
-            String handle = study.getAuthority() + "/" + study.getStudyId();
-            gnrsService.createHandle(handle);
-        } else {
-            
-        }     
-
+            if (study.getProtocol().equals("hdl")) {
+                String handle = study.getAuthority() + "/" + study.getStudyId();
+                gnrsService.createHandle(handle);
+            }
+            if (study.getProtocol().equals("doi")) {
+                doiEZIdServiceLocal.createIdentifier(studyVersion.getStudy());
+            }
+        }
+        
         logger.info("completed doImportStudy() returning study" + study.getGlobalId());
         return study;
     }

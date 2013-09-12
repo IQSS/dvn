@@ -121,7 +121,7 @@ public class ManageStudiesList extends VDCBaseBean {
             if (sortColumnName.equals(TITLE_COLUMN)) {
                 orderBy = "m.title";
             } else if (sortColumnName.equals(ID_COLUMN)) {
-                orderBy="s.studyId";
+                orderBy="s.protocol, s.authority, s.studyId";
             } else if (sortColumnName.equals(CREATOR_COLUMN)){
                 orderBy="cr.userName";
             } else if (sortColumnName.equals(DATE_CREATED_COLUMN)) {
@@ -144,7 +144,7 @@ public class ManageStudiesList extends VDCBaseBean {
             Long vdcId = getVDCRequestBean().getCurrentVDCId();
             
             dbgLog.info("manage studies list; vdcid: "+vdcId);
-            
+            System.out.print("manage studies list order by: " + orderBy );
             VDCUser user = getVDCSessionBean().getLoginBean() == null ? null : getVDCSessionBean().getLoginBean().getUser();
             
             if (user != null) {

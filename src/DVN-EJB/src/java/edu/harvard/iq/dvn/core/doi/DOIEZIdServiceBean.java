@@ -23,6 +23,8 @@ import edu.harvard.iq.dvn.core.study.Study;
 import edu.harvard.iq.dvn.core.study.StudyAuthor;
 import edu.harvard.iq.dvn.core.study.StudyProducer;
 import edu.harvard.iq.dvn.core.util.PropertyUtil;
+import edu.harvard.iq.dvn.core.vdc.VDCNetwork;
+import edu.harvard.iq.dvn.core.vdc.VDCNetworkServiceLocal;
 import edu.harvard.iq.dvn.core.web.common.VDCSessionBean;
 import edu.harvard.iq.dvn.core.web.study.StudyUI;
 import edu.ucsb.nceas.ezid.EZIDClient;
@@ -33,6 +35,7 @@ import java.net.URL;
 import java.net.URLConnection;
 import java.util.*;
 import java.util.concurrent.ExecutorService;
+import javax.ejb.EJB;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 import org.apache.commons.codec.binary.Base64;
@@ -47,17 +50,20 @@ public class DOIEZIdServiceBean implements edu.harvard.iq.dvn.core.doi.DOIEZIdSe
     EZIDServiceRequest ezidServiceRequest;    
     String baseURLString = "https://n2t.net/ezid/";  
     @Inject VDCSessionBean vdcSessionBean;
+    @EJB VDCNetworkServiceLocal vdcNetworkService;
     public VDCSessionBean getVDCSessionBean() {
         return vdcSessionBean;
     }
     //test environment shoulder identifier
     // identifiers created here last two weeks
-    private static final String DOISHOULDER = "doi:10.5072/FK2";
-    private String USERNAME = "apitest";
-    private String PASSWORD = "apitest";    
+    private String DOISHOULDER = "";
+    private String USERNAME = "";
+    private String PASSWORD = "";    
     
     public DOIEZIdServiceBean(){
-        ezidService = new EZIDService (baseURLString);    
+        ezidService = new EZIDService (baseURLString); 
+        USERNAME  = System.getProperty("doi.username");
+        PASSWORD  = System.getProperty("doi.password");
         try {
            ezidService.login(USERNAME, PASSWORD);  
         } catch(Exception e){
@@ -165,7 +171,8 @@ public class DOIEZIdServiceBean implements edu.harvard.iq.dvn.core.doi.DOIEZIdSe
 	metadata.put("datacite.publicationyear", generateYear());
 	metadata.put("datacite.resourcetype", "Text");
         String inetAddress = PropertyUtil.getHostUrl();
-        String targetUrl = "";                
+        String targetUrl = "";     
+        DOISHOULDER = "doi:" + getAuthHandle();
         if (inetAddress.equals("localhost")){                    
            targetUrl ="http://localhost:8080" + "/dvn/study?globalId=" + DOISHOULDER + "/" + studyIn.getStudyId();
            System.out.print("inetAddress.equals localhost" + targetUrl);
@@ -178,6 +185,7 @@ public class DOIEZIdServiceBean implements edu.harvard.iq.dvn.core.doi.DOIEZIdSe
     }
     
     private String getIdentifierFromStudy(Study studyIn){
+        DOISHOULDER = "doi:" + getAuthHandle();
         return DOISHOULDER + "/" + studyIn.getStudyId();
     }
     
@@ -258,5 +266,10 @@ public class DOIEZIdServiceBean implements edu.harvard.iq.dvn.core.doi.DOIEZIdSe
         guid.append(random);
 
         return guid.toString();
+    }
+    
+    private String getAuthHandle(){
+        VDCNetwork network = vdcNetworkService.findRootNetwork();
+        return  network.getAuthority();
     }
 }

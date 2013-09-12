@@ -148,7 +148,7 @@ public class Study implements java.io.Serializable {
     }
     
     private String getEZIdURL() {        
-        return "http://dx.doi.org/"+authority+"/FK2/"+getStudyId();
+        return "http://dx.doi.org/"+authority+"/"+getStudyId();
     }
     
     private String studyId;

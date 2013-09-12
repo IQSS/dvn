@@ -83,16 +83,16 @@ public class MetadataResourceBean {
     }
 
     
-    @Path("hdl:{nameSpace}/{stdyId}")
+    @Path("{nameProtocol}:{nameSpace}/{stdyId}")
     @GET
     @Produces({ "application/xml" })
     
-    public MetadataInstance getMetadataInstanceByGlobalId(@PathParam("nameSpace") String nameSpace, @PathParam("stdyId") String stdyId, @QueryParam("formatType") String formatType, @QueryParam("versionNumber") Long versionNumber, @QueryParam("partialExclude") String partialExclude, @QueryParam("partialInclude") String partialInclude) throws NotFoundException, ServiceUnavailableException, PermissionDeniedException, AuthorizationRequiredException {
+    public MetadataInstance getMetadataInstanceByGlobalId(@PathParam("nameProtocol") String nameProtocol, @PathParam("nameSpace") String nameSpace, @PathParam("stdyId") String stdyId, @QueryParam("formatType") String formatType, @QueryParam("versionNumber") Long versionNumber, @QueryParam("partialExclude") String partialExclude, @QueryParam("partialInclude") String partialInclude) throws NotFoundException, ServiceUnavailableException, PermissionDeniedException, AuthorizationRequiredException {
         String authCredentials = getAuthCredentials();
         
         MetadataInstance m = null; // = singleton.addMetadata("hdl:"+nameSpace+"/"+stdyId);
        
-        m = singleton.getMetadata("hdl:"+nameSpace+"/"+stdyId, formatType, versionNumber, partialExclude, partialInclude, authCredentials);
+        m = singleton.getMetadata(nameProtocol+":"+nameSpace+"/"+stdyId, formatType, versionNumber, partialExclude, partialInclude, authCredentials);
         
         
         if (m == null) {

@@ -85,16 +85,16 @@ public class MetadataFormatsResourceBean {
     }
 
     
-    @Path("hdl:{nameSpace}/{stdyId}")
+    @Path("{nameProtocol}:{nameSpace}/{stdyId}")
     @GET
     @Produces({ "application/xml" })
     
-    public MetadataFormats getMetadataFormatsByGlobalId(@PathParam("nameSpace") String nameSpace, @PathParam("stdyId") String stdyId) throws NotFoundException {
+    public MetadataFormats getMetadataFormatsByGlobalId(@PathParam("nameProtocol") String nameProtocol, @PathParam("nameSpace") String nameSpace, @PathParam("stdyId") String stdyId) throws NotFoundException {
         String authCredentials = getAuthCredentials();        
         
         MetadataFormats mf = null; // = singleton.addMetadata("hdl:"+nameSpace+"/"+stdyId);
        
-        mf = singleton.getMetadataFormatsAvailable("hdl:"+nameSpace+"/"+stdyId, authCredentials);
+        mf = singleton.getMetadataFormatsAvailable(nameProtocol+":"+nameSpace+"/"+stdyId, authCredentials);
         
         
         if (mf == null) {

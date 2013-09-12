@@ -112,7 +112,10 @@ public class DDIServiceBean implements DDIServiceLocal {
     // ddi constants
     public static final String SOURCE_DVN_3_0 = "DVN_3_0";
     
+    public static final String NAMING_PROTOCOL_HANDLE = "hdl";
+    public static final String NAMING_PROTOCOL_DOI = "doi";
     public static final String AGENCY_HANDLE = "handle";
+    public static final String AGENCY_DOI = "DOI";
     public static final String REPLICATION_FOR_TYPE = "replicationFor";
     public static final String VAR_WEIGHTED = "wgtd";
     public static final String VAR_INTERVAL_CONTIN = "contin";
@@ -433,7 +436,11 @@ public class DDIServiceBean implements DDIServiceLocal {
             xmlw.writeEndElement(); // titl
 
             xmlw.writeStartElement("IDNo");
-            writeAttribute( xmlw, "agency", "handle" );
+            if (NAMING_PROTOCOL_HANDLE.equals(study.getProtocol())) {
+                writeAttribute( xmlw, "agency", AGENCY_HANDLE );
+            } else if (NAMING_PROTOCOL_DOI.equals(study.getProtocol())) {
+                writeAttribute( xmlw, "agency", AGENCY_DOI );
+            }
             xmlw.writeCharacters( study.getGlobalId() );
             xmlw.writeEndElement(); // IDNo
 
@@ -558,7 +565,11 @@ public class DDIServiceBean implements DDIServiceLocal {
         }
 
         xmlw.writeStartElement("IDNo");
-        writeAttribute( xmlw, "agency", "handle" );
+        if (NAMING_PROTOCOL_HANDLE.equals(metadata.getStudy().getProtocol())) {
+            writeAttribute(xmlw, "agency", AGENCY_HANDLE);
+        } else if (NAMING_PROTOCOL_DOI.equals(metadata.getStudy().getProtocol())) {
+            writeAttribute(xmlw, "agency", AGENCY_DOI);
+        }
         xmlw.writeCharacters( metadata.getStudy().getGlobalId() );
         xmlw.writeEndElement(); // IDNo
 
@@ -1996,8 +2007,10 @@ public class DDIServiceBean implements DDIServiceLocal {
                     // this will set a StudyId if it has not yet been set; it will get overridden by a metadata
                     // id in the StudyDscr section, if one exists
                     if ( AGENCY_HANDLE.equals( xmlr.getAttributeValue(null, "agency") ) ) {
-                        parseStudyId( parseText(xmlr), metadata.getStudy() );
-                    }
+                        parseStudyIdHandle( parseText(xmlr), metadata.getStudy() );
+                    } /* else if ( AGENCY_HANDLE.equals( xmlr.getAttributeValue(null, "agency") ) ) {
+                        parseStudyIdDOI( parseText(xmlr), metadata.getStudyVersion().getStudy() );
+                    } */
                 } else if ( xmlr.getLocalName().equals("holdings") && StringUtil.isEmpty(metadata.getHarvestHoldings()) ) {
                     metadata.setHarvestHoldings( xmlr.getAttributeValue(null, "URI") );
                 }
@@ -2056,8 +2069,10 @@ public class DDIServiceBean implements DDIServiceLocal {
                     metadata.setSubTitle( parseText(xmlr) );
                 } else if (xmlr.getLocalName().equals("IDNo")) {
                     if ( AGENCY_HANDLE.equals( xmlr.getAttributeValue(null, "agency") ) ) {
-                        parseStudyId( parseText(xmlr), metadata.getStudyVersion().getStudy() );
-                    } else {
+                        parseStudyIdHandle( parseText(xmlr), metadata.getStudyVersion().getStudy() );
+                    } /* else if ( AGENCY_HANDLE.equals( xmlr.getAttributeValue(null, "agency") ) ) {
+                        parseStudyIdDOI( parseText(xmlr), metadata.getStudyVersion().getStudy() );
+                    } */ else {
                         StudyOtherId sid = new StudyOtherId();
                         sid.setAgency( xmlr.getAttributeValue(null, "agency")) ;
                         sid.setOtherId( parseText(xmlr) );
@@ -3390,7 +3405,7 @@ public class DDIServiceBean implements DDIServiceLocal {
         note.setText( parseText(xmlr, "notes") );
     }
 
-    private void parseStudyId(String _id, Study s) {
+    private void parseStudyIdHandle(String _id, Study s) {
 
         int index1 = _id.indexOf(':');
         int index2 = _id.indexOf('/');
@@ -3408,6 +3423,31 @@ public class DDIServiceBean implements DDIServiceLocal {
         s.setStudyId(_id.substring(index2+1));
     }
 
+    private void parseStudyIdDOI(String _id, Study s) {
+
+        // TODO: 
+        // This method needs to be modified to reflect the specifics of DOI
+        // string conventions; 
+        // (in particular, there may be an extra character sequence embedded 
+        // between the authority and the id - ?? ("fk2" - ?)
+        // -- L.A. - v3.6. 
+        
+        int index1 = _id.indexOf(':');
+        int index2 = _id.indexOf('/');
+        if (index1==-1) {
+            throw new EJBException("Error parsing IdNo: "+_id+". ':' not found in string");
+        } else {
+            s.setProtocol(_id.substring(0,index1));
+        }
+        if (index2 == -1) {
+            throw new EJBException("Error parsing IdNo: "+_id+". '/' not found in string");
+
+        } else {
+            s.setAuthority(_id.substring(index1+1, index2));
+        }
+        s.setStudyId(_id.substring(index2+1));
+    }
+    
     private String parseNoteByType (XMLStreamReader xmlr, String type) throws XMLStreamException {
         if (type.equalsIgnoreCase( xmlr.getAttributeValue(null, "type") ) ) {
             return parseText(xmlr);

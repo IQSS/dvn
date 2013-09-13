@@ -3499,6 +3499,69 @@ saving.
 Granting privileged status to a user requires entering a valid, existing
 user name, clicking add, choosing the role, then saving changes.
 
+Roles by Version State Table
+------------------------------
+
++---------------------+-----------+----------------+------------------+------------------+---------------------+
+|                     | **Role**  |                |                  |                  |                     |
++=====================+===========+================+==================+==================+=====================+
+| **Version State**   | None      | Contributor +, | Curator          | Admin            | Network Admin**     |
+|                     |           | ++             |                  |                  |                     |
++---------------------+-----------+----------------+------------------+------------------+---------------------+
+| Draft               |           | E,E2,D3,S,V    | E,E2,P,T,D3,R,V  | E,E2,P,T,D3,R,V  | E,E2,P,T,D3,D2,R,V  |
++---------------------+-----------+----------------+---+--------------+------------------+---------------------+
+| In Review           |           | E,E2,D3,V      | E,E2,P,T,D3,R,V  | E,E2,P,T,D3,R,V  | E,E2,P,T,D3,R,D2,V  |
++---------------------+-----------+----------------+------------------+------------------+---------------------+
+| Released            |  V        | E,V            | E,P,T,D1,V       | E,P,T,D1,V       | E,P,T,D2,D1,V       |
++---------------------+-----------+----------------+------------------+------------------+---------------------+
+|  Archived           |  V        | V              | P,T,V            | P,T,V            | P,T,D2,V            |
++---------------------+-----------+----------------+------------------+------------------+---------------------+
+|  Deaccessioned      |           |                | P,T,R2,V         | P,T,R2,V         | P,T,R2,D2,V         |
++---------------------+-----------+----------------+------------------+------------------+---------------------+
+
+
+**Legend:**
+
+E = Edit (Cataloging info, File meta data, Add files)
+
+E2 = Edit Study Version Notes
+
+D1 = Deaccession
+
+P = Permission
+
+T = Create Template
+
+D2 = Destroy
+
+D3 = Delete Draft, Delete Review Version
+
+S = Submit for Review
+
+R = Release
+
+R2 = Restore
+
+V = View
+
+ 
+
+**Notes:**
+
+*\Same as Curator
+
+**\Same as Curator + D2
+
++\ Contributor actions (E,D3,S,V) depend on new DV permission settings. A
+contributor role can act on their own studies (default) or all studies
+in a dv, and registered users can become contributors and act on their
+own studies or all studies in a dv.
+
+++ A contributor is defined either as a contributor role or as any
+registered user in a DV that allows all registered users to contribute.
+
+ 
+
 Authorization to access Terms-protected files via the API
 --------------------------------------------------------------------
 

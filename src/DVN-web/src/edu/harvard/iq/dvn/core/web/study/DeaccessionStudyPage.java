@@ -27,6 +27,7 @@
  */
 package edu.harvard.iq.dvn.core.web.study;
 
+import com.icesoft.faces.component.ext.HtmlSelectOneMenu;
 import edu.harvard.iq.dvn.core.study.GlobalId;
 import edu.harvard.iq.dvn.core.study.Study;
 import edu.harvard.iq.dvn.core.study.StudyServiceLocal;
@@ -68,7 +69,7 @@ public class DeaccessionStudyPage extends VDCBaseBean implements java.io.Seriali
         return deaccessionLinkProtocol;
     }
 
-    public void setDeacsessionLinkProtocol(String deaccessionLinkProtocol) {
+    public void setDeaccessionLinkProtocol(String deaccessionLinkProtocol) {
         this.deaccessionLinkProtocol = deaccessionLinkProtocol;
     }
     private StudyUI studyUI;
@@ -99,7 +100,7 @@ public class DeaccessionStudyPage extends VDCBaseBean implements java.io.Seriali
         }
 
     }
-
+    
     public StudyUI getStudyUI(){
         return studyUI;
     }
@@ -153,7 +154,6 @@ public class DeaccessionStudyPage extends VDCBaseBean implements java.io.Seriali
     public void validateArchiveNote(FacesContext context,
             UIComponent toValidate,
             Object value) {
-
         String strValue = (String) value;
         if (strValue.length() > StudyVersion.ARCHIVE_NOTE_MAX_LENGTH) {
             ((UIInput) toValidate).setValid(false);
@@ -175,14 +175,15 @@ public class DeaccessionStudyPage extends VDCBaseBean implements java.io.Seriali
 
 
     public void validateDeaccessionLink(FacesContext context, UIComponent toValidate, Object value) {
-        // we want to validate that the user has either filled in both fields or neither field
+        // we want to validate that the user has either filled in all fields or no field
         String linkStudyId = (String) value;
         String linkAuthority = (String) inputDeaccessionLinkAuthority.getLocalValue();
-
-        if ( (StringUtil.isEmpty(linkStudyId) && !StringUtil.isEmpty(linkAuthority)) ||
-             (!StringUtil.isEmpty(linkStudyId) && StringUtil.isEmpty(linkAuthority)) ) {
+        String linkProtocol = (String) deaccessionLinkProtocol;
+        Boolean allEmptyAnd = StringUtil.isEmpty(linkStudyId) && StringUtil.isEmpty(linkAuthority) && StringUtil.isEmpty(linkProtocol);
+        Boolean allEmptyOr = StringUtil.isEmpty(linkStudyId) || StringUtil.isEmpty(linkAuthority) || StringUtil.isEmpty(linkProtocol);
+        if ( allEmptyAnd != allEmptyOr) {
             ((UIInput) toValidate).setValid(false);
-            FacesMessage message = new FacesMessage("Deaccession link must contain both an authority and a study Id.");
+            FacesMessage message = new FacesMessage("Deaccession link must contain protocol, authority and study Id.");
             context.addMessage(toValidate.getClientId(context), message);
         }
     }
@@ -199,7 +200,6 @@ public class DeaccessionStudyPage extends VDCBaseBean implements java.io.Seriali
         } else {
             studyService.deaccessionStudy(studyVersion);
         }
-
         // we don't provide a version number, so the user goes to the study deaccessioned page
         return "/study/StudyPage?faces-redirect=true&studyId=" + studyVersion.getStudy().getId() + getContextSuffix();
     }

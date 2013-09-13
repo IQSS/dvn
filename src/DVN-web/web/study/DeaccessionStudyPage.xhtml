@@ -69,7 +69,12 @@
                   <ice:outputText value="Add a link to another version of the deaccssioned study by including the Global ID of the new study."/>
                 </p>
                 <label class="dvnDeaccessionFormLabel" for="dvnDeaccessionForwardLink">Global ID</label>
-                <ice:outputText value="#{DeaccessionStudyPage.deaccessionLinkProtocol}:"/>
+                <ice:selectOneMenu id="dvnDeaccessionLinkProtocol"  value="#{DeaccessionStudyPage.deaccessionLinkProtocol}"
+                                   partialSubmit="true">
+                    <f:selectItem itemLabel="Select..." itemValue=""/>
+                    <f:selectItem itemLabel="doi" itemValue="doi"/>
+                    <f:selectItem itemLabel="hdl" itemValue="hdl"/>
+                </ice:selectOneMenu>
                 <ice:inputText id="dvnDeaccessionLinkAuthority" value="#{DeaccessionStudyPage.deaccessionLinkAuthority}" binding="#{DeaccessionStudyPage.inputDeaccessionLinkAuthority}"/>
                 <ice:outputText value=":"/>
                 <ice:inputText id="dvnDeaccessionLinkStudyId" value="#{DeaccessionStudyPage.deaccessionLinkStudyId}"

@@ -88,11 +88,26 @@ public class MetadataResourceBean {
     @Produces({ "application/xml" })
     
     public MetadataInstance getMetadataInstanceByGlobalId(@PathParam("nameProtocol") String nameProtocol, @PathParam("nameSpace") String nameSpace, @PathParam("stdyId") String stdyId, @QueryParam("formatType") String formatType, @QueryParam("versionNumber") Long versionNumber, @QueryParam("partialExclude") String partialExclude, @QueryParam("partialInclude") String partialInclude) throws NotFoundException, ServiceUnavailableException, PermissionDeniedException, AuthorizationRequiredException {
+        
+        return getMetadataInstanceByGlobalIdImpl(nameProtocol+":"+nameSpace+"/"+stdyId, formatType, versionNumber, partialExclude, partialInclude);
+    }
+    
+    @Path("{nameProtocol}:{nameSpace}/{shoulderNameSpace}/{stdyId}")
+    @GET
+    @Produces({ "application/xml" })
+    
+    public MetadataInstance getMetadataInstanceByGlobalIdWithShoulderNameSpace(@PathParam("nameProtocol") String nameProtocol, @PathParam("nameSpace") String nameSpace, @PathParam("shoulderNameSpace") String shoulderNameSpace, @PathParam("stdyId") String stdyId, @QueryParam("formatType") String formatType, @QueryParam("versionNumber") Long versionNumber, @QueryParam("partialExclude") String partialExclude, @QueryParam("partialInclude") String partialInclude) throws NotFoundException, ServiceUnavailableException, PermissionDeniedException, AuthorizationRequiredException {
+        
+        return getMetadataInstanceByGlobalIdImpl(nameProtocol+":"+nameSpace+"/"+shoulderNameSpace+"/"+stdyId, formatType, versionNumber, partialExclude, partialInclude);   
+    }
+    
+    
+    public MetadataInstance getMetadataInstanceByGlobalIdImpl(String globalId, String formatType, Long versionNumber, String partialExclude, String partialInclude) throws NotFoundException, ServiceUnavailableException, PermissionDeniedException, AuthorizationRequiredException {
         String authCredentials = getAuthCredentials();
         
         MetadataInstance m = null; // = singleton.addMetadata("hdl:"+nameSpace+"/"+stdyId);
        
-        m = singleton.getMetadata(nameProtocol+":"+nameSpace+"/"+stdyId, formatType, versionNumber, partialExclude, partialInclude, authCredentials);
+        m = singleton.getMetadata(globalId, formatType, versionNumber, partialExclude, partialInclude, authCredentials);
         
         
         if (m == null) {

@@ -33,4 +33,6 @@ public interface DOIEZIdServiceLocal {
     
     public java.util.HashMap getIdentifierMetadata(edu.harvard.iq.dvn.core.study.Study studyIn);
 
+    public void deleteIdentifier(edu.harvard.iq.dvn.core.study.Study studyIn);
+
 }

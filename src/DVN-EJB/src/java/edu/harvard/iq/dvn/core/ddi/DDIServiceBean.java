@@ -2070,9 +2070,9 @@ public class DDIServiceBean implements DDIServiceLocal {
                 } else if (xmlr.getLocalName().equals("IDNo")) {
                     if ( AGENCY_HANDLE.equals( xmlr.getAttributeValue(null, "agency") ) ) {
                         parseStudyIdHandle( parseText(xmlr), metadata.getStudyVersion().getStudy() );
-                    } /* else if ( AGENCY_HANDLE.equals( xmlr.getAttributeValue(null, "agency") ) ) {
+                    } else if ( AGENCY_DOI.equals( xmlr.getAttributeValue(null, "agency") ) ) {
                         parseStudyIdDOI( parseText(xmlr), metadata.getStudyVersion().getStudy() );
-                    } */ else {
+                    } else {
                         StudyOtherId sid = new StudyOtherId();
                         sid.setAgency( xmlr.getAttributeValue(null, "agency")) ;
                         sid.setOtherId( parseText(xmlr) );

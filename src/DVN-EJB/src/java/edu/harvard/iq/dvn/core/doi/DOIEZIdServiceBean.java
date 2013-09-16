@@ -128,17 +128,53 @@ public class DOIEZIdServiceBean implements edu.harvard.iq.dvn.core.doi.DOIEZIdSe
         }                
     }
     
-    public void deleteIdentifier(Study studyIn){
-       String identifier = getIdentifierFromStudy(studyIn);
-       try {
-               ezidService.deleteIdentifier(identifier);
-            }  catch (EZIDException e){                
-            System.out.print("delete failed");
-            System.out.print("String " + e.toString() );
+    public void deleteIdentifier(Study studyIn) {
+        String identifier = getIdentifierFromStudy(studyIn);
+        HashMap doiMetatdata = new HashMap();
+        try {
+            doiMetatdata = ezidService.getMetadata(identifier);
+            System.out.print("Starting doiMetatdata status: " + doiMetatdata.get("_status"));
+        } catch (EZIDException e) {
+            System.out.print("get matadata failed cannot delete");
+            System.out.print("String " + e.toString());
             System.out.print("localized message " + e.getLocalizedMessage());
             System.out.print("cause " + e.getCause());
-            System.out.print("message " + e.getMessage());    
-        }                
+            System.out.print("message " + e.getMessage());
+            return;
+        }
+
+        String idStatus = (String) doiMetatdata.get("_status");
+
+        if (idStatus.equals("reserved")) {
+            System.out.print("Delete status is reserved..");
+            try {
+                ezidService.deleteIdentifier(identifier);
+            } catch (EZIDException e) {
+                System.out.print("delete failed");
+                System.out.print("String " + e.toString());
+                System.out.print("localized message " + e.getLocalizedMessage());
+                System.out.print("cause " + e.getCause());
+                System.out.print("message " + e.getMessage());
+            }
+            return;
+        }
+
+        if (idStatus.equals("public")) {
+            System.out.print("Delete status is public..");
+            try {
+                doiMetatdata.put("_status", "unavailable");
+                System.out.print("doiMetatdata status: " + doiMetatdata.get("_status"));
+                ezidService.setMetadata(identifier, doiMetatdata);
+            } catch (EZIDException e) {
+                System.out.print("modify failed");
+                System.out.print("String " + e.toString());
+                System.out.print("localized message " + e.getLocalizedMessage());
+                System.out.print("cause " + e.getCause());
+                System.out.print("message " + e.getMessage());
+            }
+            return;
+        }
+
     }
     
     private HashMap getMetadataFromStudy(Study studyIn) {
@@ -172,7 +208,7 @@ public class DOIEZIdServiceBean implements edu.harvard.iq.dvn.core.doi.DOIEZIdSe
 	metadata.put("datacite.resourcetype", "Text");
         String inetAddress = PropertyUtil.getHostUrl();
         String targetUrl = "";     
-        DOISHOULDER = "doi:" + getAuthHandle();
+        DOISHOULDER = "doi:" + studyIn.getAuthority();
         if (inetAddress.equals("localhost")){                    
            targetUrl ="http://localhost:8080" + "/dvn/study?globalId=" + DOISHOULDER + "/" + studyIn.getStudyId();
            System.out.print("inetAddress.equals localhost" + targetUrl);
@@ -185,7 +221,7 @@ public class DOIEZIdServiceBean implements edu.harvard.iq.dvn.core.doi.DOIEZIdSe
     }
     
     private String getIdentifierFromStudy(Study studyIn){
-        DOISHOULDER = "doi:" + getAuthHandle();
+        DOISHOULDER = "doi:" + studyIn.getAuthority();
         return DOISHOULDER + "/" + studyIn.getStudyId();
     }
     
@@ -268,8 +304,4 @@ public class DOIEZIdServiceBean implements edu.harvard.iq.dvn.core.doi.DOIEZIdSe
         return guid.toString();
     }
     
-    private String getAuthHandle(){
-        VDCNetwork network = vdcNetworkService.findRootNetwork();
-        return  network.getAuthority();
-    }
 }

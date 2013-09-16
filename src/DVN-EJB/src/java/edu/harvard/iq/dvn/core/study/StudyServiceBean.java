@@ -362,7 +362,14 @@ public class StudyServiceBean implements edu.harvard.iq.dvn.core.study.StudyServ
 
         //System.out.println("DEBUG: " + (new Date().getTime() - start) + "\t - deleteStudy - delete from DB and gnrs");
         em.remove(study);
-        gnrsService.delete(study.getAuthority(), study.getStudyId());
+        
+        //ADD DOI logic
+        if (study.getProtocol().equals("hdl")){
+             gnrsService.delete(study.getAuthority(), study.getStudyId());
+        }
+        if (study.getProtocol().equals("doi")){
+            doiEZIdServiceLocal.deleteIdentifier(study);
+        }
 
         //System.out.println("DEBUG: " + (new Date().getTime() - start) + "\t - deleteStudy - delete from Index");
         if (deleteFromIndex) {
@@ -2344,7 +2351,8 @@ public class StudyServiceBean implements edu.harvard.iq.dvn.core.study.StudyServ
 
         // step 7: register if necessary
         if (registerHandle && vdcNetworkService.find().isHandleRegistration()) {
-            if (study.getProtocol().equals("hdl")) {
+            if (study.getProtocol().equals("hdl") || isHarvest) {
+                study.setProtocol("hdl");
                 String handle = study.getAuthority() + "/" + study.getStudyId();
                 gnrsService.createHandle(handle);
             }

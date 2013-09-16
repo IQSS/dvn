@@ -230,33 +230,7 @@
                   </table>
                 </div>
                 <div id="dvnStudyFacetWrapper">
-                <!--<div jsfc="ice:panelGroup" styleClass="dvnStudyFacetBlock" rendered="#{(StudyListingPage.renderSearchResultsFilter)}">-->
-                    <div jsfc="ice:panelGroup" styleClass="dvnStudyFacetBlock" rendered="#{(StudyListingPage.renderSearchResultsFilter) and StudyListingPage.renderFacets}">
-                    <div class="dvnStudyFacetBlockTitle">Refine Results</div>
-                    <div class="dvnStudyFacetCategoryBlock">
-                        <ul>
-                            <ice:dataTable width="100%" value="#{StudyListingPage.getFacets(5)}" var="facetUI">
-                                <ice:column>
-                                    <!--<div class="dvnStudyFacetCategoryTitle"><ice:outputText value="#{facetUI.name}"/></div>-->
-                                    <!--<div class="dvnStudyFacetCategoryTitle"><ice:outputText value="#{facetUI.friendlyName}"/></div>-->
-                                    <div class="dvnStudyFacetCategoryTitle"><ice:outputText value="#{facetUI.showFriendlyName(facetUI.name)}"/></div>
-                                    <ul class="dvnStudyFacetResultsBlock">
-                                        <ui:repeat value="#{facetUI.facetResultUIs}" var="facetresultuis">
-                                            <li>
-                                                <ice:commandLink rendered="#{!facetresultuis.selected}" action="#{StudyListingPage.setStudyListingByFacets(facetUI.name, facetresultuis.name)}" title="Refine by facet">
-                                                    <ice:outputText styleClass="dvnStudyFacetResultText" value="#{facetresultuis.name}"/>
-                                                </ice:commandLink>
-                                                <ice:outputText styleClass="dvnStudyFacetResultText dvnSelectedFacet" value="#{facetresultuis.name}" rendered="#{facetresultuis.selected}"/>
-                                                <span class="dvnStudyFacetResultNumber">(#{facetresultuis.hits})</span>
-                                            </li>
-                                        </ui:repeat>                                        
-                                    </ul>
-                                </ice:column>
-                            </ice:dataTable>
-                        </ul>
-                    </div>
-                </div>
-                <div jsfc="ice:panelGroup" styleClass="#{(StudyListingPage.renderSearchResultsFilter and StudyListingPage.renderFacets) ? 'dvnStudyListBlockSearch' : 'dvnStudyListBlockHomePage'}">
+                  <div jsfc="ice:panelGroup" styleClass="#{(StudyListingPage.renderSearchResultsFilter and StudyListingPage.renderFacets) ? 'dvnStudyListBlockSearch' : 'dvnStudyListBlockHomePage'}">
                     <ice:dataTable rows="10" headerClass="list-header" id="studyListTable1" width="100%"
                                 binding="#{StudyListingPage.studyTable}"
                                 styleClass="dvnStudyListTable" rowClasses="list-row-odd, list-row-even" columnClasses="dvnStudyListTableColInfo, dvnStudyListTableColID" value="#{StudyListingPage.studies}" var="studyUI">
@@ -382,40 +356,79 @@
                             </div>
                         </ice:column>
                     </ice:dataTable>
-                </div>
-                </div>
-                <ice:panelGrid cellpadding="0" cellspacing="0" border="0" columns="2" id="gridPanel22"
-                               styleClass="dvnStudyListResultsBottom" columnClasses="dvn_StudyListTotals, dvnPaginatorWrap"
-                               rendered="#{StudyListingPage.renderScroller}">
-                  <div jsfc="ice:panelGroup" id="groupPanel55">
-                    &nbsp;
                   </div>
-                  <div jsfc="ice:panelGroup" id="groupPanel44" rendered="#{StudyListingPage.renderScroller}" styleClass="dvnPaginatorWrap">
-                    <ice:dataPaginator id="studyListingPaginatorBottom" styleClass="dvnPaginatorRight"
-                                       binding="#{StudyListingPage.paginator2}"
-                                       for="studyListTable1" paginator="true" partialSubmit="true"
-                                       fastStep="3" paginatorMaxPages="4" renderFacetsIfSinglePage="false">
-                      <f:facet name="first">
-                        <ice:graphicImage url="/resources/icefaces/dvn_rime/css-images/arrow-first.gif" title="First Page"/>
-                      </f:facet>
-                      <f:facet name="previous">
-                        <ice:graphicImage url="/resources/icefaces/dvn_rime/css-images/arrow-previous.gif" title="Previous"/>
-                      </f:facet>
-                      <f:facet name="next">
-                        <ice:graphicImage url="/resources/icefaces/dvn_rime/css-images/arrow-next.gif" title="Next"/>
-                      </f:facet>
-                      <f:facet name="last">
-                        <ice:graphicImage url="/resources/icefaces/dvn_rime/css-images/arrow-last.gif" title="Last Page"/>
-                      </f:facet>
-                      <f:facet name="fastforward">
-                        <ice:graphicImage url="/resources/icefaces/dvn_rime/css-images/arrow-ff.gif" title="Fast Forward"/>
-                      </f:facet>
-                      <f:facet name="fastrewind">
-                        <ice:graphicImage url="/resources/icefaces/dvn_rime/css-images/arrow-fr.gif" title="Fast Rewind"/>
-                      </f:facet>
-                    </ice:dataPaginator>
+                  
+                  <div jsfc="ice:panelGroup" styleClass="dvnStudyFacetBlock" rendered="#{(StudyListingPage.renderSearchResultsFilter) and StudyListingPage.renderFacets}">
+                    <div class="dvnStudyFacetBlockTitle">Refine Results</div>
+                    <div class="dvnStudyFacetCategoryBlock">
+                        <ul>
+                            <ice:dataTable width="99%" value="#{StudyListingPage.getFacets(5)}" var="facetUI">
+                                <ice:column>
+                                    <!--<div class="dvnStudyFacetCategoryTitle"><ice:outputText value="#{facetUI.name}"/></div>-->
+                                    <!--<div class="dvnStudyFacetCategoryTitle"><ice:outputText value="#{facetUI.friendlyName}"/></div>-->
+                                    <div class="dvnStudyFacetCategoryTitle"><ice:outputText value="#{facetUI.showFriendlyName(facetUI.name)}"/></div>
+                                    <ul class="dvnStudyFacetResultsBlock">
+                                        <ui:repeat value="#{facetUI.facetResultUIs}" var="facetresultuis">
+                                            <li>
+                                                <ice:commandLink rendered="#{!facetresultuis.selected}" action="#{StudyListingPage.setStudyListingByFacets(facetUI.name, facetresultuis.name)}" title="Refine by facet">
+                                                    <ice:outputText styleClass="dvnStudyFacetResultText" value="#{facetresultuis.name}"/>
+                                                </ice:commandLink>
+                                                <ice:outputText styleClass="dvnStudyFacetResultText dvnSelectedFacet" value="#{facetresultuis.name}" rendered="#{facetresultuis.selected}"/>
+                                                <span class="dvnStudyFacetResultNumber">(#{facetresultuis.hits})</span>
+                                            </li>
+                                        </ui:repeat>                                        
+                                    </ul>
+                                </ice:column>
+                            </ice:dataTable>
+                        </ul>
+                    </div>
                   </div>
-                </ice:panelGrid>
+                </div>
+                <div jsfc="ice:panelGroup" styleClass="dvnStudyListResultsBottom" rendered="#{StudyListingPage.renderScroller}">
+                  <table cellpadding="0" cellspacing="0" border="0" width="100%">
+                      <tr>
+                          <td align="left" valign="bottom">                            
+                            &nbsp;
+                          </td>
+                          <td align="right">
+                              <ice:panelGrid cellpadding="0" cellspacing="0" border="0" columns="2" id="gridPanel22"
+                               columnClasses="dvn_StudyListTotals, dvnPaginatorWrap"
+                               rendered="#{StudyListingPage.renderSort or StudyListingPage.renderScroller}">
+                                  <div jsfc="ice:panelGroup">
+                                    &nbsp;
+                                  </div>
+                               
+                                  <div jsfc="ice:panelGroup" id="groupPanel44" rendered="#{StudyListingPage.renderScroller}">
+                                    <ice:dataPaginator id="studyListingPaginatorBottom" styleClass="dvnPaginatorRight"
+                                                       binding="#{StudyListingPage.paginator2}"
+                                                       for="studyListTable1" paginator="true" partialSubmit="true"
+                                                       fastStep="3" paginatorMaxPages="4" renderFacetsIfSinglePage="false">
+                                      <f:facet name="first">
+                                        <ice:graphicImage url="/resources/icefaces/dvn_rime/css-images/arrow-first.gif" title="First Page"/>
+                                      </f:facet>
+                                      <f:facet name="previous">
+                                        <ice:graphicImage url="/resources/icefaces/dvn_rime/css-images/arrow-previous.gif" title="Previous"/>
+                                      </f:facet>
+                                      <f:facet name="next">
+                                        <ice:graphicImage url="/resources/icefaces/dvn_rime/css-images/arrow-next.gif" title="Next"/>
+                                      </f:facet>
+                                      <f:facet name="last">
+                                        <ice:graphicImage url="/resources/icefaces/dvn_rime/css-images/arrow-last.gif" title="Last Page"/>
+                                      </f:facet>
+                                      <f:facet name="fastforward">
+                                        <ice:graphicImage url="/resources/icefaces/dvn_rime/css-images/arrow-ff.gif" title="Fast Forward"/>
+                                      </f:facet>
+                                      <f:facet name="fastrewind">
+                                        <ice:graphicImage url="/resources/icefaces/dvn_rime/css-images/arrow-fr.gif" title="Fast Rewind"/>
+                                      </f:facet>
+                                    </ice:dataPaginator>
+                                  </div>
+                              </ice:panelGrid>
+                          </td>
+                      </tr>
+                  </table>
+                </div>
+                
                 <script type="text/javascript">
                     // <![CDATA[
                     jQuery(document).ready(function(){

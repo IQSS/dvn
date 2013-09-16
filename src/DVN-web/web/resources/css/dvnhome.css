@@ -238,8 +238,8 @@ span.dvnStudyListTableOptionalFieldLabel{color:gray}
 .dvnStudyListNoStudies{padding:0 1em;text-align:center}
 /* FACETED SEARCH */
 #dvnStudyFacetWrapper {overflow:hidden;}
-.dvnStudyFacetBlock {width:30%; float:right; text-align:left;}
-.dvnStudyListBlockSearch {width:70%; border-right:1px solid #C55B28;}
+.dvnStudyFacetBlock {width:30%; text-align:left;}
+.dvnStudyListBlockSearch {width:70%; float:right; text-align:left; border-left:1px solid #C55B28;}
 .dvnStudyFacetBlockTitle {padding:3px 5px; margin-bottom:.5em; color:#464646; font-weight:bold;}
 .dvnStudyFacetCategoryBlock {margin-left:1px; margin-bottom:1em;}
 .dvnStudyFacetCategoryTitle {color:#C55B28; font-weight:bold;}

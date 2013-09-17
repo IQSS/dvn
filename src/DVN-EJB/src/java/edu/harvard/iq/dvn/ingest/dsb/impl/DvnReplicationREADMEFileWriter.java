@@ -122,9 +122,9 @@ public class DvnReplicationREADMEFileWriter {
         "_To Get Support_\n\n"+
         "    You may want to consult the 'Finding and Using Data' section of the Users Guides on the Dataverse\n"+
         "    Network Project website first:\n\n"+
-        "        http://guides.thedata.org/book/datausers-guides\n\n"+
+        "        ${datausersGuideUrl}\n\n"+
         "    especially, the 'Tabular Data' page of the 'Subset and Analyze' section:\n\n"+
-        "        http://guides.thedata.org/book/tabular-data\n\n"+
+        "        ${tabdataGuideUrl}\n\n"+
 	
         "    If you need to contact us about results of this modeling request,\n" +
         "    besides your questions and comments, please include the following\n" +
@@ -146,6 +146,21 @@ public class DvnReplicationREADMEFileWriter {
         "    http://thedata.org/contact\n\n";
     
     public String generatePtSupportBlock(){
+        String dvnGuidesUrl = "";
+        String hostName = System.getProperty("dvn.inetAddress");
+        dvnGuidesUrl = "http://" + hostName + "/guides";
+        
+        String datausersGuideUrl = dvnGuidesUrl + "/dataverse-user-main.html#finding-and-using-data";
+        String tabdataGuideUrl = dvnGuidesUrl + "/dataverse-user-main.html#tabular-data";
+        
+        valueMap.put("datausersGuideUrl", datausersGuideUrl);
+        valueMap.put("tabdataGuideUrl", tabdataGuideUrl);
+        
+        // TODO: -? 
+        // These URLs, for the data guides, should probably be put on the map
+        // in the code that normally calls this class to generate the README 
+        // file, where the rest of valueMap is populated. -- L.A., v3.6
+        
         StrSubstitutor sub = new StrSubstitutor(valueMap);
         return sub.replace(supportTemplate);
     }

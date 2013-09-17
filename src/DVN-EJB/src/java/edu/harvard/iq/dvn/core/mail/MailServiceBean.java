@@ -274,7 +274,7 @@ public class MailServiceBean implements edu.harvard.iq.dvn.core.mail.MailService
         String dvnGuidesUrl = siteAddress;
         if (siteAddress.indexOf('/') != -1) {
             dvnGuidesUrl = dvnGuidesUrl.substring(0, siteAddress.indexOf('/'));
-            dvnGuidesUrl = dvnGuidesUrl + "/guides";
+            dvnGuidesUrl = "http://" + dvnGuidesUrl + "/guides";
         }
         
         String subject = "Dataverse Network: Your dataverse has been created";
@@ -296,7 +296,7 @@ public class MailServiceBean implements edu.harvard.iq.dvn.core.mail.MailService
         String dvnGuidesUrl = siteAddress;
         if (siteAddress.indexOf('/') != -1) {
             dvnGuidesUrl = dvnGuidesUrl.substring(0, siteAddress.indexOf('/'));
-            dvnGuidesUrl = dvnGuidesUrl + "/guides";
+            dvnGuidesUrl = "http://" + dvnGuidesUrl + "/guides";
         }
         
         String subject = "Dataverse Network: Your dataverse has been released";
